@@ -1,5 +1,4 @@
-<?xml version="1.0" ?>
-
+<?xml version="1.0"  encoding='iso-8859-1' ?>
 <project 
 	name="Castle.Facilities.NHibernateIntegration.Tests" 
 	default="test" 
@@ -9,6 +8,10 @@
 	<property name="root.dir" value="../../.." />
 	<include buildfile="${root.dir}/common-project.xml" />
 
+	<property name="nhf.dialect" value="NHibernate.Dialect.MsSql2005Dialect" overwrite="false"/>
+	<property name="nhf.connection.driver_class" value="NHibernate.Driver.SqlClientDriver" overwrite="false"/>
+	<property name="nhf.connection.connection_string.1" value="Server=(local);initial catalog=test;Integrated Security=SSPI" overwrite="false"/>
+	
 	<target name="init" depends="common.init">
 		<property name="assembly.version" value="1.0.3.0" />
 
@@ -41,18 +44,18 @@
 
 		<xmlpoke
 			file="${app.config}"
-			xpath="/configuration/appSettings/add[@key='ar.dialect']/@value"
-			value="${ar.dialect}" 
+			xpath="/configuration/appSettings/add[@key='nhf.dialect']/@value"
+			value="${nhf.dialect}" 
 		/>
 		<xmlpoke
 			file="${app.config}"
-			xpath="/configuration/appSettings/add[@key='ar.connection.driver_class']/@value"
-			value="${ar.connection.driver_class}" 
+			xpath="/configuration/appSettings/add[@key='nhf.connection.driver_class']/@value"
+			value="${nhf.connection.driver_class}" 
 		/>
 		<xmlpoke
 			file="${app.config}"
-			xpath="/configuration/appSettings/add[@key='ar.connection.connection_string']/@value"
-			value="${ar.connection.connection_string.1}" 
+			xpath="/configuration/appSettings/add[@key='nhf.connection.connection_string']/@value"
+			value="${nhf.connection.connection_string.1}" 
 		/>
 	</target>
 

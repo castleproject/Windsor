@@ -7,9 +7,8 @@
 
 	<property name="root.dir" value="../../.." />
 	<include buildfile="${root.dir}/common-project.xml" />
-
+	
 	<target name="init" depends="common.init">
-		<property name="assembly.version" value="1.0.3.0" />
 		<property name="csc.args" value="/nowarn:618" />
 
 		<assemblyfileset id="project.references" basedir="${build.dir}">
@@ -25,8 +24,9 @@
 			<include name="System.Configuration.dll" />
 		</assemblyfileset>
 	</target>
-
+	
 	<target name="generate-assemblyinfo" depends="init common.generate-assemblyinfo" />
+
 
 	<target name="build" description="Build ${project::get-name()}" depends="generate-assemblyinfo common.compile-dll" />
 

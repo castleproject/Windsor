@@ -759,7 +759,7 @@ namespace Castle.Facilities.NHibernateIntegration
 		public IList Find(string query, object value, IType type)
 		{
 			// TODO: This is deprecated. Use ISession.CreateQuery().SetXYZ().List()
-			return inner.Find(query, value, type);
+			return inner.CreateQuery(query).SetParameter(0, value, type).List();
 		}
 
 		/// <summary>
@@ -772,8 +772,13 @@ namespace Castle.Facilities.NHibernateIntegration
 		/// <remarks>See <see cref="M:NHibernate.IQuery.List"/> for implications of <c>cache</c> usage.</remarks>
 		public IList Find(string query, object[] values, IType[] types)
 		{
+			IQuery q = inner.CreateQuery(query);
 			// TODO: This is deprecated. Use ISession.CreateQuery().SetXYZ().List()
-			return inner.Find(query, values, types);
+			for (int i = 0; i < values.Length; i++)
+			{
+				q.SetParameter(i, values[i], types[i]);
+			}
+			return q.List();
 		}
 
 		/// <summary>
@@ -795,7 +800,7 @@ namespace Castle.Facilities.NHibernateIntegration
 		public IEnumerable Enumerable(string query)
 		{
 			// TODO: This is deprecated. Use ISession.CreateQuery().SetXYZ().List()
-			return inner.Enumerable(query);
+			return inner.CreateQuery(query).Enumerable();
 		}
 
 		/// <summary>
@@ -820,7 +825,9 @@ namespace Castle.Facilities.NHibernateIntegration
 		public IEnumerable Enumerable(string query, object value, IType type)
 		{
 			// TODO: This is deprecated. Use ISession.CreateQuery().SetXYZ().List()
-			return inner.Enumerable(query, value, type);
+			return inner.CreateQuery(query)
+				.SetParameter(0, value, type)
+				.Enumerable();
 		}
 
 		/// <summary>
@@ -844,8 +851,13 @@ namespace Castle.Facilities.NHibernateIntegration
 		/// </remarks>
 		public IEnumerable Enumerable(string query, object[] values, IType[] types)
 		{
+			IQuery q = inner.CreateQuery(query);
+			for (int i = 0; i < values.Length; i++)
+			{
+				q.SetParameter(i, values[i], types[i]);
+			}
 			// TODO: This is deprecated. Use ISession.CreateQuery().SetXYZ().List()
-			return inner.Enumerable(query, values, types);
+			return q.Enumerable();
 		}
 
 		/// <summary>
@@ -861,8 +873,7 @@ namespace Castle.Facilities.NHibernateIntegration
 		/// </remarks>
 		public ICollection Filter(object collection, string filter)
 		{
-			// TODO: This is deprecated. Use ISession.CreateQuery().SetXYZ().List()
-			return inner.Filter(collection, filter);
+			return inner.CreateFilter(collection, filter).List();
 		}
 
 		/// <summary>
@@ -880,8 +891,9 @@ namespace Castle.Facilities.NHibernateIntegration
 		/// </remarks>
 		public ICollection Filter(object collection, string filter, object value, IType type)
 		{
-			// TODO: This is deprecated. Use ISession.CreateQuery().SetXYZ().List()
-			return inner.Filter(collection, filter, value, type);
+			IQuery q = inner.CreateFilter(collection, filter);
+			q.SetParameter(0, value, type);
+			return q.List();
 		}
 
 		/// <summary>
@@ -899,8 +911,13 @@ namespace Castle.Facilities.NHibernateIntegration
 		/// </remarks>
 		public ICollection Filter(object collection, string filter, object[] values, IType[] types)
 		{
-			// TODO: This is deprecated. Use ISession.CreateQuery().SetXYZ().List()
-			return inner.Filter(collection, filter, values, types);
+			IQuery q = inner.CreateFilter(collection, filter);
+			for (int i = 0; i < values.Length; i++)
+			{
+				q.SetParameter(0, values[i], types[i]);
+			}
+
+			return q.List();
 		}
 
 		/// <summary>
@@ -1162,7 +1179,7 @@ namespace Castle.Facilities.NHibernateIntegration
 		/// </returns>
 		public IQuery CreateSQLQuery(string sql, string returnAlias, Type returnClass)
 		{
-			return inner.CreateSQLQuery(sql, returnAlias, returnClass);
+			return inner.CreateSQLQuery(sql).AddEntity(returnAlias, returnClass);
 		}
 
 		/// <summary>
@@ -1176,7 +1193,12 @@ namespace Castle.Facilities.NHibernateIntegration
 		/// </returns>
 		public IQuery CreateSQLQuery(string sql, string[] returnAliases, Type[] returnClasses)
 		{
-			return inner.CreateSQLQuery(sql, returnAliases, returnClasses);
+			ISQLQuery query = inner.CreateSQLQuery(sql);
+			for (int i = 0; i < returnAliases.Length; i++)
+			{
+				query.AddEntity(returnAliases[i], returnClasses[i]);
+			}
+			return query;
 		}
 
 		/// <summary>
@@ -1301,7 +1323,7 @@ namespace Castle.Facilities.NHibernateIntegration
 		internal IDbConnection InternalClose(bool closing)
 		{
 			IDbConnection conn = null;
-	
+
 			sessionStore.Remove(this);
 
 			if (closing)
@@ -1310,9 +1332,9 @@ namespace Castle.Facilities.NHibernateIntegration
 			}
 
 			inner.Dispose();
-	
+
 			disposed = true;
-	
+
 			return conn;
 		}
 
@@ -1329,11 +1351,11 @@ namespace Castle.Facilities.NHibernateIntegration
 
 			if (sdLeft != null && sdRight != null)
 			{
-				return Object.ReferenceEquals( sdLeft.inner, sdRight.inner );
+				return Object.ReferenceEquals(sdLeft.inner, sdRight.inner);
 			}
 			else
 			{
-				throw new NotSupportedException("AreEqual: left is " + 
+				throw new NotSupportedException("AreEqual: left is " +
 					left.GetType().Name + " and right is " + right.GetType().Name);
 			}
 		}

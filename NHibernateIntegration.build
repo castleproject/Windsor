@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding='iso-8859-1' ?>
 <project 
-	name="nhibernate-facility"
+	name="castle-facilities-nhibernateintegration"
 	default="build"
 	xmlns="http://nant.sf.net/release/0.85/nant.xsd"
 >

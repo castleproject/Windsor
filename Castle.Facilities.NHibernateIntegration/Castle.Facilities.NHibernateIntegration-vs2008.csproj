@@ -11,7 +11,7 @@
     <AssemblyKeyContainerName>
     </AssemblyKeyContainerName>
     <AssemblyName>Castle.Facilities.NHibernateIntegration</AssemblyName>
-    <AssemblyOriginatorKeyFile>..\..\..\CastleKey.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>..\..\buildscripts\CastleKey.snk</AssemblyOriginatorKeyFile>
     <DefaultClientScript>JScript</DefaultClientScript>
     <DefaultHTMLPageLayout>Grid</DefaultHTMLPageLayout>
     <DefaultTargetSchema>IE50</DefaultTargetSchema>
@@ -89,31 +89,31 @@
   <ItemGroup>
     <Reference Include="Castle.MicroKernel">
       <Name>Castle.MicroKernel</Name>
-      <HintPath>..\..\..\build\net-3.5\debug\Castle.MicroKernel.dll</HintPath>
+      <HintPath>..\..\lib\net-3.5\Castle.MicroKernel.dll</HintPath>
     </Reference>
     <Reference Include="Castle.Core">
       <Name>Castle.Core</Name>
-      <HintPath>..\..\..\build\net-3.5\debug\Castle.Core.dll</HintPath>
+      <HintPath>..\..\lib\net-3.5\Castle.Core.dll</HintPath>
     </Reference>
     <Reference Include="Castle.Services.Transaction">
       <Name>Castle.Services.Transaction</Name>
-      <HintPath>..\..\..\build\net-3.5\debug\Castle.Services.Transaction.dll</HintPath>
+      <HintPath>..\..\lib\net-3.5\Castle.Services.Transaction.dll</HintPath>
     </Reference>
     <Reference Include="Castle.Windsor">
       <Name>Castle.Windsor</Name>
-      <HintPath>..\..\..\build\net-3.5\debug\Castle.Windsor.dll</HintPath>
+      <HintPath>..\..\lib\net-3.5\Castle.Windsor.dll</HintPath>
     </Reference>
     <Reference Include="Iesi.Collections">
       <Name>Iesi.Collections</Name>
-      <HintPath>..\..\..\build\net-3.5\debug\Iesi.Collections.dll</HintPath>
+      <HintPath>..\..\lib\net-3.5\Iesi.Collections.dll</HintPath>
     </Reference>
     <Reference Include="log4net">
       <Name>log4net</Name>
-      <HintPath>..\..\..\build\net-3.5\debug\log4net.dll</HintPath>
+      <HintPath>..\..\lib\net-3.5\log4net.dll</HintPath>
     </Reference>
     <Reference Include="NHibernate">
       <Name>NHibernate</Name>
-      <HintPath>..\..\..\build\net-3.5\debug\NHibernate.dll</HintPath>
+      <HintPath>..\..\lib\net-3.5\NHibernate.dll</HintPath>
     </Reference>
     <Reference Include="System">
       <Name>System</Name>
@@ -212,11 +212,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\..\CastleKey.snk">
-      <Link>CastleKey.snk</Link>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
     <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />
   </ItemGroup>
   <ItemGroup>
@@ -235,6 +230,11 @@
       <ProductName>.NET Framework 3.5</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\buildscripts\CastleKey.snk">
+      <Link>CastleKey.snk</Link>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
