@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding='iso-8859-1' ?>
+<project
+	name="Castle.Services.Transaction.Tests"
+	default="test"
+	xmlns="http://nant.sf.net/release/0.85/nant.xsd"
+>
+
+	<property name="common.scripts.dir" value="../../buildscripts/" />
+	<include buildfile="${common.scripts.dir}/common-project.xml" />
+
+	<target name="init" depends="common.init">
+		<assemblyfileset id="project.references" basedir="${build.dir}">
+			<include name="log4net.dll" />
+			<include name="nunit.framework.dll"/>
+			<include name="Castle.Services.Transaction.dll" />
+			<include name="System.dll" />
+		</assemblyfileset>
+	</target>
+
+	<target name="test" depends="init common.compile-tests common.run-tests" description="Runs the tests" />
+
+</project>
