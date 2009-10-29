@@ -32,7 +32,7 @@ namespace Castle.Facilities.WcfIntegration.Proxy
 		private readonly ProxyGenerator generator;
 		private readonly WcfClientExtension clients;
 		private AsyncType asyncType;
-		WcfProxyGenerationHook wcfProxyGenerationHook;
+		private readonly WcfProxyGenerationHook wcfProxyGenerationHook;
 
 		public WcfProxyFactory(ProxyGenerator generator, WcfClientExtension clients)
 		{
