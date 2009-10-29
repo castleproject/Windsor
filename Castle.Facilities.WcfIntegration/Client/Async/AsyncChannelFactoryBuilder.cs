@@ -26,10 +26,12 @@ namespace Castle.Facilities.WcfIntegration.Async
 		where M : IWcfClientModel
 	{
 		private readonly ProxyGenerator _generator;
+		private readonly AsyncChannelFactoryProxyHook asyncChannelFactoryProxyHook;
 
 		public AsynChannelFactoryBuilder()
 		{
 			_generator = new ProxyGenerator();
+			asyncChannelFactoryProxyHook = new AsyncChannelFactoryProxyHook();
 		}
 
 		public override ChannelFactory CreateChannelFactory(Type channelFactoryType, M clientModel, 
@@ -45,7 +47,7 @@ namespace Castle.Facilities.WcfIntegration.Async
 			ReplaceServiceEndpointAsyncContracts(constructorArgs);
 
 			var interceptor = new CreateDescriptionInterceptor();
-			var proxyOptions = new ProxyGenerationOptions(new AsyncChannelFactoryProxyHook());
+			var proxyOptions = new ProxyGenerationOptions(asyncChannelFactoryProxyHook);
 			return (ChannelFactory)_generator.CreateClassProxy(
 				channelFactoryType, Type.EmptyTypes, proxyOptions, constructorArgs, interceptor);
 		}

@@ -28,6 +28,8 @@ namespace Castle.Facilities.WcfIntegration.Proxy
 			this.hook = hook;
 		}
 
+
+
 		public bool ShouldInterceptMethod(Type type, MethodInfo methodInfo)
 		{
 			// BUG: Due to... illogical behavior of DP this will produce illformed proxy types.

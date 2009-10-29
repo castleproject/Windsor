@@ -32,11 +32,13 @@ namespace Castle.Facilities.WcfIntegration.Proxy
 		private readonly ProxyGenerator generator;
 		private readonly WcfClientExtension clients;
 		private AsyncType asyncType;
+		WcfProxyGenerationHook wcfProxyGenerationHook;
 
 		public WcfProxyFactory(ProxyGenerator generator, WcfClientExtension clients)
 		{
 			this.generator = generator;
 			this.clients = clients;
+			wcfProxyGenerationHook = new WcfProxyGenerationHook(null);
 		}
 
 		public override object Create(IKernel kernel, object instance, ComponentModel model, 
@@ -114,7 +116,7 @@ namespace Castle.Facilities.WcfIntegration.Proxy
 					"Support for mixins is not yet implemented. How about contributing a patch?");
 			}
 
-			var proxyGenOptions = new ProxyGenerationOptions(new WcfProxyGenerationHook(null))
+			var proxyGenOptions = new ProxyGenerationOptions(wcfProxyGenerationHook)
 			{
 				Selector = new WcfInterceptorSelector(service, proxyOptions.Selector)
 			};

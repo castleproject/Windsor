@@ -34,6 +34,39 @@ namespace Castle.Facilities.WcfIntegration.Proxy
 			this.userProvidedSelector = userProvidedSelector;
 		}
 
+	
+
+		public override bool Equals(object obj)
+		{
+			if (ReferenceEquals(this, obj))
+			{
+				return true;
+			}
+
+			var wcfInterceptorSelector = obj as WcfInterceptorSelector;
+			if (ReferenceEquals(wcfInterceptorSelector, null))
+			{
+				return false;
+			}
+
+			if (!Equals(proxiedType, wcfInterceptorSelector.proxiedType))
+			{
+				return false;
+			}
+			if (!Equals(userProvidedSelector, wcfInterceptorSelector.userProvidedSelector))
+			{
+				return false;
+			}
+			return true;
+		}
+
+		public override int GetHashCode()
+		{
+			var result = proxiedType != null ? proxiedType.GetHashCode() : 0;
+			result = 29 * result + (userProvidedSelector != null ? userProvidedSelector.GetHashCode() : 0);
+			return result;
+		}
+
 		public IInterceptor[] SelectInterceptors(Type type, MethodInfo method, IInterceptor[] interceptors)
 		{
 			if (This_should_be_in_ProxyGenerationHook_IsProxyWrapperMethod(method))
