@@ -229,6 +229,7 @@
     <Compile Include="GraphTestCase.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="LazyLoadingTestCase.cs" />
     <Compile Include="Lifecycle\Components\HttpFakeServer.cs">
       <SubType>Code</SubType>
     </Compile>

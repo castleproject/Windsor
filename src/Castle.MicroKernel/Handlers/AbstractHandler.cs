@@ -16,6 +16,7 @@ namespace Castle.MicroKernel.Handlers
 {
 	using System;
 	using System.Collections;
+	using System.Collections.Generic;
 	using System.Collections.Specialized;
 	using System.Diagnostics;
 	using System.Text;
@@ -36,12 +37,12 @@ namespace Castle.MicroKernel.Handlers
 		/// <summary>
 		/// Dictionary of Type to a list of <see cref="DependencyModel"/>
 		/// </summary>
-		private IDictionary dependenciesByService;
+		private IDictionary<Type, DependencyModel> dependenciesByService;
 
 		/// <summary>
 		/// Dictionary of key (string) to <see cref="DependencyModel"/>
 		/// </summary>
-		private IDictionary dependenciesByKey;
+		private IDictionary<string, DependencyModel> dependenciesByKey;
 
 		/// <summary>
 		/// Custom dependencies values associated with the handler
@@ -292,9 +293,9 @@ namespace Castle.MicroKernel.Handlers
 			{
 				sb.Append("\r\nKeys (components with specific keys)\r\n");
 
-				foreach (DictionaryEntry entry in DependenciesByKey)
+				foreach (var dependency in DependenciesByKey)
 				{
-					String key = entry.Key.ToString();
+					String key = dependency.Key;
 
 					IHandler handler = Kernel.GetHandler(key);
 
@@ -486,14 +487,14 @@ namespace Castle.MicroKernel.Handlers
 
 			if (dependency.DependencyType == DependencyType.Service && dependency.TargetType != null)
 			{
-				if (DependenciesByService.Contains(dependency.TargetType))
+				if (DependenciesByService.ContainsKey(dependency.TargetType))
 				{
 					return;
 				}
 
 				DependenciesByService.Add(dependency.TargetType, dependency);
 			}
-			else if (!DependenciesByKey.Contains(dependency.DependencyKey))
+			else if (!DependenciesByKey.ContainsKey(dependency.DependencyKey))
 			{
 				DependenciesByKey.Add(dependency.DependencyKey, dependency);
 			}
@@ -552,11 +553,11 @@ namespace Castle.MicroKernel.Handlers
 
 			// Check within the Kernel
 
-			foreach (DictionaryEntry kvp in new Hashtable(DependenciesByService))
+			foreach (var pair in new Dictionary<Type,DependencyModel>(DependenciesByService))
 			{
-				Type service = (Type)kvp.Key;
-				DependencyModel dependencyModel = (DependencyModel)kvp.Value;
-				if (HasValidComponent(service, dependencyModel))
+				Type service = pair.Key;
+				DependencyModel dependency = pair.Value;
+				if (HasValidComponent(service, dependency))
 				{
 					DependenciesByService.Remove(service);
 					IHandler dependingHandler = kernel.GetHandler(service);
@@ -565,14 +566,14 @@ namespace Castle.MicroKernel.Handlers
 				}
 			}
 
-			foreach (DictionaryEntry kvp in new Hashtable(DependenciesByKey))
+			foreach (var pair in new Dictionary<string,DependencyModel>(DependenciesByKey))
 			{
-				string compKey = (string)kvp.Key;
-				DependencyModel dependency = (DependencyModel)kvp.Value;
-				if (HasValidComponent(compKey, dependency) || HasCustomParameter(compKey))
+				string key = pair.Key;
+				DependencyModel dependency = pair.Value;
+				if (HasValidComponent(key, dependency) || HasCustomParameter(key))
 				{
-					DependenciesByKey.Remove(compKey);
-					IHandler dependingHandler = kernel.GetHandler(compKey);
+					DependenciesByKey.Remove(key);
+					IHandler dependingHandler = kernel.GetHandler(key);
 					if(dependingHandler!=null)//may not be real handler, if we are using sub resovler
 						AddGraphDependency(dependingHandler.ComponentModel);
 				}
@@ -648,25 +649,25 @@ namespace Castle.MicroKernel.Handlers
 			state = newState;
 		}
 
-		protected IDictionary DependenciesByService
+		protected IDictionary<Type,DependencyModel> DependenciesByService
 		{
 			get
 			{
 				if (dependenciesByService == null)
 				{
-					dependenciesByService = new HybridDictionary();
+					dependenciesByService = new Dictionary<Type, DependencyModel>();
 				}
 				return dependenciesByService;
 			}
 		}
 
-		protected IDictionary DependenciesByKey
+		protected IDictionary<string, DependencyModel> DependenciesByKey
 		{
 			get
 			{
 				if (dependenciesByKey == null)
 				{
-					dependenciesByKey = new HybridDictionary();
+					dependenciesByKey = new Dictionary<string, DependencyModel>();
 				}
 				return dependenciesByKey;
 			}
@@ -727,7 +728,7 @@ namespace Castle.MicroKernel.Handlers
 			ComponentModel.AddDependent(model);
 		}
 
-		private DependencyModel[] Union(ICollection firstset, ICollection secondset)
+		private DependencyModel[] Union(ICollection<DependencyModel> firstset, ICollection<DependencyModel> secondset)
 		{
 			DependencyModel[] result = new DependencyModel[firstset.Count + secondset.Count];
 
