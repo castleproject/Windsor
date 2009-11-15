@@ -18,6 +18,10 @@ namespace Castle.MicroKernel.Tests.Lifestyle.Components
 
 	public class MyLifestyleHandler : AbstractLifestyleManager
 	{
+		public MyLifestyleHandler()
+		{
+		}
+
 		public override void Dispose()
 		{
 		}

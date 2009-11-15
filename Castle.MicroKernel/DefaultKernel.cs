@@ -727,7 +727,7 @@ namespace Castle.MicroKernel
 		/// <param name="serviceType">An object that specifies the type of service object to get. </param>
 		public object GetService(Type serviceType)
 		{
-			if (!HasComponent(serviceType))
+			if (!HasComponent(serviceType) && !LazyLoadComponent(null, serviceType))
 			{
 				return null;
 			}
@@ -744,14 +744,7 @@ namespace Castle.MicroKernel
 		/// </returns>
 		public T GetService<T>() where T : class
 		{
-			Type serviceType = typeof(T);
-
-			if (!HasComponent(serviceType))
-			{
-				return null;
-			}
-
-			return (T)Resolve(serviceType);
+			return (T)GetService(typeof(T));
 		}
 
 		#endregion
@@ -951,5 +944,24 @@ namespace Castle.MicroKernel
 #endif
 
 		#endregion
+
+		private bool LazyLoadComponent(string key, Type service)
+		{
+			if (key == null && service == null)
+			{
+				throw new ArgumentException("At least one - key or service must not be a null reference.");
+			}
+
+			foreach (var loader in ResolveAll<ILazyComponentLoader>())
+			{
+				var registration = loader.Load(key, service);
+				if (registration != null)
+				{
+					registration.Register(this);
+					return true;
+				}
+			}
+			return false;
+		}
 	}
 }

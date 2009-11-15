@@ -16,7 +16,11 @@ namespace Castle.MicroKernel.Handlers
 {
 	using System;
 	using System.Collections;
+	using System.Linq;
+
 	using Castle.Core;
+	using Castle.MicroKernel.Resolvers;
+	using Castle.MicroKernel.SubSystems.Naming;
 
 	/// <summary>
 	/// Summary description for DefaultHandler.
@@ -66,18 +70,24 @@ namespace Castle.MicroKernel.Handlers
 			if (context.HandlerIsCurrentlyBeingResolved(this))
 				return false;
 
-            foreach (Type service in DependenciesByService.Keys)
+			foreach (var dependency in DependenciesByService.Values.ToArray())
 			{
 				// a self-dependency is not allowed
-				var handler = Kernel.GetHandler(service);
+				var handler = Kernel.GetHandler(dependency.TargetType);
 				if (handler == this)
 					return false;
 
 				// ask the kernel
-				if (!Kernel.HasComponent(service))
+				if (Kernel.HasComponent(dependency.TargetType)) continue;
+
+				// let's try to lazy load the dependency...
+				if (!LazyLoadComponent(dependency.DependencyKey, dependency.TargetType))
+					return false;
+				// and see if we can have it this time around
+				// if the previous call returned true we always should
+				if (!Kernel.HasComponent(dependency.TargetType))
 					return false;
 			}
-			
 			return DependenciesByKey.Count == 0;
 		}
 
@@ -101,6 +111,25 @@ namespace Castle.MicroKernel.Handlers
 
 				throw new HandlerException(message);
 			}
+		}
+
+		private bool LazyLoadComponent(string dependencyKey, Type targetType)
+		{
+			if (dependencyKey == null && targetType == null)
+			{
+				throw new ArgumentException("At least one - dependencyKey or targetType must not be a null reference.");
+			}
+
+			foreach (var loader in Kernel.ResolveAll<ILazyComponentLoader>())
+			{
+				var registration = loader.Load(dependencyKey, targetType);
+				if (registration != null)
+				{
+					registration.Register(Kernel);
+					return true;
+				}
+			}
+			return false;
 		}
 	}
 }

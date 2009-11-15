@@ -461,6 +461,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SubSystems\Naming\IHandlerSelector.cs" />
+    <Compile Include="Resolvers\ILazyComponentLoader.cs" />
     <Compile Include="SubSystems\Naming\KeySearchNamingSubSystem.cs" />
     <Compile Include="SubSystems\Naming\INamingSubSystem.cs">
       <SubType>Code</SubType>

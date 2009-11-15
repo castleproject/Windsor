@@ -91,7 +91,7 @@ namespace Castle.MicroKernel
 			{
 				if (key == null) throw new ArgumentNullException("key");
 
-				if (!HasComponent(key))
+				if (!HasComponent(key) && !LazyLoadComponent(key, null))
 				{
 					throw new ComponentNotFoundException(key);
 				}
@@ -108,7 +108,7 @@ namespace Castle.MicroKernel
 			{
 				if (service == null) throw new ArgumentNullException("service");
 
-				if (!HasComponent(service))
+				if (!HasComponent(service) && !LazyLoadComponent(null, service))
 				{
 					throw new ComponentNotFoundException(service);
 				}
@@ -219,7 +219,7 @@ namespace Castle.MicroKernel
 			if (service == null) throw new ArgumentNullException("service");
 			if (arguments == null) throw new ArgumentNullException("arguments");
 
-			if (!HasComponent(service))
+			if (!HasComponent(service) && !LazyLoadComponent(null, service))
 			{
 				throw new ComponentNotFoundException(service);
 			}
@@ -253,7 +253,7 @@ namespace Castle.MicroKernel
 			if (key == null) throw new ArgumentNullException("key");
 			if (arguments == null) throw new ArgumentNullException("arguments");
 
-			if (!HasComponent(key))
+			if (!HasComponent(key) && !LazyLoadComponent(key, null))
 			{
 				throw new ComponentNotFoundException(key);
 			}
@@ -286,7 +286,7 @@ namespace Castle.MicroKernel
 			if (key == null) throw new ArgumentNullException("key");
 			if (service == null) throw new ArgumentNullException("service");
 
-			if (!HasComponent(key))
+			if (!HasComponent(key) && !LazyLoadComponent(key, service))
 			{
 				throw new ComponentNotFoundException(key);
 			}
@@ -319,7 +319,7 @@ namespace Castle.MicroKernel
 			if (key == null) throw new ArgumentNullException("key");
 			if (service == null) throw new ArgumentNullException("service");
 
-			if (!HasComponent(key))
+			if (!HasComponent(key) && !LazyLoadComponent(key,service))
 			{
 				throw new ComponentNotFoundException(key);
 			}
