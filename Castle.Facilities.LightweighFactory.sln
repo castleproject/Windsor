@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Castle.Facilities.LightweighFactory", "Castle.Facilities.LightweighFactory.csproj", "{4BC985F3-9283-44E2-9FB8-5310117AB32C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4BC985F3-9283-44E2-9FB8-5310117AB32C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4BC985F3-9283-44E2-9FB8-5310117AB32C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4BC985F3-9283-44E2-9FB8-5310117AB32C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4BC985F3-9283-44E2-9FB8-5310117AB32C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
