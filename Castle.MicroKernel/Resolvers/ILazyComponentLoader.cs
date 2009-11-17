@@ -22,9 +22,9 @@ namespace Castle.MicroKernel.Resolvers
 	/// Provides lazy registration capabilities to the container.
 	/// </summary>
 	/// <remarks>
-	/// When a component is requested from a container, that has not been registered
-	/// container loads up all the implementers of this interface and asks them in turn
-	/// whethere they can provide that component, until it finds one that will.
+	/// When a component is requested from a container and it was not registered, 
+	/// container loads up all registered implementers of this interface and asks 
+	/// them in turn whethere they can provide that component, until it finds one that will.
 	/// </remarks>
 	public interface ILazyComponentLoader
 	{
@@ -35,7 +35,7 @@ namespace Castle.MicroKernel.Resolvers
 		/// <param name="service">Type of requested service or null</param>
 		/// <returns>Registration that registers component for given key and/or service or null.</returns>
 		/// <remarks>
-		/// While both key and service can be null reference it is guaranteed that at least one of them will not be null.
+		/// While either key or service can be null reference it is guaranteed that at least one of them will not be null.
 		/// When implementer opts in to provide the requested component (by returning not-null registration) it is required
 		/// to register component for requested key/service combination (when one of the elements is null, it should be ignored as well).
 		/// When implementer does not want to register the requested component it nust return null.
