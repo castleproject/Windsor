@@ -12,13 +12,14 @@
 
 		public Delegate BuildDelegate(IHandler handler, MethodInfo invoke, Type service, LightweightFactory factory)
 		{
-			// TODO: use overload of resolve that takes key
-			ElementInit[] initializers;
 			ParameterExpression[] parameters;
-			GetInitializers(out initializers, out parameters, invoke);
+			var initializers = GetInitializers(invoke, out parameters);
 			var arguments = new Expression[]
-			{ Expression.ListInit(Expression.New(Tokens.HashtableCtor, new Expression[0]), initializers) };
-			MethodCallExpression methodCallExpression = Expression.Call(
+			{
+				Expression.Constant(handler.ComponentModel.Name),
+				Expression.ListInit(Expression.New(Tokens.DictionaryCtor, new Expression[0]), initializers)
+			};
+			var methodCallExpression = Expression.Call(
 				Expression.Field(Expression.Constant(factory, typeof(LightweightFactory)), Tokens.LightweightFactoryKernel),
 				Tokens.KernelResolve_IDictionary.MakeGenericMethod(invoke.ReturnType),
 				arguments);
@@ -27,24 +28,33 @@
 
 		#endregion
 
-		private void GetInitializers(out ElementInit[] initializers, out ParameterExpression[] parameters, MethodInfo invoke)
+		private ElementInit[] GetInitializers(MethodInfo invoke, out ParameterExpression[] parameters)
 		{
+			
 			ParameterInfo[] parameterInfos = invoke.GetParameters();
-			initializers = new ElementInit[parameterInfos.Length];
+			var initializers = new ElementInit[parameterInfos.Length + 1];
 			parameters = new ParameterExpression[parameterInfos.Length];
-			for (int i = 0; i < parameterInfos.Length; i++)
+			for (var i = 0; i < parameterInfos.Length; i++)
 			{
 				Expression dictionaryValue;
 				ConstantExpression dictionaryKey;
 				ParameterExpression parameter;
-				BuildInitializer(parameterInfos[i], out dictionaryValue, out dictionaryKey, out parameter);
+
+				BuildInitializer(out dictionaryValue, out dictionaryKey, out parameter, parameterInfos[i]);
 				parameters[i] = parameter;
-				initializers[i] = Expression.ElementInit(Tokens.HashtableAdd, new[] { dictionaryKey, dictionaryValue });
+				initializers[i] = Expression.ElementInit(Tokens.DictionaryAdd, new[] { dictionaryKey, dictionaryValue });
 			}
+			initializers[initializers.Length - 1] =
+				Expression.ElementInit(Tokens.DictionaryAdd,
+				                       new Expression[]
+				                       {
+				                       	Expression.Constant("lightweight-facility-resolution-context"),
+				                       	Expression.New(Tokens.LightweightResolutionContextCtor)
+				                       });
+			return initializers;
 		}
 
-		private void BuildInitializer(ParameterInfo parameterInfo, out Expression dictionaryValue,
-		                              out ConstantExpression dictionaryKey, out ParameterExpression parameter)
+		private void BuildInitializer(out Expression dictionaryValue, out ConstantExpression dictionaryKey, out ParameterExpression parameter, ParameterInfo parameterInfo)
 		{
 			if (parameterInfo.IsOut)
 			{
