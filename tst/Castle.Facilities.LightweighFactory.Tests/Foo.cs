@@ -4,9 +4,9 @@
 	{
 		private readonly int number;
 
-		public Foo(int arg)
+		public Foo(int number)
 		{
-			number = arg;
+			this.number = number;
 		}
 
 		public int Number

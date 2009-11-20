@@ -56,6 +56,8 @@
 			return Component.For(service)
 				.Named(key)
 				.Instance(@delegate)
+				.ExtendedProperties(
+					Property.ForKey("lightweight-factory-component").Eq(true))
 				.LifeStyle.Singleton;
 		}
 
@@ -69,8 +71,7 @@
 				IHandler[] handlers = kernel.GetAssignableHandlers(invoke.ReturnType);
 				if (handlers.Length != 1)
 				{
-					handler =
-						handlers.SingleOrDefault(h => h.ComponentModel.Name.Equals(serviceName, StringComparison.OrdinalIgnoreCase));
+					handler = handlers.SingleOrDefault(h => h.ComponentModel.Name.Equals(serviceName, StringComparison.OrdinalIgnoreCase));
 				}
 				else
 				{

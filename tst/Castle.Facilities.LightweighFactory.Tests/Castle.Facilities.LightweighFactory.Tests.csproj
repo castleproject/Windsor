@@ -61,9 +61,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Bar.cs" />
+    <Compile Include="Baz.cs" />
     <Compile Include="Foo.cs" />
     <Compile Include="LightweightFactoryTestCase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UsesBarDelegate.cs" />
     <Compile Include="UsesFooDelegate.cs" />
   </ItemGroup>
   <ItemGroup>

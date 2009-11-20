@@ -1,7 +1,6 @@
 ﻿namespace Castle.Facilities.LightweighFactory.Tests
 {
 	using Castle.Core;
-	using Castle.MicroKernel.Resolvers;
 	using Castle.Windsor;
 
 	using NUnit.Framework;
@@ -15,10 +14,7 @@
 		public void SetUpTests()
 		{
 			container = new WindsorContainer();
-			// TODO: wrap this with a facility... or nor? We could use ExpressionTreeBasedDelegateBuilder
-			// as default with 'poor mans dependency injection'...
-			container.AddComponent<ILazyComponentLoader, LightweightFactory>("lightweight factory");
-			container.AddComponent<IDelegateBuilder, ExpressionTreeBasedDelegateBuilder>();
+			container.AddFacility<LightweightFactoryFacility>();
 		}
 
 		#endregion
@@ -47,6 +43,30 @@
 			Assert.AreEqual(1, foo.Number);
 			foo = dependsOnFoo.GetFoo();
 			Assert.AreEqual(1, foo.Number);
+		}
+
+		[Test]
+		public void Delegate_pulls_another_dependencies_from_container()
+		{
+			container.AddComponent<Baz>("baz");
+			container.AddComponent<Bar>("bar");
+			container.AddComponent<UsesBarDelegate>("uBar");
+
+			var dependsOnFoo = container.Resolve<UsesBarDelegate>();
+			dependsOnFoo.GetBar("aaa","bbb");
+		}
+
+		[Test]
+		public void Delegate_parameters_are_used_in_order_first_ctor_then_properties()
+		{
+			container.AddComponent<Baz>("baz");
+			container.AddComponent<Bar>("bar");
+			container.AddComponent<UsesBarDelegate>("barBar");
+
+			var dependsOnFoo = container.Resolve<UsesBarDelegate>();
+			var bar = dependsOnFoo.GetBar("a name", "a description");
+			Assert.AreEqual("a name", bar.Name);
+			Assert.AreEqual("a description", bar.Description);
 		}
 	}
 }
