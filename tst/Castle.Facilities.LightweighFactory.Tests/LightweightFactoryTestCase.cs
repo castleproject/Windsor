@@ -1,5 +1,7 @@
 ﻿namespace Castle.Facilities.LightweighFactory.Tests
 {
+	using System;
+
 	using Castle.Core;
 	using Castle.Windsor;
 
@@ -67,6 +69,28 @@
 			var bar = dependsOnFoo.GetBar("a name", "a description");
 			Assert.AreEqual("a name", bar.Name);
 			Assert.AreEqual("a description", bar.Description);
+		}
+
+		[Test]
+		public void Affects_constructor_resolution()
+		{
+			container.AddComponent<Baz>("baz");
+			container.AddComponent<HasTwoConstructors>("fizz");
+			var factory = container.Resolve<Func<string, HasTwoConstructors>>("fizzFactory");
+
+			var obj = factory("naaaameee");
+			Assert.AreEqual("naaaameee", obj.Name);
+		}
+
+		[Test, Ignore("There does not seem to be any way to do this...")]
+		public void Does_not_duplicate_arguments_matching_delegate_parameters()
+		{
+			container.AddComponent<Baz>("baz");
+			container.AddComponent<HasOnlyOneArgMatchingDelegatesParameter>("fizz");
+			var factory = container.Resolve<Func<string, string, HasOnlyOneArgMatchingDelegatesParameter>>("fizzFactory");
+			var obj = factory("arg1", "name");
+			Assert.AreEqual("name", obj.Name);
+			Assert.AreEqual("arg1", obj.Arg1);
 		}
 	}
 }

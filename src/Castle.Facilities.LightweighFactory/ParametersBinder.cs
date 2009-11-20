@@ -13,7 +13,6 @@
 		{
 			Debug.Assert(context.AdditionalParameters.Contains(dependency.DependencyKey) == false,
 						 "context.AdditionalParameters.Contains(dependency.DependencyKey) == false");
-
 			var resolutionContext = context.AdditionalParameters["lightweight-facility-resolution-context"] as LightweightResolutionContext;
 			Debug.Assert(resolutionContext != null, "resolutionContext != null");
 			//let's match by type...
