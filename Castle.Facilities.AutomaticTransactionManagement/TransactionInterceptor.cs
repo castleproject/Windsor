@@ -79,7 +79,11 @@ namespace Castle.Facilities.AutomaticTransactionManagement
 		/// <returns></returns>
 		public void Intercept(IInvocation invocation)
 		{
-			MethodInfo methodInfo = invocation.MethodInvocationTarget;
+			MethodInfo methodInfo;
+			if (invocation.Method.DeclaringType.IsInterface)
+				methodInfo = invocation.MethodInvocationTarget;
+			else
+				methodInfo = invocation.Method;
 
 			if (metaInfo == null || !metaInfo.Contains(methodInfo))
 			{
