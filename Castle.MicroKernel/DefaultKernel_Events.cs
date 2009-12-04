@@ -261,14 +261,20 @@ namespace Castle.MicroKernel
 			{
 				lock(kernel.handlersChangedLock)
 				{
-					if(kernel.handlersChanged==false)
-						return;
+					try
+					{
+						if(kernel.handlersChanged==false)
+							return;
 
-					kernel.DoActualRaisingOfHandlersChanged();
+						kernel.DoActualRaisingOfHandlersChanged();
 
-					kernel.handlersChanged = false;
+						kernel.handlersChanged = false;
+					}
+					finally
+					{
 
-					kernel.handlersChangedDeferred = false;
+						kernel.handlersChangedDeferred = false;
+					}
 				}
 			}
 		}
