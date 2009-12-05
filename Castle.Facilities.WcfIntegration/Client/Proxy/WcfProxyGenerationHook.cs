@@ -75,5 +75,30 @@ namespace Castle.Facilities.WcfIntegration.Proxy
 				hook.MethodsInspected();
 			}
 		}
+
+		public override bool Equals(object obj)
+		{
+			if (ReferenceEquals(null, obj))
+			{
+				return false;
+			}
+
+			if (ReferenceEquals(this, obj))
+			{
+				return true;
+			}
+
+			if (obj.GetType() != typeof(WcfProxyGenerationHook))
+			{
+				return false;
+			}
+
+			return Equals(((WcfProxyGenerationHook)obj).hook, hook);
+		}
+
+		public override int GetHashCode()
+		{
+			return (hook != null ? hook.GetHashCode() : 0);
+		}
 	}
 }
