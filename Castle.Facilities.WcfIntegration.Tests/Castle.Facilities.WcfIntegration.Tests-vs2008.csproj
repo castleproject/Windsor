@@ -123,8 +123,15 @@
     <Compile Include="Components\ICalculator.cs" />
     <Compile Include="Components\TraceInterceptor.cs" />
     <Compile Include="Duplex\DuplexClientFixture.cs" />
+    <Compile Include="Components\IOne.cs" />
+    <Compile Include="Components\IServiceWithSession.cs" />
+    <Compile Include="Components\ITwo.cs" />
+    <Compile Include="Components\One.cs" />
+    <Compile Include="PerWcfSessionLifestyleTestCase.cs" />
     <Compile Include="Rest\RestClientFixture.cs" />
     <Compile Include="Rest\RestServiceFixture.cs" />
+    <Compile Include="Components\ServiceWithSession.cs" />
+    <Compile Include="Components\Two.cs" />
     <Compile Include="WcfClientFixture.cs" />
     <Compile Include="Components\IOperations.cs" />
     <Compile Include="Components\Operations.cs" />
