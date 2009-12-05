@@ -95,7 +95,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 		}
 
 		[Test]
-		public void Services_should_not_be_shared_between_two_sessions()
+		public void Services_should_not_be_shared_between_two_subsequent_sessions()
 		{
 			client.Initiating("Client 1");
 			client.Operation1(" Run Forrest run!");
@@ -104,6 +104,30 @@ namespace Castle.Facilities.WcfIntegration.Tests
 			client.Initiating("Client 2");
 			client.Operation1(" welcomes you.");
 			client.Terminating();
+			var interceptor = windsorContainer.GetService<CollectingInterceptor>();
+			IGrouping<object, IInvocation>[] invocations = interceptor
+				.AllInvocations
+				.GroupBy(i => i.InvocationTarget)
+				.ToArray();
+
+			Assert.AreEqual(6, ServiceWithSession.InstanceCount);
+			Assert.AreEqual(2, invocations.Length);
+			var one1 = invocations[0].Key as One;
+			var one2 = invocations[1].Key as One;
+			Assert.AreEqual("Client 1 Run Forrest run!", one1.Arg);
+			Assert.AreEqual("Client 2 welcomes you.", one2.Arg);
+		}
+
+		[Test]
+		public void Services_should_not_be_shared_between_two_concurrent_sessions()
+		{
+			var client2 = CreateClient();
+			client.Initiating("Client 1");
+			client.Operation1(" Run Forrest run!");
+			client2.Initiating("Client 2");
+			client2.Operation1(" welcomes you.");
+			client.Terminating();
+			client2.Terminating();
 			var interceptor = windsorContainer.GetService<CollectingInterceptor>();
 			IGrouping<object, IInvocation>[] invocations = interceptor
 				.AllInvocations
