@@ -23,7 +23,6 @@ namespace Castle.MicroKernel.Registration
 	using Castle.Core.Configuration;
 	using Castle.Core.Interceptor;
 	using Castle.MicroKernel;
-	using Castle.MicroKernel.Facilities.OnCreate;
 	using Castle.MicroKernel.LifecycleConcerns;
 	using Castle.MicroKernel.Proxy;
 
