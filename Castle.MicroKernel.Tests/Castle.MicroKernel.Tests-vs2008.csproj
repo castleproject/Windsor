@@ -200,7 +200,7 @@
     <Compile Include="Facilities\FactorySupport\FactorySupportFluentTestCase.cs" />
     <Compile Include="Facilities\FactorySupport\FactorySupportProgrammaticTestCase.cs" />
     <Compile Include="Facilities\FactorySupport\FactorySupportTestCase.cs" />
-    <Compile Include="Facilities\OnCreate\OnCreateTestCase.cs" />
+    <Compile Include="Lifecycle\OnCreateTestCase.cs" />
     <Compile Include="Facilities\Startable\Components\StartableChainWithGenerics.cs" />
     <Compile Include="Facilities\Startable\Components\StartableComponentWithCustomDependencies.cs" />
     <Compile Include="HandlerForwardingTestCase.cs" />
@@ -299,6 +299,9 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Facilities\OnCreate\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

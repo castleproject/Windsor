@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.MicroKernel.Tests.Facilities.OnCreate
+namespace Castle.MicroKernel.Tests.Lifecycle
 {
-	using MicroKernel.Facilities.OnCreate;
-	using MicroKernel.Registration;
+	using Castle.MicroKernel.Registration;
+
 	using NUnit.Framework;
 
 	[TestFixture]
@@ -28,7 +28,6 @@ namespace Castle.MicroKernel.Tests.Facilities.OnCreate
 		public void SetUp()
 		{
 			container = new DefaultKernel();
-			container.AddFacility<OnCreateFacility>();
 		}
 
 		#endregion
@@ -39,7 +38,7 @@ namespace Castle.MicroKernel.Tests.Facilities.OnCreate
 		public void CanModify_when_singleton()
 		{
 			container.Register(Component.For<IService>().ImplementedBy<MyService>()
-									.OnCreate((kernel, instance) => instance.Name+="a"));
+			                   	.OnCreate((kernel, instance) => instance.Name+="a"));
 			var service = container.Resolve<IService>();
 			Assert.That(service.Name, Is.EqualTo("a"));
 			service = container.Resolve<IService>();
@@ -62,7 +61,7 @@ namespace Castle.MicroKernel.Tests.Facilities.OnCreate
 		{
 			MyService2.staticname = "";
 			container.Register(Component.For<IService2>().ImplementedBy<MyService2>()
-									.LifeStyle.Transient.OnCreate((kernel, instance) => instance.Name+="a"));
+			                   	.LifeStyle.Transient.OnCreate((kernel, instance) => instance.Name+="a"));
 			var service = container.Resolve<IService2>();
 			Assert.That(service.Name, Is.EqualTo("a"));
 			service = container.Resolve<IService2>();
@@ -94,7 +93,7 @@ namespace Castle.MicroKernel.Tests.Facilities.OnCreate
 	{
 		public MyService()
 		{
-			this.Name = "";
+			Name = "";
 		}
 		#region IService Members
 
@@ -129,3 +128,5 @@ namespace Castle.MicroKernel.Tests.Facilities.OnCreate
 		#endregion
 	}
 }
+
+

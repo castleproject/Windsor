@@ -153,7 +153,6 @@
     <Compile Include="Facilities\IFacility.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Facilities\OnCreate\OnCreateFacility.cs" />
     <Compile Include="Facilities\Remoting\CustomActivators\RemoteActivator.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -236,6 +235,8 @@
     <Compile Include="LifecycleConcerns\InitializationConcern.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="LifecycleConcerns\OnCreateActionDelegate.cs" />
+    <Compile Include="LifecycleConcerns\OnCreatedStep.cs" />
     <Compile Include="LifecycleConcerns\SupportInitializeConcern.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -335,7 +336,7 @@
     <Compile Include="Registration\ConfigurationDescriptor.cs" />
     <Compile Include="Registration\CustomDependencyDescriptor.cs" />
     <Compile Include="Registration\ExtendedPropertiesDescriptor.cs" />
-    <Compile Include="Registration\Facilities\OnCreateComponentDescriptor.cs" />
+    <Compile Include="Registration\OnCreateComponentDescriptor.cs" />
     <Compile Include="Registration\Interceptor\InterceptorSelectorDescriptor.cs" />
     <Compile Include="Registration\Interceptor\InterceptorDescriptor.cs" />
     <Compile Include="Registration\Interceptor\InterceptorGroup.cs" />
