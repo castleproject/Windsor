@@ -24,8 +24,8 @@ namespace Castle.MicroKernel.Registration
 	using Castle.Core.Interceptor;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Facilities.OnCreate;
+	using Castle.MicroKernel.LifecycleConcerns;
 	using Castle.MicroKernel.Proxy;
-	using Facilities;
 
 	/// <summary>
 	/// Delegate to filter component registration.
@@ -35,7 +35,7 @@ namespace Castle.MicroKernel.Registration
 	/// <returns>true if accepted.</returns>
 	public delegate bool ComponentFilter(IKernel kernel, ComponentModel model);
 
-    public delegate T Function<T>();
+	public delegate T Function<T>();
 
 	/// <summary>
 	/// Registration for a single type as a component with the kernel.
@@ -56,7 +56,7 @@ namespace Castle.MicroKernel.Registration
 		private readonly List<ComponentDescriptor<S>> descriptors;
 		private ComponentModel componentModel;
 		private bool registered;
-	    private readonly List<IRegistration> additionalRegistrations;
+		private readonly List<IRegistration> additionalRegistrations;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ComponentRegistration{S}"/> class.
@@ -67,24 +67,25 @@ namespace Castle.MicroKernel.Registration
 			registered = false;
 			serviceType = typeof(S);
 			descriptors = new List<ComponentDescriptor<S>>();
-            additionalRegistrations = new List<IRegistration>();
+			additionalRegistrations = new List<IRegistration>();
 		}
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ComponentRegistration{S}"/> class
 		/// with an existing <see cref="ComponentModel"/>.
 		/// </summary>
-		protected ComponentRegistration(ComponentModel componentModel) : this()
+		protected ComponentRegistration(ComponentModel componentModel)
+			: this()
 		{
 			if (componentModel == null)
 			{
 				throw new ArgumentNullException("componentModel");
 			}
-			
+
 			this.componentModel = componentModel;
 			name = componentModel.Name;
 			serviceType = componentModel.Service;
-			implementation = componentModel.Implementation;			
+			implementation = componentModel.Implementation;
 		}
 
 		/// <summary>
@@ -110,7 +111,7 @@ namespace Castle.MicroKernel.Registration
 		public Type ServiceType
 		{
 			get { return serviceType; }
-			protected set { serviceType = value; }	
+			protected set { serviceType = value; }
 		}
 
 		/// <summary>
@@ -134,12 +135,12 @@ namespace Castle.MicroKernel.Registration
 		{
 			get { return implementation; }
 		}
-		
+
 		internal bool IsOverWrite
 		{
 			get { return overwrite; }
 		}
-		
+
 		/// <summary>
 		/// With the overwrite.
 		/// </summary>
@@ -166,7 +167,7 @@ namespace Castle.MicroKernel.Registration
 				String message = String.Format("This component has " +
 					"already been assigned name '{0}'", this.name);
 
-				throw new ComponentRegistrationException(message);					
+				throw new ComponentRegistrationException(message);
 			}
 
 			this.name = name;
@@ -180,8 +181,8 @@ namespace Castle.MicroKernel.Registration
 		/// </summary>
 		/// <typeparam name="C">The type that is the implementation for the service.</typeparam>
 		/// <returns></returns>
-        public ComponentRegistration<S> ImplementedBy<C>() where C : S
-        {
+		public ComponentRegistration<S> ImplementedBy<C>() where C : S
+		{
 			return ImplementedBy(typeof(C));
 		}
 
@@ -198,7 +199,7 @@ namespace Castle.MicroKernel.Registration
 			{
 				String message = String.Format("This component has " +
 					"already been assigned implementation {0}", implementation.FullName);
-				throw new ComponentRegistrationException(message);					
+				throw new ComponentRegistrationException(message);
 			}
 
 			implementation = type;
@@ -353,7 +354,7 @@ namespace Castle.MicroKernel.Registration
 		/// <returns></returns>
 		public ComponentRegistration<S> DependsOn(params Property[] dependencies)
 		{
-			return AddDescriptor(new CustomDependencyDescriptor<S>(dependencies));	
+			return AddDescriptor(new CustomDependencyDescriptor<S>(dependencies));
 		}
 
 		/// <summary>
@@ -366,7 +367,7 @@ namespace Castle.MicroKernel.Registration
 		/// <returns></returns>
 		public ComponentRegistration<S> DependsOn(IDictionary dependencies)
 		{
-			return AddDescriptor(new CustomDependencyDescriptor<S>(dependencies));	
+			return AddDescriptor(new CustomDependencyDescriptor<S>(dependencies));
 		}
 
 		/// <summary>
@@ -488,7 +489,7 @@ namespace Castle.MicroKernel.Registration
 		/// <returns></returns>
 		public ComponentRegistration<S> Configuration(params Node[] configNodes)
 		{
-			return AddDescriptor( new ConfigurationDescriptor<S>(configNodes));
+			return AddDescriptor(new ConfigurationDescriptor<S>(configNodes));
 		}
 
 		/// <summary>
@@ -530,7 +531,7 @@ namespace Castle.MicroKernel.Registration
 		/// to the kernel, before registering this component.</remarks>
 		public ComponentRegistration<S> Startable()
 		{
-			return AddAttributeDescriptor("startable", "true");	
+			return AddAttributeDescriptor("startable", "true");
 		}
 
 		/// <summary>
@@ -543,7 +544,7 @@ namespace Castle.MicroKernel.Registration
 		public ComponentRegistration<S> StartUsingMethod(string startMethod)
 		{
 			return Startable()
-				.AddAttributeDescriptor("startMethod", startMethod);	
+				.AddAttributeDescriptor("startMethod", startMethod);
 		}
 
 		/// <summary>
@@ -561,13 +562,11 @@ namespace Castle.MicroKernel.Registration
 
 		/// <summary>
 		/// Stores a set of <see cref="OnCreateActionDelegate{T}"/> which will be invoked when the component
-		/// is created
+		/// is created and before it's returned from the container.
 		/// </summary>
-		/// <param name="actions">A setof actions</param>
-		/// <remarks>Be sure that you first added the <see cref="OnCreateFacility"/> 
-		/// to the kernel, before registering this component.</remarks>
+		/// <param name="actions">A set of actions to be executed right after the component is created and before it's returned from the container.</param>
 		public ComponentRegistration<S> OnCreate(params OnCreateActionDelegate<S>[] actions)
-		{ 
+		{
 			this.AddDescriptor(new OnCreateComponentDescriptor<S>(actions));
 			return this;
 		}
@@ -629,20 +628,20 @@ namespace Castle.MicroKernel.Registration
 
 				IConfiguration configuration = EnsureComponentConfiguration(kernel);
 
-				foreach(ComponentDescriptor<S> descriptor in descriptors)
+				foreach (ComponentDescriptor<S> descriptor in descriptors)
 				{
 					descriptor.ApplyToConfiguration(kernel, configuration);
 				}
 
 				if (componentModel == null && isInstanceRegistration == false)
 				{
-                    componentModel = kernel.ComponentModelBuilder.BuildModel(name, serviceType, implementation, null);
-				} 
+					componentModel = kernel.ComponentModelBuilder.BuildModel(name, serviceType, implementation, null);
+				}
 				else if (componentModel == null && isInstanceRegistration)
 				{
 					componentModel = new ComponentModel(name, serviceType, implementation);
 				}
-                
+
 				foreach (ComponentDescriptor<S> descriptor in descriptors)
 				{
 					descriptor.ApplyToModel(kernel, componentModel);
@@ -654,7 +653,7 @@ namespace Castle.MicroKernel.Registration
 					options.OmitTarget = true;
 				}
 
-				if ((ifFilter == null || ifFilter(kernel, componentModel)) && 
+				if ((ifFilter == null || ifFilter(kernel, componentModel)) &&
 					(unlessFilter == null || !unlessFilter(kernel, componentModel)))
 				{
 					kernel.AddCustomComponent(componentModel);
@@ -664,11 +663,11 @@ namespace Castle.MicroKernel.Registration
 						kernel.RegisterHandlerForwarding(type, name);
 					}
 
-                    foreach (IRegistration r in additionalRegistrations) 
-                    {
-                        r.Register(kernel);
-                    }
-				}	
+					foreach (IRegistration r in additionalRegistrations)
+					{
+						r.Register(kernel);
+					}
+				}
 			}
 		}
 
@@ -717,7 +716,7 @@ namespace Castle.MicroKernel.Registration
 		{
 			if (implementation == null)
 			{
-				implementation = serviceType;	
+				implementation = serviceType;
 			}
 
 			if (String.IsNullOrEmpty(name))
@@ -749,40 +748,40 @@ namespace Castle.MicroKernel.Registration
 			return configuration;
 		}
 
-        /// <summary>
-        /// Uses a factory method to instantiate the component.
-        /// Requires the <see cref="FactorySupportFacility"/> to be installed.
-        /// </summary>
-        /// <typeparam name="T">Implementation type</typeparam>
-        /// <param name="factoryMethod">Factory method</param>
-        /// <returns></returns>
-        public ComponentRegistration<S> UsingFactoryMethod<T>(Function<T> factoryMethod) where T: S
-        {
-            string factoryName = Guid.NewGuid().ToString();
-            additionalRegistrations.Add(Component.For<GenericFactory<T>>().Named(factoryName)
-                .Instance(new GenericFactory<T>(factoryMethod)));
-            ConfigureFactoryWithId(factoryName);
-            return this;
-        }
+		/// <summary>
+		/// Uses a factory method to instantiate the component.
+		/// Requires the <see cref="FactorySupportFacility"/> to be installed.
+		/// </summary>
+		/// <typeparam name="T">Implementation type</typeparam>
+		/// <param name="factoryMethod">Factory method</param>
+		/// <returns></returns>
+		public ComponentRegistration<S> UsingFactoryMethod<T>(Function<T> factoryMethod) where T : S
+		{
+			string factoryName = Guid.NewGuid().ToString();
+			additionalRegistrations.Add(Component.For<GenericFactory<T>>().Named(factoryName)
+											.Instance(new GenericFactory<T>(factoryMethod)));
+			ConfigureFactoryWithId(factoryName);
+			return this;
+		}
 
-        /// <summary>
-        /// Uses a factory method to instantiate the component.
-        /// Requires the <see cref="FactorySupportFacility"/> to be installed.
-        /// </summary>
-        /// <typeparam name="T">Implementation type</typeparam>
-        /// <param name="factoryMethod">Factory method</param>
-        /// <returns></returns>
-        public ComponentRegistration<S> UsingFactoryMethod<T>(Converter<IKernel, T> factoryMethod) where T : S 
-        {
-            string factoryName = Guid.NewGuid().ToString();
-            string factoryMethodName = Guid.NewGuid().ToString();
-            additionalRegistrations.Add(Component.For<KernelToT<T>>().Named(factoryMethodName)
-                .Instance(new KernelToT<T>(factoryMethod)));
-            additionalRegistrations.Add(Component.For<GenericFactoryWithKernel<T>>().Named(factoryName)
-                .ServiceOverrides(ServiceOverride.ForKey("factoryMethod").Eq(factoryMethodName)));
-            ConfigureFactoryWithId(factoryName);
-            return this;
-        }
+		/// <summary>
+		/// Uses a factory method to instantiate the component.
+		/// Requires the <see cref="FactorySupportFacility"/> to be installed.
+		/// </summary>
+		/// <typeparam name="T">Implementation type</typeparam>
+		/// <param name="factoryMethod">Factory method</param>
+		/// <returns></returns>
+		public ComponentRegistration<S> UsingFactoryMethod<T>(Converter<IKernel, T> factoryMethod) where T : S
+		{
+			string factoryName = Guid.NewGuid().ToString();
+			string factoryMethodName = Guid.NewGuid().ToString();
+			additionalRegistrations.Add(Component.For<KernelToT<T>>().Named(factoryMethodName)
+				.Instance(new KernelToT<T>(factoryMethod)));
+			additionalRegistrations.Add(Component.For<GenericFactoryWithKernel<T>>().Named(factoryName)
+				.ServiceOverrides(ServiceOverride.ForKey("factoryMethod").Eq(factoryMethodName)));
+			ConfigureFactoryWithId(factoryName);
+			return this;
+		}
 
 		/// <summary>
 		/// Uses a factory method to instantiate the component.
@@ -800,45 +799,45 @@ namespace Castle.MicroKernel.Registration
 			return this;
 		}
 
-        private void ConfigureFactoryWithId(string factoryId) 
-        {
-            Configuration(
-                Attrib.ForName("factoryId").Eq(factoryId),
-                Attrib.ForName("factoryCreate").Eq("Create")
-                );
-        }
+		private void ConfigureFactoryWithId(string factoryId)
+		{
+			Configuration(
+				Attrib.ForName("factoryId").Eq(factoryId),
+				Attrib.ForName("factoryCreate").Eq("Create")
+				);
+		}
 
-        /// <summary>
-        /// Uses a factory to instantiate the component
-        /// </summary>
-        /// <typeparam name="U">Factory type. This factory has to be registered in the kernel.</typeparam>
-        /// <typeparam name="V">Implementation type.</typeparam>
-        /// <param name="factory">Factory invocation</param>
-        /// <returns></returns>
-        public ComponentRegistration<S> UsingFactory<U, V>(Converter<U, V> factory) where V : S 
-        {
-            return UsingFactoryMethod(kernel => factory.Invoke(kernel.Resolve<U>()));
-	    }
+		/// <summary>
+		/// Uses a factory to instantiate the component
+		/// </summary>
+		/// <typeparam name="U">Factory type. This factory has to be registered in the kernel.</typeparam>
+		/// <typeparam name="V">Implementation type.</typeparam>
+		/// <param name="factory">Factory invocation</param>
+		/// <returns></returns>
+		public ComponentRegistration<S> UsingFactory<U, V>(Converter<U, V> factory) where V : S
+		{
+			return UsingFactoryMethod(kernel => factory.Invoke(kernel.Resolve<U>()));
+		}
 	}
 
-    /// <summary>
-    /// Helper wrapper around Converter
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    public class KernelToT<T> 
-    {
-        private readonly Converter<IKernel, T> fun;
+	/// <summary>
+	/// Helper wrapper around Converter
+	/// </summary>
+	/// <typeparam name="T"></typeparam>
+	public class KernelToT<T>
+	{
+		private readonly Converter<IKernel, T> fun;
 
-        public KernelToT(Converter<IKernel, T> fun) 
-        {
-            this.fun = fun;
-        }
+		public KernelToT(Converter<IKernel, T> fun)
+		{
+			this.fun = fun;
+		}
 
-        public T Call(IKernel kernel) 
-        {
-            return fun(kernel);
-        }
-    }
+		public T Call(IKernel kernel)
+		{
+			return fun(kernel);
+		}
+	}
 
 	/// <summary>
 	/// Helper factory class
@@ -878,26 +877,26 @@ namespace Castle.MicroKernel.Registration
 		}
 	}
 
-    /// <summary>
-    /// Helper factory class
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    public class GenericFactoryWithKernel<T>
-    {
-        private readonly KernelToT<T> factoryMethod;
-        private readonly IKernel kernel;
+	/// <summary>
+	/// Helper factory class
+	/// </summary>
+	/// <typeparam name="T"></typeparam>
+	public class GenericFactoryWithKernel<T>
+	{
+		private readonly KernelToT<T> factoryMethod;
+		private readonly IKernel kernel;
 
-        public GenericFactoryWithKernel(KernelToT<T> factoryMethod, IKernel kernel)
-        {
-            this.factoryMethod = factoryMethod;
-            this.kernel = kernel;
-        }
+		public GenericFactoryWithKernel(KernelToT<T> factoryMethod, IKernel kernel)
+		{
+			this.factoryMethod = factoryMethod;
+			this.kernel = kernel;
+		}
 
-        public T Create()
-        {
-            return factoryMethod.Call(kernel);
-        }
-    }
+		public T Create()
+		{
+			return factoryMethod.Call(kernel);
+		}
+	}
 
 	#region Nested Type: ComponentRegistration
 
@@ -937,6 +936,6 @@ namespace Castle.MicroKernel.Registration
 			return this;
 		}
 	}
-	
+
 	#endregion
 }

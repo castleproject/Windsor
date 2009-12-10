@@ -12,14 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.MicroKernel.Registration.Facilities
+namespace Castle.MicroKernel.Registration
 {
-	using MicroKernel.Facilities.OnCreate;
+	using Castle.Core;
+	using Castle.MicroKernel.LifecycleConcerns;
+
 	/// <summary>
 	/// Adds the actions to ExtendedProperties.
 	/// </summary>
 	/// <typeparam name="S"></typeparam>
-	public class OnCreateComponentDescriptor<S>:ComponentDescriptor<S>
+	public class OnCreateComponentDescriptor<S> : ComponentDescriptor<S>
 	{
 		private readonly OnCreateActionDelegate<S>[] actions;
 
@@ -28,19 +30,14 @@ namespace Castle.MicroKernel.Registration.Facilities
 			this.actions = actions;
 		}
 
-		protected internal override void ApplyToModel(IKernel kernel, Castle.Core.ComponentModel model)
+		protected internal override void ApplyToModel(IKernel kernel, ComponentModel model)
 		{
 			if (actions == null)
 				return;
-			string key = OnCreateFacility.OnCreatePropertyKey;
-			OnCreateActionDelegate actionDelegate = delegate { };
-			foreach (var action in actions)
-			{
-				var current = action;
-				actionDelegate += (kernell, item) => current(kernell, (S)item); ;
-			}
-			model.ExtendedProperties[key] = actionDelegate;
+			model.LifecycleSteps.AddFirst(LifecycleStepType.Commission, new OnCreatedStep<S>(actions, kernel));
 		}
 
 	}
 }
+
+
