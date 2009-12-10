@@ -23,6 +23,8 @@ namespace Castle.MicroKernel.Handlers
 	using Castle.Core;
 	using Castle.MicroKernel.Lifestyle;
 
+	public delegate void ComponentResolvingDelegate(IKernel kernel, CreationContext context);
+
 	/// <summary>
 	/// Implements the basis of <see cref="IHandler"/>
 	/// </summary>
@@ -55,6 +57,7 @@ namespace Castle.MicroKernel.Handlers
 		protected ILifestyleManager lifestyleManager;
 
 		private Type service;
+		private ComponentResolvingDelegate resolvingHandler;
 
 		/// <summary>
 		/// Constructs and initializes the handler
@@ -65,6 +68,9 @@ namespace Castle.MicroKernel.Handlers
 			this.model = model;
 			state = HandlerState.Valid;
 			InitializeCustomDependencies();
+			if(model.ExtendedProperties.Contains("component_resolving_handler") == false)
+				return;
+			resolvingHandler = model.ExtendedProperties["component_resolving_handler"] as ComponentResolvingDelegate;
 		}
 
 		#region IHandler Members
@@ -95,7 +101,23 @@ namespace Castle.MicroKernel.Handlers
 		/// </summary>
 		/// <param name="context"></param>
 		/// <returns></returns>
-		public abstract object Resolve(CreationContext context);
+		public object Resolve(CreationContext context)
+		{
+			if(resolvingHandler!=null)
+			{
+				resolvingHandler(kernel, context);
+			}
+			return ResolveCore(context);
+		}
+
+		/// <summary>
+		/// Should be implemented by derived classes: 
+		/// returns an instance of the component this handler
+		/// is responsible for
+		/// </summary>
+		/// <param name="context"></param>
+		/// <returns></returns>
+		protected abstract object ResolveCore(CreationContext context);
 
 		/// <summary>
 		/// Should be implemented by derived classes: 
@@ -679,7 +701,7 @@ namespace Castle.MicroKernel.Handlers
 
 			foreach (DictionaryEntry customParameter in model.CustomDependencies)
 			{
-				customParameters.Add(customParameter.Key, customParameter.Value);	
+				customParameters.Add(customParameter.Key, customParameter.Value);
 			}
 		}
 

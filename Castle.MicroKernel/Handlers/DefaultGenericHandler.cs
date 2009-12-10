@@ -40,7 +40,7 @@ namespace Castle.MicroKernel.Handlers
 			type2SubHandler = new Dictionary<Type, IHandler>();
 		}
 
-		public override object Resolve(CreationContext context)
+		protected override object ResolveCore(CreationContext context)
 		{
 			Type implType = ComponentModel.Implementation.MakeGenericType(context.GenericArguments);
 

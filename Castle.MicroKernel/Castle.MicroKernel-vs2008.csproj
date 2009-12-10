@@ -337,6 +337,7 @@
     <Compile Include="Registration\CustomDependencyDescriptor.cs" />
     <Compile Include="Registration\ExtendedPropertiesDescriptor.cs" />
     <Compile Include="Registration\OnCreateComponentDescriptor.cs" />
+    <Compile Include="Registration\WithParametersDescriptor.cs" />
     <Compile Include="Registration\Interceptor\InterceptorSelectorDescriptor.cs" />
     <Compile Include="Registration\Interceptor\InterceptorDescriptor.cs" />
     <Compile Include="Registration\Interceptor\InterceptorGroup.cs" />

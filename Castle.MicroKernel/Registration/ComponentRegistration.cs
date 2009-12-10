@@ -569,6 +569,14 @@ namespace Castle.MicroKernel.Registration
 			this.AddDescriptor(new OnCreateComponentDescriptor<S>(actions));
 			return this;
 		}
+
+		public ComponentRegistration<S> WithParameters(WithParametersDelegate action)
+		{
+
+			this.AddDescriptor(new WithParametersDescriptor<S>(action));
+			return this;
+		}
+
 		/// <summary>
 		/// Marks the components with one or more actors.
 		/// </summary>

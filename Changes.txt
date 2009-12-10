@@ -1,3 +1,8 @@
+- added WithParameters method to fluent registration that enables inspecting and modifying arguments passed to Resolve method.
+- BREAKING CHANGE - AbstractHandler.Resolve method is no longer abstract and instead a ResolveCore protected abstract method was added. To fix this, implementers should override ResolveCore instead of Resolve.
+
+- added OnCreate method (refactored from OnCreateFacility created by Tehlike) which allows to specify actions to be invoked on the component right after it is created, and before it's returned from the container
+
 2.0
 ====
 

@@ -121,6 +121,7 @@
     <Compile Include="Bugs\Ioc113\StartableDisposableAndInitializableComponent.cs" />
     <Compile Include="Bugs\IoC_141.cs" />
     <Compile Include="ClassComponents\BaseComponent.cs" />
+    <Compile Include="ClassComponents\ClassWithArguments.cs" />
     <Compile Include="ClassComponents\ClassWithArrayConstructor.cs" />
     <Compile Include="ClassComponents\ClassWithListConstructor.cs">
       <SubType>Code</SubType>
@@ -203,6 +204,7 @@
     <Compile Include="Lifecycle\OnCreateTestCase.cs" />
     <Compile Include="Facilities\Startable\Components\StartableChainWithGenerics.cs" />
     <Compile Include="Facilities\Startable\Components\StartableComponentWithCustomDependencies.cs" />
+    <Compile Include="Registration\WithParametersTestCase.cs" />
     <Compile Include="HandlerForwardingTestCase.cs" />
     <Compile Include="KeySearchNamingSubSystemTestCase.cs" />
     <Compile Include="DefaultConversionManagerTestCase.cs">
@@ -299,9 +301,6 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Facilities\OnCreate\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
