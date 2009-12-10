@@ -17,12 +17,10 @@ namespace Castle.Facilities.WcfIntegration.Tests
 	using System;
 	using System.Collections.Generic;
 	using System.ServiceModel;
-	using System.ServiceModel.Description;
+
 	using Castle.Core;
 	using Castle.Core.Interceptor;
-	using Castle.Facilities.WcfIntegration.Demo;
 	using Castle.Facilities.WcfIntegration.Tests.Behaviors;
-	using Castle.MicroKernel;
 	using Castle.MicroKernel.Registration;
 	using Castle.Windsor;
 	using NUnit.Framework;

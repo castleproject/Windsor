@@ -32,6 +32,7 @@ namespace Castle.Facilities.WcfIntegration.Proxy
 
 		public bool ShouldInterceptMethod(Type type, MethodInfo methodInfo)
 		{
+			// NOTE: This is fixed now. This code can be uncommented and Selector does not have to have this responsibility anymore
 			// BUG: Due to... illogical behavior of DP this will produce illformed proxy types.
 			// We have to move this piece of logic to InterceptorSelector, and move it back when the bug gets fixed.
 			//if (IsChannelHolderMethod(methodInfo))
@@ -73,6 +74,31 @@ namespace Castle.Facilities.WcfIntegration.Proxy
 			{
 				hook.MethodsInspected();
 			}
+		}
+
+		public override bool Equals(object obj)
+		{
+			if (ReferenceEquals(null, obj))
+			{
+				return false;
+			}
+
+			if (ReferenceEquals(this, obj))
+			{
+				return true;
+			}
+
+			if (obj.GetType() != typeof(WcfProxyGenerationHook))
+			{
+				return false;
+			}
+
+			return Equals(((WcfProxyGenerationHook)obj).hook, hook);
+		}
+
+		public override int GetHashCode()
+		{
+			return (hook != null ? hook.GetHashCode() : 0);
 		}
 	}
 }

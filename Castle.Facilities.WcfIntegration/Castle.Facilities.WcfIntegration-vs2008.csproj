@@ -144,6 +144,12 @@
     <Compile Include="AbstractWcfPolicy.cs" />
     <Compile Include="IWcfPolicy.cs" />
     <Compile Include="IWcfCleanUp.cs" />
+    <Compile Include="Lifestyles\IWcfLifestyle.cs" />
+    <Compile Include="Lifestyles\IOperationContextProvider.cs" />
+    <Compile Include="Lifestyles\LifestyleRegistrationExtensions.cs" />
+    <Compile Include="Lifestyles\OperationContextProvider.cs" />
+    <Compile Include="Lifestyles\PerChannelLifestyleExtension.cs" />
+    <Compile Include="Lifestyles\PerWcfSessionLifestyle.cs" />
     <Compile Include="WcfContextChannel.cs" />
     <Compile Include="Client\IChannelFactoryAware.cs" />
     <Compile Include="IWcfBurden.cs" />
