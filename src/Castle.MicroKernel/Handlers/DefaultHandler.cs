@@ -20,7 +20,6 @@ namespace Castle.MicroKernel.Handlers
 
 	using Castle.Core;
 	using Castle.MicroKernel.Resolvers;
-	using Castle.MicroKernel.SubSystems.Naming;
 
 	/// <summary>
 	/// Summary description for DefaultHandler.
@@ -42,7 +41,7 @@ namespace Castle.MicroKernel.Handlers
 		/// </summary>
 		/// <param name="context"></param>
 		/// <returns></returns>
-		public override object Resolve(CreationContext context)
+		protected override object ResolveCore(CreationContext context)
 		{
 			if (!context.HasAdditionalParameters)
 			{

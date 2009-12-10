@@ -17,6 +17,8 @@ namespace Castle.MicroKernel
 	using System;
 	using System.Collections;
 	using System.Collections.Generic;
+	using System.Collections.Specialized;
+
 	using Castle.Core;
 	using Releasers;
 	using SubSystems.Conversion;
@@ -88,11 +90,29 @@ namespace Castle.MicroKernel
 		{
 			this.handler = handler;
 			this.releasePolicy = releasePolicy;
-			this.additionalArguments = additionalArguments;
+			this.additionalArguments = EnsureWriteable(additionalArguments);
 			this.converter = conversionManager;
 			dependencies = new DependencyModelCollection();
 
 			genericArguments = ExtractGenericArguments(typeToExtractGenericArguments);
+		}
+
+		private IDictionary EnsureWriteable(IDictionary dictionary)
+		{
+			// NOTE: this is actually here mostly to workaround the fact that ReflectionBasedDictionaryAdapter is read only
+			// we could make it writeable instead, but I'm not sure that would make sense.
+			if (dictionary == null)
+			{
+				// two should be enought for most cases
+				return new HybridDictionary(2);
+			}
+
+			if (!dictionary.IsReadOnly)
+			{
+				return dictionary;
+			}
+
+			return new Hashtable(dictionary);
 		}
 
 		/// <summary>
