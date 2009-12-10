@@ -14,6 +14,8 @@
 
 namespace Castle.MicroKernel.Tests.Registration
 {
+	using System;
+
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Tests.ClassComponents;
 
@@ -39,11 +41,42 @@ namespace Castle.MicroKernel.Tests.Registration
 		[Test]
 		public void Can_mix_registration_and_call_site_parameters()
 		{
-			kernel.Register(Component.For<ClassWithArguments>().LifeStyle.Transient.WithParameters((k, d) => d["arg1"] = "foo"));
+			kernel.Register(
+				Component.For<ClassWithArguments>().LifeStyle.Transient.WithParameters((k, d) => d["arg1"] = "foo"));
 
 			var component = kernel.Resolve<ClassWithArguments>(new { arg2 = 2 });
 			Assert.AreEqual(2, component.Arg2);
 			Assert.AreEqual("foo", component.Arg1);
+		}
+
+		[Test]
+		public void Can_dynamically_override_services()
+		{
+			kernel.Register(
+				Component.For<ICustomer>()
+					.ImplementedBy<CustomerImpl>()
+					.Named("defaultCustomer"),
+				Component.For<ICustomer>().ImplementedBy<CustomerImpl2>()
+					.Named("sundayCustomer")
+					.WithParameters((k, d) =>
+					{
+						d["name"] = "foo";
+						d["address"] = "bar st 13";
+						d["age"] = 5;
+					}),
+				Component.For<CommonImplWithDependancy>()
+					.LifeStyle.Transient
+					.WithParameters((k, d) =>
+					{
+						var randomNumber = 2;
+						if (randomNumber == 2)
+						{
+							d["customer"] = k.Resolve<ICustomer>("sundayCustomer");
+						}
+					}));
+
+			var component = kernel.Resolve<CommonImplWithDependancy>();
+			Assert.IsInstanceOf<CustomerImpl2>(component.Customer);
 		}
 
 		[Test]
@@ -117,5 +150,4 @@ namespace Castle.MicroKernel.Tests.Registration
 			kernel.Resolve<ClassWithArguments>();//);
 		}
 	}
-
 }
