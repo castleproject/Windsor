@@ -19,15 +19,15 @@ namespace Castle.MicroKernel.Registration
 	using Castle.Core;
 	using Castle.MicroKernel.Handlers;
 
-	public delegate void WithParametersDelegate(IKernel kernel, IDictionary parameters);
+	public delegate void DynamicParametersDelegate(IKernel kernel, IDictionary parameters);
 
 
-	public class WithParametersDescriptor<S> : ComponentDescriptor<S>
+	public class DynamicParametersDescriptor<S> : ComponentDescriptor<S>
 	{
-		private readonly WithParametersDelegate action;
+		private readonly DynamicParametersDelegate action;
 		private static readonly string key = "component_resolving_handler";
 
-		public WithParametersDescriptor(WithParametersDelegate action)
+		public DynamicParametersDescriptor(DynamicParametersDelegate action)
 		{
 			this.action = action;
 		}

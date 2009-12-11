@@ -14,15 +14,13 @@
 
 namespace Castle.MicroKernel.Tests.Registration
 {
-	using System;
-
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Tests.ClassComponents;
 
 	using NUnit.Framework;
 
 	[TestFixture]
-	public class WithParametersTestCase
+	public class DynamicParametersTestCase
 	{
 		[SetUp]
 		public void SetUp()
@@ -42,7 +40,7 @@ namespace Castle.MicroKernel.Tests.Registration
 		public void Can_mix_registration_and_call_site_parameters()
 		{
 			kernel.Register(
-				Component.For<ClassWithArguments>().LifeStyle.Transient.WithParameters((k, d) => d["arg1"] = "foo"));
+				Component.For<ClassWithArguments>().LifeStyle.Transient.DynamicParameters((k, d) => d["arg1"] = "foo"));
 
 			var component = kernel.Resolve<ClassWithArguments>(new { arg2 = 2 });
 			Assert.AreEqual(2, component.Arg2);
@@ -57,21 +55,19 @@ namespace Castle.MicroKernel.Tests.Registration
 					.ImplementedBy<CustomerImpl>()
 					.Named("defaultCustomer"),
 				Component.For<ICustomer>().ImplementedBy<CustomerImpl2>()
-					.Named("sundayCustomer")
-					.WithParameters((k, d) =>
-					{
-						d["name"] = "foo";
-						d["address"] = "bar st 13";
-						d["age"] = 5;
-					}),
+					.Named("otherCustomer")
+					.Parameters(
+					Parameter.ForKey("name").Eq("foo"),		// static parameters, resolved at registration time
+					Parameter.ForKey("address").Eq("bar st 13"),
+					Parameter.ForKey("age").Eq("5")),
 				Component.For<CommonImplWithDependancy>()
 					.LifeStyle.Transient
-					.WithParameters((k, d) =>
+					.DynamicParameters((k, d) =>			// dynamic parameters
 					{
 						var randomNumber = 2;
 						if (randomNumber == 2)
 						{
-							d["customer"] = k.Resolve<ICustomer>("sundayCustomer");
+							d["customer"] = k.Resolve<ICustomer>("otherCustomer");
 						}
 					}));
 
@@ -84,7 +80,7 @@ namespace Castle.MicroKernel.Tests.Registration
 		{
 			string arg1 = null;
 			int arg2 = 0;
-			kernel.Register(Component.For<ClassWithArguments>().LifeStyle.Transient.WithParameters((k, d) =>
+			kernel.Register(Component.For<ClassWithArguments>().LifeStyle.Transient.DynamicParameters((k, d) =>
 			{
 				arg1 = (string)d["arg1"];
 				arg2 = (int)d["arg2"];
@@ -97,7 +93,7 @@ namespace Castle.MicroKernel.Tests.Registration
 		[Test]
 		public void Should_not_require_explicit_registration()
 		{
-			kernel.Register(Component.For<CommonSub2Impl>().LifeStyle.Transient.WithParameters((k, d) => { }));
+			kernel.Register(Component.For<CommonSub2Impl>().LifeStyle.Transient.DynamicParameters((k, d) => { }));
 			Assert.DoesNotThrow(() => kernel.Resolve<CommonSub2Impl>());
 		}
 
@@ -106,7 +102,7 @@ namespace Castle.MicroKernel.Tests.Registration
 		{
 			string arg1 = "bar";
 			int arg2 = 5;
-			kernel.Register(Component.For<ClassWithArguments>().LifeStyle.Transient.WithParameters((k, d) =>
+			kernel.Register(Component.For<ClassWithArguments>().LifeStyle.Transient.DynamicParameters((k, d) =>
 			{
 				d["arg1"] = arg1;
 				d["arg2"] = arg2;
@@ -123,11 +119,11 @@ namespace Castle.MicroKernel.Tests.Registration
 			int arg2 = 5;
 			kernel.Register(Component.For<ClassWithArguments>()
 			                	.LifeStyle.Transient
-			                	.WithParameters((k, d) =>
+			                	.DynamicParameters((k, d) =>
 			                	{
 			                		d["arg1"] = arg1;
 			                	})
-			                	.WithParameters((k, d) =>
+			                	.DynamicParameters((k, d) =>
 			                	{
 			                		d["arg2"] = arg2;
 			                	}));
@@ -141,7 +137,7 @@ namespace Castle.MicroKernel.Tests.Registration
 		{
 			string arg1 = "bar";
 			int arg2 = 5;
-			kernel.Register(Component.For<ClassWithArguments>().LifeStyle.Transient.WithParameters((k, d) =>
+			kernel.Register(Component.For<ClassWithArguments>().LifeStyle.Transient.DynamicParameters((k, d) =>
 			{
 				d["arg1"] = arg1;
 				d["arg2"] = arg2;

@@ -204,7 +204,7 @@
     <Compile Include="Lifecycle\OnCreateTestCase.cs" />
     <Compile Include="Facilities\Startable\Components\StartableChainWithGenerics.cs" />
     <Compile Include="Facilities\Startable\Components\StartableComponentWithCustomDependencies.cs" />
-    <Compile Include="Registration\WithParametersTestCase.cs" />
+    <Compile Include="Registration\DynamicParametersTestCase.cs" />
     <Compile Include="HandlerForwardingTestCase.cs" />
     <Compile Include="KeySearchNamingSubSystemTestCase.cs" />
     <Compile Include="DefaultConversionManagerTestCase.cs">

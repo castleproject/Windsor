@@ -570,10 +570,10 @@ namespace Castle.MicroKernel.Registration
 			return this;
 		}
 
-		public ComponentRegistration<S> WithParameters(WithParametersDelegate action)
+		public ComponentRegistration<S> DynamicParameters(DynamicParametersDelegate action)
 		{
 
-			this.AddDescriptor(new WithParametersDescriptor<S>(action));
+			this.AddDescriptor(new DynamicParametersDescriptor<S>(action));
 			return this;
 		}
 
