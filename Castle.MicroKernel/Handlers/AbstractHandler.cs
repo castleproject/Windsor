@@ -95,8 +95,7 @@ namespace Castle.MicroKernel.Handlers
 		}
 
 		/// <summary>
-		/// Should be implemented by derived classes: 
-		/// returns an instance of the component this handler
+		/// Returns an instance of the component this handler
 		/// is responsible for
 		/// </summary>
 		/// <param name="context"></param>
