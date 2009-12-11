@@ -57,12 +57,12 @@ namespace Castle.MicroKernel.Tests.Registration
 				Component.For<ICustomer>().ImplementedBy<CustomerImpl2>()
 					.Named("otherCustomer")
 					.Parameters(
-					Parameter.ForKey("name").Eq("foo"),		// static parameters, resolved at registration time
-					Parameter.ForKey("address").Eq("bar st 13"),
-					Parameter.ForKey("age").Eq("5")),
+						Parameter.ForKey("name").Eq("foo"), // static parameters, resolved at registration time
+						Parameter.ForKey("address").Eq("bar st 13"),
+						Parameter.ForKey("age").Eq("5")),
 				Component.For<CommonImplWithDependancy>()
 					.LifeStyle.Transient
-					.DynamicParameters((k, d) =>			// dynamic parameters
+					.DynamicParameters((k, d) => // dynamic parameters
 					{
 						var randomNumber = 2;
 						if (randomNumber == 2)
