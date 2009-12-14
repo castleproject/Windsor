@@ -15,25 +15,24 @@
 namespace Castle.Windsor.Configuration.Interpreters.XmlProcessor
 {
 	using System;
-	using System.Collections;
-	using System.Collections.Specialized;
+	using System.Collections.Generic;
 	using System.Text.RegularExpressions;
 	using System.Xml;
 
-	using Castle.MicroKernel.SubSystems.Resource;
 	using Castle.Core.Resource;
-
-	using ElementProcessors;
+	using Castle.MicroKernel.SubSystems.Resource;
+	using Castle.Windsor.Configuration.Interpreters.XmlProcessor.ElementProcessors;
 
 	public class DefaultXmlProcessorEngine : IXmlProcessorEngine
 	{
 		private readonly Regex flagPattern = new Regex(@"^(\w|_)+$");
-		private readonly IDictionary properties = new HybridDictionary();
-		private readonly IDictionary flags = new HybridDictionary();
-		private readonly Stack resourceStack = new Stack();
-		private readonly Hashtable nodeProcessors = new Hashtable();
+		private readonly IDictionary<string, XmlElement> properties = new Dictionary<string, XmlElement>();
+		private readonly IDictionary<string, bool> flags = new Dictionary<string, bool>();
+		private readonly Stack<IResource> resourceStack = new Stack<IResource>();
+		private readonly IDictionary<XmlNodeType, IDictionary<string, IXmlNodeProcessor>> nodeProcessors =
+			new Dictionary<XmlNodeType, IDictionary<string, IXmlNodeProcessor>>();
 		private readonly IXmlNodeProcessor defaultElementProcessor;
-		private IResourceSubSystem resourceSubSystem;
+		private readonly IResourceSubSystem resourceSubSystem;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="DefaultXmlProcessorEngine"/> class.
@@ -59,7 +58,7 @@ namespace Castle.Windsor.Configuration.Interpreters.XmlProcessor
 		{
 			if (typeof(IXmlNodeProcessor).IsAssignableFrom(type))
 			{
-				IXmlNodeProcessor processor = Activator.CreateInstance(type) as IXmlNodeProcessor;
+				var processor = Activator.CreateInstance(type) as IXmlNodeProcessor;
 
 				foreach(XmlNodeType nodeType in processor.AcceptNodeTypes)
 				{
@@ -102,20 +101,19 @@ namespace Castle.Windsor.Configuration.Interpreters.XmlProcessor
 
 		private IXmlNodeProcessor GetProcessor(XmlNode node)
 		{
-			IXmlNodeProcessor processor = null;
-			IDictionary processors = nodeProcessors[node.NodeType] as IDictionary;
-
-			if (processors != null)
+			IDictionary<string, IXmlNodeProcessor> processors;
+			if (!nodeProcessors.TryGetValue(node.NodeType, out processors))
 			{
-				processor = processors[node.Name] as IXmlNodeProcessor;
+				return null;
+			}
 
-				// sometimes nodes with the same name will not accept a processor
-				if (processor == null || !processor.Accept(node))
+			// sometimes nodes with the same name will not accept a processor
+			IXmlNodeProcessor processor;
+			if (!processors.TryGetValue(node.Name, out processor) || !processor.Accept(node))
+			{
+				if (node.NodeType == XmlNodeType.Element)
 				{
-					if (node.NodeType == XmlNodeType.Element)
-					{
-						processor = defaultElementProcessor;
-					}
+					processor = defaultElementProcessor;
 				}
 			}
 
@@ -124,23 +122,24 @@ namespace Castle.Windsor.Configuration.Interpreters.XmlProcessor
 
 		private void RegisterProcessor(XmlNodeType type, IXmlNodeProcessor processor)
 		{
-			if (!nodeProcessors.Contains(type))
+			IDictionary<string, IXmlNodeProcessor> typeProcessors;
+			if (!nodeProcessors.TryGetValue(type,out typeProcessors))
 			{
-				nodeProcessors[type] = new Hashtable();
+				typeProcessors = new Dictionary<string, IXmlNodeProcessor>();
+				nodeProcessors[type] = typeProcessors;
 			}
 
-			IDictionary typeProcessors = (IDictionary)nodeProcessors[type];
-
-			if (typeProcessors.Contains(processor.Name))
+			if (typeProcessors.ContainsKey(processor.Name))
 			{
 				throw new XmlProcessorException("There is already a processor register for {0} with name {1} ", type, processor.Name);
 			}
+
 			typeProcessors.Add(processor.Name, processor);
 		}
 
 		public bool HasFlag(string flag)
 		{
-			return flags.Contains(GetCanonicalFlagName(flag));
+			return flags.ContainsKey(GetCanonicalFlagName(flag));
 		}
 
 		public void AddFlag(string flag)
@@ -170,19 +169,33 @@ namespace Castle.Windsor.Configuration.Interpreters.XmlProcessor
 
 		public IResource GetResource(String uri)
 		{
-			IResource resource = resourceStack.Count > 0 ? resourceStack.Peek() as IResource : null;
+			IResource resource;
+			if (resourceStack.Count > 0)
+			{
+				resource = resourceStack.Peek();
+			}
+			else
+			{
+				resource = null;
+			}
 
 			if (uri.IndexOf(Uri.SchemeDelimiter) != -1)
 			{
-				return resource == null ? resourceSubSystem.CreateResource(uri) :
-					resourceSubSystem.CreateResource(uri, resource.FileBasePath);
+				if (resource == null)
+				{
+					return resourceSubSystem.CreateResource(uri);
+				}
+				
+				return resourceSubSystem.CreateResource(uri, resource.FileBasePath);
 			}
+
+			// NOTE: what if resource is null at this point?
 			if (resourceStack.Count > 0)
 			{
 				return resource.CreateRelative(uri);
 			}
 			
-			throw new XmlProcessorException("Cannot get relative resource '" + uri + "', resource stack is empty");		
+			throw new XmlProcessorException("Cannot get relative resource '" + uri + "', resource stack is empty");
 		}
 
 		public void AddProperty(XmlElement content)
@@ -192,14 +205,18 @@ namespace Castle.Windsor.Configuration.Interpreters.XmlProcessor
 
 		public bool HasProperty(String name)
 		{
-			return properties.Contains(name);
+			return properties.ContainsKey(name);
 		}
 
 		public XmlElement GetProperty(string key)
 		{
-			XmlElement prop = properties[key] as XmlElement;
+			XmlElement property;
+			if (!properties.TryGetValue(key, out property))
+			{
+				return null;
+			}
 
-			return prop == null ? null : prop.CloneNode(true) as XmlElement;
+			return property.CloneNode(true) as XmlElement;
 		}
 
 		private void AddEnvNameAsFlag(string environmentName)
