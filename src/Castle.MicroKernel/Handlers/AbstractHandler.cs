@@ -17,9 +17,9 @@ namespace Castle.MicroKernel.Handlers
 	using System;
 	using System.Collections;
 	using System.Collections.Generic;
-	using System.Collections.Specialized;
 	using System.Diagnostics;
 	using System.Text;
+
 	using Castle.Core;
 	using Castle.MicroKernel.Lifestyle;
 
@@ -161,7 +161,7 @@ namespace Castle.MicroKernel.Handlers
 		{
 			if (customParameters == null)
 			{
-				customParameters = new HybridDictionary(true);
+				customParameters = new Dictionary<string,object>(StringComparer.InvariantCultureIgnoreCase);
 			}
 
 			customParameters[key] = value;
@@ -696,7 +696,7 @@ namespace Castle.MicroKernel.Handlers
 
 		private void InitializeCustomDependencies()
 		{
-			customParameters = new HybridDictionary(true);
+			customParameters = new Dictionary<string,object>(StringComparer.InvariantCultureIgnoreCase);
 
 			foreach (DictionaryEntry customParameter in model.CustomDependencies)
 			{

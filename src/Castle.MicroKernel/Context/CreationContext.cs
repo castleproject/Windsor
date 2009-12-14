@@ -17,7 +17,6 @@ namespace Castle.MicroKernel
 	using System;
 	using System.Collections;
 	using System.Collections.Generic;
-	using System.Collections.Specialized;
 
 	using Castle.Core;
 	using Releasers;
@@ -104,7 +103,7 @@ namespace Castle.MicroKernel
 			if (dictionary == null)
 			{
 				// two should be enought for most cases
-				return new HybridDictionary(2);
+				return new Dictionary<object,object>(2);
 			}
 
 			if (!dictionary.IsReadOnly)
