@@ -14,10 +14,12 @@
 
 namespace Castle.MicroKernel.Tests
 {
+	using System;
+
 	using Castle.Core.Configuration;
 	using Castle.MicroKernel.Handlers;
-	using Castle.MicroKernel.Resolvers;
 	using Castle.MicroKernel.Tests.ClassComponents;
+
 	using NUnit.Framework;
 
 	[TestFixture]
@@ -38,18 +40,17 @@ namespace Castle.MicroKernel.Tests
 		}
 
 		[Test]
-		[ExpectedException(typeof(HandlerException))]
 		public void UnsatisfiedService()
 		{
 			kernel.AddComponent("key", typeof(CommonServiceUser));
-			object instance = kernel["key"];
+
+			Assert.Throws(typeof(HandlerException), () =>
+			{
+				object instance = kernel["key"];
+			});
 		}
 
 		[Test]
-		[ExpectedException(typeof(HandlerException),
-		   ExpectedMessage = "Can't create component 'key' as it has dependencies to be satisfied. \r\nkey is waiting for the following dependencies: \r\n\r\n" +
-		   "Keys (components with specific keys)\r\n- name which was not registered. \r\n- address which was not registered. \r\n" +
-		   "- age which was not registered. \r\n")]
 		public void UnsatisfiedConfigValues()
 		{
 			MutableConfiguration config = new MutableConfiguration("component");
@@ -63,13 +64,21 @@ namespace Castle.MicroKernel.Tests
 
 			kernel.AddComponent("key", typeof(CustomerImpl2));
 
-			object instance = kernel["key"];
+			var exception =
+				Assert.Throws(typeof(HandlerException), () =>
+				{
+					object instance = kernel["key"];
+				});
+			var expectedMessage =
+				string.Format(
+					"Can't create component 'key' as it has dependencies to be satisfied. {0}key is waiting for the following dependencies: {0}{0}" +
+					"Keys (components with specific keys){0}- name which was not registered. {0}- address which was not registered. {0}" +
+					"- age which was not registered. {0}",
+					Environment.NewLine);
+			Assert.AreEqual(expectedMessage, exception.Message);
 		}
 
 		[Test]
-		[ExpectedException(typeof(HandlerException),
-			ExpectedMessage = "Can't create component 'key' as it has dependencies to be satisfied. \r\nkey is waiting for the following dependencies: \r\n\r\nKeys (components with specific keys)\r\n- common2 which was not registered. \r\n"
-			)]
 		public void UnsatisfiedOverride()
 		{
 			MutableConfiguration config = new MutableConfiguration("component");
@@ -83,13 +92,19 @@ namespace Castle.MicroKernel.Tests
 
 			kernel.AddComponent("common1", typeof(ICommon), typeof(CommonImpl1));
 			kernel.AddComponent("key", typeof(CommonServiceUser));
-			object instance = kernel["key"];
+			var exception =
+				Assert.Throws(typeof(HandlerException), () =>
+				{
+					object instance = kernel["key"];
+				});
+			var expectedMessage =
+				string.Format(
+					"Can't create component 'key' as it has dependencies to be satisfied. {0}key is waiting for the following dependencies: {0}{0}Keys (components with specific keys){0}- common2 which was not registered. {0}",
+					Environment.NewLine);
+			Assert.AreEqual(expectedMessage, exception.Message);
 		}
 
 		[Test]
-		[ExpectedException(typeof(HandlerException),
-			ExpectedMessage = "Can't create component 'key' as it has dependencies to be satisfied. \r\nkey is waiting for the following dependencies: \r\n\r\nKeys (components with specific keys)\r\n- common2 which was not registered. \r\n"
-			)]
 		public void OverrideIsForcedDependency()
 		{
 			MutableConfiguration config = new MutableConfiguration("component");
@@ -103,7 +118,16 @@ namespace Castle.MicroKernel.Tests
 
 			kernel.AddComponent("common1", typeof(ICommon), typeof(CommonImpl1));
 			kernel.AddComponent("key", typeof(CommonServiceUser3));
-			object instance = kernel["key"];
+			var exception =
+				Assert.Throws(typeof(HandlerException), () =>
+				{
+					object instance = kernel["key"];
+				});
+			var expectedMessage =
+				string.Format(
+					"Can't create component 'key' as it has dependencies to be satisfied. {0}key is waiting for the following dependencies: {0}{0}Keys (components with specific keys){0}- common2 which was not registered. {0}",
+					Environment.NewLine);
+			Assert.AreEqual(expectedMessage,exception.Message);
 		}
 
 		[Test]

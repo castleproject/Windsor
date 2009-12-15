@@ -14,6 +14,7 @@
 
 namespace Castle.MicroKernel.Tests
 {
+	using System;
 	using System.Collections.Generic;
 
 	using Castle.MicroKernel.Handlers;
@@ -48,15 +49,10 @@ namespace Castle.MicroKernel.Tests
 		[Test]
 		public void WithoutParameters()
 		{
-			var expectedMessage = @"Can't create component 'compb' as it has dependencies to be satisfied. 
-compb is waiting for the following dependencies: 
-
-Services: 
-- Castle.MicroKernel.Tests.RuntimeParameters.CompC which was not registered. 
-
-Keys (components with specific keys)
-- myArgument which was not registered. 
-";
+			var expectedMessage =
+				string.Format(
+					"Can't create component 'compb' as it has dependencies to be satisfied. {0}compb is waiting for the following dependencies: {0}{0}Services: {0}- Castle.MicroKernel.Tests.RuntimeParameters.CompC which was not registered. {0}{0}Keys (components with specific keys){0}- myArgument which was not registered. {0}",
+					Environment.NewLine);
 			var exception = Assert.Throws(typeof(HandlerException), () =>
 			{
 				var compb = kernel[typeof(CompB)];
