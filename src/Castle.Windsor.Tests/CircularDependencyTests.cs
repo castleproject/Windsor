@@ -17,7 +17,7 @@
 namespace Castle.Windsor.Tests
 {
 	using System;
-	using Castle.MicroKernel.Exceptions;
+
 	using Castle.MicroKernel.Handlers;
 	using Castle.Windsor.Tests.Components;
 	using NUnit.Framework;
@@ -37,30 +37,6 @@ namespace Castle.Windsor.Tests
 		}
 
 		[Test]
-		[
-			ExpectedException(typeof(HandlerException),
-				ExpectedMessage = @"Can't create component 'compA' as it has dependencies to be satisfied. 
-compA is waiting for the following dependencies: 
-
-Services: 
-- Castle.Windsor.Tests.Components.CompB which was registered but is also waiting for dependencies. 
-
-compB is waiting for the following dependencies: 
-
-Services: 
-- Castle.Windsor.Tests.Components.CompC which was registered but is also waiting for dependencies. 
-
-compC is waiting for the following dependencies: 
-
-Services: 
-- Castle.Windsor.Tests.Components.CompD which was registered but is also waiting for dependencies. 
-
-compD is waiting for the following dependencies: 
-
-Services: 
-- Castle.Windsor.Tests.Components.CompA which was registered but is also waiting for dependencies. 
-"
-				)]
 		public void ThrowsACircularDependencyException2()
 		{
 			IWindsorContainer container = new WindsorContainer();
@@ -69,7 +45,16 @@ Services:
 			container.AddComponent("compC", typeof(CompC));
 			container.AddComponent("compD", typeof(CompD));
 
-			container.Resolve("compA");
+			var exception =
+				Assert.Throws(typeof(HandlerException), () =>
+				{
+					container.Resolve("compA");
+				});
+			var expectedMessage =
+				string.Format(
+					"Can't create component 'compA' as it has dependencies to be satisfied. {0}compA is waiting for the following dependencies: {0}{0}Services: {0}- Castle.Windsor.Tests.Components.CompB which was registered but is also waiting for dependencies. {0}{0}compB is waiting for the following dependencies: {0}{0}Services: {0}- Castle.Windsor.Tests.Components.CompC which was registered but is also waiting for dependencies. {0}{0}compC is waiting for the following dependencies: {0}{0}Services: {0}- Castle.Windsor.Tests.Components.CompD which was registered but is also waiting for dependencies. {0}{0}compD is waiting for the following dependencies: {0}{0}Services: {0}- Castle.Windsor.Tests.Components.CompA which was registered but is also waiting for dependencies. {0}",
+					Environment.NewLine);
+			Assert.AreEqual(expectedMessage, exception.Message);
 		}
 
 		[Test]

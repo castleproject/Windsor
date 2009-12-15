@@ -20,64 +20,54 @@ using NUnit.Framework;
 
 namespace Castle.MicroKernel.Tests
 {
-    [TestFixture]
-    public class DecoratorsTestCase
-    {
-        [Test]
-        public void Should_ignore_reference_to_itself()
-        {
-            DefaultKernel kernel = new DefaultKernel();
-            kernel.Register(
-                Component.For<IRepository>().ImplementedBy<Repository1>(),
-                Component.For<IRepository>().ImplementedBy<DecoratedRepository>()
-                );
-            Repository1 repos = (Repository1)kernel.Resolve<IRepository>();
-            Assert.IsInstanceOf(typeof(DecoratedRepository), repos.InnerRepository);
-        }
+	[TestFixture]
+	public class DecoratorsTestCase
+	{
+		[Test]
+		public void Should_ignore_reference_to_itself()
+		{
+			DefaultKernel kernel = new DefaultKernel();
+			kernel.Register(
+				Component.For<IRepository>().ImplementedBy<Repository1>(),
+				Component.For<IRepository>().ImplementedBy<DecoratedRepository>()
+				);
+			Repository1 repos = (Repository1)kernel.Resolve<IRepository>();
+			Assert.IsInstanceOf(typeof(DecoratedRepository), repos.InnerRepository);
+		}
 
-        [Test]
-        [ExpectedException(typeof(HandlerException))]
-        public void Will_give_good_error_message_if_cannot_resolve_service_that_is_likely_decorated_when_there_are_multiple_service()
-        {
-            DefaultKernel kernel = new DefaultKernel();
-            kernel.Register(
-                Component.For<IRepository>().ImplementedBy<Repository1>(),
-                Component.For<IRepository>().ImplementedBy<DecoratedRepository2>().Named("foo"),
-                Component.For<IRepository>().ImplementedBy<Repository1>().Named("bar")
-                );
-            kernel.Resolve<IRepository>();
-        }
+		[Test]
+		[ExpectedException(typeof(HandlerException))]
+		public void Will_give_good_error_message_if_cannot_resolve_service_that_is_likely_decorated_when_there_are_multiple_service()
+		{
+			DefaultKernel kernel = new DefaultKernel();
+			kernel.Register(
+				Component.For<IRepository>().ImplementedBy<Repository1>(),
+				Component.For<IRepository>().ImplementedBy<DecoratedRepository2>().Named("foo"),
+				Component.For<IRepository>().ImplementedBy<Repository1>().Named("bar")
+				);
+			kernel.Resolve<IRepository>();
+		}
 
-        [Test]
-        public void Will_give_good_error_message_if_cannot_resolve_service_that_is_likely_decorated()
-        {
-            DefaultKernel kernel = new DefaultKernel();
-            kernel.Register(
-                Component.For<IRepository>().ImplementedBy<Repository1>(),
-                Component.For<IRepository>().ImplementedBy<DecoratedRepository2>()
-                );
-            try
-            {
-                kernel.Resolve<IRepository>();
-            }
-            catch (HandlerException e)
-            {
-                const string expectedMessage = @"Can't create component 'Castle.MicroKernel.Tests.ClassComponents.Repository1' as it has dependencies to be satisfied. 
-Castle.MicroKernel.Tests.ClassComponents.Repository1 is waiting for the following dependencies: 
+		[Test]
+		public void Will_give_good_error_message_if_cannot_resolve_service_that_is_likely_decorated()
+		{
+			DefaultKernel kernel = new DefaultKernel();
+			kernel.Register(
+				Component.For<IRepository>().ImplementedBy<Repository1>(),
+				Component.For<IRepository>().ImplementedBy<DecoratedRepository2>()
+				);
+			var exception =
+				Assert.Throws(typeof(HandlerException), () =>
+				{
+					kernel.Resolve<IRepository>();
+				});
 
-Services: 
-- Castle.MicroKernel.Tests.ClassComponents.IRepository. 
-  A dependency cannot be satisfied by itself, did you forget to add a parameter name to differentiate between the two dependencies? 
+			string expectedMessage =
+				string.Format(
+					"Can't create component 'Castle.MicroKernel.Tests.ClassComponents.Repository1' as it has dependencies to be satisfied. {0}Castle.MicroKernel.Tests.ClassComponents.Repository1 is waiting for the following dependencies: {0}{0}Services: {0}- Castle.MicroKernel.Tests.ClassComponents.IRepository. {0}  A dependency cannot be satisfied by itself, did you forget to add a parameter name to differentiate between the two dependencies? {0}{0}Castle.MicroKernel.Tests.ClassComponents.DecoratedRepository2 is registered and is matching the required service, but cannot be resolved.{0}{0}Castle.MicroKernel.Tests.ClassComponents.DecoratedRepository2 is waiting for the following dependencies: {0}{0}Keys (components with specific keys){0}- name which was not registered. {0}",
+					Environment.NewLine);
+			Assert.AreEqual(expectedMessage, exception.Message);
 
-Castle.MicroKernel.Tests.ClassComponents.DecoratedRepository2 is registered and is matching the required service, but cannot be resolved.
-
-Castle.MicroKernel.Tests.ClassComponents.DecoratedRepository2 is waiting for the following dependencies: 
-
-Keys (components with specific keys)
-- name which was not registered. 
-";
-                Assert.AreEqual(expectedMessage, e.Message);
-            }
-        }
-    }
+		}
+	}
 }
