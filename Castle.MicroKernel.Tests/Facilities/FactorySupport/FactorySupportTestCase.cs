@@ -15,19 +15,22 @@
 namespace Castle.MicroKernel.Tests.Facilities.FactorySupport
 {
 	using System;
-	using System.Collections;
-	using System.Collections.Specialized;
+	using System.Collections.Generic;
+
 	using Castle.Core;
 	using Castle.Core.Configuration;
 	using Castle.Facilities.FactorySupport;
 	using Castle.MicroKernel.Tests.ClassComponents;
+
 	using NUnit.Framework;
 
 	[TestFixture]
 	public class FactorySupportTestCase
 	{
 		IKernel kernel;
-		[SetUp]public void SetUp()
+
+		[SetUp]
+		public void SetUp()
 		{
 			kernel = new DefaultKernel();
 		}
@@ -116,7 +119,7 @@ namespace Castle.MicroKernel.Tests.Facilities.FactorySupport
 
 		public class StringDictionaryDependentComponent
 		{
-			public StringDictionaryDependentComponent(StringDictionary d)
+			public StringDictionaryDependentComponent(Dictionary<string, object> d)
 			{
 			}
 		}
@@ -130,7 +133,7 @@ namespace Castle.MicroKernel.Tests.Facilities.FactorySupport
 
 		public class HashTableDependentComponent
 		{
-			public HashTableDependentComponent(Hashtable d)
+			public HashTableDependentComponent(Dictionary<object, object> d)
 			{
 			}
 		}

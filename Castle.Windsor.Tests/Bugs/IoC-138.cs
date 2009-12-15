@@ -12,14 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Collections;
-using System.Collections.Specialized;
-using Castle.MicroKernel;
-using NUnit.Framework;
-
 namespace Castle.Windsor.Tests.Bugs
 {
-    [TestFixture]
+	using System.Collections.Generic;
+
+	using Castle.MicroKernel;
+
+	using NUnit.Framework;
+
+	[TestFixture]
     public class IoC_138
     {
         [Test]
@@ -29,10 +30,14 @@ namespace Castle.Windsor.Tests.Bugs
             container.AddComponent("A", typeof(A));
             container.AddComponent("B", typeof(B));
 
-            IDictionary parameters = new ListDictionary();
-            parameters.Add("test", "bla");
+            var parameters = new Dictionary<string,string>
+                                     {
+                                     	{
+                                     		"test", "bla"
+                                     		}
+                                     };
 
-            A a = container.Resolve<A>(parameters);
+        	A a = container.Resolve<A>(parameters);
             Assert.IsNotNull(a);
         }
 
@@ -43,7 +48,7 @@ namespace Castle.Windsor.Tests.Bugs
 
             public A(IKernel kernel, string test)
             {
-                IDictionary parameters = new ListDictionary();
+                var parameters = new Dictionary<string,string>();
                 parameters.Add("test2", "bla");
                 b = kernel.Resolve<B>(parameters);
             }
