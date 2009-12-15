@@ -43,8 +43,8 @@ namespace Castle.MicroKernel.Lifestyle
 				if (!PerWebRequestLifestyleModule.Initialized)
 				{
 					string message = "Looks like you forgot to register the http module " +
-					                 typeof(PerWebRequestLifestyleModule).FullName +
-					                 "\r\nAdd '<add name=\"PerRequestLifestyle\" type=\"Castle.MicroKernel.Lifestyle.PerWebRequestLifestyleModule, Castle.MicroKernel\" />' " +
+					                 typeof(PerWebRequestLifestyleModule).FullName + Environment.NewLine +
+					                 "Add '<add name=\"PerRequestLifestyle\" type=\"Castle.MicroKernel.Lifestyle.PerWebRequestLifestyleModule, Castle.MicroKernel\" />' " +
 					                 "to the <httpModules> section on your web.config";
 
 					throw new ConfigurationErrorsException(message);

@@ -64,17 +64,21 @@ namespace Castle.MicroKernel
 
 					if (extendedInfo != null)
 					{
-						sb.AppendFormat("\r\n - {0} for {1} in type {2}",
+						sb.AppendLine();
+						sb.AppendFormat(" - {0} for {1} in type {2}",
 						                key, extendedInfo.Info, extendedInfo.Info.DeclaringType);
 					}
 					else
 					{
-						sb.AppendFormat("\r\n - {0}", key);
+						sb.AppendLine();
+						sb.AppendFormat(" - {0}", key);
 					}
 				}
 
-				sb.AppendFormat("\r\n + {0} for {1} in {2}\r\n",
+				sb.AppendLine();
+				sb.AppendFormat(" + {0} for {1} in {2}",
 				                dependencyModel, info, info.DeclaringType);
+				sb.AppendLine();
 
 				throw new CircularDependencyException(sb.ToString());
 			}

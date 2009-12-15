@@ -341,11 +341,11 @@ namespace Castle.MicroKernel.Resolvers
 					if (handler == null)
 					{
 						throw new DependencyResolverException(
-							"Cycle detected in configuration.\r\n" +
-							"Component " + model.Name + " has a dependency on " +
-							dependency.TargetType + ", but it doesn't provide an override.\r\n" +
-							"You must provide an override if a component " +
-							"has a dependency on a service that it - itself - provides");
+							string.Format(
+								"Cycle detected in configuration.{2}Component {0} has a dependency on {1}, but it doesn't provide an override.{2}You must provide an override if a component has a dependency on a service that it - itself - provides",
+								model.Name,
+								dependency.TargetType,
+								Environment.NewLine));
 					}
 				}
 			}

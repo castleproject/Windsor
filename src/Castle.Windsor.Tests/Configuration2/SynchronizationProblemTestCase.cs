@@ -84,7 +84,7 @@ namespace Castle.Windsor.Tests.Configuration2
 				}
 				catch(Exception ex)
 				{
-					Console.WriteLine(DateTime.Now.Ticks + " ---------------------------\r\n" + ex);
+					Console.WriteLine(DateTime.Now.Ticks + " ---------------------------" + Environment.NewLine + ex);
 				}
 			}
 		}
