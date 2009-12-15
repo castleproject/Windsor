@@ -14,6 +14,7 @@
 			<include name="Castle.Core.dll" />
 			<include name="Castle.DynamicProxy2.dll" />
 			<include name="Castle.MicroKernel.dll" />
+			<include name="Castle.MicroKernel.Tests.dll" />
 			<include name="Castle.Windsor.dll" />
 			<include name="System.Configuration.dll" />
 			<include name="mscorlib.dll" if="${common.silverlight}" />
