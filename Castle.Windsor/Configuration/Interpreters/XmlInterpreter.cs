@@ -98,7 +98,7 @@ namespace Castle.Windsor.Configuration.Interpreters
 			{
 				XmlNode element = processor.Process(source);
 
-				Deserialize(element, store);				
+				Deserialize(element, store);
 			}
 			catch(XmlProcessorException)
 			{
