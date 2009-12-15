@@ -15,7 +15,7 @@
 namespace Castle.Windsor.Configuration.Interpreters.XmlProcessor.ElementProcessors
 {
 	using System;
-	using System.Collections;
+	using System.Collections.Generic;
 	using System.Xml;
 
 	enum StatementState
@@ -56,7 +56,7 @@ namespace Castle.Windsor.Configuration.Interpreters.XmlProcessor.ElementProcesso
 
 			StatementState state = engine.HasFlag(node.Data) ? StatementState.Collect : StatementState.Init;
 
-			ArrayList nodesToProcess = new ArrayList();
+            List<XmlNode> nodesToProcess = new List<XmlNode>();
 			int nestedLevels = 0;
 
 			RemoveItSelf(nodeList.Current);

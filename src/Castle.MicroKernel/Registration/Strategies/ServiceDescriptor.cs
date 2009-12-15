@@ -74,35 +74,35 @@ namespace Castle.MicroKernel.Registration
         /// </summary>
         /// <param name="implements"></param>
         /// <returns></returns>
-        public BasedOnDescriptor FromInterface(Type implements)
-        {
-            useBaseType = false;
-            return Select(delegate(Type type, Type baseType)
-            {
+		public BasedOnDescriptor FromInterface(Type implements)
+		{
+			useBaseType = false;
+			return Select(delegate(Type type, Type baseType)
+			{
 				List<Type> matches = new List<Type>();
 				implements = implements ?? baseType;
 
 				foreach (Type theInterface in GetTopLevelInterfaces(type))
-                {
-                    if (theInterface.GetInterface(implements.FullName) != null)
-                    {
-                        matches.Add(theInterface);
-                    }
-                }
+				{
+					if (theInterface.GetInterface(implements.FullName) != null)
+					{
+						matches.Add(theInterface);
+					}
+				}
 
 				if (matches.Count == 0 && baseType.IsAssignableFrom(type))
 				{
 					matches.Add(baseType);
 				}
 
-                return matches;
-            });
-        }
+				return matches;
+			});
+		}
 		
-        /// <summary>
-        /// Uses base type to lookup the sub interface.
+		/// <summary>
+		/// Uses base type to lookup the sub interface.
 		/// </summary>
-        /// <returns></returns>
+		/// <returns></returns>
 		public BasedOnDescriptor FromInterface()
 		{
 			return FromInterface(null);

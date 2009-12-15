@@ -12,10 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+
 namespace Castle.MicroKernel.SubSystems.Conversion
 {
 	using System;
 	using System.Collections;
+	using System.Collections.Generic;
+	using System.Diagnostics;
 
 	using Castle.Core.Configuration;
 
@@ -23,8 +26,12 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 	public class DictionaryConverter : AbstractTypeConverter
 	{
 		public override bool CanHandleType(Type type)
-		{
-			return (type == typeof(IDictionary) || type == typeof(Hashtable));
+        {
+#if (SILVERLIGHT)
+			return (type == typeof(IDictionary));
+#else
+            return (type == typeof(IDictionary) || type == typeof(Hashtable));
+#endif
 		}
 
 		public override object PerformConversion(String value, Type targetType)
@@ -34,10 +41,9 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 
 		public override object PerformConversion(IConfiguration configuration, Type targetType)
 		{
-#if DEBUG
-			System.Diagnostics.Debug.Assert( targetType == typeof(IDictionary) || targetType == typeof(Hashtable) );
-#endif
-			Hashtable dict = new Hashtable();
+			Debug.Assert(CanHandleType(targetType), "CanHandleType(targetType)");
+
+			var dict = new Dictionary<object, object>();
 
 			String keyTypeName = configuration.Attributes["keyType"];
 			Type defaultKeyType = typeof(String);

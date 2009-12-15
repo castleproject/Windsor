@@ -13,6 +13,8 @@
 // limitations under the License.
 
 
+using System.Collections.Generic;
+
 namespace Castle.Windsor.Tests
 {
 	using System;
@@ -85,9 +87,9 @@ namespace Castle.Windsor.Tests
 		T Get(string key);
 	}
 
-	public class HashTableCache<T> : ICache<T>
+	public class DictionaryCache<T> : ICache<T>
 	{
-		private Hashtable hash = new Hashtable();
+        private Dictionary<string, object> hash = new Dictionary<string, object>();
 
 		public void Put(string key, T item)
 		{

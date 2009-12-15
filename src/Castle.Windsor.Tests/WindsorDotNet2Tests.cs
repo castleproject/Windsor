@@ -147,7 +147,7 @@ namespace Castle.Windsor.Tests
 			DemoRepository<IEmployee> demoEmpRepost = inner as DemoRepository<IEmployee>;
 			Assert.AreEqual("Generic Repostiory", demoEmpRepost.Name);
 			Assert.IsNotNull(demoEmpRepost.Cache);
-			Assert.IsTrue(typeof(HashTableCache<IEmployee>).IsInstanceOfType(demoEmpRepost.Cache));
+			Assert.IsTrue(typeof(DictionaryCache<IEmployee>).IsInstanceOfType(demoEmpRepost.Cache));
 		}
 
 		[Test]
@@ -161,7 +161,7 @@ namespace Castle.Windsor.Tests
 			ReviewerRepository repos = rev as ReviewerRepository;
 			Assert.AreEqual("Reviewer Repository", repos.Name);
 			Assert.IsNotNull(repos.Cache);
-			Assert.IsTrue(typeof(HashTableCache<IReviewer>).IsInstanceOfType(repos.Cache));
+			Assert.IsTrue(typeof(DictionaryCache<IReviewer>).IsInstanceOfType(repos.Cache));
 		}
 
 		[Test]
@@ -220,23 +220,23 @@ namespace Castle.Windsor.Tests
 			Assert.IsFalse(ReferenceEquals(o1, o4));
 		}
 
-        [Test]
-        public void TestComponentLifestylePerGenericTypeNotMarkedAsTransient()
-        {
-            IWindsorContainer container = new WindsorContainer();
+		[Test]
+		public void TestComponentLifestylePerGenericTypeNotMarkedAsTransient()
+		{
+			IWindsorContainer container = new WindsorContainer();
 
-            container.AddComponentLifeStyle("comp", typeof(IRepository<>), 
-                typeof(RepositoryNotMarkedAsTransient<>), LifestyleType.Transient);
+			container.AddComponentLifeStyle("comp", typeof(IRepository<>),
+				typeof(RepositoryNotMarkedAsTransient<>), LifestyleType.Transient);
 
-            object o1 = container.Resolve<IRepository<Employee>>();
-            object o2 = container.Resolve<IRepository<Employee>>();
-            object o3 = container.Resolve<IRepository<Reviewer>>();
-            object o4 = container.Resolve<IRepository<Reviewer>>();
+			object o1 = container.Resolve<IRepository<Employee>>();
+			object o2 = container.Resolve<IRepository<Employee>>();
+			object o3 = container.Resolve<IRepository<Reviewer>>();
+			object o4 = container.Resolve<IRepository<Reviewer>>();
 
-            Assert.IsFalse(Object.ReferenceEquals(o1, o2));
-            Assert.IsFalse(Object.ReferenceEquals(o1, o3));
-            Assert.IsFalse(Object.ReferenceEquals(o1, o4));
-        }
+			Assert.IsFalse(Object.ReferenceEquals(o1, o2));
+			Assert.IsFalse(Object.ReferenceEquals(o1, o3));
+			Assert.IsFalse(Object.ReferenceEquals(o1, o4));
+		}
 
 
 		[Test]
@@ -337,7 +337,7 @@ namespace Castle.Windsor.Tests
 			IRepository<object> demoRepository = container.Resolve<IRepository<object>>();
 			demoRepository.Get(12);
 
-			Assert.AreEqual(12, MyInterceptor.InterceptedId , "invocation should have been intercepted by MyInterceptor");
+			Assert.AreEqual(12, MyInterceptor.InterceptedId, "invocation should have been intercepted by MyInterceptor");
 		}
 
 		[Test]
@@ -510,6 +510,5 @@ namespace Castle.Windsor.Tests
 		}
 	}
 }
-
 #endif
 #endif

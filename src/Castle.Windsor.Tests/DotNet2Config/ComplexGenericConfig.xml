@@ -11,7 +11,7 @@
 
     <component id='caching' 
       service='Castle.Windsor.Tests.ICache`1, Castle.Windsor.Tests' 
-      type='Castle.Windsor.Tests.HashTableCache`1, Castle.Windsor.Tests'>
+      type='Castle.Windsor.Tests.DictionaryCache`1, Castle.Windsor.Tests'>
     </component>
 
     <component id='no-caching' 

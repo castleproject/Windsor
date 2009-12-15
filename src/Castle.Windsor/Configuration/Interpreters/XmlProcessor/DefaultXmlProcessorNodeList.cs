@@ -14,21 +14,21 @@
 
 namespace Castle.Windsor.Configuration.Interpreters.XmlProcessor
 {
-	using System.Collections;
+	using System.Collections.Generic;
 	using System.Xml;
 
 	public class DefaultXmlProcessorNodeList : IXmlProcessorNodeList
 	{
-		private IList nodes;
+		private IList<XmlNode> nodes;
 		private int index = -1;
 
 		public DefaultXmlProcessorNodeList(XmlNode node)
 		{
-			nodes = new ArrayList();
+			nodes = new List<XmlNode>();
 			nodes.Add(node);
 		}
 
-		public DefaultXmlProcessorNodeList(ArrayList nodes)
+		public DefaultXmlProcessorNodeList(IList<XmlNode> nodes)
 		{
 			this.nodes = nodes;
 		}
@@ -43,11 +43,11 @@ namespace Castle.Windsor.Configuration.Interpreters.XmlProcessor
 		/// </summary>
 		/// <param name="nodeList">The nodeList to be copied.</param>
 		/// <returns></returns>
-		protected ArrayList CloneNodeList(XmlNodeList nodeList)
+		protected IList<XmlNode> CloneNodeList(XmlNodeList nodeList)
 		{
-			ArrayList nodes = new ArrayList(nodeList.Count);
+			IList<XmlNode> nodes = new List<XmlNode>(nodeList.Count);
 
-			foreach(XmlNode node in nodeList)
+			foreach (XmlNode node in nodeList)
 			{
 				nodes.Add(node);
 			}
@@ -57,7 +57,7 @@ namespace Castle.Windsor.Configuration.Interpreters.XmlProcessor
 
 		public XmlNode Current
 		{
-			get { return nodes[index] as XmlNode; }
+			get { return nodes[index]; }
 		}
 
 		public bool HasCurrent

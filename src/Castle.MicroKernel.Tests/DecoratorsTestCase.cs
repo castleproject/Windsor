@@ -68,7 +68,7 @@ Castle.MicroKernel.Tests.ClassComponents.Repository1 is waiting for the followin
 Services: 
 - Castle.MicroKernel.Tests.ClassComponents.IRepository. 
   A dependency cannot be satisfied by itself, did you forget to add a parameter name to differentiate between the two dependencies? 
- 
+
 Castle.MicroKernel.Tests.ClassComponents.DecoratedRepository2 is registered and is matching the required service, but cannot be resolved.
 
 Castle.MicroKernel.Tests.ClassComponents.DecoratedRepository2 is waiting for the following dependencies: 

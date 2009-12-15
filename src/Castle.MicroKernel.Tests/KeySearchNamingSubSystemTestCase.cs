@@ -15,10 +15,12 @@
 namespace Castle.MicroKernel.Tests
 {
 	using System;
-	using System.Collections;
+	using System.Collections.Generic;
 	using System.Threading;
+
 	using Castle.MicroKernel.SubSystems.Naming;
 	using Castle.MicroKernel.Tests.ClassComponents;
+
 	using NUnit.Framework;
 
 	[TestFixture]
@@ -161,11 +163,10 @@ namespace Castle.MicroKernel.Tests
 		}
 
 		[Test]
-		public void MultiThreadedAddResolve()
+		public void MultiThreadedAddResolve([Values(100)] int threadCount)
 		{
-			int threadCount = 100;
-			ArrayList list = ArrayList.Synchronized(new ArrayList());
-			Random rand = new Random();
+			object locker = new object();
+			IList<string> list = new List<string>();
 			ManualResetEvent waitEvent = new ManualResetEvent(false);
 
 			IKernel kernel = new DefaultKernel();
@@ -183,7 +184,10 @@ namespace Castle.MicroKernel.Tests
 			                             			}
 			                             			catch(Exception e)
 			                             			{
-			                             				list.Add(e.ToString());
+														lock (locker)
+														{
+															list.Add(e.ToString());
+														}
 			                             			}
 			                             		}
 			                             	};
@@ -192,7 +196,7 @@ namespace Castle.MicroKernel.Tests
 			WaitCallback addThread = delegate
 			                         	{
 			                         		waitEvent.WaitOne();
-			                         		kernel.AddComponent(rand.Next() + ".common", typeof(ICommon), typeof(CommonImpl1));
+			                         		kernel.AddComponent(Guid.NewGuid() + ".common", typeof(ICommon), typeof(CommonImpl1));
 			                         		Interlocked.Decrement(ref threadCount);
 			                         	};
 			for(int i = 0; i < threadCount; i++)
@@ -226,7 +230,8 @@ namespace Castle.MicroKernel.Tests
 		public void MultiThreaded_RemoveResolve_Throws_When_LargeRatio_Of_ComponentsToService()
 		{
 			int threadCount = 1000;
-			ArrayList list = ArrayList.Synchronized(new ArrayList());
+			List<Exception> list = new List<Exception>();
+			object locker = new object();
 			Random rand = new Random();
 			ManualResetEvent waitEvent = new ManualResetEvent(false);
 
@@ -246,7 +251,10 @@ namespace Castle.MicroKernel.Tests
 			                             			}
 			                             			catch(Exception e)
 			                             			{
+			                             				lock (locker)
+			                             				{
 			                             				list.Add(e);
+			                             				}
 			                             			}
 			                             		}
 			                             	};

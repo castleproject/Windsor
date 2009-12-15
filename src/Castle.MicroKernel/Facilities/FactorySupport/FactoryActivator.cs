@@ -12,11 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+
 namespace Castle.Facilities.FactorySupport
 {
 	using System;
-	using System.Collections;
+	using System.Collections.Generic;
 	using System.Reflection;
+
 	using Castle.Core;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.ComponentActivator;
@@ -98,7 +100,7 @@ namespace Castle.Facilities.FactorySupport
 		private object Create(object factoryInstance, string factoryId, MethodInfo instanceCreateMethod, string factoryCreate, CreationContext context)
 		{
 			object instance;
-			ArrayList methodArgs = new ArrayList();
+			List<object> methodArgs = new List<object>();
 
 			IConversionManager converter = (IConversionManager)
 				Kernel.GetSubSystem(SubSystemConstants.ConversionManagerKey);

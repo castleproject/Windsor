@@ -103,15 +103,19 @@ namespace Castle.MicroKernel
 			if (dictionary == null)
 			{
 				// two should be enought for most cases
-				return new Dictionary<object,object>(2);
+				return new Dictionary<object, object>(2);
 			}
 
 			if (!dictionary.IsReadOnly)
 			{
 				return dictionary;
 			}
-
-			return new Hashtable(dictionary);
+			var writable = new Dictionary<object, object>();
+			foreach (DictionaryEntry entry in dictionary)
+			{
+				writable.Add(entry.Key, entry.Value);
+			}
+			return writable;
 		}
 
 		/// <summary>

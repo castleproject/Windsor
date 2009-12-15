@@ -12,12 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+
 namespace Castle.MicroKernel.Tests.SubContainers
 {
 	using System;
-	using System.Collections;
+	using System.Collections.Generic;
+
 	using Castle.Core;
 	using Castle.MicroKernel.Tests.ClassComponents;
+
 	using NUnit.Framework;
 
 	/// <summary>
@@ -318,10 +321,10 @@ namespace Castle.MicroKernel.Tests.SubContainers
 			public const string Added = "added";
 			public const string Removed = "removed";
 
-			private ArrayList events;
+			private List<string> events;
 			private object expectedSender;
 
-			public ArrayList Events
+			public List<string> Events
 			{
 				get { return events; }
 			}
@@ -329,7 +332,7 @@ namespace Castle.MicroKernel.Tests.SubContainers
 			public EventsCollector(object expectedSender)
 			{
 				this.expectedSender = expectedSender;
-				events = new ArrayList();
+				events = new List<string>();
 			}
 
 			public void AddedAsChildKernel(object sender, EventArgs e)

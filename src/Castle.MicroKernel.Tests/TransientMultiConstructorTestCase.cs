@@ -15,8 +15,10 @@
 namespace Castle.MicroKernel.Tests
 {
 	using System;
-	using System.Collections;
+	using System.Collections.Generic;
+
 	using Castle.Core;
+
 	using NUnit.Framework;
 
 	[TestFixture]
@@ -28,10 +30,10 @@ namespace Castle.MicroKernel.Tests
 			DefaultKernel container = new DefaultKernel();
 			container.AddComponent("FooBar", typeof(FooBar));
 
-			Hashtable arguments1 = new Hashtable();
+			var arguments1 = new Dictionary<object, object>();
 			arguments1.Add("integer", 1);
 
-			Hashtable arguments2 = new Hashtable();
+			var arguments2 = new Dictionary<object, object>();
 			arguments2.Add("datetime", DateTime.Now.AddDays(1));
 
 			object a = container.Resolve(typeof(FooBar), arguments1);
@@ -48,10 +50,10 @@ namespace Castle.MicroKernel.Tests
 			Tester1 bla1 = new Tester1("FOOBAR");
 			Tester2 bla2 = new Tester2(666);
 
-			Hashtable arguments1 = new Hashtable();
+			var arguments1 = new Dictionary<object, object>();
 			arguments1.Add("test1", bla1);
 
-			Hashtable arguments2 = new Hashtable();
+			var arguments2 = new Dictionary<object, object>();
 			arguments2.Add("test2", bla2);
 
 			object a = container.Resolve(typeof(FooBarNonValue), arguments1);

@@ -110,16 +110,29 @@ namespace Castle.MicroKernel.Tests
 		}
 
 		[Test]
-		[ExpectedException(typeof(HandlerException),
-			ExpectedMessage = "Can't create component 'a' as it has dependencies to be satisfied. \r\na is waiting for the following dependencies: \r\n\r\nServices: \r\n- Castle.MicroKernel.Tests.CycleB which was registered but is also waiting for dependencies. \r\n\r\nb is waiting for the following dependencies: \r\n\r\nServices: \r\n- Castle.MicroKernel.Tests.CycleA which was registered but is also waiting for dependencies. \r\n"
-			)]
 		public void CycleComponentGraphs()
 		{
 			kernel.AddComponent("a", typeof(CycleA));
 			kernel.AddComponent("b", typeof(CycleB));
 
-			Assert.IsNotNull(kernel["a"]);
-			Assert.IsNotNull(kernel["b"]);
+			var exception =
+				Assert.Throws(typeof(HandlerException), () =>
+				{
+					var a = kernel["a"];
+				});
+			string expectedMessage =
+				@"Can't create component 'a' as it has dependencies to be satisfied. 
+a is waiting for the following dependencies: 
+
+Services: 
+- Castle.MicroKernel.Tests.CycleB which was registered but is also waiting for dependencies. 
+
+b is waiting for the following dependencies: 
+
+Services: 
+- Castle.MicroKernel.Tests.CycleA which was registered but is also waiting for dependencies. 
+";
+			Assert.AreEqual(expectedMessage, exception.Message);
 		}
 	}
 }

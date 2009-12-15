@@ -14,16 +14,18 @@
 
 namespace Castle.MicroKernel.Tests
 {
-	using System.Collections;
+	using System.Collections.Generic;
+
 	using Castle.MicroKernel.Handlers;
 	using Castle.MicroKernel.Tests.RuntimeParameters;
+
 	using NUnit.Framework;
 
 	[TestFixture]
 	public class RuntimeParametersTestCase
 	{
 		private IKernel kernel;
-		private Hashtable deps;
+		private Dictionary<string,object> deps;
 
 		[SetUp]
 		public void Init()
@@ -32,7 +34,7 @@ namespace Castle.MicroKernel.Tests
 			kernel.AddComponent("compa", typeof(CompA));
 			kernel.AddComponent("compb", typeof(CompB));
 
-			deps = new Hashtable();
+			deps = new Dictionary<string, object>();
 			deps.Add("cc", new CompC(12));
 			deps.Add("myArgument", "ernst");
 		}
@@ -44,24 +46,32 @@ namespace Castle.MicroKernel.Tests
 		}
 
 		[Test]
-		[ExpectedException(typeof(HandlerException), ExpectedMessage = "Can't create component 'compb' as it has " +
-		                                             "dependencies to be satisfied. \r\ncompb is waiting for the following dependencies: \r\n\r\n" +
-		                                             "Services: \r\n- Castle.MicroKernel.Tests.RuntimeParameters.CompC which was not registered. \r\n\r\n" +
-													 "Keys (components with specific keys)\r\n- myArgument which was not registered. \r\n"
-			)]
 		public void WithoutParameters()
 		{
-			CompB compb = kernel[typeof(CompB)] as CompB;
+			var expectedMessage = @"Can't create component 'compb' as it has dependencies to be satisfied. 
+compb is waiting for the following dependencies: 
+
+Services: 
+- Castle.MicroKernel.Tests.RuntimeParameters.CompC which was not registered. 
+
+Keys (components with specific keys)
+- myArgument which was not registered. 
+";
+			var exception = Assert.Throws(typeof(HandlerException), () =>
+			{
+				var compb = kernel[typeof(CompB)];
+			});
+			Assert.AreEqual(expectedMessage, exception.Message);
 		}
 
 		[Test]
 		public void WillAlwaysResolveCustomParameterFromServiceComponent()
 		{
 			kernel.AddComponent("compc", typeof(CompC));
-			Hashtable c_dependencies = new Hashtable();
+			var c_dependencies = new Dictionary<object, object>();
 			c_dependencies["test"] = 15;
 			kernel.RegisterCustomDependencies(typeof(CompC), c_dependencies);
-			Hashtable b_dependencies = new Hashtable();
+			var b_dependencies = new Dictionary<object,object>();
 			b_dependencies["myArgument"] = "foo";
 			kernel.RegisterCustomDependencies(typeof(CompB), b_dependencies);
 			CompB b = kernel["compb"] as CompB;
@@ -94,7 +104,7 @@ namespace Castle.MicroKernel.Tests
 			CompB instance_with_model = (CompB) kernel[typeof(CompB)];
 			Assert.AreSame(deps["cc"], instance_with_model.Compc, "Model dependency should override kernel dependency");
 
-			Hashtable deps2 = new Hashtable();
+			Dictionary<string, object> deps2 = new Dictionary<string, object>();
 			deps2.Add("cc", new CompC(12));
 			deps2.Add("myArgument", "ayende");
 
@@ -113,7 +123,7 @@ namespace Castle.MicroKernel.Tests
 
 			Assert.AreEqual(HandlerState.WaitingDependency, k.GetHandler("HasCustomDependency").CurrentState);
 
-			Hashtable hash = new Hashtable();
+			var hash = new Dictionary<object, object>();
 			hash["name"] = new CompA();
 			k.RegisterCustomDependencies("HasCustomDependency", hash);
 			Assert.AreEqual(HandlerState.Valid, k.GetHandler("HasCustomDependency").CurrentState);

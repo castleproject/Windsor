@@ -14,7 +14,8 @@
 
 namespace Castle.MicroKernel.Tests.Pools
 {
-	using System.Collections;
+	using System.Collections.Generic;
+
 	using NUnit.Framework;
 
 	[TestFixture]
@@ -54,20 +55,21 @@ namespace Castle.MicroKernel.Tests.Pools
 			IKernel kernel = new DefaultKernel();
 			kernel.AddComponent("a", typeof(PoolableComponent1));
 
-			ArrayList instances = new ArrayList();
-
-			instances.Add(kernel["a"] as PoolableComponent1);
-			instances.Add(kernel["a"] as PoolableComponent1);
-			instances.Add(kernel["a"] as PoolableComponent1);
-			instances.Add(kernel["a"] as PoolableComponent1);
-			instances.Add(kernel["a"] as PoolableComponent1);
+			var instances = new List<PoolableComponent1>
+			{
+				kernel["a"] as PoolableComponent1,
+				kernel["a"] as PoolableComponent1,
+				kernel["a"] as PoolableComponent1,
+				kernel["a"] as PoolableComponent1,
+				kernel["a"] as PoolableComponent1
+			};
 
 			PoolableComponent1 other1 = kernel["a"] as PoolableComponent1;
 
 			Assert.IsNotNull(other1);
 			Assert.IsTrue(!instances.Contains(other1));
 
-			foreach(object inst in instances)
+			foreach (PoolableComponent1 inst in instances)
 			{
 				kernel.ReleaseComponent(inst);
 			}

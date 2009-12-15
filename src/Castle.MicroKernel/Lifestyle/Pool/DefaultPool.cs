@@ -12,9 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+
 namespace Castle.MicroKernel.Lifestyle.Pool
 {
 	using System;
+	using System.Collections.Generic;
 	using System.Threading;
 	using System.Collections;
 
@@ -24,7 +26,7 @@ namespace Castle.MicroKernel.Lifestyle.Pool
 	public class DefaultPool : IPool, IDisposable
 	{
 		private readonly Stack available = Stack.Synchronized(new Stack());
-		private readonly IList inUse = ArrayList.Synchronized(new ArrayList());
+		private readonly List<object> inUse = new List<object>();
 		private readonly int initialsize;
 		private readonly int maxsize;
 		private readonly ReaderWriterLock rwlock;
@@ -49,7 +51,7 @@ namespace Castle.MicroKernel.Lifestyle.Pool
 		{
 			rwlock.AcquireWriterLock(-1);
 
-			object instance = null;
+			object instance;
 
 			try
 			{
@@ -143,7 +145,7 @@ namespace Castle.MicroKernel.Lifestyle.Pool
 		/// </summary>
 		private void InitPool()
 		{
-			ArrayList tempInstance = new ArrayList();
+            List<object> tempInstance = new List<object>();
 
 			for(int i=0; i < initialsize; i++)
 			{

@@ -15,7 +15,8 @@
 namespace Castle.Facilities.Remoting
 {
 	using System;
-	using System.Collections;
+	using System.Collections.Generic;
+
 	using Castle.Core;
 	using Castle.MicroKernel;
 
@@ -23,9 +24,9 @@ namespace Castle.Facilities.Remoting
 	public class RemotingRegistry : MarshalByRefObject, IDisposable
 	{
 		private readonly IKernel kernel;
-		private readonly IDictionary entries = Hashtable.Synchronized(new Hashtable());
+		private readonly Dictionary<string,ComponentModel> entries = new Dictionary<string, ComponentModel>();
+		private readonly Dictionary<Type, ComponentModel> genericEntries = new Dictionary<Type, ComponentModel>();
 
-		private readonly IDictionary genericEntries = Hashtable.Synchronized(new Hashtable());
 
 		public RemotingRegistry(IKernel kernel)
 		{
@@ -57,12 +58,10 @@ namespace Castle.Facilities.Remoting
 
 		private ComponentModel GetModel(string key)
 		{
-			ComponentModel model = (ComponentModel) entries[key];
-
-			if (model == null)
+			ComponentModel model;
+			if (!entries.TryGetValue(key, out model))
 			{
-				throw new KernelException(
-					String.Format("No remote/available component found for key {0}", key));
+				throw new KernelException(String.Format("No remote/available component found for key {0}", key));
 			}
 
 			return model;
@@ -86,12 +85,10 @@ namespace Castle.Facilities.Remoting
 		/// <returns></returns>
 		private ComponentModel GetModel(Type serviceType)
 		{
-			ComponentModel model = (ComponentModel) genericEntries[serviceType];
-
-			if (model == null)
+			ComponentModel model;
+			if (!genericEntries.TryGetValue(serviceType, out model))
 			{
-				throw new KernelException(
-					String.Format("No remote/available component found for service type {0}", serviceType));
+				throw new KernelException(String.Format("No remote/available component found for service type {0}", serviceType));
 			}
 
 			return model;

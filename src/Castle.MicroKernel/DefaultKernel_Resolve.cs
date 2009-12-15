@@ -136,7 +136,7 @@ namespace Castle.MicroKernel
 		/// <param name="service">The service type</param>
 		public Array ResolveAll(Type service)
 		{
-			return ResolveAll(service, new Hashtable());
+            return ResolveAll(service, new Dictionary<object, object>());
 		}
 
 		/// <summary>
@@ -304,7 +304,7 @@ namespace Castle.MicroKernel
 		/// <returns></returns>
 		public TService[] ResolveAll<TService>()
 		{
-			return (TService[])ResolveAll(typeof(TService), new Hashtable());
+			return (TService[])ResolveAll(typeof(TService), new Dictionary<object,object>());
 		}
 
 		/// <summary>

@@ -259,13 +259,14 @@ namespace Castle.MicroKernel.Handlers
 
 			dependenciesChecked.Add(this);
 
-			StringBuilder sb = new StringBuilder();
-
-			sb.AppendFormat("\r\n{0} is waiting for the following dependencies: \r\n", ComponentModel.Name);
-
+			var sb = new StringBuilder();
+			sb.AppendLine();
+			sb.AppendFormat("{0} is waiting for the following dependencies: ", ComponentModel.Name);
+			sb.AppendLine();
 			if (DependenciesByService.Count != 0)
 			{
-				sb.Append("\r\nServices: \r\n");
+				sb.AppendLine();
+				sb.AppendLine("Services: ");
 
 				foreach (Type type in DependenciesByService.Keys)
 				{
@@ -273,32 +274,36 @@ namespace Castle.MicroKernel.Handlers
 
 					if (handler == null)
 					{
-						sb.AppendFormat("- {0} which was not registered. \r\n", type.FullName ?? type.Name);
+						sb.AppendFormat("- {0} which was not registered. ", type.FullName ?? type.Name);
+						sb.AppendLine();
 					}
 					else if (handler == this)
 					{
-						sb.AppendFormat("- {0}. \r\n  A dependency cannot be satisfied by itself, " +
-										"did you forget to add a parameter name to differentiate between the " +
-										"two dependencies? \r\n", type.FullName);
-                        foreach (IHandler maybeDecoratedHandler in kernel.GetHandlers(handler.Service))
-					    {
-					        if(maybeDecoratedHandler==this)
-                                continue;
-					        sb.AppendFormat(
-					            " \r\n{0} is registered and is matching the required service, but cannot be resolved.\r\n",
-                                maybeDecoratedHandler.ComponentModel.Name);
-                            IExposeDependencyInfo info = maybeDecoratedHandler as IExposeDependencyInfo;
+						sb.AppendFormat("- {0}. {1}  A dependency cannot be satisfied by itself, " +
+						                "did you forget to add a parameter name to differentiate between the " +
+						                "two dependencies? ", type.FullName, Environment.NewLine);
+						sb.AppendLine();
+						foreach (IHandler maybeDecoratedHandler in kernel.GetHandlers(handler.Service))
+						{
+							if (maybeDecoratedHandler == this)
+								continue;
+							sb.AppendLine();
+							sb.AppendFormat(
+								"{0} is registered and is matching the required service, but cannot be resolved.",
+								maybeDecoratedHandler.ComponentModel.Name);
+							sb.AppendLine();
+							IExposeDependencyInfo info = maybeDecoratedHandler as IExposeDependencyInfo;
 
-                            if (info != null)
-                            {
-                                sb.Append(info.ObtainDependencyDetails(dependenciesChecked));
-                            }
-					    }
+							if (info != null)
+							{
+								sb.Append(info.ObtainDependencyDetails(dependenciesChecked));
+							}
+						}
 					}
 					else
 					{
-						sb.AppendFormat("- {0} which was registered but is also waiting for " +
-										"dependencies. \r\n", type.FullName);
+						sb.AppendFormat("- {0} which was registered but is also waiting for dependencies. ", type.FullName);
+						sb.AppendLine();
 
 						IExposeDependencyInfo info = handler as IExposeDependencyInfo;
 
@@ -312,7 +317,8 @@ namespace Castle.MicroKernel.Handlers
 
 			if (DependenciesByKey.Count != 0)
 			{
-				sb.Append("\r\nKeys (components with specific keys)\r\n");
+				sb.AppendLine();
+				sb.AppendLine("Keys (components with specific keys)");
 
 				foreach (var dependency in DependenciesByKey)
 				{
@@ -322,12 +328,13 @@ namespace Castle.MicroKernel.Handlers
 
 					if (handler == null)
 					{
-						sb.AppendFormat("- {0} which was not registered. \r\n", key);
+						sb.AppendFormat("- {0} which was not registered. ", key);
+						sb.AppendLine();
 					}
 					else
 					{
-						sb.AppendFormat("- {0} which was registered but is also " +
-										"waiting for dependencies. \r\n", key);
+						sb.AppendFormat("- {0} which was registered but is also waiting for dependencies.", key);
+						sb.AppendLine();
 
 						IExposeDependencyInfo info = handler as IExposeDependencyInfo;
 

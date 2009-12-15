@@ -12,10 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+
 namespace Castle.MicroKernel.Lifestyle
 {
 	using System;
-	using System.Collections;
+	using System.Collections.Generic;
 	using System.Threading;
 	using System.Runtime.Serialization;
 
@@ -29,7 +30,7 @@ namespace Castle.MicroKernel.Lifestyle
 		private static LocalDataStoreSlot slot = Thread.AllocateNamedDataSlot("CastlePerThread");
 
 		[NonSerialized]
-		private IList instances = new ArrayList();
+		private IList<object> instances =  new List<object>();
 
 		/// <summary>
 		/// 
@@ -51,18 +52,18 @@ namespace Castle.MicroKernel.Lifestyle
 		{
 			lock(slot)
 			{
-				Hashtable map = (Hashtable) Thread.GetData( slot );
+                var map = (Dictionary<object, object>)Thread.GetData(slot);
 
 				if (map == null)
 				{
-					map = new Hashtable();
+                    map = new Dictionary<object, object>();
 
 					Thread.SetData( slot, map );
 				}
 
-				Object instance = map[ ComponentActivator ];
+				Object instance;
 
-				if ( instance == null )
+			    if (!map.TryGetValue(ComponentActivator, out instance))
 				{
 					instance = base.Resolve(context);
 					map.Add( ComponentActivator, instance );
@@ -82,7 +83,7 @@ namespace Castle.MicroKernel.Lifestyle
 		public void OnDeserialization(object sender)
 		{
 			slot = Thread.AllocateNamedDataSlot("CastlePerThread");
-			instances = new ArrayList();
+			instances = new List<object>();
 		}
 	}
 }

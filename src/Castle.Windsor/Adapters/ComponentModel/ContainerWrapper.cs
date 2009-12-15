@@ -15,10 +15,11 @@
 namespace Castle.Windsor.Adapters.ComponentModel
 {
 	using System;
-	using System.Collections;
+	using System.Collections.Generic;
 	using System.ComponentModel;
 	using System.ComponentModel.Design;
 	using System.Threading;
+
 	using Castle.Core;
 	using Castle.MicroKernel;
 
@@ -33,7 +34,7 @@ namespace Castle.Windsor.Adapters.ComponentModel
 		private ISite site;
 		private IWindsorContainer container;
 		private IServiceProvider parentProvider;
-		private IList sites = new ArrayList();
+		private IList<IContainerAdapterSite> sites =new List<IContainerAdapterSite>();
 		private readonly ReaderWriterLock rwlock;
 
 		#endregion
@@ -113,7 +114,7 @@ namespace Castle.Windsor.Adapters.ComponentModel
 
 					for (int i = 0; i < sites.Count; ++i)
 					{
-						components[i] = ((ISite) sites[i]).Component;
+						components[i] = sites[i].Component;
 					}
 
 					return new ComponentCollection(components);

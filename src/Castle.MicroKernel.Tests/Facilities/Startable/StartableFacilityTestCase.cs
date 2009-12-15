@@ -14,12 +14,14 @@
 
 namespace Castle.Facilities.Startable.Tests
 {
-	using System.Collections;
+	using System.Collections.Generic;
+
 	using Castle.Core;
 	using Castle.Core.Configuration;
 	using Castle.Facilities.Startable.Tests.Components;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Registration;
+
 	using NUnit.Framework;
 
 	[TestFixture]
@@ -92,8 +94,7 @@ namespace Castle.Facilities.Startable.Tests
 
 			kernel.AddFacility("startable", new StartableFacility());
 
-			Hashtable dependencies = new Hashtable();
-			dependencies.Add("config", 1);
+			var dependencies = new Dictionary<string, object> { { "config", 1 } };
 			kernel.AddComponent("a", typeof(StartableComponentCustomDependencies));
 			kernel.RegisterCustomDependencies(typeof(StartableComponentCustomDependencies), dependencies);
 

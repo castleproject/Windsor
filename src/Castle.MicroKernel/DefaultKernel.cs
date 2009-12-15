@@ -16,8 +16,12 @@ namespace Castle.MicroKernel
 {
 	using System;
 	using System.Collections;
+	using System.Collections.Generic;
 	using System.Reflection;
+#if !SILVERLIGHT
 	using System.Runtime.Serialization;
+#endif
+
 	using Castle.Core;
 	using Castle.Core.Internal;
 	using Castle.MicroKernel.ComponentActivator;
@@ -31,6 +35,7 @@ namespace Castle.MicroKernel
 	using Castle.MicroKernel.SubSystems.Conversion;
 	using Castle.MicroKernel.SubSystems.Naming;
 	using Castle.MicroKernel.SubSystems.Resource;
+
 
 	/// <summary>
 	/// Default implementation of <see cref="IKernel"/>. 
@@ -80,17 +85,17 @@ namespace Castle.MicroKernel
 		/// <summary>
 		/// List of <see cref="IFacility"/> registered.
 		/// </summary>
-		private IList facilities;
+		private List<IFacility> facilities;
 
 		/// <summary>
 		/// Map of subsystems registered.
 		/// </summary>
-		private IDictionary subsystems;
+		private Dictionary<string, ISubSystem> subsystems;
 
 		/// <summary>
 		/// List of sub containers.
 		/// </summary>
-		private IList childKernels;
+		private List<IKernel> childKernels;
 
         [ThreadStatic]
 	    private static CreationContext currentCreationContext;
@@ -128,9 +133,9 @@ namespace Castle.MicroKernel
 		{
 			this.proxyFactory = proxyFactory;
 
-			childKernels = new ArrayList();
-			facilities = new ArrayList();
-			subsystems = new Hashtable();
+			childKernels = new List<IKernel>();
+			facilities = new List<IFacility>();
+			subsystems = new Dictionary<string, ISubSystem>();
 
 			RegisterSubSystems();
 
@@ -587,7 +592,7 @@ namespace Castle.MicroKernel
 		{
 			if (key == null) throw new ArgumentNullException("key");
 
-			return subsystems[key] as ISubSystem;
+			return subsystems[key];
 		}
 
 		public virtual void AddChildKernel(IKernel childKernel)
@@ -643,22 +648,22 @@ namespace Castle.MicroKernel
 			if (model.CustomComponentActivator == null)
 			{
 				activator = new DefaultComponentActivator(model, this,
-														  new ComponentInstanceDelegate(RaiseComponentCreated),
-														  new ComponentInstanceDelegate(RaiseComponentDestroyed));
+				                                          new ComponentInstanceDelegate(RaiseComponentCreated),
+				                                          new ComponentInstanceDelegate(RaiseComponentDestroyed));
 			}
 			else
 			{
 				try
 				{
 					activator = (IComponentActivator)
-								Activator.CreateInstance(model.CustomComponentActivator,
-														 new object[]
-					                                     	{
-					                                     		model,
-					                                     		this,
-					                                     		new ComponentInstanceDelegate(RaiseComponentCreated),
-					                                     		new ComponentInstanceDelegate(RaiseComponentDestroyed)
-					                                     	});
+					            Activator.CreateInstance(model.CustomComponentActivator,
+					                                     new object[]
+					                                     {
+					                                     	model,
+					                                     	this,
+					                                     	new ComponentInstanceDelegate(RaiseComponentCreated),
+					                                     	new ComponentInstanceDelegate(RaiseComponentDestroyed)
+					                                     });
 				}
 				catch (Exception e)
 				{
