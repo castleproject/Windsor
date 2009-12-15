@@ -214,6 +214,7 @@
     <Compile Include="Components\SimpleMixIn.cs" />
     <Compile Include="ConfigHelper.cs" />
     <Compile Include="Configuration2\ConfigurationEnvTestCase.cs" />
+    <Compile Include="Configuration2\ConfigurationForwardedTypesTestCase.cs" />
     <Compile Include="Configuration2\ConfigWithStatementsTestCase.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -376,6 +377,7 @@
     <None Include="DotNet2Config\chainOfRespnsability_smart.config" />
     <EmbeddedResource Include="Configuration2\env_config.xml" />
     <EmbeddedResource Include="Configuration2\eval_config.xml" />
+    <Content Include="Configuration2\config_with_forwarded_types.xml" />
     <Content Include="Configuration2\synchtest_config.xml" />
     <EmbeddedResource Include="sample_config_with_spaces.xml" />
     <EmbeddedResource Include="Configuration\sample_config.xml" />

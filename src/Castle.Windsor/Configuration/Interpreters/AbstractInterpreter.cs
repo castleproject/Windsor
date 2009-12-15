@@ -38,7 +38,7 @@ namespace Castle.Windsor.Configuration.Interpreters
 		protected static readonly string BootstrapNodeName = "bootstrap";
 		protected static readonly string ComponentNodeName = "component";
 		protected static readonly string IncludeNodeName = "include";
-		protected static readonly string PropertiesNodeName = "properties";		
+		protected static readonly string PropertiesNodeName = "properties";
 
 		// private ImportDirectiveCollection imports = new ImportDirectiveCollection();
 		private IResource source;
