@@ -15,7 +15,7 @@
 namespace Castle.MicroKernel.Handlers
 {
 	using System;
-	using System.Collections;
+	using System.Collections.Generic;
 	using System.Linq;
 
 	using Castle.Core;
@@ -24,7 +24,9 @@ namespace Castle.MicroKernel.Handlers
 	/// <summary>
 	/// Summary description for DefaultHandler.
 	/// </summary>
+#if !SILVERLIGHT
 	[Serializable]
+#endif
 	public class DefaultHandler : AbstractHandler
 	{
 		/// <summary>
@@ -106,7 +108,7 @@ namespace Castle.MicroKernel.Handlers
 			{
 				String message = String.Format("Can't create component '{1}' " +
 					"as it has dependencies to be satisfied. {0}",
-					ObtainDependencyDetails(new ArrayList()), ComponentModel.Name);
+					ObtainDependencyDetails(new List<object>()), ComponentModel.Name);
 
 				throw new HandlerException(message);
 			}

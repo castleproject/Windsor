@@ -107,7 +107,9 @@ namespace Castle.MicroKernel.Tests
 			config.Children.Add(dateItem);
 
 			Assert.IsTrue(conversionMng.CanHandleType(typeof(IDictionary)));
+#if (!SILVERLIGHT)
 			Assert.IsTrue(conversionMng.CanHandleType(typeof(Hashtable)));
+#endif
 
 			IDictionary dict = (IDictionary)
 			                   conversionMng.PerformConversion(config, typeof(IDictionary));

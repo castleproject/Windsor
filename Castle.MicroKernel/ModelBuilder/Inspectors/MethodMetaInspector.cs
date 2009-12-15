@@ -12,10 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+
 namespace Castle.MicroKernel.ModelBuilder.Inspectors
 {
 	using System;
-	using System.Collections;
+	using System.Collections.Generic;
 	using System.Configuration;
 	using System.Reflection;
 
@@ -83,9 +84,9 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 
 					String signature = methodNode.Attributes["signature"];
 
-					MethodInfo[] methods = GetMethods(model.Implementation, name, signature);
+					IList<MethodInfo> methods = GetMethods(model.Implementation, name, signature);
 
-					if (methods.Length == 0)
+					if (methods.Count == 0)
 					{
 						String message = String.Format( "The class {0} has tried to expose configuration for " + 
 							"a method named {1} which could not be found.", model.Implementation.FullName, name );
@@ -103,7 +104,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 			}
 		}
 
-		protected virtual void ProcessMeta(ComponentModel model, MethodInfo[] methods, MethodMetaModel metaModel)
+		protected virtual void ProcessMeta(ComponentModel model, IList<MethodInfo> methods, MethodMetaModel metaModel)
 		{
 		}
 
@@ -139,13 +140,13 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 				kernel.GetSubSystem( SubSystemConstants.ConversionManagerKey );
 		}
 
-		private MethodInfo[] GetMethods(Type implementation, String name, String signature)
+		private IList<MethodInfo> GetMethods(Type implementation, String name, String signature)
 		{
 			if (signature == null || signature.Length == 0)
 			{
 				MethodInfo[] allmethods = implementation.GetMethods(AllMethods);
 
-				ArrayList methods = new ArrayList();
+				List<MethodInfo> methods = new List<MethodInfo>();
 
 				foreach(MethodInfo method in allmethods)
 				{
@@ -155,7 +156,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 					}
 				}
 
-				return (MethodInfo[]) methods.ToArray( typeof(MethodInfo) );
+			    return methods;
 			}
 			else
 			{
@@ -163,7 +164,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 
 				if (methodInfo == null) return new MethodInfo[0];
 
-				return new MethodInfo[] { methodInfo };
+				return new List<MethodInfo> { methodInfo };
 			}
 		}
 
@@ -171,13 +172,13 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 		{
 			String[] parameters = signature.Split(';');
 
-			ArrayList types = new ArrayList();
+            List<Type> types = new List<Type>();
 
 			foreach(String param in parameters)
 			{
 				try
 				{
-					types.Add( converter.PerformConversion( param, typeof(Type) ) );
+					types.Add( (Type) converter.PerformConversion( param, typeof(Type) ) );
 				}
 				catch(Exception)
 				{
@@ -189,7 +190,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 				}
 			}
 
-			return (Type[]) types.ToArray( typeof(Type) );
+			return  types.ToArray();
 		}
 	}
 }

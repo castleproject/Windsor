@@ -12,10 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+
 namespace Castle.Windsor
 {
 	using System;
 	using System.Collections;
+	using System.Collections.Generic;
 
 	using Castle.Core;
 	using Castle.MicroKernel;
@@ -34,7 +36,8 @@ namespace Castle.Windsor
 		#region Fields
 
 		private readonly string name = Guid.NewGuid().ToString();
-		private readonly IDictionary childContainers = Hashtable.Synchronized(new Hashtable());
+		private readonly Dictionary<string,IWindsorContainer> childContainers = new Dictionary<string, IWindsorContainer>();
+		private readonly object childContainersLocker = new object();
 
 		private IKernel kernel;
 		private IWindsorContainer parent;
@@ -673,7 +676,7 @@ namespace Castle.Windsor
 
 		public Array ResolveAll(Type service)
 		{
-			return kernel.ResolveAll(service, new Hashtable());
+            return kernel.ResolveAll(service, new Dictionary<object, object>());
 		}
 
 		public Array ResolveAll(Type service, IDictionary arguments)
@@ -730,7 +733,7 @@ namespace Castle.Windsor
 		/// <returns></returns>
 		public virtual object Resolve(String key, Type service)
 		{
-            return kernel.Resolve(key, service);
+			return kernel.Resolve(key, service);
 		}
 
 		/// <summary>
@@ -839,11 +842,11 @@ namespace Castle.Windsor
 		{
 			if (childContainer == null) throw new ArgumentNullException("childContainer");
 
-			if (!childContainers.Contains(childContainer.Name))
+			if (!childContainers.ContainsKey(childContainer.Name))
 			{
-				lock (childContainers.SyncRoot)
+				lock (childContainersLocker)
 				{
-					if (!childContainers.Contains(childContainer.Name))
+                    if (!childContainers.ContainsKey(childContainer.Name))
 					{
 						kernel.AddChildKernel(childContainer.Kernel);
 						childContainers.Add(childContainer.Name, childContainer);
@@ -862,11 +865,11 @@ namespace Castle.Windsor
 		{
 			if (childContainer == null) throw new ArgumentNullException("childContainer");
 
-			if (childContainers.Contains(childContainer.Name))
+			if (childContainers.ContainsKey(childContainer.Name))
 			{
-				lock (childContainers.SyncRoot)
+				lock (childContainersLocker)
 				{
-					if (childContainers.Contains(childContainer.Name))
+					if (childContainers.ContainsKey(childContainer.Name))
 					{
 						kernel.RemoveChildKernel(childContainer.Kernel);
 						childContainers.Remove(childContainer.Name);
@@ -883,10 +886,12 @@ namespace Castle.Windsor
 		/// <returns>The child container instance or null</returns>
 		public IWindsorContainer GetChildContainer(string name)
 		{
-			return childContainers[name] as IWindsorContainer;
+		    IWindsorContainer windsorContainer;
+		    childContainers.TryGetValue(name, out windsorContainer);
+		    return windsorContainer;
 		}
 
-		#endregion
+	    #endregion
 
 		#region IServiceProviderEx Members
 

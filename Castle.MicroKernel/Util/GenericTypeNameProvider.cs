@@ -11,26 +11,25 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Castle.MicroKernel.Util
 {
-    public static class GenericTypeNameProvider
-    {
-        public static string AppendGenericTypeName(IHandler handler, Type genericService, string key)
-        {
-            return key + "-->" + genericService.FullName;
-        }
+	using System;
 
-        public static string StripGenericTypeName(string key)
-        {
-            int genericParamStartIndex = key.IndexOf("-->");
-            if (genericParamStartIndex != -1)
-                key = key.Substring(0, genericParamStartIndex);
-            return key;
-        }
-    }
+	// TODO: this type seems to not be used anywhere. Is it safe to delete it, or someone depends on it?
+	public static class GenericTypeNameProvider
+	{
+		public static string AppendGenericTypeName(IHandler handler, Type genericService, string key)
+		{
+			return key + "-->" + genericService.FullName;
+		}
+
+		public static string StripGenericTypeName(string key)
+		{
+			int genericParamStartIndex = key.IndexOf("-->");
+			if (genericParamStartIndex != -1)
+				key = key.Substring(0, genericParamStartIndex);
+			return key;
+		}
+	}
 }

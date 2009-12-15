@@ -14,10 +14,12 @@
 
 namespace Castle.MicroKernel.Tests.DependencyResolving
 {
-	using System.Collections;
+	using System.Collections.Generic;
+
 	using Castle.Core;
 	using Castle.Core.Configuration;
 	using Castle.MicroKernel.Tests.ClassComponents;
+
 	using NUnit.Framework;
 
 	/// <summary>
@@ -29,8 +31,8 @@ namespace Castle.MicroKernel.Tests.DependencyResolving
 	{
 		private IKernel kernel;
 
-		private Castle.Core.ComponentModel expectedClient;
-		private IList expectedModels;
+		private ComponentModel expectedClient;
+		private List<DependencyModel> expectedModels;
 
 		#region Setup / Teardown
 
@@ -63,11 +65,11 @@ namespace Castle.MicroKernel.Tests.DependencyResolving
 
 			kernel.ConfigurationStore.AddComponentConfiguration("customer", config);
 
-			kernel.AddComponent("customer", typeof(ICustomer), typeof(CustomerImpl));
+			kernel.AddComponent("customer", typeof (ICustomer), typeof (CustomerImpl));
 
 			expectedClient = kernel.GetHandler("customer").ComponentModel;
-			expectedModels = new ArrayList();
-			foreach(PropertySet prop in kernel.GetHandler("customer").ComponentModel.Properties)
+			expectedModels = new List<DependencyModel>();
+			foreach (PropertySet prop in kernel.GetHandler("customer").ComponentModel.Properties)
 			{
 				expectedModels.Add(prop.Dependency);
 			}
@@ -91,7 +93,7 @@ namespace Castle.MicroKernel.Tests.DependencyResolving
 			Assert.IsNotNull(templateengine);
 
 			expectedClient = kernel.GetHandler("spamservice").ComponentModel;
-			expectedModels = new ArrayList();
+			expectedModels = new List<DependencyModel>();
 			foreach(PropertySet prop in kernel.GetHandler("spamservice").ComponentModel.Properties)
 			{
 				expectedModels.Add(prop.Dependency);
@@ -117,7 +119,7 @@ namespace Castle.MicroKernel.Tests.DependencyResolving
 
 			expectedClient = kernel.GetHandler("spamservice").ComponentModel;
 			expectedModels =
-				new ArrayList(kernel.GetHandler("spamservice").ComponentModel.Constructors.FewerArgumentsCandidate.Dependencies);
+				new List<DependencyModel>(kernel.GetHandler("spamservice").ComponentModel.Constructors.FewerArgumentsCandidate.Dependencies);
 
 			DefaultSpamServiceWithConstructor spamservice =
 				(DefaultSpamServiceWithConstructor) kernel["spamservice"];

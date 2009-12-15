@@ -12,10 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+
 namespace Castle.MicroKernel.SubSystems.Conversion
 {
 	using System;
 	using System.Collections;
+	using System.Collections.Generic;
+	using System.Diagnostics;
 
 	using Castle.Core.Configuration;
 
@@ -29,7 +32,11 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 
 		public override bool CanHandleType(Type type)
 		{
-			return (type == typeof(IList) || type == typeof(ArrayList));
+#if(SILVERLIGHT)
+			return (type == typeof(IList);
+#else
+            return (type == typeof(IList) || type == typeof(ArrayList));
+#endif
 		}
 
 		public override object PerformConversion(String value, Type targetType)
@@ -39,10 +46,8 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 
 		public override object PerformConversion(IConfiguration configuration, Type targetType)
 		{
-#if DEBUG
-			System.Diagnostics.Debug.Assert( targetType == typeof(IList) || targetType == typeof(ArrayList) );
-#endif
-			ArrayList list = new ArrayList();
+			Debug.Assert(CanHandleType(targetType), "CanHandleType(targetType)");
+			List<object> list = new List<object>();
 
 			String itemType = configuration.Attributes["type"];
 			Type convertTo = typeof(String);

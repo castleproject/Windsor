@@ -37,20 +37,20 @@ namespace Castle.Facilities.Startable
 
 		public void Apply(ComponentModel model, object component)
 		{
-            if(component is IStartable)
-            {
-                (component as IStartable).Stop();
-            }
-            else if (model.Configuration != null)
-            {
-                String stopMethod = model.Configuration.Attributes["stopMethod"];
+			if (component is IStartable)
+			{
+				(component as IStartable).Stop();
+			}
+			else if (model.Configuration != null)
+			{
+				String stopMethod = model.Configuration.Attributes["stopMethod"];
 
 				if (stopMethod != null)
 				{
 					MethodInfo method = model.Implementation.GetMethod(stopMethod);
 					method.Invoke(component, null);
 				}
-            }
+			}
 		}
 	}
 }

@@ -134,7 +134,7 @@ namespace Castle.MicroKernel.SubSystems.Naming
 
 		internal void Visit(TreeNode node, IList<IHandler> list)
 		{
-            if (node == null) return;
+			if (node == null) return;
 
 			list.Add(node.Handler);
 

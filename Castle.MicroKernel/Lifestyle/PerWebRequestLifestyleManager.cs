@@ -15,7 +15,7 @@
 namespace Castle.MicroKernel.Lifestyle
 {
 	using System;
-	using System.Collections;
+	using System.Collections.Generic;
 	using System.Configuration;
 	using System.Web;
 
@@ -103,11 +103,11 @@ namespace Castle.MicroKernel.Lifestyle
 		{
 			HttpContext context = HttpContext.Current;
 
-			IDictionary candidates = (IDictionary) context.Items[PerRequestEvict];
+            var candidates = (IDictionary<PerWebRequestLifestyleManager, object>)context.Items[PerRequestEvict];
 
 			if (candidates == null)
 			{
-				candidates = new Hashtable();
+                candidates = new Dictionary<PerWebRequestLifestyleManager, object>();
 				context.Items[PerRequestEvict] = candidates;
 			}
 
@@ -117,14 +117,13 @@ namespace Castle.MicroKernel.Lifestyle
 		protected void Application_EndRequest(Object sender, EventArgs e)
 		{
 			HttpApplication application = (HttpApplication) sender;
-			IDictionary candidates = (IDictionary) application.Context.Items[PerRequestEvict];
+			var candidates = (IDictionary<PerWebRequestLifestyleManager, object>)application.Context.Items[PerRequestEvict];
 
 			if (candidates != null)
 			{
-				foreach(DictionaryEntry candidate in candidates)
+				foreach(KeyValuePair<PerWebRequestLifestyleManager, object> candidate in candidates)
 				{
-					PerWebRequestLifestyleManager manager =
-						(PerWebRequestLifestyleManager) candidate.Key;
+					PerWebRequestLifestyleManager manager = candidate.Key;
 					manager.Evict(candidate.Value);
 				}
 

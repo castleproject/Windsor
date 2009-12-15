@@ -16,7 +16,8 @@
 namespace Castle.MicroKernel.Tests.Registration
 {
 	using System;
-	using System.Collections;
+	using System.Collections.Generic;
+
 	using Castle.Core;
 	using Castle.Core.Configuration;
 	using Castle.Facilities.Startable;
@@ -25,6 +26,7 @@ namespace Castle.MicroKernel.Tests.Registration
 	using Castle.MicroKernel.Tests.Lifestyle.Components;
 	using Castle.MicroKernel.Tests.Configuration.Components;
 	using Castle.MicroKernel.Tests.ClassComponents;
+
 	using NUnit.Framework;
 
 	[TestFixture]
@@ -368,7 +370,7 @@ namespace Castle.MicroKernel.Tests.Registration
 		[Test]
 		public void AddComponent_CustomDependenciesDictionary_WorksFine()
 		{
-			Hashtable customDependencies = new Hashtable();
+			var customDependencies = new Dictionary<string, object>();
 			customDependencies["Name"] = "Caption Hook";
 			customDependencies["Address"] = "Fairyland";
 			customDependencies["Age"] = 45;
@@ -498,8 +500,7 @@ namespace Castle.MicroKernel.Tests.Registration
 		[Test]
 		public void AddComponent_ServiceOverridesDictionary_WorksFine()
 		{
-			Hashtable serviceOverrides = new Hashtable();
-			serviceOverrides["customer"] = "customer1";
+			var serviceOverrides = new Dictionary<string, string> { { "customer", "customer1" } };
 
 			kernel.Register(
 				Component.For<ICustomer>()

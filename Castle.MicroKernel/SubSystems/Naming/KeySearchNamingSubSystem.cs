@@ -12,10 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+
 namespace Castle.MicroKernel.SubSystems.Naming
 {
 	using System;
-	using System.Collections;
+	using System.Collections.Generic;
 	using System.Runtime.CompilerServices;
 
 	/// <summary>
@@ -29,13 +30,14 @@ namespace Castle.MicroKernel.SubSystems.Naming
 	[Serializable]
 	public class KeySearchNamingSubSystem : DefaultNamingSubSystem
 	{
-		protected readonly IDictionary service2Keys;
+		protected readonly IDictionary<Type, IList<string>> service2Keys;
 		protected readonly Predicate<string> keyPredicate;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="KeySearchNamingSubSystem"/> class.
 		/// </summary>
-		public KeySearchNamingSubSystem() : this(delegate { return true; })
+		public KeySearchNamingSubSystem()
+			: this(delegate { return true; })
 		{
 		}
 
@@ -47,7 +49,7 @@ namespace Castle.MicroKernel.SubSystems.Naming
 		{
 			if (keyPredicate == null) throw new ArgumentNullException("keyPredicate");
 
-			service2Keys = Hashtable.Synchronized(new Hashtable());
+			service2Keys = new Dictionary<Type, IList<string>>();
 			this.keyPredicate = keyPredicate;
 		}
 
@@ -63,28 +65,19 @@ namespace Castle.MicroKernel.SubSystems.Naming
 
 			Type service = handler.ComponentModel.Service;
 
-			IList keys;
+			IList<string> keys;
 
-			if (!service2Keys.Contains(service))
+			if (service2Keys.TryGetValue(service, out keys))
 			{
-				if (!service2Keys.Contains(service))
+				if (!keys.Contains(key))
 				{
-					keys = ArrayList.Synchronized(new ArrayList());
 					keys.Add(key);
-					service2Keys[service] = keys;
 				}
 			}
 			else
 			{
-				keys = (IList) service2Keys[service];
-
-				if (!keys.Contains(key))
-				{
-					if (!keys.Contains(key))
-					{
-						keys.Add(key);
-					}
-				}
+				keys = new List<string> { key };
+				service2Keys[service] = keys;
 			}
 		}
 
@@ -95,14 +88,15 @@ namespace Castle.MicroKernel.SubSystems.Naming
 		[MethodImpl(MethodImplOptions.Synchronized)]
 		public override void UnRegister(string key)
 		{
-			IHandler handler = key2Handler[key] as IHandler;
+			IHandler handler;
+			key2Handler.TryGetValue(key, out handler);
 
 			base.UnRegister(key);
 
 			if (handler != null)
 			{
-				IList keys = service2Keys[handler.ComponentModel.Service] as IList;
-				if (keys != null)
+				IList<string> keys;
+				if (service2Keys.TryGetValue(handler.ComponentModel.Service, out keys))
 				{
 					keys.Remove(key);
 				}
@@ -129,15 +123,19 @@ namespace Castle.MicroKernel.SubSystems.Naming
 		[MethodImpl(MethodImplOptions.Synchronized)]
 		public override IHandler GetHandler(Type service)
 		{
-			IList keys = service2Keys[service] as IList;
-
-			if (keys == null) return null;
-
-			if (keys.Count == 1) return base.GetHandler(service);
-
-			for(int i = 0; i < keys.Count; i++)
+			IList<string> keys;
+			if (!service2Keys.TryGetValue(service, out keys))
 			{
-				string key = (string) keys[i];
+				return null;
+			}
+
+			if (keys.Count == 1)
+			{
+				return base.GetHandler(service);
+			}
+
+			foreach (var key in keys)
+			{
 				if (keyPredicate(key))
 				{
 					return GetHandler(key);

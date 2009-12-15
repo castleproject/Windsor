@@ -145,8 +145,8 @@ namespace Castle.Facilities.EventWiring
 					"The subscribers node must have at least an one subsciber child. Check node subscribers of the " 
 					+ model.Name + " component");
 			}
-			
-			IDictionary subscribers2Evts = new Dictionary<object,object>();
+
+            Dictionary<string, List<WireInfo>> subscribers2Evts = new Dictionary<string, List<WireInfo>>();
 			
 			foreach (IConfiguration subscriber in subscribersNode.Children)
 			{
@@ -160,30 +160,30 @@ namespace Castle.Facilities.EventWiring
 			model.ExtendedProperties[SubscriberList] = subscribers2Evts;
 		}
 
-		private void ExtractAndAddEventInfo(IDictionary subscribers2Evts, string subscriberKey, IConfiguration subscriber, ComponentModel model)
+		private void ExtractAndAddEventInfo(IDictionary<string, List<WireInfo>> subscribers2Evts, string subscriberKey, IConfiguration subscriber, ComponentModel model)
 		{
-			ArrayList wireInfoList = (ArrayList)subscribers2Evts[subscriberKey];
+			List<WireInfo> wireInfoList = subscribers2Evts[subscriberKey];
 
 			if (wireInfoList == null)
 			{
-				wireInfoList = new ArrayList();
+				wireInfoList = new List<WireInfo>();
 				subscribers2Evts[subscriberKey] = wireInfoList;
 			}
-			
+
 			string eventName = subscriber.Attributes["event"];
 			if (eventName == null || eventName.Length == 0)
 			{
 				throw new EventWiringException("You must supply an 'event' " +
-					"attribute which is the event name on the publisher you want to subscribe." +
-					" Check node 'subscriber' for component " + model.Name + "and id = " + subscriberKey);
+				                               "attribute which is the event name on the publisher you want to subscribe." +
+				                               " Check node 'subscriber' for component " + model.Name + "and id = " + subscriberKey);
 			}
 
 			string handlerMethodName = subscriber.Attributes["handler"];
 			if (handlerMethodName == null || handlerMethodName.Length == 0)
 			{
 				throw new EventWiringException("You must supply an 'handler' attribute " +
-					"which is the method on the subscriber that will handle the event." +
-					" Check node 'subscriber' for component " + model.Name + "and id = " + subscriberKey);
+				                               "which is the method on the subscriber that will handle the event." +
+				                               " Check node 'subscriber' for component " + model.Name + "and id = " + subscriberKey);
 			}
 
 			wireInfoList.Add(new WireInfo(eventName, handlerMethodName));

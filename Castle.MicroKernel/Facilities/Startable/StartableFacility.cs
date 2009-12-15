@@ -15,7 +15,8 @@
 namespace Castle.Facilities.Startable
 {
 	using System;
-	using System.Collections;
+	using System.Collections.Generic;
+
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Facilities;
 	using Castle.MicroKernel.SubSystems.Conversion;
@@ -23,7 +24,7 @@ namespace Castle.Facilities.Startable
 
 	public class StartableFacility : AbstractFacility
 	{
-		private ArrayList waitList = new ArrayList();
+		private readonly List<IHandler> waitList = new List<IHandler>();
 		private ITypeConverter converter;
 
 		// Don't check the waiting list while this flag is set as this could result in
@@ -58,7 +59,7 @@ namespace Castle.Facilities.Startable
 
 		private void OnComponentRegistered(String key, IHandler handler)
 		{
-		    bool startable = (bool?) handler.ComponentModel.ExtendedProperties["startable"] ?? false;
+			bool startable = (bool?)handler.ComponentModel.ExtendedProperties["startable"] ?? false;
 
 			if (startable)
 			{
@@ -96,9 +97,9 @@ namespace Castle.Facilities.Startable
 		{
 			if (!inStart)
 			{
-				IHandler[] handlers = (IHandler[])waitList.ToArray(typeof(IHandler));
+				IHandler[] handlers = waitList.ToArray();
 
-				IList validList = new ArrayList();
+				List<IHandler> validList = new List<IHandler>();
 
 				foreach (IHandler handler in handlers)
 				{

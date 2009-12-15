@@ -203,7 +203,7 @@ namespace Castle.MicroKernel
 		/// <typeparam name="T">The facility type.</typeparam>
 		/// <param name="key"></param>
 		/// <param name="onCreate">The callback for creation.</param>
-		IKernel AddFacility<T>(String key, Action<T> onCreate) 
+		IKernel AddFacility<T>(String key, Action<T> onCreate)
 			where T : IFacility, new();
 
 		/// <summary>
@@ -228,7 +228,7 @@ namespace Castle.MicroKernel
 		/// <typeparam name="T">The facility type.</typeparam>
 		/// <param name="onCreate">The callback for creation.</param>
 		/// <returns></returns>
-		IKernel AddFacility<T>(Action<T> onCreate) 
+		IKernel AddFacility<T>(Action<T> onCreate)
 			where T : IFacility, new();
 
 		/// <summary>
@@ -308,10 +308,10 @@ namespace Castle.MicroKernel
 		/// <param name="name">The name of the component to forward to.</param>
 		void RegisterHandlerForwarding(Type forwardedType, string name);
 
-        /// <summary>
-        /// Register a new component resolver that can take part in the decision
-        /// making about which handler to resolve
-        /// </summary>
-        void AddHandlerSelector(IHandlerSelector selector);
+		/// <summary>
+		/// Register a new component resolver that can take part in the decision
+		/// making about which handler to resolve
+		/// </summary>
+		void AddHandlerSelector(IHandlerSelector selector);
 	}
 }

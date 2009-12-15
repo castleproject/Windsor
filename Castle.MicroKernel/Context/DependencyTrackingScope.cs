@@ -26,16 +26,16 @@ namespace Castle.MicroKernel
 		private readonly DependencyModelCollection dependencies;
 
 		public DependencyTrackingScope(CreationContext creationContext, ComponentModel model, MemberInfo info,
-		                               DependencyModel dependencyModel)
+									   DependencyModel dependencyModel)
 		{
-		    if (dependencyModel.TargetType == typeof (IKernel)) 
-                return;
+			if (dependencyModel.TargetType == typeof (IKernel))
+				return;
 
-		    this.dependencies = creationContext.Dependencies;
+			this.dependencies = creationContext.Dependencies;
 
-		    // We track dependencies in order to detect cycled graphs
-		    // This prevents a stack overflow
-		    this.dependencyTrackingKey = TrackDependency(model, info, dependencyModel);
+			// We track dependencies in order to detect cycled graphs
+			// This prevents a stack overflow
+			this.dependencyTrackingKey = TrackDependency(model, info, dependencyModel);
 		}
 
 		public void Dispose()
