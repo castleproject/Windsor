@@ -3,7 +3,6 @@ namespace Castle.Windsor.Tests.Configuration2
 	using System;
 	using System.IO;
 
-	using Castle.MicroKernel.Tests;
 	using Castle.MicroKernel.Tests.ClassComponents;
 
 	using NUnit.Framework;
