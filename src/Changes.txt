@@ -1,3 +1,5 @@
+- added support for forwarded types in XML config
+
 - added WithParameters method to fluent registration that enables inspecting and modifying arguments passed to Resolve method.
 - BREAKING CHANGE - AbstractHandler.Resolve method is no longer abstract and instead a ResolveCore protected abstract method was added. To fix this, implementers should override ResolveCore instead of Resolve.
 
