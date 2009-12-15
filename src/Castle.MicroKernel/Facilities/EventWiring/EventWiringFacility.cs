@@ -16,7 +16,7 @@ namespace Castle.Facilities.EventWiring
 {
 	using System;
 	using System.Collections;
-	using System.Collections.Specialized;
+	using System.Collections.Generic;
 	using System.Reflection;
 
 	using Castle.Core;
@@ -146,7 +146,7 @@ namespace Castle.Facilities.EventWiring
 					+ model.Name + " component");
 			}
 			
-			IDictionary subscribers2Evts = new HybridDictionary();
+			IDictionary subscribers2Evts = new Dictionary<object,object>();
 			
 			foreach (IConfiguration subscriber in subscribersNode.Children)
 			{

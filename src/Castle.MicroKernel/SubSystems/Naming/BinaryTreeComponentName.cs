@@ -15,7 +15,7 @@
 namespace Castle.MicroKernel.SubSystems.Naming
 {
 	using System;
-	using System.Collections;
+	using System.Collections.Generic;
 
 	[Serializable]
 	public class BinaryTreeComponentName
@@ -36,9 +36,9 @@ namespace Castle.MicroKernel.SubSystems.Naming
 		{
 			get
 			{
-				ArrayList list = new ArrayList();
+				var list = new List<IHandler>();
 				Visit(root, list);
-				return (IHandler[])list.ToArray(typeof(IHandler));
+				return list.ToArray();
 			}
 		}
 
@@ -115,7 +115,7 @@ namespace Castle.MicroKernel.SubSystems.Naming
 
 			if (node != null)
 			{
-				ArrayList list = new ArrayList();
+				var list = new List<IHandler>();
 
 				list.Add(node.Handler);
 
@@ -126,13 +126,13 @@ namespace Castle.MicroKernel.SubSystems.Naming
 					list.Add(node.Handler);
 				}
 
-				return (IHandler[])list.ToArray(typeof(IHandler));
+				return list.ToArray();
 			}
 
 			return null;
 		}
 
-		internal void Visit(TreeNode node, ArrayList list)
+		internal void Visit(TreeNode node, IList<IHandler> list)
 		{
             if (node == null) return;
 
@@ -404,14 +404,11 @@ namespace Castle.MicroKernel.SubSystems.Naming
 			{
 				return this;
 			}
-			else if (name.LiteralProperties == null || name.LiteralProperties == string.Empty)
+			if (string.IsNullOrEmpty(name.LiteralProperties))
 			{
 				return FindWithEmptyProperties();
 			}
-			else
-			{
-				return FindBestMatchByProperties(name);
-			}
+			return FindBestMatchByProperties(name);
 		}
 
 		private TreeNode FindWithEmptyProperties()
@@ -420,7 +417,7 @@ namespace Castle.MicroKernel.SubSystems.Naming
 
 			while (current != null)
 			{
-				if (current.CompName.LiteralProperties == null || current.CompName.LiteralProperties == string.Empty)
+				if (string.IsNullOrEmpty(current.CompName.LiteralProperties))
 				{
 					return current;
 				}
@@ -439,10 +436,10 @@ namespace Castle.MicroKernel.SubSystems.Naming
 			{
 				bool selected = true;
 
-				foreach (DictionaryEntry entry in name.Properties)
+				foreach (KeyValuePair<string, string> entry in name.Properties)
 				{
-					String value = current.CompName.Properties[entry.Key] as String;
-
+					string value;
+					current.CompName.Properties.TryGetValue(entry.Key, out value);
 					if (value == null || !value.Equals(entry.Value))
 					{
 						selected = false;

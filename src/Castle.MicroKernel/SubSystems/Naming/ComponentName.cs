@@ -15,9 +15,8 @@
 namespace Castle.MicroKernel.SubSystems.Naming
 {
 	using System;
+	using System.Collections.Generic;
 	using System.Text;
-	using System.Collections;
-	using System.Collections.Specialized;
 	using System.Runtime.Serialization;
 
 	[Serializable]
@@ -25,8 +24,8 @@ namespace Castle.MicroKernel.SubSystems.Naming
 	{
 		protected String internalService;
 		protected String internalliteralProperties = String.Empty;
-		protected HybridDictionary internalproperties;
-		protected bool allProperties;
+		protected IDictionary<string,string> internalproperties;
+		protected bool allProperties; // NOTE: is this safe to delete?
 
 		/// <summary>
 		/// Creates a ComponentName using a name pattern like
@@ -50,7 +49,7 @@ namespace Castle.MicroKernel.SubSystems.Naming
 			SetupProperties(properties);
 		}
 
-		internal IDictionary Properties
+		internal IDictionary<string, string> Properties
 		{
 			get { return internalproperties; }
 		}
@@ -85,7 +84,7 @@ namespace Castle.MicroKernel.SubSystems.Naming
 
 			if (name.IndexOf(':') != -1)
 			{
-				String[] splitted = name.Split(new char[] {':'});
+				String[] splitted = name.Split(new[] {':'});
 
 				SetupService(splitted[0]);
 				SetupProperties(splitted[1]);
@@ -131,13 +130,13 @@ namespace Castle.MicroKernel.SubSystems.Naming
 			if (properties == String.Empty)
 			{
 				internalliteralProperties = "";
-				SetupProperties(new HybridDictionary(true));
+				SetupProperties(new Dictionary<string,string>(StringComparer.InvariantCultureIgnoreCase));
 				return;
 			}
 
-			String[] props = properties.Split(new char[] {','});
+			String[] props = properties.Split(new[] {','});
 
-			HybridDictionary propsHash = new HybridDictionary(true);
+			Dictionary<string, string> propsHash = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase);
 
 			foreach (String chunk in props)
 			{
@@ -146,7 +145,7 @@ namespace Castle.MicroKernel.SubSystems.Naming
 					throw new ArgumentException("Invalid properties.");
 				}
 
-				String[] keyvalue = chunk.Split(new char[] {'='});
+				String[] keyvalue = chunk.Split(new[] {'='});
 
 				String key = keyvalue[0];
 				String value = keyvalue[1];
@@ -161,44 +160,24 @@ namespace Castle.MicroKernel.SubSystems.Naming
 		/// Validates a properties Hashtable.
 		/// </summary>
 		/// <param name="properties">Property list.</param>
-		protected virtual void SetupProperties(IDictionary properties)
+		protected virtual void SetupProperties(IDictionary<string, string> properties)
 		{
-			internalproperties = new HybridDictionary(true);
+			internalproperties = new Dictionary<string,string>(StringComparer.InvariantCultureIgnoreCase);
 
 			StringBuilder sb = new StringBuilder();
 
-			foreach (DictionaryEntry entry in properties)
+			foreach (KeyValuePair<string, string> entry in properties)
 			{
 				if (sb.Length != 0)
 				{
 					sb.Append(",");
 				}
 
-				String key = null;
+			
 
-				try
-				{
-					key = (String) entry.Key;
-				}
-				catch (InvalidCastException)
-				{
-					throw new ApplicationException("Key is not a String.");
-				}
+				sb.AppendFormat("{0}={1}", entry.Key, entry.Value);
 
-				String value = null;
-
-				try
-				{
-					value = (String) entry.Value;
-				}
-				catch (InvalidCastException)
-				{
-					throw new ApplicationException("Value is not a String.");
-				}
-
-				sb.AppendFormat("{0}={1}", key, value);
-
-				Properties[key] = value;
+				Properties[entry.Key] = entry.Value;
 			}
 
 			internalliteralProperties = sb.ToString();
@@ -223,7 +202,7 @@ namespace Castle.MicroKernel.SubSystems.Naming
 					throw new ArgumentNullException("key");
 				}
 
-				return (String) internalproperties[key];
+				return internalproperties[key];
 			}
 		}
 
