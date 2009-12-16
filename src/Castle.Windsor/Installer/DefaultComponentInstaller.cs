@@ -86,14 +86,13 @@ namespace Castle.Windsor.Installer
 					service = ObtainType(serviceTypeName);
 				}
 
-				SetUpComponentForwardedTypes(container, component, typeName, id);
-
 #if DEBUG
 				System.Diagnostics.Debug.Assert( id != null );
 				System.Diagnostics.Debug.Assert( type != null );
 				System.Diagnostics.Debug.Assert( service != null );
 #endif
 				container.AddComponent(id, service, type);
+				SetUpComponentForwardedTypes(container, component, typeName, id);
 
 			}
 		}
