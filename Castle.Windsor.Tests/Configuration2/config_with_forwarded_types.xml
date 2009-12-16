@@ -5,8 +5,9 @@
 			id="hasForwards"
 			type="Castle.MicroKernel.Tests.ClassComponents.TwoInterfacesImpl, Castle.MicroKernel.Tests"
 			service="Castle.MicroKernel.Tests.ClassComponents.ICommon, Castle.MicroKernel.Tests">
-			<forward 
-				service="Castle.MicroKernel.Tests.ClassComponents.ICommon2, Castle.MicroKernel.Tests" />
+      <forwardedTypes>
+        <add service="Castle.MicroKernel.Tests.ClassComponents.ICommon2, Castle.MicroKernel.Tests" />
+      </forwardedTypes>
 		</component>
 	</components>
 </configuration>

@@ -86,20 +86,7 @@ namespace Castle.Windsor.Installer
 					service = ObtainType(serviceTypeName);
 				}
 
-				var forwarded = new List<Type>();
-				foreach (var child in component.Children.FindAll(c => "forward".Equals(c.Name, StringComparison.OrdinalIgnoreCase)))
-				{
-					var forwardedServiceTypeName = child.Attributes["service"];
-					try
-					{
-						forwarded.Add(ObtainType(forwardedServiceTypeName));
-					}
-					catch (ConfigurationErrorsException e)
-					{
-						throw new ConfigurationErrorsException(
-							string.Format("Component {0}-{1} defines invalid forwarded type.", id ?? string.Empty, typeName), e);
-					}
-				}
+				SetUpComponentForwardedTypes(container, component, typeName, id);
 
 #if DEBUG
 				System.Diagnostics.Debug.Assert( id != null );
@@ -107,10 +94,34 @@ namespace Castle.Windsor.Installer
 				System.Diagnostics.Debug.Assert( service != null );
 #endif
 				container.AddComponent(id, service, type);
-				foreach (var forwadedType in forwarded)
+
+			}
+		}
+
+		private void SetUpComponentForwardedTypes(IWindsorContainer container, IConfiguration component, string typeName, string id)
+		{
+			var forwardedTypes = component.Children["forwardedTypes"];
+			if (forwardedTypes == null) return;
+
+			var forwarded = new List<Type>();
+			foreach (var forwardedType in forwardedTypes.Children
+				.FindAll(c => c.Name.Equals("add", StringComparison.OrdinalIgnoreCase)))
+			{
+				var forwardedServiceTypeName = forwardedType.Attributes["service"];
+				try
 				{
-					container.Kernel.RegisterHandlerForwarding(forwadedType, id);
+					forwarded.Add(ObtainType(forwardedServiceTypeName));
 				}
+				catch (ConfigurationErrorsException e)
+				{
+					throw new ConfigurationErrorsException(
+						string.Format("Component {0}-{1} defines invalid forwarded type.", id ?? string.Empty, typeName), e);
+				}
+			}
+
+			foreach (var forwadedType in forwarded)
+			{
+				container.Kernel.RegisterHandlerForwarding(forwadedType, id);
 			}
 		}
 
