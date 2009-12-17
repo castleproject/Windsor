@@ -16,7 +16,9 @@ namespace Castle.MicroKernel.Lifestyle.Pool
 {
 	using System;
 
+#if (!SILVERLIGHT)
 	[Serializable]
+#endif
 	public class DefaultPoolFactory : IPoolFactory
 	{
 		public DefaultPoolFactory()

@@ -20,8 +20,10 @@ namespace Castle.MicroKernel.Handlers
 	/// <summary>
 	/// Summary description for HandlerException.
 	/// </summary>
+#if (!SILVERLIGHT)
 	[Serializable]
-	public class HandlerException : Exception
+#endif
+	public class HandlerException : ApplicationException
 	{
 		/// <summary>
 		/// Initializes a new instance of the <see cref="HandlerException"/> class.
@@ -30,7 +32,8 @@ namespace Castle.MicroKernel.Handlers
 		public HandlerException(string message) : base(message)
 		{
 		}
-
+		
+#if (!SILVERLIGHT)
 		/// <summary>
 		/// Initializes a new instance of the <see cref="HandlerException"/> class.
 		/// </summary>
@@ -39,5 +42,6 @@ namespace Castle.MicroKernel.Handlers
 		public HandlerException(SerializationInfo info, StreamingContext context) : base(info, context)
 		{
 		}
+#endif
 	}
 }

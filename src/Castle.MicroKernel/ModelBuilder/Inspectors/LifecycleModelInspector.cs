@@ -25,7 +25,9 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 	/// Inspects the type looking for interfaces that constitutes
 	/// lifecycle interfaces, defined in the Castle.Model namespace.
 	/// </summary>
+#if (!SILVERLIGHT)
 	[Serializable]
+#endif
 	public class LifecycleModelInspector : IContributeComponentModelConstruction
 	{
 		public LifecycleModelInspector()

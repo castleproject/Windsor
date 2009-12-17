@@ -29,7 +29,9 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 	/// If nothing could be found it wont touch the model. In this case is up to
 	/// the kernel to estabish a default lifestyle for components.
 	/// </remarks>
+#if (!SILVERLIGHT)
 	[Serializable]
+#endif
 	public class LifestyleModelInspector : IContributeComponentModelConstruction
 	{
 		/// <summary>

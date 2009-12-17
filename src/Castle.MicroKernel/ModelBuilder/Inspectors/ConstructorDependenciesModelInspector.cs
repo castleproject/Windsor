@@ -26,10 +26,14 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 	/// as candidates. The Kernel will pick up one of the candidates
 	/// according to a heuristic.
 	/// </summary>
+#if (!SILVERLIGHT)
 	[Serializable]
+#endif
 	public class ConstructorDependenciesModelInspector : IContributeComponentModelConstruction
 	{
+#if (!SILVERLIGHT)
 		[NonSerialized]
+#endif
 		private IConversionManager converter;
 
 		public ConstructorDependenciesModelInspector()
