@@ -21,7 +21,9 @@ namespace Castle.MicroKernel
 	/// Exception threw by Kernel operations that failed
 	/// for some reason.
 	/// </summary>
+#if (!SILVERLIGHT)
 	[Serializable]
+#endif
 	public class KernelException : Exception
 	{
 		/// <summary>
@@ -40,7 +42,8 @@ namespace Castle.MicroKernel
 		public KernelException(string message, Exception innerException) : base(message, innerException)
 		{
 		}
-
+		
+#if (!SILVERLIGHT)
 		/// <summary>
 		/// Initializes a new instance of the <see cref="KernelException"/> class.
 		/// </summary>
@@ -49,5 +52,6 @@ namespace Castle.MicroKernel
 		public KernelException(SerializationInfo info, StreamingContext context) : base(info, context)
 		{
 		}
+#endif
 	}
 }

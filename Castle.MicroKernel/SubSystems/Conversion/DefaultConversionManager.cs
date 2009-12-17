@@ -24,7 +24,9 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 	/// <summary>
 	/// Composition of all available conversion managers
 	/// </summary>
+#if (!SILVERLIGHT)
 	[Serializable]
+#endif
 	public class DefaultConversionManager : AbstractSubSystem, IConversionManager, ITypeConverterContext
 	{
 		private static readonly LocalDataStoreSlot slot = Thread.AllocateDataSlot();

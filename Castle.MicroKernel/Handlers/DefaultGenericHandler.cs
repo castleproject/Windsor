@@ -26,7 +26,9 @@ namespace Castle.MicroKernel.Handlers
 	/// TODO: Consider refactoring AbstractHandler moving lifestylemanager
 	/// creation to DefaultHandler
 	/// </remarks>
+#if (!SILVERLIGHT)
 	[Serializable]
+#endif
 	public class DefaultGenericHandler : AbstractHandler
 	{
 		private readonly IDictionary<Type, IHandler> type2SubHandler;

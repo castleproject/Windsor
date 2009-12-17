@@ -20,7 +20,9 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 	/// <summary>
 	/// Implements all standard conversions.
 	/// </summary>
+#if (!SILVERLIGHT)
 	[Serializable]
+#endif
 	public class PrimitiveConverter : AbstractTypeConverter
 	{
 		private Type[] types;

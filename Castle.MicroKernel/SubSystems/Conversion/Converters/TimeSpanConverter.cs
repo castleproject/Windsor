@@ -16,7 +16,9 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 {
 	using System;
 
+#if (!SILVERLIGHT)
 	[Serializable]
+#endif
 	public class TimeSpanConverter : AbstractTypeConverter
 	{
 		public override bool CanHandleType(Type type)

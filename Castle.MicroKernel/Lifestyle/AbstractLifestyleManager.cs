@@ -20,7 +20,9 @@ namespace Castle.MicroKernel.Lifestyle
 	/// <summary>
 	/// Summary description for AbstractLifestyleManager.
 	/// </summary>
+#if (!SILVERLIGHT)
 	[Serializable]
+#endif
 	public abstract class AbstractLifestyleManager : ILifestyleManager
 	{
 		private IKernel kernel;

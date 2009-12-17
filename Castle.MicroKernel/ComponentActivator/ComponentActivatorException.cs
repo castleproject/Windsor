@@ -20,7 +20,9 @@ namespace Castle.MicroKernel.ComponentActivator
 	/// <summary>
 	/// Summary description for ComponentActivatorException.
 	/// </summary>
+#if (!SILVERLIGHT)
 	[Serializable]
+#endif
 	public class ComponentActivatorException : Exception
 	{
 		public ComponentActivatorException(string message) : base(message)
@@ -30,9 +32,11 @@ namespace Castle.MicroKernel.ComponentActivator
 		public ComponentActivatorException(string message, Exception innerException) : base(message, innerException)
 		{
 		}
-
+		
+#if (!SILVERLIGHT)
 		public ComponentActivatorException(SerializationInfo info, StreamingContext context) : base(info, context)
 		{
 		}
+#endif
 	}
 }

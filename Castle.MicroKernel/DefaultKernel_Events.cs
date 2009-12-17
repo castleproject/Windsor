@@ -26,10 +26,10 @@ namespace Castle.MicroKernel
 	/// This implementation is complete and also support a kernel 
 	/// hierarchy (sub containers).
 	/// </summary>
-#if !SILVERLIGHT
-	public partial class DefaultKernel : MarshalByRefObject, IKernel, IKernelEvents, IDeserializationCallback
-#else
+#if (SILVERLIGHT)
 	public partial class DefaultKernel : IKernel, IKernelEvents
+#else
+	public partial class DefaultKernel : MarshalByRefObject, IKernel, IKernelEvents, IDeserializationCallback
 #endif
 	{
 		private static readonly object HandlerRegisteredEvent = new object();
@@ -47,7 +47,9 @@ namespace Castle.MicroKernel
 		private bool handlersChanged;
 		private volatile bool handlersChangedDeferred;
 
+#if (!SILVERLIGHT)
 		[NonSerialized]
+#endif
 		private readonly EventHandlerList events = new EventHandlerList();
 
 #if !SILVERLIGHT
@@ -234,9 +236,6 @@ namespace Castle.MicroKernel
 			if (eventDelegate != null) eventDelegate(client, model, dependency);
 		}
 
-		#region IDeserializationCallback Members
-
-		#endregion
 
 		public IDisposable OptimizeDependencyResolution()
 		{

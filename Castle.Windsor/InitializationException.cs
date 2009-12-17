@@ -17,7 +17,9 @@ namespace Castle.Windsor
 	using System;
 	using System.Runtime.Serialization;
 
+#if (!SILVERLIGHT)
 	[Serializable]
+#endif
 	public class InitializationException : Exception
 	{
 		public InitializationException()
@@ -31,9 +33,11 @@ namespace Castle.Windsor
 		public InitializationException(Exception innerException) : base("The initialization of the container threw an exception", innerException)
 		{
 		}
-
+		
+#if (!SILVERLIGHT)
 		public InitializationException(SerializationInfo info, StreamingContext context) : base(info, context)
 		{
 		}
+#endif
 	}
 }

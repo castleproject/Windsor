@@ -22,7 +22,9 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 
 	using Castle.Core.Configuration;
 
+#if (!SILVERLIGHT)
 	[Serializable]
+#endif
 	public class DictionaryConverter : AbstractTypeConverter
 	{
 		public override bool CanHandleType(Type type)

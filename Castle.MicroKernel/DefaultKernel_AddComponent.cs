@@ -20,10 +20,10 @@ namespace Castle.MicroKernel
 	using ComponentActivator;
 	using Core;
 
-#if !SILVERLIGHT
-	public partial class DefaultKernel : MarshalByRefObject, IKernel, IKernelEvents, IDeserializationCallback
-#else
+#if (SILVERLIGHT)
 	public partial class DefaultKernel : IKernel, IKernelEvents
+#else
+	public partial class DefaultKernel : MarshalByRefObject, IKernel, IKernelEvents, IDeserializationCallback
 #endif
 	{
 		public virtual void AddComponent(String key, Type classType)

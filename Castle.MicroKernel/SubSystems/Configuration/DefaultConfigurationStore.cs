@@ -29,7 +29,9 @@ namespace Castle.MicroKernel.SubSystems.Configuration
 	/// Its only purpose is to serve as a base class for subclasses
 	/// that might obtain the configuration node from anywhere.
 	/// </summary>
+#if (!SILVERLIGHT)
 	[Serializable]
+#endif
 	public class DefaultConfigurationStore : AbstractSubSystem, IConfigurationStore
 	{
 		private readonly IDictionary<string, IConfiguration> childContainers = new Dictionary<string, IConfiguration>();

@@ -35,10 +35,16 @@ namespace Castle.Windsor.Proxy
 	/// was registered with a service interface, we proxy
 	/// the interface and the methods don't need to be virtual,
 	/// </remarks>
+#if (SILVERLIGHT)
+	public class DefaultProxyFactory : AbstractProxyFactory
+#else
 	[Serializable]
 	public class DefaultProxyFactory : AbstractProxyFactory, IDeserializationCallback
+#endif
 	{
+#if (!SILVERLIGHT)
 		[NonSerialized]
+#endif
 		protected ProxyGenerator generator;
 
 		/// <summary>
@@ -182,14 +188,14 @@ namespace Castle.Windsor.Proxy
 			return !type.IsAssignableFrom(mainInterface) && type.IsPublic;
 		}
 
-		#region IDeserializationCallback
+#if (!SILVERLIGHT)
 
 		public void OnDeserialization(object sender)
 		{
 			Init();
 		}
+#endif
 
-		#endregion
 
 		private void Init()
 		{

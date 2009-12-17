@@ -35,7 +35,9 @@ namespace Castle.MicroKernel.ComponentActivator
 	/// Please note however that the activator is responsible for the proxy creation
 	/// when needed.
 	/// </remarks>
+#if (!SILVERLIGHT)
 	[Serializable]
+#endif
 	public class DefaultComponentActivator : AbstractComponentActivator
 	{
 		private readonly bool useFastCreateInstance;

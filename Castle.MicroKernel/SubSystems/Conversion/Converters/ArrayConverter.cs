@@ -17,7 +17,9 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 	using System;
 	using Castle.Core.Configuration;
 
+#if (!SILVERLIGHT)
 	[Serializable]
+#endif
 	public class ArrayConverter : AbstractTypeConverter
 	{
 		public override bool CanHandleType(Type type)

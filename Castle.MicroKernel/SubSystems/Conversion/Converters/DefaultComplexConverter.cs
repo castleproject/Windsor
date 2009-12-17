@@ -20,7 +20,9 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.SubSystems.Conversion;
 
+#if (!SILVERLIGHT)
 	[Serializable]
+#endif
 	public class DefaultComplexConverter : AbstractTypeConverter
 	{
 		private IConversionManager _conversionManager = null;

@@ -22,7 +22,9 @@ namespace Castle.MicroKernel
 	/// cannot be satisfied because the component does not
 	/// exist in the container
 	/// </summary>
+#if (!SILVERLIGHT)
 	[Serializable]
+#endif
 	public class ComponentNotFoundException : Exception
 	{
 		/// <summary>
@@ -42,7 +44,8 @@ namespace Castle.MicroKernel
 			base( String.Format("No component for supporting the service {0} was found", service.FullName) )
 		{
 		}
-
+		
+#if (!SILVERLIGHT)
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ComponentNotFoundException"/> class.
 		/// </summary>
@@ -51,5 +54,6 @@ namespace Castle.MicroKernel
 		public ComponentNotFoundException(SerializationInfo info, StreamingContext context) : base(info, context)
 		{
 		}
+#endif
 	}
 }

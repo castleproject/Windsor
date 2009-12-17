@@ -23,13 +23,21 @@ namespace Castle.MicroKernel.Lifestyle
 	/// <summary>
 	/// Summary description for PerThreadLifestyleManager.
 	/// </summary>
+#if (SILVERLIGHT)
+	public class PerThreadLifestyleManager : AbstractLifestyleManager
+#else
 	[Serializable]
 	public class PerThreadLifestyleManager : AbstractLifestyleManager, IDeserializationCallback
+#endif
 	{
+#if (!SILVERLIGHT)
 		[NonSerialized]
+#endif
 		private static LocalDataStoreSlot slot = Thread.AllocateNamedDataSlot("CastlePerThread");
 
+#if (!SILVERLIGHT)
 		[NonSerialized]
+#endif
 		private IList<object> instances =  new List<object>();
 
 		/// <summary>
@@ -79,11 +87,13 @@ namespace Castle.MicroKernel.Lifestyle
 			// Do nothing.
 			return false;
 		}
-
+		
+#if (!SILVERLIGHT)
 		public void OnDeserialization(object sender)
 		{
 			slot = Thread.AllocateNamedDataSlot("CastlePerThread");
 			instances = new List<object>();
 		}
+#endif
 	}
 }

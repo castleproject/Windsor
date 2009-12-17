@@ -24,7 +24,9 @@ namespace Castle.MicroKernel.ComponentActivator
 	/// InternalDestroy methods in order to perform their creation and
 	/// destruction logic.
 	/// </summary>
+#if (!SILVERLIGHT)
 	[Serializable]
+#endif
 	public abstract class AbstractComponentActivator : IComponentActivator
 	{
 		private IKernel kernel;

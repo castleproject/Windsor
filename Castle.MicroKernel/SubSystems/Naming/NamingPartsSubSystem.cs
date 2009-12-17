@@ -40,7 +40,9 @@ namespace Castle.MicroKernel.SubSystems.Naming
 	///   protocol:*
 	/// </code>
 	/// </example>
+#if (!SILVERLIGHT)
 	[Serializable]
+#endif
 	public class NamingPartsSubSystem : DefaultNamingSubSystem
 	{
 		private BinaryTreeComponentName tree;

@@ -43,7 +43,9 @@ namespace Castle.MicroKernel.ComponentActivator
 	/// Has not been tested with proxies.
 	/// </para>
 	/// </summary>
+#if (!SILVERLIGHT)
 	[Serializable]
+#endif
 	public class WebUserControlComponentActivator : DefaultComponentActivator
 	{
 		/// <summary>

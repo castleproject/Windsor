@@ -23,7 +23,9 @@ namespace Castle.MicroKernel.Lifestyle
 	/// Implements a Lifestyle Manager for Web Apps that
 	/// create at most one object per web request.
 	/// </summary>
+#if (!SILVERLIGHT)
 	[Serializable]
+#endif
 	public class PerWebRequestLifestyleManager : AbstractLifestyleManager
 	{
 		private string PerRequestObjectID = "PerRequestLifestyleManager_" + Guid.NewGuid().ToString();
