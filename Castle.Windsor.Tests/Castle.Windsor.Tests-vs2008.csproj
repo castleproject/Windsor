@@ -160,6 +160,7 @@
     <Compile Include="Bugs\IoC_120.cs" />
     <Compile Include="Bugs\IoC_142.cs" />
     <Compile Include="Bugs\IoC_147.cs" />
+    <Compile Include="Bugs\IoC_155.cs" />
     <Compile Include="Bugs\IoC_169\IoC_169.cs" />
     <Compile Include="Bugs\IoC_92.cs" />
     <Compile Include="ChildContainerSupportTestCase.cs">
