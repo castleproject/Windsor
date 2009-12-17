@@ -20,8 +20,10 @@ namespace Castle.MicroKernel.Facilities
 	/// <summary>
 	/// Base exception to be used by facilities.
 	/// </summary>
+#if (!SILVERLIGHT)
 	[Serializable]
-	public class FacilityException : Exception
+#endif
+	public class FacilityException : ApplicationException
 	{
 		public FacilityException(string message) : base(message)
 		{
@@ -30,9 +32,11 @@ namespace Castle.MicroKernel.Facilities
 		public FacilityException(string message, Exception innerException) : base(message, innerException)
 		{
 		}
-
+		
+#if (!SILVERLIGHT)
 		public FacilityException(SerializationInfo info, StreamingContext context) : base(info, context)
 		{
 		}
+#endif
 	}
 }
