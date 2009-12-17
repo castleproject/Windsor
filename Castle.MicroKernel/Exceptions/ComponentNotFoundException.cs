@@ -23,7 +23,7 @@ namespace Castle.MicroKernel
 	/// exist in the container
 	/// </summary>
 	[Serializable]
-	public class ComponentNotFoundException : ApplicationException
+	public class ComponentNotFoundException : Exception
 	{
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ComponentNotFoundException"/> class.

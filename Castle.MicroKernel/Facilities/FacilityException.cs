@@ -21,7 +21,7 @@ namespace Castle.MicroKernel.Facilities
 	/// Base exception to be used by facilities.
 	/// </summary>
 	[Serializable]
-	public class FacilityException : ApplicationException
+	public class FacilityException : Exception
 	{
 		public FacilityException(string message) : base(message)
 		{
