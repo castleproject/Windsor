@@ -68,7 +68,9 @@ namespace Castle.MicroKernel.Tests.ClassComponents
 		}
 	}
 
+#if (!SILVERLIGHT)
 	[Serializable]
+#endif
 	public class CustomerChain8 : CustomerChain1
 	{
 		public CustomerChain8(ICustomer customer) : base(customer)
@@ -76,7 +78,9 @@ namespace Castle.MicroKernel.Tests.ClassComponents
 		}
 	}
 
+#if (!SILVERLIGHT)
 	[Serializable]
+#endif
 	public class CustomerChain9 : CustomerChain1
 	{
 		public CustomerChain9(ICustomer customer) : base(customer)

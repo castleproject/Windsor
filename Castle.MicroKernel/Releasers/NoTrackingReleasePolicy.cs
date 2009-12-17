@@ -19,7 +19,9 @@ namespace Castle.MicroKernel.Releasers
 	/// <summary>
 	/// No tracking of component instances are made.
 	/// </summary>
+#if (!SILVERLIGHT)
 	[Serializable]
+#endif
 	public class NoTrackingReleasePolicy : IReleasePolicy
 	{
 		/// <summary>

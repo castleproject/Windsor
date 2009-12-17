@@ -17,7 +17,9 @@ namespace Castle.Windsor.Configuration.Interpreters.XmlProcessor
 	using System;
 	using System.Runtime.Serialization;
 
+#if (!SILVERLIGHT)
 	[Serializable]
+#endif
 	public class ConfigurationProcessingException : Exception
 	{
 		public ConfigurationProcessingException(string message) : base(message)
@@ -27,9 +29,11 @@ namespace Castle.Windsor.Configuration.Interpreters.XmlProcessor
 		public ConfigurationProcessingException(string message, Exception innerException) : base(message, innerException)
 		{
 		}
-
+		
+#if (!SILVERLIGHT)
 		public ConfigurationProcessingException(SerializationInfo info, StreamingContext context) : base(info, context)
 		{
 		}
+#endif
 	}
 }

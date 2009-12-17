@@ -23,7 +23,9 @@ namespace Castle.MicroKernel.ModelBuilder
 	/// <summary>
 	/// Summary description for DefaultComponentModelBuilder.
 	/// </summary>
+#if (!SILVERLIGHT)
 	[Serializable]
+#endif
 	public class DefaultComponentModelBuilder : IComponentModelBuilder
 	{
 		private readonly IKernel kernel;
