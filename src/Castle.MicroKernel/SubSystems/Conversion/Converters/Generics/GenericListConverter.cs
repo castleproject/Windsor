@@ -19,7 +19,9 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 	using System.Diagnostics;
 	using Castle.Core.Configuration;
 
+#if (!SILVERLIGHT)
 	[Serializable]
+#endif
 	public class GenericListConverter : AbstractTypeConverter
 	{
 		/// <summary>

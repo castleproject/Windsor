@@ -21,7 +21,9 @@ namespace Castle.MicroKernel.Util
 	/// <summary>
 	/// Compares if the reference of two objects are equals.
 	/// </summary>
+#if (!SILVERLIGHT)
 	[Serializable]
+#endif
 	public class ReferenceComparer : IComparer
 	{
 		public ReferenceComparer()
@@ -34,7 +36,9 @@ namespace Castle.MicroKernel.Util
 		}
 	}
 
+#if (!SILVERLIGHT)
 	[Serializable]
+#endif
 	public class ReferenceEqualityComparer : IEqualityComparer, IEqualityComparer<object>
 	{
 		public new bool Equals(object x, object y)

@@ -22,7 +22,9 @@ namespace Castle.MicroKernel.LifecycleConcerns
 	/// <summary>
 	/// Summary description for SupportInitializeConcern.
 	/// </summary>
+#if (!SILVERLIGHT)
 	[Serializable]
+#endif
 	public class SupportInitializeConcern : ILifecycleConcern
 	{
 		private static readonly SupportInitializeConcern instance = new SupportInitializeConcern();

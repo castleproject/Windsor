@@ -19,7 +19,9 @@ namespace Castle.MicroKernel.LifecycleConcerns
 	/// <summary>
 	/// Summary description for DisposalConcern.
 	/// </summary>
+#if (!SILVERLIGHT)
 	[Serializable]
+#endif
 	public class DisposalConcern : ILifecycleConcern
 	{
 		private static readonly DisposalConcern instance = new DisposalConcern();

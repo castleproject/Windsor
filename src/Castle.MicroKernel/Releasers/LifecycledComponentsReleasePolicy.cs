@@ -21,7 +21,9 @@ namespace Castle.MicroKernel.Releasers
 	/// Only tracks components that have decommission steps
 	/// registered or have pooled lifestyle.
 	/// </summary>
+#if (!SILVERLIGHT)
 	[Serializable]
+#endif
 	public class LifecycledComponentsReleasePolicy : AllComponentsReleasePolicy
 	{
 		public override void Track(object instance, Burden burden)
