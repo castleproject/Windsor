@@ -86,6 +86,8 @@ namespace Castle.Windsor.Installer
 					service = ObtainType(serviceTypeName);
 				}
 
+				AssertImplementsService(id, service, type);
+
 #if DEBUG
 				System.Diagnostics.Debug.Assert( id != null );
 				System.Diagnostics.Debug.Assert( type != null );
@@ -94,6 +96,18 @@ namespace Castle.Windsor.Installer
 				container.AddComponent(id, service, type);
 				SetUpComponentForwardedTypes(container, component, typeName, id);
 
+			}
+		}
+
+		private void AssertImplementsService(string id, Type service, Type type)
+		{
+			if (service.IsGenericTypeDefinition)
+				type = type.MakeGenericType(service.GetGenericArguments());
+			if (!service.IsAssignableFrom(type))
+			{
+				var message = string.Format("Could not set up component '{0}'. Type '{1}' does not implement service '{2}'", id,
+				                            type.AssemblyQualifiedName, service.AssemblyQualifiedName);
+				throw new ConfigurationErrorsException(message);
 			}
 		}
 
