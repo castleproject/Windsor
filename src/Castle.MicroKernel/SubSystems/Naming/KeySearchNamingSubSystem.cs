@@ -27,7 +27,9 @@ namespace Castle.MicroKernel.SubSystems.Naming
 	/// key to use for service resolution.  If no Predicate matches, the default 
 	/// resolution occurs.
 	/// </summary>
+#if (!SILVERLIGHT)
 	[Serializable]
+#endif
 	public class KeySearchNamingSubSystem : DefaultNamingSubSystem
 	{
 		protected readonly IDictionary<Type, IList<string>> service2Keys;

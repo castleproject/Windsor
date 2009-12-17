@@ -102,7 +102,9 @@ namespace Castle.MicroKernel
 		/// The ComponentModel is required so we can get resolve an object that takes as a parameter itself, but
 		/// with difference model. (See IoC 51 for the details)
 		/// </summary>
+#if (!SILVERLIGHT)
 		[Serializable]
+#endif
 		internal class DependencyModelExtended : DependencyModel
 		{
 			private readonly ComponentModel model;

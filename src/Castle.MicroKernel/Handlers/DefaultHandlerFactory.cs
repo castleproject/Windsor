@@ -21,7 +21,9 @@ namespace Castle.MicroKernel.Handlers
 	/// <summary>
 	/// Summary description for DefaultHandlerFactory.
 	/// </summary>
+#if (!SILVERLIGHT)
 	[Serializable]
+#endif
 	public class DefaultHandlerFactory : IHandlerFactory
 	{
 		private IKernel kernel;

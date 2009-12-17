@@ -21,7 +21,9 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 	/// <summary>
 	/// Converts a string representation to an enum value
 	/// </summary>
+#if (!SILVERLIGHT)
 	[Serializable]
+#endif
 	public class EnumConverter : AbstractTypeConverter
 	{
 		public override bool CanHandleType(Type type)

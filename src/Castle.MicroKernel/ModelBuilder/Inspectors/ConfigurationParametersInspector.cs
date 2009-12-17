@@ -24,7 +24,9 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 	/// configuration. For each child it, a ParameterModel is created
 	/// and added to ComponentModel's Parameters collection
 	/// </summary>
+#if (!SILVERLIGHT)
 	[Serializable]
+#endif
 	public class ConfigurationParametersInspector : IContributeComponentModelConstruction
 	{
 		/// <summary>

@@ -25,7 +25,9 @@ namespace Castle.MicroKernel.SubSystems.Naming
 	/// Keeps key map as a list dictionary to maintain order.
 	/// Does not support a query string.
 	/// </summary>
+#if (!SILVERLIGHT)
 	[Serializable]
+#endif
 	public class DefaultNamingSubSystem : AbstractSubSystem, INamingSubSystem
 	{
 		/// <summary>

@@ -29,7 +29,9 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 	/// attribute.
 	/// </para>
 	/// </summary>
+#if (!SILVERLIGHT)
 	[Serializable]
+#endif
 	public class ComponentProxyInspector : IContributeComponentModelConstruction
 	{
 		/// <summary>

@@ -20,7 +20,9 @@ namespace Castle.MicroKernel.Exceptions
 	/// <summary>
 	/// Exception throw when a circular dependency is detected
 	/// </summary>
+#if (!SILVERLIGHT)
 	[Serializable]
+#endif
 	public class CircularDependencyException : Exception
 	{
 		/// <summary>
@@ -46,7 +48,8 @@ namespace Castle.MicroKernel.Exceptions
 		public CircularDependencyException(string message, Exception innerException) : base(message, innerException)
 		{
 		}
-
+		
+#if (!SILVERLIGHT)
 		/// <summary>
 		/// Initializes a new instance of the <see cref="CircularDependencyException"/> class.
 		/// </summary>
@@ -57,5 +60,6 @@ namespace Castle.MicroKernel.Exceptions
 		protected CircularDependencyException(SerializationInfo info, StreamingContext context) : base(info, context)
 		{
 		}
+#endif
 	}
 }

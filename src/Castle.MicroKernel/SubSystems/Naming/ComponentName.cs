@@ -19,8 +19,12 @@ namespace Castle.MicroKernel.SubSystems.Naming
 	using System.Text;
 	using System.Runtime.Serialization;
 
+#if (SILVERLIGHT)
+	public class ComponentName 
+#else
 	[Serializable]
 	public class ComponentName : ISerializable
+#endif
 	{
 		protected String internalService;
 		protected String internalliteralProperties = String.Empty;
@@ -53,7 +57,8 @@ namespace Castle.MicroKernel.SubSystems.Naming
 		{
 			get { return internalproperties; }
 		}
-
+		
+#if (!SILVERLIGHT)
 		/// <summary>
 		/// Serialization constructor.
 		/// </summary>
@@ -70,6 +75,7 @@ namespace Castle.MicroKernel.SubSystems.Naming
 				SetupProperties(props);
 			}
 		}
+#endif
 
 		/// <summary>
 		/// Parses the full name extracting the service and properties.
@@ -231,14 +237,13 @@ namespace Castle.MicroKernel.SubSystems.Naming
 				              internalService, internalliteralProperties);
 		}
 
-		#region ISerializable Members
-
+		
+#if (!SILVERLIGHT)
 		public void GetObjectData(SerializationInfo info, StreamingContext context)
 		{
 			info.AddValue("service", internalService);
 			info.AddValue("props", internalliteralProperties);
 		}
-
-		#endregion
+#endif
 	}
 }

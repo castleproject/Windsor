@@ -28,7 +28,9 @@ namespace Castle.MicroKernel
 	/// to detected cycled dependency graphs and now it's also being used
 	/// to provide arguments to components.
 	/// </summary>
+#if (!SILVERLIGHT)
 	[Serializable]
+#endif
 	public class CreationContext : MarshalByRefObject, ISubDependencyResolver
 	{
 		/// <summary>Creates a new, empty <see cref="CreationContext" /> instance.</summary>

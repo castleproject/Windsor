@@ -145,7 +145,8 @@ namespace Castle.MicroKernel
 			resolver = new DefaultDependencyResolver(this);
 			resolver.Initialize(new DependencyDelegate(RaiseDependencyResolving));
 		}
-
+		
+#if (!SILVERLIGHT)
 		public DefaultKernel(SerializationInfo info, StreamingContext context)
 		{
 			MemberInfo[] members = FormatterServices.GetSerializableMembers(GetType(), context);
@@ -157,6 +158,7 @@ namespace Castle.MicroKernel
 			events[HandlerRegisteredEvent] = (Delegate)
 				 info.GetValue("HandlerRegisteredEvent", typeof(Delegate));
 		}
+#endif
 
 		#endregion
 

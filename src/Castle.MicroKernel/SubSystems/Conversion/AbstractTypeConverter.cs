@@ -20,7 +20,9 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 	/// <summary>
 	/// Base implementation of <see cref="ITypeConverter"/>
 	/// </summary>
+#if (!SILVERLIGHT)
 	[Serializable]
+#endif
 	public abstract class AbstractTypeConverter : ITypeConverter
 	{
 		private ITypeConverterContext context;

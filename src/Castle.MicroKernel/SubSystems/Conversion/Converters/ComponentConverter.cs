@@ -20,7 +20,9 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 	using Castle.Core;
 	using Castle.Core.Configuration;
 
+#if (!SILVERLIGHT)
 	[Serializable]
+#endif
 	public class ComponentConverter : AbstractTypeConverter, IKernelDependentConverter
 	{
 		public override bool CanHandleType(Type type, IConfiguration configuration)

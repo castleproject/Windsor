@@ -17,7 +17,9 @@ namespace Castle.MicroKernel.SubSystems.Naming
 	using System;
 	using System.Collections.Generic;
 
+#if (!SILVERLIGHT)
 	[Serializable]
+#endif
 	public class BinaryTreeComponentName
 	{
 		private TreeNode root;
@@ -294,7 +296,9 @@ namespace Castle.MicroKernel.SubSystems.Naming
 	}
 
 
+#if (!SILVERLIGHT)
 	[Serializable]
+#endif
 	internal class TreeNode
 	{
 		private ComponentName compName;

@@ -21,7 +21,9 @@ namespace Castle.MicroKernel
 	/// Exception threw when there is a problem
 	/// registering a component
 	/// </summary>
+#if (!SILVERLIGHT)
 	[Serializable]
+#endif
 	public class ComponentRegistrationException : Exception
 	{
 		/// <summary>
@@ -31,7 +33,8 @@ namespace Castle.MicroKernel
 		public ComponentRegistrationException(string message) : base(message)
 		{
 		}
-
+		
+#if (!SILVERLIGHT)
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ComponentRegistrationException"/> class.
 		/// </summary>
@@ -40,5 +43,6 @@ namespace Castle.MicroKernel
 		public ComponentRegistrationException(SerializationInfo info, StreamingContext context) : base(info, context)
 		{
 		}
+#endif
 	}
 }

@@ -25,7 +25,9 @@ namespace Castle.MicroKernel.Resolvers
 	/// This implementation is quite simple, but still should be useful
 	/// for 99% of situations. 
 	/// </summary>
+#if (!SILVERLIGHT)
 	[Serializable]
+#endif
 	public class DefaultDependencyResolver : IDependencyResolver
 	{
 		private DependencyDelegate dependencyResolvingDelegate;

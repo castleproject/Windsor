@@ -22,7 +22,9 @@ namespace Castle.MicroKernel.Lifestyle.Pool
 
 	using Castle.Core;
 
+#if (!SILVERLIGHT)
 	[Serializable]
+#endif
 	public class DefaultPool : IPool, IDisposable
 	{
 		private readonly Stack available = Stack.Synchronized(new Stack());
