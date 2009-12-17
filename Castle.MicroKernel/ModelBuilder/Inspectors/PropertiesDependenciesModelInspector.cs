@@ -28,10 +28,14 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 	/// The Kernel might be able to set some of these properties when the component 
 	/// is requested.
 	/// </summary>
+#if (!SILVERLIGHT)
 	[Serializable]
+#endif
 	public class PropertiesDependenciesModelInspector : IContributeComponentModelConstruction
 	{
+#if (!SILVERLIGHT)
 		[NonSerialized]
+#endif
 		private IConversionManager converter;
 
 		/// <summary>

@@ -20,8 +20,10 @@ namespace Castle.MicroKernel.Resolvers
 	/// <summary>
 	/// Summary description for DependencyResolverException.
 	/// </summary>
+#if (!SILVERLIGHT)
 	[Serializable]
-	public class DependencyResolverException : Exception
+#endif
+	public class DependencyResolverException : ApplicationException
 	{
 		/// <summary>
 		/// Initializes a new instance of the <see cref="DependencyResolverException"/> class.
@@ -31,6 +33,7 @@ namespace Castle.MicroKernel.Resolvers
 		{
 		}
 
+#if (!SILVERLIGHT)
 		/// <summary>
 		/// Initializes a new instance of the <see cref="DependencyResolverException"/> class.
 		/// </summary>
@@ -39,5 +42,6 @@ namespace Castle.MicroKernel.Resolvers
 		public DependencyResolverException(SerializationInfo info, StreamingContext context) : base(info, context)
 		{
 		}
+#endif
 	}
 }

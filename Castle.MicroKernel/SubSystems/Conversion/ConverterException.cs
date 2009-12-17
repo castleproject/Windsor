@@ -20,8 +20,10 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 	/// <summary>
 	/// Summary description for ConverterException.
 	/// </summary>
+#if (!SILVERLIGHT)
 	[Serializable]
-	public class ConverterException : Exception
+#endif
+	public class ConverterException : ApplicationException
 	{
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ConverterException"/> class.
@@ -39,7 +41,8 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 		public ConverterException(string message, Exception innerException) : base(message, innerException)
 		{
 		}
-
+		
+#if (!SILVERLIGHT)
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ConverterException"/> class.
 		/// </summary>
@@ -48,5 +51,6 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 		public ConverterException(SerializationInfo info, StreamingContext context) : base(info, context)
 		{
 		}
+#endif
 	}
 }
