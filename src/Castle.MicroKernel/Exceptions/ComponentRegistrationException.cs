@@ -22,7 +22,7 @@ namespace Castle.MicroKernel
 	/// registering a component
 	/// </summary>
 	[Serializable]
-	public class ComponentRegistrationException : ApplicationException
+	public class ComponentRegistrationException : Exception
 	{
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ComponentRegistrationException"/> class.

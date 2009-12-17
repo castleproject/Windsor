@@ -22,7 +22,7 @@ namespace Castle.MicroKernel
 	/// for some reason.
 	/// </summary>
 	[Serializable]
-	public class KernelException : ApplicationException
+	public class KernelException : Exception
 	{
 		/// <summary>
 		/// Initializes a new instance of the <see cref="KernelException"/> class.

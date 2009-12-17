@@ -21,7 +21,7 @@ namespace Castle.MicroKernel.ComponentActivator
 	/// Summary description for ComponentActivatorException.
 	/// </summary>
 	[Serializable]
-	public class ComponentActivatorException : ApplicationException
+	public class ComponentActivatorException : Exception
 	{
 		public ComponentActivatorException(string message) : base(message)
 		{

@@ -21,7 +21,7 @@ namespace Castle.MicroKernel.Handlers
 	/// Summary description for HandlerException.
 	/// </summary>
 	[Serializable]
-	public class HandlerException : ApplicationException
+	public class HandlerException : Exception
 	{
 		/// <summary>
 		/// Initializes a new instance of the <see cref="HandlerException"/> class.

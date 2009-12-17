@@ -16,7 +16,6 @@ namespace Castle.Windsor.Proxy
 {
 	using System;
 	using System.Collections.Generic;
-	using System.Runtime.InteropServices.ComTypes;
 	using Castle.Core;
 	using Castle.Core.Interceptor;
 	using Castle.MicroKernel;
@@ -75,7 +74,7 @@ namespace Castle.Windsor.Proxy
 				{
 					// This shoul be virtually impossible to happen
 					// Seriously!
-					throw new ApplicationException("The interceptor could not be resolved");
+					throw new Exception("The interceptor could not be resolved");
 				}
 
 				try
@@ -89,11 +88,10 @@ namespace Castle.Windsor.Proxy
 				catch(InvalidCastException)
 				{
 					String message = String.Format(
-						"An interceptor registered for {0} doesnt implement " +
-						"the IInterceptor interface",
+						"An interceptor registered for {0} doesnt implement the IInterceptor interface",
 						model.Name);
 
-					throw new ApplicationException(message);
+					throw new Exception(message);
 				}
 			}
 
