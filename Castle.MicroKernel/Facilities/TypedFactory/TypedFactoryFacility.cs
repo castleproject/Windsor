@@ -16,11 +16,8 @@
 namespace Castle.Facilities.TypedFactory
 {
 	using System;
-	using System.Configuration;
-	
 	using Castle.Core;
 	using Castle.Core.Configuration;
-
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Facilities;
 	using Castle.MicroKernel.Proxy;
@@ -78,7 +75,7 @@ namespace Castle.Facilities.TypedFactory
 					{
 						string message = "Invalid factory entry in configuration";
 
-						throw new ConfigurationErrorsException(message);
+						throw new Exception(message);
 					}
 				}
 			}

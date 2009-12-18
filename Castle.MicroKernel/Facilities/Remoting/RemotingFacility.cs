@@ -16,7 +16,6 @@ namespace Castle.Facilities.Remoting
 {
 	using System;
 	using System.IO;
-	using System.Configuration;
 	using System.Runtime.Remoting;
 
 	using Castle.MicroKernel;
@@ -105,7 +104,7 @@ namespace Castle.Facilities.Remoting
 			{
 				String message = String.Format("Remoting configuration file '{0}' does not exist", configurationFile);
 
-				throw new ConfigurationErrorsException(message);
+				throw new Exception(message);
 			}
 
 #if !MONO
@@ -123,12 +122,12 @@ namespace Castle.Facilities.Remoting
 
 			String kernelUri = FacilityConfig.Attributes["registryUri"];
 
-			if (kernelUri == null || kernelUri.Length == 0)
+			if (string.IsNullOrEmpty(kernelUri))
 			{
 				String message = "When the remote facility is configured as " + 
 					"server you must supply the URI for the component registry using the attribute 'registryUri'";
 
-				throw new ConfigurationErrorsException(message);
+				throw new Exception(message);
 			}
 
 			RemotingServices.Marshal(localRegistry, kernelUri, typeof(RemotingRegistry));
@@ -145,7 +144,7 @@ namespace Castle.Facilities.Remoting
 				String message = "When the remote facility is configured as " + 
 					"client you must supply the URI for the kernel using the attribute 'remoteKernelUri'";
 
-				throw new ConfigurationErrorsException(message);
+				throw new Exception(message);
 			}
 
 			remoteRegistry = (RemotingRegistry) 

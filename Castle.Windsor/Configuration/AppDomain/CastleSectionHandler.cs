@@ -12,9 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+
 namespace Castle.Windsor.Configuration.AppDomain
 {
 	using System.Configuration;
+	using System.Xml;
 
 	/// <summary>
 	/// Implementation of <see cref="IConfigurationSectionHandler"/>.
@@ -26,7 +28,7 @@ namespace Castle.Windsor.Configuration.AppDomain
 		{
 		}
 
-		public object Create(object parent, object configContext, System.Xml.XmlNode section)
+		public object Create(object parent, object configContext, XmlNode section)
 		{
 			return section;
 		}

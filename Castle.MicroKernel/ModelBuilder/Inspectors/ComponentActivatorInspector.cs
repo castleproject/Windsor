@@ -15,7 +15,6 @@
 namespace Castle.MicroKernel.ModelBuilder.Inspectors
 {
 	using System;
-	using System.Configuration;
 	using Castle.Core;
 
 	/// <summary>
@@ -82,7 +81,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 						String.Format("The Type '{0}' specified  in the componentActivatorType attribute could not be loaded.",
 						              componentActivatorType);
 
-					throw new ConfigurationErrorsException(message, ex);
+					throw new Exception(message, ex);
 				}
 			}
 

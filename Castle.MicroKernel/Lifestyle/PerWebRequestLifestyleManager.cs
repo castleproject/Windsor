@@ -16,7 +16,6 @@ namespace Castle.MicroKernel.Lifestyle
 {
 	using System;
 	using System.Collections.Generic;
-	using System.Configuration;
 	using System.Web;
 
 	/// <summary>
@@ -28,7 +27,7 @@ namespace Castle.MicroKernel.Lifestyle
 #endif
 	public class PerWebRequestLifestyleManager : AbstractLifestyleManager
 	{
-		private string PerRequestObjectID = "PerRequestLifestyleManager_" + Guid.NewGuid().ToString();
+		private string PerRequestObjectID = "PerRequestLifestyleManager_" + Guid.NewGuid();
 
 		#region ILifestyleManager Members
 
@@ -38,18 +37,15 @@ namespace Castle.MicroKernel.Lifestyle
 
 			if (current == null)
 				throw new InvalidOperationException(
-					"HttpContext.Current is null.  PerWebRequestLifestyle can only be used in ASP.Net");
+					"HttpContext.Current is null. PerWebRequestLifestyle can only be used in ASP.Net");
 
 			if (current.Items[PerRequestObjectID] == null)
 			{
 				if (!PerWebRequestLifestyleModule.Initialized)
 				{
-					string message = "Looks like you forgot to register the http module " +
-					                 typeof(PerWebRequestLifestyleModule).FullName + Environment.NewLine +
-					                 "Add '<add name=\"PerRequestLifestyle\" type=\"Castle.MicroKernel.Lifestyle.PerWebRequestLifestyleModule, Castle.MicroKernel\" />' " +
-					                 "to the <httpModules> section on your web.config";
+					string message = string.Format("Looks like you forgot to register the http module {0}{1}Add '<add name=\"PerRequestLifestyle\" type=\"Castle.MicroKernel.Lifestyle.PerWebRequestLifestyleModule, Castle.MicroKernel\" />' to the <httpModules> section on your web.config", typeof(PerWebRequestLifestyleModule).FullName, Environment.NewLine);
 
-					throw new ConfigurationErrorsException(message);
+					throw new Exception(message);
 				}
 
 				object instance = base.Resolve(context);
