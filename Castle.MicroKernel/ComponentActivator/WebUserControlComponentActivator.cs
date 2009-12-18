@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#if !MONO
+#if !(MONO || SILVERLIGHT)
 
 namespace Castle.MicroKernel.ComponentActivator
 {
@@ -43,9 +43,7 @@ namespace Castle.MicroKernel.ComponentActivator
 	/// Has not been tested with proxies.
 	/// </para>
 	/// </summary>
-#if (!SILVERLIGHT)
 	[Serializable]
-#endif
 	public class WebUserControlComponentActivator : DefaultComponentActivator
 	{
 		/// <summary>
