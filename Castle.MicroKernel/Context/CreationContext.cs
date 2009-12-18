@@ -19,6 +19,7 @@ namespace Castle.MicroKernel
 	using System.Collections.Generic;
 
 	using Castle.Core;
+
 	using Releasers;
 	using SubSystems.Conversion;
 
@@ -218,15 +219,6 @@ namespace Castle.MicroKernel
 			return typeToExtractGenericArguments.GetGenericArguments();
 		}
 
-		/// <summary>
-		/// Check if we are now in the middle of resolving this handler, 
-		/// and as such, we shouldn't try to resolve that.
-		/// </summary>
-		public bool HandlerIsCurrentlyBeingResolved(IHandler handlerToTest)
-		{
-			return handlerStack.Contains(handlerToTest);
-		}
-
 		public ResolutionContext EnterResolutionContext(IHandler handlerBeingResolved)
 		{
 			return EnterResolutionContext(handlerBeingResolved, true);
@@ -272,6 +264,20 @@ namespace Castle.MicroKernel
 				resolutionStack.Push(resCtx);
 			}
 			return resCtx;
+		}
+
+		/// <summary>
+		/// Method used by handlers to test whether they are being resolved in the context.
+		/// </summary>
+		/// <param name="handler"></param>
+		/// <returns></returns>
+		/// <remarks>
+		/// This method is provided as part of double dispatch mechanism for use by handlers.
+		/// Outside of handlers, call <see cref="IHandler.IsBeingResolvedInContext"/> instead.
+		/// </remarks>
+		public bool IsInResolutionContext(IHandler handler)
+		{
+			return handlerStack.Contains(handler);
 		}
 
 		private void ExitResolutionContext(Burden burden)

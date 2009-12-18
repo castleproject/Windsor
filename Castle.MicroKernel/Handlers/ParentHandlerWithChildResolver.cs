@@ -133,7 +133,12 @@ namespace Castle.MicroKernel.Handlers
 			return parentHandler.HasCustomParameter(key);
 		}
 
-		#endregion
+	    public bool IsBeingResolvedInContext(CreationContext context)
+	    {
+	        return context.IsInResolutionContext(this) || parentHandler.IsBeingResolvedInContext(context);
+	    }
+
+	    #endregion
 
 		#region IDisposable Members
 

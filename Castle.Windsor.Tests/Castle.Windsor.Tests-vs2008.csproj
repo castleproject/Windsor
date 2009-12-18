@@ -233,6 +233,7 @@
     <Compile Include="Configuration\ConfigXmlInterpreterTestCase.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="ConfigureDecoratorsTestCase.cs" />
     <Compile Include="ContainerProblem.cs">
       <SubType>Code</SubType>
     </Compile>

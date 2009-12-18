@@ -95,5 +95,10 @@ namespace Castle.MicroKernel.Handlers
 		{
 			return target.HasCustomParameter(key);
 		}
+
+	    public bool IsBeingResolvedInContext(CreationContext context)
+	    {
+	        return context.IsInResolutionContext(this) || target.IsBeingResolvedInContext(context);
+	    }
 	}
 }
