@@ -23,7 +23,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 #if (!SILVERLIGHT)
 	[Serializable]
 #endif
-	public class ConverterException : ApplicationException
+	public class ConverterException : Exception
 	{
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ConverterException"/> class.

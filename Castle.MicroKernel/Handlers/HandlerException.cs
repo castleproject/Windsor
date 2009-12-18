@@ -23,7 +23,7 @@ namespace Castle.MicroKernel.Handlers
 #if (!SILVERLIGHT)
 	[Serializable]
 #endif
-	public class HandlerException : ApplicationException
+	public class HandlerException : Exception
 	{
 		/// <summary>
 		/// Initializes a new instance of the <see cref="HandlerException"/> class.
