@@ -18,6 +18,8 @@ namespace Castle.MicroKernel.Tests.Lifestyle
 	using System.Threading;
 	using Castle.Core;
 	using Castle.Core.Configuration;
+	using Castle.MicroKernel.Registration;
+	using Castle.MicroKernel.Tests.ClassComponents;
 	using Castle.MicroKernel.Tests.Lifestyle.Components;
 	using NUnit.Framework;
 
@@ -41,6 +43,24 @@ namespace Castle.MicroKernel.Tests.Lifestyle
 		public void DisposeContainer()
 		{
 			kernel.Dispose();
+		}
+
+		[Test]
+		public void Reregistration_should_not_maintain_old_lifestyle_IoC_Issue_160()
+		{
+			kernel.Register(Component.For<ICommon>().ImplementedBy<CommonImpl1>().Named("foo").LifeStyle.Singleton);
+
+			var handler = kernel.GetHandler("foo");
+			Assert.AreEqual(LifestyleType.Singleton, handler.ComponentModel.LifestyleType);
+
+			var removed = kernel.RemoveComponent("foo");
+			Assert.IsTrue(removed);
+
+			var registration = Component.For<ICommon>().ImplementedBy<CommonImpl2>().Named("foo").LifeStyle.Transient;
+			kernel.Register(registration);
+
+			handler = kernel.GetHandler("foo");
+			Assert.AreEqual(LifestyleType.Transient, handler.ComponentModel.LifestyleType);
 		}
 
 		[Test]

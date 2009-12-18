@@ -217,51 +217,49 @@ namespace Castle.MicroKernel
 		{
 			if (key == null) throw new ArgumentNullException("key");
 
-			if (NamingSubSystem.Contains(key))
+			if (!NamingSubSystem.Contains(key))
 			{
-				IHandler handler = GetHandler(key);
-
-				if (handler.ComponentModel.Dependers.Length == 0)
+				if (Parent == null)
 				{
-					NamingSubSystem.UnRegister(key);
-
-					Type service = handler.ComponentModel.Service;
-					IHandler[] assignableHandlers = NamingSubSystem.GetAssignableHandlers(service);
-					if (assignableHandlers.Length > 0)
-					{
-						NamingSubSystem[handler.ComponentModel.Service] = assignableHandlers[0];
-					}
-					else
-					{
-						NamingSubSystem.UnRegister(service);
-					}
-
-					foreach (ComponentModel model in handler.ComponentModel.Dependents)
-					{
-						model.RemoveDepender(handler.ComponentModel);
-					}
-
-					RaiseComponentUnregistered(key, handler);
-
-					DisposeHandler(handler);
-
-					return true;
-				}
-				else
-				{
-					// We can't remove this component as there are
-					// others which depends on it
-
 					return false;
 				}
-			}
 
-			if (Parent != null)
-			{
 				return Parent.RemoveComponent(key);
 			}
 
-			return false;
+			IHandler handler = GetHandler(key);
+
+			if (handler.ComponentModel.Dependers.Length != 0)
+			{
+				// We can't remove this component as there are
+				// others which depends on it
+
+				return false;
+			}
+
+			NamingSubSystem.UnRegister(key);
+
+			Type service = handler.ComponentModel.Service;
+			IHandler[] assignableHandlers = NamingSubSystem.GetAssignableHandlers(service);
+			if (assignableHandlers.Length > 0)
+			{
+				NamingSubSystem[handler.ComponentModel.Service] = assignableHandlers[0];
+			}
+			else
+			{
+				NamingSubSystem.UnRegister(service);
+			}
+
+			foreach (ComponentModel model in handler.ComponentModel.Dependents)
+			{
+				model.RemoveDepender(handler.ComponentModel);
+			}
+
+			RaiseComponentUnregistered(key, handler);
+
+			DisposeHandler(handler);
+
+			return true;
 		}
 
 		public virtual bool HasComponent(String key)
