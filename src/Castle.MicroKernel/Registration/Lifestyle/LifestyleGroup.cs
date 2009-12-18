@@ -48,11 +48,13 @@ namespace Castle.MicroKernel.Registration.Lifestyle
 		{
 			get { return AddDescriptor(new PerThread<S>()); }
 		}
-
+		
+#if (!SILVERLIGHT)
 		public ComponentRegistration<S> PerWebRequest
 		{
 			get { return AddDescriptor(new PerWebRequest<S>()); }
 		}
+#endif
 
 		public ComponentRegistration<S> Pooled
 		{

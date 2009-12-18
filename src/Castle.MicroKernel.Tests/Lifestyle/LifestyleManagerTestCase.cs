@@ -77,13 +77,17 @@ namespace Castle.MicroKernel.Tests.Lifestyle
 			TestHandlersLifestyle(typeof(NoInfoComponent), LifestyleType.Singleton, false);
 			TestHandlersLifestyle(typeof(NoInfoComponent), LifestyleType.Thread, false);
 			TestHandlersLifestyle(typeof(NoInfoComponent), LifestyleType.Transient, false);
+#if (!SILVERLIGHT)
 			TestHandlersLifestyle(typeof(NoInfoComponent), LifestyleType.PerWebRequest, false);
+#endif
 
 			TestHandlersLifestyleWithService(typeof(NoInfoComponent), LifestyleType.Transient, false);
 			TestHandlersLifestyleWithService(typeof(NoInfoComponent), LifestyleType.Singleton, false);
 			TestHandlersLifestyleWithService(typeof(NoInfoComponent), LifestyleType.Thread, false);
 			TestHandlersLifestyleWithService(typeof(NoInfoComponent), LifestyleType.Transient, false);
+#if (!SILVERLIGHT)
 			TestHandlersLifestyleWithService(typeof(NoInfoComponent), LifestyleType.PerWebRequest, false);
+#endif
 
 			TestLifestyleAndSameness(typeof(PerThreadComponent), LifestyleType.Transient, true, false);
 			TestLifestyleAndSameness(typeof(SingletonComponent), LifestyleType.Transient, true, false);

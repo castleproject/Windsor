@@ -378,10 +378,12 @@ namespace Castle.MicroKernel.Handlers
 			{
 				manager = new TransientLifestyleManager();
 			}
+#if (!SILVERLIGHT)
 			else if (type == LifestyleType.PerWebRequest)
 			{
 				manager = new PerWebRequestLifestyleManager();
 			}
+#endif
 			else if (type == LifestyleType.Custom)
 			{
 				manager = (ILifestyleManager)

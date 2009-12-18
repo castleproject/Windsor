@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#if (!SILVERLIGHT)
 namespace Castle.MicroKernel.Lifestyle
 {
 	using System;
@@ -22,9 +23,7 @@ namespace Castle.MicroKernel.Lifestyle
 	/// Implements a Lifestyle Manager for Web Apps that
 	/// create at most one object per web request.
 	/// </summary>
-#if (!SILVERLIGHT)
 	[Serializable]
-#endif
 	public class PerWebRequestLifestyleManager : AbstractLifestyleManager
 	{
 		private string PerRequestObjectID = "PerRequestLifestyleManager_" + Guid.NewGuid();
@@ -137,3 +136,4 @@ namespace Castle.MicroKernel.Lifestyle
 
 	#endregion
 }
+#endif
