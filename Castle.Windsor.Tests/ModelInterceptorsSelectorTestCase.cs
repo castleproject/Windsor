@@ -14,18 +14,18 @@
 
 #if !SILVERLIGHT
 
-using System;
-using Castle.Core;
-using Castle.Core.Interceptor;
-using Castle.DynamicProxy;
-using Castle.MicroKernel;
-using Castle.MicroKernel.Proxy;
-using Castle.Windsor;
-using NUnit.Framework;
 
 namespace Castle.Windsor.Tests
 {
-    [TestFixture]
+	using System;
+
+	using Castle.Core;
+	using Castle.Core.Interceptor;
+	using Castle.MicroKernel.Proxy;
+
+	using NUnit.Framework;
+
+	[TestFixture]
     public class ModelInterceptorsSelectorTestCase
     {
         public interface IWatcher
@@ -48,7 +48,16 @@ namespace Castle.Windsor.Tests
                 WasCalled = true;
             }
         }
+		        public class AnotherDummyInterceptor: StandardInterceptor
+        {
+            public static bool WasCalled;
 
+            protected override void PreProceed(IInvocation invocation)
+            {
+
+                WasCalled = true;
+            }
+        }
         public class Person
         {
             public IWatcher Watcher;
@@ -58,7 +67,18 @@ namespace Castle.Windsor.Tests
                 Watcher = watcher;
             }
         }
+        public class AnotherInterceptorSelector: IModelInterceptorsSelector 
+        {
+            public InterceptorReference[] SelectInterceptors(ComponentModel model)
+            {
+                return new[] {new InterceptorReference(typeof(AnotherDummyInterceptor)), };
+            }
 
+            public bool HasInterceptors(ComponentModel model) 
+            {
+                return model.Service == typeof(IWatcher);
+            }
+        }
         public enum Interceptors
         {
             None,
@@ -75,7 +95,7 @@ namespace Castle.Windsor.Tests
                     return null;
                 if(Interceptors==Interceptors.None)
                     return null;
-                return new InterceptorReference[]{new InterceptorReference(typeof(DummyInterceptor)), };
+                return new[]{new InterceptorReference(typeof(DummyInterceptor)), };
             }
 
             public bool HasInterceptors(ComponentModel model)
@@ -143,6 +163,26 @@ namespace Castle.Windsor.Tests
             Assert.IsTrue(DummyInterceptor.WasCalled);
             
         }
+        [Test]
+        public void InterceptorSelectors_Are_Cumulative()
+        {
+            IWindsorContainer container = new WindsorContainer();
+            container
+                .AddComponent<DummyInterceptor>()
+                .AddComponent<AnotherDummyInterceptor>()
+                .AddComponentLifeStyle<IWatcher, BirdWatcher>("bird.watcher", LifestyleType.Transient);
+
+            WatcherInterceptorSelector selector = new WatcherInterceptorSelector();
+            selector.Interceptors = Interceptors.Dummy;
+            container.Kernel.ProxyFactory.AddInterceptorSelector(selector);
+            container.Kernel.ProxyFactory.AddInterceptorSelector(new AnotherInterceptorSelector());
+
+            IWatcher watcher = container.Resolve<IWatcher>();
+            watcher.OnSomethingInterestingToWatch += delegate { };
+            Assert.IsTrue(DummyInterceptor.WasCalled);
+            Assert.IsTrue(AnotherDummyInterceptor.WasCalled);
+        }
+
     }
 }
 

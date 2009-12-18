@@ -103,10 +103,17 @@ namespace Castle.Windsor.Proxy
 			foreach(IModelInterceptorsSelector selector in selectors)
 			{
 				InterceptorReference[] interceptors = selector.SelectInterceptors(model);
-				if (interceptors != null)
-					return interceptors;
+				if (interceptors == null)
+				{
+					continue;
+				}
+
+				foreach (InterceptorReference interceptor in interceptors)
+					yield return interceptor;
 			}
-			return model.Interceptors;
+
+			foreach (InterceptorReference interceptor in model.Interceptors)
+				yield return interceptor;
 		}
 
 		protected static void SetOnBehalfAware(IOnBehalfAware onBehalfAware, ComponentModel target)
