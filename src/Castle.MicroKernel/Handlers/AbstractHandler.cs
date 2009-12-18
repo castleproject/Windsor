@@ -377,7 +377,11 @@ namespace Castle.MicroKernel.Handlers
 			}
 			else if (type == LifestyleType.Thread)
 			{
+#if (SILVERLIGHT)
+				manager = new PerThreadThreadStaticLifestyleManager();
+#else
 				manager = new PerThreadLifestyleManager();
+#endif
 			}
 			else if (type == LifestyleType.Transient)
 			{

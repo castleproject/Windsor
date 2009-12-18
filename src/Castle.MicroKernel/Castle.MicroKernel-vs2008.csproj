@@ -249,6 +249,7 @@
     <Compile Include="Lifestyle\PerThreadLifestyleManager.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Lifestyle\PerThreadThreadStaticLifestyleManager.cs" />
     <Compile Include="Lifestyle\PerWebRequestLifestyleManager.cs">
       <SubType>Code</SubType>
     </Compile>
