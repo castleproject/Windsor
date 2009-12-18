@@ -46,6 +46,32 @@ namespace Castle.MicroKernel.SubSystems.Configuration
 		{
 		}
 
+		public override void Init(IKernel kernel)
+		{
+			base.Init(kernel);
+			Kernel.ComponentUnregistered += CleanUpComponentConfiguration;
+		}
+
+		private void CleanUpComponentConfiguration(string key, IHandler handler)
+		{
+			if (key == null)
+			{
+				return;
+			}
+
+			if (components.Remove(key))
+			{
+				return;
+			}
+
+			bootstrapcomponents.Remove(key);
+		}
+
+		public override void Terminate()
+		{
+			Kernel.ComponentUnregistered -= CleanUpComponentConfiguration;
+		}
+
 		/// <summary>
 		/// Associates a configuration node with a facility key
 		/// </summary>
