@@ -29,7 +29,12 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 #endif
 	public class DefaultConversionManager : AbstractSubSystem, IConversionManager, ITypeConverterContext
 	{
+#if (!SILVERLIGHT)
 		private static readonly LocalDataStoreSlot slot = Thread.AllocateDataSlot();
+#else
+		[ThreadStatic]
+		private static readonly Stack<ComponentModel> slot;
+#endif
         private readonly IList<ITypeConverter> converters = new List<ITypeConverter>();
         private readonly IList<ITypeConverter> standAloneConverters = new List<ITypeConverter>();
 
@@ -181,6 +186,8 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 		{
 			get
 			{
+				
+#if (!SILVERLIGHT)
 				var stack = (Stack<ComponentModel>)Thread.GetData(slot);
 
 				if (stack == null)
@@ -190,6 +197,15 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 				}
 
 				return stack;
+#else
+				if(slot == null)
+				{
+					slot = new Stack<ComponentModel>();
+				}
+
+				return slot;
+
+#endif
 			}
 		}
 	}

@@ -18,7 +18,6 @@ namespace Castle.MicroKernel.Lifestyle.Pool
 	using System;
 	using System.Collections.Generic;
 	using System.Threading;
-	using System.Collections;
 
 	using Castle.Core;
 
@@ -27,7 +26,7 @@ namespace Castle.MicroKernel.Lifestyle.Pool
 #endif
 	public class DefaultPool : IPool, IDisposable
 	{
-		private readonly Stack available = Stack.Synchronized(new Stack());
+		private readonly Stack<object> available = new Stack<object>();
 		private readonly List<object> inUse = new List<object>();
 		private readonly int initialsize;
 		private readonly int maxsize;
@@ -131,8 +130,8 @@ namespace Castle.MicroKernel.Lifestyle.Pool
 
 		public virtual void Dispose()
 		{
-			// Release all components 
-
+			// Release all components
+			// NOTE: don't we need a lock here?
 			foreach(object instance in available)
 			{
 				componentActivator.Destroy(instance);
