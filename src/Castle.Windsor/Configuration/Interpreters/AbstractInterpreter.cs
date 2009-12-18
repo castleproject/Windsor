@@ -16,8 +16,6 @@ namespace Castle.Windsor.Configuration.Interpreters
 {
 	using System;
 	using System.Collections;
-	using System.Configuration;
-
 	using Castle.Core.Resource;
 	using Castle.Core.Configuration;
 	using Castle.MicroKernel;
@@ -181,7 +179,7 @@ namespace Castle.Windsor.Configuration.Interpreters
 			{
 				const string message = "Component or Facility was declared without a proper 'id' attribute";
 
-				throw new ConfigurationErrorsException(message);
+				throw new Exception(message);
 			}
 		}
 

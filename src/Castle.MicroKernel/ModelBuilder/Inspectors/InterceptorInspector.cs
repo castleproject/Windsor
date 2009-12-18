@@ -15,8 +15,6 @@
 namespace Castle.MicroKernel.ModelBuilder.Inspectors
 {
 	using System;
-	using System.Configuration;
-
 	using Castle.MicroKernel.Util;
 	using Castle.Core;
 	using Castle.Core.Configuration;
@@ -53,7 +51,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 						"to a component (Currently {0})", 
 						value);
 
-					throw new ConfigurationErrorsException(message);
+					throw new Exception(message);
 				}
 
 				InterceptorReference interceptorRef = 

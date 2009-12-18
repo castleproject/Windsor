@@ -16,8 +16,6 @@ namespace Castle.Windsor.Installer
 {
 	using System;
 	using System.Collections.Generic;
-	using System.Configuration;
-
 	using Castle.Core.Configuration;
 	using Castle.Core.Resource;
 	using Castle.MicroKernel;
@@ -107,7 +105,7 @@ namespace Castle.Windsor.Installer
 			{
 				var message = string.Format("Could not set up component '{0}'. Type '{1}' does not implement service '{2}'", id,
 				                            type.AssemblyQualifiedName, service.AssemblyQualifiedName);
-				throw new ConfigurationErrorsException(message);
+				throw new Exception(message);
 			}
 		}
 
@@ -125,9 +123,9 @@ namespace Castle.Windsor.Installer
 				{
 					forwarded.Add(ObtainType(forwardedServiceTypeName));
 				}
-				catch (ConfigurationErrorsException e)
+				catch (Exception e)
 				{
-					throw new ConfigurationErrorsException(
+					throw new Exception(
 						string.Format("Component {0}-{1} defines invalid forwarded type.", id ?? string.Empty, typeName), e);
 				}
 			}
@@ -161,9 +159,9 @@ namespace Castle.Windsor.Installer
 			}
 			catch (Exception e)
 			{
-				String message = String.Format("The type name {0} could not be located", typeName);
+				String message = String.Format("The type name {0} could not be located.", typeName);
 
-				throw new ConfigurationErrorsException(message, e);
+				throw new Exception(message, e);
 			}
 		}
 
@@ -171,9 +169,9 @@ namespace Castle.Windsor.Installer
 		{
 			if (!typeof(IFacility).IsAssignableFrom( facilityType ))
 			{
-				String message = String.Format("Type {0} does not implement the interface IFacility", facilityType.FullName);
+				String message = String.Format("Type {0} does not implement the interface IFacility.", facilityType.FullName);
 
-				throw new ConfigurationErrorsException(message);
+				throw new Exception(message);
 			}
 
 			try
@@ -184,7 +182,7 @@ namespace Castle.Windsor.Installer
 			{
 				String message = String.Format("Could not instantiate {0}. Does it have a public default constructor?", facilityType.FullName);
 
-				throw new ConfigurationErrorsException(message, ex);
+				throw new Exception(message, ex);
 			}
 		}
 	}

@@ -16,34 +16,34 @@
 
 namespace Castle.Windsor.Tests.Bugs
 {
-	using System.Configuration;
-    using Core.Resource;
-    using NUnit.Framework;
-    using Windsor.Configuration.Interpreters;
+	using System;
+	using Core.Resource;
+	using NUnit.Framework;
+	using Windsor.Configuration.Interpreters;
 
-    [TestFixture]
-    public class IoC_155
-    {
-        public interface IService { }
+	[TestFixture]
+	public class IoC_155
+	{
+		public interface IService { }
 
-        public class Service : IService { }
+		public class Service : IService { }
 
-        [Test]
-        public void Type_not_implementing_service_should_throw()
-        {
-            Assert.Throws<ConfigurationErrorsException>(() =>
-                new WindsorContainer(
-                    new XmlInterpreter(
-                        new StaticContentResource(
-                            @"<castle>
+		[Test]
+		public void Type_not_implementing_service_should_throw()
+		{
+			Assert.Throws<Exception>(() =>
+				new WindsorContainer(
+					new XmlInterpreter(
+						new StaticContentResource(
+							@"<castle>
 <components>
     <component id=""svc""
         service=""Castle.Windsor.Tests.Bugs.IoC_155+Service, Castle.Windsor.Tests""
         type=""Castle.Windsor.Tests.Bugs.IoC_155+IService, Castle.Windsor.Tests""/>
 </components>
 </castle>"))));
-        }
-    }
+		}
+	}
 }
 
 #endif

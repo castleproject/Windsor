@@ -15,8 +15,6 @@
 namespace Castle.MicroKernel.ModelBuilder.Inspectors
 {
 	using System;
-	using System.Configuration;
-
 	using Castle.Core;
 	
 	/// <summary>
@@ -73,7 +71,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 							"Could not convert the specified attribute value " + 
 							"{0} to a valid LifestyleType enum type", lifestyle);
 
-						throw new ConfigurationErrorsException(message);
+						throw new Exception(message);
 					}
 
 					if (model.LifestyleType == LifestyleType.Pooled)
@@ -123,14 +121,14 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 					String message = String.Format(
 						"The Type {0} specified  in the customLifestyleType attribute could not be loaded.", customLifestyleType);
 
-					throw new ConfigurationErrorsException(message);
+					throw new Exception(message);
 				}
 			}
 			else
 			{
 				const string message = @"The attribute 'customLifestyleType' must be specified in conjunction with the 'lifestyle' attribute set to ""custom"".";
 
-				throw new ConfigurationErrorsException(message);
+				throw new Exception(message);
 			}
 		}
 

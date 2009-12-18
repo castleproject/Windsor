@@ -16,7 +16,7 @@
 
 namespace Castle.Windsor.Tests.Proxy
 {
-	using System.Configuration;
+	using System;
 	using Castle.Core.Interceptor;
 	using Castle.MicroKernel;
 	using Castle.Windsor.Tests.Components;
@@ -25,7 +25,7 @@ namespace Castle.Windsor.Tests.Proxy
 	[TestFixture]
 	public class ProxyBehaviorInvalidTestCase
 	{
-		[Test, ExpectedException(typeof(ConfigurationErrorsException))]
+		[Test, ExpectedException(typeof(Exception))]
 		public void InvalidProxyBehaviorFromConfiguration()
 		{
 			new WindsorContainer(ConfigHelper.ResolveConfigPath("Proxy/proxyBehaviorInvalidConfig.xml"));

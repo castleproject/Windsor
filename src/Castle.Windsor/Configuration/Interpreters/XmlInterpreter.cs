@@ -18,14 +18,11 @@ namespace Castle.Windsor.Configuration.Interpreters
 {
 	using System;
 	using System.Xml;
-	using System.Configuration;
 	using Castle.Core.Configuration.Xml;
 	using Castle.Core.Resource;
 	using Castle.Core.Configuration;
-	
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.SubSystems.Resource;
-
 	using Castle.Windsor.Configuration.Interpreters.XmlProcessor;
 
 	/// <summary>
@@ -104,7 +101,7 @@ namespace Castle.Windsor.Configuration.Interpreters
 			{
 				const string message = "Unable to process xml resource ";
 
-				throw new ConfigurationErrorsException(message);
+				throw new Exception(message);
 			}
 		}
 
@@ -116,7 +113,7 @@ namespace Castle.Windsor.Configuration.Interpreters
 				{
 					string message = String.Format("{0} cannot contain text nodes", node.Name);
 
-					throw new ConfigurationErrorsException(message);
+					throw new Exception(message);
 				}
 				if (node.NodeType == XmlNodeType.Element)
 				{
@@ -150,7 +147,7 @@ namespace Castle.Windsor.Configuration.Interpreters
 					"<{1}>, <{2}>, <{3}> or <{4}>. There might be either a typo on <{0}> or " +
 					"you might have forgotten to nest it properly.",
 					node.Name, ContainersNodeName, FacilitiesNodeName, ComponentsNodeName, BootstrapNodeName);
-				throw new ConfigurationErrorsException(message);
+				throw new Exception(message);
 			}
 		}
 
@@ -250,7 +247,7 @@ namespace Castle.Windsor.Configuration.Interpreters
 				String message = String.Format("{0} elements expects required non blank attribute {1}",
 											   configuration.Name, attributeName);
 
-				throw new ConfigurationErrorsException(message);
+				throw new Exception(message);
 			}
 
 			return value;			
@@ -264,7 +261,7 @@ namespace Castle.Windsor.Configuration.Interpreters
 			String message = String.Format("Unexpected node under '{0}': Expected '{1}' but found '{2}'",
 										   expectedName, expectedName, node.Name);
 
-			throw new ConfigurationErrorsException(message);
+			throw new Exception(message);
 		}
 	}
 }

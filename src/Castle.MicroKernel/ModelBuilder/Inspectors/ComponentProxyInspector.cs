@@ -76,8 +76,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 				}
 				catch(ConverterException ex)
 				{
-					throw new ConfigurationErrorsException("Could not convert attribute " + 
-						"'useSingleInterfaceProxy' to bool. Value is " + useSingleInterfaceProxyAttrib, ex);
+					throw new Exception(string.Format("Could not convert attribute 'useSingleInterfaceProxy' to bool. Value is '{0}'.", useSingleInterfaceProxyAttrib), ex);
 				}
 			}
 
@@ -90,8 +89,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 				}
 				catch(ConverterException ex)
 				{
-					throw new ConfigurationErrorsException("Could not convert attribute " + 
-						"'marshalByRefProxy' to bool. Value is " + marshalByRefProxyAttrib, ex);
+					throw new Exception(string.Format("Could not convert attribute 'marshalByRefProxy' to bool. Value is '{0}'.", marshalByRefProxyAttrib), ex);
 				}
 			}
 

@@ -17,12 +17,9 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 {
 	using System;
 	using System.Collections.Generic;
-	using System.Configuration;
 	using System.Reflection;
-
 	using Castle.Core;
 	using Castle.Core.Configuration;
-
 	using Castle.MicroKernel.SubSystems.Conversion;
 
 	/// <summary>
@@ -91,7 +88,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 						String message = String.Format( "The class {0} has tried to expose configuration for " + 
 							"a method named {1} which could not be found.", model.Implementation.FullName, name );
 
-						throw new ConfigurationErrorsException(message);
+						throw new Exception(message);
 					}
 
 					ProcessMeta(model, methods, metaModel);
@@ -128,7 +125,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 					"for the component '{0}' does not have a name. You can either name " + 
 					"the node as the method name or provide an attribute 'name'", model.Name);
 
-				throw new ConfigurationErrorsException(message);
+				throw new Exception(message);
 			}
 		}
 
@@ -186,7 +183,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 						"that could not be converted to System.Type. Check the inner exception for " + 
 						"details", signature, param);
 
-					throw new ConfigurationErrorsException(message);
+					throw new Exception(message);
 				}
 			}
 
