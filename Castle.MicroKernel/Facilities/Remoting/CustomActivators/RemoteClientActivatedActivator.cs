@@ -14,6 +14,7 @@
 
 namespace Castle.Facilities.Remoting
 {
+#if (!SILVERLIGHT)
 	using System;
 	using System.Runtime.Remoting.Activation;
 	using Castle.Core;
@@ -44,4 +45,5 @@ namespace Castle.Facilities.Remoting
 			return Activator.CreateInstance(Model.Implementation, null, new object[] { new UrlAttribute(url) } );
 		}
 	}
+#endif
 }

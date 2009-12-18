@@ -14,6 +14,7 @@
 
 namespace Castle.Facilities.Remoting
 {
+#if (!SILVERLIGHT)
 	using Castle.Core;
 	
 	using Castle.MicroKernel;
@@ -49,4 +50,5 @@ namespace Castle.Facilities.Remoting
 			return registry.CreateRemoteInstance(Model.Name);
 		}
 	}
+#endif
 }

@@ -14,6 +14,7 @@
 
 namespace Castle.Facilities.Remoting
 {
+#if (!SILVERLIGHT)
 	using System.Runtime.Remoting;
 	
 	using Castle.Core;
@@ -55,4 +56,5 @@ namespace Castle.Facilities.Remoting
 			return RemotingServices.Connect(Model.Service, uri); 
 		}
 	}
+#endif
 }
