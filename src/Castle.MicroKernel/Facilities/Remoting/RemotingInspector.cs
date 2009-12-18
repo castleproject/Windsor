@@ -14,6 +14,7 @@
 
 namespace Castle.Facilities.Remoting
 {
+#if (!SILVERLIGHT)
 	using System;
 	using System.Runtime.Remoting;
 	using Castle.Core;
@@ -374,4 +375,5 @@ namespace Castle.Facilities.Remoting
 			}
 		}
 	}
+#endif
 }
