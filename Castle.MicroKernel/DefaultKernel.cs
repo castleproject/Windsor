@@ -155,8 +155,7 @@ namespace Castle.MicroKernel
 
 			FormatterServices.PopulateObjectMembers(this, members, kernelmembers);
 
-			events[HandlerRegisteredEvent] = (Delegate)
-				 info.GetValue("HandlerRegisteredEvent", typeof(Delegate));
+			AddHandler(HandlerRegisteredEvent, (Delegate)info.GetValue("HandlerRegisteredEvent", typeof(Delegate)));
 		}
 #endif
 
@@ -940,7 +939,7 @@ namespace Castle.MicroKernel
 
 			info.AddValue("members", kernelmembers, typeof(object[]));
 
-			info.AddValue("HandlerRegisteredEvent", events[HandlerRegisteredEvent]);
+			info.AddValue("HandlerRegisteredEvent", GetEventHandlers<HandlerDelegate>(HandlerRegisteredEvent));
 		}
 
 		void IDeserializationCallback.OnDeserialization(object sender)

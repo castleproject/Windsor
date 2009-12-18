@@ -12,12 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Threading;
-
 namespace Castle.MicroKernel
 {
 	using System;
+	using System.Collections.Generic;
 	using System.ComponentModel;
+	using System.Runtime.CompilerServices;
 	using System.Runtime.Serialization;
 	using Core;
 
@@ -50,7 +50,7 @@ namespace Castle.MicroKernel
 #if (!SILVERLIGHT)
 		[NonSerialized]
 #endif
-		private readonly EventHandlerList events = new EventHandlerList();
+		private readonly IDictionary<object,Delegate> events = new Dictionary<object,Delegate>();
 
 #if !SILVERLIGHT
 		public override object InitializeLifetimeService()
@@ -64,14 +64,14 @@ namespace Castle.MicroKernel
 		/// </summary>
 		public event HandlerDelegate HandlerRegistered
 		{
-			add { events.AddHandler(HandlerRegisteredEvent, value); }
-			remove { events.RemoveHandler(HandlerRegisteredEvent, value); }
+			add { AddHandler(HandlerRegisteredEvent, value); }
+			remove { RemoveHandler(HandlerRegisteredEvent, value); }
 		}
 
 		public event HandlersChangedDelegate HandlersChanged
 		{
-			add { events.AddHandler(HandlersChangedEvent, value); }
-			remove { events.RemoveHandler(HandlersChangedEvent, value); }
+			add { AddHandler(HandlersChangedEvent, value); }
+			remove { RemoveHandler(HandlersChangedEvent, value); }
 		}
 
 		/// <summary>
@@ -80,8 +80,8 @@ namespace Castle.MicroKernel
 		/// <value></value>
 		public event ComponentDataDelegate ComponentRegistered
 		{
-			add { events.AddHandler(ComponentRegisteredEvent, value); }
-			remove { events.RemoveHandler(ComponentRegisteredEvent, value); }
+			add { AddHandler(ComponentRegisteredEvent, value); }
+			remove { RemoveHandler(ComponentRegisteredEvent, value); }
 		}
 
 		/// <summary>
@@ -90,8 +90,8 @@ namespace Castle.MicroKernel
 		/// <value></value>
 		public event ComponentDataDelegate ComponentUnregistered
 		{
-			add { events.AddHandler(ComponentUnregisteredEvent, value); }
-			remove { events.RemoveHandler(ComponentUnregisteredEvent, value); }
+			add { AddHandler(ComponentUnregisteredEvent, value); }
+			remove { RemoveHandler(ComponentUnregisteredEvent, value); }
 		}
 
 		/// <summary>
@@ -100,8 +100,8 @@ namespace Castle.MicroKernel
 		/// <value></value>
 		public event ComponentInstanceDelegate ComponentCreated
 		{
-			add { events.AddHandler(ComponentCreatedEvent, value); }
-			remove { events.RemoveHandler(ComponentCreatedEvent, value); }
+			add { AddHandler(ComponentCreatedEvent, value); }
+			remove { RemoveHandler(ComponentCreatedEvent, value); }
 		}
 
 		/// <summary>
@@ -110,8 +110,8 @@ namespace Castle.MicroKernel
 		/// <value></value>
 		public event ComponentInstanceDelegate ComponentDestroyed
 		{
-			add { events.AddHandler(ComponentDestroyedEvent, value); }
-			remove { events.RemoveHandler(ComponentDestroyedEvent, value); }
+			add { AddHandler(ComponentDestroyedEvent, value); }
+			remove { RemoveHandler(ComponentDestroyedEvent, value); }
 		}
 
 		/// <summary>
@@ -120,8 +120,8 @@ namespace Castle.MicroKernel
 		/// <value></value>
 		public event EventHandler AddedAsChildKernel
 		{
-			add { events.AddHandler(AddedAsChildKernelEvent, value); }
-			remove { events.RemoveHandler(AddedAsChildKernelEvent, value); }
+			add { AddHandler(AddedAsChildKernelEvent, value); }
+			remove { RemoveHandler(AddedAsChildKernelEvent, value); }
 		}
 
 		/// <summary>
@@ -129,8 +129,8 @@ namespace Castle.MicroKernel
 		/// </summary>
 		public event EventHandler RemovedAsChildKernel
 		{
-			add { events.AddHandler(RemovedAsChildKernelEvent, value); }
-			remove { events.RemoveHandler(RemovedAsChildKernelEvent, value); }
+			add { AddHandler(RemovedAsChildKernelEvent, value); }
+			remove { RemoveHandler(RemovedAsChildKernelEvent, value); }
 		}
 
 		/// <summary>
@@ -139,56 +139,56 @@ namespace Castle.MicroKernel
 		/// <value></value>
 		public event ComponentModelDelegate ComponentModelCreated
 		{
-			add { events.AddHandler(ComponentModelCreatedEvent, value); }
-			remove { events.RemoveHandler(ComponentModelCreatedEvent, value); }
+			add { AddHandler(ComponentModelCreatedEvent, value); }
+			remove { RemoveHandler(ComponentModelCreatedEvent, value); }
 		}
 
 		public event DependencyDelegate DependencyResolving
 		{
-			add { events.AddHandler(DependencyResolvingEvent, value); }
-			remove { events.RemoveHandler(DependencyResolvingEvent, value); }
+			add { AddHandler(DependencyResolvingEvent, value); }
+			remove { RemoveHandler(DependencyResolvingEvent, value); }
 		}
 
 		protected virtual void RaiseComponentRegistered(String key, IHandler handler)
 		{
-			ComponentDataDelegate eventDelegate = (ComponentDataDelegate)events[ComponentRegisteredEvent];
+			ComponentDataDelegate eventDelegate = GetEventHandlers<ComponentDataDelegate>(ComponentRegisteredEvent);
 			if (eventDelegate != null) eventDelegate(key, handler);
 		}
 
 
 		protected virtual void RaiseComponentUnregistered(String key, IHandler handler)
 		{
-			ComponentDataDelegate eventDelegate = (ComponentDataDelegate)events[ComponentUnregisteredEvent];
+			ComponentDataDelegate eventDelegate = GetEventHandlers<ComponentDataDelegate>(ComponentUnregisteredEvent);
 			if (eventDelegate != null) eventDelegate(key, handler);
 		}
 
 		public virtual void RaiseComponentCreated(ComponentModel model, object instance)
 		{
-			ComponentInstanceDelegate eventDelegate = (ComponentInstanceDelegate)events[ComponentCreatedEvent];
+			var eventDelegate = GetEventHandlers<ComponentInstanceDelegate>(ComponentCreatedEvent);
 			if (eventDelegate != null) eventDelegate(model, instance);
 		}
 
 		public virtual void RaiseComponentDestroyed(ComponentModel model, object instance)
 		{
-			ComponentInstanceDelegate eventDelegate = (ComponentInstanceDelegate)events[ComponentDestroyedEvent];
+			var eventDelegate = GetEventHandlers<ComponentInstanceDelegate>(ComponentDestroyedEvent);
 			if (eventDelegate != null) eventDelegate(model, instance);
 		}
 
 		protected virtual void RaiseAddedAsChildKernel()
 		{
-			EventHandler eventDelegate = (EventHandler)events[AddedAsChildKernelEvent];
+			var eventDelegate = GetEventHandlers<EventHandler>(AddedAsChildKernelEvent);
 			if (eventDelegate != null) eventDelegate(this, EventArgs.Empty);
 		}
 
 		protected virtual void RaiseRemovedAsChildKernel()
 		{
-			EventHandler eventDelegate = (EventHandler)events[RemovedAsChildKernelEvent];
+			var eventDelegate = GetEventHandlers<EventHandler>(RemovedAsChildKernelEvent);
 			if (eventDelegate != null) eventDelegate(this, EventArgs.Empty);
 		}
 
 		protected virtual void RaiseComponentModelCreated(ComponentModel model)
 		{
-			ComponentModelDelegate eventDelegate = (ComponentModelDelegate)events[ComponentModelCreatedEvent];
+			var eventDelegate = GetEventHandlers<ComponentModelDelegate>(ComponentModelCreatedEvent);
 			if (eventDelegate != null) eventDelegate(model);
 		}
 
@@ -201,7 +201,7 @@ namespace Castle.MicroKernel
 					handlersChanged = true;
 				}
 				
-				return;		
+				return;
 			}
 
 			DoActualRaisingOfHandlersChanged();
@@ -214,7 +214,7 @@ namespace Castle.MicroKernel
 			while (stateChanged)
 			{
 				stateChanged = false;
-				HandlersChangedDelegate eventDelegate = (HandlersChangedDelegate)events[HandlersChangedEvent];
+				var eventDelegate = GetEventHandlers<HandlersChangedDelegate>(HandlersChangedEvent);
 				if (eventDelegate != null) eventDelegate(ref stateChanged);
 			}
 		}
@@ -226,13 +226,13 @@ namespace Castle.MicroKernel
 			while (stateChanged)
 			{
 				stateChanged = false;
-				HandlerDelegate eventDelegate = (HandlerDelegate)events[HandlerRegisteredEvent];
+				var eventDelegate = GetEventHandlers<HandlerDelegate>(HandlerRegisteredEvent);
 				if (eventDelegate != null) eventDelegate(handler, ref stateChanged);
 			}
 		}
 		protected virtual void RaiseDependencyResolving(ComponentModel client, DependencyModel model, Object dependency)
 		{
-			DependencyDelegate eventDelegate = (DependencyDelegate)events[DependencyResolvingEvent];
+			var eventDelegate = GetEventHandlers<DependencyDelegate>(DependencyResolvingEvent);
 			if (eventDelegate != null) eventDelegate(client, model, dependency);
 		}
 
@@ -276,6 +276,38 @@ namespace Castle.MicroKernel
 					}
 				}
 			}
+		}
+
+		[MethodImpl(MethodImplOptions.Synchronized)]
+		protected void AddHandler(object key, Delegate value)
+		{
+			Delegate @event;
+			if (events.TryGetValue(key, out @event))
+			{
+				events[key] = Delegate.Combine(@event, value);
+				return;
+			}
+
+			events.Add(key, Delegate.Combine(value));
+		}
+
+		[MethodImpl(MethodImplOptions.Synchronized)]
+		protected void RemoveHandler(object key, Delegate value)
+		{
+			Delegate @event;
+			if (events.TryGetValue(key, out @event))
+			{
+				events[key] = Delegate.Remove(@event, value);
+			}
+		}
+
+		[MethodImpl(MethodImplOptions.Synchronized)]
+		protected TEventHandler GetEventHandlers<TEventHandler>(object key) where TEventHandler : class // where TEventHandler : Delegate <-- this is illegal :/
+		{
+			Delegate handlers;
+			events.TryGetValue(key, out handlers);
+			return handlers as TEventHandler;
+
 		}
 	}
 }
