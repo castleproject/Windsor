@@ -31,8 +31,10 @@ namespace Castle.MicroKernel
 	/// </summary>
 #if (!SILVERLIGHT)
 	[Serializable]
-#endif
 	public class CreationContext : MarshalByRefObject, ISubDependencyResolver
+#else
+	public class CreationContext : ISubDependencyResolver
+#endif
 	{
 		/// <summary>Creates a new, empty <see cref="CreationContext" /> instance.</summary>
 		/// <remarks>A new CreationContext should be created every time, as the contexts keeps some state related to dependency resolution.</remarks>

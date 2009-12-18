@@ -32,7 +32,11 @@ namespace Castle.MicroKernel.Handlers
 	[Serializable]
 #endif
 	[DebuggerDisplay("Model: {ComponentModel.Service} / {ComponentModel.Implementation} ")]
+#if (!SILVERLIGHT)
 	public abstract class AbstractHandler : MarshalByRefObject, IHandler, IExposeDependencyInfo, IDisposable
+#else
+	public abstract class AbstractHandler : IHandler, IExposeDependencyInfo, IDisposable
+#endif
 	{
 		private readonly ComponentModel model;
 		private IKernel kernel;
