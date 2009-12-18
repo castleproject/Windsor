@@ -15,6 +15,7 @@
 
 namespace Castle.MicroKernel.Lifestyle
 {
+#if (!SILVERLIGHT)
 	using System;
 	using System.Collections.Generic;
 	using System.Threading;
@@ -23,21 +24,13 @@ namespace Castle.MicroKernel.Lifestyle
 	/// <summary>
 	/// Summary description for PerThreadLifestyleManager.
 	/// </summary>
-#if (SILVERLIGHT)
-	public class PerThreadLifestyleManager : AbstractLifestyleManager
-#else
 	[Serializable]
 	public class PerThreadLifestyleManager : AbstractLifestyleManager, IDeserializationCallback
-#endif
 	{
-#if (!SILVERLIGHT)
 		[NonSerialized]
-#endif
 		private static LocalDataStoreSlot slot = Thread.AllocateNamedDataSlot("CastlePerThread");
 
-#if (!SILVERLIGHT)
 		[NonSerialized]
-#endif
 		private IList<object> instances =  new List<object>();
 
 		/// <summary>
@@ -60,22 +53,22 @@ namespace Castle.MicroKernel.Lifestyle
 		{
 			lock(slot)
 			{
-                var map = (Dictionary<object, object>)Thread.GetData(slot);
+				var map = (Dictionary<IComponentActivator, object>)Thread.GetData(slot);
 
 				if (map == null)
 				{
-                    map = new Dictionary<object, object>();
+					map = new Dictionary<IComponentActivator, object>();
 
 					Thread.SetData( slot, map );
 				}
 
 				Object instance;
 
-			    if (!map.TryGetValue(ComponentActivator, out instance))
+				if (!map.TryGetValue(ComponentActivator, out instance))
 				{
 					instance = base.Resolve(context);
-					map.Add( ComponentActivator, instance );
-					instances.Add( instance );
+					map.Add(ComponentActivator, instance);
+					instances.Add(instance);
 				}
 
 				return instance;
@@ -88,12 +81,11 @@ namespace Castle.MicroKernel.Lifestyle
 			return false;
 		}
 		
-#if (!SILVERLIGHT)
 		public void OnDeserialization(object sender)
 		{
 			slot = Thread.AllocateNamedDataSlot("CastlePerThread");
 			instances = new List<object>();
 		}
-#endif
 	}
+#endif
 }
