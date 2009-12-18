@@ -20,7 +20,9 @@ namespace Castle.MicroKernel.Lifestyle
 	/// <summary>
 	/// Implements a Poolable Lifestyle Manager. 
 	/// </summary>
+#if (!SILVERLIGHT)
 	[Serializable]
+#endif
 	public class PoolableLifestyleManager : AbstractLifestyleManager
 	{
 		private IPool pool;

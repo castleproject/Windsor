@@ -23,7 +23,9 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 	/// Inspect the component for <c>InterceptorAttribute</c> and
 	/// the configuration for the interceptors node
 	/// </summary>
+#if (!SILVERLIGHT)
 	[Serializable]
+#endif
 	public class InterceptorInspector : IContributeComponentModelConstruction
 	{
 		public virtual void ProcessModel(IKernel kernel, ComponentModel model)
