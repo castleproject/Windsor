@@ -364,7 +364,7 @@ namespace Castle.MicroKernel.Resolvers
 			// we are doing it in two stages because it is likely to be faster to a lookup
 			// by key than a linear search
 			IHandler handler = kernel.GetHandler(dependency.TargetType);
-			if (context.HandlerIsCurrentlyBeingResolved(handler) == false)
+			if (handler.IsBeingResolvedInContext(context) == false)
 				return handler;
 			
 			// make a best effort to find another one that fit
@@ -373,7 +373,7 @@ namespace Castle.MicroKernel.Resolvers
 
 			foreach(IHandler maybeCorrectHandler in handlers)
 			{
-				if (context.HandlerIsCurrentlyBeingResolved(maybeCorrectHandler) == false)
+				if (maybeCorrectHandler.IsBeingResolvedInContext(context) == false)
 				{
 					handler = maybeCorrectHandler;
 					break;
@@ -458,7 +458,7 @@ namespace Castle.MicroKernel.Resolvers
 
 			foreach (IHandler handler in handlers)
 			{
-				if (context == null || context.HandlerIsCurrentlyBeingResolved(handler) == false)
+				if (context == null || handler.IsBeingResolvedInContext(context) == false)
 					return IsHandlerInValidState(handler);
 			}
 

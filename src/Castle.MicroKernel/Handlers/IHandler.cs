@@ -119,5 +119,10 @@ namespace Castle.MicroKernel
 		/// <param name="key"></param>
 		/// <returns></returns>
 		bool HasCustomParameter(string key);
+
+		/// <summary>
+		/// Tests whether the handler is already being resolved in given context.
+		/// </summary>
+		bool IsBeingResolvedInContext(CreationContext context);
 	}
 }

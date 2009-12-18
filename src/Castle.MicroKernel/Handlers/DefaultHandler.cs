@@ -55,7 +55,7 @@ namespace Castle.MicroKernel.Handlers
 
 			using(CreationContext.ResolutionContext resCtx = context.EnterResolutionContext(this))
 			{
-			    object instance = lifestyleManager.Resolve(context);
+				object instance = lifestyleManager.Resolve(context);
 
 				resCtx.Burden.SetRootInstance(instance, this, ComponentModel.LifecycleSteps.HasDecommissionSteps);
 
@@ -68,7 +68,7 @@ namespace Castle.MicroKernel.Handlers
 		private bool CanResolvePendingDependencies(CreationContext context)
 		{
 			// detect circular dependencies
-			if (context.HandlerIsCurrentlyBeingResolved(this))
+			if (IsBeingResolvedInContext(context))
 				return false;
 
 			foreach (var dependency in DependenciesByService.Values.ToArray())

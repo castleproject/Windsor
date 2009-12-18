@@ -203,6 +203,11 @@ namespace Castle.MicroKernel.Handlers
 			}
 		}
 
+		public bool IsBeingResolvedInContext(CreationContext context)
+		{
+			return context.IsInResolutionContext(this);
+		}
+
 		/// <summary>
 		/// 
 		/// </summary>
