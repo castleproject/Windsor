@@ -23,7 +23,7 @@ namespace Castle.MicroKernel.Facilities
 #if (!SILVERLIGHT)
 	[Serializable]
 #endif
-	public class FacilityException : ApplicationException
+	public class FacilityException : Exception
 	{
 		public FacilityException(string message) : base(message)
 		{

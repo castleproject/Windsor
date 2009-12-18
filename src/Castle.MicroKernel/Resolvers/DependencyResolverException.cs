@@ -23,7 +23,7 @@ namespace Castle.MicroKernel.Resolvers
 #if (!SILVERLIGHT)
 	[Serializable]
 #endif
-	public class DependencyResolverException : ApplicationException
+	public class DependencyResolverException : Exception
 	{
 		/// <summary>
 		/// Initializes a new instance of the <see cref="DependencyResolverException"/> class.

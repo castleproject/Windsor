@@ -20,7 +20,7 @@ namespace Castle.MicroKernel.Lifestyle.Pool
 #if (!SILVERLIGHT)
 	[Serializable]
 #endif
-	public class PoolException : ApplicationException
+	public class PoolException : Exception
 	{
 		public PoolException(string message) : base(message)
 		{
