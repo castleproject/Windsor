@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#if (!SILVERLIGHT)
 namespace Castle.MicroKernel.Registration.Lifestyle
 {
 	using Castle.Core;
@@ -24,3 +25,4 @@ namespace Castle.MicroKernel.Registration.Lifestyle
 		}
 	}
 }
+#endif
