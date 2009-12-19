@@ -16,18 +16,19 @@ namespace Castle.MicroKernel
 {
 	using System;
 #if (!SILVERLIGHT)
-	public abstract class AbstractSubSystem : MarshalByRefObject, ISubSystem
+	public abstract class AbstractSubSystem : AbstractSubSystem, ISubSystem
 #else
 	public abstract class AbstractSubSystem : ISubSystem
 #endif
 	{
 		private IKernel kernel;
 
+#if (!SILVERLIGHT)
 		public override object InitializeLifetimeService()
 		{
 			return null;
 		}
-
+#endif
 		public virtual void Init(IKernel kernel)
 		{
 			this.kernel = kernel;
