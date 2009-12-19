@@ -78,7 +78,7 @@ namespace Castle.Windsor.Tests
 			{
 				foreach(IHandler handler in handlers)
 				{
-					if (handler.ComponentModel.Name.Contains(Interest.ToString().ToLowerInvariant()))
+					if (handler.ComponentModel.Name.ToUpper().Contains(Interest.ToString().ToUpper()))
 						return handler;
 				}
 				return null;
