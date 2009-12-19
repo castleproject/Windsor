@@ -70,9 +70,9 @@ namespace Castle.Windsor.Tests.Configuration2
 
 		private void ExecuteMethodUntilSignal()
 		{
-			startEvent.WaitOne(int.MaxValue, false);
+			startEvent.WaitOne(int.MaxValue);
 
-			while (!stopEvent.WaitOne(1, false))
+			while (!stopEvent.WaitOne(1))
 			{
 				try
 				{

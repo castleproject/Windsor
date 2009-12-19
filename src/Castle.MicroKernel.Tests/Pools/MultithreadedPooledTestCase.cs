@@ -49,9 +49,9 @@ namespace Castle.MicroKernel.Tests.Pools
 
 		public void ExecuteMethodUntilSignal()
 		{
-			_startEvent.WaitOne(int.MaxValue, false);
+			_startEvent.WaitOne(int.MaxValue);
 
-			while(!_stopEvent.WaitOne(1, false))
+			while(!_stopEvent.WaitOne(1))
 			{
 				PoolableComponent1 instance = _kernel["a"] as PoolableComponent1;
 

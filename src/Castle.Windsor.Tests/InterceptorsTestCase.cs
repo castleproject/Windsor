@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Castle.MicroKernel.Registration;
 
 namespace Castle.Windsor.Tests
 {
+	using Castle.MicroKernel.Registration;
 	using System;
 	using System.Threading;
 	using Castle.Core;
@@ -67,7 +67,7 @@ namespace Castle.Windsor.Tests
             _container.AddComponent("interceptor", typeof(InterceptorThatCauseStackOverflow));
             _container.Register(
                 Component.For<ICameraService>().ImplementedBy<CameraService>()
-                    .Interceptors(new InterceptorReference[]{new InterceptorReference(typeof(InterceptorThatCauseStackOverflow)), }).First,
+                    .Interceptors(new[]{new InterceptorReference(typeof(InterceptorThatCauseStackOverflow)), }).First,
                 //because it has no interceptors, it is okay to resolve it...
                 Component.For<ICameraService>().ImplementedBy<CameraService>().Named("okay to resolve")
                     );
@@ -178,9 +178,9 @@ namespace Castle.Windsor.Tests
 
 		public void ExecuteMethodUntilSignal()
 		{
-			_startEvent.WaitOne(int.MaxValue, false);
+			_startEvent.WaitOne(int.MaxValue);
 
-			while(!_stopEvent.WaitOne(1, false))
+			while(!_stopEvent.WaitOne(1))
 			{
 				Assert.AreEqual(7, _service.Sum(2, 2));
 				Assert.AreEqual(8, _service.Sum(3, 2));
