@@ -177,10 +177,11 @@ namespace Castle.MicroKernel.Tests.Lifestyle
 			kernel.AddComponent("c", typeof(CustomComponent));
 			handler = kernel.GetHandler("c");
 			Assert.AreEqual(LifestyleType.Custom, handler.ComponentModel.LifestyleType);
-
+#if (!SILVERLIGHT)
 			kernel.AddComponent("d", typeof(PerWebRequestComponent));
 			handler = kernel.GetHandler("d");
 			Assert.AreEqual(LifestyleType.PerWebRequest, handler.ComponentModel.LifestyleType);
+#endif
 		}
 
 		[Test]

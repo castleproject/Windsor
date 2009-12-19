@@ -66,7 +66,9 @@ namespace Castle.MicroKernel.Tests
 			config.Children.Add(new MutableConfiguration("item", "third"));
 
 			Assert.IsTrue(conversionMng.CanHandleType(typeof(IList)));
+#if (!SILVERLIGHT)
 			Assert.IsTrue(conversionMng.CanHandleType(typeof(ArrayList)));
+#endif
 
 			IList list = (IList) conversionMng.PerformConversion(config, typeof(IList));
 			Assert.IsNotNull(list);
