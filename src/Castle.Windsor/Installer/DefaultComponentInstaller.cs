@@ -12,8 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+
 namespace Castle.Windsor.Installer
 {
+	using System.Linq;
 	using System;
 	using System.Collections.Generic;
 	using Castle.Core.Configuration;
@@ -116,7 +118,7 @@ namespace Castle.Windsor.Installer
 
 			var forwarded = new List<Type>();
 			foreach (var forwardedType in forwardedTypes.Children
-				.FindAll(c => c.Name.Equals("add", StringComparison.OrdinalIgnoreCase)))
+				.Where(c => c.Name.Equals("add", StringComparison.OrdinalIgnoreCase)))
 			{
 				var forwardedServiceTypeName = forwardedType.Attributes["service"];
 				try
