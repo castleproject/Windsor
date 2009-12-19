@@ -45,23 +45,29 @@ namespace Castle.MicroKernel.Proxy
 
 		public static object GetUnproxiedInstance(object instance)
 		{
+#if (!SILVERLIGHT)
 			if (!RemotingServices.IsTransparentProxy(instance))
 			{
+#endif
 				IProxyTargetAccessor accessor = instance as IProxyTargetAccessor;
 
 				if (accessor != null)
 				{
 					instance = accessor.DynProxyGetTarget();
 				}
+#if (!SILVERLIGHT)
 			}
+#endif
 
 			return instance;
 		}
 
 		public static Type GetUnproxiedType(object instance)
 		{
+#if (!SILVERLIGHT)
 			if (!RemotingServices.IsTransparentProxy(instance))
 			{
+#endif
 				IProxyTargetAccessor accessor = instance as IProxyTargetAccessor;
 
 				if (accessor != null)
@@ -78,7 +84,9 @@ namespace Castle.MicroKernel.Proxy
 						instance = target;
 					}
 				}
+#if (!SILVERLIGHT)
 			}
+#endif
 
 			return instance.GetType();
 		}
