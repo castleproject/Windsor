@@ -12,10 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+
 namespace Castle.Windsor.Configuration.Interpreters
 {
+	using System.Collections.Generic;
 	using System;
-	using System.Collections;
 	using Castle.Core.Resource;
 	using Castle.Core.Configuration;
 	using Castle.MicroKernel;
@@ -40,7 +41,7 @@ namespace Castle.Windsor.Configuration.Interpreters
 
 		// private ImportDirectiveCollection imports = new ImportDirectiveCollection();
 		private IResource source;
-		private Stack resourceStack = new Stack();
+		private Stack<IResource> resourceStack = new Stack<IResource>();
 		private string environmentName;
 
 		#endregion
@@ -95,7 +96,7 @@ namespace Castle.Windsor.Configuration.Interpreters
 			{
 				if (resourceStack.Count == 0) return null;
 
-				return resourceStack.Peek() as IResource;
+				return resourceStack.Peek();
 			}
 		}
 

@@ -52,7 +52,10 @@ namespace Castle.MicroKernel.Tests.SpecializedResolvers
 			Assert.IsNotNull(comp);
 			Assert.IsNotNull(comp.Services);
 			Assert.AreEqual(2, comp.Services.Count);
-			comp.Services.AsEnumerable().ForEach(Assert.IsNotNull);
+			foreach (var service in comp.Services.AsEnumerable())
+			{
+				Assert.IsNotNull(service);
+			}
 		}
 
 		[Test]
@@ -67,7 +70,10 @@ namespace Castle.MicroKernel.Tests.SpecializedResolvers
 			Assert.IsNotNull(comp);
 			Assert.IsNotNull(comp.Services);
 			Assert.AreEqual(2, comp.Services.Count);
-			comp.Services.AsEnumerable().ForEach(Assert.IsNotNull);
+			foreach (var service in comp.Services.AsEnumerable())
+			{
+				Assert.IsNotNull(service);
+			}
 		}
 
 		public class CollectionDepAsProperty
