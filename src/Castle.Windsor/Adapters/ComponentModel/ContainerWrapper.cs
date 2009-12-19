@@ -21,6 +21,7 @@ namespace Castle.Windsor.Adapters.ComponentModel
 	using System.Threading;
 
 	using Castle.Core;
+	using Castle.Core.Internal;
 	using Castle.MicroKernel;
 
 	/// <summary>
@@ -32,10 +33,10 @@ namespace Castle.Windsor.Adapters.ComponentModel
 		#region ContainerWrapper Fields
 
 		private ISite site;
-		private IWindsorContainer container;
-		private IServiceProvider parentProvider;
-		private IList<IContainerAdapterSite> sites =new List<IContainerAdapterSite>();
-		private readonly ReaderWriterLock rwlock;
+		private readonly IWindsorContainer container;
+		private readonly IServiceProvider parentProvider;
+		private readonly IList<IContainerAdapterSite> sites =new List<IContainerAdapterSite>();
+		private readonly Lock @lock = Lock.Create();
 
 		#endregion
 
@@ -70,7 +71,6 @@ namespace Castle.Windsor.Adapters.ComponentModel
 
 			this.container = container;
 			this.parentProvider = parentProvider;
-			this.rwlock = new ReaderWriterLock();
 
 			RegisterAdapterWithKernel();
 		}
@@ -106,9 +106,7 @@ namespace Castle.Windsor.Adapters.ComponentModel
 		{
 			get
 			{
-				rwlock.AcquireReaderLock(Timeout.Infinite);
-
-				try
+				using(@lock.ForReading())
 				{
 					IComponent[] components = new IComponent[sites.Count];
 
@@ -118,10 +116,6 @@ namespace Castle.Windsor.Adapters.ComponentModel
 					}
 
 					return new ComponentCollection(components);
-				}
-				finally
-				{
-					rwlock.ReleaseReaderLock();
 				}
 			}
 		}
@@ -145,9 +139,7 @@ namespace Castle.Windsor.Adapters.ComponentModel
 		{
 			if (component != null)
 			{
-				rwlock.AcquireWriterLock(Timeout.Infinite);
-
-				try
+				using(@lock.ForWriting())
 				{
 					ISite site = component.Site;
 
@@ -173,10 +165,6 @@ namespace Castle.Windsor.Adapters.ComponentModel
 						sites.Add(newSite);
 					}
 				}
-				finally
-				{
-					rwlock.ReleaseWriterLock();
-				}
 			}
 		}
 
@@ -193,9 +181,7 @@ namespace Castle.Windsor.Adapters.ComponentModel
 		{
 			if (component != null)
 			{
-				rwlock.AcquireWriterLock(Timeout.Infinite);
-
-				try
+				using(@lock.ForWriting())
 				{
 					IContainerAdapterSite site = component.Site as ContainerAdapterSite;
 
@@ -213,10 +199,6 @@ namespace Castle.Windsor.Adapters.ComponentModel
 
 						sites.Remove(site);
 					}
-				}
-				finally
-				{
-					rwlock.ReleaseWriterLock();
 				}
 			}
 		}
@@ -508,17 +490,12 @@ namespace Castle.Windsor.Adapters.ComponentModel
 		{
 			if (disposing)
 			{
-				rwlock.AcquireWriterLock(Timeout.Infinite);
 
-				try
+				using(@lock.ForWriting())
 				{
 					DisposeContainer();
 					DisposeComponent();
 					RaiseDisposed();
-				}
-				finally
-				{
-					rwlock.ReleaseWriterLock();
 				}
 			}
 		}

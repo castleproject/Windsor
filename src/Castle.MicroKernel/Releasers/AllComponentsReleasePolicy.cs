@@ -18,6 +18,8 @@ namespace Castle.MicroKernel.Releasers
 	using System.Collections.Generic;
 	using System.Threading;
 
+	using Castle.Core.Internal;
+
 #if (!SILVERLIGHT)
 	[Serializable]
 #endif
@@ -26,75 +28,52 @@ namespace Castle.MicroKernel.Releasers
 		private readonly IDictionary<object, Burden> instance2Burden =
 			new Dictionary<object, Burden>(new Util.ReferenceEqualityComparer());
 
-		private readonly ReaderWriterLock rwLock = new ReaderWriterLock();
+		private readonly Lock @lock = Lock.Create();
 
 		public virtual void Track(object instance, Burden burden)
 		{
-			rwLock.AcquireWriterLock(Timeout.Infinite);
-			try
+			using(@lock.ForWriting())
 			{
 				instance2Burden[instance] = burden;
-			}
-			finally
-			{
-				rwLock.ReleaseWriterLock();
 			}
 		}
 
 		public bool HasTrack(object instance)
 		{
 			if (instance == null) throw new ArgumentNullException("instance");
-			rwLock.AcquireReaderLock(Timeout.Infinite);
 
-			try
+			using(@lock.ForReading())
 			{
 				return instance2Burden.ContainsKey(instance);
-			}
-			finally
-			{
-				rwLock.ReleaseReaderLock();
 			}
 		}
 
 		public void Release(object instance)
 		{
 			if (instance == null) throw new ArgumentNullException("instance");
-			rwLock.AcquireReaderLock(Timeout.Infinite);
 
-			try
+			using (var locker = @lock.ForReadingUpgradeable())
 			{
 				Burden burden;
 
 				if (!instance2Burden.TryGetValue(instance, out burden))
 					return;
 
-				LockCookie cookie = rwLock.UpgradeToWriterLock(Timeout.Infinite);
+				locker.Upgrade();
+				if (!instance2Burden.TryGetValue(instance, out burden))
+					return;
 
-				try
-				{
-					if (!instance2Burden.TryGetValue(instance, out burden))
-						return;
+				instance2Burden.Remove(instance);
 
-					instance2Burden.Remove(instance);
+				burden.Release(this);
 
-					burden.Release(this);
-				}
-				finally
-				{
-					rwLock.DowngradeFromWriterLock(ref cookie);
-				}
-			}
-			finally
-			{
-				rwLock.ReleaseReaderLock();
 			}
 		}
 
 		public void Dispose()
 		{
-			rwLock.AcquireWriterLock(Timeout.Infinite);
 
-			try
+			using(@lock.ForWriting())
 			{
 				KeyValuePair<object, Burden>[] burdens = 
 					new KeyValuePair<object, Burden>[instance2Burden.Count];
@@ -108,10 +87,6 @@ namespace Castle.MicroKernel.Releasers
 						instance2Burden.Remove(burden.Key);
 					}
 				}
-			}
-			finally
-			{
-				rwLock.ReleaseWriterLock();
 			}
 		}
 	}

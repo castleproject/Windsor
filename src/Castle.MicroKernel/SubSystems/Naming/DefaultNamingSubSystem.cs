@@ -19,6 +19,8 @@ namespace Castle.MicroKernel.SubSystems.Naming
 	using System;
 	using System.Threading;
 
+	using Castle.Core.Internal;
+
 	/// <summary>
 	/// Default <see cref="INamingSubSystem"/> implementation.
 	/// Keeps services map as a simple hash table.
@@ -35,7 +37,7 @@ namespace Castle.MicroKernel.SubSystems.Naming
 		/// to <see cref="IHandler"/>
 		/// Items in this dictionary are sorted in insertion order.
 		/// </summary>
-		protected IDictionary<string,IHandler> key2Handler;
+		protected readonly IDictionary<string, IHandler> key2Handler = new Dictionary<string, IHandler>();
 
 		/// <summary>
 		/// Map(Type, IHandler) to map a service
@@ -45,13 +47,13 @@ namespace Castle.MicroKernel.SubSystems.Naming
 		/// It serve as a fast lookup for the common case of having a single handler for 
 		/// a type.
 		/// </summary>
-		protected IDictionary<Type, IHandler> service2Handler;
+		protected readonly IDictionary<Type, IHandler> service2Handler = new Dictionary<Type, IHandler>();
 
 		private readonly IDictionary<Type, IHandler[]> handlerListsByTypeCache = new Dictionary<Type, IHandler[]>();
 		private readonly IDictionary<Type, IHandler[]> assignableHandlerListsByTypeCache = new Dictionary<Type, IHandler[]>();
 		private IHandler[] allHandlersCache;
-		private List<IHandler> allHandlers = new List<IHandler>();
-		private readonly ReaderWriterLockSlim locker = new ReaderWriterLockSlim();
+		private readonly List<IHandler> allHandlers = new List<IHandler>();
+		private readonly Lock @lock = Lock.Create();
 		private readonly IList<IHandlerSelector> selectors = new List<IHandlerSelector>();
 
 		/// <summary>
@@ -59,8 +61,6 @@ namespace Castle.MicroKernel.SubSystems.Naming
 		/// </summary>
 		public DefaultNamingSubSystem()
 		{
-			key2Handler = new Dictionary<string,IHandler>();
-			service2Handler = new Dictionary<Type, IHandler>();
 		}
 
 		#region INamingSubSystem Members
@@ -69,8 +69,7 @@ namespace Castle.MicroKernel.SubSystems.Naming
 		{
 			Type service = handler.Service;
 
-			locker.EnterWriteLock();
-			try
+			using(@lock.ForWriting())
 			{
 				if (key2Handler.ContainsKey(key))
 				{
@@ -86,10 +85,6 @@ namespace Castle.MicroKernel.SubSystems.Naming
 				this[key] = handler;
 				InvalidateCache();
 			}
-			finally
-			{
-				locker.ExitWriteLock();
-			}
 		}
 
 		private void InvalidateCache()
@@ -101,61 +96,38 @@ namespace Castle.MicroKernel.SubSystems.Naming
 
 		public virtual bool Contains(String key)
 		{
-			locker.EnterReadLock();
-			try
+			using (@lock.ForReading())
 			{
 				return key2Handler.ContainsKey(key);
-			}
-			finally
-			{
-				locker.ExitReadLock();
 			}
 		}
 
 		public virtual bool Contains(Type service)
 		{
-			locker.EnterReadLock();
-			try
+			using (@lock.ForReading())
 			{
 				return service2Handler.ContainsKey(service);
-			}
-			finally
-			{
-				locker.ExitReadLock();
 			}
 		}
 
 		public virtual void UnRegister(String key)
 		{
-			var writeLockHeld = locker.IsWriteLockHeld;
-			if (writeLockHeld == false)
-				locker.EnterWriteLock();
-			try
+			using (@lock.ForWriting())
 			{
 				IHandler value;
-				if(key2Handler.TryGetValue(key, out value))
+				if (key2Handler.TryGetValue(key, out value))
 					allHandlers.Remove(value);
 				key2Handler.Remove(key);
 				InvalidateCache();
-			}
-			finally
-			{
-				if (writeLockHeld == false)
-					locker.ExitWriteLock();
 			}
 		}
 
 		public virtual void UnRegister(Type service)
 		{
-			locker.EnterWriteLock();
-			try
+			using (@lock.ForWriting())
 			{
 				service2Handler.Remove(service);
 				InvalidateCache();
-			}
-			finally
-			{
-				locker.ExitWriteLock();
 			}
 		}
 
@@ -163,14 +135,9 @@ namespace Castle.MicroKernel.SubSystems.Naming
 		{
 			get
 			{
-				locker.EnterReadLock();
-				try
+				using (@lock.ForReading())
 				{
 					return allHandlers.Count;
-				}
-				finally
-				{
-					locker.ExitReadLock();
 				}
 			}
 		}
@@ -183,16 +150,11 @@ namespace Castle.MicroKernel.SubSystems.Naming
 			if (selectorsOpinion != null)
 				return selectorsOpinion;
 
-			locker.EnterReadLock();
-			try
+			using (@lock.ForReading())
 			{
 				IHandler value;
 				key2Handler.TryGetValue(key, out value);
 				return value;
-			}
-			finally
-			{
-				locker.ExitReadLock();
 			}
 		}
 
@@ -209,18 +171,14 @@ namespace Castle.MicroKernel.SubSystems.Naming
 			if (selectorsOpinion != null)
 				return selectorsOpinion;
 
-			locker.EnterReadLock();
-			try
+
+			using (@lock.ForReading())
 			{
 				IHandler handler;
 
 				service2Handler.TryGetValue(service, out handler);
 
 				return handler;
-			}
-			finally
-			{
-				locker.ExitReadLock();
 			}
 		}
 
@@ -233,18 +191,13 @@ namespace Castle.MicroKernel.SubSystems.Naming
 			if (selectorsOpinion != null)
 				return selectorsOpinion;
 
-			locker.EnterReadLock();
-			try
+			using (@lock.ForReading())
 			{
 				IHandler handler;
 
 				key2Handler.TryGetValue(key, out handler);
 
 				return handler;
-			}
-			finally
-			{
-				locker.ExitReadLock();
 			}
 		}
 
@@ -253,20 +206,13 @@ namespace Castle.MicroKernel.SubSystems.Naming
 			if (service == null) throw new ArgumentNullException("service");
 
 			IHandler[] result;
-			locker.EnterReadLock();
-			try
+			using (@lock.ForReading())
 			{
 				if (handlerListsByTypeCache.TryGetValue(service, out result))
 					return result;
 			}
-			finally
-			{
-				locker.ExitReadLock();
-			}
 
-
-			locker.EnterWriteLock();
-			try
+			using (@lock.ForWriting())
 			{
 
 				var handlers = GetHandlers();
@@ -285,10 +231,6 @@ namespace Castle.MicroKernel.SubSystems.Naming
 				handlerListsByTypeCache[service] = result;
 
 			}
-			finally
-			{
-				locker.ExitWriteLock();
-			}
 
 			return result;
 		}
@@ -298,19 +240,13 @@ namespace Castle.MicroKernel.SubSystems.Naming
 			if (service == null) throw new ArgumentNullException("service");
 
 			IHandler[] result;
-			locker.EnterReadLock();
-			try
+			using (@lock.ForReading())
 			{
 				if (assignableHandlerListsByTypeCache.TryGetValue(service, out result))
 					return result;
 			}
-			finally
-			{
-				locker.ExitReadLock();
-			}
 
-			locker.EnterWriteLock();
-			try
+			using (@lock.ForWriting())
 			{
 
 				var handlers = GetHandlers();
@@ -325,7 +261,7 @@ namespace Castle.MicroKernel.SubSystems.Naming
 					else
 					{
 						if (service.IsGenericType &&
-							service.GetGenericTypeDefinition().IsAssignableFrom(handlerService))
+						    service.GetGenericTypeDefinition().IsAssignableFrom(handlerService))
 						{
 							list.Add(handler);
 						}
@@ -335,22 +271,13 @@ namespace Castle.MicroKernel.SubSystems.Naming
 				result = list.ToArray();
 				assignableHandlerListsByTypeCache[service] = result;
 			}
-			finally
-			{
-				locker.ExitWriteLock();
-			}
 
 			return result;
 		}
 
 		public virtual IHandler[] GetHandlers()
 		{
-			var lockHeld = locker.IsReadLockHeld || 
-				locker.IsUpgradeableReadLockHeld || 
-				locker.IsWriteLockHeld;
-			if (lockHeld == false)
-				locker.EnterReadLock();
-			try
+			using (@lock.ForReading())
 			{
 
 				if (allHandlersCache != null)
@@ -364,28 +291,15 @@ namespace Castle.MicroKernel.SubSystems.Naming
 
 				return list;
 			}
-			finally
-			{
-				if (lockHeld == false)
-					locker.ExitReadLock();
-			}
 		}
 
 		public virtual IHandler this[Type service]
 		{
 			set
 			{
-				var writeLockHeld = locker.IsWriteLockHeld;
-				if(writeLockHeld==false)
-					locker.EnterWriteLock();
-				try
+				using (@lock.ForWriting())
 				{
 					service2Handler[service] = value;
-				}
-				finally
-				{
-					if (writeLockHeld == false)
-						locker.ExitWriteLock();
 				}
 			}
 		}
@@ -394,18 +308,10 @@ namespace Castle.MicroKernel.SubSystems.Naming
 		{
 			set
 			{
-				var writeLockHeld = locker.IsWriteLockHeld;
-				if (writeLockHeld == false)
-					locker.EnterWriteLock();
-				try
+				using (@lock.ForWriting())
 				{
 					key2Handler[key] = value;
 					allHandlers.Add(value);
-				}
-				finally
-				{
-					if (writeLockHeld == false)
-						locker.ExitWriteLock();
 				}
 			}
 		}

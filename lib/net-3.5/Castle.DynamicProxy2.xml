@@ -656,7 +656,7 @@
             to avoid the performance hit associated with proxy generation.
             </remarks>
         </member>
-        <member name="P:Castle.DynamicProxy.ModuleScope.RWLock">
+        <member name="P:Castle.DynamicProxy.ModuleScope.Lock">
             <summary>
             Users of this <see cref="T:Castle.DynamicProxy.ModuleScope"/> should use this lock when accessing the cache.
             </summary>
