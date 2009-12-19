@@ -288,7 +288,7 @@ namespace Castle.MicroKernel
 				return;
 			}
 
-			events.Add(key, Delegate.Combine(value));
+			events.Add(key, Delegate.Combine(value, null));
 		}
 
 		[MethodImpl(MethodImplOptions.Synchronized)]

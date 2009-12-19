@@ -33,7 +33,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 		private static readonly LocalDataStoreSlot slot = Thread.AllocateDataSlot();
 #else
 		[ThreadStatic]
-		private static readonly Stack<ComponentModel> slot;
+		private static Stack<ComponentModel> slot;
 #endif
         private readonly IList<ITypeConverter> converters = new List<ITypeConverter>();
         private readonly IList<ITypeConverter> standAloneConverters = new List<ITypeConverter>();
@@ -56,7 +56,9 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 			Add(new ArrayConverter());
 			Add(new ComponentConverter());
 			Add(new AttributeAwareConverter());
+#if (!SILVERLIGHT)
 			Add(new ComponentModelConverter());
+#endif
 		}
 
 		#region IConversionManager Members

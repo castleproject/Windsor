@@ -12,11 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+
 namespace Castle.MicroKernel.ModelBuilder.Inspectors
 {
 	using System;
+	using System.Collections.Generic;
+	using System.Linq;
 	using System.Reflection;
-
 	using Castle.Core;
 	using Castle.MicroKernel.SubSystems.Conversion;
 	using Castle.Core.Configuration;
@@ -152,12 +154,12 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 			}
 			catch(Exception)
 			{
-				String[] enumNames = Enum.GetNames(typeof(PropertiesInspectionBehavior));
-				
-				String message = String.Format("Error on properties inspection. " + 
-					"Could not convert the inspectionBehavior attribute value into an expected enum value. " + 
+				Type enumType = typeof(PropertiesInspectionBehavior);
+				FieldInfo[] infos = enumType.GetFields(BindingFlags.Public | BindingFlags.Static);
+				IEnumerable<string> enumNames = infos.Select(x => x.Name);
+				String message = String.Format("Error on properties inspection. Could not convert the inspectionBehavior attribute value into an expected enum value. " + 
 					"Value found is '{0}' while possible values are '{1}'", 
-						enumStringVal, String.Join(",", enumNames));
+						enumStringVal, String.Join(",", enumNames.ToArray()));
 				
 				throw new KernelException(message);
 			}

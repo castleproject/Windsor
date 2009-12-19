@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.using System;
 
+using System.Globalization;
+
 namespace Castle.MicroKernel.SubSystems.Conversion
 {
 	using System;
@@ -139,12 +141,11 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 
 				IConfiguration paramConfig = FindChildIgnoreCase(configuration, parameter.Name);
 				if (paramConfig == null)
-					throw new ConverterException("Child '" + parameter.Name + "' missing in " + configuration.Name + " element.");
+					throw new ConverterException(string.Format("Child '{0}' missing in {1} element.", parameter.Name, configuration.Name));
 
 				Type paramType = parameter.ParameterType;
 				if (!this.ConversionManager.CanHandleType(paramType))
-					throw new ConverterException("No converter found for child '" + parameter.Name + "' in " + configuration.Name +
-					                             " element (type: " + paramType.Name + ").");
+					throw new ConverterException(string.Format("No converter found for child '{0}' in {1} element (type: {2}).", parameter.Name, configuration.Name, paramType.Name));
 
 
 				parameterValues[i] = ConvertChildParameter(paramConfig, paramType);
@@ -172,8 +173,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 
 				Type propType = property.PropertyType;
 				if (!this.ConversionManager.CanHandleType(propType))
-					throw new ConverterException("No converter found for child '" + property.Name + "' in " + configuration.Name +
-					                             " element (type: " + propType.Name + ").");
+					throw new ConverterException(string.Format("No converter found for child '{0}' in {1} element (type: {2}).", property.Name, configuration.Name, propType.Name));
 
 				object val = ConvertChildParameter(propConfig, propType);
 				property.SetValue(instance, val, null);
@@ -220,7 +220,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 		{
 			foreach(IConfiguration child in config.Children)
 			{
-				if (string.Compare(child.Name, name, true) == 0)
+				if (CultureInfo.CurrentCulture.CompareInfo.Compare(child.Name, name, CompareOptions.IgnoreCase) == 0)
 					return child;
 			}
 

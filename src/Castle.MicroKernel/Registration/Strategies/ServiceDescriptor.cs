@@ -12,8 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+
 namespace Castle.MicroKernel.Registration
 {
+	using System.Linq;
 	using System;
 	using System.Collections.Generic;
 	
@@ -143,11 +145,11 @@ namespace Castle.MicroKernel.Registration
 				services = serviceSelector(type, baseType);
 				if(services!=null)
 				{
-					services = new List<Type>(services).ConvertAll<Type>(WorkaroundCLRBug);
+					services = services.Select(x => WorkaroundCLRBug(x));
 				}
 			}
 
-			return services ?? new Type[] { type };
+			return services ?? new[] { type };
 		}
 
 		private IEnumerable<Type> GetTopLevelInterfaces(Type type)

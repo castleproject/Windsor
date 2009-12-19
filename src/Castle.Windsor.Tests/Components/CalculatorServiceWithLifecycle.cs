@@ -18,14 +18,14 @@ namespace Castle.Windsor.Tests.Components
 	using Castle.Core;
 
 	[Transient]
+#if (SILVERLIGHT)
+	public class CalculatorServiceWithLifecycle : ICalcService, IInitializable, IDisposable
+#else
 	public class CalculatorServiceWithLifecycle : MarshalByRefObject, ICalcService, IInitializable, IDisposable
+#endif
 	{
 		private bool _initialized;
 		private bool _disposed;
-
-		public CalculatorServiceWithLifecycle()
-		{
-		}
 
 		public int Sum(int x, int y)
 		{
@@ -52,14 +52,5 @@ namespace Castle.Windsor.Tests.Components
 			get { return _disposed; }
 		}
 
-		public override bool Equals(object obj)
-		{
-			return base.Equals(obj);
-		}
-
-		public override int GetHashCode()
-		{
-			return base.GetHashCode();
-		}
 	}
 }

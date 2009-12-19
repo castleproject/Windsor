@@ -16,11 +16,9 @@ namespace Castle.MicroKernel.ComponentActivator
 {
 	using System;
 	using System.Reflection;
-	using System.Runtime.Remoting;
 	using System.Security;
 	using System.Security.Permissions;
 	using Castle.Core;
-	using Castle.Core.Interceptor;
 	using Castle.MicroKernel.LifecycleConcerns;
 	using Castle.MicroKernel.Proxy;
 
@@ -40,8 +38,9 @@ namespace Castle.MicroKernel.ComponentActivator
 #endif
 	public class DefaultComponentActivator : AbstractComponentActivator
 	{
+#if (!SILVERLIGHT)
 		private readonly bool useFastCreateInstance;
-
+#endif
 		/// <summary>
 		/// Initializes a new instance of the <see cref="DefaultComponentActivator"/> class.
 		/// </summary>
@@ -54,7 +53,9 @@ namespace Castle.MicroKernel.ComponentActivator
 										 ComponentInstanceDelegate onDestruction)
 			: base(model, kernel, onCreation, onDestruction)
 		{
+#if (!SILVERLIGHT)
 			useFastCreateInstance = !model.Implementation.IsContextful && SecurityManager.IsGranted(new SecurityPermission(SecurityPermissionFlag.SerializationFormatter));
+#endif
 		}
 
 		#region AbstractComponentActivator Members
@@ -116,6 +117,9 @@ namespace Castle.MicroKernel.ComponentActivator
 			{
 				try
 				{
+#if (SILVERLIGHT)
+						instance = ActivatorCreateInstance(implType, arguments);
+#else
 					if (useFastCreateInstance)
 					{
 						instance = FastCreateInstance(implType, arguments, signature);
@@ -124,6 +128,8 @@ namespace Castle.MicroKernel.ComponentActivator
 					{
 						instance = ActivatorCreateInstance(implType, arguments);
 					}
+#endif
+
 				}
 				catch (Exception ex)
 				{
@@ -146,7 +152,8 @@ namespace Castle.MicroKernel.ComponentActivator
 
 			return instance;
 		}
-
+		
+#if (!SILVERLIGHT)
 		private static object FastCreateInstance(Type implType, object[] arguments, Type[] signature)
 		{
 			// otherwise GetConstructor wil blow up instead of returning null
@@ -167,6 +174,7 @@ namespace Castle.MicroKernel.ComponentActivator
 			cinfo.Invoke(instance, arguments);
 			return instance;
 		}
+#endif
 
 		private static object ActivatorCreateInstance(Type implType, object[] arguments)
 		{
@@ -310,7 +318,7 @@ namespace Castle.MicroKernel.ComponentActivator
 
 				try
 				{
-					setMethod.Invoke(instance, new object[] { value });
+					setMethod.Invoke(instance, new[] { value });
 				}
 				catch (Exception ex)
 				{

@@ -65,6 +65,9 @@ namespace Castle.MicroKernel.Registration
 
 			if (extension == ".dll" || extension == ".exe")
 			{
+#if (SILVERLIGHT)
+				assembly = Assembly.Load(Path.GetFileNameWithoutExtension(assemblyName));
+#else
 				if (Path.GetDirectoryName(assemblyName) == AppDomain.CurrentDomain.BaseDirectory)
 				{
 					assembly = Assembly.Load(Path.GetFileNameWithoutExtension(assemblyName));
@@ -73,6 +76,7 @@ namespace Castle.MicroKernel.Registration
 				{
 					assembly = Assembly.LoadFile(assemblyName);
 				}
+#endif
 			}
 			else
 			{
