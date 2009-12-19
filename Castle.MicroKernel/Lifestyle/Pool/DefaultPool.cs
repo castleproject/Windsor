@@ -20,6 +20,7 @@ namespace Castle.MicroKernel.Lifestyle.Pool
 	using System.Threading;
 
 	using Castle.Core;
+	using Castle.Core.Internal;
 
 #if (!SILVERLIGHT)
 	[Serializable]
@@ -30,7 +31,7 @@ namespace Castle.MicroKernel.Lifestyle.Pool
 		private readonly List<object> inUse = new List<object>();
 		private readonly int initialsize;
 		private readonly int maxsize;
-		private readonly ReaderWriterLock rwlock;
+		private readonly Lock rwlock = Lock.Create();
 		private readonly IComponentActivator componentActivator;
 
 		public DefaultPool(int initialsize, int maxsize, IComponentActivator componentActivator)
@@ -39,10 +40,6 @@ namespace Castle.MicroKernel.Lifestyle.Pool
 			this.maxsize = maxsize;
 			this.componentActivator = componentActivator;
 
-			this.rwlock = new ReaderWriterLock();
-
-			// Thread thread = new Thread(new ThreadStart(InitPool));
-			// thread.Start();
 			InitPool();
 		}
 
@@ -50,11 +47,9 @@ namespace Castle.MicroKernel.Lifestyle.Pool
 
 		public virtual object Request(CreationContext context)
 		{
-			rwlock.AcquireWriterLock(-1);
-
 			object instance;
 
-			try
+			using(rwlock.ForWriting())
 			{
 
 				if (available.Count != 0)
@@ -78,19 +73,13 @@ namespace Castle.MicroKernel.Lifestyle.Pool
 
 				inUse.Add(instance);
 			}
-			finally
-			{
-				rwlock.ReleaseWriterLock();
-			}
 
 			return instance;
 		}
 
 		public virtual bool Release(object instance)
 		{
-			rwlock.AcquireWriterLock(-1);
-
-			try
+			using(rwlock.ForWriting())
 			{
 				if (!inUse.Contains(instance))
 				{
@@ -118,10 +107,6 @@ namespace Castle.MicroKernel.Lifestyle.Pool
 					return true;
 				}
 			}
-			finally
-			{
-				rwlock.ReleaseWriterLock();
-			}
 		}
 
 		#endregion
@@ -146,7 +131,7 @@ namespace Castle.MicroKernel.Lifestyle.Pool
 		/// </summary>
 		private void InitPool()
 		{
-            List<object> tempInstance = new List<object>();
+			List<object> tempInstance = new List<object>();
 
 			for(int i=0; i < initialsize; i++)
 			{
