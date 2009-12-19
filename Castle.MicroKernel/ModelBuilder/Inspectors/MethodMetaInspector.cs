@@ -13,8 +13,10 @@
 // limitations under the License.
 
 
+
 namespace Castle.MicroKernel.ModelBuilder.Inspectors
 {
+	using System.Globalization;
 	using System;
 	using System.Collections.Generic;
 	using System.Reflection;
@@ -139,7 +141,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 
 		private IList<MethodInfo> GetMethods(Type implementation, String name, String signature)
 		{
-			if (signature == null || signature.Length == 0)
+			if (string.IsNullOrEmpty(signature))
 			{
 				MethodInfo[] allmethods = implementation.GetMethods(AllMethods);
 
@@ -147,7 +149,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 
 				foreach(MethodInfo method in allmethods)
 				{
-					if (String.Compare(method.Name, name, true) == 0)
+					if (CultureInfo.InvariantCulture.CompareInfo.Compare(method.Name, name, CompareOptions.IgnoreCase) == 0)
 					{
 						methods.Add(method);
 					}

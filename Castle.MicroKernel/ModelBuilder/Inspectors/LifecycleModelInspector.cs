@@ -50,10 +50,12 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 			{
 				model.LifecycleSteps.Add( LifecycleStepType.Commission, InitializationConcern.Instance );
 			}
+#if (!SILVERLIGHT)
 			if (typeof (ISupportInitialize).IsAssignableFrom(model.Implementation))
 			{
 				model.LifecycleSteps.Add( LifecycleStepType.Commission, SupportInitializeConcern.Instance );
 			}
+#endif
 			if (typeof (IDisposable).IsAssignableFrom(model.Implementation))
 			{
 				model.LifecycleSteps.Add( LifecycleStepType.Decommission, DisposalConcern.Instance );

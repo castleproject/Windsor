@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Threading;
+
 namespace Castle.MicroKernel.SubSystems.Conversion
 {
 	using System;
@@ -60,7 +62,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 
 			try
 			{
-				return Convert.ChangeType(value, targetType);
+				return Convert.ChangeType(value, targetType,Thread.CurrentThread.CurrentCulture);
 			}
 			catch(Exception ex)
 			{
