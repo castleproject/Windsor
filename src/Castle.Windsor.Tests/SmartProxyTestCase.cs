@@ -59,8 +59,7 @@ namespace Castle.Windsor.Tests
 		public void InterfaceProxy()
 		{
 			_container.AddComponent("interceptor", typeof(ResultModifierInterceptor));
-			_container.AddComponent("key",
-			                        typeof(ICalcService), typeof(CalculatorService));
+			_container.AddComponent("key", typeof(ICalcService), typeof(CalculatorService));
 
 			ICalcService service = (ICalcService) _container.Resolve("key");
 
