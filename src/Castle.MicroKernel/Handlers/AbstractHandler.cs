@@ -375,48 +375,47 @@ namespace Castle.MicroKernel.Handlers
 
 			LifestyleType type = ComponentModel.LifestyleType;
 
-			if (type == LifestyleType.Undefined || type == LifestyleType.Singleton)
+			switch (type)
 			{
-				manager = new SingletonLifestyleManager();
-			}
-			else if (type == LifestyleType.Thread)
-			{
-#if (SILVERLIGHT)
-				manager = new PerThreadThreadStaticLifestyleManager();
-#else
-				manager = new PerThreadLifestyleManager();
-#endif
-			}
-			else if (type == LifestyleType.Transient)
-			{
-				manager = new TransientLifestyleManager();
-			}
+				case LifestyleType.Thread:
 #if (!SILVERLIGHT)
-			else if (type == LifestyleType.PerWebRequest)
-			{
-				manager = new PerWebRequestLifestyleManager();
-			}
+					manager = new PerThreadLifestyleManager();
+#else
+					manager = new PerThreadThreadStaticLifestyleManager();
 #endif
-			else if (type == LifestyleType.Custom)
-			{
-				manager = (ILifestyleManager)
-						  Activator.CreateInstance(ComponentModel.CustomLifestyle);
-			}
-			else if (type == LifestyleType.Pooled)
-			{
-				int initial = ExtendedPropertiesConstants.Pool_Default_InitialPoolSize;
-				int maxSize = ExtendedPropertiesConstants.Pool_Default_MaxPoolSize;
-
-				if (ComponentModel.ExtendedProperties.Contains(ExtendedPropertiesConstants.Pool_InitialPoolSize))
+					break;
+				case LifestyleType.Transient:
+					manager = new TransientLifestyleManager();
+					break;
+#if (!SILVERLIGHT)
+				case LifestyleType.PerWebRequest:
+					manager = new PerWebRequestLifestyleManager();
+					break;
+#endif
+				case LifestyleType.Custom:
+					manager = (ILifestyleManager)Activator.CreateInstance(ComponentModel.CustomLifestyle);
+					break;
+				case LifestyleType.Pooled:
 				{
-					initial = (int)ComponentModel.ExtendedProperties[ExtendedPropertiesConstants.Pool_InitialPoolSize];
-				}
-				if (ComponentModel.ExtendedProperties.Contains(ExtendedPropertiesConstants.Pool_MaxPoolSize))
-				{
-					maxSize = (int)ComponentModel.ExtendedProperties[ExtendedPropertiesConstants.Pool_MaxPoolSize];
-				}
+					int initial = ExtendedPropertiesConstants.Pool_Default_InitialPoolSize;
+					int maxSize = ExtendedPropertiesConstants.Pool_Default_MaxPoolSize;
 
-				manager = new PoolableLifestyleManager(initial, maxSize);
+					if (ComponentModel.ExtendedProperties.Contains(ExtendedPropertiesConstants.Pool_InitialPoolSize))
+					{
+						initial = (int)ComponentModel.ExtendedProperties[ExtendedPropertiesConstants.Pool_InitialPoolSize];
+					}
+					if (ComponentModel.ExtendedProperties.Contains(ExtendedPropertiesConstants.Pool_MaxPoolSize))
+					{
+						maxSize = (int)ComponentModel.ExtendedProperties[ExtendedPropertiesConstants.Pool_MaxPoolSize];
+					}
+
+					manager = new PoolableLifestyleManager(initial, maxSize);
+				}
+					break;
+				default:
+					//this includes LifestyleType.Undefined, LifestyleType.Singleton and invalid values
+					manager = new SingletonLifestyleManager();
+					break;
 			}
 
 			manager.Init(activator, Kernel, model);
