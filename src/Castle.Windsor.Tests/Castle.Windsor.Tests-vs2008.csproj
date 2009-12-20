@@ -139,6 +139,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Adapters\ComponentModel\TestComponent.cs">
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="Bugs\FACILITIES-ISSUE-111\Components\A_Facilities_Issue_111.cs" />
     <Compile Include="Bugs\FACILITIES-ISSUE-111\Components\B_Facilities_Issue_111.cs" />

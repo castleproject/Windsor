@@ -14,6 +14,7 @@
 
 namespace Castle.Windsor.Tests.Adapters.ComponentModel
 {
+#if (!SILVERLIGHT)
 	using System.ComponentModel;
 
 	public class TestComponent : Component
@@ -50,4 +51,5 @@ namespace Castle.Windsor.Tests.Adapters.ComponentModel
 			}
 		}
 	}
+#endif
 }
