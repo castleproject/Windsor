@@ -14,12 +14,11 @@
 
 namespace Castle.Windsor.Adapters.ComponentModel
 {
+#if (!SILVERLIGHT)
 	using System;
 	using System.Collections.Generic;
 	using System.ComponentModel;
-#if (!SILVERLIGHT)
 	using System.ComponentModel.Design;
-#endif
 	using Castle.Core;
 	using Castle.Core.Internal;
 	using Castle.MicroKernel;
@@ -82,9 +81,7 @@ namespace Castle.Windsor.Adapters.ComponentModel
 		/// <summary>
 		/// Gets or sets the <see cref="ISite"/> associated with the <see cref="IComponent"/>.
 		/// </summary>
-#if (!SILVERLIGHT)
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden), Browsable(false)]
-#endif
 		public virtual ISite Site
 		{
 			get { return site; }
@@ -95,9 +92,7 @@ namespace Castle.Windsor.Adapters.ComponentModel
 		/// Event that notifies the disposal of the <see cref="IComponent"/>.
 		/// </summary>
 		[EditorBrowsable(EditorBrowsableState.Advanced)]
-#if (!SILVERLIGHT)
 		[Browsable(false)]
-#endif
 		public event EventHandler Disposed;
 
 		#endregion
@@ -111,7 +106,6 @@ namespace Castle.Windsor.Adapters.ComponentModel
 		{
 			get
 			{
-#if (!SILVERLIGHT)
 				using(@lock.ForReading())
 				{
 					IComponent[] components = new IComponent[sites.Count];
@@ -123,9 +117,6 @@ namespace Castle.Windsor.Adapters.ComponentModel
 
 					return new ComponentCollection(components);
 				}
-#else
-				return new ComponentCollection();
-#endif
 			}
 		}
 
@@ -237,9 +228,7 @@ namespace Castle.Windsor.Adapters.ComponentModel
 
 			// Check for instrinsic services.
 			if (serviceType == typeof(IWindsorContainer) ||
-#if (!SILVERLIGHT)
 				serviceType == typeof(IServiceContainer) ||
-#endif
 				serviceType == typeof(IContainer))
 			{
 				service = this;
@@ -285,7 +274,6 @@ namespace Castle.Windsor.Adapters.ComponentModel
 		{
 			AddService(serviceType, serviceInstance, false);
 		}
-#if (!SILVERLIGHT)
 		/// <summary>
 		/// Adds the specified service to the service container.
 		/// </summary>
@@ -295,8 +283,6 @@ namespace Castle.Windsor.Adapters.ComponentModel
 		{
 			AddService(serviceType, callback, false);
 		}
-#endif
-#if (!SILVERLIGHT)
 		/// <summary>
 		/// Adds the specified service to the service container, and optionally
 		/// promotes the service to any parent service containers.
@@ -305,18 +291,7 @@ namespace Castle.Windsor.Adapters.ComponentModel
 		/// <param name="serviceInstance">The instance of the service to add.</param>
 		/// <param name="promote">true to promote this request to any parent service containers.</param>
 		public virtual void AddService(Type serviceType, object serviceInstance, bool promote)
-#else
-		/// <summary>
-		/// Adds the specified service to the service container, and optionally
-		/// promotes the service to any parent service containers.
-		/// </summary>
-		/// <param name="serviceType">The type of service to add.</param>
-		/// <param name="serviceInstance">The instance of the service to add.</param>
-		/// <param name="promote">ignored.</param>
-		public virtual void AddService(Type serviceType, object serviceInstance, bool promote)
-#endif
 		{
-#if (!SILVERLIGHT)
 			if (serviceInstance is ServiceCreatorCallback)
 			{
 				AddService(serviceType, (ServiceCreatorCallback) serviceInstance, promote);
@@ -333,7 +308,6 @@ namespace Castle.Windsor.Adapters.ComponentModel
 					return;
 				}
 			}
-#endif
 
 			if (serviceType == null)
 			{
@@ -363,7 +337,6 @@ namespace Castle.Windsor.Adapters.ComponentModel
 			Kernel.AddComponentInstance(serviceName, serviceType, serviceInstance);
 		}
 		
-#if (!SILVERLIGHT)
 		/// <summary>
 		/// Adds the specified service to the service container, and optionally 
 		/// promotes the service to parent service containers.
@@ -410,7 +383,6 @@ namespace Castle.Windsor.Adapters.ComponentModel
 			model.CustomComponentActivator = typeof(ServiceCreatorCallbackActivator);
 			Kernel.AddCustomComponent(model);
 		}
-#endif
 
 		/// <summary>
 		/// Removes the specified service type from the service container.
@@ -421,7 +393,6 @@ namespace Castle.Windsor.Adapters.ComponentModel
 			RemoveService(serviceType, false);
 		}
 
-#if (!SILVERLIGHT)
 		/// <summary>
 		/// Removes the specified service type from the service container, 
 		/// and optionally promotes the service to parent service containers.
@@ -429,17 +400,7 @@ namespace Castle.Windsor.Adapters.ComponentModel
 		/// <param name="serviceType">The type of service to remove.</param>
 		/// <param name="promote">true to promote this request to any parent service containers.</param>
 		public virtual void RemoveService(Type serviceType, bool promote)
-#else
-		/// <summary>
-		/// Removes the specified service type from the service container, 
-		/// and optionally promotes the service to parent service containers.
-		/// </summary>
-		/// <param name="serviceType">The type of service to remove.</param>
-		/// <param name="promote">ignored.</param>
-		public virtual void RemoveService(Type serviceType, bool promote)
-#endif
 		{
-#if (!SILVERLIGHT)
 			if (promote)
 			{
 				IServiceContainer parentServices = ParentServices;
@@ -450,7 +411,6 @@ namespace Castle.Windsor.Adapters.ComponentModel
 					return;
 				}
 			}
-#endif
 
 			if (serviceType == null)
 			{
@@ -478,9 +438,7 @@ namespace Castle.Windsor.Adapters.ComponentModel
 		private bool IsIntrinsicService(Type serviceType)
 		{
 			return serviceType == typeof(IWindsorContainer) ||
-#if (!SILVERLIGHT)
 				serviceType == typeof(IServiceContainer) ||
-#endif
 				serviceType == typeof(IContainer) ||
 				serviceType == typeof(IKernel);
 		}
@@ -503,9 +461,7 @@ namespace Castle.Windsor.Adapters.ComponentModel
 		/// <summary>
 		/// Gets the adapted <see cref="IWindsorContainer"/>
 		/// </summary>
-#if (!SILVERLIGHT)
 		[Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-#endif
 		public IWindsorContainer Container
 		{
 			get { return container; }
@@ -606,7 +562,7 @@ namespace Castle.Windsor.Adapters.ComponentModel
 		{
 			get { return container.Kernel; }
 		}
-#if (!SILVERLIGHT)
+
 		private IServiceContainer ParentServices
 		{
 			get
@@ -626,7 +582,6 @@ namespace Castle.Windsor.Adapters.ComponentModel
 				return parentServices;
 			}
 		}
-#endif
 
 		private void RegisterAdapterWithKernel()
 		{
@@ -643,4 +598,5 @@ namespace Castle.Windsor.Adapters.ComponentModel
 
 		#endregion
 	}
+#endif
 }

@@ -14,15 +14,15 @@
 
 namespace Castle.Windsor.Tests.Adapters.ComponentModel
 {
+#if (!SILVERLIGHT)
 	using System;
 	using System.ComponentModel;
-#if (!SILVERLIGHT)
 	using System.ComponentModel.Design;
-#endif
 
 	using Castle.MicroKernel;
 	using Castle.Windsor.Adapters.ComponentModel;
 	using Castle.Windsor.Tests.Components;
+
 	using NUnit.Framework;
 
 	[TestFixture]
@@ -50,9 +50,7 @@ namespace Castle.Windsor.Tests.Adapters.ComponentModel
 		public void GetIntrinsicServices()
 		{
 			Assert.IsNotNull(container.GetService(typeof(IContainer)));
-#if (!SILVERLIGHT)
 			Assert.IsNotNull(container.GetService(typeof(IServiceContainer)));
-#endif
 			Assert.IsNotNull(container.GetService(typeof(IWindsorContainer)));
 			Assert.IsNotNull(container.GetService(typeof(IKernel)));
 		}
@@ -224,7 +222,6 @@ namespace Castle.Windsor.Tests.Adapters.ComponentModel
 			container.AddService(typeof(ICalcService), new CalculatorService());
 		}
 
-#if (!SILVERLIGHT)
 		[Test]
 		public void AddServiceCreatorCallback()
 		{
@@ -263,7 +260,7 @@ namespace Castle.Windsor.Tests.Adapters.ComponentModel
 			Assert.IsNull(child.GetService(typeof(ICalcService)));
 			Assert.AreSame(container.GetService(typeof(ICalcService)), service);
 		}
-#endif
+
 		[Test]
 		public void RemoveServiceInstance()
 		{
@@ -335,36 +332,16 @@ namespace Castle.Windsor.Tests.Adapters.ComponentModel
 			Assert.IsTrue(disposed);
 		}
 		
-#if (!SILVERLIGHT)
 		private object CreateCalculatorService(IServiceContainer container, Type serviceType)
 		{
 			++calledCount;
 			return new CalculatorService();
 		}
-#endif
+
 		private void Container_Disposed(object source, EventArgs args)
 		{
 			disposed = true;
 		}
 	}
-
-	public class Component:IComponent
-	{
-		public void Dispose()
-		{
-			Dispose(true);
-		}
-
-		public virtual ISite Site
-		{
-			get; set;
-		}
-
-		public event EventHandler Disposed = delegate { };
-
-		protected virtual void Dispose(bool disposing)
-		{
-			Disposed(this, EventArgs.Empty);
-		}
-	}
+#endif
 }

@@ -14,8 +14,8 @@
 
 namespace Castle.Windsor.Adapters.ComponentModel
 {
-	using System.ComponentModel;
 #if (!SILVERLIGHT)
+	using System.ComponentModel;
 	using System.ComponentModel.Design;
 
 	/// <summary>
@@ -25,23 +25,8 @@ namespace Castle.Windsor.Adapters.ComponentModel
 	/// <seealso cref="IComponent"/>
 	/// <seealso cref="IContainer"/>
 	/// <seealso cref="IServiceContainer"/>
-	public interface IContainerAdapter : IComponent, IContainer,
-		IServiceContainer,
-#else
-	using System;
-
-	/// <summary>
-	/// Integrates the <see cref="WindsorContainer"/> to the System.ComponentModel
-	/// and System.ComponentMode.Design infrastructure.
-	/// </summary>
-	/// <seealso cref="IComponent"/>
-	/// <seealso cref="IContainer"/>
-	public interface IContainerAdapter : IComponent, IContainer,
-#endif
- IContainerAccessor
+	public interface IContainerAdapter : IComponent, IContainer,IServiceContainer,IContainerAccessor
 	{
-#if (SILVERLIGHT)
-		object GetService(Type serviceType);
-#endif
 	}
+#endif
 }
