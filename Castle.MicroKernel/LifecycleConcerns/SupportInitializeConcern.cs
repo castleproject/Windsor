@@ -44,7 +44,5 @@ namespace Castle.MicroKernel.LifecycleConcerns
 			(component as ISupportInitialize).EndInit();
 		}
 	}
-#else
-#warning ISupportInitialize is internal in Silverlight
 #endif
 }

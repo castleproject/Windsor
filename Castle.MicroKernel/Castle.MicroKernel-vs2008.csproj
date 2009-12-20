@@ -428,6 +428,7 @@
     <Compile Include="SubSystems\Conversion\Converters\ListConverter.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="SubSystems\Conversion\Converters\NullableConverter.cs" />
     <Compile Include="SubSystems\Conversion\Converters\PrimitiveConverter.cs">
       <SubType>Code</SubType>
     </Compile>
