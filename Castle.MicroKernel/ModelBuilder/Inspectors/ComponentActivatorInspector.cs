@@ -51,7 +51,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 		/// component configuration and verifies it implements the <see cref="IComponentActivator"/> 
 		/// interface. 
 		/// </summary>
-		/// <exception cref="System.Configuration.ConfigurationException">
+		/// <exception cref="System.Exception">
 		/// If the type does not implement the proper interface
 		/// </exception>
 		/// <param name="model"></param>

@@ -29,7 +29,9 @@ namespace Castle.MicroKernel.Proxy
 		private List<Type> interfaceList;
 		private List<object> mixInList;
 		private bool useSingleInterfaceProxy;
+#if (!SILVERLIGHT)
 		private bool useMarshalByRefAsBaseClass;
+#endif
 		private bool allowChangeTarget;
 		private bool omitTarget;
 
@@ -88,6 +90,7 @@ namespace Castle.MicroKernel.Proxy
 			set { useSingleInterfaceProxy = value; }
 		}
 
+#if (!SILVERLIGHT)
 		/// <summary>
 		/// Determines if the interface proxied component should inherit 
 		/// from <see cref="MarshalByRefObject"/>
@@ -97,6 +100,7 @@ namespace Castle.MicroKernel.Proxy
 			get { return useMarshalByRefAsBaseClass; }
 			set { useMarshalByRefAsBaseClass = value; }
 		}
+#endif
 
 		/// <summary>
 		/// Gets the additional interfaces to proxy.
