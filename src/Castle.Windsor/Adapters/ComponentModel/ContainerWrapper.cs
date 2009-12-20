@@ -82,7 +82,9 @@ namespace Castle.Windsor.Adapters.ComponentModel
 		/// <summary>
 		/// Gets or sets the <see cref="ISite"/> associated with the <see cref="IComponent"/>.
 		/// </summary>
+#if (!SILVERLIGHT)
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden), Browsable(false)]
+#endif
 		public virtual ISite Site
 		{
 			get { return site; }
@@ -92,7 +94,10 @@ namespace Castle.Windsor.Adapters.ComponentModel
 		/// <summary>
 		/// Event that notifies the disposal of the <see cref="IComponent"/>.
 		/// </summary>
-		[EditorBrowsable(EditorBrowsableState.Advanced), Browsable(false)]
+		[EditorBrowsable(EditorBrowsableState.Advanced)]
+#if (!SILVERLIGHT)
+		[Browsable(false)]
+#endif
 		public event EventHandler Disposed;
 
 		#endregion
@@ -494,7 +499,9 @@ namespace Castle.Windsor.Adapters.ComponentModel
 		/// <summary>
 		/// Gets the adapted <see cref="IWindsorContainer"/>
 		/// </summary>
+#if (!SILVERLIGHT)
 		[Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+#endif
 		public IWindsorContainer Container
 		{
 			get { return container; }
