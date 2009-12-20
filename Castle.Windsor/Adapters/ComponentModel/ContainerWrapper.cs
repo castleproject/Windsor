@@ -17,8 +17,9 @@ namespace Castle.Windsor.Adapters.ComponentModel
 	using System;
 	using System.Collections.Generic;
 	using System.ComponentModel;
+#if (!SILVERLIGHT)
 	using System.ComponentModel.Design;
-
+#endif
 	using Castle.Core;
 	using Castle.Core.Internal;
 	using Castle.MicroKernel;
