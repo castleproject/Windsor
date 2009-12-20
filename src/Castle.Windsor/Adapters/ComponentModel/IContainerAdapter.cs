@@ -28,6 +28,8 @@ namespace Castle.Windsor.Adapters.ComponentModel
 	public interface IContainerAdapter : IComponent, IContainer,
 		IServiceContainer,
 #else
+	using System;
+
 	/// <summary>
 	/// Integrates the <see cref="WindsorContainer"/> to the System.ComponentModel
 	/// and System.ComponentMode.Design infrastructure.
@@ -38,5 +40,8 @@ namespace Castle.Windsor.Adapters.ComponentModel
 #endif
  IContainerAccessor
 	{
+#if (SILVERLIGHT)
+		object GetService(Type serviceType);
+#endif
 	}
 }

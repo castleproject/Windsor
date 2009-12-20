@@ -111,6 +111,7 @@ namespace Castle.Windsor.Adapters.ComponentModel
 		{
 			get
 			{
+#if (!SILVERLIGHT)
 				using(@lock.ForReading())
 				{
 					IComponent[] components = new IComponent[sites.Count];
@@ -122,6 +123,9 @@ namespace Castle.Windsor.Adapters.ComponentModel
 
 					return new ComponentCollection(components);
 				}
+#else
+				return new ComponentCollection();
+#endif
 			}
 		}
 
