@@ -14,6 +14,7 @@
 
 namespace Castle.Windsor.Adapters.ComponentModel
 {
+#if (!SILVERLIGHT)
 	using System;
 	using System.ComponentModel;
 	
@@ -84,4 +85,5 @@ namespace Castle.Windsor.Adapters.ComponentModel
 
 		#endregion
 	}
+#endif
 }

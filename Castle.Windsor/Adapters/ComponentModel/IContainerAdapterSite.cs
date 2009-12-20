@@ -14,11 +14,12 @@
 
 namespace Castle.Windsor.Adapters.ComponentModel
 {
-	using System;
+#if (!SILVERLIGHT)
 	using System.ComponentModel;
 
 	public interface IContainerAdapterSite : ISite
 	{
 		string EffectiveName { get; }
 	}
+#endif
 }
