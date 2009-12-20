@@ -12,11 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#if(!SILVERLIGHT)
 namespace Castle.Windsor.Configuration.Interpreters.XmlProcessor.ElementProcessors
 {
 	using System;
 	using System.Xml;
-
+	
 	public abstract class AbstractXmlNodeProcessor : IXmlNodeProcessor
 	{
 		private static readonly XmlNodeType[] acceptNodes = new XmlNodeType[] {XmlNodeType.Element};
@@ -153,3 +154,4 @@ namespace Castle.Windsor.Configuration.Interpreters.XmlProcessor.ElementProcesso
 		}
 	}
 }
+#endif

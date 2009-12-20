@@ -345,4 +345,24 @@ namespace Castle.Windsor.Tests.Adapters.ComponentModel
 			disposed = true;
 		}
 	}
+
+	public class Component:IComponent
+	{
+		public void Dispose()
+		{
+			Dispose(true);
+		}
+
+		public virtual ISite Site
+		{
+			get; set;
+		}
+
+		public event EventHandler Disposed = delegate { };
+
+		protected virtual void Dispose(bool disposing)
+		{
+			Disposed(this, EventArgs.Empty);
+		}
+	}
 }
