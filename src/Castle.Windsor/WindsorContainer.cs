@@ -30,10 +30,12 @@ namespace Castle.Windsor
 	/// Implementation of <see cref="IWindsorContainer"/>
 	/// which delegates to <see cref="IKernel"/> implementation.
 	/// </summary>
-#if (!SILVERLIGHT)
+#if (SILVERLIGHT)
+	public class WindsorContainer : IWindsorContainer
+#else
 	[Serializable]
-#endif
 	public class WindsorContainer : MarshalByRefObject, IWindsorContainer
+#endif
 	{
 		#region Fields
 
