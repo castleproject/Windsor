@@ -48,7 +48,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 		/// Reads the proxy behavior associated with the 
 		/// component configuration/type and applies it to the model.
 		/// </summary>
-		/// <exception cref="System.Configuration.ConfigurationException">
+		/// <exception cref="System.Exception">
 		/// If the conversion fails
 		/// </exception>
 		/// <param name="kernel"></param>
@@ -124,7 +124,9 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 			ProxyOptions options = ProxyUtil.ObtainProxyOptions(model, true);
 
 			options.UseSingleInterfaceProxy = behavior.UseSingleInterfaceProxy;
+#if (!SILVERLIGHT)
 			options.UseMarshalByRefAsBaseClass = behavior.UseMarshalByRefProxy;
+#endif
 			options.AddAdditionalInterfaces(behavior.AdditionalInterfaces);
 		}
 
