@@ -21,7 +21,11 @@ namespace Castle.Windsor.Tests.Components
 	/// Summary description for CalculatorServiceWithAttributes.
 	/// </summary>
 	[Interceptor(typeof(ResultModifierInterceptor))]
+#if (SILVERLIGHT)
+	public class CalculatorServiceWithAttributes 
+#else
 	public class CalculatorServiceWithAttributes : MarshalByRefObject
+#endif
 	{
 		public CalculatorServiceWithAttributes()
 		{

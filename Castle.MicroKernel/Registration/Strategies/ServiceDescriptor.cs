@@ -86,7 +86,7 @@ namespace Castle.MicroKernel.Registration
 
 				foreach (Type theInterface in GetTopLevelInterfaces(type))
 				{
-					if (theInterface.GetInterface(implements.FullName) != null)
+					if (theInterface.GetInterface(implements.FullName, false) != null)
 					{
 						matches.Add(theInterface);
 					}
