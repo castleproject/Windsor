@@ -16,7 +16,9 @@ namespace Castle.Windsor.Tests.Adapters.ComponentModel
 {
 	using System;
 	using System.ComponentModel;
+#if (!SILVERLIGHT)
 	using System.ComponentModel.Design;
+#endif
 
 	using Castle.MicroKernel;
 	using Castle.Windsor.Adapters.ComponentModel;

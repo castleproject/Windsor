@@ -15,9 +15,9 @@
 namespace Castle.Windsor.Adapters.ComponentModel
 {
 	using System.ComponentModel;
+#if (!SILVERLIGHT)
 	using System.ComponentModel.Design;
 
-#if (!SILVERLIGHT)
 	/// <summary>
 	/// Integrates the <see cref="WindsorContainer"/> to the System.ComponentModel
 	/// and System.ComponentMode.Design infrastructure.
