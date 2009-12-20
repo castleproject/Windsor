@@ -17,6 +17,7 @@ namespace Castle.Windsor.Tests.Adapters.ComponentModel
 	using System;
 	using System.ComponentModel;
 	using System.ComponentModel.Design;
+
 	using Castle.MicroKernel;
 	using Castle.Windsor.Adapters.ComponentModel;
 	using Castle.Windsor.Tests.Components;
@@ -47,7 +48,9 @@ namespace Castle.Windsor.Tests.Adapters.ComponentModel
 		public void GetIntrinsicServices()
 		{
 			Assert.IsNotNull(container.GetService(typeof(IContainer)));
+#if (!SILVERLIGHT)
 			Assert.IsNotNull(container.GetService(typeof(IServiceContainer)));
+#endif
 			Assert.IsNotNull(container.GetService(typeof(IWindsorContainer)));
 			Assert.IsNotNull(container.GetService(typeof(IKernel)));
 		}
@@ -219,6 +222,7 @@ namespace Castle.Windsor.Tests.Adapters.ComponentModel
 			container.AddService(typeof(ICalcService), new CalculatorService());
 		}
 
+#if (!SILVERLIGHT)
 		[Test]
 		public void AddServiceCreatorCallback()
 		{
@@ -257,7 +261,7 @@ namespace Castle.Windsor.Tests.Adapters.ComponentModel
 			Assert.IsNull(child.GetService(typeof(ICalcService)));
 			Assert.AreSame(container.GetService(typeof(ICalcService)), service);
 		}
-
+#endif
 		[Test]
 		public void RemoveServiceInstance()
 		{
@@ -328,13 +332,14 @@ namespace Castle.Windsor.Tests.Adapters.ComponentModel
 			container.Container.Dispose();
 			Assert.IsTrue(disposed);
 		}
-
+		
+#if (!SILVERLIGHT)
 		private object CreateCalculatorService(IServiceContainer container, Type serviceType)
 		{
 			++calledCount;
 			return new CalculatorService();
 		}
-
+#endif
 		private void Container_Disposed(object source, EventArgs args)
 		{
 			disposed = true;
