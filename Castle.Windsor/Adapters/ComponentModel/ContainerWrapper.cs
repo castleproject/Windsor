@@ -18,7 +18,6 @@ namespace Castle.Windsor.Adapters.ComponentModel
 	using System.Collections.Generic;
 	using System.ComponentModel;
 	using System.ComponentModel.Design;
-	using System.Threading;
 
 	using Castle.Core;
 	using Castle.Core.Internal;
@@ -228,7 +227,9 @@ namespace Castle.Windsor.Adapters.ComponentModel
 
 			// Check for instrinsic services.
 			if (serviceType == typeof(IWindsorContainer) ||
+#if (!SILVERLIGHT)
 				serviceType == typeof(IServiceContainer) ||
+#endif
 				serviceType == typeof(IContainer))
 			{
 				service = this;
@@ -274,7 +275,7 @@ namespace Castle.Windsor.Adapters.ComponentModel
 		{
 			AddService(serviceType, serviceInstance, false);
 		}
-
+#if (!SILVERLIGHT)
 		/// <summary>
 		/// Adds the specified service to the service container.
 		/// </summary>
@@ -284,7 +285,8 @@ namespace Castle.Windsor.Adapters.ComponentModel
 		{
 			AddService(serviceType, callback, false);
 		}
-
+#endif
+#if (!SILVERLIGHT)
 		/// <summary>
 		/// Adds the specified service to the service container, and optionally
 		/// promotes the service to any parent service containers.
@@ -293,7 +295,18 @@ namespace Castle.Windsor.Adapters.ComponentModel
 		/// <param name="serviceInstance">The instance of the service to add.</param>
 		/// <param name="promote">true to promote this request to any parent service containers.</param>
 		public virtual void AddService(Type serviceType, object serviceInstance, bool promote)
+#else
+		/// <summary>
+		/// Adds the specified service to the service container, and optionally
+		/// promotes the service to any parent service containers.
+		/// </summary>
+		/// <param name="serviceType">The type of service to add.</param>
+		/// <param name="serviceInstance">The instance of the service to add.</param>
+		/// <param name="promote">ignored.</param>
+		public virtual void AddService(Type serviceType, object serviceInstance, bool promote)
+#endif
 		{
+#if (!SILVERLIGHT)
 			if (serviceInstance is ServiceCreatorCallback)
 			{
 				AddService(serviceType, (ServiceCreatorCallback) serviceInstance, promote);
@@ -310,6 +323,7 @@ namespace Castle.Windsor.Adapters.ComponentModel
 					return;
 				}
 			}
+#endif
 
 			if (serviceType == null)
 			{
@@ -338,7 +352,8 @@ namespace Castle.Windsor.Adapters.ComponentModel
 			String serviceName = GetServiceName(serviceType);
 			Kernel.AddComponentInstance(serviceName, serviceType, serviceInstance);
 		}
-
+		
+#if (!SILVERLIGHT)
 		/// <summary>
 		/// Adds the specified service to the service container, and optionally 
 		/// promotes the service to parent service containers.
@@ -385,6 +400,7 @@ namespace Castle.Windsor.Adapters.ComponentModel
 			model.CustomComponentActivator = typeof(ServiceCreatorCallbackActivator);
 			Kernel.AddCustomComponent(model);
 		}
+#endif
 
 		/// <summary>
 		/// Removes the specified service type from the service container.
@@ -395,6 +411,7 @@ namespace Castle.Windsor.Adapters.ComponentModel
 			RemoveService(serviceType, false);
 		}
 
+#if (!SILVERLIGHT)
 		/// <summary>
 		/// Removes the specified service type from the service container, 
 		/// and optionally promotes the service to parent service containers.
@@ -402,7 +419,17 @@ namespace Castle.Windsor.Adapters.ComponentModel
 		/// <param name="serviceType">The type of service to remove.</param>
 		/// <param name="promote">true to promote this request to any parent service containers.</param>
 		public virtual void RemoveService(Type serviceType, bool promote)
+#else
+		/// <summary>
+		/// Removes the specified service type from the service container, 
+		/// and optionally promotes the service to parent service containers.
+		/// </summary>
+		/// <param name="serviceType">The type of service to remove.</param>
+		/// <param name="promote">ignored.</param>
+		public virtual void RemoveService(Type serviceType, bool promote)
+#endif
 		{
+#if (!SILVERLIGHT)
 			if (promote)
 			{
 				IServiceContainer parentServices = ParentServices;
@@ -413,6 +440,7 @@ namespace Castle.Windsor.Adapters.ComponentModel
 					return;
 				}
 			}
+#endif
 
 			if (serviceType == null)
 			{
@@ -440,7 +468,9 @@ namespace Castle.Windsor.Adapters.ComponentModel
 		private bool IsIntrinsicService(Type serviceType)
 		{
 			return serviceType == typeof(IWindsorContainer) ||
+#if (!SILVERLIGHT)
 				serviceType == typeof(IServiceContainer) ||
+#endif
 				serviceType == typeof(IContainer) ||
 				serviceType == typeof(IKernel);
 		}
@@ -564,7 +594,7 @@ namespace Castle.Windsor.Adapters.ComponentModel
 		{
 			get { return container.Kernel; }
 		}
-
+#if (!SILVERLIGHT)
 		private IServiceContainer ParentServices
 		{
 			get
@@ -584,6 +614,7 @@ namespace Castle.Windsor.Adapters.ComponentModel
 				return parentServices;
 			}
 		}
+#endif
 
 		private void RegisterAdapterWithKernel()
 		{
