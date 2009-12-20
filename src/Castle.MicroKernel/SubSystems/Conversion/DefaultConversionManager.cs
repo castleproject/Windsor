@@ -35,8 +35,8 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 		[ThreadStatic]
 		private static Stack<ComponentModel> slot;
 #endif
-        private readonly IList<ITypeConverter> converters = new List<ITypeConverter>();
-        private readonly IList<ITypeConverter> standAloneConverters = new List<ITypeConverter>();
+		private readonly IList<ITypeConverter> converters = new List<ITypeConverter>();
+		private readonly IList<ITypeConverter> standAloneConverters = new List<ITypeConverter>();
 
 		public DefaultConversionManager()
 		{
@@ -56,9 +56,10 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 			Add(new ArrayConverter());
 			Add(new ComponentConverter());
 			Add(new AttributeAwareConverter());
-#if (!SILVERLIGHT)
-			Add(new ComponentModelConverter());
+#if (SILVERLIGHT)
+			Add(new NullableConverter(this));
 #endif
+			Add(new ComponentModelConverter());
 		}
 
 		#region IConversionManager Members
