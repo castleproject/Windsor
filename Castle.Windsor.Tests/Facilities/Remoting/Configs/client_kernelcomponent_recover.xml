@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" ?> 
+<configuration>
+
+  <facilities>
+  
+    <facility 
+		id="remote.facility" 
+		type="Castle.Facilities.Remoting.RemotingFacility, Castle.MicroKernel"
+		remotingConfigurationFile="../Castle.Windsor.Tests/Facilities/Remoting/Configs/RemotingTcpConfigClient.config"
+		isClient="true"
+		remoteKernelUri="tcp://localhost:2133/kernel.rem"
+		baseUri="tcp://localhost:2133" />
+      
+  </facilities>
+  
+  <components>
+  
+    <component 
+		id="calc.service"
+		service="Castle.Facilities.Remoting.TestComponents.ICalcService, Castle.Windsor.Tests"
+		type="Castle.Facilities.Remoting.TestComponents.CalcServiceImpl, Castle.Windsor.Tests"
+		remoteclient="recoverableComponent" />
+		<!-- If the server specifies a uri, the full uri (baseUri + server uri) must be secified here too 
+			server:  uri="test" 
+			client:  uri="#{baseuri}/test"-->
+  </components>
+
+</configuration>
