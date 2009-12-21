@@ -146,7 +146,7 @@ namespace Castle.Facilities.EventWiring
 					+ model.Name + " component");
 			}
 
-            Dictionary<string, List<WireInfo>> subscribers2Evts = new Dictionary<string, List<WireInfo>>();
+			var subscribers2Evts = new Dictionary<string, List<WireInfo>>();
 			
 			foreach (IConfiguration subscriber in subscribersNode.Children)
 			{
@@ -162,16 +162,15 @@ namespace Castle.Facilities.EventWiring
 
 		private void ExtractAndAddEventInfo(IDictionary<string, List<WireInfo>> subscribers2Evts, string subscriberKey, IConfiguration subscriber, ComponentModel model)
 		{
-			List<WireInfo> wireInfoList = subscribers2Evts[subscriberKey];
-
-			if (wireInfoList == null)
+			List<WireInfo> wireInfoList;
+			if (subscribers2Evts.TryGetValue(subscriberKey,out wireInfoList) == false)
 			{
 				wireInfoList = new List<WireInfo>();
 				subscribers2Evts[subscriberKey] = wireInfoList;
 			}
 
 			string eventName = subscriber.Attributes["event"];
-			if (eventName == null || eventName.Length == 0)
+			if (string.IsNullOrEmpty(eventName))
 			{
 				throw new EventWiringException("You must supply an 'event' " +
 				                               "attribute which is the event name on the publisher you want to subscribe." +
@@ -179,7 +178,7 @@ namespace Castle.Facilities.EventWiring
 			}
 
 			string handlerMethodName = subscriber.Attributes["handler"];
-			if (handlerMethodName == null || handlerMethodName.Length == 0)
+			if (string.IsNullOrEmpty(handlerMethodName))
 			{
 				throw new EventWiringException("You must supply an 'handler' attribute " +
 				                               "which is the method on the subscriber that will handle the event." +
@@ -203,7 +202,7 @@ namespace Castle.Facilities.EventWiring
 		{
 			string subscriberKey = subscriber.Attributes["id"];
 			
-			if (subscriberKey == null || subscriberKey.Length == 0)
+			if (string.IsNullOrEmpty(subscriberKey))
 			{
 				throw new EventWiringException("The subscriber node must have a valid Id assigned");
 			}
