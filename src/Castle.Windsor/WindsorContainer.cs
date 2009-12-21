@@ -148,9 +148,7 @@ namespace Castle.Windsor
 
 			this.name = name;
 			this.kernel = kernel;
-#if !SILVERLIGHT
 			this.kernel.ProxyFactory = new Proxy.DefaultProxyFactory();
-#endif
 			this.installer = installer;
 		}
 
@@ -164,7 +162,7 @@ namespace Castle.Windsor
 
 			kernel = new DefaultKernel(proxyFactory);
 
-			installer = new Installer.DefaultComponentInstaller();
+			installer = new DefaultComponentInstaller();
 		}
 
 		/// <summary>

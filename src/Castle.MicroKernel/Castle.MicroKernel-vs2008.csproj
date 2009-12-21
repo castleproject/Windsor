@@ -93,7 +93,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AssemblyInfo.cs" />
     <Compile Include="ComponentActivator\AbstractComponentActivator.cs">
       <SubType>Code</SubType>
     </Compile>

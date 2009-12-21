@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#if !SILVERLIGHT
 
 namespace Castle.Windsor.Proxy
 {
@@ -24,6 +23,9 @@ namespace Castle.Windsor.Proxy
 	using Castle.DynamicProxy;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Proxy;
+#if (SILVERLIGHT)
+	using Castle.DynamicProxy.SilverlightExtensions;
+#endif
 
 	/// <summary>
 	/// This implementation of <see cref="IProxyFactory"/> relies 
@@ -124,12 +126,12 @@ namespace Castle.Windsor.Proxy
 			{
 				proxyGenOptions.Selector = proxyOptions.Selector;
 			}
-
+#if (!SILVERLIGHT)
 			if (proxyOptions.UseMarshalByRefAsBaseClass)
 			{
 				proxyGenOptions.BaseTypeForInterfaceProxy = typeof(MarshalByRefObject);
 			}
-
+#endif
 			foreach (object mixIn in proxyOptions.MixIns)
 			{
 				proxyGenOptions.AddMixinInstance(mixIn);
@@ -203,5 +205,3 @@ namespace Castle.Windsor.Proxy
 		}
 	}
 }
-
-#endif
