@@ -63,7 +63,6 @@
     <Compile Include="DefaultKernel_AddComponent.cs" />
     <Compile Include="DefaultKernel_Events.cs" />
     <Compile Include="DefaultKernel_Resolve.cs" />
-    <Compile Include="EventHandlerList.cs" />
     <Compile Include="Exceptions\CircularDependencyException.cs" />
     <Compile Include="Exceptions\ComponentNotFoundException.cs" />
     <Compile Include="Exceptions\ComponentRegistrationException.cs" />
@@ -146,7 +145,6 @@
     <Compile Include="Proxy\ProxyConstants.cs" />
     <Compile Include="Proxy\ProxyOptions.cs" />
     <Compile Include="Proxy\ProxyUtil.cs" />
-    <Compile Include="ReaderWriterLockSlim.cs" />
     <Compile Include="Registration\AbstractPropertyDescriptor.cs" />
     <Compile Include="Registration\AttributeDescriptor.cs" />
     <Compile Include="Registration\Component.cs" />
