@@ -452,7 +452,7 @@
     <EmbeddedResource Include="Facilities\Remoting\Configs\server_kernelcomponent_recover.xml" />
     <EmbeddedResource Include="Facilities\Remoting\Configs\server_kernelgenericcomponent.xml" />
     <EmbeddedResource Include="Facilities\Remoting\Configs\server_simple_scenario.xml" />
-    <Content Include="Facilities\TypedFactory\typedFactory_castle_config.xml" />
+    <EmbeddedResource Include="Facilities\TypedFactory\typedFactory_castle_config.xml" />
     <Content Include="IOC-51.xml" />
     <Content Include="Proxy\typedFactory.xml" />
     <Content Include="Proxy\proxyBehaviorInvalidConfig.xml" />

@@ -16,12 +16,11 @@
 
 namespace Castle.Facilities.TypedFactory.Tests
 {
-	using System;
-
 	using Castle.Windsor;
 
 	using Castle.Facilities.TypedFactory.Tests.Components;
 	using Castle.Facilities.TypedFactory.Tests.Factories;
+	using Castle.Windsor.Tests;
 
 	using NUnit.Framework;
 
@@ -33,7 +32,7 @@ namespace Castle.Facilities.TypedFactory.Tests
 		[SetUp]
 		public void Init()
 		{
-			_container = new WindsorContainer( @"../Castle.Windsor.Tests/Facilities/TypedFactory/typedFactory_castle_config.xml" );
+			_container = new WindsorContainer(ConfigHelper.ResolveConfigPath("Facilities/TypedFactory/typedFactory_castle_config.xml"));
 			
 			_container.AddFacility( "typedfactory", new TypedFactoryFacility() );
 
@@ -52,12 +51,11 @@ namespace Castle.Facilities.TypedFactory.Tests
 		[Test]
 		public void Factory1()
 		{
-			IProtocolHandlerFactory1 factory = 
-				(IProtocolHandlerFactory1) _container["protocolFac1"];
+			var factory = (IProtocolHandlerFactory1) _container["protocolFac1"];
 
 			Assert.IsNotNull( factory );
 			
-			IProtocolHandler handler = factory.Create();
+			var handler = factory.Create();
 
 			Assert.IsNotNull( handler );
 
@@ -67,12 +65,11 @@ namespace Castle.Facilities.TypedFactory.Tests
 		[Test]
 		public void Factory2()
 		{
-			IProtocolHandlerFactory2 factory = 
-				(IProtocolHandlerFactory2) _container["protocolFac2"];
+			var factory = (IProtocolHandlerFactory2) _container["protocolFac2"];
 
 			Assert.IsNotNull( factory );
 			
-			IProtocolHandler handler = factory.Create( "miranda" );
+			var handler = factory.Create( "miranda" );
 			Assert.IsNotNull( handler );
 			Assert.IsTrue( handler is MirandaProtocolHandler );
 			factory.Release( handler );
@@ -86,31 +83,28 @@ namespace Castle.Facilities.TypedFactory.Tests
 		[Test]
 		public void Factory3()
 		{
-			IComponentFactory1 factory = 
-				(IComponentFactory1) _container["compFactory1"];
+			var factory = (IComponentFactory1) _container["compFactory1"];
 
 			Assert.IsNotNull( factory );
 			
-			IDummyComponent comp1 = factory.Construct();
+			var comp1 = factory.Construct();
 			Assert.IsNotNull( comp1 );
 
-			IDummyComponent comp2 = factory.Construct();
+			var comp2 = factory.Construct();
 			Assert.IsNotNull( comp2 );
 		}
 
 		[Test]
 		public void Factory4()
 		{
-			IComponentFactory2 factory = 
-				(IComponentFactory2) _container["compFactory2"];
-
+			var factory = (IComponentFactory2) _container["compFactory2"];
 			Assert.IsNotNull( factory );
-			
-			IDummyComponent comp1 = (IDummyComponent) factory.Construct("comp1");
+
+			var comp1 = (IDummyComponent)factory.Construct("comp1");
 			Assert.IsTrue( comp1 is Component1 );
 			Assert.IsNotNull( comp1 );
 
-			IDummyComponent comp2 = (IDummyComponent) factory.Construct("comp2");
+			var comp2 = (IDummyComponent)factory.Construct("comp2");
 			Assert.IsTrue( comp2 is Component2 );
 			Assert.IsNotNull( comp2 );
 		}
