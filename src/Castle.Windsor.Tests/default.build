@@ -7,8 +7,19 @@
 
 	<property name="common.scripts.dir" value="../../buildscripts/" />
 	<include buildfile="${common.scripts.dir}/common-project.xml" />
+	
+	<property name="common.testrunner.args" value="/process:Separate" />
 
 	<target name="init" depends="common.init common.copy.project.references">
+
+		<copy todir="${build.dir}" >
+			<fileset>
+				<include name="${src.dir}/RemotingTcpConfig.config" />
+				<include name="${src.dir}/RemotingTcpConfig2.config" />
+				<include name="${src.dir}/RemotingTcpConfigClient.config" />
+			</fileset>
+		</copy>
+
 		<assemblyfileset id="project.references" basedir="${build.dir}">
 			<include name="nunit.framework.dll" />
 			<include name="Castle.Core.dll" />

@@ -424,13 +424,19 @@
     <None Include="DotNet2Config\chainOfRespnsability.config" />
     <None Include="DotNet2Config\chainOfRespnsability_smart.config" />
     <None Include="Facilities\EventWiring\App.config" />
+    <Content Include="RemotingTcpConfig2.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="RemotingTcpConfigClient.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="RemotingTcpConfig.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <EmbeddedResource Include="Facilities\EventWiring\Config\dependencies.config" />
     <EmbeddedResource Include="Facilities\EventWiring\Config\invalid.config" />
     <EmbeddedResource Include="Facilities\EventWiring\Config\singleton.config" />
     <EmbeddedResource Include="Facilities\EventWiring\Config\startable.config" />
-    <EmbeddedResource Include="Facilities\Remoting\Configs\RemotingTcpConfig.config" />
-    <EmbeddedResource Include="Facilities\Remoting\Configs\RemotingTcpConfig2.config" />
-    <EmbeddedResource Include="Facilities\Remoting\Configs\RemotingTcpConfigClient.config" />
     <EmbeddedResource Include="Configuration2\env_config.xml" />
     <EmbeddedResource Include="Configuration2\eval_config.xml" />
     <Content Include="Configuration2\config_with_forwarded_types.xml" />
