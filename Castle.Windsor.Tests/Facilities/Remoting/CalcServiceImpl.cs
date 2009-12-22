@@ -12,26 +12,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+
 namespace Castle.Facilities.Remoting.TestComponents
 {
+	using System.Linq;
 	using System;
-
+#if (SILVERLIGHT)
+	public class CalcServiceImpl : ICalcService
+#else
 	public class CalcServiceImpl : MarshalByRefObject, ICalcService
+#endif
 	{
-		public CalcServiceImpl()
-		{
-		}
-
 		public int Sum(params int[] args)
 		{
-			int sum = 0;
-
-			foreach(int arg in args)
-			{
-				sum += arg;
-			}
-
-			return sum;
+			return args.Sum();
 		}
 	}
 }

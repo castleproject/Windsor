@@ -17,7 +17,9 @@ namespace Castle.Facilities.Remoting.TestComponents
 	using System;
 	using Castle.Core.Interceptor;
 
+#if(!SILVERLIGHT)
 	[Serializable]
+#endif
 	public class ChangeResultInterceptor : IInterceptor
 	{
 		public void Intercept(IInvocation invocation)

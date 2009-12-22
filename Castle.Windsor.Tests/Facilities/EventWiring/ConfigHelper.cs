@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#if (!SILVERLIGHT)
 namespace Castle.Facilities.EventWiring.Tests
 {
 	using System.Configuration;
@@ -27,3 +28,4 @@ namespace Castle.Facilities.EventWiring.Tests
 		}
 	}
 }
+#endif

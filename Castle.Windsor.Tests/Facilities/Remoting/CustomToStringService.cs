@@ -17,7 +17,11 @@ namespace Castle.Facilities.Remoting.TestComponents
 	using System;
 	using System.Text;
 
+#if (SILVERLIGHT)
+	public class CustomToStringService : IGenericToStringService<StringBuilder>
+#else
 	public class CustomToStringService : MarshalByRefObject, IGenericToStringService<StringBuilder>
+#endif
 	{
 		public string ToString(params StringBuilder[] instances)
 		{

@@ -15,10 +15,11 @@
 namespace Castle.MicroKernel
 {
 	using System;
-#if (!SILVERLIGHT)
-	public abstract class AbstractSubSystem : MarshalByRefObject, ISubSystem
-#else
+#if (SILVERLIGHT)
 	public abstract class AbstractSubSystem : ISubSystem
+#else
+	[Serializable]
+	public abstract class AbstractSubSystem : MarshalByRefObject, ISubSystem
 #endif
 	{
 		private IKernel kernel;
