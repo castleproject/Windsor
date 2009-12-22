@@ -25,19 +25,22 @@ namespace Castle.Windsor.Tests.Proxy
 	[TestFixture]
 	public class ProxyBehaviorInvalidTestCase
 	{
-		[Test, ExpectedException(typeof(Exception))]
+		[Test]
 		public void InvalidProxyBehaviorFromConfiguration()
 		{
-			new WindsorContainer(ConfigHelper.ResolveConfigPath("Proxy/proxyBehaviorInvalidConfig.xml"));
+			Assert.Throws(typeof(Exception), () =>
+				new WindsorContainer(
+					ConfigHelper.ResolveConfigPath("Proxy/proxyBehaviorInvalidConfig.xml")));
 		}
 
-		[Test, ExpectedException(typeof(ComponentRegistrationException))]
+		[Test]
 		public void RequestSingleInterfaceProxyWithoutServiceInterface()
 		{
-			IWindsorContainer container = new WindsorContainer();
-
+			var container = new WindsorContainer();
 			container.AddComponent("standard.interceptor", typeof(StandardInterceptor));
-			container.AddComponent("useSingle", typeof(CalculatorServiceWithSingleProxyBehavior));
+
+			Assert.Throws(typeof(ComponentRegistrationException),()=>
+				container.AddComponent("useSingle", typeof(CalculatorServiceWithSingleProxyBehavior)));
 		}
 	}
 }

@@ -17,6 +17,8 @@ namespace Castle.Facilities.EventWiring.Tests
 {
 	using Castle.Facilities.EventWiring.Tests.Model;
 	using Castle.Windsor;
+	using Castle.Windsor.Tests;
+
 	using NUnit.Framework;
 
 	public abstract class WiringTestBase
@@ -26,7 +28,7 @@ namespace Castle.Facilities.EventWiring.Tests
 		[SetUp]
 		public void Init()
 		{
-			container = new WindsorContainer(ConfigHelper.ResolvePath(GetConfigFile()));
+			container = new WindsorContainer(ConfigHelper.ResolveConfigPath("Facilities/EventWiring/" + GetConfigFile()));
 		}
 
 		protected abstract string GetConfigFile();

@@ -6,6 +6,8 @@ namespace Castle.Facilities.Remoting.Tests
 	using System;
 	using Castle.Facilities.Remoting.TestComponents;
 	using Castle.Windsor;
+	using Castle.Windsor.Tests;
+
 	using NUnit.Framework;
 
 	[TestFixture, Serializable]
@@ -13,7 +15,7 @@ namespace Castle.Facilities.Remoting.Tests
 	{
 		protected override string GetServerConfigFile()
 		{
-			return BuildConfigPath("server_confreg_clientactivated.xml");
+			return ConfigHelper.ResolveConfigPath("Facilities/Remoting/Configs/server_confreg_clientactivated.xml");
 		}
 
 		[Test]
@@ -24,7 +26,7 @@ namespace Castle.Facilities.Remoting.Tests
 
 		public void ClientContainerConsumingRemoteComponentsCallback()
 		{
-			IWindsorContainer clientContainer = CreateRemoteContainer(clientDomain, BuildConfigPath("client_confreg_clientactivated.xml"));
+			IWindsorContainer clientContainer = CreateRemoteContainer(clientDomain, ConfigHelper.ResolveConfigPath("Facilities/Remoting/Configs/client_confreg_clientactivated.xml"));
 
 			Assert.IsNotNull(clientContainer.Kernel.ResolveAll<ICalcService>());
 		}

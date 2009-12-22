@@ -16,9 +16,10 @@
 namespace Castle.Facilities.Remoting.Tests
 {
 	using System;
-	
+
 	using Castle.Windsor;
-	
+	using Castle.Windsor.Tests;
+
 	using NUnit.Framework;
 
 	[TestFixture, Serializable]
@@ -26,14 +27,14 @@ namespace Castle.Facilities.Remoting.Tests
 	{
 		protected override String GetServerConfigFile()
 		{
-			return BuildConfigPath("server_kernelcomponent.xml");
+			return ConfigHelper.ResolveConfigPath("Facilities/Remoting/Configs/server_kernelcomponent.xml");
 		}
 		
 		[Test]
 		public void ClientDisposal()
 		{
 			IWindsorContainer clientContainer = CreateRemoteContainer(clientDomain, 
-				BuildConfigPath("client_kernelcomponent.xml"));
+				ConfigHelper.ResolveConfigPath("Facilities/Remoting/Configs/client_kernelcomponent.xml"));
 
 			clientContainer.Dispose();
 		}

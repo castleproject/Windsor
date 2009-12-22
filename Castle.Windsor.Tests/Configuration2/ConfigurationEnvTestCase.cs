@@ -16,31 +16,25 @@
 
 namespace Castle.Windsor.Tests.Configuration2
 {
-	using System;
-	using System.IO;
 	using Castle.Windsor.Configuration.Interpreters;
 	using Castle.Windsor.Tests.Components;
+
 	using NUnit.Framework;
 
 	[TestFixture]
 	public class ConfigurationEnvTestCase
 	{
-		private string dir = ConfigHelper.ResolveConfigPath("Configuration2/");
-
 		[Test]
 		public void AssertDefineIsSetBasedOnEnvironmentInformation()
 		{
-			string file = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, dir +
-			                                                                  "env_config.xml");
+			var configPath = ConfigHelper.ResolveConfigPath("Configuration2/env_config.xml");
+			var container = new WindsorContainer(new XmlInterpreter(configPath), new CustomEnv(true));
 
-			WindsorContainer container = new WindsorContainer(new XmlInterpreter(file), new CustomEnv(true));
-
-			ComponentWithStringProperty prop =
-				(ComponentWithStringProperty) container.Resolve("component");
+			var prop = (ComponentWithStringProperty) container.Resolve("component");
 
 			Assert.AreEqual("John Doe", prop.Name);
 
-			container = new WindsorContainer(new XmlInterpreter(file), new CustomEnv(false));
+			container = new WindsorContainer(new XmlInterpreter(configPath), new CustomEnv(false));
 
 			prop = (ComponentWithStringProperty) container.Resolve("component");
 

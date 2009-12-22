@@ -26,17 +26,12 @@ namespace Castle.Windsor.Tests.Configuration2.Properties
 	[TestFixture]
 	public class PropertiesTestCase
 	{
-		private String dir = ConfigHelper.ResolveConfigPath("Configuration2/Properties/");
-
 		private IWindsorContainer container;
 
 		[Test]
 		public void CorrectEval()
 		{
-			String file = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, dir +
-			                                                                  "config_with_properties.xml");
-
-			container = new WindsorContainer(file);
+			container = new WindsorContainer(ConfigHelper.ResolveConfigPath("Configuration2/Properties/config_with_properties.xml"));
 
 			AssertConfiguration();
 		}
@@ -44,10 +39,7 @@ namespace Castle.Windsor.Tests.Configuration2.Properties
 		[Test]
 		public void SilentProperties()
 		{
-			String file = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, dir +
-			                                                                  "config_with_silent_properties.xml");
-
-			container = new WindsorContainer(file);
+			container = new WindsorContainer(ConfigHelper.ResolveConfigPath("Configuration2/Properties/config_with_silent_properties.xml"));
 
 			IConfigurationStore store = container.Kernel.ConfigurationStore;
 
@@ -70,19 +62,13 @@ namespace Castle.Windsor.Tests.Configuration2.Properties
 		[Test, ExpectedException(typeof(ConfigurationProcessingException))]
 		public void MissingProperties()
 		{
-			String file = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, dir +
-			                                                                  "config_with_missing_properties.xml");
-
-			container = new WindsorContainer(file);
+			container = new WindsorContainer(ConfigHelper.ResolveConfigPath("Configuration2/Properties/config_with_missing_properties.xml"));
 		}
 
 		[Test]
 		public void PropertiesWithinProperties()
 		{
-			String file = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, dir +
-			                                                                  "properties_using_properties.xml");
-
-			container = new WindsorContainer(file);
+			container = new WindsorContainer(ConfigHelper.ResolveConfigPath("Configuration2/Properties/properties_using_properties.xml"));
 
 			AssertConfiguration();
 		}
@@ -90,10 +76,7 @@ namespace Castle.Windsor.Tests.Configuration2.Properties
 		[Test]
 		public void PropertiesAndIncludes()
 		{
-			String file = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, dir +
-			                                                                  "config_with_properties_and_includes.xml");
-
-			container = new WindsorContainer(file);
+			container = new WindsorContainer(ConfigHelper.ResolveConfigPath("Configuration2/Properties/config_with_properties_and_includes.xml"));
 
 			AssertConfiguration();
 		}
@@ -101,10 +84,7 @@ namespace Castle.Windsor.Tests.Configuration2.Properties
 		[Test]
 		public void PropertiesAndDefines()
 		{
-			String file = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, dir +
-			                                                                  "config_with_properties_and_defines.xml");
-
-			container = new WindsorContainer(file);
+			container = new WindsorContainer(ConfigHelper.ResolveConfigPath("Configuration2/Properties/config_with_properties_and_defines.xml"));
 
 			AssertConfiguration();
 		}
@@ -112,10 +92,7 @@ namespace Castle.Windsor.Tests.Configuration2.Properties
 		[Test]
 		public void PropertiesAndDefines2()
 		{
-			String file = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, dir +
-			                                                                  "config_with_properties_and_defines2.xml");
-
-			container = new WindsorContainer(file);
+			container = new WindsorContainer(ConfigHelper.ResolveConfigPath("Configuration2/Properties/config_with_properties_and_defines2.xml"));
 
 			AssertConfiguration();
 		}

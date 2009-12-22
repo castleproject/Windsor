@@ -16,35 +16,28 @@
 
 namespace Castle.Windsor.Tests.Configuration2
 {
-	using System;
-	using System.IO;
 	using Castle.Core.Configuration;
 	using Castle.MicroKernel;
+
 	using NUnit.Framework;
 
 	[TestFixture]
 	public class ConfigWithStatementsTestCase
 	{
-		private String dir = ConfigHelper.ResolveConfigPath("Configuration2/");
-
 		private IWindsorContainer container;
 
 		[Test]
 		public void SimpleIf()
 		{
-			String file = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, dir +
-			                                                                  "config_with_if_stmt.xml");
-
-			container = new WindsorContainer(file);
-
-			IConfigurationStore store = container.Kernel.ConfigurationStore;
+			container = new WindsorContainer(ConfigHelper.ResolveConfigPath("Configuration2/config_with_if_stmt.xml"));
+			var store = container.Kernel.ConfigurationStore;
 
 			Assert.AreEqual(4, store.GetComponents().Length);
 
-			IConfiguration config = store.GetComponentConfiguration("debug");
+			var config = store.GetComponentConfiguration("debug");
 			Assert.IsNotNull(config);
 
-			IConfiguration childItem = config.Children["item"];
+			var childItem = config.Children["item"];
 			Assert.IsNotNull(childItem);
 			Assert.AreEqual("some value", childItem.Value);
 
@@ -65,10 +58,9 @@ namespace Castle.Windsor.Tests.Configuration2
 		[Test]
 		public void SimpleChoose()
 		{
-			foreach(string flag in new string[] {"debug", "prod", "qa", "default"})
+			foreach(string flag in new[] {"debug", "prod", "qa", "default"})
 			{
-				String file = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, dir +
-				                                                                  "config_with_define_" + flag + ".xml");
+				var file = ConfigHelper.ResolveConfigPath("Configuration2/config_with_define_{0}.xml", flag);
 
 				container = new WindsorContainer(file);
 

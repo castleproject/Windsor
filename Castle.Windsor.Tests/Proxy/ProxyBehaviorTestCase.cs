@@ -28,11 +28,9 @@ namespace Castle.Windsor.Tests.Proxy
 		[Test]
 		public void DefaultProxyBehaviorFromConfiguration()
 		{
-			IWindsorContainer container;
+			var container = new WindsorContainer(ConfigHelper.ResolveConfigPath("Proxy/proxyBehavior.xml"));
 
-			container = new WindsorContainer(ConfigHelper.ResolveConfigPath("Proxy/proxyBehavior.xml"));
-
-			ICalcService calcService = (ICalcService) container["default"];
+			var calcService = (ICalcService) container["default"];
 			Assert.IsNotNull(calcService);
 			Assert.IsTrue(calcService is IDisposable, "Service proxy should expose the IDisposable interface");
 		}
@@ -40,11 +38,9 @@ namespace Castle.Windsor.Tests.Proxy
 		[Test]
 		public void NoSingleInterfaceProxyBehaviorFromConfiguration()
 		{
-			IWindsorContainer container;
+			var container = new WindsorContainer(ConfigHelper.ResolveConfigPath("Proxy/proxyBehavior.xml"));
 
-			container = new WindsorContainer(ConfigHelper.ResolveConfigPath("Proxy/proxyBehavior.xml"));
-
-			ICalcService calcService = (ICalcService) container["noSingle"];
+			var calcService = (ICalcService) container["noSingle"];
 			Assert.IsNotNull(calcService);
 			Assert.IsTrue(calcService is IDisposable, "Service proxy should expose the IDisposable interface");
 		}
@@ -52,11 +48,9 @@ namespace Castle.Windsor.Tests.Proxy
 		[Test]
 		public void UseSingleInterfaceProxyBehaviorFromConfiguration()
 		{
-			IWindsorContainer container;
+			var container = new WindsorContainer(ConfigHelper.ResolveConfigPath("Proxy/proxyBehavior.xml"));
 
-			container = new WindsorContainer(ConfigHelper.ResolveConfigPath("Proxy/proxyBehavior.xml"));
-
-			ICalcService calcService = (ICalcService) container["useSingle"];
+			var calcService = (ICalcService) container["useSingle"];
 			Assert.IsNotNull(calcService);
 			Assert.IsFalse(calcService is IDisposable, "Service proxy should not expose the IDisposable interface");
 		}
@@ -64,23 +58,21 @@ namespace Castle.Windsor.Tests.Proxy
 		[Test]
 		public void UseSingleInterfaceProxyBehaviorFromAttribute()
 		{
-			IWindsorContainer container;
+			var container = new WindsorContainer(ConfigHelper.ResolveConfigPath("Proxy/proxyBehavior.xml"));
 
-			container = new WindsorContainer(ConfigHelper.ResolveConfigPath("Proxy/proxyBehavior.xml"));
-
-			ICalcService calcService = (ICalcService) container["useSingleAttribute"];
+			var calcService = (ICalcService) container["useSingleAttribute"];
 			Assert.IsFalse(calcService is IDisposable, "Service proxy should not expose the IDisposable interface");
 		}
 
 		[Test]
 		public void RequestSingleInterfaceProxyWithAttribute()
 		{
-			IWindsorContainer container = new WindsorContainer();
+			var container = new WindsorContainer();
 
 			container.AddComponent("standard.interceptor", typeof(StandardInterceptor));
 			container.AddComponent("useSingle", typeof(ICalcService), typeof(CalculatorServiceWithSingleProxyBehavior));
 
-			ICalcService calcService = (ICalcService) container["useSingle"];
+			var calcService = (ICalcService) container["useSingle"];
 			Assert.IsNotNull(calcService);
 			Assert.IsFalse(calcService is IDisposable, "Service proxy should not expose the IDisposable interface");
 		}
@@ -88,12 +80,12 @@ namespace Castle.Windsor.Tests.Proxy
 		[Test]
 		public void NoSingleInterfaceProxyWithAttribute()
 		{
-			IWindsorContainer container = new WindsorContainer();
+			var container = new WindsorContainer();
 
 			container.AddComponent("standard.interceptor", typeof(StandardInterceptor));
 			container.AddComponent("noSingle", typeof(ICalcService), typeof(CalculatorServiceWithoutSingleProxyBehavior));
 
-			ICalcService calcService = (ICalcService) container["noSingle"];
+			var calcService = (ICalcService) container["noSingle"];
 			Assert.IsNotNull(calcService);
 			Assert.IsTrue(calcService is IDisposable, "Service proxy should expose the IDisposable interface");
 		}
@@ -101,12 +93,12 @@ namespace Castle.Windsor.Tests.Proxy
 		[Test]
 		public void RequestMarshalByRefProxyWithAttribute()
 		{
-			IWindsorContainer container = new WindsorContainer();
+			var container = new WindsorContainer();
 
 			container.AddComponent("standard.interceptor", typeof(StandardInterceptor));
 			container.AddComponent("useMarshal", typeof(ICalcService), typeof(CalculatorServiceWithMarshalByRefProxyBehavior));
 
-			ICalcService calcService = (ICalcService)container["useMarshal"];
+			var calcService = (ICalcService)container["useMarshal"];
 			Assert.IsNotNull(calcService);
 			Assert.IsFalse(calcService is CalculatorServiceWithMarshalByRefProxyBehavior, "Service proxy should not expose CalculatorServiceWithMarshalByRefProxyBehavior");
 			Assert.IsTrue(calcService is MarshalByRefObject, "Service proxy should expose MarshalByRefObject");
@@ -116,18 +108,8 @@ namespace Castle.Windsor.Tests.Proxy
 		[Test]
 		public void InternalInterfaceIgnoredByProxy()
 		{
-			IWindsorContainer container;
-
-			container = new WindsorContainer(ConfigHelper.ResolveConfigPath("Proxy/proxyBehavior.xml"));
-
-			try
-			{
-				ICalcService calcService = (ICalcService)container["hasInternalInterface"];
-			}
-			catch (ComponentActivatorException)
-			{
-				Assert.Fail("Internal interface should be ignored by proxy factory.");
-			}
+			var container = new WindsorContainer(ConfigHelper.ResolveConfigPath("Proxy/proxyBehavior.xml"));
+			Assert.DoesNotThrow(() => container.Resolve("hasInternalInterface"));
 		}
 	}
 }

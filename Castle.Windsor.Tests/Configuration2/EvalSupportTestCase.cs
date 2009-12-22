@@ -17,7 +17,7 @@
 namespace Castle.Windsor.Tests.Configuration2
 {
 	using System;
-	using System.IO;
+
 	using Castle.Windsor.Configuration.Interpreters;
 	using Castle.Windsor.Tests.Components;
 	using NUnit.Framework;
@@ -25,18 +25,12 @@ namespace Castle.Windsor.Tests.Configuration2
 	[TestFixture]
 	public class EvalSupportTestCase
 	{
-		private string dir = ConfigHelper.ResolveConfigPath("Configuration2/");
-
 		[Test]
 		public void AssertBaseDirectoryIsCorrectlyEvaluated()
 		{
-			string file = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, dir +
-			                                                                  "eval_config.xml");
+			var container = new WindsorContainer(new XmlInterpreter(ConfigHelper.ResolveConfigPath("Configuration2/eval_config.xml")), new CustomEnv(true));
 
-			WindsorContainer container = new WindsorContainer(new XmlInterpreter(file), new CustomEnv(true));
-
-			ComponentWithStringProperty prop =
-				(ComponentWithStringProperty) container.Resolve("component");
+			var prop =(ComponentWithStringProperty) container.Resolve("component");
 
 			Assert.AreEqual(AppDomain.CurrentDomain.BaseDirectory, prop.Name);
 		}
