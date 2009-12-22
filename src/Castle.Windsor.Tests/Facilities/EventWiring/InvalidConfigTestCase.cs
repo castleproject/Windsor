@@ -16,6 +16,8 @@
 namespace Castle.Facilities.EventWiring.Tests
 {
 	using Castle.Windsor;
+	using Castle.Windsor.Tests;
+
 	using NUnit.Framework;
 
 	[TestFixture]
@@ -26,7 +28,7 @@ namespace Castle.Facilities.EventWiring.Tests
 		[SetUp]
 		public void Init()
 		{
-			container = new WindsorContainer(ConfigHelper.ResolvePath("config/Invalid.config"));
+			container = new WindsorContainer(ConfigHelper.ResolveConfigPath("Facilities/EventWiring/" + "config/Invalid.config"));
 		}
 		
 		[Test, ExpectedException(typeof(EventWiringException))]

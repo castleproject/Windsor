@@ -16,6 +16,9 @@
 namespace Castle.Facilities.EventWiring.Tests
 {
 	using System;
+
+	using Castle.Windsor.Tests;
+
 	using NUnit.Framework;
 	using Windsor;
 
@@ -27,7 +30,7 @@ namespace Castle.Facilities.EventWiring.Tests
 		[SetUp]
 		public void Setup()
 		{
-			container = new WindsorContainer(ConfigHelper.ResolvePath(GetConfigFile()));
+			container = new WindsorContainer(ConfigHelper.ResolveConfigPath("Facilities/EventWiring/" + GetConfigFile()));
 		}
 
 		protected string GetConfigFile()

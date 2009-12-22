@@ -76,11 +76,6 @@ namespace Castle.Facilities.Remoting.Tests
 
 			return holder.Container;
 		}
-		
-		protected string BuildConfigPath(string configFile)
-		{
-			return ConfigHelper.ResolveConfigPath(configFile);
-		}
 	}
 
 	public class ContainerPlaceHolder : MarshalByRefObject

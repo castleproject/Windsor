@@ -21,6 +21,7 @@ namespace Castle.Facilities.Remoting.Tests
 	using Castle.Windsor;
 
 	using Castle.Facilities.Remoting.TestComponents;
+	using Castle.Windsor.Tests;
 
 	using NUnit.Framework;
 
@@ -29,7 +30,7 @@ namespace Castle.Facilities.Remoting.Tests
 	{
 		protected override String GetServerConfigFile()
 		{
-			return BuildConfigPath("server_kernelcomponent.xml");
+			return ConfigHelper.ResolveConfigPath("Facilities/Remoting/Configs/server_kernelcomponent.xml");
 		}
 
 		[Test]
@@ -40,7 +41,7 @@ namespace Castle.Facilities.Remoting.Tests
 
 		public void ClientContainerConsumingRemoteComponentCallback()
 		{
-			IWindsorContainer clientContainer = CreateRemoteContainer(clientDomain, BuildConfigPath("client_kernelcomponent.xml"));
+			IWindsorContainer clientContainer = CreateRemoteContainer(clientDomain, ConfigHelper.ResolveConfigPath("Facilities/Remoting/Configs/client_kernelcomponent.xml"));
 
 			ICalcService service = (ICalcService) clientContainer[ typeof(ICalcService) ];
 

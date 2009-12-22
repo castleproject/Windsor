@@ -59,7 +59,7 @@ namespace Castle.Windsor.Tests.Installer
 				Configuration.FromXmlFile(
 					ConfigHelper.ResolveConfigPath("ignoreprop.xml")),
 				Configuration.FromXmlFile(
-					ConfigHelper.ResolveConfigPath("robotwireconfig.xml"))				
+					ConfigHelper.ResolveConfigPath("robotwireconfig.xml"))
 				);
 
 			Assert.IsTrue( container.Kernel.HasComponent(typeof(ICalcService)));

@@ -24,6 +24,11 @@ namespace Castle.Windsor.Tests
 		{
 			return Path.Combine(ConfigurationManager.AppSettings["tests.src"], configFilePath);
 		}
+
+		public static string ResolveConfigPath(string configFilePath, params object[] parameters)
+		{
+			return Path.Combine(ConfigurationManager.AppSettings["tests.src"], string.Format(configFilePath, parameters));
+		}
 	}
 }
 #endif

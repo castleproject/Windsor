@@ -16,11 +16,12 @@
 namespace Castle.Windsor.Tests.XmlProcessor
 {
 	using System;
-	using System.Diagnostics;
 	using System.IO;
 	using System.Text.RegularExpressions;
 	using System.Xml;
+
 	using Castle.Windsor.Configuration.Interpreters.XmlProcessor;
+
 	using NUnit.Framework;
 
 	/// <summary>
@@ -29,28 +30,20 @@ namespace Castle.Windsor.Tests.XmlProcessor
 	[TestFixture]
 	public class XmlProcessorTestCase
 	{
-		private String dir = ConfigHelper.ResolveConfigPath("XmlProcessor/TestFiles/");
-
 		[Test]
 		public void InvalidFiles()
 		{
-			String dirFullPath = GetFullPath();
+			var files = Directory.GetFiles(GetFullPath(), "Invalid*.xml");
+			Assert.IsNotEmpty(files);
 
-			foreach(String fileName in Directory.GetFiles(dirFullPath, "Invalid*.xml"))
+			foreach (var fileName in files)
 			{
-				try
-				{
-					XmlDocument doc = GetXmlDocument(fileName);
-					XmlProcessor processor = new XmlProcessor();
+				var doc = GetXmlDocument(fileName);
+				var processor = new XmlProcessor();
 
-					XmlNode result = processor.Process(doc.DocumentElement);
+				Assert.Throws(typeof(ConfigurationProcessingException), () =>
+					processor.Process(doc.DocumentElement));
 
-					Assert.Fail(fileName + " should throw an exception");
-				}
-				catch(ConfigurationProcessingException e)
-				{
-					Debug.WriteLine("Expected exception:" + e.Message);
-				}
 			}
 		}
 
@@ -60,31 +53,31 @@ namespace Castle.Windsor.Tests.XmlProcessor
 		[Test]
 		public void RunTests()
 		{
-			String dirFullPath = GetFullPath();
+			var files = Directory.GetFiles(GetFullPath(), "*Test.xml");
+			Assert.IsNotEmpty(files);
 
-			foreach(String fileName in Directory.GetFiles(dirFullPath, "*Test.xml"))
+			foreach(var fileName in files)
 			{
-				// Debug.WriteLine("Running " + fileName.Substring( fileName.LastIndexOf("/") + 1 ));
 
 				if (fileName.EndsWith("PropertiesWithAttributesTest.xml"))
 				{
 					continue;
 				}
 
-				XmlDocument doc = GetXmlDocument(fileName);
+				var doc = GetXmlDocument(fileName);
 
-				String resultFileName = fileName.Substring(0, fileName.Length - 4) + "Result.xml";
+				var resultFileName = fileName.Substring(0, fileName.Length - 4) + "Result.xml";
 
-				XmlDocument resultDoc = GetXmlDocument(resultFileName);
+				var resultDoc = GetXmlDocument(resultFileName);
 
-				XmlProcessor processor = new XmlProcessor();
+				var processor = new XmlProcessor();
 
 				try
 				{
-					XmlNode result = processor.Process(doc.DocumentElement);
+					var result = processor.Process(doc.DocumentElement);
 
-					String resultDocStr = StripSpaces(resultDoc.OuterXml);
-					String resultStr = StripSpaces(result.OuterXml);
+					var resultDocStr = StripSpaces(resultDoc.OuterXml);
+					var resultStr = StripSpaces(result.OuterXml);
 
 					// Debug.WriteLine(resultDocStr);
 					// Debug.WriteLine(resultStr);
@@ -116,7 +109,7 @@ namespace Castle.Windsor.Tests.XmlProcessor
 
 		private string GetFullPath()
 		{
-			return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, dir);
+			return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ConfigHelper.ResolveConfigPath("XmlProcessor/TestFiles/"));
 		}
 
 		#endregion

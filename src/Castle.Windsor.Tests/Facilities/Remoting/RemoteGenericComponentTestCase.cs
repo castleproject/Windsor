@@ -23,6 +23,7 @@ namespace Castle.Facilities.Remoting.Tests
 	using Castle.Windsor;
 
 	using Castle.Facilities.Remoting.TestComponents;
+	using Castle.Windsor.Tests;
 
 	using NUnit.Framework;
 
@@ -31,7 +32,7 @@ namespace Castle.Facilities.Remoting.Tests
 	{
 		protected override String GetServerConfigFile()
 		{
-			return BuildConfigPath("server_kernelgenericcomponent.xml");
+			return ConfigHelper.ResolveConfigPath("Facilities/Remoting/Configs/server_kernelgenericcomponent.xml");
 		}
 
 		[Test]
@@ -42,7 +43,7 @@ namespace Castle.Facilities.Remoting.Tests
 
 		public void ClientContainerConsumingRemoteGenericComponentCallback()
 		{
-            IWindsorContainer clientContainer = CreateRemoteContainer(clientDomain, BuildConfigPath("client_kernelgenericcomponent.xml"));
+            IWindsorContainer clientContainer = CreateRemoteContainer(clientDomain, ConfigHelper.ResolveConfigPath("Facilities/Remoting/Configs/client_kernelgenericcomponent.xml"));
 
             IGenericToStringService<String> service = clientContainer.Resolve<IGenericToStringService<String>>();
 
@@ -61,7 +62,7 @@ namespace Castle.Facilities.Remoting.Tests
 
         public void ClientContainerConsumingRemoteGenericComponentWhichDoesNotExistOnServerCallback()
         {
-            IWindsorContainer clientContainer = CreateRemoteContainer(clientDomain, BuildConfigPath("client_kernelgenericcomponent.xml"));
+            IWindsorContainer clientContainer = CreateRemoteContainer(clientDomain, ConfigHelper.ResolveConfigPath("Facilities/Remoting/Configs/client_kernelgenericcomponent.xml"));
 
             GenericToStringServiceImpl<String> service = clientContainer.Resolve<GenericToStringServiceImpl<String>>();        
         }
@@ -75,7 +76,7 @@ namespace Castle.Facilities.Remoting.Tests
 
         public void ClientContainerConsumingRemoteCustomComponentUsingGenericInterfaceCallback()
         {
-            IWindsorContainer clientContainer = CreateRemoteContainer(clientDomain, BuildConfigPath("client_kernelgenericcomponent.xml"));
+            IWindsorContainer clientContainer = CreateRemoteContainer(clientDomain, ConfigHelper.ResolveConfigPath("Facilities/Remoting/Configs/client_kernelgenericcomponent.xml"));
 
             
             IGenericToStringService<StringBuilder> service = clientContainer.Resolve<IGenericToStringService<StringBuilder>>();

@@ -15,8 +15,6 @@
 #if (!SILVERLIGHT)
 namespace Castle.Windsor.Tests.Configuration2
 {
-	using System;
-	using System.IO;
 
 	using Castle.MicroKernel.Tests.ClassComponents;
 
@@ -29,10 +27,7 @@ namespace Castle.Windsor.Tests.Configuration2
 		[SetUp]
 		public void SetUp()
 		{
-
-			var dir = ConfigHelper.ResolveConfigPath("Configuration2/");
-			var file = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, dir + "config_with_forwarded_types.xml");
-			container = new WindsorContainer(file);
+			container = new WindsorContainer(ConfigHelper.ResolveConfigPath("Configuration2/config_with_forwarded_types.xml"));
 		}
 
 		private IWindsorContainer container;

@@ -18,7 +18,7 @@
 namespace Castle.Windsor.Tests
 {
 	using System;
-	using System.IO;
+
 	using Castle.Core.Interceptor;
 	using Castle.MicroKernel.Registration;
 	using Castle.Windsor.Configuration.Interpreters;
@@ -362,8 +362,7 @@ namespace Castle.Windsor.Tests
 
 		public string GetFilePath(string fileName)
 		{
-			return Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
-								ConfigHelper.ResolveConfigPath("DotNet2Config/" + fileName));
+			return ConfigHelper.ResolveConfigPath("DotNet2Config/" + fileName);
 		}
 	}
 

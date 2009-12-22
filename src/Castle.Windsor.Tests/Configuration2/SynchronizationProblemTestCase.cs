@@ -17,7 +17,6 @@
 namespace Castle.Windsor.Tests.Configuration2
 {
 	using System;
-	using System.IO;
 	using System.Threading;
 	using Castle.Windsor.Configuration.Interpreters;
 	using Castle.Windsor.Tests.Components;
@@ -26,7 +25,6 @@ namespace Castle.Windsor.Tests.Configuration2
 	[TestFixture, Explicit]
 	public class SynchronizationProblemTestCase
 	{
-		private string dir = ConfigHelper.ResolveConfigPath("Configuration2/");
 		private WindsorContainer container;
 		private ManualResetEvent startEvent = new ManualResetEvent(false);
 		private ManualResetEvent stopEvent = new ManualResetEvent(false);
@@ -34,10 +32,7 @@ namespace Castle.Windsor.Tests.Configuration2
 		[SetUp]
 		public void Init()
 		{
-			string file = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, dir +
-																			  "synchtest_config.xml");
-
-			container = new WindsorContainer(new XmlInterpreter(file));
+			container = new WindsorContainer(new XmlInterpreter(ConfigHelper.ResolveConfigPath("Configuration2/synchtest_config.xml")));
 
 			container.Resolve(typeof(ComponentWithConfigs));
 		}
@@ -53,11 +48,11 @@ namespace Castle.Windsor.Tests.Configuration2
 		{
 			const int threadCount = 50;
 
-			Thread[] threads = new Thread[threadCount];
+			var threads = new Thread[threadCount];
 
 			for (int i = 0; i < threadCount; i++)
 			{
-				threads[i] = new Thread(new ThreadStart(ExecuteMethodUntilSignal));
+				threads[i] = new Thread(ExecuteMethodUntilSignal);
 				threads[i].Start();
 			}
 

@@ -18,9 +18,9 @@ namespace Castle.Facilities.Remoting.Tests
 	using System;
 	using System.Runtime.Remoting;
 	using System.Runtime.Remoting.Activation;
-	using Castle.Windsor;
 
 	using Castle.Facilities.Remoting.TestComponents;
+	using Castle.Windsor.Tests;
 
 	using NUnit.Framework;
 
@@ -30,7 +30,7 @@ namespace Castle.Facilities.Remoting.Tests
 	{
 		protected override String GetServerConfigFile()
 		{
-			return BuildConfigPath("server_clientactivated.xml");
+			return ConfigHelper.ResolveConfigPath("Facilities/Remoting/Configs/server_clientactivated.xml");
 		}
 
 		[Test]
@@ -41,7 +41,7 @@ namespace Castle.Facilities.Remoting.Tests
 
 		public void CommonAppConsumingRemoteComponentsCallback()
 		{
-			ICalcService service = (ICalcService) 
+			var service = (ICalcService) 
 				Activator.CreateInstance( 
 					typeof(CalcServiceImpl), null, 
 					new object[] { new UrlAttribute("tcp://localhost:2133/") } );
@@ -55,14 +55,14 @@ namespace Castle.Facilities.Remoting.Tests
 		[Test]
 		public void ClientContainerConsumingRemoteComponent()
 		{
-			clientDomain.DoCallBack(new CrossAppDomainDelegate(ClientContainerConsumingRemoteComponentCallback));
+			clientDomain.DoCallBack(ClientContainerConsumingRemoteComponentCallback);
 		}
 
 		public void ClientContainerConsumingRemoteComponentCallback()
 		{
-			IWindsorContainer clientContainer = CreateRemoteContainer(clientDomain, BuildConfigPath("client_clientactivated.xml"));
+			var clientContainer = CreateRemoteContainer(clientDomain, ConfigHelper.ResolveConfigPath("Facilities/Remoting/Configs/client_clientactivated.xml"));
 
-			ICalcService service = (ICalcService) clientContainer[ typeof(ICalcService) ];
+			var service = (ICalcService) clientContainer[ typeof(ICalcService) ];
 
 			Assert.IsTrue( RemotingServices.IsTransparentProxy(service) );
 			Assert.IsTrue( RemotingServices.IsObjectOutOfAppDomain(service) );
