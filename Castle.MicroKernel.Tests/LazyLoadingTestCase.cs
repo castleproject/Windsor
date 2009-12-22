@@ -49,15 +49,6 @@ namespace Castle.MicroKernel.Tests
 			var component = kernel.Resolve<UsingLazyComponent>();
 			Assert.IsNotNull(component.Dependency);
 		}
-
-		[Test]
-		[Ignore("Not sure how to do this in an elegant way... plus I don't think it's the right place for this anyway.")]
-		public void Can_lazily_resolve_parameters()
-		{
-			kernel.AddComponent<UsingString>();
-			var component = kernel.Resolve<UsingString>();
-			Assert.AreEqual("Foo", component.Parameter);
-		}
 	}
 
 	public class Loader : ILazyComponentLoader
