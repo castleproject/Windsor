@@ -17,7 +17,11 @@ namespace Castle.Facilities.Remoting.TestComponents
 	using System;
 	using System.Text;
 
+#if (SILVERLIGHT)
+	public class GenericToStringServiceImpl<T> : IGenericToStringService<T> where T : class
+#else
 	public class GenericToStringServiceImpl<T> : MarshalByRefObject, IGenericToStringService<T> where T : class
+#endif
 	{
 		public string ToString(params T[] instances)
 		{

@@ -1,10 +1,13 @@
-using System;
-using Castle.Facilities.Remoting.TestComponents;
-using Castle.Windsor;
-using NUnit.Framework;
 
+
+#if (!SILVERLIGHT)
 namespace Castle.Facilities.Remoting.Tests
 {
+	using System;
+	using Castle.Facilities.Remoting.TestComponents;
+	using Castle.Windsor;
+	using NUnit.Framework;
+
 	[TestFixture, Serializable]
 	public class ConfigurableRegistrationTestCase : AbstractRemoteTestCase
 	{
@@ -27,3 +30,4 @@ namespace Castle.Facilities.Remoting.Tests
 		}
 	}
 }
+#endif
