@@ -18,42 +18,42 @@ namespace Castle.Facilities.TypedFactory
 
 	public class FactoryEntry
 	{
-		private String _id;
-		private String _creationMethod;
-		private String _destructionMethod;
-		private Type _factoryInterface;
+		private readonly String id;
+		private readonly String creationMethod;
+		private readonly String destructionMethod;
+		private readonly Type factoryInterface;
 
 		public FactoryEntry(String id, Type factoryInterface, String creationMethod, String destructionMethod)
 		{
-			if (id == null || id.Length == 0) throw new ArgumentNullException("id");
+			if (string.IsNullOrEmpty(id)) throw new ArgumentNullException("id");
 			if (factoryInterface == null) throw new ArgumentNullException("factoryInterface");
 			if (!factoryInterface.IsInterface) throw new ArgumentException("factoryInterface must be an interface");
-			if (creationMethod == null || creationMethod.Length == 0) throw new ArgumentNullException("creationMethod");
+			if (string.IsNullOrEmpty(creationMethod)) throw new ArgumentNullException("creationMethod");
 
-			_id = id;
-			_factoryInterface = factoryInterface;
-			_creationMethod = creationMethod;
-			_destructionMethod = destructionMethod;
+			this.id = id;
+			this.factoryInterface = factoryInterface;
+			this.creationMethod = creationMethod;
+			this.destructionMethod = destructionMethod;
 		}
 
 		public String Id
 		{
-			get { return _id; }
+			get { return id; }
 		}
 
 		public Type FactoryInterface
 		{
-			get { return _factoryInterface; }
+			get { return factoryInterface; }
 		}
 
 		public String CreationMethod
 		{
-			get { return _creationMethod; }
+			get { return creationMethod; }
 		}
 
 		public String DestructionMethod
 		{
-			get { return _destructionMethod; }
+			get { return destructionMethod; }
 		}
 	}
 }

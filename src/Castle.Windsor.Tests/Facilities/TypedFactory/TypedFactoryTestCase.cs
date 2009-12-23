@@ -14,8 +14,6 @@
 
 namespace Castle.Facilities.TypedFactory.Tests
 {
-	using System;
-
 	using Castle.Windsor;
 
 	using Castle.MicroKernel.SubSystems.Configuration;
@@ -51,10 +49,11 @@ namespace Castle.Facilities.TypedFactory.Tests
 		[Test]
 		public void Factory1()
 		{
+#pragma warning disable 0618 //call to obsolete method
 			_facility.AddTypedFactoryEntry( 
 				new FactoryEntry(
-					"protocolHandlerFactory", typeof(IProtocolHandlerFactory1), "Create", "Release") );
-
+					"protocolHandlerFactory", typeof(IProtocolHandlerFactory1), "Create", "Release"));
+#pragma warning restore
 			_container.AddComponent( "miranda", typeof(IProtocolHandler), typeof(MirandaProtocolHandler) );
 			_container.AddComponent( "messenger", typeof(IProtocolHandler), typeof(MessengerProtocolHandler) );
 
@@ -73,10 +72,11 @@ namespace Castle.Facilities.TypedFactory.Tests
 		[Test]
 		public void Factory2()
 		{
+#pragma warning disable 0618 //call to obsolete method
 			_facility.AddTypedFactoryEntry( 
 				new FactoryEntry(
 				"protocolHandlerFactory", typeof(IProtocolHandlerFactory2), "Create", "Release") );
-
+#pragma warning restore
 			_container.AddComponent( "miranda", typeof(IProtocolHandler), typeof(MirandaProtocolHandler) );
 			_container.AddComponent( "messenger", typeof(IProtocolHandler), typeof(MessengerProtocolHandler) );
 
@@ -99,10 +99,11 @@ namespace Castle.Facilities.TypedFactory.Tests
 		[Test]
 		public void Factory3()
 		{
+#pragma warning disable 0618 //call to obsolete method
 			_facility.AddTypedFactoryEntry( 
 				new FactoryEntry(
 				"compFactory", typeof(IComponentFactory1), "Construct", "") );
-
+#pragma warning restore
 			_container.AddComponent( "comp1", typeof(IDummyComponent), typeof(Component1) );
 			_container.AddComponent( "comp2", typeof(IDummyComponent), typeof(Component2) );
 
@@ -121,9 +122,11 @@ namespace Castle.Facilities.TypedFactory.Tests
 		[Test]
 		public void Factory4()
 		{
+#pragma warning disable 0618 //call to obsolete method
 			_facility.AddTypedFactoryEntry( 
 				new FactoryEntry(
-				"compFactory", typeof(IComponentFactory2), "Construct", "") );
+				"compFactory", typeof(IComponentFactory2), "Construct", ""));
+#pragma warning restore
 
 			_container.AddComponent( "comp1", typeof(IDummyComponent), typeof(Component1) );
 			_container.AddComponent( "comp2", typeof(IDummyComponent), typeof(Component2) );
