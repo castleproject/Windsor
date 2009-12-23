@@ -12,18 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Configuration;
+using Castle.Core.Configuration;
+using Castle.Facilities.NHibernateIntegration.Builders;
+using NHibernate;
+using NUnit.Framework;
+using Configuration = NHibernate.Cfg.Configuration;
+
 namespace Castle.Facilities.NHibernateIntegration.Tests.Internals
 {
-	using Builders;
-	using Castle.Core.Configuration;
-	using Castle.Core.Resource;
-	using Castle.Windsor.Configuration.Interpreters;
-	using NHibernate;
-	using NHibernate.Cfg;
-	using NUnit.Framework;
-	using Windsor;
-
-	public partial class CustomConfigurationBuilder : IConfigurationBuilder
+	public class CustomConfigurationBuilder : IConfigurationBuilder
 	{
 		private int _configurationsCreated;
 
@@ -32,11 +30,28 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Internals
 			get { return _configurationsCreated; }
 		}
 
+		#region IConfigurationBuilder Members
+
 		public Configuration GetConfiguration(IConfiguration config)
 		{
 			_configurationsCreated++;
-			return new DefaultConfigurationBuilder().GetConfiguration(config);
+
+			Configuration nhConfig = new DefaultConfigurationBuilder().GetConfiguration(config);
+			nhConfig.Properties["dialect"] = ConfigurationManager.AppSettings["nhf.dialect"];
+			nhConfig.Properties["connection.driver_class"] = ConfigurationManager.AppSettings["nhf.connection.driver_class"];
+			nhConfig.Properties["connection.provider"] = ConfigurationManager.AppSettings["nhf.connection.provider"];
+			nhConfig.Properties["connection.connection_string"] =
+				ConfigurationManager.AppSettings["nhf.connection.connection_string.1"];
+			if (config.Attributes["id"] != "sessionFactory1")
+			{
+				nhConfig.Properties["connection.connection_string"] =
+				ConfigurationManager.AppSettings["nhf.connection.connection_string.2"];
+			}
+			nhConfig.Properties["proxyfactory.factory_class"] = ConfigurationManager.AppSettings["nhf.proxyfactory.factory_class"];
+			return nhConfig;
 		}
+
+		#endregion
 	}
 
 	public class CustomNHibernateFacility : NHibernateFacility
@@ -47,40 +62,34 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Internals
 		}
 	}
 
-	public abstract class AbstractCusomConfigurationBuilderTestCase:AbstractNHibernateTestCase
+	public abstract class AbstractCustomConfigurationBuilderTestCase : AbstractNHibernateTestCase
 	{
-
 		[Test]
 		public void Invoked()
 		{
 			ISession session = container.Resolve<ISessionManager>().OpenSession();
-			CustomConfigurationBuilder configurationBuilder = (CustomConfigurationBuilder) container.Resolve<IConfigurationBuilder>();
+			CustomConfigurationBuilder configurationBuilder =
+				(CustomConfigurationBuilder) container.Resolve<IConfigurationBuilder>();
 			Assert.AreEqual(1, configurationBuilder.ConfigurationsCreated);
 			session.Close();
 		}
 	}
 
 	[TestFixture]
-	public class CustomConfigurationBuilderTestCase : AbstractCusomConfigurationBuilderTestCase
+	public class CustomConfigurationBuilderTestCase : AbstractCustomConfigurationBuilderTestCase
 	{
 		protected override string ConfigurationFile
 		{
-			get
-			{
-				return "customConfigurationBuilder.xml";
-			}
+			get { return "customConfigurationBuilder.xml"; }
 		}
 	}
 
 	[TestFixture]
-	public class CustomConfigurationBulderRegressionTestCase : AbstractCusomConfigurationBuilderTestCase
+	public class CustomConfigurationBulderRegressionTestCase : AbstractCustomConfigurationBuilderTestCase
 	{
 		protected override string ConfigurationFile
 		{
-			get
-			{
-				return "configurationBuilderRegression.xml";
-			}
+			get { return "configurationBuilderRegression.xml"; }
 		}
 	}
 }

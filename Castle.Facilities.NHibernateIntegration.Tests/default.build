@@ -7,9 +7,12 @@
 
 	<property name="common.scripts.dir" value="../../buildscripts/" />
 	<include buildfile="${common.scripts.dir}/common-project.xml" />
+	
 	<property name="nhf.dialect" value="NHibernate.Dialect.MsSql2005Dialect" overwrite="false"/>
 	<property name="nhf.connection.driver_class" value="NHibernate.Driver.SqlClientDriver" overwrite="false"/>
 	<property name="nhf.connection.connection_string.1" value="Server=(local);initial catalog=test;Integrated Security=SSPI" overwrite="false"/>
+	<property name="nhf.connection.connection_string.2" value="Server=(local);initial catalog=test2;Integrated Security=SSPI" overwrite="false"/>
+
 	<target name="init" depends="common.init">
 		<assemblyfileset id="project.references" basedir="${build.dir}">
 			<include name="nunit.framework.dll"/>
@@ -25,6 +28,7 @@
 			<include name="System.Configuration.dll" />
 			<include name="log4net.dll" />
 			<include name="System.Data.dll" />
+			<include name="MySql.Data.dll" if="${common.mono}" />
 		</assemblyfileset>
 		
 		<resourcefileset id="project.resources" prefix="${project::get-name()}" dynamicprefix="true">
@@ -49,8 +53,13 @@
 		/>
 		<xmlpoke
 			file="${app.config}"
-			xpath="/configuration/appSettings/add[@key='nhf.connection.connection_string']/@value"
+			xpath="/configuration/appSettings/add[@key='nhf.connection.connection_string.1']/@value"
 			value="${nhf.connection.connection_string.1}" 
+		/>
+		<xmlpoke
+			file="${app.config}"
+			xpath="/configuration/appSettings/add[@key='nhf.connection.connection_string.2']/@value"
+			value="${nhf.connection.connection_string.2}" 
 		/>
 	</target>
 

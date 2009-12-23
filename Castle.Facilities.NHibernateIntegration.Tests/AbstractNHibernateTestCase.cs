@@ -12,9 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using Rhino.Mocks;
-
 namespace Castle.Facilities.NHibernateIntegration.Tests
 {
 	using Castle.Core.Resource;
@@ -23,15 +20,18 @@ namespace Castle.Facilities.NHibernateIntegration.Tests
 	using NHibernate.Cfg;
 	using NHibernate.Tool.hbm2ddl;
 	using NUnit.Framework;
+	using Rhino.Mocks;
 
 	public abstract class AbstractNHibernateTestCase
 	{
-		public AbstractNHibernateTestCase()
-		{
-			mockRepository=new MockRepository();
-		}
 		protected IWindsorContainer container;
 		protected MockRepository mockRepository;
+
+		public AbstractNHibernateTestCase()
+		{
+			mockRepository = new MockRepository();
+		}
+
 		protected virtual string ConfigurationFile
 		{
 			get { return "DefaultConfiguration.xml"; }
@@ -46,6 +46,7 @@ namespace Castle.Facilities.NHibernateIntegration.Tests
 				export.Create(false, true);
 			}
 		}
+
 		protected virtual void DropDatabaseSchema()
 		{
 			Configuration[] cfgs = container.ResolveAll<Configuration>();
@@ -59,7 +60,6 @@ namespace Castle.Facilities.NHibernateIntegration.Tests
 		[SetUp]
 		public void SetUp()
 		{
-
 			container = new WindsorContainer(new XmlInterpreter(new AssemblyResource(GetContainerFile())));
 			ConfigureContainer();
 			ExportDatabaseSchema();
@@ -69,7 +69,6 @@ namespace Castle.Facilities.NHibernateIntegration.Tests
 		[TearDown]
 		public virtual void TearDown()
 		{
-
 			OnTearDown();
 			DropDatabaseSchema();
 			container.Dispose();

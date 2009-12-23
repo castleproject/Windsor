@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 namespace Castle.Facilities.NHibernateIntegration.Tests.Issues
 {
 	public class IssueTestCase : AbstractNHibernateTestCase
@@ -17,10 +13,7 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Issues
 
 		protected override string ConfigurationFile
 		{
-			get
-			{
-				return "Issues/" + BugNumber + "/facility.xml";
-			}
+			get { return "Issues/" + BugNumber + "/facility.xml"; }
 		}
 	}
 }
