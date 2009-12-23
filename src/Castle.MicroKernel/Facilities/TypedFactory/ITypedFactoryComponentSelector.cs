@@ -17,21 +17,21 @@ namespace Castle.MicroKernel.Facilities.TypedFactory
 	using System;
 	using System.Reflection;
 
-	using Castle.Core;
-
 	public interface ITypedFactoryComponentSelector
 	{
 		/// <summary>
 		/// Selects one or both of component name and type, for given method 
 		/// called on given typed factory type.
 		/// When component should be requested by type only,
-		/// name (first argument of returned pair) should be null.
+		/// componentName should be null.
 		/// When component should be requested by name only,
-		/// type (second argument of returned pair) should be null.
+		/// componentType should be null.
+		/// 
 		/// </summary>
 		/// <param name="method"></param>
 		/// <param name="type"></param>
+		/// <param name="arguments"></param>
 		/// <returns></returns>
-		Pair<string, Type> SelectComponent(MethodInfo method, Type type);
+		TypedFactoryComponent SelectComponent(MethodInfo method, Type type, object[] arguments);
 	}
 }

@@ -64,7 +64,7 @@ namespace Castle.Windsor.Proxy
 		/// <param name="target">The target.</param>
 		/// <param name="model">The model.</param>
 		/// <param name="constructorArguments">The constructor arguments.</param>
-        /// <param name="context">The creation context</param>
+		/// <param name="context">The creation context</param>
 		/// <returns>The component proxy.</returns>
 		public override object Create(IKernel kernel, object target, ComponentModel model, CreationContext context, params object[] constructorArguments)
 		{

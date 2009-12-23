@@ -14,8 +14,6 @@
 
 namespace Castle.MicroKernel.Facilities.TypedFactory
 {
-	using System.Collections.Generic;
-
 	using Castle.Core.Interceptor;
 
 	/// <summary>
@@ -33,32 +31,20 @@ namespace Castle.MicroKernel.Facilities.TypedFactory
 
 		public void Invoke(IInvocation invocation)
 		{
-			var component = selector.SelectComponent(invocation.Method, invocation.TargetType);
-			var arguments = GetArguments(invocation);
-			if (component.First == null)
+			var component = selector.SelectComponent(invocation.Method, invocation.TargetType, invocation.Arguments);
+			if (component.ComponentName == null)
 			{
-				invocation.ReturnValue = kernel.Resolve(component.Second, arguments);
+				invocation.ReturnValue = kernel.Resolve(component.ComponentType, component.AdditionalArguments);
 				return;
 			}
 
-			if (component.Second == null)
+			if (component.ComponentType == null)
 			{
-				invocation.ReturnValue = kernel.Resolve(component.First, arguments);
+				invocation.ReturnValue = kernel.Resolve(component.ComponentName, component.AdditionalArguments);
 				return;
 			}
 
-			invocation.ReturnValue = kernel.Resolve(component.First, component.Second, arguments);
-		}
-
-		private Dictionary<string, object> GetArguments(IInvocation invocation)
-		{
-			var arguments = new Dictionary<string, object>();
-			var parameters = invocation.Method.GetParameters();
-			for (int i = 0; i < parameters.Length; i++)
-			{
-				arguments.Add(parameters[i].Name, invocation.GetArgumentValue(i));
-			}
-			return arguments;
+			invocation.ReturnValue = kernel.Resolve(component.ComponentName, component.ComponentType, component.AdditionalArguments);
 		}
 	}
 }

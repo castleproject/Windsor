@@ -15,22 +15,43 @@
 namespace Castle.MicroKernel.Facilities.TypedFactory
 {
 	using System;
+	using System.Collections.Generic;
 	using System.Reflection;
-
-	using Castle.Core;
 
 	public class DefaultTypedFactoryComponentSelector : ITypedFactoryComponentSelector
 	{
-		public Pair<string, Type> SelectComponent(MethodInfo method, Type type)
+		public TypedFactoryComponent SelectComponent(MethodInfo method, Type type, object[] arguments)
+		{
+			var componentName = GetComponentName(method);
+			var componentType = GetComponentType(method);
+			var additionalArguments = GetArguments(method, arguments);
+			return new TypedFactoryComponent(componentName, componentType, additionalArguments);
+		}
+
+		private Type GetComponentType(MethodInfo method)
+		{
+			return method.ReturnType;
+		}
+
+		private string GetComponentName(MethodInfo method)
 		{
 			string componentName = null;
 			if (method.Name.StartsWith("Get"))
 			{
 				componentName = method.Name.Substring("get".Length);
 			}
-			var componentType = method.ReturnType;
+			return componentName;
+		}
 
-			return new Pair<string, Type>(componentName,componentType);
+		private Dictionary<string, object> GetArguments(MethodInfo method, object[] arguments)
+		{
+			var argumentMap = new Dictionary<string, object>();
+			var parameters = method.GetParameters();
+			for (int i = 0; i < parameters.Length; i++)
+			{
+				argumentMap.Add(parameters[i].Name, arguments[i]);
+			}
+			return argumentMap;
 		}
 	}
 }
