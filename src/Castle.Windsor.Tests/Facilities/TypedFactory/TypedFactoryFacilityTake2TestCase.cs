@@ -132,6 +132,20 @@ namespace Castle.Facilities.TypedFactory.Tests
 		}
 
 		[Test]
+		public void Void_methods_release_components()
+		{
+			container.Register(
+				Component.For<IDisposableFactory>().AsFactory(),
+				Component.For<DisposableComponent>().LifeStyle.Transient);
+			var factory = container.Resolve<IDisposableFactory>();
+			var component = factory.Create();
+			Assert.IsFalse(component.Disposed);
+
+			factory.Destroy(component);
+			Assert.IsTrue(component.Disposed);
+		}
+
+		[Test]
 		public void Disposing_factory_does_not_destroy_singleton_components()
 		{
 			container.Register(
