@@ -35,7 +35,7 @@ namespace Castle.Facilities.EventWiring.Tests
 
 		protected string GetConfigFile()
 		{
-			return "config/dependencies.config";
+			return "Config/dependencies.config";
 		}
 
 		[Test]
