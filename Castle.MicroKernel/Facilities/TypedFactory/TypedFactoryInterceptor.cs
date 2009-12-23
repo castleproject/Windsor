@@ -62,27 +62,42 @@ namespace Castle.Facilities.TypedFactory
 				throw new ObjectDisposedException("this", "The factory was disposed and can no longer be used.");
 			}
 
-			var method = methods[invocation.Method];
+			ITypedFactoryMethod method;
+			if (TryGetMethod(invocation, out method) == false)
+			{
+				throw new Exception(
+					string.Format("Can't find information about factory method {0}. This is most likely a bug. Please report it.",
+					              invocation.Method));
+			}
 			method.Invoke(invocation);
+		}
+
+		private bool TryGetMethod(IInvocation invocation, out ITypedFactoryMethod method)
+		{
+			if (methods.TryGetValue(invocation.Method, out method))
+				return true;
+			if (invocation.Method.IsGenericMethod == false)
+				return false;
+			return methods.TryGetValue(invocation.Method.GetGenericMethodDefinition(), out method);
 		}
 
 		public void SetInterceptedComponentModel(ComponentModel target)
 		{
 			this.target = target;
-			BuildHandlersMap();
+			BuildHandlersMap(this.target.Service);
 		}
 
-		protected virtual void BuildHandlersMap()
+		protected virtual void BuildHandlersMap(Type service)
 		{
-			MethodInfo dispose = GetDisposeMethod();
-
-			foreach (MethodInfo method in target.Service.GetMethods())
+			if(service.Equals(typeof(IDisposable)))
 			{
-				if (method == dispose)
-				{
-					methods.Add(method, new Dispose(Dispose));
-					continue;
-				}
+				var method = service.GetMethods().Single();
+				methods.Add(method, new Dispose(Dispose));
+				return;
+			}
+
+			foreach (MethodInfo method in service.GetMethods())
+			{
 				if (IsReleaseMethod(method))
 				{
 					methods.Add(method, new Release(kernel));
@@ -91,16 +106,21 @@ namespace Castle.Facilities.TypedFactory
 				//TODO: had collection handling
 				methods.Add(method, new Resolve(kernel, ComponentSelector));
 			}
+
+			foreach (var @interface in service.GetInterfaces())
+			{
+				BuildHandlersMap(@interface);
+			}
 		}
 
-		private MethodInfo GetDisposeMethod()
+		private bool IsDispose(MethodInfo method)
 		{
-			if (!typeof(IDisposable).IsAssignableFrom(target.Service))
-			{
-				return null;
-			}
+			return method.Name.Equals("Disposable", StringComparison.Ordinal) && method.GetParameters().Length == 0;
+		}
 
-			return target.Service.GetInterfaceMap(typeof(IDisposable)).TargetMethods.Single();
+		private bool GetIsDisposable()
+		{
+			return typeof(IDisposable).IsAssignableFrom(target.Service);
 		}
 
 		private bool IsReleaseMethod(MethodInfo methodInfo)

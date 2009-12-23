@@ -19,9 +19,12 @@ namespace Castle.Facilities.TypedFactory.Tests
 
 	using Castle.Core;
 	using Castle.Facilities.TypedFactory.Tests.Components;
+	using Castle.Facilities.TypedFactory.Tests.Factories;
 	using Castle.MicroKernel.Facilities.TypedFactory;
 	using Castle.MicroKernel.Registration;
+	using Castle.MicroKernel.Resolvers.SpecializedResolvers;
 	using Castle.Windsor;
+	using Castle.Windsor.Tests.Facilities.TypedFactory.Factories;
 
 	using NUnit.Framework;
 
@@ -85,19 +88,69 @@ namespace Castle.Facilities.TypedFactory.Tests
 			component = factory.CreateDummyComponent();
 			Assert.IsInstanceOf<Component2>(component);
 		}
-	}
 
-	public interface DummyComponentFactory
-	{
-		IDummyComponent CreateDummyComponent();
-		IDummyComponent GetSecondComponent();
+		[Test]
+		public void Can_resolve_open_generic_components()
+		{
+			container.Register(
+				Component.For<IGenericComponentsFactory>().AsFactory(),
+				Component.For(typeof(GenericComponentWithIntArg<>)).LifeStyle.Singleton,
+				Component.For(typeof(GenericComponent<>)).LifeStyle.Singleton);
+
+			var factory = container.Resolve<IGenericComponentsFactory>();
+
+			factory.CreateGeneric<GenericComponent<int>>();
+			factory.CreateGeneric<GenericComponent<IDisposable>>();
+
+			var component = factory.CreateGeneric<GenericComponentWithIntArg<string>, int>(667);
+			Assert.AreEqual(667, component.Property);
+		}
+
+		[Test]
+		public void Can_resolve_via_generic_factory()
+		{
+			container.Register(
+				Component.For<IGenericComponentsFactory>().AsFactory());
+
+			var factory = container.Resolve<IGenericComponentsFactory>();
+			var component = factory.CreateGeneric<IDummyComponent>();
+			Assert.IsInstanceOf<Component1>(component);
+		}
+
+		[Test]
+		public void Disposing_factory_destroys_transient_components()
+		{
+			container.Register(
+				Component.For<IDisposableFactory>().AsFactory(),
+				Component.For<DisposableComponent>().LifeStyle.Transient);
+			var factory = container.Resolve<IDisposableFactory>();
+			var component = factory.Create();
+			Assert.IsFalse(component.Disposed);
+
+			factory.Dispose();
+			Assert.IsTrue(component.Disposed);
+		}
+
+		[Test]
+		public void Disposing_factory_does_not_destroy_singleton_components()
+		{
+			container.Register(
+				Component.For<IDisposableFactory>().AsFactory(),
+				Component.For<DisposableComponent>().LifeStyle.Singleton);
+			var factory = container.Resolve<IDisposableFactory>();
+			var component = factory.Create();
+			Assert.IsFalse(component.Disposed);
+
+			factory.Dispose();
+			Assert.IsFalse(component.Disposed);
+		}
 	}
 
 	public class FooSelector:ITypedFactoryComponentSelector
 	{
-		public Pair<string, Type> SelectComponent(MethodInfo method, Type type)
+		public TypedFactoryComponent SelectComponent(MethodInfo method, Type type, object[] arguments)
 		{
-			return new Pair<string, Type>("foo", null);
+			return new TypedFactoryComponent("foo", null, null);
 		}
 	}
 }
