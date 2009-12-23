@@ -28,7 +28,7 @@ namespace Castle.Facilities.EventWiring.Tests
 		[SetUp]
 		public void Init()
 		{
-			container = new WindsorContainer(ConfigHelper.ResolveConfigPath("Facilities/EventWiring/" + "config/Invalid.config"));
+			container = new WindsorContainer(ConfigHelper.ResolveConfigPath("Facilities/EventWiring/Config/invalid.config"));
 		}
 		
 		[Test, ExpectedException(typeof(EventWiringException))]

@@ -22,7 +22,7 @@ namespace Castle.Facilities.EventWiring.Tests
 	{
 		protected override string GetConfigFile()
 		{
-			return "config/startable.config";
+			return "Config/startable.config";
 		}
 	}
 }

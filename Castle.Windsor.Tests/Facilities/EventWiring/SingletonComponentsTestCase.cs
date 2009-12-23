@@ -15,7 +15,6 @@
 #if (!SILVERLIGHT)
 namespace Castle.Facilities.EventWiring.Tests
 {
-	using System;
 	using Castle.Facilities.EventWiring.Tests.Model;
 	using NUnit.Framework;
 
@@ -24,7 +23,7 @@ namespace Castle.Facilities.EventWiring.Tests
 	{
 		protected override string GetConfigFile()
 		{
-			return "config/singleton.config";
+			return "Config/singleton.config";
 		}
 
 		[Test]
