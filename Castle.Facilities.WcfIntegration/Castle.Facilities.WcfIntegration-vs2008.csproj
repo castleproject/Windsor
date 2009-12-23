@@ -96,7 +96,6 @@
     <Compile Include="Behaviors\Lifecyle\AbstractMessageAction.cs" />
     <Compile Include="Behaviors\WcfBehaviorActivator.cs" />
     <Compile Include="Client\AbstractChannelFactoryAware.cs" />
-    <Compile Include="AssemblyInfo.cs" />
     <Compile Include="Behaviors\AbstractWcfExtension.cs" />
     <Compile Include="Behaviors\ExtensionDependencies.cs" />
     <Compile Include="Behaviors\Logging\AbstractMessageFormatter.cs" />
