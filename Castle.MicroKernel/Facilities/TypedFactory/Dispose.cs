@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,10 +12,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Facilities.TypedFactory
+namespace Castle.MicroKernel.Facilities.TypedFactory
 {
-	public class Empty
+	using System;
+
+	using Castle.Core.Interceptor;
+
+	public class Dispose : ITypedFactoryMethod
 	{
-		
+		private readonly Action disposeCallback;
+
+		public Dispose(Action disposeCallback)
+		{
+			this.disposeCallback = disposeCallback;
+		}
+
+		public void Invoke(IInvocation invocation)
+		{
+			disposeCallback();
+		}
 	}
 }

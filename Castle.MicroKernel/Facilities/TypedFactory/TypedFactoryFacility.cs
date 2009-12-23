@@ -1,4 +1,3 @@
-
 // Copyright 2004-2009 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -28,27 +27,35 @@ namespace Castle.Facilities.TypedFactory
 	/// </summary>
 	public class TypedFactoryFacility : AbstractFacility
 	{
-		public void AddTypedFactoryEntry( FactoryEntry entry )
-		{
-			ComponentModel model = 
-				new ComponentModel(entry.Id, entry.FactoryInterface, typeof(Empty));
-			
-			model.LifestyleType = LifestyleType.Singleton;
-			model.ExtendedProperties["typed.fac.entry"] = entry;
-			model.Interceptors.Add( new InterceptorReference( typeof(FactoryInterceptor) ) );
+		internal static readonly string InterceptorKey = "Castle.TypedFactory.Interceptor";
 
-			ProxyOptions proxyOptions = ProxyUtil.ObtainProxyOptions(model, true);
+		[Obsolete("This method is obsolete. Use AsFactory() extension method on fluent registration API instead.")]
+		public void AddTypedFactoryEntry(FactoryEntry entry)
+		{
+			var model = new ComponentModel(entry.Id, entry.FactoryInterface, typeof(Empty)) { LifestyleType = LifestyleType.Singleton };
+
+			model.ExtendedProperties["typed.fac.entry"] = entry;
+			model.Interceptors.Add(new InterceptorReference(typeof(FactoryInterceptor)));
+
+			var proxyOptions = ProxyUtil.ObtainProxyOptions(model, true);
 			proxyOptions.OmitTarget = true;
 
-			Kernel.AddCustomComponent( model );
+			Kernel.AddCustomComponent(model);
 		}
 
 		protected override void Init()
 		{
-			Kernel.AddComponent( "typed.fac.interceptor", typeof(FactoryInterceptor) );
+			Kernel.AddComponent(InterceptorKey, typeof(TypedFactoryInterceptor), LifestyleType.Transient);
 
-			ITypeConverter converter = (ITypeConverter)
-				Kernel.GetSubSystem( SubSystemConstants.ConversionManagerKey );
+			LegacyInit();
+		}
+
+		private void LegacyInit()
+		{
+			Kernel.AddComponent("typed.fac.interceptor", typeof(FactoryInterceptor));
+
+			var converter = (ITypeConverter)
+			                Kernel.GetSubSystem(SubSystemConstants.ConversionManagerKey);
 
 			AddFactories(FacilityConfig, converter);
 		}
@@ -57,27 +64,46 @@ namespace Castle.Facilities.TypedFactory
 		{
 			if (facilityConfig != null)
 			{
-				foreach(IConfiguration config in facilityConfig.Children["factories"].Children)
+				foreach (IConfiguration config in facilityConfig.Children["factories"].Children)
 				{
-					String id = config.Attributes["id"];
-					String creation = config.Attributes["creation"];
-					String destruction = config.Attributes["destruction"];
+					var id = config.Attributes["id"];
+					var creation = config.Attributes["creation"];
+					var destruction = config.Attributes["destruction"];
 
-					Type factoryType = (Type)
-						converter.PerformConversion( config.Attributes["interface"], typeof(Type) );
-
-					try
+					var factoryType = (Type)converter.PerformConversion(config.Attributes["interface"], typeof(Type));
+					if(string.IsNullOrEmpty(creation))
 					{
-						AddTypedFactoryEntry( 
-							new FactoryEntry(id, factoryType, creation, destruction) );
+						RegisterFactory(id, factoryType);
+						continue;
 					}
-					catch(Exception)
-					{
-						string message = "Invalid factory entry in configuration";
 
-						throw new Exception(message);
-					}
+					RegisterFactoryLegacy(creation, id, factoryType, destruction);
 				}
+			}
+		}
+
+		private void RegisterFactory(string id, Type type)
+		{
+			var model = new ComponentModel(id, type, type) { LifestyleType = LifestyleType.Singleton };
+			model.Interceptors.Add(new InterceptorReference(typeof(TypedFactoryInterceptor)));
+			ProxyUtil.ObtainProxyOptions(model, true).OmitTarget = true;
+
+			Kernel.AddCustomComponent(model);
+		}
+
+		private void RegisterFactoryLegacy(string creation, string id, Type factoryType, string destruction)
+		{
+			try
+			{
+#pragma warning disable 0618 //call to obsolete method
+				AddTypedFactoryEntry(new FactoryEntry(id, factoryType, creation, destruction));
+#pragma warning restore
+			}
+			catch (Exception)
+			{
+				string message = "Invalid factory entry in configuration";
+
+				throw new Exception(message);
 			}
 		}
 	}

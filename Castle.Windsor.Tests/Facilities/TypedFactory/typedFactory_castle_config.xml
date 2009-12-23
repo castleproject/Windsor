@@ -18,6 +18,9 @@
 			  <factory id="protocolFac2" 
 				interface="Castle.Facilities.TypedFactory.Tests.Factories.IProtocolHandlerFactory2, Castle.Windsor.Tests" 
 				creation="Create" destruction="Release" />
+        
+        <factory id="NoCreationOrDestructionDefined"
+				interface="Castle.Facilities.TypedFactory.Tests.Factories.IComponentFactory1, Castle.Windsor.Tests" />
 			</factories>
 		</facility>
 	</facilities>

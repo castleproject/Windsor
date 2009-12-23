@@ -181,6 +181,8 @@
     <Compile Include="Facilities\Startable\StopConcern.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Facilities\TypedFactory\DefaultTypedFactoryComponentSelector.cs" />
+    <Compile Include="Facilities\TypedFactory\Dispose.cs" />
     <Compile Include="Facilities\TypedFactory\Empty.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -190,9 +192,15 @@
     <Compile Include="Facilities\TypedFactory\FactoryInterceptor.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Facilities\TypedFactory\ITypedFactoryComponentSelector.cs" />
+    <Compile Include="Facilities\TypedFactory\ITypedFactoryMethod.cs" />
+    <Compile Include="Facilities\TypedFactory\Release.cs" />
+    <Compile Include="Facilities\TypedFactory\Resolve.cs" />
     <Compile Include="Facilities\TypedFactory\TypedFactoryFacility.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Facilities\TypedFactory\TypedFactoryInterceptor.cs" />
+    <Compile Include="Facilities\TypedFactory\TypedFactoryRegistrationExtensions.cs" />
     <Compile Include="Handlers\AbstractHandler.cs">
       <SubType>Code</SubType>
     </Compile>

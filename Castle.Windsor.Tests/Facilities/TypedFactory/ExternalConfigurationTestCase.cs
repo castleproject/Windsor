@@ -27,31 +27,31 @@ namespace Castle.Facilities.TypedFactory.Tests
 	[TestFixture]
 	public class ExternalConfigurationTestCase
 	{
-		private IWindsorContainer _container;
+		private IWindsorContainer container;
 
 		[SetUp]
 		public void Init()
 		{
-			_container = new WindsorContainer(ConfigHelper.ResolveConfigPath("Facilities/TypedFactory/typedFactory_castle_config.xml"));
+			container = new WindsorContainer(ConfigHelper.ResolveConfigPath("Facilities/TypedFactory/typedFactory_castle_config.xml"));
 			
-			_container.AddFacility( "typedfactory", new TypedFactoryFacility() );
+			container.AddFacility( "typedfactory", new TypedFactoryFacility() );
 
-			_container.AddComponent( "miranda", typeof(IProtocolHandler), typeof(MirandaProtocolHandler) );
-			_container.AddComponent( "messenger", typeof(IProtocolHandler), typeof(MessengerProtocolHandler) );
-			_container.AddComponent( "comp1", typeof(IDummyComponent), typeof(Component1) );
-			_container.AddComponent( "comp2", typeof(IDummyComponent), typeof(Component2) );
+			container.AddComponent( "miranda", typeof(IProtocolHandler), typeof(MirandaProtocolHandler) );
+			container.AddComponent( "messenger", typeof(IProtocolHandler), typeof(MessengerProtocolHandler) );
+			container.AddComponent( "comp1", typeof(IDummyComponent), typeof(Component1) );
+			container.AddComponent( "comp2", typeof(IDummyComponent), typeof(Component2) );
 		}
 
 		[TearDown]
 		public void Finish()
 		{
-			_container.Dispose();
+			container.Dispose();
 		}
 
 		[Test]
 		public void Factory1()
 		{
-			var factory = (IProtocolHandlerFactory1) _container["protocolFac1"];
+			var factory = (IProtocolHandlerFactory1) container["protocolFac1"];
 
 			Assert.IsNotNull( factory );
 			
@@ -65,7 +65,7 @@ namespace Castle.Facilities.TypedFactory.Tests
 		[Test]
 		public void Factory2()
 		{
-			var factory = (IProtocolHandlerFactory2) _container["protocolFac2"];
+			var factory = (IProtocolHandlerFactory2) container["protocolFac2"];
 
 			Assert.IsNotNull( factory );
 			
@@ -83,7 +83,7 @@ namespace Castle.Facilities.TypedFactory.Tests
 		[Test]
 		public void Factory3()
 		{
-			var factory = (IComponentFactory1) _container["compFactory1"];
+			var factory = (IComponentFactory1) container["compFactory1"];
 
 			Assert.IsNotNull( factory );
 			
@@ -97,7 +97,7 @@ namespace Castle.Facilities.TypedFactory.Tests
 		[Test]
 		public void Factory4()
 		{
-			var factory = (IComponentFactory2) _container["compFactory2"];
+			var factory = (IComponentFactory2) container["compFactory2"];
 			Assert.IsNotNull( factory );
 
 			var comp1 = (IDummyComponent)factory.Construct("comp1");
@@ -107,6 +107,20 @@ namespace Castle.Facilities.TypedFactory.Tests
 			var comp2 = (IDummyComponent)factory.Construct("comp2");
 			Assert.IsTrue( comp2 is Component2 );
 			Assert.IsNotNull( comp2 );
+		}
+
+		[Test]
+		public void No_Creation_Or_Destruction_methods_defined()
+		{
+			var factory = (IComponentFactory1)container["NoCreationOrDestructionDefined"];
+
+			Assert.IsNotNull(factory);
+
+			var comp1 = factory.Construct();
+			Assert.IsNotNull(comp1);
+
+			var comp2 = factory.Construct();
+			Assert.IsNotNull(comp2);
 		}
 	}
 }
