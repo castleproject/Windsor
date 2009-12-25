@@ -66,7 +66,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 
 				if(parameter.ConfigValue != null)
 				{
-					if(parameter.ConfigValue.Name == "array" || parameter.ConfigValue.Name == "list")
+					if(IsArray(parameter) || IsList(parameter))
 					{
 						AddAnyServiceOverrides(model, parameter.ConfigValue);
 					}
@@ -83,6 +83,16 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 				
 				model.Dependencies.Add(new DependencyModel(DependencyType.ServiceOverride, newKey, null, false));
 			}
+		}
+
+		private bool IsList(ParameterModel parameter)
+		{
+			return parameter.ConfigValue.Name == "list";
+		}
+
+		private bool IsArray(ParameterModel parameter)
+		{
+			return parameter.ConfigValue.Name == "array";
 		}
 
 		private void AddAnyServiceOverrides(ComponentModel model, IConfiguration config)

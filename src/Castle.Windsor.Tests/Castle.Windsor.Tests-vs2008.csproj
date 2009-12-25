@@ -431,6 +431,9 @@
     <None Include="DotNet2Config\chainOfRespnsability.config" />
     <None Include="DotNet2Config\chainOfRespnsability_smart.config" />
     <None Include="Facilities\EventWiring\App.config" />
+    <EmbeddedResource Include="InterceptorsMultiple.config" />
+    <EmbeddedResource Include="InterceptorsInvalid.config" />
+    <EmbeddedResource Include="Interceptors.config" />
     <Content Include="RemotingTcpConfig2.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

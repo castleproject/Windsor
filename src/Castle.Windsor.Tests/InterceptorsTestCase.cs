@@ -15,73 +15,74 @@
 
 namespace Castle.Windsor.Tests
 {
-	using Castle.MicroKernel.Registration;
 	using System;
 	using System.Threading;
+
 	using Castle.Core;
 	using Castle.Core.Interceptor;
 	using Castle.MicroKernel;
+	using Castle.MicroKernel.Handlers;
+	using Castle.MicroKernel.Registration;
 	using Castle.Windsor.Tests.Components;
+
 	using NUnit.Framework;
 
 	[TestFixture]
 	public class InterceptorsTestCase
 	{
-		private IWindsorContainer _container;
-		private ManualResetEvent _startEvent = new ManualResetEvent(false);
-		private ManualResetEvent _stopEvent = new ManualResetEvent(false);
-		private CalculatorService _service;
+		private IWindsorContainer container;
+		private readonly ManualResetEvent startEvent = new ManualResetEvent(false);
+		private readonly ManualResetEvent stopEvent = new ManualResetEvent(false);
+		private CalculatorService service;
 
 		[SetUp]
 		public void Init()
 		{
-			_container = new WindsorContainer();
+			container = new WindsorContainer();
 
-			_container.AddFacility("1", new MyInterceptorGreedyFacility());
-			_container.AddFacility("2", new MyInterceptorGreedyFacility());
-			_container.AddFacility("3", new MyInterceptorGreedyFacility());
+			container.AddFacility("1", new MyInterceptorGreedyFacility());
+			container.AddFacility("2", new MyInterceptorGreedyFacility());
+			container.AddFacility("3", new MyInterceptorGreedyFacility());
 		}
 
 		[TearDown]
 		public void Terminate()
 		{
-			_container.Dispose();
+			container.Dispose();
 		}
 
 		[Test]
 		public void InterfaceProxy()
 		{
-			_container.AddComponent("interceptor", typeof(ResultModifierInterceptor));
-			_container.AddComponent("key",
-			                        typeof(ICalcService), typeof(CalculatorService));
+			container.AddComponent("interceptor", typeof(ResultModifierInterceptor));
+			container.AddComponent("key",typeof(ICalcService), typeof(CalculatorService));
 
-			ICalcService service = (ICalcService) _container.Resolve("key");
+			var service = container.Resolve<ICalcService>("key");
 
 			Assert.IsNotNull(service);
 			Assert.AreEqual(7, service.Sum(2, 2));
 		}
 
-        [Test]
-        public void Interface_that_depends_on_service_it_is_intercepting()
-        {
-            _container.AddComponent("interceptor", typeof(InterceptorThatCauseStackOverflow));
-            _container.Register(
-                Component.For<ICameraService>().ImplementedBy<CameraService>()
-                    .Interceptors(new[]{new InterceptorReference(typeof(InterceptorThatCauseStackOverflow)), }).First,
-                //because it has no interceptors, it is okay to resolve it...
-                Component.For<ICameraService>().ImplementedBy<CameraService>().Named("okay to resolve")
-                    );
-            _container.Resolve<ICameraService>();
-        }
+		[Test]
+		public void Interface_that_depends_on_service_it_is_intercepting()
+		{
+			container.AddComponent("interceptor", typeof(InterceptorThatCauseStackOverflow));
+			container.Register(
+				Component.For<ICameraService>().ImplementedBy<CameraService>()
+					.Interceptors(new[] { new InterceptorReference(typeof(InterceptorThatCauseStackOverflow)), }).First,
+				//because it has no interceptors, it is okay to resolve it...
+				Component.For<ICameraService>().ImplementedBy<CameraService>().Named("okay to resolve")
+				);
+			container.Resolve<ICameraService>();
+		}
 
 		[Test]
 		public void InterfaceProxyWithLifecycle()
 		{
-			_container.AddComponent("interceptor", typeof(ResultModifierInterceptor));
-			_container.AddComponent("key",
-			                        typeof(ICalcService), typeof(CalculatorServiceWithLifecycle));
+			container.AddComponent("interceptor", typeof(ResultModifierInterceptor));
+			container.AddComponent("key", typeof(ICalcService), typeof(CalculatorServiceWithLifecycle));
 
-			ICalcService service = (ICalcService) _container.Resolve("key");
+			ICalcService service = (ICalcService) container.Resolve("key");
 
 			Assert.IsNotNull(service);
 			Assert.IsTrue(service.Initialized);
@@ -89,7 +90,7 @@ namespace Castle.Windsor.Tests
 
 			Assert.IsFalse(service.Disposed);
 
-			_container.Release(service);
+			container.Release(service);
 
 			Assert.IsTrue(service.Disposed);
 		}
@@ -97,23 +98,62 @@ namespace Castle.Windsor.Tests
 		[Test]
 		public void ClassProxy()
 		{
-			_container.AddComponent("interceptor", typeof(ResultModifierInterceptor));
-			_container.AddComponent("key", typeof(CalculatorService));
+			container.AddComponent("interceptor", typeof(ResultModifierInterceptor));
+			container.AddComponent("key", typeof(CalculatorService));
 
-			CalculatorService service = (CalculatorService) _container.Resolve("key");
+			service = container.Resolve<CalculatorService>("key");
 
 			Assert.IsNotNull(service);
 			Assert.AreEqual(7, service.Sum(2, 2));
 		}
 
+#if (!SILVERLIGH) //no xml in Silverlight
+
+		[Test]
+		public void Xml_validComponent_resolves_correctly()
+		{
+			container.Install(Windsor.Installer.Configuration.FromXmlFile(ConfigHelper.ResolveConfigPath("Interceptors.config")));
+			service = container.Resolve<CalculatorService>("ValidComponent");
+
+			Assert.IsNotNull(service);
+			Assert.AreEqual(5, service.Sum(2, 2));
+		}
+
+		[Test]
+		public void Xml_multiple_interceptors_resolves_correctly()
+		{
+			container.Install(Windsor.Installer.Configuration.FromXmlFile(ConfigHelper.ResolveConfigPath("InterceptorsMultiple.config")));
+			service = container.Resolve<CalculatorService>("component");
+
+			Assert.IsNotNull(service);
+			Assert.AreEqual(10, service.Sum(2, 2));
+		}
+
+		[Test]
+		public void Xml_Component_With_Non_Existing_Interceptor_throws()
+		{
+			container.Install(Windsor.Installer.Configuration.FromXmlFile(ConfigHelper.ResolveConfigPath("Interceptors.config")));
+			Assert.Throws(typeof(HandlerException), () =>
+				container.Resolve<CalculatorService>("ComponentWithNonExistingInterceptor"));
+		}
+
+		[Test]
+		public void Xml_Component_With_Non_invalid_Interceptor_throws()
+		{
+			Assert.Throws(typeof(Exception), () =>
+				container.Install(
+					Windsor.Installer.Configuration.FromXmlFile(
+						ConfigHelper.ResolveConfigPath("InterceptorsInvalid.config"))));
+		}
+#endif
 		[Test]
 		public void OnBehalfOfTest()
 		{
-			_container.AddComponent("interceptor", typeof(InterceptorWithOnBehalf));
-			_container.AddComponent("key", typeof(CalculatorService));
+			container.AddComponent("interceptor", typeof(InterceptorWithOnBehalf));
+			container.AddComponent("key", typeof(CalculatorService));
 
 			CalculatorService service =
-				(CalculatorService) _container.Resolve("key");
+				(CalculatorService) container.Resolve("key");
 
 			Assert.IsNotNull(service);
 			Assert.AreEqual(4, service.Sum(2, 2));
@@ -126,13 +166,13 @@ namespace Castle.Windsor.Tests
 		[Test]
 		public void ClassProxyWithAttributes()
 		{
-			_container = new WindsorContainer(); // So we wont use the facilities
+			container = new WindsorContainer(); // So we wont use the facilities
 
-			_container.AddComponent("interceptor", typeof(ResultModifierInterceptor));
-			_container.AddComponent("key", typeof(CalculatorServiceWithAttributes));
+			container.AddComponent("interceptor", typeof(ResultModifierInterceptor));
+			container.AddComponent("key", typeof(CalculatorServiceWithAttributes));
 
 			CalculatorServiceWithAttributes service =
-				(CalculatorServiceWithAttributes) _container.Resolve("key");
+				(CalculatorServiceWithAttributes) container.Resolve("key");
 
 			Assert.IsNotNull(service);
 			Assert.AreEqual(5, service.Sum(2, 2));
@@ -141,10 +181,10 @@ namespace Castle.Windsor.Tests
 		[Test]
 		public void Multithreaded()
 		{
-			_container.AddComponent("interceptor", typeof(ResultModifierInterceptor));
-			_container.AddComponent("key", typeof(CalculatorService));
+			container.AddComponent("interceptor", typeof(ResultModifierInterceptor));
+			container.AddComponent("key", typeof(CalculatorService));
 
-			_service = (CalculatorService) _container.Resolve("key");
+			service = (CalculatorService) container.Resolve("key");
 
 			const int threadCount = 10;
 
@@ -156,35 +196,35 @@ namespace Castle.Windsor.Tests
 				threads[i].Start();
 			}
 
-			_startEvent.Set();
+			startEvent.Set();
 
 			Thread.CurrentThread.Join(1 * 2000);
 
-			_stopEvent.Set();
+			stopEvent.Set();
 		}
 
 		[Test]
 		public void AutomaticallyOmitTarget()
 		{
-			_container.Register(
+			container.Register(
 				Component.For<ICalcService>()
 					.Interceptors(InterceptorReference.ForType<ReturnDefaultInterceptor>()).Last,
 				Component.For<ReturnDefaultInterceptor>()
 				);
 
-			ICalcService calcService = _container.Resolve<ICalcService>();
+			ICalcService calcService = container.Resolve<ICalcService>();
 			Assert.AreEqual(0, calcService.Sum(1, 2));
 		}
 
 		public void ExecuteMethodUntilSignal()
 		{
-			_startEvent.WaitOne(int.MaxValue);
+			startEvent.WaitOne(int.MaxValue);
 
-			while(!_stopEvent.WaitOne(1))
+			while(!stopEvent.WaitOne(1))
 			{
-				Assert.AreEqual(7, _service.Sum(2, 2));
-				Assert.AreEqual(8, _service.Sum(3, 2));
-				Assert.AreEqual(10, _service.Sum(3, 4));
+				Assert.AreEqual(7, service.Sum(2, 2));
+				Assert.AreEqual(8, service.Sum(3, 2));
+				Assert.AreEqual(10, service.Sum(3, 4));
 			}
 		}
 	}
@@ -240,28 +280,44 @@ namespace Castle.Windsor.Tests
 		}
 	}
 
-    public class InterceptorThatCauseStackOverflow : IInterceptor
-    {
-
-        public InterceptorThatCauseStackOverflow(ICameraService service)
-        {
-        }
-
-        public void Intercept(IInvocation invocation)
-        {
-            
-        }
-    }
-
-    public class ResultModifierInterceptor : IInterceptor
+	public class InterceptorThatCauseStackOverflow : IInterceptor
 	{
+
+		public InterceptorThatCauseStackOverflow(ICameraService service)
+		{
+		}
+
+		public void Intercept(IInvocation invocation)
+		{
+
+		}
+	}
+
+	public class ResultModifierInterceptor : IInterceptor
+	{
+		private readonly int? returnValue;
+
+		public ResultModifierInterceptor()
+		{
+		}
+
+		public ResultModifierInterceptor(int returnValue)
+		{
+			this.returnValue = returnValue;
+		}
+
 		public void Intercept(IInvocation invocation)
 		{
 			if (invocation.Method.Name.Equals("Sum"))
 			{
 				invocation.Proceed();
 				object result = invocation.ReturnValue;
-				invocation.ReturnValue = ((int) result) + 1;
+				if (!returnValue.HasValue)
+				{
+					invocation.ReturnValue = ((int)result) + 1;
+					return;
+				}
+				invocation.ReturnValue = returnValue.Value;
 				return;
 			}
 

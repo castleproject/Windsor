@@ -17,7 +17,6 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 	using System;
 	using Castle.MicroKernel.Util;
 	using Castle.Core;
-	using Castle.Core.Configuration;
 
 	/// <summary>
 	/// Inspect the component for <c>InterceptorAttribute</c> and
@@ -38,29 +37,23 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 		{
 			if (model.Configuration == null) return;
 
-			IConfiguration interceptors = model.Configuration.Children["interceptors"];
-
+			var interceptors = model.Configuration.Children["interceptors"];
 			if (interceptors == null) return;
 
-			foreach(IConfiguration interceptor in interceptors.Children)
+			foreach (var interceptor in interceptors.Children)
 			{
-				String value = interceptor.Value;
+				var value = interceptor.Value;
 
 				if (!ReferenceExpressionUtil.IsReference(value))
 				{
-					String message = String.Format(
-						"The value for the interceptor must be a reference " + 
-						"to a component (Currently {0})", 
-						value);
-
-					throw new Exception(message);
+					throw new Exception(
+						String.Format("The value for the interceptor must be a reference to a component (Currently {0})", value));
 				}
 
-				InterceptorReference interceptorRef = 
-					new InterceptorReference( ReferenceExpressionUtil.ExtractComponentKey(value) );
-				
-				model.Interceptors.Add(interceptorRef);
-				model.Dependencies.Add( CreateDependencyModel(interceptorRef) );
+				var reference = new InterceptorReference(ReferenceExpressionUtil.ExtractComponentKey(value));
+
+				model.Interceptors.Add(reference);
+				model.Dependencies.Add(CreateDependencyModel(reference));
 			}
 		}
 
@@ -91,8 +84,12 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 
 		protected DependencyModel CreateDependencyModel(InterceptorReference interceptor)
 		{
-			return new DependencyModel(DependencyType.Service, interceptor.ComponentKey, 
-				interceptor.ServiceType, false);
+			if (string.IsNullOrEmpty(interceptor.ComponentKey))
+			{
+				return new DependencyModel(DependencyType.Service, interceptor.ComponentKey, interceptor.ServiceType, false);
+			}
+
+			return new DependencyModel(DependencyType.ServiceOverride, interceptor.ComponentKey, interceptor.ServiceType, false);
 		}
 
 		protected void AddInterceptor(InterceptorReference interceptorRef, InterceptorReferenceCollection interceptors)
