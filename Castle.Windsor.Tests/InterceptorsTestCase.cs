@@ -107,7 +107,7 @@ namespace Castle.Windsor.Tests
 			Assert.AreEqual(7, service.Sum(2, 2));
 		}
 
-#if (!SILVERLIGH) //no xml in Silverlight
+#if (!SILVERLIGHT) //no xml in Silverlight
 
 		[Test]
 		public void Xml_validComponent_resolves_correctly()
