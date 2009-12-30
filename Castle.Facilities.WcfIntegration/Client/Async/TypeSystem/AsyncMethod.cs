@@ -61,7 +61,7 @@ namespace Castle.Facilities.WcfIntegration.Async.TypeSystem
 
 		public override Type ReflectedType
 		{
-			get { throw new NotImplementedException(); }
+			get { return AsyncType; }
 		}
 
 		public override RuntimeMethodHandle MethodHandle
@@ -71,7 +71,7 @@ namespace Castle.Facilities.WcfIntegration.Async.TypeSystem
 
 		public override MethodAttributes Attributes
 		{
-			get { throw new NotImplementedException(); }
+			get { return SyncMethod.Attributes; }
 		}
 
 		public MethodInfo SyncMethod { get; private set; }
@@ -110,17 +110,17 @@ namespace Castle.Facilities.WcfIntegration.Async.TypeSystem
 
 		public override object[] GetCustomAttributes(bool inherit)
 		{
-			throw new NotImplementedException();
+			return SyncMethod.GetCustomAttributes(inherit);
 		}
 
 		public override bool IsDefined(Type attributeType, bool inherit)
 		{
-			throw new NotImplementedException();
+			return SyncMethod.IsDefined(attributeType, inherit);
 		}
 
 		public override MethodImplAttributes GetMethodImplementationFlags()
 		{
-			throw new NotImplementedException();
+			return SyncMethod.GetMethodImplementationFlags();
 		}
 
 		public override object Invoke(object obj, BindingFlags invokeAttr, Binder binder, object[] parameters,
@@ -131,7 +131,7 @@ namespace Castle.Facilities.WcfIntegration.Async.TypeSystem
 
 		public override MethodInfo GetBaseDefinition()
 		{
-			throw new NotImplementedException();
+			return this;
 		}
 	}
 }

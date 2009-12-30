@@ -51,6 +51,11 @@ namespace Castle.Facilities.WcfIntegration.Proxy
 			}
 		}
 
+		public ParameterInfo[] Parameters
+		{
+			get { return parameters; }
+		}
+
 		public string GetArgName(int index)
 		{
 			return parameters[index].Name;
@@ -131,11 +136,20 @@ namespace Castle.Facilities.WcfIntegration.Proxy
 			get { return inArguments;}
 		}
 
+		public object[] OutArgs
+		{
+			get
+			{
+				return parameters.Where(p => p.IsOut || p.ParameterType.IsByRef)
+					.Select((p, i) => Args[i]).ToArray();
+			}
+		}
+
 		private static Func<LogicalCallContext> LogicalCallContextBuilder()
 		{
 			var type = typeof(LogicalCallContext);
 			var ctor = type.GetConstructor(BindingFlags.NonPublic | BindingFlags.Instance, null, Type.EmptyTypes, null);
-			var creator = new DynamicMethod("CreateLogicalContext", type, null, type);
+			var creator = new DynamicMethod("CreateLogicalContext", type, null, type, true);
 			var generator = creator.GetILGenerator();
 			generator.Emit(OpCodes.Newobj, ctor);
 			generator.Emit(OpCodes.Ret);

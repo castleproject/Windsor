@@ -143,7 +143,6 @@
     <Compile Include="AbstractWcfPolicy.cs" />
     <Compile Include="IWcfPolicy.cs" />
     <Compile Include="IWcfCleanUp.cs" />
-    <Compile Include="Lifestyles\IWcfLifestyle.cs" />
     <Compile Include="Lifestyles\IOperationContextProvider.cs" />
     <Compile Include="Lifestyles\LifestyleRegistrationExtensions.cs" />
     <Compile Include="Lifestyles\OperationContextProvider.cs" />

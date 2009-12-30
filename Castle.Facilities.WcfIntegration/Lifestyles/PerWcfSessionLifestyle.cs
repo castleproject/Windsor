@@ -10,10 +10,8 @@
 	/// with this lifestyle is requested multiple times during WCF session, the same instance will be provided.
 	/// If no WCF session is available falls back to the default behavior of transient.
 	/// </summary>
-	public class PerWcfSessionLifestyle : AbstractLifestyleManager, IWcfLifestyle
+	public class PerWcfSessionLifestyle : AbstractLifestyleManager
 	{
-		private readonly Guid id = Guid.NewGuid();
-
 		private readonly IOperationContextProvider operationContextProvider;
 
 		public PerWcfSessionLifestyle()
@@ -39,11 +37,10 @@
 		public override object Resolve(CreationContext context)
 		{
 			var operation = operationContextProvider.Current;
-			if (operation == null)
+			if (operation == null || string.IsNullOrEmpty(operation.SessionId))
+			{
 				return base.Resolve(context);
-
-			if (string.IsNullOrEmpty(operation.SessionId))
-				return base.Resolve(context);
+			}
 
 			var channel = operation.Channel;
 
@@ -64,11 +61,6 @@
 			}
 
 			return component;
-		}
-
-		public Guid ComponentId
-		{
-			get { return id; }
 		}
 	}
 }

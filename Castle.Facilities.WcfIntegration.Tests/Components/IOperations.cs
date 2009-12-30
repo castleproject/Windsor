@@ -25,6 +25,9 @@ namespace Castle.Facilities.WcfIntegration.Tests
 		int GetValueFromConstructor();
 
 		[OperationContract]
+		int GetValueFromConstructorAsRef(ref int refValue);
+
+		[OperationContract]
 		int GetValueFromConstructorAsRefAndOut(ref int refValue, out int outValue);
 
 		[OperationContract]
@@ -37,6 +40,10 @@ namespace Castle.Facilities.WcfIntegration.Tests
 		[OperationContract(AsyncPattern = true)]
 		IAsyncResult BeginGetValueFromConstructor(AsyncCallback callback, object asyncState);
 		int EndGetValueFromConstructor(IAsyncResult result);
+
+        [OperationContract(AsyncPattern = true)]
+        IAsyncResult BeginGetValueFromConstructorAsRef(ref int refValue, AsyncCallback callback, object asyncState);
+        int EndGetValueFromConstructorAsRef(ref int refValue, IAsyncResult result);
 
 		[OperationContract(AsyncPattern = true)]
 		IAsyncResult BeginGetValueFromConstructorAsRefAndOut(ref int refValue, AsyncCallback callback, object asyncState);
@@ -64,6 +71,9 @@ namespace Castle.Facilities.WcfIntegration.Tests
 		int GetValueFromConstructor();
 
 		[OperationContract]
+		int GetValueFromConstructorAsRef(ref int refValue);
+
+		[OperationContract]
 		int GetValueFromConstructorAsRefAndOut(ref int refValue, out int outValue);
 
 		[OperationContract]
@@ -72,6 +82,10 @@ namespace Castle.Facilities.WcfIntegration.Tests
 		[OperationContract(AsyncPattern = true)]
 		IAsyncResult BeginGetValueFromConstructor(AsyncCallback callback, object asyncState);
 		int EndGetValueFromConstructor(IAsyncResult result);
+
+		[OperationContract(AsyncPattern = true)]
+		IAsyncResult BeginGetValueFromConstructorAsRef(ref int refValue, AsyncCallback callback, object asyncState);
+		int EndGetValueFromConstructorAsRef(ref int refValue, IAsyncResult result);
 
 		[OperationContract(AsyncPattern = true)]
 		IAsyncResult BeginGetValueFromConstructorAsRefAndOut(ref int refValue, AsyncCallback callback, object asyncState);

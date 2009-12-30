@@ -9,7 +9,7 @@
 	public class PerChannelLifestyleExtension : IExtension<IContextChannel>
 	{
 		private IContextChannel channel;
-		private readonly IDictionary<IWcfLifestyle, object> components = new Dictionary<IWcfLifestyle, object>(new WCFLifestyleComparer());
+		private readonly IDictionary<PerWcfSessionLifestyle, object> components = new Dictionary<PerWcfSessionLifestyle, object>();
 		private bool used;
 
 		/// <inheritDoc />
@@ -57,7 +57,7 @@
 			channel = null;
 		}
 
-		public object this[IWcfLifestyle manager]
+		public object this[PerWcfSessionLifestyle manager]
 		{
 			get
 			{
@@ -68,19 +68,6 @@
 			set
 			{
 				components[manager] = value;
-			}
-		}
-
-		private class WCFLifestyleComparer : IEqualityComparer<IWcfLifestyle>
-		{
-			public bool Equals(IWcfLifestyle x, IWcfLifestyle y)
-			{
-				return x.ComponentId.Equals(y.ComponentId);
-			}
-
-			public int GetHashCode(IWcfLifestyle obj)
-			{
-				return obj.ComponentId.GetHashCode();
 			}
 		}
 	}
