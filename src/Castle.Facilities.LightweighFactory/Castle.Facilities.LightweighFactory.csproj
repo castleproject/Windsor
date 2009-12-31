@@ -62,11 +62,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ExpressionTreeBasedDelegateBuilder.cs" />
+    <Compile Include="FactoryParameter.cs" />
     <Compile Include="LightweightFactoryFacility.cs" />
     <Compile Include="ParametersBinder.cs" />
     <Compile Include="IDelegateBuilder.cs" />
     <Compile Include="LightweightFactory.cs" />
-    <Compile Include="LightweightResolutionContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tokens.cs" />
   </ItemGroup>

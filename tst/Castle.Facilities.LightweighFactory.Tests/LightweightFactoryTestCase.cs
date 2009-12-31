@@ -82,10 +82,9 @@
 			Assert.AreEqual("naaaameee", obj.Name);
 		}
 
-		[Test, Ignore("There does not seem to be any way to do this...")]
+		[Test]
 		public void Does_not_duplicate_arguments_matching_delegate_parameters()
 		{
-			container.AddComponent<Baz>("baz");
 			container.AddComponent<HasOnlyOneArgMatchingDelegatesParameter>("fizz");
 			var factory = container.Resolve<Func<string, string, HasOnlyOneArgMatchingDelegatesParameter>>("fizzFactory");
 			var obj = factory("arg1", "name");
