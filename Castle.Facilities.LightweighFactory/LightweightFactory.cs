@@ -56,8 +56,6 @@
 			return Component.For(service)
 				.Named(key)
 				.Instance(@delegate)
-				.ExtendedProperties(
-					Property.ForKey("lightweight-factory-component").Eq(true))
 				.LifeStyle.Singleton;
 		}
 

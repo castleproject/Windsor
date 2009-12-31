@@ -24,8 +24,13 @@
 		internal static readonly FieldInfo LightweightFactoryKernel =
 			typeof(LightweightFactory).GetField("kernel",BindingFlags.Instance |BindingFlags.NonPublic);
 
-		public static readonly ConstructorInfo LightweightResolutionContextCtor =
-			typeof(LightweightResolutionContext).GetConstructor(Type.EmptyTypes);
+		public static ConstructorInfo FactoryParameterCtor = typeof(FactoryParameter).GetConstructor(new[]
+		{
+			typeof(Type),
+			typeof(string),
+			typeof(int),
+			typeof(object)
+		});
 
 		private class OpenGenericBinder : Binder
 		{
@@ -61,5 +66,4 @@
 			}
 		}
 	}
-
 }

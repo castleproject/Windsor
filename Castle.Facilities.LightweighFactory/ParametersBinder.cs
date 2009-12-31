@@ -2,44 +2,61 @@
 {
 	using System;
 	using System.Collections;
-	using System.Diagnostics;
+	using System.Collections.Generic;
+	using System.Linq;
 
 	using Castle.Core;
 	using Castle.MicroKernel;
+	using Castle.MicroKernel.Facilities;
 
 	public class ParametersBinder: ISubDependencyResolver
 	{
 		public object Resolve(CreationContext context, ISubDependencyResolver contextHandlerResolver, ComponentModel model, DependencyModel dependency)
 		{
-			Debug.Assert(context.AdditionalParameters.Contains(dependency.DependencyKey) == false,
-						 "context.AdditionalParameters.Contains(dependency.DependencyKey) == false");
-			var resolutionContext = context.AdditionalParameters["lightweight-facility-resolution-context"] as LightweightResolutionContext;
-			Debug.Assert(resolutionContext != null, "resolutionContext != null");
-			//let's match by type...
-			var type = dependency.TargetType;
-			var items = GetAllOfType(context.AdditionalParameters, type);
-			//...and get first of non-used dependencies
-			return resolutionContext.NextNotUsed(items);
-
-		}
-
-		private IEnumerable GetAllOfType(IDictionary additionalParameters, Type type)
-		{
-			foreach (var item in additionalParameters.Values)
+			var parameters = GetAllNotUsedFactoryParameters(context.AdditionalParameters);
+			var result = MatchByName(dependency, parameters);
+			if (result != null)
 			{
-				if (type.IsAssignableFrom(item.GetType()))
-					yield return item;
+				return result.ResolveValue();
+			}
+			result = MatchByType(dependency, parameters);
+			if (result != null)
+			{
+				return result.ResolveValue();
 			}
 
+			throw new FacilityException("Can't resolve dependency" + dependency);
+		}
+
+		private FactoryParameter MatchByType(DependencyModel dependency, IEnumerable<FactoryParameter> parameters)
+		{
+			return parameters.FirstOrDefault(
+				p => dependency.TargetType.IsAssignableFrom(p.Type));
+		}
+
+		private FactoryParameter MatchByName(DependencyModel dependency, IEnumerable<FactoryParameter> parameters)
+		{
+			return parameters.FirstOrDefault(
+				p => p.Name.Equals(dependency.DependencyKey, StringComparison.OrdinalIgnoreCase));
+		}
+
+		private IEnumerable<FactoryParameter> GetAllNotUsedFactoryParameters(IDictionary additionalParameters)
+		{
+			return additionalParameters.Values.Cast<object>()
+				.Where(p => p is FactoryParameter)
+				.Select(p => p as FactoryParameter)
+				.Where(p => p.Used == false)
+				.OrderBy(p => p.Position);
 		}
 
 		public bool CanResolve(CreationContext context, ISubDependencyResolver contextHandlerResolver, ComponentModel model, DependencyModel dependency)
 		{
 			return context != null &&
+			       dependency.DependencyType == DependencyType.Parameter &&
 			       context.AdditionalParameters != null &&
 			       context.AdditionalParameters.Count > 0 &&
-			       dependency.DependencyType == DependencyType.Parameter &&
-			       context.AdditionalParameters.Contains("lightweight-facility-resolution-context");
+			       context.AdditionalParameters.Values.Cast<object>()
+			       	.Any(p => p is FactoryParameter);
 		}
 	}
 }

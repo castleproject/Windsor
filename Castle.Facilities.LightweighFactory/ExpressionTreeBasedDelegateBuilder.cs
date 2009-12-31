@@ -30,9 +30,9 @@
 
 		private ElementInit[] GetInitializers(MethodInfo invoke, out ParameterExpression[] parameters)
 		{
-			
+
 			ParameterInfo[] parameterInfos = invoke.GetParameters();
-			var initializers = new ElementInit[parameterInfos.Length + 1];
+			var initializers = new ElementInit[parameterInfos.Length];
 			parameters = new ParameterExpression[parameterInfos.Length];
 			for (var i = 0; i < parameterInfos.Length; i++)
 			{
@@ -44,13 +44,6 @@
 				parameters[i] = parameter;
 				initializers[i] = Expression.ElementInit(Tokens.DictionaryAdd, new[] { dictionaryKey, dictionaryValue });
 			}
-			initializers[initializers.Length - 1] =
-				Expression.ElementInit(Tokens.DictionaryAdd,
-				                       new Expression[]
-				                       {
-				                       	Expression.Constant("lightweight-facility-resolution-context"),
-				                       	Expression.New(Tokens.LightweightResolutionContextCtor)
-				                       });
 			return initializers;
 		}
 
@@ -61,14 +54,22 @@
 				throw new InvalidOperationException("out parameters are not supported.");
 			}
 			parameter = Expression.Parameter(parameterInfo.ParameterType, parameterInfo.Name);
-			dictionaryKey = Expression.Constant(parameterInfo.Name, typeof(string));
+			dictionaryKey = Expression.Constant(Guid.NewGuid().ToString(), typeof(string));
 			if (parameterInfo.ParameterType.IsValueType)
 			{
-				dictionaryValue = Expression.Convert(parameter, typeof(object));
+				dictionaryValue = Expression.New(Tokens.FactoryParameterCtor,
+												 Expression.Constant(parameterInfo.ParameterType),
+												 Expression.Constant(parameterInfo.Name),
+												 Expression.Constant(parameterInfo.Position),
+												 Expression.Convert(parameter, typeof(object)));
 			}
 			else
 			{
-				dictionaryValue = parameter;
+				dictionaryValue = Expression.New(Tokens.FactoryParameterCtor,
+												 Expression.Constant(parameterInfo.ParameterType),
+												 Expression.Constant(parameterInfo.Name),
+												 Expression.Constant(parameterInfo.Position),
+												 parameter);
 			}
 		}
 	}
