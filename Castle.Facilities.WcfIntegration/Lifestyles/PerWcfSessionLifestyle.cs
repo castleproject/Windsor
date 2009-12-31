@@ -1,16 +1,14 @@
 ﻿namespace Castle.Facilities.WcfIntegration.Lifestyles
 {
 	using System;
-
-	using Castle.MicroKernel;
-	using Castle.MicroKernel.Lifestyle;
+	using System.ServiceModel;
 
 	/// <summary>
 	/// Manages object instances in the context of WCF session. This means that when a component 
 	/// with this lifestyle is requested multiple times during WCF session, the same instance will be provided.
 	/// If no WCF session is available falls back to the default behavior of transient.
 	/// </summary>
-	public class PerWcfSessionLifestyle : AbstractLifestyleManager
+	public class PerWcfSessionLifestyle : AbstractWcfLifestyleManager<IContextChannel, PerChannelCache>
 	{
 		private readonly IOperationContextProvider operationContextProvider;
 
@@ -29,38 +27,20 @@
 			this.operationContextProvider = operationContextProvider;
 		}
 
-		public override void Dispose()
-		{
-
-		}
-
-		public override object Resolve(CreationContext context)
+		protected override IContextChannel GetCacheHolder()
 		{
 			var operation = operationContextProvider.Current;
-			if (operation == null || string.IsNullOrEmpty(operation.SessionId))
+			if (operation == null)
 			{
-				return base.Resolve(context);
+				return null;
 			}
 
-			var channel = operation.Channel;
-
-			// TODO: does this need locking?
-			var lifestyle = channel.Extensions.Find<PerChannelLifestyleExtension>();
-
-			if (lifestyle == null)
+			if (string.IsNullOrEmpty(operation.SessionId))
 			{
-				lifestyle = new PerChannelLifestyleExtension();
-				channel.Extensions.Add(lifestyle);
+				return null;
 			}
 
-			var component = lifestyle[this];
-			if (component == null)
-			{
-				component = base.Resolve(context);
-				lifestyle[this] = component;
-			}
-
-			return component;
+			return operation.Channel;
 		}
 	}
 }
