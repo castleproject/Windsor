@@ -56,7 +56,24 @@
 			       context.AdditionalParameters != null &&
 			       context.AdditionalParameters.Count > 0 &&
 			       context.AdditionalParameters.Values.Cast<object>()
-			       	.Any(p => p is FactoryParameter);
+			       	.Any(p => p is FactoryParameter) &&
+			       CanResolve(dependency, GetAllNotUsedFactoryParameters(context.AdditionalParameters));
+		}
+
+		private bool CanResolve(DependencyModel dependency, IEnumerable<FactoryParameter> parameters)
+		{
+			var result = MatchByName(dependency, parameters);
+			if (result != null)
+			{
+				return true;
+			}
+
+			result = MatchByType(dependency, parameters);
+			if (result != null)
+			{
+				return true;
+			}
+			return false;
 		}
 	}
 }
