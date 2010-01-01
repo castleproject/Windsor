@@ -18,6 +18,8 @@ namespace Castle.MicroKernel.Handlers
 	using System.Collections;
 	using System.Collections.Generic;
 	using System.Diagnostics;
+	using System.Linq;
+	using System.Reflection;
 	using System.Text;
 
 	using Castle.Core;
@@ -469,7 +471,7 @@ namespace Castle.MicroKernel.Handlers
 			// We need to satisfy at least the constructor 
 			// with fewer arguments
 
-			ConstructorCandidate candidate = ComponentModel.Constructors.FewerArgumentsCandidate;
+			ConstructorCandidate candidate = GetConstructorCandidate();
 
 			foreach(DependencyModel dependency in candidate.Dependencies)
 			{
@@ -490,6 +492,112 @@ namespace Castle.MicroKernel.Handlers
 			{
 				DisconnectEvents();
 			}
+		}
+
+		private ConstructorCandidate GetConstructorCandidate()
+		{
+			if (ComponentModel.Constructors.HasAmbiguousFewerArgumentsCandidate == false)
+			{
+				return ComponentModel.Constructors.FewerArgumentsCandidate;
+			}
+
+			// we have more than one 'best' constructor with regards to number of paramters
+			// we must now find out if we can satisfy any of them
+			var candidates = ComponentModel.Constructors
+				.Where(CanSatisfyConstructor)
+				.GroupBy(c => c.Constructor.GetParameters().Length)
+				.ToList();
+			if (candidates.Count == 0)
+			{
+				// none can be satisfied... let's return the default.
+				return ComponentModel.Constructors.FewerArgumentsCandidate;
+			}
+
+			if (candidates[0].Count() == 1)
+			{
+				return candidates[0].Single();
+			}
+
+			return SelectMostValuableCandidate(candidates[0]);
+		}
+
+		private ConstructorCandidate SelectMostValuableCandidate(IEnumerable<ConstructorCandidate> candidates)
+		{
+			// let's try to get one with the most parameter dependencies:
+			var bestCandidates = GetBestCandidatesByDependencyType(candidates);
+			if (bestCandidates.Count == 1)
+			{
+				return bestCandidates[0];
+			}
+			return SelectMostValuableCandidateByName(bestCandidates);
+		}
+
+		private ConstructorCandidate SelectMostValuableCandidateByName(IEnumerable<ConstructorCandidate> candidates)
+		{
+			IEnumerable<KeyValuePair<ConstructorCandidate, ParameterInfo[]>> parametersByConstructor =
+				candidates.ToDictionary(c => c,
+				                        c => c.Constructor.GetParameters());
+			var parametersCount = parametersByConstructor.First().Value.Length;
+			for (var i = 0; i < parametersCount; i++)
+			{
+				var index = i;
+				var first = parametersByConstructor.GroupBy(p=>p.Value[index].Name).OrderBy(g=>g.Key).First();
+				if (first.Count() == 1)
+				{
+					return first.Single().Key;
+				}
+
+				parametersByConstructor = first;
+			}
+
+			// we have more than one constructor with all parameters with identical names...
+			// highly unlikely but...
+			// in this case let's just toss a coin
+			return parametersByConstructor.First().Key;
+		}
+
+		private List<ConstructorCandidate> GetBestCandidatesByDependencyType(IEnumerable<ConstructorCandidate> candidates)
+		{
+			var parametersCount = 0;
+			var bestCandidates = new List<ConstructorCandidate>();
+			foreach (var candidate in candidates)
+			{
+				var count = Enumerable.Count(candidate.Dependencies,
+				                             d => d.DependencyType == DependencyType.Parameter ||
+				                                  d.DependencyType == DependencyType.ServiceOverride);
+				if (count < parametersCount) continue;
+
+				if (count == parametersCount)
+				{
+					bestCandidates.Add(candidate);
+					continue;
+				}
+
+				bestCandidates.Clear();
+				bestCandidates.Add(candidate);
+				parametersCount = count;
+			}
+
+			return bestCandidates;
+		}
+
+		protected bool CanSatisfyConstructor(ConstructorCandidate constructor)
+		{
+			return constructor.Dependencies.All(CanSatisfyDependency);
+		}
+
+		protected bool CanSatisfyDependency(DependencyModel dependency)
+		{
+			if (HasValidComponentFromResolver(dependency)) return true;
+
+			if (dependency.DependencyType == DependencyType.Service &&
+				dependency.TargetType != null &&
+				DependenciesByService.ContainsKey(dependency.TargetType))
+			{
+				return true;
+			}
+
+			return false;
 		}
 
 		/// <summary>
