@@ -49,11 +49,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Castle.Core, Version=1.1.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+    <Reference Include="Castle.Core, Version=1.2.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\net-3.5\Castle.Core.dll</HintPath>
     </Reference>
-    <Reference Include="Castle.DynamicProxy2, Version=2.1.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+    <Reference Include="Castle.DynamicProxy2, Version=2.2.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\net-3.5\Castle.DynamicProxy2.dll</HintPath>
     </Reference>
@@ -65,11 +65,11 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\net-3.5\Castle.MicroKernel.dll</HintPath>
     </Reference>
-    <Reference Include="Castle.Services.Logging.log4netIntegration, Version=1.0.3.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+    <Reference Include="Castle.Services.Logging.log4netIntegration, Version=1.1.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\net-3.5\Castle.Services.Logging.log4netIntegration.dll</HintPath>
     </Reference>
-    <Reference Include="Castle.Services.Logging.NLogIntegration, Version=1.0.3.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+    <Reference Include="Castle.Services.Logging.NLogIntegration, Version=1.1.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\net-3.5\Castle.Services.Logging.NLogIntegration.dll</HintPath>
     </Reference>
@@ -146,16 +146,6 @@
     <Compile Include="WcfServiceFixture.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Castle.Facilities.WcfIntegration.Demo\Castle.Facilities.WcfIntegration.Demo-vs2008.csproj">
-      <Project>{BCDBC6AC-C85A-4564-AB6E-354262BB1A87}</Project>
-      <Name>Castle.Facilities.WcfIntegration.Demo-vs2008</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Castle.Facilities.WcfIntegration\Castle.Facilities.WcfIntegration-vs2008.csproj">
-      <Project>{0F1CAD31-322E-4266-B3A0-BB424E1AE0A9}</Project>
-      <Name>Castle.Facilities.WcfIntegration-vs2008</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
       <Visible>False</Visible>
       <ProductName>.NET Framework 2.0 %28x86%29</ProductName>
@@ -178,6 +168,16 @@
   <ItemGroup>
     <Content Include="ConfigureServices.xml" />
     <Content Include="ConfigureClients.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Castle.Facilities.WcfIntegration.Demo\Castle.Facilities.WcfIntegration.Demo-vs2008.csproj">
+      <Project>{BCDBC6AC-C85A-4564-AB6E-354262BB1A87}</Project>
+      <Name>Castle.Facilities.WcfIntegration.Demo-vs2008</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Castle.Facilities.WcfIntegration\Castle.Facilities.WcfIntegration-vs2008.csproj">
+      <Project>{0F1CAD31-322E-4266-B3A0-BB424E1AE0A9}</Project>
+      <Name>Castle.Facilities.WcfIntegration-vs2008</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
