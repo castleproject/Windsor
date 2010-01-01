@@ -20,6 +20,7 @@ namespace Castle.Facilities.WcfIntegration
 	using Castle.Core;
 	using Castle.MicroKernel.Facilities;
 	using Castle.MicroKernel.Registration;
+	using Castle.MicroKernel.Resolvers;
 
 	/// <summary>
 	/// Facility to simplify the management of WCF clients and services. 
@@ -42,7 +43,8 @@ namespace Castle.Facilities.WcfIntegration
 
 			Kernel.Register(
 				Component.For<WcfClientExtension>().Instance(clientExtension),
-				Component.For<WcfServiceExtension>().Instance(serviceExtension)
+				Component.For<WcfServiceExtension>().Instance(serviceExtension),
+				Component.For<ILazyComponentLoader>().ImplementedBy<WcfConfigComponentLoader>()
 				);
 
 			Kernel.ComponentModelCreated += Kernel_ComponentModelCreated;

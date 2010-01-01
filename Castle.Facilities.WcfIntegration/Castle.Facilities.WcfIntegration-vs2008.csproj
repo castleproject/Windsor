@@ -154,6 +154,7 @@
     <Compile Include="Lifestyles\PerWcfOperationLifestyle.cs" />
     <Compile Include="Lifestyles\PerWcfSessionLifestyle.cs" />
     <Compile Include="Lifestyles\AbstractWcfLifestyleManager.cs" />
+    <Compile Include="WcfConfigComponentLoader.cs" />
     <Compile Include="WcfContextChannel.cs" />
     <Compile Include="Client\IChannelFactoryAware.cs" />
     <Compile Include="IWcfBurden.cs" />

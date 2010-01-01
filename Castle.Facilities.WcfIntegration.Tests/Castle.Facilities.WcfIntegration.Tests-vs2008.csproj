@@ -126,6 +126,7 @@
     <Compile Include="Components\IServiceWithDependencies.cs" />
     <Compile Include="Components\ServiceWithDependencies.cs" />
     <Compile Include="Components\TraceInterceptor.cs" />
+    <Compile Include="ConfigFixture.cs" />
     <Compile Include="Duplex\DuplexClientFixture.cs" />
     <Compile Include="Components\IOne.cs" />
     <Compile Include="Components\IServiceWithSession.cs" />
