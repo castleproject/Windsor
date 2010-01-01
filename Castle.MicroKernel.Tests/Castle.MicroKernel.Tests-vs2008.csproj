@@ -145,6 +145,8 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ClassComponents\CommonImplWithDependancy.cs" />
+    <Compile Include="ClassComponents\HasTwoConstructors.cs" />
+    <Compile Include="ClassComponents\HasTwoConstructors2.cs" />
     <Compile Include="ClassComponents\ICommon2.cs" />
     <Compile Include="ClassComponents\IMapper.cs" />
     <Compile Include="ClassComponents\ICommonSub1.cs" />
@@ -189,6 +191,8 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ClassComponents\Repository.cs" />
+    <Compile Include="ClassComponents\ServiceUser.cs" />
+    <Compile Include="ClassComponents\ServiceUser2.cs" />
     <Compile Include="ClassComponents\TwoInterfacesImpl.cs" />
     <Compile Include="Configuration\Components\ClassWithComplexParameter.cs" />
     <Compile Include="Configuration\Components\ClassWithConstructors.cs">

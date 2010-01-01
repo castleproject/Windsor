@@ -14,83 +14,12 @@
 
 namespace Castle.MicroKernel.Tests
 {
-	using System;
 	using Castle.Core.Configuration;
+	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.SubSystems.Configuration;
+	using Castle.MicroKernel.Tests.ClassComponents;
+
 	using NUnit.Framework;
-
-	public class ServiceUser
-	{
-		private A _a;
-		private B _b;
-		private C _c;
-
-		public ServiceUser(A a)
-		{
-			if (a == null) throw new ArgumentNullException();
-			_a = a;
-		}
-
-		public ServiceUser(A a, B b) : this(a)
-		{
-			if (b == null) throw new ArgumentNullException();
-			_b = b;
-		}
-
-		public ServiceUser(A a, B b, C c) : this(a, b)
-		{
-			if (c == null) throw new ArgumentNullException();
-			_c = c;
-		}
-
-		public A AComponent
-		{
-			get { return _a; }
-		}
-
-		public B BComponent
-		{
-			get { return _b; }
-		}
-
-		public C CComponent
-		{
-			get { return _c; }
-		}
-	}
-
-	public class ServiceUser2 : ServiceUser
-	{
-		private string _name;
-		private int _port;
-		private int _scheduleinterval;
-
-		public ServiceUser2(A a, String name, int port) : base(a)
-		{
-			_name = name;
-			_port = port;
-		}
-
-		public ServiceUser2(A a, String name, int port, int scheduleinterval) : this(a, name, port)
-		{
-			_scheduleinterval = scheduleinterval;
-		}
-
-		public String Name
-		{
-			get { return _name; }
-		}
-
-		public int Port
-		{
-			get { return _port; }
-		}
-
-		public int ScheduleInterval
-		{
-			get { return _scheduleinterval; }
-		}
-	}
 
 	/// <summary>
 	/// Summary description for BestConstructorTestCase.
@@ -213,6 +142,58 @@ namespace Castle.MicroKernel.Tests
 			Assert.AreEqual("hammett", service.Name);
 			Assert.AreEqual(120, service.Port);
 			Assert.AreEqual(22, service.ScheduleInterval);
+		}
+
+		[Test]
+		public void Two_constructors_equal_number_of_parameters_pick_one_that_can_be_satisfied()
+		{
+			kernel.Register(Component.For<ICommon>().ImplementedBy<CommonImpl1>(),
+			                Component.For<HasTwoConstructors>());
+
+			kernel.Resolve<HasTwoConstructors>();
+		}
+
+		[Test]
+		public void Two_satisfiable_constructors_pick_one_with_more_inline_parameters()
+		{
+			kernel.Register(Component.For<ICommon>().ImplementedBy<CommonImpl1>(),
+			                Component.For<HasTwoConstructors2>()
+			                	.Parameters(Parameter.ForKey("param").Eq("foo")));
+
+			var component = kernel.Resolve<HasTwoConstructors2>();
+
+			Assert.AreEqual("foo", component.Param);
+		}
+
+		[Test]
+		public void Two_satisfiable_constructors_equal_number_of_inline_parameters_pick_one_with_more_service_overrides()
+		{
+			kernel.Register(Component.For<ICommon>().ImplementedBy<CommonImpl1>().Named("Mucha"),
+			                Component.For<ICustomer>().ImplementedBy<CustomerImpl>().Named("Stefan"),
+			                Component.For<HasTwoConstructors>().Named("first")
+			                	.ServiceOverrides(new { customer = "Stefan" }),
+			                Component.For<HasTwoConstructors>().Named("second")
+			                	.ServiceOverrides(new { common = "Mucha" }));
+
+			var first = kernel.Resolve<HasTwoConstructors>("first");
+			var second = kernel.Resolve<HasTwoConstructors>("second");
+
+			Assert.IsNotNull(first.Customer);
+			Assert.IsNotNull(second.Common);
+		}
+
+		[Test]
+		public void Two_satisfiable_constructors_identical_dependency_kinds_pick_based_on_parameter_names()
+		{
+			kernel.Register(Component.For<ICommon>().ImplementedBy<CommonImpl1>(),
+			                Component.For<ICustomer>().ImplementedBy<CustomerImpl>(),
+			                Component.For<HasTwoConstructors>());
+
+			var component = kernel.Resolve<HasTwoConstructors>();
+
+			// common is 'smaller' so we pick ctor with dependency named 'common'
+			Assert.Less("common", "customer");
+			Assert.IsNotNull(component.Common);
 		}
 	}
 }
