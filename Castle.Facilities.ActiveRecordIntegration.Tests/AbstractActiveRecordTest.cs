@@ -30,7 +30,7 @@ namespace Castle.Facilities.ActiveRecordIntegration.Tests
 	{
 		protected IWindsorContainer container;
 
-		[TestFixtureSetUp]
+		[SetUp]
 		public void Init()
 		{
 			container = new WindsorContainer(new XmlInterpreter(new ConfigResource()));
@@ -46,7 +46,7 @@ namespace Castle.Facilities.ActiveRecordIntegration.Tests
 			Recreate();
 		}
 
-		[TestFixtureTearDown]
+		[TearDown]
 		public void Terminate()
 		{
 			try
