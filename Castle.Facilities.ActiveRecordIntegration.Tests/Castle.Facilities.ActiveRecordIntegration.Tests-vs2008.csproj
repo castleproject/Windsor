@@ -149,7 +149,7 @@
       <HintPath>..\..\lib\net-3.5\x64\System.Data.SQLite.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="System.Data.SQLite, Version=1.0.61.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=x86" Condition="'$(PROCESSOR_ARCHITECTURE )' == 'x86' and '$(PROCESSOR_ARCHITEW6432)' == ''">
+    <Reference Include="System.Data.SQLite, Version=1.0.61.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=x86" Condition="'$(PROCESSOR_ARCHITECTURE)' == 'x86' and '$(PROCESSOR_ARCHITEW6432)' == ''">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\net-3.5\System.Data.SQLite.dll</HintPath>
       <Private>True</Private>
