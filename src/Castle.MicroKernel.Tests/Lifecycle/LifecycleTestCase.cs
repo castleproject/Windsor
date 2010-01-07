@@ -14,6 +14,11 @@
 
 namespace Castle.MicroKernel.Tests.Lifecycle
 {
+	using System;
+
+	using Castle.Core;
+	using Castle.Facilities.Startable;
+	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Tests.Lifecycle.Components;
 	using NUnit.Framework;
 
@@ -56,6 +61,47 @@ namespace Castle.MicroKernel.Tests.Lifecycle
 			handler.Release(server);
 
 			Assert.IsTrue(server.IsDisposed);
+		}
+
+		[Test]
+		public void Works_when_method_has_overloads()
+		{
+			kernel.AddFacility<StartableFacility>();
+			kernel.Register(Component.For<WithOverloads>()
+			                	.StartUsingMethod("Start")
+			                	.StopUsingMethod("Stop"));
+			var c = kernel.Resolve<WithOverloads>();
+			Assert.IsTrue(c.StartCalled);
+			kernel.ReleaseComponent(c);
+			Assert.IsTrue(c.StopCalled);
+		}
+
+	}
+
+	[Transient]
+	public class WithOverloads
+	{
+		public void Start()
+		{
+			StartCalled = true;
+		}
+
+		public bool StartCalled { get; set; }
+
+		public void Start(int fake)
+		{
+			
+		}
+		public void Stop()
+		{
+			StopCalled = true;
+		}
+
+		public bool StopCalled { get; set; }
+
+		public void Stop(string fake)
+		{
+			
 		}
 	}
 }

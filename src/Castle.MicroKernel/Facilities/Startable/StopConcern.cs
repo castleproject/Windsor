@@ -24,7 +24,7 @@ namespace Castle.Facilities.Startable
 
 	public class StopConcern : ILifecycleConcern
 	{
-		private static readonly StopConcern _instance = new StopConcern();
+		private static readonly StopConcern instance = new StopConcern();
 
 		protected StopConcern()
 		{
@@ -32,7 +32,7 @@ namespace Castle.Facilities.Startable
 
 		public static StopConcern Instance
 		{
-			get { return _instance; }
+			get { return instance; }
 		}
 
 		public void Apply(ComponentModel model, object component)
@@ -47,7 +47,7 @@ namespace Castle.Facilities.Startable
 
 				if (stopMethod != null)
 				{
-					MethodInfo method = model.Implementation.GetMethod(stopMethod);
+					MethodInfo method = model.Implementation.GetMethod(stopMethod, Type.EmptyTypes);
 					method.Invoke(component, null);
 				}
 			}
