@@ -91,9 +91,8 @@ namespace Castle.Facilities.FactorySupport
 		public void AddFactory<TService, TFactory>(
 			string serviceKey, string factoryCreateMethodName, string factoryId)
 		{
-			IConfiguration cfg = new MutableConfiguration(serviceKey);
+			var cfg = new MutableConfiguration(serviceKey);
 			cfg.Attributes["factoryCreate"] = factoryCreateMethodName;
-
 			AddFactoryComponent<TService, TFactory>(cfg, factoryId, serviceKey);
 		}
 
@@ -102,19 +101,14 @@ namespace Castle.Facilities.FactorySupport
 		private void AddFactoryComponent<TService, TFactory>(
 			IConfiguration cfg, string factoryId, string serviceKey)
 		{
-			Type factoryType = typeof(TFactory);
-			Type serviceType = typeof(TService);
+			var factoryType = typeof(TFactory);
+			var serviceType = typeof(TService);
 
 			EnsureFactoryIsRegistered(factoryId, factoryType);
 
-			ComponentModel serviceModel = Kernel.ComponentModelBuilder.BuildModel(
-				serviceKey, serviceType,
-				factoryType, null);
-
+			var serviceModel = Kernel.ComponentModelBuilder.BuildModel(serviceKey, serviceType, serviceType, null);
 			cfg.Attributes["factoryId"] = factoryId;
-
 			serviceModel.Configuration = cfg;
-
 			Kernel.AddCustomComponent(serviceModel);
 		}
 
