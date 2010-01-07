@@ -24,7 +24,7 @@ namespace Castle.Facilities.Startable
 
 	public class StartConcern : ILifecycleConcern
 	{
-		private static readonly StartConcern _instance = new StartConcern();
+		private static readonly StartConcern instance = new StartConcern();
 
 		protected StartConcern()
 		{
@@ -32,7 +32,7 @@ namespace Castle.Facilities.Startable
 
 		public static StartConcern Instance
 		{
-			get { return _instance; }
+			get { return instance; }
 		}
 
 		public void Apply(ComponentModel model, object component)
@@ -47,7 +47,7 @@ namespace Castle.Facilities.Startable
 
 				if (startMethod != null)
 				{
-					MethodInfo method = model.Implementation.GetMethod(startMethod);
+					MethodInfo method = model.Implementation.GetMethod(startMethod, Type.EmptyTypes);
 					method.Invoke(component, null);
 				}
 			}
