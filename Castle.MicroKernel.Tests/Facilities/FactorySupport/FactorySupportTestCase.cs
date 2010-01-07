@@ -20,6 +20,8 @@ namespace Castle.MicroKernel.Tests.Facilities.FactorySupport
 	using Castle.Core;
 	using Castle.Core.Configuration;
 	using Castle.Facilities.FactorySupport;
+	using Castle.MicroKernel.Facilities;
+	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Tests.ClassComponents;
 
 	using NUnit.Framework;
@@ -41,7 +43,7 @@ namespace Castle.MicroKernel.Tests.Facilities.FactorySupport
 			kernel.AddFacility("factories", new FactorySupportFacility());
 			kernel.AddComponentInstance("a", new CustomerImpl());
 		}
-		
+
 		[Test]
 		public void DependancyIgnored()
 		{
@@ -51,7 +53,7 @@ namespace Castle.MicroKernel.Tests.Facilities.FactorySupport
 			AddComponent("stringdictComponent", typeof(StringDictionaryDependentComponent), "CreateWithStringDictionary");
 			AddComponent("hashtableComponent", typeof(HashTableDependentComponent), "CreateWithHashtable");
 			AddComponent("serviceComponent", typeof(ServiceDependentComponent), "CreateWithService");
-			
+
 			kernel.Resolve("hashtableComponent", typeof(HashTableDependentComponent));
 			kernel.Resolve("serviceComponent", typeof(ServiceDependentComponent));
 			kernel.Resolve("stringdictComponent", typeof(StringDictionaryDependentComponent));
@@ -67,11 +69,45 @@ namespace Castle.MicroKernel.Tests.Facilities.FactorySupport
 
 			model.Parameters.Add("someProperty", "Abc");
 
-			MyCoolServiceWithProperties service = (MyCoolServiceWithProperties) kernel["cool.service"];
+			var service = (MyCoolServiceWithProperties)kernel["cool.service"];
 
 			Assert.IsNotNull(service);
 			Assert.IsNull(service.SomeProperty);
 		}
+
+		[Test]
+		public void CheckReturnValueFromTheFactory()
+		{
+			kernel.AddFacility("factories", new FactorySupportFacility());
+			kernel.Register(
+				Component.For<PetFactory>().Parameters(
+					Parameter.ForKey("petType").Eq("dog"))
+					.Named("pet.factory"));
+			kernel.Register(
+				Component.For<Pet>().ImplementedBy<Cat>()
+					.Configuration(
+					Attrib.ForName("factoryId").Eq("pet.factory"),
+					Attrib.ForName("factoryCreate").Eq("Get"))
+				);
+
+			Assert.Throws(typeof(FacilityException), () => kernel.Resolve<Pet>());
+		}
+
+		[Test]
+		public void CheckReturnValueFromTheFactoryAccessor()
+		{
+			kernel.AddFacility("factories", new FactorySupportFacility());
+			kernel.Register(
+				Component.For<PetFactory>()
+					.Named("pet.factory"));
+			kernel.Register(
+				Component.For<Pet>().ImplementedBy<Cat>()
+					.Configuration(
+					Attrib.ForName("instance-accessor").Eq("Dog"))
+				);
+			Assert.Throws(typeof(FacilityException), () => kernel.Resolve<Pet>());
+		}
+
 
 		private ComponentModel AddComponent(string key, Type type, string factoryMethod)
 		{
@@ -82,7 +118,7 @@ namespace Castle.MicroKernel.Tests.Facilities.FactorySupport
 			kernel.AddComponent(key, type);
 			return kernel.GetHandler(key).ComponentModel;
 		}
-		
+
 		public class Factory
 		{
 			public static HashTableDependentComponent CreateWithHashtable()
@@ -137,5 +173,36 @@ namespace Castle.MicroKernel.Tests.Facilities.FactorySupport
 			{
 			}
 		}
+
+		public class Cat : Pet
+		{
+			public static Pet Dog
+			{
+				get { return new Dog(); }
+			}
+		}
+		public class Dog : Pet
+		{
+		}
+		public class Pet
+		{
+		}
+		public class PetFactory
+		{
+			private readonly string type;
+			public PetFactory(string petType)
+			{
+				type = petType.ToLowerInvariant();
+			}
+			public Pet Get()
+			{
+				if (type == "cat")
+					return new Cat();
+				else
+					return new Dog();
+			}
+		}
+
+
 	}
 }

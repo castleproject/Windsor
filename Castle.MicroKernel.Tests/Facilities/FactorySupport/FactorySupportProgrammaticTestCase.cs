@@ -15,10 +15,10 @@
 namespace Castle.Facilities.FactorySupport.Tests
 {
 	using System;
-	using System.Collections.Generic;
+
 	using Castle.MicroKernel;
-	using Core.Configuration;
-	using MicroKernel.Registration;
+	using Castle.MicroKernel.Registration;
+
 	using NUnit.Framework;
 
 	[TestFixture]

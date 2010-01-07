@@ -60,9 +60,12 @@ namespace Castle.Facilities.FactorySupport
 				factoryType.GetMethod(factoryCreate,
 					BindingFlags.Public | BindingFlags.Static);
 
+			object instance;
+			string createMethodName;
 			if (staticCreateMethod != null)
 			{
-				return Create(null, factoryId, staticCreateMethod, factoryCreate, context);
+				createMethodName = staticCreateMethod.ToString();
+				instance = this.Create(null, factoryId, staticCreateMethod, factoryCreate, context);
 			}
 			else
 			{
@@ -81,20 +84,31 @@ namespace Castle.Facilities.FactorySupport
 							BindingFlags.Public | BindingFlags.Instance);
 				}
 
-				if (instanceCreateMethod != null)
-				{
-					return Create(factoryInstance, factoryId, instanceCreateMethod, factoryCreate, context);
-				}
-				else
+				if (instanceCreateMethod == null)
 				{
 					String message = String.Format("You have specified a factory " +
-					                               "('{2}' - method to be called: {3}) " +
-					                               "for the component '{0}' {1} but we couldn't find the creation method" +
-					                               "(neither instance or static method with the name '{3}')",
-					                               Model.Name, Model.Implementation.FullName, factoryId, factoryCreate);
+													"('{2}' - method to be called: {3}) " +
+													"for the component '{0}' {1} but we couldn't find the creation method" +
+													"(neither instance or static method with the name '{3}')",
+													this.Model.Name, this.Model.Implementation.FullName, factoryId, factoryCreate);
 					throw new FacilityException(message);
 				}
+
+				createMethodName = instanceCreateMethod.ToString();
+				instance = this.Create(factoryInstance, factoryId, instanceCreateMethod, factoryCreate, context);
 			}
+			var type = context.Handler.ComponentModel.Implementation;
+			if (instance != null && type != null && type.IsInstanceOfType(instance) == false)
+			{
+				String message =
+					String.Format(
+						"Factory '{0}' (method '{1}') created instance of type {2}.{5}" +
+						"This type is not compatible with implementation type {3} registered for this component ({4}).{5}" +
+						"This may signify a bug. If it's the expected behavior, change the registration of this component to cover this return type.",
+						factoryId, createMethodName, instance.GetType().FullName, type.FullName, context.Handler.ComponentModel.Name, Environment.NewLine);
+				throw new FacilityException(message);
+			}
+			return instance;
 		}
 
 		private object Create(object factoryInstance, string factoryId, MethodInfo instanceCreateMethod, string factoryCreate, CreationContext context)
@@ -110,7 +124,7 @@ namespace Castle.Facilities.FactorySupport
 				ParameterInfo[] parameters = instanceCreateMethod.GetParameters();
 
 
-				foreach(ParameterInfo parameter in parameters)
+				foreach (ParameterInfo parameter in parameters)
 				{
 					Type paramType = parameter.ParameterType;
 
@@ -167,13 +181,13 @@ namespace Castle.Facilities.FactorySupport
 				{
 					instance = Kernel.ProxyFactory.Create(Kernel, instance, Model, context, methodArgs.ToArray());
 				}
-				catch ( Exception ex )
+				catch (Exception ex)
 				{
-					throw new ComponentActivatorException( "FactoryActivator: could not proxy " +
-						 instance.GetType().FullName, ex );
+					throw new ComponentActivatorException("FactoryActivator: could not proxy " +
+						 instance.GetType().FullName, ex);
 				}
-			}	
-			
+			}
+
 			return instance;
 		}
 	}
