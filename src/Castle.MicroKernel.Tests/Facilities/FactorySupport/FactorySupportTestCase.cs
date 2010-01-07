@@ -192,7 +192,7 @@ namespace Castle.MicroKernel.Tests.Facilities.FactorySupport
 			private readonly string type;
 			public PetFactory(string petType)
 			{
-				type = petType.ToLowerInvariant();
+				type = petType;
 			}
 			public Pet Get()
 			{
