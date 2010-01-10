@@ -247,9 +247,6 @@ namespace Castle.Facilities.ActiveRecordIntegration
 			string defaultFlushType = facilityConfig.Attributes["flush"];
 			string namingstrategytype = facilityConfig.Attributes["namingstrategytype"];
 
-			if (isWeb != null && "auto" == isWeb) 
-				isWeb = (Assembly.GetEntryAssembly() == null ? "true" : "false");
-            
 			SetUpThreadInfoType(ConvertBool(isWeb), threadinfotype);
 			SetDebugFlag(ConvertBool(isDebug));
 			SetUpSessionFactoryHolderType(sessionfactoryholdertype);
