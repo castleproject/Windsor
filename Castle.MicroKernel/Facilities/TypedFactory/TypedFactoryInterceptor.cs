@@ -113,16 +113,6 @@ namespace Castle.Facilities.TypedFactory
 			}
 		}
 
-		private bool IsDispose(MethodInfo method)
-		{
-			return method.Name.Equals("Disposable", StringComparison.Ordinal) && method.GetParameters().Length == 0;
-		}
-
-		private bool GetIsDisposable()
-		{
-			return typeof(IDisposable).IsAssignableFrom(target.Service);
-		}
-
 		private bool IsReleaseMethod(MethodInfo methodInfo)
 		{
 			return methodInfo.ReturnType == typeof(void);
