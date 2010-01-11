@@ -12,19 +12,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Castle.Facilities.FactorySupport;
-
 namespace Castle.MicroKernel.Registration
 {
 	using System;
 	using System.Collections;
 	using System.Collections.Generic;
+	using System.Linq;
+
 	using Castle.Core;
 	using Castle.Core.Configuration;
 	using Castle.Core.Interceptor;
+	using Castle.Facilities.FactorySupport;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.LifecycleConcerns;
 	using Castle.MicroKernel.Proxy;
+	using Castle.MicroKernel.Registration.Interceptor;
 
 	/// <summary>
 	/// Delegate to filter component registration.
@@ -49,9 +51,9 @@ namespace Castle.MicroKernel.Registration
 		private bool isInstanceRegistration;
 		private Type serviceType;
 		private Type implementation;
-		private List<Type> forwardedTypes = new List<Type>();
-		private ComponentFilter unlessFilter;
-		private ComponentFilter ifFilter;
+		private readonly List<Type> forwardedTypes;
+		private ComponentFilter unlessFilter = delegate { return false; };
+		private ComponentFilter ifFilter = delegate { return true; };
 		private readonly List<ComponentDescriptor<S>> descriptors;
 		private ComponentModel componentModel;
 		private bool registered;
@@ -65,6 +67,7 @@ namespace Castle.MicroKernel.Registration
 			overwrite = false;
 			registered = false;
 			serviceType = typeof(S);
+			forwardedTypes = new List<Type>();
 			descriptors = new List<ComponentDescriptor<S>>();
 			additionalRegistrations = new List<IRegistration>();
 		}
@@ -506,10 +509,48 @@ namespace Castle.MicroKernel.Registration
 		/// </summary>
 		/// <param name="interceptors">The interceptors.</param>
 		/// <returns></returns>
-		public Interceptor.InterceptorGroup<S> Interceptors(
-				params InterceptorReference[] interceptors)
+		public InterceptorGroup<S> Interceptors(params InterceptorReference[] interceptors)
 		{
-			return new Interceptor.InterceptorGroup<S>(this, interceptors);
+			return new InterceptorGroup<S>(this, interceptors);
+		}
+
+		/// <summary>
+		/// Set the interceptors for this component.
+		/// </summary>
+		/// <param name="interceptors">The interceptors.</param>
+		/// <returns></returns>
+		public ComponentRegistration<S> Interceptors(params Type[] interceptors)
+		{
+			return AddDescriptor(new InterceptorDescriptor<S>(interceptors.Select(t => new InterceptorReference(t)).ToArray()));
+		}
+
+		/// <summary>
+		/// Set the interceptor for this component.
+		/// </summary>
+		/// <returns></returns>
+		public ComponentRegistration<S> Interceptors<T>() where T : IInterceptor
+		{
+			return AddDescriptor(new InterceptorDescriptor<S>(new[] { new InterceptorReference(typeof(T)) }));
+		}
+
+		/// <summary>
+		/// Set the interceptor for this component.
+		/// </summary>
+		/// <returns></returns>
+		public ComponentRegistration<S> Interceptors<T1, T2>()
+			where T1 : IInterceptor
+			where T2 : IInterceptor
+		{
+			return Interceptors<T1>().Interceptors<T2>();
+		}
+
+		/// <summary>
+		/// Set the interceptor for this component.
+		/// </summary>
+		/// <returns></returns>
+		public ComponentRegistration<S> Interceptors(params string[] keys)
+		{
+			return AddDescriptor(new InterceptorDescriptor<S>(keys.Select(k => InterceptorReference.ForKey(k)).ToArray()));
 		}
 
 		/// <summary>
@@ -675,8 +716,7 @@ namespace Castle.MicroKernel.Registration
 					options.OmitTarget = true;
 				}
 
-				if ((ifFilter == null || ifFilter(kernel, componentModel)) &&
-					(unlessFilter == null || !unlessFilter(kernel, componentModel)))
+				if (ifFilter(kernel, componentModel) && !unlessFilter(kernel, componentModel))
 				{
 					kernel.AddCustomComponent(componentModel);
 
