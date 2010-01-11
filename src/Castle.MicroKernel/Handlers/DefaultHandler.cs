@@ -42,8 +42,9 @@ namespace Castle.MicroKernel.Handlers
 		/// is responsible for
 		/// </summary>
 		/// <param name="context"></param>
+		/// <param name="track"></param>
 		/// <returns></returns>
-		protected override object ResolveCore(CreationContext context)
+		protected override object ResolveCore(CreationContext context, bool track)
 		{
 			if (!context.HasAdditionalParameters)
 			{
@@ -57,7 +58,7 @@ namespace Castle.MicroKernel.Handlers
 			{
 				object instance = lifestyleManager.Resolve(context);
 
-				resCtx.Burden.SetRootInstance(instance, this, ComponentModel.LifecycleSteps.HasDecommissionSteps);
+				resCtx.Burden.SetRootInstance(instance, this, track || ComponentModel.LifecycleSteps.HasDecommissionSteps);
 
 				context.ReleasePolicy.Track(instance, resCtx.Burden);
 
@@ -97,7 +98,7 @@ namespace Castle.MicroKernel.Handlers
 		/// </summary>
 		/// <param name="instance"></param>
 		/// <returns>true if destroyed</returns>
-		public override bool Release(object instance)
+		public override bool ReleaseCore(object instance)
 		{
 			return lifestyleManager.Release(instance);
 		}

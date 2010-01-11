@@ -12,21 +12,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Castle.Facilities.FactorySupport;
+
 namespace Castle.MicroKernel.Registration
 {
 	using System;
 	using System.Collections;
 	using System.Collections.Generic;
-	using System.Linq;
-
 	using Castle.Core;
 	using Castle.Core.Configuration;
 	using Castle.Core.Interceptor;
-	using Castle.Facilities.FactorySupport;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.LifecycleConcerns;
 	using Castle.MicroKernel.Proxy;
-	using Castle.MicroKernel.Registration.Interceptor;
 
 	/// <summary>
 	/// Delegate to filter component registration.
@@ -51,9 +49,9 @@ namespace Castle.MicroKernel.Registration
 		private bool isInstanceRegistration;
 		private Type serviceType;
 		private Type implementation;
-		private readonly List<Type> forwardedTypes = new List<Type>();
-		private ComponentFilter unlessFilter = delegate { return false; };
-		private ComponentFilter ifFilter = delegate { return true; };
+		private List<Type> forwardedTypes = new List<Type>();
+		private ComponentFilter unlessFilter;
+		private ComponentFilter ifFilter;
 		private readonly List<ComponentDescriptor<S>> descriptors;
 		private ComponentModel componentModel;
 		private bool registered;
@@ -75,7 +73,8 @@ namespace Castle.MicroKernel.Registration
 		/// Initializes a new instance of the <see cref="ComponentRegistration{S}"/> class
 		/// with an existing <see cref="ComponentModel"/>.
 		/// </summary>
-		protected ComponentRegistration(ComponentModel componentModel) : this()
+		protected ComponentRegistration(ComponentModel componentModel)
+			: this()
 		{
 			if (componentModel == null)
 			{
@@ -507,46 +506,10 @@ namespace Castle.MicroKernel.Registration
 		/// </summary>
 		/// <param name="interceptors">The interceptors.</param>
 		/// <returns></returns>
-		public InterceptorGroup<S> Interceptors(params InterceptorReference[] interceptors)
+		public Interceptor.InterceptorGroup<S> Interceptors(
+				params InterceptorReference[] interceptors)
 		{
-			return new InterceptorGroup<S>(this, interceptors);
-		}
-
-		/// <summary>
-		/// Set the interceptors for this component.
-		/// </summary>
-		/// <param name="interceptors">The interceptors.</param>
-		/// <returns></returns>
-		public ComponentRegistration<S> Interceptors(params Type[] interceptors)
-		{
-			return AddDescriptor(new InterceptorDescriptor<S>(interceptors.Select(t => new InterceptorReference(t)).ToArray()));
-		}
-
-		/// <summary>
-		/// Set the interceptor for this component.
-		/// </summary>
-		/// <returns></returns>
-		public ComponentRegistration<S> Interceptors<T>() where T : IInterceptor
-		{
-			return AddDescriptor(new InterceptorDescriptor<S>(new[] {new InterceptorReference(typeof (T))}));
-		}
-
-		/// <summary>
-		/// Set the interceptor for this component.
-		/// </summary>
-		/// <returns></returns>
-		public ComponentRegistration<S> Interceptors<T1, T2>() where T1 : IInterceptor where T2: IInterceptor
-		{
-			return Interceptors<T1>().Interceptors<T2>();
-		}
-
-		/// <summary>
-		/// Set the interceptor for this component.
-		/// </summary>
-		/// <returns></returns>
-		public ComponentRegistration<S> Interceptors(params string[] keys)
-		{
-			return AddDescriptor(new InterceptorDescriptor<S>(keys.Select(k => InterceptorReference.ForKey(k)).ToArray()));
+			return new Interceptor.InterceptorGroup<S>(this, interceptors);
 		}
 
 		/// <summary>
@@ -607,10 +570,25 @@ namespace Castle.MicroKernel.Registration
 			return this;
 		}
 
-		public ComponentRegistration<S> DynamicParameters(DynamicParametersDelegate action)
+		/// <summary>
+		/// Allows custom dependencies to by defined dyncamically.
+		/// </summary>
+		/// <param name="resolve">The delegate used for providing dynamic parameters.</param>
+		/// <returns></returns>
+		public ComponentRegistration<S> DynamicParameters(DynamicParametersDelegate resolve)
 		{
+			this.AddDescriptor(new DynamicParametersDescriptor<S>(resolve));
+			return this;
+		}
 
-			this.AddDescriptor(new DynamicParametersDescriptor<S>(action));
+		/// <summary>
+		/// Allows custom dependencies to by defined dyncamically with releasing capability.
+		/// </summary>
+		/// <param name="resolve">The delegate used for providing dynamic parameters.</param>
+		/// <returns></returns>
+		public ComponentRegistration<S> DynamicParameters(DynamicParametersResolveDelegate resolve)
+		{
+			this.AddDescriptor(new DynamicParametersDescriptor<S>(resolve));
 			return this;
 		}
 
@@ -697,7 +675,8 @@ namespace Castle.MicroKernel.Registration
 					options.OmitTarget = true;
 				}
 
-				if (ifFilter(kernel, componentModel) && !unlessFilter(kernel, componentModel))
+				if ((ifFilter == null || ifFilter(kernel, componentModel)) &&
+					(unlessFilter == null || !unlessFilter(kernel, componentModel)))
 				{
 					kernel.AddCustomComponent(componentModel);
 

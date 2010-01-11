@@ -25,7 +25,8 @@ namespace Castle.MicroKernel.Handlers
 	using Castle.Core;
 	using Castle.MicroKernel.Lifestyle;
 
-	public delegate void ComponentResolvingDelegate(IKernel kernel, CreationContext context);
+	public delegate ComponentReleasingDelegate ComponentResolvingDelegate(IKernel kernel, CreationContext context);
+	public delegate void ComponentReleasingDelegate(IKernel kernel);
 
 	/// <summary>
 	/// Implements the basis of <see cref="IHandler"/>
@@ -66,6 +67,7 @@ namespace Castle.MicroKernel.Handlers
 
 		private Type service;
 		private ComponentResolvingDelegate resolvingHandler;
+		private IDictionary<object, ComponentReleasingDelegate> releasingHandlers;
 
 		/// <summary>
 		/// Constructs and initializes the handler
@@ -110,11 +112,28 @@ namespace Castle.MicroKernel.Handlers
 		/// <returns></returns>
 		public object Resolve(CreationContext context)
 		{
-			if(resolvingHandler!=null)
+			ComponentReleasingDelegate releasingHandler = null;
+
+			if (resolvingHandler != null)
 			{
-				resolvingHandler(kernel, context);
+				releasingHandler = resolvingHandler(kernel, context);
 			}
-			return ResolveCore(context);
+
+			var instance = ResolveCore(context, releasingHandler != null);
+
+			if (releasingHandler != null)
+			{
+				lock (resolvingHandler)
+				{
+					if (releasingHandlers == null)
+					{
+						releasingHandlers = new Dictionary<object, ComponentReleasingDelegate>();
+					}
+					releasingHandlers.Add(instance, releasingHandler);
+				}
+			}
+
+			return instance;
 		}
 
 		/// <summary>
@@ -123,8 +142,37 @@ namespace Castle.MicroKernel.Handlers
 		/// is responsible for
 		/// </summary>
 		/// <param name="context"></param>
+		/// <param name="track"></param>
 		/// <returns></returns>
-		protected abstract object ResolveCore(CreationContext context);
+		protected abstract object ResolveCore(CreationContext context, bool track);
+
+		/// <summary>
+		///  disposes the component instance (or recycle it).
+		/// </summary>
+		/// <param name="instance"></param>
+		/// <returns></returns>
+		public bool Release(object instance)
+		{
+			if (releasingHandlers != null)
+			{
+				ComponentReleasingDelegate releasingHandler;
+
+				lock (releasingHandlers)
+				{
+					if (releasingHandlers.TryGetValue(instance, out releasingHandler))
+					{
+						releasingHandlers.Remove(instance);
+					}
+				}
+
+				if (releasingHandler != null)
+				{
+					releasingHandler(Kernel);
+				}
+			}
+
+			return ReleaseCore(instance);
+		}
 
 		/// <summary>
 		/// Should be implemented by derived classes: 
@@ -132,7 +180,7 @@ namespace Castle.MicroKernel.Handlers
 		/// </summary>
 		/// <param name="instance"></param>
 		/// <returns>true if destroyed.</returns>
-		public abstract bool Release(object instance);
+		public abstract bool ReleaseCore(object instance);
 
 		/// <summary>
 		/// Gets the handler state.
