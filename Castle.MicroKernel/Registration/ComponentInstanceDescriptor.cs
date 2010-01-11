@@ -17,11 +17,11 @@ namespace Castle.MicroKernel.Registration
 	using Castle.Core;
 	using Castle.MicroKernel.ComponentActivator;
 
-	public class ComponentInstanceDescriptior<S> : ComponentDescriptor<S>
+	public class ComponentInstanceDescriptor<S> : ComponentDescriptor<S>
 	{
 		private readonly object instance;
 
-		public ComponentInstanceDescriptior(object instance)
+		public ComponentInstanceDescriptor(object instance)
 		{
 			this.instance = instance;
 		}

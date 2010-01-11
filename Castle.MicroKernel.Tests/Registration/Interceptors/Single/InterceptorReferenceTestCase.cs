@@ -12,32 +12,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.MicroKernel.Registration
+namespace Castle.MicroKernel.Tests.Registration.Interceptors.Single
 {
+	using System.Collections.Generic;
+
 	using Castle.Core;
-	using Castle.Core.Configuration;
+	using Castle.MicroKernel.Registration;
 
-	public abstract class ComponentDescriptor<S>
+	public class InterceptorReferenceTestCase : InterceptorsTestCaseBase
 	{
-		private ComponentRegistration<S> registration;
-
-		internal protected ComponentRegistration<S> Registration
+		protected override IRegistration RegisterInterceptors<S>(ComponentRegistration<S> registration)
 		{
-			get { return registration; }
-			set { registration = value; }
+			return registration.Interceptors(new InterceptorReference(typeof(TestInterceptor1))).Anywhere;
 		}
 
-		protected bool IsOverWrite
+		protected override IEnumerable<InterceptorReference> GetExpectedInterceptorsInCorrectOrder()
 		{
-			get { return registration.IsOverWrite; }
-		}
-
-		protected internal virtual void ApplyToConfiguration(IKernel kernel, IConfiguration configuration)
-		{
-		}
-
-		protected internal virtual void ApplyToModel(IKernel kernel, ComponentModel model)
-		{
+			yield return InterceptorReference.ForType<TestInterceptor1>();
 		}
 	}
 }

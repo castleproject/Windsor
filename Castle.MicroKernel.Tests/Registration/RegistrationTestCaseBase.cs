@@ -12,32 +12,25 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.MicroKernel.Registration
+namespace Castle.MicroKernel.Tests.Registration
 {
-	using Castle.Core;
-	using Castle.Core.Configuration;
+	using NUnit.Framework;
 
-	public abstract class ComponentDescriptor<S>
+	[TestFixture]
+	public abstract class RegistrationTestCaseBase
 	{
-		private ComponentRegistration<S> registration;
+		protected IKernel Kernel;
 
-		internal protected ComponentRegistration<S> Registration
+		[SetUp]
+		public void Setup()
 		{
-			get { return registration; }
-			set { registration = value; }
+			Kernel = new DefaultKernel();
 		}
 
-		protected bool IsOverWrite
+		[TearDown]
+		public void TearDown()
 		{
-			get { return registration.IsOverWrite; }
-		}
-
-		protected internal virtual void ApplyToConfiguration(IKernel kernel, IConfiguration configuration)
-		{
-		}
-
-		protected internal virtual void ApplyToModel(IKernel kernel, ComponentModel model)
-		{
+			Kernel.Dispose();
 		}
 	}
 }
