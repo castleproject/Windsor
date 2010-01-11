@@ -20,21 +20,26 @@ namespace Castle.MicroKernel.Registration
 	using Castle.MicroKernel.Handlers;
 
 	public delegate void DynamicParametersDelegate(IKernel kernel, IDictionary parameters);
-
+	public delegate ComponentReleasingDelegate DynamicParametersResolveDelegate(IKernel kernel, IDictionary parameters);
 
 	public class DynamicParametersDescriptor<S> : ComponentDescriptor<S>
 	{
-		private readonly DynamicParametersDelegate action;
+		private readonly DynamicParametersResolveDelegate resolve;
 		private static readonly string key = "component_resolving_handler";
 
-		public DynamicParametersDescriptor(DynamicParametersDelegate action)
+		public DynamicParametersDescriptor(DynamicParametersDelegate resolve)
+			: this((k, d) => { resolve(k, d); return null; })
 		{
-			this.action = action;
+		}
+
+		public DynamicParametersDescriptor(DynamicParametersResolveDelegate resolve)
+		{
+			this.resolve = resolve;
 		}
 
 		protected internal override void ApplyToModel(IKernel kernel, ComponentModel model)
 		{
-			ComponentResolvingDelegate handler = (k, c) => action(k, c.AdditionalParameters);
+			ComponentResolvingDelegate handler = (k, c) => resolve(k, c.AdditionalParameters);
 			if (model.ExtendedProperties.Contains(key) == false)
 			{
 				model.ExtendedProperties[key] = handler;

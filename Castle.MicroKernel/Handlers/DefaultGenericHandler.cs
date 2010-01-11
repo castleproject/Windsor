@@ -42,7 +42,7 @@ namespace Castle.MicroKernel.Handlers
 			type2SubHandler = new Dictionary<Type, IHandler>();
 		}
 
-		protected override object ResolveCore(CreationContext context)
+		protected override object ResolveCore(CreationContext context, bool track)
 		{
 			Type implType = ComponentModel.Implementation.MakeGenericType(context.GenericArguments);
 
@@ -55,7 +55,7 @@ namespace Castle.MicroKernel.Handlers
 			}
 		}
 
-		public override bool Release(object instance)
+		public override bool ReleaseCore(object instance)
 		{
 			Type genericType = ProxyUtil.GetUnproxiedType(instance);
 
