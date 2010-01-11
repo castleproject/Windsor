@@ -1,3 +1,7 @@
+2.1
+====
+- simplified API for attaching interceptors.
+
 - added support for forwarded types in XML config
 
 - added WithParameters method to fluent registration that enables inspecting and modifying arguments passed to Resolve method.

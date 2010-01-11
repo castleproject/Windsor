@@ -289,6 +289,24 @@
     </Compile>
     <Compile Include="Registration\ComponentRegistrationTestCase.cs" />
     <Compile Include="Registration\AllTypesTestCase.cs" />
+    <Compile Include="Registration\Interceptors\Multiple\GenericInterceptorsInSingleCallTestCase.cs" />
+    <Compile Include="Registration\Interceptors\Multiple\GenericInterceptorsMultipleCallTestCase.cs" />
+    <Compile Include="Registration\Interceptors\Multiple\InterceptorKeyInSingleCallTestCase.cs" />
+    <Compile Include="Registration\Interceptors\Multiple\InterceptorKeyMultipleCallTestCase.cs" />
+    <Compile Include="Registration\Interceptors\InterceptorReferenceComparer.cs" />
+    <Compile Include="Registration\Interceptors\Multiple\InterceptorReferenceMultipleCallTestCase.cs" />
+    <Compile Include="Registration\Interceptors\InterceptorsTestCaseBase.cs" />
+    <Compile Include="Registration\Interceptors\Multiple\InterceptorReferencesInSingleCallTestCase.cs" />
+    <Compile Include="Registration\Interceptors\Multiple\InterceptorReferenceWithPositionMultipleCall1TestCase.cs" />
+    <Compile Include="Registration\Interceptors\Multiple\InterceptorReferenceWithPositionMultipleCall2TestCase.cs" />
+    <Compile Include="Registration\Interceptors\Multiple\InterceptorReferenceWithPositionMultipleCall3TestCase.cs" />
+    <Compile Include="Registration\Interceptors\Multiple\InterceptorTypeMultipleCallTestCase.cs" />
+    <Compile Include="Registration\Interceptors\Multiple\InterceptorTypesInSingleCallTestCase.cs" />
+    <Compile Include="Registration\Interceptors\Single\GenericInterceptorTestCase.cs" />
+    <Compile Include="Registration\Interceptors\Single\InterceptorKeyTestCase.cs" />
+    <Compile Include="Registration\Interceptors\Single\InterceptorReferenceTestCase.cs" />
+    <Compile Include="Registration\Interceptors\Single\InterceptorTypeTestCase.cs" />
+    <Compile Include="Registration\RegistrationTestCaseBase.cs" />
     <Compile Include="RuntimeParametersTestCase.cs" />
     <Compile Include="RuntimeParameters\ComponentWithParameters.cs" />
     <Compile Include="SerializationTestCase.cs">
