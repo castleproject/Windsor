@@ -93,7 +93,7 @@
         <member name="P:Castle.Core.ComponentProxyBehaviorAttribute.UseMarshalByRefProxy">
             <summary>
             Gets or sets a value indicating whether the generated 
-            interface proxy should inherit from <see cref="!:MarshalByRefObject"/>.
+            interface proxy should inherit from <see cref="T:System.MarshalByRefObject"/>.
             </summary>
         </member>
         <member name="P:Castle.Core.ComponentProxyBehaviorAttribute.UseSingleInterfaceProxy">
@@ -163,6 +163,12 @@
         <member name="M:Castle.Core.PerThreadAttribute.#ctor">
             <summary>
             Initializes a new instance of the <see cref="T:Castle.Core.PerThreadAttribute"/> class.
+            </summary>
+        </member>
+        <member name="T:Castle.Core.PerWebRequestAttribute">
+            <summary>
+            Indicates that the target components wants a
+            per web request lifestyle.
             </summary>
         </member>
         <member name="T:Castle.Core.PooledAttribute">
@@ -616,6 +622,25 @@
             Creates a new logger.
             </summary>
         </member>
+        <member name="M:Castle.Core.Logging.Factories.AbstractExtendedLoggerFactory.GetConfigFile(System.String)">
+            <summary>
+            Gets the configuration file.
+            </summary>
+            <param name="fileName">i.e. log4net.config</param>
+            <returns></returns>
+        </member>
+        <member name="M:Castle.Core.Logging.AbstractLoggerFactory.GetConfigFile(System.String)">
+            <summary>
+            Gets the configuration file.
+            </summary>
+            <param name="fileName">i.e. log4net.config</param>
+            <returns></returns>
+        </member>
+        <member name="T:Castle.Core.Logging.ConsoleFactory">
+            <summary>
+            Summary description for ConsoleFactory.
+            </summary>
+        </member>
         <member name="T:Castle.Core.Logging.NullLogFactory">
             <summary>
             NullLogFactory used when logging is turned off.
@@ -635,6 +660,25 @@
             <param name="name">Name.</param>
             <param name="level">Level.</param>
             <returns></returns>
+        </member>
+        <member name="T:Castle.Core.Logging.StreamLoggerFactory">
+            <summary>
+            Creates <see cref="T:Castle.Core.Logging.StreamLogger"/> outputing 
+            to files. The name of the file is derived from the log name
+            plus the 'log' extension.
+            </summary>
+        </member>
+        <member name="T:Castle.Core.Logging.TraceLoggerFactory">
+            <summary>
+            Used to create the TraceLogger implementation of ILogger interface. See <see cref="T:Castle.Core.Logging.TraceLogger"/>. 
+            </summary>
+        </member>
+        <member name="T:Castle.Core.Logging.ConsoleLogger">
+            <summary>
+            The Logger sending everything to the standard output streams.
+            This is mainly for the cases when you have a utility that
+            does not have a logger to supply.
+            </summary>
         </member>
         <member name="T:Castle.Core.Logging.LevelFilteredLogger">
             <summary>
@@ -983,6 +1027,12 @@
             Creates a new <c>LevelFilteredLogger</c>.
             </summary>
         </member>
+        <member name="M:Castle.Core.Logging.LevelFilteredLogger.InitializeLifetimeService">
+            <summary>
+            Keep the instance alive in a remoting scenario
+            </summary>
+            <returns></returns>
+        </member>
         <member name="M:Castle.Core.Logging.LevelFilteredLogger.Debug(System.String)">
             <summary>
             Logs a debug message.
@@ -1320,6 +1370,77 @@
             Determines if messages of priority "fatal" will be logged.
             </summary>
             <value><c>true</c> if log level flags include the <see cref="F:Castle.Core.Logging.LoggerLevel.Fatal"/> bit</value> 
+        </member>
+        <member name="M:Castle.Core.Logging.ConsoleLogger.#ctor">
+            <summary>
+            Creates a new ConsoleLogger with the <c>Level</c>
+            set to <c>LoggerLevel.Debug</c> and the <c>Name</c>
+            set to <c>String.Empty</c>.
+            </summary>
+        </member>
+        <member name="M:Castle.Core.Logging.ConsoleLogger.#ctor(Castle.Core.Logging.LoggerLevel)">
+            <summary>
+            Creates a new ConsoleLogger with the <c>Name</c>
+            set to <c>String.Empty</c>.
+            </summary>
+            <param name="logLevel">The logs Level.</param>
+        </member>
+        <member name="M:Castle.Core.Logging.ConsoleLogger.#ctor(System.String)">
+            <summary>
+            Creates a new ConsoleLogger with the <c>Level</c>
+            set to <c>LoggerLevel.Debug</c>.
+            </summary>
+            <param name="name">The logs Name.</param>
+        </member>
+        <member name="M:Castle.Core.Logging.ConsoleLogger.#ctor(System.String,Castle.Core.Logging.LoggerLevel)">
+            <summary>
+            Creates a new ConsoleLogger.
+            </summary>
+            <param name="name">The logs Name.</param>
+            <param name="logLevel">The logs Level.</param>
+        </member>
+        <member name="M:Castle.Core.Logging.ConsoleLogger.Log(Castle.Core.Logging.LoggerLevel,System.String,System.String,System.Exception)">
+            <summary>
+            A Common method to log.
+            </summary>
+            <param name="loggerLevel">The level of logging</param>
+            <param name="loggerName">The name of the logger</param>
+            <param name="message">The Message</param>
+            <param name="exception">The Exception</param>
+        </member>
+        <member name="M:Castle.Core.Logging.ConsoleLogger.CreateChildLogger(System.String)">
+            <summary>
+            Returns a new <c>ConsoleLogger</c> with the name
+            added after this loggers name, with a dot in between.
+            </summary>
+            <param name="loggerName">The added hierarchical name.</param>
+            <returns>A new <c>ConsoleLogger</c>.</returns> 
+        </member>
+        <member name="T:Castle.Core.Logging.DiagnosticsLogger">
+            <summary>
+            The Logger using standart Diagnostics namespace.
+            </summary>
+        </member>
+        <member name="M:Castle.Core.Logging.DiagnosticsLogger.#ctor(System.String)">
+            <summary>
+            Creates a logger based on <see cref="T:System.Diagnostics.EventLog"/>.
+            </summary>
+            <param name="logName"><see cref="P:System.Diagnostics.EventLog.Log"/></param>
+        </member>
+        <member name="M:Castle.Core.Logging.DiagnosticsLogger.#ctor(System.String,System.String)">
+            <summary>
+            Creates a logger based on <see cref="T:System.Diagnostics.EventLog"/>.
+            </summary>
+            <param name="logName"><see cref="P:System.Diagnostics.EventLog.Log"/></param>
+            <param name="source"><see cref="P:System.Diagnostics.EventLog.Source"/></param>
+        </member>
+        <member name="M:Castle.Core.Logging.DiagnosticsLogger.#ctor(System.String,System.String,System.String)">
+            <summary>
+            Creates a logger based on <see cref="T:System.Diagnostics.EventLog"/>.
+            </summary>
+            <param name="logName"><see cref="P:System.Diagnostics.EventLog.Log"/></param>
+            <param name="machineName"><see cref="P:System.Diagnostics.EventLog.MachineName"/></param>
+            <param name="source"><see cref="P:System.Diagnostics.EventLog.Source"/></param>
         </member>
         <member name="T:Castle.Core.Logging.NullLogger">
             <summary>
@@ -1788,6 +1909,101 @@
             <param name="name">The name of the log.</param>
             <param name="writer">The <c>StreamWriter</c> the log will write to.</param>
         </member>
+        <member name="T:Castle.Core.Logging.TraceLogger">
+            <summary>
+            The TraceLogger sends all logging to the System.Diagnostics.TraceSource
+            built into the .net framework. 
+            </summary>
+            <remarks>
+            Logging can be configured in the system.diagnostics configuration 
+            section. 
+            
+            If logger doesn't find a source name with a full match it will
+            use source names which match the namespace partially. For example you can
+            configure from all castle components by adding a source name with the
+            name "Castle". 
+            
+            If no portion of the namespace matches the source named "Default" will
+            be used.
+            </remarks>
+        </member>
+        <member name="M:Castle.Core.Logging.TraceLogger.#ctor(System.String)">
+            <summary>
+            Build a new trace logger based on the named TraceSource
+            </summary>
+            <param name="name">The name used to locate the best TraceSource. In most cases comes from the using type's fullname.</param>
+        </member>
+        <member name="M:Castle.Core.Logging.TraceLogger.#ctor(System.String,Castle.Core.Logging.LoggerLevel)">
+            <summary>
+            Build a new trace logger based on the named TraceSource
+            </summary>
+            <param name="name">The name used to locate the best TraceSource. In most cases comes from the using type's fullname.</param>
+            <param name="level">The default logging level at which this source should write messages. In almost all cases this
+            default value will be overridden in the config file. </param>
+        </member>
+        <member name="M:Castle.Core.Logging.TraceLogger.CreateChildLogger(System.String)">
+            <summary>
+            Create a new child logger.
+            The name of the child logger is [current-loggers-name].[passed-in-name]
+            </summary>
+            <param name="loggerName">The Subname of this logger.</param>
+            <returns>The New ILogger instance.</returns> 
+        </member>
+        <member name="T:Castle.Core.Logging.WebLogger">
+            <summary>
+            The WebLogger sends everything to the HttpContext.Trace 
+            </summary>
+            <remarks>
+            Trace must be enabled on the Asp.Net configuration file (web.config or machine.config)
+            </remarks>
+        </member>
+        <member name="M:Castle.Core.Logging.WebLogger.#ctor">
+            <summary>
+            Creates a new WebLogger with the priority set to DEBUG.
+            </summary>
+        </member>
+        <member name="M:Castle.Core.Logging.WebLogger.#ctor(Castle.Core.Logging.LoggerLevel)">
+            <summary>
+            Creates a new WebLogger.
+            </summary>
+            <param name="logLevel">The Log level typecode.</param>
+        </member>
+        <member name="M:Castle.Core.Logging.WebLogger.#ctor(System.String)">
+            <summary>
+            Creates a new WebLogger.
+            </summary>
+            <param name="name">The Log name.</param>
+        </member>
+        <member name="M:Castle.Core.Logging.WebLogger.#ctor(System.String,Castle.Core.Logging.LoggerLevel)">
+            <summary>
+            Creates a new WebLogger.
+            </summary>
+            <param name="name">The Log name.</param>
+            <param name="loggerLevel">The Log level typecode.</param>
+        </member>
+        <member name="M:Castle.Core.Logging.WebLogger.Log(Castle.Core.Logging.LoggerLevel,System.String,System.String,System.Exception)">
+            <summary>
+            A Common method to log.
+            </summary>
+            <param name="loggerLevel">The level of logging</param>
+            <param name="loggerName">The Log name.</param>
+            <param name="message">The Message</param>
+            <param name="exception">The Exception</param>
+        </member>
+        <member name="M:Castle.Core.Logging.WebLogger.CreateChildLogger(System.String)">
+            <summary>
+            Just returns this logger (<c>WebLogger</c> is not hierarchical).
+            </summary>
+            <param name="loggerName">Ignored</param>
+            <returns>This ILogger instance.</returns> 
+        </member>
+        <member name="M:Castle.Core.Logging.WebLogger.TryToGetTraceContext">
+            <summary>
+            Tries to get the current http context's trace context.
+            </summary>
+            <returns>The current http context's trace context or null if none is 
+            available</returns>
+        </member>
         <member name="T:Castle.Core.Logging.LoggerLevel">
             <summary>
             Supporting Logger levels.
@@ -1821,6 +2037,24 @@
         <member name="F:Castle.Core.Logging.LoggerLevel.Debug">
             <summary>
             Debug logging level
+            </summary>
+        </member>
+        <member name="T:Castle.Core.Configuration.Xml.XmlConfigurationDeserializer">
+            <summary>
+            Pendent
+            </summary>
+        </member>
+        <member name="M:Castle.Core.Configuration.Xml.XmlConfigurationDeserializer.Deserialize(System.Xml.XmlNode)">
+            <summary>
+            Deserializes the specified node into an abstract representation of configuration.
+            </summary>
+            <param name="node">The node.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Castle.Core.Configuration.Xml.XmlConfigurationDeserializer.GetConfigValue(System.String)">
+            <summary>
+            If a config value is an empty string we return null, this is to keep
+            backward compability with old code
             </summary>
         </member>
         <member name="T:Castle.Core.Configuration.AbstractConfiguration">
@@ -1984,6 +2218,11 @@
             <summary>
             Optimization of transient components that keeps
             instance in a pool instead of always creating them.
+            </summary>
+        </member>
+        <member name="F:Castle.Core.LifestyleType.PerWebRequest">
+            <summary>
+            PerWebRequest components are created once per Http Request
             </summary>
         </member>
         <member name="F:Castle.Core.LifestyleType.Custom">
@@ -2620,11 +2859,6 @@
             Collection of <see cref="T:Castle.Core.ParameterModel"/>
             </summary>
         </member>
-        <member name="M:Castle.Core.ParameterModelCollection.#ctor">
-            <summary>
-            Initializes a new instance of the <see cref="T:Castle.Core.ParameterModelCollection"/> class.
-            </summary>
-        </member>
         <member name="M:Castle.Core.ParameterModelCollection.Add(System.String,System.String)">
             <summary>
             Adds the specified name.
@@ -2890,6 +3124,11 @@
             
             </summary>
         </member>
+        <member name="T:Castle.Core.Resource.FileResourceFactory">
+            <summary>
+            
+            </summary>
+        </member>
         <member name="T:Castle.Core.Resource.StaticContentResource">
             <summary>
             Adapts a static string content as an <see cref="T:Castle.Core.Resource.IResource"/>
@@ -2899,6 +3138,126 @@
             <summary>
             Enable access to files on network shares
             </summary>
+        </member>
+        <member name="T:Castle.Core.Smtp.DefaultSmtpSender">
+            <summary>
+            Default <see cref="T:Castle.Core.Smtp.IEmailSender"/> implementation.
+            </summary>
+        </member>
+        <member name="T:Castle.Core.Smtp.IEmailSender">
+            <summary>
+            Email sender abstraction.
+            </summary>
+        </member>
+        <member name="M:Castle.Core.Smtp.IEmailSender.Send(System.String,System.String,System.String,System.String)">
+            <summary>
+            Sends a mail message.
+            </summary>
+            <param name="from">From field</param>
+            <param name="to">To field</param>
+            <param name="subject">E-mail's subject</param>
+            <param name="messageText">message's body</param>
+        </member>
+        <member name="M:Castle.Core.Smtp.IEmailSender.Send(System.Net.Mail.MailMessage)">
+            <summary>
+            Sends a <see cref="T:System.Net.Mail.MailMessage">message</see>. 
+            </summary>
+            <param name="message"><see cref="T:System.Net.Mail.MailMessage">Message</see> instance</param>
+        </member>
+        <member name="M:Castle.Core.Smtp.IEmailSender.Send(System.Collections.Generic.IEnumerable{System.Net.Mail.MailMessage})">
+            <summary>
+            Sends multiple <see cref="T:System.Net.Mail.MailMessage">messages</see>. 
+            </summary>
+            <param name="messages">List of <see cref="T:System.Net.Mail.MailMessage">messages</see></param>
+        </member>
+        <member name="M:Castle.Core.Smtp.DefaultSmtpSender.#ctor(System.String)">
+            <summary>
+            This service implementation
+            requires a host name in order to work
+            </summary>
+            <param name="hostname">The smtp server name</param>
+        </member>
+        <member name="M:Castle.Core.Smtp.DefaultSmtpSender.Send(System.String,System.String,System.String,System.String)">
+            <summary>
+            Sends a message. 
+            </summary>
+            <exception cref="T:System.ArgumentNullException">If any of the parameters is null</exception>
+            <param name="from">From field</param>
+            <param name="to">To field</param>
+            <param name="subject">e-mail's subject</param>
+            <param name="messageText">message's body</param>
+        </member>
+        <member name="M:Castle.Core.Smtp.DefaultSmtpSender.Send(System.Net.Mail.MailMessage)">
+            <summary>
+            Sends a message. 
+            </summary>
+            <exception cref="T:System.ArgumentNullException">If the message is null</exception>
+            <param name="message">Message instance</param>
+        </member>
+        <member name="M:Castle.Core.Smtp.DefaultSmtpSender.Configure(System.Net.Mail.SmtpClient)">
+            <summary>
+            Configures the sender
+            with port information and eventual credential
+            informed
+            </summary>
+            <param name="smtpClient">Message instance</param>
+        </member>
+        <member name="P:Castle.Core.Smtp.DefaultSmtpSender.Port">
+            <summary>
+            Gets or sets the port used to 
+            access the SMTP server
+            </summary>
+        </member>
+        <member name="P:Castle.Core.Smtp.DefaultSmtpSender.Hostname">
+            <summary>
+            Gets the hostname.
+            </summary>
+            <value>The hostname.</value>
+        </member>
+        <member name="P:Castle.Core.Smtp.DefaultSmtpSender.AsyncSend">
+            <summary>
+            Gets or sets a value which is used to 
+            configure if emails are going to be sent asyncrhonously or not.
+            </summary>
+        </member>
+        <member name="P:Castle.Core.Smtp.DefaultSmtpSender.Timeout">
+            <summary>
+            Gets or sets a value that specifies 
+            the amount of time after which a synchronous Send call times out.
+            </summary>
+        </member>
+        <member name="P:Castle.Core.Smtp.DefaultSmtpSender.UseSsl">
+            <summary>
+            Gets or sets a value indicating whether the email should be sent using 
+            a secure communication channel.
+            </summary>
+            <value><c>true</c> if should use SSL; otherwise, <c>false</c>.</value>
+        </member>
+        <member name="P:Castle.Core.Smtp.DefaultSmtpSender.Domain">
+            <summary>
+            Gets or sets the domain.
+            </summary>
+            <value>The domain.</value>
+        </member>
+        <member name="P:Castle.Core.Smtp.DefaultSmtpSender.UserName">
+            <summary>
+            Gets or sets the name of the user.
+            </summary>
+            <value>The name of the user.</value>
+        </member>
+        <member name="P:Castle.Core.Smtp.DefaultSmtpSender.Password">
+            <summary>
+            Gets or sets the password.
+            </summary>
+            <value>The password.</value>
+        </member>
+        <member name="P:Castle.Core.Smtp.DefaultSmtpSender.HasCredentials">
+            <summary>
+            Gets a value indicating whether credentials were informed.
+            </summary>
+            <value>
+            <see langword="true"/> if this instance has credentials; otherwise, <see langword="false"/>.
+            </value>
         </member>
         <member name="T:Castle.Core.IServiceEnabledComponent">
             <summary>
