@@ -67,7 +67,7 @@ namespace Castle.MicroKernel.Handlers
 
 		private Type service;
 		private ComponentResolvingDelegate resolvingHandler;
-		private IDictionary<object, ComponentReleasingDelegate> releasingHandlers;
+		private IDictionary<object, IList<ComponentReleasingDelegate>> releasingHandlers;
 
 		/// <summary>
 		/// Constructs and initializes the handler
@@ -112,24 +112,37 @@ namespace Castle.MicroKernel.Handlers
 		/// <returns></returns>
 		public object Resolve(CreationContext context)
 		{
-			ComponentReleasingDelegate releasingHandler = null;
+			List<ComponentReleasingDelegate> releasers = null;
 
 			if (resolvingHandler != null)
 			{
-				releasingHandler = resolvingHandler(kernel, context);
+				foreach (ComponentResolvingDelegate resolver in resolvingHandler.GetInvocationList())
+				{
+					var releaser = resolver(kernel, context);
+
+					if (releaser != null)
+					{
+						if (releasers == null)
+						{
+							releasers = new List<ComponentReleasingDelegate>();
+						}
+						releasers.Add(releaser);
+					}
+				}
 			}
 
-			var instance = ResolveCore(context, releasingHandler != null);
+			var instance = ResolveCore(context, releasers != null);
 
-			if (releasingHandler != null)
+			if (releasers != null)
 			{
 				lock (resolvingHandler)
 				{
 					if (releasingHandlers == null)
 					{
-						releasingHandlers = new Dictionary<object, ComponentReleasingDelegate>();
+						releasingHandlers = new Dictionary<object, IList<ComponentReleasingDelegate>>();
 					}
-					releasingHandlers.Add(instance, releasingHandler);
+
+					releasingHandlers.Add(instance, releasers);
 				}
 			}
 
@@ -155,19 +168,22 @@ namespace Castle.MicroKernel.Handlers
 		{
 			if (releasingHandlers != null)
 			{
-				ComponentReleasingDelegate releasingHandler;
+				IList<ComponentReleasingDelegate> releasers;
 
 				lock (releasingHandlers)
 				{
-					if (releasingHandlers.TryGetValue(instance, out releasingHandler))
+					if (releasingHandlers.TryGetValue(instance, out releasers))
 					{
 						releasingHandlers.Remove(instance);
 					}
 				}
 
-				if (releasingHandler != null)
+				if (releasers != null)
 				{
-					releasingHandler(Kernel);
+					foreach (var releaser in releasers)
+					{
+						releaser(kernel);
+					}
 				}
 			}
 

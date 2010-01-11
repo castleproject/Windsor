@@ -134,12 +134,17 @@ namespace Castle.MicroKernel.Tests.Registration
 		[Test]
 		public void Can_release_components_with_dynamic_parameters()
 		{
-			bool releaseCalled = false;
+			int releaseCalled = 0;
 			Kernel.Register(
-				Component.For<ClassWithArguments>().LifeStyle.Transient.DynamicParameters((k, d) =>
+				Component.For<ClassWithArguments>().LifeStyle.Transient
+				.DynamicParameters((k, d) =>
 				{
 					d["arg1"] = "foo";
-					return kk => releaseCalled = true;
+					return kk => ++releaseCalled;
+				})
+				.DynamicParameters((k, d) =>
+				{
+					return kk => ++releaseCalled;
 				}));
 
 			var component = Kernel.Resolve<ClassWithArguments>(new { arg2 = 2 });
@@ -147,27 +152,31 @@ namespace Castle.MicroKernel.Tests.Registration
 			Assert.AreEqual("foo", component.Arg1);
 
 			Kernel.ReleaseComponent(component);
-			Assert.IsTrue(releaseCalled);
+			Assert.AreEqual(2, releaseCalled);
 		}
 
 		[Test]
 		public void Can_release_generics_with_dynamic_parameters()
 		{
-			bool releaseCalled = false;
+			int releaseCalled = 0;
 			Kernel.Register(
 				Component.For(typeof(IGenericClassWithParameter<>))
-				.ImplementedBy(typeof(GenericClassWithParameter<>))
-				.LifeStyle.Transient.DynamicParameters((k, d) =>
+				.ImplementedBy(typeof(GenericClassWithParameter<>)).LifeStyle.Transient
+				.DynamicParameters((k, d) =>
 				{
 					d["name"] = "foo";
-					return kk => releaseCalled = true;
+					return kk => ++releaseCalled;
+				})
+				.DynamicParameters((k, d) =>
+				{
+					return kk => ++releaseCalled;
 				}));
 
 			var component = Kernel.Resolve<IGenericClassWithParameter<int>>(new { name = "bar" });
 			Assert.AreEqual("foo", component.Name);
 
 			Kernel.ReleaseComponent(component);
-			Assert.IsTrue(releaseCalled);
+			Assert.AreEqual(2, releaseCalled);
 		}
 	}
 }
