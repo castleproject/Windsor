@@ -289,13 +289,13 @@
     </Compile>
     <Compile Include="Registration\ComponentRegistrationTestCase.cs" />
     <Compile Include="Registration\AllTypesTestCase.cs" />
+    <Compile Include="Registration\Interceptors\InterceptorReferenceComparer.cs" />
+    <Compile Include="Registration\Interceptors\InterceptorsTestCaseBase.cs" />
     <Compile Include="Registration\Interceptors\Multiple\GenericInterceptorsInSingleCallTestCase.cs" />
     <Compile Include="Registration\Interceptors\Multiple\GenericInterceptorsMultipleCallTestCase.cs" />
     <Compile Include="Registration\Interceptors\Multiple\InterceptorKeyInSingleCallTestCase.cs" />
     <Compile Include="Registration\Interceptors\Multiple\InterceptorKeyMultipleCallTestCase.cs" />
-    <Compile Include="Registration\Interceptors\InterceptorReferenceComparer.cs" />
     <Compile Include="Registration\Interceptors\Multiple\InterceptorReferenceMultipleCallTestCase.cs" />
-    <Compile Include="Registration\Interceptors\InterceptorsTestCaseBase.cs" />
     <Compile Include="Registration\Interceptors\Multiple\InterceptorReferencesInSingleCallTestCase.cs" />
     <Compile Include="Registration\Interceptors\Multiple\InterceptorReferenceWithPositionMultipleCall1TestCase.cs" />
     <Compile Include="Registration\Interceptors\Multiple\InterceptorReferenceWithPositionMultipleCall2TestCase.cs" />
