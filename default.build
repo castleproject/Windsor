@@ -16,8 +16,8 @@
 		<include name="src/Castle.MicroKernel.Tests/default.build" if="${common.testrunner.enabled}" />
 		<include name="src/Castle.Windsor/default.build" />
 		<include name="src/Castle.Windsor.Tests/default.build" if="${common.testrunner.enabled}" />
-		<include name="src/Castle.Facilities.Logging/default.build" />
-		<include name="src/Castle.Facilities.Logging.Tests/default.build" if="${common.testrunner.enabled}" />
+		<include name="src/Castle.Facilities.Logging/default.build" if="${not common.silverlight}" />
+		<include name="src/Castle.Facilities.Logging.Tests/default.build" if="${common.testrunner.enabled and not common.silverlight}" />
 	</fileset>
 
 	<patternset id="package.bin.set" >
