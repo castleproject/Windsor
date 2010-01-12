@@ -47,7 +47,6 @@ namespace Castle.Facilities.Logging.Tests
 		[Test]
 		public void SimpleTest()
 		{
-
 			container.AddComponent("component1", typeof(SimpleLoggingComponent));
 			SimpleLoggingComponent test = container["component1"] as SimpleLoggingComponent;
 
@@ -78,7 +77,6 @@ namespace Castle.Facilities.Logging.Tests
 			patternLayout.Format(actualLogOutput, memoryAppender.GetEvents()[3]);
 
 			Assert.AreEqual(expectedLogOutput, actualLogOutput.ToString());
-
 		}
 
 		[Test]

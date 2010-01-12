@@ -9,7 +9,6 @@
 	<include buildfile="${common.scripts.dir}/common-project.xml" />
 
 	<target name="init" depends="common.init">
-		<property name="assembly.version" value="2.0.0.0" />
 		<property name="assembly.description" value="MicroKernel is a thin and lightweight inversion of control container" />
 
 		<assemblyfileset id="project.references" basedir="${build.dir}">
