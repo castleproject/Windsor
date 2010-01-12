@@ -36,7 +36,7 @@ namespace Castle.Facilities.Logging
 		Log4net,
 		ExtendedNLog,
 		ExtendedLog4net,
-        Trace
+		Trace
 	}
 
 	/// <summary>
@@ -47,22 +47,22 @@ namespace Castle.Facilities.Logging
 	{
 		private static readonly String Log4NetLoggerFactoryTypeName =
 			"Castle.Services.Logging.Log4netIntegration.Log4netFactory," +
-			"Castle.Services.Logging.Log4netIntegration,Version=1.0.3.0, Culture=neutral," +
+			"Castle.Services.Logging.Log4netIntegration,Version=1.2.0.0, Culture=neutral," +
 			"PublicKeyToken=407dd0808d44fbdc";
 
 		private static readonly String NLogLoggerFactoryTypeName =
 			"Castle.Services.Logging.NLogIntegration.NLogFactory," +
-			"Castle.Services.Logging.NLogIntegration,Version=1.0.3.0, Culture=neutral," +
+			"Castle.Services.Logging.NLogIntegration,Version=1.2.0.0, Culture=neutral," +
 			"PublicKeyToken=407dd0808d44fbdc";
 
 		private static readonly String ExtendedLog4NetLoggerFactoryTypeName =
 			"Castle.Services.Logging.Log4netIntegration.ExtendedLog4netFactory," +
-			"Castle.Services.Logging.Log4netIntegration,Version=1.0.3.0, Culture=neutral," +
+			"Castle.Services.Logging.Log4netIntegration,Version=1.2.0.0, Culture=neutral," +
 			"PublicKeyToken=407dd0808d44fbdc";
 
 		private static readonly String ExtendedNLogLoggerFactoryTypeName =
 			"Castle.Services.Logging.NLogIntegration.ExtendedNLogFactory," +
-			"Castle.Services.Logging.NLogIntegration,Version=1.0.3.0, Culture=neutral," +
+			"Castle.Services.Logging.NLogIntegration,Version=1.2.0.0, Culture=neutral," +
 			"PublicKeyToken=407dd0808d44fbdc";
 
 		private ITypeConverter converter;
@@ -70,9 +70,9 @@ namespace Castle.Facilities.Logging
 		private LoggerImplementation logApi;
 
 		//Configuration
-		private LoggerImplementation? loggingApiConfig = null;
-		private string customLoggerFactoryConfig = null;
-		private string configFileConfig = null;
+		private LoggerImplementation? loggingApiConfig;
+		private readonly string customLoggerFactoryConfig;
+		private readonly string configFileConfig;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="LoggingFacility"/> class.
@@ -89,7 +89,6 @@ namespace Castle.Facilities.Logging
 		/// </param>
 		public LoggingFacility(LoggerImplementation loggingApi) : this(loggingApi, null)
 		{
-
 		}
 
 		/// <summary>
@@ -103,7 +102,6 @@ namespace Castle.Facilities.Logging
 		/// </param>
 		public LoggingFacility(LoggerImplementation loggingApi, string configFile) : this(loggingApi, null, configFile)
 		{
-
 		}
 
 		/// <summary>
@@ -117,7 +115,6 @@ namespace Castle.Facilities.Logging
 		/// </param>
 		public LoggingFacility(string customLoggerFactory, string configFile) : this(LoggerImplementation.Custom, customLoggerFactory, configFile)
 		{
-		
 		}
 
 		/// <summary>
@@ -134,9 +131,9 @@ namespace Castle.Facilities.Logging
 		/// </param>
 		public LoggingFacility(LoggerImplementation loggingApi, string customLoggerFactory, string configFile)
 		{
-			this.loggingApiConfig = loggingApi;
-			this.customLoggerFactoryConfig = customLoggerFactory;
-			this.configFileConfig = configFile;
+			loggingApiConfig = loggingApi;
+			customLoggerFactoryConfig = customLoggerFactory;
+			configFileConfig = configFile;
 		}
 
 		protected override void Init()
@@ -186,15 +183,13 @@ namespace Castle.Facilities.Logging
 		{
 			logApi = LoggerImplementation.Console;
 
-
 			String typeAtt = (FacilityConfig  != null) ? FacilityConfig.Attributes["loggingApi"] : null;
 			String customAtt = (FacilityConfig  != null)  ? FacilityConfig.Attributes["customLoggerFactory"] : null;
 			String configFileAtt = (FacilityConfig  != null) ? FacilityConfig.Attributes["configFile"] : null;
 
 			if (typeAtt != null)
 			{
-				logApi = (LoggerImplementation)
-						 converter.PerformConversion(typeAtt, typeof(LoggerImplementation));
+				logApi = (LoggerImplementation)converter.PerformConversion(typeAtt, typeof(LoggerImplementation));
 			}
 			else if (loggingApiConfig.HasValue)
 			{
@@ -244,7 +239,7 @@ namespace Castle.Facilities.Logging
 			object[] args = null;
 			ConstructorInfo ctor = null;
 
-			if (configFile != null && configFile.Length > 0)
+			if (!string.IsNullOrEmpty(configFile))
 			{
 				ctor = loggerFactoryType.GetConstructor(flags, null, new Type[] { typeof(string) }, null);
 			}
@@ -281,8 +276,7 @@ namespace Castle.Facilities.Logging
 						throw new ConfigurationErrorsException(message);
 					}
 
-					loggerFactoryType = (Type)
-										converter.PerformConversion(customType, typeof(Type));
+					loggerFactoryType = (Type)converter.PerformConversion(customType, typeof(Type));
 
 					if (!typeof(ILoggerFactory).IsAssignableFrom(loggerFactoryType) && !typeof(IExtendedLoggerFactory).IsAssignableFrom(loggerFactoryType))
 					{
@@ -299,9 +293,9 @@ namespace Castle.Facilities.Logging
 				case LoggerImplementation.Diagnostics:
 					loggerFactoryType = typeof(DiagnosticsLoggerFactory);
 					break;
-                case LoggerImplementation.Trace:
-			        loggerFactoryType = typeof (TraceLoggerFactory);
-			        break;
+				case LoggerImplementation.Trace:
+					loggerFactoryType = typeof (TraceLoggerFactory);
+					break;
 				case LoggerImplementation.Web:
 					loggerFactoryType = typeof(WebLoggerFactory);
 					break;
@@ -329,8 +323,7 @@ namespace Castle.Facilities.Logging
 
 		private void SetUpTypeConverter()
 		{
-			converter = Kernel.GetSubSystem(
-							SubSystemConstants.ConversionManagerKey) as IConversionManager;
+			converter = Kernel.GetSubSystem(SubSystemConstants.ConversionManagerKey) as IConversionManager;
 		}
 	}
 }

@@ -1,5 +1,14 @@
-2.1
-====
+2.1.0 (2010-01-12)
+==================
+
+- Moved the logging facility project into the Windsor project:
+  - Applied Tom Allard's patch fixing FACILITIES-93
+    "Extra constructors on LoggingFacility"
+  - Added test case supplied by chris ortman
+  - Register base logger and factory when using extended logger.
+  - Fixed FACILITIES-77
+    "ILoggerFactory instance creation requires constructor with one argument"
+
 - simplified API for attaching interceptors.
 
 - added support for forwarded types in XML config

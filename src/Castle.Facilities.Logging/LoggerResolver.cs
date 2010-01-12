@@ -26,8 +26,8 @@ namespace Castle.Facilities.Logging
 	/// </summary>
 	public class LoggerResolver : ISubDependencyResolver
 	{
-		private ILoggerFactory loggerFactory;
-		private IExtendedLoggerFactory extendedLoggerFactory;
+		private readonly ILoggerFactory loggerFactory;
+		private readonly IExtendedLoggerFactory extendedLoggerFactory;
 
 		public LoggerResolver(ILoggerFactory loggerFactory)
 		{
@@ -49,19 +49,15 @@ namespace Castle.Facilities.Logging
 			if (CanResolve(context, parentResolver, model, dependency))
 			{
 				if (extendedLoggerFactory != null)
-        {
-        	return extendedLoggerFactory.Create(model.Implementation);
-        }
-				else if (loggerFactory != null)
+				{
+					return extendedLoggerFactory.Create(model.Implementation);
+				}
+				if (loggerFactory != null)
 				{
 					return loggerFactory.Create(model.Implementation);
 				}
-				else
-				{
-					throw new LoggerException("Unable to resolve proper LoggerFactory for Logger.");
-				}
+				throw new LoggerException("Unable to resolve proper LoggerFactory for Logger.");
 			}
-
 			return null;
 		}
 
