@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+
+	<facilities>
+
+		<facility
+			id="remote.facility"
+			type="Castle.Facilities.Remoting.RemotingFacility, Castle.MicroKernel"
+			remotingConfigurationFile="RemotingTcpConfig.config">
+
+		</facility>
+
+	</facilities>
+
+
+	<components>
+
+		<component
+			id="calc.service"
+			service="Castle.Facilities.Remoting.TestComponents.ICalcService, Castle.Windsor.Tests"
+			type="Castle.Facilities.Remoting.TestComponents.CalcServiceImpl, Castle.Windsor.Tests"
+			remoteserver="ClientActivated" />
+
+		<component
+			id="calc.service2"
+			service="Castle.Facilities.Remoting.TestComponents.ICalcService, Castle.Windsor.Tests"
+			type="Castle.Facilities.Remoting.TestComponents.InterceptableCalcService, Castle.Windsor.Tests"
+			remoteserver="ClientActivated" />
+
+	</components>
+
+</configuration>
