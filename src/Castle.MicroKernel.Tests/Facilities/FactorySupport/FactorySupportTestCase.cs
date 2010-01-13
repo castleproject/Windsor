@@ -108,6 +108,17 @@ namespace Castle.MicroKernel.Tests.Facilities.FactorySupport
 			Assert.Throws(typeof(FacilityException), () => kernel.Resolve<Pet>());
 		}
 
+		[Test]
+		public void Works_for_dependencies()
+		{
+			kernel.AddFacility("factories", new FactorySupportFacility());
+			kernel.Register(
+				Component.For<Pet>().ImplementedBy<Cat>()
+					.UsingFactoryMethod(() => new Cat()));
+			kernel.Register(Component.For<UsesPet>());
+
+			kernel.Resolve<UsesPet>();
+		}
 
 		private ComponentModel AddComponent(string key, Type type, string factoryMethod)
 		{
@@ -184,9 +195,21 @@ namespace Castle.MicroKernel.Tests.Facilities.FactorySupport
 		public class Dog : Pet
 		{
 		}
+
 		public class Pet
 		{
 		}
+
+		public class UsesPet
+		{
+			public Pet Pet { get; set; }
+
+			public UsesPet(Pet pet)
+			{
+				Pet = pet;
+			}
+		}
+
 		public class PetFactory
 		{
 			private readonly string type;
