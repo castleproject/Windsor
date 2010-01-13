@@ -53,10 +53,9 @@ namespace Castle.Facilities.FactorySupport
 				throw new FacilityException(message);
 			}
 
-			object instance;
 			try
 			{
-				instance = pi.GetValue(null, new object[0]);
+				return pi.GetValue(null, new object[0]);
 			}
 			catch (Exception ex)
 			{
@@ -65,18 +64,6 @@ namespace Castle.Facilities.FactorySupport
 					Model.Name, Model.Implementation.FullName);
 				throw new FacilityException(message, ex);
 			}
-			var type = Model.Implementation;
-			if (instance != null && type != null && type.IsInstanceOfType(instance) == false)
-			{
-				String message =
-					String.Format(
-						"Factory accessor '{0}.{1}' created instance of type {2}.{5}" +
-						"This type is not compatible with implementation type {3} registered for this component ({4}).{5}" +
-						"This may signify a bug. If it's the expected behavior, change the registration of this component to cover this return type.",
-						pi.DeclaringType.FullName, pi.Name, instance.GetType().FullName, type.FullName, context.Handler.ComponentModel.Name, Environment.NewLine);
-				throw new FacilityException(message);
-			}
-			return instance;
 		}
 	}
 }

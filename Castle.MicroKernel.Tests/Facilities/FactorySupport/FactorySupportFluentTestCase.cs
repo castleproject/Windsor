@@ -83,6 +83,7 @@ namespace Castle.MicroKernel.Tests.Facilities.FactorySupport
 				Component.For<User>().Named("currentUser").Instance(user),
 				Component.For<AbstractCarProviderFactory>().Named("AbstractCarProviderFactory"),
 				Component.For<ICarProvider>()
+					.ImplementedBy<FerrariProvider>()
 					.Attribute("factoryId").Eq("AbstractCarProviderFactory")
 					.Attribute("factoryCreate").Eq("Create")
 				);
