@@ -106,7 +106,7 @@ namespace Castle.Facilities.FactorySupport
 
 			EnsureFactoryIsRegistered(factoryId, factoryType);
 
-			var serviceModel = Kernel.ComponentModelBuilder.BuildModel(serviceKey, serviceType, serviceType, null);
+			var serviceModel = Kernel.ComponentModelBuilder.BuildModel(serviceKey, serviceType, factoryType, null);
 			cfg.Attributes["factoryId"] = factoryId;
 			serviceModel.Configuration = cfg;
 			Kernel.AddCustomComponent(serviceModel);

@@ -20,8 +20,6 @@ namespace Castle.MicroKernel.Tests.Facilities.FactorySupport
 	using Castle.Core;
 	using Castle.Core.Configuration;
 	using Castle.Facilities.FactorySupport;
-	using Castle.MicroKernel.Facilities;
-	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Tests.ClassComponents;
 
 	using NUnit.Framework;
@@ -73,51 +71,6 @@ namespace Castle.MicroKernel.Tests.Facilities.FactorySupport
 
 			Assert.IsNotNull(service);
 			Assert.IsNull(service.SomeProperty);
-		}
-
-		[Test]
-		public void CheckReturnValueFromTheFactory()
-		{
-			kernel.AddFacility("factories", new FactorySupportFacility());
-			kernel.Register(
-				Component.For<PetFactory>().Parameters(
-					Parameter.ForKey("petType").Eq("dog"))
-					.Named("pet.factory"));
-			kernel.Register(
-				Component.For<Pet>().ImplementedBy<Cat>()
-					.Configuration(
-					Attrib.ForName("factoryId").Eq("pet.factory"),
-					Attrib.ForName("factoryCreate").Eq("Get"))
-				);
-
-			Assert.Throws(typeof(FacilityException), () => kernel.Resolve<Pet>());
-		}
-
-		[Test]
-		public void CheckReturnValueFromTheFactoryAccessor()
-		{
-			kernel.AddFacility("factories", new FactorySupportFacility());
-			kernel.Register(
-				Component.For<PetFactory>()
-					.Named("pet.factory"));
-			kernel.Register(
-				Component.For<Pet>().ImplementedBy<Cat>()
-					.Configuration(
-					Attrib.ForName("instance-accessor").Eq("Dog"))
-				);
-			Assert.Throws(typeof(FacilityException), () => kernel.Resolve<Pet>());
-		}
-
-		[Test]
-		public void Works_for_dependencies()
-		{
-			kernel.AddFacility("factories", new FactorySupportFacility());
-			kernel.Register(
-				Component.For<Pet>().ImplementedBy<Cat>()
-					.UsingFactoryMethod(() => new Cat()));
-			kernel.Register(Component.For<UsesPet>());
-
-			kernel.Resolve<UsesPet>();
 		}
 
 		private ComponentModel AddComponent(string key, Type type, string factoryMethod)
@@ -184,48 +137,5 @@ namespace Castle.MicroKernel.Tests.Facilities.FactorySupport
 			{
 			}
 		}
-
-		public class Cat : Pet
-		{
-			public static Pet Dog
-			{
-				get { return new Dog(); }
-			}
-		}
-		public class Dog : Pet
-		{
-		}
-
-		public class Pet
-		{
-		}
-
-		public class UsesPet
-		{
-			public Pet Pet { get; set; }
-
-			public UsesPet(Pet pet)
-			{
-				Pet = pet;
-			}
-		}
-
-		public class PetFactory
-		{
-			private readonly string type;
-			public PetFactory(string petType)
-			{
-				type = petType;
-			}
-			public Pet Get()
-			{
-				if (type == "cat")
-					return new Cat();
-				else
-					return new Dog();
-			}
-		}
-
-
 	}
 }
