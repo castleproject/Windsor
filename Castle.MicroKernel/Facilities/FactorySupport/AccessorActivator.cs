@@ -65,7 +65,7 @@ namespace Castle.Facilities.FactorySupport
 					Model.Name, Model.Implementation.FullName);
 				throw new FacilityException(message, ex);
 			}
-			var type = context.Handler.ComponentModel.Implementation;
+			var type = Model.Implementation;
 			if (instance != null && type != null && type.IsInstanceOfType(instance) == false)
 			{
 				String message =

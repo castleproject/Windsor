@@ -98,7 +98,7 @@ namespace Castle.Facilities.FactorySupport
 				instance = this.Create(factoryInstance, factoryId, instanceCreateMethod, factoryCreate, context);
 			}
 			var type = context.Handler.ComponentModel.Implementation;
-			if (instance != null && type != null && type.IsInstanceOfType(instance) == false)
+			if (instance != null && type != null && Model.Implementation.IsInstanceOfType(instance) == false)
 			{
 				String message =
 					String.Format(
