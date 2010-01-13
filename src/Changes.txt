@@ -1,6 +1,10 @@
+2.1.1 (2010-01-13)
+==================
+- Reverted factory support facility changes in r6595, r6596 and r6653 which fixed IOC-ISSUE-153, however caused other bugs
+  reported on the mailing list (http://groups.google.com/group/castle-project-users/browse_thread/thread/3f2b602e738a08c6?hl=en)
+
 2.1.0 (2010-01-12)
 ==================
-
 - Moved the logging facility project into the Windsor project:
   - Applied Tom Allard's patch fixing FACILITIES-93
     "Extra constructors on LoggingFacility"
