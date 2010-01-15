@@ -118,7 +118,7 @@ namespace Castle.Windsor.Installer
 
 			var forwarded = new List<Type>();
 			foreach (var forwardedType in forwardedTypes.Children
-				.Where(c => c.Name.Equals("add", StringComparison.OrdinalIgnoreCase)))
+				.Where(c => c.Name.Equals("add", StringComparison.InvariantCultureIgnoreCase)))
 			{
 				var forwardedServiceTypeName = forwardedType.Attributes["service"];
 				try

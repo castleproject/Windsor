@@ -24,82 +24,51 @@ namespace Castle.MicroKernel.Proxy
 	/// </summary>
 	public class ProxyOptions
 	{
-		private IProxyHook hook;
-		private IInterceptorSelector selector;
 		private List<Type> interfaceList;
-		private List<object> mixInList;
-		private bool useSingleInterfaceProxy;
-#if (!SILVERLIGHT)
-		private bool useMarshalByRefAsBaseClass;
-#endif
-		private bool allowChangeTarget;
-		private bool omitTarget;
+		private List<IReference<object>> mixInList;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ProxyOptions"/> class.
 		/// </summary>
 		public ProxyOptions()
 		{
-			useSingleInterfaceProxy = false;
-			omitTarget = false;
+			UseSingleInterfaceProxy = false;
+			OmitTarget = false;
 		}
 
 		/// <summary>
 		/// Gets or sets the proxy hook.
 		/// </summary>
-		public IProxyHook Hook
-		{
-			get { return hook; }
-			set { hook = value; }
-		}
+		public IReference<IProxyHook> Hook { get; set; }
 
 		/// <summary>
 		/// Gets or sets the interceptor selector.
 		/// </summary>
-		public IInterceptorSelector Selector
-		{
-			get { return selector; }
-			set { selector = value; }
-		}
+		public IReference<IInterceptorSelector> Selector { get; set; }
 
 		/// <summary>
 		/// Determines if the proxied component uses a target.
 		/// </summary>
-		public bool OmitTarget
-		{
-			get { return omitTarget; }
-			set { omitTarget = value; }
-		}
+		public bool OmitTarget { get; set; }
 
 		/// <summary>
 		/// Determines if the proxied component can change targets.
 		/// </summary>
-		public bool AllowChangeTarget
-		{
-			get { return allowChangeTarget; }
-			set { allowChangeTarget = value; }
-		}
+		public bool AllowChangeTarget { get; set; }
 
 		/// <summary>
 		/// Determines if the proxied component should only include
 		/// the service interface.
 		/// </summary>
-		public bool UseSingleInterfaceProxy
-		{
-			get { return useSingleInterfaceProxy; }
-			set { useSingleInterfaceProxy = value; }
-		}
+		public bool UseSingleInterfaceProxy { get; set; }
 
 #if (!SILVERLIGHT)
 		/// <summary>
 		/// Determines if the interface proxied component should inherit 
 		/// from <see cref="MarshalByRefObject"/>
 		/// </summary>
-		public bool UseMarshalByRefAsBaseClass
-		{
-			get { return useMarshalByRefAsBaseClass; }
-			set { useMarshalByRefAsBaseClass = value; }
-		}
+		public bool UseMarshalByRefAsBaseClass { get; set; }
+
 #endif
 
 		/// <summary>
@@ -112,7 +81,7 @@ namespace Castle.MicroKernel.Proxy
 			{
 				if (interfaceList != null)
 				{
-					return (Type[]) interfaceList.ToArray();
+					return interfaceList.ToArray();
 				}
 
 				return new Type[0];
@@ -123,16 +92,19 @@ namespace Castle.MicroKernel.Proxy
 		/// Gets the mix ins to integrate.
 		/// </summary>
 		/// <value>The interfaces.</value>
-		public object[] MixIns
+		public IEnumerable<IReference<object>> MixIns
 		{
 			get
 			{
-				if (mixInList != null)
+				if (mixInList == null)
 				{
-					return (object[])mixInList.ToArray();
+					yield break;
 				}
 
-				return new object[0];
+				foreach (var reference in this.mixInList)
+				{
+					yield return reference;
+				}
 			}
 		}
 
@@ -168,10 +140,31 @@ namespace Castle.MicroKernel.Proxy
 
 			if (mixInList == null)
 			{
-				mixInList = new List<object>();
+				mixInList = new List<IReference<object>>();
 			}
 
-			mixInList.AddRange(mixIns);
+			foreach (var mixIn in mixIns)
+			{
+				mixInList.Add(new InstanceReference<object>(mixIn));
+			}
+		}
+
+		/// <summary>
+		/// Adds the additional mix in to integrate.
+		/// </summary>
+		/// <param name="mixIn">The mix in.</param>
+		public void AddMixinReference(IReference<object> mixIn)
+		{
+			if (mixIn == null)
+			{
+				throw new ArgumentNullException("mixIn");
+			}
+
+			if (mixInList == null)
+			{
+				mixInList = new List<IReference<object>>();
+			}
+			mixInList.Add(mixIn);
 		}
 
 		/// <summary>
@@ -182,12 +175,12 @@ namespace Castle.MicroKernel.Proxy
 		public override bool Equals(object obj)
 		{
 			if (this == obj) return true;
-			ProxyOptions proxyOptions = obj as ProxyOptions;
+			var proxyOptions = obj as ProxyOptions;
 			if (proxyOptions == null) return false;
-			if (!Equals(hook, proxyOptions.hook)) return false;
-			if (!Equals(selector, proxyOptions.selector)) return false;
-			if (!Equals(useSingleInterfaceProxy, proxyOptions.useSingleInterfaceProxy)) return false;
-			if (!Equals(omitTarget, proxyOptions.omitTarget)) return false;
+			if (!Equals(this.Hook, proxyOptions.Hook)) return false;
+			if (!Equals(this.Selector, proxyOptions.Selector)) return false;
+			if (!Equals(this.UseSingleInterfaceProxy, proxyOptions.UseSingleInterfaceProxy)) return false;
+			if (!Equals(this.OmitTarget, proxyOptions.OmitTarget)) return false;
 			if (!AdditionalInterfacesAreEquals(proxyOptions)) return false;
 			return MixInsAreEquals(proxyOptions);
 		}
@@ -208,7 +201,7 @@ namespace Castle.MicroKernel.Proxy
 			if (!Equals(interfaceList == null, proxyOptions.interfaceList == null)) return false;
 			if (interfaceList == null) return true; //both are null, nothing more to check
 			if (interfaceList.Count != proxyOptions.interfaceList.Count) return false;
-			for(int i = 0; i < interfaceList.Count; ++i)
+			for (int i = 0; i < interfaceList.Count; ++i)
 			{
 				if (!proxyOptions.interfaceList.Contains(interfaceList[0])) return false;
 			}
@@ -233,7 +226,7 @@ namespace Castle.MicroKernel.Proxy
 
 			if (items == null) return result;
 
-			foreach(object item in items)
+			foreach (object item in items)
 			{
 				result = 29 * result + item.GetHashCode();
 			}

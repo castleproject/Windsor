@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
 namespace Castle.Windsor.Tests
 {
 	using System;
@@ -22,6 +21,7 @@ namespace Castle.Windsor.Tests
 	using Castle.Core.Interceptor;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Handlers;
+	using Castle.MicroKernel.Proxy;
 	using Castle.MicroKernel.Registration;
 	using Castle.Windsor.Tests.Components;
 
@@ -141,9 +141,58 @@ namespace Castle.Windsor.Tests
 		public void Xml_Component_With_Non_invalid_Interceptor_throws()
 		{
 			Assert.Throws(typeof(Exception), () =>
-				container.Install(
-					Windsor.Installer.Configuration.FromXmlFile(
-						ConfigHelper.ResolveConfigPath("InterceptorsInvalid.config"))));
+			                                 container.Install(
+			                                 	Windsor.Installer.Configuration.FromXmlFile(
+			                                 		ConfigHelper.ResolveConfigPath("InterceptorsInvalid.config"))));
+		}
+
+		[Test]
+		public void Xml_mixin()
+		{
+			container.Install(Windsor.Installer.Configuration.FromXmlFile(ConfigHelper.ResolveConfigPath("Mixins.config")));
+			service = container.Resolve<CalculatorService>("ValidComponent");
+
+			Assert.IsInstanceOf<ISimpleMixIn>(service);
+
+			((ISimpleMixIn)service).DoSomething();
+		}
+
+		[Test]
+		public void Xml_additionalInterfaces()
+		{
+			container.Install(Windsor.Installer.Configuration.FromXmlFile(ConfigHelper.ResolveConfigPath("AdditionalInterfaces.config")));
+			service = container.Resolve<CalculatorService>("ValidComponent");
+
+			Assert.IsInstanceOf<ISimpleMixIn>(service);
+
+			Assert.Throws(typeof(System.NotImplementedException), () =>
+
+				((ISimpleMixIn)service).DoSomething());
+		}
+
+		[Test]
+		public void Xml_hook_and_selector()
+		{
+			container.Install(
+				Windsor.Installer.Configuration.FromXmlFile(ConfigHelper.ResolveConfigPath("InterceptorsWithHookAndSelector.config")));
+			var model = this.container.Kernel.GetHandler("ValidComponent").ComponentModel;
+			var options = ProxyUtil.ObtainProxyOptions(model, false);
+
+			Assert.IsNotNull(options);
+			Assert.IsNotNull(options.Selector);
+			Assert.IsNotNull(options.Hook);
+			Assert.AreEqual(0, SelectAllSelector.Instances);
+			Assert.AreEqual(0, ProxyAllHook.Instances);
+
+			service = this.container.Resolve<CalculatorService>("ValidComponent");
+
+			Assert.AreEqual(1, SelectAllSelector.Instances);
+			Assert.AreEqual(0, SelectAllSelector.Calls);
+			Assert.AreEqual(1, ProxyAllHook.Instances);
+
+			service.Sum(2, 2);
+
+			Assert.AreEqual(1, SelectAllSelector.Calls);
 		}
 #endif
 		[Test]

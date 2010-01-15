@@ -14,14 +14,12 @@
 
 namespace Castle.Windsor.Tests.Components
 {
-	using System;
-
 	/// <summary>
 	/// Summary description for ISimpleMixIn.
 	/// </summary>
 	public interface ISimpleMixIn
 	{
-		void DoSomething();	
+		void DoSomething();
 	}
 
 	/// <summary>

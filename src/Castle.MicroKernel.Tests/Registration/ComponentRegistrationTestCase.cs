@@ -71,7 +71,7 @@ namespace Castle.MicroKernel.Tests.Registration
 			var proxyOptions = ProxyUtil.ObtainProxyOptions(handler.ComponentModel, false);
 
 			Assert.IsNotNull(proxyOptions);
-			Assert.AreEqual(selector, proxyOptions.Selector);
+            Assert.AreEqual( selector, proxyOptions.Selector.Resolve( null, null ) );
         }
 
         [Test]

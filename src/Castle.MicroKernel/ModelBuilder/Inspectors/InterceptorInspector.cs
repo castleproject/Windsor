@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,6 +15,10 @@
 namespace Castle.MicroKernel.ModelBuilder.Inspectors
 {
 	using System;
+
+	using Castle.Core.Configuration;
+	using Castle.Core.Interceptor;
+	using Castle.MicroKernel.Proxy;
 	using Castle.MicroKernel.Util;
 	using Castle.Core;
 
@@ -55,34 +59,74 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 				model.Interceptors.Add(reference);
 				model.Dependencies.Add(CreateDependencyModel(reference));
 			}
+
+			var options = ProxyUtil.ObtainProxyOptions(model, true);
+			CollectSelector(interceptors, options);
+			CollectHook(interceptors, options);
+		}
+
+		protected virtual void CollectHook(IConfiguration interceptors, ProxyOptions options)
+		{
+			var hook = interceptors.Attributes["hook"];
+			if (hook == null)
+			{
+				return;
+			}
+
+			if (!ReferenceExpressionUtil.IsReference(hook))
+			{
+				throw new Exception(
+					String.Format("The value for the hook must be a reference to a component (Currently {0})", hook));
+			}
+
+			var componentKey = ReferenceExpressionUtil.ExtractComponentKey(hook);
+			options.Hook = new ComponentReference<IProxyHook>(componentKey);
+		}
+
+		protected virtual void CollectSelector(IConfiguration interceptors, ProxyOptions options)
+		{
+			var selector = interceptors.Attributes["selector"];
+			if (selector == null)
+			{
+				return;
+			}
+
+			if (!ReferenceExpressionUtil.IsReference(selector))
+			{
+				throw new Exception(
+					String.Format("The value for the selector must be a reference to a component (Currently {0})", selector));
+			}
+
+			var componentKey = ReferenceExpressionUtil.ExtractComponentKey(selector);
+			options.Selector = new ComponentReference<IInterceptorSelector>(componentKey);
 		}
 
 		protected virtual void CollectFromAttributes(ComponentModel model)
 		{
-			if (!model.Implementation.IsDefined( typeof(InterceptorAttribute), true ))
+			if (!model.Implementation.IsDefined(typeof(InterceptorAttribute), true))
 			{
 				return;
 			}
 
 			object[] attributes = model.Implementation.GetCustomAttributes(true);
 
-			foreach(object attribute in attributes)
+			foreach (object attribute in attributes)
 			{
 				if (attribute is InterceptorAttribute)
 				{
 					InterceptorAttribute attr = (attribute as InterceptorAttribute);
 
-					AddInterceptor( 
-						attr.Interceptor, 
-						model.Interceptors );
+					AddInterceptor(
+						attr.Interceptor,
+						model.Interceptors);
 
-					model.Dependencies.Add( 
-						CreateDependencyModel(attr.Interceptor) );
+					model.Dependencies.Add(
+						CreateDependencyModel(attr.Interceptor));
 				}
 			}
 		}
 
-		protected DependencyModel CreateDependencyModel(InterceptorReference interceptor)
+		protected virtual DependencyModel CreateDependencyModel(InterceptorReference interceptor)
 		{
 			if (string.IsNullOrEmpty(interceptor.ComponentKey))
 			{
@@ -92,9 +136,10 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 			return new DependencyModel(DependencyType.ServiceOverride, interceptor.ComponentKey, interceptor.ServiceType, false);
 		}
 
-		protected void AddInterceptor(InterceptorReference interceptorRef, InterceptorReferenceCollection interceptors)
+		protected virtual void AddInterceptor(InterceptorReference interceptorRef, InterceptorReferenceCollection interceptors)
 		{
-			interceptors.Add( interceptorRef );
+			interceptors.Add(interceptorRef);
 		}
 	}
 }
+
