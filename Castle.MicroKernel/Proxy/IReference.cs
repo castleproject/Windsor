@@ -21,8 +21,8 @@ namespace Castle.MicroKernel.Proxy
 	public interface IReference<T>
 	{
 		/// <summary>
-		/// Resolves object referenced by this reference, optionally using provided <see cref="kernel"/>.
-		/// If object is resolved from the kernel, the <see cref="context"/> should be used to guard
+		/// Resolves object referenced by this reference, optionally using provided <paramref name="kernel"/>.
+		/// If object is resolved from the kernel, the <paramref name="context"/>should be used to guard
 		/// against against cyclic dependencies.
 		/// </summary>
 		/// <param name="kernel"></param>
