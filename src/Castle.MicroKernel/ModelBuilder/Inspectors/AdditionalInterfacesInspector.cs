@@ -33,7 +33,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 			var interfaces = model.Configuration.Children["additionalInterfaces"];
 			if (interfaces == null) return;
 
-			var list = new HashSet<Type>();
+			var list = new List<Type>();
 			foreach (var @interface in interfaces.Children
 				.Where(c => c.Name.Equals("add", StringComparison.InvariantCultureIgnoreCase)))
 			{
