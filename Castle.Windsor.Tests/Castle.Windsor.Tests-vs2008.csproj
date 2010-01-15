@@ -293,7 +293,9 @@
     <Compile Include="Facilities\TypedFactory\TypedFactoryFacilityTake2TestCase.cs" />
     <Compile Include="InterceptorSelectorTestCase.cs" />
     <Compile Include="OpenGenericsTestCase.cs" />
+    <Compile Include="ProxyAllHook.cs" />
     <Compile Include="RegisteringTwoServicesForSameType.cs" />
+    <Compile Include="SelectAllSelector.cs" />
     <Compile Include="SubResolversShouldNotBeTrustedToBeCorrect.cs" />
     <Compile Include="ModelInterceptorsSelectorTestCase.cs" />
     <Compile Include="DependencyProblem.cs">
@@ -428,12 +430,16 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <EmbeddedResource Include="InterceptorsWithHookAndSelector.config" />
+    <EmbeddedResource Include="Mixins.config" />
+    <EmbeddedResource Include="AdditionalInterfaces.config" />
     <None Include="DotNet2Config\chainOfRespnsability.config" />
     <None Include="DotNet2Config\chainOfRespnsability_smart.config" />
     <None Include="Facilities\EventWiring\App.config" />
     <EmbeddedResource Include="InterceptorsMultiple.config" />
     <EmbeddedResource Include="InterceptorsInvalid.config" />
     <EmbeddedResource Include="Interceptors.config" />
+    <Content Include="Configuration2\config_with_forwarded_types.xml" />
     <Content Include="RemotingTcpConfig2.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -449,7 +455,6 @@
     <EmbeddedResource Include="Facilities\EventWiring\Config\startable.config" />
     <EmbeddedResource Include="Configuration2\env_config.xml" />
     <EmbeddedResource Include="Configuration2\eval_config.xml" />
-    <Content Include="Configuration2\config_with_forwarded_types.xml" />
     <Content Include="Configuration2\synchtest_config.xml" />
     <EmbeddedResource Include="sample_config_with_spaces.xml" />
     <EmbeddedResource Include="Configuration\sample_config.xml" />

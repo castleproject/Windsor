@@ -294,6 +294,7 @@
     <Compile Include="ModelBuilder\IContributeComponentModelConstruction.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="ModelBuilder\Inspectors\AdditionalInterfacesInspector.cs" />
     <Compile Include="ModelBuilder\Inspectors\ComponentActivatorInspector.cs" />
     <Compile Include="ModelBuilder\Inspectors\ComponentProxyInspector.cs" />
     <Compile Include="ModelBuilder\Inspectors\ConfigurationModelInspector.cs">
@@ -321,14 +322,18 @@
     <Compile Include="ModelBuilder\Inspectors\MethodMetaInspector.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="ModelBuilder\Inspectors\MixinInspector.cs" />
     <Compile Include="ModelBuilder\Inspectors\PropertiesDependenciesModelInspector.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Proxy\ComponentReference.cs" />
     <Compile Include="Proxy\IModelInterceptorsSelector.cs" />
+    <Compile Include="Proxy\InstanceReference.cs" />
     <Compile Include="Proxy\IProxyFactory.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Proxy\IProxyHook.cs" />
+    <Compile Include="Proxy\IReference.cs" />
     <Compile Include="Proxy\NotSupportedProxyFactory.cs">
       <SubType>Code</SubType>
     </Compile>

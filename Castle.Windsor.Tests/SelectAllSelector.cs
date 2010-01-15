@@ -12,25 +12,27 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.MicroKernel.Registration.Interceptor
+namespace Castle.Windsor.Tests
 {
-	using Castle.Core;
+	using System;
+	using System.Reflection;
+
 	using Castle.Core.Interceptor;
-	using Castle.MicroKernel.Proxy;
 
-	public class InterceptorSelectorDescriptor<S> : ComponentDescriptor<S>
+	public class SelectAllSelector : IInterceptorSelector
 	{
-		private readonly IInterceptorSelector selector;
+		public static int Instances;
+		public static int Calls;
 
-		public InterceptorSelectorDescriptor(IInterceptorSelector selector)
+		public SelectAllSelector()
 		{
-			this.selector = selector;
+			Instances++;
 		}
 
-		protected internal override void ApplyToModel(IKernel kernel, ComponentModel model)
+		public IInterceptor[] SelectInterceptors(Type type, MethodInfo method, IInterceptor[] interceptors)
 		{
-			ProxyOptions options = ProxyUtil.ObtainProxyOptions(model, true);
-		    options.Selector = new InstanceReference<IInterceptorSelector>( selector );
+			Calls++;
+			return interceptors;
 		}
 	}
 }

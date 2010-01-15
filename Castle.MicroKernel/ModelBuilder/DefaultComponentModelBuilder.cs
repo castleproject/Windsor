@@ -17,6 +17,7 @@ namespace Castle.MicroKernel.ModelBuilder
 	using System;
 	using System.Collections;
 	using System.Collections.Generic;
+
 	using Castle.Core;
 	using Castle.MicroKernel.ModelBuilder.Inspectors;
 
@@ -113,6 +114,8 @@ namespace Castle.MicroKernel.ModelBuilder
 			AddContributor(new PropertiesDependenciesModelInspector());
 			AddContributor(new LifecycleModelInspector());
 			AddContributor(new InterceptorInspector());
+			AddContributor(new MixinInspector());
+			AddContributor(new AdditionalInterfacesInspector());
 			AddContributor(new ComponentActivatorInspector());
 			AddContributor(new ComponentProxyInspector());
 		}

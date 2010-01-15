@@ -73,7 +73,7 @@ namespace Castle.Windsor.Proxy
 			IInterceptor[] interceptors = ObtainInterceptors(kernel, model, context);
 
 			ProxyOptions proxyOptions = ProxyUtil.ObtainProxyOptions(model, true);
-			ProxyGenerationOptions proxyGenOptions = CreateProxyGenerationOptionsFrom(proxyOptions);
+			ProxyGenerationOptions proxyGenOptions = CreateProxyGenerationOptionsFrom(proxyOptions, kernel, context);
 
 			CustomizeOptions(proxyGenOptions, kernel, model, constructorArguments);
 
@@ -88,8 +88,8 @@ namespace Castle.Windsor.Proxy
 				}
 				else if (proxyOptions.AllowChangeTarget)
 				{
-					proxy = generator.CreateInterfaceProxyWithTargetInterface(model.Service, interfaces, target, 
-						                                                      proxyGenOptions, interceptors);
+					proxy = generator.CreateInterfaceProxyWithTargetInterface(model.Service, interfaces, target,
+					                                                          proxyGenOptions, interceptors);
 				}
 				else
 				{
@@ -99,7 +99,7 @@ namespace Castle.Windsor.Proxy
 					}
 
 					proxy = generator.CreateInterfaceProxyWithTarget(model.Service, interfaces,
-																	 target, proxyGenOptions, interceptors);
+					                                                 target, proxyGenOptions, interceptors);
 				}
 			}
 			else
@@ -113,18 +113,19 @@ namespace Castle.Windsor.Proxy
 			return proxy;
 		}
 
-		protected static ProxyGenerationOptions CreateProxyGenerationOptionsFrom(ProxyOptions proxyOptions)
+		protected static ProxyGenerationOptions CreateProxyGenerationOptionsFrom(ProxyOptions proxyOptions, IKernel kernel, CreationContext context)
 		{
-			ProxyGenerationOptions proxyGenOptions = new ProxyGenerationOptions();
-
+			var proxyGenOptions = new ProxyGenerationOptions();
 			if (proxyOptions.Hook != null)
 			{
-				proxyGenOptions.Hook = new ProxyGenerationHookAdapter(proxyOptions.Hook);
+				var hook = proxyOptions.Hook.Resolve(kernel, context);
+				proxyGenOptions.Hook = new ProxyGenerationHookAdapter(hook);
 			}
 
 			if (proxyOptions.Selector != null)
 			{
-				proxyGenOptions.Selector = proxyOptions.Selector;
+				var selector = proxyOptions.Selector.Resolve(kernel, context);
+				proxyGenOptions.Selector = selector;
 			}
 #if (!SILVERLIGHT)
 			if (proxyOptions.UseMarshalByRefAsBaseClass)
@@ -132,24 +133,23 @@ namespace Castle.Windsor.Proxy
 				proxyGenOptions.BaseTypeForInterfaceProxy = typeof(MarshalByRefObject);
 			}
 #endif
-			foreach (object mixIn in proxyOptions.MixIns)
+			foreach (var mixInReference in proxyOptions.MixIns)
 			{
+				var mixIn = mixInReference.Resolve(kernel, context);
 				proxyGenOptions.AddMixinInstance(mixIn);
 			}
 
 			return proxyGenOptions;
 		}
 
-		protected virtual void CustomizeProxy(object proxy, ProxyGenerationOptions options, 
-		                                      IKernel kernel, ComponentModel model)
+		protected virtual void CustomizeProxy(object proxy, ProxyGenerationOptions options, IKernel kernel, ComponentModel model)
 		{
 		}
 
-		protected virtual void CustomizeOptions(ProxyGenerationOptions options, IKernel kernel, 
-		                                        ComponentModel model, object[] arguments)
+		protected virtual void CustomizeOptions(ProxyGenerationOptions options, IKernel kernel, ComponentModel model, object[] arguments)
 		{
 		}
-		
+
 		/// <summary>
 		/// Determines if the component requiries a target instance for proxying.
 		/// </summary>
@@ -158,23 +158,22 @@ namespace Castle.Windsor.Proxy
 		/// <returns>true if an instance is required.</returns>
 		public override bool RequiresTargetInstance(IKernel kernel, ComponentModel model)
 		{
-			ProxyOptions proxyOptions = ProxyUtil.ObtainProxyOptions(model, true);
+			var proxyOptions = ProxyUtil.ObtainProxyOptions(model, true);
 
 			return model.Service.IsInterface && !proxyOptions.OmitTarget;
 		}
 
 		protected Type[] CollectInterfaces(Type[] interfaces, ComponentModel model)
 		{
-			Type[] modelInterfaces = model.Implementation.FindInterfaces(
-				new TypeFilter(EmptyTypeFilter), model.Service);
+			var modelInterfaces = model.Implementation.FindInterfaces(EmptyTypeFilter, model.Service);
 
 			if (interfaces == null || interfaces.Length == 0)
 			{
 				interfaces = modelInterfaces;
 			}
-			else if (modelInterfaces != null && modelInterfaces.Length > 0)
+			else if (modelInterfaces.Length > 0)
 			{
-				Type[] allInterfaces = new Type[interfaces.Length + modelInterfaces.Length];
+				var allInterfaces = new Type[interfaces.Length + modelInterfaces.Length];
 				interfaces.CopyTo(allInterfaces, 0);
 				modelInterfaces.CopyTo(allInterfaces, interfaces.Length);
 				interfaces = allInterfaces;
