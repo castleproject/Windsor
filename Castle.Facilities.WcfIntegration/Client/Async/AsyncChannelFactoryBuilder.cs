@@ -15,6 +15,7 @@
 namespace Castle.Facilities.WcfIntegration.Async
 {
 	using System;
+	using System.Diagnostics;
 	using System.Reflection;
 	using System.ServiceModel;
 	using System.ServiceModel.Description;
@@ -72,7 +73,7 @@ namespace Castle.Facilities.WcfIntegration.Async
 					asyncEndpoint.Behaviors.Clear();
 					foreach (var behavior in endpoint.Behaviors)
 					{
-						asyncEndpoint.Behaviors.Add(behavior);	
+						asyncEndpoint.Behaviors.Add(behavior);
 					}
 
 					constructorArgs[i] = asyncEndpoint;
@@ -101,6 +102,16 @@ namespace Castle.Facilities.WcfIntegration.Async
 		public void MethodsInspected()
 		{
 		}
+
+		public override bool Equals(object obj)
+		{
+			return obj != null && GetType().Equals(obj.GetType());
+		}
+
+		public override int GetHashCode()
+		{
+			return GetType().GetHashCode();
+		}
 	}
 
 	#endregion
@@ -115,28 +126,43 @@ namespace Castle.Facilities.WcfIntegration.Async
 		{
 			if (!applied)
 			{
-				var target = invocation.InvocationTarget;
-				var channelFactoryType = FindTypeContainingChannelTypeField(target.GetType());
-
-				if (channelFactoryType != null)
-				{
-					var channelTypeField = channelFactoryType.GetField("channelType",
-						BindingFlags.Instance | BindingFlags.NonPublic);
-					var channelType = (Type)channelTypeField.GetValue(target);
-					channelTypeField.SetValue(target, AsyncType.GetAsyncType(channelType));
-					applied = true;
-				}
+				SetAsyncTypeAsTargetType(invocation.InvocationTarget);
+				applied = true;
 			}
 
 			invocation.Proceed();
 		}
 
+		private void SetAsyncTypeAsTargetType(object target)
+		{
+			var channelFactoryType = FindTypeContainingChannelTypeField(target.GetType());
+			if (channelFactoryType == null)
+			{
+				// This should literally never happen...
+				return;
+			}
+
+			var channelTypeField = GetChannelTypeField(channelFactoryType);
+			var channelType = (Type)channelTypeField.GetValue(target);
+			channelTypeField.SetValue(target, AsyncType.GetAsyncType(channelType));
+		}
+
+		private FieldInfo GetChannelTypeField(Type channelFactoryType)
+		{
+			return channelFactoryType.GetField("channelType", BindingFlags.Instance | BindingFlags.NonPublic);
+		}
+
 		private Type FindTypeContainingChannelTypeField(Type channelFactoryType)
 		{
+			Debug.Assert(typeof(ChannelFactory).IsAssignableFrom(channelFactoryType),
+			             "typeof(ChannelFactory).IsAssignableFrom(channelFactoryType)");
 			do
 			{
 				if (channelFactoryType.BaseType == typeof(ChannelFactory))
+				{
 					return channelFactoryType;
+				}
+
 				channelFactoryType = channelFactoryType.BaseType;
 			} while (channelFactoryType != null);
 
