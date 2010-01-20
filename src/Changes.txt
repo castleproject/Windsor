@@ -1,3 +1,18 @@
+unreleased changes
+==================
+- fixed IOC-ISSUE-190 - "Resolve with argumentsAsAnonymousType overload is now case sensitive".
+	This fixed a regression bug introduced in v2.1, and brings the behavior back to what it was in v2.0.
+
+- added support for specifying interceptorsSelector, proxyHook and mixins from config (see new tests for example). This also means some small impact breaking changes:
+	- DefaultProxyFactory.CreateProxyGenerationOptionsFrom protected method has changed signature - it now also takes IKernel and CreationContext, to be used by IReferences to do resolve (see below)
+	- DefaultProxyFactory.CustomizeProxy protected virtual method has changed signature, for the same reason as above
+	- ProxyOption's properties changed types: 
+		Selector, from IInterceptorSelector to IReference<IInterceptorSelector>
+		Hook from IProxyHook to IReference<IProxyHook>
+		MixIns from object[] to IEnumerable<IReference<object>>
+	IReference abstraction allows to use components resolved from the container, similar to InterceptorReferences.
+
+
 2.1.1 (2010-01-13)
 ==================
 - Reverted factory support facility changes in r6595, r6596 and r6653 which fixed IOC-ISSUE-153, however caused other bugs
