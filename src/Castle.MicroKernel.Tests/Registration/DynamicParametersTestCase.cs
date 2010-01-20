@@ -14,6 +14,10 @@
 
 namespace Castle.MicroKernel.Tests.Registration
 {
+	using System;
+	using System.Collections;
+	using System.Collections.Generic;
+
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Tests.ClassComponents;
 	using NUnit.Framework;
@@ -98,6 +102,37 @@ namespace Castle.MicroKernel.Tests.Registration
 		}
 
 		[Test]
+		public void Arguments_are_case_insensitive_when_using_anonymous_object()
+		{
+			var wasCalled = false;
+			Kernel.Register(Component.For<ClassWithArguments>().LifeStyle.Transient.DynamicParameters((k, d) =>
+			{
+				Assert.IsTrue(d.Contains("ArG1"));
+				wasCalled = true;
+			}));
+
+			Kernel.Resolve<ClassWithArguments>(new { arg2 = 2, arg1 = "foo" });
+
+			Assert.IsTrue(wasCalled);
+		}
+
+		[Test]
+		public void DynamicParameters_will_not_enforce_passed_IDictionary_to_be_writeable()
+		{
+			var wasCalled = false;
+			Kernel.Register(Component.For<DefaultCustomer>().LifeStyle.Transient.DynamicParameters((k, d) =>
+			{
+				Assert.Throws(typeof(NotSupportedException), () =>
+					d.Add("foo", "It will throw"));
+				wasCalled = true;
+			}));
+
+			Kernel.Resolve<DefaultCustomer>(new ReadOnlyDictionary());
+
+			Assert.IsTrue(wasCalled);
+		}
+
+		[Test]
 		public void Should_handle_multiple_calls()
 		{
 			string arg1 = "bar";
@@ -127,8 +162,9 @@ namespace Castle.MicroKernel.Tests.Registration
 				d["arg1"] = arg1;
 				d["arg2"] = arg2;
 			}));
-			//Assert.DoesNotThrow(() =>
-			Kernel.Resolve<ClassWithArguments>();//);
+
+			Assert.DoesNotThrow(() =>
+				Kernel.Resolve<ClassWithArguments>());
 		}
 
 		[Test]
@@ -177,6 +213,19 @@ namespace Castle.MicroKernel.Tests.Registration
 
 			Kernel.ReleaseComponent(component);
 			Assert.AreEqual(2, releaseCalled);
+		}
+	}
+
+	public class ReadOnlyDictionary : Dictionary<object, object>, IDictionary
+	{
+		public bool IsReadOnly
+		{
+			get { return true; }
+		}
+
+		public new void Add(object key, object value)
+		{
+			throw new NotSupportedException();
 		}
 	}
 }
