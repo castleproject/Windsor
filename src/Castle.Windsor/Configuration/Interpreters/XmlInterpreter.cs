@@ -45,8 +45,6 @@ namespace Castle.Windsor.Configuration.Interpreters
 	/// </summary>
 	public class XmlInterpreter : AbstractInterpreter
 	{
-		private IKernel kernel;
-
 		#region Constructors
 
 		/// <summary>
@@ -78,18 +76,20 @@ namespace Castle.Windsor.Configuration.Interpreters
 		/// Gets or sets the kernel.
 		/// </summary>
 		/// <value>The kernel.</value>
-		public IKernel Kernel
-		{
-			get { return kernel ; }
-			set { kernel = value; }
-		}
+		public IKernel Kernel { get; set; }
 
 		public override void ProcessResource(IResource source, IConfigurationStore store)
 		{
-			XmlProcessor.XmlProcessor processor = (kernel == null) ?
-				new XmlProcessor.XmlProcessor(EnvironmentName) :
-				new XmlProcessor.XmlProcessor(EnvironmentName, 
-					kernel.GetSubSystem(SubSystemConstants.ResourceKey) as IResourceSubSystem);
+			XmlProcessor.XmlProcessor processor;
+			if (Kernel == null)
+			{
+				processor = new XmlProcessor.XmlProcessor(EnvironmentName);
+			}
+			else
+			{
+				var resourceSubSystem = Kernel.GetSubSystem(SubSystemConstants.ResourceKey) as IResourceSubSystem;
+				processor = new XmlProcessor.XmlProcessor(EnvironmentName, resourceSubSystem);
+			}
 
 			try
 			{
@@ -225,9 +225,8 @@ namespace Castle.Windsor.Configuration.Interpreters
 
 		private static void DeserializeComponent(XmlNode node, IConfigurationStore store)
 		{
-			IConfiguration config = XmlConfigurationDeserializer.GetDeserializedNode(node);
-
-			string id = GetRequiredAttributeValue(config, "id");
+			var config = XmlConfigurationDeserializer.GetDeserializedNode(node);
+			var id = GetRequiredAttributeValue(config, "id");
 			AddComponentConfig(id, config, store);
 		}
 
@@ -257,9 +256,9 @@ namespace Castle.Windsor.Configuration.Interpreters
 		{
 			if (expectedName.Equals(node.Name))
 				return;
-			
-			String message = String.Format("Unexpected node under '{0}': Expected '{1}' but found '{2}'",
-										   expectedName, expectedName, node.Name);
+
+			String message = String.Format("Unexpected node under '{0}': Expected '{1}' but found '{2}'", expectedName,
+			                               expectedName, node.Name);
 
 			throw new Exception(message);
 		}

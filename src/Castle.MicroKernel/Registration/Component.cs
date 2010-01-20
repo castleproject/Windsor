@@ -179,7 +179,7 @@ namespace Castle.MicroKernel.Registration
 		/// <returns>true if the component type is in the namespace.</returns>
 		public static Predicate<Type> IsInNamespace(string @namespace)
 		{
-			return delegate(Type type) { return type.Namespace == @namespace; };
+			return type => type.Namespace == @namespace;
 		}
 
 		/// <summary>
