@@ -72,11 +72,11 @@ namespace Castle.MicroKernel
 		public CreationContext(Type typeToExtractGenericArguments, CreationContext parentContext)
 			: this(parentContext.Handler, parentContext.ReleasePolicy, typeToExtractGenericArguments, null, null)
 		{
-			this.resolutionStack = parentContext.resolutionStack;
+			resolutionStack = parentContext.resolutionStack;
 
-			foreach(IHandler handlerItem in parentContext.handlerStack)
+			foreach(var handlerItem in parentContext.handlerStack)
 			{
-				this.handlerStack.Push(handlerItem);
+				handlerStack.Push(handlerItem);
 			}
 		}
 
@@ -94,32 +94,37 @@ namespace Castle.MicroKernel
 		{
 			this.handler = handler;
 			this.releasePolicy = releasePolicy;
-			this.additionalArguments = EnsureWriteable(additionalArguments);
+			this.additionalArguments = EnsureAdditionalArgumentsNotNull(additionalArguments);
 			this.converter = conversionManager;
 			dependencies = new DependencyModelCollection();
 
 			genericArguments = ExtractGenericArguments(typeToExtractGenericArguments);
 		}
 
-		private IDictionary EnsureWriteable(IDictionary dictionary)
+		private IDictionary EnsureAdditionalArgumentsNotNull(IDictionary dictionary)
 		{
 			// NOTE: this is actually here mostly to workaround the fact that ReflectionBasedDictionaryAdapter is read only
 			// we could make it writeable instead, but I'm not sure that would make sense.
+			// NOTE: As noted in IOC-ISSUE-190 that may lead to issues with custom IDictionary implementations
+			// We better just ignore not known implementations and if someone uses one, it's their problem to take that into
+			// account when dealing with DynamicParameters
 			if (dictionary == null)
 			{
 				// two should be enought for most cases
-				return new Dictionary<object, object>(2);
+				return new Dictionary<string, object>(2, StringComparer.OrdinalIgnoreCase);
 			}
 
-			if (!dictionary.IsReadOnly)
+			if (!(dictionary is ReflectionBasedDictionaryAdapter))
 			{
 				return dictionary;
 			}
-			var writable = new Dictionary<object, object>();
+
+			IDictionary writable = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
 			foreach (DictionaryEntry entry in dictionary)
 			{
 				writable.Add(entry.Key, entry.Value);
 			}
+
 			return writable;
 		}
 
