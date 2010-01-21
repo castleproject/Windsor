@@ -276,6 +276,7 @@
     <Compile Include="Facilities\Remoting\ServerClientContainerTestCase.cs" />
     <Compile Include="Facilities\TypedFactory\Components\Component1.cs" />
     <Compile Include="Facilities\TypedFactory\Components\Component2.cs" />
+    <Compile Include="Facilities\TypedFactory\Components\ComponentWithOptionalParameter.cs" />
     <Compile Include="Facilities\TypedFactory\Components\DisposableComponent.cs" />
     <Compile Include="Facilities\TypedFactory\Components\GenericComponent.cs" />
     <Compile Include="Facilities\TypedFactory\Components\GenericComponentWithIntArg.cs" />
@@ -287,6 +288,7 @@
     <Compile Include="Facilities\TypedFactory\Factories\IDisposableFactory.cs" />
     <Compile Include="Facilities\TypedFactory\Factories\DummyComponentFactory.cs" />
     <Compile Include="Facilities\TypedFactory\Factories\IComponentFactory.cs" />
+    <Compile Include="Facilities\TypedFactory\Factories\IFactoryWithParameters.cs" />
     <Compile Include="Facilities\TypedFactory\Factories\IGenericComponentsFactory.cs" />
     <Compile Include="Facilities\TypedFactory\Factories\IProtocolHandlerFactory.cs" />
     <Compile Include="Facilities\TypedFactory\TypedFactoryTestCase.cs" />
