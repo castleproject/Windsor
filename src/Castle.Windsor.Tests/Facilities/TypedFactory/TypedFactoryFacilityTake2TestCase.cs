@@ -22,8 +22,8 @@ namespace Castle.Facilities.TypedFactory.Tests
 	using Castle.Facilities.TypedFactory.Tests.Factories;
 	using Castle.MicroKernel.Facilities.TypedFactory;
 	using Castle.MicroKernel.Registration;
-	using Castle.MicroKernel.Resolvers.SpecializedResolvers;
 	using Castle.Windsor;
+	using Castle.Windsor.Tests.Facilities.TypedFactory.Components;
 	using Castle.Windsor.Tests.Facilities.TypedFactory.Factories;
 
 	using NUnit.Framework;
@@ -143,6 +143,19 @@ namespace Castle.Facilities.TypedFactory.Tests
 
 			factory.Destroy(component);
 			Assert.IsTrue(component.Disposed);
+		}
+
+		[Test]
+		public void Should_match_arguments_ignoring_case()
+		{
+			container.Register(
+				Component.For<IFactoryWithParameters>().AsFactory(),
+				Component.For<ComponentWithOptionalParameter>());
+
+			var factory = container.Resolve<IFactoryWithParameters>();
+			var component = factory.BuildComponent("foo");
+
+			Assert.AreEqual("foo", component.Parameter);
 		}
 
 		[Test]

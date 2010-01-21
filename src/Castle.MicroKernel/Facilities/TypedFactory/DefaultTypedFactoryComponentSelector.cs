@@ -28,12 +28,12 @@ namespace Castle.MicroKernel.Facilities.TypedFactory
 			return new TypedFactoryComponent(componentName, componentType, additionalArguments);
 		}
 
-		private Type GetComponentType(MethodInfo method)
+		protected virtual Type GetComponentType(MethodInfo method)
 		{
 			return method.ReturnType;
 		}
 
-		private string GetComponentName(MethodInfo method)
+		protected virtual string GetComponentName(MethodInfo method)
 		{
 			string componentName = null;
 			if (method.Name.StartsWith("Get"))
@@ -43,9 +43,9 @@ namespace Castle.MicroKernel.Facilities.TypedFactory
 			return componentName;
 		}
 
-		private Dictionary<string, object> GetArguments(MethodInfo method, object[] arguments)
+		protected virtual Dictionary<string, object> GetArguments(MethodInfo method, object[] arguments)
 		{
-			var argumentMap = new Dictionary<string, object>();
+			var argumentMap = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
 			var parameters = method.GetParameters();
 			for (int i = 0; i < parameters.Length; i++)
 			{

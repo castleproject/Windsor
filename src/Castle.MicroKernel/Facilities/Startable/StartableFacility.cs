@@ -35,10 +35,8 @@ namespace Castle.Facilities.Startable
 		{
 			converter = (ITypeConverter) Kernel.GetSubSystem(SubSystemConstants.ConversionManagerKey);
 
-			Kernel.ComponentModelCreated +=
-				new ComponentModelDelegate(OnComponentModelCreated);
-			Kernel.ComponentRegistered +=
-				new ComponentDataDelegate(OnComponentRegistered);
+			Kernel.ComponentModelCreated +=OnComponentModelCreated;
+			Kernel.ComponentRegistered +=OnComponentRegistered;
 		}
 
 		private void OnComponentModelCreated(ComponentModel model)
