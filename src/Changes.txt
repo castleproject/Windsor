@@ -1,5 +1,12 @@
 unreleased changes
 ==================
+
+- added strongly typed overloads for StartUsingMethod and StopUsingMethod from startable facility's registration API. It is now possible to call .StartUsingMethod(x => x.Start).StopUsingMethod(x => x.Stop)
+
+- moved StartUsingMethod/StopUsingMethod to extension methods in StartableFacility's namespace. Startable() method was removed as superfluous.
+
+- changed the UsingFactoryMethod (and UsingFactory) methods in fluent registration API to not rely on FactorySupportFacility. They now work even if facility is not used.
+
 - fixed IOC-ISSUE-190 - "Resolve with argumentsAsAnonymousType overload is now case sensitive".
 	This fixed a regression bug introduced in v2.1, and brings the behavior back to what it was in v2.0.
 

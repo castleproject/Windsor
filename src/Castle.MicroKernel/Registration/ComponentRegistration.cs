@@ -561,42 +561,6 @@ namespace Castle.MicroKernel.Registration
 			return AddDescriptor(new Interceptor.InterceptorSelectorDescriptor<S>(selector));
 		}
 
-		/// <summary>
-		/// Marks the component as startable.
-		/// </summary>
-		/// <returns></returns>
-		/// <remarks>Be sure that you first added the <see cref="Castle.Facilities.Startable.StartableFacility"/> 
-		/// to the kernel, before registering this component.</remarks>
-		public ComponentRegistration<S> Startable()
-		{
-			return AddAttributeDescriptor("startable", "true");
-		}
-
-		/// <summary>
-		/// Assigns the start method for the startable.
-		/// </summary>
-		/// <param name="startMethod">The start method.</param>
-		/// <returns></returns>
-		/// <remarks>Be sure that you first added the <see cref="Castle.Facilities.Startable.StartableFacility"/> 
-		/// to the kernel, before registering this component.</remarks>
-		public ComponentRegistration<S> StartUsingMethod(string startMethod)
-		{
-			return Startable()
-				.AddAttributeDescriptor("startMethod", startMethod);
-		}
-
-		/// <summary>
-		/// Assigns the stop method for the startable.
-		/// </summary>
-		/// <param name="stopMethod">The stop method.</param>
-		/// <returns></returns>
-		/// <remarks>Be sure that you first added the <see cref="Castle.Facilities.Startable.StartableFacility"/> 
-		/// to the kernel, before registering this component.</remarks>
-		public ComponentRegistration<S> StopUsingMethod(string stopMethod)
-		{
-			return Startable()
-				.AddAttributeDescriptor("stopMethod", stopMethod);
-		}
 
 		/// <summary>
 		/// Stores a set of <see cref="OnCreateActionDelegate{T}"/> which will be invoked when the component
