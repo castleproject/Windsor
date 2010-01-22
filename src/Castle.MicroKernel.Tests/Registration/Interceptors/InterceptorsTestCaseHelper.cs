@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,23 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.MicroKernel.Tests.Registration.Interceptors.Single
+namespace Castle.MicroKernel.Tests.Registration.Interceptors
 {
 	using System.Collections.Generic;
 
 	using Castle.Core;
 	using Castle.MicroKernel.Registration;
 
-	public class SingleInterceptorType : InterceptorsTestCaseHelper
+	public abstract class InterceptorsTestCaseHelper
 	{
-		public override IRegistration RegisterInterceptors<S>(ComponentRegistration<S> registration)
-		{
-			return registration.Interceptors(typeof(TestInterceptor1));
-		}
+		public abstract IRegistration RegisterInterceptors<T>(ComponentRegistration<T> registration);
 
-		public override IEnumerable<InterceptorReference> GetExpectedInterceptorsInCorrectOrder()
-		{
-			yield return InterceptorReference.ForType<TestInterceptor1>();
-		}
+		public abstract IEnumerable<InterceptorReference> GetExpectedInterceptorsInCorrectOrder();
 	}
 }

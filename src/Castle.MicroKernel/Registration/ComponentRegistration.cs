@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -35,8 +35,6 @@ namespace Castle.MicroKernel.Registration
 	/// <param name="model">The component model.</param>
 	/// <returns>true if accepted.</returns>
 	public delegate bool ComponentFilter(IKernel kernel, ComponentModel model);
-
-	public delegate T Function<T>();
 
 	/// <summary>
 	/// Registration for a single type as a component with the kernel.
@@ -242,7 +240,7 @@ namespace Castle.MicroKernel.Registration
 		/// <returns>The component registration.</returns>
 		public ComponentRegistration<S> Forward<F>()
 		{
-			return Forward(new Type[] { typeof(F) });
+			return Forward(new[] { typeof(F) });
 		}
 
 		/// <summary>
@@ -253,7 +251,7 @@ namespace Castle.MicroKernel.Registration
 		/// <returns>The component registration.</returns>
 		public ComponentRegistration<S> Forward<F1, F2>()
 		{
-			return Forward(new Type[] { typeof(F1), typeof(F2) });
+			return Forward(new[] { typeof(F1), typeof(F2) });
 		}
 
 		/// <summary>
@@ -265,7 +263,7 @@ namespace Castle.MicroKernel.Registration
 		/// <returns>The component registration.</returns>
 		public ComponentRegistration<S> Forward<F1, F2, F3>()
 		{
-			return Forward(new Type[] { typeof(F1), typeof(F2), typeof(F3) });
+			return Forward(new[] { typeof(F1), typeof(F2), typeof(F3) });
 		}
 
 		/// <summary>
@@ -278,7 +276,7 @@ namespace Castle.MicroKernel.Registration
 		/// <returns>The component registration.</returns>
 		public ComponentRegistration<S> Forward<F1, F2, F3, F4>()
 		{
-			return Forward(new Type[] { typeof(F1), typeof(F2), typeof(F3), typeof(F4) });
+			return Forward(new[] { typeof(F1), typeof(F2), typeof(F3), typeof(F4) });
 		}
 
 		/// <summary>
@@ -607,7 +605,7 @@ namespace Castle.MicroKernel.Registration
 		/// <param name="actions">A set of actions to be executed right after the component is created and before it's returned from the container.</param>
 		public ComponentRegistration<S> OnCreate(params OnCreateActionDelegate<S>[] actions)
 		{
-			this.AddDescriptor(new OnCreateComponentDescriptor<S>(actions));
+			AddDescriptor(new OnCreateComponentDescriptor<S>(actions));
 			return this;
 		}
 
@@ -618,7 +616,7 @@ namespace Castle.MicroKernel.Registration
 		/// <returns></returns>
 		public ComponentRegistration<S> DynamicParameters(DynamicParametersDelegate resolve)
 		{
-			this.AddDescriptor(new DynamicParametersDescriptor<S>(resolve));
+			AddDescriptor(new DynamicParametersDescriptor<S>(resolve));
 			return this;
 		}
 
@@ -629,7 +627,7 @@ namespace Castle.MicroKernel.Registration
 		/// <returns></returns>
 		public ComponentRegistration<S> DynamicParameters(DynamicParametersResolveDelegate resolve)
 		{
-			this.AddDescriptor(new DynamicParametersDescriptor<S>(resolve));
+			AddDescriptor(new DynamicParametersDescriptor<S>(resolve));
 			return this;
 		}
 
@@ -817,12 +815,9 @@ namespace Castle.MicroKernel.Registration
 		/// <typeparam name="T">Implementation type</typeparam>
 		/// <param name="factoryMethod">Factory method</param>
 		/// <returns></returns>
-		public ComponentRegistration<S> UsingFactoryMethod<T>(Function<T> factoryMethod) where T : S
+		public ComponentRegistration<S> UsingFactoryMethod<T>(Func<T> factoryMethod) where T : S
 		{
-			string factoryName = Guid.NewGuid().ToString();
-			additionalRegistrations.Add(Component.For<GenericFactory<T>>().Named(factoryName)
-											.Instance(new GenericFactory<T>(factoryMethod)));
-			ConfigureFactoryWithId(factoryName);
+			AddDescriptor(new FactoryDescriptor<T, S>((k, c) => factoryMethod()));
 			return this;
 		}
 
@@ -835,13 +830,7 @@ namespace Castle.MicroKernel.Registration
 		/// <returns></returns>
 		public ComponentRegistration<S> UsingFactoryMethod<T>(Converter<IKernel, T> factoryMethod) where T : S
 		{
-			string factoryName = Guid.NewGuid().ToString();
-			string factoryMethodName = Guid.NewGuid().ToString();
-			additionalRegistrations.Add(Component.For<KernelToT<T>>().Named(factoryMethodName)
-				.Instance(new KernelToT<T>(factoryMethod)));
-			additionalRegistrations.Add(Component.For<GenericFactoryWithKernel<T>>().Named(factoryName)
-				.ServiceOverrides(ServiceOverride.ForKey("factoryMethod").Eq(factoryMethodName)));
-			ConfigureFactoryWithId(factoryName);
+			AddDescriptor(new FactoryDescriptor<T, S>((k, c) => factoryMethod(k)));
 			return this;
 		}
 
@@ -854,19 +843,8 @@ namespace Castle.MicroKernel.Registration
 		/// <returns></returns>
 		public ComponentRegistration<S> UsingFactoryMethod<T>(Func<IKernel, CreationContext, T> factoryMethod) where T : S
 		{
-			string factoryName = Guid.NewGuid().ToString();
-			additionalRegistrations.Add(Component.For<GenericFactoryWithContext<T>>().Named(factoryName)
-				.Instance(new GenericFactoryWithContext<T>(factoryMethod)));
-			ConfigureFactoryWithId(factoryName);
+			AddDescriptor(new FactoryDescriptor<T, S>(factoryMethod));
 			return this;
-		}
-
-		private void ConfigureFactoryWithId(string factoryId)
-		{
-			Configuration(
-				Attrib.ForName("factoryId").Eq(factoryId),
-				Attrib.ForName("factoryCreate").Eq("Create")
-				);
 		}
 
 		/// <summary>
@@ -881,123 +859,4 @@ namespace Castle.MicroKernel.Registration
 			return UsingFactoryMethod(kernel => factory.Invoke(kernel.Resolve<U>()));
 		}
 	}
-
-	/// <summary>
-	/// Helper wrapper around Converter
-	/// </summary>
-	/// <typeparam name="T"></typeparam>
-	public class KernelToT<T>
-	{
-		private readonly Converter<IKernel, T> fun;
-
-		public KernelToT(Converter<IKernel, T> fun)
-		{
-			this.fun = fun;
-		}
-
-		public T Call(IKernel kernel)
-		{
-			return fun(kernel);
-		}
-	}
-
-	/// <summary>
-	/// Helper factory class
-	/// </summary>
-	/// <typeparam name="T"></typeparam>
-	public class GenericFactory<T>
-	{
-		private readonly Function<T> factoryMethod;
-
-		public GenericFactory(Function<T> factoryMethod)
-		{
-			this.factoryMethod = factoryMethod;
-		}
-
-		public T Create()
-		{
-			return factoryMethod();
-		}
-	}
-
-	/// <summary>
-	/// Helper factory class
-	/// </summary>
-	/// <typeparam name="T"></typeparam>
-	public class GenericFactoryWithContext<T>
-	{
-		private readonly Func<IKernel, CreationContext, T> factoryMethod;
-
-		public GenericFactoryWithContext(Func<IKernel, CreationContext, T> factoryMethod)
-		{
-			this.factoryMethod = factoryMethod;
-		}
-
-		public T Create(IKernel kernel, CreationContext context)
-		{
-			return factoryMethod(kernel, context);
-		}
-	}
-
-	/// <summary>
-	/// Helper factory class
-	/// </summary>
-	/// <typeparam name="T"></typeparam>
-	public class GenericFactoryWithKernel<T>
-	{
-		private readonly KernelToT<T> factoryMethod;
-		private readonly IKernel kernel;
-
-		public GenericFactoryWithKernel(KernelToT<T> factoryMethod, IKernel kernel)
-		{
-			this.factoryMethod = factoryMethod;
-			this.kernel = kernel;
-		}
-
-		public T Create()
-		{
-			return factoryMethod.Call(kernel);
-		}
-	}
-
-	#region Nested Type: ComponentRegistration
-
-	/// <summary>
-	/// A non-generic <see cref="ComponentRegistration{S}"/>.
-	/// <para />
-	/// You can create a new registration with the <see cref="Component"/> factory.
-	/// </summary>
-	public class ComponentRegistration : ComponentRegistration<object>
-	{
-		public ComponentRegistration()
-		{
-		}
-
-		public ComponentRegistration(Type serviceType, params Type[] forwaredTypes)
-		{
-			ServiceType = serviceType;
-			Forward(forwaredTypes);
-		}
-
-		public ComponentRegistration(ComponentModel componentModel)
-			: base(componentModel)
-		{
-		}
-
-		public ComponentRegistration For(Type serviceType, params Type[] forwaredTypes)
-		{
-			if (ServiceType != null)
-			{
-				String message = String.Format("This component has " +
-					"already been assigned service type {0}", ServiceType.FullName);
-				throw new ComponentRegistrationException(message);
-			}
-
-			ServiceType = serviceType;
-			Forward(forwaredTypes);
-			return this;
-		}
-	}
-
-	#endregion
 }

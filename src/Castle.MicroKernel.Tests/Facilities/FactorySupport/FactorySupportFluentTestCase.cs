@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -39,9 +39,10 @@ namespace Castle.MicroKernel.Tests.Facilities.FactorySupport
 	}
 
 	[TestFixture]
-	public class When_resolving_car_providers_from_an_abstract_factory
+	public class FactorySupportFluentTestCase
 	{
 		IKernel kernel;
+
 		[SetUp]
 		public void SetUp()
 		{
@@ -52,7 +53,7 @@ namespace Castle.MicroKernel.Tests.Facilities.FactorySupport
 		[Test]
 		public void register_ferrari_implementation_get_ferrari_instance()
 		{
-			RegisterComponentsImplemtedByFerrari(new User() { FiscalStability = FiscalStability.MrMoneyBags });
+			RegisterComponentsImplemtedByFerrari(new User { FiscalStability = FiscalStability.MrMoneyBags });
 			Assert.IsInstanceOf(typeof(FerrariProvider), kernel.Resolve<ICarProvider>());
 		}
 
@@ -66,7 +67,7 @@ namespace Castle.MicroKernel.Tests.Facilities.FactorySupport
 		[Test]
 		public void can_register_without_providing_an_implementation()
 		{
-			var user = new User() { FiscalStability = FiscalStability.DirtFarmer };
+			var user = new User { FiscalStability = FiscalStability.DirtFarmer };
 			kernel.Register(
 				Component.For<User>().Named("currentUser").Instance(user),
 				Component.For<AbstractCarProviderFactory>().Named("AbstractCarProviderFactory"),
@@ -89,88 +90,5 @@ namespace Castle.MicroKernel.Tests.Facilities.FactorySupport
 				);
 		}
 
-		[Test]
-		public void RegisterWithFluentFactory()
-		{
-			var user = new User { FiscalStability = FiscalStability.DirtFarmer };
-			kernel.Register(
-				Component.For<User>().Instance(user),
-				Component.For<AbstractCarProviderFactory>(),
-				Component.For<ICarProvider>()
-					.UsingFactory((AbstractCarProviderFactory f) => f.Create(kernel.Resolve<User>()))
-				);
-			Assert.IsInstanceOf(typeof(HondaProvider), kernel.Resolve<ICarProvider>());
-		}
-
-		[Test]
-		public void RegisterWithFactoryMethod()
-		{
-			var user = new User { FiscalStability = FiscalStability.DirtFarmer };
-			kernel.Register(
-				Component.For<AbstractCarProviderFactory>(),
-				Component.For<ICarProvider>()
-					.UsingFactoryMethod(() => new AbstractCarProviderFactory().Create(user))
-				);
-			Assert.IsInstanceOf(typeof(HondaProvider), kernel.Resolve<ICarProvider>());
-		}
-
-		[Test]
-		public void RegisterWithFactoryMethodAndKernel()
-		{
-			var user = new User { FiscalStability = FiscalStability.MrMoneyBags };
-			kernel.Register(
-				Component.For<User>().Instance(user),
-				Component.For<AbstractCarProviderFactory>(),
-				Component.For<ICarProvider>()
-					.UsingFactoryMethod(k => new AbstractCarProviderFactory().Create(k.Resolve<User>()))
-				);
-			Assert.IsInstanceOf(typeof(FerrariProvider), kernel.Resolve<ICarProvider>());
-		}
-
-		[Test]
-		public void RegisterWithFactoryMethodNamed()
-		{
-			kernel.Register(
-				Component.For<ICarProvider>()
-					.UsingFactoryMethod(() => new AbstractCarProviderFactory().Create(new User { FiscalStability = FiscalStability.MrMoneyBags }))
-					.Named("ferrariProvider"),
-				Component.For<ICarProvider>()
-					.UsingFactoryMethod(() => new AbstractCarProviderFactory().Create(new User { FiscalStability = FiscalStability.DirtFarmer }))
-					.Named("hondaProvider")
-				);
-
-			Assert.IsInstanceOf(typeof(HondaProvider), kernel.Resolve<ICarProvider>("hondaProvider"));
-			Assert.IsInstanceOf(typeof(FerrariProvider), kernel.Resolve<ICarProvider>("ferrariProvider"));
-		}
-
-		[Test]
-		public void RegisterWithFactoryMethodAndKernelNamed()
-		{
-			kernel.Register(
-				Component.For<ICarProvider>()
-					.UsingFactoryMethod(k => new AbstractCarProviderFactory().Create(new User { FiscalStability = FiscalStability.MrMoneyBags }))
-					.Named("ferrariProvider"),
-				Component.For<ICarProvider>()
-					.UsingFactoryMethod(k => new AbstractCarProviderFactory().Create(new User { FiscalStability = FiscalStability.DirtFarmer }))
-					.Named("hondaProvider")
-				);
-
-			Assert.IsInstanceOf(typeof(HondaProvider), kernel.Resolve<ICarProvider>("hondaProvider"));
-			Assert.IsInstanceOf(typeof(FerrariProvider), kernel.Resolve<ICarProvider>("ferrariProvider"));
-		}
-
-		[Test]
-		public void RegisterWithFactoryMethodKernelAndContext()
-		{
-			kernel.Register(
-				Component.For<User>().LifeStyle.Transient,
-				Component.For<AbstractCarProviderFactory>(),
-				Component.For<ICarProvider>()
-					.UsingFactoryMethod((k, ctx) => new AbstractCarProviderFactory().Create(
-						k.Resolve<User>(ctx.AdditionalParameters)))
-				);
-			Assert.IsInstanceOf(typeof(FerrariProvider), kernel.Resolve<ICarProvider>(
-				new { FiscalStability = FiscalStability.MrMoneyBags }));
-		}
 	}
 }
