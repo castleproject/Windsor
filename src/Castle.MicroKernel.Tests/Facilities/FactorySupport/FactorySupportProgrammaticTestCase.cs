@@ -39,7 +39,9 @@ namespace Castle.Facilities.FactorySupport.Tests
 		public void FactoryResolveWithProposedFacilityPatch()
 		{
 			string serviceKey = "someService";
+#pragma warning disable 0618 //call to obsolete method
 			facility.AddFactory<ISomeService, ServiceFactory>(serviceKey, "Create");
+#pragma warning restore
 
 			ISomeService service = kernel.Resolve(serviceKey,
 			                                      typeof(ISomeService)) as ISomeService;
@@ -52,7 +54,9 @@ namespace Castle.Facilities.FactorySupport.Tests
 		public void Factory_AsAPublisherOfValues_CanBeResolvedByDependents()
 		{
 			string serviceKey = "someService";
+#pragma warning disable 0618 //call to obsolete method
 			facility.AddFactory<TimeSpan, ServiceFactory>(serviceKey, "get_Something");
+#pragma warning restore
 
 			kernel.Register(Component.For<SettingsConsumer>().
 				Parameters(Parameter.ForKey("something").Eq("${serviceKey}")));
