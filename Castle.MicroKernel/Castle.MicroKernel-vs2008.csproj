@@ -176,6 +176,7 @@
     <Compile Include="Facilities\Startable\StartableFacility.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Facilities\Startable\StartableFacilityRegistrationExtensions.cs" />
     <Compile Include="Facilities\Startable\StartConcern.cs">
       <SubType>Code</SubType>
     </Compile>

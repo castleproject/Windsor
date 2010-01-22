@@ -59,11 +59,11 @@ namespace Castle.MicroKernel.Tests.Registration
 			Assert.AreSame(customer, customer1);
 		}
 
-        [Test]
-        public void AddComponent_WithInterceptorSelector_ComponentModelShouldHaveInterceptorSelector()
-        {
-        	var selector = new InterceptorTypeSelector(typeof(TestInterceptor1));
-        	Kernel.Register(Component.For<ICustomer>().Interceptors(new InterceptorReference(typeof(TestInterceptor1)))
+		[Test]
+		public void AddComponent_WithInterceptorSelector_ComponentModelShouldHaveInterceptorSelector()
+		{
+			var selector = new InterceptorTypeSelector(typeof(TestInterceptor1));
+			Kernel.Register(Component.For<ICustomer>().Interceptors(new InterceptorReference(typeof(TestInterceptor1)))
 				.SelectedWith(selector).Anywhere);
 
 			IHandler handler = Kernel.GetHandler(typeof(ICustomer));
@@ -71,21 +71,21 @@ namespace Castle.MicroKernel.Tests.Registration
 			var proxyOptions = ProxyUtil.ObtainProxyOptions(handler.ComponentModel, false);
 
 			Assert.IsNotNull(proxyOptions);
-            Assert.AreEqual( selector, proxyOptions.Selector.Resolve( null, null ) );
-        }
+			Assert.AreEqual(selector, proxyOptions.Selector.Resolve(null, null));
+		}
 
-        [Test]
-        public void AddComponent_WithInterfaceServiceOnly_And_Interceptors_ProxyOptionsShouldNotHaveATarget()
-        {
-            Kernel.Register(Component.For<ICustomer>().Interceptors(new InterceptorReference(typeof(StandardInterceptor))).Anywhere);
+		[Test]
+		public void AddComponent_WithInterfaceServiceOnly_And_Interceptors_ProxyOptionsShouldNotHaveATarget()
+		{
+			Kernel.Register(Component.For<ICustomer>().Interceptors(new InterceptorReference(typeof(StandardInterceptor))).Anywhere);
 
-            IHandler handler = Kernel.GetHandler(typeof(ICustomer));
+			IHandler handler = Kernel.GetHandler(typeof(ICustomer));
 
-            var proxyOptions = ProxyUtil.ObtainProxyOptions(handler.ComponentModel, false);
+			var proxyOptions = ProxyUtil.ObtainProxyOptions(handler.ComponentModel, false);
 
-            Assert.IsNotNull(proxyOptions);
-            Assert.IsTrue(proxyOptions.OmitTarget);
-        }
+			Assert.IsNotNull(proxyOptions);
+			Assert.IsTrue(proxyOptions.OmitTarget);
+		}
 
 		[Test]
 		public void AddComponent_WithServiceAndName_RegisteredNamed()
@@ -100,7 +100,7 @@ namespace Castle.MicroKernel.Tests.Registration
 			Assert.AreEqual(typeof(CustomerImpl), handler.ComponentModel.Service);
 			Assert.AreEqual(typeof(CustomerImpl), handler.ComponentModel.Implementation);
 
-			CustomerImpl customer = (CustomerImpl) Kernel["customer"];
+			CustomerImpl customer = (CustomerImpl)Kernel["customer"];
 			Assert.IsNotNull(customer);
 		}
 
@@ -179,7 +179,7 @@ namespace Castle.MicroKernel.Tests.Registration
 		[Test]
 		public void AddComponent_Instance_UsesInstanceWithParameters()
 		{
-			CustomerImpl2 customer = new CustomerImpl2("ernst","delft", 29);
+			CustomerImpl2 customer = new CustomerImpl2("ernst", "delft", 29);
 
 			Kernel.Register(
 				Component.For<ICustomer>()
@@ -266,7 +266,7 @@ namespace Castle.MicroKernel.Tests.Registration
 			IHandler handler = Kernel.GetHandler("customer");
 			Assert.AreEqual(LifestyleType.Thread, handler.ComponentModel.LifestyleType);
 		}
-		
+
 #if (!SILVERLIGHT)
 		[Test]
 		public void AddComponent_WithPerWebRequestLifestyle_WorksFine()
@@ -380,10 +380,10 @@ namespace Castle.MicroKernel.Tests.Registration
 		[Test]
 		public void AddComponent_CustomDependencies_UsingAnonymousType()
 		{
-				Kernel.Register(
-				Component.For<ICustomer>()
-					.ImplementedBy<CustomerImpl>()
-					.DependsOn(new { Name = "Caption Hook", Address = "Fairyland", Age = 45 }));
+			Kernel.Register(
+			Component.For<ICustomer>()
+				.ImplementedBy<CustomerImpl>()
+				.DependsOn(new { Name = "Caption Hook", Address = "Fairyland", Age = 45 }));
 
 			ICustomer customer = Kernel.Resolve<ICustomer>();
 			Assert.AreEqual(customer.Name, "Caption Hook");
@@ -435,7 +435,7 @@ namespace Castle.MicroKernel.Tests.Registration
 						)
 				);
 
-			CustomerChain1 customer = (CustomerChain1) Kernel["customer2"];
+			CustomerChain1 customer = (CustomerChain1)Kernel["customer2"];
 			Assert.IsNotNull(customer.CustomerBase);
 			Assert.AreEqual(customer.CustomerBase.Name, "Caption Hook");
 			Assert.AreEqual(customer.CustomerBase.Address, "Fairyland");
@@ -459,8 +459,8 @@ namespace Castle.MicroKernel.Tests.Registration
 					)
 				);
 
-			ICommon common1 = (ICommon) Kernel["common1"];
-			ICommon common2 = (ICommon) Kernel["common2"];
+			ICommon common1 = (ICommon)Kernel["common1"];
+			ICommon common2 = (ICommon)Kernel["common2"];
 			ClassWithArrayConstructor component = Kernel.Resolve<ClassWithArrayConstructor>();
 			Assert.AreSame(common2, component.First);
 			Assert.AreEqual(2, component.Services.Length);
@@ -514,7 +514,7 @@ namespace Castle.MicroKernel.Tests.Registration
 					.ServiceOverrides(new { customer = "customer1" })
 				);
 
-			CustomerChain1 customer = (CustomerChain1) Kernel["customer2"];
+			CustomerChain1 customer = (CustomerChain1)Kernel["customer2"];
 			Assert.IsNotNull(customer.CustomerBase);
 			Assert.AreEqual(customer.CustomerBase.Name, "Caption Hook");
 			Assert.AreEqual(customer.CustomerBase.Address, "Fairyland");
@@ -545,7 +545,7 @@ namespace Castle.MicroKernel.Tests.Registration
 					.ServiceOverrides(serviceOverrides)
 				);
 
-			CustomerChain1 customer = (CustomerChain1) Kernel["customer2"];
+			CustomerChain1 customer = (CustomerChain1)Kernel["customer2"];
 			Assert.IsNotNull(customer.CustomerBase);
 			Assert.AreEqual(customer.CustomerBase.Name, "Caption Hook");
 			Assert.AreEqual(customer.CustomerBase.Address, "Fairyland");
@@ -634,9 +634,9 @@ namespace Castle.MicroKernel.Tests.Registration
 			Assert.IsNotNull(component);
 			Assert.IsNotNull(component.ComplexParam);
 			Assert.AreEqual("value1", component.ComplexParam.MandatoryValue);
-			Assert.AreEqual("value2", component.ComplexParam.OptionalValue);			
+			Assert.AreEqual("value2", component.ComplexParam.OptionalValue);
 		}
-		
+
 		[Test]
 		public void CanUseExistingComponentModelWithComponentRegistration()
 		{
@@ -647,7 +647,7 @@ namespace Castle.MicroKernel.Tests.Registration
 			IHandler handler = Kernel.GetHandler(typeof(ICustomer));
 			ComponentRegistration component = Component.For(handler.ComponentModel);
 
-			Assert.AreEqual(typeof(ICustomer), component.ServiceType);			
+			Assert.AreEqual(typeof(ICustomer), component.ServiceType);
 			Assert.AreEqual(typeof(CustomerImpl), component.Implementation);
 		}
 
@@ -701,7 +701,7 @@ namespace Castle.MicroKernel.Tests.Registration
 			Kernel.AddFacility<StartableFacility>()
 				.Register(Component.For<StartableComponent>());
 
-			StartableComponent component = Kernel.Resolve<StartableComponent>();
+			var component = Kernel.Resolve<StartableComponent>();
 
 			Assert.IsNotNull(component);
 			Assert.IsTrue(component.Started);
@@ -720,7 +720,26 @@ namespace Castle.MicroKernel.Tests.Registration
 					.StopUsingMethod("Stop")
 					);
 
-			NoInterfaceStartableComponent component = Kernel.Resolve<NoInterfaceStartableComponent>();
+			var component = Kernel.Resolve<NoInterfaceStartableComponent>();
+
+			Assert.IsNotNull(component);
+			Assert.IsTrue(component.Started);
+			Assert.IsFalse(component.Stopped);
+
+			Kernel.ReleaseComponent(component);
+			Assert.IsTrue(component.Stopped);
+		}
+
+		[Test]
+		public void AddComponent_StartableWithoutInterface_StartsComponent_via_expression()
+		{
+			Kernel.AddFacility<StartableFacility>()
+				.Register(Component.For<NoInterfaceStartableComponent>()
+							.StartUsingMethod(x => x.Start)
+							.StopUsingMethod(x => x.Stop)
+				);
+
+			var component = Kernel.Resolve<NoInterfaceStartableComponent>();
 
 			Assert.IsNotNull(component);
 			Assert.IsTrue(component.Started);
@@ -731,26 +750,27 @@ namespace Castle.MicroKernel.Tests.Registration
 		}
 	}
 
-    public class InterceptorTypeSelector : IInterceptorSelector
-    {
-        private readonly Type interceptorType;
+	public class InterceptorTypeSelector : IInterceptorSelector
+	{
+		private readonly Type interceptorType;
 
-        public InterceptorTypeSelector(Type interceptorType)
-        {
-            this.interceptorType = interceptorType;
-        }
+		public InterceptorTypeSelector(Type interceptorType)
+		{
+			this.interceptorType = interceptorType;
+		}
 
-        public IInterceptor[] SelectInterceptors(Type type, MethodInfo method, IInterceptor[] interceptors)
-        {
-        	return interceptors.Where(i => i.GetType() == interceptorType).ToArray();
-        }
-    }
+		public IInterceptor[] SelectInterceptors(Type type, MethodInfo method, IInterceptor[] interceptors)
+		{
+			return interceptors.Where(i => i.GetType() == interceptorType).ToArray();
+		}
+	}
 
 	public abstract class TestInterceptor : IInterceptor
 	{
 		public int Invocations
 		{
-			get; set;
+			get;
+			set;
 		}
 
 		public void Intercept(IInvocation invocation)
@@ -761,14 +781,14 @@ namespace Castle.MicroKernel.Tests.Registration
 	}
 
 	public class TestInterceptor1 : TestInterceptor
-    {
-    }
+	{
+	}
 
-    public class TestInterceptor2 : TestInterceptor
-    {
-    }
+	public class TestInterceptor2 : TestInterceptor
+	{
+	}
 
-    public class TestInterceptor3 : TestInterceptor
-    {
-    }
+	public class TestInterceptor3 : TestInterceptor
+	{
+	}
 }
