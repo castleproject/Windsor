@@ -102,6 +102,7 @@
     <Compile Include="ComponentActivator\DefaultComponentActivator.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="ComponentActivator\FactoryMethodActivator.cs" />
     <Compile Include="ComponentActivator\WebUserControlComponentActivator.cs" />
     <Compile Include="Context\Burden.cs" />
     <Compile Include="Context\DependencyTrackingScope.cs" />
@@ -346,10 +347,12 @@
     <Compile Include="Registration\ComponentDescriptor.cs" />
     <Compile Include="Registration\ComponentInstanceDescriptor.cs" />
     <Compile Include="Registration\ComponentRegistration.cs" />
+    <Compile Include="Registration\ComponentRegistration.nonGeneric.cs" />
     <Compile Include="Registration\Configuration.cs" />
     <Compile Include="Registration\ConfigurationDescriptor.cs" />
     <Compile Include="Registration\CustomDependencyDescriptor.cs" />
     <Compile Include="Registration\ExtendedPropertiesDescriptor.cs" />
+    <Compile Include="Registration\FactoryDescriptor.cs" />
     <Compile Include="Registration\OnCreateComponentDescriptor.cs" />
     <Compile Include="Registration\DynamicParametersDescriptor.cs" />
     <Compile Include="Registration\Interceptor\InterceptorSelectorDescriptor.cs" />

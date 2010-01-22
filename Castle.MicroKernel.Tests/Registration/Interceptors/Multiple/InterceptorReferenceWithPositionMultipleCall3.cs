@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,19 +19,20 @@ namespace Castle.MicroKernel.Tests.Registration.Interceptors.Multiple
 	using Castle.Core;
 	using Castle.MicroKernel.Registration;
 
-	public class InterceptorReferencesWithPositionInSingleCall3 : InterceptorsTestCaseHelper
+	public class InterceptorReferenceWithPositionMultipleCall3 : InterceptorsTestCaseHelper
 	{
 		public override IRegistration RegisterInterceptors<S>(ComponentRegistration<S> registration)
 		{
-			return registration.Interceptors(
-				InterceptorReference.ForType(typeof(TestInterceptor1)),
-				InterceptorReference.ForType(typeof(TestInterceptor2))).AtIndex(0);
+			return registration.Interceptors(new InterceptorReference(typeof (TestInterceptor3))).Last
+				.Interceptors(new InterceptorReference(typeof (TestInterceptor1))).First
+				.Interceptors(new InterceptorReference(typeof (TestInterceptor2))).AtIndex(1);
 		}
 
 		public override IEnumerable<InterceptorReference> GetExpectedInterceptorsInCorrectOrder()
 		{
-			yield return InterceptorReference.ForType<TestInterceptor2>();
 			yield return InterceptorReference.ForType<TestInterceptor1>();
+			yield return InterceptorReference.ForType<TestInterceptor2>();
+			yield return InterceptorReference.ForType<TestInterceptor3>();
 		}
 	}
 }
