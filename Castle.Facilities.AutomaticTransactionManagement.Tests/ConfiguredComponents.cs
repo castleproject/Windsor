@@ -14,6 +14,7 @@
 
 namespace Castle.Facilities.AutomaticTransactionManagement.Tests
 {
+	using System;
 	using System.Configuration;
 
 	using Castle.MicroKernel.Facilities;
@@ -55,7 +56,7 @@ namespace Castle.Facilities.AutomaticTransactionManagement.Tests
 			Assert.AreEqual(3, meta.Methods.Length);
 		}
 
-		[Test, ExpectedException(typeof(ConfigurationErrorsException))]
+		[Test, ExpectedException(typeof(Exception), ExpectedMessage = "The class Castle.Facilities.AutomaticTransactionManagement.Tests.TransactionalComp1 has tried to expose configuration for a method named HelloGoodbye which could not be found.")]
 		public void HasInvalidMethod()
 		{
 			new WindsorContainer( ConfigHelper.ResolvePath("../HasInvalidMethod.xml") );

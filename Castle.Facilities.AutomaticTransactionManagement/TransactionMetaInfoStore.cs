@@ -73,7 +73,7 @@ namespace Castle.Facilities.AutomaticTransactionManagement
 			PopulateMetaInfoFromType(metaInfo, implementation.BaseType);
 		}
 
-		public TransactionMetaInfo CreateMetaFromConfig(Type implementation, MethodInfo[] methods, IConfiguration config)
+		public TransactionMetaInfo CreateMetaFromConfig(Type implementation, IList<MethodInfo> methods, IConfiguration config)
 		{
 			TransactionMetaInfo metaInfo = GetMetaFor(implementation);
 

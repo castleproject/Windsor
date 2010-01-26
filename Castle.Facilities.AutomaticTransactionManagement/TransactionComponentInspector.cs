@@ -16,6 +16,7 @@ namespace Castle.Facilities.AutomaticTransactionManagement
 {
 	using System;
 	using System.Collections;
+	using System.Collections.Generic;
 	using System.Reflection;
 	using Castle.Core;
 	using Castle.MicroKernel;
@@ -93,7 +94,7 @@ namespace Castle.Facilities.AutomaticTransactionManagement
 		/// <param name="model">The model.</param>
 		/// <param name="methods">The methods.</param>
 		/// <param name="metaModel">The meta model.</param>
-		protected override void ProcessMeta(ComponentModel model, MethodInfo[] methods, MethodMetaModel metaModel)
+		protected override void ProcessMeta(ComponentModel model, IList<MethodInfo> methods, MethodMetaModel metaModel)
 		{
 			metaStore.CreateMetaFromConfig(model.Implementation, methods, metaModel.ConfigNode);
 		}
