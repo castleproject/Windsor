@@ -12,14 +12,28 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Facilities.WcfIntegration.Lifestyles
+namespace Castle.Facilities.WcfIntegration.Tests.Components
 {
-	using System;
+	using System.Collections.Generic;
+	using System.ServiceModel;
 
-	using Castle.MicroKernel;
-
-	public interface IWcfLifestyle : ILifestyleManager
+	[ServiceBehavior(InstanceContextMode = InstanceContextMode.PerCall)]
+	public class ServiceWithDependencies : IServiceWithDependencies
 	{
-		Guid ComponentId { get; }
+		private readonly IOne one;
+		private readonly HasOne hasOne;
+		public static readonly IList<object> Dependencies = new List<object>();
+
+		public ServiceWithDependencies(IOne one,HasOne hasOne)
+		{
+			this.one = one;
+			this.hasOne = hasOne;
+		}
+
+		public void OperationOne()
+		{
+			Dependencies.Add(one);
+			Dependencies.Add(hasOne);
+		}
 	}
 }

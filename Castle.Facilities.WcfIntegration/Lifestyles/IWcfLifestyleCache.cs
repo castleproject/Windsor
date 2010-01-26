@@ -14,12 +14,11 @@
 
 namespace Castle.Facilities.WcfIntegration.Lifestyles
 {
-	using System;
+	using System.ServiceModel;
 
-	using Castle.MicroKernel;
-
-	public interface IWcfLifestyle : ILifestyleManager
+	public interface IWcfLifestyleCache<TContext> : IExtension<TContext>
+		where TContext : class, IExtensibleObject<TContext>
 	{
-		Guid ComponentId { get; }
+		object this[IWcfLifestyle manager] { get; set; }
 	}
 }

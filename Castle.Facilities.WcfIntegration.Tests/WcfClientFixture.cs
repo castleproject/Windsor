@@ -52,7 +52,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 					new DefaultClientModel()
 					{
 						Endpoint = WcfEndpoint.ForContract<IOperations>()
-							.BoundTo(new NetTcpBinding{PortSharingEnabled = true })
+							.BoundTo(new NetTcpBinding { PortSharingEnabled = true })
 							.At("net.tcp://localhost/Operations")
 					}),
 					Component.For<IServiceBehavior>()
@@ -66,10 +66,10 @@ namespace Castle.Facilities.WcfIntegration.Tests
 						.DependsOn(new { number = 42 })
 						.ActAs(new DefaultServiceModel().AddEndpoints(
 							WcfEndpoint.ForContract<IOperations>()
-								.BoundTo(new NetTcpBinding{PortSharingEnabled = true })
+								.BoundTo(new NetTcpBinding { PortSharingEnabled = true })
 								.At("net.tcp://localhost/Operations"),
 							WcfEndpoint.ForContract<IOperationsEx>()
-								.BoundTo(new NetTcpBinding{PortSharingEnabled = true })
+								.BoundTo(new NetTcpBinding { PortSharingEnabled = true })
 								.At("net.tcp://localhost/Operations/Ex")
 								)
 						),
@@ -102,7 +102,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 					.ActAs(new DefaultClientModel()
 					{
 						Endpoint = WcfEndpoint
-							.BoundTo(new NetTcpBinding{PortSharingEnabled = true })
+							.BoundTo(new NetTcpBinding { PortSharingEnabled = true })
 							.At("net.tcp://localhost/Operations")
 					})
 				);
@@ -147,7 +147,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 				)))
 			{
 				using (IWindsorContainer clientContainer = new WindsorContainer()
-					.AddFacility<WcfFacility>(f => f.DefaultBinding = 
+					.AddFacility<WcfFacility>(f => f.DefaultBinding =
 						new NetTcpBinding { PortSharingEnabled = true }
 					)
 					.Register(Component.For<IOperations>()
@@ -187,17 +187,23 @@ namespace Castle.Facilities.WcfIntegration.Tests
 					))
 				{
 					IOperations client1 = clientContainer.Resolve<IOperations>("operations",
-						new { Model = new DefaultClientModel
+						new
 						{
-							Endpoint = WcfEndpoint.BoundTo(new NetTcpBinding())
-								.At("net.tcp://localhost/Operations2")
-						}});
+							Model = new DefaultClientModel
+								{
+									Endpoint = WcfEndpoint.BoundTo(new NetTcpBinding())
+										.At("net.tcp://localhost/Operations2")
+								}
+						});
 					IOperations client2 = clientContainer.Resolve<IOperations>("operations",
-						new { Model = new DefaultClientModel() 
+						new
 						{
-							Endpoint = WcfEndpoint.BoundTo(new NetTcpBinding())
-								.At("net.tcp://localhost/Operations2")
-						}});
+							Model = new DefaultClientModel()
+								{
+									Endpoint = WcfEndpoint.BoundTo(new NetTcpBinding())
+										.At("net.tcp://localhost/Operations2")
+								}
+						});
 					Assert.AreEqual(28, client1.GetValueFromConstructor());
 					Assert.AreEqual(28, client2.GetValueFromConstructor());
 					clientContainer.Release(client1);
@@ -323,9 +329,9 @@ namespace Castle.Facilities.WcfIntegration.Tests
 					.ActAs(new DefaultServiceModel()
 						.AddBaseAddresses("net.tcp://localhost/Operations")
 						.AddEndpoints(WcfEndpoint.ForContract<IOperations>()
-							.BoundTo(new NetTcpBinding{PortSharingEnabled = true })
+							.BoundTo(new NetTcpBinding { PortSharingEnabled = true })
 							.At("Extended")
-							)	
+							)
 				)))
 			{
 				using (IWindsorContainer clientContainer = new WindsorContainer()
@@ -335,9 +341,9 @@ namespace Castle.Facilities.WcfIntegration.Tests
 						.ActAs(new DefaultClientModel()
 						{
 							Endpoint = WcfEndpoint
-								.BoundTo(new NetTcpBinding{PortSharingEnabled = true })
+								.BoundTo(new NetTcpBinding { PortSharingEnabled = true })
 								.At("net.tcp://localhost/Operations/Extended")
-						
+
 						})
 					))
 				{
@@ -357,7 +363,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 						.ImplementedBy<Operations>()
 						.DependsOn(new { number = 22 })
 						.ActAs(new DefaultServiceModel().AddEndpoints(
-							WcfEndpoint.BoundTo(new NetTcpBinding{PortSharingEnabled = true })
+							WcfEndpoint.BoundTo(new NetTcpBinding { PortSharingEnabled = true })
 								.At("urn:castle:operations")
 								.Via("net.tcp://localhost/OperationsVia")
 								)
@@ -367,7 +373,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 						.ActAs(new DefaultClientModel()
 						{
 							Endpoint = WcfEndpoint
-								.BoundTo(new NetTcpBinding{PortSharingEnabled = true })
+								.BoundTo(new NetTcpBinding { PortSharingEnabled = true })
 								.At("urn:castle:operations")
 								.Via("net.tcp://localhost/OperationsVia")
 						})
@@ -387,7 +393,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 					.ActAs(new DefaultClientModel()
 					{
 						Endpoint = WcfEndpoint
-							.BoundTo(new NetTcpBinding{PortSharingEnabled = true })
+							.BoundTo(new NetTcpBinding { PortSharingEnabled = true })
 							.At("net.tcp://localhost/Operations/Ex")
 							.AddExtensions(typeof(NetDataContractFormatBehavior))
 					})
@@ -409,12 +415,12 @@ namespace Castle.Facilities.WcfIntegration.Tests
 				Component.For<IOperationsEx>()
 					.Named("operations")
 					.ActAs(new DefaultClientModel()
-					       {
-					       	Endpoint = WcfEndpoint
-					       		.BoundTo(new NetTcpBinding {PortSharingEnabled = true})
-					       		.At("net.tcp://localhost/Operations/Ex")
-					       		.AddExtensions("specialBehavior")
-					       })
+						   {
+							   Endpoint = WcfEndpoint
+								   .BoundTo(new NetTcpBinding { PortSharingEnabled = true })
+								   .At("net.tcp://localhost/Operations/Ex")
+								   .AddExtensions("specialBehavior")
+						   })
 				);
 			IOperationsEx client = windsorContainer.Resolve<IOperationsEx>("operations");
 			client.Backup(new Dictionary<string, object>());
@@ -511,9 +517,9 @@ namespace Castle.Facilities.WcfIntegration.Tests
 					.ActAs(new DefaultClientModel()
 					{
 						Endpoint = WcfEndpoint
-							.BoundTo(new NetTcpBinding{PortSharingEnabled = true })
+							.BoundTo(new NetTcpBinding { PortSharingEnabled = true })
 							.At("net.tcp://localhost/Operations/Ex")
-					
+
 					})
 				);
 
@@ -558,7 +564,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 		public void CanInhibitRecoveryFromAnUnhandledException()
 		{
 			using (var localContainer = new WindsorContainer()
-				.AddFacility<WcfFacility>(f => 
+				.AddFacility<WcfFacility>(f =>
 				{
 					f.CloseTimeout = TimeSpan.Zero;
 					f.Clients.DefaultChannelPolicy = null;
@@ -623,10 +629,10 @@ namespace Castle.Facilities.WcfIntegration.Tests
 			IOperationsEx client = null;
 
 			using (createLocalContainer())
-            {
+			{
 				client = windsorContainer.Resolve<IOperationsEx>("operations");
 				client.Backup(new Dictionary<string, object>());
-            }
+			}
 
 			using (createLocalContainer())
 			{
@@ -772,11 +778,11 @@ namespace Castle.Facilities.WcfIntegration.Tests
 
 			IOperations client = windsorContainer.Resolve<IOperations>("operations");
 			using (new OperationContextScope(WcfContextChannel.For(client)))
-            {
+			{
 				MessageHeader header = MessageHeader.CreateHeader("MyHeader", "", "MyValue", false);
 				OperationContext.Current.OutgoingMessageHeaders.Add(header);
 				Assert.AreEqual(42, client.GetValueFromConstructor());
-            }
+			}
 		}
 
 		[Test]
@@ -896,7 +902,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 
 			int i = 0;
 			foreach (LoggingEvent log in memoryAppender.GetEvents())
-			{				
+			{
 				Assert.AreEqual(typeof(IOperations).FullName, log.LoggerName);
 				Assert.IsTrue(log.Properties.Contains("NDC"));
 
@@ -1067,7 +1073,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 							.BoundTo(new NetTcpBinding { PortSharingEnabled = true })
 							.At("net.tcp://localhost/Operations")
 							.AddExtensions(start, new ReplaceOperationsResult("100").ExecuteAt(1),
-										   new ReplaceOperationsResult("200").ExecuteAt(2), 
+										   new ReplaceOperationsResult("200").ExecuteAt(2),
 										   new AddOperationsHeader("MyHeader", "Hello"),
 										   end)
 					})
@@ -1192,6 +1198,26 @@ namespace Castle.Facilities.WcfIntegration.Tests
 			Assert.AreEqual(42, client.EndWcfCall<int>(result));
 		}
 
+		public void CanCallChannelOperationsWithRefArgumentsAsynchronously()
+		{
+			windsorContainer.Register(
+				Component.For<IOperations>()
+					.Named("operations")
+					.ActAs(new DefaultClientModel()
+					{
+						Endpoint = WcfEndpoint
+							.BoundTo(new NetTcpBinding { PortSharingEnabled = true })
+							.At("net.tcp://localhost/Operations")
+					})
+				);
+
+			IOperations client = windsorContainer.Resolve<IOperations>("operations");
+			int refValue = 0;
+			var call = client.BeginWcfCall(p => p.GetValueFromConstructorAsRef(ref refValue));
+			Assert.AreEqual(42, call.End(out refValue));
+			Assert.AreEqual(42, refValue);
+		}
+
 		[Test]
 		public void CanCallChannelOperationsWithOutAndRefArgumentsAsynchronously()
 		{
@@ -1214,7 +1240,6 @@ namespace Castle.Facilities.WcfIntegration.Tests
 			Assert.AreEqual(42, outValue);
 		}
 
-
 		[Test]
 		public void CanCallChannelOperationsAsynchronouslyUsingServiceEndpoint()
 		{
@@ -1226,7 +1251,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 						Endpoint = WcfEndpoint
 							.FromEndpoint(new ServiceEndpoint(
 								ContractDescription.GetContract(typeof(IOperations)),
-								new NetTcpBinding { PortSharingEnabled = true }, 
+								new NetTcpBinding { PortSharingEnabled = true },
 								new EndpointAddress("net.tcp://localhost/Operations")
 								))
 					})
@@ -1400,20 +1425,20 @@ namespace Castle.Facilities.WcfIntegration.Tests
 			}
 		}
 
-        protected void RegisterLoggingFacility(IWindsorContainer container)
-        {
-            MutableConfiguration facNode = new MutableConfiguration("facility" );
-            facNode.Attributes["id"] = "logging";
-            facNode.Attributes["loggingApi"] = "ExtendedLog4net";
+		protected void RegisterLoggingFacility(IWindsorContainer container)
+		{
+			MutableConfiguration facNode = new MutableConfiguration("facility");
+			facNode.Attributes["id"] = "logging";
+			facNode.Attributes["loggingApi"] = "ExtendedLog4net";
 			facNode.Attributes["configFile"] = "";
-            container.Kernel.ConfigurationStore.AddFacilityConfiguration("logging", facNode);
-            container.AddFacility("logging", new LoggingFacility());
+			container.Kernel.ConfigurationStore.AddFacilityConfiguration("logging", facNode);
+			container.AddFacility("logging", new LoggingFacility());
 
 			memoryAppender = new MemoryAppender();
 			BasicConfigurator.Configure(memoryAppender);
-        }
+		}
 
-        private static string xmlConfiguration = @"<?xml version='1.0' encoding='utf-8' ?>
+		private static string xmlConfiguration = @"<?xml version='1.0' encoding='utf-8' ?>
 <configuration>
 	<facilities>
 		<facility id='wcf' 

@@ -100,7 +100,7 @@ namespace Castle.Facilities.WcfIntegration.Async
 				throw returnMessage.Exception;
 			}
 
-			outs = returnMessage.OutArgs;
+			outs = message.OutArgs;
 			return returnMessage;
 		}
 

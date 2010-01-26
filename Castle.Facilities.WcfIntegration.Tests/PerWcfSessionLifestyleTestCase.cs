@@ -15,13 +15,11 @@
 namespace Castle.Facilities.WcfIntegration.Tests
 {
 	using System;
-	using System.Collections.Generic;
 	using System.Linq;
 	using System.ServiceModel;
 
 	using Castle.Core;
 	using Castle.Core.Interceptor;
-	using Castle.Facilities.WcfIntegration.Lifestyles;
 	using Castle.Facilities.WcfIntegration.Tests.Behaviors;
 	using Castle.Facilities.WcfIntegration.Tests.Components;
 	using Castle.MicroKernel.Registration;
@@ -140,21 +138,6 @@ namespace Castle.Facilities.WcfIntegration.Tests
 			var one2 = invocations[1].Key as One;
 			Assert.AreEqual("Client 1 Run Forrest run!", one1.Arg);
 			Assert.AreEqual("Client 2 welcomes you.", one2.Arg);
-		}
-	}
-
-	public class CollectingInterceptor : StandardInterceptor
-	{
-		private readonly List<IInvocation> invocations = new List<IInvocation>();
-
-		public IInvocation[] AllInvocations
-		{
-			get { return invocations.ToArray(); }
-		}
-
-		protected override void PreProceed(IInvocation invocation)
-		{
-			invocations.Add(invocation);
 		}
 	}
 }

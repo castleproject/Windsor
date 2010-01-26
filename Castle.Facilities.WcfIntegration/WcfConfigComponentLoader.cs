@@ -12,14 +12,28 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Facilities.WcfIntegration.Lifestyles
+namespace Castle.Facilities.WcfIntegration
 {
 	using System;
+	using System.ServiceModel;
 
-	using Castle.MicroKernel;
+	using Castle.MicroKernel.Registration;
+	using Castle.MicroKernel.Resolvers;
 
-	public interface IWcfLifestyle : ILifestyleManager
+	public class WcfConfigComponentLoader : ILazyComponentLoader
 	{
-		Guid ComponentId { get; }
+		public IRegistration Load(string key, Type service)
+		{
+			if (!Attribute.IsDefined(service, typeof(ServiceContractAttribute)))
+			{
+				return null;
+			}
+
+			//we assume the service is defined in the config file
+			return Component.For(service)
+				.Named(key)
+				.LifeStyle.Transient
+				.ActAs(new DefaultClientModel(WcfEndpoint.FromConfiguration(key)));
+		}
 	}
 }

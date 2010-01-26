@@ -15,11 +15,23 @@
 namespace Castle.Facilities.WcfIntegration.Lifestyles
 {
 	using System;
+	using System.ServiceModel;
 
-	using Castle.MicroKernel;
-
-	public interface IWcfLifestyle : ILifestyleManager
+	public class PerOperationCache : AbstractWcfLifestyleCache<OperationContext>
 	{
-		Guid ComponentId { get; }
+		protected override void InitContext(OperationContext context)
+		{
+			context.OperationCompleted += Shutdown;
+		}
+
+		protected override void ShutdownContext(OperationContext context)
+		{
+			context.OperationCompleted -= Shutdown;
+		}
+
+		private void Shutdown(object sender, EventArgs e)
+		{
+			ShutdownCache();
+		}
 	}
 }

@@ -12,14 +12,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Facilities.WcfIntegration.Lifestyles
+namespace Castle.Facilities.WcfIntegration.Tests
 {
-	using System;
+	using System.Collections.Generic;
 
-	using Castle.MicroKernel;
+	using Castle.Core.Interceptor;
 
-	public interface IWcfLifestyle : ILifestyleManager
+	public class CollectingInterceptor : StandardInterceptor
 	{
-		Guid ComponentId { get; }
+		private readonly List<IInvocation> invocations = new List<IInvocation>();
+
+		public IInvocation[] AllInvocations
+		{
+			get { return invocations.ToArray(); }
+		}
+
+		protected override void PreProceed(IInvocation invocation)
+		{
+			invocations.Add(invocation);
+		}
 	}
 }

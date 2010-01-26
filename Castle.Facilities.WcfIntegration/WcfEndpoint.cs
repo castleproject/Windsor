@@ -14,11 +14,12 @@
 
 namespace Castle.Facilities.WcfIntegration
 {
-    using System;
+	using System;
 	using System.Collections.Generic;
-    using System.ServiceModel;
-    using System.ServiceModel.Channels;
+	using System.ServiceModel;
+	using System.ServiceModel.Channels;
 	using System.ServiceModel.Description;
+
 	using Castle.Facilities.WcfIntegration.Behaviors;
 
 	public static class WcfEndpoint
