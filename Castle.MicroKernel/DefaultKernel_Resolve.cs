@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,8 +18,9 @@ namespace Castle.MicroKernel
 	using System.Collections;
 	using System.Collections.Generic;
 	using System.Runtime.Serialization;
-	using Core;
-	using Handlers;
+
+	using Castle.Core;
+	using Castle.MicroKernel.Handlers;
 
 #if (SILVERLIGHT)
 	public partial class DefaultKernel : IKernel, IKernelEvents
@@ -27,69 +28,14 @@ namespace Castle.MicroKernel
 	public partial class DefaultKernel : MarshalByRefObject, IKernel, IKernelEvents, IDeserializationCallback
 #endif
 	{
-		/// <summary>
-		/// Returns the component instance by the service type
-		/// using dynamic arguments
-		/// </summary>
-		/// <param name="arguments"></param>
-		/// <returns></returns>
-		public T Resolve<T>(IDictionary arguments)
-		{
-			Type serviceType = typeof(T);
-			return (T)Resolve(serviceType, arguments);
-		}
-
-		/// <summary>
-		/// Returns the component instance by the service type
-		/// using dynamic arguments
-		/// </summary>
-		/// <param name="argumentsAsAnonymousType"></param>
-		/// <returns></returns>
-		public T Resolve<T>(object argumentsAsAnonymousType)
-		{
-			return Resolve<T>(new ReflectionBasedDictionaryAdapter(argumentsAsAnonymousType));
-		}
-
-		/// <summary>
-		/// Returns the component instance by the component key
-		/// </summary>
-		/// <returns></returns>
-		public T Resolve<T>()
-		{
-			Type serviceType = typeof(T);
-			return (T)Resolve(serviceType);
-		}
-
-		/// <summary>
-		/// Returns a component instance by the key
-		/// </summary>
-		/// <param name="key">Component's key</param>
-		/// <typeparam name="T">Service type</typeparam>
-		/// <returns>The Component instance</returns>
-		public T Resolve<T>(String key)
-		{
-			Type serviceType = typeof(T);
-			return (T)Resolve(key, serviceType);
-		}
-
-		/// <summary>
-		/// Returns a component instance by the key
-		/// </summary>
-		/// <typeparam name="T">Service type</typeparam>
-		/// <param name="key">Component's key</param>
-		/// <param name="arguments"></param>
-		/// <returns>The Component instance</returns>
-		public T Resolve<T>(String key, IDictionary arguments)
-		{
-			Type serviceType = typeof(T);
-			return (T)Resolve(key, serviceType, arguments);
-		}
-
 		public virtual object this[String key]
 		{
 			get
 			{
-				if (key == null) throw new ArgumentNullException("key");
+				if (key == null)
+				{
+					throw new ArgumentNullException("key");
+				}
 
 				if (!HasComponent(key) && !LazyLoadComponent(key, null))
 				{
@@ -106,7 +52,10 @@ namespace Castle.MicroKernel
 		{
 			get
 			{
-				if (service == null) throw new ArgumentNullException("service");
+				if (service == null)
+				{
+					throw new ArgumentNullException("service");
+				}
 
 				if (!HasComponent(service) && !LazyLoadComponent(null, service))
 				{
@@ -120,39 +69,243 @@ namespace Castle.MicroKernel
 		}
 
 		/// <summary>
-		/// Returns the component instance by the service type
+		///   Returns a component instance by the key
+		/// </summary>
+		/// <param name="key"></param>
+		/// <param name="service"></param>
+		/// <returns></returns>
+		public virtual object Resolve(String key, Type service)
+		{
+			if (key == null)
+			{
+				throw new ArgumentNullException("key");
+			}
+			if (service == null)
+			{
+				throw new ArgumentNullException("service");
+			}
+
+			if (!HasComponent(key) && !LazyLoadComponent(key, service))
+			{
+				throw new ComponentNotFoundException(key);
+			}
+
+			IHandler handler = GetHandler(key);
+
+			return ResolveComponent(handler, service);
+		}
+
+		/// <summary>
+		///   Returns a component instance by the key
+		/// </summary>
+		/// <param name="key"></param>
+		/// <param name="service"></param>
+		/// <param name="arguments"></param>
+		/// <returns></returns>
+		public virtual object Resolve(String key, Type service, IDictionary arguments)
+		{
+			if (key == null)
+			{
+				throw new ArgumentNullException("key");
+			}
+			if (service == null)
+			{
+				throw new ArgumentNullException("service");
+			}
+
+			if (!HasComponent(key) && !LazyLoadComponent(key, service))
+			{
+				throw new ComponentNotFoundException(key);
+			}
+
+			IHandler handler = GetHandler(key);
+
+			return ResolveComponent(handler, service, arguments);
+		}
+
+		/// <summary>
+		///   Returns the component instance by the service type
+		///   using dynamic arguments
+		/// </summary>
+		/// <param name="arguments"></param>
+		/// <returns></returns>
+		public T Resolve<T>(IDictionary arguments)
+		{
+			Type serviceType = typeof(T);
+			return (T)Resolve(serviceType, arguments);
+		}
+
+		/// <summary>
+		///   Returns the component instance by the service type
+		///   using dynamic arguments
+		/// </summary>
+		/// <param name="argumentsAsAnonymousType"></param>
+		/// <returns></returns>
+		public T Resolve<T>(object argumentsAsAnonymousType)
+		{
+			return Resolve<T>(new ReflectionBasedDictionaryAdapter(argumentsAsAnonymousType));
+		}
+
+		/// <summary>
+		///   Returns the component instance by the component key
+		/// </summary>
+		/// <returns></returns>
+		public T Resolve<T>()
+		{
+			Type serviceType = typeof(T);
+			return (T)Resolve(serviceType);
+		}
+
+		/// <summary>
+		///   Returns a component instance by the key
+		/// </summary>
+		/// <param name="key">Component's key</param>
+		/// <typeparam name="T">Service type</typeparam>
+		/// <returns>
+		///   The Component instance
+		/// </returns>
+		public T Resolve<T>(String key)
+		{
+			Type serviceType = typeof(T);
+			return (T)Resolve(key, serviceType);
+		}
+
+		/// <summary>
+		///   Returns a component instance by the key
+		/// </summary>
+		/// <typeparam name="T">Service type</typeparam>
+		/// <param name="key">Component's key</param>
+		/// <param name="arguments"></param>
+		/// <returns>
+		///   The Component instance
+		/// </returns>
+		public T Resolve<T>(String key, IDictionary arguments)
+		{
+			Type serviceType = typeof(T);
+			return (T)Resolve(key, serviceType, arguments);
+		}
+
+		/// <summary>
+		///   Returns the component instance by the service type
 		/// </summary>
 		public object Resolve(Type service)
 		{
-			if (service == null) throw new ArgumentNullException("service");
+			if (service == null)
+			{
+				throw new ArgumentNullException("service");
+			}
 
 			return this[service];
 		}
 
 		/// <summary>
-		/// Returns all the valid component instances by
-		/// the service type
+		///   Returns the component instance by the service type
+		///   using dynamic arguments
+		/// </summary>
+		/// <param name="service"></param>
+		/// <param name="arguments"></param>
+		/// <returns></returns>
+		public object Resolve(Type service, IDictionary arguments)
+		{
+			if (service == null)
+			{
+				throw new ArgumentNullException("service");
+			}
+			if (arguments == null)
+			{
+				throw new ArgumentNullException("arguments");
+			}
+
+			if (!HasComponent(service) && !LazyLoadComponent(null, service))
+			{
+				throw new ComponentNotFoundException(service);
+			}
+
+			IHandler handler = GetHandler(service);
+
+			return ResolveComponent(handler, service, arguments);
+		}
+
+		/// <summary>
+		///   Returns the component instance by the service type
+		///   using dynamic arguments
+		/// </summary>
+		/// <param name="service"></param>
+		/// <param name="argumentsAsAnonymousType"></param>
+		/// <returns></returns>
+		public object Resolve(Type service, object argumentsAsAnonymousType)
+		{
+			return Resolve(service, new ReflectionBasedDictionaryAdapter(argumentsAsAnonymousType));
+		}
+
+		/// <summary>
+		///   Returns the component instance by the component key
+		///   using dynamic arguments
+		/// </summary>
+		/// <param name="key"></param>
+		/// <param name="arguments"></param>
+		/// <returns></returns>
+		public object Resolve(string key, IDictionary arguments)
+		{
+			if (key == null)
+			{
+				throw new ArgumentNullException("key");
+			}
+			if (arguments == null)
+			{
+				throw new ArgumentNullException("arguments");
+			}
+
+			if (!HasComponent(key) && !LazyLoadComponent(key, null))
+			{
+				throw new ComponentNotFoundException(key);
+			}
+
+			IHandler handler = GetHandler(key);
+
+			return ResolveComponent(handler, arguments);
+		}
+
+		/// <summary>
+		///   Returns the component instance by the component key
+		///   using dynamic arguments
+		/// </summary>
+		/// <param name="key"></param>
+		/// <param name="argumentsAsAnonymousType"></param>
+		/// <returns></returns>
+		public object Resolve(string key, object argumentsAsAnonymousType)
+		{
+			return Resolve(key, new ReflectionBasedDictionaryAdapter(argumentsAsAnonymousType));
+		}
+
+		/// <summary>
+		///   Returns all the valid component instances by
+		///   the service type
 		/// </summary>
 		/// <param name="service">The service type</param>
 		public Array ResolveAll(Type service)
 		{
-            return ResolveAll(service, new Dictionary<object, object>());
+			return ResolveAll(service, new Dictionary<object, object>());
 		}
 
 		/// <summary>
-		/// Returns all the valid component instances by
-		/// the service type
+		///   Returns all the valid component instances by
+		///   the service type
 		/// </summary>
 		/// <param name="service">The service type</param>
-		/// <param name="arguments">Arguments to resolve the services</param>
+		/// <param name="arguments">
+		///   Arguments to resolve the services
+		/// </param>
 		public Array ResolveAll(Type service, IDictionary arguments)
 		{
 			Dictionary<IHandler, object> resolved = new Dictionary<IHandler, object>();
 
-			foreach(IHandler handler in GetAssignableHandlers(service))
+			foreach (IHandler handler in GetAssignableHandlers(service))
 			{
 				if (handler.CurrentState != HandlerState.Valid)
+				{
 					continue;
+				}
 
 				IHandler actualHandler = handler;
 
@@ -174,19 +327,20 @@ namespace Castle.MicroKernel
 		}
 
 		/// <summary>
-		/// Returns all the valid component instances by
-		/// the service type
+		///   Returns all the valid component instances by
+		///   the service type
 		/// </summary>
 		/// <param name="service">The service type</param>
-		/// <param name="argumentsAsAnonymousType">Arguments to resolve the services</param>
+		/// <param name="argumentsAsAnonymousType">
+		///   Arguments to resolve the services
+		/// </param>
 		public Array ResolveAll(Type service, object argumentsAsAnonymousType)
 		{
 			return ResolveAll(service, new ReflectionBasedDictionaryAdapter(argumentsAsAnonymousType));
 		}
 
-
 		/// <summary>
-		/// Returns component instances that implement TService
+		///   Returns component instances that implement TService
 		/// </summary>
 		/// <typeparam name="TService"></typeparam>
 		/// <param name="argumentsAsAnonymousType"></param>
@@ -197,7 +351,7 @@ namespace Castle.MicroKernel
 		}
 
 		/// <summary>
-		/// Returns component instances that implement TService
+		///   Returns component instances that implement TService
 		/// </summary>
 		/// <typeparam name="TService"></typeparam>
 		/// <param name="arguments"></param>
@@ -208,133 +362,23 @@ namespace Castle.MicroKernel
 		}
 
 		/// <summary>
-		/// Returns the component instance by the service type
-		/// using dynamic arguments
-		/// </summary>
-		/// <param name="service"></param>
-		/// <param name="arguments"></param>
-		/// <returns></returns>
-		public object Resolve(Type service, IDictionary arguments)
-		{
-			if (service == null) throw new ArgumentNullException("service");
-			if (arguments == null) throw new ArgumentNullException("arguments");
-
-			if (!HasComponent(service) && !LazyLoadComponent(null, service))
-			{
-				throw new ComponentNotFoundException(service);
-			}
-
-			IHandler handler = GetHandler(service);
-
-			return ResolveComponent(handler, service, arguments);
-		}
-
-		/// <summary>
-		/// Returns the component instance by the service type
-		/// using dynamic arguments
-		/// </summary>
-		/// <param name="service"></param>
-		/// <param name="argumentsAsAnonymousType"></param>
-		/// <returns></returns>
-		public object Resolve(Type service, object argumentsAsAnonymousType)
-		{
-			return Resolve(service, new ReflectionBasedDictionaryAdapter(argumentsAsAnonymousType));
-		}
-
-		/// <summary>
-		/// Returns the component instance by the component key
-		/// using dynamic arguments
-		/// </summary>
-		/// <param name="key"></param>
-		/// <param name="arguments"></param>
-		/// <returns></returns>
-		public object Resolve(string key, IDictionary arguments)
-		{
-			if (key == null) throw new ArgumentNullException("key");
-			if (arguments == null) throw new ArgumentNullException("arguments");
-
-			if (!HasComponent(key) && !LazyLoadComponent(key, null))
-			{
-				throw new ComponentNotFoundException(key);
-			}
-
-			IHandler handler = GetHandler(key);
-
-			return ResolveComponent(handler, arguments);
-		}
-
-		/// <summary>
-		/// Returns the component instance by the component key
-		/// using dynamic arguments
-		/// </summary>
-		/// <param name="key"></param>
-		/// <param name="argumentsAsAnonymousType"></param>
-		/// <returns></returns>
-		public object Resolve(string key, object argumentsAsAnonymousType)
-		{
-			return Resolve(key, new ReflectionBasedDictionaryAdapter(argumentsAsAnonymousType));
-		}
-
-		/// <summary>
-		/// Returns a component instance by the key
-		/// </summary>
-		/// <param name="key"></param>
-		/// <param name="service"></param>
-		/// <returns></returns>
-		public virtual object Resolve(String key, Type service)
-		{
-			if (key == null) throw new ArgumentNullException("key");
-			if (service == null) throw new ArgumentNullException("service");
-
-			if (!HasComponent(key) && !LazyLoadComponent(key, service))
-			{
-				throw new ComponentNotFoundException(key);
-			}
-
-			IHandler handler = GetHandler(key);
-
-			return ResolveComponent(handler, service);
-		}
-
-
-		/// <summary>
-		/// Returns component instances that implement TService
+		///   Returns component instances that implement TService
 		/// </summary>
 		/// <typeparam name="TService"></typeparam>
 		/// <returns></returns>
 		public TService[] ResolveAll<TService>()
 		{
-			return (TService[])ResolveAll(typeof(TService), new Dictionary<object,object>());
+			return (TService[])ResolveAll(typeof(TService), new Dictionary<object, object>());
 		}
 
 		/// <summary>
-		/// Returns a component instance by the key
-		/// </summary>
-		/// <param name="key"></param>
-		/// <param name="service"></param>
-		/// <param name="arguments"></param>
-		/// <returns></returns>
-		public virtual object Resolve(String key, Type service, IDictionary arguments)
-		{
-			if (key == null) throw new ArgumentNullException("key");
-			if (service == null) throw new ArgumentNullException("service");
-
-			if (!HasComponent(key) && !LazyLoadComponent(key,service))
-			{
-				throw new ComponentNotFoundException(key);
-			}
-
-			IHandler handler = GetHandler(key);
-
-			return ResolveComponent(handler, service, arguments);
-		}
-
-		/// <summary>
-		/// Resolves the specified key.
+		///   Resolves the specified key.
 		/// </summary>
 		/// <param name="key">The key.</param>
 		/// <param name="service">The service.</param>
-		/// <param name="argumentsAsAnonymousType">Type of the arguments as anonymous.</param>
+		/// <param name="argumentsAsAnonymousType">
+		///   Type of the arguments as anonymous.
+		/// </param>
 		/// <returns></returns>
 		public virtual object Resolve(String key, Type service, object argumentsAsAnonymousType)
 		{
