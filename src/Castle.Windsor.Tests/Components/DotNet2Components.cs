@@ -89,7 +89,7 @@ namespace Castle.Windsor.Tests
 
 	public class DictionaryCache<T> : ICache<T>
 	{
-        private Dictionary<string, object> hash = new Dictionary<string, object>();
+		private Dictionary<string, object> hash = new Dictionary<string, object>();
 
 		public void Put(string key, T item)
 		{

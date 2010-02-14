@@ -345,7 +345,7 @@ namespace Castle.MicroKernel.Registration
 		}
 
 		/// <summary>
-		/// Specify custom dependencies using <see cref="Property.ForKey"/>.
+		/// Specify custom dependencies using <see cref="Property.ForKey(string)"/> or <see cref="Property.ForKey(System.Type)"/>.
 		/// <para />
 		/// Use <see cref="ServiceOverrides(ServiceOverride[])"/> to specify the components
 		/// this component should be resolved with.

@@ -14,7 +14,6 @@
 
 namespace Castle.MicroKernel.Registration
 {
-	using System;
 	using System.Collections;
 	using Core;
 
@@ -39,7 +38,7 @@ namespace Castle.MicroKernel.Registration
 			{
 				foreach(DictionaryEntry property in dictionary)
 				{
-					ApplyProperty(kernel, model, property.Key.ToString(), property.Value, null);
+					ApplyProperty(kernel, model, property.Key, property.Value, null);
 				}
 			}
 			else if (properties != null)
@@ -51,7 +50,6 @@ namespace Castle.MicroKernel.Registration
 			}
 		}
 
-		protected abstract void ApplyProperty(IKernel kernel, ComponentModel model,
-		                                      String key, Object value, Property property);
+		protected abstract void ApplyProperty(IKernel kernel, ComponentModel model, object key, object value, Property property);
 	}
 }

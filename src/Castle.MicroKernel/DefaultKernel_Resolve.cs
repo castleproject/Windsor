@@ -20,6 +20,7 @@ namespace Castle.MicroKernel
 	using System.Runtime.Serialization;
 
 	using Castle.Core;
+	using Castle.MicroKernel.Context;
 	using Castle.MicroKernel.Handlers;
 
 #if (SILVERLIGHT)
@@ -285,7 +286,7 @@ namespace Castle.MicroKernel
 		/// <param name="service">The service type</param>
 		public Array ResolveAll(Type service)
 		{
-			return ResolveAll(service, new Dictionary<object, object>());
+			return ResolveAll(service, new Arguments());
 		}
 
 		/// <summary>
@@ -368,7 +369,7 @@ namespace Castle.MicroKernel
 		/// <returns></returns>
 		public TService[] ResolveAll<TService>()
 		{
-			return (TService[])ResolveAll(typeof(TService), new Dictionary<object, object>());
+			return (TService[])ResolveAll(typeof(TService), new Arguments());
 		}
 
 		/// <summary>

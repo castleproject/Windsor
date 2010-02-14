@@ -678,7 +678,7 @@ namespace Castle.Windsor
 
 		public Array ResolveAll(Type service)
 		{
-            return kernel.ResolveAll(service, new Dictionary<object, object>());
+			return kernel.ResolveAll(service);
 		}
 
 		public Array ResolveAll(Type service, IDictionary arguments)

@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,8 +19,8 @@ namespace Castle.MicroKernel
 	using System.Collections.Generic;
 
 	using Castle.Core;
+	using Castle.MicroKernel.Releasers;
 
-	using Releasers;
 	using SubSystems.Conversion;
 
 	/// <summary>
@@ -110,8 +110,7 @@ namespace Castle.MicroKernel
 			// account when dealing with DynamicParameters
 			if (dictionary == null)
 			{
-				// two should be enought for most cases
-				return new Dictionary<string, object>(2, StringComparer.OrdinalIgnoreCase);
+				return new Arguments();
 			}
 
 			if (!(dictionary is ReflectionBasedDictionaryAdapter))
@@ -119,13 +118,7 @@ namespace Castle.MicroKernel
 				return dictionary;
 			}
 
-			IDictionary writable = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
-			foreach (DictionaryEntry entry in dictionary)
-			{
-				writable.Add(entry.Key, entry.Value);
-			}
-
-			return writable;
+			return new Arguments(dictionary);
 		}
 
 		/// <summary>
@@ -140,15 +133,14 @@ namespace Castle.MicroKernel
 		#region ISubDependencyResolver
 
 		public virtual object Resolve(CreationContext context, ISubDependencyResolver contextHandlerResolver,
-		                              ComponentModel model, DependencyModel dependency)
+									  ComponentModel model, DependencyModel dependency)
 		{
-			if (additionalArguments != null)
+			var inlineArgument = additionalArguments[dependency.DependencyKey];
+			if (inlineArgument != null)
 			{
-				var inlineArgument = additionalArguments[dependency.DependencyKey];
-
-				if (inlineArgument != null && converter != null && 
-					!dependency.TargetType.IsInstanceOfType(inlineArgument) &&
-					dependency.DependencyType == DependencyType.Parameter)
+				if (converter != null &&
+				    !dependency.TargetType.IsInstanceOfType(inlineArgument) &&
+				    dependency.DependencyType == DependencyType.Parameter)
 				{
 					return converter.PerformConversion(inlineArgument.ToString(), dependency.TargetType);
 				}
@@ -156,30 +148,58 @@ namespace Castle.MicroKernel
 				return inlineArgument;
 			}
 
-			return null;
+			inlineArgument = additionalArguments[dependency.TargetType];
+			if (inlineArgument != null &&
+			    converter != null &&
+			    !dependency.TargetType.IsInstanceOfType(inlineArgument) &&
+			    dependency.DependencyType == DependencyType.Parameter)
+			{
+				return converter.PerformConversion(inlineArgument.ToString(), dependency.TargetType);
+			}
+
+			return inlineArgument;
 		}
 
 		public virtual bool CanResolve(CreationContext context, ISubDependencyResolver contextHandlerResolver,
 		                               ComponentModel model, DependencyModel dependency)
 		{
-			if (dependency.DependencyKey == null) return false;
+			var canResolveByKey = CanResolveByKey(dependency);
+			var canResolveByType = CanResolveByType(dependency);
+			return canResolveByKey || canResolveByType;
+		}
 
-			if (additionalArguments != null)
+		private bool CanResolveByType(DependencyModel dependency)
+		{
+			if (dependency.TargetType == null) return false;
+			if (additionalArguments == null) return false;
+
+			var inlineArgument = additionalArguments[dependency.TargetType];
+			if (inlineArgument != null && converter != null &&
+				!dependency.TargetType.IsInstanceOfType(inlineArgument) &&
+				dependency.DependencyType == DependencyType.Parameter &&
+				converter.CanHandleType(dependency.TargetType))
 			{
-				var inlineArgument = additionalArguments[dependency.DependencyKey];
-
-				if (inlineArgument != null && converter != null && 
-					!dependency.TargetType.IsInstanceOfType(inlineArgument) &&
-					dependency.DependencyType == DependencyType.Parameter && 
-					converter.CanHandleType(dependency.TargetType))
-				{
-					return true;
-				}
-
-				return additionalArguments.Contains(dependency.DependencyKey);
+				return true;
 			}
 
-			return false;
+			return additionalArguments.Contains(dependency.TargetType);
+		}
+
+		private bool CanResolveByKey(DependencyModel dependency)
+		{
+			if (dependency.DependencyKey == null) return false;
+			if (additionalArguments == null) return false;
+
+			var inlineArgument = additionalArguments[dependency.DependencyKey];
+			if (inlineArgument != null && converter != null && 
+			    !dependency.TargetType.IsInstanceOfType(inlineArgument) &&
+			    dependency.DependencyType == DependencyType.Parameter && 
+			    converter.CanHandleType(dependency.TargetType))
+			{
+				return true;
+			}
+
+			return additionalArguments.Contains(dependency.DependencyKey);
 		}
 
 		#endregion

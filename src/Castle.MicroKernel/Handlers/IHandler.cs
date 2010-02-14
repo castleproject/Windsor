@@ -105,20 +105,20 @@ namespace Castle.MicroKernel
 		/// <remarks>
 		/// TODO: Document this
 		/// </remarks>
-		void AddCustomDependencyValue(string key, object value);
+		void AddCustomDependencyValue(object key, object value);
 
 		/// <summary>
 		/// TODO: Document this
 		/// </summary>
 		/// <param name="key"></param>
-		void RemoveCustomDependencyValue(string key);
+		void RemoveCustomDependencyValue(object key);
 
 		/// <summary>
 		/// TODO: Document this
 		/// </summary>
 		/// <param name="key"></param>
 		/// <returns></returns>
-		bool HasCustomParameter(string key);
+		bool HasCustomParameter(object key);
 
 		/// <summary>
 		/// Tests whether the handler is already being resolved in given context.

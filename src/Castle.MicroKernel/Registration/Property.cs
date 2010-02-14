@@ -21,10 +21,10 @@ namespace Castle.MicroKernel.Registration
 	/// </summary>
 	public class Property
 	{
-		private readonly String key;
+		private readonly object key;
 		private readonly object value;
 
-		internal Property(String key, Object value)
+		internal Property(object key, object value)
 		{
 			this.key = key;
 			this.value = value;
@@ -33,7 +33,7 @@ namespace Castle.MicroKernel.Registration
 		/// <summary>
 		/// Gets the property key.
 		/// </summary>
-		public string Key
+		public object Key
 		{
 			get { return key; }
 		}
@@ -49,11 +49,30 @@ namespace Castle.MicroKernel.Registration
 		/// <summary>
 		/// Create a <see cref="PropertyKey"/> with key.
 		/// </summary>
-		/// <param name="key">The property key.</param>
+		/// <param key="key">The property key.</param>
 		/// <returns>The new <see cref="PropertyKey"/></returns>
 		public static PropertyKey ForKey(String key)
 		{
 			return new PropertyKey(key);
+		}
+
+		/// <summary>
+		/// Create a <see cref="PropertyKey"/> with key.
+		/// </summary>
+		/// <param key="key">The property key.</param>
+		/// <returns>The new <see cref="PropertyKey"/></returns>
+		public static PropertyKey ForKey(Type key)
+		{
+			return new PropertyKey(key);
+		}
+		/// <summary>
+		/// Create a <see cref="PropertyKey"/> with key.
+		/// </summary>
+		/// <param key="key">The property key.</param>
+		/// <returns>The new <see cref="PropertyKey"/></returns>
+		public static PropertyKey ForKey<TKey>()
+		{
+			return new PropertyKey(typeof(TKey));
 		}
 	}
 
@@ -62,29 +81,29 @@ namespace Castle.MicroKernel.Registration
 	/// </summary>
 	public class PropertyKey
 	{
-		private readonly String name;
+		private readonly object key;
 
-		internal PropertyKey(String name)
+		internal PropertyKey(object key)
 		{
-			this.name = name;
+			this.key = key;
 		}
 
 		/// <summary>
-		/// The property key name.
+		/// The property key key.
 		/// </summary>
-		public string Name
+		public object Key
 		{
-			get { return name; }
+			get { return key; }
 		}
 
 		/// <summary>
 		/// Builds the <see cref="Property"/> with key/value.
 		/// </summary>
-		/// <param name="value">The property value.</param>
+		/// <param key="value">The property value.</param>
 		/// <returns>The new <see cref="Property"/></returns>
 		public Property Eq(Object value)
 		{
-			return new Property(name, value);
+			return new Property(key, value);
 		}
 	}
 }

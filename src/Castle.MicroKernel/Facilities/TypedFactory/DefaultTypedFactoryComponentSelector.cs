@@ -15,8 +15,10 @@
 namespace Castle.MicroKernel.Facilities.TypedFactory
 {
 	using System;
-	using System.Collections.Generic;
+	using System.Collections;
 	using System.Reflection;
+
+	using Castle.MicroKernel.Context;
 
 	public class DefaultTypedFactoryComponentSelector : ITypedFactoryComponentSelector
 	{
@@ -43,9 +45,9 @@ namespace Castle.MicroKernel.Facilities.TypedFactory
 			return componentName;
 		}
 
-		protected virtual Dictionary<string, object> GetArguments(MethodInfo method, object[] arguments)
+		protected virtual IDictionary GetArguments(MethodInfo method, object[] arguments)
 		{
-			var argumentMap = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
+			var argumentMap = new Arguments();
 			var parameters = method.GetParameters();
 			for (int i = 0; i < parameters.Length; i++)
 			{

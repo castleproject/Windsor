@@ -38,8 +38,7 @@ namespace Castle.MicroKernel.Registration
 		{
 		}
 
-		protected override void ApplyProperty(IKernel kernel, ComponentModel model,
-		                                      String key, Object value, Property property)
+		protected override void ApplyProperty(IKernel kernel, ComponentModel model, object key, object value, Property property)
 		{
 			if (value is string)
 			{
@@ -53,21 +52,21 @@ namespace Castle.MicroKernel.Registration
 		}
 
 		private void ApplySimpleReference(IKernel kernel, ComponentModel model,
-			                              String key, String componentKey)
+			                              object key, String componentKey)
 		{
 			String reference = FormattedReferenceExpression(componentKey);
-			Registration.AddParameter(kernel, model, key, reference);			
+			Registration.AddParameter(kernel, model, key.ToString(), reference);
 		}
 
 		private void ApplyReferenceList(IKernel kernel, ComponentModel model,
-										String key, IEnumerable<String> items,
+										object key, IEnumerable<String> items,
 			                            ServiceOverride serviceOverride)
 		{
 			MutableConfiguration list = new MutableConfiguration("list");
 			
 			if (serviceOverride != null && serviceOverride.Type != null)
 			{
-				list.Attributes.Add("type", serviceOverride.Type.AssemblyQualifiedName);	
+				list.Attributes.Add("type", serviceOverride.Type.AssemblyQualifiedName);
 			}
 
 			foreach (String item in items )
@@ -77,7 +76,7 @@ namespace Castle.MicroKernel.Registration
 				list.Children.Add(node);
 			}
 
-			Registration.AddParameter(kernel, model, key, list);
+			Registration.AddParameter(kernel, model, key.ToString(), list);
 		}
 
 		private static String FormattedReferenceExpression(String value)
