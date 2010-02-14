@@ -105,6 +105,9 @@
     <Compile Include="ComponentActivator\FactoryMethodActivator.cs" />
     <Compile Include="ComponentActivator\WebUserControlComponentActivator.cs" />
     <Compile Include="Context\Burden.cs" />
+    <Compile Include="Context\Arguments.cs" />
+    <Compile Include="Context\ComponentArgumentsEnumerator.cs" />
+    <Compile Include="Context\NamedArgumentsStore.cs" />
     <Compile Include="Context\DependencyTrackingScope.cs" />
     <Compile Include="ComponentActivator\ExternalInstanceActivator.cs">
       <SubType>Code</SubType>
@@ -113,6 +116,8 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Context\CreationContext.cs" />
+    <Compile Include="Context\IArgumentsStore.cs" />
+    <Compile Include="Context\TypedArgumentsStore.cs" />
     <Compile Include="DefaultKernel.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -345,6 +350,7 @@
     <Compile Include="Registration\AbstractPropertyDescriptor.cs" />
     <Compile Include="Registration\AttributeDescriptor.cs" />
     <Compile Include="Registration\Component.cs" />
+    <Compile Include="Registration\ComponentDependencyRegistrationExtensions.cs" />
     <Compile Include="Registration\ComponentDescriptor.cs" />
     <Compile Include="Registration\ComponentInstanceDescriptor.cs" />
     <Compile Include="Registration\ComponentRegistration.cs" />

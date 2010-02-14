@@ -15,19 +15,21 @@
 namespace Castle.MicroKernel.Facilities.TypedFactory
 {
 	using System;
-	using System.Collections.Generic;
+	using System.Collections;
+
+	using Castle.MicroKernel.Context;
 
 	public class TypedFactoryComponent
 	{
 		private readonly Type componentType;
 		private readonly string componentName;
-		private readonly Dictionary<string, object> additionalArguments;
+		private readonly IDictionary additionalArguments;
 
-		public TypedFactoryComponent(string componentName, Type componentType, Dictionary<string, object> additionalArguments)
+		public TypedFactoryComponent(string componentName, Type componentType, IDictionary additionalArguments)
 		{
 			this.componentType = componentType;
 			this.componentName = componentName;
-			this.additionalArguments = additionalArguments ?? new Dictionary<string, object>();
+			this.additionalArguments = additionalArguments ?? new Arguments();
 		}
 
 		public Type ComponentType
@@ -40,7 +42,7 @@ namespace Castle.MicroKernel.Facilities.TypedFactory
 			get { return componentName; }
 		}
 
-		public Dictionary<string, object> AdditionalArguments
+		public IDictionary AdditionalArguments
 		{
 			get { return additionalArguments; }
 		}

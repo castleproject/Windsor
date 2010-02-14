@@ -81,17 +81,17 @@ namespace Castle.MicroKernel.Handlers
 			remove { target.OnHandlerStateChanged -= value; }
 		}
 
-		public void AddCustomDependencyValue(string key, object value)
+		public void AddCustomDependencyValue(object key, object value)
 		{
 			target.AddCustomDependencyValue(key, value);
 		}
 
-		public void RemoveCustomDependencyValue(string key)
+		public void RemoveCustomDependencyValue(object key)
 		{
 			target.RemoveCustomDependencyValue(key);
 		}
 
-		public bool HasCustomParameter(string key)
+		public bool HasCustomParameter(object key)
 		{
 			return target.HasCustomParameter(key);
 		}

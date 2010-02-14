@@ -23,6 +23,7 @@ namespace Castle.MicroKernel.Handlers
 	using System.Text;
 
 	using Castle.Core;
+	using Castle.MicroKernel.Context;
 	using Castle.MicroKernel.Lifestyle;
 
 	public delegate ComponentReleasingDelegate ComponentResolvingDelegate(IKernel kernel, CreationContext context);
@@ -229,11 +230,11 @@ namespace Castle.MicroKernel.Handlers
 		/// </summary>
 		/// <param name="key"></param>
 		/// <param name="value"></param>
-		public void AddCustomDependencyValue(string key, object value)
+		public void AddCustomDependencyValue(object key, object value)
 		{
 			if (customParameters == null)
 			{
-				customParameters = new Dictionary<string,object>(StringComparer.InvariantCultureIgnoreCase);
+				customParameters = new Arguments();
 			}
 
 			customParameters[key] = value;
@@ -245,26 +246,26 @@ namespace Castle.MicroKernel.Handlers
 		/// </summary>
 		/// <param name="key"></param>
 		/// <returns></returns>
-		public bool HasCustomParameter(string key)
+		public bool HasCustomParameter(object key)
 		{
 			if (key == null)
 			{
 				return false;
 			}
 
-			if (customParameters != null)
+			if (customParameters == null)
 			{
-				return customParameters.Contains(key);
+				return false;
 			}
 
-			return false;
+			return customParameters.Contains(key);
 		}
 
 		/// <summary>
 		/// TODO: Pendent
 		/// </summary>
 		/// <param name="key"></param>
-		public void RemoveCustomDependencyValue(string key)
+		public void RemoveCustomDependencyValue(object key)
 		{
 			if (customParameters != null)
 			{
@@ -287,21 +288,19 @@ namespace Castle.MicroKernel.Handlers
 
 		#region ISubDependencyResolver Members
 
-		public virtual object Resolve(CreationContext context, ISubDependencyResolver contextHandlerResolver, ComponentModel model,
-									  DependencyModel dependency)
+		public virtual object Resolve(CreationContext context, ISubDependencyResolver contextHandlerResolver, ComponentModel model, DependencyModel dependency)
 		{
-			return customParameters[dependency.DependencyKey];
-		}
-
-		public virtual bool CanResolve(CreationContext context, ISubDependencyResolver contextHandlerResolver, ComponentModel model,
-									   DependencyModel dependency)
-		{
-			if (dependency.DependencyKey == null)
+			if (HasCustomParameter(dependency.DependencyKey))
 			{
-				return false;
+				return customParameters[dependency.DependencyKey];
 			}
 
-			return HasCustomParameter(dependency.DependencyKey);
+			return customParameters[dependency.TargetType];
+		}
+
+		public virtual bool CanResolve(CreationContext context, ISubDependencyResolver contextHandlerResolver, ComponentModel model, DependencyModel dependency)
+		{
+			return HasCustomParameter(dependency.DependencyKey) || HasCustomParameter(dependency.TargetType);
 		}
 
 		#endregion
@@ -891,7 +890,7 @@ namespace Castle.MicroKernel.Handlers
 
 		private void InitializeCustomDependencies()
 		{
-			customParameters = new Dictionary<string,object>(StringComparer.InvariantCultureIgnoreCase);
+			customParameters = new Arguments();
 
 			foreach (DictionaryEntry customParameter in model.CustomDependencies)
 			{

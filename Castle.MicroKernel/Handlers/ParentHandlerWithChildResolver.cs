@@ -118,17 +118,17 @@ namespace Castle.MicroKernel.Handlers
 			}
 		}
 
-		public virtual void AddCustomDependencyValue(string key, object value)
+		public virtual void AddCustomDependencyValue(object key, object value)
 		{
 			parentHandler.AddCustomDependencyValue(key, value);
 		}
 
-		public virtual void RemoveCustomDependencyValue(string key)
+		public virtual void RemoveCustomDependencyValue(object key)
 		{
 			parentHandler.RemoveCustomDependencyValue(key);
 		}
 
-		public virtual bool HasCustomParameter(string key)
+		public virtual bool HasCustomParameter(object key)
 		{
 			return parentHandler.HasCustomParameter(key);
 		}

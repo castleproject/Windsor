@@ -163,7 +163,7 @@ namespace Castle.MicroKernel.SubSystems.Naming
 		}
 
 		/// <summary>
-        /// Validates a properties IDictionary.
+		/// Validates a properties IDictionary.
 		/// </summary>
 		/// <param name="properties">Property list.</param>
 		protected virtual void SetupProperties(IDictionary<string, string> properties)

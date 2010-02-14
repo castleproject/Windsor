@@ -35,8 +35,7 @@ namespace Castle.MicroKernel.Registration
 		{
 		}
 
-		protected override void ApplyProperty(IKernel kernel, ComponentModel model,
-		                                      String key, Object value, Property property)
+		protected override void ApplyProperty(IKernel kernel, ComponentModel model, object key, object value, Property property)
 		{
 			model.CustomDependencies[key] = value;
 		}
