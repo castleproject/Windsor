@@ -193,13 +193,13 @@ namespace Castle.MicroKernel
 			store.Remove(key);
 		}
 
-		private void AddStores(IList<IArgumentsStore> list)
+		protected virtual void AddStores(IList<IArgumentsStore> list)
 		{
 			list.Add(new NamedArgumentsStore());
 			list.Add(new TypedArgumentsStore());
 		}
 
-		private IArgumentsStore GetSupportingStore(object key)
+		protected virtual IArgumentsStore GetSupportingStore(object key)
 		{
 			var keyType = key.GetType();
 			var store = stores.SingleOrDefault(s => s.Supports(keyType));
