@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,26 +18,26 @@ namespace Castle.MicroKernel.Registration
 	using System.Collections.Generic;
 
 	/// <summary>
-	/// Delegate for custom registration configuration.
+	///   Delegate for custom registration configuration.
 	/// </summary>
-	/// <param name="registration">The component registration.</param>
+	/// <param name = "registration">The component registration.</param>
 	/// <returns>Not uaed.</returns>
 	public delegate object ConfigureDelegate(ComponentRegistration registration);
 
 	/// <summary>
-	/// Describes how to register a group of related types.
+	///   Describes how to register a group of related types.
 	/// </summary>
 	public class BasedOnDescriptor : IRegistration
 	{
 		private readonly Type basedOn;
+		private readonly List<ConfigureDescriptor> configurers;
 		private readonly FromDescriptor from;
 		private readonly ServiceDescriptor service;
-		private readonly List<ConfigureDescriptor> configurers;
-		private Predicate<Type> unlessFilter;
 		private Predicate<Type> ifFilter;
+		private Predicate<Type> unlessFilter;
 
 		/// <summary>
-		/// Initializes a new instance of the BasedOnDescriptor.
+		///   Initializes a new instance of the BasedOnDescriptor.
 		/// </summary>
 		internal BasedOnDescriptor(Type basedOn, FromDescriptor from)
 		{
@@ -48,7 +48,7 @@ namespace Castle.MicroKernel.Registration
 		}
 
 		/// <summary>
-		/// Gets the type all types must be based on.
+		///   Gets the type all types must be based on.
 		/// </summary>
 		internal Type InternalBasedOn
 		{
@@ -56,39 +56,45 @@ namespace Castle.MicroKernel.Registration
 		}
 
 		/// <summary>
-		/// Assigns a conditional predication which must be satisfied.
-		/// </summary>
-		/// <param name="ifFilter">The predicate to satisfy.</param>
-		/// <returns></returns>
-		public BasedOnDescriptor If(Predicate<Type> ifFilter)
-		{
-			this.ifFilter += ifFilter;
-			return this;
-		}
-
-		/// <summary>
-		/// Assigns a conditional predication which must not be satisfied. 
-		/// </summary>
-		/// <param name="unlessFilter">The predicate not to satisify.</param>
-		/// <returns></returns>
-		public BasedOnDescriptor Unless(Predicate<Type> unlessFilter)
-		{
-			this.unlessFilter += unlessFilter;
-			return this;
-		}
-		
-		/// <summary>
-		/// Gets the service descriptor.
+		///   Gets the service descriptor.
 		/// </summary>
 		public ServiceDescriptor WithService
 		{
 			get { return service; }
 		}
-		
+
 		/// <summary>
-		/// Allows customized configurations of each matching type.
+		///   Allows a type to be registered multiple times.
 		/// </summary>
-		/// <param name="configurer">The configuration action.</param>
+		public FromDescriptor AllowMultipleMatches()
+		{
+			return from.AllowMultipleMatches();
+		}
+
+		/// <summary>
+		///   Returns the descriptor for accepting a new type.
+		/// </summary>
+		/// <typeparam name = "T">The base type.</typeparam>
+		/// <returns>The descriptor for the type.</returns>
+		public BasedOnDescriptor BasedOn<T>()
+		{
+			return from.BasedOn<T>();
+		}
+
+		/// <summary>
+		///   Returns the descriptor for accepting a new type.
+		/// </summary>
+		/// <param name = "basedOn">The base type.</param>
+		/// <returns>The descriptor for the type.</returns>
+		public BasedOnDescriptor BasedOn(Type basedOn)
+		{
+			return from.BasedOn(basedOn);
+		}
+
+		/// <summary>
+		///   Allows customized configurations of each matching type.
+		/// </summary>
+		/// <param name = "configurer">The configuration action.</param>
 		/// <returns></returns>
 		public BasedOnDescriptor Configure(Action<ComponentRegistration> configurer)
 		{
@@ -98,24 +104,23 @@ namespace Castle.MicroKernel.Registration
 		}
 
 		/// <summary>
-		/// Allows customized configurations of each matching type.
+		///   Allows customized configurations of each matching type.
 		/// </summary>
-		/// <param name="configurer">The configuration action.</param>
+		/// <param name = "configurer">The configuration action.</param>
 		/// <returns></returns>
 		public BasedOnDescriptor Configure(ConfigureDelegate configurer)
 		{
-			return Configure(delegate(ComponentRegistration registration)
-			{
-				configurer(registration);
-			});
+			return Configure(delegate(ComponentRegistration registration) { configurer(registration); });
 		}
 
 		/// <summary>
-		/// Allows customized configurations of each matching type that is 
-		/// assignable to <typeparamref name="T"/>.
+		///   Allows customized configurations of each matching type that is 
+		///   assignable to
+		///   <typeparamref name = "T" />
+		///   .
 		/// </summary>
-		/// <typeparam name="T">The type assignable from.</typeparam>
-		/// <param name="configurer">The configuration action.</param>
+		/// <typeparam name = "T">The type assignable from.</typeparam>
+		/// <param name = "configurer">The configuration action.</param>
 		/// <returns></returns>
 		public BasedOnDescriptor ConfigureFor<T>(Action<ComponentRegistration> configurer)
 		{
@@ -125,52 +130,45 @@ namespace Castle.MicroKernel.Registration
 		}
 
 		/// <summary>
-		/// Allows customized configurations of each matching type that is 
-		/// assignable to <typeparamref name="T"/>.
+		///   Allows customized configurations of each matching type that is 
+		///   assignable to
+		///   <typeparamref name = "T" />
+		///   .
 		/// </summary>
-		/// <typeparam name="T">The type assignable from.</typeparam>
-		/// <param name="configurer">The configuration action.</param>
+		/// <typeparam name = "T">The type assignable from.</typeparam>
+		/// <param name = "configurer">The configuration action.</param>
 		/// <returns></returns>
 		public BasedOnDescriptor ConfigureFor<T>(ConfigureDelegate configurer)
 		{
-			return ConfigureFor<T>(delegate(ComponentRegistration registration)
-			{
-				configurer(registration);
-			});
+			return ConfigureFor<T>(delegate(ComponentRegistration registration) { configurer(registration); });
 		}
 
 		/// <summary>
-		/// Allows a type to be registered multiple times.
+		///   Assigns a conditional predication which must be satisfied.
 		/// </summary>
-		public FromDescriptor AllowMultipleMatches()
+		/// <param name = "ifFilter">The predicate to satisfy.</param>
+		/// <returns></returns>
+		public BasedOnDescriptor If(Predicate<Type> ifFilter)
 		{
-			return from.AllowMultipleMatches();
+			this.ifFilter += ifFilter;
+			return this;
 		}
 
 		/// <summary>
-		/// Returns the descriptor for accepting a new type.
+		///   Assigns a conditional predication which must not be satisfied.
 		/// </summary>
-		/// <typeparam name="T">The base type.</typeparam>
-		/// <returns>The descriptor for the type.</returns>
-		public BasedOnDescriptor BasedOn<T>()
+		/// <param name = "unlessFilter">The predicate not to satisify.</param>
+		/// <returns></returns>
+		public BasedOnDescriptor Unless(Predicate<Type> unlessFilter)
 		{
-			return from.BasedOn<T>();
+			this.unlessFilter += unlessFilter;
+			return this;
 		}
 
 		/// <summary>
-		/// Returns the descriptor for accepting a new type.
+		///   Returns the descriptor for accepting a type based on a condition.
 		/// </summary>
-		/// <param name="basedOn">The base type.</param>
-		/// <returns>The descriptor for the type.</returns>
-		public BasedOnDescriptor BasedOn(Type basedOn)
-		{
-			return from.BasedOn(basedOn);
-		}
-
-		/// <summary>
-		/// Returns the descriptor for accepting a type based on a condition.
-		/// </summary>
-		/// <param name="accepted">The accepting condition.</param>
+		/// <param name = "accepted">The accepting condition.</param>
 		/// <returns>The descriptor for the type.</returns>
 		public BasedOnDescriptor Where(Predicate<Type> accepted)
 		{
@@ -211,11 +209,44 @@ namespace Castle.MicroKernel.Registration
 		private bool Accepts(Type type, out Type baseType)
 		{
 			baseType = basedOn;
-			return type.IsClass && !type.IsAbstract 
-				&& IsBasedOn(type, ref baseType)
-				&& (ifFilter == null || ifFilter(type))
-				&& (unlessFilter == null || !unlessFilter(type)
-				);
+			return type.IsClass && !type.IsAbstract
+			       && IsBasedOn(type, ref baseType)
+			       && ExecuteIfCondition(type)
+			       && !ExecuteUnlessCondition(type);
+		}
+
+		private bool ExecuteIfCondition(Type type)
+		{
+			if (ifFilter == null)
+			{
+				return true;
+			}
+
+			foreach (Predicate<Type> filter in ifFilter.GetInvocationList())
+			{
+				if (filter(type) == false)
+				{
+					return false;
+				}
+			}
+
+			return true;
+		}
+
+		private bool ExecuteUnlessCondition(Type type)
+		{
+			if (unlessFilter == null)
+			{
+				return false;
+			}
+			foreach (Predicate<Type> filter in unlessFilter.GetInvocationList())
+			{
+				if (filter(type))
+				{
+					return true;
+				}
+			}
+			return false;
 		}
 
 		private bool IsBasedOn(Type type, ref Type baseType)
@@ -233,7 +264,22 @@ namespace Castle.MicroKernel.Registration
 				return IsBasedOnGenericClass(type, ref baseType);
 			}
 			return false;
+		}
 
+		private bool IsBasedOnGenericClass(Type type, ref Type baseType)
+		{
+			while (type != null)
+			{
+				if (type.IsGenericType &&
+				    type.GetGenericTypeDefinition() == basedOn)
+				{
+					baseType = type;
+					return true;
+				}
+
+				type = type.BaseType;
+			}
+			return false;
 		}
 
 		private bool IsBasedOnGenericInterface(Type type, ref Type baseType)
@@ -241,10 +287,10 @@ namespace Castle.MicroKernel.Registration
 			foreach (Type @interface in type.GetInterfaces())
 			{
 				if (@interface.IsGenericType &&
-					@interface.GetGenericTypeDefinition() == basedOn)
+				    @interface.GetGenericTypeDefinition() == basedOn)
 				{
 					if (@interface.ReflectedType == null &&
-						@interface.ContainsGenericParameters)
+					    @interface.ContainsGenericParameters)
 					{
 						baseType = @interface.GetGenericTypeDefinition();
 					}
@@ -254,22 +300,6 @@ namespace Castle.MicroKernel.Registration
 					}
 					return true;
 				}
-			}
-			return false;
-		}
-
-		private bool IsBasedOnGenericClass(Type type, ref Type baseType)
-		{
-			while (type != null)
-			{
-				if (type.IsGenericType &&
-					type.GetGenericTypeDefinition() == basedOn)
-				{
-					baseType = type;
-					return true;
-				}
-
-				type = type.BaseType;
 			}
 			return false;
 		}
