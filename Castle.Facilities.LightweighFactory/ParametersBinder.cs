@@ -19,6 +19,7 @@
 			{
 				return result.ResolveValue();
 			}
+
 			result = MatchByType(dependency, parameters);
 			if (result != null)
 			{
@@ -42,7 +43,7 @@
 
 		private IEnumerable<FactoryParameter> GetAllNotUsedFactoryParameters(IDictionary additionalParameters)
 		{
-			return additionalParameters.Values.Cast<object>()
+			return additionalParameters.Keys.Cast<object>()
 				.Where(p => p is FactoryParameter)
 				.Select(p => p as FactoryParameter)
 				.Where(p => p.Used == false)
@@ -51,13 +52,9 @@
 
 		public bool CanResolve(CreationContext context, ISubDependencyResolver contextHandlerResolver, ComponentModel model, DependencyModel dependency)
 		{
-			return context != null &&
-			       dependency.DependencyType == DependencyType.Parameter &&
-			       context.AdditionalParameters != null &&
-			       context.AdditionalParameters.Count > 0 &&
-			       context.AdditionalParameters.Values.Cast<object>()
-			       	.Any(p => p is FactoryParameter) &&
-			       CanResolve(dependency, GetAllNotUsedFactoryParameters(context.AdditionalParameters));
+			if (context == null || dependency.DependencyType != DependencyType.Parameter) return false;
+			return context.AdditionalParameters != null && context.AdditionalParameters.Count > 0 && context.AdditionalParameters.Keys.Cast<object>()
+			                                                                                         	.Any(p => p is FactoryParameter) && CanResolve(dependency, GetAllNotUsedFactoryParameters(context.AdditionalParameters));
 		}
 
 		private bool CanResolve(DependencyModel dependency, IEnumerable<FactoryParameter> parameters)
