@@ -195,6 +195,7 @@
     <Compile Include="ClassComponents\ServiceUser.cs" />
     <Compile Include="ClassComponents\ServiceUser2.cs" />
     <Compile Include="ClassComponents\TwoInterfacesImpl.cs" />
+    <Compile Include="ComponentArgumentsEnumeratorTestCase.cs" />
     <Compile Include="Configuration\Components\ClassWithComplexParameter.cs" />
     <Compile Include="Configuration\Components\ClassWithConstructors.cs">
       <SubType>Code</SubType>
