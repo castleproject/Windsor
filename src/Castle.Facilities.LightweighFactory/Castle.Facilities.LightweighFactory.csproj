@@ -62,7 +62,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ExpressionTreeBasedDelegateBuilder.cs" />
+    <Compile Include="FactoryArguments.cs" />
     <Compile Include="FactoryParameter.cs" />
+    <Compile Include="FactoryParametersStore.cs" />
     <Compile Include="LightweightFactoryFacility.cs" />
     <Compile Include="NoUniqueComponentException.cs" />
     <Compile Include="ParametersBinder.cs" />

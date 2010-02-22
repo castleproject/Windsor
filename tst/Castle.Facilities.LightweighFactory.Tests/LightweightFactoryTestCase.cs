@@ -10,7 +10,6 @@
 	[TestFixture]
 	public class LightweightFactoryTestCase
 	{
-		#region Setup/Teardown
 
 		[SetUp]
 		public void SetUpTests()
@@ -19,9 +18,18 @@
 			container.AddFacility<LightweightFactoryFacility>();
 		}
 
-		#endregion
-
 		private WindsorContainer container;
+
+		[Test]
+		public void Affects_constructor_resolution()
+		{
+			container.AddComponent<Baz>("baz");
+			container.AddComponent<HasTwoConstructors>("fizz");
+			var factory = container.Resolve<Func<string, HasTwoConstructors>>("fizzFactory");
+
+			var obj = factory("naaaameee");
+			Assert.AreEqual("naaaameee", obj.Name);
+		}
 
 		[Test]
 		public void Can_resolve_service_via_delegate()
@@ -48,17 +56,6 @@
 		}
 
 		[Test]
-		public void Delegate_pulls_another_dependencies_from_container()
-		{
-			container.AddComponent<Baz>("baz");
-			container.AddComponent<Bar>("bar");
-			container.AddComponent<UsesBarDelegate>("uBar");
-
-			var dependsOnFoo = container.Resolve<UsesBarDelegate>();
-			dependsOnFoo.GetBar("aaa","bbb");
-		}
-
-		[Test]
 		public void Delegate_parameters_are_used_in_order_first_ctor_then_properties()
 		{
 			container.AddComponent<Baz>("baz");
@@ -72,14 +69,14 @@
 		}
 
 		[Test]
-		public void Affects_constructor_resolution()
+		public void Delegate_pulls_another_dependencies_from_container()
 		{
 			container.AddComponent<Baz>("baz");
-			container.AddComponent<HasTwoConstructors>("fizz");
-			var factory = container.Resolve<Func<string, HasTwoConstructors>>("fizzFactory");
+			container.AddComponent<Bar>("bar");
+			container.AddComponent<UsesBarDelegate>("uBar");
 
-			var obj = factory("naaaameee");
-			Assert.AreEqual("naaaameee", obj.Name);
+			var dependsOnFoo = container.Resolve<UsesBarDelegate>();
+			dependsOnFoo.GetBar("aaa", "bbb");
 		}
 
 		[Test]

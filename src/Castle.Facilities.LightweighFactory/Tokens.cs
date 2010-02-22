@@ -11,11 +11,10 @@
 
 	internal static class Tokens
 	{
-		// use ListDictionary because it preserves the order
 		internal static readonly MethodInfo DictionaryAdd =
-			typeof(ListDictionary).GetMethod("Add");
+			typeof(FactoryArguments).GetMethod("Add");
 		internal static readonly ConstructorInfo DictionaryCtor =
-			typeof(ListDictionary).GetConstructor(Type.EmptyTypes);
+			typeof(FactoryArguments).GetConstructor(Type.EmptyTypes);
 
 		internal static readonly MethodInfo KernelResolve_IDictionary =
 			typeof(IKernel).GetMethod("Resolve", BindingFlags.Instance | BindingFlags.Public, new OpenGenericBinder(),
