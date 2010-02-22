@@ -1,5 +1,16 @@
 unreleased changes
 ==================
+- If and Unless functions on fluent registration API are now cumulative - it is legal to call them multiple times and all conditions will be checked. This is a minor breaking change from previous behavior where last call would win.
+
+- added typed arguments (specified by type rather than by name).
+	It works for:
+	- call site (Resolve with Dictionary, specifying System.Type as value of key. A helper class 'Arguments' should be used for this.)
+	- DynamicParameters - there's an extension method Insert that should make using it nicer
+	- fluent Api (DependsOn(Property.ForKey<string>().Eq("typed"))
+
+- added 'Insert' extension method on IDictionary, specifically so simplify usage in DynamicParameters method and similar situations. It behaves like IDictionary's indexer setter
+
+- added 'Arguments' class to carry inline arguments (typed or named) for components. It is recommended to use this class rather than Hashtable or Dictionary<>
 
 - added strongly typed overloads for StartUsingMethod and StopUsingMethod from startable facility's registration API. It is now possible to call .StartUsingMethod(x => x.Start).StopUsingMethod(x => x.Stop)
 

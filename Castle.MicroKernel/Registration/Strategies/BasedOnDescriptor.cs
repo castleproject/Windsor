@@ -32,7 +32,7 @@ namespace Castle.MicroKernel.Registration
 		private readonly Type basedOn;
 		private readonly FromDescriptor from;
 		private readonly ServiceDescriptor service;
-		private List<ConfigureDescriptor> configurers;
+		private readonly List<ConfigureDescriptor> configurers;
 		private Predicate<Type> unlessFilter;
 		private Predicate<Type> ifFilter;
 
@@ -62,7 +62,7 @@ namespace Castle.MicroKernel.Registration
 		/// <returns></returns>
 		public BasedOnDescriptor If(Predicate<Type> ifFilter)
 		{
-			this.ifFilter = ifFilter;
+			this.ifFilter += ifFilter;
 			return this;
 		}
 
@@ -73,7 +73,7 @@ namespace Castle.MicroKernel.Registration
 		/// <returns></returns>
 		public BasedOnDescriptor Unless(Predicate<Type> unlessFilter)
 		{
-			this.unlessFilter = unlessFilter;
+			this.unlessFilter += unlessFilter;
 			return this;
 		}
 		
@@ -104,9 +104,9 @@ namespace Castle.MicroKernel.Registration
 		/// <returns></returns>
 		public BasedOnDescriptor Configure(ConfigureDelegate configurer)
 		{
-			return Configure(delegate(ComponentRegistration registration) 
+			return Configure(delegate(ComponentRegistration registration)
 			{
-				configurer(registration); 
+				configurer(registration);
 			});
 		}
 
@@ -119,7 +119,7 @@ namespace Castle.MicroKernel.Registration
 		/// <returns></returns>
 		public BasedOnDescriptor ConfigureFor<T>(Action<ComponentRegistration> configurer)
 		{
-			ConfigureDescriptor config = new ConfigureDescriptor(this, typeof(T), configurer);
+			var config = new ConfigureDescriptor(this, typeof(T), configurer);
 			configurers.Add(config);
 			return this;
 		}
