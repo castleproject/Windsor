@@ -32,26 +32,35 @@
 
 		public IRegistration Load(string key, Type service)
 		{
-			if (FirstPassChecks(key, service) == false)
+			if (string.IsNullOrEmpty(key) || service == null)
 			{
 				return null;
 			}
 
-			MethodInfo invoke = GetInvokeMethod(service);
+			if (!typeof(MulticastDelegate).IsAssignableFrom(service))
+			{
+				return null;
+			}
+
+			var invoke = GetInvokeMethod(service);
 			if (!HasReturn(invoke))
 			{
 				return null;
 			}
 
-			string serviceName = GetServiceName(key);
+			if (ShouldLoad(key, service) == false)
+			{
+				return null;
+			}
 
-			IHandler handler = GetHandler(invoke, serviceName);
+			var serviceName = ExtractServiceName(key);
+			var handler = GetHandlerToBeResolvedByDelegate(invoke, serviceName);
 			if (handler == null)
 			{
 				return null;
 			}
 
-			Delegate @delegate = delegateBuiler.BuildDelegate(handler, invoke, service, this);
+			var @delegate = delegateBuiler.BuildDelegate(handler, invoke, service, this);
 			Debug.Assert(@delegate != null, "@delegate != null");
 			return Component.For(service)
 				.Named(key)
@@ -59,71 +68,52 @@
 				.LifeStyle.Singleton;
 		}
 
-		#endregion
-
-		private IHandler GetHandler(MethodInfo invoke, string serviceName)
+		protected virtual string ExtractServiceName(string key)
 		{
-			IHandler handler = kernel.GetHandler(serviceName);
-			if (handler == null)
-			{
-				IHandler[] handlers = kernel.GetAssignableHandlers(invoke.ReturnType);
-				if (handlers.Length != 1)
-				{
-					handler = handlers.SingleOrDefault(h => h.ComponentModel.Name.Equals(serviceName, StringComparison.OrdinalIgnoreCase));
-				}
-				else
-				{
-					handler = handlers.Single();
-				}
-			}
-			return handler;
+			return key;
 		}
 
-		private string GetServiceName(string key)
+		protected virtual bool ShouldLoad(string key, Type service)
 		{
-			string serviceName;
-			if (key.Equals("factory", StringComparison.OrdinalIgnoreCase))
-			{
-				serviceName = key;
-			}
-			else
-			{
-				serviceName = key.Substring(0, key.Length - "factory".Length);
-			}
-			return serviceName;
-		}
-
-		private bool FirstPassChecks(string key, Type service)
-		{
-			if (string.IsNullOrEmpty(key))
-			{
-				return false;
-			}
-
-			if (service == null)
-			{
-				return false;
-			}
-
-			if (!key.EndsWith("Factory", StringComparison.OrdinalIgnoreCase))
-			{
-				//just a convention...
-				return false;
-			}
-
-			if (!typeof(MulticastDelegate).IsAssignableFrom(service))
-			{
-				return false;
-			}
 			return true;
 		}
 
-		private bool HasReturn(MethodInfo invoke)
+		#endregion
+
+		protected virtual IHandler GetHandlerToBeResolvedByDelegate(MethodInfo invoke, string serviceName)
+		{
+			if(!string.IsNullOrEmpty(serviceName))
+			{
+				var handler = kernel.GetHandler(serviceName);
+				if (handler != null)
+				{
+					return handler;
+				}
+			}
+
+			var handlers = kernel.GetAssignableHandlers(invoke.ReturnType);
+			if (handlers.Length == 1)
+			{
+				return handlers.Single();
+			}
+			var potentialHandler = handlers.SingleOrDefault(h => h.ComponentModel.Name.Equals(serviceName, StringComparison.OrdinalIgnoreCase));
+			if (potentialHandler == null)
+			{
+				throw new NoUniqueComponentException(invoke.ReturnType,
+				                                     "Lightweight factory ({0}) was unable to uniquely nominate component to resolve for service '{1}'. " +
+				                                     "You may provide your own selection logic, by registering custom LightweightFactory with key LightweightFactoryFacility.FactoryKey " +
+				                                     "before registering the facility.");
+			}
+
+			return potentialHandler;
+		}
+
+		protected bool HasReturn(MethodInfo invoke)
 		{
 			return invoke.ReturnType != typeof(void);
 		}
 
-		private MethodInfo GetInvokeMethod(Type @delegate)
+		protected MethodInfo GetInvokeMethod(Type @delegate)
 		{
 			MethodInfo invoke = @delegate.GetMethod("Invoke");
 			Debug.Assert(invoke != null, "invoke != null");

@@ -64,6 +64,7 @@
     <Compile Include="ExpressionTreeBasedDelegateBuilder.cs" />
     <Compile Include="FactoryParameter.cs" />
     <Compile Include="LightweightFactoryFacility.cs" />
+    <Compile Include="NoUniqueComponentException.cs" />
     <Compile Include="ParametersBinder.cs" />
     <Compile Include="IDelegateBuilder.cs" />
     <Compile Include="LightweightFactory.cs" />
