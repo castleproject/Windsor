@@ -23,8 +23,8 @@
 				if (hasNext == false)
 				{
 					currentEnumerator = null;
+					return MoveNext();
 				}
-
 				return hasNext;
 			}
 
@@ -52,12 +52,26 @@
 
 		public object Key
 		{
-			get { return currentEnumerator.Current.Key; }
+			get
+			{
+				if(currentEnumerator == null)
+				{
+					return null;
+				}
+				return currentEnumerator.Current.Key;
+			}
 		}
 
 		public object Value
 		{
-			get { return currentEnumerator.Current.Value; }
+			get
+			{
+				if (currentEnumerator == null)
+				{
+					return null;
+				} 
+				return currentEnumerator.Current.Value;
+			}
 		}
 
 		public DictionaryEntry Entry
