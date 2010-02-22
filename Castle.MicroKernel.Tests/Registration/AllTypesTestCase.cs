@@ -225,6 +225,20 @@ namespace Castle.MicroKernel.Tests.Registration
 		}
 
 		[Test]
+		public void RegisterAssemblyTypes_MultipleIfCondition_RegisteredInContainer()
+		{
+			Kernel.Register(AllTypes.Of<ICustomer>()
+			                	.FromAssembly(Assembly.GetExecutingAssembly())
+			                	.If(t => t.Name.EndsWith("2"))
+			                	.If(t => t.FullName.Contains("Chain"))
+				);
+
+			IHandler[] handlers = Kernel.GetAssignableHandlers(typeof(ICustomer));
+			Assert.AreEqual(1, handlers.Length);
+			Assert.AreEqual(typeof(CustomerChain2), handlers.Single().ComponentModel.Implementation);
+		}
+
+		[Test]
 		public void RegisterAssemblyTypes_UnlessCondition_RegisteredInContainer()
 		{
 			Kernel.Register(AllTypes.Of<ICustomer>()
@@ -237,6 +251,27 @@ namespace Castle.MicroKernel.Tests.Registration
 				Assert.IsFalse(typeof(CustomerChain1).IsAssignableFrom(handler.ComponentModel.Implementation));
 			}
 		}
+
+
+		[Test]
+		public void RegisterAssemblyTypes_MultipleUnlessCondition_RegisteredInContainer()
+		{
+			Kernel.Register(AllTypes.Of<ICustomer>()
+			                	.FromAssembly(Assembly.GetExecutingAssembly())
+			                	.Unless(t => t.Name.EndsWith("2"))
+			                	.Unless(t => t.Name.EndsWith("3"))
+				);
+
+			var handlers = Kernel.GetAssignableHandlers(typeof(ICustomer));
+			Assert.IsNotEmpty(handlers);
+			foreach (var handler in handlers)
+			{
+				var name = handler.ComponentModel.Implementation.Name;
+				Assert.IsFalse(name.EndsWith("2"));
+				Assert.IsFalse(name.EndsWith("3"));
+			}
+		}
+
 #if(!SILVERLIGHT)
 		[Test]
 		public void RegisterTypes_WithLinq_RegisteredInContainer()
