@@ -1,0 +1,3 @@
+[submodule "buildscripts"]
+	path = buildscripts
+	url = git://github.com/castleproject/Castle.Buildscripts.git
