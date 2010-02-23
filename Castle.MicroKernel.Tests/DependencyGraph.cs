@@ -121,17 +121,15 @@ namespace Castle.MicroKernel.Tests
 					var a = kernel["a"];
 				});
 			string expectedMessage =
-				@"Can't create component 'a' as it has dependencies to be satisfied. 
-a is waiting for the following dependencies: 
+				"Can't create component 'a' as it has dependencies to be satisfied. \r\n" +
+				"a is waiting for the following dependencies: \r\n\r\n" +
+				"Services: \r\n" +
+				"- Castle.MicroKernel.Tests.CycleB which was registered but is also waiting for dependencies. \r\n\r\n" +
 
-Services: 
-- Castle.MicroKernel.Tests.CycleB which was registered but is also waiting for dependencies. 
+				"b is waiting for the following dependencies: \r\n\r\n" +
 
-b is waiting for the following dependencies: 
-
-Services: 
-- Castle.MicroKernel.Tests.CycleA which was registered but is also waiting for dependencies. 
-";
+				"Services: \r\n" +
+				"- Castle.MicroKernel.Tests.CycleA which was registered but is also waiting for dependencies. \r\n";
 			Assert.AreEqual(expectedMessage, exception.Message);
 		}
 	}
