@@ -15,6 +15,7 @@
 #if (!SILVERLIGHT)
 namespace Castle.Windsor.Tests
 {
+	using System;
 	using System.Configuration;
 	using System.IO;
 
@@ -22,12 +23,12 @@ namespace Castle.Windsor.Tests
 	{
 		public static string ResolveConfigPath(string configFilePath)
 		{
-			return Path.Combine(ConfigurationManager.AppSettings["tests.src"], configFilePath);
+			return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, configFilePath);
 		}
 
 		public static string ResolveConfigPath(string configFilePath, params object[] parameters)
 		{
-			return Path.Combine(ConfigurationManager.AppSettings["tests.src"], string.Format(configFilePath, parameters));
+			return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, string.Format(configFilePath, parameters));
 		}
 	}
 }
