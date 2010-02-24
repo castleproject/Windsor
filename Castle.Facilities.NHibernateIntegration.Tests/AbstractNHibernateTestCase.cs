@@ -91,7 +91,7 @@ namespace Castle.Facilities.NHibernateIntegration.Tests
 
 		private string GetContainerFile()
 		{
-			return ConfigHelper.ResolveResourcePath(ConfigurationFile);
+			return "Castle.Facilities.NHibernateIntegration.Tests/" + ConfigurationFile;
 		}
 	}
 }

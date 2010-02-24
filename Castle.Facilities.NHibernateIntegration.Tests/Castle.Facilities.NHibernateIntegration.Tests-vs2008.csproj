@@ -45,7 +45,7 @@
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <OutputPath>..\bin\</OutputPath>
+    <OutputPath>bin\Debug\</OutputPath>
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     <BaseAddress>285212672</BaseAddress>
     <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
@@ -69,7 +69,7 @@
     <UseVSHostingProcess>true</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <OutputPath>..\bin\</OutputPath>
+    <OutputPath>bin\Release\</OutputPath>
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     <BaseAddress>285212672</BaseAddress>
     <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
@@ -180,7 +180,6 @@
     <Compile Include="Common\TestInterceptor.cs" />
     <Compile Include="Components\NHibernateGenericDaoTestCase.cs" />
     <Compile Include="Components\ReflectionUtilityTests.cs" />
-    <Compile Include="ConfigHelper.cs" />
     <Compile Include="Internals\ConfigurationBuilderTestCase.cs" />
     <Compile Include="Internals\CustomConfigurationBuilderTestCase.cs" />
     <Compile Include="Internals\SessionManagerTestCase.cs">
@@ -271,11 +270,14 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="configurationBuilderRegression.xml" />
-    <EmbeddedResource Include="customConfigurationBuilder.xml" />
+    <EmbeddedResource Include="configurationBuilderRegression.xml">
+    </EmbeddedResource>
+    <EmbeddedResource Include="customConfigurationBuilder.xml">
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="DefaultConfiguration.xml" />
+    <EmbeddedResource Include="DefaultConfiguration.xml">
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Internals\TwoDatabaseConfiguration.xml" />
@@ -284,7 +286,9 @@
     <EmbeddedResource Include="Transactions\TwoDatabaseConfiguration.xml" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="EmptyConfiguration.xml" />
+    <EmbeddedResource Include="EmptyConfiguration.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
     <EmbeddedResource Include="Issues\Facilities106\factory1.xml">
     </EmbeddedResource>
   </ItemGroup>
