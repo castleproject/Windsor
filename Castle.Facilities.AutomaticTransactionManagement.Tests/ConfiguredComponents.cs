@@ -28,13 +28,13 @@ namespace Castle.Facilities.AutomaticTransactionManagement.Tests
 		[Test, ExpectedException(typeof(FacilityException), ExpectedMessage = "The class Castle.Facilities.AutomaticTransactionManagement.Tests.TransactionalComp1 has configured transaction in a child node but has not specified istransaction=\"true\" on the component node.")]
 		public void IsTransactionalMissing()
 		{
-			new WindsorContainer( ConfigHelper.ResolvePath("../IsTransactionalMissing.xml" ));
+			new WindsorContainer( "IsTransactionalMissing.xml" );
 		}
 
 		[Test]
 		public void HasIsTransactionalButNothingIsConfigured()
 		{
-			WindsorContainer container = new WindsorContainer( ConfigHelper.ResolvePath("../HasIsTransactionalButNothingIsConfigured.xml" ));
+			WindsorContainer container = new WindsorContainer( "HasIsTransactionalButNothingIsConfigured.xml" );
 
 			TransactionMetaInfoStore metaInfoStore = (TransactionMetaInfoStore) 
 				container[typeof(TransactionMetaInfoStore)];
@@ -46,7 +46,7 @@ namespace Castle.Facilities.AutomaticTransactionManagement.Tests
 		[Test]
 		public void HasConfiguration()
 		{
-			WindsorContainer container = new WindsorContainer( ConfigHelper.ResolvePath("../HasConfiguration.xml") );
+			WindsorContainer container = new WindsorContainer( "HasConfiguration.xml" );
 
 			TransactionMetaInfoStore metaInfoStore = (TransactionMetaInfoStore) 
 				container[typeof(TransactionMetaInfoStore)];
@@ -59,13 +59,13 @@ namespace Castle.Facilities.AutomaticTransactionManagement.Tests
 		[Test, ExpectedException(typeof(Exception), ExpectedMessage = "The class Castle.Facilities.AutomaticTransactionManagement.Tests.TransactionalComp1 has tried to expose configuration for a method named HelloGoodbye which could not be found.")]
 		public void HasInvalidMethod()
 		{
-			new WindsorContainer( ConfigHelper.ResolvePath("../HasInvalidMethod.xml") );
+			new WindsorContainer( "HasInvalidMethod.xml" );
 		}
 
 		[Test]
 		public void ValidConfigForInheritedMethods()
 		{
-			WindsorContainer container = new WindsorContainer( ConfigHelper.ResolvePath("../ValidConfigForInheritedMethods.xml") );
+			WindsorContainer container = new WindsorContainer( "ValidConfigForInheritedMethods.xml" );
 
 			TransactionMetaInfoStore metaInfoStore = (TransactionMetaInfoStore) 
 				container[typeof(TransactionMetaInfoStore)];
@@ -78,7 +78,7 @@ namespace Castle.Facilities.AutomaticTransactionManagement.Tests
 		[Test]
 		public void ConfigForServiceWithInterface()
 		{
-			WindsorContainer container = new WindsorContainer( ConfigHelper.ResolvePath("../ConfigForServiceWithInterface.xml") );
+			WindsorContainer container = new WindsorContainer( "ConfigForServiceWithInterface.xml" );
 
 			TransactionMetaInfoStore metaInfoStore = (TransactionMetaInfoStore) 
 				container[typeof(TransactionMetaInfoStore)];

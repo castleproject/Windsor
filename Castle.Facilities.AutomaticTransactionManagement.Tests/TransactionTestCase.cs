@@ -172,7 +172,7 @@ namespace Castle.Facilities.AutomaticTransactionManagement.Tests
 		[Test]
 		public void TestBasicOperationsWithConfigComponent()
 		{
-			WindsorContainer container = new WindsorContainer(ConfigHelper.ResolvePath("../HasConfiguration.xml"));
+			WindsorContainer container = new WindsorContainer("HasConfiguration.xml");
 
 			container.AddComponent("transactionmanager",
 								   typeof(ITransactionManager), typeof(MockTransactionManager));

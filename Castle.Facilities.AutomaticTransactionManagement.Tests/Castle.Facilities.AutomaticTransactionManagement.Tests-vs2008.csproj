@@ -45,7 +45,7 @@
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <OutputPath>..\bin\</OutputPath>
+    <OutputPath>bin\Debug\</OutputPath>
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     <BaseAddress>285212672</BaseAddress>
     <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
@@ -132,9 +132,6 @@
     <Compile Include="BaseTransactionalComp.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ConfigHelper.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="ConfiguredComponents.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -157,7 +154,6 @@
     <Compile Include="TransactionTestCase.cs">
       <SubType>Code</SubType>
     </Compile>
-    <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />
@@ -185,10 +181,31 @@
       <Name>Castle.Facilities.AutomaticTransactionManagement-vs2008</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="ConfigForServiceWithInterface.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="HasConfiguration.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="HasInvalidMethod.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="HasIsTransactionalButNothingIsConfigured.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="IsTransactionalMissing.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ValidConfigForInheritedMethods.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>
     </PreBuildEvent>
-    <PostBuildEvent>copy "$(ProjectDir)\App.config" "$(TargetPath).config"</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
 </Project>
