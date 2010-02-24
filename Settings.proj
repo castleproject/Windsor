@@ -32,7 +32,6 @@ limitations under the License.
 	<!-- Project Properties -->
 	<PropertyGroup>
 		<ProjectName>Castle.InversionOfControl</ProjectName>
-		<SolutionName>InversionOfControl</SolutionName>
 		
 		<!-- Versioning -->
 		<Project_Major>2</Project_Major>
