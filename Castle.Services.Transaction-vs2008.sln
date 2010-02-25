@@ -2,8 +2,8 @@ Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{9172705F-82B9-4799-A3CC-3216D88F677A}"
 	ProjectSection(SolutionItems) = preProject
-		Changes.txt = Changes.txt
-		transaction.build = transaction.build
+		..\Changes.txt = ..\Changes.txt
+		..\Settings.proj = ..\Settings.proj
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Castle.Services.Transaction-vs2008", "Castle.Services.Transaction\Castle.Services.Transaction-vs2008.csproj", "{0F611C1B-EDFD-46E6-9C3A-95420946E9CC}"
