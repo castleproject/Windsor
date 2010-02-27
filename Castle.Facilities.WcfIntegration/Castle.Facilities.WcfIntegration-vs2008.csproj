@@ -234,7 +234,9 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <None Include="CastleKey.snk" />
+    <None Include="..\..\buildscripts\CastleKey.snk">
+      <Link>CastleKey.snk</Link>
+    </None>
     <None Include="WcfIntegration.cd" />
   </ItemGroup>
   <ItemGroup>
