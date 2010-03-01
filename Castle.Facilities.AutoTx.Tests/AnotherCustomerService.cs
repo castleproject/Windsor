@@ -12,33 +12,25 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Facilities.AutomaticTransactionManagement.Tests
+namespace Castle.Facilities.AutoTx.Tests
 {
 	using System;
 
-	public class TransactionalComp1
+	using Castle.Services.Transaction;
+
+	[Transactional]
+	public class AnotherCustomerService : ICustomerService
 	{
-		public virtual void Save()
+		[Transaction(TransactionMode.Requires)]
+		public void Insert( String name, String address )
 		{
 			
 		}
 
-		public virtual void Create()
+		[Transaction(TransactionMode.Requires)]
+		public void Delete( int id )
 		{
-			
-		}
-
-		public virtual void Delete()
-		{
-			
-		}
-	}
-
-	public class TransactionalComp2 : TransactionalComp1
-	{
-		public virtual void SaveThat()
-		{
-			
+			throw new ApplicationException("Whopps. Problems!");
 		}
 	}
 }

@@ -12,34 +12,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Facilities.AutomaticTransactionManagement.Tests
+namespace Castle.Facilities.AutoTx.Tests
 {
 	using System;
 	using Castle.Services.Transaction;
 
-	[Transactional]
-	public class GenericService<T>
+	public abstract class BaseTransactionalComp
 	{
 		[Transaction]
-		public virtual void Bar<K>()
+		public virtual void BaseMethod()
 		{
+			
 		}
+	}
 
-		[Transaction]
-		public virtual void Foo()
-		{
-		}
-
-		[Transaction]
-		public virtual void Throw()
-		{
-			throw new Exception(typeof(T).FullName);
-		}
-
-		[Transaction]
-		public virtual void Throw<K>()
-		{
-			throw new Exception(typeof(T).FullName);
-		}
+	[Transactional]
+	public class SubTransactionalComp : BaseTransactionalComp
+	{
+		
 	}
 }

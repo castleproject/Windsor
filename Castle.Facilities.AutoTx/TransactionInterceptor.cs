@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Facilities.AutomaticTransactionManagement
+namespace Castle.Facilities.AutoTx
 {
 	using System;
 	using System.Reflection;
@@ -111,6 +111,18 @@ namespace Castle.Facilities.AutomaticTransactionManagement
 
 				try
 				{
+					if (metaInfo.ShouldInject(methodInfo))
+					{
+						var parameters = methodInfo.GetParameters();
+
+						for (int i = 0; i < parameters.Length; i++)
+						{
+							if (parameters[i].ParameterType == typeof(ITransaction))
+							{
+								invocation.SetArgumentValue(i, transaction);
+							}
+						}
+					}
 					invocation.Proceed();
 
 					if (transaction.IsRollbackOnlySet)
@@ -143,7 +155,8 @@ namespace Castle.Facilities.AutomaticTransactionManagement
 				{
 					if (!rolledback)
 					{
-						logger.DebugFormat("Rolling back transaction {0} due to exception on method {2}.{1}", transaction.GetHashCode(), methodInfo.Name, methodInfo.DeclaringType.Name);
+						if (logger.IsDebugEnabled)
+							logger.DebugFormat("Rolling back transaction {0} due to exception on method {2}.{1}", transaction.GetHashCode(), methodInfo.Name, methodInfo.DeclaringType.Name);
 
 						transaction.Rollback();
 					}

@@ -6,7 +6,7 @@
 	
 		<facility 
 			id="atm" 
-			type="Castle.Facilities.AutomaticTransactionManagement.TransactionFacility, Castle.Facilities.AutomaticTransactionManagement" />
+			type="Castle.Facilities.AutoTx.TransactionFacility, Castle.Facilities.AutoTx" />
 	
 	</facilities>
 
@@ -14,7 +14,7 @@
 
 		<component 
 			id="mycomp" 
-			type="Castle.Facilities.AutomaticTransactionManagement.Tests.TransactionalComp1, Castle.Facilities.AutomaticTransactionManagement.Tests"
+			type="Castle.Facilities.AutoTx.Tests.TransactionalComp1, Castle.Facilities.AutoTx.Tests"
 			isTransactional="true">
 		
 			<transaction>

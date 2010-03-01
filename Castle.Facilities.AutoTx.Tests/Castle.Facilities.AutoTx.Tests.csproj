@@ -10,7 +10,7 @@
     </ApplicationIcon>
     <AssemblyKeyContainerName>
     </AssemblyKeyContainerName>
-    <AssemblyName>Castle.Facilities.AutomaticTransactionManagement.Tests</AssemblyName>
+    <AssemblyName>Castle.Facilities.AutoTx.Tests</AssemblyName>
     <AssemblyOriginatorKeyFile>
     </AssemblyOriginatorKeyFile>
     <DefaultClientScript>JScript</DefaultClientScript>
@@ -18,7 +18,7 @@
     <DefaultTargetSchema>IE50</DefaultTargetSchema>
     <DelaySign>false</DelaySign>
     <OutputType>Library</OutputType>
-    <RootNamespace>Castle.Facilities.AutomaticTransactionManagement.Tests</RootNamespace>
+    <RootNamespace>Castle.Facilities.AutoTx.Tests</RootNamespace>
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
     <StartupObject>
     </StartupObject>
@@ -176,9 +176,9 @@
       <Project>{0F611C1B-EDFD-46E6-9C3A-95420946E9CC}</Project>
       <Name>Castle.Services.Transaction</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Castle.Facilities.AutomaticTransactionManagement\Castle.Facilities.AutomaticTransactionManagement.csproj">
+    <ProjectReference Include="..\Castle.Facilities.AutoTx\Castle.Facilities.AutoTx.csproj">
       <Project>{9962F772-E75C-4998-A45B-3CD99C2E2903}</Project>
-      <Name>Castle.Facilities.AutomaticTransactionManagement</Name>
+      <Name>Castle.Facilities.AutoTx</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

@@ -12,25 +12,34 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Facilities.AutomaticTransactionManagement.Tests
+namespace Castle.Facilities.AutoTx.Tests
 {
 	using System;
-
 	using Castle.Services.Transaction;
 
 	[Transactional]
-	public class AnotherCustomerService : ICustomerService
+	public class GenericService<T>
 	{
-		[Transaction(TransactionMode.Requires)]
-		public void Insert( String name, String address )
+		[Transaction]
+		public virtual void Bar<K>()
 		{
-			
 		}
 
-		[Transaction(TransactionMode.Requires)]
-		public void Delete( int id )
+		[Transaction]
+		public virtual void Foo()
 		{
-			throw new ApplicationException("Whopps. Problems!");
+		}
+
+		[Transaction]
+		public virtual void Throw()
+		{
+			throw new Exception(typeof(T).FullName);
+		}
+
+		[Transaction]
+		public virtual void Throw<K>()
+		{
+			throw new Exception(typeof(T).FullName);
 		}
 	}
 }

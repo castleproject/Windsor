@@ -14,14 +14,14 @@
     </ApplicationIcon>
     <AssemblyKeyContainerName>
     </AssemblyKeyContainerName>
-    <AssemblyName>Castle.Facilities.AutomaticTransactionManagement</AssemblyName>
+    <AssemblyName>Castle.Facilities.AutoTx</AssemblyName>
     <AssemblyOriginatorKeyFile>CastleKey.snk</AssemblyOriginatorKeyFile>
     <DefaultClientScript>JScript</DefaultClientScript>
     <DefaultHTMLPageLayout>Grid</DefaultHTMLPageLayout>
     <DefaultTargetSchema>IE50</DefaultTargetSchema>
     <DelaySign>false</DelaySign>
     <OutputType>Library</OutputType>
-    <RootNamespace>Castle.Facilities.AutomaticTransactionManagement</RootNamespace>
+    <RootNamespace>Castle.Facilities.AutoTx</RootNamespace>
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
     <StartupObject>
     </StartupObject>
@@ -56,7 +56,7 @@
     <ConfigurationOverrideFile>
     </ConfigurationOverrideFile>
     <DefineConstants>TRACE;DEBUG</DefineConstants>
-    <DocumentationFile>bin\Debug\Castle.Facilities.AutomaticTransactionManagement.XML</DocumentationFile>
+    <DocumentationFile>bin\Debug\Castle.Facilities.AutoTx.xml</DocumentationFile>
     <DebugSymbols>true</DebugSymbols>
     <FileAlignment>4096</FileAlignment>
     <NoStdLib>false</NoStdLib>
@@ -77,7 +77,7 @@
     <ConfigurationOverrideFile>
     </ConfigurationOverrideFile>
     <DefineConstants>TRACE</DefineConstants>
-    <DocumentationFile>bin\Release\Castle.Facilities.AutomaticTransactionManagement.XML</DocumentationFile>
+    <DocumentationFile>bin\Release\Castle.Facilities.AutoTx.xml</DocumentationFile>
     <DebugSymbols>false</DebugSymbols>
     <FileAlignment>4096</FileAlignment>
     <NoStdLib>false</NoStdLib>
@@ -127,6 +127,7 @@
     <Compile Include="AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="InjectTransaction.cs" />
     <Compile Include="TransactionComponentInspector.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -136,6 +137,7 @@
     <Compile Include="TransactionInterceptor.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="TransactionMetaInfo.cs" />
     <Compile Include="TransactionMetaInfoStore.cs">
       <SubType>Code</SubType>
     </Compile>

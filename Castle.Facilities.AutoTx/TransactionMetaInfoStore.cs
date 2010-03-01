@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Facilities.AutomaticTransactionManagement
+namespace Castle.Facilities.AutoTx
 {
 	using System;
 	using System.Collections;
@@ -42,7 +42,9 @@ namespace Castle.Facilities.AutomaticTransactionManagement
 		}
 
 		#endregion
-
+		///<summary>
+		/// Creates meta-information from a type.
+		///</summary>
 		public TransactionMetaInfo CreateMetaFromType(Type implementation)
 		{
 			TransactionMetaInfo metaInfo = new TransactionMetaInfo();
@@ -67,12 +69,22 @@ namespace Castle.Facilities.AutomaticTransactionManagement
 				if (atts.Length != 0)
 				{
 					metaInfo.Add(method, atts[0] as TransactionAttribute);
+					// only add the method as transaction injection if we also have specified a transaction attribute.
+					atts = method.GetCustomAttributes(typeof (InjectTransactionAttribute), true);
+
+					if (atts.Length != 0)
+					{
+						metaInfo.AddInjection(method);
+					}
 				}
 			}
 
 			PopulateMetaInfoFromType(metaInfo, implementation.BaseType);
 		}
-
+		///<summary>
+		/// Create meta-information from the configuration about
+		/// what methods should be overridden.
+		///</summary>
 		public TransactionMetaInfo CreateMetaFromConfig(Type implementation, IList<MethodInfo> methods, IConfiguration config)
 		{
 			TransactionMetaInfo metaInfo = GetMetaFor(implementation);
@@ -97,7 +109,11 @@ namespace Castle.Facilities.AutomaticTransactionManagement
 
 			return metaInfo;
 		}
-
+		///<summary>
+		/// Gets the meta-data for the implementation.
+		///</summary>
+		///<param name="implementation"></param>
+		///<returns></returns>
 		public TransactionMetaInfo GetMetaFor(Type implementation)
 		{
 			return (TransactionMetaInfo)type2MetaInfo[implementation];
@@ -154,84 +170,6 @@ namespace Castle.Facilities.AutomaticTransactionManagement
 		private void Register(Type implementation, TransactionMetaInfo metaInfo)
 		{
 			type2MetaInfo[implementation] = metaInfo;
-		}
-	}
-
-	public class TransactionMetaInfo : MarshalByRefObject
-	{
-		private readonly Dictionary<MethodInfo, TransactionAttribute> method2Att;
-		private readonly Dictionary<MethodInfo, String> notTransactionalCache;
-		private readonly object locker = new object();
-
-		/// <summary>
-		/// Initializes a new instance of the <see cref="TransactionMetaInfo"/> class.
-		/// </summary>
-		public TransactionMetaInfo()
-		{
-			method2Att = new Dictionary<MethodInfo, TransactionAttribute>();
-			notTransactionalCache = new Dictionary<MethodInfo, String>();
-		}
-
-		#region MarshalByRefObject overrides
-
-		public override object InitializeLifetimeService()
-		{
-			return null;
-		}
-
-		#endregion
-
-		public void Add(MethodInfo method, TransactionAttribute attribute)
-		{
-			method2Att[method] = attribute;
-		}
-
-		public MethodInfo[] Methods
-		{
-			get
-			{
-				MethodInfo[] methods = new MethodInfo[method2Att.Count];
-				method2Att.Keys.CopyTo(methods, 0);
-				return methods;
-			}
-		}
-
-		public bool Contains(MethodInfo info)
-		{
-			lock(locker)
-			{
-				if (method2Att.ContainsKey(info)) return true;
-				if (notTransactionalCache.ContainsKey(info)) return false;
-
-				if (info.DeclaringType.IsGenericType || info.IsGenericMethod)
-				{
-					return IsGenericMethodTransactional(info);
-				}
-
-				return false;
-			}
-		}
-
-		public TransactionAttribute GetTransactionAttributeFor(MethodInfo methodInfo)
-		{
-			return method2Att[methodInfo];
-		}
-
-		private bool IsGenericMethodTransactional(MethodInfo info)
-		{
-			object[] atts = info.GetCustomAttributes(typeof(TransactionAttribute), true);
-
-			if (atts.Length != 0)
-			{
-				Add(info, atts[0] as TransactionAttribute);
-				return true;
-			}
-			else
-			{
-				notTransactionalCache[info] = string.Empty;
-			}
-
-			return false;
 		}
 	}
 }
