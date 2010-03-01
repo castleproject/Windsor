@@ -15,6 +15,7 @@
 namespace Castle.Services.Transaction
 {
 	using System.Collections;
+	using System.Collections.Generic;
 
 	/// <summary>
 	/// 
@@ -95,6 +96,6 @@ namespace Castle.Services.Transaction
 
 		string Name { get; }
 
-		IResource[] Resources { get; }
+		IEnumerable<IResource> Resources();
 	}
 }

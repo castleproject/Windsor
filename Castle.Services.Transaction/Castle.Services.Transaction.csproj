@@ -95,6 +95,10 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\net-3.5\log4net.dll</HintPath>
+    </Reference>
     <Reference Include="System">
       <Name>System</Name>
     </Reference>
@@ -113,44 +117,54 @@
     <Compile Include="..\..\buildscripts\CommonAssemblyInfo.cs">
       <Link>CommonAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="AbstractTransaction.cs">
+    <Compile Include="GenericTransactions\AbstractTransaction.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Attributes.cs">
+    <Compile Include="Managers\CallContextActivityManager.cs" />
+    <Compile Include="Exceptions\CommitResourceException.cs" />
+    <Compile Include="Managers\DefaultTransactionManager.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="CallContextActivityManager.cs" />
-    <Compile Include="CommitResourceException.cs" />
-    <Compile Include="DefaultTransactionManager.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Activity.cs" />
+    <Compile Include="Managers\Activity.cs" />
+    <Compile Include="FileTransactions\FileResourceAdapter.cs" />
+    <Compile Include="FileTransactions\FileTransaction.cs" />
+    <Compile Include="IO\DirectoryAdapter.cs" />
+    <Compile Include="IO\FileAdapter.cs" />
+    <Compile Include="IFileTransaction.cs" />
+    <Compile Include="FileTransactions\IKernelTransaction.cs" />
+    <Compile Include="FileTransactions\SafeFindHandle.cs" />
+    <Compile Include="FileTransactions\SafeTxHandle.cs" />
+    <Compile Include="IO\TxAdapterBase.cs" />
     <Compile Include="IActivityManager.cs" />
     <Compile Include="IResource.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Attributes\IsolationMode.cs" />
     <Compile Include="ISynchronization.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ITransaction.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ITransactionManager.cs">
+    <Compile Include="Managers\ITransactionManager.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ResourceException.cs" />
-    <Compile Include="RollbackResourceException.cs" />
-    <Compile Include="StandardTransaction.cs">
+    <Compile Include="Exceptions\ResourceException.cs" />
+    <Compile Include="Exceptions\RollbackResourceException.cs" />
+    <Compile Include="GenericTransactions\StandardTransaction.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="TLSActivityManager.cs" />
-    <Compile Include="TransactionException.cs">
+    <Compile Include="Managers\TLSActivityManager.cs" />
+    <Compile Include="Exceptions\TransactionException.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="TransactionScopeResourceAdapter.cs" />
+    <Compile Include="Attributes\TransactionalAttribute.cs" />
+    <Compile Include="Attributes\TransactionAttribute.cs" />
+    <Compile Include="Attributes\TransactionMode.cs" />
+    <Compile Include="GenericTransactions\TransactionScopeResourceAdapter.cs" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />

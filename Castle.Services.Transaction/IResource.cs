@@ -18,8 +18,6 @@
 
 namespace Castle.Services.Transaction
 {
-	using System;
-
 	/// <summary>
 	/// Represents a contract for a resource that 
 	/// can be enlisted within transactions.

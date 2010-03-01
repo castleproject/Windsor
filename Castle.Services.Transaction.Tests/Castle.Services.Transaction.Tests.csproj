@@ -117,17 +117,17 @@
     <Compile Include="NestedTransactionsTestCase.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ResourceImpl.cs">
+    <Compile Include="TestClasses\ResourceImpl.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SynchronizationImpl.cs">
+    <Compile Include="TestClasses\SynchronizationImpl.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ThrowsExceptionResource.cs" />
+    <Compile Include="TestClasses\ThrowsExceptionResource.cs" />
     <Compile Include="TransactionManagerTestCase.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="TransientActivityManager.cs" />
+    <Compile Include="TestClasses\TransientActivityManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />
