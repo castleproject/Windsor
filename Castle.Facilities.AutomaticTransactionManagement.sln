@@ -13,7 +13,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Castle.Facilities.Automatic
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Submodules", "Submodules", "{34AB49B2-2DE9-4434-9648-EDF660B76078}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Castle.Services.Transaction-vs2008", "..\lib\Castle.Services.Transaction\src\Castle.Services.Transaction\Castle.Services.Transaction-vs2008.csproj", "{0F611C1B-EDFD-46E6-9C3A-95420946E9CC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Castle.Services.Transaction", "..\lib\Castle.Services.Transaction\src\Castle.Services.Transaction\Castle.Services.Transaction.csproj", "{0F611C1B-EDFD-46E6-9C3A-95420946E9CC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Castle.Services.Transaction.Tests", "..\lib\Castle.Services.Transaction\src\Castle.Services.Transaction.Tests\Castle.Services.Transaction.Tests.csproj", "{67CDFD3A-450F-4CD4-9401-EF15361E2713}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Castle.Core-vs2008", "..\lib\Castle.Services.Transaction\lib\Castle.Core\src\Castle.Core\Castle.Core-vs2008.csproj", "{E4FA5B53-7D36-429E-8E5C-53D5479242BA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,11 +37,21 @@ Global
 		{0F611C1B-EDFD-46E6-9C3A-95420946E9CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0F611C1B-EDFD-46E6-9C3A-95420946E9CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0F611C1B-EDFD-46E6-9C3A-95420946E9CC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{67CDFD3A-450F-4CD4-9401-EF15361E2713}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{67CDFD3A-450F-4CD4-9401-EF15361E2713}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{67CDFD3A-450F-4CD4-9401-EF15361E2713}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{67CDFD3A-450F-4CD4-9401-EF15361E2713}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E4FA5B53-7D36-429E-8E5C-53D5479242BA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E4FA5B53-7D36-429E-8E5C-53D5479242BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E4FA5B53-7D36-429E-8E5C-53D5479242BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E4FA5B53-7D36-429E-8E5C-53D5479242BA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{0F611C1B-EDFD-46E6-9C3A-95420946E9CC} = {34AB49B2-2DE9-4434-9648-EDF660B76078}
+		{67CDFD3A-450F-4CD4-9401-EF15361E2713} = {34AB49B2-2DE9-4434-9648-EDF660B76078}
+		{E4FA5B53-7D36-429E-8E5C-53D5479242BA} = {34AB49B2-2DE9-4434-9648-EDF660B76078}
 	EndGlobalSection
 EndGlobal
