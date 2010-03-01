@@ -176,9 +176,9 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Castle.Facilities.AutomaticTransactionManagement\Castle.Facilities.AutomaticTransactionManagement-vs2008.csproj">
+    <ProjectReference Include="..\Castle.Facilities.AutomaticTransactionManagement\Castle.Facilities.AutomaticTransactionManagement.csproj">
       <Project>{9962F772-E75C-4998-A45B-3CD99C2E2903}</Project>
-      <Name>Castle.Facilities.AutomaticTransactionManagement-vs2008</Name>
+      <Name>Castle.Facilities.AutomaticTransactionManagement</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

@@ -3,16 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{80DF106C-5169-49A5-8F83-6ECEAFD3A79A}"
 	ProjectSection(SolutionItems) = preProject
-		..\License.txt = ..\License.txt
 		..\Readme.txt = ..\Readme.txt
 		..\Settings.proj = ..\Settings.proj
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Castle.Facilities.AutomaticTransactionManagement-vs2008", "Castle.Facilities.AutomaticTransactionManagement\Castle.Facilities.AutomaticTransactionManagement-vs2008.csproj", "{9962F772-E75C-4998-A45B-3CD99C2E2903}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Castle.Facilities.AutomaticTransactionManagement", "Castle.Facilities.AutomaticTransactionManagement\Castle.Facilities.AutomaticTransactionManagement.csproj", "{9962F772-E75C-4998-A45B-3CD99C2E2903}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Castle.Facilities.AutomaticTransactionManagement.Tests-vs2008", "Castle.Facilities.AutomaticTransactionManagement.Tests\Castle.Facilities.AutomaticTransactionManagement.Tests-vs2008.csproj", "{8A7E5413-3F2C-4C09-92A7-F5A3AC9F2F93}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Castle.Facilities.AutomaticTransactionManagement.Tests", "Castle.Facilities.AutomaticTransactionManagement.Tests\Castle.Facilities.AutomaticTransactionManagement.Tests.csproj", "{8A7E5413-3F2C-4C09-92A7-F5A3AC9F2F93}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Submodules", "Submodules", "{34AB49B2-2DE9-4434-9648-EDF660B76078}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Castle.Services.Transaction-vs2008", "..\lib\Castle.Services.Transaction\src\Castle.Services.Transaction\Castle.Services.Transaction-vs2008.csproj", "{0F611C1B-EDFD-46E6-9C3A-95420946E9CC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -28,8 +29,15 @@ Global
 		{8A7E5413-3F2C-4C09-92A7-F5A3AC9F2F93}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8A7E5413-3F2C-4C09-92A7-F5A3AC9F2F93}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8A7E5413-3F2C-4C09-92A7-F5A3AC9F2F93}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0F611C1B-EDFD-46E6-9C3A-95420946E9CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F611C1B-EDFD-46E6-9C3A-95420946E9CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0F611C1B-EDFD-46E6-9C3A-95420946E9CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0F611C1B-EDFD-46E6-9C3A-95420946E9CC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{0F611C1B-EDFD-46E6-9C3A-95420946E9CC} = {34AB49B2-2DE9-4434-9648-EDF660B76078}
 	EndGlobalSection
 EndGlobal
