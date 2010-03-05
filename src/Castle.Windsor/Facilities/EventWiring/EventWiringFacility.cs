@@ -85,7 +85,7 @@ namespace Castle.Facilities.EventWiring
 	/// 	<facilities>
 	/// 		<facility 
 	/// 			id="event.wiring"
-	/// 			type="Castle.Facilities.EventWiring.EventWiringFacility, Castle.MicroKernel" />
+	/// 			type="Castle.Facilities.EventWiring.EventWiringFacility, Castle.Windsor" />
 	/// 	</facilities>
 	/// 
 	/// 	<components>

@@ -51,7 +51,7 @@ namespace Castle.MicroKernel.Tests
 		{
 			Assert.AreEqual(typeof(DefaultConversionManagerTestCase),
 			                conversionMng.PerformConversion(
-			                	"Castle.MicroKernel.Tests.DefaultConversionManagerTestCase, Castle.MicroKernel.Tests",
+								"Castle.MicroKernel.Tests.DefaultConversionManagerTestCase, Castle.MicroKernel.Tests",// TODO: update to Windsor
 			                	typeof(Type)));
 		}
 

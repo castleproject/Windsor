@@ -1,4 +1,21 @@
 ================================================================================================
+change - Assembly Castle.MicroKernel.dll was merged into Castle.Windsor.dll
+
+impact - high
+fixability - easy
+revision - 
+
+description - Since vast majority of users used Windsor, as opposed to bare MicroKernel it was
+	decided it didn't make sense to maintain two containers. As result of that their assemblies
+	were merged, as first step of integration between Windsor and MicroKernel.
+
+fix - In your projects remove reference to Castle.MicroKernel.dll. If you weren't using Windsor
+	add reference to Castle.Windsor.dll
+	In all places where your were referencing types from Castle.MicroKernel.dll via string
+	(like xml configuration when registering facilities, or <httpModules> section on your 
+	web.config) update references from Castle.MicroKernel to Castle.Windsor.
+
+================================================================================================
 change - ComponentRegistration<S>.Startable public method has been removed.
 	ComponentRegistration<S>.StartUsingMethod public method was moved to extension method.
 	ComponentRegistration<S>.StopUsingMethod public method was moved to extension method.

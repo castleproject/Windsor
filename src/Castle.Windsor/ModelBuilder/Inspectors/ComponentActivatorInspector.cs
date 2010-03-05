@@ -117,7 +117,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 			{
 				string message =
 					String.Format(
-						"The Type '{0}' specified  in the componentActivatorType attribute must implement Castle.MicroKernel.IComponentActivator",
+						"The Type '{0}' specified in the componentActivatorType attribute must implement Castle.MicroKernel.IComponentActivator",
 						customComponentActivator.FullName);
 				throw new InvalidOperationException(message);
 			}

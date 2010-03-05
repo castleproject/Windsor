@@ -58,7 +58,7 @@ namespace Castle.MicroKernel.Tests
 			{
 				IKernel kernel = (IKernel)
 				                 otherDomain.CreateInstanceAndUnwrap(
-				                 	"Castle.MicroKernel", "Castle.MicroKernel.DefaultKernel");
+				                 	"Castle.Windsor", "Castle.MicroKernel.DefaultKernel");
 
 				kernel.AddComponent("key", typeof(CustomerImpl));
 				Assert.IsTrue(kernel.HasComponent("key"));
@@ -88,7 +88,7 @@ namespace Castle.MicroKernel.Tests
 			{
 				IKernel kernel = (IKernel)
 				                 otherDomain.CreateInstanceAndUnwrap(
-				                 	"Castle.MicroKernel", "Castle.MicroKernel.DefaultKernel");
+				                 	"Castle.Windsor", "Castle.MicroKernel.DefaultKernel");
 
 				kernel.AddComponent("key", typeof(CustomerImpl));
 				Assert.IsTrue(kernel.HasComponent("key"));
