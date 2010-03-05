@@ -150,7 +150,7 @@ namespace Castle.MicroKernel.Tests.Configuration
 			parameters.Children.Add(services);
 			MutableConfiguration list = new MutableConfiguration("list");
 			services.Children.Add(list);
-			list.Attributes.Add("type", "Castle.MicroKernel.Tests.ClassComponents.ICommon, Castle.MicroKernel.Tests");
+			list.Attributes.Add("type", "Castle.MicroKernel.Tests.ClassComponents.ICommon, Castle.MicroKernel.Tests"); // TODO: update to Windsor
 
 			list.Children.Add(new MutableConfiguration("item", "${commonservice1}"));
 			list.Children.Add(new MutableConfiguration("item", "${commonservice2}"));
@@ -180,7 +180,6 @@ namespace Castle.MicroKernel.Tests.Configuration
 			parameters.Children.Add(services);
 			MutableConfiguration array = new MutableConfiguration("array");
 			services.Children.Add(array);
-			//list.Attributes.Add("type", "Castle.MicroKernel.Tests.ClassComponents.ICommon, Castle.MicroKernel.Tests");
 
 			array.Children.Add(new MutableConfiguration("item", "${commonservice1}"));
 			array.Children.Add(new MutableConfiguration("item", "${commonservice2}"));
@@ -208,7 +207,7 @@ namespace Castle.MicroKernel.Tests.Configuration
 			confignode.Attributes.Add("lifestyle", "custom");
 
 			confignode.Attributes.Add("customLifestyleType",
-			                          "Castle.MicroKernel.Tests.ClassComponents.CustomLifestyleManager, Castle.MicroKernel.Tests");
+									  "Castle.MicroKernel.Tests.ClassComponents.CustomLifestyleManager, Castle.MicroKernel.Tests");// TODO: update to Windsor
 
 			kernel.ConfigurationStore.AddComponentConfiguration(key, confignode);
 			kernel.AddComponent(key, typeof(ICommon), typeof(CommonImpl1));

@@ -3,7 +3,7 @@
   <facilities>
     <facility
         id="typedfactory"
-        type="Castle.Facilities.TypedFactory.TypedFactoryFacility, Castle.MicroKernel">
+        type="Castle.Facilities.TypedFactory.TypedFactoryFacility, Castle.Windsor">
 
       <factories>
         <factory id="calculator.factory"

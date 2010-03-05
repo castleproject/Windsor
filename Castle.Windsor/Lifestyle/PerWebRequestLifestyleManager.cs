@@ -42,7 +42,7 @@ namespace Castle.MicroKernel.Lifestyle
 			{
 				if (!PerWebRequestLifestyleModule.Initialized)
 				{
-					string message = string.Format("Looks like you forgot to register the http module {0}{1}Add '<add name=\"PerRequestLifestyle\" type=\"Castle.MicroKernel.Lifestyle.PerWebRequestLifestyleModule, Castle.MicroKernel\" />' to the <httpModules> section on your web.config", typeof(PerWebRequestLifestyleModule).FullName, Environment.NewLine);
+					string message = string.Format("Looks like you forgot to register the http module {0}{1}Add '<add name=\"PerRequestLifestyle\" type=\"Castle.MicroKernel.Lifestyle.PerWebRequestLifestyleModule, Castle.Windsor\" />' to the <httpModules> section on your web.config", typeof(PerWebRequestLifestyleModule).FullName, Environment.NewLine);
 
 					throw new Exception(message);
 				}

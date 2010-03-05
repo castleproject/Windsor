@@ -3,11 +3,11 @@
 
   <facilities>
   
-	<facility id="startable" type="Castle.Facilities.Startable.StartableFacility, Castle.MicroKernel" />
+	<facility id="startable" type="Castle.Facilities.Startable.StartableFacility, Castle.Windsor" />
   
     <facility 
 		id="remote.facility" 
-		type="Castle.Facilities.Remoting.RemotingFacility, Castle.MicroKernel"
+		type="Castle.Facilities.Remoting.RemotingFacility, Castle.Windsor"
 		isServer="true"
 		registryUri="kernel.rem"
 		remotingConfigurationFile="RemotingTcpConfig.config" />

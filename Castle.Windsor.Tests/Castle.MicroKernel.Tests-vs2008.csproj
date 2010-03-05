@@ -98,10 +98,9 @@
     <Reference Include="System.Xml">
       <Name>System.XML</Name>
     </Reference>
-    <ProjectReference Include="..\Castle.MicroKernel\Castle.MicroKernel-vs2008.csproj">
-      <Name>Castle.MicroKernel-vs2008</Name>
-      <Project>{8C6AADEB-D099-4D2A-8F5B-4EBC12AC9159}</Project>
-      <Package>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</Package>
+    <ProjectReference Include="..\Castle.Windsor\Castle.Windsor-vs2008.csproj">
+      <Project>{60EFCB9B-E3FF-46A5-A2D2-D9F0EF75D5FE}</Project>
+      <Name>Castle.Windsor-vs2008</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
