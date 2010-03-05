@@ -12,11 +12,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		{B4F97281-0DBD-4835-9ED8-7DFB966E87FF} = {B4F97281-0DBD-4835-9ED8-7DFB966E87FF}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Castle.MicroKernel-vs2008", "src\Castle.MicroKernel\Castle.MicroKernel-vs2008.csproj", "{8C6AADEB-D099-4D2A-8F5B-4EBC12AC9159}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Castle.MicroKernel-vs2008", "src\Castle.Windsor\Castle.MicroKernel-vs2008.csproj", "{8C6AADEB-D099-4D2A-8F5B-4EBC12AC9159}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Castle.Windsor-vs2008", "src\Castle.Windsor\Castle.Windsor-vs2008.csproj", "{60EFCB9B-E3FF-46A5-A2D2-D9F0EF75D5FE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Castle.MicroKernel.Tests-vs2008", "src\Castle.MicroKernel.Tests\Castle.MicroKernel.Tests-vs2008.csproj", "{EF9313A4-C6E0-40F7-9E3F-530D547D3AEF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Castle.MicroKernel.Tests-vs2008", "src\Castle.Windsor.Tests\Castle.MicroKernel.Tests-vs2008.csproj", "{EF9313A4-C6E0-40F7-9E3F-530D547D3AEF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Castle.Windsor.Tests-vs2008", "src\Castle.Windsor.Tests\Castle.Windsor.Tests-vs2008.csproj", "{CB3A30A6-56D4-4F4F-9AEF-DA55E1FF6D74}"
 EndProject
