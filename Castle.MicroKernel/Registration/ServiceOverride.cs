@@ -24,12 +24,12 @@ namespace Castle.MicroKernel.Registration
 	{
 		private readonly Type type;
 
-		internal ServiceOverride(String key, object value)
+		internal ServiceOverride(object key, object value)
 			: base(key, value)
 		{
 		}
 
-		internal ServiceOverride(String key, object value, Type type)
+		internal ServiceOverride(object key, object value, Type type)
 			: base(key, value)
 		{
 			this.type = type;
@@ -52,6 +52,26 @@ namespace Castle.MicroKernel.Registration
 		{
 			return new ServiceOverrideKey(key);
 		}
+
+		/// <summary>
+		/// Creates a <see cref="ServiceOverrideKey"/> with key.
+		/// </summary>
+		/// <param name="key">The service override key.</param>
+		/// <returns>The new <see cref="ServiceOverrideKey"/></returns>
+		public new static ServiceOverrideKey ForKey(Type key)
+		{
+			return new ServiceOverrideKey(key);
+		}
+
+		/// <summary>
+		/// Creates a <see cref="ServiceOverrideKey"/> with key.
+		/// </summary>
+		/// <typeparam name="TKey">The service override key.</typeparam>
+		/// <returns>The new <see cref="ServiceOverrideKey"/></returns>
+		public new static ServiceOverrideKey ForKey<TKey>()
+		{
+			return new ServiceOverrideKey(typeof(TKey));
+		}
 	}
 
 	/// <summary>
@@ -59,19 +79,15 @@ namespace Castle.MicroKernel.Registration
 	/// </summary>
 	public class ServiceOverrideKey
 	{
-		private readonly String name;
+		private readonly object key;
 
-		internal ServiceOverrideKey(String name)
+		internal ServiceOverrideKey(String key)
 		{
-			this.name = name;
+			this.key = key;
 		}
-
-		/// <summary>
-		/// Gets the service override key name.
-		/// </summary>
-		public string Name
+		internal ServiceOverrideKey(Type key)
 		{
-			get { return name; }
+			this.key = key;
 		}
 
 		/// <summary>
@@ -81,7 +97,7 @@ namespace Castle.MicroKernel.Registration
 		/// <returns>The new <see cref="ServiceOverride"/></returns>
 		public ServiceOverride Eq(String value)
 		{
-			return new ServiceOverride(name, value);
+			return new ServiceOverride(key, value);
 		}
 
 		/// <summary>
@@ -91,7 +107,7 @@ namespace Castle.MicroKernel.Registration
 		/// <returns>The new <see cref="ServiceOverride"/></returns>
 		public ServiceOverride Eq(params String[] value)
 		{
-			return new ServiceOverride(name, value);
+			return new ServiceOverride(key, value);
 		}
 
 		/// <summary>
@@ -102,7 +118,7 @@ namespace Castle.MicroKernel.Registration
 		/// <typeparam name="V">The value type.</typeparam>
 		public ServiceOverride Eq<V>(params String[] value)
 		{
-			return new ServiceOverride(name, value, typeof(V));
+			return new ServiceOverride(key, value, typeof(V));
 		}
 
 		/// <summary>
@@ -112,7 +128,7 @@ namespace Castle.MicroKernel.Registration
 		/// <returns>The new <see cref="ServiceOverride"/></returns>
 		public ServiceOverride Eq(IEnumerable<String> value)
 		{
-			return new ServiceOverride(name, value);
+			return new ServiceOverride(key, value);
 		}
 
 		/// <summary>
@@ -123,7 +139,7 @@ namespace Castle.MicroKernel.Registration
 		/// <typeparam name="V">The value type.</typeparam>
 		public ServiceOverride Eq<V>(IEnumerable<String> value)
 		{
-			return new ServiceOverride(name, value, typeof(V));
+			return new ServiceOverride(key, value, typeof(V));
 		}
 	}
 }

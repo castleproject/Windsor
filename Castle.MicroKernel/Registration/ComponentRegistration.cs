@@ -418,7 +418,7 @@ namespace Castle.MicroKernel.Registration
 
 		/// <summary>
 		/// Override (some of) the services that this component needs.
-		/// Use <see cref="ServiceOverride.ForKey"/> to create an override.
+		/// Use <see cref="ServiceOverride.ForKey(string)"/> to create an override.
 		/// <para />
 		/// Each key represents the service dependency of this component, for example the name of a constructor argument or a property.
 		/// The corresponding value is the key of an other component registered to the kernel, and is used to resolve the dependency.

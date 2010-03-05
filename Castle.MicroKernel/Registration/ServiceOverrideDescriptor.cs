@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@ namespace Castle.MicroKernel.Registration
 	using System;
 	using System.Collections;
 	using System.Collections.Generic;
+
 	using Castle.Core;
 	using Castle.Core.Configuration;
 	using Castle.MicroKernel.Util;
@@ -38,7 +39,8 @@ namespace Castle.MicroKernel.Registration
 		{
 		}
 
-		protected override void ApplyProperty(IKernel kernel, ComponentModel model, object key, object value, Property property)
+		protected override void ApplyProperty(IKernel kernel, ComponentModel model, object key, object value,
+		                                      Property property)
 		{
 			if (value is string)
 			{
@@ -46,45 +48,49 @@ namespace Castle.MicroKernel.Registration
 			}
 			else if (value is IEnumerable<String>)
 			{
-				ServiceOverride serviceOverride = (ServiceOverride)property;
-				ApplyReferenceList(kernel, model, key, (IEnumerable<String>)value, serviceOverride);	
+				var serviceOverride = (ServiceOverride)property;
+				ApplyReferenceList(kernel, model, key, (IEnumerable<String>)value, serviceOverride);
 			}
 		}
 
 		private void ApplySimpleReference(IKernel kernel, ComponentModel model,
-			                              object key, String componentKey)
+		                                  object key, String componentKey)
 		{
 			String reference = FormattedReferenceExpression(componentKey);
-			Registration.AddParameter(kernel, model, key.ToString(), reference);
+			Registration.AddParameter(kernel, model, GetKeyString(key), reference);
+		}
+
+		private string GetKeyString(object key)
+		{
+			if ((key is Type))
+				return (key as Type).AssemblyQualifiedName;
+
+			return key.ToString();
 		}
 
 		private void ApplyReferenceList(IKernel kernel, ComponentModel model,
-										object key, IEnumerable<String> items,
-			                            ServiceOverride serviceOverride)
+		                                object key, IEnumerable<String> items,
+		                                ServiceOverride serviceOverride)
 		{
 			MutableConfiguration list = new MutableConfiguration("list");
-			
-			if (serviceOverride != null && serviceOverride.Type != null)
-			{
-				list.Attributes.Add("type", serviceOverride.Type.AssemblyQualifiedName);
-			}
 
-			foreach (String item in items )
+			if (serviceOverride != null && serviceOverride.Type != null)
+				list.Attributes.Add("type", serviceOverride.Type.AssemblyQualifiedName);
+
+			foreach (String item in items)
 			{
 				String reference = FormattedReferenceExpression(item);
 				MutableConfiguration node = new MutableConfiguration("item", reference);
 				list.Children.Add(node);
 			}
 
-			Registration.AddParameter(kernel, model, key.ToString(), list);
+			Registration.AddParameter(kernel, model, GetKeyString(key), list);
 		}
 
 		private static String FormattedReferenceExpression(String value)
 		{
 			if (!ReferenceExpressionUtil.IsReference(value))
-			{
 				value = String.Format("${{{0}}}", value);
-			}
 			return value;
 		}
 	}

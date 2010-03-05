@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -130,6 +130,57 @@ namespace Castle.MicroKernel.Tests
 
 			Assert.AreEqual("typed", item.Arg1);
 			Assert.AreEqual(2, item.Arg2);
+		}
+
+		[Test]
+		public void Typed_arguments_work_for_ServiceOverrides()
+		{
+			kernel.Register(Component.For<ICommon>().ImplementedBy<CommonImpl1>().Named("default"));
+			kernel.Register(Component.For<ICommon>().ImplementedBy<CommonImpl2>().Named("non-default"));
+			kernel.Register(Component.For<CommonServiceUser>().ServiceOverrides(ServiceOverride.ForKey<ICommon>().Eq("non-default")));
+
+			var item = kernel.Resolve<CommonServiceUser>();
+
+			Assert.IsInstanceOf<CommonImpl2>(item.CommonService);
+		}
+
+		[Test]
+		public void Typed_arguments_work_for_closed_generic_ServiceOverrides()
+		{
+			kernel.Register(Component.For<IGeneric<string>>().ImplementedBy<GenericImpl1<string>>().Named("default"));
+			kernel.Register(Component.For<IGeneric<string>>().ImplementedBy<GenericImpl2<string>>().Named("non-default"));
+			kernel.Register(Component.For<UsesIGeneric<string>>().ServiceOverrides(ServiceOverride.ForKey<IGeneric<string>>().Eq("non-default")));
+
+			var item = kernel.Resolve<UsesIGeneric<string>>();
+
+			Assert.IsInstanceOf<GenericImpl2<string>>(item.Dependency);
+		}
+
+		[Test]
+		public void Typed_arguments_work_for_open_generic_ServiceOverrides_closed_service()
+		{
+			kernel.Register(Component.For(typeof(IGeneric<>)).ImplementedBy(typeof(GenericImpl1<>)).Named("default"));
+			kernel.Register(Component.For(typeof(IGeneric<>)).ImplementedBy(typeof(GenericImpl2<>)).Named("non-default"));
+			kernel.Register(Component.For(typeof(UsesIGeneric<>))
+								.ServiceOverrides(ServiceOverride.ForKey(typeof(IGeneric<string>)).Eq("non-default")));
+
+			var item = kernel.Resolve<UsesIGeneric<string>>();
+
+			Assert.IsInstanceOf<GenericImpl2<string>>(item.Dependency);
+		}
+
+		[Test]
+		[Ignore("Not supported yet")]
+		public void Typed_arguments_work_for_open_generic_ServiceOverrides_open_service()
+		{
+			kernel.Register(Component.For(typeof(IGeneric<>)).ImplementedBy(typeof(GenericImpl1<>)).Named("default"));
+			kernel.Register(Component.For(typeof(IGeneric<>)).ImplementedBy(typeof(GenericImpl2<>)).Named("non-default"));
+			kernel.Register(Component.For(typeof(UsesIGeneric<>))
+			                	.ServiceOverrides(ServiceOverride.ForKey(typeof(IGeneric<>)).Eq("non-default")));
+
+			var item = kernel.Resolve<UsesIGeneric<string>>();
+
+			Assert.IsInstanceOf<GenericImpl2<string>>(item.Dependency);
 		}
 	}
 }
