@@ -3,7 +3,7 @@ change - Assembly Castle.MicroKernel.dll was merged into Castle.Windsor.dll
 
 impact - high
 fixability - easy
-revision - 
+revision - 730b202b0ed23a6b42258a6ffd6a3e63f89501fc
 
 description - Since vast majority of users used Windsor, as opposed to bare MicroKernel it was
 	decided it didn't make sense to maintain two containers. As result of that their assemblies

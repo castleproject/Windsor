@@ -51,7 +51,7 @@
     <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
     <ConfigurationOverrideFile>
     </ConfigurationOverrideFile>
-    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;DOTNET35</DefineConstants>
     <DocumentationFile>
     </DocumentationFile>
     <DebugSymbols>true</DebugSymbols>
@@ -75,7 +75,7 @@
     <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
     <ConfigurationOverrideFile>
     </ConfigurationOverrideFile>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>TRACE;DOTNET35</DefineConstants>
     <DocumentationFile>
     </DocumentationFile>
     <DebugSymbols>false</DebugSymbols>
@@ -118,10 +118,6 @@
     <Reference Include="System.Xml">
       <Name>System.XML</Name>
     </Reference>
-    <ProjectReference Include="Castle.MicroKernel.Tests-vs2008.csproj">
-      <Project>{EF9313A4-C6E0-40F7-9E3F-530D547D3AEF}</Project>
-      <Name>Castle.MicroKernel.Tests-vs2008</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Castle.Windsor\Castle.Windsor-vs2008.csproj">
       <Name>Castle.Windsor-vs2008</Name>
       <Project>{60EFCB9B-E3FF-46A5-A2D2-D9F0EF75D5FE}</Project>
@@ -130,6 +126,234 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AnonymousDependenciesTestCase.cs" />
+    <Compile Include="BestConstructorTestCase.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="BinaryTreeComponentNameTestCase.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Bugs\IoC-108.cs" />
+    <Compile Include="Bugs\IoC-114.cs" />
+    <Compile Include="Bugs\IoC-117.cs" />
+    <Compile Include="Bugs\IoC-83.cs" />
+    <Compile Include="Bugs\IoC-95.cs" />
+    <Compile Include="Bugs\Ioc113\IoC_113.cs" />
+    <Compile Include="Bugs\Ioc113\SdiComponentMethods.cs" />
+    <Compile Include="Bugs\Ioc113\StartableDisposableAndInitializableComponent.cs" />
+    <Compile Include="Bugs\IoC_141.cs" />
+    <Compile Include="ClassComponents\BaseComponent.cs" />
+    <Compile Include="ClassComponents\ClassWithArguments.cs" />
+    <Compile Include="ClassComponents\ClassWithArrayConstructor.cs" />
+    <Compile Include="ClassComponents\ClassWithListConstructor.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ClassComponents\ClassWithTwoParametersWithSameType.cs" />
+    <Compile Include="ClassComponents\CommonImpl1.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ClassComponents\CommonImpl2.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ClassComponents\CommonServiceUser.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ClassComponents\CommonServiceUser2.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ClassComponents\CommonSub1Impl.cs" />
+    <Compile Include="ClassComponents\CommonSub2Impl.cs" />
+    <Compile Include="ClassComponents\ComponentFactory.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ClassComponents\CommonImplWithDependancy.cs" />
+    <Compile Include="ClassComponents\HasTwoConstructors.cs" />
+    <Compile Include="ClassComponents\HasTwoConstructors2.cs" />
+    <Compile Include="ClassComponents\ICommon2.cs" />
+    <Compile Include="ClassComponents\IGeneric.cs" />
+    <Compile Include="ClassComponents\GenericImpl1.cs" />
+    <Compile Include="ClassComponents\GenericImpl2.cs" />
+    <Compile Include="ClassComponents\IMapper.cs" />
+    <Compile Include="ClassComponents\ICommonSub1.cs" />
+    <Compile Include="ClassComponents\ICommonSub2.cs" />
+    <Compile Include="ClassComponents\ITask.cs" />
+    <Compile Include="ClassComponents\NonPublicComponent.cs" />
+    <Compile Include="ClassComponents\CustomerValidator.cs" />
+    <Compile Include="ClassComponents\IValidator.cs" />
+    <Compile Include="ClassComponents\CustomerChain.cs" />
+    <Compile Include="ClassComponents\CustomerImpl.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ClassComponents\CustomerImpl2.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ClassComponents\CustomLifestyleManager.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ClassComponents\DefaultCustomer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ClassComponents\DefaultMailSenderService.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ClassComponents\DefaultSpamService.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ClassComponents\DefaultSpamServiceWithConstructor.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ClassComponents\DefaultTemplateEngine.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ClassComponents\GenericClassWithParameter.cs" />
+    <Compile Include="ClassComponents\HiperFacility.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ClassComponents\ICommon.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ClassComponents\ICustomer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ClassComponents\Repository.cs" />
+    <Compile Include="ClassComponents\ServiceUser.cs" />
+    <Compile Include="ClassComponents\ServiceUser2.cs" />
+    <Compile Include="ClassComponents\TwoInterfacesImpl.cs" />
+    <Compile Include="ClassComponents\UsesIGeneric.cs" />
+    <Compile Include="ComponentArgumentsEnumeratorTestCase.cs" />
+    <Compile Include="Configuration\Components\ClassWithComplexParameter.cs" />
+    <Compile Include="Configuration\Components\ClassWithConstructors.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Configuration\ConfigurationTestCase.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DecoratorsTestCase.cs" />
+    <Compile Include="DependencyResolvingTestCase.cs" />
+    <Compile Include="EventTests.cs" />
+    <Compile Include="Facilities\FactorySupport\FactorySupportFluentTestCase.cs" />
+    <Compile Include="Facilities\FactorySupport\FactorySupportProgrammaticTestCase.cs" />
+    <Compile Include="Facilities\FactorySupport\FactorySupportTestCase.cs" />
+    <Compile Include="Lifecycle\OnCreateTestCase.cs" />
+    <Compile Include="Facilities\Startable\Components\StartableChainWithGenerics.cs" />
+    <Compile Include="Facilities\Startable\Components\StartableComponentWithCustomDependencies.cs" />
+    <Compile Include="Registration\DynamicParametersTestCase.cs" />
+    <Compile Include="HandlerForwardingTestCase.cs" />
+    <Compile Include="KeySearchNamingSubSystemTestCase.cs" />
+    <Compile Include="DefaultConversionManagerTestCase.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DependencyGraph.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DependencyResolvers.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Facilities\Startable\Components\NoInterfaceStartableComponent.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Facilities\Startable\Components\StartableComponent.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Facilities\Startable\StartableFacilityTestCase.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="FacilityTestCase.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="GraphTestCase.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="LazyLoadingTestCase.cs" />
+    <Compile Include="Lifecycle\Components\HttpFakeServer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Lifestyle\Components\DisposableBase.cs" />
+    <Compile Include="Lifestyle\Components\MyCustomerActivator.cs" />
+    <Compile Include="Lifestyle\DecomissioningResponsibilitiesTestCase.cs" />
+    <Compile Include="Lifecycle\LifecycleTestCase.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Lifestyle\Components\PerWebRequestComponent.cs" />
+    <Compile Include="Lifestyle\Components\CustomComponent.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Lifestyle\Components\IComponent.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Lifestyle\Components\MyLifestyleHandler.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Lifestyle\Components\NoInfoComponent.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Lifestyle\Components\PerThreadComponent.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Lifestyle\Components\SingletonComponent.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Lifestyle\Components\TransientComponent.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Lifestyle\LifestyleManagerTestCase.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MicroKernelTestCase.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="NamingPartsSubSystemTestCase.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Pools\MultithreadedPooledTestCase.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Pools\PoolableComponent1.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Pools\PooledLifestyleManagerTestCase.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Registration\ComponentRegistrationTestCase.cs" />
+    <Compile Include="Registration\AllTypesTestCase.cs" />
+    <Compile Include="Registration\Interceptors\InterceptorReferenceComparer.cs" />
+    <Compile Include="Registration\Interceptors\InterceptorsTestCase.cs" />
+    <Compile Include="Registration\Interceptors\InterceptorsTestCaseHelper.cs" />
+    <Compile Include="Registration\Interceptors\Multiple\GenericInterceptorsInSingleCall.cs" />
+    <Compile Include="Registration\Interceptors\Multiple\GenericInterceptorsMultipleCall.cs" />
+    <Compile Include="Registration\Interceptors\Multiple\InterceptorKeyInSingleCall.cs" />
+    <Compile Include="Registration\Interceptors\Multiple\InterceptorKeyMultipleCall.cs" />
+    <Compile Include="Registration\Interceptors\Multiple\InterceptorReferenceAnywhereMultipleCall.cs" />
+    <Compile Include="Registration\Interceptors\Multiple\InterceptorReferencesInSingleCallTestCase.cs" />
+    <Compile Include="Registration\Interceptors\Multiple\InterceptorReferencesWithPositionInSingleCall.cs" />
+    <Compile Include="Registration\Interceptors\Multiple\InterceptorReferencesWithPositionInSingleCall1.cs" />
+    <Compile Include="Registration\Interceptors\Multiple\InterceptorReferencesWithPositionInSingleCall2.cs" />
+    <Compile Include="Registration\Interceptors\Multiple\InterceptorReferenceWithPositionMultipleCall1.cs" />
+    <Compile Include="Registration\Interceptors\Multiple\InterceptorReferenceWithPositionMultipleCall2.cs" />
+    <Compile Include="Registration\Interceptors\Multiple\InterceptorReferenceWithPositionMultipleCall3.cs" />
+    <Compile Include="Registration\Interceptors\Multiple\InterceptorTypeMultipleCall.cs" />
+    <Compile Include="Registration\Interceptors\Multiple\InterceptorTypesInSingleCall.cs" />
+    <Compile Include="Registration\Interceptors\Single\SingleGenericInterceptor.cs" />
+    <Compile Include="Registration\Interceptors\Single\InterceptorKeyTestCase.cs" />
+    <Compile Include="Registration\Interceptors\Single\InterceptorReference.cs" />
+    <Compile Include="Registration\Interceptors\Single\InterceptorTypeTestCase.cs" />
+    <Compile Include="Registration\RegistrationTestCaseBase.cs" />
+    <Compile Include="Registration\UsingFactoryMethodTestCase.cs" />
+    <Compile Include="RuntimeParametersTestCase.cs" />
+    <Compile Include="RuntimeParameters\ComponentWithParameters.cs" />
+    <Compile Include="SerializationTestCase.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SpecializedResolvers\ArrayResolverTestCase.cs" />
+    <Compile Include="SpecializedResolvers\ListResolverTestCase.cs" />
+    <Compile Include="SubContainers\SubContainersTestCase.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SubResolverTestCase.cs" />
+    <Compile Include="TransientMultiConstructorTestCase.cs" />
+    <Compile Include="UnsatisfiedDependenciesTestCase.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Adapters\ComponentModel\ContainerAdapterTestCase.cs">
       <SubType>Code</SubType>
     </Compile>
