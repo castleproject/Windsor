@@ -21,7 +21,7 @@ limitations under the License.
 ***********************************************************************************************
 -->
 
-<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" InitialTargets="_InitializeDynamicProperties">
 
 	<!-- Root Path definition relative for actual build file -->
 	<PropertyGroup>
@@ -53,6 +53,16 @@ limitations under the License.
 		<PackageFiles Include="$(OutputPath)Iesi.*" />
 	</ItemGroup>
 
+	<Target Name="_InitializeDynamicProperties">
+		<PropertyGroup>
+			<!-- 
+			Specify additional items to package here, they are added to the package
+			in addition to automatically detected dependencies.
+			<PackageFiles>$(OutputPath)Assembly.dll</PackageFiles>
+			-->
+		</PropertyGroup>
+	</Target>
+
 
 	<!-- Import framework version specific settings, like Settings-v3.5 or Settings-v4.0 -->
 	<Import
@@ -65,5 +75,4 @@ limitations under the License.
 		Project="$(RootPath)\Settings-SL.proj"
 		Condition="'$(TargetFrameworkIdentifier)' == 'Silverlight' and Exists('$(RootPath)\Settings-SL.proj')"
 		/>
-
 </Project>
