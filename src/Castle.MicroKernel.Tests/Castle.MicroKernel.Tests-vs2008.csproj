@@ -149,6 +149,9 @@
     <Compile Include="ClassComponents\HasTwoConstructors.cs" />
     <Compile Include="ClassComponents\HasTwoConstructors2.cs" />
     <Compile Include="ClassComponents\ICommon2.cs" />
+    <Compile Include="ClassComponents\IGeneric.cs" />
+    <Compile Include="ClassComponents\GenericImpl1.cs" />
+    <Compile Include="ClassComponents\GenericImpl2.cs" />
     <Compile Include="ClassComponents\IMapper.cs" />
     <Compile Include="ClassComponents\ICommonSub1.cs" />
     <Compile Include="ClassComponents\ICommonSub2.cs" />
@@ -195,6 +198,7 @@
     <Compile Include="ClassComponents\ServiceUser.cs" />
     <Compile Include="ClassComponents\ServiceUser2.cs" />
     <Compile Include="ClassComponents\TwoInterfacesImpl.cs" />
+    <Compile Include="ClassComponents\UsesIGeneric.cs" />
     <Compile Include="ComponentArgumentsEnumeratorTestCase.cs" />
     <Compile Include="Configuration\Components\ClassWithComplexParameter.cs" />
     <Compile Include="Configuration\Components\ClassWithConstructors.cs">

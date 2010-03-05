@@ -13,7 +13,7 @@
         <FORCE_FIXED_BRACES_STYLE>ALWAYS_ADD</FORCE_FIXED_BRACES_STYLE>
         <FORCE_FOR_BRACES_STYLE>ALWAYS_ADD</FORCE_FOR_BRACES_STYLE>
         <FORCE_FOREACH_BRACES_STYLE>ALWAYS_ADD</FORCE_FOREACH_BRACES_STYLE>
-        <FORCE_IFELSE_BRACES_STYLE>ONLY_FOR_MULTILINE</FORCE_IFELSE_BRACES_STYLE>
+        <FORCE_IFELSE_BRACES_STYLE>ALWAYS_ADD</FORCE_IFELSE_BRACES_STYLE>
         <FORCE_USING_BRACES_STYLE>ALWAYS_ADD</FORCE_USING_BRACES_STYLE>
         <FORCE_WHILE_BRACES_STYLE>ALWAYS_ADD</FORCE_WHILE_BRACES_STYLE>
         <INDENT_ANONYMOUS_METHOD_BLOCK>False</INDENT_ANONYMOUS_METHOD_BLOCK>
@@ -143,12 +143,11 @@ II.2.12 <HandlesEvent />
           </Or>
         </And>
       </Match>
-      <Group Region="Setup/Teardown"/>
     </Entry>
-    
+
     <!--All other members-->
     <Entry/>
-    
+
     <!--Test methods-->
     <Entry>
       <Match>
@@ -165,20 +164,26 @@ II.2.12 <HandlesEvent />
 
   <!--Default pattern-->
   <Pattern>
-	<!--according to http://castleproject.org/community/codingstandards.html-->
-
-    <!--fields and constants-->
+    <!--according to http://castleproject.org/community/codingstandards.html-->
+    <!--constants-->
     <Entry>
       <Match>
-        <Or>
-          <Kind Is="constant"/>
-          <Kind Is="field"/>
-        </Or>
+        <Kind Is="constant"/>
       </Match>
       <Sort>
-        <Kind Order="constant field"/>
+        <Access/>
+        <Name/>
+      </Sort>
+    </Entry>
+    <!--fields (static readonly / static / instance readonly / instance )-->
+    <Entry>
+      <Match>
+        <Kind Is="field"/>
+      </Match>
+      <Sort>
         <Static/>
         <Readonly/>
+        <Access/>
         <Name/>
       </Sort>
     </Entry>
@@ -190,38 +195,59 @@ II.2.12 <HandlesEvent />
       </Match>
       <Sort>
         <Static/>
+        <Access/>
       </Sort>
     </Entry>
-    
-    <!--properties, indexers-->
+
+    <!--instance properties, indexers and methods-->
     <Entry>
       <Match>
-        <Or>
-          <Kind Is="property"/>
-          <Kind Is="indexer"/>
-        </Or>
-      </Match>
-    </Entry>
-    
-    <!--interface implementations-->
-    <Entry>
-      <Match>
-        <And Weight="100">
-          <Kind Is="member"/>
-          <ImplementsInterface/>
+        <And>
+          <Or>
+            <Kind Is="property"/>
+            <Kind Is="indexer"/>
+            <Kind Is="method"/>
+          </Or>
+          <Not>
+            <Static/>
+          </Not>
         </And>
       </Match>
       <Sort>
-        <ImplementsInterface Immediate="true"/>
+        <Kind Order="property indexer method"/>
+        <Abstract/>
+        <ImplementsInterface/>
+        <Access/>
+        <Readonly/>
+        <Name/>
       </Sort>
-      <Group>
-        <ImplementsInterface Immediate="true" Region="${ImplementsInterface} Members"/>
-      </Group>
     </Entry>
-    
+
+    <!--static properties, indexers and methods-->
+    <Entry>
+      <Match>
+        <And>
+          <Static/>
+          <Or>
+            <Kind Is="property"/>
+            <Kind Is="indexer"/>
+            <Kind Is="method"/>
+          </Or>
+        </And>
+      </Match>
+      <Sort>
+        <Kind Order="property indexer method"/>
+        <Abstract/>
+        <ImplementsInterface/>
+        <Access/>
+        <Readonly/>
+        <Name/>
+      </Sort>
+    </Entry>
+
     <!--all other members-->
-    <Entry/>	
-	
+    <Entry/>
+
     <!--public delegate-->
     <Entry>
       <Match>
@@ -235,7 +261,7 @@ II.2.12 <HandlesEvent />
       </Sort>
       <Group Region="Delegates"/>
     </Entry>
-    
+
     <!--public enum-->
     <Entry>
       <Match>
@@ -252,7 +278,7 @@ II.2.12 <HandlesEvent />
       </Group>
     </Entry>
 
-    
+
     <!--nested types-->
     <Entry>
       <Match>
@@ -266,7 +292,7 @@ II.2.12 <HandlesEvent />
       </Group>
     </Entry>
   </Pattern>
-  
+
 </Patterns>
 ]]></CustomMemberReorderingPatterns>
     </CSharp>
@@ -287,19 +313,19 @@ II.2.12 <HandlesEvent />
     <XML>
       <FormatSettings />
     </XML>
-    <FileHeader><![CDATA[// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
-// 
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-// 
-//     http://www.apache.org/licenses/LICENSE-2.0
-// 
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+    <FileHeader><![CDATA[Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
 ]]></FileHeader>
     <GenerateMemberBody />
     <Naming2>
