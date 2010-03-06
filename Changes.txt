@@ -30,6 +30,38 @@ unreleased changes
 		MixIns from object[] to IEnumerable<IReference<object>>
 	IReference abstraction allows to use components resolved from the container, similar to InterceptorReferences.
 
+- Moved several types from Core:
+    ComponentActivatorAttribute
+    ComponentProxyBehaviorAttribute
+    CustomLifestyleAttribute
+    DoNotWireAttribute      
+    InterceptorAttribute    
+    LifestyleAttribute
+    PooledAttribute
+    TransientAttribute
+    GraphNode
+    IVertex
+    IRecyclable
+    IStartable
+    ComponentModel
+    ConstructorCandidate
+    ConstructorCandidateCollection
+    DependencyModel
+    DependencyModelCollection
+    InterceptorReference
+    InterceptorReferenceCollection
+    LifecycleStepCollection
+    MethodMetaModel
+    MethodMetaModelCollection
+    ParameterModel
+    ParameterModelCollection
+    PropertySet
+    PropertySetCollection
+    TopologicalSortAlgo
+    IOnBehalfAware
+    GraphSets
+    GraphTestCase
+
 
 2.1.1 (2010-01-13)
 ==================
