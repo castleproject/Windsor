@@ -14,8 +14,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Castle.Windsor-vs2008", "src\Castle.Windsor\Castle.Windsor-vs2008.csproj", "{60EFCB9B-E3FF-46A5-A2D2-D9F0EF75D5FE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Castle.MicroKernel.Tests-vs2008", "src\Castle.Windsor.Tests\Castle.MicroKernel.Tests-vs2008.csproj", "{EF9313A4-C6E0-40F7-9E3F-530D547D3AEF}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Castle.Windsor.Tests-vs2008", "src\Castle.Windsor.Tests\Castle.Windsor.Tests-vs2008.csproj", "{CB3A30A6-56D4-4F4F-9AEF-DA55E1FF6D74}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Castle.Facilities.Logging-vs2008", "src\Castle.Facilities.Logging\Castle.Facilities.Logging-vs2008.csproj", "{32D54D33-206F-44EE-8329-8480ABE049B1}"
@@ -32,10 +30,6 @@ Global
 		{60EFCB9B-E3FF-46A5-A2D2-D9F0EF75D5FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{60EFCB9B-E3FF-46A5-A2D2-D9F0EF75D5FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{60EFCB9B-E3FF-46A5-A2D2-D9F0EF75D5FE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{EF9313A4-C6E0-40F7-9E3F-530D547D3AEF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EF9313A4-C6E0-40F7-9E3F-530D547D3AEF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EF9313A4-C6E0-40F7-9E3F-530D547D3AEF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EF9313A4-C6E0-40F7-9E3F-530D547D3AEF}.Release|Any CPU.Build.0 = Release|Any CPU
 		{CB3A30A6-56D4-4F4F-9AEF-DA55E1FF6D74}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{CB3A30A6-56D4-4F4F-9AEF-DA55E1FF6D74}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CB3A30A6-56D4-4F4F-9AEF-DA55E1FF6D74}.Release|Any CPU.ActiveCfg = Release|Any CPU
