@@ -26,7 +26,9 @@ namespace Castle.MicroKernel.Lifestyle
 	[Serializable]
 	public class PerWebRequestLifestyleManager : AbstractLifestyleManager
 	{
+
 		private string PerRequestObjectID = "PerRequestLifestyleManager_" + Guid.NewGuid();
+		private bool evicting;
 
 		#region ILifestyleManager Members
 
@@ -63,12 +65,18 @@ namespace Castle.MicroKernel.Lifestyle
 			// the web request.  An internal Evict method is provided to
 			// allow the actual releasing of the component at the end of
 			// the web request.
-			return false;
+
+			if (evicting == false) return false;
+
+			return base.Release(instance);
 		}
 
 		internal void Evict(object instance)
 		{
-			base.Release(instance);
+			using (new EvitionScope(this))
+			{
+				Kernel.ReleaseComponent(instance);
+			}
 		}
 
 		public override void Dispose()
@@ -76,7 +84,25 @@ namespace Castle.MicroKernel.Lifestyle
 		}
 
 		#endregion
+
+		private class EvitionScope : IDisposable
+		{
+			private readonly PerWebRequestLifestyleManager owner;
+
+			public EvitionScope(PerWebRequestLifestyleManager owner)
+			{
+				this.owner = owner;
+				this.owner.evicting = true;
+			}
+
+			public void Dispose()
+			{
+				owner.evicting = false;
+			}
+		}
 	}
+
+
 
 	#region PerWebRequestLifestyleModule
 
@@ -89,7 +115,7 @@ namespace Castle.MicroKernel.Lifestyle
 		public void Init(HttpApplication context)
 		{
 			initialized = true;
-			context.EndRequest += new EventHandler(Application_EndRequest);
+			context.EndRequest += Application_EndRequest;
 		}
 
 		public void Dispose()
@@ -100,11 +126,11 @@ namespace Castle.MicroKernel.Lifestyle
 		{
 			HttpContext context = HttpContext.Current;
 
-            var candidates = (IDictionary<PerWebRequestLifestyleManager, object>)context.Items[PerRequestEvict];
+			var candidates = (IDictionary<PerWebRequestLifestyleManager, object>)context.Items[PerRequestEvict];
 
 			if (candidates == null)
 			{
-                candidates = new Dictionary<PerWebRequestLifestyleManager, object>();
+				candidates = new Dictionary<PerWebRequestLifestyleManager, object>();
 				context.Items[PerRequestEvict] = candidates;
 			}
 
@@ -113,14 +139,14 @@ namespace Castle.MicroKernel.Lifestyle
 
 		protected void Application_EndRequest(Object sender, EventArgs e)
 		{
-			HttpApplication application = (HttpApplication) sender;
+			var application = (HttpApplication)sender;
 			var candidates = (IDictionary<PerWebRequestLifestyleManager, object>)application.Context.Items[PerRequestEvict];
 
 			if (candidates != null)
 			{
-				foreach(KeyValuePair<PerWebRequestLifestyleManager, object> candidate in candidates)
+				foreach (var candidate in candidates)
 				{
-					PerWebRequestLifestyleManager manager = candidate.Key;
+					var manager = candidate.Key;
 					manager.Evict(candidate.Value);
 				}
 
