@@ -21,7 +21,7 @@ namespace Castle.Facilities.AutoTx.Tests
 	using Castle.Services.Transaction;
 
 	[TestFixture]
-	public class FacilityBasicTestCase
+	public class FacilityBasicTests
 	{
 		[Test]
 		public void TestReportedBug()

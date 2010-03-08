@@ -122,29 +122,32 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AnotherCustomerService.cs">
+    <Compile Include="TestClasses\AnotherCustomerService.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="BaseTransactionalComp.cs">
+    <Compile Include="AutoTxFacilityTests.cs" />
+    <Compile Include="TestClasses\BaseTransactionalComp.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ConfiguredComponents.cs">
+    <Compile Include="ConfiguredComponentsTests.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="CustomerService.cs">
+    <Compile Include="TestClasses\CustomerService.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="GenericService.cs" />
-    <Compile Include="ICustomerService.cs">
+    <Compile Include="TestClasses\GenericService.cs" />
+    <Compile Include="TestClasses\ICustomerService.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="MockTransactionManager.cs">
+    <Compile Include="TestClasses\MockTransactionManager.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="TransactionalComp1.cs">
+    <Compile Include="TestClasses\AClass.cs" />
+    <Compile Include="TestClasses\ISomething.cs" />
+    <Compile Include="TestClasses\TransactionalComp1.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="TransactionalComp3.cs">
+    <Compile Include="TestClasses\TransactionalComp3.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="TransactionTestCase.cs">
