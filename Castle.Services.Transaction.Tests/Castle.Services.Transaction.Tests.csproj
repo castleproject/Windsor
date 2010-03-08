@@ -104,9 +104,14 @@
     <Reference Include="System.Data">
       <Name>System.Data</Name>
     </Reference>
+    <Reference Include="System.Transactions" />
     <Reference Include="System.Xml">
       <Name>System.XML</Name>
     </Reference>
+    <ProjectReference Include="..\..\lib\Castle.Core\src\Castle.Core\Castle.Core-vs2008.csproj">
+      <Project>{E4FA5B53-7D36-429E-8E5C-53D5479242BA}</Project>
+      <Name>Castle.Core-vs2008</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Castle.Services.Transaction\Castle.Services.Transaction.csproj">
       <Name>Castle.Services.Transaction</Name>
       <Project>{0F611C1B-EDFD-46E6-9C3A-95420946E9CC}</Project>
@@ -114,7 +119,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="NestedTransactionsTestCase.cs">
+    <Compile Include="FileTransactionTests.cs" />
+    <Compile Include="FileTransaction_WithManager_Tests.cs" />
+    <Compile Include="NestedTransactionsTests.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="TestClasses\ResourceImpl.cs">
@@ -123,8 +130,9 @@
     <Compile Include="TestClasses\SynchronizationImpl.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="TestClasses\TestResource.cs" />
     <Compile Include="TestClasses\ThrowsExceptionResource.cs" />
-    <Compile Include="TransactionManagerTestCase.cs">
+    <Compile Include="TransactionManagerTests.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="TestClasses\TransientActivityManager.cs" />

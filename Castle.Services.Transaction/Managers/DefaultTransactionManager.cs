@@ -30,7 +30,7 @@ namespace Castle.Services.Transaction
 		private static readonly object TransactionDisposedEvent = new object();
 		private static readonly object ChildTransactionCreatedEvent = new object();
 
-		private EventHandlerList events = new EventHandlerList();
+		private readonly EventHandlerList _Events = new EventHandlerList();
 		private ILogger logger = NullLogger.Instance;
 		private IActivityManager activityManager;
 
@@ -180,44 +180,44 @@ namespace Castle.Services.Transaction
 
 		public event TransactionCreationInfoDelegate TransactionCreated
 		{
-			add { events.AddHandler(TransactionCreatedEvent, value); }
-			remove { events.RemoveHandler(TransactionCreatedEvent, value); }
+			add { _Events.AddHandler(TransactionCreatedEvent, value); }
+			remove { _Events.RemoveHandler(TransactionCreatedEvent, value); }
 		}
 
 		public event TransactionCreationInfoDelegate ChildTransactionCreated
 		{
-			add { events.AddHandler(ChildTransactionCreatedEvent, value); }
-			remove { events.RemoveHandler(ChildTransactionCreatedEvent, value); }
+			add { _Events.AddHandler(ChildTransactionCreatedEvent, value); }
+			remove { _Events.RemoveHandler(ChildTransactionCreatedEvent, value); }
 		}
 
 		public event TransactionDelegate TransactionCommitted
 		{
-			add { events.AddHandler(TransactionCommittedEvent, value); }
-			remove { events.RemoveHandler(TransactionCommittedEvent, value); }
+			add { _Events.AddHandler(TransactionCommittedEvent, value); }
+			remove { _Events.RemoveHandler(TransactionCommittedEvent, value); }
 		}
 
 		public event TransactionDelegate TransactionRolledback
 		{
-			add { events.AddHandler(TransactionRolledbackEvent, value); }
-			remove { events.RemoveHandler(TransactionRolledbackEvent, value); }
+			add { _Events.AddHandler(TransactionRolledbackEvent, value); }
+			remove { _Events.RemoveHandler(TransactionRolledbackEvent, value); }
 		}
 
 		public event TransactionErrorDelegate TransactionFailed
 		{
-			add { events.AddHandler(TransactionFailedEvent, value); }
-			remove { events.RemoveHandler(TransactionFailedEvent, value); }
+			add { _Events.AddHandler(TransactionFailedEvent, value); }
+			remove { _Events.RemoveHandler(TransactionFailedEvent, value); }
 		}
 
 		public event TransactionDelegate TransactionDisposed
 		{
-			add { events.AddHandler(TransactionDisposedEvent, value); }
-			remove { events.RemoveHandler(TransactionDisposedEvent, value); }
+			add { _Events.AddHandler(TransactionDisposedEvent, value); }
+			remove { _Events.RemoveHandler(TransactionDisposedEvent, value); }
 		}
 
 		protected void RaiseTransactionCreated(ITransaction transaction, TransactionMode transactionMode,
 		                                       IsolationMode isolationMode, bool distributedTransaction)
 		{
-			TransactionCreationInfoDelegate eventDelegate = (TransactionCreationInfoDelegate) events[TransactionCreatedEvent];
+			TransactionCreationInfoDelegate eventDelegate = (TransactionCreationInfoDelegate) _Events[TransactionCreatedEvent];
 
 			if (eventDelegate != null)
 			{
@@ -228,8 +228,8 @@ namespace Castle.Services.Transaction
 		protected void RaiseChildTransactionCreated(ITransaction transaction, TransactionMode transactionMode,
 													IsolationMode isolationMode, bool distributedTransaction)
 		{
-			TransactionCreationInfoDelegate eventDelegate =
-				(TransactionCreationInfoDelegate) events[ChildTransactionCreatedEvent];
+			var eventDelegate =
+				(TransactionCreationInfoDelegate) _Events[ChildTransactionCreatedEvent];
 
 			if (eventDelegate != null)
 			{
@@ -239,7 +239,7 @@ namespace Castle.Services.Transaction
 
 		protected void RaiseTransactionFailed(ITransaction transaction, TransactionException exception)
 		{
-			TransactionErrorDelegate eventDelegate = (TransactionErrorDelegate)events[TransactionFailedEvent];
+			TransactionErrorDelegate eventDelegate = (TransactionErrorDelegate)_Events[TransactionFailedEvent];
 			
 			if (eventDelegate != null)
 			{
@@ -249,7 +249,7 @@ namespace Castle.Services.Transaction
 
 		protected void RaiseTransactionDisposed(ITransaction transaction)
 		{
-			TransactionDelegate eventDelegate = (TransactionDelegate) events[TransactionDisposedEvent];
+			TransactionDelegate eventDelegate = (TransactionDelegate) _Events[TransactionDisposedEvent];
 
 			if (eventDelegate != null)
 			{
@@ -259,7 +259,7 @@ namespace Castle.Services.Transaction
 
 		protected void RaiseTransactionCommitted(ITransaction transaction)
 		{
-			TransactionDelegate eventDelegate = (TransactionDelegate) events[TransactionCommittedEvent];
+			TransactionDelegate eventDelegate = (TransactionDelegate) _Events[TransactionCommittedEvent];
 
 			if (eventDelegate != null)
 			{
@@ -269,7 +269,7 @@ namespace Castle.Services.Transaction
 
 		protected void RaiseTransactionRolledback(ITransaction transaction)
 		{
-			TransactionDelegate eventDelegate = (TransactionDelegate) events[TransactionRolledbackEvent];
+			TransactionDelegate eventDelegate = (TransactionDelegate) _Events[TransactionRolledbackEvent];
 
 			if (eventDelegate != null)
 			{

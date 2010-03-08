@@ -342,8 +342,8 @@ namespace Castle.Services.Transaction
 				if (!createDirectoryTransacted(nonExistent.Pop()))
 				{
 					var win32Exception = new Win32Exception(Marshal.GetLastWin32Error());
-					throw new TransactionException(string.Format("Failed to create directory at path {0}. " 
-					                                             + "See inner exception for more details.", path),
+					throw new TransactionException(string.Format("Failed to create directory \"{1}\" at path \"{0}\". " 
+					                                             + "See inner exception for more details.", path, curr),
 					                               win32Exception);
 				}
 			}
@@ -608,6 +608,8 @@ namespace Castle.Services.Transaction
 
 		#region Helper methods
 
+		private const int ERROR_TRANSACTIONAL_CONFLICT = 0x1A90;
+
 		/// <summary>
 		/// Creates a file handle with the current ongoing transaction.
 		/// </summary>
@@ -628,12 +630,19 @@ namespace Castle.Services.Transaction
 			                                       _TransactionHandle,
 			                                       IntPtr.Zero, IntPtr.Zero);
 
-
 			if (fileHandle.IsInvalid)
-				throw new TransactionException(
-					string.Format("Unable to open a file descriptor to \"{0}\". Please see the inner exceptions for details.", 
-					              path),
-					new Win32Exception(Marshal.GetLastWin32Error()));
+			{
+				var error = Marshal.GetLastWin32Error();
+				var baseStr = string.Format("Transaction \"{1}\": Unable to open a file descriptor to \"{0}\".", path, Name ?? "[no name]");
+
+				if (error == ERROR_TRANSACTIONAL_CONFLICT)
+					throw new TransactionalConflictException(baseStr 
+						+ " You will get this error if you are accessing the transacted file from a non-transacted API before the transaction has " 
+						+ "committed. See http://msdn.microsoft.com/en-us/library/aa365536%28VS.85%29.aspx for details.");
+
+				throw new TransactionException(baseStr 
+					+ "Please see the inner exceptions for details.", new Win32Exception(Marshal.GetLastWin32Error()));
+			}
 
 			return new FileStream(fileHandle, access);
 		}

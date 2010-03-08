@@ -117,6 +117,7 @@
     <Compile Include="..\..\buildscripts\CommonAssemblyInfo.cs">
       <Link>CommonAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="Exceptions\TransactionalConflictException.cs" />
     <Compile Include="GenericTransactions\AbstractTransaction.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -165,6 +166,7 @@
     <Compile Include="Attributes\TransactionAttribute.cs" />
     <Compile Include="Attributes\TransactionMode.cs" />
     <Compile Include="GenericTransactions\TransactionScopeResourceAdapter.cs" />
+    <Compile Include="Misc\Fun.cs" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />
