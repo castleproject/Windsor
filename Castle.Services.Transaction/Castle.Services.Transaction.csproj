@@ -126,7 +126,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="GenericTransactions\ChildTransaction.cs" />
-    <Compile Include="GenericTransactions\DefaultTransaction.cs" />
+    <Compile Include="GenericTransactions\TalkativeTransaction.cs" />
     <Compile Include="Managers\CallContextActivityManager.cs" />
     <Compile Include="Exceptions\CommitResourceException.cs" />
     <Compile Include="Managers\DefaultTransactionManager.cs">

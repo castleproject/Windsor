@@ -20,11 +20,11 @@ namespace Castle.Services.Transaction
 		private readonly TransactionMode _TransactionMode;
 		private readonly IsolationMode _IsolationMode;
 
-		protected readonly string _Name;
+		internal readonly string _TheName;
 
 		protected TransactionBase(string name, TransactionMode mode, IsolationMode isolationMode)
 		{
-			_Name = name ?? string.Empty;
+			_TheName = name ?? string.Empty;
 			_TransactionMode = mode;
 			_IsolationMode = isolationMode;
 			Status = TransactionStatus.NoTransaction;
@@ -82,8 +82,8 @@ namespace Castle.Services.Transaction
 		///</summary>
 		public virtual string Name 
 		{ 
-			get { return string.IsNullOrEmpty(_Name) ? 
-			                                         	string.Format("Tx #{0}", GetHashCode()) : _Name; }
+			get { return string.IsNullOrEmpty(_TheName) ? 
+			                                         	string.Format("Tx #{0}", GetHashCode()) : _TheName; }
 		}
 
 		#endregion
@@ -110,7 +110,7 @@ namespace Castle.Services.Transaction
 		/// Succeed the transaction, persisting the
 		///             modifications
 		/// </summary>
-		public void Commit()
+		public virtual void Commit()
 		{
 			if (!_CanCommit) throw new TransactionException("Rollback only was set.");
 			AssertState(TransactionStatus.Active);
@@ -121,12 +121,16 @@ namespace Castle.Services.Transaction
 				_SyncInfo.ForEach(s => _Logger.TryAndLog(s.BeforeCompletion));
 			});
 
-			_Logger.TryAndLog(InnerCommit).Exception(e =>
+			try
 			{
-				throw new TransactionException("Could not commit", e);
-			});
+				_Logger.TryAndLog(InnerCommit)
+					.Exception(e => { throw new TransactionException("Could not commit", e); });
+			}
+			finally
+			{
+				_Sem.AtomRead(() => _SyncInfo.ForEach(s => _Logger.TryAndLog(s.AfterCompletion)));
+			}
 
-			_Sem.AtomRead(() => _SyncInfo.ForEach(s => _Logger.TryAndLog(s.AfterCompletion)));
 		}
 
 		/// <summary>
@@ -137,7 +141,7 @@ namespace Castle.Services.Transaction
 		/// <summary>
 		/// See <see cref="ITransaction.Rollback"/>.
 		/// </summary>
-		public void Rollback()
+		public virtual void Rollback()
 		{
 			AssertState(TransactionStatus.Active);
 			Status = TransactionStatus.RolledBack;
@@ -188,6 +192,8 @@ namespace Castle.Services.Transaction
 			_CanCommit = false;
 		}
 
+		#region Resources
+
 		/// <summary>
 		/// Register a participant on the transaction.
 		/// </summary>
@@ -196,10 +202,10 @@ namespace Castle.Services.Transaction
 		{
 			if (resource == null) throw new ArgumentNullException("resource");
 			_Sem.AtomWrite(() => {
-				if (_Resources.Contains(resource)) return;
-				_Logger.TryAndLog(resource.Start)
-					.Exception(_ => SetRollbackOnly());
-				_Resources.Add(resource);
+			                     	if (_Resources.Contains(resource)) return;
+			                     	_Logger.TryAndLog(resource.Start)
+			                     		.Exception(_ => SetRollbackOnly());
+			                     	_Resources.Add(resource);
 			});
 		}
 
@@ -221,6 +227,10 @@ namespace Castle.Services.Transaction
 				yield return resource;
 		}
 
+		#endregion
+
+		#region utils
+
 		protected void AssertState(TransactionStatus status)
 		{
 			AssertState(status, null);
@@ -237,5 +247,8 @@ namespace Castle.Services.Transaction
 				                                             status, Status));
 			}
 		}
+
+		#endregion
+
 	}
 }

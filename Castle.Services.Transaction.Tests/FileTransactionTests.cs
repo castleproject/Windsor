@@ -147,16 +147,12 @@ namespace Castle.Services.Transaction.Tests
 		}
 
 		[Test]
-		public void WhenCallingBeginTwice_WeSimplyReturn_Also_TestForRollbackedState()
+		public void Using_NormalStates()
 		{
 			using (var tx = new FileTransaction())
 			{
 				Assert.That(tx.Status, Is.EqualTo(TransactionStatus.NoTransaction));
 				tx.Begin();
-				Assert.That(tx.Status, Is.EqualTo(TransactionStatus.Active));
-				Assert.That(tx.IsAmbient, Is.False);
-				tx.Begin();
-				Assert.That(tx.IsAmbient, Is.False, "Starting the same transaction twice should make no difference.");
 				Assert.That(tx.Status, Is.EqualTo(TransactionStatus.Active));
 				tx.Commit();
 				Assert.That(tx.Status, Is.EqualTo(TransactionStatus.Committed));

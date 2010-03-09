@@ -257,7 +257,7 @@ namespace Castle.Services.Transaction
 			get { return isolationMode; }
 		}
 
-		public bool IsAmbientTransaction
+		public bool IsAmbient
 		{
 			get { return _IsAmbientTransaction; }
 		}

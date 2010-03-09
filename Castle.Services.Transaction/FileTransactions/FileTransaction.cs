@@ -61,7 +61,7 @@ namespace Castle.Services.Transaction
 		///</summary>
 		public override string Name
 		{
-			get { return _Name ?? string.Format("FtX #{0}", GetHashCode()); }
+			get { return _TheName ?? string.Format("FtX #{0}", GetHashCode()); }
 		}
 
 		internal override void InnerBegin()
@@ -86,7 +86,7 @@ namespace Castle.Services.Transaction
 				_TransactionHandle = handle; // see the link in the remarks to the class for more details about async exceptions
 				IsAmbient = true;
 			}
-			else _TransactionHandle = createTransaction(string.Format("{0} Transaction", _Name));
+			else _TransactionHandle = createTransaction(string.Format("{0} Transaction", _TheName));
 			if (!_TransactionHandle.IsInvalid) return;
 
 			throw new TransactionException(
