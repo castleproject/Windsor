@@ -47,8 +47,8 @@ namespace Castle.Services.Transaction
 		 * );
 		 */
 		[DllImport("kernel32")]
-		[ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
-		[SuppressUnmanagedCodeSecurity]
+		//[ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
+		//[SuppressUnmanagedCodeSecurity]
 		private static extern bool CloseHandle(IntPtr handle);
 	}
 }

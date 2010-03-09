@@ -581,11 +581,15 @@ namespace Castle.Services.Transaction
 		private void Dispose(bool disposing)
 		{
 			if (_Disposed) return;
-
 			if (disposing)
 			{
 				// called via the Dispose() method on IDisposable, 
 				// can use private object references.
+
+				if (_Status == TransactionStatus.Active)
+				{
+					Rollback();
+				}
 
 				if (_TransactionHandle != null && !_TransactionHandle.IsInvalid)
 				{
