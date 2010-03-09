@@ -12,25 +12,37 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+using Castle.Services.Transaction;
+
 namespace Castle.Facilities.AutoTx.Tests
 {
-	using System;
-
-	using Castle.Services.Transaction;
-
 	/// <summary>
 	/// Summary description for MockTransactionManager.
 	/// </summary>
 	public class MockTransactionManager : ITransactionManager
 	{
-		private MockTransaction _current;
-		private int _transactions;
 		private int _committedCount;
+		private MockTransaction _current;
 		private int _rolledBackCount;
+		private int _transactions;
 
-		public MockTransactionManager()
+		public int TransactionCount
 		{
+			get { return _transactions; }
 		}
+
+		public int CommittedCount
+		{
+			get { return _committedCount; }
+		}
+
+		public int RolledBackCount
+		{
+			get { return _rolledBackCount; }
+		}
+
+		#region ITransactionManager Members
 
 		event TransactionCreationInfoDelegate ITransactionManager.TransactionCreated
 		{
@@ -62,7 +74,7 @@ namespace Castle.Facilities.AutoTx.Tests
 			remove { throw new NotImplementedException(); }
 		}
 
-		event TransactionErrorDelegate ITransactionManager.TransactionFailed 
+		event TransactionErrorDelegate ITransactionManager.TransactionFailed
 		{
 			add { throw new NotImplementedException(); }
 			remove { throw new NotImplementedException(); }
@@ -85,7 +97,7 @@ namespace Castle.Facilities.AutoTx.Tests
 
 		public void Dispose(ITransaction tran)
 		{
-			MockTransaction transaction = (MockTransaction) tran;
+			var transaction = (MockTransaction) tran;
 
 			if (transaction.Status == TransactionStatus.Committed)
 			{
@@ -104,29 +116,15 @@ namespace Castle.Facilities.AutoTx.Tests
 			get { return _current; }
 		}
 
-		public int TransactionCount
-		{
-			get { return _transactions; }
-		}
-
-		public int CommittedCount
-		{
-			get { return _committedCount; }
-		}
-
-		public int RolledBackCount
-		{
-			get { return _rolledBackCount; }
-		}
+		#endregion
 	}
 
-	public class MockTransaction : AbstractTransaction
+	public class MockTransaction : TransactionBase
 	{
 		private bool rollbackOnly;
 
-		public override void SetRollbackOnly()
+		public MockTransaction() : base(null, TransactionMode.Unspecified, IsolationMode.Unspecified)
 		{
-			rollbackOnly = true;
 		}
 
 		public override bool IsChildTransaction
@@ -134,9 +132,25 @@ namespace Castle.Facilities.AutoTx.Tests
 			get { return false; }
 		}
 
-		public override bool IsRollbackOnlySet
+		public override bool IsAmbient
+		{
+			get { throw new NotImplementedException(); }
+			protected set { throw new NotImplementedException(); }
+		}
+
+		public new bool IsRollbackOnlySet
 		{
 			get { return rollbackOnly; }
+		}
+
+		protected override void InnerRollback()
+		{
+			throw new NotImplementedException();
+		}
+
+		public new void SetRollbackOnly()
+		{
+			rollbackOnly = true;
 		}
 	}
 }
