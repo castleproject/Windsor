@@ -21,7 +21,7 @@ namespace Castle.Services.Transaction
 	/// <summary>
 	/// Implements a transaction root.
 	/// </summary>
-	public class StandardTransaction : AbstractTransaction
+	public class StandardTransaction : TransactionBase
 	{
 		private readonly TransactionDelegate onTransactionCommitted;
 		private readonly TransactionDelegate onTransactionRolledback;

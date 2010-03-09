@@ -29,6 +29,20 @@ namespace Castle.Services.Transaction
 		{
 		}
 
+		public override void Rollback()
+		{
+			try
+			{
+				base.Rollback();
+			}
+			catch (TransactionException e)
+			{
+				_Logger.TryAndLog(() => TransactionFailed.Fire(this, new TransactionFailedEventArgs(this, e)));
+				throw;
+			}
+			
+		}
+
 		public override void Commit()
 		{
 			try {

@@ -33,7 +33,7 @@ namespace Castle.Services.Transaction.Tests
 		public void NestedRequiresWithCommits()
 		{
 			ITransaction root = tm.CreateTransaction( TransactionMode.Requires, IsolationMode.Unspecified );
-			Assert.IsTrue( root is StandardTransaction );
+			Assert.IsTrue( root is TransactionBase );
 			root.Begin();
 
 			ITransaction child1 = tm.CreateTransaction( TransactionMode.Requires, IsolationMode.Unspecified );
@@ -55,7 +55,7 @@ namespace Castle.Services.Transaction.Tests
 		public void NestedRequiresAndRequiresNew()
 		{
 			ITransaction root = tm.CreateTransaction( TransactionMode.Requires, IsolationMode.Unspecified );
-			Assert.IsTrue( root is StandardTransaction );
+			Assert.IsTrue(root is TransactionBase);
 			root.Begin();
 
 			ITransaction child1 = tm.CreateTransaction( TransactionMode.Requires, IsolationMode.Unspecified );
@@ -80,13 +80,13 @@ namespace Castle.Services.Transaction.Tests
 		[Test]
 		public void SameResources()
 		{
-			ResourceImpl resource = new ResourceImpl();
+			var resource = new ResourceImpl();
 
 			ITransaction root = tm.CreateTransaction( TransactionMode.Requires, IsolationMode.Unspecified );
 			root.Begin();
 			root.Enlist(resource);
 
-			ITransaction child1 = tm.CreateTransaction( TransactionMode.Requires, IsolationMode.Unspecified );
+			var child1 = tm.CreateTransaction( TransactionMode.Requires, IsolationMode.Unspecified );
 			Assert.IsTrue( child1 is ChildTransaction );
 			child1.Enlist(resource);
 			child1.Begin();

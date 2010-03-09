@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 
 namespace Castle.Services.Transaction
@@ -6,19 +7,12 @@ namespace Castle.Services.Transaction
 	/// Emulates a standalone transaction but in fact it 
 	/// just propages a transaction. 
 	/// </summary>
-	public class ChildTransaction : StandardTransaction
+	public sealed class ChildTransaction : TransactionBase
 	{
-		private StandardTransaction _parent;
+		private readonly ITransaction _Parent;
 
-		public ChildTransaction(StandardTransaction parent) : 
-			base(parent.TransactionMode, parent.IsolationMode, parent.IsAmbient)
+		public ChildTransaction(string name, TransactionMode mode, IsolationMode isolationMode) : base(name, mode, isolationMode)
 		{
-			_parent = parent;
-		}
-
-		public override void Enlist(IResource resource)
-		{
-			_parent.Enlist(resource);
 		}
 
 		public override void Begin()
@@ -26,11 +20,22 @@ namespace Castle.Services.Transaction
 			// Ignored
 		}
 
+		internal override void InnerBegin()
+		{
+		}
+
+		internal override void InnerCommit()
+		{
+		}
+
 		public override void Rollback()
 		{
 			// Vote as rollback
+			_Parent.SetRollbackOnly();
+		}
 
-			_parent.SetRollbackOnly();
+		protected override void InnerRollback()
+		{
 		}
 
 		public override void Commit()
@@ -38,29 +43,11 @@ namespace Castle.Services.Transaction
 			// Vote as commit
 		}
 
-		public override void SetRollbackOnly()
-		{
-			Rollback();
-		}
-
-		public override void RegisterSynchronization(ISynchronization synchronization)
-		{
-			_parent.RegisterSynchronization(synchronization);
-		}
-
-		public override IDictionary Context
-		{
-			get { return _parent.Context; }
-		}
-
 		public override bool IsChildTransaction
 		{
 			get { return true; }
 		}
 
-		public override bool IsRollbackOnlySet
-		{
-			get { return _parent.IsRollbackOnlySet; }
-		}
+		public override bool IsAmbient { get; protected set; }
 	}
 }
