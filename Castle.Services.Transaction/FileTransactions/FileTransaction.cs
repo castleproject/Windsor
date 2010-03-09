@@ -35,7 +35,7 @@ namespace Castle.Services.Transaction
 		private readonly string _Name;
 
 		private bool _CanCommit;
-		private bool _IsDistributed;
+		private bool _IsAmbient;
 		private bool _Disposed;
 
 		#region Constructors
@@ -89,7 +89,7 @@ namespace Castle.Services.Transaction
 				// had been yielded just before setting this reference, the "safe"-ness of the wrapper should
 				// not dispose the other handle which is now removed
 				_TransactionHandle = handle; // see the link in the remarks to the class for more details about async exceptions
-				_IsDistributed = true;
+				_IsAmbient = true;
 			}
 			else _TransactionHandle = createTransaction(string.Format("{0} Transaction", _Name));
 
@@ -260,9 +260,9 @@ namespace Castle.Services.Transaction
 		/// Gets whether the transaction is a distributed transaction.
 		/// TODO: What happens if the transaction is promoted to a distributed tx after it is created?
 		/// </summary>
-		public bool DistributedTransaction
+		public bool IsAmbientTransaction
 		{
-			get { return _IsDistributed; }
+			get { return _IsAmbient; }
 		}
 
 		///<summary>
@@ -560,7 +560,8 @@ namespace Castle.Services.Transaction
 		}
 
 		/// <summary>
-		/// Allows an <see cref="T:System.Object"/> to attempt to free resources and perform other cleanup operations before the <see cref="T:System.Object"/> is reclaimed by garbage collection.
+		/// Allows an <see cref="T:System.Object"/> to attempt to free resources and perform other 
+		/// cleanup operations before the <see cref="T:System.Object"/> is reclaimed by garbage collection.
 		/// </summary>
 		~FileTransaction()
 		{
@@ -580,21 +581,21 @@ namespace Castle.Services.Transaction
 		[SecurityPermission(SecurityAction.Demand, UnmanagedCode = true)]
 		private void Dispose(bool disposing)
 		{
+			// no unmanaged code here, just return.
+			if (!disposing) return;
+			
 			if (_Disposed) return;
-			if (disposing)
+			// called via the Dispose() method on IDisposable, 
+			// can use private object references.
+
+			if (_Status == TransactionStatus.Active)
 			{
-				// called via the Dispose() method on IDisposable, 
-				// can use private object references.
+				Rollback();
+			}
 
-				if (_Status == TransactionStatus.Active)
-				{
-					Rollback();
-				}
-
-				if (_TransactionHandle != null && !_TransactionHandle.IsInvalid)
-				{
-					_TransactionHandle.Dispose();
-				}
+			if (_TransactionHandle != null && !_TransactionHandle.IsInvalid)
+			{
+				_TransactionHandle.Dispose();
 			}
 
 			_Disposed = true;

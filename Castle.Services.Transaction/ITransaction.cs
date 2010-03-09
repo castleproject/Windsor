@@ -18,18 +18,6 @@ namespace Castle.Services.Transaction
 	using System.Collections.Generic;
 
 	/// <summary>
-	/// 
-	/// </summary>
-	public enum TransactionStatus
-	{
-		NoTransaction,
-		Active,
-		Committed,
-		RolledBack,
-		Invalid
-	}
-
-	/// <summary>
 	/// Represents the contract for a transaction.
 	/// </summary>
 	public interface ITransaction
@@ -84,18 +72,44 @@ namespace Castle.Services.Transaction
 		/// </summary>
 		IDictionary Context { get; }
 
+		/// <summary>
+		/// Gets whether the transaction is running inside another of castle's transactions.
+		/// </summary>
 		bool IsChildTransaction { get; }
 
+		/// <summary>
+		/// Gets whether rollback only is set.
+		/// </summary>
 		bool IsRollbackOnlySet { get; }
 
+		/// <summary>
+		/// Gets the transaction mode of the transaction.
+		/// </summary>
 		TransactionMode TransactionMode { get; }
 
+		/// <summary>
+		/// Gets the isolation mode in use for the transaction.
+		/// </summary>
 		IsolationMode IsolationMode { get; }
 
-		bool DistributedTransaction { get; }
+		/// <summary>
+		/// Gets whether the transaction "found an" ambient transaction to run in.
+		/// This is true if the tx is running in the DTC or a TransactionScope, but 
+		/// doesn't imply a distributed transaction (as TransactionScopes automatically choose the least
+		/// performance invasive option)
+		/// </summary>
+		bool IsAmbientTransaction { get; }
 
+		/// <summary>
+		/// Gets the friendly name (if set) or an unfriendly integer hash name (if not set).
+		/// Never returns null.
+		/// </summary>
 		string Name { get; }
 
+		/// <summary>
+		/// Gets an enumerable of the resources present.
+		/// </summary>
+		/// <returns></returns>
 		IEnumerable<IResource> Resources();
 	}
 }

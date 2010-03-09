@@ -5,7 +5,7 @@ using Path=Castle.Core.IO.Path;
 namespace Castle.Services.Transaction.IO
 {
 	///<summary>
-	/// Adapter base class.
+	/// Adapter base class for the file and directory adapters.
 	///</summary>
 	public abstract class TxAdapterBase
 	{

@@ -137,7 +137,7 @@ namespace Castle.Services.Transaction.Tests
 				{
 					tx.Begin();
 
-					Assert.That(tx.DistributedTransaction);
+					Assert.That(tx.IsAmbientTransaction);
 
 					tx.Rollback();
 					Assert.That(tx.IsRollbackOnlySet);
@@ -154,9 +154,9 @@ namespace Castle.Services.Transaction.Tests
 				Assert.That(tx.Status, Is.EqualTo(TransactionStatus.NoTransaction));
 				tx.Begin();
 				Assert.That(tx.Status, Is.EqualTo(TransactionStatus.Active));
-				Assert.That(tx.DistributedTransaction, Is.False);
+				Assert.That(tx.IsAmbientTransaction, Is.False);
 				tx.Begin();
-				Assert.That(tx.DistributedTransaction, Is.False, "Starting the same transaction twice should make no difference.");
+				Assert.That(tx.IsAmbientTransaction, Is.False, "Starting the same transaction twice should make no difference.");
 				Assert.That(tx.Status, Is.EqualTo(TransactionStatus.Active));
 				tx.Commit();
 				Assert.That(tx.Status, Is.EqualTo(TransactionStatus.Committed));

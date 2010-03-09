@@ -32,8 +32,8 @@ namespace Castle.Services.Transaction
 		private TransactionStatus state = TransactionStatus.NoTransaction;
 		private TransactionMode transactionMode;
 		private IsolationMode isolationMode;
-		private bool distributedTransaction;
-		private string name;
+		private bool _IsAmbientTransaction;
+		private string name = string.Empty;
 		private ILogger logger = NullLogger.Instance;
 
 		internal IList<IResource> resources;
@@ -55,7 +55,7 @@ namespace Castle.Services.Transaction
 		{
 			this.transactionMode = transactionMode;
 			this.isolationMode = isolationMode;
-			this.distributedTransaction = distributedTransaction;
+			this._IsAmbientTransaction = distributedTransaction;
 
 			if (String.IsNullOrEmpty(name))
 			{
@@ -257,9 +257,9 @@ namespace Castle.Services.Transaction
 			get { return isolationMode; }
 		}
 
-		public bool DistributedTransaction
+		public bool IsAmbientTransaction
 		{
-			get { return distributedTransaction; }
+			get { return _IsAmbientTransaction; }
 		}
 
 		public string Name

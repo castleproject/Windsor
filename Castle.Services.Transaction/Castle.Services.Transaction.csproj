@@ -167,6 +167,7 @@
     <Compile Include="Attributes\TransactionMode.cs" />
     <Compile Include="GenericTransactions\TransactionScopeResourceAdapter.cs" />
     <Compile Include="Misc\Fun.cs" />
+    <Compile Include="TransactionStatus.cs" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />
@@ -192,6 +193,7 @@
     <None Include="..\CastleKey.snk">
       <Link>CastleKey.snk</Link>
     </None>
+    <None Include="Diagrams\Transaction Hierarchy.cd" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\lib\Castle.Core\src\Castle.Core\Castle.Core-vs2008.csproj">

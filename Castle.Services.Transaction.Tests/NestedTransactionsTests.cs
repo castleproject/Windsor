@@ -38,10 +38,12 @@ namespace Castle.Services.Transaction.Tests
 
 			ITransaction child1 = tm.CreateTransaction( TransactionMode.Requires, IsolationMode.Unspecified );
 			Assert.IsTrue( child1 is ChildTransaction );
+			Assert.IsTrue( child1.IsChildTransaction );
 			child1.Begin();
 			
 			ITransaction child2 = tm.CreateTransaction( TransactionMode.Requires, IsolationMode.Unspecified );
 			Assert.IsTrue( child2 is ChildTransaction );
+			Assert.IsTrue( child2.IsChildTransaction );
 			child2.Begin();
 
 			child2.Commit();
