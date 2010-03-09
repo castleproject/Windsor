@@ -4,306 +4,6 @@
         <name>Castle.DynamicProxy2</name>
     </assembly>
     <members>
-        <member name="M:Castle.DynamicProxy.Contributors.MembersCollector.IsAccessible(System.Reflection.MethodBase)">
-            <summary>
-            Checks if the method is public or protected.
-            </summary>
-            <param name="method"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Castle.DynamicProxy.Contributors.MembersCollector.AcceptMethod(System.Reflection.MethodInfo,System.Boolean,Castle.DynamicProxy.IProxyGenerationHook)">
-            <summary>
-            Performs some basic screening and invokes the <see cref="T:Castle.DynamicProxy.IProxyGenerationHook"/>
-            to select methods.
-            </summary>
-            <param name="method"></param>
-            <param name="onlyVirtuals"></param>
-            <param name="hook"></param>
-            <returns></returns>
-        </member>
-        <member name="T:Castle.DynamicProxy.Contributors.ITypeContributor">
-            <summary>
-            Interface describing elements composing generated type
-            </summary>
-        </member>
-        <member name="T:Castle.DynamicProxy.Generators.Emitters.SimpleAST.IndirectReference">
-            <summary>
-            Wraps a reference that is passed 
-            ByRef and provides indirect load/store support.
-            </summary>
-        </member>
-        <member name="T:Castle.DynamicProxy.Generators.Emitters.SimpleAST.NewArrayExpression">
-            <summary>
-            Summary description for NewArrayExpression.
-            </summary>
-        </member>
-        <member name="T:Castle.DynamicProxy.Generators.Emitters.SimpleAST.ReferencesToObjectArrayExpression">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="T:Castle.DynamicProxy.Generators.Emitters.LdcOpCodesDictionary">
-            <summary>s
-            Provides appropriate Ldc.X opcode for the type of primitive value to be loaded.
-            </summary>
-        </member>
-        <member name="T:Castle.DynamicProxy.Generators.Emitters.LdindOpCodesDictionary">
-            <summary>
-            Provides appropriate Ldind.X opcode for 
-            the type of primitive value to be loaded indirectly.
-            </summary>
-        </member>
-        <member name="M:Castle.DynamicProxy.Generators.Emitters.MethodEmitter.CopyParametersAndReturnTypeFrom(System.Reflection.MethodInfo,Castle.DynamicProxy.Generators.Emitters.AbstractTypeEmitter)">
-            <summary>
-            Inspect the base method for generic definitions
-            and set the return type and the parameters
-            accordingly
-            </summary>
-        </member>
-        <member name="M:Castle.DynamicProxy.Generators.Emitters.OpCodeUtil.EmitLoadOpCodeForConstantValue(System.Reflection.Emit.ILGenerator,System.Object)">
-            <summary>
-            Emits a load opcode of the appropriate kind for a constant string or
-            primitive value.
-            </summary>
-            <param name="gen"></param>
-            <param name="value"></param>
-        </member>
-        <member name="M:Castle.DynamicProxy.Generators.Emitters.OpCodeUtil.EmitLoadOpCodeForDefaultValueOfType(System.Reflection.Emit.ILGenerator,System.Type)">
-            <summary>
-            Emits a load opcode of the appropriate kind for the constant default value of a
-            type, such as 0 for value types and null for reference types.
-            </summary>
-        </member>
-        <member name="M:Castle.DynamicProxy.Generators.Emitters.OpCodeUtil.EmitLoadIndirectOpCodeForType(System.Reflection.Emit.ILGenerator,System.Type)">
-            <summary>
-            Emits a load indirect opcode of the appropriate type for a value or object reference.
-            Pops a pointer off the evaluation stack, dereferences it and loads
-            a value of the specified type.
-            </summary>
-            <param name="gen"></param>
-            <param name="type"></param>
-        </member>
-        <member name="M:Castle.DynamicProxy.Generators.Emitters.OpCodeUtil.EmitStoreIndirectOpCodeForType(System.Reflection.Emit.ILGenerator,System.Type)">
-            <summary>
-            Emits a store indirectopcode of the appropriate type for a value or object reference.
-            Pops a value of the specified type and a pointer off the evaluation stack, and
-            stores the value.
-            </summary>
-            <param name="gen"></param>
-            <param name="type"></param>
-        </member>
-        <member name="T:Castle.DynamicProxy.Generators.Emitters.PropertiesCollection">
-            <summary>
-            Summary description for PropertiesCollection.
-            </summary>
-        </member>
-        <member name="T:Castle.DynamicProxy.Generators.Emitters.StindOpCodesDictionary">
-            <summary>
-            Provides appropriate Stind.X opcode 
-            for the type of primitive value to be stored indirectly.
-            </summary>
-        </member>
-        <member name="M:Castle.DynamicProxy.Generators.Emitters.TypeUtil.GetAllInterfaces(System.Type[])">
-            <summary>
-            Returns list of all unique interfaces implemented given types, including their base interfaces.
-            </summary>
-            <param name="types"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Castle.DynamicProxy.Generators.AttributeDisassembler.HandleError(System.Type,System.Exception)">
-            <summary>
-            Handles error during disassembly process
-            </summary>
-            <param name="attributeType">Type of the attribute being disassembled</param>
-            <param name="exception">Exception thrown during the process</param>
-            <returns>usually null, or (re)throws the exception</returns>
-        </member>
-        <member name="M:Castle.DynamicProxy.Generators.AttributeDisassembler.InitializeConstructorArgs(System.Type,System.Attribute,System.Object[],System.Reflection.ParameterInfo[])">
-            <summary>
-            Here we try to match a constructor argument to its value.
-            Since we can't get the values from the assembly, we use some heuristics to get it.
-            a/ we first try to match all the properties on the attributes by name (case insensitive) to the argument
-            b/ if we fail we try to match them by property type, with some smarts about convertions (i,e: can use Guid for string).
-            </summary>
-        </member>
-        <member name="M:Castle.DynamicProxy.Generators.AttributeDisassembler.ReplaceIfBetterMatch(System.Reflection.ParameterInfo,System.Reflection.PropertyInfo,System.Reflection.PropertyInfo)">
-            <summary>
-            We have the following rules here.
-            Try to find a matching type, failing that, if the parameter is string, get the first property (under the assumption that
-            we can convert it.
-            </summary>
-        </member>
-        <member name="M:Castle.DynamicProxy.Generators.AttributeDisassembler.ConvertValue(System.Object,System.Type)">
-            <summary>
-            Attributes can only accept simple types, so we return null for null,
-            if the value is passed as string we call to string (should help with converting), 
-            otherwise, we use the value as is (enums, integer, etc).
-            </summary>
-        </member>
-        <member name="T:Castle.DynamicProxy.Generators.BaseProxyGenerator">
-            <summary>
-            Base class that exposes the common functionalities
-            to proxy generation.
-            </summary>
-        </member>
-        <member name="M:Castle.DynamicProxy.Generators.BaseProxyGenerator.GenerateParameterlessConstructor(Castle.DynamicProxy.Generators.Emitters.ClassEmitter,System.Type,Castle.DynamicProxy.Generators.Emitters.SimpleAST.FieldReference)">
-            <summary>
-            Generates a parameters constructor that initializes the proxy
-            state with <see cref="T:Castle.Core.Interceptor.StandardInterceptor"/> just to make it non-null.
-            <para>
-            This constructor is important to allow proxies to be XML serializable
-            </para>
-            </summary>
-        </member>
-        <member name="M:Castle.DynamicProxy.Generators.BaseProxyGenerator.AddMappingNoCheck(System.Type,Castle.DynamicProxy.Contributors.ITypeContributor,System.Collections.Generic.IDictionary{System.Type,Castle.DynamicProxy.Contributors.ITypeContributor})">
-            <summary>
-            It is safe to add mapping (no mapping for the interface exists)
-            </summary>
-            <param name="implementer"></param>
-            <param name="interface"></param>
-            <param name="mapping"></param>
-        </member>
-        <member name="M:Castle.DynamicProxy.Generators.CacheKey.#ctor(System.Reflection.MemberInfo,System.Type,System.Type[],Castle.DynamicProxy.ProxyGenerationOptions)">
-            <summary>
-            Initializes a new instance of the <see cref="T:Castle.DynamicProxy.Generators.CacheKey"/> class.
-            </summary>
-            <param name="target">Target element. This is either target type or target method for invocation types.</param>
-            <param name="type">The type of the proxy. This is base type for invocation types.</param>
-            <param name="interfaces">The interfaces.</param>
-            <param name="options">The options.</param>
-        </member>
-        <member name="M:Castle.DynamicProxy.Generators.CacheKey.#ctor(System.Type,System.Type[],Castle.DynamicProxy.ProxyGenerationOptions)">
-            <summary>
-            Initializes a new instance of the <see cref="T:Castle.DynamicProxy.Generators.CacheKey"/> class.
-            </summary>
-            <param name="target">Type of the target.</param>
-            <param name="interfaces">The interfaces.</param>
-            <param name="options">The options.</param>
-        </member>
-        <member name="M:Castle.DynamicProxy.Generators.InvocationTypeGenerator.GetCtorArgumentsAndBaseCtorToCall(System.Type,Castle.DynamicProxy.ProxyGenerationOptions,System.Reflection.ConstructorInfo@)">
-            <summary>
-            Generates the constructor for the class that extends
-            <see cref="T:Castle.DynamicProxy.AbstractInvocation"/>
-            </summary>
-            <param name="targetFieldType"></param>
-            <param name="proxyGenerationOptions"></param>
-            <param name="baseConstructor"></param>
-        </member>
-        <member name="T:Castle.DynamicProxy.Generators.ClassProxyGenerator">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="T:Castle.DynamicProxy.Generators.INamingScope">
-            <summary>
-            Represents the scope of uniquenes of names for types and their members
-            </summary>
-        </member>
-        <member name="M:Castle.DynamicProxy.Generators.INamingScope.GetUniqueName(System.String)">
-            <summary>
-            Gets a unique name based on <paramref name="suggestedName"/>
-            </summary>
-            <param name="suggestedName">Name suggested by the caller</param>
-            <returns>Unique name based on <paramref name="suggestedName"/>.</returns>
-            <remarks>
-            Implementers should provide name as closely resembling <paramref name="suggestedName"/> as possible.
-            Generally if no collision occurs it is suggested to return suggested name, otherwise append sequential suffix.
-            Implementers must return deterministic names, that is when <see cref="M:Castle.DynamicProxy.Generators.INamingScope.GetUniqueName(System.String)"/> is called twice 
-            with the same suggested name, the same returned name should be provided each time. Non-deterministic return
-            values, like appending random suffices will break serialization of proxies.
-            </remarks>
-        </member>
-        <member name="M:Castle.DynamicProxy.Generators.INamingScope.SafeSubScope">
-            <summary>
-            Returns new, disposable naming scope. It is responsibilty of the caller to make sure that no naming collision
-            with enclosing scope, or other subscopes is possible.
-            </summary>
-            <returns>New naming scope.</returns>
-        </member>
-        <member name="T:Castle.DynamicProxy.Generators.InterfaceProxyWithTargetGenerator">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="M:Castle.DynamicProxy.Generators.MetaEvent.#ctor(System.String,System.Type,System.Type,Castle.DynamicProxy.Generators.MetaMethod,Castle.DynamicProxy.Generators.MetaMethod,System.Reflection.EventAttributes)">
-            <summary>
-            Initializes a new instance of the <see cref="T:Castle.DynamicProxy.Generators.MetaEvent"/> class.
-            </summary>
-            <param name="name">The name.</param>
-            <param name="declaringType">Type declaring the original event being overriten, or null.</param>
-            <param name="eventDelegateType"></param>
-            <param name="adder">The add method.</param>
-            <param name="remover">The remove method.</param>
-            <param name="attributes">The attributes.</param>
-        </member>
-        <member name="T:Castle.DynamicProxy.Generators.MethodFinder">
-            <summary>
-            Returns the methods implemented by a type. Use this instead of Type.GetMethods() to work around a CLR issue
-            where duplicate MethodInfos are returned by Type.GetMethods() after a token of a generic type's method was loaded.
-            </summary>
-        </member>
-        <member name="T:Castle.DynamicProxy.Serialization.ProxyObjectReference">
-            <summary>
-            Handles the deserialization of proxies.
-            </summary>
-        </member>
-        <member name="M:Castle.DynamicProxy.Serialization.ProxyObjectReference.ResetScope">
-            <summary>
-            Resets the <see cref="P:Castle.DynamicProxy.Serialization.ProxyObjectReference.ModuleScope"/> used for deserialization to a new scope.
-            </summary>
-            <remarks>This is useful for test cases.</remarks>
-        </member>
-        <member name="M:Castle.DynamicProxy.Serialization.ProxyObjectReference.SetScope(Castle.DynamicProxy.ModuleScope)">
-            <summary>
-            Resets the <see cref="P:Castle.DynamicProxy.Serialization.ProxyObjectReference.ModuleScope"/> used for deserialization to a given <paramref name="scope"/>.
-            </summary>
-            <param name="scope">The scope to be used for deserialization.</param>
-            <remarks>By default, the deserialization process uses a different scope than the rest of the application, which can lead to multiple proxies
-            being generated for the same type. By explicitly setting the deserialization scope to the application's scope, this can be avoided.</remarks>
-        </member>
-        <member name="P:Castle.DynamicProxy.Serialization.ProxyObjectReference.ModuleScope">
-            <summary>
-            Gets the <see cref="T:Castle.DynamicProxy.ModuleScope"/> used for deserialization.
-            </summary>
-            <value>As <see cref="T:Castle.DynamicProxy.Serialization.ProxyObjectReference"/> has no way of automatically determining the scope used by the application (and the application
-            might use more than one scope at the same time), <see cref="T:Castle.DynamicProxy.Serialization.ProxyObjectReference"/> uses a dedicated scope instance for deserializing proxy
-            types. This instance can be reset and set to a specific value via <see cref="M:Castle.DynamicProxy.Serialization.ProxyObjectReference.ResetScope"/> and <see cref="M:Castle.DynamicProxy.Serialization.ProxyObjectReference.SetScope(Castle.DynamicProxy.ModuleScope)"/>.</value>
-        </member>
-        <member name="T:Castle.DynamicProxy.Tokens.InvocationMethods">
-            <summary>
-            Holds <see cref="T:System.Reflection.MethodInfo"/> objects representing methods of <see cref="T:Castle.DynamicProxy.AbstractInvocation"/> class.
-            </summary>
-        </member>
-        <member name="T:Castle.DynamicProxy.Tokens.SerializationInfoMethods">
-            <summary>
-            Holds <see cref="T:System.Reflection.MethodInfo"/> objects representing methods of <see cref="T:System.Runtime.Serialization.SerializationInfo"/> class.
-            </summary>
-        </member>
-        <member name="F:Castle.DynamicProxy.Tokens.SerializationInfoMethods.AddValue_Bool">
-            <summary>
-            <see cref="M:System.Runtime.Serialization.SerializationInfo.AddValue(System.String,System.Boolean)"/>
-            </summary>
-        </member>
-        <member name="F:Castle.DynamicProxy.Tokens.SerializationInfoMethods.AddValue_Int32">
-            <summary>
-            <see cref="M:System.Runtime.Serialization.SerializationInfo.AddValue(System.String,System.Int32)"/>
-            </summary>
-        </member>
-        <member name="F:Castle.DynamicProxy.Tokens.SerializationInfoMethods.AddValue_Object">
-            <summary>
-            <see cref="M:System.Runtime.Serialization.SerializationInfo.AddValue(System.String,System.Object)"/>
-            </summary>
-        </member>
-        <member name="F:Castle.DynamicProxy.Tokens.SerializationInfoMethods.GetValue">
-            <summary>
-            <see cref="M:System.Runtime.Serialization.SerializationInfo.GetValue(System.String,System.Type)"/>
-            </summary>
-        </member>
-        <member name="F:Castle.DynamicProxy.Tokens.SerializationInfoMethods.SetType">
-            <summary>
-            <see cref="M:System.Runtime.Serialization.SerializationInfo.SetType(System.Type)"/>
-            </summary>
-        </member>
         <member name="T:Castle.DynamicProxy.IProxyGenerationHook">
             <summary>
             Used during the target type inspection process. Implementors have a chance to customize the
@@ -335,28 +35,71 @@
             Invoked by the generation process to notify that the whole process has completed.
             </summary>
         </member>
-        <member name="M:Castle.DynamicProxy.AttributeUtil.AddDisassembler``1(Castle.DynamicProxy.IAttributeDisassembler)">
+        <member name="T:Castle.DynamicProxy.Contributors.ITypeContributor">
             <summary>
-            Registers custom disassembler to handle disassembly of specified type of attributes.
+            Interface describing elements composing generated type
             </summary>
-            <typeparam name="TAttribute">Type of attributes to handle</typeparam>
-            <param name="disassembler">Disassembler converting existing instances of Attributes to CustomAttributeBuilders</param>
-            <remarks>
-            When disassembling an attribute Dynamic Proxy will first check if an custom disassembler has been registered to handle attributes of that type, 
-            and if none is found, it'll use the <see cref="P:Castle.DynamicProxy.AttributeUtil.FallbackDisassembler"/>.
-            </remarks>
         </member>
-        <member name="M:Castle.DynamicProxy.AttributeUtil.ShouldSkipAttributeReplication(System.Type)">
+        <member name="M:Castle.DynamicProxy.Generators.AttributeDisassembler.HandleError(System.Type,System.Exception)">
             <summary>
-            Attributes should be replicated if they are non-inheritable,
-            but there are some special cases where the attributes means
-            something to the CLR, where they should be skipped.
+            Handles error during disassembly process
+            </summary>
+            <param name="attributeType">Type of the attribute being disassembled</param>
+            <param name="exception">Exception thrown during the process</param>
+            <returns>usually null, or (re)throws the exception</returns>
+        </member>
+        <member name="M:Castle.DynamicProxy.Generators.AttributeDisassembler.InitializeConstructorArgs(System.Type,System.Attribute,System.Object[],System.Reflection.ParameterInfo[])">
+            <summary>
+            Here we try to match a constructor argument to its value.
+            Since we can't get the values from the assembly, we use some heuristics to get it.
+            a/ we first try to match all the properties on the attributes by name (case insensitive) to the argument
+            b/ if we fail we try to match them by property type, with some smarts about convertions (i,e: can use Guid for string).
+            </summary>
+        </member>
+        <member name="M:Castle.DynamicProxy.Generators.AttributeDisassembler.ReplaceIfBetterMatch(System.Reflection.ParameterInfo,System.Reflection.PropertyInfo,System.Reflection.PropertyInfo)">
+            <summary>
+            We have the following rules here.
+            Try to find a matching type, failing that, if the parameter is string, get the first property (under the assumption that
+            we can convert it.
+            </summary>
+        </member>
+        <member name="M:Castle.DynamicProxy.Generators.AttributeDisassembler.ConvertValue(System.Object,System.Type)">
+            <summary>
+            Attributes can only accept simple types, so we return null for null,
+            if the value is passed as string we call to string (should help with converting), 
+            otherwise, we use the value as is (enums, integer, etc).
             </summary>
         </member>
         <member name="T:Castle.DynamicProxy.CacheMappingsAttribute">
             <summary>
             Applied to the assemblies saved by <see cref="T:Castle.DynamicProxy.ModuleScope"/> in order to persist the cache data included in the persisted assembly.
             </summary>
+        </member>
+        <member name="M:Castle.DynamicProxy.Contributors.MembersCollector.IsAccessible(System.Reflection.MethodBase)">
+            <summary>
+            Checks if the method is public or protected.
+            </summary>
+            <param name="method"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Castle.DynamicProxy.Contributors.MembersCollector.AcceptMethod(System.Reflection.MethodInfo,System.Boolean,Castle.DynamicProxy.IProxyGenerationHook)">
+            <summary>
+            Performs some basic screening and invokes the <see cref="T:Castle.DynamicProxy.IProxyGenerationHook"/>
+            to select methods.
+            </summary>
+            <param name="method"></param>
+            <param name="onlyVirtuals"></param>
+            <param name="hook"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Castle.DynamicProxy.Generators.InvocationTypeGenerator.GetCtorArgumentsAndBaseCtorToCall(System.Type,Castle.DynamicProxy.ProxyGenerationOptions,System.Reflection.ConstructorInfo@)">
+            <summary>
+            Generates the constructor for the class that extends
+            <see cref="T:Castle.DynamicProxy.AbstractInvocation"/>
+            </summary>
+            <param name="targetFieldType"></param>
+            <param name="proxyGenerationOptions"></param>
+            <param name="baseConstructor"></param>
         </member>
         <member name="T:Castle.DynamicProxy.DefaultProxyBuilder">
             <summary>
@@ -493,6 +236,201 @@
             Initializes a new instance of the <see cref="T:Castle.DynamicProxy.DefaultProxyBuilder"/> class.
             </summary>
             <param name="scope">The module scope for generated proxy types.</param>
+        </member>
+        <member name="M:Castle.DynamicProxy.AttributeUtil.AddDisassembler``1(Castle.DynamicProxy.IAttributeDisassembler)">
+            <summary>
+            Registers custom disassembler to handle disassembly of specified type of attributes.
+            </summary>
+            <typeparam name="TAttribute">Type of attributes to handle</typeparam>
+            <param name="disassembler">Disassembler converting existing instances of Attributes to CustomAttributeBuilders</param>
+            <remarks>
+            When disassembling an attribute Dynamic Proxy will first check if an custom disassembler has been registered to handle attributes of that type, 
+            and if none is found, it'll use the <see cref="P:Castle.DynamicProxy.AttributeUtil.FallbackDisassembler"/>.
+            </remarks>
+        </member>
+        <member name="M:Castle.DynamicProxy.AttributeUtil.ShouldSkipAttributeReplication(System.Type)">
+            <summary>
+            Attributes should be replicated if they are non-inheritable,
+            but there are some special cases where the attributes means
+            something to the CLR, where they should be skipped.
+            </summary>
+        </member>
+        <member name="T:Castle.DynamicProxy.Generators.BaseProxyGenerator">
+            <summary>
+            Base class that exposes the common functionalities
+            to proxy generation.
+            </summary>
+        </member>
+        <member name="M:Castle.DynamicProxy.Generators.BaseProxyGenerator.GenerateParameterlessConstructor(Castle.DynamicProxy.Generators.Emitters.ClassEmitter,System.Type,Castle.DynamicProxy.Generators.Emitters.SimpleAST.FieldReference)">
+            <summary>
+            Generates a parameters constructor that initializes the proxy
+            state with <see cref="T:Castle.Core.Interceptor.StandardInterceptor"/> just to make it non-null.
+            <para>
+            This constructor is important to allow proxies to be XML serializable
+            </para>
+            </summary>
+        </member>
+        <member name="M:Castle.DynamicProxy.Generators.BaseProxyGenerator.AddMappingNoCheck(System.Type,Castle.DynamicProxy.Contributors.ITypeContributor,System.Collections.Generic.IDictionary{System.Type,Castle.DynamicProxy.Contributors.ITypeContributor})">
+            <summary>
+            It is safe to add mapping (no mapping for the interface exists)
+            </summary>
+            <param name="implementer"></param>
+            <param name="interface"></param>
+            <param name="mapping"></param>
+        </member>
+        <member name="M:Castle.DynamicProxy.Generators.CacheKey.#ctor(System.Reflection.MemberInfo,System.Type,System.Type[],Castle.DynamicProxy.ProxyGenerationOptions)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Castle.DynamicProxy.Generators.CacheKey"/> class.
+            </summary>
+            <param name="target">Target element. This is either target type or target method for invocation types.</param>
+            <param name="type">The type of the proxy. This is base type for invocation types.</param>
+            <param name="interfaces">The interfaces.</param>
+            <param name="options">The options.</param>
+        </member>
+        <member name="M:Castle.DynamicProxy.Generators.CacheKey.#ctor(System.Type,System.Type[],Castle.DynamicProxy.ProxyGenerationOptions)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Castle.DynamicProxy.Generators.CacheKey"/> class.
+            </summary>
+            <param name="target">Type of the target.</param>
+            <param name="interfaces">The interfaces.</param>
+            <param name="options">The options.</param>
+        </member>
+        <member name="T:Castle.DynamicProxy.Generators.ClassProxyGenerator">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Castle.DynamicProxy.Generators.Emitters.LdcOpCodesDictionary">
+            <summary>s
+            Provides appropriate Ldc.X opcode for the type of primitive value to be loaded.
+            </summary>
+        </member>
+        <member name="T:Castle.DynamicProxy.Generators.Emitters.LdindOpCodesDictionary">
+            <summary>
+            Provides appropriate Ldind.X opcode for 
+            the type of primitive value to be loaded indirectly.
+            </summary>
+        </member>
+        <member name="M:Castle.DynamicProxy.Generators.Emitters.MethodEmitter.CopyParametersAndReturnTypeFrom(System.Reflection.MethodInfo,Castle.DynamicProxy.Generators.Emitters.AbstractTypeEmitter)">
+            <summary>
+            Inspect the base method for generic definitions
+            and set the return type and the parameters
+            accordingly
+            </summary>
+        </member>
+        <member name="M:Castle.DynamicProxy.Generators.Emitters.OpCodeUtil.EmitLoadOpCodeForConstantValue(System.Reflection.Emit.ILGenerator,System.Object)">
+            <summary>
+            Emits a load opcode of the appropriate kind for a constant string or
+            primitive value.
+            </summary>
+            <param name="gen"></param>
+            <param name="value"></param>
+        </member>
+        <member name="M:Castle.DynamicProxy.Generators.Emitters.OpCodeUtil.EmitLoadOpCodeForDefaultValueOfType(System.Reflection.Emit.ILGenerator,System.Type)">
+            <summary>
+            Emits a load opcode of the appropriate kind for the constant default value of a
+            type, such as 0 for value types and null for reference types.
+            </summary>
+        </member>
+        <member name="M:Castle.DynamicProxy.Generators.Emitters.OpCodeUtil.EmitLoadIndirectOpCodeForType(System.Reflection.Emit.ILGenerator,System.Type)">
+            <summary>
+            Emits a load indirect opcode of the appropriate type for a value or object reference.
+            Pops a pointer off the evaluation stack, dereferences it and loads
+            a value of the specified type.
+            </summary>
+            <param name="gen"></param>
+            <param name="type"></param>
+        </member>
+        <member name="M:Castle.DynamicProxy.Generators.Emitters.OpCodeUtil.EmitStoreIndirectOpCodeForType(System.Reflection.Emit.ILGenerator,System.Type)">
+            <summary>
+            Emits a store indirectopcode of the appropriate type for a value or object reference.
+            Pops a value of the specified type and a pointer off the evaluation stack, and
+            stores the value.
+            </summary>
+            <param name="gen"></param>
+            <param name="type"></param>
+        </member>
+        <member name="T:Castle.DynamicProxy.Generators.Emitters.PropertiesCollection">
+            <summary>
+            Summary description for PropertiesCollection.
+            </summary>
+        </member>
+        <member name="T:Castle.DynamicProxy.Generators.Emitters.SimpleAST.IndirectReference">
+            <summary>
+            Wraps a reference that is passed 
+            ByRef and provides indirect load/store support.
+            </summary>
+        </member>
+        <member name="T:Castle.DynamicProxy.Generators.Emitters.SimpleAST.NewArrayExpression">
+            <summary>
+            Summary description for NewArrayExpression.
+            </summary>
+        </member>
+        <member name="T:Castle.DynamicProxy.Generators.Emitters.SimpleAST.ReferencesToObjectArrayExpression">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Castle.DynamicProxy.Generators.Emitters.StindOpCodesDictionary">
+            <summary>
+            Provides appropriate Stind.X opcode 
+            for the type of primitive value to be stored indirectly.
+            </summary>
+        </member>
+        <member name="M:Castle.DynamicProxy.Generators.Emitters.TypeUtil.GetAllInterfaces(System.Type[])">
+            <summary>
+            Returns list of all unique interfaces implemented given types, including their base interfaces.
+            </summary>
+            <param name="types"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Castle.DynamicProxy.Generators.MetaEvent.#ctor(System.String,System.Type,System.Type,Castle.DynamicProxy.Generators.MetaMethod,Castle.DynamicProxy.Generators.MetaMethod,System.Reflection.EventAttributes)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Castle.DynamicProxy.Generators.MetaEvent"/> class.
+            </summary>
+            <param name="name">The name.</param>
+            <param name="declaringType">Type declaring the original event being overriten, or null.</param>
+            <param name="eventDelegateType"></param>
+            <param name="adder">The add method.</param>
+            <param name="remover">The remove method.</param>
+            <param name="attributes">The attributes.</param>
+        </member>
+        <member name="T:Castle.DynamicProxy.Generators.INamingScope">
+            <summary>
+            Represents the scope of uniquenes of names for types and their members
+            </summary>
+        </member>
+        <member name="M:Castle.DynamicProxy.Generators.INamingScope.GetUniqueName(System.String)">
+            <summary>
+            Gets a unique name based on <paramref name="suggestedName"/>
+            </summary>
+            <param name="suggestedName">Name suggested by the caller</param>
+            <returns>Unique name based on <paramref name="suggestedName"/>.</returns>
+            <remarks>
+            Implementers should provide name as closely resembling <paramref name="suggestedName"/> as possible.
+            Generally if no collision occurs it is suggested to return suggested name, otherwise append sequential suffix.
+            Implementers must return deterministic names, that is when <see cref="M:Castle.DynamicProxy.Generators.INamingScope.GetUniqueName(System.String)"/> is called twice 
+            with the same suggested name, the same returned name should be provided each time. Non-deterministic return
+            values, like appending random suffices will break serialization of proxies.
+            </remarks>
+        </member>
+        <member name="M:Castle.DynamicProxy.Generators.INamingScope.SafeSubScope">
+            <summary>
+            Returns new, disposable naming scope. It is responsibilty of the caller to make sure that no naming collision
+            with enclosing scope, or other subscopes is possible.
+            </summary>
+            <returns>New naming scope.</returns>
+        </member>
+        <member name="T:Castle.DynamicProxy.Generators.InterfaceProxyWithTargetGenerator">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Castle.DynamicProxy.Generators.MethodFinder">
+            <summary>
+            Returns the methods implemented by a type. Use this instead of Type.GetMethods() to work around a CLR issue
+            where duplicate MethodInfos are returned by Type.GetMethods() after a token of a generic type's method was loaded.
+            </summary>
         </member>
         <member name="M:Castle.DynamicProxy.InternalsHelper.IsInternalToDynamicProxy(System.Reflection.Assembly)">
             <summary>
@@ -1465,6 +1403,68 @@
             <summary>
             For interface proxies, this will point to the
             <see cref="T:System.Reflection.MethodInfo"/> on the target class
+            </summary>
+        </member>
+        <member name="T:Castle.DynamicProxy.Serialization.ProxyObjectReference">
+            <summary>
+            Handles the deserialization of proxies.
+            </summary>
+        </member>
+        <member name="M:Castle.DynamicProxy.Serialization.ProxyObjectReference.ResetScope">
+            <summary>
+            Resets the <see cref="P:Castle.DynamicProxy.Serialization.ProxyObjectReference.ModuleScope"/> used for deserialization to a new scope.
+            </summary>
+            <remarks>This is useful for test cases.</remarks>
+        </member>
+        <member name="M:Castle.DynamicProxy.Serialization.ProxyObjectReference.SetScope(Castle.DynamicProxy.ModuleScope)">
+            <summary>
+            Resets the <see cref="P:Castle.DynamicProxy.Serialization.ProxyObjectReference.ModuleScope"/> used for deserialization to a given <paramref name="scope"/>.
+            </summary>
+            <param name="scope">The scope to be used for deserialization.</param>
+            <remarks>By default, the deserialization process uses a different scope than the rest of the application, which can lead to multiple proxies
+            being generated for the same type. By explicitly setting the deserialization scope to the application's scope, this can be avoided.</remarks>
+        </member>
+        <member name="P:Castle.DynamicProxy.Serialization.ProxyObjectReference.ModuleScope">
+            <summary>
+            Gets the <see cref="T:Castle.DynamicProxy.ModuleScope"/> used for deserialization.
+            </summary>
+            <value>As <see cref="T:Castle.DynamicProxy.Serialization.ProxyObjectReference"/> has no way of automatically determining the scope used by the application (and the application
+            might use more than one scope at the same time), <see cref="T:Castle.DynamicProxy.Serialization.ProxyObjectReference"/> uses a dedicated scope instance for deserializing proxy
+            types. This instance can be reset and set to a specific value via <see cref="M:Castle.DynamicProxy.Serialization.ProxyObjectReference.ResetScope"/> and <see cref="M:Castle.DynamicProxy.Serialization.ProxyObjectReference.SetScope(Castle.DynamicProxy.ModuleScope)"/>.</value>
+        </member>
+        <member name="T:Castle.DynamicProxy.Tokens.InvocationMethods">
+            <summary>
+            Holds <see cref="T:System.Reflection.MethodInfo"/> objects representing methods of <see cref="T:Castle.DynamicProxy.AbstractInvocation"/> class.
+            </summary>
+        </member>
+        <member name="T:Castle.DynamicProxy.Tokens.SerializationInfoMethods">
+            <summary>
+            Holds <see cref="T:System.Reflection.MethodInfo"/> objects representing methods of <see cref="T:System.Runtime.Serialization.SerializationInfo"/> class.
+            </summary>
+        </member>
+        <member name="F:Castle.DynamicProxy.Tokens.SerializationInfoMethods.AddValue_Bool">
+            <summary>
+            <see cref="M:System.Runtime.Serialization.SerializationInfo.AddValue(System.String,System.Boolean)"/>
+            </summary>
+        </member>
+        <member name="F:Castle.DynamicProxy.Tokens.SerializationInfoMethods.AddValue_Int32">
+            <summary>
+            <see cref="M:System.Runtime.Serialization.SerializationInfo.AddValue(System.String,System.Int32)"/>
+            </summary>
+        </member>
+        <member name="F:Castle.DynamicProxy.Tokens.SerializationInfoMethods.AddValue_Object">
+            <summary>
+            <see cref="M:System.Runtime.Serialization.SerializationInfo.AddValue(System.String,System.Object)"/>
+            </summary>
+        </member>
+        <member name="F:Castle.DynamicProxy.Tokens.SerializationInfoMethods.GetValue">
+            <summary>
+            <see cref="M:System.Runtime.Serialization.SerializationInfo.GetValue(System.String,System.Type)"/>
+            </summary>
+        </member>
+        <member name="F:Castle.DynamicProxy.Tokens.SerializationInfoMethods.SetType">
+            <summary>
+            <see cref="M:System.Runtime.Serialization.SerializationInfo.SetType(System.Type)"/>
             </summary>
         </member>
     </members>
