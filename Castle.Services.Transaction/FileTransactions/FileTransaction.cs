@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
@@ -8,7 +7,6 @@ using System.Runtime.InteropServices;
 using System.Security.Permissions;
 using System.Text;
 using System.Transactions;
-using Castle.Core;
 using Castle.Core.IO;
 using Castle.Services.Transaction.IO;
 using Microsoft.Win32.SafeHandles;
@@ -24,18 +22,9 @@ namespace Castle.Services.Transaction
 	/// Good information for dealing with the peculiarities of the runtime:
 	/// http://msdn.microsoft.com/en-us/library/system.runtime.interopservices.safehandle.aspx
 	/// </remarks>
-	public sealed class FileTransaction : MarshalByRefObject, IFileTransaction
+	public sealed class FileTransaction : TransactionBase, IFileTransaction
 	{
-		private readonly List<IResource> _Resources = new List<IResource>();
-		private readonly List<ISynchronization> _SyncInfo = new List<ISynchronization>();
-
 		private SafeTxHandle _TransactionHandle;
-
-		private TransactionStatus _Status = TransactionStatus.NoTransaction;
-		private readonly string _Name;
-
-		private bool _CanCommit;
-		private bool _IsAmbient;
 		private bool _Disposed;
 
 		#region Constructors
@@ -43,40 +32,46 @@ namespace Castle.Services.Transaction
 		///<summary>
 		/// c'tor w/o name.
 		///</summary>
-		public FileTransaction()
+		public FileTransaction() : this(null)
 		{
-			Context = new Hashtable();
 		}
 
 		///<summary>
 		/// c'tor for the file transaction.
 		///</summary>
 		///<param name="name">The name of the transaction.</param>
-		public FileTransaction(string name)
+		public FileTransaction(string name) 
+			: base(name, TransactionMode.Unspecified, IsolationMode.ReadCommitted)
 		{
-			Context = new Hashtable();
-			_Name = name;
 		}
 
 		#endregion
 
 		#region ITransaction Members
 
-		/// <summary>
-		/// Starts the transaction by requesting a new transaction
-		/// from the kernel transaction manager.
-		/// </summary>
-		public void Begin()
-		{
-			if (_Status == TransactionStatus.Active)
-				return;
+		// This isn't really relevant with the current architecture
 
-			retry:
+		/// <summary>
+		/// Gets whether the transaction is a distributed transaction.
+		/// </summary>
+		public override bool IsAmbient { get; protected set; }
+
+		///<summary>
+		/// Gets the name of the transaction.
+		///</summary>
+		public override string Name
+		{
+			get { return _Name ?? string.Format("FtX #{0}", GetHashCode()); }
+		}
+
+		internal override void InnerBegin()
+		{
+		retry:
 			// we have a ongoing current transaction, join it!
 			if (System.Transactions.Transaction.Current != null)
 			{
 				var ktx = TransactionInterop.GetDtcTransaction(System.Transactions.Transaction.Current)
-				          as IKernelTransaction;
+						  as IKernelTransaction;
 
 				// check for race-condition.
 				if (ktx == null)
@@ -89,213 +84,32 @@ namespace Castle.Services.Transaction
 				// had been yielded just before setting this reference, the "safe"-ness of the wrapper should
 				// not dispose the other handle which is now removed
 				_TransactionHandle = handle; // see the link in the remarks to the class for more details about async exceptions
-				_IsAmbient = true;
+				IsAmbient = true;
 			}
 			else _TransactionHandle = createTransaction(string.Format("{0} Transaction", _Name));
+			if (!_TransactionHandle.IsInvalid) return;
 
-			if (_TransactionHandle.IsInvalid)
-			{
-				_Status = TransactionStatus.Invalid;
-
-				throw new TransactionException(
-					"Cannot begin file transaction because we got a null pointer back from CreateTransaction.",
-					Marshal.GetExceptionForHR(Marshal.GetLastWin32Error()));
-			}
-
-			_Status = TransactionStatus.Active;
-			_CanCommit = true;
+			throw new TransactionException(
+				"Cannot begin file transaction because we got a null pointer back from CreateTransaction.",
+				LastEx());
 		}
 
-		/// <summary>
-		/// Succeed the transaction, persisting the
-		///             modifications
-		/// </summary>
-		public void Commit()
+		private Exception LastEx()
 		{
-			if (!_CanCommit)
-				throw new TransactionException("Rollback only was set.");
-
-			foreach (ISynchronization synchronization in _SyncInfo)
-			{
-				synchronization.BeforeCompletion();
-			}
-
-			// TODO: Fix the resource exception handling.
-			foreach (var resource in _Resources)
-			{
-				resource.Commit();
-			}
-
-			if (!CommitTransaction(_TransactionHandle))
-			{
-				_Status = TransactionStatus.Invalid;
-				throw new TransactionException("Commit failed.");
-			}
-
-			_Status = TransactionStatus.Committed;
-
-			foreach (ISynchronization synchronization in _SyncInfo)
-			{
-				synchronization.AfterCompletion();
-			}
+			return Marshal.GetExceptionForHR(Marshal.GetLastWin32Error());
 		}
 
-		/// <summary>
-		/// Cancels the transaction, rolling back the 
-		///             modifications
-		/// </summary>
-		public void Rollback()
+		internal override void InnerCommit()
 		{
-			if (_Status == TransactionStatus.RolledBack)
-				return;
-
-			var resources = new List<Pair<IResource, Exception>>();
-			try 
-			{
-				foreach (IResource resource in _Resources)
-				{
-					try
-					{
-						resource.Rollback();
-					}
-					catch (Exception ex)
-					{
-						resources.Add(new Pair<IResource, Exception>(resource, ex));
-					}
-				}
-				
-				if (resources.Count > 0)
-				{
-					var lastR = resources[resources.Count - 1];
-					throw new RollbackResourceException("Failed to properly dispose all resources. See the inner exception for details",
-					                                    lastR.Second, lastR.First, resources.Select(r => r.First).ToArray());
-				}
-			}
-			finally
-			{
-				_Status = TransactionStatus.RolledBack;
-				_CanCommit = false;
-
-				if (!RollbackTransaction(_TransactionHandle))
-					throw new TransactionException("Rollback failed.");
-			}
+			if (CommitTransaction(_TransactionHandle)) return;
+			throw new TransactionException("Commit failed.", LastEx());
 		}
 
-		/// <summary>
-		/// Signals that this transaction can only be rolledback. 
-		///             This is used when the transaction is not being managed by
-		///             the callee.
-		/// </summary>
-		public void SetRollbackOnly()
+		protected override void InnerRollback()
 		{
-			_CanCommit = false;
-		}
-
-		/// <summary>
-		/// Register a participant on the transaction.
-		/// </summary>
-		/// <param name="resource"/>
-		public void Enlist(IResource resource)
-		{
-			if (resource == null) throw new ArgumentNullException("resource");
-			_Resources.Add(resource);
-		}
-
-		/// <summary>
-		/// Registers a synchronization object that will be 
-		///             invoked prior and after the transaction completion
-		///             (commit or rollback)
-		/// </summary>
-		/// <param name="synchronization"/>
-		public void RegisterSynchronization(ISynchronization synchronization)
-		{
-			if (synchronization == null) throw new ArgumentNullException("synchronization");
-			_SyncInfo.Add(synchronization);
-		}
-
-		public TransactionStatus Status
-		{
-			get { return _Status; }
-		}
-
-		/// <summary>
-		/// Transaction context. Can be used by applications.
-		/// </summary>
-		public IDictionary Context { get; private set; }
-
-		// This isn't really relevant with the current architecture
-		///<summary>
-		/// Not relevant.
-		///</summary>
-		public bool IsChildTransaction
-		{
-			get { return false; }
-		}
-
-		/// <summary>
-		/// Gets whether rollback only is set.
-		/// </summary>
-		public bool IsRollbackOnlySet
-		{
-			get { return !_CanCommit; }
-		}
-
-		///<summary>
-		/// Gets the transaction mode of the transaction.
-		///</summary>
-		public TransactionMode TransactionMode
-		{
-			get { return TransactionMode.Unspecified; }
-		}
-
-		///<summary>
-		/// Gets the isolation mode of the transaction.
-		///</summary>
-		public IsolationMode IsolationMode
-		{
-			get { return IsolationMode.RepeatableRead; }
-		}
-
-		/// <summary>
-		/// Gets whether the transaction is a distributed transaction.
-		/// TODO: What happens if the transaction is promoted to a distributed tx after it is created?
-		/// </summary>
-		public bool IsAmbientTransaction
-		{
-			get { return _IsAmbient; }
-		}
-
-		///<summary>
-		/// Gets the name of the transaction.
-		///</summary>
-		public string Name
-		{
-			get { return _Name ?? string.Format("FileTransaction #{0}", GetHashCode()); }
-		}
-
-		public IEnumerable<IResource> Resources()
-		{
-			foreach (var resource in _Resources)
-			{
-				yield return resource;
-			}
-			yield break;
-		}
-
-		private void AssertState(TransactionStatus status)
-		{
-			AssertState(status, null);
-		}
-
-		private void AssertState(TransactionStatus status, string msg)
-		{
-			if (status != _Status)
-			{
-				if (!string.IsNullOrEmpty(msg))
-					throw new TransactionException(msg);
-				throw new TransactionException(string.Format("State failure; should have been {0} but was {1}",
-				                                             status, _Status));
-			}
+			if (!RollbackTransaction(_TransactionHandle))
+				throw new TransactionException("Rollback failed.",
+											   Marshal.GetExceptionForHR(Marshal.GetLastWin32Error()));
 		}
 
 		#endregion
@@ -588,7 +402,7 @@ namespace Castle.Services.Transaction
 			// called via the Dispose() method on IDisposable, 
 			// can use private object references.
 
-			if (_Status == TransactionStatus.Active)
+			if (Status == TransactionStatus.Active)
 			{
 				Rollback();
 			}

@@ -86,7 +86,7 @@ namespace Castle.Services.Transaction.Tests
 			using (var tx = new FileTransaction("Not distributed transaction"))
 			{
 				tx.Begin();
-				Assert.That(tx.IsAmbientTransaction, Is.False);
+				Assert.That(tx.IsAmbient, Is.False);
 				tx.Commit();
 			}
 		}

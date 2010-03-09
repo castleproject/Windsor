@@ -12,10 +12,51 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+
 namespace Castle.Services.Transaction
 {
 	using System.Collections;
 	using System.Collections.Generic;
+
+	public interface ITalkativeTransaction
+	{
+		event EventHandler<TransactionEventArgs> TransactionCompleted;
+		event EventHandler<TransactionFailedEventArgs> TransactionFailed;
+	}
+
+	public sealed class TransactionFailedEventArgs : TransactionEventArgs
+	{
+		private readonly TransactionException _Exception;
+
+		public TransactionFailedEventArgs(ITransaction tx, TransactionException exception) : base(tx)
+		{
+			_Exception = exception;
+		}
+
+		public TransactionException Exception
+		{
+			get { return _Exception; }
+		}
+	}
+
+	/// <summary>
+	/// Event args for a transaction event.
+	/// </summary>
+	public class TransactionEventArgs : EventArgs
+	{
+		private readonly ITransaction _Tx;
+
+		public TransactionEventArgs(ITransaction tx)
+		{
+			_Tx = tx;
+		}
+
+		public ITransaction Transaction
+		{
+			get { return _Tx; }
+		}
+	}
 
 	/// <summary>
 	/// Represents the contract for a transaction.
@@ -36,9 +77,29 @@ namespace Castle.Services.Transaction
 		void Commit();
 
 		/// <summary>
-		/// Cancels the transaction, rolling back the 
-		/// modifications
+		/// <list>
+		/// <item>
+		/// Pre:	TransactionStatus = Active
+		/// </item>
+		/// <item>
+		/// Mid:	Supply a logger and any exceptions from rollbacks will be logged as they happen.
+		/// </item>
+		/// <item>
+		/// Post:
+		///	<list><item>InnerRollback will be called for inheritors, then</item>
+		/// <item>All resources will have Rollback called, then</item>
+		/// <item>All sync infos will have AfterCompletion called.</item>
+		/// </list>
+		/// </item>
+		/// </list>
 		/// </summary>
+		/// <remarks>
+		/// If you are interfacing the transaction through an inversion of control engine
+		/// and in particylar AutoTx, calling this method is not recommended. Instead use
+		/// <see cref="SetRollbackOnly"/>.
+		/// </remarks>
+		/// <exception cref="RollbackResourceException">If any resource(s) failed.</exception>
+		/// <exception cref="TransactionException">If the transaction status was not active.</exception>
 		void Rollback();
 
 		/// <summary>
@@ -98,7 +159,7 @@ namespace Castle.Services.Transaction
 		/// doesn't imply a distributed transaction (as TransactionScopes automatically choose the least
 		/// performance invasive option)
 		/// </summary>
-		bool IsAmbientTransaction { get; }
+		bool IsAmbient { get; }
 
 		/// <summary>
 		/// Gets the friendly name (if set) or an unfriendly integer hash name (if not set).

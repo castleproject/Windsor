@@ -11,7 +11,7 @@ namespace Castle.Services.Transaction
 		private StandardTransaction _parent;
 
 		public ChildTransaction(StandardTransaction parent) : 
-			base(parent.TransactionMode, parent.IsolationMode, parent.IsAmbientTransaction)
+			base(parent.TransactionMode, parent.IsolationMode, parent.IsAmbient)
 		{
 			_parent = parent;
 		}

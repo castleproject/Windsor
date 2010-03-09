@@ -17,6 +17,7 @@ namespace Castle.Services.Transaction
 	using System;
 	using System.Collections;
 
+
 	/// <summary>
 	/// Implements a transaction root.
 	/// </summary>
