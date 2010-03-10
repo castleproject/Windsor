@@ -103,7 +103,7 @@ namespace Castle.Services.Transaction.Tests
 				catch (RollbackResourceException rex)
 				{
 					// good.
-					Assert.That(rex.FailedResources[0], Is.InstanceOf(typeof (R)));
+					Assert.That(rex.FailedResource[0].First, Is.InstanceOf(typeof (R)));
 				}
 			}
 		}

@@ -64,7 +64,7 @@ namespace Castle.Services.Transaction
 			get { return _TheName ?? string.Format("FtX #{0}", GetHashCode()); }
 		}
 
-		internal override void InnerBegin()
+		protected override void InnerBegin()
 		{
 		retry:
 			// we have a ongoing current transaction, join it!
@@ -99,7 +99,7 @@ namespace Castle.Services.Transaction
 			return Marshal.GetExceptionForHR(Marshal.GetLastWin32Error());
 		}
 
-		internal override void InnerCommit()
+		protected override void InnerCommit()
 		{
 			if (CommitTransaction(_TransactionHandle)) return;
 			throw new TransactionException("Commit failed.", LastEx());
@@ -386,9 +386,14 @@ namespace Castle.Services.Transaction
 		/// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
 		/// </summary>
 		/// <filterpriority>2</filterpriority>
-		public void Dispose()
+		public override void Dispose()
 		{
 			Dispose(true);
+			
+			// the base transaction dispose all resources active, so we must be careful
+			// and call our own resources first, thereby having to call this afterwards.
+			base.Dispose();
+
 			GC.SuppressFinalize(this);
 		}
 
@@ -403,14 +408,10 @@ namespace Castle.Services.Transaction
 			// can use private object references.
 
 			if (Status == TransactionStatus.Active)
-			{
 				Rollback();
-			}
 
 			if (_TransactionHandle != null && !_TransactionHandle.IsInvalid)
-			{
 				_TransactionHandle.Dispose();
-			}
 
 			_Disposed = true;
 		}

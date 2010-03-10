@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,45 +18,6 @@ namespace Castle.Services.Transaction
 {
 	using System.Collections;
 	using System.Collections.Generic;
-
-	public interface ITalkativeTransaction
-	{
-		event EventHandler<TransactionEventArgs> TransactionCompleted;
-		event EventHandler<TransactionFailedEventArgs> TransactionFailed;
-	}
-
-	public sealed class TransactionFailedEventArgs : TransactionEventArgs
-	{
-		private readonly TransactionException _Exception;
-
-		public TransactionFailedEventArgs(ITransaction tx, TransactionException exception) : base(tx)
-		{
-			_Exception = exception;
-		}
-
-		public TransactionException Exception
-		{
-			get { return _Exception; }
-		}
-	}
-
-	/// <summary>
-	/// Event args for a transaction event.
-	/// </summary>
-	public class TransactionEventArgs : EventArgs
-	{
-		private readonly ITransaction _Tx;
-
-		public TransactionEventArgs(ITransaction tx)
-		{
-			_Tx = tx;
-		}
-
-		public ITransaction Transaction
-		{
-			get { return _Tx; }
-		}
-	}
 
 	/// <summary>
 	/// Represents the contract for a transaction.
@@ -126,6 +87,7 @@ namespace Castle.Services.Transaction
 		/// (commit or rollback)
 		/// </summary>
 		/// <param name="synchronization"></param>
+		/// <exception cref="ArgumentNullException">If the parameter is null.</exception>
 		void RegisterSynchronization(ISynchronization synchronization);
 
 		/// <summary>

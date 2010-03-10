@@ -3,11 +3,14 @@ using log4net;
 
 namespace Castle.Services.Transaction
 {
-	public sealed class TalkativeTransaction : TransactionBase, ITalkativeTransaction
+	public sealed class TalkativeTransaction : TransactionBase, IEventPublisher
 	{
 		private static readonly ILog _Logger = LogManager.GetLogger(typeof (TalkativeTransaction));
 		private bool _IsAmbient;
-		
+
+		public event EventHandler<TransactionEventArgs> TransactionCompleted;
+		public event EventHandler<TransactionFailedEventArgs> TransactionFailed;
+		public event EventHandler<TransactionEventArgs> TransactionRolledBack;
 
 		public TalkativeTransaction(TransactionMode transactionMode, IsolationMode isolationMode, bool isAmbient) : 
 			base(null, transactionMode, isolationMode)
@@ -21,46 +24,51 @@ namespace Castle.Services.Transaction
 			protected set { _IsAmbient = value; }
 		}
 
-		internal override void InnerBegin()
+		public override void Begin()
 		{
+			try
+			{
+				base.Begin();
+			}
+			catch (TransactionException e)
+			{
+				_Logger.TryLogFail(() => TransactionFailed.Fire(this, new TransactionFailedEventArgs(this, e)));
+				throw;
+			}
 		}
 
-		internal override void InnerCommit()
+		protected override void InnerBegin() { }
+
+		public override void Commit()
 		{
+			try
+			{
+				base.Commit();
+				_Logger.TryLogFail(() => TransactionCompleted.Fire(this, new TransactionEventArgs(this)));
+			}
+			catch (TransactionException e)
+			{
+				_Logger.TryLogFail(() => TransactionFailed.Fire(this, new TransactionFailedEventArgs(this, e)));
+				throw;
+			}
 		}
+
+		protected override void InnerCommit() { }
 
 		public override void Rollback()
 		{
 			try
 			{
 				base.Rollback();
+				_Logger.TryLogFail(() => TransactionRolledBack.Fire(this, new TransactionEventArgs(this)));
 			}
 			catch (TransactionException e)
 			{
-				_Logger.TryAndLog(() => TransactionFailed.Fire(this, new TransactionFailedEventArgs(this, e)));
-				throw;
-			}
-			
-		}
-
-		public override void Commit()
-		{
-			try {
-				base.Commit();
-				_Logger.TryAndLog(() => TransactionCompleted.Fire(this, new TransactionEventArgs(this)));
-			} 
-			catch (TransactionException e)
-			{
-				_Logger.TryAndLog(() => TransactionFailed.Fire(this, new TransactionFailedEventArgs(this, e)));
+				_Logger.TryLogFail(() => TransactionFailed.Fire(this, new TransactionFailedEventArgs(this, e)));
 				throw;
 			}
 		}
 
-		protected override void InnerRollback()
-		{
-		}
-
-		public event EventHandler<TransactionEventArgs> TransactionCompleted;
-		public event EventHandler<TransactionFailedEventArgs> TransactionFailed;
+		protected override void InnerRollback() {}
 	}
 }

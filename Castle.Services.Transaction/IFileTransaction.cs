@@ -1,7 +1,7 @@
 using System;
 using Castle.Core.IO;
 
-namespace Castle.Services.Transaction.IO
+namespace Castle.Services.Transaction
 {
 	///<summary>
 	/// Interface for a transaction acting on a file.

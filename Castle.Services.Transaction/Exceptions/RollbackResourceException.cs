@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,29 +12,40 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Collections.Generic;
+using Castle.Core;
+
 namespace Castle.Services.Transaction
 {
 	using System;
 	using System.Runtime.Serialization;
 
 	[Serializable]
-	public class RollbackResourceException : ResourceException
+	public class RollbackResourceException : TransactionException
 	{
-		public RollbackResourceException(string message, Exception innerException, IResource lastFailedResource,
-		                                 IResource[] failedResources)
-			: base(message, innerException, lastFailedResource, failedResources)
+		private readonly List<Pair<IResource, Exception>> _FailedResources = new List<Pair<IResource, Exception>>();
+
+		public RollbackResourceException(string message,
+			IEnumerable<Pair<IResource,Exception>> failedResources)
+			: base(message, null)
+		{
+			_FailedResources.AddRange(failedResources);
+		}
+
+		public RollbackResourceException(SerializationInfo info, StreamingContext context) 
+			: base(info, context)
 		{
 		}
 
-		public RollbackResourceException(SerializationInfo info, StreamingContext context, IResource lastFailedResource,
-		                                 IResource[] failedResources)
-			: base(info, context, lastFailedResource, failedResources)
+		public RollbackResourceException(SerializationInfo info, StreamingContext context,
+			IEnumerable<Pair<IResource,Exception>> failedResources) : base(info, context)
 		{
+			_FailedResources.AddRange(failedResources);
 		}
 
-		public RollbackResourceException(string message, IResource lastFailedResource, IResource[] failedResources)
-			: base(message, lastFailedResource, failedResources)
+		public IList<Pair<IResource,Exception>> FailedResource
 		{
+			get { return _FailedResources; }
 		}
 	}
 }

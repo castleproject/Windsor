@@ -21,10 +21,16 @@ namespace Castle.Services.Transaction
 
 		public static void AtomRead(this ReaderWriterLockSlim sem, Action a)
 		{
+			AtomRead(sem, a, false);
+		}
+
+		public static void AtomRead(this ReaderWriterLockSlim sem, Action a, bool upgradable)
+		{
 			if (sem == null) throw new ArgumentNullException("sem");
 			if (a == null) throw new ArgumentNullException("a");
-
-			sem.EnterReadLock();
+			
+			if (!upgradable) sem.EnterReadLock();
+			else sem.EnterUpgradeableReadLock();
 
 			try
 			{
@@ -32,7 +38,25 @@ namespace Castle.Services.Transaction
 			}
 			finally
 			{
-				sem.ExitReadLock();	
+				if (!upgradable) sem.ExitReadLock();
+				else sem.ExitUpgradeableReadLock();
+			}
+		}
+
+		public static T AtomRead<T>(this ReaderWriterLockSlim sem, Func<T> f)
+		{
+			if (sem == null) throw new ArgumentNullException("sem");
+			if (f == null) throw new ArgumentNullException("f");
+
+			sem.EnterReadLock();
+
+			try
+			{
+				return f();
+			}
+			finally
+			{
+				sem.ExitReadLock();
 			}
 		}
 
@@ -67,7 +91,7 @@ namespace Castle.Services.Transaction
 		/// Given a logger and action, performs the action and catches + logs exceptions.
 		/// </summary>
 		/// <returns>Whether the lambda was a success or not.</returns>
-		public static Result TryAndLog(this ILog logger, Action a)
+		public static Result TryLogFail(this ILog logger, Action a)
 		{
 			try
 			{

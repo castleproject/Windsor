@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,24 +18,21 @@ namespace Castle.Services.Transaction
 	using System.Runtime.Serialization;
 
 	[Serializable]
-	public class CommitResourceException : ResourceException
+	public class CommitResourceException : TransactionException
 	{
-		public CommitResourceException(string message, Exception innerException, IResource lastFailedResource,
-		                               IResource[] failedResources)
-			: base(message, innerException, lastFailedResource, failedResources)
+		private readonly IResource _FailedResource;
+
+		public CommitResourceException(string message, Exception innerException, IResource failedResource)
+			: base(message, innerException)
 		{
+			_FailedResource = failedResource;
 		}
 
-		public CommitResourceException(string message, IResource lastFailedResource, IResource[] failedResources)
-			: base(message, lastFailedResource, failedResources)
+		public CommitResourceException(SerializationInfo info, StreamingContext context, IResource failedResource) : base(info, context)
 		{
+			_FailedResource = failedResource;
 		}
 
-		public CommitResourceException(SerializationInfo info, StreamingContext context, IResource lastFailedResource,
-		                               IResource[] failedResources) : base(info, context, lastFailedResource, failedResources)
-		{
-		}
-		
 		public CommitResourceException(SerializationInfo info, StreamingContext context) : base(info, context)
 		{
 		}

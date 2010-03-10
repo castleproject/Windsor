@@ -1,6 +1,3 @@
-using System;
-using System.Collections;
-
 namespace Castle.Services.Transaction
 {
 	/// <summary>
@@ -11,20 +8,22 @@ namespace Castle.Services.Transaction
 	{
 		private readonly ITransaction _Parent;
 
-		public ChildTransaction(string name, TransactionMode mode, IsolationMode isolationMode) : base(name, mode, isolationMode)
+		public ChildTransaction(ITransaction parent) 
+			: base(string.Format("Child-TX to \"{0}\"", parent.Name),
+				   parent.TransactionMode, parent.IsolationMode)
 		{
+			_Parent = parent;
 		}
 
 		public override void Begin()
 		{
-			// Ignored
 		}
 
-		internal override void InnerBegin()
+		protected override void InnerBegin()
 		{
 		}
 
-		internal override void InnerCommit()
+		protected override void InnerCommit()
 		{
 		}
 
@@ -34,13 +33,17 @@ namespace Castle.Services.Transaction
 			_Parent.SetRollbackOnly();
 		}
 
+		public override void SetRollbackOnly()
+		{
+			_Parent.SetRollbackOnly();
+		}
+
 		protected override void InnerRollback()
 		{
 		}
 
 		public override void Commit()
 		{
-			// Vote as commit
 		}
 
 		public override bool IsChildTransaction
@@ -48,6 +51,13 @@ namespace Castle.Services.Transaction
 			get { return true; }
 		}
 
-		public override bool IsAmbient { get; protected set; }
+		public override void Enlist(IResource resource)
+		{
+			_Parent.Enlist(resource);
+		}
+
+		public override bool IsAmbient { 
+			get { return true; }
+			protected set { } }
 	}
 }

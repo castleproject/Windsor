@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,44 +20,31 @@ namespace Castle.Services.Transaction
 	[Serializable]
 	public class Activity : MarshalByRefObject
 	{
-		private Guid id;
-		private Stack<ITransaction> transactionStack = new Stack<ITransaction>(2);
-
-		/// <summary>
-		/// Initializes a new instance of the <see cref="Activity"/> class.
-		/// </summary>
-		public Activity()
-		{
-			id = Guid.NewGuid();
-		}
+		private Guid id = Guid.NewGuid();
+		private readonly Stack<ITransaction> _TransactionStack = new Stack<ITransaction>(2);
 
 		public ITransaction CurrentTransaction
 		{
 			get
 			{
-				if (transactionStack.Count == 0)
-				{
-					return null;
-				}
-
-				return transactionStack.Peek();
+				return _TransactionStack.Count == 0 ? null : _TransactionStack.Peek();
 			}
 		}
 
 		public void Push(ITransaction transaction)
 		{
-			transactionStack.Push(transaction);
+			_TransactionStack.Push(transaction);
 		}
 
 		public ITransaction Pop()
 		{
-			return transactionStack.Pop();
+			return _TransactionStack.Pop();
 		}
 
 		public override bool Equals(object obj)
 		{
 			if (this == obj) return true;
-			Activity activity = obj as Activity;
+			var activity = obj as Activity;
 			if (activity == null) return false;
 			return Equals(id, activity.id);
 		}

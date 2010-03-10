@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -78,7 +78,7 @@ namespace Castle.Services.Transaction.Tests
 		}
 
 		[Test]
-		public void SameResources()
+		public void SameResourcesShared_BetweenParentAndChild_ParentsResponsibility()
 		{
 			var resource = new ResourceImpl();
 
@@ -103,7 +103,7 @@ namespace Castle.Services.Transaction.Tests
 		}
 
 		[Test]
-		[ExpectedException( typeof(TransactionException) )]
+		[ExpectedException( typeof(TransactionModeUnsupportedException) )]
 		public void NotSupportedAndActiveTransaction()
 		{
 			ITransaction root = tm.CreateTransaction( TransactionMode.Requires, IsolationMode.Unspecified );
@@ -114,7 +114,7 @@ namespace Castle.Services.Transaction.Tests
 
 		[Test]
 		[ExpectedException( typeof(TransactionException) )]
-		public void NestedRollback()
+		public void NestedRollback_RollingAChildBack_TryingToCommitRoot_Fails()
 		{
 			ITransaction root = tm.CreateTransaction( TransactionMode.Requires, IsolationMode.Unspecified );
 			root.Begin();
@@ -160,6 +160,30 @@ namespace Castle.Services.Transaction.Tests
 			child2.Begin();
 
 			tm.Dispose(root);
+		}
+
+		[Test]
+		public void WhenOneResourceFails_OtherResourcesAreNotCommitted()
+		{
+			var first = new ResourceImpl();
+			var rfail = new ThrowsExceptionResourceImpl(true, false);
+			var rsucc = new ResourceImpl();
+
+			var t = tm.CreateTransaction(TransactionMode.Requires, IsolationMode.Unspecified);
+			t.Enlist(first);
+			t.Enlist(rfail);
+			t.Enlist(rsucc);
+
+			t.Begin();
+
+			Assert.That(rfail.Started);
+			Assert.That(rsucc.Started);
+
+			Assert.Throws(typeof(CommitResourceException), t.Commit);
+
+			Assert.That(first.Committed);
+			Assert.That(rfail.Committed, Is.False);
+			Assert.That(rsucc.Committed, Is.False);
 		}
 	}
 }

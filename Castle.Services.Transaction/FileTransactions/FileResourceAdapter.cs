@@ -1,5 +1,4 @@
 using System;
-using Castle.Services.Transaction.IO;
 
 namespace Castle.Services.Transaction
 {

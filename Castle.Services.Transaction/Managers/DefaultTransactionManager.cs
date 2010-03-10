@@ -1,38 +1,20 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
-// 
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-// 
-//     http://www.apache.org/licenses/LICENSE-2.0
-// 
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+using System;
+using log4net;
 
 namespace Castle.Services.Transaction
 {
-	using System;
-	using System.ComponentModel;
-	using Castle.Core.Logging;
-
-	/// <summary>
-	/// TODO: Ensure this class is thread-safe
-	/// </summary>
 	public class DefaultTransactionManager : MarshalByRefObject, ITransactionManager
 	{
-		private static readonly object TransactionCreatedEvent = new object();
-		private static readonly object TransactionCommittedEvent = new object();
-		private static readonly object TransactionRolledbackEvent = new object();
-		private static readonly object TransactionFailedEvent = new object();
-		private static readonly object TransactionDisposedEvent = new object();
-		private static readonly object ChildTransactionCreatedEvent = new object();
+		private static readonly ILog _Logger = LogManager.GetLogger(typeof (DefaultTransactionManager));
+	
+		private IActivityManager _ActivityManager;
 
-		private readonly EventHandlerList _Events = new EventHandlerList();
-		private ILogger logger = NullLogger.Instance;
-		private IActivityManager activityManager;
+		public event EventHandler<TransactionEventArgs> TransactionCreated;
+		public event EventHandler<TransactionEventArgs> TransactionRolledBack;
+		public event EventHandler<TransactionEventArgs> TransactionCompleted;
+		public event EventHandler<TransactionEventArgs> ChildTransactionCreated;
+		public event EventHandler<TransactionFailedEventArgs> TransactionFailed;
+		public event EventHandler<TransactionEventArgs> TransactionDisposed;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="DefaultTransactionManager"/> class.
@@ -44,286 +26,197 @@ namespace Castle.Services.Transaction
 		/// <summary>
 		/// Initializes a new instance of the <see cref="DefaultTransactionManager"/> class.
 		/// </summary>
+		/// <exception cref="ArgumentNullException">activityManager is null</exception>
 		/// <param name="activityManager">The activity manager.</param>
 		public DefaultTransactionManager(IActivityManager activityManager)
 		{
-			this.activityManager = activityManager;
+			if (activityManager == null) throw new ArgumentNullException("activityManager");
+
+			_ActivityManager = activityManager;
+			
+			if (_Logger.IsDebugEnabled) _Logger.Debug("DefaultTransactionManager created.");
 		}
 
 		/// <summary>
 		/// Gets or sets the activity manager.
 		/// </summary>
+		/// <exception cref="ArgumentNullException">value is null</exception>
 		/// <value>The activity manager.</value>
 		public IActivityManager ActivityManager
 		{
-			get { return activityManager; }
-			set { activityManager = value; }
-		}
-
-		/// <summary>
-		/// Gets or sets the logger.
-		/// </summary>
-		/// <value>The logger.</value>
-		public ILogger Logger
-		{
-			get { return logger; }
-			set { logger = value; }
-		}
-
-		#region MarshalByRefObject
-
-		public override object InitializeLifetimeService()
-		{
-			return null;
-		}
-
-		#endregion
-
-		#region ITransactionManager Members
-
-		/// <summary>
-		/// Creates a transaction.
-		/// </summary>
-		/// <param name="transactionMode">The transaction mode.</param>
-		/// <param name="isolationMode">The isolation mode.</param>
-		/// <returns></returns>
-		public virtual ITransaction CreateTransaction(TransactionMode transactionMode, IsolationMode isolationMode)
-		{
-			return CreateTransaction(transactionMode, isolationMode, false);
-		}
-
-		/// <summary>
-		/// Creates a transaction.
-		/// </summary>
-		/// <param name="transactionMode">The transaction mode.</param>
-		/// <param name="isolationMode">The isolation mode.</param>
-		/// <param name="distributedTransaction">if set to <c>true</c>, the TM will create a distributed transaction.</param>
-		/// <returns></returns>
-		public virtual ITransaction CreateTransaction(TransactionMode transactionMode, IsolationMode isolationMode, bool distributedTransaction)
-		{
-			if (transactionMode == TransactionMode.Unspecified)
+			get { return _ActivityManager; }
+			set
 			{
-				transactionMode = ObtainDefaultTransactionMode(transactionMode);
+				if (value == null) throw new ArgumentNullException("value");
+				_ActivityManager = value;
 			}
+		}
 
-			CheckNotSupportedTransaction(transactionMode);
+		/// <summary>
+		/// <see cref="ITransactionManager.CreateTransaction(Castle.Services.Transaction.TransactionMode,Castle.Services.Transaction.IsolationMode)"/>.
+		/// </summary>
+		public ITransaction CreateTransaction(TransactionMode txMode, IsolationMode isolationMode)
+		{
+			return CreateTransaction(txMode, isolationMode, false);
+		}
+
+		public ITransaction CreateTransaction(TransactionMode txMode, IsolationMode iMode, bool isAmbient)
+		{
+			txMode = ObtainDefaultTransactionMode(txMode);
+
+			AssertModeSupported(txMode);
 
 			if (CurrentTransaction == null &&
-			    (transactionMode == TransactionMode.Supported ||
-			     transactionMode == TransactionMode.NotSupported))
+			    (txMode == TransactionMode.Supported ||
+			     txMode == TransactionMode.NotSupported))
 			{
 				return null;
 			}
 
-			AbstractTransaction transaction = null;
+			TransactionBase transaction = null;
 
 			if (CurrentTransaction != null)
 			{
-				if (transactionMode == TransactionMode.Requires || transactionMode == TransactionMode.Supported)
+				if (txMode == TransactionMode.Requires || txMode == TransactionMode.Supported)
 				{
-					transaction = ((StandardTransaction) CurrentTransaction).CreateChildTransaction();
+					transaction = ((TransactionBase)CurrentTransaction).CreateChildTransaction();
 
-					logger.DebugFormat("Child Transaction {0} created", transaction.GetHashCode());
+					_Logger.DebugFormat("Child transaction \"{0}\" created", transaction.Name);
 				}
 			}
 
 			if (transaction == null)
 			{
-				transaction = InstantiateTransaction(transactionMode, isolationMode, distributedTransaction);
+				transaction = InstantiateTransaction(txMode, iMode, isAmbient);
 
-				if (distributedTransaction)
+				if (isAmbient)
 				{
 #if MONO
-					throw new TransactionException("Distributed transactions are not supported on Mono");
+					throw new NotSupportedException("Distributed transactions are not supported on Mono");
 #else
-					transaction.Enlist(new TransactionScopeResourceAdapter(transactionMode, isolationMode));
+					transaction.Enlist(new TransactionScopeResourceAdapter(txMode, iMode));
 #endif
 				}
 
-				logger.DebugFormat("Transaction {0} created", transaction.GetHashCode());
+				_Logger.DebugFormat("Transaction \"{0}\" created", transaction.Name);
 			}
 
-			transaction.Logger = logger.CreateChildLogger(transaction.GetType().FullName);
-
-			activityManager.CurrentActivity.Push(transaction);
+			_ActivityManager.CurrentActivity.Push(transaction);
 
 			if (transaction.IsChildTransaction)
-				RaiseChildTransactionCreated(transaction, transactionMode, isolationMode, distributedTransaction);
+				ChildTransactionCreated.Fire(this, new TransactionEventArgs(transaction));
 			else
-				RaiseTransactionCreated(transaction, transactionMode, isolationMode, distributedTransaction);
+				TransactionCreated.Fire(this, new TransactionEventArgs(transaction));
 
 			return transaction;
 		}
 
+		private TransactionBase InstantiateTransaction(TransactionMode mode, IsolationMode isolationMode, bool ambient)
+		{
+			var t = new TalkativeTransaction(mode, isolationMode, ambient);
+
+			t.TransactionCompleted += CompletedHandler;
+			t.TransactionRolledBack += RolledBackHandler;
+			t.TransactionFailed += FailedHandler;
+
+			return t;
+		}
+
+		private void FailedHandler(object sender, TransactionFailedEventArgs e)
+		{
+			TransactionFailed.Fire(this, e);
+		}
+
+		private void RolledBackHandler(object sender, TransactionEventArgs e)
+		{
+			TransactionRolledBack.Fire(this, e);
+		}
+
+		private void CompletedHandler(object sender, TransactionEventArgs e)
+		{
+			TransactionCompleted.Fire(this, e);
+		}
+
+		private void AssertModeSupported(TransactionMode mode)
+		{
+			var ctx = CurrentTransaction;
+
+			if (mode == TransactionMode.NotSupported &&
+			    ctx != null &&
+			    ctx.Status == TransactionStatus.Active)
+			{
+				var message = "There is a transaction active and the transaction mode " +
+				              "explicit says that no transaction is supported for this context";
+
+				_Logger.Error(message);
+
+				throw new TransactionModeUnsupportedException(message);
+			}
+		}
+
 		/// <summary>
-		/// Factory method for creating a transaction.
+		/// Gets the default transaction mode, i.e. the mode which is the current mode when
+		/// <see cref="TransactionMode.Unspecified"/> is passed to <see cref="CreateTransaction(Castle.Services.Transaction.TransactionMode,Castle.Services.Transaction.IsolationMode)"/>.
 		/// </summary>
-		/// <param name="transactionMode">The transaction mode.</param>
-		/// <param name="isolationMode">The isolation mode.</param>
-		/// <param name="distributedTransaction">if set to <c>true</c>, the TM will create a distributed transaction.</param>
-		/// <returns>A transaction</returns>
-		protected virtual AbstractTransaction InstantiateTransaction(TransactionMode transactionMode, IsolationMode isolationMode, bool distributedTransaction)
+		/// <param name="mode">The mode which was passed.</param>
+		/// <returns>
+		/// Requires &lt;- mode = Unspecified
+		/// mode &lt;- otherwise
+		/// </returns>
+		protected virtual TransactionMode ObtainDefaultTransactionMode(TransactionMode mode)
 		{
-			return new StandardTransaction(
-				new TransactionDelegate(RaiseTransactionCommitted),
-				new TransactionDelegate(RaiseTransactionRolledback),
-				new TransactionErrorDelegate(RaiseTransactionFailed), 
-				transactionMode, isolationMode, distributedTransaction);
+			return mode == TransactionMode.Unspecified ? TransactionMode.Requires : mode;
 		}
 
-		public virtual ITransaction CurrentTransaction
+		/// <summary>
+		/// <see cref="ITransactionManager.CurrentTransaction"/>
+		/// </summary>
+		/// <remarks>Thread-safety of this method depends on that of the <see cref="IActivityManager.CurrentActivity"/>.</remarks>
+		public ITransaction CurrentTransaction
 		{
-			get { return activityManager.CurrentActivity.CurrentTransaction; }
+			get { return _ActivityManager.CurrentActivity.CurrentTransaction; }
 		}
 
-		#region events
-
-		public event TransactionCreationInfoDelegate TransactionCreated
-		{
-			add { _Events.AddHandler(TransactionCreatedEvent, value); }
-			remove { _Events.RemoveHandler(TransactionCreatedEvent, value); }
-		}
-
-		public event TransactionCreationInfoDelegate ChildTransactionCreated
-		{
-			add { _Events.AddHandler(ChildTransactionCreatedEvent, value); }
-			remove { _Events.RemoveHandler(ChildTransactionCreatedEvent, value); }
-		}
-
-		public event TransactionDelegate TransactionCommitted
-		{
-			add { _Events.AddHandler(TransactionCommittedEvent, value); }
-			remove { _Events.RemoveHandler(TransactionCommittedEvent, value); }
-		}
-
-		public event TransactionDelegate TransactionRolledback
-		{
-			add { _Events.AddHandler(TransactionRolledbackEvent, value); }
-			remove { _Events.RemoveHandler(TransactionRolledbackEvent, value); }
-		}
-
-		public event TransactionErrorDelegate TransactionFailed
-		{
-			add { _Events.AddHandler(TransactionFailedEvent, value); }
-			remove { _Events.RemoveHandler(TransactionFailedEvent, value); }
-		}
-
-		public event TransactionDelegate TransactionDisposed
-		{
-			add { _Events.AddHandler(TransactionDisposedEvent, value); }
-			remove { _Events.RemoveHandler(TransactionDisposedEvent, value); }
-		}
-
-		protected void RaiseTransactionCreated(ITransaction transaction, TransactionMode transactionMode,
-		                                       IsolationMode isolationMode, bool distributedTransaction)
-		{
-			TransactionCreationInfoDelegate eventDelegate = (TransactionCreationInfoDelegate) _Events[TransactionCreatedEvent];
-
-			if (eventDelegate != null)
-			{
-				eventDelegate(transaction, transactionMode, isolationMode, distributedTransaction);
-			}
-		}
-
-		protected void RaiseChildTransactionCreated(ITransaction transaction, TransactionMode transactionMode,
-													IsolationMode isolationMode, bool distributedTransaction)
-		{
-			var eventDelegate =
-				(TransactionCreationInfoDelegate) _Events[ChildTransactionCreatedEvent];
-
-			if (eventDelegate != null)
-			{
-				eventDelegate(transaction, transactionMode, isolationMode, distributedTransaction);
-			}
-		}
-
-		protected void RaiseTransactionFailed(ITransaction transaction, TransactionException exception)
-		{
-			TransactionErrorDelegate eventDelegate = (TransactionErrorDelegate)_Events[TransactionFailedEvent];
-			
-			if (eventDelegate != null)
-			{
-				eventDelegate(transaction, exception);
-			}
-		}
-
-		protected void RaiseTransactionDisposed(ITransaction transaction)
-		{
-			TransactionDelegate eventDelegate = (TransactionDelegate) _Events[TransactionDisposedEvent];
-
-			if (eventDelegate != null)
-			{
-				eventDelegate(transaction);
-			}
-		}
-
-		protected void RaiseTransactionCommitted(ITransaction transaction)
-		{
-			TransactionDelegate eventDelegate = (TransactionDelegate) _Events[TransactionCommittedEvent];
-
-			if (eventDelegate != null)
-			{
-				eventDelegate(transaction);
-			}
-		}
-
-		protected void RaiseTransactionRolledback(ITransaction transaction)
-		{
-			TransactionDelegate eventDelegate = (TransactionDelegate) _Events[TransactionRolledbackEvent];
-
-			if (eventDelegate != null)
-			{
-				eventDelegate(transaction);
-			}
-		}
-
-		#endregion
-
+		/// <summary>
+		/// <see cref="ITransactionManager.Dispose"/>.
+		/// </summary>
+		/// <param name="transaction"></param>
 		public virtual void Dispose(ITransaction transaction)
 		{
-			if (transaction == null)
-			{
-				throw new ArgumentNullException("transaction", "Tried to dispose a null transaction");
-			}
+			if (transaction == null) throw new ArgumentNullException("transaction", "Tried to dispose a null transaction");
 
 			if (CurrentTransaction != transaction)
 			{
-				throw new ArgumentException("Tried to dispose a transaction that is not on the current active transaction", 
-					"transaction");
+				throw new ArgumentException("Tried to dispose a transaction that is not on the current active transaction",
+				                            "transaction");
 			}
 
-			activityManager.CurrentActivity.Pop();
+			_ActivityManager.CurrentActivity.Pop();
 
 			if (transaction is IDisposable)
 			{
 				(transaction as IDisposable).Dispose();
 			}
 
-			RaiseTransactionDisposed(transaction);
-
-			logger.DebugFormat("Transaction {0} disposed successfully", transaction.GetHashCode());
-		}
-
-		#endregion
-
-		protected virtual TransactionMode ObtainDefaultTransactionMode(TransactionMode transactionMode)
-		{
-			return TransactionMode.Requires;
-		}
-
-		private void CheckNotSupportedTransaction(TransactionMode transactionMode)
-		{
-			if (transactionMode == TransactionMode.NotSupported &&
-			    CurrentTransaction != null &&
-			    CurrentTransaction.Status == TransactionStatus.Active)
+			if (transaction is IEventPublisher)
 			{
-				String message = "There is a transaction active and the transaction mode " +
-				                 "explicit says that no transaction is supported for this context";
-
-				logger.Error(message);
-
-				throw new TransactionException(message);
+				(transaction as IEventPublisher).TransactionCompleted -= CompletedHandler;
+				(transaction as IEventPublisher).TransactionFailed -= FailedHandler;
+				(transaction as IEventPublisher).TransactionRolledBack -= RolledBackHandler;
 			}
+
+			TransactionDisposed.Fire(this, new TransactionEventArgs(transaction));
+
+			_Logger.DebugFormat("Transaction {0} disposed successfully", transaction.Name);
+		}
+
+		/// <summary>
+		/// <see cref="MarshalByRefObject.InitializeLifetimeService"/>.
+		/// </summary>
+		/// <returns>always null</returns>
+		public override object InitializeLifetimeService()
+		{
+			return null;
 		}
 	}
 }
