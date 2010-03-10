@@ -44,44 +44,15 @@ namespace Castle.Facilities.AutoTx.Tests
 
 		#region ITransactionManager Members
 
-		event TransactionCreationInfoDelegate ITransactionManager.TransactionCreated
-		{
-			add { throw new NotImplementedException(); }
-			remove { throw new NotImplementedException(); }
-		}
-
-		event TransactionCreationInfoDelegate ITransactionManager.ChildTransactionCreated
-		{
-			add { throw new NotImplementedException(); }
-			remove { throw new NotImplementedException(); }
-		}
-
-		event TransactionDelegate ITransactionManager.TransactionCommitted
-		{
-			add { throw new NotImplementedException(); }
-			remove { throw new NotImplementedException(); }
-		}
-
-		event TransactionDelegate ITransactionManager.TransactionRolledback
-		{
-			add { throw new NotImplementedException(); }
-			remove { throw new NotImplementedException(); }
-		}
-
-		event TransactionDelegate ITransactionManager.TransactionDisposed
-		{
-			add { throw new NotImplementedException(); }
-			remove { throw new NotImplementedException(); }
-		}
-
-		event TransactionErrorDelegate ITransactionManager.TransactionFailed
-		{
-			add { throw new NotImplementedException(); }
-			remove { throw new NotImplementedException(); }
-		}
+		public event EventHandler<TransactionEventArgs> TransactionCreated;
+		public event EventHandler<TransactionEventArgs> ChildTransactionCreated;
+		public event EventHandler<TransactionEventArgs> TransactionDisposed;
+		public event EventHandler<TransactionEventArgs> TransactionRolledBack;
+		public event EventHandler<TransactionEventArgs> TransactionCompleted;
+		public event EventHandler<TransactionFailedEventArgs> TransactionFailed;
 
 		public ITransaction CreateTransaction(TransactionMode transactionMode, IsolationMode isolationMode,
-		                                      bool distributedTransaction)
+		                                      bool isAmbient)
 		{
 			_current = new MockTransaction();
 
@@ -117,40 +88,5 @@ namespace Castle.Facilities.AutoTx.Tests
 		}
 
 		#endregion
-	}
-
-	public class MockTransaction : TransactionBase
-	{
-		private bool rollbackOnly;
-
-		public MockTransaction() : base(null, TransactionMode.Unspecified, IsolationMode.Unspecified)
-		{
-		}
-
-		public override bool IsChildTransaction
-		{
-			get { return false; }
-		}
-
-		public override bool IsAmbient
-		{
-			get { throw new NotImplementedException(); }
-			protected set { throw new NotImplementedException(); }
-		}
-
-		public new bool IsRollbackOnlySet
-		{
-			get { return rollbackOnly; }
-		}
-
-		protected override void InnerRollback()
-		{
-			throw new NotImplementedException();
-		}
-
-		public new void SetRollbackOnly()
-		{
-			rollbackOnly = true;
-		}
 	}
 }

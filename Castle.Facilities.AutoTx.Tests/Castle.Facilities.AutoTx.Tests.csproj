@@ -62,7 +62,7 @@
     <Optimize>false</Optimize>
     <RegisterForComInterop>false</RegisterForComInterop>
     <RemoveIntegerChecks>false</RemoveIntegerChecks>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <WarningLevel>4</WarningLevel>
     <DebugType>full</DebugType>
     <ErrorReport>prompt</ErrorReport>
@@ -139,6 +139,7 @@
     <Compile Include="TestClasses\ICustomerService.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="TestClasses\MockTransaction.cs" />
     <Compile Include="TestClasses\MockTransactionManager.cs">
       <SubType>Code</SubType>
     </Compile>
