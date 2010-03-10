@@ -15,6 +15,8 @@
 namespace Castle.Facilities.TypedFactory.Tests
 {
 	using System;
+	using System.Collections.Generic;
+	using System.Linq;
 	using System.Reflection;
 
 	using Castle.Core;
@@ -87,6 +89,86 @@ namespace Castle.Facilities.TypedFactory.Tests
 
 			component = factory.CreateDummyComponent();
 			Assert.IsInstanceOf<Component2>(component);
+		}
+
+		[Test]
+		public void Can_Resolve_multiple_components_at_once_with_non_default_selector_array()
+		{
+			container.Register(
+				Component.For<IDummyComponent>()
+					.ImplementedBy<Component2>()
+					.LifeStyle.Transient,
+				Component.For<DummyComponentArrayFactory>()
+					.AsFactory(),
+				Component.For<ITypedFactoryComponentSelector>()
+					.ImplementedBy<MultipleSelector>());
+			var factory = container.Resolve<DummyComponentArrayFactory>();
+
+			var all = factory.All();
+			Assert.IsNotNull(all);
+			Assert.AreEqual(2, all.Length);
+			Assert.That(all.Any(c => c is Component1));
+			Assert.That(all.Any(c => c is Component2));
+		}
+
+		[Test]
+		public void Can_Resolve_multiple_components_at_once_with_non_default_selector_enumerable()
+		{
+			container.Register(
+				Component.For<IDummyComponent>()
+					.ImplementedBy<Component2>()
+					.LifeStyle.Transient,
+				Component.For<DummyComponentEnumerableFactory>()
+					.AsFactory(),
+				Component.For<ITypedFactoryComponentSelector>()
+					.ImplementedBy<MultipleSelector>());
+			var factory = container.Resolve<DummyComponentEnumerableFactory>();
+
+			var all = factory.All().ToArray();
+			Assert.IsNotNull(all);
+			Assert.AreEqual(2, all.Length);
+			Assert.That(all.Any(c => c is Component1));
+			Assert.That(all.Any(c => c is Component2));
+		}
+
+		[Test]
+		public void Can_Resolve_multiple_components_at_once_with_non_default_selector_collection()
+		{
+			container.Register(
+				Component.For<IDummyComponent>()
+					.ImplementedBy<Component2>()
+					.LifeStyle.Transient,
+				Component.For<DummyComponentCollectionFactory>()
+					.AsFactory(),
+				Component.For<ITypedFactoryComponentSelector>()
+					.ImplementedBy<MultipleSelector>());
+			var factory = container.Resolve<DummyComponentCollectionFactory>();
+
+			var all = factory.All().ToArray();
+			Assert.IsNotNull(all);
+			Assert.AreEqual(2, all.Length);
+			Assert.That(all.Any(c => c is Component1));
+			Assert.That(all.Any(c => c is Component2));
+		}
+
+		[Test]
+		public void Can_Resolve_multiple_components_at_once_with_non_default_selector_list()
+		{
+			container.Register(
+				Component.For<IDummyComponent>()
+					.ImplementedBy<Component2>()
+					.LifeStyle.Transient,
+				Component.For<DummyComponentListFactory>()
+					.AsFactory(),
+				Component.For<ITypedFactoryComponentSelector>()
+					.ImplementedBy<MultipleSelector>());
+			var factory = container.Resolve<DummyComponentListFactory>();
+
+			var all = factory.All();
+			Assert.IsNotNull(all);
+			Assert.AreEqual(2, all.Count);
+			Assert.That(all.Any(c => c is Component1));
+			Assert.That(all.Any(c => c is Component2));
 		}
 
 		[Test]
@@ -170,6 +252,34 @@ namespace Castle.Facilities.TypedFactory.Tests
 
 			factory.Dispose();
 			Assert.IsFalse(component.Disposed);
+		}
+	}
+
+	public interface DummyComponentArrayFactory
+	{
+		IDummyComponent[] All();
+	}
+
+	public interface DummyComponentEnumerableFactory
+	{
+		IEnumerable<IDummyComponent> All();
+	}
+
+	public interface DummyComponentCollectionFactory
+	{
+		ICollection<IDummyComponent> All();
+	}
+
+	public interface DummyComponentListFactory
+	{
+		IList<IDummyComponent> All();
+	}
+
+	public class MultipleSelector:ITypedFactoryComponentSelector
+	{
+		public TypedFactoryComponent SelectComponent(MethodInfo method, Type type, object[] arguments)
+		{
+			return new TypedFactoryComponentCollection(method.ReturnType, null);
 		}
 	}
 

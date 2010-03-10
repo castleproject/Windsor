@@ -23,15 +23,15 @@ namespace Castle.Windsor.Tests.Proxy
 
 	public interface ICalculatorFactory
 	{
-		ICalcService Create(String id);        
+		ICalcService Create(String id);
 		void Release(ICalcService calculator);
 	}
 
-    public interface ICalculatorFactoryCreateWithoutId
-    {
-        ICalcService Create();        
-    }
-    
+	public interface ICalculatorFactoryCreateWithoutId
+	{
+		ICalcService Create();
+	}
+
 	[TestFixture]
 	public class TypedFactoryFacilityTestCase
 	{
@@ -40,7 +40,7 @@ namespace Castle.Windsor.Tests.Proxy
 		{
 			var container = new WindsorContainer(ConfigHelper.ResolveConfigPath("Proxy/typedFactory.xml"));
 
-			var calcFactory = (ICalculatorFactory) container.Resolve(typeof(ICalculatorFactory));
+			var calcFactory = (ICalculatorFactory)container.Resolve(typeof(ICalculatorFactory));
 			Assert.IsNotNull(calcFactory);
 
 			var calculator = calcFactory.Create("default");
