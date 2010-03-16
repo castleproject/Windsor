@@ -822,7 +822,7 @@ namespace Castle.Services.Transaction
 		/// http://msdn.microsoft.com/en-us/library/aa363916(VS.85).aspx
 		/// </summary>
 		[return: MarshalAs(UnmanagedType.Bool)]
-		[DllImport("kernel32", SetLastError = true)]
+		[DllImport("kernel32.dll", SetLastError = true)]
 		private static extern bool DeleteFileTransactedW(
 			[MarshalAs(UnmanagedType.LPWStr)] string file,
 			SafeTxHandle transaction);
@@ -846,7 +846,7 @@ namespace Castle.Services.Transaction
 		/// <param name="lpSecurityAttributes">A pointer to a SECURITY_ATTRIBUTES structure. The lpSecurityDescriptor member of the structure specifies a security descriptor for the new directory.</param>
 		/// <param name="hTransaction">A handle to the transaction. This handle is returned by the CreateTransaction function.</param>
 		/// <returns>True if the call succeeds, otherwise do a GetLastError.</returns>
-		[DllImport("kernel32", SetLastError = true)]
+		[DllImport("kernel32.dll", SetLastError = true)]
 		private static extern bool CreateDirectoryTransactedW(
 			[MarshalAs(UnmanagedType.LPWStr)] string lpTemplateDirectory,
 			[MarshalAs(UnmanagedType.LPWStr)] string lpNewDirectory,
@@ -864,7 +864,7 @@ namespace Castle.Services.Transaction
 		/// </param>
 		/// <param name="hTransaction">A handle to the transaction. This handle is returned by the CreateTransaction function.</param>
 		/// <returns>True if the call succeeds, otherwise do a GetLastError.</returns>
-		[DllImport("kernel32", SetLastError = true)]
+		[DllImport("kernel32.dll", SetLastError = true)]
 		private static extern bool RemoveDirectoryTransactedW(
 			[MarshalAs(UnmanagedType.LPWStr)] string lpPathName,
 			SafeTxHandle hTransaction);
@@ -891,7 +891,7 @@ namespace Castle.Services.Transaction
 		/// If lpBuffer points to a directory and not a file, lpFilePart receives 0 (zero).</param>
 		/// <param name="hTransaction"></param>
 		/// <returns>If the function succeeds, the return value is the length, in TCHARs, of the string copied to lpBuffer, not including the terminating null character.</returns>
-		[DllImport( "Kernel32.dll", CharSet=CharSet.Auto, SetLastError = true)]
+		[DllImport( "kernel32.dll", CharSet=CharSet.Auto, SetLastError = true)]
 		private static extern int GetFullPathNameTransactedW(
 			[In, MarshalAs(UnmanagedType.LPWStr)] string lpFileName,
 			[In] int nBufferLength,

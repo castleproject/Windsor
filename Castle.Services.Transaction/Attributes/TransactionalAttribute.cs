@@ -7,7 +7,7 @@ namespace Castle.Services.Transaction
 	/// the transactional services.
 	/// </summary>
 	[AttributeUsage(AttributeTargets.Class, AllowMultiple=false)]
-	public class TransactionalAttribute : System.Attribute
+	public sealed class TransactionalAttribute : System.Attribute
 	{
 	}
 }

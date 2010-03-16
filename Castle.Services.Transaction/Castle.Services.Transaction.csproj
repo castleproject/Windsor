@@ -117,12 +117,10 @@
     <Compile Include="..\..\buildscripts\CommonAssemblyInfo.cs">
       <Link>CommonAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="AssemblyInfo.cs" />
     <Compile Include="Exceptions\TransactionalConflictException.cs" />
     <Compile Include="Exceptions\TransactionModeUnsupportedException.cs" />
     <Compile Include="GenericTransactions\TransactionBase.cs" />
-    <Compile Include="AssemblyInfo.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="GenericTransactions\ChildTransaction.cs" />
     <Compile Include="GenericTransactions\TalkativeTransaction.cs" />
     <Compile Include="IEventPublisher.cs" />
@@ -191,7 +189,7 @@
     <None Include="..\CastleKey.snk">
       <Link>CastleKey.snk</Link>
     </None>
-    <None Include="Diagrams\Transaction Hierarchy.cd" />
+    <None Include="Diagrams\Transaction Hierarchy and Managers.cd" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\lib\Castle.Core\src\Castle.Core\Castle.Core-vs2008.csproj">

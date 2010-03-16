@@ -6,7 +6,7 @@ namespace Castle.Services.Transaction
 	/// Indicates the transaction support for a method.
 	/// </summary>
 	[AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
-	public class TransactionAttribute : Attribute
+	public sealed class TransactionAttribute : Attribute
 	{
 		private readonly IsolationMode _isolationMode;
 		private readonly TransactionMode _transactionMode;

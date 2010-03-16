@@ -58,6 +58,12 @@ namespace Castle.Services.Transaction
 
 		public override bool IsAmbient { 
 			get { return true; }
-			protected set { } }
+			protected set { } 
+		}
+
+		public override bool IsRollbackOnlySet
+		{
+			get { return _Parent.IsRollbackOnlySet; }
+		}
 	}
 }

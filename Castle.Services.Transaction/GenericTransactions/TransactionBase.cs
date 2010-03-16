@@ -63,7 +63,7 @@ namespace Castle.Services.Transaction
 		/// <summary>
 		/// Gets whether rollback only is set.
 		/// </summary>
-		public bool IsRollbackOnlySet
+		public virtual bool IsRollbackOnlySet
 		{
 			get { return !_CanCommit; }
 		}
@@ -108,7 +108,8 @@ namespace Castle.Services.Transaction
 
 			_Logger.TryLogFail(InnerBegin)
 				.Exception(e => { _CanCommit = false; throw new TransactionException("Could not begin transaction.", e); })
-				.Success(() => _CanCommit = true);
+				.Success(() => 
+					_CanCommit = true);
 
 			_Sem.AtomRead(() =>
 			{
@@ -148,8 +149,8 @@ namespace Castle.Services.Transaction
 
 				_SyncInfo.ForEach(s => _Logger.TryLogFail(s.BeforeCompletion));
 
-            	foreach (var r in _Resources)
-            	{
+				foreach (var r in _Resources)
+				{
 					try { r.Commit(); } 
 					catch (Exception e)
 					{

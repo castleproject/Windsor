@@ -46,7 +46,7 @@ namespace Castle.Services.Transaction
 		 *		__in  HANDLE hObject
 		 * );
 		 */
-		[DllImport("kernel32")]
+		[DllImport("kernel32.dll")]
 		//[ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
 		//[SuppressUnmanagedCodeSecurity]
 		private static extern bool CloseHandle(IntPtr handle);
