@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
 using Castle.Services.Transaction;
 
 namespace Castle.Facilities.AutoTx.Tests
@@ -20,12 +19,16 @@ namespace Castle.Facilities.AutoTx.Tests
 	/// <summary>
 	/// Summary description for MockTransactionManager.
 	/// </summary>
-	public class MockTransactionManager : ITransactionManager
+	public class MockTransactionManager : DefaultTransactionManager
 	{
 		private int _committedCount;
-		private MockTransaction _current;
 		private int _rolledBackCount;
 		private int _transactions;
+
+		public MockTransactionManager()
+		{
+			SetupStatistics();
+		}
 
 		public int TransactionCount
 		{
@@ -42,51 +45,12 @@ namespace Castle.Facilities.AutoTx.Tests
 			get { return _rolledBackCount; }
 		}
 
-		#region ITransactionManager Members
-
-		public event EventHandler<TransactionEventArgs> TransactionCreated;
-		public event EventHandler<TransactionEventArgs> ChildTransactionCreated;
-		public event EventHandler<TransactionEventArgs> TransactionDisposed;
-		public event EventHandler<TransactionEventArgs> TransactionRolledBack;
-		public event EventHandler<TransactionEventArgs> TransactionCompleted;
-		public event EventHandler<TransactionFailedEventArgs> TransactionFailed;
-
-		public ITransaction CreateTransaction(TransactionMode transactionMode, IsolationMode isolationMode,
-		                                      bool isAmbient)
+		private void SetupStatistics()
 		{
-			_current = new MockTransaction();
-
-			_transactions++;
-
-			return _current;
+			TransactionCreated		+= (sender, ev) => { _transactions++; };
+			ChildTransactionCreated += (sender, ev) => { _transactions++; };
+			TransactionCompleted	+= (sender, ev) => { _committedCount++; };
+			TransactionRolledBack	+= (sender, ev) => { _rolledBackCount++; };
 		}
-
-		public ITransaction CreateTransaction(TransactionMode transactionMode, IsolationMode isolationMode)
-		{
-			return CreateTransaction(transactionMode, isolationMode, false);
-		}
-
-		public void Dispose(ITransaction tran)
-		{
-			var transaction = (MockTransaction) tran;
-
-			if (transaction.Status == TransactionStatus.Committed)
-			{
-				_committedCount++;
-			}
-			else
-			{
-				_rolledBackCount++;
-			}
-
-			_current = null;
-		}
-
-		public ITransaction CurrentTransaction
-		{
-			get { return _current; }
-		}
-
-		#endregion
 	}
 }

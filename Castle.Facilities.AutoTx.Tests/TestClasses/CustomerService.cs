@@ -35,7 +35,6 @@ namespace Castle.Facilities.AutoTx.Tests
 		[Transaction(TransactionMode.Requires)]
 		public virtual void Insert( String name, String address )
 		{
-			
 		}
 
 		[Transaction(TransactionMode.Requires)]
