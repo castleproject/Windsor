@@ -129,7 +129,7 @@ namespace Castle.MicroKernel.Tests
 		}
 
 		[Test]
-		public void Exception_message_when_parameter_type_does_not_match()
+		public void Missing_service_is_correctly_detected()
 		{
 			TestDelegate act = ()=>
 
