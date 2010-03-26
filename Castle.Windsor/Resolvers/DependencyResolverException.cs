@@ -25,6 +25,16 @@ namespace Castle.MicroKernel.Resolvers
 #endif
 	public class DependencyResolverException : Exception
 	{
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="DependencyResolverException"/> class.
+		/// </summary>
+		/// <param name="message">The message.</param>
+		/// <param name="innerException">The inner exception.</param>
+		public DependencyResolverException(string message, Exception innerException) : base(message, innerException)
+		{
+		}
+
 		/// <summary>
 		/// Initializes a new instance of the <see cref="DependencyResolverException"/> class.
 		/// </summary>
