@@ -116,6 +116,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Attributes\CastleComponentAttribute.cs" />
     <Compile Include="Attributes\ComponentActivatorAttribute.cs" />
     <Compile Include="Attributes\ComponentProxyBehaviorAttribute.cs" />
     <Compile Include="Attributes\DoNotWireAttribute.cs" />
