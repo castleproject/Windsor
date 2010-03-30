@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,13 +17,15 @@ namespace Castle.MicroKernel.Facilities.TypedFactory
 	using System;
 	using System.Collections;
 
-	using Castle.MicroKernel.Context;
-
+	/// <summary>
+	/// Represents a single component to be resolved via Typed Factory
+	/// </summary>
 	public class TypedFactoryComponent
 	{
 		private readonly Type componentType;
 		private readonly string componentName;
 		private readonly IDictionary additionalArguments;
+
 
 		public TypedFactoryComponent(string componentName, Type componentType, IDictionary additionalArguments)
 		{
@@ -45,6 +47,27 @@ namespace Castle.MicroKernel.Facilities.TypedFactory
 		public IDictionary AdditionalArguments
 		{
 			get { return additionalArguments; }
+		}
+
+		/// <summary>
+		/// Resolves the component(s) from given kernel.
+		/// </summary>
+		/// <param name="kernel"></param>
+		/// <returns>Resolved component(s).</returns>
+		public virtual object Resolve(IKernel kernel)
+		{
+			// NOTE: should this be moved to an interface? like IReference, similar to IReference<T>, but without CreationContext...
+			if (ComponentName == null)
+			{
+				return kernel.Resolve(ComponentType,AdditionalArguments);
+			}
+
+			if (ComponentType == null)
+			{
+				return kernel.Resolve(ComponentName, AdditionalArguments);
+			}
+
+			return kernel.Resolve(ComponentName, ComponentType, AdditionalArguments);
 		}
 	}
 }

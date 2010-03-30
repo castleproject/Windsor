@@ -36,7 +36,7 @@ namespace Castle.MicroKernel.Proxy
 
 		public T Resolve(IKernel kernel, CreationContext context)
 		{
-			var handler = kernel.GetHandler(this.componentKey);
+			var handler = kernel.GetHandler(componentKey);
 			if (handler == null)
 			{
 				throw new Exception(string.Format("Component {0} could not be resolved. Make sure you didn't misspell the name, and that component is registered.", componentKey));

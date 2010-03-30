@@ -116,6 +116,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Attributes\CastleComponentAttribute.cs" />
     <Compile Include="Attributes\ComponentActivatorAttribute.cs" />
     <Compile Include="Attributes\ComponentProxyBehaviorAttribute.cs" />
     <Compile Include="Attributes\DoNotWireAttribute.cs" />
@@ -232,6 +233,7 @@
     <Compile Include="Facilities\TypedFactory\Release.cs" />
     <Compile Include="Facilities\TypedFactory\Resolve.cs" />
     <Compile Include="Facilities\TypedFactory\TypedFactoryComponent.cs" />
+    <Compile Include="Facilities\TypedFactory\TypedFactoryComponentCollection.cs" />
     <Compile Include="Facilities\TypedFactory\TypedFactoryFacility.cs">
       <SubType>Code</SubType>
     </Compile>

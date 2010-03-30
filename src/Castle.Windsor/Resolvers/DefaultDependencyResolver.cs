@@ -18,6 +18,7 @@ namespace Castle.MicroKernel.Resolvers
 	using System.Collections.Generic;
 
 	using Castle.Core;
+	using Castle.MicroKernel.Handlers;
 	using Castle.MicroKernel.SubSystems.Conversion;
 	using Castle.MicroKernel.Util;
 
@@ -356,7 +357,20 @@ namespace Castle.MicroKernel.Resolvers
 				}
 				else
 				{
-					handler = TryGetHandlerFromKernel(dependency, context);
+					try
+					{
+						handler = TryGetHandlerFromKernel(dependency, context);
+					}
+					catch (HandlerException exception)
+					{
+						throw new DependencyResolverException(
+							string.Format(
+								"Missing dependency.{2}Component {0} has a dependency on {1}, which could not be resolved.{2}Make sure the dependency is correctly registered in the container as a service, or provided as inline argument",
+								model.Name,
+								dependency.TargetType,
+								Environment.NewLine),
+							exception);
+					}
 
 					if (handler == null)
 					{
@@ -384,7 +398,11 @@ namespace Castle.MicroKernel.Resolvers
 		{
 			// we are doing it in two stages because it is likely to be faster to a lookup
 			// by key than a linear search
-			IHandler handler = kernel.GetHandler(dependency.TargetType);
+			var handler = kernel.GetHandler(dependency.TargetType);
+			if (handler == null)
+			{
+				throw new HandlerException(string.Format("Handler for {0} was not found.", dependency.TargetType));
+			}
 			if (handler.IsBeingResolvedInContext(context) == false)
 			{
 				return handler;

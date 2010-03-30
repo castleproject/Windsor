@@ -32,19 +32,14 @@ namespace Castle.MicroKernel.Facilities.TypedFactory
 		public void Invoke(IInvocation invocation)
 		{
 			var component = selector.SelectComponent(invocation.Method, invocation.TargetType, invocation.Arguments);
-			if (component.ComponentName == null)
+			if(component == null)
 			{
-				invocation.ReturnValue = kernel.Resolve(component.ComponentType, component.AdditionalArguments);
-				return;
+				throw new FacilityException(
+					string.Format(
+						"Selector {0} didn't select any component for method {1}. This usually signifies a bug in the selector.", selector,
+						invocation.Method));
 			}
-
-			if (component.ComponentType == null)
-			{
-				invocation.ReturnValue = kernel.Resolve(component.ComponentName, component.AdditionalArguments);
-				return;
-			}
-
-			invocation.ReturnValue = kernel.Resolve(component.ComponentName, component.ComponentType, component.AdditionalArguments);
+			invocation.ReturnValue = component.Resolve(kernel);
 		}
 	}
 }
