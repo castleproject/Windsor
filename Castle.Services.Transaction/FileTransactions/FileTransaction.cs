@@ -7,10 +7,9 @@ using System.Runtime.InteropServices;
 using System.Security.Permissions;
 using System.Text;
 using System.Transactions;
-using Castle.Core.IO;
 using Castle.Services.Transaction.IO;
 using Microsoft.Win32.SafeHandles;
-using Path=Castle.Core.IO.Path;
+using Path=Castle.Services.Transaction.IO.Path;
 
 namespace Castle.Services.Transaction
 {
