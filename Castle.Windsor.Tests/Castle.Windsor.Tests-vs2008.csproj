@@ -170,6 +170,7 @@
     <Compile Include="ClassComponents\CommonImplWithDependancy.cs" />
     <Compile Include="ClassComponents\HasTwoConstructors.cs" />
     <Compile Include="ClassComponents\HasTwoConstructors2.cs" />
+    <Compile Include="ClassComponents\HasTwoConstructors3.cs" />
     <Compile Include="ClassComponents\ICommon2.cs" />
     <Compile Include="ClassComponents\IGeneric.cs" />
     <Compile Include="ClassComponents\GenericImpl1.cs" />
@@ -219,6 +220,9 @@
     <Compile Include="ClassComponents\Repository.cs" />
     <Compile Include="ClassComponents\ServiceUser.cs" />
     <Compile Include="ClassComponents\ServiceUser2.cs" />
+    <Compile Include="ClassComponents\SimpleComponent1.cs" />
+    <Compile Include="ClassComponents\SimpleComponent2.cs" />
+    <Compile Include="ClassComponents\SimpleComponent3.cs" />
     <Compile Include="ClassComponents\TwoInterfacesImpl.cs" />
     <Compile Include="ClassComponents\UsesIGeneric.cs" />
     <Compile Include="ComponentArgumentsEnumeratorTestCase.cs" />

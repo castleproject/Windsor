@@ -539,7 +539,7 @@ namespace Castle.MicroKernel.Handlers
 
 		private ConstructorCandidate GetConstructorCandidate()
 		{
-			if (ComponentModel.Constructors.HasAmbiguousFewerArgumentsCandidate == false)
+			if (ComponentModel.Constructors.HasAmbiguousFewerArgumentsCandidate == false && CanSatisfyConstructor(ComponentModel.Constructors.FewerArgumentsCandidate))
 				return ComponentModel.Constructors.FewerArgumentsCandidate;
 
 			// we have more than one 'best' constructor with regards to number of paramters
