@@ -517,12 +517,7 @@ namespace Castle.MicroKernel.Handlers
 					AddDependency(dependency);
 			}
 
-			// We need to satisfy at least the constructor 
-			// with fewer arguments
-
-			ConstructorCandidate candidate = GetConstructorCandidate();
-
-			foreach (DependencyModel dependency in candidate.Dependencies)
+			foreach (DependencyModel dependency in GetSecuredDependencies())
 			{
 				if (dependency.DependencyType == DependencyType.Service ||
 				    dependency.DependencyType == DependencyType.ServiceOverride)
@@ -537,27 +532,37 @@ namespace Castle.MicroKernel.Handlers
 				DisconnectEvents();
 		}
 
-		private ConstructorCandidate GetConstructorCandidate()
+		private IEnumerable<DependencyModel> GetSecuredDependencies()
+		{
+			var candidateConstructors = GetCandidateConstructors();
+
+			// if there is more than one possible constructors, we need to verify
+			// its dependencies at resolve time
+
+			if (candidateConstructors.Count() != 1)
+				return new DependencyModel[0];
+
+			return candidateConstructors.Single().Dependencies;
+		}
+
+		private IEnumerable<ConstructorCandidate> GetCandidateConstructors()
 		{
 			if (ComponentModel.Constructors.HasAmbiguousFewerArgumentsCandidate == false && CanSatisfyConstructor(ComponentModel.Constructors.FewerArgumentsCandidate))
-				return ComponentModel.Constructors.FewerArgumentsCandidate;
+				return new[] { ComponentModel.Constructors.FewerArgumentsCandidate };
 
-			// we have more than one 'best' constructor with regards to number of paramters
-			// we must now find out if we can satisfy any of them
 			var candidates = ComponentModel.Constructors
 				.Where(CanSatisfyConstructor)
 				.GroupBy(c => c.Constructor.GetParameters().Length)
 				.ToList();
 			if (candidates.Count == 0)
 			{
-				// none can be satisfied... let's return the default.
-				return ComponentModel.Constructors.FewerArgumentsCandidate;
+				return ComponentModel.Constructors;
 			}
 
 			if (candidates[0].Count() == 1)
-				return candidates[0].Single();
+				return candidates[0];
 
-			return SelectMostValuableCandidate(candidates[0]);
+			return new[] { SelectMostValuableCandidate(candidates[0]) };
 		}
 
 		private ConstructorCandidate SelectMostValuableCandidate(IEnumerable<ConstructorCandidate> candidates)
