@@ -195,5 +195,17 @@ namespace Castle.MicroKernel.Tests
 			Assert.Less("common", "customer");
 			Assert.IsNotNull(component.Common);
 		}
+
+        [Test]
+        public void Two_constructors_but_one_with_satisfiable_dependencies()
+        {
+            kernel.AddComponent<SimpleComponent1>();
+            kernel.AddComponent<SimpleComponent2>();
+            kernel.AddComponent<HasTwoConstructors3>();
+            var component = kernel.Resolve<HasTwoConstructors3>();
+            Assert.IsNotNull(component.X);
+            Assert.IsNotNull(component.Y);
+            Assert.IsNull(component.A);
+        }
 	}
 }
