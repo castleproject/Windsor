@@ -706,7 +706,7 @@ namespace Castle.MicroKernel
 			if(target==null)
 				throw new InvalidOperationException("There is no handler named " + name);
 			IHandler handler = HandlerFactory.CreateForwarding(target, forwardedType);
-			RegisterHandler(forwardedType.FullName + ": Forward to: " + name, handler);
+			RegisterHandler(name + ", ForwardedType=" + forwardedType.FullName, handler);
 		}
 
 		public virtual void RemoveChildKernel(IKernel childKernel)
