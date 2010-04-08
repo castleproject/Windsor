@@ -16,6 +16,9 @@ namespace Castle.MicroKernel.Registration
 {
 	using System;
 	using System.Collections;
+	using System.Collections.Generic;
+
+	using Castle.Core;
 
 	public static class ComponentDependencyRegistrationExtensions
 	{
@@ -43,6 +46,32 @@ namespace Castle.MicroKernel.Registration
 		public static IDictionary Insert<TKeyType>(this IDictionary arguments, TKeyType value)
 		{
 			arguments[typeof(TKeyType)] = value;
+			return arguments;
+		}
+
+		/// <summary>
+		/// Inserts a set of typed arguments. Property names of the anonymous type will be used as key.
+		/// </summary>
+		public static IDictionary Insert(this IDictionary arguments, object namedArgumentsAsAnonymousType)
+		{
+			foreach (DictionaryEntry item in new ReflectionBasedDictionaryAdapter(namedArgumentsAsAnonymousType))
+			{
+				arguments[item.Key] = item.Value;
+			}
+
+			return arguments;
+		}
+
+		/// <summary>
+		/// Inserts a set of typed arguments. Actual type of the arguments will be used as key.
+		/// </summary>
+		public static IDictionary Insert(this IDictionary arguments, object[] typedArgumentsArray)
+		{
+			foreach (var item in typedArgumentsArray)
+			{
+				arguments[item.GetType()] = item;
+			}
+
 			return arguments;
 		}
 	}

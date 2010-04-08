@@ -1,5 +1,16 @@
 unreleased changes
 ==================
+
+- fixed issue with per-web-request components not being released properly in some cases
+
+- fixed IOC-ISSUE-199 - NamingPartsSubSystem broken when RegisterHandlerForwarding is used
+
+- TypedFactoryFacility: added ability to resolve multiple components
+
+- TypedFactoryFacility: added ability to put custom resolving logic
+
+- fixed another case of IoC-168 where a component with two constructors of different parameter length couldn't be resolved when the fewer parameter constructor was not satisfied
+
 - If and Unless functions on fluent registration API are now cumulative - it is legal to call them multiple times and all conditions will be checked. This is a minor breaking change from previous behavior where last call would win.
 
 - added typed arguments (specified by type rather than by name).

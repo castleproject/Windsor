@@ -136,6 +136,7 @@
     <Compile Include="Context\Burden.cs" />
     <Compile Include="Context\Arguments.cs" />
     <Compile Include="Context\ComponentArgumentsEnumerator.cs" />
+    <Compile Include="Context\FallbackArgumentsStore.cs" />
     <Compile Include="Context\NamedArgumentsStore.cs" />
     <Compile Include="Context\DependencyTrackingScope.cs" />
     <Compile Include="ComponentActivator\ExternalInstanceActivator.cs">

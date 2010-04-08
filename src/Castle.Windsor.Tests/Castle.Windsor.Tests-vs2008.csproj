@@ -127,6 +127,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AnonymousDependenciesTestCase.cs" />
+    <Compile Include="ArgumentsTestCase.cs" />
     <Compile Include="BestConstructorTestCase.cs">
       <SubType>Code</SubType>
     </Compile>

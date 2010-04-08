@@ -30,14 +30,13 @@ namespace Castle.MicroKernel
 		private readonly IList<IArgumentsStore> stores = new List<IArgumentsStore>();
 		private readonly object syncRoot = new object();
 
-		public Arguments(object namedArgumentsAsAnonymousType)
-			: this(new ReflectionBasedDictionaryAdapter(namedArgumentsAsAnonymousType))
+		public Arguments(object namedArgumentsAsAnonymousType, params IArgumentsStore[] customStores)
+			: this(new ReflectionBasedDictionaryAdapter(namedArgumentsAsAnonymousType), customStores)
 		{
 		}
 
-
-		public Arguments(IDictionary values)
-			: this()
+		public Arguments(IDictionary values, params IArgumentsStore[] customStores)
+			: this(customStores)
 		{
 			foreach (DictionaryEntry entry in values)
 			{
@@ -45,8 +44,8 @@ namespace Castle.MicroKernel
 			}
 		}
 
-		public Arguments(object[] typedArguments)
-			: this()
+		public Arguments(object[] typedArguments, params IArgumentsStore[] customStores)
+			: this(customStores)
 		{
 			foreach (var @object in typedArguments)
 			{
@@ -60,8 +59,18 @@ namespace Castle.MicroKernel
 			}
 		}
 
-		public Arguments()
+		public Arguments(params IArgumentsStore[] customStores)
 		{
+			if (customStores != null)
+			{
+				foreach (var store in customStores)
+				{
+					if (store == null) continue;
+
+					// first one wins, so stores passed via .ctor will get picked over the default ones
+					stores.Add(store);
+				}
+			}
 			AddStores(stores);
 		}
 
@@ -70,19 +79,14 @@ namespace Castle.MicroKernel
 			get { return stores.Sum(s => s.Count); }
 		}
 
-		public bool IsFixedSize
+		bool ICollection.IsSynchronized
 		{
 			get { return false; }
 		}
 
-		public bool IsReadOnly
+		object ICollection.SyncRoot
 		{
-			get { return false; }
-		}
-
-		public bool IsSynchronized
-		{
-			get { return false; }
+			get { return syncRoot; }
 		}
 
 		public object this[object key]
@@ -120,11 +124,6 @@ namespace Castle.MicroKernel
 			}
 		}
 
-		public object SyncRoot
-		{
-			get { return syncRoot; }
-		}
-
 		public ICollection Values
 		{
 			get
@@ -135,6 +134,44 @@ namespace Castle.MicroKernel
 					values.Add(value.Value);
 				}
 				return values;
+			}
+		}
+
+		bool IDictionary.IsFixedSize
+		{
+			get { return false; }
+		}
+
+		bool IDictionary.IsReadOnly
+		{
+			get { return false; }
+		}
+
+		protected virtual void AddStores(IList<IArgumentsStore> list)
+		{
+			list.Add(new NamedArgumentsStore());
+			list.Add(new TypedArgumentsStore());
+			list.Add(new FallbackArgumentsStore());
+		}
+
+		protected virtual IArgumentsStore GetSupportingStore(object key)
+		{
+			var keyType = key.GetType();
+			var store = stores.FirstOrDefault(s => s.Supports(keyType));
+			if (store == null)
+			{
+				throw new NotSupportedException(string.Format("Key type {0} is not supported.", keyType));
+			}
+			return store;
+		}
+
+		void ICollection.CopyTo(Array array, int index)
+		{
+			var currentIndex = index;
+			foreach (DictionaryEntry item in this)
+			{
+				array.SetValue(item.Value, currentIndex);
+				currentIndex++;
 			}
 		}
 
@@ -162,24 +199,9 @@ namespace Castle.MicroKernel
 			return stores.Any(s => s.Contains(key));
 		}
 
-		public void CopyTo(Array array, int index)
-		{
-			var currentIndex = index;
-			foreach (DictionaryEntry item in this)
-			{
-				array.SetValue(item.Value, currentIndex);
-				currentIndex++;
-			}
-		}
-
 		public IDictionaryEnumerator GetEnumerator()
 		{
 			return new ComponentArgumentsEnumerator(stores);
-		}
-
-		IEnumerator IEnumerable.GetEnumerator()
-		{
-			return GetEnumerator();
 		}
 
 		public void Remove(object key)
@@ -193,21 +215,9 @@ namespace Castle.MicroKernel
 			store.Remove(key);
 		}
 
-		protected virtual void AddStores(IList<IArgumentsStore> list)
+		IEnumerator IEnumerable.GetEnumerator()
 		{
-			list.Add(new NamedArgumentsStore());
-			list.Add(new TypedArgumentsStore());
-		}
-
-		protected virtual IArgumentsStore GetSupportingStore(object key)
-		{
-			var keyType = key.GetType();
-			var store = stores.SingleOrDefault(s => s.Supports(keyType));
-			if (store == null)
-			{
-				throw new NotSupportedException(string.Format("Key type {0} is not supported.", keyType));
-			}
-			return store;
+			return GetEnumerator();
 		}
 	}
 }
