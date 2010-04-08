@@ -29,7 +29,6 @@ namespace Castle.MicroKernel.SubSystems.Naming
 		protected String internalService;
 		protected String internalliteralProperties = String.Empty;
 		protected IDictionary<string,string> internalproperties;
-		protected bool allProperties; // NOTE: is this safe to delete?
 
 		/// <summary>
 		/// Creates a ComponentName using a name pattern like
@@ -91,7 +90,6 @@ namespace Castle.MicroKernel.SubSystems.Naming
 			if (name.IndexOf(':') != -1)
 			{
 				String[] splitted = name.Split(new[] {':'});
-
 				SetupService(splitted[0]);
 				SetupProperties(splitted[1]);
 			}
@@ -130,7 +128,6 @@ namespace Castle.MicroKernel.SubSystems.Naming
 			if (properties.Equals("*"))
 			{
 				internalliteralProperties = "*";
-				allProperties = true;
 				return;
 			}
 			if (properties == String.Empty)

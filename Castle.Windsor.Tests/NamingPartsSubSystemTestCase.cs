@@ -22,12 +22,18 @@ namespace Castle.MicroKernel.Tests
 	[TestFixture]
 	public class NamingPartsSubSystemTestCase
 	{
+		private IKernel kernel;
+
+		[SetUp]
+		public void SetUpTests()
+		{
+			kernel = new DefaultKernel();
+			kernel.AddSubSystem(SubSystemConstants.NamingKey, new NamingPartsSubSystem());
+		}
+
 		[Test]
 		public void ComponentQuery()
 		{
-			IKernel kernel = new DefaultKernel();
-			kernel.AddSubSystem(SubSystemConstants.NamingKey, new NamingPartsSubSystem());
-
 			kernel.AddComponent("common:key1=true", typeof(ICommon), typeof(CommonImpl1));
 			kernel.AddComponent("common:secure=true", typeof(ICommon), typeof(CommonImpl2));
 
@@ -50,9 +56,6 @@ namespace Castle.MicroKernel.Tests
 		[Test]
 		public void ComponentGraph()
 		{
-			IKernel kernel = new DefaultKernel();
-			kernel.AddSubSystem(SubSystemConstants.NamingKey, new NamingPartsSubSystem());
-
 			kernel.AddComponent("common:key1=true", typeof(ICommon), typeof(CommonImpl1));
 			kernel.AddComponent("common:secure=true", typeof(ICommon), typeof(CommonImpl2));
 
@@ -64,9 +67,6 @@ namespace Castle.MicroKernel.Tests
 		[Test]
 		public void ServiceLookup()
 		{
-			IKernel kernel = new DefaultKernel();
-			kernel.AddSubSystem(SubSystemConstants.NamingKey, new NamingPartsSubSystem());
-
 			kernel.AddComponent("common:key1=true", typeof(ICommon), typeof(CommonImpl1));
 			kernel.AddComponent("common:secure=true", typeof(ICommon), typeof(CommonImpl2));
 
@@ -79,9 +79,6 @@ namespace Castle.MicroKernel.Tests
 		[Test]
 		public void GetAssignableHandlers()
 		{
-			IKernel kernel = new DefaultKernel();
-			kernel.AddSubSystem(SubSystemConstants.NamingKey, new NamingPartsSubSystem());
-
 			kernel.AddComponent("common:key1=true", typeof(ICommon), typeof(CommonImpl1));
 			kernel.AddComponent("common:secure=true", typeof(ICommon), typeof(CommonImpl2));
 
@@ -90,5 +87,13 @@ namespace Castle.MicroKernel.Tests
 			Assert.IsNotNull(handlers);
 			Assert.AreEqual(2, handlers.Length);
 		}
+
+		[Test]
+		public void WorksWithHandlerForwarding()
+		{
+			kernel.AddComponent("common:key1=true", typeof(ICommon), typeof(CommonImpl1));
+			kernel.RegisterHandlerForwarding(typeof(CommonImpl2), "common:key1=true");
+		}
+
 	}
 }
