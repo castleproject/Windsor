@@ -18,8 +18,6 @@ namespace Castle.MicroKernel.Facilities.TypedFactory
 	using System.Collections;
 	using System.Reflection;
 
-	using Castle.MicroKernel.Context;
-
 	public class DefaultTypedFactoryComponentSelector : ITypedFactoryComponentSelector
 	{
 		public TypedFactoryComponent SelectComponent(MethodInfo method, Type type, object[] arguments)

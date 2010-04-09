@@ -1,6 +1,8 @@
 unreleased changes
 ==================
 
+- TypedFactoryFacility: TypedFactoryComponent will now fallback to resolving by type if no component with designated name can be found
+
 - fixed issue with per-web-request components not being released properly in some cases
 
 - fixed IOC-ISSUE-199 - NamingPartsSubSystem broken when RegisterHandlerForwarding is used
