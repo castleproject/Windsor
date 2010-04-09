@@ -71,6 +71,19 @@ namespace Castle.Facilities.TypedFactory.Tests
 		}
 
 		[Test]
+		public void Resolve_component_by_name_with_default_selector_falls_back_to_by_type_when_no_name_found()
+		{
+			container.Register(
+				Component.For<DummyComponentFactory>()
+					.AsFactory());
+			var factory = container.Resolve<DummyComponentFactory>();
+
+			var component = factory.GetSecondComponent();
+			Assert.IsNotNull(component);
+			Assert.IsInstanceOf<Component1>(component);
+		}
+
+		[Test]
 		public void Can_use_non_default_selector()
 		{
 			container.Register(
