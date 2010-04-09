@@ -460,13 +460,23 @@ namespace Castle.MicroKernel.Resolvers
 
 		private ParameterModel ObtainParameterModelByType(DependencyModel dependency, ComponentModel model)
 		{
-			Type type = dependency.TargetType;
+			var type = dependency.TargetType;
+			var parameter = GetParameterModelByType(type, model);
+			if(parameter==null && type.IsGenericType)
+			{
+				parameter = GetParameterModelByType(type.GetGenericTypeDefinition(), model);
+			}
+			return parameter;
+		}
+
+		private ParameterModel GetParameterModelByType(Type type, ComponentModel model)
+		{
 			if (type == null)
 			{
 				return null;
 			}
 
-			string key = type.AssemblyQualifiedName;
+			var key = type.AssemblyQualifiedName;
 			if (key == null)
 			{
 				return null;
@@ -477,7 +487,7 @@ namespace Castle.MicroKernel.Resolvers
 
 		private ParameterModel ObtainParameterModelByKey(DependencyModel dependency, ComponentModel model)
 		{
-			string key = dependency.DependencyKey;
+			var key = dependency.DependencyKey;
 			if (key == null)
 			{
 				return null;

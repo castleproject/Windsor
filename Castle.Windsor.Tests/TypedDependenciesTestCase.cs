@@ -170,7 +170,6 @@ namespace Castle.MicroKernel.Tests
 		}
 
 		[Test]
-		[Ignore("Not supported yet")]
 		public void Typed_arguments_work_for_open_generic_ServiceOverrides_open_service()
 		{
 			kernel.Register(Component.For(typeof(IGeneric<>)).ImplementedBy(typeof(GenericImpl1<>)).Named("default"));
@@ -181,6 +180,30 @@ namespace Castle.MicroKernel.Tests
 			var item = kernel.Resolve<UsesIGeneric<string>>();
 
 			Assert.IsInstanceOf<GenericImpl2<string>>(item.Dependency);
+		}
+
+		[Test]
+		public void Typed_arguments_work_for_open_generic_ServiceOverrides_closed_service_preferred_over_open_service()
+		{
+			kernel.Register(Component.For(typeof(IGeneric<>)).ImplementedBy(typeof(GenericImpl1<>)).Named("default"),
+			                Component.For(typeof(IGeneric<>)).ImplementedBy(typeof(GenericImpl2<>)).Named("non-default-open").
+			                	DependsOn(new { value = 1 }),
+			                Component.For(typeof(IGeneric<>)).ImplementedBy(typeof(GenericImpl2<>)).Named("non-default-int").
+			                	DependsOn(new { value = 2 }),
+			                Component.For(typeof(UsesIGeneric<>))
+			                	.ServiceOverrides(ServiceOverride.ForKey(typeof(IGeneric<>)).Eq("non-default-open"),
+								ServiceOverride.ForKey(typeof(IGeneric<int>)).Eq("non-default-int"))
+				);
+
+			var withString = kernel.Resolve<UsesIGeneric<string>>();
+			Assert.IsInstanceOf<GenericImpl2<string>>(withString.Dependency);
+			Assert.AreEqual(1, (withString.Dependency as GenericImpl2<string>).Value);
+
+
+			var withInt = kernel.Resolve<UsesIGeneric<int>>();
+			Assert.IsInstanceOf<GenericImpl2<int>>(withInt.Dependency);
+			Assert.AreEqual(2, (withInt.Dependency as GenericImpl2<int>).Value);
+
 		}
 	}
 }
