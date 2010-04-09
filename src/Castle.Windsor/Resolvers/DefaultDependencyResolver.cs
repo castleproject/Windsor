@@ -461,8 +461,13 @@ namespace Castle.MicroKernel.Resolvers
 		private ParameterModel ObtainParameterModelByType(DependencyModel dependency, ComponentModel model)
 		{
 			var type = dependency.TargetType;
+			if (type == null)
+			{
+				// for example it's an interceptor
+				return null;
+			}
 			var parameter = GetParameterModelByType(type, model);
-			if(parameter==null && type.IsGenericType)
+			if (parameter == null && type.IsGenericType)
 			{
 				parameter = GetParameterModelByType(type.GetGenericTypeDefinition(), model);
 			}

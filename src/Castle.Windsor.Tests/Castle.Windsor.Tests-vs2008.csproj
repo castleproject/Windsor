@@ -126,7 +126,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AnonymousDependenciesTestCase.cs" />
+    <Compile Include="TypedDependenciesTestCase.cs" />
     <Compile Include="ArgumentsTestCase.cs" />
     <Compile Include="BestConstructorTestCase.cs">
       <SubType>Code</SubType>
