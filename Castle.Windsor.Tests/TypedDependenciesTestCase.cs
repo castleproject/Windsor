@@ -23,9 +23,8 @@ namespace Castle.MicroKernel.Tests
 	using NUnit.Framework;
 
 	[TestFixture]
-	public class AnonymousDependenciesTestCase
+	public class TypedDependenciesTestCase
 	{
-
 		[SetUp]
 		public void SetUpTests()
 		{
@@ -185,25 +184,24 @@ namespace Castle.MicroKernel.Tests
 		[Test]
 		public void Typed_arguments_work_for_open_generic_ServiceOverrides_closed_service_preferred_over_open_service()
 		{
-			kernel.Register(Component.For(typeof(IGeneric<>)).ImplementedBy(typeof(GenericImpl1<>)).Named("default"),
-			                Component.For(typeof(IGeneric<>)).ImplementedBy(typeof(GenericImpl2<>)).Named("non-default-open").
-			                	DependsOn(new { value = 1 }),
-			                Component.For(typeof(IGeneric<>)).ImplementedBy(typeof(GenericImpl2<>)).Named("non-default-int").
-			                	DependsOn(new { value = 2 }),
-			                Component.For(typeof(UsesIGeneric<>))
-			                	.ServiceOverrides(ServiceOverride.ForKey(typeof(IGeneric<>)).Eq("non-default-open"),
-								ServiceOverride.ForKey(typeof(IGeneric<int>)).Eq("non-default-int"))
+			kernel.Register(
+				Component.For(typeof(IGeneric<>)).ImplementedBy(typeof(GenericImpl1<>)).Named("default"),
+				Component.For(typeof(IGeneric<>)).ImplementedBy(typeof(GenericImpl2<>)).Named("non-default-open").DependsOn(
+					new { value = 1 }),
+				Component.For(typeof(IGeneric<>)).ImplementedBy(typeof(GenericImpl2<>)).Named("non-default-int").DependsOn(
+					new { value = 2 }),
+				Component.For(typeof(UsesIGeneric<>)).ServiceOverrides(
+					ServiceOverride.ForKey(typeof(IGeneric<>)).Eq("non-default-open"),
+					ServiceOverride.ForKey(typeof(IGeneric<int>)).Eq("non-default-int"))
 				);
 
 			var withString = kernel.Resolve<UsesIGeneric<string>>();
+			var withInt = kernel.Resolve<UsesIGeneric<int>>();
+
 			Assert.IsInstanceOf<GenericImpl2<string>>(withString.Dependency);
 			Assert.AreEqual(1, (withString.Dependency as GenericImpl2<string>).Value);
-
-
-			var withInt = kernel.Resolve<UsesIGeneric<int>>();
 			Assert.IsInstanceOf<GenericImpl2<int>>(withInt.Dependency);
 			Assert.AreEqual(2, (withInt.Dependency as GenericImpl2<int>).Value);
-
 		}
 	}
 }
