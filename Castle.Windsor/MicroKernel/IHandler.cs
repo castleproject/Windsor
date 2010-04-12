@@ -67,6 +67,15 @@ namespace Castle.MicroKernel
 		object Resolve(CreationContext context);
 
 		/// <summary>
+		/// Implementors should return a valid instance 
+		/// for the component the handler is responsible.
+		/// It should return null in the case the component
+		/// can't be created for some reason
+		/// </summary>
+		/// <returns></returns>
+		object TryResolve(CreationContext context);
+
+		/// <summary>
 		/// Implementors should dispose the component instance
 		/// </summary>
 		/// <param name="instance"></param>
