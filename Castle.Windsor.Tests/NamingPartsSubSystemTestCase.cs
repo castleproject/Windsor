@@ -15,6 +15,7 @@
 namespace Castle.MicroKernel.Tests
 {
 	using Castle.Core;
+	using Castle.Core.Internal;
 	using Castle.MicroKernel.SubSystems.Naming;
 	using Castle.MicroKernel.Tests.ClassComponents;
 	using NUnit.Framework;

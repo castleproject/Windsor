@@ -18,6 +18,7 @@ namespace Castle.MicroKernel.Tests.Lifestyle
 	using System.Threading;
 	using Castle.Core;
 	using Castle.Core.Configuration;
+	using Castle.MicroKernel.Context;
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Tests.ClassComponents;
 	using Castle.MicroKernel.Tests.Lifestyle.Components;

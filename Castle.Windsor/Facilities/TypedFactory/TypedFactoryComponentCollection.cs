@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.MicroKernel.Facilities.TypedFactory
+namespace Castle.Facilities.TypedFactory
 {
 	using System;
 	using System.Collections;
@@ -20,6 +20,7 @@ namespace Castle.MicroKernel.Facilities.TypedFactory
 	using System.Linq;
 
 	using Castle.DynamicProxy.Generators.Emitters;
+	using Castle.MicroKernel;
 
 	/// <summary>
 	/// Represents a set of components to be resolved via Typed Factory. Uses <see cref="IKernel.ResolveAll(System.Type,System.Collections.IDictionary)"/> to resolve the components.

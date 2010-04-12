@@ -12,10 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.MicroKernel.Facilities.TypedFactory
+namespace Castle.Facilities.TypedFactory
 {
 	using System;
 	using System.Collections;
+
+	using Castle.MicroKernel;
 
 	/// <summary>
 	/// Represents a single component to be resolved via Typed Factory

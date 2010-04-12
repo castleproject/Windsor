@@ -20,6 +20,7 @@ namespace Castle.Windsor.Tests.Adapters.ComponentModel
 	using System.ComponentModel.Design;
 
 	using Castle.MicroKernel;
+	using Castle.MicroKernel.Context;
 	using Castle.Windsor.Adapters.ComponentModel;
 	using Castle.Windsor.Tests.Components;
 
