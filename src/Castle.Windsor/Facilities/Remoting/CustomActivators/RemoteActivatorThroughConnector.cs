@@ -12,15 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Facilities.Remoting
+namespace Castle.Facilities.Remoting.CustomActivators
 {
 #if (!SILVERLIGHT)
 	using System.Runtime.Remoting;
-	
+
 	using Castle.Core;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.ComponentActivator;
-	
+	using Castle.MicroKernel.Context;
+
 	/// <summary>
 	/// Activates a client connecting to the remote server, enforcing the uri and the server activation.
 	/// </summary>

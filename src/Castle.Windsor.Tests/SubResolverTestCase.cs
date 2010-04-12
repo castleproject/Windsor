@@ -14,6 +14,8 @@
 
 namespace Castle.MicroKernel.Tests
 {
+	using Castle.MicroKernel.Context;
+
 	using Core;
 	using NUnit.Framework;
 

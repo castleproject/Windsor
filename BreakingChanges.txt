@@ -1,4 +1,15 @@
 ================================================================================================
+change - Multiple types were moved between namespaces
+
+impact - low
+fixability - trivial
+revision - 
+
+description - To improve the internal structure several types were moved to other namespaces.
+
+fix - When compilation error occurs adjust namespace imports as suggested by Visual Studio
+
+================================================================================================
 change - Assembly Castle.MicroKernel.dll was merged into Castle.Windsor.dll
 
 impact - high

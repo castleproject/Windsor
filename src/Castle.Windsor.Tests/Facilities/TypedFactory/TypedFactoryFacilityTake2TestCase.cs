@@ -22,7 +22,6 @@ namespace Castle.Facilities.TypedFactory.Tests
 	using Castle.Core;
 	using Castle.Facilities.TypedFactory.Tests.Components;
 	using Castle.Facilities.TypedFactory.Tests.Factories;
-	using Castle.MicroKernel.Facilities.TypedFactory;
 	using Castle.MicroKernel.Registration;
 	using Castle.Windsor;
 	using Castle.Windsor.Tests.Facilities.TypedFactory.Components;

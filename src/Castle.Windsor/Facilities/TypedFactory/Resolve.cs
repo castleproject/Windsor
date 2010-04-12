@@ -12,9 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.MicroKernel.Facilities.TypedFactory
+namespace Castle.Facilities.TypedFactory
 {
 	using Castle.Core.Interceptor;
+	using Castle.MicroKernel;
+	using Castle.MicroKernel.Facilities;
 
 	/// <summary>
 	/// resolves componet selected by given <see cref="ITypedFactoryComponentSelector"/> from the container
