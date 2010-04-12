@@ -298,28 +298,28 @@ namespace Castle.MicroKernel
 		public Array ResolveAll(Type service, IDictionary arguments)
 		{
 			var resolved = new Dictionary<IHandler, object>();
-			foreach (IHandler handler in GetAssignableHandlers(service))
+			foreach (var handler in GetAssignableHandlers(service))
 			{
-				if (handler.CurrentState != HandlerState.Valid)
-				{
-					continue;
-				}
-
-				IHandler actualHandler = handler;
-
+				// TODO: swap this for correct implementation of IEquatable<IHandler> on all handlers
+				var actualHandler = handler;
 				if (handler is ForwardingHandler)
 				{
 					actualHandler = ((ForwardingHandler)handler).Target;
 				}
 
-				if (!resolved.ContainsKey(actualHandler))
+				if (resolved.ContainsKey(actualHandler))
 				{
-					object component = ResolveComponent(actualHandler, service, arguments);
+					continue;
+				}
+
+				var component = TryResolveComponent(actualHandler, service, arguments);
+				if (component != null)
+				{
 					resolved.Add(actualHandler, component);
 				}
 			}
 
-			Array components = Array.CreateInstance(service, resolved.Count);
+			var components = Array.CreateInstance(service, resolved.Count);
 			((ICollection)resolved.Values).CopyTo(components, 0);
 			return components;
 		}

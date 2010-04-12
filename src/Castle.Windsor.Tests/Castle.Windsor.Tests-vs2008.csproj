@@ -168,7 +168,7 @@
     <Compile Include="ClassComponents\ComponentFactory.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ClassComponents\CommonImplWithDependancy.cs" />
+    <Compile Include="ClassComponents\CommonImplWithDependency.cs" />
     <Compile Include="ClassComponents\HasTwoConstructors.cs" />
     <Compile Include="ClassComponents\HasTwoConstructors2.cs" />
     <Compile Include="ClassComponents\HasTwoConstructors3.cs" />
