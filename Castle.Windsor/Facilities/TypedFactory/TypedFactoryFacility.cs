@@ -89,7 +89,7 @@ namespace Castle.Facilities.TypedFactory
 
 		private void RegisterFactory(string id, Type type)
 		{
-			var model = new ComponentModel(id, type, type) { LifestyleType = LifestyleType.Singleton };
+			var model = new ComponentModel(id, type, type);
 			model.Interceptors.AddLast(new InterceptorReference(InterceptorKey));
 			ProxyUtil.ObtainProxyOptions(model, true).OmitTarget = true;
 
