@@ -20,6 +20,7 @@ namespace Castle.Facilities.TypedFactory
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Facilities;
 	using Castle.MicroKernel.Proxy;
+	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.SubSystems.Conversion;
 
 	/// <summary>
@@ -45,7 +46,9 @@ namespace Castle.Facilities.TypedFactory
 
 		protected override void Init()
 		{
-			Kernel.AddComponent(InterceptorKey, typeof(TypedFactoryInterceptor), LifestyleType.Transient);
+			Kernel.Register(Component.For<TypedFactoryInterceptor>()
+			                	.Named(InterceptorKey)
+			                	.Unless(Component.ServiceAlreadyRegistered));
 
 			LegacyInit();
 		}
@@ -62,30 +65,32 @@ namespace Castle.Facilities.TypedFactory
 
 		protected virtual void AddFactories(IConfiguration facilityConfig, ITypeConverter converter)
 		{
-			if (facilityConfig != null)
+			if (facilityConfig == null)
 			{
-				foreach (IConfiguration config in facilityConfig.Children["factories"].Children)
+				return;
+			}
+
+			foreach (var config in facilityConfig.Children["factories"].Children)
+			{
+				var id = config.Attributes["id"];
+				var creation = config.Attributes["creation"];
+				var destruction = config.Attributes["destruction"];
+
+				var factoryType = (Type)converter.PerformConversion(config.Attributes["interface"], typeof(Type));
+				if(string.IsNullOrEmpty(creation))
 				{
-					var id = config.Attributes["id"];
-					var creation = config.Attributes["creation"];
-					var destruction = config.Attributes["destruction"];
-
-					var factoryType = (Type)converter.PerformConversion(config.Attributes["interface"], typeof(Type));
-					if(string.IsNullOrEmpty(creation))
-					{
-						RegisterFactory(id, factoryType);
-						continue;
-					}
-
-					RegisterFactoryLegacy(creation, id, factoryType, destruction);
+					RegisterFactory(id, factoryType);
+					continue;
 				}
+
+				RegisterFactoryLegacy(creation, id, factoryType, destruction);
 			}
 		}
 
 		private void RegisterFactory(string id, Type type)
 		{
 			var model = new ComponentModel(id, type, type) { LifestyleType = LifestyleType.Singleton };
-			model.Interceptors.Add(new InterceptorReference(typeof(TypedFactoryInterceptor)));
+			model.Interceptors.AddLast(new InterceptorReference(InterceptorKey));
 			ProxyUtil.ObtainProxyOptions(model, true).OmitTarget = true;
 
 			Kernel.AddCustomComponent(model);
