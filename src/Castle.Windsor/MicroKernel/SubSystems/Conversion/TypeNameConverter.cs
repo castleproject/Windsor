@@ -75,7 +75,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 
 		private Type GetType(string name)
 		{
-			var type = Type.GetType(name, false, false);
+			var type = Type.GetType(name, false, true);
 			if (type != null)
 			{
 				return type;
@@ -93,15 +93,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 
 		private Type GetType(TypeName typeName)
 		{
-			Type type;
-			if (typeName.HasNamespace)
-			{
-				fullName2Type.TryGetValue(typeName.FullName, out type);
-				return type;
-			}
-
-			justName2Type.TryGetValue(typeName.Name, out type);
-			return type;
+			return typeName.GetType(this);
 		}
 
 		private void EnsureAppDomainAssembliesInitialized(bool forceLoad)
@@ -143,6 +135,28 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 			{
 				return null;
 			}
+			var genericIndex = name.IndexOf('`');
+			var genericTypes = new TypeName[] { };
+			if (genericIndex > -1)
+			{
+				var start = name.IndexOf("[[", genericIndex);
+				if (start != -1)
+				{
+					int count;
+					var countString = name.Substring(genericIndex + 1, start - genericIndex - 1);
+					if (int.TryParse(countString, out count) == false)
+					{
+						return null;
+					}
+					var genericsString = name.Substring(start + 2, name.Length - start - 4);
+					genericTypes = ParseNames(genericsString, count);
+					if (genericTypes == null)
+					{
+						return null;
+					}
+					name = name.Substring(0, start);
+				}
+			}
 			// at this point we assume we have just the type name, probably prefixed with namespace so let's see which one is it
 			var typeStartsHere = name.LastIndexOf('.');
 			string typeName;
@@ -157,7 +171,21 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 			{
 				typeName = name;
 			}
-			return new TypeName(@namespace, typeName);
+			return new TypeName(@namespace, typeName, genericTypes);
+		}
+
+		private TypeName[] ParseNames(string substring, int count)
+		{
+			if (count == 1)
+			{
+				var name = ParseName(substring);
+				if (name == null)
+				{
+					return new TypeName[0];
+				}
+				return new[] { name };
+			}
+			return new TypeName[0];
 		}
 
 		public override object PerformConversion(IConfiguration configuration, Type targetType)
@@ -167,16 +195,32 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 
 		private class TypeName
 		{
+			private readonly string assemblyQualifiedName;
+			private readonly TypeName[] genericTypes;
 			private readonly string name;
 			private readonly string @namespace;
 
-			public TypeName(string @namespace, string name)
+			public TypeName(string @namespace, string name, TypeName[] genericTypes)
 			{
 				this.name = name;
+				this.genericTypes = genericTypes;
 				this.@namespace = @namespace;
 			}
 
-			public string FullName
+			public TypeName(string assemblyQualifiedName)
+			{
+				this.assemblyQualifiedName = assemblyQualifiedName;
+			}
+
+			private bool IsAssemblyQualified
+			{
+				get
+				{
+					return assemblyQualifiedName != null;
+				}
+			}
+
+			private string FullName
 			{
 				get
 				{
@@ -188,14 +232,47 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 				}
 			}
 
-			public bool HasNamespace
+			private bool HasGenericParameters
+			{
+				get { return genericTypes.Length > 0; }
+			}
+
+			private bool HasNamespace
 			{
 				get { return string.IsNullOrEmpty(@namespace) == false; }
 			}
 
-			public string Name
+			private string Name
 			{
 				get { return name; }
+			}
+
+			public Type GetType(TypeNameConverter converter)
+			{
+				Type type;
+				if(IsAssemblyQualified)
+				{
+					return Type.GetType(assemblyQualifiedName, false, true);
+				}
+				if (HasNamespace)
+				{
+					converter.fullName2Type.TryGetValue(FullName, out type);
+					return type;
+				}
+
+				converter.justName2Type.TryGetValue(Name, out type);
+				if (!HasGenericParameters)
+				{
+					return type;
+				}
+
+				var genericArgs = new Type[genericTypes.Length];
+				for (var i = 0; i < genericArgs.Length; i++)
+				{
+					genericArgs[i] = genericTypes[i].GetType(converter);
+				}
+
+				return type.MakeGenericType(genericArgs);
 			}
 		}
 	}

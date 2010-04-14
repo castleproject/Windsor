@@ -17,6 +17,7 @@ namespace Castle.Windsor.Tests
 	using System;
 
 	using Castle.MicroKernel.SubSystems.Conversion;
+	using Castle.MicroKernel.Tests.ClassComponents;
 	using Castle.MicroKernel.Tests.Lifecycle;
 
 	using NUnit.Framework;
@@ -48,6 +49,24 @@ namespace Castle.Windsor.Tests
 			var name = type.FullName;
 			var result = converter.PerformConversion(name, typeof(Type));
 			Assert.AreEqual(result, type);
+		}
+
+		[Test]
+		public void Can_load_open_generic_type_by_name()
+		{
+			var type = typeof(IGeneric<>);
+			var name = type.Name;
+			var result = converter.PerformConversion(name, typeof(Type));
+			Assert.AreEqual(result, type);
+		}
+
+		[Test]
+		public void Can_load_closed_generic_type_by_Name_single_generic_parameter()
+		{
+			var type = typeof(IGeneric<IService2>);
+			var name = type.Name + "[[" + typeof(IService2).Name + "]]";
+			var result = converter.PerformConversion(name, typeof(Type));
+			Assert.AreEqual(type, result);
 		}
 	}
 }
