@@ -60,7 +60,7 @@ namespace Castle.MicroKernel
 		/// <summary>
 		/// The implementation of <see cref="IHandlerFactory"/>
 		/// </summary>
-		private IHandlerFactory handlerFactory;
+		private readonly IHandlerFactory handlerFactory;
 
 		/// <summary>
 		/// The implementation of <see cref="IComponentModelBuilder"/>
@@ -70,7 +70,7 @@ namespace Castle.MicroKernel
 		/// <summary>
 		/// The dependency resolver.
 		/// </summary>
-		private IDependencyResolver resolver;
+		private readonly IDependencyResolver resolver;
 
 		/// <summary>
 		/// Implements a policy to control component's
@@ -86,22 +86,22 @@ namespace Castle.MicroKernel
 		/// <summary>
 		/// List of <see cref="IFacility"/> registered.
 		/// </summary>
-		private List<IFacility> facilities;
+		private readonly List<IFacility> facilities;
 
 		/// <summary>
 		/// Map of subsystems registered.
 		/// </summary>
-		private Dictionary<string, ISubSystem> subsystems;
+		private readonly Dictionary<string, ISubSystem> subsystems;
 
 		/// <summary>
 		/// List of sub containers.
 		/// </summary>
-		private List<IKernel> childKernels;
+		private readonly List<IKernel> childKernels;
 
-        [ThreadStatic]
-	    private static CreationContext currentCreationContext;
-
-	    #endregion
+		[ThreadStatic]
+		private static CreationContext currentCreationContext;
+		
+		#endregion
 
 		#region Constructors
 
@@ -144,15 +144,14 @@ namespace Castle.MicroKernel
 			handlerFactory = new DefaultHandlerFactory(this);
 			modelBuilder = new DefaultComponentModelBuilder(this);
 			resolver = new DefaultDependencyResolver(this);
-			resolver.Initialize(new DependencyDelegate(RaiseDependencyResolving));
+			resolver.Initialize(RaiseDependencyResolving);
 		}
 		
 #if (!SILVERLIGHT)
 		public DefaultKernel(SerializationInfo info, StreamingContext context)
 		{
-			MemberInfo[] members = FormatterServices.GetSerializableMembers(GetType(), context);
-
-			object[] kernelmembers = (object[])info.GetValue("members", typeof(object[]));
+			var members = FormatterServices.GetSerializableMembers(GetType(), context);
+			var kernelmembers = (object[])info.GetValue("members", typeof(object[]));
 
 			FormatterServices.PopulateObjectMembers(this, members, kernelmembers);
 
@@ -198,7 +197,7 @@ namespace Castle.MicroKernel
 
 			using (OptimizeDependencyResolution())
 			{
-				foreach (IRegistration registration in registrations)
+				foreach (var registration in registrations)
 				{
 					registration.Register(this);
 				}
@@ -444,7 +443,7 @@ namespace Castle.MicroKernel
 		/// <returns></returns>
 		public virtual IHandler[] GetHandlers(Type service)
 		{
-			IHandler[] result = NamingSubSystem.GetHandlers(service);
+			var result = NamingSubSystem.GetHandlers(service);
 
 			// a complete generic type, Foo<Bar>, need to check if Foo<T> is registered
 			if (service.IsGenericType && !service.IsGenericTypeDefinition)
@@ -453,7 +452,7 @@ namespace Castle.MicroKernel
 
 				if (result.Length > 0)
 				{
-					IHandler[] mergedResult = new IHandler[result.Length + genericResult.Length];
+					var mergedResult = new IHandler[result.Length + genericResult.Length];
 					result.CopyTo(mergedResult, 0);
 					genericResult.CopyTo(mergedResult, result.Length);
 					result = mergedResult;
@@ -467,11 +466,11 @@ namespace Castle.MicroKernel
 			// If a parent kernel exists, we merge both results
 			if (Parent != null)
 			{
-				IHandler[] parentResult = Parent.GetHandlers(service);
+				var parentResult = Parent.GetHandlers(service);
 
 				if (parentResult.Length > 0)
 				{
-					IHandler[] newResult = new IHandler[result.Length + parentResult.Length];
+					var newResult = new IHandler[result.Length + parentResult.Length];
 					result.CopyTo(newResult, 0);
 					parentResult.CopyTo(newResult, result.Length);
 					result = newResult;
@@ -499,7 +498,7 @@ namespace Castle.MicroKernel
 
 				if (parentResult.Length > 0)
 				{
-					IHandler[] newResult = new IHandler[result.Length + parentResult.Length];
+					var newResult = new IHandler[result.Length + parentResult.Length];
 					result.CopyTo(newResult, 0);
 					parentResult.CopyTo(newResult, result.Length);
 					result = newResult;
@@ -534,7 +533,7 @@ namespace Castle.MicroKernel
 		public IKernel AddFacility<T>(String key, Action<T> onCreate)
 			where T : IFacility, new()
 		{
-			T facility = new T();
+			var facility = new T();
 			if (onCreate != null) onCreate(facility);
 			return AddFacility(key, facility);
 		}
@@ -542,7 +541,7 @@ namespace Castle.MicroKernel
 		public IKernel AddFacility<T>(String key, Func<T, object> onCreate)
 			where T : IFacility, new()
 		{
-			T facility = new T();
+			var facility = new T();
 			if (onCreate != null) onCreate(facility);
 			return AddFacility(key, facility);
 		}
@@ -555,7 +554,7 @@ namespace Castle.MicroKernel
 		public IKernel AddFacility<T>(Action<T> onCreate)
 			where T : IFacility, new()
 		{
-			T facility = new T();
+			var facility = new T();
 			if (onCreate != null) onCreate(facility);
 			return AddFacility(typeof(T).FullName, facility);
 		}
@@ -563,7 +562,7 @@ namespace Castle.MicroKernel
 		public IKernel AddFacility<T>(Func<T, object> onCreate)
 			where T : IFacility, new()
 		{
-			T facility = new T();
+			var facility = new T();
 			if (onCreate != null) onCreate(facility);
 			return AddFacility(typeof(T).FullName, facility);
 		}
@@ -574,7 +573,7 @@ namespace Castle.MicroKernel
 		/// <returns></returns>
 		public virtual IFacility[] GetFacilities()
 		{
-			IFacility[] list = new IFacility[facilities.Count];
+			var list = new IFacility[facilities.Count];
 			facilities.CopyTo(list, 0);
 			return list;
 		}
@@ -648,8 +647,8 @@ namespace Castle.MicroKernel
 			if (model.CustomComponentActivator == null)
 			{
 				activator = new DefaultComponentActivator(model, this,
-				                                          new ComponentInstanceDelegate(RaiseComponentCreated),
-				                                          new ComponentInstanceDelegate(RaiseComponentDestroyed));
+				                                          RaiseComponentCreated,
+				                                          RaiseComponentDestroyed);
 			}
 			else
 			{
@@ -681,13 +680,11 @@ namespace Castle.MicroKernel
 		{
 			get
 			{
-				GraphNode[] nodes = new GraphNode[NamingSubSystem.ComponentCount];
+				var nodes = new GraphNode[NamingSubSystem.ComponentCount];
+				var index = 0;
 
-				int index = 0;
-
-				IHandler[] handlers = NamingSubSystem.GetHandlers();
-
-				foreach (IHandler handler in handlers)
+				var handlers = NamingSubSystem.GetHandlers();
+				foreach (var handler in handlers)
 				{
 					nodes[index++] = handler.ComponentModel;
 				}
@@ -696,23 +693,30 @@ namespace Castle.MicroKernel
 			}
 		}
 
-	    public void AddHandlerSelector(IHandlerSelector selector)
-	    {
-	        NamingSubSystem.AddHandlerSelector(selector);
-	    }
-
-	    public void RegisterHandlerForwarding(Type forwardedType, string name)
+		public void AddHandlerSelector(IHandlerSelector selector)
 		{
-			IHandler target = GetHandler(name);
-			if(target==null)
+			NamingSubSystem.AddHandlerSelector(selector);
+		}
+
+		public void RegisterHandlerForwarding(Type forwardedType, string name)
+		{
+			var target = GetHandler(name);
+			if (target == null)
+			{
 				throw new InvalidOperationException("There is no handler named " + name);
-			IHandler handler = HandlerFactory.CreateForwarding(target, forwardedType);
+			}
+
+			var handler = HandlerFactory.CreateForwarding(target, forwardedType);
 			RegisterHandler(name + ", ForwardedType=" + forwardedType.FullName, handler);
 		}
 
 		public virtual void RemoveChildKernel(IKernel childKernel)
 		{
-			if (childKernel == null) throw new ArgumentNullException("childKernel");
+			if (childKernel == null)
+			{
+				throw new ArgumentNullException("childKernel");
+			}
+
 			childKernel.Parent = null;
 			childKernels.Remove(childKernel);
 		}
@@ -783,7 +787,7 @@ namespace Castle.MicroKernel
 
 			for (int i = 0; i < vertices.Length; i++)
 			{
-				ComponentModel model = (ComponentModel)vertices[i];
+				var model = (ComponentModel)vertices[i];
 
 				// Prevent the removal of a component that belongs 
 				// to other container
@@ -795,24 +799,28 @@ namespace Castle.MicroKernel
 
 		private void UnsubscribeFromParentKernel()
 		{
-			if (parentKernel != null)
+			if (parentKernel == null)
 			{
-				parentKernel.HandlerRegistered -= new HandlerDelegate(HandlerRegisteredOnParentKernel);
-				parentKernel.HandlersChanged -= HandlersChangedOnParentKernel;
-				parentKernel.ComponentRegistered -= new ComponentDataDelegate(RaiseComponentRegistered);
-				parentKernel.ComponentUnregistered -= new ComponentDataDelegate(RaiseComponentUnregistered);
+				return;
 			}
+
+			parentKernel.HandlerRegistered -= HandlerRegisteredOnParentKernel;
+			parentKernel.HandlersChanged -= HandlersChangedOnParentKernel;
+			parentKernel.ComponentRegistered -= RaiseComponentRegistered;
+			parentKernel.ComponentUnregistered -= RaiseComponentUnregistered;
 		}
 
 		private void SubscribeToParentKernel()
 		{
-			if (parentKernel != null)
+			if (parentKernel == null)
 			{
-				parentKernel.HandlerRegistered += new HandlerDelegate(HandlerRegisteredOnParentKernel);
-				parentKernel.HandlersChanged += HandlersChangedOnParentKernel;
-				parentKernel.ComponentRegistered += new ComponentDataDelegate(RaiseComponentRegistered);
-				parentKernel.ComponentUnregistered += new ComponentDataDelegate(RaiseComponentUnregistered);
+				return;
 			}
+
+			parentKernel.HandlerRegistered += HandlerRegisteredOnParentKernel;
+			parentKernel.HandlersChanged += HandlersChangedOnParentKernel;
+			parentKernel.ComponentRegistered += RaiseComponentRegistered;
+			parentKernel.ComponentUnregistered += RaiseComponentUnregistered;
 		}
 
 		private void HandlersChangedOnParentKernel(ref bool changed)
@@ -854,7 +862,7 @@ namespace Castle.MicroKernel
 
 		protected IConversionManager ConversionSubSystem
 		{
-			get { return (IConversionManager) subsystems[SubSystemConstants.ConversionManagerKey]; }
+			get { return GetSubSystem(SubSystemConstants.ConversionManagerKey) as IConversionManager; }
 		}
 
 		protected virtual IHandler WrapParentHandler(IHandler parentHandler)

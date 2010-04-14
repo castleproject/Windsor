@@ -161,13 +161,13 @@ namespace Castle.MicroKernel
 			if (eventDelegate != null) eventDelegate(key, handler);
 		}
 
-		public virtual void RaiseComponentCreated(ComponentModel model, object instance)
+		protected virtual void RaiseComponentCreated(ComponentModel model, object instance)
 		{
 			var eventDelegate = GetEventHandlers<ComponentInstanceDelegate>(ComponentCreatedEvent);
 			if (eventDelegate != null) eventDelegate(model, instance);
 		}
 
-		public virtual void RaiseComponentDestroyed(ComponentModel model, object instance)
+		protected virtual void RaiseComponentDestroyed(ComponentModel model, object instance)
 		{
 			var eventDelegate = GetEventHandlers<ComponentInstanceDelegate>(ComponentDestroyedEvent);
 			if (eventDelegate != null) eventDelegate(model, instance);
