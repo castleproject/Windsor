@@ -358,6 +358,7 @@
     </Compile>
     <Compile Include="SubResolverTestCase.cs" />
     <Compile Include="TransientMultiConstructorTestCase.cs" />
+    <Compile Include="TypeNameConverterTestCase.cs" />
     <Compile Include="UnsatisfiedDependenciesTestCase.cs">
       <SubType>Code</SubType>
     </Compile>

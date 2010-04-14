@@ -19,7 +19,6 @@ namespace Castle.Windsor.Configuration.Interpreters
 	using System;
 	using Castle.Core.Resource;
 	using Castle.Core.Configuration;
-	using Castle.MicroKernel;
 	using Castle.MicroKernel.SubSystems.Configuration;
 
 	/// <summary>
@@ -41,15 +40,15 @@ namespace Castle.Windsor.Configuration.Interpreters
 		protected static readonly string PropertiesNodeName = "properties";
 
 		// private ImportDirectiveCollection imports = new ImportDirectiveCollection();
-		private IResource source;
-		private Stack<IResource> resourceStack = new Stack<IResource>();
+		private readonly IResource source;
+		private readonly Stack<IResource> resourceStack = new Stack<IResource>();
 		private string environmentName;
 
 		#endregion
 
 		#region Constructors
 
-		public AbstractInterpreter(IResource source)
+		protected AbstractInterpreter(IResource source)
 		{
 			if (source == null) throw new ArgumentNullException("source", "IResource is null");
 
