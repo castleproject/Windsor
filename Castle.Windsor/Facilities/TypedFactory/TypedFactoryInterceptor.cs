@@ -23,6 +23,7 @@ namespace Castle.Facilities.TypedFactory
 	using Castle.Core.Interceptor;
 	using Castle.MicroKernel;
 
+	[Transient]
 	public class TypedFactoryInterceptor : IInterceptor, IOnBehalfAware, IDisposable
 	{
 		private readonly IKernel kernel;

@@ -169,6 +169,18 @@ namespace Castle.MicroKernel.Handlers
 		/// <returns></returns>
 		public object Resolve(CreationContext context)
 		{
+			return Resolve(context, true);
+		}
+
+		/// <summary>
+		/// Returns an instance of the component this handler
+		/// is responsible for
+		/// </summary>
+		/// <param name="context"></param>
+		/// <param name="instanceRequired">when <c>false</c>, handler can not create valid instance and return <c>null</c> instead </param>
+		/// <returns></returns>
+		private object Resolve(CreationContext context, bool instanceRequired)
+		{
 			List<ComponentReleasingDelegate> releasers = null;
 
 			if (resolvingHandler != null)
@@ -186,7 +198,7 @@ namespace Castle.MicroKernel.Handlers
 				}
 			}
 
-			var instance = ResolveCore(context, releasers != null);
+			var instance = ResolveCore(context, releasers != null, instanceRequired);
 
 			if (releasers != null)
 			{
@@ -202,6 +214,11 @@ namespace Castle.MicroKernel.Handlers
 			return instance;
 		}
 
+		public object TryResolve(CreationContext context)
+		{
+			return Resolve(context, false);
+		}
+
 		/// <summary>
 		///   Should be implemented by derived classes: 
 		///   returns an instance of the component this handler
@@ -209,8 +226,9 @@ namespace Castle.MicroKernel.Handlers
 		/// </summary>
 		/// <param name = "context"></param>
 		/// <param name = "track"></param>
+		/// <param name="instanceRequired">When <c>false</c>, handler can not create valid instance and return <c>null</c> instead.</param>
 		/// <returns></returns>
-		protected abstract object ResolveCore(CreationContext context, bool track);
+		protected abstract object ResolveCore(CreationContext context, bool track, bool instanceRequired);
 
 		/// <summary>
 		///   disposes the component instance (or recycle it).
