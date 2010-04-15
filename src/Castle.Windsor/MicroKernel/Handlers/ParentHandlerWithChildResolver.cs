@@ -89,6 +89,11 @@ namespace Castle.MicroKernel.Handlers
 			return parentHandler.Resolve(context);
 		}
 
+		public object TryResolve(CreationContext context)
+		{
+			return parentHandler.Resolve(context);
+		}
+
 		public virtual bool Release(object instance)
 		{
 			return parentHandler.Release(instance);

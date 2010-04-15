@@ -901,6 +901,25 @@ namespace Castle.MicroKernel
 			return ResolveComponent(handler, handler.ComponentModel.Service, additionalArguments);
 		}
 
+		protected object TryResolveComponent(IHandler handler, Type service, IDictionary additionalArguments)
+		{
+			var prev = currentCreationContext;
+			var context = CreateCreationContext(handler, service, additionalArguments);
+			currentCreationContext = context;
+
+			using (context.ParentResolutionContext(prev))
+			{
+				try
+				{
+					return handler.TryResolve(context);
+				}
+				finally
+				{
+					currentCreationContext = prev;
+				}
+			}
+		}
+
 		protected object ResolveComponent(IHandler handler, Type service, IDictionary additionalArguments)
 		{
 			CreationContext prev = currentCreationContext;

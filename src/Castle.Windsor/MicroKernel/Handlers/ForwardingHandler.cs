@@ -56,6 +56,11 @@ namespace Castle.MicroKernel.Handlers
 			return target.Resolve(context);
 		}
 
+		public object TryResolve(CreationContext context)
+		{
+			return target.TryResolve(context);
+		}
+
 		public bool Release(object instance)
 		{
 			return target.Release(instance);

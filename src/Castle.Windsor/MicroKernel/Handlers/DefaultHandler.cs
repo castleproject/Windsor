@@ -44,20 +44,26 @@ namespace Castle.MicroKernel.Handlers
 		/// </summary>
 		/// <param name="context"></param>
 		/// <param name="track"></param>
+		/// <param name="instanceRequired"></param>
 		/// <returns></returns>
-		protected override object ResolveCore(CreationContext context, bool track)
+		protected override object ResolveCore(CreationContext context, bool track, bool instanceRequired)
 		{
 			if (!context.HasAdditionalParameters)
 			{
 				if (CurrentState != HandlerState.Valid && !CanResolvePendingDependencies(context))
 				{
+					if (!instanceRequired)
+					{
+						return null;
+					}
+
 					AssertNotWaitingForDependency();
 				}
 			}
 
 			using(CreationContext.ResolutionContext resCtx = context.EnterResolutionContext(this))
 			{
-				object instance = lifestyleManager.Resolve(context);
+				var instance = lifestyleManager.Resolve(context);
 
 				resCtx.Burden.SetRootInstance(instance, this, track || ComponentModel.LifecycleSteps.HasDecommissionSteps);
 

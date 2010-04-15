@@ -1,6 +1,8 @@
 unreleased changes
 ==================
 
+- ResolveAll will now resolve components that are not in Valid state when inline/dynamic arguments are provided
+
 - TypedFactoryFacility: TypedFactoryComponent will now fallback to resolving by type if no component with designated name can be found
 
 - fixed issue with per-web-request components not being released properly in some cases
