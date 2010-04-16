@@ -17,6 +17,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 	using System;
 	using System.Collections.Generic;
 	using System.Reflection;
+	using System.Reflection.Emit;
 
 	using Castle.Core.Configuration;
 
@@ -121,6 +122,9 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 
 		private void Scan(Assembly assembly)
 		{
+			// won't work for dynamic assemblies
+			if (assembly is AssemblyBuilder) return;
+
 			foreach (var type in assembly.GetExportedTypes())
 			{
 				fullName2Type[type.FullName] = type;
