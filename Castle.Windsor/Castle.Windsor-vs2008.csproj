@@ -500,6 +500,7 @@
     <Compile Include="MicroKernel\SubSystems\Conversion\GenericDictionaryConverter.cs" />
     <Compile Include="MicroKernel\SubSystems\Conversion\IGenericCollectionConverterHelper.cs" />
     <Compile Include="MicroKernel\SubSystems\Conversion\GenericListConverter.cs" />
+    <Compile Include="MicroKernel\SubSystems\Conversion\ITypeNameParser.cs" />
     <Compile Include="MicroKernel\SubSystems\Conversion\ListConverter.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -532,6 +533,7 @@
     <Compile Include="MicroKernel\ISubSystem.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="MicroKernel\SubSystems\Conversion\TypeNameParser.cs" />
     <Compile Include="MicroKernel\SubSystems\Naming\BinaryTreeComponentName.cs">
       <SubType>Code</SubType>
     </Compile>
