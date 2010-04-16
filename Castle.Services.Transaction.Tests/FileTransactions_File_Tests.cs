@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading;
-using Castle.Core.IO;
+using Castle.Services.Transaction.IO;
 using NUnit.Framework;
 
 namespace Castle.Services.Transaction.Tests

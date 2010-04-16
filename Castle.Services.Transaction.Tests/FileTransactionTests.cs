@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Transactions;
-using Castle.Core.IO;
+using Castle.Services.Transaction.IO;
 using NUnit.Framework;
-using Path=Castle.Core.IO.Path;
+using Path=Castle.Services.Transaction.IO.Path;
 
 namespace Castle.Services.Transaction.Tests
 {

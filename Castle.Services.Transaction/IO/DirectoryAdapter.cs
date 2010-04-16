@@ -1,8 +1,8 @@
 using System;
 using System.IO;
-using Castle.Core.IO;
+using Castle.Services.Transaction.IO;
 using log4net;
-using Path=Castle.Core.IO.Path;
+using Path=Castle.Services.Transaction.IO.Path;
 
 namespace Castle.Services.Transaction.IO
 {

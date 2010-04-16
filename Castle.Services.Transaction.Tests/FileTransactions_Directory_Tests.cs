@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using System.Threading;
 using System.Collections.Generic;
-using Castle.Core.IO;
+using Castle.Services.Transaction.IO;
 using NUnit.Framework;
 
 namespace Castle.Services.Transaction.Tests
