@@ -25,18 +25,36 @@ namespace Castle.Windsor.Tests
 	[TestFixture]
 	public class TypeNameConverterTestCase
 	{
-		private TypeNameConverter converter;
-
 		[SetUp]
 		public void SetUpTests()
 		{
 			converter = new TypeNameConverter();
 		}
 
+		private TypeNameConverter converter;
+
+		[Test]
+		public void Can_load_closed_generic_type_by_Name_single_generic_parameter()
+		{
+			var type = typeof(IGeneric<ICustomer>);
+			var name = type.Name + "[[" + typeof(ICustomer).Name + "]]";
+			var result = converter.PerformConversion(name, typeof(Type));
+			Assert.AreEqual(result, type);
+		}
+
+		[Test]
+		public void Can_load_open_generic_type_by_name()
+		{
+			var type = typeof(IGeneric<>);
+			var name = type.Name;
+			var result = converter.PerformConversion(name, typeof(Type));
+			Assert.AreEqual(result, type);
+		}
+
 		[Test]
 		public void Can_load_type_from_loaded_assembly_by_just_name()
 		{
-			var type = typeof(IService2);
+			var type = typeof(ICustomer);
 			var name = type.Name;
 			var result = converter.PerformConversion(name, typeof(Type));
 			Assert.AreEqual(result, type);
@@ -52,21 +70,31 @@ namespace Castle.Windsor.Tests
 		}
 
 		[Test]
-		public void Can_load_open_generic_type_by_name()
-		{
-			var type = typeof(IGeneric<>);
-			var name = type.Name;
-			var result = converter.PerformConversion(name, typeof(Type));
-			Assert.AreEqual(result, type);
-		}
-
-		[Test]
-		public void Can_load_closed_generic_type_by_Name_single_generic_parameter()
+		public void Throws_when_inner_generic_type_not_unique()
 		{
 			var type = typeof(IGeneric<IService2>);
 			var name = type.Name + "[[" + typeof(IService2).Name + "]]";
-			var result = converter.PerformConversion(name, typeof(Type));
-			Assert.AreEqual(type, result);
+			TestDelegate code = () =>
+
+			converter.PerformConversion(name, typeof(Type));
+
+			var exception =
+			Assert.Throws(typeof(ConverterException), code);
+			Assert.That(exception.Message.StartsWith("Could not uniquely identify type for 'IService2'."));
+		}
+
+		[Test]
+		public void Throws_when_type_not_unique()
+		{
+			var type = typeof(IService2);
+			var name = type.Name;
+			TestDelegate code = () =>
+
+			converter.PerformConversion(name, typeof(Type));
+
+			var exception =
+			Assert.Throws(typeof(ConverterException), code);
+			Assert.That(exception.Message.StartsWith("Could not uniquely identify type for 'IService2'."));
 		}
 	}
 }
