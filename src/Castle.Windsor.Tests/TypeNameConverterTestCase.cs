@@ -28,7 +28,7 @@ namespace Castle.Windsor.Tests
 		[SetUp]
 		public void SetUpTests()
 		{
-			converter = new TypeNameConverter();
+			converter = new TypeNameConverter(new TypeNameParser());
 		}
 
 		private TypeNameConverter converter;
@@ -38,6 +38,15 @@ namespace Castle.Windsor.Tests
 		{
 			var type = typeof(IGeneric<ICustomer>);
 			var name = type.Name + "[[" + typeof(ICustomer).Name + "]]";
+			var result = converter.PerformConversion(name, typeof(Type));
+			Assert.AreEqual(result, type);
+		}
+
+		[Test, Ignore("Not implemented yet.")]
+		public void Can_load_closed_generic_type_by_Name_two_generic_parameters()
+		{
+			var type = typeof(IDoubleGeneric<ICustomer, ISpecification>);
+			var name = type.Name + "[[" + typeof(ICustomer).Name + "],[" + typeof(ISpecification) + "]]";
 			var result = converter.PerformConversion(name, typeof(Type));
 			Assert.AreEqual(result, type);
 		}
