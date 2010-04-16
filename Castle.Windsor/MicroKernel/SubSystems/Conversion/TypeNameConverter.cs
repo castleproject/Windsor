@@ -15,9 +15,12 @@
 namespace Castle.MicroKernel.SubSystems.Conversion
 {
 	using System;
+	using System.Collections;
 	using System.Collections.Generic;
+	using System.Diagnostics;
 	using System.Reflection;
 	using System.Reflection.Emit;
+	using System.Text;
 
 	using Castle.Core.Configuration;
 
@@ -48,7 +51,6 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 			try
 			{
 				var type = GetType(value);
-
 				if (type == null)
 				{
 					var message = String.Format(
@@ -58,6 +60,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 					throw new ConverterException(message);
 				}
 
+				Debug.Assert((type is MultiType) == false);
 				return type;
 			}
 			catch (ConverterException)
@@ -87,7 +90,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 				return null;
 			}
 
-			EnsureAppDomainAssembliesInitialized(false);
+			EnsureAppDomainAssembliesInitialized();
 			type = GetType(typeName);
 			return type;
 		}
@@ -97,21 +100,23 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 			return typeName.GetType(this);
 		}
 
-		private void EnsureAppDomainAssembliesInitialized(bool forceLoad)
+		private void EnsureAppDomainAssembliesInitialized()
 		{
-			if (forceLoad || assemblies.Count == 0)
+			if (assemblies.Count != 0)
 			{
-				var current = AppDomain.CurrentDomain.GetAssemblies();
-				foreach (var assembly in current)
-				{
-					if (assemblies.Contains(assembly) || ShouldSkipAssembly(assembly))
-					{
-						continue;
-					}
+				return;
+			}
 
-					assemblies.Add(assembly);
-					Scan(assembly);
+			var loadedAssemblies = AppDomain.CurrentDomain.GetAssemblies();
+			foreach (var assembly in loadedAssemblies)
+			{
+				if (assemblies.Contains(assembly) || ShouldSkipAssembly(assembly))
+				{
+					continue;
 				}
+
+				assemblies.Add(assembly);
+				Scan(assembly);
 			}
 		}
 
@@ -123,13 +128,33 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 		private void Scan(Assembly assembly)
 		{
 			// won't work for dynamic assemblies
-			if (assembly is AssemblyBuilder) return;
+			if (assembly is AssemblyBuilder)
+			{
+				return;
+			}
 
 			foreach (var type in assembly.GetExportedTypes())
 			{
-				fullName2Type[type.FullName] = type;
-				justName2Type[type.Name] = type;
+				Insert(fullName2Type, type.FullName, type);
+				Insert(justName2Type, type.Name, type);
 			}
+		}
+
+		private void Insert(IDictionary<string, Type> collection, string key, Type value)
+		{
+			Type existing;
+			if (collection.TryGetValue(key, out existing) == false)
+			{
+				collection[key] = value;
+				return;
+			}
+			var multiType = existing as MultiType;
+			if (multiType != null)
+			{
+				multiType.AddInnerType(value);
+				return;
+			}
+			collection[key] = new MultiType().AddInnerType(existing).AddInnerType(value);
 		}
 
 		private TypeName ParseName(string name)
@@ -197,86 +222,60 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 			return PerformConversion(configuration.Value, targetType);
 		}
 
-		private class TypeName
+		public Type GetTypeByFullName(string fullName)
 		{
-			private readonly string assemblyQualifiedName;
-			private readonly TypeName[] genericTypes;
-			private readonly string name;
-			private readonly string @namespace;
-
-			public TypeName(string @namespace, string name, TypeName[] genericTypes)
+			Type type;
+			if (fullName2Type.TryGetValue(fullName, out type))
 			{
-				this.name = name;
-				this.genericTypes = genericTypes;
-				this.@namespace = @namespace;
+				EnsureUnique(type, fullName, "assembly qualified name");
 			}
+			return type;
+		}
 
-			public TypeName(string assemblyQualifiedName)
+		public Type GetTypeByName(string justName)
+		{
+			Type type;
+			if (justName2Type.TryGetValue(justName, out type))
 			{
-				this.assemblyQualifiedName = assemblyQualifiedName;
+				EnsureUnique(type, justName, "full name, or assembly qualified name");
 			}
+			return type;
+		}
 
-			private bool IsAssemblyQualified
+		private void EnsureUnique(Type type, string value, string missingInformation)
+		{
+			if (type is MultiType)
 			{
-				get
+				var multi = type as MultiType;
+				var message = new StringBuilder(string.Format("Could not uniquely identify type for '{0}'. ", value));
+				message.AppendLine("The following types were matched:");
+				foreach (var matchedType in multi)
 				{
-					return assemblyQualifiedName != null;
+					message.AppendLine(matchedType.AssemblyQualifiedName);
 				}
+				message.AppendFormat("Provide more information ({0}) to uniquely identify the type.", missingInformation);
+				throw new ConverterException(message.ToString());
+			}
+		}
+
+		private class MultiType : TypeDelegator, IEnumerable<Type>
+		{
+			private readonly LinkedList<Type> inner = new LinkedList<Type>();
+
+			public MultiType AddInnerType(Type type)
+			{
+				inner.AddLast(type);
+				return this;
 			}
 
-			private string FullName
+			IEnumerator IEnumerable.GetEnumerator()
 			{
-				get
-				{
-					if (HasNamespace)
-					{
-						return @namespace + "." + name;
-					}
-					throw new InvalidOperationException("Namespace was not defined.");
-				}
+				return ((IEnumerable)inner).GetEnumerator();
 			}
 
-			private bool HasGenericParameters
+			public IEnumerator<Type> GetEnumerator()
 			{
-				get { return genericTypes.Length > 0; }
-			}
-
-			private bool HasNamespace
-			{
-				get { return string.IsNullOrEmpty(@namespace) == false; }
-			}
-
-			private string Name
-			{
-				get { return name; }
-			}
-
-			public Type GetType(TypeNameConverter converter)
-			{
-				Type type;
-				if(IsAssemblyQualified)
-				{
-					return Type.GetType(assemblyQualifiedName, false, true);
-				}
-				if (HasNamespace)
-				{
-					converter.fullName2Type.TryGetValue(FullName, out type);
-					return type;
-				}
-
-				converter.justName2Type.TryGetValue(Name, out type);
-				if (!HasGenericParameters)
-				{
-					return type;
-				}
-
-				var genericArgs = new Type[genericTypes.Length];
-				for (var i = 0; i < genericArgs.Length; i++)
-				{
-					genericArgs[i] = genericTypes[i].GetType(converter);
-				}
-
-				return type.MakeGenericType(genericArgs);
+				return inner.GetEnumerator();
 			}
 		}
 	}

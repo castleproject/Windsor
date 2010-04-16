@@ -509,6 +509,7 @@
     </Compile>
     <Compile Include="MicroKernel\SubSystems\Conversion\TimeSpanConverter.cs" />
     <Compile Include="MicroKernel\SubSystems\Conversion\TypeDescriptor.cs" />
+    <Compile Include="MicroKernel\SubSystems\Conversion\TypeName.cs" />
     <Compile Include="MicroKernel\SubSystems\Conversion\TypeNameConverter.cs">
       <SubType>Code</SubType>
     </Compile>
