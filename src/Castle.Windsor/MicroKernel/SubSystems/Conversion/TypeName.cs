@@ -73,12 +73,17 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 			{
 				return Type.GetType(assemblyQualifiedName, false, true);
 			}
+
+			Type type;
 			if (HasNamespace)
 			{
-				return converter.GetTypeByFullName(FullName);
+				type =  converter.GetTypeByFullName(FullName);
+			}
+			else
+			{
+				type = converter.GetTypeByName(Name);
 			}
 
-			var type = converter.GetTypeByName(Name);
 			if (!HasGenericParameters)
 			{
 				return type;
