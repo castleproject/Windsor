@@ -1,4 +1,5 @@
 using System;
+using Path=Castle.Services.Transaction.IO.Path;
 
 namespace Castle.Services.Transaction.IO
 {

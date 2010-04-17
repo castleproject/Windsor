@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Text;
+using Castle.Services.Transaction.IO;
 using log4net;
 
 namespace Castle.Services.Transaction.IO

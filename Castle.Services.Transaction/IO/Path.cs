@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Castle.Services.Transaction.IO;
 
 namespace Castle.Services.Transaction.IO
 {

@@ -1,6 +1,7 @@
 using System;
 using System.Net;
 using System.Text.RegularExpressions;
+using Castle.Services.Transaction.IO;
 
 namespace Castle.Services.Transaction.IO
 {
