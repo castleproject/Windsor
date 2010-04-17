@@ -54,8 +54,27 @@ namespace Castle.Windsor.Tests
 			Assert.AreEqual(type, result);
 		}
 
-		[Test, Ignore("Not yet supported")]
-		public void Can_handle_multi_generic_with_multi_generic_of_generics_properly()
+		[Test]
+		public void Can_handle_multi_generic_with_multi_generic_of_generics_properly_1()
+		{
+			var type = typeof(IDoubleGeneric<IDoubleGeneric<ICustomer, IClock>, ICustomer>);
+			var name = typeof(IDoubleGeneric<,>).Name
+			           + "[[" +
+			           typeof(IDoubleGeneric<,>).Name +
+			           "[[" +
+			           typeof(ICustomer).Name + "],[" +
+			           typeof(IClock).Name
+			           + "]]"
+					   + "],[" +
+			           typeof(ICustomer).Name + 
+			           "]]";
+			var result = converter.PerformConversion(name, typeof(Type));
+			Assert.AreEqual(type, result);
+		}
+
+
+		[Test]
+		public void Can_handle_multi_generic_with_multi_generic_of_generics_properly_2()
 		{
 			var type = typeof(IDoubleGeneric<ICustomer, IDoubleGeneric<ICustomer, IClock>>);
 			var name = typeof(IDoubleGeneric<,>).Name

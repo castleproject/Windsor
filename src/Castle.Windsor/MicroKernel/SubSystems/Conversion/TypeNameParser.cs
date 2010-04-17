@@ -86,17 +86,54 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 				return new[] { name };
 			}
 			var names = new TypeName[count];
-			var split = substring.Split(new[] { "],[" }, StringSplitOptions.None);
-			if(split.Length!=count)
-			{
-					throw new NotSupportedException("We don't support nested multi generics yet");
-			}
 
-			for (int i = 0; i < count; i++)
+			var location = 0;
+			for (var i = 0; i < count; i++)
 			{
-				names[i] = Parse(split[i]);
+				var newLocation = MoveToEnd(location,substring);
+				names[i] = Parse(substring.Substring(location, newLocation - location));
+				location = MoveToBeginning(newLocation, substring) + 1;
 			}
 			return names;
+		}
+
+		private int MoveToBeginning(int location, string text)
+		{
+			
+			var currentLocation = location;
+			while (currentLocation < text.Length)
+			{
+				if(text[currentLocation]=='[')
+				{
+					return currentLocation;
+				}
+				currentLocation++;
+			}
+			return currentLocation;
+		}
+
+		private int MoveToEnd(int location, string text)
+		{
+			var open = 1;
+			var currentLocation = location;
+			while (currentLocation < text.Length)
+			{
+				var current = text[currentLocation];
+				if (current == '[')
+				{
+					open++;
+				}
+				else if (current == ']')
+				{
+					open--;
+					if (open == 0)
+					{
+						return currentLocation;
+					}
+				}
+				currentLocation++;
+			}
+			return currentLocation;
 		}
 	}
 }
