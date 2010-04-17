@@ -95,10 +95,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\net-3.5\Castle.Core.dll</HintPath>
     </Reference>
-    <Reference Include="Castle.DynamicProxy2, Version=2.2.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\net-3.5\Castle.DynamicProxy2.dll</HintPath>
-    </Reference>
     <Reference Include="System">
       <Name>System</Name>
     </Reference>
@@ -120,6 +116,7 @@
     <Compile Include="Core\ComponentActivatorAttribute.cs" />
     <Compile Include="Core\ComponentProxyBehaviorAttribute.cs" />
     <Compile Include="Core\DoNotWireAttribute.cs" />
+    <Compile Include="Core\IInitializable.cs" />
     <Compile Include="Core\InterceptorAttribute.cs" />
     <Compile Include="Core\LifestyleAttributes.cs" />
     <Compile Include="MicroKernel\ComponentActivator\AbstractComponentActivator.cs">
