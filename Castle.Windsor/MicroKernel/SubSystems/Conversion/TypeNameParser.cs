@@ -14,15 +14,16 @@
 
 namespace Castle.MicroKernel.SubSystems.Conversion
 {
+	using System;
+
 	public class TypeNameParser : ITypeNameParser
 	{
 		public TypeName Parse(string name)
 		{
-
-			//ok first let us make sure we're not dealing with fully qualified type name, because in that case there's nothing we can really do.
+			var isPotentiallyFullyQualifiedName = false;
 			if (name.IndexOf(',') != -1)
 			{
-				return null;
+				isPotentiallyFullyQualifiedName = true;
 			}
 			var genericIndex = name.IndexOf('`');
 			var genericTypes = new TypeName[] { };
@@ -37,16 +38,26 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 					{
 						return null;
 					}
-					var genericsString = name.Substring(start + 2, name.Length - start - 4);
-					genericTypes = ParseNames(genericsString, count);
+					genericTypes = ParseNames(name.Substring(start + 2, name.LastIndexOf("]]") - 2 - start), count);
 					if (genericTypes == null)
 					{
 						return null;
 					}
+					isPotentiallyFullyQualifiedName = false;
 					name = name.Substring(0, start);
 				}
 			}
+			if(isPotentiallyFullyQualifiedName)
+			{
+				//well at this point it either is a fully qualified name, or invalid string
+				return new TypeName(name);
+			}
 			// at this point we assume we have just the type name, probably prefixed with namespace so let's see which one is it
+			return BuildName(name, genericTypes);
+		}
+
+		private TypeName BuildName(string name, TypeName[] genericTypes)
+		{
 			var typeStartsHere = name.LastIndexOf('.');
 			string typeName;
 			string @namespace = null;
@@ -74,7 +85,18 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 				}
 				return new[] { name };
 			}
-			return new TypeName[0];
+			var names = new TypeName[count];
+			var split = substring.Split(new[] { "],[" }, StringSplitOptions.None);
+			if(split.Length!=count)
+			{
+					throw new NotSupportedException("We don't support nested multi generics yet");
+			}
+
+			for (int i = 0; i < count; i++)
+			{
+				names[i] = Parse(split[i]);
+			}
+			return names;
 		}
 	}
 }

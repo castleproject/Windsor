@@ -34,6 +34,44 @@ namespace Castle.Windsor.Tests
 		private TypeNameConverter converter;
 
 		[Test]
+		public void Can_handle_generic_of_generics_properly()
+		{
+			var type = typeof(IGeneric<IGeneric<ICustomer>>);
+			var name = type.FullName;
+			var result = converter.PerformConversion(name, typeof(Type));
+			Assert.AreEqual(type, result);
+		}
+
+		[Test]
+		public void Can_handle_multi_generic_with_generic_of_generics_properly()
+		{
+			var type = typeof(IDoubleGeneric<ICustomer, IGeneric<ICustomer>>);
+			var name = type.Name + "[[" +
+			           typeof(ICustomer).Name + "],[" +
+			           typeof(IGeneric<>).Name + "[[" + typeof(ICustomer).Name + "]]"
+			           + "]]";
+			var result = converter.PerformConversion(name, typeof(Type));
+			Assert.AreEqual(type, result);
+		}
+
+		[Test, Ignore("Not yet supported")]
+		public void Can_handle_multi_generic_with_multi_generic_of_generics_properly()
+		{
+			var type = typeof(IDoubleGeneric<ICustomer, IDoubleGeneric<ICustomer, IClock>>);
+			var name = typeof(IDoubleGeneric<,>).Name
+			           + "[[" +
+						   typeof(ICustomer).Name + "],[" +
+						   typeof(IDoubleGeneric<,>).Name + 
+						   "[[" +
+							   typeof(ICustomer).Name + "],[" +
+							   typeof(IClock).Name
+						   + "]]"
+			           + "]]";
+			var result = converter.PerformConversion(name, typeof(Type));
+			Assert.AreEqual(type, result);
+		}
+
+		[Test]
 		public void Can_load_closed_generic_type_by_Name_single_generic_parameter()
 		{
 			var type = typeof(IGeneric<ICustomer>);
@@ -42,7 +80,7 @@ namespace Castle.Windsor.Tests
 			Assert.AreEqual(result, type);
 		}
 
-		[Test, Ignore("Not implemented yet.")]
+		[Test]
 		public void Can_load_closed_generic_type_by_Name_two_generic_parameters()
 		{
 			var type = typeof(IDoubleGeneric<ICustomer, ISpecification>);
@@ -57,7 +95,7 @@ namespace Castle.Windsor.Tests
 			var type = typeof(IGeneric<>);
 			var name = type.Name;
 			var result = converter.PerformConversion(name, typeof(Type));
-			Assert.AreEqual(result, type);
+			Assert.AreEqual(type, result);
 		}
 
 		[Test]
@@ -66,7 +104,7 @@ namespace Castle.Windsor.Tests
 			var type = typeof(ICustomer);
 			var name = type.Name;
 			var result = converter.PerformConversion(name, typeof(Type));
-			Assert.AreEqual(result, type);
+			Assert.AreEqual(type, result);
 		}
 
 		[Test]
@@ -75,7 +113,7 @@ namespace Castle.Windsor.Tests
 			var type = typeof(IService); // notice we have multiple types 'IService in various namespaces'
 			var name = type.FullName;
 			var result = converter.PerformConversion(name, typeof(Type));
-			Assert.AreEqual(result, type);
+			Assert.AreEqual(type, result);
 		}
 
 		[Test]
@@ -84,11 +122,10 @@ namespace Castle.Windsor.Tests
 			var type = typeof(IGeneric<IService2>);
 			var name = type.Name + "[[" + typeof(IService2).Name + "]]";
 			TestDelegate code = () =>
-
-			converter.PerformConversion(name, typeof(Type));
+			                    converter.PerformConversion(name, typeof(Type));
 
 			var exception =
-			Assert.Throws(typeof(ConverterException), code);
+				Assert.Throws(typeof(ConverterException), code);
 			Assert.That(exception.Message.StartsWith("Could not uniquely identify type for 'IService2'."));
 		}
 
@@ -98,11 +135,10 @@ namespace Castle.Windsor.Tests
 			var type = typeof(IService2);
 			var name = type.Name;
 			TestDelegate code = () =>
-
-			converter.PerformConversion(name, typeof(Type));
+			                    converter.PerformConversion(name, typeof(Type));
 
 			var exception =
-			Assert.Throws(typeof(ConverterException), code);
+				Assert.Throws(typeof(ConverterException), code);
 			Assert.That(exception.Message.StartsWith("Could not uniquely identify type for 'IService2'."));
 		}
 	}
