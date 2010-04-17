@@ -1,5 +1,7 @@
+using System;
 using Castle.MicroKernel.SubSystems.Configuration;
 using Castle.Services.Transaction;
+using Castle.Services.Transaction.IO;
 using Castle.Windsor;
 using NUnit.Framework;
 
@@ -13,15 +15,14 @@ namespace Castle.Facilities.AutoTx.Tests
 			WindsorContainer c = new WindsorContainer(new DefaultConfigurationStore());
 
 			c.AddFacility("transactionmanagement", new TransactionFacility());
-
-			c.AddComponent("transactionmanager",
-								   typeof(ITransactionManager), typeof(MockTransactionManager));
-
+			c.AddComponent("transactionmanager", typeof(ITransactionManager), typeof(MockTransactionManager));
 			c.AddComponent("AClass", typeof(ISomething), typeof(AClass));
 
 			var something = c.Resolve<ISomething>();
 
 			Assert.That(something, Is.Not.Null);
+			Assert.That(something.Da, Is.Not.Null);
+			Assert.That(something.Fa, Is.Not.Null);
 
 			something.A(null);
 			something.B(null);
