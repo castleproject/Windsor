@@ -20,7 +20,7 @@ namespace Castle.Windsor.Configuration.Interpreters.XmlProcessor.ElementProcesso
 	
 	public abstract class AbstractXmlNodeProcessor : IXmlNodeProcessor
 	{
-		private static readonly XmlNodeType[] acceptNodes = new XmlNodeType[] {XmlNodeType.Element};
+		private static readonly XmlNodeType[] acceptNodes = new[] {XmlNodeType.Element};
 
 		public AbstractXmlNodeProcessor()
 		{
@@ -77,7 +77,7 @@ namespace Castle.Windsor.Configuration.Interpreters.XmlProcessor.ElementProcesso
 		{
 			String attValue = element.GetAttribute(attribute).Trim();
 
-			if (attValue == "")
+			if (attValue == string.Empty)
 			{
 				throw new XmlProcessorException("'{0}' requires a non empty '{1}' attribute", element.Name, attribute);
 			}

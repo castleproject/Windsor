@@ -589,11 +589,11 @@ namespace Castle.Windsor
 				throw new ArgumentNullException("installers");
 			}
 
-			IComponentsInstaller scope = new Installer.DefaultComponentInstaller();
+			IComponentsInstaller scope = new DefaultComponentInstaller();
 
-			using (PartialConfigurationStore store = new PartialConfigurationStore(kernel))
+			using (var store = new PartialConfigurationStore(kernel))
 			{
-				foreach (IWindsorInstaller windsorInstaller in installers)
+				foreach (var windsorInstaller in installers)
 				{
 					windsorInstaller.Install(this, store);
 				}

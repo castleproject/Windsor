@@ -1,6 +1,13 @@
 unreleased changes
 ==================
 
+- added ability to specify installers (IWindsorInstaller) via XML using either of the following:
+  <installers>
+    <install type="Castle.Windsor.Tests.Installers.CustomerInstaller"/>
+    <install assembly="Castle.Windsor.Tests"/>
+  </installers>
+  installers must be public and have default constructor.
+
 - Xml config does not require assembly qualified type name any more - specifying just type name, or typename+namespace should be enough. Works only for types in already loaded assemblies.
 
 - ResolveAll will now resolve components that are not in Valid state when inline/dynamic arguments are provided

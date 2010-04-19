@@ -57,6 +57,12 @@ namespace Castle.Windsor.Installer
 			partial.AddChildContainerConfiguration(name, config);			
 		}
 
+		public void AddInstallerConfiguration(IConfiguration config)
+		{
+			inner.AddInstallerConfiguration(config);
+			partial.AddInstallerConfiguration(config);
+		}
+
 		public IConfiguration GetChildContainerConfiguration(String key)
 		{
 			return partial.GetChildContainerConfiguration( key );
@@ -85,6 +91,11 @@ namespace Castle.Windsor.Installer
 		public IConfiguration[] GetComponents()
 		{
 			return partial.GetComponents();
+		}
+
+		public IConfiguration[] GetInstallers()
+		{
+			return partial.GetInstallers();
 		}
 
 		public IConfiguration[] GetBootstrapComponents()

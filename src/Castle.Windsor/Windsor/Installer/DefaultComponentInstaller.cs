@@ -15,13 +15,17 @@
 
 namespace Castle.Windsor.Installer
 {
+	using System.Diagnostics;
 	using System.Linq;
 	using System;
 	using System.Collections.Generic;
+	using System.Reflection;
+
 	using Castle.Core.Configuration;
 	using Castle.Core.Resource;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.SubSystems.Configuration;
+	using Castle.MicroKernel.SubSystems.Conversion;
 	using Castle.Windsor.Configuration.Interpreters;
 
 	/// <summary>
@@ -38,9 +42,11 @@ namespace Castle.Windsor.Installer
 		/// <param name="store">Configuration store</param>
 		public void SetUp(IWindsorContainer container, IConfigurationStore store)
 		{
-			SetUpComponents(store.GetBootstrapComponents(), container);
-			SetUpFacilities(store.GetFacilities(), container);
-			SetUpComponents(store.GetComponents(), container);
+			var converter = container.Kernel.GetSubSystem(SubSystemConstants.ConversionManagerKey) as IConversionManager;
+			SetUpInstallers(store.GetInstallers(), container, converter);
+			SetUpComponents(store.GetBootstrapComponents(), container,converter);
+			SetUpFacilities(store.GetFacilities(), container,converter);
+			SetUpComponents(store.GetComponents(), container,converter);
 #if !SILVERLIGHT
 			SetUpChildContainers(store.GetConfigurationForChildContainers(), container);
 #endif
@@ -48,7 +54,63 @@ namespace Castle.Windsor.Installer
 
 		#endregion
 
-		protected virtual void SetUpFacilities(IConfiguration[] configurations, IWindsorContainer container)
+
+		protected virtual void SetUpInstallers(IConfiguration[] installers, IWindsorContainer container, IConversionManager converter)
+		{
+			var instances = new Dictionary<Type, IWindsorInstaller>();
+			foreach (var installer in installers)
+			{
+				AddInstaller(installer, instances, converter);
+			}
+
+			if (instances.Count != 0)
+			{
+				container.Install(instances.Values.ToArray());
+			}
+		}
+
+		private void AddInstaller(IConfiguration installer, Dictionary<Type, IWindsorInstaller> cache, IConversionManager conversionManager)
+		{
+			var typeName = installer.Attributes["type"];
+			if (string.IsNullOrEmpty(typeName) == false)
+			{
+				var type = conversionManager.PerformConversion(typeName, typeof(Type)) as Type;
+				AddInstaller(cache, type);
+				return;
+			}
+
+			Debug.Assert(string.IsNullOrEmpty(installer.Attributes["assembly"]) == false);
+			var types = Assembly.Load(installer.Attributes["assembly"]).GetExportedTypes();
+			foreach (var type in InstallerTypes(types))
+			{
+				AddInstaller(cache, type);
+			}
+		}
+
+		private IEnumerable<Type> InstallerTypes(IEnumerable<Type> types)
+		{
+			foreach (var type in types)
+			{
+				if (type.IsClass && 
+					type.IsAbstract == false && 
+					type.IsGenericTypeDefinition == false &&
+					typeof(IWindsorInstaller).IsAssignableFrom(type))
+				{
+					yield return type;
+				}
+			}
+		}
+
+		private void AddInstaller(Dictionary<Type, IWindsorInstaller> cache, Type type)
+		{
+			if (cache.ContainsKey(type) == false)
+			{
+				var installerInstance = Activator.CreateInstance(type) as IWindsorInstaller;
+				cache.Add(type, installerInstance);
+			}
+		}
+
+		protected virtual void SetUpFacilities(IConfiguration[] configurations, IWindsorContainer container, IConversionManager converter)
 		{
 			foreach(IConfiguration facility in configurations)
 			{
@@ -56,19 +118,18 @@ namespace Castle.Windsor.Installer
 				string typeName = facility.Attributes["type"];
 				if (string.IsNullOrEmpty(typeName)) continue;
 
-				Type type = ObtainType(typeName);
+				Type type = ObtainType(typeName, converter);
 
 				IFacility facilityInstance = InstantiateFacility(type);
 
-#if DEBUG
-				System.Diagnostics.Debug.Assert( id != null );
-				System.Diagnostics.Debug.Assert( facilityInstance != null );
-#endif
+				Debug.Assert( id != null );
+				Debug.Assert( facilityInstance != null );
+
 				container.AddFacility(id, facilityInstance);
 			}
 		}
 
-		protected virtual void SetUpComponents(IConfiguration[] configurations, IWindsorContainer container)
+		protected virtual void SetUpComponents(IConfiguration[] configurations, IWindsorContainer container, IConversionManager converter)
 		{
 			foreach(IConfiguration component in configurations)
 			{
@@ -79,23 +140,22 @@ namespace Castle.Windsor.Installer
 				
 				if (string.IsNullOrEmpty(typeName)) continue;
 				
-				Type type = ObtainType(typeName);
+				Type type = ObtainType(typeName,converter);
 				Type service = type;
 
 				if (!string.IsNullOrEmpty(serviceTypeName))
 				{
-					service = ObtainType(serviceTypeName);
+					service = ObtainType(serviceTypeName,converter);
 				}
 
 				AssertImplementsService(id, service, type);
 
-#if DEBUG
-				System.Diagnostics.Debug.Assert( id != null );
-				System.Diagnostics.Debug.Assert( type != null );
-				System.Diagnostics.Debug.Assert( service != null );
-#endif
+
+				Debug.Assert( id != null );
+				Debug.Assert( type != null );
+				Debug.Assert( service != null );
 				container.AddComponent(id, service, type);
-				SetUpComponentForwardedTypes(container, component, typeName, id);
+				SetUpComponentForwardedTypes(container, component, typeName, id,converter);
 
 			}
 		}
@@ -112,7 +172,7 @@ namespace Castle.Windsor.Installer
 			}
 		}
 
-		private void SetUpComponentForwardedTypes(IWindsorContainer container, IConfiguration component, string typeName, string id)
+		private void SetUpComponentForwardedTypes(IWindsorContainer container, IConfiguration component, string typeName, string id, IConversionManager converter)
 		{
 			var forwardedTypes = component.Children["forwardedTypes"];
 			if (forwardedTypes == null) return;
@@ -124,7 +184,7 @@ namespace Castle.Windsor.Installer
 				var forwardedServiceTypeName = forwardedType.Attributes["service"];
 				try
 				{
-					forwarded.Add(ObtainType(forwardedServiceTypeName));
+					forwarded.Add(ObtainType(forwardedServiceTypeName,converter));
 				}
 				catch (Exception e)
 				{
@@ -154,18 +214,9 @@ namespace Castle.Windsor.Installer
 		}
 #endif
 
-		private static Type ObtainType(String typeName)
+		private static Type ObtainType(String typeName, IConversionManager converter)
 		{
-			try
-			{
-				return Type.GetType(typeName, true, false);
-			}
-			catch (Exception e)
-			{
-				String message = String.Format("The type name {0} could not be located.", typeName);
-
-				throw new Exception(message, e);
-			}
+			return (Type)converter.PerformConversion(typeName, typeof(Type));
 		}
 
 		private static IFacility InstantiateFacility(Type facilityType)
