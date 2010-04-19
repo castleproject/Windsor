@@ -1,6 +1,8 @@
 unreleased changes
 ==================
 
+- Xml config does not require assembly qualified type name any more - specifying just type name, or typename+namespace should be enough. Works only for types in already loaded assemblies.
+
 - ResolveAll will now resolve components that are not in Valid state when inline/dynamic arguments are provided
 
 - TypedFactoryFacility: TypedFactoryComponent will now fallback to resolving by type if no component with designated name can be found
