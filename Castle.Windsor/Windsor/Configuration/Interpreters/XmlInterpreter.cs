@@ -133,6 +133,10 @@ namespace Castle.Windsor.Configuration.Interpreters
 			{
 				DeserializeFacilities(node.ChildNodes, store);
 			}
+			else if (InstallersNodeName.Equals(node.Name))
+			{
+				DeserializeInstallers(node.ChildNodes, store);
+			}
 			else if (ComponentsNodeName.Equals(node.Name))
 			{
 				DeserializeComponents(node.ChildNodes, store);
@@ -150,6 +154,29 @@ namespace Castle.Windsor.Configuration.Interpreters
 					node.Name, ContainersNodeName, FacilitiesNodeName, ComponentsNodeName, BootstrapNodeName);
 				throw new Exception(message);
 			}
+		}
+
+		private static void DeserializeInstallers(XmlNodeList nodes, IConfigurationStore store)
+		{
+			foreach (XmlNode node in nodes)
+			{
+				if (node.NodeType != XmlNodeType.Element) continue;
+
+				AssertNodeName(node, InstallNodeName);
+				DeserializeInstaller(node, store);
+			}
+		}
+
+		private static void DeserializeInstaller(XmlNode node, IConfigurationStore store)
+		{
+			var config = XmlConfigurationDeserializer.GetDeserializedNode(node);
+			var type = config.Attributes["type"];
+			var assembly = config.Attributes["assembly"];
+			if ((string.IsNullOrEmpty(type) ^ string.IsNullOrEmpty(assembly)) == false)
+			{
+				throw new Exception("installer must have exactly one of the following attibutes defined: 'type' or 'assembly'.");
+			}
+			AddInstallerConfig(config, store);
 		}
 
 		private static void DeserializeContainers(XmlNodeList nodes, IConfigurationStore store)
@@ -243,14 +270,15 @@ namespace Castle.Windsor.Configuration.Interpreters
 		{
 			String value = configuration.Attributes[attributeName];
 
-			if (string.IsNullOrEmpty(value)) {
+			if (string.IsNullOrEmpty(value))
+			{
 				String message = String.Format("{0} elements expects required non blank attribute {1}",
-											   configuration.Name, attributeName);
+				                               configuration.Name, attributeName);
 
 				throw new Exception(message);
 			}
 
-			return value;			
+			return value;
 		}
 
 		private static void AssertNodeName(XmlNode node, IEquatable<string> expectedName)

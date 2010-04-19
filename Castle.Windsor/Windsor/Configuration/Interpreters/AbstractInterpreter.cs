@@ -36,8 +36,8 @@ namespace Castle.Windsor.Configuration.Interpreters
 		protected static readonly string ComponentsNodeName = "components";
 		protected static readonly string BootstrapNodeName = "bootstrap";
 		protected static readonly string ComponentNodeName = "component";
-		protected static readonly string IncludeNodeName = "include";
-		protected static readonly string PropertiesNodeName = "properties";
+		protected static readonly string InstallersNodeName = "installers";
+		protected static readonly string InstallNodeName = "install";
 
 		// private ImportDirectiveCollection imports = new ImportDirectiveCollection();
 		private readonly IResource source;
@@ -163,6 +163,11 @@ namespace Castle.Windsor.Configuration.Interpreters
 			// TODO: Use import collection on type and service attribute (if they exist)
 			
 			store.AddComponentConfiguration( id, component );
+		}
+
+		protected static void AddInstallerConfig(IConfiguration installer, IConfigurationStore store)
+		{
+			store.AddInstallerConfiguration(installer);
 		}
 
 		protected static void AddBootstrapComponentConfig(string id, IConfiguration component, IConfigurationStore store)

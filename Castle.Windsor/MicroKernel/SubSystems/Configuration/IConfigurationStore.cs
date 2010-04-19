@@ -54,6 +54,8 @@ namespace Castle.MicroKernel.SubSystems.Configuration
 		/// <param name="config">The config.</param>
 		void AddChildContainerConfiguration(String name, IConfiguration config);
 
+		void AddInstallerConfiguration(IConfiguration config);
+
 		/// <summary>
 		/// Returns the configuration node associated with 
 		/// the specified child container key. Should return null
@@ -101,6 +103,12 @@ namespace Castle.MicroKernel.SubSystems.Configuration
 		/// </summary>
 		/// <returns></returns>
 		IConfiguration[] GetComponents();
+
+		/// <summary>
+		/// Returns all configuration nodes for components
+		/// </summary>
+		/// <returns></returns>
+		IConfiguration[] GetInstallers();
 
 		/// <summary>
 		/// Returns all configuration nodes for bootstrap components

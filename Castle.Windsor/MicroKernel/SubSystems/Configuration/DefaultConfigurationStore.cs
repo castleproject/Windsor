@@ -38,6 +38,7 @@ namespace Castle.MicroKernel.SubSystems.Configuration
 		private readonly IDictionary<string, IConfiguration> facilities = new Dictionary<string, IConfiguration>();
 		private readonly IDictionary<string, IConfiguration> components = new Dictionary<string, IConfiguration>();
 		private readonly IDictionary<string, IConfiguration> bootstrapcomponents = new Dictionary<string, IConfiguration>();
+		private readonly ICollection<IConfiguration> installers = new List<IConfiguration>();
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="DefaultConfigurationStore"/> class.
@@ -114,6 +115,12 @@ namespace Castle.MicroKernel.SubSystems.Configuration
 			childContainers[key] = config;
 		}
 
+		[MethodImpl(MethodImplOptions.Synchronized)]
+		public void AddInstallerConfiguration(IConfiguration config)
+		{
+			installers.Add(config);
+		}
+
 		/// <summary>
 		/// Returns the configuration node associated with
 		/// the specified facility key. Should return null
@@ -182,6 +189,12 @@ namespace Castle.MicroKernel.SubSystems.Configuration
 		public IConfiguration[] GetFacilities()
 		{
 			return facilities.Values.ToArray();
+		}
+
+		[MethodImpl(MethodImplOptions.Synchronized)]
+		public IConfiguration[] GetInstallers()
+		{
+			return installers.ToArray();
 		}
 
 		/// <summary>
