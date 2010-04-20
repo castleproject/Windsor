@@ -102,8 +102,19 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 				return null;
 			}
 
-			EnsureAppDomainAssembliesInitialized();
+			var forceLoad = false;
+			InitializeAppDomainAssemblies(forceLoad);
 			type = GetType(typeName);
+			if (type != null)
+			{
+				return type;
+			}
+
+			forceLoad = true;
+			if (InitializeAppDomainAssemblies(forceLoad))
+			{
+				type = GetType(typeName);
+			}
 			return type;
 		}
 
@@ -112,24 +123,24 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 			return typeName.GetType(this);
 		}
 
-		private void EnsureAppDomainAssembliesInitialized()
+		private bool InitializeAppDomainAssemblies(bool forceLoad)
 		{
-			if (assemblies.Count != 0)
+			var anyAssemblyAdded = false;
+			if (forceLoad || assemblies.Count == 0)
 			{
-				return;
-			}
-
-			var loadedAssemblies = AppDomain.CurrentDomain.GetAssemblies();
-			foreach (var assembly in loadedAssemblies)
-			{
-				if (assemblies.Contains(assembly) || ShouldSkipAssembly(assembly))
+				var loadedAssemblies = AppDomain.CurrentDomain.GetAssemblies();
+				foreach (var assembly in loadedAssemblies)
 				{
-					continue;
+					if (assemblies.Contains(assembly) || ShouldSkipAssembly(assembly))
+					{
+						continue;
+					}
+					anyAssemblyAdded = true;
+					assemblies.Add(assembly);
+					Scan(assembly);
 				}
-
-				assemblies.Add(assembly);
-				Scan(assembly);
 			}
+			return anyAssemblyAdded;
 		}
 
 		protected virtual bool ShouldSkipAssembly(Assembly assembly)

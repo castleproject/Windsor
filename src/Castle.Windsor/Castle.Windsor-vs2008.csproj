@@ -118,6 +118,7 @@
     <Compile Include="Core\DoNotWireAttribute.cs" />
     <Compile Include="Core\IInitializable.cs" />
     <Compile Include="Core\InterceptorAttribute.cs" />
+    <Compile Include="Core\Internal\ReflectionUtil.cs" />
     <Compile Include="Core\LifestyleAttributes.cs" />
     <Compile Include="MicroKernel\ComponentActivator\AbstractComponentActivator.cs">
       <SubType>Code</SubType>
@@ -649,6 +650,7 @@
     <Compile Include="Windsor\Configuration\Interpreters\XmlProcessor\ElementProcessors\UndefProcessingInstructionProcessor.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Windsor\Configuration\Interpreters\XmlProcessor\ElementProcessors\UsingElementProcessor.cs" />
     <Compile Include="Windsor\Configuration\Interpreters\XmlProcessor\IXmlNodeProcessor.cs">
       <SubType>Code</SubType>
     </Compile>
