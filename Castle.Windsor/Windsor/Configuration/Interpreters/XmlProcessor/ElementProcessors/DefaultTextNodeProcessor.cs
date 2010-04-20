@@ -21,7 +21,7 @@ namespace Castle.Windsor.Configuration.Interpreters.XmlProcessor.ElementProcesso
 
 	public class DefaultTextNodeProcessor : AbstractXmlNodeProcessor
 	{
-		private static readonly XmlNodeType[] acceptNodes = new XmlNodeType[] {XmlNodeType.CDATA, XmlNodeType.Text};
+		private static readonly XmlNodeType[] acceptNodes = new[] {XmlNodeType.CDATA, XmlNodeType.Text};
 
 		/// <summary>
 		/// Properties names can contain a-zA-Z0-9_. 

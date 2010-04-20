@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,24 +15,23 @@
 #if (!SILVERLIGHT)
 namespace Castle.Windsor.Tests.Configuration2
 {
+	using System;
+
+	using Castle.MicroKernel;
+	using Castle.MicroKernel.SubSystems.Conversion;
+
 	using NUnit.Framework;
 
 	[TestFixture]
-	public class ConfigurationInstallersTestCase
+	public class UsingAssemblyTestCase
 	{
-
 		[Test]
 		public void Installers_by_type()
 		{
-			var container = new WindsorContainer(ConfigHelper.ResolveConfigPath("Configuration2/config_with_installers_type.xml"));
-			container.Resolve("Customer-by-CustomerInstaller");
-		}
-
-		[Test]
-		public void Installers_by_assembly()
-		{
-			var container = new WindsorContainer(ConfigHelper.ResolveConfigPath("Configuration2/config_with_installers_assembly.xml"));
-			container.Resolve("Customer-by-CustomerInstaller");
+			var container = new WindsorContainer(ConfigHelper.ResolveConfigPath("Configuration2/config_with_using_assembly.xml"));
+			var manager = container.Kernel.GetSubSystem(SubSystemConstants.ConversionManagerKey) as IConversionManager;
+			var type = manager.PerformConversion("BrushMappingMode", typeof(Type));
+			Assert.IsNotNull(type);
 		}
 	}
 }

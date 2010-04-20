@@ -71,6 +71,7 @@ namespace Castle.Windsor.Configuration.Interpreters.XmlProcessor
 			AddElementProcessor(typeof(UndefProcessingInstructionProcessor));
 			AddElementProcessor(typeof(DefaultTextNodeProcessor));
 			AddElementProcessor(typeof(EvalProcessingInstructionProcessor));
+			AddElementProcessor(typeof(UsingElementProcessor));
 		}
 
 		protected void AddElementProcessor(Type t)

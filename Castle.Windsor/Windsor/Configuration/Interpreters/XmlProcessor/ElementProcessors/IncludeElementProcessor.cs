@@ -22,10 +22,6 @@ namespace Castle.Windsor.Configuration.Interpreters.XmlProcessor.ElementProcesso
 
 	public class IncludeElementProcessor : AbstractXmlNodeProcessor
 	{
-		public IncludeElementProcessor()
-		{
-		}
-
 		public override String Name
 		{
 			get { return "include"; }

@@ -124,6 +124,7 @@
   <ItemGroup>
     <Compile Include="ClassComponents\IDoubleGeneric.cs" />
     <Compile Include="Configuration2\ConfigurationInstallersTestCase.cs" />
+    <Compile Include="Configuration2\UsingAssemblyTestCase.cs" />
     <Compile Include="Installers\CustomerInstaller.cs" />
     <Compile Include="TypedDependenciesTestCase.cs" />
     <Compile Include="ArgumentsTestCase.cs" />
@@ -843,6 +844,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="Configuration2\config_with_installers_type.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Configuration2\config_with_using_assembly.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
     <Content Include="RemotingTcpConfig2.config">

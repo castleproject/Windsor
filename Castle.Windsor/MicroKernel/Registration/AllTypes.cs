@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,10 +15,11 @@
 namespace Castle.MicroKernel.Registration
 {
 	using System;
-	using System.IO;
 	using System.Reflection;
 	using System.Collections.Generic;
-	
+
+	using Castle.Core.Internal;
+
 	/// <summary>
 	/// Describes a set of components to register in the kernel.
 	/// </summary>
@@ -60,29 +61,7 @@ namespace Castle.MicroKernel.Registration
 		/// <returns>The corresponding <see cref="FromDescriptor"/></returns>
 		public static FromAssemblyDescriptor FromAssemblyNamed(string assemblyName)
 		{
-			Assembly assembly;
-			String extension = Path.GetExtension(assemblyName);
-
-			if (extension == ".dll" || extension == ".exe")
-			{
-#if (SILVERLIGHT)
-				assembly = Assembly.Load(Path.GetFileNameWithoutExtension(assemblyName));
-#else
-				if (Path.GetDirectoryName(assemblyName) == AppDomain.CurrentDomain.BaseDirectory)
-				{
-					assembly = Assembly.Load(Path.GetFileNameWithoutExtension(assemblyName));
-				}
-				else
-				{
-					assembly = Assembly.LoadFile(assemblyName);
-				}
-#endif
-			}
-			else
-			{
-				assembly = Assembly.Load(assemblyName);
-			}
-
+			var assembly = ReflectionUtil.GetAssemblyNamed(assemblyName);
 			return FromAssembly(assembly);
 		}
 
