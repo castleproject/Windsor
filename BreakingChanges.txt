@@ -1,9 +1,21 @@
 ================================================================================================
+change -  AddInstallerConfiguration and GetComponents methods were added to IConfigurationStore.
+
+impact - very low
+fixability - easy
+revision - 3bf716cc6fc218601dab92a6dd75fe269bcb63d0
+
+description - To enable installers to be exposed via configuration the interface has been 
+	extended by addition of the two methods.
+
+fix - Implement the methods accordingly to your situation.
+
+================================================================================================
 change - Multiple types were moved between namespaces
 
 impact - low
 fixability - trivial
-revision - 
+revision - 3bf716cc6fc218601dab92a6dd75fe269bcb63d0
 
 description - To improve the internal structure several types were moved to other namespaces.
 
