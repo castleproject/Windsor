@@ -17,6 +17,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 	using System;
 	using System.Collections.Generic;
 	using Castle.Core.Configuration;
+	using Castle.Core.Internal;
 
 #if (!SILVERLIGHT)
 	[Serializable]
@@ -72,16 +73,15 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 				defaultValueType = (Type) Context.Composition.PerformConversion(valueTypeName, typeof(Type));
 			}
 
-			IGenericCollectionConverterHelper collectionConverterHelper =
-				(IGenericCollectionConverterHelper)
-				Activator.CreateInstance(typeof(DictionaryHelper<,>).MakeGenericType(defaultKeyType, defaultValueType), this);
+			var helperType = typeof(DictionaryHelper<,>).MakeGenericType(defaultKeyType, defaultValueType);
+			var collectionConverterHelper = ReflectionUtil.CreateInstance<IGenericCollectionConverterHelper>(helperType, this);
 			
 			return collectionConverterHelper.ConvertConfigurationToCollection(configuration);
 		}
 
 		private class DictionaryHelper<TKey, TValue> : IGenericCollectionConverterHelper
 		{
-			private GenericDictionaryConverter parent;
+			private readonly GenericDictionaryConverter parent;
 
 			public DictionaryHelper(GenericDictionaryConverter parent)
 			{
@@ -90,8 +90,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 
 			public object ConvertConfigurationToCollection(IConfiguration configuration)
 			{
-				Dictionary<TKey, TValue> dict = new Dictionary<TKey, TValue>();
-
+				var dict = new Dictionary<TKey, TValue>();
 				foreach(IConfiguration itemConfig in configuration.Children)
 				{
 					// Preparing the key

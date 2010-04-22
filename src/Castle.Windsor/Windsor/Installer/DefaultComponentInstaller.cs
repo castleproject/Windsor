@@ -22,6 +22,7 @@ namespace Castle.Windsor.Installer
 	using System.Reflection;
 
 	using Castle.Core.Configuration;
+	using Castle.Core.Internal;
 	using Castle.Core.Resource;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.SubSystems.Configuration;
@@ -105,7 +106,7 @@ namespace Castle.Windsor.Installer
 		{
 			if (cache.ContainsKey(type) == false)
 			{
-				var installerInstance = Activator.CreateInstance(type) as IWindsorInstaller;
+				var installerInstance = ReflectionUtil.CreateInstance<IWindsorInstaller>(type);
 				cache.Add(type, installerInstance);
 			}
 		}
@@ -120,7 +121,7 @@ namespace Castle.Windsor.Installer
 
 				Type type = ObtainType(typeName, converter);
 
-				IFacility facilityInstance = InstantiateFacility(type);
+				var facilityInstance = ReflectionUtil.CreateInstance<IFacility>(type);
 
 				Debug.Assert( id != null );
 				Debug.Assert( facilityInstance != null );
@@ -217,27 +218,6 @@ namespace Castle.Windsor.Installer
 		private static Type ObtainType(String typeName, IConversionManager converter)
 		{
 			return (Type)converter.PerformConversion(typeName, typeof(Type));
-		}
-
-		private static IFacility InstantiateFacility(Type facilityType)
-		{
-			if (!typeof(IFacility).IsAssignableFrom( facilityType ))
-			{
-				String message = String.Format("Type {0} does not implement the interface IFacility.", facilityType.FullName);
-
-				throw new Exception(message);
-			}
-
-			try
-			{
-				return (IFacility) Activator.CreateInstance(facilityType);
-			}
-			catch(Exception ex)
-			{
-				String message = String.Format("Could not instantiate {0}. Does it have a public default constructor?", facilityType.FullName);
-
-				throw new Exception(message, ex);
-			}
 		}
 	}
 }

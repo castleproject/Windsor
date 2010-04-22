@@ -23,6 +23,7 @@ namespace Castle.MicroKernel.Handlers
 	using System.Text;
 
 	using Castle.Core;
+	using Castle.Core.Internal;
 	using Castle.MicroKernel.Context;
 	using Castle.MicroKernel.Lifestyle;
 	using Castle.MicroKernel.ModelBuilder.Inspectors;
@@ -474,7 +475,7 @@ namespace Castle.MicroKernel.Handlers
 					break;
 #endif
 				case LifestyleType.Custom:
-					manager = (ILifestyleManager)Activator.CreateInstance(ComponentModel.CustomLifestyle);
+					manager = ReflectionUtil.CreateInstance<ILifestyleManager>(ComponentModel.CustomLifestyle);
 					break;
 				case LifestyleType.Pooled:
 				{

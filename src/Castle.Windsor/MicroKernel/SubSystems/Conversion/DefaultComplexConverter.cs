@@ -18,6 +18,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 	using System.Globalization;
 	using System.Reflection;
 	using Castle.Core.Configuration;
+	using Castle.Core.Internal;
 	using Castle.MicroKernel;
 
 #if (!SILVERLIGHT)
@@ -57,7 +58,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 		/// <returns></returns>
 		private object CreateInstance(Type type, IConfiguration configuration)
 		{
-			type = ObtainImplementation(type, configuration);	
+			type = ObtainImplementation(type, configuration);
 
 			ConstructorInfo constructor = ChooseConstructor(type);
 
@@ -67,7 +68,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 				args = ConvertConstructorParameters(constructor, configuration);
 			}
 
-			object instance = Activator.CreateInstance(type, args);
+			var instance = ReflectionUtil.CreateInstance<object>(type, args);
 			return instance;
 		}
 

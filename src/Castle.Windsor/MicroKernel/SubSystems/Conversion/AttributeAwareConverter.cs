@@ -16,6 +16,8 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 {
 	using System;
 
+	using Castle.Core.Internal;
+
 	/// <summary>
 	/// Looks for a <see cref="ConvertibleAttribute"/> on the type to be converted. 
 	/// If found, the TypeConverter defined by the attribute is used to perform the conversion.
@@ -56,12 +58,11 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 		{
 			ITypeConverter converter = null;
 
-			ConvertibleAttribute attr = (ConvertibleAttribute) 
-				Attribute.GetCustomAttribute(type, typeof(ConvertibleAttribute));
+			var attr = (ConvertibleAttribute)Attribute.GetCustomAttribute(type, typeof(ConvertibleAttribute));
 			
 			if (attr != null)
 			{
-				converter = (ITypeConverter) Activator.CreateInstance(attr.ConverterType);
+				converter = ReflectionUtil.CreateInstance<ITypeConverter>(attr.ConverterType);
 				converter.Context = Context;
 			}
 
