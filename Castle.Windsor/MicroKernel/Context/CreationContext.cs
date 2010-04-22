@@ -62,6 +62,7 @@ namespace Castle.MicroKernel.Context
 		private readonly Stack<IHandler> handlerStack = new Stack<IHandler>();
 		private readonly Stack<ResolutionContext> resolutionStack = new Stack<ResolutionContext>();
 		private readonly ITypeConverter converter;
+		private IDictionary extendedProperties;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="CreationContext"/> class.
@@ -72,7 +73,14 @@ namespace Castle.MicroKernel.Context
 			: this(parentContext.Handler, parentContext.ReleasePolicy, typeToExtractGenericArguments, null, null)
 		{
 			resolutionStack = parentContext.resolutionStack;
-
+			if (parentContext.extendedProperties != null)
+			{
+				extendedProperties = new Dictionary<object, object>(parentContext.extendedProperties.Count);
+				foreach (DictionaryEntry parentProperty in parentContext.extendedProperties)
+				{
+					extendedProperties.Add(parentProperty.Key, parentProperty.Value);
+				}
+			}
 			foreach(var handlerItem in parentContext.handlerStack)
 			{
 				handlerStack.Push(handlerItem);
@@ -238,6 +246,29 @@ namespace Castle.MicroKernel.Context
 		public Type[] GenericArguments
 		{
 			get { return genericArguments; }
+		}
+
+		public void AddContextualProperty(object key, object value)
+		{
+			if (key == null)
+			{
+				throw new ArgumentNullException("key");
+			}
+			if(extendedProperties==null)
+			{
+				extendedProperties = new Dictionary<object, object>();
+			}
+			extendedProperties.Add(key, value);
+		}
+
+		public object GetContextualProperty(object key)
+		{
+			if (extendedProperties == null)
+			{
+				return null;
+			}
+
+			return extendedProperties[key];
 		}
 
 		private static Type[] ExtractGenericArguments(Type typeToExtractGenericArguments)

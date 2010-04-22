@@ -37,6 +37,12 @@ namespace Castle.MicroKernel.Lifestyle
 		{
 			if (instance == null)
 			{
+				var instanceFromContext = context.GetContextualProperty(ComponentActivator);
+				if (instanceFromContext != null)
+				{
+					//we've been called recursively, by some dependency from base.Resolve call
+					return instanceFromContext;
+				}
 				lock (ComponentActivator)
 				{
 					if (instance == null)
