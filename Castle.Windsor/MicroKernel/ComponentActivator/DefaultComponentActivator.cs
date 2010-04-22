@@ -19,6 +19,7 @@ namespace Castle.MicroKernel.ComponentActivator
 	using System.Security;
 	using System.Security.Permissions;
 	using Castle.Core;
+	using Castle.Core.Internal;
 	using Castle.MicroKernel.Context;
 	using Castle.MicroKernel.LifecycleConcerns;
 	using Castle.MicroKernel.Proxy;
@@ -119,7 +120,7 @@ namespace Castle.MicroKernel.ComponentActivator
 				try
 				{
 #if (SILVERLIGHT)
-						instance = ActivatorCreateInstance(implType, arguments);
+					instance = ReflectionUtil.CreateInstance<object>(implType, arguments);
 #else
 					if (useFastCreateInstance)
 					{
@@ -127,7 +128,7 @@ namespace Castle.MicroKernel.ComponentActivator
 					}
 					else
 					{
-						instance = ActivatorCreateInstance(implType, arguments);
+						instance = ReflectionUtil.CreateInstance<object>(implType, arguments);
 					}
 #endif
 
@@ -176,20 +177,6 @@ namespace Castle.MicroKernel.ComponentActivator
 			return instance;
 		}
 #endif
-
-		private static object ActivatorCreateInstance(Type implType, object[] arguments)
-		{
-			try
-			{
-				return Activator.CreateInstance(implType, arguments);
-			}
-			catch (MissingMethodException missingMethodException)
-			{
-				string message = "Could not find a constructor for the type {0}. Make sure that it is there and that it is public.";
-				message = string.Format(message, implType);
-				throw new ComponentActivatorException(message, missingMethodException);
-			}
-		}
 
 		protected virtual void ApplyCommissionConcerns(object instance)
 		{

@@ -18,6 +18,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 	using System.Collections.Generic;
 	using System.Diagnostics;
 	using Castle.Core.Configuration;
+	using Castle.Core.Internal;
 
 #if (!SILVERLIGHT)
 	[Serializable]
@@ -68,16 +69,14 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 				convertTo = (Type) Context.Composition.PerformConversion(itemType, typeof(Type));
 			}
 
-			IGenericCollectionConverterHelper converterHelper = (IGenericCollectionConverterHelper)
-			                                                    Activator.CreateInstance(
-			                                                    	typeof(ListHelper<>).MakeGenericType(convertTo),
-			                                                    	this);
+			var helperType = typeof(ListHelper<>).MakeGenericType(convertTo);
+			var converterHelper = ReflectionUtil.CreateInstance<IGenericCollectionConverterHelper>(helperType, this);
 			return converterHelper.ConvertConfigurationToCollection(configuration);
 		}
 
 		private class ListHelper<T> : IGenericCollectionConverterHelper
 		{
-			private GenericListConverter parent;
+			private readonly GenericListConverter parent;
 
 			public ListHelper(GenericListConverter parent)
 			{

@@ -654,15 +654,16 @@ namespace Castle.MicroKernel
 			{
 				try
 				{
-					activator = (IComponentActivator)
-					            Activator.CreateInstance(model.CustomComponentActivator,
-					                                     new object[]
-					                                     {
-					                                     	model,
-					                                     	this,
-					                                     	new ComponentInstanceDelegate(RaiseComponentCreated),
-					                                     	new ComponentInstanceDelegate(RaiseComponentDestroyed)
-					                                     });
+					activator = ReflectionUtil.CreateInstance<IComponentActivator>(model.CustomComponentActivator,
+					                                                               new object[]
+					                                                               {
+					                                                               	model,
+					                                                               	this,
+					                                                               	new ComponentInstanceDelegate(RaiseComponentCreated)
+					                                                               	,
+					                                                               	new ComponentInstanceDelegate(
+					                                                               		RaiseComponentDestroyed)
+					                                                               });
 				}
 				catch (Exception e)
 				{

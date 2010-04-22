@@ -14,8 +14,6 @@
 
 namespace Castle.MicroKernel.SubSystems.Conversion
 {
-	using System;
-
 	public class TypeNameParser : ITypeNameParser
 	{
 		public TypeName Parse(string name)
