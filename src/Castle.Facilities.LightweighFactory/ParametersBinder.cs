@@ -1,19 +1,18 @@
 ﻿namespace Castle.Facilities.LightweighFactory
 {
 	using System;
-	using System.Collections;
 	using System.Collections.Generic;
 	using System.Linq;
-
 	using Castle.Core;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Facilities;
 
-	public class ParametersBinder: ISubDependencyResolver
+	public class ParametersBinder : ISubDependencyResolver
 	{
-		public object Resolve(CreationContext context, ISubDependencyResolver contextHandlerResolver, ComponentModel model, DependencyModel dependency)
+		public object Resolve(CreationContext context, ISubDependencyResolver contextHandlerResolver, ComponentModel model,
+		                      DependencyModel dependency)
 		{
-			var parameters = GetAllNotUsedFactoryParameters(context.AdditionalParameters);
+			var parameters = GetAllNotUsedFactoryParameters(GetAllFactoryParameters(context));
 			var result = MatchByName(dependency, parameters);
 			if (result != null)
 			{
@@ -29,10 +28,32 @@
 			throw new FacilityException("Can't resolve dependency" + dependency);
 		}
 
+		public bool CanResolve(CreationContext context, ISubDependencyResolver contextHandlerResolver, ComponentModel model,
+		                       DependencyModel dependency)
+		{
+			if (context == null || dependency.DependencyType != DependencyType.Parameter)
+			{
+				return false;
+			}
+			if (context.AdditionalParameters == null)
+			{
+				return false;
+			}
+			if (context.AdditionalParameters.Count <= 0)
+			{
+				return false;
+			}
+			var factoryParameters = GetAllFactoryParameters(context);
+			if (!factoryParameters.Any())
+			{
+				return false;
+			}
+			return CanResolve(dependency, GetAllNotUsedFactoryParameters(factoryParameters));
+		}
+
 		private FactoryParameter MatchByType(DependencyModel dependency, IEnumerable<FactoryParameter> parameters)
 		{
-			return parameters.FirstOrDefault(
-				p => dependency.TargetType.IsAssignableFrom(p.Type));
+			return parameters.FirstOrDefault(p => dependency.TargetType == p.Type);
 		}
 
 		private FactoryParameter MatchByName(DependencyModel dependency, IEnumerable<FactoryParameter> parameters)
@@ -41,20 +62,14 @@
 				p => p.Name.Equals(dependency.DependencyKey, StringComparison.OrdinalIgnoreCase));
 		}
 
-		private IEnumerable<FactoryParameter> GetAllNotUsedFactoryParameters(IDictionary additionalParameters)
+		private IEnumerable<FactoryParameter> GetAllNotUsedFactoryParameters(IEnumerable<FactoryParameter> parameters)
 		{
-			return additionalParameters.Keys.Cast<object>()
-				.Where(p => p is FactoryParameter)
-				.Select(p => p as FactoryParameter)
-				.Where(p => p.Used == false)
-				.OrderBy(p => p.Position);
+			return parameters.Where(p => p.Used == false).OrderBy(p => p.Position);
 		}
 
-		public bool CanResolve(CreationContext context, ISubDependencyResolver contextHandlerResolver, ComponentModel model, DependencyModel dependency)
+		private IEnumerable<FactoryParameter> GetAllFactoryParameters(CreationContext context)
 		{
-			if (context == null || dependency.DependencyType != DependencyType.Parameter) return false;
-			return context.AdditionalParameters != null && context.AdditionalParameters.Count > 0 && context.AdditionalParameters.Keys.Cast<object>()
-			                                                                                         	.Any(p => p is FactoryParameter) && CanResolve(dependency, GetAllNotUsedFactoryParameters(context.AdditionalParameters));
+			return context.AdditionalParameters.Keys.Cast<object>().Where(p => p is FactoryParameter).Cast<FactoryParameter>();
 		}
 
 		private bool CanResolve(DependencyModel dependency, IEnumerable<FactoryParameter> parameters)

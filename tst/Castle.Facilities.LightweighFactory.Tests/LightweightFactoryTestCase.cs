@@ -69,7 +69,7 @@
 		}
 
 		[Test]
-		public void Delegate_pulls_another_dependencies_from_container()
+		public void Delegate_pulls_unspecified_dependencies_from_container()
 		{
 			container.AddComponent<Baz>("baz");
 			container.AddComponent<Bar>("bar");
