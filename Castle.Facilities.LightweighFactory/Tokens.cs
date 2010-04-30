@@ -2,7 +2,6 @@
 {
 	using System;
 	using System.Collections;
-	using System.Collections.Specialized;
 	using System.Globalization;
 	using System.Linq;
 	using System.Reflection;
@@ -23,7 +22,7 @@
 		internal static readonly FieldInfo LightweightFactoryKernel =
 			typeof(LightweightFactory).GetField("kernel",BindingFlags.Instance |BindingFlags.NonPublic);
 
-		public static ConstructorInfo FactoryParameterCtor = typeof(FactoryParameter).GetConstructor(new[]
+		internal static readonly ConstructorInfo FactoryParameterCtor = typeof(FactoryParameter).GetConstructor(new[]
 		{
 			typeof(Type),
 			typeof(string),
@@ -45,7 +44,7 @@
 
 			public override MethodBase SelectMethod(BindingFlags bindingAttr, MethodBase[] match, Type[] types, ParameterModifier[] modifiers)
 			{
-				// this is just a single purpoes implementation so we may get away with it being so ugly
+				// this is just a single purpose implementation so we may get away with it being so ugly
 				return match.Single(m => m.IsGenericMethodDefinition);
 			}
 
