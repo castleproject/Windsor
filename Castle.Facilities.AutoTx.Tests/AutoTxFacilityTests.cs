@@ -49,6 +49,43 @@ namespace Castle.Facilities.AutoTx.Tests
 			Assert.AreEqual(0, transactionManager.RolledBackCount);
 		}
 
+		[Test]
+		public void FileAndDirectoryAdapterResolveManager()
+		{
+			var container = new WindsorContainer();
+
+			container.AddFacility("transactionmanagement", new TransactionFacility());
+			container.AddComponent("transactionmanager", typeof(ITransactionManager), typeof(MockTransactionManager));
+
+			container.AddComponent("mycomp", typeof(CustomerService));
+			container.AddComponent("delegatecomp", typeof(ProxyService));
+
+			var fa = (FileAdapter)container.Resolve<IFileAdapter>();
+			Assert.That(fa.TxManager, Is.Not.Null);
+
+			var da = (DirectoryAdapter)container.Resolve<IDirectoryAdapter>();
+			Assert.That(da.TxManager, Is.Not.Null);
+		}
+
+		[Test]
+		public void FileAndDirectoryAdapterResolveManager_OtherWayAround()
+		{
+			var container = new WindsorContainer();
+
+			// these lines have been permuted
+			container.AddComponent("transactionmanager", typeof(ITransactionManager), typeof(MockTransactionManager)); 
+			container.AddFacility("transactionmanagement", new TransactionFacility());
+
+			container.AddComponent("mycomp", typeof(CustomerService));
+			container.AddComponent("delegatecomp", typeof(ProxyService));
+
+			var fa = (FileAdapter)container.Resolve<IFileAdapter>();
+			Assert.That(fa.TxManager, Is.Not.Null);
+
+			var da = (DirectoryAdapter)container.Resolve<IDirectoryAdapter>();
+			Assert.That(da.TxManager, Is.Not.Null);
+		}
+
 	}
 	[Transactional]
 	public class ProxyService

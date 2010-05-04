@@ -14,6 +14,7 @@
 
 using System;
 using Castle.MicroKernel.Facilities;
+using Castle.Services.Transaction;
 using Castle.Services.Transaction.IO;
 
 namespace Castle.Facilities.AutoTx
@@ -62,23 +63,49 @@ namespace Castle.Facilities.AutoTx
 			Kernel.AddComponent("transaction.interceptor", typeof (TransactionInterceptor));
 			Kernel.AddComponent("transaction.MetaInfoStore", typeof (TransactionMetaInfoStore));
 			Kernel.AddComponent("directory.adapter.mappath", typeof (IMapPath), typeof (MapPathImpl));
-
+			
 			RegisterAdapters();
 
 			Kernel.ComponentModelBuilder.AddContributor(new TransactionComponentInspector());
+
 		}
 
 		private void RegisterAdapters()
 		{
-			Kernel.AddComponentInstance("directory.adapter", typeof (IDirectoryAdapter), new DirectoryAdapter(
-			                                                                             	Kernel.Resolve<IMapPath>(),
-			                                                                             	!_AllowAccessOutsideRootFolder,
-			                                                                             	RootFolder));
+			var directoryAdapter = new DirectoryAdapter(
+				Kernel.Resolve<IMapPath>(),
+				!_AllowAccessOutsideRootFolder,
+				RootFolder);
 
-			Kernel.AddComponentInstance("file.adapter", typeof (IFileAdapter), new FileAdapter(
-			                                                                   	!_AllowAccessOutsideRootFolder,
-			                                                                   	RootFolder));
+			Kernel.AddComponentInstance("directory.adapter", typeof (IDirectoryAdapter), directoryAdapter);
+
+			var fileAdapter = new FileAdapter(
+				!_AllowAccessOutsideRootFolder,
+				RootFolder);
+			Kernel.AddComponentInstance("file.adapter", typeof (IFileAdapter), fileAdapter);
+
+			if (Kernel.HasComponent(typeof(ITransactionManager)))
+				fileAdapter.TxManager = directoryAdapter.TxManager = Kernel.Resolve<ITransactionManager>();
+			else
+				Kernel.ComponentRegistered += Kernel_ComponentRegistered;
+				
 		}
+
+		void Kernel_ComponentRegistered(string key, Castle.MicroKernel.IHandler handler)
+		{
+			if (handler.ComponentModel.Service.IsAssignableFrom(typeof(ITransactionManager)))
+			{
+				((DirectoryAdapter)Kernel.Resolve<IDirectoryAdapter>()).TxManager = (ITransactionManager)Kernel[key];
+				((FileAdapter)Kernel.Resolve<IFileAdapter>()).TxManager = (ITransactionManager)Kernel[key];
+			}
+		}
+
+		public override void Dispose()
+		{
+			Kernel.ComponentRegistered -= Kernel_ComponentRegistered;
+			base.Dispose();
+		}
+
 
 		private void AssertHasDirectories()
 		{
