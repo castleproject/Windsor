@@ -11,7 +11,7 @@ namespace Castle.Services.Transaction.IO
 		private readonly bool _AllowOutsideSpecifiedFolder;
 		private readonly string _SpecifiedFolder;
 		private ITransactionManager _TxManager;
-		private bool _UseTransactions;
+		private bool _UseTransactions = true;
 		private bool _OnlyJoinExisting;
 
 		protected TxAdapterBase(bool constrainToSpecifiedDir,
