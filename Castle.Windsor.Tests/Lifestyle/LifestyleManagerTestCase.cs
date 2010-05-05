@@ -92,7 +92,7 @@ namespace Castle.MicroKernel.Tests.Lifestyle
 		}
 
 		[Test]
-		public void LifestyleSetProgromatically()
+		public void LifestyleSetProgramatically()
 		{
 			TestHandlersLifestyle(typeof(NoInfoComponent), LifestyleType.Transient, false);
 			TestHandlersLifestyle(typeof(NoInfoComponent), LifestyleType.Singleton, false);
@@ -216,6 +216,34 @@ namespace Castle.MicroKernel.Tests.Lifestyle
 			handler = kernel.GetHandler("d");
 			Assert.AreEqual(LifestyleType.PerWebRequest, handler.ComponentModel.LifestyleType);
 #endif
+		}
+
+		[Test]
+		public void Lifestyle_from_configuration_overwrites_attribute()
+		{
+			var confignode = new MutableConfiguration("component");
+			confignode.Attributes.Add("lifestyle", "transient");
+			kernel.ConfigurationStore.AddComponentConfiguration("a", confignode);
+			kernel.AddComponent("a", typeof(SingletonComponent));
+			var handler = kernel.GetHandler("a");
+			Assert.AreEqual(LifestyleType.Transient, handler.ComponentModel.LifestyleType);
+		}
+
+		[Test]
+		public void Lifestyle_from_registration_DOES_NOT_overwrite_attribute()
+		{
+			kernel.AddComponent("a", typeof(SingletonComponent), LifestyleType.Transient);
+			var handler = kernel.GetHandler("a");
+			Assert.Throws<AssertionException>(() =>
+			              Assert.AreEqual(LifestyleType.Transient, handler.ComponentModel.LifestyleType));
+		}
+
+		[Test]
+		public void Lifestyle_from_fluent_registration_overwrites_attribute()
+		{
+			kernel.Register(Component.For<SingletonComponent>().Named("a").LifeStyle.Transient);
+			var handler = kernel.GetHandler("a");
+			Assert.AreEqual(LifestyleType.Transient, handler.ComponentModel.LifestyleType);
 		}
 
 		[Test]

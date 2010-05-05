@@ -17,7 +17,6 @@ namespace Castle.Core
 	using System;
 	using System.Collections;
 	using System.Collections.Generic;
-	using Castle.Core.Internal;
 
 	/// <summary>
 	/// Collection of <see cref="InterceptorReference"/>
@@ -27,8 +26,7 @@ namespace Castle.Core
 #endif
 	public class InterceptorReferenceCollection : ICollection<InterceptorReference>
 	{
-		private readonly LinkedList list = new LinkedList();
-
+		private readonly LinkedList<InterceptorReference> list = new LinkedList<InterceptorReference>();
 		/// <summary>
 		/// Adds the specified item.
 		/// </summary>
@@ -48,7 +46,7 @@ namespace Castle.Core
 			return list.Contains(item);
 		}
 
-		public void CopyTo(InterceptorReference[] array, int arrayIndex)
+		void ICollection<InterceptorReference>.CopyTo(InterceptorReference[] array, int arrayIndex)
 		{
 			throw new NotImplementedException();
 		}
@@ -84,7 +82,22 @@ namespace Castle.Core
 		/// <param name="item">The interceptor.</param>
 		public void Insert(int index, InterceptorReference item)
 		{
-			list.Insert(index, item);
+			if(index==0)
+			{
+				AddFirst(item);
+				return;
+			}
+			if(index == list.Count)
+			{
+				AddLast(item);
+				return;
+			}
+			var previous = list.First;
+			for (int i = 1; i < index; i++)
+			{
+				previous = previous.Next;
+			}
+			list.AddAfter(previous, item);
 		}
 
 		/// <summary>
@@ -99,31 +112,6 @@ namespace Castle.Core
 		}
 
 		/// <summary>
-		/// When implemented by a class, copies the elements of
-		/// the <see cref="T:System.Collections.ICollection"/> to an <see cref="T:System.Array"/>, starting at a particular <see cref="T:System.Array"/> index.
-		/// </summary>
-		/// <param name="array">The one-dimensional <see cref="T:System.Array"/> that is the destination of the elements copied from <see cref="T:System.Collections.ICollection"/>. The <see cref="T:System.Array"/> must have zero-based indexing.</param>
-		/// <param name="index">The zero-based index in <paramref name="array"/> at which copying begins.</param>
-		/// <exception cref="T:System.ArgumentNullException">
-		/// 	<paramref name="array"/> is <see langword="null"/>.</exception>
-		/// <exception cref="T:System.ArgumentOutOfRangeException">
-		/// 	<paramref name="index"/> is less than zero.</exception>
-		/// <exception cref="T:System.ArgumentException">
-		/// 	<para>
-		/// 		<paramref name="array"/> is multidimensional.</para>
-		/// 	<para>-or-</para>
-		/// 	<para>
-		/// 		<paramref name="index"/> is equal to or greater than the length of <paramref name="array"/>.</para>
-		/// 	<para>-or-</para>
-		/// 	<para>The number of elements in the source <see cref="T:System.Collections.ICollection"/> is greater than the available space from <paramref name="index"/> to the end of the destination <paramref name="array"/>.</para>
-		/// </exception>
-		/// <exception cref="T:System.InvalidCastException">The type of the source <see cref="T:System.Collections.ICollection"/> cannot be cast automatically to the type of the destination <paramref name="array"/>.</exception>
-		public void CopyTo(Array array, int index)
-		{
-			throw new NotImplementedException();
-		}
-
-		/// <summary>
 		/// Gets the number of
 		/// elements contained in the <see cref="T:System.Collections.ICollection"/>.
 		/// </summary>
@@ -133,28 +121,7 @@ namespace Castle.Core
 			get { return list.Count; }
 		}
 
-		public bool IsReadOnly
-		{
-			get { return list.IsReadOnly; }
-		}
-
-		/// <summary>
-		/// Gets an object that
-		/// can be used to synchronize access to the <see cref="T:System.Collections.ICollection"/>.
-		/// </summary>
-		/// <value></value>
-		public object SyncRoot
-		{
-			get { return list; }
-		}
-
-		/// <summary>
-		/// Gets a value
-		/// indicating whether access to the <see cref="T:System.Collections.ICollection"/> is synchronized
-		/// (thread-safe).
-		/// </summary>
-		/// <value></value>
-		public bool IsSynchronized
+		bool ICollection<InterceptorReference>.IsReadOnly
 		{
 			get { return false; }
 		}
@@ -183,7 +150,7 @@ namespace Castle.Core
 
 		IEnumerator<InterceptorReference> IEnumerable<InterceptorReference>.GetEnumerator()
 		{
-		    foreach (InterceptorReference reference in list)
+		    foreach (var reference in list)
 		    {
 		        yield return reference;
 		    }
