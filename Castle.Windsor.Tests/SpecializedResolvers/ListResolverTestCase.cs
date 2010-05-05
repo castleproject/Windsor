@@ -106,6 +106,20 @@ namespace Castle.MicroKernel.Tests.SpecializedResolvers
 			Assert.AreSame(proxy.GetInterceptors()[0], kernel.Resolve<StandardInterceptor>("b"));
 		}
 
+		[Test]
+		public void DependencyOnListWhenEmpty()
+		{
+			kernel.Resolver.AddSubResolver(new ListResolver(kernel, true));
+			kernel.Register(Component.For<CollectionDepAsConstructor>(),
+			                Component.For<CollectionDepAsProperty>());
+
+			var proxy = kernel.Resolve<CollectionDepAsConstructor>();
+			Assert.IsNotNull(proxy.Services);
+
+			var proxy2 = kernel.Resolve<CollectionDepAsProperty>();
+			Assert.IsNotNull(proxy2.Services);
+		}
+
 		public class CollectionDepAsProperty
 		{
 			public IList<IService> Services { get; set; }

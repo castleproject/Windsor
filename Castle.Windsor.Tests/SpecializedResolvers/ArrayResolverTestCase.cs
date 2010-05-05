@@ -14,7 +14,6 @@
 
 namespace Castle.MicroKernel.Tests.SpecializedResolvers
 {
-	using Castle.Core;
 	using System.Linq;
 	using MicroKernel.Registration;
 	using NUnit.Framework;
@@ -72,6 +71,20 @@ namespace Castle.MicroKernel.Tests.SpecializedResolvers
 			{
 				Assert.IsNotNull(service);
 			}
+		}
+
+		[Test]
+		public void DependencyOnArrayWhenEmpty()
+		{
+			kernel.Resolver.AddSubResolver(new ArrayResolver(kernel, true));
+			kernel.Register(Component.For<CollectionDepAsConstructor>(),
+			                Component.For<CollectionDepAsProperty>());
+
+			var proxy = kernel.Resolve<CollectionDepAsConstructor>();
+			Assert.IsNotNull(proxy.Services);
+
+			var proxy2 = kernel.Resolve<CollectionDepAsProperty>();
+			Assert.IsNotNull(proxy2.Services);
 		}
 
 		public class CollectionDepAsProperty

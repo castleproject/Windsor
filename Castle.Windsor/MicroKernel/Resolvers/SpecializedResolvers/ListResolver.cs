@@ -56,10 +56,17 @@ namespace Castle.MicroKernel.Resolvers.SpecializedResolvers
 	public class ListResolver : ISubDependencyResolver
 	{
 		private readonly IKernel kernel;
+		private readonly bool allowEmptyList;
 
 		public ListResolver(IKernel kernel)
+			: this(kernel, false)
+		{
+		}
+
+		public ListResolver(IKernel kernel, bool allowEmptyList)
 		{
 			this.kernel = kernel;
+			this.allowEmptyList = allowEmptyList;
 		}
 
 		public object Resolve(CreationContext context, ISubDependencyResolver contextHandlerResolver,
@@ -88,7 +95,7 @@ namespace Castle.MicroKernel.Resolvers.SpecializedResolvers
 			{
 				var elementType = targetType.GetGenericArguments()[0];
 
-				return kernel.HasComponent(elementType);
+				return kernel.HasComponent(elementType) || allowEmptyList;
 			}
 
 			return false;
