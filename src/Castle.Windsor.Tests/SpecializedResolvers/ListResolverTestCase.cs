@@ -15,9 +15,11 @@
 namespace Castle.MicroKernel.Tests.SpecializedResolvers
 {
 	using System.Collections.Generic;
-	using Castle.Core;
 	using System.Linq;
-	using Core.Configuration;
+
+	using Castle.Core.Interceptor;
+	using Castle.Windsor.Proxy;
+
 	using MicroKernel.Registration;
 	using NUnit.Framework;
 	using Resolvers.SpecializedResolvers;
@@ -30,7 +32,7 @@ namespace Castle.MicroKernel.Tests.SpecializedResolvers
 		[SetUp]
 		public void Init()
 		{
-			kernel = new DefaultKernel();
+			kernel = new DefaultKernel(new DefaultProxyFactory());
 			kernel.Resolver.AddSubResolver(new ListResolver(kernel));
 		}
 
@@ -74,6 +76,34 @@ namespace Castle.MicroKernel.Tests.SpecializedResolvers
 			{
 				Assert.IsNotNull(service);
 			}
+		}
+
+		[Test]
+		public void DependencyOnListOfInterceptedServices()
+		{
+			kernel.Register(
+				Component.For<StandardInterceptor>().Named("a"),
+				Component.For<StandardInterceptor>().Named("b"),
+				Component.For<IService>().ImplementedBy<A>().Interceptors("a"),
+				Component.For<IService>().ImplementedBy<B>().Interceptors("b"),
+				Component.For<CollectionDepAsConstructor>(),
+				Component.For<CollectionDepAsProperty>());
+
+			var proxy = kernel.Resolve<CollectionDepAsConstructor>().Services[0] as IProxyTargetAccessor;
+			Assert.IsNotNull(proxy);
+			Assert.AreSame(proxy.GetInterceptors()[0], kernel.Resolve<StandardInterceptor>("a"));
+
+			proxy = kernel.Resolve<CollectionDepAsConstructor>().Services[1] as IProxyTargetAccessor;
+			Assert.IsNotNull(proxy);
+			Assert.AreSame(proxy.GetInterceptors()[0], kernel.Resolve<StandardInterceptor>("b"));
+
+			proxy = kernel.Resolve<CollectionDepAsProperty>().Services[0] as IProxyTargetAccessor;
+			Assert.IsNotNull(proxy);
+			Assert.AreSame(proxy.GetInterceptors()[0], kernel.Resolve<StandardInterceptor>("a"));
+
+			proxy = kernel.Resolve<CollectionDepAsProperty>().Services[1] as IProxyTargetAccessor;
+			Assert.IsNotNull(proxy);
+			Assert.AreSame(proxy.GetInterceptors()[0], kernel.Resolve<StandardInterceptor>("b"));
 		}
 
 		public class CollectionDepAsProperty

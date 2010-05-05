@@ -83,7 +83,7 @@ namespace Castle.MicroKernel.Resolvers.SpecializedResolvers
 		{
 			var targetType = dependency.TargetType;
 
-			if (targetType.IsGenericType && 
+			if (targetType != null && targetType.IsGenericType &&
 				targetType.GetGenericTypeDefinition() == typeof(IList<>))
 			{
 				var elementType = targetType.GetGenericArguments()[0];
