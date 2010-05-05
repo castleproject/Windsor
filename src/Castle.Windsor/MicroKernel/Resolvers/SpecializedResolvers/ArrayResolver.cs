@@ -14,6 +14,8 @@
 
 namespace Castle.MicroKernel.Resolvers.SpecializedResolvers
 {
+	using System;
+
 	using Castle.MicroKernel.Context;
 
 	using Core;
@@ -52,10 +54,16 @@ namespace Castle.MicroKernel.Resolvers.SpecializedResolvers
 	public class ArrayResolver : ISubDependencyResolver
 	{
 		private readonly IKernel kernel;
+		private readonly bool allowEmptyArray;
 
-		public ArrayResolver(IKernel kernel)
+		public ArrayResolver(IKernel kernel):this(kernel,false)
+		{
+		}
+
+		public ArrayResolver(IKernel kernel, bool allowEmptyArray)
 		{
 			this.kernel = kernel;
+			this.allowEmptyArray = allowEmptyArray;
 		}
 
 		public object Resolve(CreationContext context, ISubDependencyResolver contextHandlerResolver,
@@ -71,7 +79,7 @@ namespace Castle.MicroKernel.Resolvers.SpecializedResolvers
 		{
 			return dependency.TargetType != null &&
 			       dependency.TargetType.IsArray &&
-				   kernel.HasComponent(dependency.TargetType.GetElementType());
+			       (kernel.HasComponent(dependency.TargetType.GetElementType()) || allowEmptyArray);
 		}
 	}
 }
