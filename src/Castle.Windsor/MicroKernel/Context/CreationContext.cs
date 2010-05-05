@@ -254,7 +254,7 @@ namespace Castle.MicroKernel.Context
 			{
 				throw new ArgumentNullException("key");
 			}
-			if(extendedProperties==null)
+			if (extendedProperties == null)
 			{
 				extendedProperties = new Dictionary<object, object>();
 			}

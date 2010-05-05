@@ -56,7 +56,7 @@ namespace Castle.MicroKernel.Registration.Interceptor
 
 		protected internal override void ApplyToModel(IKernel kernel, ComponentModel model)
 		{
-			foreach(InterceptorReference interceptor in interceptors)
+			foreach(var interceptor in interceptors)
 			{
 				switch (where)
 				{

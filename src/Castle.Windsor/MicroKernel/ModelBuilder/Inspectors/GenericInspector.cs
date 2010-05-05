@@ -17,7 +17,6 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 	using System;
 
 	using Castle.Core;
-	using Castle.Core.Configuration;
 
 #if (!SILVERLIGHT)
 	[Serializable]
