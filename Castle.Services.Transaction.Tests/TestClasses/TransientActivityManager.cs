@@ -12,30 +12,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Services.Transaction
+namespace Castle.Services.Transaction.Tests
 {
-	/// <summary>
-	/// Represents a contract for a resource that 
-	/// can be enlisted within transactions.
-	/// </summary>
-	public interface IResource
+	public class TransientActivityManager : IActivityManager
 	{
-		/// <summary>
-		/// Implementors should start the
-		/// transaction on the underlying resource.
-		/// </summary>
-		void Start();
+		private Activity activity;
+
+		public TransientActivityManager()
+		{
+			activity = new Activity();
+		}
 
 		/// <summary>
-		/// Implementors should commit the
-		/// transaction on the underlying resource
+		/// Gets the current activity.
 		/// </summary>
-		void Commit();
-
-		/// <summary>
-		/// Implementors should rollback the
-		/// transaction on the underlying resource
-		/// </summary>
-		void Rollback();
+		/// <value>The current activity.</value>
+		public Activity CurrentActivity
+		{
+			get { return activity; }
+		}
 	}
 }

@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -27,7 +27,12 @@ namespace Castle.Services.Transaction
 	{
 		/// <summary>
 		/// Implementors may have code executing
-		/// just before the transaction completes
+		/// just before the transaction completes or rolls back.
+		/// There be dragons: if a resource fails BeforeCompletion
+		/// could be called twice, as it's first called before commit
+		/// and then if the transaction has made changes and needs to 
+		/// be rolled back because of one of its resources failing,
+		/// then again, this method will be called.
 		/// </summary>
 		void BeforeCompletion();
 

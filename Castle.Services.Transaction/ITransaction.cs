@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,21 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+
 namespace Castle.Services.Transaction
 {
 	using System.Collections;
-
-	/// <summary>
-	/// 
-	/// </summary>
-	public enum TransactionStatus
-	{
-		NoTransaction,
-		Active,
-		Committed,
-		RolledBack,
-		Invalid
-	}
+	using System.Collections.Generic;
 
 	/// <summary>
 	/// Represents the contract for a transaction.
@@ -47,9 +38,29 @@ namespace Castle.Services.Transaction
 		void Commit();
 
 		/// <summary>
-		/// Cancels the transaction, rolling back the 
-		/// modifications
+		/// <list>
+		/// <item>
+		/// Pre:	TransactionStatus = Active
+		/// </item>
+		/// <item>
+		/// Mid:	Supply a logger and any exceptions from rollbacks will be logged as they happen.
+		/// </item>
+		/// <item>
+		/// Post:
+		///	<list><item>InnerRollback will be called for inheritors, then</item>
+		/// <item>All resources will have Rollback called, then</item>
+		/// <item>All sync infos will have AfterCompletion called.</item>
+		/// </list>
+		/// </item>
+		/// </list>
 		/// </summary>
+		/// <remarks>
+		/// If you are interfacing the transaction through an inversion of control engine
+		/// and in particylar AutoTx, calling this method is not recommended. Instead use
+		/// <see cref="SetRollbackOnly"/>.
+		/// </remarks>
+		/// <exception cref="RollbackResourceException">If any resource(s) failed.</exception>
+		/// <exception cref="TransactionException">If the transaction status was not active.</exception>
 		void Rollback();
 
 		/// <summary>
@@ -76,6 +87,7 @@ namespace Castle.Services.Transaction
 		/// (commit or rollback)
 		/// </summary>
 		/// <param name="synchronization"></param>
+		/// <exception cref="ArgumentNullException">If the parameter is null.</exception>
 		void RegisterSynchronization(ISynchronization synchronization);
 
 		/// <summary>
@@ -83,18 +95,44 @@ namespace Castle.Services.Transaction
 		/// </summary>
 		IDictionary Context { get; }
 
+		/// <summary>
+		/// Gets whether the transaction is running inside another of castle's transactions.
+		/// </summary>
 		bool IsChildTransaction { get; }
 
+		/// <summary>
+		/// Gets whether rollback only is set.
+		/// </summary>
 		bool IsRollbackOnlySet { get; }
 
+		/// <summary>
+		/// Gets the transaction mode of the transaction.
+		/// </summary>
 		TransactionMode TransactionMode { get; }
 
+		/// <summary>
+		/// Gets the isolation mode in use for the transaction.
+		/// </summary>
 		IsolationMode IsolationMode { get; }
 
-		bool DistributedTransaction { get; }
+		/// <summary>
+		/// Gets whether the transaction "found an" ambient transaction to run in.
+		/// This is true if the tx is running in the DTC or a TransactionScope, but 
+		/// doesn't imply a distributed transaction (as TransactionScopes automatically choose the least
+		/// performance invasive option)
+		/// </summary>
+		bool IsAmbient { get; }
 
+		/// <summary>
+		/// Gets the friendly name (if set) or an unfriendly integer hash name (if not set).
+		/// Never returns null.
+		/// </summary>
 		string Name { get; }
 
-		IResource[] Resources { get; }
+		/// <summary>
+		/// Gets an enumerable of the resources present.
+		/// </summary>
+		/// <returns></returns>
+		IEnumerable<IResource> Resources();
 	}
 }

@@ -85,12 +85,20 @@
     <Optimize>true</Optimize>
     <RegisterForComInterop>false</RegisterForComInterop>
     <RemoveIntegerChecks>false</RemoveIntegerChecks>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <WarningLevel>4</WarningLevel>
     <DebugType>none</DebugType>
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Castle.Core, Version=1.2.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\net-35\Castle.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\net-35\log4net.dll</HintPath>
+    </Reference>
     <Reference Include="nunit.framework">
       <Name>nunit.framework</Name>
       <HintPath>..\..\lib\nunit.framework.dll</HintPath>
@@ -104,30 +112,38 @@
     <Reference Include="System.Data">
       <Name>System.Data</Name>
     </Reference>
+    <Reference Include="System.Transactions" />
     <Reference Include="System.Xml">
       <Name>System.XML</Name>
     </Reference>
     <ProjectReference Include="..\Castle.Services.Transaction\Castle.Services.Transaction-vs2008.csproj">
-      <Name>Castle.Services.Transaction-vs2008</Name>
+      <Name>Castle.Services.Transaction</Name>
       <Project>{0F611C1B-EDFD-46E6-9C3A-95420946E9CC}</Project>
       <Package>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</Package>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="NestedTransactionsTestCase.cs">
+    <Compile Include="DirectoryAdapterTests.cs" />
+    <Compile Include="FileTransactions_Directory_Tests.cs" />
+    <Compile Include="FileTransactions_File_Tests.cs" />
+    <Compile Include="TestClasses\Exts.cs" />
+    <Compile Include="FileTransactionTests.cs" />
+    <Compile Include="FileTransaction_WithManager_Tests.cs" />
+    <Compile Include="NestedTransactionsTests.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ResourceImpl.cs">
+    <Compile Include="TestClasses\ResourceImpl.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SynchronizationImpl.cs">
+    <Compile Include="TestClasses\SynchronizationImpl.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ThrowsExceptionResource.cs" />
-    <Compile Include="TransactionManagerTestCase.cs">
+    <Compile Include="TestClasses\TestResource.cs" />
+    <Compile Include="TestClasses\ThrowsExceptionResource.cs" />
+    <Compile Include="TransactionManagerTests.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="TransientActivityManager.cs" />
+    <Compile Include="TestClasses\TransientActivityManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />

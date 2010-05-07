@@ -12,30 +12,37 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Services.Transaction
+namespace Castle.Services.Transaction.Tests
 {
-	/// <summary>
-	/// Represents a contract for a resource that 
-	/// can be enlisted within transactions.
-	/// </summary>
-	public interface IResource
+	using System;
+
+	public class SynchronizationImpl : ISynchronization
 	{
-		/// <summary>
-		/// Implementors should start the
-		/// transaction on the underlying resource.
-		/// </summary>
-		void Start();
+		private DateTime _after = DateTime.MinValue;
+		private DateTime _before = DateTime.MinValue;
 
-		/// <summary>
-		/// Implementors should commit the
-		/// transaction on the underlying resource
-		/// </summary>
-		void Commit();
+		public SynchronizationImpl()
+		{
+		}
 
-		/// <summary>
-		/// Implementors should rollback the
-		/// transaction on the underlying resource
-		/// </summary>
-		void Rollback();
+		public DateTime After
+		{
+			get { return _after; }
+		}
+
+		public DateTime Before
+		{
+			get { return _before; }
+		}
+
+		public void AfterCompletion()
+		{
+			_after = DateTime.Now;
+		}
+
+		public void BeforeCompletion()
+		{
+			_before = DateTime.Now;
+		}
 	}
 }

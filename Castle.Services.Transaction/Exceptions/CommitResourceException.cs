@@ -14,28 +14,27 @@
 
 namespace Castle.Services.Transaction
 {
-	/// <summary>
-	/// Represents a contract for a resource that 
-	/// can be enlisted within transactions.
-	/// </summary>
-	public interface IResource
+	using System;
+	using System.Runtime.Serialization;
+
+	[Serializable]
+	public class CommitResourceException : TransactionException
 	{
-		/// <summary>
-		/// Implementors should start the
-		/// transaction on the underlying resource.
-		/// </summary>
-		void Start();
+		private readonly IResource _FailedResource;
 
-		/// <summary>
-		/// Implementors should commit the
-		/// transaction on the underlying resource
-		/// </summary>
-		void Commit();
+		public CommitResourceException(string message, Exception innerException, IResource failedResource)
+			: base(message, innerException)
+		{
+			_FailedResource = failedResource;
+		}
 
-		/// <summary>
-		/// Implementors should rollback the
-		/// transaction on the underlying resource
-		/// </summary>
-		void Rollback();
+		public CommitResourceException(SerializationInfo info, StreamingContext context, IResource failedResource) : base(info, context)
+		{
+			_FailedResource = failedResource;
+		}
+
+		public CommitResourceException(SerializationInfo info, StreamingContext context) : base(info, context)
+		{
+		}
 	}
 }
