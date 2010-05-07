@@ -12,33 +12,25 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Facilities.AutomaticTransactionManagement.Tests
+namespace Castle.Facilities.AutoTx.Tests
 {
 	using System;
 
-	public class TransactionalComp1
+	public interface TransactionalService
 	{
-		public virtual void Save()
-		{
-			
-		}
+		void Save();
 
-		public virtual void Create()
-		{
-			
-		}
-
-		public virtual void Delete()
-		{
-			
-		}
+		void Create();
 	}
 
-	public class TransactionalComp2 : TransactionalComp1
+	public class TransactionalComp3 : TransactionalService
 	{
-		public virtual void SaveThat()
+		public void Save()
 		{
-			
+		}
+
+		public void Create()
+		{
 		}
 	}
 }

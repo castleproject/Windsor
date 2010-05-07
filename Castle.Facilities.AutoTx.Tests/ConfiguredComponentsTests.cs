@@ -12,10 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Facilities.AutomaticTransactionManagement.Tests
+using System.Linq;
+
+namespace Castle.Facilities.AutoTx.Tests
 {
 	using System;
-	using System.Configuration;
 
 	using Castle.MicroKernel.Facilities;
 	using Castle.Windsor;
@@ -23,9 +24,9 @@ namespace Castle.Facilities.AutomaticTransactionManagement.Tests
 	using NUnit.Framework;
 
 	[TestFixture]
-	public class ConfiguredComponents
+	public class ConfiguredComponentsTests
 	{
-		[Test, ExpectedException(typeof(FacilityException), ExpectedMessage = "The class Castle.Facilities.AutomaticTransactionManagement.Tests.TransactionalComp1 has configured transaction in a child node but has not specified istransaction=\"true\" on the component node.")]
+		[Test, ExpectedException(typeof(FacilityException), ExpectedMessage = "The class Castle.Facilities.AutoTx.Tests.TransactionalComp1 has configured transaction in a child node but has not specified istransaction=\"true\" on the component node.")]
 		public void IsTransactionalMissing()
 		{
 			new WindsorContainer( "IsTransactionalMissing.xml" );
@@ -53,10 +54,10 @@ namespace Castle.Facilities.AutomaticTransactionManagement.Tests
 
 			TransactionMetaInfo meta = metaInfoStore.GetMetaFor(typeof(TransactionalComp1));
 			Assert.IsNotNull(meta);
-			Assert.AreEqual(3, meta.Methods.Length);
+			Assert.AreEqual(3, meta.Methods.Count());
 		}
 
-		[Test, ExpectedException(typeof(Exception), ExpectedMessage = "The class Castle.Facilities.AutomaticTransactionManagement.Tests.TransactionalComp1 has tried to expose configuration for a method named HelloGoodbye which could not be found.")]
+		[Test, ExpectedException(typeof(Exception), ExpectedMessage = "The class Castle.Facilities.AutoTx.Tests.TransactionalComp1 has tried to expose configuration for a method named HelloGoodbye which could not be found.")]
 		public void HasInvalidMethod()
 		{
 			new WindsorContainer( "HasInvalidMethod.xml" );
@@ -72,7 +73,7 @@ namespace Castle.Facilities.AutomaticTransactionManagement.Tests
 
 			TransactionMetaInfo meta = metaInfoStore.GetMetaFor(typeof(TransactionalComp2));
 			Assert.IsNotNull(meta);
-			Assert.AreEqual(4, meta.Methods.Length);
+			Assert.AreEqual(4, meta.Methods.Count());
 		}
 
 		[Test]
@@ -85,7 +86,7 @@ namespace Castle.Facilities.AutomaticTransactionManagement.Tests
 
 			TransactionMetaInfo meta = metaInfoStore.GetMetaFor(typeof(TransactionalComp3));
 			Assert.IsNotNull(meta);
-			Assert.AreEqual(2, meta.Methods.Length);
+			Assert.AreEqual(2, meta.Methods.Count());
 		}
 	}
 }
