@@ -1,6 +1,8 @@
 unreleased changes
 ==================
 
+- added fluent API for EventWiringFacility
+
 - added ability to specify assemblies that will be scanned for types when shorthened type name is using via XML using the following syntax:
 	<using assembly="Assembly name or path to file.dll" />
 
