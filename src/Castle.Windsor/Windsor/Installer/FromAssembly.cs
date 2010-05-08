@@ -16,6 +16,8 @@ namespace Castle.Windsor.Installer
 {
 	using System.Reflection;
 
+	using Castle.Core.Internal;
+
 	public class FromAssembly
 	{
 		/// <summary>
@@ -25,6 +27,16 @@ namespace Castle.Windsor.Installer
 		public static IWindsorInstaller This()
 		{
 			return new AssemblyInstaller(Assembly.GetCallingAssembly());
+		}
+
+		/// <summary>
+		/// Scans the assembly with specified name for types implementing <see cref="IWindsorInstaller"/>, instantiates them and installs.
+		/// </summary>
+		/// <returns></returns>
+		public static IWindsorInstaller Named(string assemblyName)
+		{
+			var assembly = ReflectionUtil.GetAssemblyNamed(assemblyName);
+			return new AssemblyInstaller(assembly);
 		}
 	}
 }

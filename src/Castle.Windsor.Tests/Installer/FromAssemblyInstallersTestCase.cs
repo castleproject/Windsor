@@ -36,5 +36,13 @@ namespace Castle.Windsor.Tests.Installer
 
 			container.Resolve("Customer-by-CustomerInstaller");
 		}
+
+		[Test]
+		public void Can_install_from_assembly_by_name()
+		{
+			container.Install(FromAssembly.Named("Castle.Windsor.Tests"));
+
+			container.Resolve("Customer-by-CustomerInstaller");
+		}
 	}
 }
