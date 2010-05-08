@@ -37,11 +37,44 @@ namespace Castle.Facilities.EventWiring.Tests
 		{
 			container.Register(
 				Component.For<SimplePublisher>()
-					.PublishEvent(p => p.Event += null)
-					.ToSubscribers(
-						EventSubscriber
-							.Named("foo")
-							.HandledBy<SimpleListener>(l => l.OnPublish(null, null))),
+					.PublishEvent(p => p.Event += null,
+					              x => x.To<SimpleListener>("foo", l => l.OnPublish(null, null))),
+				Component.For<SimpleListener>().Named("foo"));
+
+			var subscriber = container.Resolve<SimpleListener>("foo");
+			var publisher = container.Resolve<SimplePublisher>();
+
+			publisher.Trigger();
+
+			Assert.IsTrue(subscriber.Listened);
+			Assert.AreSame(publisher, subscriber.Sender);
+		}
+
+		[Test]
+		public void Can_specify_event_as_string()
+		{
+			container.Register(
+				Component.For<SimplePublisher>()
+					.PublishEvent("Event",
+								  x => x.To<SimpleListener>("foo", l => l.OnPublish(null, null))),
+				Component.For<SimpleListener>().Named("foo"));
+
+			var subscriber = container.Resolve<SimpleListener>("foo");
+			var publisher = container.Resolve<SimplePublisher>();
+
+			publisher.Trigger();
+
+			Assert.IsTrue(subscriber.Listened);
+			Assert.AreSame(publisher, subscriber.Sender);
+		}
+
+		[Test]
+		public void Can_specify_handler_as_string()
+		{
+			container.Register(
+				Component.For<SimplePublisher>()
+					.PublishEvent("Event",
+								  x => x.To("foo", "OnPublish")),
 				Component.For<SimpleListener>().Named("foo"));
 
 			var subscriber = container.Resolve<SimpleListener>("foo");
@@ -58,10 +91,8 @@ namespace Castle.Facilities.EventWiring.Tests
 		{
 			container.Register(
 				Component.For<SimplePublisher>()
-					.PublishEvent(p => p.Event += null)
-					.ToSubscribers(
-						EventSubscriber
-							.Named("foo")),
+					.PublishEvent(p => p.Event += null,
+					              x => x.To("foo")),
 				Component.For<ListenerWithOnEventMethod>().Named("foo"));
 
 			var subscriber = container.Resolve<ListenerWithOnEventMethod>("foo");
@@ -78,12 +109,9 @@ namespace Castle.Facilities.EventWiring.Tests
 		{
 			container.Register(
 				Component.For<SimplePublisher>()
-					.PublishEvent(p => p.Event += null)
-					.ToSubscribers(
-						EventSubscriber.Named("foo"),
-						EventSubscriber
-							.Named("bar")
-							.HandledBy<SimpleListener>(l => l.OnPublish(null, null))),
+					.PublishEvent(p => p.Event += null,
+					              x => x.To("foo")
+					                   	.To<SimpleListener>("bar", l => l.OnPublish(null, null))),
 				Component.For<ListenerWithOnEventMethod>().Named("foo"),
 				Component.For<SimpleListener>().Named("bar"));
 
@@ -104,8 +132,8 @@ namespace Castle.Facilities.EventWiring.Tests
 		{
 			container.Register(
 				Component.For<SimplePublisher>()
-					.PublishEvent(p => SimplePublisher.StaticEvent += null)
-					.ToSubscribers(EventSubscriber.Named("bar").HandledBy<SimpleListener>(l => l.OnPublish(null, null))),
+					.PublishEvent(p => SimplePublisher.StaticEvent += null,
+					              x => x.To<SimpleListener>("bar", l => l.OnPublish(null, null))),
 				Component.For<SimpleListener>().Named("bar"));
 
 			var listener = container.Resolve<SimpleListener>("bar");
@@ -122,11 +150,10 @@ namespace Castle.Facilities.EventWiring.Tests
 		{
 			container.Register(
 				Component.For<SimplePublisher>()
-					.PublishEvent(p => p.Event += null)
-					.ToSubscribers(
-						EventSubscriber.Named("foo"))
-					.PublishEvent(p => SimplePublisher.StaticEvent += null)
-					.ToSubscribers(EventSubscriber.Named("bar").HandledBy<SimpleListener>(l => l.OnPublish(null, null))),
+					.PublishEvent(p => p.Event += null,
+					              x => x.To("foo"))
+					.PublishEvent(p => SimplePublisher.StaticEvent += null,
+					              x => x.To<SimpleListener>("bar", l => l.OnPublish(null, null))),
 				Component.For<ListenerWithOnEventMethod>().Named("foo"),
 				Component.For<SimpleListener>().Named("bar"));
 

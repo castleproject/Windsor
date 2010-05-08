@@ -18,7 +18,7 @@ namespace Castle.Facilities.EventWiring
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Registration;
 
-	public class EventWiringDescriptor<T>:ComponentDescriptor<T>
+	public class EventWiringDescriptor<T> : ComponentDescriptor<T>
 	{
 		private readonly string eventName;
 		private readonly EventSubscriber[] subscribers;
@@ -44,7 +44,7 @@ namespace Castle.Facilities.EventWiring
 		private IConfiguration GetSubscribersNode(IConfiguration configuration)
 		{
 			var node = configuration.Children["subscribers"];
-			if(node==null)
+			if (node == null)
 			{
 				node = new MutableConfiguration("subscribers");
 				configuration.Children.Add(node);
