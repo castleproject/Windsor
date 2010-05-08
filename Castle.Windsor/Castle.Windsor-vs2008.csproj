@@ -126,15 +126,12 @@
     <Compile Include="Facilities\EventWiring\EventWiringRegistrationExtensions.cs" />
     <Compile Include="Facilities\EventWiring\NaiveMethodNameExtractor.cs" />
     <Compile Include="Facilities\EventWiring\OpCodeValues.cs" />
-    <Compile Include="Facilities\TypedFactory\ExpressionTreeBasedDelegateBuilder.cs" />
-    <Compile Include="Facilities\TypedFactory\FactoryArguments.cs" />
-    <Compile Include="Facilities\TypedFactory\FactoryParameter.cs" />
-    <Compile Include="Facilities\TypedFactory\FactoryParametersStore.cs" />
-    <Compile Include="Facilities\TypedFactory\IDelegateBuilder.cs" />
-    <Compile Include="Facilities\TypedFactory\LightweightFactory.cs" />
+    <Compile Include="Facilities\TypedFactory\DefaultDelegateComponentSelector.cs" />
+    <Compile Include="Facilities\TypedFactory\DelegateInvocation.cs" />
+    <Compile Include="Facilities\TypedFactory\ExpressionTreeBasedDelegateGenerator.cs" />
+    <Compile Include="Facilities\TypedFactory\IDelegateGenerator.cs" />
+    <Compile Include="Facilities\TypedFactory\DelegateFactory.cs" />
     <Compile Include="Facilities\TypedFactory\NoUniqueComponentException.cs" />
-    <Compile Include="Facilities\TypedFactory\ParametersBinder.cs" />
-    <Compile Include="Facilities\TypedFactory\Tokens.cs" />
     <Compile Include="MicroKernel\ComponentActivator\AbstractComponentActivator.cs">
       <SubType>Code</SubType>
     </Compile>

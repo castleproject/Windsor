@@ -31,7 +31,7 @@ namespace Castle.Facilities.TypedFactory
 	{
 		public static readonly string InterceptorKey = "Castle.TypedFactory.Interceptor";
 		public static readonly string DelegateFactoryKey = "Castle.TypedFactory.DelegateFactory";
-		public static readonly string DelegateBuilderKey = "Castle.TypedFactory.DelegateBuilder";
+		public static readonly string DelegateGeneratorKey = "Castle.TypedFactory.DelegateGenerator";
 
 		[Obsolete("This method is obsolete. Use AsFactory() extension method on fluent registration API instead.")]
 		public void AddTypedFactoryEntry(FactoryEntry entry)
@@ -57,15 +57,13 @@ namespace Castle.Facilities.TypedFactory
 
 		private void InitDelegateBasedFactory()
 		{
-			Kernel.Resolver.AddSubResolver(new ParametersBinder());
-
 			Kernel.Register(Component.For<ILazyComponentLoader>()
-			                	.ImplementedBy<LightweightFactory>()
+			                	.ImplementedBy<DelegateFactory>()
 			                	.Named(DelegateFactoryKey)
 			                	.Unless(Component.ServiceAlreadyRegistered),
-			                Component.For<IDelegateBuilder>()
-			                	.ImplementedBy<ExpressionTreeBasedDelegateBuilder>()
-			                	.Named(DelegateBuilderKey)
+			                Component.For<IDelegateGenerator>()
+			                	.ImplementedBy<ExpressionTreeBasedDelegateGenerator>()
+			                	.Named(DelegateGeneratorKey)
 			                	.Unless(Component.ServiceAlreadyRegistered));
 		}
 

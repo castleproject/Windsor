@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,18 +14,11 @@
 
 namespace Castle.Facilities.TypedFactory
 {
-	using System.Collections.Generic;
+	using System;
+	using System.Reflection;
 
-	using Castle.MicroKernel;
-	using Castle.MicroKernel.Context;
-
-	public class FactoryArguments : Arguments
+	public interface IDelegateGenerator
 	{
-		protected override void AddStores(IList<IArgumentsStore> list)
-		{
-			base.AddStores(list);
-			list.Add(new FactoryParametersStore());
-
-		}
+		Delegate BuildDelegate(DelegateInvocation invocation, MethodInfo invoke, Type delegateType);
 	}
 }

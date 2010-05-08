@@ -33,7 +33,7 @@ namespace Castle.Facilities.TypedFactory
 		{
 			foreach (var argument in invocation.Arguments)
 			{
-				if(argument==null) continue;
+				if (argument == null) continue;
 
 				kernel.ReleaseComponent(argument);
 			}

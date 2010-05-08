@@ -23,12 +23,12 @@ namespace Castle.Facilities.TypedFactory
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Resolvers;
 
-	public class LightweightFactory : ILazyComponentLoader
+	public class DelegateFactory : ILazyComponentLoader
 	{
-		private readonly IDelegateBuilder delegateBuiler;
+		private readonly IDelegateGenerator delegateBuiler;
 		private readonly IKernel kernel;
 
-		public LightweightFactory(IKernel kernel, IDelegateBuilder delegateBuiler)
+		public DelegateFactory(IKernel kernel, IDelegateGenerator delegateBuiler)
 		{
 			if (kernel == null)
 			{
@@ -73,8 +73,10 @@ namespace Castle.Facilities.TypedFactory
 			{
 				return null;
 			}
+			var selector = kernel.GetService<ITypedFactoryComponentSelector>() ?? new DefaultDelegateComponentSelector();
+			var invocation = new DelegateInvocation(kernel, selector, invoke, invoke.ReturnType);
+			var @delegate = delegateBuiler.BuildDelegate(invocation, invoke, service);
 
-			var @delegate = delegateBuiler.BuildDelegate(handler, invoke, service, this);
 			Debug.Assert(@delegate != null, "@delegate != null");
 			return Component.For(service)
 				.Named(key)
@@ -114,8 +116,8 @@ namespace Castle.Facilities.TypedFactory
 			if (potentialHandler == null)
 			{
 				throw new NoUniqueComponentException(invoke.ReturnType,
-				                                     "Lightweight factory ({0}) was unable to uniquely nominate component to resolve for service '{1}'. " +
-				                                     "You may provide your own selection logic, by registering custom LightweightFactory with key LightweightFactoryFacility.FactoryKey " +
+				                                     "Delegate factory ({0}) was unable to uniquely nominate component to resolve for service '{1}'. " +
+													 "You may provide your own selection logic, by registering custom DelegateFactory with key TypedFactoryFacility.DelegateFactoryKey " +
 				                                     "before registering the facility.");
 			}
 
