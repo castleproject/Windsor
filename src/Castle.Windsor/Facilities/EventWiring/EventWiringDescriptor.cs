@@ -18,7 +18,49 @@ namespace Castle.Facilities.EventWiring
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Registration;
 
+
 	public class EventWiringDescriptor<T> : ComponentDescriptor<T>
+	{
+		private readonly string eventName;
+		private readonly EventSubscriber[] subscribers;
+
+		protected internal override void ApplyToConfiguration(IKernel kernel, IConfiguration configuration)
+		{
+			var node = GetSubscribersNode(configuration);
+			foreach (var eventSubscriber in subscribers)
+			{
+				var child = Child.ForName("subscriber").Eq(
+					Attrib.ForName("id").Eq(eventSubscriber.SubscriberComponentName),
+					Attrib.ForName("event").Eq(eventName),
+					Attrib.ForName("handler").Eq(EventHandlerMethodName(eventSubscriber)));
+				child.ApplyTo(node);
+			}
+		}
+
+		private string EventHandlerMethodName(EventSubscriber eventSubscriber)
+		{
+			return eventSubscriber.EventHandler ?? ("On" + eventName);
+		}
+
+		private IConfiguration GetSubscribersNode(IConfiguration configuration)
+		{
+			var node = configuration.Children["subscribers"];
+			if (node == null)
+			{
+				node = new MutableConfiguration("subscribers");
+				configuration.Children.Add(node);
+			}
+			return node;
+		}
+
+		public EventWiringDescriptor(string eventName, EventSubscriber[] subscribers)
+		{
+			this.eventName = eventName;
+			this.subscribers = subscribers;
+		}
+	}
+
+	public class EventWiringDescriptor : ComponentDescriptor<object>
 	{
 		private readonly string eventName;
 		private readonly EventSubscriber[] subscribers;
