@@ -23,8 +23,6 @@ namespace Castle.Facilities.EventWiring.Tests
 	[TestFixture]
 	public class FluentRegistrationTestCase
 	{
-		private IWindsorContainer container;
-
 		[SetUp]
 		public void SetUp()
 		{
@@ -32,67 +30,16 @@ namespace Castle.Facilities.EventWiring.Tests
 			container.AddFacility<EventWiringFacility>();
 		}
 
-		[Test]
-		public void Single_publisher_single_subscriber_single_event()
-		{
-			container.Register(
-				Component.For<SimplePublisher>()
-					.PublishEvent(p => p.Event += null,
-					              x => x.To<SimpleListener>("foo", l => l.OnPublish(null, null))),
-				Component.For<SimpleListener>().Named("foo"));
-
-			var subscriber = container.Resolve<SimpleListener>("foo");
-			var publisher = container.Resolve<SimplePublisher>();
-
-			publisher.Trigger();
-
-			Assert.IsTrue(subscriber.Listened);
-			Assert.AreSame(publisher, subscriber.Sender);
-		}
+		private IWindsorContainer container;
 
 		[Test]
-		public void Can_specify_event_as_string()
+		public void Can_publish_events_via_AllTypes()
 		{
 			container.Register(
-				Component.For<SimplePublisher>()
-					.PublishEvent("Event",
-								  x => x.To<SimpleListener>("foo", l => l.OnPublish(null, null))),
-				Component.For<SimpleListener>().Named("foo"));
-
-			var subscriber = container.Resolve<SimpleListener>("foo");
-			var publisher = container.Resolve<SimplePublisher>();
-
-			publisher.Trigger();
-
-			Assert.IsTrue(subscriber.Listened);
-			Assert.AreSame(publisher, subscriber.Sender);
-		}
-
-		[Test]
-		public void Can_specify_handler_as_string()
-		{
-			container.Register(
-				Component.For<SimplePublisher>()
-					.PublishEvent("Event",
-								  x => x.To("foo", "OnPublish")),
-				Component.For<SimpleListener>().Named("foo"));
-
-			var subscriber = container.Resolve<SimpleListener>("foo");
-			var publisher = container.Resolve<SimplePublisher>();
-
-			publisher.Trigger();
-
-			Assert.IsTrue(subscriber.Listened);
-			Assert.AreSame(publisher, subscriber.Sender);
-		}
-
-		[Test]
-		public void Not_specifying_handler_name_uses_OnEVENTNAME_method()
-		{
-			container.Register(
-				Component.For<SimplePublisher>()
-					.PublishEvent(p => p.Event += null,
-					              x => x.To("foo")),
+				AllTypes.FromAssemblyContaining<SimpleListener>()
+					.BasedOn<SimplePublisher>()
+					.Configure(r => r.PublishEvent<SimplePublisher>(p => p.Event += null,
+					                                                x => x.To("foo"))),
 				Component.For<ListenerWithOnEventMethod>().Named("foo"));
 
 			var subscriber = container.Resolve<ListenerWithOnEventMethod>("foo");
@@ -105,26 +52,21 @@ namespace Castle.Facilities.EventWiring.Tests
 		}
 
 		[Test]
-		public void Can_specify_multiple_subscribers()
+		public void Can_publish_events_via_AllTypes_weakly_typed()
 		{
 			container.Register(
-				Component.For<SimplePublisher>()
-					.PublishEvent(p => p.Event += null,
-					              x => x.To("foo")
-					                   	.To<SimpleListener>("bar", l => l.OnPublish(null, null))),
-				Component.For<ListenerWithOnEventMethod>().Named("foo"),
-				Component.For<SimpleListener>().Named("bar"));
+				AllTypes.FromAssemblyContaining<SimpleListener>()
+					.BasedOn<SimplePublisher>()
+					.Configure(r => r.PublishEvent("Event", x => x.To("foo"))),
+				Component.For<ListenerWithOnEventMethod>().Named("foo"));
 
-			var subscriber1 = container.Resolve<ListenerWithOnEventMethod>("foo");
-			var subscriber2 = container.Resolve<SimpleListener>("bar");
+			var subscriber = container.Resolve<ListenerWithOnEventMethod>("foo");
 			var publisher = container.Resolve<SimplePublisher>();
 
 			publisher.Trigger();
 
-			Assert.IsTrue(subscriber1.Listened);
-			Assert.AreSame(publisher, subscriber1.Sender);
-			Assert.IsTrue(subscriber2.Listened);
-			Assert.AreSame(publisher, subscriber2.Sender);
+			Assert.IsTrue(subscriber.Listened);
+			Assert.AreSame(publisher, subscriber.Sender);
 		}
 
 		[Test]
@@ -143,6 +85,42 @@ namespace Castle.Facilities.EventWiring.Tests
 
 			Assert.IsTrue(listener.Listened);
 			Assert.AreSame(publisher, listener.Sender);
+		}
+
+		[Test]
+		public void Can_specify_event_as_string()
+		{
+			container.Register(
+				Component.For<SimplePublisher>()
+					.PublishEvent("Event",
+					              x => x.To<SimpleListener>("foo", l => l.OnPublish(null, null))),
+				Component.For<SimpleListener>().Named("foo"));
+
+			var subscriber = container.Resolve<SimpleListener>("foo");
+			var publisher = container.Resolve<SimplePublisher>();
+
+			publisher.Trigger();
+
+			Assert.IsTrue(subscriber.Listened);
+			Assert.AreSame(publisher, subscriber.Sender);
+		}
+
+		[Test]
+		public void Can_specify_handler_as_string()
+		{
+			container.Register(
+				Component.For<SimplePublisher>()
+					.PublishEvent("Event",
+					              x => x.To("foo", "OnPublish")),
+				Component.For<SimpleListener>().Named("foo"));
+
+			var subscriber = container.Resolve<SimpleListener>("foo");
+			var publisher = container.Resolve<SimplePublisher>();
+
+			publisher.Trigger();
+
+			Assert.IsTrue(subscriber.Listened);
+			Assert.AreSame(publisher, subscriber.Sender);
 		}
 
 		[Test]
@@ -170,6 +148,65 @@ namespace Castle.Facilities.EventWiring.Tests
 
 			Assert.IsTrue(subscriber2.Listened);
 			Assert.AreSame(publisher, subscriber2.Sender);
+		}
+
+		[Test]
+		public void Can_specify_multiple_subscribers()
+		{
+			container.Register(
+				Component.For<SimplePublisher>()
+					.PublishEvent(p => p.Event += null,
+					              x => x.To("foo")
+					                   	.To<SimpleListener>("bar", l => l.OnPublish(null, null))),
+				Component.For<ListenerWithOnEventMethod>().Named("foo"),
+				Component.For<SimpleListener>().Named("bar"));
+
+			var subscriber1 = container.Resolve<ListenerWithOnEventMethod>("foo");
+			var subscriber2 = container.Resolve<SimpleListener>("bar");
+			var publisher = container.Resolve<SimplePublisher>();
+
+			publisher.Trigger();
+
+			Assert.IsTrue(subscriber1.Listened);
+			Assert.AreSame(publisher, subscriber1.Sender);
+			Assert.IsTrue(subscriber2.Listened);
+			Assert.AreSame(publisher, subscriber2.Sender);
+		}
+
+		[Test]
+		public void Not_specifying_handler_name_uses_OnEVENTNAME_method()
+		{
+			container.Register(
+				Component.For<SimplePublisher>()
+					.PublishEvent(p => p.Event += null,
+					              x => x.To("foo")),
+				Component.For<ListenerWithOnEventMethod>().Named("foo"));
+
+			var subscriber = container.Resolve<ListenerWithOnEventMethod>("foo");
+			var publisher = container.Resolve<SimplePublisher>();
+
+			publisher.Trigger();
+
+			Assert.IsTrue(subscriber.Listened);
+			Assert.AreSame(publisher, subscriber.Sender);
+		}
+
+		[Test]
+		public void Single_publisher_single_subscriber_single_event()
+		{
+			container.Register(
+				Component.For<SimplePublisher>()
+					.PublishEvent(p => p.Event += null,
+					              x => x.To<SimpleListener>("foo", l => l.OnPublish(null, null))),
+				Component.For<SimpleListener>().Named("foo"));
+
+			var subscriber = container.Resolve<SimpleListener>("foo");
+			var publisher = container.Resolve<SimplePublisher>();
+
+			publisher.Trigger();
+
+			Assert.IsTrue(subscriber.Listened);
+			Assert.AreSame(publisher, subscriber.Sender);
 		}
 	}
 }
