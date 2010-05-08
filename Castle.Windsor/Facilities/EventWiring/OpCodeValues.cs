@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,36 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Facilities.EventWiring.Tests.Model
+namespace Castle.Facilities.EventWiring
 {
-	using System;
-
-	public class SimpleListener
+	internal enum OpCodeValues : ushort
 	{
-		private bool listened;
-		private object sender;
-
-		public void OnPublish(object sender, EventArgs e)
-		{
-			this.sender = sender;
-
-			listened = sender != null;
-		}
-
-		public bool Listened
-		{
-			get
-			{
-				return listened;
-			}
-		}
-
-		public object Sender
-		{
-			get
-			{
-				return sender;
-			}
-		}
+		Nop = 0x0000,
+		Ldarg_0 = 0x0002,
+		Ldnull = 0x0014,
+		Call = 0x0028,
+		Ret = 0x002A,
+		Callvirt = 0x006F,
 	}
 }
