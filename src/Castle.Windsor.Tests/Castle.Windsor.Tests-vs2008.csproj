@@ -127,6 +127,14 @@
     <Compile Include="Configuration2\UsingAssemblyTestCase.cs" />
     <Compile Include="Facilities\EventWiring\FluentRegistrationTestCase.cs" />
     <Compile Include="Facilities\EventWiring\Model\ListenerWithOnEventMethod.cs" />
+    <Compile Include="Facilities\TypedFactory\Delegates\Bar.cs" />
+    <Compile Include="Facilities\TypedFactory\Delegates\Baz.cs" />
+    <Compile Include="Facilities\TypedFactory\Delegates\Foo.cs" />
+    <Compile Include="Facilities\TypedFactory\Delegates\HasOnlyOneArgMatchingDelegatesParameter.cs" />
+    <Compile Include="Facilities\TypedFactory\Delegates\HasTwoConstructors.cs" />
+    <Compile Include="Facilities\TypedFactory\Delegates\LightweightFactoryTestCase.cs" />
+    <Compile Include="Facilities\TypedFactory\Delegates\UsesBarDelegate.cs" />
+    <Compile Include="Facilities\TypedFactory\Delegates\UsesFooDelegate.cs" />
     <Compile Include="Installers\CustomerInstaller.cs" />
     <Compile Include="Installer\FromAssemblyInstallersTestCase.cs" />
     <Compile Include="TypedDependenciesTestCase.cs" />
