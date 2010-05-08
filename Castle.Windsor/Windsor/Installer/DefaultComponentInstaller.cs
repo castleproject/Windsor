@@ -81,7 +81,7 @@ namespace Castle.Windsor.Installer
 			}
 
 			Debug.Assert(string.IsNullOrEmpty(installer.Attributes["assembly"]) == false);
-			var types = Assembly.Load(installer.Attributes["assembly"]).GetExportedTypes();
+			var types = ReflectionUtil.GetAssemblyNamed(installer.Attributes["assembly"]).GetExportedTypes();
 			foreach (var type in InstallerTypes(types))
 			{
 				AddInstaller(cache, type);

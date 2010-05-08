@@ -32,10 +32,10 @@ namespace Castle.MicroKernel.Registration
 		}
 
 		public FromAssemblyDescriptor IncludeNonPublicTypes()
-        {
+		{
 			nonPublicTypes = true;
 			return this;
-        }
+		}
 
 		protected override IEnumerable<Type> SelectedTypes(IKernel kernel)
 		{
