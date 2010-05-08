@@ -31,7 +31,7 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory.Delegates
 		public void SetUpTests()
 		{
 			container = new WindsorContainer();
-			container.AddFacility<LightweightFactoryFacility>();
+			container.AddFacility<TypedFactoryFacility>();
 		}
 
 		private WindsorContainer container;
