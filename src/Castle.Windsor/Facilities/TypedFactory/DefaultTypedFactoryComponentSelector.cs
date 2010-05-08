@@ -27,6 +27,16 @@ namespace Castle.Facilities.TypedFactory
 			var componentName = GetComponentName(method);
 			var componentType = GetComponentType(method);
 			var additionalArguments = GetArguments(method, arguments);
+
+			return BuildFactoryComponent(method, componentName, componentType, additionalArguments);
+		}
+
+		protected virtual TypedFactoryComponent BuildFactoryComponent(MethodInfo method, string componentName, Type componentType, IDictionary additionalArguments)
+		{
+			if (TypedFactoryComponentCollection.IsSupportedCollectionType(componentType))
+			{
+				return new TypedFactoryComponentCollection(componentType, additionalArguments);
+			}
 			return new TypedFactoryComponent(componentName, componentType, additionalArguments);
 		}
 
@@ -40,7 +50,7 @@ namespace Castle.Facilities.TypedFactory
 			string componentName = null;
 			if (method.Name.StartsWith("Get"))
 			{
-				componentName = method.Name.Substring("get".Length);
+				componentName = method.Name.Substring("Get".Length);
 			}
 			return componentName;
 		}

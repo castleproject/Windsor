@@ -103,7 +103,6 @@ namespace Castle.Facilities.TypedFactory
 					methods.Add(method, new Release(kernel));
 					continue;
 				}
-				//TODO: add collection handling?
 				methods.Add(method, new Resolve(kernel, ComponentSelector));
 			}
 

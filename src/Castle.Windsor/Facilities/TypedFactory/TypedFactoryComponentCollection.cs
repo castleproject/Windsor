@@ -52,17 +52,6 @@ namespace Castle.Facilities.TypedFactory
 			return array;
 		}
 
-		protected void CheckReturnTypeCanBeSatisfiedByArrayOf(Type type)
-		{
-			var arrayType = type.MakeArrayType();
-			if (ComponentType.IsAssignableFrom(arrayType))
-			{
-				return;
-			}
-
-			ThrowUnsupportedCollectionType();
-		}
-
 		protected Type GetCollectionItemType()
 		{
 			if (ComponentType.IsArray)
@@ -74,7 +63,10 @@ namespace Castle.Facilities.TypedFactory
 			{
 				foreach (var @interface in TypeUtil.GetAllInterfaces(ComponentType))
 				{
-					if(@interface.IsGenericType == false) continue;
+					if (@interface.IsGenericType == false)
+					{
+						continue;
+					}
 
 					if (@interface.GetGenericTypeDefinition() == typeof(IEnumerable<>))
 					{
@@ -93,6 +85,18 @@ namespace Castle.Facilities.TypedFactory
 				string.Format(
 					"Type {0} is not supported collection type. If you want to support it, your ITypedFactoryComponentSelector implementation should return custom TypedFactoryComponent that will appropriately override Resolve method.",
 					ComponentType));
+		}
+
+		public static bool IsSupportedCollectionType(Type type)
+		{
+			if (type.IsArray)
+			{
+				return true;
+			}
+			return type.IsGenericType &&
+			       TypeUtil.GetAllInterfaces(type)
+			       	.Where(@interface => @interface.IsGenericType)
+			       	.Any(@interface => @interface.GetGenericTypeDefinition() == typeof(IEnumerable<>));
 		}
 	}
 }

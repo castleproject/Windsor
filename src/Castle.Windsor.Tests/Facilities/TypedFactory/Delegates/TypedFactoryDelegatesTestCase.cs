@@ -72,6 +72,7 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory.Delegates
 		}
 
 		[Test]
+		[Ignore("Not supported for Func delegates")]
 		public void Delegate_parameters_are_used_in_order_first_ctor_then_properties()
 		{
 			container.AddComponent<Baz>("baz");
@@ -85,6 +86,7 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory.Delegates
 		}
 
 		[Test]
+		[Ignore("Not supported for Func delegates")]
 		public void Delegate_pulls_unspecified_dependencies_from_container()
 		{
 			container.AddComponent<Baz>("baz");
@@ -96,6 +98,7 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory.Delegates
 		}
 
 		[Test]
+		[Ignore("Not supported for Func delegates")]
 		public void Does_not_duplicate_arguments_matching_delegate_parameters()
 		{
 			container.AddComponent<HasOnlyOneArgMatchingDelegatesParameter>("fizz");
@@ -103,6 +106,28 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory.Delegates
 			var obj = factory("arg1", "name");
 			Assert.AreEqual("name", obj.Name);
 			Assert.AreEqual("arg1", obj.Arg1);
+		}
+
+		[Test]
+		public void Using_Func_delegate_with_duplicated_Parameter_types_throws_exception()
+		{
+			container.AddComponent<Baz>("baz");
+			container.AddComponent<Bar>("bar");
+			container.AddComponent<UsesBarDelegate>();
+
+			var user = container.Resolve<UsesBarDelegate>();
+
+			
+			var exception = 
+			Assert.Throws<ArgumentException>(()=>
+
+			user.GetBar("aaa", "bbb"));
+
+			Assert.AreEqual(
+				"Factory delegate System.Func`3[System.String,System.String,Castle.Facilities.LightweighFactory.Tests.Bar] has duplicated arguments of type System.String. " +
+				"Using generic purpose delegates with duplicated argument types is unsupported, because then it is not possible to match arguments properly. " +
+				"Use some custom delegate with meaningful argument names or interface based factory instead.",
+				exception.Message);
 		}
 	}
 }

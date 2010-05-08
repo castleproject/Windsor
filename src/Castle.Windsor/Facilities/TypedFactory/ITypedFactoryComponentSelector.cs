@@ -26,7 +26,6 @@ namespace Castle.Facilities.TypedFactory
 		/// componentName should be null.
 		/// When component should be requested by name only,
 		/// componentType should be null.
-		/// 
 		/// </summary>
 		/// <param name="method"></param>
 		/// <param name="type"></param>
