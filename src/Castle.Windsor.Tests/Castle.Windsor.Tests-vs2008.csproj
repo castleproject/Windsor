@@ -128,6 +128,7 @@
     <Compile Include="Facilities\EventWiring\FluentRegistrationTestCase.cs" />
     <Compile Include="Facilities\EventWiring\Model\ListenerWithOnEventMethod.cs" />
     <Compile Include="Installers\CustomerInstaller.cs" />
+    <Compile Include="Installer\FromAssemblyInstallersTestCase.cs" />
     <Compile Include="TypedDependenciesTestCase.cs" />
     <Compile Include="ArgumentsTestCase.cs" />
     <Compile Include="BestConstructorTestCase.cs">

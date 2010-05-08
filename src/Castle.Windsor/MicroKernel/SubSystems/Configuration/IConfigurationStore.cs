@@ -105,7 +105,7 @@ namespace Castle.MicroKernel.SubSystems.Configuration
 		IConfiguration[] GetComponents();
 
 		/// <summary>
-		/// Returns all configuration nodes for components
+		/// Returns all configuration nodes for installers
 		/// </summary>
 		/// <returns></returns>
 		IConfiguration[] GetInstallers();

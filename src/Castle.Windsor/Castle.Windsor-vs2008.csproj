@@ -676,11 +676,13 @@
     <Compile Include="Windsor\InitializationException.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Windsor\Installer\AssemblyInstaller.cs" />
     <Compile Include="Windsor\Installer\Configuration.cs" />
     <Compile Include="Windsor\Installer\ConfigurationInstaller.cs" />
     <Compile Include="Windsor\Installer\DefaultComponentInstaller.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Windsor\Installer\FromAssembly.cs" />
     <Compile Include="Windsor\Installer\PartialConfigurationStore.cs" />
     <Compile Include="Windsor\IComponentsInstaller.cs">
       <SubType>Code</SubType>
