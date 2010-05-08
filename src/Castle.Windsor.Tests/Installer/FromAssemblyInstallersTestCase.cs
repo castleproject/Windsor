@@ -44,5 +44,21 @@ namespace Castle.Windsor.Tests.Installer
 
 			container.Resolve("Customer-by-CustomerInstaller");
 		}
+
+		[Test]
+		public void Can_install_from_assembly_by_type()
+		{
+			container.Install(FromAssembly.Containing(GetType()));
+
+			container.Resolve("Customer-by-CustomerInstaller");
+		}
+
+		[Test]
+		public void Can_install_from_assembly_by_type_generic()
+		{
+			container.Install(FromAssembly.Containing<FromAssemblyInstallersTestCase>());
+
+			container.Resolve("Customer-by-CustomerInstaller");
+		}
 	}
 }
