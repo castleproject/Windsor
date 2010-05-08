@@ -14,6 +14,8 @@
 
 namespace Castle.Windsor.Tests.Installer
 {
+	using System.Reflection;
+
 	using Castle.Windsor.Installer;
 
 	using NUnit.Framework;
@@ -57,6 +59,14 @@ namespace Castle.Windsor.Tests.Installer
 		public void Can_install_from_assembly_by_type_generic()
 		{
 			container.Install(FromAssembly.Containing<FromAssemblyInstallersTestCase>());
+
+			container.Resolve("Customer-by-CustomerInstaller");
+		}
+
+		[Test]
+		public void Can_install_from_assembly_by_assembly()
+		{
+			container.Install(FromAssembly.Given(Assembly.GetExecutingAssembly()));
 
 			container.Resolve("Customer-by-CustomerInstaller");
 		}
