@@ -132,7 +132,7 @@
     <Compile Include="Facilities\TypedFactory\Delegates\Foo.cs" />
     <Compile Include="Facilities\TypedFactory\Delegates\HasOnlyOneArgMatchingDelegatesParameter.cs" />
     <Compile Include="Facilities\TypedFactory\Delegates\HasTwoConstructors.cs" />
-    <Compile Include="Facilities\TypedFactory\Delegates\LightweightFactoryTestCase.cs" />
+    <Compile Include="Facilities\TypedFactory\Delegates\TypedFactoryDelegatesTestCase.cs" />
     <Compile Include="Facilities\TypedFactory\Delegates\UsesBarDelegate.cs" />
     <Compile Include="Facilities\TypedFactory\Delegates\UsesFooDelegate.cs" />
     <Compile Include="Installers\CustomerInstaller.cs" />
