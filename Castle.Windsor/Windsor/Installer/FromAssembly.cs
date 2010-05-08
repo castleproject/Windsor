@@ -41,6 +41,15 @@ namespace Castle.Windsor.Installer
 		}
 
 		/// <summary>
+		/// Scans the specified assembly with specified name for types implementing <see cref="IWindsorInstaller"/>, instantiates them and installs.
+		/// </summary>
+		/// <returns></returns>
+		public static IWindsorInstaller Given(Assembly assembly)
+		{
+			return new AssemblyInstaller(assembly);
+		}
+
+		/// <summary>
 		/// Scans the assembly containing specified type for types implementing <see cref="IWindsorInstaller"/>, instantiates them and installs.
 		/// </summary>
 		/// <returns></returns>
