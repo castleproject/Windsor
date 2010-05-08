@@ -21,12 +21,23 @@ namespace Castle.Facilities.EventWiring
 
 	public static class EventWiringRegistrationExtensions
 	{
-		public static EventPublisher<TPublisher> PublishEvent<TPublisher>(this ComponentRegistration<TPublisher> registration, Action<TPublisher> eventSubscribtion)
+		public static ComponentRegistration<TPublisher> PublishEvent<TPublisher>(this ComponentRegistration<TPublisher> registration, Action<TPublisher> eventSubscribtion, Action<EventSubscribers> toSubscribers)
 		{
 			var eventName = GetEventName(eventSubscribtion);
-			return new EventPublisher<TPublisher>(registration, eventName);
+
+			var subscribers = new EventSubscribers();
+			toSubscribers(subscribers);
+
+			return registration.AddDescriptor(new EventWiringDescriptor<TPublisher>(eventName, subscribers.Subscribers));
 		}
 
+		public static ComponentRegistration<TPublisher> PublishEvent<TPublisher>(this ComponentRegistration<TPublisher> registration, string eventName, Action<EventSubscribers> toSubscribers)
+		{
+			var subscribers = new EventSubscribers();
+			toSubscribers(subscribers);
+
+			return registration.AddDescriptor(new EventWiringDescriptor<TPublisher>(eventName, subscribers.Subscribers));
+		}
 		private static string GetEventName<TPublisher>(Action<TPublisher> eventSubscribtion)
 		{
 			string eventName;

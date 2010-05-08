@@ -120,8 +120,8 @@
     <Compile Include="Core\InterceptorAttribute.cs" />
     <Compile Include="Core\Internal\ReflectionUtil.cs" />
     <Compile Include="Core\LifestyleAttributes.cs" />
-    <Compile Include="Facilities\EventWiring\EventPublisher.cs" />
     <Compile Include="Facilities\EventWiring\EventSubscriber.cs" />
+    <Compile Include="Facilities\EventWiring\EventSubscribers.cs" />
     <Compile Include="Facilities\EventWiring\EventWiringDescriptor.cs" />
     <Compile Include="Facilities\EventWiring\EventWiringRegistrationExtensions.cs" />
     <Compile Include="Facilities\EventWiring\NaiveMethodNameExtractor.cs" />
