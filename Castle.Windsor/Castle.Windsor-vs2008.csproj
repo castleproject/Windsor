@@ -132,7 +132,6 @@
     <Compile Include="Facilities\TypedFactory\FactoryParametersStore.cs" />
     <Compile Include="Facilities\TypedFactory\IDelegateBuilder.cs" />
     <Compile Include="Facilities\TypedFactory\LightweightFactory.cs" />
-    <Compile Include="Facilities\TypedFactory\LightweightFactoryFacility.cs" />
     <Compile Include="Facilities\TypedFactory\NoUniqueComponentException.cs" />
     <Compile Include="Facilities\TypedFactory\ParametersBinder.cs" />
     <Compile Include="Facilities\TypedFactory\Tokens.cs" />

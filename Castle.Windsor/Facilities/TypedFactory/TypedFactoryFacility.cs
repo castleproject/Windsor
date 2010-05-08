@@ -21,6 +21,7 @@ namespace Castle.Facilities.TypedFactory
 	using Castle.MicroKernel.Facilities;
 	using Castle.MicroKernel.Proxy;
 	using Castle.MicroKernel.Registration;
+	using Castle.MicroKernel.Resolvers;
 	using Castle.MicroKernel.SubSystems.Conversion;
 
 	/// <summary>
@@ -28,7 +29,9 @@ namespace Castle.Facilities.TypedFactory
 	/// </summary>
 	public class TypedFactoryFacility : AbstractFacility
 	{
-		internal static readonly string InterceptorKey = "Castle.TypedFactory.Interceptor";
+		public static readonly string InterceptorKey = "Castle.TypedFactory.Interceptor";
+		public static readonly string DelegateFactoryKey = "Castle.TypedFactory.DelegateFactory";
+		public static readonly string DelegateBuilderKey = "Castle.TypedFactory.DelegateBuilder";
 
 		[Obsolete("This method is obsolete. Use AsFactory() extension method on fluent registration API instead.")]
 		public void AddTypedFactoryEntry(FactoryEntry entry)
@@ -46,11 +49,31 @@ namespace Castle.Facilities.TypedFactory
 
 		protected override void Init()
 		{
+			InitInterfaceBasedFactory();
+			InitDelegateBasedFactory();
+
+			LegacyInit();
+		}
+
+		private void InitDelegateBasedFactory()
+		{
+			Kernel.Resolver.AddSubResolver(new ParametersBinder());
+
+			Kernel.Register(Component.For<ILazyComponentLoader>()
+			                	.ImplementedBy<LightweightFactory>()
+			                	.Named(DelegateFactoryKey)
+			                	.Unless(Component.ServiceAlreadyRegistered),
+			                Component.For<IDelegateBuilder>()
+			                	.ImplementedBy<ExpressionTreeBasedDelegateBuilder>()
+			                	.Named(DelegateBuilderKey)
+			                	.Unless(Component.ServiceAlreadyRegistered));
+		}
+
+		private void InitInterfaceBasedFactory()
+		{
 			Kernel.Register(Component.For<TypedFactoryInterceptor>()
 			                	.Named(InterceptorKey)
 			                	.Unless(Component.ServiceAlreadyRegistered));
-
-			LegacyInit();
 		}
 
 		private void LegacyInit()
