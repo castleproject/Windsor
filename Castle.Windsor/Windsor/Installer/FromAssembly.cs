@@ -14,6 +14,7 @@
 
 namespace Castle.Windsor.Installer
 {
+	using System;
 	using System.Reflection;
 
 	using Castle.Core.Internal;
@@ -37,6 +38,29 @@ namespace Castle.Windsor.Installer
 		{
 			var assembly = ReflectionUtil.GetAssemblyNamed(assemblyName);
 			return new AssemblyInstaller(assembly);
+		}
+
+		/// <summary>
+		/// Scans the assembly containing specified type for types implementing <see cref="IWindsorInstaller"/>, instantiates them and installs.
+		/// </summary>
+		/// <returns></returns>
+		public static IWindsorInstaller Containing(Type type)
+		{
+			if (type == null)
+			{
+				throw new ArgumentNullException("type");
+			}
+			var assembly = type.Assembly;
+			return new AssemblyInstaller(assembly);
+		}
+
+		/// <summary>
+		/// Scans the assembly containing specified type for types implementing <see cref="IWindsorInstaller"/>, instantiates them and installs.
+		/// </summary>
+		/// <returns></returns>
+		public static IWindsorInstaller Containing<T>()
+		{
+			return Containing(typeof(T));
 		}
 	}
 }
