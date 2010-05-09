@@ -22,34 +22,6 @@ namespace Castle.Windsor.Installer
 	public class FromAssembly
 	{
 		/// <summary>
-		/// Scans assembly that contains code calling this method for types implementing <see cref="IWindsorInstaller"/>, instantiates them and installs.
-		/// </summary>
-		/// <returns></returns>
-		public static IWindsorInstaller This()
-		{
-			return new AssemblyInstaller(Assembly.GetCallingAssembly());
-		}
-
-		/// <summary>
-		/// Scans the assembly with specified name for types implementing <see cref="IWindsorInstaller"/>, instantiates them and installs.
-		/// </summary>
-		/// <returns></returns>
-		public static IWindsorInstaller Named(string assemblyName)
-		{
-			var assembly = ReflectionUtil.GetAssemblyNamed(assemblyName);
-			return new AssemblyInstaller(assembly);
-		}
-
-		/// <summary>
-		/// Scans the specified assembly with specified name for types implementing <see cref="IWindsorInstaller"/>, instantiates them and installs.
-		/// </summary>
-		/// <returns></returns>
-		public static IWindsorInstaller Given(Assembly assembly)
-		{
-			return new AssemblyInstaller(assembly);
-		}
-
-		/// <summary>
 		/// Scans the assembly containing specified type for types implementing <see cref="IWindsorInstaller"/>, instantiates them and installs.
 		/// </summary>
 		/// <returns></returns>
@@ -60,7 +32,21 @@ namespace Castle.Windsor.Installer
 				throw new ArgumentNullException("type");
 			}
 			var assembly = type.Assembly;
-			return new AssemblyInstaller(assembly);
+			return Given(assembly);
+		}
+
+		/// <summary>
+		/// Scans the assembly containing specified type for types implementing <see cref="IWindsorInstaller"/>, instantiates using given <see cref="InstallerFactory"/> and installs.
+		/// </summary>
+		/// <returns></returns>
+		public static IWindsorInstaller Containing(Type type, InstallerFactory installerFactory)
+		{
+			if (type == null)
+			{
+				throw new ArgumentNullException("type");
+			}
+			var assembly = type.Assembly;
+			return Given(assembly, installerFactory);
 		}
 
 		/// <summary>
@@ -70,6 +56,71 @@ namespace Castle.Windsor.Installer
 		public static IWindsorInstaller Containing<T>()
 		{
 			return Containing(typeof(T));
+		}
+
+		/// <summary>
+		/// Scans the assembly containing specified type for types implementing <see cref="IWindsorInstaller"/>, instantiates using given <see cref="InstallerFactory"/> and installs.
+		/// </summary>
+		/// <returns></returns>
+		public static IWindsorInstaller Containing<T>(InstallerFactory installerFactory)
+		{
+			return Containing(typeof(T), installerFactory);
+		}
+
+		/// <summary>
+		/// Scans the specified assembly with specified name for types implementing <see cref="IWindsorInstaller"/>, instantiates them and installs.
+		/// </summary>
+		/// <returns></returns>
+		public static IWindsorInstaller Given(Assembly assembly)
+		{
+			return Given(assembly, new InstallerFactory());
+		}
+
+		/// <summary>
+		/// Scans the specified assembly with specified name for types implementing <see cref="IWindsorInstaller"/>, instantiates using given <see cref="InstallerFactory"/> and installs.
+		/// </summary>
+		/// <returns></returns>
+		public static IWindsorInstaller Given(Assembly assembly, InstallerFactory installerFactory)
+		{
+			return new AssemblyInstaller(assembly, installerFactory);
+		}
+
+		/// <summary>
+		/// Scans the assembly with specified name for types implementing <see cref="IWindsorInstaller"/>, instantiates them and installs.
+		/// </summary>
+		/// <returns></returns>
+		public static IWindsorInstaller Named(string assemblyName)
+		{
+			var assembly = ReflectionUtil.GetAssemblyNamed(assemblyName);
+			return Given(assembly);
+		}
+
+		/// <summary>
+		/// Scans the assembly with specified name for types implementing <see cref="IWindsorInstaller"/>, instantiates using given <see cref="InstallerFactory"/> and installs.
+		/// </summary>
+		/// <returns></returns>
+		public static IWindsorInstaller Named(string assemblyName, InstallerFactory installerFactory)
+		{
+			var assembly = ReflectionUtil.GetAssemblyNamed(assemblyName);
+			return Given(assembly, installerFactory);
+		}
+
+		/// <summary>
+		/// Scans assembly that contains code calling this method for types implementing <see cref="IWindsorInstaller"/>, instantiates them and installs.
+		/// </summary>
+		/// <returns></returns>
+		public static IWindsorInstaller This()
+		{
+			return Given(Assembly.GetCallingAssembly());
+		}
+
+		/// <summary>
+		/// Scans assembly that contains code calling this method for types implementing <see cref="IWindsorInstaller"/>, instantiates using given <see cref="InstallerFactory"/> and installs.
+		/// </summary>
+		/// <returns></returns>
+		public static IWindsorInstaller This(InstallerFactory installerFactory)
+		{
+			return Given(Assembly.GetCallingAssembly(), installerFactory);
 		}
 	}
 }

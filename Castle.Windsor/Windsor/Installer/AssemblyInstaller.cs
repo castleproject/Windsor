@@ -19,39 +19,48 @@ namespace Castle.Windsor.Installer
 	using System.Linq;
 	using System.Reflection;
 
-	using Castle.Core.Internal;
 	using Castle.MicroKernel.SubSystems.Configuration;
 
 	public class AssemblyInstaller : IWindsorInstaller
 	{
 		private readonly Assembly assembly;
+		private readonly InstallerFactory factory;
 
-		public AssemblyInstaller(Assembly assembly)
+		public AssemblyInstaller(Assembly assembly, InstallerFactory factory)
 		{
+			if (assembly == null)
+			{
+				throw new ArgumentNullException("assembly");
+			}
+			if (factory == null)
+			{
+				throw new ArgumentNullException("factory");
+			}
 			this.assembly = assembly;
+			this.factory = factory;
 		}
 
 		public void Install(IWindsorContainer container, IConfigurationStore store)
 		{
-			var installers = InstallerTypes(assembly.GetExportedTypes())
-				.Select(type => ReflectionUtil.CreateInstance<IWindsorInstaller>(type))
-				.ToList();
+			var installerTypes = factory.Select(FilterInstallerTypes(assembly.GetExportedTypes()));
+			if (installerTypes == null)
+			{
+				return;
+			}
 
-			installers.ForEach(i => i.Install(container, store));
+			foreach (var installerType in installerTypes)
+			{
+				var installer = factory.CreateInstance(installerType);
+				installer.Install(container, store);
+			}
 		}
 
-		private IEnumerable<Type> InstallerTypes(IEnumerable<Type> types)
+		private IEnumerable<Type> FilterInstallerTypes(IEnumerable<Type> types)
 		{
-			foreach (var type in types)
-			{
-				if (type.IsClass &&
-				    type.IsAbstract == false &&
-				    type.IsGenericTypeDefinition == false &&
-				    typeof(IWindsorInstaller).IsAssignableFrom(type))
-				{
-					yield return type;
-				}
-			}
+			return types.Where(t => t.IsClass &&
+			                        t.IsAbstract == false &&
+			                        t.IsGenericTypeDefinition == false &&
+			                        typeof(IWindsorInstaller).IsAssignableFrom(t));
 		}
 	}
 }
