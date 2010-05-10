@@ -136,6 +136,27 @@ namespace Castle.MicroKernel.Tests.SubContainers
 		}
 
 		[Test]
+		public void Three_level_hierarchy([Values(0, 1, 2)] int parentComponentContainer, [Values(0, 1, 2)] int childComponentContainer)
+		{
+			var subKernel = new DefaultKernel();
+			var subSubKernel = new DefaultKernel();
+			kernel.AddChildKernel(subKernel);
+			subKernel.AddChildKernel(subSubKernel);
+			var containers = new[]
+			{
+				kernel,
+				subKernel,
+				subSubKernel
+			};
+
+			containers[parentComponentContainer].Register(Component.For<UsesSimpleComponent1>());
+			containers[childComponentContainer].Register(Component.For<SimpleComponent1>());
+
+
+			subSubKernel.Resolve<UsesSimpleComponent1>();
+		}
+
+		[Test]
 		public void Singleton_WithNonSingletonDependencies_DoesNotReResolveDependencies()
 		{
 			kernel.AddComponent("spamservice", typeof(DefaultSpamService));
