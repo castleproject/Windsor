@@ -89,7 +89,7 @@ namespace Castle.MicroKernel.Handlers
 		{
 			if (context.GetContextualProperty("Castle.HasComponentChecker") == null)
 			{
-				context.AddContextualProperty("Castle.HasComponentChecker", new Func<Type, bool>(kernel.HasComponent));
+				context.AddContextualProperty("Castle.HasComponentChecker", new Predicate<Type>(kernel.HasComponent));
 			}
 			return parentHandler.Resolve(context);
 		}
@@ -98,7 +98,7 @@ namespace Castle.MicroKernel.Handlers
 		{
 			if (context.GetContextualProperty("Castle.HasComponentChecker") == null)
 			{
-				context.AddContextualProperty("Castle.HasComponentChecker", new Func<Type, bool>(kernel.HasComponent));
+				context.AddContextualProperty("Castle.HasComponentChecker", new Predicate<Type>(kernel.HasComponent));
 			}
 			return parentHandler.Resolve(context);
 		}
