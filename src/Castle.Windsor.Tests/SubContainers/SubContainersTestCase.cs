@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,13 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
 namespace Castle.MicroKernel.Tests.SubContainers
 {
 	using System;
 	using System.Collections.Generic;
 
 	using Castle.Core;
+	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Tests.ClassComponents;
 
 	using NUnit.Framework;
@@ -68,11 +68,11 @@ namespace Castle.MicroKernel.Tests.SubContainers
 			DefaultKernel childContainer = new DefaultKernel();
 
 			container.AddChildKernel(childContainer);
-			childContainer.AddComponent("component", typeof(Component));
+			childContainer.AddComponent("component", typeof(UsesIEmptyService));
 
-			container.AddComponent("service1", typeof(IService), typeof(Service));
+			container.AddComponent("service1", typeof(IEmptyService), typeof(EmptyService));
 
-			Component comp = (Component) childContainer[typeof(Component)];
+			UsesIEmptyService comp = (UsesIEmptyService) childContainer[typeof(UsesIEmptyService)];
 		}
 
 		[Test]
@@ -120,6 +120,19 @@ namespace Castle.MicroKernel.Tests.SubContainers
 			kernel.RemoveComponent("templateengine");
 			spamservice = (DefaultSpamService) kernel["spamservice"];
 			Assert.IsNull(spamservice.TemplateEngine);
+		}
+
+		[Test]
+		public void Requesting_parent_component_with_child_dependency_from_child_component()
+		{
+			var subkernel = new DefaultKernel();
+			kernel.AddChildKernel(subkernel);
+
+			kernel.Register(Component.For<UsesSimpleComponent1>());
+			subkernel.Register(Component.For<SimpleComponent1>());
+
+
+			subkernel.Resolve<UsesSimpleComponent1>();
 		}
 
 		[Test]
@@ -348,22 +361,6 @@ namespace Castle.MicroKernel.Tests.SubContainers
 			}
 		}
 
-		public class Component
-		{
-			public Component(IService service)
-			{
-			}
-		}
 
-		public interface IService
-		{
-		}
-
-		public class Service : IService
-		{
-			public Service()
-			{
-			}
-		}
 	}
 }

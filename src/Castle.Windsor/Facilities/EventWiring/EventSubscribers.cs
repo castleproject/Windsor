@@ -36,6 +36,7 @@ namespace Castle.Facilities.EventWiring
 			subscribers.Add(EventSubscriber.Named(subscriberComponentName).HandledBy(methodHandler));
 			return this;
 		}
+
 		internal EventSubscriber[] Subscribers
 		{
 			get
