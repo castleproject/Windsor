@@ -134,7 +134,7 @@ namespace Castle.MicroKernel.Context
 		private CreationContext()
 		{
 			dependencies = new DependencyModelCollection();
-			this.releasePolicy = new NoTrackingReleasePolicy();
+			releasePolicy = new NoTrackingReleasePolicy();
 		}
 
 		#region ISubDependencyResolver

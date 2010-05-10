@@ -26,7 +26,7 @@ namespace Castle.MicroKernel.Handlers
 #endif
 	public class DefaultHandlerFactory : IHandlerFactory
 	{
-		private IKernel kernel;
+		private readonly IKernel kernel;
 
 		public DefaultHandlerFactory(IKernel kernel)
 		{
