@@ -406,7 +406,7 @@ namespace Castle.MicroKernel
 		{
 			if (key == null) throw new ArgumentNullException("key");
 
-			IHandler handler = NamingSubSystem.GetHandler(key);
+			var handler = NamingSubSystem.GetHandler(key);
 
 			if (handler == null && Parent != null)
 			{
@@ -870,7 +870,9 @@ namespace Castle.MicroKernel
 		{
 			if (parentHandler == null) return null;
 
-			return new ParentHandlerWithChildResolver(parentHandler, Resolver);
+			var handler = new ParentHandlerWithChildResolver(parentHandler, Resolver);
+			handler.Init(this);
+			return handler;
 		}
 
 		protected INamingSubSystem NamingSubSystem
@@ -951,9 +953,7 @@ namespace Castle.MicroKernel
 		protected CreationContext CreateCreationContext(IHandler handler, Type typeToExtractGenericArguments,
 		                                                IDictionary additionalArguments)
 		{
-			var context = new CreationContext(handler, ReleasePolicy, typeToExtractGenericArguments, additionalArguments, ConversionSubSystem);
-			context.AddContextualProperty("Castle.OriginKernel", this);
-			return context;
+			return new CreationContext(handler, ReleasePolicy, typeToExtractGenericArguments, additionalArguments, ConversionSubSystem);
 		}
 
 		#endregion

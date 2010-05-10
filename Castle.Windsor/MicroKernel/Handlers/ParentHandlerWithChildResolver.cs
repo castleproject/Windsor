@@ -27,6 +27,7 @@ namespace Castle.MicroKernel.Handlers
 	{
 		private readonly IHandler parentHandler;
 		private readonly ISubDependencyResolver childResolver;
+		private IKernel kernel;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ParentHandlerWithChildResolver"/> class.
@@ -81,16 +82,24 @@ namespace Castle.MicroKernel.Handlers
 
 		public virtual void Init(IKernel kernel)
 		{
-			throw new NotImplementedException();
+			this.kernel = kernel;
 		}
 
 		public virtual object Resolve(CreationContext context)
 		{
+			if (context.GetContextualProperty("Castle.OriginKernel") == null)
+			{
+				context.AddContextualProperty("Castle.OriginKernel", kernel);
+			}
 			return parentHandler.Resolve(context);
 		}
 
 		public object TryResolve(CreationContext context)
 		{
+			if (context.GetContextualProperty("Castle.OriginKernel") == null)
+			{
+				context.AddContextualProperty("Castle.OriginKernel", kernel);
+			}
 			return parentHandler.Resolve(context);
 		}
 

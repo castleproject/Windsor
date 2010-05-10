@@ -81,14 +81,14 @@ namespace Castle.MicroKernel.Handlers
 
 			foreach (var dependency in DependenciesByService.Values.ToArray())
 			{
-				//NOTE: this is hacky. Find cleaner way to do this.
-				var originKernel = (context.GetContextualProperty("Castle.OriginKernel") as IKernel) ?? Kernel;
 
 				// a self-dependency is not allowed
-				var handler = originKernel.GetHandler(dependency.TargetType);
+				var handler = Kernel.GetHandler(dependency.TargetType);
 				if (handler == this)
 					return false;
 
+				//NOTE: this is hacky. Find cleaner way to do this.
+				var originKernel = (context.GetContextualProperty("Castle.OriginKernel") as IKernel) ?? Kernel;
 				// ask the kernel
 				if (originKernel.HasComponent(dependency.TargetType)) continue;
 
