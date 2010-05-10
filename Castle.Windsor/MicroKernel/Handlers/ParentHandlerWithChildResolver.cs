@@ -39,7 +39,7 @@ namespace Castle.MicroKernel.Handlers
 			if (childResolver == null) throw new ArgumentNullException("childResolver");
 
 			this.parentHandler = parentHandler;
-			parentHandler.OnHandlerStateChanged += new HandlerStateDelegate(RaiseHandlerStateChanged);
+			parentHandler.OnHandlerStateChanged += RaiseHandlerStateChanged;
 			this.childResolver = childResolver;
 		}
 

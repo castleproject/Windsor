@@ -81,20 +81,23 @@ namespace Castle.MicroKernel.Handlers
 
 			foreach (var dependency in DependenciesByService.Values.ToArray())
 			{
+				//NOTE: this is hacky. Find cleaner way to do this.
+				var originKernel = (context.GetContextualProperty("Castle.OriginKernel") as IKernel) ?? Kernel;
+
 				// a self-dependency is not allowed
-				var handler = Kernel.GetHandler(dependency.TargetType);
+				var handler = originKernel.GetHandler(dependency.TargetType);
 				if (handler == this)
 					return false;
 
 				// ask the kernel
-				if (Kernel.HasComponent(dependency.TargetType)) continue;
+				if (originKernel.HasComponent(dependency.TargetType)) continue;
 
 				// let's try to lazy load the dependency...
 				if (!LazyLoadComponent(dependency.DependencyKey, dependency.TargetType))
 					return false;
 				// and see if we can have it this time around
 				// if the previous call returned true we always should
-				if (!Kernel.HasComponent(dependency.TargetType))
+				if (!originKernel.HasComponent(dependency.TargetType))
 					return false;
 			}
 			return DependenciesByKey.Count == 0;

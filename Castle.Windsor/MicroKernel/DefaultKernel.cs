@@ -951,7 +951,9 @@ namespace Castle.MicroKernel
 		protected CreationContext CreateCreationContext(IHandler handler, Type typeToExtractGenericArguments,
 		                                                IDictionary additionalArguments)
 		{
-			return new CreationContext(handler, ReleasePolicy, typeToExtractGenericArguments, additionalArguments, ConversionSubSystem);
+			var context = new CreationContext(handler, ReleasePolicy, typeToExtractGenericArguments, additionalArguments, ConversionSubSystem);
+			context.AddContextualProperty("Castle.OriginKernel", this);
+			return context;
 		}
 
 		#endregion
