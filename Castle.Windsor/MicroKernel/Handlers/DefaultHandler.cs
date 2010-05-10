@@ -88,16 +88,17 @@ namespace Castle.MicroKernel.Handlers
 					return false;
 
 				//NOTE: this is hacky. Find cleaner way to do this.
-				var originKernel = (context.GetContextualProperty("Castle.OriginKernel") as IKernel) ?? Kernel;
+				var hasComponent = (context.GetContextualProperty("Castle.HasComponentChecker") as Func<Type, bool>) ??
+				                   Kernel.HasComponent;
 				// ask the kernel
-				if (originKernel.HasComponent(dependency.TargetType)) continue;
+				if (hasComponent(dependency.TargetType)) continue;
 
 				// let's try to lazy load the dependency...
 				if (!LazyLoadComponent(dependency.DependencyKey, dependency.TargetType))
 					return false;
 				// and see if we can have it this time around
 				// if the previous call returned true we always should
-				if (!originKernel.HasComponent(dependency.TargetType))
+				if (!hasComponent(dependency.TargetType))
 					return false;
 			}
 			return DependenciesByKey.Count == 0;
