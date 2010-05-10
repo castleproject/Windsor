@@ -88,7 +88,7 @@ namespace Castle.MicroKernel.Handlers
 					return false;
 
 				//NOTE: this is hacky. Find cleaner way to do this.
-				var hasComponent = (context.GetContextualProperty("Castle.HasComponentChecker") as Func<Type, bool>) ??
+				var hasComponent = (context.GetContextualProperty("Castle.HasComponentChecker") as Predicate<Type>) ??
 				                   Kernel.HasComponent;
 				// ask the kernel
 				if (hasComponent(dependency.TargetType)) continue;
