@@ -17,7 +17,7 @@ namespace Castle.MicroKernel.Proxy
 	using System;
 	using System.Collections;
 	using System.Collections.Generic;
-	using Castle.Core.Interceptor;
+	using Castle.DynamicProxy;
 
 	/// <summary>
 	/// Represents options to configure proxies.

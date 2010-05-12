@@ -17,7 +17,7 @@ namespace Castle.Windsor.Tests
 	using System;
 	using System.Reflection;
 
-	using Castle.Core.Interceptor;
+	using Castle.DynamicProxy;
 
 	public class SelectAllSelector : IInterceptorSelector
 	{

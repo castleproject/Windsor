@@ -15,7 +15,7 @@
 namespace Castle.Facilities.Remoting.TestComponents
 {
 	using System;
-	using Castle.Core.Interceptor;
+	using Castle.DynamicProxy;
 
 #if(!SILVERLIGHT)
 	[Serializable]

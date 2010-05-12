@@ -15,10 +15,9 @@
 namespace Castle.Facilities.TypedFactory
 {
 	using System;
-
 	using Castle.Core;
 	using Castle.Core.Interceptor;
-
+	using Castle.DynamicProxy;
 	using Castle.MicroKernel;
 
 	/// <summary>

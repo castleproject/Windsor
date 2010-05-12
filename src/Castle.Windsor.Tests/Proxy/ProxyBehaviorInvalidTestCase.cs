@@ -17,7 +17,7 @@
 namespace Castle.Windsor.Tests.Proxy
 {
 	using System;
-	using Castle.Core.Interceptor;
+	using Castle.DynamicProxy;
 	using Castle.MicroKernel;
 	using Castle.Windsor.Tests.Components;
 	using NUnit.Framework;

@@ -14,7 +14,7 @@
 
 namespace Castle.Facilities.TypedFactory
 {
-	using Castle.Core.Interceptor;
+	using Castle.DynamicProxy;
 
 	public interface ITypedFactoryMethod
 	{
