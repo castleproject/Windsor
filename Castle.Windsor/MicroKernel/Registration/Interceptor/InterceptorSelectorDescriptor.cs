@@ -15,7 +15,7 @@
 namespace Castle.MicroKernel.Registration.Interceptor
 {
 	using Castle.Core;
-	using Castle.Core.Interceptor;
+	using Castle.DynamicProxy;
 	using Castle.MicroKernel.Proxy;
 
 	public class InterceptorSelectorDescriptor<S> : ComponentDescriptor<S>

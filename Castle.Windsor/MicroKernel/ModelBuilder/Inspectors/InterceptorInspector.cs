@@ -15,12 +15,11 @@
 namespace Castle.MicroKernel.ModelBuilder.Inspectors
 {
 	using System;
-
+	using Castle.Core;
 	using Castle.Core.Configuration;
-	using Castle.Core.Interceptor;
+	using Castle.DynamicProxy;
 	using Castle.MicroKernel.Proxy;
 	using Castle.MicroKernel.Util;
-	using Castle.Core;
 
 	/// <summary>
 	/// Inspect the component for <c>InterceptorAttribute</c> and

@@ -23,6 +23,7 @@ namespace Castle.MicroKernel.Tests.SpecializedResolvers
 	using MicroKernel.Registration;
 	using NUnit.Framework;
 	using Resolvers.SpecializedResolvers;
+	using Castle.DynamicProxy;
 
 	[TestFixture]
 	public class ListResolverTestCase

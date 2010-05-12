@@ -18,7 +18,7 @@ namespace Castle.Facilities.TypedFactory
 	using System.Linq;
 
 	using Castle.Core;
-	using Castle.Core.Interceptor;
+	using Castle.DynamicProxy;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Registration;
 

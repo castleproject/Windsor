@@ -3,7 +3,7 @@
 	<components>
 
     <component id="standard.interceptor" 
-      type="Castle.Core.Interceptor.StandardInterceptor, Castle.Core">
+      type="Castle.DynamicProxy.StandardInterceptor, Castle.Core">
     </component>
         
 		<component id="invalidAttrib" 

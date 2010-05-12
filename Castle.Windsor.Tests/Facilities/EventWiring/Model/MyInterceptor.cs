@@ -14,7 +14,7 @@
 
 namespace Castle.Facilities.EventWiring.Tests.Model
 {
-	using Castle.Core.Interceptor;
+	using Castle.DynamicProxy;
 	using Core;
 
 	[Singleton]
