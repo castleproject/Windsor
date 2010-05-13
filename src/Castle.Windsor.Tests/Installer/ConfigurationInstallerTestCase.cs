@@ -16,6 +16,10 @@
 
 namespace Castle.Windsor.Tests.Installer
 {
+	using System;
+
+	using Castle.MicroKernel.Registration;
+	using Castle.MicroKernel.SubSystems.Configuration;
 	using Castle.Windsor.Installer;
 	using Castle.Windsor.Tests.Components;
 	using NUnit.Framework;
@@ -52,6 +56,33 @@ namespace Castle.Windsor.Tests.Installer
 		}
 
 		[Test]
+		public void InstallComponents_FromXmlFile_first_and_from_code()
+		{
+			container.Install(
+				Configuration.FromXmlFile(ConfigHelper.ResolveConfigPath("JustConfiguration.xml")),
+				new Installer(c => c.Register(Component.For<ICamera>()
+				                              	.ImplementedBy<Camera>()
+				                              	.Named("camera"))));
+
+			var camera = container.Resolve<ICamera>();
+			Assert.AreEqual("from configuration", camera.Name);
+		}
+
+		[Test,Ignore("This does not work. Would be cool if it did, but we need deeper restructuring first.")]
+		public void InstallComponents_from_code_first_and_FromXmlFile()
+		{
+			container.Install(
+				new Installer(c => c.Register(Component.For<ICamera>()
+				                              	.ImplementedBy<Camera>()
+				                              	.Named("camera"))),
+				Configuration.FromXmlFile(ConfigHelper.ResolveConfigPath("JustConfiguration.xml"))
+				);
+
+			var camera = container.Resolve<ICamera>();
+			Assert.AreEqual("from configuration", camera.Name);
+		}
+
+		[Test]
 		public void InstallComponents_FromMultiple_ComponentsInstalled()
 		{
 			container.Install(
@@ -62,14 +93,14 @@ namespace Castle.Windsor.Tests.Installer
 					ConfigHelper.ResolveConfigPath("robotwireconfig.xml"))
 				);
 
-			Assert.IsTrue( container.Kernel.HasComponent(typeof(ICalcService)));
-			Assert.IsTrue( container.Kernel.HasComponent("calcservice"));
+			Assert.IsTrue(container.Kernel.HasComponent(typeof(ICalcService)));
+			Assert.IsTrue(container.Kernel.HasComponent("calcservice"));
 			Assert.IsTrue(container.Kernel.HasComponent(typeof(MailServer)));
 			Assert.IsTrue(container.Kernel.HasComponent("server"));
 			Assert.IsTrue(container.Kernel.HasComponent(typeof(Robot)));
 			Assert.IsTrue(container.Kernel.HasComponent("robot"));
 		}
-		
+
 		[Test]
 		public void InstallComponents_FromXmlFileWithEnvironment_ComponentsInstalled()
 		{
@@ -84,6 +115,21 @@ namespace Castle.Windsor.Tests.Installer
 
 			Assert.AreEqual("John Doe", prop.Name);
 		}		
+	}
+
+	internal class Installer : IWindsorInstaller
+	{
+		private readonly Action<IWindsorContainer> install;
+
+		public Installer(Action<IWindsorContainer> install)
+		{
+			this.install = install;
+		}
+
+		public void Install(IWindsorContainer container, IConfigurationStore store)
+		{
+			install(container);
+		}
 	}
 }
 

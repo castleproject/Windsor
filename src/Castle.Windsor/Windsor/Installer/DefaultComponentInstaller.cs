@@ -45,9 +45,9 @@ namespace Castle.Windsor.Installer
 		{
 			var converter = container.Kernel.GetSubSystem(SubSystemConstants.ConversionManagerKey) as IConversionManager;
 			SetUpInstallers(store.GetInstallers(), container, converter);
-			SetUpComponents(store.GetBootstrapComponents(), container,converter);
-			SetUpFacilities(store.GetFacilities(), container,converter);
-			SetUpComponents(store.GetComponents(), container,converter);
+			SetUpComponents(store.GetBootstrapComponents(), container, converter);
+			SetUpFacilities(store.GetFacilities(), container, converter);
+			SetUpComponents(store.GetComponents(), container, converter);
 #if !SILVERLIGHT
 			SetUpChildContainers(store.GetConfigurationForChildContainers(), container);
 #endif
@@ -140,8 +140,8 @@ namespace Castle.Windsor.Installer
 				var serviceTypeName = component.Attributes["service"];
 				
 				if (string.IsNullOrEmpty(typeName)) continue;
-				
-				Type type = ObtainType(typeName,converter);
+
+				Type type = ObtainType(typeName, converter);
 				Type service = type;
 
 				if (!string.IsNullOrEmpty(serviceTypeName))
@@ -156,8 +156,7 @@ namespace Castle.Windsor.Installer
 				Debug.Assert( type != null );
 				Debug.Assert( service != null );
 				container.AddComponent(id, service, type);
-				SetUpComponentForwardedTypes(container, component, typeName, id,converter);
-
+				SetUpComponentForwardedTypes(container, component, typeName, id, converter);
 			}
 		}
 
