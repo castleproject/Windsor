@@ -206,6 +206,27 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 		}
 
 		[Test]
+		public void Can_Resolve_by_closed_generic_closed_on_arguments_type_with_custom_selector()
+		{
+			container.Register(AllTypes.FromAssemblyContaining<TypedFactoryFacilityTake2TestCase>()
+				.BasedOn(typeof(GenericComponent<>))
+				.WithService.Base().Configure(c=>c.LifeStyle.Transient),
+				Component.For<IGenericFactory>().AsFactory(),
+				Component.For<ITypedFactoryComponentSelector>()
+					.ImplementedBy<SelectorByClosedArgumentType>());
+
+			var factory = container.Resolve<IGenericFactory>();
+
+			var one = factory.GetItemByWithParameter(3);
+			var two = factory.GetItemByWithParameter("two");
+			Assert.IsInstanceOf<GenericIntComponent>(one);
+			Assert.IsInstanceOf<GenericStringComponent>(two);
+
+			Assert.AreEqual(3, ((GenericIntComponent)one).Value);
+			Assert.AreEqual("two", ((GenericStringComponent)two).Value);
+		}
+
+		[Test]
 		public void Can_resolve_open_generic_components()
 		{
 			container.Register(
