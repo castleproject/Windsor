@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,20 +12,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Facilities.TypedFactory.Tests
+namespace Castle.Windsor.Tests.Facilities.TypedFactory
 {
 	using System;
-	using System.Collections.Generic;
 	using System.Linq;
-	using System.Reflection;
 
 	using Castle.Core;
+	using Castle.Facilities.TypedFactory;
 	using Castle.Facilities.TypedFactory.Tests.Components;
 	using Castle.Facilities.TypedFactory.Tests.Factories;
 	using Castle.MicroKernel.Registration;
 	using Castle.Windsor;
 	using Castle.Windsor.Tests.Facilities.TypedFactory.Components;
 	using Castle.Windsor.Tests.Facilities.TypedFactory.Factories;
+	using Castle.Windsor.Tests.Facilities.TypedFactory.Selectors;
 
 	using NUnit.Framework;
 
@@ -184,6 +184,28 @@ namespace Castle.Facilities.TypedFactory.Tests
 		}
 
 		[Test]
+		public void Can_Resolve_by_name_with_custom_selector()
+		{
+			container.Register(
+				Component.For<IDummyComponent>()
+					.ImplementedBy<Component1>()
+					.Named("one"),
+				Component.For<IDummyComponent>()
+					.ImplementedBy<Component2>()
+					.Named("two"),
+				Component.For<IFactoryById>().AsFactory(),
+				Component.For<ITypedFactoryComponentSelector>()
+					.ImplementedBy<SelectorById>());
+
+			var factory = container.Resolve<IFactoryById>();
+
+			var one = factory.ComponentNamed("one");
+			var two = factory.ComponentNamed("two");
+			Assert.IsInstanceOf<Component1>(one);
+			Assert.IsInstanceOf<Component2>(two);
+		}
+
+		[Test]
 		public void Can_resolve_open_generic_components()
 		{
 			container.Register(
@@ -264,42 +286,6 @@ namespace Castle.Facilities.TypedFactory.Tests
 
 			factory.Dispose();
 			Assert.IsFalse(component.Disposed);
-		}
-	}
-
-	public interface DummyComponentArrayFactory
-	{
-		IDummyComponent[] All();
-	}
-
-	public interface DummyComponentEnumerableFactory
-	{
-		IEnumerable<IDummyComponent> All();
-	}
-
-	public interface DummyComponentCollectionFactory
-	{
-		ICollection<IDummyComponent> All();
-	}
-
-	public interface DummyComponentListFactory
-	{
-		IList<IDummyComponent> All();
-	}
-
-	public class MultipleSelector:ITypedFactoryComponentSelector
-	{
-		public TypedFactoryComponent SelectComponent(MethodInfo method, Type type, object[] arguments)
-		{
-			return new TypedFactoryComponentCollection(method.ReturnType, null);
-		}
-	}
-
-	public class FooSelector:ITypedFactoryComponentSelector
-	{
-		public TypedFactoryComponent SelectComponent(MethodInfo method, Type type, object[] arguments)
-		{
-			return new TypedFactoryComponent("foo", null, null);
 		}
 	}
 }

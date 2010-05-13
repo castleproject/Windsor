@@ -136,6 +136,14 @@
     <Compile Include="Facilities\TypedFactory\Delegates\TypedFactoryDelegatesTestCase.cs" />
     <Compile Include="Facilities\TypedFactory\Delegates\UsesBarDelegate.cs" />
     <Compile Include="Facilities\TypedFactory\Delegates\UsesFooDelegate.cs" />
+    <Compile Include="Facilities\TypedFactory\Factories\DummyComponentArrayFactory.cs" />
+    <Compile Include="Facilities\TypedFactory\Factories\DummyComponentCollectionFactory.cs" />
+    <Compile Include="Facilities\TypedFactory\Factories\DummyComponentEnumerableFactory.cs" />
+    <Compile Include="Facilities\TypedFactory\Factories\DummyComponentListFactory.cs" />
+    <Compile Include="Facilities\TypedFactory\Factories\IFactoryById.cs" />
+    <Compile Include="Facilities\TypedFactory\Selectors\FooSelector.cs" />
+    <Compile Include="Facilities\TypedFactory\Selectors\MultipleSelector.cs" />
+    <Compile Include="Facilities\TypedFactory\Selectors\SelectorById.cs" />
     <Compile Include="Installers\CustomerInstaller.cs" />
     <Compile Include="Installer\FromAssemblyInstallersTestCase.cs" />
     <Compile Include="Components\UsesIEmptyService.cs" />

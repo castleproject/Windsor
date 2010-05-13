@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,23 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Windsor.Tests.Facilities.TypedFactory.Factories
+namespace Castle.Windsor.Tests.Facilities.TypedFactory.Selectors
 {
 	using System;
+	using System.Reflection;
 
-	using Castle.Facilities.TypedFactory.Tests.Components;
+	using Castle.Facilities.TypedFactory;
 
-	public interface IProtocolHandlerFactory1
+	public class FooSelector:ITypedFactoryComponentSelector
 	{
-		IProtocolHandler Create();
-
-		void Release(IProtocolHandler handler);
-	}
-
-	public interface IProtocolHandlerFactory2
-	{
-		IProtocolHandler Create(String key);
-
-		void Release(IProtocolHandler handler);
+		public TypedFactoryComponent SelectComponent(MethodInfo method, Type type, object[] arguments)
+		{
+			return new TypedFactoryComponent("foo", null, null);
+		}
 	}
 }
