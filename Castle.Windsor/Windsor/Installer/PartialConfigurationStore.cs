@@ -48,13 +48,13 @@ namespace Castle.Windsor.Installer
 		public void AddBootstrapComponentConfiguration(String key, IConfiguration config)
 		{
 			inner.AddBootstrapComponentConfiguration(key, config);
-			partial.AddBootstrapComponentConfiguration(key, config);			
+			partial.AddBootstrapComponentConfiguration(key, config);
 		}
 
 		public void AddChildContainerConfiguration(String name, IConfiguration config)
 		{
 			inner.AddChildContainerConfiguration(name, config);
-			partial.AddChildContainerConfiguration(name, config);			
+			partial.AddChildContainerConfiguration(name, config);
 		}
 
 		public void AddInstallerConfiguration(IConfiguration config)

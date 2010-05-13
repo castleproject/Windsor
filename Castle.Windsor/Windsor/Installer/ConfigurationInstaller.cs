@@ -49,7 +49,7 @@ namespace Castle.Windsor.Installer
 		/// <returns></returns>
 		public ConfigurationInstaller Environment(String environmentName)
 		{
-			return Environment(delegate { return environmentName; });
+			return Environment(() => environmentName);
 		}
 		
 		/// <summary>
@@ -64,7 +64,7 @@ namespace Castle.Windsor.Installer
 		}
 
 		void IWindsorInstaller.Install(IWindsorContainer container, IConfigurationStore store)
-		{			
+		{
 			if (environment != null)
 			{
 				interpreter.EnvironmentName = environment();
