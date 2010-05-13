@@ -24,8 +24,8 @@ namespace Castle.Facilities.TypedFactory
 	{
 		public TypedFactoryComponent SelectComponent(MethodInfo method, Type type, object[] arguments)
 		{
-			var componentName = GetComponentName(method);
-			var componentType = GetComponentType(method);
+			var componentName = GetComponentName(method, arguments);
+			var componentType = GetComponentType(method, arguments);
 			var additionalArguments = GetArguments(method, arguments);
 
 			return BuildFactoryComponent(method, componentName, componentType, additionalArguments);
@@ -40,12 +40,12 @@ namespace Castle.Facilities.TypedFactory
 			return new TypedFactoryComponent(componentName, componentType, additionalArguments);
 		}
 
-		protected virtual Type GetComponentType(MethodInfo method)
+		protected virtual Type GetComponentType(MethodInfo method, object[] arguments)
 		{
 			return method.ReturnType;
 		}
 
-		protected virtual string GetComponentName(MethodInfo method)
+		protected virtual string GetComponentName(MethodInfo method, object[] arguments)
 		{
 			string componentName = null;
 			if (method.Name.StartsWith("Get"))

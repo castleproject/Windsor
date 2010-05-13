@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,21 +14,10 @@
 
 namespace Castle.Windsor.Tests.Facilities.TypedFactory.Factories
 {
-	using System;
-
 	using Castle.Facilities.TypedFactory.Tests.Components;
 
-	public interface IProtocolHandlerFactory1
+	public interface DummyComponentArrayFactory
 	{
-		IProtocolHandler Create();
-
-		void Release(IProtocolHandler handler);
-	}
-
-	public interface IProtocolHandlerFactory2
-	{
-		IProtocolHandler Create(String key);
-
-		void Release(IProtocolHandler handler);
+		IDummyComponent[] All();
 	}
 }
