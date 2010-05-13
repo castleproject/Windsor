@@ -141,8 +141,10 @@
     <Compile Include="Facilities\TypedFactory\Factories\DummyComponentEnumerableFactory.cs" />
     <Compile Include="Facilities\TypedFactory\Factories\DummyComponentListFactory.cs" />
     <Compile Include="Facilities\TypedFactory\Factories\IFactoryById.cs" />
+    <Compile Include="Facilities\TypedFactory\Factories\IGenericFactory.cs" />
     <Compile Include="Facilities\TypedFactory\Selectors\FooSelector.cs" />
     <Compile Include="Facilities\TypedFactory\Selectors\MultipleSelector.cs" />
+    <Compile Include="Facilities\TypedFactory\Selectors\SelectorByClosedArgumentType.cs" />
     <Compile Include="Facilities\TypedFactory\Selectors\SelectorById.cs" />
     <Compile Include="Installers\CustomerInstaller.cs" />
     <Compile Include="Installer\FromAssemblyInstallersTestCase.cs" />
