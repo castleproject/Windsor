@@ -17,7 +17,6 @@ namespace Castle.MicroKernel.Registration.Proxy
 	using System.Linq;
 
 	using Castle.Core;
-	using Castle.DynamicProxy;
 	using Castle.MicroKernel.Proxy;
 
 	public class ProxyMixIns<S> : ComponentDescriptor<S>
@@ -31,18 +30,14 @@ namespace Castle.MicroKernel.Registration.Proxy
 
 		protected internal override void ApplyToModel(IKernel kernel, ComponentModel model)
 		{
-			if (mixIns.Any())
+			if (!mixIns.Any())
 			{
-				if (model.Interceptors.Count == 0)
-				{
-					kernel.Register(Component.For<StandardInterceptor>().Unless(Component.ServiceAlreadyRegistered));
-					model.Interceptors.Add(new InterceptorReference(typeof(StandardInterceptor)));
-				}
-				var options = ProxyUtil.ObtainProxyOptions(model, true);
-				foreach (var mixIn in mixIns)
-				{
-					options.AddMixinReference(mixIn);
-				}
+				return;
+			}
+			var options = ProxyUtil.ObtainProxyOptions(model, true);
+			foreach (var mixIn in mixIns)
+			{
+				options.AddMixinReference(mixIn);
 			}
 		}
 	}

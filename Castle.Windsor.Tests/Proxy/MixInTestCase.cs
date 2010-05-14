@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,31 +16,75 @@ namespace Castle.Windsor.Tests.Proxy
 {
 	using Castle.MicroKernel.Registration;
 	using Castle.Windsor.Tests.Components;
+
 	using NUnit.Framework;
 
 	[TestFixture]
 	public class ComponentRegistrationTestCase
 	{
-		private WindsorContainer container;
-
 		[SetUp]
 		public void SetUp()
 		{
 			container = new WindsorContainer();
 		}
 
+		private WindsorContainer container;
+
 		[Test]
 		public void AddComponent_WithMixIn_AddsMixin()
 		{
 			container.Register(Component.For<ICalcService>()
-				.ImplementedBy<CalculatorService>()
-				.Proxy.MixIns(new SimpleMixIn())
+			                   	.ImplementedBy<CalculatorService>()
+			                   	.Proxy.MixIns(new SimpleMixIn())
 				);
 
-			ICalcService calculator = container.Resolve<ICalcService>();
+			var calculator = container.Resolve<ICalcService>();
 			Assert.IsInstanceOf(typeof(ISimpleMixIn), calculator);
 
-			ISimpleMixIn mixin = (ISimpleMixIn)calculator;
+			var mixin = (ISimpleMixIn)calculator;
+			mixin.DoSomething();
+		}
+
+		[Test]
+		public void AddComponent_With_instance_given_MixIn()
+		{
+			container.Register(
+				Component.For<ICalcService>()
+					.ImplementedBy<CalculatorService>()
+					.Proxy.MixIns(m => m.Objects(new SimpleMixIn())));
+
+			var calculator = container.Resolve<ICalcService>();
+			Assert.IsInstanceOf(typeof(ISimpleMixIn), calculator);
+
+			var mixin = (ISimpleMixIn)calculator;
+			mixin.DoSomething();
+		}
+
+		[Test]
+		public void AddComponent_With_named_component_MixIn()
+		{
+			container.Register(
+				Component.For<ICalcService>().ImplementedBy<CalculatorService>().Proxy.MixIns(m => m.Service("other")),
+				Component.For<ISimpleMixIn>().ImplementedBy<SimpleMixIn>().Named("other"));
+
+			var calculator = container.Resolve<ICalcService>();
+			Assert.IsInstanceOf(typeof(ISimpleMixIn), calculator);
+
+			var mixin = (ISimpleMixIn)calculator;
+			mixin.DoSomething();
+		}
+
+		[Test]
+		public void AddComponent_With_typed_component_MixIn()
+		{
+			container.Register(
+				Component.For<ICalcService>().ImplementedBy<CalculatorService>().Proxy.MixIns(m => m.Service<ISimpleMixIn>()),
+				Component.For<ISimpleMixIn>().ImplementedBy<SimpleMixIn>());
+
+			var calculator = container.Resolve<ICalcService>();
+			Assert.IsInstanceOf(typeof(ISimpleMixIn), calculator);
+
+			var mixin = (ISimpleMixIn)calculator;
 			mixin.DoSomething();
 		}
 	}
