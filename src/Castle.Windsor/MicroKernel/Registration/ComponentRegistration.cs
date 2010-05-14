@@ -596,6 +596,20 @@ namespace Castle.MicroKernel.Registration
 		}
 
 		/// <summary>
+		/// Allows custom dependencies to by defined dynamically with releasing capability.
+		/// </summary>
+		/// <param name="resolve">The delegate used for providing dynamic parameters.</param>
+		/// <returns></returns>
+		/// <remarks>
+		/// Use <see cref="CreationContext"/> when resolving components from <see cref="IKernel"/> in order to detect cycles.
+		/// </remarks>
+		public ComponentRegistration<S> DynamicParameters(DynamicParametersWithContextResolveDelegate resolve)
+		{
+			AddDescriptor(new DynamicParametersDescriptor<S>(resolve));
+			return this;
+		}
+
+		/// <summary>
 		/// Marks the components with one or more actors.
 		/// </summary>
 		/// <param name="actors">The component actors.</param>
