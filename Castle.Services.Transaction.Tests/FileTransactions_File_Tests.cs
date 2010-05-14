@@ -56,6 +56,12 @@ namespace Castle.Services.Transaction.Tests
 		[Test]
 		public void CanMove_File()
 		{
+            if (Environment.OSVersion.Version.Major < 6)
+            {
+                Assert.Ignore("TxF not supported");
+                return;
+            }
+
 			string folder = dllPath.CombineAssert("testing");
 			Console.WriteLine(string.Format("Directory \"{0}\"", folder));
 			string toFolder = dllPath.CombineAssert("testing2");
@@ -100,6 +106,12 @@ namespace Castle.Services.Transaction.Tests
 		[Test]
 		public void CreateFileAndReplaceContents()
 		{
+            if (Environment.OSVersion.Version.Major < 6)
+            {
+                Assert.Ignore("TxF not supported");
+                return;
+            }
+
 			string filePath = testFixturePath.CombineAssert("temp").Combine("temp__");
 			infosCreated.Add(filePath);
 
@@ -127,6 +139,12 @@ namespace Castle.Services.Transaction.Tests
 		[Test]
 		public void CreateFileTransactionally_Rollback()
 		{
+            if (Environment.OSVersion.Version.Major < 6)
+            {
+                Assert.Ignore("TxF not supported");
+                return;
+            }
+
 			string filePath = testFixturePath.CombineAssert("temp").Combine("temp2");
 			infosCreated.Add(filePath);
 
@@ -154,6 +172,12 @@ namespace Castle.Services.Transaction.Tests
 		[Test]
 		public void CreateFileTranscationally_Commit()
 		{
+            if (Environment.OSVersion.Version.Major < 6)
+            {
+                Assert.Ignore("TxF not supported");
+                return;
+            }
+
 			string filepath = testFixturePath.CombineAssert("temp").Combine("test");
 
 			if (File.Exists(filepath))

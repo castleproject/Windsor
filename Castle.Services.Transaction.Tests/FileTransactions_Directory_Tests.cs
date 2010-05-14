@@ -52,6 +52,12 @@ namespace Castle.Services.Transaction.Tests
 		[Test]
 		public void NoCommit_MeansNoDirectory()
 		{
+            if (Environment.OSVersion.Version.Major < 6)
+            {
+                Assert.Ignore("TxF not supported");
+                return;
+            }
+
 			string directoryPath = "testing";
 			Assert.That(Directory.Exists(directoryPath), Is.False);
 
@@ -67,6 +73,12 @@ namespace Castle.Services.Transaction.Tests
 		[Test]
 		public void NonExistentDir()
 		{
+            if (Environment.OSVersion.Version.Major < 6)
+            {
+                Assert.Ignore("TxF not supported");
+                return;
+            }
+
 			using (var t = new FileTransaction())
 			{
 				t.Begin();
@@ -83,6 +95,12 @@ namespace Castle.Services.Transaction.Tests
 		[Test, Description("We are not in a distributed transaction if there is no transaction scope.")]
 		public void NotUsingTransactionScope_IsNotDistributed_AboveNegated()
 		{
+            if (Environment.OSVersion.Version.Major < 6)
+            {
+                Assert.Ignore("TxF not supported");
+                return;
+            }
+
 			using (var tx = new FileTransaction("Not distributed transaction"))
 			{
 				tx.Begin();
@@ -94,6 +112,12 @@ namespace Castle.Services.Transaction.Tests
 		[Test]
 		public void ExistingDirWithTrailingBackslash()
 		{
+            if (Environment.OSVersion.Version.Major < 6)
+            {
+                Assert.Ignore("TxF not supported");
+                return;
+            }
+
 			// From http://msdn.microsoft.com/en-us/library/aa364419(VS.85).aspx
 			// An attempt to open a search with a trailing backslash always fails.
 			// --> So I need to make it succeed.
@@ -110,6 +134,12 @@ namespace Castle.Services.Transaction.Tests
 		[Test]
 		public void CreatingFolder_InTransaction_AndCommitting_MeansExistsAfter()
 		{
+            if (Environment.OSVersion.Version.Major < 6)
+            {
+                Assert.Ignore("TxF not supported");
+                return;
+            }
+
 			string directoryPath = "testing";
 			Assert.That(Directory.Exists(directoryPath), Is.False);
 
@@ -128,6 +158,12 @@ namespace Castle.Services.Transaction.Tests
 		[Test]
 		public void CanCreate_AndFind_Directory_WithinTx()
 		{
+            if (Environment.OSVersion.Version.Major < 6)
+            {
+                Assert.Ignore("TxF not supported");
+                return;
+            }
+
 			using (var tx = new FileTransaction("s"))
 			{
 				tx.Begin();
@@ -141,6 +177,12 @@ namespace Castle.Services.Transaction.Tests
 		[Test]
 		public void CanCreateDirectory_NLengths_DownInNonExistentDirectory()
 		{
+            if (Environment.OSVersion.Version.Major < 6)
+            {
+                Assert.Ignore("TxF not supported");
+                return;
+            }
+
 			string directoryPath = "testing/apa/apa2";
 			Assert.That(Directory.Exists(directoryPath), Is.False);
 
@@ -157,6 +199,12 @@ namespace Castle.Services.Transaction.Tests
 		[Test]
 		public void CanDelete_NonRecursively_EmptyDir()
 		{
+            if (Environment.OSVersion.Version.Major < 6)
+            {
+                Assert.Ignore("TxF not supported");
+                return;
+            }
+
 			// 1. create dir
 			string dir = dllPath.CombineAssert("testing");
 
@@ -173,6 +221,12 @@ namespace Castle.Services.Transaction.Tests
 		[Test]
 		public void CanDelete_Recursively()
 		{
+            if (Environment.OSVersion.Version.Major < 6)
+            {
+                Assert.Ignore("TxF not supported");
+                return;
+            }
+
 			// 1. Create directory
 			string pr = dllPath.Combine("testing");
 			Directory.CreateDirectory(pr);
@@ -197,6 +251,12 @@ namespace Castle.Services.Transaction.Tests
 		[Test]
 		public void CanNotDelete_NonRecursively_NonEmptyDir()
 		{
+            if (Environment.OSVersion.Version.Major < 6)
+            {
+                Assert.Ignore("TxF not supported");
+                return;
+            }
+
 			// 1. create dir and file
 			string dir = dllPath.CombineAssert("testing");
 			string file = dir.Combine("file");

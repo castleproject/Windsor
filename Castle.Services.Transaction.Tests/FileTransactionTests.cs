@@ -71,6 +71,12 @@ namespace Castle.Services.Transaction.Tests
 		[Test]
 		public void CannotCommitAfterSettingRollbackOnly()
 		{
+            if (Environment.OSVersion.Version.Major < 6)
+            {
+                Assert.Ignore("TxF not supported");
+                return;
+            }
+
 			using (var tx = new FileTransaction())
 			{
 				tx.Begin();
@@ -83,6 +89,12 @@ namespace Castle.Services.Transaction.Tests
 		[Test]
 		public void FailingResource_TxStillRolledBack()
 		{
+            if (Environment.OSVersion.Version.Major < 6)
+            {
+                Assert.Ignore("TxF not supported");
+                return;
+            }
+
 			using (var tx = new FileTransaction())
 			{
 				tx.Enlist(new R());
@@ -149,6 +161,12 @@ namespace Castle.Services.Transaction.Tests
 		[Test]
 		public void Using_NormalStates()
 		{
+            if (Environment.OSVersion.Version.Major < 6)
+            {
+                Assert.Ignore("TxF not supported");
+                return;
+            }
+
 			using (var tx = new FileTransaction())
 			{
 				Assert.That(tx.Status, Is.EqualTo(TransactionStatus.NoTransaction));

@@ -1,9 +1,10 @@
 using System.IO;
+using System;
 using NUnit.Framework;
 
 namespace Castle.Services.Transaction.Tests
 {
-	[TestFixture]
+    [TestFixture]
 	public class FileTransaction_WithManager_Tests
 	{
 		private string _DirPath;
@@ -52,6 +53,12 @@ namespace Castle.Services.Transaction.Tests
 		[Test]
 		public void NestedFileTransaction_CanBeCommitted()
 		{
+            if (Environment.OSVersion.Version.Major < 6)
+            {
+                Assert.Ignore("TxF not supported");
+                return;
+            }
+
 			Assert.That(tm.CurrentTransaction, Is.Null);
 
 			var stdTx = tm.CreateTransaction(TransactionMode.Requires, IsolationMode.Unspecified);
