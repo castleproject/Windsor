@@ -47,7 +47,15 @@ namespace Castle.MicroKernel.Registration.Proxy
 
 		public ComponentRegistration<S> MixIns(params object[] mixIns)
 		{
-			AddDescriptor(new ProxyMixIns<S>(mixIns));
+			return MixIns(r => r.Objects(mixIns));
+		}
+
+		public ComponentRegistration<S> MixIns(Action<MixinRegistration> mixinRegistration)
+		{
+			var mixins = new MixinRegistration();
+			mixinRegistration.Invoke(mixins);
+
+			AddDescriptor(new ProxyMixIns<S>(mixins));
 			return Registration;
 		}
 	}

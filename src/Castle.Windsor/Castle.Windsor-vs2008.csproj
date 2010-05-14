@@ -396,6 +396,7 @@
     <Compile Include="Core\PropertySet.cs" />
     <Compile Include="Core\PropertySetCollection.cs" />
     <Compile Include="MicroKernel\Proxy\ComponentReference.cs" />
+    <Compile Include="MicroKernel\Proxy\ComponentReference.Generic.cs" />
     <Compile Include="MicroKernel\Proxy\IModelInterceptorsSelector.cs" />
     <Compile Include="MicroKernel\Proxy\InstanceReference.cs" />
     <Compile Include="MicroKernel\IProxyFactory.cs">
@@ -439,6 +440,7 @@
     <Compile Include="MicroKernel\Registration\Parameter.cs" />
     <Compile Include="MicroKernel\Registration\ParametersDescriptor.cs" />
     <Compile Include="MicroKernel\Registration\Property.cs" />
+    <Compile Include="MicroKernel\Registration\Proxy\MixinRegistration.cs" />
     <Compile Include="MicroKernel\Registration\Proxy\ProxyMixIns.cs" />
     <Compile Include="MicroKernel\Registration\Proxy\ProxyGroup.cs" />
     <Compile Include="MicroKernel\Registration\Proxy\ProxyInterfaces.cs" />
