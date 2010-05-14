@@ -142,8 +142,14 @@ namespace Castle.Services.Transaction.Tests
 
 		[Test]
 		public void Using_TransactionScope_IsDistributed_AlsoTestingStatusWhenRolledBack()
-		{
-			using (new TransactionScope())
+        {
+            if (Environment.OSVersion.Version.Major < 6)
+            {
+                Assert.Ignore("TxF not supported");
+                return;
+            }
+
+            using (new TransactionScope())
 			{
 				using (var tx = new FileTransaction())
 				{
