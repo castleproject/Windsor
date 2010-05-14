@@ -17,29 +17,39 @@ namespace Castle.MicroKernel.Registration
 	using System.Collections;
 
 	using Castle.Core;
+	using Castle.MicroKernel.Context;
 	using Castle.MicroKernel.Handlers;
 
 	public delegate void DynamicParametersDelegate(IKernel kernel, IDictionary parameters);
+
+	public delegate ComponentReleasingDelegate DynamicParametersWithContextResolveDelegate(
+		IKernel kernel, CreationContext creationContext, IDictionary parameters);
+
 	public delegate ComponentReleasingDelegate DynamicParametersResolveDelegate(IKernel kernel, IDictionary parameters);
 
 	public class DynamicParametersDescriptor<S> : ComponentDescriptor<S>
 	{
-		private readonly DynamicParametersResolveDelegate resolve;
+		private readonly DynamicParametersWithContextResolveDelegate resolve;
 		private static readonly string key = "component_resolving_handler";
 
 		public DynamicParametersDescriptor(DynamicParametersDelegate resolve)
-			: this((k, d) => { resolve(k, d); return null; })
+			: this((k, c, d) => { resolve(k, d); return null; })
 		{
 		}
 
-		public DynamicParametersDescriptor(DynamicParametersResolveDelegate resolve)
+		public DynamicParametersDescriptor(DynamicParametersWithContextResolveDelegate resolve)
 		{
 			this.resolve = resolve;
 		}
 
+		public DynamicParametersDescriptor(DynamicParametersResolveDelegate resolve)
+			: this((k, c, d) => resolve(k, d))
+		{
+		}
+
 		protected internal override void ApplyToModel(IKernel kernel, ComponentModel model)
 		{
-			ComponentResolvingDelegate handler = (k, c) => resolve(k, c.AdditionalParameters);
+			ComponentResolvingDelegate handler = (k, c) => resolve(k, c, c.AdditionalParameters);
 			if (model.ExtendedProperties.Contains(key) == false)
 			{
 				model.ExtendedProperties[key] = handler;

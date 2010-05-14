@@ -183,6 +183,72 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 		}
 
 		[Test]
+		public void Can_pick_non_default_selector_by_instance()
+		{
+			container.Register(
+				Component.For<IDummyComponent>().ImplementedBy<Component1>().Named("one").LifeStyle.Transient,
+				Component.For<IDummyComponent>().ImplementedBy<Component2>().Named("two").LifeStyle.Transient,
+				Component.For<DummyComponentFactory>().AsFactory(c => c.SelectedWith(new Component2Selector())));
+
+			var factory = container.Resolve<DummyComponentFactory>();
+			var component = factory.CreateDummyComponent();
+
+			Assert.IsInstanceOf<Component2>(component);
+		}
+
+		[Test]
+		public void Can_pick_non_default_selector_by_name()
+		{
+			container.Register(
+				Component.For<IDummyComponent>().ImplementedBy<Component1>().Named("one").LifeStyle.Transient,
+				Component.For<IDummyComponent>().ImplementedBy<Component2>().Named("two").LifeStyle.Transient,
+				Component.For<DummyComponentFactory>().AsFactory(c => c.SelectedWith("factoryTwo")),
+				Component.For<ITypedFactoryComponentSelector>().ImplementedBy<Component1Selector>().Named("factoryOne"),
+				Component.For<ITypedFactoryComponentSelector>().ImplementedBy<Component2Selector>().Named("factoryTwo"));
+
+			var factory = container.Resolve<DummyComponentFactory>();
+			var component = factory.CreateDummyComponent();
+
+			Assert.IsInstanceOf<Component2>(component);
+		}
+
+		[Test]
+		public void Can_pick_non_default_selector_by_name_multiple_factories()
+		{
+			container.Register(
+				Component.For<IDummyComponent>().ImplementedBy<Component1>().Named("one").LifeStyle.Transient,
+				Component.For<IDummyComponent>().ImplementedBy<Component2>().Named("two").LifeStyle.Transient,
+				Component.For<DummyComponentFactory>().AsFactory(c => c.SelectedWith("factoryTwo")).Named("2"),
+				Component.For<DummyComponentFactory>().AsFactory(c => c.SelectedWith("factoryOne")).Named("1"),
+				Component.For<ITypedFactoryComponentSelector>().ImplementedBy<Component1Selector>().Named("factoryOne"),
+				Component.For<ITypedFactoryComponentSelector>().ImplementedBy<Component2Selector>().Named("factoryTwo"));
+
+			var factory2 = container.Resolve<DummyComponentFactory>("2");
+			var component2 = factory2.CreateDummyComponent();
+			Assert.IsInstanceOf<Component2>(component2);
+
+			var factory1 = container.Resolve<DummyComponentFactory>("1");
+			var component1 = factory1.CreateDummyComponent();
+			Assert.IsInstanceOf<Component1>(component1);
+		}
+
+		[Test]
+		public void Can_pick_non_default_selector_by_type()
+		{
+			container.Register(
+				Component.For<IDummyComponent>().ImplementedBy<Component1>().Named("one").LifeStyle.Transient,
+				Component.For<IDummyComponent>().ImplementedBy<Component2>().Named("two").LifeStyle.Transient,
+				Component.For<DummyComponentFactory>().AsFactory(c => c.SelectedWith<Component2Selector>()),
+				Component.For<ITypedFactoryComponentSelector>().ImplementedBy<Component1Selector>(),
+				Component.For<Component2Selector, ITypedFactoryComponentSelector>());
+
+			var factory = container.Resolve<DummyComponentFactory>();
+			var component = factory.CreateDummyComponent();
+
+			Assert.IsInstanceOf<Component2>(component);
+		}
+
+		[Test]
 		public void Can_resolve_component()
 		{
 			container.Register(Component.For<DummyComponentFactory>().AsFactory());
