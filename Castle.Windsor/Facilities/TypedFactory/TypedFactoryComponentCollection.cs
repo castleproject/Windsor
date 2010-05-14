@@ -41,15 +41,7 @@ namespace Castle.Facilities.TypedFactory
 		{
 			var service = GetCollectionItemType();
 			var result = kernel.ResolveAll(service, AdditionalArguments);
-
-			if (service == typeof(object))
-			{
-				return result;
-			}
-
-			var array = Array.CreateInstance(service, result.Length);
-			result.CopyTo(array, 0);
-			return array;
+			return result;
 		}
 
 		protected Type GetCollectionItemType()
@@ -93,10 +85,24 @@ namespace Castle.Facilities.TypedFactory
 			{
 				return true;
 			}
-			return type.IsGenericType &&
-			       TypeUtil.GetAllInterfaces(type)
-			       	.Where(@interface => @interface.IsGenericType)
-			       	.Any(@interface => @interface.GetGenericTypeDefinition() == typeof(IEnumerable<>));
+			if (!type.IsGenericType)
+			{
+				return false;
+			}
+			var enumerable = GetEnumerableType(type);
+			if (enumerable == null)
+			{
+				return false;
+			}
+			var array = enumerable.GetGenericArguments().Single().MakeArrayType();
+			return type.IsAssignableFrom(array);
+		}
+
+		private static Type GetEnumerableType(Type type)
+		{
+			return TypeUtil.GetAllInterfaces(type)
+				.Where(@interface => @interface.IsGenericType)
+				.SingleOrDefault(@interface => @interface.GetGenericTypeDefinition() == typeof(IEnumerable<>));
 		}
 	}
 }

@@ -17,7 +17,6 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 	using System;
 	using System.Linq;
 
-	using Castle.Core;
 	using Castle.Facilities.TypedFactory;
 	using Castle.Facilities.TypedFactory.Tests.Components;
 	using Castle.Facilities.TypedFactory.Tests.Factories;
@@ -300,7 +299,7 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 			Assert.IsInstanceOf<Component1>(component);
 		}
 
-		[Test, Ignore("This is a bug.")]
+		[Test]
 		public void Resolve_multiple_components_at_once_with_default_selector_collection_unasignable_from_array()
 		{
 			container.Register(
