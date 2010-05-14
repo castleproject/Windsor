@@ -142,6 +142,7 @@
     <Compile Include="Facilities\TypedFactory\Factories\DummyComponentListFactory.cs" />
     <Compile Include="Facilities\TypedFactory\Factories\IFactoryById.cs" />
     <Compile Include="Facilities\TypedFactory\Factories\IGenericFactory.cs" />
+    <Compile Include="Facilities\TypedFactory\Factories\InvalidDummyComponentListFactory.cs" />
     <Compile Include="Facilities\TypedFactory\Selectors\FooSelector.cs" />
     <Compile Include="Facilities\TypedFactory\Selectors\MultipleSelector.cs" />
     <Compile Include="Facilities\TypedFactory\Selectors\SelectorByClosedArgumentType.cs" />

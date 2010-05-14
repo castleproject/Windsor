@@ -21,8 +21,8 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 	using Castle.Facilities.TypedFactory;
 	using Castle.Facilities.TypedFactory.Tests.Components;
 	using Castle.Facilities.TypedFactory.Tests.Factories;
+	using Castle.MicroKernel;
 	using Castle.MicroKernel.Registration;
-	using Castle.Windsor;
 	using Castle.Windsor.Tests.Facilities.TypedFactory.Components;
 	using Castle.Windsor.Tests.Facilities.TypedFactory.Factories;
 	using Castle.Windsor.Tests.Facilities.TypedFactory.Selectors;
@@ -32,75 +32,75 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 	[TestFixture]
 	public class TypedFactoryFacilityTake2TestCase
 	{
-		private WindsorContainer container;
-
 		[SetUp]
 		public void SetUp()
 		{
 			container = new WindsorContainer();
 			container.AddFacility<TypedFactoryFacility>();
-			container.AddComponentLifeStyle<IDummyComponent, Component1>(LifestyleType.Transient);
+			container.Register(Component.For<IDummyComponent>().ImplementedBy<Component1>().LifeStyle.Transient);
 		}
 
+		private WindsorContainer container;
+
 		[Test]
-		public void Can_resolve_component()
+		public void Can_Resolve_by_closed_generic_closed_on_arguments_type_with_custom_selector()
 		{
-			container.Register(Component.For<DummyComponentFactory>().AsFactory());
-			var factory = container.Resolve<DummyComponentFactory>();
+			container.Register(AllTypes.FromAssemblyContaining<TypedFactoryFacilityTake2TestCase>()
+			                   	.BasedOn(typeof(GenericComponent<>))
+			                   	.WithService.Base().Configure(c => c.LifeStyle.Transient),
+			                   Component.For<IGenericFactory>().AsFactory(),
+			                   Component.For<ITypedFactoryComponentSelector>()
+			                   	.ImplementedBy<SelectorByClosedArgumentType>());
 
-			var component = factory.CreateDummyComponent();
-			Assert.IsNotNull(component);
+			var factory = container.Resolve<IGenericFactory>();
+
+			var one = factory.GetItemByWithParameter(3);
+			var two = factory.GetItemByWithParameter("two");
+			Assert.IsInstanceOf<GenericIntComponent>(one);
+			Assert.IsInstanceOf<GenericStringComponent>(two);
+
+			Assert.AreEqual(3, ((GenericIntComponent)one).Value);
+			Assert.AreEqual("two", ((GenericStringComponent)two).Value);
 		}
 
 		[Test]
-		public void Can_resolve_component_by_name_with_default_selector()
-		{
-			container.Register(
-				Component.For<IDummyComponent>()
-					.ImplementedBy<Component2>()
-					.Named("SecondComponent")
-					.LifeStyle.Transient,
-				Component.For<DummyComponentFactory>()
-					.AsFactory());
-			var factory = container.Resolve<DummyComponentFactory>();
-
-			var component = factory.GetSecondComponent();
-			Assert.IsNotNull(component);
-			Assert.IsInstanceOf<Component2>(component);
-		}
-
-		[Test]
-		public void Resolve_component_by_name_with_default_selector_falls_back_to_by_type_when_no_name_found()
-		{
-			container.Register(
-				Component.For<DummyComponentFactory>()
-					.AsFactory());
-			var factory = container.Resolve<DummyComponentFactory>();
-
-			var component = factory.GetSecondComponent();
-			Assert.IsNotNull(component);
-			Assert.IsInstanceOf<Component1>(component);
-		}
-
-		[Test]
-		public void Can_use_non_default_selector()
+		public void Can_Resolve_by_name_with_custom_selector()
 		{
 			container.Register(
 				Component.For<IDummyComponent>()
+					.ImplementedBy<Component1>()
+					.Named("one"),
+				Component.For<IDummyComponent>()
 					.ImplementedBy<Component2>()
-					.Named("foo")
-					.LifeStyle.Transient,
-				Component.For<DummyComponentFactory>()
-					.AsFactory(),
+					.Named("two"),
+				Component.For<IFactoryById>().AsFactory(),
 				Component.For<ITypedFactoryComponentSelector>()
-					.ImplementedBy<FooSelector>());
-			var factory = container.Resolve<DummyComponentFactory>();
+					.ImplementedBy<SelectorById>());
 
-			var component = factory.GetSecondComponent();
-			Assert.IsInstanceOf<Component2>(component);
+			var factory = container.Resolve<IFactoryById>();
 
-			component = factory.CreateDummyComponent();
-			Assert.IsInstanceOf<Component2>(component);
+			var one = factory.ComponentNamed("one");
+			var two = factory.ComponentNamed("two");
+			Assert.IsInstanceOf<Component1>(one);
+			Assert.IsInstanceOf<Component2>(two);
+		}
+
+		[Test]
+		public void Can_Resolve_multiple_components_at_once_with_default_selector_list()
+		{
+			container.Register(
+				Component.For<IDummyComponent>()
+					.ImplementedBy<Component2>()
+					.LifeStyle.Transient,
+				Component.For<DummyComponentListFactory>()
+					.AsFactory());
+			var factory = container.Resolve<DummyComponentListFactory>();
+
+			var all = factory.All();
+			Assert.IsNotNull(all);
+			Assert.AreEqual(2, all.Count);
+			Assert.That(all.Any(c => c is Component1));
+			Assert.That(all.Any(c => c is Component2));
 		}
 
 		[Test]
@@ -124,26 +124,6 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 		}
 
 		[Test]
-		public void Can_Resolve_multiple_components_at_once_with_non_default_selector_enumerable()
-		{
-			container.Register(
-				Component.For<IDummyComponent>()
-					.ImplementedBy<Component2>()
-					.LifeStyle.Transient,
-				Component.For<DummyComponentEnumerableFactory>()
-					.AsFactory(),
-				Component.For<ITypedFactoryComponentSelector>()
-					.ImplementedBy<MultipleSelector>());
-			var factory = container.Resolve<DummyComponentEnumerableFactory>();
-
-			var all = factory.All().ToArray();
-			Assert.IsNotNull(all);
-			Assert.AreEqual(2, all.Length);
-			Assert.That(all.Any(c => c is Component1));
-			Assert.That(all.Any(c => c is Component2));
-		}
-
-		[Test]
 		public void Can_Resolve_multiple_components_at_once_with_non_default_selector_collection()
 		{
 			container.Register(
@@ -155,6 +135,26 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 				Component.For<ITypedFactoryComponentSelector>()
 					.ImplementedBy<MultipleSelector>());
 			var factory = container.Resolve<DummyComponentCollectionFactory>();
+
+			var all = factory.All().ToArray();
+			Assert.IsNotNull(all);
+			Assert.AreEqual(2, all.Length);
+			Assert.That(all.Any(c => c is Component1));
+			Assert.That(all.Any(c => c is Component2));
+		}
+
+		[Test]
+		public void Can_Resolve_multiple_components_at_once_with_non_default_selector_enumerable()
+		{
+			container.Register(
+				Component.For<IDummyComponent>()
+					.ImplementedBy<Component2>()
+					.LifeStyle.Transient,
+				Component.For<DummyComponentEnumerableFactory>()
+					.AsFactory(),
+				Component.For<ITypedFactoryComponentSelector>()
+					.ImplementedBy<MultipleSelector>());
+			var factory = container.Resolve<DummyComponentEnumerableFactory>();
 
 			var all = factory.All().ToArray();
 			Assert.IsNotNull(all);
@@ -184,46 +184,30 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 		}
 
 		[Test]
-		public void Can_Resolve_by_name_with_custom_selector()
+		public void Can_resolve_component()
 		{
-			container.Register(
-				Component.For<IDummyComponent>()
-					.ImplementedBy<Component1>()
-					.Named("one"),
-				Component.For<IDummyComponent>()
-					.ImplementedBy<Component2>()
-					.Named("two"),
-				Component.For<IFactoryById>().AsFactory(),
-				Component.For<ITypedFactoryComponentSelector>()
-					.ImplementedBy<SelectorById>());
+			container.Register(Component.For<DummyComponentFactory>().AsFactory());
+			var factory = container.Resolve<DummyComponentFactory>();
 
-			var factory = container.Resolve<IFactoryById>();
-
-			var one = factory.ComponentNamed("one");
-			var two = factory.ComponentNamed("two");
-			Assert.IsInstanceOf<Component1>(one);
-			Assert.IsInstanceOf<Component2>(two);
+			var component = factory.CreateDummyComponent();
+			Assert.IsNotNull(component);
 		}
 
 		[Test]
-		public void Can_Resolve_by_closed_generic_closed_on_arguments_type_with_custom_selector()
+		public void Can_resolve_component_by_name_with_default_selector()
 		{
-			container.Register(AllTypes.FromAssemblyContaining<TypedFactoryFacilityTake2TestCase>()
-				.BasedOn(typeof(GenericComponent<>))
-				.WithService.Base().Configure(c=>c.LifeStyle.Transient),
-				Component.For<IGenericFactory>().AsFactory(),
-				Component.For<ITypedFactoryComponentSelector>()
-					.ImplementedBy<SelectorByClosedArgumentType>());
+			container.Register(
+				Component.For<IDummyComponent>()
+					.ImplementedBy<Component2>()
+					.Named("SecondComponent")
+					.LifeStyle.Transient,
+				Component.For<DummyComponentFactory>()
+					.AsFactory());
+			var factory = container.Resolve<DummyComponentFactory>();
 
-			var factory = container.Resolve<IGenericFactory>();
-
-			var one = factory.GetItemByWithParameter(3);
-			var two = factory.GetItemByWithParameter("two");
-			Assert.IsInstanceOf<GenericIntComponent>(one);
-			Assert.IsInstanceOf<GenericStringComponent>(two);
-
-			Assert.AreEqual(3, ((GenericIntComponent)one).Value);
-			Assert.AreEqual("two", ((GenericStringComponent)two).Value);
+			var component = factory.GetSecondComponent();
+			Assert.IsNotNull(component);
+			Assert.IsInstanceOf<Component2>(component);
 		}
 
 		[Test]
@@ -255,6 +239,27 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 		}
 
 		[Test]
+		public void Can_use_non_default_selector()
+		{
+			container.Register(
+				Component.For<IDummyComponent>()
+					.ImplementedBy<Component2>()
+					.Named("foo")
+					.LifeStyle.Transient,
+				Component.For<DummyComponentFactory>()
+					.AsFactory(),
+				Component.For<ITypedFactoryComponentSelector>()
+					.ImplementedBy<FooSelector>());
+			var factory = container.Resolve<DummyComponentFactory>();
+
+			var component = factory.GetSecondComponent();
+			Assert.IsInstanceOf<Component2>(component);
+
+			component = factory.CreateDummyComponent();
+			Assert.IsInstanceOf<Component2>(component);
+		}
+
+		[Test]
 		public void Disposing_factory_destroys_transient_components()
 		{
 			container.Register(
@@ -269,17 +274,44 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 		}
 
 		[Test]
-		public void Void_methods_release_components()
+		public void Disposing_factory_does_not_destroy_singleton_components()
 		{
 			container.Register(
 				Component.For<IDisposableFactory>().AsFactory(),
-				Component.For<DisposableComponent>().LifeStyle.Transient);
+				Component.For<DisposableComponent>().LifeStyle.Singleton);
 			var factory = container.Resolve<IDisposableFactory>();
 			var component = factory.Create();
 			Assert.IsFalse(component.Disposed);
 
-			factory.Destroy(component);
-			Assert.IsTrue(component.Disposed);
+			factory.Dispose();
+			Assert.IsFalse(component.Disposed);
+		}
+
+		[Test]
+		public void Resolve_component_by_name_with_default_selector_falls_back_to_by_type_when_no_name_found()
+		{
+			container.Register(
+				Component.For<DummyComponentFactory>()
+					.AsFactory());
+			var factory = container.Resolve<DummyComponentFactory>();
+
+			var component = factory.GetSecondComponent();
+			Assert.IsNotNull(component);
+			Assert.IsInstanceOf<Component1>(component);
+		}
+
+		[Test, Ignore("This is a bug.")]
+		public void Resolve_multiple_components_at_once_with_default_selector_collection_unasignable_from_array()
+		{
+			container.Register(
+				Component.For<IDummyComponent>()
+					.ImplementedBy<Component2>()
+					.LifeStyle.Transient,
+				Component.For<InvalidDummyComponentListFactory>()
+					.AsFactory());
+			var factory = container.Resolve<InvalidDummyComponentListFactory>();
+
+			Assert.Throws<ComponentNotFoundException>(() => factory.All());
 		}
 
 		[Test]
@@ -296,17 +328,17 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 		}
 
 		[Test]
-		public void Disposing_factory_does_not_destroy_singleton_components()
+		public void Void_methods_release_components()
 		{
 			container.Register(
 				Component.For<IDisposableFactory>().AsFactory(),
-				Component.For<DisposableComponent>().LifeStyle.Singleton);
+				Component.For<DisposableComponent>().LifeStyle.Transient);
 			var factory = container.Resolve<IDisposableFactory>();
 			var component = factory.Create();
 			Assert.IsFalse(component.Disposed);
 
-			factory.Dispose();
-			Assert.IsFalse(component.Disposed);
+			factory.Destroy(component);
+			Assert.IsTrue(component.Disposed);
 		}
 	}
 }
