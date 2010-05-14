@@ -18,40 +18,32 @@ namespace Castle.MicroKernel.Proxy
 
 	using Castle.MicroKernel.Context;
 
-	/// <summary>
-	/// Reference to component obtained from a container.
-	/// </summary>
-	/// <typeparam name="T"></typeparam>
-	public class ComponentReference<T> : IReference<T>
+	public class ComponentReference : IReference<object>
 	{
-		private readonly string componentKey;
+		private readonly Type componentType;
 
-		public ComponentReference(string componentKey)
+		public ComponentReference(Type componentType)
 		{
-			if (componentKey == null)
+			if (componentType == null)
 			{
-				throw new ArgumentNullException("componentKey");
+				throw new ArgumentNullException("componentType");
 			}
 
-			this.componentKey = componentKey;
+			this.componentType = componentType;
 		}
 
-		public T Resolve(IKernel kernel, CreationContext context)
+		public object Resolve(IKernel kernel, CreationContext context)
 		{
-			var handler = kernel.GetHandler(componentKey);
+
+			var handler = kernel.GetHandler(componentType);
 			if (handler == null)
 			{
-				throw new Exception(string.Format("Component {0} could not be resolved. Make sure you didn't misspell the name, and that component is registered.", componentKey));
+				throw new Exception(
+					string.Format(
+						"Component {0} could not be resolved. Make sure that the component is registered.",
+						componentType));
 			}
-
-			try
-			{
-				return (T)handler.Resolve(context);
-			}
-			catch (InvalidCastException e)
-			{
-				throw new Exception(string.Format("Component {0} is not compatible with type {1}.", componentKey, typeof(T)), e);
-			}
+			return handler.Resolve(context);
 		}
 	}
 }
