@@ -1,6 +1,8 @@
 unreleased changes
 ==================
 
+- removed IProxyHook interface (see breakingchanges.txt)
+
 - added support for specifying typed factory component selectors on a per-factory basis
 
 - added support for using services as mixins

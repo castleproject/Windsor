@@ -119,7 +119,7 @@ namespace Castle.Windsor.Proxy
 			if (proxyOptions.Hook != null)
 			{
 				var hook = proxyOptions.Hook.Resolve(kernel, context);
-				proxyGenOptions.Hook = new ProxyGenerationHookAdapter(hook);
+				proxyGenOptions.Hook = hook;
 			}
 
 			if (proxyOptions.Selector != null)

@@ -79,7 +79,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 			}
 
 			var componentKey = ReferenceExpressionUtil.ExtractComponentKey(hook);
-			options.Hook = new ComponentReference<IProxyHook>(componentKey);
+			options.Hook = new ComponentReference<IProxyGenerationHook>(componentKey);
 		}
 
 		protected virtual void CollectSelector(IConfiguration interceptors, ProxyOptions options)

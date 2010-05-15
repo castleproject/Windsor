@@ -1,4 +1,17 @@
 ================================================================================================
+change - IProxyHook interface was removed
+
+impact - very low
+fixability - easy
+revision - 
+
+description - Since MicroKernel was merged with Windsor and now depends on DynamicProxy directly
+	there's no need to provide additional abstraction on top of IProxyGenerationHook.
+
+fix - Make types that were implementing IProxyHook to implement IProxyGenerationHook. Change all
+	usages of IProxyHook to IProxyGenerationHook.
+
+================================================================================================
 change -  AddInstallerConfiguration and GetComponents methods were added to IConfigurationStore.
 
 impact - very low
