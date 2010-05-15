@@ -164,11 +164,11 @@ namespace Castle.Facilities.ActiveRecordIntegration
 			}
 		}
 
-		private void OnNewTransaction(ITransaction transaction, TransactionMode transactionMode, IsolationMode isolationMode, bool distributedTransaction)
+		private void OnNewTransaction(object sender, TransactionEventArgs e)
 		{
-			if (!transaction.DistributedTransaction)
+			if (!e.Transaction.IsAmbient)
 			{
-				transaction.Enlist(new TransactionScopeResourceAdapter(transactionMode));
+				e.Transaction.Enlist(new TransactionScopeResourceAdapter(e.Transaction.TransactionMode));
 			}
 		}
 
@@ -182,7 +182,7 @@ namespace Castle.Facilities.ActiveRecordIntegration
 		{
 			if (model.Service != null && model.Service == typeof(ITransactionManager))
 			{
-				(instance as ITransactionManager).TransactionCreated += new TransactionCreationInfoDelegate(OnNewTransaction);
+				(instance as ITransactionManager).TransactionCreated += OnNewTransaction;
 			}
 		}
 

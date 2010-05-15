@@ -16,6 +16,7 @@ namespace Castle.Facilities.ActiveRecordIntegration.Tests
 {
 	using System;
 	using Castle.Core.Resource;
+	using Castle.Facilities.AutoTx;
 	using Castle.Windsor;
 	
 	using Castle.ActiveRecord;
@@ -23,8 +24,6 @@ namespace Castle.Facilities.ActiveRecordIntegration.Tests
 	using NUnit.Framework;
 
 	using Castle.Facilities.ActiveRecordIntegration.Tests.Model;
-	using Castle.Facilities.AutomaticTransactionManagement;
-
 
 	public class AbstractActiveRecordTest
 	{
