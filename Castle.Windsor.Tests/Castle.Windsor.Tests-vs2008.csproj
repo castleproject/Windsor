@@ -128,6 +128,9 @@
     <Compile Include="Configuration2\UsingAssemblyTestCase.cs" />
     <Compile Include="Facilities\EventWiring\FluentRegistrationTestCase.cs" />
     <Compile Include="Facilities\EventWiring\Model\ListenerWithOnEventMethod.cs" />
+    <Compile Include="Facilities\Metadata\IHasAge.cs" />
+    <Compile Include="Facilities\Metadata\MyClass.cs" />
+    <Compile Include="Facilities\Metadata\MetadataFacilityTests.cs" />
     <Compile Include="Facilities\TypedFactory\Delegates\Bar.cs" />
     <Compile Include="Facilities\TypedFactory\Delegates\Baz.cs" />
     <Compile Include="Facilities\TypedFactory\Delegates\Foo.cs" />
