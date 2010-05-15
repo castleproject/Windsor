@@ -107,7 +107,7 @@
       <Name>Castle.MicroKernel</Name>
       <HintPath>..\..\lib\net-3.5\Castle.MicroKernel.dll</HintPath>
     </Reference>
-    <Reference Include="Castle.Services.Transaction, Version=1.1.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+    <Reference Include="Castle.Services.Transaction">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\net-3.5\Castle.Services.Transaction.dll</HintPath>
     </Reference>

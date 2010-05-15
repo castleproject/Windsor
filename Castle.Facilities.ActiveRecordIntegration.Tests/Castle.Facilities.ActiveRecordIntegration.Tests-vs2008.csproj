@@ -82,15 +82,15 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\net-3.5\Castle.DynamicProxy2.dll</HintPath>
     </Reference>
-    <Reference Include="Castle.Facilities.AutomaticTransactionManagement">
-      <Name>Castle.Facilities.AutomaticTransactionManagement</Name>
-      <HintPath>..\..\lib\net-3.5\Castle.Facilities.AutomaticTransactionManagement.dll</HintPath>
+    <Reference Include="Castle.Facilities.AutoTx">
+      <Name>Castle.Facilities.AutoTx</Name>
+      <HintPath>..\..\lib\net-3.5\Castle.Facilities.AutoTx.dll</HintPath>
     </Reference>
     <Reference Include="Castle.MicroKernel, Version=2.1.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\net-3.5\Castle.MicroKernel.dll</HintPath>
     </Reference>
-    <Reference Include="Castle.Services.Transaction, Version=1.1.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+    <Reference Include="Castle.Services.Transaction">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\net-3.5\Castle.Services.Transaction.dll</HintPath>
     </Reference>
