@@ -92,9 +92,9 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Castle.Facilities.AutomaticTransactionManagement">
-      <Name>Castle.Facilities.AutomaticTransactionManagement</Name>
-      <HintPath>..\..\lib\net-3.5\Castle.Facilities.AutomaticTransactionManagement.dll</HintPath>
+    <Reference Include="Castle.Facilities.AutoTx">
+      <Name>Castle.Facilities.AutoTx</Name>
+      <HintPath>..\..\lib\net-3.5\Castle.Facilities.AutoTx.dll</HintPath>
     </Reference>
     <Reference Include="Castle.MicroKernel">
       <Name>Castle.MicroKernel</Name>
