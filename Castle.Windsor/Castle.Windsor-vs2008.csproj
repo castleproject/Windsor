@@ -402,7 +402,6 @@
     <Compile Include="MicroKernel\IProxyFactory.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="MicroKernel\Proxy\IProxyHook.cs" />
     <Compile Include="MicroKernel\Proxy\IReference.cs" />
     <Compile Include="MicroKernel\Proxy\NotSupportedProxyFactory.cs">
       <SubType>Code</SubType>
@@ -706,7 +705,6 @@
     <Compile Include="Windsor\Proxy\DefaultProxyFactory.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Windsor\Proxy\ProxyGenerationHookAdapter.cs" />
     <Compile Include="Windsor\IWindsorInstaller.cs" />
     <Compile Include="Windsor\WindsorContainer.cs">
       <SubType>Code</SubType>

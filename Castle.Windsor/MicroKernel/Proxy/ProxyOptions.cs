@@ -39,7 +39,7 @@ namespace Castle.MicroKernel.Proxy
 		/// <summary>
 		/// Gets or sets the proxy hook.
 		/// </summary>
-		public IReference<IProxyHook> Hook { get; set; }
+		public IReference<IProxyGenerationHook> Hook { get; set; }
 
 		/// <summary>
 		/// Gets or sets the interceptor selector.

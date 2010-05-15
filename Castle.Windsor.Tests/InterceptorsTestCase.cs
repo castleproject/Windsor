@@ -406,5 +406,5 @@ namespace Castle.Windsor.Tests
 				invocation.ReturnValue = Activator.CreateInstance(invocation.Method.ReturnType);
 			}
 		}
-	}
+	} 
 }
