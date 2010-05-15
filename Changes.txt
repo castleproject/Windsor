@@ -1,6 +1,8 @@
 unreleased changes
 ==================
 
+- added metadata facility, which lets you associate some metadata with the component and access it from the call site.
+
 - removed IProxyHook interface (see breakingchanges.txt)
 
 - added support for specifying typed factory component selectors on a per-factory basis

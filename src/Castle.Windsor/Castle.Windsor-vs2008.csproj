@@ -126,6 +126,14 @@
     <Compile Include="Facilities\EventWiring\EventWiringRegistrationExtensions.cs" />
     <Compile Include="Facilities\EventWiring\NaiveMethodNameExtractor.cs" />
     <Compile Include="Facilities\EventWiring\OpCodeValues.cs" />
+    <Compile Include="Facilities\Metadata\IMeta.cs" />
+    <Compile Include="Facilities\Metadata\MetaComponentInterceptorSelector.cs" />
+    <Compile Include="Facilities\Metadata\MetadataContributor.cs" />
+    <Compile Include="Facilities\Metadata\MetadataDataInterceptor.cs" />
+    <Compile Include="Facilities\Metadata\MetadataFacility.cs" />
+    <Compile Include="Facilities\Metadata\MetadataItemInterceptor.cs" />
+    <Compile Include="Facilities\Metadata\MetadataRegistration.cs" />
+    <Compile Include="Facilities\Metadata\NoOpSetter.cs" />
     <Compile Include="Facilities\TypedFactory\DefaultDelegateComponentSelector.cs" />
     <Compile Include="Facilities\TypedFactory\DelegateInvocation.cs" />
     <Compile Include="Facilities\TypedFactory\ExpressionTreeBasedDelegateGenerator.cs" />
