@@ -67,7 +67,7 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Issues.Facilities103
 				Expect.Call(sessionFactory.OpenSession()).Return(session);
 				session.FlushMode = sessionManager.DefaultFlushMode;
 				Expect.Call(transaction.Context).Return(contextDictionary).Repeat.Any();
-				Expect.Call(transaction.DistributedTransaction).Return(false);
+				Expect.Call(transaction.IsAmbient).Return(false);
 				Expect.Call(transaction.IsolationMode).Return(DefaultIsolationMode);
 				Expect.Call(session.BeginTransaction(DefaultIsolationLevel)).Throw(new Exception());
 			}

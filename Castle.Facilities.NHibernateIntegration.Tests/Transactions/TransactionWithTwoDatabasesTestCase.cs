@@ -15,7 +15,9 @@
 namespace Castle.Facilities.NHibernateIntegration.Tests.Transactions
 {
 	using System;
-	using Castle.Facilities.AutomaticTransactionManagement;
+
+	using Castle.Facilities.AutoTx;
+
 	using NUnit.Framework;
 
 	[TestFixture]
