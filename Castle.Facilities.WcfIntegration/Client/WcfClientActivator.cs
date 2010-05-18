@@ -104,8 +104,8 @@ namespace Castle.Facilities.WcfIntegration
 		private ChannelCreator GetChannelCreator(CreationContext context, out IWcfBurden burden)
 		{
 			burden = channelBurden;
-			ChannelCreator creator = createChannel;
-			IWcfClientModel clientModel = ObtainClientModel(Model, context);
+			var creator = createChannel;
+			var clientModel = ObtainClientModel(Model, context);
 
 			if (clientModel != null)
 			{

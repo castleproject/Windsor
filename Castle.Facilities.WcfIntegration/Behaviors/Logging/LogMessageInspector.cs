@@ -141,17 +141,18 @@ namespace Castle.Facilities.WcfIntegration.Behaviors
 
 		private string ObtainCorrelationId(Message message)
 		{
-			UniqueId correlationId = message.Headers.MessageId;
+			var correlationId = message.Headers.MessageId;
 			return (correlationId != null) ? correlationId.ToString() : Guid.NewGuid().ToString();
 		}
 
 		private void LogMessageContents(ref Message message)
 		{
-			MessageBuffer buffer = message.CreateBufferedCopy(int.MaxValue);
-			Message forWriting = buffer.CreateMessage();
+			var buffer = message.CreateBufferedCopy(int.MaxValue);
+			var forLogging = buffer.CreateMessage();
 			message = buffer.CreateMessage();
 
-			logger.InfoFormat(formatter, "{0:" + format + "}", forWriting);
+			var content = string.Format(formatter, "{0:" + format + "}", forLogging);
+			logger.Info(content);
 		}
 	}
 }
