@@ -126,6 +126,7 @@
     <Compile Include="ClassComponents\UsesSimpleComponent1.cs" />
     <Compile Include="Configuration2\ConfigurationInstallersTestCase.cs" />
     <Compile Include="Configuration2\UsingAssemblyTestCase.cs" />
+    <Compile Include="CustomActivatorTestCase.cs" />
     <Compile Include="Facilities\EventWiring\FluentRegistrationTestCase.cs" />
     <Compile Include="Facilities\EventWiring\Model\ListenerWithOnEventMethod.cs" />
     <Compile Include="Facilities\Metadata\IHasAge.cs" />

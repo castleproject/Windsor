@@ -19,7 +19,7 @@ namespace Castle.MicroKernel.ComponentActivator
 	using Castle.Core;
 	using Castle.MicroKernel.Context;
 
-	public class FactoryMethodActivator<T> : AbstractComponentActivator
+	public class FactoryMethodActivator<T> : AbstractComponentActivator, IDependencyAwareActivator
 	{
 		public FactoryMethodActivator(ComponentModel model, IKernel kernel, ComponentInstanceDelegate onCreation, ComponentInstanceDelegate onDestruction) : base(model, kernel, onCreation, onDestruction)
 		{
@@ -43,6 +43,12 @@ namespace Castle.MicroKernel.ComponentActivator
 		protected override void InternalDestroy(object instance)
 		{
 			// no op
+		}
+		
+		public bool CanProvideRequiredDependencies(ComponentModel component)
+		{
+			// the factory will take care of providing all dependencies.
+			return true;
 		}
 	}
 }

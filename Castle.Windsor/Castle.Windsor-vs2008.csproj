@@ -150,6 +150,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="MicroKernel\ComponentActivator\FactoryMethodActivator.cs" />
+    <Compile Include="MicroKernel\ComponentActivator\IDependencyAwareActivator.cs" />
     <Compile Include="MicroKernel\ComponentActivator\WebUserControlComponentActivator.cs" />
     <Compile Include="MicroKernel\Burden.cs" />
     <Compile Include="MicroKernel\Arguments.cs" />

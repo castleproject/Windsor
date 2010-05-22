@@ -24,6 +24,7 @@ namespace Castle.MicroKernel.Handlers
 
 	using Castle.Core;
 	using Castle.Core.Internal;
+	using Castle.MicroKernel.ComponentActivator;
 	using Castle.MicroKernel.Context;
 	using Castle.MicroKernel.Lifestyle;
 	using Castle.MicroKernel.ModelBuilder.Inspectors;
@@ -137,7 +138,7 @@ namespace Castle.MicroKernel.Handlers
 			get
 			{
 				if (dependenciesByKey == null)
-					dependenciesByKey = new Dictionary<string, DependencyModel>();
+					dependenciesByKey = new Dictionary<string, DependencyModel>(StringComparer.OrdinalIgnoreCase);
 				return dependenciesByKey;
 			}
 		}
@@ -155,11 +156,12 @@ namespace Castle.MicroKernel.Handlers
 			this.kernel = kernel;
 			this.kernel.AddedAsChildKernel += new EventHandler(OnAddedAsChildKernel);
 
-			IComponentActivator activator = kernel.CreateComponentActivator(ComponentModel);
-
+			var activator = kernel.CreateComponentActivator(ComponentModel);
 			lifestyleManager = CreateLifestyleManager(activator);
+			EnsureDependenciesCanBeSatisfied(activator as IDependencyAwareActivator);
 
-			EnsureDependenciesCanBeSatisfied();
+			if (state == HandlerState.Valid)
+				DisconnectEvents();
 		}
 
 		/// <summary>
@@ -509,8 +511,11 @@ namespace Castle.MicroKernel.Handlers
 		///   For each non*optional dependency, the implementation will invoke
 		///   <see cref = "AddDependency" />
 		/// </remarks>
-		protected virtual void EnsureDependenciesCanBeSatisfied()
+		protected virtual void EnsureDependenciesCanBeSatisfied(IDependencyAwareActivator activator)
 		{
+			if(activator != null && activator.CanProvideRequiredDependencies(ComponentModel))
+				return;
+			
 			// Custom activators should deal with this case
 			if (ComponentModel.Constructors.Count == 0)
 				return;
@@ -548,9 +553,6 @@ namespace Castle.MicroKernel.Handlers
 				         !ComponentModel.Parameters.Contains(dependency.DependencyKey))
 					AddDependency(dependency);
 			}
-
-			if (state == HandlerState.Valid)
-				DisconnectEvents();
 		}
 
 		private IEnumerable<DependencyModel> GetSecuredDependencies()
