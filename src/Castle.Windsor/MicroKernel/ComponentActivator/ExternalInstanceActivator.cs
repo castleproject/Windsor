@@ -17,7 +17,7 @@ namespace Castle.MicroKernel.ComponentActivator
 	using Castle.Core;
 	using Castle.MicroKernel.Context;
 
-	public class ExternalInstanceActivator : AbstractComponentActivator
+	public class ExternalInstanceActivator : AbstractComponentActivator, IDependencyAwareActivator
 	{
 		public ExternalInstanceActivator(ComponentModel model, IKernel kernel, ComponentInstanceDelegate onCreation, ComponentInstanceDelegate onDestruction) : base(model, kernel, onCreation, onDestruction)
 		{
@@ -31,6 +31,12 @@ namespace Castle.MicroKernel.ComponentActivator
 		protected override void InternalDestroy(object instance)
 		{
 			// Nothing to do
+		}
+		
+		public bool CanProvideRequiredDependencies(ComponentModel component)
+		{
+			//we already have an instance so we don't need to provide any dependencies at all
+			return true;
 		}
 	}
 }
