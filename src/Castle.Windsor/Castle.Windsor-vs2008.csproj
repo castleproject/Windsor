@@ -423,14 +423,12 @@
     <Compile Include="MicroKernel\Registration\Component.cs" />
     <Compile Include="MicroKernel\Registration\ComponentDependencyRegistrationExtensions.cs" />
     <Compile Include="MicroKernel\Registration\ComponentDescriptor.cs" />
-    <Compile Include="MicroKernel\Registration\ComponentInstanceDescriptor.cs" />
     <Compile Include="MicroKernel\Registration\ComponentRegistration.cs" />
     <Compile Include="MicroKernel\Registration\ComponentRegistration.nonGeneric.cs" />
     <Compile Include="MicroKernel\Registration\Configuration.cs" />
     <Compile Include="MicroKernel\Registration\ConfigurationDescriptor.cs" />
     <Compile Include="MicroKernel\Registration\CustomDependencyDescriptor.cs" />
     <Compile Include="MicroKernel\Registration\ExtendedPropertiesDescriptor.cs" />
-    <Compile Include="MicroKernel\Registration\FactoryDescriptor.cs" />
     <Compile Include="MicroKernel\Registration\OnCreateComponentDescriptor.cs" />
     <Compile Include="MicroKernel\Registration\DynamicParametersDescriptor.cs" />
     <Compile Include="MicroKernel\Registration\Interceptor\InterceptorSelectorDescriptor.cs" />

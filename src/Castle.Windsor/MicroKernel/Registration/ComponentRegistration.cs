@@ -18,11 +18,13 @@ namespace Castle.MicroKernel.Registration
 	using System.Collections;
 	using System.Collections.Generic;
 	using System.Linq;
+	
 	using Castle.Core;
 	using Castle.Core.Configuration;
 	using Castle.DynamicProxy;
 	using Castle.Facilities.FactorySupport;
 	using Castle.MicroKernel;
+	using Castle.MicroKernel.ComponentActivator;
 	using Castle.MicroKernel.Context;
 	using Castle.MicroKernel.LifecycleConcerns;
 	using Castle.MicroKernel.Proxy;
@@ -46,7 +48,6 @@ namespace Castle.MicroKernel.Registration
 	{
 		private String name;
 		private bool overwrite;
-		private bool isInstanceRegistration;
 		private Type serviceType;
 		private Type implementation;
 		private readonly List<Type> forwardedTypes;
@@ -217,10 +218,9 @@ namespace Castle.MicroKernel.Registration
 			{
 				throw new ArgumentNullException("instance");
 			}
-
-			isInstanceRegistration = true;
-			ImplementedBy(instance.GetType());
-			return AddDescriptor(new ComponentInstanceDescriptor<S>(instance));
+			return ImplementedBy(instance.GetType())
+				.Activator<ExternalInstanceActivator>()
+				.ExtendedProperties(new {instance = instance});
 		}
 
 		/// <summary>
@@ -672,13 +672,9 @@ namespace Castle.MicroKernel.Registration
 					descriptor.ApplyToConfiguration(kernel, configuration);
 				}
 
-				if (componentModel == null && isInstanceRegistration == false)
+				if (componentModel == null)
 				{
 					componentModel = kernel.ComponentModelBuilder.BuildModel(name, serviceType, implementation, null);
-				}
-				else if (componentModel == null && isInstanceRegistration)
-				{
-					componentModel = new ComponentModel(name, serviceType, implementation);
 				}
 
 				foreach (ComponentDescriptor<S> descriptor in descriptors)
@@ -795,8 +791,7 @@ namespace Castle.MicroKernel.Registration
 		/// <returns></returns>
 		public ComponentRegistration<S> UsingFactoryMethod<T>(Func<T> factoryMethod) where T : S
 		{
-			AddDescriptor(new FactoryDescriptor<T, S>((k, c) => factoryMethod()));
-			return this;
+			return UsingFactoryMethod<S>((k, c) => factoryMethod());
 		}
 
 		/// <summary>
@@ -808,8 +803,7 @@ namespace Castle.MicroKernel.Registration
 		/// <returns></returns>
 		public ComponentRegistration<S> UsingFactoryMethod<T>(Converter<IKernel, T> factoryMethod) where T : S
 		{
-			AddDescriptor(new FactoryDescriptor<T, S>((k, c) => factoryMethod(k)));
-			return this;
+			return UsingFactoryMethod<S>((k, c) => factoryMethod(k));
 		}
 
 		/// <summary>
@@ -821,8 +815,8 @@ namespace Castle.MicroKernel.Registration
 		/// <returns></returns>
 		public ComponentRegistration<S> UsingFactoryMethod<T>(Func<IKernel, CreationContext, T> factoryMethod) where T : S
 		{
-			AddDescriptor(new FactoryDescriptor<T, S>(factoryMethod));
-			return this;
+			return Activator<FactoryMethodActivator<T>>()
+				.ExtendedProperties(new {factoryMethodDelegate = factoryMethod});
 		}
 
 		/// <summary>
