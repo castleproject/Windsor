@@ -66,7 +66,7 @@ namespace Castle.Windsor.Tests.Installer
 		[Test]
 		public void Can_install_from_assembly_by_assembly()
 		{
-			container.Install(FromAssembly.Given(Assembly.GetExecutingAssembly()));
+			container.Install(FromAssembly.Instance(Assembly.GetExecutingAssembly()));
 
 			container.Resolve("Customer-by-CustomerInstaller");
 		}

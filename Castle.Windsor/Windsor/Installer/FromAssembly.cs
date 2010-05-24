@@ -32,7 +32,7 @@ namespace Castle.Windsor.Installer
 				throw new ArgumentNullException("type");
 			}
 			var assembly = type.Assembly;
-			return Given(assembly);
+			return Instance(assembly);
 		}
 
 		/// <summary>
@@ -71,7 +71,7 @@ namespace Castle.Windsor.Installer
 		/// Scans the specified assembly with specified name for types implementing <see cref="IWindsorInstaller"/>, instantiates them and installs.
 		/// </summary>
 		/// <returns></returns>
-		public static IWindsorInstaller Given(Assembly assembly)
+		public static IWindsorInstaller Instance(Assembly assembly)
 		{
 			return Given(assembly, new InstallerFactory());
 		}
@@ -92,7 +92,7 @@ namespace Castle.Windsor.Installer
 		public static IWindsorInstaller Named(string assemblyName)
 		{
 			var assembly = ReflectionUtil.GetAssemblyNamed(assemblyName);
-			return Given(assembly);
+			return Instance(assembly);
 		}
 
 		/// <summary>
@@ -111,7 +111,7 @@ namespace Castle.Windsor.Installer
 		/// <returns></returns>
 		public static IWindsorInstaller This()
 		{
-			return Given(Assembly.GetCallingAssembly());
+			return Instance(Assembly.GetCallingAssembly());
 		}
 
 		/// <summary>
