@@ -87,8 +87,6 @@ namespace Castle.MicroKernel.Handlers
 			this.model = model;
 			state = HandlerState.Valid;
 			InitializeCustomDependencies();
-			if (model.ExtendedProperties.Contains("component_resolving_handler") == false)
-				return;
 			resolvingHandler = model.ExtendedProperties["component_resolving_handler"] as ComponentResolvingDelegate;
 		}
 
@@ -210,7 +208,8 @@ namespace Castle.MicroKernel.Handlers
 					if (releasingHandlers == null)
 						releasingHandlers = new Dictionary<object, IList<ComponentReleasingDelegate>>();
 
-					releasingHandlers.Add(instance, releasers);
+					if (releasingHandlers.ContainsKey(instance) == false)
+						releasingHandlers.Add(instance, releasers);
 				}
 			}
 
