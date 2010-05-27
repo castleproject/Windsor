@@ -23,6 +23,8 @@ using NUnit.Framework;
 
 namespace Castle.Windsor.Tests
 {
+    using Castle.DynamicProxy;
+
     [TestFixture]
     public class InterceptorsSelectorTestCase
     {

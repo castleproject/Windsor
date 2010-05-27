@@ -56,10 +56,22 @@ namespace Castle.MicroKernel.ComponentActivator
 			: base(model, kernel, onCreation, onDestruction)
 		{
 #if (!SILVERLIGHT)
-			useFastCreateInstance = !model.Implementation.IsContextful && SecurityManager.IsGranted(new SecurityPermission(SecurityPermissionFlag.SerializationFormatter));
+			useFastCreateInstance = !model.Implementation.IsContextful && HasSerializationFormatterPermission();
 #endif
 		}
 
+#if(!SILVERLIGHT)
+        private bool HasSerializationFormatterPermission()
+        {
+#if(NET35)
+            return SecurityManager.IsGranted(new SecurityPermission(SecurityPermissionFlag.SerializationFormatter));
+#else
+            var permission = new PermissionSet(PermissionState.None);
+            permission.AddPermission(new SecurityPermission(SecurityPermissionFlag.UnmanagedCode));
+            return permission.IsSubsetOf(AppDomain.CurrentDomain.PermissionSet);
+#endif
+        }
+#endif
 		#region AbstractComponentActivator Members
 
 		protected override object InternalCreate(CreationContext context)

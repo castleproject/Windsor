@@ -16,6 +16,9 @@
 namespace Castle.Windsor.Tests
 {
 	using System.Collections.ObjectModel;
+
+	using Castle.DynamicProxy;
+
 	using Core;
 	using Core.Interceptor;
 	using MicroKernel.Registration;

@@ -14,8 +14,9 @@
 
 namespace Castle.Facilities.EventWiring.Tests.Model
 {
-	using Castle.Core.Interceptor;
-	using Core;
+    using Castle.Core.Interceptor;
+
+    using Core;
 
 	[Singleton]
 	public class MyInterceptor : IInterceptor

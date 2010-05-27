@@ -16,6 +16,7 @@ namespace Castle.MicroKernel.Registration.Proxy
 {
 	using Castle.Core;
 	using Castle.Core.Interceptor;
+	using Castle.DynamicProxy;
 	using Castle.MicroKernel.Proxy;
 
 	public class ProxyMixIns<S> : ComponentDescriptor<S>
