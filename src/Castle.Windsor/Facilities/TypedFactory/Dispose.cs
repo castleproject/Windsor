@@ -17,8 +17,9 @@ namespace Castle.Facilities.TypedFactory
 	using System;
 
 	using Castle.Core.Interceptor;
+	using Castle.DynamicProxy;
 
-	public class Dispose : ITypedFactoryMethod
+    public class Dispose : ITypedFactoryMethod
 	{
 		private readonly Action disposeCallback;
 

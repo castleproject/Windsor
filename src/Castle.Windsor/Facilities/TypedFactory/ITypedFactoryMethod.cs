@@ -14,9 +14,9 @@
 
 namespace Castle.Facilities.TypedFactory
 {
-	using Castle.Core.Interceptor;
+    using Castle.Core.Interceptor;
 
-	public interface ITypedFactoryMethod
+    public interface ITypedFactoryMethod
 	{
 		/// <summary>
 		/// Performs actual invocation of typed factory method.

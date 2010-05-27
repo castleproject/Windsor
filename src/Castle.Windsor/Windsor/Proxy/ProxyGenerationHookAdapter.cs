@@ -38,10 +38,10 @@ namespace Castle.Windsor.Proxy
 			return hook.ShouldInterceptMethod(type, memberInfo);	
 		}
 
-		void IProxyGenerationHook.NonVirtualMemberNotification(Type type, MemberInfo memberInfo)
-		{
-			hook.NonVirtualMemberNotification(type, memberInfo);
-		}
+	    void IProxyGenerationHook.NonVirtualMemberNotification(Type type, MemberInfo memberInfo)
+	    {
+            hook.NonVirtualMemberNotification(type, memberInfo);
+	    }
 
 		void IProxyGenerationHook.MethodsInspected()
 		{

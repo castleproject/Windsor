@@ -22,6 +22,7 @@ namespace Castle.MicroKernel.Tests.Registration
 	using Castle.Core;
 	using Castle.Core.Configuration;
 	using Castle.Core.Interceptor;
+	using Castle.DynamicProxy;
 	using Castle.Facilities.Startable;
 	using Castle.Facilities.Startable.Tests.Components;
 	using Castle.MicroKernel.Proxy;

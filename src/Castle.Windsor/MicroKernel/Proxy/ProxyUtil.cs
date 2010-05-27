@@ -18,8 +18,9 @@ namespace Castle.MicroKernel.Proxy
 	using System.Runtime.Remoting;
 	using Castle.Core;
 	using Castle.Core.Interceptor;
+	using Castle.DynamicProxy;
 
-	/// <summary>
+    /// <summary>
 	/// Helper support for proxy configuration.
 	/// </summary>
 	public abstract class ProxyUtil

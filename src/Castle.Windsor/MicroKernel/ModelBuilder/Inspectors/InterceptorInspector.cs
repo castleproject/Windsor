@@ -18,6 +18,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 
 	using Castle.Core.Configuration;
 	using Castle.Core.Interceptor;
+	using Castle.DynamicProxy;
 	using Castle.MicroKernel.Proxy;
 	using Castle.MicroKernel.Util;
 	using Castle.Core;
