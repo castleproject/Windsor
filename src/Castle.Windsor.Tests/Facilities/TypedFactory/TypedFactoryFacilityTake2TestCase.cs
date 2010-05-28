@@ -211,6 +211,23 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 
 			Assert.IsInstanceOf<Component2>(component);
 		}
+		
+		[Test]
+		public void Can_pick_non_default_selector_by_name_delegate()
+		{
+			container.Register(
+				Component.For<IDummyComponent>().ImplementedBy<Component1>().Named("one").LifeStyle.Transient,
+				Component.For<IDummyComponent>().ImplementedBy<Component2>().Named("two").LifeStyle.Transient,
+				Component.For<Func<IDummyComponent>>().AsFactory(c => c.SelectedWith("factoryTwo")),
+				Component.For<ITypedFactoryComponentSelector>().ImplementedBy<Component1Selector>().Named("factoryOne"),
+				Component.For<ITypedFactoryComponentSelector>().ImplementedBy<Component2Selector>().Named("factoryTwo"));
+
+			Assert.IsTrue(container.Kernel.HasComponent(typeof(Func<IDummyComponent>)));
+			var factory = container.Resolve<Func<IDummyComponent>>();
+			var component = factory.Invoke();
+
+			Assert.IsInstanceOf<Component2>(component);
+		}
 
 		[Test]
 		public void Can_pick_non_default_selector_by_name_multiple_factories()

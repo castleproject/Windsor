@@ -27,6 +27,7 @@ namespace Castle.Facilities.TypedFactory
 	{
 		private readonly IDelegateGenerator delegateBuiler;
 		private readonly IKernel kernel;
+		protected readonly TypedFactoryConfiguration settings = new TypedFactoryConfiguration();
 
 		public DelegateFactory(IKernel kernel, IDelegateGenerator delegateBuiler)
 		{
@@ -51,13 +52,8 @@ namespace Castle.Facilities.TypedFactory
 				return null;
 			}
 
-			if (!typeof(MulticastDelegate).IsAssignableFrom(service))
-			{
-				return null;
-			}
-
-			var invoke = GetInvokeMethod(service);
-			if (!HasReturn(invoke))
+			var invoke = ExtractInvokeMethod(service);
+			if (invoke == null)
 			{
 				return null;
 			}
@@ -73,15 +69,41 @@ namespace Castle.Facilities.TypedFactory
 			{
 				return null;
 			}
-			var selector = kernel.GetService<ITypedFactoryComponentSelector>() ?? new DefaultDelegateComponentSelector();
-			var invocation = new DelegateInvocation(kernel, selector, invoke, invoke.ReturnType);
-			var @delegate = delegateBuiler.BuildDelegate(invocation, invoke, service);
-
-			Debug.Assert(@delegate != null, "@delegate != null");
+			
 			return Component.For(service)
 				.Named(key)
-				.Instance(@delegate)
-				.LifeStyle.Singleton;
+				.LifeStyle.Singleton
+				.UsingFactoryMethod((k,c) => 
+                                 {
+                                 	var selector = (ITypedFactoryComponentSelector)settings.Reference.Resolve(k,c);
+                                 	var @delegate = GenerateDelegate(invoke, selector, service);
+                                 	k.ReleaseComponent(selector);
+                                 	return @delegate;
+                                 });
+		}
+
+		public static MethodInfo ExtractInvokeMethod(Type service)
+		{
+			if (!typeof(MulticastDelegate).IsAssignableFrom(service)) 
+			{
+				return null;
+			}
+			
+			var invoke = GetInvokeMethod(service);
+			if (!HasReturn(invoke)) 
+			{
+				return null;
+			}
+			
+			return invoke;
+		}
+
+		public virtual Delegate GenerateDelegate(MethodInfo invoke, ITypedFactoryComponentSelector selector, Type delegateType)
+		{
+			var invocation = new DelegateInvocation(kernel, selector, invoke, invoke.ReturnType);
+			var @delegate = delegateBuiler.BuildDelegate(invocation, invoke, delegateType);
+			Debug.Assert(@delegate != null, "@delegate != null");
+			return @delegate;
 		}
 
 		protected virtual string ExtractServiceName(string key)
@@ -117,19 +139,19 @@ namespace Castle.Facilities.TypedFactory
 			{
 				throw new NoUniqueComponentException(invoke.ReturnType,
 				                                     "Delegate factory ({0}) was unable to uniquely nominate component to resolve for service '{1}'. " +
-													 "You may provide your own selection logic, by registering custom DelegateFactory with key TypedFactoryFacility.DelegateFactoryKey " +
+				                                     "You may provide your own selection logic, by registering custom DelegateFactory with key TypedFactoryFacility.DelegateFactoryKey " +
 				                                     "before registering the facility.");
 			}
 
 			return potentialHandler;
 		}
 
-		protected bool HasReturn(MethodInfo invoke)
+		protected static bool HasReturn(MethodInfo invoke)
 		{
 			return invoke.ReturnType != typeof(void);
 		}
 
-		protected MethodInfo GetInvokeMethod(Type @delegate)
+		protected static MethodInfo GetInvokeMethod(Type @delegate)
 		{
 			MethodInfo invoke = @delegate.GetMethod("Invoke");
 			Debug.Assert(invoke != null, "invoke != null");

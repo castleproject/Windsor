@@ -12,26 +12,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.MicroKernel.Proxy
+namespace Castle.MicroKernel
 {
 	using Castle.MicroKernel.Context;
 
 	/// <summary>
-	/// Represents a reference to an existing object.
+	/// Represents obtained just in time object.
 	/// </summary>
 	/// <typeparam name="T"></typeparam>
-	public class InstanceReference<T> : IReference<T>
+	public interface IReference<T>
 	{
-		private readonly T instance;
-
-		public InstanceReference(T instance)
-		{
-			this.instance = instance;
-		}
-
-		public T Resolve(IKernel kernel, CreationContext context)
-		{
-			return instance;
-		}
+		/// <summary>
+		/// Resolves object referenced by this reference, optionally using provided <paramref name="kernel"/>.
+		/// If object is resolved from the kernel, the <paramref name="context"/>should be used to guard
+		/// against against cyclic dependencies.
+		/// </summary>
+		/// <param name="kernel"></param>
+		/// <param name="context"></param>
+		/// <returns></returns>
+		T Resolve(IKernel kernel, CreationContext context);
 	}
 }

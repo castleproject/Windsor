@@ -62,28 +62,60 @@ namespace Castle.Facilities.TypedFactory
 				throw new ArgumentNullException("registration");
 			}
 
-			if (registration.ServiceType.IsInterface == false)
+			if (registration.ServiceType.IsInterface)
 			{
-				throw new ComponentRegistrationException(
-					string.Format("Type {0} is not an interface. Only interfaces may be used as typed factories.",
-								  registration.ServiceType));
+				return RegisterInterfaceBasedFactory(registration, configuration);
 			}
-
-			if (HasOutArguments(registration.ServiceType))
+			if(registration.ServiceType.BaseType == typeof(MulticastDelegate))
+			{ 
+				return RegisterDelegateBasedFactory(registration, configuration);
+			}
+			
+			throw new ComponentRegistrationException(
+				string.Format("Type {0} is not an interface nor a delegate. Only interfaces and delegates may be used as typed factories.",
+				              registration.ServiceType));
+		}
+		
+		private static ComponentRegistration<TDelegate> RegisterDelegateBasedFactory<TDelegate>(ComponentRegistration<TDelegate> registration, Action<TypedFactoryConfiguration> configuration)
+		{
+			if (HasOutArguments(registration.ServiceType)) 
 			{
-				throw new ComponentRegistrationException(
-					string.Format("Type {0} can not be used as typed factory because it has methods with 'out' arguments.",
-								  registration.ServiceType));
+				throw new ComponentRegistrationException(string.Format("Delegate type {0} can not be used as typed factory because it has 'out' arguments.", registration.ServiceType));
 			}
-
-
+			var invoke = DelegateFactory.ExtractInvokeMethod(registration.ServiceType);
+			if(invoke == null)
+			{
+				throw new ComponentRegistrationException(string.Format("Delegate type {0} can not be used as typed factory because it has void return type.", registration.ServiceType));
+			}
+			var settings = new TypedFactoryConfiguration();
+			if(configuration != null)
+			{
+				configuration.Invoke(settings);
+			}
+			
+			return registration.UsingFactoryMethod((k,c) => 
+			                                       {
+			                                       	var factory = k.Resolve<DelegateFactory>(TypedFactoryFacility.DelegateFactoryKey);
+			                                       	var selector = (ITypedFactoryComponentSelector)settings.Reference.Resolve(k,c);
+			                                       	var @delegate = factory.GenerateDelegate(invoke, selector, registration.ServiceType);
+			                                       	k.ReleaseComponent(selector);
+			                                       	k.ReleaseComponent(factory);
+			                                       	return (TDelegate)(object)@delegate;
+			                                       });
+			                                       
+		}
+		
+		private static ComponentRegistration<TFactoryInterface> RegisterInterfaceBasedFactory<TFactoryInterface>(ComponentRegistration<TFactoryInterface> registration, Action<TypedFactoryConfiguration> configuration)
+		{
+			if (HasOutArguments(registration.ServiceType)) 
+			{
+				throw new ComponentRegistrationException(string.Format("Type {0} can not be used as typed factory because it has methods with 'out' arguments.", registration.ServiceType));
+			}
 			var componentRegistration = registration.Interceptors(new InterceptorReference(TypedFactoryFacility.InterceptorKey)).Last;
-
 			if (configuration == null)
 			{
 				return componentRegistration;
 			}
-
 			var factoryConfiguration = new TypedFactoryConfiguration();
 			configuration.Invoke(factoryConfiguration);
 			var selectorReference = factoryConfiguration.Reference;
@@ -91,15 +123,12 @@ namespace Castle.Facilities.TypedFactory
 			{
 				return componentRegistration;
 			}
-
-			return componentRegistration
-				.DynamicParameters((k, c, d) =>
-				{
-					var selector = selectorReference.Resolve(k, c);
-					d.Insert((ITypedFactoryComponentSelector)selector);
-					return k2 => k2.ReleaseComponent(selector);
-				});
-
+			return componentRegistration.DynamicParameters((k, c, d) =>
+			                                               {
+			                                               	var selector = selectorReference.Resolve(k, c);
+			                                               	d.Insert((ITypedFactoryComponentSelector)selector);
+			                                               	return k2 => k2.ReleaseComponent(selector);
+			                                               });
 		}
 
 		private static bool HasOutArguments(Type serviceType)
@@ -110,19 +139,28 @@ namespace Castle.Facilities.TypedFactory
 
 	public class TypedFactoryConfiguration
 	{
+		private IReference<object> selectorReference;
+		
 		internal IReference<object> Reference
 		{
-			get; private set;
+			get
+			{
+				if(selectorReference == null)
+				{
+					selectorReference = new DefaultTypedFactoryComponentSelectorReference();
+				}
+				return selectorReference;
+			}
 		}
 
 		public void SelectedWith(string selectorComponentName)
 		{
-			Reference = new ComponentReference<object>(selectorComponentName);
+			selectorReference = new ComponentReference<object>(selectorComponentName);
 		}
 
 		public void SelectedWith<TSelectorComponent>() where TSelectorComponent : ITypedFactoryComponentSelector
 		{
-			Reference = new ComponentReference(typeof(TSelectorComponent));
+			selectorReference = new ComponentReference(typeof(TSelectorComponent));
 		}
 
 		public void SelectedWith(ITypedFactoryComponentSelector selector)
@@ -132,7 +170,15 @@ namespace Castle.Facilities.TypedFactory
 				throw new ArgumentNullException("selector");
 			}
 
-			Reference = new InstanceReference<object>(selector);
+			selectorReference = new InstanceReference<object>(selector);
+		}
+	
+		class DefaultTypedFactoryComponentSelectorReference:IReference<object>
+		{
+			public object Resolve(IKernel kernel, Castle.MicroKernel.Context.CreationContext context)
+			{
+				return kernel.GetService<ITypedFactoryComponentSelector>() ?? new DefaultDelegateComponentSelector();
+			}
 		}
 	}
 }
