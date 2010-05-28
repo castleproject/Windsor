@@ -44,16 +44,14 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 		{
 			if (converter == null)
 			{
-				converter = (IConversionManager)
-				            kernel.GetSubSystem(SubSystemConstants.ConversionManagerKey);
+				converter = (IConversionManager) kernel.GetSubSystem(SubSystemConstants.ConversionManagerKey);
 			}
 
-			Type targetType = model.Implementation;
+			var targetType = model.Implementation;
 
-			ConstructorInfo[] constructors =
-				targetType.GetConstructors(BindingFlags.Public | BindingFlags.Instance);
+			var constructors = targetType.GetConstructors(BindingFlags.Public | BindingFlags.Instance);
 
-			foreach(ConstructorInfo constructor in constructors)
+			foreach(var constructor in constructors)
 			{
 				// We register each public constructor
 				// and let the ComponentFactory select an 
@@ -64,39 +62,40 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 
 		protected virtual ConstructorCandidate CreateConstructorCandidate(ComponentModel model, ConstructorInfo constructor)
 		{
-			ParameterInfo[] parameters = constructor.GetParameters();
+			var parameters = constructor.GetParameters();
 
-			DependencyModel[] dependencies = new DependencyModel[parameters.Length];
+			var dependencies = new DependencyModel[parameters.Length];
 
 			for(int i = 0; i < parameters.Length; i++)
 			{
-				ParameterInfo parameter = parameters[i];
+				var parameter = parameters[i];
 
-				Type paramType = parameter.ParameterType;
+				var paramType = parameter.ParameterType;
 
 				// This approach is somewhat problematic. We should use
 				// another strategy to differentiate types and classify dependencies
 				if (converter.IsSupportedAndPrimitiveType(paramType))
 				{
-					dependencies[i] = new DependencyModel(
-						DependencyType.Parameter, parameter.Name, paramType, false);
+					dependencies[i] = new DependencyModel(DependencyType.Parameter, parameter.Name, paramType, false);
 				}
-				else 
+				else if (String.IsNullOrEmpty(parameter.Name) == false)
 				{
-					ParameterModel modelParameter = model.Parameters[parameter.Name];
+					var modelParameter = model.Parameters[parameter.Name];
 
 					if (modelParameter != null && ReferenceExpressionUtil.IsReference(modelParameter.Value))
 					{
-						String key = ReferenceExpressionUtil.ExtractComponentKey(modelParameter.Value);
+						var key = ReferenceExpressionUtil.ExtractComponentKey(modelParameter.Value);
 
-						dependencies[i] = new DependencyModel(
-							DependencyType.ServiceOverride, key, paramType, false);					
+						dependencies[i] = new DependencyModel(DependencyType.ServiceOverride, key, paramType, false);
 					}
 					else
 					{
-						dependencies[i] = new DependencyModel(
-							DependencyType.Service, parameter.Name, paramType, false);
+						dependencies[i] = new DependencyModel(DependencyType.Service, parameter.Name, paramType, false);
 					}
+				}
+				else
+				{
+					dependencies[i] = new DependencyModel(DependencyType.Service, null, paramType, false);
 				}
 			}
 
