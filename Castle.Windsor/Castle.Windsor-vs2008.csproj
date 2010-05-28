@@ -404,14 +404,14 @@
     <Compile Include="Core\ParameterModelCollection.cs" />
     <Compile Include="Core\PropertySet.cs" />
     <Compile Include="Core\PropertySetCollection.cs" />
-    <Compile Include="MicroKernel\Proxy\ComponentReference.cs" />
-    <Compile Include="MicroKernel\Proxy\ComponentReference.Generic.cs" />
+    <Compile Include="MicroKernel\ComponentReference.cs" />
+    <Compile Include="MicroKernel\ComponentReference.Generic.cs" />
     <Compile Include="MicroKernel\Proxy\IModelInterceptorsSelector.cs" />
-    <Compile Include="MicroKernel\Proxy\InstanceReference.cs" />
+    <Compile Include="MicroKernel\InstanceReference.cs" />
     <Compile Include="MicroKernel\IProxyFactory.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="MicroKernel\Proxy\IReference.cs" />
+    <Compile Include="MicroKernel\IReference.cs" />
     <Compile Include="MicroKernel\Proxy\NotSupportedProxyFactory.cs">
       <SubType>Code</SubType>
     </Compile>

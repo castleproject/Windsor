@@ -57,8 +57,7 @@ namespace Castle.Facilities.TypedFactory
 
 		private void InitDelegateBasedFactory()
 		{
-			Kernel.Register(Component.For<ILazyComponentLoader>()
-			                	.ImplementedBy<DelegateFactory>()
+			Kernel.Register(Component.For<DelegateFactory>()
 			                	.Named(DelegateFactoryKey)
 			                	.Unless(Component.ServiceAlreadyRegistered),
 			                Component.For<IDelegateGenerator>()

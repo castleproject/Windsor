@@ -12,38 +12,26 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.MicroKernel.Proxy
+namespace Castle.MicroKernel
 {
-	using System;
-
 	using Castle.MicroKernel.Context;
 
-	public class ComponentReference : IReference<object>
+	/// <summary>
+	/// Represents a reference to an existing object.
+	/// </summary>
+	/// <typeparam name="T"></typeparam>
+	public class InstanceReference<T> : IReference<T>
 	{
-		private readonly Type componentType;
+		private readonly T instance;
 
-		public ComponentReference(Type componentType)
+		public InstanceReference(T instance)
 		{
-			if (componentType == null)
-			{
-				throw new ArgumentNullException("componentType");
-			}
-
-			this.componentType = componentType;
+			this.instance = instance;
 		}
 
-		public object Resolve(IKernel kernel, CreationContext context)
+		public T Resolve(IKernel kernel, CreationContext context)
 		{
-
-			var handler = kernel.GetHandler(componentType);
-			if (handler == null)
-			{
-				throw new Exception(
-					string.Format(
-						"Component {0} could not be resolved. Make sure that the component is registered.",
-						componentType));
-			}
-			return handler.Resolve(context);
+			return instance;
 		}
 	}
 }
