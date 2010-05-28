@@ -784,7 +784,6 @@ namespace Castle.MicroKernel.Registration
 
 		/// <summary>
 		/// Uses a factory method to instantiate the component.
-		/// Requires the <see cref="FactorySupportFacility"/> to be installed.
 		/// </summary>
 		/// <typeparam name="T">Implementation type</typeparam>
 		/// <param name="factoryMethod">Factory method</param>
@@ -796,7 +795,6 @@ namespace Castle.MicroKernel.Registration
 
 		/// <summary>
 		/// Uses a factory method to instantiate the component.
-		/// Requires the <see cref="FactorySupportFacility"/> to be installed.
 		/// </summary>
 		/// <typeparam name="T">Implementation type</typeparam>
 		/// <param name="factoryMethod">Factory method</param>
@@ -808,7 +806,6 @@ namespace Castle.MicroKernel.Registration
 
 		/// <summary>
 		/// Uses a factory method to instantiate the component.
-		/// Requires the <see cref="FactorySupportFacility"/> to be installed.
 		/// </summary>
 		/// <typeparam name="T">Implementation type</typeparam>
 		/// <param name="factoryMethod">Factory method</param>
