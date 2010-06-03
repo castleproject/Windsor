@@ -19,16 +19,14 @@ namespace Castle.MicroKernel.ComponentActivator
 	using Castle.Core;
 	using Castle.MicroKernel.Context;
 
-	public class FactoryMethodActivator<T> : AbstractComponentActivator, IDependencyAwareActivator
+	public class FactoryMethodActivator<T> : DefaultComponentActivator, IDependencyAwareActivator
 	{
+		private readonly Func<IKernel, CreationContext, T> creator;
+
 		public FactoryMethodActivator(ComponentModel model, IKernel kernel, ComponentInstanceDelegate onCreation, ComponentInstanceDelegate onDestruction) : base(model, kernel, onCreation, onDestruction)
 		{
-		}
-
-		protected override object InternalCreate(CreationContext context)
-		{
 			// NOTE: in .NET 4.0 we can use Func<IKernel, CreationContext, object> and ditch the generics altogether
-			var creator = Model.ExtendedProperties["factoryMethodDelegate"] as Func<IKernel, CreationContext, T>;
+			creator = Model.ExtendedProperties["factoryMethodDelegate"] as Func<IKernel, CreationContext, T>;
 			if (creator == null)
 			{
 				throw new ComponentActivatorException(
@@ -36,13 +34,11 @@ namespace Castle.MicroKernel.ComponentActivator
 						"{0} received misconfigured component model for {1}. Are you sure you registered this component with 'UsingFactoryMethod'?",
 						GetType().Name, Model));
 			}
-
-			return creator(Kernel, context);
 		}
 
-		protected override void InternalDestroy(object instance)
+		protected override object Instantiate(CreationContext context)
 		{
-			// no op
+			return creator(Kernel, context);
 		}
 		
 		public bool CanProvideRequiredDependencies(ComponentModel component)
