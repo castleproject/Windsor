@@ -16,7 +16,7 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory.Factories
 {
 	using System;
 
-	using Castle.Facilities.TypedFactory.Tests.Components;
+	using Castle.Windsor.Tests.ClassComponents;
 
 	public interface IDisposableFactory : IDisposable
 	{
