@@ -21,6 +21,7 @@ namespace Castle.MicroKernel.Registration
 	
 	using Castle.Core;
 	using Castle.Core.Configuration;
+	using Castle.Core.Internal;
 	using Castle.DynamicProxy;
 	using Castle.Facilities.FactorySupport;
 	using Castle.MicroKernel;
@@ -812,8 +813,14 @@ namespace Castle.MicroKernel.Registration
 		/// <returns></returns>
 		public ComponentRegistration<S> UsingFactoryMethod<T>(Func<IKernel, CreationContext, T> factoryMethod) where T : S
 		{
-			return Activator<FactoryMethodActivator<T>>()
+			Activator<FactoryMethodActivator<T>>()
 				.ExtendedProperties(new {factoryMethodDelegate = factoryMethod});
+
+			if (implementation == null && serviceType.IsSealed == false)
+			{
+				implementation = typeof (LateBoundComponent);
+			}
+			return this;
 		}
 
 		/// <summary>

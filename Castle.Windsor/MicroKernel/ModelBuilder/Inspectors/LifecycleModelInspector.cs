@@ -18,7 +18,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 	using System.ComponentModel;
 
 	using Castle.Core;
-
+	using Castle.Core.Internal;
 	using Castle.MicroKernel.LifecycleConcerns;
 
 	/// <summary>
@@ -46,6 +46,54 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 			{
 				throw new ArgumentNullException("model");
 			}
+			if (typeof (LateBoundComponent) != model.Implementation)
+			{
+				ProcessModel(model);
+				return;
+			}
+			
+			ProcessLateBoundModel(model);
+		}
+
+		private void ProcessLateBoundModel(ComponentModel model)
+		{
+			var lateBoundCommissionConcern = new LateBoundConcern();
+			if (typeof (IInitializable).IsAssignableFrom(model.Service))
+			{
+				model.LifecycleSteps.Add(LifecycleStepType.Commission, InitializationConcern.Instance);
+			}
+			else
+			{
+				lateBoundCommissionConcern.AddStep<IInitializable>(InitializationConcern.Instance);
+			}
+#if (!SILVERLIGHT)
+			if (typeof (ISupportInitialize).IsAssignableFrom(model.Implementation))
+			{
+				model.LifecycleSteps.Add(LifecycleStepType.Commission, SupportInitializeConcern.Instance);
+			}
+			else
+			{
+				lateBoundCommissionConcern.AddStep<ISupportInitialize>(SupportInitializeConcern.Instance);
+			}
+#endif
+			if (typeof (IDisposable).IsAssignableFrom(model.Implementation))
+			{
+				model.LifecycleSteps.Add(LifecycleStepType.Decommission, DisposalConcern.Instance);
+			}
+			else
+			{
+				var decommission = new LateBoundConcern();
+				decommission.AddStep<IDisposable>(DisposalConcern.Instance);
+				model.LifecycleSteps.Add(LifecycleStepType.Decommission, decommission);
+			}
+			if (lateBoundCommissionConcern.HasSteps)
+			{
+				model.LifecycleSteps.Add(LifecycleStepType.Commission, lateBoundCommissionConcern);
+			}
+		}
+
+		private void ProcessModel(ComponentModel model)
+		{
 			if (typeof (IInitializable).IsAssignableFrom(model.Implementation))
 			{
 				model.LifecycleSteps.Add( LifecycleStepType.Commission, InitializationConcern.Instance );

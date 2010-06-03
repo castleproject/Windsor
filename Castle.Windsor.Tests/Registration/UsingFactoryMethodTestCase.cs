@@ -124,7 +124,7 @@ namespace Castle.MicroKernel.Tests.Registration
 			Assert.IsTrue(component.Disposed);
 		}
 
-		[Test, Ignore("This does not work yet")]
+		[Test]
 		public void Can_dispose_component_on_release_non_disposable_service_and_impl()
 		{
 			Kernel.Register(Component.For<IComponent>()
