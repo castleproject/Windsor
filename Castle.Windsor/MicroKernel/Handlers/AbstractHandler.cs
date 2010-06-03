@@ -525,7 +525,7 @@ namespace Castle.MicroKernel.Handlers
 			{
 				DependencyModel dependency = property.Dependency;
 
-				if (!dependency.IsOptional &&
+				if (dependency.IsOptional == false &&
 				    (dependency.DependencyType == DependencyType.Service ||
 				     dependency.DependencyType == DependencyType.ServiceOverride))
 					AddDependency(dependency);
@@ -536,7 +536,7 @@ namespace Castle.MicroKernel.Handlers
 
 			foreach (DependencyModel dependency in ComponentModel.Dependencies)
 			{
-				if (!dependency.IsOptional &&
+				if (dependency.IsOptional == false &&
 				    (dependency.DependencyType == DependencyType.Service ||
 				     dependency.DependencyType == DependencyType.ServiceOverride))
 					AddDependency(dependency);
