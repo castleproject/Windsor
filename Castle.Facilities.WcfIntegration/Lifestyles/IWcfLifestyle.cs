@@ -21,5 +21,7 @@ namespace Castle.Facilities.WcfIntegration.Lifestyles
 	public interface IWcfLifestyle : ILifestyleManager
 	{
 		Guid ComponentId { get; }
+
+		void Evict(object instance);
 	}
 }

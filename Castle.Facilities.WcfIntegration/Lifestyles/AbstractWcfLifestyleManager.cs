@@ -16,7 +16,6 @@ namespace Castle.Facilities.WcfIntegration.Lifestyles
 {
 	using System;
 	using System.ServiceModel;
-
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Lifestyle;
 
@@ -24,7 +23,7 @@ namespace Castle.Facilities.WcfIntegration.Lifestyles
 		where TExtensibleObject : class, IExtensibleObject<TExtensibleObject>
 		where TCache : class, IWcfLifestyleCache<TExtensibleObject>, new()
 	{
-
+		private bool evicting;
 		private readonly Guid id = Guid.NewGuid();
 
 		public Guid ComponentId
@@ -32,9 +31,27 @@ namespace Castle.Facilities.WcfIntegration.Lifestyles
 			get { return id; }
 		}
 
+		public override bool Release(object instance)
+		{
+			if (evicting == false) 
+				return false;
+
+			return base.Release(instance);
+		}
+
 		public override void Dispose()
 		{
+			var cacheHolder = GetCacheHolder();
+			if (cacheHolder == null) return;
+			
+			var cache = cacheHolder.Extensions.Find<TCache>();
+			if (cache == null) return;
 
+			var component = cache[this];
+			if (component != null)
+			{
+				Evict(component);
+			}
 		}
 
 		public override object Resolve(CreationContext context)
@@ -63,5 +80,33 @@ namespace Castle.Facilities.WcfIntegration.Lifestyles
 		}
 
 		protected abstract TExtensibleObject GetCacheHolder();
+
+		public void Evict(object instance)
+		{
+			using (new EvictionScope(this))
+			{
+				Kernel.ReleaseComponent(instance);
+			}
+		}
+
+		#region Nested type: EvictionScope
+
+		private class EvictionScope : IDisposable
+		{
+			private readonly AbstractWcfLifestyleManager<TExtensibleObject, TCache> owner;
+
+			public EvictionScope(AbstractWcfLifestyleManager<TExtensibleObject, TCache> owner)
+			{
+				this.owner = owner;
+				this.owner.evicting = true;
+			}
+
+			public void Dispose()
+			{
+				owner.evicting = false;
+			}
+		}
+
+		#endregion
 	}
 }

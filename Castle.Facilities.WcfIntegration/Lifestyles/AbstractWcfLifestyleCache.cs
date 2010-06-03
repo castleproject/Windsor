@@ -77,7 +77,7 @@ namespace Castle.Facilities.WcfIntegration.Lifestyles
 			channel.Extensions.Remove(this);
 			foreach (var component in components)
 			{
-				component.Key.Release(component.Value);
+				component.Key.Evict(component.Value);
 			}
 
 			components.Clear();
