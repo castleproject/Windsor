@@ -36,13 +36,12 @@ namespace Castle.MicroKernel
 					throw new ArgumentNullException("key");
 				}
 
-				if (!HasComponent(key) && !LazyLoadComponent(key, null))
+				if ((this as IKernelInternal).LazyLoadComponentByKey(key, null) == false)
 				{
 					throw new ComponentNotFoundException(key);
 				}
 
-				IHandler handler = GetHandler(key);
-
+				var handler = GetHandler(key);
 				return ResolveComponent(handler);
 			}
 		}
@@ -56,7 +55,7 @@ namespace Castle.MicroKernel
 					throw new ArgumentNullException("service");
 				}
 
-				if (!HasComponent(service) && !LazyLoadComponent(null, service))
+				if ((this as IKernelInternal).LazyLoadComponentByType(null, service) == false)
 				{
 					throw new ComponentNotFoundException(service);
 				}
@@ -84,13 +83,12 @@ namespace Castle.MicroKernel
 				throw new ArgumentNullException("service");
 			}
 
-			if (!HasComponent(key) && !LazyLoadComponent(key, service))
+			if ((this as IKernelInternal).LazyLoadComponentByKey(key, service) == false)
 			{
 				throw new ComponentNotFoundException(key);
 			}
 
-			IHandler handler = GetHandler(key);
-
+			var handler = GetHandler(key);
 			return ResolveComponent(handler, service);
 		}
 
@@ -112,13 +110,12 @@ namespace Castle.MicroKernel
 				throw new ArgumentNullException("service");
 			}
 
-			if (!HasComponent(key) && !LazyLoadComponent(key, service))
+			if ((this as IKernelInternal).LazyLoadComponentByKey(key, service) == false)
 			{
 				throw new ComponentNotFoundException(key);
 			}
 
-			IHandler handler = GetHandler(key);
-
+			var handler = GetHandler(key);
 			return ResolveComponent(handler, service, arguments);
 		}
 
@@ -215,13 +212,12 @@ namespace Castle.MicroKernel
 				throw new ArgumentNullException("arguments");
 			}
 
-			if (!HasComponent(service) && !LazyLoadComponent(null, service))
+			if ((this as IKernelInternal).LazyLoadComponentByType(null, service) == false)
 			{
 				throw new ComponentNotFoundException(service);
 			}
 
-			IHandler handler = GetHandler(service);
-
+			var handler = GetHandler(service);
 			return ResolveComponent(handler, service, arguments);
 		}
 
@@ -255,7 +251,7 @@ namespace Castle.MicroKernel
 				throw new ArgumentNullException("arguments");
 			}
 
-			if (!HasComponent(key) && !LazyLoadComponent(key, null))
+			if ((this as IKernelInternal).LazyLoadComponentByKey(key, null) == false)
 			{
 				throw new ComponentNotFoundException(key);
 			}

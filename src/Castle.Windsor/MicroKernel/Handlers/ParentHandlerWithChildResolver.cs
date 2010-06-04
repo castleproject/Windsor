@@ -87,19 +87,11 @@ namespace Castle.MicroKernel.Handlers
 
 		public virtual object Resolve(CreationContext context)
 		{
-			if (context.GetContextualProperty("Castle.HasComponentChecker") == null)
-			{
-				context.AddContextualProperty("Castle.HasComponentChecker", new Predicate<Type>(kernel.HasComponent));
-			}
 			return parentHandler.Resolve(context);
 		}
 
 		public object TryResolve(CreationContext context)
 		{
-			if (context.GetContextualProperty("Castle.HasComponentChecker") == null)
-			{
-				context.AddContextualProperty("Castle.HasComponentChecker", new Predicate<Type>(kernel.HasComponent));
-			}
 			return parentHandler.Resolve(context);
 		}
 

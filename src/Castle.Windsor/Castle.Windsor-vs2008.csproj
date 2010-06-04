@@ -1,4 +1,5 @@
-﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
   <!-- Root Path definition relative for actual build file -->
   <PropertyGroup>
     <RootPath Condition=" '$(RootPath)' == '' ">$(MSBuildProjectDirectory)\..\..</RootPath>
@@ -30,7 +31,7 @@
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
     <SignAssembly>true</SignAssembly>
-    <OldToolsVersion>2.0</OldToolsVersion>
+    <OldToolsVersion>3.5</OldToolsVersion>
     <PublishUrl>http://localhost/Castle.Windsor/</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Web</InstallFrom>
@@ -118,6 +119,7 @@
     <Compile Include="Core\DoNotWireAttribute.cs" />
     <Compile Include="Core\IInitializable.cs" />
     <Compile Include="Core\InterceptorAttribute.cs" />
+    <Compile Include="Core\Internal\LateBoundComponent.cs" />
     <Compile Include="Core\Internal\ReflectionUtil.cs" />
     <Compile Include="Core\LifestyleAttributes.cs" />
     <Compile Include="Facilities\EventWiring\EventSubscriber.cs" />
@@ -180,6 +182,7 @@
     <Compile Include="MicroKernel\ComponentRegistrationException.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="MicroKernel\IKernelInternal.cs" />
     <Compile Include="MicroKernel\KernelException.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -305,6 +308,7 @@
     <Compile Include="MicroKernel\LifecycleConcerns\InitializationConcern.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="MicroKernel\LifecycleConcerns\LateBoundConcern.cs" />
     <Compile Include="MicroKernel\LifecycleConcerns\OnCreateActionDelegate.cs" />
     <Compile Include="MicroKernel\LifecycleConcerns\OnCreatedStep.cs" />
     <Compile Include="MicroKernel\LifecycleConcerns\SupportInitializeConcern.cs">

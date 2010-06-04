@@ -123,6 +123,7 @@ namespace Castle.MicroKernel.Tests.SubContainers
 		}
 
 		[Test]
+		[Ignore("Support for this was removed due to issues with scoping (SimpleComponent1 would become visible from parent container).")]
 		public void Requesting_parent_component_with_child_dependency_from_child_component()
 		{
 			var subkernel = new DefaultKernel();
@@ -136,6 +137,7 @@ namespace Castle.MicroKernel.Tests.SubContainers
 		}
 
 		[Test]
+		[Ignore("Support for this was removed due to issues with scoping (SimpleComponent1 would become visible from parent container).")]
 		public void Three_level_hierarchy([Values(0, 1, 2)] int parentComponentContainer, [Values(0, 1, 2)] int childComponentContainer)
 		{
 			var subKernel = new DefaultKernel();
