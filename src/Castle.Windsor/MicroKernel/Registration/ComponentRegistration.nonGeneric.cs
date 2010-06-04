@@ -44,8 +44,7 @@ namespace Castle.MicroKernel.Registration
 		{
 			if (ServiceType != null)
 			{
-				String message = String.Format("This component has already been assigned service type {0}",
-				                               ServiceType.FullName);
+				var message = String.Format("This component has already been assigned service type {0}", ServiceType.FullName);
 				throw new ComponentRegistrationException(message);
 			}
 
