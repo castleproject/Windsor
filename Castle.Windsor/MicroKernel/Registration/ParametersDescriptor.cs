@@ -27,7 +27,7 @@ namespace Castle.MicroKernel.Registration
 
 		protected internal override void ApplyToModel(IKernel kernel, ComponentModel model)
 		{
-			foreach(Parameter parameter in parameters)
+			foreach(var parameter in parameters)
 			{
 				ApplyParameter(kernel, model, parameter);
 			}

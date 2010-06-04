@@ -165,9 +165,7 @@ namespace Castle.MicroKernel.Registration
 		{
 			if (this.name != null)
 			{
-				String message = String.Format("This component has " +
-					"already been assigned name '{0}'", this.name);
-
+				var message = String.Format("This component has already been assigned name '{0}'", this.name);
 				throw new ComponentRegistrationException(message);
 			}
 
@@ -198,8 +196,8 @@ namespace Castle.MicroKernel.Registration
 		{
 			if (implementation != null)
 			{
-				String message = String.Format("This component has " +
-					"already been assigned implementation {0}", implementation.FullName);
+				var message = String.Format("This component has already been assigned implementation {0}",
+					implementation.FullName);
 				throw new ComponentRegistrationException(message);
 			}
 
@@ -616,7 +614,7 @@ namespace Castle.MicroKernel.Registration
 		/// <returns></returns>
 		public ComponentRegistration<S> ActAs(params object[] actors)
 		{
-			foreach (object actor in actors)
+			foreach (var actor in actors)
 			{
 				if (actor != null)
 				{
@@ -667,7 +665,7 @@ namespace Castle.MicroKernel.Registration
 
 				IConfiguration configuration = EnsureComponentConfiguration(kernel);
 
-				foreach (ComponentDescriptor<S> descriptor in descriptors)
+				foreach (var descriptor in descriptors)
 				{
 					descriptor.ApplyToConfiguration(kernel, configuration);
 				}
@@ -677,14 +675,14 @@ namespace Castle.MicroKernel.Registration
 					componentModel = kernel.ComponentModelBuilder.BuildModel(name, serviceType, implementation, null);
 				}
 
-				foreach (ComponentDescriptor<S> descriptor in descriptors)
+				foreach (var descriptor in descriptors)
 				{
 					descriptor.ApplyToModel(kernel, componentModel);
 				}
 
 				if (componentModel.Implementation.IsInterface && componentModel.Interceptors.Count > 0)
 				{
-					ProxyOptions options = ProxyUtil.ObtainProxyOptions(componentModel, true);
+					var options = ProxyUtil.ObtainProxyOptions(componentModel, true);
 					options.OmitTarget = true;
 				}
 
@@ -692,12 +690,12 @@ namespace Castle.MicroKernel.Registration
 				{
 					kernel.AddCustomComponent(componentModel);
 
-					foreach (Type type in forwardedTypes)
+					foreach (var type in forwardedTypes)
 					{
 						kernel.RegisterHandlerForwarding(type, name);
 					}
 
-					foreach (IRegistration r in additionalRegistrations)
+					foreach (var r in additionalRegistrations)
 					{
 						r.Register(kernel);
 					}
@@ -731,16 +729,16 @@ namespace Castle.MicroKernel.Registration
 
 		internal void AddParameter(IKernel kernel, ComponentModel model, String key, String value)
 		{
-			IConfiguration parameters = EnsureParametersConfiguration(kernel);
-			MutableConfiguration parameter = new MutableConfiguration(key, value);
+			var parameters = EnsureParametersConfiguration(kernel);
+			var parameter = new MutableConfiguration(key, value);
 			parameters.Children.Add(parameter);
 			model.Parameters.Add(key, value);
 		}
 
 		internal void AddParameter(IKernel kernel, ComponentModel model, String key, IConfiguration value)
 		{
-			IConfiguration parameters = EnsureParametersConfiguration(kernel);
-			MutableConfiguration parameter = new MutableConfiguration(key);
+			var parameters = EnsureParametersConfiguration(kernel);
+			var parameter = new MutableConfiguration(key);
 			parameter.Children.Add(value);
 			parameters.Children.Add(parameter);
 			model.Parameters.Add(key, value);
@@ -761,8 +759,8 @@ namespace Castle.MicroKernel.Registration
 
 		private IConfiguration EnsureParametersConfiguration(IKernel kernel)
 		{
-			IConfiguration configuration = EnsureComponentConfiguration(kernel);
-			IConfiguration parameters = configuration.Children["parameters"];
+			var configuration = EnsureComponentConfiguration(kernel);
+			var parameters = configuration.Children["parameters"];
 			if (parameters == null)
 			{
 				parameters = new MutableConfiguration("parameters");
@@ -773,7 +771,7 @@ namespace Castle.MicroKernel.Registration
 
 		private IConfiguration EnsureComponentConfiguration(IKernel kernel)
 		{
-			IConfiguration configuration = kernel.ConfigurationStore.GetComponentConfiguration(name);
+			var configuration = kernel.ConfigurationStore.GetComponentConfiguration(name);
 			if (configuration == null)
 			{
 				configuration = new MutableConfiguration("component");
