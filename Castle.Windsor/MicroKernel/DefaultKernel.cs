@@ -19,6 +19,7 @@ namespace Castle.MicroKernel
 	using System.Collections.Generic;
 	using System.Reflection;
 #if !SILVERLIGHT
+	using System.Runtime.CompilerServices;
 	using System.Runtime.Serialization;
 #endif
 
@@ -45,9 +46,9 @@ namespace Castle.MicroKernel
 	/// </summary>
 #if !SILVERLIGHT
 	[Serializable]
-	public partial class DefaultKernel : MarshalByRefObject, IKernel, IKernelEvents, IDeserializationCallback
+	public partial class DefaultKernel : MarshalByRefObject, IKernel, IKernelEvents, IKernelInternal, IDeserializationCallback
 #else
-	public partial class DefaultKernel : IKernel, IKernelEvents
+	public partial class DefaultKernel : IKernel, IKernelEvents, IKernelInternal
 #endif
 	{
 		#region Fields
@@ -654,16 +655,15 @@ namespace Castle.MicroKernel
 			{
 				try
 				{
-					activator = ReflectionUtil.CreateInstance<IComponentActivator>(model.CustomComponentActivator,
-					                                                               new object[]
-					                                                               {
-					                                                               	model,
-					                                                               	this,
-					                                                               	new ComponentInstanceDelegate(RaiseComponentCreated)
-					                                                               	,
-					                                                               	new ComponentInstanceDelegate(
-					                                                               		RaiseComponentDestroyed)
-					                                                               });
+					activator = ReflectionUtil.CreateInstance<IComponentActivator>(
+						model.CustomComponentActivator,
+						new object[]
+							{
+								model,
+								this,
+								new ComponentInstanceDelegate(RaiseComponentCreated),
+								new ComponentInstanceDelegate(RaiseComponentDestroyed)
+							});
 				}
 				catch (Exception e)
 				{
@@ -737,7 +737,7 @@ namespace Castle.MicroKernel
 		/// <param name="serviceType">An object that specifies the type of service object to get. </param>
 		public object GetService(Type serviceType)
 		{
-			if (!HasComponent(serviceType) && !LazyLoadComponent(null, serviceType))
+			if ((this as IKernelInternal).LazyLoadComponentByType(null, serviceType) == false)
 			{
 				return null;
 			}
@@ -980,13 +980,33 @@ namespace Castle.MicroKernel
 
 		#endregion
 
-		private bool LazyLoadComponent(string key, Type service)
+		[MethodImpl(MethodImplOptions.Synchronized)]
+		bool IKernelInternal.LazyLoadComponentByType(string key, Type service)
 		{
-			if (key == null && service == null)
+			if (service == null) throw new ArgumentNullException("service");
+			if (HasComponent(service))
 			{
-				throw new ArgumentException("At least one - key or service must not be a null reference.");
+				return true;
 			}
 
+			return LazyLoad(key, service);
+		}
+
+		[MethodImpl(MethodImplOptions.Synchronized)]
+		bool IKernelInternal.LazyLoadComponentByKey(string key, Type service)
+		{
+			if (key == null) throw new ArgumentNullException("key");
+
+			if (HasComponent(key))
+			{
+				return true;
+			}
+
+			return LazyLoad(key, service);
+		}
+
+		private bool LazyLoad(string key, Type service)
+		{
 			foreach (var loader in ResolveAll<ILazyComponentLoader>())
 			{
 				var registration = loader.Load(key, service);

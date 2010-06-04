@@ -24,7 +24,7 @@ namespace Castle.Facilities.FactorySupport
 	{
 		protected override void Init()
 		{
-			Kernel.ComponentModelCreated += new ComponentModelDelegate(Kernel_ComponentModelCreated);
+			Kernel.ComponentModelCreated += Kernel_ComponentModelCreated;
 		}
 
 		private void Kernel_ComponentModelCreated(ComponentModel model)

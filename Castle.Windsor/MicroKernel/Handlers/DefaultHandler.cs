@@ -20,7 +20,6 @@ namespace Castle.MicroKernel.Handlers
 
 	using Castle.Core;
 	using Castle.MicroKernel.Context;
-	using Castle.MicroKernel.Resolvers;
 
 	/// <summary>
 	/// Summary description for DefaultHandler.
@@ -81,25 +80,27 @@ namespace Castle.MicroKernel.Handlers
 
 			foreach (var dependency in DependenciesByService.Values.ToArray())
 			{
-
 				// a self-dependency is not allowed
 				var handler = Kernel.GetHandler(dependency.TargetType);
 				if (handler == this)
+				{
 					return false;
+				}
 
-				//NOTE: this is hacky. Find cleaner way to do this.
-				var hasComponent = (context.GetContextualProperty("Castle.HasComponentChecker") as Predicate<Type>) ??
-				                   Kernel.HasComponent;
 				// ask the kernel
-				if (hasComponent(dependency.TargetType)) continue;
-
-				// let's try to lazy load the dependency...
-				if (!LazyLoadComponent(dependency.DependencyKey, dependency.TargetType))
+				var internalKernel = Kernel as IKernelInternal;
+				if(internalKernel == null)
+				{
+					if (Kernel.HasComponent(dependency.TargetType))
+					{
+						continue;
+					}
 					return false;
-				// and see if we can have it this time around
-				// if the previous call returned true we always should
-				if (!hasComponent(dependency.TargetType))
+				}
+				if (internalKernel.LazyLoadComponentByType(dependency.DependencyKey, dependency.TargetType) == false)
+				{
 					return false;
+				}
 			}
 			return DependenciesByKey.Count == 0;
 		}
@@ -124,25 +125,6 @@ namespace Castle.MicroKernel.Handlers
 
 				throw new HandlerException(message);
 			}
-		}
-
-		private bool LazyLoadComponent(string dependencyKey, Type targetType)
-		{
-			if (dependencyKey == null && targetType == null)
-			{
-				throw new ArgumentException("At least one - dependencyKey or targetType must not be a null reference.");
-			}
-
-			foreach (var loader in Kernel.ResolveAll<ILazyComponentLoader>())
-			{
-				var registration = loader.Load(dependencyKey, targetType);
-				if (registration != null)
-				{
-					registration.Register(Kernel);
-					return true;
-				}
-			}
-			return false;
 		}
 	}
 }

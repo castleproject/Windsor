@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,20 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.MicroKernel.Tests.ClassComponents
+namespace Castle.MicroKernel
 {
-	public class UsesSimpleComponent1
+	using System;
+	using System.Runtime.CompilerServices;
+
+	/// <summary>
+	/// Extended contract of kernel, used internally.
+	/// </summary>
+	public interface IKernelInternal: IKernel
 	{
-		private readonly SimpleComponent1 dependency;
-
-		public UsesSimpleComponent1(SimpleComponent1 dependency)
-		{
-			this.dependency = dependency;
-		}
-
-		public SimpleComponent1 Dependency
-		{
-			get { return dependency; }
-		}
+		bool LazyLoadComponentByType(string key, Type service);
+		bool LazyLoadComponentByKey(string key, Type service);
 	}
 }
