@@ -16,20 +16,26 @@ namespace Castle.Facilities.Startable
 {
 	using System;
 	using System.Collections.Generic;
-
+	using Castle.Core;
 	using Castle.MicroKernel;
+	using Castle.MicroKernel.Context;
 	using Castle.MicroKernel.Facilities;
 	using Castle.MicroKernel.SubSystems.Conversion;
-	using Castle.Core;
 
 	public class StartableFacility : AbstractFacility
 	{
 		private readonly List<IHandler> waitList = new List<IHandler>();
+		private readonly HandlerStateDelegate checkWaitingList;
 		private ITypeConverter converter;
 
 		// Don't check the waiting list while this flag is set as this could result in
 		// duplicate singletons.
 		private bool inStart;
+
+		public StartableFacility()
+		{
+			checkWaitingList = OnHandlerStateChanged;	
+		}
 
 		protected override void Init()
 		{
@@ -61,13 +67,9 @@ namespace Castle.Facilities.Startable
 
 			if (startable)
 			{
-				if (handler.CurrentState == HandlerState.WaitingDependency)
+				if (TryStart(handler) == false)
 				{
 					AddHandlerToWaitingList(handler);
-				}
-				else
-				{
-					Start(key);
 				}
 			}
 
@@ -82,8 +84,7 @@ namespace Castle.Facilities.Startable
 		private void AddHandlerToWaitingList(IHandler handler)
 		{
 			waitList.Add(handler);
-
-			handler.OnHandlerStateChanged += new HandlerStateDelegate(OnHandlerStateChanged);
+			handler.OnHandlerStateChanged += checkWaitingList;
 		}
 
 		/// <summary>
@@ -95,24 +96,15 @@ namespace Castle.Facilities.Startable
 		{
 			if (!inStart)
 			{
-				IHandler[] handlers = waitList.ToArray();
-
-				List<IHandler> validList = new List<IHandler>();
+				var handlers = waitList.ToArray();
 
 				foreach (IHandler handler in handlers)
 				{
-					if (handler.CurrentState == HandlerState.Valid)
+					if (TryStart(handler))
 					{
-						validList.Add(handler);
 						waitList.Remove(handler);
-
-						handler.OnHandlerStateChanged -= new HandlerStateDelegate(OnHandlerStateChanged);
+						handler.OnHandlerStateChanged -= checkWaitingList;
 					}
-				}
-
-				foreach (IHandler handler in validList)
-				{
-					Start(handler.ComponentModel.Name);
 				}
 			}
 		}
@@ -120,14 +112,14 @@ namespace Castle.Facilities.Startable
 		/// <summary>
 		/// Request the component instance
 		/// </summary>
-		/// <param name="key"></param>
-		private void Start(String key)
+		/// <param name="handler"></param>
+		private bool TryStart(IHandler handler)
 		{
 			try
 			{
 				inStart = true;
 
-				object instance = Kernel[key];
+				return handler.TryResolve(CreationContext.Empty) != null;
 			}
 			finally
 			{
@@ -135,7 +127,7 @@ namespace Castle.Facilities.Startable
 			}
 		}
 
-		private bool CheckIfComponentImplementsIStartable(ComponentModel model)
+		private static bool CheckIfComponentImplementsIStartable(ComponentModel model)
 		{
 			return typeof(IStartable).IsAssignableFrom(model.Implementation);
 		}

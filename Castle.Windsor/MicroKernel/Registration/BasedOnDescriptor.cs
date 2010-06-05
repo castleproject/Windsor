@@ -98,7 +98,7 @@ namespace Castle.MicroKernel.Registration
 		/// <returns></returns>
 		public BasedOnDescriptor Configure(Action<ComponentRegistration> configurer)
 		{
-			ConfigureDescriptor config = new ConfigureDescriptor(this, configurer);
+			var config = new ConfigureDescriptor(this, configurer);
 			configurers.Add(config);
 			return this;
 		}
@@ -181,11 +181,11 @@ namespace Castle.MicroKernel.Registration
 
 			if (Accepts(type, out baseType))
 			{
-				IEnumerable<Type> serviceTypes = service.GetServices(type, baseType);
-				ComponentRegistration registration = Component.For(serviceTypes);
+				var serviceTypes = service.GetServices(type, baseType);
+				var registration = Component.For(serviceTypes);
 				registration.ImplementedBy(type);
 
-				foreach (ConfigureDescriptor configurer in configurers)
+				foreach (var configurer in configurers)
 				{
 					configurer.Apply(registration);
 				}
@@ -284,7 +284,7 @@ namespace Castle.MicroKernel.Registration
 
 		private bool IsBasedOnGenericInterface(Type type, ref Type baseType)
 		{
-			foreach (Type @interface in type.GetInterfaces())
+			foreach (var @interface in type.GetInterfaces())
 			{
 				if (@interface.IsGenericType &&
 				    @interface.GetGenericTypeDefinition() == basedOn)

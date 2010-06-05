@@ -50,10 +50,10 @@ namespace Castle.MicroKernel.Registration
 				throw new ArgumentException("At least one service type must be supplied");
 			}
 
-			Type[] forwardTypes = new Type[serviceTypes.Length - 1];
+			var forwardTypes = new Type[serviceTypes.Length - 1];
 			Array.Copy(serviceTypes, 1, forwardTypes, 0, serviceTypes.Length - 1);
 
-			ComponentRegistration registration = For(serviceTypes[0]);
+			var registration = For(serviceTypes[0]);
 			registration.Forward(forwardTypes);
 			return registration;
 		}

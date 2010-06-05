@@ -56,7 +56,7 @@ namespace Castle.MicroKernel.Registration
 		private void ApplySimpleReference(IKernel kernel, ComponentModel model,
 		                                  object key, String componentKey)
 		{
-			String reference = FormattedReferenceExpression(componentKey);
+			var reference = FormattedReferenceExpression(componentKey);
 			Registration.AddParameter(kernel, model, GetKeyString(key), reference);
 		}
 
@@ -72,15 +72,15 @@ namespace Castle.MicroKernel.Registration
 		                                object key, IEnumerable<String> items,
 		                                ServiceOverride serviceOverride)
 		{
-			MutableConfiguration list = new MutableConfiguration("list");
+			var list = new MutableConfiguration("list");
 
 			if (serviceOverride != null && serviceOverride.Type != null)
 				list.Attributes.Add("type", serviceOverride.Type.AssemblyQualifiedName);
 
-			foreach (String item in items)
+			foreach (var item in items)
 			{
-				String reference = FormattedReferenceExpression(item);
-				MutableConfiguration node = new MutableConfiguration("item", reference);
+				var reference = FormattedReferenceExpression(item);
+				var node = new MutableConfiguration("item", reference);
 				list.Children.Add(node);
 			}
 

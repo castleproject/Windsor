@@ -21,6 +21,7 @@ namespace Castle.MicroKernel.Tests.Facilities.FactorySupport
 	using Castle.Core.Configuration;
 	using Castle.Facilities.FactorySupport;
 	using Castle.MicroKernel.Tests.ClassComponents;
+	using Castle.MicroKernel.Tests.Lifestyle.Components;
 
 	using NUnit.Framework;
 
@@ -73,9 +74,23 @@ namespace Castle.MicroKernel.Tests.Facilities.FactorySupport
 			Assert.IsNull(service.SomeProperty);
 		}
 
+		[Test,Ignore("Since the facility is mostly for legacy stuff, I don't think it's crucial to support this.") ]
+		public void Late_bound_factory_properly_applies_lifetime_concenrns()
+		{
+			kernel.AddFacility("factories", new FactorySupportFacility());
+			kernel.AddComponent("a", typeof(DisposableComponentFactory));
+			var componentModel = AddComponent("foo", typeof (IComponent), "Create");
+			componentModel.LifestyleType = LifestyleType.Transient;
+			var component = kernel.Resolve<IComponent>("foo") as ComponentWithDispose;
+			Assert.IsNotNull(component);
+			Assert.IsFalse(component.Disposed);
+			kernel.ReleaseComponent(component);
+			Assert.IsTrue(component.Disposed);
+		}
+
 		private ComponentModel AddComponent(string key, Type type, string factoryMethod)
 		{
-			MutableConfiguration config = new MutableConfiguration(key);
+			var config = new MutableConfiguration(key);
 			config.Attributes["factoryId"] = "a";
 			config.Attributes["factoryCreate"] = factoryMethod;
 			kernel.ConfigurationStore.AddComponentConfiguration(key, config);
@@ -136,6 +151,15 @@ namespace Castle.MicroKernel.Tests.Facilities.FactorySupport
 			public HashTableDependentComponent(Dictionary<object, object> d)
 			{
 			}
+		}
+	}
+
+	public class DisposableComponentFactory
+	{
+		public IComponent Create()
+		{
+			return new ComponentWithDispose();
+
 		}
 	}
 }
