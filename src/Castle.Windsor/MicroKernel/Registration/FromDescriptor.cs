@@ -23,7 +23,7 @@ namespace Castle.MicroKernel.Registration
 	public abstract class FromDescriptor : IRegistration
 	{
 		private bool allowMultipleMatches;
-		private IList<BasedOnDescriptor> criterias;
+		private readonly IList<BasedOnDescriptor> criterias;
 		
 		internal FromDescriptor()
 		{
@@ -57,7 +57,7 @@ namespace Castle.MicroKernel.Registration
 		/// <returns>The descriptor for the type.</returns>
 		public BasedOnDescriptor BasedOn(Type basedOn)
 		{
-			BasedOnDescriptor descriptor = new BasedOnDescriptor(basedOn, this);
+			var descriptor = new BasedOnDescriptor(basedOn, this);
 			criterias.Add(descriptor);
 			return descriptor;
 		}
@@ -69,8 +69,7 @@ namespace Castle.MicroKernel.Registration
 		/// <returns>The descriptor for the type.</returns>
 		public BasedOnDescriptor Where(Predicate<Type> accepted)
 		{
-			BasedOnDescriptor descriptor = new BasedOnDescriptor(typeof(object), this)
-				.If(accepted);
+			var descriptor = new BasedOnDescriptor(typeof(object), this).If(accepted);
 			criterias.Add(descriptor);
 			return descriptor;
 		}
@@ -79,9 +78,11 @@ namespace Castle.MicroKernel.Registration
 
 		void IRegistration.Register(IKernel kernel)
 		{
-			foreach (Type type in SelectedTypes(kernel))
+			if (criterias.Count == 0) return;
+
+			foreach (var type in SelectedTypes(kernel))
 			{
-				foreach (BasedOnDescriptor criteria in criterias)
+				foreach (var criteria in criterias)
 				{
 					if (criteria.TryRegister(type, kernel) && !allowMultipleMatches)
 					{

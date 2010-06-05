@@ -46,13 +46,17 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 			{
 				throw new ArgumentNullException("model");
 			}
-			if (typeof (LateBoundComponent) != model.Implementation)
+			if (IsLateBoundComponent(model))
 			{
-				ProcessModel(model);
+				ProcessLateBoundModel(model);
 				return;
 			}
-			
-			ProcessLateBoundModel(model);
+			ProcessModel(model);
+		}
+
+		private bool IsLateBoundComponent(ComponentModel model)
+		{
+			return typeof(LateBoundComponent) == model.Implementation;
 		}
 
 		private void ProcessLateBoundModel(ComponentModel model)
