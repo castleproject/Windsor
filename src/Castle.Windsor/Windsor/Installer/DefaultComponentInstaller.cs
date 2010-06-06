@@ -156,7 +156,7 @@ namespace Castle.Windsor.Installer
 				Debug.Assert( type != null );
 				Debug.Assert( service != null );
 				container.AddComponent(id, service, type);
-				SetUpComponentForwardedTypes(container, component, typeName, id, converter);
+				SetUpComponentForwardedTypes(container.Kernel as IKernelInternal, component, typeName, id, converter);
 			}
 		}
 
@@ -172,8 +172,12 @@ namespace Castle.Windsor.Installer
 			}
 		}
 
-		private void SetUpComponentForwardedTypes(IWindsorContainer container, IConfiguration component, string typeName, string id, IConversionManager converter)
+		private void SetUpComponentForwardedTypes(IKernelInternal kernel, IConfiguration component, string typeName, string id, IConversionManager converter)
 		{
+			if(kernel == null)
+			{
+				return;
+			}
 			var forwardedTypes = component.Children["forwardedTypes"];
 			if (forwardedTypes == null) return;
 
@@ -195,7 +199,7 @@ namespace Castle.Windsor.Installer
 
 			foreach (var forwadedType in forwarded)
 			{
-				container.Kernel.RegisterHandlerForwarding(forwadedType, id);
+				kernel.RegisterHandlerForwarding(forwadedType, id);
 			}
 		}
 

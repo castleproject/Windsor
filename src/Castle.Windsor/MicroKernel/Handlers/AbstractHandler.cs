@@ -67,7 +67,7 @@ namespace Castle.MicroKernel.Handlers
 		/// </summary>
 		private IDictionary<Type, DependencyModel> dependenciesByService;
 
-		private IKernel kernel;
+		private IKernelInternal kernel;
 
 		/// <summary>
 		///   Lifestyle manager instance
@@ -116,7 +116,7 @@ namespace Castle.MicroKernel.Handlers
 			}
 		}
 
-		protected IKernel Kernel
+		protected IKernelInternal Kernel
 		{
 			get { return kernel; }
 		}
@@ -151,10 +151,20 @@ namespace Castle.MicroKernel.Handlers
 		/// <param name = "kernel"></param>
 		public virtual void Init(IKernel kernel)
 		{
-			this.kernel = kernel;
-			this.kernel.AddedAsChildKernel += new EventHandler(OnAddedAsChildKernel);
+			if (kernel == null)
+			{
+				throw new ArgumentNullException("kernel");
+			}
+			this.kernel = kernel as IKernelInternal;
+			if(this.kernel == null)
+			{
+				throw new HandlerException(
+					string.Format("The kernel does not implement {0}. It must also provide contract for internal usage.",
+					              typeof(IKernelInternal).FullName));
+			}
+			this.kernel.AddedAsChildKernel += OnAddedAsChildKernel;
 
-			var activator = kernel.CreateComponentActivator(ComponentModel);
+			var activator = this.kernel.CreateComponentActivator(ComponentModel);
 			lifestyleManager = CreateLifestyleManager(activator);
 			EnsureDependenciesCanBeSatisfied(activator as IDependencyAwareActivator);
 

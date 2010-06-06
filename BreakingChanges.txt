@@ -1,4 +1,19 @@
 ================================================================================================
+change - CreateComponentActivator, RaiseHandlerRegistered, RaiseHandlersChanged and
+	 RegisterHandlerForwarding methods were moved from IKernel to IKernelInternal interface
+
+impact - very low
+fixability - easy
+revision - 
+
+description - These methods constitute internally used contract of kernel and are not intended
+	for external usage. As such they were moved to internal interface to declutter public
+	interface of IKernel.
+
+fix - You should not have been using these methods so it should not affect you in any way. If
+	you did, cast the IKernel to IKernelInternal to invoke the methods.
+
+================================================================================================
 change - IProxyHook interface was removed
 
 impact - very low

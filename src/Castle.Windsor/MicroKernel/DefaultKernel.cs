@@ -699,7 +699,7 @@ namespace Castle.MicroKernel
 			NamingSubSystem.AddHandlerSelector(selector);
 		}
 
-		public void RegisterHandlerForwarding(Type forwardedType, string name)
+		void IKernelInternal.RegisterHandlerForwarding(Type forwardedType, string name)
 		{
 			var target = GetHandler(name);
 			if (target == null)
