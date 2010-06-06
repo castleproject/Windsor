@@ -119,14 +119,6 @@ namespace Castle.MicroKernel
 		void ReleaseComponent(object instance);
 
 		/// <summary>
-		/// Constructs an implementation of <see cref="IComponentActivator"/>
-		/// for the given <see cref="ComponentModel"/>
-		/// </summary>
-		/// <param name="model"></param>
-		/// <returns></returns>
-		IComponentActivator CreateComponentActivator(ComponentModel model);
-
-		/// <summary>
 		/// Returns the implementation of <see cref="IComponentModelBuilder"/>
 		/// </summary>
 		IComponentModelBuilder ComponentModelBuilder { get; }
@@ -292,23 +284,6 @@ namespace Castle.MicroKernel
 		/// </summary>
 		GraphNode[] GraphNodes { get; }
 
-		/// <summary>
-		/// Raise the hanlder registered event, required so
-		/// dependant handlers will be notified about their dependant moving
-		/// to valid state.
-		/// </summary>
-		/// <param name="handler"></param>
-		void RaiseHandlerRegistered(IHandler handler);
-
-		void RaiseHandlersChanged();
-
-		/// <summary>
-		/// Registers the <paramref name="forwardedType"/> to be forwarded 
-		/// to the component registered with <paramref name="name"/>.
-		/// </summary>
-		/// <param name="forwardedType">The service type that gets forwarded.</param>
-		/// <param name="name">The name of the component to forward to.</param>
-		void RegisterHandlerForwarding(Type forwardedType, string name);
 
 		/// <summary>
 		/// Register a new component resolver that can take part in the decision

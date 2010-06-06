@@ -93,7 +93,7 @@ namespace Castle.MicroKernel.Tests
 		public void WorksWithHandlerForwarding()
 		{
 			kernel.AddComponent("common:key1=true", typeof(ICommon), typeof(CommonImpl1));
-			kernel.RegisterHandlerForwarding(typeof(CommonImpl2), "common:key1=true");
+			((IKernelInternal) kernel).RegisterHandlerForwarding(typeof(CommonImpl2), "common:key1=true");
 		}
 
 	}

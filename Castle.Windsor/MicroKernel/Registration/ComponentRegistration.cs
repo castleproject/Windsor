@@ -690,10 +690,13 @@ namespace Castle.MicroKernel.Registration
 				if (ifFilter(kernel, componentModel) && !unlessFilter(kernel, componentModel))
 				{
 					kernel.AddCustomComponent(componentModel);
-
-					foreach (var type in forwardedTypes)
+					if(forwardedTypes.Count>0 && kernel is IKernelInternal)
 					{
-						kernel.RegisterHandlerForwarding(type, name);
+						var internalKernel = kernel as IKernelInternal;
+						foreach (var type in forwardedTypes)
+						{
+							internalKernel.RegisterHandlerForwarding(type, name);
+						}
 					}
 
 					foreach (var r in additionalRegistrations)

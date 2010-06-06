@@ -88,16 +88,7 @@ namespace Castle.MicroKernel.Handlers
 				}
 
 				// ask the kernel
-				var internalKernel = Kernel as IKernelInternal;
-				if(internalKernel == null)
-				{
-					if (Kernel.HasComponent(dependency.TargetType))
-					{
-						continue;
-					}
-					return false;
-				}
-				if (internalKernel.LazyLoadComponentByType(dependency.DependencyKey, dependency.TargetType) == false)
+				if (Kernel.LazyLoadComponentByType(dependency.DependencyKey, dependency.TargetType) == false)
 				{
 					return false;
 				}
