@@ -19,6 +19,7 @@ namespace Castle.Windsor.Tests.Proxy
 	using System;
 	using Castle.DynamicProxy;
 	using Castle.MicroKernel;
+	using Castle.MicroKernel.SubSystems.Conversion;
 	using Castle.Windsor.Tests.Components;
 	using NUnit.Framework;
 
@@ -28,7 +29,7 @@ namespace Castle.Windsor.Tests.Proxy
 		[Test]
 		public void InvalidProxyBehaviorFromConfiguration()
 		{
-			Assert.Throws(typeof(Exception), () =>
+			Assert.Throws(typeof(ConverterException), () =>
 				new WindsorContainer(
 					ConfigHelper.ResolveConfigPath("Proxy/proxyBehaviorInvalidConfig.xml")));
 		}

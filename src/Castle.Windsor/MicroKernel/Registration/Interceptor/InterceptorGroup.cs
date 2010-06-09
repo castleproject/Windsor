@@ -15,6 +15,7 @@
 namespace Castle.MicroKernel.Registration.Interceptor
 {
 	using Castle.DynamicProxy;
+
 	using Core;
 
 	public class InterceptorGroup<S> : RegistrationGroup<S>

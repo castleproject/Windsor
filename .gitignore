@@ -12,3 +12,6 @@ _ReSharper*
 *.suo
 *.cache
 * Thumbs.db
+
+#leftovers from merge
+*.orig
