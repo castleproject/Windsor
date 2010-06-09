@@ -65,7 +65,7 @@ namespace Castle.Core
 		/// </returns>
 		public bool Contains(object key)
 		{
-			return dictionary.ContainsKey((string) key);
+		return dictionary.ContainsKey((string) key);
 		}
 
 		/// <summary>

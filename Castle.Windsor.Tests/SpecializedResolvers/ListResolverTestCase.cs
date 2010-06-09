@@ -17,14 +17,12 @@ namespace Castle.MicroKernel.Tests.SpecializedResolvers
 	using System.Collections.Generic;
 	using System.Linq;
 
-	using Castle.Core.Interceptor;
 	using Castle.DynamicProxy;
 	using Castle.Windsor.Proxy;
 
 	using MicroKernel.Registration;
 	using NUnit.Framework;
 	using Resolvers.SpecializedResolvers;
-	using Castle.DynamicProxy;
 
 	[TestFixture]
 	public class ListResolverTestCase

@@ -151,15 +151,25 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 		private void Scan(Assembly assembly)
 		{
 			// won't work for dynamic assemblies
+#if DOTNET35
 			if (assembly is AssemblyBuilder)
+#else
+			if(assembly.IsDynamic)
+#endif
 			{
 				return;
 			}
-
-			foreach (var type in assembly.GetExportedTypes())
+			try
 			{
-				Insert(fullName2Type, type.FullName, type);
-				Insert(justName2Type, type.Name, type);
+				foreach (var type in assembly.GetExportedTypes())
+				{
+					Insert(fullName2Type, type.FullName, type);
+					Insert(justName2Type, type.Name, type);
+				}
+			}
+			catch (NotSupportedException e)
+			{
+				throw e;
 			}
 		}
 

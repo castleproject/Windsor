@@ -29,7 +29,7 @@ namespace Castle.Windsor.Tests.Proxy
 		[Test]
 		public void InvalidProxyBehaviorFromConfiguration()
 		{
-			Assert.Throws(typeof(ConverterException), () =>
+			Assert.Throws(typeof(Exception), () =>
 				new WindsorContainer(
 					ConfigHelper.ResolveConfigPath("Proxy/proxyBehaviorInvalidConfig.xml")));
 		}
