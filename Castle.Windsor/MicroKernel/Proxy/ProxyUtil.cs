@@ -19,7 +19,7 @@ namespace Castle.MicroKernel.Proxy
 	using Castle.Core;
 	using Castle.DynamicProxy;
 
-	/// <summary>
+    /// <summary>
 	/// Helper support for proxy configuration.
 	/// </summary>
 	public abstract class ProxyUtil

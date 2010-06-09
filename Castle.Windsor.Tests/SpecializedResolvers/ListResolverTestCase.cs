@@ -18,6 +18,7 @@ namespace Castle.MicroKernel.Tests.SpecializedResolvers
 	using System.Linq;
 
 	using Castle.Core.Interceptor;
+	using Castle.DynamicProxy;
 	using Castle.Windsor.Proxy;
 
 	using MicroKernel.Registration;

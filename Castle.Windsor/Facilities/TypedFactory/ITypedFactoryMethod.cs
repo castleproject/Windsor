@@ -16,7 +16,7 @@ namespace Castle.Facilities.TypedFactory
 {
 	using Castle.DynamicProxy;
 
-	public interface ITypedFactoryMethod
+    public interface ITypedFactoryMethod
 	{
 		/// <summary>
 		/// Performs actual invocation of typed factory method.
