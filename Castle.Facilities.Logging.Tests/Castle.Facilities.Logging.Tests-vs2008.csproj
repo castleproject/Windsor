@@ -96,9 +96,6 @@
     <Reference Include="Castle.Core">
       <HintPath>..\..\lib\NET40\Castle.Core.dll</HintPath>
     </Reference>
-    <Reference Include="Castle.DynamicProxy2">
-      <HintPath>..\..\lib\NET40\Castle.DynamicProxy2.dll</HintPath>
-    </Reference>
     <Reference Include="Castle.Services.Logging.Log4netIntegration">
       <HintPath>..\..\lib\NET40\Castle.Services.Logging.Log4netIntegration.dll</HintPath>
     </Reference>
