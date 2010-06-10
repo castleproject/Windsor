@@ -99,11 +99,8 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\NET40\Castle.Core.dll</HintPath>
     </Reference>
-    <Reference Include="Castle.DynamicProxy2">
-      <HintPath>..\..\lib\NET40\Castle.DynamicProxy2.dll</HintPath>
-    </Reference>
     <Reference Include="nunit.framework">
-      <HintPath>..\..\lib\net-3.5\nunit.framework.dll</HintPath>
+      <HintPath>..\..\lib\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="System">
       <Name>System</Name>
