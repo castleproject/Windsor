@@ -48,11 +48,7 @@
   <ItemGroup>
     <Reference Include="Castle.Core, Version=1.3.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\NET40\Castle.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="Castle.DynamicProxy2">
-      <HintPath>..\..\lib\NET35\Castle.DynamicProxy2.dll</HintPath>
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+      <HintPath>..\..\lib\$(BuildConfigKey)\Castle.Core.dll</HintPath>
     </Reference>
     <Reference Include="System">
       <Name>System</Name>

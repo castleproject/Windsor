@@ -45,7 +45,7 @@
   <ItemGroup>
     <Reference Include="Castle.Core, Version=1.3.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\NET40\Castle.Core.dll</HintPath>
+      <HintPath>..\..\lib\$(BuildConfigKey)\Castle.Core.dll</HintPath>
     </Reference>
     <Reference Include="System">
       <Name>System</Name>
