@@ -54,7 +54,7 @@ limitations under the License.
 		Name="BuildProject"
 		>
 
-		<MSBuild Projects="$(SolutionPath)" Targets="Build" Properties="Configuration=$(Configuration)$(BuildFramework);BuildConstants=$(BuildConstants);MSBuildTargets=$(MSBuildTargets);TargetFrameworkVersion=$(TargetFrameworkVersion)">
+		<MSBuild Projects="$(SolutionPath)" Targets="Build" Properties="Configuration=$(Configuration)$(BuildFramework);BuildConstants=$(BuildConstants);MSBuildTargets=$(MSBuildTargets);TargetFrameworkVersion=$(TargetFrameworkVersion);TargetFrameworkProfile=$(TargetFrameworkProfile)">
 
 			<Output TaskParameter="TargetOutputs" ItemName="AllBinaries" />
 		

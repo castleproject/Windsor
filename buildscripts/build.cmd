@@ -17,9 +17,13 @@ REM ****************************************************************************
 IF NOT EXIST %~dp0..\Settings.proj GOTO msbuild_not_configured
 
 REM Set Framework version based on passed in parameter
-IF "%1" == "" SET FrameworkVersion=v4.0.30319
-IF "%1" == "NET40" (SET FrameworkVersion=v4.0.30319)
+IF "%1" == "" SET FrameworkVersion=v4.0
+
+IF "%1" == "NET40" (SET FrameworkVersion=v4.0)
 IF "%1" == "NET40" (SET BuildConfigKey=NET40)
+
+IF "%1" == "NET40CP" (SET FrameworkVersion=v4.0)
+IF "%1" == "NET40CP" (SET BuildConfigKey=NET40CP)
 
 IF "%1" == "NET35" (SET FrameworkVersion=v3.5)
 IF "%1" == "NET35" (SET BuildConfigKey=NET35)
