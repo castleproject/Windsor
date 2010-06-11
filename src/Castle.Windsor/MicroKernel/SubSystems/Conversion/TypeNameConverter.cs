@@ -161,15 +161,17 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 			}
 			try
 			{
-				foreach (var type in assembly.GetExportedTypes())
+				var exportedTypes = assembly.GetExportedTypes();
+				foreach (var type in exportedTypes)
 				{
 					Insert(fullName2Type, type.FullName, type);
 					Insert(justName2Type, type.Name, type);
 				}
 			}
-			catch (NotSupportedException e)
+			catch (NotSupportedException)
 			{
-				throw e;
+				// uncaught dynamic assembly?
+				// this seems to happen when .NET 3.5 build runs on .NET 4...
 			}
 		}
 
