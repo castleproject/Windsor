@@ -28,6 +28,7 @@ limitations under the License.
 	<PropertyGroup>
 		<BuildConfigKey Condition="$(BuildConfigKey)==''">NET40</BuildConfigKey>
 		<Configuration Condition="$(Configuration)==''">Release</Configuration>
+		<TargetFrameworkProfile></TargetFrameworkProfile>
 	</PropertyGroup>
 
 
@@ -38,17 +39,25 @@ limitations under the License.
 		<TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
 	</PropertyGroup>
 
+	<!-- .NET 4.0 Client Profile -->
+	<PropertyGroup Condition="$(BuildConfigKey)=='NET40CP'">
+		<BuildFramework></BuildFramework>
+		<BuildConstants>DOTNET DOTNET40 CLIENTPROFILE</BuildConstants>
+		<TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+		<TargetFrameworkProfile>Client</TargetFrameworkProfile>
+	</PropertyGroup>
+
 	<!-- .NET 3.5 -->
 	<PropertyGroup Condition="$(BuildConfigKey)=='NET35'">
 		<BuildFramework>$(BuildConfigKey)</BuildFramework>
-		<BuildConstants>DOTNET;DOTNET35</BuildConstants>
+		<BuildConstants>DOTNET DOTNET35</BuildConstants>
 		<TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
 	</PropertyGroup>
 
 	<!--Silverlight 3.0 runtime-->
 	<PropertyGroup Condition="$(BuildConfigKey)=='SL3'">
 		<BuildFramework>$(BuildConfigKey)</BuildFramework>
-		<BuildConstants>SILVERLIGHT;SL3</BuildConstants>
+		<BuildConstants>SILVERLIGHT SL3</BuildConstants>
 		<MSBuildTargets>Silverlight 3.0</MSBuildTargets>
 		<TestRunner_Enabled>False</TestRunner_Enabled>
 		<TargetFrameworkVersion>3.0</TargetFrameworkVersion>
@@ -57,7 +66,7 @@ limitations under the License.
 	<!--Silverlight 4.0 runtime-->
 	<PropertyGroup Condition="$(BuildConfigKey)=='SL4'">
 		<BuildFramework>$(BuildConfigKey)</BuildFramework>
-		<BuildConstants>SILVERLIGHT;SL4</BuildConstants>
+		<BuildConstants>SILVERLIGHT SL4</BuildConstants>
 		<MSBuildTargets>Silverlight 4.0</MSBuildTargets>
 		<TestRunner_Enabled>False</TestRunner_Enabled>
 		<TargetFrameworkVersion>4.0</TargetFrameworkVersion>
