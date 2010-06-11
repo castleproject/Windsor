@@ -16,30 +16,38 @@ REM ****************************************************************************
 
 IF NOT EXIST %~dp0..\Settings.proj GOTO msbuild_not_configured
 
-IF "%FrameworkVersion%" == "" SET FrameworkVersion=v2.0.50727
-IF "%Framework35Version%" == "" SET Framework35Version=v3.5
+REM Setup build configuration key used to target output 
+REM folder and constatns in Castle.Common.Targets
+IF "%1" == "" (SET BuildConfigKey=NET40) ELSE (SET BuildConfigKey=%1)
 
-REM Select the correct MSBuild version
-IF "%FrameworkVersion%" == "v2.0.50727" SET __MSBUILD_EXE__=%windir%\microsoft.net\framework\v3.5\msbuild.exe
-IF "%FrameworkVersion%" == "v4.0.30128" SET __MSBUILD_EXE__=%windir%\microsoft.net\framework\v4.0.30128\msbuild.exe
+REM Set Framework version based on passed in parameter
+IF "%1" == "" SET FrameworkVersion=v4.0.30319
+IF "%1" == "NET40" (SET FrameworkVersion=v4.0.30319) ELSE (SET FrameworkVersion=v3.5)
 
-IF DEFINED CLICKTOBUILD GOTO quick
-IF "%~1" == "" GOTO quick
+REM Set BuildFramework variable
+REM Default value of NET35 and NET4 will be automatically set to "Release"
+IF "%1" == "NET35" SET BuildFramework="" 
+IF "%1" == "NET40" SET BuildFramework=""
+IF "%1" == "SL4" SET BuildFramework=ReleaseSL4
+IF "%1" == "SL3" SET BuildFramework=ReleaseSL3
 
-ECHO ON
-%__MSBUILD_EXE__% /m "%~dp0Build.proj" /p:TargetFrameworkVersion=%Framework35Version% %*
-@ECHO OFF
-@GOTO end
+REM Set the build target, if not specified set it to "Package" target.
+IF "%2" == "" (SET BuildTarget=Package) ELSE (SET BuildTarget=%2)
 
-:quick
-IF "%FrameworkVersion%" == "v2.0.50727" SET __OUTDIR__=%~dp0..\build\.NETFramework-v3.5\Release\
-IF "%FrameworkVersion%" == "v4.0.21006" SET __OUTDIR__=%~dp0..\build\.NETFramework-v4.0\Release\
-ECHO ON
-%__MSBUILD_EXE__% /m "%~dp0Build.proj" /t:CleanAll;BuildProject /p:OutputPath=%__OUTDIR__% /p:Configuration=Release /p:Platform=AnyCPU /p:TargetFrameworkVersion=%Framework35Version%
-@ECHO OFF
-IF "%CLICKTOBUILD%" == "1" EXIT /B %ERRORLEVEL%
+REM Write variables to console
+echo Framework version is: %FrameworkVersion%
+echo Build Configuration Key: %BuildConfigKey%
+echo Defined Constant: %BuildConstant%
+echo Build Target is: %BuildTarget%
 
-:end
+REM Always uses the MSBuild 4.0
+SET __MSBUILD_EXE__=%windir%\microsoft.net\framework\v4.0.30319\msbuild.exe
+
+REM Call the MSBuild to build the project
+@echo on
+%__MSBUILD_EXE__% /m "%~dp0Build.proj" /property:BuildConfigKey=%BuildConfigKey% /property:BuildFramework=%BuildFramework% /p:TargetFrameworkVersion=%FrameworkVersion% /p:DefineConstants=%BuildConfigKey% /ToolsVersion:4.0 /t:%BuildTarget% /property:Configuration=
+@echo off
+
 IF %ERRORLEVEL% NEQ 0 GOTO err
 EXIT /B 0
 

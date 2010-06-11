@@ -18,7 +18,9 @@ namespace Castle.Windsor.Tests
 {
 	using System;
 
+	using Castle.Core;
 	using Castle.MicroKernel.Handlers;
+	using Castle.MicroKernel.Registration;
 	using Castle.Windsor.Tests.Components;
 	using NUnit.Framework;
 
@@ -31,7 +33,7 @@ namespace Castle.Windsor.Tests
 			IWindsorContainer container = new WindsorContainer();
 			container.AddComponent("controller", typeof(IController), typeof(Controller));
 			container.AddComponent("view", typeof(IView), typeof(View));
-			Controller controller = (Controller)container.Resolve("controller");
+			var controller = (Controller)container.Resolve("controller");
 			Assert.IsNotNull(controller.View);
 			Assert.IsNull(controller.View.Controller);
 		}
@@ -46,10 +48,7 @@ namespace Castle.Windsor.Tests
 			container.AddComponent("compD", typeof(CompD));
 
 			var exception =
-				Assert.Throws(typeof(HandlerException), () =>
-				{
-					container.Resolve("compA");
-				});
+				Assert.Throws(typeof(HandlerException), () => container.Resolve("compA"));
 			var expectedMessage =
 				string.Format(
 					"Can't create component 'compA' as it has dependencies to be satisfied. {0}compA is waiting for the following dependencies: {0}{0}Services: {0}- Castle.Windsor.Tests.Components.CompB which was registered but is also waiting for dependencies. {0}{0}compB is waiting for the following dependencies: {0}{0}Services: {0}- Castle.Windsor.Tests.Components.CompC which was registered but is also waiting for dependencies. {0}{0}compC is waiting for the following dependencies: {0}{0}Services: {0}- Castle.Windsor.Tests.Components.CompD which was registered but is also waiting for dependencies. {0}{0}compD is waiting for the following dependencies: {0}{0}Services: {0}- Castle.Windsor.Tests.Components.CompA which was registered but is also waiting for dependencies. {0}",
@@ -60,11 +59,46 @@ namespace Castle.Windsor.Tests
 		[Test]
 		public void ShouldNotGetCircularDepencyExceptionWhenResolvingTypeOnItselfWithDifferentModels()
 		{
-			WindsorContainer container = new WindsorContainer(ConfigHelper.ResolveConfigPath("IOC-51.xml"));
+			var container = new WindsorContainer(ConfigHelper.ResolveConfigPath("IOC-51.xml"));
 			object o = container["path.fileFinder"];
 			Assert.IsNotNull(o);
 		}
+
+		[Test]
+		public void Should_not_try_to_instantiate_singletons_twice_when_circular_dependency()
+		{
+			SingletonComponent.CtorCallsCount = 0;
+			var container = new WindsorContainer();
+			container.Register(Component.For<SingletonComponent>(),
+			                   Component.For<SingletonDependency>());
+
+			container.Resolve<SingletonComponent>();
+
+			Assert.AreEqual(1, SingletonComponent.CtorCallsCount);
+		}
+
 	}
+
+	[Singleton]
+	public class SingletonComponent
+	{
+		public static int CtorCallsCount;
+
+		public SingletonComponent()
+		{
+			CtorCallsCount++;
+		}
+
+		public SingletonDependency E { get; set; }
+	}
+
+	[Singleton]
+	public class SingletonDependency
+	{
+		public SingletonDependency(SingletonComponent c)
+		{
+		}
+	} 
 
 	namespace IOC51
 	{

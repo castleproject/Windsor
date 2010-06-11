@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,10 +15,9 @@
 namespace Castle.Facilities.TypedFactory
 {
 	using System;
-
 	using Castle.Core;
 	using Castle.Core.Interceptor;
-
+	using Castle.DynamicProxy;
 	using Castle.MicroKernel;
 
 	/// <summary>
@@ -27,17 +26,17 @@ namespace Castle.Facilities.TypedFactory
 	[Transient]
 	public class FactoryInterceptor : IInterceptor, IOnBehalfAware
 	{
-		private FactoryEntry _entry;
-		private IKernel _kernel;
+		private FactoryEntry entry;
+		private readonly IKernel kernel;
 
 		public FactoryInterceptor(IKernel kernel)
 		{
-			_kernel = kernel;
+			this.kernel = kernel;
 		}
 
 		public void SetInterceptedComponentModel(ComponentModel target)
 		{
-			_entry = (FactoryEntry) target.ExtendedProperties["typed.fac.entry"];
+			entry = (FactoryEntry) target.ExtendedProperties["typed.fac.entry"];
 		}
 
 		public void Intercept(IInvocation invocation)
@@ -46,24 +45,24 @@ namespace Castle.Facilities.TypedFactory
 
 			object[] args = invocation.Arguments;
 
-			if (name.Equals(_entry.CreationMethod))
+			if (name.Equals(entry.CreationMethod))
 			{
 				if (args.Length == 0 || args[0] == null)
 				{
-					invocation.ReturnValue = _kernel[ invocation.Method.ReturnType ];
+					invocation.ReturnValue = kernel[ invocation.Method.ReturnType ];
 					return;
 				}
 				else
 				{
-					invocation.ReturnValue = _kernel[(String)args[0]];
+					invocation.ReturnValue = kernel[(String)args[0]];
 					return;
 				}
 			}
-			else if (name.Equals(_entry.DestructionMethod))
+			else if (name.Equals(entry.DestructionMethod))
 			{
 				if (args.Length == 1)
 				{
-					_kernel.ReleaseComponent( args[0] );
+					kernel.ReleaseComponent( args[0] );
 					invocation.ReturnValue = null;
 					return;
 				}

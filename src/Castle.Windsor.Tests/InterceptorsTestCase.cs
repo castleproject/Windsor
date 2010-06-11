@@ -16,15 +16,14 @@ namespace Castle.Windsor.Tests
 {
 	using System;
 	using System.Threading;
-
 	using Castle.Core;
 	using Castle.Core.Interceptor;
+	using Castle.DynamicProxy;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Handlers;
 	using Castle.MicroKernel.Proxy;
 	using Castle.MicroKernel.Registration;
 	using Castle.Windsor.Tests.Components;
-
 	using NUnit.Framework;
 
 	[TestFixture]
@@ -407,5 +406,5 @@ namespace Castle.Windsor.Tests
 				invocation.ReturnValue = Activator.CreateInstance(invocation.Method.ReturnType);
 			}
 		}
-	}
+	} 
 }

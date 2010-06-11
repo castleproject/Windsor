@@ -1,4 +1,55 @@
 ================================================================================================
+change - CreateComponentActivator, RaiseHandlerRegistered, RaiseHandlersChanged and
+	 RegisterHandlerForwarding methods were moved from IKernel to IKernelInternal interface
+
+impact - very low
+fixability - easy
+revision - 
+
+description - These methods constitute internally used contract of kernel and are not intended
+	for external usage. As such they were moved to internal interface to declutter public
+	interface of IKernel.
+
+fix - You should not have been using these methods so it should not affect you in any way. If
+	you did, cast the IKernel to IKernelInternal to invoke the methods.
+
+================================================================================================
+change - IProxyHook interface was removed
+
+impact - very low
+fixability - easy
+revision - 
+
+description - Since MicroKernel was merged with Windsor and now depends on DynamicProxy directly
+	there's no need to provide additional abstraction on top of IProxyGenerationHook.
+
+fix - Make types that were implementing IProxyHook to implement IProxyGenerationHook. Change all
+	usages of IProxyHook to IProxyGenerationHook.
+
+================================================================================================
+change -  AddInstallerConfiguration and GetComponents methods were added to IConfigurationStore.
+
+impact - very low
+fixability - easy
+revision - 3bf716cc6fc218601dab92a6dd75fe269bcb63d0
+
+description - To enable installers to be exposed via configuration the interface has been 
+	extended by addition of the two methods.
+
+fix - Implement the methods accordingly to your situation.
+
+================================================================================================
+change - Multiple types were moved between namespaces
+
+impact - low
+fixability - trivial
+revision - 3bf716cc6fc218601dab92a6dd75fe269bcb63d0
+
+description - To improve the internal structure several types were moved to other namespaces.
+
+fix - When compilation error occurs adjust namespace imports as suggested by Visual Studio
+
+================================================================================================
 change - Assembly Castle.MicroKernel.dll was merged into Castle.Windsor.dll
 
 impact - high

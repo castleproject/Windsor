@@ -19,23 +19,12 @@ namespace Castle.MicroKernel.Tests.ClassComponents
 	/// </summary>
 	public class DefaultSpamService
 	{
-		private DefaultMailSenderService mailSender;
-		private DefaultTemplateEngine templateEngine;
-
 		public DefaultSpamService()
 		{
 		}
 
-		public DefaultMailSenderService MailSender
-		{
-			get { return mailSender; }
-			set { mailSender = value; }
-		}
+		public DefaultMailSenderService MailSender { get; set; }
 
-		public DefaultTemplateEngine TemplateEngine
-		{
-			get { return templateEngine; }
-			set { templateEngine = value; }
-		}
+		public DefaultTemplateEngine TemplateEngine { get; set; }
 	}
 }

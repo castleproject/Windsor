@@ -59,7 +59,7 @@ namespace Castle.Facilities.Remoting.Tests
 				typeof(WindsorContainer).Assembly.FullName,
 				typeof(WindsorContainer).FullName, false, BindingFlags.Instance | BindingFlags.Public, null,
 				new object[] { configFile },
-				CultureInfo.InvariantCulture, null, null);
+				CultureInfo.InvariantCulture, null);
 
 			return (IWindsorContainer) handle.Unwrap();
 		}
@@ -70,7 +70,7 @@ namespace Castle.Facilities.Remoting.Tests
 				typeof(ContainerPlaceHolder).Assembly.FullName, 
 				typeof(ContainerPlaceHolder).FullName, false, BindingFlags.Instance|BindingFlags.Public, null, 
 				new object[] { configFile }, 
-				CultureInfo.InvariantCulture, null, null );
+				CultureInfo.InvariantCulture, null);
 
 			ContainerPlaceHolder holder = handle.Unwrap() as ContainerPlaceHolder;
 

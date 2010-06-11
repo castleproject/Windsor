@@ -18,18 +18,16 @@ namespace Castle.MicroKernel.Tests.Registration
 	using System.Collections.Generic;
 	using System.Linq;
 	using System.Reflection;
-
 	using Castle.Core;
 	using Castle.Core.Configuration;
-	using Castle.Core.Interceptor;
+	using Castle.DynamicProxy;
 	using Castle.Facilities.Startable;
 	using Castle.Facilities.Startable.Tests.Components;
 	using Castle.MicroKernel.Proxy;
 	using Castle.MicroKernel.Registration;
-	using Castle.MicroKernel.Tests.Lifestyle.Components;
-	using Castle.MicroKernel.Tests.Configuration.Components;
 	using Castle.MicroKernel.Tests.ClassComponents;
-
+	using Castle.MicroKernel.Tests.Configuration.Components;
+	using Castle.MicroKernel.Tests.Lifestyle.Components;
 	using NUnit.Framework;
 
 	public class ComponentRegistrationTestCase : RegistrationTestCaseBase

@@ -1,4 +1,5 @@
-﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
   <PropertyGroup>
     <ProjectType>Local</ProjectType>
     <ProductVersion>9.0.30729</ProductVersion>
@@ -26,7 +27,7 @@
     </FileUpgradeFlags>
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
-    <OldToolsVersion>2.0</OldToolsVersion>
+    <OldToolsVersion>3.5</OldToolsVersion>
     <PublishUrl>http://localhost/Castle.Windsor.Tests/</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Web</InstallFrom>
@@ -42,7 +43,8 @@
     <IsWebBootstrapper>true</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <OutputPath>bin\Debug\</OutputPath>
@@ -93,16 +95,11 @@
     <UseVSHostingProcess>true</UseVSHostingProcess>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Castle.Core, Version=1.2.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+    <Reference Include="Castle.Core, Version=1.3.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\net-3.5\Castle.Core.dll</HintPath>
+      <HintPath>..\..\lib\NET40\Castle.Core.dll</HintPath>
     </Reference>
-    <Reference Include="Castle.DynamicProxy2, Version=2.2.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\net-3.5\Castle.DynamicProxy2.dll</HintPath>
-    </Reference>
-    <Reference Include="nunit.framework, Version=2.5.0.9122, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="nunit.framework">
       <HintPath>..\..\lib\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="System">
@@ -126,7 +123,45 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AnonymousDependenciesTestCase.cs" />
+    <Compile Include="ClassComponents\IDoubleGeneric.cs" />
+    <Compile Include="ClassComponents\UsesSimpleComponent1.cs" />
+    <Compile Include="Configuration2\ConfigurationInstallersTestCase.cs" />
+    <Compile Include="Configuration2\UsingAssemblyTestCase.cs" />
+    <Compile Include="CustomActivatorTestCase.cs" />
+    <Compile Include="Facilities\EventWiring\FluentRegistrationTestCase.cs" />
+    <Compile Include="Facilities\EventWiring\Model\ListenerWithOnEventMethod.cs" />
+    <Compile Include="Facilities\Metadata\IHasAge.cs" />
+    <Compile Include="Facilities\Metadata\MyClass.cs" />
+    <Compile Include="Facilities\Metadata\MetadataFacilityTests.cs" />
+    <Compile Include="Facilities\TypedFactory\Delegates\Bar.cs" />
+    <Compile Include="Facilities\TypedFactory\Delegates\Baz.cs" />
+    <Compile Include="Facilities\TypedFactory\Delegates\Foo.cs" />
+    <Compile Include="Facilities\TypedFactory\Delegates\HasOnlyOneArgMatchingDelegatesParameter.cs" />
+    <Compile Include="Facilities\TypedFactory\Delegates\HasTwoConstructors.cs" />
+    <Compile Include="Facilities\TypedFactory\Delegates\TypedFactoryDelegatesTestCase.cs" />
+    <Compile Include="Facilities\TypedFactory\Delegates\UsesBarDelegate.cs" />
+    <Compile Include="Facilities\TypedFactory\Delegates\UsesFooDelegate.cs" />
+    <Compile Include="Facilities\TypedFactory\Factories\DummyComponentArrayFactory.cs" />
+    <Compile Include="Facilities\TypedFactory\Factories\DummyComponentCollectionFactory.cs" />
+    <Compile Include="Facilities\TypedFactory\Factories\DummyComponentEnumerableFactory.cs" />
+    <Compile Include="Facilities\TypedFactory\Factories\DummyComponentListFactory.cs" />
+    <Compile Include="Facilities\TypedFactory\Factories\IFactoryById.cs" />
+    <Compile Include="Facilities\TypedFactory\Factories\IGenericFactory.cs" />
+    <Compile Include="Facilities\TypedFactory\Factories\InvalidDummyComponentListFactory.cs" />
+    <Compile Include="Facilities\TypedFactory\Selectors\Component2Selector.cs" />
+    <Compile Include="Facilities\TypedFactory\Selectors\FooSelector.cs" />
+    <Compile Include="Facilities\TypedFactory\Selectors\MultipleSelector.cs" />
+    <Compile Include="Facilities\TypedFactory\Selectors\SelectorByClosedArgumentType.cs" />
+    <Compile Include="Facilities\TypedFactory\Selectors\SelectorById.cs" />
+    <Compile Include="Facilities\TypedFactory\Selectors\Component1Selector.cs" />
+    <Compile Include="Installers\CustomerInstaller.cs" />
+    <Compile Include="Installer\FromAssemblyInstallersTestCase.cs" />
+    <Compile Include="Components\UsesIEmptyService.cs" />
+    <Compile Include="Components\IEmptyService.cs" />
+    <Compile Include="Components\EmptyService.cs" />
+    <Compile Include="Lifestyle\Components\ComponentWithDispose.cs" />
+    <Compile Include="TypedDependenciesTestCase.cs" />
+    <Compile Include="ArgumentsTestCase.cs" />
     <Compile Include="BestConstructorTestCase.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -167,7 +202,7 @@
     <Compile Include="ClassComponents\ComponentFactory.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ClassComponents\CommonImplWithDependancy.cs" />
+    <Compile Include="ClassComponents\CommonImplWithDependency.cs" />
     <Compile Include="ClassComponents\HasTwoConstructors.cs" />
     <Compile Include="ClassComponents\HasTwoConstructors2.cs" />
     <Compile Include="ClassComponents\HasTwoConstructors3.cs" />
@@ -357,6 +392,7 @@
     </Compile>
     <Compile Include="SubResolverTestCase.cs" />
     <Compile Include="TransientMultiConstructorTestCase.cs" />
+    <Compile Include="TypeNameConverterTestCase.cs" />
     <Compile Include="UnsatisfiedDependenciesTestCase.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -502,7 +538,7 @@
     <Compile Include="Facilities\TypedFactory\Components\Component1.cs" />
     <Compile Include="Facilities\TypedFactory\Components\Component2.cs" />
     <Compile Include="Facilities\TypedFactory\Components\ComponentWithOptionalParameter.cs" />
-    <Compile Include="Facilities\TypedFactory\Components\DisposableComponent.cs" />
+    <Compile Include="ClassComponents\DisposableComponent.cs" />
     <Compile Include="Facilities\TypedFactory\Components\GenericComponent.cs" />
     <Compile Include="Facilities\TypedFactory\Components\GenericComponentWithIntArg.cs" />
     <Compile Include="Facilities\TypedFactory\Components\IDummyComponent.cs" />
@@ -836,6 +872,18 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Configuration2\config_with_forwarded_types.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <EmbeddedResource Include="Configuration2\config_with_installers_assembly.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Configuration2\config_with_installers_type.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Configuration2\config_with_using_assembly.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <Content Include="JustConfiguration.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="RemotingTcpConfig2.config">

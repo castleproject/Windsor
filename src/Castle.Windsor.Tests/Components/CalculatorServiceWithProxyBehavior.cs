@@ -16,9 +16,9 @@ namespace Castle.Windsor.Tests.Components
 {
 	using System;
 	using Castle.Core;
-	using Castle.Core.Interceptor;
+	using Castle.DynamicProxy;
 
-	/// <summary>
+    /// <summary>
 	/// Summary description for CalculatorServiceWithAttributes.
 	/// </summary>
 	[Interceptor(typeof(StandardInterceptor))]

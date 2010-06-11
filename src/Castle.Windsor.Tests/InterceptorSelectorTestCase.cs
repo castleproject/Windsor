@@ -17,12 +17,14 @@
 using System;
 using System.Reflection;
 using Castle.Core;
-using Castle.Core.Interceptor;
+using Castle.DynamicProxy;
 using Castle.MicroKernel.Registration;
 using NUnit.Framework;
 
 namespace Castle.Windsor.Tests
 {
+    using Castle.DynamicProxy;
+
     [TestFixture]
     public class InterceptorsSelectorTestCase
     {

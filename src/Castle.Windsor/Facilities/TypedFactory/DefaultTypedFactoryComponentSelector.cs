@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,35 +12,45 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.MicroKernel.Facilities.TypedFactory
+namespace Castle.Facilities.TypedFactory
 {
 	using System;
 	using System.Collections;
 	using System.Reflection;
 
-	using Castle.MicroKernel.Context;
+	using Castle.MicroKernel;
 
 	public class DefaultTypedFactoryComponentSelector : ITypedFactoryComponentSelector
 	{
 		public TypedFactoryComponent SelectComponent(MethodInfo method, Type type, object[] arguments)
 		{
-			var componentName = GetComponentName(method);
-			var componentType = GetComponentType(method);
+			var componentName = GetComponentName(method, arguments);
+			var componentType = GetComponentType(method, arguments);
 			var additionalArguments = GetArguments(method, arguments);
+
+			return BuildFactoryComponent(method, componentName, componentType, additionalArguments);
+		}
+
+		protected virtual TypedFactoryComponent BuildFactoryComponent(MethodInfo method, string componentName, Type componentType, IDictionary additionalArguments)
+		{
+			if (TypedFactoryComponentCollection.IsSupportedCollectionType(componentType))
+			{
+				return new TypedFactoryComponentCollection(componentType, additionalArguments);
+			}
 			return new TypedFactoryComponent(componentName, componentType, additionalArguments);
 		}
 
-		protected virtual Type GetComponentType(MethodInfo method)
+		protected virtual Type GetComponentType(MethodInfo method, object[] arguments)
 		{
 			return method.ReturnType;
 		}
 
-		protected virtual string GetComponentName(MethodInfo method)
+		protected virtual string GetComponentName(MethodInfo method, object[] arguments)
 		{
 			string componentName = null;
 			if (method.Name.StartsWith("Get"))
 			{
-				componentName = method.Name.Substring("get".Length);
+				componentName = method.Name.Substring("Get".Length);
 			}
 			return componentName;
 		}

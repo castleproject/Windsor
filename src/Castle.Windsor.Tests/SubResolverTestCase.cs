@@ -14,6 +14,8 @@
 
 namespace Castle.MicroKernel.Tests
 {
+	using Castle.MicroKernel.Context;
+
 	using Core;
 	using NUnit.Framework;
 
@@ -35,8 +37,8 @@ namespace Castle.MicroKernel.Tests
 			resolver.Result = 15;
 
 			//should force reevaluation of state
-			kernel.RaiseHandlerRegistered(null);
-			kernel.RaiseHandlersChanged();
+			((IKernelInternal)kernel).RaiseHandlerRegistered(null);
+			((IKernelInternal)kernel).RaiseHandlersChanged();
 
 			Assert.AreEqual(HandlerState.Valid, handler.CurrentState);
 		}

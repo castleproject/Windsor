@@ -18,6 +18,7 @@ namespace Castle.MicroKernel.Tests.Lifecycle
 
 	using Castle.Core;
 	using Castle.Facilities.Startable;
+	using Castle.MicroKernel.Context;
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Tests.Lifecycle.Components;
 	using NUnit.Framework;

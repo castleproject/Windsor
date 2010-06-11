@@ -17,6 +17,8 @@ namespace Castle.Facilities.Logging
 	using System;
 	using System.Configuration;
 	using System.Reflection;
+
+	using Castle.Core.Internal;
 	using Castle.Core.Logging;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Facilities;
@@ -224,11 +226,11 @@ namespace Castle.Facilities.Logging
 
 			if (logApi == LoggerImplementation.ExtendedNLog || logApi == LoggerImplementation.ExtendedLog4net)
 			{
-				factory = (IExtendedLoggerFactory) Activator.CreateInstance(loggerFactoryType, args);
+				factory = ReflectionUtil.CreateInstance<IExtendedLoggerFactory>(loggerFactoryType, args);
 			}
 			else
 			{
-				factory = (ILoggerFactory) Activator.CreateInstance(loggerFactoryType, args);
+				factory = ReflectionUtil.CreateInstance<ILoggerFactory>(loggerFactoryType, args);
 			}
 		}
 
@@ -241,7 +243,7 @@ namespace Castle.Facilities.Logging
 
 			if (!string.IsNullOrEmpty(configFile))
 			{
-				ctor = loggerFactoryType.GetConstructor(flags, null, new Type[] { typeof(string) }, null);
+				ctor = loggerFactoryType.GetConstructor(flags, null, new[] { typeof(string) }, null);
 			}
 
 			if (ctor != null)

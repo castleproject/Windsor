@@ -18,6 +18,7 @@ namespace Castle.MicroKernel.Tests
 	using System.Collections;
 	using System.Collections.Generic;
 	using Castle.Core;
+	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Tests.ClassComponents;
 	using NUnit.Framework;
 
@@ -182,9 +183,29 @@ namespace Castle.MicroKernel.Tests
 		[Test]
 		public void ResolveAllWaitingOnDependencies()
 		{
-			kernel.AddComponent("test", typeof(ICommon), typeof(CommonImplWithDependancy));
+			kernel.AddComponent("test", typeof(ICommon), typeof(CommonImplWithDependency));
 			ICommon[] services = kernel.ResolveAll<ICommon>();
 			Assert.AreEqual(0, services.Length);
+		}
+
+		[Test]
+		public void ResolveAll_resolves_when_dependency_provideded_inline()
+		{
+			kernel.AddComponent("test", typeof(ICommon), typeof(CommonImplWithDependency));
+			ICommon[] services = kernel.ResolveAll<ICommon>(new { customer = new CustomerImpl() });
+			Assert.AreEqual(1, services.Length);
+		}
+
+		[Test]
+		public void ResolveAll_resolves_when_dependency_provideded_dynamically()
+		{
+			kernel.Register(Component.For<ICommon>()
+			                	.ImplementedBy<CommonImplWithDependency>()
+			                	.DynamicParameters((k, d) => d.Insert<ICustomer>(new CustomerImpl()))
+				);
+
+			var services = kernel.ResolveAll<ICommon>();
+			Assert.AreEqual(1, services.Length);
 		}
 
 		[Test]

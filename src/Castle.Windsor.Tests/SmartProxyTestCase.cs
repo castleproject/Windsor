@@ -15,8 +15,7 @@
 namespace Castle.Windsor.Tests
 {
 	using System.Runtime.Remoting;
-	using System.Diagnostics;
-	using Castle.Core.Interceptor;
+	using Castle.DynamicProxy;
 	using Castle.Windsor.Tests.Components;
 	using NUnit.Framework;
 

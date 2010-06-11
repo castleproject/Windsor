@@ -22,6 +22,7 @@ namespace Castle.Facilities.FactorySupport
 	using Castle.Core;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.ComponentActivator;
+	using Castle.MicroKernel.Context;
 	using Castle.MicroKernel.Facilities;
 	using Castle.MicroKernel.Proxy;
 	using Castle.MicroKernel.SubSystems.Conversion;

@@ -49,7 +49,7 @@ namespace Castle.MicroKernel.Tests.Registration
 						Parameter.ForKey("name").Eq("foo"), // static parameters, resolved at registration time
 						Parameter.ForKey("address").Eq("bar st 13"),
 						Parameter.ForKey("age").Eq("5")),
-				Component.For<CommonImplWithDependancy>()
+				Component.For<CommonImplWithDependency>()
 					.LifeStyle.Transient
 					.DynamicParameters((k, d) => // dynamic parameters
 					{
@@ -60,7 +60,7 @@ namespace Castle.MicroKernel.Tests.Registration
 						}
 					}));
 
-			var component = Kernel.Resolve<CommonImplWithDependancy>();
+			var component = Kernel.Resolve<CommonImplWithDependency>();
 			Assert.IsInstanceOf<CustomerImpl2>(component.Customer);
 		}
 

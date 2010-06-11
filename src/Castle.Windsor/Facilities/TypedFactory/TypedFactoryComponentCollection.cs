@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.MicroKernel.Facilities.TypedFactory
+namespace Castle.Facilities.TypedFactory
 {
 	using System;
 	using System.Collections;
@@ -20,6 +20,7 @@ namespace Castle.MicroKernel.Facilities.TypedFactory
 	using System.Linq;
 
 	using Castle.DynamicProxy.Generators.Emitters;
+	using Castle.MicroKernel;
 
 	/// <summary>
 	/// Represents a set of components to be resolved via Typed Factory. Uses <see cref="IKernel.ResolveAll(System.Type,System.Collections.IDictionary)"/> to resolve the components.
@@ -40,26 +41,7 @@ namespace Castle.MicroKernel.Facilities.TypedFactory
 		{
 			var service = GetCollectionItemType();
 			var result = kernel.ResolveAll(service, AdditionalArguments);
-
-			if (service == typeof(object))
-			{
-				return result;
-			}
-
-			var array = Array.CreateInstance(service, result.Length);
-			result.CopyTo(array, 0);
-			return array;
-		}
-
-		protected void CheckReturnTypeCanBeSatisfiedByArrayOf(Type type)
-		{
-			var arrayType = type.MakeArrayType();
-			if (ComponentType.IsAssignableFrom(arrayType))
-			{
-				return;
-			}
-
-			ThrowUnsupportedCollectionType();
+			return result;
 		}
 
 		protected Type GetCollectionItemType()
@@ -73,7 +55,10 @@ namespace Castle.MicroKernel.Facilities.TypedFactory
 			{
 				foreach (var @interface in TypeUtil.GetAllInterfaces(ComponentType))
 				{
-					if(@interface.IsGenericType == false) continue;
+					if (@interface.IsGenericType == false)
+					{
+						continue;
+					}
 
 					if (@interface.GetGenericTypeDefinition() == typeof(IEnumerable<>))
 					{
@@ -92,6 +77,32 @@ namespace Castle.MicroKernel.Facilities.TypedFactory
 				string.Format(
 					"Type {0} is not supported collection type. If you want to support it, your ITypedFactoryComponentSelector implementation should return custom TypedFactoryComponent that will appropriately override Resolve method.",
 					ComponentType));
+		}
+
+		public static bool IsSupportedCollectionType(Type type)
+		{
+			if (type.IsArray)
+			{
+				return true;
+			}
+			if (!type.IsGenericType)
+			{
+				return false;
+			}
+			var enumerable = GetEnumerableType(type);
+			if (enumerable == null)
+			{
+				return false;
+			}
+			var array = enumerable.GetGenericArguments().Single().MakeArrayType();
+			return type.IsAssignableFrom(array);
+		}
+
+		private static Type GetEnumerableType(Type type)
+		{
+			return TypeUtil.GetAllInterfaces(type)
+				.Where(@interface => @interface.IsGenericType)
+				.SingleOrDefault(@interface => @interface.GetGenericTypeDefinition() == typeof(IEnumerable<>));
 		}
 	}
 }

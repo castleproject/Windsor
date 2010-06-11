@@ -18,11 +18,9 @@
 namespace Castle.Windsor.Tests
 {
 	using System;
-
 	using Castle.Core;
-	using Castle.Core.Interceptor;
+	using Castle.DynamicProxy;
 	using Castle.MicroKernel.Proxy;
-
 	using NUnit.Framework;
 
 	[TestFixture]

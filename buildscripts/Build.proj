@@ -34,7 +34,7 @@ limitations under the License.
 	<Import Project="$(BuildScriptsPath)\Castle.Common.Targets" />
 	<Import Project="$(MSBuildBinPath)\Microsoft.CSharp.Targets" />	
 
-	
+
 	<Target Name="CheckRequiredProperties">
 		<Error Condition="'$(ProjectName)' == ''" Text="The ProjectName property has not been set, please set it in Settings.proj." />
 	</Target>
@@ -70,7 +70,7 @@ limitations under the License.
 			Projects="@(AppProjects)"
 			Properties="OutputPath=$(OutputPath)"
 			Targets="Build">
-			
+		
 			<Output TaskParameter="TargetOutputs" ItemName="AppAssemblies" />
 		
 		</MSBuild>
@@ -83,7 +83,7 @@ limitations under the License.
 		<!-- Pick up the PDB files. This is kind of hard coded to the location of the AppAssemblies, but I currently don't see another way  -->
 		<ItemGroup>
 			<PdbFiles
-				Include="@(AppAssemblies->'%(RelativeDir)%(FileName).pdb')" />
+				Include="@(AppAssemblies->'%(RelativeDir)%(FileName).pdb')" Condition="Exists('@(AppAssemblies->%(RelativeDir)%(FileName).pdb')"  />
 		</ItemGroup>
 
 		<!-- Pick up the documentation XML. This is kind of hard coded to the location of the AppAssemblies, but I currently don't see another way  -->
@@ -221,11 +221,11 @@ limitations under the License.
 	<!-- Creates Zip file for Release -->
 	<Target
 		Name="Package"
-		DependsOnTargets="BuildProject;RunAllTests;GetBuildRevision;_PreparePackage"
+		DependsOnTargets="BuildProject;GetBuildRevision;_PreparePackage"
 		>
 
 		<PropertyGroup>
-			<Build_ZipFile Condition="'$(Build_ZipFile)' == ''">$(ProjectName)-$(TargetFrameworkIdentifier)-$(TargetFrameworkVersion)-$(Build_Revision).zip</Build_ZipFile>
+			<Build_ZipFile Condition="'$(Build_ZipFile)' == ''">$(ProjectName)-$(FrameworkId)-$(Build_Number).zip</Build_ZipFile>
 			<Build_ZipFilePath Condition="'$(Build_ZipFilePath)' == ''">$(OutputPath)/$(Build_ZipFile)</Build_ZipFilePath>
 		</PropertyGroup>
 

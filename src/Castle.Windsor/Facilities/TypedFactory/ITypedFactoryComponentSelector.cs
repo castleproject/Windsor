@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.MicroKernel.Facilities.TypedFactory
+namespace Castle.Facilities.TypedFactory
 {
 	using System;
 	using System.Reflection;
@@ -26,7 +26,6 @@ namespace Castle.MicroKernel.Facilities.TypedFactory
 		/// componentName should be null.
 		/// When component should be requested by name only,
 		/// componentType should be null.
-		/// 
 		/// </summary>
 		/// <param name="method"></param>
 		/// <param name="type"></param>

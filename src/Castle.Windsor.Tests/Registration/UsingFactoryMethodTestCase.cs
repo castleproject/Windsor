@@ -16,6 +16,8 @@ namespace Castle.MicroKernel.Tests.Registration
 {
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Tests.Facilities.FactorySupport;
+	using Castle.MicroKernel.Tests.Lifestyle.Components;
+	using Castle.Windsor.Tests.ClassComponents;
 
 	using NUnit.Framework;
 
@@ -105,6 +107,50 @@ namespace Castle.MicroKernel.Tests.Registration
 				);
 			Assert.IsInstanceOf(typeof(FerrariProvider), Kernel.Resolve<ICarProvider>(
 				new { FiscalStability = FiscalStability.MrMoneyBags }));
+		}
+
+		[Test]
+		public void Can_dispose_component_on_release_non_disposable_service_disposable_impl()
+		{
+			Kernel.Register(Component.For<IComponent>()
+			                	.ImplementedBy<ComponentWithDispose>()
+			                	.LifeStyle.Transient
+			                	.UsingFactoryMethod(() => new ComponentWithDispose()));
+			var component = Kernel.Resolve<IComponent>() as ComponentWithDispose;
+			Assert.IsFalse(component.Disposed);
+
+			Kernel.ReleaseComponent(component);
+
+			Assert.IsTrue(component.Disposed);
+		}
+
+		[Test]
+		public void Can_dispose_component_on_release_non_disposable_service_and_impl()
+		{
+			Kernel.Register(Component.For<IComponent>()
+								.LifeStyle.Transient
+								.UsingFactoryMethod(() => new ComponentWithDispose()));
+			var component = Kernel.Resolve<IComponent>() as ComponentWithDispose;
+			Assert.IsFalse(component.Disposed);
+
+			Kernel.ReleaseComponent(component);
+
+			Assert.IsTrue(component.Disposed);
+		}
+
+
+		[Test]
+		public void Can_dispose_component_on_release_disposable_service()
+		{
+			Kernel.Register(Component.For<DisposableComponent>()
+								.LifeStyle.Transient
+								.UsingFactoryMethod(() => new DisposableComponent()));
+			var component = Kernel.Resolve<DisposableComponent>();
+			Assert.IsFalse(component.Disposed);
+
+			Kernel.ReleaseComponent(component);
+
+			Assert.IsTrue(component.Disposed);
 		}
 	}
 }

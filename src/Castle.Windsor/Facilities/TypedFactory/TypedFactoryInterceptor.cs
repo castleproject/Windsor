@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,12 +18,12 @@ namespace Castle.Facilities.TypedFactory
 	using System.Collections.Generic;
 	using System.Linq;
 	using System.Reflection;
-
 	using Castle.Core;
 	using Castle.Core.Interceptor;
+	using Castle.DynamicProxy;
 	using Castle.MicroKernel;
-	using Castle.MicroKernel.Facilities.TypedFactory;
 
+	[Transient]
 	public class TypedFactoryInterceptor : IInterceptor, IOnBehalfAware, IDisposable
 	{
 		private readonly IKernel kernel;
@@ -103,7 +103,6 @@ namespace Castle.Facilities.TypedFactory
 					methods.Add(method, new Release(kernel));
 					continue;
 				}
-				//TODO: add collection handling?
 				methods.Add(method, new Resolve(kernel, ComponentSelector));
 			}
 

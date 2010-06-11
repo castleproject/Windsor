@@ -19,6 +19,7 @@ namespace Castle.Facilities.Remoting
 	using System.Collections.Generic;
 
 	using Castle.Core;
+	using Castle.Facilities.Remoting.CustomActivators;
 	using Castle.MicroKernel;
 
 

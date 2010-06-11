@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,21 +18,21 @@ namespace Castle.Facilities.EventWiring.Tests.Model
 
 	public class SimpleListener
 	{
-		private bool _listened;
-		private object _sender;
+		private bool listened;
+		private object sender;
 
 		public void OnPublish(object sender, EventArgs e)
 		{
-			_sender = sender;
+			this.sender = sender;
 
-			_listened = sender != null;
+			listened = sender != null;
 		}
 
 		public bool Listened
 		{
 			get
 			{
-				return _listened;
+				return listened;
 			}
 		}
 
@@ -40,7 +40,7 @@ namespace Castle.Facilities.EventWiring.Tests.Model
 		{
 			get
 			{
-				return _sender;
+				return sender;
 			}
 		}
 	}

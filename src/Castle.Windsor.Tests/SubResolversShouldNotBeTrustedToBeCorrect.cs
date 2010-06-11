@@ -16,7 +16,7 @@ namespace Castle.Windsor.Tests
 {
 	using Castle.Core;
 	using Castle.MicroKernel;
-	using Castle.MicroKernel.Exceptions;
+	using Castle.MicroKernel.Context;
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Resolvers;
 	using NUnit.Framework;

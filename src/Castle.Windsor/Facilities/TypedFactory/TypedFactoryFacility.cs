@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,6 +20,8 @@ namespace Castle.Facilities.TypedFactory
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Facilities;
 	using Castle.MicroKernel.Proxy;
+	using Castle.MicroKernel.Registration;
+	using Castle.MicroKernel.Resolvers;
 	using Castle.MicroKernel.SubSystems.Conversion;
 
 	/// <summary>
@@ -27,7 +29,9 @@ namespace Castle.Facilities.TypedFactory
 	/// </summary>
 	public class TypedFactoryFacility : AbstractFacility
 	{
-		internal static readonly string InterceptorKey = "Castle.TypedFactory.Interceptor";
+		public static readonly string InterceptorKey = "Castle.TypedFactory.Interceptor";
+		public static readonly string DelegateFactoryKey = "Castle.TypedFactory.DelegateFactory";
+		public static readonly string DelegateGeneratorKey = "Castle.TypedFactory.DelegateGenerator";
 
 		[Obsolete("This method is obsolete. Use AsFactory() extension method on fluent registration API instead.")]
 		public void AddTypedFactoryEntry(FactoryEntry entry)
@@ -45,9 +49,28 @@ namespace Castle.Facilities.TypedFactory
 
 		protected override void Init()
 		{
-			Kernel.AddComponent(InterceptorKey, typeof(TypedFactoryInterceptor), LifestyleType.Transient);
+			InitInterfaceBasedFactory();
+			InitDelegateBasedFactory();
 
 			LegacyInit();
+		}
+
+		private void InitDelegateBasedFactory()
+		{
+			Kernel.Register(Component.For<DelegateFactory>()
+			                	.Named(DelegateFactoryKey)
+			                	.Unless(Component.ServiceAlreadyRegistered),
+			                Component.For<IDelegateGenerator>()
+			                	.ImplementedBy<ExpressionTreeBasedDelegateGenerator>()
+			                	.Named(DelegateGeneratorKey)
+			                	.Unless(Component.ServiceAlreadyRegistered));
+		}
+
+		private void InitInterfaceBasedFactory()
+		{
+			Kernel.Register(Component.For<TypedFactoryInterceptor>()
+			                	.Named(InterceptorKey)
+			                	.Unless(Component.ServiceAlreadyRegistered));
 		}
 
 		private void LegacyInit()
@@ -62,30 +85,32 @@ namespace Castle.Facilities.TypedFactory
 
 		protected virtual void AddFactories(IConfiguration facilityConfig, ITypeConverter converter)
 		{
-			if (facilityConfig != null)
+			if (facilityConfig == null)
 			{
-				foreach (IConfiguration config in facilityConfig.Children["factories"].Children)
+				return;
+			}
+
+			foreach (var config in facilityConfig.Children["factories"].Children)
+			{
+				var id = config.Attributes["id"];
+				var creation = config.Attributes["creation"];
+				var destruction = config.Attributes["destruction"];
+
+				var factoryType = (Type)converter.PerformConversion(config.Attributes["interface"], typeof(Type));
+				if(string.IsNullOrEmpty(creation))
 				{
-					var id = config.Attributes["id"];
-					var creation = config.Attributes["creation"];
-					var destruction = config.Attributes["destruction"];
-
-					var factoryType = (Type)converter.PerformConversion(config.Attributes["interface"], typeof(Type));
-					if(string.IsNullOrEmpty(creation))
-					{
-						RegisterFactory(id, factoryType);
-						continue;
-					}
-
-					RegisterFactoryLegacy(creation, id, factoryType, destruction);
+					RegisterFactory(id, factoryType);
+					continue;
 				}
+
+				RegisterFactoryLegacy(creation, id, factoryType, destruction);
 			}
 		}
 
 		private void RegisterFactory(string id, Type type)
 		{
-			var model = new ComponentModel(id, type, type) { LifestyleType = LifestyleType.Singleton };
-			model.Interceptors.Add(new InterceptorReference(typeof(TypedFactoryInterceptor)));
+			var model = new ComponentModel(id, type, type);
+			model.Interceptors.AddLast(new InterceptorReference(InterceptorKey));
 			ProxyUtil.ObtainProxyOptions(model, true).OmitTarget = true;
 
 			Kernel.AddCustomComponent(model);
