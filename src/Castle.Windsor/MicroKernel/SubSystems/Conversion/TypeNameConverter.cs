@@ -43,6 +43,11 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 
 		private readonly ITypeNameParser parser;
 
+#if DOTNET35
+		private static readonly Type AssemblyBuilderDotNet4 = Type.GetType("System.Reflection.Emit.InternalAssemblyBuilder",
+		                                                                   false, true);
+#endif
+
 		public TypeNameConverter(ITypeNameParser parser)
 		{
 			if (parser == null)
@@ -152,7 +157,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 		{
 			// won't work for dynamic assemblies
 #if DOTNET35
-			if (assembly is AssemblyBuilder)
+			if (assembly is AssemblyBuilder || (AssemblyBuilderDotNet4 != null && assembly.GetType().Equals(AssemblyBuilderDotNet4)))
 #else
 			if(assembly.IsDynamic)
 #endif
