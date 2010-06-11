@@ -45,10 +45,12 @@
     <NoWarn>1591</NoWarn>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
+  <ItemGroup Condition="$(TargetFrameworkProfile)!='Client' and $(MSBuildTargets)!='Silverlight 3.0' and $(MSBuildTargets)!='Silverlight 4.0'">
+	  <Reference Include="System.Web" />
+  </ItemGroup>
   <ItemGroup Condition="$(MSBuildTargets)!='Silverlight 3.0' and $(MSBuildTargets)!='Silverlight 4.0'">
     <Reference Include="System.configuration" />
     <Reference Include="System.Runtime.Remoting" />
-    <Reference Include="System.Web" />
     <Reference Include="System.Data">
       <Name>System.Data</Name>
     </Reference>
@@ -67,6 +69,12 @@
     <Reference Include="System.Xml">
       <Name>System.XML</Name>
     </Reference>
+  </ItemGroup>
+  <ItemGroup Condition="$(TargetFrameworkProfile)!='Client' and $(MSBuildTargets)!='Silverlight 3.0' and $(MSBuildTargets)!='Silverlight 4.0'">
+	  <Compile Include="MicroKernel\ComponentActivator\WebUserControlComponentActivator.cs" />
+	  <Compile Include="MicroKernel\Lifestyle\PerWebRequestLifestyleManager.cs">
+		  <SubType>Code</SubType>
+	  </Compile>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core\CastleComponentAttribute.cs" />
@@ -109,7 +117,6 @@
     </Compile>
     <Compile Include="MicroKernel\ComponentActivator\FactoryMethodActivator.cs" />
     <Compile Include="MicroKernel\ComponentActivator\IDependencyAwareActivator.cs" />
-    <Compile Include="MicroKernel\ComponentActivator\WebUserControlComponentActivator.cs" />
     <Compile Include="MicroKernel\Burden.cs" />
     <Compile Include="MicroKernel\Arguments.cs" />
     <Compile Include="MicroKernel\Context\ComponentArgumentsEnumerator.cs" />
@@ -282,9 +289,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="MicroKernel\Lifestyle\PerThreadThreadStaticLifestyleManager.cs" />
-    <Compile Include="MicroKernel\Lifestyle\PerWebRequestLifestyleManager.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="MicroKernel\Lifestyle\PoolableLifestyleManager.cs">
       <SubType>Code</SubType>
     </Compile>

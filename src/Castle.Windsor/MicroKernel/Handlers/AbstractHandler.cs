@@ -480,7 +480,7 @@ namespace Castle.MicroKernel.Handlers
 				case LifestyleType.Transient:
 					manager = new TransientLifestyleManager();
 					break;
-#if (!SILVERLIGHT)
+#if (!SILVERLIGHT && !CLIENTPROFILE)
 				case LifestyleType.PerWebRequest:
 					manager = new PerWebRequestLifestyleManager();
 					break;
