@@ -63,7 +63,7 @@ namespace Castle.MicroKernel.ComponentActivator
 #if(!SILVERLIGHT)
         private bool HasSerializationFormatterPermission()
         {
-#if(NET35)
+#if(DOTNET35)
             return SecurityManager.IsGranted(new SecurityPermission(SecurityPermissionFlag.SerializationFormatter));
 #else
             var permission = new PermissionSet(PermissionState.None);

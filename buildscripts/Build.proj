@@ -25,14 +25,14 @@ limitations under the License.
 	
 	<!-- Root Path definition relative for actual build file -->
 	<PropertyGroup>
-		<RootPath Condition="'$(RootPath)' == ''">$(MSBuildProjectDirectory)\..</RootPath>
+		<RootPath Condition="'$(RootPath)' == ''">$(MSBuildProjectDirectory)/..</RootPath>
 	</PropertyGroup>
 
 
 	<!-- Import common targets -->
-	<Import Project="$(RootPath)\Settings.proj" />
-	<Import Project="$(BuildScriptsPath)\Castle.Common.Targets" />
-	<Import Project="$(MSBuildBinPath)\Microsoft.CSharp.Targets" />	
+	<Import Project="$(RootPath)/Settings.proj" />
+	<Import Project="$(BuildScriptsPath)/Castle.Common.Targets" />
+	<Import Project="$(MSBuildBinPath)/Microsoft.CSharp.Targets" Condition="($(MSBuildTargets) == '') Or ($(MSBuildTargets) == 'CSharp')" />
 
 
 	<Target Name="CheckRequiredProperties">
@@ -42,48 +42,42 @@ limitations under the License.
 
 	<UsingTask
 		TaskName="NCover.MSBuildTasks.NCover"
-		AssemblyFile="$(NCoverPath)\Build Task Plugins\NCover.MSBuildTasks.dll"
+		AssemblyFile="$(NCoverPath)/Build Task Plugins/NCover.MSBuildTasks.dll"
 		Condition="$(TestRunner_EnableCoverage)" />
-
-	
-	<!-- Project detection -->
-	<PropertyGroup>
-		<TestDetectionExpression>.[\.]((Integration|Unit)?Test[s]{0,1}(-vs\d{4})?)</TestDetectionExpression>
-		<IntegrationTestDetectionExpression>.[\.](IntegrationTest[s]{0,1}(-vs\d{4})?)</IntegrationTestDetectionExpression>
-		<UnitTestDetectionExpression>.[\.]((Unit)?Test[s]{0,1}(-vs\d{4})?)</UnitTestDetectionExpression>
-	</PropertyGroup>
 
 	
 	<!--
 		Public targets
 	-->
 	
-	<Target Name="BuildAll" DependsOnTargets="BuildProject;BuildAllTests" />
-
-	
 	<Target
 		Name="BuildProject"
-		DependsOnTargets="_GetProjectsFromSolution"
 		>
 
-		<MSBuild
-			Projects="@(AppProjects)"
-			Properties="OutputPath=$(OutputPath)"
-			Targets="Build">
-		
-			<Output TaskParameter="TargetOutputs" ItemName="AppAssemblies" />
+		<MSBuild Projects="$(SolutionPath)" Targets="Build" Properties="Configuration=$(Configuration)$(BuildFramework);BuildConstants=$(BuildConstants);MSBuildTargets=$(MSBuildTargets);TargetFrameworkVersion=$(TargetFrameworkVersion)">
+
+			<Output TaskParameter="TargetOutputs" ItemName="AllBinaries" />
 		
 		</MSBuild>
 		
-		<!-- Add all assemblies to all build assemblies -->
+		<PropertyGroup>
+			<TestDetectionExpression>.[\.]((Integration|Unit)?Test[s]{0,1}?)</TestDetectionExpression>
+		</PropertyGroup>
+
+		<!-- Resolve test projects -->
+		<RegexMatch Input="@(AllBinaries)" Expression="$(TestDetectionExpression)">
+			<Output TaskParameter="Output" ItemName="TestBinaries" />
+		</RegexMatch>
+
+		<!-- Resolve the libraries code projects -->
 		<ItemGroup>
-			<BuildAssemblies Include="@(AppAssemblies)" />
+			<AppAssemblies Include="@(AllBinaries)" Exclude="@(TestBinaries)" />
 		</ItemGroup>
 
 		<!-- Pick up the PDB files. This is kind of hard coded to the location of the AppAssemblies, but I currently don't see another way  -->
 		<ItemGroup>
 			<PdbFiles
-				Include="@(AppAssemblies->'%(RelativeDir)%(FileName).pdb')" Condition="Exists('@(AppAssemblies->%(RelativeDir)%(FileName).pdb')"  />
+				Include="@(AppAssemblies->'%(RelativeDir)%(FileName).pdb')" />
 		</ItemGroup>
 
 		<!-- Pick up the documentation XML. This is kind of hard coded to the location of the AppAssemblies, but I currently don't see another way  -->
@@ -96,143 +90,75 @@ limitations under the License.
 	</Target>
 
 	
-	<Target
-		Name="BuildAllTests"
-		DependsOnTargets="_GetProjectsFromSolution"
-		>
-		
-		<MSBuild
-			Projects="@(TestProjects)"
-			Properties="OutputPath=$(OutputPath)"
-			Targets="Build"
-			>
-			
-			<Output TaskParameter="TargetOutputs" ItemName="TestAssemblies" />
-		
-		</MSBuild>
+	<Target Name="RebuildAll" DependsOnTargets="CleanAll;BuildProject" />
+	<Target Name="ClickToBuild" DependsOnTargets="RebuildAll;_SetPackageDir;_PreparePackage" />
 
-		<!-- Add all assemblies to all build assemblies -->
-		<ItemGroup>
-			<BuildAssemblies Include="@(TestAssemblies)" />
-		</ItemGroup>
+	<Target Name="_SetPackageDir">
+		<PropertyGroup>
+			<PackageDir>$(OutputPath)</PackageDir>
+		</PropertyGroup>
 	</Target>
 
-	
-	<Target
-		Name="BuildIntegrationTests"
-		DependsOnTargets="_GetProjectsFromSolution"
-		>
-		
-		<MSBuild
-			Projects="@(IntegrationTestProjects)"
-			Properties="OutputPath=$(OutputPath)"
-			Targets="Build"
-			>
-			
-			<Output TaskParameter="TargetOutputs" ItemName="TestAssemblies" />
-		
-		</MSBuild>
+	<Target Name="CleanProject">
+		<MSBuild Projects="$(SolutionPath)" Targets="Clean" Properties="Configuration=$(Configuration)$(BuildFramework);BuildConstants=$(BuildConstants);MSBuildTargets=$(MSBuildTargets);TargetFrameworkVersion=$(TargetFrameworkVersion)" />
 
-		<!-- Add all assemblies to all build assemblies -->
-		<ItemGroup>
-			<BuildAssemblies Include="@(TestAssemblies)" />
-		</ItemGroup>
-	
+		<CreateItem Include="**/Debug/**/*.*;**/Release/**/*.*">
+			<Output ItemName="_binaryFiles" TaskParameter="Include"/>
+		</CreateItem>
+		<Delete Files="@(_binaryFiles)" TreatErrorsAsWarnings="true"/>
+		<RemoveDir Directories="$(OutputPath)" />
 	</Target>
 
-	
-	<Target
-		Name="BuildUnitTests"
-		DependsOnTargets="_GetProjectsFromSolution"
-		>
-		
-		<MSBuild
-			Projects="@(UnitTestProjects)"
-			Properties="Configuration=$(Configuration);Platform=$(Platform)"
-			Targets="Build"
-			>
-			<Output TaskParameter="TargetOutputs" ItemName="TestAssemblies" />
-		</MSBuild>
 
-		<!-- Add all assemblies to all build assemblies -->
-		<ItemGroup>
-			<BuildAssemblies Include="@(TestAssemblies)" />
-		</ItemGroup>
-	
-	</Target>
+	<Target Name="CleanAll">
+		<MSBuild Projects="$(SolutionPath)" Targets="Clean" Properties="Configuration=$(Configuration)$(BuildFramework);BuildConstants=$(BuildConstants);MSBuildTargets=$(MSBuildTargets);TargetFrameworkVersion=$(TargetFrameworkVersion)" />
 
-	
-	<Target Name="RebuildAll" DependsOnTargets="CleanAll;BuildAll" />
-
-	
-	<Target Name="CleanAll" DependsOnTargets="CleanProject;CleanTest" />
-
-	
-	<Target
-		Name="CleanProject"
-		DependsOnTargets="_GetProjectsFromSolution"
-		>
-		
-		<MSBuild Projects="@(AppProjects)" Targets="Clean" />
-
-	</Target>
-
-	
-	<Target
-		Name="CleanTest"
-		DependsOnTargets="_GetProjectsFromSolution"
-		>
-		
-		<MSBuild Projects="@(TestProjects)" Targets="Clean" />
-
+		<CreateItem Include="**/Debug/**/*.*;**/Release/**/*.*">
+			<Output ItemName="_binaryFiles" TaskParameter="Include"/>
+		</CreateItem>
+		<Delete Files="@(_binaryFiles)" TreatErrorsAsWarnings="true"/>
+		<Exec Command="for /f %%d in ('dir /ad /b') do rd /s /q %%d"
+			WorkingDirectory="$(BuildPath)"
+			Condition=" Exists('$(BuildPath)') "/>
+  		<RemoveDir Directories="$(BuildPath)" Condition=" Exists('$(BuildPath)') "/>
 	</Target>
 
 	
 	<Target
 		Name="RunAllTests"
-		DependsOnTargets="BuildAllTests"
+		DependsOnTargets="BuildProject"
 		>
 		
 		<CallTarget Targets="_ExecTestRunner" />
 	
 	</Target>
 
-	
+	<!-- Builds the source code and creates the package -->
 	<Target
-		Name="RunIntegrationTests"
-		DependsOnTargets="BuildIntegrationTests"
+	    Name="BuildAndPack"
 		>
+	
+		<CallTarget Targets="RebuildAll" />
 		
-		<CallTarget Targets="_ExecTestRunner" />
+		<CallTarget Targets="Package" />
 	
 	</Target>
-
 	
-	<Target
-		Name="RunUnitTests"
-		DependsOnTargets="BuildUnitTests"
-		>
-		
-		<CallTarget Targets="_ExecTestRunner" />
-	
-	</Target>
-
-
 	<!-- Creates Zip file for Release -->
 	<Target
 		Name="Package"
-		DependsOnTargets="BuildProject;GetBuildRevision;_PreparePackage"
+		DependsOnTargets="CleanProject;GetBuildRevision;RunAllTests;_PreparePackage"
 		>
 
 		<PropertyGroup>
-			<Build_ZipFile Condition="'$(Build_ZipFile)' == ''">$(ProjectName)-$(FrameworkId)-$(Build_Number).zip</Build_ZipFile>
+			<Build_ZipFile Condition="'$(Build_ZipFile)' == ''">$(ProjectName)-$(BuildConfigKey)-$(Build_Number).zip</Build_ZipFile>
 			<Build_ZipFilePath Condition="'$(Build_ZipFilePath)' == ''">$(OutputPath)/$(Build_ZipFile)</Build_ZipFilePath>
 		</PropertyGroup>
 
 		<Message Importance="high" Text="Creating ZIP file $(Build_ZipFilePath)"/>
 
 		<ItemGroup>
-			<FilesToPackage Include="$(PackageDir)\**\*.*" />
+			<FilesToPackage Include="$(PackageDir)\**\*.*" Exclude="$(PackageDir)\**\*Tests*" />
 		</ItemGroup>
 		<Zip
 			Files="@(FilesToPackage)"
@@ -244,8 +170,7 @@ limitations under the License.
 		<RemoveDir Directories="$(PackageDir)" ContinueOnError="true" />
 
 	</Target>
-
-
+	
 	<!--
 	==================================================
 		Internal targets
@@ -256,7 +181,7 @@ limitations under the License.
 	<Target
 		Name="_ExecTestRunner"
 		DependsOnTargets="_CreateTestResultsFolder"
-		Condition="$(TestRunner_Enabled) And '@(TestAssemblies)' != ''"
+		Condition="$(TestRunner_Enabled)"
 		>
 		
 		<CallTarget Targets="_ExecNUnit" Condition="!$(TestRunner_EnableCoverage)" />
@@ -266,14 +191,21 @@ limitations under the License.
 	</Target>
 	
 
+	<!-- Use TeamCity's when running on the build server -->
+	<UsingTask TaskName="NUnit" AssemblyFile="$(teamcity_dotnet_nunitlauncher_msbuild_task)" Condition=" '$(TEAMCITY_VERSION)' != '' "/>
+
 	<Target
 		Name="_ExecNUnit"
 		>
-
+		
 		<PropertyGroup>
-			<NUnitTestResultXmlFiles Condition="'$(NUnitTestResultXmlFiles)' == ''">$(TestResultsPath)\nunit-results.xml</NUnitTestResultXmlFiles>
+			<NUnitTestResultXmlFiles Condition="'$(NUnitTestResultXmlFiles)' == ''">$(TestResultsPath)/nunit-results.xml</NUnitTestResultXmlFiles>
 		</PropertyGroup>
 
+		<ItemGroup>
+			<TestAssemblies Include="$(RootPath)/src/**/bin/$(Configuration)/*Test*.dll" />
+		</ItemGroup>
+		
 		<NUnit 
 			ToolPath="$(NUnitPath)"
 			Assemblies="@(TestAssemblies)"
@@ -296,12 +228,12 @@ limitations under the License.
 		>
 		
 		<PropertyGroup>
-			<NCoverResultXmlFiles Condition="'$(NCoverResultXmlFiles)' == ''">$(TestResultsPath)\nunit-coverage-results.xml</NCoverResultXmlFiles>
+			<NCoverResultXmlFiles Condition="'$(NCoverResultXmlFiles)' == ''">$(TestResultsPath)/nunit-coverage-results.xml</NCoverResultXmlFiles>
 		</PropertyGroup>
 
 		<NCover
 			ToolPath="$(NCoverPath)"
-			TestRunnerExe="$(NUnitPath)\nunit-console-x86.exe"
+			TestRunnerExe="$(NUnitPath)/nunit-console-x86.exe"
 			TestRunnerArgs="@(TestAssemblies) /noshadow"
 			CoverageFile="$(NCoverResultXmlFiles)"
 			ContinueOnError="$(TestRunner_ContinueOnError)"
@@ -326,64 +258,6 @@ limitations under the License.
 	
 	</Target>
 
-	<Target
-		Name="_GetProjectsFromSolution"
-		>
-
-		<!-- Get all the projects associated with the solution -->
-		<GetSolutionProjects Solution="$(SolutionPath)">
-			<Output TaskParameter="Output" ItemName="SolutionProjects" />
-		</GetSolutionProjects>
-
-		<!-- Filter out solution folders and non .csproj items -->
-		<RegexMatch Input="@(SolutionProjects)" Expression=".[\.]csproj$">
-			<Output TaskParameter="Output" ItemName="Projects" />
-		</RegexMatch>
-
-		<!-- Resolve test projects -->
-		<RegexMatch Input="@(Projects)" Expression="$(TestDetectionExpression)[\.]csproj$">
-			<Output TaskParameter="Output" ItemName="TestProjects" />
-		</RegexMatch>
-
-		<RegexMatch Input="@(TestProjects)" Expression="$(IntegrationTestDetectionExpression)[\.]csproj$">
-			<Output TaskParameter="Output" ItemName="IntegrationTestProjects" />
-		</RegexMatch>
-
-		<RegexMatch Input="@(TestProjects)" Expression="$(UnitTestDetectionExpression)[\.]csproj$">
-			<Output TaskParameter="Output" ItemName="UnitTestProjects" />
-		</RegexMatch>
-
-		<!-- Resolve the libraries code projects -->
-		<ItemGroup>
-			<AppProjects Include="@(Projects)" Exclude="@(TestProjects)" />
-		</ItemGroup>
-
-		<Message
-			Text="$(NEW_LINE)Resolved the following solution projects:"
-			Importance="high"
-			/>
-		<Message
-			Text="AppProjects:$(NEW_LINE)$(TAB)@(AppProjects-&gt;'%(RelativeDir)%(FileName)%(Extension)', '$(NEW_LINE)$(TAB)')"
-			Importance="high"
-			/>
-		<Message
-			Text="TestProjects:$(NEW_LINE)$(TAB)@(TestProjects-&gt;'%(RelativeDir)%(FileName)%(Extension)', '$(NEW_LINE)$(TAB)')"
-			Importance="high"
-			/>
-	
-	</Target>
-
-	
-	<Target
-		Name="_ChangeConfigurationToRelease"
-		>
-		
-		<PropertyGroup>
-			<Configuration>Release</Configuration>
-		</PropertyGroup>
-
-	</Target>
-
 
 	<!-- Prepare package directory -->
 	<Target Name="_PreparePackage">
@@ -398,33 +272,30 @@ limitations under the License.
 			<!-- Grab all Castle assemblies, but ignore unit test assemblies. -->
 			<_CastleDependencies Include="$(OutputPath)Castle*.dll;$(OutputPath)Castle*.xml" Exclude="$(OutputPath)Castle*.Tests.dll"/>
 
-			<_BuildScriptsTxtFiles Include="$(BuildScriptsPath)\*.txt"/>
-			<_Txt Include="$(RootPath)\*.txt"/>			
-			
-			<_PackageFiles Include="$(PackageFiles)" />
-			<_ExcludeFromPackageFiles Include="$(ExcludeFromPackageFiles)" />
+			<_BuildScriptsTxtFiles Include="$(BuildScriptsPath)/*.txt"/>
+			<_ChangesTxt Include="$(RootPath)/src/Change*.txt"/>
 		</ItemGroup>
-		
+
 		<!-- Create list with items to be copied to package directory. The metadata <DestinationFolder> controls where they wind up. -->
 		<ItemGroup>
 			<CopyToPackageDirectory Include="@(_BuildScriptsTxtFiles)">
 				<DestinationFolder>$(PackageDir)</DestinationFolder>
 			</CopyToPackageDirectory>
 
-			<CopyToPackageDirectory Include="@(AppAssemblies);@(PdbFiles);@(DocumentationFiles);@(_CastleDependencies);@(_PackageFiles)">
-				<DestinationFolder>$(PackageDir)\bin</DestinationFolder>
+			<CopyToPackageDirectory Include="@(AppAssemblies);@(PdbFiles);@(DocumentationFiles);@(_CastleDependencies);@(PackageFiles)">
+				<DestinationFolder>$(PackageDir)/bin</DestinationFolder>
 			</CopyToPackageDirectory>
 
-			<CopyToPackageDirectory Include="@(_Txt)">
-				<DestinationFolder>$(PackageDir)\ReleaseNotes</DestinationFolder>
+			<CopyToPackageDirectory Include="@(_ChangesTxt)">
+				<DestinationFolder>$(PackageDir)/ReleaseNotes</DestinationFolder>
 			</CopyToPackageDirectory>
 			
-			<CopyToPackageDirectory Remove="@(_ExcludeFromPackageFiles)" />
+			<CopyToPackageDirectory Remove="@(ExcludeFromPackageFiles)" />
 		</ItemGroup>
-
+		
 		<Copy
 			SourceFiles="@(CopyToPackageDirectory)"
-			DestinationFiles="@(CopyToPackageDirectory->'%(DestinationFolder)\%(RecursiveDir)%(Filename)%(Extension)')"
+			DestinationFiles="@(CopyToPackageDirectory->'%(DestinationFolder)/%(RecursiveDir)%(Filename)%(Extension)')"
 			/>
 
 	</Target>

@@ -55,23 +55,38 @@ namespace Castle.Facilities.Remoting.Tests
 
 		protected IWindsorContainer CreateRemoteContainer(AppDomain domain, String configFile)
 		{
+#if DOTNET35
+			ObjectHandle handle = domain.CreateInstance(
+				typeof(WindsorContainer).Assembly.FullName,
+				typeof(WindsorContainer).FullName, false, BindingFlags.Instance | BindingFlags.Public, null,
+				new object[] { configFile },
+				CultureInfo.InvariantCulture, null, null);
+#else
 			ObjectHandle handle = domain.CreateInstance(
 				typeof(WindsorContainer).Assembly.FullName,
 				typeof(WindsorContainer).FullName, false, BindingFlags.Instance | BindingFlags.Public, null,
 				new object[] { configFile },
 				CultureInfo.InvariantCulture, null);
+#endif
 
 			return (IWindsorContainer) handle.Unwrap();
 		}
 
 		protected IWindsorContainer GetRemoteContainer(AppDomain domain, String configFile)
 		{
-			ObjectHandle handle = domain.CreateInstance( 
-				typeof(ContainerPlaceHolder).Assembly.FullName, 
-				typeof(ContainerPlaceHolder).FullName, false, BindingFlags.Instance|BindingFlags.Public, null, 
-				new object[] { configFile }, 
+#if DOTNET35
+			ObjectHandle handle = domain.CreateInstance(
+				typeof(ContainerPlaceHolder).Assembly.FullName,
+				typeof(ContainerPlaceHolder).FullName, false, BindingFlags.Instance | BindingFlags.Public, null,
+				new object[] { configFile },
+				CultureInfo.InvariantCulture, null, null);
+#else
+			ObjectHandle handle = domain.CreateInstance(
+				typeof(ContainerPlaceHolder).Assembly.FullName,
+				typeof(ContainerPlaceHolder).FullName, false, BindingFlags.Instance | BindingFlags.Public, null,
+				new object[] { configFile },
 				CultureInfo.InvariantCulture, null);
-
+#endif
 			ContainerPlaceHolder holder = handle.Unwrap() as ContainerPlaceHolder;
 
 			return holder.Container;
