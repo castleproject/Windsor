@@ -42,8 +42,11 @@
     <NoWarn>1591</NoWarn>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
-  <ItemGroup Condition="$(MSBuildTargets)!='Silverlight 3.0' or $(MSBuildTargets)!='Silverlight 4.0'">
+  <ItemGroup Condition="$(MSBuildTargets)!='Silverlight 3.0' and $(MSBuildTargets)!='Silverlight 4.0'">
     <Reference Include="System.configuration" />
+    <Reference Include="System.Data">
+      <Name>System.Data</Name>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Castle.Core">
@@ -55,9 +58,6 @@
     </Reference>
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="System.Data">
-      <Name>System.Data</Name>
     </Reference>
     <Reference Include="System.Xml">
       <Name>System.XML</Name>
