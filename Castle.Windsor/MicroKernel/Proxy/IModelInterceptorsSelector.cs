@@ -13,15 +13,15 @@ namespace Castle.MicroKernel.Proxy
         /// The intereceptor references aren't neccessarily registered in the model.Intereceptors
         /// </summary>
         /// <param name="model">The model to select the interceptors for</param>
+        /// <param name="interceptors">The interceptors selected by previous selectors in the pipeline or <see cref="ComponentModel.Interceptors"/> if this is the first interceptor in the pipeline.</param>
         /// <returns>The intereceptors for this model (in the current context) or a null reference</returns>
         /// <remarks>
         /// If the selector is not interested in modifying the interceptors for this model, it 
-        /// should return a null reference and the next selector in line would be executed (or the default
-        /// model.Interceptors).
-        /// If the selector return a non null value, this is the value that is used, and the model.Interectors are ignored, if this
-        /// is not the desirable behavior, you need to merge your interceptors with the ones in model.Interecptors yourself.
+        /// should return <paramref name="interceptors"/> and the next selector in line would be executed.
+        /// If the selector wants no interceptors to be used it can either return <c>null</c> or empty array.
+        /// However next interceptor in line is free to override this choice.
         /// </remarks>
-        InterceptorReference[] SelectInterceptors(ComponentModel model);
+        InterceptorReference[] SelectInterceptors(ComponentModel model, InterceptorReference[] interceptors);
 
         /// <summary>
         /// Determain whatever the specified has interecptors.

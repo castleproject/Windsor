@@ -28,8 +28,9 @@ namespace Castle.Windsor.Proxy
 	public abstract class AbstractProxyFactory : IProxyFactory
 	{
 		private readonly IList<IModelInterceptorsSelector> selectors = new List<IModelInterceptorsSelector>();
+	    private static readonly InterceptorReference[] emptyInterceptors = new InterceptorReference[0];
 
-		public abstract object Create(IKernel kernel, object instance, ComponentModel model, CreationContext context,
+	    public abstract object Create(IKernel kernel, object instance, ComponentModel model, CreationContext context,
 		                              params object[] constructorArguments);
 
 		public abstract bool RequiresTargetInstance(IKernel kernel, ComponentModel model);
@@ -70,12 +71,11 @@ namespace Castle.Windsor.Proxy
 		/// <returns>interceptors array</returns>
 		protected IInterceptor[] ObtainInterceptors(IKernel kernel, ComponentModel model, CreationContext context)
 		{
-			List<IInterceptor> interceptors = new List<IInterceptor>();
+			var interceptors = new List<IInterceptor>();
 
 			foreach(InterceptorReference interceptorRef in GetInterceptorsFor(model))
 			{
 				IHandler handler;
-
 				if (interceptorRef.ReferenceType == InterceptorReferenceType.Interface)
 				{
 					handler = kernel.GetHandler(interceptorRef.ServiceType);
@@ -115,20 +115,23 @@ namespace Castle.Windsor.Proxy
 
 		protected IEnumerable<InterceptorReference> GetInterceptorsFor(ComponentModel model)
 		{
-			foreach(IModelInterceptorsSelector selector in selectors)
+		    InterceptorReference[] interceptors = model.Interceptors.ToArray();
+		    foreach(var selector in selectors)
 			{
-				InterceptorReference[] interceptors = selector.SelectInterceptors(model);
-				if (interceptors == null)
+                if(selector.HasInterceptors(model) == false) continue;
+
+			    interceptors = selector.SelectInterceptors(model, interceptors);
+			    if (interceptors == null)
 				{
-					continue;
+					interceptors = emptyInterceptors;
 				}
 
-				foreach (InterceptorReference interceptor in interceptors)
-					yield return interceptor;
-			}
+            }
 
-			foreach (InterceptorReference interceptor in model.Interceptors)
-				yield return interceptor;
+		    foreach (var interceptor in interceptors)
+		    {
+		        yield return interceptor;
+		    }
 		}
 
 		protected static void SetOnBehalfAware(IOnBehalfAware onBehalfAware, ComponentModel target)
