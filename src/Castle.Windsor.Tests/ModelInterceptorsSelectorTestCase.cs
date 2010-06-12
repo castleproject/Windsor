@@ -67,7 +67,7 @@ namespace Castle.Windsor.Tests
         }
         public class AnotherInterceptorSelector: IModelInterceptorsSelector 
         {
-            public InterceptorReference[] SelectInterceptors(ComponentModel model)
+            public InterceptorReference[] SelectInterceptors(ComponentModel model, InterceptorReference[] interceptors)
             {
                 return new[] {new InterceptorReference(typeof(AnotherDummyInterceptor)), };
             }
@@ -87,7 +87,7 @@ namespace Castle.Windsor.Tests
         {
             public Interceptors Interceptors = Interceptors.None;
 
-            public InterceptorReference[] SelectInterceptors(ComponentModel model)
+            public InterceptorReference[] SelectInterceptors(ComponentModel model, InterceptorReference[] interceptors)
             {
                 if(model.Service!=typeof(IWatcher))
                     return null;

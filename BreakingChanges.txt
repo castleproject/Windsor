@@ -1,4 +1,23 @@
 ================================================================================================
+change - IModelInterceptorsSelector.SelectInterceptors method changed its signature and how it
+	is used.
+
+impact - medium
+fixability - medium
+revision - 
+
+description - To accomodate additional scenarios that were impossible (or hard to acheave
+	with previous design the method now has additional parameter, an array of references to
+	interceptors, which contains either default interceptors for the component, or interceptors
+	selected by previous interceptors in line). Also, Windsor will now never call
+	IModelInterceptorsSelector.SelectInterceptors without calling 
+	IModelInterceptorsSelector.HasInterceptors before it, or when the latter returns false.
+
+fix - When adjusting your implementation remember that model's interceptors are the default value
+	passed as methods second parameter, so you don't need to merge them again manually (otherwise
+	they'll be invoked twice).
+
+================================================================================================
 change - CreateComponentActivator, RaiseHandlerRegistered, RaiseHandlersChanged and
 	 RegisterHandlerForwarding methods were moved from IKernel to IKernelInternal interface
 
