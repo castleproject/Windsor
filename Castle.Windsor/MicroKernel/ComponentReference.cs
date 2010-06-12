@@ -18,32 +18,68 @@ namespace Castle.MicroKernel
 
 	using Castle.MicroKernel.Context;
 
-	public class ComponentReference : IReference<object>
+	/// <summary>
+	/// Reference to component obtained from a container.
+	/// </summary>
+	/// <typeparam name="T"></typeparam>
+	public class ComponentReference<T> : IReference<T>
 	{
-		private readonly Type componentType;
+	    private readonly Type actualComponentType;
+	    private readonly string componentKey;
 
-		public ComponentReference(Type componentType)
+		public ComponentReference(string componentKey)
 		{
-			if (componentType == null)
+			if (componentKey == null)
 			{
-				throw new ArgumentNullException("componentType");
+				throw new ArgumentNullException("componentKey");
 			}
 
-			this.componentType = componentType;
+			this.componentKey = componentKey;
 		}
 
-		public object Resolve(IKernel kernel, CreationContext context)
-		{
+        public ComponentReference(Type actualComponentType)
+        {
+            if (actualComponentType == null)
+            {
+                throw new ArgumentNullException("actualComponentType");
+            }
+            this.actualComponentType = actualComponentType;
+        }
 
-			var handler = kernel.GetHandler(componentType);
+	    public ComponentReference():this(typeof(T))
+	    {
+	        // so that we don't have to specify the key
+	    }
+
+	    public T Resolve(IKernel kernel, CreationContext context)
+		{
+			var handler = GetHandler(kernel);
 			if (handler == null)
 			{
 				throw new Exception(
 					string.Format(
-						"Component {0} could not be resolved. Make sure that the component is registered.",
-						componentType));
+						"Component {0} could not be resolved. Make sure you didn't misspell the name, and that component is registered.",
+						componentKey ?? actualComponentType.ToString()));
 			}
-			return handler.Resolve(context);
+
+			try
+			{
+				return (T)handler.Resolve(context);
+			}
+			catch (InvalidCastException e)
+			{
+				throw new Exception(string.Format("Component {0} is not compatible with type {1}.", componentKey, typeof(T)), e);
+			}
+		}
+
+		private IHandler GetHandler(IKernel kernel)
+		{
+			if (componentKey != null)
+			{
+				return kernel.GetHandler(componentKey);
+			}
+
+		    return kernel.GetHandler(actualComponentType);
 		}
 	}
 }

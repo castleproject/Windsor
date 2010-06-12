@@ -46,7 +46,7 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <ItemGroup Condition="$(TargetFrameworkProfile)!='Client' and $(MSBuildTargets)!='Silverlight 3.0' and $(MSBuildTargets)!='Silverlight 4.0'">
-	  <Reference Include="System.Web" />
+    <Reference Include="System.Web" />
   </ItemGroup>
   <ItemGroup Condition="$(MSBuildTargets)!='Silverlight 3.0' and $(MSBuildTargets)!='Silverlight 4.0'">
     <Reference Include="System.configuration" />
@@ -71,10 +71,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup Condition="$(TargetFrameworkProfile)!='Client' and $(MSBuildTargets)!='Silverlight 3.0' and $(MSBuildTargets)!='Silverlight 4.0'">
-	  <Compile Include="MicroKernel\ComponentActivator\WebUserControlComponentActivator.cs" />
-	  <Compile Include="MicroKernel\Lifestyle\PerWebRequestLifestyleManager.cs">
-		  <SubType>Code</SubType>
-	  </Compile>
+    <Compile Include="MicroKernel\ComponentActivator\WebUserControlComponentActivator.cs" />
+    <Compile Include="MicroKernel\Lifestyle\PerWebRequestLifestyleManager.cs">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core\CastleComponentAttribute.cs" />
@@ -106,6 +106,7 @@
     <Compile Include="Facilities\TypedFactory\IDelegateGenerator.cs" />
     <Compile Include="Facilities\TypedFactory\DelegateFactory.cs" />
     <Compile Include="Facilities\TypedFactory\NoUniqueComponentException.cs" />
+    <Compile Include="Facilities\TypedFactory\TypedFactoryConfiguration.cs" />
     <Compile Include="MicroKernel\ComponentActivator\AbstractComponentActivator.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -369,7 +370,6 @@
     <Compile Include="Core\PropertySet.cs" />
     <Compile Include="Core\PropertySetCollection.cs" />
     <Compile Include="MicroKernel\ComponentReference.cs" />
-    <Compile Include="MicroKernel\ComponentReference.Generic.cs" />
     <Compile Include="MicroKernel\Proxy\IModelInterceptorsSelector.cs" />
     <Compile Include="MicroKernel\InstanceReference.cs" />
     <Compile Include="MicroKernel\IProxyFactory.cs">

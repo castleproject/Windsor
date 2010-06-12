@@ -75,7 +75,7 @@ namespace Castle.Facilities.TypedFactory
 				.LifeStyle.Singleton
 				.UsingFactoryMethod((k,c) => 
                                  {
-                                 	var selector = (ITypedFactoryComponentSelector)settings.Reference.Resolve(k,c);
+                                 	var selector = settings.Reference.Resolve(k,c);
                                  	var @delegate = GenerateDelegate(invoke, selector, service);
                                  	k.ReleaseComponent(selector);
                                  	return @delegate;

@@ -18,9 +18,7 @@ namespace Castle.MicroKernel.Registration.Proxy
 	using System.Collections;
 	using System.Collections.Generic;
 
-	using Castle.MicroKernel.Proxy;
-
-	public class MixinRegistration : IEnumerable<IReference<object>>
+    public class MixinRegistration : IEnumerable<IReference<object>>
 	{
 		private readonly IList<IReference<object>> mixins = new List<IReference<object>>();
 
@@ -35,13 +33,13 @@ namespace Castle.MicroKernel.Registration.Proxy
 
 		public MixinRegistration Service<TService>()
 		{
-			mixins.Add(new ComponentReference(typeof(TService)));
+			mixins.Add(new ComponentReference<object>(typeof(TService)));
 			return this;
 		}
 
 		public MixinRegistration Service(Type serviceType)
 		{
-			mixins.Add(new ComponentReference(serviceType));
+			mixins.Add(new ComponentReference<object>(serviceType));
 			return this;
 		}
 
