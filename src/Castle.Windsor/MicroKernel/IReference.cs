@@ -20,7 +20,7 @@ namespace Castle.MicroKernel
 	/// Represents obtained just in time object.
 	/// </summary>
 	/// <typeparam name="T"></typeparam>
-	public interface IReference<T>
+	public interface IReference<out T>
 	{
 		/// <summary>
 		/// Resolves object referenced by this reference, optionally using provided <paramref name="kernel"/>.

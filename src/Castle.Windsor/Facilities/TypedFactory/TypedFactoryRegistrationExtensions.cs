@@ -20,7 +20,6 @@ namespace Castle.Facilities.TypedFactory
 	using Castle.Core;
 	using Castle.DynamicProxy;
 	using Castle.MicroKernel;
-	using Castle.MicroKernel.Proxy;
 	using Castle.MicroKernel.Registration;
 
 	public static class TypedFactoryRegistrationExtensions
@@ -96,7 +95,7 @@ namespace Castle.Facilities.TypedFactory
 			return registration.UsingFactoryMethod((k,c) => 
 			                                       {
 			                                       	var factory = k.Resolve<DelegateFactory>(TypedFactoryFacility.DelegateFactoryKey);
-			                                       	var selector = (ITypedFactoryComponentSelector)settings.Reference.Resolve(k,c);
+			                                       	var selector = settings.Reference.Resolve(k,c);
 			                                       	var @delegate = factory.GenerateDelegate(invoke, selector, registration.ServiceType);
 			                                       	k.ReleaseComponent(selector);
 			                                       	k.ReleaseComponent(factory);
@@ -126,7 +125,7 @@ namespace Castle.Facilities.TypedFactory
 			return componentRegistration.DynamicParameters((k, c, d) =>
 			                                               {
 			                                               	var selector = selectorReference.Resolve(k, c);
-			                                               	d.Insert((ITypedFactoryComponentSelector)selector);
+			                                               	d.Insert(selector);
 			                                               	return k2 => k2.ReleaseComponent(selector);
 			                                               });
 		}
@@ -134,51 +133,6 @@ namespace Castle.Facilities.TypedFactory
 		private static bool HasOutArguments(Type serviceType)
 		{
 			return serviceType.GetMethods().Any(m => m.GetParameters().Any(p => p.IsOut));
-		}
-	}
-
-	public class TypedFactoryConfiguration
-	{
-		private IReference<object> selectorReference;
-		
-		internal IReference<object> Reference
-		{
-			get
-			{
-				if(selectorReference == null)
-				{
-					selectorReference = new DefaultTypedFactoryComponentSelectorReference();
-				}
-				return selectorReference;
-			}
-		}
-
-		public void SelectedWith(string selectorComponentName)
-		{
-			selectorReference = new ComponentReference<object>(selectorComponentName);
-		}
-
-		public void SelectedWith<TSelectorComponent>() where TSelectorComponent : ITypedFactoryComponentSelector
-		{
-			selectorReference = new ComponentReference(typeof(TSelectorComponent));
-		}
-
-		public void SelectedWith(ITypedFactoryComponentSelector selector)
-		{
-			if (selector == null)
-			{
-				throw new ArgumentNullException("selector");
-			}
-
-			selectorReference = new InstanceReference<object>(selector);
-		}
-	
-		class DefaultTypedFactoryComponentSelectorReference:IReference<object>
-		{
-			public object Resolve(IKernel kernel, Castle.MicroKernel.Context.CreationContext context)
-			{
-				return kernel.GetService<ITypedFactoryComponentSelector>() ?? new DefaultDelegateComponentSelector();
-			}
 		}
 	}
 }
