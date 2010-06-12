@@ -66,12 +66,12 @@ limitations under the License.
 
 		<!-- Resolve test projects -->
 		<RegexMatch Input="@(AllBinaries)" Expression="$(TestDetectionExpression)">
-			<Output TaskParameter="Output" ItemName="TestBinaries" />
+			<Output TaskParameter="Output" ItemName="TestAssemblies" />
 		</RegexMatch>
 
 		<!-- Resolve the libraries code projects -->
 		<ItemGroup>
-			<AppAssemblies Include="@(AllBinaries)" Exclude="@(TestBinaries)" />
+			<AppAssemblies Include="@(AllBinaries)" Exclude="@(TestAssemblies)" />
 		</ItemGroup>
 
 		<!-- Pick up the PDB files. This is kind of hard coded to the location of the AppAssemblies, but I currently don't see another way  -->
@@ -178,6 +178,9 @@ limitations under the License.
 		Internal targets
 	==================================================
 	-->
+	<PropertyGroup>
+		<TestAssemblies></TestAssemblies>
+	</PropertyGroup>
 
 	<!-- Executes NUnit or NCover with NUnit -->
 	<Target
@@ -199,15 +202,10 @@ limitations under the License.
 	<Target
 		Name="_ExecNUnit"
 		>
-		
 		<PropertyGroup>
 			<NUnitTestResultXmlFiles Condition="'$(NUnitTestResultXmlFiles)' == ''">$(TestResultsPath)/nunit-results.xml</NUnitTestResultXmlFiles>
 		</PropertyGroup>
 
-		<ItemGroup>
-			<TestAssemblies Include="$(RootPath)/src/**/bin/$(Configuration)/*Test*.dll" />
-		</ItemGroup>
-		
 		<NUnit 
 			ToolPath="$(NUnitPath)"
 			Assemblies="@(TestAssemblies)"
