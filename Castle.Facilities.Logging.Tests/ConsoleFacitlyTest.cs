@@ -17,6 +17,7 @@ namespace Castle.Facilities.Logging.Tests
 	using System;
 	using System.IO;
 	using Castle.Facilities.Logging.Tests.Classes;
+	using Castle.MicroKernel.Registration;
 	using Castle.Windsor;
 	using NUnit.Framework;
 
@@ -54,7 +55,7 @@ namespace Castle.Facilities.Logging.Tests
 		[Test]
 		public void SimpleTest()
 		{
-			container.AddComponent("component", typeof(SimpleLoggingComponent));
+			container.Register(Component.For(typeof(SimpleLoggingComponent)).Named("component"));
 			SimpleLoggingComponent test = container["component"] as SimpleLoggingComponent;
 
 			String expectedLogOutput = String.Format("[Info] '{0}' Hello world" + Environment.NewLine, typeof(SimpleLoggingComponent).FullName);

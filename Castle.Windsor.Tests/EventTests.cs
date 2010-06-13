@@ -14,11 +14,13 @@
 
 namespace Castle.MicroKernel.Tests.DependencyResolving
 {
-	using System.Collections.Generic;
+    using System;
+    using System.Collections.Generic;
 
 	using Castle.Core;
 	using Castle.Core.Configuration;
-	using Castle.MicroKernel.Tests.ClassComponents;
+    using Castle.MicroKernel.Registration;
+    using Castle.MicroKernel.Tests.ClassComponents;
 
 	using NUnit.Framework;
 
@@ -65,7 +67,7 @@ namespace Castle.MicroKernel.Tests.DependencyResolving
 
 			kernel.ConfigurationStore.AddComponentConfiguration("customer", config);
 
-			kernel.AddComponent("customer", typeof (ICustomer), typeof (CustomerImpl));
+			kernel.Register(Component.For(typeof (ICustomer)).ImplementedBy(typeof (CustomerImpl)).Named("customer"));
 
 			expectedClient = kernel.GetHandler("customer").ComponentModel;
 			expectedModels = new List<DependencyModel>();
@@ -82,9 +84,9 @@ namespace Castle.MicroKernel.Tests.DependencyResolving
 		[Test]
 		public void ResolvingConcreteClassThroughProperties()
 		{
-			kernel.AddComponent("spamservice", typeof(DefaultSpamService));
-			kernel.AddComponent("mailsender", typeof(DefaultMailSenderService));
-			kernel.AddComponent("templateengine", typeof(DefaultTemplateEngine));
+			kernel.Register(Component.For(typeof(DefaultSpamService)).Named("spamservice"));
+			kernel.Register(Component.For(typeof(DefaultMailSenderService)).Named("mailsender"));
+			kernel.Register(Component.For(typeof(DefaultTemplateEngine)).Named("templateengine"));
 
 			DefaultMailSenderService mailservice = (DefaultMailSenderService) kernel["mailsender"];
 			DefaultTemplateEngine templateengine = (DefaultTemplateEngine) kernel["templateengine"];
@@ -107,9 +109,9 @@ namespace Castle.MicroKernel.Tests.DependencyResolving
 		[Test]
 		public void ResolvingConcreteClassThroughConstructor()
 		{
-			kernel.AddComponent("spamservice", typeof(DefaultSpamServiceWithConstructor));
-			kernel.AddComponent("mailsender", typeof(DefaultMailSenderService));
-			kernel.AddComponent("templateengine", typeof(DefaultTemplateEngine));
+			kernel.Register(Component.For(typeof(DefaultSpamServiceWithConstructor)).Named("spamservice"));
+			kernel.Register(Component.For(typeof(DefaultMailSenderService)).Named("mailsender"));
+			kernel.Register(Component.For(typeof(DefaultTemplateEngine)).Named("templateengine"));
 
 			DefaultMailSenderService mailservice = (DefaultMailSenderService) kernel["mailsender"];
 			DefaultTemplateEngine templateengine = (DefaultTemplateEngine) kernel["templateengine"];

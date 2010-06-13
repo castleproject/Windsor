@@ -14,7 +14,10 @@
 
 namespace Castle.Windsor.Tests
 {
-	using Castle.Windsor.Tests.Components;
+    using System;
+
+    using Castle.MicroKernel.Registration;
+    using Castle.Windsor.Tests.Components;
 	using NUnit.Framework;
 
 	[TestFixture]
@@ -31,9 +34,9 @@ namespace Castle.Windsor.Tests
 		[Test]
 		public void StackOverflowProblem()
 		{
-			container.AddComponent("C", typeof(Employee));
-			container.AddComponent("B", typeof(Reviewer));
-			container.AddComponent("A", typeof(ReviewableEmployee));
+			container.Register(Component.For(typeof(Employee)).Named("C"));
+			container.Register(Component.For(typeof(Reviewer)).Named("B"));
+			container.Register(Component.For(typeof(ReviewableEmployee)).Named("A"));
 
 			Assert.IsNotNull(container["A"]);
 			Assert.IsNotNull(container["B"]);

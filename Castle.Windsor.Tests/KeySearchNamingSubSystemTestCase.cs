@@ -18,6 +18,7 @@ namespace Castle.MicroKernel.Tests
 	using System.Collections.Generic;
 	using System.Threading;
 
+	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.SubSystems.Naming;
 	using Castle.MicroKernel.Tests.ClassComponents;
 
@@ -32,8 +33,8 @@ namespace Castle.MicroKernel.Tests
 			IKernel kernel = new DefaultKernel();
 			kernel.AddSubSystem(SubSystemConstants.NamingKey, new KeySearchNamingSubSystem());
 
-			kernel.AddComponent("1.common", typeof(ICommon), typeof(CommonImpl1));
-			kernel.AddComponent("2.common", typeof(ICommon), typeof(CommonImpl2));
+			kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(CommonImpl1)).Named("1.common"));
+			kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(CommonImpl2)).Named("2.common"));
 
 			ICommon common = kernel[typeof(ICommon)] as ICommon;
 
@@ -49,8 +50,8 @@ namespace Castle.MicroKernel.Tests
 			                    new KeySearchNamingSubSystem(
 			                    	delegate(string key) { return key.StartsWith("castlestronghold.com"); }));
 
-			kernel.AddComponent("castleproject.org.common", typeof(ICommon), typeof(CommonImpl1));
-			kernel.AddComponent("castlestronghold.com.common", typeof(ICommon), typeof(CommonImpl2));
+			kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(CommonImpl1)).Named("castleproject.org.common"));
+			kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(CommonImpl2)).Named("castlestronghold.com.common"));
 
 			ICommon common = kernel[typeof(ICommon)] as ICommon;
 
@@ -65,8 +66,8 @@ namespace Castle.MicroKernel.Tests
 			kernel.AddSubSystem(SubSystemConstants.NamingKey,
 			                    new KeySearchNamingSubSystem(delegate(string key) { return key.StartsWith("3"); }));
 
-			kernel.AddComponent("1.common", typeof(ICommon), typeof(CommonImpl1));
-			kernel.AddComponent("2.common", typeof(ICommon), typeof(CommonImpl2));
+			kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(CommonImpl1)).Named("1.common"));
+			kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(CommonImpl2)).Named("2.common"));
 
 			ICommon common = kernel[typeof(ICommon)] as ICommon;
 
@@ -81,8 +82,8 @@ namespace Castle.MicroKernel.Tests
 			kernel.AddSubSystem(SubSystemConstants.NamingKey,
 			                    new KeySearchNamingSubSystem(delegate(string key) { return key.StartsWith("1"); }));
 
-			kernel.AddComponent("1.common", typeof(ICommon), typeof(CommonImpl1));
-			kernel.AddComponent("11.common", typeof(ICommon), typeof(CommonImpl2));
+			kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(CommonImpl1)).Named("1.common"));
+			kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(CommonImpl2)).Named("11.common"));
 
 			ICommon common = kernel[typeof(ICommon)] as ICommon;
 
@@ -98,8 +99,8 @@ namespace Castle.MicroKernel.Tests
 			kernel.AddSubSystem(SubSystemConstants.NamingKey,
 			                    new KeySearchNamingSubSystem(delegate(string key) { return key.StartsWith("2"); }));
 
-			kernel.AddComponent("1.common", typeof(ICommon), typeof(CommonImpl1));
-			kernel.AddComponent("2.common", typeof(ICommon), typeof(CommonImpl2));
+			kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(CommonImpl1)).Named("1.common"));
+			kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(CommonImpl2)).Named("2.common"));
 
 			ICommon common = kernel[typeof(ICommon)] as ICommon;
 
@@ -124,8 +125,8 @@ namespace Castle.MicroKernel.Tests
 			kernel.AddSubSystem(SubSystemConstants.NamingKey,
 			                    new KeySearchNamingSubSystem(delegate(string key) { return key.StartsWith("1"); }));
 
-			kernel.AddComponent("1.common", typeof(ICommon), typeof(CommonImpl1));
-			kernel.AddComponent("2.common", typeof(ICommon), typeof(CommonImpl2));
+			kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(CommonImpl1)).Named("1.common"));
+			kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(CommonImpl2)).Named("2.common"));
 
 			ICommon common = kernel[typeof(ICommon)] as ICommon;
 
@@ -148,7 +149,7 @@ namespace Castle.MicroKernel.Tests
 			kernel.AddSubSystem(SubSystemConstants.NamingKey,
 			                    new KeySearchNamingSubSystem(delegate(string key) { return key.StartsWith("1"); }));
 
-			kernel.AddComponent("1.common", typeof(ICommon), typeof(CommonImpl1));
+			kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(CommonImpl1)).Named("1.common"));
 
 			ICommon common = kernel[typeof(ICommon)] as ICommon;
 
@@ -171,7 +172,7 @@ namespace Castle.MicroKernel.Tests
 
 			IKernel kernel = new DefaultKernel();
 			kernel.AddSubSystem(SubSystemConstants.NamingKey, new KeySearchNamingSubSystem());
-			kernel.AddComponent("common", typeof(ICommon), typeof(CommonImpl1));
+			kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(CommonImpl1)).Named("common"));
 
 			WaitCallback resolveThread = delegate
 			                             	{
@@ -196,7 +197,7 @@ namespace Castle.MicroKernel.Tests
 			WaitCallback addThread = delegate
 			                         	{
 			                         		waitEvent.WaitOne();
-			                         		kernel.AddComponent(Guid.NewGuid() + ".common", typeof(ICommon), typeof(CommonImpl1));
+			                         		kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(CommonImpl1)).Named(Guid.NewGuid() + ".common"));
 			                         		Interlocked.Decrement(ref threadCount);
 			                         	};
 			for(int i = 0; i < threadCount; i++)
@@ -238,7 +239,7 @@ namespace Castle.MicroKernel.Tests
 			IKernel kernel = new DefaultKernel();
 			kernel.AddSubSystem(SubSystemConstants.NamingKey, new KeySearchNamingSubSystem(delegate { return false; }));
 
-			kernel.AddComponent("common", typeof(ICommon), typeof(CommonImpl1));
+			kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(CommonImpl1)).Named("common"));
 
 			WaitCallback resolveThread = delegate
 			                             	{
@@ -268,7 +269,7 @@ namespace Castle.MicroKernel.Tests
 			                            	};
 			for(int i = 0; i < threadCount; i++)
 			{
-				kernel.AddComponent(i + ".common", typeof(ICommon), typeof(CommonImpl1));
+				kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(CommonImpl1)).Named(i + ".common"));
 				ThreadPool.QueueUserWorkItem(removeThread);
 			}
 

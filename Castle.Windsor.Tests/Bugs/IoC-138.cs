@@ -14,11 +14,13 @@
 
 namespace Castle.Windsor.Tests.Bugs
 {
-	using System.Collections.Generic;
+    using System;
+    using System.Collections.Generic;
 
 	using Castle.MicroKernel;
+    using Castle.MicroKernel.Registration;
 
-	using NUnit.Framework;
+    using NUnit.Framework;
 
 	[TestFixture]
     public class IoC_138
@@ -27,8 +29,8 @@ namespace Castle.Windsor.Tests.Bugs
         public void TestResolveSubComponentInConstructorWithParameters()
         {
             IWindsorContainer container = new WindsorContainer();
-            container.AddComponent("A", typeof(A));
-            container.AddComponent("B", typeof(B));
+            container.Register(Component.For(typeof(A)).Named("A"));
+            container.Register(Component.For(typeof(B)).Named("B"));
 
             var parameters = new Dictionary<string,string>
                                      {

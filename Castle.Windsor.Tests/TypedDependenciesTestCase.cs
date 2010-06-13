@@ -36,8 +36,8 @@ namespace Castle.MicroKernel.Tests
 		[Test]
 		public void Can_mix_typed_arguments_with_named()
 		{
-			kernel.AddComponent<ClassWithArguments>();
-			var arguments = new Dictionary<object, object>
+		    kernel.Register(Component.For<ClassWithArguments>());
+		    var arguments = new Dictionary<object, object>
 			{
 				{ "arg1", "foo" },
 				{ typeof(int), 2 }
@@ -52,8 +52,8 @@ namespace Castle.MicroKernel.Tests
 		[Test]
 		public void Can_named_arguments_take_precedense_over_typed()
 		{
-			kernel.AddComponent<ClassWithArguments>();
-			var arguments = new Dictionary<object, object>
+		    kernel.Register(Component.For<ClassWithArguments>());
+		    var arguments = new Dictionary<object, object>
 			{
 				{ "arg1", "named" },
 				{ typeof(string), "typed" },
@@ -69,8 +69,8 @@ namespace Castle.MicroKernel.Tests
 		[Test]
 		public void Can_resolve_component_with_typed_arguments()
 		{
-			kernel.AddComponent<ClassWithArguments>();
-			var arguments = new Dictionary<object, object>
+		    kernel.Register(Component.For<ClassWithArguments>());
+		    var arguments = new Dictionary<object, object>
 			{
 				{ typeof(string), "foo" },
 				{ typeof(int), 2 }

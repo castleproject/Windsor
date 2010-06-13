@@ -18,6 +18,7 @@ namespace Castle.Windsor.Tests.Proxy
 {
 	using System;
 	using Castle.DynamicProxy;
+	using Castle.MicroKernel.Registration;
 	using Castle.Windsor.Tests.Components;
 	using NUnit.Framework;
 
@@ -68,8 +69,8 @@ namespace Castle.Windsor.Tests.Proxy
 		{
 			var container = new WindsorContainer();
 
-			container.AddComponent("standard.interceptor", typeof(StandardInterceptor));
-			container.AddComponent("useSingle", typeof(ICalcService), typeof(CalculatorServiceWithSingleProxyBehavior));
+			((IWindsorContainer)container).Register(Component.For(typeof(StandardInterceptor)).Named("standard.interceptor"));
+			((IWindsorContainer)container).Register(Component.For(typeof(ICalcService)).ImplementedBy(typeof(CalculatorServiceWithSingleProxyBehavior)).Named("useSingle"));
 
 			var calcService = (ICalcService) container["useSingle"];
 			Assert.IsNotNull(calcService);
@@ -81,8 +82,8 @@ namespace Castle.Windsor.Tests.Proxy
 		{
 			var container = new WindsorContainer();
 
-			container.AddComponent("standard.interceptor", typeof(StandardInterceptor));
-			container.AddComponent("noSingle", typeof(ICalcService), typeof(CalculatorServiceWithoutSingleProxyBehavior));
+			((IWindsorContainer)container).Register(Component.For(typeof(StandardInterceptor)).Named("standard.interceptor"));
+			((IWindsorContainer)container).Register(Component.For(typeof(ICalcService)).ImplementedBy(typeof(CalculatorServiceWithoutSingleProxyBehavior)).Named("noSingle"));
 
 			var calcService = (ICalcService) container["noSingle"];
 			Assert.IsNotNull(calcService);
@@ -94,8 +95,8 @@ namespace Castle.Windsor.Tests.Proxy
 		{
 			var container = new WindsorContainer();
 
-			container.AddComponent("standard.interceptor", typeof(StandardInterceptor));
-			container.AddComponent("useMarshal", typeof(ICalcService), typeof(CalculatorServiceWithMarshalByRefProxyBehavior));
+			((IWindsorContainer)container).Register(Component.For(typeof(StandardInterceptor)).Named("standard.interceptor"));
+			((IWindsorContainer)container).Register(Component.For(typeof(ICalcService)).ImplementedBy(typeof(CalculatorServiceWithMarshalByRefProxyBehavior)).Named("useMarshal"));
 
 			var calcService = (ICalcService)container["useMarshal"];
 			Assert.IsNotNull(calcService);

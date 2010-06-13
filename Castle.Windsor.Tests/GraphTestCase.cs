@@ -14,9 +14,13 @@
 
 namespace Castle.MicroKernel.Tests
 {
-	using Castle.Core;
+    using System;
+
+    using Castle.Core;
 	using Castle.Core.Internal;
-	using NUnit.Framework;
+    using Castle.MicroKernel.Registration;
+
+    using NUnit.Framework;
 
 	[TestFixture]
 	public class GraphTestCase
@@ -38,9 +42,9 @@ namespace Castle.MicroKernel.Tests
 		[Test]
 		public void TopologicalSortOnComponents()
 		{
-			kernel.AddComponent("a", typeof(A));
-			kernel.AddComponent("b", typeof(B));
-			kernel.AddComponent("c", typeof(C));
+			kernel.Register(Component.For(typeof(A)).Named("a"));
+			kernel.Register(Component.For(typeof(B)).Named("b"));
+			kernel.Register(Component.For(typeof(C)).Named("c"));
 
 			GraphNode[] nodes = kernel.GraphNodes;
 
@@ -57,9 +61,9 @@ namespace Castle.MicroKernel.Tests
 		[Test]
 		public void RemoveComponent()
 		{
-			kernel.AddComponent("a", typeof(A));
-			kernel.AddComponent("b", typeof(B));
-			kernel.AddComponent("c", typeof(C));
+			kernel.Register(Component.For(typeof(A)).Named("a"));
+			kernel.Register(Component.For(typeof(B)).Named("b"));
+			kernel.Register(Component.For(typeof(C)).Named("c"));
 
 			Assert.IsFalse(kernel.RemoveComponent("a"));
 			Assert.IsFalse(kernel.RemoveComponent("b"));

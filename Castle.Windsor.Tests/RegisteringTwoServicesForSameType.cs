@@ -2,7 +2,9 @@ using NUnit.Framework;
 
 namespace Castle.Windsor.Tests
 {
-	[TestFixture]
+    using Castle.MicroKernel.Registration;
+
+    [TestFixture]
 	public class RegisteringTwoServicesForSameType
 	{
 		public interface IService{}
@@ -13,9 +15,9 @@ namespace Castle.Windsor.Tests
 		[Test]
 		public void ResolvingComponentIsDoneOnFirstComeBasis()
 		{
-			var windsor = new WindsorContainer();
-			windsor.AddComponent<IService, Srv1>("1");
-			windsor.AddComponent<IService, Srv1>("2");
+            IWindsorContainer windsor = new WindsorContainer();
+			windsor.Register(Component.For<IService>().ImplementedBy<Srv1>().Named("1"));
+			windsor.Register(Component.For<IService>().ImplementedBy<Srv1>().Named("2"));
 
 			Assert.IsInstanceOf<Srv1>(windsor.Resolve<IService>());
 		}
@@ -23,9 +25,9 @@ namespace Castle.Windsor.Tests
 		[Test]
 		public void ResolvingComponentIsDoneOnFirstComeBasisWhenNamesAreNotOrdered()
 		{
-			var windsor = new WindsorContainer();
-			windsor.AddComponent<IService, Srv1>("3");
-			windsor.AddComponent<IService, Srv1>("2");
+            IWindsorContainer windsor = new WindsorContainer();
+            windsor.Register(Component.For<IService>().ImplementedBy<Srv1>().Named("3"));
+            windsor.Register(Component.For<IService>().ImplementedBy<Srv1>().Named("2"));
 
 			Assert.IsInstanceOf<Srv1>(windsor.Resolve<IService>());
 		}

@@ -30,7 +30,7 @@ namespace Castle.MicroKernel.Tests
 		public void SetUp()
 		{
 			kernel = new DefaultKernel();
-			kernel.AddComponent<Loader>(typeof(ILazyComponentLoader));
+		    kernel.Register(Component.For<ILazyComponentLoader>().ImplementedBy<Loader>());
 		}
 
 		[Test]
@@ -45,8 +45,8 @@ namespace Castle.MicroKernel.Tests
 		[Test]
 		public void Can_lazily_resolve_dependency()
 		{
-			kernel.AddComponent<UsingLazyComponent>();
-			var component = kernel.Resolve<UsingLazyComponent>();
+		    kernel.Register(Component.For<UsingLazyComponent>());
+		    var component = kernel.Resolve<UsingLazyComponent>();
 			Assert.IsNotNull(component.Dependency);
 		}
 
@@ -54,8 +54,8 @@ namespace Castle.MicroKernel.Tests
 		[Timeout(2000)]
 		public void Loaders_are_thread_safe()
 		{
-			kernel.AddComponent<SlowLoader>();
-			var @event = new ManualResetEvent(false);
+		    kernel.Register(Component.For<SlowLoader>());
+		    var @event = new ManualResetEvent(false);
 			int[] count = {10};
 			Exception exception = null;
 			for (int i = 0; i < count[0]; i++)

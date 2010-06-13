@@ -21,6 +21,7 @@ namespace Castle.MicroKernel.Tests
 	using System.Security.Policy;
 	using Castle.Core;
 	using Castle.Core.Internal;
+	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Tests.ClassComponents;
 	using NUnit.Framework;
 
@@ -32,7 +33,7 @@ namespace Castle.MicroKernel.Tests
 		public void KernelSerialization()
 		{
 			IKernel kernel = new DefaultKernel();
-			kernel.AddComponent("key", typeof(CustomerImpl));
+			kernel.Register(Component.For(typeof(CustomerImpl)).Named("key"));
 			Assert.IsTrue(kernel.HasComponent("key"));
 
 			MemoryStream stream = new MemoryStream();
@@ -61,7 +62,7 @@ namespace Castle.MicroKernel.Tests
 				                 otherDomain.CreateInstanceAndUnwrap(
 				                 	"Castle.Windsor", "Castle.MicroKernel.DefaultKernel");
 
-				kernel.AddComponent("key", typeof(CustomerImpl));
+				kernel.Register(Component.For(typeof(CustomerImpl)).Named("key"));
 				Assert.IsTrue(kernel.HasComponent("key"));
 			}
 			catch(Exception ex)
@@ -75,9 +76,7 @@ namespace Castle.MicroKernel.Tests
 		}
 
 		[Test]
-#if MONO2
-		[Ignore(@"problem running on mono 2.0 profile")]
-#endif
+		[Ignore(@"Registration API is not serializable. Also ther are problems running this on mono2 profile")]
 		public void RemoteAccessToComponentGraph()
 		{
 			AppDomain current = AppDomain.CurrentDomain;
@@ -91,7 +90,7 @@ namespace Castle.MicroKernel.Tests
 				                 otherDomain.CreateInstanceAndUnwrap(
 				                 	"Castle.Windsor", "Castle.MicroKernel.DefaultKernel");
 
-				kernel.AddComponent("key", typeof(CustomerImpl));
+				kernel.Register(Component.For(typeof(CustomerImpl)).Named("key"));
 				Assert.IsTrue(kernel.HasComponent("key"));
 
 				GraphNode[] nodes = kernel.GraphNodes;

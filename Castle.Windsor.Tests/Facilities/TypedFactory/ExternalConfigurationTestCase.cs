@@ -16,7 +16,10 @@
 
 namespace Castle.Facilities.TypedFactory.Tests
 {
-	using Castle.Windsor;
+    using System;
+
+    using Castle.MicroKernel.Registration;
+    using Castle.Windsor;
 
 	using Castle.Facilities.TypedFactory.Tests.Components;
 	using Castle.Facilities.TypedFactory.Tests.Factories;
@@ -37,10 +40,10 @@ namespace Castle.Facilities.TypedFactory.Tests
 			
 			container.AddFacility( "typedfactory", new TypedFactoryFacility() );
 
-			container.AddComponent( "miranda", typeof(IProtocolHandler), typeof(MirandaProtocolHandler) );
-			container.AddComponent( "messenger", typeof(IProtocolHandler), typeof(MessengerProtocolHandler) );
-			container.AddComponent( "comp1", typeof(IDummyComponent), typeof(Component1) );
-			container.AddComponent( "comp2", typeof(IDummyComponent), typeof(Component2) );
+			container.Register(Component.For(typeof(IProtocolHandler)).ImplementedBy(typeof(MirandaProtocolHandler)).Named("miranda"));
+			container.Register(Component.For(typeof(IProtocolHandler)).ImplementedBy(typeof(MessengerProtocolHandler)).Named("messenger"));
+			container.Register(Component.For(typeof(IDummyComponent)).ImplementedBy(typeof(Component1)).Named("comp1"));
+			container.Register(Component.For(typeof(IDummyComponent)).ImplementedBy(typeof(Component2)).Named("comp2"));
 		}
 
 		[TearDown]

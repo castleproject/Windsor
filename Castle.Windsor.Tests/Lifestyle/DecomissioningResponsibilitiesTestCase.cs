@@ -55,8 +55,8 @@ namespace Castle.MicroKernel.Tests.Lifestyle
 		[Test]
 		public void TransientReferencedComponentsAreReleasedInChain()
 		{
-			kernel.AddComponent("spamservice", typeof(DisposableSpamService), LifestyleType.Transient);
-			kernel.AddComponent("templateengine", typeof(DisposableTemplateEngine), LifestyleType.Transient);
+			kernel.Register(Component.For(typeof(DisposableSpamService)).Named("spamservice").LifeStyle.Is(LifestyleType.Transient));
+			kernel.Register(Component.For(typeof(DisposableTemplateEngine)).Named("templateengine").LifeStyle.Is(LifestyleType.Transient));
 
 			DisposableSpamService instance1 = (DisposableSpamService) kernel["spamservice"];
 			Assert.IsFalse(instance1.IsDisposed);
@@ -71,8 +71,8 @@ namespace Castle.MicroKernel.Tests.Lifestyle
 		[Test]
 		public void DisposingSubLevelBurdenWontDisposeComponentAsTheyAreDisposedAlready()
 		{
-			kernel.AddComponent("spamservice", typeof(DisposableSpamService), LifestyleType.Transient);
-			kernel.AddComponent("templateengine", typeof(DisposableTemplateEngine), LifestyleType.Transient);
+			kernel.Register(Component.For(typeof(DisposableSpamService)).Named("spamservice").LifeStyle.Is(LifestyleType.Transient));
+			kernel.Register(Component.For(typeof(DisposableTemplateEngine)).Named("templateengine").LifeStyle.Is(LifestyleType.Transient));
 
 			DisposableSpamService instance1 = (DisposableSpamService)kernel["spamservice"];
 			Assert.IsFalse(instance1.IsDisposed);
@@ -85,8 +85,8 @@ namespace Castle.MicroKernel.Tests.Lifestyle
 		[Test]
 		public void ComponentsAreOnlyDisposedOnce()
 		{
-			kernel.AddComponent("spamservice", typeof(DisposableSpamService), LifestyleType.Transient);
-			kernel.AddComponent("templateengine", typeof(DisposableTemplateEngine), LifestyleType.Transient);
+			kernel.Register(Component.For(typeof(DisposableSpamService)).Named("spamservice").LifeStyle.Is(LifestyleType.Transient));
+			kernel.Register(Component.For(typeof(DisposableTemplateEngine)).Named("templateengine").LifeStyle.Is(LifestyleType.Transient));
 
 			DisposableSpamService instance1 = (DisposableSpamService)kernel["spamservice"];
 			Assert.IsFalse(instance1.IsDisposed);
@@ -100,8 +100,8 @@ namespace Castle.MicroKernel.Tests.Lifestyle
 		[Test]
 		public void GenericTransientComponentsAreReleasedInChain()
 		{
-			kernel.AddComponent("gena", typeof(GenA<>), LifestyleType.Transient);
-			kernel.AddComponent("genb", typeof(GenB<>), LifestyleType.Transient);
+			kernel.Register(Component.For(typeof(GenA<>)).Named("gena").LifeStyle.Is(LifestyleType.Transient));
+			kernel.Register(Component.For(typeof(GenB<>)).Named("genb").LifeStyle.Is(LifestyleType.Transient));
 
 			GenA<string> instance1 = kernel.Resolve<GenA<string>>();
 			Assert.IsFalse(instance1.IsDisposed);
@@ -116,9 +116,9 @@ namespace Castle.MicroKernel.Tests.Lifestyle
 		[Test]
 		public void SingletonReferencedComponentIsNotDisposed()
 		{
-			kernel.AddComponent("spamservice", typeof(DisposableSpamService), LifestyleType.Transient);
-			kernel.AddComponent("mailsender", typeof(DefaultMailSenderService), LifestyleType.Singleton);
-			kernel.AddComponent("templateengine", typeof(DisposableTemplateEngine), LifestyleType.Transient);
+			kernel.Register(Component.For(typeof(DisposableSpamService)).Named("spamservice").LifeStyle.Is(LifestyleType.Transient));
+			kernel.Register(Component.For(typeof(DefaultMailSenderService)).Named("mailsender").LifeStyle.Is(LifestyleType.Singleton));
+			kernel.Register(Component.For(typeof(DisposableTemplateEngine)).Named("templateengine").LifeStyle.Is(LifestyleType.Transient));
 
 			DisposableSpamService instance1 = (DisposableSpamService)kernel["spamservice"];
 			Assert.IsFalse(instance1.IsDisposed);
@@ -134,9 +134,9 @@ namespace Castle.MicroKernel.Tests.Lifestyle
 		[Test]
 		public void WhenRootComponentIsNotDisposableButDependenciesAre_DependenciesShouldBeDisposed()
 		{
-			kernel.AddComponent("root", typeof(NonDisposableRoot), LifestyleType.Transient);
-			kernel.AddComponent("a", typeof(A), LifestyleType.Transient);
-			kernel.AddComponent("b", typeof(B), LifestyleType.Transient);
+			kernel.Register(Component.For(typeof(NonDisposableRoot)).Named("root").LifeStyle.Is(LifestyleType.Transient));
+			kernel.Register(Component.For(typeof(A)).Named("a").LifeStyle.Is(LifestyleType.Transient));
+			kernel.Register(Component.For(typeof(B)).Named("b").LifeStyle.Is(LifestyleType.Transient));
 
 			NonDisposableRoot instance1 = kernel.Resolve<NonDisposableRoot>();
 			Assert.IsFalse(instance1.A.IsDisposed);
@@ -151,10 +151,10 @@ namespace Castle.MicroKernel.Tests.Lifestyle
 		[Test]
 		public void WhenRootComponentIsNotDisposableButThirdLevelDependenciesAre_DependenciesShouldBeDisposed()
 		{
-			kernel.AddComponent("root", typeof(Indirection), LifestyleType.Transient);
-			kernel.AddComponent("secroot", typeof(NonDisposableRoot), LifestyleType.Transient);
-			kernel.AddComponent("a", typeof(A), LifestyleType.Transient);
-			kernel.AddComponent("b", typeof(B), LifestyleType.Transient);
+			kernel.Register(Component.For(typeof(Indirection)).Named("root").LifeStyle.Is(LifestyleType.Transient));
+			kernel.Register(Component.For(typeof(NonDisposableRoot)).Named("secroot").LifeStyle.Is(LifestyleType.Transient));
+			kernel.Register(Component.For(typeof(A)).Named("a").LifeStyle.Is(LifestyleType.Transient));
+			kernel.Register(Component.For(typeof(B)).Named("b").LifeStyle.Is(LifestyleType.Transient));
 
 			Indirection instance1 = kernel.Resolve<Indirection>();
 			Assert.IsFalse(instance1.FakeRoot.A.IsDisposed);

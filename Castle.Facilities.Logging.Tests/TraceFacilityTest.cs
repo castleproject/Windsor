@@ -19,6 +19,7 @@ namespace Castle.Facilities.Logging.Tests
     using System.Diagnostics;
     using System.IO;
 
+    using Castle.MicroKernel.Registration;
     using Castle.Windsor;
     using Castle.Facilities.Logging.Tests.Classes;
 
@@ -62,7 +63,7 @@ namespace Castle.Facilities.Logging.Tests
         [Test]
         public void SimpleTest()
         {
-            container.AddComponent("component", typeof(SimpleLoggingComponent));
+            container.Register(Component.For(typeof(SimpleLoggingComponent)).Named("component"));
             SimpleLoggingComponent test = container["component"] as SimpleLoggingComponent;
 
             string expectedLogOutput = String.Format("{0} Information: 0 : Hello world" + Environment.NewLine, typeof(SimpleLoggingComponent).FullName);

@@ -14,8 +14,11 @@
 
 namespace Castle.MicroKernel.Tests.Configuration
 {
-	using Castle.Core.Configuration;
-	using Castle.MicroKernel.Resolvers;
+    using System;
+
+    using Castle.Core.Configuration;
+    using Castle.MicroKernel.Registration;
+    using Castle.MicroKernel.Resolvers;
 	using Castle.MicroKernel.Tests.ClassComponents;
 	using Castle.MicroKernel.Tests.Configuration.Components;
 	using NUnit.Framework;
@@ -41,7 +44,7 @@ namespace Castle.MicroKernel.Tests.Configuration
 		[ExpectedException(typeof(DependencyResolverException))]
 		public void ConstructorWithUnsatisfiedParameters()
 		{
-			kernel.AddComponent("key", typeof(ClassWithConstructors));
+			kernel.Register(Component.For(typeof(ClassWithConstructors)).Named("key"));
 			object res = kernel["key"];
 		}
 
@@ -57,7 +60,7 @@ namespace Castle.MicroKernel.Tests.Configuration
 
 			kernel.ConfigurationStore.AddComponentConfiguration("key", confignode);
 
-			kernel.AddComponent("key", typeof(ClassWithConstructors));
+			kernel.Register(Component.For(typeof(ClassWithConstructors)).Named("key"));
 
 			ClassWithConstructors instance = (ClassWithConstructors) kernel["key"];
 			Assert.IsNotNull(instance);
@@ -77,9 +80,9 @@ namespace Castle.MicroKernel.Tests.Configuration
 
 			kernel.ConfigurationStore.AddComponentConfiguration("commonserviceuser", confignode);
 
-			kernel.AddComponent("commonservice1", typeof(ICommon), typeof(CommonImpl1));
-			kernel.AddComponent("commonservice2", typeof(ICommon), typeof(CommonImpl2));
-			kernel.AddComponent("commonserviceuser", typeof(CommonServiceUser));
+			kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(CommonImpl1)).Named("commonservice1"));
+			kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(CommonImpl2)).Named("commonservice2"));
+			kernel.Register(Component.For(typeof(CommonServiceUser)).Named("commonserviceuser"));
 
 			CommonServiceUser instance = (CommonServiceUser) kernel["commonserviceuser"];
 
@@ -99,10 +102,10 @@ namespace Castle.MicroKernel.Tests.Configuration
 
 			kernel.ConfigurationStore.AddComponentConfiguration("commonserviceuser", confignode);
 
-			kernel.AddComponent("commonservice1", typeof(ICommon), typeof(CommonImpl1));
-			kernel.AddComponent("commonservice2", typeof(ICommon), typeof(CommonImpl2));
+			kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(CommonImpl1)).Named("commonservice1"));
+			kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(CommonImpl2)).Named("commonservice2"));
 
-			kernel.AddComponent("commonserviceuser", typeof(CommonServiceUser2));
+			kernel.Register(Component.For(typeof(CommonServiceUser2)).Named("commonserviceuser"));
 
 			CommonServiceUser2 instance = (CommonServiceUser2) kernel["commonserviceuser"];
 
@@ -128,7 +131,7 @@ namespace Castle.MicroKernel.Tests.Configuration
 
 			kernel.ConfigurationStore.AddComponentConfiguration("key", confignode);
 
-			kernel.AddComponent("key", typeof(ClassWithConstructors));
+			kernel.Register(Component.For(typeof(ClassWithConstructors)).Named("key"));
 
 			ClassWithConstructors instance = (ClassWithConstructors) kernel["key"];
 			Assert.IsNotNull(instance);
@@ -156,10 +159,10 @@ namespace Castle.MicroKernel.Tests.Configuration
 			list.Children.Add(new MutableConfiguration("item", "${commonservice2}"));
 
 			kernel.ConfigurationStore.AddComponentConfiguration("key", confignode);
-			kernel.AddComponent("key", typeof(ClassWithListConstructor));
+			kernel.Register(Component.For(typeof(ClassWithListConstructor)).Named("key"));
 
-			kernel.AddComponent("commonservice1", typeof(ICommon), typeof(CommonImpl1));
-			kernel.AddComponent("commonservice2", typeof(ICommon), typeof(CommonImpl2));
+			kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(CommonImpl1)).Named("commonservice1"));
+			kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(CommonImpl2)).Named("commonservice2"));
 
 			ClassWithListConstructor instance = (ClassWithListConstructor) kernel["key"];
 			Assert.IsNotNull(instance.Services);
@@ -186,10 +189,10 @@ namespace Castle.MicroKernel.Tests.Configuration
 
 			kernel.ConfigurationStore.AddComponentConfiguration("key", confignode);
 
-			kernel.AddComponent("key", typeof(ClassWithArrayConstructor));
+			kernel.Register(Component.For(typeof(ClassWithArrayConstructor)).Named("key"));
 
-			kernel.AddComponent("commonservice1", typeof(ICommon), typeof(CommonImpl1));
-			kernel.AddComponent("commonservice2", typeof(ICommon), typeof(CommonImpl2));
+			kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(CommonImpl1)).Named("commonservice1"));
+			kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(CommonImpl2)).Named("commonservice2"));
 
 			ClassWithArrayConstructor instance = (ClassWithArrayConstructor) kernel["key"];
 			Assert.IsNotNull(instance.Services);
@@ -210,7 +213,7 @@ namespace Castle.MicroKernel.Tests.Configuration
 									  "Castle.MicroKernel.Tests.ClassComponents.CustomLifestyleManager, Castle.Windsor.Tests");
 
 			kernel.ConfigurationStore.AddComponentConfiguration(key, confignode);
-			kernel.AddComponent(key, typeof(ICommon), typeof(CommonImpl1));
+			kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(CommonImpl1)).Named(key));
 
 			ICommon instance = (ICommon) kernel[key];
 			IHandler handler = kernel.GetHandler(key);
@@ -243,7 +246,7 @@ namespace Castle.MicroKernel.Tests.Configuration
 
 
 			kernel.ConfigurationStore.AddComponentConfiguration(key, confignode);
-			kernel.AddComponent(key, typeof(ClassWithComplexParameter));
+			kernel.Register(Component.For(typeof(ClassWithComplexParameter)).Named(key));
 
 			ClassWithComplexParameter instance = (ClassWithComplexParameter) kernel[key];
 

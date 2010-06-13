@@ -14,8 +14,12 @@
 
 namespace Castle.MicroKernel.Tests
 {
-	using Castle.MicroKernel.Handlers;
-	using NUnit.Framework;
+    using System;
+
+    using Castle.MicroKernel.Handlers;
+    using Castle.MicroKernel.Registration;
+
+    using NUnit.Framework;
 
 	public class A
 	{
@@ -69,9 +73,9 @@ namespace Castle.MicroKernel.Tests
 		[Test]
 		public void ValidSituation()
 		{
-			kernel.AddComponent("a", typeof(A));
-			kernel.AddComponent("b", typeof(B));
-			kernel.AddComponent("c", typeof(C));
+			kernel.Register(Component.For(typeof(A)).Named("a"));
+			kernel.Register(Component.For(typeof(B)).Named("b"));
+			kernel.Register(Component.For(typeof(C)).Named("c"));
 
 			Assert.IsNotNull(kernel["a"]);
 			Assert.IsNotNull(kernel["b"]);
@@ -81,8 +85,8 @@ namespace Castle.MicroKernel.Tests
 		[Test]
 		public void GraphInvalid()
 		{
-			kernel.AddComponent("b", typeof(B));
-			kernel.AddComponent("c", typeof(C));
+			kernel.Register(Component.For(typeof(B)).Named("b"));
+			kernel.Register(Component.For(typeof(C)).Named("c"));
 
 			IHandler handlerB = kernel.GetHandler(typeof(B));
 			IHandler handlerC = kernel.GetHandler(typeof(C));
@@ -94,8 +98,8 @@ namespace Castle.MicroKernel.Tests
 		[Test]
 		public void GraphInvalidAndLateValidation()
 		{
-			kernel.AddComponent("b", typeof(B));
-			kernel.AddComponent("c", typeof(C));
+			kernel.Register(Component.For(typeof(B)).Named("b"));
+			kernel.Register(Component.For(typeof(C)).Named("c"));
 
 			IHandler handlerB = kernel.GetHandler(typeof(B));
 			IHandler handlerC = kernel.GetHandler(typeof(C));
@@ -103,7 +107,7 @@ namespace Castle.MicroKernel.Tests
 			Assert.AreEqual(HandlerState.WaitingDependency, handlerB.CurrentState);
 			Assert.AreEqual(HandlerState.WaitingDependency, handlerC.CurrentState);
 
-			kernel.AddComponent("a", typeof(A));
+			kernel.Register(Component.For(typeof(A)).Named("a"));
 
 			Assert.AreEqual(HandlerState.Valid, handlerB.CurrentState);
 			Assert.AreEqual(HandlerState.Valid, handlerC.CurrentState);
@@ -112,8 +116,8 @@ namespace Castle.MicroKernel.Tests
 		[Test]
 		public void CycleComponentGraphs()
 		{
-			kernel.AddComponent("a", typeof(CycleA));
-			kernel.AddComponent("b", typeof(CycleB));
+			kernel.Register(Component.For(typeof(CycleA)).Named("a"));
+			kernel.Register(Component.For(typeof(CycleB)).Named("b"));
 
 			var exception =
 				Assert.Throws(typeof(HandlerException), () =>

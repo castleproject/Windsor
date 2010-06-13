@@ -14,7 +14,9 @@
 
 namespace Castle.Windsor.Tests.Bugs.IoC_169
 {
-	using Castle.Core;
+    using System;
+
+    using Castle.Core;
 	using Castle.Facilities.Startable;
 	using Castle.MicroKernel.Registration;
 	using Castle.Windsor;
@@ -75,14 +77,14 @@ namespace Castle.Windsor.Tests.Bugs.IoC_169
 
 			container.AddFacility("startable.facility", new StartableFacility());
 
-			container.AddComponent("blackboard", typeof(IBlackboard), typeof(Blackboard));
+			((IWindsorContainer)container).Register(Component.For(typeof(IBlackboard)).ImplementedBy(typeof(Blackboard)).Named("blackboard"));
 
 			BasedOnDescriptor registrations = AllTypes.Of<IServiceWithoutImplementation>().
 				FromAssembly(GetType().Assembly).Unless(t => container.Kernel.HasComponent(t));
 
 			container.Register(registrations);
 
-			container.Kernel.AddComponentInstance("chalk", typeof(IChalk), new Chalk());
+		    container.Kernel.Register(Component.For<IChalk>().Named("chalk").Instance(new Chalk()));
 
 			Assert.True(AbstractBlackboard.Started); // fails here, service is never started
 		}

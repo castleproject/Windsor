@@ -22,6 +22,7 @@ namespace Castle.Facilities.Logging
 	using Castle.Core.Logging;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Facilities;
+	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.SubSystems.Conversion;
 
 	/// <summary>
@@ -154,12 +155,12 @@ namespace Castle.Facilities.Logging
 			if (logApi == LoggerImplementation.ExtendedNLog || logApi == LoggerImplementation.ExtendedLog4net)
 			{
 				ILogger defaultLogger = factory.Create("Default");
-				Kernel.AddComponentInstance("ilogger.default", typeof(IExtendedLogger), defaultLogger);
-				Kernel.AddComponentInstance("ilogger.default.base", typeof(ILogger), defaultLogger);
+			    Kernel.Register(Component.For(typeof(IExtendedLogger)).Named("ilogger.default").Instance(defaultLogger));
+			    Kernel.Register(Component.For(typeof(ILogger)).Named("ilogger.default.base").Instance(defaultLogger));
 			}
 			else
 			{
-				Kernel.AddComponentInstance("ilogger.default", typeof(ILogger), factory.Create("Default"));
+			    Kernel.Register(Component.For(typeof(ILogger)).Named("ilogger.default").Instance(factory.Create("Default")));
 			}
 		}
 
@@ -167,12 +168,12 @@ namespace Castle.Facilities.Logging
 		{
 			if (logApi == LoggerImplementation.ExtendedNLog || logApi == LoggerImplementation.ExtendedLog4net)
 			{
-				Kernel.AddComponentInstance("iloggerfactory", typeof(IExtendedLoggerFactory), factory);
-				Kernel.AddComponentInstance("iloggerfactory.base", typeof(ILoggerFactory), factory);
+			    Kernel.Register(Component.For(typeof(IExtendedLoggerFactory)).Named("iloggerfactory").Instance(factory));
+			    Kernel.Register(Component.For(typeof(ILoggerFactory)).Named("iloggerfactory.base").Instance(factory));
 			}
 			else
 			{
-				Kernel.AddComponentInstance("iloggerfactory", typeof(ILoggerFactory), factory);
+			    Kernel.Register(Component.For(typeof(ILoggerFactory)).Named("iloggerfactory").Instance(factory));
 			}
 		}
 

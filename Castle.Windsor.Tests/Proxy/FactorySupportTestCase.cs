@@ -19,6 +19,7 @@ namespace Castle.Windsor.Tests.Proxy
 	using Castle.Core.Configuration;
 	using Castle.DynamicProxy;
 	using Castle.Facilities.FactorySupport;
+	using Castle.MicroKernel.Registration;
 	using Castle.Windsor.Tests.Components;
 	using NUnit.Framework;
 
@@ -37,8 +38,8 @@ namespace Castle.Windsor.Tests.Proxy
 		public void FactorySupport_UsingProxiedFactory_WorksFine()
 		{
 			container.AddFacility("factories", new FactorySupportFacility());
-			container.AddComponent("standard.interceptor", typeof(StandardInterceptor));
-			container.AddComponent("factory", typeof(CalulcatorFactory));
+			((IWindsorContainer)container).Register(Component.For(typeof(StandardInterceptor)).Named("standard.interceptor"));
+			((IWindsorContainer)container).Register(Component.For(typeof(CalulcatorFactory)).Named("factory"));
 
 			AddComponent("calculator", typeof(ICalcService), typeof(CalculatorService), "Create");
 
@@ -53,7 +54,7 @@ namespace Castle.Windsor.Tests.Proxy
 			config.Attributes["factoryId"] = "factory";
 			config.Attributes["factoryCreate"] = factoryMethod;
 			container.Kernel.ConfigurationStore.AddComponentConfiguration(key, config);
-			container.Kernel.AddComponent(key, service, type);
+			container.Kernel.Register(Component.For(service).ImplementedBy(type).Named(key));
 		}
 		
 		[Interceptor(typeof(StandardInterceptor))]

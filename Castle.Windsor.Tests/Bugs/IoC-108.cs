@@ -3,7 +3,9 @@ using NUnit.Framework;
 
 namespace Castle.MicroKernel.Tests.Bugs
 {
-	[TestFixture]
+    using Castle.MicroKernel.Registration;
+
+    [TestFixture]
 	public class IoC_108
 	{
 		[Test]
@@ -11,10 +13,10 @@ namespace Castle.MicroKernel.Tests.Bugs
 		{
 			IKernel kernel = new DefaultKernel();
 
-			kernel.AddComponent<Service2>();
-			kernel.AddComponent<Service1>();
+		    kernel.Register(Component.For<Service2>());
+		    kernel.Register(Component.For<Service1>());
 
-			try
+		    try
 			{
 				Service2 svc = kernel.Resolve<Service2>();
 				Assert.IsNotNull(svc);

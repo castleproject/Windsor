@@ -18,6 +18,7 @@ namespace Castle.Facilities.Remoting.Tests
 	using System;
 	using System.Runtime.Remoting;
 
+	using Castle.MicroKernel.Registration;
 	using Castle.Windsor;
 	using Castle.Facilities.Remoting.TestComponents;
 	using Castle.Windsor.Tests;
@@ -78,7 +79,7 @@ namespace Castle.Facilities.Remoting.Tests
 		{
 			IWindsorContainer clientContainer = CreateRemoteContainer(clientDomain, ConfigHelper.ResolveConfigPath("Facilities/Remoting/Configs/client_simple_scenario.xml"));
 
-			clientContainer.AddComponent("comp", typeof(ConsumerComp));
+			clientContainer.Register(Component.For(typeof(ConsumerComp)).Named("comp"));
 
 			ConsumerComp service = (ConsumerComp) clientContainer[ typeof(ConsumerComp) ];
 

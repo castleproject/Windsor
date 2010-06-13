@@ -14,8 +14,12 @@
 
 namespace Castle.MicroKernel.Tests.Pools
 {
-	using System.Threading;
-	using NUnit.Framework;
+    using System;
+    using System.Threading;
+
+    using Castle.MicroKernel.Registration;
+
+    using NUnit.Framework;
 
 	[TestFixture]
 	public class MultithreadedPooledTestCase
@@ -28,7 +32,7 @@ namespace Castle.MicroKernel.Tests.Pools
 		public void Multithreaded()
 		{
 			_kernel = new DefaultKernel();
-			_kernel.AddComponent("a", typeof(PoolableComponent1));
+			_kernel.Register(Component.For(typeof(PoolableComponent1)).Named("a"));
 
 			const int threadCount = 15;
 

@@ -46,7 +46,7 @@ namespace Castle.MicroKernel.Tests.Lifecycle
 		[Test]
 		public void InitializeLifecycle()
 		{
-			kernel.AddComponent("a", typeof(HttpFakeServer));
+			kernel.Register(Component.For(typeof(HttpFakeServer)).Named("a"));
 			HttpFakeServer server = (HttpFakeServer) kernel["a"];
 
 			Assert.IsTrue(server.IsInitialized);
@@ -55,7 +55,7 @@ namespace Castle.MicroKernel.Tests.Lifecycle
 		[Test]
 		public void DisposableLifecycle()
 		{
-			kernel.AddComponent("a", typeof(HttpFakeServer));
+			kernel.Register(Component.For(typeof(HttpFakeServer)).Named("a"));
 			IHandler handler = kernel.GetHandler("a");
 			HttpFakeServer server = (HttpFakeServer) handler.Resolve(CreationContext.Empty);
 

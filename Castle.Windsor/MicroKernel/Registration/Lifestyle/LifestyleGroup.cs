@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -31,6 +31,16 @@ namespace Castle.MicroKernel.Registration.Lifestyle
 		/// <returns></returns>
 		public ComponentRegistration<S> Is(LifestyleType type)
 		{
+			if (Enum.IsDefined(typeof(LifestyleType), type) == false)
+			{
+				throw new ArgumentOutOfRangeException("type", type, "Not a valid lifestyle");
+			}
+			if(type == LifestyleType.Undefined)
+			{
+				throw new ArgumentOutOfRangeException("type", type,
+				                                      string.Format("{0} is not a valid lifestyle type.", LifestyleType.Undefined));
+			}
+
 			return AddDescriptor(new LifestyleDescriptor<S>(type));
 		}
 
@@ -63,7 +73,7 @@ namespace Castle.MicroKernel.Registration.Lifestyle
 
 		public ComponentRegistration<S> PooledWithSize(int? initialSize, int? maxSize)
 		{
-			return AddDescriptor(new Pooled<S>(initialSize, maxSize));			
+			return AddDescriptor(new Pooled<S>(initialSize, maxSize));
 		}
 
 		/// <summary>

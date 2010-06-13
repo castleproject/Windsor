@@ -53,8 +53,8 @@ namespace Castle.Windsor.Tests
 		[Test]
 		public void InterfaceProxy()
 		{
-			container.AddComponent("interceptor", typeof(ResultModifierInterceptor));
-			container.AddComponent("key",typeof(ICalcService), typeof(CalculatorService));
+			container.Register(Component.For(typeof(ResultModifierInterceptor)).Named("interceptor"));
+			container.Register(Component.For(typeof(ICalcService)).ImplementedBy(typeof(CalculatorService)).Named("key"));
 
 			var service = container.Resolve<ICalcService>("key");
 
@@ -65,7 +65,7 @@ namespace Castle.Windsor.Tests
 		[Test]
 		public void Interface_that_depends_on_service_it_is_intercepting()
 		{
-			container.AddComponent("interceptor", typeof(InterceptorThatCauseStackOverflow));
+			container.Register(Component.For(typeof(InterceptorThatCauseStackOverflow)).Named("interceptor"));
 			container.Register(
 				Component.For<ICameraService>().ImplementedBy<CameraService>()
 					.Interceptors(new[] { new InterceptorReference(typeof(InterceptorThatCauseStackOverflow)), }).First,
@@ -78,8 +78,8 @@ namespace Castle.Windsor.Tests
 		[Test]
 		public void InterfaceProxyWithLifecycle()
 		{
-			container.AddComponent("interceptor", typeof(ResultModifierInterceptor));
-			container.AddComponent("key", typeof(ICalcService), typeof(CalculatorServiceWithLifecycle));
+			container.Register(Component.For(typeof(ResultModifierInterceptor)).Named("interceptor"));
+			container.Register(Component.For(typeof(ICalcService)).ImplementedBy(typeof(CalculatorServiceWithLifecycle)).Named("key"));
 
 			ICalcService service = (ICalcService) container.Resolve("key");
 
@@ -97,8 +97,8 @@ namespace Castle.Windsor.Tests
 		[Test]
 		public void ClassProxy()
 		{
-			container.AddComponent("interceptor", typeof(ResultModifierInterceptor));
-			container.AddComponent("key", typeof(CalculatorService));
+			container.Register(Component.For(typeof(ResultModifierInterceptor)).Named("interceptor"));
+			container.Register(Component.For(typeof(CalculatorService)).Named("key"));
 
 			service = container.Resolve<CalculatorService>("key");
 
@@ -197,8 +197,8 @@ namespace Castle.Windsor.Tests
 		[Test]
 		public void OnBehalfOfTest()
 		{
-			container.AddComponent("interceptor", typeof(InterceptorWithOnBehalf));
-			container.AddComponent("key", typeof(CalculatorService));
+			container.Register(Component.For(typeof(InterceptorWithOnBehalf)).Named("interceptor"));
+			container.Register(Component.For(typeof(CalculatorService)).Named("key"));
 
 			CalculatorService service =
 				(CalculatorService) container.Resolve("key");
@@ -216,8 +216,8 @@ namespace Castle.Windsor.Tests
 		{
 			container = new WindsorContainer(); // So we wont use the facilities
 
-			container.AddComponent("interceptor", typeof(ResultModifierInterceptor));
-			container.AddComponent("key", typeof(CalculatorServiceWithAttributes));
+			container.Register(Component.For(typeof(ResultModifierInterceptor)).Named("interceptor"));
+			container.Register(Component.For(typeof(CalculatorServiceWithAttributes)).Named("key"));
 
 			CalculatorServiceWithAttributes service =
 				(CalculatorServiceWithAttributes) container.Resolve("key");
@@ -229,8 +229,8 @@ namespace Castle.Windsor.Tests
 		[Test]
 		public void Multithreaded()
 		{
-			container.AddComponent("interceptor", typeof(ResultModifierInterceptor));
-			container.AddComponent("key", typeof(CalculatorService));
+			container.Register(Component.For(typeof(ResultModifierInterceptor)).Named("interceptor"));
+			container.Register(Component.For(typeof(CalculatorService)).Named("key"));
 
 			service = (CalculatorService) container.Resolve("key");
 

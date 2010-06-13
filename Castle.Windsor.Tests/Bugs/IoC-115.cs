@@ -17,6 +17,10 @@ using NUnit.Framework;
 
 namespace Castle.Windsor.Tests.Bugs
 {
+    using System;
+
+    using Castle.MicroKernel.Registration;
+
     [TestFixture]
     public class IoC_115
     {
@@ -28,9 +32,9 @@ namespace Castle.Windsor.Tests.Bugs
 
             parent.AddChildContainer(child);
 
-            parent.AddComponent("service", typeof(IParentService), typeof(ParentService));
-            child.AddComponent("service1", typeof(IChildService1), typeof(ChildService1));
-            child.AddComponent("service2", typeof(IChildService2), typeof(ChildService2));
+            ((IWindsorContainer)parent).Register(Component.For(typeof(IParentService)).ImplementedBy(typeof(ParentService)).Named("service"));
+            ((IWindsorContainer)child).Register(Component.For(typeof(IChildService1)).ImplementedBy(typeof(ChildService1)).Named("service1"));
+            ((IWindsorContainer)child).Register(Component.For(typeof(IChildService2)).ImplementedBy(typeof(ChildService2)).Named("service2"));
 
 
             child.Resolve<IChildService1>();
@@ -45,9 +49,9 @@ namespace Castle.Windsor.Tests.Bugs
 
             parent.AddChildContainer(child);
 
-            parent.AddComponent("service1", typeof(IParentService), typeof(ParentService));
-            parent.AddComponent("service3", typeof(IChildService2), typeof(ChildService2));
-            child.AddComponent("service2", typeof(IParentService), typeof(AnotherParentService));
+            ((IWindsorContainer)parent).Register(Component.For(typeof(IParentService)).ImplementedBy(typeof(ParentService)).Named("service1"));
+            ((IWindsorContainer)parent).Register(Component.For(typeof(IChildService2)).ImplementedBy(typeof(ChildService2)).Named("service3"));
+            ((IWindsorContainer)child).Register(Component.For(typeof(IParentService)).ImplementedBy(typeof(AnotherParentService)).Named("service2"));
 
 			IChildService2 resolve = child.Resolve<IChildService2>();
             Assert.IsInstanceOf(typeof(AnotherParentService),resolve.Parent);

@@ -21,6 +21,7 @@ namespace Castle.Facilities.Remoting
 
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Facilities;
+	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.SubSystems.Conversion;
 
 	/// <summary>
@@ -117,7 +118,7 @@ namespace Castle.Facilities.Remoting
 
 		private void ConfigureServerFacility()
 		{
-			Kernel.AddComponent("remoting.registry", typeof(RemotingRegistry));
+		    Kernel.Register(Component.For<RemotingRegistry>().Named("remoting.registry"));
 
 			localRegistry = (RemotingRegistry) Kernel[ typeof(RemotingRegistry) ];
 

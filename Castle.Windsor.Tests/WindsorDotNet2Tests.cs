@@ -207,7 +207,7 @@ namespace Castle.Windsor.Tests
 		{
 			IWindsorContainer container = new WindsorContainer();
 
-			container.AddComponent("comp", typeof(IRepository<>), typeof(TransientRepository<>));
+			container.Register(Component.For(typeof(IRepository<>)).ImplementedBy(typeof(TransientRepository<>)).Named("comp"));
 
 			object o1 = container.Resolve<IRepository<Employee>>();
 			object o2 = container.Resolve<IRepository<Employee>>();
@@ -224,8 +224,8 @@ namespace Castle.Windsor.Tests
 		{
 			IWindsorContainer container = new WindsorContainer();
 
-			container.AddComponentLifeStyle("comp", typeof(IRepository<>),
-				typeof(RepositoryNotMarkedAsTransient<>), LifestyleType.Transient);
+            container.Register(
+                Component.For(typeof(IRepository<>)).ImplementedBy(typeof(RepositoryNotMarkedAsTransient<>)).Named("comp").LifeStyle.Transient);
 
 			object o1 = container.Resolve<IRepository<Employee>>();
 			object o2 = container.Resolve<IRepository<Employee>>();
@@ -243,8 +243,8 @@ namespace Castle.Windsor.Tests
 		{
 			IWindsorContainer container = new WindsorContainer();
 
-			container.AddComponent("comp", typeof(NeedsGenericType));
-			container.AddComponent("cache", typeof(ICache<>), typeof(NullCache<>));
+			container.Register(Component.For(typeof(NeedsGenericType)).Named("comp"));
+			container.Register(Component.For(typeof(ICache<>)).ImplementedBy(typeof(NullCache<>)).Named("cache"));
 
 			NeedsGenericType needsGenericType = container.Resolve<NeedsGenericType>();
 
@@ -257,8 +257,8 @@ namespace Castle.Windsor.Tests
 			WindsorContainer container = new WindsorContainer();
 
 			container.AddFacility("interceptor-facility", new MyInterceptorGreedyFacility());
-			container.AddComponent("interceptor", typeof(StandardInterceptor));
-			container.AddComponent("key", typeof(IRepository<Employee>), typeof(DemoRepository<Employee>));
+			((IWindsorContainer)container).Register(Component.For(typeof(StandardInterceptor)).Named("interceptor"));
+			((IWindsorContainer)container).Register(Component.For(typeof(IRepository<Employee>)).ImplementedBy(typeof(DemoRepository<Employee>)).Named("key"));
 
 			IRepository<Employee> store = container.Resolve<IRepository<Employee>>();
 
@@ -271,8 +271,8 @@ namespace Castle.Windsor.Tests
 			WindsorContainer container = new WindsorContainer();
 
 			container.AddFacility("interceptor-facility", new MyInterceptorGreedyFacility2());
-			container.AddComponent("interceptor", typeof(StandardInterceptor));
-			container.AddComponent("key", typeof(IRepository<>), typeof(DemoRepository<>));
+			((IWindsorContainer)container).Register(Component.For(typeof(StandardInterceptor)).Named("interceptor"));
+			((IWindsorContainer)container).Register(Component.For(typeof(IRepository<>)).ImplementedBy(typeof(DemoRepository<>)).Named("key"));
 
 			IRepository<Employee> store = container.Resolve<IRepository<Employee>>();
 
@@ -313,9 +313,9 @@ namespace Castle.Windsor.Tests
 			WindsorContainer container = new WindsorContainer();
 
 			container.AddFacility("interceptor-facility", new MyInterceptorGreedyFacility2());
-			container.AddComponent("interceptor", typeof(StandardInterceptor));
-			container.AddComponentLifeStyle("key", typeof(IRepository<>), typeof(DemoRepository<>), LifestyleType.Transient);
-
+			container.Register(Component.For(typeof(StandardInterceptor)).Named("interceptor"));
+		    container.Register(
+		        Component.For(typeof(IRepository<>)).ImplementedBy(typeof(DemoRepository<>)).Named("key").LifeStyle.Transient);
 			IRepository<Employee> store = container.Resolve<IRepository<Employee>>();
 			IRepository<Employee> anotherStore = container.Resolve<IRepository<Employee>>();
 
@@ -328,8 +328,8 @@ namespace Castle.Windsor.Tests
 		{
 			WindsorContainer container = new WindsorContainer();
 
-			container.AddComponent("interceptor", typeof(MyInterceptor));
-			container.AddComponent("key", typeof(IRepository<>), typeof(DemoRepository<>));
+			((IWindsorContainer)container).Register(Component.For(typeof(MyInterceptor)).Named("interceptor"));
+			((IWindsorContainer)container).Register(Component.For(typeof(IRepository<>)).ImplementedBy(typeof(DemoRepository<>)).Named("key"));
 			container.Kernel.GetHandler(typeof(IRepository<>)).ComponentModel.Interceptors.Add(
 				new InterceptorReference(typeof(MyInterceptor)));
 
@@ -343,7 +343,7 @@ namespace Castle.Windsor.Tests
 		public void ParentResolverIntercetorShouldNotAffectGenericComponentInterceptor()
 		{
 			WindsorContainer container = new WindsorContainer();
-			container.AddComponent<MyInterceptor>();
+			((IWindsorContainer)container).Register(Component.For<MyInterceptor>());
 
 			container.Register(
 				Component.For<ISpecification>()
@@ -351,7 +351,7 @@ namespace Castle.Windsor.Tests
 					.Interceptors(new InterceptorReference(typeof(MyInterceptor)))
 					.Anywhere
 				);
-			container.AddComponent("repos", typeof(IRepository<>), typeof(TransientRepository<>));
+			((IWindsorContainer)container).Register(Component.For(typeof(IRepository<>)).ImplementedBy(typeof(TransientRepository<>)).Named("repos"));
 
 			ISpecification specification = container.Resolve<ISpecification>();
 			bool isProxy = specification.Repository.GetType().FullName.Contains("Proxy");

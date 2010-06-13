@@ -48,11 +48,11 @@ namespace Castle.MicroKernel.Tests.SubContainers
 		{
 			IKernel subkernel = new DefaultKernel();
 
-			kernel.AddComponent("templateengine", typeof(DefaultTemplateEngine));
-			kernel.AddComponent("mailsender", typeof(DefaultMailSenderService));
+			kernel.Register(Component.For(typeof(DefaultTemplateEngine)).Named("templateengine"));
+			kernel.Register(Component.For(typeof(DefaultMailSenderService)).Named("mailsender"));
 
 			kernel.AddChildKernel(subkernel);
-			subkernel.AddComponent("spamservice", typeof(DefaultSpamService));
+			subkernel.Register(Component.For(typeof(DefaultSpamService)).Named("spamservice"));
 
 			DefaultSpamService spamservice = (DefaultSpamService) subkernel["spamservice"];
 
@@ -68,9 +68,9 @@ namespace Castle.MicroKernel.Tests.SubContainers
 			DefaultKernel childContainer = new DefaultKernel();
 
 			container.AddChildKernel(childContainer);
-			childContainer.AddComponent("component", typeof(UsesIEmptyService));
+			((IKernel)childContainer).Register(Component.For(typeof(UsesIEmptyService)).Named("component"));
 
-			container.AddComponent("service1", typeof(IEmptyService), typeof(EmptyService));
+			((IKernel)container).Register(Component.For(typeof(IEmptyService)).ImplementedBy(typeof(EmptyService)).Named("service1"));
 
 			UsesIEmptyService comp = (UsesIEmptyService) childContainer[typeof(UsesIEmptyService)];
 		}
@@ -80,12 +80,12 @@ namespace Castle.MicroKernel.Tests.SubContainers
 		{
 			IKernel child = new DefaultKernel();
 
-			kernel.AddComponent("templateengine", typeof(DefaultTemplateEngine));
-			kernel.AddComponent("spamservice", typeof(DefaultSpamService));
+			kernel.Register(Component.For(typeof(DefaultTemplateEngine)).Named("templateengine"));
+			kernel.Register(Component.For(typeof(DefaultSpamService)).Named("spamservice"));
 
 			kernel.AddChildKernel(child);
 			
-			child.AddComponent("mailsender", typeof(DefaultMailSenderService));
+			child.Register(Component.For(typeof(DefaultMailSenderService)).Named("mailsender"));
 
 			DefaultSpamService spamservice = (DefaultSpamService) child["spamservice"];
 
@@ -99,12 +99,12 @@ namespace Castle.MicroKernel.Tests.SubContainers
 		{
 			IKernel subkernel = new DefaultKernel();
 
-			kernel.AddComponent("spamservice", typeof(DefaultSpamService), LifestyleType.Transient);
-			kernel.AddComponent("mailsender", typeof(DefaultMailSenderService));
-			kernel.AddComponent("templateengine", typeof(DefaultTemplateEngine));
+			kernel.Register(Component.For(typeof(DefaultSpamService)).Named("spamservice").LifeStyle.Is(LifestyleType.Transient));
+			kernel.Register(Component.For(typeof(DefaultMailSenderService)).Named("mailsender"));
+			kernel.Register(Component.For(typeof(DefaultTemplateEngine)).Named("templateengine"));
 
 			kernel.AddChildKernel(subkernel);
-			subkernel.AddComponent("templateengine", typeof(DefaultTemplateEngine));
+			subkernel.Register(Component.For(typeof(DefaultTemplateEngine)).Named("templateengine"));
 
 			DefaultTemplateEngine templateengine = (DefaultTemplateEngine) kernel["templateengine"];
 			DefaultTemplateEngine sub_templateengine = (DefaultTemplateEngine) subkernel["templateengine"];
@@ -161,15 +161,15 @@ namespace Castle.MicroKernel.Tests.SubContainers
 		[Test]
 		public void Singleton_WithNonSingletonDependencies_DoesNotReResolveDependencies()
 		{
-			kernel.AddComponent("spamservice", typeof(DefaultSpamService));
-			kernel.AddComponent("mailsender", typeof(DefaultMailSenderService));
+			kernel.Register(Component.For(typeof(DefaultSpamService)).Named("spamservice"));
+			kernel.Register(Component.For(typeof(DefaultMailSenderService)).Named("mailsender"));
 
 			IKernel subkernel1 = new DefaultKernel();
-			subkernel1.AddComponent("templateengine", typeof(DefaultTemplateEngine));
+			subkernel1.Register(Component.For(typeof(DefaultTemplateEngine)).Named("templateengine"));
 			kernel.AddChildKernel(subkernel1);
 
 			IKernel subkernel2 = new DefaultKernel();
-			subkernel2.AddComponent("templateengine", typeof(DefaultTemplateEngine), LifestyleType.Transient);
+			subkernel2.Register(Component.For(typeof(DefaultTemplateEngine)).Named("templateengine").LifeStyle.Is(LifestyleType.Transient));
 			kernel.AddChildKernel(subkernel2);
 
 			DefaultTemplateEngine templateengine1 = (DefaultTemplateEngine) subkernel1["templateengine"];
@@ -190,12 +190,12 @@ namespace Castle.MicroKernel.Tests.SubContainers
 		{
 			IKernel subkernel = new DefaultKernel();
 
-			kernel.AddComponent("mailsender", typeof(DefaultMailSenderService));
-			kernel.AddComponent("templateengine", typeof(DefaultTemplateEngine));
+			kernel.Register(Component.For(typeof(DefaultMailSenderService)).Named("mailsender"));
+			kernel.Register(Component.For(typeof(DefaultTemplateEngine)).Named("templateengine"));
 
 			kernel.AddChildKernel(subkernel);
 
-			subkernel.AddComponent("spamservice", typeof(DefaultSpamService));
+			subkernel.Register(Component.For(typeof(DefaultSpamService)).Named("spamservice"));
 
 			DefaultSpamService spamservice = (DefaultSpamService) subkernel["spamservice"];
 
@@ -209,10 +209,10 @@ namespace Castle.MicroKernel.Tests.SubContainers
 		{
 			IKernel subkernel = new DefaultKernel();
 
-			subkernel.AddComponent("spamservice", typeof(DefaultSpamServiceWithConstructor));
+			subkernel.Register(Component.For(typeof(DefaultSpamServiceWithConstructor)).Named("spamservice"));
 
-			kernel.AddComponent("mailsender", typeof(DefaultMailSenderService));
-			kernel.AddComponent("templateengine", typeof(DefaultTemplateEngine));
+			kernel.Register(Component.For(typeof(DefaultMailSenderService)).Named("mailsender"));
+			kernel.Register(Component.For(typeof(DefaultTemplateEngine)).Named("templateengine"));
 
 			kernel.AddChildKernel(subkernel);
 
@@ -229,7 +229,7 @@ namespace Castle.MicroKernel.Tests.SubContainers
 		{
 			IKernel subkernel = new DefaultKernel();
 
-			kernel.AddComponent("templateengine", typeof(DefaultTemplateEngine));
+			kernel.Register(Component.For(typeof(DefaultTemplateEngine)).Named("templateengine"));
 
 			kernel.AddChildKernel(subkernel);
 
@@ -244,7 +244,7 @@ namespace Castle.MicroKernel.Tests.SubContainers
 		{
 			IKernel subkernel = new DefaultKernel();
 
-			subkernel.AddComponent("templateengine", typeof(DefaultTemplateEngine));
+			subkernel.Register(Component.For(typeof(DefaultTemplateEngine)).Named("templateengine"));
 
 			kernel.AddChildKernel(subkernel);
 
@@ -262,10 +262,10 @@ namespace Castle.MicroKernel.Tests.SubContainers
 			// subkernel added with already registered components that overload parent components.
 
 			IKernel subkernel = new DefaultKernel();
-			subkernel.AddComponentInstance("engine", instance1);
+			subkernel.Register(Component.For<DefaultTemplateEngine>().Named("engine").Instance(instance1));
 			Assert.AreEqual(instance1, subkernel["engine"]);
 
-			kernel.AddComponentInstance("engine", instance2);
+            kernel.Register(Component.For<DefaultTemplateEngine>().Named("engine").Instance(instance2));
 			Assert.AreEqual(instance2, kernel["engine"]);
 
 			kernel.AddChildKernel(subkernel);
@@ -284,11 +284,11 @@ namespace Castle.MicroKernel.Tests.SubContainers
 
 			// subkernel added first, then populated with overloaded components after
 
-			kernel.AddComponentInstance("engine", instance2);
+            kernel.Register(Component.For<DefaultTemplateEngine>().Named("engine").Instance(instance2));
 			Assert.AreEqual(instance2, kernel["engine"]);
 			Assert.AreEqual(instance2, subkernel["engine"]);
 
-			subkernel.AddComponentInstance("engine", instance1);
+            subkernel.Register(Component.For<DefaultTemplateEngine>().Named("engine").Instance(instance1));
 			Assert.AreEqual(instance1, subkernel["engine"]);
 			Assert.AreEqual(instance2, kernel["engine"]);
 		}

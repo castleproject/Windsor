@@ -20,7 +20,7 @@ namespace Castle.MicroKernel.Registration
 
 		public RegistrationGroup(ComponentRegistration<S> registration)
 		{
-			this.registration = registration;	
+			this.registration = registration;
 		}
 
 		public ComponentRegistration<S> Registration

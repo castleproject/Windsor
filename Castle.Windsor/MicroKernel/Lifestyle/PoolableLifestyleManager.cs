@@ -18,8 +18,9 @@ namespace Castle.MicroKernel.Lifestyle
 
 	using Castle.MicroKernel.Context;
 	using Castle.MicroKernel.Lifestyle.Pool;
+	using Castle.MicroKernel.Registration;
 
-	/// <summary>
+    /// <summary>
 	/// Implements a Poolable Lifestyle Manager. 
 	/// </summary>
 #if (!SILVERLIGHT)
@@ -74,12 +75,13 @@ namespace Castle.MicroKernel.Lifestyle
 		{
 			if (!Kernel.HasComponent(typeof(IPoolFactory)))
 			{
-				Kernel.AddComponent("castle.internal.poolfactory",
-				                    typeof(IPoolFactory), typeof(DefaultPoolFactory));
+			    Kernel.Register(
+			        Component.For<IPoolFactory>()
+			            .ImplementedBy<DefaultPoolFactory>()
+			            .Named("castle.internal.poolfactory"));
 			}
 
-			IPoolFactory factory = Kernel[typeof(IPoolFactory)] as IPoolFactory;
-
+		    var factory = Kernel.Resolve<IPoolFactory>();
 			return factory.Create(initialSize, maxSize, ComponentActivator);
 		}
 	}

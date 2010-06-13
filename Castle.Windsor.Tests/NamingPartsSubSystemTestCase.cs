@@ -14,9 +14,12 @@
 
 namespace Castle.MicroKernel.Tests
 {
-	using Castle.Core;
+    using System;
+
+    using Castle.Core;
 	using Castle.Core.Internal;
-	using Castle.MicroKernel.SubSystems.Naming;
+    using Castle.MicroKernel.Registration;
+    using Castle.MicroKernel.SubSystems.Naming;
 	using Castle.MicroKernel.Tests.ClassComponents;
 	using NUnit.Framework;
 
@@ -35,8 +38,8 @@ namespace Castle.MicroKernel.Tests
 		[Test]
 		public void ComponentQuery()
 		{
-			kernel.AddComponent("common:key1=true", typeof(ICommon), typeof(CommonImpl1));
-			kernel.AddComponent("common:secure=true", typeof(ICommon), typeof(CommonImpl2));
+			kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(CommonImpl1)).Named("common:key1=true"));
+			kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(CommonImpl2)).Named("common:secure=true"));
 
 			ICommon common = kernel["common"] as ICommon;
 
@@ -57,8 +60,8 @@ namespace Castle.MicroKernel.Tests
 		[Test]
 		public void ComponentGraph()
 		{
-			kernel.AddComponent("common:key1=true", typeof(ICommon), typeof(CommonImpl1));
-			kernel.AddComponent("common:secure=true", typeof(ICommon), typeof(CommonImpl2));
+			kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(CommonImpl1)).Named("common:key1=true"));
+			kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(CommonImpl2)).Named("common:secure=true"));
 
 			GraphNode[] nodes = kernel.GraphNodes;
 			Assert.IsNotNull(nodes);
@@ -68,8 +71,8 @@ namespace Castle.MicroKernel.Tests
 		[Test]
 		public void ServiceLookup()
 		{
-			kernel.AddComponent("common:key1=true", typeof(ICommon), typeof(CommonImpl1));
-			kernel.AddComponent("common:secure=true", typeof(ICommon), typeof(CommonImpl2));
+			kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(CommonImpl1)).Named("common:key1=true"));
+			kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(CommonImpl2)).Named("common:secure=true"));
 
 			ICommon common = kernel[typeof(ICommon)] as ICommon;
 
@@ -80,8 +83,8 @@ namespace Castle.MicroKernel.Tests
 		[Test]
 		public void GetAssignableHandlers()
 		{
-			kernel.AddComponent("common:key1=true", typeof(ICommon), typeof(CommonImpl1));
-			kernel.AddComponent("common:secure=true", typeof(ICommon), typeof(CommonImpl2));
+			kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(CommonImpl1)).Named("common:key1=true"));
+			kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(CommonImpl2)).Named("common:secure=true"));
 
 			IHandler[] handlers = kernel.GetAssignableHandlers(typeof(ICommon));
 
@@ -92,7 +95,7 @@ namespace Castle.MicroKernel.Tests
 		[Test]
 		public void WorksWithHandlerForwarding()
 		{
-			kernel.AddComponent("common:key1=true", typeof(ICommon), typeof(CommonImpl1));
+			kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(CommonImpl1)).Named("common:key1=true"));
 			((IKernelInternal) kernel).RegisterHandlerForwarding(typeof(CommonImpl2), "common:key1=true");
 		}
 

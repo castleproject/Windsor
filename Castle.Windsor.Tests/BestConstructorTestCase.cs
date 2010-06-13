@@ -14,7 +14,9 @@
 
 namespace Castle.MicroKernel.Tests
 {
-	using Castle.Core.Configuration;
+    using System;
+
+    using Castle.Core.Configuration;
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.SubSystems.Configuration;
 	using Castle.MicroKernel.Tests.ClassComponents;
@@ -44,10 +46,10 @@ namespace Castle.MicroKernel.Tests
 		[Test]
 		public void ConstructorWithMoreArguments()
 		{
-			kernel.AddComponent("a", typeof(A));
-			kernel.AddComponent("b", typeof(B));
-			kernel.AddComponent("c", typeof(C));
-			kernel.AddComponent("service", typeof(ServiceUser));
+			kernel.Register(Component.For(typeof(A)).Named("a"));
+			kernel.Register(Component.For(typeof(B)).Named("b"));
+			kernel.Register(Component.For(typeof(C)).Named("c"));
+			kernel.Register(Component.For(typeof(ServiceUser)).Named("service"));
 
 			ServiceUser service = (ServiceUser) kernel["service"];
 
@@ -60,9 +62,9 @@ namespace Castle.MicroKernel.Tests
 		[Test]
 		public void ConstructorWithTwoArguments()
 		{
-			kernel.AddComponent("a", typeof(A));
-			kernel.AddComponent("b", typeof(B));
-			kernel.AddComponent("service", typeof(ServiceUser));
+			kernel.Register(Component.For(typeof(A)).Named("a"));
+			kernel.Register(Component.For(typeof(B)).Named("b"));
+			kernel.Register(Component.For(typeof(ServiceUser)).Named("service"));
 
 			ServiceUser service = (ServiceUser) kernel["service"];
 
@@ -75,8 +77,8 @@ namespace Castle.MicroKernel.Tests
 		[Test]
 		public void ConstructorWithOneArgument()
 		{
-			kernel.AddComponent("a", typeof(A));
-			kernel.AddComponent("service", typeof(ServiceUser));
+			kernel.Register(Component.For(typeof(A)).Named("a"));
+			kernel.Register(Component.For(typeof(ServiceUser)).Named("service"));
 
 			ServiceUser service = (ServiceUser) kernel["service"];
 
@@ -101,8 +103,8 @@ namespace Castle.MicroKernel.Tests
 
 			kernel.ConfigurationStore = store;
 
-			kernel.AddComponent("a", typeof(A));
-			kernel.AddComponent("service", typeof(ServiceUser2));
+			kernel.Register(Component.For(typeof(A)).Named("a"));
+			kernel.Register(Component.For(typeof(ServiceUser2)).Named("service"));
 
 			ServiceUser2 service = (ServiceUser2) kernel["service"];
 
@@ -130,8 +132,8 @@ namespace Castle.MicroKernel.Tests
 
 			kernel.ConfigurationStore = store;
 
-			kernel.AddComponent("a", typeof(A));
-			kernel.AddComponent("service", typeof(ServiceUser2));
+			kernel.Register(Component.For(typeof(A)).Named("a"));
+			kernel.Register(Component.For(typeof(ServiceUser2)).Named("service"));
 
 			ServiceUser2 service = (ServiceUser2) kernel["service"];
 
@@ -199,9 +201,9 @@ namespace Castle.MicroKernel.Tests
         [Test]
         public void Two_constructors_but_one_with_satisfiable_dependencies()
         {
-            kernel.AddComponent<SimpleComponent1>();
-            kernel.AddComponent<SimpleComponent2>();
-            kernel.AddComponent<HasTwoConstructors3>();
+            kernel.Register(Component.For<SimpleComponent1>());
+            kernel.Register(Component.For<SimpleComponent2>());
+            kernel.Register(Component.For<HasTwoConstructors3>());
             var component = kernel.Resolve<HasTwoConstructors3>();
             Assert.IsNotNull(component.X);
             Assert.IsNotNull(component.Y);
@@ -211,10 +213,10 @@ namespace Castle.MicroKernel.Tests
 		[Test]
 		public void Two_constructors_but_one_with_satisfiable_dependencies_registering_dependencies_last()
 		{
-			kernel.AddComponent<HasTwoConstructors3>();
-			kernel.AddComponent<SimpleComponent1>();
-			kernel.AddComponent<SimpleComponent2>();
-			var component = kernel.Resolve<HasTwoConstructors3>();
+		    kernel.Register(Component.For<HasTwoConstructors3>());
+		    kernel.Register(Component.For<SimpleComponent1>());
+		    kernel.Register(Component.For<SimpleComponent2>());
+		    var component = kernel.Resolve<HasTwoConstructors3>();
 			Assert.IsNotNull(component.X);
 			Assert.IsNotNull(component.Y);
 			Assert.IsNull(component.A);

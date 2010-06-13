@@ -14,9 +14,12 @@
 
 namespace Castle.Windsor.Tests
 {
-	using System.Collections.Generic;
+    using System;
+    using System.Collections.Generic;
 	using Castle.MicroKernel;
-	using NUnit.Framework;
+    using Castle.MicroKernel.Registration;
+
+    using NUnit.Framework;
 
 	[TestFixture]
 	public class ContainerProblem
@@ -26,8 +29,8 @@ namespace Castle.Windsor.Tests
 		{
 			IWindsorContainer container = new WindsorContainer();
 
-			container.AddComponent("child", typeof(IChild), typeof(Child));
-			container.AddComponent("parent", typeof(IParent), typeof(Parent));
+			container.Register(Component.For(typeof(IChild)).ImplementedBy(typeof(Child)).Named("child"));
+			container.Register(Component.For(typeof(IParent)).ImplementedBy(typeof(Parent)).Named("parent"));
 
 			// child or parent will cause a stack overflow...?
 

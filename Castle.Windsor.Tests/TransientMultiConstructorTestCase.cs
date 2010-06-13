@@ -18,6 +18,7 @@ namespace Castle.MicroKernel.Tests
 	using System.Collections.Generic;
 
 	using Castle.Core;
+	using Castle.MicroKernel.Registration;
 
 	using NUnit.Framework;
 
@@ -28,7 +29,7 @@ namespace Castle.MicroKernel.Tests
 		public void TransientMultiConstructorTest()
 		{
 			DefaultKernel container = new DefaultKernel();
-			container.AddComponent("FooBar", typeof(FooBar));
+			((IKernel)container).Register(Component.For(typeof(FooBar)).Named("FooBar"));
 
 			var arguments1 = new Dictionary<object, object>();
 			arguments1.Add("integer", 1);
@@ -46,7 +47,7 @@ namespace Castle.MicroKernel.Tests
 		public void TransientMultipleConstructorNonValueTypeTest()
 		{
 			DefaultKernel container = new DefaultKernel();
-			container.AddComponent("FooBar", typeof(FooBarNonValue));
+			((IKernel)container).Register(Component.For(typeof(FooBarNonValue)).Named("FooBar"));
 			Tester1 bla1 = new Tester1("FOOBAR");
 			Tester2 bla2 = new Tester2(666);
 
