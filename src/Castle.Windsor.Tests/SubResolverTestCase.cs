@@ -14,9 +14,12 @@
 
 namespace Castle.MicroKernel.Tests
 {
-	using Castle.MicroKernel.Context;
+    using System;
 
-	using Core;
+    using Castle.MicroKernel.Context;
+    using Castle.MicroKernel.Registration;
+
+    using Core;
 	using NUnit.Framework;
 
 	[TestFixture]
@@ -30,7 +33,7 @@ namespace Castle.MicroKernel.Tests
 			IKernel kernel = new DefaultKernel();
 			kernel.Resolver.AddSubResolver(resolver);
 
-			kernel.AddComponent("foo", typeof(Foo));
+			kernel.Register(Component.For(typeof(Foo)).Named("foo"));
 			IHandler handler = kernel.GetHandler("foo");
 			Assert.AreEqual(HandlerState.WaitingDependency, handler.CurrentState);
 

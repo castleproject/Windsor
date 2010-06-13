@@ -20,6 +20,7 @@ namespace Castle.MicroKernel.Tests.Facilities.FactorySupport
 	using Castle.Core;
 	using Castle.Core.Configuration;
 	using Castle.Facilities.FactorySupport;
+	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Tests.ClassComponents;
 	using Castle.MicroKernel.Tests.Lifestyle.Components;
 
@@ -39,15 +40,15 @@ namespace Castle.MicroKernel.Tests.Facilities.FactorySupport
 		[Test]
 		public void NullModelConfigurationBug()
 		{
-			kernel.AddFacility("factories", new FactorySupportFacility());
-			kernel.AddComponentInstance("a", new CustomerImpl());
+            kernel.AddFacility("factories", new FactorySupportFacility());
+            kernel.Register(Component.For<ICustomer>().Named("a").Instance(new CustomerImpl()));
 		}
 
 		[Test]
 		public void DependancyIgnored()
 		{
 			kernel.AddFacility("factories", new FactorySupportFacility());
-			kernel.AddComponent("a", typeof(Factory));
+			kernel.Register(Component.For(typeof(Factory)).Named("a"));
 
 			AddComponent("stringdictComponent", typeof(StringDictionaryDependentComponent), "CreateWithStringDictionary");
 			AddComponent("hashtableComponent", typeof(HashTableDependentComponent), "CreateWithHashtable");
@@ -62,7 +63,7 @@ namespace Castle.MicroKernel.Tests.Facilities.FactorySupport
 		public void KernelDoesNotTryToWireComponentsPropertiesWithFactoryConfiguration()
 		{
 			kernel.AddFacility("factories", new FactorySupportFacility());
-			kernel.AddComponent("a", typeof(Factory));
+			kernel.Register(Component.For(typeof(Factory)).Named("a"));
 
 			ComponentModel model = AddComponent("cool.service", typeof(MyCoolServiceWithProperties), "CreateCoolService");
 
@@ -78,7 +79,7 @@ namespace Castle.MicroKernel.Tests.Facilities.FactorySupport
 		public void Late_bound_factory_properly_applies_lifetime_concenrns()
 		{
 			kernel.AddFacility("factories", new FactorySupportFacility());
-			kernel.AddComponent("a", typeof(DisposableComponentFactory));
+			kernel.Register(Component.For(typeof(DisposableComponentFactory)).Named("a"));
 			var componentModel = AddComponent("foo", typeof (IComponent), "Create");
 			componentModel.LifestyleType = LifestyleType.Transient;
 			var component = kernel.Resolve<IComponent>("foo") as ComponentWithDispose;
@@ -94,7 +95,7 @@ namespace Castle.MicroKernel.Tests.Facilities.FactorySupport
 			config.Attributes["factoryId"] = "a";
 			config.Attributes["factoryCreate"] = factoryMethod;
 			kernel.ConfigurationStore.AddComponentConfiguration(key, config);
-			kernel.AddComponent(key, type);
+			kernel.Register(Component.For(type).Named(key));
 			return kernel.GetHandler(key).ComponentModel;
 		}
 

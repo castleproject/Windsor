@@ -14,9 +14,12 @@
 
 namespace Castle.MicroKernel.Tests
 {
-	using Castle.Core.Configuration;
+    using System;
+
+    using Castle.Core.Configuration;
 	using Castle.MicroKernel.Handlers;
-	using Castle.MicroKernel.Tests.ClassComponents;
+    using Castle.MicroKernel.Registration;
+    using Castle.MicroKernel.Tests.ClassComponents;
 	using NUnit.Framework;
 
 	/// <summary>
@@ -53,7 +56,7 @@ namespace Castle.MicroKernel.Tests
 
 			kernel.ConfigurationStore.AddComponentConfiguration("customer", config);
 
-			kernel.AddComponent("customer", typeof(ICustomer), typeof(CustomerImpl));
+			kernel.Register(Component.For(typeof(ICustomer)).ImplementedBy(typeof(CustomerImpl)).Named("customer"));
 
 			ICustomer customer = (ICustomer) kernel["customer"];
 
@@ -66,9 +69,9 @@ namespace Castle.MicroKernel.Tests
 		[Test]
 		public void ResolvingConcreteClassThroughProperties()
 		{
-			kernel.AddComponent("spamservice", typeof(DefaultSpamService));
-			kernel.AddComponent("mailsender", typeof(DefaultMailSenderService));
-			kernel.AddComponent("templateengine", typeof(DefaultTemplateEngine));
+			kernel.Register(Component.For(typeof(DefaultSpamService)).Named("spamservice"));
+			kernel.Register(Component.For(typeof(DefaultMailSenderService)).Named("mailsender"));
+			kernel.Register(Component.For(typeof(DefaultTemplateEngine)).Named("templateengine"));
 
 			DefaultSpamService spamservice = (DefaultSpamService) kernel["spamservice"];
 
@@ -80,9 +83,9 @@ namespace Castle.MicroKernel.Tests
 		[Test]
 		public void ResolvingConcreteClassThroughConstructor()
 		{
-			kernel.AddComponent("spamservice", typeof(DefaultSpamServiceWithConstructor));
-			kernel.AddComponent("mailsender", typeof(DefaultMailSenderService));
-			kernel.AddComponent("templateengine", typeof(DefaultTemplateEngine));
+			kernel.Register(Component.For(typeof(DefaultSpamServiceWithConstructor)).Named("spamservice"));
+			kernel.Register(Component.For(typeof(DefaultMailSenderService)).Named("mailsender"));
+			kernel.Register(Component.For(typeof(DefaultTemplateEngine)).Named("templateengine"));
 
 			DefaultSpamServiceWithConstructor spamservice =
 				(DefaultSpamServiceWithConstructor) kernel["spamservice"];
@@ -96,8 +99,8 @@ namespace Castle.MicroKernel.Tests
 		[ExpectedException(typeof(HandlerException))]
 		public void UnresolvedDependencies()
 		{
-			kernel.AddComponent("spamservice", typeof(DefaultSpamServiceWithConstructor));
-			kernel.AddComponent("templateengine", typeof(DefaultTemplateEngine));
+			kernel.Register(Component.For(typeof(DefaultSpamServiceWithConstructor)).Named("spamservice"));
+			kernel.Register(Component.For(typeof(DefaultTemplateEngine)).Named("templateengine"));
 
 			DefaultSpamService spamservice = (DefaultSpamService) kernel["spamservice"];
 		}
@@ -105,11 +108,11 @@ namespace Castle.MicroKernel.Tests
 		[Test]
 		public void FactoryPattern()
 		{
-			kernel.AddComponent("spamservice", typeof(DefaultSpamServiceWithConstructor));
-			kernel.AddComponent("mailsender", typeof(DefaultMailSenderService));
-			kernel.AddComponent("templateengine", typeof(DefaultTemplateEngine));
+			kernel.Register(Component.For(typeof(DefaultSpamServiceWithConstructor)).Named("spamservice"));
+			kernel.Register(Component.For(typeof(DefaultMailSenderService)).Named("mailsender"));
+			kernel.Register(Component.For(typeof(DefaultTemplateEngine)).Named("templateengine"));
 
-			kernel.AddComponent("factory", typeof(ComponentFactory));
+			kernel.Register(Component.For(typeof(ComponentFactory)).Named("factory"));
 
 			ComponentFactory factory = (ComponentFactory) kernel["factory"];
 
@@ -126,16 +129,16 @@ namespace Castle.MicroKernel.Tests
 		[Test]
 		public void DependencyChain()
 		{
-			kernel.AddComponent("Customer9", typeof(ICustomer), typeof(CustomerChain9));
-			kernel.AddComponent("Customer8", typeof(ICustomer), typeof(CustomerChain8));
-			kernel.AddComponent("Customer7", typeof(ICustomer), typeof(CustomerChain7));
-			kernel.AddComponent("Customer6", typeof(ICustomer), typeof(CustomerChain6));
-			kernel.AddComponent("Customer5", typeof(ICustomer), typeof(CustomerChain5));
-			kernel.AddComponent("Customer4", typeof(ICustomer), typeof(CustomerChain4));
-			kernel.AddComponent("Customer3", typeof(ICustomer), typeof(CustomerChain3));
-			kernel.AddComponent("Customer2", typeof(ICustomer), typeof(CustomerChain2));
-			kernel.AddComponent("Customer1", typeof(ICustomer), typeof(CustomerChain1));
-			kernel.AddComponent("Customer", typeof(ICustomer), typeof(CustomerImpl));
+			kernel.Register(Component.For(typeof(ICustomer)).ImplementedBy(typeof(CustomerChain9)).Named("Customer9"));
+			kernel.Register(Component.For(typeof(ICustomer)).ImplementedBy(typeof(CustomerChain8)).Named("Customer8"));
+			kernel.Register(Component.For(typeof(ICustomer)).ImplementedBy(typeof(CustomerChain7)).Named("Customer7"));
+			kernel.Register(Component.For(typeof(ICustomer)).ImplementedBy(typeof(CustomerChain6)).Named("Customer6"));
+			kernel.Register(Component.For(typeof(ICustomer)).ImplementedBy(typeof(CustomerChain5)).Named("Customer5"));
+			kernel.Register(Component.For(typeof(ICustomer)).ImplementedBy(typeof(CustomerChain4)).Named("Customer4"));
+			kernel.Register(Component.For(typeof(ICustomer)).ImplementedBy(typeof(CustomerChain3)).Named("Customer3"));
+			kernel.Register(Component.For(typeof(ICustomer)).ImplementedBy(typeof(CustomerChain2)).Named("Customer2"));
+			kernel.Register(Component.For(typeof(ICustomer)).ImplementedBy(typeof(CustomerChain1)).Named("Customer1"));
+			kernel.Register(Component.For(typeof(ICustomer)).ImplementedBy(typeof(CustomerImpl)).Named("Customer"));
 
 			CustomerChain1 customer = (CustomerChain1) kernel[typeof(ICustomer)];
 			Assert.IsInstanceOf(typeof(CustomerChain9), customer);

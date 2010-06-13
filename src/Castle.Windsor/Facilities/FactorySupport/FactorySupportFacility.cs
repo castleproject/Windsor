@@ -19,6 +19,7 @@ namespace Castle.Facilities.FactorySupport
 	using Castle.Core.Configuration;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Facilities;
+	using Castle.MicroKernel.Registration;
 
 	public class FactorySupportFacility : AbstractFacility
 	{
@@ -113,14 +114,14 @@ namespace Castle.Facilities.FactorySupport
 			var serviceModel = Kernel.ComponentModelBuilder.BuildModel(serviceKey, serviceType, factoryType, null);
 			cfg.Attributes["factoryId"] = factoryId;
 			serviceModel.Configuration = cfg;
-			Kernel.AddCustomComponent(serviceModel);
+			((IKernelInternal)Kernel).AddCustomComponent(serviceModel);
 		}
 
 		private void EnsureFactoryIsRegistered(string factoryId, Type factoryType)
 		{
 			if (!Kernel.HasComponent(factoryType))
 			{
-				Kernel.AddComponent(factoryId, factoryType);
+			    Kernel.Register(Component.For(factoryType).Named(factoryId));
 			}
 		}
 

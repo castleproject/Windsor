@@ -14,9 +14,12 @@
 
 namespace Castle.MicroKernel.Tests.Pools
 {
-	using System.Collections.Generic;
+    using System;
+    using System.Collections.Generic;
 
-	using NUnit.Framework;
+    using Castle.MicroKernel.Registration;
+
+    using NUnit.Framework;
 
 	[TestFixture]
 	public class PooledLifestyleManagerTestCase
@@ -25,7 +28,7 @@ namespace Castle.MicroKernel.Tests.Pools
 		public void SimpleUsage()
 		{
 			IKernel kernel = new DefaultKernel();
-			kernel.AddComponent("a", typeof(PoolableComponent1));
+			kernel.Register(Component.For(typeof(PoolableComponent1)).Named("a"));
 
 			PoolableComponent1 inst1 = kernel["a"] as PoolableComponent1;
 			PoolableComponent1 inst2 = kernel["a"] as PoolableComponent1;
@@ -53,7 +56,7 @@ namespace Castle.MicroKernel.Tests.Pools
 		public void MaxSize()
 		{
 			IKernel kernel = new DefaultKernel();
-			kernel.AddComponent("a", typeof(PoolableComponent1));
+			kernel.Register(Component.For(typeof(PoolableComponent1)).Named("a"));
 
 			var instances = new List<PoolableComponent1>
 			{

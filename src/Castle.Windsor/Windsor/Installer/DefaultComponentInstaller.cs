@@ -19,12 +19,12 @@ namespace Castle.Windsor.Installer
 	using System.Linq;
 	using System;
 	using System.Collections.Generic;
-	using System.Reflection;
 
 	using Castle.Core.Configuration;
 	using Castle.Core.Internal;
 	using Castle.Core.Resource;
 	using Castle.MicroKernel;
+	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.SubSystems.Configuration;
 	using Castle.MicroKernel.SubSystems.Conversion;
 	using Castle.Windsor.Configuration.Interpreters;
@@ -155,7 +155,8 @@ namespace Castle.Windsor.Installer
 				Debug.Assert( id != null );
 				Debug.Assert( type != null );
 				Debug.Assert( service != null );
-				container.AddComponent(id, service, type);
+
+				container.Register(Component.For(service).ImplementedBy(type).Named(id));
 				SetUpComponentForwardedTypes(container.Kernel as IKernelInternal, component, typeName, id, converter);
 			}
 		}

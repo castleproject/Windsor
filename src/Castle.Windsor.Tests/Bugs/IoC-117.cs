@@ -15,6 +15,9 @@
 namespace Castle.MicroKernel.Tests.Bugs
 {
 	using System;
+
+	using Castle.MicroKernel.Registration;
+
 	using NUnit.Framework;
 
 	[TestFixture]
@@ -25,10 +28,10 @@ namespace Castle.MicroKernel.Tests.Bugs
 		{
 			IKernel kernel = new DefaultKernel();
 
-			kernel.AddComponent<Presenter>();
-			kernel.AddComponent<View>();
+		    kernel.Register(Component.For<Presenter>());
+		    kernel.Register(Component.For<View>());
 
-			try
+		    try
 			{
 				Presenter p = (Presenter)kernel.Resolve(typeof(Presenter));
 				Assert.IsNotNull(p);

@@ -16,8 +16,11 @@
 
 namespace Castle.Windsor.Tests
 {
-	using Castle.MicroKernel;
-	using Castle.Windsor.Configuration.Interpreters;
+    using System;
+
+    using Castle.MicroKernel;
+    using Castle.MicroKernel.Registration;
+    using Castle.Windsor.Configuration.Interpreters;
 	using NUnit.Framework;
 
 	[TestFixture]
@@ -29,7 +32,7 @@ namespace Castle.Windsor.Tests
 		public void Init()
 		{
 			container = new WindsorContainer();
-			container.AddComponent("A", typeof(A));
+			container.Register(Component.For(typeof(A)).Named("A"));
 		}
 
 		[Test]
@@ -40,7 +43,7 @@ namespace Castle.Windsor.Tests
 
 			Assert.AreEqual(container, childcontainer.Parent);
 
-			childcontainer.AddComponent("B", typeof(B));
+			childcontainer.Register(Component.For(typeof(B)).Named("B"));
 			B b = childcontainer["B"] as B;
 
 			Assert.IsNotNull(b);
@@ -54,7 +57,7 @@ namespace Castle.Windsor.Tests
 
 			Assert.AreEqual(container, childcontainer.Parent);
 
-			childcontainer.AddComponent("B", typeof(B));
+			childcontainer.Register(Component.For(typeof(B)).Named("B"));
 			B b = childcontainer["B"] as B;
 
 			Assert.IsNotNull(b);
@@ -115,7 +118,7 @@ namespace Castle.Windsor.Tests
 
 			Assert.AreEqual(container, childcontainer.Parent);
 
-			childcontainer.AddComponent("B", typeof(B));
+			childcontainer.Register(Component.For(typeof(B)).Named("B"));
 			B b = childcontainer["B"] as B;
 
 			Assert.IsNotNull(b);

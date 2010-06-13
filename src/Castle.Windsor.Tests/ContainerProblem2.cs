@@ -14,8 +14,12 @@
 
 namespace Castle.Windsor.Tests
 {
-	using Castle.Core;
-	using NUnit.Framework;
+    using System;
+
+    using Castle.Core;
+    using Castle.MicroKernel.Registration;
+
+    using NUnit.Framework;
 
 	[PerThread]
 	public class R
@@ -120,10 +124,10 @@ namespace Castle.Windsor.Tests
 		{
 			IWindsorContainer container = new WindsorContainer();
 
-			container.AddComponent("BS", typeof(IS), typeof(BS));
-			container.AddComponent("C", typeof(IC), typeof(C));
-			container.AddComponent("WM", typeof(IWM), typeof(WM));
-			container.AddComponent("SP", typeof(ISP), typeof(SP));
+			container.Register(Component.For(typeof(IS)).ImplementedBy(typeof(BS)).Named("BS"));
+			container.Register(Component.For(typeof(IC)).ImplementedBy(typeof(C)).Named("C"));
+			container.Register(Component.For(typeof(IWM)).ImplementedBy(typeof(WM)).Named("WM"));
+			container.Register(Component.For(typeof(ISP)).ImplementedBy(typeof(SP)).Named("SP"));
 
 			// ComponentModel model = new ComponentModel("R", typeof(R), typeof(R));
 			// model.LifestyleType = LifestyleType.Custom;
@@ -131,7 +135,7 @@ namespace Castle.Windsor.Tests
 
 			// container.Kernel.AddCustomComponent(model);
 			// container.Kernel.AddComponent("R", typeof(R), LifestyleType.Thread);
-			container.Kernel.AddComponent("R", typeof(R));
+			container.Kernel.Register(Component.For(typeof(R)).Named("R"));
 
 			IC c = container["C"] as IC;
 			Assert.IsNotNull(c);

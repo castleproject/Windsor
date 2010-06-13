@@ -14,7 +14,11 @@
 
 namespace Castle.MicroKernel.Tests
 {
-	using NUnit.Framework;
+    using System;
+
+    using Castle.MicroKernel.Registration;
+
+    using NUnit.Framework;
 
 	[TestFixture]
 	public class DependencyResolvingTestCase
@@ -23,10 +27,10 @@ namespace Castle.MicroKernel.Tests
 		public void ContainerShouldUseFirstRegisteredDependencyOfTypeByDefault_SmsRegisteredFirst()
 		{
 			IKernel kernel = new DefaultKernel();
-			kernel.AddComponent("sms", typeof(IAlarmSender), typeof(SmsSender));
-			kernel.AddComponent("email", typeof(IAlarmSender), typeof(EmailSender));
+			kernel.Register(Component.For(typeof(IAlarmSender)).ImplementedBy(typeof(SmsSender)).Named("sms"));
+			kernel.Register(Component.For(typeof(IAlarmSender)).ImplementedBy(typeof(EmailSender)).Named("email"));
 
-			kernel.AddComponent("generator", typeof(AlarmGenerator));
+			kernel.Register(Component.For(typeof(AlarmGenerator)).Named("generator"));
 
 			AlarmGenerator gen = (AlarmGenerator) kernel["generator"];
 			Assert.AreEqual(typeof(SmsSender), gen.Sender.GetType());
@@ -37,10 +41,10 @@ namespace Castle.MicroKernel.Tests
 		public void ContainerShouldUseFirstRegisteredDependencyOfTypeByDefault_EmailRegisteredFirst()
 		{
 			IKernel kernel = new DefaultKernel();
-			kernel.AddComponent("email", typeof(IAlarmSender), typeof(EmailSender));
-			kernel.AddComponent("sms", typeof(IAlarmSender), typeof(SmsSender));
+			kernel.Register(Component.For(typeof(IAlarmSender)).ImplementedBy(typeof(EmailSender)).Named("email"));
+			kernel.Register(Component.For(typeof(IAlarmSender)).ImplementedBy(typeof(SmsSender)).Named("sms"));
 
-			kernel.AddComponent("generator", typeof(AlarmGenerator));
+			kernel.Register(Component.For(typeof(AlarmGenerator)).Named("generator"));
 
 			AlarmGenerator gen = (AlarmGenerator)kernel["generator"];
 			Assert.AreEqual(typeof(EmailSender), gen.Sender.GetType());

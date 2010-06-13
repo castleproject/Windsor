@@ -14,8 +14,11 @@
 
 namespace Castle.Windsor.Tests.Facilities.TypedFactory
 {
-	using Castle.Facilities.TypedFactory;
-	using Castle.Windsor;
+    using System;
+
+    using Castle.Facilities.TypedFactory;
+    using Castle.MicroKernel.Registration;
+    using Castle.Windsor;
 	using Castle.MicroKernel.SubSystems.Configuration;
 	using Castle.Facilities.TypedFactory.Tests.Components;
 	using Castle.Facilities.TypedFactory.Tests.Factories;
@@ -54,8 +57,8 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 				new FactoryEntry(
 					"protocolHandlerFactory", typeof(IProtocolHandlerFactory1), "Create", "Release"));
 #pragma warning restore
-			_container.AddComponent( "miranda", typeof(IProtocolHandler), typeof(MirandaProtocolHandler) );
-			_container.AddComponent( "messenger", typeof(IProtocolHandler), typeof(MessengerProtocolHandler) );
+			_container.Register(Component.For(typeof(IProtocolHandler)).ImplementedBy(typeof(MirandaProtocolHandler)).Named("miranda"));
+			_container.Register(Component.For(typeof(IProtocolHandler)).ImplementedBy(typeof(MessengerProtocolHandler)).Named("messenger"));
 
 			IProtocolHandlerFactory1 factory = 
 				(IProtocolHandlerFactory1) _container["protocolHandlerFactory"];
@@ -77,8 +80,8 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 				new FactoryEntry(
 				"protocolHandlerFactory", typeof(IProtocolHandlerFactory2), "Create", "Release") );
 #pragma warning restore
-			_container.AddComponent( "miranda", typeof(IProtocolHandler), typeof(MirandaProtocolHandler) );
-			_container.AddComponent( "messenger", typeof(IProtocolHandler), typeof(MessengerProtocolHandler) );
+			_container.Register(Component.For(typeof(IProtocolHandler)).ImplementedBy(typeof(MirandaProtocolHandler)).Named("miranda"));
+			_container.Register(Component.For(typeof(IProtocolHandler)).ImplementedBy(typeof(MessengerProtocolHandler)).Named("messenger"));
 
 			IProtocolHandlerFactory2 factory = 
 				(IProtocolHandlerFactory2) _container["protocolHandlerFactory"];
@@ -104,8 +107,8 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 				new FactoryEntry(
 				"compFactory", typeof(IComponentFactory1), "Construct", "") );
 #pragma warning restore
-			_container.AddComponent( "comp1", typeof(IDummyComponent), typeof(Component1) );
-			_container.AddComponent( "comp2", typeof(IDummyComponent), typeof(Component2) );
+			_container.Register(Component.For(typeof(IDummyComponent)).ImplementedBy(typeof(Component1)).Named("comp1"));
+			_container.Register(Component.For(typeof(IDummyComponent)).ImplementedBy(typeof(Component2)).Named("comp2"));
 
 			IComponentFactory1 factory = 
 				(IComponentFactory1) _container["compFactory"];
@@ -128,8 +131,8 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 				"compFactory", typeof(IComponentFactory2), "Construct", ""));
 #pragma warning restore
 
-			_container.AddComponent( "comp1", typeof(IDummyComponent), typeof(Component1) );
-			_container.AddComponent( "comp2", typeof(IDummyComponent), typeof(Component2) );
+			_container.Register(Component.For(typeof(IDummyComponent)).ImplementedBy(typeof(Component1)).Named("comp1"));
+			_container.Register(Component.For(typeof(IDummyComponent)).ImplementedBy(typeof(Component2)).Named("comp2"));
 
 			IComponentFactory2 factory = 
 				(IComponentFactory2) _container["compFactory"];

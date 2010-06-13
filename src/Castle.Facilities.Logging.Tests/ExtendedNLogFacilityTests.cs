@@ -17,6 +17,7 @@ namespace Castle.Facilities.Logging.Tests
 	using System;
 	using System.IO;
 	using Castle.Facilities.Logging.Tests.Classes;
+	using Castle.MicroKernel.Registration;
 	using Castle.Windsor;
 	using log4net;
 	using log4net.Appender;
@@ -49,7 +50,7 @@ namespace Castle.Facilities.Logging.Tests
 		public void SimpleTest()
 		{
 
-			container.AddComponent("component1", typeof(SimpleLoggingComponent));
+			container.Register(Component.For(typeof(SimpleLoggingComponent)).Named("component1"));
 			SimpleLoggingComponent test = container["component1"] as SimpleLoggingComponent;
 
 			test.DoSomething();
@@ -60,7 +61,7 @@ namespace Castle.Facilities.Logging.Tests
 			
 			Assert.AreEqual(expectedLogOutput, actualLogOutput);
 
-			container.AddComponent("component2", typeof(SmtpServer));
+			container.Register(Component.For(typeof(SmtpServer)).Named("component2"));
 			ISmtpServer smtpServer = container["component2"] as ISmtpServer;
 
 			smtpServer.Start();
@@ -78,7 +79,7 @@ namespace Castle.Facilities.Logging.Tests
 		[Test]
 		public void ContextTest()
 		{
-			container.AddComponent("component1", typeof(ComplexLoggingComponent));
+			container.Register(Component.For(typeof(ComplexLoggingComponent)).Named("component1"));
 			ComplexLoggingComponent complexLoggingComponent = container["component1"] as ComplexLoggingComponent;
 
 			complexLoggingComponent.DoSomeContextual();

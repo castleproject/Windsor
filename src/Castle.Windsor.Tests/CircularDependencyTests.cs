@@ -31,8 +31,8 @@ namespace Castle.Windsor.Tests
 		public void ShouldNotSetTheViewControllerProperty()
 		{
 			IWindsorContainer container = new WindsorContainer();
-			container.AddComponent("controller", typeof(IController), typeof(Controller));
-			container.AddComponent("view", typeof(IView), typeof(View));
+			container.Register(Component.For(typeof(IController)).ImplementedBy(typeof(Controller)).Named("controller"));
+			container.Register(Component.For(typeof(IView)).ImplementedBy(typeof(View)).Named("view"));
 			var controller = (Controller)container.Resolve("controller");
 			Assert.IsNotNull(controller.View);
 			Assert.IsNull(controller.View.Controller);
@@ -42,10 +42,10 @@ namespace Castle.Windsor.Tests
 		public void ThrowsACircularDependencyException2()
 		{
 			IWindsorContainer container = new WindsorContainer();
-			container.AddComponent("compA", typeof(CompA));
-			container.AddComponent("compB", typeof(CompB));
-			container.AddComponent("compC", typeof(CompC));
-			container.AddComponent("compD", typeof(CompD));
+			container.Register(Component.For(typeof(CompA)).Named("compA"));
+			container.Register(Component.For(typeof(CompB)).Named("compB"));
+			container.Register(Component.For(typeof(CompC)).Named("compC"));
+			container.Register(Component.For(typeof(CompD)).Named("compD"));
 
 			var exception =
 				Assert.Throws(typeof(HandlerException), () => container.Resolve("compA"));

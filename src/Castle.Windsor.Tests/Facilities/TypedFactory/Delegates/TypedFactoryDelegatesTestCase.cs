@@ -19,6 +19,7 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory.Delegates
 	using Castle.Core;
 	using Castle.Facilities.LightweighFactory.Tests;
 	using Castle.Facilities.TypedFactory;
+	using Castle.MicroKernel.Registration;
 	using Castle.Windsor;
 
 	using NUnit.Framework;
@@ -39,8 +40,8 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory.Delegates
 		[Test]
 		public void Affects_constructor_resolution()
 		{
-			container.AddComponent<Baz>("baz");
-			container.AddComponent<HasTwoConstructors>("fizz");
+            container.Register(Component.For<Baz>().Named("baz"));
+            container.Register(Component.For<HasTwoConstructors>().Named("fizz"));
 			var factory = container.Resolve<Func<string, HasTwoConstructors>>("fizzFactory");
 
 			var obj = factory("naaaameee");
@@ -50,8 +51,8 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory.Delegates
 		[Test]
 		public void Can_resolve_service_via_delegate()
 		{
-			container.AddComponentLifeStyle<Foo>("MyFoo", LifestyleType.Transient);
-			container.AddComponent<UsesFooDelegate>();
+			container.Register(Component.For<Foo>().Named("MyFoo").LifeStyle.Is(LifestyleType.Transient));
+			((IWindsorContainer)container).Register(Component.For<UsesFooDelegate>());
 			var dependsOnFoo = container.Resolve<UsesFooDelegate>();
 			Foo foo = dependsOnFoo.GetFoo();
 			Assert.AreEqual(1, foo.Number);
@@ -62,8 +63,8 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory.Delegates
 		[Test]
 		public void Delegate_obeys_lifestyle()
 		{
-			container.AddComponentLifeStyle<Foo>("MyFoo", LifestyleType.Singleton);
-			container.AddComponent<UsesFooDelegate>();
+            container.Register(Component.For<Foo>().Named("MyFoo").LifeStyle.Is(LifestyleType.Singleton));
+			((IWindsorContainer)container).Register(Component.For<UsesFooDelegate>());
 			var dependsOnFoo = container.Resolve<UsesFooDelegate>();
 			Foo foo = dependsOnFoo.GetFoo();
 			Assert.AreEqual(1, foo.Number);
@@ -75,11 +76,11 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory.Delegates
 		[Ignore("Not supported for Func delegates")]
 		public void Delegate_parameters_are_used_in_order_first_ctor_then_properties()
 		{
-			container.AddComponent<Baz>("baz");
-			container.AddComponent<Bar>("bar");
-			container.AddComponent<UsesBarDelegate>("barBar");
+		    container.Register(Component.For(typeof(Baz)).Named("baz"));
+		    container.Register(Component.For(typeof(Bar)).Named("bar"));
+		    container.Register(Component.For(typeof(UsesBarDelegate)).Named("barBar"));
 
-			var dependsOnFoo = container.Resolve<UsesBarDelegate>();
+		    var dependsOnFoo = container.Resolve<UsesBarDelegate>();
 			var bar = dependsOnFoo.GetBar("a name", "a description");
 			Assert.AreEqual("a name", bar.Name);
 			Assert.AreEqual("a description", bar.Description);
@@ -89,11 +90,11 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory.Delegates
 		[Ignore("Not supported for Func delegates")]
 		public void Delegate_pulls_unspecified_dependencies_from_container()
 		{
-			container.AddComponent<Baz>("baz");
-			container.AddComponent<Bar>("bar");
-			container.AddComponent<UsesBarDelegate>("uBar");
+		    container.Register(Component.For(typeof(Baz)).Named("baz"));
+		    container.Register(Component.For(typeof(Bar)).Named("bar"));
+		    container.Register(Component.For(typeof(UsesBarDelegate)).Named("uBar"));
 
-			var dependsOnFoo = container.Resolve<UsesBarDelegate>();
+		    var dependsOnFoo = container.Resolve<UsesBarDelegate>();
 			dependsOnFoo.GetBar("aaa", "bbb");
 		}
 
@@ -101,8 +102,8 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory.Delegates
 		[Ignore("Not supported for Func delegates")]
 		public void Does_not_duplicate_arguments_matching_delegate_parameters()
 		{
-			container.AddComponent<HasOnlyOneArgMatchingDelegatesParameter>("fizz");
-			var factory = container.Resolve<Func<string, string, HasOnlyOneArgMatchingDelegatesParameter>>("fizzFactory");
+		    container.Register(Component.For(typeof(HasOnlyOneArgMatchingDelegatesParameter)).Named("fizz"));
+		    var factory = container.Resolve<Func<string, string, HasOnlyOneArgMatchingDelegatesParameter>>("fizzFactory");
 			var obj = factory("arg1", "name");
 			Assert.AreEqual("name", obj.Name);
 			Assert.AreEqual("arg1", obj.Arg1);
@@ -111,9 +112,9 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory.Delegates
 		[Test]
 		public void Using_Func_delegate_with_duplicated_Parameter_types_throws_exception()
 		{
-			container.AddComponent<Baz>("baz");
-			container.AddComponent<Bar>("bar");
-			container.AddComponent<UsesBarDelegate>();
+		    container.Register(Component.For(typeof(Baz)).Named("baz"));
+		    container.Register(Component.For(typeof(Bar)).Named("bar"));
+		    ((IWindsorContainer)container).Register(Component.For<UsesBarDelegate>());
 
 			var user = container.Resolve<UsesBarDelegate>();
 

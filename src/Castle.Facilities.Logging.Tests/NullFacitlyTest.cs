@@ -14,8 +14,11 @@
 
 namespace Castle.Facilities.Logging.Tests
 {
-	using Castle.Facilities.Logging.Tests.Classes;
-	using Castle.Windsor;
+    using System;
+
+    using Castle.Facilities.Logging.Tests.Classes;
+    using Castle.MicroKernel.Registration;
+    using Castle.Windsor;
 	using NUnit.Framework;
 
 	/// <summary>
@@ -44,7 +47,7 @@ namespace Castle.Facilities.Logging.Tests
 		[Test]
 		public void SimpleTest()
 		{
-			container.AddComponent("component", typeof(SimpleLoggingComponent));
+			container.Register(Component.For(typeof(SimpleLoggingComponent)).Named("component"));
 			SimpleLoggingComponent test = container["component"] as SimpleLoggingComponent;
 
 			test.DoSomething();

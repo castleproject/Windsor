@@ -4,6 +4,8 @@ using NUnit.Framework;
 
 namespace Castle.Windsor.Tests.Bugs
 {
+    using Castle.MicroKernel.Registration;
+
     [TestFixture]
     public class IoC_120
     {
@@ -11,8 +13,8 @@ namespace Castle.Windsor.Tests.Bugs
         public void Can_resolve_component_with_internal_ctor()
         {
             var container = new WindsorContainer();
-            container.AddComponent<Foo>();
-            container.AddComponent<Bar>();
+            ((IWindsorContainer)container).Register(Component.For<Foo>());
+            ((IWindsorContainer)container).Register(Component.For<Bar>());
 
             try
             {

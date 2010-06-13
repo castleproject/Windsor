@@ -14,7 +14,8 @@
 
 namespace Castle.Facilities.Startable.Tests
 {
-	using System.Collections.Generic;
+    using System;
+    using System.Collections.Generic;
 
 	using Castle.Core;
 	using Castle.Core.Configuration;
@@ -43,7 +44,7 @@ namespace Castle.Facilities.Startable.Tests
 
 			kernel.AddFacility("startable", new StartableFacility());
 
-			kernel.AddComponent("a", typeof(StartableComponent));
+			kernel.Register(Component.For(typeof(StartableComponent)).Named("a"));
 
 			Assert.IsTrue(startableCreatedBeforeResolved, "Component was not properly started");
 
@@ -72,7 +73,7 @@ namespace Castle.Facilities.Startable.Tests
 			kernel.ConfigurationStore.AddComponentConfiguration("b", compNode);
 
 			kernel.AddFacility("startable", new StartableFacility());
-			kernel.AddComponent("b", typeof(NoInterfaceStartableComponent));
+			kernel.Register(Component.For(typeof(NoInterfaceStartableComponent)).Named("b"));
 
 			Assert.IsTrue(startableCreatedBeforeResolved, "Component was not properly started");
 
@@ -95,7 +96,7 @@ namespace Castle.Facilities.Startable.Tests
 			kernel.AddFacility("startable", new StartableFacility());
 
 			var dependencies = new Dictionary<string, object> { { "config", 1 } };
-			kernel.AddComponent("a", typeof(StartableComponentCustomDependencies));
+			kernel.Register(Component.For(typeof(StartableComponentCustomDependencies)).Named("a"));
 			kernel.RegisterCustomDependencies(typeof(StartableComponentCustomDependencies), dependencies);
 
 			Assert.IsTrue(startableCreatedBeforeResolved, "Component was not properly started");
@@ -170,19 +171,19 @@ namespace Castle.Facilities.Startable.Tests
 			kernel.AddFacility("startable", new StartableFacility());
 
 			// Add parent. This has a dependency so won't be started yet.
-			kernel.AddComponent("chainparent", typeof(StartableChainParent));
+			kernel.Register(Component.For(typeof(StartableChainParent)).Named("chainparent"));
 
 			Assert.AreEqual(0, StartableChainDependency.startcount);
 			Assert.AreEqual(0, StartableChainDependency.createcount);
 
 			// Add generic dependency. This is not startable so won't get created. 
-			kernel.AddComponent("chaingeneric", typeof(StartableChainGeneric<>));
+			kernel.Register(Component.For(typeof(StartableChainGeneric<>)).Named("chaingeneric"));
 
 			Assert.AreEqual(0, StartableChainDependency.startcount);
 			Assert.AreEqual(0, StartableChainDependency.createcount);
 
 			// Add dependency. This will satisfy the dependency so everything will start.
-			kernel.AddComponent("chaindependency", typeof(StartableChainDependency));
+			kernel.Register(Component.For(typeof(StartableChainDependency)).Named("chaindependency"));
 
 			Assert.AreEqual(1, StartableChainParent.startcount);
 			Assert.AreEqual(1, StartableChainParent.createcount);

@@ -14,9 +14,12 @@
 
 namespace Castle.Facilities.Logging.Tests
 {
-	using Castle.Core.Logging;
+    using System;
+
+    using Castle.Core.Logging;
 	using Castle.Facilities.Logging.Tests.Classes;
-	using Castle.Windsor;
+    using Castle.MicroKernel.Registration;
+    using Castle.Windsor;
 	using NUnit.Framework;
 
 	[TestFixture]
@@ -29,7 +32,7 @@ namespace Castle.Facilities.Logging.Tests
 			IWindsorContainer container =
 				CreateConfiguredContainer(LoggerImplementation.Custom, typeof(TestLoggerFactory).AssemblyQualifiedName);
 
-			container.AddComponent("component", typeof(SimpleLoggingComponent));
+			container.Register(Component.For(typeof(SimpleLoggingComponent)).Named("component"));
 			SimpleLoggingComponent test = container["component"] as SimpleLoggingComponent;
 
 			TestLoggerFactory logFactory = (TestLoggerFactory) container.Kernel["iloggerfactory"];

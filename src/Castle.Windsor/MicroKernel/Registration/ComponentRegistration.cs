@@ -23,7 +23,6 @@ namespace Castle.MicroKernel.Registration
 	using Castle.Core.Configuration;
 	using Castle.Core.Internal;
 	using Castle.DynamicProxy;
-	using Castle.Facilities.FactorySupport;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.ComponentActivator;
 	using Castle.MicroKernel.Context;
@@ -198,7 +197,7 @@ namespace Castle.MicroKernel.Registration
 			if (implementation != null && implementation != typeof(LateBoundComponent))
 			{
 				var message = String.Format("This component has already been assigned implementation {0}",
-				                            implementation.FullName);
+											implementation.FullName);
 				throw new ComponentRegistrationException(message);
 			}
 
@@ -387,7 +386,7 @@ namespace Castle.MicroKernel.Registration
 		/// </summary>
 		/// <param name="dependencies">The dependencies.</param>
 		/// <returns></returns>
-		[Obsolete]
+		[Obsolete("Obsolete, use DependsOn(Property[]) instead.")]
 		public ComponentRegistration<S> CustomDependencies(params Property[] dependencies)
 		{
 			return DependsOn(dependencies);
@@ -398,7 +397,7 @@ namespace Castle.MicroKernel.Registration
 		/// </summary>
 		/// <param name="dependencies">The dependencies.</param>
 		/// <returns></returns>
-		[Obsolete]
+		[Obsolete("Obsolete, use DependsOn(IDictionary) instead.")]
 		public ComponentRegistration<S> CustomDependencies(IDictionary dependencies)
 		{
 			return DependsOn(dependencies);
@@ -409,7 +408,7 @@ namespace Castle.MicroKernel.Registration
 		/// </summary>
 		/// <param name="dependencies">The dependencies.</param>
 		/// <returns></returns>
-		[Obsolete]
+		[Obsolete("Obsolete, use DependsOn(object) instead.")]
 		public ComponentRegistration<S> CustomDependencies(object dependencies)
 		{
 			return DependsOn(dependencies);
@@ -547,7 +546,7 @@ namespace Castle.MicroKernel.Registration
 		/// <returns></returns>
 		public ComponentRegistration<S> Interceptors(params string[] keys)
 		{
-			return AddDescriptor(new InterceptorDescriptor<S>(keys.Select(k => InterceptorReference.ForKey(k)).ToArray()));
+			return AddDescriptor(new InterceptorDescriptor<S>(keys.Select(InterceptorReference.ForKey).ToArray()));
 		}
 
 		/// <summary>
@@ -557,7 +556,7 @@ namespace Castle.MicroKernel.Registration
 		/// <returns></returns>
 		public ComponentRegistration<S> SelectInterceptorsWith(IInterceptorSelector selector)
 		{
-			return AddDescriptor(new Interceptor.InterceptorSelectorDescriptor<S>(selector));
+			return AddDescriptor(new InterceptorSelectorDescriptor<S>(selector));
 		}
 
 
@@ -689,10 +688,10 @@ namespace Castle.MicroKernel.Registration
 
 				if (ifFilter(kernel, componentModel) && !unlessFilter(kernel, componentModel))
 				{
-					kernel.AddCustomComponent(componentModel);
-					if(forwardedTypes.Count>0 && kernel is IKernelInternal)
+					var internalKernel = GetInternalKernel(kernel);
+					internalKernel.AddCustomComponent(componentModel);
+					if (forwardedTypes.Count > 0)
 					{
-						var internalKernel = kernel as IKernelInternal;
 						foreach (var type in forwardedTypes)
 						{
 							internalKernel.RegisterHandlerForwarding(type, name);
@@ -705,6 +704,17 @@ namespace Castle.MicroKernel.Registration
 					}
 				}
 			}
+		}
+
+		private IKernelInternal GetInternalKernel(IKernel kernel)
+		{
+			var internalKernel = kernel as IKernelInternal;
+			if (internalKernel == null)
+			{
+				throw new ArgumentException(
+					string.Format("The kernel does not implement {0}.", typeof(IKernelInternal)), "kernel");
+			}
+			return internalKernel;
 		}
 
 		/// <summary>

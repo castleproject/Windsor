@@ -1,4 +1,18 @@
 ================================================================================================
+change - AddCustomComponent method were moved from IKernel to IKernelInternal interface
+
+impact - very low
+fixability - easy
+revision - 
+
+description - This method constitute internally used contract of kernel and is not intended
+	for external usage. As such it was moved to internal interface to declutter public
+	interface of IKernel.
+
+fix - You should not have been using this method so it should not affect you in any way. If
+	you did, cast the IKernel to IKernelInternal to invoke the method.
+
+================================================================================================
 change - IModelInterceptorsSelector.SelectInterceptors method changed its signature and how it
 	is used.
 
@@ -6,7 +20,7 @@ impact - medium
 fixability - medium
 revision - 
 
-description - To accomodate additional scenarios that were impossible (or hard to acheave
+description - To accomodate additional scenarios that were impossible (or hard to achieve
 	with previous design the method now has additional parameter, an array of references to
 	interceptors, which contains either default interceptors for the component, or interceptors
 	selected by previous interceptors in line). Also, Windsor will now never call

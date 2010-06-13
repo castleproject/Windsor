@@ -76,7 +76,7 @@ namespace Castle.Windsor.Tests.Adapters.ComponentModel
 		{
 			WindsorContainer windsor = new WindsorContainer();
 
-			windsor.AddComponent("calculator", typeof(ICalcService), typeof(CalculatorService));
+			((IWindsorContainer)windsor).Register(MicroKernel.Registration.Component.For(typeof(ICalcService)).ImplementedBy(typeof(CalculatorService)).Named("calculator"));
 
 			IContainerAdapter adapter = new ContainerAdapter(windsor);
 

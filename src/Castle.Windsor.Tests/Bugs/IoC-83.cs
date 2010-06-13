@@ -4,7 +4,9 @@ using NUnit.Framework;
 
 namespace Castle.MicroKernel.Tests.Bugs
 {
-	/// <summary>
+    using Castle.MicroKernel.Registration;
+
+    /// <summary>
 	/// For IoC-120 also
 	/// </summary>
 	[TestFixture]
@@ -15,9 +17,9 @@ namespace Castle.MicroKernel.Tests.Bugs
 		{
 			IKernel kernel = new DefaultKernel();
 
-			kernel.AddComponent<WithNonPublicCtor>();
+		    kernel.Register(Component.For<WithNonPublicCtor>());
 
-			bool exceptionThrown = false;
+		    bool exceptionThrown = false;
 
 			try
 			{

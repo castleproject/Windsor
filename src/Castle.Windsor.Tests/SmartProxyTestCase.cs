@@ -14,9 +14,11 @@
 
 namespace Castle.Windsor.Tests
 {
-	using System.Runtime.Remoting;
+    using System;
+    using System.Runtime.Remoting;
 	using Castle.DynamicProxy;
-	using Castle.Windsor.Tests.Components;
+    using Castle.MicroKernel.Registration;
+    using Castle.Windsor.Tests.Components;
 	using NUnit.Framework;
 
 	[TestFixture]
@@ -47,8 +49,8 @@ namespace Castle.Windsor.Tests
 		[Test]
 		public void InterfaceInheritance()
 		{
-			_container.AddComponent("interceptor", typeof(StandardInterceptor));
-			_container.AddComponent("key", typeof(ICameraService), typeof(CameraService));
+			_container.Register(Component.For(typeof(StandardInterceptor)).Named("interceptor"));
+			_container.Register(Component.For(typeof(ICameraService)).ImplementedBy(typeof(CameraService)).Named("key"));
 
 			ICameraService service = (ICameraService) _container.Resolve("key");
 
@@ -58,8 +60,8 @@ namespace Castle.Windsor.Tests
 		[Test]
 		public void InterfaceProxy()
 		{
-			_container.AddComponent("interceptor", typeof(ResultModifierInterceptor));
-			_container.AddComponent("key", typeof(ICalcService), typeof(CalculatorService));
+			_container.Register(Component.For(typeof(ResultModifierInterceptor)).Named("interceptor"));
+			_container.Register(Component.For(typeof(ICalcService)).ImplementedBy(typeof(CalculatorService)).Named("key"));
 
 			ICalcService service = (ICalcService) _container.Resolve("key");
 
@@ -73,8 +75,8 @@ namespace Castle.Windsor.Tests
 		[Test]
 		public void ConcreteClassProxy()
 		{
-			_container.AddComponent("interceptor", typeof(ResultModifierInterceptor));
-			_container.AddComponent("key", typeof(CalculatorService));
+			_container.Register(Component.For(typeof(ResultModifierInterceptor)).Named("interceptor"));
+			_container.Register(Component.For(typeof(CalculatorService)).Named("key"));
 
 			CalculatorService service = (CalculatorService) _container.Resolve("key");
 

@@ -14,7 +14,11 @@
 
 namespace Castle.Windsor.Tests
 {
-	using NUnit.Framework;
+    using System;
+
+    using Castle.MicroKernel.Registration;
+
+    using NUnit.Framework;
 
 	/// <summary>
 	/// Reported at http://forum.castleproject.org/posts/list/17.page
@@ -33,9 +37,9 @@ namespace Castle.Windsor.Tests
 		[Test]
 		public void LoadingInSequence()
 		{
-			container.AddComponent("C", typeof(C));
-			container.AddComponent("B", typeof(B));
-			container.AddComponent("A", typeof(A));
+			container.Register(Component.For(typeof(C)).Named("C"));
+			container.Register(Component.For(typeof(B)).Named("B"));
+			container.Register(Component.For(typeof(A)).Named("A"));
 
 			Assert.IsNotNull(container["A"]);
 			Assert.IsNotNull(container["B"]);
@@ -45,9 +49,9 @@ namespace Castle.Windsor.Tests
 		[Test]
 		public void LoadingPartiallyInSequence()
 		{
-			container.AddComponent("B", typeof(B));
-			container.AddComponent("C", typeof(C));
-			container.AddComponent("A", typeof(A));
+			container.Register(Component.For(typeof(B)).Named("B"));
+			container.Register(Component.For(typeof(C)).Named("C"));
+			container.Register(Component.For(typeof(A)).Named("A"));
 
 			Assert.IsNotNull(container["A"]);
 			Assert.IsNotNull(container["B"]);
@@ -57,9 +61,9 @@ namespace Castle.Windsor.Tests
 		[Test]
 		public void LoadingOutOfSequence()
 		{
-			container.AddComponent("A", typeof(A));
-			container.AddComponent("B", typeof(B));
-			container.AddComponent("C", typeof(C));
+			container.Register(Component.For(typeof(A)).Named("A"));
+			container.Register(Component.For(typeof(B)).Named("B"));
+			container.Register(Component.For(typeof(C)).Named("C"));
 
 			Assert.IsNotNull(container["A"]);
 			Assert.IsNotNull(container["B"]);
@@ -69,10 +73,10 @@ namespace Castle.Windsor.Tests
 		[Test]
 		public void LoadingOutOfSequenceWithExtraLoad()
 		{
-			container.AddComponent("A", typeof(A));
-			container.AddComponent("B", typeof(B));
-			container.AddComponent("C", typeof(C));
-			container.AddComponent("NotUsed", typeof(int));
+			container.Register(Component.For(typeof(A)).Named("A"));
+			container.Register(Component.For(typeof(B)).Named("B"));
+			container.Register(Component.For(typeof(C)).Named("C"));
+			container.Register(Component.For(typeof(int)).Named("NotUsed"));
 
 			Assert.IsNotNull(container["A"]);
 			Assert.IsNotNull(container["B"]);
@@ -82,7 +86,7 @@ namespace Castle.Windsor.Tests
 		[Test]
 		public void CtorSourceOrderDoesNotMatter()
 		{
-			container.AddComponent("D", typeof(D));
+			container.Register(Component.For(typeof(D)).Named("D"));
 			Assert.IsNotNull(container["D"]);
 		}
 

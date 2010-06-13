@@ -21,6 +21,8 @@ namespace Castle.Windsor.Tests
 	using Castle.Core;
 	using Castle.DynamicProxy;
 	using Castle.MicroKernel.Proxy;
+	using Castle.MicroKernel.Registration;
+
 	using NUnit.Framework;
 
 	[TestFixture]
@@ -106,9 +108,7 @@ namespace Castle.Windsor.Tests
         public void TurnProxyOnAndOff_DirectSelection()
         {
             IWindsorContainer container = new WindsorContainer();
-            container
-                .AddComponent<DummyInterceptor>()
-                .AddComponentLifeStyle<IWatcher, BirdWatcher>("bird.watcher",LifestyleType.Transient);
+            container.Register(Component.For<DummyInterceptor>()).Register(Component.For(typeof(IWatcher)).ImplementedBy(typeof(BirdWatcher)).Named("bird.watcher").LifeStyle.Is(LifestyleType.Transient));
             WatcherInterceptorSelector selector = new WatcherInterceptorSelector();
             container.Kernel.ProxyFactory.AddInterceptorSelector(selector);
 
@@ -121,10 +121,7 @@ namespace Castle.Windsor.Tests
         public void TurnProxyOnAndOff_SubDependency()
         {
             IWindsorContainer container = new WindsorContainer();
-            container
-                .AddComponent<DummyInterceptor>()
-                .AddComponentLifeStyle<IWatcher, BirdWatcher>("bird.watcher", LifestyleType.Transient)
-                .AddComponentLifeStyle<Person>(LifestyleType.Transient);
+            container.Register(Component.For<DummyInterceptor>()).Register(Component.For(typeof(IWatcher)).ImplementedBy(typeof(BirdWatcher)).Named("bird.watcher").LifeStyle.Is(LifestyleType.Transient)).Register(Component.For(typeof(Person)).LifeStyle.Is(LifestyleType.Transient));
             WatcherInterceptorSelector selector = new WatcherInterceptorSelector();
             container.Kernel.ProxyFactory.AddInterceptorSelector(selector);
 
@@ -141,9 +138,7 @@ namespace Castle.Windsor.Tests
         public void CanAddInterceptor_DirectSelection()
         {
             IWindsorContainer container = new WindsorContainer();
-            container
-                .AddComponent<DummyInterceptor>()
-                .AddComponentLifeStyle<IWatcher, BirdWatcher>("bird.watcher", LifestyleType.Transient);
+            container.Register(Component.For<DummyInterceptor>()).Register(Component.For(typeof(IWatcher)).ImplementedBy(typeof(BirdWatcher)).Named("bird.watcher").LifeStyle.Is(LifestyleType.Transient));
           
             WatcherInterceptorSelector selector = new WatcherInterceptorSelector();
             container.Kernel.ProxyFactory.AddInterceptorSelector(selector);
@@ -165,10 +160,7 @@ namespace Castle.Windsor.Tests
         public void InterceptorSelectors_Are_Cumulative()
         {
             IWindsorContainer container = new WindsorContainer();
-            container
-                .AddComponent<DummyInterceptor>()
-                .AddComponent<AnotherDummyInterceptor>()
-                .AddComponentLifeStyle<IWatcher, BirdWatcher>("bird.watcher", LifestyleType.Transient);
+            container.Register(Component.For<DummyInterceptor>()).Register(Component.For<AnotherDummyInterceptor>()).Register(Component.For(typeof(IWatcher)).ImplementedBy(typeof(BirdWatcher)).Named("bird.watcher").LifeStyle.Is(LifestyleType.Transient));
 
             WatcherInterceptorSelector selector = new WatcherInterceptorSelector();
             selector.Interceptors = Interceptors.Dummy;

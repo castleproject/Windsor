@@ -15,13 +15,13 @@
 namespace Castle.Facilities.TypedFactory
 {
 	using System;
+
 	using Castle.Core;
 	using Castle.Core.Configuration;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Facilities;
 	using Castle.MicroKernel.Proxy;
 	using Castle.MicroKernel.Registration;
-	using Castle.MicroKernel.Resolvers;
 	using Castle.MicroKernel.SubSystems.Conversion;
 
 	/// <summary>
@@ -44,7 +44,7 @@ namespace Castle.Facilities.TypedFactory
 			var proxyOptions = ProxyUtil.ObtainProxyOptions(model, true);
 			proxyOptions.OmitTarget = true;
 
-			Kernel.AddCustomComponent(model);
+			((IKernelInternal)Kernel).AddCustomComponent(model);
 		}
 
 		protected override void Init()
@@ -75,7 +75,7 @@ namespace Castle.Facilities.TypedFactory
 
 		private void LegacyInit()
 		{
-			Kernel.AddComponent("typed.fac.interceptor", typeof(FactoryInterceptor));
+			Kernel.Register(Component.For<FactoryInterceptor>().Named("typed.fac.interceptor"));
 
 			var converter = (ITypeConverter)
 			                Kernel.GetSubSystem(SubSystemConstants.ConversionManagerKey);
@@ -113,7 +113,7 @@ namespace Castle.Facilities.TypedFactory
 			model.Interceptors.AddLast(new InterceptorReference(InterceptorKey));
 			ProxyUtil.ObtainProxyOptions(model, true).OmitTarget = true;
 
-			Kernel.AddCustomComponent(model);
+			((IKernelInternal)Kernel).AddCustomComponent(model);
 		}
 
 		private void RegisterFactoryLegacy(string creation, string id, Type factoryType, string destruction)

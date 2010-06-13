@@ -52,5 +52,13 @@ namespace Castle.MicroKernel
 		/// <param name="forwardedType">The service type that gets forwarded.</param>
 		/// <param name="name">The name of the component to forward to.</param>
 		void RegisterHandlerForwarding(Type forwardedType, string name);
+
+
+		/// <summary>
+		/// Adds a custom made <see cref="ComponentModel"/>.
+		/// Used by facilities.
+		/// </summary>
+		/// <param name="model"></param>
+		void AddCustomComponent(ComponentModel model);
 	}
 }

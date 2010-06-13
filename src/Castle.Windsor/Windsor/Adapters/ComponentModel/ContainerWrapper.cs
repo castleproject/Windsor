@@ -23,8 +23,11 @@ namespace Castle.Windsor.Adapters.ComponentModel
 	using Castle.Core.Internal;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Context;
+	using Castle.MicroKernel.Registration;
 
-	/// <summary>
+	using Component = Castle.MicroKernel.Registration.Component;
+
+    /// <summary>
 	/// Implementation of <see cref="IContainerAdapter"/> that does not assume ownership of the
 	/// wrapped <see cref="IWindsorContainer"/>. 
 	/// </summary>
@@ -150,7 +153,7 @@ namespace Castle.Windsor.Adapters.ComponentModel
 
 						try
 						{
-							Kernel.AddComponentInstance(newSite.EffectiveName, typeof(IComponent), component);
+						    Kernel.Register(Component.For<IComponent>().Named(newSite.EffectiveName).Instance(component));
 						}
 						catch (ComponentRegistrationException ex)
 						{
@@ -335,7 +338,7 @@ namespace Castle.Windsor.Adapters.ComponentModel
 			}
 
 			String serviceName = GetServiceName(serviceType);
-			Kernel.AddComponentInstance(serviceName, serviceType, serviceInstance);
+		    Kernel.Register(Component.For(serviceType).Named(serviceName).Instance(serviceInstance));
 		}
 		
 		/// <summary>
@@ -347,45 +350,45 @@ namespace Castle.Windsor.Adapters.ComponentModel
 		/// <param name="promote">true to promote this request to any parent service containers.</param>
 		public virtual void AddService(Type serviceType, ServiceCreatorCallback callback, bool promote)
 		{
-			if (promote)
-			{
-				IServiceContainer parentServices = ParentServices;
+		    if (promote)
+		    {
+		        IServiceContainer parentServices = ParentServices;
 
-				if (parentServices != null)
-				{
-					parentServices.AddService(serviceType, callback, promote);
-					return;
-				}
-			}
+		        if (parentServices != null)
+		        {
+		            parentServices.AddService(serviceType, callback, promote);
+		            return;
+		        }
+		    }
 
-			if (serviceType == null)
-			{
-				throw new ArgumentNullException("serviceType");
-			}
+		    if (serviceType == null)
+		    {
+		        throw new ArgumentNullException("serviceType");
+		    }
 
-			if (callback == null)
-			{
-				throw new ArgumentNullException("callback");
-			}
+		    if (callback == null)
+		    {
+		        throw new ArgumentNullException("callback");
+		    }
 
-			if (HasService(serviceType))
-			{
-				throw new ArgumentException(String.Format(
-					"A service for type '{0}' already exists", serviceType.FullName),
-				                            "serviceType");
-			}
+		    if (HasService(serviceType))
+		    {
+		        throw new ArgumentException(String.Format(
+		            "A service for type '{0}' already exists", serviceType.FullName),
+		                                    "serviceType");
+		    }
 
-			String serviceName = GetServiceName(serviceType);
-			ComponentModel model = new ComponentModel(serviceName, serviceType, null);
-			model.ExtendedProperties.Add(ServiceCreatorCallbackActivator.ServiceContainerKey,
-			                             GetService(typeof(IServiceContainer)));
-			model.ExtendedProperties.Add(ServiceCreatorCallbackActivator.ServiceCreatorCallbackKey, callback);
-			model.LifestyleType = LifestyleType.Singleton;
-			model.CustomComponentActivator = typeof(ServiceCreatorCallbackActivator);
-			Kernel.AddCustomComponent(model);
+		    Kernel.Register(MicroKernel.Registration.Component.For(serviceType)
+		                        .Named(GetServiceName(serviceType))
+		                        .Activator<ServiceCreatorCallbackActivator>()
+		                        .ExtendedProperties(
+		                            Property.ForKey(ServiceCreatorCallbackActivator.ServiceContainerKey)
+		                                .Eq(GetService(typeof(IServiceContainer))),
+		                            Property.ForKey(ServiceCreatorCallbackActivator.ServiceCreatorCallbackKey)
+		                                .Eq(callback)));
 		}
 
-		/// <summary>
+        /// <summary>
 		/// Removes the specified service type from the service container.
 		/// </summary>
 		/// <param name="serviceType">The type of service to remove.</param>
@@ -587,9 +590,9 @@ namespace Castle.Windsor.Adapters.ComponentModel
 		private void RegisterAdapterWithKernel()
 		{
 			String adapterName = String.Format("#ContainerAdapter:{0}#", Guid.NewGuid());
-			Kernel.AddComponentInstance(adapterName, this);
+			Kernel.Register(Component.For<object>().Named(adapterName).Instance(this));
 
-			Kernel.ComponentUnregistered += new ComponentDataDelegate(OnComponentUnregistered);
+			Kernel.ComponentUnregistered += OnComponentUnregistered;
 		}
 
 		private String GetServiceName(Type serviceType)

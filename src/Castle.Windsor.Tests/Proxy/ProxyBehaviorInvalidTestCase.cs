@@ -19,6 +19,7 @@ namespace Castle.Windsor.Tests.Proxy
 	using System;
 	using Castle.DynamicProxy;
 	using Castle.MicroKernel;
+	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.SubSystems.Conversion;
 	using Castle.Windsor.Tests.Components;
 	using NUnit.Framework;
@@ -38,10 +39,10 @@ namespace Castle.Windsor.Tests.Proxy
 		public void RequestSingleInterfaceProxyWithoutServiceInterface()
 		{
 			var container = new WindsorContainer();
-			container.AddComponent("standard.interceptor", typeof(StandardInterceptor));
+			((IWindsorContainer)container).Register(Component.For(typeof(StandardInterceptor)).Named("standard.interceptor"));
 
-			Assert.Throws(typeof(ComponentRegistrationException),()=>
-				container.AddComponent("useSingle", typeof(CalculatorServiceWithSingleProxyBehavior)));
+			Assert.Throws(typeof(ComponentRegistrationException),(TestDelegate)(()=>
+			                                                                    ((IWindsorContainer)container).Register(Component.For(typeof(CalculatorServiceWithSingleProxyBehavior)).Named("useSingle"))));
 		}
 	}
 }

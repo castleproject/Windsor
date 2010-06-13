@@ -18,6 +18,7 @@ namespace Castle.Windsor.Tests
 	using Castle.Core;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Context;
+	using Castle.MicroKernel.Registration;
 	using Castle.Windsor;
 	using NUnit.Framework;
 
@@ -105,9 +106,7 @@ namespace Castle.Windsor.Tests
 		public void SelectUsingBusinessLogic_DirectSelection()
 		{
 			IWindsorContainer container = new WindsorContainer();
-			container
-				.AddComponent<IWatcher, BirdWatcher>("bird.watcher")
-				.AddComponent<IWatcher, SatiWatcher>("astronomy.watcher");
+            container.Register(Component.For<IWatcher>().ImplementedBy<BirdWatcher>().Named("bird.watcher")).Register(Component.For<IWatcher>().ImplementedBy<SatiWatcher>().Named("astronomy.watcher"));
 			WatcherSelector selector = new WatcherSelector();
 			container.Kernel.AddHandlerSelector(selector);
 
@@ -122,11 +121,8 @@ namespace Castle.Windsor.Tests
 		public void SelectUsingBusinessLogic_SubDependency()
 		{
 			IWindsorContainer container = new WindsorContainer();
-			container
-				.AddComponentLifeStyle<Person>(LifestyleType.Transient)
-				.AddComponent<IWatcher, BirdWatcher>("bird.watcher")
-				.AddComponent<IWatcher, SatiWatcher>("astronomy.watcher");
-			WatcherSelector selector = new WatcherSelector();
+			container.Register(Component.For(typeof(Person)).LifeStyle.Is(LifestyleType.Transient)).Register(Component.For<IWatcher>().ImplementedBy<BirdWatcher>().Named("bird.watcher")).Register(Component.For<IWatcher>().ImplementedBy<SatiWatcher>().Named("astronomy.watcher"));
+            WatcherSelector selector = new WatcherSelector();
 			container.Kernel.AddHandlerSelector(selector);
 
 			Assert.IsInstanceOf(typeof(BirdWatcher), container.Resolve<Person>().Watcher, "default");
@@ -141,11 +137,8 @@ namespace Castle.Windsor.Tests
 		public void SubDependencyResolverHasHigherPriorityThanHandlerSelector()
 		{
 			IWindsorContainer container = new WindsorContainer();
-			container
-				.AddComponentLifeStyle<Person>(LifestyleType.Transient)
-				.AddComponent<IWatcher, BirdWatcher>("bird.watcher")
-				.AddComponent<IWatcher, SatiWatcher>("astronomy.watcher");
-			WatcherSelector selector = new WatcherSelector();
+			container.Register(Component.For(typeof(Person)).LifeStyle.Is(LifestyleType.Transient)).Register(Component.For<IWatcher>().ImplementedBy<BirdWatcher>().Named("bird.watcher")).Register(Component.For<IWatcher>().ImplementedBy<SatiWatcher>().Named("astronomy.watcher"));
+            WatcherSelector selector = new WatcherSelector();
 			container.Kernel.AddHandlerSelector(selector);
 			container.Kernel.Resolver.AddSubResolver(new WatchSubDependencySelector());
 

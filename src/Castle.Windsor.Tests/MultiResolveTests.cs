@@ -16,6 +16,8 @@ namespace Castle.Windsor.Tests
 {
 	using System;
 	using Castle.MicroKernel.Handlers;
+	using Castle.MicroKernel.Registration;
+
 	using NUnit.Framework;
 
 	[TestFixture]
@@ -24,9 +26,7 @@ namespace Castle.Windsor.Tests
 		[Test]
 		public void CanResolveMoreThanSingleComponentForService()
 		{
-			IWindsorContainer container = new WindsorContainer()
-				.AddComponent<IClock, IsraelClock>()
-				.AddComponent<IClock, WorldClock>();
+			IWindsorContainer container = ((IWindsorContainer)new WindsorContainer()).Register(Component.For(typeof(IClock)).ImplementedBy(typeof(IsraelClock))).Register(Component.For(typeof(IClock)).ImplementedBy(typeof(WorldClock)));
 
 			IClock[] clocks = container.ResolveAll<IClock>();
 
@@ -36,9 +36,7 @@ namespace Castle.Windsor.Tests
 		[Test]
 		public void MultiResolveWillResolveInRegistrationOrder()
 		{
-			IWindsorContainer container = new WindsorContainer()
-				.AddComponent<IClock, IsraelClock>()
-				.AddComponent<IClock, WorldClock>();
+			IWindsorContainer container = ((IWindsorContainer)new WindsorContainer()).Register(Component.For(typeof(IClock)).ImplementedBy(typeof(IsraelClock))).Register(Component.For(typeof(IClock)).ImplementedBy(typeof(WorldClock)));
 
 			IClock[] clocks = container.ResolveAll<IClock>();
 
@@ -46,11 +44,9 @@ namespace Castle.Windsor.Tests
 			Assert.AreEqual(typeof(WorldClock), clocks[1].GetType());
 
 			//reversing order
-			container = new WindsorContainer()
-				.AddComponent<IClock, WorldClock>()
-				.AddComponent<IClock, IsraelClock>();
+		    container = ((IWindsorContainer)new WindsorContainer()).Register(Component.For(typeof(IClock)).ImplementedBy(typeof(WorldClock))).Register(Component.For(typeof(IClock)).ImplementedBy(typeof(IsraelClock)));
 
-			clocks = container.ResolveAll<IClock>();
+		    clocks = container.ResolveAll<IClock>();
 
 			Assert.AreEqual(typeof(WorldClock), clocks[0].GetType());
 			Assert.AreEqual(typeof(IsraelClock), clocks[1].GetType());
@@ -59,9 +55,7 @@ namespace Castle.Windsor.Tests
 		[Test]
 		public void CanUseMutliResolveWithGenericSpecialization()
 		{
-			IWindsorContainer container = new WindsorContainer()
-				.AddComponent("demo", typeof (IRepository<>), typeof (DemoRepository<>))
-				.AddComponent("trans", typeof(IRepository<>), typeof(TransientRepository<>));
+			IWindsorContainer container = ((IWindsorContainer)new WindsorContainer()).Register(Component.For(typeof (IRepository<>)).ImplementedBy(typeof (DemoRepository<>)).Named("demo")).Register(Component.For(typeof(IRepository<>)).ImplementedBy(typeof(TransientRepository<>)).Named("trans"));
 
 			IRepository<IClock> resolve = container.Resolve<IRepository<IClock>>();
 			Assert.IsNotNull(resolve);

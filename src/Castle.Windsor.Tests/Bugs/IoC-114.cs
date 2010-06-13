@@ -2,6 +2,10 @@ using NUnit.Framework;
 
 namespace Castle.MicroKernel.Tests.Bugs
 {
+    using System;
+
+    using Castle.MicroKernel.Registration;
+
     [TestFixture]
     public class IoC_114
     {
@@ -34,8 +38,8 @@ namespace Castle.MicroKernel.Tests.Bugs
         {
             IKernel container = new DefaultKernel();
 
-            container.AddComponent("service1", typeof(IService1), typeof(Service1));
-            container.AddComponent("service2", typeof(IService2), typeof(Service2));
+            container.Register(Component.For(typeof(IService1)).ImplementedBy(typeof(Service1)).Named("service1"));
+            container.Register(Component.For(typeof(IService2)).ImplementedBy(typeof(Service2)).Named("service2"));
 
             Service2 service2 = (Service2)container.Resolve<IService2>();
 

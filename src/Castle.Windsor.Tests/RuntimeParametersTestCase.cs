@@ -18,6 +18,7 @@ namespace Castle.MicroKernel.Tests
 	using System.Collections.Generic;
 
 	using Castle.MicroKernel.Handlers;
+	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Resolvers;
 	using Castle.MicroKernel.Tests.RuntimeParameters;
 
@@ -33,8 +34,8 @@ namespace Castle.MicroKernel.Tests
 		public void Init()
 		{
 			kernel = new DefaultKernel();
-			kernel.AddComponent("compa", typeof(CompA));
-			kernel.AddComponent("compb", typeof(CompB));
+			kernel.Register(Component.For(typeof(CompA)).Named("compa"));
+			kernel.Register(Component.For(typeof(CompB)).Named("compb"));
 
 			deps = new Dictionary<string, object>();
 			deps.Add("cc", new CompC(12));
@@ -64,7 +65,7 @@ namespace Castle.MicroKernel.Tests
 		[Test]
 		public void WillAlwaysResolveCustomParameterFromServiceComponent()
 		{
-			kernel.AddComponent("compc", typeof(CompC));
+			kernel.Register(Component.For(typeof(CompC)).Named("compc"));
 			var c_dependencies = new Dictionary<object, object>();
 			c_dependencies["test"] = 15;
 			kernel.RegisterCustomDependencies(typeof(CompC), c_dependencies);
@@ -115,8 +116,8 @@ namespace Castle.MicroKernel.Tests
 		public void AddingDependencyToServiceWithCustomDependency()
 		{
 			DefaultKernel k = new DefaultKernel();
-			k.AddComponent("NeedClassWithCustomerDependency",typeof(NeedClassWithCustomerDependency));
-			k.AddComponent("HasCustomDependency", typeof(HasCustomDependency));
+			((IKernel)k).Register(Component.For(typeof(NeedClassWithCustomerDependency)).Named("NeedClassWithCustomerDependency"));
+			((IKernel)k).Register(Component.For(typeof(HasCustomDependency)).Named("HasCustomDependency"));
 
 			Assert.AreEqual(HandlerState.WaitingDependency, k.GetHandler("HasCustomDependency").CurrentState);
 

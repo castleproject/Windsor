@@ -18,6 +18,7 @@ namespace Castle.MicroKernel.Tests
 
 	using Castle.Core.Configuration;
 	using Castle.MicroKernel.Handlers;
+	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Tests.ClassComponents;
 
 	using NUnit.Framework;
@@ -42,7 +43,7 @@ namespace Castle.MicroKernel.Tests
 		[Test]
 		public void UnsatisfiedService()
 		{
-			kernel.AddComponent("key", typeof(CommonServiceUser));
+			kernel.Register(Component.For(typeof(CommonServiceUser)).Named("key"));
 
 			Assert.Throws(typeof(HandlerException), () =>
 			{
@@ -62,7 +63,7 @@ namespace Castle.MicroKernel.Tests
 
 			kernel.ConfigurationStore.AddComponentConfiguration("customer", config);
 
-			kernel.AddComponent("key", typeof(CustomerImpl2));
+			kernel.Register(Component.For(typeof(CustomerImpl2)).Named("key"));
 
 			var exception =
 				Assert.Throws(typeof(HandlerException), () =>
@@ -90,8 +91,8 @@ namespace Castle.MicroKernel.Tests
 
 			kernel.ConfigurationStore.AddComponentConfiguration("key", config);
 
-			kernel.AddComponent("common1", typeof(ICommon), typeof(CommonImpl1));
-			kernel.AddComponent("key", typeof(CommonServiceUser));
+			kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(CommonImpl1)).Named("common1"));
+			kernel.Register(Component.For(typeof(CommonServiceUser)).Named("key"));
 			var exception =
 				Assert.Throws(typeof(HandlerException), () =>
 				{
@@ -116,8 +117,8 @@ namespace Castle.MicroKernel.Tests
 
 			kernel.ConfigurationStore.AddComponentConfiguration("key", config);
 
-			kernel.AddComponent("common1", typeof(ICommon), typeof(CommonImpl1));
-			kernel.AddComponent("key", typeof(CommonServiceUser3));
+			kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(CommonImpl1)).Named("common1"));
+			kernel.Register(Component.For(typeof(CommonServiceUser3)).Named("key"));
 			var exception =
 				Assert.Throws(typeof(HandlerException), () =>
 				{
@@ -142,9 +143,9 @@ namespace Castle.MicroKernel.Tests
 
 			kernel.ConfigurationStore.AddComponentConfiguration("key", config);
 
-			kernel.AddComponent("common1", typeof(ICommon), typeof(CommonImpl1));
-			kernel.AddComponent("common2", typeof(ICommon), typeof(CommonImpl2));
-			kernel.AddComponent("key", typeof(CommonServiceUser));
+			kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(CommonImpl1)).Named("common1"));
+			kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(CommonImpl2)).Named("common2"));
+			kernel.Register(Component.For(typeof(CommonServiceUser)).Named("key"));
 			CommonServiceUser instance = (CommonServiceUser) kernel["key"];
 
 			Assert.IsNotNull(instance);
@@ -160,23 +161,23 @@ namespace Castle.MicroKernel.Tests
 			config1.Children.Add(parameters1);
 			parameters1.Children.Add(new MutableConfiguration("inner", "${repository2}"));
 			kernel.ConfigurationStore.AddComponentConfiguration("repository1", config1);
-			kernel.AddComponent("repository1", typeof(IRepository), typeof(Repository1));
+			kernel.Register(Component.For(typeof(IRepository)).ImplementedBy(typeof(Repository1)).Named("repository1"));
 
 			MutableConfiguration config2 = new MutableConfiguration("component");
 			MutableConfiguration parameters2 = new MutableConfiguration("parameters");
 			config2.Children.Add(parameters2);
 			parameters2.Children.Add(new MutableConfiguration("inner", "${repository3}"));
 			kernel.ConfigurationStore.AddComponentConfiguration("repository2", config2);
-			kernel.AddComponent("repository2", typeof(IRepository), typeof(Repository2));
+			kernel.Register(Component.For(typeof(IRepository)).ImplementedBy(typeof(Repository2)).Named("repository2"));
 
 			MutableConfiguration config3 = new MutableConfiguration("component");
 			MutableConfiguration parameters3 = new MutableConfiguration("parameters");
 			config3.Children.Add(parameters3);
 			parameters3.Children.Add(new MutableConfiguration("inner", "${decoratedRepository}"));
 			kernel.ConfigurationStore.AddComponentConfiguration("repository3", config3);
-			kernel.AddComponent("repository3", typeof(IRepository), typeof(Repository3));
+			kernel.Register(Component.For(typeof(IRepository)).ImplementedBy(typeof(Repository3)).Named("repository3"));
 
-			kernel.AddComponent("decoratedRepository", typeof(IRepository), typeof(DecoratedRepository));
+			kernel.Register(Component.For(typeof(IRepository)).ImplementedBy(typeof(DecoratedRepository)).Named("decoratedRepository"));
 
 			IRepository instance = (Repository1) kernel[typeof(IRepository)];
 

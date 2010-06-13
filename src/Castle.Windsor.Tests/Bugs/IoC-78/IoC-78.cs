@@ -21,6 +21,8 @@ using NUnit.Framework;
 
 namespace Castle.Windsor.Tests.Bugs.IoC_78
 {
+    using Castle.MicroKernel.Registration;
+
     [TestFixture]
     public class IoC78
     {
@@ -28,8 +30,8 @@ namespace Castle.Windsor.Tests.Bugs.IoC_78
         public void WillIgnoreComponentsThatAreAlreadyInTheDependencyTracker_Constructor()
         {
             IWindsorContainer container = new WindsorContainer();
-            container.AddComponent("chain", typeof(IChain), typeof(MyChain));
-            container.AddComponent("chain2", typeof(IChain), typeof(MyChain2));
+            container.Register(Component.For(typeof(IChain)).ImplementedBy(typeof(MyChain)).Named("chain"));
+            container.Register(Component.For(typeof(IChain)).ImplementedBy(typeof(MyChain2)).Named("chain2"));
 
             IChain resolve = container.Resolve<IChain>("chain2");
             Assert.IsNotNull(resolve);
@@ -40,7 +42,7 @@ namespace Castle.Windsor.Tests.Bugs.IoC_78
         public void WillIgnoreComponentsThatAreAlreadyInTheDependencyTracker_Property()
         {
             IWindsorContainer container = new WindsorContainer();
-            container.AddComponent("chain", typeof(IChain), typeof(MyChain3));
+            container.Register(Component.For(typeof(IChain)).ImplementedBy(typeof(MyChain3)).Named("chain"));
 
             IChain resolve = container.Resolve<IChain>("chain");
             Assert.IsNotNull(resolve);
@@ -51,7 +53,7 @@ namespace Castle.Windsor.Tests.Bugs.IoC_78
         public void WillNotTryToResolveAComponentToItself()
         {
             IWindsorContainer container = new WindsorContainer();
-            container.AddComponent("chain", typeof(IChain), typeof(MyChain4));
+            container.Register(Component.For(typeof(IChain)).ImplementedBy(typeof(MyChain4)).Named("chain"));
 
             container.Resolve<IChain>("chain");
         }

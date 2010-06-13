@@ -4,6 +4,8 @@ using NUnit.Framework;
 
 namespace Castle.MicroKernel.Tests.Bugs
 {
+    using Castle.MicroKernel.Registration;
+
     [TestFixture]
     public class IoC_95
     {
@@ -14,7 +16,7 @@ namespace Castle.MicroKernel.Tests.Bugs
             IKernel childKernel = new DefaultKernel();
             kernel.AddChildKernel(childKernel);
             childKernel.AddFacility("StartableFacility", new StartableFacility());
-            kernel.AddComponent("string", typeof(String)); // exception here
+            kernel.Register(Component.For(typeof(String)).Named("string")); // exception here
         }
     }
 }
