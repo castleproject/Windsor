@@ -1,0 +1,710 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <RootPath Condition=" '$(RootPath)' == '' ">$(MSBuildProjectDirectory)\..\..</RootPath>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ProjectType>Local</ProjectType>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{60EFCB9B-E3FF-46A5-A2D2-D9F0EF75D5FE}</ProjectGuid>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{60EFCB9B-E3FF-46A5-A2D2-D9F0EF75D5FE}</ProjectGuid>
+    <AssemblyName>Castle.Windsor</AssemblyName>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Castle</RootNamespace>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\..\buildscripts\CastleKey.snk</AssemblyOriginatorKeyFile>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <TargetFrameworkVersion Condition="$(TargetFrameworkVersion)==''">v4.0</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <DocumentationFile>bin\Debug\Castle.Windsor.XML</DocumentationFile>
+    <NoWarn>1591</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\Castle.Windsor.XML</DocumentationFile>
+    <NoWarn>1591</NoWarn>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+  <PropertyGroup>
+    <DefineConstants>$(DefineConstants);$(BuildConstants)</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup Condition="$(TargetFrameworkProfile)!='Client' and $(MSBuildTargets)!='Silverlight 3.0' and $(MSBuildTargets)!='Silverlight 4.0'">
+    <Reference Include="System.Web" />
+  </ItemGroup>
+  <ItemGroup Condition="$(MSBuildTargets)!='Silverlight 3.0' and $(MSBuildTargets)!='Silverlight 4.0'">
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Runtime.Remoting" />
+    <Reference Include="System.Data">
+      <Name>System.Data</Name>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Castle.Core">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\$(BuildConfigKey)\Castle.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="System">
+      <Name>System</Name>
+    </Reference>
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Xml">
+      <Name>System.XML</Name>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup Condition="$(TargetFrameworkProfile)!='Client' and $(MSBuildTargets)!='Silverlight 3.0' and $(MSBuildTargets)!='Silverlight 4.0'">
+    <Compile Include="MicroKernel\ComponentActivator\WebUserControlComponentActivator.cs" />
+    <Compile Include="MicroKernel\Lifestyle\PerWebRequestLifestyleManager.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Core\CastleComponentAttribute.cs" />
+    <Compile Include="Core\ComponentActivatorAttribute.cs" />
+    <Compile Include="Core\ComponentProxyBehaviorAttribute.cs" />
+    <Compile Include="Core\DoNotWireAttribute.cs" />
+    <Compile Include="Core\IInitializable.cs" />
+    <Compile Include="Core\InterceptorAttribute.cs" />
+    <Compile Include="Core\Internal\LateBoundComponent.cs" />
+    <Compile Include="Core\Internal\ReflectionUtil.cs" />
+    <Compile Include="Core\LifestyleAttributes.cs" />
+    <Compile Include="Facilities\EventWiring\EventSubscriber.cs" />
+    <Compile Include="Facilities\EventWiring\EventSubscribers.cs" />
+    <Compile Include="Facilities\EventWiring\EventWiringDescriptor.cs" />
+    <Compile Include="Facilities\EventWiring\EventWiringRegistrationExtensions.cs" />
+    <Compile Include="Facilities\EventWiring\NaiveMethodNameExtractor.cs" />
+    <Compile Include="Facilities\EventWiring\OpCodeValues.cs" />
+    <Compile Include="Facilities\TypedFactory\DefaultDelegateComponentSelector.cs" />
+    <Compile Include="Facilities\TypedFactory\DelegateInvocation.cs" />
+    <Compile Include="Facilities\TypedFactory\ExpressionTreeBasedDelegateGenerator.cs" />
+    <Compile Include="Facilities\TypedFactory\IDelegateGenerator.cs" />
+    <Compile Include="Facilities\TypedFactory\DelegateFactory.cs" />
+    <Compile Include="Facilities\TypedFactory\NoUniqueComponentException.cs" />
+    <Compile Include="Facilities\TypedFactory\TypedFactoryConfiguration.cs" />
+    <Compile Include="MicroKernel\ComponentActivator\AbstractComponentActivator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MicroKernel\ComponentActivator\ComponentActivatorException.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MicroKernel\ComponentActivator\DefaultComponentActivator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MicroKernel\ComponentActivator\FactoryMethodActivator.cs" />
+    <Compile Include="MicroKernel\ComponentActivator\IDependencyAwareActivator.cs" />
+    <Compile Include="MicroKernel\Burden.cs" />
+    <Compile Include="MicroKernel\Arguments.cs" />
+    <Compile Include="MicroKernel\Context\ComponentArgumentsEnumerator.cs" />
+    <Compile Include="MicroKernel\Context\FallbackArgumentsStore.cs" />
+    <Compile Include="MicroKernel\Context\NamedArgumentsStore.cs" />
+    <Compile Include="MicroKernel\Context\DependencyTrackingScope.cs" />
+    <Compile Include="MicroKernel\ComponentActivator\ExternalInstanceActivator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MicroKernel\IComponentActivator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MicroKernel\Context\CreationContext.cs" />
+    <Compile Include="MicroKernel\Context\IArgumentsStore.cs" />
+    <Compile Include="MicroKernel\Context\TypedArgumentsStore.cs" />
+    <Compile Include="MicroKernel\DefaultKernel.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MicroKernel\DefaultKernel_AddComponent.cs" />
+    <Compile Include="MicroKernel\DefaultKernel_Events.cs" />
+    <Compile Include="MicroKernel\DefaultKernel_Resolve.cs" />
+    <Compile Include="MicroKernel\CircularDependencyException.cs" />
+    <Compile Include="MicroKernel\ComponentNotFoundException.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MicroKernel\ComponentRegistrationException.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MicroKernel\IKernelInternal.cs" />
+    <Compile Include="MicroKernel\KernelException.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MicroKernel\Facilities\AbstractFacility.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Facilities\EventWiring\EventWiringException.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Facilities\EventWiring\EventWiringFacility.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MicroKernel\Facilities\FacilityException.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Facilities\FactorySupport\AccessorActivator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Facilities\FactorySupport\FactoryActivator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Facilities\FactorySupport\FactorySupportFacility.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MicroKernel\IFacility.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Facilities\Remoting\CustomActivators\RemoteActivator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Facilities\Remoting\CustomActivators\RemoteActivatorThroughConnector.cs" />
+    <Compile Include="Facilities\Remoting\CustomActivators\RemoteActivatorThroughRegistry.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Facilities\Remoting\CustomActivators\RemoteClientActivatedActivator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Facilities\Remoting\CustomActivators\RemoteMarshallerActivator.cs" />
+    <Compile Include="Facilities\Remoting\RemotingFacility.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Facilities\Remoting\RemotingInspector.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Facilities\Remoting\RemotingRegistry.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Facilities\Startable\StartableFacility.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Facilities\Startable\StartableFacilityRegistrationExtensions.cs" />
+    <Compile Include="Facilities\Startable\StartConcern.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Facilities\Startable\StopConcern.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Facilities\TypedFactory\DefaultTypedFactoryComponentSelector.cs" />
+    <Compile Include="Facilities\TypedFactory\Dispose.cs" />
+    <Compile Include="Facilities\TypedFactory\Empty.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Facilities\TypedFactory\FactoryEntry.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Facilities\TypedFactory\FactoryInterceptor.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Facilities\TypedFactory\ITypedFactoryComponentSelector.cs" />
+    <Compile Include="Facilities\TypedFactory\ITypedFactoryMethod.cs" />
+    <Compile Include="Facilities\TypedFactory\Release.cs" />
+    <Compile Include="Facilities\TypedFactory\Resolve.cs" />
+    <Compile Include="Facilities\TypedFactory\TypedFactoryComponent.cs" />
+    <Compile Include="Facilities\TypedFactory\TypedFactoryComponentCollection.cs" />
+    <Compile Include="Facilities\TypedFactory\TypedFactoryFacility.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Facilities\TypedFactory\TypedFactoryInterceptor.cs" />
+    <Compile Include="Facilities\TypedFactory\TypedFactoryRegistrationExtensions.cs" />
+    <Compile Include="MicroKernel\Handlers\AbstractHandler.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MicroKernel\Handlers\ForwardingHandler.cs" />
+    <Compile Include="MicroKernel\Handlers\ParentHandlerWithChildResolver.cs" />
+    <Compile Include="MicroKernel\Handlers\DefaultGenericHandler.cs" />
+    <Compile Include="MicroKernel\Handlers\DefaultHandler.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MicroKernel\Handlers\DefaultHandlerFactory.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MicroKernel\Handlers\HandlerException.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MicroKernel\Handlers\IExposeDependencyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MicroKernel\IHandler.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MicroKernel\IHandlerFactory.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MicroKernel\IKernel.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MicroKernel\IKernelEvents.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MicroKernel\IKernel_AddComponent.cs" />
+    <Compile Include="MicroKernel\IKernel_Resolve.cs" />
+    <Compile Include="Core\Interceptor\IOnBehalfAware.cs" />
+    <Compile Include="Core\Internal\GraphNode.cs" />
+    <Compile Include="Core\Internal\GraphSets.cs" />
+    <Compile Include="Core\Internal\IVertex.cs" />
+    <Compile Include="Core\Internal\TopologicalSortAlgo.cs" />
+    <Compile Include="MicroKernel\LifecycleConcerns\DisposalConcern.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MicroKernel\LifecycleConcerns\ILifecycleConcern.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MicroKernel\LifecycleConcerns\InitializationConcern.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MicroKernel\LifecycleConcerns\LateBoundConcern.cs" />
+    <Compile Include="MicroKernel\LifecycleConcerns\OnCreateActionDelegate.cs" />
+    <Compile Include="MicroKernel\LifecycleConcerns\OnCreatedStep.cs" />
+    <Compile Include="MicroKernel\LifecycleConcerns\SupportInitializeConcern.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Core\IRecyclable.cs" />
+    <Compile Include="Core\IStartable.cs" />
+    <Compile Include="MicroKernel\Lifestyle\AbstractLifestyleManager.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MicroKernel\ILifestyleManager.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MicroKernel\Lifestyle\PerThreadLifestyleManager.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MicroKernel\Lifestyle\PerThreadThreadStaticLifestyleManager.cs" />
+    <Compile Include="MicroKernel\Lifestyle\PoolableLifestyleManager.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MicroKernel\Lifestyle\Pool\DefaultPool.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MicroKernel\Lifestyle\Pool\DefaultPoolFactory.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MicroKernel\Lifestyle\Pool\IPool.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MicroKernel\Lifestyle\Pool\IPoolFactory.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MicroKernel\Lifestyle\Pool\PoolException.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MicroKernel\Lifestyle\SingletonLifestyleManager.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MicroKernel\Lifestyle\TransientLifestyleManager.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MicroKernel\ModelBuilder\DefaultComponentModelBuilder.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MicroKernel\IComponentModelBuilder.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MicroKernel\ModelBuilder\IContributeComponentModelConstruction.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MicroKernel\ModelBuilder\Inspectors\AdditionalInterfacesInspector.cs" />
+    <Compile Include="MicroKernel\ModelBuilder\Inspectors\ComponentActivatorInspector.cs" />
+    <Compile Include="MicroKernel\ModelBuilder\Inspectors\ComponentProxyInspector.cs" />
+    <Compile Include="MicroKernel\ModelBuilder\Inspectors\ConfigurationModelInspector.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MicroKernel\ModelBuilder\Inspectors\ConfigurationParametersInspector.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MicroKernel\ModelBuilder\Inspectors\ConstructorDependenciesModelInspector.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MicroKernel\ModelBuilder\Inspectors\ExtendedPropertiesConstants.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MicroKernel\ModelBuilder\Inspectors\GenericInspector.cs" />
+    <Compile Include="MicroKernel\ModelBuilder\Inspectors\InterceptorInspector.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MicroKernel\ModelBuilder\Inspectors\LifecycleModelInspector.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MicroKernel\ModelBuilder\Inspectors\LifestyleModelInspector.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MicroKernel\ModelBuilder\Inspectors\MethodMetaInspector.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MicroKernel\ModelBuilder\Inspectors\MixinInspector.cs" />
+    <Compile Include="MicroKernel\ModelBuilder\Inspectors\PropertiesDependenciesModelInspector.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Core\ComponentModel.cs" />
+    <Compile Include="Core\ConstructorCandidate.cs" />
+    <Compile Include="Core\ConstructorCandidateCollection.cs" />
+    <Compile Include="Core\DependencyModel.cs" />
+    <Compile Include="Core\DependencyModelCollection.cs" />
+    <Compile Include="Core\InterceptorReference.cs" />
+    <Compile Include="Core\InterceptorReferenceCollection.cs" />
+    <Compile Include="Core\LifecycleStepCollection.cs" />
+    <Compile Include="Core\MethodMetaModel.cs" />
+    <Compile Include="Core\MethodMetaModelCollection.cs" />
+    <Compile Include="Core\ParameterModel.cs" />
+    <Compile Include="Core\ParameterModelCollection.cs" />
+    <Compile Include="Core\PropertySet.cs" />
+    <Compile Include="Core\PropertySetCollection.cs" />
+    <Compile Include="MicroKernel\ComponentReference.cs" />
+    <Compile Include="MicroKernel\Proxy\IModelInterceptorsSelector.cs" />
+    <Compile Include="MicroKernel\InstanceReference.cs" />
+    <Compile Include="MicroKernel\IProxyFactory.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MicroKernel\IReference.cs" />
+    <Compile Include="MicroKernel\Proxy\NotSupportedProxyFactory.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MicroKernel\Proxy\ProxyConstants.cs" />
+    <Compile Include="MicroKernel\Proxy\ProxyOptions.cs" />
+    <Compile Include="MicroKernel\Proxy\ProxyUtil.cs" />
+    <Compile Include="MicroKernel\Registration\AbstractPropertyDescriptor.cs" />
+    <Compile Include="MicroKernel\Registration\AttributeDescriptor.cs" />
+    <Compile Include="MicroKernel\Registration\Component.cs" />
+    <Compile Include="MicroKernel\Registration\ComponentDependencyRegistrationExtensions.cs" />
+    <Compile Include="MicroKernel\Registration\ComponentDescriptor.cs" />
+    <Compile Include="MicroKernel\Registration\ComponentRegistration.cs" />
+    <Compile Include="MicroKernel\Registration\ComponentRegistration.nonGeneric.cs" />
+    <Compile Include="MicroKernel\Registration\Configuration.cs" />
+    <Compile Include="MicroKernel\Registration\ConfigurationDescriptor.cs" />
+    <Compile Include="MicroKernel\Registration\CustomDependencyDescriptor.cs" />
+    <Compile Include="MicroKernel\Registration\ExtendedPropertiesDescriptor.cs" />
+    <Compile Include="MicroKernel\Registration\OnCreateComponentDescriptor.cs" />
+    <Compile Include="MicroKernel\Registration\DynamicParametersDescriptor.cs" />
+    <Compile Include="MicroKernel\Registration\Interceptor\InterceptorSelectorDescriptor.cs" />
+    <Compile Include="MicroKernel\Registration\Interceptor\InterceptorDescriptor.cs" />
+    <Compile Include="MicroKernel\Registration\Interceptor\InterceptorGroup.cs" />
+    <Compile Include="MicroKernel\Registration\IRegistration.cs" />
+    <Compile Include="MicroKernel\Registration\Lifestyle\Custom.cs" />
+    <Compile Include="MicroKernel\Registration\LifestyleDescriptor.cs" />
+    <Compile Include="MicroKernel\Registration\Lifestyle\LifestyleGroup.cs" />
+    <Compile Include="MicroKernel\Registration\Lifestyle\PerThread.cs" />
+    <Compile Include="MicroKernel\Registration\Lifestyle\PerWebRequest.cs" />
+    <Compile Include="MicroKernel\Registration\Lifestyle\Pooled.cs" />
+    <Compile Include="MicroKernel\Registration\Lifestyle\Singleton.cs" />
+    <Compile Include="MicroKernel\Registration\Lifestyle\Transient.cs" />
+    <Compile Include="MicroKernel\Registration\Parameter.cs" />
+    <Compile Include="MicroKernel\Registration\ParametersDescriptor.cs" />
+    <Compile Include="MicroKernel\Registration\Property.cs" />
+    <Compile Include="MicroKernel\Registration\Proxy\MixinRegistration.cs" />
+    <Compile Include="MicroKernel\Registration\Proxy\ProxyMixIns.cs" />
+    <Compile Include="MicroKernel\Registration\Proxy\ProxyGroup.cs" />
+    <Compile Include="MicroKernel\Registration\Proxy\ProxyInterfaces.cs" />
+    <Compile Include="MicroKernel\Registration\RegistrationGroup.cs" />
+    <Compile Include="MicroKernel\Registration\ServiceOverride.cs" />
+    <Compile Include="MicroKernel\Registration\ServiceOverrideDescriptor.cs" />
+    <Compile Include="MicroKernel\Registration\AllTypes.cs" />
+    <Compile Include="MicroKernel\Registration\AllTypesOf.cs" />
+    <Compile Include="MicroKernel\Registration\ConfigureDescriptor.cs" />
+    <Compile Include="MicroKernel\Registration\FromAssemblyDescriptor.cs" />
+    <Compile Include="MicroKernel\Registration\FromTypesDescriptor.cs" />
+    <Compile Include="MicroKernel\Registration\FromDescriptor.cs" />
+    <Compile Include="MicroKernel\Registration\ServiceDescriptor.cs" />
+    <Compile Include="MicroKernel\Registration\BasedOnDescriptor.cs" />
+    <Compile Include="MicroKernel\Releasers\AllComponentsReleasePolicy.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MicroKernel\IReleasePolicy.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MicroKernel\Releasers\LifecycledComponentsReleasePolicy.cs" />
+    <Compile Include="MicroKernel\Releasers\NoTrackingReleasePolicy.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MicroKernel\Resolvers\DefaultDependencyResolver.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MicroKernel\Resolvers\DependencyResolverException.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MicroKernel\IDependencyResolver.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MicroKernel\ISubDependencyResolver.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MicroKernel\Resolvers\SpecializedResolvers\ArrayResolver.cs" />
+    <Compile Include="MicroKernel\Resolvers\SpecializedResolvers\ListResolver.cs" />
+    <Compile Include="MicroKernel\AbstractSubSystem.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MicroKernel\SubSystems\Configuration\DefaultConfigurationStore.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MicroKernel\SubSystems\Configuration\IConfigurationStore.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MicroKernel\SubSystems\Conversion\AbstractTypeConverter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MicroKernel\SubSystems\Conversion\ConverterException.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MicroKernel\SubSystems\Conversion\ArrayConverter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MicroKernel\SubSystems\Conversion\AttributeAwareConverter.cs" />
+    <Compile Include="MicroKernel\SubSystems\Conversion\ComponentConverter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MicroKernel\SubSystems\Conversion\ComponentModelConverter.cs" />
+    <Compile Include="MicroKernel\SubSystems\Conversion\DefaultComplexConverter.cs" />
+    <Compile Include="MicroKernel\SubSystems\Conversion\DictionaryConverter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MicroKernel\SubSystems\Conversion\EnumConverter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MicroKernel\SubSystems\Conversion\GenericDictionaryConverter.cs" />
+    <Compile Include="MicroKernel\SubSystems\Conversion\IGenericCollectionConverterHelper.cs" />
+    <Compile Include="MicroKernel\SubSystems\Conversion\GenericListConverter.cs" />
+    <Compile Include="MicroKernel\SubSystems\Conversion\ITypeNameParser.cs" />
+    <Compile Include="MicroKernel\SubSystems\Conversion\ListConverter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MicroKernel\SubSystems\Conversion\NullableConverter.cs" />
+    <Compile Include="MicroKernel\SubSystems\Conversion\PrimitiveConverter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MicroKernel\SubSystems\Conversion\TimeSpanConverter.cs" />
+    <Compile Include="MicroKernel\SubSystems\Conversion\TypeDescriptor.cs" />
+    <Compile Include="MicroKernel\SubSystems\Conversion\TypeName.cs" />
+    <Compile Include="MicroKernel\SubSystems\Conversion\TypeNameConverter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MicroKernel\SubSystems\Conversion\ConvertibleAttribute.cs" />
+    <Compile Include="MicroKernel\SubSystems\Conversion\DefaultConversionManager.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MicroKernel\SubSystems\Conversion\IConversionManager.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MicroKernel\SubSystems\Conversion\IKernelDependentConverter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MicroKernel\SubSystems\Conversion\ITypeConverter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MicroKernel\SubSystems\Conversion\ITypeConverterContext.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MicroKernel\ISubSystem.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MicroKernel\SubSystems\Conversion\TypeNameParser.cs" />
+    <Compile Include="MicroKernel\SubSystems\Naming\BinaryTreeComponentName.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MicroKernel\SubSystems\Naming\ComponentName.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MicroKernel\SubSystems\Naming\DefaultNamingSubSystem.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MicroKernel\IHandlerSelector.cs" />
+    <Compile Include="MicroKernel\Resolvers\ILazyComponentLoader.cs" />
+    <Compile Include="MicroKernel\SubSystems\Naming\KeySearchNamingSubSystem.cs" />
+    <Compile Include="MicroKernel\SubSystems\Naming\INamingSubSystem.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MicroKernel\SubSystems\Naming\NamingPartsSubSystem.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MicroKernel\SubSystems\Resource\DefaultResourceSubSystem.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MicroKernel\SubSystems\Resource\IResourceSubSystem.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MicroKernel\SubSystemConstants.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MicroKernel\Util\GenericTypeNameProvider.cs" />
+    <Compile Include="MicroKernel\Util\ReferenceComparer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MicroKernel\Util\ReferenceExpressionUtil.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="..\..\buildscripts\CommonAssemblyInfo.cs">
+      <Link>CommonAssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="Windsor\Adapters\ComponentModel\ContainerAdapter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Windsor\Adapters\ComponentModel\ContainerAdapterSite.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Windsor\Adapters\ComponentModel\ContainerWrapper.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Windsor\Adapters\ComponentModel\IContainerAdapter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Windsor\Adapters\ComponentModel\IContainerAdapterSite.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Windsor\Adapters\ComponentModel\ServiceCreatorCallbackActivator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="Windsor\Configuration\AppDomain\CastleSectionHandler.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Windsor\Configuration\IConfigurationInterpreter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Windsor\Configuration\Interpreters\AbstractInterpreter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Windsor\Configuration\Interpreters\XmlInterpreter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Windsor\Configuration\Interpreters\XmlProcessor\ConfigurationProcessingException.cs" />
+    <Compile Include="Windsor\Configuration\Interpreters\XmlProcessor\DefaultXmlProcessorEngine.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Windsor\Configuration\Interpreters\XmlProcessor\DefaultXmlProcessorNodeList.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Windsor\Configuration\Interpreters\XmlProcessor\ElementProcessors\AbstractStatementElementProcessor.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Windsor\Configuration\Interpreters\XmlProcessor\ElementProcessors\AbstractXmlNodeProcessor.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Windsor\Configuration\Interpreters\XmlProcessor\ElementProcessors\AttributesElementProcessor.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Windsor\Configuration\Interpreters\XmlProcessor\ElementProcessors\ChooseElementProcessor.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Windsor\Configuration\Interpreters\XmlProcessor\ElementProcessors\DefaultElementProcessor.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Windsor\Configuration\Interpreters\XmlProcessor\ElementProcessors\DefaultTextNodeProcessor.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Windsor\Configuration\Interpreters\XmlProcessor\ElementProcessors\DefinedProcessingInstructionProcessor.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Windsor\Configuration\Interpreters\XmlProcessor\ElementProcessors\DefineElementProcessor.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Windsor\Configuration\Interpreters\XmlProcessor\ElementProcessors\EvalProcessingInstructionProcessor.cs" />
+    <Compile Include="Windsor\Configuration\Interpreters\XmlProcessor\ElementProcessors\IfElementProcessor.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Windsor\Configuration\Interpreters\XmlProcessor\ElementProcessors\IfProcessingInstructionProcessor.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Windsor\Configuration\Interpreters\XmlProcessor\ElementProcessors\IncludeElementProcessor.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Windsor\Configuration\Interpreters\XmlProcessor\ElementProcessors\PropertiesElementProcessor.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Windsor\Configuration\Interpreters\XmlProcessor\ElementProcessors\UndefElementProcessor.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Windsor\Configuration\Interpreters\XmlProcessor\ElementProcessors\UndefProcessingInstructionProcessor.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Windsor\Configuration\Interpreters\XmlProcessor\ElementProcessors\UsingElementProcessor.cs" />
+    <Compile Include="Windsor\Configuration\Interpreters\XmlProcessor\IXmlNodeProcessor.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Windsor\Configuration\Interpreters\XmlProcessor\IXmlProcessorEngine.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Windsor\Configuration\Interpreters\XmlProcessor\IXmlProcessorNodeList.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Windsor\Configuration\Interpreters\XmlProcessor\XmlProcessor.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Windsor\Configuration\Interpreters\XmlProcessor\XmlProcessorException.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Windsor\IEnvironmentInfo.cs" />
+    <Compile Include="Windsor\InitializationException.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Windsor\Installer\AssemblyInstaller.cs" />
+    <Compile Include="Windsor\Installer\Configuration.cs" />
+    <Compile Include="Windsor\Installer\ConfigurationInstaller.cs" />
+    <Compile Include="Windsor\Installer\DefaultComponentInstaller.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Windsor\Installer\FromAssembly.cs" />
+    <Compile Include="Windsor\Installer\InstallerFactory.cs" />
+    <Compile Include="Windsor\Installer\PartialConfigurationStore.cs" />
+    <Compile Include="Windsor\IComponentsInstaller.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Windsor\IWindsorContainer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Windsor\IContainerAccessor.cs" />
+    <Compile Include="Windsor\Proxy\AbstractProxyFactory.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Windsor\Proxy\DefaultProxyFactory.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Windsor\IWindsorInstaller.cs" />
+    <Compile Include="Windsor\WindsorContainer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <EmbeddedResource Include="Windsor\Adapters\ComponentModel\ContainerAdapter.resx">
+      <DependentUpon>ContainerAdapter.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Windsor\Adapters\ComponentModel\ContainerWrapper.resx">
+      <DependentUpon>ContainerWrapper.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\buildscripts\CastleKey.snk">
+      <Link>CastleKey.snk</Link>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" Condition="($(MSBuildTargets) == '') Or ($(MSBuildTargets) == 'CSharp')" />
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight\v3.0\Microsoft.Silverlight.CSharp.targets" Condition="$(MSBuildTargets) == 'Silverlight 3.0'" />
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight\v4.0\Microsoft.Silverlight.CSharp.targets" Condition="$(MSBuildTargets) == 'Silverlight 4.0'" />
+  <Import Project="$(RootPath)\Settings.proj" />
+  <Import Project="$(BuildScriptsPath)\Castle.Common.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
