@@ -18,10 +18,8 @@ namespace Castle.MicroKernel
 	using System.Collections;
 	using System.Collections.Generic;
 	using System.Reflection;
-#if !SILVERLIGHT
 	using System.Runtime.CompilerServices;
 	using System.Runtime.Serialization;
-#endif
 
 	using Castle.Core;
 	using Castle.Core.Internal;
