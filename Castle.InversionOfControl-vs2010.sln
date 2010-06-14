@@ -12,13 +12,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		{B4F97281-0DBD-4835-9ED8-7DFB966E87FF} = {B4F97281-0DBD-4835-9ED8-7DFB966E87FF}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Castle.Windsor-vs2008", "src\Castle.Windsor\Castle.Windsor-vs2008.csproj", "{60EFCB9B-E3FF-46A5-A2D2-D9F0EF75D5FE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Castle.Windsor", "src\Castle.Windsor\Castle.Windsor.csproj", "{60EFCB9B-E3FF-46A5-A2D2-D9F0EF75D5FE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Castle.Windsor.Tests-vs2008", "src\Castle.Windsor.Tests\Castle.Windsor.Tests-vs2008.csproj", "{CB3A30A6-56D4-4F4F-9AEF-DA55E1FF6D74}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Castle.Windsor.Tests", "src\Castle.Windsor.Tests\Castle.Windsor.Tests.csproj", "{CB3A30A6-56D4-4F4F-9AEF-DA55E1FF6D74}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Castle.Facilities.Logging-vs2008", "src\Castle.Facilities.Logging\Castle.Facilities.Logging-vs2008.csproj", "{32D54D33-206F-44EE-8329-8480ABE049B1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Castle.Facilities.Logging", "src\Castle.Facilities.Logging\Castle.Facilities.Logging.csproj", "{32D54D33-206F-44EE-8329-8480ABE049B1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Castle.Facilities.Logging.Tests-vs2008", "src\Castle.Facilities.Logging.Tests\Castle.Facilities.Logging.Tests-vs2008.csproj", "{8F649EDC-B84C-4F20-81AD-221ACA465E1D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Castle.Facilities.Logging.Tests", "src\Castle.Facilities.Logging.Tests\Castle.Facilities.Logging.Tests.csproj", "{8F649EDC-B84C-4F20-81AD-221ACA465E1D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
