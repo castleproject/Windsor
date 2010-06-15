@@ -47,7 +47,7 @@ namespace Castle.Facilities.TypedFactory
 
 		public IRegistration Load(string key, Type service)
 		{
-			if (string.IsNullOrEmpty(key) || service == null)
+			if (service == null)
 			{
 				return null;
 			}

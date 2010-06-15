@@ -14,12 +14,11 @@
 
 namespace Castle.MicroKernel.Tests
 {
-    using System;
-
-    using Castle.Core.Configuration;
+	using Castle.Core.Configuration;
 	using Castle.MicroKernel.Handlers;
-    using Castle.MicroKernel.Registration;
-    using Castle.MicroKernel.Tests.ClassComponents;
+	using Castle.MicroKernel.Registration;
+	using Castle.MicroKernel.Tests.ClassComponents;
+
 	using NUnit.Framework;
 
 	/// <summary>
@@ -83,18 +82,45 @@ namespace Castle.MicroKernel.Tests
 		[Test]
 		public void ResolvingConcreteClassThroughConstructor()
 		{
-			kernel.Register(Component.For(typeof(DefaultSpamServiceWithConstructor)).Named("spamservice"));
-			kernel.Register(Component.For(typeof(DefaultMailSenderService)).Named("mailsender"));
-			kernel.Register(Component.For(typeof(DefaultTemplateEngine)).Named("templateengine"));
+			kernel.Register(Component.For<DefaultSpamServiceWithConstructor>().Named("spamservice"));
+			kernel.Register(Component.For<DefaultMailSenderService>().Named("mailsender"));
+			kernel.Register(Component.For<DefaultTemplateEngine>().Named("templateengine"));
 
-			DefaultSpamServiceWithConstructor spamservice =
-				(DefaultSpamServiceWithConstructor) kernel["spamservice"];
+			var spamservice = kernel.Resolve<DefaultSpamServiceWithConstructor>("spamservice");
 
 			Assert.IsNotNull(spamservice);
 			Assert.IsNotNull(spamservice.MailSender);
 			Assert.IsNotNull(spamservice.TemplateEngine);
 		}
 
+		[Test]
+		public void Resolving_by_name_is_case_insensitive()
+		{
+			kernel.Register(Component.For<DefaultSpamServiceWithConstructor>().Named("spamService"));
+			kernel.Register(Component.For<DefaultMailSenderService>().Named("mailSender"));
+			kernel.Register(Component.For<DefaultTemplateEngine>().Named("templateEngine"));
+
+			var spamservice = kernel.Resolve<DefaultSpamServiceWithConstructor>("spamSERVICE");
+
+			Assert.IsNotNull(spamservice);
+			Assert.IsNotNull(spamservice.MailSender);
+			Assert.IsNotNull(spamservice.TemplateEngine);
+		}
+
+		[Test]
+		public void Service_override_by_name_is_case_insensitive()
+		{
+			kernel.Register(Component.For<DefaultSpamServiceWithConstructor>().Named("spamService"));
+			kernel.Register(Component.For<DefaultMailSenderService>().Named("someMailSender"));
+			kernel.Register(Component.For<DefaultTemplateEngine>().Named("templateEngine")
+			                	.DependsOn(ServiceOverride.ForKey("mailSENDER").Eq("SOMEmailSenDeR")));
+
+			var spamservice = kernel.Resolve<DefaultSpamServiceWithConstructor>("spamSERVICE");
+
+			Assert.IsNotNull(spamservice);
+			Assert.IsNotNull(spamservice.MailSender);
+			Assert.IsNotNull(spamservice.TemplateEngine);
+		}
 		[Test]
 		[ExpectedException(typeof(HandlerException))]
 		public void UnresolvedDependencies()
