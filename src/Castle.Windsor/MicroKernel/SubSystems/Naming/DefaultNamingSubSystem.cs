@@ -17,7 +17,6 @@ using System.Collections.Generic;
 namespace Castle.MicroKernel.SubSystems.Naming
 {
 	using System;
-	using System.Threading;
 
 	using Castle.Core.Internal;
 
@@ -37,7 +36,7 @@ namespace Castle.MicroKernel.SubSystems.Naming
 		/// to <see cref="IHandler"/>
 		/// Items in this dictionary are sorted in insertion order.
 		/// </summary>
-		protected readonly IDictionary<string, IHandler> key2Handler = new Dictionary<string, IHandler>();
+		protected readonly IDictionary<string, IHandler> key2Handler = new Dictionary<string, IHandler>(StringComparer.OrdinalIgnoreCase);
 
 		/// <summary>
 		/// Map(Type, IHandler) to map a service

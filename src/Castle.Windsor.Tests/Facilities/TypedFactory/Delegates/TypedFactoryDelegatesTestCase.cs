@@ -40,9 +40,9 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory.Delegates
 		[Test]
 		public void Affects_constructor_resolution()
 		{
-            container.Register(Component.For<Baz>().Named("baz"));
-            container.Register(Component.For<HasTwoConstructors>().Named("fizz"));
-			var factory = container.Resolve<Func<string, HasTwoConstructors>>("fizzFactory");
+			container.Register(Component.For<Baz>().Named("baz"));
+			container.Register(Component.For<HasTwoConstructors>().Named("fizz"));
+			var factory = container.Resolve<Func<string, HasTwoConstructors>>();
 
 			var obj = factory("naaaameee");
 			Assert.AreEqual("naaaameee", obj.Name);

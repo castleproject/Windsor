@@ -48,17 +48,17 @@ namespace Castle.MicroKernel
 		/// <returns><c>true</c> if an instance must be passed to <see cref="Create"/></returns>
 		bool RequiresTargetInstance(IKernel kernel, ComponentModel model);
 
-        /// <summary>
-        /// Add the selector to the list of selectors that can affect interecptors decisions
-        /// in the container.
-        /// </summary>
-	    void AddInterceptorSelector(IModelInterceptorsSelector selector);
+		/// <summary>
+		/// Add the selector to the list of selectors that can affect interecptors decisions
+		/// in the container.
+		/// </summary>
+		void AddInterceptorSelector(IModelInterceptorsSelector selector);
 
-        /// <summary>
-        /// Determains whatever we need to create a proxy for this model
-        /// </summary>
-        /// <param name="model"></param>
-        /// <returns></returns>
-	    bool ShouldCreateProxy(ComponentModel model);
+		/// <summary>
+		/// Determains whatever we need to create a proxy for this model
+		/// </summary>
+		/// <param name="model"></param>
+		/// <returns></returns>
+		bool ShouldCreateProxy(ComponentModel model);
 	}
 }
