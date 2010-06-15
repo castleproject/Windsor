@@ -548,13 +548,7 @@
     <Compile Include="..\..\buildscripts\CommonAssemblyInfo.cs">
       <Link>CommonAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="Windsor\Adapters\ComponentModel\ContainerAdapter.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Windsor\Adapters\ComponentModel\ContainerAdapterSite.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Windsor\Adapters\ComponentModel\ContainerWrapper.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Windsor\Adapters\ComponentModel\IContainerAdapter.cs">
@@ -675,14 +669,22 @@
     <Compile Include="Windsor\WindsorContainer.cs">
       <SubType>Code</SubType>
     </Compile>
-    <EmbeddedResource Include="Windsor\Adapters\ComponentModel\ContainerAdapter.resx">
-      <DependentUpon>ContainerAdapter.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Windsor\Adapters\ComponentModel\ContainerWrapper.resx">
-      <DependentUpon>ContainerWrapper.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup Condition="$(MSBuildTargets)!='Silverlight 3.0' and $(MSBuildTargets)!='Silverlight 4.0'">
+	  <Compile Include="Windsor\Adapters\ComponentModel\ContainerAdapter.cs">
+		  <SubType>Code</SubType>
+	  </Compile>
+	  <Compile Include="Windsor\Adapters\ComponentModel\ContainerWrapper.cs">
+		  <SubType>Code</SubType>
+	  </Compile>
+	  <EmbeddedResource Include="Windsor\Adapters\ComponentModel\ContainerAdapter.resx">
+		  <DependentUpon>ContainerAdapter.cs</DependentUpon>
+		  <SubType>Designer</SubType>
+	  </EmbeddedResource>
+	  <EmbeddedResource Include="Windsor\Adapters\ComponentModel\ContainerWrapper.resx">
+		  <DependentUpon>ContainerWrapper.cs</DependentUpon>
+		  <SubType>Designer</SubType>
+	  </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />
