@@ -23,7 +23,7 @@ namespace Castle.MicroKernel.Registration
 
 		public LifestyleDescriptor(LifestyleType lifestyle)
 		{
-			this.lifestyle = lifestyle;	
+			this.lifestyle = lifestyle;
 		}
 
 		protected internal override void ApplyToConfiguration(IKernel kernel, IConfiguration configuration)

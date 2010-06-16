@@ -46,34 +46,43 @@ namespace Castle.MicroKernel.Registration.Lifestyle
 
 		public ComponentRegistration<S> Transient
 		{
-			get { return AddDescriptor(new Transient<S>()); }
+			get { return AddDescriptor(new LifestyleDescriptor<S>(LifestyleType.Transient)); }
 		}
 
 		public ComponentRegistration<S> Singleton
 		{
-			get { return AddDescriptor(new Singleton<S>()); }
+			get { return AddDescriptor(new LifestyleDescriptor<S>(LifestyleType.Singleton)); }
 		}
 
 		public ComponentRegistration<S> PerThread
 		{
-			get { return AddDescriptor(new PerThread<S>()); }
+			get { return AddDescriptor(new LifestyleDescriptor<S>(LifestyleType.Thread)); }
 		}
 		
 #if (!SILVERLIGHT)
 		public ComponentRegistration<S> PerWebRequest
 		{
-			get { return AddDescriptor(new PerWebRequest<S>()); }
+			get { return AddDescriptor(new LifestyleDescriptor<S>(LifestyleType.PerWebRequest)); }
 		}
 #endif
 
 		public ComponentRegistration<S> Pooled
 		{
-			get { return AddDescriptor(new Pooled<S>()); }
+			get { return AddDescriptor(new LifestyleDescriptor<S>(LifestyleType.Pooled)); }
 		}
 
 		public ComponentRegistration<S> PooledWithSize(int? initialSize, int? maxSize)
 		{
-			return AddDescriptor(new Pooled<S>(initialSize, maxSize));
+			var pooledWithSize = Pooled;
+			if(initialSize.HasValue)
+			{
+				pooledWithSize = pooledWithSize.Attribute("initialPoolSize").Eq(initialSize);
+			}
+			if(maxSize.HasValue)
+			{
+				pooledWithSize = pooledWithSize.Attribute("maxPoolSize").Eq(maxSize);
+			}
+			return pooledWithSize;
 		}
 
 		/// <summary>
@@ -90,7 +99,8 @@ namespace Castle.MicroKernel.Registration.Lifestyle
 					"be used as a custom lifestyle", customLifestyleType.FullName));
 			}
 
-			return AddDescriptor(new Custom<S>(customLifestyleType));
+			return AddDescriptor(new LifestyleDescriptor<S>(LifestyleType.Custom))
+				.Attribute("customLifestyleType").Eq(customLifestyleType.AssemblyQualifiedName);
 		}
 
 		/// <summary>
