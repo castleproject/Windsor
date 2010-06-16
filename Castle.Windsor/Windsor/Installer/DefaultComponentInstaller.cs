@@ -85,9 +85,10 @@ namespace Castle.Windsor.Installer
 
 			// TODO: extract this so that it has as much common with FromAssembly. as possible
 			assemblyName = installer.Attributes["assembly"];
-			if (string.IsNullOrEmpty(assemblyName))
+			if (string.IsNullOrEmpty(assemblyName) == false)
 			{
 				AddAssemblyInstallers(cache, assemblyName);
+				return;
 			}
 
 			var directory = installer.Attributes["directory"];
