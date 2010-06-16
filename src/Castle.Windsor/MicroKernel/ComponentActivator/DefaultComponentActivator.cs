@@ -274,7 +274,7 @@ namespace Castle.MicroKernel.ComponentActivator
 			if (constructor == null) return null;
 
 			object[] arguments = new object[constructor.Constructor.GetParameters().Length];
-			if(arguments.Length==0)
+			if (arguments.Length == 0)
 			{
 				return null;
 			}
