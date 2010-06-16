@@ -15,6 +15,7 @@
 namespace Castle.Windsor.Installer
 {
 	using System;
+	using System.Collections.Generic;
 	using System.Reflection;
 
 	using Castle.Core.Internal;
@@ -46,7 +47,7 @@ namespace Castle.Windsor.Installer
 				throw new ArgumentNullException("type");
 			}
 			var assembly = type.Assembly;
-			return Given(assembly, installerFactory);
+			return Instance(assembly, installerFactory);
 		}
 
 		/// <summary>
@@ -73,14 +74,14 @@ namespace Castle.Windsor.Installer
 		/// <returns></returns>
 		public static IWindsorInstaller Instance(Assembly assembly)
 		{
-			return Given(assembly, new InstallerFactory());
+			return Instance(assembly, new InstallerFactory());
 		}
 
 		/// <summary>
 		/// Scans the specified assembly with specified name for types implementing <see cref="IWindsorInstaller"/>, instantiates using given <see cref="InstallerFactory"/> and installs.
 		/// </summary>
 		/// <returns></returns>
-		public static IWindsorInstaller Given(Assembly assembly, InstallerFactory installerFactory)
+		public static IWindsorInstaller Instance(Assembly assembly, InstallerFactory installerFactory)
 		{
 			return new AssemblyInstaller(assembly, installerFactory);
 		}
@@ -102,7 +103,7 @@ namespace Castle.Windsor.Installer
 		public static IWindsorInstaller Named(string assemblyName, InstallerFactory installerFactory)
 		{
 			var assembly = ReflectionUtil.GetAssemblyNamed(assemblyName);
-			return Given(assembly, installerFactory);
+			return Instance(assembly, installerFactory);
 		}
 
 		/// <summary>
@@ -120,7 +121,23 @@ namespace Castle.Windsor.Installer
 		/// <returns></returns>
 		public static IWindsorInstaller This(InstallerFactory installerFactory)
 		{
-			return Given(Assembly.GetCallingAssembly(), installerFactory);
+			return Instance(Assembly.GetCallingAssembly(), installerFactory);
+		}
+
+		public static IWindsorInstaller InDirectory(AssemblyFilter filter)
+		{
+			return InDirectory(filter, new InstallerFactory());
+		}
+
+		public static IWindsorInstaller InDirectory(AssemblyFilter filter, InstallerFactory installerFactory)
+		{
+			var assemblies = new HashSet<Assembly>(ReflectionUtil.GetAssemblies(filter));
+			var installer = new CompositeInstaller();
+			foreach (var assembly in assemblies)
+			{
+				installer.Add(Instance(assembly, installerFactory));
+			}
+			return installer;
 		}
 	}
 }

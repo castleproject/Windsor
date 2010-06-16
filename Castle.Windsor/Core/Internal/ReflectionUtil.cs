@@ -15,6 +15,7 @@
 namespace Castle.Core.Internal
 {
 	using System;
+	using System.Collections.Generic;
 	using System.Diagnostics;
 	using System.IO;
 	using System.Reflection;
@@ -36,8 +37,7 @@ namespace Castle.Core.Internal
 			try
 			{
 				Assembly assembly;
-				var extension = Path.GetExtension(assemblyName);
-				if (IsDll(extension) || IsExe(extension))
+				if (IsAssemblyFile(assemblyName))
 				{
 #if (SILVERLIGHT)
 				assembly = Assembly.Load(Path.GetFileNameWithoutExtension(assemblyName));
@@ -62,6 +62,26 @@ namespace Castle.Core.Internal
 			{
 				throw new Exception(string.Format("Could not load assembly {0}", assemblyName), e);
 			}
+		}
+
+		public static bool IsAssemblyFile(string filePath)
+		{
+			if (filePath == null)
+			{
+				throw new ArgumentNullException("filePath");
+			}
+
+			string extension;
+			try
+			{
+				extension = Path.GetExtension(filePath);
+			}
+			catch (ArgumentException)
+			{
+				// path contains invalid characters...
+				return false;
+			}
+			return IsDll(extension) || IsExe(extension);
 		}
 
 		private static void EnsureIsAssignable<TBase>(Type subtypeofTBase)
@@ -125,6 +145,48 @@ namespace Castle.Core.Internal
 		private static bool IsExe(string extension)
 		{
 			return ".exe".Equals(extension, StringComparison.OrdinalIgnoreCase);
+		}
+
+
+
+		public static IEnumerable<Assembly> GetAssemblies(IAssemblyProvider assemblyProvider)
+		{
+			return assemblyProvider.GetAssemblies();
+		}
+
+		public static Assembly GetAssemblyNamed(string filePath, Predicate<AssemblyName> nameFilter, Predicate<Assembly> assemblyFilter)
+		{
+			AssemblyName assemblyName;
+			try
+			{
+				assemblyName = AssemblyName.GetAssemblyName(filePath);
+			}
+			catch (ArgumentException)
+			{
+				assemblyName = new AssemblyName { CodeBase = filePath };
+			}
+			if (nameFilter != null)
+			{
+				foreach (Predicate<AssemblyName> predicate in nameFilter.GetInvocationList())
+				{
+					if (predicate(assemblyName) == false)
+					{
+						return null;
+					}
+				}
+			}
+			var assembly = Assembly.Load(assemblyName);
+			if (assemblyFilter != null)
+			{
+				foreach (Predicate<Assembly> predicate in assemblyFilter.GetInvocationList())
+				{
+					if (predicate(assembly) == false)
+					{
+						return null;
+					}
+				}
+			}
+			return assembly;
 		}
 	}
 }
