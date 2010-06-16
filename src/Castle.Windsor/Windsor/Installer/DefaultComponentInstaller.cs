@@ -19,6 +19,7 @@ namespace Castle.Windsor.Installer
 	using System.Linq;
 	using System;
 	using System.Collections.Generic;
+	using System.Reflection;
 
 	using Castle.Core.Configuration;
 	using Castle.Core.Internal;
@@ -34,6 +35,8 @@ namespace Castle.Windsor.Installer
 	/// </summary>
 	public class DefaultComponentInstaller : IComponentsInstaller
 	{
+		private string assemblyName;
+
 		#region IComponentsInstaller Members
 
 		/// <summary>
@@ -80,8 +83,37 @@ namespace Castle.Windsor.Installer
 				return;
 			}
 
-			Debug.Assert(string.IsNullOrEmpty(installer.Attributes["assembly"]) == false);
-			var types = ReflectionUtil.GetAssemblyNamed(installer.Attributes["assembly"]).GetExportedTypes();
+			// TODO: extract this so that it has as much common with FromAssembly. as possible
+			assemblyName = installer.Attributes["assembly"];
+			if (string.IsNullOrEmpty(assemblyName))
+			{
+				AddAssemblyInstallers(cache, assemblyName);
+			}
+
+			var directory = installer.Attributes["directory"];
+			var mask = installer.Attributes["fileMask"];
+			var token = installer.Attributes["publicKeyToken"];
+			Debug.Assert(directory != null, "directory != null");
+			var assemblyFilter = new AssemblyFilter(directory, mask);
+			if (token != null)
+			{
+				assemblyFilter.WithKeyToken(token);
+			}
+			foreach (var assembly in ReflectionUtil.GetAssemblies(assemblyFilter))
+			{
+				GetAssemblyInstallers(cache, assembly);
+			}
+		}
+
+		private void AddAssemblyInstallers(Dictionary<Type, IWindsorInstaller> cache, string assemblyName)
+		{
+			var assembly = ReflectionUtil.GetAssemblyNamed(assemblyName);
+			GetAssemblyInstallers(cache, assembly);
+		}
+
+		private void GetAssemblyInstallers(Dictionary<Type, IWindsorInstaller> cache, Assembly assembly)
+		{
+			var types = assembly.GetExportedTypes();
 			foreach (var type in InstallerTypes(types))
 			{
 				AddInstaller(cache, type);
