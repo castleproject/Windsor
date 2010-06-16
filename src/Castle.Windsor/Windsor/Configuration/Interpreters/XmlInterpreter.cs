@@ -173,9 +173,23 @@ namespace Castle.Windsor.Configuration.Interpreters
 			var type = config.Attributes["type"];
 			var assembly = config.Attributes["assembly"];
 			var directory = config.Attributes["directory"];
-			if ((string.IsNullOrEmpty(type) ^ string.IsNullOrEmpty(assembly) ^ string.IsNullOrEmpty(directory)) == false)
+			var attributesCount = 0;
+			if ((string.IsNullOrEmpty(type)) == false)
 			{
-				throw new Exception("install must have exactly one of the following attibutes defined: 'type', 'assembly' or 'directory'.");
+				attributesCount++;
+			}
+			if (string.IsNullOrEmpty(assembly) == false)
+			{
+				attributesCount++;
+			}
+			if (string.IsNullOrEmpty(directory) == false)
+			{
+				attributesCount++;
+			}
+			if (attributesCount != 1)
+			{
+				throw new Exception(
+					"install must have exactly one of the following attibutes defined: 'type', 'assembly' or 'directory'.");
 			}
 			AddInstallerConfig(config, store);
 		}
