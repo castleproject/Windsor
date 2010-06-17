@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -11,16 +11,18 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-using System.Threading;
 
 namespace Castle.MicroKernel.Tests.Registration
 {
 	using System;
 	using System.Reflection;
+
 	using Castle.Core;
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Tests.ClassComponents;
+
 	using NUnit.Framework;
+
 	using System.Linq;
 
 	[TestFixture]
@@ -29,11 +31,24 @@ namespace Castle.MicroKernel.Tests.Registration
 		[Test]
 		public void RegisterAssemblyTypes_BasedOn_RegisteredInContainer()
 		{
-			Kernel.Register(AllTypes.Of(typeof(ICommon))
+			Kernel.Register(AllTypes
 			                	.FromAssembly(Assembly.GetExecutingAssembly())
+			                	.BasedOn(typeof(ICommon))
 				);
 
-			IHandler[] handlers = Kernel.GetHandlers(typeof(ICommon));
+			var handlers = Kernel.GetHandlers(typeof(ICommon));
+			Assert.AreEqual(0, handlers.Length);
+
+			handlers = Kernel.GetAssignableHandlers(typeof(ICommon));
+			Assert.AreNotEqual(0, handlers.Length);
+		}
+
+		[Test]
+		public void RegisterAssemblyTypesFromThisAssembly_BasedOn_RegisteredInContainer()
+		{
+			Kernel.Register(AllTypes.FromThisAssembly().BasedOn(typeof(ICommon)));
+
+			var handlers = Kernel.GetHandlers(typeof(ICommon));
 			Assert.AreEqual(0, handlers.Length);
 
 			handlers = Kernel.GetAssignableHandlers(typeof(ICommon));
@@ -43,12 +58,11 @@ namespace Castle.MicroKernel.Tests.Registration
 		[Test]
 		public void RegisterDirectoryAssemblyTypes_BasedOn_RegisteredInContainer()
 		{
-			AllTypes.Of()
 			var directory = AppDomain.CurrentDomain.BaseDirectory;
 			Kernel.Register(AllTypes.FromAssemblyInDirectory(new AssemblyFilter(directory))
 			                	.BasedOn<ICommon>());
 
-			IHandler[] handlers = Kernel.GetHandlers(typeof(ICommon));
+			var handlers = Kernel.GetHandlers(typeof(ICommon));
 			Assert.AreEqual(0, handlers.Length);
 
 			handlers = Kernel.GetAssignableHandlers(typeof(ICommon));
@@ -58,11 +72,10 @@ namespace Castle.MicroKernel.Tests.Registration
 		[Test]
 		public void RegisterAssemblyTypes_NoService_RegisteredInContainer()
 		{
-			Kernel.Register(AllTypes.Of<ICommon>()
-			                	.FromAssembly(Assembly.GetExecutingAssembly())
-				);
+			Kernel.Register(AllTypes.FromAssembly(Assembly.GetExecutingAssembly())
+			                	.BasedOn<ICommon>());
 
-			IHandler[] handlers = Kernel.GetHandlers(typeof(ICommon));
+			var handlers = Kernel.GetHandlers(typeof(ICommon));
 			Assert.AreEqual(0, handlers.Length);
 
 			handlers = Kernel.GetAssignableHandlers(typeof(ICommon));
@@ -72,12 +85,12 @@ namespace Castle.MicroKernel.Tests.Registration
 		[Test]
 		public void RegisterAssemblyTypes_FirstInterfaceService_RegisteredInContainer()
 		{
-			Kernel.Register(AllTypes.Of<ICommon>()
-			                	.FromAssembly(Assembly.GetExecutingAssembly())
+			Kernel.Register(AllTypes.FromAssembly(Assembly.GetExecutingAssembly())
+			                	.BasedOn<ICommon>()
 			                	.WithService.FirstInterface()
 				);
 
-			IHandler[] handlers = Kernel.GetHandlers(typeof(ICommon));
+			var handlers = Kernel.GetHandlers(typeof(ICommon));
 			Assert.AreNotEqual(0, handlers.Length);
 
 			handlers = Kernel.GetAssignableHandlers(typeof(ICommon));
@@ -87,12 +100,12 @@ namespace Castle.MicroKernel.Tests.Registration
 		[Test]
 		public void RegisterAssemblyTypes_LookupInterfaceService_RegisteredInContainer()
 		{
-			Kernel.Register(AllTypes.Of<ICommon>()
-			                	.FromAssembly(Assembly.GetExecutingAssembly())
+			Kernel.Register(AllTypes.FromAssembly(Assembly.GetExecutingAssembly())
+			                	.BasedOn<ICommon>()
 			                	.WithService.FromInterface()
 				);
 
-			IHandler[] handlers = Kernel.GetHandlers(typeof(ICommon));
+			var handlers = Kernel.GetHandlers(typeof(ICommon));
 			Assert.AreNotEqual(0, handlers.Length);
 
 			handlers = Kernel.GetHandlers(typeof(ICommonSub1));
@@ -111,12 +124,12 @@ namespace Castle.MicroKernel.Tests.Registration
 		[Test]
 		public void RegisterAssemblyTypes_DefaultService_RegisteredInContainer()
 		{
-			Kernel.Register(AllTypes.Of<ICommon>()
-			                	.FromAssembly(Assembly.GetExecutingAssembly())
+			Kernel.Register(AllTypes.FromAssembly(Assembly.GetExecutingAssembly())
+			                	.BasedOn<ICommon>()
 			                	.WithService.Base()
 				);
 
-			IHandler[] handlers = Kernel.GetHandlers(typeof(ICommon));
+			var handlers = Kernel.GetHandlers(typeof(ICommon));
 			Assert.AreNotEqual(0, handlers.Length);
 
 			handlers = Kernel.GetAssignableHandlers(typeof(ICommon));
@@ -126,16 +139,16 @@ namespace Castle.MicroKernel.Tests.Registration
 		[Test]
 		public void RegisterAssemblyTypes_WithConfiguration_RegisteredInContainer()
 		{
-			Kernel.Register(AllTypes.Of<ICommon>()
-			                	.FromAssembly(Assembly.GetExecutingAssembly())
+			Kernel.Register(AllTypes.FromAssembly(Assembly.GetExecutingAssembly())
+			                	.BasedOn<ICommon>()
 			                	.Configure(delegate(ComponentRegistration component)
-			                	           	{
-			                	           		component.LifeStyle.Transient
-			                	           			.Named(component.Implementation.FullName + "XYZ");
-			                	           	})
+			                	{
+			                		component.LifeStyle.Transient
+			                			.Named(component.Implementation.FullName + "XYZ");
+			                	})
 				);
 
-			foreach(IHandler handler in Kernel.GetAssignableHandlers(typeof(ICommon)))
+			foreach (IHandler handler in Kernel.GetAssignableHandlers(typeof(ICommon)))
 			{
 				Assert.AreEqual(LifestyleType.Transient, handler.ComponentModel.LifestyleType);
 				Assert.AreEqual(handler.ComponentModel.Implementation.FullName + "XYZ", handler.ComponentModel.Name);
@@ -145,20 +158,20 @@ namespace Castle.MicroKernel.Tests.Registration
 		[Test]
 		public void RegisterAssemblyTypes_WithConfigurationBasedOnImplementation_RegisteredInContainer()
 		{
-			Kernel.Register(AllTypes.Of<ICommon>()
-			                	.FromAssembly(Assembly.GetExecutingAssembly())
+			Kernel.Register(AllTypes.FromAssembly(Assembly.GetExecutingAssembly())
+			                	.BasedOn<ICommon>()
 			                	.Configure(delegate(ComponentRegistration component)
-			                	           	{
-			                	           		component.LifeStyle.Transient
-			                	           			.Named(component.Implementation.FullName + "XYZ");
-			                	           	})
+			                	{
+			                		component.LifeStyle.Transient
+			                			.Named(component.Implementation.FullName + "XYZ");
+			                	})
 			                	.ConfigureFor<CommonImpl1>(
-			                	delegate(ComponentRegistration component) { component.DependsOn(Property.ForKey("key1").Eq(1)); })
+			                		component => component.DependsOn(Property.ForKey("key1").Eq(1)))
 			                	.ConfigureFor<CommonImpl2>(
-			                	delegate(ComponentRegistration component) { component.DependsOn(Property.ForKey("key2").Eq(2)); })
+			                		component => component.DependsOn(Property.ForKey("key2").Eq(2)))
 				);
 
-			foreach(IHandler handler in Kernel.GetAssignableHandlers(typeof(ICommon)))
+			foreach (IHandler handler in Kernel.GetAssignableHandlers(typeof(ICommon)))
 			{
 				Assert.AreEqual(LifestyleType.Transient, handler.ComponentModel.LifestyleType);
 				Assert.AreEqual(handler.ComponentModel.Implementation.FullName + "XYZ", handler.ComponentModel.Name);
@@ -179,12 +192,12 @@ namespace Castle.MicroKernel.Tests.Registration
 		[Test]
 		public void RegisterGenericTypes_BasedOnGenericDefinition_RegisteredInContainer()
 		{
-			Kernel.Register(AllTypes.Pick()
-			                	.From(typeof(DefaultRepository<>))
+			Kernel.Register(AllTypes.From(typeof(DefaultRepository<>))
+			                	.Pick()
 			                	.WithService.FirstInterface()
 				);
 
-			IRepository<CustomerImpl> repository = Kernel.Resolve<IRepository<CustomerImpl>>();
+			var repository = Kernel.Resolve<IRepository<CustomerImpl>>();
 			Assert.IsNotNull(repository);
 		}
 
@@ -196,14 +209,14 @@ namespace Castle.MicroKernel.Tests.Registration
 			                	.WithService.Base()
 				);
 
-			IHandler[] handlers = Kernel.GetHandlers(typeof(IValidator<ICustomer>));
+			var handlers = Kernel.GetHandlers(typeof(IValidator<ICustomer>));
 			Assert.AreNotEqual(0, handlers.Length);
-			IValidator<ICustomer> validator = Kernel.Resolve<IValidator<ICustomer>>();
+			var validator = Kernel.Resolve<IValidator<ICustomer>>();
 			Assert.IsNotNull(validator);
 
 			handlers = Kernel.GetHandlers(typeof(IValidator<CustomerChain1>));
 			Assert.AreNotEqual(0, handlers.Length);
-			IValidator<CustomerChain1> validator2 = Kernel.Resolve<IValidator<CustomerChain1>>();
+			var validator2 = Kernel.Resolve<IValidator<CustomerChain1>>();
 			Assert.IsNotNull(validator2);
 		}
 
@@ -215,7 +228,7 @@ namespace Castle.MicroKernel.Tests.Registration
 			                	.WithService.FirstInterface()
 				);
 
-			IHandler[] handlers = Kernel.GetHandlers(typeof(IMapper<CommonImpl1>));
+			var handlers = Kernel.GetHandlers(typeof(IMapper<CommonImpl1>));
 			Assert.AreEqual(1, handlers.Length);
 
 			handlers = Kernel.GetAssignableHandlers(typeof(IMapper<CommonImpl2>));
@@ -225,15 +238,15 @@ namespace Castle.MicroKernel.Tests.Registration
 		[Test]
 		public void RegisterAssemblyTypes_IfCondition_RegisteredInContainer()
 		{
-			Kernel.Register(AllTypes.Of<ICustomer>()
-			                	.FromAssembly(Assembly.GetExecutingAssembly())
+			Kernel.Register(AllTypes.FromAssembly(Assembly.GetExecutingAssembly())
+			                	.BasedOn<ICustomer>()
 			                	.If(t => t.FullName.Contains("Chain"))
 				);
 
-			IHandler[] handlers = Kernel.GetAssignableHandlers(typeof(ICustomer));
+			var handlers = Kernel.GetAssignableHandlers(typeof(ICustomer));
 			Assert.AreNotEqual(0, handlers.Length);
 
-			foreach(IHandler handler in handlers)
+			foreach (IHandler handler in handlers)
 			{
 				Assert.IsTrue(handler.ComponentModel.Implementation.FullName.Contains("Chain"));
 			}
@@ -242,13 +255,13 @@ namespace Castle.MicroKernel.Tests.Registration
 		[Test]
 		public void RegisterAssemblyTypes_MultipleIfCondition_RegisteredInContainer()
 		{
-			Kernel.Register(AllTypes.Of<ICustomer>()
-			                	.FromAssembly(Assembly.GetExecutingAssembly())
+			Kernel.Register(AllTypes.FromAssembly(Assembly.GetExecutingAssembly())
+			                	.BasedOn<ICustomer>()
 			                	.If(t => t.Name.EndsWith("2"))
 			                	.If(t => t.FullName.Contains("Chain"))
 				);
 
-			IHandler[] handlers = Kernel.GetAssignableHandlers(typeof(ICustomer));
+			var handlers = Kernel.GetAssignableHandlers(typeof(ICustomer));
 			Assert.AreEqual(1, handlers.Length);
 			Assert.AreEqual(typeof(CustomerChain2), handlers.Single().ComponentModel.Implementation);
 		}
@@ -256,23 +269,22 @@ namespace Castle.MicroKernel.Tests.Registration
 		[Test]
 		public void RegisterAssemblyTypes_UnlessCondition_RegisteredInContainer()
 		{
-			Kernel.Register(AllTypes.Of<ICustomer>()
-			                	.FromAssembly(Assembly.GetExecutingAssembly())
+			Kernel.Register(AllTypes.FromAssembly(Assembly.GetExecutingAssembly())
+			                	.BasedOn<ICustomer>()
 			                	.Unless(t => typeof(CustomerChain1).IsAssignableFrom(t))
 				);
 
-			foreach(IHandler handler in Kernel.GetAssignableHandlers(typeof(ICustomer)))
+			foreach (IHandler handler in Kernel.GetAssignableHandlers(typeof(ICustomer)))
 			{
 				Assert.IsFalse(typeof(CustomerChain1).IsAssignableFrom(handler.ComponentModel.Implementation));
 			}
 		}
 
-
 		[Test]
 		public void RegisterAssemblyTypes_MultipleUnlessCondition_RegisteredInContainer()
 		{
-			Kernel.Register(AllTypes.Of<ICustomer>()
-			                	.FromAssembly(Assembly.GetExecutingAssembly())
+			Kernel.Register(AllTypes.FromAssembly(Assembly.GetExecutingAssembly())
+			                	.BasedOn<ICustomer>()
 			                	.Unless(t => t.Name.EndsWith("2"))
 			                	.Unless(t => t.Name.EndsWith("3"))
 				);
@@ -291,13 +303,12 @@ namespace Castle.MicroKernel.Tests.Registration
 		[Test]
 		public void RegisterTypes_WithLinq_RegisteredInContainer()
 		{
-			Kernel.Register(AllTypes.Of<CustomerChain1>()
-			                	.Pick(from type in Assembly.GetExecutingAssembly().GetExportedTypes()
-			                	      where type.IsDefined(typeof(SerializableAttribute), true)
-			                	      select type
-			                	));
+			Kernel.Register(AllTypes.From(from type in Assembly.GetExecutingAssembly().GetExportedTypes()
+			                              where type.IsDefined(typeof(SerializableAttribute), true)
+			                              select type
+			                	).BasedOn<CustomerChain1>());
 
-			IHandler[] handlers = Kernel.GetAssignableHandlers(typeof(CustomerChain1));
+			var handlers = Kernel.GetAssignableHandlers(typeof(CustomerChain1));
 			Assert.AreEqual(2, handlers.Length);
 		}
 #endif
@@ -305,14 +316,15 @@ namespace Castle.MicroKernel.Tests.Registration
 		[Test]
 		public void RegisterAssemblyTypes_WithLinqConfiguration_RegisteredInContainer()
 		{
-			Kernel.Register(AllTypes.Of<ICommon>()
+			Kernel.Register(AllTypes
 			                	.FromAssembly(Assembly.GetExecutingAssembly())
+			                	.BasedOn<ICommon>()
 			                	.Configure(component => component.LifeStyle.Transient
 			                	                        	.Named(component.Implementation.FullName + "XYZ")
 			                	)
 				);
 
-			foreach(IHandler handler in Kernel.GetAssignableHandlers(typeof(ICommon)))
+			foreach (IHandler handler in Kernel.GetAssignableHandlers(typeof(ICommon)))
 			{
 				Assert.AreEqual(LifestyleType.Transient, handler.ComponentModel.LifestyleType);
 				Assert.AreEqual(handler.ComponentModel.Implementation.FullName + "XYZ", handler.ComponentModel.Name);
@@ -322,12 +334,13 @@ namespace Castle.MicroKernel.Tests.Registration
 		[Test]
 		public void RegisterAssemblyTypes_WithLinqConfigurationReturningValue_RegisteredInContainer()
 		{
-			Kernel.Register(AllTypes.Of<ICommon>()
+			Kernel.Register(AllTypes
 			                	.FromAssembly(Assembly.GetExecutingAssembly())
+			                	.BasedOn<ICommon>()
 			                	.Configure(component => component.LifeStyle.Transient)
 				);
 
-			foreach(IHandler handler in Kernel.GetAssignableHandlers(typeof(ICommon)))
+			foreach (IHandler handler in Kernel.GetAssignableHandlers(typeof(ICommon)))
 			{
 				Assert.AreEqual(LifestyleType.Transient, handler.ComponentModel.LifestyleType);
 			}
@@ -346,7 +359,7 @@ namespace Castle.MicroKernel.Tests.Registration
 					.BasedOn<DefaultSpamServiceWithConstructor>()
 				);
 
-			IHandler[] handlers = Kernel.GetHandlers(typeof(ICommon));
+			var handlers = Kernel.GetHandlers(typeof(ICommon));
 			Assert.AreEqual(0, handlers.Length);
 
 			handlers = Kernel.GetAssignableHandlers(typeof(ICommon));
@@ -355,7 +368,7 @@ namespace Castle.MicroKernel.Tests.Registration
 			handlers = Kernel.GetAssignableHandlers(typeof(ICustomer));
 			Assert.AreNotEqual(0, handlers.Length);
 
-			foreach(IHandler handler in handlers)
+			foreach (IHandler handler in handlers)
 			{
 				Assert.IsTrue(handler.ComponentModel.Implementation.FullName.Contains("Chain"));
 			}
@@ -373,7 +386,7 @@ namespace Castle.MicroKernel.Tests.Registration
 					.WithService.FirstInterface()
 				);
 
-			IHandler[] handlers = Kernel.GetHandlers(typeof(ICustomer));
+			var handlers = Kernel.GetHandlers(typeof(ICustomer));
 			Assert.AreEqual(1, handlers.Length);
 		}
 
@@ -385,7 +398,7 @@ namespace Castle.MicroKernel.Tests.Registration
 					.BasedOn<NonPublicComponent>()
 				);
 
-			IHandler[] handlers = Kernel.GetHandlers(typeof(NonPublicComponent));
+			var handlers = Kernel.GetHandlers(typeof(NonPublicComponent));
 			Assert.AreEqual(0, handlers.Length);
 		}
 
@@ -398,7 +411,7 @@ namespace Castle.MicroKernel.Tests.Registration
 					.BasedOn<NonPublicComponent>()
 				);
 
-			IHandler[] handlers = Kernel.GetHandlers(typeof(NonPublicComponent));
+			var handlers = Kernel.GetHandlers(typeof(NonPublicComponent));
 			Assert.AreEqual(1, handlers.Length);
 		}
 
@@ -411,7 +424,7 @@ namespace Castle.MicroKernel.Tests.Registration
 					.WithService.FirstInterface()
 				);
 
-			IHandler[] handlers = Kernel.GetHandlers(typeof(ICustomer));
+			var handlers = Kernel.GetHandlers(typeof(ICustomer));
 			Assert.IsTrue(handlers.Length > 0);
 		}
 
@@ -436,26 +449,27 @@ namespace Castle.MicroKernel.Tests.Registration
 					.WithService.FirstInterface()
 				);
 
-			IHandler[] handlers = Kernel.GetHandlers(typeof(ICustomer));
+			var handlers = Kernel.GetHandlers(typeof(ICustomer));
 			Assert.IsTrue(handlers.Length > 0);
 		}
 
 		[Test]
 		public void RegisterSpecificTypes_WithGenericDefinition_RegisteredInContainer()
 		{
-			Kernel.Register(AllTypes.Pick()
-			                	.From(typeof(CustomerRepository))
+			Kernel.Register(AllTypes.From(typeof(CustomerRepository))
+			                	.Pick()
 			                	.WithService.FirstInterface()
 				);
 
-			IRepository<ICustomer> repository = Kernel.Resolve<IRepository<ICustomer>>();
+			var repository = Kernel.Resolve<IRepository<ICustomer>>();
 			Assert.IsNotNull(repository);
 		}
 
 		[Test]
 		public void RegisterGenericTypes_BasedOnGenericDefinitionUsingSelect_RegisteredInContainer()
 		{
-			Kernel.Register(AllTypes.Of<ITask>().FromAssembly(Assembly.GetExecutingAssembly())
+			Kernel.Register(AllTypes.FromAssembly(Assembly.GetExecutingAssembly())
+			                	.BasedOn<ITask>()
 			                	.WithService.Select((t, b) =>
 			                	                    from type in t.GetInterfaces()
 			                	                    where !type.Equals(typeof(ITask))

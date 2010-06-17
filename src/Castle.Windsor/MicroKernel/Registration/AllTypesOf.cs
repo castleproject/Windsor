@@ -67,7 +67,7 @@ namespace Castle.MicroKernel.Registration
 		/// <returns>The corresponding <see cref="BasedOnDescriptor"/></returns>
 		public BasedOnDescriptor Pick(IEnumerable<Type> types)
 		{
-			return AllTypes.Pick(types).BasedOn(basedOn);
+			return AllTypes.From(types).BasedOn(basedOn);
 		}
 		
 		/// <summary>

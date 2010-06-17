@@ -79,12 +79,14 @@ namespace Castle.Windsor.Tests.Bugs.IoC_169
 
 			((IWindsorContainer)container).Register(Component.For(typeof(IBlackboard)).ImplementedBy(typeof(Blackboard)).Named("blackboard"));
 
-			BasedOnDescriptor registrations = AllTypes.Of<IServiceWithoutImplementation>().
-				FromAssembly(GetType().Assembly).Unless(t => container.Kernel.HasComponent(t));
+			BasedOnDescriptor registrations = AllTypes.
+				FromAssembly(GetType().Assembly)
+				.BasedOn<IServiceWithoutImplementation>()
+				.Unless(t => container.Kernel.HasComponent(t));
 
 			container.Register(registrations);
 
-		    container.Kernel.Register(Component.For<IChalk>().Named("chalk").Instance(new Chalk()));
+			container.Kernel.Register(Component.For<IChalk>().Named("chalk").Instance(new Chalk()));
 
 			Assert.True(AbstractBlackboard.Started); // fails here, service is never started
 		}
