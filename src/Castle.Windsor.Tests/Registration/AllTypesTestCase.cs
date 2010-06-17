@@ -41,6 +41,21 @@ namespace Castle.MicroKernel.Tests.Registration
 		}
 
 		[Test]
+		public void RegisterDirectoryAssemblyTypes_BasedOn_RegisteredInContainer()
+		{
+			AllTypes.Of()
+			var directory = AppDomain.CurrentDomain.BaseDirectory;
+			Kernel.Register(AllTypes.FromAssemblyInDirectory(new AssemblyFilter(directory))
+			                	.BasedOn<ICommon>());
+
+			IHandler[] handlers = Kernel.GetHandlers(typeof(ICommon));
+			Assert.AreEqual(0, handlers.Length);
+
+			handlers = Kernel.GetAssignableHandlers(typeof(ICommon));
+			Assert.AreNotEqual(0, handlers.Length);
+		}
+
+		[Test]
 		public void RegisterAssemblyTypes_NoService_RegisteredInContainer()
 		{
 			Kernel.Register(AllTypes.Of<ICommon>()
