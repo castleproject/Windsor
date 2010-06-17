@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@ namespace Castle.MicroKernel.Registration
 {
 	using System;
 	using System.Collections.Generic;
+	using System.Linq;
 	using System.Reflection;
 	
 	/// <summary>
@@ -23,12 +24,17 @@ namespace Castle.MicroKernel.Registration
 	/// </summary>
 	public class FromAssemblyDescriptor : FromDescriptor
 	{
-		private readonly Assembly assembly;
+		private readonly IEnumerable<Assembly> assemblies;
 		private bool nonPublicTypes;
 
 		internal FromAssemblyDescriptor(Assembly assembly)
 		{
-			this.assembly = assembly;
+			this.assemblies = new[] { assembly };
+		}
+
+		internal FromAssemblyDescriptor(IEnumerable<Assembly> assemblies)
+		{
+			this.assemblies = assemblies;
 		}
 
 		public FromAssemblyDescriptor IncludeNonPublicTypes()
@@ -41,10 +47,16 @@ namespace Castle.MicroKernel.Registration
 		{
 			if (nonPublicTypes)
 			{
-				return assembly.GetTypes();
+				foreach (var type in assemblies.SelectMany(assembly => assembly.GetTypes()))
+				{
+					yield return type;
+				}
 			}
 
-			return assembly.GetExportedTypes();
+			foreach (var type in assemblies.SelectMany(assembly => assembly.GetExportedTypes()))
+			{
+				yield return type;
+			}
 		}
 	}
 }

@@ -379,6 +379,7 @@
     <Compile Include="MicroKernel\Proxy\ProxyOptions.cs" />
     <Compile Include="MicroKernel\Proxy\ProxyUtil.cs" />
     <Compile Include="MicroKernel\Registration\AbstractPropertyDescriptor.cs" />
+    <Compile Include="MicroKernel\Registration\AssemblyFilter.cs" />
     <Compile Include="MicroKernel\Registration\AttributeDescriptor.cs" />
     <Compile Include="MicroKernel\Registration\Component.cs" />
     <Compile Include="MicroKernel\Registration\ComponentDependencyRegistrationExtensions.cs" />
@@ -638,7 +639,6 @@
     <Compile Include="Windsor\InitializationException.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Windsor\Installer\AssemblyFilter.cs" />
     <Compile Include="Windsor\Installer\AssemblyInstaller.cs" />
     <Compile Include="Windsor\Installer\CompositeInstaller.cs" />
     <Compile Include="Windsor\Installer\Configuration.cs" />

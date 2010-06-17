@@ -19,6 +19,7 @@ namespace Castle.Windsor.Installer
 	using System.Reflection;
 
 	using Castle.Core.Internal;
+	using Castle.MicroKernel.Registration;
 
 	public class FromAssembly
 	{

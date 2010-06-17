@@ -17,6 +17,7 @@ namespace Castle.Windsor.Tests.Installer
 	using System;
 	using System.Reflection;
 
+	using Castle.MicroKernel.Registration;
 	using Castle.Windsor.Installer;
 
 	using NUnit.Framework;
