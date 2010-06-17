@@ -19,7 +19,6 @@ namespace Castle.MicroKernel.Registration
 	using System.Collections.Generic;
 
 	using Castle.Core.Internal;
-	using Castle.Windsor.Installer;
 
 	/// <summary>
 	/// Describes a set of components to register in the kernel.
@@ -31,6 +30,7 @@ namespace Castle.MicroKernel.Registration
 		/// </summary>
 		/// <param name="basedOn">The base type.</param>
 		/// <returns></returns>
+		[Obsolete("Use AllTypes.FromAssembly...BasedOn(basedOn) instead.")]
 		public static AllTypesOf Of(Type basedOn)
 		{
 			return new AllTypesOf(basedOn);
@@ -41,6 +41,7 @@ namespace Castle.MicroKernel.Registration
 		/// </summary>
 		/// <typeparam name="T">The base type.</typeparam>
 		/// <returns></returns>
+		[Obsolete("Use AllTypes.FromAssembly...BasedOn<T>() instead.")]
 		public static AllTypesOf Of<T>()
 		{
 			return new AllTypesOf(typeof(T));
@@ -50,6 +51,7 @@ namespace Castle.MicroKernel.Registration
 		/// Describes any types that are supplied.
 		/// </summary>
 		/// <returns></returns>
+		[Obsolete("Use AllTypes.FromAssembly...Pick() instead.")]
 		public static AllTypesOf Pick()
 		{
 			return Of<object>();
@@ -104,6 +106,20 @@ namespace Castle.MicroKernel.Registration
 			return FromAssemblyContaining(typeof(T));
 		}
 
+		/// <summary>
+		/// Prepares to register types from the assembly containing the code invoking this method.
+		/// </summary>
+		/// <returns>The corresponding <see cref="FromDescriptor"/></returns>
+		public static FromAssemblyDescriptor FromThisAssembly()
+		{
+			return FromAssembly(Assembly.GetCallingAssembly());
+		}
+
+		/// <summary>
+		/// Prepares to register types from assemblies found in a given directory that meet additional optional restrictions.
+		/// </summary>
+		/// <param name="filter"></param>
+		/// <returns></returns>
 		public static FromAssemblyDescriptor FromAssemblyInDirectory(AssemblyFilter filter)
 		{
 			if (filter == null)
@@ -129,6 +145,7 @@ namespace Castle.MicroKernel.Registration
 		/// </summary>
 		/// <param name="types">The list of types.</param>
 		/// <returns>The corresponding <see cref="FromDescriptor"/></returns>
+		[Obsolete("Use From(types) instead.")]
 		public static FromTypesDescriptor Pick(IEnumerable<Type> types)
 		{
 			return new FromTypesDescriptor(types);

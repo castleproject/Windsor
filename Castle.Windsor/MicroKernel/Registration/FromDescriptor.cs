@@ -63,6 +63,15 @@ namespace Castle.MicroKernel.Registration
 		}
 
 		/// <summary>
+		/// Returns the descriptor for accepting any type from given solutions.
+		/// </summary>
+		/// <returns></returns>
+		public BasedOnDescriptor Pick()
+		{
+			return BasedOn<object>();
+		}
+
+		/// <summary>
 		/// Returns the descriptor for accepting a type based on a condition.
 		/// </summary>
 		/// <param name="accepted">The accepting condition.</param>
