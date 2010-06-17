@@ -86,20 +86,22 @@ namespace Castle.Core.Internal
 
 		private static void EnsureIsAssignable<TBase>(Type subtypeofTBase)
 		{
-			if (!typeof(TBase).IsAssignableFrom(subtypeofTBase))
+			if (typeof(TBase).IsAssignableFrom(subtypeofTBase))
 			{
-				string message;
-				if (typeof(TBase).IsInterface)
-				{
-					message = String.Format("Type {0} does not implement the interface {1}.", subtypeofTBase.FullName,
-					                        typeof(TBase).FullName);
-				}
-				else
-				{
-					message = String.Format("Type {0} does not inherit from {1}.", subtypeofTBase.FullName, typeof(TBase).FullName);
-				}
-				throw new InvalidCastException(message);
+				return;
 			}
+
+			string message;
+			if (typeof(TBase).IsInterface)
+			{
+				message = String.Format("Type {0} does not implement the interface {1}.", subtypeofTBase.FullName,
+				                        typeof(TBase).FullName);
+			}
+			else
+			{
+				message = String.Format("Type {0} does not inherit from {1}.", subtypeofTBase.FullName, typeof(TBase).FullName);
+			}
+			throw new InvalidCastException(message);
 		}
 
 		private static TBase Instantiate<TBase>(Type subtypeofTBase, object[] ctorArgs)

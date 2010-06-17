@@ -19,6 +19,7 @@ namespace Castle.MicroKernel.Registration
 	using System.Collections.Generic;
 
 	using Castle.Core.Internal;
+	using Castle.Windsor.Installer;
 
 	/// <summary>
 	/// Describes a set of components to register in the kernel.
@@ -101,6 +102,16 @@ namespace Castle.MicroKernel.Registration
 		public static FromAssemblyDescriptor FromAssemblyContaining<T>()
 		{
 			return FromAssemblyContaining(typeof(T));
+		}
+
+		public static FromAssemblyDescriptor FromAssemblyInDirectory(AssemblyFilter filter)
+		{
+			if (filter == null)
+			{
+				throw new ArgumentNullException("filter");
+			}
+			var assemblies = ReflectionUtil.GetAssemblies(filter);
+			return new FromAssemblyDescriptor(assemblies);
 		}
 
 		/// <summary>
