@@ -61,9 +61,15 @@ namespace Castle.Windsor.Installer
 		                                       IConversionManager converter)
 		{
 			var instances = new Dictionary<Type, IWindsorInstaller>();
+			ICollection<Assembly> assemblies =
+#if SL3
+				new List<Assembly>();
+#else
+				new HashSet<Assembly>();
+#endif
 			foreach (var installer in installers)
 			{
-				AddInstaller(installer, instances, converter);
+				AddInstaller(installer, instances, converter, assemblies);
 			}
 
 			if (instances.Count != 0)
@@ -73,7 +79,7 @@ namespace Castle.Windsor.Installer
 		}
 
 		private void AddInstaller(IConfiguration installer, Dictionary<Type, IWindsorInstaller> cache,
-		                          IConversionManager conversionManager)
+		                          IConversionManager conversionManager, ICollection<Assembly> assemblies)
 		{
 			var typeName = installer.Attributes["type"];
 			if (string.IsNullOrEmpty(typeName) == false)
@@ -83,11 +89,17 @@ namespace Castle.Windsor.Installer
 				return;
 			}
 
-			// TODO: extract this so that it has as much common with FromAssembly. as possible
 			assemblyName = installer.Attributes["assembly"];
 			if (string.IsNullOrEmpty(assemblyName) == false)
 			{
-				AddAssemblyInstallers(cache, assemblyName);
+				var assembly = ReflectionUtil.GetAssemblyNamed(assemblyName);
+				if (assemblies.Contains(assembly))
+				{
+					return;
+				}
+				assemblies.Add(assembly);
+
+				GetAssemblyInstallers(cache, assembly);
 				return;
 			}
 
@@ -103,14 +115,13 @@ namespace Castle.Windsor.Installer
 
 			foreach (var assembly in ReflectionUtil.GetAssemblies(assemblyFilter))
 			{
+				if (assemblies.Contains(assembly))
+				{
+					continue;
+				}
+				assemblies.Add(assembly);
 				GetAssemblyInstallers(cache, assembly);
 			}
-		}
-
-		private void AddAssemblyInstallers(Dictionary<Type, IWindsorInstaller> cache, string assemblyName)
-		{
-			var assembly = ReflectionUtil.GetAssemblyNamed(assemblyName);
-			GetAssemblyInstallers(cache, assembly);
 		}
 
 		private void GetAssemblyInstallers(Dictionary<Type, IWindsorInstaller> cache, Assembly assembly)
