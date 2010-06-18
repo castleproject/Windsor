@@ -296,7 +296,6 @@ namespace Castle.MicroKernel
 			var resolved = new Dictionary<IHandler, object>();
 			foreach (var handler in GetAssignableHandlers(service))
 			{
-				// TODO: swap this for correct implementation of IEquatable<IHandler> on all handlers
 				var actualHandler = handler;
 				if (handler is ForwardingHandler)
 				{

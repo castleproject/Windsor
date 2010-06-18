@@ -99,7 +99,10 @@ namespace Castle.MicroKernel
 
 		[ThreadStatic]
 		private static CreationContext currentCreationContext;
-		
+
+		[ThreadStatic]
+		private static bool isCheckingLazyLoaders;
+
 		#endregion
 
 		#region Constructors
@@ -1005,16 +1008,29 @@ namespace Castle.MicroKernel
 
 		private bool LazyLoad(string key, Type service)
 		{
-			foreach (var loader in ResolveAll<ILazyComponentLoader>())
+			if (isCheckingLazyLoaders)
 			{
-				var registration = loader.Load(key, service);
-				if (registration != null)
-				{
-					registration.Register(this);
-					return true;
-				}
+				return false;
 			}
-			return false;
+
+			isCheckingLazyLoaders = true;
+			try
+			{
+				foreach (var loader in ResolveAll<ILazyComponentLoader>())
+				{
+					var registration = loader.Load(key, service);
+					if (registration != null)
+					{
+						registration.Register(this);
+						return true;
+					}
+				}
+				return false;
+			}
+			finally
+			{
+				isCheckingLazyLoaders = false;
+			}
 		}
 	}
 }

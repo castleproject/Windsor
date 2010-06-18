@@ -324,7 +324,7 @@ namespace Castle.MicroKernel.Handlers
 
 		public bool IsBeingResolvedInContext(CreationContext context)
 		{
-			return context.IsInResolutionContext(this);
+			return context != null && context.IsInResolutionContext(this);
 		}
 
 		/// <summary>
