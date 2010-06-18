@@ -11,7 +11,6 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
 namespace Castle.MicroKernel.Registration
 {
 	using System;
@@ -38,7 +37,7 @@ namespace Castle.MicroKernel.Registration
 				throw new ArgumentNullException("directoryName");
 			}
 
-			this.directoryName = directoryName;
+			this.directoryName = GetFullPath(directoryName);
 			this.mask = mask;
 			assemblyFilter += a => a != CastleWindsorDll;
 		}
@@ -182,6 +181,16 @@ namespace Castle.MicroKernel.Registration
 					yield return assembly;
 				}
 			}
+		}
+
+		private static string GetFullPath(string path)
+		{
+			if (Path.IsPathRooted(path) == false && AppDomain.CurrentDomain.BaseDirectory != null)
+			{
+				path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, path);
+			}
+
+			return Path.GetFullPath(path).ToUpperInvariant();
 		}
 
 		private static bool IsTokenEqual(byte[] actualToken, byte[] expectedToken)
