@@ -57,12 +57,12 @@ namespace Castle.Facilities.TypedFactory
 
 		private void InitDelegateBasedFactory()
 		{
-			Kernel.Register(Component.For<DelegateFactory>()
-			                	.Named(DelegateFactoryKey)
-			                	.Unless(Component.ServiceAlreadyRegistered),
-			                Component.For<IDelegateGenerator>()
+			Kernel.Register(Component.For<IDelegateGenerator>()
 			                	.ImplementedBy<ExpressionTreeBasedDelegateGenerator>()
 			                	.Named(DelegateGeneratorKey)
+			                	.Unless(Component.ServiceAlreadyRegistered),
+			                Component.For<DelegateFactory>()
+			                	.Named(DelegateFactoryKey)
 			                	.Unless(Component.ServiceAlreadyRegistered));
 		}
 
