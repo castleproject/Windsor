@@ -18,6 +18,8 @@ namespace Castle.MicroKernel.Tests
 	using System.Threading;
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Resolvers;
+	using Castle.Windsor.Tests;
+	using Castle.Windsor.Tests.Components;
 
 	using NUnit.Framework;
 
@@ -85,7 +87,31 @@ namespace Castle.MicroKernel.Tests
 			Assert.AreEqual(0, count[0]);
 		}
 
+		[Test]
+		public void Loaders_with_dependencies_dont_overflow_the_stack()
+		{
+			kernel.Register(Component.For<LoaderWithDependency>());
 
+			Assert.Throws<ComponentNotFoundException>(()=>
+
+			kernel.Resolve<ISpecification>("some not registered service"));
+		}
+
+	}
+
+	public class LoaderWithDependency:ILazyComponentLoader
+	{
+		private IEmployee employee;
+
+		public LoaderWithDependency(IEmployee employee)
+		{
+			this.employee = employee;
+		}
+
+		public IRegistration Load(string key, Type service)
+		{
+			return null;
+		}
 	}
 
 	public class SlowLoader:ILazyComponentLoader
