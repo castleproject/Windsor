@@ -1,6 +1,15 @@
 unreleased changes
 ==================
 
+- Component.IsInNamespace and its sister methods have now overload that let you include components from subnamespaces as well.
+
+- added ability to load assemblies from designated directory (with fair bit of optional filtering using new AssemblyFilter class). It works in three places:
+	- AllTypes.FromAssemblyInDirectory() - picks assemblies for registration
+	- FromAssembly.InDirectory() - installs installers from assemblies in the directory
+	- <install directory="" /> - installs installers from assemblies in directory via XML
+
+- TypedFactoryFacility - added ability to configure factory inline: Component.For<IFooFactory>().AsFactory(f => f.SelectedWith("selectorKey")) 
+
 - Changed IModelInterceptorSelector's signature and behavior (see breakingChanges.txt for details)
 
 - added metadata facility, which lets you associate some metadata with the component and access it from the call site.
