@@ -165,6 +165,7 @@
     <Compile Include="Components\IEmptyService.cs" />
     <Compile Include="Components\EmptyService.cs" />
     <Compile Include="Lifestyle\Components\ComponentWithDispose.cs" />
+    <Compile Include="Registration\ComponentRegistrationByNamespaceTestCase.cs" />
     <Compile Include="TypedDependenciesTestCase.cs" />
     <Compile Include="ArgumentsTestCase.cs" />
     <Compile Include="BestConstructorTestCase.cs">
