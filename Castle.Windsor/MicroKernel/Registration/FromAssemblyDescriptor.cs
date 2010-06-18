@@ -29,7 +29,7 @@ namespace Castle.MicroKernel.Registration
 
 		internal FromAssemblyDescriptor(Assembly assembly)
 		{
-			this.assemblies = new[] { assembly };
+			assemblies = new[] { assembly };
 		}
 
 		internal FromAssemblyDescriptor(IEnumerable<Assembly> assemblies)

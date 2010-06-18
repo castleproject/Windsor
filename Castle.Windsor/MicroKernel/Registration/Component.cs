@@ -179,6 +179,23 @@ namespace Castle.MicroKernel.Registration
 		/// <returns>true if the component type is in the namespace.</returns>
 		public static Predicate<Type> IsInNamespace(string @namespace)
 		{
+			return IsInNamespace(@namespace, false);
+		}
+
+		/// <summary>
+		/// Creates a predicate to check if a component is in a namespace.
+		/// </summary>
+		/// <param name="namespace">The namespace.</param>
+		/// <param name="includeSubnamespaces">If set to true, will also include types from subnamespaces.</param>
+		/// <returns>true if the component type is in the namespace.</returns>
+		public static Predicate<Type> IsInNamespace(string @namespace, bool includeSubnamespaces)
+		{
+			if (includeSubnamespaces)
+			{
+				return type => type.Namespace == @namespace ||
+							   type.Namespace.StartsWith(@namespace + ".");
+			}
+
 			return type => type.Namespace == @namespace;
 		}
 
@@ -195,11 +212,34 @@ namespace Castle.MicroKernel.Registration
 		/// <summary>
 		/// Creates a predicate to check if a component shares a namespace with another.
 		/// </summary>
+		/// <param name="type">The component type to test namespace against.</param>
+		/// <param name="includeSubnamespaces">If set to true, will also include types from subnamespaces.</param>
+		/// <returns>true if the component is in the same namespace.</returns>
+		public static Predicate<Type> IsInSameNamespaceAs(Type type, bool includeSubnamespaces)
+		{
+			return IsInNamespace(type.Namespace, includeSubnamespaces);
+		}
+
+		/// <summary>
+		/// Creates a predicate to check if a component shares a namespace with another.
+		/// </summary>
 		/// <typeparam name="T">The component type to test namespace against.</typeparam>
 		/// <returns>true if the component is in the same namespace.</returns>
 		public static Predicate<Type> IsInSameNamespaceAs<T>() where T : class
 		{
 			return IsInSameNamespaceAs(typeof(T));
+		}
+
+
+		/// <summary>
+		/// Creates a predicate to check if a component shares a namespace with another.
+		/// </summary>
+		/// <typeparam name="T">The component type to test namespace against.</typeparam>
+		/// <param name="includeSubnamespaces">If set to true, will also include types from subnamespaces.</param>
+		/// <returns>true if the component is in the same namespace.</returns>
+		public static Predicate<Type> IsInSameNamespaceAs<T>(bool includeSubnamespaces) where T : class
+		{
+			return IsInSameNamespaceAs(typeof(T), includeSubnamespaces);
 		}
 	}
 }
