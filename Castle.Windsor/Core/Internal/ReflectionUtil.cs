@@ -18,6 +18,7 @@ namespace Castle.Core.Internal
 	using System.Collections.Generic;
 	using System.Diagnostics;
 	using System.IO;
+	using System.Linq;
 	using System.Reflection;
 	using System.Text;
 
@@ -124,7 +125,7 @@ namespace Castle.Core.Internal
 					messageBuilder.AppendLine(
 						String.Format("Type {0} does not have a public constructor matching arguments of the following types:",
 						              subtypeofTBase.FullName));
-					foreach (var type in Type.GetTypeArray(ctorArgs))
+					foreach (var type in ctorArgs.Select(o => o.GetType()))
 					{
 						messageBuilder.AppendLine(type.FullName);
 					}
@@ -158,15 +159,7 @@ namespace Castle.Core.Internal
 
 		public static Assembly GetAssemblyNamed(string filePath, Predicate<AssemblyName> nameFilter, Predicate<Assembly> assemblyFilter)
 		{
-			AssemblyName assemblyName;
-			try
-			{
-				assemblyName = AssemblyName.GetAssemblyName(filePath);
-			}
-			catch (ArgumentException)
-			{
-				assemblyName = new AssemblyName { CodeBase = filePath };
-			}
+			var assemblyName = GetAssemblyName(filePath);
 			if (nameFilter != null)
 			{
 				foreach (Predicate<AssemblyName> predicate in nameFilter.GetInvocationList())
@@ -189,6 +182,24 @@ namespace Castle.Core.Internal
 				}
 			}
 			return assembly;
+		}
+
+		private static AssemblyName GetAssemblyName(string filePath)
+		{
+			AssemblyName assemblyName;
+			try
+			{
+#if SILVERLIGHT
+				assemblyName = new AssemblyName { CodeBase = filePath };
+#else
+				assemblyName = AssemblyName.GetAssemblyName(filePath);
+#endif
+			}
+			catch (ArgumentException)
+			{
+				assemblyName = new AssemblyName { CodeBase = filePath };
+			}
+			return assemblyName;
 		}
 	}
 }
