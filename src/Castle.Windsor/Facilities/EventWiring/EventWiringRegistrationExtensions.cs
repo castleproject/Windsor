@@ -21,6 +21,7 @@ namespace Castle.Facilities.EventWiring
 
 	public static class EventWiringRegistrationExtensions
 	{
+#if !SILVERLIGHT
 		public static ComponentRegistration<TPublisher> PublishEvent<TPublisher>(this ComponentRegistration<TPublisher> registration, Action<TPublisher> eventSubscribtion, Action<EventSubscribers> toSubscribers)
 		{
 			var eventName = GetEventName(eventSubscribtion);
@@ -41,7 +42,7 @@ namespace Castle.Facilities.EventWiring
 			registration.AddDescriptor(new EventWiringDescriptor(eventName, subscribers.Subscribers));
 			return registration;
 		}
-
+#endif
 		public static ComponentRegistration<TPublisher> PublishEvent<TPublisher>(this ComponentRegistration<TPublisher> registration, string eventName, Action<EventSubscribers> toSubscribers)
 		{
 			var subscribers = new EventSubscribers();
@@ -58,7 +59,7 @@ namespace Castle.Facilities.EventWiring
 			registration.AddDescriptor(new EventWiringDescriptor(eventName, subscribers.Subscribers));
 			return registration;
 		}
-
+#if !SILVERLIGHT
 		private static string GetEventName<TPublisher>(Action<TPublisher> eventSubscribtion)
 		{
 			string eventName;
@@ -79,7 +80,6 @@ namespace Castle.Facilities.EventWiring
 			}
 			return eventName;
 		}
-
 		private static string ExtractEventName(MethodBase calledMethod)
 		{
 			var methodName = calledMethod.Name;
@@ -93,5 +93,6 @@ namespace Castle.Facilities.EventWiring
 			}
 			return null;
 		}
+#endif
 	}
 }

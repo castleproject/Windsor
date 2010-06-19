@@ -14,6 +14,7 @@
 
 namespace Castle.Facilities.EventWiring
 {
+#if !SILVERLIGHT
 	using System;
 	using System.Diagnostics;
 	using System.IO;
@@ -129,4 +130,5 @@ namespace Castle.Facilities.EventWiring
 			return bytes;
 		}
 	}
+#endif
 }
