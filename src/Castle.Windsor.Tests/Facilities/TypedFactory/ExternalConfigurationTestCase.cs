@@ -16,13 +16,12 @@
 
 namespace Castle.Facilities.TypedFactory.Tests
 {
-    using System;
-
-    using Castle.MicroKernel.Registration;
-    using Castle.Windsor;
+	using Castle.MicroKernel.Registration;
+	using Castle.Windsor;
 
 	using Castle.Facilities.TypedFactory.Tests.Components;
 	using Castle.Facilities.TypedFactory.Tests.Factories;
+	using Castle.Windsor.Installer;
 	using Castle.Windsor.Tests;
 	using Castle.Windsor.Tests.Facilities.TypedFactory.Factories;
 
@@ -36,9 +35,11 @@ namespace Castle.Facilities.TypedFactory.Tests
 		[SetUp]
 		public void Init()
 		{
-			container = new WindsorContainer(ConfigHelper.ResolveConfigPath("Facilities/TypedFactory/typedFactory_castle_config.xml"));
-			
-			container.AddFacility( "typedfactory", new TypedFactoryFacility() );
+			var path = ConfigHelper.ResolveConfigPath("Facilities/TypedFactory/typedFactory_castle_config.xml");
+
+			container = new WindsorContainer();
+			container.Install(Configuration.FromXmlFile(path));
+			container.AddFacility<TypedFactoryFacility>("typedfactory");
 
 			container.Register(Component.For(typeof(IProtocolHandler)).ImplementedBy(typeof(MirandaProtocolHandler)).Named("miranda"));
 			container.Register(Component.For(typeof(IProtocolHandler)).ImplementedBy(typeof(MessengerProtocolHandler)).Named("messenger"));
@@ -125,6 +126,17 @@ namespace Castle.Facilities.TypedFactory.Tests
 
 			var comp2 = factory.Construct();
 			Assert.IsNotNull(comp2);
+		}
+
+		[Test]
+		public void Selector_in_xml()
+		{
+			container.Register(
+				Component.For<IDummyComponent>().ImplementedBy<Component1>(),
+				Component.For<IDummyComponent>().ImplementedBy<Component2>().Named("one"));
+			var factory = container.Resolve<IComponentFactory1>("HasOneSelector");
+			var dummyComponent = factory.Construct();
+			Assert.IsInstanceOf<Component2>(dummyComponent);
 		}
 	}
 }
