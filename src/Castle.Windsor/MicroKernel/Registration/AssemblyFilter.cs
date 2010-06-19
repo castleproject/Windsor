@@ -129,10 +129,17 @@ namespace Castle.MicroKernel.Registration
 			{
 				if (string.IsNullOrEmpty(mask))
 				{
+#if NET35
 					return Directory.GetFiles(directoryName);
+#else
+					return Directory.EnumerateFiles(directoryName);
+#endif
 				}
-
+#if NET35
 				return Directory.GetFiles(directoryName, mask);
+#else
+				return Directory.EnumerateFiles(directoryName, mask);
+#endif
 			}
 			catch (IOException e)
 			{
@@ -185,11 +192,12 @@ namespace Castle.MicroKernel.Registration
 
 		private static string GetFullPath(string path)
 		{
+#if !SILVERLIGHT // NOTE: Can we support this somehow in SL?
 			if (Path.IsPathRooted(path) == false && AppDomain.CurrentDomain.BaseDirectory != null)
 			{
 				path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, path);
 			}
-
+#endif
 			return Path.GetFullPath(path).ToUpperInvariant();
 		}
 

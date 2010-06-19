@@ -63,7 +63,10 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 			}
 
 			string useSingleInterfaceProxyAttrib = model.Configuration != null ? model.Configuration.Attributes["useSingleInterfaceProxy"] : null;
+			
+#if !SILVERLIGHT
 			string marshalByRefProxyAttrib = model.Configuration != null ? model.Configuration.Attributes["marshalByRefProxy"] : null;
+#endif
 
 			ITypeConverter converter = (ITypeConverter)kernel.GetSubSystem(SubSystemConstants.ConversionManagerKey);
 
@@ -79,7 +82,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 					throw new Exception(string.Format("Could not convert attribute 'useSingleInterfaceProxy' to bool. Value is '{0}'.", useSingleInterfaceProxyAttrib), ex);
 				}
 			}
-
+#if !SILVERLIGHT
 			if (marshalByRefProxyAttrib != null)
 			{
 				try
@@ -92,7 +95,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 					throw new Exception(string.Format("Could not convert attribute 'marshalByRefProxy' to bool. Value is '{0}'.", marshalByRefProxyAttrib), ex);
 				}
 			}
-
+#endif
 			ApplyProxyBehavior(proxyBehaviorAtt, model);
 		}
 
@@ -116,7 +119,11 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 
 		private static void ApplyProxyBehavior(ComponentProxyBehaviorAttribute behavior, ComponentModel model)
 		{
-			if (behavior.UseSingleInterfaceProxy || behavior.UseMarshalByRefProxy)
+			if (behavior.UseSingleInterfaceProxy
+#if (!SILVERLIGHT)
+				|| behavior.UseMarshalByRefProxy
+#endif
+				)
 			{
 				EnsureComponentRegisteredWithInterface(model);
 			}

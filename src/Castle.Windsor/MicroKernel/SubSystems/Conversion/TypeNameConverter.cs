@@ -130,6 +130,9 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 
 		private bool InitializeAppDomainAssemblies(bool forceLoad)
 		{
+#if SILVERLIGHT
+			return false;
+#else
 			var anyAssemblyAdded = false;
 			if (forceLoad || assemblies.Count == 0)
 			{
@@ -146,6 +149,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 				}
 			}
 			return anyAssemblyAdded;
+#endif
 		}
 
 		protected virtual bool ShouldSkipAssembly(Assembly assembly)
