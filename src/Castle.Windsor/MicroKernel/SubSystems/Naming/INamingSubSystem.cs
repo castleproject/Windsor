@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -24,24 +24,27 @@ namespace Castle.MicroKernel.SubSystems.Naming
 	public interface INamingSubSystem : ISubSystem
 	{
 		/// <summary>
-		/// Implementors should register the key and service pointing 
-		/// to the specified handler
+		/// Returns the number of components registered.
 		/// </summary>
-		/// <param name="key"></param>
-		/// <param name="handler"></param>
-		void Register(String key, IHandler handler);
+		int ComponentCount { get; }
 
 		/// <summary>
-		/// Unregister the handler by the given key
+		/// Associates a <see cref="IHandler"/> with 
+		/// the specified service
 		/// </summary>
-		/// <param name="key"></param>
-		void UnRegister(String key);
+		IHandler this[Type service] { set; }
 
 		/// <summary>
-		/// Unregister the handler by the given service
+		/// Associates a <see cref="IHandler"/> with
+		/// the specified key
 		/// </summary>
-		/// <param name="service"></param>
-		void UnRegister(Type service);
+		IHandler this[String key] { set; }
+
+		/// <summary>
+		/// Register a new component resolver that can take part in the decision
+		/// making about which handler to resolve
+		/// </summary>
+		void AddHandlerSelector(IHandlerSelector selector);
 
 		/// <summary>
 		/// Returns true if there is a component registered 
@@ -60,9 +63,12 @@ namespace Castle.MicroKernel.SubSystems.Naming
 		bool Contains(Type service);
 
 		/// <summary>
-		/// Returns the number of components registered.
+		/// Return <see cref="IHandler"/>s where components are compatible
+		/// with the specified service.
 		/// </summary>
-		int ComponentCount { get; }
+		/// <param name="service"></param>
+		/// <returns></returns>
+		IHandler[] GetAssignableHandlers(Type service);
 
 		/// <summary>
 		/// Returns the <see cref="IHandler"/> associated with
@@ -71,14 +77,6 @@ namespace Castle.MicroKernel.SubSystems.Naming
 		/// <param name="key"></param>
 		/// <returns></returns>
 		IHandler GetHandler(String key);
-
-		/// <summary>
-		/// Returns an array of <see cref="IHandler"/> that
-		/// satisfies the specified query.
-		/// </summary>
-		/// <param name="query"></param>
-		/// <returns></returns>
-		IHandler[] GetHandlers(String query);
 
 		/// <summary>
 		/// Returns the <see cref="IHandler"/> associated with
@@ -95,7 +93,15 @@ namespace Castle.MicroKernel.SubSystems.Naming
 		/// </remarks>
 		/// </summary>
 		IHandler GetHandler(string key, Type service);
-	    
+
+		/// <summary>
+		/// Returns an array of <see cref="IHandler"/> that
+		/// satisfies the specified query.
+		/// </summary>
+		/// <param name="query"></param>
+		/// <returns></returns>
+		IHandler[] GetHandlers(String query);
+
 		/// <summary>
 		/// Returns an array of <see cref="IHandler"/> associated with
 		/// the specified service.
@@ -111,39 +117,33 @@ namespace Castle.MicroKernel.SubSystems.Naming
 		IHandler[] GetHandlers();
 
 		/// <summary>
-		/// Return <see cref="IHandler"/>s where components are compatible
-		/// with the specified service.
-		/// </summary>
-		/// <param name="service"></param>
-		/// <returns></returns>
-		IHandler[] GetAssignableHandlers(Type service);
-
-		/// <summary>
-		/// Associates a <see cref="IHandler"/> with 
-		/// the specified service
-		/// </summary>
-		IHandler this[Type service] { set; }
-
-		/// <summary>
-		/// Associates a <see cref="IHandler"/> with
-		/// the specified key
-		/// </summary>
-		IHandler this[String key] { set; }
-
-		/// <summary>
 		/// List of handler by key
 		/// </summary>
-		IDictionary<string,IHandler> GetKey2Handler();
+		IDictionary<string, IHandler> GetKey2Handler();
 
 		/// <summary>
 		/// List of handler by service
 		/// </summary>
 		IDictionary<Type, IHandler> GetService2Handler();
 
-        /// <summary>
-        /// Register a new component resolver that can take part in the decision
-        /// making about which handler to resolve
-        /// </summary>
-	    void AddHandlerSelector(IHandlerSelector selector);
+		/// <summary>
+		/// Implementors should register the key and service pointing 
+		/// to the specified handler
+		/// </summary>
+		/// <param name="key"></param>
+		/// <param name="handler"></param>
+		void Register(String key, IHandler handler);
+
+		/// <summary>
+		/// Unregister the handler by the given key
+		/// </summary>
+		/// <param name="key"></param>
+		void UnRegister(String key);
+
+		/// <summary>
+		/// Unregister the handler by the given service
+		/// </summary>
+		/// <param name="service"></param>
+		void UnRegister(Type service);
 	}
 }

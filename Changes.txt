@@ -1,6 +1,8 @@
 unreleased changes
 ==================
 
+- added simple debugger visualizer to help diagnosing misconfigured components.
+
 - added optimized mode to StartableFacility for Single-call-to-Install scenario that won't start anything before the end of Install (at which point the container is assumed to be completely configured and all components should be there) and it will throw if it can't resolve and start the component.
 
 - added OptimizeDependencyResolution around calls to Install
