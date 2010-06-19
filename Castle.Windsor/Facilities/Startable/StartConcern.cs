@@ -43,12 +43,11 @@ namespace Castle.Facilities.Startable
 			}
 			else if (model.Configuration != null)
 			{
-				String startMethod = model.Configuration.Attributes["startMethod"];
 
+				var startMethod = model.ExtendedProperties["Castle.StartableFacility.StartMethod"] as MethodInfo;
 				if (startMethod != null)
 				{
-					MethodInfo method = model.Implementation.GetMethod(startMethod, Type.EmptyTypes);
-					method.Invoke(component, null);
+					startMethod.Invoke(component, null);
 				}
 			}
 		}

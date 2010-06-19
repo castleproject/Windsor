@@ -14,6 +14,8 @@
 
 namespace Castle.Facilities.Startable
 {
+	using System;
+
 	using Castle.Core;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.ModelBuilder;
@@ -53,11 +55,42 @@ namespace Castle.Facilities.Startable
 
 			if (startable)
 			{
-				model.LifecycleSteps.Add(
-					LifecycleStepType.Commission, StartConcern.Instance);
-				model.LifecycleSteps.AddFirst(
-					LifecycleStepType.Decommission, StopConcern.Instance);
+
+				AddStart(model);
+				AddStop(model);
 			}
+		}
+
+		private void AddStop(ComponentModel model)
+		{
+			var startMethod = model.Configuration.Attributes["stopMethod"];
+			if (startMethod != null)
+			{
+				var method = model.Implementation.GetMethod(startMethod, Type.EmptyTypes);
+				if (method == null)
+				{
+					throw new ArgumentException(
+						"Could not find public parameterless method '{}' on type {1} designated as stop method. Make sure you didn't mistype the method name and that its signature matches.");
+				}
+				model.ExtendedProperties.Add("Castle.StartableFacility.StopMethod", method);
+			}
+			model.LifecycleSteps.AddFirst(LifecycleStepType.Decommission, StopConcern.Instance);
+		}
+
+		private void AddStart(ComponentModel model)
+		{
+			var startMethod = model.Configuration.Attributes["startMethod"];
+			if (startMethod != null)
+			{
+				var method = model.Implementation.GetMethod(startMethod, Type.EmptyTypes);
+				if(method == null)
+				{
+					throw new ArgumentException(
+						"Could not find public parameterless method '{}' on type {1} designated as start method. Make sure you didn't mistype the method name and that its signature matches.");
+				}
+				model.ExtendedProperties.Add("Castle.StartableFacility.StartMethod", method);
+			}
+			model.LifecycleSteps.Add(LifecycleStepType.Commission, StartConcern.Instance);
 		}
 
 		private static bool CheckIfComponentImplementsIStartable(ComponentModel model)
