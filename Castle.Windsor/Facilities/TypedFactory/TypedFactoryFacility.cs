@@ -23,6 +23,7 @@ namespace Castle.Facilities.TypedFactory
 	using Castle.MicroKernel.Proxy;
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.SubSystems.Conversion;
+	using Castle.MicroKernel.Util;
 
 	/// <summary>
 	/// Summary description for TypedFactoryFacility.
@@ -99,7 +100,8 @@ namespace Castle.Facilities.TypedFactory
 				var factoryType = (Type)converter.PerformConversion(config.Attributes["interface"], typeof(Type));
 				if(string.IsNullOrEmpty(creation))
 				{
-					RegisterFactory(id, factoryType);
+					var selector = config.Attributes["selector"];
+					RegisterFactory(id, factoryType, selector);
 					continue;
 				}
 
@@ -107,13 +109,20 @@ namespace Castle.Facilities.TypedFactory
 			}
 		}
 
-		private void RegisterFactory(string id, Type type)
+		private void RegisterFactory(string id, Type type, string selector)
 		{
-			var model = new ComponentModel(id, type, type);
-			model.Interceptors.AddLast(new InterceptorReference(InterceptorKey));
-			ProxyUtil.ObtainProxyOptions(model, true).OmitTarget = true;
+			var factory = Component.For(type).Named(id);
+			if (selector == null)
+			{
+				factory.AsFactory();
+			}
+			else
+			{
+				var selectorKey = ReferenceExpressionUtil.ExtractComponentKey(selector);
+				factory.AsFactory(x => x.SelectedWith(selectorKey));
+			}
 
-			((IKernelInternal)Kernel).AddCustomComponent(model);
+			Kernel.Register(factory);
 		}
 
 		private void RegisterFactoryLegacy(string creation, string id, Type factoryType, string destruction)
