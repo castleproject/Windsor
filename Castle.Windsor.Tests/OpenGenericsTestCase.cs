@@ -30,13 +30,6 @@ namespace Castle.Windsor.Tests
 		public void Setup()
 		{
 			container = new WindsorContainer();
-
-			container.Kernel.Register(Component.For<StandardInterceptor>().LifeStyle.Transient);
-
-			container.Register(Component.For(typeof (Collection<>))
-			                   	.Proxy.AdditionalInterfaces(typeof (ITestInterface))
-			                   	.Interceptors(new InterceptorReference(typeof (StandardInterceptor))).Last
-			                   	.LifeStyle.Transient);
 		}
 
 		#endregion
@@ -46,9 +39,26 @@ namespace Castle.Windsor.Tests
 		[Test]
 		public void ExtendedProperties_incl_ProxyOptions_are_honored_for_open_generic_types()
 		{
+
+			container.Kernel.Register(Component.For<StandardInterceptor>().LifeStyle.Transient);
+
+			container.Register(Component.For(typeof(Collection<>))
+								.Proxy.AdditionalInterfaces(typeof(ITestInterface))
+								.Interceptors(new InterceptorReference(typeof(StandardInterceptor))).Last
+								.LifeStyle.Transient);
 			var tst = container.Resolve<Collection<int>>();
 			var tst1 = tst as ITestInterface;
 			Assert.IsNotNull(tst1);
+		}
+
+		[Test]
+		public void ResolveAll_for_open_generic_with_constraints_works()
+		{
+			container.Register(Component.For(typeof(IIface<,>)).ImplementedBy(typeof(HandlerImpl<,>)));
+			var invalid = container.ResolveAll<IIface<Impl1, Stub>>();
+			Assert.AreEqual(0, invalid.Length);
+			var valid = container.ResolveAll<IIface<Impl2, Stub>>();
+			Assert.AreEqual(1, valid.Length);
 		}
 	}
 
@@ -57,4 +67,35 @@ namespace Castle.Windsor.Tests
 	{
 		void Foo();
 	}
+
+	public class Base { }
+
+	public class Stub { }
+
+	public interface AdditionalIface
+	{
+	}
+
+	public interface IIface<T1, T2>
+		where T1 : Base
+		where T2 : class
+	{
+		T1 Command { get; set; }
+	}
+
+	public class HandlerImpl<T1, T2> : IIface<T1, T2>
+		where T1 : Base, AdditionalIface
+		where T2 : class
+	{
+		public T1 Command { get; set; }
+	}
+
+	public class Impl1 : Base
+	{
+	}
+
+	public class Impl2 : Base, AdditionalIface
+	{
+	}
+
 }
