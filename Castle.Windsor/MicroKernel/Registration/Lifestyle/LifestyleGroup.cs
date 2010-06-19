@@ -33,15 +33,23 @@ namespace Castle.MicroKernel.Registration.Lifestyle
 		{
 			if (Enum.IsDefined(typeof(LifestyleType), type) == false)
 			{
-				throw new ArgumentOutOfRangeException("type", type, "Not a valid lifestyle");
+				throw InvalidValue(type, "Not a valid lifestyle");
 			}
 			if(type == LifestyleType.Undefined)
 			{
-				throw new ArgumentOutOfRangeException("type", type,
-				                                      string.Format("{0} is not a valid lifestyle type.", LifestyleType.Undefined));
+				throw InvalidValue(type,string.Format("{0} is not a valid lifestyle type.", LifestyleType.Undefined));
 			}
 
 			return AddDescriptor(new LifestyleDescriptor<S>(type));
+		}
+
+		private ArgumentOutOfRangeException InvalidValue(LifestyleType type, string message)
+		{
+#if SILVERLIGHT
+			return new ArgumentOutOfRangeException("type", message);
+#else
+			return new ArgumentOutOfRangeException("type", type, message);
+#endif
 		}
 
 		public ComponentRegistration<S> Transient
