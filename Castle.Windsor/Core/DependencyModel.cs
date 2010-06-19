@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -33,10 +33,7 @@ namespace Castle.Core
 #endif
 	public class DependencyModel
 	{
-		private String dependencyKey;
-		private Type targetType;
-		private bool isOptional;
-		private DependencyType dependencyType;
+		private readonly Type targetType;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="DependencyModel"/> class.
@@ -48,31 +45,23 @@ namespace Castle.Core
 		public DependencyModel(DependencyType type, String dependencyKey,
 		                       Type targetType, bool isOptional)
 		{
-			dependencyType = type;
-			this.dependencyKey = dependencyKey;
 			this.targetType = targetType;
-			this.isOptional = isOptional;
+			DependencyType = type;
+			DependencyKey = dependencyKey;
+			IsOptional = isOptional;
 		}
 
 		/// <summary>
 		/// Gets or sets the type of the dependency.
 		/// </summary>
 		/// <value>The type of the dependency.</value>
-		public DependencyType DependencyType
-		{
-			get { return dependencyType; }
-			set { dependencyType = value; }
-		}
+		public DependencyType DependencyType { get; set; }
 
 		/// <summary>
 		/// Gets or sets the dependency key.
 		/// </summary>
 		/// <value>The dependency key.</value>
-		public String DependencyKey
-		{
-			get { return dependencyKey; }
-			set { dependencyKey = value; }
-		}
+		public string DependencyKey { get; set; }
 
 		/// <summary>
 		/// Gets the type of the target.
@@ -89,11 +78,7 @@ namespace Castle.Core
 		/// <value>
 		/// 	<c>true</c> if this dependency is optional; otherwise, <c>false</c>.
 		/// </value>
-		public bool IsOptional
-		{
-			get { return isOptional; }
-			set { isOptional = value; }
-		}
+		public bool IsOptional { get; set; }
 
 		/// <summary>
 		/// Returns a <see cref="T:System.String"/> that represents the current <see cref="T:System.Object"/>.
@@ -104,7 +89,7 @@ namespace Castle.Core
 		public override string ToString()
 		{
 			return string.Format(CultureInfo.CurrentCulture, "{0} dependency '{1}' type '{2}'",
-			                     DependencyType, dependencyKey, TargetType);
+			                     DependencyType, DependencyKey, TargetType);
 		}
 
 		/// <summary>
@@ -116,10 +101,10 @@ namespace Castle.Core
 		/// </returns>
 		public override int GetHashCode()
 		{
-			int result = dependencyKey.GetHashCode();
+			var result = DependencyKey.GetHashCode();
 			result += 37 ^ targetType.GetHashCode();
-			result += 37 ^ isOptional.GetHashCode();
-			result += 37 ^ dependencyType.GetHashCode();
+			result += 37 ^ IsOptional.GetHashCode();
+			result += 37 ^ DependencyType.GetHashCode();
 			return result;
 		}
 
@@ -133,13 +118,31 @@ namespace Castle.Core
 		/// </returns>
 		public override bool Equals(object obj)
 		{
-			if (this == obj) return true;
-			DependencyModel dependencyModel = obj as DependencyModel;
-			if (dependencyModel == null) return false;
-			if (!Equals(dependencyKey, dependencyModel.dependencyKey)) return false;
-			if (!Equals(targetType, dependencyModel.targetType)) return false;
-			if (!Equals(isOptional, dependencyModel.isOptional)) return false;
-			if (!Equals(dependencyType, dependencyModel.dependencyType)) return false;
+			if (this == obj)
+			{
+				return true;
+			}
+			var dependencyModel = obj as DependencyModel;
+			if (dependencyModel == null)
+			{
+				return false;
+			}
+			if (!Equals(DependencyKey, dependencyModel.DependencyKey))
+			{
+				return false;
+			}
+			if (!Equals(targetType, dependencyModel.targetType))
+			{
+				return false;
+			}
+			if (!Equals(IsOptional, dependencyModel.IsOptional))
+			{
+				return false;
+			}
+			if (!Equals(DependencyType, dependencyModel.DependencyType))
+			{
+				return false;
+			}
 			return true;
 		}
 	}

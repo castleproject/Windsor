@@ -16,7 +16,7 @@ namespace Castle.Facilities.Startable
 {
 	using System;
 	using System.Collections.Generic;
-	using Castle.Core;
+
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Context;
 	using Castle.MicroKernel.Facilities;
@@ -24,47 +24,34 @@ namespace Castle.Facilities.Startable
 
 	public class StartableFacility : AbstractFacility
 	{
+		private readonly bool optimizeForSingleInstall;
 		private readonly List<IHandler> waitList = new List<IHandler>();
-		private readonly HandlerStateDelegate checkWaitingList;
 		private ITypeConverter converter;
 
 		// Don't check the waiting list while this flag is set as this could result in
 		// duplicate singletons.
 		private bool inStart;
 
-		public StartableFacility()
+		public StartableFacility():this(false)
 		{
-			checkWaitingList = OnHandlerStateChanged;	
+		}
+
+		public StartableFacility(bool optimizeForSingleInstall)
+		{
+			this.optimizeForSingleInstall = optimizeForSingleInstall;
 		}
 
 		protected override void Init()
 		{
-			converter = (ITypeConverter) Kernel.GetSubSystem(SubSystemConstants.ConversionManagerKey);
+			converter = (ITypeConverter)Kernel.GetSubSystem(SubSystemConstants.ConversionManagerKey);
+			Kernel.ComponentModelBuilder.AddContributor(new StartableContributor(converter));
 
-			Kernel.ComponentModelCreated +=OnComponentModelCreated;
 			Kernel.ComponentRegistered +=OnComponentRegistered;
-		}
-
-		private void OnComponentModelCreated(ComponentModel model)
-		{
-			bool startable =
-				CheckIfComponentImplementsIStartable(model) || HasStartableAttributeSet(model);
-
-			model.ExtendedProperties["startable"] = startable;
-
-			if (startable)
-			{
-				model.LifecycleSteps.Add(
-					LifecycleStepType.Commission, StartConcern.Instance);
-				model.LifecycleSteps.AddFirst(
-					LifecycleStepType.Decommission, StopConcern.Instance);
-			}
 		}
 
 		private void OnComponentRegistered(String key, IHandler handler)
 		{
-			bool startable = (bool?)handler.ComponentModel.ExtendedProperties["startable"] ?? false;
-
+			var startable = (bool?)handler.ComponentModel.ExtendedProperties["startable"] ?? false;
 			if (startable)
 			{
 				if (TryStart(handler) == false)
@@ -84,7 +71,7 @@ namespace Castle.Facilities.Startable
 		private void AddHandlerToWaitingList(IHandler handler)
 		{
 			waitList.Add(handler);
-			handler.OnHandlerStateChanged += checkWaitingList;
+			handler.OnHandlerStateChanged += OnHandlerStateChanged;
 		}
 
 		/// <summary>
@@ -97,13 +84,12 @@ namespace Castle.Facilities.Startable
 			if (!inStart)
 			{
 				var handlers = waitList.ToArray();
-
 				foreach (IHandler handler in handlers)
 				{
 					if (TryStart(handler))
 					{
 						waitList.Remove(handler);
-						handler.OnHandlerStateChanged -= checkWaitingList;
+						handler.OnHandlerStateChanged -= OnHandlerStateChanged;
 					}
 				}
 			}
@@ -118,35 +104,12 @@ namespace Castle.Facilities.Startable
 			try
 			{
 				inStart = true;
-
 				return handler.TryResolve(CreationContext.Empty) != null;
 			}
 			finally
 			{
 				inStart = false;
 			}
-		}
-
-		private static bool CheckIfComponentImplementsIStartable(ComponentModel model)
-		{
-			return typeof(IStartable).IsAssignableFrom(model.Implementation);
-		}
-
-		private bool HasStartableAttributeSet(ComponentModel model)
-		{
-			bool result = false;
-
-			if (model.Configuration != null)
-			{
-				String startable = model.Configuration.Attributes["startable"];
-
-				if (startable != null)
-				{
-					result = (bool) converter.PerformConversion(startable, typeof(bool));
-				}
-			}
-
-			return result;
 		}
 	}
 }
