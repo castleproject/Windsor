@@ -45,9 +45,22 @@ namespace Castle.MicroKernel.Handlers
 
 		protected override object ResolveCore(CreationContext context, bool track, bool instanceRequired)
 		{
-			Type implType = ComponentModel.Implementation.MakeGenericType(context.GenericArguments);
+			Type implType;
+			try
+			{
+				implType = ComponentModel.Implementation.MakeGenericType(context.GenericArguments);
+			}
+			catch (ArgumentException)
+			{
+				// may throw in some cases when impl has generic constraints that service hasn't
+				if(instanceRequired)
+				{
+					throw;
+				}
+				return null;
+			}
 
-			IHandler handler = GetSubHandler(context, implType);
+			var handler = GetSubHandler(context, implType);
 
 			// so the generic version wouldn't be considered as well
 			using(context.EnterResolutionContext(this, false))
