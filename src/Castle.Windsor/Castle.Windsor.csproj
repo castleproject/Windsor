@@ -96,6 +96,7 @@
     <Compile Include="Facilities\EventWiring\EventWiringRegistrationExtensions.cs" />
     <Compile Include="Facilities\EventWiring\NaiveMethodNameExtractor.cs" />
     <Compile Include="Facilities\EventWiring\OpCodeValues.cs" />
+    <Compile Include="Facilities\Startable\StartableContributor.cs" />
     <Compile Include="Facilities\TypedFactory\DefaultDelegateComponentSelector.cs" />
     <Compile Include="Facilities\TypedFactory\DelegateInvocation.cs" />
     <Compile Include="Facilities\TypedFactory\ExpressionTreeBasedDelegateGenerator.cs" />
