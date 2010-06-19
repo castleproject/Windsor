@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -11,7 +11,6 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
 
 namespace Castle.Windsor
 {
@@ -26,6 +25,7 @@ namespace Castle.Windsor
 	using Castle.Windsor.Configuration;
 	using Castle.Windsor.Configuration.Interpreters;
 	using Castle.Windsor.Installer;
+	using Castle.Windsor.Proxy;
 
 	/// <summary>
 	/// Implementation of <see cref="IWindsorContainer"/>
@@ -38,25 +38,20 @@ namespace Castle.Windsor
 	public class WindsorContainer : MarshalByRefObject, IWindsorContainer
 #endif
 	{
-		#region Fields
 
 		private readonly string name = Guid.NewGuid().ToString();
-		private readonly Dictionary<string,IWindsorContainer> childContainers = new Dictionary<string, IWindsorContainer>();
+		private readonly Dictionary<string, IWindsorContainer> childContainers = new Dictionary<string, IWindsorContainer>();
 		private readonly object childContainersLocker = new object();
 
-		private IKernel kernel;
+		private readonly IKernel kernel;
 		private IWindsorContainer parent;
-		private IComponentsInstaller installer;
-
-		#endregion
-
-		#region Constructors
+		private readonly IComponentsInstaller installer;
 
 		/// <summary>
 		/// Constructs a container without any external 
 		/// configuration reference
 		/// </summary>
-		public WindsorContainer() : this(new DefaultKernel(), new Installer.DefaultComponentInstaller())
+		public WindsorContainer() : this(new DefaultKernel(), new DefaultComponentInstaller())
 		{
 		}
 
@@ -79,7 +74,10 @@ namespace Castle.Windsor
 		/// <param name="interpreter">The instance of an <see cref="IConfigurationInterpreter"/> implementation.</param>
 		public WindsorContainer(IConfigurationInterpreter interpreter) : this()
 		{
-			if (interpreter == null) throw new ArgumentNullException("interpreter");
+			if (interpreter == null)
+			{
+				throw new ArgumentNullException("interpreter");
+			}
 
 			interpreter.ProcessResource(interpreter.Source, kernel.ConfigurationStore);
 
@@ -93,8 +91,14 @@ namespace Castle.Windsor
 		/// <param name="environmentInfo">The environment info.</param>
 		public WindsorContainer(IConfigurationInterpreter interpreter, IEnvironmentInfo environmentInfo) : this()
 		{
-			if (interpreter == null) throw new ArgumentNullException("interpreter");
-			if (environmentInfo == null) throw new ArgumentNullException("environmentInfo");
+			if (interpreter == null)
+			{
+				throw new ArgumentNullException("interpreter");
+			}
+			if (environmentInfo == null)
+			{
+				throw new ArgumentNullException("environmentInfo");
+			}
 
 			interpreter.EnvironmentName = environmentInfo.GetEnvironmentName();
 			interpreter.ProcessResource(interpreter.Source, kernel.ConfigurationStore);
@@ -126,7 +130,8 @@ namespace Castle.Windsor
 		/// </remarks>
 		/// <param name="kernel">Kernel instance</param>
 		/// <param name="installer">Installer instance</param>
-		public WindsorContainer(IKernel kernel, IComponentsInstaller installer) : this(Guid.NewGuid().ToString(), kernel, installer)
+		public WindsorContainer(IKernel kernel, IComponentsInstaller installer)
+			: this(Guid.NewGuid().ToString(), kernel, installer)
 		{
 		}
 
@@ -143,13 +148,22 @@ namespace Castle.Windsor
 		/// <param name="installer">Installer instance</param>
 		public WindsorContainer(String name, IKernel kernel, IComponentsInstaller installer)
 		{
-			if (name == null) throw new ArgumentNullException("name");
-			if (kernel == null) throw new ArgumentNullException("kernel");
-			if (installer == null) throw new ArgumentNullException("installer");
+			if (name == null)
+			{
+				throw new ArgumentNullException("name");
+			}
+			if (kernel == null)
+			{
+				throw new ArgumentNullException("kernel");
+			}
+			if (installer == null)
+			{
+				throw new ArgumentNullException("installer");
+			}
 
 			this.name = name;
 			this.kernel = kernel;
-			this.kernel.ProxyFactory = new Proxy.DefaultProxyFactory();
+			this.kernel.ProxyFactory = new DefaultProxyFactory();
 			this.installer = installer;
 		}
 
@@ -159,7 +173,10 @@ namespace Castle.Windsor
 		/// <param name="proxyFactory">A instance of an <see cref="IProxyFactory"/>.</param>
 		public WindsorContainer(IProxyFactory proxyFactory)
 		{
-			if (proxyFactory == null) throw new ArgumentNullException("proxyFactory");
+			if (proxyFactory == null)
+			{
+				throw new ArgumentNullException("proxyFactory");
+			}
 
 			kernel = new DefaultKernel(proxyFactory);
 
@@ -174,8 +191,14 @@ namespace Castle.Windsor
 		/// <param name="interpreter">The instance of an <see cref="IConfigurationInterpreter"/> implementation</param>
 		public WindsorContainer(IWindsorContainer parent, IConfigurationInterpreter interpreter) : this()
 		{
-			if (parent == null) throw new ArgumentNullException("parent");
-			if (interpreter == null) throw new ArgumentNullException("interpreter");
+			if (parent == null)
+			{
+				throw new ArgumentNullException("parent");
+			}
+			if (interpreter == null)
+			{
+				throw new ArgumentNullException("interpreter");
+			}
 
 			parent.AddChildContainer(this);
 
@@ -192,9 +215,18 @@ namespace Castle.Windsor
 		/// <param name="interpreter">The interpreter.</param>
 		public WindsorContainer(string name, IWindsorContainer parent, IConfigurationInterpreter interpreter) : this()
 		{
-			if (name == null) throw new ArgumentNullException("name");
-			if (parent == null) throw new ArgumentNullException("parent");
-			if (interpreter == null) throw new ArgumentNullException("interpreter");
+			if (name == null)
+			{
+				throw new ArgumentNullException("name");
+			}
+			if (parent == null)
+			{
+				throw new ArgumentNullException("parent");
+			}
+			if (interpreter == null)
+			{
+				throw new ArgumentNullException("interpreter");
+			}
 
 			this.name = name;
 
@@ -204,10 +236,6 @@ namespace Castle.Windsor
 
 			RunInstaller();
 		}
-
-		#endregion
-
-		#region IWindsorContainer Members
 
 		/// <summary>
 		/// Gets the container's name
@@ -238,7 +266,7 @@ namespace Castle.Windsor
 			get { return parent; }
 			set
 			{
-				if( value == null )
+				if (value == null)
 				{
 					if (parent != null)
 					{
@@ -290,7 +318,7 @@ namespace Castle.Windsor
 		public IWindsorContainer AddFacility<T>(String key, Action<T> onCreate)
 			where T : IFacility, new()
 		{
-			kernel.AddFacility<T>(key, onCreate);
+			kernel.AddFacility(key, onCreate);
 			return this;
 		}
 
@@ -304,7 +332,7 @@ namespace Castle.Windsor
 		public IWindsorContainer AddFacility<T>(String key, Func<T, object> onCreate)
 			where T : IFacility, new()
 		{
-			kernel.AddFacility<T>(key, onCreate);
+			kernel.AddFacility(key, onCreate);
 			return this;
 		}
 
@@ -328,7 +356,7 @@ namespace Castle.Windsor
 		public IWindsorContainer AddFacility<T>(Action<T> onCreate)
 			where T : IFacility, new()
 		{
-			kernel.AddFacility<T>(onCreate);
+			kernel.AddFacility(onCreate);
 			return this;
 		}
 
@@ -341,7 +369,7 @@ namespace Castle.Windsor
 		public IWindsorContainer AddFacility<T>(Func<T, object> onCreate)
 			where T : IFacility, new()
 		{
-			kernel.AddFacility<T>(onCreate);
+			kernel.AddFacility(onCreate);
 			return this;
 		}
 
@@ -390,7 +418,8 @@ namespace Castle.Windsor
 		/// <param name="serviceType">The service <see cref="Type"/> that the component implements.</param>
 		/// <param name="classType">The <see cref="Type"/> to manage.</param>
 		/// <param name="lifestyle">The <see cref="LifestyleType"/> with which to manage the component.</param>
-		[Obsolete("Use Register(Component.For(serviceType).ImplementedBy(classType).Named(key)).Lifestyle.Is(lifestyle) instead.")]
+		[Obsolete(
+			"Use Register(Component.For(serviceType).ImplementedBy(classType).Named(key)).Lifestyle.Is(lifestyle) instead.")]
 		public IWindsorContainer AddComponentLifeStyle(string key, Type serviceType, Type classType, LifestyleType lifestyle)
 		{
 			kernel.AddComponent(key, serviceType, classType, lifestyle, true);
@@ -404,9 +433,11 @@ namespace Castle.Windsor
 			return this;
 		}
 
-		[Obsolete("Use Register(Component.For(serviceType).ImplementedBy(classType).Named(key).ExtendedProperties(extendedProperties) instead.")]
+		[Obsolete(
+			"Use Register(Component.For(serviceType).ImplementedBy(classType).Named(key).ExtendedProperties(extendedProperties) instead."
+			)]
 		public virtual IWindsorContainer AddComponentWithProperties(string key, Type serviceType, Type classType,
-													   IDictionary extendedProperties)
+		                                                            IDictionary extendedProperties)
 		{
 			kernel.AddComponentWithExtendedProperties(key, serviceType, classType, extendedProperties);
 			return this;
@@ -420,7 +451,7 @@ namespace Castle.Windsor
 		[Obsolete("Use Register(Component.For<T>()) instead.")]
 		public IWindsorContainer AddComponent<T>()
 		{
-			Type t = typeof(T);
+			var t = typeof(T);
 			AddComponent(t.FullName, t);
 			return this;
 		}
@@ -446,7 +477,7 @@ namespace Castle.Windsor
 		[Obsolete("Use Register(Component.For<T>().Lifestyle.Is(lifestyle)) instead.")]
 		public IWindsorContainer AddComponentLifeStyle<T>(LifestyleType lifestyle)
 		{
-			Type t = typeof(T);
+			var t = typeof(T);
 			AddComponentLifeStyle(t.FullName, t, lifestyle);
 			return this;
 		}
@@ -474,7 +505,7 @@ namespace Castle.Windsor
 		[Obsolete("Use Register(Component.For<I>().ImplementedBy<T>().Lifestyle.Is(lifestyle)) instead.")]
 		public IWindsorContainer AddComponentLifeStyle<I, T>(LifestyleType lifestyle) where T : class
 		{
-			Type t = typeof(T);
+			var t = typeof(T);
 			AddComponentLifeStyle(t.FullName, typeof(I), t, lifestyle);
 			return this;
 		}
@@ -501,7 +532,7 @@ namespace Castle.Windsor
 		[Obsolete("Use Register(Component.For<I>().ImplementedBy<T>()) instead.")]
 		public IWindsorContainer AddComponent<I, T>() where T : class
 		{
-			Type t = typeof(T);
+			var t = typeof(T);
 			AddComponent(t.FullName, typeof(I), t);
 			return this;
 		}
@@ -530,7 +561,7 @@ namespace Castle.Windsor
 		[Obsolete("Use Register(Component.For<T>().ExtendedProperties(extendedProperties) instead.")]
 		public IWindsorContainer AddComponentWithProperties<T>(IDictionary extendedProperties)
 		{
-			Type t = typeof(T);
+			var t = typeof(T);
 			AddComponentWithProperties(t.FullName, t, extendedProperties);
 			return this;
 		}
@@ -561,7 +592,7 @@ namespace Castle.Windsor
 		[Obsolete("Use Register(Component.For<I>().ImplementedBy<T>().ExtendedProperties(extendedProperties) instead.")]
 		public IWindsorContainer AddComponentProperties<I, T>(IDictionary extendedProperties) where T : class
 		{
-			Type t = typeof(T);
+			var t = typeof(T);
 			AddComponentWithProperties(t.FullName, typeof(I), t, extendedProperties);
 			return this;
 		}
@@ -575,7 +606,8 @@ namespace Castle.Windsor
 		/// <typeparam name="T"></typeparam>
 		/// <param name="key"></param>
 		/// <param name="extendedProperties"></param>
-		[Obsolete("Use Register(Component.For<I>().ImplementedBy<T>().Named(key).ExtendedProperties(extendedProperties) instead.")]
+		[Obsolete(
+			"Use Register(Component.For<I>().ImplementedBy<T>().Named(key).ExtendedProperties(extendedProperties) instead.")]
 		public IWindsorContainer AddComponentProperties<I, T>(string key, IDictionary extendedProperties) where T : class
 		{
 			AddComponentWithProperties(key, typeof(I), typeof(T), extendedProperties);
@@ -607,8 +639,31 @@ namespace Castle.Windsor
 				throw new ArgumentNullException("installers");
 			}
 
-			IComponentsInstaller scope = new DefaultComponentInstaller();
+			if (installers.Length == 0)
+			{
+				return this;
+			}
 
+			var scope = new DefaultComponentInstaller();
+
+			var internalKernel = kernel as IKernelInternal;
+			if (internalKernel == null)
+			{
+				Install(installers, scope);
+			}
+			else
+			{
+				using (internalKernel.OptimizeDependencyResolution())
+				{
+					Install(installers, scope);
+				}
+			}
+
+			return this;
+		}
+
+		private void Install(IWindsorInstaller[] installers, DefaultComponentInstaller scope)
+		{
 			using (var store = new PartialConfigurationStore(kernel))
 			{
 				foreach (var windsorInstaller in installers)
@@ -618,10 +673,8 @@ namespace Castle.Windsor
 
 				scope.SetUp(this, store);
 			}
-
-			return this;
 		}
-		
+
 		/// <summary>
 		/// Returns a component instance by the key
 		/// </summary>
@@ -692,7 +745,7 @@ namespace Castle.Windsor
 		/// <typeparam name="T">The service type</typeparam>
 		public T[] ResolveAll<T>()
 		{
-			return (T[]) ResolveAll(typeof(T));
+			return (T[])ResolveAll(typeof(T));
 		}
 
 		public Array ResolveAll(Type service)
@@ -717,7 +770,7 @@ namespace Castle.Windsor
 		/// </summary>
 		public T[] ResolveAll<T>(IDictionary arguments)
 		{
-			return (T[]) ResolveAll(typeof (T), arguments);
+			return (T[])ResolveAll(typeof(T), arguments);
 		}
 
 		/// <summary>
@@ -780,7 +833,7 @@ namespace Castle.Windsor
 		{
 			return Resolve(key, service, new ReflectionBasedDictionaryAdapter(argumentsAsAnonymousType));
 		}
-		
+
 		/// <summary>
 		/// Returns a component instance by the service 
 		/// </summary>
@@ -789,7 +842,7 @@ namespace Castle.Windsor
 		/// <returns></returns>
 		public T Resolve<T>(IDictionary arguments)
 		{
-			return (T) Resolve(typeof(T), arguments);
+			return (T)Resolve(typeof(T), arguments);
 		}
 
 		/// <summary>
@@ -811,7 +864,7 @@ namespace Castle.Windsor
 		/// <returns></returns>
 		public virtual T Resolve<T>(String key, IDictionary arguments)
 		{
-			return (T) Resolve(key, typeof(T), arguments);
+			return (T)Resolve(key, typeof(T), arguments);
 		}
 
 		/// <summary>
@@ -832,7 +885,7 @@ namespace Castle.Windsor
 		/// <returns></returns>
 		public T Resolve<T>()
 		{
-			return (T) Resolve(typeof(T));
+			return (T)Resolve(typeof(T));
 		}
 
 		/// <summary>
@@ -842,7 +895,7 @@ namespace Castle.Windsor
 		/// <returns></returns>
 		public virtual T Resolve<T>(String key)
 		{
-			return (T) Resolve(key, typeof(T));
+			return (T)Resolve(key, typeof(T));
 		}
 
 		/// <summary>
@@ -861,7 +914,10 @@ namespace Castle.Windsor
 		/// <param name="childContainer"></param>
 		public virtual void AddChildContainer(IWindsorContainer childContainer)
 		{
-			if (childContainer == null) throw new ArgumentNullException("childContainer");
+			if (childContainer == null)
+			{
+				throw new ArgumentNullException("childContainer");
+			}
 
 			if (!childContainers.ContainsKey(childContainer.Name))
 			{
@@ -884,7 +940,10 @@ namespace Castle.Windsor
 		/// <param name="childContainer"></param>
 		public virtual void RemoveChildContainer(IWindsorContainer childContainer)
 		{
-			if (childContainer == null) throw new ArgumentNullException("childContainer");
+			if (childContainer == null)
+			{
+				throw new ArgumentNullException("childContainer");
+			}
 
 			if (childContainers.ContainsKey(childContainer.Name))
 			{
@@ -912,10 +971,6 @@ namespace Castle.Windsor
 			return windsorContainer;
 		}
 
-		#endregion
-
-		#region IServiceProviderEx Members
-
 		/// <summary>
 		/// Gets the service object of the specified type.
 		/// </summary>
@@ -939,10 +994,6 @@ namespace Castle.Windsor
 			return kernel.GetService<T>();
 		}
 
-		#endregion
-
-		#region IDisposable Members
-
 		/// <summary>
 		/// Executes Dispose on underlying <see cref="IKernel"/>
 		/// </summary>
@@ -952,10 +1003,7 @@ namespace Castle.Windsor
 			childContainers.Clear();
 			kernel.Dispose();
 		}
-
-		#endregion
-
-		#region Protected Operations Members
+		
 
 		public IComponentsInstaller Installer
 		{
@@ -969,7 +1017,5 @@ namespace Castle.Windsor
 				installer.SetUp(this, kernel.ConfigurationStore);
 			}
 		}
-
-		#endregion
 	}
 }

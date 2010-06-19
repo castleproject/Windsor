@@ -60,5 +60,7 @@ namespace Castle.MicroKernel
 		/// </summary>
 		/// <param name="model"></param>
 		void AddCustomComponent(ComponentModel model);
+
+		IDisposable OptimizeDependencyResolution();
 	}
 }
