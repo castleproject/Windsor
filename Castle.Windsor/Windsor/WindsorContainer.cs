@@ -17,6 +17,7 @@ namespace Castle.Windsor
 	using System;
 	using System.Collections;
 	using System.Collections.Generic;
+	using System.Diagnostics;
 
 	using Castle.Core;
 	using Castle.MicroKernel;
@@ -31,6 +32,7 @@ namespace Castle.Windsor
 	/// Implementation of <see cref="IWindsorContainer"/>
 	/// which delegates to <see cref="IKernel"/> implementation.
 	/// </summary>
+	[DebuggerTypeProxy(typeof(Debugging.ContainerDebuggerProxy))]
 #if (SILVERLIGHT)
 	public class WindsorContainer : IWindsorContainer
 #else
