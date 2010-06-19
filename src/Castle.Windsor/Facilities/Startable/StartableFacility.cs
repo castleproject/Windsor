@@ -24,7 +24,7 @@ namespace Castle.Facilities.Startable
 
 	public class StartableFacility : AbstractFacility
 	{
-		private readonly bool optimizeForSingleInstall;
+		private bool optimizeForSingleInstall;
 		private readonly List<IHandler> waitList = new List<IHandler>();
 		private ITypeConverter converter;
 
@@ -32,26 +32,45 @@ namespace Castle.Facilities.Startable
 		// duplicate singletons.
 		private bool inStart;
 
-		public StartableFacility():this(false)
+		public void OptimizeForSingleInstall()
 		{
-		}
-
-		public StartableFacility(bool optimizeForSingleInstall)
-		{
-			this.optimizeForSingleInstall = optimizeForSingleInstall;
+			optimizeForSingleInstall = true;
 		}
 
 		protected override void Init()
 		{
 			converter = (ITypeConverter)Kernel.GetSubSystem(SubSystemConstants.ConversionManagerKey);
 			Kernel.ComponentModelBuilder.AddContributor(new StartableContributor(converter));
-
+			if(optimizeForSingleInstall)
+			{
+				Kernel.HandlersChanged += StartAll;
+				Kernel.ComponentRegistered += CacheForStart;
+				return;
+			}
 			Kernel.ComponentRegistered +=OnComponentRegistered;
+		}
+
+		private void CacheForStart(string key, IHandler handler)
+		{
+			if (IsStartable(handler))
+			{
+				waitList.Add(handler);
+			}
+		}
+
+		private void StartAll(ref bool statechanged)
+		{
+			var array = waitList.ToArray();
+			waitList.Clear();
+			foreach (var handler in array)
+			{
+				handler.Resolve(CreationContext.Empty);
+			}
 		}
 
 		private void OnComponentRegistered(String key, IHandler handler)
 		{
-			var startable = (bool?)handler.ComponentModel.ExtendedProperties["startable"] ?? false;
+			var startable = IsStartable(handler);
 			if (startable)
 			{
 				if (TryStart(handler) == false)
@@ -61,6 +80,12 @@ namespace Castle.Facilities.Startable
 			}
 
 			CheckWaitingList();
+		}
+
+		private bool IsStartable(IHandler handler)
+		{
+			var isStartable = (bool?)handler.ComponentModel.ExtendedProperties["startable"];
+			return isStartable ?? false;
 		}
 
 		private void OnHandlerStateChanged(object source, EventArgs args)

@@ -1,6 +1,10 @@
 unreleased changes
 ==================
 
+- added optimized mode to StartableFacility for Single-call-to-Install scenario that won't start anything before the end of Install (at which point the container is assumed to be completely configured and all components should be there) and it will throw if it can't resolve and start the component.
+
+- added OptimizeDependencyResolution around calls to Install
+
 - Component.IsInNamespace and its sister methods have now overload that let you include components from subnamespaces as well.
 
 - added ability to load assemblies from designated directory (with fair bit of optional filtering using new AssemblyFilter class). It works in three places:
