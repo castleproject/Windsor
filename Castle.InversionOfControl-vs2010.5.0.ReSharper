@@ -350,6 +350,7 @@ limitations under the License.
       <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AaBb" ElementKind="PrivateConstants" />
       <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AaBb" ElementKind="PrivateStaticReadonly" />
       <Abbreviation Text="NH" />
+      <Abbreviation Text="CLR" />
     </Naming2>
   </CodeStyleSettings>
 </Configuration>

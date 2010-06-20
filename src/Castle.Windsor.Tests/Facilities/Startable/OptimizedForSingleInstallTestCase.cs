@@ -30,7 +30,7 @@ namespace Castle.Facilities.Startable.Tests
 		public void SetUp()
 		{
 			windsorContainer = new WindsorContainer();
-			windsorContainer.AddFacility<StartableFacility>(f => f.OptimizeForSingleInstall());
+			windsorContainer.AddFacility<StartableFacility>(f => f.DeferredStart());
 			Startable.Started = false;
 		}
 
@@ -67,6 +67,30 @@ namespace Castle.Facilities.Startable.Tests
 			Assert.Throws<HandlerException>(() =>
 			windsorContainer.Install(
 			    new ActionBasedInstaller(c => c.Register(Component.For<Startable>()))));
+		}
+
+
+		[Test]
+		public void Missing_dependencies_after_the_end_of_Install_no_exception_when_tryStart_true()
+		{
+			var container = new WindsorContainer();
+			container.AddFacility<StartableFacility>(f => f.DeferredStart(true));
+
+			container.Install(new ActionBasedInstaller(c => c.Register(Component.For<Startable>())));
+
+			Assert.IsFalse(Startable.Started);
+		}
+
+		[Test]
+		public void Missing_dependencies_after_the_end_of_Install_starts_after_adding_missing_dependency_after_Install()
+		{
+			var container = new WindsorContainer();
+			container.AddFacility<StartableFacility>(f => f.DeferredStart(true));
+
+			container.Install(new ActionBasedInstaller(c => c.Register(Component.For<Startable>())));
+
+			container.Register(Component.For<ICustomer>().ImplementedBy<CustomerImpl>());
+			Assert.IsTrue(Startable.Started);
 		}
 	}
 }
