@@ -23,6 +23,7 @@ namespace Castle.MicroKernel.Registration
 	public class FromTypesDescriptor : FromDescriptor
 	{
 		private readonly IEnumerable<Type> types;
+		
 
 		internal FromTypesDescriptor(IEnumerable<Type> types)
 		{

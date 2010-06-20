@@ -18,7 +18,9 @@ namespace Castle.MicroKernel.Registration
 	using System.Linq;
 	using System;
 	using System.Collections.Generic;
-	
+
+	using Castle.DynamicProxy.Generators.Emitters;
+
 	/// <summary>
 	/// Describes how to select a types service.
 	/// </summary>
@@ -26,7 +28,6 @@ namespace Castle.MicroKernel.Registration
 	{
 		public delegate IEnumerable<Type> ServiceSelector(Type type, Type baseType);
 
-		private bool useBaseType;
 		private readonly BasedOnDescriptor basedOnDescriptor;
 		private ServiceSelector serviceSelector;
 		
@@ -41,47 +42,60 @@ namespace Castle.MicroKernel.Registration
 		/// <returns></returns>
 		public BasedOnDescriptor Base()
 		{
-			useBaseType = true;
-			return basedOnDescriptor;
+			return Select((t, b) => new[] { b });
 		}
-				
+
 		/// <summary>
-		/// Uses the first interface of a type.
+		/// Uses the type itself.
+		/// </summary>
+		/// <returns></returns>
+		public BasedOnDescriptor Self()
+		{
+			return Select((t, b) => new[] { t });
+		}
+
+		/// <summary>
+		/// Uses all interfaces implemented by the type (or its base types) as well as their base interfaces.
+		/// </summary>
+		/// <returns></returns>
+		public BasedOnDescriptor AllInterfaces()
+		{
+			return Select((t, b) => TypeUtil.GetAllInterfaces(t));
+		}
+
+		/// <summary>
+		/// Uses the first interface of a type. This method has non-deterministic behavior when type implements more than one interface!
 		/// </summary>
 		/// <returns></returns>
 		public BasedOnDescriptor FirstInterface()
 		{
-			useBaseType = false;
 			return Select(delegate(Type type, Type baseType)
 			{
-				Type first = null;
-				Type[] interfaces = type.GetInterfaces();
-
-				if (interfaces.Length > 0)
+				var first = type.GetInterfaces().FirstOrDefault();
+				if (first == null)
 				{
-					first = interfaces[0];
+					return null;
 				}
 
-				return (first != null) ? new Type[] { first } : null;
+				return new[] { first };
 			});
 		}
 
-        /// <summary>
-        /// Uses <paramref name="implements"/> to lookup the sub interface.
-        /// For example: if you have IService and 
-        /// IProductService : ISomeInterface, IService, ISomeOtherInterface.
-        /// When you call FromInterface(typeof(IService)) then IProductService
-        /// will be used. Useful when you want to register _all_ your services
-        /// and but not want to specify all of them.
-        /// </summary>
-        /// <param name="implements"></param>
-        /// <returns></returns>
+		/// <summary>
+		/// Uses <paramref name="implements"/> to lookup the sub interface.
+		/// For example: if you have IService and 
+		/// IProductService : ISomeInterface, IService, ISomeOtherInterface.
+		/// When you call FromInterface(typeof(IService)) then IProductService
+		/// will be used. Useful when you want to register _all_ your services
+		/// and but not want to specify all of them.
+		/// </summary>
+		/// <param name="implements"></param>
+		/// <returns></returns>
 		public BasedOnDescriptor FromInterface(Type implements)
 		{
-			useBaseType = false;
 			return Select(delegate(Type type, Type baseType)
 			{
-				List<Type> matches = new List<Type>();
+				var matches = new List<Type>();
 				implements = implements ?? baseType;
 
 				foreach (Type theInterface in GetTopLevelInterfaces(type))
@@ -117,8 +131,7 @@ namespace Castle.MicroKernel.Registration
 		/// <returns></returns>
 		public BasedOnDescriptor Select(ServiceSelector selector)
 		{
-			useBaseType = false;
-			serviceSelector = selector;
+			serviceSelector += selector;
 			return basedOnDescriptor;
 		}
 		
@@ -134,22 +147,35 @@ namespace Castle.MicroKernel.Registration
 
 		internal IEnumerable<Type> GetServices(Type type, Type baseType)
 		{
-			IEnumerable<Type> services = null;
-
-			if (useBaseType)
+			ICollection<Type> services =
+#if SL3
+				new List<Type>();
+#else
+				new HashSet<Type>();
+#endif
+			if (serviceSelector != null)
 			{
-				type = baseType;
-			}
-			else if (serviceSelector != null)
-			{
-				services = serviceSelector(type, baseType);
-				if(services!=null)
+				foreach (ServiceSelector selector in serviceSelector.GetInvocationList())
 				{
-					services = services.Select(x => WorkaroundCLRBug(x));
+					var selected = selector(type, baseType);
+					if (selected != null)
+					{
+						foreach (var service in selected.Select(WorkaroundCLRBug))
+						{
+#if SL3
+							if(services.Contains(service)) continue;
+#endif
+							services.Add(service);
+						}
+					}
 				}
 			}
 
-			return services ?? new[] { type };
+			if (services.Count != 0)
+			{
+				return services;
+			}
+			return new[] { type };
 		}
 
 		private IEnumerable<Type> GetTopLevelInterfaces(Type type)
