@@ -21,6 +21,7 @@ namespace Castle.Facilities.Startable
 	using Castle.MicroKernel.Context;
 	using Castle.MicroKernel.Facilities;
 	using Castle.MicroKernel.SubSystems.Conversion;
+	using Castle.Windsor;
 
 	public class StartableFacility : AbstractFacility
 	{
@@ -31,10 +32,22 @@ namespace Castle.Facilities.Startable
 		// Don't check the waiting list while this flag is set as this could result in
 		// duplicate singletons.
 		private bool inStart;
+		private bool disableException;
 
-		public void OptimizeForSingleInstall()
+		/// <summary>
+		/// This method changes behavior of the facility. Deferred mode should be used when you
+		/// have single call to <see cref="IWindsorContainer.Install"/> and register all your components there.
+		/// Enabling this mode will optimize the behavior of the facility so that it will wait 'till the end of
+		/// intallation and only after all <see cref="IWindsorInstaller"/>s were ran it will instantiate and
+		/// start all the startable components. If the <paramref name="tryStart"/> is set to <c>false</c> an
+		/// exception will be thrown is a startable component can't be instantiated and started. This will
+		/// help you fail fast and diagnose issues quickly.
+		/// </summary>
+		/// <param name="tryStart"></param>
+		public void DeferredStart(bool tryStart = false)
 		{
 			optimizeForSingleInstall = true;
+			disableException = tryStart;
 		}
 
 		protected override void Init()
@@ -64,8 +77,22 @@ namespace Castle.Facilities.Startable
 			waitList.Clear();
 			foreach (var handler in array)
 			{
-				handler.Resolve(CreationContext.Empty);
+				if (disableException == false)
+				{
+					Start(handler);
+					continue;
+				}
+
+				if (TryStart(handler) == false)
+				{
+					AddHandlerToWaitingList(handler);
+				}
 			}
+		}
+
+		private void Start(IHandler handler)
+		{
+			handler.Resolve(CreationContext.Empty);
 		}
 
 		private void OnComponentRegistered(String key, IHandler handler)
