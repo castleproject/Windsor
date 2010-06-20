@@ -129,13 +129,13 @@ namespace Castle.MicroKernel.Registration
 			{
 				if (string.IsNullOrEmpty(mask))
 				{
-#if NET35
+#if DOTNET35
 					return Directory.GetFiles(directoryName);
 #else
 					return Directory.EnumerateFiles(directoryName);
 #endif
 				}
-#if NET35
+#if DOTNET35
 				return Directory.GetFiles(directoryName, mask);
 #else
 				return Directory.EnumerateFiles(directoryName, mask);
