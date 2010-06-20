@@ -26,6 +26,8 @@ namespace Castle.Windsor.Debugging
 		private IKernel kernel;
 		private INamingSubSystem naming;
 
+		public KernelDebuggerProxy(IWindsorContainer container):this(container.Kernel){}
+
 		public KernelDebuggerProxy(IKernel kernel)
 		{
 			if (kernel == null)
@@ -61,6 +63,12 @@ namespace Castle.Windsor.Debugging
 		private int WaitingDependencyHandlersCount
 		{
 			get { return MisconfiguredHandlers.Count; }
+		}
+
+
+		public IFacility[] Facilities
+		{
+			get { return kernel.GetFacilities(); }
 		}
 	}
 }

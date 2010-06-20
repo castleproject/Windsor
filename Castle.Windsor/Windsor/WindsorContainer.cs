@@ -32,7 +32,7 @@ namespace Castle.Windsor
 	/// Implementation of <see cref="IWindsorContainer"/>
 	/// which delegates to <see cref="IKernel"/> implementation.
 	/// </summary>
-	[DebuggerTypeProxy(typeof(Debugging.ContainerDebuggerProxy))]
+	[DebuggerTypeProxy(typeof(Debugging.KernelDebuggerProxy))]
 #if (SILVERLIGHT)
 	public class WindsorContainer : IWindsorContainer
 #else

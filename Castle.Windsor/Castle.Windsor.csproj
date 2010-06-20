@@ -636,7 +636,6 @@
     <Compile Include="Windsor\Configuration\Interpreters\XmlProcessor\XmlProcessorException.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Windsor\Debugging\ContainerDebuggerProxy.cs" />
     <Compile Include="Windsor\Debugging\HandlerByKeyDebuggerView.cs" />
     <Compile Include="Windsor\Debugging\HandlerDebuggerProxy.cs" />
     <Compile Include="Windsor\Debugging\HandlersByKeyDictionaryDebuggerView.cs" />

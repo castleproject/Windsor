@@ -18,6 +18,9 @@ namespace Castle.Facilities.TypedFactory
 	using System.Linq.Expressions;
 	using System.Reflection;
 
+	using Castle.Core;
+
+	[Singleton]
 	public class ExpressionTreeBasedDelegateGenerator : IDelegateGenerator
 	{
 		public Delegate BuildDelegate(DelegateInvocation invocation, MethodInfo invoke, Type delegateType)
