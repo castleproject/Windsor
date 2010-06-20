@@ -19,10 +19,12 @@ namespace Castle.Facilities.TypedFactory
 	using System.Linq;
 	using System.Reflection;
 
+	using Castle.Core;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Resolvers;
 
+	[Singleton]
 	public class DelegateFactory : ILazyComponentLoader
 	{
 		private readonly IDelegateGenerator delegateBuiler;

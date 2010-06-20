@@ -17,6 +17,7 @@ namespace Castle.Windsor.Debugging
 	using System;
 	using System.Collections.Generic;
 
+	using Castle.Core;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Handlers;
 
@@ -49,6 +50,19 @@ namespace Castle.Windsor.Debugging
 				}
 				return "Some dependencies of this component could not be statically resolved." +
 				       handler.ObtainDependencyDetails(new List<object>());
+			}
+		}
+
+		public string Lifestyle
+		{
+			get
+			{
+				var lifestyle = handler.ComponentModel.LifestyleType;
+				if (lifestyle == LifestyleType.Custom)
+				{
+					return "Custom: " + handler.ComponentModel.CustomLifestyle.Name;
+				}
+				return lifestyle.ToString();
 			}
 		}
 	}
