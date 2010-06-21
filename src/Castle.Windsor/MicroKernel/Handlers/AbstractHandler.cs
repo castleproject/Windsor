@@ -228,7 +228,16 @@ namespace Castle.MicroKernel.Handlers
 
 		public object TryResolve(CreationContext context)
 		{
-			return Resolve(context, false);
+			try
+			{
+				// TODO: Implement this is a proper way if possible...
+				return Resolve(context, false);
+			}
+			catch (Exception e)
+			{
+				Trace.Write(e, "Castle.Windsor");
+				return null;
+			}
 		}
 
 		/// <summary>

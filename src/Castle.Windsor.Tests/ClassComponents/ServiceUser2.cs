@@ -16,6 +16,8 @@ namespace Castle.MicroKernel.Tests.ClassComponents
 {
 	using System;
 
+	using Castle.Windsor.Tests;
+
 	public class ServiceUser2 : ServiceUser
 	{
 		private string _name;

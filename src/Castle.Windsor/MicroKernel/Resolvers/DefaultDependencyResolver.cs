@@ -350,38 +350,35 @@ namespace Castle.MicroKernel.Resolvers
 			{
 				return kernel;
 			}
+			if (dependency.DependencyType == DependencyType.ServiceOverride)
+			{
+				handler = kernel.GetHandler(dependency.DependencyKey);
+			}
 			else
 			{
-				if (dependency.DependencyType == DependencyType.ServiceOverride)
+				try
 				{
-					handler = kernel.GetHandler(dependency.DependencyKey);
+					handler = TryGetHandlerFromKernel(dependency, context);
 				}
-				else
+				catch (HandlerException exception)
 				{
-					try
-					{
-						handler = TryGetHandlerFromKernel(dependency, context);
-					}
-					catch (HandlerException exception)
-					{
-						throw new DependencyResolverException(
-							string.Format(
-								"Missing dependency.{2}Component {0} has a dependency on {1}, which could not be resolved.{2}Make sure the dependency is correctly registered in the container as a service, or provided as inline argument",
-								model.Name,
-								dependency.TargetType,
-								Environment.NewLine),
-							exception);
-					}
+					throw new DependencyResolverException(
+						string.Format(
+							"Missing dependency.{2}Component {0} has a dependency on {1}, which could not be resolved.{2}Make sure the dependency is correctly registered in the container as a service, or provided as inline argument",
+							model.Name,
+							dependency.TargetType,
+							Environment.NewLine),
+						exception);
+				}
 
-					if (handler == null)
-					{
-						throw new DependencyResolverException(
-							string.Format(
-								"Cycle detected in configuration.{2}Component {0} has a dependency on {1}, but it doesn't provide an override.{2}You must provide an override if a component has a dependency on a service that it - itself - provides",
-								model.Name,
-								dependency.TargetType,
-								Environment.NewLine));
-					}
+				if (handler == null)
+				{
+					throw new DependencyResolverException(
+						string.Format(
+							"Cycle detected in configuration.{2}Component {0} has a dependency on {1}, but it doesn't provide an override.{2}You must provide an override if a component has a dependency on a service that it - itself - provides",
+							model.Name,
+							dependency.TargetType,
+							Environment.NewLine));
 				}
 			}
 

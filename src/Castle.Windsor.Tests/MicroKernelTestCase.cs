@@ -15,11 +15,12 @@
 namespace Castle.MicroKernel.Tests
 {
 	using System;
-	using System.Collections;
 	using System.Collections.Generic;
 	using Castle.Core;
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Tests.ClassComponents;
+	using Castle.Windsor.Tests;
+
 	using NUnit.Framework;
 
 	[TestFixture]
@@ -205,6 +206,33 @@ namespace Castle.MicroKernel.Tests
 
 			var services = kernel.ResolveAll<ICommon>();
 			Assert.AreEqual(1, services.Length);
+		}
+
+		[Test]
+		public void Resolve_all_when_dependency_is_unresolvable_should_not_throw()
+		{
+			kernel.Register(
+				Component.For<B>(), 
+				Component.For<C>());
+			// the dependency goes C --> B --> A
+
+			C[] cs = null;
+			Assert.DoesNotThrow(() => cs = kernel.ResolveAll<C>());
+			Assert.IsEmpty(cs);
+		}
+
+		[Test]
+		public void Resolve_all_when_dependency_is_missing_should_not_throw()
+		{
+			kernel.Register(
+				Component.For<C>());
+			// the dependency goes C --> B --> A
+
+			C[] cs = null;
+			Assert.DoesNotThrow(() =>
+			                    cs = kernel.ResolveAll<C>(
+			                    	new { fakeDependency = "Stefan!" }));
+			Assert.IsEmpty(cs);
 		}
 
 		[Test]
