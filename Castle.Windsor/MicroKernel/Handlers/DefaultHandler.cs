@@ -49,29 +49,45 @@ namespace Castle.MicroKernel.Handlers
 		/// <returns></returns>
 		protected override object ResolveCore(CreationContext context, bool track, bool instanceRequired)
 		{
-			if (!context.HasAdditionalParameters)
+			if (ResolveImpossible(context))
 			{
-				if (CurrentState != HandlerState.Valid && !CanResolvePendingDependencies(context))
+				if (instanceRequired == false)
 				{
-					if (!instanceRequired)
-					{
-						return null;
-					}
-
-					AssertNotWaitingForDependency();
+					return null;
 				}
-			}
 
-			using(CreationContext.ResolutionContext resCtx = context.EnterResolutionContext(this))
+				AssertNotWaitingForDependency();
+			}
+			using (var resCtx = context.EnterResolutionContext(this))
 			{
 				var instance = lifestyleManager.Resolve(context);
 
-				resCtx.Burden.SetRootInstance(instance, this, track || ComponentModel.LifecycleSteps.HasDecommissionSteps);
+				resCtx.Burden.SetRootInstance(instance, this, HasDecomission(track));
 
 				context.ReleasePolicy.Track(instance, resCtx.Burden);
 
 				return instance;
 			}
+		}
+
+		private bool HasDecomission(bool track)
+		{
+			return track || ComponentModel.LifecycleSteps.HasDecommissionSteps;
+		}
+
+		private bool ResolveImpossible(CreationContext context)
+		{
+			if (context.HasAdditionalParameters)
+			{
+				return false; // we assume we can
+			}
+
+			if (CurrentState == HandlerState.Valid || CanResolvePendingDependencies(context))
+			{
+				return false;
+			}
+
+			return true;
 		}
 
 		private bool CanResolvePendingDependencies(CreationContext context)
@@ -88,11 +104,13 @@ namespace Castle.MicroKernel.Handlers
 				{
 					return false;
 				}
-
-				// ask the kernel
-				if (Kernel.LazyLoadComponentByType(dependency.DependencyKey, dependency.TargetType) == false)
+				if(handler == null)
 				{
-					return false;
+					// ask the kernel
+					if (Kernel.LazyLoadComponentByType(dependency.DependencyKey, dependency.TargetType) == false)
+					{
+						return false;
+					}
 				}
 			}
 			return DependenciesByKey.Count == 0;

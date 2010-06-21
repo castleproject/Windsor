@@ -20,8 +20,9 @@ namespace Castle.MicroKernel.Tests
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.SubSystems.Configuration;
 	using Castle.MicroKernel.Tests.ClassComponents;
+    using Castle.Windsor.Tests;
 
-	using NUnit.Framework;
+    using NUnit.Framework;
 
 	/// <summary>
 	/// Summary description for BestConstructorTestCase.

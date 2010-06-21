@@ -14,44 +14,11 @@
 
 namespace Castle.MicroKernel.Tests
 {
-    using System;
+	using Castle.MicroKernel.Handlers;
+	using Castle.MicroKernel.Registration;
+	using Castle.Windsor.Tests;
 
-    using Castle.MicroKernel.Handlers;
-    using Castle.MicroKernel.Registration;
-
-    using NUnit.Framework;
-
-	public class A
-	{
-	}
-
-	public class B
-	{
-		public B(A a)
-		{
-		}
-	}
-
-	public class C
-	{
-		public C(B b)
-		{
-		}
-	}
-
-	public class CycleA
-	{
-		public CycleA(CycleB b)
-		{
-		}
-	}
-
-	public class CycleB
-	{
-		public CycleB(CycleA a)
-		{
-		}
-	}
+	using NUnit.Framework;
 
 	[TestFixture]
 	public class DependencyGraph
@@ -128,12 +95,12 @@ namespace Castle.MicroKernel.Tests
 				"Can't create component 'a' as it has dependencies to be satisfied. \r\n" +
 				"a is waiting for the following dependencies: \r\n\r\n" +
 				"Services: \r\n" +
-				"- Castle.MicroKernel.Tests.CycleB which was registered but is also waiting for dependencies. \r\n\r\n" +
+				"- Castle.Windsor.Tests.CycleB which was registered but is also waiting for dependencies. \r\n\r\n" +
 
 				"b is waiting for the following dependencies: \r\n\r\n" +
 
 				"Services: \r\n" +
-				"- Castle.MicroKernel.Tests.CycleA which was registered but is also waiting for dependencies. \r\n";
+				"- Castle.Windsor.Tests.CycleA which was registered but is also waiting for dependencies. \r\n";
 			Assert.AreEqual(expectedMessage, exception.Message);
 		}
 	}

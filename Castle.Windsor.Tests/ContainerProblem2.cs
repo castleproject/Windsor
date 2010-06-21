@@ -14,9 +14,7 @@
 
 namespace Castle.Windsor.Tests
 {
-    using System;
-
-    using Castle.Core;
+	using Castle.Core;
     using Castle.MicroKernel.Registration;
 
     using NUnit.Framework;
@@ -31,7 +29,7 @@ namespace Castle.Windsor.Tests
 		IN N { get; set; }
 	}
 
-	public class C : IC
+	public class CImpl : IC
 	{
 		private R _r = null;
 
@@ -40,13 +38,12 @@ namespace Castle.Windsor.Tests
 			set { _r = value; }
 		}
 
-		private IN _n = null;
-
-		public IN N
+		public CImpl()
 		{
-			get { return _n; }
-			set { _n = value; }
+			N = null;
 		}
+
+		public IN N { get; set; }
 	}
 
 	public interface IN
@@ -57,20 +54,16 @@ namespace Castle.Windsor.Tests
 	[Transient]
 	public class DN : IN
 	{
-		private IS _s = null;
-		private IWM _vm = null;
-		private ISP _sp = null;
+		private IWM vm;
+		private ISP sp;
 
-		public IS CS
-		{
-			get { return _s; }
-		}
+		public IS CS { get; private set; }
 
 		public DN(IWM vm, ISP sp)
 		{
-			_vm = vm;
-			_sp = sp;
-			_s = new BS();
+			this.vm = vm;
+			this.sp = sp;
+			CS = new BS();
 		}
 	}
 
@@ -125,7 +118,7 @@ namespace Castle.Windsor.Tests
 			IWindsorContainer container = new WindsorContainer();
 
 			container.Register(Component.For(typeof(IS)).ImplementedBy(typeof(BS)).Named("BS"));
-			container.Register(Component.For(typeof(IC)).ImplementedBy(typeof(C)).Named("C"));
+			container.Register(Component.For(typeof(IC)).ImplementedBy(typeof(CImpl)).Named("C"));
 			container.Register(Component.For(typeof(IWM)).ImplementedBy(typeof(WM)).Named("WM"));
 			container.Register(Component.For(typeof(ISP)).ImplementedBy(typeof(SP)).Named("SP"));
 
