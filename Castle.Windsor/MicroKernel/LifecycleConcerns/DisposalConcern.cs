@@ -37,7 +37,8 @@ namespace Castle.MicroKernel.LifecycleConcerns
 
 		public void Apply(Castle.Core.ComponentModel model, object component)
 		{
-			((IDisposable)component).Dispose();
+			var disposable = component as IDisposable;
+			if (disposable != null) disposable.Dispose();
 		}
 	}
 }
