@@ -19,7 +19,7 @@ namespace Castle.Windsor.Adapters.ComponentModel
 	using System.Collections.Generic;
 	using System.ComponentModel;
 	using System.ComponentModel.Design;
-	using Castle.Core;
+
 	using Castle.Core.Internal;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Context;
@@ -27,7 +27,7 @@ namespace Castle.Windsor.Adapters.ComponentModel
 
 	using Component = Castle.MicroKernel.Registration.Component;
 
-    /// <summary>
+	/// <summary>
 	/// Implementation of <see cref="IContainerAdapter"/> that does not assume ownership of the
 	/// wrapped <see cref="IWindsorContainer"/>. 
 	/// </summary>
@@ -228,45 +228,51 @@ namespace Castle.Windsor.Adapters.ComponentModel
 		/// <returns>An object inplementing service, or null.</returns>
 		public virtual object GetService(Type serviceType)
 		{
-			object service = null;
+			if(serviceType == null)
+			{
+				return null;
+			}
 
 			// Check for instrinsic services.
-			if (serviceType == typeof(IWindsorContainer) ||
+			if (serviceType == typeof(IContainerAdapter) ||
+				serviceType == typeof(IContainerAccessor) ||
 				serviceType == typeof(IServiceContainer) ||
 				serviceType == typeof(IContainer))
 			{
-				service = this;
+				return this;
 			}
-			else if (serviceType == typeof(IKernel))
+			if( serviceType == typeof(IWindsorContainer))
 			{
-				service = Kernel;
+				return container;
 			}
-			else
+			if (serviceType == typeof(IKernel))
 			{
-				// Then, check the Windsor Container.
-				try
-				{
-					service = container[serviceType];
-				}
-				catch (ComponentNotFoundException)
-				{
-					// Fall through
-				}
-
-				// Otherwise, check the parent service provider.
-				if ((service == null) && (parentProvider != null))
-				{
-					service = parentProvider.GetService(serviceType);
-				}
-
-				// Finally, check the chained container.
-				if ((service == null) && (site != null))
-				{
-					service = site.GetService(serviceType);
-				}
+				return Kernel;
+			}
+			
+			// Then, check the Windsor Container.
+			try
+			{
+				return container[serviceType];
+			}
+			catch (ComponentNotFoundException)
+			{
+				// Fall through
 			}
 
-			return service;
+			// Otherwise, check the parent service provider.
+			if (parentProvider != null)
+			{
+				return parentProvider.GetService(serviceType);
+			}
+
+			// Finally, check the chained container.
+			if (site != null)
+			{
+				return site.GetService(serviceType);
+			}
+
+			return null;
 		}
 
 		/// <summary>

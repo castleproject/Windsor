@@ -627,6 +627,7 @@
     <Compile Include="SmartProxyTestCase.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Windsor.Tests\ContainerWrapperTestsCase.cs" />
     <Compile Include="WindsorDotNet2Tests.cs" />
     <Compile Include="XmlProcessor\XmlProcessorTestCase.cs">
       <SubType>Code</SubType>
