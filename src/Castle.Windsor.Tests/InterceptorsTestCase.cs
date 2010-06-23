@@ -111,7 +111,7 @@ namespace Castle.Windsor.Tests
 		[Test]
 		public void Xml_validComponent_resolves_correctly()
 		{
-			container.Install(Windsor.Installer.Configuration.FromXmlFile(ConfigHelper.ResolveConfigPath("Interceptors.config")));
+			container.Install(Castle.Windsor.Installer.Configuration.FromXmlFile(ConfigHelper.ResolveConfigPath("Interceptors.config")));
 			service = container.Resolve<CalculatorService>("ValidComponent");
 
 			Assert.IsNotNull(service);
@@ -121,7 +121,7 @@ namespace Castle.Windsor.Tests
 		[Test]
 		public void Xml_multiple_interceptors_resolves_correctly()
 		{
-			container.Install(Windsor.Installer.Configuration.FromXmlFile(ConfigHelper.ResolveConfigPath("InterceptorsMultiple.config")));
+			container.Install(Castle.Windsor.Installer.Configuration.FromXmlFile(ConfigHelper.ResolveConfigPath("InterceptorsMultiple.config")));
 			service = container.Resolve<CalculatorService>("component");
 
 			Assert.IsNotNull(service);
@@ -131,7 +131,7 @@ namespace Castle.Windsor.Tests
 		[Test]
 		public void Xml_Component_With_Non_Existing_Interceptor_throws()
 		{
-			container.Install(Windsor.Installer.Configuration.FromXmlFile(ConfigHelper.ResolveConfigPath("Interceptors.config")));
+			container.Install(Castle.Windsor.Installer.Configuration.FromXmlFile(ConfigHelper.ResolveConfigPath("Interceptors.config")));
 			Assert.Throws(typeof(HandlerException), () =>
 				container.Resolve<CalculatorService>("ComponentWithNonExistingInterceptor"));
 		}
@@ -141,14 +141,14 @@ namespace Castle.Windsor.Tests
 		{
 			Assert.Throws(typeof(Exception), () =>
 			                                 container.Install(
-			                                 	Windsor.Installer.Configuration.FromXmlFile(
+												Castle.Windsor.Installer.Configuration.FromXmlFile(
 			                                 		ConfigHelper.ResolveConfigPath("InterceptorsInvalid.config"))));
 		}
 
 		[Test]
 		public void Xml_mixin()
 		{
-			container.Install(Windsor.Installer.Configuration.FromXmlFile(ConfigHelper.ResolveConfigPath("Mixins.config")));
+			container.Install(Castle.Windsor.Installer.Configuration.FromXmlFile(ConfigHelper.ResolveConfigPath("Mixins.config")));
 			service = container.Resolve<CalculatorService>("ValidComponent");
 
 			Assert.IsInstanceOf<ISimpleMixIn>(service);
@@ -159,7 +159,7 @@ namespace Castle.Windsor.Tests
 		[Test]
 		public void Xml_additionalInterfaces()
 		{
-			container.Install(Windsor.Installer.Configuration.FromXmlFile(ConfigHelper.ResolveConfigPath("AdditionalInterfaces.config")));
+			container.Install(Castle.Windsor.Installer.Configuration.FromXmlFile(ConfigHelper.ResolveConfigPath("AdditionalInterfaces.config")));
 			service = container.Resolve<CalculatorService>("ValidComponent");
 
 			Assert.IsInstanceOf<ISimpleMixIn>(service);
@@ -173,7 +173,7 @@ namespace Castle.Windsor.Tests
 		public void Xml_hook_and_selector()
 		{
 			container.Install(
-				Windsor.Installer.Configuration.FromXmlFile(ConfigHelper.ResolveConfigPath("InterceptorsWithHookAndSelector.config")));
+				Castle.Windsor.Installer.Configuration.FromXmlFile(ConfigHelper.ResolveConfigPath("InterceptorsWithHookAndSelector.config")));
 			var model = this.container.Kernel.GetHandler("ValidComponent").ComponentModel;
 			var options = ProxyUtil.ObtainProxyOptions(model, false);
 

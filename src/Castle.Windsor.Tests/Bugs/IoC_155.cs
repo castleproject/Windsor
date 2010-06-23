@@ -17,9 +17,11 @@
 namespace Castle.Windsor.Tests.Bugs
 {
 	using System;
+
+	using Castle.Windsor.Configuration.Interpreters;
+
 	using Core.Resource;
 	using NUnit.Framework;
-	using Windsor.Configuration.Interpreters;
 
 	[TestFixture]
 	public class IoC_155
