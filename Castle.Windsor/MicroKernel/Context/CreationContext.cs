@@ -133,6 +133,7 @@ namespace Castle.MicroKernel.Context
 		/// </summary>
 		private CreationContext()
 		{
+			additionalArguments = new Arguments();
 			dependencies = new DependencyModelCollection();
 			releasePolicy = new NoTrackingReleasePolicy();
 		}
