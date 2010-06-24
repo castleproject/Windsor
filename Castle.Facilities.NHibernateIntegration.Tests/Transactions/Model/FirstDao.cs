@@ -62,12 +62,12 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Transactions
 			using(ISession session = sessManager.OpenSession())
 			{
 				NUnit.Framework.Assert.IsNotNull(session.Transaction);
-
 				session.Delete("from Blog b where b.Name ='" + name + "'");
+				session.Flush();
 			}
 		}
 		
-		[Transaction]
+
 		public virtual void AddBlogRef(BlogRef blogRef)
 		{
 			using(ISession session = sessManager.OpenSession())

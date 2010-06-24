@@ -48,7 +48,6 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Transactions
 				service.DoBlogRefOperation(blog);
 				
 				// Expects a constraint exception on Commit
-
 				Assert.Fail("Must fail");
 			}
 			catch(Exception)

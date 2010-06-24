@@ -152,7 +152,7 @@ namespace Castle.Facilities.NHibernateIntegration
 
 			if (shouldEnlist)
 			{
-				if (!transaction.IsAmbient)
+				if (session.Transaction==null || !session.Transaction.IsActive)
 				{
 					transaction.Context["nh.session.enlisted"] = list;
 

@@ -63,12 +63,11 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Issues.Facilities103
 				Expect.Call(transactionManager.CurrentTransaction).Return(transaction);
 				Expect.Call(factoryResolver.GetSessionFactory(Alias)).Return(sessionFactory);
 				Expect.Call(kernel.HasComponent(string.Format(InterceptorFormatString, Alias))).Return(false);
-				Expect.Call(kernel.HasComponent(InterceptorName)).Return(false);
+				Expect.Call(kernel.HasComponent(InterceptorName)).Return(false).Repeat.Any();
 				Expect.Call(sessionFactory.OpenSession()).Return(session);
 				session.FlushMode = sessionManager.DefaultFlushMode;
 				Expect.Call(transaction.Context).Return(contextDictionary).Repeat.Any();
-				Expect.Call(transaction.IsAmbient).Return(false);
-				Expect.Call(transaction.IsolationMode).Return(DefaultIsolationMode);
+				Expect.Call(transaction.IsolationMode).Return(DefaultIsolationMode).Repeat.Any();
 				Expect.Call(session.BeginTransaction(DefaultIsolationLevel)).Throw(new Exception());
 			}
 
@@ -79,9 +78,9 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Issues.Facilities103
 					sessionManager.OpenSession(Alias);
 					Assert.Fail("DbException not thrown");
 				}
-				catch (Exception)
+				catch (Exception ex)
 				{
-
+					Console.WriteLine(ex.ToString());
 				}
 				Assert.IsNull(sessionStore.FindCompatibleSession(Alias),"The sessionStore shouldn't contain compatible session if the session creation fails");
 			}
