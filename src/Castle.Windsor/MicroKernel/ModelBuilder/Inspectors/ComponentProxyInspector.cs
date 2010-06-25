@@ -74,8 +74,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 			{
 				try
 				{
-					proxyBehaviorAtt.UseSingleInterfaceProxy = (bool)
-						converter.PerformConversion(useSingleInterfaceProxyAttrib, typeof(bool));
+					proxyBehaviorAtt.UseSingleInterfaceProxy = converter.PerformConversion<bool>(useSingleInterfaceProxyAttrib);
 				}
 				catch(ConverterException ex)
 				{
@@ -87,8 +86,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 			{
 				try
 				{
-					proxyBehaviorAtt.UseMarshalByRefProxy = (bool)
-						converter.PerformConversion(marshalByRefProxyAttrib, typeof(bool));
+					proxyBehaviorAtt.UseMarshalByRefProxy = converter.PerformConversion<bool>(marshalByRefProxyAttrib);
 				}
 				catch(ConverterException ex)
 				{

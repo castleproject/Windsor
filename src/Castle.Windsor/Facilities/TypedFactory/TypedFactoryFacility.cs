@@ -97,7 +97,7 @@ namespace Castle.Facilities.TypedFactory
 				var creation = config.Attributes["creation"];
 				var destruction = config.Attributes["destruction"];
 
-				var factoryType = (Type)converter.PerformConversion(config.Attributes["interface"], typeof(Type));
+				var factoryType = converter.PerformConversion<Type>(config.Attributes["interface"]);
 				if(string.IsNullOrEmpty(creation))
 				{
 					var selector = config.Attributes["selector"];

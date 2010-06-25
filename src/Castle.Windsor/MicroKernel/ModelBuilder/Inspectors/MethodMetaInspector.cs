@@ -171,13 +171,13 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 		{
 			String[] parameters = signature.Split(';');
 
-            List<Type> types = new List<Type>();
+			var types = new List<Type>();
 
 			foreach(String param in parameters)
 			{
 				try
 				{
-					types.Add( (Type) converter.PerformConversion( param, typeof(Type) ) );
+					types.Add( converter.PerformConversion<Type>( param ) );
 				}
 				catch(Exception)
 				{

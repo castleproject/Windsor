@@ -86,8 +86,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 				return type;
 			}
 
-			Type implType = (Type) Context.Composition.PerformConversion(typeNode, typeof(Type));
-
+			var implType = Context.Composition.PerformConversion<Type>(typeNode);
 			if (!type.IsAssignableFrom(implType))
 			{
 				String message = String.Format("Type {0} is not assignable to {1}",

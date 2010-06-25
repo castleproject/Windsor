@@ -84,7 +84,7 @@ namespace Castle.Windsor.Installer
 			var typeName = installer.Attributes["type"];
 			if (string.IsNullOrEmpty(typeName) == false)
 			{
-				var type = conversionManager.PerformConversion(typeName, typeof(Type)) as Type;
+				var type = conversionManager.PerformConversion<Type>(typeName);
 				AddInstaller(cache, type);
 				return;
 			}
@@ -167,7 +167,7 @@ namespace Castle.Windsor.Installer
 					continue;
 				}
 
-				var type = ObtainType(typeName, converter);
+				var type = converter.PerformConversion<Type>(typeName);
 
 				var facilityInstance = ReflectionUtil.CreateInstance<IFacility>(type);
 
@@ -193,12 +193,12 @@ namespace Castle.Windsor.Installer
 					continue;
 				}
 
-				var type = ObtainType(typeName, converter);
+				var type = converter.PerformConversion<Type>(typeName);
 				var service = type;
 
 				if (!string.IsNullOrEmpty(serviceTypeName))
 				{
-					service = ObtainType(serviceTypeName, converter);
+					service = converter.PerformConversion<Type>(serviceTypeName);
 				}
 
 				AssertImplementsService(id, service, type);
@@ -246,7 +246,7 @@ namespace Castle.Windsor.Installer
 				var forwardedServiceTypeName = forwardedType.Attributes["service"];
 				try
 				{
-					forwarded.Add(ObtainType(forwardedServiceTypeName, converter));
+					forwarded.Add(converter.PerformConversion<Type>(forwardedServiceTypeName));
 				}
 				catch (Exception e)
 				{
@@ -275,10 +275,5 @@ namespace Castle.Windsor.Installer
 			}
 		}
 #endif
-
-		private static Type ObtainType(String typeName, IConversionManager converter)
-		{
-			return (Type)converter.PerformConversion(typeName, typeof(Type));
-		}
 	}
 }

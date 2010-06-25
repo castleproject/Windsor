@@ -1,6 +1,8 @@
 unreleased changes
 ==================
 
+- added generic overloads for ITypeConverter.PerformConversion to reduce casting.
+
 - it is now possible to call WithService.Foo().WithService.Bar() and both services will be used. Also more methods were added: WithService.Self() and WithService.AllInterfaces()
 
 - added simple debugger visualizer to help diagnosing misconfigured components.

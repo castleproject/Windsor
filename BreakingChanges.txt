@@ -1,4 +1,19 @@
 ================================================================================================
+change - Added two new overloads to ITypeConverter.PerformConversion
+
+impact - very low
+fixability - easy
+revision - 
+
+description - To reduce casting in the most common scenario where converted value is casted to
+	the type it's been converted to, ITypeConverter.PerformConversion has now generic overloads
+	for handling this case.
+
+fix - If you're implementing ITypeConverter via AbstractTypeConverter you don't have to do
+	anything as the base class will handle the conversion for you. Otherwise implement it like
+	in AbstractTypeConverter.
+
+================================================================================================
 change - AddCustomComponent method were moved from IKernel to IKernelInternal interface
 
 impact - very low
