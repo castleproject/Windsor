@@ -85,14 +85,12 @@ namespace Castle.Facilities.Remoting
 
 			if (remoteserverAttValue != null)
 			{
-				server = (RemotingStrategy) 
-					converter.PerformConversion(remoteserverAttValue, typeof(RemotingStrategy));
+				server = converter.PerformConversion<RemotingStrategy>(remoteserverAttValue);
 			}
 
 			if (remoteclientAttValue != null)
 			{
-				client = (RemotingStrategy) 
-					converter.PerformConversion(remoteclientAttValue, typeof(RemotingStrategy));
+				client = converter.PerformConversion<RemotingStrategy>(remoteclientAttValue);
 			}
 
 			DoSemanticCheck(server, model, client);

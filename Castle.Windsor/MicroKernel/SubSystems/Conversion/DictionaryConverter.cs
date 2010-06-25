@@ -55,11 +55,11 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 
 			if (keyTypeName != null)
 			{
-				defaultKeyType = (Type) Context.Composition.PerformConversion( keyTypeName, typeof(Type) );
+				defaultKeyType = Context.Composition.PerformConversion<Type>( keyTypeName);
 			}
 			if (valueTypeName != null)
 			{
-				defaultValueType = (Type) Context.Composition.PerformConversion( valueTypeName, typeof(Type) );
+				defaultValueType = Context.Composition.PerformConversion<Type>(valueTypeName);
 			}
 
 			foreach(IConfiguration itemConfig in configuration.Children)
@@ -77,8 +77,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 
 				if (itemConfig.Attributes["keyType"] != null)
 				{
-					convertKeyTo = (Type) Context.Composition.PerformConversion( 
-						itemConfig.Attributes["keyType"], typeof(Type) );
+					convertKeyTo = Context.Composition.PerformConversion<Type>(itemConfig.Attributes["keyType"]);
 				}
 
 				object key = Context.Composition.PerformConversion(keyValue, convertKeyTo);
@@ -89,8 +88,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 
 				if (itemConfig.Attributes["valueType"] != null)
 				{
-					convertValueTo = (Type) Context.Composition.PerformConversion( 
-						itemConfig.Attributes["valueType"], typeof(Type) );
+					convertValueTo = Context.Composition.PerformConversion<Type>(itemConfig.Attributes["valueType"]);
 				}
 
 				object value;

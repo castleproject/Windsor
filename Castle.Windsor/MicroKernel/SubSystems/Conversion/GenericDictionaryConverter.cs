@@ -65,12 +65,12 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 
 			if (keyTypeName != null)
 			{
-				defaultKeyType = (Type) Context.Composition.PerformConversion(keyTypeName, typeof(Type));
+				defaultKeyType = Context.Composition.PerformConversion<Type>(keyTypeName);
 			}
 			
 			if (valueTypeName != null)
 			{
-				defaultValueType = (Type) Context.Composition.PerformConversion(valueTypeName, typeof(Type));
+				defaultValueType = Context.Composition.PerformConversion<Type>(valueTypeName);
 			}
 
 			var helperType = typeof(DictionaryHelper<,>).MakeGenericType(defaultKeyType, defaultValueType);
@@ -106,7 +106,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 
 					if (itemConfig.Attributes["keyType"] != null)
 					{
-						convertKeyTo = (Type) parent.Context.Composition.PerformConversion(itemConfig.Attributes["keyType"], typeof(Type));
+						convertKeyTo = parent.Context.Composition.PerformConversion<Type>(itemConfig.Attributes["keyType"]);
 					}
 
 					if (!typeof(TKey).IsAssignableFrom(convertKeyTo))
@@ -124,8 +124,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 
 					if (itemConfig.Attributes["valueType"] != null)
 					{
-						convertValueTo =
-							(Type) parent.Context.Composition.PerformConversion(itemConfig.Attributes["valueType"], typeof(Type));
+						convertValueTo = parent.Context.Composition.PerformConversion<Type>(itemConfig.Attributes["valueType"]);
 					}
 
 					if (!typeof(TValue).IsAssignableFrom(convertValueTo))

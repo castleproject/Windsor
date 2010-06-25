@@ -40,7 +40,7 @@ namespace Castle.Facilities.Startable
 			var startable = model.Configuration.Attributes["startable"];
 			if (startable != null)
 			{
-				return (bool)converter.PerformConversion(startable, typeof(bool));
+				return converter.PerformConversion<bool>(startable);
 			}
 
 			return false;

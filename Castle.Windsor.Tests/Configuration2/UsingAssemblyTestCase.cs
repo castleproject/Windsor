@@ -30,7 +30,7 @@ namespace Castle.Windsor.Tests.Configuration2
 		{
 			var container = new WindsorContainer(ConfigHelper.ResolveConfigPath("Configuration2/config_with_using_assembly.xml"));
 			var manager = container.Kernel.GetSubSystem(SubSystemConstants.ConversionManagerKey) as IConversionManager;
-			var type = manager.PerformConversion("BrushMappingMode", typeof(Type));
+			var type = manager.PerformConversion<Type>("BrushMappingMode");
 			Assert.IsNotNull(type);
 		}
 	}

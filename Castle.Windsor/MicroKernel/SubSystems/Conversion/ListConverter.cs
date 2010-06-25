@@ -49,22 +49,26 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 		public override object PerformConversion(IConfiguration configuration, Type targetType)
 		{
 			Debug.Assert(CanHandleType(targetType), "CanHandleType(targetType)");
-			List<object> list = new List<object>();
 
-			String itemType = configuration.Attributes["type"];
-			Type convertTo = typeof(String);
-
-			if (itemType != null)
-			{
-				convertTo = (Type) Context.Composition.PerformConversion( itemType, typeof(Type) );
-			}
-
-			foreach(IConfiguration itemConfig in configuration.Children)
+			var list = new List<object>();
+			var convertTo = GetConvertToType(configuration);
+			foreach(var itemConfig in configuration.Children)
 			{
 				list.Add( Context.Composition.PerformConversion(itemConfig.Value, convertTo) );
 			}
 
 			return list;
+		}
+
+		private Type GetConvertToType(IConfiguration configuration)
+		{
+			var itemType = configuration.Attributes["type"];
+			var convertTo = typeof(String);
+			if (itemType != null)
+			{
+				convertTo = Context.Composition.PerformConversion<Type>(itemType);
+			}
+			return convertTo;
 		}
 	}
 }

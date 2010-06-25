@@ -66,7 +66,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 
 			if (itemType != null)
 			{
-				convertTo = (Type) Context.Composition.PerformConversion(itemType, typeof(Type));
+				convertTo = Context.Composition.PerformConversion<Type>(itemType);
 			}
 
 			var helperType = typeof(ListHelper<>).MakeGenericType(convertTo);
@@ -85,11 +85,10 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 
 			public object ConvertConfigurationToCollection(IConfiguration configuration)
 			{
-				List<T> list = new List<T>();
-
-				foreach(IConfiguration itemConfig in configuration.Children)
+				var list = new List<T>();
+				foreach(var itemConfig in configuration.Children)
 				{
-					T item = (T) parent.Context.Composition.PerformConversion(itemConfig, typeof(T));
+					var item = parent.Context.Composition.PerformConversion<T>(itemConfig);
 					list.Add(item);
 				}
 
