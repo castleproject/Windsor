@@ -71,6 +71,7 @@
       <Link>CommonAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="LoggerImplementation.cs" />
     <Compile Include="LoggerResolver.cs">
       <SubType>Code</SubType>
     </Compile>
