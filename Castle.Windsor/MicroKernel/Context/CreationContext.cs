@@ -17,6 +17,7 @@ namespace Castle.MicroKernel.Context
 	using System;
 	using System.Collections;
 	using System.Collections.Generic;
+	using System.Diagnostics;
 
 	using Castle.Core;
 	using Castle.MicroKernel.Releasers;
@@ -44,7 +45,7 @@ namespace Castle.MicroKernel.Context
 
 		private readonly IHandler handler;
 		private readonly IReleasePolicy releasePolicy;
-		private readonly IDictionary additionalArguments;
+		private IDictionary additionalArguments;
 		private readonly Type[] genericArguments;
 
 		/// <summary>
@@ -101,14 +102,14 @@ namespace Castle.MicroKernel.Context
 		{
 			this.handler = handler;
 			this.releasePolicy = releasePolicy;
-			this.additionalArguments = EnsureAdditionalArgumentsNotNull(additionalArguments);
+			this.additionalArguments = EnsureAdditionalArgumentsWriteable(additionalArguments);
 			this.converter = conversionManager;
 			dependencies = new DependencyModelCollection();
 
 			genericArguments = ExtractGenericArguments(typeToExtractGenericArguments);
 		}
 
-		private IDictionary EnsureAdditionalArgumentsNotNull(IDictionary dictionary)
+		private IDictionary EnsureAdditionalArgumentsWriteable(IDictionary dictionary)
 		{
 			// NOTE: this is actually here mostly to workaround the fact that ReflectionBasedDictionaryAdapter is read only
 			// we could make it writeable instead, but I'm not sure that would make sense.
@@ -117,7 +118,7 @@ namespace Castle.MicroKernel.Context
 			// account when dealing with DynamicParameters
 			if (dictionary == null)
 			{
-				return new Arguments();
+				return null;
 			}
 
 			if (!(dictionary is ReflectionBasedDictionaryAdapter))
@@ -133,7 +134,6 @@ namespace Castle.MicroKernel.Context
 		/// </summary>
 		private CreationContext()
 		{
-			additionalArguments = new Arguments();
 			dependencies = new DependencyModelCollection();
 			releasePolicy = new NoTrackingReleasePolicy();
 		}
@@ -143,6 +143,9 @@ namespace Castle.MicroKernel.Context
 		public virtual object Resolve(CreationContext context, ISubDependencyResolver contextHandlerResolver,
 									  ComponentModel model, DependencyModel dependency)
 		{
+			Debug.Assert(CanResolve(context, contextHandlerResolver, model, dependency),
+			             "CanResolve(context, contextHandlerResolver, model, dependency)");
+
 			var inlineArgument = additionalArguments[dependency.DependencyKey];
 			if (inlineArgument != null)
 			{
@@ -171,6 +174,10 @@ namespace Castle.MicroKernel.Context
 		public virtual bool CanResolve(CreationContext context, ISubDependencyResolver contextHandlerResolver,
 		                               ComponentModel model, DependencyModel dependency)
 		{
+			if(additionalArguments == null)
+			{
+				return false;
+			}
 			var canResolveByKey = CanResolveByKey(dependency);
 			var canResolveByType = CanResolveByType(dependency);
 			return canResolveByKey || canResolveByType;
@@ -179,7 +186,7 @@ namespace Castle.MicroKernel.Context
 		private bool CanResolveByType(DependencyModel dependency)
 		{
 			if (dependency.TargetType == null) return false;
-			if (additionalArguments == null) return false;
+			Debug.Assert(additionalArguments != null, "additionalArguments != null");
 
 			var inlineArgument = additionalArguments[dependency.TargetType];
 			if (inlineArgument != null && converter != null &&
@@ -196,7 +203,7 @@ namespace Castle.MicroKernel.Context
 		private bool CanResolveByKey(DependencyModel dependency)
 		{
 			if (dependency.DependencyKey == null) return false;
-			if (additionalArguments == null) return false;
+			Debug.Assert(additionalArguments != null, "additionalArguments != null");
 
 			var inlineArgument = additionalArguments[dependency.DependencyKey];
 			if (inlineArgument != null && converter != null && 
@@ -219,7 +226,14 @@ namespace Castle.MicroKernel.Context
 
 		public IDictionary AdditionalParameters
 		{
-			get { return additionalArguments; }
+			get
+			{
+				if(additionalArguments == null)
+				{
+					additionalArguments = new Arguments();
+				}
+				return additionalArguments;
+			}
 		}
 
 		public bool HasAdditionalParameters
