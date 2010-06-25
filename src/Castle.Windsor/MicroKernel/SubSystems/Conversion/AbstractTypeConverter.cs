@@ -55,5 +55,15 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 		public abstract object PerformConversion(String value, Type targetType);
 
 		public abstract object PerformConversion(IConfiguration configuration, Type targetType);
+
+		public TTarget PerformConversion<TTarget>(String value)
+		{
+			return (TTarget)PerformConversion(value, typeof(TTarget));
+		}
+
+		public TTarget PerformConversion<TTarget>(IConfiguration configuration)
+		{
+			return (TTarget)PerformConversion(configuration, typeof(TTarget));
+		}
 	}
 }
