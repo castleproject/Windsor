@@ -148,6 +148,16 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 			throw new ConverterException(message);
 		}
 
+		public TTarget PerformConversion<TTarget>(string value)
+		{
+			return (TTarget)PerformConversion(value, typeof(TTarget));
+		}
+
+		public TTarget PerformConversion<TTarget>(IConfiguration configuration)
+		{
+			return (TTarget)PerformConversion(configuration, typeof(TTarget));
+		}
+
 		#endregion
 
 		#region ITypeConverterContext Members

@@ -62,5 +62,9 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 		/// <param name="targetType"></param>
 		/// <returns></returns>
 		object PerformConversion(IConfiguration configuration, Type targetType);
+
+		TTarget PerformConversion<TTarget>(String value);
+
+		TTarget PerformConversion<TTarget>(IConfiguration configuration);
 	}
 }
