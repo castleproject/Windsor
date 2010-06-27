@@ -1,6 +1,10 @@
 unreleased changes
 ==================
 
+- added helper methods to fluently configure logging facility using: container.AddFacility<LoggingFacility>( f = > f.Fluent().Magic().Here() );
+
+- added overload for UsingFactoryMethod which exposees ComponentModel of component to the factory
+
 - added generic overloads for ITypeConverter.PerformConversion to reduce casting.
 
 - it is now possible to call WithService.Foo().WithService.Bar() and both services will be used. Also more methods were added: WithService.Self() and WithService.AllInterfaces()

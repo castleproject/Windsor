@@ -132,10 +132,10 @@ namespace Castle.Facilities.Logging
 			return this;
 		}
 
-		public LoggingFacility LogUsing<TCUstomLoggerFactory>() where TCUstomLoggerFactory : ILoggerFactory
+		public LoggingFacility LogUsing<TCustomLoggerFactory>() where TCustomLoggerFactory : ILoggerFactory
 		{
 			loggerImplementation = LoggerImplementation.Custom;
-			loggingFactoryType = typeof(TCUstomLoggerFactory);
+			loggingFactoryType = typeof(TCustomLoggerFactory);
 			return this;
 		}
 
