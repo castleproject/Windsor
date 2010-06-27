@@ -4348,61 +4348,6 @@
             <param name="loggerName">The Subname of this logger.</param>
             <returns>The New ILogger instance.</returns> 
         </member>
-        <member name="T:Castle.Core.Logging.WebLogger">
-            <summary>
-            The WebLogger sends everything to the HttpContext.Trace 
-            </summary>
-            <remarks>
-            Trace must be enabled on the Asp.Net configuration file (web.config or machine.config)
-            </remarks>
-        </member>
-        <member name="M:Castle.Core.Logging.WebLogger.#ctor">
-            <summary>
-            Creates a new WebLogger with the priority set to DEBUG.
-            </summary>
-        </member>
-        <member name="M:Castle.Core.Logging.WebLogger.#ctor(Castle.Core.Logging.LoggerLevel)">
-            <summary>
-            Creates a new WebLogger.
-            </summary>
-            <param name="logLevel">The Log level typecode.</param>
-        </member>
-        <member name="M:Castle.Core.Logging.WebLogger.#ctor(System.String)">
-            <summary>
-            Creates a new WebLogger.
-            </summary>
-            <param name="name">The Log name.</param>
-        </member>
-        <member name="M:Castle.Core.Logging.WebLogger.#ctor(System.String,Castle.Core.Logging.LoggerLevel)">
-            <summary>
-            Creates a new WebLogger.
-            </summary>
-            <param name="name">The Log name.</param>
-            <param name="loggerLevel">The Log level typecode.</param>
-        </member>
-        <member name="M:Castle.Core.Logging.WebLogger.Log(Castle.Core.Logging.LoggerLevel,System.String,System.String,System.Exception)">
-            <summary>
-            A Common method to log.
-            </summary>
-            <param name="loggerLevel">The level of logging</param>
-            <param name="loggerName">The Log name.</param>
-            <param name="message">The Message</param>
-            <param name="exception">The Exception</param>
-        </member>
-        <member name="M:Castle.Core.Logging.WebLogger.CreateChildLogger(System.String)">
-            <summary>
-            Just returns this logger (<c>WebLogger</c> is not hierarchical).
-            </summary>
-            <param name="loggerName">Ignored</param>
-            <returns>This ILogger instance.</returns> 
-        </member>
-        <member name="M:Castle.Core.Logging.WebLogger.TryToGetTraceContext">
-            <summary>
-            Tries to get the current http context's trace context.
-            </summary>
-            <returns>The current http context's trace context or null if none is 
-            available</returns>
-        </member>
         <member name="T:Castle.Core.Configuration.AbstractConfiguration">
             <summary>
             This is an abstract <see cref="T:Castle.Core.Configuration.IConfiguration"/> implementation
