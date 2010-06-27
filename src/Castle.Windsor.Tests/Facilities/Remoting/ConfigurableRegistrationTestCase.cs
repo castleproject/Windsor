@@ -1,10 +1,10 @@
 
 
 #if (!SILVERLIGHT)
-namespace Castle.Facilities.Remoting.Tests
+namespace Castle.Windsor.Tests.Facilities.Remoting
 {
 	using System;
-	using Castle.Facilities.Remoting.TestComponents;
+
 	using Castle.Windsor;
 	using Castle.Windsor.Tests;
 
@@ -21,7 +21,7 @@ namespace Castle.Facilities.Remoting.Tests
 		[Test]
 		public void ClientContainerConsumingRemoteComponents()
 		{
-			clientDomain.DoCallBack(new CrossAppDomainDelegate(ClientContainerConsumingRemoteComponentsCallback));
+			clientDomain.DoCallBack(ClientContainerConsumingRemoteComponentsCallback);
 		}
 
 		public void ClientContainerConsumingRemoteComponentsCallback()

@@ -14,15 +14,13 @@
 
 
 #if(!SILVERLIGHT)
-namespace Castle.Facilities.Remoting.Tests
+namespace Castle.Windsor.Tests.Facilities.Remoting
 {
 	using System;
-    using System.Text;
+	using System.Text;
 	using System.Runtime.Remoting;
 
 	using Castle.Windsor;
-
-	using Castle.Facilities.Remoting.TestComponents;
 	using Castle.Windsor.Tests;
 
 	using NUnit.Framework;

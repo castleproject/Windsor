@@ -45,7 +45,7 @@ namespace Castle.MicroKernel
 		/// </summary>
 		/// <param name="kernel">The kernel instance</param>
 		/// <param name="model">The component model</param>
-		/// <returns><c>true</c> if an instance must be passed to <see cref="Create"/></returns>
+		/// <returns><c>true</c> if an instance must be passed to <see cref="Create(Castle.MicroKernel.IKernel,object,Castle.Core.ComponentModel,Castle.MicroKernel.Context.CreationContext,object[])"/></returns>
 		bool RequiresTargetInstance(IKernel kernel, ComponentModel model);
 
 		/// <summary>
@@ -60,5 +60,7 @@ namespace Castle.MicroKernel
 		/// <param name="model"></param>
 		/// <returns></returns>
 		bool ShouldCreateProxy(ComponentModel model);
+
+		object Create(IProxyFactoryExtension customFactory, IKernel kernel, ComponentModel model, CreationContext context, params object[] constructorArguments);
 	}
 }

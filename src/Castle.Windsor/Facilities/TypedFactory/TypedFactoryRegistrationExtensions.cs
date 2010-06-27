@@ -91,19 +91,31 @@ namespace Castle.Facilities.TypedFactory
 			{
 				configuration.Invoke(settings);
 			}
-			
-			return registration.UsingFactoryMethod((k,c) => 
-			                                       {
-			                                       	var factory = k.Resolve<DelegateFactory>(TypedFactoryFacility.DelegateFactoryKey);
-			                                       	var selector = settings.Reference.Resolve(k,c);
-			                                       	var @delegate = factory.GenerateDelegate(invoke, selector, registration.ServiceType);
-			                                       	k.ReleaseComponent(selector);
-			                                       	k.ReleaseComponent(factory);
-			                                       	return (TDelegate)(object)@delegate;
-			                                       });
-			                                       
+
+			var componentRegistration = AttachFactoryInterceptor(registration);
+			componentRegistration = AttachDelegateFactory(componentRegistration);
+			return AttachConfiguration(componentRegistration, configuration);
 		}
-		
+
+		private static ComponentRegistration<T> AttachDelegateFactory<T>(ComponentRegistration<T> registration)
+		{
+			return registration.UsingFactoryMethod((k, c) =>
+			{
+				// TODO: This can be moved to normal factory
+				var delegateProxyFactory = k.Resolve<IProxyFactoryExtension>(TypedFactoryFacility.DelegateProxyFactoryKey,
+				                                                             new Arguments(new { targetDelegateType = typeof(T) }));
+				var @delegate = k.ProxyFactory.Create(delegateProxyFactory, k,
+				                                      c.Handler.ComponentModel, c);
+				k.ReleaseComponent(delegateProxyFactory);
+				return (T)@delegate;
+			});
+		}
+
+		private static ComponentRegistration<TDelegate> AttachFactoryInterceptor<TDelegate>(ComponentRegistration<TDelegate> registration)
+		{
+			return registration.Interceptors(new InterceptorReference(TypedFactoryFacility.InterceptorKey)).Last;
+		}
+
 		private static ComponentRegistration<TFactoryInterface> RegisterInterfaceBasedFactory<TFactoryInterface>(ComponentRegistration<TFactoryInterface> registration, Action<TypedFactoryConfiguration> configuration)
 		{
 			if (HasOutArguments(registration.ServiceType)) 
@@ -111,6 +123,11 @@ namespace Castle.Facilities.TypedFactory
 				throw new ComponentRegistrationException(string.Format("Type {0} can not be used as typed factory because it has methods with 'out' arguments.", registration.ServiceType));
 			}
 			var componentRegistration = registration.Interceptors(new InterceptorReference(TypedFactoryFacility.InterceptorKey)).Last;
+			return AttachConfiguration(componentRegistration, configuration);
+		}
+
+		private static ComponentRegistration<TFactoryInterface> AttachConfiguration<TFactoryInterface>(ComponentRegistration<TFactoryInterface> componentRegistration, Action<TypedFactoryConfiguration> configuration)
+		{
 			if (configuration == null)
 			{
 				return componentRegistration;
@@ -123,11 +140,11 @@ namespace Castle.Facilities.TypedFactory
 				return componentRegistration;
 			}
 			return componentRegistration.DynamicParameters((k, c, d) =>
-			                                               {
-			                                               	var selector = selectorReference.Resolve(k, c);
-			                                               	d.Insert(selector);
-			                                               	return k2 => k2.ReleaseComponent(selector);
-			                                               });
+			{
+				var selector = selectorReference.Resolve(k, c);
+				d.Insert(selector);
+				return k2 => k2.ReleaseComponent(selector);
+			});
 		}
 
 		private static bool HasOutArguments(Type serviceType)

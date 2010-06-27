@@ -14,12 +14,10 @@
 
 namespace Castle.Windsor.Tests.Facilities.TypedFactory.Factories
 {
-	using System.Collections.Generic;
+	using Castle.Windsor.Tests.ClassComponents;
 
-	using Castle.Windsor.Tests.Facilities.TypedFactory.Components;
-
-	public interface InvalidDummyComponentListFactory
+	public interface INonDisposableFactory
 	{
-		List<IDummyComponent> All();
+		DisposableComponent Create();
 	}
 }

@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Facilities.TypedFactory.Tests.Factories
+namespace Castle.Windsor.Tests.Facilities.TypedFactory.Factories
 {
 	public interface IGenericComponentsFactory
 	{

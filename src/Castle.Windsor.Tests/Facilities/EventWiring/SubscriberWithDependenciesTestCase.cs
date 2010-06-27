@@ -13,14 +13,15 @@
 // limitations under the License.
 
 #if (!SILVERLIGHT)
-namespace Castle.Facilities.EventWiring.Tests
+namespace Castle.Windsor.Tests.Facilities.EventWiring
 {
 	using System;
 
 	using Castle.Windsor.Tests;
 
 	using NUnit.Framework;
-	using Windsor;
+
+	using Castle.Windsor;
 
 	[TestFixture]
 	public class SubscriberWithDependenciesTestCase

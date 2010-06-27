@@ -12,12 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Facilities.FactorySupport.Tests
+namespace Castle.Windsor.Tests.Facilities.FactorySupport
 {
 	using System;
 
+	using Castle.Facilities.FactorySupport;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Registration;
+
 	using NUnit.Framework;
 
 	[TestFixture]

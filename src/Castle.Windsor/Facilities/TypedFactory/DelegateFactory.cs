@@ -27,22 +27,15 @@ namespace Castle.Facilities.TypedFactory
 	[Singleton]
 	public class DelegateFactory : ILazyComponentLoader
 	{
-		private readonly IDelegateGenerator delegateBuiler;
 		private readonly IKernel kernel;
-		protected readonly TypedFactoryConfiguration settings = new TypedFactoryConfiguration();
 
-		public DelegateFactory(IKernel kernel, IDelegateGenerator delegateBuiler)
+		public DelegateFactory(IKernel kernel)
 		{
 			if (kernel == null)
 			{
 				throw new ArgumentNullException("kernel");
 			}
-			if (delegateBuiler == null)
-			{
-				throw new ArgumentNullException("delegateBuiler");
-			}
 			this.kernel = kernel;
-			this.delegateBuiler = delegateBuiler;
 		}
 
 		#region ILazyComponentLoader Members
@@ -71,17 +64,28 @@ namespace Castle.Facilities.TypedFactory
 			{
 				return null;
 			}
-			
+
+
+
+
 			return Component.For(service)
 				.Named(key)
-				.LifeStyle.Singleton
-				.UsingFactoryMethod((k,c) => 
-                                 {
-                                 	var selector = settings.Reference.Resolve(k,c);
-                                 	var @delegate = GenerateDelegate(invoke, selector, service);
-                                 	k.ReleaseComponent(selector);
-                                 	return @delegate;
-                                 });
+				.LifeStyle.Transient
+				.UsingFactoryMethod((k,m, c) =>
+				{
+					var delegateProxyFactory = k.Resolve<IProxyFactoryExtension>(TypedFactoryFacility.DelegateProxyFactoryKey,
+					                                                             new Arguments(new { targetDelegateType = service }));
+					var @delegate = k.ProxyFactory.Create(delegateProxyFactory, k, m, c);
+					
+					k.ReleaseComponent(delegateProxyFactory);
+					return @delegate;
+				})
+				.DynamicParameters((k, d) =>
+				{
+					var selector = new DefaultDelegateComponentSelector();
+					d.Insert<ITypedFactoryComponentSelector>(selector);
+				})
+				.Interceptors(new InterceptorReference(TypedFactoryFacility.InterceptorKey)).Last;
 		}
 
 		public static MethodInfo ExtractInvokeMethod(Type service)
@@ -98,14 +102,6 @@ namespace Castle.Facilities.TypedFactory
 			}
 			
 			return invoke;
-		}
-
-		public virtual Delegate GenerateDelegate(MethodInfo invoke, ITypedFactoryComponentSelector selector, Type delegateType)
-		{
-			var invocation = new DelegateInvocation(kernel, selector, invoke, invoke.ReturnType);
-			var @delegate = delegateBuiler.BuildDelegate(invocation, invoke, delegateType);
-			Debug.Assert(@delegate != null, "@delegate != null");
-			return @delegate;
 		}
 
 		protected virtual string ExtractServiceName(string key)

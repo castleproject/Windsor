@@ -13,12 +13,11 @@
 // limitations under the License.
 
 #if (!SILVERLIGHT)
-namespace Castle.Facilities.Remoting.Tests
+namespace Castle.Windsor.Tests.Facilities.Remoting
 {
 	using System;
 
 	using Castle.Windsor;
-	using Castle.Facilities.Remoting.TestComponents;
 	using Castle.Windsor.Tests;
 
 	using NUnit.Framework;

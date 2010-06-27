@@ -148,10 +148,13 @@
     <Compile Include="Facilities\Startable\Components\Startable.cs" />
     <Compile Include="Facilities\TypedFactory\Delegates\Bar.cs" />
     <Compile Include="Facilities\TypedFactory\Delegates\Baz.cs" />
+    <Compile Include="Facilities\TypedFactory\Delegates\DisposableFoo.cs" />
     <Compile Include="Facilities\TypedFactory\Delegates\Foo.cs" />
     <Compile Include="Facilities\TypedFactory\Delegates\HasOnlyOneArgMatchingDelegatesParameter.cs" />
     <Compile Include="Facilities\TypedFactory\Delegates\HasTwoConstructors.cs" />
-    <Compile Include="Facilities\TypedFactory\Delegates\TypedFactoryDelegatesTestCase.cs" />
+    <Compile Include="Facilities\TypedFactory\Delegates\UsesDisposableFooDelegate.cs" />
+    <Compile Include="Facilities\TypedFactory\Factories\INonDisposableFactory.cs" />
+    <Compile Include="Facilities\TypedFactory\TypedFactoryDelegatesTestCase.cs" />
     <Compile Include="Facilities\TypedFactory\Delegates\UsesBarDelegate.cs" />
     <Compile Include="Facilities\TypedFactory\Delegates\UsesFooDelegate.cs" />
     <Compile Include="Facilities\TypedFactory\Factories\DummyComponentArrayFactory.cs" />
@@ -985,6 +988,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Facilities\TypedFactory\typedFactory_castle_config.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <Content Include="IOC-51.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

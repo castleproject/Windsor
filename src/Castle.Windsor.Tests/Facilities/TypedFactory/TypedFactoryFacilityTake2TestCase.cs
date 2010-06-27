@@ -18,8 +18,6 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 	using System.Linq;
 
 	using Castle.Facilities.TypedFactory;
-	using Castle.Facilities.TypedFactory.Tests.Components;
-	using Castle.Facilities.TypedFactory.Tests.Factories;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Registration;
 	using Castle.Windsor.Tests.ClassComponents;
@@ -212,7 +210,7 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 
 			Assert.IsInstanceOf<Component2>(component);
 		}
-		
+
 		[Test]
 		public void Can_pick_non_default_selector_by_name_delegate()
 		{
@@ -421,6 +419,20 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 			Assert.IsFalse(component.Disposed);
 
 			factory.Destroy(component);
+			Assert.IsTrue(component.Disposed);
+		}
+
+		[Test]
+		public void Releasing_factory_release_components()
+		{
+			container.Register(
+				Component.For<INonDisposableFactory>().LifeStyle.Transient.AsFactory(),
+				Component.For<DisposableComponent>().LifeStyle.Transient);
+			var factory = container.Resolve<INonDisposableFactory>();
+			var component = factory.Create();
+			Assert.IsFalse(component.Disposed);
+
+			container.Release(factory);
 			Assert.IsTrue(component.Disposed);
 		}
 	}

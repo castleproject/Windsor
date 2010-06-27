@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.MicroKernel.Tests.Facilities.FactorySupport
+namespace Castle.Windsor.Tests.Facilities.FactorySupport
 {
 	using System;
 	using System.Collections.Generic;
@@ -20,6 +20,7 @@ namespace Castle.MicroKernel.Tests.Facilities.FactorySupport
 	using Castle.Core;
 	using Castle.Core.Configuration;
 	using Castle.Facilities.FactorySupport;
+	using Castle.MicroKernel;
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Tests.ClassComponents;
 	using Castle.MicroKernel.Tests.Lifestyle.Components;

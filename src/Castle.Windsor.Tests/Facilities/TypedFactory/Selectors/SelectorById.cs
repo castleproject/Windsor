@@ -22,16 +22,6 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory.Selectors
 
 	public class SelectorById : DefaultTypedFactoryComponentSelector
 	{
-		protected override string GetComponentName(MethodInfo method, object[] arguments)
-		{
-			if (method.Name.Equals("ComponentNamed"))
-			{
-				return (string)arguments[0];
-			}
-
-			return base.GetComponentName(method, arguments);
-		}
-
 		protected override IDictionary GetArguments(MethodInfo method, object[] arguments)
 		{
 			if (method.Name.Equals("ComponentNamed"))
@@ -41,6 +31,16 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory.Selectors
 			}
 
 			return base.GetArguments(method, arguments);
+		}
+
+		protected override string GetComponentName(MethodInfo method, object[] arguments)
+		{
+			if (method.Name.Equals("ComponentNamed"))
+			{
+				return (string)arguments[0];
+			}
+
+			return base.GetComponentName(method, arguments);
 		}
 	}
 }

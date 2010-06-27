@@ -18,14 +18,14 @@
 
 		<component
 			id="calcservice"
-			service="Castle.Facilities.Remoting.TestComponents.ICalcService, Castle.Windsor.Tests"
-			type="Castle.Facilities.Remoting.TestComponents.CalcServiceImpl, Castle.Windsor.Tests"
+			service="Castle.Windsor.Tests.Facilities.Remoting.ICalcService, Castle.Windsor.Tests"
+			type="Castle.Windsor.Tests.Facilities.Remoting.CalcServiceImpl, Castle.Windsor.Tests"
 			remoteclient="ClientActivated" />
 
 		<component
 			id="calcservice2"
-			service="Castle.Facilities.Remoting.TestComponents.ICalcService, Castle.Windsor.Tests"
-			type="Castle.Facilities.Remoting.TestComponents.InterceptableCalcService, Castle.Windsor.Tests"
+			service="Castle.Windsor.Tests.Facilities.Remoting.ICalcService, Castle.Windsor.Tests"
+			type="Castle.Windsor.Tests.Facilities.Remoting.InterceptableCalcService, Castle.Windsor.Tests"
 			remoteclient="ClientActivated"
 			skipRemotingRegistration="true" />
 

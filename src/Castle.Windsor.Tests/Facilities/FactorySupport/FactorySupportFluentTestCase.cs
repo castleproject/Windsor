@@ -12,10 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.MicroKernel.Tests.Facilities.FactorySupport
+namespace Castle.Windsor.Tests.Facilities.FactorySupport
 {
 	using Castle.Facilities.FactorySupport;
+	using Castle.MicroKernel;
 	using Castle.MicroKernel.Registration;
+
 	using NUnit.Framework;
 
 	class User

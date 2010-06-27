@@ -29,7 +29,7 @@ namespace Castle.Facilities.TypedFactory
 		private readonly MethodInfo invoke;
 		private readonly Type serviceType;
 
-		public DelegateInvocation(IKernel kernel, ITypedFactoryComponentSelector selector, MethodInfo invoke,Type serviceType)
+		public DelegateInvocation(IKernel kernel, ITypedFactoryComponentSelector selector, MethodInfo invoke, Type serviceType)
 		{
 			this.kernel = kernel;
 			this.selector = selector;

@@ -83,7 +83,7 @@ namespace Castle.MicroKernel.Registration.Interceptor
 
 		private static void AddDependencyModel(InterceptorReference interceptor, ComponentModel model)
 		{
-			DependencyModel dependency = new DependencyModel(
+			var dependency = new DependencyModel(
 				DependencyType.Service, interceptor.ComponentKey,
 				interceptor.ServiceType, false);
 			model.Dependencies.Add(dependency);

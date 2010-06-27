@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Facilities.EventWiring.Tests.Model
+namespace Castle.Windsor.Tests.Facilities.EventWiring.Model
 {
 	using System;
 
