@@ -22,12 +22,13 @@ namespace Castle.MicroKernel.Tests.Registration
 	using Castle.Core.Configuration;
 	using Castle.DynamicProxy;
 	using Castle.Facilities.Startable;
-	using Castle.Facilities.Startable.Tests.Components;
 	using Castle.MicroKernel.Proxy;
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Tests.ClassComponents;
 	using Castle.MicroKernel.Tests.Configuration.Components;
 	using Castle.MicroKernel.Tests.Lifestyle.Components;
+	using Castle.Windsor.Tests.Facilities.Startable.Components;
+
 	using NUnit.Framework;
 
 	public class ComponentRegistrationTestCase : RegistrationTestCaseBase

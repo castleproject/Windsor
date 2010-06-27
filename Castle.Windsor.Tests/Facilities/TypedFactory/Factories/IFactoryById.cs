@@ -14,7 +14,7 @@
 
 namespace Castle.Windsor.Tests.Facilities.TypedFactory.Factories
 {
-	using Castle.Facilities.TypedFactory.Tests.Components;
+	using Castle.Windsor.Tests.Facilities.TypedFactory.Components;
 
 	public interface IFactoryById
 	{

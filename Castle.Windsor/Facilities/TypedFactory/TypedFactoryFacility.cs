@@ -18,6 +18,7 @@ namespace Castle.Facilities.TypedFactory
 
 	using Castle.Core;
 	using Castle.Core.Configuration;
+	using Castle.Facilities.TypedFactory.Internal;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Facilities;
 	using Castle.MicroKernel.Proxy;
@@ -32,7 +33,7 @@ namespace Castle.Facilities.TypedFactory
 	{
 		public static readonly string InterceptorKey = "Castle.TypedFactory.Interceptor";
 		public static readonly string DelegateFactoryKey = "Castle.TypedFactory.DelegateFactory";
-		public static readonly string DelegateGeneratorKey = "Castle.TypedFactory.DelegateGenerator";
+		public static readonly string DelegateProxyFactoryKey = "Castle.TypedFactory.DelegateProxyFactory";
 
 		[Obsolete("This method is obsolete. Use AsFactory() extension method on fluent registration API instead.")]
 		public void AddTypedFactoryEntry(FactoryEntry entry)
@@ -58,12 +59,12 @@ namespace Castle.Facilities.TypedFactory
 
 		private void InitDelegateBasedFactory()
 		{
-			Kernel.Register(Component.For<IDelegateGenerator>()
-			                	.ImplementedBy<ExpressionTreeBasedDelegateGenerator>()
-			                	.Named(DelegateGeneratorKey)
-			                	.Unless(Component.ServiceAlreadyRegistered),
-			                Component.For<DelegateFactory>()
+			Kernel.Register(Component.For<DelegateFactory>()
 			                	.Named(DelegateFactoryKey)
+			                	.Unless(Component.ServiceAlreadyRegistered),
+			                Component.For<IProxyFactoryExtension>()
+			                	.ImplementedBy<DelegateProxyFactory>()
+			                	.Named(DelegateProxyFactoryKey)
 			                	.Unless(Component.ServiceAlreadyRegistered));
 		}
 

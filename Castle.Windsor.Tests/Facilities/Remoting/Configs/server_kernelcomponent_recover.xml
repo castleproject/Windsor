@@ -19,8 +19,8 @@
     <component 
 		id="calc.service" 
 		startable="true"
-		service="Castle.Facilities.Remoting.TestComponents.ICalcService, Castle.Windsor.Tests"
-		type="Castle.Facilities.Remoting.TestComponents.CalcServiceImpl, Castle.Windsor.Tests"
+		service="Castle.Windsor.Tests.Facilities.Remoting.ICalcService, Castle.Windsor.Tests"
+		type="Castle.Windsor.Tests.Facilities.Remoting.CalcServiceImpl, Castle.Windsor.Tests"
 		remoteserver="recoverableComponent" />
 		<!-- If uri is specified here, client uri should be a full uri (baseUri + uri) 
 			server:  uri="test" 

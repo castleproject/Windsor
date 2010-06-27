@@ -12,14 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Windsor.Tests.Facilities.TypedFactory.Factories
+namespace Castle.MicroKernel
 {
-	using System.Collections.Generic;
+	using Castle.DynamicProxy;
 
-	using Castle.Windsor.Tests.Facilities.TypedFactory.Components;
-
-	public interface InvalidDummyComponentListFactory
+	public interface IProxyFactoryExtension
 	{
-		List<IDummyComponent> All();
+		object Generate(IProxyBuilder builder, ProxyGenerationOptions options, IInterceptor[] interceptors);
 	}
 }

@@ -19,7 +19,7 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory.Selectors
 
 	using Castle.Facilities.TypedFactory;
 
-	public class MultipleSelector:ITypedFactoryComponentSelector
+	public class MultipleSelector : ITypedFactoryComponentSelector
 	{
 		public TypedFactoryComponent SelectComponent(MethodInfo method, Type type, object[] arguments)
 		{

@@ -12,14 +12,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Windsor.Tests.Facilities.TypedFactory.Factories
+namespace Castle.Windsor.Tests.Facilities.TypedFactory.Delegates
 {
-	using System.Collections.Generic;
+	using System;
 
-	using Castle.Windsor.Tests.Facilities.TypedFactory.Components;
-
-	public interface InvalidDummyComponentListFactory
+	public class UsesDisposableFooDelegate
 	{
-		List<IDummyComponent> All();
+		private readonly Func<int, DisposableFoo> myFooFactory;
+		private int counter;
+
+		public UsesDisposableFooDelegate(Func<int, DisposableFoo> myFooFactory)
+		{
+			this.myFooFactory = myFooFactory;
+			counter = 0;
+		}
+
+		public DisposableFoo GetFoo()
+		{
+			return myFooFactory(++counter);
+		}
 	}
 }

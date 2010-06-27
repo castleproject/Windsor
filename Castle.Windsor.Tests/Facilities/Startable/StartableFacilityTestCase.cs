@@ -12,16 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Facilities.Startable.Tests
+namespace Castle.Windsor.Tests.Facilities.Startable
 {
-    using System;
-    using System.Collections.Generic;
+	using System.Collections.Generic;
 
 	using Castle.Core;
 	using Castle.Core.Configuration;
-	using Castle.Facilities.Startable.Tests.Components;
+	using Castle.Facilities.Startable;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Registration;
+	using Castle.Windsor.Tests.Facilities.Startable.Components;
 
 	using NUnit.Framework;
 

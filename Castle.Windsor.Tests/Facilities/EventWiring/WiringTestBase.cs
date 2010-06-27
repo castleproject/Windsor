@@ -13,11 +13,11 @@
 // limitations under the License.
 
 #if (!SILVERLIGHT)
-namespace Castle.Facilities.EventWiring.Tests
+namespace Castle.Windsor.Tests.Facilities.EventWiring
 {
-	using Castle.Facilities.EventWiring.Tests.Model;
 	using Castle.Windsor;
 	using Castle.Windsor.Tests;
+	using Castle.Windsor.Tests.Facilities.EventWiring.Model;
 
 	using NUnit.Framework;
 

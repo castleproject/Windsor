@@ -13,17 +13,15 @@
 // limitations under the License.
 
 #if (!SILVERLIGHT)
-namespace Castle.Facilities.Remoting.Tests
+namespace Castle.Windsor.Tests.Facilities.Remoting
 {
 	using System;
 	using System.Runtime.Remoting;
 	using System.Runtime.Remoting.Activation;
 
-	using Castle.Facilities.Remoting.TestComponents;
 	using Castle.Windsor.Tests;
 
 	using NUnit.Framework;
-
 
 	[TestFixture, Serializable]
 	public class RemoteClientActivatedTestCase : AbstractRemoteTestCase

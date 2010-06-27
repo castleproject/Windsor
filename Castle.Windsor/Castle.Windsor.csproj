@@ -102,6 +102,7 @@
     <Compile Include="Facilities\TypedFactory\ExpressionTreeBasedDelegateGenerator.cs" />
     <Compile Include="Facilities\TypedFactory\IDelegateGenerator.cs" />
     <Compile Include="Facilities\TypedFactory\DelegateFactory.cs" />
+    <Compile Include="Facilities\TypedFactory\Internal\DelegateProxyFactory.cs" />
     <Compile Include="Facilities\TypedFactory\NoUniqueComponentException.cs" />
     <Compile Include="Facilities\TypedFactory\TypedFactoryConfiguration.cs" />
     <Compile Include="MicroKernel\ComponentActivator\AbstractComponentActivator.cs">
@@ -144,6 +145,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="MicroKernel\IKernelInternal.cs" />
+    <Compile Include="MicroKernel\IProxyFactoryExtension.cs" />
     <Compile Include="MicroKernel\KernelException.cs">
       <SubType>Code</SubType>
     </Compile>

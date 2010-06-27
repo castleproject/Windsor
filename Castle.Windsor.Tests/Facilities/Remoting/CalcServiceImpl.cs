@@ -13,10 +13,11 @@
 // limitations under the License.
 
 
-namespace Castle.Facilities.Remoting.TestComponents
+namespace Castle.Windsor.Tests.Facilities.Remoting
 {
 	using System.Linq;
 	using System;
+
 #if (SILVERLIGHT)
 	public class CalcServiceImpl : ICalcService
 #else

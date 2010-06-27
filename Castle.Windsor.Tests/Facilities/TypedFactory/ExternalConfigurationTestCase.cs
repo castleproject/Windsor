@@ -14,15 +14,14 @@
 
 #if (!SILVERLIGHT)
 
-namespace Castle.Facilities.TypedFactory.Tests
+namespace Castle.Windsor.Tests.Facilities.TypedFactory
 {
+	using Castle.Facilities.TypedFactory;
 	using Castle.MicroKernel.Registration;
 	using Castle.Windsor;
-
-	using Castle.Facilities.TypedFactory.Tests.Components;
-	using Castle.Facilities.TypedFactory.Tests.Factories;
 	using Castle.Windsor.Installer;
 	using Castle.Windsor.Tests;
+	using Castle.Windsor.Tests.Facilities.TypedFactory.Components;
 	using Castle.Windsor.Tests.Facilities.TypedFactory.Factories;
 
 	using NUnit.Framework;
@@ -30,8 +29,6 @@ namespace Castle.Facilities.TypedFactory.Tests
 	[TestFixture]
 	public class ExternalConfigurationTestCase
 	{
-		private IWindsorContainer container;
-
 		[SetUp]
 		public void Init()
 		{
@@ -41,8 +38,10 @@ namespace Castle.Facilities.TypedFactory.Tests
 			container.Install(Configuration.FromXmlFile(path));
 			container.AddFacility<TypedFactoryFacility>("typedfactory");
 
-			container.Register(Component.For(typeof(IProtocolHandler)).ImplementedBy(typeof(MirandaProtocolHandler)).Named("miranda"));
-			container.Register(Component.For(typeof(IProtocolHandler)).ImplementedBy(typeof(MessengerProtocolHandler)).Named("messenger"));
+			container.Register(
+				Component.For(typeof(IProtocolHandler)).ImplementedBy(typeof(MirandaProtocolHandler)).Named("miranda"));
+			container.Register(
+				Component.For(typeof(IProtocolHandler)).ImplementedBy(typeof(MessengerProtocolHandler)).Named("messenger"));
 			container.Register(Component.For(typeof(IDummyComponent)).ImplementedBy(typeof(Component1)).Named("comp1"));
 			container.Register(Component.For(typeof(IDummyComponent)).ImplementedBy(typeof(Component2)).Named("comp2"));
 		}
@@ -53,65 +52,67 @@ namespace Castle.Facilities.TypedFactory.Tests
 			container.Dispose();
 		}
 
+		private IWindsorContainer container;
+
 		[Test]
 		public void Factory1()
 		{
-			var factory = (IProtocolHandlerFactory1) container["protocolFac1"];
+			var factory = (IProtocolHandlerFactory1)container["protocolFac1"];
 
-			Assert.IsNotNull( factory );
-			
+			Assert.IsNotNull(factory);
+
 			var handler = factory.Create();
 
-			Assert.IsNotNull( handler );
+			Assert.IsNotNull(handler);
 
-			factory.Release( handler );
+			factory.Release(handler);
 		}
 
 		[Test]
 		public void Factory2()
 		{
-			var factory = (IProtocolHandlerFactory2) container["protocolFac2"];
+			var factory = (IProtocolHandlerFactory2)container["protocolFac2"];
 
-			Assert.IsNotNull( factory );
-			
-			var handler = factory.Create( "miranda" );
-			Assert.IsNotNull( handler );
-			Assert.IsTrue( handler is MirandaProtocolHandler );
-			factory.Release( handler );
+			Assert.IsNotNull(factory);
 
-			handler = factory.Create( "messenger" );
-			Assert.IsNotNull( handler );
-			Assert.IsTrue( handler is MessengerProtocolHandler );
-			factory.Release( handler );
+			var handler = factory.Create("miranda");
+			Assert.IsNotNull(handler);
+			Assert.IsTrue(handler is MirandaProtocolHandler);
+			factory.Release(handler);
+
+			handler = factory.Create("messenger");
+			Assert.IsNotNull(handler);
+			Assert.IsTrue(handler is MessengerProtocolHandler);
+			factory.Release(handler);
 		}
 
 		[Test]
 		public void Factory3()
 		{
-			var factory = (IComponentFactory1) container["compFactory1"];
+			var factory = (IComponentFactory1)container["compFactory1"];
 
-			Assert.IsNotNull( factory );
-			
+			Assert.IsNotNull(factory);
+
 			var comp1 = factory.Construct();
-			Assert.IsNotNull( comp1 );
+			Assert.IsNotNull(comp1);
 
 			var comp2 = factory.Construct();
-			Assert.IsNotNull( comp2 );
+			Assert.IsNotNull(comp2);
 		}
 
 		[Test]
 		public void Factory4()
 		{
-			var factory = (IComponentFactory2) container["compFactory2"];
-			Assert.IsNotNull( factory );
+			var factory = (IComponentFactory2)container["compFactory2"];
+			Assert.IsNotNull(factory);
 
 			var comp1 = (IDummyComponent)factory.Construct("comp1");
-			Assert.IsTrue( comp1 is Component1 );
-			Assert.IsNotNull( comp1 );
+			Assert.IsTrue(comp1 is Component1);
+			Assert.IsNotNull(comp1);
 
 			var comp2 = (IDummyComponent)factory.Construct("comp2");
-			Assert.IsTrue( comp2 is Component2 );
-			Assert.IsNotNull( comp2 );
+			Assert.IsTrue(comp2 is Component2);
+			Assert.IsNotNull(comp2);
 		}
 
 		[Test]
@@ -140,4 +141,5 @@ namespace Castle.Facilities.TypedFactory.Tests
 		}
 	}
 }
+
 #endif

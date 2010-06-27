@@ -15,9 +15,9 @@
 namespace Castle.MicroKernel.Tests.Registration
 {
 	using Castle.MicroKernel.Registration;
-	using Castle.MicroKernel.Tests.Facilities.FactorySupport;
 	using Castle.MicroKernel.Tests.Lifestyle.Components;
 	using Castle.Windsor.Tests.ClassComponents;
+	using Castle.Windsor.Tests.Facilities.FactorySupport;
 
 	using NUnit.Framework;
 

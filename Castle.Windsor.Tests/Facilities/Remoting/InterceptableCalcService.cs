@@ -12,10 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Facilities.Remoting.TestComponents
+namespace Castle.Windsor.Tests.Facilities.Remoting
 {
-	using System;
-
 	using Castle.Core;
 
 	[Interceptor( typeof(ChangeResultInterceptor) )]

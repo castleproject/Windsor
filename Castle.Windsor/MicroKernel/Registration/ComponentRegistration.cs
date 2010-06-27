@@ -802,7 +802,7 @@ namespace Castle.MicroKernel.Registration
 		/// <returns></returns>
 		public ComponentRegistration<S> UsingFactoryMethod<T>(Func<T> factoryMethod) where T : S
 		{
-			return UsingFactoryMethod<S>((k, c) => factoryMethod());
+			return UsingFactoryMethod((k, m, c) => factoryMethod());
 		}
 
 		/// <summary>
@@ -813,7 +813,25 @@ namespace Castle.MicroKernel.Registration
 		/// <returns></returns>
 		public ComponentRegistration<S> UsingFactoryMethod<T>(Converter<IKernel, T> factoryMethod) where T : S
 		{
-			return UsingFactoryMethod<S>((k, c) => factoryMethod(k));
+			return UsingFactoryMethod((k, m, c) => factoryMethod(k));
+		}
+
+		/// <summary>
+		/// Uses a factory method to instantiate the component.
+		/// </summary>
+		/// <typeparam name="T">Implementation type</typeparam>
+		/// <param name="factoryMethod">Factory method</param>
+		/// <returns></returns>
+		public ComponentRegistration<S> UsingFactoryMethod<T>(Func<IKernel,ComponentModel, CreationContext, T> factoryMethod) where T : S
+		{
+			Activator<FactoryMethodActivator<T>>()
+				.ExtendedProperties(new {factoryMethodDelegate = factoryMethod});
+
+			if (implementation == null && serviceType.IsSealed == false)
+			{
+				implementation = typeof (LateBoundComponent);
+			}
+			return this;
 		}
 
 		/// <summary>
@@ -824,14 +842,7 @@ namespace Castle.MicroKernel.Registration
 		/// <returns></returns>
 		public ComponentRegistration<S> UsingFactoryMethod<T>(Func<IKernel, CreationContext, T> factoryMethod) where T : S
 		{
-			Activator<FactoryMethodActivator<T>>()
-				.ExtendedProperties(new {factoryMethodDelegate = factoryMethod});
-
-			if (implementation == null && serviceType.IsSealed == false)
-			{
-				implementation = typeof (LateBoundComponent);
-			}
-			return this;
+			return UsingFactoryMethod((k, m, c) => factoryMethod(k, c));
 		}
 
 		/// <summary>

@@ -17,8 +17,8 @@ namespace Castle.Windsor.Proxy
 {
 	using System;
 	using System.Runtime.Serialization;
+
 	using Castle.Core;
-	using Castle.Core.Interceptor;
 	using Castle.DynamicProxy;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Context;
@@ -55,6 +55,22 @@ namespace Castle.Windsor.Proxy
 		public DefaultProxyFactory()
 		{
 			Init();
+		}
+
+		public override object Create(IProxyFactoryExtension customFactory, IKernel kernel, ComponentModel model, CreationContext context, params object[] constructorArguments)
+		{
+
+			var interceptors = ObtainInterceptors(kernel, model, context);
+			var proxyOptions = ProxyUtil.ObtainProxyOptions(model, true);
+			var proxyGenOptions = CreateProxyGenerationOptionsFrom(proxyOptions, kernel, context);
+
+			CustomizeOptions(proxyGenOptions, kernel, model, constructorArguments);
+			var builder = generator.ProxyBuilder;
+			var proxy = customFactory.Generate(builder, proxyGenOptions, interceptors);
+
+			CustomizeProxy(proxy, proxyGenOptions, kernel, model);
+
+			return proxy;
 		}
 
 		/// <summary>

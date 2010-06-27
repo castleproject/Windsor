@@ -22,18 +22,18 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory.Selectors
 	using Castle.MicroKernel;
 	using Castle.Windsor.Tests.Facilities.TypedFactory.Components;
 
-	public class SelectorByClosedArgumentType:DefaultTypedFactoryComponentSelector
+	public class SelectorByClosedArgumentType : DefaultTypedFactoryComponentSelector
 	{
-		protected override Type GetComponentType(MethodInfo method, object[] arguments)
-		{
-			//a condition checking if it's actually a method we want to be in should go here
-			return typeof(GenericComponent<>).MakeGenericType(arguments[0].GetType());
-		}
-
 		protected override IDictionary GetArguments(MethodInfo method, object[] arguments)
 		{
 			//a condition checking if it's actually a method we want to be in should go here
 			return new Arguments(arguments);
+		}
+
+		protected override Type GetComponentType(MethodInfo method, object[] arguments)
+		{
+			//a condition checking if it's actually a method we want to be in should go here
+			return typeof(GenericComponent<>).MakeGenericType(arguments[0].GetType());
 		}
 	}
 }
