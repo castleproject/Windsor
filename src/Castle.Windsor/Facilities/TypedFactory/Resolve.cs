@@ -14,6 +14,8 @@
 
 namespace Castle.Facilities.TypedFactory
 {
+	using System;
+
 	using Castle.DynamicProxy;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Facilities;
@@ -25,10 +27,13 @@ namespace Castle.Facilities.TypedFactory
 	{
 		private readonly IKernel kernel;
 		private readonly ITypedFactoryComponentSelector selector;
-		public Resolve(IKernel kernel, ITypedFactoryComponentSelector selector)
+		private readonly Action<object> trackComponentCallback;
+
+		public Resolve(IKernel kernel, ITypedFactoryComponentSelector selector, Action<object> trackComponentCallback)
 		{
 			this.kernel = kernel;
 			this.selector = selector;
+			this.trackComponentCallback = trackComponentCallback;
 		}
 
 		public void Invoke(IInvocation invocation)
@@ -41,7 +46,12 @@ namespace Castle.Facilities.TypedFactory
 						"Selector {0} didn't select any component for method {1}. This usually signifies a bug in the selector.", selector,
 						invocation.Method));
 			}
-			invocation.ReturnValue = component.Resolve(kernel);
+			var instance = component.Resolve(kernel);
+			if(kernel.ReleasePolicy.HasTrack(instance))
+			{
+				trackComponentCallback(instance);
+			}
+			invocation.ReturnValue = instance;
 		}
 	}
 }

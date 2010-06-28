@@ -19,6 +19,7 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 	using Castle.Core;
 	using Castle.Facilities.TypedFactory;
 	using Castle.MicroKernel.Registration;
+	using Castle.MicroKernel.Releasers;
 	using Castle.Windsor;
 	using Castle.Windsor.Tests.Facilities.TypedFactory.Delegates;
 
@@ -57,6 +58,27 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 			Assert.AreEqual(1, foo.Number);
 			foo = dependsOnFoo.GetFoo();
 			Assert.AreEqual(2, foo.Number);
+		}
+
+		[Test]
+		public void Delegate_factory_obeys_release_policy_non_tracking()
+		{
+			container.Kernel.ReleasePolicy = new NoTrackingReleasePolicy();
+			container.Register(Component.For<DisposableFoo>().LifeStyle.Transient,
+			                   Component.For<UsesDisposableFooDelegate>().LifeStyle.Transient);
+			var dependsOnFoo = container.Resolve<UsesDisposableFooDelegate>();
+			var foo = dependsOnFoo.GetFoo();
+			Assert.IsFalse(container.Kernel.ReleasePolicy.HasTrack(foo));
+		}
+
+		[Test]
+		public void Delegate_factory_obeys_release_policy_tracking()
+		{
+			container.Register(Component.For<DisposableFoo>().LifeStyle.Transient,
+			                   Component.For<UsesDisposableFooDelegate>().LifeStyle.Transient);
+			var dependsOnFoo = container.Resolve<UsesDisposableFooDelegate>();
+			var foo = dependsOnFoo.GetFoo();
+			Assert.IsTrue(container.Kernel.ReleasePolicy.HasTrack(foo));
 		}
 
 		[Test]
