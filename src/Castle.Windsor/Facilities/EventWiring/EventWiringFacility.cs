@@ -115,9 +115,9 @@ namespace Castle.Facilities.EventWiring
 		/// </summary>
 		protected override void Init()
 		{
-			Kernel.ComponentModelCreated += new ComponentModelDelegate(OnComponentModelCreated);
-			Kernel.ComponentCreated += new ComponentInstanceDelegate(OnComponentCreated);
-			Kernel.ComponentDestroyed += new ComponentInstanceDelegate(OnComponentDestroyed);
+			Kernel.ComponentModelCreated += OnComponentModelCreated;
+			Kernel.ComponentCreated += OnComponentCreated;
+			Kernel.ComponentDestroyed += OnComponentDestroyed;
 		}
 
 		#region OnComponentModelCreated
