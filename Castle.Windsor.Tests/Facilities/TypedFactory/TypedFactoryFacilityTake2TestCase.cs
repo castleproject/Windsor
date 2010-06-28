@@ -20,6 +20,7 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 	using Castle.Facilities.TypedFactory;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Registration;
+	using Castle.MicroKernel.Releasers;
 	using Castle.Windsor.Tests.ClassComponents;
 	using Castle.Windsor.Tests.Facilities.TypedFactory.Components;
 	using Castle.Windsor.Tests.Facilities.TypedFactory.Factories;
@@ -369,6 +370,20 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 		}
 
 		[Test]
+		public void Releasing_factory_release_components()
+		{
+			container.Register(
+				Component.For<INonDisposableFactory>().LifeStyle.Transient.AsFactory(),
+				Component.For<DisposableComponent>().LifeStyle.Transient);
+			var factory = container.Resolve<INonDisposableFactory>();
+			var component = factory.Create();
+			Assert.IsFalse(component.Disposed);
+
+			container.Release(factory);
+			Assert.IsTrue(component.Disposed);
+		}
+
+		[Test]
 		public void Resolve_component_by_name_with_default_selector_falls_back_to_by_type_when_no_name_found()
 		{
 			container.Register(
@@ -409,6 +424,29 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 		}
 
 		[Test]
+		public void Typed_factory_obeys_release_policy_non_tracking()
+		{
+			container.Kernel.ReleasePolicy = new NoTrackingReleasePolicy();
+			container.Register(
+				Component.For<INonDisposableFactory>().LifeStyle.Transient.AsFactory(),
+				Component.For<DisposableComponent>().LifeStyle.Transient);
+			var factory = container.Resolve<INonDisposableFactory>();
+			var component = factory.Create();
+			Assert.IsFalse(container.Kernel.ReleasePolicy.HasTrack(component));
+		}
+
+		[Test]
+		public void Typed_factory_obeys_release_policy_tracking()
+		{
+			container.Register(
+				Component.For<INonDisposableFactory>().LifeStyle.Transient.AsFactory(),
+				Component.For<DisposableComponent>().LifeStyle.Transient);
+			var factory = container.Resolve<INonDisposableFactory>();
+			var component = factory.Create();
+			Assert.IsTrue(container.Kernel.ReleasePolicy.HasTrack(component));
+		}
+
+		[Test]
 		public void Void_methods_release_components()
 		{
 			container.Register(
@@ -419,20 +457,6 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 			Assert.IsFalse(component.Disposed);
 
 			factory.Destroy(component);
-			Assert.IsTrue(component.Disposed);
-		}
-
-		[Test]
-		public void Releasing_factory_release_components()
-		{
-			container.Register(
-				Component.For<INonDisposableFactory>().LifeStyle.Transient.AsFactory(),
-				Component.For<DisposableComponent>().LifeStyle.Transient);
-			var factory = container.Resolve<INonDisposableFactory>();
-			var component = factory.Create();
-			Assert.IsFalse(component.Disposed);
-
-			container.Release(factory);
 			Assert.IsTrue(component.Disposed);
 		}
 	}

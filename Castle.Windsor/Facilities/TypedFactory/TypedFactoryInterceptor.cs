@@ -27,6 +27,7 @@ namespace Castle.Facilities.TypedFactory
 	public class TypedFactoryInterceptor : IInterceptor, IOnBehalfAware, IDisposable
 	{
 		private readonly IKernel kernel;
+		private readonly List<object> trackedComponents = new List<object>();
 
 		private readonly IDictionary<MethodInfo, ITypedFactoryMethod> methods =
 			new Dictionary<MethodInfo, ITypedFactoryMethod>();
@@ -34,17 +35,16 @@ namespace Castle.Facilities.TypedFactory
 		private ComponentModel target;
 		private bool disposed;
 
-		public TypedFactoryInterceptor(IKernel parent)
-			: this(parent, new DefaultTypedFactoryComponentSelector())
+		public TypedFactoryInterceptor(IKernel kernel)
+			: this(kernel, new DefaultTypedFactoryComponentSelector())
 		{
 			// if no selector is registered, we'll use the default
 		}
 
-		public TypedFactoryInterceptor(IKernel parent, ITypedFactoryComponentSelector componentSelector)
+		public TypedFactoryInterceptor(IKernel kernel, ITypedFactoryComponentSelector componentSelector)
 		{
 			ComponentSelector = componentSelector;
-			kernel = new DefaultKernel();
-			parent.AddChildKernel(kernel);
+			this.kernel = kernel;
 		}
 
 		public ITypedFactoryComponentSelector ComponentSelector { get; set; }
@@ -53,7 +53,12 @@ namespace Castle.Facilities.TypedFactory
 		public void Dispose()
 		{
 			disposed = true;
-			kernel.Dispose();
+			var components = trackedComponents.ToArray();
+			trackedComponents.Clear();
+			foreach (var component in components)
+			{
+				kernel.ReleaseComponent(component);
+			}
 		}
 		public void Intercept(IInvocation invocation)
 		{
@@ -103,7 +108,7 @@ namespace Castle.Facilities.TypedFactory
 					methods.Add(method, new Release(kernel));
 					continue;
 				}
-				methods.Add(method, new Resolve(kernel, ComponentSelector));
+				methods.Add(method, new Resolve(kernel, ComponentSelector, trackedComponents.Add));
 			}
 
 			foreach (var @interface in service.GetInterfaces())
