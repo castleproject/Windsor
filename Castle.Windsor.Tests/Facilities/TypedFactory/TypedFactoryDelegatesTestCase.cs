@@ -131,6 +131,18 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 		}
 
 		[Test]
+		public void Registered_Delegate_prefered_over_factory()
+		{
+			var foo = new DisposableFoo();
+			container.Register(Component.For<DisposableFoo>().LifeStyle.Transient,
+			                   Component.For<Func<int, DisposableFoo>>().Instance((i) => foo),
+			                   Component.For<UsesDisposableFooDelegate>().LifeStyle.Transient);
+			var dependsOnFoo = container.Resolve<UsesDisposableFooDelegate>();
+			var otherFoo = dependsOnFoo.GetFoo();
+			Assert.AreSame(foo, otherFoo);
+		}
+
+		[Test]
 		public void Releasing_component_depending_on_the_delegate_factory_releases_what_was_pulled_from_it()
 		{
 			DisposableFoo.DisposedCount = 0;
