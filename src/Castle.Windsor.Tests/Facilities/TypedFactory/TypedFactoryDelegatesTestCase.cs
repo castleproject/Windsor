@@ -51,8 +51,8 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 		[Test]
 		public void Can_resolve_service_via_delegate()
 		{
-			container.Register(Component.For<Foo>().Named("MyFoo").LifeStyle.Is(LifestyleType.Transient));
-			((IWindsorContainer)container).Register(Component.For<UsesFooDelegate>());
+			container.Register(Component.For<Foo>().Named("MyFoo").LifeStyle.Transient);
+			container.Register(Component.For<UsesFooDelegate>());
 			var dependsOnFoo = container.Resolve<UsesFooDelegate>();
 			var foo = dependsOnFoo.GetFoo();
 			Assert.AreEqual(1, foo.Number);
@@ -135,7 +135,7 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 		{
 			var foo = new DisposableFoo();
 			container.Register(Component.For<DisposableFoo>().LifeStyle.Transient,
-			                   Component.For<Func<int, DisposableFoo>>().Instance((i) => foo),
+			                   Component.For<Func<int, DisposableFoo>>().Instance(i => foo),
 			                   Component.For<UsesDisposableFooDelegate>().LifeStyle.Transient);
 			var dependsOnFoo = container.Resolve<UsesDisposableFooDelegate>();
 			var otherFoo = dependsOnFoo.GetFoo();
@@ -150,7 +150,7 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 			container.Register(Component.For<DisposableFoo>().LifeStyle.Transient,
 			                   Component.For<UsesDisposableFooDelegate>().LifeStyle.Transient);
 			var dependsOnFoo = container.Resolve<UsesDisposableFooDelegate>();
-			var foo = dependsOnFoo.GetFoo();
+			dependsOnFoo.GetFoo();
 
 			Assert.AreEqual(0, DisposableFoo.DisposedCount);
 			container.Release(dependsOnFoo);
@@ -160,9 +160,9 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 		[Test]
 		public void Using_Func_delegate_with_duplicated_Parameter_types_throws_exception()
 		{
-			container.Register(Component.For(typeof(Baz)).Named("baz"));
-			container.Register(Component.For(typeof(Bar)).Named("bar"));
-			((IWindsorContainer)container).Register(Component.For<UsesBarDelegate>());
+			container.Register(Component.For<Baz>().Named("baz"),
+			                   Component.For<Bar>().Named("bar"),
+			                   Component.For<UsesBarDelegate>());
 
 			var user = container.Resolve<UsesBarDelegate>();
 
