@@ -16,6 +16,7 @@ namespace Castle.Windsor.Tests
 {
 	using System;
 
+	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.SubSystems.Configuration;
 
 	internal class ActionBasedInstaller : IWindsorInstaller

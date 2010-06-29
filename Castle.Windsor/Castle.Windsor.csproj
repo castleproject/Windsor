@@ -393,6 +393,7 @@
     <Compile Include="MicroKernel\Registration\ConfigurationDescriptor.cs" />
     <Compile Include="MicroKernel\Registration\CustomDependencyDescriptor.cs" />
     <Compile Include="MicroKernel\Registration\ExtendedPropertiesDescriptor.cs" />
+    <Compile Include="MicroKernel\Registration\IWindsorInstaller.cs" />
     <Compile Include="MicroKernel\Registration\OnCreateComponentDescriptor.cs" />
     <Compile Include="MicroKernel\Registration\DynamicParametersDescriptor.cs" />
     <Compile Include="MicroKernel\Registration\Interceptor\InterceptorSelectorDescriptor.cs" />
@@ -669,7 +670,6 @@
     <Compile Include="Windsor\Proxy\DefaultProxyFactory.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Windsor\IWindsorInstaller.cs" />
     <Compile Include="Windsor\WindsorContainer.cs">
       <SubType>Code</SubType>
     </Compile>
