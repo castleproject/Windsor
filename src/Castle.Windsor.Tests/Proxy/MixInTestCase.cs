@@ -11,7 +11,6 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
 namespace Castle.Windsor.Tests.Proxy
 {
 	using Castle.MicroKernel.Registration;
@@ -86,6 +85,26 @@ namespace Castle.Windsor.Tests.Proxy
 
 			var mixin = (ISimpleMixIn)calculator;
 			mixin.DoSomething();
+		}
+
+		[Test]
+		public void Releasing_MixIn_releases_all_parts()
+		{
+			SimpleServiceDisposable.DisposeCount = 0;
+			container.Register(
+				Component.For<ICalcService>()
+					.ImplementedBy<CalculatorService>().Proxy.MixIns(m => m.Service<ISimpleService>())
+					.LifeStyle.Transient,
+				Component.For<ISimpleService>().ImplementedBy<SimpleServiceDisposable>()
+					.LifeStyle.Transient);
+
+			var calculator = container.Resolve<ICalcService>();
+			Assert.IsInstanceOf<ISimpleService>(calculator);
+
+			var mixin = (ISimpleService)calculator;
+			mixin.Operation();
+			container.Release(mixin);
+			Assert.AreEqual(1, SimpleServiceDisposable.DisposeCount);
 		}
 	}
 }

@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Windsor.Tests.Facilities.EventWiring.Model
+namespace Castle.Windsor.Tests.Components
 {
-	public class SimpleService
+	public class EmptyClassService
 	{
 	}
 }

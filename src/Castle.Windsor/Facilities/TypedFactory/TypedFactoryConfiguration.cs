@@ -14,54 +14,37 @@
 
 namespace Castle.Facilities.TypedFactory
 {
-    using System;
+	using System;
 
-    using Castle.MicroKernel;
-    using Castle.MicroKernel.Context;
+	using Castle.MicroKernel;
 
-    public class TypedFactoryConfiguration
-    {
-        private IReference<ITypedFactoryComponentSelector> selectorReference;
+	public class TypedFactoryConfiguration
+	{
+		private IReference<ITypedFactoryComponentSelector> selectorReference;
 
-        internal IReference<ITypedFactoryComponentSelector> Reference
-        {
-            get
-            {
-                if(selectorReference == null)
-                {
-                    selectorReference = new DefaultTypedFactoryComponentSelectorReference();
-                }
+		internal IReference<ITypedFactoryComponentSelector> Reference
+		{
+			get { return selectorReference; }
+		}
 
-                return selectorReference;
-            }
-        }
+		public void SelectedWith(string selectorComponentName)
+		{
+			selectorReference = new ComponentReference<ITypedFactoryComponentSelector>(selectorComponentName);
+		}
 
-        public void SelectedWith(string selectorComponentName)
-        {
-            selectorReference = new ComponentReference<ITypedFactoryComponentSelector>(selectorComponentName);
-        }
+		public void SelectedWith<TSelectorComponent>() where TSelectorComponent : ITypedFactoryComponentSelector
+		{
+			selectorReference = (IReference<ITypedFactoryComponentSelector>)new ComponentReference<TSelectorComponent>();
+		}
 
-        public void SelectedWith<TSelectorComponent>() where TSelectorComponent : ITypedFactoryComponentSelector
-        {
-            selectorReference = (IReference<ITypedFactoryComponentSelector>)new ComponentReference<TSelectorComponent>();
-        }
+		public void SelectedWith(ITypedFactoryComponentSelector selector)
+		{
+			if (selector == null)
+			{
+				throw new ArgumentNullException("selector");
+			}
 
-        public void SelectedWith(ITypedFactoryComponentSelector selector)
-        {
-            if (selector == null)
-            {
-                throw new ArgumentNullException("selector");
-            }
-
-            selectorReference = new InstanceReference<ITypedFactoryComponentSelector>(selector);
-        }
-	
-        class DefaultTypedFactoryComponentSelectorReference:IReference<ITypedFactoryComponentSelector>
-        {
-            public ITypedFactoryComponentSelector Resolve(IKernel kernel, CreationContext context)
-            {
-                return kernel.GetService<ITypedFactoryComponentSelector>() ?? new DefaultDelegateComponentSelector();
-            }
-        }
-    }
+			selectorReference = new InstanceReference<ITypedFactoryComponentSelector>(selector);
+		}
+	}
 }

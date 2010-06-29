@@ -24,8 +24,8 @@ namespace Castle.MicroKernel
 	/// <typeparam name="T"></typeparam>
 	public class ComponentReference<T> : IReference<T>
 	{
-	    private readonly Type actualComponentType;
-	    private readonly string componentKey;
+		private readonly Type actualComponentType;
+		private readonly string componentKey;
 
 		public ComponentReference(string componentKey)
 		{
@@ -37,21 +37,31 @@ namespace Castle.MicroKernel
 			this.componentKey = componentKey;
 		}
 
-        public ComponentReference(Type actualComponentType)
-        {
-            if (actualComponentType == null)
-            {
-                throw new ArgumentNullException("actualComponentType");
-            }
-            this.actualComponentType = actualComponentType;
-        }
+		public ComponentReference(Type actualComponentType)
+		{
+			if (actualComponentType == null)
+			{
+				throw new ArgumentNullException("actualComponentType");
+			}
+			this.actualComponentType = actualComponentType;
+		}
 
-	    public ComponentReference():this(typeof(T))
-	    {
-	        // so that we don't have to specify the key
-	    }
+		public ComponentReference() : this(typeof(T))
+		{
+			// so that we don't have to specify the key
+		}
 
-	    public T Resolve(IKernel kernel, CreationContext context)
+		private IHandler GetHandler(IKernel kernel)
+		{
+			if (componentKey != null)
+			{
+				return kernel.GetHandler(componentKey);
+			}
+
+			return kernel.GetHandler(actualComponentType);
+		}
+
+		public T Resolve(IKernel kernel, CreationContext context)
 		{
 			var handler = GetHandler(kernel);
 			if (handler == null)
@@ -70,16 +80,6 @@ namespace Castle.MicroKernel
 			{
 				throw new Exception(string.Format("Component {0} is not compatible with type {1}.", componentKey, typeof(T)), e);
 			}
-		}
-
-		private IHandler GetHandler(IKernel kernel)
-		{
-			if (componentKey != null)
-			{
-				return kernel.GetHandler(componentKey);
-			}
-
-		    return kernel.GetHandler(actualComponentType);
 		}
 	}
 }
