@@ -24,6 +24,12 @@ namespace Castle.Facilities.TypedFactory
 
 	public static class TypedFactoryRegistrationExtensions
 	{
+		private static readonly ITypedFactoryComponentSelector defaultDelegateComponentSelector =
+			new DefaultDelegateComponentSelector();
+
+		private static readonly ITypedFactoryComponentSelector defaultInterfaceComponentSelector =
+			new DefaultTypedFactoryComponentSelector();
+
 		/// <summary>
 		/// Marks the component as typed factory.
 		/// </summary>
@@ -94,18 +100,16 @@ namespace Castle.Facilities.TypedFactory
 
 			var componentRegistration = AttachFactoryInterceptor(registration);
 			componentRegistration = AttachDelegateFactory(componentRegistration);
-			return AttachConfiguration(componentRegistration, configuration);
+			return AttachConfiguration(componentRegistration, configuration, defaultDelegateComponentSelector);
 		}
 
 		private static ComponentRegistration<T> AttachDelegateFactory<T>(ComponentRegistration<T> registration)
 		{
-			return registration.UsingFactoryMethod((k, c) =>
+			return registration.UsingFactoryMethod((k,m, c) =>
 			{
-				// TODO: This can be moved to normal factory
 				var delegateProxyFactory = k.Resolve<IProxyFactoryExtension>(TypedFactoryFacility.DelegateProxyFactoryKey,
-				                                                             new Arguments(new { targetDelegateType = typeof(T) }));
-				var @delegate = k.ProxyFactory.Create(delegateProxyFactory, k,
-				                                      c.Handler.ComponentModel, c);
+				                                                             new Arguments(new { targetDelegateType = registration.ServiceType }));
+				var @delegate = k.ProxyFactory.Create(delegateProxyFactory, k, m, c);
 				k.ReleaseComponent(delegateProxyFactory);
 				return (T)@delegate;
 			});
@@ -122,11 +126,11 @@ namespace Castle.Facilities.TypedFactory
 			{
 				throw new ComponentRegistrationException(string.Format("Type {0} can not be used as typed factory because it has methods with 'out' arguments.", registration.ServiceType));
 			}
-			var componentRegistration = registration.Interceptors(new InterceptorReference(TypedFactoryFacility.InterceptorKey)).Last;
-			return AttachConfiguration(componentRegistration, configuration);
+			var componentRegistration = AttachFactoryInterceptor(registration);
+			return AttachConfiguration(componentRegistration, configuration, defaultInterfaceComponentSelector);
 		}
 
-		private static ComponentRegistration<TFactoryInterface> AttachConfiguration<TFactoryInterface>(ComponentRegistration<TFactoryInterface> componentRegistration, Action<TypedFactoryConfiguration> configuration)
+		private static ComponentRegistration<TFactory> AttachConfiguration<TFactory>(ComponentRegistration<TFactory> componentRegistration, Action<TypedFactoryConfiguration> configuration, ITypedFactoryComponentSelector defaultComponentSelector)
 		{
 			if (configuration == null)
 			{
@@ -137,7 +141,11 @@ namespace Castle.Facilities.TypedFactory
 			var selectorReference = factoryConfiguration.Reference;
 			if (selectorReference == null)
 			{
-				return componentRegistration;
+				return componentRegistration.DynamicParameters((k, d) =>
+				{
+					var selector = defaultComponentSelector;
+					d.Insert(selector);
+				});
 			}
 			return componentRegistration.DynamicParameters((k, c, d) =>
 			{

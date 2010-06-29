@@ -16,7 +16,6 @@ namespace Castle.Facilities.TypedFactory
 {
 	using System;
 	using System.Diagnostics;
-	using System.Linq;
 	using System.Reflection;
 
 	using Castle.Core;
@@ -27,17 +26,6 @@ namespace Castle.Facilities.TypedFactory
 	[Singleton]
 	public class DelegateFactory : ILazyComponentLoader
 	{
-		private readonly IKernel kernel;
-
-		public DelegateFactory(IKernel kernel)
-		{
-			if (kernel == null)
-			{
-				throw new ArgumentNullException("kernel");
-			}
-			this.kernel = kernel;
-		}
-
 		#region ILazyComponentLoader Members
 
 		public IRegistration Load(string key, Type service)
@@ -61,12 +49,13 @@ namespace Castle.Facilities.TypedFactory
 			return Component.For(service)
 				.Named(key)
 				.LifeStyle.Transient
-				.UsingFactoryMethod((k,m, c) =>
+				.Interceptors(new InterceptorReference(TypedFactoryFacility.InterceptorKey)).Last
+				.UsingFactoryMethod((k, m, c) =>
 				{
 					var delegateProxyFactory = k.Resolve<IProxyFactoryExtension>(TypedFactoryFacility.DelegateProxyFactoryKey,
 					                                                             new Arguments(new { targetDelegateType = service }));
 					var @delegate = k.ProxyFactory.Create(delegateProxyFactory, k, m, c);
-					
+
 					k.ReleaseComponent(delegateProxyFactory);
 					return @delegate;
 				})
@@ -74,8 +63,7 @@ namespace Castle.Facilities.TypedFactory
 				{
 					var selector = new DefaultDelegateComponentSelector();
 					d.Insert<ITypedFactoryComponentSelector>(selector);
-				})
-				.Interceptors(new InterceptorReference(TypedFactoryFacility.InterceptorKey)).Last;
+				});
 		}
 
 		public static MethodInfo ExtractInvokeMethod(Type service)
@@ -94,45 +82,12 @@ namespace Castle.Facilities.TypedFactory
 			return invoke;
 		}
 
-		protected virtual string ExtractServiceName(string key)
-		{
-			return key;
-		}
-
 		protected virtual bool ShouldLoad(string key, Type service)
 		{
 			return true;
 		}
 
 		#endregion
-
-		protected virtual IHandler GetHandlerToBeResolvedByDelegate(MethodInfo invoke, string serviceName)
-		{
-			if(!string.IsNullOrEmpty(serviceName))
-			{
-				var handler = kernel.GetHandler(serviceName);
-				if (handler != null)
-				{
-					return handler;
-				}
-			}
-
-			var handlers = kernel.GetAssignableHandlers(invoke.ReturnType);
-			if (handlers.Length == 1)
-			{
-				return handlers.Single();
-			}
-			var potentialHandler = handlers.SingleOrDefault(h => h.ComponentModel.Name.Equals(serviceName, StringComparison.OrdinalIgnoreCase));
-			if (potentialHandler == null)
-			{
-				throw new NoUniqueComponentException(invoke.ReturnType,
-				                                     "Delegate factory ({0}) was unable to uniquely nominate component to resolve for service '{1}'. " +
-				                                     "You may provide your own selection logic, by registering custom DelegateFactory with key TypedFactoryFacility.DelegateFactoryKey " +
-				                                     "before registering the facility.");
-			}
-
-			return potentialHandler;
-		}
 
 		protected static bool HasReturn(MethodInfo invoke)
 		{

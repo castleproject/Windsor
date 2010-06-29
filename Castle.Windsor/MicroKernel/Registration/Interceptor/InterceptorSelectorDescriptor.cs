@@ -30,7 +30,7 @@ namespace Castle.MicroKernel.Registration.Interceptor
 		protected internal override void ApplyToModel(IKernel kernel, ComponentModel model)
 		{
 			ProxyOptions options = ProxyUtil.ObtainProxyOptions(model, true);
-		    options.Selector = new InstanceReference<IInterceptorSelector>( selector );
+			options.Selector = new InstanceReference<IInterceptorSelector>(selector);
 		}
 	}
 }

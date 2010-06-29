@@ -43,10 +43,17 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 			var interceptors = model.Configuration.Children["interceptors"];
 			if (interceptors == null) return;
 
+			CollectInterceptors(model, interceptors);
+			var options = ProxyUtil.ObtainProxyOptions(model, true);
+			CollectSelector(interceptors, options);
+			CollectHook(interceptors, options);
+		}
+
+		private void CollectInterceptors(ComponentModel model, IConfiguration interceptors)
+		{
 			foreach (var interceptor in interceptors.Children)
 			{
 				var value = interceptor.Value;
-
 				if (!ReferenceExpressionUtil.IsReference(value))
 				{
 					throw new Exception(
@@ -58,10 +65,6 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 				model.Interceptors.Add(reference);
 				model.Dependencies.Add(CreateDependencyModel(reference));
 			}
-
-			var options = ProxyUtil.ObtainProxyOptions(model, true);
-			CollectSelector(interceptors, options);
-			CollectHook(interceptors, options);
 		}
 
 		protected virtual void CollectHook(IConfiguration interceptors, ProxyOptions options)
@@ -102,26 +105,11 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 
 		protected virtual void CollectFromAttributes(ComponentModel model)
 		{
-			if (!model.Implementation.IsDefined(typeof(InterceptorAttribute), true))
+			var attributes = Attribute.GetCustomAttributes(model.Implementation, typeof(InterceptorAttribute), true);
+			foreach (InterceptorAttribute attribute in attributes)
 			{
-				return;
-			}
-
-			object[] attributes = model.Implementation.GetCustomAttributes(true);
-
-			foreach (object attribute in attributes)
-			{
-				if (attribute is InterceptorAttribute)
-				{
-					InterceptorAttribute attr = (attribute as InterceptorAttribute);
-
-					AddInterceptor(
-						attr.Interceptor,
-						model.Interceptors);
-
-					model.Dependencies.Add(
-						CreateDependencyModel(attr.Interceptor));
-				}
+				AddInterceptor(attribute.Interceptor, model.Interceptors);
+				model.Dependencies.Add(CreateDependencyModel(attribute.Interceptor));
 			}
 		}
 

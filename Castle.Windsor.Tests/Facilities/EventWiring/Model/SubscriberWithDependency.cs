@@ -16,12 +16,14 @@ namespace Castle.Windsor.Tests.Facilities.EventWiring.Model
 {
 	using System;
 
+	using Castle.Windsor.Tests.Components;
+
 	public class SubscriberWithDependency
 	{
-		private SimpleService _genericService;
+		private EmptyClassService _genericService;
 
 
-		public SubscriberWithDependency(SimpleService genericService)
+		public SubscriberWithDependency(EmptyClassService genericService)
 		{
 			_genericService = genericService;
 		}

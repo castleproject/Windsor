@@ -14,16 +14,7 @@
 
 namespace Castle.Windsor.Tests.Components
 {
-	public interface ISimpleMixIn
+	public class EmptyGenericClassService<T>
 	{
-		void DoSomething();
-	}
-
-	public class SimpleMixIn : ISimpleMixIn
-	{
-		public void DoSomething()
-		{
-			
-		}
 	}
 }

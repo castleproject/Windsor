@@ -137,6 +137,9 @@
     <Compile Include="ClassComponents\C.cs" />
     <Compile Include="ClassComponents\IDoubleGeneric.cs" />
     <Compile Include="ClassComponents\UsesSimpleComponent1.cs" />
+    <Compile Include="Components\ISimpleService.cs" />
+    <Compile Include="Components\SimpleService.cs" />
+    <Compile Include="Components\SimpleServiceDisposable.cs" />
     <Compile Include="Configuration2\ConfigurationInstallersTestCase.cs" />
     <Compile Include="Configuration2\UsingAssemblyTestCase.cs" />
     <Compile Include="CustomActivatorTestCase.cs" />
@@ -518,7 +521,7 @@
     </Compile>
     <Compile Include="ContainerProblem2.cs" />
     <Compile Include="Facilities\EventWiring\InvalidConfigTestCase.cs" />
-    <Compile Include="Facilities\EventWiring\Model\GenericService.cs" />
+    <Compile Include="Components\EmptyGenericClassService.cs" />
     <Compile Include="Facilities\EventWiring\Model\Handlers.cs" />
     <Compile Include="Facilities\EventWiring\Model\MultiListener.cs" />
     <Compile Include="Facilities\EventWiring\Model\MultiPublisher.cs" />
@@ -526,7 +529,7 @@
     <Compile Include="Facilities\EventWiring\Model\PublisherListener.cs" />
     <Compile Include="Facilities\EventWiring\Model\SimpleListener.cs" />
     <Compile Include="Facilities\EventWiring\Model\SimplePublisher.cs" />
-    <Compile Include="Facilities\EventWiring\Model\SimpleService.cs" />
+    <Compile Include="Components\EmptyClassService.cs" />
     <Compile Include="Facilities\EventWiring\Model\SubscriberWithDependency.cs" />
     <Compile Include="Facilities\EventWiring\Model\SubscriberWithGenericDependency.cs" />
     <Compile Include="Facilities\EventWiring\ProxiedSubscriberTestCase.cs" />
