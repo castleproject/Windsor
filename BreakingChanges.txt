@@ -5,7 +5,7 @@ impact - very low
 fixability - easy
 revision - 
 
-description -veloIn order to improve developer experience when writing installers the interface
+description -In order to improve developer experience when writing installers the interface
 	was moved so that Component and AllTypes entry types for registration are already in scope.
 
 fix - add using Castle.MicroKernel.Registration directive.
