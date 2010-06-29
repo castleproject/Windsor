@@ -19,6 +19,7 @@ namespace Castle.Windsor.Installer
 	using System.Linq;
 	using System.Reflection;
 
+	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.SubSystems.Configuration;
 
 	public class AssemblyInstaller : IWindsorInstaller

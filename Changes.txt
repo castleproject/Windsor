@@ -1,6 +1,8 @@
 unreleased changes
 ==================
 
+-moved IWindsorInstaller to Castle.MicroKernel.Registration namespace
+
 - typed factories will now obey container release policy, that is if the container does not track the component, so won't the factory.
 
 - added helper methods to fluently configure logging facility using: container.AddFacility<LoggingFacility>( f = > f.Fluent().Magic().Here() );

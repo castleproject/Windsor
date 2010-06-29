@@ -18,6 +18,7 @@ namespace Castle.Windsor.Installer
 	using System.Collections.Generic;
 
 	using Castle.Core.Internal;
+	using Castle.MicroKernel.Registration;
 
 	/// <summary>
 	/// Helper class used by <see cref="FromAssembly"/> to filter/order and instantiate <see cref="IWindsorInstaller"/> implementations

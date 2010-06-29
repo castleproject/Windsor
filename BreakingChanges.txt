@@ -1,4 +1,15 @@
 ================================================================================================
+change - moved IWindsorInstaller to Castle.MicroKernel.Registration namespace
+
+impact - very low
+fixability - easy
+revision - 
+
+description -veloIn order to improve developer experience when writing installers the interface
+	was moved so that Component and AllTypes entry types for registration are already in scope.
+
+fix - add using Castle.MicroKernel.Registration directive.
+================================================================================================
 change - Added two new overloads to ITypeConverter.PerformConversion
 
 impact - very low

@@ -20,6 +20,7 @@ namespace Castle.Facilities.Startable
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Context;
 	using Castle.MicroKernel.Facilities;
+	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.SubSystems.Conversion;
 	using Castle.Windsor;
 

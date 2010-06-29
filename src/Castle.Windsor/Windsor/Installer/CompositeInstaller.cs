@@ -16,6 +16,7 @@ namespace Castle.Windsor.Installer
 {
 	using System.Collections.Generic;
 
+	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.SubSystems.Configuration;
 
 	public class CompositeInstaller : IWindsorInstaller
