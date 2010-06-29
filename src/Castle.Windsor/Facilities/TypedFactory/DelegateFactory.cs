@@ -58,16 +58,6 @@ namespace Castle.Facilities.TypedFactory
 				return null;
 			}
 
-			var serviceName = ExtractServiceName(key);
-			var handler = GetHandlerToBeResolvedByDelegate(invoke, serviceName);
-			if (handler == null)
-			{
-				return null;
-			}
-
-
-
-
 			return Component.For(service)
 				.Named(key)
 				.LifeStyle.Transient

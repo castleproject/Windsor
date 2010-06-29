@@ -77,7 +77,7 @@ namespace Castle.Facilities.TypedFactory
 		
 		private static ComponentRegistration<TDelegate> RegisterDelegateBasedFactory<TDelegate>(ComponentRegistration<TDelegate> registration, Action<TypedFactoryConfiguration> configuration)
 		{
-			if (HasOutArguments(registration.ServiceType)) 
+			if (HasOutArguments(registration.ServiceType))
 			{
 				throw new ComponentRegistrationException(string.Format("Delegate type {0} can not be used as typed factory because it has 'out' arguments.", registration.ServiceType));
 			}
