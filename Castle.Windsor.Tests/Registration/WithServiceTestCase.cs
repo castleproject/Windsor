@@ -73,7 +73,7 @@ namespace Castle.MicroKernel.Tests.Registration
 			Assert.True(handlers.All(h => h.Service == typeof(ICommon)));
 		}
 
-		[Test, Ignore("No solution for this yet, please discuss here: http://3.ly/eP5Q")]
+		[Test]
 		public void Base_uses_both_types_from_BasedOn_if_implemented_generically_twice()
 		{
 			// NOTE: This scenario should be tested for not just Base, but also other methods as well?
