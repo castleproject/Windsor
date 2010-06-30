@@ -16,65 +16,11 @@ namespace Castle.Core
 {
 	using System;
 	using System.Collections;
-	using System.Diagnostics;
-	using Castle.Core.Configuration;
 	using System.Collections.Generic;
+	using System.Diagnostics;
 
+	using Castle.Core.Configuration;
 	using Castle.Core.Internal;
-
-	#region Enums
-
-	/// <summary>
-	/// Enumeration used to mark the component's lifestyle.
-	/// </summary>
-	public enum LifestyleType
-	{
-		/// <summary>
-		/// No lifestyle specified.
-		/// </summary>
-		Undefined,
-		/// <summary>
-		/// Singleton components are instantiated once, and shared
-		/// between all clients.
-		/// </summary>
-		Singleton,
-		/// <summary>
-		/// Thread components have a unique instance per thread.
-		/// </summary>
-		Thread,
-		/// <summary>
-		/// Transient components are created on demand.
-		/// </summary>
-		Transient,
-		/// <summary>
-		/// Optimization of transient components that keeps
-		/// instance in a pool instead of always creating them.
-		/// </summary>
-		Pooled,
-#if (!SILVERLIGHT)
-		/// <summary>
-		/// PerWebRequest components are created once per Http Request
-		/// </summary>
-		PerWebRequest,
-#endif
-		/// <summary>
-		/// Any other logic to create/release components.
-		/// </summary>
-		Custom
-	}
-
-	/// <summary>
-	/// 
-	/// </summary>
-	public enum PropertiesInspectionBehavior
-	{
-		Undefined,
-		None,
-		All,
-		DeclaredOnly
-	}
-
-	#endregion
 
 	/// <summary>
 	/// Represents the collection of information and
@@ -92,31 +38,11 @@ namespace Castle.Core
 		// Note the use of volatile for fields used in the double checked lock pattern.
 		// This is necessary to ensure the pattern works correctly.
 
-		/// <summary>Name (key) of the component</summary>
-		private String name;
-
-		/// <summary>Service exposed</summary>
-		private Type service;
-
-		/// <summary>Implementation for the service</summary>
-		private Type implementation;
-
 		/// <summary>Extended properties</summary>
 #if !SILVERLIGHT
 		[NonSerialized] 
 #endif
 		private volatile IDictionary extended;
-
-		/// <summary>Lifestyle for the component</summary>
-		private LifestyleType lifestyleType;
-
-		private PropertiesInspectionBehavior inspectionBehavior;
-
-		/// <summary>Custom lifestyle, if any</summary>
-		private Type customLifestyle;
-
-		/// <summary>Custom activator, if any</summary>
-		private Type customComponentActivator;
 
 		/// <summary>Dependencies the kernel must resolve</summary>
 		private volatile DependencyModelCollection dependencies;
@@ -135,19 +61,14 @@ namespace Castle.Core
 		/// <summary>External parameters</summary>
 		private volatile ParameterModelCollection parameters;
 
-		/// <summary>Configuration node associated</summary>
-		private IConfiguration configuration;
-
 		/// <summary>Interceptors associated</summary>
 		private volatile InterceptorReferenceCollection interceptors;
 
 		/// <summary>/// Custom dependencies/// </summary>
 #if !SILVERLIGHT
-		[NonSerialized] 
+		[NonSerialized]
 #endif
 		private volatile IDictionary customDependencies;
-
-		private bool requiresGenericArguments;
 
 		private readonly object syncRoot = new object();
 
@@ -158,41 +79,29 @@ namespace Castle.Core
 		/// </summary>
 		public ComponentModel(String name, Type service, Type implementation)
 		{
-			this.name = name;
-			this.service = service;
-			this.implementation = implementation;
-			lifestyleType = LifestyleType.Undefined;
-			inspectionBehavior = PropertiesInspectionBehavior.Undefined;
+			Name = name;
+			Service = service;
+			Implementation = implementation;
+			LifestyleType = LifestyleType.Undefined;
+			InspectionBehavior = PropertiesInspectionBehavior.Undefined;
 		}
 
 		/// <summary>
 		/// Sets or returns the component key
 		/// </summary>
-		public String Name
-		{
-			get { return name; }
-			set { name = value; }
-		}
+		public string Name { get; set; }
 
 		/// <summary>
 		/// Gets or sets the service exposed.
 		/// </summary>
 		/// <value>The service.</value>
-		public Type Service
-		{
-			get { return service; }
-			set { service = value; }
-		}
+		public Type Service { get; set; }
 
 		/// <summary>
 		/// Gets or sets the component implementation.
 		/// </summary>
 		/// <value>The implementation.</value>
-		public Type Implementation
-		{
-			get { return implementation; }
-			set { implementation = value; }
-		}
+		public Type Implementation { get; set; }
 
 		/// <summary>
 		/// Gets or sets a value indicating whether the component requires generic arguments.
@@ -200,11 +109,7 @@ namespace Castle.Core
 		/// <value>
 		/// <c>true</c> if generic arguments are required; otherwise, <c>false</c>.
 		/// </value>
-		public bool RequiresGenericArguments
-		{
-			get { return requiresGenericArguments; }
-			set { requiresGenericArguments = value; }
-		}
+		public bool RequiresGenericArguments { get; set; }
 
 		/// <summary>
 		/// Gets or sets the extended properties.
@@ -268,11 +173,7 @@ namespace Castle.Core
 		/// Gets or sets the configuration.
 		/// </summary>
 		/// <value>The configuration.</value>
-		public IConfiguration Configuration
-		{
-			get { return configuration; }
-			set { configuration = value; }
-		}
+		public IConfiguration Configuration { get; set; }
 
 		/// <summary>
 		/// Gets the lifecycle steps.
@@ -297,42 +198,26 @@ namespace Castle.Core
 		/// Gets or sets the lifestyle type.
 		/// </summary>
 		/// <value>The type of the lifestyle.</value>
-		public LifestyleType LifestyleType
-		{
-			get { return lifestyleType; }
-			set { lifestyleType = value; }
-		}
+		public LifestyleType LifestyleType { get; set; }
 
 		/// <summary>
 		/// Gets or sets the strategy for
 		/// inspecting public properties 
 		/// on the components
 		/// </summary>
-		public PropertiesInspectionBehavior InspectionBehavior
-		{
-			get { return inspectionBehavior; }
-			set { inspectionBehavior = value; }
-		}
+		public PropertiesInspectionBehavior InspectionBehavior { get; set; }
 
 		/// <summary>
 		/// Gets or sets the custom lifestyle.
 		/// </summary>
 		/// <value>The custom lifestyle.</value>
-		public Type CustomLifestyle
-		{
-			get { return customLifestyle; }
-			set { customLifestyle = value; }
-		}
+		public Type CustomLifestyle { get; set; }
 
 		/// <summary>
 		/// Gets or sets the custom component activator.
 		/// </summary>
 		/// <value>The custom component activator.</value>
-		public Type CustomComponentActivator
-		{
-			get { return customComponentActivator; }
-			set { customComponentActivator = value; }
-		}
+		public Type CustomComponentActivator { get; set; }
 
 		/// <summary>
 		/// Gets the interceptors.

@@ -37,14 +37,12 @@ namespace Castle.MicroKernel.Handlers
 	///   Implements the basis of
 	///   <see cref = "IHandler" />
 	/// </summary>
-#if (!SILVERLIGHT)
-	[Serializable]
-#endif
 	[DebuggerDisplay("Model: {ComponentModel.Service} / {ComponentModel.Implementation} ")]
-#if (!SILVERLIGHT)
-	public abstract class AbstractHandler : MarshalByRefObject, IHandler, IExposeDependencyInfo, IDisposable
-#else
+#if SILVERLIGHT
 	public abstract class AbstractHandler : IHandler, IExposeDependencyInfo, IDisposable
+#else
+	[Serializable]
+	public abstract class AbstractHandler : MarshalByRefObject, IHandler, IExposeDependencyInfo, IDisposable
 #endif
 	{
 		private readonly ComponentModel model;
