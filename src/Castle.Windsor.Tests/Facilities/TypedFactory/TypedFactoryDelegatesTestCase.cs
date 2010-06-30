@@ -49,6 +49,19 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 		}
 
 		[Test]
+		public void Can_resolve_multiple_delegates_just_fine()
+		{
+			container.Register(Component.For<Baz>());
+			container.Register(Component.For<A>());
+
+			var bazFactory = container.Resolve<Func<Baz>>();
+			var aFactory = container.Resolve<Func<A>>();
+
+			bazFactory.Invoke();
+			aFactory.Invoke();
+		}
+
+		[Test]
 		public void Can_resolve_service_via_delegate()
 		{
 			container.Register(Component.For<Foo>().Named("MyFoo").LifeStyle.Transient);

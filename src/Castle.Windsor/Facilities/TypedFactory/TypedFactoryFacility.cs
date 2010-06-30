@@ -64,6 +64,7 @@ namespace Castle.Facilities.TypedFactory
 			                	.Unless(Component.ServiceAlreadyRegistered),
 			                Component.For<IProxyFactoryExtension>()
 			                	.ImplementedBy<DelegateProxyFactory>()
+			                	.LifeStyle.Transient
 			                	.Named(DelegateProxyFactoryKey)
 			                	.Unless(Component.ServiceAlreadyRegistered));
 		}
