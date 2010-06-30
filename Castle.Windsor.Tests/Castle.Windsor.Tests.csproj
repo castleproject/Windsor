@@ -135,7 +135,9 @@
     <Compile Include="ActionBasedInstaller.cs" />
     <Compile Include="ClassComponents\B.cs" />
     <Compile Include="ClassComponents\C.cs" />
+    <Compile Include="ClassComponents\ClosedGenericOverAAndB.cs" />
     <Compile Include="ClassComponents\IDoubleGeneric.cs" />
+    <Compile Include="ClassComponents\ISimpleGeneric.cs" />
     <Compile Include="ClassComponents\UsesSimpleComponent1.cs" />
     <Compile Include="Components\ISimpleService.cs" />
     <Compile Include="Components\SimpleService.cs" />

@@ -4,6 +4,8 @@ namespace Castle.MicroKernel.Tests.Registration
 
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Tests.ClassComponents;
+	using Castle.Windsor.Tests;
+	using Castle.Windsor.Tests.ClassComponents;
 
 	using NUnit.Framework;
 
@@ -69,6 +71,22 @@ namespace Castle.MicroKernel.Tests.Registration
 
 			Assert.IsNotEmpty(handlers);
 			Assert.True(handlers.All(h => h.Service == typeof(ICommon)));
+		}
+
+		[Test, Ignore("No solution for this yet, please discuss here: http://3.ly/eP5Q")]
+		public void Base_uses_both_types_from_BasedOn_if_implemented_generically_twice()
+		{
+			// NOTE: This scenario should be tested for not just Base, but also other methods as well?
+			Kernel.Register(AllTypes.FromThisAssembly().BasedOn(typeof(ISimpleGeneric<>)).WithService.Base());
+
+			var allHandlers = Kernel.GetAssignableHandlers(typeof(object));
+			var aHandlers = Kernel.GetAssignableHandlers(typeof(ISimpleGeneric<A>));
+			var bHandlers = Kernel.GetAssignableHandlers(typeof(ISimpleGeneric<B>));
+
+			Assert.IsNotEmpty(allHandlers);
+			Assert.True(allHandlers.All(h => h.ComponentModel.Implementation == typeof(ClosedSimpleGenericOverAAndB)));
+			Assert.IsNotEmpty(aHandlers);
+			Assert.IsNotEmpty(bHandlers);
 		}
 
 		[Test]
