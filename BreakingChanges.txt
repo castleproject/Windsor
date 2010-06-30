@@ -1,4 +1,21 @@
 ================================================================================================
+change - ServiceSelector delegate (used in WithService.Select calls) changed signature
+
+impact - low
+fixability - easy
+revision - 
+
+description - To fix a bug which would occur if type implemented multiple closed version of base
+	open generic interface the signature of the delegate was changed from
+	public delegate IEnumerable<Type> ServiceSelector(Type type, Type baseType);
+	to
+	public delegate IEnumerable<Type> ServiceSelector(Type type, Type[] baseTypes);
+	so that multiple base types are possible (they would be closed versions of the same open
+	generic interface)
+
+fix - depending on the scenario. You would either ignore it, or wrap your current method's body
+	in foreach(var baseType in baseTypes)
+================================================================================================
 change - moved IWindsorInstaller to Castle.MicroKernel.Registration namespace
 
 impact - very low

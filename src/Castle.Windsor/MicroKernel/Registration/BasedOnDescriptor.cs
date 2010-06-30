@@ -177,40 +177,40 @@ namespace Castle.MicroKernel.Registration
 
 		internal bool TryRegister(Type type, IKernel kernel)
 		{
-			Type baseType;
+			Type[] baseTypes;
 
-			if (Accepts(type, out baseType))
+			if (!Accepts(type, out baseTypes))
 			{
-				var serviceTypes = service.GetServices(type, baseType);
-				var registration = Component.For(serviceTypes);
-				registration.ImplementedBy(type);
-
-				foreach (var configurer in configurers)
-				{
-					configurer.Apply(registration);
-				}
-
-				if (String.IsNullOrEmpty(registration.Name))
-				{
-					registration.Named(type.FullName);
-				}
-
-				if (!kernel.HasComponent(registration.Name))
-				{
-					kernel.Register(registration);
-				}
-
-				return true;
+				return false;
 			}
 
-			return false;
+			var serviceTypes = service.GetServices(type, baseTypes);
+			var registration = Component.For(serviceTypes);
+			registration.ImplementedBy(type);
+
+			foreach (var configurer in configurers)
+			{
+				configurer.Apply(registration);
+			}
+
+			if (String.IsNullOrEmpty(registration.Name))
+			{
+				registration.Named(type.FullName);
+			}
+
+			if (!kernel.HasComponent(registration.Name))
+			{
+				kernel.Register(registration);
+			}
+
+			return true;
 		}
 
-		private bool Accepts(Type type, out Type baseType)
+		private bool Accepts(Type type, out Type[] baseTypes)
 		{
-			baseType = basedOn;
+			baseTypes = null;
 			return type.IsClass && !type.IsAbstract
-			       && IsBasedOn(type, ref baseType)
+			       && IsBasedOn(type, out baseTypes)
 			       && ExecuteIfCondition(type)
 			       && !ExecuteUnlessCondition(type);
 		}
@@ -249,41 +249,45 @@ namespace Castle.MicroKernel.Registration
 			return false;
 		}
 
-		private bool IsBasedOn(Type type, ref Type baseType)
+		private bool IsBasedOn(Type type, out Type[] baseTypes)
 		{
 			if (basedOn.IsAssignableFrom(type))
 			{
+				baseTypes = new[] { basedOn };
 				return true;
 			}
-			else if (basedOn.IsGenericTypeDefinition)
+			if (basedOn.IsGenericTypeDefinition)
 			{
 				if (basedOn.IsInterface)
 				{
-					return IsBasedOnGenericInterface(type, ref baseType);
+					return IsBasedOnGenericInterface(type, out baseTypes);
 				}
-				return IsBasedOnGenericClass(type, ref baseType);
+				return IsBasedOnGenericClass(type, out baseTypes);
 			}
+			baseTypes = new[] { basedOn };
 			return false;
 		}
 
-		private bool IsBasedOnGenericClass(Type type, ref Type baseType)
+		private bool IsBasedOnGenericClass(Type type, out Type[] baseTypes)
 		{
 			while (type != null)
 			{
 				if (type.IsGenericType &&
 				    type.GetGenericTypeDefinition() == basedOn)
 				{
-					baseType = type;
+					baseTypes = new[] { type };
 					return true;
 				}
 
 				type = type.BaseType;
 			}
+			baseTypes = null;
 			return false;
 		}
 
-		private bool IsBasedOnGenericInterface(Type type, ref Type baseType)
+		private bool IsBasedOnGenericInterface(Type type, out Type[] baseTypes)
 		{
+			var types = new List<Type>(4);
 			foreach (var @interface in type.GetInterfaces())
 			{
 				if (@interface.IsGenericType &&
@@ -292,16 +296,16 @@ namespace Castle.MicroKernel.Registration
 					if (@interface.ReflectedType == null &&
 					    @interface.ContainsGenericParameters)
 					{
-						baseType = @interface.GetGenericTypeDefinition();
+						types.Add(@interface.GetGenericTypeDefinition());
 					}
 					else
 					{
-						baseType = @interface;
+						types.Add(@interface);
 					}
-					return true;
 				}
 			}
-			return false;
+			baseTypes = types.ToArray();
+			return baseTypes.Length > 0;
 		}
 
 		#region IRegistration Members

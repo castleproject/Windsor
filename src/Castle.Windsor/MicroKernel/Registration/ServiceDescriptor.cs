@@ -26,7 +26,7 @@ namespace Castle.MicroKernel.Registration
 	/// </summary>
 	public class ServiceDescriptor
 	{
-		public delegate IEnumerable<Type> ServiceSelector(Type type, Type baseType);
+		public delegate IEnumerable<Type> ServiceSelector(Type type, Type[] baseTypes);
 
 		private readonly BasedOnDescriptor basedOnDescriptor;
 		private ServiceSelector serviceSelector;
@@ -42,7 +42,7 @@ namespace Castle.MicroKernel.Registration
 		/// <returns></returns>
 		public BasedOnDescriptor Base()
 		{
-			return Select((t, b) => new[] { b });
+			return Select((t, b) => b);
 		}
 
 		/// <summary>
@@ -69,7 +69,7 @@ namespace Castle.MicroKernel.Registration
 		/// <returns></returns>
 		public BasedOnDescriptor FirstInterface()
 		{
-			return Select(delegate(Type type, Type baseType)
+			return Select((type, @base) =>
 			{
 				var first = type.GetInterfaces().FirstOrDefault();
 				if (first == null)
@@ -93,28 +93,54 @@ namespace Castle.MicroKernel.Registration
 		/// <returns></returns>
 		public BasedOnDescriptor FromInterface(Type implements)
 		{
-			return Select(delegate(Type type, Type baseType)
+			return Select(delegate(Type type, Type[] baseTypes)
 			{
-				var matches = new List<Type>();
-				implements = implements ?? baseType;
-
-				foreach (Type theInterface in GetTopLevelInterfaces(type))
+				var matches = 
+#if SL3
+					new List<Type>();
+#else
+					new HashSet<Type>();
+#endif
+				if(implements!=null)
 				{
-					if (theInterface.GetInterface(implements.FullName, false) != null)
+					AddFromInterface(type, implements, matches);
+				}
+				else
+				{
+					foreach (var baseType in baseTypes)
 					{
-						matches.Add(theInterface);
+						AddFromInterface(type, baseType, matches);
 					}
 				}
-
-				if (matches.Count == 0 && baseType.IsAssignableFrom(type))
+				foreach (var baseType in baseTypes)
 				{
-					matches.Add(baseType);
+
+					if (matches.Count == 0 && baseType.IsAssignableFrom(type))
+					{
+						matches.Add(baseType);
+					}
+					
 				}
 
 				return matches;
 			});
 		}
-		
+
+		private void AddFromInterface(Type type, Type implements, ICollection<Type> matches)
+		{
+			foreach (var @interface in GetTopLevelInterfaces(type))
+			{
+				if (@interface.GetInterface(implements.FullName, false) != null)
+				{
+#if SL3
+					if(matches.Contains(@interface)) continue;
+#endif
+					matches.Add(@interface);
+
+				}
+			}
+		}
+
 		/// <summary>
 		/// Uses base type to lookup the sub interface.
 		/// </summary>
@@ -145,7 +171,7 @@ namespace Castle.MicroKernel.Registration
 			return Select(delegate { return types; });
 		}
 
-		internal IEnumerable<Type> GetServices(Type type, Type baseType)
+		internal IEnumerable<Type> GetServices(Type type, Type[] baseType)
 		{
 			ICollection<Type> services =
 #if SL3
