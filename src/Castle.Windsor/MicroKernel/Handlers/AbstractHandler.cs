@@ -80,7 +80,7 @@ namespace Castle.MicroKernel.Handlers
 		///   Constructs and initializes the handler
 		/// </summary>
 		/// <param name = "model"></param>
-		public AbstractHandler(ComponentModel model)
+		protected AbstractHandler(ComponentModel model)
 		{
 			this.model = model;
 			state = HandlerState.Valid;
@@ -188,7 +188,7 @@ namespace Castle.MicroKernel.Handlers
 		/// <param name="context"></param>
 		/// <param name="instanceRequired">when <c>false</c>, handler can not create valid instance and return <c>null</c> instead </param>
 		/// <returns></returns>
-		private object Resolve(CreationContext context, bool instanceRequired)
+		protected virtual object Resolve(CreationContext context, bool instanceRequired)
 		{
 			List<ComponentReleasingDelegate> releasers = null;
 
@@ -254,7 +254,7 @@ namespace Castle.MicroKernel.Handlers
 		/// </summary>
 		/// <param name = "instance"></param>
 		/// <returns></returns>
-		public bool Release(object instance)
+		public virtual bool Release(object instance)
 		{
 			if (releasingHandlers != null)
 			{
