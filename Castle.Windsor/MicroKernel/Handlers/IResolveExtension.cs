@@ -16,6 +16,8 @@ namespace Castle.MicroKernel.Handlers
 {
 	public interface IResolveExtension
 	{
+		void Init(IKernel kernel, IHandler handler);
+
 		void Intercept(ResolveInvocation invocation);
 	}
 }

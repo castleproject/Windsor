@@ -11,7 +11,6 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
 namespace Castle.MicroKernel.Handlers
 {
 	using System.Collections.Generic;
@@ -39,6 +38,26 @@ namespace Castle.MicroKernel.Handlers
 			}
 		}
 
+		public override void Init(IKernel kernel)
+		{
+			base.Init(kernel);
+
+			if (resolveExtensions != null)
+			{
+				foreach (var extension in resolveExtensions)
+				{
+					extension.Init(kernel, this);
+				}
+			}
+			if (releaseExtensions != null)
+			{
+				foreach (var extension in releaseExtensions)
+				{
+					extension.Init(kernel, this);
+				}
+			}
+		}
+
 		public override bool Release(object instance)
 		{
 			if (releaseExtensions == null)
@@ -46,7 +65,7 @@ namespace Castle.MicroKernel.Handlers
 				return base.Release(instance);
 			}
 
-			var invocation = new ReleaseInvocation(instance, this);
+			var invocation = new ReleaseInvocation(instance);
 			InvokeReleasePipeline(0, invocation);
 			return invocation.ReturnValue;
 		}
@@ -57,7 +76,7 @@ namespace Castle.MicroKernel.Handlers
 			{
 				return base.Resolve(context, instanceRequired);
 			}
-			var invocation = new ResolveInvocation(context, instanceRequired, this);
+			var invocation = new ResolveInvocation(context, instanceRequired);
 			InvokeResolvePipeline(0, invocation);
 			return invocation.ReturnValue;
 		}
@@ -78,7 +97,8 @@ namespace Castle.MicroKernel.Handlers
 		{
 			if (extensionIndex >= resolveExtensions.Length)
 			{
-				invocation.ReturnValue = base.Resolve(invocation.Context, invocation.InstanceRequired);
+				invocation.ReturnValue = ResolveCore(invocation.Context, invocation.DecommissionRequired,
+				                                     invocation.InstanceRequired);
 				return;
 			}
 			var nextIndex = extensionIndex + 1;

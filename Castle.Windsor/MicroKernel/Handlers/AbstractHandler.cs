@@ -29,10 +29,6 @@ namespace Castle.MicroKernel.Handlers
 	using Castle.MicroKernel.Lifestyle;
 	using Castle.MicroKernel.ModelBuilder.Inspectors;
 
-	public delegate ComponentReleasingDelegate ComponentResolvingDelegate(IKernel kernel, CreationContext context);
-
-	public delegate void ComponentReleasingDelegate(IKernel kernel);
-
 	/// <summary>
 	///   Implements the basis of
 	///   <see cref = "IHandler" />
@@ -46,7 +42,6 @@ namespace Castle.MicroKernel.Handlers
 #endif
 	{
 		private readonly ComponentModel model;
-		private readonly ComponentResolvingDelegate resolvingHandler;
 
 		/// <summary>
 		///   Custom dependencies values associated with the handler
@@ -72,7 +67,6 @@ namespace Castle.MicroKernel.Handlers
 		/// </summary>
 		protected ILifestyleManager lifestyleManager;
 
-		private IDictionary<object, IList<ComponentReleasingDelegate>> releasingHandlers;
 		private Type service;
 		private HandlerState state;
 
@@ -85,7 +79,6 @@ namespace Castle.MicroKernel.Handlers
 			this.model = model;
 			state = HandlerState.Valid;
 			InitializeCustomDependencies();
-			resolvingHandler = model.ExtendedProperties["component_resolving_handler"] as ComponentResolvingDelegate;
 		}
 
 		/// <summary>
@@ -190,38 +183,7 @@ namespace Castle.MicroKernel.Handlers
 		/// <returns></returns>
 		protected virtual object Resolve(CreationContext context, bool instanceRequired)
 		{
-			List<ComponentReleasingDelegate> releasers = null;
-
-			if (resolvingHandler != null)
-			{
-				foreach (ComponentResolvingDelegate resolver in resolvingHandler.GetInvocationList())
-				{
-					var releaser = resolver(kernel, context);
-
-					if (releaser != null)
-					{
-						if (releasers == null)
-							releasers = new List<ComponentReleasingDelegate>();
-						releasers.Add(releaser);
-					}
-				}
-			}
-
-			var instance = ResolveCore(context, releasers != null, instanceRequired);
-
-			if (releasers != null)
-			{
-				lock (resolvingHandler)
-				{
-					if (releasingHandlers == null)
-						releasingHandlers = new Dictionary<object, IList<ComponentReleasingDelegate>>();
-
-					if (releasingHandlers.ContainsKey(instance) == false)
-						releasingHandlers.Add(instance, releasers);
-				}
-			}
-
-			return instance;
+			return ResolveCore(context, false, instanceRequired);
 		}
 
 		public object TryResolve(CreationContext context)
@@ -244,10 +206,10 @@ namespace Castle.MicroKernel.Handlers
 		///   is responsible for
 		/// </summary>
 		/// <param name = "context"></param>
-		/// <param name = "track"></param>
+		/// <param name = "requiresDecommission"></param>
 		/// <param name="instanceRequired">When <c>false</c>, handler can not create valid instance and return <c>null</c> instead.</param>
 		/// <returns></returns>
-		protected abstract object ResolveCore(CreationContext context, bool track, bool instanceRequired);
+		protected abstract object ResolveCore(CreationContext context, bool requiresDecommission, bool instanceRequired);
 
 		/// <summary>
 		///   disposes the component instance (or recycle it).
@@ -256,25 +218,6 @@ namespace Castle.MicroKernel.Handlers
 		/// <returns></returns>
 		public virtual bool Release(object instance)
 		{
-			if (releasingHandlers != null)
-			{
-				IList<ComponentReleasingDelegate> releasers;
-
-				lock (releasingHandlers)
-				{
-					if (releasingHandlers.TryGetValue(instance, out releasers))
-						releasingHandlers.Remove(instance);
-				}
-
-				if (releasers != null)
-				{
-					foreach (var releaser in releasers)
-					{
-						releaser(kernel);
-					}
-				}
-			}
-
 			return ReleaseCore(instance);
 		}
 
@@ -471,8 +414,7 @@ namespace Castle.MicroKernel.Handlers
 		/// <returns></returns>
 		protected virtual ILifestyleManager CreateLifestyleManager(IComponentActivator activator)
 		{
-			ILifestyleManager manager = null;
-
+			ILifestyleManager manager;
 			LifestyleType type = ComponentModel.LifestyleType;
 
 			switch (type)
@@ -768,7 +710,6 @@ namespace Castle.MicroKernel.Handlers
 			}
 
 			// Check within the Kernel
-
 			foreach (var pair in new Dictionary<Type, DependencyModel>(DependenciesByService))
 			{
 				Type service = pair.Key;

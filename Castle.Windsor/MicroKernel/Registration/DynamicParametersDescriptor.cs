@@ -32,34 +32,29 @@ namespace Castle.MicroKernel.Registration
 		private readonly DynamicParametersWithContextResolveDelegate resolve;
 		private static readonly string key = "component_resolving_handler";
 
-		public DynamicParametersDescriptor(DynamicParametersDelegate resolve)
-			: this((k, c, d) => { resolve(k, d); return null; })
-		{
-		}
-
 		public DynamicParametersDescriptor(DynamicParametersWithContextResolveDelegate resolve)
 		{
 			this.resolve = resolve;
 		}
 
-		public DynamicParametersDescriptor(DynamicParametersResolveDelegate resolve)
-			: this((k, c, d) => resolve(k, d))
-		{
-		}
-
 		protected internal override void ApplyToModel(IKernel kernel, ComponentModel model)
 		{
-			ComponentResolvingDelegate handler = (k, c) => resolve(k, c, c.AdditionalParameters);
-			if (model.ExtendedProperties.Contains(key) == false)
+			var dynamicParameters = GetDynamicParametersExtension(model);
+			dynamicParameters.AddHandler((k, c) => resolve(k, c, c.AdditionalParameters));
+		}
+
+		private ComponentLifecycleExtension GetDynamicParametersExtension(ComponentModel model)
+		{
+			if (model.ExtendedProperties.Contains(key))
 			{
-				model.ExtendedProperties[key] = handler;
-				return;
+				return (ComponentLifecycleExtension)model.ExtendedProperties[key];
 			}
 
-			var @delegate = (ComponentResolvingDelegate)model.ExtendedProperties[key];
-			@delegate += handler;
-
-			model.ExtendedProperties[key] = @delegate;
+			var dynamicParameters = new ComponentLifecycleExtension();
+			model.ExtendedProperties[key] = dynamicParameters;
+			model.ResolveExtensions(true).Add(dynamicParameters);
+			model.ReleaseExtensions(true).Add(dynamicParameters);
+			return dynamicParameters;
 		}
 	}
 }

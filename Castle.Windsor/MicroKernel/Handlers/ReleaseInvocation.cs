@@ -20,13 +20,10 @@ namespace Castle.MicroKernel.Handlers
 	{
 		private Action proceed;
 
-		public ReleaseInvocation(object instance, IHandler handler)
+		public ReleaseInvocation(object instance)
 		{
 			Instance = instance;
-			Handler = handler;
 		}
-
-		public IHandler Handler { get; private set; }
 
 		public object Instance { get; private set; }
 
