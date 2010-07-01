@@ -43,7 +43,7 @@ namespace Castle.MicroKernel.Handlers
 			type2SubHandler = new Dictionary<Type, IHandler>();
 		}
 
-		protected override object ResolveCore(CreationContext context, bool track, bool instanceRequired)
+		protected override object ResolveCore(CreationContext context, bool requiresDecommission, bool instanceRequired)
 		{
 			Type implType;
 			try

@@ -44,10 +44,10 @@ namespace Castle.MicroKernel.Handlers
 		/// is responsible for
 		/// </summary>
 		/// <param name="context"></param>
-		/// <param name="track"></param>
+		/// <param name="requiresDecommission"></param>
 		/// <param name="instanceRequired"></param>
 		/// <returns></returns>
-		protected override object ResolveCore(CreationContext context, bool track, bool instanceRequired)
+		protected override object ResolveCore(CreationContext context, bool requiresDecommission, bool instanceRequired)
 		{
 			if (ResolveImpossible(context))
 			{
@@ -62,7 +62,7 @@ namespace Castle.MicroKernel.Handlers
 			{
 				var instance = lifestyleManager.Resolve(context);
 
-				resolutionContext.Burden.SetRootInstance(instance, this, HasDecomission(track));
+				resolutionContext.Burden.SetRootInstance(instance, this, HasDecomission(requiresDecommission));
 				context.ReleasePolicy.Track(instance, resolutionContext.Burden);
 
 				return instance;

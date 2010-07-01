@@ -14,6 +14,7 @@
 
 namespace Castle.Windsor.Tests
 {
+	using System;
 	using System.Collections.Generic;
 	using System.Linq;
 
@@ -122,6 +123,11 @@ namespace Castle.Windsor.Tests
 			this.proceed = proceed;
 		}
 
+		public void Init(IKernel kernel, IHandler handler)
+		{
+			
+		}
+
 		public void Intercept(ResolveInvocation invocation)
 		{
 			if (proceed)
@@ -151,6 +157,11 @@ namespace Castle.Windsor.Tests
 		{
 			invocation.Proceed();
 			releasedItems.Add(invocation.Instance);
+		}
+
+		public void Init(IKernel kernel, IHandler handler)
+		{
+			
 		}
 
 		public void Intercept(ResolveInvocation invocation)

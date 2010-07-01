@@ -578,8 +578,11 @@ namespace Castle.MicroKernel.Registration
 		/// <returns></returns>
 		public ComponentRegistration<S> DynamicParameters(DynamicParametersDelegate resolve)
 		{
-			AddDescriptor(new DynamicParametersDescriptor<S>(resolve));
-			return this;
+			return DynamicParameters((k, c, d) =>
+			{
+				resolve(k, d);
+				return null;
+			});
 		}
 
 		/// <summary>
@@ -589,8 +592,7 @@ namespace Castle.MicroKernel.Registration
 		/// <returns></returns>
 		public ComponentRegistration<S> DynamicParameters(DynamicParametersResolveDelegate resolve)
 		{
-			AddDescriptor(new DynamicParametersDescriptor<S>(resolve));
-			return this;
+			return DynamicParameters((k, c, d) => resolve(k, d));
 		}
 
 		/// <summary>

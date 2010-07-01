@@ -21,19 +21,28 @@ namespace Castle.MicroKernel.Handlers
 	public class ResolveInvocation
 	{
 		private Action proceed;
+		private bool decommissionRequired;
 
-		public ResolveInvocation(CreationContext context, bool instanceRequired, IHandler handler)
+		public ResolveInvocation(CreationContext context, bool instanceRequired)
 		{
 			Context = context;
 			InstanceRequired = instanceRequired;
-			Handler = handler;
 		}
 
 		public CreationContext Context { get; private set; }
-		public IHandler Handler { get; private set; }
 		public bool InstanceRequired { get; private set; }
 
 		public object ReturnValue { get; set; }
+
+		internal bool DecommissionRequired
+		{
+			get {return decommissionRequired;}
+		}
+
+		public void RequireDecommission()
+		{
+			decommissionRequired = true;
+		}
 
 		public void Proceed()
 		{

@@ -49,8 +49,8 @@ namespace Castle.MicroKernel.Handlers
 			{
 				return new DefaultGenericHandler(model);
 			}
-			var resolveExtensions = model.ExtendedProperties["Castle.ResolveExtensions"] as ICollection<IResolveExtension>;
-			var releaseExtensions = model.ExtendedProperties["Castle.ReleaseExtensions"] as ICollection<IReleaseExtension>;
+			var resolveExtensions = model.ResolveExtensions(false);
+			var releaseExtensions = model.ReleaseExtensions(false);
 			if (releaseExtensions == null && resolveExtensions == null)
 			{
 				return new DefaultHandler(model);

@@ -17,5 +17,7 @@ namespace Castle.MicroKernel.Handlers
 	public interface IReleaseExtension
 	{
 		void Intercept(ReleaseInvocation invocation);
+
+		void Init(IKernel kernel, IHandler handler);
 	}
 }
