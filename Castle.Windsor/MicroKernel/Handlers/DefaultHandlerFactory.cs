@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
 namespace Castle.MicroKernel.Handlers
 {
 	using System;
+	using System.Collections.Generic;
 
 	using Castle.Core;
 
@@ -35,20 +36,26 @@ namespace Castle.MicroKernel.Handlers
 
 		public virtual IHandler Create(ComponentModel model)
 		{
-			IHandler handler;
-
-			if (model.RequiresGenericArguments)
-			{
-				handler = new DefaultGenericHandler(model);
-			}
-			else
-			{
-				handler = new DefaultHandler(model);
-			}
+			var handler = CreateHandler(model);
 
 			handler.Init(kernel);
-			
+
 			return handler;
+		}
+
+		private IHandler CreateHandler(ComponentModel model)
+		{
+			if (model.RequiresGenericArguments)
+			{
+				return new DefaultGenericHandler(model);
+			}
+			var resolveExtensions = model.ExtendedProperties["Castle.ResolveExtensions"] as ICollection<IResolveExtension>;
+			var releaseExtensions = model.ExtendedProperties["Castle.ReleaseExtensions"] as ICollection<IReleaseExtension>;
+			if (releaseExtensions == null && resolveExtensions == null)
+			{
+				return new DefaultHandler(model);
+			}
+			return new ExtendedHandler(model, resolveExtensions, releaseExtensions);
 		}
 
 		public IHandler CreateForwarding(IHandler target, Type forwardedType)

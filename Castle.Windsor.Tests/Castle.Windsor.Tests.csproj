@@ -175,6 +175,7 @@
     <Compile Include="Facilities\TypedFactory\Selectors\SelectorByClosedArgumentType.cs" />
     <Compile Include="Facilities\TypedFactory\Selectors\SelectorById.cs" />
     <Compile Include="Facilities\TypedFactory\Selectors\Component1Selector.cs" />
+    <Compile Include="HandlerExtensionsTestCase.cs" />
     <Compile Include="Installers\CustomerInstaller.cs" />
     <Compile Include="Installer\FromAssemblyInstallersTestCase.cs" />
     <Compile Include="Components\UsesIEmptyService.cs" />

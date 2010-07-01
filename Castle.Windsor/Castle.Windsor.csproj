@@ -127,6 +127,11 @@
     <Compile Include="MicroKernel\ComponentActivator\ExternalInstanceActivator.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="MicroKernel\Handlers\ExtendedHandler.cs" />
+    <Compile Include="MicroKernel\Handlers\IReleaseExtension.cs" />
+    <Compile Include="MicroKernel\Handlers\IResolveExtension.cs" />
+    <Compile Include="MicroKernel\Handlers\ReleaseInvocation.cs" />
+    <Compile Include="MicroKernel\Handlers\ResolveInvocation.cs" />
     <Compile Include="MicroKernel\IComponentActivator.cs">
       <SubType>Code</SubType>
     </Compile>
