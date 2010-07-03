@@ -51,29 +51,24 @@ namespace Castle.Facilities.TypedFactory
 
 		protected override void Init()
 		{
-			InitInterfaceBasedFactory();
-			InitDelegateBasedFactory();
+			InitFacility();
 
 			LegacyInit();
 		}
 
-		private void InitDelegateBasedFactory()
+		private void InitFacility()
 		{
-			Kernel.Register(Component.For<DelegateFactory>()
+			Kernel.Register(Component.For<TypedFactoryInterceptor>()
+			                	.Named(InterceptorKey)
+			                	.Unless(Component.ServiceAlreadyRegistered),
+			                Component.For<DelegateFactory>()
 			                	.Named(DelegateFactoryKey)
 			                	.Unless(Component.ServiceAlreadyRegistered),
 			                Component.For<IProxyFactoryExtension>()
 			                	.ImplementedBy<DelegateProxyFactory>()
 			                	.LifeStyle.Transient
 			                	.Named(DelegateProxyFactoryKey)
-			                	.Unless(Component.ServiceAlreadyRegistered));
-		}
-
-		private void InitInterfaceBasedFactory()
-		{
-			Kernel.Register(Component.For<TypedFactoryInterceptor>()
-			                	.Named(InterceptorKey)
-			                	.Unless(Component.ServiceAlreadyRegistered));
+								.Unless(Component.ServiceAlreadyRegistered));
 		}
 
 		private void LegacyInit()
