@@ -47,7 +47,7 @@ namespace Castle.Facilities.TypedFactory
 			this.kernel = kernel;
 		}
 
-		public ITypedFactoryComponentSelector ComponentSelector { get; set; }
+		public ITypedFactoryComponentSelector ComponentSelector { get; private set; }
 
 
 		public void Dispose()
@@ -60,6 +60,7 @@ namespace Castle.Facilities.TypedFactory
 				kernel.ReleaseComponent(component);
 			}
 		}
+
 		public void Intercept(IInvocation invocation)
 		{
 			if (disposed)
