@@ -190,8 +190,7 @@ namespace Castle.Facilities.EventWiring
 
 		private void AddSubscriberDependecyToModel(string subscriberKey, ComponentModel model)
 		{
-			DependencyModel dp = new DependencyModel(DependencyType.ServiceOverride, subscriberKey, null, false);
-			
+			var dp = new DependencyModel(DependencyType.ServiceOverride, subscriberKey, null, false);
 			if (!model.Dependencies.Contains(dp))
 			{
 				model.Dependencies.Add(dp);

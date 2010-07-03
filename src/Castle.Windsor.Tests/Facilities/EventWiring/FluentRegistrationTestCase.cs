@@ -175,6 +175,42 @@ namespace Castle.Windsor.Tests.Facilities.EventWiring
 		}
 
 		[Test]
+		public void Can_specify_subscriber_as_type_handler_as_expression()
+		{
+			container.Register(
+				Component.For<SimplePublisher>()
+					.PublishEvent("Event",
+					              x => x.To<SimpleListener>(l => l.OnPublish(null, null))),
+				Component.For<SimpleListener>());
+
+			var subscriber = container.Resolve<SimpleListener>();
+			var publisher = container.Resolve<SimplePublisher>();
+
+			publisher.Trigger();
+
+			Assert.IsTrue(subscriber.Listened);
+			Assert.AreSame(publisher, subscriber.Sender);
+		}
+
+		[Test]
+		public void Can_specify_subscriber_as_type_handler_as_string()
+		{
+			container.Register(
+				Component.For<SimplePublisher>()
+					.PublishEvent("Event",
+					              x => x.To<SimpleListener>("OnPublish")),
+				Component.For<SimpleListener>());
+
+			var subscriber = container.Resolve<SimpleListener>();
+			var publisher = container.Resolve<SimplePublisher>();
+
+			publisher.Trigger();
+
+			Assert.IsTrue(subscriber.Listened);
+			Assert.AreSame(publisher, subscriber.Sender);
+		}
+
+		[Test]
 		public void Not_specifying_handler_name_uses_OnEVENTNAME_method()
 		{
 			container.Register(
@@ -184,6 +220,24 @@ namespace Castle.Windsor.Tests.Facilities.EventWiring
 				Component.For<ListenerWithOnEventMethod>().Named("foo"));
 
 			var subscriber = container.Resolve<ListenerWithOnEventMethod>("foo");
+			var publisher = container.Resolve<SimplePublisher>();
+
+			publisher.Trigger();
+
+			Assert.IsTrue(subscriber.Listened);
+			Assert.AreSame(publisher, subscriber.Sender);
+		}
+
+		[Test]
+		public void Not_specifying_handler_name_uses_OnEVENTNAME_method_subscriber_as_type()
+		{
+			container.Register(
+				Component.For<SimplePublisher>()
+					.PublishEvent(p => p.Event += null,
+					              x => x.To<ListenerWithOnEventMethod>()),
+				Component.For<ListenerWithOnEventMethod>());
+
+			var subscriber = container.Resolve<ListenerWithOnEventMethod>();
 			var publisher = container.Resolve<SimplePublisher>();
 
 			publisher.Trigger();

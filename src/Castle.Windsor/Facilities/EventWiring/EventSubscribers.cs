@@ -11,7 +11,6 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
 namespace Castle.Facilities.EventWiring
 {
 	using System;
@@ -25,24 +24,36 @@ namespace Castle.Facilities.EventWiring
 	{
 		private readonly List<EventSubscriber> subscribers = new List<EventSubscriber>(3);
 
+		internal EventSubscriber[] Subscribers
+		{
+			get { return subscribers.ToArray(); }
+		}
+
 		public EventSubscribers To<TSubscriber>(string subscriberComponentName, Expression<Action<TSubscriber>> methodHandler)
 		{
 			subscribers.Add(EventSubscriber.Named(subscriberComponentName).HandledBy(methodHandler));
 			return this;
 		}
 
+		public EventSubscribers To<TSubscriber>(Expression<Action<TSubscriber>> methodHandler)
+		{
+			return To(typeof(TSubscriber).FullName, methodHandler);
+		}
+
+		public EventSubscribers To<TSubscriber>(string methodHandler)
+		{
+			return To(typeof(TSubscriber).FullName, methodHandler);
+		}
+
+		public EventSubscribers To<TSubscriber>()
+		{
+			return To(typeof(TSubscriber).FullName);
+		}
+
 		public EventSubscribers To(string subscriberComponentName, string methodHandler)
 		{
 			subscribers.Add(EventSubscriber.Named(subscriberComponentName).HandledBy(methodHandler));
 			return this;
-		}
-
-		internal EventSubscriber[] Subscribers
-		{
-			get
-			{
-				return subscribers.ToArray();
-			}
 		}
 
 		public EventSubscribers To(string subscriberComponentName)

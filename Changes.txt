@@ -1,6 +1,8 @@
 unreleased changes
 ==================
 
+- Obsoleted all the AddComponent* methods in favor of using Installers and fluent registration API
+
 - ServiceSelector delegate (used in WithService.Select calls) changed signature to fix a bug: http://3.ly/eP5Q
 
 - moved IWindsorInstaller to Castle.MicroKernel.Registration namespace
@@ -31,8 +33,6 @@ unreleased changes
 - TypedFactoryFacility - added ability to configure factory inline: Component.For<IFooFactory>().AsFactory(f => f.SelectedWith("selectorKey")) 
 
 - Changed IModelInterceptorSelector's signature and behavior (see breakingChanges.txt for details)
-
-- added metadata facility, which lets you associate some metadata with the component and access it from the call site.
 
 - removed IProxyHook interface (see breakingchanges.txt)
 
