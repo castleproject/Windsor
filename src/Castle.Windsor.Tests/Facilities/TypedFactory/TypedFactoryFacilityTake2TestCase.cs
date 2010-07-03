@@ -213,6 +213,20 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 		}
 
 		[Test]
+		public void Releasing_factory_releases_selector()
+		{
+			DisposableSelector.InstancesCreated = 0;
+			DisposableSelector.InstancesDisposed = 0;
+			container.Register(
+				Component.For<DummyComponentFactory>().AsFactory().LifeStyle.Transient,
+				Component.For<ITypedFactoryComponentSelector>().ImplementedBy<DisposableSelector>().LifeStyle.Transient);
+			var factory = container.Resolve<DummyComponentFactory>();
+
+			container.Release(factory);
+
+			Assert.AreEqual(1, DisposableSelector.InstancesDisposed);
+		}
+		[Test]
 		public void Can_pick_non_default_selector_by_name_delegate()
 		{
 			container.Register(

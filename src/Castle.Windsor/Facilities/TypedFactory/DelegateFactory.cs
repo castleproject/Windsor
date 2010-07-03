@@ -58,11 +58,6 @@ namespace Castle.Facilities.TypedFactory
 
 					k.ReleaseComponent(delegateProxyFactory);
 					return @delegate;
-				})
-				.DynamicParameters((k, d) =>
-				{
-					var selector = new DefaultDelegateComponentSelector();
-					d.Insert<ITypedFactoryComponentSelector>(selector);
 				});
 		}
 

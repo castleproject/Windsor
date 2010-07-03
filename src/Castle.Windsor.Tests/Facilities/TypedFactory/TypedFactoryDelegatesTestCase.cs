@@ -22,6 +22,7 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 	using Castle.MicroKernel.Releasers;
 	using Castle.Windsor;
 	using Castle.Windsor.Tests.Facilities.TypedFactory.Delegates;
+	using Castle.Windsor.Tests.Facilities.TypedFactory.Selectors;
 
 	using NUnit.Framework;
 
@@ -104,6 +105,66 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 			Assert.AreEqual(1, foo.Number);
 			foo = dependsOnFoo.GetFoo();
 			Assert.AreEqual(1, foo.Number);
+		}
+
+		[Test]
+		public void Delegate_based_factories_explicitly_pick_registered_selector()
+		{
+			DisposableSelector.InstancesCreated = 0;
+			SimpleSelector.InstancesCreated = 0;
+			container.Register(
+				Component.For<ITypedFactoryComponentSelector>().ImplementedBy<DisposableSelector>().Named("1").LifeStyle.Transient,
+				Component.For<ITypedFactoryComponentSelector>().ImplementedBy<SimpleSelector>().Named("2").LifeStyle.Transient,
+				Component.For<Func<Foo>>().LifeStyle.Transient.AsFactory(x => x.SelectedWith("2")));
+
+			container.Resolve<Func<Foo>>();
+
+			Assert.AreEqual(0, DisposableSelector.InstancesCreated);
+			Assert.AreEqual(1, SimpleSelector.InstancesCreated);
+		}
+
+		[Test]
+		public void Delegate_based_factories_explicitly_pick_registered_selector_implicitly_registered_factory()
+		{
+			DisposableSelector.InstancesCreated = 0;
+			DisposableSelector.InstancesDisposed = 0;
+			container.Register(
+				Component.For<ITypedFactoryComponentSelector>().ImplementedBy<DisposableSelector>().LifeStyle.Transient);
+
+			container.Resolve<Func<Foo>>();
+
+			Assert.AreEqual(1, DisposableSelector.InstancesCreated);
+		}
+
+		[Test]
+		public void Delegate_based_factories_implicitly_pick_registered_selector_explicitly_registered_factory()
+		{
+			DisposableSelector.InstancesCreated = 0;
+			DisposableSelector.InstancesDisposed = 0;
+			container.Register(
+				Component.For<ITypedFactoryComponentSelector>().ImplementedBy<DisposableSelector>().LifeStyle.Transient,
+				Component.For<Func<Foo>>().LifeStyle.Transient.AsFactory());
+
+			container.Resolve<Func<Foo>>();
+
+			Assert.AreEqual(1, DisposableSelector.InstancesCreated);
+		}
+
+		[Test]
+		public void Releasing_factory_releases_selector()
+		{
+			DisposableSelector.InstancesCreated = 0;
+			DisposableSelector.InstancesDisposed = 0;
+			container.Register(
+				Component.For<DisposableSelector>().LifeStyle.Transient,
+				Component.For<Func<Foo>>().LifeStyle.Transient.AsFactory(x => x.SelectedWith<DisposableSelector>()));
+			var factory = container.Resolve<Func<Foo>>();
+
+			Assert.AreEqual(1, DisposableSelector.InstancesCreated);
+
+			container.Release(factory);
+
+			Assert.AreEqual(1, DisposableSelector.InstancesDisposed);
 		}
 
 		[Test]

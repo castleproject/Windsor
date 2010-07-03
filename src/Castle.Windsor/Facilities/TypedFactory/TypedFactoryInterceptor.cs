@@ -18,6 +18,7 @@ namespace Castle.Facilities.TypedFactory
 	using System.Collections.Generic;
 	using System.Linq;
 	using System.Reflection;
+
 	using Castle.Core;
 	using Castle.Core.Interceptor;
 	using Castle.DynamicProxy;
@@ -27,18 +28,19 @@ namespace Castle.Facilities.TypedFactory
 	public class TypedFactoryInterceptor : IInterceptor, IOnBehalfAware, IDisposable
 	{
 		private readonly IKernel kernel;
-		private readonly List<object> trackedComponents = new List<object>();
 
 		private readonly IDictionary<MethodInfo, ITypedFactoryMethod> methods =
 			new Dictionary<MethodInfo, ITypedFactoryMethod>();
 
-		private ComponentModel target;
+		private readonly List<object> trackedComponents = new List<object>();
+
 		private bool disposed;
 
+		private ComponentModel target;
+
 		public TypedFactoryInterceptor(IKernel kernel)
-			: this(kernel, new DefaultTypedFactoryComponentSelector())
 		{
-			// if no selector is registered, we'll use the default
+			this.kernel = kernel;
 		}
 
 		public TypedFactoryInterceptor(IKernel kernel, ITypedFactoryComponentSelector componentSelector)
@@ -49,6 +51,63 @@ namespace Castle.Facilities.TypedFactory
 
 		public ITypedFactoryComponentSelector ComponentSelector { get; private set; }
 
+		protected virtual void BuildHandlersMap(Type service)
+		{
+			if (service.Equals(typeof(IDisposable)))
+			{
+				var method = service.GetMethods().Single();
+				methods.Add(method, new Dispose(Dispose));
+				return;
+			}
+
+			foreach (MethodInfo method in service.GetMethods())
+			{
+				if (IsReleaseMethod(method))
+				{
+					methods.Add(method, new Release(kernel));
+					continue;
+				}
+				methods.Add(method, new Resolve(kernel, ComponentSelector, trackedComponents.Add));
+			}
+
+			foreach (var @interface in service.GetInterfaces())
+			{
+				BuildHandlersMap(@interface);
+			}
+		}
+
+		private void EnsureSelectorExists(Type service)
+		{
+			if (ComponentSelector != null)
+			{
+				return;
+			}
+			if (service.IsInterface)
+			{
+				ComponentSelector = new DefaultTypedFactoryComponentSelector();
+				return;
+			}
+			// else it's a delegate
+			ComponentSelector = new DefaultDelegateComponentSelector();
+		}
+
+		private bool IsReleaseMethod(MethodInfo methodInfo)
+		{
+			return methodInfo.ReturnType == typeof(void);
+		}
+
+		private bool TryGetMethod(IInvocation invocation, out ITypedFactoryMethod method)
+		{
+			if (methods.TryGetValue(invocation.Method, out method))
+			{
+				return true;
+			}
+			if (invocation.Method.IsGenericMethod == false)
+			{
+				return false;
+			}
+			return methods.TryGetValue(invocation.Method.GetGenericMethodDefinition(), out method);
+		}
 
 		public void Dispose()
 		{
@@ -78,49 +137,11 @@ namespace Castle.Facilities.TypedFactory
 			method.Invoke(invocation);
 		}
 
-		private bool TryGetMethod(IInvocation invocation, out ITypedFactoryMethod method)
-		{
-			if (methods.TryGetValue(invocation.Method, out method))
-				return true;
-			if (invocation.Method.IsGenericMethod == false)
-				return false;
-			return methods.TryGetValue(invocation.Method.GetGenericMethodDefinition(), out method);
-		}
-
 		public void SetInterceptedComponentModel(ComponentModel target)
 		{
 			this.target = target;
+			EnsureSelectorExists(this.target.Service);
 			BuildHandlersMap(this.target.Service);
-		}
-
-		protected virtual void BuildHandlersMap(Type service)
-		{
-			if(service.Equals(typeof(IDisposable)))
-			{
-				var method = service.GetMethods().Single();
-				methods.Add(method, new Dispose(Dispose));
-				return;
-			}
-
-			foreach (MethodInfo method in service.GetMethods())
-			{
-				if (IsReleaseMethod(method))
-				{
-					methods.Add(method, new Release(kernel));
-					continue;
-				}
-				methods.Add(method, new Resolve(kernel, ComponentSelector, trackedComponents.Add));
-			}
-
-			foreach (var @interface in service.GetInterfaces())
-			{
-				BuildHandlersMap(@interface);
-			}
-		}
-
-		private bool IsReleaseMethod(MethodInfo methodInfo)
-		{
-			return methodInfo.ReturnType == typeof(void);
 		}
 	}
 }
