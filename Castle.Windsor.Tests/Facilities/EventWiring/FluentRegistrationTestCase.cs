@@ -32,7 +32,7 @@ namespace Castle.Windsor.Tests.Facilities.EventWiring
 		}
 
 		private IWindsorContainer container;
-
+#if !SILVERLIGHT
 		[Test]
 		public void Can_publish_events_via_AllTypes()
 		{
@@ -51,6 +51,7 @@ namespace Castle.Windsor.Tests.Facilities.EventWiring
 			Assert.IsTrue(subscriber.Listened);
 			Assert.AreSame(publisher, subscriber.Sender);
 		}
+#endif
 
 		[Test]
 		public void Can_publish_events_via_AllTypes_weakly_typed()
@@ -75,7 +76,7 @@ namespace Castle.Windsor.Tests.Facilities.EventWiring
 		{
 			container.Register(
 				Component.For<SimplePublisher>()
-					.PublishEvent(p => SimplePublisher.StaticEvent += null,
+					.PublishEvent("StaticEvent",
 					              x => x.To<SimpleListener>("bar", l => l.OnPublish(null, null))),
 				Component.For<SimpleListener>().Named("bar"));
 
@@ -87,6 +88,26 @@ namespace Castle.Windsor.Tests.Facilities.EventWiring
 			Assert.IsTrue(listener.Listened);
 			Assert.AreSame(publisher, listener.Sender);
 		}
+
+#if !SILVERLIGHT
+		[Test]
+		public void Can_specify_strongly_typed_event()
+		{
+			container.Register(
+				Component.For<SimplePublisher>()
+					.PublishEvent(x => SimplePublisher.StaticEvent += null,
+					              x => x.To<SimpleListener>("bar", l => l.OnPublish(null, null))),
+				Component.For<SimpleListener>().Named("bar"));
+
+			var listener = container.Resolve<SimpleListener>("bar");
+			var publisher = container.Resolve<SimplePublisher>();
+
+			publisher.StaticTrigger();
+
+			Assert.IsTrue(listener.Listened);
+			Assert.AreSame(publisher, listener.Sender);
+		}
+#endif
 
 		[Test]
 		public void Can_specify_event_as_string()
@@ -129,9 +150,9 @@ namespace Castle.Windsor.Tests.Facilities.EventWiring
 		{
 			container.Register(
 				Component.For<SimplePublisher>()
-					.PublishEvent(p => p.Event += null,
+					.PublishEvent("Event",
 					              x => x.To("foo"))
-					.PublishEvent(p => SimplePublisher.StaticEvent += null,
+					.PublishEvent("StaticEvent",
 					              x => x.To<SimpleListener>("bar", l => l.OnPublish(null, null))),
 				Component.For<ListenerWithOnEventMethod>().Named("foo"),
 				Component.For<SimpleListener>().Named("bar"));
@@ -156,7 +177,7 @@ namespace Castle.Windsor.Tests.Facilities.EventWiring
 		{
 			container.Register(
 				Component.For<SimplePublisher>()
-					.PublishEvent(p => p.Event += null,
+					.PublishEvent("Event",
 					              x => x.To("foo")
 					                   	.To<SimpleListener>("bar", l => l.OnPublish(null, null))),
 				Component.For<ListenerWithOnEventMethod>().Named("foo"),
@@ -215,7 +236,7 @@ namespace Castle.Windsor.Tests.Facilities.EventWiring
 		{
 			container.Register(
 				Component.For<SimplePublisher>()
-					.PublishEvent(p => p.Event += null,
+					.PublishEvent("Event",
 					              x => x.To("foo")),
 				Component.For<ListenerWithOnEventMethod>().Named("foo"));
 
@@ -233,7 +254,7 @@ namespace Castle.Windsor.Tests.Facilities.EventWiring
 		{
 			container.Register(
 				Component.For<SimplePublisher>()
-					.PublishEvent(p => p.Event += null,
+					.PublishEvent("Event",
 					              x => x.To<ListenerWithOnEventMethod>()),
 				Component.For<ListenerWithOnEventMethod>());
 
@@ -251,7 +272,7 @@ namespace Castle.Windsor.Tests.Facilities.EventWiring
 		{
 			container.Register(
 				Component.For<SimplePublisher>()
-					.PublishEvent(p => p.Event += null,
+					.PublishEvent("Event",
 					              x => x.To<SimpleListener>("foo", l => l.OnPublish(null, null))),
 				Component.For<SimpleListener>().Named("foo"));
 
