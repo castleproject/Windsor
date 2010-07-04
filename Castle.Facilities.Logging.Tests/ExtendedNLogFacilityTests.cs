@@ -14,21 +14,16 @@
 
 namespace Castle.Facilities.Logging.Tests
 {
+#if !SILVERLIGHT
 	using System;
-	using System.IO;
+
 	using Castle.Facilities.Logging.Tests.Classes;
 	using Castle.MicroKernel.Registration;
 	using Castle.Windsor;
-	using log4net;
-	using log4net.Appender;
-	using log4net.Layout;
-	using log4net.Repository.Hierarchy;
+
 	using NLog.Targets;
 	using NUnit.Framework;
 
-	/// <summary>
-	/// Summary description for ExtendedLog4NetFacilityTests.
-	/// </summary>
 	[TestFixture]
 	public class ExtendedNLogFacilityTests : BaseTest
 	{
@@ -91,4 +86,5 @@ namespace Castle.Facilities.Logging.Tests
 			Assert.AreEqual(expectedLogOutput, actualLogOutput.ToString());
 		}
 	}
+#endif
 }

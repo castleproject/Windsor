@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,12 +14,16 @@
 
 namespace Castle.Facilities.Logging.Tests
 {
+#if !SILVERLIGHT
 	using System;
-	using System.IO;
+
 	using Castle.Facilities.Logging.Tests.Classes;
 	using Castle.MicroKernel.Registration;
 	using Castle.Windsor;
+
+	using NLog;
 	using NLog.Targets;
+
 	using NUnit.Framework;
 
 	/// <summary>
@@ -28,8 +32,6 @@ namespace Castle.Facilities.Logging.Tests
 	[TestFixture]
 	public class NLogFacilityTests : BaseTest
 	{
-		private IWindsorContainer container;
-
 		[SetUp]
 		public void Setup()
 		{
@@ -45,18 +47,21 @@ namespace Castle.Facilities.Logging.Tests
 			}
 		}
 
+		private IWindsorContainer container;
+
 		[Test]
 		public void SimpleTest()
 		{
 			container.Register(Component.For(typeof(SimpleLoggingComponent)).Named("component"));
-			SimpleLoggingComponent test = container["component"] as SimpleLoggingComponent;
+			var test = container["component"] as SimpleLoggingComponent;
 
 			test.DoSomething();
 
-			String expectedLogOutput = String.Format("|INFO|{0}|Hello world", typeof(SimpleLoggingComponent).FullName);
-			String actualLogOutput = (NLog.LogManager.Configuration.FindTargetByName("memory") as MemoryTarget).Logs[0].ToString();
+			var expectedLogOutput = String.Format("|INFO|{0}|Hello world", typeof(SimpleLoggingComponent).FullName);
+			var actualLogOutput = (LogManager.Configuration.FindTargetByName("memory") as MemoryTarget).Logs[0].ToString();
 			actualLogOutput = actualLogOutput.Substring(actualLogOutput.IndexOf('|'));
 			Assert.AreEqual(expectedLogOutput, actualLogOutput);
 		}
 	}
+#endif
 }

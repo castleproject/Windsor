@@ -62,6 +62,10 @@ namespace Castle.Windsor.Debugging
 				{
 					return "Custom: " + handler.ComponentModel.CustomLifestyle.Name;
 				}
+				if(lifestyle == LifestyleType.Undefined)
+				{
+					return lifestyle.ToString() + string.Format(" (default lifestyle {0} will be used)", LifestyleType.Singleton);
+				}
 				return lifestyle.ToString();
 			}
 		}

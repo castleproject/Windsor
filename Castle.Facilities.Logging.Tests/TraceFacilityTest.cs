@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,70 +12,72 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
 namespace Castle.Facilities.Logging.Tests
 {
-    using System;
-    using System.Diagnostics;
-    using System.IO;
+	
+#if !SILVERLIGHT
+	using System;
+	using System.Diagnostics;
+	using System.IO;
 
-    using Castle.MicroKernel.Registration;
-    using Castle.Windsor;
-    using Castle.Facilities.Logging.Tests.Classes;
+	using Castle.MicroKernel.Registration;
+	using Castle.Windsor;
+	using Castle.Facilities.Logging.Tests.Classes;
 
-    using NUnit.Framework;
+	using NUnit.Framework;
 
-    /// <summary>
-    /// Summary description for TraceFacilityTest
-    /// </summary>
-    [TestFixture]
-    public class TraceFacilityTest : BaseTest
-    {
-        private IWindsorContainer container;
-        private readonly StringWriter consoleWriter = new StringWriter();
+	/// <summary>
+	/// Summary description for TraceFacilityTest
+	/// </summary>
+	[TestFixture]
+	public class TraceFacilityTest : BaseTest
+	{
+		[SetUp]
+		public void Setup()
+		{
+			container = base.CreateConfiguredContainer(LoggerImplementation.Trace);
+			consoleWriter.GetStringBuilder().Length = 0;
 
-        [SetUp]
-        public void Setup()
-        {
-            container = base.CreateConfiguredContainer(LoggerImplementation.Trace);
-            consoleWriter.GetStringBuilder().Length = 0;
+			var source = new TraceSource("Default");
+			foreach (TraceListener listener in source.Listeners)
+			{
+				var consoleListener = listener as ConsoleTraceListener;
+				if (consoleListener != null)
+				{
+					consoleListener.Writer = consoleWriter;
+				}
+			}
+		}
 
-            TraceSource source = new TraceSource("Default");
-            foreach(TraceListener listener in source.Listeners)
-            {
-                ConsoleTraceListener consoleListener = listener as ConsoleTraceListener;
-                if (consoleListener != null)
-                {
-                    consoleListener.Writer = consoleWriter;
-                }
-            }
-        }
+		[TearDown]
+		public void Teardown()
+		{
+			if (container != null)
+			{
+				container.Dispose();
+			}
+		}
 
-        [TearDown]
-        public void Teardown()
-        {
-            if (container != null)
-            {
-                container.Dispose();
-            }
-        }
+		private IWindsorContainer container;
+		private readonly StringWriter consoleWriter = new StringWriter();
 
-        [Test]
-        public void SimpleTest()
-        {
-            container.Register(Component.For(typeof(SimpleLoggingComponent)).Named("component"));
-            SimpleLoggingComponent test = container["component"] as SimpleLoggingComponent;
+		[Test]
+		public void SimpleTest()
+		{
+			container.Register(Component.For(typeof(SimpleLoggingComponent)).Named("component"));
+			var test = container["component"] as SimpleLoggingComponent;
 
-            string expectedLogOutput = String.Format("{0} Information: 0 : Hello world" + Environment.NewLine, typeof(SimpleLoggingComponent).FullName);
+			var expectedLogOutput = String.Format("{0} Information: 0 : Hello world" + Environment.NewLine,
+			                                      typeof(SimpleLoggingComponent).FullName);
 
-            if (test != null)
-            {
-                test.DoSomething();
-            }
+			if (test != null)
+			{
+				test.DoSomething();
+			}
 
-            string actualLogOutput = consoleWriter.GetStringBuilder().ToString();
-            Assert.AreEqual(expectedLogOutput, actualLogOutput);
-        }
-
-    }
+			var actualLogOutput = consoleWriter.GetStringBuilder().ToString();
+			Assert.AreEqual(expectedLogOutput, actualLogOutput);
+		}
+	}
+#endif
 }
