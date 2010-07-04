@@ -64,7 +64,7 @@ namespace Castle.Windsor.Tests.Components
 		{
 		}
 	}
-
+#if !SILVERLIGHT
 	/// <summary>
 	/// Summary description for CalculatorServiceWithAttributes.
 	/// </summary>
@@ -80,4 +80,5 @@ namespace Castle.Windsor.Tests.Components
 		{
 		}
 	}
+#endif
 }
