@@ -14,6 +14,7 @@
 
 namespace Castle.Windsor.Tests.Windsor.Tests
 {
+#if (!SILVERLIGHT)
 	using Castle.Windsor.Adapters.ComponentModel;
 
 	using NUnit.Framework;
@@ -39,4 +40,5 @@ namespace Castle.Windsor.Tests.Windsor.Tests
 			Assert.AreSame(container, windsorContainer);
 		}
 	}
+#endif
 }

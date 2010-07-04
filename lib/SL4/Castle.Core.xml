@@ -267,7 +267,7 @@
         </member>
         <member name="T:Castle.Components.DictionaryAdapter.KeyAttribute">
             <summary>
-            Assignes a specific dictionary key.
+            Assigns a specific dictionary key.
             </summary>
         </member>
         <member name="M:Castle.Components.DictionaryAdapter.KeyAttribute.#ctor(System.String)">
@@ -275,6 +275,12 @@
             Initializes a new instance of the <see cref="T:Castle.Components.DictionaryAdapter.KeyAttribute"/> class.
             </summary>
             <param name="key">The key.</param>
+        </member>
+        <member name="M:Castle.Components.DictionaryAdapter.KeyAttribute.#ctor(System.String[])">
+            <summary>
+            Initializes a new instance of the <see cref="T:Castle.Components.DictionaryAdapter.KeyAttribute"/> class.
+            </summary>
+            <param name="keys">The compound key.</param>
         </member>
         <member name="T:Castle.Components.DictionaryAdapter.KeyPrefixAttribute">
             <summary>
@@ -1121,15 +1127,6 @@
             otherwise, we use the value as is (enums, integer, etc).
             </summary>
         </member>
-        <member name="M:Castle.DynamicProxy.Generators.InvocationTypeGenerator.GetBaseCtorArguments(System.Type,Castle.DynamicProxy.ProxyGenerationOptions,System.Reflection.ConstructorInfo@)">
-            <summary>
-            Generates the constructor for the class that extends
-            <see cref="T:Castle.DynamicProxy.AbstractInvocation"/>
-            </summary>
-            <param name="targetFieldType"></param>
-            <param name="proxyGenerationOptions"></param>
-            <param name="baseConstructor"></param>
-        </member>
         <member name="T:Castle.DynamicProxy.Generators.BaseProxyGenerator">
             <summary>
             Base class that exposes the common functionalities
@@ -1152,6 +1149,15 @@
             <param name="implementer"></param>
             <param name="interface"></param>
             <param name="mapping"></param>
+        </member>
+        <member name="M:Castle.DynamicProxy.Generators.InvocationTypeGenerator.GetBaseCtorArguments(System.Type,Castle.DynamicProxy.ProxyGenerationOptions,System.Reflection.ConstructorInfo@)">
+            <summary>
+            Generates the constructor for the class that extends
+            <see cref="T:Castle.DynamicProxy.AbstractInvocation"/>
+            </summary>
+            <param name="targetFieldType"></param>
+            <param name="proxyGenerationOptions"></param>
+            <param name="baseConstructor"></param>
         </member>
         <member name="T:Castle.DynamicProxy.DefaultProxyBuilder">
             <summary>
@@ -3169,6 +3175,13 @@
             Debug logging level
             </summary>
         </member>
+        <member name="T:Castle.Core.Logging.ConsoleLogger">
+            <summary>
+            The Logger sending everything to the standard output streams.
+            This is mainly for the cases when you have a utility that
+            does not have a logger to supply.
+            </summary>
+        </member>
         <member name="T:Castle.Core.Logging.LevelFilteredLogger">
             <summary>
             The Level Filtered Logger class.  This is a base clase which
@@ -3518,6 +3531,51 @@
             Determines if messages of priority "fatal" will be logged.
             </summary>
             <value><c>true</c> if log level flags include the <see cref="F:Castle.Core.Logging.LoggerLevel.Fatal"/> bit</value> 
+        </member>
+        <member name="M:Castle.Core.Logging.ConsoleLogger.#ctor">
+            <summary>
+            Creates a new ConsoleLogger with the <c>Level</c>
+            set to <c>LoggerLevel.Debug</c> and the <c>Name</c>
+            set to <c>String.Empty</c>.
+            </summary>
+        </member>
+        <member name="M:Castle.Core.Logging.ConsoleLogger.#ctor(Castle.Core.Logging.LoggerLevel)">
+            <summary>
+            Creates a new ConsoleLogger with the <c>Name</c>
+            set to <c>String.Empty</c>.
+            </summary>
+            <param name="logLevel">The logs Level.</param>
+        </member>
+        <member name="M:Castle.Core.Logging.ConsoleLogger.#ctor(System.String)">
+            <summary>
+            Creates a new ConsoleLogger with the <c>Level</c>
+            set to <c>LoggerLevel.Debug</c>.
+            </summary>
+            <param name="name">The logs Name.</param>
+        </member>
+        <member name="M:Castle.Core.Logging.ConsoleLogger.#ctor(System.String,Castle.Core.Logging.LoggerLevel)">
+            <summary>
+            Creates a new ConsoleLogger.
+            </summary>
+            <param name="name">The logs Name.</param>
+            <param name="logLevel">The logs Level.</param>
+        </member>
+        <member name="M:Castle.Core.Logging.ConsoleLogger.Log(Castle.Core.Logging.LoggerLevel,System.String,System.String,System.Exception)">
+            <summary>
+            A Common method to log.
+            </summary>
+            <param name="loggerLevel">The level of logging</param>
+            <param name="loggerName">The name of the logger</param>
+            <param name="message">The Message</param>
+            <param name="exception">The Exception</param>
+        </member>
+        <member name="M:Castle.Core.Logging.ConsoleLogger.CreateChildLogger(System.String)">
+            <summary>
+            Returns a new <c>ConsoleLogger</c> with the name
+            added after this loggers name, with a dot in between.
+            </summary>
+            <param name="loggerName">The added hierarchical name.</param>
+            <returns>A new <c>ConsoleLogger</c>.</returns> 
         </member>
         <member name="T:Castle.Core.Logging.NullLogger">
             <summary>

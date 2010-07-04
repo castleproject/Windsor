@@ -15,7 +15,6 @@
 namespace Castle.Facilities.Logging
 {
 	using System;
-	using System.Configuration;
 	using System.Diagnostics;
 	using System.Reflection;
 
@@ -31,26 +30,27 @@ namespace Castle.Facilities.Logging
 	/// </summary>
 	public class LoggingFacility : AbstractFacility
 	{
+#if !SILVERLIGHT
 		private static readonly String ExtendedLog4NetLoggerFactoryTypeName =
 			"Castle.Services.Logging.Log4netIntegration.ExtendedLog4netFactory," +
-			"Castle.Services.Logging.Log4netIntegration,Version=1.3.0.0, Culture=neutral," +
+			"Castle.Services.Logging.Log4netIntegration,Version=2.5.0.0, Culture=neutral," +
 			"PublicKeyToken=407dd0808d44fbdc";
 
 		private static readonly String ExtendedNLogLoggerFactoryTypeName =
 			"Castle.Services.Logging.NLogIntegration.ExtendedNLogFactory," +
-			"Castle.Services.Logging.NLogIntegration,Version=1.3.0.0, Culture=neutral," +
+			"Castle.Services.Logging.NLogIntegration,Version=2.5.0.0, Culture=neutral," +
 			"PublicKeyToken=407dd0808d44fbdc";
 
 		private static readonly String Log4NetLoggerFactoryTypeName =
 			"Castle.Services.Logging.Log4netIntegration.Log4netFactory," +
-			"Castle.Services.Logging.Log4netIntegration,Version=1.3.0.0, Culture=neutral," +
+			"Castle.Services.Logging.Log4netIntegration,Version=2.5.0.0, Culture=neutral," +
 			"PublicKeyToken=407dd0808d44fbdc";
 
 		private static readonly String NLogLoggerFactoryTypeName =
 			"Castle.Services.Logging.NLogIntegration.NLogFactory," +
-			"Castle.Services.Logging.NLogIntegration,Version=1.3.0.0, Culture=neutral," +
+			"Castle.Services.Logging.NLogIntegration,Version=2.5.0.0, Culture=neutral," +
 			"PublicKeyToken=407dd0808d44fbdc";
-
+#endif
 		private readonly string customLoggerFactoryTypeName;
 		private string configFileName;
 
@@ -238,12 +238,15 @@ namespace Castle.Facilities.Logging
 					return typeof(NullLogFactory);
 				case LoggerImplementation.Console:
 					return typeof(ConsoleFactory);
+#if !SILVERLIGHT
 				case LoggerImplementation.Diagnostics:
 					return typeof(DiagnosticsLoggerFactory);
 				case LoggerImplementation.Trace:
 					return typeof(TraceLoggerFactory);
+#if !CLIENTPROFILE
 				case LoggerImplementation.Web:
 					return typeof(WebLoggerFactory);
+#endif
 				case LoggerImplementation.Log4net:
 					return converter.PerformConversion<Type>(Log4NetLoggerFactoryTypeName);
 				case LoggerImplementation.NLog:
@@ -252,10 +255,10 @@ namespace Castle.Facilities.Logging
 					return converter.PerformConversion<Type>(ExtendedLog4NetLoggerFactoryTypeName);
 				case LoggerImplementation.ExtendedNLog:
 					return converter.PerformConversion<Type>(ExtendedNLogLoggerFactoryTypeName);
+#endif
 				default:
 				{
-					var message = "An invalid loggingApi was specified: " + loggerApi;
-					throw new ConfigurationErrorsException(message);
+					throw new FacilityException("An invalid loggingApi was specified: " + loggerApi);
 				}
 			}
 		}
@@ -289,7 +292,7 @@ namespace Castle.Facilities.Logging
 			              "then you must use the attribute customLoggerFactory to inform the " +
 			              "type name of the custom logger factory";
 
-			throw new ConfigurationErrorsException(message);
+			throw new FacilityException(message);
 		}
 
 		private LoggerImplementation ReadLoggingApi()

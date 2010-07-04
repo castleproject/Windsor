@@ -267,7 +267,7 @@
         </member>
         <member name="T:Castle.Components.DictionaryAdapter.KeyAttribute">
             <summary>
-            Assignes a specific dictionary key.
+            Assigns a specific dictionary key.
             </summary>
         </member>
         <member name="M:Castle.Components.DictionaryAdapter.KeyAttribute.#ctor(System.String)">
@@ -275,6 +275,12 @@
             Initializes a new instance of the <see cref="T:Castle.Components.DictionaryAdapter.KeyAttribute"/> class.
             </summary>
             <param name="key">The key.</param>
+        </member>
+        <member name="M:Castle.Components.DictionaryAdapter.KeyAttribute.#ctor(System.String[])">
+            <summary>
+            Initializes a new instance of the <see cref="T:Castle.Components.DictionaryAdapter.KeyAttribute"/> class.
+            </summary>
+            <param name="keys">The compound key.</param>
         </member>
         <member name="T:Castle.Components.DictionaryAdapter.KeyPrefixAttribute">
             <summary>
@@ -1121,15 +1127,6 @@
             otherwise, we use the value as is (enums, integer, etc).
             </summary>
         </member>
-        <member name="M:Castle.DynamicProxy.Generators.InvocationTypeGenerator.GetBaseCtorArguments(System.Type,Castle.DynamicProxy.ProxyGenerationOptions,System.Reflection.ConstructorInfo@)">
-            <summary>
-            Generates the constructor for the class that extends
-            <see cref="T:Castle.DynamicProxy.AbstractInvocation"/>
-            </summary>
-            <param name="targetFieldType"></param>
-            <param name="proxyGenerationOptions"></param>
-            <param name="baseConstructor"></param>
-        </member>
         <member name="T:Castle.DynamicProxy.Generators.BaseProxyGenerator">
             <summary>
             Base class that exposes the common functionalities
@@ -1152,6 +1149,15 @@
             <param name="implementer"></param>
             <param name="interface"></param>
             <param name="mapping"></param>
+        </member>
+        <member name="M:Castle.DynamicProxy.Generators.InvocationTypeGenerator.GetBaseCtorArguments(System.Type,Castle.DynamicProxy.ProxyGenerationOptions,System.Reflection.ConstructorInfo@)">
+            <summary>
+            Generates the constructor for the class that extends
+            <see cref="T:Castle.DynamicProxy.AbstractInvocation"/>
+            </summary>
+            <param name="targetFieldType"></param>
+            <param name="proxyGenerationOptions"></param>
+            <param name="baseConstructor"></param>
         </member>
         <member name="T:Castle.DynamicProxy.DefaultProxyBuilder">
             <summary>
