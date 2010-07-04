@@ -3031,11 +3031,6 @@
             </para>
             </remarks>
         </member>
-        <member name="T:Castle.Core.Logging.ConsoleFactory">
-            <summary>
-            Summary description for ConsoleFactory.
-            </summary>
-        </member>
         <member name="T:Castle.Core.Logging.NullLogFactory">
             <summary>
             NullLogFactory used when logging is turned off.
