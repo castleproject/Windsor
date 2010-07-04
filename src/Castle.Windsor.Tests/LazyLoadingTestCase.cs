@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@ namespace Castle.MicroKernel.Tests
 {
 	using System;
 	using System.Threading;
+
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Resolvers;
 	using Castle.Windsor.Tests;
@@ -26,19 +27,18 @@ namespace Castle.MicroKernel.Tests
 	[TestFixture]
 	public class LazyLoadingTestCase
 	{
-		private IKernel kernel;
-
 		[SetUp]
 		public void SetUp()
 		{
 			kernel = new DefaultKernel();
-		    kernel.Register(Component.For<ILazyComponentLoader>().ImplementedBy<Loader>());
+			kernel.Register(Component.For<ILazyComponentLoader>().ImplementedBy<Loader>());
 		}
+
+		private IKernel kernel;
 
 		[Test]
 		public void Can_Lazily_resolve_component()
 		{
-
 			var service = kernel.Resolve("foo", typeof(IHasDefaultImplementation));
 			Assert.IsNotNull(service);
 			Assert.IsInstanceOf<Implementation>(service);
@@ -47,8 +47,8 @@ namespace Castle.MicroKernel.Tests
 		[Test]
 		public void Can_lazily_resolve_dependency()
 		{
-		    kernel.Register(Component.For<UsingLazyComponent>());
-		    var component = kernel.Resolve<UsingLazyComponent>();
+			kernel.Register(Component.For<UsingLazyComponent>());
+			var component = kernel.Resolve<UsingLazyComponent>();
 			Assert.IsNotNull(component.Dependency);
 		}
 
@@ -56,30 +56,30 @@ namespace Castle.MicroKernel.Tests
 		[Timeout(2000)]
 		public void Loaders_are_thread_safe()
 		{
-		    kernel.Register(Component.For<SlowLoader>());
-		    var @event = new ManualResetEvent(false);
-			int[] count = {10};
+			kernel.Register(Component.For<SlowLoader>());
+			var @event = new ManualResetEvent(false);
+			int[] count = { 10 };
 			Exception exception = null;
-			for (int i = 0; i < count[0]; i++)
+			for (var i = 0; i < count[0]; i++)
 			{
 				ThreadPool.QueueUserWorkItem(o =>
-				                             	{
-				                             		try
-				                             		{
-				                             			kernel.Resolve<Implementation>("not registered");
-				                             			if (Interlocked.Decrement(ref count[0]) == 0)
-				                             			{
-				                             				@event.Set();
-				                             			}
-				                             		}
-				                             		catch (Exception e)
-				                             		{
-				                             			exception = e;
-				                             			// this is required because NUnit does not consider it a failure when
-				                             			// an exception is thrown on a non-main thread and therfore it waits.
-				                             			@event.Set();
-				                             		}
-				                             	}
+				{
+					try
+					{
+						kernel.Resolve<Implementation>("not registered");
+						if (Interlocked.Decrement(ref count[0]) == 0)
+						{
+							@event.Set();
+						}
+					}
+					catch (Exception e)
+					{
+						exception = e;
+						// this is required because NUnit does not consider it a failure when
+						// an exception is thrown on a non-main thread and therfore it waits.
+						@event.Set();
+					}
+				}
 					);
 			}
 			@event.WaitOne();
@@ -92,14 +92,12 @@ namespace Castle.MicroKernel.Tests
 		{
 			kernel.Register(Component.For<LoaderWithDependency>());
 
-			Assert.Throws<ComponentNotFoundException>(()=>
-
-			kernel.Resolve<ISpecification>("some not registered service"));
+			Assert.Throws<ComponentNotFoundException>(() =>
+			                                          kernel.Resolve<ISpecification>("some not registered service"));
 		}
-
 	}
 
-	public class LoaderWithDependency:ILazyComponentLoader
+	public class LoaderWithDependency : ILazyComponentLoader
 	{
 		private IEmployee employee;
 
@@ -114,7 +112,7 @@ namespace Castle.MicroKernel.Tests
 		}
 	}
 
-	public class SlowLoader:ILazyComponentLoader
+	public class SlowLoader : ILazyComponentLoader
 	{
 		public IRegistration Load(string key, Type service)
 		{
@@ -153,7 +151,6 @@ namespace Castle.MicroKernel.Tests
 		}
 	}
 
-
 	public class UsingLazyComponent
 	{
 		private IHasDefaultImplementation dependency;
@@ -179,12 +176,11 @@ namespace Castle.MicroKernel.Tests
 	{
 		public void Foo()
 		{
-			
 		}
 	}
 
-	[AttributeUsage(AttributeTargets.Interface,AllowMultiple = false)]
-	public class DefaultImplementationAttribute:Attribute
+	[AttributeUsage(AttributeTargets.Interface, AllowMultiple = false)]
+	public class DefaultImplementationAttribute : Attribute
 	{
 		private readonly Type implementation;
 
