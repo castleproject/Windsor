@@ -90,6 +90,7 @@ namespace Castle.Windsor.Tests.Proxy
 			Assert.IsTrue(calcService is IDisposable, "Service proxy should expose the IDisposable interface");
 		}
 
+#if !SILVERLIGHT
 		[Test]
 		public void RequestMarshalByRefProxyWithAttribute()
 		{
@@ -104,6 +105,7 @@ namespace Castle.Windsor.Tests.Proxy
 			Assert.IsTrue(calcService is MarshalByRefObject, "Service proxy should expose MarshalByRefObject");
 			Assert.IsTrue(calcService is IDisposable, "Service proxy should expose the IDisposable interface");
 		}
+#endif
 
 		[Test]
 		public void InternalInterfaceIgnoredByProxy()
