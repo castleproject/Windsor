@@ -26,6 +26,8 @@ namespace Castle.Facilities.TypedFactory
 	[Singleton]
 	public class DelegateFactory : ILazyComponentLoader
 	{
+		private static ITypedFactoryComponentSelector defaultSelector = new DefaultDelegateComponentSelector();
+
 		#region ILazyComponentLoader Members
 
 		public IRegistration Load(string key, Type service)
@@ -58,6 +60,10 @@ namespace Castle.Facilities.TypedFactory
 
 					k.ReleaseComponent(delegateProxyFactory);
 					return @delegate;
+				}).DynamicParameters((k, d) =>
+				{
+					var selector = defaultSelector;
+					d.Insert(selector);
 				});
 		}
 

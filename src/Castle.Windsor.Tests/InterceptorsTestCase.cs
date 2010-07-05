@@ -17,13 +17,14 @@ namespace Castle.Windsor.Tests
 	using System;
 	using System.Threading;
 	using Castle.Core;
-	using Castle.Core.Interceptor;
 	using Castle.DynamicProxy;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Handlers;
 	using Castle.MicroKernel.Proxy;
 	using Castle.MicroKernel.Registration;
 	using Castle.Windsor.Tests.Components;
+	using Castle.Windsor.Tests.Interceptors;
+
 	using NUnit.Framework;
 
 	[TestFixture]
@@ -327,84 +328,4 @@ namespace Castle.Windsor.Tests
 			handler.ComponentModel.Interceptors.Add(new InterceptorReference("interceptor"));
 		}
 	}
-
-	public class InterceptorThatCauseStackOverflow : IInterceptor
-	{
-
-		public InterceptorThatCauseStackOverflow(ICameraService service)
-		{
-		}
-
-		public void Intercept(IInvocation invocation)
-		{
-
-		}
-	}
-
-	public class ResultModifierInterceptor : IInterceptor
-	{
-		private readonly int? returnValue;
-
-		public ResultModifierInterceptor()
-		{
-		}
-
-		public ResultModifierInterceptor(int returnValue)
-		{
-			this.returnValue = returnValue;
-		}
-
-		public void Intercept(IInvocation invocation)
-		{
-			if (invocation.Method.Name.Equals("Sum"))
-			{
-				invocation.Proceed();
-				object result = invocation.ReturnValue;
-				if (!returnValue.HasValue)
-				{
-					invocation.ReturnValue = ((int)result) + 1;
-					return;
-				}
-				invocation.ReturnValue = returnValue.Value;
-				return;
-			}
-
-			invocation.Proceed();
-		}
-	}
-
-	public class InterceptorWithOnBehalf : IInterceptor, IOnBehalfAware
-	{
-		private static ComponentModel _model;
-
-		#region IMethodInterceptor Members
-
-		public void Intercept(IInvocation invocation)
-		{
-			invocation.Proceed();
-		}
-
-		#endregion
-
-		public void SetInterceptedComponentModel(ComponentModel target)
-		{
-			_model = target;
-		}
-
-		public static ComponentModel Model
-		{
-			get { return _model; }
-		}
-	}
-
-	public class ReturnDefaultInterceptor : IInterceptor
-	{
-		public void Intercept(IInvocation invocation)
-		{
-			if (invocation.Method.ReturnType.IsValueType)
-			{
-				invocation.ReturnValue = Activator.CreateInstance(invocation.Method.ReturnType);
-			}
-		}
-	} 
 }

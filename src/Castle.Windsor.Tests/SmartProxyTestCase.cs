@@ -19,7 +19,9 @@ namespace Castle.Windsor.Tests
 	using Castle.DynamicProxy;
     using Castle.MicroKernel.Registration;
     using Castle.Windsor.Tests.Components;
-	using NUnit.Framework;
+    using Castle.Windsor.Tests.Interceptors;
+
+    using NUnit.Framework;
 
 	[TestFixture]
 	public class SmartProxyTestCase

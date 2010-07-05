@@ -1,4 +1,21 @@
 ================================================================================================
+change - Typed Factories will not implicitly pick default ITypedFactoryComponentSelector 
+	registered in the container anymore
+
+impact - low
+fixability - easy
+revision - 
+
+description - In version 2.1 where ITypedFactoryComponentSelectors were introduced, when you had
+	a selector registered in the container that selector would be implicitly picked for every
+	factory you had. Since the behavior of a selector tends to be fine grained and targetet for
+	a specific factories, this behavior was removed. You have to explicitly associate the selector
+	with a factory (using .AsFactory(f => f.SelectUsing("MySelector")); or via xml configuration)
+	to override selection behavior.
+
+fix - using either fluent API .AsFactory(f => f.SelectUsing("MySelector")), or XML configuration
+	selector="${MySelector}" specify the selector explicitly for each of your factories.
+================================================================================================
 change - ServiceSelector delegate (used in WithService.Select calls) changed signature
 
 impact - low

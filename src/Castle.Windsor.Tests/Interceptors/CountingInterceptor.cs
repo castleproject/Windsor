@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,29 +12,25 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Windsor.Tests.Components
+namespace Castle.Windsor.Tests.Interceptors
 {
-	using System;
 	using Castle.Core;
-	using Castle.Windsor.Tests.Interceptors;
+	using Castle.DynamicProxy;
 
-	/// <summary>
-	/// Summary description for CalculatorServiceWithAttributes.
-	/// </summary>
-	[Interceptor(typeof(ResultModifierInterceptor))]
-#if (SILVERLIGHT)
-	public class CalculatorServiceWithAttributes 
-#else
-	public class CalculatorServiceWithAttributes : MarshalByRefObject
-#endif
+	[Singleton]
+	public class CountingInterceptor : IInterceptor
 	{
-		public CalculatorServiceWithAttributes()
+		private int intercepted;
+
+		public void Intercept(IInvocation invocation)
 		{
+			intercepted++;
+			invocation.Proceed();
 		}
 
-		public virtual int Sum(int x, int y)
+		public int Intercepted
 		{
-			return x + y;
+			get { return intercepted; }
 		}
 	}
 }

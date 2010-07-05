@@ -16,8 +16,7 @@ namespace Castle.MicroKernel.Tests.Registration
 {
 	using System;
 	using System.Collections.Generic;
-	using System.Linq;
-	using System.Reflection;
+
 	using Castle.Core;
 	using Castle.Core.Configuration;
 	using Castle.DynamicProxy;
@@ -28,6 +27,7 @@ namespace Castle.MicroKernel.Tests.Registration
 	using Castle.MicroKernel.Tests.Configuration.Components;
 	using Castle.MicroKernel.Tests.Lifestyle.Components;
 	using Castle.Windsor.Tests.Facilities.Startable.Components;
+	using Castle.Windsor.Tests.Interceptors;
 
 	using NUnit.Framework;
 
@@ -747,47 +747,5 @@ namespace Castle.MicroKernel.Tests.Registration
 			Kernel.ReleaseComponent(component);
 			Assert.IsTrue(component.Stopped);
 		}
-	}
-
-	public class InterceptorTypeSelector : IInterceptorSelector
-	{
-		private readonly Type interceptorType;
-
-		public InterceptorTypeSelector(Type interceptorType)
-		{
-			this.interceptorType = interceptorType;
-		}
-
-		public IInterceptor[] SelectInterceptors(Type type, MethodInfo method, IInterceptor[] interceptors)
-		{
-			return interceptors.Where(i => i.GetType() == interceptorType).ToArray();
-		}
-	}
-
-	public abstract class TestInterceptor : IInterceptor
-	{
-		public int Invocations
-		{
-			get;
-			set;
-		}
-
-		public void Intercept(IInvocation invocation)
-		{
-			Invocations++;
-			invocation.Proceed();
-		}
-	}
-
-	public class TestInterceptor1 : TestInterceptor
-	{
-	}
-
-	public class TestInterceptor2 : TestInterceptor
-	{
-	}
-
-	public class TestInterceptor3 : TestInterceptor
-	{
 	}
 }

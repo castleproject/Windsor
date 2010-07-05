@@ -18,6 +18,7 @@ namespace Castle.MicroKernel.Tests.Registration.Interceptors.Single
 
 	using Castle.Core;
 	using Castle.MicroKernel.Registration;
+	using Castle.Windsor.Tests.Interceptors;
 
 	public class SingleInterceptorType : InterceptorsTestCaseHelper
 	{

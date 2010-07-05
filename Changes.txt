@@ -1,5 +1,6 @@
-unreleased changes
+2.5.0 beta1 (2010-07-05)
 ==================
+- Typed Factories will not implicitly pick default ITypedFactoryComponentSelector registered in the container anymore
 
 - Obsoleted all the AddComponent* methods in favor of using Installers and fluent registration API
 

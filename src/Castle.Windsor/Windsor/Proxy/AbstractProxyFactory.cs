@@ -20,14 +20,15 @@ namespace Castle.Windsor.Proxy
 
 	using Castle.Core;
 	using Castle.Core.Interceptor;
+	using Castle.Core.Internal;
 	using Castle.DynamicProxy;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Context;
 	using Castle.MicroKernel.Proxy;
+	using Castle.MicroKernel.Resolvers;
 
 	public abstract class AbstractProxyFactory : IProxyFactory
 	{
-		private static readonly InterceptorReference[] emptyInterceptors = new InterceptorReference[0];
 		private readonly IList<IModelInterceptorsSelector> selectors = new List<IModelInterceptorsSelector>();
 
 		public abstract object Create(IKernel kernel, object instance, ComponentModel model, CreationContext context,
@@ -51,7 +52,7 @@ namespace Castle.Windsor.Proxy
 				interceptors = selector.SelectInterceptors(model, interceptors);
 				if (interceptors == null)
 				{
-					interceptors = emptyInterceptors;
+					interceptors = new InterceptorReference[0];
 				}
 			}
 
@@ -89,6 +90,14 @@ namespace Castle.Windsor.Proxy
 					// This shoul be virtually impossible to happen
 					// Seriously!
 					throw new Exception("The interceptor could not be resolved");
+				}
+
+				if(handler.IsBeingResolvedInContext(context))
+				{
+					throw new DependencyResolverException(
+						string.Format(
+							"Cycle detected - interceptor {0} wants to use itself as its interceptor. This usually signifies a bug in custom {1}",
+							handler.ComponentModel.Name, typeof(IModelInterceptorsSelector).Name));
 				}
 
 				try

@@ -37,12 +37,7 @@ namespace Castle.Facilities.TypedFactory
 		private bool disposed;
 
 		private ComponentModel target;
-
-		public TypedFactoryInterceptor(IKernel kernel)
-		{
-			this.kernel = kernel;
-		}
-
+		
 		public TypedFactoryInterceptor(IKernel kernel, ITypedFactoryComponentSelector componentSelector)
 		{
 			ComponentSelector = componentSelector;
@@ -74,21 +69,6 @@ namespace Castle.Facilities.TypedFactory
 			{
 				BuildHandlersMap(@interface);
 			}
-		}
-
-		private void EnsureSelectorExists(Type service)
-		{
-			if (ComponentSelector != null)
-			{
-				return;
-			}
-			if (service.IsInterface)
-			{
-				ComponentSelector = new DefaultTypedFactoryComponentSelector();
-				return;
-			}
-			// else it's a delegate
-			ComponentSelector = new DefaultDelegateComponentSelector();
 		}
 
 		private bool IsReleaseMethod(MethodInfo methodInfo)
@@ -140,7 +120,6 @@ namespace Castle.Facilities.TypedFactory
 		public void SetInterceptedComponentModel(ComponentModel target)
 		{
 			this.target = target;
-			EnsureSelectorExists(this.target.Service);
 			BuildHandlersMap(this.target.Service);
 		}
 	}
