@@ -75,7 +75,7 @@ namespace Castle.Windsor.Tests.Facilities.Startable
 		public void Missing_dependencies_after_the_end_of_Install_no_exception_when_tryStart_true()
 		{
 			var container = new WindsorContainer();
-			container.AddFacility<StartableFacility>(f => f.DeferredStart(true));
+			container.AddFacility<StartableFacility>(f => f.DeferredTryStart());
 
 			container.Install(new ActionBasedInstaller(c => c.Register(Component.For<Startable>())));
 
@@ -86,7 +86,7 @@ namespace Castle.Windsor.Tests.Facilities.Startable
 		public void Missing_dependencies_after_the_end_of_Install_starts_after_adding_missing_dependency_after_Install()
 		{
 			var container = new WindsorContainer();
-			container.AddFacility<StartableFacility>(f => f.DeferredStart(true));
+			container.AddFacility<StartableFacility>(f => f.DeferredTryStart());
 
 			container.Install(new ActionBasedInstaller(c => c.Register(Component.For<Startable>())));
 
