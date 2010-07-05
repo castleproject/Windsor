@@ -47,9 +47,8 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 			container.Register(AllTypes.FromAssemblyContaining<TypedFactoryFacilityTake2TestCase>()
 			                   	.BasedOn(typeof(GenericComponent<>))
 			                   	.WithService.Base().Configure(c => c.LifeStyle.Transient),
-			                   Component.For<IGenericFactory>().AsFactory(),
-			                   Component.For<ITypedFactoryComponentSelector>()
-			                   	.ImplementedBy<SelectorByClosedArgumentType>());
+			                   Component.For<IGenericFactory>().AsFactory(s => s.SelectedWith<SelectorByClosedArgumentType>()),
+			                   Component.For<SelectorByClosedArgumentType>());
 
 			var factory = container.Resolve<IGenericFactory>();
 
@@ -72,9 +71,8 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 				Component.For<IDummyComponent>()
 					.ImplementedBy<Component2>()
 					.Named("two"),
-				Component.For<IFactoryById>().AsFactory(),
-				Component.For<ITypedFactoryComponentSelector>()
-					.ImplementedBy<SelectorById>());
+				Component.For<IFactoryById>().AsFactory(f => f.SelectedWith<SelectorById>()),
+				Component.For<SelectorById>());
 
 			var factory = container.Resolve<IFactoryById>();
 
@@ -183,7 +181,7 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 		}
 
 		[Test]
-		public void Can_pick_non_default_selector_by_instance()
+		public void Selector_pick_by_instance()
 		{
 			container.Register(
 				Component.For<IDummyComponent>().ImplementedBy<Component1>().Named("one").LifeStyle.Transient,
@@ -197,7 +195,7 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 		}
 
 		[Test]
-		public void Can_pick_non_default_selector_by_name()
+		public void Selector_pick_by_name()
 		{
 			container.Register(
 				Component.For<IDummyComponent>().ImplementedBy<Component1>().Named("one").LifeStyle.Transient,
@@ -213,38 +211,7 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 		}
 
 		[Test]
-		public void Releasing_factory_releases_selector()
-		{
-			DisposableSelector.InstancesCreated = 0;
-			DisposableSelector.InstancesDisposed = 0;
-			container.Register(
-				Component.For<DummyComponentFactory>().AsFactory().LifeStyle.Transient,
-				Component.For<ITypedFactoryComponentSelector>().ImplementedBy<DisposableSelector>().LifeStyle.Transient);
-			var factory = container.Resolve<DummyComponentFactory>();
-
-			container.Release(factory);
-
-			Assert.AreEqual(1, DisposableSelector.InstancesDisposed);
-		}
-		[Test]
-		public void Can_pick_non_default_selector_by_name_delegate()
-		{
-			container.Register(
-				Component.For<IDummyComponent>().ImplementedBy<Component1>().Named("one").LifeStyle.Transient,
-				Component.For<IDummyComponent>().ImplementedBy<Component2>().Named("two").LifeStyle.Transient,
-				Component.For<Func<IDummyComponent>>().AsFactory(c => c.SelectedWith("factoryTwo")),
-				Component.For<ITypedFactoryComponentSelector>().ImplementedBy<Component1Selector>().Named("factoryOne"),
-				Component.For<ITypedFactoryComponentSelector>().ImplementedBy<Component2Selector>().Named("factoryTwo"));
-
-			Assert.IsTrue(container.Kernel.HasComponent(typeof(Func<IDummyComponent>)));
-			var factory = container.Resolve<Func<IDummyComponent>>();
-			var component = factory.Invoke();
-
-			Assert.IsInstanceOf<Component2>(component);
-		}
-
-		[Test]
-		public void Can_pick_non_default_selector_by_name_multiple_factories()
+		public void Selector_pick_by_name_multiple_factories()
 		{
 			container.Register(
 				Component.For<IDummyComponent>().ImplementedBy<Component1>().Named("one").LifeStyle.Transient,
@@ -264,7 +231,7 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 		}
 
 		[Test]
-		public void Can_pick_non_default_selector_by_type()
+		public void Selector_pick_by_type()
 		{
 			container.Register(
 				Component.For<IDummyComponent>().ImplementedBy<Component1>().Named("one").LifeStyle.Transient,
@@ -279,6 +246,21 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 			Assert.IsInstanceOf<Component2>(component);
 		}
 
+		[Test]
+		public void Selector_WILL_NOT_be_picked_implicitly()
+		{
+			container.Register(
+				Component.For<IDummyComponent>().ImplementedBy<Component1>().Named("one").LifeStyle.Transient,
+				Component.For<IDummyComponent>().ImplementedBy<Component2>().Named("two").LifeStyle.Transient,
+				Component.For<DummyComponentFactory>().AsFactory(),
+				Component.For<ITypedFactoryComponentSelector>().ImplementedBy<Component1Selector>(),
+				Component.For<Component2Selector, ITypedFactoryComponentSelector>());
+
+			var factory = container.Resolve<DummyComponentFactory>();
+			var component = factory.CreateDummyComponent();
+
+			Assert.IsInstanceOf<Component1>(component);
+		}
 		[Test]
 		public void Can_resolve_component()
 		{
@@ -343,9 +325,8 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 					.Named("foo")
 					.LifeStyle.Transient,
 				Component.For<DummyComponentFactory>()
-					.AsFactory(),
-				Component.For<ITypedFactoryComponentSelector>()
-					.ImplementedBy<FooSelector>());
+					.AsFactory(f => f.SelectedWith<FooSelector>()),
+				Component.For<FooSelector>());
 			var factory = container.Resolve<DummyComponentFactory>();
 
 			var component = factory.GetSecondComponent();
@@ -395,6 +376,21 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 
 			container.Release(factory);
 			Assert.IsTrue(component.Disposed);
+		}
+
+		[Test]
+		public void Releasing_factory_releases_selector()
+		{
+			DisposableSelector.InstancesCreated = 0;
+			DisposableSelector.InstancesDisposed = 0;
+			container.Register(
+				Component.For<DummyComponentFactory>().AsFactory(f => f.SelectedWith<DisposableSelector>()).LifeStyle.Transient,
+				Component.For<DisposableSelector>().LifeStyle.Transient);
+			var factory = container.Resolve<DummyComponentFactory>();
+
+			container.Release(factory);
+
+			Assert.AreEqual(1, DisposableSelector.InstancesDisposed);
 		}
 
 		[Test]

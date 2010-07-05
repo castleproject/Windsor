@@ -12,25 +12,27 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.MicroKernel.Tests.Registration.Interceptors.Multiple
+namespace Castle.Windsor.Tests.Interceptors
 {
-	using System.Collections.Generic;
+	using System;
 
 	using Castle.Core;
-	using Castle.MicroKernel.Registration;
-	using Castle.Windsor.Tests.Interceptors;
+	using Castle.DynamicProxy;
 
-	public class InterceptorTypeMultipleCall : InterceptorsTestCaseHelper
+	[Transient]
+	public class DisposableInterceptor : StandardInterceptor, IDisposable
 	{
-		public override IRegistration RegisterInterceptors<S>(ComponentRegistration<S> registration)
+		public static int InstancesCreated;
+		public static int InstancesDisposed;
+
+		public DisposableInterceptor()
 		{
-			return registration.Interceptors(typeof(TestInterceptor1)).Interceptors(typeof(TestInterceptor2));
+			InstancesCreated++;
 		}
 
-		public override IEnumerable<InterceptorReference> GetExpectedInterceptorsInCorrectOrder()
+		public void Dispose()
 		{
-			yield return InterceptorReference.ForType<TestInterceptor1>();
-			yield return InterceptorReference.ForType<TestInterceptor2>();
+			InstancesDisposed++;
 		}
 	}
 }

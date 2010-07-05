@@ -145,7 +145,6 @@
     <Compile Include="Components\IResultFinder.cs" />
     <Compile Include="Components\ISimpleService.cs" />
     <Compile Include="Components\ISpecification.cs" />
-    <Compile Include="Components\MyInterceptor.cs" />
     <Compile Include="Components\MySpecification.cs" />
     <Compile Include="Components\ResultFinderStringDecorator.cs" />
     <Compile Include="Components\SimpleService.cs" />
@@ -192,6 +191,23 @@
     <Compile Include="Components\UsesIEmptyService.cs" />
     <Compile Include="Components\IEmptyService.cs" />
     <Compile Include="Components\EmptyService.cs" />
+    <Compile Include="Interceptors\DisposableInterceptor.cs" />
+    <Compile Include="Interceptors\WasCalledInterceptor.cs" />
+    <Compile Include="Interceptors\AnotherInterceptorSelector.cs" />
+    <Compile Include="Interceptors\ByTypeInterceptorSelector.cs" />
+    <Compile Include="Interceptors\ChangeResultInterceptor.cs" />
+    <Compile Include="Interceptors\CountingInterceptor.cs" />
+    <Compile Include="Interceptors\DummyInterceptorSelector.cs" />
+    <Compile Include="Interceptors\InterceptorThatCauseStackOverflow.cs" />
+    <Compile Include="Interceptors\InterceptorTypeSelector.cs" />
+    <Compile Include="Interceptors\InterceptorWithOnBehalf.cs" />
+    <Compile Include="Interceptors\CollectInterceptedIdInterceptor.cs" />
+    <Compile Include="Interceptors\ResultModifierInterceptor.cs" />
+    <Compile Include="Interceptors\ReturnDefaultInterceptor.cs" />
+    <Compile Include="Interceptors\TestInterceptor1.cs" />
+    <Compile Include="Interceptors\TestInterceptor2.cs" />
+    <Compile Include="Interceptors\TestInterceptor3.cs" />
+    <Compile Include="Interceptors\WatcherInterceptorSelector.cs" />
     <Compile Include="Lifestyle\Components\ComponentWithDispose.cs" />
     <Compile Include="Registration\ComponentRegistrationByNamespaceTestCase.cs" />
     <Compile Include="Registration\WithServiceTestCase.cs" />
@@ -539,7 +555,6 @@
     <Compile Include="Facilities\EventWiring\Model\Handlers.cs" />
     <Compile Include="Facilities\EventWiring\Model\MultiListener.cs" />
     <Compile Include="Facilities\EventWiring\Model\MultiPublisher.cs" />
-    <Compile Include="Facilities\EventWiring\Model\MyInterceptor.cs" />
     <Compile Include="Facilities\EventWiring\Model\PublisherListener.cs" />
     <Compile Include="Facilities\EventWiring\Model\SimpleListener.cs" />
     <Compile Include="Facilities\EventWiring\Model\SimplePublisher.cs" />
@@ -554,7 +569,6 @@
     <Compile Include="Facilities\Remoting\AbstractRemoteTestCase.cs" />
     <Compile Include="Facilities\Remoting\AppDomainFactory.cs" />
     <Compile Include="Facilities\Remoting\CalcServiceImpl.cs" />
-    <Compile Include="Facilities\Remoting\ChangeResultInterceptor.cs" />
     <Compile Include="Facilities\Remoting\ConfigurableRegistrationTestCase.cs" />
     <Compile Include="Facilities\Remoting\ConsumerComp.cs" />
     <Compile Include="Facilities\Remoting\CustomToStringService.cs" />
@@ -1002,6 +1016,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Facilities\Remoting\Configs\server_simple_scenario.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Facilities\TypedFactory\typedFactory_castle_config.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

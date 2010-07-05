@@ -101,7 +101,6 @@
     <Compile Include="Facilities\Startable\StartableContributor.cs" />
     <Compile Include="Facilities\TypedFactory\DefaultDelegateComponentSelector.cs" />
     <Compile Include="Facilities\TypedFactory\DelegateInvocation.cs" />
-    <Compile Include="Facilities\TypedFactory\ExpressionTreeBasedDelegateGenerator.cs" />
     <Compile Include="Facilities\TypedFactory\IDelegateGenerator.cs" />
     <Compile Include="Facilities\TypedFactory\DelegateFactory.cs" />
     <Compile Include="Facilities\TypedFactory\Internal\DelegateProxyFactory.cs" />

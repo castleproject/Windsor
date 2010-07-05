@@ -22,6 +22,7 @@ namespace Castle.Windsor.Tests.Facilities.EventWiring
 	using Castle.MicroKernel.SubSystems.Configuration;
 	using Castle.Windsor;
 	using Castle.Windsor.Tests.Facilities.EventWiring.Model;
+	using Castle.Windsor.Tests.Interceptors;
 
 	using NUnit.Framework;
 
@@ -55,7 +56,7 @@ namespace Castle.Windsor.Tests.Facilities.EventWiring
 			container.AddFacility("event", new EventWiringFacility());
 
 			// Registers interceptor as component
-			container.Register(Component.For<MyInterceptor>().Named("my.interceptor"));
+			container.Register(Component.For<CountingInterceptor>().Named("my.interceptor"));
 			
 			container.Register(Component.For<SimpleListener>().Named("listener"));
 			
@@ -69,7 +70,7 @@ namespace Castle.Windsor.Tests.Facilities.EventWiring
 			SimplePublisher publisher = container.Resolve<SimplePublisher>();
 			publisher.Trigger();
 
-			MyInterceptor interceptor = container.Resolve<MyInterceptor>();
+			CountingInterceptor interceptor = container.Resolve<CountingInterceptor>();
 			Assert.AreEqual(1, interceptor.Intercepted);
 
 			// Assert that event was caught

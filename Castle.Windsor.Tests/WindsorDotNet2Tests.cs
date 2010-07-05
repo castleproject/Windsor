@@ -25,6 +25,7 @@ namespace Castle.Windsor.Tests
 	using Castle.Windsor.Configuration.Interpreters;
 	using Castle.Windsor.Tests.Components;
 	using Castle.Core;
+	using Castle.Windsor.Tests.Interceptors;
 
 	using NUnit.Framework;
 
@@ -252,16 +253,16 @@ namespace Castle.Windsor.Tests
 		{
 			var container = new WindsorContainer();
 
-			((IWindsorContainer)container).Register(Component.For(typeof(MyInterceptor)).Named("interceptor"));
+			((IWindsorContainer)container).Register(Component.For(typeof(CollectInterceptedIdInterceptor)).Named("interceptor"));
 			((IWindsorContainer)container).Register(
 				Component.For(typeof(IRepository<>)).ImplementedBy(typeof(DemoRepository<>)).Named("key"));
 			container.Kernel.GetHandler(typeof(IRepository<>)).ComponentModel.Interceptors.Add(
-				new InterceptorReference(typeof(MyInterceptor)));
+				new InterceptorReference(typeof(CollectInterceptedIdInterceptor)));
 
 			var demoRepository = container.Resolve<IRepository<object>>();
 			demoRepository.Get(12);
 
-			Assert.AreEqual(12, MyInterceptor.InterceptedId, "invocation should have been intercepted by MyInterceptor");
+			Assert.AreEqual(12, CollectInterceptedIdInterceptor.InterceptedId, "invocation should have been intercepted by MyInterceptor");
 		}
 
 		[Test]
@@ -284,12 +285,12 @@ namespace Castle.Windsor.Tests
 		public void ParentResolverIntercetorShouldNotAffectGenericComponentInterceptor()
 		{
 			var container = new WindsorContainer();
-			((IWindsorContainer)container).Register(Component.For<MyInterceptor>());
+			((IWindsorContainer)container).Register(Component.For<CollectInterceptedIdInterceptor>());
 
 			container.Register(
 				Component.For<ISpecification>()
 					.ImplementedBy<MySpecification>()
-					.Interceptors(new InterceptorReference(typeof(MyInterceptor)))
+					.Interceptors(new InterceptorReference(typeof(CollectInterceptedIdInterceptor)))
 					.Anywhere
 				);
 			((IWindsorContainer)container).Register(

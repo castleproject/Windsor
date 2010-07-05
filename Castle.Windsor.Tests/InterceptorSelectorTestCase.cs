@@ -14,8 +14,6 @@
 
 #if !SILVERLIGHT
 
-using System;
-using System.Reflection;
 using Castle.Core;
 using Castle.DynamicProxy;
 using Castle.MicroKernel.Registration;
@@ -23,51 +21,12 @@ using NUnit.Framework;
 
 namespace Castle.Windsor.Tests
 {
-    using Castle.DynamicProxy;
+	using Castle.Windsor.Tests.Interceptors;
 
-    [TestFixture]
+	[TestFixture]
     public class InterceptorsSelectorTestCase
     {
-        public interface ICatalog
-        {
-			void AddItem(object item);
-
-			void RemoveItem(object item);
-        }
-
-        public class SimpleCatalog : ICatalog
-        {
-			public void AddItem(object item)
-			{
-			}
-
-			public void RemoveItem(object item)
-			{	
-			}
-        }
-
-        public class DummyInterceptor : StandardInterceptor
-        {
-            public static bool WasCalled;
-
-            protected override void PreProceed(IInvocation invocation)
-            {
-                WasCalled = true;
-            }
-        }
-
-        public class DummyInterceptorSelector : IInterceptorSelector
-        {  
-			public IInterceptor[] SelectInterceptors(Type type, MethodInfo method, IInterceptor[] interceptors)
-			{
-				if (typeof(ICatalog).IsAssignableFrom(type))
-				{
-					if (method.Name == "AddItem")
-						return interceptors;
-				}
-				return null;
-			}
-		}
+        
 
         [Test]
         public void CanApplyInterceptorsToSelectedMethods()
@@ -76,22 +35,39 @@ namespace Castle.Windsor.Tests
 			container.Register(
 				Component.For<ICatalog>()
 					.ImplementedBy<SimpleCatalog>()
-					.Interceptors(InterceptorReference.ForType<DummyInterceptor>())
+					.Interceptors(InterceptorReference.ForType<WasCalledInterceptor>())
 						.SelectedWith(new DummyInterceptorSelector()).Anywhere,
-				Component.For<DummyInterceptor>()
+				Component.For<WasCalledInterceptor>()
 					);
 
-			Assert.IsFalse(DummyInterceptor.WasCalled);
+			Assert.IsFalse(WasCalledInterceptor.WasCalled);
 
 			ICatalog catalog = container.Resolve<ICatalog>();
 			catalog.AddItem("hot dogs");
-			Assert.IsTrue(DummyInterceptor.WasCalled);
+			Assert.IsTrue(WasCalledInterceptor.WasCalled);
 
-			DummyInterceptor.WasCalled = false;
+			WasCalledInterceptor.WasCalled = false;
 			catalog.RemoveItem("hot dogs");
-			Assert.IsFalse(DummyInterceptor.WasCalled);
+			Assert.IsFalse(WasCalledInterceptor.WasCalled);
         }
     }
+	public interface ICatalog
+	{
+		void AddItem(object item);
+
+		void RemoveItem(object item);
+	}
+
+	public class SimpleCatalog : ICatalog
+	{
+		public void AddItem(object item)
+		{
+		}
+
+		public void RemoveItem(object item)
+		{
+		}
+	}
 }
 
 #endif

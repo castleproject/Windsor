@@ -21,6 +21,7 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Releasers;
 	using Castle.Windsor;
+	using Castle.Windsor.Tests.Facilities.TypedFactory.Components;
 	using Castle.Windsor.Tests.Facilities.TypedFactory.Delegates;
 	using Castle.Windsor.Tests.Facilities.TypedFactory.Selectors;
 
@@ -124,7 +125,24 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 		}
 
 		[Test]
-		public void Delegate_based_factories_explicitly_pick_registered_selector_implicitly_registered_factory()
+		public void Selector_pick_by_name()
+		{
+			container.Register(
+				Component.For<IDummyComponent>().ImplementedBy<Component1>().Named("one").LifeStyle.Transient,
+				Component.For<IDummyComponent>().ImplementedBy<Component2>().Named("two").LifeStyle.Transient,
+				Component.For<Func<IDummyComponent>>().AsFactory(c => c.SelectedWith("factoryTwo")),
+				Component.For<ITypedFactoryComponentSelector>().ImplementedBy<Component1Selector>().Named("factoryOne"),
+				Component.For<ITypedFactoryComponentSelector>().ImplementedBy<Component2Selector>().Named("factoryTwo"));
+
+			Assert.IsTrue(container.Kernel.HasComponent(typeof(Func<IDummyComponent>)));
+			var factory = container.Resolve<Func<IDummyComponent>>();
+			var component = factory.Invoke();
+
+			Assert.IsInstanceOf<Component2>(component);
+		}
+
+		[Test]
+		public void Delegate_based_factories_DO_NOT_implicitly_pick_registered_selector_implicitly_registered_factory()
 		{
 			DisposableSelector.InstancesCreated = 0;
 			DisposableSelector.InstancesDisposed = 0;
@@ -133,11 +151,11 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 
 			container.Resolve<Func<Foo>>();
 
-			Assert.AreEqual(1, DisposableSelector.InstancesCreated);
+			Assert.AreEqual(0, DisposableSelector.InstancesCreated);
 		}
 
 		[Test]
-		public void Delegate_based_factories_implicitly_pick_registered_selector_explicitly_registered_factory()
+		public void Delegate_based_factories_DO_NOT_implicitly_pick_registered_selector_explicitly_registered_factory()
 		{
 			DisposableSelector.InstancesCreated = 0;
 			DisposableSelector.InstancesDisposed = 0;
@@ -147,7 +165,7 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 
 			container.Resolve<Func<Foo>>();
 
-			Assert.AreEqual(1, DisposableSelector.InstancesCreated);
+			Assert.AreEqual(0, DisposableSelector.InstancesCreated);
 		}
 
 		[Test]

@@ -132,12 +132,12 @@ namespace Castle.Facilities.TypedFactory
 
 		private static ComponentRegistration<TFactory> AttachConfiguration<TFactory>(ComponentRegistration<TFactory> componentRegistration, Action<TypedFactoryConfiguration> configuration, ITypedFactoryComponentSelector defaultComponentSelector)
 		{
-			if (configuration == null)
-			{
-				return componentRegistration;
-			}
 			var factoryConfiguration = new TypedFactoryConfiguration();
-			configuration.Invoke(factoryConfiguration);
+
+			if (configuration != null)
+			{
+				configuration.Invoke(factoryConfiguration);
+			}
 			var selectorReference = factoryConfiguration.Reference;
 			if (selectorReference == null)
 			{

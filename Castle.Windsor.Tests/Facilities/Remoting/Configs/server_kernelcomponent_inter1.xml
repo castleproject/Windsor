@@ -16,7 +16,7 @@
   
     <component 
 		id="myinterceptor"
-		type="Castle.Windsor.Tests.Facilities.Remoting.ChangeResultInterceptor, Castle.Windsor.Tests"
+		type="Castle.Windsor.Tests.Interceptors.ChangeResultInterceptor, Castle.Windsor.Tests"
 		/>
   
     <component 
