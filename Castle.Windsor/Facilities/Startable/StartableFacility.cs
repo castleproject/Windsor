@@ -40,15 +40,34 @@ namespace Castle.Facilities.Startable
 		/// have single call to <see cref="IWindsorContainer.Install"/> and register all your components there.
 		/// Enabling this mode will optimize the behavior of the facility so that it will wait 'till the end of
 		/// intallation and only after all <see cref="IWindsorInstaller"/>s were ran it will instantiate and
-		/// start all the startable components. If the <paramref name="tryStart"/> is set to <c>false</c> an
-		/// exception will be thrown is a startable component can't be instantiated and started. This will
-		/// help you fail fast and diagnose issues quickly.
+		/// start all the startable components. An exception will be thrown if a startable component can't be 
+		/// instantiated and started. This will help you fail fast and diagnose issues quickly. If you don't want
+		/// the exception to be thrown and you prefer the component to fail silently, use <see cref="DeferredTryStart"/> method instead.
 		/// </summary>
-		/// <param name="tryStart"></param>
-		public void DeferredStart(bool tryStart = false)
+		/// <remarks>
+		/// It is recommended to use this method over <see cref="DeferredTryStart"/> method.
+		/// </remarks>
+		public void DeferredStart()
 		{
 			optimizeForSingleInstall = true;
-			disableException = tryStart;
+			disableException = false;
+		}
+
+		/// <summary>
+		/// This method changes behavior of the facility. Deferred mode should be used when you
+		/// have single call to <see cref="IWindsorContainer.Install"/> and register all your components there.
+		/// Enabling this mode will optimize the behavior of the facility so that it will wait 'till the end of
+		/// intallation and only after all <see cref="IWindsorInstaller"/>s were ran it will instantiate and
+		/// start all the startable components. No exception will be thrown if a startable component can't be 
+		/// instantiated and started. If you'd rather fail fast and diagnose issues quickly, use <see cref="DeferredStart"/> method instead.
+		/// </summary>
+		/// <remarks>
+		/// It is recommended to use <see cref="DeferredStart"/> method over this method.
+		/// </remarks>
+		public void DeferredTryStart()
+		{
+			optimizeForSingleInstall = true;
+			disableException = true;
 		}
 
 		protected override void Init()
