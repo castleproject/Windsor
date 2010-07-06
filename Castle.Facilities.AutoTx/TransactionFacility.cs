@@ -14,6 +14,7 @@
 
 using System;
 using Castle.MicroKernel.Facilities;
+using Castle.MicroKernel.Registration;
 using Castle.Services.Transaction;
 using Castle.Services.Transaction.IO;
 
@@ -60,9 +61,12 @@ namespace Castle.Facilities.AutoTx
 		protected override void Init()
 		{
 			AssertHasDirectories();
-			Kernel.AddComponent("transaction.interceptor", typeof (TransactionInterceptor));
-			Kernel.AddComponent("transaction.MetaInfoStore", typeof (TransactionMetaInfoStore));
-			Kernel.AddComponent("directory.adapter.mappath", typeof (IMapPath), typeof (MapPathImpl));
+
+			Kernel.Register(
+				Component.For<TransactionInterceptor>().Named("transaction.interceptor"),
+				Component.For<TransactionMetaInfoStore>().Named("transaction.MetaInfoStore"),
+				Component.For<IMapPath>().ImplementedBy<MapPathImpl>().Named("directory.adapter.mappath")
+				);
 			
 			RegisterAdapters();
 
@@ -77,12 +81,12 @@ namespace Castle.Facilities.AutoTx
 				!_AllowAccessOutsideRootFolder,
 				RootFolder);
 
-			Kernel.AddComponentInstance("directory.adapter", typeof (IDirectoryAdapter), directoryAdapter);
+			Kernel.Register(Component.For<IDirectoryAdapter>().Named("directory.adapter").Instance(directoryAdapter));
 
 			var fileAdapter = new FileAdapter(
 				!_AllowAccessOutsideRootFolder,
 				RootFolder);
-			Kernel.AddComponentInstance("file.adapter", typeof (IFileAdapter), fileAdapter);
+			Kernel.Register(Component.For<IFileAdapter>().Named("file.adapter").Instance(fileAdapter));
 
 			if (Kernel.HasComponent(typeof(ITransactionManager)))
 				fileAdapter.TxManager = directoryAdapter.TxManager = Kernel.Resolve<ITransactionManager>();
