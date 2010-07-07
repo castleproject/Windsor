@@ -197,7 +197,7 @@ namespace Castle.MicroKernel.Context
 				return true;
 			}
 
-			return additionalArguments.Contains(dependency.TargetType);
+			return inlineArgument != null;
 		}
 
 		private bool CanResolveByKey(DependencyModel dependency)
@@ -214,7 +214,7 @@ namespace Castle.MicroKernel.Context
 				return true;
 			}
 
-			return additionalArguments.Contains(dependency.DependencyKey);
+			return inlineArgument != null;
 		}
 
 		#endregion
