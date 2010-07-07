@@ -61,6 +61,7 @@ namespace Castle.MicroKernel.Context
 		/// with itself.
 		/// </summary>
 		private readonly Stack<IHandler> handlerStack = new Stack<IHandler>();
+
 		private readonly Stack<ResolutionContext> resolutionStack = new Stack<ResolutionContext>();
 		private readonly ITypeConverter converter;
 		private IDictionary extendedProperties;
@@ -82,7 +83,7 @@ namespace Castle.MicroKernel.Context
 					extendedProperties.Add(parentProperty.Key, parentProperty.Value);
 				}
 			}
-			foreach(var handlerItem in parentContext.handlerStack)
+			foreach (var handlerItem in parentContext.handlerStack)
 			{
 				handlerStack.Push(handlerItem);
 			}
@@ -103,7 +104,7 @@ namespace Castle.MicroKernel.Context
 			this.handler = handler;
 			this.releasePolicy = releasePolicy;
 			this.additionalArguments = EnsureAdditionalArgumentsWriteable(additionalArguments);
-			this.converter = conversionManager;
+			converter = conversionManager;
 			dependencies = new DependencyModelCollection();
 
 			genericArguments = ExtractGenericArguments(typeToExtractGenericArguments);
@@ -141,7 +142,7 @@ namespace Castle.MicroKernel.Context
 		#region ISubDependencyResolver
 
 		public virtual object Resolve(CreationContext context, ISubDependencyResolver contextHandlerResolver,
-									  ComponentModel model, DependencyModel dependency)
+		                              ComponentModel model, DependencyModel dependency)
 		{
 			Debug.Assert(CanResolve(context, contextHandlerResolver, model, dependency),
 			             "CanResolve(context, contextHandlerResolver, model, dependency)");
@@ -174,7 +175,7 @@ namespace Castle.MicroKernel.Context
 		public virtual bool CanResolve(CreationContext context, ISubDependencyResolver contextHandlerResolver,
 		                               ComponentModel model, DependencyModel dependency)
 		{
-			if(additionalArguments == null)
+			if (additionalArguments == null)
 			{
 				return false;
 			}
@@ -185,36 +186,34 @@ namespace Castle.MicroKernel.Context
 
 		private bool CanResolveByType(DependencyModel dependency)
 		{
-			if (dependency.TargetType == null) return false;
-			Debug.Assert(additionalArguments != null, "additionalArguments != null");
-
-			var inlineArgument = additionalArguments[dependency.TargetType];
-			if (inlineArgument != null && converter != null &&
-				!dependency.TargetType.IsInstanceOfType(inlineArgument) &&
-				dependency.DependencyType == DependencyType.Parameter &&
-				converter.CanHandleType(dependency.TargetType))
+			if (dependency.TargetType == null)
 			{
-				return true;
+				return false;
 			}
-
-			return inlineArgument != null;
+			Debug.Assert(additionalArguments != null, "additionalArguments != null");
+			return CanResolve(dependency, additionalArguments[dependency.TargetType]);
 		}
 
 		private bool CanResolveByKey(DependencyModel dependency)
 		{
-			if (dependency.DependencyKey == null) return false;
-			Debug.Assert(additionalArguments != null, "additionalArguments != null");
-
-			var inlineArgument = additionalArguments[dependency.DependencyKey];
-			if (inlineArgument != null && converter != null && 
-			    !dependency.TargetType.IsInstanceOfType(inlineArgument) &&
-			    dependency.DependencyType == DependencyType.Parameter && 
-			    converter.CanHandleType(dependency.TargetType))
+			if (dependency.DependencyKey == null)
 			{
-				return true;
+				return false;
 			}
+			Debug.Assert(additionalArguments != null, "additionalArguments != null");
+			return CanResolve(dependency, additionalArguments[dependency.DependencyKey]);
+		}
 
-			return inlineArgument != null;
+		private bool CanResolve(DependencyModel dependency, object inlineArgument)
+		{
+			if (inlineArgument == null)
+			{
+				return false;
+			}
+			return dependency.TargetType.IsInstanceOfType(inlineArgument) ||
+			       (converter != null &&
+			        dependency.DependencyType == DependencyType.Parameter &&
+			        converter.CanHandleType(dependency.TargetType));
 		}
 
 		#endregion
@@ -228,7 +227,7 @@ namespace Castle.MicroKernel.Context
 		{
 			get
 			{
-				if(additionalArguments == null)
+				if (additionalArguments == null)
 				{
 					additionalArguments = new Arguments();
 				}
@@ -299,7 +298,9 @@ namespace Castle.MicroKernel.Context
 		public IDisposable ParentResolutionContext(CreationContext parent)
 		{
 			if (parent == null)
+			{
 				return new RemoveDependencies(dependencies, null);
+			}
 			dependencies.AddRange(parent.Dependencies);
 			return new RemoveDependencies(dependencies, parent.Dependencies);
 		}
@@ -318,9 +319,12 @@ namespace Castle.MicroKernel.Context
 
 			public void Dispose()
 			{
-				if (parentDependencies == null) return;
+				if (parentDependencies == null)
+				{
+					return;
+				}
 
-				foreach(DependencyModel model in parentDependencies)
+				foreach (DependencyModel model in parentDependencies)
 				{
 					dependencies.Remove(model);
 				}
@@ -329,7 +333,7 @@ namespace Castle.MicroKernel.Context
 
 		public ResolutionContext EnterResolutionContext(IHandler handlerBeingResolved, bool createBurden)
 		{
-			ResolutionContext resCtx = new ResolutionContext(this, createBurden ? new Burden() : null);
+			var resCtx = new ResolutionContext(this, createBurden ? new Burden() : null);
 			handlerStack.Push(handlerBeingResolved);
 			if (createBurden)
 			{
@@ -371,8 +375,8 @@ namespace Castle.MicroKernel.Context
 
 		public class ResolutionContext : IDisposable
 		{
-			private readonly CreationContext context;
 			private readonly Burden burden;
+			private readonly CreationContext context;
 
 			public ResolutionContext(CreationContext context, Burden burden)
 			{
