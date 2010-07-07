@@ -193,9 +193,9 @@ namespace Castle.MicroKernel.Handlers
 				// TODO: Implement this is a proper way if possible...
 				return Resolve(context, false);
 			}
-			catch (Exception e)
+			catch
 			{
-				Trace.Write(e, "Castle.Windsor");
+				//Trace.Write(e, "Castle.Windsor");
 				return null;
 			}
 		}
