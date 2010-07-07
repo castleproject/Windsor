@@ -1,6 +1,6 @@
 2.5.0 beta2
 ==================
-- Fixed how contextual arguments are handled. Null is no longer considered a valid value (That would cause an exception later on).
+- Fixed how contextual arguments are handled. Null is no longer considered a valid value (That would cause an exception later on, now it's ignored).
 
 - Changed method DeferredStart on StartableFacility. It now does not take a bool parameter. A DeferredTryStart() method was introduced instead.
 

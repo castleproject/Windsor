@@ -17,6 +17,7 @@ namespace Castle.MicroKernel.Lifestyle
 {
 	using System;
 	using System.Collections.Generic;
+	using System.Linq;
 	using System.Web;
 
 	using Castle.MicroKernel.Context;
@@ -162,16 +163,18 @@ namespace Castle.MicroKernel.Lifestyle
 			var application = (HttpApplication)sender;
 			var candidates = (IDictionary<PerWebRequestLifestyleManager, object>)application.Context.Items[PerRequestEvict];
 
-			if (candidates != null)
+			if (candidates == null)
 			{
-				foreach (var candidate in candidates)
-				{
-					var manager = candidate.Key;
-					manager.Evict(candidate.Value);
-				}
-
-				application.Context.Items.Remove(PerRequestEvict);
+				return;
 			}
+
+			foreach (var candidate in candidates.Reverse())
+			{
+				var manager = candidate.Key;
+				manager.Evict(candidate.Value);
+			}
+
+			application.Context.Items.Remove(PerRequestEvict);
 		}
 	}
 
