@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,12 +16,12 @@ namespace Castle.MicroKernel.LifecycleConcerns
 {
 	using Castle.Core;
 
-	public class OnCreatedStep<S>:ILifecycleConcern
+	public class OnCreatedConcern<TComponent> : ICommissionConcern
 	{
-		private readonly OnCreateActionDelegate<S>[] actions;
+		private readonly OnCreateActionDelegate<TComponent>[] actions;
 		private readonly IKernel kernel;
 
-		public OnCreatedStep(OnCreateActionDelegate<S>[] actions, IKernel kernel)
+		public OnCreatedConcern(OnCreateActionDelegate<TComponent>[] actions, IKernel kernel)
 		{
 			this.actions = actions;
 			this.kernel = kernel;
@@ -29,7 +29,7 @@ namespace Castle.MicroKernel.LifecycleConcerns
 
 		public void Apply(ComponentModel model, object component)
 		{
-			var item = (S)component;
+			var item = (TComponent)component;
 			foreach (var action in actions)
 			{
 				action(kernel, item);

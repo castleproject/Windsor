@@ -84,6 +84,8 @@
     <Compile Include="Core\ComponentActivatorAttribute.cs" />
     <Compile Include="Core\ComponentProxyBehaviorAttribute.cs" />
     <Compile Include="Core\DoNotWireAttribute.cs" />
+    <Compile Include="Core\ICommissionConcern.cs" />
+    <Compile Include="Core\IDecommissionConcern.cs" />
     <Compile Include="Core\IInitializable.cs" />
     <Compile Include="Core\InterceptorAttribute.cs" />
     <Compile Include="Core\Internal\IAssemblyProvider.cs" />
@@ -273,15 +275,15 @@
     <Compile Include="MicroKernel\LifecycleConcerns\DisposalConcern.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="MicroKernel\LifecycleConcerns\ILifecycleConcern.cs">
+    <Compile Include="Core\ILifecycleConcern.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="MicroKernel\LifecycleConcerns\InitializationConcern.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="MicroKernel\LifecycleConcerns\LateBoundConcern.cs" />
+    <Compile Include="MicroKernel\LifecycleConcerns\LateBoundConcerns.cs" />
     <Compile Include="MicroKernel\LifecycleConcerns\OnCreateActionDelegate.cs" />
-    <Compile Include="MicroKernel\LifecycleConcerns\OnCreatedStep.cs" />
+    <Compile Include="MicroKernel\LifecycleConcerns\OnCreatedConcern.cs" />
     <Compile Include="MicroKernel\LifecycleConcerns\SupportInitializeConcern.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -369,7 +371,7 @@
     <Compile Include="Core\DependencyModelCollection.cs" />
     <Compile Include="Core\InterceptorReference.cs" />
     <Compile Include="Core\InterceptorReferenceCollection.cs" />
-    <Compile Include="Core\LifecycleStepCollection.cs" />
+    <Compile Include="Core\LifecycleConcernsCollection.cs" />
     <Compile Include="Core\MethodMetaModel.cs" />
     <Compile Include="Core\MethodMetaModelCollection.cs" />
     <Compile Include="Core\ParameterModel.cs" />

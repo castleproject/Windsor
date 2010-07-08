@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -33,11 +33,10 @@ namespace Castle.MicroKernel.Registration
 		protected internal override void ApplyToModel(IKernel kernel, ComponentModel model)
 		{
 			if (actions == null)
+			{
 				return;
-			model.LifecycleSteps.AddFirst(LifecycleStepType.Commission, new OnCreatedStep<S>(actions, kernel));
+			}
+			model.Lifecycle.AddFirst(new OnCreatedConcern<S>(actions, kernel));
 		}
-
 	}
 }
-
-

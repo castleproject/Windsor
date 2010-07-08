@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -30,10 +30,6 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 #endif
 	public class LifecycleModelInspector : IContributeComponentModelConstruction
 	{
-		public LifecycleModelInspector()
-		{
-		}
-
 		/// <summary>
 		/// Checks if the type implements <see cref="IInitializable"/> and or
 		/// <see cref="IDisposable"/> interfaces.
@@ -61,56 +57,56 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 
 		private void ProcessLateBoundModel(ComponentModel model)
 		{
-			var lateBoundCommissionConcern = new LateBoundConcern();
-			if (typeof (IInitializable).IsAssignableFrom(model.Service))
+			var lateBoundCommissionConcern = new LateBoundConcerns();
+			if (typeof(IInitializable).IsAssignableFrom(model.Service))
 			{
-				model.LifecycleSteps.Add(LifecycleStepType.Commission, InitializationConcern.Instance);
+				model.Lifecycle.Add(InitializationConcern.Instance);
 			}
 			else
 			{
-				lateBoundCommissionConcern.AddStep<IInitializable>(InitializationConcern.Instance);
+				lateBoundCommissionConcern.AddConcern<IInitializable>(InitializationConcern.Instance);
 			}
 #if (!SILVERLIGHT)
-			if (typeof (ISupportInitialize).IsAssignableFrom(model.Implementation))
+			if (typeof(ISupportInitialize).IsAssignableFrom(model.Implementation))
 			{
-				model.LifecycleSteps.Add(LifecycleStepType.Commission, SupportInitializeConcern.Instance);
+				model.Lifecycle.Add(SupportInitializeConcern.Instance);
 			}
 			else
 			{
-				lateBoundCommissionConcern.AddStep<ISupportInitialize>(SupportInitializeConcern.Instance);
+				lateBoundCommissionConcern.AddConcern<ISupportInitialize>(SupportInitializeConcern.Instance);
 			}
 #endif
-			if (typeof (IDisposable).IsAssignableFrom(model.Implementation))
+			if (typeof(IDisposable).IsAssignableFrom(model.Implementation))
 			{
-				model.LifecycleSteps.Add(LifecycleStepType.Decommission, DisposalConcern.Instance);
+				model.Lifecycle.Add(DisposalConcern.Instance);
 			}
 			else
 			{
-				var decommission = new LateBoundConcern();
-				decommission.AddStep<IDisposable>(DisposalConcern.Instance);
-				model.LifecycleSteps.Add(LifecycleStepType.Decommission, decommission);
+				var decommission = new LateBoundConcerns();
+				decommission.AddConcern<IDisposable>(DisposalConcern.Instance);
+				model.Lifecycle.Add(decommission as IDecommissionConcern);
 			}
-			if (lateBoundCommissionConcern.HasSteps)
+			if (lateBoundCommissionConcern.HasConcerns)
 			{
-				model.LifecycleSteps.Add(LifecycleStepType.Commission, lateBoundCommissionConcern);
+				model.Lifecycle.Add(lateBoundCommissionConcern as ICommissionConcern);
 			}
 		}
 
 		private void ProcessModel(ComponentModel model)
 		{
-			if (typeof (IInitializable).IsAssignableFrom(model.Implementation))
+			if (typeof(IInitializable).IsAssignableFrom(model.Implementation))
 			{
-				model.LifecycleSteps.Add( LifecycleStepType.Commission, InitializationConcern.Instance );
+				model.Lifecycle.Add(InitializationConcern.Instance);
 			}
 #if (!SILVERLIGHT)
-			if (typeof (ISupportInitialize).IsAssignableFrom(model.Implementation))
+			if (typeof(ISupportInitialize).IsAssignableFrom(model.Implementation))
 			{
-				model.LifecycleSteps.Add( LifecycleStepType.Commission, SupportInitializeConcern.Instance );
+				model.Lifecycle.Add(SupportInitializeConcern.Instance);
 			}
 #endif
-			if (typeof (IDisposable).IsAssignableFrom(model.Implementation))
+			if (typeof(IDisposable).IsAssignableFrom(model.Implementation))
 			{
-				model.LifecycleSteps.Add( LifecycleStepType.Decommission, DisposalConcern.Instance );
+				model.Lifecycle.Add(DisposalConcern.Instance);
 			}
 		}
 	}

@@ -16,6 +16,7 @@ namespace Castle.MicroKernel.LifecycleConcerns
 {
 	using System;
 	using System.Collections.Generic;
+
 	using Castle.Core;
 
 	/// <summary>
@@ -24,27 +25,27 @@ namespace Castle.MicroKernel.LifecycleConcerns
 #if (!SILVERLIGHT)
 	[Serializable]
 #endif
-	public class LateBoundConcern : ILifecycleConcern
+	public class LateBoundConcerns : ICommissionConcern, IDecommissionConcern
 	{
 		private IDictionary<Type, ILifecycleConcern> steps;
 
-		public void AddStep<TForType>(ILifecycleConcern lifecycleConcern)
+		public void AddConcern<TForType>(ILifecycleConcern lifecycleConcern)
 		{
 			if (steps == null)
 			{
 				steps = new Dictionary<Type, ILifecycleConcern>();
 			}
-			steps.Add(typeof (TForType), lifecycleConcern);
+			steps.Add(typeof(TForType), lifecycleConcern);
 		}
 
-		public bool HasSteps
+		public bool HasConcerns
 		{
 			get { return steps != null; }
 		}
 
 		public void Apply(ComponentModel model, object component)
 		{
-			Type type = component.GetType();
+			var type = component.GetType();
 			foreach (var step in steps)
 			{
 				if (step.Key.IsAssignableFrom(type))

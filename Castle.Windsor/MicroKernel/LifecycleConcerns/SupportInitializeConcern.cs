@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -23,16 +23,10 @@ namespace Castle.MicroKernel.LifecycleConcerns
 	/// <summary>
 	/// Summary description for SupportInitializeConcern.
 	/// </summary>
-
 	[Serializable]
-	public class SupportInitializeConcern : ILifecycleConcern
+	public class SupportInitializeConcern : ICommissionConcern
 	{
 		private static readonly SupportInitializeConcern instance = new SupportInitializeConcern();
-
-		public static SupportInitializeConcern Instance
-		{
-			get { return instance; }
-		}
 
 		protected SupportInitializeConcern()
 		{
@@ -40,8 +34,18 @@ namespace Castle.MicroKernel.LifecycleConcerns
 
 		public void Apply(ComponentModel model, object component)
 		{
-			(component as ISupportInitialize).BeginInit();
-			(component as ISupportInitialize).EndInit();
+			var supportInitialize = component as ISupportInitialize;
+			if (supportInitialize == null)
+			{
+				return;
+			}
+			supportInitialize.BeginInit();
+			supportInitialize.EndInit();
+		}
+
+		public static SupportInitializeConcern Instance
+		{
+			get { return instance; }
 		}
 	}
 #endif

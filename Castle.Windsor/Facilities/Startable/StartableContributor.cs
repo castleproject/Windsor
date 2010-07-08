@@ -63,18 +63,20 @@ namespace Castle.Facilities.Startable
 
 		private void AddStop(ComponentModel model)
 		{
-			var startMethod = model.Configuration.Attributes["stopMethod"];
-			if (startMethod != null)
+			var stopMethod = model.Configuration.Attributes["stopMethod"];
+			if (stopMethod != null)
 			{
-				var method = model.Implementation.GetMethod(startMethod, Type.EmptyTypes);
+				var method = model.Implementation.GetMethod(stopMethod, Type.EmptyTypes);
 				if (method == null)
 				{
 					throw new ArgumentException(
-						"Could not find public parameterless method '{}' on type {1} designated as stop method. Make sure you didn't mistype the method name and that its signature matches.");
+						string.Format(
+							"Could not find public parameterless method '{0}' on type {1} designated as stop method. Make sure you didn't mistype the method name and that its signature matches.",
+							stopMethod, model.Implementation));
 				}
 				model.ExtendedProperties.Add("Castle.StartableFacility.StopMethod", method);
 			}
-			model.LifecycleSteps.AddFirst(LifecycleStepType.Decommission, StopConcern.Instance);
+			model.Lifecycle.AddFirst(StopConcern.Instance);
 		}
 
 		private void AddStart(ComponentModel model)
@@ -86,11 +88,13 @@ namespace Castle.Facilities.Startable
 				if(method == null)
 				{
 					throw new ArgumentException(
-						"Could not find public parameterless method '{}' on type {1} designated as start method. Make sure you didn't mistype the method name and that its signature matches.");
+						string.Format(
+							"Could not find public parameterless method '{0}' on type {1} designated as start method. Make sure you didn't mistype the method name and that its signature matches.",
+							startMethod, model.Implementation));
 				}
 				model.ExtendedProperties.Add("Castle.StartableFacility.StartMethod", method);
 			}
-			model.LifecycleSteps.Add(LifecycleStepType.Commission, StartConcern.Instance);
+			model.Lifecycle.Add(StartConcern.Instance);
 		}
 
 		private static bool CheckIfComponentImplementsIStartable(ComponentModel model)

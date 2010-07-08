@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,13 +16,15 @@ namespace Castle.MicroKernel.LifecycleConcerns
 {
 	using System;
 
+	using Castle.Core;
+
 	/// <summary>
 	/// Summary description for DisposalConcern.
 	/// </summary>
 #if (!SILVERLIGHT)
 	[Serializable]
 #endif
-	public class DisposalConcern : ILifecycleConcern
+	public class DisposalConcern : IDecommissionConcern
 	{
 		private static readonly DisposalConcern instance = new DisposalConcern();
 
@@ -35,10 +37,14 @@ namespace Castle.MicroKernel.LifecycleConcerns
 		{
 		}
 
-		public void Apply(Castle.Core.ComponentModel model, object component)
+		public void Apply(ComponentModel model, object component)
 		{
 			var disposable = component as IDisposable;
-			if (disposable != null) disposable.Dispose();
+			if (disposable == null)
+			{
+				return;
+			}
+			disposable.Dispose();
 		}
 	}
 }
