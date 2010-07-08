@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -28,43 +28,53 @@ namespace Castle.Windsor.Tests.Facilities.Startable
 	[TestFixture]
 	public class StartableFacilityTestCase
 	{
-		private bool startableCreatedBeforeResolved;
-
 		[SetUp]
 		public void SetUp()
 		{
 			startableCreatedBeforeResolved = false;
 		}
 
-		[Test]
-		public void TestInterfaceBasedStartable()
+		private bool startableCreatedBeforeResolved;
+
+		private void OnStartableComponentStarted(ComponentModel mode, object instance)
 		{
+			var startable = instance as StartableComponent;
+
+			Assert.IsNotNull(startable);
+			Assert.IsTrue(startable.Started);
+			Assert.IsFalse(startable.Stopped);
+
+			startableCreatedBeforeResolved = true;
+		}
+
+		private void OnNoInterfaceStartableComponentStarted(ComponentModel mode, object instance)
+		{
+			var startable = instance as NoInterfaceStartableComponent;
+
+			Assert.IsNotNull(startable);
+			Assert.IsTrue(startable.Started);
+			Assert.IsFalse(startable.Stopped);
+
+			startableCreatedBeforeResolved = true;
+		}
+
+		[Test]
+		public void Starts_component_without_start_method()
+		{
+			ClassWithInstanceCount.InstancesCount = 0;
 			IKernel kernel = new DefaultKernel();
-			kernel.ComponentCreated += new ComponentInstanceDelegate(OnStartableComponentStarted);
-
-			kernel.AddFacility("startable", new StartableFacility());
-
-			kernel.Register(Component.For(typeof(StartableComponent)).Named("a"));
-
-			Assert.IsTrue(startableCreatedBeforeResolved, "Component was not properly started");
-
-			StartableComponent component = kernel["a"] as StartableComponent;
-
-			Assert.IsNotNull(component);
-			Assert.IsTrue(component.Started);
-			Assert.IsFalse(component.Stopped);
-
-			kernel.ReleaseComponent(component);
-			Assert.IsTrue(component.Stopped);
+			kernel.AddFacility<StartableFacility>(f => f.DeferredTryStart());
+			kernel.Register(Component.For<ClassWithInstanceCount>().Start());
+			Assert.AreEqual(1, ClassWithInstanceCount.InstancesCount);
 		}
 
 		[Test]
 		public void TestComponentWithNoInterface()
 		{
 			IKernel kernel = new DefaultKernel();
-			kernel.ComponentCreated += new ComponentInstanceDelegate(OnNoInterfaceStartableComponentStarted);
+			kernel.ComponentCreated += OnNoInterfaceStartableComponentStarted;
 
-			MutableConfiguration compNode = new MutableConfiguration("component");
+			var compNode = new MutableConfiguration("component");
 			compNode.Attributes["id"] = "b";
 			compNode.Attributes["startable"] = "true";
 			compNode.Attributes["startMethod"] = "Start";
@@ -77,7 +87,7 @@ namespace Castle.Windsor.Tests.Facilities.Startable
 
 			Assert.IsTrue(startableCreatedBeforeResolved, "Component was not properly started");
 
-			NoInterfaceStartableComponent component = kernel["b"] as NoInterfaceStartableComponent;
+			var component = kernel["b"] as NoInterfaceStartableComponent;
 
 			Assert.IsNotNull(component);
 			Assert.IsTrue(component.Started);
@@ -88,20 +98,18 @@ namespace Castle.Windsor.Tests.Facilities.Startable
 		}
 
 		[Test]
-		public void TestStartableWithRegisteredCustomDependencies()
+		public void TestInterfaceBasedStartable()
 		{
 			IKernel kernel = new DefaultKernel();
-			kernel.ComponentCreated += new ComponentInstanceDelegate(OnStartableComponentStarted);
+			kernel.ComponentCreated += OnStartableComponentStarted;
 
 			kernel.AddFacility("startable", new StartableFacility());
 
-			var dependencies = new Dictionary<string, object> { { "config", 1 } };
-			kernel.Register(Component.For(typeof(StartableComponentCustomDependencies)).Named("a"));
-			kernel.RegisterCustomDependencies(typeof(StartableComponentCustomDependencies), dependencies);
+			kernel.Register(Component.For(typeof(StartableComponent)).Named("a"));
 
 			Assert.IsTrue(startableCreatedBeforeResolved, "Component was not properly started");
 
-			StartableComponentCustomDependencies component = kernel["a"] as StartableComponentCustomDependencies;
+			var component = kernel["a"] as StartableComponent;
 
 			Assert.IsNotNull(component);
 			Assert.IsTrue(component.Started);
@@ -109,53 +117,6 @@ namespace Castle.Windsor.Tests.Facilities.Startable
 
 			kernel.ReleaseComponent(component);
 			Assert.IsTrue(component.Stopped);
-		}
-
-		[Test]
-		public void TestStartableCustomDependencies()
-		{
-			IKernel kernel = new DefaultKernel();
-			kernel.ComponentCreated += new ComponentInstanceDelegate(OnStartableComponentStarted);
-
-			kernel.AddFacility("startable", new StartableFacility());
-
-			kernel.Register(
-				Component.For<StartableComponentCustomDependencies>()
-					.Named("a")
-					.DependsOn(Property.ForKey("config").Eq(1))
-				);
-			Assert.IsTrue(startableCreatedBeforeResolved, "Component was not properly started");
-
-			StartableComponentCustomDependencies component = kernel["a"] as StartableComponentCustomDependencies;
-
-			Assert.IsNotNull(component);
-			Assert.IsTrue(component.Started);
-			Assert.IsFalse(component.Stopped);
-
-			kernel.ReleaseComponent(component);
-			Assert.IsTrue(component.Stopped);
-		}
-
-		private void OnStartableComponentStarted(ComponentModel mode, object instance)
-		{
-			StartableComponent startable = instance as StartableComponent;
-
-			Assert.IsNotNull(startable);
-			Assert.IsTrue(startable.Started);
-			Assert.IsFalse(startable.Stopped);
-
-			startableCreatedBeforeResolved = true;
-		}
-
-		private void OnNoInterfaceStartableComponentStarted(ComponentModel mode, object instance)
-		{
-			NoInterfaceStartableComponent startable = instance as NoInterfaceStartableComponent;
-
-			Assert.IsNotNull(startable);
-			Assert.IsTrue(startable.Started);
-			Assert.IsFalse(startable.Stopped);
-
-			startableCreatedBeforeResolved = true;
 		}
 
 		/// <summary>
@@ -190,6 +151,65 @@ namespace Castle.Windsor.Tests.Facilities.Startable
 			Assert.AreEqual(1, StartableChainDependency.startcount);
 			Assert.AreEqual(1, StartableChainDependency.createcount);
 			Assert.AreEqual(1, StartableChainGeneric<string>.createcount);
+		}
+
+		[Test]
+		public void TestStartableCustomDependencies()
+		{
+			IKernel kernel = new DefaultKernel();
+			kernel.ComponentCreated += OnStartableComponentStarted;
+
+			kernel.AddFacility("startable", new StartableFacility());
+
+			kernel.Register(
+				Component.For<StartableComponentCustomDependencies>()
+					.Named("a")
+					.DependsOn(Property.ForKey("config").Eq(1))
+				);
+			Assert.IsTrue(startableCreatedBeforeResolved, "Component was not properly started");
+
+			var component = kernel["a"] as StartableComponentCustomDependencies;
+
+			Assert.IsNotNull(component);
+			Assert.IsTrue(component.Started);
+			Assert.IsFalse(component.Stopped);
+
+			kernel.ReleaseComponent(component);
+			Assert.IsTrue(component.Stopped);
+		}
+
+		[Test]
+		public void TestStartableWithRegisteredCustomDependencies()
+		{
+			IKernel kernel = new DefaultKernel();
+			kernel.ComponentCreated += OnStartableComponentStarted;
+
+			kernel.AddFacility("startable", new StartableFacility());
+
+			var dependencies = new Dictionary<string, object> { { "config", 1 } };
+			kernel.Register(Component.For(typeof(StartableComponentCustomDependencies)).Named("a"));
+			kernel.RegisterCustomDependencies(typeof(StartableComponentCustomDependencies), dependencies);
+
+			Assert.IsTrue(startableCreatedBeforeResolved, "Component was not properly started");
+
+			var component = kernel["a"] as StartableComponentCustomDependencies;
+
+			Assert.IsNotNull(component);
+			Assert.IsTrue(component.Started);
+			Assert.IsFalse(component.Stopped);
+
+			kernel.ReleaseComponent(component);
+			Assert.IsTrue(component.Stopped);
+		}
+	}
+
+	public class ClassWithInstanceCount
+	{
+		public static int InstancesCount;
+
+		public ClassWithInstanceCount()
+		{
+			InstancesCount++;
 		}
 	}
 }
