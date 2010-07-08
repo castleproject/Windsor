@@ -71,7 +71,7 @@ namespace Castle.MicroKernel.Handlers
 
 		private bool HasDecomission(bool track)
 		{
-			return track || ComponentModel.LifecycleSteps.HasDecommissionSteps;
+			return track || ComponentModel.Lifecycle.HasDecommissionConcerns;
 		}
 
 		private bool ResolveImpossible(CreationContext context)

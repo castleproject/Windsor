@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,25 +14,16 @@
 
 namespace Castle.Facilities.Startable
 {
-	using System;
 	using System.Reflection;
 
 	using Castle.Core;
 
-	using Castle.MicroKernel.LifecycleConcerns;
-
-
-	public class StopConcern : ILifecycleConcern
+	public class StopConcern : IDecommissionConcern
 	{
 		private static readonly StopConcern instance = new StopConcern();
 
 		protected StopConcern()
 		{
-		}
-
-		public static StopConcern Instance
-		{
-			get { return instance; }
 		}
 
 		public void Apply(ComponentModel model, object component)
@@ -49,6 +40,11 @@ namespace Castle.Facilities.Startable
 					stopMethod.Invoke(component, null);
 				}
 			}
+		}
+
+		public static StopConcern Instance
+		{
+			get { return instance; }
 		}
 	}
 }

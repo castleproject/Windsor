@@ -1,4 +1,21 @@
 ================================================================================================
+change - LifecycleStepCollection class was removed. Instaed LifecycleConcernsCollection class
+	was introduced. ILifecycleConcern has now two innerited interfaces for commission and
+	decommission. LifecycleSteps property of ComponentModel was renamed to Lifecycle.
+	LifecycleStepType type was removed.
+
+impact - medium
+fixability - easy
+revision - 
+
+description - To improve strongly typed nature and decrease probability of mistake and improve
+	general usability of the type LifecycleStepCollection was removed. In it place similar type
+	was introduced - LifecycleConcernsCollection. Instead of using untyped Objects and enums
+	it works with two new interfaces : ICommissionConcern and IDecommissionConcern.
+
+fix - have your lifecycle steps implement one of the new lifecycle interfaces. Use appropriate
+	overload of Add/AddFirst to add them.
+================================================================================================
 change - Typed Factories will not implicitly pick default ITypedFactoryComponentSelector 
 	registered in the container anymore
 

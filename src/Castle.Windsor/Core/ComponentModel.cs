@@ -56,7 +56,7 @@ namespace Castle.Core
 		//private MethodMetaModelCollection methodMetaModels;
 
 		/// <summary>Steps of lifecycle</summary>
-		private volatile LifecycleStepCollection lifecycleSteps;
+		private volatile LifecycleConcernsCollection lifecycle;
 
 		/// <summary>External parameters</summary>
 		private volatile ParameterModelCollection parameters;
@@ -179,18 +179,18 @@ namespace Castle.Core
 		/// Gets the lifecycle steps.
 		/// </summary>
 		/// <value>The lifecycle steps.</value>
-		public LifecycleStepCollection LifecycleSteps
+		public LifecycleConcernsCollection Lifecycle
 		{
 			get
 			{
-				if (lifecycleSteps == null)
+				if (lifecycle == null)
 				{
 					lock (syncRoot)
 					{
-						if (lifecycleSteps == null) lifecycleSteps = new LifecycleStepCollection();
+						if (lifecycle == null) lifecycle = new LifecycleConcernsCollection();
 					}
 				}
-				return lifecycleSteps;
+				return lifecycle;
 			}
 		}
 
