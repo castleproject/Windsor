@@ -15,9 +15,8 @@
 namespace Castle.Facilities.WcfIntegration.Demo
 {
 	using System;
-	using System.Web;
-	using System.ServiceModel;
 	using System.ServiceModel.Description;
+	using System.Web;
 	using Castle.MicroKernel.Registration;
 	using Castle.Windsor;
 	using Castle.Windsor.Installer;

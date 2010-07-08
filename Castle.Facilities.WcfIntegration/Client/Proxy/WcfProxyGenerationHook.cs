@@ -53,12 +53,12 @@ namespace Castle.Facilities.WcfIntegration.Proxy
 			return typeof(IWcfChannelHolder).IsAssignableFrom(methodInfo.DeclaringType);
 		}
 
-		public void NonVirtualMemberNotification(Type type, MemberInfo memberInfo)
+		public void NonProxyableMemberNotification(Type type, MemberInfo memberInfo)
 		{
 			if (hook != null)
 			{
 				//give the inner hook a chance to throw its own exception
-				hook.NonVirtualMemberNotification(type, memberInfo);
+				hook.NonProxyableMemberNotification(type, memberInfo);
 			}
 
 			// actually we should never get this, since we're doing an interface proxy

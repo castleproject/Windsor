@@ -65,7 +65,7 @@ namespace Castle.Facilities.WcfIntegration.Async
 
 		private void InternalEnd()
 		{
-			End((i, c) => i.EndCall(c, out outArgs));
+			End((i, c) => i.EndCall(c, out outArguments));
 		}
 
 		protected override object GetDefaultReturnValue()

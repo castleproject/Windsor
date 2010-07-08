@@ -22,6 +22,7 @@ namespace Castle.Facilities.WcfIntegration.Internal
 	using System.Threading;
 	using Castle.Core;
 	using Castle.MicroKernel;
+	using Castle.MicroKernel.Context;
 
 	internal static class WcfUtils
 	{

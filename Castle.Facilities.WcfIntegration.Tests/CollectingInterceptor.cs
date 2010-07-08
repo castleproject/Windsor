@@ -16,7 +16,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 {
 	using System.Collections.Generic;
 
-	using Castle.Core.Interceptor;
+	using Castle.DynamicProxy;
 
 	public class CollectingInterceptor : StandardInterceptor
 	{

@@ -52,7 +52,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 						)
 				))
 			{
-				IOperations client = ChannelFactory<IOperations>.CreateChannel(
+				var client = ChannelFactory<IOperations>.CreateChannel(
 					new NetTcpBinding { PortSharingEnabled = true }, new EndpointAddress("net.tcp://localhost/Operations"));
 				Assert.AreEqual(42, client.GetValueFromConstructor());
 			}
@@ -79,7 +79,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 						)
 				))
 			{
-				IOperations client = ChannelFactory<IOperations>.CreateChannel(
+				var client = ChannelFactory<IOperations>.CreateChannel(
 					new NetTcpBinding { PortSharingEnabled = true },
 					new EndpointAddress("net.tcp://localhost/Operations"));
 				((IClientChannel)client).Open();
@@ -117,7 +117,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 						)
 				)))
 			{
-				IOperations client = ChannelFactory<IOperations>.CreateChannel(
+				var client = ChannelFactory<IOperations>.CreateChannel(
 					new NetTcpBinding { PortSharingEnabled = true }, new EndpointAddress("net.tcp://localhost/Operations"));
 				Assert.AreEqual(42, client.GetValueFromConstructor());
 			}
@@ -133,7 +133,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 					.ActAs(new DefaultServiceModel())
 				))
 			{
-				IAmUsingWindsor client = ChannelFactory<IAmUsingWindsor>.CreateChannel(
+				var client = ChannelFactory<IAmUsingWindsor>.CreateChannel(
 					new BasicHttpBinding(), new EndpointAddress("http://localhost:27198/UsingWindsor.svc"));
 				Assert.AreEqual(42, client.GetValueFromWindsorConfig());
 			}
@@ -156,11 +156,11 @@ namespace Castle.Facilities.WcfIntegration.Tests
 						)
 				)))
 			{
-				IOperations client = ChannelFactory<IOperations>.CreateChannel(
+				var client = ChannelFactory<IOperations>.CreateChannel(
 					new NetTcpBinding { PortSharingEnabled = true }, new EndpointAddress("net.tcp://localhost/Operations"));
 				Assert.AreEqual(42, client.GetValueFromConstructor());
 
-				IOperationsEx clientEx = ChannelFactory<IOperationsEx>.CreateChannel(
+				var clientEx = ChannelFactory<IOperationsEx>.CreateChannel(
 					new BasicHttpBinding(), new EndpointAddress("http://localhost:27198/UsingWindsor.svc"));
 				clientEx.Backup(new Dictionary<string, object>());
 			}
@@ -187,11 +187,11 @@ namespace Castle.Facilities.WcfIntegration.Tests
 					)
 				))
 			{
-				IOperations client = ChannelFactory<IOperations>.CreateChannel(
+				var client = ChannelFactory<IOperations>.CreateChannel(
 					new NetTcpBinding { PortSharingEnabled = true }, new EndpointAddress("net.tcp://localhost/Operations"));
 				Assert.AreEqual(42, client.GetValueFromConstructor());
 
-				IOperationsEx clientEx = ChannelFactory<IOperationsEx>.CreateChannel(
+				var clientEx = ChannelFactory<IOperationsEx>.CreateChannel(
 					new BasicHttpBinding(), new EndpointAddress("http://localhost:27198/UsingWindsor.svc/Extended"));
 				clientEx.Backup(new Dictionary<string, object>());
 			}
@@ -212,7 +212,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 							)
 				)))
 			{
-				IOperations client = ChannelFactory<IOperations>.CreateChannel(
+				var client = ChannelFactory<IOperations>.CreateChannel(
 					new NetTcpBinding { PortSharingEnabled = true }, new EndpointAddress("urn:castle:operations"),
 					new Uri("net.tcp://localhost/Operations"));
 				Assert.AreEqual(42, client.GetValueFromConstructor());
@@ -225,7 +225,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 			using (new WindsorContainer()
 					.Install(Configuration.FromXml(new StaticContentResource(xmlConfiguration))))
 			{
-				IAmUsingWindsor client = ChannelFactory<IAmUsingWindsor>.CreateChannel(
+				var client = ChannelFactory<IAmUsingWindsor>.CreateChannel(
 					new BasicHttpBinding(), new EndpointAddress("http://localhost:27198/UsingWindsor.svc"));
 				Assert.AreEqual(42, client.GetValueFromWindsorConfig());
 			}
@@ -255,11 +255,11 @@ namespace Castle.Facilities.WcfIntegration.Tests
 							)
 				))
 			{
-				IOperations client = ChannelFactory<IOperations>.CreateChannel(
+				var client = ChannelFactory<IOperations>.CreateChannel(
 					new NetTcpBinding { PortSharingEnabled = true }, new EndpointAddress("net.tcp://localhost/Operations"));
 				Assert.AreEqual(42, client.GetValueFromConstructor());
 
-				IOperationsEx clientEx = ChannelFactory<IOperationsEx>.CreateChannel(
+				var clientEx = ChannelFactory<IOperationsEx>.CreateChannel(
 					new BasicHttpBinding(), new EndpointAddress("http://localhost:27198/UsingWindsor.svc/Extended"));
 				clientEx.Backup(new Dictionary<string, object>());
 			}
@@ -286,7 +286,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 						)
 				))
 			{
-				IOperations client = ChannelFactory<IOperations>.CreateChannel(
+				var client = ChannelFactory<IOperations>.CreateChannel(
 					new NetTcpBinding { PortSharingEnabled = true }, new EndpointAddress("net.tcp://localhost/Operations"));
 				bool unitOfWorkIsInitialized_DuringCall = client.UnitOfWorkIsInitialized();
 				Assert.IsTrue(unitOfWorkIsInitialized_DuringCall);
@@ -315,7 +315,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 					)
 				)
 			{
-				IOperations client = ChannelFactory<IOperations>.CreateChannel(
+				var client = ChannelFactory<IOperations>.CreateChannel(
 					new NetTcpBinding { PortSharingEnabled = true }, new EndpointAddress("net.tcp://localhost/Operations"));
 				bool unitOfWorkIsInitialized_DuringCall = client.UnitOfWorkIsInitialized();
 				Assert.IsTrue(unitOfWorkIsInitialized_DuringCall);
@@ -344,7 +344,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 						)
 				))
 			{
-				IOperations client = ChannelFactory<IOperations>.CreateChannel(
+				var client = ChannelFactory<IOperations>.CreateChannel(
 					new NetTcpBinding { PortSharingEnabled = true }, new EndpointAddress("net.tcp://localhost/Operations"));
 				Assert.AreEqual(42, client.GetValueFromConstructor());
 			}
@@ -374,7 +374,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 						)
 				))
 			{
-				IOperations client = ChannelFactory<IOperations>.CreateChannel(
+				var client = ChannelFactory<IOperations>.CreateChannel(
 					new NetTcpBinding { PortSharingEnabled = true }, new EndpointAddress("net.tcp://localhost/Operations"));
 				Assert.AreEqual(42, client.GetValueFromConstructor());
 				Assert.AreEqual(1, CallCountServiceBehavior.CallCount);
@@ -401,7 +401,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 						)
 				))
 			{
-				IOperations client = ChannelFactory<IOperations>.CreateChannel(
+				var client = ChannelFactory<IOperations>.CreateChannel(
 					new NetTcpBinding { PortSharingEnabled = true }, new EndpointAddress("net.tcp://localhost/Operations"));
 				Assert.AreEqual(42, client.GetValueFromConstructor());
 				Assert.AreEqual(1, CallCountServiceBehavior.CallCount);
@@ -427,7 +427,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 						)
 				))
 			{
-				IOperations client = ChannelFactory<IOperations>.CreateChannel(
+				var client = ChannelFactory<IOperations>.CreateChannel(
 					new NetTcpBinding { PortSharingEnabled = true }, new EndpointAddress("net.tcp://localhost/Operations"));
 				bool unitOfWorkIsInitialized_DuringCall = client.UnitOfWorkIsInitialized();
 				Assert.IsTrue(unitOfWorkIsInitialized_DuringCall);
@@ -439,7 +439,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 		[Test]
 		public void CanCaptureRequestsAndResponsesAtEndpointLevel()
 		{
-			using (IWindsorContainer container = new WindsorContainer()
+			using (var container = new WindsorContainer()
 				.AddFacility<WcfFacility>(f => f.CloseTimeout = TimeSpan.Zero)
 				.Register(
 					Component.For<LogMessageEndpointBehavior>()
@@ -457,7 +457,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 			{
 				RegisterLoggingFacility(container);
 
-				IOperations client = ChannelFactory<IOperations>.CreateChannel(
+				var client = ChannelFactory<IOperations>.CreateChannel(
 					new NetTcpBinding { PortSharingEnabled = true }, new EndpointAddress("net.tcp://localhost/Operations"));
 				Assert.AreEqual(42, client.GetValueFromConstructor());
 				Assert.AreEqual(4, memoryAppender.GetEvents().Length);
@@ -473,7 +473,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 		[Test]
 		public void CanCaptureRequestsAndResponsesAtServiceLevel()
 		{
-			using (IWindsorContainer container = new WindsorContainer()
+			using (var container = new WindsorContainer()
 				.AddFacility<WcfFacility>(f => f.CloseTimeout = TimeSpan.Zero)
 				.Register(
 					Component.For<LogMessageEndpointBehavior>()
@@ -491,7 +491,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 			{
 				RegisterLoggingFacility(container);
 
-				IOperations client = ChannelFactory<IOperations>.CreateChannel(
+				var client = ChannelFactory<IOperations>.CreateChannel(
 					new NetTcpBinding { PortSharingEnabled = true }, new EndpointAddress("net.tcp://localhost/Operations"));
 				Assert.AreEqual(42, client.GetValueFromConstructor());
 				Assert.AreEqual(4, memoryAppender.GetEvents().Length);
@@ -501,7 +501,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 		[Test]
 		public void CanModifyRequestsAndResponses()
 		{
-			using (IWindsorContainer container = new WindsorContainer()
+			using (new WindsorContainer()
 				.AddFacility<WcfFacility>(f => f.CloseTimeout = TimeSpan.Zero)
 				.Register(
 					Component.For<MessageLifecycleBehavior>(),
@@ -515,17 +515,17 @@ namespace Castle.Facilities.WcfIntegration.Tests
 							)
 				))
 			{
-				IOperations client = ChannelFactory<IOperations>.CreateChannel(
+				var client = ChannelFactory<IOperations>.CreateChannel(
 					new NetTcpBinding { PortSharingEnabled = true }, 
 					new EndpointAddress("net.tcp://localhost/Operations"));
 				Assert.AreEqual(100, client.GetValueFromConstructor());
 			}
 		}
 
-		[Test, ExpectedException(typeof(FaultException<ExceptionDetail>))]
+		[Test]
 		public void CanGiveFriendlyErrorMessageForUunresolvedServiceDependenciesIfOpenEagerly()
 		{
-			using (IWindsorContainer container = new WindsorContainer()
+			using (new WindsorContainer()
 				.AddFacility<WcfFacility>(f => f.CloseTimeout = TimeSpan.Zero)
 				.Register(
 					Component.For<IServiceBehavior>()
@@ -542,10 +542,21 @@ namespace Castle.Facilities.WcfIntegration.Tests
 						)
 				))
 			{
-				IOperations client = ChannelFactory<IOperations>.CreateChannel(
+				var client = ChannelFactory<IOperations>.CreateChannel(
 					new NetTcpBinding { PortSharingEnabled = true }, 
 					new EndpointAddress("net.tcp://localhost/Operations"));
-				Assert.AreEqual(42, client.GetValueFromConstructor());
+
+				try
+				{
+					Assert.AreEqual(42, client.GetValueFromConstructor());
+				}
+				catch (FaultException<ExceptionDetail> fault)
+				{
+				}
+				catch (Exception ex)
+				{
+					Assert.Fail("Expected a {0}, but got {1}", typeof(FaultException<ExceptionDetail>).FullName, ex.GetType().FullName);
+				}
 			}
 		}
 
@@ -571,7 +582,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 							)
 				))
 			{
-				IOperations client = ChannelFactory<IOperations>.CreateChannel(
+				var client = ChannelFactory<IOperations>.CreateChannel(
 					new NetTcpBinding { PortSharingEnabled = true }, new EndpointAddress("net.tcp://localhost/Operations"));
 				Assert.AreEqual(42, client.GetValueFromConstructor());
 
@@ -584,7 +595,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 
 		protected void RegisterLoggingFacility(IWindsorContainer container)
 		{
-			MutableConfiguration facNode = new MutableConfiguration("facility");
+			var facNode = new MutableConfiguration("facility");
 			facNode.Attributes["id"] = "logging";
 			facNode.Attributes["loggingApi"] = "ExtendedLog4net";
 			facNode.Attributes["configFile"] = "";

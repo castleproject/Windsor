@@ -17,6 +17,7 @@ namespace Castle.Facilities.WcfIntegration.Lifestyles
 	using System;
 	using System.ServiceModel;
 	using Castle.MicroKernel;
+	using Castle.MicroKernel.Context;
 	using Castle.MicroKernel.Lifestyle;
 
 	public abstract class AbstractWcfLifestyleManager<TExtensibleObject, TCache> : AbstractLifestyleManager, IWcfLifestyle

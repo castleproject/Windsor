@@ -95,7 +95,7 @@ namespace Castle.Facilities.WcfIntegration.Async
 			return false;
 		}
 
-		public void NonVirtualMemberNotification(Type type, MemberInfo memberInfo)
+		public void NonProxyableMemberNotification(Type type, MemberInfo memberInfo)
 		{
 		}
 

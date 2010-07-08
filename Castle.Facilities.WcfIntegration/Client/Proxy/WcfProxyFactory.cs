@@ -15,15 +15,16 @@
 namespace Castle.Facilities.WcfIntegration.Proxy
 {
 	using System;
+	using System.Linq;
 	using System.Runtime.Remoting;
 	using System.ServiceModel;
 	using Castle.Core;
-	using Castle.Core.Interceptor;
 	using Castle.DynamicProxy;
 	using Castle.Facilities.WcfIntegration.Async;
 	using Castle.Facilities.WcfIntegration.Async.TypeSystem;
 	using Castle.Facilities.WcfIntegration.Internal;
 	using Castle.MicroKernel;
+	using Castle.MicroKernel.Context;
 	using Castle.MicroKernel.Proxy;
 	using Castle.Windsor.Proxy;
 
@@ -41,19 +42,23 @@ namespace Castle.Facilities.WcfIntegration.Proxy
 			wcfProxyGenerationHook = new WcfProxyGenerationHook(null);
 		}
 
+		public override object Create(IProxyFactoryExtension customFactory, IKernel kernel, ComponentModel model,
+									  CreationContext context, params object[] constructorArguments)
+		{
+			throw new NotSupportedException();
+		}
+
 		public override object Create(IKernel kernel, object instance, ComponentModel model, 
 									  CreationContext context, params object[] constructorArguments)
 		{
 			var channelHolder = instance as IWcfChannelHolder;
 
 			if (channelHolder == null)
-			{
 				throw new ArgumentException("Given instance is not an IWcfChannelHolder", "instance");
-			}
 
 			var isDuplex = IsDuplex(channelHolder.RealProxy);
 			var proxyOptions = ProxyUtil.ObtainProxyOptions(model, true);
-			var generationOptions = CreateProxyGenerationOptions(model.Service, proxyOptions);
+			var generationOptions = CreateProxyGenerationOptions(model.Service, proxyOptions, kernel);
 			var additionalInterfaces = GetInterfaces(model.Service, proxyOptions, isDuplex);
 			var interceptors = GetInterceptors(kernel, model, context);
 
@@ -82,9 +87,7 @@ namespace Castle.Facilities.WcfIntegration.Proxy
 			additionalInterfaces[--index] = typeof(IClientChannel);
 
 			if (isDuplex)
-			{
 				additionalInterfaces[--index] = typeof(IDuplexContextChannel);
-			}
 
 			return additionalInterfaces;
 		}
@@ -108,17 +111,21 @@ namespace Castle.Facilities.WcfIntegration.Proxy
 			return interceptors;
 		}
 
-		private ProxyGenerationOptions CreateProxyGenerationOptions(Type service, ProxyOptions proxyOptions)
+		private ProxyGenerationOptions CreateProxyGenerationOptions(Type service, ProxyOptions proxyOptions, IKernel kernel)
 		{
-			if (proxyOptions.MixIns != null && proxyOptions.MixIns.Length > 0)
+			if (proxyOptions.MixIns != null && proxyOptions.MixIns.Count() > 0)
 			{
 				throw new NotImplementedException(
 					"Support for mixins is not yet implemented. How about contributing a patch?");
 			}
 
+			IInterceptorSelector userProvidedSelector = null;
+			if (proxyOptions.Selector != null)
+				userProvidedSelector = proxyOptions.Selector.Resolve(kernel, CreationContext.Empty);
+
 			var proxyGenOptions = new ProxyGenerationOptions(wcfProxyGenerationHook)
 			{
-				Selector = new WcfInterceptorSelector(service, proxyOptions.Selector)
+				Selector = new WcfInterceptorSelector(service, userProvidedSelector)
 			};
 
 			return proxyGenOptions;

@@ -112,9 +112,9 @@ namespace Castle.Facilities.WcfIntegration
 			where T : IClientChannelBuilder<M>
 			where M : IWcfClientModel
 		{
-			if (force || !kernel.HasComponent(typeof(IClientChannelBuilder<M>)))
+			if (force || kernel.HasComponent(typeof(IClientChannelBuilder<M>)) == false)
 			{
-				kernel.AddComponent<T>(typeof(IClientChannelBuilder<M>));
+				kernel.Register(Component.For<IClientChannelBuilder<M>>().ImplementedBy<T>());
 			}
 		}
 

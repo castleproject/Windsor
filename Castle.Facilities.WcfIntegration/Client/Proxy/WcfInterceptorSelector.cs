@@ -18,7 +18,7 @@ namespace Castle.Facilities.WcfIntegration.Proxy
 	using System.Collections.Generic;
 	using System.Reflection;
 	using System.ServiceModel;
-	using Castle.Core.Interceptor;
+	using Castle.DynamicProxy;
 
 	[Serializable]
 	public class WcfInterceptorSelector : IInterceptorSelector
@@ -34,29 +34,23 @@ namespace Castle.Facilities.WcfIntegration.Proxy
 			this.userProvidedSelector = userProvidedSelector;
 		}
 
-	
 
 		public override bool Equals(object obj)
 		{
 			if (ReferenceEquals(this, obj))
-			{
 				return true;
-			}
 
 			var wcfInterceptorSelector = obj as WcfInterceptorSelector;
+
 			if (ReferenceEquals(wcfInterceptorSelector, null))
-			{
 				return false;
-			}
 
 			if (!Equals(proxiedType, wcfInterceptorSelector.proxiedType))
-			{
 				return false;
-			}
+
 			if (!Equals(userProvidedSelector, wcfInterceptorSelector.userProvidedSelector))
-			{
 				return false;
-			}
+
 			return true;
 		}
 
@@ -70,19 +64,14 @@ namespace Castle.Facilities.WcfIntegration.Proxy
 		public IInterceptor[] SelectInterceptors(Type type, MethodInfo method, IInterceptor[] interceptors)
 		{
 			if (This_should_be_in_ProxyGenerationHook_IsProxyWrapperMethod(method))
-			{
 				return EmptyInterceptors;
-			}
 
 			if (IsProxiedTypeMethod(method))
-			{
 				return SelectInterceptorsForProxiedType(method, interceptors, type);
-			}
 
 			if (IsServiceMethod(method))
-			{
 				return SelectInterceptorsForServiceType(method, interceptors);
-			}
+
 
 			return interceptors;
 		}
@@ -135,9 +124,7 @@ namespace Castle.Facilities.WcfIntegration.Proxy
 			var selectedInterceptors = userInterceptors.ToArray();
 
 			if (userProvidedSelector != null)
-			{
 				selectedInterceptors = userProvidedSelector.SelectInterceptors(type, method, selectedInterceptors);
-			}
 
 			return selectedInterceptors;
 		}

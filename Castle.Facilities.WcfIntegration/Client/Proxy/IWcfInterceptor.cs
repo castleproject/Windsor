@@ -15,7 +15,7 @@
 namespace Castle.Facilities.WcfIntegration.Proxy
 {
 	using System.Reflection;
-	using Castle.Core.Interceptor;
+	using Castle.DynamicProxy;
 
 	public interface IWcfInterceptor : IInterceptor
 	{

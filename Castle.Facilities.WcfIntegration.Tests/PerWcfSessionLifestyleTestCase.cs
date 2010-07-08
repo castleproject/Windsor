@@ -19,7 +19,6 @@ namespace Castle.Facilities.WcfIntegration.Tests
 	using System.ServiceModel;
 
 	using Castle.Core;
-	using Castle.Core.Interceptor;
 	using Castle.Facilities.WcfIntegration.Tests.Behaviors;
 	using Castle.Facilities.WcfIntegration.Tests.Components;
 	using Castle.MicroKernel.Registration;
@@ -81,7 +80,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 			client.Operation2("two ");
 			client.Operation2("and two again");
 			client.Terminating();
-			IGrouping<object, IInvocation>[] invocations = windsorContainer.GetService<CollectingInterceptor>()
+			var invocations = windsorContainer.GetService<CollectingInterceptor>()
 				.AllInvocations
 				.GroupBy(i => i.InvocationTarget)
 				.ToArray();
@@ -103,7 +102,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 			client.Operation1(" welcomes you.");
 			client.Terminating();
 			var interceptor = windsorContainer.GetService<CollectingInterceptor>();
-			IGrouping<object, IInvocation>[] invocations = interceptor
+			var invocations = interceptor
 				.AllInvocations
 				.GroupBy(i => i.InvocationTarget)
 				.ToArray();
@@ -127,7 +126,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 			client.Terminating();
 			client2.Terminating();
 			var interceptor = windsorContainer.GetService<CollectingInterceptor>();
-			IGrouping<object, IInvocation>[] invocations = interceptor
+			var invocations = interceptor
 				.AllInvocations
 				.GroupBy(i => i.InvocationTarget)
 				.ToArray();

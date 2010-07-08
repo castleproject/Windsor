@@ -18,7 +18,7 @@ namespace Castle.Facilities.WcfIntegration.Proxy
 	using System.Linq;
 	using System.Reflection;
 	using System.Runtime.Remoting.Messaging;
-	using Castle.Core.Interceptor;
+	using Castle.DynamicProxy;
 
 	public class WcfRemotingInterceptor : IWcfInterceptor
 	{

@@ -16,7 +16,7 @@ namespace Castle.Facilities.WcfIntegration.Async
 {
 	using System;
 	using System.Threading;
-	using Castle.Core.Interceptor;
+	using Castle.DynamicProxy;
 
 	public abstract class AsyncWcfCallBase<TProxy> : IWcfAsyncBindings
 	{
@@ -24,8 +24,8 @@ namespace Castle.Facilities.WcfIntegration.Async
 		private readonly Action<TProxy> onBegin;
 		private readonly WcfRemotingAsyncInterceptor wcfAsyncInterceptor;
 		private AsyncWcfCallContext context;
-		protected object[] outArgs;
-		protected object[] unboundOutArgs;
+		protected object[] outArguments;
+		protected object[] unboundOutArguments;
 
 		public AsyncWcfCallBase(TProxy proxy, Action<TProxy> onBegin)
 		{
@@ -53,12 +53,12 @@ namespace Castle.Facilities.WcfIntegration.Async
 
 		public object[] OutArgs
 		{
-			get { return outArgs; }
+			get { return outArguments; }
 		}
 
 		public object[] UnboundOutArgs
 		{
-			get { return unboundOutArgs; }
+			get { return unboundOutArguments; }
 		}
 
 		public TOut GetOutArg<TOut>(int index)
@@ -162,12 +162,12 @@ namespace Castle.Facilities.WcfIntegration.Async
 
 		protected object ExtractOutOfType(Type type, int index)
 		{
-			return ExtractOutOfType(type, index, outArgs);
+			return ExtractOutOfType(type, index, outArguments);
 		}
 
 		protected object ExtractUnboundOutOfType(Type type, int index)
 		{
-			return ExtractOutOfType(type, index, unboundOutArgs);
+			return ExtractOutOfType(type, index, unboundOutArguments);
 		}
 
 		private object ExtractOutOfType(Type type, int index, object[] outArgs)
@@ -203,10 +203,10 @@ namespace Castle.Facilities.WcfIntegration.Async
 
 		protected void CreateUnusedOutArgs(int fromIndex)
 		{
-			unboundOutArgs = new object[Math.Max(0, outArgs.Length - fromIndex)];
-			if (unboundOutArgs.Length > 0)
+			unboundOutArguments = new object[Math.Max(0, outArguments.Length - fromIndex)];
+			if (unboundOutArguments.Length > 0)
 			{
-				Array.Copy(outArgs, fromIndex, unboundOutArgs, 0, unboundOutArgs.Length);
+				Array.Copy(outArguments, fromIndex, unboundOutArguments, 0, unboundOutArguments.Length);
 			}
 		}
 	}

@@ -15,7 +15,7 @@
 namespace Castle.Facilities.WcfIntegration.Tests
 {
 	using System.Reflection;
-	using Castle.Core.Interceptor;
+	using Castle.DynamicProxy;
 
 	public class TraceInterceptor : IInterceptor
 	{

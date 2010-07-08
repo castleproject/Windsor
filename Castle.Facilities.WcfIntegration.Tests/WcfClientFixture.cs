@@ -21,8 +21,8 @@ namespace Castle.Facilities.WcfIntegration.Tests
 	using System.ServiceModel.Description;
 	using Castle.Core;
 	using Castle.Core.Configuration;
-	using Castle.Core.Interceptor;
 	using Castle.Core.Resource;
+	using Castle.DynamicProxy;
 	using Castle.Facilities.Logging;
 	using Castle.Facilities.WcfIntegration.Async;
 	using Castle.Facilities.WcfIntegration.Behaviors;
@@ -107,7 +107,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 					})
 				);
 
-			IOperations client = windsorContainer.Resolve<IOperations>("operations");
+			var client = windsorContainer.Resolve<IOperations>("operations");
 			Assert.AreEqual(42, client.GetValueFromConstructor());
 		}
 
@@ -125,7 +125,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 					})
 				);
 
-			IOperations client = windsorContainer.Resolve<IOperations>("operations");
+			var client = windsorContainer.Resolve<IOperations>("operations");
 			int refValue = 0, outValue;
 			Assert.AreEqual(42, client.GetValueFromConstructorAsRefAndOut(ref refValue, out outValue));
 			Assert.AreEqual(42, refValue);
@@ -146,7 +146,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 							)
 				)))
 			{
-				using (IWindsorContainer clientContainer = new WindsorContainer()
+				using (var clientContainer = new WindsorContainer()
 					.AddFacility<WcfFacility>(f => f.DefaultBinding =
 						new NetTcpBinding { PortSharingEnabled = true }
 					)
@@ -158,7 +158,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 						})
 					))
 				{
-					IOperations client = clientContainer.Resolve<IOperations>("operations");
+					var client = clientContainer.Resolve<IOperations>("operations");
 					Assert.AreEqual(28, client.GetValueFromConstructor());
 				}
 			}
@@ -178,7 +178,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 							)
 				)))
 			{
-				using (IWindsorContainer clientContainer = new WindsorContainer()
+				using (var clientContainer = new WindsorContainer()
 					.AddFacility<WcfFacility>(f => f.CloseTimeout = TimeSpan.Zero)
 					.Register(Component.For<IOperations>()
 						.Named("operations")
@@ -186,7 +186,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 						.ActAs(new DefaultClientModel())
 					))
 				{
-					IOperations client1 = clientContainer.Resolve<IOperations>("operations",
+					var client1 = clientContainer.Resolve<IOperations>("operations",
 						new
 						{
 							Model = new DefaultClientModel
@@ -195,7 +195,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 										.At("net.tcp://localhost/Operations2")
 								}
 						});
-					IOperations client2 = clientContainer.Resolve<IOperations>("operations",
+					var client2 = clientContainer.Resolve<IOperations>("operations",
 						new
 						{
 							Model = new DefaultClientModel()
@@ -226,7 +226,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 							)
 				)))
 			{
-				using (IWindsorContainer clientContainer = new WindsorContainer()
+				using (var clientContainer = new WindsorContainer()
 					.AddFacility<WcfFacility>(f => f.DefaultBinding =
 						new NetTcpBinding { PortSharingEnabled = true }
 					)
@@ -264,7 +264,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 							)
 				)))
 			{
-				using (IWindsorContainer clientContainer = new WindsorContainer()
+				using (var clientContainer = new WindsorContainer()
 					.AddFacility<WcfFacility>(f => f.CloseTimeout = TimeSpan.Zero)
 					.Register(Component.For<IOperationsEx>()
 						.Named("operations")
@@ -272,7 +272,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 						.ActAs(new DefaultClientModel())
 					))
 				{
-					IOperationsEx client = clientContainer.Resolve<IOperationsEx>("operations",
+					var client = clientContainer.Resolve<IOperationsEx>("operations",
 						new
 						{
 							Model = new DefaultClientModel
@@ -306,7 +306,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 						.FromConfiguration("WSHttpBinding_IAmUsingWindsor")
 				}));
 
-			IAmUsingWindsor client = windsorContainer.Resolve<IAmUsingWindsor>("usingWindsor");
+			var client = windsorContainer.Resolve<IAmUsingWindsor>("usingWindsor");
 			Assert.AreEqual(42, client.GetValueFromWindsorConfig());
 		}
 
@@ -334,7 +334,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 							)
 				)))
 			{
-				using (IWindsorContainer clientContainer = new WindsorContainer()
+				using (var clientContainer = new WindsorContainer()
 					.AddFacility<WcfFacility>(f => f.CloseTimeout = TimeSpan.Zero)
 					.Register(Component.For<IOperations>()
 						.Named("operations")
@@ -347,7 +347,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 						})
 					))
 				{
-					IOperations client = clientContainer.Resolve<IOperations>("operations");
+					var client = clientContainer.Resolve<IOperations>("operations");
 					Assert.AreEqual(28, client.GetValueFromConstructor());
 				}
 			}
@@ -356,7 +356,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 		[Test]
 		public void CanResolveClientAssociatedWithChannelUsingViaAddress()
 		{
-			using (IWindsorContainer localContainer = new WindsorContainer()
+			using (var localContainer = new WindsorContainer()
 				.AddFacility<WcfFacility>(f => f.CloseTimeout = TimeSpan.Zero)
 				.Register(
 					Component.For<IOperations>()
@@ -379,7 +379,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 						})
 					))
 			{
-				IOperations client = localContainer.Resolve<IOperations>("operations");
+				var client = localContainer.Resolve<IOperations>("operations");
 				Assert.AreEqual(22, client.GetValueFromConstructor());
 			}
 		}
@@ -399,7 +399,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 					})
 				);
 
-			IOperationsEx client = windsorContainer.Resolve<IOperationsEx>("operations");
+			var client = windsorContainer.Resolve<IOperationsEx>("operations");
 			client.Backup(new Dictionary<string, object>());
 		}
 
@@ -422,7 +422,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 								   .AddExtensions("specialBehavior")
 						   })
 				);
-			IOperationsEx client = windsorContainer.Resolve<IOperationsEx>("operations");
+			var client = windsorContainer.Resolve<IOperationsEx>("operations");
 			client.Backup(new Dictionary<string, object>());
 			Assert.AreEqual(1, CallCountEndpointBehavior.CallCount);
 		}
@@ -446,7 +446,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 							.AddExtensions(typeof(CallCountEndpointBehavior))
 					})
 				);
-			IOperationsEx client = windsorContainer.Resolve<IOperationsEx>("operations");
+			var client = windsorContainer.Resolve<IOperationsEx>("operations");
 			client.Backup(new Dictionary<string, object>());
 			Assert.AreEqual(1, CallCountEndpointBehavior.CallCount);
 		}
@@ -466,7 +466,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 					})
 				);
 
-			IOperations client = windsorContainer.Resolve<IOperations>("operations");
+			var client = windsorContainer.Resolve<IOperations>("operations");
 
 			Assert.IsTrue(ChannelFactoryListener.CreatedCalled);
 			Assert.IsTrue(ChannelFactoryListener.OpeningCalled);
@@ -494,7 +494,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 					}.AddExtensions(new ChannelFactoryListener()))
 				);
 
-			IOperations client = windsorContainer.Resolve<IOperations>("operations");
+			var client = windsorContainer.Resolve<IOperations>("operations");
 
 			Assert.IsTrue(ChannelFactoryListener.CreatedCalled);
 			Assert.IsTrue(ChannelFactoryListener.OpeningCalled);
@@ -523,7 +523,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 					})
 				);
 
-			IOperationsEx client = windsorContainer.Resolve<IOperationsEx>("operations");
+			var client = windsorContainer.Resolve<IOperationsEx>("operations");
 			try
 			{
 				client.ThrowException();
@@ -549,7 +549,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 					})
 				);
 
-			IOperationsEx client = windsorContainer.Resolve<IOperationsEx>("operations");
+			var client = windsorContainer.Resolve<IOperationsEx>("operations");
 			try
 			{
 				client.BeginWcfCall(p => p.ThrowException()).End();
@@ -582,7 +582,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 						})
 					))
 			{
-				IOperationsEx client = localContainer.Resolve<IOperationsEx>("operations");
+				var client = localContainer.Resolve<IOperationsEx>("operations");
 				try
 				{
 					client.ThrowException();
@@ -734,10 +734,10 @@ namespace Castle.Facilities.WcfIntegration.Tests
 		[Test]
 		public void CanResolveClientAssociatedWithChannelFromXmlConfiguration()
 		{
-			using (IWindsorContainer container = new WindsorContainer()
+			using (var container = new WindsorContainer()
 					.Install(Configuration.FromXml(new StaticContentResource(xmlConfiguration))))
 			{
-				IAmUsingWindsor client = container.Resolve<IAmUsingWindsor>("usingWindsor");
+				var client = container.Resolve<IAmUsingWindsor>("usingWindsor");
 				Assert.AreEqual(42, client.GetValueFromWindsorConfig());
 			}
 		}
@@ -756,8 +756,8 @@ namespace Castle.Facilities.WcfIntegration.Tests
 					})
 				);
 
-			IOperations client = windsorContainer.Resolve<IOperations>("operations");
-			IClientChannel channel = client as IClientChannel;
+			var client = windsorContainer.Resolve<IOperations>("operations");
+			var channel = client as IClientChannel;
 			Assert.IsNotNull(channel);
 			Assert.AreEqual(CommunicationState.Opened, channel.State);
 		}
@@ -776,7 +776,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 					})
 				);
 
-			IOperations client = windsorContainer.Resolve<IOperations>("operations");
+			var client = windsorContainer.Resolve<IOperations>("operations");
 			using (new OperationContextScope(WcfContextChannel.For(client)))
 			{
 				MessageHeader header = MessageHeader.CreateHeader("MyHeader", "", "MyValue", false);
@@ -803,7 +803,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 					})
 				);
 
-			IOperations client = windsorContainer.Resolve<IOperations>("operations");
+			var client = windsorContainer.Resolve<IOperations>("operations");
 			Assert.AreEqual(42, client.GetValueFromConstructor());
 			Assert.AreEqual(4, memoryAppender.GetEvents().Length);
 
@@ -832,7 +832,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 					})
 				);
 
-			IOperations client = windsorContainer.Resolve<IOperations>("operations");
+			var client = windsorContainer.Resolve<IOperations>("operations");
 			Assert.AreEqual(42, client.GetValueFromConstructor());
 			Assert.AreEqual(4, memoryAppender.GetEvents().Length);
 
@@ -862,7 +862,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 					})
 				);
 
-			IOperations client = windsorContainer.Resolve<IOperations>("operations");
+			var client = windsorContainer.Resolve<IOperations>("operations");
 			Assert.AreEqual(42, client.GetValueFromConstructor());
 			Assert.AreEqual(4, memoryAppender.GetEvents().Length);
 
@@ -896,7 +896,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 					})
 				);
 
-			IOperations client = windsorContainer.Resolve<IOperations>("operations");
+			var client = windsorContainer.Resolve<IOperations>("operations");
 			Assert.AreEqual(42, client.GetValueFromConstructor());
 			Assert.AreEqual(4, memoryAppender.GetEvents().Length);
 
@@ -931,7 +931,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 					})
 				);
 
-			IOperations client = windsorContainer.Resolve<IOperations>("operations");
+			var client = windsorContainer.Resolve<IOperations>("operations");
 			Assert.AreEqual(42, client.GetValueFromConstructor());
 			Assert.AreEqual(4, memoryAppender.GetEvents().Length);
 
@@ -967,7 +967,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 					})
 				);
 
-			IOperations client = windsorContainer.Resolve<IOperations>("operations");
+			var client = windsorContainer.Resolve<IOperations>("operations");
 			Assert.AreEqual(42, client.GetValueFromConstructor());
 
 			int i = 0;
@@ -996,7 +996,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 					})
 				);
 
-			IOperations client = windsorContainer.Resolve<IOperations>("operations");
+			var client = windsorContainer.Resolve<IOperations>("operations");
 			Assert.AreEqual(100, client.GetValueFromConstructor());
 		}
 
@@ -1021,7 +1021,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 					})
 				);
 
-			IOperations client = windsorContainer.Resolve<IOperations>("operations");
+			var client = windsorContainer.Resolve<IOperations>("operations");
 			Assert.AreEqual(200, client.GetValueFromConstructor());
 			Assert.IsNotNull(start.Body);
 			Assert.AreSame(start.Body, end.Body);
@@ -1044,7 +1044,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 					})
 				);
 
-			IOperations client = windsorContainer.Resolve<IOperations>("operations");
+			var client = windsorContainer.Resolve<IOperations>("operations");
 			Assert.AreEqual(100, client.GetValueFromConstructor());
 
 			int i = 0;
@@ -1079,7 +1079,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 					})
 				);
 
-			IOperations client = windsorContainer.Resolve<IOperations>("operations");
+			var client = windsorContainer.Resolve<IOperations>("operations");
 			Assert.AreEqual(200, client.GetValueFromConstructor());
 			Assert.IsNotNull(start.Body);
 			Assert.IsNotNull(end.Body);
@@ -1136,7 +1136,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 					})
 				);
 
-			IOperations client = windsorContainer.Resolve<IOperations>("operations");
+			var client = windsorContainer.Resolve<IOperations>("operations");
 			var call = client.BeginWcfCall(p => p.GetValueFromConstructor());
 			Assert.AreEqual(42, call.End());
 		}
@@ -1155,7 +1155,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 					})
 				);
 
-			IOperations client = windsorContainer.Resolve<IOperations>("operations");
+			var client = windsorContainer.Resolve<IOperations>("operations");
 			var call = client.BeginWcfCall(p => p.GetValueFromConstructor());
 			Assert.AreEqual(42, call.End());
 		}
@@ -1174,7 +1174,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 					})
 				);
 
-			IOperationsAll client = windsorContainer.Resolve<IOperationsAll>("operations");
+			var client = windsorContainer.Resolve<IOperationsAll>("operations");
 			var call = client.BeginGetValueFromConstructor(null, null);
 			Assert.AreEqual(42, client.EndGetValueFromConstructor(call));
 		}
@@ -1193,8 +1193,8 @@ namespace Castle.Facilities.WcfIntegration.Tests
 					})
 				);
 
-			IOperations client = windsorContainer.Resolve<IOperations>("operations");
-			IAsyncResult result = client.BeginWcfCall(p => p.GetValueFromConstructor());
+			var client = windsorContainer.Resolve<IOperations>("operations");
+			var result = client.BeginWcfCall(p => p.GetValueFromConstructor());
 			Assert.AreEqual(42, client.EndWcfCall<int>(result));
 		}
 
@@ -1211,7 +1211,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 					})
 				);
 
-			IOperations client = windsorContainer.Resolve<IOperations>("operations");
+			var client = windsorContainer.Resolve<IOperations>("operations");
 			int refValue = 0;
 			var call = client.BeginWcfCall(p => p.GetValueFromConstructorAsRef(ref refValue));
 			Assert.AreEqual(42, call.End(out refValue));
@@ -1232,7 +1232,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 					})
 				);
 
-			IOperations client = windsorContainer.Resolve<IOperations>("operations");
+			var client = windsorContainer.Resolve<IOperations>("operations");
 			int refValue = 0, outValue;
 			var call = client.BeginWcfCall(p => p.GetValueFromConstructorAsRefAndOut(ref refValue, out outValue));
 			Assert.AreEqual(42, call.End(out refValue, out outValue));
@@ -1257,7 +1257,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 					})
 				);
 
-			IOperations client = windsorContainer.Resolve<IOperations>("operations");
+			var client = windsorContainer.Resolve<IOperations>("operations");
 			var call = client.BeginWcfCall(p => p.GetValueFromConstructor());
 			Assert.AreEqual(42, call.End());
 		}
@@ -1276,8 +1276,8 @@ namespace Castle.Facilities.WcfIntegration.Tests
 					})
 				);
 
-			IOperations client = windsorContainer.Resolve<IOperations>("operations");
-			IAsyncResult result = client.BeginWcfCall(p => p.GetValueFromConstructor(),
+			var client = windsorContainer.Resolve<IOperations>("operations");
+			var result = client.BeginWcfCall(p => p.GetValueFromConstructor(),
 				call => Assert.AreEqual(42, call.End()), null);
 			result.AsyncWaitHandle.WaitOne(5000);
 		}
@@ -1306,8 +1306,8 @@ namespace Castle.Facilities.WcfIntegration.Tests
 						})
 					))
 			{
-				IOperations client = localContainer.Resolve<IOperations>("operations");
-				IAsyncResult result = client.BeginWcfCall(p => p.GetValueFromConstructor(),
+				var client = localContainer.Resolve<IOperations>("operations");
+				var result = client.BeginWcfCall(p => p.GetValueFromConstructor(),
 					(IAsyncResult ar) => Assert.AreEqual(22, client.EndWcfCall<int>(ar)), null);
 				Assert.True(result.AsyncWaitHandle.WaitOne(5000));
 			}
@@ -1337,8 +1337,8 @@ namespace Castle.Facilities.WcfIntegration.Tests
 						})
 					))
 			{
-				IOperations client = localContainer.Resolve<IOperations>("operations");
-				IAsyncResult result = client.BeginWcfCall(p => p.GetValueFromConstructor(),
+				var client = localContainer.Resolve<IOperations>("operations");
+				var result = client.BeginWcfCall(p => p.GetValueFromConstructor(),
 					(IAsyncResult ar) => Assert.AreEqual(22, client.EndWcfCall<int>(ar)), null);
 				Assert.True(result.AsyncWaitHandle.WaitOne(5000));
 			}
@@ -1358,8 +1358,8 @@ namespace Castle.Facilities.WcfIntegration.Tests
 					})
 				);
 
-			IOperationsAll client = windsorContainer.Resolve<IOperationsAll>("operations");
-			IAsyncResult result = client.BeginWcfCall(p => p.GetValueFromConstructor(),
+			var client = windsorContainer.Resolve<IOperationsAll>("operations");
+			var result = client.BeginWcfCall(p => p.GetValueFromConstructor(),
 				(IAsyncResult ar) => Assert.AreEqual(42, client.EndWcfCall<int>(ar)), null);
 			Assert.True(result.AsyncWaitHandle.WaitOne(5000));
 		}
@@ -1383,7 +1383,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 			TraceInterceptor.Reset();
 			Assert.IsNull(TraceInterceptor.MethodCalled);
 
-			IOperations client = windsorContainer.Resolve<IOperations>("operations");
+			var client = windsorContainer.Resolve<IOperations>("operations");
 			var call = client.BeginWcfCall(p => p.GetValueFromConstructor());
 			Assert.AreEqual(42, call.End());
 			Assert.AreEqual("GetValueFromConstructor", TraceInterceptor.MethodCalled.Name);
@@ -1427,7 +1427,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 
 		protected void RegisterLoggingFacility(IWindsorContainer container)
 		{
-			MutableConfiguration facNode = new MutableConfiguration("facility");
+			var facNode = new MutableConfiguration("facility");
 			facNode.Attributes["id"] = "logging";
 			facNode.Attributes["loggingApi"] = "ExtendedLog4net";
 			facNode.Attributes["configFile"] = "";

@@ -17,7 +17,7 @@ namespace Castle.Facilities.WcfIntegration.Async
 	using System;
 	using System.Reflection;
 	using System.Runtime.Remoting.Messaging;
-	using Castle.Core.Interceptor;
+	using Castle.DynamicProxy;
 	using Castle.Facilities.WcfIntegration.Async.TypeSystem;
 	using Castle.Facilities.WcfIntegration.Proxy;
 

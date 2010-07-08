@@ -100,7 +100,7 @@ namespace Castle.Facilities.WcfIntegration.Async
 		private TResult InternalEnd()
 		{
 			TResult result = default(TResult);
-			End((i, c) => { result = i.EndCall<TResult>(c, out outArgs); });
+			End((i, c) => { result = i.EndCall<TResult>(c, out outArguments); });
 			return result;
 		}
 

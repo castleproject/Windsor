@@ -17,9 +17,8 @@ namespace Castle.Facilities.WcfIntegration.Tests
 	using System;
 	using System.Collections.Generic;
 	using System.ServiceModel;
-
 	using Castle.Core;
-	using Castle.Core.Interceptor;
+	using Castle.DynamicProxy;
 	using Castle.Facilities.WcfIntegration.Tests.Behaviors;
 	using Castle.MicroKernel.Registration;
 	using Castle.Windsor;

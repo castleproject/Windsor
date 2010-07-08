@@ -167,9 +167,9 @@ namespace Castle.Facilities.WcfIntegration
 			where T : IServiceHostBuilder<M>
 			where M : IWcfServiceModel
 		{
-			if (force || !kernel.HasComponent(typeof(IServiceHostBuilder<M>)))
+			if (force || kernel.HasComponent(typeof(IServiceHostBuilder<M>)) == false)
 			{
-				kernel.AddComponent<T>(typeof(IServiceHostBuilder<M>));
+				kernel.Register(Component.For<IServiceHostBuilder<M>>().ImplementedBy<T>());
 			}
 		}
 
