@@ -41,6 +41,46 @@ namespace Castle.MicroKernel.Tests.Registration
 		}
 
 		[Test]
+		public void If_conditions_are_cumulative()
+		{
+			bool firstCalled = false;
+			bool secondCalled = false;
+			Kernel.Register(
+				Component.For<CustomerImpl>().If(delegate
+				{
+					firstCalled = true;
+					return true;
+				}).If(delegate
+				{
+					secondCalled = true;
+					return true;
+				}));
+
+			Assert.IsTrue(firstCalled);
+			Assert.IsTrue(secondCalled);
+		}
+
+		[Test]
+		public void If_conditions_are_executed_until_first_false()
+		{
+			bool firstCalled = false;
+			bool secondCalled = false;
+			Kernel.Register(
+				Component.For<CustomerImpl>().If(delegate
+				{
+					firstCalled = true;
+					return false;
+				}).If(delegate
+				{
+					secondCalled = true;
+					return true;
+				}));
+
+			Assert.IsTrue(firstCalled);
+			Assert.IsFalse(secondCalled);
+		}
+
+		[Test]
 		public void AddComponent_WithServiceOnly_RegisteredWithServiceTypeName()
 		{
 			Kernel.Register(
