@@ -14,9 +14,11 @@
 
 namespace Castle.Facilities.WcfIntegration
 {
+	using System.Collections.Generic;
 	using System.ServiceModel;
 	using System.ServiceModel.Activation;
 	using System.ServiceModel.Description;
+	using System.ServiceModel.Dispatcher;
 	using Castle.Core;
 	using Castle.Facilities.WcfIntegration.Internal;
 	using Castle.MicroKernel;
@@ -27,12 +29,14 @@ namespace Castle.Facilities.WcfIntegration
 		{
 			BindServiceHostAware(serviceHost, kernel, burden);
 			AddServiceBehaviors(serviceHost, kernel, burden);
+			AddErrorHandlers(serviceHost, kernel, burden);
 		}
 
 		public override void AddDependencies(IKernel kernel, ComponentModel model)
 		{
 			WcfUtils.AddExtensionDependencies<IServiceBehavior>(kernel, WcfExtensionScope.Services, model);
 			WcfUtils.AddExtensionDependencies<IServiceHostAware>(kernel, WcfExtensionScope.Services, model);
+			WcfUtils.AddExtensionDependencies<IErrorHandler>(kernel, WcfExtensionScope.Services, model);
 		}
 
 		public override void Accept(IWcfExtensionVisitor visitor)
@@ -40,10 +44,10 @@ namespace Castle.Facilities.WcfIntegration
 			visitor.VisitServiceExtension(this);
 		}
 
-		private void AddServiceBehaviors(ServiceHost serviceHost, IKernel kernel, IWcfBurden burden)
+		private static void AddServiceBehaviors(ServiceHost serviceHost, IKernel kernel, IWcfBurden burden)
 		{
 			WcfUtils.AddBehaviors(kernel, WcfExtensionScope.Services,
-				serviceHost.Description.Behaviors, burden, delegate(IServiceBehavior behavior)
+				serviceHost.Description.Behaviors, burden, behavior =>
 				{
 					if (behavior.GetType() == typeof(ServiceBehaviorAttribute))
 					{
@@ -61,14 +65,22 @@ namespace Castle.Facilities.WcfIntegration
 				});
 		}
 
-		private void BindServiceHostAware(ServiceHost serviceHost, IKernel kernel, IWcfBurden burden)
+		private static void BindServiceHostAware(ServiceHost serviceHost, IKernel kernel, IWcfBurden burden)
 		{
-            WcfUtils.AddBehaviors<IServiceHostAware>(kernel, WcfExtensionScope.Services, null, burden,
-				delegate(IServiceHostAware serviceHostAware)
-				{
-					WcfUtils.BindServiceHostAware(serviceHost, serviceHostAware, true);
-					return true;
-				});
+            WcfUtils.AddBehaviors<IServiceHostAware>(kernel, WcfExtensionScope.Services, null, burden, serviceHostAware =>
+			{
+				WcfUtils.BindServiceHostAware(serviceHost, serviceHostAware, true);
+				return true;
+			});
+		}
+
+		private static void AddErrorHandlers(ServiceHost serviceHost, IKernel kernel, IWcfBurden burden)
+		{
+			var errorHandlers = new KeyedByTypeCollection<IErrorHandler>();
+			WcfUtils.AddBehaviors(kernel, WcfExtensionScope.Services, errorHandlers, burden, errorHandler =>
+			{
+				return WcfUtils.RegisterErrorHandler(serviceHost, errorHandler, true);
+			});
 		}
 	}
 }

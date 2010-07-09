@@ -17,6 +17,7 @@ namespace Castle.Facilities.WcfIntegration
 	using System;
 	using System.ServiceModel;
 	using System.ServiceModel.Description;
+	using System.ServiceModel.Dispatcher;
 	using Castle.Core;
 	using Castle.Facilities.WcfIntegration.Internal;
 	using Castle.MicroKernel;
@@ -37,6 +38,10 @@ namespace Castle.Facilities.WcfIntegration
 			else if (extension is IServiceHostAware)
 			{
 				WcfUtils.BindServiceHostAware(serviceHost, (IServiceHostAware)extension, true);
+			}
+			else if (extension is IErrorHandler)
+			{
+				WcfUtils.RegisterErrorHandler(serviceHost, (IErrorHandler)extension, true);
 			}
 			else if (extension is IExtension<ServiceHostBase>)
 			{
@@ -90,6 +95,10 @@ namespace Castle.Facilities.WcfIntegration
 				{
 					endpoint.Contract.Behaviors.Add((IContractBehavior)extension);
 				}
+			}
+			else if (extension is IErrorHandler)
+			{
+				WcfUtils.RegisterErrorHandler(endpoint, (IErrorHandler)extension, true);
 			}
 			else if (!WcfUtils.AttachExtension(endpoint.Behaviors, extension))
 			{

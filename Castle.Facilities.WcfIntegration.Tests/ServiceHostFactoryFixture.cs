@@ -16,8 +16,9 @@ namespace Castle.Facilities.WcfIntegration.Tests
 {
 	using System;
 	using System.ServiceModel;
-	using Castle.Windsor;
 	using Castle.Facilities.WcfIntegration.Demo;
+	using Castle.MicroKernel.Registration;
+	using Castle.Windsor;
 	using NUnit.Framework;
 
 	[TestFixture]
@@ -27,8 +28,9 @@ namespace Castle.Facilities.WcfIntegration.Tests
 		public void CanCreateServiceByName()
 		{
 			IWindsorContainer windsorContainer = new WindsorContainer()
-				.AddComponent("operations", typeof(IOperations), typeof(Operations))
-				.AddComponent<IServiceHostBuilder<DefaultServiceModel>, DefaultServiceHostBuilder>();
+				.Register(Component.For<IOperations>().ImplementedBy<Operations>().Named("operations"),
+						  Component.For<IServiceHostBuilder<DefaultServiceModel>>().ImplementedBy<DefaultServiceHostBuilder>()
+						  );
 
 			DefaultServiceHostFactory factory = new DefaultServiceHostFactory(windsorContainer.Kernel);
 			ServiceHostBase serviceHost = factory.CreateServiceHost("operations", 

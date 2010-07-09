@@ -82,6 +82,7 @@
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="Behaviors\AbstractExtensibleObject.cs" />
     <Compile Include="Behaviors\AbstractExtension.cs" />
+    <Compile Include="Behaviors\WcfErrorBehavior.cs" />
     <Compile Include="Behaviors\WcfChannelExtensions.cs" />
     <Compile Include="Behaviors\Lifecyle\AbstractMessageEnvelopeAction.cs" />
     <Compile Include="Behaviors\Lifecyle\IMessageLifecyleAction.cs" />

@@ -94,6 +94,7 @@
     <Compile Include="Behaviors\CaptureServiceHost.cs" />
     <Compile Include="Behaviors\ChannelFactoryListener.cs" />
     <Compile Include="Behaviors\DummyContractBehavior.cs" />
+    <Compile Include="Behaviors\ErrorLogger.cs" />
     <Compile Include="Behaviors\RefreshChannelPolicy.cs" />
     <Compile Include="Behaviors\StoreMessageBody.cs" />
     <Compile Include="Behaviors\NetDataContractFormatBehavior.cs" />

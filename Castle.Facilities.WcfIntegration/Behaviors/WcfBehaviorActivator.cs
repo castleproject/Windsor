@@ -31,10 +31,10 @@ namespace Castle.Facilities.WcfIntegration
 
 		protected override object Instantiate(CreationContext context)
 		{
-			object instance = base.Instantiate(context);
+			var instance = base.Instantiate(context);
 
-			object behavior = ProxyUtil.GetUnproxiedInstance(instance);
-			WcfExtensionScope scope = WcfUtils.GetScope(Model);
+			var behavior = ProxyUtil.GetUnproxiedInstance(instance);
+			var scope = WcfUtils.GetScope(Model);
 			WcfUtils.ExtendBehavior(Kernel, scope, behavior);
 
 			return instance;

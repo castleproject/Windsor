@@ -527,6 +527,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 			try
 			{
 				client.ThrowException();
+				Assert.Fail("Should have raised an exception");
 			}
 			catch (Exception)
 			{

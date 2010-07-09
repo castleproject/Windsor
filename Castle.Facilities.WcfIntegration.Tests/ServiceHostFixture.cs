@@ -437,9 +437,74 @@ namespace Castle.Facilities.WcfIntegration.Tests
 		}
 
 		[Test]
+		public void WillApplyErrorHandlersToServices()
+		{
+			using (RegisterLoggingFacility(new WindsorContainer())
+				.AddFacility<WcfFacility>(f => f.CloseTimeout = TimeSpan.Zero)
+				.Register(
+					Component.For<ErrorLogger>(),
+					Component.For<IOperationsEx>().ImplementedBy<Operations>()
+					.DependsOn(new { number = 42 })
+					.ActAs(new DefaultServiceModel().AddEndpoints(
+						WcfEndpoint.BoundTo(new NetTcpBinding { PortSharingEnabled = true })
+							.At("net.tcp://localhost/Operations"))
+						)
+				))
+			{
+				var client = ChannelFactory<IOperationsEx>.CreateChannel(
+					new NetTcpBinding { PortSharingEnabled = true }, new EndpointAddress("net.tcp://localhost/Operations"));
+
+				try
+				{
+					client.ThrowException();
+					Assert.Fail("Should have raised an exception");
+				}
+				catch
+				{
+					foreach (var log in memoryAppender.GetEvents())
+					{
+						Assert.AreEqual("An error has occurred", log.RenderedMessage);
+						Assert.AreEqual("Oh No!", log.ExceptionObject.Message);
+					}
+				}
+			}
+		}
+
+		[Test]
+		public void WillNotApplyErrorHandlersToServicesIfExplicit()
+		{
+			using (RegisterLoggingFacility(new WindsorContainer())
+				.AddFacility<WcfFacility>(f => f.CloseTimeout = TimeSpan.Zero)
+				.Register(
+					Component.For<ErrorLogger>()
+						.Attribute("scope").Eq(WcfExtensionScope.Explicit),
+					Component.For<IOperationsEx>().ImplementedBy<Operations>()
+					.DependsOn(new { number = 42 })
+					.ActAs(new DefaultServiceModel().AddEndpoints(
+						WcfEndpoint.BoundTo(new NetTcpBinding { PortSharingEnabled = true })
+							.At("net.tcp://localhost/Operations"))
+						)
+				))
+			{
+				var client = ChannelFactory<IOperationsEx>.CreateChannel(
+					new NetTcpBinding { PortSharingEnabled = true }, new EndpointAddress("net.tcp://localhost/Operations"));
+
+				try
+				{
+					client.ThrowException();
+					Assert.Fail("Should have raised an exception");
+				}
+				catch
+				{
+					CollectionAssert.IsEmpty(memoryAppender.GetEvents());
+				}
+			}
+		}
+
+		[Test]
 		public void CanCaptureRequestsAndResponsesAtEndpointLevel()
 		{
-			using (var container = new WindsorContainer()
+			using (RegisterLoggingFacility(new WindsorContainer())
 				.AddFacility<WcfFacility>(f => f.CloseTimeout = TimeSpan.Zero)
 				.Register(
 					Component.For<LogMessageEndpointBehavior>()
@@ -455,14 +520,12 @@ namespace Castle.Facilities.WcfIntegration.Tests
 							))
 				))
 			{
-				RegisterLoggingFacility(container);
-
 				var client = ChannelFactory<IOperations>.CreateChannel(
 					new NetTcpBinding { PortSharingEnabled = true }, new EndpointAddress("net.tcp://localhost/Operations"));
 				Assert.AreEqual(42, client.GetValueFromConstructor());
 				Assert.AreEqual(4, memoryAppender.GetEvents().Length);
 
-				foreach (LoggingEvent log in memoryAppender.GetEvents())
+				foreach (var log in memoryAppender.GetEvents())
 				{
 					Assert.AreEqual(typeof(Operations).FullName, log.LoggerName);
 					Assert.IsTrue(log.Properties.Contains("NDC"));
@@ -473,7 +536,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 		[Test]
 		public void CanCaptureRequestsAndResponsesAtServiceLevel()
 		{
-			using (var container = new WindsorContainer()
+			using (RegisterLoggingFacility(new WindsorContainer())
 				.AddFacility<WcfFacility>(f => f.CloseTimeout = TimeSpan.Zero)
 				.Register(
 					Component.For<LogMessageEndpointBehavior>()
@@ -489,8 +552,6 @@ namespace Castle.Facilities.WcfIntegration.Tests
 							)
 				))
 			{
-				RegisterLoggingFacility(container);
-
 				var client = ChannelFactory<IOperations>.CreateChannel(
 					new NetTcpBinding { PortSharingEnabled = true }, new EndpointAddress("net.tcp://localhost/Operations"));
 				Assert.AreEqual(42, client.GetValueFromConstructor());
@@ -550,7 +611,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 				{
 					Assert.AreEqual(42, client.GetValueFromConstructor());
 				}
-				catch (FaultException<ExceptionDetail> fault)
+				catch (FaultException<ExceptionDetail>)
 				{
 				}
 				catch (Exception ex)
@@ -593,7 +654,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 			}
 		}
 
-		protected void RegisterLoggingFacility(IWindsorContainer container)
+		protected IWindsorContainer RegisterLoggingFacility(IWindsorContainer container)
 		{
 			var facNode = new MutableConfiguration("facility");
 			facNode.Attributes["id"] = "logging";
@@ -604,6 +665,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 
 			memoryAppender = new MemoryAppender();
 			BasicConfigurator.Configure(memoryAppender);
+			return container;
 		}
 
 		private static string xmlConfiguration = @"<?xml version='1.0' encoding='utf-8' ?>

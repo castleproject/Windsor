@@ -17,6 +17,7 @@ namespace Castle.Facilities.WcfIntegration
 	using System;
 	using System.ServiceModel.Channels;
 	using System.ServiceModel.Description;
+	using System.ServiceModel.Dispatcher;
 	using Castle.Core;
 	using Castle.MicroKernel.Facilities;
 	using Castle.MicroKernel.Registration;
@@ -66,12 +67,14 @@ namespace Castle.Facilities.WcfIntegration
 
 		private void Kernel_ComponentModelCreated(ComponentModel model)
 		{
-			Type implementation = model.Implementation;
+			var implementation = model.Implementation;
 
 			if (typeof(IServiceBehavior).IsAssignableFrom(implementation) ||
 				typeof(IEndpointBehavior).IsAssignableFrom(implementation) ||
 				typeof(IOperationBehavior).IsAssignableFrom(implementation) ||
-				typeof(IContractBehavior).IsAssignableFrom(implementation))
+				typeof(IContractBehavior).IsAssignableFrom(implementation) ||
+				typeof(IErrorHandler).IsAssignableFrom(implementation)
+				)
 			{
 				model.LifestyleType = LifestyleType.Transient;
 

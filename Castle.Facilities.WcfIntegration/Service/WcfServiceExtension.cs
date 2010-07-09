@@ -96,8 +96,7 @@ namespace Castle.Facilities.WcfIntegration
 				{
 					dependencies = new ExtensionDependencies(model, kernel)
 						.Apply(new WcfServiceExtensions())
-						.Apply(new WcfEndpointExtensions(WcfExtensionScope.Services)
-						);
+						.Apply(new WcfEndpointExtensions(WcfExtensionScope.Services));
 				}
 
 				if (serviceModel != null)

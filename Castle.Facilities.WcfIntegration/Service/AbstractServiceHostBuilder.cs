@@ -84,7 +84,8 @@ namespace Castle.Facilities.WcfIntegration
 			if (serviceHost is IWcfServiceHost)
 			{
 				var wcfServiceHost = (IWcfServiceHost)serviceHost;
-				wcfServiceHost.EndpointCreated += delegate(object source, EndpointCreatedArgs e)
+
+				wcfServiceHost.EndpointCreated += (_, e) =>
 				{
 					var addContract = contracts.Add(e.Endpoint.Contract);
 					var endpointExtensions = new ServiceEndpointExtensions(e.Endpoint, addContract, kernel)
@@ -100,15 +101,12 @@ namespace Castle.Facilities.WcfIntegration
 			serviceHost.Extensions.Add(new WcfBurdenExtension<ServiceHostBase>(burden));
 		}
 
-		protected Uri[] GetEffectiveBaseAddresses(IWcfServiceModel serviceModel, Uri[] defaultBaseAddresses)
+		protected static Uri[] GetEffectiveBaseAddresses(IWcfServiceModel serviceModel, Uri[] defaultBaseAddresses)
 		{
 			var baseAddresses = new List<Uri>(serviceModel.BaseAddresses);
 			foreach (Uri defaultBaseAddress in defaultBaseAddresses)
 			{
-				if (!baseAddresses.Exists(delegate(Uri uri)
-				{
-					return uri.Scheme == defaultBaseAddress.Scheme;
-				}))
+				if (baseAddresses.Exists(uri => uri.Scheme == defaultBaseAddress.Scheme) == false)
 				{
 					baseAddresses.Add(defaultBaseAddress);
 				}

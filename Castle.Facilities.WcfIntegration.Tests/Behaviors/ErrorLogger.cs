@@ -10,37 +10,31 @@
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
-// limitations under the License.
 
 namespace Castle.Facilities.WcfIntegration.Tests.Behaviors
 {
+	using System;
 	using System.ServiceModel.Channels;
-	using System.ServiceModel.Description;
 	using System.ServiceModel.Dispatcher;
+	using Castle.Core.Logging;
 
-	public class DummyContractBehavior : IContractBehavior
+	public class ErrorLogger : IErrorHandler
 	{
-		#region IContractBehavior Members
-
-		public void AddBindingParameters(ContractDescription contractDescription, ServiceEndpoint endpoint, 
-										 BindingParameterCollection bindingParameters)
+		public ErrorLogger()
 		{
+			Logger = NullLogger.Instance;
 		}
 
-		public void ApplyClientBehavior(ContractDescription contractDescription, ServiceEndpoint endpoint, 
-										ClientRuntime clientRuntime)
+		public ILogger Logger { get; set; }
+
+		public bool HandleError(Exception error)
 		{
+			return false;
 		}
 
-		public void ApplyDispatchBehavior(ContractDescription contractDescription, ServiceEndpoint endpoint,
-										  DispatchRuntime dispatchRuntime)
+		public void ProvideFault(Exception error, MessageVersion version, ref Message fault)
 		{
+			Logger.Error("An error has occurred", error);
 		}
-
-		public void Validate(ContractDescription contractDescription, ServiceEndpoint endpoint)
-		{
-		}
-
-		#endregion
 	}
 }

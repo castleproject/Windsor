@@ -19,6 +19,8 @@ namespace Castle.Facilities.WcfIntegration.Internal
 	using System.Collections.Generic;
 	using System.Configuration;
 	using System.ServiceModel;
+	using System.ServiceModel.Description;
+	using System.ServiceModel.Dispatcher;
 	using System.Threading;
 	using Castle.Core;
 	using Castle.MicroKernel;
@@ -104,9 +106,9 @@ namespace Castle.Facilities.WcfIntegration.Internal
 		{
 			foreach (IHandler handler in kernel.GetAssignableHandlers(type))
 			{
-				ComponentModel model = handler.ComponentModel;
+				var model = handler.ComponentModel;
 
-				WcfExtensionScope modelScope = GetScope(model);
+				var modelScope = GetScope(model);
 
 				if (modelScope != WcfExtensionScope.Explicit || scope == WcfExtensionScope.Explicit)
 				{
@@ -209,6 +211,26 @@ namespace Castle.Facilities.WcfIntegration.Internal
 			channelFactory.Closing += delegate { channelFactoryAware.Closing(channelFactory); };
 			channelFactory.Closed += delegate { channelFactoryAware.Closed(channelFactory); };
 			channelFactory.Faulted += delegate { channelFactoryAware.Faulted(channelFactory); };
+		}
+
+		public static bool RegisterErrorHandler(ServiceHost serviceHost, IErrorHandler errorHandler, bool skipPiggybacks)
+		{
+			if (skipPiggybacks && IsBehaviorExtension(errorHandler)) return false;
+			serviceHost.Description.Behaviors.Add(new WcfErrorBehavior(errorHandler));
+			return true;
+		}
+
+		public static bool RegisterErrorHandler(ServiceEndpoint endpoint, IErrorHandler errorHandler, bool skipPiggybacks)
+		{
+			if (skipPiggybacks && IsBehaviorExtension(errorHandler)) return false;
+			endpoint.Behaviors.Add(new WcfErrorBehavior(errorHandler));
+			return true;
+		}
+
+		public static bool IsBehaviorExtension(object behavior)
+		{
+			return behavior is IServiceBehavior || behavior is IContractBehavior ||
+				   behavior is IOperationBehavior || behavior is IEndpointBehavior;
 		}
 
 		public static IEnumerable<T> FindDependencies<T>(IDictionary dependencies)
