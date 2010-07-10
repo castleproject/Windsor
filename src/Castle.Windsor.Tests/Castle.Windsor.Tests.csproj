@@ -220,6 +220,8 @@
     <Compile Include="Interceptors\WatcherInterceptorSelector.cs" />
     <Compile Include="Lifestyle\Components\ComponentWithDispose.cs" />
     <Compile Include="Lifestyle\Scope.cs" />
+    <Compile Include="Proxy\ComponentProxyRegistrationTestCase.cs" />
+    <Compile Include="Proxy\DisposableHook.cs" />
     <Compile Include="Registration\ComponentRegistrationByNamespaceTestCase.cs" />
     <Compile Include="Registration\WithServiceTestCase.cs" />
     <Compile Include="TypedDependenciesTestCase.cs" />
@@ -658,7 +660,7 @@
     </Compile>
     <Compile Include="MultiResolveTests.cs" />
     <Compile Include="PropertiesInspectionBehaviorTestCase.cs" />
-    <Compile Include="Proxy\MixInTestCase.cs" />
+    <Compile Include="Proxy\ProxyNothingHook.cs" />
     <Compile Include="Proxy\FactorySupportTestCase.cs" />
     <Compile Include="Proxy\TypedFactoryFacilityTestCase.cs" />
     <Compile Include="Proxy\ProxyBehaviorInvalidTestCase.cs" />

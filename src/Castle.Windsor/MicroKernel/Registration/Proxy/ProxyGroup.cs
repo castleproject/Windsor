@@ -16,6 +16,8 @@ namespace Castle.MicroKernel.Registration.Proxy
 {
 	using System;
 
+	using Castle.DynamicProxy;
+
 	public class ProxyGroup<S> : RegistrationGroup<S>
 	{
 		public ProxyGroup(ComponentRegistration<S> registration)
@@ -56,6 +58,20 @@ namespace Castle.MicroKernel.Registration.Proxy
 			mixinRegistration.Invoke(mixins);
 
 			AddDescriptor(new ProxyMixIns<S>(mixins));
+			return Registration;
+		}
+
+		public ComponentRegistration<S> Hook(IProxyGenerationHook hook)
+		{
+			return Hook(r => r.Instance(hook));
+		}
+
+		public ComponentRegistration<S> Hook(Action<ItemRegistration<IProxyGenerationHook>> hookRegistration)
+		{
+			var hook = new ItemRegistration<IProxyGenerationHook>();
+			hookRegistration.Invoke(hook);
+
+			AddDescriptor(new ProxyHook<S>(hook.Item));
 			return Registration;
 		}
 	}

@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,25 +12,25 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.MicroKernel.Registration.Interceptor
+namespace Castle.MicroKernel.Registration.Proxy
 {
 	using Castle.Core;
 	using Castle.DynamicProxy;
 	using Castle.MicroKernel.Proxy;
 
-	public class InterceptorSelectorDescriptor<S> : ComponentDescriptor<S>
+	public class ProxyHook<S> : ComponentDescriptor<S>
 	{
-		private readonly IReference<IInterceptorSelector> selector;
+		private readonly IReference<IProxyGenerationHook> hook;
 
-		public InterceptorSelectorDescriptor(IReference<IInterceptorSelector> selector)
+		public ProxyHook(IReference<IProxyGenerationHook> hook)
 		{
-			this.selector = selector;
+			this.hook = hook;
 		}
 
 		protected internal override void ApplyToModel(IKernel kernel, ComponentModel model)
 		{
 			var options = ProxyUtil.ObtainProxyOptions(model, true);
-			options.Selector = selector;
+			options.Hook = hook;
 		}
 	}
 }
