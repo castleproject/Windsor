@@ -38,7 +38,7 @@ namespace Castle.Facilities.WcfIntegration.Tests.Rest
 				.Register(Component.For<ICalculator>()
 					.ImplementedBy<Calculator>()
 					.DependsOn(new { number = 42 })
-					.ActAs(new RestServiceModel("http://localhost:27198"))
+					.AsWcfService(new RestServiceModel("http://localhost:27198"))
 				))
 			{
 				using (WebChannelFactory<ICalculator> factory =
@@ -58,7 +58,7 @@ namespace Castle.Facilities.WcfIntegration.Tests.Rest
 				.Register(Component.For<ICalculator>()
 					.ImplementedBy<Calculator>()
 					.DependsOn(new { number = 42 })
-					.ActAs(new RestServiceModel("http://localhost:27198/Calc"))
+					.AsWcfService(new RestServiceModel("http://localhost:27198/Calc"))
 				))
 			{
 				using (WebChannelFactory<ICalculator> factory =
@@ -76,7 +76,7 @@ namespace Castle.Facilities.WcfIntegration.Tests.Rest
 			using (new WindsorContainer()
 				.AddFacility<WcfFacility>()
 				.Register(Component.For<Inventory>()
-					.ActAs(new RestServiceModel("http://localhost:8008/Inventory")
+					.AsWcfService(new RestServiceModel("http://localhost:8008/Inventory")
 				)))
 			{
 				var request = WebRequest.Create("http://localhost:8008/Inventory/quantity/1234");

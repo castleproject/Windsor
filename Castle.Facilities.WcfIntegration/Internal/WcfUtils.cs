@@ -37,7 +37,7 @@ namespace Castle.Facilities.WcfIntegration.Internal
         {
 			if (model.Configuration != null)
 			{
-				string scopeAttrib = model.Configuration.Attributes[WcfConstants.ExtensionScopeKey];
+				var scopeAttrib = model.Configuration.Attributes[WcfConstants.ExtensionScopeKey];
 				if (!string.IsNullOrEmpty(scopeAttrib))
 				{
 					switch (scopeAttrib.ToLower())
@@ -80,14 +80,14 @@ namespace Castle.Facilities.WcfIntegration.Internal
 
 		public static void ExtendBehavior(IKernel kernel, WcfExtensionScope scope, object behavior)
 		{
-			Type type = behavior.GetType();
-			Type extensibleType = type.GetInterface(typeof(IExtensibleObject<>).FullName);
+			var type = behavior.GetType();
+			var extensibleType = type.GetInterface(typeof(IExtensibleObject<>).FullName);
 			if (extensibleType != null)
 			{
-				Type[] args = extensibleType.GetGenericArguments();
+				var args = extensibleType.GetGenericArguments();
 				if (args.Length == 1 && args[0] == type)
 				{
-					Type extensionType = typeof(IExtension<>).MakeGenericType(type);
+					var extensionType = typeof(IExtension<>).MakeGenericType(type);
 					foreach (var extHandler in FindExtensions(kernel, scope, extensionType))
 					{
 						object extension = extHandler.Resolve(CreationContext.Empty);
@@ -104,7 +104,7 @@ namespace Castle.Facilities.WcfIntegration.Internal
 
 		public static IEnumerable<IHandler> FindExtensions(IKernel kernel, WcfExtensionScope scope, Type type)
 		{
-			foreach (IHandler handler in kernel.GetAssignableHandlers(type))
+			foreach (var handler in kernel.GetAssignableHandlers(type))
 			{
 				var model = handler.ComponentModel;
 
@@ -136,7 +136,7 @@ namespace Castle.Facilities.WcfIntegration.Internal
 
 		public static bool IsExtension<T>(object extension)
 		{
-			Type owner = typeof(T);
+			var owner = typeof(T);
 			return IsExtension(extension, ref owner);
 		}
 
@@ -144,12 +144,12 @@ namespace Castle.Facilities.WcfIntegration.Internal
 		{
 			if (extension != null)
 			{
-				Type extensionType = extension.GetType();
-				Type extensionInterface = extensionType.GetInterface(typeof(IExtension<>).FullName);
+				var extensionType = extension.GetType();
+				var extensionInterface = extensionType.GetInterface(typeof(IExtension<>).FullName);
 
 				if (extensionInterface != null)
 				{
-					Type[] args = extensionInterface.GetGenericArguments();
+					var args = extensionInterface.GetGenericArguments();
 
 					if (args.Length == 1)
 					{
@@ -166,9 +166,9 @@ namespace Castle.Facilities.WcfIntegration.Internal
 
 		public static bool AttachExtension(object owner, object extension)
 		{
-			IWcfExtensionHelper helper = (IWcfExtensionHelper)
-				Activator.CreateInstance(typeof(WcfExtensionHelper<>)
-					.MakeGenericType(owner.GetType()), owner);
+			var helper = (IWcfExtensionHelper)
+							Activator.CreateInstance(typeof(WcfExtensionHelper<>)
+								.MakeGenericType(owner.GetType()), owner);
 			return helper.AddExtension(extension);
 		}
 
@@ -238,8 +238,7 @@ namespace Castle.Facilities.WcfIntegration.Internal
 			return FindDependencies<T>(dependencies, null);
 		}
 
-		public static IEnumerable<T> FindDependencies<T>(IDictionary dependencies,
-														 Predicate<T> test)
+		public static IEnumerable<T> FindDependencies<T>(IDictionary dependencies, Predicate<T> test)
 		{
 			if (dependencies != null)
 			{

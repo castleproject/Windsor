@@ -64,7 +64,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 					.Attribute("scope").Eq(WcfExtensionScope.Explicit),
 				Component.For<IAmUsingWindsor>().ImplementedBy<UsingWindsor>()
 					.DependsOn(new { number = 42 })
-					.ActAs(new DefaultServiceModel()
+					.AsWcfService(new DefaultServiceModel()
 					)
 				);
 
@@ -87,7 +87,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 					.Attribute("scope").Eq(WcfExtensionScope.Explicit),
 				Component.For<IAmUsingWindsor>().ImplementedBy<UsingWindsor>()
 					.DependsOn(new { number = 42 })
-					.ActAs(new DefaultServiceModel()
+					.AsWcfService(new DefaultServiceModel()
 					)
 				);
 

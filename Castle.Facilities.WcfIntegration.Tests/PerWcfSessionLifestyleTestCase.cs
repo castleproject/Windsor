@@ -45,7 +45,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 					InterceptorReference.ForType<CollectingInterceptor>()).Anywhere,
 				Component.For<IServiceWithSession>().ImplementedBy<ServiceWithSession>().LifeStyle.Transient
 					.Named("Operations")
-					.ActAs(new DefaultServiceModel().AddEndpoints(
+					.AsWcfService(new DefaultServiceModel().AddEndpoints(
 					       	WcfEndpoint.BoundTo(new NetTcpBinding { PortSharingEnabled = true })
 					       		.At("net.tcp://localhost/Operations")
 					       	)

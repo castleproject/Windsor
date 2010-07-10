@@ -39,7 +39,7 @@ namespace Castle.Facilities.WcfIntegration.Tests.Duplex
 				.Register(Component.For<IServiceWithCallback>()
 					.ImplementedBy<ServiceWithCallback>()
 					.DependsOn(parameters)
-					.ActAs(new DefaultServiceModel().AddEndpoints(
+					.AsWcfService(new DefaultServiceModel().AddEndpoints(
 							WcfEndpoint.BoundTo(new NetTcpBinding())
 								.At("net.tcp://localhost/ServiceWithCallback")
 							   )

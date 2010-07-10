@@ -40,7 +40,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 				Component.For<HasOne>().LifeStyle.PerWcfOperation(),
 				Component.For<IServiceWithDependencies>().ImplementedBy<ServiceWithDependencies>().LifeStyle.Transient
 					.Named("Operations")
-					.ActAs(new DefaultServiceModel().AddEndpoints(
+					.AsWcfService(new DefaultServiceModel().AddEndpoints(
 					       	WcfEndpoint.BoundTo(new NetTcpBinding { PortSharingEnabled = true })
 					       		.At("net.tcp://localhost/Operations")
 					       	)

@@ -200,6 +200,7 @@
     <Compile Include="Service\WindsorDependencyInjectionServiceBehavior.cs" />
     <Compile Include="Service\WindsorInstanceProvider.cs" />
     <Compile Include="Behaviors\WcfServiceExtensions.cs" />
+    <Compile Include="WcfIntegrationExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">

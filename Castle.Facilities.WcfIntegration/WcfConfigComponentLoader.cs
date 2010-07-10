@@ -33,7 +33,7 @@ namespace Castle.Facilities.WcfIntegration
 			return Component.For(service)
 				.Named(key)
 				.LifeStyle.Transient
-				.ActAs(new DefaultClientModel(WcfEndpoint.FromConfiguration(key)));
+				.AsWcfClient(new DefaultClientModel(WcfEndpoint.FromConfiguration(key)));
 		}
 	}
 }

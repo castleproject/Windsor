@@ -36,7 +36,7 @@ namespace Castle.Facilities.WcfIntegration.Tests.Rest
 				.Register(Component.For<ICalculator>()
 					.ImplementedBy<Calculator>()
 					.DependsOn(new { number = 42 })
-					.ActAs(new RestServiceModel("http://localhost:27198"))
+					.AsWcfService(new RestServiceModel("http://localhost:27198"))
 				);
 		}
 
@@ -56,7 +56,7 @@ namespace Castle.Facilities.WcfIntegration.Tests.Rest
 			windsorContainer.Register(
 				Component.For<ICalculator>()
 					.Named("calculator")
-					.ActAs(new RestClientModel("http://localhost:27198"))
+					.AsWcfClient(new RestClientModel("http://localhost:27198"))
 				);
 
 			ICalculator calculator = windsorContainer.Resolve<ICalculator>("calculator");
@@ -69,7 +69,7 @@ namespace Castle.Facilities.WcfIntegration.Tests.Rest
 			windsorContainer.Register(
 				Component.For<ICalculator>()
 					.Named("calculator")
-					.ActAs(new RestClientModel()
+					.AsWcfClient(new RestClientModel()
 					{
 						Endpoint = WcfEndpoint
 							.BoundTo(new WebHttpBinding())
@@ -87,7 +87,7 @@ namespace Castle.Facilities.WcfIntegration.Tests.Rest
 			windsorContainer.Register(
 				Component.For<ICalculator>()
 					.Named("calculator")
-					.ActAs(new RestClientModel("http://localhost:27198"))
+					.AsWcfClient(new RestClientModel("http://localhost:27198"))
 				);
 
 			ICalculator calculator = windsorContainer.Resolve<ICalculator>("calculator");

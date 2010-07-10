@@ -44,7 +44,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 						.Named("Operations")
 						.Interceptors(InterceptorReference.ForType<LoggingInterceptor>()).Anywhere
 						.DependsOn(new { number = 42 })
-						.ActAs(new DefaultServiceModel().AddEndpoints(
+						.AsWcfService(new DefaultServiceModel().AddEndpoints(
 							WcfEndpoint.BoundTo(new NetTcpBinding{PortSharingEnabled = true })
 								.At("net.tcp://localhost/Operations")
 								)
