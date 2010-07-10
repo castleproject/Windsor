@@ -16,7 +16,10 @@ namespace Castle.MicroKernel.Tests
 {
 	using Castle.MicroKernel.Handlers;
 	using Castle.MicroKernel.Registration;
+	using Castle.MicroKernel.Tests.ClassComponents;
+	using Castle.Windsor;
 	using Castle.Windsor.Tests;
+	using Castle.Windsor.Tests.Components;
 
 	using NUnit.Framework;
 
@@ -40,13 +43,13 @@ namespace Castle.MicroKernel.Tests
 		[Test]
 		public void ValidSituation()
 		{
-			kernel.Register(Component.For(typeof(A)).Named("a"));
-			kernel.Register(Component.For(typeof(B)).Named("b"));
-			kernel.Register(Component.For(typeof(C)).Named("c"));
+			kernel.Register(Component.For<A>(),
+			                Component.For<B>(),
+			                Component.For<C>());
 
-			Assert.IsNotNull(kernel["a"]);
-			Assert.IsNotNull(kernel["b"]);
-			Assert.IsNotNull(kernel["c"]);
+			Assert.IsNotNull(kernel.Resolve<A>());
+			Assert.IsNotNull(kernel.Resolve<B>());
+			Assert.IsNotNull(kernel.Resolve<C>());
 		}
 
 		[Test]
@@ -89,7 +92,7 @@ namespace Castle.MicroKernel.Tests
 			var exception =
 				Assert.Throws(typeof(HandlerException), () =>
 				{
-					var a = kernel["a"];
+					var a = kernel.Resolve<CycleA>("a");
 				});
 			string expectedMessage =
 				"Can't create component 'a' as it has dependencies to be satisfied. \r\n" +

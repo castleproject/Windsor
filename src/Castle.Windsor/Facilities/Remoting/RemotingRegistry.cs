@@ -55,7 +55,7 @@ namespace Castle.Facilities.Remoting
 		{
 			GetModel(key);
 
-			return kernel[key];
+			return kernel.Resolve(key, new Arguments());
 		}
 
 		private ComponentModel GetModel(string key)
@@ -72,11 +72,10 @@ namespace Castle.Facilities.Remoting
 		public void Publish(string key)
 		{
 			// Resolve first
-			MarshalByRefObject mbr = (MarshalByRefObject)kernel[key];
+			var mbr = (MarshalByRefObject)kernel.Resolve(key, new Arguments());
 
 			// then get the model
-			ComponentModel model = GetModel(key);
-
+			var model = GetModel(key);
 			RemoteMarshallerActivator.Marshal(mbr, model);
 		}
 
@@ -98,17 +97,17 @@ namespace Castle.Facilities.Remoting
 
 		public object CreateRemoteInstance(Type serviceType)
 		{
-			return kernel[serviceType];
+			return kernel.Resolve(serviceType);
 		}
 
 
 		public void Publish(Type serviceType)
 		{
 			// Resolve first
-			MarshalByRefObject mbr = (MarshalByRefObject)kernel[serviceType];
+			var mbr = (MarshalByRefObject)kernel.Resolve(serviceType);
 
 			// then get the model
-			ComponentModel model = GetModel(serviceType);
+			var model = GetModel(serviceType);
 
 			RemoteMarshallerActivator.Marshal(mbr, model);
 		}

@@ -45,12 +45,12 @@ namespace Castle.MicroKernel.Tests
 		{
 			kernel.Register(Component.For(typeof(ICustomer)).ImplementedBy(typeof(CustomerImpl)).Named("key"));
 			kernel.Register(Component.For(typeof(ICustomer)).ImplementedBy(typeof(CustomerImpl)).Named("key2"));
-			object result = kernel["key"];
+			object result = kernel.Resolve("key", new Arguments());
 			Assert.IsNotNull(result);
 
 			kernel.RemoveComponent("key");
 
-			result = kernel[typeof(ICustomer)];
+			result = kernel.Resolve<ICustomer>();
 			Assert.IsNotNull(result);
 		}
 
@@ -75,10 +75,10 @@ namespace Castle.MicroKernel.Tests
 		    kernel.Register(Component.For<ICustomer>().Named("key").Instance(customer));
 			Assert.IsTrue(kernel.HasComponent("key"));
 
-			CustomerImpl customer2 = kernel["key"] as CustomerImpl;
+			CustomerImpl customer2 = kernel.Resolve("key", new Arguments()) as CustomerImpl;
 			Assert.AreSame(customer, customer2);
 
-			customer2 = kernel[typeof(ICustomer)] as CustomerImpl;
+			customer2 = kernel.Resolve<ICustomer>() as CustomerImpl;
 			Assert.AreSame(customer, customer2);
 		}
 
@@ -88,7 +88,7 @@ namespace Castle.MicroKernel.Tests
 			CustomerImpl customer = new CustomerImpl();
 
 			kernel.Register(Component.For(typeof(ICustomer)).Instance(customer));
-			Assert.AreSame(kernel[typeof(ICustomer)], customer);
+			Assert.AreSame(kernel.Resolve<ICustomer>(), customer);
 		}
 
 		[Test]
@@ -99,10 +99,10 @@ namespace Castle.MicroKernel.Tests
 			kernel.Register(Component.For<CustomerImpl>().Named("key").Instance(customer));
 			Assert.IsTrue(kernel.HasComponent("key"));
 
-			CustomerImpl customer2 = kernel["key"] as CustomerImpl;
+			var customer2 = kernel.Resolve<CustomerImpl>("key");
 			Assert.AreSame(customer, customer2);
 
-			customer2 = kernel[typeof(CustomerImpl)] as CustomerImpl;
+			customer2 = kernel.Resolve<CustomerImpl>();
 			Assert.AreSame(customer, customer2);
 		}
 
@@ -142,7 +142,7 @@ namespace Castle.MicroKernel.Tests
 		public void UnregisteredComponentByKey()
 		{
 			kernel.Register(Component.For(typeof(CustomerImpl)).Named("key1"));
-			object component = kernel["key2"];
+			object component = kernel.Resolve("key2", new Arguments());
 		}
 
 		[Test]
@@ -150,7 +150,7 @@ namespace Castle.MicroKernel.Tests
 		public void UnregisteredComponentByService()
 		{
 			kernel.Register(Component.For(typeof(CustomerImpl)).Named("key1"));
-			object component = kernel[typeof(IDisposable)];
+			kernel.Resolve<IDisposable>();
 		}
 
 		[Test]

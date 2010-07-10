@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,90 +12,60 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
 namespace Castle.Windsor.Tests
 {
 	using System.Collections.ObjectModel;
-	using Castle.DynamicProxy;
-	using Core;
-	using MicroKernel.Registration;
+
+	using Castle.Windsor.Tests.Components;
+	using Castle.MicroKernel.Registration;
+
 	using NUnit.Framework;
 
 	[TestFixture]
 	public class OpenGenericsTestCase
 	{
-		#region Setup/Teardown
-
 		[SetUp]
 		public void Setup()
 		{
 			container = new WindsorContainer();
 		}
 
-		#endregion
-
 		private WindsorContainer container;
 
 		[Test]
 		public void ExtendedProperties_incl_ProxyOptions_are_honored_for_open_generic_types()
 		{
+			container.Register(
+				Component.For(typeof(Collection<>))
+					.Proxy.AdditionalInterfaces(typeof(ISimpleService)));
 
-			container.Kernel.Register(Component.For<StandardInterceptor>().LifeStyle.Transient);
+			var proxy = container.Resolve<Collection<int>>();
 
-			container.Register(Component.For(typeof(Collection<>))
-								.Proxy.AdditionalInterfaces(typeof(ITestInterface))
-								.Interceptors(new InterceptorReference(typeof(StandardInterceptor))).Last
-								.LifeStyle.Transient);
-			var tst = container.Resolve<Collection<int>>();
-			var tst1 = tst as ITestInterface;
-			Assert.IsNotNull(tst1);
+			Assert.IsInstanceOf<ISimpleService>(proxy);
 		}
 
 		[Test]
-		public void ResolveAll_for_open_generic_with_constraints_works()
+		public void ResolveAll_properly_skips_open_generic_service_with_generic_constraints_that_dont_match()
 		{
-			container.Register(Component.For(typeof(IIface<,>)).ImplementedBy(typeof(HandlerImpl<,>)));
-			var invalid = container.ResolveAll<IIface<Impl1, Stub>>();
+			container.Register(
+				Component.For(typeof(IHasGenericConstraints<,>))
+					.ImplementedBy(typeof(HasGenericConstraintsImpl<,>)));
+
+			var invalid = container.ResolveAll<IHasGenericConstraints<EmptySub1, EmptyClass>>();
+
 			Assert.AreEqual(0, invalid.Length);
-			var valid = container.ResolveAll<IIface<Impl2, Stub>>();
+		}
+
+		[Test]
+		public void ResolveAll_returns_matching_open_generic_service_with_generic_constraints()
+		{
+			container.Register(
+				Component.For(typeof(IHasGenericConstraints<,>))
+					.ImplementedBy(typeof(HasGenericConstraintsImpl<,>)));
+
+			var valid = container.ResolveAll<IHasGenericConstraints<EmptySub2WithMarkerInterface, EmptyClass>>();
+
 			Assert.AreEqual(1, valid.Length);
 		}
 	}
-
-
-	public interface ITestInterface
-	{
-		void Foo();
-	}
-
-	public class Base { }
-
-	public class Stub { }
-
-	public interface AdditionalIface
-	{
-	}
-
-	public interface IIface<T1, T2>
-		where T1 : Base
-		where T2 : class
-	{
-		T1 Command { get; set; }
-	}
-
-	public class HandlerImpl<T1, T2> : IIface<T1, T2>
-		where T1 : Base, AdditionalIface
-		where T2 : class
-	{
-		public T1 Command { get; set; }
-	}
-
-	public class Impl1 : Base
-	{
-	}
-
-	public class Impl2 : Base, AdditionalIface
-	{
-	}
-
 }

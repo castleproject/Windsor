@@ -70,7 +70,7 @@ namespace Castle.Windsor.Tests.Facilities.FactorySupport
 
 			model.Parameters.Add("someProperty", "Abc");
 
-			var service = (MyCoolServiceWithProperties)kernel["cool.service"];
+			var service = kernel.Resolve<MyCoolServiceWithProperties>("cool.service");
 
 			Assert.IsNotNull(service);
 			Assert.IsNull(service.SomeProperty);

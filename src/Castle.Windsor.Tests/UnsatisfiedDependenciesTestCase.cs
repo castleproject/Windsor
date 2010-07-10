@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -26,8 +26,6 @@ namespace Castle.MicroKernel.Tests
 	[TestFixture]
 	public class UnsatisfiedDependenciesTestCase
 	{
-		private IKernel kernel;
-
 		[SetUp]
 		public void Init()
 		{
@@ -40,23 +38,98 @@ namespace Castle.MicroKernel.Tests
 			kernel.Dispose();
 		}
 
-		[Test]
-		public void UnsatisfiedService()
-		{
-			kernel.Register(Component.For(typeof(CommonServiceUser)).Named("key"));
+		private IKernel kernel;
 
-			Assert.Throws(typeof(HandlerException), () =>
-			{
-				object instance = kernel["key"];
-			});
+		[Test]
+		public void OverrideIsForcedDependency()
+		{
+			var config = new MutableConfiguration("component");
+
+			var parameters = new MutableConfiguration("parameters");
+			config.Children.Add(parameters);
+
+			parameters.Children.Add(new MutableConfiguration("common", "${common2}"));
+
+			kernel.ConfigurationStore.AddComponentConfiguration("key", config);
+
+			kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(CommonImpl1)).Named("common1"));
+			kernel.Register(Component.For(typeof(CommonServiceUser3)).Named("key"));
+			var exception =
+				Assert.Throws(typeof(HandlerException), () => kernel.Resolve("key", new Arguments()));
+			var expectedMessage =
+				string.Format(
+					"Can't create component 'key' as it has dependencies to be satisfied. {0}key is waiting for the following dependencies: {0}{0}Keys (components with specific keys){0}- common2 which was not registered. {0}",
+					Environment.NewLine);
+			Assert.AreEqual(expectedMessage, exception.Message);
+		}
+
+		[Test]
+		public void SatisfiedOverride()
+		{
+			var config = new MutableConfiguration("component");
+
+			var parameters = new MutableConfiguration("parameters");
+			config.Children.Add(parameters);
+
+			parameters.Children.Add(new MutableConfiguration("common", "${common2}"));
+
+			kernel.ConfigurationStore.AddComponentConfiguration("key", config);
+
+			kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(CommonImpl1)).Named("common1"));
+			kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(CommonImpl2)).Named("common2"));
+			kernel.Register(Component.For(typeof(CommonServiceUser)).Named("key"));
+			var instance = (CommonServiceUser)kernel.Resolve("key", new Arguments());
+
+			Assert.IsNotNull(instance);
+			Assert.IsNotNull(instance.CommonService);
+			Assert.AreEqual("CommonImpl2", instance.CommonService.GetType().Name);
+		}
+
+		[Test]
+		public void SatisfiedOverrideRecursive()
+		{
+			var config1 = new MutableConfiguration("component");
+			var parameters1 = new MutableConfiguration("parameters");
+			config1.Children.Add(parameters1);
+			parameters1.Children.Add(new MutableConfiguration("inner", "${repository2}"));
+			kernel.ConfigurationStore.AddComponentConfiguration("repository1", config1);
+			kernel.Register(Component.For(typeof(IRepository)).ImplementedBy(typeof(Repository1)).Named("repository1"));
+
+			var config2 = new MutableConfiguration("component");
+			var parameters2 = new MutableConfiguration("parameters");
+			config2.Children.Add(parameters2);
+			parameters2.Children.Add(new MutableConfiguration("inner", "${repository3}"));
+			kernel.ConfigurationStore.AddComponentConfiguration("repository2", config2);
+			kernel.Register(Component.For(typeof(IRepository)).ImplementedBy(typeof(Repository2)).Named("repository2"));
+
+			var config3 = new MutableConfiguration("component");
+			var parameters3 = new MutableConfiguration("parameters");
+			config3.Children.Add(parameters3);
+			parameters3.Children.Add(new MutableConfiguration("inner", "${decoratedRepository}"));
+			kernel.ConfigurationStore.AddComponentConfiguration("repository3", config3);
+			kernel.Register(Component.For(typeof(IRepository)).ImplementedBy(typeof(Repository3)).Named("repository3"));
+
+			kernel.Register(
+				Component.For(typeof(IRepository)).ImplementedBy(typeof(DecoratedRepository)).Named("decoratedRepository"));
+
+			var instance = kernel.Resolve<IRepository>();
+
+			Assert.IsNotNull(instance);
+			Assert.IsInstanceOf<Repository1>(instance);
+			Assert.IsInstanceOf<Repository2>(((Repository1)instance).InnerRepository);
+			Assert.IsInstanceOf<Repository3>(
+				((Repository2)(((Repository1)instance).InnerRepository)).InnerRepository);
+			Assert.IsInstanceOf<DecoratedRepository>(
+				((Repository3)(((Repository2)(((Repository1)instance).InnerRepository)).InnerRepository)).
+					InnerRepository);
 		}
 
 		[Test]
 		public void UnsatisfiedConfigValues()
 		{
-			MutableConfiguration config = new MutableConfiguration("component");
+			var config = new MutableConfiguration("component");
 
-			MutableConfiguration parameters = new MutableConfiguration("parameters");
+			var parameters = new MutableConfiguration("parameters");
 			config.Children.Add(parameters);
 
 			parameters.Children.Add(new MutableConfiguration("name", "hammett"));
@@ -66,10 +139,7 @@ namespace Castle.MicroKernel.Tests
 			kernel.Register(Component.For(typeof(CustomerImpl2)).Named("key"));
 
 			var exception =
-				Assert.Throws(typeof(HandlerException), () =>
-				{
-					object instance = kernel["key"];
-				});
+				Assert.Throws(typeof(HandlerException), () => { var instance = kernel.Resolve("key", new Arguments()); });
 			var expectedMessage =
 				string.Format(
 					"Can't create component 'key' as it has dependencies to be satisfied. {0}key is waiting for the following dependencies: {0}{0}" +
@@ -82,9 +152,9 @@ namespace Castle.MicroKernel.Tests
 		[Test]
 		public void UnsatisfiedOverride()
 		{
-			MutableConfiguration config = new MutableConfiguration("component");
+			var config = new MutableConfiguration("component");
 
-			MutableConfiguration parameters = new MutableConfiguration("parameters");
+			var parameters = new MutableConfiguration("parameters");
 			config.Children.Add(parameters);
 
 			parameters.Children.Add(new MutableConfiguration("common", "${common2}"));
@@ -94,10 +164,7 @@ namespace Castle.MicroKernel.Tests
 			kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(CommonImpl1)).Named("common1"));
 			kernel.Register(Component.For(typeof(CommonServiceUser)).Named("key"));
 			var exception =
-				Assert.Throws(typeof(HandlerException), () =>
-				{
-					object instance = kernel["key"];
-				});
+				Assert.Throws(typeof(HandlerException), () => { var instance = kernel.Resolve("key", new Arguments()); });
 			var expectedMessage =
 				string.Format(
 					"Can't create component 'key' as it has dependencies to be satisfied. {0}key is waiting for the following dependencies: {0}{0}Keys (components with specific keys){0}- common2 which was not registered. {0}",
@@ -106,89 +173,11 @@ namespace Castle.MicroKernel.Tests
 		}
 
 		[Test]
-		public void OverrideIsForcedDependency()
+		public void UnsatisfiedService()
 		{
-			MutableConfiguration config = new MutableConfiguration("component");
-
-			MutableConfiguration parameters = new MutableConfiguration("parameters");
-			config.Children.Add(parameters);
-
-			parameters.Children.Add(new MutableConfiguration("common", "${common2}"));
-
-			kernel.ConfigurationStore.AddComponentConfiguration("key", config);
-
-			kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(CommonImpl1)).Named("common1"));
-			kernel.Register(Component.For(typeof(CommonServiceUser3)).Named("key"));
-			var exception =
-				Assert.Throws(typeof(HandlerException), () =>
-				{
-					object instance = kernel["key"];
-				});
-			var expectedMessage =
-				string.Format(
-					"Can't create component 'key' as it has dependencies to be satisfied. {0}key is waiting for the following dependencies: {0}{0}Keys (components with specific keys){0}- common2 which was not registered. {0}",
-					Environment.NewLine);
-			Assert.AreEqual(expectedMessage,exception.Message);
-		}
-
-		[Test]
-		public void SatisfiedOverride()
-		{
-			MutableConfiguration config = new MutableConfiguration("component");
-
-			MutableConfiguration parameters = new MutableConfiguration("parameters");
-			config.Children.Add(parameters);
-
-			parameters.Children.Add(new MutableConfiguration("common", "${common2}"));
-
-			kernel.ConfigurationStore.AddComponentConfiguration("key", config);
-
-			kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(CommonImpl1)).Named("common1"));
-			kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(CommonImpl2)).Named("common2"));
 			kernel.Register(Component.For(typeof(CommonServiceUser)).Named("key"));
-			CommonServiceUser instance = (CommonServiceUser) kernel["key"];
 
-			Assert.IsNotNull(instance);
-			Assert.IsNotNull(instance.CommonService);
-			Assert.AreEqual("CommonImpl2", instance.CommonService.GetType().Name);
-		}
-
-		[Test]
-		public void SatisfiedOverrideRecursive()
-		{
-			MutableConfiguration config1 = new MutableConfiguration("component");
-			MutableConfiguration parameters1 = new MutableConfiguration("parameters");
-			config1.Children.Add(parameters1);
-			parameters1.Children.Add(new MutableConfiguration("inner", "${repository2}"));
-			kernel.ConfigurationStore.AddComponentConfiguration("repository1", config1);
-			kernel.Register(Component.For(typeof(IRepository)).ImplementedBy(typeof(Repository1)).Named("repository1"));
-
-			MutableConfiguration config2 = new MutableConfiguration("component");
-			MutableConfiguration parameters2 = new MutableConfiguration("parameters");
-			config2.Children.Add(parameters2);
-			parameters2.Children.Add(new MutableConfiguration("inner", "${repository3}"));
-			kernel.ConfigurationStore.AddComponentConfiguration("repository2", config2);
-			kernel.Register(Component.For(typeof(IRepository)).ImplementedBy(typeof(Repository2)).Named("repository2"));
-
-			MutableConfiguration config3 = new MutableConfiguration("component");
-			MutableConfiguration parameters3 = new MutableConfiguration("parameters");
-			config3.Children.Add(parameters3);
-			parameters3.Children.Add(new MutableConfiguration("inner", "${decoratedRepository}"));
-			kernel.ConfigurationStore.AddComponentConfiguration("repository3", config3);
-			kernel.Register(Component.For(typeof(IRepository)).ImplementedBy(typeof(Repository3)).Named("repository3"));
-
-			kernel.Register(Component.For(typeof(IRepository)).ImplementedBy(typeof(DecoratedRepository)).Named("decoratedRepository"));
-
-			IRepository instance = (Repository1) kernel[typeof(IRepository)];
-
-			Assert.IsNotNull(instance);
-			Assert.IsInstanceOf(typeof(Repository1), instance);
-			Assert.IsInstanceOf(typeof(Repository2), ((Repository1) instance).InnerRepository);
-			Assert.IsInstanceOf(typeof(Repository3),
-			                        ((Repository2) (((Repository1) instance).InnerRepository)).InnerRepository);
-			Assert.IsInstanceOf(typeof(DecoratedRepository),
-			                        ((Repository3) (((Repository2) (((Repository1) instance).InnerRepository)).InnerRepository)).
-			                        	InnerRepository);
+			Assert.Throws(typeof(HandlerException), () => { var instance = kernel.Resolve("key", new Arguments()); });
 		}
 	}
 }

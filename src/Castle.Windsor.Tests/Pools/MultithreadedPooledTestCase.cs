@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,57 +14,56 @@
 
 namespace Castle.MicroKernel.Tests.Pools
 {
-    using System;
-    using System.Threading;
+	using System.Threading;
 
-    using Castle.MicroKernel.Registration;
+	using Castle.MicroKernel.Registration;
 
-    using NUnit.Framework;
+	using NUnit.Framework;
 
 	[TestFixture]
 	public class MultithreadedPooledTestCase
 	{
-		private ManualResetEvent _startEvent = new ManualResetEvent(false);
-		private ManualResetEvent _stopEvent = new ManualResetEvent(false);
-		private IKernel _kernel;
+		private readonly ManualResetEvent startEvent = new ManualResetEvent(false);
+		private readonly ManualResetEvent stopEvent = new ManualResetEvent(false);
+		private IKernel kernel;
+
+		public void ExecuteMethodUntilSignal()
+		{
+			startEvent.WaitOne(int.MaxValue);
+
+			while (!stopEvent.WaitOne(1))
+			{
+				var instance = kernel.Resolve<PoolableComponent1>("a");
+
+				Assert.IsNotNull(instance);
+
+				Thread.Sleep(1*500);
+
+				kernel.ReleaseComponent(instance);
+			}
+		}
 
 		[Test]
 		public void Multithreaded()
 		{
-			_kernel = new DefaultKernel();
-			_kernel.Register(Component.For(typeof(PoolableComponent1)).Named("a"));
+			kernel = new DefaultKernel();
+			kernel.Register(Component.For(typeof(PoolableComponent1)).Named("a"));
 
 			const int threadCount = 15;
 
-			Thread[] threads = new Thread[threadCount];
+			var threads = new Thread[threadCount];
 
-			for(int i = 0; i < threadCount; i++)
+			for (var i = 0; i < threadCount; i++)
 			{
-				threads[i] = new Thread(new ThreadStart(ExecuteMethodUntilSignal));
+				threads[i] = new Thread(ExecuteMethodUntilSignal);
 				threads[i].Start();
 			}
 
-			_startEvent.Set();
+			startEvent.Set();
 
-			Thread.CurrentThread.Join(3 * 1000);
+			Thread.CurrentThread.Join(3*1000);
 
-			_stopEvent.Set();
-		}
-
-		public void ExecuteMethodUntilSignal()
-		{
-			_startEvent.WaitOne(int.MaxValue);
-
-			while(!_stopEvent.WaitOne(1))
-			{
-				PoolableComponent1 instance = _kernel["a"] as PoolableComponent1;
-
-				Assert.IsNotNull(instance);
-
-				Thread.Sleep(1 * 500);
-
-				_kernel.ReleaseComponent(instance);
-			}
+			stopEvent.Set();
 		}
 	}
 }

@@ -19,9 +19,12 @@ namespace Castle.MicroKernel.Tests.Lifestyle
 	using Castle.Core;
 	using Castle.Core.Configuration;
 	using Castle.MicroKernel.Context;
+	using Castle.MicroKernel.Handlers;
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Tests.ClassComponents;
 	using Castle.MicroKernel.Tests.Lifestyle.Components;
+	using Castle.Windsor.Tests.ClassComponents;
+
 	using NUnit.Framework;
 
 	/// <summary>
@@ -139,8 +142,8 @@ namespace Castle.MicroKernel.Tests.Lifestyle
 
 		private void TestSameness(string key, bool areSame)
 		{
-			IComponent one = kernel[key] as IComponent;
-			IComponent two = kernel[key] as IComponent;
+			IComponent one = kernel.Resolve<IComponent>(key);
+			IComponent two = kernel.Resolve<IComponent>(key);
 			if (areSame)
 			{
 				Assert.AreSame(one, two);
@@ -272,6 +275,24 @@ namespace Castle.MicroKernel.Tests.Lifestyle
 			IComponent instance1 = handler.Resolve(CreationContext.Empty) as IComponent;
 
 			Assert.IsNotNull(instance1);
+		}
+
+		[Test(Description = "Prototype spike of the idea of providing scoped lifestyle - scoped per root component.")]
+		public void Per_dependency_tree()
+		{
+			kernel.Register(
+				Component.For<Root>().ExtendedProperties(ScopeRoot()),
+				Component.For<Branch>(),
+				Component.For<Leaf>().LifeStyle.Custom<ScopedLifestyle>()
+				);
+			var root = kernel.Resolve<Root>();
+			Assert.AreSame(root.Leaf, root.Branch.Leaf);
+			
+		}
+
+		private Property ScopeRoot()
+		{
+			return Property.ForKey(HandlerExtensionsUtil.ResolveExtensionsKey).Eq(new IResolveExtension[] { new Scope() });
 		}
 
 		[Test]

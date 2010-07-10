@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,25 +12,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.MicroKernel.Tests.ClassComponents
+namespace Castle.Windsor.Tests.ClassComponents
 {
-	using System;
-
-	/// <summary>
-	/// Summary description for ComponentFactory.
-	/// </summary>
-	public class ComponentFactory
+	public class Branch
 	{
-		private readonly IKernel kernel;
+		private readonly Leaf leaf;
 
-		public ComponentFactory(IKernel kernel)
+		public Branch(Leaf leaf)
 		{
-			this.kernel = kernel;
+			this.leaf = leaf;
 		}
 
-		public object Create(String name)
+		public Leaf Leaf
 		{
-			return kernel.Resolve<object>(name);
+			get { return leaf; }
 		}
 	}
 }
