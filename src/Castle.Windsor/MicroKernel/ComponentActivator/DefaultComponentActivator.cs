@@ -16,6 +16,7 @@ namespace Castle.MicroKernel.ComponentActivator
 {
 	using System;
 	using System.Collections.Generic;
+	using System.Linq;
 	using System.Reflection;
 	using System.Security;
 	using System.Security.Permissions;
@@ -197,7 +198,11 @@ namespace Castle.MicroKernel.ComponentActivator
 			if(Model.Lifecycle.HasCommissionConcerns == false) return;
 
 			instance = ProxyUtil.GetUnproxiedInstance(instance);
-			ApplyConcerns(Model.Lifecycle.CommissionConcerns, instance);
+			ApplyConcerns(Model.Lifecycle.CommissionConcerns
+#if DOTNET35 || SL3
+				.ToArray()
+#endif
+				, instance);
 		}
 
 		protected virtual void ApplyDecommissionConcerns(object instance)
@@ -205,7 +210,11 @@ namespace Castle.MicroKernel.ComponentActivator
 			if(Model.Lifecycle.HasDecommissionConcerns == false) return;
 
 			instance = ProxyUtil.GetUnproxiedInstance(instance);
-			ApplyConcerns(Model.Lifecycle.DecommissionConcerns, instance);
+			ApplyConcerns(Model.Lifecycle.DecommissionConcerns
+#if DOTNET35 || SL3
+				.ToArray()
+#endif
+, instance);
 		}
 
 		protected virtual void ApplyConcerns(IEnumerable<ILifecycleConcern> steps, object instance)
