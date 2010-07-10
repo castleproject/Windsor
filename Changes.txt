@@ -1,6 +1,8 @@
 2.5.0 beta2
 ==================
 
+- added WithAppConfig() method to logging facility to point to loging configuration in AppDomain's config file (web.config or app.config)
+
 - Restructured lifecycle concerns - introduced ICommissionConcern and IDecommissionConcern and favors them over old enum driven style.
 
 - Fixed how contextual arguments are handled. Null is no longer considered a valid value (That would cause an exception later on, now it's ignored).
