@@ -30,8 +30,8 @@ namespace Castle.MicroKernel.Tests.Pools
 			IKernel kernel = new DefaultKernel();
 			kernel.Register(Component.For(typeof(PoolableComponent1)).Named("a"));
 
-			PoolableComponent1 inst1 = kernel["a"] as PoolableComponent1;
-			PoolableComponent1 inst2 = kernel["a"] as PoolableComponent1;
+			PoolableComponent1 inst1 = kernel.Resolve<PoolableComponent1>("a");
+			PoolableComponent1 inst2 = kernel.Resolve<PoolableComponent1>("a");
 
 			Assert.IsNotNull(inst1);
 			Assert.IsNotNull(inst2);
@@ -39,8 +39,8 @@ namespace Castle.MicroKernel.Tests.Pools
 			kernel.ReleaseComponent(inst2);
 			kernel.ReleaseComponent(inst1);
 
-			PoolableComponent1 other1 = kernel["a"] as PoolableComponent1;
-			PoolableComponent1 other2 = kernel["a"] as PoolableComponent1;
+			PoolableComponent1 other1 = kernel.Resolve<PoolableComponent1>("a");
+			PoolableComponent1 other2 = kernel.Resolve<PoolableComponent1>("a");
 
 			Assert.IsNotNull(other1);
 			Assert.IsNotNull(other2);
@@ -60,14 +60,14 @@ namespace Castle.MicroKernel.Tests.Pools
 
 			var instances = new List<PoolableComponent1>
 			{
-				kernel["a"] as PoolableComponent1,
-				kernel["a"] as PoolableComponent1,
-				kernel["a"] as PoolableComponent1,
-				kernel["a"] as PoolableComponent1,
-				kernel["a"] as PoolableComponent1
+				kernel.Resolve<PoolableComponent1>("a"),
+				kernel.Resolve<PoolableComponent1>("a"),
+				kernel.Resolve<PoolableComponent1>("a"),
+				kernel.Resolve<PoolableComponent1>("a"),
+				kernel.Resolve<PoolableComponent1>("a")
 			};
 
-			PoolableComponent1 other1 = kernel["a"] as PoolableComponent1;
+			PoolableComponent1 other1 = kernel.Resolve<PoolableComponent1>("a");
 
 			Assert.IsNotNull(other1);
 			Assert.IsTrue(!instances.Contains(other1));
@@ -79,7 +79,7 @@ namespace Castle.MicroKernel.Tests.Pools
 
 			kernel.ReleaseComponent(other1);
 
-			PoolableComponent1 other2 = kernel["a"] as PoolableComponent1;
+			PoolableComponent1 other2 = kernel.Resolve<PoolableComponent1>("a");
 			Assert.IsNotNull(other2);
 			Assert.IsTrue(other1 != other2);
 			Assert.IsTrue(instances.Contains(other2));

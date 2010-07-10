@@ -21,6 +21,7 @@ namespace Castle.Windsor.Tests.Facilities.EventWiring
 
 	using NUnit.Framework;
 
+	[TestFixture]
 	public abstract class WiringTestBase
 	{
 		protected WindsorContainer container;

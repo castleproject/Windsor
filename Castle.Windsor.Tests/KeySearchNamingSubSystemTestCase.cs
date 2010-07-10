@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -27,193 +27,129 @@ namespace Castle.MicroKernel.Tests
 	[TestFixture]
 	public class KeySearchNamingSubSystemTestCase
 	{
-		[Test]
-		public void EmptyDelegateReturnsFirstTypeLoaded()
+		[SetUp]
+		public void SetUp()
 		{
-			IKernel kernel = new DefaultKernel();
+			kernel = new DefaultKernel();
+		}
+
+		private IKernel kernel;
+
+		[Test]
+		public void By_default_returns_first_component_for_resolved_type()
+		{
 			kernel.AddSubSystem(SubSystemConstants.NamingKey, new KeySearchNamingSubSystem());
+			kernel.Register(Component.For<ICommon>().ImplementedBy<CommonImpl1>().Named("1.common"),
+			                Component.For<ICommon>().ImplementedBy<CommonImpl2>().Named("2.common"));
 
-			kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(CommonImpl1)).Named("1.common"));
-			kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(CommonImpl2)).Named("2.common"));
+			var common = kernel.Resolve<ICommon>();
 
-			ICommon common = kernel[typeof(ICommon)] as ICommon;
-
-			Assert.IsNotNull(common);
-			Assert.AreEqual(typeof(CommonImpl1), common.GetType());
+			Assert.IsInstanceOf<CommonImpl1>(common);
 		}
 
 		[Test]
-		public void ReturnsCorrectType()
+		public void Delegate_filters_components_by_key()
 		{
-			IKernel kernel = new DefaultKernel();
-			kernel.AddSubSystem(SubSystemConstants.NamingKey,
-			                    new KeySearchNamingSubSystem(
-			                    	delegate(string key) { return key.StartsWith("castlestronghold.com"); }));
+			kernel.AddSubSystem(
+				SubSystemConstants.NamingKey,
+				new KeySearchNamingSubSystem(key => key.StartsWith("castlestronghold.com")));
 
-			kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(CommonImpl1)).Named("castleproject.org.common"));
-			kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(CommonImpl2)).Named("castlestronghold.com.common"));
+			kernel.Register(Component.For<ICommon>().ImplementedBy<CommonImpl1>().Named("castleproject.org.common"),
+			                Component.For<ICommon>().ImplementedBy<CommonImpl2>().Named("castlestronghold.com.common"));
 
-			ICommon common = kernel[typeof(ICommon)] as ICommon;
+			var common = kernel.Resolve<ICommon>();
 
-			Assert.IsNotNull(common);
-			Assert.AreEqual(typeof(CommonImpl2), common.GetType());
+			Assert.IsInstanceOf<CommonImpl2>(common);
 		}
 
 		[Test]
-		public void ReturnsFirstTypeWhenNotFound()
+		public void Does_not_impact_ability_to_unregister_component()
 		{
-			IKernel kernel = new DefaultKernel();
 			kernel.AddSubSystem(SubSystemConstants.NamingKey,
-			                    new KeySearchNamingSubSystem(delegate(string key) { return key.StartsWith("3"); }));
+			                    new KeySearchNamingSubSystem(key => key.StartsWith("2")));
+			kernel.Register(Component.For<ICommon>().ImplementedBy<CommonImpl1>().Named("1.common"),
+			                Component.For<ICommon>().ImplementedBy<CommonImpl2>().Named("2.common"));
 
-			kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(CommonImpl1)).Named("1.common"));
-			kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(CommonImpl2)).Named("2.common"));
-
-			ICommon common = kernel[typeof(ICommon)] as ICommon;
-
-			Assert.IsNotNull(common);
-			Assert.AreEqual(typeof(CommonImpl1), common.GetType());
-		}
-
-		[Test]
-		public void ReturnsFirstMatchingType()
-		{
-			IKernel kernel = new DefaultKernel();
-			kernel.AddSubSystem(SubSystemConstants.NamingKey,
-			                    new KeySearchNamingSubSystem(delegate(string key) { return key.StartsWith("1"); }));
-
-			kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(CommonImpl1)).Named("1.common"));
-			kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(CommonImpl2)).Named("11.common"));
-
-			ICommon common = kernel[typeof(ICommon)] as ICommon;
-
-			Assert.IsNotNull(common);
-			Assert.AreEqual(typeof(CommonImpl1), common.GetType());
-		}
-
-		[Test]
-		public void ComponentUnregistersProperly()
-		{
-			IKernel kernel = new DefaultKernel();
-
-			kernel.AddSubSystem(SubSystemConstants.NamingKey,
-			                    new KeySearchNamingSubSystem(delegate(string key) { return key.StartsWith("2"); }));
-
-			kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(CommonImpl1)).Named("1.common"));
-			kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(CommonImpl2)).Named("2.common"));
-
-			ICommon common = kernel[typeof(ICommon)] as ICommon;
-
-			Assert.IsNotNull(common);
-			Assert.AreEqual(typeof(CommonImpl2), common.GetType());
+			var common = kernel.Resolve<ICommon>();
+			Assert.IsInstanceOf<CommonImpl2>(common);
 
 			kernel.RemoveComponent("2.common");
 
-			common = kernel[typeof(ICommon)] as ICommon;
-
-			Assert.IsNotNull(common);
-			Assert.AreEqual(typeof(CommonImpl1), common.GetType());
+			common = kernel.Resolve<ICommon>();
+			Assert.IsInstanceOf<CommonImpl1>(common);
 
 			kernel.RemoveComponent("1.common");
+
 			Assert.AreEqual(0, kernel.GetHandlers(typeof(ICommon)).Length);
 		}
 
 		[Test]
-		public void FirstLoadedComponentUnregistersProperly()
+		public void Falls_back_to_returning_first_when_delegate_finds_no_match()
 		{
-			IKernel kernel = new DefaultKernel();
-			kernel.AddSubSystem(SubSystemConstants.NamingKey,
-			                    new KeySearchNamingSubSystem(delegate(string key) { return key.StartsWith("1"); }));
+			kernel.AddSubSystem(
+				SubSystemConstants.NamingKey,
+				new KeySearchNamingSubSystem(key => key.StartsWith("3")));
 
-			kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(CommonImpl1)).Named("1.common"));
-			kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(CommonImpl2)).Named("2.common"));
+			kernel.Register(Component.For<ICommon>().ImplementedBy<CommonImpl1>().Named("1.common"),
+			                Component.For<ICommon>().ImplementedBy<CommonImpl2>().Named("2.common"));
 
-			ICommon common = kernel[typeof(ICommon)] as ICommon;
+			var common = kernel.Resolve<ICommon>();
 
-			Assert.IsNotNull(common);
-			Assert.AreEqual(typeof(CommonImpl1), common.GetType());
-
-			kernel.RemoveComponent("1.common");
-
-			common = kernel[typeof(ICommon)] as ICommon;
-
-			Assert.IsNotNull(common);
-			Assert.AreEqual(typeof(CommonImpl2), common.GetType());
-		}
-
-		[Test]
-		[ExpectedException(typeof(ComponentNotFoundException))]
-		public void SingleComponentUnregistersProperly()
-		{
-			IKernel kernel = new DefaultKernel();
-			kernel.AddSubSystem(SubSystemConstants.NamingKey,
-			                    new KeySearchNamingSubSystem(delegate(string key) { return key.StartsWith("1"); }));
-
-			kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(CommonImpl1)).Named("1.common"));
-
-			ICommon common = kernel[typeof(ICommon)] as ICommon;
-
-			Assert.IsNotNull(common);
-			Assert.AreEqual(typeof(CommonImpl1), common.GetType());
-
-			kernel.RemoveComponent("1.common");
-
-			Assert.IsFalse(kernel.HasComponent("1.common"));
-			Assert.IsFalse(kernel.HasComponent(typeof(CommonImpl1)));
-			common = kernel[typeof(ICommon)] as ICommon;
+			Assert.IsInstanceOf<CommonImpl1>(common);
 		}
 
 		[Test]
 		public void MultiThreadedAddResolve([Values(100)] int threadCount)
 		{
-			object locker = new object();
-			IList<string> list = new List<string>();
-			ManualResetEvent waitEvent = new ManualResetEvent(false);
+			var locker = new object();
+			var list = new List<string>();
+			var waitEvent = new ManualResetEvent(false);
 
-			IKernel kernel = new DefaultKernel();
 			kernel.AddSubSystem(SubSystemConstants.NamingKey, new KeySearchNamingSubSystem());
-			kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(CommonImpl1)).Named("common"));
 
+			kernel.Register(Component.For<ICommon>().ImplementedBy<CommonImpl1>().Named("common"));
+
+			var count = threadCount;
 			WaitCallback resolveThread = delegate
-			                             	{
-			                             		waitEvent.WaitOne();
-			                             		while(threadCount > 0 && list.Count == 0)
-			                             		{
-			                             			try
-			                             			{
-			                             				ICommon common = kernel[typeof(ICommon)] as ICommon;
-			                             			}
-			                             			catch(Exception e)
-			                             			{
-														lock (locker)
-														{
-															list.Add(e.ToString());
-														}
-			                             			}
-			                             		}
-			                             	};
+			{
+				waitEvent.WaitOne();
+				while (count > 0 && list.Count == 0)
+				{
+					try
+					{
+						kernel.Resolve<ICommon>();
+					}
+					catch (Exception e)
+					{
+						lock (locker)
+						{
+							list.Add(e.ToString());
+						}
+					}
+				}
+			};
 			ThreadPool.QueueUserWorkItem(resolveThread);
 
 			WaitCallback addThread = delegate
-			                         	{
-			                         		waitEvent.WaitOne();
-			                         		kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(CommonImpl1)).Named(Guid.NewGuid() + ".common"));
-			                         		Interlocked.Decrement(ref threadCount);
-			                         	};
-			for(int i = 0; i < threadCount; i++)
+			{
+				waitEvent.WaitOne();
+				kernel.Register(Component.For<ICommon>().ImplementedBy<CommonImpl1>().Named(Guid.NewGuid() + ".common"));
+				Interlocked.Decrement(ref threadCount);
+			};
+			for (var i = 0; i < threadCount; i++)
 			{
 				ThreadPool.QueueUserWorkItem(addThread);
 			}
 
 			waitEvent.Set();
-			while(threadCount > 0 && list.Count == 0)
+			while (threadCount > 0 && list.Count == 0)
 			{
 				Thread.Sleep(15);
 			}
 
 			if (list.Count > 0)
 			{
-				Assert.Fail(list[0].ToString());
+				Assert.Fail(list[0]);
 			}
 		}
 
@@ -230,11 +166,11 @@ namespace Castle.MicroKernel.Tests
 		[Ignore("This test needs to be reviewed")]
 		public void MultiThreaded_RemoveResolve_Throws_When_LargeRatio_Of_ComponentsToService()
 		{
-			int threadCount = 1000;
-			List<Exception> list = new List<Exception>();
-			object locker = new object();
-			Random rand = new Random();
-			ManualResetEvent waitEvent = new ManualResetEvent(false);
+			var threadCount = 1000;
+			var list = new List<Exception>();
+			var locker = new object();
+			var rand = new Random();
+			var waitEvent = new ManualResetEvent(false);
 
 			IKernel kernel = new DefaultKernel();
 			kernel.AddSubSystem(SubSystemConstants.NamingKey, new KeySearchNamingSubSystem(delegate { return false; }));
@@ -242,47 +178,62 @@ namespace Castle.MicroKernel.Tests
 			kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(CommonImpl1)).Named("common"));
 
 			WaitCallback resolveThread = delegate
-			                             	{
-			                             		waitEvent.WaitOne();
-			                             		while(threadCount > 0 && list.Count == 0)
-			                             		{
-			                             			try
-			                             			{
-			                             				ICommon common = kernel[typeof(ICommon)] as ICommon;
-			                             			}
-			                             			catch(Exception e)
-			                             			{
-			                             				lock (locker)
-			                             				{
-			                             				list.Add(e);
-			                             				}
-			                             			}
-			                             		}
-			                             	};
+			{
+				waitEvent.WaitOne();
+				while (threadCount > 0 && list.Count == 0)
+				{
+					try
+					{
+						kernel.Resolve<ICommon>();
+					}
+					catch (Exception e)
+					{
+						lock (locker)
+						{
+							list.Add(e);
+						}
+					}
+				}
+			};
 			ThreadPool.QueueUserWorkItem(resolveThread);
 
 			WaitCallback removeThread = delegate
-			                            	{
-			                            		waitEvent.WaitOne();
-			                            		kernel.RemoveComponent(threadCount + ".common");
-			                            		Interlocked.Decrement(ref threadCount);
-			                            	};
-			for(int i = 0; i < threadCount; i++)
+			{
+				waitEvent.WaitOne();
+				kernel.RemoveComponent(threadCount + ".common");
+				Interlocked.Decrement(ref threadCount);
+			};
+			for (var i = 0; i < threadCount; i++)
 			{
 				kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(CommonImpl1)).Named(i + ".common"));
 				ThreadPool.QueueUserWorkItem(removeThread);
 			}
 
 			waitEvent.Set();
-			while(threadCount > 0 && list.Count == 0)
+			while (threadCount > 0 && list.Count == 0)
 			{
 				Thread.Sleep(15);
 			}
 
 			if (list.Count > 0)
 			{
-				throw (Exception) list[0];
+				throw list[0];
 			}
+		}
+
+		[Test]
+		public void On_multiple_matches_returns_first()
+		{
+			kernel.AddSubSystem(
+				SubSystemConstants.NamingKey,
+				new KeySearchNamingSubSystem(key => key.StartsWith("1")));
+
+			kernel.Register(Component.For<ICommon>().ImplementedBy<CommonImpl1>().Named("1.common"),
+			                Component.For<ICommon>().ImplementedBy<CommonImpl2>().Named("11.common"));
+
+			var common = kernel.Resolve<ICommon>();
+
+			Assert.IsInstanceOf<CommonImpl1>(common);
 		}
 	}
 }

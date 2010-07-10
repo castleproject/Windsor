@@ -684,7 +684,7 @@ namespace Castle.Windsor
 		/// <returns></returns>
 		public virtual object Resolve(String key)
 		{
-			return kernel[key];
+			return kernel.Resolve(key, new Arguments());
 		}
 
 		/// <summary>
@@ -738,7 +738,7 @@ namespace Castle.Windsor
 		/// <returns></returns>
 		public virtual object Resolve(Type service)
 		{
-			return kernel[service];
+			return kernel.Resolve(service);
 		}
 
 		/// <summary>

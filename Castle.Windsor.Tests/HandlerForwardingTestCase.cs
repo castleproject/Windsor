@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,113 +12,123 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Castle.MicroKernel.Registration;
-using NUnit.Framework;
-
 namespace Castle.MicroKernel.Tests
 {
+	using Castle.MicroKernel.Registration;
+
+	using NUnit.Framework;
+
 	[TestFixture]
 	public class HandlerForwardingTestCase
 	{
+		private IKernel kernel;
+
 		[Test]
 		public void Can_register_handler_forwarding()
 		{
-			IKernel kernel = new DefaultKernel();
 			kernel.Register(
 				Component.For<IUserRepository, IRepository>()
 					.ImplementedBy<MyRepository>()
 				);
 
 			Assert.AreSame(
-				kernel[typeof(IRepository)],
-				kernel[typeof(IUserRepository)]
+				kernel.Resolve<IRepository>(),
+				kernel.Resolve<IUserRepository>()
 				);
 		}
 
 		[Test]
 		public void Can_register_handler_forwarding_using_generics()
 		{
-			IKernel kernel = new DefaultKernel();
 			kernel.Register(
 				Component.For<IUserRepository, IRepository<User>>()
 					.ImplementedBy<MyRepository>()
 				);
 			Assert.AreSame(
-				kernel[typeof(IRepository<User>)],
-				kernel[typeof(IUserRepository)]
-				);
-		}
-
-		[Test]
-		public void Can_register_several_handler_forwarding()
-		{
-			IKernel kernel = new DefaultKernel();
-			kernel.Register(
-				Component.For<IUserRepository>()
-					.Forward<IRepository, IRepository<User>>()
-						.ImplementedBy<MyRepository>()
-				);
-
-			Assert.AreSame(
-				kernel[typeof(IRepository<User>)],
-				kernel[typeof(IUserRepository)]
-				);
-			Assert.AreSame(
-				kernel[typeof(IRepository)],
-				kernel[typeof(IUserRepository)]
+				kernel.Resolve<IRepository<User>>(),
+				kernel.Resolve<IUserRepository>()
 				);
 		}
 
 		[Test]
 		public void Can_register_handler_forwarding_with_dependencies()
 		{
-			IKernel kernel = new DefaultKernel();
 			kernel.Register(
 				Component.For<IUserRepository, IRepository>()
 					.ImplementedBy<MyRepository2>(),
-				Component.For<ServiceUsingRepository>()
+				Component.For<ServiceUsingRepository>(),
+				Component.For<User>()
 				);
 
-			kernel.Register(Component.For<User>());
+			kernel.Resolve<ServiceUsingRepository>();
+		}
 
-			ServiceUsingRepository service =
-				kernel.Resolve<ServiceUsingRepository>();
+		[Test]
+		public void Can_register_several_handler_forwarding()
+		{
+			kernel.Register(
+				Component.For<IUserRepository>()
+					.Forward<IRepository, IRepository<User>>()
+					.ImplementedBy<MyRepository>()
+				);
+
+			Assert.AreSame(
+				kernel.Resolve<IRepository<User>>(),
+				kernel.Resolve<IUserRepository>()
+				);
+			Assert.AreSame(
+				kernel.Resolve<IRepository>(),
+				kernel.Resolve<IUserRepository>()
+				);
 		}
 
 		[Test]
 		public void ResolveAll_Will_Only_Resolve_Unique_Handlers()
 		{
-			IKernel kernel = new DefaultKernel();
 			kernel.Register(
 				Component.For<IUserRepository, IRepository>()
 					.ImplementedBy<MyRepository>()
 				);
 
-			IRepository[] repos = kernel.ResolveAll<IRepository>();
+			var repos = kernel.ResolveAll<IRepository>();
 			Assert.AreEqual(1, repos.Length);
 		}
 
+		[SetUp]
+		public void SetUp()
+		{
+			kernel = new DefaultKernel();
+		}
+
+		#region Nested type: IRepository
+
 		public interface IRepository
 		{
-
 		}
 
 		public interface IRepository<T> : IRepository
 		{
-
 		}
 
-		public class User { }
+		#endregion
+
+		#region Nested type: IUserRepository
 
 		public interface IUserRepository : IRepository<User>
 		{
-
 		}
+
+		#endregion
+
+		#region Nested type: MyRepository
 
 		public class MyRepository : IUserRepository
 		{
-
 		}
+
+		#endregion
+
+		#region Nested type: MyRepository2
 
 		public class MyRepository2 : IUserRepository
 		{
@@ -127,11 +137,25 @@ namespace Castle.MicroKernel.Tests
 			}
 		}
 
+		#endregion
+
+		#region Nested type: ServiceUsingRepository
+
 		public class ServiceUsingRepository
 		{
 			public ServiceUsingRepository(IRepository repos)
 			{
 			}
 		}
+
+		#endregion
+
+		#region Nested type: User
+
+		public class User
+		{
+		}
+
+		#endregion
 	}
 }

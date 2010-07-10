@@ -41,24 +41,20 @@ namespace Castle.Facilities.TypedFactory
 
 		public void Intercept(IInvocation invocation)
 		{
-			String name = invocation.Method.Name;
-
-			object[] args = invocation.Arguments;
-
+			var name = invocation.Method.Name;
+			var args = invocation.Arguments;
 			if (name.Equals(entry.CreationMethod))
 			{
 				if (args.Length == 0 || args[0] == null)
 				{
-					invocation.ReturnValue = kernel[ invocation.Method.ReturnType ];
+					invocation.ReturnValue = kernel.Resolve(invocation.Method.ReturnType);
 					return;
 				}
-				else
-				{
-					invocation.ReturnValue = kernel[(String)args[0]];
-					return;
-				}
+				invocation.ReturnValue = kernel.Resolve((String)args[0], new Arguments());
+				return;
 			}
-			else if (name.Equals(entry.DestructionMethod))
+
+			if (name.Equals(entry.DestructionMethod))
 			{
 				if (args.Length == 1)
 				{
@@ -67,7 +63,7 @@ namespace Castle.Facilities.TypedFactory
 					return;
 				}
 			}
-			
+
 			invocation.Proceed();
 		}
 	}

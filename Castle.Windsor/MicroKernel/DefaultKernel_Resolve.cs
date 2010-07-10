@@ -27,43 +27,16 @@ namespace Castle.MicroKernel
 	public partial class DefaultKernel
 #endif
 	{
+		[Obsolete("Use Resolve(key, new Arguments()) instead")]
 		public virtual object this[String key]
 		{
-			get
-			{
-				if (key == null)
-				{
-					throw new ArgumentNullException("key");
-				}
-
-				if ((this as IKernelInternal).LazyLoadComponentByKey(key, null) == false)
-				{
-					throw new ComponentNotFoundException(key);
-				}
-
-				var handler = GetHandler(key);
-				return ResolveComponent(handler);
-			}
+			get { return Resolve(key, new Arguments()); }
 		}
 
+		[Obsolete("Use Resolve(service) instead")]
 		public virtual object this[Type service]
 		{
-			get
-			{
-				if (service == null)
-				{
-					throw new ArgumentNullException("service");
-				}
-
-				if ((this as IKernelInternal).LazyLoadComponentByType(null, service) == false)
-				{
-					throw new ComponentNotFoundException(service);
-				}
-
-				IHandler handler = GetHandler(service);
-
-				return ResolveComponent(handler, service);
-			}
+			get { return Resolve(service); }
 		}
 
 		/// <summary>
@@ -191,7 +164,13 @@ namespace Castle.MicroKernel
 				throw new ArgumentNullException("service");
 			}
 
-			return this[service];
+			if ((this as IKernelInternal).LazyLoadComponentByType(null, service) == false)
+			{
+				throw new ComponentNotFoundException(service);
+			}
+
+			var handler = GetHandler(service);
+			return ResolveComponent(handler, service);
 		}
 
 		/// <summary>

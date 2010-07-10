@@ -23,11 +23,13 @@ namespace Castle.MicroKernel
 		/// <summary>
 		/// Returns the component instance by the key
 		/// </summary>
+		[Obsolete("Use Resolve(key, new Arguments()) instead")]
 		object this[String key] { get; }
 
 		/// <summary>
 		/// Returns the component instance by the service type
 		/// </summary>
+		[Obsolete("Use Resolve(service) or generic strongly typed version instead")]
 		object this[Type service] { get; }
 
 		/// <summary>

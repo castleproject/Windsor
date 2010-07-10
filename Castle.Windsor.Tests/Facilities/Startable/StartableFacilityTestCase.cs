@@ -87,7 +87,7 @@ namespace Castle.Windsor.Tests.Facilities.Startable
 
 			Assert.IsTrue(startableCreatedBeforeResolved, "Component was not properly started");
 
-			var component = kernel["b"] as NoInterfaceStartableComponent;
+			var component = kernel.Resolve<NoInterfaceStartableComponent>("b");
 
 			Assert.IsNotNull(component);
 			Assert.IsTrue(component.Started);
@@ -109,7 +109,7 @@ namespace Castle.Windsor.Tests.Facilities.Startable
 
 			Assert.IsTrue(startableCreatedBeforeResolved, "Component was not properly started");
 
-			var component = kernel["a"] as StartableComponent;
+			var component = kernel.Resolve<StartableComponent>("a");
 
 			Assert.IsNotNull(component);
 			Assert.IsTrue(component.Started);
@@ -168,7 +168,7 @@ namespace Castle.Windsor.Tests.Facilities.Startable
 				);
 			Assert.IsTrue(startableCreatedBeforeResolved, "Component was not properly started");
 
-			var component = kernel["a"] as StartableComponentCustomDependencies;
+			var component = kernel.Resolve<StartableComponentCustomDependencies>("a");
 
 			Assert.IsNotNull(component);
 			Assert.IsTrue(component.Started);
@@ -192,7 +192,7 @@ namespace Castle.Windsor.Tests.Facilities.Startable
 
 			Assert.IsTrue(startableCreatedBeforeResolved, "Component was not properly started");
 
-			var component = kernel["a"] as StartableComponentCustomDependencies;
+			var component = kernel.Resolve<StartableComponentCustomDependencies>("a");
 
 			Assert.IsNotNull(component);
 			Assert.IsTrue(component.Started);

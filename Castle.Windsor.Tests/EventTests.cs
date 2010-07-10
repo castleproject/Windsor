@@ -76,7 +76,7 @@ namespace Castle.MicroKernel.Tests.DependencyResolving
 				expectedModels.Add(prop.Dependency);
 			}
 
-			ICustomer customer = (ICustomer) kernel["customer"];
+			var customer = kernel.Resolve<ICustomer>("customer");
 
 			Assert.IsNotNull(customer);
 		}
@@ -88,8 +88,8 @@ namespace Castle.MicroKernel.Tests.DependencyResolving
 			kernel.Register(Component.For(typeof(DefaultMailSenderService)).Named("mailsender"));
 			kernel.Register(Component.For(typeof(DefaultTemplateEngine)).Named("templateengine"));
 
-			DefaultMailSenderService mailservice = (DefaultMailSenderService) kernel["mailsender"];
-			DefaultTemplateEngine templateengine = (DefaultTemplateEngine) kernel["templateengine"];
+			var mailservice = kernel.Resolve<DefaultMailSenderService>("mailsender");
+			DefaultTemplateEngine templateengine = kernel.Resolve<DefaultTemplateEngine>("templateengine");
 
 			Assert.IsNotNull(mailservice);
 			Assert.IsNotNull(templateengine);
@@ -101,7 +101,7 @@ namespace Castle.MicroKernel.Tests.DependencyResolving
 				expectedModels.Add(prop.Dependency);
 			}
 
-			DefaultSpamService spamservice = (DefaultSpamService) kernel["spamservice"];
+			DefaultSpamService spamservice = (DefaultSpamService) kernel.Resolve<DefaultSpamService>("spamservice");
 
 			Assert.IsNotNull(spamservice);
 		}
@@ -113,8 +113,8 @@ namespace Castle.MicroKernel.Tests.DependencyResolving
 			kernel.Register(Component.For(typeof(DefaultMailSenderService)).Named("mailsender"));
 			kernel.Register(Component.For(typeof(DefaultTemplateEngine)).Named("templateengine"));
 
-			DefaultMailSenderService mailservice = (DefaultMailSenderService) kernel["mailsender"];
-			DefaultTemplateEngine templateengine = (DefaultTemplateEngine) kernel["templateengine"];
+			DefaultMailSenderService mailservice = (DefaultMailSenderService) kernel.Resolve<DefaultMailSenderService>("mailsender");
+			DefaultTemplateEngine templateengine = (DefaultTemplateEngine) kernel.Resolve<DefaultTemplateEngine>("templateengine");
 
 			Assert.IsNotNull(mailservice);
 			Assert.IsNotNull(templateengine);
@@ -124,7 +124,7 @@ namespace Castle.MicroKernel.Tests.DependencyResolving
 				new List<DependencyModel>(kernel.GetHandler("spamservice").ComponentModel.Constructors.FewerArgumentsCandidate.Dependencies);
 
 			DefaultSpamServiceWithConstructor spamservice =
-				(DefaultSpamServiceWithConstructor) kernel["spamservice"];
+				(DefaultSpamServiceWithConstructor) kernel.Resolve<DefaultSpamServiceWithConstructor>("spamservice");
 
 			Assert.IsNotNull(spamservice);
 		}

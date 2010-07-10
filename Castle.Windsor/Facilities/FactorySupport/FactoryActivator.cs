@@ -65,36 +65,33 @@ namespace Castle.Facilities.FactorySupport
 			{
 				return Create(null, factoryId, staticCreateMethod, factoryCreate, context);
 			}
+			object factoryInstance = Kernel.Resolve(factoryId, new Arguments());
+
+			MethodInfo instanceCreateMethod =
+				factoryInstance.GetType().GetMethod(factoryCreate,
+				                                    BindingFlags.Public | BindingFlags.Instance);
+
+			if (instanceCreateMethod == null)
+			{
+				factoryInstance = ProxyUtil.GetUnproxiedInstance(factoryInstance);
+
+				instanceCreateMethod =
+					factoryInstance.GetType().GetMethod(factoryCreate,
+					                                    BindingFlags.Public | BindingFlags.Instance);
+			}
+
+			if (instanceCreateMethod != null)
+			{
+				return Create(factoryInstance, factoryId, instanceCreateMethod, factoryCreate, context);
+			}
 			else
 			{
-				object factoryInstance = Kernel[factoryId];
-
-				MethodInfo instanceCreateMethod =
-					factoryInstance.GetType().GetMethod(factoryCreate,
-						BindingFlags.Public | BindingFlags.Instance);
-
-				if (instanceCreateMethod == null)
-				{
-					factoryInstance = ProxyUtil.GetUnproxiedInstance(factoryInstance);
-
-					instanceCreateMethod =
-						factoryInstance.GetType().GetMethod(factoryCreate,
-							BindingFlags.Public | BindingFlags.Instance);
-				}
-
-				if (instanceCreateMethod != null)
-				{
-					return Create(factoryInstance, factoryId, instanceCreateMethod, factoryCreate, context);
-				}
-				else
-				{
-					String message = String.Format("You have specified a factory " +
-					                               "('{2}' - method to be called: {3}) " +
-					                               "for the component '{0}' {1} but we couldn't find the creation method" +
-					                               "(neither instance or static method with the name '{3}')",
-					                               Model.Name, Model.Implementation.FullName, factoryId, factoryCreate);
-					throw new FacilityException(message);
-				}
+				String message = String.Format("You have specified a factory " +
+				                               "('{2}' - method to be called: {3}) " +
+				                               "for the component '{0}' {1} but we couldn't find the creation method" +
+				                               "(neither instance or static method with the name '{3}')",
+				                               Model.Name, Model.Implementation.FullName, factoryId, factoryCreate);
+				throw new FacilityException(message);
 			}
 		}
 

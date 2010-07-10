@@ -118,9 +118,9 @@ namespace Castle.Facilities.Remoting
 
 		private void ConfigureServerFacility()
 		{
-		    Kernel.Register(Component.For<RemotingRegistry>().Named("remoting.registry"));
+			Kernel.Register(Component.For<RemotingRegistry>().Named("remoting.registry"));
 
-			localRegistry = (RemotingRegistry) Kernel[ typeof(RemotingRegistry) ];
+			localRegistry = Kernel.Resolve<RemotingRegistry>();
 
 			String kernelUri = FacilityConfig.Attributes["registryUri"];
 

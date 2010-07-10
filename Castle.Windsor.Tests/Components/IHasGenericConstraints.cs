@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,25 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.MicroKernel.Tests.ClassComponents
+namespace Castle.Windsor.Tests.Components
 {
-	using System;
-
-	/// <summary>
-	/// Summary description for ComponentFactory.
-	/// </summary>
-	public class ComponentFactory
+	public interface IHasGenericConstraints<T1, T2>
+		where T1 : EmptyBase
+		where T2 : class
 	{
-		private readonly IKernel kernel;
-
-		public ComponentFactory(IKernel kernel)
-		{
-			this.kernel = kernel;
-		}
-
-		public object Create(String name)
-		{
-			return kernel.Resolve<object>(name);
-		}
+		T1 Property { get; set; }
 	}
 }

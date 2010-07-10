@@ -134,14 +134,23 @@
     <Compile Include="ClassComponents\A.cs" />
     <Compile Include="ActionBasedInstaller.cs" />
     <Compile Include="ClassComponents\B.cs" />
+    <Compile Include="ClassComponents\Branch.cs" />
     <Compile Include="ClassComponents\C.cs" />
     <Compile Include="ClassComponents\ClosedGenericOverAAndB.cs" />
     <Compile Include="ClassComponents\IDoubleGeneric.cs" />
     <Compile Include="ClassComponents\ISimpleGeneric.cs" />
+    <Compile Include="ClassComponents\Leaf.cs" />
+    <Compile Include="ClassComponents\Root.cs" />
     <Compile Include="ClassComponents\UsesSimpleComponent1.cs" />
+    <Compile Include="Components\EmptyBase.cs" />
     <Compile Include="Components\CacheResultFinder.cs" />
     <Compile Include="Components\DatabaseResultFinder.cs" />
     <Compile Include="Components\FailedResultFinder.cs" />
+    <Compile Include="Components\HasGenericConstraintsImpl.cs" />
+    <Compile Include="Components\IHasGenericConstraints.cs" />
+    <Compile Include="Components\IMarkerInterface.cs" />
+    <Compile Include="Components\EmptySub1.cs" />
+    <Compile Include="Components\EmptySub2WithMarkerInterface.cs" />
     <Compile Include="Components\IResultFinder.cs" />
     <Compile Include="Components\ISimpleService.cs" />
     <Compile Include="Components\ISpecification.cs" />
@@ -149,6 +158,7 @@
     <Compile Include="Components\ResultFinderStringDecorator.cs" />
     <Compile Include="Components\SimpleService.cs" />
     <Compile Include="Components\SimpleServiceDisposable.cs" />
+    <Compile Include="Components\EmptyClass.cs" />
     <Compile Include="Components\WebServiceResultFinder.cs" />
     <Compile Include="Configuration2\ConfigurationInstallersTestCase.cs" />
     <Compile Include="Configuration2\UsingAssemblyTestCase.cs" />
@@ -209,6 +219,7 @@
     <Compile Include="Interceptors\TestInterceptor3.cs" />
     <Compile Include="Interceptors\WatcherInterceptorSelector.cs" />
     <Compile Include="Lifestyle\Components\ComponentWithDispose.cs" />
+    <Compile Include="Lifestyle\Scope.cs" />
     <Compile Include="Registration\ComponentRegistrationByNamespaceTestCase.cs" />
     <Compile Include="Registration\WithServiceTestCase.cs" />
     <Compile Include="TypedDependenciesTestCase.cs" />
@@ -382,7 +393,7 @@
     <Compile Include="Lifestyle\Components\PerThreadComponent.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Lifestyle\Components\SingletonComponent.cs">
+    <Compile Include="Lifestyle\SingletonComponent.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Lifestyle\Components\TransientComponent.cs">
