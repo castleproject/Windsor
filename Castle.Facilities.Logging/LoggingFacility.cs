@@ -150,6 +150,16 @@ namespace Castle.Facilities.Logging
 			return this;
 		}
 
+		/// <summary>
+		/// loads configuration from current AppDomain's config file (aka web.config/app.config)
+		/// </summary>
+		/// <returns></returns>
+		public LoggingFacility WithAppConfig()
+		{
+			configFileName = AppDomain.CurrentDomain.SetupInformation.ConfigurationFile;
+			return this;
+		}
+
 		protected override void Init()
 		{
 			SetUpTypeConverter();
