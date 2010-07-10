@@ -18,45 +18,45 @@ namespace Castle.MicroKernel.Registration.Proxy
 	using System.Collections;
 	using System.Collections.Generic;
 
-    public class MixinRegistration : IEnumerable<IReference<object>>
+	public class MixinRegistration : IEnumerable<IReference<object>>
 	{
-		private readonly IList<IReference<object>> mixins = new List<IReference<object>>();
+		private readonly IList<IReference<object>> items = new List<IReference<object>>();
 
-		public MixinRegistration Objects(params object[] mixIns)
+		public MixinRegistration Objects(params object[] objects)
 		{
-			foreach (var mixIn in mixIns)
+			foreach (var item in objects)
 			{
-				mixins.Add(new InstanceReference<object>(mixIn));
+				items.Add(new InstanceReference<object>(item));
 			}
 			return this;
 		}
 
 		public MixinRegistration Service<TService>()
 		{
-			mixins.Add(new ComponentReference<object>(typeof(TService)));
+			items.Add(new ComponentReference<object>(typeof(TService)));
 			return this;
 		}
 
 		public MixinRegistration Service(Type serviceType)
 		{
-			mixins.Add(new ComponentReference<object>(serviceType));
+			items.Add(new ComponentReference<object>(serviceType));
 			return this;
 		}
 
 		public MixinRegistration Service(string name)
 		{
-			mixins.Add(new ComponentReference<object>(name));
+			items.Add(new ComponentReference<object>(name));
 			return this;
 		}
 
 		IEnumerator IEnumerable.GetEnumerator()
 		{
-			return mixins.GetEnumerator();
+			return items.GetEnumerator();
 		}
 
 		IEnumerator<IReference<object>> IEnumerable<IReference<object>>.GetEnumerator()
 		{
-			return mixins.GetEnumerator();
+			return items.GetEnumerator();
 		}
 	}
 }

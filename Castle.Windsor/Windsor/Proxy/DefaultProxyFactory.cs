@@ -11,8 +11,6 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-
 namespace Castle.Windsor.Proxy
 {
 	using System;
@@ -23,6 +21,7 @@ namespace Castle.Windsor.Proxy
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Context;
 	using Castle.MicroKernel.Proxy;
+
 #if (SILVERLIGHT)
 	using Castle.DynamicProxy.SilverlightExtensions;
 #endif
@@ -47,7 +46,7 @@ namespace Castle.Windsor.Proxy
 #if (!SILVERLIGHT)
 		[NonSerialized]
 #endif
-		protected ProxyGenerator generator;
+			protected ProxyGenerator generator;
 
 		/// <summary>
 		/// Constructs a DefaultProxyFactory
@@ -57,9 +56,9 @@ namespace Castle.Windsor.Proxy
 			Init();
 		}
 
-		public override object Create(IProxyFactoryExtension customFactory, IKernel kernel, ComponentModel model, CreationContext context, params object[] constructorArguments)
+		public override object Create(IProxyFactoryExtension customFactory, IKernel kernel, ComponentModel model,
+		                              CreationContext context, params object[] constructorArguments)
 		{
-
 			var interceptors = ObtainInterceptors(kernel, model, context);
 			var proxyOptions = ProxyUtil.ObtainProxyOptions(model, true);
 			var proxyGenOptions = CreateProxyGenerationOptionsFrom(proxyOptions, kernel, context);
@@ -69,8 +68,17 @@ namespace Castle.Windsor.Proxy
 			var proxy = customFactory.Generate(builder, proxyGenOptions, interceptors);
 
 			CustomizeProxy(proxy, proxyGenOptions, kernel, model);
-
+			ReleaseHook(proxyGenOptions, kernel);
 			return proxy;
+		}
+
+		private void ReleaseHook(ProxyGenerationOptions proxyGenOptions, IKernel kernel)
+		{
+			if (proxyGenOptions.Hook == null)
+			{
+				return;
+			}
+			kernel.ReleaseComponent(proxyGenOptions.Hook);
 		}
 
 		/// <summary>
@@ -82,18 +90,19 @@ namespace Castle.Windsor.Proxy
 		/// <param name="constructorArguments">The constructor arguments.</param>
 		/// <param name="context">The creation context</param>
 		/// <returns>The component proxy.</returns>
-		public override object Create(IKernel kernel, object target, ComponentModel model, CreationContext context, params object[] constructorArguments)
+		public override object Create(IKernel kernel, object target, ComponentModel model, CreationContext context,
+		                              params object[] constructorArguments)
 		{
 			object proxy;
 
-			IInterceptor[] interceptors = ObtainInterceptors(kernel, model, context);
+			var interceptors = ObtainInterceptors(kernel, model, context);
 
-			ProxyOptions proxyOptions = ProxyUtil.ObtainProxyOptions(model, true);
-			ProxyGenerationOptions proxyGenOptions = CreateProxyGenerationOptionsFrom(proxyOptions, kernel, context);
+			var proxyOptions = ProxyUtil.ObtainProxyOptions(model, true);
+			var proxyGenOptions = CreateProxyGenerationOptionsFrom(proxyOptions, kernel, context);
 
 			CustomizeOptions(proxyGenOptions, kernel, model, constructorArguments);
 
-			Type[] interfaces = proxyOptions.AdditionalInterfaces;
+			var interfaces = proxyOptions.AdditionalInterfaces;
 
 			if (model.Service.IsInterface)
 			{
@@ -125,11 +134,12 @@ namespace Castle.Windsor.Proxy
 			}
 
 			CustomizeProxy(proxy, proxyGenOptions, kernel, model);
-
+			ReleaseHook(proxyGenOptions, kernel);
 			return proxy;
 		}
 
-		protected static ProxyGenerationOptions CreateProxyGenerationOptionsFrom(ProxyOptions proxyOptions, IKernel kernel, CreationContext context)
+		protected static ProxyGenerationOptions CreateProxyGenerationOptionsFrom(ProxyOptions proxyOptions, IKernel kernel,
+		                                                                         CreationContext context)
 		{
 			var proxyGenOptions = new ProxyGenerationOptions();
 			if (proxyOptions.Hook != null)
@@ -158,11 +168,13 @@ namespace Castle.Windsor.Proxy
 			return proxyGenOptions;
 		}
 
-		protected virtual void CustomizeProxy(object proxy, ProxyGenerationOptions options, IKernel kernel, ComponentModel model)
+		protected virtual void CustomizeProxy(object proxy, ProxyGenerationOptions options, IKernel kernel,
+		                                      ComponentModel model)
 		{
 		}
 
-		protected virtual void CustomizeOptions(ProxyGenerationOptions options, IKernel kernel, ComponentModel model, object[] arguments)
+		protected virtual void CustomizeOptions(ProxyGenerationOptions options, IKernel kernel, ComponentModel model,
+		                                        object[] arguments)
 		{
 		}
 
@@ -200,7 +212,7 @@ namespace Castle.Windsor.Proxy
 
 		private bool EmptyTypeFilter(Type type, object criteria)
 		{
-			Type mainInterface = (Type) criteria;
+			var mainInterface = (Type)criteria;
 
 			return !type.IsAssignableFrom(mainInterface) && type.IsPublic;
 		}
@@ -212,7 +224,6 @@ namespace Castle.Windsor.Proxy
 			Init();
 		}
 #endif
-
 
 		private void Init()
 		{

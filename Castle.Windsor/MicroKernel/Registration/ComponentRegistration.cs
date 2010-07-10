@@ -616,7 +616,19 @@ namespace Castle.MicroKernel.Registration
 		/// <returns></returns>
 		public ComponentRegistration<TService> SelectInterceptorsWith(IInterceptorSelector selector)
 		{
-			return AddDescriptor(new InterceptorSelectorDescriptor<TService>(selector));
+			return SelectInterceptorsWith(s => s.Instance(selector));
+		}
+
+		/// <summary>
+		/// Sets the interceptor selector for this component.
+		/// </summary>
+		/// <param name="selector"></param>
+		/// <returns></returns>
+		public ComponentRegistration<TService> SelectInterceptorsWith(Action<ItemRegistration<IInterceptorSelector>> selector)
+		{
+			var registration = new ItemRegistration<IInterceptorSelector>();
+			selector.Invoke(registration);
+			return AddDescriptor(new InterceptorSelectorDescriptor<TService>(registration.Item));
 		}
 
 		/// <summary>
