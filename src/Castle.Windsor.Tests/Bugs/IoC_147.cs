@@ -17,6 +17,7 @@ namespace Castle.Windsor.Tests.Bugs
 	using System.Collections;
 	using System.Collections.Generic;
 
+	using Castle.MicroKernel;
 	using Castle.MicroKernel.Registration;
 
 	using NUnit.Framework;
@@ -32,7 +33,8 @@ namespace Castle.Windsor.Tests.Bugs
 
 			var someDictionary = new Dictionary<string, object>();
 
-			var s = container.Resolve<ClassTakingDictionary>(new { SomeDictionary = someDictionary });
+			var s = container.Resolve<ClassTakingDictionary>(
+				new Arguments().Insert("SomeDictionary", someDictionary));
 			Assert.IsNotNull(s);
 		}
 

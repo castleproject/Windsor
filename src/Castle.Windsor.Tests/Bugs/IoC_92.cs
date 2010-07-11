@@ -3,7 +3,9 @@ using NUnit.Framework;
 
 namespace Castle.Windsor.Tests.Bugs
 {
-    [TestFixture]
+	using Castle.MicroKernel;
+
+	[TestFixture]
     public class IoC_92
     {
         [Test]
@@ -15,7 +17,7 @@ namespace Castle.Windsor.Tests.Bugs
                     .Parameters(Parameter.ForKey("x").Eq("abc"))
                 );
 
-            container.Resolve<Foo>(new {y=1});
+        	container.Resolve<Foo>(new Arguments().Insert("y", 1));
         }
 
         public class Foo

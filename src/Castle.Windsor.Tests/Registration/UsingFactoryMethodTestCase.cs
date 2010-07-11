@@ -106,7 +106,7 @@ namespace Castle.MicroKernel.Tests.Registration
 						k.Resolve<User>(ctx.AdditionalParameters)))
 				);
 			Assert.IsInstanceOf(typeof(FerrariProvider), Kernel.Resolve<ICarProvider>(
-				new { FiscalStability = FiscalStability.MrMoneyBags }));
+				new Arguments().Insert("FiscalStability", FiscalStability.MrMoneyBags)));
 		}
 
 		[Test]

@@ -96,7 +96,7 @@ namespace Castle.MicroKernel.Tests.Registration
 				d["arg1"] = arg1;
 				d["arg2"] = arg2;
 			}));
-			var component = Kernel.Resolve<ClassWithArguments>(new { arg2 = 2, arg1 = "foo" });
+			var component = Kernel.Resolve<ClassWithArguments>(new Arguments().Insert("arg2", 2).Insert("arg1", "foo"));
 			Assert.AreEqual(arg1, component.Arg1);
 			Assert.AreEqual(arg2, component.Arg2);
 		}
@@ -111,7 +111,7 @@ namespace Castle.MicroKernel.Tests.Registration
 				wasCalled = true;
 			}));
 
-			Kernel.Resolve<ClassWithArguments>(new { arg2 = 2, arg1 = "foo" });
+			Kernel.Resolve<ClassWithArguments>(new Arguments().Insert("arg2", 2).Insert("arg1", "foo"));
 
 			Assert.IsTrue(wasCalled);
 		}
@@ -147,7 +147,7 @@ namespace Castle.MicroKernel.Tests.Registration
 								{
 									d["arg2"] = arg2;
 								}));
-			var component = Kernel.Resolve<ClassWithArguments>(new { arg2 = 2, arg1 = "foo" });
+			var component = Kernel.Resolve<ClassWithArguments>(new Arguments().Insert("arg2", 2).Insert("arg1", "foo"));
 			Assert.AreEqual(arg1, component.Arg1);
 			Assert.AreEqual(arg2, component.Arg2);
 		}
@@ -183,7 +183,7 @@ namespace Castle.MicroKernel.Tests.Registration
 					return kk => ++releaseCalled;
 				}));
 
-			var component = Kernel.Resolve<ClassWithArguments>(new { arg2 = 2 });
+			var component = Kernel.Resolve<ClassWithArguments>(new Arguments().Insert("arg2", 2));
 			Assert.AreEqual(2, component.Arg2);
 			Assert.AreEqual("foo", component.Arg1);
 

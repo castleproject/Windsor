@@ -393,7 +393,9 @@ namespace Castle.MicroKernel.Tests.Registration
 			Kernel.Register(
 				Component.For<ICustomer>()
 					.ImplementedBy<CustomerImpl>()
-					.ExtendedProperties(new { key1 = "value1", key2 = "value2" }));
+					.ExtendedProperties(
+						Property.ForKey("key1").Eq("value1"),
+						Property.ForKey("key2").Eq("value2")));
 
 			var handler = Kernel.GetHandler(typeof(ICustomer));
 			Assert.AreEqual("value1", handler.ComponentModel.ExtendedProperties["key1"]);
@@ -555,7 +557,8 @@ namespace Castle.MicroKernel.Tests.Registration
 						Property.ForKey("Address").Eq("Forest"),
 						Property.ForKey("Age").Eq(100)
 					)
-					.ServiceOverrides(new { customer = "customer1" })
+					.ServiceOverrides(
+						ServiceOverride.ForKey("customer").Eq("customer1"))
 				);
 
 			var customer = Kernel.Resolve<CustomerChain1>("customer2");
