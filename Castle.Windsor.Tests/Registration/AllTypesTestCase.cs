@@ -55,6 +55,7 @@ namespace Castle.MicroKernel.Tests.Registration
 			Assert.AreNotEqual(0, handlers.Length);
 		}
 
+#if !SILVERLIGHT
 		[Test]
 		public void RegisterDirectoryAssemblyTypes_BasedOn_RegisteredInContainer()
 		{
@@ -68,6 +69,7 @@ namespace Castle.MicroKernel.Tests.Registration
 			handlers = Kernel.GetAssignableHandlers(typeof(ICommon));
 			Assert.AreNotEqual(0, handlers.Length);
 		}
+#endif
 
 		[Test]
 		public void RegisterAssemblyTypes_NoService_RegisteredInContainer()

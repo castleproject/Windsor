@@ -40,6 +40,7 @@ namespace Castle.Windsor.Tests.Installer
 			container.Resolve("Customer-by-CustomerInstaller");
 		}
 
+#if !SILVERLIGHT
 		[Test]
 		public void Can_install_from_assembly_by_directory_simple()
 		{
@@ -47,7 +48,7 @@ namespace Castle.Windsor.Tests.Installer
 			container.Install(FromAssembly.InDirectory(new AssemblyFilter(location)));
 			container.Resolve("Customer-by-CustomerInstaller");
 		}
-
+#endif
 		[Test]
 		public void Can_install_from_assembly_by_name()
 		{
@@ -80,6 +81,7 @@ namespace Castle.Windsor.Tests.Installer
 			container.Resolve("Customer-by-CustomerInstaller");
 		}
 
+#if !SILVERLIGHT
 		[Test]
 		public void Install_from_assembly_by_directory_executes_assembly_condition()
 		{
@@ -194,5 +196,6 @@ namespace Castle.Windsor.Tests.Installer
 			container.Install(FromAssembly.InDirectory(new AssemblyFilter(location).WithKeyToken<object>()));
 			Assert.IsFalse(container.Kernel.HasComponent("Customer-by-CustomerInstaller"));
 		}
+#endif
 	}
 }
