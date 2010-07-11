@@ -112,6 +112,9 @@ namespace Castle.MicroKernel.Context
 
 		private IDictionary EnsureAdditionalArgumentsWriteable(IDictionary dictionary)
 		{
+#if SILVERLIGHT
+			return dictionary;
+#else
 			// NOTE: this is actually here mostly to workaround the fact that ReflectionBasedDictionaryAdapter is read only
 			// we could make it writeable instead, but I'm not sure that would make sense.
 			// NOTE: As noted in IOC-ISSUE-190 that may lead to issues with custom IDictionary implementations
@@ -126,8 +129,8 @@ namespace Castle.MicroKernel.Context
 			{
 				return dictionary;
 			}
-
 			return new Arguments(dictionary);
+#endif
 		}
 
 		/// <summary>

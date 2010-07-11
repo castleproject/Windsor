@@ -425,7 +425,9 @@ namespace Castle.MicroKernel.Tests.Registration
 			Kernel.Register(
 				Component.For<ICustomer>()
 					.ImplementedBy<CustomerImpl>()
-					.DependsOn(new { Name = "Caption Hook", Address = "Fairyland", Age = 45 }));
+					.DependsOn(Property.ForKey("Name").Eq("Caption Hook"),
+					           Property.ForKey("Address").Eq("Fairyland"),
+					           Property.ForKey("Age").Eq(45)));
 
 			var customer = Kernel.Resolve<ICustomer>();
 			Assert.AreEqual(customer.Name, "Caption Hook");
