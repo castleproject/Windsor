@@ -14,7 +14,7 @@
     <ProjectGuid>{CB3A30A6-56D4-4F4F-9AEF-DA55E1FF6D74}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Castle</RootNamespace>
+    <RootNamespace>Castle.Windsor.Tests</RootNamespace>
     <AssemblyName>Castle.Windsor.Tests</AssemblyName>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\buildscripts\CastleKey.snk</AssemblyOriginatorKeyFile>
