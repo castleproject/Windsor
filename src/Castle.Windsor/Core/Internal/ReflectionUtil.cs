@@ -185,7 +185,7 @@ namespace Castle.Core.Internal
 			var constructor = subtypeofTBase.GetConstructor(BindingFlags.Instance | BindingFlags.Public, null, types, null);
 			if (constructor != null)
 			{
-				return (TBase)Instantiate(constructor, subtypeofTBase, ctorArgs);
+				return (TBase)Instantiate(constructor, ctorArgs);
 			}
 			try
 			{
@@ -220,7 +220,7 @@ namespace Castle.Core.Internal
 			}
 		}
 
-		private static object Instantiate(ConstructorInfo ctor, Type type, object[] ctorArgs)
+		private static object Instantiate(ConstructorInfo ctor, object[] ctorArgs)
 		{
 			Func<object[], object> factory;
 			if (factories.TryGetValue(ctor, out factory) == false)
