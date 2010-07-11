@@ -19,6 +19,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 	using System.ServiceModel;
 	using System.ServiceModel.Channels;
 	using System.ServiceModel.Description;
+	using System.ServiceModel.Discovery;
 	using Castle.Core;
 	using Castle.Core.Configuration;
 	using Castle.Core.Resource;
@@ -1423,6 +1424,32 @@ namespace Castle.Facilities.WcfIntegration.Tests
 			{
 				client = windsorContainer.Resolve<IOperationsEx>("operations");
 				client.Backup(new Dictionary<string, object>());
+			}
+		}
+
+		[Test]
+		public void CanDiscoverServices()
+		{
+			using (new WindsorContainer()
+				.AddFacility<WcfFacility>(f => f.CloseTimeout = TimeSpan.Zero)
+				.Register(Component.For<Operations>()
+					.DependsOn(new { number = 28 })
+					.AsWcfService(new DefaultServiceModel()
+						.AddEndpoints(WcfEndpoint.ForContract<IOperations>()
+							.BoundTo(new NetTcpBinding { PortSharingEnabled = true })
+							.At("net.tcp://localhost/Operations2"))
+						.Discoverable()
+				)))
+			{
+				using (var discover = new DiscoveryClient(new UdpDiscoveryEndpoint()))
+				{
+					var criteria = new FindCriteria(typeof(IOperations)) { MaxResults = 1 };
+					var result = discover.Find(criteria);
+					Assert.AreEqual(1, result.Endpoints.Count);
+
+					//var client = clientContainer.Resolve<IOperations>("operations");
+					//Assert.AreEqual(28, client.GetValueFromConstructor());
+				}
 			}
 		}
 

@@ -21,7 +21,7 @@ namespace Castle.Facilities.WcfIntegration.Tests.Behaviors
 	{
 		public ServiceHost ServiceHost { get; private set; }
 
-		public override void Opened(ServiceHost serviceHost)
+		protected override void Opened(ServiceHost serviceHost)
 		{
 			ServiceHost = serviceHost;
 		}

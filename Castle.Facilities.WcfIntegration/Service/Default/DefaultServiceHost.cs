@@ -15,9 +15,8 @@
 namespace Castle.Facilities.WcfIntegration
 {
 	using System;
+	using System.Linq;
 	using System.ServiceModel;
-	using System.ServiceModel.Channels;
-	using System.ServiceModel.Description;
 	using Castle.Core;
 
 	public class DefaultServiceHost : ServiceHost, IWcfServiceHost
@@ -46,59 +45,18 @@ namespace Castle.Facilities.WcfIntegration
 
 		private void AddDefaultEndpointIfNoneFound()
 		{
-			if (Description != null && Description.Endpoints.Count == 0)
+			if (Description != null && 
+				Description.Endpoints.Where(endpoint => endpoint.IsSystemEndpoint == false)
+				.Any() == false)
 			{
-				Type contract = ObtainDefaultContract();
-
-				if (contract != null)
+				foreach (var endpoint in AddDefaultEndpoints())
 				{
-					foreach (Uri baseAddress in BaseAddresses)
+					if (EndpointCreated != null)
 					{
-						Binding binding = null;
-
-						if (baseAddress.Scheme == Uri.UriSchemeHttp)
-						{
-							binding = new BasicHttpBinding();
-						}
-						else if (baseAddress.Scheme == Uri.UriSchemeHttps)
-						{
-							binding = new BasicHttpBinding(BasicHttpSecurityMode.Transport);
-						}
-						else if (baseAddress.Scheme == Uri.UriSchemeNetTcp)
-						{
-							binding = new NetTcpBinding();
-						}
-
-						if (binding != null)
-						{
-							var endpoint = AddServiceEndpoint(contract, binding, baseAddress);
-
-							if (EndpointCreated != null)
-							{
-								EndpointCreated(this, new EndpointCreatedArgs(endpoint));
-							}
-						}
+						EndpointCreated(this, new EndpointCreatedArgs(endpoint));
 					}
 				}
 			}
-		}
-
-		private Type ObtainDefaultContract()
-		{
-			if (model != null && model.Service.IsInterface)
-			{
-				return model.Service;
-			}
-
-			if (ImplementedContracts.Count == 1)
-			{
-				foreach (var contract in ImplementedContracts.Values)
-				{
-					return contract.ContractType;
-				}
-			}
-
-			return null;
 		}
 	}
 }

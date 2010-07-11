@@ -18,7 +18,7 @@ namespace Castle.Facilities.WcfIntegration.Tests.Behaviors
 	using System.ServiceModel;
 	using Castle.Facilities.WcfIntegration.Service;
 
-	public class ServiceHostListener : AbstractServiceHostAware
+	internal class ServiceHostListener : AbstractServiceHostAware
 	{
 		private static bool created, opening, opened, closing, closed, faulted;
 
@@ -57,32 +57,32 @@ namespace Castle.Facilities.WcfIntegration.Tests.Behaviors
 			created = opening = opened = closing = closed = faulted = false;	
 		}
 
-		public override void Created(ServiceHost serviceHost)
+		protected override void Created(ServiceHost serviceHost)
 		{
 			created = true;
 		}
 
-		public override void Opening(ServiceHost serviceHost)
+		protected override void Opening(ServiceHost serviceHost)
 		{
 			opening = true;
 		}
 
-		public override void Opened(ServiceHost serviceHost)
+		protected override void Opened(ServiceHost serviceHost)
 		{
 			opened = true;
 		}
 
-		public override void Closing(ServiceHost serviceHost)
+		protected override void Closing(ServiceHost serviceHost)
 		{
 			closing = true;
 		}
 
-		public override void Closed(ServiceHost serviceHost)
+		protected override void Closed(ServiceHost serviceHost)
 		{
 			closed = true;
 		}
 
-		public override void Faulted(ServiceHost serviceHost)
+		protected override void Faulted(ServiceHost serviceHost)
 		{
 			faulted = true;
 		}

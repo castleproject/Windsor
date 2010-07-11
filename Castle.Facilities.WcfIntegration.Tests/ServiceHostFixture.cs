@@ -30,7 +30,6 @@ namespace Castle.Facilities.WcfIntegration.Tests
 	using Castle.Windsor.Installer;
 	using log4net.Appender;
 	using log4net.Config;
-	using log4net.Core;
 	using NUnit.Framework;
 
 	[TestFixture]
@@ -723,6 +722,112 @@ namespace Castle.Facilities.WcfIntegration.Tests
 					captureServiceHost.ServiceHost.Description.Behaviors.Find<AspNetCompatibilityRequirementsAttribute>();
 				Assert.IsNotNull(aspNetCompat);
 				Assert.AreEqual(AspNetCompatibilityRequirementsMode.Allowed, aspNetCompat.RequirementsMode);
+			}
+		}
+
+		[Test]
+		public void CanPubishMEXEndpointsUsingDefaults()
+		{
+			using (new WindsorContainer()
+				.AddFacility<WcfFacility>(f => f.CloseTimeout = TimeSpan.Zero)
+				.Register(Component.For<Operations>()
+					.DependsOn(new { number = 42 })
+					.AsWcfService(new DefaultServiceModel()
+						.AddBaseAddresses(
+							"net.tcp://localhost/Operations",
+							"http://localhost:27198/UsingWindsor.svc")
+						.AddEndpoints(
+							WcfEndpoint.ForContract<IOperations>()
+								.BoundTo(new NetTcpBinding { PortSharingEnabled = true })
+							)
+						.PublishMEX(mex => mex.EnableHttpGet())
+					)
+				))
+			{
+				var tcpMextClient = new MetadataExchangeClient(new EndpointAddress("net.tcp://localhost/Operations/mex"));
+				var tcpMetadata = tcpMextClient.GetMetadata();
+				Assert.IsNotNull(tcpMetadata);
+
+				var httpMextClient = new MetadataExchangeClient(new EndpointAddress("http://localhost:27198/UsingWindsor.svc?wsdl"));
+				var httpMetadata = httpMextClient.GetMetadata();
+				Assert.IsNotNull(httpMextClient);
+			}
+		}
+
+		[Test]
+		public void CanPubishMEXEndpointsUsingCustomAddress()
+		{
+			using (new WindsorContainer()
+				.AddFacility<WcfFacility>(f => f.CloseTimeout = TimeSpan.Zero)
+				.Register(Component.For<Operations>()
+					.DependsOn(new { number = 42 })
+					.AsWcfService(new DefaultServiceModel()
+						.AddBaseAddresses(
+							"net.tcp://localhost/Operations",
+							"http://localhost:27198/UsingWindsor.svc")
+						.AddEndpoints(
+							WcfEndpoint.ForContract<IOperations>()
+								.BoundTo(new NetTcpBinding { PortSharingEnabled = true })
+							)
+						.PublishMEX(mex => mex.EnableHttpGet().AtAddress("tellMeAboutYourSelf"))
+					)
+				))
+			{
+				var tcpMextClient = new MetadataExchangeClient(new EndpointAddress("net.tcp://localhost/Operations/tellMeAboutYourSelf"));
+				var tcpMetadata = tcpMextClient.GetMetadata();
+				Assert.IsNotNull(tcpMetadata);
+
+				var httpMextClient = new MetadataExchangeClient(new EndpointAddress("http://localhost:27198/UsingWindsor.svc?wsdl"));
+				var httpMetadata = httpMextClient.GetMetadata();
+				Assert.IsNotNull(httpMetadata);
+			}
+		}
+
+		[Test]
+		public void CanPubishMEXEndpointsWithoutBaseAddresses()
+		{
+			using (new WindsorContainer()
+				.AddFacility<WcfFacility>(f =>
+				{
+					f.DefaultBinding = new NetTcpBinding { PortSharingEnabled = true };
+					f.CloseTimeout = TimeSpan.Zero;
+				}
+				)
+				.Register(Component.For<Operations>()
+					.DependsOn(new { number = 42 })
+					.AsWcfService(new DefaultServiceModel().AddEndpoints(
+						WcfEndpoint.ForContract<IOperations>()
+							.At("net.tcp://localhost/Operations"))
+					.PublishMEX()
+				)))
+			{
+				var tcpMextClient = new MetadataExchangeClient(new EndpointAddress("net.tcp://localhost/Operations/mex"));
+				var tcpMetadata = tcpMextClient.GetMetadata();
+				Assert.IsNotNull(tcpMetadata);			
+			}
+		}
+
+		[Test]
+		public void CanPubishMEXEndpointsWithoutBaseAddressesUsingCustomAddress()
+		{
+			using (new WindsorContainer()
+				.AddFacility<WcfFacility>(f =>
+				{
+					f.DefaultBinding = new NetTcpBinding { PortSharingEnabled = true };
+					f.CloseTimeout = TimeSpan.Zero;
+				}
+				)
+				.Register(Component.For<Operations>()
+					.DependsOn(new { number = 42 })
+					.AsWcfService(new DefaultServiceModel().AddEndpoints(
+						WcfEndpoint.ForContract<IOperations>()
+							.At("net.tcp://localhost/Operations"))
+					.PublishMEX(mex => mex.AtAddress("tellMeAboutYourSelf"))
+				)))
+			{
+				var tcpMextClient = new MetadataExchangeClient(new EndpointAddress("net.tcp://localhost/Operations/tellMeAboutYourSelf"));
+				var tcpMetadata = tcpMextClient.GetMetadata();
+				Assert.IsNotNull(tcpMetadata);
 			}
 		}
 

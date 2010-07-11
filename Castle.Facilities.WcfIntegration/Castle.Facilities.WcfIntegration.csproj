@@ -69,6 +69,7 @@
     </Reference>
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.ServiceModel.Activation" />
+    <Reference Include="System.ServiceModel.Discovery" />
     <Reference Include="System.ServiceModel.Web">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -82,6 +83,7 @@
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="Behaviors\AbstractExtensibleObject.cs" />
     <Compile Include="Behaviors\AbstractExtension.cs" />
+    <Compile Include="Behaviors\WcfDiscoveryExtension.cs" />
     <Compile Include="Behaviors\WcfErrorBehavior.cs" />
     <Compile Include="Behaviors\WcfChannelExtensions.cs" />
     <Compile Include="Behaviors\Lifecyle\AbstractMessageEnvelopeAction.cs" />
@@ -92,6 +94,7 @@
     <Compile Include="Behaviors\Lifecyle\MessageLifecycleBehavior.cs" />
     <Compile Include="Behaviors\Lifecyle\AbstractMessageAction.cs" />
     <Compile Include="Behaviors\WcfBehaviorActivator.cs" />
+    <Compile Include="Behaviors\WcfMexExtension.cs" />
     <Compile Include="Client\AbstractChannelFactoryAware.cs" />
     <Compile Include="Behaviors\AbstractWcfExtension.cs" />
     <Compile Include="Behaviors\ExtensionDependencies.cs" />

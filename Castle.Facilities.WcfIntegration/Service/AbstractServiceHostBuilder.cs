@@ -39,8 +39,7 @@ namespace Castle.Facilities.WcfIntegration
 
 		public WcfServiceExtension Services { get; set; }
 
-		protected void ConfigureServiceHost(ServiceHost serviceHost, IWcfServiceModel serviceModel,
-											ComponentModel model)
+		protected void ConfigureServiceHost(ServiceHost serviceHost, IWcfServiceModel serviceModel, ComponentModel model)
 		{
 			serviceHost.Description.Behaviors.Add(
 				new WindsorDependencyInjectionServiceBehavior(kernel, model)

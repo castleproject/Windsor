@@ -21,33 +21,57 @@ namespace Castle.Facilities.WcfIntegration.Service
 	/// </summary>
 	public abstract class AbstractServiceHostAware : IServiceHostAware
 	{
-		/// <inheritdoc />
-		public virtual void Created(ServiceHost serviceHost)
+		void IServiceHostAware.Created(ServiceHost serviceHost)
+		{
+			Created(serviceHost);
+		}
+
+		protected virtual void Created(ServiceHost serviceHost)
 		{
 		}
 
-		/// <inheritdoc />
-		public virtual void Opening(ServiceHost serviceHost)
+		void IServiceHostAware.Opening(ServiceHost serviceHost)
+		{
+			Opening(serviceHost);
+		}
+
+		protected virtual void Opening(ServiceHost serviceHost)
 		{
 		}
 
-		/// <inheritdoc />
-		public virtual void Opened(ServiceHost serviceHost)
+		void IServiceHostAware.Opened(ServiceHost serviceHost)
+		{
+			Opened(serviceHost);
+		}
+
+		protected virtual void Opened(ServiceHost serviceHost)
 		{
 		}
 
-		/// <inheritdoc />
-		public virtual void Closing(ServiceHost serviceHost)
+		void IServiceHostAware.Closing(ServiceHost serviceHost)
+		{
+			Closing(serviceHost);
+		}
+
+		protected virtual void Closing(ServiceHost serviceHost)
 		{
 		}
 
-		/// <inheritdoc />
-		public virtual void Closed(ServiceHost serviceHost)
+		void IServiceHostAware.Closed(ServiceHost serviceHost)
+		{
+			Closed(serviceHost);
+		}
+
+		protected virtual void Closed(ServiceHost serviceHost)
 		{
 		}
 
-		/// <inheritdoc />
-		public virtual void Faulted(ServiceHost serviceHost)
+		void IServiceHostAware.Faulted(ServiceHost serviceHost)
+		{
+			Faulted(serviceHost);
+		}
+
+		protected virtual void Faulted(ServiceHost serviceHost)
 		{
 		}
 	}
