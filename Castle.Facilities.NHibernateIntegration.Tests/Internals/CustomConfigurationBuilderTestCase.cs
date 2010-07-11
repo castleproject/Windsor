@@ -18,9 +18,14 @@ using Castle.Facilities.NHibernateIntegration.Builders;
 using NHibernate;
 using NUnit.Framework;
 using Configuration = NHibernate.Cfg.Configuration;
+using Castle.Core.Resource;
+using Castle.MicroKernel.Facilities;
+using Castle.Windsor;
+using Castle.Windsor.Configuration.Interpreters;
 
 namespace Castle.Facilities.NHibernateIntegration.Tests.Internals
 {
+
 	public class CustomConfigurationBuilder : IConfigurationBuilder
 	{
 		private int _configurationsCreated;
@@ -91,5 +96,31 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Internals
 		{
 			get { return "configurationBuilderRegression.xml"; }
 		}
+	}
+
+	[TestFixture]
+	public class InvalidCustomConfigurationBuilderTestCase : AbstractCustomConfigurationBuilderTestCase
+	{
+		[Test]
+		[ExpectedException(typeof(FacilityException), ExpectedMessage = "ConfigurationBuilder type 'InvalidType' not found")]
+		public void ThrowsWithMessage()
+		{
+			container = new WindsorContainer(new XmlInterpreter(new AssemblyResource(GetContainerFile())));
+			Invoked();
+		}
+
+		public override void SetUp()
+		{
+		}
+
+		public override void TearDown()
+		{
+		}
+
+		protected override string ConfigurationFile
+		{
+			get { return "invalidConfigurationBuilder.xml"; }
+		}
+		
 	}
 }

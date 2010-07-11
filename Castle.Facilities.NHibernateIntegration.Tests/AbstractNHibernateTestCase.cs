@@ -58,7 +58,7 @@ namespace Castle.Facilities.NHibernateIntegration.Tests
 		}
 
 		[SetUp]
-		public void SetUp()
+		public virtual void SetUp()
 		{
 			container = new WindsorContainer(new XmlInterpreter(new AssemblyResource(GetContainerFile())));
 			ConfigureContainer();
@@ -89,7 +89,7 @@ namespace Castle.Facilities.NHibernateIntegration.Tests
 		}
 
 
-		private string GetContainerFile()
+		protected string GetContainerFile()
 		{
 			return "Castle.Facilities.NHibernateIntegration.Tests/" + ConfigurationFile;
 		}

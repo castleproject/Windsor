@@ -301,6 +301,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Issues\Facilities119\facility.xml" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="invalidConfigurationBuilder.xml" />
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>
