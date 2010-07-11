@@ -81,7 +81,7 @@ namespace Castle.MicroKernel.Tests
 		public void Missing_service_is_correctly_detected()
 		{
 			TestDelegate act = () =>
-			                   kernel.Resolve<CompB>(new { myArgument = 123 });
+			                   kernel.Resolve<CompB>(new Arguments().Insert("myArgument", 123));
 			var exception =
 				Assert.Throws<DependencyResolverException>(act);
 			Assert.AreEqual(

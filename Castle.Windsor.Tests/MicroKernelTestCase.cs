@@ -230,8 +230,7 @@ namespace Castle.MicroKernel.Tests
 
 			C[] cs = null;
 			Assert.DoesNotThrow(() =>
-			                    cs = kernel.ResolveAll<C>(
-			                    	new { fakeDependency = "Stefan!" }));
+			                    cs = kernel.ResolveAll<C>(new Arguments().Insert("fakeDependency", "Stefan!")));
 			Assert.IsEmpty(cs);
 		}
 
