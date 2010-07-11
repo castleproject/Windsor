@@ -149,7 +149,8 @@ namespace Castle.Facilities.Logging
 			configFileName = configFile;
 			return this;
 		}
-
+		
+#if !SILVERLIGHT
 		/// <summary>
 		/// loads configuration from current AppDomain's config file (aka web.config/app.config)
 		/// </summary>
@@ -159,7 +160,7 @@ namespace Castle.Facilities.Logging
 			configFileName = AppDomain.CurrentDomain.SetupInformation.ConfigurationFile;
 			return this;
 		}
-
+#endif
 		protected override void Init()
 		{
 			SetUpTypeConverter();
