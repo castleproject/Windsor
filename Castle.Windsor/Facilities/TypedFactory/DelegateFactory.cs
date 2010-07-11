@@ -55,7 +55,7 @@ namespace Castle.Facilities.TypedFactory
 				.UsingFactoryMethod((k, m, c) =>
 				{
 					var delegateProxyFactory = k.Resolve<IProxyFactoryExtension>(TypedFactoryFacility.DelegateProxyFactoryKey,
-					                                                             new Arguments(new { targetDelegateType = service }));
+					                                                             new Arguments().Insert("targetDelegateType", service));
 					var @delegate = k.ProxyFactory.Create(delegateProxyFactory, k, m, c);
 
 					k.ReleaseComponent(delegateProxyFactory);
@@ -97,7 +97,7 @@ namespace Castle.Facilities.TypedFactory
 
 		protected static MethodInfo GetInvokeMethod(Type @delegate)
 		{
-			MethodInfo invoke = @delegate.GetMethod("Invoke");
+			var invoke = @delegate.GetMethod("Invoke");
 			Debug.Assert(invoke != null, "invoke != null");
 			return invoke;
 		}

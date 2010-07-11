@@ -39,8 +39,8 @@ namespace Castle.Windsor.Tests
 		private ComponentRegistration<A> AddResolveExtensions(ComponentRegistration<A> componentRegistration,
 		                                                      params IResolveExtension[] items)
 		{
-			var resolveExtensions = new HashSet<IResolveExtension>();
-			foreach (var item in items)
+			var resolveExtensions = new List<IResolveExtension>();
+			foreach (var item in items.Distinct())
 			{
 				resolveExtensions.Add(item);
 			}
@@ -50,8 +50,8 @@ namespace Castle.Windsor.Tests
 		private ComponentRegistration<TComponent> AddReleaseExtensions<TComponent>(
 			ComponentRegistration<TComponent> componentRegistration, params IReleaseExtension[] items)
 		{
-			var releaseExtensions = new HashSet<IReleaseExtension>();
-			foreach (var item in items)
+			var releaseExtensions = new List<IReleaseExtension>();
+			foreach (var item in items.Distinct())
 			{
 				releaseExtensions.Add(item);
 			}
