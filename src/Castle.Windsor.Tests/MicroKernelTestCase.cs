@@ -192,7 +192,7 @@ namespace Castle.MicroKernel.Tests
 		public void ResolveAll_resolves_when_dependency_provideded_inline()
 		{
 			kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(CommonImplWithDependency)).Named("test"));
-			ICommon[] services = kernel.ResolveAll<ICommon>(new { customer = new CustomerImpl() });
+			ICommon[] services = kernel.ResolveAll<ICommon>(new Arguments().Insert("customer", new CustomerImpl()));
 			Assert.AreEqual(1, services.Length);
 		}
 

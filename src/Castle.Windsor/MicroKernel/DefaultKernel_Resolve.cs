@@ -317,7 +317,6 @@ namespace Castle.MicroKernel
 		{
 			return ResolveAll(service, new ReflectionBasedDictionaryAdapter(argumentsAsAnonymousType));
 		}
-#endif
 
 		/// <summary>
 		///   Returns component instances that implement TService
@@ -329,6 +328,7 @@ namespace Castle.MicroKernel
 		{
 			return (TService[])ResolveAll(typeof(TService), argumentsAsAnonymousType);
 		}
+#endif
 
 		/// <summary>
 		///   Returns component instances that implement TService
