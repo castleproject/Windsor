@@ -88,6 +88,9 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 			}
 			
 			Type targetType = model.Implementation;
+#if SILVERLIGHT
+			if(model.Implementation.IsPublic == false) return;
+#endif
 	
 			PropertyInfo[] properties = targetType.GetProperties(bindingFlags);
 	
