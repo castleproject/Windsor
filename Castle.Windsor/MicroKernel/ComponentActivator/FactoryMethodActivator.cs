@@ -22,10 +22,10 @@ namespace Castle.MicroKernel.ComponentActivator
 	public class FactoryMethodActivator<T> : DefaultComponentActivator, IDependencyAwareActivator
 	{
 		private readonly Func<IKernel,ComponentModel, CreationContext, T> creator;
+
 		public FactoryMethodActivator(ComponentModel model, IKernel kernel, ComponentInstanceDelegate onCreation, ComponentInstanceDelegate onDestruction) 
 			: base(model, kernel, onCreation, onDestruction)
 		{
-			// NOTE: in .NET 4.0 we can use Func<IKernel, CreationContext, object> and ditch the generics altogether
 			creator = Model.ExtendedProperties["factoryMethodDelegate"] as Func<IKernel, ComponentModel, CreationContext, T>;
 			if (creator == null)
 			{
@@ -35,6 +35,7 @@ namespace Castle.MicroKernel.ComponentActivator
 						GetType().Name, Model));
 			}
 		}
+
 		protected override object Instantiate(CreationContext context)
 		{
 			return creator(Kernel, Model, context);
