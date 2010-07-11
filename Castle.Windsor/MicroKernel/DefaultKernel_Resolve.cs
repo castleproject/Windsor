@@ -365,6 +365,6 @@ namespace Castle.MicroKernel
 		{
 			return Resolve(key, service, new ReflectionBasedDictionaryAdapter(argumentsAsAnonymousType));
 		}
-	}
 #endif
+	}
 }
