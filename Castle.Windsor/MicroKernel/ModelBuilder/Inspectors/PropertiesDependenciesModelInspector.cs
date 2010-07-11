@@ -65,6 +65,10 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 
 		protected virtual void InspectProperties(ComponentModel model)
 		{
+			var targetType = model.Implementation;
+#if SILVERLIGHT
+			if(targetType.IsVisible == false) return;
+#endif
 			if (model.InspectionBehavior == PropertiesInspectionBehavior.Undefined)
 			{
 				model.InspectionBehavior = GetInspectionBehaviorFromTheConfiguration(model.Configuration);
@@ -77,7 +81,6 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 			}
 			
 			BindingFlags bindingFlags;
-			
 			if (model.InspectionBehavior == PropertiesInspectionBehavior.DeclaredOnly)
 			{
 				bindingFlags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly;
@@ -87,14 +90,8 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 				bindingFlags = BindingFlags.Public | BindingFlags.Instance;
 			}
 			
-			Type targetType = model.Implementation;
-#if SILVERLIGHT
-			if(model.Implementation.IsPublic == false) return;
-#endif
-	
-			PropertyInfo[] properties = targetType.GetProperties(bindingFlags);
-	
-			foreach(PropertyInfo property in properties)
+			var properties = targetType.GetProperties(bindingFlags);
+			foreach(var property in properties)
 			{
 				if (!property.CanWrite || property.GetSetMethod() == null)
 				{
