@@ -199,7 +199,7 @@ namespace Castle.MicroKernel.ComponentActivator
 
 			instance = ProxyUtil.GetUnproxiedInstance(instance);
 			ApplyConcerns(Model.Lifecycle.CommissionConcerns
-#if DOTNET35 || SL3
+#if DOTNET35 || SILVERLIGHT
 				.ToArray()
 #endif
 				, instance);
@@ -211,7 +211,7 @@ namespace Castle.MicroKernel.ComponentActivator
 
 			instance = ProxyUtil.GetUnproxiedInstance(instance);
 			ApplyConcerns(Model.Lifecycle.DecommissionConcerns
-#if DOTNET35 || SL3
+#if DOTNET35 || SILVERLIGHT
 				.ToArray()
 #endif
 , instance);

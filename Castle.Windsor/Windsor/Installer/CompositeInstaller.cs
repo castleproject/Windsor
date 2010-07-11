@@ -21,10 +21,18 @@ namespace Castle.Windsor.Installer
 
 	public class CompositeInstaller : IWindsorInstaller
 	{
-		private readonly ICollection<IWindsorInstaller> installers = new HashSet<IWindsorInstaller>();
+		private readonly ICollection<IWindsorInstaller> installers =
+#if SL3
+			new List<IWindsorInstaller>();
+#else
+			new HashSet<IWindsorInstaller>();
+#endif
 
 		public void Add(IWindsorInstaller instance)
 		{
+#if SL3
+			if(installers.Contains(instance)) return;
+#endif
 			installers.Add(instance);
 		}
 

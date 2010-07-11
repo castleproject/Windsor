@@ -19,7 +19,6 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 	using System.Collections.Generic;
 	using System.Diagnostics;
 	using System.Reflection;
-	using System.Reflection.Emit;
 	using System.Text;
 
 	using Castle.Core.Configuration;
@@ -33,7 +32,12 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 	public class TypeNameConverter : AbstractTypeConverter
 	{
 		private static readonly Assembly mscorlib = typeof(object).Assembly;
-		private readonly ICollection<Assembly> assemblies = new HashSet<Assembly>();
+		private readonly ICollection<Assembly> assemblies = 
+#if SL3
+			new List<Assembly>();
+#else
+			new HashSet<Assembly>();
+#endif
 
 		private readonly IDictionary<string, Type> fullName2Type =
 			new Dictionary<string, Type>(StringComparer.OrdinalIgnoreCase);
@@ -160,7 +164,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 		private void Scan(Assembly assembly)
 		{
 			// won't work for dynamic assemblies
-#if DOTNET35
+#if DOTNET35 || SL3
 			if (assembly is AssemblyBuilder || (AssemblyBuilderDotNet4 != null && assembly.GetType().Equals(AssemblyBuilderDotNet4)))
 #else
 			if(assembly.IsDynamic)

@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 namespace Castle.MicroKernel.Registration
 {
 	using System;
@@ -129,13 +130,13 @@ namespace Castle.MicroKernel.Registration
 			{
 				if (string.IsNullOrEmpty(mask))
 				{
-#if DOTNET35
+#if DOTNET35 || SL3
 					return Directory.GetFiles(directoryName);
 #else
 					return Directory.EnumerateFiles(directoryName);
 #endif
 				}
-#if DOTNET35
+#if DOTNET35 || SL3
 				return Directory.GetFiles(directoryName, mask);
 #else
 				return Directory.EnumerateFiles(directoryName, mask);
@@ -197,8 +198,8 @@ namespace Castle.MicroKernel.Registration
 			{
 				path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, path);
 			}
+			return Path.GetFullPath(path).ToUpper(CultureInfo.InvariantCulture);
 #endif
-			return Path.GetFullPath(path).ToUpperInvariant();
 		}
 
 		private static bool IsTokenEqual(byte[] actualToken, byte[] expectedToken)
