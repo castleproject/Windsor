@@ -30,10 +30,12 @@ namespace Castle.MicroKernel
 		private readonly IList<IArgumentsStore> stores = new List<IArgumentsStore>();
 		private readonly object syncRoot = new object();
 
+#if !SILVERLIGHT
 		public Arguments(object namedArgumentsAsAnonymousType, params IArgumentsStore[] customStores)
 			: this(new ReflectionBasedDictionaryAdapter(namedArgumentsAsAnonymousType), customStores)
 		{
 		}
+#endif
 
 		public Arguments(IDictionary values, params IArgumentsStore[] customStores)
 			: this(customStores)
