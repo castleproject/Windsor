@@ -306,7 +306,8 @@ namespace Castle.Windsor
 		/// <param name="arguments"></param>
 		/// <returns></returns>
 		object Resolve(String key, IDictionary arguments);
-
+		
+#if !SILVERLIGHT
 		/// <summary>
 		/// Returns a component instance by the key
 		/// </summary>
@@ -314,7 +315,7 @@ namespace Castle.Windsor
 		/// <param name="argumentsAsAnonymousType"></param>
 		/// <returns></returns>
 		object Resolve(String key, object argumentsAsAnonymousType);
-		
+#endif
 		/// <summary>
 		/// Returns a component instance by the key
 		/// </summary>
@@ -337,7 +338,8 @@ namespace Castle.Windsor
 		/// <param name="arguments"></param>
 		/// <returns></returns>
 		object Resolve(Type service, IDictionary arguments);
-
+		
+#if !SILVERLIGHT
 		/// <summary>
 		/// Returns a component instance by the service
 		/// </summary>
@@ -345,6 +347,7 @@ namespace Castle.Windsor
 		/// <param name="argumentsAsAnonymousType"></param>
 		/// <returns></returns>
 		object Resolve(Type service, object argumentsAsAnonymousType);
+#endif
 
 		/// <summary>
 		/// Releases a component instance
@@ -368,12 +371,14 @@ namespace Castle.Windsor
 		/// <summary>
 		/// Shortcut to <see cref="Resolve(string)"/>
 		/// </summary>
-		object this [String key] { get; }
+		[Obsolete("Use Resolve(key, new Arguments()) instead")]
+		object this[String key] { get; }
 
 		/// <summary>
 		/// Shortcut to <see cref="Resolve(Type)"/>
 		/// </summary>
-		object this [Type service] { get; }
+		[Obsolete("Use Resolve(service) or generic version instead")]
+		object this[Type service] { get; }
 
 		/// <summary>
 		/// Gets a child container instance by name.
@@ -397,6 +402,7 @@ namespace Castle.Windsor
 		/// <returns>The component instance</returns>
 		T Resolve<T>(IDictionary arguments);
 		
+#if !SILVERLIGHT
 		/// <summary>
 		/// Returns a component instance by the service
 		/// </summary>
@@ -404,7 +410,7 @@ namespace Castle.Windsor
 		/// <param name="argumentsAsAnonymousType"></param>
 		/// <returns>The component instance</returns>
 		T Resolve<T>(object argumentsAsAnonymousType);
-		
+#endif
 		/// <summary>
 		/// Returns a component instance by the key
 		/// </summary>
@@ -422,6 +428,8 @@ namespace Castle.Windsor
 		/// <returns>The Component instance</returns>
 		T Resolve<T>(String key, IDictionary arguments);
 		
+		
+#if !SILVERLIGHT
 		/// <summary>
 		/// Returns a component instance by the key
 		/// </summary>
@@ -430,6 +438,7 @@ namespace Castle.Windsor
 		/// <param name="argumentsAsAnonymousType"></param>
 		/// <returns>The Component instance</returns>
 		T Resolve<T>(String key, object argumentsAsAnonymousType);
+#endif
 
 		/// <summary>
 		/// Returns a component instance by the key
@@ -439,7 +448,8 @@ namespace Castle.Windsor
 		/// <param name="arguments"></param>
 		/// <returns></returns>
 		object Resolve(String key, Type service, IDictionary arguments);
-
+		
+#if !SILVERLIGHT
 		/// <summary>
 		/// Returns a component instance by the key
 		/// </summary>
@@ -448,7 +458,8 @@ namespace Castle.Windsor
 		/// <param name="argumentsAsAnonymousType"></param>
 		/// <returns></returns>
 		object Resolve(String key, Type service, object argumentsAsAnonymousType);
-		
+#endif
+
 		/// <summary>
 		/// Returns the inner instance of the MicroKernel
 		/// </summary>
@@ -478,13 +489,15 @@ namespace Castle.Windsor
 		/// <param name="arguments">Arguments to resolve the service</param>
 		/// </summary>
 		Array ResolveAll(Type service, IDictionary arguments);
-
+		
+#if !SILVERLIGHT
 		/// <summary>
 		/// Resolve all valid components that mathc this service
 		/// <param name="service">the service to match</param>
 		/// <param name="argumentsAsAnonymousType">Arguments to resolve the service</param>
 		/// </summary>
 		Array ResolveAll(Type service, object argumentsAsAnonymousType);
+#endif
 
 		/// <summary>
 		/// Resolve all valid components that match this type.
@@ -492,12 +505,14 @@ namespace Castle.Windsor
 		/// <param name="arguments">Arguments to resolve the service</param>
 		/// </summary>
 		T[] ResolveAll<T>(IDictionary arguments);
-
+		
+#if !SILVERLIGHT
 		/// <summary>
 		/// Resolve all valid components that match this type.
 		/// <typeparam name="T">The service type</typeparam>
 		/// <param name="argumentsAsAnonymousType">Arguments to resolve the service</param>
 		/// </summary>
 		T[] ResolveAll<T>(object argumentsAsAnonymousType);
+#endif
 	}
 }

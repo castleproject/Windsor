@@ -48,7 +48,7 @@ namespace Castle.Facilities.Logging.Tests
 		public void SimpleTest()
 		{
 			container.Register(Component.For(typeof(SimpleLoggingComponent)).Named("component"));
-			SimpleLoggingComponent test = container["component"] as SimpleLoggingComponent;
+			SimpleLoggingComponent test = container.Resolve<SimpleLoggingComponent>("component");
 
 			test.DoSomething();
 		}
