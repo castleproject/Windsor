@@ -183,9 +183,9 @@ namespace Castle.MicroKernel.Tests
 			kernel.Register(Component.For<ICommon>().ImplementedBy<CommonImpl1>().Named("Mucha"),
 			                Component.For<ICustomer>().ImplementedBy<CustomerImpl>().Named("Stefan"),
 			                Component.For<HasTwoConstructors>().Named("first")
-			                	.DependsOn(ServiceOverride.ForKey("customer").Eq("Stefan")),
+			                	.ServiceOverrides(ServiceOverride.ForKey("customer").Eq("Stefan")),
 			                Component.For<HasTwoConstructors>().Named("second")
-			                	.DependsOn(ServiceOverride.ForKey("common").Eq("Mucha")));
+			                	.ServiceOverrides(ServiceOverride.ForKey("common").Eq("Mucha")));
 
 			var first = kernel.Resolve<HasTwoConstructors>("first");
 			var second = kernel.Resolve<HasTwoConstructors>("second");

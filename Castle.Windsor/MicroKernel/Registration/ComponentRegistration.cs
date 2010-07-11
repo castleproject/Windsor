@@ -301,7 +301,8 @@ namespace Castle.MicroKernel.Registration
 		{
 			return AddDescriptor(new CustomDependencyDescriptor<TService>(dependencies));
 		}
-
+		
+#if !SILVERLIGHT
 		/// <summary>
 		/// Uses an (anonymous) object as a dictionary, to specify custom dependencies.
 		/// <para />
@@ -314,6 +315,7 @@ namespace Castle.MicroKernel.Registration
 		{
 			return AddDescriptor(new CustomDependencyDescriptor<TService>(anonymous));
 		}
+#endif
 
 		/// <summary>
 		/// Allows custom dependencies to by defined dyncamically.
@@ -661,7 +663,8 @@ namespace Castle.MicroKernel.Registration
 		{
 			return AddDescriptor(new ServiceOverrideDescriptor<TService>(overrides));
 		}
-
+		
+#if !SILVERLIGHT
 		/// <summary>
 		/// Override (some of) the services that this component needs, using an (anonymous) object as a dictionary.
 		/// <para />
@@ -675,8 +678,8 @@ namespace Castle.MicroKernel.Registration
 		public ComponentRegistration<TService> ServiceOverrides(object anonymous)
 		{
 			return AddDescriptor(new ServiceOverrideDescriptor<TService>(anonymous));
-		}
-
+		} 
+#endif
 		/// <summary>
 		/// Assigns a conditional predication which must not be satisfied. 
 		/// <para />

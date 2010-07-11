@@ -14,7 +14,6 @@
 
 namespace Castle.MicroKernel.Registration
 {
-	using System;
 	using System.Collections;
 	using Castle.Core;
 
