@@ -505,7 +505,7 @@ namespace Castle.MicroKernel.Registration
 			}
 			return ImplementedBy(instance.GetType())
 				.Activator<ExternalInstanceActivator>()
-				.ExtendedProperties(new { instance });
+				.ExtendedProperties(Property.ForKey("instance").Eq(instance));
 		}
 
 		/// <summary>
@@ -735,7 +735,7 @@ namespace Castle.MicroKernel.Registration
 			where TImpl : TService
 		{
 			Activator<FactoryMethodActivator<TImpl>>()
-				.ExtendedProperties(new { factoryMethodDelegate = factoryMethod });
+				.ExtendedProperties(Property.ForKey("factoryMethodDelegate").Eq(factoryMethod));
 
 			if (implementation == null && serviceType.IsSealed == false)
 			{

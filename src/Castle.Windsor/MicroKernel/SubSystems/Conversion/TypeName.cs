@@ -69,6 +69,10 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 
 		public Type GetType(TypeNameConverter converter)
 		{
+			if (converter == null)
+			{
+				throw new ArgumentNullException("converter");
+			}
 			if (IsAssemblyQualified)
 			{
 				return Type.GetType(assemblyQualifiedName, false, true);
