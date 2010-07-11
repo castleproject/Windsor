@@ -208,7 +208,7 @@ namespace Castle.MicroKernel.Tests.Registration
 					return kk => ++releaseCalled;
 				}));
 
-			var component = Kernel.Resolve<IGenericClassWithParameter<int>>(new { name = "bar" });
+			var component = Kernel.Resolve<IGenericClassWithParameter<int>>(new Arguments().Insert("name", "bar"));
 			Assert.AreEqual("foo", component.Name);
 
 			Kernel.ReleaseComponent(component);
