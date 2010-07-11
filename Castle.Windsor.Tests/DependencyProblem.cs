@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,11 +14,9 @@
 
 namespace Castle.Windsor.Tests
 {
-    using System;
+	using Castle.MicroKernel.Registration;
 
-    using Castle.MicroKernel.Registration;
-
-    using NUnit.Framework;
+	using NUnit.Framework;
 
 	/// <summary>
 	/// Reported at http://forum.castleproject.org/posts/list/17.page
@@ -26,69 +24,13 @@ namespace Castle.Windsor.Tests
 	[TestFixture]
 	public class DependencyProblem
 	{
-		private IWindsorContainer container;
-
 		[SetUp]
 		public void Init()
 		{
 			container = new WindsorContainer();
 		}
 
-		[Test]
-		public void LoadingInSequence()
-		{
-			container.Register(Component.For(typeof(C)).Named("C"));
-			container.Register(Component.For(typeof(B)).Named("B"));
-			container.Register(Component.For(typeof(A)).Named("A"));
-
-			Assert.IsNotNull(container["A"]);
-			Assert.IsNotNull(container["B"]);
-			Assert.IsNotNull(container["C"]);
-		}
-
-		[Test]
-		public void LoadingPartiallyInSequence()
-		{
-			container.Register(Component.For(typeof(B)).Named("B"));
-			container.Register(Component.For(typeof(C)).Named("C"));
-			container.Register(Component.For(typeof(A)).Named("A"));
-
-			Assert.IsNotNull(container["A"]);
-			Assert.IsNotNull(container["B"]);
-			Assert.IsNotNull(container["C"]);
-		}
-
-		[Test]
-		public void LoadingOutOfSequence()
-		{
-			container.Register(Component.For(typeof(A)).Named("A"));
-			container.Register(Component.For(typeof(B)).Named("B"));
-			container.Register(Component.For(typeof(C)).Named("C"));
-
-			Assert.IsNotNull(container["A"]);
-			Assert.IsNotNull(container["B"]);
-			Assert.IsNotNull(container["C"]);
-		}
-
-		[Test]
-		public void LoadingOutOfSequenceWithExtraLoad()
-		{
-			container.Register(Component.For(typeof(A)).Named("A"));
-			container.Register(Component.For(typeof(B)).Named("B"));
-			container.Register(Component.For(typeof(C)).Named("C"));
-			container.Register(Component.For(typeof(int)).Named("NotUsed"));
-
-			Assert.IsNotNull(container["A"]);
-			Assert.IsNotNull(container["B"]);
-			Assert.IsNotNull(container["C"]);
-		}
-
-		[Test]
-		public void CtorSourceOrderDoesNotMatter()
-		{
-			container.Register(Component.For(typeof(D)).Named("D"));
-			Assert.IsNotNull(container["D"]);
-		}
+		private IWindsorContainer container;
 
 		public class A
 		{
@@ -106,9 +48,6 @@ namespace Castle.Windsor.Tests
 
 		public class C
 		{
-			public C()
-			{
-			}
 		}
 
 		public class D
@@ -120,6 +59,62 @@ namespace Castle.Windsor.Tests
 			public D()
 			{
 			}
+		}
+
+		[Test]
+		public void CtorSourceOrderDoesNotMatter()
+		{
+			container.Register(Component.For(typeof(D)).Named("D"));
+			Assert.IsNotNull(container.Resolve<D>("D"));
+		}
+
+		[Test]
+		public void LoadingInSequence()
+		{
+			container.Register(Component.For(typeof(C)).Named("C"));
+			container.Register(Component.For(typeof(B)).Named("B"));
+			container.Register(Component.For(typeof(A)).Named("A"));
+
+			Assert.IsNotNull(container.Resolve<A>("A"));
+			Assert.IsNotNull(container.Resolve<B>("B"));
+			Assert.IsNotNull(container.Resolve<C>("C"));
+		}
+
+		[Test]
+		public void LoadingOutOfSequence()
+		{
+			container.Register(Component.For(typeof(A)).Named("A"));
+			container.Register(Component.For(typeof(B)).Named("B"));
+			container.Register(Component.For(typeof(C)).Named("C"));
+
+			Assert.IsNotNull(container.Resolve<A>("A"));
+			Assert.IsNotNull(container.Resolve<B>("B"));
+			Assert.IsNotNull(container.Resolve<C>("C"));
+		}
+
+		[Test]
+		public void LoadingOutOfSequenceWithExtraLoad()
+		{
+			container.Register(Component.For(typeof(A)).Named("A"));
+			container.Register(Component.For(typeof(B)).Named("B"));
+			container.Register(Component.For(typeof(C)).Named("C"));
+			container.Register(Component.For(typeof(int)).Named("NotUsed"));
+
+			Assert.IsNotNull(container.Resolve<A>("A"));
+			Assert.IsNotNull(container.Resolve<B>("B"));
+			Assert.IsNotNull(container.Resolve<C>("C"));
+		}
+
+		[Test]
+		public void LoadingPartiallyInSequence()
+		{
+			container.Register(Component.For(typeof(B)).Named("B"));
+			container.Register(Component.For(typeof(C)).Named("C"));
+			container.Register(Component.For(typeof(A)).Named("A"));
+
+			Assert.IsNotNull(container.Resolve<A>("A"));
+			Assert.IsNotNull(container.Resolve<B>("B"));
+			Assert.IsNotNull(container.Resolve<C>("C"));
 		}
 	}
 }
