@@ -796,6 +796,7 @@ namespace Castle.Windsor
 		/// <summary>
 		/// Shortcut to the method <see cref="Resolve(String)"/>
 		/// </summary>
+		[Obsolete("Use Resolve(key, new Arguments()) instead")]
 		public virtual object this[String key]
 		{
 			get { return Resolve(key); }
@@ -804,6 +805,7 @@ namespace Castle.Windsor
 		/// <summary>
 		/// Shortcut to the method <see cref="Resolve(Type)"/>
 		/// </summary>
+		[Obsolete("Use Resolve(service) or generic version instead")]
 		public virtual object this[Type service]
 		{
 			get { return Resolve(service); }

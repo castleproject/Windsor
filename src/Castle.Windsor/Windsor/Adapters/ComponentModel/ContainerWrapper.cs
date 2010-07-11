@@ -253,7 +253,7 @@ namespace Castle.Windsor.Adapters.ComponentModel
 			// Then, check the Windsor Container.
 			try
 			{
-				return container[serviceType];
+				return container.Resolve(serviceType);
 			}
 			catch (ComponentNotFoundException)
 			{

@@ -50,7 +50,7 @@ namespace Castle.Facilities.Logging.Tests
 		public void SimpleTest()
 		{
 			container.Register(Component.For(typeof(SimpleLoggingComponent)).Named("component1"));
-			SimpleLoggingComponent test = container["component1"] as SimpleLoggingComponent;
+			SimpleLoggingComponent test = container.Resolve<SimpleLoggingComponent>("component1");
 
 			test.DoSomething();
 
@@ -63,7 +63,7 @@ namespace Castle.Facilities.Logging.Tests
 			Assert.AreEqual(expectedLogOutput, actualLogOutput.ToString());
 
 			container.Register(Component.For(typeof(SmtpServer)).Named("component2"));
-			ISmtpServer smtpServer = container["component2"] as ISmtpServer;
+			ISmtpServer smtpServer = container.Resolve<ISmtpServer>("component2");
 
 			smtpServer.Start();
 			smtpServer.InternalSend("rbellamy@pteradigm.com", "jobs@castlestronghold.com", "We're looking for a few good porgrammars.");
@@ -85,7 +85,7 @@ namespace Castle.Facilities.Logging.Tests
 		public void ContextTest()
 		{
 			container.Register(Component.For(typeof(ComplexLoggingComponent)).Named("component1"));
-			ComplexLoggingComponent complexLoggingComponent = container["component1"] as ComplexLoggingComponent;
+			ComplexLoggingComponent complexLoggingComponent = container.Resolve<ComplexLoggingComponent>("component1");
 
 			complexLoggingComponent.DoSomeContextual();
 
