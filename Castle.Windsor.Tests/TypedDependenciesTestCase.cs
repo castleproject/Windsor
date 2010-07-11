@@ -187,9 +187,9 @@ namespace Castle.MicroKernel.Tests
 			kernel.Register(
 				Component.For(typeof(IGeneric<>)).ImplementedBy(typeof(GenericImpl1<>)).Named("default"),
 				Component.For(typeof(IGeneric<>)).ImplementedBy(typeof(GenericImpl2<>)).Named("non-default-open").DependsOn(
-					new { value = 1 }),
+					Property.ForKey("value").Eq(1)),
 				Component.For(typeof(IGeneric<>)).ImplementedBy(typeof(GenericImpl2<>)).Named("non-default-int").DependsOn(
-					new { value = 2 }),
+					Property.ForKey("value").Eq(2)),
 				Component.For(typeof(UsesIGeneric<>)).ServiceOverrides(
 					ServiceOverride.ForKey(typeof(IGeneric<>)).Eq("non-default-open"),
 					ServiceOverride.ForKey(typeof(IGeneric<int>)).Eq("non-default-int"))

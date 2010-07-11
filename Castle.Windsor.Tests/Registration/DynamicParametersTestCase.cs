@@ -31,7 +31,7 @@ namespace Castle.MicroKernel.Tests.Registration
 			Kernel.Register(
 				Component.For<ClassWithArguments>().LifeStyle.Transient.DynamicParameters((k, d) => d["arg1"] = "foo"));
 
-			var component = Kernel.Resolve<ClassWithArguments>(new { arg2 = 2 });
+			var component = Kernel.Resolve<ClassWithArguments>(new Arguments().Insert("arg2", 2));
 			Assert.AreEqual(2, component.Arg2);
 			Assert.AreEqual("foo", component.Arg1);
 		}
@@ -74,7 +74,7 @@ namespace Castle.MicroKernel.Tests.Registration
 				arg1 = (string)d["arg1"];
 				arg2 = (int)d["arg2"];
 			}));
-			var component = Kernel.Resolve<ClassWithArguments>(new { arg2 = 2, arg1 = "foo" });
+			var component = Kernel.Resolve<ClassWithArguments>(new Arguments().Insert("arg2", 2).Insert("arg1", "foo"));
 			Assert.AreEqual("foo", arg1);
 			Assert.AreEqual(2, arg2);
 		}

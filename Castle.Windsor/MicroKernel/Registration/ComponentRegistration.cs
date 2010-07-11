@@ -243,6 +243,7 @@ namespace Castle.MicroKernel.Registration
 			return AddDescriptor(new ConfigurationDescriptor<TService>(configuration));
 		}
 
+#if !SILVERLIGHT
 		/// <summary>
 		/// Obsolete, use <see cref="DependsOn(Property[])"/> instead.
 		/// </summary>
@@ -275,7 +276,7 @@ namespace Castle.MicroKernel.Registration
 		{
 			return DependsOn(dependencies);
 		}
-
+#endif
 		/// <summary>
 		/// Specify custom dependencies using <see cref="Property.ForKey(string)"/> or <see cref="Property.ForKey(System.Type)"/>.
 		/// <para />
@@ -365,6 +366,7 @@ namespace Castle.MicroKernel.Registration
 			return AddDescriptor(new ExtendedPropertiesDescriptor<TService>(properties));
 		}
 
+#if !SILVERLIGHT
 		/// <summary>
 		/// Sets <see cref="ComponentModel.ExtendedProperties"/> for this component.
 		/// </summary>
@@ -374,7 +376,7 @@ namespace Castle.MicroKernel.Registration
 		{
 			return AddDescriptor(new ExtendedPropertiesDescriptor<TService>(anonymous));
 		}
-
+#endif
 		/// <summary>
 		/// Registers the service types on behalf of this component.
 		/// </summary>
