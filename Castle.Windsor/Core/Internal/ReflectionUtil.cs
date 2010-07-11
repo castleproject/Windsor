@@ -19,16 +19,27 @@ namespace Castle.Core.Internal
 	using System.Diagnostics;
 	using System.IO;
 	using System.Linq;
+	using System.Linq.Expressions;
 	using System.Reflection;
 	using System.Text;
 
 	public abstract class ReflectionUtil
 	{
+		private static readonly IDictionary<ConstructorInfo, Func<object[], object>> factories =
+			new Dictionary<ConstructorInfo, Func<object[], object>>();
+
+		private static readonly Lock @lock = Lock.Create();
+
 		public static TBase CreateInstance<TBase>(Type subtypeofTBase, params object[] ctorArgs)
 		{
 			EnsureIsAssignable<TBase>(subtypeofTBase);
 
 			return Instantiate<TBase>(subtypeofTBase, ctorArgs ?? new object[0]);
+		}
+
+		public static IEnumerable<Assembly> GetAssemblies(IAssemblyProvider assemblyProvider)
+		{
+			return assemblyProvider.GetAssemblies();
 		}
 
 		public static Assembly GetAssemblyNamed(string assemblyName)
@@ -65,6 +76,34 @@ namespace Castle.Core.Internal
 			}
 		}
 
+		public static Assembly GetAssemblyNamed(string filePath, Predicate<AssemblyName> nameFilter,
+		                                        Predicate<Assembly> assemblyFilter)
+		{
+			var assemblyName = GetAssemblyName(filePath);
+			if (nameFilter != null)
+			{
+				foreach (Predicate<AssemblyName> predicate in nameFilter.GetInvocationList())
+				{
+					if (predicate(assemblyName) == false)
+					{
+						return null;
+					}
+				}
+			}
+			var assembly = Assembly.Load(assemblyName);
+			if (assemblyFilter != null)
+			{
+				foreach (Predicate<Assembly> predicate in assemblyFilter.GetInvocationList())
+				{
+					if (predicate(assembly) == false)
+					{
+						return null;
+					}
+				}
+			}
+			return assembly;
+		}
+
 		public static bool IsAssemblyFile(string filePath)
 		{
 			if (filePath == null)
@@ -83,6 +122,22 @@ namespace Castle.Core.Internal
 				return false;
 			}
 			return IsDll(extension) || IsExe(extension);
+		}
+
+		private static Func<object[], object> BuildFactory(ConstructorInfo ctor)
+		{
+			var parameterInfos = ctor.GetParameters();
+			var parameterExpressions = new Expression[parameterInfos.Length];
+			var argument = Expression.Parameter(typeof(object[]), "parameters");
+			for (var i = 0; i < parameterExpressions.Length; i++)
+			{
+				parameterExpressions[i] = Expression.Convert(
+					Expression.ArrayIndex(argument, Expression.Constant(i, typeof(int))),
+					parameterInfos[i].ParameterType);
+			}
+			return Expression.Lambda<Func<object[], object>>(
+				Expression.New(ctor, parameterExpressions),
+				new[] { argument }).Compile();
 		}
 
 		private static void EnsureIsAssignable<TBase>(Type subtypeofTBase)
@@ -105,8 +160,33 @@ namespace Castle.Core.Internal
 			throw new InvalidCastException(message);
 		}
 
+		private static AssemblyName GetAssemblyName(string filePath)
+		{
+			AssemblyName assemblyName;
+			try
+			{
+#if SILVERLIGHT
+				assemblyName = new AssemblyName { CodeBase = filePath };
+#else
+				assemblyName = AssemblyName.GetAssemblyName(filePath);
+#endif
+			}
+			catch (ArgumentException)
+			{
+				assemblyName = new AssemblyName { CodeBase = filePath };
+			}
+			return assemblyName;
+		}
+
 		private static TBase Instantiate<TBase>(Type subtypeofTBase, object[] ctorArgs)
 		{
+			ctorArgs = ctorArgs ?? new object[0];
+			var types = ctorArgs.Select(a => a == null ? typeof(object) : a.GetType()).ToArray();
+			var constructor = subtypeofTBase.GetConstructor(BindingFlags.Instance | BindingFlags.Public, null, types, null);
+			if (constructor != null)
+			{
+				return (TBase)Instantiate(constructor, subtypeofTBase, ctorArgs);
+			}
 			try
 			{
 				return (TBase)Activator.CreateInstance(subtypeofTBase, ctorArgs);
@@ -140,6 +220,23 @@ namespace Castle.Core.Internal
 			}
 		}
 
+		private static object Instantiate(ConstructorInfo ctor, Type type, object[] ctorArgs)
+		{
+			Func<object[], object> factory;
+			if (factories.TryGetValue(ctor, out factory) == false)
+			{
+				using (@lock.ForWriting())
+				{
+					if (factories.TryGetValue(ctor, out factory) == false)
+					{
+						factory = BuildFactory(ctor);
+						factories[ctor] = factory;
+					}
+				}
+			}
+			return factory.Invoke(ctorArgs);
+		}
+
 		private static bool IsDll(string extension)
 		{
 			return ".dll".Equals(extension, StringComparison.OrdinalIgnoreCase);
@@ -148,58 +245,6 @@ namespace Castle.Core.Internal
 		private static bool IsExe(string extension)
 		{
 			return ".exe".Equals(extension, StringComparison.OrdinalIgnoreCase);
-		}
-
-
-
-		public static IEnumerable<Assembly> GetAssemblies(IAssemblyProvider assemblyProvider)
-		{
-			return assemblyProvider.GetAssemblies();
-		}
-
-		public static Assembly GetAssemblyNamed(string filePath, Predicate<AssemblyName> nameFilter, Predicate<Assembly> assemblyFilter)
-		{
-			var assemblyName = GetAssemblyName(filePath);
-			if (nameFilter != null)
-			{
-				foreach (Predicate<AssemblyName> predicate in nameFilter.GetInvocationList())
-				{
-					if (predicate(assemblyName) == false)
-					{
-						return null;
-					}
-				}
-			}
-			var assembly = Assembly.Load(assemblyName);
-			if (assemblyFilter != null)
-			{
-				foreach (Predicate<Assembly> predicate in assemblyFilter.GetInvocationList())
-				{
-					if (predicate(assembly) == false)
-					{
-						return null;
-					}
-				}
-			}
-			return assembly;
-		}
-
-		private static AssemblyName GetAssemblyName(string filePath)
-		{
-			AssemblyName assemblyName;
-			try
-			{
-#if SILVERLIGHT
-				assemblyName = new AssemblyName { CodeBase = filePath };
-#else
-				assemblyName = AssemblyName.GetAssemblyName(filePath);
-#endif
-			}
-			catch (ArgumentException)
-			{
-				assemblyName = new AssemblyName { CodeBase = filePath };
-			}
-			return assemblyName;
 		}
 	}
 }
