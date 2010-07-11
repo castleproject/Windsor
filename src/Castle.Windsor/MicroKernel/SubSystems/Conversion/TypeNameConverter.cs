@@ -19,6 +19,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 	using System.Collections.Generic;
 	using System.Diagnostics;
 	using System.Reflection;
+	using System.Reflection.Emit; // needed for .NET 3.5 and SL 3
 	using System.Text;
 
 	using Castle.Core.Configuration;
