@@ -198,8 +198,9 @@ namespace Castle.MicroKernel.Registration
 			{
 				path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, path);
 			}
-			return Path.GetFullPath(path).ToUpper(CultureInfo.InvariantCulture);
 #endif
+			return Path.GetFullPath(path).ToUpper(CultureInfo.InvariantCulture);
+
 		}
 
 		private static bool IsTokenEqual(byte[] actualToken, byte[] expectedToken)

@@ -13,7 +13,6 @@
 // limitations under the License.
 
 #if !SILVERLIGHT
-
 namespace Castle.Windsor.Tests
 {
 	using System;

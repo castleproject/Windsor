@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -13,44 +13,41 @@
 // limitations under the License.
 
 #if !SILVERLIGHT
-
-using Castle.Core;
-using Castle.DynamicProxy;
-using Castle.MicroKernel.Registration;
-using NUnit.Framework;
-
 namespace Castle.Windsor.Tests
 {
+	using Castle.Core;
+	using Castle.MicroKernel.Registration;
 	using Castle.Windsor.Tests.Interceptors;
 
-	[TestFixture]
-    public class InterceptorsSelectorTestCase
-    {
-        
+	using NUnit.Framework;
 
-        [Test]
-        public void CanApplyInterceptorsToSelectedMethods()
-        {
-            IWindsorContainer container = new WindsorContainer();
+	[TestFixture]
+	public class InterceptorsSelectorTestCase
+	{
+		[Test]
+		public void CanApplyInterceptorsToSelectedMethods()
+		{
+			IWindsorContainer container = new WindsorContainer();
 			container.Register(
 				Component.For<ICatalog>()
 					.ImplementedBy<SimpleCatalog>()
 					.Interceptors(InterceptorReference.ForType<WasCalledInterceptor>())
-						.SelectedWith(new DummyInterceptorSelector()).Anywhere,
+					.SelectedWith(new DummyInterceptorSelector()).Anywhere,
 				Component.For<WasCalledInterceptor>()
-					);
+				);
 
 			Assert.IsFalse(WasCalledInterceptor.WasCalled);
 
-			ICatalog catalog = container.Resolve<ICatalog>();
+			var catalog = container.Resolve<ICatalog>();
 			catalog.AddItem("hot dogs");
 			Assert.IsTrue(WasCalledInterceptor.WasCalled);
 
 			WasCalledInterceptor.WasCalled = false;
 			catalog.RemoveItem("hot dogs");
 			Assert.IsFalse(WasCalledInterceptor.WasCalled);
-        }
-    }
+		}
+	}
+
 	public interface ICatalog
 	{
 		void AddItem(object item);
