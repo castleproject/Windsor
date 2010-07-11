@@ -24,8 +24,8 @@ namespace Castle.Core.Internal
 	public class GraphNode : MarshalByRefObject, IVertex
 #endif
 	{
-        private List<GraphNode> incoming;
-        private List<GraphNode> outgoing;
+		private List<GraphNode> incoming;
+		private List<GraphNode> outgoing;
 
 		#region IVertex Members
 
@@ -55,11 +55,14 @@ namespace Castle.Core.Internal
 			}
 		}
 
-        private List<GraphNode> Outgoing
+		private List<GraphNode> Outgoing
 		{
 			get
 			{
-                if (outgoing == null) outgoing = new List<GraphNode>();
+				if (outgoing == null)
+				{
+					outgoing = new List<GraphNode>();
+				}
 				return outgoing;
 			}
 		}
@@ -71,7 +74,10 @@ namespace Castle.Core.Internal
 		{
 			get
 			{
-				if (incoming == null) return new GraphNode[0];
+				if (incoming == null)
+				{
+					return new GraphNode[0];
+				}
 				return incoming.ToArray();
 			}
 		}
@@ -83,7 +89,10 @@ namespace Castle.Core.Internal
 		{
 			get
 			{
-				if (outgoing == null) return new GraphNode[0];
+				if (outgoing == null)
+				{
+					return new GraphNode[0];
+				}
 				return outgoing.ToArray();
 			}
 		}
