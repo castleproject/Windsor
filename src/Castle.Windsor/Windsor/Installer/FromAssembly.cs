@@ -16,6 +16,7 @@ namespace Castle.Windsor.Installer
 {
 	using System;
 	using System.Collections.Generic;
+	using System.Linq;
 	using System.Reflection;
 
 	using Castle.Core.Internal;
@@ -144,7 +145,11 @@ namespace Castle.Windsor.Installer
 		/// <returns></returns>
 		public static IWindsorInstaller InDirectory(AssemblyFilter filter, InstallerFactory installerFactory)
 		{
+#if SL3
+			var assemblies = ReflectionUtil.GetAssemblies(filter).Distinct();
+#else
 			var assemblies = new HashSet<Assembly>(ReflectionUtil.GetAssemblies(filter));
+#endif
 			var installer = new CompositeInstaller();
 			foreach (var assembly in assemblies)
 			{

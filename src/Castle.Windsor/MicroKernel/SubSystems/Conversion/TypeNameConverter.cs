@@ -48,7 +48,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 
 		private readonly ITypeNameParser parser;
 
-#if DOTNET35
+#if DOTNET35 || SL3
 		private static readonly Type AssemblyBuilderDotNet4 = Type.GetType("System.Reflection.Emit.InternalAssemblyBuilder",
 		                                                                   false, true);
 #endif
