@@ -36,7 +36,7 @@ namespace Castle.Facilities.WcfIntegration.Internal
 		{
 			if (extension is IExtension<T>)
 			{
-				IExtension<T> extensionObject = (IExtension<T>)extension;
+				var extensionObject = (IExtension<T>)extension;
 				owner.Extensions.Add(extensionObject);
 				return true;
 			}

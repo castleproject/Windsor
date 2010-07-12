@@ -83,7 +83,7 @@ namespace Castle.Facilities.WcfIntegration
 			{
 				model.CustomComponentActivator = typeof(WcfClientActivator);
 				model.ExtendedProperties[WcfConstants.ClientModelKey] = clientModel;
-				model.LifecycleSteps.Add(LifecycleStepType.Decommission, DisposalConcern.Instance);
+				model.Lifecycle.Add(DisposalConcern.Instance);
 
 				var dependencies = new ExtensionDependencies(model, kernel)
 					.Apply(new WcfEndpointExtensions(WcfExtensionScope.Clients))
@@ -94,7 +94,7 @@ namespace Castle.Facilities.WcfIntegration
 			}
 		}
 
-		private void Kernel_ComponentUnregistered(string key, IHandler handler)
+		private static void Kernel_ComponentUnregistered(string key, IHandler handler)
 		{
 			ComponentModel model = handler.ComponentModel;
 			var burden = model.ExtendedProperties[WcfConstants.ClientBurdenKey] as IWcfBurden;
@@ -118,9 +118,8 @@ namespace Castle.Facilities.WcfIntegration
 			}
 		}
 
-		private IWcfClientModel ResolveClientModel(ComponentModel model)
+		private static IWcfClientModel ResolveClientModel(ComponentModel model)
 		{
-
 			if (model.Service.IsInterface)
 			{
 				foreach (var clientModel in WcfUtils.FindDependencies<IWcfClientModel>(model.CustomDependencies))
@@ -143,12 +142,8 @@ namespace Castle.Facilities.WcfIntegration
 			return null;
 		}
 
-		#region IDisposable Members
-
 		public void Dispose()
 		{
 		}
-
-		#endregion
 	}
 }

@@ -19,6 +19,7 @@ namespace Castle.Facilities.WcfIntegration
 	using System.ServiceModel.Channels;
 	using System.ServiceModel.Dispatcher;
 	using Castle.Core;
+	using Castle.Facilities.WcfIntegration.Internal;
 	using Castle.MicroKernel;
 
 	/// <summary>
@@ -71,7 +72,7 @@ namespace Castle.Facilities.WcfIntegration
 		{
 			if (model != null)
 			{
-				return kernel[model.Name];
+				return kernel.Resolve(model.Name, WcfUtils.EmptyArguments);
 			}
 			else if (kernel.HasComponent(serviceType))
 			{

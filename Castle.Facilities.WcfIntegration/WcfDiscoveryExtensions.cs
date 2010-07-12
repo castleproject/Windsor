@@ -10,17 +10,27 @@
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
-// limitations under the License.
 
 namespace Castle.Facilities.WcfIntegration
 {
-	public interface IWcfEndpointVisitor
+	using System;
+
+	public static class WcfDiscoveryExtensions
 	{
-		void VisitContractEndpoint(ContractEndpointModel model);
-		void VisitServiceEndpoint(ServiceEndpointModel model);
-		void VisitConfigurationEndpoint(ConfigurationEndpointModel model);
-		void VisitBindingEndpoint(BindingEndpointModel model);
-		void VisitBindingAddressEndpoint(BindingAddressEndpointModel model);
-		void VisitBindingDiscoveredEndpoint(DiscoveredEndpointModel model);
+		public static T Discoverable<T>(this WcfServiceModel<T> serviceModel)
+				where T : WcfServiceModel<T>
+		{
+			serviceModel.AddExtensions(new WcfDiscoveryExtension());
+			return (T)serviceModel;
+		}
+
+		public static T Discoverable<T>(this WcfServiceModel<T> serviceModel, Action<WcfDiscoveryExtension> discover)
+			where T : WcfServiceModel<T>
+		{
+			var discoveryExtension = new WcfDiscoveryExtension();
+			if (discover != null) discover(discoveryExtension);
+			serviceModel.AddExtensions(discoveryExtension);
+			return (T)serviceModel;
+		}	
 	}
 }

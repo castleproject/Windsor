@@ -740,7 +740,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 							WcfEndpoint.ForContract<IOperations>()
 								.BoundTo(new NetTcpBinding { PortSharingEnabled = true })
 							)
-						.PublishMEX(mex => mex.EnableHttpGet())
+						.PublishMetadata(mex => mex.EnableHttpGet())
 					)
 				))
 			{
@@ -769,7 +769,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 							WcfEndpoint.ForContract<IOperations>()
 								.BoundTo(new NetTcpBinding { PortSharingEnabled = true })
 							)
-						.PublishMEX(mex => mex.EnableHttpGet().AtAddress("tellMeAboutYourSelf"))
+						.PublishMetadata(mex => mex.EnableHttpGet().AtAddress("tellMeAboutYourSelf"))
 					)
 				))
 			{
@@ -798,7 +798,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 					.AsWcfService(new DefaultServiceModel().AddEndpoints(
 						WcfEndpoint.ForContract<IOperations>()
 							.At("net.tcp://localhost/Operations"))
-					.PublishMEX()
+					.PublishMetadata()
 				)))
 			{
 				var tcpMextClient = new MetadataExchangeClient(new EndpointAddress("net.tcp://localhost/Operations/mex"));
@@ -822,7 +822,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 					.AsWcfService(new DefaultServiceModel().AddEndpoints(
 						WcfEndpoint.ForContract<IOperations>()
 							.At("net.tcp://localhost/Operations"))
-					.PublishMEX(mex => mex.AtAddress("tellMeAboutYourSelf"))
+					.PublishMetadata(mex => mex.AtAddress("tellMeAboutYourSelf"))
 				)))
 			{
 				var tcpMextClient = new MetadataExchangeClient(new EndpointAddress("net.tcp://localhost/Operations/tellMeAboutYourSelf"));

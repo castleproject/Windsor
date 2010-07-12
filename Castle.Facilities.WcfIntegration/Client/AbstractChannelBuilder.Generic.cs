@@ -119,22 +119,20 @@ namespace Castle.Facilities.WcfIntegration
 			return CreateChannelCreator(contract, clientModel, binding, address);
 		}
 
-		protected virtual ChannelCreator GetChannel(M clientModel, Type contract, Binding binding, 
-			                                        EndpointAddress address)
+		protected virtual ChannelCreator GetChannel(M clientModel, Type contract, Binding binding, EndpointAddress address)
 		{
 			return CreateChannelCreator(contract, clientModel, binding, address);
 		}
 
 		#endregion
 
-		protected virtual ChannelCreator CreateChannelCreator(Type contract, M clientModel, 
-			                                                  params object[] channelFactoryArgs)
+		protected virtual ChannelCreator CreateChannelCreator(Type contract, M clientModel, params object[] channelFactoryArgs)
 		{
-			Type type = typeof(ChannelFactory<>).MakeGenericType(new Type[] { contract });
+			var type = typeof(ChannelFactory<>).MakeGenericType(new Type[] { contract });
 			var channelFactory = ChannelFactoryBuilder.CreateChannelFactory(type, clientModel, channelFactoryArgs);
 			ConfigureChannelFactory(channelFactory);
 
-			MethodInfo methodInfo = type.GetMethod("CreateChannel", new Type[0]);
+			var methodInfo = type.GetMethod("CreateChannel", new Type[0]);
 			return (ChannelCreator)Delegate.CreateDelegate(typeof(ChannelCreator), channelFactory, methodInfo);
 		}
 	}

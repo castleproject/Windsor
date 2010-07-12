@@ -215,6 +215,11 @@ namespace Castle.Facilities.WcfIntegration
 			{
 				serviceEndpoint = builder.AddServiceEndpoint(serviceHost, model);
 			}
+
+			void IWcfEndpointVisitor.VisitBindingDiscoveredEndpoint(DiscoveredEndpointModel model)
+			{
+				throw new InvalidOperationException("Discovered endpoints can only by applied for clients.");
+			}
 		}
 
 		#endregion

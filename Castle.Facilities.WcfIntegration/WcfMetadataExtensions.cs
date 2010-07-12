@@ -10,17 +10,27 @@
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
-// limitations under the License.
 
 namespace Castle.Facilities.WcfIntegration
 {
-	public interface IWcfEndpointVisitor
+	using System;
+
+	public static class WcfMetadataExtensions
 	{
-		void VisitContractEndpoint(ContractEndpointModel model);
-		void VisitServiceEndpoint(ServiceEndpointModel model);
-		void VisitConfigurationEndpoint(ConfigurationEndpointModel model);
-		void VisitBindingEndpoint(BindingEndpointModel model);
-		void VisitBindingAddressEndpoint(BindingAddressEndpointModel model);
-		void VisitBindingDiscoveredEndpoint(DiscoveredEndpointModel model);
+		public static T PublishMetadata<T>(this WcfServiceModel<T> serviceModel)
+			where T : WcfServiceModel<T>
+		{
+			serviceModel.AddExtensions(new WcfMetadataExtension());
+			return (T)serviceModel;
+		}
+
+		public static T PublishMetadata<T>(this WcfServiceModel<T> serviceModel, Action<WcfMetadataExtension> mex)
+				where T : WcfServiceModel<T>
+		{
+			var mexExtension = new WcfMetadataExtension();
+			if (mex != null) mex(mexExtension);
+			serviceModel.AddExtensions(mexExtension);
+			return (T)serviceModel;
+		}
 	}
 }

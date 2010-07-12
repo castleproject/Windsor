@@ -19,7 +19,8 @@ namespace Castle.Facilities.WcfIntegration
 	using System.ServiceModel;
 	using System.ServiceModel.Channels;
 	using System.ServiceModel.Description;
-
+	using System.ServiceModel.Discovery;
+	using System.Xml.Linq;
 	using Castle.Facilities.WcfIntegration.Behaviors;
 
 	public static class WcfEndpoint
@@ -59,32 +60,27 @@ namespace Castle.Facilities.WcfIntegration
 		{
 			return ForContract(typeof(Contract));
 		}
+
+		public static DiscoveredEndpointModel Discover()
+		{
+			return new ContractEndpointModel().Discover();
+		}
 	}
 
 	#region Nested Class: WcfEndpointBase
 
 	public abstract class WcfEndpointBase : IWcfEndpoint
 	{
-		private Type contract;
 		private ICollection<IWcfExtension> extensions;
 
 		protected WcfEndpointBase(Type contract)
 		{
-			this.contract = contract;
+			Contract = contract;
 		}
 
 		#region IWcfEndpoint Members
 
-		public Type Contract
-		{
-			get { return contract; }
-		}
-
-		Type IWcfEndpoint.Contract
-		{
-			get { return contract; }
-			set { contract = value; }
-		}
+		public Type Contract { get; set; }
 
 		public ICollection<IWcfExtension> Extensions
 		{
@@ -184,7 +180,6 @@ namespace Castle.Facilities.WcfIntegration
 			{
 				throw new ArgumentNullException("endpoint");
 			}
-
 			return new ServiceEndpointModel(Contract, endpoint);
 		}
 
@@ -216,6 +211,11 @@ namespace Castle.Facilities.WcfIntegration
 			return new BindingEndpointModel(Contract, null).At(address);
 		}
 
+		public DiscoveredEndpointModel Discover()
+		{
+			return new BindingEndpointModel(Contract, null).Discover();
+		}
+
 		protected override void Accept(IWcfEndpointVisitor visitor)
 		{
 			visitor.VisitContractEndpoint(this);
@@ -228,18 +228,13 @@ namespace Castle.Facilities.WcfIntegration
 
 	public class ServiceEndpointModel : WcfEndpointBase<ServiceEndpointModel>
 	{
-		private readonly ServiceEndpoint endpoint;
-
 		internal ServiceEndpointModel(Type contract, ServiceEndpoint endpoint)
 			: base(contract)
 		{
-			this.endpoint = endpoint;
+			ServiceEndpoint = endpoint;
 		}
 
-		public ServiceEndpoint ServiceEndpoint
-		{
-			get { return endpoint; }
-		}
+		public ServiceEndpoint ServiceEndpoint { get; private set; }
 
 		protected override void Accept(IWcfEndpointVisitor visitor)
 		{
@@ -253,18 +248,13 @@ namespace Castle.Facilities.WcfIntegration
 
 	public class ConfigurationEndpointModel : WcfEndpointBase<ConfigurationEndpointModel>
 	{
-		private readonly string endpointName;
-
 		internal ConfigurationEndpointModel(Type contract, string endpointName)
 			: base(contract)
 		{
-			this.endpointName = endpointName;
+			EndpointName = endpointName;
 		}
 
-		public string EndpointName
-		{
-			get { return endpointName; }
-		}
+		public string EndpointName { get; private set; }
 
 		protected override void Accept(IWcfEndpointVisitor visitor)
 		{
@@ -278,18 +268,13 @@ namespace Castle.Facilities.WcfIntegration
 
 	public class BindingEndpointModel : WcfEndpointBase<BindingEndpointModel>
 	{
-		private readonly Binding binding;
-
 		internal BindingEndpointModel(Type contract, Binding binding)
 			: base(contract)
 		{
-			this.binding = binding;
+			Binding = binding;
 		}
 
-		public Binding Binding
-		{
-			get { return binding; }
-		}
+		public Binding Binding { get; private set; }
 
 		public BindingAddressEndpointModel At(string address)
 		{
@@ -318,6 +303,11 @@ namespace Castle.Facilities.WcfIntegration
 			return new BindingAddressEndpointModel(Contract, Binding, address);
 		}
 
+		public DiscoveredEndpointModel Discover()
+		{
+			return new DiscoveredEndpointModel(Contract, Binding);
+		}
+
 		protected override void Accept(IWcfEndpointVisitor visitor)
 		{
 			visitor.VisitBindingEndpoint(this);
@@ -330,31 +320,25 @@ namespace Castle.Facilities.WcfIntegration
 
 	public class BindingAddressEndpointModel : WcfEndpointBase<BindingAddressEndpointModel>
 	{
-		private readonly Binding binding;
 		private readonly string address;
 		private readonly EndpointAddress endpointAddress;
 		private string via;
 
-		internal BindingAddressEndpointModel(Type contract, Binding binding,
-											 string address)
+		internal BindingAddressEndpointModel(Type contract, Binding binding, string address)
 			: base(contract)
 		{
-			this.binding = binding;
+			Binding = binding;
 			this.address = address;
 		}
 
-		internal BindingAddressEndpointModel(Type contract, Binding binding,
-											 EndpointAddress address)
+		internal BindingAddressEndpointModel(Type contract, Binding binding, EndpointAddress address)
 			: base(contract)
 		{
-			this.binding = binding;
-			this.endpointAddress = address;
+			Binding = binding;
+			endpointAddress = address;
 		}
 
-		public Binding Binding
-		{
-			get { return binding; }
-		}
+		public Binding Binding { get; private set; }
 
 		public string Address
 		{
@@ -385,6 +369,105 @@ namespace Castle.Facilities.WcfIntegration
 		protected override void Accept(IWcfEndpointVisitor visitor)
 		{
 			visitor.VisitBindingAddressEndpoint(this);
+		}
+	}
+
+	#endregion
+
+	#region Nested Class: DiscoveredEndpointModel
+
+	public class DiscoveredEndpointModel : WcfEndpointBase<DiscoveredEndpointModel>
+	{
+		private Uri _scopeMatchBy;
+		private readonly List<Uri> _scopes;
+		private readonly List<XElement> _filters;
+
+		internal DiscoveredEndpointModel(Type contract, Binding binding)
+			: base(contract)
+		{
+			Binding = binding;
+			_scopes = new List<Uri>();
+			_filters = new List<XElement>();
+		}
+
+		public Binding Binding { get; private set; }
+
+		public Uri ScopeMatchBy
+		{
+			get { return _scopeMatchBy; }
+		}
+
+		public IEnumerable<Uri> Scopes
+		{
+			get { return _scopes; }
+		}
+
+		public IEnumerable<XElement> Filters
+		{
+			get { return _filters; }
+		}
+
+		public TimeSpan? Duration { get; private set; }
+
+		public DiscoveryEndpoint DiscoveryEndpoint { get; set; }
+
+		public DiscoveredEndpointModel With(DiscoveryEndpoint endpoint)
+		{
+			DiscoveryEndpoint = endpoint;
+			return this;
+		}
+
+		public DiscoveredEndpointModel SearchFor(TimeSpan duration)
+		{
+			Duration = duration;
+			return this;
+		}
+
+		#region Scopes
+
+		public DiscoveredEndpointModel MatchScopeExactly()
+		{
+			return MatchScopeBy(FindCriteria.ScopeMatchByExact);
+		}
+
+		public DiscoveredEndpointModel MatchScopeByLdap()
+		{
+			return MatchScopeBy(FindCriteria.ScopeMatchByLdap);
+		}
+
+		public DiscoveredEndpointModel MatchScopeByPrefix()
+		{
+			return MatchScopeBy(FindCriteria.ScopeMatchByPrefix);
+		}
+
+		public DiscoveredEndpointModel MatchScopeByUuid()
+		{
+			return MatchScopeBy(FindCriteria.ScopeMatchByUuid);
+		}
+
+		public DiscoveredEndpointModel MatchScopeBy(Uri match)
+		{
+			_scopeMatchBy = match;
+			return this;
+		}
+
+		public DiscoveredEndpointModel InScope(params Uri[] scopes)
+		{
+			_scopes.AddRange(scopes);
+			return this;
+		}
+
+		#endregion
+
+		public DiscoveredEndpointModel FilteredBy(params XElement[] filters)
+		{
+			_filters.AddRange(filters);
+			return this;
+		}
+
+		protected override void Accept(IWcfEndpointVisitor visitor)
+		{
+			visitor.VisitBindingDiscoveredEndpoint(this);
 		}
 	}
 

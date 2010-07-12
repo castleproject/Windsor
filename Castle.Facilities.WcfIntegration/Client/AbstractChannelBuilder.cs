@@ -18,33 +18,29 @@ namespace Castle.Facilities.WcfIntegration
 	using System.ServiceModel;
 	using System.ServiceModel.Channels;
 	using System.ServiceModel.Description;
+	using System.ServiceModel.Discovery;
 	using Castle.MicroKernel;
 
 	public abstract class AbstractChannelBuilder : IWcfEndpointVisitor
 	{
 		private Type contract;
-		private readonly IKernel kernel;
 		private ChannelCreator channelCreator;
 
 		protected AbstractChannelBuilder(IKernel kernel)
 		{
-			this.kernel = kernel;
+			Kernel = kernel;
 		}
 
-		protected IKernel Kernel
-		{
-			get { return kernel; }
-		}
+		protected IKernel Kernel { get; private set; }
 
 		public WcfClientExtension Clients { get; set; }
 	
-		protected void ConfigureChannelFactory(ChannelFactory channelFactory, IWcfClientModel clientModel,
-											   IWcfBurden burden)
+		protected void ConfigureChannelFactory(ChannelFactory channelFactory, IWcfClientModel clientModel, IWcfBurden burden)
 		{
-			var extensions = new ChannelFactoryExtensions(channelFactory, kernel)
+			var extensions = new ChannelFactoryExtensions(channelFactory, Kernel)
 				.Install(burden, new WcfChannelExtensions());
 
-			var endpointExtensions = new ServiceEndpointExtensions(channelFactory.Endpoint, true, kernel)
+			var endpointExtensions = new ServiceEndpointExtensions(channelFactory.Endpoint, true, Kernel)
 				.Install(burden, new WcfEndpointExtensions(WcfExtensionScope.Clients));
 
 			if (clientModel != null)
@@ -99,7 +95,7 @@ namespace Castle.Facilities.WcfIntegration
 
 		void IWcfEndpointVisitor.VisitBindingAddressEndpoint(BindingAddressEndpointModel model)
 		{
-			Binding binding = GetEffectiveBinding(model.Binding);
+			var binding = GetEffectiveBinding(model.Binding);
 
 			if (model.HasViaAddress)
 			{
@@ -122,7 +118,52 @@ namespace Castle.Facilities.WcfIntegration
 			}
 		}
 
+		void IWcfEndpointVisitor.VisitBindingDiscoveredEndpoint(DiscoveredEndpointModel model)
+		{
+			var discoveryEndpoint = model.DiscoveryEndpoint ?? new UdpDiscoveryEndpoint();
+
+			using (var discover = new DiscoveryClient(discoveryEndpoint))
+			{
+				var criteria = CreateDiscoveryCriteria(model);
+				var response = discover.Find(criteria);
+
+				if (response.Endpoints.Count > 0)
+				{
+					var binding = GetEffectiveBinding(model.Binding);
+					var address = response.Endpoints[0].Address;
+					channelCreator = GetChannel(contract, binding, address);
+				}
+			}
+		}
+
 		#endregion
+
+		private FindCriteria CreateDiscoveryCriteria(DiscoveredEndpointModel model)
+		{
+			var criteria = new FindCriteria(contract) { MaxResults = 1 };
+
+			if (model.Duration.HasValue)
+			{
+				criteria.Duration = model.Duration.Value;
+			}
+
+			foreach (var scope in model.Scopes)
+			{
+				criteria.Scopes.Add(scope);
+			}
+
+			if (model.ScopeMatchBy != null)
+			{
+				criteria.ScopeMatchBy = model.ScopeMatchBy;
+			}
+
+			foreach (var filter in model.Filters)
+			{
+				criteria.Extensions.Add(filter);
+			}
+
+			return criteria;
+		}
 
 		private Binding GetEffectiveBinding(Binding binding)
 		{

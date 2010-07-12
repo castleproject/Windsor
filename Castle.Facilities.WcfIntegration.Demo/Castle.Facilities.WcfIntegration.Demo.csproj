@@ -144,7 +144,7 @@
         <WebProjectProperties>
           <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>2474</DevelopmentServerPort>
+          <DevelopmentServerPort>28841</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>http://localhost/Castle.Facilities.WcfIntegration.Demo</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>

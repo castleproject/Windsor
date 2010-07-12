@@ -19,7 +19,6 @@ namespace Castle.Facilities.WcfIntegration.Tests
 	using System.ServiceModel;
 	using System.ServiceModel.Channels;
 	using System.ServiceModel.Description;
-	using System.ServiceModel.Discovery;
 	using Castle.Core;
 	using Castle.Core.Configuration;
 	using Castle.Core.Resource;
@@ -1418,17 +1417,15 @@ namespace Castle.Facilities.WcfIntegration.Tests
 					})
 				);
 
-			IOperationsEx client;
-
 			using (createLocalContainer())
 			{
-				client = windsorContainer.Resolve<IOperationsEx>("operations");
+				var client = windsorContainer.Resolve<IOperationsEx>("operations");
 				client.Backup(new Dictionary<string, object>());
 			}
 		}
 
 		[Test]
-		public void CanDiscoverServices()
+		public void CanDiscoverServiceEndpointAddresses()
 		{
 			using (new WindsorContainer()
 				.AddFacility<WcfFacility>(f => f.CloseTimeout = TimeSpan.Zero)
@@ -1440,15 +1437,18 @@ namespace Castle.Facilities.WcfIntegration.Tests
 							.At("net.tcp://localhost/Operations2"))
 						.Discoverable()
 				)))
-			{
-				using (var discover = new DiscoveryClient(new UdpDiscoveryEndpoint()))
+			{	//}
+				using (var clientContainer = new WindsorContainer()
+					.AddFacility<WcfFacility>(f => f.DefaultBinding =
+						new NetTcpBinding { PortSharingEnabled = true }
+					)
+					.Register(Component.For<IOperations>()
+						.Named("operations")
+						.AsWcfClient(new DefaultClientModel(WcfEndpoint.Discover()))
+					))
 				{
-					var criteria = new FindCriteria(typeof(IOperations)) { MaxResults = 1 };
-					var result = discover.Find(criteria);
-					Assert.AreEqual(1, result.Endpoints.Count);
-
-					//var client = clientContainer.Resolve<IOperations>("operations");
-					//Assert.AreEqual(28, client.GetValueFromConstructor());
+					var client = clientContainer.Resolve<IOperations>("operations");
+					Assert.AreEqual(28, client.GetValueFromConstructor());
 				}
 			}
 		}

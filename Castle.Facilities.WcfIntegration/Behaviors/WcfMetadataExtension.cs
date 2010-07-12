@@ -21,18 +21,18 @@ namespace Castle.Facilities.WcfIntegration
 	using System.ServiceModel.Description;
 	using Castle.Facilities.WcfIntegration.Service;
 
-	public class WcfMexExtension : AbstractServiceHostAware
+	public class WcfMetadataExtension : AbstractServiceHostAware
 	{
 		private bool _enableHttpGet;
 		private string _mexAddress = "mex";
 
-		public WcfMexExtension EnableHttpGet()
+		public WcfMetadataExtension EnableHttpGet()
 		{
 			_enableHttpGet = true;
 			return this;
 		}
 
-		public WcfMexExtension AtAddress(string address)
+		public WcfMetadataExtension AtAddress(string address)
 		{
 			_mexAddress = address;
 			return this;

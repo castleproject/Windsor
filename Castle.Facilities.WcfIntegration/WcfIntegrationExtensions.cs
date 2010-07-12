@@ -13,43 +13,10 @@
 
 namespace Castle.Facilities.WcfIntegration
 {
-	using System;
 	using Castle.MicroKernel.Registration;
 
 	public static class WcfIntegrationExtensions
 	{
-		public static T PublishMEX<T>(this WcfServiceModel<T> serviceModel)
-			where T : WcfServiceModel<T>
-		{
-			serviceModel.AddExtensions(new WcfMexExtension());
-			return (T)serviceModel;
-		}
-
-		public static T PublishMEX<T>(this WcfServiceModel<T> serviceModel, Action<WcfMexExtension> mex)
-				where T : WcfServiceModel<T>
-		{
-			var mexExtension = new WcfMexExtension();
-			if (mex != null) mex(mexExtension);
-			serviceModel.AddExtensions(mexExtension);
-			return (T)serviceModel;
-		}
-
-		public static T Discoverable<T>(this WcfServiceModel<T> serviceModel)
-			where T : WcfServiceModel<T>
-		{
-			serviceModel.AddExtensions(new WcfDiscoveryExtension());
-			return (T)serviceModel;
-		}
-
-		public static T Discoverable<T>(this WcfServiceModel<T> serviceModel, Action<WcfDiscoveryExtension> discover)
-			where T : WcfServiceModel<T>
-		{
-			var discoveryExtension = new WcfDiscoveryExtension();
-			if (discover != null) discover(discoveryExtension);
-			serviceModel.AddExtensions(discoveryExtension);
-			return (T)serviceModel;
-		}
-
 		public static ComponentRegistration<T> AsWcfClient<T>(this ComponentRegistration<T> registration)
 		{
 			return registration.ActAs(new DefaultClientModel());

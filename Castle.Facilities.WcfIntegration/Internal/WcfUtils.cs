@@ -28,6 +28,8 @@ namespace Castle.Facilities.WcfIntegration.Internal
 
 	internal static class WcfUtils
 	{
+		public static readonly Arguments EmptyArguments = new Arguments();
+
 		public static bool IsHosted(IWcfServiceModel serviceModel)
 		{
 			return serviceModel.IsHosted;

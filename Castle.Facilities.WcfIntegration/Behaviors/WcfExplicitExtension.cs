@@ -165,7 +165,7 @@ namespace Castle.Facilities.WcfIntegration
 
 		protected override object GetExtensionInstance(IKernel kernel, IWcfBurden burden)
 		{
-			object extension = kernel[key];
+			object extension = kernel.Resolve(key, WcfUtils.EmptyArguments);
 			burden.Add(extension);
 			return extension;
 		}
