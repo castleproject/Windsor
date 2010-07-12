@@ -15,7 +15,6 @@
 namespace Castle.Facilities.WcfIntegration
 {
 	using System;
-	using System.Reflection;
 	using System.ServiceModel;
 	using System.ServiceModel.Channels;
 	using Castle.MicroKernel;
@@ -39,13 +38,13 @@ namespace Castle.Facilities.WcfIntegration
         }
 
         protected override ChannelCreator CreateChannelCreator(Type contract, DuplexClientModel clientModel,
-                                                                params object[] channelFactoryArgs)
+                                                               params object[] channelFactoryArgs)
         {
-            Type type = typeof(DuplexChannelFactory<>).MakeGenericType(new Type[] { contract });
+			var type = typeof(DuplexChannelFactory<>).MakeGenericType(new Type[] { contract });
 			var channelFactory = ChannelFactoryBuilder.CreateChannelFactory(type, clientModel, channelFactoryArgs);
 			ConfigureChannelFactory(channelFactory);
 
-            MethodInfo methodInfo = type.GetMethod("CreateChannel", new Type[0]);
+			var methodInfo = type.GetMethod("CreateChannel", new Type[0]);
             return (ChannelCreator)Delegate.CreateDelegate(typeof(ChannelCreator), channelFactory, methodInfo);
         }
     }

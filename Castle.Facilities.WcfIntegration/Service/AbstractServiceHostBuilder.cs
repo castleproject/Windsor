@@ -113,36 +113,31 @@ namespace Castle.Facilities.WcfIntegration
 			return baseAddresses.ToArray();
 		}
 
-		protected virtual ServiceEndpoint AddServiceEndpoint(ServiceHost serviceHost,
-															 ContractEndpointModel model)
+		protected virtual ServiceEndpoint AddServiceEndpoint(ServiceHost serviceHost, ContractEndpointModel model)
 		{
 			var binding = GetEffectiveBinding(null, serviceHost, string.Empty);
 			return serviceHost.AddServiceEndpoint(model.Contract, binding, string.Empty);
 		}
 
-		protected virtual ServiceEndpoint AddServiceEndpoint(ServiceHost serviceHost,
-															 ServiceEndpointModel model)
+		protected virtual ServiceEndpoint AddServiceEndpoint(ServiceHost serviceHost, ServiceEndpointModel model)
 		{
 			serviceHost.Description.Endpoints.Add(model.ServiceEndpoint);
 			return model.ServiceEndpoint;
 		}
 
-		protected virtual ServiceEndpoint AddServiceEndpoint(ServiceHost serviceHost,
-															 ConfigurationEndpointModel model)
+		protected virtual ServiceEndpoint AddServiceEndpoint(ServiceHost serviceHost, ConfigurationEndpointModel model)
 		{
 			throw new InvalidOperationException("The ServiceEndpoint for a ServiceHost " +
 				"cannot be created from an endpoint name.");
 		}
 
-		protected virtual ServiceEndpoint AddServiceEndpoint(ServiceHost serviceHost,
-															 BindingEndpointModel model)
+		protected virtual ServiceEndpoint AddServiceEndpoint(ServiceHost serviceHost, BindingEndpointModel model)
 		{
 			var binding = GetEffectiveBinding(model.Binding, serviceHost, string.Empty);
 			return serviceHost.AddServiceEndpoint(model.Contract, binding, string.Empty);
 		}
 
-		protected virtual ServiceEndpoint AddServiceEndpoint(ServiceHost serviceHost,
-															 BindingAddressEndpointModel model)
+		protected virtual ServiceEndpoint AddServiceEndpoint(ServiceHost serviceHost, BindingAddressEndpointModel model)
 		{
 			var binding = GetEffectiveBinding(model.Binding, serviceHost, model.Address);
 
@@ -164,11 +159,12 @@ namespace Castle.Facilities.WcfIntegration
 
 		private Binding GetEffectiveBinding(Binding binding, ServiceHost serviceHost, string address)
 		{
+			binding = binding ?? GetDefaultBinding(serviceHost, address);
 			if (binding == null && Services != null)
 			{
 				binding = Services.DefaultBinding;
 			}
-			return binding ?? GetDefaultBinding(serviceHost, address);
+			return binding; 
 		}
 
 		#region Nested Class: ServiceEndpointBuilder

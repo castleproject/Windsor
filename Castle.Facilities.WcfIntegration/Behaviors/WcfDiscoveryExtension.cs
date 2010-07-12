@@ -14,6 +14,8 @@
 
 namespace Castle.Facilities.WcfIntegration
 {
+	using System;
+	using System.Collections.Generic;
 	using System.Linq;
 	using System.ServiceModel;
 	using System.ServiceModel.Discovery;
@@ -21,11 +23,18 @@ namespace Castle.Facilities.WcfIntegration
 
 	public class WcfDiscoveryExtension : AbstractServiceHostAware
 	{
-		private DiscoveryEndpoint _discoveryEndpoint;
+		private DiscoveryEndpoint discoveryEndpoint;
+		private readonly List<Uri> scopes = new List<Uri>();
 
 		public WcfDiscoveryExtension AtEndpoint(DiscoveryEndpoint endpoint)
 		{
-			_discoveryEndpoint = endpoint;
+			discoveryEndpoint = endpoint;
+			return this;
+		}
+
+		public WcfDiscoveryExtension InScope(params Uri[] scopes)
+		{
+			this.scopes.AddRange(scopes);
 			return this;
 		}
 
@@ -36,6 +45,21 @@ namespace Castle.Facilities.WcfIntegration
 			{
 				serviceHost.Description.Behaviors.Add(new ServiceDiscoveryBehavior());
 			}
+
+			if (scopes.Count > 0)
+			{
+				var scopeBehavior = new EndpointDiscoveryBehavior();
+				foreach (var scope in scopes)
+				{
+					scopeBehavior.Scopes.Add(scope);
+				}
+
+				foreach (var endpoint in serviceHost.Description.NonSystemEndpoints())
+				{
+					endpoint.Behaviors.Add(scopeBehavior);
+				}
+			}
+
 			AddDiscoveryEndpoint(serviceHost);
 		}
 
@@ -43,8 +67,8 @@ namespace Castle.Facilities.WcfIntegration
 		{
 			if (serviceHost.Description.Endpoints.OfType<DiscoveryEndpoint>().Any() == false)
 			{
-				var discoveryEndpoint = _discoveryEndpoint ?? new UdpDiscoveryEndpoint();
-				serviceHost.Description.Endpoints.Add(discoveryEndpoint);
+				var endpoint = discoveryEndpoint ?? new UdpDiscoveryEndpoint();
+				serviceHost.Description.Endpoints.Add(endpoint);
 			}
 		}
 	}

@@ -90,17 +90,16 @@ namespace Castle.Facilities.WcfIntegration
 
 		void IWcfEndpointVisitor.VisitBindingEndpoint(BindingEndpointModel model)
 		{
-			channelCreator = GetChannel(contract, GetEffectiveBinding(model.Binding), string.Empty);
+			channelCreator = GetChannel(contract, GetEffectiveBinding(model.Binding, null), string.Empty);
 		}
 
 		void IWcfEndpointVisitor.VisitBindingAddressEndpoint(BindingAddressEndpointModel model)
 		{
-			var binding = GetEffectiveBinding(model.Binding);
-
 			if (model.HasViaAddress)
 			{
 				var address = model.EndpointAddress ?? new EndpointAddress(model.Address);
 				var description = ContractDescription.GetContract(contract);
+				var binding = GetEffectiveBinding(model.Binding, address.Uri);
 				var endpoint = new ServiceEndpoint(description, binding, address);
 				endpoint.Behaviors.Add(new ClientViaBehavior(model.ViaAddress));
 				channelCreator = GetChannel(contract, endpoint);
@@ -109,10 +108,12 @@ namespace Castle.Facilities.WcfIntegration
 			{
 				if (model.EndpointAddress != null)
 				{
+					var binding = GetEffectiveBinding(model.Binding, model.EndpointAddress.Uri);
 					channelCreator = GetChannel(contract, binding, model.EndpointAddress);
 				}
 				else
 				{
+					var binding = GetEffectiveBinding(model.Binding, new Uri(model.Address));
 					channelCreator = GetChannel(contract, binding, model.Address);
 				}
 			}
@@ -129,14 +130,23 @@ namespace Castle.Facilities.WcfIntegration
 
 				if (response.Endpoints.Count > 0)
 				{
-					var binding = GetEffectiveBinding(model.Binding);
 					var address = response.Endpoints[0].Address;
+					var binding = GetEffectiveBinding(model.Binding, address.Uri);
 					channelCreator = GetChannel(contract, binding, address);
 				}
 			}
 		}
 
 		#endregion
+
+		protected virtual Binding InferBinding(Uri address)
+		{
+			if (Clients != null)
+			{
+				return Clients.InferBinding(address) ?? Clients.DefaultBinding;
+			}
+			return null;
+		}
 
 		private FindCriteria CreateDiscoveryCriteria(DiscoveredEndpointModel model)
 		{
@@ -165,13 +175,9 @@ namespace Castle.Facilities.WcfIntegration
 			return criteria;
 		}
 
-		private Binding GetEffectiveBinding(Binding binding)
+		private Binding GetEffectiveBinding(Binding binding, Uri address)
 		{
-			if (binding == null && Clients != null)
-			{
-				binding = Clients.DefaultBinding;
-			}
-			return binding;
+			return binding ?? InferBinding(address);
 		}
 	}
 }

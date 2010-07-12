@@ -16,7 +16,6 @@ namespace Castle.Facilities.WcfIntegration
 {
 	using System;
 	using System.Collections.Generic;
-	using Castle.Facilities.WcfIntegration.Internal;
 
 	/// <summary>
 	/// Contract for all WCF endpoints.
@@ -29,9 +28,14 @@ namespace Castle.Facilities.WcfIntegration
 		Type Contract { get; set; }
 
 		/// <summary>
-		/// Gets the service extensions.
+		/// Gets the endpoint extensions.
 		/// </summary>
 		ICollection<IWcfExtension> Extensions { get; }
+
+		/// <summary>
+		/// Gets the endpoint scopes.
+		/// </summary>
+		ICollection<Uri> Scopes { get; }
 
 		/// <summary>
 		/// Supports management of endpoints.

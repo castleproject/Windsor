@@ -15,6 +15,7 @@
 namespace Castle.Facilities.WcfIntegration
 {
 	using System;
+	using System.ServiceModel.Channels;
 	using Castle.MicroKernel;
 
 	/// <summary>
@@ -25,6 +26,11 @@ namespace Castle.Facilities.WcfIntegration
 		public DefaultChannelBuilder(IKernel kernel, IChannelFactoryBuilder<DefaultClientModel> channelFactoryBuilder)
 			: base(kernel, channelFactoryBuilder)
 		{
+		}
+
+		protected override Binding InferBinding(Uri address)
+		{
+			return (Clients != null) ? Clients.InferBinding(address) : null;
 		}
 	}
 }

@@ -15,13 +15,13 @@
 namespace Castle.Facilities.WcfIntegration.Async.TypeSystem
 {
 	using System;
+	using System.Collections.Concurrent;
 	using System.Collections.Generic;
 	using System.Linq;
 	using System.Reflection;
 	using System.Runtime.Serialization;
 	using System.ServiceModel;
 	using System.ServiceModel.Description;
-	using System.Threading;
 	using Castle.Facilities.WcfIntegration.Internal;
 
 	[Serializable]
@@ -35,8 +35,8 @@ namespace Castle.Facilities.WcfIntegration.Async.TypeSystem
 		private readonly Dictionary<RuntimeMethodHandle, EndMethod> fakeEndMethods;
 		private BeginMethod lastAccessedBeginMethod;
 
-		private static readonly IDictionary<Type, AsyncType> typeToAsyncType = new Dictionary<Type, AsyncType>();
-		private static ReaderWriterLock locker = new ReaderWriterLock();
+		private static readonly ConcurrentDictionary<Type, AsyncType> 
+			typeToAsyncType = new ConcurrentDictionary<Type, AsyncType>();
 
 		private AsyncType(Type type) : base(type)
 		{
@@ -45,7 +45,7 @@ namespace Castle.Facilities.WcfIntegration.Async.TypeSystem
 				throw new ArgumentNullException("type");
 			}
 
-			if (!type.IsInterface)
+			if (type.IsInterface == false)
 			{
 				throw new ArgumentException("Interface type expected.", "type");
 			}
@@ -188,29 +188,7 @@ namespace Castle.Facilities.WcfIntegration.Async.TypeSystem
 
 		public static AsyncType GetAsyncType(Type type)
 		{
-			AsyncType asyncType;
-
-			try
-			{
-				locker.AcquireReaderLock(Timeout.Infinite);
-
-				if (!typeToAsyncType.TryGetValue(type, out asyncType))
-				{
-					locker.UpgradeToWriterLock(Timeout.Infinite);
-
-					if (!typeToAsyncType.TryGetValue(type, out asyncType))
-					{
-						asyncType = new AsyncType(type);
-						typeToAsyncType.Add(type, asyncType);
-					}
-				}
-			}
-			finally
-			{
-				locker.ReleaseLock();
-			}
-
-			return asyncType;
+			return typeToAsyncType.GetOrAdd(type, addType => new AsyncType(type));
 		}
 
 		private void CollectAsynchronousMethods()
@@ -237,7 +215,7 @@ namespace Castle.Facilities.WcfIntegration.Async.TypeSystem
 			}
 		}
 
-		private Type GetEffectiveType(Type asyncCandidateType)
+		private static  Type GetEffectiveType(Type asyncCandidateType)
 		{
 			if (asyncCandidateType != null && asyncCandidateType != typeof(object))
 			{

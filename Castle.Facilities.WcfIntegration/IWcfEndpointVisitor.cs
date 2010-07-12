@@ -17,10 +17,15 @@ namespace Castle.Facilities.WcfIntegration
 	public interface IWcfEndpointVisitor
 	{
 		void VisitContractEndpoint(ContractEndpointModel model);
+
 		void VisitServiceEndpoint(ServiceEndpointModel model);
+
 		void VisitConfigurationEndpoint(ConfigurationEndpointModel model);
+
 		void VisitBindingEndpoint(BindingEndpointModel model);
+
 		void VisitBindingAddressEndpoint(BindingAddressEndpointModel model);
+
 		void VisitBindingDiscoveredEndpoint(DiscoveredEndpointModel model);
 	}
 }

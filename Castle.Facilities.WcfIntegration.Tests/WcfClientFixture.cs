@@ -147,9 +147,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 				)))
 			{
 				using (var clientContainer = new WindsorContainer()
-					.AddFacility<WcfFacility>(f => f.DefaultBinding =
-						new NetTcpBinding { PortSharingEnabled = true }
-					)
+					.AddFacility<WcfFacility>()
 					.Register(Component.For<IOperations>()
 						.Named("operations")
 						.AsWcfClient(new DefaultClientModel()
@@ -227,9 +225,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 				)))
 			{
 				using (var clientContainer = new WindsorContainer()
-					.AddFacility<WcfFacility>(f => f.DefaultBinding =
-						new NetTcpBinding { PortSharingEnabled = true }
-					)
+					.AddFacility<WcfFacility>()
 					.Register(Component.For<IOperations>()
 						.Named("operations")
 						.LifeStyle.Transient
@@ -1439,9 +1435,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 				)))
 			{	//}
 				using (var clientContainer = new WindsorContainer()
-					.AddFacility<WcfFacility>(f => f.DefaultBinding =
-						new NetTcpBinding { PortSharingEnabled = true }
-					)
+					.AddFacility<WcfFacility>()
 					.Register(Component.For<IOperations>()
 						.Named("operations")
 						.AsWcfClient(new DefaultClientModel(WcfEndpoint.Discover()))

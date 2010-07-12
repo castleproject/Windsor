@@ -38,7 +38,7 @@ namespace Castle.Facilities.WcfIntegration.Rest
 
 		protected override Binding GetDefaultBinding(ServiceHost serviceHost, string address)
 		{
-			WebHttpBinding binding = new WebHttpBinding();
+			var binding = new WebHttpBinding();
 			if (address.StartsWith(Uri.UriSchemeHttps))
 			{
 				binding.Security.Mode = WebHttpSecurityMode.Transport;
@@ -46,22 +46,19 @@ namespace Castle.Facilities.WcfIntegration.Rest
 			return binding;
 		}
 
-		protected override ServiceHost CreateServiceHost(ComponentModel model, 
-			                                             RestServiceModel serviceModel,
+		protected override ServiceHost CreateServiceHost(ComponentModel model, RestServiceModel serviceModel,
 														 params Uri[] baseAddresses)
 		{
 			return CreateRestServiceHost(model.Implementation, 
 				GetEffectiveBaseAddresses(serviceModel, baseAddresses));
 		}
 
-		protected override ServiceHost CreateServiceHost(ComponentModel model, 
-			                                             params Uri[] baseAddresses)
+		protected override ServiceHost CreateServiceHost(ComponentModel model, params Uri[] baseAddresses)
 		{
 			return CreateRestServiceHost(model.Implementation, baseAddresses);
 		}
 
-		protected override ServiceHost CreateServiceHost(Type serviceType, 
-			                                             params Uri[] baseAddresses)
+		protected override ServiceHost CreateServiceHost(Type serviceType,  params Uri[] baseAddresses)
 		{
 			return CreateRestServiceHost(serviceType, baseAddresses);
 		}

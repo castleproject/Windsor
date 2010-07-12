@@ -15,11 +15,10 @@
 namespace Castle.Facilities.WcfIntegration
 {
 	using System;
-	using System.Collections.Generic;
+	using System.Collections.Concurrent;
 	using System.Linq;
 	using System.Reflection;
 	using System.ServiceModel;
-	using System.Threading;
 	using Castle.Core;
 	using Castle.DynamicProxy;
 	using Castle.Facilities.WcfIntegration.Internal;
@@ -49,10 +48,8 @@ namespace Castle.Facilities.WcfIntegration
 					null
 				);
 
-		private static readonly Dictionary<Type, CreateChannelDelegate>
-			createChannelCache = new Dictionary<Type, CreateChannelDelegate>();
-
-		private static ReaderWriterLock locker = new ReaderWriterLock();
+		private static readonly ConcurrentDictionary<Type, CreateChannelDelegate>
+			createChannelCache = new ConcurrentDictionary<Type, CreateChannelDelegate>();
 
 		#endregion
 
@@ -184,8 +181,7 @@ namespace Castle.Facilities.WcfIntegration
 				throw new FacilityException("The client model requires an endpoint.");
 			}
 
-			if ((model != null) && (clientModel.Contract != null) &&
-				(clientModel.Contract != model.Service))
+			if ((model != null) && (clientModel.Contract != null) && (clientModel.Contract != model.Service))
 			{
 				throw new FacilityException("The client endpoint contract " +
 					clientModel.Contract.FullName + " conflicts with the expected contaxt" +
@@ -198,31 +194,11 @@ namespace Castle.Facilities.WcfIntegration
 		{
 			ValidateClientModel(clientModel, model);
 
-			CreateChannelDelegate createChannelDelegate;
-
-			try
+			var createChannelDelegate = createChannelCache.GetOrAdd(clientModel.GetType(), clientModelType =>
 			{
-				locker.AcquireReaderLock(Timeout.Infinite);
-
-				Type clientModelType = clientModel.GetType();
-
-				if (!createChannelCache.TryGetValue(clientModelType, out createChannelDelegate))
-				{
-					locker.UpgradeToWriterLock(Timeout.Infinite);
-
-					if (!createChannelCache.TryGetValue(clientModelType, out createChannelDelegate))
-					{
-						createChannelDelegate = (CreateChannelDelegate)
-							Delegate.CreateDelegate(typeof(CreateChannelDelegate),
-								createChannelMethod.MakeGenericMethod(clientModelType));
-						createChannelCache.Add(clientModelType, createChannelDelegate);
-					}
-				}
-			}
-			finally
-			{
-				locker.ReleaseLock();
-			}
+				return (CreateChannelDelegate)Delegate.CreateDelegate(typeof(CreateChannelDelegate),
+						createChannelMethod.MakeGenericMethod(clientModelType));
+			});
 
 			return createChannelDelegate(kernel, clientModel, model, out burden);
 		}

@@ -15,6 +15,9 @@
 namespace Castle.Facilities.WcfIntegration
 {
 	using System;
+	using System.Collections.Generic;
+	using System.Linq;
+	using System.ServiceModel;
 	using System.ServiceModel.Channels;
 	using Castle.Core;
 	using Castle.Facilities.WcfIntegration.Async;
@@ -30,10 +33,12 @@ namespace Castle.Facilities.WcfIntegration
 		private WcfFacility facility;
 		private Binding defaultBinding;
 		private TimeSpan? closeTimeout;
+		private List<Func<Uri, Binding>> bindingPolicies;
 
 		public WcfClientExtension()
 		{
 			DefaultChannelPolicy = new ChannelReconnectPolicy();
+			bindingPolicies = new List<Func<Uri,Binding>>();
 		}
 
 		public Binding DefaultBinding
@@ -58,12 +63,24 @@ namespace Castle.Facilities.WcfIntegration
 			return this;
 		}
 
+		public WcfClientExtension AddBindingPolicy(Func<Uri, Binding> policy)
+		{
+			bindingPolicies.Insert(0, policy);
+			return this;
+		}
+
+		public Binding InferBinding(Uri address)
+		{
+			return bindingPolicies.Select(policy => policy(address)).FirstOrDefault(binding => binding != null);
+		}
+
 		internal void Init(WcfFacility facility)
 		{
 			this.facility = facility;
 			kernel = facility.Kernel;
 
 			AddDefaultChannelBuilders();
+			AddDefaultBindingPolicies();
 
 			kernel.Register(
 				Component.For(typeof(IChannelFactoryBuilder<>))
@@ -107,6 +124,21 @@ namespace Castle.Facilities.WcfIntegration
 			AddChannelBuilder<DuplexChannelBuilder, DuplexClientModel>(false);
 			AddChannelBuilder<RestChannelBuilder, RestClientModel>(false);
         }
+
+		private void AddDefaultBindingPolicies()
+		{
+			var httpBinding = new BasicHttpBinding();
+			AddBindingPolicy(address => address.Scheme == Uri.UriSchemeHttp ? httpBinding : null);
+
+			var httpsBinding = new BasicHttpBinding(BasicHttpSecurityMode.Transport);
+			AddBindingPolicy(address => address.Scheme == Uri.UriSchemeHttps ? httpsBinding : null);
+
+			var tcpBinding = new NetTcpBinding { PortSharingEnabled = true };
+			AddBindingPolicy(address => address.Scheme == Uri.UriSchemeNetTcp ? tcpBinding : null);
+
+			var pipeBinding = new NetNamedPipeBinding();
+			AddBindingPolicy(address => address.Scheme == Uri.UriSchemeNetPipe ? pipeBinding : null);
+		}
 
 		internal void AddChannelBuilder<T, M>(bool force)
 			where T : IClientChannelBuilder<M>

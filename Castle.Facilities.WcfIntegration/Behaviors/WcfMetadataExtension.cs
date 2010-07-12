@@ -23,18 +23,18 @@ namespace Castle.Facilities.WcfIntegration
 
 	public class WcfMetadataExtension : AbstractServiceHostAware
 	{
-		private bool _enableHttpGet;
-		private string _mexAddress = "mex";
+		private bool enableHttpGet;
+		private string address = "mex";
 
 		public WcfMetadataExtension EnableHttpGet()
 		{
-			_enableHttpGet = true;
+			enableHttpGet = true;
 			return this;
 		}
 
 		public WcfMetadataExtension AtAddress(string address)
 		{
-			_mexAddress = address;
+			this.address = address;
 			return this;
 		}
 
@@ -55,7 +55,7 @@ namespace Castle.Facilities.WcfIntegration
 			foreach (var baseAddress in GetBaseAddresses(serviceHost, out relativeAddress))
 			{
 				Binding binding = null;
-				var mexAddress = _mexAddress;
+				var mexAddress = address;
 				var scheme = baseAddress.Scheme;
 
 				if (scheme == Uri.UriSchemeHttp)
@@ -76,13 +76,13 @@ namespace Castle.Facilities.WcfIntegration
 					transport.PortSharingEnabled = true;
 					binding = tcpBinding;
 					if (relativeAddress == false)
-						mexAddress = string.Format("{0}/{1}", baseAddress.AbsoluteUri, _mexAddress);
+						mexAddress = string.Format("{0}/{1}", baseAddress.AbsoluteUri, address);
 				}
 				else if (scheme == Uri.UriSchemeNetPipe)
 				{
 					binding = MetadataExchangeBindings.CreateMexNamedPipeBinding();
 					if (relativeAddress == false)
-						mexAddress = string.Format("{0}/{1}", baseAddress.AbsoluteUri, _mexAddress);
+						mexAddress = string.Format("{0}/{1}", baseAddress.AbsoluteUri, address);
 				}
 
 				if (binding != null)
@@ -101,11 +101,11 @@ namespace Castle.Facilities.WcfIntegration
 			{
 				if (baseAddress.Scheme == Uri.UriSchemeHttp)
 				{
-					metadataBehavior.HttpGetEnabled = _enableHttpGet;
+					metadataBehavior.HttpGetEnabled = enableHttpGet;
 				}
 				else if (baseAddress.Scheme == Uri.UriSchemeHttp)
 				{
-					metadataBehavior.HttpsGetEnabled = _enableHttpGet;
+					metadataBehavior.HttpsGetEnabled = enableHttpGet;
 				}
 			}
 

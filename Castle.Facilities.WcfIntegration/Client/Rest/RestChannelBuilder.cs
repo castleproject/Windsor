@@ -15,7 +15,6 @@
 namespace Castle.Facilities.WcfIntegration.Rest
 {
 	using System;
-	using System.Reflection;
 	using System.ServiceModel;
 	using System.ServiceModel.Channels;
 	using System.ServiceModel.Web;
@@ -28,10 +27,15 @@ namespace Castle.Facilities.WcfIntegration.Rest
 		{
 		}
 
+		protected override Binding InferBinding(Uri address)
+		{
+			return null;
+		}
+
 		protected override ChannelCreator GetChannel(RestClientModel clientModel, Type contract,
 												     Binding binding, string address)
 		{
-			Uri remoteAddress = new Uri(address, UriKind.Absolute);
+			var remoteAddress = new Uri(address, UriKind.Absolute);
 
 			if (binding == null)
 			{
@@ -50,11 +54,11 @@ namespace Castle.Facilities.WcfIntegration.Rest
 		protected override ChannelCreator CreateChannelCreator(Type contract, RestClientModel clientModel,
 			                                                   params object[] channelFactoryArgs)
 		{
-			Type type = typeof(WebChannelFactory<>).MakeGenericType(new Type[] { contract });
+			var type = typeof(WebChannelFactory<>).MakeGenericType(new Type[] { contract });
 			var channelFactory = ChannelFactoryBuilder.CreateChannelFactory(type, clientModel, channelFactoryArgs);
 			ConfigureChannelFactory(channelFactory);
 
-			MethodInfo methodInfo = type.GetMethod("CreateChannel", new Type[0]);
+			var methodInfo = type.GetMethod("CreateChannel", new Type[0]);
 			return (ChannelCreator)Delegate.CreateDelegate(typeof(ChannelCreator), channelFactory, methodInfo);
 		}
 	}

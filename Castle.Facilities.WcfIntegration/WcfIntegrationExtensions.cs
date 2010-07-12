@@ -13,10 +13,23 @@
 
 namespace Castle.Facilities.WcfIntegration
 {
+	using System.Collections.Generic;
+	using System.Linq;
+	using System.ServiceModel.Description;
 	using Castle.MicroKernel.Registration;
 
 	public static class WcfIntegrationExtensions
 	{
+		public static IEnumerable<ServiceEndpoint> SystemEndpoints(this ServiceDescription description)
+		{
+			return description.Endpoints.Where(endpoint => endpoint.IsSystemEndpoint);
+		}
+
+		public static IEnumerable<ServiceEndpoint> NonSystemEndpoints(this ServiceDescription description)
+		{
+			return description.Endpoints.Where(endpoint => endpoint.IsSystemEndpoint == false);
+		}
+
 		public static ComponentRegistration<T> AsWcfClient<T>(this ComponentRegistration<T> registration)
 		{
 			return registration.ActAs(new DefaultClientModel());

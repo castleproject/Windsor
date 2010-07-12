@@ -59,7 +59,7 @@ namespace Castle.Facilities.WcfIntegration.Tests.Rest
 					.AsWcfClient(new RestClientModel("http://localhost:27198"))
 				);
 
-			ICalculator calculator = windsorContainer.Resolve<ICalculator>("calculator");
+			var calculator = windsorContainer.Resolve<ICalculator>("calculator");
 			Assert.AreEqual(21, calculator.Multiply(3, 7));
 		}
 
@@ -77,7 +77,7 @@ namespace Castle.Facilities.WcfIntegration.Tests.Rest
 					})
 				);
 
-			ICalculator calculator = windsorContainer.Resolve<ICalculator>("calculator");
+			var calculator = windsorContainer.Resolve<ICalculator>("calculator");
 			Assert.AreEqual(75, calculator.Subtract(100, 25));
 		}
 
@@ -90,7 +90,7 @@ namespace Castle.Facilities.WcfIntegration.Tests.Rest
 					.AsWcfClient(new RestClientModel("http://localhost:27198"))
 				);
 
-			ICalculator calculator = windsorContainer.Resolve<ICalculator>("calculator");
+			var calculator = windsorContainer.Resolve<ICalculator>("calculator");
 			var call = calculator.BeginWcfCall(p => p.Multiply(3, 7));
 			Assert.AreEqual(21, call.End());
 		}

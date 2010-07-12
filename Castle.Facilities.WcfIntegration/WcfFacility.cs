@@ -28,8 +28,8 @@ namespace Castle.Facilities.WcfIntegration
 	/// </summary>
 	public class WcfFacility : AbstractFacility
 	{
-		private WcfClientExtension clientExtension;
-		private WcfServiceExtension serviceExtension;
+		private readonly WcfClientExtension clientExtension;
+		private readonly WcfServiceExtension serviceExtension;
 
 		public WcfFacility()
 		{

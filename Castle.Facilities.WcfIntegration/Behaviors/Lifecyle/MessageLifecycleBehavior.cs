@@ -117,7 +117,7 @@ namespace Castle.Facilities.WcfIntegration.Behaviors
 				{
 					bool proceed = true;
 
-					if (!action.ShouldPerform(lifecycle)) continue;
+					if (action.ShouldPerform(lifecycle) == false) continue;
 
 					if (action is IMessageEnvelopeAction)
 					{
@@ -143,7 +143,7 @@ namespace Castle.Facilities.WcfIntegration.Behaviors
 						proceed = messageAction.Perform(ref message, lifecycle, state);
 					}
 
-					if (!proceed) break;
+					if (proceed == false) break;
 				}
 
 				if (envelope != null)

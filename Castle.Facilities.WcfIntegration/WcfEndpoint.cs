@@ -71,7 +71,8 @@ namespace Castle.Facilities.WcfIntegration
 
 	public abstract class WcfEndpointBase : IWcfEndpoint
 	{
-		private ICollection<IWcfExtension> extensions;
+		private List<IWcfExtension> extensions;
+		private List<Uri> scopes;
 
 		protected WcfEndpointBase(Type contract)
 		{
@@ -91,6 +92,18 @@ namespace Castle.Facilities.WcfIntegration
 					extensions = new List<IWcfExtension>();
 				}
 				return extensions;
+			}
+		}
+
+		public ICollection<Uri> Scopes
+		{
+			get
+			{
+				if (scopes == null)
+				{
+					scopes = new List<Uri>();
+				}
+				return scopes;
 			}
 		}
 
@@ -114,9 +127,19 @@ namespace Castle.Facilities.WcfIntegration
 
 		public T AddExtensions(params object[] extensions)
 		{
-			foreach (object extension in extensions)
+			foreach (var extension in extensions)
 			{
 				Extensions.Add(WcfExplicitExtension.CreateFrom(extension));
+			}
+			return (T)this;
+		}
+
+
+		public T InScope(params Uri[] scopes)
+		{
+			foreach (var scope in scopes)
+			{
+				Scopes.Add(scope);
 			}
 			return (T)this;
 		}
@@ -378,33 +401,31 @@ namespace Castle.Facilities.WcfIntegration
 
 	public class DiscoveredEndpointModel : WcfEndpointBase<DiscoveredEndpointModel>
 	{
-		private Uri _scopeMatchBy;
-		private readonly List<Uri> _scopes;
-		private readonly List<XElement> _filters;
+		private Uri scopeMatchBy;
+		private readonly List<XElement> filters;
 
-		internal DiscoveredEndpointModel(Type contract, Binding binding)
+		internal DiscoveredEndpointModel(Type contract)
 			: base(contract)
 		{
+			filters = new List<XElement>();
+		}
+
+		internal DiscoveredEndpointModel(Type contract, Binding binding)
+			: this(contract)
+		{
 			Binding = binding;
-			_scopes = new List<Uri>();
-			_filters = new List<XElement>();
 		}
 
 		public Binding Binding { get; private set; }
 
 		public Uri ScopeMatchBy
 		{
-			get { return _scopeMatchBy; }
+			get { return scopeMatchBy; }
 		}
 
-		public IEnumerable<Uri> Scopes
+		public ICollection<XElement> Filters
 		{
-			get { return _scopes; }
-		}
-
-		public IEnumerable<XElement> Filters
-		{
-			get { return _filters; }
+			get { return filters; }
 		}
 
 		public TimeSpan? Duration { get; private set; }
@@ -422,8 +443,6 @@ namespace Castle.Facilities.WcfIntegration
 			Duration = duration;
 			return this;
 		}
-
-		#region Scopes
 
 		public DiscoveredEndpointModel MatchScopeExactly()
 		{
@@ -447,21 +466,13 @@ namespace Castle.Facilities.WcfIntegration
 
 		public DiscoveredEndpointModel MatchScopeBy(Uri match)
 		{
-			_scopeMatchBy = match;
+			scopeMatchBy = match;
 			return this;
 		}
-
-		public DiscoveredEndpointModel InScope(params Uri[] scopes)
-		{
-			_scopes.AddRange(scopes);
-			return this;
-		}
-
-		#endregion
 
 		public DiscoveredEndpointModel FilteredBy(params XElement[] filters)
 		{
-			_filters.AddRange(filters);
+			this.filters.AddRange(filters);
 			return this;
 		}
 

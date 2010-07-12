@@ -45,9 +45,7 @@ namespace Castle.Facilities.WcfIntegration
 
 		private void AddDefaultEndpointIfNoneFound()
 		{
-			if (Description != null && 
-				Description.Endpoints.Where(endpoint => endpoint.IsSystemEndpoint == false)
-				.Any() == false)
+			if (Description != null && Description.NonSystemEndpoints().Any() == false)
 			{
 				foreach (var endpoint in AddDefaultEndpoints())
 				{

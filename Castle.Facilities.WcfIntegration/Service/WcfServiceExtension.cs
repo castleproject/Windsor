@@ -2,12 +2,12 @@
 namespace Castle.Facilities.WcfIntegration
 {
 	using System;
+	using System.Collections.Concurrent;
 	using System.Collections.Generic;
 	using System.Reflection;
 	using System.ServiceModel;
 	using System.ServiceModel.Activation;
 	using System.ServiceModel.Channels;
-	using System.Threading;
 	using Castle.Core;
 	using Castle.Facilities.WcfIntegration.Internal;
 	using Castle.Facilities.WcfIntegration.Rest;
@@ -37,10 +37,8 @@ namespace Castle.Facilities.WcfIntegration
 					typeof(ComponentModel), typeof(Uri[]) }, null
 				);
 
-		private static readonly Dictionary<Type, CreateServiceHostDelegate> 
-			createServiceHostCache = new Dictionary<Type, CreateServiceHostDelegate>();
-
-		private static ReaderWriterLock locker = new ReaderWriterLock();
+		private static readonly ConcurrentDictionary<Type, CreateServiceHostDelegate>
+			createServiceHostCache = new ConcurrentDictionary<Type, CreateServiceHostDelegate>();
 
 		#endregion
 
@@ -197,39 +195,17 @@ namespace Castle.Facilities.WcfIntegration
 		public static ServiceHost CreateServiceHost(IKernel Kernel, IWcfServiceModel serviceModel,
 													ComponentModel model, params Uri[] baseAddresses)
 		{
-			CreateServiceHostDelegate createServiceHost;
-
-			try
+			var createServiceHost = createServiceHostCache.GetOrAdd(serviceModel.GetType(), serviceModelType =>
 			{
-				locker.AcquireReaderLock(Timeout.Infinite);
-
-				Type serviceModelType = serviceModel.GetType();
-
-				if (!createServiceHostCache.TryGetValue(serviceModelType, out createServiceHost))
-				{
-					locker.UpgradeToWriterLock(Timeout.Infinite);
-
-					if (!createServiceHostCache.TryGetValue(serviceModelType, out createServiceHost))
-					{
-						createServiceHost = (CreateServiceHostDelegate)
-							Delegate.CreateDelegate(typeof(CreateServiceHostDelegate),
-								createServiceHostMethod.MakeGenericMethod(serviceModelType));
-						createServiceHostCache.Add(serviceModelType, createServiceHost);
-					}
-				}
-			}
-			finally
-			{
-				locker.ReleaseLock();
-			}
+				return (CreateServiceHostDelegate)Delegate.CreateDelegate(typeof(CreateServiceHostDelegate),
+						createServiceHostMethod.MakeGenericMethod(serviceModelType));
+			});
 
 			return createServiceHost(Kernel, serviceModel, model, baseAddresses);
 		}
 
-		internal static ServiceHost CreateServiceHostInternal<M>(IKernel kernel, 
-		                                                         IWcfServiceModel serviceModel, 
-			                                                     ComponentModel model,
-																 params Uri[] baseAddresses)
+		internal static ServiceHost CreateServiceHostInternal<M>(IKernel kernel, IWcfServiceModel serviceModel, 
+			                                                     ComponentModel model, params Uri[] baseAddresses)
 			where M : IWcfServiceModel
 		{
 			var serviceHostBuilder = kernel.Resolve<IServiceHostBuilder<M>>();
@@ -246,8 +222,7 @@ namespace Castle.Facilities.WcfIntegration
 
 		#endregion
 
-		private void CreateServiceHostWhenHandlerIsValid(IHandler handler, IWcfServiceModel serviceModel,
-			                                             ComponentModel model)
+		private void CreateServiceHostWhenHandlerIsValid(IHandler handler, IWcfServiceModel serviceModel, ComponentModel model)
 		{
 			if (serviceModel.ShouldOpenEagerly.GetValueOrDefault(OpenServiceHostsEagerly) ||
 				handler.CurrentState == HandlerState.Valid)
@@ -257,13 +232,12 @@ namespace Castle.Facilities.WcfIntegration
 			else
 			{
 				HandlerDelegate onStateChanged = null;
-				onStateChanged = delegate(IHandler valid, ref bool stateChanged)
+				onStateChanged = (IHandler valid, ref bool stateChanged) =>
 				{
 					if (handler.CurrentState == HandlerState.Valid && onStateChanged != null)
 					{
 						kernel.HandlerRegistered -= onStateChanged;
 						onStateChanged = null;
-
 						CreateAndOpenServiceHost(serviceModel, model);
 					}
 				};
