@@ -26,15 +26,15 @@ namespace Castle.Facilities.WcfIntegration
 		private DiscoveryEndpoint discoveryEndpoint;
 		private readonly List<Uri> scopes = new List<Uri>();
 
-		public WcfDiscoveryExtension AtEndpoint(DiscoveryEndpoint endpoint)
-		{
-			discoveryEndpoint = endpoint;
-			return this;
-		}
-
 		public WcfDiscoveryExtension InScope(params Uri[] scopes)
 		{
 			this.scopes.AddRange(scopes);
+			return this;
+		}
+
+		public WcfDiscoveryExtension AtEndpoint(DiscoveryEndpoint endpoint)
+		{
+			discoveryEndpoint = endpoint;
 			return this;
 		}
 

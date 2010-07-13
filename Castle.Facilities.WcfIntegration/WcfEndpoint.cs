@@ -418,6 +418,8 @@ namespace Castle.Facilities.WcfIntegration
 
 		public Binding Binding { get; private set; }
 
+		public bool UseMetadata { get; private set; }
+
 		public Uri ScopeMatchBy
 		{
 			get { return scopeMatchBy; }
@@ -431,6 +433,12 @@ namespace Castle.Facilities.WcfIntegration
 		public TimeSpan? Duration { get; private set; }
 
 		public DiscoveryEndpoint DiscoveryEndpoint { get; set; }
+
+		public DiscoveredEndpointModel FromMetadata()
+		{
+			UseMetadata = true;
+			return this;
+		}
 
 		public DiscoveredEndpointModel With(DiscoveryEndpoint endpoint)
 		{

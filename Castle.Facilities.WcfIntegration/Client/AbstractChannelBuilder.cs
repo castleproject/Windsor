@@ -123,16 +123,50 @@ namespace Castle.Facilities.WcfIntegration
 		{
 			var discoveryEndpoint = model.DiscoveryEndpoint ?? new UdpDiscoveryEndpoint();
 
+			if (model.UseMetadata)
+			{
+				DiscoverEndpointFromMetadata(discoveryEndpoint, model);
+			}
+			else
+			{
+				DiscoverEndpointAddress(discoveryEndpoint, model);
+			}
+		}
+
+		private void DiscoverEndpointAddress(DiscoveryEndpoint discoveryEndpoint, DiscoveredEndpointModel model)
+		{
 			using (var discover = new DiscoveryClient(discoveryEndpoint))
 			{
-				var criteria = CreateDiscoveryCriteria(model);
-				var response = discover.Find(criteria);
+				var criteria = new FindCriteria(contract);
+				ConfigureSearchCriteria(criteria, model);
 
-				if (response.Endpoints.Count > 0)
+				var discovered = discover.Find(criteria);
+				if (discovered.Endpoints.Count > 0)
 				{
-					var address = response.Endpoints[0].Address;
+					var address = discovered.Endpoints[0].Address;
 					var binding = GetEffectiveBinding(model.Binding, address.Uri);
 					channelCreator = GetChannel(contract, binding, address);
+				}
+			}
+		}
+
+		private void DiscoverEndpointFromMetadata(DiscoveryEndpoint discoveryEndpoint, DiscoveredEndpointModel model)
+		{
+			using (var discover = new DiscoveryClient(discoveryEndpoint))
+			{
+				var criteria = FindCriteria.CreateMetadataExchangeEndpointCriteria(contract);
+				ConfigureSearchCriteria(criteria, model);
+
+				var discovered = discover.Find(criteria);
+				if (discovered.Endpoints.Count > 0)
+				{
+					var mexAddress = discovered.Endpoints[0].Address;
+					var endpoints = MetadataResolver.Resolve(contract, mexAddress);
+					if (endpoints.Count > 0)
+					{
+						var endpoint = endpoints[0];
+						channelCreator = GetChannel(contract, endpoint.Binding, endpoint.Address);
+					}
 				}
 			}
 		}
@@ -148,9 +182,9 @@ namespace Castle.Facilities.WcfIntegration
 			return null;
 		}
 
-		private FindCriteria CreateDiscoveryCriteria(DiscoveredEndpointModel model)
+		private static void ConfigureSearchCriteria(FindCriteria criteria, DiscoveredEndpointModel model)
 		{
-			var criteria = new FindCriteria(contract) { MaxResults = 1 };
+			criteria.MaxResults = 1;
 
 			if (model.Duration.HasValue)
 			{
@@ -171,8 +205,6 @@ namespace Castle.Facilities.WcfIntegration
 			{
 				criteria.Extensions.Add(filter);
 			}
-
-			return criteria;
 		}
 
 		private Binding GetEffectiveBinding(Binding binding, Uri address)

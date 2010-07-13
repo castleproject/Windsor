@@ -41,6 +41,11 @@ namespace Castle.Facilities.WcfIntegration
 			return registration.ActAs(clientModels);
 		}
 
+		public static ComponentRegistration<T> AsWcfClient<T>(this ComponentRegistration<T> registration, IWcfEndpoint endpoint)
+		{
+			return registration.ActAs(new DefaultClientModel(endpoint));
+		}
+
 		public static ComponentRegistration<T> AsWcfService<T>(this ComponentRegistration<T> registration)
 		{
 			return registration.ActAs(new DefaultServiceModel());

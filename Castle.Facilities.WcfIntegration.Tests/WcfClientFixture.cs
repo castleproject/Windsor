@@ -1421,7 +1421,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 		}
 
 		[Test]
-		public void CanDiscoverServiceEndpointAddresses()
+		public void CanDiscoverServiceEndpointAndInferBinding()
 		{
 			using (new WindsorContainer()
 				.AddFacility<WcfFacility>(f => f.CloseTimeout = TimeSpan.Zero)
@@ -1437,11 +1437,37 @@ namespace Castle.Facilities.WcfIntegration.Tests
 				using (var clientContainer = new WindsorContainer()
 					.AddFacility<WcfFacility>()
 					.Register(Component.For<IOperations>()
-						.Named("operations")
-						.AsWcfClient(new DefaultClientModel(WcfEndpoint.Discover()))
+						.AsWcfClient(WcfEndpoint.Discover())
 					))
 				{
-					var client = clientContainer.Resolve<IOperations>("operations");
+					var client = clientContainer.Resolve<IOperations>();
+					Assert.AreEqual(28, client.GetValueFromConstructor());
+				}
+			}
+		}
+
+		[Test]
+		public void CanDiscoverServiceEndpointFromMetadata()
+		{
+			using (new WindsorContainer()
+				.AddFacility<WcfFacility>(f => f.CloseTimeout = TimeSpan.Zero)
+				.Register(Component.For<Operations>()
+					.DependsOn(new { number = 28 })
+					.AsWcfService(new DefaultServiceModel()
+						.AddEndpoints(WcfEndpoint.ForContract<IOperations>()
+							.BoundTo(new NetTcpBinding { PortSharingEnabled = true })
+							.At("net.tcp://localhost/Operations2"))
+						.PublishMetadata()
+						.Discoverable()
+				)))
+			{	//}
+				using (var clientContainer = new WindsorContainer()
+					.AddFacility<WcfFacility>()
+					.Register(Component.For<IOperations>()
+						.AsWcfClient(WcfEndpoint.Discover().FromMetadata())
+					))
+				{
+					var client = clientContainer.Resolve<IOperations>();
 					Assert.AreEqual(28, client.GetValueFromConstructor());
 				}
 			}

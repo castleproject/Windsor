@@ -99,7 +99,7 @@ namespace Castle.Facilities.WcfIntegration.Async
 				if (returnValue == null)
 				{
 					throw new InvalidOperationException("Return value of the message is not of type IAsyncResult. " +
-						"This indicate it's not a result of async operation. This may also be a bug, so if you think it is, please report it.");
+						"This indicate it's not a result of async operation.  This may also be a bug, so if you think it is, please report it.");
 				}
 
 				AsyncResult = returnValue;

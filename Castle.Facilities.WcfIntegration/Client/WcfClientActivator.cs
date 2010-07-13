@@ -172,8 +172,7 @@ namespace Castle.Facilities.WcfIntegration
 			}
 			else
 			{
-				throw new FacilityException(
-					"The client endpoint does not specify a contract.");
+				throw new FacilityException("The client endpoint does not specify a contract.");
 			}
 
 			if (clientModel.Endpoint == null)
@@ -183,9 +182,9 @@ namespace Castle.Facilities.WcfIntegration
 
 			if ((model != null) && (clientModel.Contract != null) && (clientModel.Contract != model.Service))
 			{
-				throw new FacilityException("The client endpoint contract " +
-					clientModel.Contract.FullName + " conflicts with the expected contaxt" +
-					model.Service.FullName + ".");
+				throw new FacilityException(string.Format(
+					"The client endpoint contract {0} conflicts with the expected contract.",
+					clientModel.Contract.FullName, model.Service.FullName));
 			}
 		}
 
@@ -200,7 +199,12 @@ namespace Castle.Facilities.WcfIntegration
 						createChannelMethod.MakeGenericMethod(clientModelType));
 			});
 
-			return createChannelDelegate(kernel, clientModel, model, out burden);
+			var channelCreator = createChannelDelegate(kernel, clientModel, model, out burden);
+			if (channelCreator == null)
+			{
+				throw new FacilityException("Unable to generate the channel creator.  This is most likely a bug so please report it.");
+			}
+			return channelCreator;
 		}
 
 		private static ChannelCreator CreateChannelCreatorInternal<M>(
