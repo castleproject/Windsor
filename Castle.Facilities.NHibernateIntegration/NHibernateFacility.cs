@@ -144,11 +144,17 @@ namespace Castle.Facilities.NHibernateIntegration
 			string defaultConfigurationBuilder = FacilityConfig.Attributes[ConfigurationBuilderConfigurationKey];
 			if (!string.IsNullOrEmpty(defaultConfigurationBuilder))
 			{
-				Type configurationBuilderType = Type.GetType(defaultConfigurationBuilder);
-				if (configurationBuilderType == null)
-					throw new FacilityException(string.Format("ConfigurationBuilder type '{0}' not found", defaultConfigurationBuilder));
-				Kernel.AddComponent(DefaultConfigurationBuilderKey, typeof(IConfigurationBuilder),
-				                    configurationBuilderType);
+				var converter = (IConversionManager) Kernel.GetSubSystem(SubSystemConstants.ConversionManagerKey);
+				try
+				{
+					var configurationBuilderType = (Type)converter.PerformConversion(defaultConfigurationBuilder, typeof(Type));
+					Kernel.AddComponent(DefaultConfigurationBuilderKey, typeof(IConfigurationBuilder),
+										configurationBuilderType);
+				}
+				catch (ConverterException)
+				{
+					throw new FacilityException(string.Format("ConfigurationBuilder type '{0}' invalid or not found", defaultConfigurationBuilder));
+				}
 			}
 			else
 				Kernel.AddComponentInstance(DefaultConfigurationBuilderKey, typeof(IConfigurationBuilder),this.configurationBuilder);

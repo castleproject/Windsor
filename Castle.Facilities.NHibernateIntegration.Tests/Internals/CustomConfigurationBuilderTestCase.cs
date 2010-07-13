@@ -102,7 +102,7 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Internals
 	public class InvalidCustomConfigurationBuilderTestCase : AbstractCustomConfigurationBuilderTestCase
 	{
 		[Test]
-		[ExpectedException(typeof(FacilityException), ExpectedMessage = "ConfigurationBuilder type 'InvalidType' not found")]
+		[ExpectedException(typeof(FacilityException), ExpectedMessage = "ConfigurationBuilder type 'InvalidType' invalid or not found")]
 		public void ThrowsWithMessage()
 		{
 			container = new WindsorContainer(new XmlInterpreter(new AssemblyResource(GetContainerFile())));
