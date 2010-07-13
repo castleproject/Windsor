@@ -99,14 +99,13 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Internals
 	}
 
 	[TestFixture]
-	public class InvalidCustomConfigurationBuilderTestCase : AbstractCustomConfigurationBuilderTestCase
+	public class InvalidCustomConfigurationBuilderTestCase : AbstractNHibernateTestCase
 	{
 		[Test]
 		[ExpectedException(typeof(FacilityException), ExpectedMessage = "ConfigurationBuilder type 'InvalidType' invalid or not found")]
 		public void ThrowsWithMessage()
 		{
 			container = new WindsorContainer(new XmlInterpreter(new AssemblyResource(GetContainerFile())));
-			Invoked();
 		}
 
 		public override void SetUp()
