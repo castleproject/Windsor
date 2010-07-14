@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -22,11 +22,11 @@ namespace Castle.Core
 	/// By doing so, the batch register will look 
 	/// for this attribute to distinguish components from other classes.
 	/// </summary>
-	[AttributeUsage(AttributeTargets.Class, AllowMultiple=true)]
+	[AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
 	public class CastleComponentAttribute : LifestyleAttribute
 	{
-		private readonly Type service;
 		private readonly string key;
+		private readonly Type service;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="CastleComponentAttribute"/> class.
@@ -58,21 +58,21 @@ namespace Castle.Core
 		}
 
 		/// <summary>
-		/// Gets the service.
-		/// </summary>
-		/// <value>The service.</value>
-		public Type Service
-		{
-			get { return service; }
-		}
-
-		/// <summary>
 		/// Gets the key.
 		/// </summary>
 		/// <value>The key.</value>
 		public String Key
 		{
 			get { return key; }
+		}
+
+		/// <summary>
+		/// Gets the service.
+		/// </summary>
+		/// <value>The service.</value>
+		public Type Service
+		{
+			get { return service; }
 		}
 	}
 }

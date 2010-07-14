@@ -41,5 +41,7 @@ namespace Castle.MicroKernel
 		/// Key used for the resource subsystem
 		/// </summary>
 		public static readonly String ResourceKey = "resource.sub.key";
+
+		public static readonly String DebuggingKey = "Castle.DebuggingSubSystem";
 	}
 }

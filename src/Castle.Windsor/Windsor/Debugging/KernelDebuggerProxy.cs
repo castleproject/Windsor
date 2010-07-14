@@ -15,16 +15,16 @@
 namespace Castle.Windsor.Debugging
 {
 	using System;
+	using System.Collections.Generic;
 	using System.Diagnostics;
 	using System.Linq;
 
 	using Castle.MicroKernel;
-	using Castle.MicroKernel.SubSystems.Naming;
 
+	[DebuggerDisplay("")]
 	internal class KernelDebuggerProxy
 	{
-		private IKernel kernel;
-		private INamingSubSystem naming;
+		private readonly IEnumerable<IContainerDebuggerExtension> extensions;
 
 		public KernelDebuggerProxy(IWindsorContainer container):this(container.Kernel){}
 
@@ -34,41 +34,15 @@ namespace Castle.Windsor.Debugging
 			{
 				throw new ArgumentNullException("kernel");
 			}
-			this.kernel = kernel;
-			naming = kernel.GetSubSystem(SubSystemConstants.NamingKey) as INamingSubSystem;
+			extensions = (IEnumerable<IContainerDebuggerExtension>)(kernel.GetSubSystem(SubSystemConstants.DebuggingKey) as IContainerDebuggerExtensionHost) ??
+			             new IContainerDebuggerExtension[0];
 		}
 
-		[DebuggerDisplay("Count: {TotalHandlersCount}", Name = "AllComponents")]
-		public HandlersByKeyDictionaryDebuggerView AllComponents
+		[DebuggerDisplay("")]
+		[DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
+		public DebuggerViewItem[] Extensions
 		{
-			get { return new HandlersByKeyDictionaryDebuggerView(naming.GetKey2Handler()); }
-		}
-
-		[DebuggerDisplay("Count: {WaitingDependencyHandlersCount}", Name = "PotentiallyMisconfiguredComponents")]
-		public HandlersByKeyDictionaryDebuggerView MisconfiguredHandlers
-		{
-			get
-			{
-				return
-					new HandlersByKeyDictionaryDebuggerView(
-						naming.GetKey2Handler().Where(h => h.Value.CurrentState == HandlerState.WaitingDependency));
-			}
-		}
-
-		private int TotalHandlersCount
-		{
-			get { return naming.ComponentCount; }
-		}
-
-		private int WaitingDependencyHandlersCount
-		{
-			get { return MisconfiguredHandlers.Count; }
-		}
-
-
-		public IFacility[] Facilities
-		{
-			get { return kernel.GetFacilities(); }
+			get { return extensions.SelectMany(e => e.Attach()).ToArray(); }
 		}
 	}
 }

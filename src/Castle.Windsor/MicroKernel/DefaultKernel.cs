@@ -36,6 +36,7 @@ namespace Castle.MicroKernel
 	using Castle.MicroKernel.SubSystems.Conversion;
 	using Castle.MicroKernel.SubSystems.Naming;
 	using Castle.MicroKernel.SubSystems.Resource;
+	using Castle.Windsor.Debugging;
 
 	/// <summary>
 	/// Default implementation of <see cref="IKernel"/>. 
@@ -179,6 +180,11 @@ namespace Castle.MicroKernel
 
 			AddSubSystem(SubSystemConstants.ResourceKey,
 						 new DefaultResourceSubSystem());
+
+			if(Debugger.IsAttached)
+			{
+				AddSubSystem(SubSystemConstants.DebuggingKey, new DefaultDebuggingSubSystem());
+			}
 		}
 
 		#endregion
@@ -598,7 +604,9 @@ namespace Castle.MicroKernel
 		{
 			if (key == null) throw new ArgumentNullException("key");
 
-			return subsystems[key];
+			ISubSystem subsystem;
+			subsystems.TryGetValue(key, out subsystem);
+			return subsystem;
 		}
 
 		public virtual void AddChildKernel(IKernel childKernel)
