@@ -16,6 +16,7 @@ namespace Castle.MicroKernel.Tests.Registration
 {
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Tests.Lifestyle.Components;
+	using Castle.Windsor.Tests;
 	using Castle.Windsor.Tests.ClassComponents;
 	using Castle.Windsor.Tests.Facilities.FactorySupport;
 
@@ -138,6 +139,17 @@ namespace Castle.MicroKernel.Tests.Registration
 			Assert.IsTrue(component.Disposed);
 		}
 
+		[Test(Description = "see issue IOC-ISSUE-207")]
+		public void Can_register_more_than_one_with_factory_method()
+		{
+
+			Assert.DoesNotThrow(
+				() => Kernel.Register(
+					Component.For<ClassWithPrimitiveDependency>()
+						.UsingFactoryMethod(() => new ClassWithPrimitiveDependency(2)),
+					Component.For<ClassWithServiceDependency>()
+						.UsingFactoryMethod(() => new ClassWithServiceDependency(null))));
+		}
 
 		[Test]
 		public void Can_dispose_component_on_release_disposable_service()

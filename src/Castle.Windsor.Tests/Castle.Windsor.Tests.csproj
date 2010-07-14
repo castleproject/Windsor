@@ -106,7 +106,6 @@
     <Compile Include="ClassComponents\Leaf.cs" />
     <Compile Include="ClassComponents\Root.cs" />
     <Compile Include="ClassComponents\UsesSimpleComponent1.cs" />
-    <Compile Include="Components\ComponentWithServiceProperty.cs" />
     <Compile Include="Components\EmptyBase.cs" />
     <Compile Include="Components\CacheResultFinder.cs" />
     <Compile Include="Components\DatabaseResultFinder.cs" />
@@ -143,7 +142,6 @@
     <Compile Include="Facilities\TypedFactory\Delegates\HasTwoConstructors.cs" />
     <Compile Include="Facilities\TypedFactory\Delegates\UsesDisposableFooDelegate.cs" />
     <Compile Include="Facilities\TypedFactory\Factories\INonDisposableFactory.cs" />
-    <Compile Include="Facilities\TypedFactory\LazyLoadingWithDelegateFactoriesTestCase.cs" />
     <Compile Include="Facilities\TypedFactory\Selectors\DisposableSelector.cs" />
     <Compile Include="Facilities\TypedFactory\Selectors\SimpleSelector.cs" />
     <Compile Include="Facilities\TypedFactory\TypedFactoryDelegatesTestCase.cs" />

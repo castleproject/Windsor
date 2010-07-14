@@ -852,7 +852,15 @@ namespace Castle.MicroKernel.Registration
 
 			if (String.IsNullOrEmpty(name))
 			{
-				name = implementation.FullName;
+				
+				if(implementation == typeof(LateBoundComponent))
+				{
+					name = "Late bound " + serviceType.FullName;
+				}
+				else
+				{
+					name = implementation.FullName;
+				}
 			}
 		}
 
