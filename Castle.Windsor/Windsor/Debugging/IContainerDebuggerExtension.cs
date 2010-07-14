@@ -15,31 +15,13 @@
 namespace Castle.Windsor.Debugging
 {
 	using System.Collections.Generic;
-	using System.Diagnostics;
-	using System.Linq;
 
 	using Castle.MicroKernel;
 
-	public class HandlersByKeyDictionaryDebuggerView
+	public interface IContainerDebuggerExtension
 	{
-		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
-		private readonly HandlerByKeyDebuggerView[] items;
+		IEnumerable<DebuggerViewItem> Attach();
 
-		public HandlersByKeyDictionaryDebuggerView(IEnumerable<KeyValuePair<string, IHandler>> key2Handler)
-		{
-			items = key2Handler.Select(h => new HandlerByKeyDebuggerView(h.Key, h.Value)).ToArray();
-		}
-
-		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
-		public int Count
-		{
-			get { return items.Length; }
-		}
-
-		[DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
-		public HandlerByKeyDebuggerView[] Items
-		{
-			get { return items; }
-		}
+		void Init(IKernel kernel);
 	}
 }

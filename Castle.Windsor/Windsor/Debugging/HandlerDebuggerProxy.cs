@@ -53,7 +53,7 @@ namespace Castle.Windsor.Debugging
 			}
 		}
 
-		public string Lifestyle
+		public object Lifestyle
 		{
 			get
 			{
@@ -64,9 +64,9 @@ namespace Castle.Windsor.Debugging
 				}
 				if(lifestyle == LifestyleType.Undefined)
 				{
-					return lifestyle.ToString() + string.Format(" (default lifestyle {0} will be used)", LifestyleType.Singleton);
+					return string.Format("{0} (default lifestyle {1} will be used)", lifestyle, LifestyleType.Singleton);
 				}
-				return lifestyle.ToString();
+				return lifestyle;
 			}
 		}
 	}

@@ -15,8 +15,11 @@
 namespace Castle.Windsor.Tests
 {
 	using System;
-	using Castle.MicroKernel.Handlers;
+
+	using Castle.MicroKernel;
 	using Castle.MicroKernel.Registration;
+	using Castle.Windsor.Debugging;
+	using Castle.Windsor.Debugging.Extensions;
 
 	using NUnit.Framework;
 
@@ -55,7 +58,11 @@ namespace Castle.Windsor.Tests
 		[Test]
 		public void CanUseMutliResolveWithGenericSpecialization()
 		{
-			IWindsorContainer container = ((IWindsorContainer)new WindsorContainer()).Register(Component.For(typeof (IRepository<>)).ImplementedBy(typeof (DemoRepository<>)).Named("demo")).Register(Component.For(typeof(IRepository<>)).ImplementedBy(typeof(TransientRepository<>)).Named("trans"));
+			var windsorContainer = new WindsorContainer();
+			windsorContainer.Kernel.AddSubSystem("Castle.DebuggingSubSystem", new ContainerDebuggerExtensionHost());
+			IWindsorContainer container = windsorContainer
+				.Register(Component.For(typeof(IRepository<>)).ImplementedBy(typeof(DemoRepository<>)).Named("demo"),
+				          Component.For(typeof(IRepository<>)).ImplementedBy(typeof(TransientRepository<>)).Named("trans"));
 
 			IRepository<IClock> resolve = container.Resolve<IRepository<IClock>>();
 			Assert.IsNotNull(resolve);

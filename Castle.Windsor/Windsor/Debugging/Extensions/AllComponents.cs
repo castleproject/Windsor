@@ -12,34 +12,27 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Windsor.Debugging
+namespace Castle.Windsor.Debugging.Extensions
 {
 	using System.Collections.Generic;
-	using System.Diagnostics;
-	using System.Linq;
 
 	using Castle.MicroKernel;
+	using Castle.MicroKernel.SubSystems.Naming;
 
-	public class HandlersByKeyDictionaryDebuggerView
+	public class AllComponents : IContainerDebuggerExtension
 	{
-		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
-		private readonly HandlerByKeyDebuggerView[] items;
+		private INamingSubSystem naming;
 
-		public HandlersByKeyDictionaryDebuggerView(IEnumerable<KeyValuePair<string, IHandler>> key2Handler)
+		public IEnumerable<DebuggerViewItem> Attach()
 		{
-			items = key2Handler.Select(h => new HandlerByKeyDebuggerView(h.Key, h.Value)).ToArray();
+			yield return new DebuggerViewItem("All Components", "Count = " + naming.ComponentCount,
+			                                  new HandlersByKeyDictionaryDebuggerView(
+			                                  	naming.GetKey2Handler()));
 		}
 
-		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
-		public int Count
+		public void Init(IKernel kernel)
 		{
-			get { return items.Length; }
-		}
-
-		[DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
-		public HandlerByKeyDebuggerView[] Items
-		{
-			get { return items; }
+			naming = kernel.GetSubSystem(SubSystemConstants.NamingKey) as INamingSubSystem;
 		}
 	}
 }
