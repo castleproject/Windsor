@@ -316,7 +316,6 @@ namespace Castle.MicroKernel.ComponentActivator
 			foreach (PropertySet property in Model.Properties)
 			{
 				object value = null;
-
 				using (new DependencyTrackingScope(context, Model, property.Property, property.Dependency))
 				{
 					if (resolver.CanResolve(context, context.Handler, Model, property.Dependency))
