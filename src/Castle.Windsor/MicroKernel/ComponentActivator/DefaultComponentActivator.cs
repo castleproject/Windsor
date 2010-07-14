@@ -63,16 +63,16 @@ namespace Castle.MicroKernel.ComponentActivator
 		}
 
 #if(!SILVERLIGHT)
-        private bool HasSerializationFormatterPermission()
-        {
+		private bool HasSerializationFormatterPermission()
+		{
 #if(DOTNET35)
-            return SecurityManager.IsGranted(new SecurityPermission(SecurityPermissionFlag.SerializationFormatter));
+			return SecurityManager.IsGranted(new SecurityPermission(SecurityPermissionFlag.SerializationFormatter));
 #else
-            var permission = new PermissionSet(PermissionState.None);
-            permission.AddPermission(new SecurityPermission(SecurityPermissionFlag.UnmanagedCode));
-            return permission.IsSubsetOf(AppDomain.CurrentDomain.PermissionSet);
+			var permission = new PermissionSet(PermissionState.None);
+			permission.AddPermission(new SecurityPermission(SecurityPermissionFlag.UnmanagedCode));
+			return permission.IsSubsetOf(AppDomain.CurrentDomain.PermissionSet);
 #endif
-        }
+		}
 #endif
 		#region AbstractComponentActivator Members
 
@@ -312,23 +312,22 @@ namespace Castle.MicroKernel.ComponentActivator
 		protected virtual void SetUpProperties(object instance, CreationContext context)
 		{
 			instance = ProxyUtil.GetUnproxiedInstance(instance);
-
+			var resolver = Kernel.Resolver;
 			foreach (PropertySet property in Model.Properties)
 			{
 				object value = null;
 
 				using (new DependencyTrackingScope(context, Model, property.Property, property.Dependency))
 				{
-					if (Kernel.Resolver.CanResolve(context, context.Handler, Model, property.Dependency))
+					if (resolver.CanResolve(context, context.Handler, Model, property.Dependency))
 					{
-						value = Kernel.Resolver.Resolve(context, context.Handler, Model, property.Dependency);
+						value = resolver.Resolve(context, context.Handler, Model, property.Dependency);
 					}
 				}
 
 				if (value == null) continue;
 
-				MethodInfo setMethod = property.Property.GetSetMethod();
-
+				var setMethod = property.Property.GetSetMethod();
 				try
 				{
 					setMethod.Invoke(instance, new[] { value });

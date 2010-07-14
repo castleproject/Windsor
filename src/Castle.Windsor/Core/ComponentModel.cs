@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -35,14 +35,15 @@ namespace Castle.Core
 		public const string SkipRegistration = "skip.registration";
 
 		#region Fields
+
 		// Note the use of volatile for fields used in the double checked lock pattern.
 		// This is necessary to ensure the pattern works correctly.
 
 		/// <summary>Extended properties</summary>
 #if !SILVERLIGHT
-		[NonSerialized] 
+		[NonSerialized]
 #endif
-		private volatile IDictionary extended;
+			private volatile IDictionary extended;
 
 		/// <summary>Dependencies the kernel must resolve</summary>
 		private volatile DependencyModelCollection dependencies;
@@ -68,7 +69,7 @@ namespace Castle.Core
 #if !SILVERLIGHT
 		[NonSerialized]
 #endif
-		private volatile IDictionary customDependencies;
+			private volatile IDictionary customDependencies;
 
 		private readonly object syncRoot = new object();
 
@@ -123,7 +124,10 @@ namespace Castle.Core
 				{
 					lock (syncRoot)
 					{
-						if (extended == null) extended = new Dictionary<object, object>();
+						if (extended == null)
+						{
+							extended = new Dictionary<object, object>();
+						}
 					}
 				}
 				return extended;
@@ -143,7 +147,10 @@ namespace Castle.Core
 				{
 					lock (syncRoot)
 					{
-						if (constructors == null) constructors = new ConstructorCandidateCollection();
+						if (constructors == null)
+						{
+							constructors = new ConstructorCandidateCollection();
+						}
 					}
 				}
 				return constructors;
@@ -162,7 +169,10 @@ namespace Castle.Core
 				{
 					lock (syncRoot)
 					{
-						if (properties == null) properties = new PropertySetCollection();
+						if (properties == null)
+						{
+							properties = new PropertySetCollection();
+						}
 					}
 				}
 				return properties;
@@ -187,7 +197,10 @@ namespace Castle.Core
 				{
 					lock (syncRoot)
 					{
-						if (lifecycle == null) lifecycle = new LifecycleConcernsCollection();
+						if (lifecycle == null)
+						{
+							lifecycle = new LifecycleConcernsCollection();
+						}
 					}
 				}
 				return lifecycle;
@@ -231,7 +244,10 @@ namespace Castle.Core
 				{
 					lock (syncRoot)
 					{
-						if (interceptors == null) interceptors = new InterceptorReferenceCollection();
+						if (interceptors == null)
+						{
+							interceptors = new InterceptorReferenceCollection();
+						}
 					}
 				}
 				return interceptors;
@@ -250,7 +266,10 @@ namespace Castle.Core
 				{
 					lock (syncRoot)
 					{
-						if (parameters == null) parameters = new ParameterModelCollection();
+						if (parameters == null)
+						{
+							parameters = new ParameterModelCollection();
+						}
 					}
 				}
 				return parameters;
@@ -271,7 +290,10 @@ namespace Castle.Core
 				{
 					lock (syncRoot)
 					{
-						if (dependencies == null) dependencies = new DependencyModelCollection();
+						if (dependencies == null)
+						{
+							dependencies = new DependencyModelCollection();
+						}
 					}
 				}
 				return dependencies;
@@ -290,7 +312,10 @@ namespace Castle.Core
 				{
 					lock (syncRoot)
 					{
-						if (customDependencies == null) customDependencies = new Dictionary<object, object>();
+						if (customDependencies == null)
+						{
+							customDependencies = new Dictionary<object, object>();
+						}
 					}
 				}
 				return customDependencies;
@@ -303,9 +328,9 @@ namespace Castle.Core
 		/// <param name="selectors">The property selector.</param>
 		public void Requires(params Predicate<PropertySet>[] selectors)
 		{
-			foreach (PropertySet property in Properties)
+			foreach (var property in Properties)
 			{
-				foreach (Predicate<PropertySet> select in selectors)
+				foreach (var select in selectors)
 				{
 					if (select(property))
 					{
@@ -322,10 +347,7 @@ namespace Castle.Core
 		/// <typeparam name="D">The dependency type.</typeparam>
 		public void Requires<D>() where D : class
 		{
-			Requires(delegate(PropertySet p)
-			{
-				return p.Dependency.TargetType == typeof(D);
-			});
+			Requires(p => p.Dependency.TargetType == typeof(D));
 		}
 	}
 }
