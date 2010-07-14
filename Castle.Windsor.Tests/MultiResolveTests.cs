@@ -58,13 +58,11 @@ namespace Castle.Windsor.Tests
 		[Test]
 		public void CanUseMutliResolveWithGenericSpecialization()
 		{
-			var windsorContainer = new WindsorContainer();
-			windsorContainer.Kernel.AddSubSystem("Castle.DebuggingSubSystem", new ContainerDebuggerExtensionHost());
-			IWindsorContainer container = windsorContainer
+            IWindsorContainer container = new WindsorContainer()
 				.Register(Component.For(typeof(IRepository<>)).ImplementedBy(typeof(DemoRepository<>)).Named("demo"),
 				          Component.For(typeof(IRepository<>)).ImplementedBy(typeof(TransientRepository<>)).Named("trans"));
 
-			IRepository<IClock> resolve = container.Resolve<IRepository<IClock>>();
+			var resolve = container.Resolve<IRepository<IClock>>();
 			Assert.IsNotNull(resolve);
 
 			IRepository<IsraelClock>[] repositories = container.ResolveAll<IRepository<IsraelClock>>();

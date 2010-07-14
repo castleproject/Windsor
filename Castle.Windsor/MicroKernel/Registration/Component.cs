@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -11,11 +11,11 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
 namespace Castle.MicroKernel.Registration
 {
 	using System;
 	using System.Collections.Generic;
+
 	using Castle.Core;
 
 	/// <summary>
@@ -31,9 +31,11 @@ namespace Castle.MicroKernel.Registration
 		public static ComponentRegistration For(Type serviceType)
 		{
 			if (serviceType == null)
+			{
 				throw new ArgumentNullException("serviceType",
-				                                "The argument was null. Check that the assembly " 
-												+ "is referenced and the type available to your application.");
+				                                "The argument was null. Check that the assembly "
+				                                + "is referenced and the type available to your application.");
+			}
 
 			return new ComponentRegistration(serviceType);
 		}
@@ -97,6 +99,110 @@ namespace Castle.MicroKernel.Registration
 			return new ComponentRegistration<S>();
 		}
 
+		/// <summary>
+		/// Create a component registration for an exisiting <see cref="ComponentModel"/>
+		/// </summary>
+		/// <param name="model">The component model.</param>
+		/// <returns>The component registration.</returns>
+		public static ComponentRegistration For(ComponentModel model)
+		{
+			return new ComponentRegistration(model);
+		}
+
+		/// <summary>
+		/// Determines if the component is a Castle component, that is - if it has a <see cref="CastleComponentAttribute"/>.
+		/// </summary>
+		/// <param name="kernel">The kernel.</param>
+		/// <param name="model">The component model.</param>
+		/// <returns>true if the service is a Castle Component.</returns>
+		/// <remarks>
+		/// This method is usually used as argument for <see cref="ComponentRegistration{TService}.If"/> method.
+		/// </remarks>
+		public static bool IsCastleComponent(IKernel kernel, ComponentModel model)
+		{
+			return model.Implementation != null && Attribute.IsDefined(model.Implementation, typeof(CastleComponentAttribute));
+		}
+
+		/// <summary>
+		/// Creates a predicate to check if a component is in a namespace.
+		/// </summary>
+		/// <param name="namespace">The namespace.</param>
+		/// <returns>true if the component type is in the namespace.</returns>
+		public static Predicate<Type> IsInNamespace(string @namespace)
+		{
+			return IsInNamespace(@namespace, false);
+		}
+
+		/// <summary>
+		/// Creates a predicate to check if a component is in a namespace.
+		/// </summary>
+		/// <param name="namespace">The namespace.</param>
+		/// <param name="includeSubnamespaces">If set to true, will also include types from subnamespaces.</param>
+		/// <returns>true if the component type is in the namespace.</returns>
+		public static Predicate<Type> IsInNamespace(string @namespace, bool includeSubnamespaces)
+		{
+			if (includeSubnamespaces)
+			{
+				return type => type.Namespace == @namespace ||
+				               type.Namespace.StartsWith(@namespace + ".");
+			}
+
+			return type => type.Namespace == @namespace;
+		}
+
+		/// <summary>
+		/// Creates a predicate to check if a component shares a namespace with another.
+		/// </summary>
+		/// <param name="type">The component type to test namespace against.</param>
+		/// <returns>true if the component is in the same namespace.</returns>
+		public static Predicate<Type> IsInSameNamespaceAs(Type type)
+		{
+			return IsInNamespace(type.Namespace);
+		}
+
+		/// <summary>
+		/// Creates a predicate to check if a component shares a namespace with another.
+		/// </summary>
+		/// <param name="type">The component type to test namespace against.</param>
+		/// <param name="includeSubnamespaces">If set to true, will also include types from subnamespaces.</param>
+		/// <returns>true if the component is in the same namespace.</returns>
+		public static Predicate<Type> IsInSameNamespaceAs(Type type, bool includeSubnamespaces)
+		{
+			return IsInNamespace(type.Namespace, includeSubnamespaces);
+		}
+
+		/// <summary>
+		/// Creates a predicate to check if a component shares a namespace with another.
+		/// </summary>
+		/// <typeparam name="T">The component type to test namespace against.</typeparam>
+		/// <returns>true if the component is in the same namespace.</returns>
+		public static Predicate<Type> IsInSameNamespaceAs<T>() where T : class
+		{
+			return IsInSameNamespaceAs(typeof(T));
+		}
+
+		/// <summary>
+		/// Creates a predicate to check if a component shares a namespace with another.
+		/// </summary>
+		/// <typeparam name="T">The component type to test namespace against.</typeparam>
+		/// <param name="includeSubnamespaces">If set to true, will also include types from subnamespaces.</param>
+		/// <returns>true if the component is in the same namespace.</returns>
+		public static Predicate<Type> IsInSameNamespaceAs<T>(bool includeSubnamespaces) where T : class
+		{
+			return IsInSameNamespaceAs(typeof(T), includeSubnamespaces);
+		}
+
+		/// <summary>
+		/// Determines if the component service is already registered.
+		/// </summary>
+		/// <param name="kernel">The kernel.</param>
+		/// <param name="model">The component model.</param>
+		/// <returns>true if the service is already registered.</returns>
+		public static bool ServiceAlreadyRegistered(IKernel kernel, ComponentModel model)
+		{
+			return kernel.HasComponent(model.Service);
+		}
+
 		#region Forwarded Service Types
 
 		/// <summary>
@@ -150,96 +256,5 @@ namespace Castle.MicroKernel.Registration
 		}
 
 		#endregion
-
-		/// <summary>
-		/// Create a component registration for an exisiting <see cref="ComponentModel"/>
-		/// </summary>
-		/// <param name="model">The component model.</param>
-		/// <returns>The component registration.</returns>
-		public static ComponentRegistration For(ComponentModel model)
-		{
-			return new ComponentRegistration(model);
-		}
-
-		/// <summary>
-		/// Determines if the component service is already registered.
-		/// </summary>
-		/// <param name="kernel">The kernel.</param>
-		/// <param name="model">The component model.</param>
-		/// <returns>true if the service is already registered.</returns>
-		public static bool ServiceAlreadyRegistered(IKernel kernel, ComponentModel model)
-		{
-			return kernel.HasComponent(model.Service);
-		}
-
-		/// <summary>
-		/// Creates a predicate to check if a component is in a namespace.
-		/// </summary>
-		/// <param name="namespace">The namespace.</param>
-		/// <returns>true if the component type is in the namespace.</returns>
-		public static Predicate<Type> IsInNamespace(string @namespace)
-		{
-			return IsInNamespace(@namespace, false);
-		}
-
-		/// <summary>
-		/// Creates a predicate to check if a component is in a namespace.
-		/// </summary>
-		/// <param name="namespace">The namespace.</param>
-		/// <param name="includeSubnamespaces">If set to true, will also include types from subnamespaces.</param>
-		/// <returns>true if the component type is in the namespace.</returns>
-		public static Predicate<Type> IsInNamespace(string @namespace, bool includeSubnamespaces)
-		{
-			if (includeSubnamespaces)
-			{
-				return type => type.Namespace == @namespace ||
-							   type.Namespace.StartsWith(@namespace + ".");
-			}
-
-			return type => type.Namespace == @namespace;
-		}
-
-		/// <summary>
-		/// Creates a predicate to check if a component shares a namespace with another.
-		/// </summary>
-		/// <param name="type">The component type to test namespace against.</param>
-		/// <returns>true if the component is in the same namespace.</returns>
-		public static Predicate<Type> IsInSameNamespaceAs(Type type)
-		{
-			return IsInNamespace(type.Namespace);
-		}
-
-		/// <summary>
-		/// Creates a predicate to check if a component shares a namespace with another.
-		/// </summary>
-		/// <param name="type">The component type to test namespace against.</param>
-		/// <param name="includeSubnamespaces">If set to true, will also include types from subnamespaces.</param>
-		/// <returns>true if the component is in the same namespace.</returns>
-		public static Predicate<Type> IsInSameNamespaceAs(Type type, bool includeSubnamespaces)
-		{
-			return IsInNamespace(type.Namespace, includeSubnamespaces);
-		}
-
-		/// <summary>
-		/// Creates a predicate to check if a component shares a namespace with another.
-		/// </summary>
-		/// <typeparam name="T">The component type to test namespace against.</typeparam>
-		/// <returns>true if the component is in the same namespace.</returns>
-		public static Predicate<Type> IsInSameNamespaceAs<T>() where T : class
-		{
-			return IsInSameNamespaceAs(typeof(T));
-		}
-
-
-		/// <summary>
-		/// Creates a predicate to check if a component shares a namespace with another.
-		/// </summary>
-		/// <typeparam name="T">The component type to test namespace against.</typeparam>
-		/// <param name="includeSubnamespaces">If set to true, will also include types from subnamespaces.</param>
-		/// <returns>true if the component is in the same namespace.</returns>
-		public static Predicate<Type> IsInSameNamespaceAs<T>(bool includeSubnamespaces) where T : class
-		{
-			return IsInSameNamespaceAs(typeof(T), includeSubnamespaces);
-		}
 	}
 }

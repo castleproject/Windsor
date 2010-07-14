@@ -38,7 +38,7 @@ namespace Castle.MicroKernel.ComponentActivator
 		/// <summary>
 		/// Constructs an AbstractComponentActivator
 		/// </summary>
-		public AbstractComponentActivator(ComponentModel model, IKernel kernel, 
+		protected AbstractComponentActivator(ComponentModel model, IKernel kernel, 
 			ComponentInstanceDelegate onCreation, 
 			ComponentInstanceDelegate onDestruction)
 		{
