@@ -330,8 +330,7 @@ namespace Castle.MicroKernel.Resolvers
 		protected virtual object ResolveServiceDependency(CreationContext context, ComponentModel model,
 		                                                  DependencyModel dependency)
 		{
-			IHandler handler = null;
-
+			IHandler handler;
 			if (dependency.DependencyType == DependencyType.Service)
 			{
 				ParameterModel parameter = ObtainParameterModelMatchingDependency(dependency, model);
@@ -340,7 +339,6 @@ namespace Castle.MicroKernel.Resolvers
 				{
 					// User wants to override, we then 
 					// change the type to ServiceOverride
-
 					dependency.DependencyKey = ExtractComponentKey(parameter.Value, parameter.Name);
 					dependency.DependencyType = DependencyType.ServiceOverride;
 				}
@@ -428,7 +426,7 @@ namespace Castle.MicroKernel.Resolvers
 
 			if (parameter != null)
 			{
-				converter.Context.PushModel(model);
+				converter.Context.Push(model, context);
 
 				try
 				{
@@ -443,7 +441,7 @@ namespace Castle.MicroKernel.Resolvers
 				}
 				finally
 				{
-					converter.Context.PopModel();
+					converter.Context.Pop();
 				}
 			}
 

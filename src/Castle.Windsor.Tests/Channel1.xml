@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+  <components>
+
+    <component id="MessageChannel1" type="MessageChannel">
+      <parameters>
+        <root>${device1}</root>
+      </parameters>
+    </component>
+
+    <component id="device2" service="IDevice" type="TestDevice" />
+    <component id="device3" service="IDevice" type="TestDevice" />
+    <component id="device1" service="IDevice" type="TestDevice">
+      <parameters>
+        <theChildren>
+          <array>
+            <item>${device2}</item>
+            <item>${device3}</item>
+          </array>
+        </theChildren>
+      </parameters>
+    </component>
+
+  </components>
+</configuration>
+

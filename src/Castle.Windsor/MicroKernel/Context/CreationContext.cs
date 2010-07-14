@@ -11,7 +11,6 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
 namespace Castle.MicroKernel.Context
 {
 	using System;
@@ -110,6 +109,15 @@ namespace Castle.MicroKernel.Context
 			genericArguments = ExtractGenericArguments(typeToExtractGenericArguments);
 		}
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="CreationContext"/> class.
+		/// </summary>
+		private CreationContext()
+		{
+			dependencies = new DependencyModelCollection();
+			releasePolicy = new NoTrackingReleasePolicy();
+		}
+
 		private IDictionary EnsureAdditionalArgumentsWriteable(IDictionary dictionary)
 		{
 #if SILVERLIGHT
@@ -131,15 +139,6 @@ namespace Castle.MicroKernel.Context
 			}
 			return new Arguments(dictionary);
 #endif
-		}
-
-		/// <summary>
-		/// Initializes a new instance of the <see cref="CreationContext"/> class.
-		/// </summary>
-		private CreationContext()
-		{
-			dependencies = new DependencyModelCollection();
-			releasePolicy = new NoTrackingReleasePolicy();
 		}
 
 		#region ISubDependencyResolver

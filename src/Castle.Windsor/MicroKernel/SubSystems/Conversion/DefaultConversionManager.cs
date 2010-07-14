@@ -11,7 +11,6 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
 namespace Castle.MicroKernel.SubSystems.Conversion
 {
 	using System;
@@ -20,6 +19,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 
 	using Castle.Core;
 	using Castle.Core.Configuration;
+	using Castle.MicroKernel.Context;
 
 	/// <summary>
 	/// Composition of all available conversion managers
@@ -78,9 +78,12 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 
 		public bool IsSupportedAndPrimitiveType(Type type)
 		{
-			foreach(ITypeConverter converter in standAloneConverters)
+			foreach (ITypeConverter converter in standAloneConverters)
 			{
-				if (converter.CanHandleType(type)) return true;
+				if (converter.CanHandleType(type))
+				{
+					return true;
+				}
 			}
 
 			return false;
@@ -98,9 +101,12 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 
 		public bool CanHandleType(Type type)
 		{
-			foreach(ITypeConverter converter in converters)
+			foreach (ITypeConverter converter in converters)
 			{
-				if (converter.CanHandleType(type)) return true;
+				if (converter.CanHandleType(type))
+				{
+					return true;
+				}
 			}
 
 			return false;
@@ -108,9 +114,12 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 
 		public bool CanHandleType(Type type, IConfiguration configuration)
 		{
-			foreach(ITypeConverter converter in converters)
+			foreach (ITypeConverter converter in converters)
 			{
-				if (converter.CanHandleType(type, configuration)) return true;
+				if (converter.CanHandleType(type, configuration))
+				{
+					return true;
+				}
 			}
 
 			return false;
@@ -118,7 +127,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 
 		public object PerformConversion(String value, Type targetType)
 		{
-			foreach(ITypeConverter converter in converters)
+			foreach (ITypeConverter converter in converters)
 			{
 				if (converter.CanHandleType(targetType))
 				{
@@ -126,15 +135,15 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 				}
 			}
 
-			String message = String.Format("No converter registered to handle the type {0}",
-			                               targetType.FullName);
+			var message = String.Format("No converter registered to handle the type {0}",
+			                            targetType.FullName);
 
 			throw new ConverterException(message);
 		}
 
 		public object PerformConversion(IConfiguration configuration, Type targetType)
 		{
-			foreach(ITypeConverter converter in converters)
+			foreach (ITypeConverter converter in converters)
 			{
 				if (converter.CanHandleType(targetType, configuration))
 				{
@@ -142,8 +151,8 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 				}
 			}
 
-			String message = String.Format("No converter registered to handle the type {0}",
-			                               targetType.FullName);
+			var message = String.Format("No converter registered to handle the type {0}",
+			                            targetType.FullName);
 
 			throw new ConverterException(message);
 		}
@@ -164,15 +173,15 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 
 		IKernel ITypeConverterContext.Kernel
 		{
-			get { return base.Kernel; }
+			get { return Kernel; }
 		}
 
-		public void PushModel(ComponentModel model)
+		public void Push(ComponentModel model, CreationContext context)
 		{
-			CurrentStack.Push(model);
+			CurrentStack.Push(new Pair<ComponentModel, CreationContext>(model, context));
 		}
 
-		public void PopModel()
+		public void Pop()
 		{
 			CurrentStack.Pop();
 		}
@@ -182,9 +191,24 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 			get
 			{
 				if (CurrentStack.Count == 0)
+				{
 					return null;
+				}
 
-				return CurrentStack.Peek();
+				return CurrentStack.Peek().First;
+			}
+		}
+
+		public CreationContext CurrentCreationContext
+		{
+			get
+			{
+				if (CurrentStack.Count == 0)
+				{
+					return null;
+				}
+
+				return CurrentStack.Peek().Second;
 			}
 		}
 
@@ -195,28 +219,26 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 
 		#endregion
 
-		private Stack<ComponentModel> CurrentStack
+		private Stack<Pair<ComponentModel, CreationContext>> CurrentStack
 		{
 			get
 			{
-				
-#if (!SILVERLIGHT)
-				var stack = (Stack<ComponentModel>)Thread.GetData(slot);
+#if (SILVERLIGHT)
+				if(slot == null)
+				{
+					slot = new Stack<Pair<ComponentModel,CreationContext>>();
+				}
 
+				return slot;
+#else
+				var stack = (Stack<Pair<ComponentModel, CreationContext>>)Thread.GetData(slot);
 				if (stack == null)
 				{
-					stack = new Stack<ComponentModel>();
+					stack = new Stack<Pair<ComponentModel, CreationContext>>();
 					Thread.SetData(slot, stack);
 				}
 
 				return stack;
-#else
-				if(slot == null)
-				{
-					slot = new Stack<ComponentModel>();
-				}
-
-				return slot;
 
 #endif
 			}

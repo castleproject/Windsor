@@ -189,6 +189,7 @@
     <Compile Include="Proxy\DisposableHook.cs" />
     <Compile Include="Registration\ComponentRegistrationByNamespaceTestCase.cs" />
     <Compile Include="Registration\WithServiceTestCase.cs" />
+    <Compile Include="ServiceOverridesTestCase.cs" />
     <Compile Include="TypedDependenciesTestCase.cs" />
     <Compile Include="ArgumentsTestCase.cs" />
     <Compile Include="BestConstructorTestCase.cs">
@@ -591,6 +592,9 @@
     <Compile Include="DependencyProblem.cs">
       <SubType>Code</SubType>
     </Compile>
+    <EmbeddedResource Include="Channel1.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
     <Content Include="ignoreprop.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
