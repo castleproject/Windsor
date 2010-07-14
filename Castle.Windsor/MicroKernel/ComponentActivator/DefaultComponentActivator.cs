@@ -318,7 +318,8 @@ namespace Castle.MicroKernel.ComponentActivator
 				object value = null;
 				using (new DependencyTrackingScope(context, Model, property.Property, property.Dependency))
 				{
-					if (resolver.CanResolve(context, context.Handler, Model, property.Dependency))
+					if (property.Dependency.IsOptional == false ||
+					    resolver.CanResolve(context, context.Handler, Model, property.Dependency))
 					{
 						value = resolver.Resolve(context, context.Handler, Model, property.Dependency);
 					}

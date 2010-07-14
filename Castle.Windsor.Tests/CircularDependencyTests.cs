@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#if !SILVERLIGHT // we do not support xml config on SL
 
 namespace Castle.Windsor.Tests
 {
@@ -22,11 +21,23 @@ namespace Castle.Windsor.Tests
 	using Castle.MicroKernel.Handlers;
 	using Castle.MicroKernel.Registration;
 	using Castle.Windsor.Tests.Components;
+
 	using NUnit.Framework;
 
 	[TestFixture]
 	public class CircularDependencyTests
 	{
+
+#if !SILVERLIGHT
+		// we do not support xml config on SL
+		[Test]
+		public void ShouldNotGetCircularDepencyExceptionWhenResolvingTypeOnItselfWithDifferentModels()
+		{
+			var container = new WindsorContainer(ConfigHelper.ResolveConfigPath("IOC-51.xml"));
+			var o = container["path.fileFinder"];
+			Assert.IsNotNull(o);
+		}
+#endif
 		[Test]
 		public void ShouldNotSetTheViewControllerProperty()
 		{
@@ -36,6 +47,34 @@ namespace Castle.Windsor.Tests
 			var controller = (Controller)container.Resolve("controller");
 			Assert.IsNotNull(controller.View);
 			Assert.IsNull(controller.View.Controller);
+		}
+
+		[Test]
+		public void Should_not_try_to_instantiate_singletons_twice_when_circular_dependency()
+		{
+			SingletonComponent.CtorCallsCount = 0;
+			var container = new WindsorContainer();
+			container.Register(Component.For<SingletonComponent>(),
+			                   Component.For<SingletonDependency>());
+
+			var component = container.Resolve<SingletonComponent>();
+			Assert.IsNotNull(component.Dependency);
+			Assert.AreEqual(1, SingletonComponent.CtorCallsCount);
+		}
+
+		[Test]
+		[Ignore("This is not supported. Should be?")]
+		public void Should_not_try_to_instantiate_singletons_twice_when_circular_property_dependency()
+		{
+			SingletonPropertyComponent.CtorCallsCount = 0;
+			var container = new WindsorContainer();
+			container.Register(Component.For<SingletonPropertyComponent>(),
+			                   Component.For<SingletonPropertyDependency>());
+
+			var component = container.Resolve<SingletonPropertyComponent>();
+			Assert.IsNotNull(component.Dependency);
+			Assert.AreSame(component, component.Dependency.Component);
+			Assert.AreEqual(1, SingletonPropertyComponent.CtorCallsCount);
 		}
 
 		[Test]
@@ -55,28 +94,6 @@ namespace Castle.Windsor.Tests
 					Environment.NewLine);
 			Assert.AreEqual(expectedMessage, exception.Message);
 		}
-
-		[Test]
-		public void ShouldNotGetCircularDepencyExceptionWhenResolvingTypeOnItselfWithDifferentModels()
-		{
-			var container = new WindsorContainer(ConfigHelper.ResolveConfigPath("IOC-51.xml"));
-			object o = container["path.fileFinder"];
-			Assert.IsNotNull(o);
-		}
-
-		[Test]
-		public void Should_not_try_to_instantiate_singletons_twice_when_circular_dependency()
-		{
-			SingletonComponent.CtorCallsCount = 0;
-			var container = new WindsorContainer();
-			container.Register(Component.For<SingletonComponent>(),
-			                   Component.For<SingletonDependency>());
-
-			container.Resolve<SingletonComponent>();
-
-			Assert.AreEqual(1, SingletonComponent.CtorCallsCount);
-		}
-
 	}
 
 	[Singleton]
@@ -89,7 +106,20 @@ namespace Castle.Windsor.Tests
 			CtorCallsCount++;
 		}
 
-		public SingletonDependency E { get; set; }
+		public SingletonDependency Dependency { get; set; }
+	}
+
+	[Singleton]
+	public class SingletonPropertyComponent
+	{
+		public static int CtorCallsCount;
+
+		public SingletonPropertyComponent()
+		{
+			CtorCallsCount++;
+		}
+
+		public SingletonPropertyDependency Dependency { get; set; }
 	}
 
 	[Singleton]
@@ -98,7 +128,13 @@ namespace Castle.Windsor.Tests
 		public SingletonDependency(SingletonComponent c)
 		{
 		}
-	} 
+	}
+
+	[Singleton]
+	public class SingletonPropertyDependency
+	{
+		public SingletonPropertyComponent Component { get; set; }
+	}
 
 	namespace IOC51
 	{
@@ -115,7 +151,7 @@ namespace Castle.Windsor.Tests
 			{
 				get
 				{
-					Uri uriPath = new Uri(Assembly.GetExecutingAssembly().GetName(false).CodeBase);
+					var uriPath = new Uri(Assembly.GetExecutingAssembly().GetName(false).CodeBase);
 					return uriPath.LocalPath;
 				}
 			}
@@ -123,6 +159,8 @@ namespace Castle.Windsor.Tests
 
 		public class RelativeFilePath : IPathProvider
 		{
+			private string _path;
+
 			public RelativeFilePath(IPathProvider basePathProvider, string extensionsPath)
 			{
 				_path = System.IO.Path.Combine(basePathProvider.Path + "\\", extensionsPath);
@@ -132,10 +170,6 @@ namespace Castle.Windsor.Tests
 			{
 				get { return _path; }
 			}
-
-			private string _path;
 		}
 	}
 }
-
-#endif
