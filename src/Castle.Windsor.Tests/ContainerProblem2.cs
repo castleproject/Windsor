@@ -130,7 +130,7 @@ namespace Castle.Windsor.Tests
 			// container.Kernel.AddComponent("R", typeof(R), LifestyleType.Thread);
 			container.Kernel.Register(Component.For(typeof(R)).Named("R"));
 
-			IC c = container["C"] as IC;
+			IC c = container.Resolve("C") as IC;
 			Assert.IsNotNull(c);
 		}
 	}

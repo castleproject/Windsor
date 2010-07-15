@@ -32,17 +32,17 @@ namespace Castle.Windsor.Tests
 
 			ExtendedComponentWithProperties comp;
 
-			comp = (ExtendedComponentWithProperties) container["comp1"]; // None
+			comp = (ExtendedComponentWithProperties) container.Resolve("comp1"); // None
 			Assert.IsNull(comp.Prop1);
 			Assert.AreEqual(0, comp.Prop2);
 			Assert.AreEqual(0, comp.Prop3);
 
-			comp = (ExtendedComponentWithProperties) container["comp2"]; // All
+			comp = (ExtendedComponentWithProperties) container.Resolve("comp2"); // All
 			Assert.IsNotNull(comp.Prop1);
 			Assert.AreEqual(1, comp.Prop2);
 			Assert.AreEqual(2, comp.Prop3);
 
-			comp = (ExtendedComponentWithProperties) container["comp3"]; // DeclaredOnly
+			comp = (ExtendedComponentWithProperties) container.Resolve("comp3"); // DeclaredOnly
 			Assert.IsNull(comp.Prop1);
 			Assert.AreEqual(0, comp.Prop2);
 			Assert.AreEqual(2, comp.Prop3);

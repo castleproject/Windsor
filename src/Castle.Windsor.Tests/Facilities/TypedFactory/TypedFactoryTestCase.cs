@@ -60,7 +60,7 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 				Component.For(typeof(IProtocolHandler)).ImplementedBy(typeof(MessengerProtocolHandler)).Named("messenger"));
 
 			var factory =
-				(IProtocolHandlerFactory1)_container["protocolHandlerFactory"];
+				(IProtocolHandlerFactory1)_container.Resolve("protocolHandlerFactory");
 
 			Assert.IsNotNull(factory);
 
@@ -85,7 +85,7 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 				Component.For(typeof(IProtocolHandler)).ImplementedBy(typeof(MessengerProtocolHandler)).Named("messenger"));
 
 			var factory =
-				(IProtocolHandlerFactory2)_container["protocolHandlerFactory"];
+				(IProtocolHandlerFactory2)_container.Resolve("protocolHandlerFactory");
 
 			Assert.IsNotNull(factory);
 
@@ -112,7 +112,7 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 			_container.Register(Component.For(typeof(IDummyComponent)).ImplementedBy(typeof(Component2)).Named("comp2"));
 
 			var factory =
-				(IComponentFactory1)_container["compFactory"];
+				(IComponentFactory1)_container.Resolve("compFactory");
 
 			Assert.IsNotNull(factory);
 
@@ -136,7 +136,7 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 			_container.Register(Component.For(typeof(IDummyComponent)).ImplementedBy(typeof(Component2)).Named("comp2"));
 
 			var factory =
-				(IComponentFactory2)_container["compFactory"];
+				(IComponentFactory2)_container.Resolve("compFactory");
 
 			Assert.IsNotNull(factory);
 

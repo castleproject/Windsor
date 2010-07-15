@@ -37,8 +37,8 @@ namespace Castle.Windsor.Tests.Facilities.EventWiring
 		[Test]
 		public void TriggerSimple()
 		{
-			SimplePublisher publisher = (SimplePublisher)container["SimplePublisher"];
-			SimpleListener listener = (SimpleListener)container["SimpleListener"];
+			SimplePublisher publisher = (SimplePublisher)container.Resolve("SimplePublisher");
+			SimpleListener listener = (SimpleListener)container.Resolve("SimpleListener");
 
 			Assert.IsFalse(listener.Listened);
 			Assert.IsNull(listener.Sender);
@@ -52,8 +52,8 @@ namespace Castle.Windsor.Tests.Facilities.EventWiring
 		[Test]
 		public void TriggerStaticEvent()
 		{
-			SimplePublisher publisher = (SimplePublisher)container["SimplePublisher"];
-			SimpleListener listener = (SimpleListener)container["SimpleListener2"];
+			SimplePublisher publisher = (SimplePublisher)container.Resolve("SimplePublisher");
+			SimpleListener listener = (SimpleListener)container.Resolve("SimpleListener2");
 
 			Assert.IsFalse(listener.Listened);
 			Assert.IsNull(listener.Sender);

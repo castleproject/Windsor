@@ -28,7 +28,7 @@ namespace Castle.Windsor.Tests
 			WindsorContainer container = new WindsorContainer(
 				ConfigHelper.ResolveConfigPath("ignoreprop.xml"));
 
-			MailServer server = (MailServer) container[typeof(MailServer)];
+			MailServer server = container.Resolve<MailServer>();
 
 			Assert.AreEqual(0, server.Port);
 			Assert.IsNull(server.Host);

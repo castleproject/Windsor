@@ -43,7 +43,7 @@ namespace Castle.Windsor.Tests.Proxy
 
 			AddComponent("calculator", typeof(ICalcService), typeof(CalculatorService), "Create");
 
-			ICalcService service = (ICalcService) container["calculator"];
+			ICalcService service = (ICalcService) container.Resolve("calculator");
 
 			Assert.IsNotNull(service);
 		}

@@ -30,7 +30,7 @@ namespace Castle.Windsor.Tests.Proxy
 		{
 			var container = new WindsorContainer(ConfigHelper.ResolveConfigPath("Proxy/proxyBehavior.xml"));
 
-			var calcService = (ICalcService) container["default"];
+			var calcService = (ICalcService) container.Resolve("default");
 			Assert.IsNotNull(calcService);
 			Assert.IsTrue(calcService is IDisposable, "Service proxy should expose the IDisposable interface");
 		}
@@ -40,7 +40,7 @@ namespace Castle.Windsor.Tests.Proxy
 		{
 			var container = new WindsorContainer(ConfigHelper.ResolveConfigPath("Proxy/proxyBehavior.xml"));
 
-			var calcService = (ICalcService) container["noSingle"];
+			var calcService = (ICalcService) container.Resolve("noSingle");
 			Assert.IsNotNull(calcService);
 			Assert.IsTrue(calcService is IDisposable, "Service proxy should expose the IDisposable interface");
 		}
@@ -50,7 +50,7 @@ namespace Castle.Windsor.Tests.Proxy
 		{
 			var container = new WindsorContainer(ConfigHelper.ResolveConfigPath("Proxy/proxyBehavior.xml"));
 
-			var calcService = (ICalcService) container["useSingle"];
+			var calcService = (ICalcService) container.Resolve("useSingle");
 			Assert.IsNotNull(calcService);
 			Assert.IsFalse(calcService is IDisposable, "Service proxy should not expose the IDisposable interface");
 		}
@@ -60,7 +60,7 @@ namespace Castle.Windsor.Tests.Proxy
 		{
 			var container = new WindsorContainer(ConfigHelper.ResolveConfigPath("Proxy/proxyBehavior.xml"));
 
-			var calcService = (ICalcService) container["useSingleAttribute"];
+			var calcService = (ICalcService) container.Resolve("useSingleAttribute");
 			Assert.IsFalse(calcService is IDisposable, "Service proxy should not expose the IDisposable interface");
 		}
 
@@ -72,7 +72,7 @@ namespace Castle.Windsor.Tests.Proxy
 			((IWindsorContainer)container).Register(Component.For(typeof(StandardInterceptor)).Named("standard.interceptor"));
 			((IWindsorContainer)container).Register(Component.For(typeof(ICalcService)).ImplementedBy(typeof(CalculatorServiceWithSingleProxyBehavior)).Named("useSingle"));
 
-			var calcService = (ICalcService) container["useSingle"];
+			var calcService = (ICalcService) container.Resolve("useSingle");
 			Assert.IsNotNull(calcService);
 			Assert.IsFalse(calcService is IDisposable, "Service proxy should not expose the IDisposable interface");
 		}
@@ -85,7 +85,7 @@ namespace Castle.Windsor.Tests.Proxy
 			((IWindsorContainer)container).Register(Component.For(typeof(StandardInterceptor)).Named("standard.interceptor"));
 			((IWindsorContainer)container).Register(Component.For(typeof(ICalcService)).ImplementedBy(typeof(CalculatorServiceWithoutSingleProxyBehavior)).Named("noSingle"));
 
-			var calcService = (ICalcService) container["noSingle"];
+			var calcService = (ICalcService) container.Resolve("noSingle");
 			Assert.IsNotNull(calcService);
 			Assert.IsTrue(calcService is IDisposable, "Service proxy should expose the IDisposable interface");
 		}
@@ -99,7 +99,7 @@ namespace Castle.Windsor.Tests.Proxy
 			((IWindsorContainer)container).Register(Component.For(typeof(StandardInterceptor)).Named("standard.interceptor"));
 			((IWindsorContainer)container).Register(Component.For(typeof(ICalcService)).ImplementedBy(typeof(CalculatorServiceWithMarshalByRefProxyBehavior)).Named("useMarshal"));
 
-			var calcService = (ICalcService)container["useMarshal"];
+			var calcService = (ICalcService)container.Resolve("useMarshal");
 			Assert.IsNotNull(calcService);
 			Assert.IsFalse(calcService is CalculatorServiceWithMarshalByRefProxyBehavior, "Service proxy should not expose CalculatorServiceWithMarshalByRefProxyBehavior");
 			Assert.IsTrue(calcService is MarshalByRefObject, "Service proxy should expose MarshalByRefObject");
