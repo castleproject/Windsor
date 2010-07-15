@@ -134,12 +134,12 @@ namespace Castle.Facilities.WcfIntegration
 			return creator;
 		}
 
-		private IWcfClientModel ObtainClientModel(ComponentModel model)
+		private static IWcfClientModel ObtainClientModel(ComponentModel model)
 		{
 			return (IWcfClientModel)model.ExtendedProperties[WcfConstants.ClientModelKey];
 		}
 
-		private IWcfClientModel ObtainClientModel(ComponentModel model, CreationContext context)
+		private static IWcfClientModel ObtainClientModel(ComponentModel model, CreationContext context)
 		{
 			var clientModel = WcfUtils.FindDependencies<IWcfClientModel>(context.AdditionalParameters)
 				.FirstOrDefault();
@@ -158,7 +158,7 @@ namespace Castle.Facilities.WcfIntegration
 			return clientModel;
 		}
 
-		private void ValidateClientModel(IWcfClientModel clientModel, ComponentModel model)
+		private static void ValidateClientModel(IWcfClientModel clientModel, ComponentModel model)
 		{
 			Type contract;
 
@@ -188,8 +188,8 @@ namespace Castle.Facilities.WcfIntegration
 			}
 		}
 
-		private ChannelCreator CreateChannelCreator(IKernel kernel, ComponentModel model,
-													IWcfClientModel clientModel, out IWcfBurden burden)
+		private static ChannelCreator CreateChannelCreator(IKernel kernel, ComponentModel model,
+														   IWcfClientModel clientModel, out IWcfBurden burden)
 		{
 			ValidateClientModel(clientModel, model);
 
@@ -202,7 +202,8 @@ namespace Castle.Facilities.WcfIntegration
 			var channelCreator = createChannelDelegate(kernel, clientModel, model, out burden);
 			if (channelCreator == null)
 			{
-				throw new FacilityException("Unable to generate the channel creator.  This is most likely a bug so please report it.");
+				throw new CommunicationException("Unable to generate the channel creator.  " +
+					"Either the endpoint could be be created or it's a bug so please report it.");
 			}
 			return channelCreator;
 		}

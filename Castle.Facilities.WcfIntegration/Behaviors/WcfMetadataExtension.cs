@@ -60,13 +60,21 @@ namespace Castle.Facilities.WcfIntegration
 
 				if (scheme == Uri.UriSchemeHttp)
 				{
-					binding = MetadataExchangeBindings.CreateMexHttpBinding();
-					mexAddress = relativeAddress ? string.Empty : baseAddress.AbsoluteUri;
+					binding = FindCompatibleBinding(serviceHost, scheme);
+					if (binding == null)
+					{
+						binding = MetadataExchangeBindings.CreateMexHttpBinding();
+						mexAddress = relativeAddress ? string.Empty : baseAddress.AbsoluteUri;
+					}
 				}
 				else if (scheme == Uri.UriSchemeHttps)
 				{
-					binding = MetadataExchangeBindings.CreateMexHttpsBinding();
-					mexAddress = relativeAddress ? string.Empty : baseAddress.AbsoluteUri;
+					binding = FindCompatibleBinding(serviceHost, scheme);
+					if (binding == null)
+					{
+						binding = MetadataExchangeBindings.CreateMexHttpsBinding();
+						mexAddress = relativeAddress ? string.Empty : baseAddress.AbsoluteUri;
+					}
 				}
 				else if (scheme == Uri.UriSchemeNetTcp)
 				{
@@ -110,6 +118,13 @@ namespace Castle.Facilities.WcfIntegration
 			}
 
 			return metadataBehavior;
+		}
+
+		private static Binding FindCompatibleBinding(ServiceHost serviceHost, string scheme)
+		{
+			return serviceHost.Description.Endpoints
+				.Where(endpoint => endpoint.Address.Uri.Scheme == scheme)
+				.Select(endpoint => endpoint.Binding).FirstOrDefault();
 		}
 
 		private  static Uri[] GetBaseAddresses(ServiceHost serviceHost, out bool relative)

@@ -32,6 +32,12 @@ namespace Castle.Facilities.WcfIntegration
 			return this;
 		}
 
+		public WcfDiscoveryExtension InScope(params string[] scopes)
+		{
+			this.scopes.AddRange(scopes.Select(scope => new Uri(scope)));
+			return this;
+		}
+
 		public WcfDiscoveryExtension AtEndpoint(DiscoveryEndpoint endpoint)
 		{
 			discoveryEndpoint = endpoint;

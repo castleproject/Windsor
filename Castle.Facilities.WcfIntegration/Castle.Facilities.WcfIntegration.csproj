@@ -142,8 +142,6 @@
     <Compile Include="Client\Duplex\DuplexClientModel.cs" />
     <Compile Include="Client\ChannelFactoryExtensions.cs" />
     <Compile Include="AbstractWcfPolicy.cs" />
-    <Compile Include="WcfDiscoveryExtensions.cs" />
-    <Compile Include="WcfMetadataExtensions.cs" />
     <Compile Include="IWcfPolicy.cs" />
     <Compile Include="IWcfCleanUp.cs" />
     <Compile Include="Lifestyles\AbstractWcfLifestyleCache.cs" />

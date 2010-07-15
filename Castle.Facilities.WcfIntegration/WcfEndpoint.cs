@@ -144,6 +144,15 @@ namespace Castle.Facilities.WcfIntegration
 			return (T)this;
 		}
 
+		public T InScope(params string[] scopes)
+		{
+			foreach (var scope in scopes)
+			{
+				Scopes.Add(new Uri(scope));
+			}
+			return (T)this;
+		}
+
 		#region Logging
 
 		public T LogMessages()

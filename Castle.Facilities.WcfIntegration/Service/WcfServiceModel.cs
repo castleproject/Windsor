@@ -122,6 +122,38 @@ namespace Castle.Facilities.WcfIntegration
 			return (T)this;
 		}
 
+		#region Metadata
+
+		public T PublishMetadata()
+		{
+			return AddExtensions(new WcfMetadataExtension());
+		}
+
+		public T PublishMetadata(Action<WcfMetadataExtension> mex)
+		{
+			var mexExtension = new WcfMetadataExtension();
+			if (mex != null) mex(mexExtension);
+			return AddExtensions(mexExtension);
+		}
+
+		#endregion
+
+		#region Discovery
+
+		public T Discoverable()
+		{
+			return AddExtensions(new WcfDiscoveryExtension());
+		}
+
+		public T Discoverable(Action<WcfDiscoveryExtension> discover)
+		{
+			var discoveryExtension = new WcfDiscoveryExtension();
+			if (discover != null) discover(discoveryExtension);
+			return AddExtensions(discoveryExtension);
+		}
+
+		#endregion
+
 		#region Logging
 
 		public T LogMessages()

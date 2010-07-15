@@ -66,8 +66,7 @@ namespace Castle.Facilities.WcfIntegration
 				{
 					if (model == null)
 					{
-						throw new FacilityException(
-							"No service endpoint contract can be implied from the component.");
+						throw new FacilityException("No service endpoint contract can be implied from the component.");
 					}
 					endpoint.Contract = model.Service;
 				}
@@ -78,8 +77,7 @@ namespace Castle.Facilities.WcfIntegration
 		{
 		}
 
-		protected abstract ServiceHost CreateServiceHost(ComponentModel model, M serviceModel,
-														 params Uri[] baseAddresses);
+		protected abstract ServiceHost CreateServiceHost(ComponentModel model, M serviceModel, params Uri[] baseAddresses);
 		protected abstract ServiceHost CreateServiceHost(ComponentModel model, Uri[] baseAddresses);
 		protected abstract ServiceHost CreateServiceHost(Type serviceType, Uri[] baseAddresses);
 	}
