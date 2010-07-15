@@ -84,7 +84,7 @@ namespace Castle.Windsor.Tests
 		{
 			IWindsorContainer container =
 				new WindsorContainer(new XmlInterpreter(GetFilePath("ComplexGenericConfig.xml")));
-			var empRepost = container[typeof(IRepository<IEmployee>)] as IRepository<IEmployee>;
+			var empRepost = container.Resolve<IRepository<IEmployee>>();
 			Assert.IsNotNull(empRepost);
 			Assert.IsTrue(typeof(LoggingRepositoryDecorator<IEmployee>).IsInstanceOfType(empRepost));
 			var log = empRepost as LoggingRepositoryDecorator<IEmployee>;

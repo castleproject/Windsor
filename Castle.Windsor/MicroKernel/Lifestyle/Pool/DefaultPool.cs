@@ -17,7 +17,6 @@ namespace Castle.MicroKernel.Lifestyle.Pool
 {
 	using System;
 	using System.Collections.Generic;
-	using System.Threading;
 
 	using Castle.Core;
 	using Castle.Core.Internal;
@@ -34,12 +33,15 @@ namespace Castle.MicroKernel.Lifestyle.Pool
 		private readonly int maxsize;
 		private readonly Lock rwlock = Lock.Create();
 		private readonly IComponentActivator componentActivator;
+		private readonly IKernel kernel;
+		private bool evicting;
 
-		public DefaultPool(int initialsize, int maxsize, IComponentActivator componentActivator)
+		public DefaultPool(int initialsize, int maxsize, IComponentActivator componentActivator, IKernel kernel)
 		{
 			this.initialsize = initialsize;
 			this.maxsize = maxsize;
 			this.componentActivator = componentActivator;
+			this.kernel = kernel;
 
 			InitPool();
 		}
@@ -82,9 +84,9 @@ namespace Castle.MicroKernel.Lifestyle.Pool
 		{
 			using(rwlock.ForWriting())
 			{
-				if (!inUse.Contains(instance))
+				if (inUse.Contains(instance) == false)
 				{
-					throw new PoolException("Trying to release a component that does not belong to this pool");
+					return evicting;
 				}
 
 				inUse.Remove(instance);
@@ -116,11 +118,11 @@ namespace Castle.MicroKernel.Lifestyle.Pool
 
 		public virtual void Dispose()
 		{
-			// Release all components
-			// NOTE: don't we need a lock here?
+			evicting = true;
+
 			foreach(object instance in available)
 			{
-				componentActivator.Destroy(instance);
+				kernel.ReleaseComponent(instance);
 			}
 		}
 

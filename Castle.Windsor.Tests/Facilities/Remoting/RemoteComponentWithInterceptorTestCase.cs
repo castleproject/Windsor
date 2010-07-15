@@ -40,7 +40,7 @@ namespace Castle.Windsor.Tests.Facilities.Remoting
 		{
 			IWindsorContainer clientContainer = CreateRemoteContainer(clientDomain, ConfigHelper.ResolveConfigPath("Facilities/Remoting/Configs/client_kernelcomponent.xml"));
 
-			ICalcService service = (ICalcService) clientContainer[ typeof(ICalcService) ];
+			ICalcService service = clientContainer.Resolve<ICalcService>();
 
 			// The result is being intercepted, that's why we 
 			// assert for 20 instead of 10

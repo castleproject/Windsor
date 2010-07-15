@@ -36,7 +36,7 @@ namespace Castle.Windsor.Tests
 
 			// IChild child = (IChild)container["child"];
 			// IParent parent = (IParent) container["parent"];
-			object component = container["parent"];
+			object component = container.Resolve("parent");
 		}
 	}
 

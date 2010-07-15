@@ -118,7 +118,7 @@ namespace Castle.Windsor.Tests.Adapters.ComponentModel
 
 			IComponent component2 = container.Components["myComponent"];
 			Assert.AreSame(component2, component);
-			Assert.AreSame(component2, container.Container["myComponent"]);
+			Assert.AreSame(component2, container.Container.Resolve("myComponent"));
 			Assert.AreSame(container, component2.Site.Container);
 		}
 
@@ -193,7 +193,7 @@ namespace Castle.Windsor.Tests.Adapters.ComponentModel
 			container.AddService(typeof(ICalcService), service);
 
 			Assert.AreSame(container.GetService(typeof(ICalcService)), service);
-			Assert.AreSame(container.Container[typeof(ICalcService)], service);
+			Assert.AreSame(container.Container.Resolve<ICalcService>(), service);
 		}
 
 		[Test]
@@ -233,7 +233,7 @@ namespace Castle.Windsor.Tests.Adapters.ComponentModel
 			ICalcService service = (ICalcService) container.GetService(typeof(ICalcService));
 
 			Assert.IsNotNull(service);
-			Assert.AreSame(service, container.Container[typeof(ICalcService)]);
+			Assert.AreSame(service, container.Container.Resolve<ICalcService>());
 
 			service = (ICalcService) container.GetService(typeof(ICalcService));
 			Assert.AreEqual(1, calledCount);
