@@ -66,17 +66,18 @@ namespace Castle.MicroKernel
 			get { return handler.ComponentModel; }
 		}
 
-		public void Release(IReleasePolicy policy)
+		public bool Release(IReleasePolicy policy)
 		{
 			if (policy == null) throw new ArgumentNullException("policy");
 
-			if (handler.Release(instance))
+			if (handler.Release(instance) == false)
+				return false;
+
+			foreach (Burden child in children)
 			{
-				foreach (Burden child in children)
-				{
-					policy.Release(child.instance);
-				}
+				policy.Release(child.instance);
 			}
+			return true;
 		}
 	}
 }

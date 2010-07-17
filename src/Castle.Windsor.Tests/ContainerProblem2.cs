@@ -15,9 +15,9 @@
 namespace Castle.Windsor.Tests
 {
 	using Castle.Core;
-    using Castle.MicroKernel.Registration;
+	using Castle.MicroKernel.Registration;
 
-    using NUnit.Framework;
+	using NUnit.Framework;
 
 	[PerThread]
 	public class R

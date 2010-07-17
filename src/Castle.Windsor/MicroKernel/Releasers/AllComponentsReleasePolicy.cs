@@ -62,28 +62,31 @@ namespace Castle.MicroKernel.Releasers
 				if (!instance2Burden.TryGetValue(instance, out burden))
 					return;
 
-				instance2Burden.Remove(instance);
-
-				burden.Release(this);
-
+				if (instance2Burden.Remove(instance))
+				{
+					if (burden.Release(this) == false)
+					{
+						instance2Burden[instance] = burden;
+					}
+				}
 			}
 		}
 
 		public void Dispose()
 		{
-
 			using(@lock.ForWriting())
 			{
-				KeyValuePair<object, Burden>[] burdens = 
-					new KeyValuePair<object, Burden>[instance2Burden.Count];
+				var burdens = new KeyValuePair<object, Burden>[instance2Burden.Count];
 				instance2Burden.CopyTo(burdens, 0);
 
-				foreach (KeyValuePair<object, Burden> burden in burdens)
+				foreach (var burden in burdens)
 				{
 					if (instance2Burden.ContainsKey(burden.Key))
 					{
-						burden.Value.Release(this);
-						instance2Burden.Remove(burden.Key);
+						if (burden.Value.Release(this))
+						{
+							instance2Burden.Remove(burden.Key);
+						}
 					}
 				}
 			}
