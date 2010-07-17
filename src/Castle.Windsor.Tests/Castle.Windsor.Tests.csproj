@@ -48,15 +48,14 @@
     <Reference Include="System.Data">
       <Name>System.Data</Name>
     </Reference>
-    <Reference Include="nunit.framework">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\nunit.framework.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Castle.Core">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\$(BuildConfigKey)\Castle.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.framework">
+      <HintPath>..\..\tools\NUnit\bin\net-2.0\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="System">
       <Name>System</Name>
@@ -127,6 +126,7 @@
     <Compile Include="Components\WebServiceResultFinder.cs" />
     <Compile Include="Configuration2\ConfigurationInstallersTestCase.cs" />
     <Compile Include="Configuration2\UsingAssemblyTestCase.cs" />
+    <Compile Include="Configuration\ConfigTestCase.cs" />
     <Compile Include="CustomActivatorTestCase.cs" />
     <Compile Include="ClassComponents\CycleA.cs" />
     <Compile Include="ClassComponents\CycleB.cs" />
@@ -490,7 +490,7 @@
     <Compile Include="Components\IReviewer.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Components\MailServer.cs" />
+    <Compile Include="Components\ClassWithDoNotWireProperties.cs" />
     <Compile Include="Components\MarshalCalculatorService.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -593,6 +593,9 @@
       <SubType>Code</SubType>
     </Compile>
     <EmbeddedResource Include="Channel1.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Configuration\OneComponentInTwoPieces.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
     <Content Include="ignoreprop.xml">

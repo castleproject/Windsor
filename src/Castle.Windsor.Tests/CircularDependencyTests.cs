@@ -34,8 +34,7 @@ namespace Castle.Windsor.Tests
 		public void ShouldNotGetCircularDepencyExceptionWhenResolvingTypeOnItselfWithDifferentModels()
 		{
 			var container = new WindsorContainer(ConfigHelper.ResolveConfigPath("IOC-51.xml"));
-			var o = container["path.fileFinder"];
-			Assert.IsNotNull(o);
+			Assert.IsNotNull(container.Resolve<object>("path.fileFinder"));
 		}
 #endif
 		[Test]

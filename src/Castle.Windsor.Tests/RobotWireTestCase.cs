@@ -33,7 +33,7 @@ namespace Castle.Windsor.Tests
 		{
 			container = new WindsorContainer(ConfigHelper.ResolveConfigPath("robotwireconfig.xml"));
 
-			Robot robot = (Robot) container[typeof(Robot)];
+			var robot = container.Resolve<Robot>();
 
 			Assert.IsNotNull(robot);
 			Assert.IsNotNull(robot.Left);

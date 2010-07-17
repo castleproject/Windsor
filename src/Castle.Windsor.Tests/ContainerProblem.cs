@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,12 +14,12 @@
 
 namespace Castle.Windsor.Tests
 {
-    using System;
-    using System.Collections.Generic;
-	using Castle.MicroKernel;
-    using Castle.MicroKernel.Registration;
+	using System.Collections.Generic;
 
-    using NUnit.Framework;
+	using Castle.MicroKernel;
+	using Castle.MicroKernel.Registration;
+
+	using NUnit.Framework;
 
 	[TestFixture]
 	public class ContainerProblem
@@ -29,14 +29,14 @@ namespace Castle.Windsor.Tests
 		{
 			IWindsorContainer container = new WindsorContainer();
 
-			container.Register(Component.For(typeof(IChild)).ImplementedBy(typeof(Child)).Named("child"));
-			container.Register(Component.For(typeof(IParent)).ImplementedBy(typeof(Parent)).Named("parent"));
+			container.Register(Component.For<IChild>().ImplementedBy<Child>().Named("child"));
+			container.Register(Component.For<IParent>().ImplementedBy<Parent>().Named("parent"));
 
 			// child or parent will cause a stack overflow...?
 
 			// IChild child = (IChild)container["child"];
 			// IParent parent = (IParent) container["parent"];
-			object component = container["parent"];
+			container.Resolve<IParent>("parent");
 		}
 	}
 
@@ -55,7 +55,7 @@ namespace Castle.Windsor.Tests
 		}
 	}
 
-	public class Parent : List<IChild>
+	public class Parent : List<IChild>,IParent
 	{
 		public Parent(IKernel kernel)
 		{

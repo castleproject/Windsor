@@ -19,6 +19,7 @@ namespace Castle.MicroKernel.Registration
 	using System;
 	using System.Collections.Generic;
 
+	using Castle.Core;
 	using Castle.DynamicProxy.Generators.Emitters;
 
 	/// <summary>
@@ -171,7 +172,7 @@ namespace Castle.MicroKernel.Registration
 			return Select(delegate { return types; });
 		}
 
-		internal IEnumerable<Type> GetServices(Type type, Type[] baseType)
+		internal ICollection<Type> GetServices(Type type, Type[] baseType)
 		{
 			ICollection<Type> services =
 #if SL3
@@ -196,12 +197,7 @@ namespace Castle.MicroKernel.Registration
 					}
 				}
 			}
-
-			if (services.Count != 0)
-			{
-				return services;
-			}
-			return new[] { type };
+			return services;
 		}
 
 		private IEnumerable<Type> GetTopLevelInterfaces(Type type)

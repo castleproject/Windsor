@@ -30,10 +30,8 @@ namespace Castle.Windsor.Tests.Facilities.EventWiring
 		[Test]
 		public void MultiEvents()
 		{
-			MultiListener listener = (MultiListener)container["MultiListener"];
-			
-			
-			PublisherListener publisherThatListens = (PublisherListener)container["PublisherListener"];
+			var listener = container.Resolve<MultiListener>("MultiListener");
+			var publisherThatListens = container.Resolve<PublisherListener>("PublisherListener");
 
 			publisherThatListens.Trigger1();
 			Assert.IsTrue(listener.Listened);
@@ -43,8 +41,8 @@ namespace Castle.Windsor.Tests.Facilities.EventWiring
 			Assert.IsFalse(publisherThatListens.Listened);
 			Assert.IsNull(publisherThatListens.Sender);
 
-			
-			SimplePublisher anotherPublisher = (SimplePublisher)container["SimplePublisher"];
+
+			var anotherPublisher = container.Resolve<SimplePublisher>("SimplePublisher");
 			
 			anotherPublisher.Trigger();
 			Assert.IsTrue(publisherThatListens.Listened);
@@ -55,8 +53,7 @@ namespace Castle.Windsor.Tests.Facilities.EventWiring
 			Assert.IsNull(listener.Sender);
 
 			
-			MultiPublisher publisher = (MultiPublisher)container["MultiPublisher"];
-			
+			var publisher = container.Resolve<MultiPublisher>("MultiPublisher");
 			publisher.Trigger1();
 			Assert.IsTrue(listener.Listened);
 			Assert.AreSame(publisher, listener.Sender);
@@ -73,11 +70,11 @@ namespace Castle.Windsor.Tests.Facilities.EventWiring
 		[Test]
 		public void TriggerThenResolve()
 		{
-			SimplePublisher publisher = (SimplePublisher)container["SimplePublisher"];
+			var publisher = container.Resolve<SimplePublisher>("SimplePublisher");
 			
 			publisher.Trigger();
-			
-			SimpleListener listener = (SimpleListener)container["SimpleListener"];
+
+			var listener = container.Resolve<SimpleListener>("SimpleListener");
 			Assert.IsTrue(listener.Listened);
 			Assert.AreSame(publisher, listener.Sender);
 		}

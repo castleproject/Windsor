@@ -32,35 +32,34 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 		[SetUp]
 		public void Init()
 		{
-			_container = new WindsorContainer(new DefaultConfigurationStore());
-			_facility = new TypedFactoryFacility();
-			_container.AddFacility("typedfactory", _facility);
+			container = new WindsorContainer(new DefaultConfigurationStore());
+			facility = new TypedFactoryFacility();
+			container.AddFacility("typedfactory", facility);
 		}
 
 		[TearDown]
 		public void Finish()
 		{
-			_container.Dispose();
+			container.Dispose();
 		}
 
-		private IWindsorContainer _container;
-		private TypedFactoryFacility _facility;
+		private IWindsorContainer container;
+		private TypedFactoryFacility facility;
 
 		[Test]
 		public void Factory1()
 		{
 #pragma warning disable 0618 //call to obsolete method
-			_facility.AddTypedFactoryEntry(
+			facility.AddTypedFactoryEntry(
 				new FactoryEntry(
 					"protocolHandlerFactory", typeof(IProtocolHandlerFactory1), "Create", "Release"));
 #pragma warning restore
-			_container.Register(
+			container.Register(
 				Component.For(typeof(IProtocolHandler)).ImplementedBy(typeof(MirandaProtocolHandler)).Named("miranda"));
-			_container.Register(
+			container.Register(
 				Component.For(typeof(IProtocolHandler)).ImplementedBy(typeof(MessengerProtocolHandler)).Named("messenger"));
 
-			var factory =
-				(IProtocolHandlerFactory1)_container["protocolHandlerFactory"];
+			var factory = container.Resolve<IProtocolHandlerFactory1>("protocolHandlerFactory");
 
 			Assert.IsNotNull(factory);
 
@@ -75,17 +74,16 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 		public void Factory2()
 		{
 #pragma warning disable 0618 //call to obsolete method
-			_facility.AddTypedFactoryEntry(
+			facility.AddTypedFactoryEntry(
 				new FactoryEntry(
 					"protocolHandlerFactory", typeof(IProtocolHandlerFactory2), "Create", "Release"));
 #pragma warning restore
-			_container.Register(
+			container.Register(
 				Component.For(typeof(IProtocolHandler)).ImplementedBy(typeof(MirandaProtocolHandler)).Named("miranda"));
-			_container.Register(
+			container.Register(
 				Component.For(typeof(IProtocolHandler)).ImplementedBy(typeof(MessengerProtocolHandler)).Named("messenger"));
 
-			var factory =
-				(IProtocolHandlerFactory2)_container["protocolHandlerFactory"];
+			var factory = container.Resolve<IProtocolHandlerFactory2>("protocolHandlerFactory");
 
 			Assert.IsNotNull(factory);
 
@@ -104,16 +102,15 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 		public void Factory3()
 		{
 #pragma warning disable 0618 //call to obsolete method
-			_facility.AddTypedFactoryEntry(
+			facility.AddTypedFactoryEntry(
 				new FactoryEntry(
 					"compFactory", typeof(IComponentFactory1), "Construct", ""));
 #pragma warning restore
-			_container.Register(Component.For(typeof(IDummyComponent)).ImplementedBy(typeof(Component1)).Named("comp1"));
-			_container.Register(Component.For(typeof(IDummyComponent)).ImplementedBy(typeof(Component2)).Named("comp2"));
+			container.Register(Component.For(typeof(IDummyComponent)).ImplementedBy(typeof(Component1)).Named("comp1"));
+			container.Register(Component.For(typeof(IDummyComponent)).ImplementedBy(typeof(Component2)).Named("comp2"));
 
-			var factory =
-				(IComponentFactory1)_container["compFactory"];
 
+			var factory = container.Resolve<IComponentFactory1>("compFactory");
 			Assert.IsNotNull(factory);
 
 			var comp1 = factory.Construct();
@@ -127,16 +124,15 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 		public void Factory4()
 		{
 #pragma warning disable 0618 //call to obsolete method
-			_facility.AddTypedFactoryEntry(
+			facility.AddTypedFactoryEntry(
 				new FactoryEntry(
 					"compFactory", typeof(IComponentFactory2), "Construct", ""));
 #pragma warning restore
 
-			_container.Register(Component.For(typeof(IDummyComponent)).ImplementedBy(typeof(Component1)).Named("comp1"));
-			_container.Register(Component.For(typeof(IDummyComponent)).ImplementedBy(typeof(Component2)).Named("comp2"));
+			container.Register(Component.For(typeof(IDummyComponent)).ImplementedBy(typeof(Component1)).Named("comp1"));
+			container.Register(Component.For(typeof(IDummyComponent)).ImplementedBy(typeof(Component2)).Named("comp2"));
 
-			var factory =
-				(IComponentFactory2)_container["compFactory"];
+			var factory = container.Resolve<IComponentFactory2>("compFactory");
 
 			Assert.IsNotNull(factory);
 

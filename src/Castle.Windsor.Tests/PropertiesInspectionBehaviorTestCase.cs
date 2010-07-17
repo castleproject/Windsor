@@ -26,23 +26,19 @@ namespace Castle.Windsor.Tests
 		[Test]
 		public void PropertiesInspectionTestCase()
 		{
-			IWindsorContainer container;
+			var container = new WindsorContainer(ConfigHelper.ResolveConfigPath("propertyInspectionBehavior.xml"));
 
-			container = new WindsorContainer(ConfigHelper.ResolveConfigPath("propertyInspectionBehavior.xml"));
-
-			ExtendedComponentWithProperties comp;
-
-			comp = (ExtendedComponentWithProperties) container["comp1"]; // None
+			var comp = container.Resolve<ExtendedComponentWithProperties>("comp1");
 			Assert.IsNull(comp.Prop1);
 			Assert.AreEqual(0, comp.Prop2);
 			Assert.AreEqual(0, comp.Prop3);
 
-			comp = (ExtendedComponentWithProperties) container["comp2"]; // All
+			comp = container.Resolve<ExtendedComponentWithProperties>("comp2"); // All
 			Assert.IsNotNull(comp.Prop1);
 			Assert.AreEqual(1, comp.Prop2);
 			Assert.AreEqual(2, comp.Prop3);
 
-			comp = (ExtendedComponentWithProperties) container["comp3"]; // DeclaredOnly
+			comp = container.Resolve<ExtendedComponentWithProperties>("comp3"); // DeclaredOnly
 			Assert.IsNull(comp.Prop1);
 			Assert.AreEqual(0, comp.Prop2);
 			Assert.AreEqual(2, comp.Prop3);
@@ -54,9 +50,7 @@ namespace Castle.Windsor.Tests
 		 	)]
 		public void InvalidOption()
 		{
-			IWindsorContainer container;
-
-			container = new WindsorContainer(ConfigHelper.ResolveConfigPath("propertyInspectionBehaviorInvalid.xml"));
+			new WindsorContainer(ConfigHelper.ResolveConfigPath("propertyInspectionBehaviorInvalid.xml"));
 		}
 	}
 }

@@ -38,12 +38,12 @@ namespace Castle.Windsor.Tests.Proxy
 		public void FactorySupport_UsingProxiedFactory_WorksFine()
 		{
 			container.AddFacility("factories", new FactorySupportFacility());
-			((IWindsorContainer)container).Register(Component.For(typeof(StandardInterceptor)).Named("standard.interceptor"));
-			((IWindsorContainer)container).Register(Component.For(typeof(CalulcatorFactory)).Named("factory"));
+			container.Register(Component.For(typeof(StandardInterceptor)).Named("standard.interceptor"));
+			container.Register(Component.For(typeof(CalulcatorFactory)).Named("factory"));
 
 			AddComponent("calculator", typeof(ICalcService), typeof(CalculatorService), "Create");
 
-			ICalcService service = (ICalcService) container["calculator"];
+			ICalcService service = container.Resolve<ICalcService>("calculator");
 
 			Assert.IsNotNull(service);
 		}

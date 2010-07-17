@@ -59,7 +59,7 @@ namespace Castle.Windsor.Tests.Facilities.Remoting
 		{
 			IWindsorContainer clientContainer = GetRemoteContainer(clientDomain, ConfigHelper.ResolveConfigPath("Facilities/Remoting/Configs/client_kernelcomponent_recover.xml"));
 
-			ICalcService service = (ICalcService) clientContainer[ typeof(ICalcService) ];
+			ICalcService service = clientContainer.Resolve<ICalcService>();
 
 			Assert.IsTrue( RemotingServices.IsTransparentProxy(service) );
 			Assert.IsTrue( RemotingServices.IsObjectOutOfAppDomain(service) );

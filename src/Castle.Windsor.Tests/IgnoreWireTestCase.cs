@@ -25,10 +25,10 @@ namespace Castle.Windsor.Tests
 		[Test]
 		public void TestIgnoreAttribute()
 		{
-			WindsorContainer container = new WindsorContainer(
+			var container = new WindsorContainer(
 				ConfigHelper.ResolveConfigPath("ignoreprop.xml"));
 
-			MailServer server = (MailServer) container[typeof(MailServer)];
+			var server = container.Resolve<ClassWithDoNotWireProperties>();
 
 			Assert.AreEqual(0, server.Port);
 			Assert.IsNull(server.Host);
