@@ -1,6 +1,8 @@
 2.5.0 beta2
 ==================
 
+- added support for CastleComponentAttribute in fluent Api. Also added helper filter method Component.IsCastleComponent
+
 - added ability to specify interceptors selector as a service, not just as instance
 
 - added ability to specify proxy hook in fluent API: 
@@ -69,8 +71,8 @@
 
 - added ability to specify installers (IWindsorInstaller) via XML using either of the following:
   <installers>
-    <install type="Castle.Windsor.Tests.Installers.CustomerInstaller"/>
-    <install assembly="Castle.Windsor.Tests"/>
+	<install type="Castle.Windsor.Tests.Installers.CustomerInstaller"/>
+	<install assembly="Castle.Windsor.Tests"/>
   </installers>
   installers must be public and have default constructor.
 
@@ -121,36 +123,36 @@
 	IReference abstraction allows to use components resolved from the container, similar to InterceptorReferences.
 
 - Moved several types from Core:
-    ComponentActivatorAttribute
-    ComponentProxyBehaviorAttribute
-    CustomLifestyleAttribute
-    DoNotWireAttribute      
-    InterceptorAttribute    
-    LifestyleAttribute
-    PooledAttribute
-    TransientAttribute
-    GraphNode
-    IVertex
-    IRecyclable
-    IStartable
-    ComponentModel
-    ConstructorCandidate
-    ConstructorCandidateCollection
-    DependencyModel
-    DependencyModelCollection
-    InterceptorReference
-    InterceptorReferenceCollection
-    LifecycleStepCollection
-    MethodMetaModel
-    MethodMetaModelCollection
-    ParameterModel
-    ParameterModelCollection
-    PropertySet
-    PropertySetCollection
-    TopologicalSortAlgo
-    IOnBehalfAware
-    GraphSets
-    GraphTestCase
+	ComponentActivatorAttribute
+	ComponentProxyBehaviorAttribute
+	CustomLifestyleAttribute
+	DoNotWireAttribute      
+	InterceptorAttribute    
+	LifestyleAttribute
+	PooledAttribute
+	TransientAttribute
+	GraphNode
+	IVertex
+	IRecyclable
+	IStartable
+	ComponentModel
+	ConstructorCandidate
+	ConstructorCandidateCollection
+	DependencyModel
+	DependencyModelCollection
+	InterceptorReference
+	InterceptorReferenceCollection
+	LifecycleStepCollection
+	MethodMetaModel
+	MethodMetaModelCollection
+	ParameterModel
+	ParameterModelCollection
+	PropertySet
+	PropertySetCollection
+	TopologicalSortAlgo
+	IOnBehalfAware
+	GraphSets
+	GraphTestCase
 
 
 2.1.1 (2010-01-13)
@@ -162,11 +164,11 @@
 ==================
 - Moved the logging facility project into the Windsor project:
   - Applied Tom Allard's patch fixing FACILITIES-93
-    "Extra constructors on LoggingFacility"
+	"Extra constructors on LoggingFacility"
   - Added test case supplied by chris ortman
   - Register base logger and factory when using extended logger.
   - Fixed FACILITIES-77
-    "ILoggerFactory instance creation requires constructor with one argument"
+	"ILoggerFactory instance creation requires constructor with one argument"
 
 - simplified API for attaching interceptors.
 
@@ -425,27 +427,27 @@ RC 4
 -- Introduces the KeySearchNamingSubSystem
 
 -- Allows you to associate a custom component activator using
-    1. componentActivatorType on component node
-    2. ComponentActivatorAttribute
+	1. componentActivatorType on component node
+	2. ComponentActivatorAttribute
 
 -- Allows you to create and configure child containers 
    through the configuration, using
 
   <configuration>
-    <containers>
-        <container name="child1">
-          <configuration>
-                <facilities>
+	<containers>
+		<container name="child1">
+		  <configuration>
+				<facilities>
 					...
-                </facilities>
-          
-                <components>
+				</facilities>
+		  
+				<components>
 					...
-                </components>
-                
-            </configuration>
-        </container>
-    </containers>
+				</components>
+				
+			</configuration>
+		</container>
+	</containers>
   </configuration>
 
 - Applied AndyD's patch fixing IOC-52
@@ -530,7 +532,7 @@ RC 3
   an object per web request.  To use it you must add the following http module
 
   <httpModules>
-      ...
+	  ...
 	  <add name="PerWebRequest" type="Castle.MicroKernel.Lifestyle.PerWebRequestLifestyleManager , Castle.MicroKernel,Version=0.0.1.7, Culture=neutral, PublicKeyToken=407dd0808d44fbdc"/>
 
   <httpModules>
@@ -545,7 +547,7 @@ RC 3
   
   - None: No properties inspection should happen
   - All: All properties will be inspected and collected (on the class and on the superclasses). 
-         This is the default behavior
+		 This is the default behavior
   - DeclaredOnly: Only properties specified on type are checked (superclasses will be ignored) 
 
 - Added overload to ITypeConvertor that accept the current node configuration as well as the type in CanHandleType()
@@ -574,14 +576,14 @@ RC 3
   
 
 - Applied patch by Alex Henderson <webmaster@bittercoder.com> adding
-    IWindsorContainer.RemoveChildContainer(IWindsorContainer childContainer)
-    and IKernel.RemoveChildKernel(IKernel kernel)
+	IWindsorContainer.RemoveChildContainer(IWindsorContainer childContainer)
+	and IKernel.RemoveChildKernel(IKernel kernel)
 
 - Applied fix by Ahmed. Now defines can be used on properties nodes like
 
   <properties>
    <?if DEBUG?>
-    <item>x</item>
+	<item>x</item>
    <?end?>
   </properties>
 
@@ -597,38 +599,38 @@ using #{propertyName} syntax.(Patch from Ahmed)
   Example:
 
   <configuration>
-    <properties>
-       <MyComponentParams>
-         <user>Joe</user>
-         <pwd>Doe</pwd>
-       </MyComponentParams>
-     </properties>
-     <components id=??Component
-       <parameters>#{ MyComponentParams }</parameters>
-     </components>
+	<properties>
+	   <MyComponentParams>
+		 <user>Joe</user>
+		 <pwd>Doe</pwd>
+	   </MyComponentParams>
+	 </properties>
+	 <components id=??Component
+	   <parameters>#{ MyComponentParams }</parameters>
+	 </components>
   </configuration>
   
   Will result in 
 
-     <components id=??Component
-       <parameters>
-         <user>Joe</user>
-         <pwd>Doe</pwd>
-       </parameters>
-     </components>
+	 <components id=??Component
+	   <parameters>
+		 <user>Joe</user>
+		 <pwd>Doe</pwd>
+	   </parameters>
+	 </components>
 
 - Type converter for kernel components. This allows a usage like this:
 
   <component id="mycomp">
   
-    <parameters>
-      <servicelist>
-        <list type="IMyService, MyAssembly">
-          <item>${keytocomponent1}</item>
-          <item>${keytocomponent2}</item>
-        </list>
-      </servicelist>
-    </parameters>
+	<parameters>
+	  <servicelist>
+		<list type="IMyService, MyAssembly">
+		  <item>${keytocomponent1}</item>
+		  <item>${keytocomponent2}</item>
+		</list>
+	  </servicelist>
+	</parameters>
 
 - Removed support for MethodMeta on ComponentModel. The design decision here 
   is to make the facilities interested on it to extend MethodMetaInspector
@@ -673,9 +675,9 @@ RC 2
 - Support for custom lifestyle through configuration (kudos to Bawer Dagdeviren):
 
   <component id="my.component"
-                   type="MyLib.MyComponent, MyLib"
-                   lifestyle="custom"
-                   customLifestyleType="MyLib.MyCustomLifestyle, MyLib" />
+				   type="MyLib.MyComponent, MyLib"
+				   lifestyle="custom"
+				   customLifestyleType="MyLib.MyCustomLifestyle, MyLib" />
 
 - Added Type converter for enums
 
@@ -703,21 +705,21 @@ RC 2
   which are accessible through Uris:
 
   - FileResource:  
-    file://pathtofile 
-    (For example: file://c:\mydir\file.txt)
+	file://pathtofile 
+	(For example: file://c:\mydir\file.txt)
 
   - AssemblyResource:  
-    assembly://AssemblyName/ExtendingNamespace/filename 
-    (For example: assembly://Castle.Windsor.Tests/Configuration2/include1.xml)
+	assembly://AssemblyName/ExtendingNamespace/filename 
+	(For example: assembly://Castle.Windsor.Tests/Configuration2/include1.xml)
 
   - ConfigResource:  
-    config://sectioname 
-    (For example: config://castle will fetch the 
-    <configuration><castle> entry in the configuration)
+	config://sectioname 
+	(For example: config://castle will fetch the 
+	<configuration><castle> entry in the configuration)
 
   - UncResource:  
-    \\server\file 
-    (For example: \\mysharedplace\myconfig.xml)
+	\\server\file 
+	(For example: \\mysharedplace\myconfig.xml)
 
 - IResource, IResourceFactory and IResourceSubSystem introduced
 
@@ -794,13 +796,13 @@ Beta 1  - 21/jan/2005
 - Added: support for dictionaries, lists and arrays on the configuration file.
 
   <component>
-    <parameters>
-      <properties>
-        <dictionary>
-          <item key="mykey">value</item>
-        </dictionary>
-      </properties>
-    </parameters>
+	<parameters>
+	  <properties>
+		<dictionary>
+		  <item key="mykey">value</item>
+		</dictionary>
+	  </properties>
+	</parameters>
   </component>
 
 - Added: Component Graph (used by the Remove method and to dispose the components)
