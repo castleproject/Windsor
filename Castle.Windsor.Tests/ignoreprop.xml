@@ -3,7 +3,7 @@
 	<components>
 
 		<component id="server" 
-			type="Castle.Windsor.Tests.Components.MailServer, Castle.Windsor.Tests">
+			type="ClassWithDoNotWireProperties">
 			<parameters>
 				<Port>100</Port>
 				<Host>server</Host>

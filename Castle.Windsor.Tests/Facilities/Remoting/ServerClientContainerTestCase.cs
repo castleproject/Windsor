@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #if (!SILVERLIGHT)
+
 namespace Castle.Windsor.Tests.Facilities.Remoting
 {
 	using System;
@@ -23,72 +24,77 @@ namespace Castle.Windsor.Tests.Facilities.Remoting
 
 	using NUnit.Framework;
 
-	[TestFixture, Serializable]
+	[TestFixture]
+	[Serializable]
 	public class ServerClientContainerTestCase : AbstractRemoteTestCase
 	{
-		private AppDomain serverClient;
-		
-		IWindsorContainer serverClientContainer = null;
-		
 		public override void Init()
 		{
 			base.Init();
-			
+
 			serverClient = AppDomainFactory.Create("serverClient");
-			serverClientContainer = GetRemoteContainer(serverClient, ConfigHelper.ResolveConfigPath("Facilities/Remoting/Configs/server_client_kernelcomponent.xml"));
+			serverClientContainer = GetRemoteContainer(serverClient,
+			                                           ConfigHelper.ResolveConfigPath(
+			                                           	"Facilities/Remoting/Configs/server_client_kernelcomponent.xml"));
 		}
 
 		public override void Terminate()
 		{
 			serverClientContainer.Dispose();
 			AppDomain.Unload(serverClient);
-			
+
 			base.Terminate();
 		}
-		
+
+		private AppDomain serverClient;
+
+		private IWindsorContainer serverClientContainer;
+
 		protected override String GetServerConfigFile()
 		{
 			return ConfigHelper.ResolveConfigPath("Facilities/Remoting/Configs/server_kernelcomponent.xml");
 		}
 
+		public void ClientContainerConsumingRemoteComponentCallback()
+		{
+			var clientContainer = CreateRemoteContainer(clientDomain,
+			                                            ConfigHelper.ResolveConfigPath(
+			                                            	"Facilities/Remoting/Configs/client_12134_kernelcomponent.xml"));
+
+			var service = clientContainer.Resolve<ICalcService>("calc.service.c1");
+
+			Assert.IsTrue(RemotingServices.IsTransparentProxy(service));
+			Assert.IsTrue(RemotingServices.IsObjectOutOfAppDomain(service));
+
+			Assert.AreEqual(10, service.Sum(7, 3));
+		}
+
+		public void ServerClientContainerConsumingRemoteComponentCallback()
+		{
+			var serverAsClient = GetRemoteContainer(serverClient,
+			                                        ConfigHelper.ResolveConfigPath(
+			                                        	"Facilities/Remoting/Configs/server_client_kernelcomponent.xml"));
+
+			var service = serverAsClient.Resolve<ICalcService>();
+
+			Assert.IsTrue(RemotingServices.IsTransparentProxy(service));
+			Assert.IsTrue(RemotingServices.IsObjectOutOfAppDomain(service));
+
+			Assert.AreEqual(10, service.Sum(7, 3));
+		}
+
 		[Test]
 		public void ClientContainerConsumingRemoteComponent()
 		{
-			clientDomain.DoCallBack(new CrossAppDomainDelegate(ClientContainerConsumingRemoteComponentCallback));
-		}
-
-		public void ClientContainerConsumingRemoteComponentCallback()
-		{
-			IWindsorContainer clientContainer = CreateRemoteContainer(clientDomain, ConfigHelper.ResolveConfigPath("Facilities/Remoting/Configs/client_12134_kernelcomponent.xml"));
-
-			ICalcService service = (ICalcService) clientContainer[ "calc.service.c1" ];
-
-			Assert.IsTrue( RemotingServices.IsTransparentProxy(service) );
-			Assert.IsTrue( RemotingServices.IsObjectOutOfAppDomain(service) );
-
-			Assert.AreEqual(10, service.Sum(7,3));
+			clientDomain.DoCallBack(ClientContainerConsumingRemoteComponentCallback);
 		}
 
 		[Test]
 		public void ServerClientContainerConsumingRemoteComponent()
 		{
-			serverClient.DoCallBack(new CrossAppDomainDelegate(ServerClientContainerConsumingRemoteComponentCallback));
-		}
-		
-		public void ServerClientContainerConsumingRemoteComponentCallback()
-		{
-			IWindsorContainer serverAsClient = GetRemoteContainer(serverClient, ConfigHelper.ResolveConfigPath("Facilities/Remoting/Configs/server_client_kernelcomponent.xml"));
-			
-			ICalcService service = (ICalcService) serverAsClient[typeof(ICalcService)];
-
-			Assert.IsTrue( RemotingServices.IsTransparentProxy(service) );
-			Assert.IsTrue( RemotingServices.IsObjectOutOfAppDomain(service) );
-
-			Assert.AreEqual(10, service.Sum(7,3));
+			serverClient.DoCallBack(ServerClientContainerConsumingRemoteComponentCallback);
 		}
 	}
 }
-
-
 
 #endif

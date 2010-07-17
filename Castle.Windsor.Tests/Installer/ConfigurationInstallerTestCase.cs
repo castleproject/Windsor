@@ -95,7 +95,7 @@ namespace Castle.Windsor.Tests.Installer
 
 			Assert.IsTrue(container.Kernel.HasComponent(typeof(ICalcService)));
 			Assert.IsTrue(container.Kernel.HasComponent("calcservice"));
-			Assert.IsTrue(container.Kernel.HasComponent(typeof(MailServer)));
+			Assert.IsTrue(container.Kernel.HasComponent(typeof(ClassWithDoNotWireProperties)));
 			Assert.IsTrue(container.Kernel.HasComponent("server"));
 			Assert.IsTrue(container.Kernel.HasComponent(typeof(Robot)));
 			Assert.IsTrue(container.Kernel.HasComponent("robot"));

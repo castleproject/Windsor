@@ -122,6 +122,7 @@ namespace Castle.Windsor.Tests
 			container.Register(Component.For(typeof(IWM)).ImplementedBy(typeof(WM)).Named("WM"));
 			container.Register(Component.For(typeof(ISP)).ImplementedBy(typeof(SP)).Named("SP"));
 
+			//TODO: dead code - why is it here?
 			// ComponentModel model = new ComponentModel("R", typeof(R), typeof(R));
 			// model.LifestyleType = LifestyleType.Custom;
 			// model.CustomLifestyle = typeof(PerThreadLifestyleManager);
@@ -130,7 +131,7 @@ namespace Castle.Windsor.Tests
 			// container.Kernel.AddComponent("R", typeof(R), LifestyleType.Thread);
 			container.Kernel.Register(Component.For(typeof(R)).Named("R"));
 
-			IC c = container["C"] as IC;
+			IC c = container.Resolve<IC>("C");
 			Assert.IsNotNull(c);
 		}
 	}

@@ -17,6 +17,8 @@ namespace Castle.MicroKernel.Registration
 	using System;
 	using System.Collections.Generic;
 
+	using Castle.Core;
+
 	/// <summary>
 	///   Delegate for custom registration configuration.
 	/// </summary>
@@ -183,8 +185,12 @@ namespace Castle.MicroKernel.Registration
 			{
 				return false;
 			}
-
+			var defaults = InitializeDefaults(type);
 			var serviceTypes = service.GetServices(type, baseTypes);
+			if(serviceTypes.Count == 0)
+			{
+				serviceTypes = new[] { defaults.Service };
+			}
 			var registration = Component.For(serviceTypes);
 			registration.ImplementedBy(type);
 
@@ -192,10 +198,9 @@ namespace Castle.MicroKernel.Registration
 			{
 				configurer.Apply(registration);
 			}
-
 			if (String.IsNullOrEmpty(registration.Name))
 			{
-				registration.Named(type.FullName);
+				registration.Named(defaults.Key);
 			}
 
 			if (!kernel.HasComponent(registration.Name))
@@ -204,6 +209,11 @@ namespace Castle.MicroKernel.Registration
 			}
 
 			return true;
+		}
+
+		private CastleComponentAttribute InitializeDefaults(Type type)
+		{
+			return CastleComponentAttribute.GetDefaultsFor(type);
 		}
 
 		private bool Accepts(Type type, out Type[] baseTypes)

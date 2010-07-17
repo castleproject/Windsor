@@ -57,7 +57,7 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 		[Test]
 		public void Factory1()
 		{
-			var factory = (IProtocolHandlerFactory1)container["protocolFac1"];
+			var factory = container.Resolve<IProtocolHandlerFactory1>("protocolFac1");
 
 			Assert.IsNotNull(factory);
 
@@ -71,7 +71,7 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 		[Test]
 		public void Factory2()
 		{
-			var factory = (IProtocolHandlerFactory2)container["protocolFac2"];
+			var factory = container.Resolve<IProtocolHandlerFactory2>("protocolFac2");
 
 			Assert.IsNotNull(factory);
 
@@ -89,7 +89,7 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 		[Test]
 		public void Factory3()
 		{
-			var factory = (IComponentFactory1)container["compFactory1"];
+			var factory = container.Resolve<IComponentFactory1>("compFactory1");
 
 			Assert.IsNotNull(factory);
 
@@ -103,7 +103,7 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 		[Test]
 		public void Factory4()
 		{
-			var factory = (IComponentFactory2)container["compFactory2"];
+			var factory = container.Resolve<IComponentFactory2>("compFactory2");
 			Assert.IsNotNull(factory);
 
 			var comp1 = (IDummyComponent)factory.Construct("comp1");
@@ -118,7 +118,7 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 		[Test]
 		public void No_Creation_Or_Destruction_methods_defined()
 		{
-			var factory = (IComponentFactory1)container["NoCreationOrDestructionDefined"];
+			var factory = container.Resolve<IComponentFactory1>("NoCreationOrDestructionDefined");
 
 			Assert.IsNotNull(factory);
 

@@ -25,8 +25,6 @@ namespace Castle.Core
 	[AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
 	public class CastleComponentAttribute : LifestyleAttribute
 	{
-		private readonly string key;
-		private readonly Type service;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="CastleComponentAttribute"/> class.
@@ -53,8 +51,8 @@ namespace Castle.Core
 		/// <param name="lifestyle">The lifestyle.</param>
 		public CastleComponentAttribute(String key, Type service, LifestyleType lifestyle) : base(lifestyle)
 		{
-			this.key = key;
-			this.service = service;
+			Key = key;
+			Service = service;
 		}
 
 		/// <summary>
@@ -63,16 +61,30 @@ namespace Castle.Core
 		/// <value>The key.</value>
 		public String Key
 		{
-			get { return key; }
-		}
+			get; private set; }
 
 		/// <summary>
 		/// Gets the service.
 		/// </summary>
 		/// <value>The service.</value>
-		public Type Service
+		public Type Service { get; private set; }
+
+		public static CastleComponentAttribute GetDefaultsFor(Type type)
 		{
-			get { return service; }
+			var attribute = (CastleComponentAttribute)GetCustomAttribute(type, typeof(CastleComponentAttribute));
+			if (attribute == null)
+			{
+				return new CastleComponentAttribute(type.FullName, type);
+			}
+			if (attribute.Service == null)
+			{
+				attribute.Service = type;
+			}
+			if (attribute.Key == null)
+			{
+				attribute.Key = type.FullName;
+			}
+			return attribute;
 		}
 	}
 }

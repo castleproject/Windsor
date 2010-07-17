@@ -16,6 +16,7 @@ namespace Castle.Windsor.Tests
 {
     using System;
 
+    using Castle.MicroKernel;
     using Castle.MicroKernel.Registration;
     using Castle.Windsor.Tests.Components;
 	using NUnit.Framework;
@@ -38,9 +39,10 @@ namespace Castle.Windsor.Tests
 			container.Register(Component.For(typeof(Reviewer)).Named("B"));
 			container.Register(Component.For(typeof(ReviewableEmployee)).Named("A"));
 
-			Assert.IsNotNull(container["A"]);
-			Assert.IsNotNull(container["B"]);
-			Assert.IsNotNull(container["C"]);
+			Assert.IsNotNull(container.Resolve("A", new Arguments()));
+			Assert.IsNotNull(container.Resolve("B", new Arguments()));
+			Assert.IsNotNull(container.Resolve("C", new Arguments()));
+
 		}
 	}
 }

@@ -44,21 +44,19 @@ namespace Castle.Windsor.Tests
 			Assert.AreEqual(container, childcontainer.Parent);
 
 			childcontainer.Register(Component.For(typeof(B)).Named("B"));
-			B b = childcontainer["B"] as B;
-
+			var b = childcontainer.Resolve<B>("B");
 			Assert.IsNotNull(b);
 		}
 
 		[Test]
 		public void ResolveAgainstParentContainerWithProperty()
 		{
-			IWindsorContainer childcontainer = new WindsorContainer();
-			childcontainer.Parent = container;
+			IWindsorContainer childcontainer = new WindsorContainer { Parent = container };
 
 			Assert.AreEqual(container, childcontainer.Parent);
 
 			childcontainer.Register(Component.For(typeof(B)).Named("B"));
-			B b = childcontainer["B"] as B;
+			var b = childcontainer.Resolve<B>("B");
 
 			Assert.IsNotNull(b);
 		}
@@ -119,7 +117,7 @@ namespace Castle.Windsor.Tests
 			Assert.AreEqual(container, childcontainer.Parent);
 
 			childcontainer.Register(Component.For(typeof(B)).Named("B"));
-			B b = childcontainer["B"] as B;
+			var b = childcontainer.Resolve<B>("B");
 
 			Assert.IsNotNull(b);
 		}

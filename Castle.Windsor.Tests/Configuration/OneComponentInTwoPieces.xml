@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+  <components>
+    <component id="a"
+               type="CountingInterceptor"/>
+    <component id="Foo">
+      <interceptors>
+        <interceptor>${a}</interceptor>
+      </interceptors>
+    </component>
+    <component id="Foo"
+               component="ISimpleService"
+               type="SimpleService" />
+  </components>
+</configuration>
