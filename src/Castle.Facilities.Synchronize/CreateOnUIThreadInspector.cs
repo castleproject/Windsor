@@ -49,9 +49,6 @@ namespace Castle.Facilities.Synchronize
 		{
 			marshalingControl = new MarshalingControl();
 			controlProxyHook = ObtainProxyHook(kernel, config);
-			RegisterAmbientSynchronizationContext<WindowsFormsSynchronizationContext>(kernel);
-			RegisterAmbientSynchronizationContext<DispatcherSynchronizationContext>(kernel);
-			kernel.ComponentModelCreated += Kernel_ComponentModelCreated;
 		}
 
 		/// <summary>
@@ -79,15 +76,11 @@ namespace Castle.Facilities.Synchronize
 			{
 				ConfigureProxyOptions(model);
 				model.ExtendedProperties[Constants.CreateOnUIThead] = createOnUIThread;
-			}
-		}
 
-		private static void Kernel_ComponentModelCreated(ComponentModel model)
-		{
-			if (model.ExtendedProperties.Contains(Constants.CreateOnUIThead))
-			{
 				if (model.CustomComponentActivator != null)
+				{
 					model.ExtendedProperties[Constants.CustomActivator] = model.CustomComponentActivator;
+				}
 				model.CustomComponentActivator = typeof(CreateOnUIThreadActivator);
 			}
 		}
@@ -154,8 +147,8 @@ namespace Castle.Facilities.Synchronize
 					if (!typeof(IProxyGenerationHook).IsAssignableFrom(hookType))
 					{
 						var message = String.Format("The specified controlProxyHook does " +
-						                            "not implement the interface IProxyGenerationHook. Type {0}",
-						                            hookType.FullName);
+						                            "not implement the interface {1}. Type {0}",
+						                            hookType.FullName, typeof(IProxyGenerationHook).Name);
 
 						throw new ConfigurationErrorsException(message);
 					}
@@ -170,17 +163,6 @@ namespace Castle.Facilities.Synchronize
 			}
 
 			return new InstanceReference<IProxyGenerationHook>(hook);
-		}
-
-		private static void RegisterAmbientSynchronizationContext<C>(IKernel kernel)
-			where C : SynchronizationContext
-		{
-			var syncContext = SynchronizationContext.Current as C;
-
-			if (syncContext != null)
-			{
-				kernel.Register(Component.For<C>().Instance(syncContext));
-			}
 		}
 
 		private static object GetUnproxiedInstance(object instance)

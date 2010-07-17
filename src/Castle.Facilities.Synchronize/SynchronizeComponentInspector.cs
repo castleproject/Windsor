@@ -12,14 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.ComponentModel;
-
 namespace Castle.Facilities.Synchronize
 {
 	using System;
 	using System.Collections.Generic;
+	using System.ComponentModel;
 	using System.Reflection;
 	using System.Windows.Threading;
+
 	using Castle.Core;
 	using Castle.DynamicProxy;
 	using Castle.MicroKernel;
@@ -100,17 +100,14 @@ namespace Castle.Facilities.Synchronize
 		/// </returns>
 		private bool CheckFromConfiguration(ComponentModel model)
 		{
-			if (model.Configuration != null &&
-			    "true" == model.Configuration.Attributes[Constants.SynchronizedAttrib])
+			if (model.Configuration == null || "true" != model.Configuration.Attributes[Constants.SynchronizedAttrib])
 			{
-				var methodsNode = model.Configuration.Children[ObtainNodeName()];
-
-				metaStore.CreateMetaInfoFromConfig(model.Implementation, methodsNode);
-
-				return true;
+				return false;
 			}
 
-			return false;
+			var methodsNode = model.Configuration.Children[ObtainNodeName()];
+			metaStore.CreateMetaInfoFromConfig(model.Implementation, methodsNode);
+			return true;
 		}
 
 		/// <summary>
