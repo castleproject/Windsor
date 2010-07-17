@@ -94,7 +94,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CastleComponentAttributeTestCase.cs" />
+    <Compile Include="ComponentsWithAttribute\HasUserAttributeNonRegister.cs" />
+    <Compile Include="ComponentsWithAttribute\HasUserAttributeRegister.cs" />
+    <Compile Include="ComponentsWithAttribute\UserAttribute.cs" />
+    <Compile Include="RegistrationWithAttributeTestCase.cs" />
     <Compile Include="ClassComponents\A.cs" />
     <Compile Include="ActionBasedInstaller.cs" />
     <Compile Include="ClassComponents\B.cs" />

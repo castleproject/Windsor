@@ -109,6 +109,17 @@ namespace Castle.MicroKernel.Registration
 			return new ComponentRegistration(model);
 		}
 
+		public static bool HasAttribute<TAttribute>(Type type) where TAttribute:Attribute
+		{
+			return Attribute.IsDefined(type, typeof(TAttribute));
+		}
+
+		public static Predicate<Type> HasAttribute<TAttribute>(Predicate<TAttribute> filter) where TAttribute : Attribute
+		{
+			return type => HasAttribute<TAttribute>(type) &&
+			               filter((TAttribute)Attribute.GetCustomAttribute(type, typeof(TAttribute)));
+		}
+
 		/// <summary>
 		/// Determines if the component is a Castle component, that is - if it has a <see cref="CastleComponentAttribute"/>.
 		/// </summary>
@@ -118,7 +129,7 @@ namespace Castle.MicroKernel.Registration
 		/// </remarks>
 		public static bool IsCastleComponent(Type type)
 		{
-			return type != null && Attribute.IsDefined(type, typeof(CastleComponentAttribute));
+			return HasAttribute<CastleComponentAttribute>(type);
 		}
 
 		/// <summary>
