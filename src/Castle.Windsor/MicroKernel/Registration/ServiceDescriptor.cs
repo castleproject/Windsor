@@ -65,6 +65,28 @@ namespace Castle.MicroKernel.Registration
 		}
 
 		/// <summary>
+		/// Uses all interfaces that have names matched by implementation type name.
+		/// Matches Foo to IFoo, SuperFooExtended to IFoo and IFooExtended etc
+		/// </summary>
+		/// <returns></returns>
+		public BasedOnDescriptor DefaultInterface()
+		{
+			return Select((type, @base) =>
+			              type.GetAllInterfaces()
+			              	.Where(i => type.Name.Contains(GetInterfaceName(i))));
+		}
+
+		private string GetInterfaceName(Type @interface)
+		{
+			var name = @interface.Name;
+			if ((name.Length > 1 && name[0] == 'I') && char.IsUpper(name[1]))
+			{
+				return name.Substring(1);
+			}
+			return name;
+		}
+
+		/// <summary>
 		/// Uses the first interface of a type. This method has non-deterministic behavior when type implements more than one interface!
 		/// </summary>
 		/// <returns></returns>
