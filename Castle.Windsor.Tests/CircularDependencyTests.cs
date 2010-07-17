@@ -41,9 +41,9 @@ namespace Castle.Windsor.Tests
 		public void ShouldNotSetTheViewControllerProperty()
 		{
 			IWindsorContainer container = new WindsorContainer();
-			container.Register(Component.For(typeof(IController)).ImplementedBy(typeof(Controller)).Named("controller"));
-			container.Register(Component.For(typeof(IView)).ImplementedBy(typeof(View)).Named("view"));
-			var controller = (Controller)container.Resolve("controller");
+			container.Register(Component.For<IController>().ImplementedBy<Controller>().Named("controller"));
+			container.Register(Component.For<IView>().ImplementedBy<View>().Named("view"));
+			var controller = container.Resolve<Controller>("controller");
 			Assert.IsNotNull(controller.View);
 			Assert.IsNull(controller.View.Controller);
 		}
@@ -80,13 +80,13 @@ namespace Castle.Windsor.Tests
 		public void ThrowsACircularDependencyException2()
 		{
 			IWindsorContainer container = new WindsorContainer();
-			container.Register(Component.For(typeof(CompA)).Named("compA"));
-			container.Register(Component.For(typeof(CompB)).Named("compB"));
-			container.Register(Component.For(typeof(CompC)).Named("compC"));
-			container.Register(Component.For(typeof(CompD)).Named("compD"));
+			container.Register(Component.For<CompA>().Named("compA"),
+			                   Component.For<CompB>().Named("compB"),
+			                   Component.For<CompC>().Named("compC"),
+			                   Component.For<CompD>().Named("compD"));
 
 			var exception =
-				Assert.Throws(typeof(HandlerException), () => container.Resolve("compA"));
+				Assert.Throws(typeof(HandlerException), () => container.Resolve<CompA>("compA"));
 			var expectedMessage =
 				string.Format(
 					"Can't create component 'compA' as it has dependencies to be satisfied. {0}compA is waiting for the following dependencies: {0}{0}Services: {0}- Castle.Windsor.Tests.Components.CompB which was registered but is also waiting for dependencies. {0}{0}compB is waiting for the following dependencies: {0}{0}Services: {0}- Castle.Windsor.Tests.Components.CompC which was registered but is also waiting for dependencies. {0}{0}compC is waiting for the following dependencies: {0}{0}Services: {0}- Castle.Windsor.Tests.Components.CompD which was registered but is also waiting for dependencies. {0}{0}compD is waiting for the following dependencies: {0}{0}Services: {0}- Castle.Windsor.Tests.Components.CompA which was registered but is also waiting for dependencies. {0}",

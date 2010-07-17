@@ -42,16 +42,14 @@ namespace Castle.Windsor.Tests.Facilities.EventWiring
 		[Test]
 		public void CanCreateComponent_WithSubscriber_WithDependency()
 		{
-			Object listener = container.Resolve("HasSubscriberWithDependency");
-			Assert.IsNotNull(listener);
+			Assert.IsNotNull(container.Resolve<object>("HasSubscriberWithDependency"));
 		}
 
 		//See also FACILITIES-97
 		[Test]
 		public void CanCreateComponent_WithSubscriber_WithGenericDependency()
 		{
-			Object listener = container.Resolve("HasSubscriberWithGenericDependency");
-			Assert.IsNotNull(listener);
+			Assert.IsNotNull(container.Resolve<object>("HasSubscriberWithGenericDependency"));
 		}
 	}
 }

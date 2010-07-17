@@ -30,13 +30,13 @@ namespace Castle.Windsor.Tests.Configuration2
 			var configPath = ConfigHelper.ResolveConfigPath("Configuration2/env_config.xml");
 			var container = new WindsorContainer(new XmlInterpreter(configPath), new CustomEnv(true));
 
-			var prop = (ComponentWithStringProperty) container.Resolve("component");
+			var prop = container.Resolve<ComponentWithStringProperty>("component");
 
 			Assert.AreEqual("John Doe", prop.Name);
 
 			container = new WindsorContainer(new XmlInterpreter(configPath), new CustomEnv(false));
 
-			prop = (ComponentWithStringProperty) container.Resolve("component");
+			prop = container.Resolve<ComponentWithStringProperty>("component");
 
 			Assert.AreEqual("Hammett", prop.Name);
 		}

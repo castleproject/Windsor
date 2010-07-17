@@ -678,16 +678,6 @@ namespace Castle.Windsor
 		}
 
 		/// <summary>
-		/// Returns a component instance by the key
-		/// </summary>
-		/// <param name="key"></param>
-		/// <returns></returns>
-		public virtual object Resolve(String key)
-		{
-			return kernel.Resolve(key, new Arguments());
-		}
-
-		/// <summary>
 		/// Returns a component instance by the service
 		/// </summary>
 		/// <param name="service"></param>
@@ -799,7 +789,7 @@ namespace Castle.Windsor
 		[Obsolete("Use Resolve(key, new Arguments()) instead")]
 		public virtual object this[String key]
 		{
-			get { return Resolve(key); }
+			get { return Resolve(key, new Arguments()); }
 		}
 
 		/// <summary>
