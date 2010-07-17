@@ -30,7 +30,7 @@ namespace Castle.Windsor.Tests.Configuration2
 		{
 			var container = new WindsorContainer(new XmlInterpreter(ConfigHelper.ResolveConfigPath("Configuration2/eval_config.xml")), new CustomEnv(true));
 
-			var prop =(ComponentWithStringProperty) container.Resolve("component");
+			var prop = container.Resolve<ComponentWithStringProperty>("component");
 
 			Assert.AreEqual(AppDomain.CurrentDomain.BaseDirectory, prop.Name);
 		}

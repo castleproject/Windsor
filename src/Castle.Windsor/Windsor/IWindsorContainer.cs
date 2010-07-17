@@ -291,13 +291,6 @@ namespace Castle.Windsor
 		/// <returns>The container.</returns>
 		/// </summary>
 		IWindsorContainer Install(params IWindsorInstaller[] installers);
-		
-		/// <summary>
-		/// Returns a component instance by the key
-		/// </summary>
-		/// <param name="key"></param>
-		/// <returns></returns>
-		object Resolve(String key);
 
 		/// <summary>
 		/// Returns a component instance by the key

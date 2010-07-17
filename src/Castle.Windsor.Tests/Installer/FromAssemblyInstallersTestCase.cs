@@ -37,7 +37,7 @@ namespace Castle.Windsor.Tests.Installer
 		public void Can_install_from_assembly_by_assembly()
 		{
 			container.Install(FromAssembly.Instance(Assembly.GetExecutingAssembly()));
-			container.Resolve("Customer-by-CustomerInstaller");
+			container.Resolve<object>("Customer-by-CustomerInstaller");
 		}
 
 #if !SILVERLIGHT
@@ -46,39 +46,31 @@ namespace Castle.Windsor.Tests.Installer
 		{
 			var location = AppDomain.CurrentDomain.BaseDirectory;
 			container.Install(FromAssembly.InDirectory(new AssemblyFilter(location)));
-			container.Resolve("Customer-by-CustomerInstaller");
+			container.Resolve<object>("Customer-by-CustomerInstaller");
 		}
 #endif
 		[Test]
 		public void Can_install_from_assembly_by_name()
 		{
 			container.Install(FromAssembly.Named("Castle.Windsor.Tests"));
-
-			container.Resolve("Customer-by-CustomerInstaller");
 		}
 
 		[Test]
 		public void Can_install_from_assembly_by_type()
 		{
 			container.Install(FromAssembly.Containing(GetType()));
-
-			container.Resolve("Customer-by-CustomerInstaller");
 		}
 
 		[Test]
 		public void Can_install_from_assembly_by_type_generic()
 		{
 			container.Install(FromAssembly.Containing<FromAssemblyInstallersTestCase>());
-
-			container.Resolve("Customer-by-CustomerInstaller");
 		}
 
 		[Test]
 		public void Can_install_from_calling_assembly()
 		{
 			container.Install(FromAssembly.This());
-
-			container.Resolve("Customer-by-CustomerInstaller");
 		}
 
 #if !SILVERLIGHT

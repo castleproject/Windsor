@@ -42,8 +42,8 @@ namespace Castle.Windsor.Tests.Installer
 			Assert.IsTrue(child1.Kernel.HasComponent(typeof(ICalcService)));
 			Assert.IsTrue(child1.Kernel.HasComponent("child_calcservice"));
 
-			var calcservice = container.Resolve("calcservice") as ICalcService;
-			var child_calcservice = child1.Resolve(typeof(ICalcService)) as ICalcService;
+			var calcservice = container.Resolve<ICalcService>("calcservice");
+			var child_calcservice = child1.Resolve<ICalcService>();
 			Assert.AreNotEqual(calcservice, child_calcservice);
 		}
 	}

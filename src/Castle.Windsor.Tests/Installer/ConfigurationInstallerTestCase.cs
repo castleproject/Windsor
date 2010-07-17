@@ -110,8 +110,7 @@ namespace Castle.Windsor.Tests.Installer
 					.Environment("devel")
 					);
 
-			ComponentWithStringProperty prop =
-				(ComponentWithStringProperty)container.Resolve("component");
+			var prop = container.Resolve<ComponentWithStringProperty>("component");
 
 			Assert.AreEqual("John Doe", prop.Name);
 		}		

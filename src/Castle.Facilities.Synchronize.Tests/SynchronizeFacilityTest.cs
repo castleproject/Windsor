@@ -317,7 +317,7 @@ namespace Castle.Facilities.Synchronize.Tests
 		public void ResolveContextComponent_WithMissingDependency_ThrowsHandlerException()
 		{
 			container.Register(Component.For<ClassInContextWithMissingDependency>().Named("class.in.context.bad"));
-			container.Resolve("class.in.context.bad");
+			container.Resolve<ClassInContextWithMissingDependency>("class.in.context.bad");
 		}
 
 		[Test]

@@ -113,7 +113,7 @@ namespace Castle.Windsor.Tests.Proxy
 		public void InternalInterfaceIgnoredByProxy()
 		{
 			var container = new WindsorContainer(ConfigHelper.ResolveConfigPath("Proxy/proxyBehavior.xml"));
-			Assert.DoesNotThrow(() => container.Resolve("hasInternalInterface"));
+			Assert.DoesNotThrow(() => container.Resolve<object>("hasInternalInterface"));
 		}
 	}
 }

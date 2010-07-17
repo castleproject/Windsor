@@ -92,7 +92,14 @@ namespace Castle.Windsor.Tests.Facilities.Remoting
 		[Test]
 		public void ServerClientContainerConsumingRemoteComponent()
 		{
-			serverClient.DoCallBack(ServerClientContainerConsumingRemoteComponentCallback);
+			IWindsorContainer serverAsClient = GetRemoteContainer(serverClient, ConfigHelper.ResolveConfigPath("Facilities/Remoting/Configs/server_client_kernelcomponent.xml"));
+			
+			ICalcService service = serverAsClient.Resolve<ICalcService>();
+
+			Assert.IsTrue( RemotingServices.IsTransparentProxy(service) );
+			Assert.IsTrue( RemotingServices.IsObjectOutOfAppDomain(service) );
+
+			Assert.AreEqual(10, service.Sum(7,3));
 		}
 	}
 }

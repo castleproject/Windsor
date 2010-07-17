@@ -26,35 +26,31 @@ namespace Castle.Windsor.Tests
 	[TestFixture]
 	public class SmartProxyTestCase
 	{
-		private IWindsorContainer _container;
-
-		public SmartProxyTestCase()
-		{
-		}
+		private IWindsorContainer container;
 
 		[SetUp]
 		public void Init()
 		{
-			_container = new WindsorContainer();
+			container = new WindsorContainer();
 
-			_container.AddFacility("1", new MyInterceptorGreedyFacility());
-			_container.AddFacility("2", new MyInterceptorGreedyFacility());
-			_container.AddFacility("3", new MyInterceptorGreedyFacility());
+			container.AddFacility("1", new MyInterceptorGreedyFacility());
+			container.AddFacility("2", new MyInterceptorGreedyFacility());
+			container.AddFacility("3", new MyInterceptorGreedyFacility());
 		}
 
 		[TearDown]
 		public void Terminate()
 		{
-			_container.Dispose();
+			container.Dispose();
 		}
 
 		[Test]
 		public void InterfaceInheritance()
 		{
-			_container.Register(Component.For(typeof(StandardInterceptor)).Named("interceptor"));
-			_container.Register(Component.For(typeof(ICameraService)).ImplementedBy(typeof(CameraService)).Named("key"));
+			container.Register(Component.For(typeof(StandardInterceptor)).Named("interceptor"));
+			container.Register(Component.For(typeof(ICameraService)).ImplementedBy(typeof(CameraService)).Named("key"));
 
-			ICameraService service = (ICameraService) _container.Resolve("key");
+			var service = container.Resolve<ICameraService>("key");
 
 			Assert.IsNotNull(service);
 		}
@@ -62,10 +58,10 @@ namespace Castle.Windsor.Tests
 		[Test]
 		public void InterfaceProxy()
 		{
-			_container.Register(Component.For(typeof(ResultModifierInterceptor)).Named("interceptor"));
-			_container.Register(Component.For(typeof(ICalcService)).ImplementedBy(typeof(CalculatorService)).Named("key"));
+			container.Register(Component.For(typeof(ResultModifierInterceptor)).Named("interceptor"));
+			container.Register(Component.For(typeof(ICalcService)).ImplementedBy(typeof(CalculatorService)).Named("key"));
 
-			ICalcService service = (ICalcService) _container.Resolve("key");
+			var service = container.Resolve<ICalcService>("key");
 
 			Assert.IsNotNull(service);
 #if (!SILVERLIGHT)
@@ -77,10 +73,10 @@ namespace Castle.Windsor.Tests
 		[Test]
 		public void ConcreteClassProxy()
 		{
-			_container.Register(Component.For(typeof(ResultModifierInterceptor)).Named("interceptor"));
-			_container.Register(Component.For(typeof(CalculatorService)).Named("key"));
+			container.Register(Component.For(typeof(ResultModifierInterceptor)).Named("interceptor"));
+			container.Register(Component.For(typeof(CalculatorService)).Named("key"));
 
-			CalculatorService service = (CalculatorService) _container.Resolve("key");
+			var service = container.Resolve<CalculatorService>("key");
 
 			Assert.IsNotNull(service);
 #if (!SILVERLIGHT)

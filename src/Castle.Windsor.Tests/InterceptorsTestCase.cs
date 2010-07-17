@@ -82,7 +82,7 @@ namespace Castle.Windsor.Tests
 			container.Register(Component.For(typeof(ResultModifierInterceptor)).Named("interceptor"));
 			container.Register(Component.For(typeof(ICalcService)).ImplementedBy(typeof(CalculatorServiceWithLifecycle)).Named("key"));
 
-			ICalcService service = (ICalcService) container.Resolve("key");
+			var service = container.Resolve<ICalcService>("key");
 
 			Assert.IsNotNull(service);
 			Assert.IsTrue(service.Initialized);
@@ -201,8 +201,7 @@ namespace Castle.Windsor.Tests
 			container.Register(Component.For(typeof(InterceptorWithOnBehalf)).Named("interceptor"));
 			container.Register(Component.For(typeof(CalculatorService)).Named("key"));
 
-			CalculatorService service =
-				(CalculatorService) container.Resolve("key");
+			var service = container.Resolve<CalculatorService>("key");
 
 			Assert.IsNotNull(service);
 			Assert.AreEqual(4, service.Sum(2, 2));
@@ -220,8 +219,7 @@ namespace Castle.Windsor.Tests
 			container.Register(Component.For(typeof(ResultModifierInterceptor)).Named("interceptor"));
 			container.Register(Component.For(typeof(CalculatorServiceWithAttributes)).Named("key"));
 
-			CalculatorServiceWithAttributes service =
-				(CalculatorServiceWithAttributes) container.Resolve("key");
+			var service = container.Resolve<CalculatorServiceWithAttributes>("key");
 
 			Assert.IsNotNull(service);
 			Assert.AreEqual(5, service.Sum(2, 2));
@@ -233,7 +231,7 @@ namespace Castle.Windsor.Tests
 			container.Register(Component.For(typeof(ResultModifierInterceptor)).Named("interceptor"));
 			container.Register(Component.For(typeof(CalculatorService)).Named("key"));
 
-			service = (CalculatorService) container.Resolve("key");
+			service = container.Resolve<CalculatorService>("key");
 
 			const int threadCount = 10;
 
