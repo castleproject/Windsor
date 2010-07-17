@@ -18,6 +18,7 @@ namespace Castle.Windsor.Tests
 	using System.Linq;
 
 	using Castle.Core;
+	using Castle.MicroKernel;
 	using Castle.MicroKernel.Registration;
 	using Castle.Windsor.Tests.Components;
 	using Castle.Windsor.Tests.ComponentsWithAttribute;
@@ -25,7 +26,7 @@ namespace Castle.Windsor.Tests
 	using NUnit.Framework;
 
 	[TestFixture]
-	public class CastleComponentAttributeTestCase
+	public class RegistrationWithAttributeTestCase
 	{
 		[SetUp]
 		public void SetUp()
@@ -87,11 +88,8 @@ namespace Castle.Windsor.Tests
 		{
 			container.Register(AllTypes.FromThisAssembly().Where(Component.IsCastleComponent));
 
-			var handler = container.Kernel.GetHandler(typeof(ISimpleService));
-
-			Assert.AreEqual(typeof(ISimpleService), handler.Service);
-			Assert.AreEqual(typeof(HasType), handler.ComponentModel.Implementation);
-			Assert.AreEqual(LifestyleType.Undefined, handler.ComponentModel.LifestyleType);
+			var handlers = container.Kernel.GetHandlers(typeof(ISimpleService));
+			Assert.IsNotEmpty(handlers);
 		}
 
 		[Test]
@@ -129,6 +127,23 @@ namespace Castle.Windsor.Tests
 			{
 				Assert.That(Attribute.IsDefined(handler.ComponentModel.Implementation, typeof(CastleComponentAttribute)));
 			}
+		}
+
+		[Test]
+		public void Can_filter_types_based_on_custom_attribute()
+		{
+			container.Register(AllTypes.FromThisAssembly().Where(Component.HasAttribute<UserAttribute>));
+
+			container.Resolve<HasUserAttributeRegister>();
+			container.Resolve<HasUserAttributeNonRegister>();
+		}
+
+		[Test]
+		public void Can_filter_types_based_on_custom_attribute_properties()
+		{
+			container.Register(AllTypes.FromThisAssembly().Where(Component.HasAttribute<UserAttribute>(u => u.Register)));
+			container.Resolve<HasUserAttributeRegister>();
+			Assert.Throws<ComponentNotFoundException>(() => container.Resolve<HasUserAttributeNonRegister>());
 		}
 	}
 }

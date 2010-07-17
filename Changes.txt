@@ -1,6 +1,8 @@
 2.5.0 beta2
 ==================
 
+- added support for selecting components based on custom attributes and their properties. See Component.HasAttribute<T>() methods
+
 - added WithService.DefaultInterface() to fluent API.IT matches Foo to IFoo, SuperFooExtended to IFoo and IFooExtended etc
 
 - added support for CastleComponentAttribute in fluent Api. Also added helper filter method Component.IsCastleComponent
