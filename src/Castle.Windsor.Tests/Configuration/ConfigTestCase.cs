@@ -1,12 +1,12 @@
 namespace Castle.Windsor.Tests.Configuration
 {
+#if !SILVERLIGHT
 	using Castle.Windsor.Tests.Components;
 	using Castle.Windsor.Tests.Interceptors;
 
 	using NUnit.Framework;
 	using Config = Castle.Windsor.Installer.Configuration;
 
-#if !SILVERLIGHT
 	[TestFixture]
 	public class ConfigTestCase
 	{

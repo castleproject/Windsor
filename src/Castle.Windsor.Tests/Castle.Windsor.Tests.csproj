@@ -55,7 +55,28 @@
       <HintPath>..\..\lib\$(BuildConfigKey)\Castle.Core.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework">
-      <HintPath>..\..\tools\NUnit\bin\net-2.0\nunit.framework.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\nunit.framework.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup Condition="$(MSBuildTargets)=='Silverlight 3.0'">
+    <Reference Include="NUnit.Silverlight.Framework">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\sl3\NUnit.Silverlight.Framework.dll</HintPath>
+    </Reference>
+    <Reference Include="NUnit.Silverlight.Compatibility">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\sl3\NUnit.Silverlight.Compatibility.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup Condition="$(MSBuildTargets)=='Silverlight 4.0'">
+    <Reference Include="NUnit.Silverlight.Framework">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\sl4\NUnit.Silverlight.Framework.dll</HintPath>
+    </Reference>
+    <Reference Include="NUnit.Silverlight.Compatibility">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\sl4\NUnit.Silverlight.Compatibility.dll</HintPath>
     </Reference>
     <Reference Include="System">
       <Name>System</Name>
@@ -437,9 +458,7 @@
     <Compile Include="Adapters\ComponentModel\ContainerAdapterTestCase.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Adapters\ComponentModel\TestComponent.cs">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Include="Adapters\ComponentModel\TestComponent.cs" />
     <Compile Include="Bugs\FACILITIES-ISSUE-111\Components\A_Facilities_Issue_111.cs" />
     <Compile Include="Bugs\FACILITIES-ISSUE-111\Components\B_Facilities_Issue_111.cs" />
     <Compile Include="Bugs\FACILITIES-ISSUE-111\Components\IA_Facilities_Issue_111.cs" />
