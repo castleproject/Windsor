@@ -105,6 +105,12 @@
     <Compile Include="ClassComponents\Leaf.cs" />
     <Compile Include="ClassComponents\Root.cs" />
     <Compile Include="ClassComponents\UsesSimpleComponent1.cs" />
+    <Compile Include="ComponentsWithAttribute\HasKey.cs" />
+    <Compile Include="ComponentsWithAttribute\HasKeyAndType.cs" />
+    <Compile Include="ComponentsWithAttribute\HasKeyAndTypeTransient.cs" />
+    <Compile Include="ComponentsWithAttribute\HasKeyTransient.cs" />
+    <Compile Include="ComponentsWithAttribute\HasType.cs" />
+    <Compile Include="ComponentsWithAttribute\HasTypeTransient.cs" />
     <Compile Include="Components\EmptyBase.cs" />
     <Compile Include="Components\CacheResultFinder.cs" />
     <Compile Include="Components\DatabaseResultFinder.cs" />
