@@ -94,6 +94,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CastleComponentAttributeTestCase.cs" />
     <Compile Include="ClassComponents\A.cs" />
     <Compile Include="ActionBasedInstaller.cs" />
     <Compile Include="ClassComponents\B.cs" />
@@ -132,7 +133,12 @@
     <Compile Include="Components\WebServiceResultFinder.cs" />
     <Compile Include="Configuration2\ConfigurationInstallersTestCase.cs" />
     <Compile Include="Configuration2\UsingAssemblyTestCase.cs" />
+    <Compile Include="Configuration\AppDomainConfigurationStoreTestCase.cs" />
+    <Compile Include="Configuration\Components\ClassWithComplexParameter.cs" />
+    <Compile Include="Configuration\Components\ClassWithConstructors.cs" />
     <Compile Include="Configuration\ConfigTestCase.cs" />
+    <Compile Include="Configuration\ConfigurationTestCase.cs" />
+    <Compile Include="Configuration\ConfigXmlInterpreterTestCase.cs" />
     <Compile Include="CustomActivatorTestCase.cs" />
     <Compile Include="ClassComponents\CycleA.cs" />
     <Compile Include="ClassComponents\CycleB.cs" />
@@ -297,13 +303,6 @@
     <Compile Include="ClassComponents\TwoInterfacesImpl.cs" />
     <Compile Include="ClassComponents\UsesIGeneric.cs" />
     <Compile Include="ComponentArgumentsEnumeratorTestCase.cs" />
-    <Compile Include="Configuration\Components\ClassWithComplexParameter.cs" />
-    <Compile Include="Configuration\Components\ClassWithConstructors.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Configuration\ConfigurationTestCase.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="DecoratorsTestCase.cs" />
     <Compile Include="DependencyResolvingTestCase.cs" />
     <Compile Include="EventTests.cs" />
@@ -524,12 +523,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Configuration2\SynchronizationProblemTestCase.cs" />
-    <Compile Include="Configuration\AppDomainConfigurationStoreTestCase.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Configuration\ConfigXmlInterpreterTestCase.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="ConfigureDecoratorsTestCase.cs" />
     <Compile Include="ContainerProblem.cs">
       <SubType>Code</SubType>
@@ -603,6 +596,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Configuration\OneComponentInTwoPieces.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Configuration\sample_config.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
     <Content Include="ignoreprop.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -958,9 +954,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <EmbeddedResource Include="sample_config_with_spaces.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Configuration\sample_config.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="Facilities\Remoting\Configs\client_12134_kernelcomponent.xml">

@@ -112,15 +112,13 @@ namespace Castle.MicroKernel.Registration
 		/// <summary>
 		/// Determines if the component is a Castle component, that is - if it has a <see cref="CastleComponentAttribute"/>.
 		/// </summary>
-		/// <param name="kernel">The kernel.</param>
-		/// <param name="model">The component model.</param>
 		/// <returns>true if the service is a Castle Component.</returns>
 		/// <remarks>
 		/// This method is usually used as argument for <see cref="ComponentRegistration{TService}.If"/> method.
 		/// </remarks>
-		public static bool IsCastleComponent(IKernel kernel, ComponentModel model)
+		public static bool IsCastleComponent(Type type)
 		{
-			return model.Implementation != null && Attribute.IsDefined(model.Implementation, typeof(CastleComponentAttribute));
+			return type != null && Attribute.IsDefined(type, typeof(CastleComponentAttribute));
 		}
 
 		/// <summary>
