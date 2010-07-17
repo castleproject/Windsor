@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,6 +14,10 @@
 
 namespace Castle.Facilities.Synchronize
 {
+	using System.Threading;
+	using System.Windows.Forms;
+	using System.Windows.Threading;
+
 	using Castle.MicroKernel.Facilities;
 	using Castle.MicroKernel.Registration;
 
@@ -29,10 +33,23 @@ namespace Castle.Facilities.Synchronize
 		{
 			Kernel.Register(
 				Component.For<SynchronizeInterceptor>(),
-				Component.For<SynchronizeMetaInfoStore>());
+				Component.For<SynchronizeMetaInfoStore>()
+				);
 
 			Kernel.ComponentModelBuilder.AddContributor(new SynchronizeComponentInspector(Kernel));
 			Kernel.ComponentModelBuilder.AddContributor(new CreateOnUIThreadInspector(Kernel, FacilityConfig));
+			RegisterAmbientSynchronizationContext<WindowsFormsSynchronizationContext>();
+			RegisterAmbientSynchronizationContext<DispatcherSynchronizationContext>();
+		}
+
+		private void RegisterAmbientSynchronizationContext<TContext>()
+			where TContext : SynchronizationContext
+		{
+			var syncContext = SynchronizationContext.Current as TContext;
+			if (syncContext != null)
+			{
+				Kernel.Register(Component.For<TContext>().Instance(syncContext));
+			}
 		}
 	}
 }
