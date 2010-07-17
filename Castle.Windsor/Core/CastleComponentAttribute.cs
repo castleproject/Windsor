@@ -11,7 +11,6 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
 namespace Castle.Core
 {
 	using System;
@@ -25,48 +24,26 @@ namespace Castle.Core
 	[AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
 	public class CastleComponentAttribute : LifestyleAttribute
 	{
-
-		/// <summary>
-		/// Initializes a new instance of the <see cref="CastleComponentAttribute"/> class.
-		/// </summary>
-		/// <param name="key">The key.</param>
 		public CastleComponentAttribute(String key) : this(key, null)
 		{
 		}
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="CastleComponentAttribute"/> class.
-		/// </summary>
-		/// <param name="key">The key.</param>
-		/// <param name="service">The service.</param>
+		public CastleComponentAttribute(Type service)
+			: this(null, service)
+		{
+		}
 		public CastleComponentAttribute(String key, Type service) : this(key, service, LifestyleType.Undefined)
 		{
 		}
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="CastleComponentAttribute"/> class.
-		/// </summary>
-		/// <param name="key">The key.</param>
-		/// <param name="service">The service.</param>
-		/// <param name="lifestyle">The lifestyle.</param>
 		public CastleComponentAttribute(String key, Type service, LifestyleType lifestyle) : base(lifestyle)
 		{
 			Key = key;
 			Service = service;
 		}
 
-		/// <summary>
-		/// Gets the key.
-		/// </summary>
-		/// <value>The key.</value>
-		public String Key
-		{
-			get; private set; }
+		public String Key { get; private set; }
 
-		/// <summary>
-		/// Gets the service.
-		/// </summary>
-		/// <value>The service.</value>
 		public Type Service { get; private set; }
 
 		public static CastleComponentAttribute GetDefaultsFor(Type type)
