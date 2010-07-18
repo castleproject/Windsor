@@ -16,6 +16,7 @@ namespace Castle.MicroKernel.Tests.Bugs
 {
 	using Castle.MicroKernel.ComponentActivator;
 	using Castle.MicroKernel.Registration;
+	using Castle.Windsor.Tests.Components;
 
 	using NUnit.Framework;
 
@@ -25,26 +26,21 @@ namespace Castle.MicroKernel.Tests.Bugs
 	[TestFixture]
 	public class IoC_83
 	{
-		public class WithNonPublicCtor
-		{
-			protected WithNonPublicCtor()
-			{
-			}
-		}
-
 		[Test]
 		public void When_attemting_to_resolve_component_with_nonpublic_ctor_should_throw_meaningfull_exception()
 		{
 			var kernel = new DefaultKernel();
 
-			kernel.Register(Component.For<WithNonPublicCtor>());
+			kernel.Register(Component.For<HasProtectedConstructor>());
 
 			var exception =
-				Assert.Throws<ComponentActivatorException>(() => kernel.Resolve<WithNonPublicCtor>());
+				Assert.Throws<ComponentActivatorException>(() => kernel.Resolve<HasProtectedConstructor>());
 
-			var inner = exception.InnerException as ComponentActivatorException;
-			Assert.IsNotNull(inner);
-			StringAssert.Contains("public", inner.Message, "Exception should say that constructor has to be public.");
+#if !SILVERLIGHT
+			exception = exception.InnerException as ComponentActivatorException;
+#endif
+			Assert.IsNotNull(exception);
+			StringAssert.Contains("public", exception.Message, "Exception should say that constructor has to be public.");
 
 		}
 	}
