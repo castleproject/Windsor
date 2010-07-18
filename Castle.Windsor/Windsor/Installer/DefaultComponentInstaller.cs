@@ -20,6 +20,7 @@ namespace Castle.Windsor.Installer
 	using System.Collections.Generic;
 	using System.Reflection;
 
+	using Castle.Core;
 	using Castle.Core.Configuration;
 	using Castle.Core.Internal;
 	using Castle.Core.Resource;
@@ -143,7 +144,7 @@ namespace Castle.Windsor.Installer
 			return type.IsClass &&
 			       type.IsAbstract == false &&
 			       type.IsGenericTypeDefinition == false &&
-			       typeof(IWindsorInstaller).IsAssignableFrom(type);
+			       type.Is<IWindsorInstaller>();
 		}
 
 		private void AddInstaller(Dictionary<Type, IWindsorInstaller> cache, Type type)

@@ -44,7 +44,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 		{
 			if (converter == null)
 			{
-				converter = (IConversionManager) kernel.GetSubSystem(SubSystemConstants.ConversionManagerKey);
+				converter = kernel.GetConversionManager();
 			}
 
 			var targetType = model.Implementation;

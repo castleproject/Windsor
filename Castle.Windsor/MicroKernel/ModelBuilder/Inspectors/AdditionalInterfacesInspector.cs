@@ -20,12 +20,15 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 
 	using Castle.Core;
 	using Castle.MicroKernel.Proxy;
+	using Castle.MicroKernel.SubSystems.Conversion;
 
 #if !(SILVERLIGHT)
 	[Serializable]
 #endif
 	public class AdditionalInterfacesInspector : IContributeComponentModelConstruction
 	{
+		private IConversionManager converter;
+
 		public void ProcessModel(IKernel kernel, ComponentModel model)
 		{
 			if (model.Configuration == null) return;
@@ -33,29 +36,20 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 			var interfaces = model.Configuration.Children["additionalInterfaces"];
 			if (interfaces == null) return;
 
+			if(converter == null)
+			{
+				converter = kernel.GetConversionManager();
+			}
 			var list = new List<Type>();
 			foreach (var @interface in interfaces.Children
 				.Where(c => c.Name.Equals("add", StringComparison.InvariantCultureIgnoreCase)))
 			{
 				var interfaceTypeName = @interface.Attributes["interface"];
-				list.Add(ObtainType(interfaceTypeName));
+				list.Add(converter.PerformConversion<Type>(interfaceTypeName));
 			}
 
 			var options = ProxyUtil.ObtainProxyOptions(model, true);
 			options.AddAdditionalInterfaces(list.ToArray());
-		}
-
-		private static Type ObtainType(String typeName)
-		{
-			try
-			{
-				return Type.GetType(typeName, true, false);
-			}
-			catch (Exception e)
-			{
-				var message = String.Format("The type name {0} could not be located.", typeName);
-				throw new Exception(message, e);
-			}
 		}
 	}
 }

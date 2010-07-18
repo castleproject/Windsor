@@ -16,6 +16,8 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 {
 	using System;
 	using System.Collections.Generic;
+
+	using Castle.Core;
 	using Castle.Core.Configuration;
 	using Castle.Core.Internal;
 
@@ -109,7 +111,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 						convertKeyTo = parent.Context.Composition.PerformConversion<Type>(itemConfig.Attributes["keyType"]);
 					}
 
-					if (!typeof(TKey).IsAssignableFrom(convertKeyTo))
+					if (convertKeyTo.Is<TKey>() == false)
 					{
 						throw new ArgumentException(
 							string.Format("Could not create dictionary<{0},{1}> because {2} is not assignmable to key type {0}", typeof(TKey),
@@ -127,13 +129,13 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 						convertValueTo = parent.Context.Composition.PerformConversion<Type>(itemConfig.Attributes["valueType"]);
 					}
 
-					if (!typeof(TValue).IsAssignableFrom(convertValueTo))
+					if (convertValueTo.Is<TValue>() == false)
 					{
 						throw new ArgumentException(
 							string.Format("Could not create dictionary<{0},{1}> because {2} is not assignmable to value type {1}",
 							              typeof(TKey), typeof(TValue), convertValueTo));
 					}
-					TValue value = (TValue) parent.Context.Composition.PerformConversion(itemConfig.Value, convertValueTo);
+					var value = (TValue) parent.Context.Composition.PerformConversion(itemConfig.Value, convertValueTo);
 
 					dict.Add(key, value);
 				}

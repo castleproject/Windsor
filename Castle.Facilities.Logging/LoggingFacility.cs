@@ -18,6 +18,7 @@ namespace Castle.Facilities.Logging
 	using System.Diagnostics;
 	using System.Reflection;
 
+	using Castle.Core;
 	using Castle.Core.Internal;
 	using Castle.Core.Logging;
 	using Castle.MicroKernel;
@@ -181,8 +182,7 @@ namespace Castle.Facilities.Logging
 
 		private Type EnsureIsValidLoggerFactoryType(Type loggerFactoryType)
 		{
-			if (typeof(ILoggerFactory).IsAssignableFrom(loggerFactoryType) ||
-			    typeof(IExtendedLoggerFactory).IsAssignableFrom(loggerFactoryType))
+			if (loggerFactoryType.Is<ILoggerFactory>() ||loggerFactoryType.Is<IExtendedLoggerFactory>())
 			{
 				return loggerFactoryType;
 			}

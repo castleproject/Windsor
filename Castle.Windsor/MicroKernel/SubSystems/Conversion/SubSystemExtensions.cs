@@ -12,28 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#if !SILVERLIGHT
-namespace Castle.Windsor.Tests.Interceptors
+namespace Castle.MicroKernel.SubSystems.Conversion
 {
-	using System;
-	using System.Reflection;
-
-	using Castle.Core;
-	using Castle.DynamicProxy;
-
-	public class DummyInterceptorSelector : IInterceptorSelector
+	public static class SubSystemExtensions
 	{
-		public IInterceptor[] SelectInterceptors(Type type, MethodInfo method, IInterceptor[] interceptors)
+		public static IConversionManager GetConversionManager(this IKernel kernel)
 		{
-			if (type.Is<ICatalog>())
-			{
-				if (method.Name == "AddItem")
-				{
-					return interceptors;
-				}
-			}
-			return null;
+			return (IConversionManager)kernel.GetSubSystem(SubSystemConstants.ConversionManagerKey);
 		}
 	}
 }
-#endif

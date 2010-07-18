@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,8 +15,10 @@
 namespace Castle.MicroKernel.ModelBuilder.Inspectors
 {
 	using System;
+
 	using Castle.Core;
-	
+	using Castle.MicroKernel.SubSystems.Conversion;
+
 	/// <summary>
 	/// Inspects the component configuration and the type looking for a
 	/// definition of lifestyle type. The configuration preceeds whatever
@@ -32,15 +34,26 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 #endif
 	public class LifestyleModelInspector : IContributeComponentModelConstruction
 	{
+		private IConversionManager converter;
+
 		/// <summary>
 		/// Seaches for the lifestyle in the configuration and, if unsuccessful
 		/// look for the lifestyle attribute in the implementation type.
 		/// </summary>
 		public virtual void ProcessModel(IKernel kernel, ComponentModel model)
 		{
+			EnsureConverterSet(kernel);
 			if (!ReadLifestyleFromConfiguration(model))
 			{
 				ReadLifestyleFromType(model);
+			}
+		}
+
+		private void EnsureConverterSet(IKernel kernel)
+		{
+			if (converter == null)
+			{
+				converter = kernel.GetConversionManager();
 			}
 		}
 
@@ -53,36 +66,20 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 		{
 			if (model.Configuration != null)
 			{
-				String lifestyle = model.Configuration.Attributes["lifestyle"];
-				
+				var lifestyle = model.Configuration.Attributes["lifestyle"];
 				if (lifestyle != null)
 				{
-					try
-					{
-						LifestyleType type = (LifestyleType) 
-							Enum.Parse(typeof(LifestyleType), lifestyle, true);
-
-						model.LifestyleType = type;
-
-					}
-					catch(Exception)
-					{
-						String message = String.Format(
-							"Could not convert the specified attribute value " + 
-							"{0} to a valid LifestyleType enum type", lifestyle);
-
-						throw new Exception(message);
-					}
+					var type = converter.PerformConversion<LifestyleType>(lifestyle);
+					model.LifestyleType = type;
 
 					if (model.LifestyleType == LifestyleType.Pooled)
 					{
 						ExtractPoolConfig(model);
 					}
-					else if(model.LifestyleType == LifestyleType.Custom)
+					else if (model.LifestyleType == LifestyleType.Custom)
 					{
 						ExtractCustomConfig(model);
 					}
-
 
 					return true;
 				}
@@ -91,44 +88,50 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 			return false;
 		}
 
-		private static void ExtractPoolConfig(ComponentModel model)
+		private void ExtractPoolConfig(ComponentModel model)
 		{
-			String initial = model.Configuration.Attributes["initialPoolSize"];
-			String maxSize = model.Configuration.Attributes["maxPoolSize"];
-	
-			if (initial != null)
+			var initialRaw = model.Configuration.Attributes["initialPoolSize"];
+			var maxRaw = model.Configuration.Attributes["maxPoolSize"];
+
+			if (initialRaw != null)
 			{
-				model.ExtendedProperties[ExtendedPropertiesConstants.Pool_InitialPoolSize] = Convert.ToInt32(initial);
+				var initial = converter.PerformConversion<int>(initialRaw);
+				model.ExtendedProperties[ExtendedPropertiesConstants.Pool_InitialPoolSize] = initial;
 			}
-			if (maxSize != null)
+			if (maxRaw != null)
 			{
-				model.ExtendedProperties[ExtendedPropertiesConstants.Pool_MaxPoolSize] = Convert.ToInt32(maxSize);
+				var max = converter.PerformConversion<int>(maxRaw);
+				model.ExtendedProperties[ExtendedPropertiesConstants.Pool_MaxPoolSize] = max;
 			}
 		}
 
-		private static void ExtractCustomConfig(ComponentModel model)
+		private void ExtractCustomConfig(ComponentModel model)
 		{
-			String customLifestyleType = model.Configuration.Attributes["customLifestyleType"];
-
-			if(customLifestyleType != null)
+			var customLifestyleTypeRaw = model.Configuration.Attributes["customLifestyleType"];
+			if (customLifestyleTypeRaw != null)
 			{
-				try
-				{
-					model.CustomLifestyle = Type.GetType(customLifestyleType, true, false);
-				}
-				catch(Exception)
-				{
-					String message = String.Format(
-						"The Type {0} specified  in the customLifestyleType attribute could not be loaded.", customLifestyleType);
-
-					throw new Exception(message);
-				}
+				var lifestyle = converter.PerformConversion<Type>(customLifestyleTypeRaw);
+				ValidateLifestyleManager(lifestyle);
+				model.CustomLifestyle = lifestyle;
 			}
 			else
 			{
-				const string message = @"The attribute 'customLifestyleType' must be specified in conjunction with the 'lifestyle' attribute set to ""custom"".";
+				const string message =
+					@"The attribute 'customLifestyleType' must be specified in conjunction with the 'lifestyle' attribute set to ""custom"".";
 
 				throw new Exception(message);
+			}
+		}
+
+		protected virtual void ValidateLifestyleManager(Type customLifestyleManager)
+		{
+			if (customLifestyleManager.Is<ILifestyleManager>() == false)
+			{
+				var message =
+					String.Format(
+						"The Type '{0}' specified in the componentActivatorType attribute must implement {1}",
+						customLifestyleManager.FullName, typeof(ILifestyleManager).FullName);
+				throw new InvalidOperationException(message);
 			}
 		}
 
@@ -138,28 +141,25 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 		/// </summary>
 		protected virtual void ReadLifestyleFromType(ComponentModel model)
 		{
-			object[] attributes = model.Implementation.GetCustomAttributes( 
-				typeof(LifestyleAttribute), true );
-
-			if (attributes.Length != 0)
+			var attributes = model.Implementation.GetAttributes<LifestyleAttribute>();
+			if (attributes.Length == 0)
 			{
-				LifestyleAttribute attribute = (LifestyleAttribute)
-					attributes[0];
+				return;
+			}
+			var attribute = attributes[0];
+			model.LifestyleType = attribute.Lifestyle;
 
-				model.LifestyleType = attribute.Lifestyle;
-
-				if (model.LifestyleType == LifestyleType.Custom)
-				{
-					CustomLifestyleAttribute custom = (CustomLifestyleAttribute)
-						attribute;
-					model.CustomLifestyle = custom.LifestyleHandlerType;
-				}
-				else if (model.LifestyleType == LifestyleType.Pooled)
-				{
-					PooledAttribute pooled = (PooledAttribute) attribute;
-					model.ExtendedProperties[ExtendedPropertiesConstants.Pool_InitialPoolSize] = pooled.InitialPoolSize;
-					model.ExtendedProperties[ExtendedPropertiesConstants.Pool_MaxPoolSize] = pooled.MaxPoolSize;
-				}
+			if (model.LifestyleType == LifestyleType.Custom)
+			{
+				var custom = (CustomLifestyleAttribute)attribute;
+				ValidateLifestyleManager(custom.LifestyleHandlerType);
+				model.CustomLifestyle = custom.LifestyleHandlerType;
+			}
+			else if (model.LifestyleType == LifestyleType.Pooled)
+			{
+				var pooled = (PooledAttribute)attribute;
+				model.ExtendedProperties[ExtendedPropertiesConstants.Pool_InitialPoolSize] = pooled.InitialPoolSize;
+				model.ExtendedProperties[ExtendedPropertiesConstants.Pool_MaxPoolSize] = pooled.MaxPoolSize;
 			}
 		}
 	}

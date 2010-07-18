@@ -142,7 +142,7 @@ namespace Castle.Core.Internal
 
 		private static void EnsureIsAssignable<TBase>(Type subtypeofTBase)
 		{
-			if (typeof(TBase).IsAssignableFrom(subtypeofTBase))
+			if (subtypeofTBase.Is<TBase>())
 			{
 				return;
 			}

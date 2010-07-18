@@ -20,6 +20,7 @@ namespace Castle.Windsor.Configuration.Interpreters.XmlProcessor
 	using System.Text.RegularExpressions;
 	using System.Xml;
 
+	using Castle.Core;
 	using Castle.Core.Internal;
 	using Castle.Core.Resource;
 	using Castle.MicroKernel.SubSystems.Resource;
@@ -58,7 +59,7 @@ namespace Castle.Windsor.Configuration.Interpreters.XmlProcessor
 
 		public void AddNodeProcessor(Type type)
 		{
-			if (typeof(IXmlNodeProcessor).IsAssignableFrom(type))
+			if (type.Is<IXmlNodeProcessor>())
 			{
 				var processor = ReflectionUtil.CreateInstance<IXmlNodeProcessor>(type);
 				foreach(var nodeType in processor.AcceptNodeTypes)

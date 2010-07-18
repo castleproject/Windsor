@@ -69,7 +69,7 @@ namespace Castle.Facilities.TypedFactory
 
 		public static MethodInfo ExtractInvokeMethod(Type service)
 		{
-			if (!typeof(MulticastDelegate).IsAssignableFrom(service))
+			if (!service.Is<MulticastDelegate>())
 			{
 				return null;
 			}

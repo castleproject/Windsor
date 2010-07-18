@@ -16,6 +16,8 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 {
 	using System;
 
+	using Castle.Core;
+
 	/// <summary>
 	/// Declares a type as being convertible by a <see cref="ITypeConverter"/> and optionally defines the converter to be used
 	/// </summary>
@@ -37,9 +39,11 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 		/// <param name="converterType"></param>
 		public ConvertibleAttribute(Type converterType)
 		{
-			if (!typeof(ITypeConverter).IsAssignableFrom(converterType))
+			if (converterType.Is<ITypeConverter>() == false)
 			{
-				throw new ArgumentException("converterType must implement ITypeConverter interface", "converterType");
+				throw new ArgumentException(
+					string.Format("ConverterType {0} does not implement {1} interface", converterType.FullName,
+					              typeof(ITypeConverter).FullName), "converterType");
 			}
 
 			this.converterType = converterType;
