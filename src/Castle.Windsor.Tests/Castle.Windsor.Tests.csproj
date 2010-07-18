@@ -43,43 +43,11 @@
   <PropertyGroup>
     <DefineConstants>$(DefineConstants);$(BuildConstants)</DefineConstants>
   </PropertyGroup>
-  <ItemGroup Condition="$(MSBuildTargets)!='Silverlight 3.0' and $(MSBuildTargets)!='Silverlight 4.0'">
-    <Reference Include="System.configuration" />
-    <Reference Include="System.Data">
-      <Name>System.Data</Name>
-    </Reference>
-  </ItemGroup>
   <ItemGroup>
     <Reference Include="Castle.Core">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\$(BuildConfigKey)\Castle.Core.dll</HintPath>
     </Reference>
-    <Reference Include="nunit.framework">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\nunit.framework.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup Condition="$(MSBuildTargets)=='Silverlight 3.0'">
-    <Reference Include="NUnit.Silverlight.Framework">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\sl3\NUnit.Silverlight.Framework.dll</HintPath>
-    </Reference>
-    <Reference Include="NUnit.Silverlight.Compatibility">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\sl3\NUnit.Silverlight.Compatibility.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup Condition="$(MSBuildTargets)=='Silverlight 4.0'">
-    <Reference Include="NUnit.Silverlight.Framework">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\sl4\NUnit.Silverlight.Framework.dll</HintPath>
-    </Reference>
-    <Reference Include="NUnit.Silverlight.Compatibility">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\sl4\NUnit.Silverlight.Compatibility.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
     <Reference Include="System">
       <Name>System</Name>
     </Reference>
@@ -95,6 +63,16 @@
       <Package>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</Package>
       <Private>True</Private>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup Condition="$(MSBuildTargets)!='Silverlight 3.0' and $(MSBuildTargets)!='Silverlight 4.0'">
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Data">
+      <Name>System.Data</Name>
+    </Reference>
+    <Reference Include="nunit.framework">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\nunit.framework.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup Condition="$(MSBuildTargets)=='Silverlight 3.0'">
     <Reference Include="NUnit.Silverlight.Framework">
