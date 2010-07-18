@@ -16,6 +16,8 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 {
 	using System;
 	using System.Configuration;
+	using System.Linq;
+
 	using Castle.Core;
 	using Castle.MicroKernel.Proxy;
 	using Castle.MicroKernel.SubSystems.Conversion;
@@ -104,15 +106,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 		/// <param name="implementation"></param>
 		protected virtual ComponentProxyBehaviorAttribute GetProxyBehaviorFromType(Type implementation)
 		{
-			object[] attributes = implementation.GetCustomAttributes(
-				typeof(ComponentProxyBehaviorAttribute), true);
-
-			if (attributes.Length != 0)
-			{
-				return (ComponentProxyBehaviorAttribute) attributes[0];
-			}
-
-			return null;
+			return implementation.GetAttributes<ComponentProxyBehaviorAttribute>().FirstOrDefault();
 		}
 
 		private static void ApplyProxyBehavior(ComponentProxyBehaviorAttribute behavior, ComponentModel model)

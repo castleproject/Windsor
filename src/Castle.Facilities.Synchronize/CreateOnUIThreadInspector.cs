@@ -63,11 +63,11 @@ namespace Castle.Facilities.Synchronize
 			// Since controls created on different threads cannot be added to one
 			// another, ensure that all controls are created on the main UI thread.
 
-			if (typeof(Control).IsAssignableFrom(model.Implementation))
+			if (model.Implementation.Is<Control>())
 			{
 				createOnUIThread = CreateOnWinformsUIThread;
 			}
-			else if (typeof(UIElement).IsAssignableFrom(model.Implementation))
+			else if (model.Implementation.Is<UIElement>())
 			{
 				createOnUIThread = CreateOnDispatcherUIThread;
 			}
@@ -140,11 +140,10 @@ namespace Castle.Facilities.Synchronize
 						return new ComponentReference<IProxyGenerationHook>(hookKey);
 					}
 
-					var converter = (ITypeConverter)kernel.GetSubSystem(SubSystemConstants.ConversionManagerKey);
+					var converter = kernel.GetConversionManager();
+					var hookType = converter.PerformConversion<Type>(hookAttrib);
 
-					var hookType = (Type) converter.PerformConversion(hookAttrib, typeof(Type));
-
-					if (!typeof(IProxyGenerationHook).IsAssignableFrom(hookType))
+					if (hookType.Is<IProxyGenerationHook>() == false)
 					{
 						var message = String.Format("The specified controlProxyHook does " +
 						                            "not implement the interface {1}. Type {0}",

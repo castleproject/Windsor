@@ -19,6 +19,7 @@ namespace Castle.Windsor.Installer
 	using System.Linq;
 	using System.Reflection;
 
+	using Castle.Core;
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.SubSystems.Configuration;
 
@@ -61,7 +62,7 @@ namespace Castle.Windsor.Installer
 			return types.Where(t => t.IsClass &&
 			                        t.IsAbstract == false &&
 			                        t.IsGenericTypeDefinition == false &&
-			                        typeof(IWindsorInstaller).IsAssignableFrom(t));
+			                        t.Is<IWindsorInstaller>());
 		}
 	}
 }

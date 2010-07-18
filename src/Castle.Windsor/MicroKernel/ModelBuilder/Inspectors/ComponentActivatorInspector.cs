@@ -16,6 +16,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 {
 	using System;
 	using Castle.Core;
+	using Castle.MicroKernel.SubSystems.Conversion;
 
 	/// <summary>
 	/// Inspects the component configuration and the type looking for a
@@ -32,6 +33,8 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 #endif
 	public class ComponentActivatorInspector : IContributeComponentModelConstruction
 	{
+		private IConversionManager converter;
+
 		/// <summary>
 		/// Seaches for the component activator in the configuration and, if unsuccessful
 		/// look for the component activator attribute in the implementation type.
@@ -40,9 +43,18 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 		/// <param name="model">The model instance</param>
 		public virtual void ProcessModel(IKernel kernel, ComponentModel model)
 		{
+			EnsureConverterInitialized(kernel);
 			if (!ReadComponentActivatorFromConfiguration(model))
 			{
 				ReadComponentActivatorFromType(model);
+			}
+		}
+
+		private void EnsureConverterInitialized(IKernel kernel)
+		{
+			if(converter == null)
+			{
+				converter = kernel.GetConversionManager();
 			}
 		}
 
@@ -60,29 +72,16 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 		{
 			if (model.Configuration != null)
 			{
-				string componentActivatorType = model.Configuration.Attributes["componentActivatorType"];
-
+				var componentActivatorType = model.Configuration.Attributes["componentActivatorType"];
 				if (componentActivatorType == null)
 				{
 					return false;
 				}
 
-				try
-				{
-					Type customComponentActivator = Type.GetType(componentActivatorType, true, false);
+				var customComponentActivator = converter.PerformConversion<Type>(componentActivatorType);
+				ValidateComponentActivator(customComponentActivator);
 
-					ValidateComponentActivator(customComponentActivator);
-
-					model.CustomComponentActivator = customComponentActivator;
-				}
-				catch(Exception ex)
-				{
-					string message =
-						String.Format("The Type '{0}' specified  in the componentActivatorType attribute could not be loaded.",
-						              componentActivatorType);
-
-					throw new Exception(message, ex);
-				}
+				model.CustomComponentActivator = customComponentActivator;
 			}
 
 			return false;
@@ -95,12 +94,10 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 		/// <param name="model"></param>
 		protected virtual void ReadComponentActivatorFromType(ComponentModel model)
 		{
-			object[] attributes = model.Implementation.GetCustomAttributes(typeof(ComponentActivatorAttribute), true);
-
+			var attributes = model.Implementation.GetAttributes<ComponentActivatorAttribute>();
 			if (attributes.Length != 0)
 			{
-				ComponentActivatorAttribute attribute = (ComponentActivatorAttribute) attributes[0];
-
+				var attribute = attributes[0];
 				ValidateComponentActivator(attribute.ComponentActivatorType);
 
 				model.CustomComponentActivator = attribute.ComponentActivatorType;
@@ -113,7 +110,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 		/// <param name="customComponentActivator">The custom component activator.</param>
 		protected virtual void ValidateComponentActivator(Type customComponentActivator)
 		{
-			if (!typeof(IComponentActivator).IsAssignableFrom(customComponentActivator))
+			if (customComponentActivator.Is<IComponentActivator>()==false)
 			{
 				string message =
 					String.Format(

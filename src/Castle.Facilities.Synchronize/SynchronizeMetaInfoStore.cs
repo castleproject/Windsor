@@ -17,6 +17,8 @@ namespace Castle.Facilities.Synchronize
 	using System;
 	using System.Collections.Generic;
 	using System.Reflection;
+
+	using Castle.Core;
 	using Castle.Core.Configuration;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.SubSystems.Conversion;
@@ -53,7 +55,7 @@ namespace Castle.Facilities.Synchronize
 		/// <returns>The corresponding meta-info.</returns>
 		public SynchronizeMetaInfo CreateMetaFromType(Type implementation)
 		{
-			var syncAttrib = (SynchronizeAttribute) implementation.GetCustomAttributes(true)[0];
+			var syncAttrib = implementation.GetAttributes<SynchronizeAttribute>()[0];
 			var metaInfo = new SynchronizeMetaInfo(syncAttrib);
 
 			PopulateMetaInfoFromType(metaInfo, implementation);
@@ -80,11 +82,11 @@ namespace Castle.Facilities.Synchronize
 
 			foreach (var method in methods)
 			{
-				var atts = method.GetCustomAttributes(typeof(SynchronizeAttribute), true);
+				var atts = method.GetAttributes<SynchronizeAttribute>();
 
 				if (atts.Length != 0)
 				{
-					metaInfo.Add(method, atts[0] as SynchronizeAttribute);
+					metaInfo.Add(method, atts[0]);
 				}
 			}
 

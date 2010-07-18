@@ -99,7 +99,7 @@ namespace Castle.Facilities.Startable
 
 		private static bool CheckIfComponentImplementsIStartable(ComponentModel model)
 		{
-			return typeof(IStartable).IsAssignableFrom(model.Implementation);
+			return model.Implementation.Is<IStartable>();
 		}
 	}
 }

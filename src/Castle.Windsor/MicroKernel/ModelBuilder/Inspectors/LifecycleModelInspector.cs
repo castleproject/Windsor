@@ -58,7 +58,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 		private void ProcessLateBoundModel(ComponentModel model)
 		{
 			var lateBoundCommissionConcern = new LateBoundConcerns();
-			if (typeof(IInitializable).IsAssignableFrom(model.Service))
+			if (model.Implementation.Is<IInitializable>())
 			{
 				model.Lifecycle.Add(InitializationConcern.Instance);
 			}
@@ -67,7 +67,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 				lateBoundCommissionConcern.AddConcern<IInitializable>(InitializationConcern.Instance);
 			}
 #if (!SILVERLIGHT)
-			if (typeof(ISupportInitialize).IsAssignableFrom(model.Implementation))
+			if (model.Implementation.Is<ISupportInitialize>())
 			{
 				model.Lifecycle.Add(SupportInitializeConcern.Instance);
 			}
@@ -76,7 +76,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 				lateBoundCommissionConcern.AddConcern<ISupportInitialize>(SupportInitializeConcern.Instance);
 			}
 #endif
-			if (typeof(IDisposable).IsAssignableFrom(model.Implementation))
+			if (model.Implementation.Is<IDisposable>())
 			{
 				model.Lifecycle.Add(DisposalConcern.Instance);
 			}
@@ -94,17 +94,17 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 
 		private void ProcessModel(ComponentModel model)
 		{
-			if (typeof(IInitializable).IsAssignableFrom(model.Implementation))
+			if (model.Implementation.Is<IInitializable>())
 			{
 				model.Lifecycle.Add(InitializationConcern.Instance);
 			}
 #if (!SILVERLIGHT)
-			if (typeof(ISupportInitialize).IsAssignableFrom(model.Implementation))
+			if (model.Implementation.Is<ISupportInitialize>())
 			{
 				model.Lifecycle.Add(SupportInitializeConcern.Instance);
 			}
 #endif
-			if (typeof(IDisposable).IsAssignableFrom(model.Implementation))
+			if (model.Implementation.Is<IDisposable>())
 			{
 				model.Lifecycle.Add(DisposalConcern.Instance);
 			}

@@ -100,7 +100,7 @@ namespace Castle.Facilities.TypedFactory
 
 		private static Type GetEnumerableType(Type type)
 		{
-			return TypeUtil.GetAllInterfaces(type)
+			return type.GetAllInterfaces()
 				.Where(@interface => @interface.IsGenericType)
 				.SingleOrDefault(@interface => @interface.GetGenericTypeDefinition() == typeof(IEnumerable<>));
 		}

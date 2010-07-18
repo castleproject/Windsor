@@ -31,7 +31,7 @@ namespace Castle.Windsor.Tests.Interceptors
 
 		public bool HasInterceptors(ComponentModel model)
 		{
-			return typeof(IInterceptor).IsAssignableFrom(model.Service) == false;
+			return model.Service.Is<IInterceptor>() == false;
 		}
 
 		public InterceptorReference[] SelectInterceptors(ComponentModel model, InterceptorReference[] interceptors)

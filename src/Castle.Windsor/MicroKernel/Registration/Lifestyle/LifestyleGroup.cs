@@ -100,11 +100,11 @@ namespace Castle.MicroKernel.Registration.Lifestyle
 		/// <returns></returns>
 		public ComponentRegistration<S> Custom(Type customLifestyleType)
 		{
-			if (!typeof(ILifestyleManager).IsAssignableFrom(customLifestyleType))
+			if (customLifestyleType.Is<ILifestyleManager>() == false)
 			{
 				throw new ComponentRegistrationException(String.Format(
-					"The type {0} must implement ILifestyleManager to " +
-					"be used as a custom lifestyle", customLifestyleType.FullName));
+					"The type {0} must implement {1} to " +
+					"be used as a custom lifestyle", customLifestyleType.FullName, typeof(ILifestyleManager).FullName));
 			}
 
 			return AddDescriptor(new LifestyleDescriptor<S>(LifestyleType.Custom))

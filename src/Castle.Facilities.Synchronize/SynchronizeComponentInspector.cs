@@ -129,10 +129,13 @@ namespace Castle.Facilities.Synchronize
 		/// <param name="model">The model.</param>
 		private void CheckFromAttributes(ComponentModel model)
 		{
-			if (model.Implementation.IsDefined(typeof(SynchronizeAttribute), true))
+			var attributes = model.Implementation.GetAttributes<SynchronizeAttribute>();
+			if (attributes.Length == 0)
 			{
-				metaStore.CreateMetaFromType(model.Implementation);
+				return;
 			}
+			metaStore.CreateMetaFromType(model.Implementation);
+
 		}
 
 		/// <summary>
@@ -144,8 +147,8 @@ namespace Castle.Facilities.Synchronize
 		/// </returns>
 		private static bool HasImplicitSynchronization(ComponentModel model)
 		{
-			return typeof(ISynchronizeInvoke).IsAssignableFrom(model.Implementation) ||
-				   typeof(DispatcherObject).IsAssignableFrom(model.Implementation);
+			return model.Implementation.Is<ISynchronizeInvoke>() ||
+			       model.Implementation.Is<DispatcherObject>();
 		}
 
 		/// <summary>

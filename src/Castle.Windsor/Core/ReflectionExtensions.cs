@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,28 +12,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#if !SILVERLIGHT
-namespace Castle.Windsor.Tests.Interceptors
+namespace Castle.Core
 {
 	using System;
 	using System.Reflection;
 
-	using Castle.Core;
-	using Castle.DynamicProxy;
-
-	public class DummyInterceptorSelector : IInterceptorSelector
+	public static class ReflectionExtensions
 	{
-		public IInterceptor[] SelectInterceptors(Type type, MethodInfo method, IInterceptor[] interceptors)
+		public static TAttribute[] GetAttributes<TAttribute>(this MemberInfo item) where TAttribute : Attribute
 		{
-			if (type.Is<ICatalog>())
-			{
-				if (method.Name == "AddItem")
-				{
-					return interceptors;
-				}
-			}
-			return null;
+			return (TAttribute[])Attribute.GetCustomAttributes(item, typeof(TAttribute), true);
+		}
+		
+		public static bool Is<TType>(this Type type)
+		{
+			return typeof(TType).IsAssignableFrom(type);
 		}
 	}
 }
-#endif

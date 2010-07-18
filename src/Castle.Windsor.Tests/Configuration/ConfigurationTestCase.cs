@@ -142,7 +142,7 @@ namespace Castle.MicroKernel.Tests.Configuration
 			parameters.Children.Add(services);
 			var list = new MutableConfiguration("list");
 			services.Children.Add(list);
-			list.Attributes.Add("type", "Castle.MicroKernel.Tests.ClassComponents.ICommon, Castle.Windsor.Tests");
+			list.Attributes.Add("type", "ICommon");
 
 			list.Children.Add(new MutableConfiguration("item", "${commonservice1}"));
 			list.Children.Add(new MutableConfiguration("item", "${commonservice2}"));
@@ -196,8 +196,7 @@ namespace Castle.MicroKernel.Tests.Configuration
 			var confignode = new MutableConfiguration(key);
 			confignode.Attributes.Add("lifestyle", "custom");
 
-			confignode.Attributes.Add("customLifestyleType",
-			                          "Castle.MicroKernel.Tests.ClassComponents.CustomLifestyleManager, Castle.Windsor.Tests");
+			confignode.Attributes.Add("customLifestyleType","CustomLifestyleManager");
 
 			kernel.ConfigurationStore.AddComponentConfiguration(key, confignode);
 			kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(CommonImpl1)).Named(key));
