@@ -78,6 +78,8 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\sl4\NUnit.Silverlight.Compatibility.dll</HintPath>
     </Reference>
+  </ItemGroup>
+  <ItemGroup>
     <Reference Include="System">
       <Name>System</Name>
     </Reference>
