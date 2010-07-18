@@ -58,6 +58,9 @@
       <Name>System.Data</Name>
     </Reference>
   </ItemGroup>
+  <ItemGroup Condition="$(MSBuildTargets)=='Silverlight 3.0' or $(MSBuildTargets)=='Silverlight 4.0'">
+    <Reference Include="System.Windows" />
+  </ItemGroup>
   <ItemGroup>
     <Reference Include="Castle.Core">
       <SpecificVersion>False</SpecificVersion>
