@@ -23,6 +23,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 	using System.Linq;
 	using System.Reflection.Emit; // needed for .NET 3.5 and SL 3
 #endif
+	using System.Security;
 	using System.Text;
 
 	using Castle.Core.Configuration;
@@ -266,6 +267,11 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 
 		private class MultiType : TypeDelegator, IEnumerable<Type>
 		{
+			[SecuritySafeCritical]
+			public MultiType()
+			{
+			}
+
 			private readonly LinkedList<Type> inner = new LinkedList<Type>();
 
 			public MultiType AddInnerType(Type type)
