@@ -1,51 +1,49 @@
-using System;
-using Castle.MicroKernel.ComponentActivator;
-using NUnit.Framework;
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// 
+//     http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 namespace Castle.Windsor.Tests.Bugs
 {
-    using Castle.MicroKernel.Registration;
+	using Castle.MicroKernel.ComponentActivator;
+	using Castle.MicroKernel.Registration;
+	using Castle.Windsor.Tests.Components;
 
-    [TestFixture]
-    public class IoC_120
-    {
-        [Test]
-        public void Can_resolve_component_with_internal_ctor()
-        {
-            var container = new WindsorContainer();
-            ((IWindsorContainer)container).Register(Component.For<Foo>());
-            ((IWindsorContainer)container).Register(Component.For<Bar>());
+	using NUnit.Framework;
 
-            try
-            {
-                container.Resolve<Bar>();
-                Assert.Fail();
-            }
-            catch (ComponentActivatorException e)
-            {
-            	var expected = 
-#if (!SILVERLIGHT)
-				"Could not find a public constructor for the type Castle.Windsor.Tests.Bugs.Bar";
+	[TestFixture]
+	public class IoC_120
+	{
+		[Test]
+		public void Can_resolve_component_with_internal_ctor()
+		{
+			var container = new WindsorContainer();
+			container.Register(Component.For<EmptyClass>(),
+			                   Component.For<HasInternalConstructor>());
+
+			var exception = Assert.Throws<ComponentActivatorException>(() =>
+			                                                           container.Resolve<HasInternalConstructor>());
+			var expected =
+#if SILVERLIGHT
+				string.Format("Type {0} does not have a public default constructor and could not be instantiated.",
+				              typeof(HasInternalConstructor).FullName);
 #else
-				"Could not find a constructor for the type Castle.Windsor.Tests.Bugs.Bar. Make sure that it is there and that it is public.";
+				string.Format("Could not find a public constructor for the type {0}", typeof(HasInternalConstructor).FullName);
 #endif
 
-				Assert.AreEqual(expected,
-            	                e.InnerException.Message);
-            }
-        }
-    }
-
-    public class Foo
-    {
-        
-    }
-
-    public class Bar
-    {
-        internal Bar(Foo f)
-        {
-            
-        }
-    }
+			Assert.AreEqual(expected,
+			                exception.InnerException.Message);
+		}
+	}
 }
+
+

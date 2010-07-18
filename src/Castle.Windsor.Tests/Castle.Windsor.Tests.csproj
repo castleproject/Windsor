@@ -98,6 +98,7 @@
     <Compile Include="ComponentsWithAttribute\HasUserAttributeNonRegister.cs" />
     <Compile Include="ComponentsWithAttribute\HasUserAttributeRegister.cs" />
     <Compile Include="ComponentsWithAttribute\UserAttribute.cs" />
+    <Compile Include="Components\HasInternalConstructor.cs" />
     <Compile Include="RegistrationWithAttributeTestCase.cs" />
     <Compile Include="ClassComponents\A.cs" />
     <Compile Include="ActionBasedInstaller.cs" />
