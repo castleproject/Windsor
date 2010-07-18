@@ -28,7 +28,7 @@ namespace Castle.Facilities.Synchronize.Tests
 	using NUnit.Framework;
 
 	[TestFixture]
-	public class SynchronizeFacilityTest
+	public class SynchronizeFacilityTestFixture
 	{
 		private IWindsorContainer container;
 		private Exception uncaughtException;

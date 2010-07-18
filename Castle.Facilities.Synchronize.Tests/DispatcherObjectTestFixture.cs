@@ -27,7 +27,7 @@ namespace Castle.Facilities.Synchronize.Tests
 	using NUnit.Framework;
 
 	[TestFixture, Ignore("Need to support multiple Applications")]
-	public class DispatcherObjectTest
+	public class DispatcherObjectTestFixture
 	{
 		private Application application;
 		private IWindsorContainer container;

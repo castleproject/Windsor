@@ -91,11 +91,11 @@
   <ItemGroup>
     <Compile Include="WPFDummyClasses.cs">
     </Compile>
-    <Compile Include="DispatcherObjectTest.cs" />
+    <Compile Include="DispatcherObjectTestFixture.cs" />
     <Compile Include="DummyClasses.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="SynchronizeFacilityTest.cs" />
+    <Compile Include="SynchronizeFacilityTestFixture.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
