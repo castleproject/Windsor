@@ -17,13 +17,13 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 	using System;
 	using System.Collections;
 	using System.Collections.Generic;
-	using System.Diagnostics;
 	using System.Reflection;
 	using System.Linq;
+	using System.Text;
+#if DOTNET35 || SL3
 	using System.Reflection.Emit; // needed for .NET 3.5 and SL 3
 	using System.Security;
-	using System.Text;
-
+#endif
 	using Castle.Core.Configuration;
 
 	/// <summary>
@@ -35,6 +35,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 	public class TypeNameConverter : AbstractTypeConverter
 	{
 		private static readonly Assembly mscorlib = typeof(object).Assembly;
+
 		private readonly ICollection<Assembly> assemblies = 
 #if SL3
 			new List<Assembly>();
@@ -42,11 +43,11 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 			new HashSet<Assembly>();
 #endif
 
-		private readonly IDictionary<string, Type> fullName2Type =
-			new Dictionary<string, Type>(StringComparer.OrdinalIgnoreCase);
+		private readonly IDictionary<string, MultiType> fullName2Type =
+			new Dictionary<string, MultiType>(StringComparer.OrdinalIgnoreCase);
 
-		private readonly IDictionary<string, Type> justName2Type =
-			new Dictionary<string, Type>(StringComparer.OrdinalIgnoreCase);
+		private readonly IDictionary<string, MultiType> justName2Type =
+			new Dictionary<string, MultiType>(StringComparer.OrdinalIgnoreCase);
 
 		private readonly ITypeNameParser parser;
 
@@ -83,8 +84,6 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 
 					throw new ConverterException(message);
 				}
-
-				Debug.Assert((type is MultiType) == false);
 				return type;
 			}
 			catch (ConverterException)
@@ -179,7 +178,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 #if DOTNET35 || SL3
 			if (assembly is AssemblyBuilder || (AssemblyBuilderDotNet4 != null && assembly.GetType().Equals(AssemblyBuilderDotNet4)))
 #else
-			if(assembly.IsDynamic)
+			if (assembly.IsDynamic)
 #endif
 			{
 				return;
@@ -200,21 +199,15 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 			}
 		}
 
-		private void Insert(IDictionary<string, Type> collection, string key, Type value)
+		private void Insert(IDictionary<string, MultiType> collection, string key, Type value)
 		{
-			Type existing;
+			MultiType existing;
 			if (collection.TryGetValue(key, out existing) == false)
 			{
-				collection[key] = value;
+				collection[key] = new MultiType(value);
 				return;
 			}
-			var multiType = existing as MultiType;
-			if (multiType != null)
-			{
-				multiType.AddInnerType(value);
-				return;
-			}
-			collection[key] = new MultiType().AddInnerType(existing).AddInnerType(value);
+			existing.AddInnerType(value);
 		}
 
 		private TypeName ParseName(string name)
@@ -229,48 +222,55 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 
 		public Type GetTypeByFullName(string fullName)
 		{
-			Type type;
-			if (fullName2Type.TryGetValue(fullName, out type))
-			{
-				EnsureUnique(type, fullName, "assembly qualified name");
-			}
-			return type;
+			return GetUniqueType(fullName, fullName2Type, "assembly qualified name");
 		}
 
 		public Type GetTypeByName(string justName)
 		{
-			Type type;
-			if (justName2Type.TryGetValue(justName, out type))
-			{
-				EnsureUnique(type, justName, "full name, or assembly qualified name");
-			}
-			return type;
+			return GetUniqueType(justName, justName2Type, "full name, or assembly qualified name");
 		}
 
-		private void EnsureUnique(Type type, string value, string missingInformation)
+		private Type GetUniqueType(string name, IDictionary<string, MultiType> map, string description)
 		{
-			if (type is MultiType)
+			MultiType type;
+			if (map.TryGetValue(name, out type))
 			{
-				var multi = type as MultiType;
-				var message = new StringBuilder(string.Format("Could not uniquely identify type for '{0}'. ", value));
-				message.AppendLine("The following types were matched:");
-				foreach (var matchedType in multi)
-				{
-					message.AppendLine(matchedType.AssemblyQualifiedName);
-				}
-				message.AppendFormat("Provide more information ({0}) to uniquely identify the type.", missingInformation);
-				throw new ConverterException(message.ToString());
+				EnsureUnique(type, name, description);
+				return type.Single();
 			}
+			return null;
 		}
 
-		private class MultiType : TypeDelegator, IEnumerable<Type>
+		private void EnsureUnique(MultiType type, string value, string missingInformation)
 		{
-			[SecuritySafeCritical]
-			public MultiType()
+			if (type.HasOne)
 			{
+				return;
 			}
 
+			var message = new StringBuilder(string.Format("Could not uniquely identify type for '{0}'. ", value));
+			message.AppendLine("The following types were matched:");
+			foreach (var matchedType in type)
+			{
+				message.AppendLine(matchedType.AssemblyQualifiedName);
+			}
+			message.AppendFormat("Provide more information ({0}) to uniquely identify the type.", missingInformation);
+			throw new ConverterException(message.ToString());
+		}
+
+		private class MultiType : IEnumerable<Type>
+		{
 			private readonly LinkedList<Type> inner = new LinkedList<Type>();
+
+			public MultiType(Type type)
+			{
+				inner.AddFirst(type);
+			}
+
+			public bool HasOne
+			{
+				get { return inner.Count == 1; }
+			}
 
 			public MultiType AddInnerType(Type type)
 			{
