@@ -22,6 +22,7 @@ namespace Castle.Facilities.Synchronize.Tests
 	using System.Windows.Controls;
 	using System.Windows.Threading;
 	using Castle.Core.Configuration;
+	using Castle.Facilities.Synchronize.Tests.Components;
 	using Castle.MicroKernel.Registration;
 	using Castle.Windsor;
 	using NUnit.Framework;
