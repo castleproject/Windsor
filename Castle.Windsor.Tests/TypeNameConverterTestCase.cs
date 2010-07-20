@@ -139,6 +139,10 @@ namespace Castle.Windsor.Tests
 			Assert.AreEqual(type, result);
 		}
 
+
+#if SILVERLIGHT
+		[Ignore("Type conversion does not work in tests under Silverlight because the assembly is not in the starting manifest (of Statlight)")]
+#endif
 		[Test]
 		public void Can_load_type_from_loaded_assembly_by_just_name()
 		{

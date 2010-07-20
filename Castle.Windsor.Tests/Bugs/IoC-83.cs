@@ -14,6 +14,8 @@
 
 namespace Castle.MicroKernel.Tests.Bugs
 {
+	using System;
+
 	using Castle.MicroKernel.ComponentActivator;
 	using Castle.MicroKernel.Registration;
 	using Castle.Windsor.Tests.Components;
@@ -33,12 +35,10 @@ namespace Castle.MicroKernel.Tests.Bugs
 
 			kernel.Register(Component.For<HasProtectedConstructor>());
 
-			var exception =
+			Exception exception =
 				Assert.Throws<ComponentActivatorException>(() => kernel.Resolve<HasProtectedConstructor>());
 
-#if !SILVERLIGHT
-			exception = exception.InnerException as ComponentActivatorException;
-#endif
+			exception = exception.InnerException;
 			Assert.IsNotNull(exception);
 			StringAssert.Contains("public", exception.Message, "Exception should say that constructor has to be public.");
 
