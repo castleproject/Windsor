@@ -48,13 +48,13 @@ namespace Castle.Windsor.Tests.Installer
 			container.Install(FromAssembly.InDirectory(new AssemblyFilter(location)));
 			container.Resolve<object>("Customer-by-CustomerInstaller");
 		}
-#endif
+
 		[Test]
 		public void Can_install_from_assembly_by_name()
 		{
 			container.Install(FromAssembly.Named("Castle.Windsor.Tests"));
 		}
-
+#endif
 		[Test]
 		public void Can_install_from_assembly_by_type()
 		{

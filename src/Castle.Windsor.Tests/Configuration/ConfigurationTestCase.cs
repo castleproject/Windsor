@@ -130,6 +130,9 @@ namespace Castle.MicroKernel.Tests.Configuration
 			Assert.AreEqual("CommonImpl2", instance.Services[1].GetType().Name);
 		}
 
+#if SILVERLIGHT
+		[Ignore("Type conversion does not work in tests under Silverlight because the assembly is not in the starting manifest (of Statlight)")]
+#endif
 		[Test]
 		public void ConstructorWithListParameterAndCustomType()
 		{
@@ -142,7 +145,7 @@ namespace Castle.MicroKernel.Tests.Configuration
 			parameters.Children.Add(services);
 			var list = new MutableConfiguration("list");
 			services.Children.Add(list);
-			list.Attributes.Add("type", "Castle.MicroKernel.Tests.ClassComponents.ICommon");
+			list.Attributes.Add("type", "ICommon");
 
 			list.Children.Add(new MutableConfiguration("item", "${commonservice1}"));
 			list.Children.Add(new MutableConfiguration("item", "${commonservice2}"));
@@ -188,6 +191,9 @@ namespace Castle.MicroKernel.Tests.Configuration
 			var res = kernel.Resolve("key", new Arguments());
 		}
 
+#if SILVERLIGHT
+		[Ignore("Type conversion does not work in tests under Silverlight because the assembly is not in the starting manifest (of Statlight)")]
+#endif
 		[Test]
 		public void CustomLifestyleManager()
 		{
@@ -196,7 +202,7 @@ namespace Castle.MicroKernel.Tests.Configuration
 			var confignode = new MutableConfiguration(key);
 			confignode.Attributes.Add("lifestyle", "custom");
 
-			confignode.Attributes.Add("customLifestyleType", "Castle.MicroKernel.Tests.ClassComponents.CustomLifestyleManager");
+			confignode.Attributes.Add("customLifestyleType", "CustomLifestyleManager");
 
 			kernel.ConfigurationStore.AddComponentConfiguration(key, confignode);
 			kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(CommonImpl1)).Named(key));
