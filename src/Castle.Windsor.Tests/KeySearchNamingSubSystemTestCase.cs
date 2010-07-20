@@ -99,8 +99,9 @@ namespace Castle.MicroKernel.Tests
 		}
 
 		[Test]
-		public void MultiThreadedAddResolve([Values(100)] int threadCount)
+		public void MultiThreadedAddResolve()
 		{
+			var threadCount = 100;
 			var locker = new object();
 			var list = new List<string>();
 			var waitEvent = new ManualResetEvent(false);
