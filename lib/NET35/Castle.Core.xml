@@ -4763,11 +4763,6 @@
             It is the responsability of the caller to dispose of this stream
             </summary>
         </member>
-        <member name="T:Castle.Core.Resource.AssemblyResourceFactory">
-            <summary>
-            
-            </summary>
-        </member>
         <member name="T:Castle.Core.Resource.IResourceFactory">
             <summary>
             Depicts the contract for resource factories.

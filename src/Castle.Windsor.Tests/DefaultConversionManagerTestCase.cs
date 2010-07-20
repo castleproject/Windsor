@@ -45,7 +45,9 @@ namespace Castle.MicroKernel.Tests
 			Assert.AreEqual(true, conversionMng.PerformConversion("true", typeof(bool)));
 			Assert.AreEqual(false, conversionMng.PerformConversion("false", typeof(bool)));
 		}
-
+#if SILVERLIGHT
+		[Ignore("This does not work in tests under Silverlight")]
+#endif
 		[Test]
 		public void PerformConversionType()
 		{
