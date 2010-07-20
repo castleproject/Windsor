@@ -34,6 +34,9 @@ namespace Castle.Windsor.Tests
 
 		private TypeNameConverter converter;
 
+#if SILVERLIGHT
+		[Ignore("Type conversion does not work in tests under Silverlight because the assembly is not in the starting manifest (of Statlight)")]
+#endif
 		[Test]
 		public void Can_handle_generic_of_generics_properly()
 		{
@@ -43,6 +46,9 @@ namespace Castle.Windsor.Tests
 			Assert.AreEqual(type, result);
 		}
 
+#if SILVERLIGHT
+		[Ignore("Type conversion does not work in tests under Silverlight because the assembly is not in the starting manifest (of Statlight)")]
+#endif
 		[Test]
 		public void Can_handle_multi_generic_with_generic_of_generics_properly()
 		{
@@ -55,6 +61,9 @@ namespace Castle.Windsor.Tests
 			Assert.AreEqual(type, result);
 		}
 
+#if SILVERLIGHT
+		[Ignore("Type conversion does not work in tests under Silverlight because the assembly is not in the starting manifest (of Statlight)")]
+#endif
 		[Test]
 		public void Can_handle_multi_generic_with_multi_generic_of_generics_properly_1()
 		{
@@ -74,6 +83,9 @@ namespace Castle.Windsor.Tests
 		}
 
 
+#if SILVERLIGHT
+		[Ignore("Type conversion does not work in tests under Silverlight because the assembly is not in the starting manifest (of Statlight)")]
+#endif
 		[Test]
 		public void Can_handle_multi_generic_with_multi_generic_of_generics_properly_2()
 		{
@@ -91,6 +103,9 @@ namespace Castle.Windsor.Tests
 			Assert.AreEqual(type, result);
 		}
 
+#if SILVERLIGHT
+		[Ignore("Type conversion does not work in tests under Silverlight because the assembly is not in the starting manifest (of Statlight)")]
+#endif
 		[Test]
 		public void Can_load_closed_generic_type_by_Name_single_generic_parameter()
 		{
@@ -100,6 +115,9 @@ namespace Castle.Windsor.Tests
 			Assert.AreEqual(result, type);
 		}
 
+#if SILVERLIGHT
+		[Ignore("Type conversion does not work in tests under Silverlight because the assembly is not in the starting manifest (of Statlight)")]
+#endif
 		[Test]
 		public void Can_load_closed_generic_type_by_Name_two_generic_parameters()
 		{
@@ -109,6 +127,9 @@ namespace Castle.Windsor.Tests
 			Assert.AreEqual(result, type);
 		}
 
+#if SILVERLIGHT
+		[Ignore("Type conversion does not work in tests under Silverlight because the assembly is not in the starting manifest (of Statlight)")]
+#endif
 		[Test]
 		public void Can_load_open_generic_type_by_name()
 		{
@@ -127,6 +148,9 @@ namespace Castle.Windsor.Tests
 			Assert.AreEqual(type, result);
 		}
 
+#if SILVERLIGHT
+		[Ignore("Type conversion does not work in tests under Silverlight because the assembly is not in the starting manifest (of Statlight)")]
+#endif
 		[Test]
 		public void Can_load_type_from_loaded_assembly_by_name_with_namespace()
 		{
@@ -136,6 +160,9 @@ namespace Castle.Windsor.Tests
 			Assert.AreEqual(type, result);
 		}
 
+#if SILVERLIGHT
+		[Ignore("Type conversion does not work in tests under Silverlight because the assembly is not in the starting manifest (of Statlight)")]
+#endif
 		[Test]
 		public void Throws_when_inner_generic_type_not_unique()
 		{
@@ -149,6 +176,9 @@ namespace Castle.Windsor.Tests
 			Assert.That(exception.Message.StartsWith("Could not uniquely identify type for 'IService2'."));
 		}
 
+#if SILVERLIGHT
+		[Ignore("Type conversion does not work in tests under Silverlight because the assembly is not in the starting manifest (of Statlight)")]
+#endif
 		[Test]
 		public void Throws_when_type_not_unique()
 		{
