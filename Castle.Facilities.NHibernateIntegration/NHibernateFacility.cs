@@ -19,6 +19,7 @@ namespace Castle.Facilities.NHibernateIntegration
 	using Builders;
 	using Castle.Core.Configuration;
 	using Castle.MicroKernel.Facilities;
+	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.SubSystems.Conversion;
 	using Castle.Services.Transaction;
 	using Castle.Core;
@@ -142,22 +143,25 @@ namespace Castle.Facilities.NHibernateIntegration
 		private void RegisterDefaultConfigurationBuilder()
 		{
 			string defaultConfigurationBuilder = FacilityConfig.Attributes[ConfigurationBuilderConfigurationKey];
-			if (!string.IsNullOrEmpty(defaultConfigurationBuilder))
-			{
-				var converter = (IConversionManager) Kernel.GetSubSystem(SubSystemConstants.ConversionManagerKey);
-				try
-				{
-					var configurationBuilderType = (Type)converter.PerformConversion(defaultConfigurationBuilder, typeof(Type));
-					Kernel.AddComponent(DefaultConfigurationBuilderKey, typeof(IConfigurationBuilder),
-										configurationBuilderType);
-				}
-				catch (ConverterException)
-				{
-					throw new FacilityException(string.Format("ConfigurationBuilder type '{0}' invalid or not found", defaultConfigurationBuilder));
-				}
-			}
-			else
-				Kernel.AddComponentInstance(DefaultConfigurationBuilderKey, typeof(IConfigurationBuilder),this.configurationBuilder);
+            if (!string.IsNullOrEmpty(defaultConfigurationBuilder))
+            {
+                var converter = (IConversionManager)Kernel.GetSubSystem(SubSystemConstants.ConversionManagerKey);
+                try
+                {
+                    var configurationBuilderType = (Type)converter.PerformConversion(defaultConfigurationBuilder, typeof(Type));
+                    Kernel.Register(
+                        Component.For<IConfigurationBuilder>()
+                            .ImplementedBy(configurationBuilderType)
+                            .Named(DefaultConfigurationBuilderKey)
+                        );
+                }
+                catch (ConverterException)
+                {
+                    throw new FacilityException(string.Format("ConfigurationBuilder type '{0}' invalid or not found", defaultConfigurationBuilder));
+                }
+            }
+            else
+                Kernel.Register(Component.For<IConfigurationBuilder>().Instance(configurationBuilder).Named(DefaultConfigurationBuilderKey));
 		}
 
 
@@ -166,9 +170,11 @@ namespace Castle.Facilities.NHibernateIntegration
 		/// </summary>
 		protected void RegisterSessionFactoryResolver()
 		{
-			Kernel.AddComponent(SessionFactoryResolverKey,
-			                    typeof (ISessionFactoryResolver),
-			                    typeof (SessionFactoryResolver));
+		    Kernel.Register(
+		        Component.For<ISessionFactoryResolver>()
+		            .ImplementedBy<SessionFactoryResolver>()
+		            .Named(SessionFactoryResolverKey)
+		        );
 		}
 
 		/// <summary>
@@ -201,8 +207,7 @@ namespace Castle.Facilities.NHibernateIntegration
 				}
 			}
 
-			Kernel.AddComponent(SessionStoreKey, 
-				typeof(ISessionStore), sessionStoreType );
+		    Kernel.Register(Component.For<ISessionStore>().ImplementedBy(sessionStoreType).Named(SessionStoreKey));
 		}
 
 		/// <summary>
@@ -224,8 +229,7 @@ namespace Castle.Facilities.NHibernateIntegration
 				Kernel.ConfigurationStore.AddComponentConfiguration(SessionManagerKey, confignode);
 			}
 
-			Kernel.AddComponent(SessionManagerKey, 
-				typeof(ISessionManager), typeof(DefaultSessionManager) );
+		    Kernel.Register(Component.For<ISessionManager>().ImplementedBy<DefaultSessionManager>().Named(SessionManagerKey));
 		}
 
 		/// <summary>
@@ -236,9 +240,7 @@ namespace Castle.Facilities.NHibernateIntegration
 			if (!Kernel.HasComponent(typeof(ITransactionManager)))
 			{
 				log.Info("No Transaction Manager registered on Kernel, registering default Transaction Manager");
-
-				Kernel.AddComponent(TransactionManagerKey,
-									typeof (ITransactionManager), typeof (DefaultTransactionManager));
+                Kernel.Register(Component.For<ITransactionManager>().ImplementedBy<DefaultTransactionManager>().Named(TransactionManagerKey));
 			}
 		}
 
@@ -335,23 +337,21 @@ namespace Castle.Facilities.NHibernateIntegration
 			}
 			string configurationBuilderType = config.Attributes[ConfigurationBuilderConfigurationKey];
 			string configurationbuilderKey = string.Format(ConfigurationBuilderForFactoryFormat, id);
-			IConfigurationBuilder configurationBuilder;
+			IConfigurationBuilder configBuilder;
 			if (string.IsNullOrEmpty(configurationBuilderType))
 			{
-				configurationBuilder = Kernel.Resolve<IConfigurationBuilder>();
+				configBuilder = Kernel.Resolve<IConfigurationBuilder>();
 			}
 			else
 			{
-				Kernel.AddComponent(configurationbuilderKey,
-				                    typeof (IConfigurationBuilder),
-				                    Type.GetType(configurationBuilderType));
-				configurationBuilder = Kernel.Resolve<IConfigurationBuilder>(configurationbuilderKey);
+                Kernel.Register(Component.For<IConfigurationBuilder>().ImplementedBy(Type.GetType(configurationBuilderType)).Named(configurationbuilderKey));
+				configBuilder = Kernel.Resolve<IConfigurationBuilder>(configurationbuilderKey);
 			}
 			
-			var cfg = configurationBuilder.GetConfiguration(config);
+			var cfg = configBuilder.GetConfiguration(config);
 
 			// Registers the Configuration object
-			Kernel.AddComponentInstance( String.Format("{0}.cfg", id), cfg );
+		    Kernel.Register(Component.For<NHibernate.Cfg.Configuration>().Instance(cfg).Named(String.Format("{0}.cfg", id)));
 
 			// If a Session Factory level interceptor was provided, we use it
 
