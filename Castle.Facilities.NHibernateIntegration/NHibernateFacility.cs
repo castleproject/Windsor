@@ -173,7 +173,7 @@ namespace Castle.Facilities.NHibernateIntegration
 		    Kernel.Register(
 		        Component.For<ISessionFactoryResolver>()
 		            .ImplementedBy<SessionFactoryResolver>()
-		            .Named(SessionFactoryResolverKey)
+		            .Named(SessionFactoryResolverKey).LifeStyle.Singleton
 		        );
 		}
 
