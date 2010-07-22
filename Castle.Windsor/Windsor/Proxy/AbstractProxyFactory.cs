@@ -20,7 +20,6 @@ namespace Castle.Windsor.Proxy
 
 	using Castle.Core;
 	using Castle.Core.Interceptor;
-	using Castle.Core.Internal;
 	using Castle.DynamicProxy;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Context;
@@ -102,7 +101,8 @@ namespace Castle.Windsor.Proxy
 
 				try
 				{
-					var interceptor = (IInterceptor)handler.Resolve(context);
+					var contextForInterceptor = RebuildContext(handler.Service, context);
+					var interceptor = (IInterceptor)handler.Resolve(contextForInterceptor);
 
 					interceptors.Add(interceptor);
 
@@ -119,6 +119,17 @@ namespace Castle.Windsor.Proxy
 			}
 
 			return interceptors.ToArray();
+		}
+
+		private CreationContext RebuildContext(Type parameterType, CreationContext current)
+		{
+
+			if (parameterType.ContainsGenericParameters)
+			{
+				return current;
+			}
+
+			return new CreationContext(parameterType, current, true);
 		}
 
 		public void AddInterceptorSelector(IModelInterceptorsSelector selector)

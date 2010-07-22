@@ -95,6 +95,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ClassComponents\A2.cs" />
+    <Compile Include="ClassComponents\ACycleProp.cs" />
+    <Compile Include="ClassComponents\AProp.cs" />
+    <Compile Include="ClassComponents\APropCtor.cs" />
+    <Compile Include="ClassComponents\BCycleProp.cs" />
     <Compile Include="ComponentsWithAttribute\HasUserAttributeNonRegister.cs" />
     <Compile Include="ComponentsWithAttribute\HasUserAttributeRegister.cs" />
     <Compile Include="ComponentsWithAttribute\UserAttribute.cs" />

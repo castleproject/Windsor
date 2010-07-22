@@ -16,10 +16,10 @@ namespace Castle.MicroKernel.Tests
 {
 	using Castle.MicroKernel.Handlers;
 	using Castle.MicroKernel.Registration;
-	using Castle.MicroKernel.Tests.ClassComponents;
-	using Castle.Windsor;
+	using Castle.Windsor.Proxy;
 	using Castle.Windsor.Tests;
-	using Castle.Windsor.Tests.Components;
+	using Castle.Windsor.Tests.ClassComponents;
+	using Castle.Windsor.Tests.Interceptors;
 
 	using NUnit.Framework;
 
@@ -31,7 +31,7 @@ namespace Castle.MicroKernel.Tests
 		[SetUp]
 		public void Init()
 		{
-			kernel = new DefaultKernel();
+			kernel = new DefaultKernel(new DefaultProxyFactory());
 		}
 
 		[TearDown]
@@ -50,6 +50,44 @@ namespace Castle.MicroKernel.Tests
 			Assert.IsNotNull(kernel.Resolve<A>());
 			Assert.IsNotNull(kernel.Resolve<B>());
 			Assert.IsNotNull(kernel.Resolve<C>());
+		}
+
+		[Test]
+		public void Same_transient_interceptor_ctor_dependencies()
+		{
+			kernel.Register(Component.For<CountingInterceptor>().LifeStyle.Transient,
+			                Component.For<A>().Interceptors<CountingInterceptor>().LifeStyle.Transient,
+			                Component.For<B>().Interceptors<CountingInterceptor>().LifeStyle.Transient,
+			                Component.For<C>().Interceptors<CountingInterceptor>().LifeStyle.Transient);
+			kernel.Resolve<C>();
+		}
+
+		[Test]
+		public void Same_transient_interceptor_property_dependencies_cycle()
+		{
+			kernel.Register(Component.For<CountingInterceptor>().LifeStyle.Transient,
+							Component.For<ACycleProp>().Interceptors<CountingInterceptor>().LifeStyle.Transient,
+							Component.For<BCycleProp>().Interceptors<CountingInterceptor>().LifeStyle.Transient);
+			kernel.Resolve<ACycleProp>();
+		}
+
+		[Test]
+		public void Same_transient_interceptor_ctor_and_property_dependencies_no_cycle()
+		{
+			kernel.Register(Component.For<CountingInterceptor>().LifeStyle.Transient,
+							Component.For<APropCtor>().Interceptors<CountingInterceptor>().LifeStyle.Transient,
+							Component.For<A>().Interceptors<CountingInterceptor>().LifeStyle.Transient,
+							Component.For<A2>().Interceptors<CountingInterceptor>().LifeStyle.Transient);
+			var item = kernel.Resolve<APropCtor>();
+		}
+
+		[Test]
+		public void Same_transient_interceptor_property_dependencies_no_cycle()
+		{
+			kernel.Register(Component.For<CountingInterceptor>().LifeStyle.Transient,
+							Component.For<AProp>().Interceptors<CountingInterceptor>().LifeStyle.Transient,
+							Component.For<A>().Interceptors<CountingInterceptor>().LifeStyle.Transient);
+			kernel.Resolve<AProp>();
 		}
 
 		[Test]
