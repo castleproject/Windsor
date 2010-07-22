@@ -44,7 +44,7 @@ namespace Castle.MicroKernel.Context
 
 		private readonly IHandler handler;
 		private readonly IReleasePolicy releasePolicy;
-		private IDictionary additionalArguments;
+		private IDictionary additionalParameters;
 		private readonly Type[] genericArguments;
 
 		/// <summary>
@@ -70,7 +70,8 @@ namespace Castle.MicroKernel.Context
 		/// </summary>
 		/// <param name="typeToExtractGenericArguments">The type to extract generic arguments.</param>
 		/// <param name="parentContext">The parent context.</param>
-		public CreationContext(Type typeToExtractGenericArguments, CreationContext parentContext)
+		/// <param name="propagateInlineDependencies">When set to <c>true</c> will clone <paramref name="parentContext"/> <see cref="AdditionalParameters"/>.</param>
+		public CreationContext(Type typeToExtractGenericArguments, CreationContext parentContext, bool propagateInlineDependencies)
 			: this(parentContext.Handler, parentContext.ReleasePolicy, typeToExtractGenericArguments, null, null)
 		{
 			resolutionStack = parentContext.resolutionStack;
@@ -85,6 +86,11 @@ namespace Castle.MicroKernel.Context
 			foreach (var handlerItem in parentContext.handlerStack)
 			{
 				handlerStack.Push(handlerItem);
+			}
+
+			if (propagateInlineDependencies && parentContext.HasAdditionalParameters)
+			{
+				additionalParameters = new Arguments(parentContext.additionalParameters);
 			}
 		}
 
@@ -102,7 +108,7 @@ namespace Castle.MicroKernel.Context
 		{
 			this.handler = handler;
 			this.releasePolicy = releasePolicy;
-			this.additionalArguments = EnsureAdditionalArgumentsWriteable(additionalArguments);
+			this.additionalParameters = EnsureAdditionalArgumentsWriteable(additionalArguments);
 			converter = conversionManager;
 			dependencies = new DependencyModelCollection();
 
@@ -149,7 +155,7 @@ namespace Castle.MicroKernel.Context
 			Debug.Assert(CanResolve(context, contextHandlerResolver, model, dependency),
 			             "CanResolve(context, contextHandlerResolver, model, dependency)");
 
-			var inlineArgument = additionalArguments[dependency.DependencyKey];
+			var inlineArgument = additionalParameters[dependency.DependencyKey];
 			if (inlineArgument != null)
 			{
 				if (converter != null &&
@@ -162,7 +168,7 @@ namespace Castle.MicroKernel.Context
 				return inlineArgument;
 			}
 
-			inlineArgument = additionalArguments[dependency.TargetType];
+			inlineArgument = additionalParameters[dependency.TargetType];
 			if (inlineArgument != null &&
 			    converter != null &&
 			    !dependency.TargetType.IsInstanceOfType(inlineArgument) &&
@@ -177,7 +183,7 @@ namespace Castle.MicroKernel.Context
 		public virtual bool CanResolve(CreationContext context, ISubDependencyResolver contextHandlerResolver,
 		                               ComponentModel model, DependencyModel dependency)
 		{
-			if (additionalArguments == null)
+			if (additionalParameters == null)
 			{
 				return false;
 			}
@@ -192,8 +198,8 @@ namespace Castle.MicroKernel.Context
 			{
 				return false;
 			}
-			Debug.Assert(additionalArguments != null, "additionalArguments != null");
-			return CanResolve(dependency, additionalArguments[dependency.TargetType]);
+			Debug.Assert(additionalParameters != null, "additionalArguments != null");
+			return CanResolve(dependency, additionalParameters[dependency.TargetType]);
 		}
 
 		private bool CanResolveByKey(DependencyModel dependency)
@@ -202,8 +208,8 @@ namespace Castle.MicroKernel.Context
 			{
 				return false;
 			}
-			Debug.Assert(additionalArguments != null, "additionalArguments != null");
-			return CanResolve(dependency, additionalArguments[dependency.DependencyKey]);
+			Debug.Assert(additionalParameters != null, "additionalArguments != null");
+			return CanResolve(dependency, additionalParameters[dependency.DependencyKey]);
 		}
 
 		private bool CanResolve(DependencyModel dependency, object inlineArgument)
@@ -229,17 +235,17 @@ namespace Castle.MicroKernel.Context
 		{
 			get
 			{
-				if (additionalArguments == null)
+				if (additionalParameters == null)
 				{
-					additionalArguments = new Arguments();
+					additionalParameters = new Arguments();
 				}
-				return additionalArguments;
+				return additionalParameters;
 			}
 		}
 
 		public bool HasAdditionalParameters
 		{
-			get { return additionalArguments != null && additionalArguments.Count != 0; }
+			get { return additionalParameters != null && additionalParameters.Count != 0; }
 		}
 
 		/// <summary>
