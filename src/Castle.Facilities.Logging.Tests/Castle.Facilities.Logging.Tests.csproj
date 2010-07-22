@@ -115,9 +115,9 @@
     <Reference Include="NLog">
       <HintPath>..\..\lib\NLog.dll</HintPath>
     </Reference>
-    <Reference Include="nunit.framework" >
+    <Reference Include="nunit.framework">
       <HintPath>..\..\lib\NUnit.Framework.dll</HintPath>
-	</Reference>
+    </Reference>
     <Reference Include="System">
       <Name>System</Name>
     </Reference>
@@ -131,13 +131,13 @@
       <Name>System.XML</Name>
     </Reference>
     <ProjectReference Include="..\Castle.Facilities.Logging\Castle.Facilities.Logging.csproj">
-      <Name>Castle.Facilities.Logging-vs2008</Name>
+      <Name>Castle.Facilities.Logging</Name>
       <Project>{32D54D33-206F-44EE-8329-8480ABE049B1}</Project>
       <Package>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</Package>
     </ProjectReference>
     <ProjectReference Include="..\Castle.Windsor\Castle.Windsor.csproj">
       <Project>{60EFCB9B-E3FF-46A5-A2D2-D9F0EF75D5FE}</Project>
-      <Name>Castle.Windsor-vs2008</Name>
+      <Name>Castle.Windsor</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
