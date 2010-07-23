@@ -14,6 +14,8 @@
 
 namespace Castle.Facilities.WcfIntegration
 {
+	using System.Xml.Linq;
+
     internal static class WcfConstants
     {
 		public const string ExtensionScopeKey = "scope";
@@ -24,6 +26,8 @@ namespace Castle.Facilities.WcfIntegration
 		public const string ClientModelKey = "wcf.clientModel";
 		public const string ClientBurdenKey = "wcf.clientBurden";
 		public const string EndpointConfiguration = "wcfEndpointConfiguration";
+
+		public static readonly XName EndpointMetadata = XName.Get("Endpoint", "urn:www.castleproject.org:wcf");
 	}
 }
 

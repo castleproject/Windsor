@@ -53,7 +53,7 @@ namespace Castle.Facilities.WcfIntegration.Async
 				channelFactoryType, Type.EmptyTypes, proxyOptions, constructorArgs, interceptor);
 		}
 
-		private void ReplaceServiceEndpointAsyncContracts(object[] constructorArgs)
+		private static void ReplaceServiceEndpointAsyncContracts(object[] constructorArgs)
 		{
 			for (int i = 0; i < constructorArgs.Length; ++i)
 			{
@@ -133,7 +133,7 @@ namespace Castle.Facilities.WcfIntegration.Async
 			invocation.Proceed();
 		}
 
-		private void SetAsyncTypeAsTargetType(object target)
+		private static void SetAsyncTypeAsTargetType(object target)
 		{
 			var channelFactoryType = FindTypeContainingChannelTypeField(target.GetType());
 			if (channelFactoryType == null)
@@ -147,12 +147,12 @@ namespace Castle.Facilities.WcfIntegration.Async
 			channelTypeField.SetValue(target, AsyncType.GetAsyncType(channelType));
 		}
 
-		private FieldInfo GetChannelTypeField(Type channelFactoryType)
+		private static FieldInfo GetChannelTypeField(Type channelFactoryType)
 		{
 			return channelFactoryType.GetField("channelType", BindingFlags.Instance | BindingFlags.NonPublic);
 		}
 
-		private Type FindTypeContainingChannelTypeField(Type channelFactoryType)
+		private static Type FindTypeContainingChannelTypeField(Type channelFactoryType)
 		{
 			Debug.Assert(typeof(ChannelFactory).IsAssignableFrom(channelFactoryType),
 			             "typeof(ChannelFactory).IsAssignableFrom(channelFactoryType)");

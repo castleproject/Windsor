@@ -15,25 +15,17 @@
 namespace Castle.Facilities.WcfIntegration
 {
 	using System;
-	using System.ServiceModel;
 
-	using Castle.MicroKernel.Registration;
-	using Castle.MicroKernel.Resolvers;
-
-	public class WcfConfigComponentLoader : ILazyComponentLoader
+	public interface IWcfClientFactory
 	{
-		public IRegistration Load(string key, Type service)
-		{
-			if (!Attribute.IsDefined(service, typeof(ServiceContractAttribute)))
-			{
-				return null;
-			}
+		T GetClient<T>(string name) where T : class;
 
-			//we assume the service is defined in the config file
-			return Component.For(service)
-				.Named(key)
-				.LifeStyle.Transient
-				.AsWcfClient(new DefaultClientModel(WcfEndpoint.FromConfiguration(key)));
-		}
+		T GetClient<T>(IWcfClientModel model) where T : class;
+
+		T GetClient<T>(IWcfEndpoint endpoint) where T : class;
+
+		T GetClient<T>(Uri address) where T : class;
+
+		void Release(object client);
 	}
 }

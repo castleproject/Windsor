@@ -107,6 +107,7 @@
     <Compile Include="Behaviors\ServiceEndpointExtensions.cs" />
     <Compile Include="Client\AbstractChannelFactoryBuilder.cs" />
     <Compile Include="Client\Async\TypeSystem\AttributeHelpers.cs" />
+    <Compile Include="Client\IWcfClientFactory.cs" />
     <Compile Include="Client\Policies\ChannelReconnectPolicy.cs" />
     <Compile Include="Client\Policies\IChannelActionPolicy.cs" />
     <Compile Include="Client\Policies\IRefreshChannelPolicy.cs" />
@@ -142,6 +143,7 @@
     <Compile Include="Client\Duplex\DuplexClientModel.cs" />
     <Compile Include="Client\ChannelFactoryExtensions.cs" />
     <Compile Include="AbstractWcfPolicy.cs" />
+    <Compile Include="Client\WcfClientFactorySelector.cs" />
     <Compile Include="IWcfPolicy.cs" />
     <Compile Include="IWcfCleanUp.cs" />
     <Compile Include="Lifestyles\AbstractWcfLifestyleCache.cs" />
@@ -155,7 +157,7 @@
     <Compile Include="Lifestyles\PerWcfOperationLifestyle.cs" />
     <Compile Include="Lifestyles\PerWcfSessionLifestyle.cs" />
     <Compile Include="Lifestyles\AbstractWcfLifestyleManager.cs" />
-    <Compile Include="WcfConfigComponentLoader.cs" />
+    <Compile Include="Client\WcfClientComponentLoader.cs" />
     <Compile Include="WcfContextChannel.cs" />
     <Compile Include="Client\IChannelFactoryAware.cs" />
     <Compile Include="IWcfBurden.cs" />

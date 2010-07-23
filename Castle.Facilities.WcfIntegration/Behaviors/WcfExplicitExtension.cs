@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+using System.Threading;
 
 namespace Castle.Facilities.WcfIntegration
 {
@@ -156,23 +157,23 @@ namespace Castle.Facilities.WcfIntegration
 
 	internal class WcfServiceKeyExtension : WcfExplicitExtension
 	{
-		private readonly string key;
-
 		internal WcfServiceKeyExtension(string key)
 		{
-			this.key = key;
+			Key = key;
 		}
+
+		public string Key { get; private set; }
 
 		protected override object GetExtensionInstance(IKernel kernel, IWcfBurden burden)
 		{
-			object extension = kernel.Resolve(key, WcfUtils.EmptyArguments);
+			object extension = kernel.Resolve(Key, WcfUtils.EmptyArguments);
 			burden.Add(extension);
 			return extension;
 		}
 
 		public override void AddDependencies(IKernel kernel, ComponentModel model)
 		{
-			WcfUtils.AddExtensionDependency(key, null, model);
+			WcfUtils.AddExtensionDependency(Key, null, model);
 		}
 	}
 
@@ -182,23 +183,23 @@ namespace Castle.Facilities.WcfIntegration
 
 	internal class WcfServiceTypeExtension : WcfExplicitExtension
 	{
-		private readonly Type service;
-
 		internal WcfServiceTypeExtension(Type service)
 		{
-			this.service = service;
+			ServiceType = service;
 		}
+
+		public Type ServiceType { get; private set; }
 
 		protected override object GetExtensionInstance(IKernel kernel, IWcfBurden burden)
 		{
-			object extension = kernel.Resolve(service);
+			object extension = kernel.Resolve(ServiceType);
 			burden.Add(extension);
 			return extension;
 		}
 
 		public override void AddDependencies(IKernel kernel, ComponentModel model)
 		{
-			WcfUtils.AddExtensionDependency(null, service, model);
+			WcfUtils.AddExtensionDependency(null, ServiceType, model);
 		}
 	}
 
@@ -208,17 +209,17 @@ namespace Castle.Facilities.WcfIntegration
 
 	internal class WcfInstanceExtension : WcfExplicitExtension
 	{
-		private readonly object instance;
-
 		internal WcfInstanceExtension(object instance)
 		{
-			this.instance = instance;
+			Instance = instance;
 		}
+
+		public object Instance { get; private set; }
 
 		protected override object GetExtensionInstance(IKernel kernel, IWcfBurden burden)
 		{
-			burden.Add(instance);
-			return instance;
+			burden.Add(Instance);
+			return Instance;
 		}
 	}
 

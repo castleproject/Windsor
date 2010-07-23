@@ -16,6 +16,7 @@ namespace Castle.Facilities.WcfIntegration
 {
 	using System;
 	using System.Collections.Generic;
+	using System.Linq;
 	using System.ServiceModel;
 	using System.ServiceModel.Channels;
 	using System.ServiceModel.Description;
@@ -72,7 +73,6 @@ namespace Castle.Facilities.WcfIntegration
 	public abstract class WcfEndpointBase : IWcfEndpoint
 	{
 		private List<IWcfExtension> extensions;
-		private List<Uri> scopes;
 
 		protected WcfEndpointBase(Type contract)
 		{
@@ -92,18 +92,6 @@ namespace Castle.Facilities.WcfIntegration
 					extensions = new List<IWcfExtension>();
 				}
 				return extensions;
-			}
-		}
-
-		public ICollection<Uri> Scopes
-		{
-			get
-			{
-				if (scopes == null)
-				{
-					scopes = new List<Uri>();
-				}
-				return scopes;
 			}
 		}
 
@@ -137,20 +125,45 @@ namespace Castle.Facilities.WcfIntegration
 
 		public T InScope(params Uri[] scopes)
 		{
+			var discovery = GetDiscoveryInstance();
+
 			foreach (var scope in scopes)
 			{
-				Scopes.Add(scope);
+				discovery.Scopes.Add(scope);
 			}
+
 			return (T)this;
 		}
 
 		public T InScope(params string[] scopes)
 		{
-			foreach (var scope in scopes)
+			return InScope(scopes.Select(scope => new Uri(scope)).ToArray());
+		}
+
+		public T FilteredBy(params XElement[] filters)
+		{
+			var discovery = GetDiscoveryInstance();
+			foreach (var filter in filters)
 			{
-				Scopes.Add(new Uri(scope));
+				discovery.Extensions.Add(filter);
 			}
 			return (T)this;
+		}
+
+		private EndpointDiscoveryBehavior GetDiscoveryInstance()
+		{
+			var discovery = Extensions.OfType<WcfInstanceExtension>()
+						.Select(extension => extension.Instance)
+						.OfType<EndpointDiscoveryBehavior>()
+						.FirstOrDefault();
+
+			if (discovery == null)
+			{
+				discovery = new EndpointDiscoveryBehavior();
+				AddExtensions(WcfExplicitExtension.CreateFrom(discovery));
+			}
+
+			return discovery;
 		}
 
 		#region Logging
@@ -410,13 +423,9 @@ namespace Castle.Facilities.WcfIntegration
 
 	public class DiscoveredEndpointModel : WcfEndpointBase<DiscoveredEndpointModel>
 	{
-		private Uri scopeMatchBy;
-		private readonly List<XElement> filters;
-
 		internal DiscoveredEndpointModel(Type contract)
 			: base(contract)
 		{
-			filters = new List<XElement>();
 		}
 
 		internal DiscoveredEndpointModel(Type contract, Binding binding)
@@ -427,25 +436,17 @@ namespace Castle.Facilities.WcfIntegration
 
 		public Binding Binding { get; private set; }
 
-		public bool UseMetadata { get; private set; }
+		public bool DeriveBinding { get; private set; }
 
-		public Uri ScopeMatchBy
-		{
-			get { return scopeMatchBy; }
-		}
-
-		public ICollection<XElement> Filters
-		{
-			get { return filters; }
-		}
+		public Uri ScopeMatchBy { get; private set; }
 
 		public TimeSpan? Duration { get; private set; }
 
 		public DiscoveryEndpoint DiscoveryEndpoint { get; set; }
 
-		public DiscoveredEndpointModel FromMetadata()
+		public DiscoveredEndpointModel InferBinding()
 		{
-			UseMetadata = true;
+			DeriveBinding = true;
 			return this;
 		}
 
@@ -483,13 +484,7 @@ namespace Castle.Facilities.WcfIntegration
 
 		public DiscoveredEndpointModel MatchScopeBy(Uri match)
 		{
-			scopeMatchBy = match;
-			return this;
-		}
-
-		public DiscoveredEndpointModel FilteredBy(params XElement[] filters)
-		{
-			this.filters.AddRange(filters);
+			ScopeMatchBy = match;
 			return this;
 		}
 

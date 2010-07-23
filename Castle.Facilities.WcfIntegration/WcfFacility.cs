@@ -45,7 +45,7 @@ namespace Castle.Facilities.WcfIntegration
 			Kernel.Register(
 				Component.For<WcfClientExtension>().Instance(clientExtension),
 				Component.For<WcfServiceExtension>().Instance(serviceExtension),
-				Component.For<ILazyComponentLoader>().ImplementedBy<WcfConfigComponentLoader>()
+				Component.For<ILazyComponentLoader>().ImplementedBy<WcfClientComponentLoader>()
 				);
 
 			Kernel.ComponentModelCreated += Kernel_ComponentModelCreated;

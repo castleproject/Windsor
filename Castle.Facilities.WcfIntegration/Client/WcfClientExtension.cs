@@ -20,6 +20,7 @@ namespace Castle.Facilities.WcfIntegration
 	using System.ServiceModel;
 	using System.ServiceModel.Channels;
 	using Castle.Core;
+	using Castle.Facilities.TypedFactory;
 	using Castle.Facilities.WcfIntegration.Async;
 	using Castle.Facilities.WcfIntegration.Internal;
 	using Castle.Facilities.WcfIntegration.Rest;
@@ -87,6 +88,13 @@ namespace Castle.Facilities.WcfIntegration
 					.ImplementedBy(typeof(AsynChannelFactoryBuilder<>))
 					.Unless(Component.ServiceAlreadyRegistered)
 					);
+
+			if (kernel.GetFacilities().OfType<TypedFactoryFacility>().Any())
+			{
+				kernel.Register(
+					Component.For<IWcfClientFactory>().AsFactory(c => c.SelectedWith(new WcfClientFactorySelector()))
+					);
+			}
 
 			kernel.ComponentModelCreated += Kernel_ComponentModelCreated;
 			kernel.ComponentUnregistered += Kernel_ComponentUnregistered;

@@ -24,6 +24,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 	using Castle.Core.Resource;
 	using Castle.DynamicProxy;
 	using Castle.Facilities.Logging;
+	using Castle.Facilities.TypedFactory;
 	using Castle.Facilities.WcfIntegration.Async;
 	using Castle.Facilities.WcfIntegration.Behaviors;
 	using Castle.Facilities.WcfIntegration.Demo;
@@ -181,7 +182,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 					.Register(Component.For<IOperations>()
 						.Named("operations")
 						.LifeStyle.Transient
-						.AsWcfClient(new DefaultClientModel())
+						.AsWcfClient()
 					))
 				{
 					var client1 = clientContainer.Resolve<IOperations>("operations",
@@ -236,12 +237,192 @@ namespace Castle.Facilities.WcfIntegration.Tests
 						new { Endpoint = WcfEndpoint.At("net.tcp://localhost/Operations2") }));
 					var client2 = clientContainer.Resolve<IOperations>("operations",
 						new { Endpoint = WcfEndpoint.At("net.tcp://localhost/Operations2") });
+
 					Assert.AreEqual(28, ((IOperations)client1.Target).GetValueFromConstructor());
 					Assert.AreEqual(28, client2.GetValueFromConstructor());
 					clientContainer.Release(client1.Target);
 					clientContainer.Release(client2);
 					System.GC.Collect();
 					Assert.IsFalse(client1.IsAlive);
+				}
+			}
+		}
+
+		[Test]
+		public void CanLazilyResolveClientAssociatedWithChannelUsingSuppliedModel()
+		{
+			using (new WindsorContainer()
+				.AddFacility<WcfFacility>(f => f.CloseTimeout = TimeSpan.Zero)
+				.Register(Component.For<Operations>()
+					.DependsOn(new { number = 28 })
+					.AsWcfService(new DefaultServiceModel()
+						.AddEndpoints(WcfEndpoint.ForContract<IOperations>()
+							.BoundTo(new NetTcpBinding { PortSharingEnabled = true })
+							.At("net.tcp://localhost/Operations2")
+							)
+				)))
+			{
+				using (var clientContainer = new WindsorContainer()
+					.AddFacility<WcfFacility>(f => f.CloseTimeout = TimeSpan.Zero))
+				{
+					var client1 = clientContainer.Resolve<IOperations>(
+						new
+						{
+							Model = new DefaultClientModel
+							{
+								Endpoint = WcfEndpoint.BoundTo(new NetTcpBinding())
+									.At("net.tcp://localhost/Operations2")
+							}
+						});
+					var client2 = clientContainer.Resolve<IOperations>(
+						new
+						{
+							Model = new DefaultClientModel()
+							{
+								Endpoint = WcfEndpoint.BoundTo(new NetTcpBinding())
+									.At("net.tcp://localhost/Operations2")
+							}
+						});
+					Assert.AreEqual(28, client1.GetValueFromConstructor());
+					Assert.AreEqual(28, client2.GetValueFromConstructor());
+					clientContainer.Release(client1);
+					clientContainer.Release(client2);
+				}
+			}
+		}
+
+		[Test]
+		public void CanLazilyResolveClientAssociatedWithChannelUsingSuppliedEndpoint()
+		{
+			using (new WindsorContainer()
+				.AddFacility<WcfFacility>(f => f.CloseTimeout = TimeSpan.Zero)
+				.Register(Component.For<Operations>()
+					.DependsOn(new { number = 28 })
+					.AsWcfService(new DefaultServiceModel()
+						.AddEndpoints(WcfEndpoint.ForContract<IOperations>()
+							.BoundTo(new NetTcpBinding { PortSharingEnabled = true })
+							.At("net.tcp://localhost/Operations2")
+							)
+				)))
+			{
+				using (var clientContainer = new WindsorContainer()
+					.AddFacility<WcfFacility>(f => f.CloseTimeout = TimeSpan.Zero))
+				{
+					var client1 = new WeakReference(clientContainer.Resolve<IOperations>("operations",
+						new { Endpoint = WcfEndpoint.At("net.tcp://localhost/Operations2") }));
+					var client2 = clientContainer.Resolve<IOperations>("operations",
+						new { Endpoint = WcfEndpoint.At("net.tcp://localhost/Operations2") });
+
+					Assert.AreEqual(28, ((IOperations)client1.Target).GetValueFromConstructor());
+					Assert.AreEqual(28, client2.GetValueFromConstructor());
+					clientContainer.Release(client1.Target);
+					clientContainer.Release(client2);
+					System.GC.Collect();
+					Assert.IsFalse(client1.IsAlive);
+				}
+			}
+		}
+
+		[Test]
+		public void CanResolveClientAssociatedWithChannelUsingFactoryWithConfiguration()
+		{
+			using (var clientContainer = new WindsorContainer()
+					.AddFacility<TypedFactoryFacility>()
+					.AddFacility<WcfFacility>(f => f.CloseTimeout = TimeSpan.Zero))
+			{
+				var factory = clientContainer.Resolve<IWcfClientFactory>();
+
+				var client = factory.GetClient<IAmUsingWindsor>("WSHttpBinding_IAmUsingWindsor");
+
+				Assert.AreEqual(42, client.GetValueFromWindsorConfig());
+				factory.Release(client);
+			}
+		}
+
+		[Test]
+		public void CanResolveClientAssociatedWithChannelUsingFactoryWithModel()
+		{
+			using (new WindsorContainer()
+				.AddFacility<WcfFacility>(f => f.CloseTimeout = TimeSpan.Zero)
+				.Register(Component.For<Operations>()
+					.DependsOn(new { number = 28 })
+					.AsWcfService(new DefaultServiceModel()
+						.AddEndpoints(WcfEndpoint.ForContract<IOperations>()
+							.BoundTo(new NetTcpBinding { PortSharingEnabled = true })
+							.At("net.tcp://localhost/Operations2")
+							)
+				)))
+			{
+				using (var clientContainer = new WindsorContainer()
+					.AddFacility<TypedFactoryFacility>()
+					.AddFacility<WcfFacility>(f => f.CloseTimeout = TimeSpan.Zero))
+				{
+					var factory = clientContainer.Resolve<IWcfClientFactory>();
+
+					var client = factory.GetClient<IOperations>(new DefaultClientModel
+					{
+						Endpoint = WcfEndpoint.BoundTo(new NetTcpBinding())
+							.At("net.tcp://localhost/Operations2")
+					});
+
+					Assert.AreEqual(28, client.GetValueFromConstructor());
+					factory.Release(client);
+				}
+			}
+		}
+
+		[Test]
+		public void CanResolveClientAssociatedWithChannelUsingFactoryWithEndpoint()
+		{
+			using (new WindsorContainer()
+				.AddFacility<WcfFacility>(f => f.CloseTimeout = TimeSpan.Zero)
+				.Register(Component.For<Operations>()
+					.DependsOn(new { number = 28 })
+					.AsWcfService(new DefaultServiceModel()
+						.AddEndpoints(WcfEndpoint.ForContract<IOperations>()
+							.BoundTo(new NetTcpBinding { PortSharingEnabled = true })
+							.At("net.tcp://localhost/Operations2")
+							)
+				)))
+			{
+				using (var clientContainer = new WindsorContainer()
+					.AddFacility<TypedFactoryFacility>()
+					.AddFacility<WcfFacility>(f => f.CloseTimeout = TimeSpan.Zero))
+				{
+					var factory = clientContainer.Resolve<IWcfClientFactory>();
+
+					var client = factory.GetClient<IOperations>(WcfEndpoint.At("net.tcp://localhost/Operations2"));
+
+					Assert.AreEqual(28, client.GetValueFromConstructor());
+					factory.Release(client);
+				}
+			}
+		}
+
+		[Test]
+		public void CanResolveClientAssociatedWithChannelUsingFactoryWithUri()
+		{
+			using (new WindsorContainer()
+				.AddFacility<WcfFacility>(f => f.CloseTimeout = TimeSpan.Zero)
+				.Register(Component.For<Operations>()
+					.DependsOn(new { number = 28 })
+					.AsWcfService(new DefaultServiceModel()
+						.AddEndpoints(WcfEndpoint.ForContract<IOperations>()
+							.BoundTo(new NetTcpBinding { PortSharingEnabled = true })
+							.At("net.tcp://localhost/Operations2")
+							)
+				)))
+			{
+				using (var clientContainer = new WindsorContainer()
+					.AddFacility<TypedFactoryFacility>()
+					.AddFacility<WcfFacility>(f => f.CloseTimeout = TimeSpan.Zero))
+				{
+					var factory = clientContainer.Resolve<IWcfClientFactory>();
+
+					var client = factory.GetClient<IOperations>(new Uri("net.tcp://localhost/Operations2"));
+
+					Assert.AreEqual(28, client.GetValueFromConstructor());
+					factory.Release(client);
 				}
 			}
 		}
@@ -1433,11 +1614,11 @@ namespace Castle.Facilities.WcfIntegration.Tests
 							.At("net.tcp://localhost/Operations2"))
 						.Discoverable()
 				)))
-			{	//}
+			{
 				using (var clientContainer = new WindsorContainer()
 					.AddFacility<WcfFacility>()
 					.Register(Component.For<IOperations>()
-						.AsWcfClient(WcfEndpoint.Discover())
+						.AsWcfClient(WcfEndpoint.Discover().InferBinding())
 					))
 				{
 					var client = clientContainer.Resolve<IOperations>();
@@ -1460,14 +1641,13 @@ namespace Castle.Facilities.WcfIntegration.Tests
 								PortSharingEnabled = true
 							})
 							.At("net.tcp://localhost/Operations2"))
-						.PublishMetadata()
 						.Discoverable()
 				)))
-			{	//}
+			{
 				using (var clientContainer = new WindsorContainer()
 					.AddFacility<WcfFacility>()
 					.Register(Component.For<IOperations>()
-						.AsWcfClient(WcfEndpoint.Discover().FromMetadata())
+						.AsWcfClient(WcfEndpoint.Discover())
 					))
 				{
 					var client = clientContainer.Resolve<IOperations>();
@@ -1489,7 +1669,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 							.At("net.tcp://localhost/Operations2"))
 						.Discoverable(discover => discover.InScope("urn:castle:wcf"))
 				)))
-			{	//}
+			{
 				using (var clientContainer = new WindsorContainer()
 					.AddFacility<WcfFacility>()
 					.Register(Component.For<IOperations>()
@@ -1517,11 +1697,66 @@ namespace Castle.Facilities.WcfIntegration.Tests
 							.At("net.tcp://localhost/Operations2"))
 						.Discoverable(discover => discover.InScope("urn:castle:wcf"))
 				)))
-			{	//}
+			{
 				using (var clientContainer = new WindsorContainer()
 					.AddFacility<WcfFacility>()
 					.Register(Component.For<IOperations>()
 						.AsWcfClient(WcfEndpoint.Discover().InScope("urn:castle:wcf"))
+					))
+				{
+					var client = clientContainer.Resolve<IOperations>();
+					Assert.AreEqual(28, client.GetValueFromConstructor());
+				}
+			}
+		}
+
+		[Test]
+		public void CanDiscoverServiceEndpointAndInferBindingWithEndpointScope()
+		{
+			using (new WindsorContainer()
+				.AddFacility<WcfFacility>(f => f.CloseTimeout = TimeSpan.Zero)
+				.Register(Component.For<Operations>()
+					.DependsOn(new { number = 28 })
+					.AsWcfService(new DefaultServiceModel()
+						.AddEndpoints(WcfEndpoint.ForContract<IOperations>()
+							.BoundTo(new NetTcpBinding { PortSharingEnabled = true })
+							.At("net.tcp://localhost/Operations2")
+							.InScope("urn:castle:wcf"))
+						.Discoverable()
+				)))
+			{
+				using (var clientContainer = new WindsorContainer()
+					.AddFacility<WcfFacility>()
+					.Register(Component.For<IOperations>()
+						.AsWcfClient(WcfEndpoint.Discover().InferBinding().InScope("urn:castle:wcf"))
+					))
+				{
+					var client = clientContainer.Resolve<IOperations>();
+					Assert.AreEqual(28, client.GetValueFromConstructor());
+				}
+			}
+		}
+
+		[Test]
+		public void CanDiscoverServiceEndpointAndInferBindingWithCombindedScopes()
+		{
+			using (new WindsorContainer()
+				.AddFacility<WcfFacility>(f => f.CloseTimeout = TimeSpan.Zero)
+				.Register(Component.For<Operations>()
+					.DependsOn(new { number = 28 })
+					.AsWcfService(new DefaultServiceModel()
+						.AddEndpoints(WcfEndpoint.ForContract<IOperations>()
+							.BoundTo(new NetTcpBinding { PortSharingEnabled = true })
+							.At("net.tcp://localhost/Operations2")
+							.InScope("urn:castle:wcf"))
+						.Discoverable(discover => discover.InScope("urn:castle:ioc"))
+				)))
+			{
+				using (var clientContainer = new WindsorContainer()
+					.AddFacility<WcfFacility>()
+					.Register(Component.For<IOperations>()
+						.AsWcfClient(WcfEndpoint.Discover().InferBinding()
+						.InScope("urn:castle:wcf", "urn:castle:ioc"))
 					))
 				{
 					var client = clientContainer.Resolve<IOperations>();
@@ -1545,13 +1780,12 @@ namespace Castle.Facilities.WcfIntegration.Tests
 							})
 							.At("net.tcp://localhost/Operations2"))
 						.Discoverable(discover => discover.InScope("urn:castle:wcf"))
-						.PublishMetadata()
 				)))
-			{	//}
+			{
 				using (var clientContainer = new WindsorContainer()
 					.AddFacility<WcfFacility>()
 					.Register(Component.For<IOperations>()
-						.AsWcfClient(WcfEndpoint.Discover().FromMetadata().InScope("urn:castle:wcf"))
+						.AsWcfClient(WcfEndpoint.Discover().InScope("urn:castle:wcf"))
 					))
 				{
 					var client = clientContainer.Resolve<IOperations>();

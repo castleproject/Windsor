@@ -33,11 +33,6 @@ namespace Castle.Facilities.WcfIntegration
 		ICollection<IWcfExtension> Extensions { get; }
 
 		/// <summary>
-		/// Gets the endpoint scopes.
-		/// </summary>
-		ICollection<Uri> Scopes { get; }
-
-		/// <summary>
 		/// Supports management of endpoints.
 		/// </summary>
 		/// <param name="visitor"></param>

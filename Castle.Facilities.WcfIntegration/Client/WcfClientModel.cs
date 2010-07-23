@@ -72,9 +72,12 @@ namespace Castle.Facilities.WcfIntegration
 
 		public virtual IWcfClientModel ForEndpoint(IWcfEndpoint endpoint)
 		{
-			WcfClientModelBase copy = (WcfClientModelBase)MemberwiseClone();
+			var copy = (WcfClientModelBase)MemberwiseClone();
 			copy.endpoint = endpoint;
-			copy.extensions = new List<IWcfExtension>(extensions);
+			if (extensions != null)
+			{
+				copy.extensions = new List<IWcfExtension>(extensions);
+			}
 			return copy;
 		}
 

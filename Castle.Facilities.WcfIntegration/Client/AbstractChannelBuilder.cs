@@ -15,6 +15,7 @@
 namespace Castle.Facilities.WcfIntegration
 {
 	using System;
+	using System.Linq;
 	using System.ServiceModel;
 	using System.ServiceModel.Channels;
 	using System.ServiceModel.Description;
@@ -122,18 +123,10 @@ namespace Castle.Facilities.WcfIntegration
 		void IWcfEndpointVisitor.VisitBindingDiscoveredEndpoint(DiscoveredEndpointModel model)
 		{
 			var discoveryEndpoint = model.DiscoveryEndpoint ?? new UdpDiscoveryEndpoint();
-
-			if (model.UseMetadata)
-			{
-				DiscoverEndpointFromMetadata(discoveryEndpoint, model);
-			}
-			else
-			{
-				DiscoverEndpointAddress(discoveryEndpoint, model);
-			}
+			DiscoverEndpoint(discoveryEndpoint, model);
 		}
 
-		private void DiscoverEndpointAddress(DiscoveryEndpoint discoveryEndpoint, DiscoveredEndpointModel model)
+		private void DiscoverEndpoint(DiscoveryEndpoint discoveryEndpoint, DiscoveredEndpointModel model)
 		{
 			using (var discover = new DiscoveryClient(discoveryEndpoint))
 			{
@@ -142,8 +135,16 @@ namespace Castle.Facilities.WcfIntegration
 				var discovered = discover.Find(criteria);
 				if (discovered.Endpoints.Count > 0)
 				{
-					var address = discovered.Endpoints[0].Address;
-					var binding = GetEffectiveBinding(model.Binding, address.Uri);
+					var binding = model.Binding;
+					var endpointMetadata = discovered.Endpoints[0];
+
+					if (binding == null && model.DeriveBinding == false)
+					{
+						binding = GetBindingFromMetadata(endpointMetadata);					
+					}
+					
+					var address = endpointMetadata.Address;
+					binding = GetEffectiveBinding(binding, address.Uri);
 					channelCreator = GetChannel(contract, binding, address);
 				}
 				else
@@ -152,26 +153,6 @@ namespace Castle.Facilities.WcfIntegration
 						"Unable to discover the endpoint address for contract {0}.  " + 
 						"Either no service exists or it does not support discovery.",
 						contract.FullName));
-				}
-			}
-		}
-
-		private void DiscoverEndpointFromMetadata(DiscoveryEndpoint discoveryEndpoint, DiscoveredEndpointModel model)
-		{
-			using (var discover = new DiscoveryClient(discoveryEndpoint))
-			{
-				var criteria = FindCriteria.CreateMetadataExchangeEndpointCriteria(contract);
-				criteria.MaxResults = 1;
-
-				var discovered = discover.Find(criteria);
-				if (discovered.Endpoints.Count > 0)
-				{
-					var mexAddress = discovered.Endpoints[0].Address;
-					var endpoints = MetadataResolver.Resolve(contract, mexAddress);
-					if (endpoints.Count > 0)
-					{
-						channelCreator = GetChannel(contract, endpoints[0].Binding, endpoints[0].Address);
-					}
 				}
 			}
 		}
@@ -196,22 +177,55 @@ namespace Castle.Facilities.WcfIntegration
 				criteria.Duration = model.Duration.Value;
 			}
 
-			foreach (var scope in model.Scopes)
-			{
-				criteria.Scopes.Add(scope);
-			}
+			var discovery = model.Extensions.OfType<WcfInstanceExtension>()
+				.Select(extension => extension.Instance)
+				.OfType<EndpointDiscoveryBehavior>()
+				.FirstOrDefault();
 
-			if (model.ScopeMatchBy != null)
+			if (discovery != null)
 			{
-				criteria.ScopeMatchBy = model.ScopeMatchBy;
-			}
+				foreach (var scope in discovery.Scopes)
+				{
+					criteria.Scopes.Add(scope);
+				}
 
-			foreach (var filter in model.Filters)
-			{
-				criteria.Extensions.Add(filter);
+				if (model.ScopeMatchBy != null)
+				{
+					criteria.ScopeMatchBy = model.ScopeMatchBy;
+				}
+
+				foreach (var filter in discovery.Extensions)
+				{
+					criteria.Extensions.Add(filter);
+				}
 			}
 
 			return criteria;
+		}
+
+		private static Binding GetBindingFromMetadata(EndpointDiscoveryMetadata metadata)
+		{
+			var metadataExtension = 
+				(from extension in metadata.Extensions
+				 where extension.Name == WcfConstants.EndpointMetadata
+				 select extension).FirstOrDefault();
+			if (metadataExtension == null) return null;
+
+			var endpointMetadata = metadataExtension.Elements().FirstOrDefault();
+			if (endpointMetadata == null) return null;
+
+			using (var xmlReader = endpointMetadata.CreateReader())
+			{
+				var metadataSet = MetadataSet.ReadFrom(xmlReader);
+				var importer = new WsdlImporter(metadataSet);
+				var endpoints = importer.ImportAllEndpoints();
+				if (endpoints.Count > 0)
+				{
+					return endpoints[0].Binding;
+				}
+			}
+
+			return null;
 		}
 
 		private Binding GetEffectiveBinding(Binding binding, Uri address)

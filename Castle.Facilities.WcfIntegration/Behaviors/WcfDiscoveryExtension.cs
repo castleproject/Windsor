@@ -18,13 +18,17 @@ namespace Castle.Facilities.WcfIntegration
 	using System.Collections.Generic;
 	using System.Linq;
 	using System.ServiceModel;
+	using System.ServiceModel.Description;
 	using System.ServiceModel.Discovery;
+	using System.Xml.Linq;
 	using Castle.Facilities.WcfIntegration.Service;
 
 	public class WcfDiscoveryExtension : AbstractServiceHostAware
 	{
+		private bool strict;
 		private DiscoveryEndpoint discoveryEndpoint;
 		private readonly List<Uri> scopes = new List<Uri>();
+		private readonly List<XElement> filters = new List<XElement>();
 
 		public WcfDiscoveryExtension InScope(params Uri[] scopes)
 		{
@@ -32,9 +36,21 @@ namespace Castle.Facilities.WcfIntegration
 			return this;
 		}
 
+		public WcfDiscoveryExtension Strict()
+		{
+			strict = true;
+			return this;
+		}
+
 		public WcfDiscoveryExtension InScope(params string[] scopes)
 		{
 			this.scopes.AddRange(scopes.Select(scope => new Uri(scope)));
+			return this;
+		}
+
+		public WcfDiscoveryExtension FilteredBy(params XElement[] filters)
+		{
+			this.filters.AddRange(filters);
 			return this;
 		}
 
@@ -52,17 +68,28 @@ namespace Castle.Facilities.WcfIntegration
 				serviceHost.Description.Behaviors.Add(new ServiceDiscoveryBehavior());
 			}
 
-			if (scopes.Count > 0)
+			foreach (var endpoint in serviceHost.Description.NonSystemEndpoints())
 			{
-				var scopeBehavior = new EndpointDiscoveryBehavior();
-				foreach (var scope in scopes)
+				var discovery = endpoint.Behaviors.Find<EndpointDiscoveryBehavior>();
+				if (discovery == null)
 				{
-					scopeBehavior.Scopes.Add(scope);
+					discovery = new EndpointDiscoveryBehavior();
+					endpoint.Behaviors.Add(discovery);
 				}
 
-				foreach (var endpoint in serviceHost.Description.NonSystemEndpoints())
+				foreach (var scope in scopes)
 				{
-					endpoint.Behaviors.Add(scopeBehavior);
+					discovery.Scopes.Add(scope);
+				}
+
+				foreach (var filter in filters)
+				{
+					discovery.Extensions.Add(filter);
+				}
+
+				if (strict == false)
+				{
+					ExportMetadata(endpoint, discovery);
 				}
 			}
 
@@ -76,6 +103,25 @@ namespace Castle.Facilities.WcfIntegration
 				var endpoint = discoveryEndpoint ?? new UdpDiscoveryEndpoint();
 				serviceHost.Description.Endpoints.Add(endpoint);
 			}
+		}
+
+		private static void ExportMetadata(ServiceEndpoint endpoint, EndpointDiscoveryBehavior discovery)
+		{
+			var exporter = new WsdlExporter();
+			exporter.ExportEndpoint(endpoint);
+			var metadata = exporter.GetGeneratedMetadata();
+
+			var document = new XDocument();
+			using (var xmlWriter = document.CreateWriter())
+			{
+				xmlWriter.WriteStartElement(WcfConstants.EndpointMetadata.LocalName, 
+											WcfConstants.EndpointMetadata.Namespace.NamespaceName);
+				metadata.WriteTo(xmlWriter);
+				xmlWriter.WriteEndElement();
+				xmlWriter.Flush();
+			}
+
+			discovery.Extensions.Add(document.Element(WcfConstants.EndpointMetadata));
 		}
 	}
 }
