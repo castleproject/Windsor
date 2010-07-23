@@ -751,7 +751,7 @@ namespace Castle.MicroKernel
 		/// <param name="serviceType">An object that specifies the type of service object to get. </param>
 		public object GetService(Type serviceType)
 		{
-			if ((this as IKernelInternal).LazyLoadComponentByType(null, serviceType) == false)
+			if ((this as IKernelInternal).LazyLoadComponentByType(null, serviceType, null) == false)
 			{
 				return null;
 			}
@@ -995,7 +995,7 @@ namespace Castle.MicroKernel
 		#endregion
 
 		[MethodImpl(MethodImplOptions.Synchronized)]
-		bool IKernelInternal.LazyLoadComponentByType(string key, Type service)
+		bool IKernelInternal.LazyLoadComponentByType(string key, Type service, IDictionary arguments)
 		{
 			if (service == null) throw new ArgumentNullException("service");
 			if (HasComponent(service))
@@ -1003,11 +1003,11 @@ namespace Castle.MicroKernel
 				return true;
 			}
 
-			return LazyLoad(key, service);
+			return LazyLoad(key, service, arguments);
 		}
 
 		[MethodImpl(MethodImplOptions.Synchronized)]
-		bool IKernelInternal.LazyLoadComponentByKey(string key, Type service)
+		bool IKernelInternal.LazyLoadComponentByKey(string key, Type service, IDictionary arguments)
 		{
 			if (key == null) throw new ArgumentNullException("key");
 
@@ -1016,10 +1016,10 @@ namespace Castle.MicroKernel
 				return true;
 			}
 
-			return LazyLoad(key, service);
+			return LazyLoad(key, service, arguments);
 		}
 
-		private bool LazyLoad(string key, Type service)
+		private bool LazyLoad(string key, Type service, IDictionary arguments)
 		{
 			if (isCheckingLazyLoaders)
 			{
@@ -1031,7 +1031,7 @@ namespace Castle.MicroKernel
 			{
 				foreach (var loader in ResolveAll<ILazyComponentLoader>())
 				{
-					var registration = loader.Load(key, service);
+					var registration = loader.Load(key, service, arguments);
 					if (registration != null)
 					{
 						registration.Register(this);

@@ -106,7 +106,7 @@ namespace Castle.MicroKernel.Handlers
 				if(handler == null)
 				{
 					// ask the kernel
-					if (Kernel.LazyLoadComponentByType(dependency.DependencyKey, dependency.TargetType) == false)
+					if (Kernel.LazyLoadComponentByType(dependency.DependencyKey, dependency.TargetType, context.AdditionalParameters) == false)
 					{
 						return false;
 					}

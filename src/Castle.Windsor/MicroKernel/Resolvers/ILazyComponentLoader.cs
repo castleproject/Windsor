@@ -15,7 +15,7 @@
 namespace Castle.MicroKernel.Resolvers
 {
 	using System;
-
+	using System.Collections;
 	using Castle.MicroKernel.Registration;
 
 	/// <summary>
@@ -33,6 +33,7 @@ namespace Castle.MicroKernel.Resolvers
 		/// </summary>
 		/// <param name="key">Key of the requested component or null</param>
 		/// <param name="service">Type of requested service or null</param>
+		/// <param name="arguments">User supplied arguments or null</param>
 		/// <returns>Registration that registers component for given key and/or service or null.</returns>
 		/// <remarks>
 		/// While either key or service can be null reference it is guaranteed that at least one of them will not be null.
@@ -40,6 +41,6 @@ namespace Castle.MicroKernel.Resolvers
 		/// to register component for requested key/service combination (when one of the elements is null, it should be ignored as well).
 		/// When implementer does not want to register the requested component it nust return null.
 		/// </remarks>
-		IRegistration Load(string key, Type service);
+		IRegistration Load(string key, Type service, IDictionary arguments);
 	}
 }
