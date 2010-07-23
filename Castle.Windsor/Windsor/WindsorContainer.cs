@@ -784,9 +784,9 @@ namespace Castle.Windsor
 #endif
 
 		/// <summary>
-		/// Shortcut to the method <see cref="Resolve(String)"/>
+		/// Shortcut to the method <see cref="Resolve(String, IDictionary)"/>
 		/// </summary>
-		[Obsolete("Use Resolve(key, new Arguments()) instead")]
+		[Obsolete("Use Resolve(key, new Arguments()) or Resolve<TService>(key) instead")]
 		public virtual object this[String key]
 		{
 			get { return Resolve(key, new Arguments()); }
