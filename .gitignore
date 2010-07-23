@@ -5,6 +5,8 @@ AssemblyInfo.cs
 # Standard VS.NET and ReSharper Foo
 src/*/obj
 src/*/bin
+samples/*/obj
+samples/*/bin
 *.csproj.user
 *ReSharper.user
 _ReSharper*
