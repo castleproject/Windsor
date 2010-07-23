@@ -1792,6 +1792,40 @@ namespace Castle.Facilities.WcfIntegration.Tests
 					Assert.AreEqual(28, client.GetValueFromConstructor());
 				}
 			}
+		}
+
+		[Test]
+		public void CanAddAdditionalDiscoveryMetadata()
+		{
+			using (var container = new WindsorContainer()
+				.AddFacility<WcfFacility>(f => f.CloseTimeout = TimeSpan.Zero)
+				.Register(Component.For<Operations>()
+					.DependsOn(new { number = 28 })
+					.AsWcfService(new DefaultServiceModel()
+						.AddEndpoints(WcfEndpoint.ForContract<IOperations>()
+							.BoundTo(new NetTcpBinding(SecurityMode.Transport, true)
+							{
+								PortSharingEnabled = true
+							})
+							.At("net.tcp://localhost/Operations2"))
+						.ProvideMetadata<WcfMetadataProvider<ServiceHostBase>>()
+						.Discoverable()
+				)))
+			{
+				var metadata = new WcfMetadataProvider<ServiceHostBase>();
+				metadata.Scopes.Add(new Uri("urn:castle:wcf"));
+				container.Register(Component.For<WcfMetadataProvider<ServiceHostBase>>().Instance(metadata));
+
+				using (var clientContainer = new WindsorContainer()
+					.AddFacility<WcfFacility>()
+					.Register(Component.For<IOperations>()
+						.AsWcfClient(WcfEndpoint.Discover().InScope("urn:castle:wcf"))
+					))
+				{
+					var client = clientContainer.Resolve<IOperations>();
+					Assert.AreEqual(28, client.GetValueFromConstructor());
+				}
+			}
 		}	
 
 		protected void RegisterLoggingFacility(IWindsorContainer container)

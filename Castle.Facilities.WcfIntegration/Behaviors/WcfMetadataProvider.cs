@@ -14,22 +14,22 @@
 
 namespace Castle.Facilities.WcfIntegration
 {
+	using System;
+	using System.Collections.Generic;
 	using System.ServiceModel;
+	using System.Xml.Linq;
 
-	public abstract class AbstractExtensibleObject<T> : IExtensibleObject<T>
-		where T : AbstractExtensibleObject<T>
+	public class WcfMetadataProvider<T> : AbstractExtension<T>, IWcfMetadataProvider
+		where T : class, IExtensibleObject<T>
 	{
-		private readonly ExtensionCollection<T> extensions;
-		private readonly object guard = new object();
-
-		protected AbstractExtensibleObject()
-        {
-			extensions = new ExtensionCollection<T>((T)this, guard);
-        }
-
-		public IExtensionCollection<T> Extensions
+		public WcfMetadataProvider()
 		{
-			get { return extensions; }
+			Scopes = new List<Uri>();
+			Extensions = new List<XElement>();
 		}
+
+		public ICollection<Uri> Scopes { get; private set; }
+
+		public ICollection<XElement> Extensions { get; private set; }
 	}
 }

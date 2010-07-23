@@ -15,8 +15,10 @@
 namespace Castle.Facilities.WcfIntegration
 {
     using System;
+	using System.Linq;
     using System.Collections.Generic;
 	using Castle.Facilities.WcfIntegration.Behaviors;
+	using Castle.Facilities.WcfIntegration.Internal;
 
     public abstract class WcfServiceModelBase : IWcfServiceModel
     {
@@ -88,37 +90,24 @@ namespace Castle.Facilities.WcfIntegration
 
 		public T AddBaseAddresses(params Uri[] baseAddresses)
 		{
-			foreach (Uri baseAddress in baseAddresses)
-			{
-				BaseAddresses.Add(baseAddress);
-			}
+			BaseAddresses.AddAll(baseAddresses);
 			return (T)this;
 		}
 
 		public T AddBaseAddresses(params string[] baseAddresses)
 		{
-			foreach (string baseAddress in baseAddresses)
-			{
-				BaseAddresses.Add(new Uri(baseAddress, UriKind.Absolute));
-			}
-			return (T)this;
+			return AddBaseAddresses(baseAddresses.Select(a => new Uri(a, UriKind.Absolute)).ToArray());
 		}
 
 		public T AddEndpoints(params IWcfEndpoint[] endpoints)
 		{
-			foreach (IWcfEndpoint endpoint in endpoints)
-			{
-				Endpoints.Add(endpoint);
-			}
+			Endpoints.AddAll(endpoints);
 			return (T)this;
 		}
 
 		public T AddExtensions(params object[] extensions)
 		{
-			foreach (object extension in extensions)
-			{
-				Extensions.Add(WcfExplicitExtension.CreateFrom(extension));
-			}
+			Extensions.AddAll(extensions.Select(extension => WcfExplicitExtension.CreateFrom(extension)));
 			return (T)this;
 		}
 
@@ -134,6 +123,16 @@ namespace Castle.Facilities.WcfIntegration
 			var mexExtension = new WcfMetadataExtension();
 			if (mex != null) mex(mexExtension);
 			return AddExtensions(mexExtension);
+		}
+
+		public T ProvideMetadata<TMeta>() where TMeta : IWcfMetadataProvider
+		{
+			return AddExtensions(typeof(TMeta));
+		}
+
+		public T ProviderMetadata(IWcfMetadataProvider provider)
+		{
+			return AddExtensions(provider);
 		}
 
 		#endregion

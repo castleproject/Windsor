@@ -22,23 +22,24 @@ namespace Castle.Facilities.WcfIntegration
 	using System.ServiceModel.Discovery;
 	using System.Xml.Linq;
 	using Castle.Facilities.WcfIntegration.Service;
+	using Castle.Facilities.WcfIntegration.Internal;
 
 	public class WcfDiscoveryExtension : AbstractServiceHostAware
 	{
 		private bool strict;
 		private DiscoveryEndpoint discoveryEndpoint;
 		private readonly List<Uri> scopes = new List<Uri>();
-		private readonly List<XElement> filters = new List<XElement>();
-
-		public WcfDiscoveryExtension InScope(params Uri[] scopes)
-		{
-			this.scopes.AddRange(scopes);
-			return this;
-		}
+		private readonly List<XElement> metadata = new List<XElement>();
 
 		public WcfDiscoveryExtension Strict()
 		{
 			strict = true;
+			return this;
+		}
+
+		public WcfDiscoveryExtension InScope(params Uri[] scopes)
+		{
+			this.scopes.AddRange(scopes);
 			return this;
 		}
 
@@ -48,9 +49,9 @@ namespace Castle.Facilities.WcfIntegration
 			return this;
 		}
 
-		public WcfDiscoveryExtension FilteredBy(params XElement[] filters)
+		public WcfDiscoveryExtension WithMetadata(params XElement[] metadata)
 		{
-			this.filters.AddRange(filters);
+			this.metadata.AddRange(metadata);
 			return this;
 		}
 
@@ -77,15 +78,11 @@ namespace Castle.Facilities.WcfIntegration
 					endpoint.Behaviors.Add(discovery);
 				}
 
-				foreach (var scope in scopes)
-				{
-					discovery.Scopes.Add(scope);
-				}
+				discovery.Scopes.AddAll(scopes);
 
-				foreach (var filter in filters)
-				{
-					discovery.Extensions.Add(filter);
-				}
+				discovery.Extensions.AddAll(metadata);
+
+				AddAdditionalMetadata(serviceHost, discovery);
 
 				if (strict == false)
 				{
@@ -103,6 +100,15 @@ namespace Castle.Facilities.WcfIntegration
 				var endpoint = discoveryEndpoint ?? new UdpDiscoveryEndpoint();
 				serviceHost.Description.Endpoints.Add(endpoint);
 			}
+		}
+
+		private static void AddAdditionalMetadata(ServiceHost serviceHost, EndpointDiscoveryBehavior discovery)
+		{
+			var meatadata = serviceHost.Extensions.FindAll<IWcfMetadataProvider>();
+
+			discovery.Scopes.AddAll(meatadata.SelectMany(meta => meta.Scopes));
+
+			discovery.Extensions.AddAll(meatadata.SelectMany(meta => meta.Extensions));
 		}
 
 		private static void ExportMetadata(ServiceEndpoint endpoint, EndpointDiscoveryBehavior discovery)

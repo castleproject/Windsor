@@ -307,6 +307,20 @@ namespace Castle.Facilities.WcfIntegration.Internal
 			}
 		}
 
+		public static ICollection<T> AddAll<T>(this ICollection<T> collection, params T[] items)
+		{
+			return AddAll(collection, (IEnumerable<T>)items);
+		}
+
+		public static ICollection<T> AddAll<T>(this ICollection<T> collection, IEnumerable<T> items)
+		{
+			foreach (var item in items)
+			{
+				collection.Add(item);
+			}
+			return collection;
+		}
+
 		public static T SafeInitialize<T>(ref T cache, Func<T> source) where T : class
 		{
 			T getCache = Interlocked.CompareExchange(ref cache, null, null);

@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,22 +14,14 @@
 
 namespace Castle.Facilities.WcfIntegration
 {
-	using System.ServiceModel;
+	using System;
+	using System.Collections.Generic;
+	using System.Xml.Linq;
 
-	public abstract class AbstractExtensibleObject<T> : IExtensibleObject<T>
-		where T : AbstractExtensibleObject<T>
+	public interface IWcfMetadataProvider
 	{
-		private readonly ExtensionCollection<T> extensions;
-		private readonly object guard = new object();
+		ICollection<Uri> Scopes { get; }
 
-		protected AbstractExtensibleObject()
-        {
-			extensions = new ExtensionCollection<T>((T)this, guard);
-        }
-
-		public IExtensionCollection<T> Extensions
-		{
-			get { return extensions; }
-		}
+		ICollection<XElement> Extensions { get; }
 	}
 }

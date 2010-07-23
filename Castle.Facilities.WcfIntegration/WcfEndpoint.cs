@@ -23,6 +23,7 @@ namespace Castle.Facilities.WcfIntegration
 	using System.ServiceModel.Discovery;
 	using System.Xml.Linq;
 	using Castle.Facilities.WcfIntegration.Behaviors;
+	using Castle.Facilities.WcfIntegration.Internal;
 
 	public static class WcfEndpoint
 	{
@@ -126,12 +127,7 @@ namespace Castle.Facilities.WcfIntegration
 		public T InScope(params Uri[] scopes)
 		{
 			var discovery = GetDiscoveryInstance();
-
-			foreach (var scope in scopes)
-			{
-				discovery.Scopes.Add(scope);
-			}
-
+			discovery.Scopes.AddAll(scopes);
 			return (T)this;
 		}
 
@@ -140,13 +136,10 @@ namespace Castle.Facilities.WcfIntegration
 			return InScope(scopes.Select(scope => new Uri(scope)).ToArray());
 		}
 
-		public T FilteredBy(params XElement[] filters)
+		public T WithMetadata(params XElement[] metadata)
 		{
 			var discovery = GetDiscoveryInstance();
-			foreach (var filter in filters)
-			{
-				discovery.Extensions.Add(filter);
-			}
+			discovery.Extensions.AddAll(metadata);
 			return (T)this;
 		}
 

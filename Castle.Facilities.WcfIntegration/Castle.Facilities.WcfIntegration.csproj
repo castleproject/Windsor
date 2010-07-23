@@ -84,6 +84,7 @@
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="Behaviors\AbstractExtensibleObject.cs" />
     <Compile Include="Behaviors\AbstractExtension.cs" />
+    <Compile Include="Behaviors\IWcfMetadataProvider.cs" />
     <Compile Include="Behaviors\WcfDiscoveryExtension.cs" />
     <Compile Include="Behaviors\WcfErrorBehavior.cs" />
     <Compile Include="Behaviors\WcfChannelExtensions.cs" />
@@ -96,6 +97,7 @@
     <Compile Include="Behaviors\Lifecyle\AbstractMessageAction.cs" />
     <Compile Include="Behaviors\WcfBehaviorActivator.cs" />
     <Compile Include="Behaviors\WcfMetadataExtension.cs" />
+    <Compile Include="Behaviors\WcfMetadataProvider.cs" />
     <Compile Include="Client\AbstractChannelFactoryAware.cs" />
     <Compile Include="Behaviors\AbstractWcfExtension.cs" />
     <Compile Include="Behaviors\ExtensionDependencies.cs" />

@@ -115,7 +115,7 @@ namespace Castle.Facilities.WcfIntegration
 
 			foreach (var serviceModel in ResolveServiceModels(model))
 			{ 
-				if (!serviceModel.IsHosted)
+				if (serviceModel.IsHosted == false)
 				{
 					CreateServiceHostWhenHandlerIsValid(handler, serviceModel, model);
 				}
@@ -231,17 +231,17 @@ namespace Castle.Facilities.WcfIntegration
 			}
 			else
 			{
-				HandlerDelegate onStateChanged = null;
-				onStateChanged = (IHandler valid, ref bool stateChanged) =>
+				HandlersChangedDelegate onStateChanged = null;
+				onStateChanged = (ref bool stateChanged) =>
 				{
 					if (handler.CurrentState == HandlerState.Valid && onStateChanged != null)
 					{
-						kernel.HandlerRegistered -= onStateChanged;
+						kernel.HandlersChanged -= onStateChanged;
 						onStateChanged = null;
 						CreateAndOpenServiceHost(serviceModel, model);
 					}
 				};
-				kernel.HandlerRegistered += onStateChanged;
+				kernel.HandlersChanged += onStateChanged;
 			}
 		}
 

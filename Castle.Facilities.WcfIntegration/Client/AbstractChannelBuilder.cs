@@ -21,6 +21,7 @@ namespace Castle.Facilities.WcfIntegration
 	using System.ServiceModel.Description;
 	using System.ServiceModel.Discovery;
 	using Castle.MicroKernel;
+	using Castle.Facilities.WcfIntegration.Internal;
 
 	public abstract class AbstractChannelBuilder : IWcfEndpointVisitor
 	{
@@ -184,20 +185,14 @@ namespace Castle.Facilities.WcfIntegration
 
 			if (discovery != null)
 			{
-				foreach (var scope in discovery.Scopes)
-				{
-					criteria.Scopes.Add(scope);
-				}
+				criteria.Scopes.AddAll(discovery.Scopes);
 
 				if (model.ScopeMatchBy != null)
 				{
 					criteria.ScopeMatchBy = model.ScopeMatchBy;
 				}
 
-				foreach (var filter in discovery.Extensions)
-				{
-					criteria.Extensions.Add(filter);
-				}
+				criteria.Extensions.AddAll(discovery.Extensions);
 			}
 
 			return criteria;
