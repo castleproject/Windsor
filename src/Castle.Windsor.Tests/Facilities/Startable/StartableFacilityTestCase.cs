@@ -69,6 +69,18 @@ namespace Castle.Windsor.Tests.Facilities.Startable
 		}
 
 		[Test]
+		public void Starts_component_without_start_method_AllTypes()
+		{
+			ClassWithInstanceCount.InstancesCount = 0;
+			IKernel kernel = new DefaultKernel();
+			kernel.AddFacility<StartableFacility>(f => f.DeferredTryStart());
+			kernel.Register(AllTypes.FromThisAssembly()
+			                	.Where(t => t == typeof(ClassWithInstanceCount))
+			                	.Configure(c => c.Start()));
+			Assert.AreEqual(1, ClassWithInstanceCount.InstancesCount);
+		}
+
+		[Test]
 		public void TestComponentWithNoInterface()
 		{
 			IKernel kernel = new DefaultKernel();
