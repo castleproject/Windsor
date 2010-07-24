@@ -29,6 +29,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 	using Castle.Facilities.WcfIntegration.Behaviors;
 	using Castle.Facilities.WcfIntegration.Demo;
 	using Castle.Facilities.WcfIntegration.Tests.Behaviors;
+	using Castle.MicroKernel.Facilities;
 	using Castle.MicroKernel.Registration;
 	using Castle.Windsor;
 	using Castle.Windsor.Installer;
@@ -320,6 +321,17 @@ namespace Castle.Facilities.WcfIntegration.Tests
 					System.GC.Collect();
 					Assert.IsFalse(client1.IsAlive);
 				}
+			}
+		}
+
+		[Test, ExpectedException(typeof(FacilityException),
+			ExpectedMessage = "The IWcfClientFactory is only available with the TypedFactoryFacility.  Did you forget to register that facility?")]
+		public void WillGetFriendlyErrorWhenFactoryIsNotAvailable()
+		{
+			using (var clientContainer = new WindsorContainer()
+					.AddFacility<WcfFacility>(f => f.CloseTimeout = TimeSpan.Zero))
+			{
+				clientContainer.Resolve<IWcfClientFactory>();
 			}
 		}
 

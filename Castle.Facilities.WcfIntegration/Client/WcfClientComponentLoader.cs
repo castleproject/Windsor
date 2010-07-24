@@ -19,6 +19,7 @@ namespace Castle.Facilities.WcfIntegration
 	using System.Linq;
 	using System.ServiceModel;
 	using Castle.Facilities.WcfIntegration.Internal;
+	using Castle.MicroKernel.Facilities;
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Resolvers;
 
@@ -26,6 +27,13 @@ namespace Castle.Facilities.WcfIntegration
 	{
 		public IRegistration Load(string key, Type service, IDictionary arguments)
 		{
+			if (service == typeof(IWcfClientFactory))
+			{
+				throw new FacilityException(
+					"The IWcfClientFactory is only available with the TypedFactoryFacility.  " +
+					"Did you forget to register that facility?");
+			}
+
 			if (Attribute.IsDefined(service, typeof(ServiceContractAttribute)) == false)
 			{
 				return null;
