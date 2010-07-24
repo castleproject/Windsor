@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,27 +19,27 @@ namespace Castle.Windsor.Tests.Facilities.Startable.Components
 	[Transient]
 	public class NoInterfaceStartableComponent
 	{
-		private bool _Started = false;
-		private bool _Stopped = false;
-
-		public void Start()
-		{
-			_Started = true;
-		}
-
-		public void Stop()
-		{
-			_Stopped = true;
-		}
+		private bool started;
+		private bool stopped;
 
 		public bool Started
 		{
-			get { return _Started; }
+			get { return started; }
 		}
 
 		public bool Stopped
 		{
-			get { return _Stopped; }
+			get { return stopped; }
+		}
+
+		public void Start()
+		{
+			started = true;
+		}
+
+		public void Stop()
+		{
+			stopped = true;
 		}
 	}
 }
