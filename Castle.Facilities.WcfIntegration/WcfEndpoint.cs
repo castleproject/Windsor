@@ -123,6 +123,12 @@ namespace Castle.Facilities.WcfIntegration
 			return (T)this;
 		}
 
+		public T PreserveObjectReferences()
+		{
+			return AddExtensions(typeof(PreserveObjectReferenceBehavior));
+		}
+
+		#region Discovery and Metadata
 
 		public T InScope(params Uri[] scopes)
 		{
@@ -158,6 +164,8 @@ namespace Castle.Facilities.WcfIntegration
 
 			return discovery;
 		}
+
+		#endregion
 
 		#region Logging
 

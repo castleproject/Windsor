@@ -85,6 +85,7 @@
     <Compile Include="Behaviors\AbstractExtensibleObject.cs" />
     <Compile Include="Behaviors\AbstractExtension.cs" />
     <Compile Include="Behaviors\IWcfMetadataProvider.cs" />
+    <Compile Include="Behaviors\PreserveObjectReferenceBehavior.cs" />
     <Compile Include="Behaviors\WcfDiscoveryExtension.cs" />
     <Compile Include="Behaviors\WcfErrorBehavior.cs" />
     <Compile Include="Behaviors\WcfChannelExtensions.cs" />
