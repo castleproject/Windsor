@@ -12,26 +12,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Core
+namespace Castle.Windsor.Tests.Components
 {
-	using System;
-	using System.Reflection;
-
-	public static class ReflectionExtensions
+	public class CtorWithDefaultValue
 	{
-		public static TAttribute[] GetAttributes<TAttribute>(this MemberInfo item) where TAttribute : Attribute
+		private readonly string name;
+
+		public CtorWithDefaultValue(string name = "Stefan Mucha")
 		{
-			return (TAttribute[])Attribute.GetCustomAttributes(item, typeof(TAttribute), true);
+			this.name = name;
 		}
 
-		public static bool HasDefaultValue(this ParameterInfo item)
+		public string Name
 		{
-			return (item.Attributes & ParameterAttributes.HasDefault) != 0;
-		}
-		
-		public static bool Is<TType>(this Type type)
-		{
-			return typeof(TType).IsAssignableFrom(type);
+			get { return name; }
 		}
 	}
 }

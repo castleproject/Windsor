@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,26 +12,31 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Core
+namespace Castle.Windsor.Tests.Components
 {
-	using System;
-	using System.Reflection;
-
-	public static class ReflectionExtensions
+	public class TwoCtorsWithDefaultValue
 	{
-		public static TAttribute[] GetAttributes<TAttribute>(this MemberInfo item) where TAttribute : Attribute
+		private readonly int age;
+		private readonly string name;
+
+		public TwoCtorsWithDefaultValue(string name = "Stefan Mucha")
 		{
-			return (TAttribute[])Attribute.GetCustomAttributes(item, typeof(TAttribute), true);
+			this.name = name;
 		}
 
-		public static bool HasDefaultValue(this ParameterInfo item)
+		public TwoCtorsWithDefaultValue(int age = 100)
 		{
-			return (item.Attributes & ParameterAttributes.HasDefault) != 0;
+			this.age = age;
 		}
-		
-		public static bool Is<TType>(this Type type)
+
+		public int Age
 		{
-			return typeof(TType).IsAssignableFrom(type);
+			get { return age; }
+		}
+
+		public string Name
+		{
+			get { return name; }
 		}
 	}
 }

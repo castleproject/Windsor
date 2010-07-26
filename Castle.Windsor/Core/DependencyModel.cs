@@ -38,18 +38,28 @@ namespace Castle.Core
 		/// <summary>
 		/// Initializes a new instance of the <see cref="DependencyModel"/> class.
 		/// </summary>
-		/// <param name="type">The type.</param>
+		/// <param name="dependencyType">The type.</param>
 		/// <param name="dependencyKey">The dependency key.</param>
 		/// <param name="targetType">Type of the target.</param>
 		/// <param name="isOptional">if set to <c>true</c> [is optional].</param>
-		public DependencyModel(DependencyType type, String dependencyKey,
+		public DependencyModel(DependencyType dependencyType, String dependencyKey,
 		                       Type targetType, bool isOptional)
+			: this(dependencyType, dependencyKey, targetType, isOptional, false, null)
+		{
+		}
+
+		public DependencyModel(DependencyType dependencyType, string dependencyKey, Type targetType, bool isOptional,
+		                       bool hasDefaultValue, object defaultValue)
 		{
 			this.targetType = targetType;
-			DependencyType = type;
+			DependencyType = dependencyType;
 			DependencyKey = dependencyKey;
 			IsOptional = isOptional;
+			HasDefaultValue = hasDefaultValue;
+			DefaultValue = defaultValue;
 		}
+
+		public object DefaultValue { get; private set; }
 
 		/// <summary>
 		/// Gets or sets the type of the dependency.
@@ -79,6 +89,8 @@ namespace Castle.Core
 		/// 	<c>true</c> if this dependency is optional; otherwise, <c>false</c>.
 		/// </value>
 		public bool IsOptional { get; set; }
+
+		public bool HasDefaultValue { get; private set; }
 
 		/// <summary>
 		/// Returns a <see cref="T:System.String"/> that represents the current <see cref="T:System.Object"/>.
