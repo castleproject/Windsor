@@ -503,6 +503,8 @@ namespace Castle.MicroKernel.Handlers
 
 			foreach (DependencyModel dependency in GetSecuredDependencies())
 			{
+				if (dependency.HasDefaultValue) continue;
+
 				if (dependency.DependencyType == DependencyType.Service ||
 				    dependency.DependencyType == DependencyType.ServiceOverride)
 					AddDependency(dependency);
@@ -610,12 +612,10 @@ namespace Castle.MicroKernel.Handlers
 		{
 			if (HasValidComponentFromResolver(dependency)) return true;
 
-			if (dependency.DependencyType == DependencyType.Service &&
-			    dependency.TargetType != null &&
-			    DependenciesByService.ContainsKey(dependency.TargetType))
-				return true;
-
-			return false;
+			return dependency.HasDefaultValue ||
+			       (dependency.DependencyType == DependencyType.Service &&
+			        dependency.TargetType != null &&
+			        DependenciesByService.ContainsKey(dependency.TargetType));
 		}
 
 		/// <summary>
@@ -655,12 +655,16 @@ namespace Castle.MicroKernel.Handlers
 			if (dependency.DependencyType == DependencyType.Service && dependency.TargetType != null)
 			{
 				if (DependenciesByService.ContainsKey(dependency.TargetType))
+				{
 					return;
+				}
 
 				DependenciesByService.Add(dependency.TargetType, dependency);
 			}
 			else if (!DependenciesByKey.ContainsKey(dependency.DependencyKey))
+			{
 				DependenciesByKey.Add(dependency.DependencyKey, dependency);
+			}
 
 			if (state != HandlerState.WaitingDependency)
 			{

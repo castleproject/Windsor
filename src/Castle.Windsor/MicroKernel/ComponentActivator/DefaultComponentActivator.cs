@@ -20,10 +20,10 @@ namespace Castle.MicroKernel.ComponentActivator
 	using System.Reflection;
 	using System.Security;
 	using System.Security.Permissions;
+
 	using Castle.Core;
 	using Castle.Core.Internal;
 	using Castle.MicroKernel.Context;
-	using Castle.MicroKernel.LifecycleConcerns;
 	using Castle.MicroKernel.Proxy;
 
 	/// <summary>
@@ -241,20 +241,22 @@ namespace Castle.MicroKernel.ComponentActivator
 			ConstructorCandidate winnerCandidate = null;
 
 			int winnerPoints = 0;
-
 			foreach (ConstructorCandidate candidate in Model.Constructors)
 			{
 				int candidatePoints = 0;
-
 				foreach (DependencyModel dep in candidate.Dependencies)
 				{
 					if (CanSatisfyDependency(context, dep))
 					{
-						candidatePoints += 2;
+						candidatePoints += 100;
+					}
+					else if (dep.HasDefaultValue)
+					{
+						candidatePoints += 1;
 					}
 					else
 					{
-						candidatePoints -= 2;
+						candidatePoints -= 100;
 					}
 				}
 

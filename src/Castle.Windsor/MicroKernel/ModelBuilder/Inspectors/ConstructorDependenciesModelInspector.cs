@@ -15,6 +15,8 @@
 namespace Castle.MicroKernel.ModelBuilder.Inspectors
 {
 	using System;
+	using System.ComponentModel;
+	using System.Linq;
 	using System.Reflection;
 	using Castle.Core;
 	using Castle.MicroKernel.SubSystems.Conversion;
@@ -69,14 +71,15 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 			for(int i = 0; i < parameters.Length; i++)
 			{
 				var parameter = parameters[i];
-
 				var paramType = parameter.ParameterType;
+				var defaultValue = parameter.DefaultValue;
+				var hasDefaultValue = parameter.HasDefaultValue();
 
 				// This approach is somewhat problematic. We should use
 				// another strategy to differentiate types and classify dependencies
 				if (converter.IsSupportedAndPrimitiveType(paramType))
 				{
-					dependencies[i] = new DependencyModel(DependencyType.Parameter, parameter.Name, paramType, false);
+					dependencies[i] = new DependencyModel(DependencyType.Parameter, parameter.Name, paramType, false, hasDefaultValue, defaultValue);
 				}
 				else if (String.IsNullOrEmpty(parameter.Name) == false)
 				{
@@ -86,16 +89,16 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 					{
 						var key = ReferenceExpressionUtil.ExtractComponentKey(modelParameter.Value);
 
-						dependencies[i] = new DependencyModel(DependencyType.ServiceOverride, key, paramType, false);
+						dependencies[i] = new DependencyModel(DependencyType.ServiceOverride, key, paramType, false ,hasDefaultValue, defaultValue);
 					}
 					else
 					{
-						dependencies[i] = new DependencyModel(DependencyType.Service, parameter.Name, paramType, false);
+						dependencies[i] = new DependencyModel(DependencyType.Service, parameter.Name, paramType, false, hasDefaultValue, defaultValue);
 					}
 				}
 				else
 				{
-					dependencies[i] = new DependencyModel(DependencyType.Service, null, paramType, false);
+					dependencies[i] = new DependencyModel(DependencyType.Service, null, paramType, false, hasDefaultValue, defaultValue);
 				}
 			}
 
