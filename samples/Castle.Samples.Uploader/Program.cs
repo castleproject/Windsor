@@ -1,8 +1,11 @@
-﻿using System;
-using System.Windows.Forms;
-
-namespace Castle.Samples.Uploader
+﻿namespace Castle.Samples.Uploader
 {
+	using System;
+	using System.Windows.Forms;
+
+	using Castle.Windsor;
+	using Castle.Windsor.Installer;
+
 	static class Program
 	{
 		/// <summary>
@@ -13,7 +16,18 @@ namespace Castle.Samples.Uploader
 		{
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
-			Application.Run(new Shell());
+
+			using (var container = BootstrapContainer())
+			{
+				var mainForm = container.Resolve<Shell>();
+				Application.Run(mainForm);
+			}
+		}
+
+		private static IWindsorContainer BootstrapContainer()
+		{
+			return new WindsorContainer()
+				.Install(FromAssembly.This());
 		}
 	}
 }

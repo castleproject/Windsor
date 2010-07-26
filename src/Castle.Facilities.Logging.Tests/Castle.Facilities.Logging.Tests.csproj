@@ -115,8 +115,8 @@
     <Reference Include="NLog">
       <HintPath>..\..\lib\NLog.dll</HintPath>
     </Reference>
-    <Reference Include="nunit.framework">
       <HintPath>..\..\lib\NUnit.Framework.dll</HintPath>
+    <Reference Include="nunit.framework">
     </Reference>
     <Reference Include="System">
       <Name>System</Name>

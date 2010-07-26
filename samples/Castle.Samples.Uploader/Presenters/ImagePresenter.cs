@@ -1,9 +1,10 @@
 namespace Castle.Samples.Uploader.Presenters
 {
 	using System;
-	using System.Drawing;
 
+	using Castle.Samples.Uploader.Commands;
 	using Castle.Samples.Uploader.Services;
+	using Castle.Samples.Uploader.Views;
 
 	public class ImagePresenter:IDisposable
 	{
@@ -40,15 +41,5 @@ namespace Castle.Samples.Uploader.Presenters
 				loadImage = null;
 			}
 		}
-	}
-
-	public interface ILoadImageCommand:ICommand
-	{
-		event Action<string> LoadImage;
-	}
-
-	public interface IImageView
-	{
-		Image Image { set; get; }
 	}
 }
