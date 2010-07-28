@@ -20,7 +20,7 @@
     </UpgradeBackupLocation>
     <OldToolsVersion>2.0</OldToolsVersion>
     <IsWebBootstrapper>true</IsWebBootstrapper>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\buildscripts\CastleKey.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
@@ -29,10 +29,10 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;DOTNET35</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <NoWarn>1591</NoWarn>
+    <NoWarn>1591;0067</NoWarn>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <DocumentationFile>bin\Debug\Castle.Facilities.WcfIntegration.XML</DocumentationFile>
   </PropertyGroup>
@@ -147,6 +147,7 @@
     <Compile Include="Client\ChannelFactoryExtensions.cs" />
     <Compile Include="AbstractWcfPolicy.cs" />
     <Compile Include="Client\WcfClientFactorySelector.cs" />
+    <Compile Include="Internal\ConcurrentDictionary.cs" />
     <Compile Include="IWcfPolicy.cs" />
     <Compile Include="IWcfCleanUp.cs" />
     <Compile Include="Lifestyles\AbstractWcfLifestyleCache.cs" />

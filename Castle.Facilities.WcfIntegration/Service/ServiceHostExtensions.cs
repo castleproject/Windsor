@@ -63,7 +63,13 @@ namespace Castle.Facilities.WcfIntegration
 		{
 			var contracts = new HashSet<ContractDescription>();
 
-			foreach (var endpoint in serviceHost.Description.NonSystemEndpoints())
+#if DOTNET40
+			var endpoints = serviceHost.Description.NonSystemEndpoints();
+#else
+			var endpoints = serviceHost.Description.Endpoints;
+#endif
+
+			foreach (var endpoint in endpoints)
 			{
 				extension.Install(endpoint, contracts.Add(endpoint.Contract), kernel, burden);
 			}

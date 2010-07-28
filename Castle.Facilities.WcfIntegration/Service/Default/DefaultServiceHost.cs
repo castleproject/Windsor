@@ -35,7 +35,7 @@ namespace Castle.Facilities.WcfIntegration
 			: base(serviceType, baseAddresses)
 		{
 		}
-
+#if DOTNET40
 		protected override void OnOpening()
 		{
 			base.OnOpening();
@@ -56,5 +56,6 @@ namespace Castle.Facilities.WcfIntegration
 				}
 			}
 		}
+#endif
 	}
 }

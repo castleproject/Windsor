@@ -15,7 +15,9 @@
 namespace Castle.Facilities.WcfIntegration
 {
 	using System;
+#if DOTNET40
 	using System.Collections.Concurrent;
+#endif
 	using System.Linq;
 	using System.Reflection;
 	using System.ServiceModel;

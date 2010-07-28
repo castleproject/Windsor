@@ -1613,6 +1613,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 			}
 		}
 
+#if DOTNET40
 		[Test]
 		public void CanDiscoverServiceEndpointAndInferBinding()
 		{
@@ -1839,7 +1840,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 				}
 			}
 		}	
-
+#endif
 		protected void RegisterLoggingFacility(IWindsorContainer container)
 		{
 			var facNode = new MutableConfiguration("facility");

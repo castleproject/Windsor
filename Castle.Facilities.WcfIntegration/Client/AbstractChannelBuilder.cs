@@ -19,7 +19,9 @@ namespace Castle.Facilities.WcfIntegration
 	using System.ServiceModel;
 	using System.ServiceModel.Channels;
 	using System.ServiceModel.Description;
+#if DOTNET40
 	using System.ServiceModel.Discovery;
+#endif
 	using Castle.MicroKernel;
 	using Castle.Facilities.WcfIntegration.Internal;
 
@@ -120,7 +122,7 @@ namespace Castle.Facilities.WcfIntegration
 				}
 			}
 		}
-
+#if DOTNET40
 		void IWcfEndpointVisitor.VisitBindingDiscoveredEndpoint(DiscoveredEndpointModel model)
 		{
 			var discoveryEndpoint = model.DiscoveryEndpoint ?? new UdpDiscoveryEndpoint();
@@ -157,7 +159,7 @@ namespace Castle.Facilities.WcfIntegration
 				}
 			}
 		}
-
+#endif
 		#endregion
 
 		protected virtual Binding InferBinding(Uri address)
@@ -168,7 +170,7 @@ namespace Castle.Facilities.WcfIntegration
 			}
 			return null;
 		}
-
+#if DOTNET40
 		private FindCriteria CreateSearchCriteria(DiscoveredEndpointModel model)
 		{
 			var criteria = new FindCriteria(contract) { MaxResults = 1 };
@@ -222,6 +224,7 @@ namespace Castle.Facilities.WcfIntegration
 
 			return null;
 		}
+#endif
 
 		private Binding GetEffectiveBinding(Binding binding, Uri address)
 		{

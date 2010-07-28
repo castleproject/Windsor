@@ -20,7 +20,9 @@ namespace Castle.Facilities.WcfIntegration
 	using System.ServiceModel;
 	using System.ServiceModel.Channels;
 	using System.ServiceModel.Description;
+#if DOTNET40
 	using System.ServiceModel.Discovery;
+#endif
 	using System.Xml.Linq;
 	using Castle.Facilities.WcfIntegration.Behaviors;
 	using Castle.Facilities.WcfIntegration.Internal;
@@ -62,11 +64,12 @@ namespace Castle.Facilities.WcfIntegration
 		{
 			return ForContract(typeof(Contract));
 		}
-
+#if DOTNET40
 		public static DiscoveredEndpointModel Discover()
 		{
 			return new ContractEndpointModel().Discover();
 		}
+#endif
 	}
 
 	#region Nested Class: WcfEndpointBase
@@ -127,7 +130,7 @@ namespace Castle.Facilities.WcfIntegration
 		{
 			return AddExtensions(typeof(PreserveObjectReferenceBehavior));
 		}
-
+#if DOTNET40
 		#region Discovery and Metadata
 
 		public T InScope(params Uri[] scopes)
@@ -166,7 +169,7 @@ namespace Castle.Facilities.WcfIntegration
 		}
 
 		#endregion
-
+#endif
 		#region Logging
 
 		public T LogMessages()
@@ -256,12 +259,12 @@ namespace Castle.Facilities.WcfIntegration
 		{
 			return new BindingEndpointModel(Contract, null).At(address);
 		}
-
+#if DOTNET40
 		public DiscoveredEndpointModel Discover()
 		{
 			return new BindingEndpointModel(Contract, null).Discover();
 		}
-
+#endif
 		protected override void Accept(IWcfEndpointVisitor visitor)
 		{
 			visitor.VisitContractEndpoint(this);
@@ -349,10 +352,12 @@ namespace Castle.Facilities.WcfIntegration
 			return new BindingAddressEndpointModel(Contract, Binding, address);
 		}
 
+#if DOTNET40
 		public DiscoveredEndpointModel Discover()
 		{
 			return new DiscoveredEndpointModel(Contract, Binding);
 		}
+#endif
 
 		protected override void Accept(IWcfEndpointVisitor visitor)
 		{
@@ -420,6 +425,7 @@ namespace Castle.Facilities.WcfIntegration
 
 	#endregion
 
+#if DOTNET40
 	#region Nested Class: DiscoveredEndpointModel
 
 	public class DiscoveredEndpointModel : WcfEndpointBase<DiscoveredEndpointModel>
@@ -496,5 +502,7 @@ namespace Castle.Facilities.WcfIntegration
 	}
 
 	#endregion
+#endif
+
 }
 

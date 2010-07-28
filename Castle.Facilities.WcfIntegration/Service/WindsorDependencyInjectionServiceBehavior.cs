@@ -68,7 +68,13 @@ namespace Castle.Facilities.WcfIntegration
 
 			var contractNameToContractType = new Dictionary<string, Type>();
 
-			foreach (var endpoint in serviceDescription.NonSystemEndpoints())
+#if DOTNET40
+			var endpoints = serviceDescription.NonSystemEndpoints();
+#else
+			var endpoints = serviceDescription.Endpoints;
+#endif
+
+			foreach (var endpoint in endpoints)
 			{
 				contractNameToContractType[endpoint.Contract.Name] = endpoint.Contract.ContractType;
 			}

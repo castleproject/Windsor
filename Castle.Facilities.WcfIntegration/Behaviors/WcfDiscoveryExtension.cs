@@ -14,6 +14,7 @@
 
 namespace Castle.Facilities.WcfIntegration
 {
+#if DOTNET40
 	using System;
 	using System.Collections.Generic;
 	using System.Linq;
@@ -130,4 +131,5 @@ namespace Castle.Facilities.WcfIntegration
 			discovery.Extensions.Add(document.Element(WcfConstants.EndpointMetadata));
 		}
 	}
+#endif
 }
