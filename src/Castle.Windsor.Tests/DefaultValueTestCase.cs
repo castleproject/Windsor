@@ -39,6 +39,16 @@ namespace Castle.Windsor.Tests
 		}
 
 		[Test]
+		public void Null_is_a_valid_default_value()
+		{
+			container.Register(Component.For<CtorWithNullDefaultValueAndDefault>());
+
+			var value = container.Resolve<CtorWithNullDefaultValueAndDefault>();
+
+			Assert.IsNull(value.Name);
+		}
+
+		[Test]
 		public void Uses_ctor_with_defaults_when_greediest()
 		{
 			container.Register(Component.For<CtorWithDefaultValueAndDefault>());
