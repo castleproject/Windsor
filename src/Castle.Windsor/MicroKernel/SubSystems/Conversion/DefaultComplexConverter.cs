@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -10,34 +10,34 @@
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
-// limitations under the License.using System;
+// limitations under the License.
 
 namespace Castle.MicroKernel.SubSystems.Conversion
 {
 	using System;
 	using System.Globalization;
 	using System.Reflection;
+
 	using Castle.Core.Configuration;
 	using Castle.Core.Internal;
-	using Castle.MicroKernel;
 
 #if (!SILVERLIGHT)
 	[Serializable]
 #endif
 	public class DefaultComplexConverter : AbstractTypeConverter
 	{
-		private IConversionManager _conversionManager = null;
+		private IConversionManager conversionManager;
 
 		#region ITypeConverter Member
 
 		public override bool CanHandleType(Type type)
 		{
-			return !type.IsPrimitive;
+			return type.IsPrimitive == false;
 		}
 
 		public override object PerformConversion(IConfiguration configuration, Type targetType)
 		{
-			object instance = CreateInstance(targetType, configuration);
+			var instance = CreateInstance(targetType, configuration);
 			ConvertPropertyValues(instance, targetType, configuration);
 
 			return instance;
@@ -60,7 +60,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 		{
 			type = ObtainImplementation(type, configuration);
 
-			ConstructorInfo constructor = ChooseConstructor(type);
+			var constructor = ChooseConstructor(type);
 
 			object[] args = null;
 			if (constructor != null)
@@ -74,8 +74,8 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 
 		private Type ObtainImplementation(Type type, IConfiguration configuration)
 		{
-			String typeNode = configuration.Attributes["type"];
-	
+			var typeNode = configuration.Attributes["type"];
+
 			if (String.IsNullOrEmpty(typeNode))
 			{
 				if (type.IsInterface)
@@ -89,8 +89,8 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 			var implType = Context.Composition.PerformConversion<Type>(typeNode);
 			if (!type.IsAssignableFrom(implType))
 			{
-				String message = String.Format("Type {0} is not assignable to {1}",
-				                               implType.FullName, type.FullName);
+				var message = String.Format("Type {0} is not assignable to {1}",
+				                            implType.FullName, type.FullName);
 
 				throw new ConverterException(message);
 			}
@@ -107,13 +107,17 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 		private ConstructorInfo ChooseConstructor(Type type)
 		{
 			ConstructorInfo chosen = null;
-			ConstructorInfo[] constructors = type.GetConstructors();
-			foreach(ConstructorInfo candidate in constructors)
+			var constructors = type.GetConstructors();
+			foreach (var candidate in constructors)
 			{
 				if (candidate.GetParameters().Length == 0)
+				{
 					continue;
+				}
 				if (chosen != null)
+				{
 					throw new ConverterException("Classes with more than one non-default constructor are not supported.");
+				}
 				chosen = candidate;
 			}
 
@@ -128,23 +132,28 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 		/// <returns></returns>
 		private object[] ConvertConstructorParameters(ConstructorInfo constructor, IConfiguration configuration)
 		{
-			IConversionManager conversionManager = this.ConversionManager;
+			var conversionManager = ConversionManager;
 
-			ParameterInfo[] parameters = constructor.GetParameters();
-			object[] parameterValues = new object[parameters.Length];
+			var parameters = constructor.GetParameters();
+			var parameterValues = new object[parameters.Length];
 
-			for(int i = 0, n = parameters.Length; i < n; ++i)
+			for (int i = 0, n = parameters.Length; i < n; ++i)
 			{
-				ParameterInfo parameter = parameters[i];
+				var parameter = parameters[i];
 
-				IConfiguration paramConfig = FindChildIgnoreCase(configuration, parameter.Name);
+				var paramConfig = FindChildIgnoreCase(configuration, parameter.Name);
 				if (paramConfig == null)
-					throw new ConverterException(string.Format("Child '{0}' missing in {1} element.", parameter.Name, configuration.Name));
+				{
+					throw new ConverterException(string.Format("Child '{0}' missing in {1} element.", parameter.Name,
+					                                           configuration.Name));
+				}
 
-				Type paramType = parameter.ParameterType;
-				if (!this.ConversionManager.CanHandleType(paramType))
-					throw new ConverterException(string.Format("No converter found for child '{0}' in {1} element (type: {2}).", parameter.Name, configuration.Name, paramType.Name));
-
+				var paramType = parameter.ParameterType;
+				if (!ConversionManager.CanHandleType(paramType))
+				{
+					throw new ConverterException(string.Format("No converter found for child '{0}' in {1} element (type: {2}).",
+					                                           parameter.Name, configuration.Name, paramType.Name));
+				}
 
 				parameterValues[i] = ConvertChildParameter(paramConfig, paramType);
 			}
@@ -160,34 +169,38 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 		/// <param name="configuration">The configuration.</param>
 		private void ConvertPropertyValues(object instance, Type type, IConfiguration configuration)
 		{
-			IConversionManager conversionManager = this.ConversionManager;
+			var conversionManager = ConversionManager;
 
-			foreach(IConfiguration propConfig in configuration.Children)
+			foreach (var propConfig in configuration.Children)
 			{
-				PropertyInfo property =
+				var property =
 					type.GetProperty(propConfig.Name, BindingFlags.Instance | BindingFlags.Public | BindingFlags.IgnoreCase);
 				if (property == null || !property.CanWrite)
+				{
 					continue;
+				}
 
-				Type propType = property.PropertyType;
-				if (!this.ConversionManager.CanHandleType(propType))
-					throw new ConverterException(string.Format("No converter found for child '{0}' in {1} element (type: {2}).", property.Name, configuration.Name, propType.Name));
+				var propType = property.PropertyType;
+				if (!ConversionManager.CanHandleType(propType))
+				{
+					throw new ConverterException(string.Format("No converter found for child '{0}' in {1} element (type: {2}).",
+					                                           property.Name, configuration.Name, propType.Name));
+				}
 
-				object val = ConvertChildParameter(propConfig, propType);
+				var val = ConvertChildParameter(propConfig, propType);
 				property.SetValue(instance, val, null);
 			}
 		}
-
 
 		private object ConvertChildParameter(IConfiguration config, Type type)
 		{
 			if (config.Value == null && config.Children.Count != 0)
 			{
-				return this.Context.Composition.PerformConversion(config, type);
+				return Context.Composition.PerformConversion(config, type);
 			}
 			else
 			{
-				return this.Context.Composition.PerformConversion(config.Value, type);
+				return Context.Composition.PerformConversion(config.Value, type);
 			}
 		}
 
@@ -199,12 +212,11 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 		{
 			get
 			{
-				if (_conversionManager == null)
+				if (conversionManager == null)
 				{
-					_conversionManager = (IConversionManager)
-					                     this.Context.Kernel.GetSubSystem(SubSystemConstants.ConversionManagerKey);
+					conversionManager = Context.Kernel.GetConversionManager();
 				}
-				return _conversionManager;
+				return conversionManager;
 			}
 		}
 
@@ -216,10 +228,12 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 		/// <returns></returns>
 		private IConfiguration FindChildIgnoreCase(IConfiguration config, string name)
 		{
-			foreach(IConfiguration child in config.Children)
+			foreach (var child in config.Children)
 			{
 				if (CultureInfo.CurrentCulture.CompareInfo.Compare(child.Name, name, CompareOptions.IgnoreCase) == 0)
+				{
 					return child;
+				}
 			}
 
 			return null;
