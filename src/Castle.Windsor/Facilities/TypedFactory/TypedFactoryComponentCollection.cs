@@ -16,10 +16,7 @@ namespace Castle.Facilities.TypedFactory
 {
 	using System;
 	using System.Collections;
-	using System.Collections.Generic;
-	using System.Linq;
 
-	using Castle.DynamicProxy.Generators.Emitters;
 	using Castle.MicroKernel;
 
 	/// <summary>
@@ -39,70 +36,8 @@ namespace Castle.Facilities.TypedFactory
 
 		public override object Resolve(IKernel kernel)
 		{
-			var service = GetCollectionItemType();
-			var result = kernel.ResolveAll(service, AdditionalArguments);
+			var result = kernel.ResolveAll(ComponentType, AdditionalArguments);
 			return result;
-		}
-
-		protected Type GetCollectionItemType()
-		{
-			if (ComponentType.IsArray)
-			{
-				return ComponentType.GetElementType();
-			}
-
-			if (ComponentType.IsGenericType) // we support generic collections only
-			{
-				foreach (var @interface in TypeUtil.GetAllInterfaces(ComponentType))
-				{
-					if (@interface.IsGenericType == false)
-					{
-						continue;
-					}
-
-					if (@interface.GetGenericTypeDefinition() == typeof(IEnumerable<>))
-					{
-						return @interface.GetGenericArguments().Single();
-					}
-				}
-			}
-
-			ThrowUnsupportedCollectionType();
-			return null; //to satify the compiler
-		}
-
-		private void ThrowUnsupportedCollectionType()
-		{
-			throw new InvalidOperationException(
-				string.Format(
-					"Type {0} is not supported collection type. If you want to support it, your ITypedFactoryComponentSelector implementation should return custom TypedFactoryComponent that will appropriately override Resolve method.",
-					ComponentType));
-		}
-
-		public static bool IsSupportedCollectionType(Type type)
-		{
-			if (type.IsArray)
-			{
-				return true;
-			}
-			if (!type.IsGenericType)
-			{
-				return false;
-			}
-			var enumerable = GetEnumerableType(type);
-			if (enumerable == null)
-			{
-				return false;
-			}
-			var array = enumerable.GetGenericArguments().Single().MakeArrayType();
-			return type.IsAssignableFrom(array);
-		}
-
-		private static Type GetEnumerableType(Type type)
-		{
-			return type.GetAllInterfaces()
-				.Where(@interface => @interface.IsGenericType)
-				.SingleOrDefault(@interface => @interface.GetGenericTypeDefinition() == typeof(IEnumerable<>));
 		}
 	}
 }

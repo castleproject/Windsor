@@ -15,7 +15,11 @@
 namespace Castle.Core
 {
 	using System;
+	using System.Collections.Generic;
+	using System.Linq;
 	using System.Reflection;
+
+	using Castle.DynamicProxy.Generators.Emitters;
 
 	public static class ReflectionExtensions
 	{
@@ -32,6 +36,43 @@ namespace Castle.Core
 		public static bool Is<TType>(this Type type)
 		{
 			return typeof(TType).IsAssignableFrom(type);
+		}
+
+		/// <summary>
+		/// If the extended type is a Foo[] or IEnumerable{Foo} which is assignable from Foo[] this method will return typeof(Foo)
+		/// otherwise <c>null</c>.
+		/// </summary>
+		/// <param name="type"></param>
+		/// <returns></returns>
+		public static Type GetCompatibileArrayItemType(this Type type)
+		{
+			if (type.IsArray)
+			{
+				return type.GetElementType();
+			}
+			if (!type.IsGenericType)
+			{
+				return null;
+			}
+			var enumerable = GetEnumerableType(type);
+			if (enumerable != null)
+			{
+				var itemType = enumerable.GetGenericArguments().Single();
+				var array = itemType.MakeArrayType();
+				if (type.IsAssignableFrom(array))
+				{
+					return itemType;
+				}
+			}
+
+			return null;
+		}
+
+		private static Type GetEnumerableType(Type type)
+		{
+			return type.GetAllInterfaces()
+				.Where(@interface => @interface.IsGenericType)
+				.SingleOrDefault(@interface => @interface.GetGenericTypeDefinition() == typeof(IEnumerable<>));
 		}
 	}
 }

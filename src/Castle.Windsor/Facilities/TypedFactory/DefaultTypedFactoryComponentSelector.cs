@@ -18,6 +18,7 @@ namespace Castle.Facilities.TypedFactory
 	using System.Collections;
 	using System.Reflection;
 
+	using Castle.Core;
 	using Castle.MicroKernel;
 
 	public class DefaultTypedFactoryComponentSelector : ITypedFactoryComponentSelector
@@ -33,9 +34,10 @@ namespace Castle.Facilities.TypedFactory
 
 		protected virtual TypedFactoryComponent BuildFactoryComponent(MethodInfo method, string componentName, Type componentType, IDictionary additionalArguments)
 		{
-			if (TypedFactoryComponentCollection.IsSupportedCollectionType(componentType))
+			var itemType = componentType.GetCompatibileArrayItemType();
+			if (itemType != null)
 			{
-				return new TypedFactoryComponentCollection(componentType, additionalArguments);
+				return new TypedFactoryComponentCollection(itemType, additionalArguments);
 			}
 			return new TypedFactoryComponent(componentName, componentType, additionalArguments);
 		}
