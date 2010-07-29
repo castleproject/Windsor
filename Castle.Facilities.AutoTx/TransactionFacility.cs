@@ -99,8 +99,10 @@ namespace Castle.Facilities.AutoTx
 		{
 			if (handler.ComponentModel.Service.IsAssignableFrom(typeof(ITransactionManager)))
 			{
-				((DirectoryAdapter)Kernel.Resolve<IDirectoryAdapter>()).TxManager = (ITransactionManager)Kernel[key];
-				((FileAdapter)Kernel.Resolve<IFileAdapter>()).TxManager = (ITransactionManager)Kernel[key];
+				var transactionManager = Kernel.Resolve<ITransactionManager>();
+
+				((DirectoryAdapter)Kernel.Resolve<IDirectoryAdapter>()).TxManager = transactionManager;
+				((FileAdapter)Kernel.Resolve<IFileAdapter>()).TxManager = transactionManager;
 			}
 		}
 

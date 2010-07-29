@@ -95,7 +95,7 @@ namespace Castle.Facilities.AutoTx
 			{
 				TransactionAttribute transactionAtt = metaInfo.GetTransactionAttributeFor(methodInfo);
 
-				ITransactionManager manager = (ITransactionManager) kernel[ typeof(ITransactionManager) ];
+				ITransactionManager manager = kernel.Resolve<ITransactionManager>();
 
 				ITransaction transaction = manager.CreateTransaction(
 					transactionAtt.TransactionMode, transactionAtt.IsolationMode, transactionAtt.Distributed);

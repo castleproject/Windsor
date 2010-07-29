@@ -177,7 +177,7 @@ namespace Castle.Facilities.AutoTx.Tests
 			container.AddComponent("transactionmanager",
 								   typeof(ITransactionManager), typeof(MockTransactionManager));
 
-			TransactionalComp1 comp1 = (TransactionalComp1)container.Resolve("mycomp");
+			TransactionalComp1 comp1 = container.Resolve<TransactionalComp1>("mycomp");
 
 			comp1.Create();
 
@@ -210,7 +210,7 @@ namespace Castle.Facilities.AutoTx.Tests
 
 			container.AddComponent("mycomp", typeof(CustomerService));
 			
-			CustomerService serv = (CustomerService) container.Resolve("mycomp");
+			CustomerService serv = container.Resolve<CustomerService>("mycomp");
 
 			serv.Update(1);
 

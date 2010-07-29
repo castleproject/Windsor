@@ -39,7 +39,7 @@ namespace Castle.Facilities.AutoTx.Tests
 			container.AddComponent("mycomp", typeof(CustomerService));
 			container.AddComponent("delegatecomp", typeof(ProxyService));
 
-			var serv = (ProxyService)container.Resolve("delegatecomp");
+			var serv = container.Resolve<ProxyService>("delegatecomp");
 
 			serv.DelegateInsert("John", "Home Address");
 
