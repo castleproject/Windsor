@@ -110,6 +110,7 @@
     <Compile Include="Components\CtorWithDefaultValue.cs" />
     <Compile Include="Components\TwoCtorsWithDefaultValue.cs" />
     <Compile Include="DefaultValueTestCase.cs" />
+    <Compile Include="Lifestyle\Components\UsesComponentWithDispose.cs" />
     <Compile Include="RegistrationWithAttributeTestCase.cs" />
     <Compile Include="ClassComponents\A.cs" />
     <Compile Include="ActionBasedInstaller.cs" />

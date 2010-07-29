@@ -72,16 +72,14 @@ namespace Castle.Facilities.Remoting
 
 			baseUri = FacilityConfig.Attributes["baseUri"];
 
-			String isServerAttValue = FacilityConfig.Attributes["isServer"];
-			String isClientAttValue = FacilityConfig.Attributes["isClient"];
-
-			if ("true".Equals(isServerAttValue))
+		    var conversionManager = Kernel.GetConversionManager();
+		    if (conversionManager.PerformConversion<bool?>(FacilityConfig.Attributes["isServer"]) == true)
 			{
 				isServer = true;
 				ConfigureServerFacility();
 			}
 
-			if ("true".Equals(isClientAttValue))
+			if (conversionManager.PerformConversion<bool?>(FacilityConfig.Attributes["isClient"]) == true)
 			{
 				isClient = true;
 				ConfigureClientFacility();
