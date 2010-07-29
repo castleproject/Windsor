@@ -20,17 +20,17 @@ namespace Castle.Services.Transaction
 	[Serializable]
 	public class CommitResourceException : TransactionException
 	{
-		private readonly IResource _FailedResource;
+		private readonly IResource failedResource;
 
 		public CommitResourceException(string message, Exception innerException, IResource failedResource)
 			: base(message, innerException)
 		{
-			_FailedResource = failedResource;
+			this.failedResource = failedResource;
 		}
 
 		public CommitResourceException(SerializationInfo info, StreamingContext context, IResource failedResource) : base(info, context)
 		{
-			_FailedResource = failedResource;
+			this.failedResource = failedResource;
 		}
 
 		public CommitResourceException(SerializationInfo info, StreamingContext context) : base(info, context)

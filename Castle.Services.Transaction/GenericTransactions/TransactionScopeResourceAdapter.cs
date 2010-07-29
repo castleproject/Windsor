@@ -16,6 +16,7 @@
 
 namespace Castle.Services.Transaction
 {
+	using System;
 	using System.Transactions;
 
 	public class TransactionScopeResourceAdapter : IResource
@@ -45,7 +46,7 @@ namespace Castle.Services.Transaction
 			
 			var options = new TransactionOptions();
 			
-			switch(isolationMode)
+			switch (isolationMode)
 			{
 				case IsolationMode.ReadCommitted:
 					options.IsolationLevel = IsolationLevel.ReadCommitted;
@@ -84,6 +85,22 @@ namespace Castle.Services.Transaction
 		public void Rollback()
 		{
 			scope.Dispose();
+		}
+
+		public override string ToString()
+		{
+			if (Transaction.Current != null)
+			{
+				var info = Transaction.Current.TransactionInformation;
+
+				return string.Format("Created: '{0}'. DId: '{1}'. LId: '{2}'. Status: '{3}'. Mode: '{4}'. Isolation: '{5}'", 
+					info.CreationTime, info.DistributedIdentifier, info.LocalIdentifier, info.Status, mode, isolationMode);
+			}
+			else
+			{
+				return string.Format("No current transaction was found. Should not happen. Mode: '{0}'. Isolation: '{1}'", 
+					mode, isolationMode);			
+			}
 		}
 	}
 }

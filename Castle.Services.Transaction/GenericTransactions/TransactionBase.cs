@@ -10,23 +10,23 @@ namespace Castle.Services.Transaction
 {
 	public abstract class TransactionBase : MarshalByRefObject, ITransaction, IDisposable
 	{
-		private static readonly ILog _Logger = LogManager.GetLogger(typeof (TransactionBase));
-		private readonly ReaderWriterLockSlim _Sem = new ReaderWriterLockSlim();
-		private readonly IList<IResource> _Resources = new List<IResource>();
-		private readonly IList<ISynchronization> _SyncInfo = new List<ISynchronization>();
+		private static readonly ILog logger = LogManager.GetLogger(typeof (TransactionBase));
+		private readonly ReaderWriterLockSlim sem = new ReaderWriterLockSlim();
+		private readonly IList<IResource> resources = new List<IResource>();
+		private readonly IList<ISynchronization> syncInfo = new List<ISynchronization>();
 
-		private volatile bool _CanCommit;
+		private volatile bool canCommit;
 
-		private readonly TransactionMode _TransactionMode;
-		private readonly IsolationMode _IsolationMode;
+		private readonly TransactionMode transactionMode;
+		private readonly IsolationMode isolationMode;
 
-		internal readonly string _TheName;
+		internal readonly string theName;
 
 		protected TransactionBase(string name, TransactionMode mode, IsolationMode isolationMode)
 		{
-			_TheName = name ?? string.Empty;
-			_TransactionMode = mode;
-			_IsolationMode = isolationMode;
+			theName = name ?? string.Empty;
+			transactionMode = mode;
+			this.isolationMode = isolationMode;
 			Status = TransactionStatus.NoTransaction;
 			Context = new Hashtable();
 		}
@@ -65,7 +65,7 @@ namespace Castle.Services.Transaction
 		/// </summary>
 		public virtual bool IsRollbackOnlySet
 		{
-			get { return !_CanCommit; }
+			get { return !canCommit; }
 		}
 
 		///<summary>
@@ -73,7 +73,7 @@ namespace Castle.Services.Transaction
 		///</summary>
 		public TransactionMode TransactionMode
 		{
-			get { return _TransactionMode; }
+			get { return transactionMode; }
 		}
 
 		///<summary>
@@ -81,7 +81,7 @@ namespace Castle.Services.Transaction
 		///</summary>
 		public IsolationMode IsolationMode
 		{
-			get { return _IsolationMode; }
+			get { return isolationMode; }
 		}
 
 		///<summary>
@@ -89,8 +89,8 @@ namespace Castle.Services.Transaction
 		///</summary>
 		public virtual string Name 
 		{ 
-			get { return string.IsNullOrEmpty(_TheName) ? 
-			                                         	string.Format("Tx #{0}", GetHashCode()) : _TheName; }
+			get { return string.IsNullOrEmpty(theName) ? 
+			                                         	string.Format("Tx #{0}", GetHashCode()) : theName; }
 		}
 
 		#endregion
@@ -100,20 +100,20 @@ namespace Castle.Services.Transaction
 		/// </summary>
 		public virtual void Begin()
 		{
-			_Sem.AtomWrite(() =>
+			sem.AtomWrite(() =>
 			{
 				AssertState(TransactionStatus.NoTransaction);
 				Status = TransactionStatus.Active;
 			});
 
-			_Logger.TryLogFail(InnerBegin)
-				.Exception(e => { _CanCommit = false; throw new TransactionException("Could not begin transaction.", e); })
+			logger.TryLogFail(InnerBegin)
+				.Exception(e => { canCommit = false; throw new TransactionException("Could not begin transaction.", e); })
 				.Success(() => 
-					_CanCommit = true);
+					canCommit = true);
 
-			_Sem.AtomRead(() =>
+			sem.AtomRead(() =>
 			{
-				foreach (var r in _Resources)
+				foreach (var r in resources)
 				{
 					try { r.Start(); }
 					catch (Exception e)
@@ -137,38 +137,45 @@ namespace Castle.Services.Transaction
 		/// </summary>
 		public virtual void Commit()
 		{
-			if (!_CanCommit) throw new TransactionException("Rollback only was set.");
+			if (!canCommit) throw new TransactionException("Rollback only was set.");
 
-			_Sem.AtomWrite(() =>
+			sem.AtomWrite(() =>
 			{
 				AssertState(TransactionStatus.Active);
 				Status = TransactionStatus.Committed;
 			});
 
-			_Sem.AtomRead(() => {
+			sem.AtomRead(() => {
 
-				_SyncInfo.ForEach(s => _Logger.TryLogFail(s.BeforeCompletion));
+				syncInfo.ForEach(s => logger.TryLogFail(s.BeforeCompletion));
 
-				foreach (var r in _Resources)
+				foreach (var r in resources)
 				{
-					try { r.Commit(); } 
+					try
+					{
+						logger.DebugFormat("Resource: " + r);
+
+						r.Commit();
+					} 
 					catch (Exception e)
 					{
 						SetRollbackOnly();
-						throw new CommitResourceException("Transaction could not commit because of a failed resource.", 
-							e, r);
+
+						logger.ErrorFormat("Resource state: " + r);
+
+						throw new CommitResourceException("Transaction could not commit because of a failed resource.", e, r);
 					}
 				}
 			});
 
 			try
 			{
-				_Logger.TryLogFail(InnerCommit)
+				logger.TryLogFail(InnerCommit)
 					.Exception(e => { throw new TransactionException("Could not commit", e); });
 			}
 			finally
 			{
-				_Sem.AtomRead(() => _SyncInfo.ForEach(s => _Logger.TryLogFail(s.AfterCompletion)));
+				sem.AtomRead(() => syncInfo.ForEach(s => logger.TryLogFail(s.AfterCompletion)));
 			}
 		}
 
@@ -182,29 +189,29 @@ namespace Castle.Services.Transaction
 		/// </summary>
 		public virtual void Rollback()
 		{
-			_Sem.AtomWrite(() =>
+			sem.AtomWrite(() =>
 			{
 				AssertState(TransactionStatus.Active);
 				Status = TransactionStatus.RolledBack;
-				_CanCommit = false;
+				canCommit = false;
 			});
 
 			var failures = new List<Pair<IResource, Exception>>();
 
 			Exception toThrow = null;
 
-			_SyncInfo.ForEach(s => _Logger.TryLogFail(s.BeforeCompletion));
+			syncInfo.ForEach(s => logger.TryLogFail(s.BeforeCompletion));
 
-			_Logger
+			logger
 				.TryLogFail(InnerRollback)
 				.Exception(e => toThrow = e);
 
 			try
 			{
-				_Sem.AtomRead(() =>
+				sem.AtomRead(() =>
 				{
-					_Resources.ForEach(r =>
-						_Logger.TryLogFail(r.Rollback)
+					resources.ForEach(r =>
+						logger.TryLogFail(r.Rollback)
 							.Exception(e => failures.Add(r.And(e))));
 
 					if (failures.Count == 0) return;
@@ -219,7 +226,7 @@ namespace Castle.Services.Transaction
 			}
 			finally
 			{
-				_Sem.AtomRead(() => _SyncInfo.ForEach(s => _Logger.TryLogFail(s.AfterCompletion)));
+				sem.AtomRead(() => syncInfo.ForEach(s => logger.TryLogFail(s.AfterCompletion)));
 			}
 		}
 
@@ -235,7 +242,7 @@ namespace Castle.Services.Transaction
 		/// </summary>
 		public virtual void SetRollbackOnly()
 		{
-			_CanCommit = false;
+			canCommit = false;
 		}
 
 		#region Resources
@@ -247,11 +254,11 @@ namespace Castle.Services.Transaction
 		public virtual void Enlist(IResource resource)
 		{
 			if (resource == null) throw new ArgumentNullException("resource");
-			_Sem.AtomWrite(() => {
-             	if (_Resources.Contains(resource)) return;
+			sem.AtomWrite(() => {
+             	if (resources.Contains(resource)) return;
              	if (Status == TransactionStatus.Active)
-					_Logger.TryLogFail(resource.Start).Exception(_ => SetRollbackOnly());
-             	_Resources.Add(resource);
+					logger.TryLogFail(resource.Start).Exception(_ => SetRollbackOnly());
+             	resources.Add(resource);
 			});
 		}
 
@@ -265,16 +272,16 @@ namespace Castle.Services.Transaction
 		{
 			if (s == null) throw new ArgumentNullException("s");
 
-			_Sem.AtomWrite(() =>
+			sem.AtomWrite(() =>
 			{
-				if (_SyncInfo.Contains(s)) return;
-				_SyncInfo.Add(s);
+				if (syncInfo.Contains(s)) return;
+				syncInfo.Add(s);
 			});
 		}
 
 		public IEnumerable<IResource> Resources()
 		{
-			foreach (var resource in _Resources.ToList())
+			foreach (var resource in resources.ToList())
 				yield return resource;
 		}
 
@@ -303,14 +310,14 @@ namespace Castle.Services.Transaction
 
 		public virtual void Dispose()
 		{
-			_Sem.AtomWrite(() =>
+			sem.AtomWrite(() =>
 			               	{
-			               		_Resources.Select(r => r as IDisposable)
+			               		resources.Select(r => r as IDisposable)
 									.Where(r => r != null)
 									.ForEach(r => r.Dispose());
 
-								_Resources.Clear();
-								_SyncInfo.Clear();
+								resources.Clear();
+								syncInfo.Clear();
 			               	});
 
 		}

@@ -119,7 +119,7 @@
     <Reference Include="System.Xml">
       <Name>System.XML</Name>
     </Reference>
-    <ProjectReference Include="..\Castle.Services.Transaction\Castle.Services.Transaction-vs2008.csproj">
+    <ProjectReference Include="..\Castle.Services.Transaction\Castle.Services.Transaction-vs2010.csproj">
       <Name>Castle.Services.Transaction</Name>
       <Project>{0F611C1B-EDFD-46E6-9C3A-95420946E9CC}</Project>
       <Package>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</Package>
