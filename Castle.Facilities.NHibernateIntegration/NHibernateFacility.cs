@@ -361,11 +361,18 @@ namespace Castle.Facilities.NHibernateIntegration
 			}
 			// Registers the ISessionFactory as a component
 
-			var model = new ComponentModel(id, typeof(ISessionFactory), typeof(Empty));
-			model.LifestyleType = LifestyleType.Singleton;
-			model.ExtendedProperties[Constants.SessionFactoryConfiguration] = cfg;
-			model.CustomComponentActivator = typeof (SessionFactoryActivator);
-			Kernel.AddCustomComponent(model);
+			//var model = new ComponentModel(id, typeof(ISessionFactory), typeof(Empty));
+			//model.LifestyleType = LifestyleType.Singleton;
+			//model.ExtendedProperties[Constants.SessionFactoryConfiguration] = cfg;
+			//model.CustomComponentActivator = typeof (SessionFactoryActivator);
+			//Kernel.AddCustomComponent(model);
+			Kernel.Register(Component
+			                	.For<ISessionFactory>()
+			                	.Named(id)
+			                	.Activator<SessionFactoryActivator>()
+			                	.ExtendedProperties(Property.ForKey(Constants.SessionFactoryConfiguration).Eq(cfg))
+			                	.LifeStyle.Singleton);
+
 			sessionFactoryResolver.RegisterAliasComponentIdMapping(alias, id);
 		}
 

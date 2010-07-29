@@ -7,6 +7,11 @@
 			service="NHibernate.IInterceptor, NHibernate" />
 	</components>
 	<facilities>
+		
+		<facility
+				id="loggingfacility"
+				type="Castle.Facilities.Logging.LoggingFacility, Castle.Facilities.Logging"
+				loggingApi="Log4net" configFile="log4net.config" />
 
 		<facility
 			id="nhibernatefacility"

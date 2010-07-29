@@ -28,7 +28,7 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Transactions
 			this.sessManager = sessManager;
 		}
 
-		[Transaction(Distributed = true)]
+		//[Transaction(Distributed = true)]
 		public virtual Order Create(float val)
 		{
 			using(ISession session = sessManager.OpenSession("db2"))

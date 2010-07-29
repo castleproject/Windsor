@@ -28,13 +28,13 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Transactions
 			this.sessManager = sessManager;
 		}
 
-		[Transaction(Distributed = true)]
+		//[Transaction(Distributed = true)]
 		public virtual Blog Create()
 		{
 			return Create("xbox blog");
 		}
 
-		[Transaction(Distributed = true)]
+		//[Transaction(Distributed = true)]
 		public virtual Blog Create(String name)
 		{
 			NHibernate.ITransaction tran;

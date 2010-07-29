@@ -17,6 +17,7 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Transactions
 	using System;
 
 	using Castle.Facilities.AutoTx;
+	using Castle.Facilities.Logging;
 
 	using NUnit.Framework;
 

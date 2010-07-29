@@ -28,7 +28,7 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Transactions
 			this.sessManager = sessManager;
 		}
 
-		[Transaction(Distributed = true)]
+		//[Transaction(Distributed = true)]
 		public virtual BlogItem Create(Blog blog)
 		{
 			using(ISession session = sessManager.OpenSession())

@@ -1,5 +1,7 @@
 ﻿namespace Castle.Facilities.NHibernateIntegration.Internal
 {
+	using Castle.MicroKernel.Context;
+
 	using Core;
 	using MicroKernel;
 	using MicroKernel.ComponentActivator;
