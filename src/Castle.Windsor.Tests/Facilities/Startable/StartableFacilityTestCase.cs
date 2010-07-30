@@ -192,7 +192,7 @@ namespace Castle.Windsor.Tests.Facilities.Startable
 		{
 			kernel.ComponentCreated += OnStartableComponentStarted;
 
-			kernel.AddFacility("startable", new StartableFacility());
+			kernel.AddFacility<StartableFacility>();
 
 			var dependencies = new Dictionary<string, object> { { "config", 1 } };
 			kernel.Register(Component.For(typeof(StartableComponentCustomDependencies)).Named("a"));
@@ -208,6 +208,21 @@ namespace Castle.Windsor.Tests.Facilities.Startable
 
 			kernel.ReleaseComponent(component);
 			Assert.IsTrue(component.Stopped);
+		}
+
+		[Test]
+		public void Startable_with_throwing_property_dependency()
+		{
+			HasThrowingPropertyDependency.InstancesStarted = 0;
+			HasThrowingPropertyDependency.InstancesCreated = 0;
+			kernel.AddFacility<StartableFacility>();
+			kernel.Register(
+				Component.For<ThrowsInCtor>(),
+				Component.For<HasThrowingPropertyDependency>().StartUsingMethod(x => x.Start)
+				);
+
+			Assert.AreEqual(1, HasThrowingPropertyDependency.InstancesCreated);
+			Assert.AreEqual(1, HasThrowingPropertyDependency.InstancesStarted);
 		}
 	}
 }
