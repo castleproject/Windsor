@@ -113,8 +113,7 @@ namespace Castle.MicroKernel.Resolvers
 
 			// 2 - check with the model's handler, if not the same as the parent resolver
 
-			IHandler handler = kernel.GetHandler(model.Name);
-
+			var handler = kernel.GetHandler(model.Name);
 			if (handler != null && handler != contextHandlerResolver)
 			{
 				if (handler.CanResolve(context, contextHandlerResolver, model, dependency))
@@ -150,10 +149,7 @@ namespace Castle.MicroKernel.Resolvers
 			{
 				return CanResolveServiceDependency(context, model, dependency);
 			}
-			else
-			{
-				return CanResolveParameterDependency(model, dependency);
-			}
+			return CanResolveParameterDependency(model, dependency);
 		}
 
 		/// <summary>

@@ -30,10 +30,10 @@ namespace Castle.MicroKernel.ComponentActivator
 #endif
 	public abstract class AbstractComponentActivator : IComponentActivator
 	{
-		private IKernel kernel;
-		private ComponentModel model; 
-		private ComponentInstanceDelegate onCreation;
-		private ComponentInstanceDelegate onDestruction;
+		private readonly IKernel kernel;
+		private readonly ComponentModel model; 
+		private readonly ComponentInstanceDelegate onCreation;
+		private readonly ComponentInstanceDelegate onDestruction;
 
 		/// <summary>
 		/// Constructs an AbstractComponentActivator
