@@ -41,8 +41,8 @@ namespace Castle.Windsor.Tests.Facilities.FactorySupport
 		[Test]
 		public void NullModelConfigurationBug()
 		{
-            kernel.AddFacility("factories", new FactorySupportFacility());
-            kernel.Register(Component.For<ICustomer>().Named("a").Instance(new CustomerImpl()));
+			kernel.AddFacility("factories", new FactorySupportFacility());
+			kernel.Register(Component.For<ICustomer>().Named("a").Instance(new CustomerImpl()));
 		}
 
 		[Test]
@@ -125,13 +125,7 @@ namespace Castle.Windsor.Tests.Facilities.FactorySupport
 
 		public class MyCoolServiceWithProperties
 		{
-			private string someProperty;
-
-			public string SomeProperty
-			{
-				get { return someProperty; }
-				set { someProperty = value; }
-			}
+			public string SomeProperty { get; set; }
 		}
 
 		public class StringDictionaryDependentComponent

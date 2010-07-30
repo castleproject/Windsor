@@ -111,8 +111,10 @@
     <Compile Include="Components\HasInternalConstructor.cs" />
     <Compile Include="Components\HasProtectedConstructor.cs" />
     <Compile Include="Components\CtorWithDefaultValue.cs" />
+    <Compile Include="Components\ThrowsInCtorWithDisposableDependency.cs" />
     <Compile Include="Components\TwoCtorsWithDefaultValue.cs" />
     <Compile Include="DefaultValueTestCase.cs" />
+    <Compile Include="FailureCleanUpTestCase.cs" />
     <Compile Include="Lifestyle\Components\UsesComponentWithDispose.cs" />
     <Compile Include="RegistrationWithAttributeTestCase.cs" />
     <Compile Include="ClassComponents\A.cs" />

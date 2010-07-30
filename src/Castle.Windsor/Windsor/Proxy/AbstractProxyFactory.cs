@@ -123,7 +123,6 @@ namespace Castle.Windsor.Proxy
 
 		private CreationContext RebuildContext(Type parameterType, CreationContext current)
 		{
-
 			if (parameterType.ContainsGenericParameters)
 			{
 				return current;

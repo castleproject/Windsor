@@ -150,6 +150,10 @@ namespace Castle.MicroKernel.ComponentActivator
 				}
 				catch (Exception ex)
 				{
+					foreach (var argument in arguments)
+					{
+						Kernel.ReleaseComponent(argument);
+					}
 					throw new ComponentActivatorException(
 						"ComponentActivator: could not instantiate " + Model.Implementation.FullName, ex);
 				}
@@ -157,6 +161,7 @@ namespace Castle.MicroKernel.ComponentActivator
 
 			if (createProxy)
 			{
+				
 				try
 				{
 					instance = Kernel.ProxyFactory.Create(Kernel, instance, Model, context, arguments);
