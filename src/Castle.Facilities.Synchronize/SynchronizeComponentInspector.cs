@@ -21,6 +21,7 @@ namespace Castle.Facilities.Synchronize
 	using System.Windows.Threading;
 
 	using Castle.Core;
+	using Castle.Core.Internal;
 	using Castle.DynamicProxy;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Context;

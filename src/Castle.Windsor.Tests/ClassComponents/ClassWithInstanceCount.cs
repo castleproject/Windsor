@@ -12,28 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#if !SILVERLIGHT
-namespace Castle.Windsor.Tests.Interceptors
+namespace Castle.Windsor.Tests.ClassComponents
 {
-	using System;
-	using System.Reflection;
-
-	using Castle.Core.Internal;
-	using Castle.DynamicProxy;
-
-	public class DummyInterceptorSelector : IInterceptorSelector
+	public class ClassWithInstanceCount
 	{
-		public IInterceptor[] SelectInterceptors(Type type, MethodInfo method, IInterceptor[] interceptors)
+		public static int InstancesCount;
+
+		public ClassWithInstanceCount()
 		{
-			if (type.Is<ICatalog>())
-			{
-				if (method.Name == "AddItem")
-				{
-					return interceptors;
-				}
-			}
-			return null;
+			InstancesCount++;
 		}
 	}
 }
-#endif

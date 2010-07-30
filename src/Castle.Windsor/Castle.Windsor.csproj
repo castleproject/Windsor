@@ -97,7 +97,6 @@
     <Compile Include="Core\LifestyleAttributes.cs" />
     <Compile Include="Core\LifestyleType.cs" />
     <Compile Include="Core\PropertiesInspectionBehavior.cs" />
-    <Compile Include="Core\ReflectionExtensions.cs" />
     <Compile Include="Facilities\EventWiring\EventSubscriber.cs" />
     <Compile Include="Facilities\EventWiring\EventSubscribers.cs" />
     <Compile Include="Facilities\EventWiring\EventWiringDescriptor.cs" />
