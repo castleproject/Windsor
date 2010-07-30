@@ -459,6 +459,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="MicroKernel\Resolvers\SpecializedResolvers\ArrayResolver.cs" />
+    <Compile Include="MicroKernel\Resolvers\SpecializedResolvers\CollectionResolver.cs" />
     <Compile Include="MicroKernel\Resolvers\SpecializedResolvers\ListResolver.cs" />
     <Compile Include="MicroKernel\AbstractSubSystem.cs">
       <SubType>Code</SubType>
