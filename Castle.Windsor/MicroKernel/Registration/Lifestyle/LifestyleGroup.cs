@@ -16,6 +16,7 @@ namespace Castle.MicroKernel.Registration.Lifestyle
 {
 	using System;
 	using Castle.Core;
+	using Castle.Core.Internal;
 
 	public class LifestyleGroup<S> : RegistrationGroup<S>
 	{

@@ -17,6 +17,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 	using System;
 
 	using Castle.Core;
+	using Castle.Core.Internal;
 	using Castle.MicroKernel.SubSystems.Conversion;
 
 	/// <summary>

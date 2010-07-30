@@ -19,6 +19,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 	using System.Linq;
 
 	using Castle.Core;
+	using Castle.Core.Internal;
 	using Castle.MicroKernel.Proxy;
 	using Castle.MicroKernel.SubSystems.Conversion;
 

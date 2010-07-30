@@ -17,6 +17,7 @@ namespace Castle.MicroKernel.Resolvers.SpecializedResolvers
 	using System.Collections.Generic;
 
 	using Castle.Core;
+	using Castle.Core.Internal;
 	using Castle.MicroKernel.Context;
 
 	/// <summary>

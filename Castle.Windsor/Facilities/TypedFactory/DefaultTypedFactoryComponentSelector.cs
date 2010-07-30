@@ -19,6 +19,7 @@ namespace Castle.Facilities.TypedFactory
 	using System.Reflection;
 
 	using Castle.Core;
+	using Castle.Core.Internal;
 	using Castle.MicroKernel;
 
 	public class DefaultTypedFactoryComponentSelector : ITypedFactoryComponentSelector

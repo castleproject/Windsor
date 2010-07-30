@@ -17,6 +17,7 @@ namespace Castle.Windsor.Tests.Interceptors
 	using System;
 
 	using Castle.Core;
+	using Castle.Core.Internal;
 	using Castle.DynamicProxy;
 	using Castle.MicroKernel.Proxy;
 

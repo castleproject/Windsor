@@ -21,6 +21,7 @@ namespace Castle.Windsor.Tests.Facilities.Startable
 	using Castle.Facilities.Startable;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Registration;
+	using Castle.Windsor.Tests.ClassComponents;
 	using Castle.Windsor.Tests.Facilities.Startable.Components;
 
 	using NUnit.Framework;
@@ -28,9 +29,13 @@ namespace Castle.Windsor.Tests.Facilities.Startable
 	[TestFixture]
 	public class StartableFacilityTestCase
 	{
+		private IKernel kernel;
+
 		[SetUp]
 		public void SetUp()
 		{
+			kernel = new DefaultKernel();
+
 			startableCreatedBeforeResolved = false;
 		}
 
@@ -62,7 +67,6 @@ namespace Castle.Windsor.Tests.Facilities.Startable
 		public void Starts_component_without_start_method()
 		{
 			ClassWithInstanceCount.InstancesCount = 0;
-			IKernel kernel = new DefaultKernel();
 			kernel.AddFacility<StartableFacility>(f => f.DeferredTryStart());
 			kernel.Register(Component.For<ClassWithInstanceCount>().Start());
 			Assert.AreEqual(1, ClassWithInstanceCount.InstancesCount);
@@ -72,7 +76,6 @@ namespace Castle.Windsor.Tests.Facilities.Startable
 		public void Starts_component_without_start_method_AllTypes()
 		{
 			ClassWithInstanceCount.InstancesCount = 0;
-			IKernel kernel = new DefaultKernel();
 			kernel.AddFacility<StartableFacility>(f => f.DeferredTryStart());
 			kernel.Register(AllTypes.FromThisAssembly()
 			                	.Where(t => t == typeof(ClassWithInstanceCount))
@@ -83,7 +86,6 @@ namespace Castle.Windsor.Tests.Facilities.Startable
 		[Test]
 		public void TestComponentWithNoInterface()
 		{
-			IKernel kernel = new DefaultKernel();
 			kernel.ComponentCreated += OnNoInterfaceStartableComponentStarted;
 
 			var compNode = new MutableConfiguration("component");
@@ -94,7 +96,7 @@ namespace Castle.Windsor.Tests.Facilities.Startable
 
 			kernel.ConfigurationStore.AddComponentConfiguration("b", compNode);
 
-			kernel.AddFacility("startable", new StartableFacility());
+			kernel.AddFacility<StartableFacility>();
 			kernel.Register(Component.For(typeof(NoInterfaceStartableComponent)).Named("b"));
 
 			Assert.IsTrue(startableCreatedBeforeResolved, "Component was not properly started");
@@ -112,10 +114,9 @@ namespace Castle.Windsor.Tests.Facilities.Startable
 		[Test]
 		public void TestInterfaceBasedStartable()
 		{
-			IKernel kernel = new DefaultKernel();
 			kernel.ComponentCreated += OnStartableComponentStarted;
 
-			kernel.AddFacility("startable", new StartableFacility());
+			kernel.AddFacility<StartableFacility>();
 
 			kernel.Register(Component.For(typeof(StartableComponent)).Named("a"));
 
@@ -139,9 +140,7 @@ namespace Castle.Windsor.Tests.Facilities.Startable
 		[Test]
 		public void TestStartableChainWithGenerics()
 		{
-			IKernel kernel = new DefaultKernel();
-
-			kernel.AddFacility("startable", new StartableFacility());
+			kernel.AddFacility<StartableFacility>();
 
 			// Add parent. This has a dependency so won't be started yet.
 			kernel.Register(Component.For(typeof(StartableChainParent)).Named("chainparent"));
@@ -168,11 +167,9 @@ namespace Castle.Windsor.Tests.Facilities.Startable
 		[Test]
 		public void TestStartableCustomDependencies()
 		{
-			IKernel kernel = new DefaultKernel();
 			kernel.ComponentCreated += OnStartableComponentStarted;
 
-			kernel.AddFacility("startable", new StartableFacility());
-
+			kernel.AddFacility<StartableFacility>();
 			kernel.Register(
 				Component.For<StartableComponentCustomDependencies>()
 					.Named("a")
@@ -193,7 +190,6 @@ namespace Castle.Windsor.Tests.Facilities.Startable
 		[Test]
 		public void TestStartableWithRegisteredCustomDependencies()
 		{
-			IKernel kernel = new DefaultKernel();
 			kernel.ComponentCreated += OnStartableComponentStarted;
 
 			kernel.AddFacility("startable", new StartableFacility());
@@ -212,16 +208,6 @@ namespace Castle.Windsor.Tests.Facilities.Startable
 
 			kernel.ReleaseComponent(component);
 			Assert.IsTrue(component.Stopped);
-		}
-	}
-
-	public class ClassWithInstanceCount
-	{
-		public static int InstancesCount;
-
-		public ClassWithInstanceCount()
-		{
-			InstancesCount++;
 		}
 	}
 }

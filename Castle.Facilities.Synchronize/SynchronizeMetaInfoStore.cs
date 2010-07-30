@@ -20,6 +20,7 @@ namespace Castle.Facilities.Synchronize
 
 	using Castle.Core;
 	using Castle.Core.Configuration;
+	using Castle.Core.Internal;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.SubSystems.Conversion;
 

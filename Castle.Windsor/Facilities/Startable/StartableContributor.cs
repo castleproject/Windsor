@@ -17,6 +17,7 @@ namespace Castle.Facilities.Startable
 	using System;
 
 	using Castle.Core;
+	using Castle.Core.Internal;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.ModelBuilder;
 	using Castle.MicroKernel.SubSystems.Conversion;
