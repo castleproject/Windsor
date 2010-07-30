@@ -17,11 +17,11 @@ namespace Castle.Windsor.Tests.ClassComponents
 	public class HasThrowingPropertyDependency
 	{
 		public static int InstancesStarted;
-		public static int instancesCreated;
+		public static int InstancesCreated;
 
 		public HasThrowingPropertyDependency()
 		{
-			instancesCreated++;
+			InstancesCreated++;
 		}
 
 		public ThrowsInCtor Property { get; set; }

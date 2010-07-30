@@ -317,16 +317,7 @@ namespace Castle.MicroKernel.ComponentActivator
 			var resolver = Kernel.Resolver;
 			foreach (PropertySet property in Model.Properties)
 			{
-				object value = null;
-				using (new DependencyTrackingScope(context, Model, property.Property, property.Dependency))
-				{
-					if (property.Dependency.IsOptional == false ||
-					    resolver.CanResolve(context, context.Handler, Model, property.Dependency))
-					{
-						value = resolver.Resolve(context, context.Handler, Model, property.Dependency);
-					}
-				}
-
+				var value = ObtainPropertyValue(context, property, resolver);
 				if (value == null) continue;
 
 				var setMethod = property.Property.GetSetMethod();
@@ -342,6 +333,36 @@ namespace Castle.MicroKernel.ComponentActivator
 							setMethod.Name, instance.GetType().FullName, Model.Name);
 					throw new ComponentActivatorException(message, ex);
 				}
+			}
+		}
+
+		private object ObtainPropertyValue(CreationContext context, PropertySet property, IDependencyResolver resolver)
+		{
+			using (new DependencyTrackingScope(context, Model, property.Property, property.Dependency))
+			{
+				if (property.Dependency.IsOptional == false ||
+				    resolver.CanResolve(context, context.Handler, Model, property.Dependency))
+				{
+					return ObtainPropertyValueCore(context, property, resolver);
+				}
+			}
+			return null;
+		}
+
+		private object ObtainPropertyValueCore(CreationContext context, PropertySet property, IDependencyResolver resolver)
+		{
+			try
+			{
+				return resolver.Resolve(context, context.Handler, Model, property.Dependency);
+			}
+			catch (Exception)
+			{
+				// TODO: clean up
+				if (property.Dependency.IsOptional)
+				{
+					return null;
+				}
+				throw;
 			}
 		}
 	}
