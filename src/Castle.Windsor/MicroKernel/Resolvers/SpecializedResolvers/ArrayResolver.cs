@@ -14,8 +14,6 @@
 
 namespace Castle.MicroKernel.Resolvers.SpecializedResolvers
 {
-	using System;
-
 	using Castle.MicroKernel.Context;
 
 	using Core;
@@ -79,7 +77,7 @@ namespace Castle.MicroKernel.Resolvers.SpecializedResolvers
 		{
 			return dependency.TargetType != null &&
 			       dependency.TargetType.IsArray &&
-			       (kernel.HasComponent(dependency.TargetType.GetElementType()) || allowEmptyArray);
+			       (allowEmptyArray || kernel.HasComponent(dependency.TargetType.GetElementType()));
 		}
 	}
 }
