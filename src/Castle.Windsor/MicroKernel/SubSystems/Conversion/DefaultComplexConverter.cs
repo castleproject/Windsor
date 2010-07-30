@@ -68,7 +68,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 				args = ConvertConstructorParameters(constructor, configuration);
 			}
 
-			var instance = ReflectionUtil.CreateInstance<object>(type, args);
+			var instance = type.CreateInstance<object>(args);
 			return instance;
 		}
 

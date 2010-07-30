@@ -70,7 +70,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 			}
 
 			var helperType = typeof(ListHelper<>).MakeGenericType(convertTo);
-			var converterHelper = ReflectionUtil.CreateInstance<IGenericCollectionConverterHelper>(helperType, this);
+			var converterHelper = helperType.CreateInstance<IGenericCollectionConverterHelper>(this);
 			return converterHelper.ConvertConfigurationToCollection(configuration);
 		}
 

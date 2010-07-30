@@ -15,11 +15,11 @@
 namespace Castle.MicroKernel.Resolvers.SpecializedResolvers
 {
 	using System.Collections.Generic;
+	using System.Linq;
 
+	using Castle.Core;
 	using Castle.Core.Internal;
 	using Castle.MicroKernel.Context;
-
-	using Core;
 
 	/// <summary>
 	/// Handle dependencies of services in the format of generic IList.
@@ -73,12 +73,12 @@ namespace Castle.MicroKernel.Resolvers.SpecializedResolvers
 							  DependencyModel dependency)
 		{
 			var targetType = dependency.TargetType;
-			var elementType = targetType.GetGenericArguments()[0];
+			var elementType = targetType.GetGenericArguments().Single();
 
 			var items = kernel.ResolveAll(elementType, null);
 
 			var listType = typeof(List<>).MakeGenericType(elementType);
-			var list = ReflectionUtil.CreateInstance<object>(listType, items);
+			var list = listType.CreateInstance<object>(items);
 
 			return list;
 		}
@@ -88,16 +88,13 @@ namespace Castle.MicroKernel.Resolvers.SpecializedResolvers
 							   DependencyModel dependency)
 		{
 			var targetType = dependency.TargetType;
-
-			if (targetType != null && targetType.IsGenericType &&
-				targetType.GetGenericTypeDefinition() == typeof(IList<>))
+			if (targetType == null || !targetType.IsGenericType || targetType.GetGenericTypeDefinition() != typeof(IList<>))
 			{
-				var elementType = targetType.GetGenericArguments()[0];
-
-				return kernel.HasComponent(elementType) || allowEmptyList;
+				return false;
 			}
 
-			return false;
+			var elementType = targetType.GetGenericArguments().Single();
+			return allowEmptyList || kernel.HasComponent(elementType);
 		}
 	}
 }

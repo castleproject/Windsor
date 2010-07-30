@@ -62,7 +62,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 			
 			if (attr != null)
 			{
-				converter = ReflectionUtil.CreateInstance<ITypeConverter>(attr.ConverterType);
+				converter = attr.ConverterType.CreateInstance<ITypeConverter>();
 				converter.Context = Context;
 			}
 

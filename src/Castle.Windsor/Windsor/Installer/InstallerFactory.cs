@@ -33,7 +33,7 @@ namespace Castle.Windsor.Installer
 		/// </remarks>
 		public virtual IWindsorInstaller CreateInstance(Type installerType)
 		{
-			return ReflectionUtil.CreateInstance<IWindsorInstaller>(installerType);
+			return installerType.CreateInstance<IWindsorInstaller>();
 		}
 
 		/// <summary>

@@ -23,14 +23,14 @@ namespace Castle.Core.Internal
 	using System.Reflection;
 	using System.Text;
 
-	public abstract class ReflectionUtil
+	public static class ReflectionUtil
 	{
 		private static readonly IDictionary<ConstructorInfo, Func<object[], object>> factories =
 			new Dictionary<ConstructorInfo, Func<object[], object>>();
 
 		private static readonly Lock @lock = Lock.Create();
 
-		public static TBase CreateInstance<TBase>(Type subtypeofTBase, params object[] ctorArgs)
+		public static TBase CreateInstance<TBase>(this Type subtypeofTBase, params object[] ctorArgs)
 		{
 			EnsureIsAssignable<TBase>(subtypeofTBase);
 

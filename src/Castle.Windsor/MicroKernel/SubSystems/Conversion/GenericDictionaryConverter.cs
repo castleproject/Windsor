@@ -76,7 +76,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 			}
 
 			var helperType = typeof(DictionaryHelper<,>).MakeGenericType(defaultKeyType, defaultValueType);
-			var collectionConverterHelper = ReflectionUtil.CreateInstance<IGenericCollectionConverterHelper>(helperType, this);
+			var collectionConverterHelper = helperType.CreateInstance<IGenericCollectionConverterHelper>(this);
 			
 			return collectionConverterHelper.ConvertConfigurationToCollection(configuration);
 		}

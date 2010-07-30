@@ -435,7 +435,7 @@ namespace Castle.MicroKernel.Handlers
 					break;
 #endif
 				case LifestyleType.Custom:
-					manager = ReflectionUtil.CreateInstance<ILifestyleManager>(ComponentModel.CustomLifestyle);
+					manager = ComponentModel.CustomLifestyle.CreateInstance<ILifestyleManager>();
 					break;
 				case LifestyleType.Pooled:
 				{

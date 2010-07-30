@@ -61,7 +61,7 @@ namespace Castle.Windsor.Configuration.Interpreters.XmlProcessor
 		{
 			if (type.Is<IXmlNodeProcessor>())
 			{
-				var processor = ReflectionUtil.CreateInstance<IXmlNodeProcessor>(type);
+				var processor = type.CreateInstance<IXmlNodeProcessor>();
 				foreach(var nodeType in processor.AcceptNodeTypes)
 				{
 					RegisterProcessor(nodeType, processor);

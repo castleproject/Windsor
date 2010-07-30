@@ -151,7 +151,7 @@ namespace Castle.Windsor.Installer
 		{
 			if (cache.ContainsKey(type) == false)
 			{
-				var installerInstance = ReflectionUtil.CreateInstance<IWindsorInstaller>(type);
+				var installerInstance = type.CreateInstance<IWindsorInstaller>();
 				cache.Add(type, installerInstance);
 			}
 		}
@@ -170,7 +170,7 @@ namespace Castle.Windsor.Installer
 
 				var type = converter.PerformConversion<Type>(typeName);
 
-				var facilityInstance = ReflectionUtil.CreateInstance<IFacility>(type);
+				var facilityInstance = type.CreateInstance<IFacility>();
 
 				Debug.Assert(id != null);
 				Debug.Assert(facilityInstance != null);

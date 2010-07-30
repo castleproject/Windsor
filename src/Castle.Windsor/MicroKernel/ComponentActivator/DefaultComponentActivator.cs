@@ -143,7 +143,7 @@ namespace Castle.MicroKernel.ComponentActivator
 					}
 					else
 					{
-						instance = ReflectionUtil.CreateInstance<object>(implType, arguments);
+						instance = implType.CreateInstance<object>(arguments);
 					}
 #endif
 
