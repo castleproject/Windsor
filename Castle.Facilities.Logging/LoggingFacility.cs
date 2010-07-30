@@ -177,7 +177,7 @@ namespace Castle.Facilities.Logging
 			Debug.Assert(loggerFactoryType != null, "loggerFactoryType != null");
 
 			var ctorArgs = GetLoggingFactoryArguments(loggerFactoryType);
-			return ReflectionUtil.CreateInstance<ILoggerFactory>(loggerFactoryType, ctorArgs);
+			return loggerFactoryType.CreateInstance<ILoggerFactory>(ctorArgs);
 		}
 
 		private Type EnsureIsValidLoggerFactoryType(Type loggerFactoryType)

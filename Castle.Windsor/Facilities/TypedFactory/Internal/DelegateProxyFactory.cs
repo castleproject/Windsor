@@ -31,7 +31,7 @@ namespace Castle.Facilities.TypedFactory.Internal
 
 		private object GetProxyInstance(Type type, IInterceptor[] interceptors)
 		{
-			return ReflectionUtil.CreateInstance<object>(type, null, interceptors);
+			return type.CreateInstance<object>(null, interceptors);
 		}
 
 		private Type GetProxyType(IProxyBuilder builder)
