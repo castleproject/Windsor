@@ -36,7 +36,8 @@ namespace Castle.MicroKernel.Tests.Bugs
 			kernel.Register(Component.For<HasProtectedConstructor>());
 
 			Exception exception =
-				Assert.Throws<ComponentActivatorException>(() => kernel.Resolve<HasProtectedConstructor>());
+				Assert.Throws<ComponentActivatorException>(() => 
+					kernel.Resolve<HasProtectedConstructor>());
 
 			exception = exception.InnerException;
 			Assert.IsNotNull(exception);

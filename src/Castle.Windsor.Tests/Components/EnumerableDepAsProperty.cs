@@ -14,10 +14,10 @@
 
 namespace Castle.Windsor.Tests.Components
 {
-	public class UsesIEmptyService
+	using System.Collections.Generic;
+
+	public class EnumerableDepAsProperty
 	{
-		public UsesIEmptyService(IEmptyService emptyService)
-		{
-		}
+		public IEnumerable<IEmptyService> Services { get; set; }
 	}
 }

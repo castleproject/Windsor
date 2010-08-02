@@ -14,10 +14,7 @@
 
 namespace Castle.Windsor.Tests.Components
 {
-	public class UsesIEmptyService
+	public class EmptyServiceA : IEmptyService
 	{
-		public UsesIEmptyService(IEmptyService emptyService)
-		{
-		}
 	}
 }

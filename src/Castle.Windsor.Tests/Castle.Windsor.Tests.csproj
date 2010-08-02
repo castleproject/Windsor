@@ -106,11 +106,21 @@
     <Compile Include="ComponentsWithAttribute\HasUserAttributeNonRegister.cs" />
     <Compile Include="ComponentsWithAttribute\HasUserAttributeRegister.cs" />
     <Compile Include="ComponentsWithAttribute\UserAttribute.cs" />
+    <Compile Include="Components\ArrayDepAsConstructor.cs" />
+    <Compile Include="Components\ArrayDepAsProperty.cs" />
+    <Compile Include="Components\CollectionDepAsConstructor.cs" />
+    <Compile Include="Components\CollectionDepAsProperty.cs" />
     <Compile Include="Components\CtorWithDefaultValueAndDefault.cs" />
     <Compile Include="Components\CtorWithNullDefaultValueAndDefault.cs" />
+    <Compile Include="Components\EmptyServiceA.cs" />
+    <Compile Include="Components\EmptyServiceB.cs" />
+    <Compile Include="Components\EnumerableDepAsConstructor.cs" />
+    <Compile Include="Components\EnumerableDepAsProperty.cs" />
     <Compile Include="Components\HasInternalConstructor.cs" />
     <Compile Include="Components\HasProtectedConstructor.cs" />
     <Compile Include="Components\CtorWithDefaultValue.cs" />
+    <Compile Include="Components\ListDepAsConstructor.cs" />
+    <Compile Include="Components\ListDepAsProperty.cs" />
     <Compile Include="Components\ThrowsInCtorWithDisposableDependency.cs" />
     <Compile Include="Components\TwoCtorsWithDefaultValue.cs" />
     <Compile Include="DefaultValueTestCase.cs" />
@@ -199,7 +209,6 @@
     <Compile Include="Installer\FromAssemblyInstallersTestCase.cs" />
     <Compile Include="Components\UsesIEmptyService.cs" />
     <Compile Include="Components\IEmptyService.cs" />
-    <Compile Include="Components\EmptyService.cs" />
     <Compile Include="Interceptors\DisposableInterceptor.cs" />
     <Compile Include="Interceptors\WasCalledInterceptor.cs" />
     <Compile Include="Interceptors\AnotherInterceptorSelector.cs" />
@@ -224,6 +233,7 @@
     <Compile Include="Registration\ComponentRegistrationByNamespaceTestCase.cs" />
     <Compile Include="Registration\WithServiceTestCase.cs" />
     <Compile Include="ServiceOverridesTestCase.cs" />
+    <Compile Include="SpecializedResolvers\CollectionResolverTestCase.cs" />
     <Compile Include="TypedDependenciesTestCase.cs" />
     <Compile Include="ArgumentsTestCase.cs" />
     <Compile Include="BestConstructorTestCase.cs">

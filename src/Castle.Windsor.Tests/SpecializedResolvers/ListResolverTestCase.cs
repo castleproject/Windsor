@@ -14,11 +14,11 @@
 
 namespace Castle.MicroKernel.Tests.SpecializedResolvers
 {
-	using System.Collections.Generic;
 	using System.Linq;
 
 	using Castle.DynamicProxy;
 	using Castle.Windsor.Proxy;
+	using Castle.Windsor.Tests.Components;
 
 	using MicroKernel.Registration;
 	using NUnit.Framework;
@@ -45,11 +45,11 @@ namespace Castle.MicroKernel.Tests.SpecializedResolvers
 		[Test]
 		public void DependencyOnListOfServices_OnProperty()
 		{
-			kernel.Register(Component.For<IService>().ImplementedBy<A>(),
-							Component.For<IService>().ImplementedBy<B>(),
-							Component.For<CollectionDepAsProperty>());
+			kernel.Register(Component.For<IEmptyService>().ImplementedBy<EmptyServiceA>(),
+							Component.For<IEmptyService>().ImplementedBy<EmptyServiceB>(),
+							Component.For<ListDepAsProperty>());
 
-			var comp = kernel.Resolve<CollectionDepAsProperty>();
+			var comp = kernel.Resolve<ListDepAsProperty>();
 
 			Assert.IsNotNull(comp);
 			Assert.IsNotNull(comp.Services);
@@ -63,11 +63,11 @@ namespace Castle.MicroKernel.Tests.SpecializedResolvers
 		[Test]
 		public void DependencyOnListOfServices_OnConstructor()
 		{
-			kernel.Register(Component.For<IService>().ImplementedBy<A>(),
-							Component.For<IService>().ImplementedBy<B>(),
-							Component.For<CollectionDepAsConstructor>());
+			kernel.Register(Component.For<IEmptyService>().ImplementedBy<EmptyServiceA>(),
+							Component.For<IEmptyService>().ImplementedBy<EmptyServiceB>(),
+							Component.For<ListDepAsConstructor>());
 
-			var comp = kernel.Resolve<CollectionDepAsConstructor>();
+			var comp = kernel.Resolve<ListDepAsConstructor>();
 
 			Assert.IsNotNull(comp);
 			Assert.IsNotNull(comp.Services);
@@ -84,24 +84,24 @@ namespace Castle.MicroKernel.Tests.SpecializedResolvers
 			kernel.Register(
 				Component.For<StandardInterceptor>().Named("a"),
 				Component.For<StandardInterceptor>().Named("b"),
-				Component.For<IService>().ImplementedBy<A>().Interceptors("a"),
-				Component.For<IService>().ImplementedBy<B>().Interceptors("b"),
-				Component.For<CollectionDepAsConstructor>(),
-				Component.For<CollectionDepAsProperty>());
+				Component.For<IEmptyService>().ImplementedBy<EmptyServiceA>().Interceptors("a"),
+				Component.For<IEmptyService>().ImplementedBy<EmptyServiceB>().Interceptors("b"),
+				Component.For<ListDepAsConstructor>(),
+				Component.For<ListDepAsProperty>());
 
-			var proxy = kernel.Resolve<CollectionDepAsConstructor>().Services[0] as IProxyTargetAccessor;
+			var proxy = kernel.Resolve<ListDepAsConstructor>().Services[0] as IProxyTargetAccessor;
 			Assert.IsNotNull(proxy);
 			Assert.AreSame(proxy.GetInterceptors()[0], kernel.Resolve<StandardInterceptor>("a"));
 
-			proxy = kernel.Resolve<CollectionDepAsConstructor>().Services[1] as IProxyTargetAccessor;
+			proxy = kernel.Resolve<ListDepAsConstructor>().Services[1] as IProxyTargetAccessor;
 			Assert.IsNotNull(proxy);
 			Assert.AreSame(proxy.GetInterceptors()[0], kernel.Resolve<StandardInterceptor>("b"));
 
-			proxy = kernel.Resolve<CollectionDepAsProperty>().Services[0] as IProxyTargetAccessor;
+			proxy = kernel.Resolve<ListDepAsProperty>().Services[0] as IProxyTargetAccessor;
 			Assert.IsNotNull(proxy);
 			Assert.AreSame(proxy.GetInterceptors()[0], kernel.Resolve<StandardInterceptor>("a"));
 
-			proxy = kernel.Resolve<CollectionDepAsProperty>().Services[1] as IProxyTargetAccessor;
+			proxy = kernel.Resolve<ListDepAsProperty>().Services[1] as IProxyTargetAccessor;
 			Assert.IsNotNull(proxy);
 			Assert.AreSame(proxy.GetInterceptors()[0], kernel.Resolve<StandardInterceptor>("b"));
 		}
@@ -110,46 +110,14 @@ namespace Castle.MicroKernel.Tests.SpecializedResolvers
 		public void DependencyOnListWhenEmpty()
 		{
 			kernel.Resolver.AddSubResolver(new ListResolver(kernel, true));
-			kernel.Register(Component.For<CollectionDepAsConstructor>(),
-			                Component.For<CollectionDepAsProperty>());
+			kernel.Register(Component.For<ListDepAsConstructor>(),
+			                Component.For<ListDepAsProperty>());
 
-			var proxy = kernel.Resolve<CollectionDepAsConstructor>();
+			var proxy = kernel.Resolve<ListDepAsConstructor>();
 			Assert.IsNotNull(proxy.Services);
 
-			var proxy2 = kernel.Resolve<CollectionDepAsProperty>();
+			var proxy2 = kernel.Resolve<ListDepAsProperty>();
 			Assert.IsNotNull(proxy2.Services);
-		}
-
-		public class CollectionDepAsProperty
-		{
-			public IList<IService> Services { get; set; }
-		}
-
-		public class CollectionDepAsConstructor
-		{
-			private readonly IList<IService> services;
-
-			public CollectionDepAsConstructor(IList<IService> services)
-			{
-				this.services = services;
-			}
-
-			public IList<IService> Services
-			{
-				get { return services; }
-			}
-		}
-
-		public interface IService
-		{
-		}
-
-		public class A : IService
-		{
-		}
-
-		public class B : IService
-		{
 		}
 	}
 }
