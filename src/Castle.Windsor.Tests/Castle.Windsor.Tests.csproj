@@ -101,6 +101,7 @@
     <Compile Include="ClassComponents\APropCtor.cs" />
     <Compile Include="ClassComponents\BCycleProp.cs" />
     <Compile Include="ClassComponents\ClassWithInstanceCount.cs" />
+    <Compile Include="ClassComponents\DependsOnThrowingComponent.cs" />
     <Compile Include="ClassComponents\HasThrowingPropertyDependency.cs" />
     <Compile Include="ClassComponents\ThrowsInCtor.cs" />
     <Compile Include="ComponentsWithAttribute\HasUserAttributeNonRegister.cs" />

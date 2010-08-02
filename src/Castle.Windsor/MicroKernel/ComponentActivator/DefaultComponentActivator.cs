@@ -296,17 +296,34 @@ namespace Castle.MicroKernel.ComponentActivator
 
 			if (constructor == null) return null;
 
-			object[] arguments = new object[constructor.Constructor.GetParameters().Length];
+			var arguments = new object[constructor.Constructor.GetParameters().Length];
 			if (arguments.Length == 0)
 			{
 				return null;
 			}
 
-			signature = new Type[arguments.Length];
+			try
+			{
+				signature = new Type[arguments.Length];
+				CreateConstructorArgumentsCore(constructor, arguments, context, signature);
+			}
+			catch
+			{
+				foreach (var argument in arguments)
+				{
+					if (argument == null) break;
+					Kernel.ReleaseComponent(argument);
+				}
+				throw;
+			}
 
+			return arguments;
+		}
+
+		private void CreateConstructorArgumentsCore(ConstructorCandidate constructor, object[] arguments, CreationContext context, Type[] signature)
+		{
 			int index = 0;
-
-			foreach (DependencyModel dependency in constructor.Dependencies)
+			foreach (var dependency in constructor.Dependencies)
 			{
 				object value;
 				using (new DependencyTrackingScope(context, Model, constructor.Constructor, dependency))
@@ -316,8 +333,6 @@ namespace Castle.MicroKernel.ComponentActivator
 				arguments[index] = value;
 				signature[index++] = dependency.TargetType;
 			}
-
-			return arguments;
 		}
 
 		protected virtual void SetUpProperties(object instance, CreationContext context)

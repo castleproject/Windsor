@@ -16,6 +16,7 @@ namespace Castle.Windsor.Tests
 {
 	using Castle.MicroKernel.ComponentActivator;
 	using Castle.MicroKernel.Registration;
+	using Castle.Windsor.Tests.ClassComponents;
 	using Castle.Windsor.Tests.Components;
 
 	using NUnit.Framework;
@@ -41,6 +42,20 @@ namespace Castle.Windsor.Tests
 				);
 
 			Assert.Throws<ComponentActivatorException>(() => container.Resolve<ThrowsInCtorWithDisposableDependency>());
+			Assert.AreEqual(1, SimpleServiceDisposable.DisposeCount);
+		}
+
+		[Test]
+		public void When_constructor_dependency_throws_previous_dependencies_get_released()
+		{
+			SimpleServiceDisposable.DisposeCount = 0;
+			container.Register(
+				Component.For<ISimpleService>().ImplementedBy<SimpleServiceDisposable>().LifeStyle.Transient,
+				Component.For<ThrowsInCtor>().LifeStyle.Transient,
+				Component.For<DependsOnThrowingComponent>()
+				);
+
+			Assert.Throws<ComponentActivatorException>(() => container.Resolve<DependsOnThrowingComponent>());
 			Assert.AreEqual(1, SimpleServiceDisposable.DisposeCount);
 		}
 	}
