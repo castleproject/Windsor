@@ -20,6 +20,7 @@ namespace Castle.MicroKernel.Tests.SubContainers
 	using Castle.Core;
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Tests.ClassComponents;
+	using Castle.Windsor.Tests.Components;
 
 	using NUnit.Framework;
 
@@ -106,7 +107,7 @@ namespace Castle.MicroKernel.Tests.SubContainers
 			childContainer.Register(Component.For(typeof(UsesIEmptyService)).Named("component"));
 
 			container.Register(
-				Component.For(typeof(IEmptyService)).ImplementedBy(typeof(EmptyService)).Named("service1"));
+				Component.For(typeof(IEmptyService)).ImplementedBy(typeof(EmptyServiceA)).Named("service1"));
 
 			var comp = childContainer.Resolve<UsesIEmptyService>();
 		}

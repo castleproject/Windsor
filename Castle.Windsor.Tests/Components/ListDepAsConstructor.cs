@@ -14,10 +14,20 @@
 
 namespace Castle.Windsor.Tests.Components
 {
-	public class UsesIEmptyService
+	using System.Collections.Generic;
+
+	public class ListDepAsConstructor
 	{
-		public UsesIEmptyService(IEmptyService emptyService)
+		private readonly IList<IEmptyService> services;
+
+		public ListDepAsConstructor(IList<IEmptyService> services)
 		{
+			this.services = services;
+		}
+
+		public IList<IEmptyService> Services
+		{
+			get { return services; }
 		}
 	}
 }

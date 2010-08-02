@@ -150,10 +150,14 @@ namespace Castle.MicroKernel.ComponentActivator
 				}
 				catch (Exception ex)
 				{
-					foreach (var argument in arguments)
+					if (arguments != null)
 					{
-						Kernel.ReleaseComponent(argument);
+						foreach (var argument in arguments)
+						{
+							Kernel.ReleaseComponent(argument);
+						}
 					}
+
 					throw new ComponentActivatorException(
 						"ComponentActivator: could not instantiate " + Model.Implementation.FullName, ex);
 				}

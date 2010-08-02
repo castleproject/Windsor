@@ -14,10 +14,18 @@
 
 namespace Castle.Windsor.Tests.Components
 {
-	public class UsesIEmptyService
+	public class ArrayDepAsConstructor
 	{
-		public UsesIEmptyService(IEmptyService emptyService)
+		private readonly IEmptyService[] services;
+
+		public ArrayDepAsConstructor(IEmptyService[] services)
 		{
+			this.services = services;
+		}
+
+		public IEmptyService[] Services
+		{
+			get { return services; }
 		}
 	}
 }

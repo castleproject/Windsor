@@ -12,12 +12,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.MicroKernel.Tests.SubContainers
+namespace Castle.Windsor.Tests.Components
 {
-	public class EmptyService : IEmptyService
+	using System.Collections.Generic;
+
+	public class EnumerableDepAsConstructor
 	{
-		public EmptyService()
+		private readonly IEnumerable<IEmptyService> services;
+
+		public EnumerableDepAsConstructor(IEnumerable<IEmptyService> services)
 		{
+			this.services = services;
+		}
+
+		public IEnumerable<IEmptyService> Services
+		{
+			get { return services; }
 		}
 	}
 }

@@ -15,9 +15,12 @@
 namespace Castle.MicroKernel.Tests.SpecializedResolvers
 {
 	using System.Linq;
-	using MicroKernel.Registration;
+
+	using Castle.MicroKernel.Registration;
+	using Castle.MicroKernel.Resolvers.SpecializedResolvers;
+	using Castle.Windsor.Tests.Components;
+
 	using NUnit.Framework;
-	using Resolvers.SpecializedResolvers;
 
 	[TestFixture]
 	public class ArrayResolverTestCase
@@ -40,16 +43,16 @@ namespace Castle.MicroKernel.Tests.SpecializedResolvers
 		[Test]
 		public void DependencyOnArrayOfServices_OnProperty()
 		{
-			kernel.Register(Component.For<IService>().ImplementedBy<A>(),
-			                Component.For<IService>().ImplementedBy<B>(),
-			                Component.For<CollectionDepAsProperty>());
+			kernel.Register(Component.For<IEmptyService>().ImplementedBy<EmptyServiceA>(),
+			                Component.For<IEmptyService>().ImplementedBy<EmptyServiceB>(),
+			                Component.For<ArrayDepAsProperty>());
 
-			var comp = kernel.Resolve<CollectionDepAsProperty>();
+			var comp = kernel.Resolve<ArrayDepAsProperty>();
 
 			Assert.IsNotNull(comp);
 			Assert.IsNotNull(comp.Services);
 			Assert.AreEqual(2, comp.Services.Length);
-			foreach (var service in comp.Services.AsEnumerable())
+			foreach (var service in comp.Services)
 			{
 				Assert.IsNotNull(service);
 			}
@@ -58,16 +61,16 @@ namespace Castle.MicroKernel.Tests.SpecializedResolvers
 		[Test]
 		public void DependencyOnArrayOfServices_OnConstructor()
 		{
-			kernel.Register(Component.For<IService>().ImplementedBy<A>(),
-							Component.For<IService>().ImplementedBy<B>(),
-							Component.For<CollectionDepAsConstructor>());
+			kernel.Register(Component.For<IEmptyService>().ImplementedBy<EmptyServiceA>(),
+							Component.For<IEmptyService>().ImplementedBy<EmptyServiceB>(),
+							Component.For<ArrayDepAsConstructor>());
 
-			var comp = kernel.Resolve<CollectionDepAsConstructor>();
+			var comp = kernel.Resolve<ArrayDepAsConstructor>();
 
 			Assert.IsNotNull(comp);
 			Assert.IsNotNull(comp.Services);
 			Assert.AreEqual(2, comp.Services.Length);
-			foreach (var service in comp.Services.AsEnumerable())
+			foreach (var service in comp.Services)
 			{
 				Assert.IsNotNull(service);
 			}
@@ -77,46 +80,14 @@ namespace Castle.MicroKernel.Tests.SpecializedResolvers
 		public void DependencyOnArrayWhenEmpty()
 		{
 			kernel.Resolver.AddSubResolver(new ArrayResolver(kernel, true));
-			kernel.Register(Component.For<CollectionDepAsConstructor>(),
-			                Component.For<CollectionDepAsProperty>());
+			kernel.Register(Component.For<ArrayDepAsConstructor>(),
+			                Component.For<ArrayDepAsProperty>());
 
-			var proxy = kernel.Resolve<CollectionDepAsConstructor>();
+			var proxy = kernel.Resolve<ArrayDepAsConstructor>();
 			Assert.IsNotNull(proxy.Services);
 
-			var proxy2 = kernel.Resolve<CollectionDepAsProperty>();
+			var proxy2 = kernel.Resolve<ArrayDepAsProperty>();
 			Assert.IsNotNull(proxy2.Services);
-		}
-
-		public class CollectionDepAsProperty
-		{
-			public IService[] Services { get; set; }
-		}
-
-		public class CollectionDepAsConstructor
-		{
-			private readonly IService[] services;
-
-			public CollectionDepAsConstructor(IService[] Services)
-			{
-				services = Services;
-			}
-
-			public IService[] Services
-			{
-				get { return services; }
-			}
-		}
-
-		public interface IService
-		{
-		}
-
-		public class A : IService
-		{
-		}
-
-		public class B : IService
-		{
 		}
 	}
 }
