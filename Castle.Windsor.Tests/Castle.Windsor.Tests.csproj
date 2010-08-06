@@ -95,6 +95,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DisposeOrderTestFixture.cs" />
     <Compile Include="ClassComponents\A2.cs" />
     <Compile Include="ClassComponents\ACycleProp.cs" />
     <Compile Include="ClassComponents\AProp.cs" />
@@ -126,6 +127,7 @@
     <Compile Include="Components\TwoCtorsWithDefaultValue.cs" />
     <Compile Include="DefaultValueTestCase.cs" />
     <Compile Include="FailureCleanUpTestCase.cs" />
+    <Compile Include="Interceptors\ThrowInCtorInterceptor.cs" />
     <Compile Include="Lifestyle\Components\UsesComponentWithDispose.cs" />
     <Compile Include="RegistrationWithAttributeTestCase.cs" />
     <Compile Include="ClassComponents\A.cs" />
@@ -1109,9 +1111,7 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Bugs\UnregisteringWithFactorySupport\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" Condition="($(MSBuildTargets) == '') Or ($(MSBuildTargets) == 'CSharp')" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight\v3.0\Microsoft.Silverlight.CSharp.targets" Condition="$(MSBuildTargets) == 'Silverlight 3.0'" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight\v4.0\Microsoft.Silverlight.CSharp.targets" Condition="$(MSBuildTargets) == 'Silverlight 4.0'" />

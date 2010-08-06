@@ -15,6 +15,7 @@
 namespace Castle.Core
 {
 	using System;
+	using System.Diagnostics;
 
 	public enum InterceptorReferenceType
 	{
@@ -142,6 +143,17 @@ namespace Castle.Core
 			result = 29*result + (serviceType != null ? serviceType.GetHashCode() : 0);
 			result = 29*result + (componentKey != null ? componentKey.GetHashCode() : 0);
 			return result;
+		}
+
+		public override string ToString()
+		{
+			if (refType == InterceptorReferenceType.Key)
+			{
+				return componentKey;
+			}
+
+			Debug.Assert(serviceType != null);
+			return serviceType.FullName;
 		}
 	}
 }
