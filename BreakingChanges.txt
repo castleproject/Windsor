@@ -1,4 +1,13 @@
 ================================================================================================
+change - ILazyComponentLoader.Load now accepts a third argument for additional arguments.
+
+impact - medium
+fixability - easy
+revision - 
+
+description - To allow maximum flexibility and usage with Resolve, any additional arguments
+   are now passed to the lazy loader.
+================================================================================================
 change - LifecycleStepCollection class was removed. Instaed LifecycleConcernsCollection class
 	was introduced. ILifecycleConcern has now two innerited interfaces for commission and
 	decommission. LifecycleSteps property of ComponentModel was renamed to Lifecycle.

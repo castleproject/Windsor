@@ -56,7 +56,7 @@ namespace Castle.MicroKernel
 				throw new ArgumentNullException("service");
 			}
 
-			if ((this as IKernelInternal).LazyLoadComponentByKey(key, service) == false)
+			if ((this as IKernelInternal).LazyLoadComponentByKey(key, service, null) == false)
 			{
 				throw new ComponentNotFoundException(key);
 			}
@@ -83,7 +83,7 @@ namespace Castle.MicroKernel
 				throw new ArgumentNullException("service");
 			}
 
-			if ((this as IKernelInternal).LazyLoadComponentByKey(key, service) == false)
+			if ((this as IKernelInternal).LazyLoadComponentByKey(key, service, arguments) == false)
 			{
 				throw new ComponentNotFoundException(key);
 			}
@@ -166,7 +166,7 @@ namespace Castle.MicroKernel
 				throw new ArgumentNullException("service");
 			}
 
-			if ((this as IKernelInternal).LazyLoadComponentByType(null, service) == false)
+			if ((this as IKernelInternal).LazyLoadComponentByType(null, service, null) == false)
 			{
 				throw new ComponentNotFoundException(service);
 			}
@@ -193,7 +193,7 @@ namespace Castle.MicroKernel
 				throw new ArgumentNullException("arguments");
 			}
 
-			if ((this as IKernelInternal).LazyLoadComponentByType(null, service) == false)
+			if ((this as IKernelInternal).LazyLoadComponentByType(null, service, arguments) == false)
 			{
 				throw new ComponentNotFoundException(service);
 			}
@@ -234,7 +234,7 @@ namespace Castle.MicroKernel
 				throw new ArgumentNullException("arguments");
 			}
 
-			if ((this as IKernelInternal).LazyLoadComponentByKey(key, null) == false)
+			if ((this as IKernelInternal).LazyLoadComponentByKey(key, null, arguments) == false)
 			{
 				throw new ComponentNotFoundException(key);
 			}

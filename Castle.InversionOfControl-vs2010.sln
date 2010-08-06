@@ -4,7 +4,6 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F9A88F20-64E5-442C-8C20-10C69A39EF4C}"
 	ProjectSection(SolutionItems) = preProject
 		BreakingChanges.txt = BreakingChanges.txt
-		Changes.txt = Changes.txt
 		License.txt = License.txt
 		Readme.txt = Readme.txt
 	EndProjectSection
@@ -25,8 +24,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Castle.Facilities.Synchronize.Tests", "src\Castle.Facilities.Synchronize.Tests\Castle.Facilities.Synchronize.Tests.csproj", "{8AC538A8-8801-47E4-A96C-A0EC8AF6C341}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sample", "Sample", "{D4D4C2B2-F90E-41A3-92E8-C24D55B60D33}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Castle.Samples.Uploader", "samples\Castle.Samples.Uploader\Castle.Samples.Uploader.csproj", "{90F3245D-FFB9-4CF0-AC27-C68CF17761CF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -228,42 +225,9 @@ Global
 		{8AC538A8-8801-47E4-A96C-A0EC8AF6C341}.ReleaseSL4|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{8AC538A8-8801-47E4-A96C-A0EC8AF6C341}.ReleaseSL4|Mixed Platforms.Build.0 = Release|Any CPU
 		{8AC538A8-8801-47E4-A96C-A0EC8AF6C341}.ReleaseSL4|x86.ActiveCfg = Release|Any CPU
-		{90F3245D-FFB9-4CF0-AC27-C68CF17761CF}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{90F3245D-FFB9-4CF0-AC27-C68CF17761CF}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
-		{90F3245D-FFB9-4CF0-AC27-C68CF17761CF}.Debug|Mixed Platforms.Build.0 = Debug|x86
-		{90F3245D-FFB9-4CF0-AC27-C68CF17761CF}.Debug|x86.ActiveCfg = Debug|x86
-		{90F3245D-FFB9-4CF0-AC27-C68CF17761CF}.Debug|x86.Build.0 = Debug|x86
-		{90F3245D-FFB9-4CF0-AC27-C68CF17761CF}.Release|Any CPU.ActiveCfg = Release|x86
-		{90F3245D-FFB9-4CF0-AC27-C68CF17761CF}.Release|Mixed Platforms.ActiveCfg = Release|x86
-		{90F3245D-FFB9-4CF0-AC27-C68CF17761CF}.Release|Mixed Platforms.Build.0 = Release|x86
-		{90F3245D-FFB9-4CF0-AC27-C68CF17761CF}.Release|x86.ActiveCfg = Release|x86
-		{90F3245D-FFB9-4CF0-AC27-C68CF17761CF}.Release|x86.Build.0 = Release|x86
-		{90F3245D-FFB9-4CF0-AC27-C68CF17761CF}.ReleaseNET35|Any CPU.ActiveCfg = Release|x86
-		{90F3245D-FFB9-4CF0-AC27-C68CF17761CF}.ReleaseNET35|Mixed Platforms.ActiveCfg = Release|x86
-		{90F3245D-FFB9-4CF0-AC27-C68CF17761CF}.ReleaseNET35|Mixed Platforms.Build.0 = Release|x86
-		{90F3245D-FFB9-4CF0-AC27-C68CF17761CF}.ReleaseNET35|x86.ActiveCfg = Release|x86
-		{90F3245D-FFB9-4CF0-AC27-C68CF17761CF}.ReleaseNET35|x86.Build.0 = Release|x86
-		{90F3245D-FFB9-4CF0-AC27-C68CF17761CF}.ReleaseNET40CP|Any CPU.ActiveCfg = Release|x86
-		{90F3245D-FFB9-4CF0-AC27-C68CF17761CF}.ReleaseNET40CP|Mixed Platforms.ActiveCfg = Release|x86
-		{90F3245D-FFB9-4CF0-AC27-C68CF17761CF}.ReleaseNET40CP|Mixed Platforms.Build.0 = Release|x86
-		{90F3245D-FFB9-4CF0-AC27-C68CF17761CF}.ReleaseNET40CP|x86.ActiveCfg = Release|x86
-		{90F3245D-FFB9-4CF0-AC27-C68CF17761CF}.ReleaseNET40CP|x86.Build.0 = Release|x86
-		{90F3245D-FFB9-4CF0-AC27-C68CF17761CF}.ReleaseSL3|Any CPU.ActiveCfg = Release|x86
-		{90F3245D-FFB9-4CF0-AC27-C68CF17761CF}.ReleaseSL3|Mixed Platforms.ActiveCfg = Release|x86
-		{90F3245D-FFB9-4CF0-AC27-C68CF17761CF}.ReleaseSL3|Mixed Platforms.Build.0 = Release|x86
-		{90F3245D-FFB9-4CF0-AC27-C68CF17761CF}.ReleaseSL3|x86.ActiveCfg = Release|x86
-		{90F3245D-FFB9-4CF0-AC27-C68CF17761CF}.ReleaseSL3|x86.Build.0 = Release|x86
-		{90F3245D-FFB9-4CF0-AC27-C68CF17761CF}.ReleaseSL4|Any CPU.ActiveCfg = Release|x86
-		{90F3245D-FFB9-4CF0-AC27-C68CF17761CF}.ReleaseSL4|Mixed Platforms.ActiveCfg = Release|x86
-		{90F3245D-FFB9-4CF0-AC27-C68CF17761CF}.ReleaseSL4|Mixed Platforms.Build.0 = Release|x86
-		{90F3245D-FFB9-4CF0-AC27-C68CF17761CF}.ReleaseSL4|x86.ActiveCfg = Release|x86
-		{90F3245D-FFB9-4CF0-AC27-C68CF17761CF}.ReleaseSL4|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{90F3245D-FFB9-4CF0-AC27-C68CF17761CF} = {D4D4C2B2-F90E-41A3-92E8-C24D55B60D33}
 	EndGlobalSection
 	GlobalSection(TextTemplating) = postSolution
 		TextTemplating = 1

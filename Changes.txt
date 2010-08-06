@@ -4,6 +4,8 @@
 
 - fixed issue where startable component would be created twice when property dependency could not be resolved
 
+- passing arguments to ILazyComponentLoader (see breakingchanges.txt)
+
 - fixed bug that caused exception when proxied component and it's proxied property dependency shared interceptor
 
 2.5.0 beta2 (2010-07-21)
