@@ -168,6 +168,7 @@ namespace Castle.MicroKernel.Lifestyle
 				return;
 			}
 
+			// NOTE: This is relying on a undocumented behavior that order of items when enumeratinc Dictionary<> will be oldest --> latest
 			foreach (var candidate in candidates.Reverse())
 			{
 				var manager = candidate.Key;

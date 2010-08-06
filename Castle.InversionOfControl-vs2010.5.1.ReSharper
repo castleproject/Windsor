@@ -259,7 +259,6 @@ II.2.12 <HandlesEvent />
       <Sort>
         <Name/>
       </Sort>
-      <Group Region="Delegates"/>
     </Entry>
 
     <!--public enum-->
@@ -273,9 +272,6 @@ II.2.12 <HandlesEvent />
       <Sort>
         <Name/>
       </Sort>
-      <Group>
-        <Name Region="${Name} enum"/>
-      </Group>
     </Entry>
 
 
@@ -287,9 +283,6 @@ II.2.12 <HandlesEvent />
       <Sort>
         <Name/>
       </Sort>
-      <Group>
-        <Name Region="Nested type: ${Name}"/>
-      </Group>
     </Entry>
   </Pattern>
 

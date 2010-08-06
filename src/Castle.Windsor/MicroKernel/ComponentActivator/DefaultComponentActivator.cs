@@ -165,13 +165,23 @@ namespace Castle.MicroKernel.ComponentActivator
 
 			if (createProxy)
 			{
-				
 				try
 				{
 					instance = Kernel.ProxyFactory.Create(Kernel, instance, Model, context, arguments);
 				}
 				catch (Exception ex)
 				{
+					if (instance != null)
+					{
+						Kernel.ReleaseComponent(instance);
+					}
+					if (arguments != null)
+					{
+						foreach (var argument in arguments)
+						{
+							Kernel.ReleaseComponent(argument);
+						}
+					}
 					throw new ComponentActivatorException("ComponentActivator: could not proxy " + Model.Implementation.FullName, ex);
 				}
 			}

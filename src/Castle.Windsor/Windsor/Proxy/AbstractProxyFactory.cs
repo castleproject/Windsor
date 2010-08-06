@@ -71,24 +71,14 @@ namespace Castle.Windsor.Proxy
 		protected IInterceptor[] ObtainInterceptors(IKernel kernel, ComponentModel model, CreationContext context)
 		{
 			var interceptors = new List<IInterceptor>();
-
-			foreach (InterceptorReference interceptorRef in GetInterceptorsFor(model))
+			foreach (var interceptorRef in GetInterceptorsFor(model))
 			{
-				IHandler handler;
-				if (interceptorRef.ReferenceType == InterceptorReferenceType.Interface)
-				{
-					handler = kernel.GetHandler(interceptorRef.ServiceType);
-				}
-				else
-				{
-					handler = kernel.GetHandler(interceptorRef.ComponentKey);
-				}
-
+				var handler = GetInterceptorHandler(interceptorRef, kernel);
 				if (handler == null)
 				{
-					// This shoul be virtually impossible to happen
+					// This should be virtually impossible to happen
 					// Seriously!
-					throw new Exception("The interceptor could not be resolved");
+					throw new DependencyResolverException(string.Format("The interceptor {0} could not be resolved", interceptorRef));
 				}
 
 				if(handler.IsBeingResolvedInContext(context))
@@ -108,17 +98,40 @@ namespace Castle.Windsor.Proxy
 
 					SetOnBehalfAware(interceptor as IOnBehalfAware, model);
 				}
-				catch (InvalidCastException)
+				catch (Exception e)
 				{
-					var message = String.Format(
-						"An interceptor registered for {0} doesn't implement the IInterceptor interface",
-						model.Name);
+					foreach (var interceptor in interceptors)
+					{
+						kernel.ReleaseComponent(interceptor);
+					}
 
-					throw new Exception(message);
+					if(e is InvalidCastException)
+					{
+						var message = String.Format(
+						"An interceptor registered for {0} doesn't implement the {1} interface",
+						model.Name, typeof(IInterceptor).Name);
+
+						throw new DependencyResolverException(message);
+					}
+					throw;
 				}
 			}
 
 			return interceptors.ToArray();
+		}
+
+		private IHandler GetInterceptorHandler(InterceptorReference interceptorRef, IKernel kernel)
+		{
+			IHandler handler;
+			if (interceptorRef.ReferenceType == InterceptorReferenceType.Interface)
+			{
+				handler = kernel.GetHandler(interceptorRef.ServiceType);
+			}
+			else
+			{
+				handler = kernel.GetHandler(interceptorRef.ComponentKey);
+			}
+			return handler;
 		}
 
 		private CreationContext RebuildContext(Type parameterType, CreationContext current)

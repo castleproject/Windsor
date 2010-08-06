@@ -16,6 +16,7 @@ namespace Castle.MicroKernel.Releasers
 {
 	using System;
 	using System.Collections.Generic;
+	using System.Linq;
 
 	using Castle.Core.Internal;
 
@@ -79,7 +80,8 @@ namespace Castle.MicroKernel.Releasers
 				var burdens = new KeyValuePair<object, Burden>[instance2Burden.Count];
 				instance2Burden.CopyTo(burdens, 0);
 
-				foreach (var burden in burdens)
+				// NOTE: This is relying on a undocumented behavior that order of items when enumerating Dictionary<> will be oldest --> latest
+				foreach (var burden in burdens.Reverse())
 				{
 					if (instance2Burden.ContainsKey(burden.Key))
 					{
