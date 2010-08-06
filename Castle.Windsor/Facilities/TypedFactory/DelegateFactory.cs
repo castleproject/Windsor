@@ -15,9 +15,9 @@
 namespace Castle.Facilities.TypedFactory
 {
 	using System;
+	using System.Collections;
 	using System.Diagnostics;
 	using System.Reflection;
-
 	using Castle.Core;
 	using Castle.Core.Internal;
 	using Castle.MicroKernel;
@@ -31,7 +31,7 @@ namespace Castle.Facilities.TypedFactory
 
 		#region ILazyComponentLoader Members
 
-		public IRegistration Load(string key, Type service)
+		public IRegistration Load(string key, Type service, IDictionary arguments)
 		{
 			if (service == null)
 			{
