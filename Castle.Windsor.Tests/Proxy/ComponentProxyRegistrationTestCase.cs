@@ -92,7 +92,7 @@ namespace Castle.Windsor.Tests.Proxy
 		[Test]
 		public void Releasing_MixIn_releases_all_parts()
 		{
-			SimpleServiceDisposable.DisposeCount = 0;
+			SimpleServiceDisposable.DisposedCount = 0;
 			container.Register(
 				Component.For<ICalcService>()
 					.ImplementedBy<CalculatorService>().Proxy.MixIns(m => m.Service<ISimpleService>())
@@ -106,7 +106,7 @@ namespace Castle.Windsor.Tests.Proxy
 			var mixin = (ISimpleService)calculator;
 			mixin.Operation();
 			container.Release(mixin);
-			Assert.AreEqual(1, SimpleServiceDisposable.DisposeCount);
+			Assert.AreEqual(1, SimpleServiceDisposable.DisposedCount);
 		}
 
 		[Test]

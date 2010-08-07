@@ -21,6 +21,7 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Releasers;
 	using Castle.Windsor;
+	using Castle.Windsor.Tests.ClassComponents;
 	using Castle.Windsor.Tests.Facilities.TypedFactory.Components;
 	using Castle.Windsor.Tests.Facilities.TypedFactory.Delegates;
 	using Castle.Windsor.Tests.Facilities.TypedFactory.Selectors;
