@@ -171,10 +171,6 @@ namespace Castle.MicroKernel.ComponentActivator
 				}
 				catch (Exception ex)
 				{
-					if (instance != null)
-					{
-						Kernel.ReleaseComponent(instance);
-					}
 					if (arguments != null)
 					{
 						foreach (var argument in arguments)
@@ -391,7 +387,6 @@ namespace Castle.MicroKernel.ComponentActivator
 			}
 			catch (Exception)
 			{
-				// TODO: clean up
 				if (property.Dependency.IsOptional)
 				{
 					return null;

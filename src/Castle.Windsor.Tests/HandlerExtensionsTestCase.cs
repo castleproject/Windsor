@@ -14,14 +14,13 @@
 
 namespace Castle.Windsor.Tests
 {
-	using System;
 	using System.Collections.Generic;
 	using System.Linq;
 
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Handlers;
 	using Castle.MicroKernel.Registration;
-	using Castle.Windsor.Tests.Facilities.TypedFactory.Delegates;
+	using Castle.Windsor.Tests.ClassComponents;
 
 	using NUnit.Framework;
 

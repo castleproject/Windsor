@@ -95,6 +95,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ClassComponents\DisposableFoo.cs" />
+    <Compile Include="ClassComponents\UsesDisposableFoo.cs" />
+    <Compile Include="Configuration2\PrivateSettersTestCase.cs" />
     <Compile Include="DisposeOrderTestFixture.cs" />
     <Compile Include="ClassComponents\A2.cs" />
     <Compile Include="ClassComponents\ACycleProp.cs" />
@@ -183,7 +186,6 @@
     <Compile Include="Facilities\Startable\Components\Startable.cs" />
     <Compile Include="Facilities\TypedFactory\Delegates\Bar.cs" />
     <Compile Include="Facilities\TypedFactory\Delegates\Baz.cs" />
-    <Compile Include="Facilities\TypedFactory\Delegates\DisposableFoo.cs" />
     <Compile Include="Facilities\TypedFactory\Delegates\Foo.cs" />
     <Compile Include="Facilities\TypedFactory\Delegates\HasOnlyOneArgMatchingDelegatesParameter.cs" />
     <Compile Include="Facilities\TypedFactory\Delegates\HasTwoConstructors.cs" />
@@ -634,6 +636,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Configuration\sample_config.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Configuration2\class_with_private_setter.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
     <Content Include="ignoreprop.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

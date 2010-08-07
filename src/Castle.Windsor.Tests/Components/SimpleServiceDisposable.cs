@@ -18,11 +18,11 @@ namespace Castle.Windsor.Tests.Components
 
 	public class SimpleServiceDisposable : ISimpleService, IDisposable
 	{
-		public static int DisposeCount;
+		public static int DisposedCount;
 
 		public void Dispose()
 		{
-			DisposeCount++;
+			DisposedCount++;
 		}
 
 		public void Operation()
