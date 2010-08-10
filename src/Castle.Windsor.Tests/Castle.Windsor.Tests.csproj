@@ -182,6 +182,7 @@
     <Compile Include="ClassComponents\CycleB.cs" />
     <Compile Include="Facilities\EventWiring\FluentRegistrationTestCase.cs" />
     <Compile Include="Facilities\EventWiring\Model\ListenerWithOnEventMethod.cs" />
+    <Compile Include="Facilities\Startable\Components\StartableWithError.cs" />
     <Compile Include="Facilities\Startable\OptimizedForSingleInstallTestCase.cs" />
     <Compile Include="Facilities\Startable\Components\Startable.cs" />
     <Compile Include="Facilities\TypedFactory\Delegates\Bar.cs" />

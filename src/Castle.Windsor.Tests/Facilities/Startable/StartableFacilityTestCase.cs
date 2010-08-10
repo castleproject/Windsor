@@ -15,15 +15,14 @@
 namespace Castle.Windsor.Tests.Facilities.Startable
 {
 	using System.Collections.Generic;
-
 	using Castle.Core;
 	using Castle.Core.Configuration;
 	using Castle.Facilities.Startable;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Registration;
+	using Castle.MicroKernel.Tests.ClassComponents;
 	using Castle.Windsor.Tests.ClassComponents;
 	using Castle.Windsor.Tests.Facilities.Startable.Components;
-
 	using NUnit.Framework;
 
 	[TestFixture]
@@ -223,6 +222,40 @@ namespace Castle.Windsor.Tests.Facilities.Startable
 
 			Assert.AreEqual(1, HasThrowingPropertyDependency.InstancesCreated);
 			Assert.AreEqual(1, HasThrowingPropertyDependency.InstancesStarted);
+		}
+
+		[Test, Ignore("This is pending review")]
+		public void TestStartableCallsStartOnlyOnceOnError()
+		{
+			IKernel kernel = new DefaultKernel();
+			kernel.AddFacility<StartableFacility>();
+
+			kernel.Register(Component.For<StartableWithError>());
+			kernel.Register(Component.For<ICommon>().ImplementedBy<CommonImpl1>());
+
+			// Every additional registration causes Start to be called again and again...
+
+			Assert.AreEqual(1, StartableWithError.Counter);
+		}
+
+		[Test]
+		public void TestStartableExplicitFakeDependencies()
+		{
+			kernel.ComponentCreated += OnStartableComponentStarted;
+
+			var dependsOnSomething = new DependencyModel(DependencyType.Service, null, typeof(ICommon), false);
+
+			kernel.AddFacility<StartableFacility>();
+			kernel.Register(
+				Component.For<StartableComponent>()
+					.ProcessModel((_, model) => model.Dependencies.Add(dependsOnSomething))
+				);
+
+			Assert.False(startableCreatedBeforeResolved, "Component should not have started");
+
+			kernel.Register(Component.For<ICommon>().ImplementedBy<CommonImpl1>());
+
+			Assert.True(startableCreatedBeforeResolved, "Component was not properly started");
 		}
 	}
 }
