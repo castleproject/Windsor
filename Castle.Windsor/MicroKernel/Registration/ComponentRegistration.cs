@@ -23,7 +23,6 @@ namespace Castle.MicroKernel.Registration
 	using Castle.Core.Configuration;
 	using Castle.Core.Internal;
 	using Castle.DynamicProxy;
-	using Castle.MicroKernel;
 	using Castle.MicroKernel.ComponentActivator;
 	using Castle.MicroKernel.Context;
 	using Castle.MicroKernel.LifecycleConcerns;
@@ -758,6 +757,16 @@ namespace Castle.MicroKernel.Registration
 		public ComponentRegistration<TService> UsingFactoryMethod<TImpl>(Func<IKernel, CreationContext, TImpl> factoryMethod) where TImpl : TService
 		{
 			return UsingFactoryMethod((k, m, c) => factoryMethod(k, c));
+		}
+
+		/// <summary>
+		/// Allows direct manipulation of the corresponding <see cref="ComponentModel"/>.
+		/// </summary>
+		/// <param name="processModel">The action to apply to the model.</param>
+		/// <returns></returns>
+		public ComponentRegistration<TService> ProcessModel(Action<IKernel, ComponentModel> processModel)
+		{
+			return AddDescriptor(new ProcessModelDescriptor<TService>(processModel));
 		}
 
 		internal void AddParameter(IKernel kernel, ComponentModel model, String key, String value)
