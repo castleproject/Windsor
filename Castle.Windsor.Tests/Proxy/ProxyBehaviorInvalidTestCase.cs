@@ -16,7 +16,6 @@
 
 namespace Castle.Windsor.Tests.Proxy
 {
-	using System;
 	using Castle.DynamicProxy;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Registration;
@@ -30,7 +29,7 @@ namespace Castle.Windsor.Tests.Proxy
 		[Test]
 		public void InvalidProxyBehaviorFromConfiguration()
 		{
-			Assert.Throws(typeof(Exception), () =>
+			Assert.Throws<ConverterException>(() =>
 				new WindsorContainer(
 					ConfigHelper.ResolveConfigPath("Proxy/proxyBehaviorInvalidConfig.xml")));
 		}
@@ -39,10 +38,11 @@ namespace Castle.Windsor.Tests.Proxy
 		public void RequestSingleInterfaceProxyWithoutServiceInterface()
 		{
 			var container = new WindsorContainer();
-			((IWindsorContainer)container).Register(Component.For(typeof(StandardInterceptor)).Named("standard.interceptor"));
+			container.Register(Component.For<StandardInterceptor>());
 
-			Assert.Throws(typeof(ComponentRegistrationException),(TestDelegate)(()=>
-			                                                                    ((IWindsorContainer)container).Register(Component.For(typeof(CalculatorServiceWithSingleProxyBehavior)).Named("useSingle"))));
+			Assert.Throws<ComponentRegistrationException>(() =>
+			                                              container.Register(
+			                                              	Component.For<CalculatorServiceWithSingleProxyBehavior>()));
 		}
 	}
 }

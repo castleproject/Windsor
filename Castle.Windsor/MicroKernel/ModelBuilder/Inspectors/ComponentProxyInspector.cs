@@ -15,7 +15,6 @@
 namespace Castle.MicroKernel.ModelBuilder.Inspectors
 {
 	using System;
-	using System.Configuration;
 	using System.Linq;
 
 	using Castle.Core;
@@ -71,30 +70,17 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 			string marshalByRefProxyAttrib = model.Configuration != null ? model.Configuration.Attributes["marshalByRefProxy"] : null;
 #endif
 
-			ITypeConverter converter = (ITypeConverter)kernel.GetSubSystem(SubSystemConstants.ConversionManagerKey);
-
+			var converter = kernel.GetConversionManager();
 			if (useSingleInterfaceProxyAttrib != null)
 			{
-				try
-				{
-					proxyBehaviorAtt.UseSingleInterfaceProxy = converter.PerformConversion<bool>(useSingleInterfaceProxyAttrib);
-				}
-				catch(ConverterException ex)
-				{
-					throw new Exception(string.Format("Could not convert attribute 'useSingleInterfaceProxy' to bool. Value is '{0}'.", useSingleInterfaceProxyAttrib), ex);
-				}
+					proxyBehaviorAtt.UseSingleInterfaceProxy =
+						converter.PerformConversion<bool?>(useSingleInterfaceProxyAttrib).GetValueOrDefault(false);
 			}
 #if !SILVERLIGHT
 			if (marshalByRefProxyAttrib != null)
 			{
-				try
-				{
-					proxyBehaviorAtt.UseMarshalByRefProxy = converter.PerformConversion<bool>(marshalByRefProxyAttrib);
-				}
-				catch(ConverterException ex)
-				{
-					throw new Exception(string.Format("Could not convert attribute 'marshalByRefProxy' to bool. Value is '{0}'.", marshalByRefProxyAttrib), ex);
-				}
+				proxyBehaviorAtt.UseMarshalByRefProxy =
+					converter.PerformConversion<bool?>(marshalByRefProxyAttrib).GetValueOrDefault(false);
 			}
 #endif
 			ApplyProxyBehavior(proxyBehaviorAtt, model);

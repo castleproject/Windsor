@@ -1,17 +1,17 @@
 <configuration>
 
-	<components>
+  <components>
 
-    <component id="standard.interceptor" 
+    <component id="standard.interceptor"
       type="Castle.DynamicProxy.StandardInterceptor, Castle.Core">
     </component>
-        
-		<component id="invalidAttrib" 
+
+    <component id="invalidAttrib"
 			type="Castle.Windsor.Tests.Components.CalculatorServiceWithMultipleInterfaces, Castle.Windsor.Tests"
       service="Castle.Windsor.Tests.Components.ICalcService, Castle.Windsor.Tests"
 			useSingleInterfaceProxy="Foo">
-		</component>
-    
-	</components>
+    </component>
+
+  </components>
 
 </configuration>
