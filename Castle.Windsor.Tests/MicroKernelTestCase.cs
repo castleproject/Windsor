@@ -217,7 +217,8 @@ namespace Castle.MicroKernel.Tests
 			// the dependency goes C --> B --> A
 
 			C[] cs = null;
-			Assert.DoesNotThrow(() => cs = kernel.ResolveAll<C>());
+			Assert.DoesNotThrow(() => 
+				cs = kernel.ResolveAll<C>());
 			Assert.IsEmpty(cs);
 		}
 
