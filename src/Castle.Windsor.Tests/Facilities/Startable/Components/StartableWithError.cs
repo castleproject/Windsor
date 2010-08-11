@@ -19,14 +19,14 @@ namespace Castle.Windsor.Tests.Facilities.Startable.Components
 
 	public class StartableWithError : IStartable
 	{
-		public static int Counter { get; private set; }
+		public static int StartedCount;
 
 		public bool Started { get; private set; }
 
 		public void Start()
 		{
 			Started = true;
-			Counter++;
+			StartedCount++;
 			throw new Exception("This should go bonk");
 		}
 

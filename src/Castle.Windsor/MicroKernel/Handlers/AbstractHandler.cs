@@ -28,6 +28,7 @@ namespace Castle.MicroKernel.Handlers
 	using Castle.MicroKernel.Context;
 	using Castle.MicroKernel.Lifestyle;
 	using Castle.MicroKernel.ModelBuilder.Inspectors;
+	using Castle.MicroKernel.Resolvers;
 
 	/// <summary>
 	///   Implements the basis of
@@ -190,12 +191,21 @@ namespace Castle.MicroKernel.Handlers
 		{
 			try
 			{
-				// TODO: Implement this is a proper way if possible...
 				return Resolve(context, false);
 			}
-			catch
+			catch (DependencyResolverException)
 			{
-				//Trace.Write(e, "Castle.Windsor");
+				// this exception is thrown when a dependency can not be resolved
+				// in which case we're free to ignore it and fallback
+				// TODO: this should be logged
+				return null;
+			}
+			catch(HandlerException)
+			{
+				// this exception is thrown when Handler can't operate or in the same
+				// cases as above, which means we should throw DependencyResolverException
+				// instead (in vNext, not to break anyone now)
+				// TODO: this should be logged
 				return null;
 			}
 		}

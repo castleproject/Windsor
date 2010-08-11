@@ -63,7 +63,6 @@ namespace Castle.Windsor.Tests
 		}
 
 		[Test]
-		[Ignore]
 		public void ChainOfResponsability_Smart()
 		{
 			IWindsorContainer container =

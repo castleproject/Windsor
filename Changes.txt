@@ -1,3 +1,5 @@
+- calling IHandler.TryStart will no longer silently ignore all the execeptions.
+
 - added CollectionResolver which is a more general version of ArrayResolver and ListResolver and supports in addition ICollection<Foo> and IEnumerable<Foo>
 
 - fixed issue where dependencies would not be cleaned up when component creation failed

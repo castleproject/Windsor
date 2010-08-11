@@ -14,6 +14,7 @@
 
 namespace Castle.Windsor.Tests.Facilities.Startable
 {
+	using System;
 	using System.Collections.Generic;
 	using Castle.Core;
 	using Castle.Core.Configuration;
@@ -224,18 +225,20 @@ namespace Castle.Windsor.Tests.Facilities.Startable
 			Assert.AreEqual(1, HasThrowingPropertyDependency.InstancesStarted);
 		}
 
-		[Test, Ignore("This is pending review")]
+		[Test]
 		public void TestStartableCallsStartOnlyOnceOnError()
 		{
-			IKernel kernel = new DefaultKernel();
+			StartableWithError.StartedCount = 0;
 			kernel.AddFacility<StartableFacility>();
 
-			kernel.Register(Component.For<StartableWithError>());
-			kernel.Register(Component.For<ICommon>().ImplementedBy<CommonImpl1>());
+			var ex = 
+			Assert.Throws<Exception>(()=>
+			kernel.Register(Component.For<StartableWithError>(),
+			                Component.For<ICommon>().ImplementedBy<CommonImpl1>()));
 
 			// Every additional registration causes Start to be called again and again...
-
-			Assert.AreEqual(1, StartableWithError.Counter);
+			Assert.AreEqual("This should go bonk", ex.Message);
+			Assert.AreEqual(1, StartableWithError.StartedCount);
 		}
 
 		[Test]
