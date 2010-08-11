@@ -70,7 +70,7 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Transactions
 			{
 				service.DoTwoDBOperation_Create(true);
 			}
-			catch(Exception)
+			catch (InvalidOperationException)
 			{
 				// Expected
 			}

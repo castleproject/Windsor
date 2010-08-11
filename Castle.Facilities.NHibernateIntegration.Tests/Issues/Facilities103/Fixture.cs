@@ -1,16 +1,14 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Data;
-using System.Text;
-using Castle.MicroKernel;
-using Castle.Services.Transaction;
-using NHibernate;
-using NUnit.Framework;
-using Rhino.Mocks;
-using ITransaction = Castle.Services.Transaction.ITransaction;
 namespace Castle.Facilities.NHibernateIntegration.Tests.Issues.Facilities103
 {
+	using System;
+	using System.Collections;
+	using System.Data;
+	using Castle.MicroKernel;
+	using Castle.Services.Transaction;
+	using NHibernate;
+	using NUnit.Framework;
+	using Rhino.Mocks;
+	using ITransaction = Castle.Services.Transaction.ITransaction;
 	using SessionStores;
 
 	[TestFixture]
@@ -78,9 +76,10 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Issues.Facilities103
 					sessionManager.OpenSession(Alias);
 					Assert.Fail("DbException not thrown");
 				}
-				catch (Exception ex)
+				catch (Exception)
 				{
-					Console.WriteLine(ex.ToString());
+					//ignore
+					//Console.WriteLine(ex.ToString());
 				}
 				Assert.IsNull(sessionStore.FindCompatibleSession(Alias),"The sessionStore shouldn't contain compatible session if the session creation fails");
 			}

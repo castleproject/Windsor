@@ -14,6 +14,7 @@
 
 namespace Castle.Facilities.NHibernateIntegration.Internal
 {
+	using System;
 	using Castle.Services.Transaction;
 
 	using ITransaction = NHibernate.ITransaction;
@@ -23,17 +24,20 @@ namespace Castle.Facilities.NHibernateIntegration.Internal
 	/// NHibernate transaction can be enlisted within
 	/// <see cref="Castle.Services.Transaction.ITransaction"/> instances.
 	/// </summary>
-	public class ResourceAdapter : IResource
+	public class ResourceAdapter : IResource, IDisposable
 	{
 		private readonly ITransaction transaction;
+		private readonly bool isAmbient;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ResourceAdapter"/> class.
 		/// </summary>
 		/// <param name="transaction">The transaction.</param>
-		public ResourceAdapter(ITransaction transaction)
+		/// <param name="isAmbient"></param>
+		public ResourceAdapter(ITransaction transaction, bool isAmbient)
 		{
 			this.transaction = transaction;
+			this.isAmbient = isAmbient;
 		}
 
 		/// <summary>
@@ -42,7 +46,7 @@ namespace Castle.Facilities.NHibernateIntegration.Internal
 		/// </summary>
 		public void Start()
 		{
-			
+			transaction.Begin();
 		}
 
 		/// <summary>
@@ -60,7 +64,18 @@ namespace Castle.Facilities.NHibernateIntegration.Internal
 		/// </summary>
 		public void Rollback()
 		{
-			transaction.Rollback();
+			//HACK: It was supossed to only a test but it fixed the escalated tx rollback issue. not sure if 
+			//		this the right way to do it (probably not).
+			if (!isAmbient)
+				transaction.Rollback();
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		public void Dispose()
+		{
+			transaction.Dispose();
 		}
 	}
 }

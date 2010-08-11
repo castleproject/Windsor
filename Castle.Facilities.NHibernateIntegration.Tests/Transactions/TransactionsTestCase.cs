@@ -36,8 +36,6 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Transactions
 		[Test]
 		public void TestTransaction()
 		{
-			ISessionManager sessionManager = (ISessionManager) container[typeof(ISessionManager)];
-
 			RootService service = (RootService) container[typeof(RootService)];
 			FirstDao dao = (FirstDao) container[typeof(FirstDao)];
 
@@ -57,55 +55,53 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Transactions
 		}
 
 		[Test]
-		// [Ignore("This doesn't work with the NH 1.2 transaction property, needs to be fixed")]
 		public void TransactionNotHijackingTheSession()
 		{
 			ISessionManager sessionManager = (ISessionManager)
 			                                 container[typeof(ISessionManager)];
 
+			ITransaction transaction;
+
 			using(ISession session = sessionManager.OpenSession())
 			{
-				Assert.IsFalse(session.Transaction.IsActive);
+				transaction = session.Transaction;
+
+				Assert.IsFalse(transaction.IsActive);
 
 				FirstDao service = (FirstDao) container["myfirstdao"];
 
 				// This call is transactional
 				Blog blog = service.Create();
 
-				// TODO: Assert transaction was committed
-				// Assert.IsTrue(session.Transaction.WasCommitted);
-
 				RootService rootService = (RootService) container["root"];
 
 				Array blogs = rootService.FindAll(typeof(Blog));
 				Assert.AreEqual(1, blogs.Length);
 			}
+
+			Assert.IsTrue(transaction.WasCommitted);
 		}
 
 		[Test]
-		// [Ignore("This doesn't work with the NH 1.2 transaction property, needs to be fixed")]
 		public void SessionBeingSharedByMultipleTransactionsInSequence()
 		{
 			ISessionManager sessionManager = (ISessionManager)
 			                                 container[typeof(ISessionManager)];
 
+			ITransaction transaction;
+
 			using(ISession session = sessionManager.OpenSession())
 			{
-				Assert.IsFalse(session.Transaction.IsActive);
+				transaction = session.Transaction;
+				Assert.IsFalse(transaction.IsActive);
 
 				FirstDao service = (FirstDao) container["myfirstdao"];
 
 				// This call is transactional
 				service.Create();
 
-				// TODO: Assert transaction was committed
-				// Assert.IsTrue(session.Transaction.WasCommitted);
-
 				// This call is transactional
 				service.Create("ps2's blogs");
-
-				// TODO: Assert transaction was committed
-				// Assert.IsTrue(session.Transaction.WasCommitted);
 
 				// This call is transactional
 				service.Create("game cube's blogs");
@@ -115,18 +111,23 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Transactions
 				Array blogs = rootService.FindAll(typeof(Blog));
 				Assert.AreEqual(3, blogs.Length);
 			}
+
+			Assert.IsTrue(transaction.WasCommitted);
 		}
 
 		[Test]
-		// [Ignore("This doesn't work with the NH 1.2 transaction property, needs to be fixed")]
 		public void NonTransactionalRoot()
 		{
 			ISessionManager sessionManager = (ISessionManager)
 			                                 container[typeof(ISessionManager)];
 
+			ITransaction transaction;
+
 			using(ISession session = sessionManager.OpenSession())
 			{
-				Assert.IsFalse(session.Transaction.IsActive);
+				transaction = session.Transaction;
+
+				Assert.IsFalse(transaction.IsActive);
 
 				FirstDao first = (FirstDao) container["myfirstdao"];
 				SecondDao second = (SecondDao) container["myseconddao"];
@@ -183,7 +184,7 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Transactions
 			{
 				service.CallWithException();
 			}
-			catch(Exception)
+			catch (NotSupportedException)
 			{
 			}
 
@@ -205,7 +206,7 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Transactions
 			{
 				service.CallWithException2();
 			}
-			catch(Exception)
+			catch (NotSupportedException)
 			{
 			}
 

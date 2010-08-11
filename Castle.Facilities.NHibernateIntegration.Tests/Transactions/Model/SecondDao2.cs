@@ -15,10 +15,8 @@
 namespace Castle.Facilities.NHibernateIntegration.Tests.Transactions
 {
 	using System;
-	using Castle.Services.Transaction;
 	using NHibernate;
 
-	[Transactional]
 	public class SecondDao2
 	{
 		private readonly ISessionManager sessManager;
@@ -28,13 +26,10 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Transactions
 			this.sessManager = sessManager;
 		}
 
-		//[Transaction(Distributed = true)]
-		public virtual BlogItem Create(Blog blog)
+		public BlogItem Create(Blog blog)
 		{
 			using(ISession session = sessManager.OpenSession())
 			{
-				NUnit.Framework.Assert.IsNotNull(session.Transaction);
-
 				BlogItem item = new BlogItem();
 
 				item.ParentBlog = blog;
@@ -45,44 +40,6 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Transactions
 				session.Save(item);
 
 				return item;
-			}
-		}
-
-		[Transaction(Distributed = true)]
-		public virtual BlogItem CreateWithException(Blog blog)
-		{
-			using(ISession session = sessManager.OpenSession())
-			{
-				NUnit.Framework.Assert.IsNotNull(session.Transaction);
-
-				BlogItem item = new BlogItem();
-
-				item.ParentBlog = blog;
-				item.ItemDate = DateTime.Now;
-				item.Text = "x";
-				item.Title = "splinter cell is cool!";
-
-				throw new NotSupportedException("I dont feel like supporting this");
-			}
-		}
-
-		[Transaction(Distributed = true)]
-		public virtual BlogItem CreateWithException2(Blog blog)
-		{
-			using(ISession session = sessManager.OpenSession())
-			{
-				NUnit.Framework.Assert.IsNotNull(session.Transaction);
-
-				BlogItem item = new BlogItem();
-
-				item.ParentBlog = blog;
-				item.ItemDate = DateTime.Now;
-				item.Text = "x";
-				item.Title = "splinter cell is cool!";
-
-				session.Save(item);
-
-				throw new NotSupportedException("I dont feel like supporting this");
 			}
 		}
 	}

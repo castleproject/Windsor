@@ -38,39 +38,6 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Transactions
 			set { orderDao = value; }
 		}
 
-		[Transaction(Distributed=true)]
-		public virtual BlogItem SuccessFullCall()
-		{
-			Blog blog = firstDao.Create();
-			return secondDao.Create(blog);
-		}
-
-		[Transaction(Distributed = true)]
-		public virtual void CallWithException()
-		{
-			Blog blog = firstDao.Create();
-			secondDao.CreateWithException(blog);
-		}
-
-		[Transaction(Distributed = true)]
-		public virtual void CallWithException2()
-		{
-			Blog blog = firstDao.Create();
-			secondDao.CreateWithException2(blog);
-		}
-
-		[Transaction(Distributed = true)]
-		public virtual void DoBlogRefOperation(Blog blog)
-		{
-			BlogRef blogRef = new BlogRef();
-			blogRef.ParentBlog = blog;
-			blogRef.Title = "title";
-			firstDao.AddBlogRef(blogRef);
-
-			//constraint exception
-			firstDao.Delete("Blog1");
-		}
-
 		[Transaction(Distributed = true)]
 		public virtual void DoTwoDBOperation_Create(bool throwException)
 		{
@@ -80,7 +47,7 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Transactions
 
 			if (throwException)
 			{
-				throw new Exception("Nah, giving up");
+				throw new InvalidOperationException("Nah, giving up");
 			}
 		}
 	}

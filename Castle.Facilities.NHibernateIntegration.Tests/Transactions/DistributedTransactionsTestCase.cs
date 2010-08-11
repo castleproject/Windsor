@@ -15,11 +15,10 @@
 namespace Castle.Facilities.NHibernateIntegration.Tests.Transactions
 {
 	using System;
-
 	using Castle.Facilities.AutoTx;
-	using Castle.Facilities.Logging;
 
 	using NUnit.Framework;
+	using Services.Transaction;
 
 	[TestFixture]
 	public class DistributedTransactionsTestCase : AbstractNHibernateTestCase
@@ -51,16 +50,16 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Transactions
 			{
 				service.DoTwoDBOperation_Create(false);
 			}
-			catch(Exception ex)
+			catch (Exception ex)
 			{
-				if(ex.InnerException != null && ex.InnerException.GetType().Name == "TransactionManagerCommunicationException")
+				if (ex.InnerException != null && ex.InnerException.GetType().Name == "TransactionManagerCommunicationException")
 					Assert.Ignore("MTS is not available");
 				throw;
 			}
 
-			Array blogs = service.FindAll(typeof(Blog));
-			Array blogitems = service.FindAll(typeof(BlogItem));
-			Array orders = orderDao.FindAll(typeof(Order));
+			Array blogs = service.FindAll(typeof (Blog));
+			Array blogitems = service.FindAll(typeof (BlogItem));
+			Array orders = orderDao.FindAll(typeof (Order));
 
 			Assert.IsNotNull(blogs);
 			Assert.IsNotNull(blogitems);
@@ -80,9 +79,18 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Transactions
 			{
 				service.DoTwoDBOperation_Create(true);
 			}
-			catch(Exception)
+			catch (InvalidOperationException)
 			{
 				// Expected
+			}
+			catch (RollbackResourceException e)
+			{
+				foreach (var resource in e.FailedResource)
+				{
+					Console.WriteLine(resource.Second);
+				}
+
+				throw;
 			}
 
 			Array blogs = service.FindAll(typeof(Blog));

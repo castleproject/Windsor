@@ -79,7 +79,7 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Transactions
 
 			if (throwException)
 			{
-				throw new Exception("Nah, giving up");
+				throw new InvalidOperationException("Nah, giving up");
 			}
 		}
 	}

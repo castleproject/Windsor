@@ -28,7 +28,7 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Transactions
 			this.sessManager = sessManager;
 		}
 
-		//[Transaction(Distributed = true)]
+		[Transaction]
 		public virtual Order Create(float val)
 		{
 			using(ISession session = sessManager.OpenSession("db2"))
@@ -40,32 +40,6 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Transactions
 				session.Save(order);
 
 				return order;
-			}
-		}
-
-		[Transaction(Distributed = true)]
-		public virtual void Update(Order order, float newval)
-		{
-			using(ISession session = sessManager.OpenSession("db2"))
-			{
-				NUnit.Framework.Assert.IsNotNull(session.Transaction);
-
-				order.Value = newval;
-
-				session.Update(order);
-			}
-		}
-
-		[Transaction(Distributed = true)]
-		public virtual void Delete(int orderId)
-		{
-			using(ISession session = sessManager.OpenSession("db2"))
-			{
-				NUnit.Framework.Assert.IsNotNull(session.Transaction);
-
-				Order order = (Order) session.Load(typeof(Order), orderId);
-
-				session.Delete(order);
 			}
 		}
 	}

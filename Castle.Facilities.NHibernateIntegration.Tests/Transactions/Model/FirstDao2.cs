@@ -28,48 +28,21 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Transactions
 			this.sessManager = sessManager;
 		}
 
-		//[Transaction(Distributed = true)]
+		[Transaction]
 		public virtual Blog Create()
 		{
 			return Create("xbox blog");
 		}
 
-		//[Transaction(Distributed = true)]
+		[Transaction]
 		public virtual Blog Create(String name)
 		{
-			NHibernate.ITransaction tran;
-
 			using(ISession session = sessManager.OpenSession())
 			{
-				tran = session.Transaction;
-
-				// NUnit.Framework.Assert.IsNotNull(session.Transaction);
-				// NUnit.Framework.Assert.IsTrue(session.Transaction.IsActive);
-
 				Blog blog = new Blog();
 				blog.Name = name;
 				session.Save(blog);
 				return blog;
-			}
-		}
-
-		[Transaction(Distributed = true)]
-		public virtual void Delete(String name)
-		{
-			using(ISession session = sessManager.OpenSession())
-			{
-				NUnit.Framework.Assert.IsNotNull(session.Transaction);
-
-				session.Delete("from Blog b where b.Name ='" + name + "'");
-			}
-		}
-
-		[Transaction(Distributed = true)]
-		public virtual void AddBlogRef(BlogRef blogRef)
-		{
-			using(ISession session = sessManager.OpenSession())
-			{
-				session.Save(blogRef);
 			}
 		}
 	}
