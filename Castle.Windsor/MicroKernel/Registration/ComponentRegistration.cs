@@ -248,7 +248,7 @@ namespace Castle.MicroKernel.Registration
 		/// </summary>
 		/// <param name="dependencies">The dependencies.</param>
 		/// <returns></returns>
-		[Obsolete("Obsolete, use DependsOn(Property[]) instead.")]
+		[Obsolete("Obsolete, use DependsOn(Property[]) instead.", true)]
 		public ComponentRegistration<TService> CustomDependencies(params Property[] dependencies)
 		{
 			return DependsOn(dependencies);
@@ -259,7 +259,7 @@ namespace Castle.MicroKernel.Registration
 		/// </summary>
 		/// <param name="dependencies">The dependencies.</param>
 		/// <returns></returns>
-		[Obsolete("Obsolete, use DependsOn(IDictionary) instead.")]
+		[Obsolete("Obsolete, use DependsOn(IDictionary) instead.", true)]
 		public ComponentRegistration<TService> CustomDependencies(IDictionary dependencies)
 		{
 			return DependsOn(dependencies);
