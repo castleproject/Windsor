@@ -25,7 +25,7 @@ namespace Castle.Services.Transaction.IO
 
 		/// <summary>
 		/// Combines an input path and a path together
-		/// using <see cref="System.IO.Path.Combine"/> and returns the result.
+		/// using System.IO.Path.Combine and returns the result.
 		/// </summary>
 		public static string Combine(this string input, string path)
 		{
