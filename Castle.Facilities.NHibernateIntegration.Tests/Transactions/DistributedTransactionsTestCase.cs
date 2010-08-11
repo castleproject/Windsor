@@ -85,7 +85,7 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Transactions
 			}
 			catch (RollbackResourceException e)
 			{
-				foreach (var resource in e.FailedResource)
+				foreach (var resource in e.FailedResources)
 				{
 					Console.WriteLine(resource.Second);
 				}
