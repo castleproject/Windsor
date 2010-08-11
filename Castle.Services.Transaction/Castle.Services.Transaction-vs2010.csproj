@@ -170,7 +170,6 @@
     <Compile Include="Attributes\TransactionalAttribute.cs" />
     <Compile Include="Attributes\TransactionAttribute.cs" />
     <Compile Include="TransactionMode.cs" />
-    <Compile Include="GenericTransactions\TransactionScopeResourceAdapter.cs" />
     <Compile Include="Misc\Fun.cs" />
     <Compile Include="Events\TransactionEventArgs.cs" />
     <Compile Include="Events\TransactionFailedEventArgs.cs" />

@@ -1,16 +1,18 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using Castle.Core;
-using log4net;
-
 namespace Castle.Services.Transaction
 {
+	using System;
+	using System.Collections;
+	using System.Collections.Generic;
+	using System.Linq;
+	using System.Threading;
+	using Castle.Core;
+	using log4net;
+	using System.Transactions;
+
 	public abstract class TransactionBase : MarshalByRefObject, ITransaction, IDisposable
 	{
 		private static readonly ILog logger = LogManager.GetLogger(typeof (TransactionBase));
+
 		private readonly ReaderWriterLockSlim sem = new ReaderWriterLockSlim();
 		private readonly IList<IResource> resources = new List<IResource>();
 		private readonly IList<ISynchronization> syncInfo = new List<ISynchronization>();
@@ -21,6 +23,7 @@ namespace Castle.Services.Transaction
 		private readonly IsolationMode isolationMode;
 
 		internal readonly string theName;
+		private TransactionScope ambientTransaction;
 
 		protected TransactionBase(string name, TransactionMode mode, IsolationMode isolationMode)
 		{
@@ -145,37 +148,58 @@ namespace Castle.Services.Transaction
 				Status = TransactionStatus.Committed;
 			});
 
-			sem.AtomRead(() => {
-
-				syncInfo.ForEach(s => logger.TryLogFail(s.BeforeCompletion));
-
-				foreach (var r in resources)
-				{
-					try
-					{
-						logger.DebugFormat("Resource: " + r);
-
-						r.Commit();
-					} 
-					catch (Exception e)
-					{
-						SetRollbackOnly();
-
-						logger.ErrorFormat("Resource state: " + r);
-
-						throw new CommitResourceException("Transaction could not commit because of a failed resource.", e, r);
-					}
-				}
-			});
-
+			var commitFailed = false;
+			
 			try
 			{
-				logger.TryLogFail(InnerCommit)
-					.Exception(e => { throw new TransactionException("Could not commit", e); });
+				sem.AtomRead(() => 
+				{
+					syncInfo.ForEach(s => logger.TryLogFail(s.BeforeCompletion));
+
+					foreach (var r in resources)
+					{
+						try
+						{
+							logger.DebugFormat("Resource: " + r);
+
+							r.Commit();
+						} 
+						catch (Exception e)
+						{
+							SetRollbackOnly();
+							commitFailed = true;
+
+							logger.ErrorFormat("Resource state: " + r);
+
+							throw new CommitResourceException("Transaction could not commit because of a failed resource.", e, r);
+						}
+					}
+				});
+
+			
+				logger
+					.TryLogFail(InnerCommit)
+					.Exception(e =>
+					           	{
+									commitFailed = true;
+
+					           		throw new TransactionException("Could not commit", e);
+					           	});
 			}
 			finally
 			{
-				sem.AtomRead(() => syncInfo.ForEach(s => logger.TryLogFail(s.AfterCompletion)));
+				if (!commitFailed)
+				{
+					if (ambientTransaction != null)
+					{
+						logger.DebugFormat("Commiting TransactionScope (Ambient Transaction) for '{0}'. ", Name);
+
+						ambientTransaction.Complete();
+						DisposeAmbientTx();
+					}
+
+					sem.AtomRead(() => syncInfo.ForEach(s => logger.TryLogFail(s.AfterCompletion)));
+				}
 			}
 		}
 
@@ -218,7 +242,7 @@ namespace Castle.Services.Transaction
 
 					if (toThrow == null)
 						throw new RollbackResourceException(
-							"Failed to properly roll back all resources. See the inner exception for details",
+							"Failed to properly roll back all resources. See the inner exception or the failed resources list for details",
 							failures);
 					
 					throw toThrow;
@@ -226,6 +250,13 @@ namespace Castle.Services.Transaction
 			}
 			finally
 			{
+				if (ambientTransaction != null)
+				{
+					logger.DebugFormat("Rolling back TransactionScope (Ambient Transaction) for '{0}'. ", Name);
+
+					DisposeAmbientTx();
+				}
+
 				sem.AtomRead(() => syncInfo.ForEach(s => logger.TryLogFail(s.AfterCompletion)));
 			}
 		}
@@ -255,10 +286,10 @@ namespace Castle.Services.Transaction
 		{
 			if (resource == null) throw new ArgumentNullException("resource");
 			sem.AtomWrite(() => {
-             	if (resources.Contains(resource)) return;
-             	if (Status == TransactionStatus.Active)
-					logger.TryLogFail(resource.Start).Exception(_ => SetRollbackOnly());
-             	resources.Add(resource);
+			                    	if (resources.Contains(resource)) return;
+			                    	if (Status == TransactionStatus.Active)
+			                    		logger.TryLogFail(resource.Start).Exception(_ => SetRollbackOnly());
+			                    	resources.Add(resource);
 			});
 		}
 
@@ -273,10 +304,10 @@ namespace Castle.Services.Transaction
 			if (s == null) throw new ArgumentNullException("s");
 
 			sem.AtomWrite(() =>
-			{
-				if (syncInfo.Contains(s)) return;
-				syncInfo.Add(s);
-			});
+			              	{
+			              		if (syncInfo.Contains(s)) return;
+			              		syncInfo.Add(s);
+			              	});
 		}
 
 		public IEnumerable<IResource> Resources()
@@ -311,15 +342,32 @@ namespace Castle.Services.Transaction
 		public virtual void Dispose()
 		{
 			sem.AtomWrite(() =>
-			               	{
-			               		resources.Select(r => r as IDisposable)
-									.Where(r => r != null)
-									.ForEach(r => r.Dispose());
+			              	{
+			              		resources.Select(r => r as IDisposable)
+			              			.Where(r => r != null)
+			              			.ForEach(r => r.Dispose());
 
-								resources.Clear();
-								syncInfo.Clear();
-			               	});
+			              		resources.Clear();
+			              		syncInfo.Clear();
+			              	});
 
+			if (ambientTransaction != null)
+			{
+				DisposeAmbientTx();
+			}
+		}
+
+		private void DisposeAmbientTx()
+		{
+			ambientTransaction.Dispose();
+			ambientTransaction = null;
+		}
+
+		public void CreateAmbientTransaction()
+		{
+			ambientTransaction = new TransactionScope();
+
+			logger.DebugFormat("Created a TransactionScope (Ambient Transaction) for '{0}'. ", Name);
 		}
 	}
 }
