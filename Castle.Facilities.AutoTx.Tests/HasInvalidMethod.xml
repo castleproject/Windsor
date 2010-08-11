@@ -1,32 +1,16 @@
-﻿<?xml version="1.0" encoding="utf-8" ?> 
+﻿<?xml version="1.0" encoding="utf-8"?>
 
 <configuration>
-
 	<facilities>
-	
-		<facility 
-			id="atm" 
-			type="Castle.Facilities.AutoTx.TransactionFacility, Castle.Facilities.AutoTx" />
-	
+		<facility id="atm" type="Castle.Facilities.AutoTx.TransactionFacility, Castle.Facilities.AutoTx" />
 	</facilities>
-
 	<components>
-
-		<component 
-			id="mycomp" 
-			type="Castle.Facilities.AutoTx.Tests.TransactionalComp1, Castle.Facilities.AutoTx.Tests"
-			isTransactional="true">
-		
+		<component id="mycomp" type="Castle.Facilities.AutoTx.Tests.TransactionalComp1, Castle.Facilities.AutoTx.Tests" isTransactional="true">
 			<transaction>
-			
 				<method name="Save" />
 				<method name="Create" />
 				<method name="HelloGoodbye" />
-			
 			</transaction>
-		
 		</component>
-		
 	</components>
-
 </configuration>
