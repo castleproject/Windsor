@@ -23,9 +23,9 @@ namespace Castle.Windsor.Debugging.Extensions
 	{
 		private INamingSubSystem naming;
 
-		public IEnumerable<DebuggerViewItem> Attach()
+		public IEnumerable<DebuggerViewItemWithDescribtion> Attach()
 		{
-			yield return new DebuggerViewItem("All Components", "Count = " + naming.ComponentCount,
+			yield return new DebuggerViewItemWithDescribtion("All Components", "Count = " + naming.ComponentCount,
 			                                  new HandlersByKeyDictionaryDebuggerView(
 			                                  	naming.GetKey2Handler()));
 		}

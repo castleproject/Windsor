@@ -14,14 +14,25 @@
 
 namespace Castle.Windsor.Debugging
 {
-	using System.Collections.Generic;
+	using System.Diagnostics;
 
-	using Castle.MicroKernel;
-
-	public interface IContainerDebuggerExtension
+	[DebuggerDisplay("{valueDescription}", Name = "{name}")]
+	public class DebuggerViewItemWithDescribtion:IDebuggerViewItem
 	{
-		IEnumerable<DebuggerViewItemWithDescribtion> Attach();
+		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
+		private readonly string name;
 
-		void Init(IKernel kernel);
+		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
+		private readonly string valueDescription;
+
+		[DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
+		internal object value;
+
+		public DebuggerViewItemWithDescribtion(string name, string valueDescription, object value)
+		{
+			this.name = name;
+			this.valueDescription = valueDescription;
+			this.value = value;
+		}
 	}
 }

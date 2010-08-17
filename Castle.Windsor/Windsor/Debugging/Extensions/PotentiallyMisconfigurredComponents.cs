@@ -24,7 +24,7 @@ namespace Castle.Windsor.Debugging.Extensions
 	{
 		private INamingSubSystem naming;
 
-		public IEnumerable<DebuggerViewItem> Attach()
+		public IEnumerable<DebuggerViewItemWithDescribtion> Attach()
 		{
 			var waitingComponents = naming.GetKey2Handler()
 				.Where(h => h.Value.CurrentState == HandlerState.WaitingDependency)
@@ -33,7 +33,7 @@ namespace Castle.Windsor.Debugging.Extensions
 			{
 				yield break;
 			}
-			yield return new DebuggerViewItem("Potentially Misconfigured Components", "Count = " + naming.ComponentCount,
+			yield return new DebuggerViewItemWithDescribtion("Potentially Misconfigured Components", "Count = " + naming.ComponentCount,
 			                                  new HandlersByKeyDictionaryDebuggerView(waitingComponents));
 		}
 
