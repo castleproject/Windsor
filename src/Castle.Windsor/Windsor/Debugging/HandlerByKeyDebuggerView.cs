@@ -41,7 +41,7 @@ namespace Castle.Windsor.Debugging
 		}
 
 		[DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
-		public IDebuggerViewItem[] Extensions
+		public DebuggerViewItem[] Extensions
 		{
 			get { return extensions.SelectMany(e => e.Attach()).ToArray(); }
 		}

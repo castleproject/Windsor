@@ -658,11 +658,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Windsor\Debugging\DebuggerViewItem.cs" />
-    <Compile Include="Windsor\Debugging\DebuggerViewItemProxy.cs" />
     <Compile Include="Windsor\Debugging\DefaultComponentView.cs" />
     <Compile Include="Windsor\Debugging\Extensions\AllComponents.cs" />
     <Compile Include="Windsor\Debugging\DefaultDebuggingSubSystem.cs" />
-    <Compile Include="Windsor\Debugging\DebuggerViewItemWithDescribtion.cs" />
+    <Compile Include="Windsor\Debugging\DebuggerViewItemRich.cs" />
     <Compile Include="Windsor\Debugging\Extensions\Facilities.cs" />
     <Compile Include="Windsor\Debugging\HandlerByKeyDebuggerView.cs" />
     <Compile Include="Windsor\Debugging\HandlerDebuggerProxy.cs" />
@@ -670,7 +669,6 @@
     <Compile Include="Windsor\Debugging\IComponentDebuggerExtensions.cs" />
     <Compile Include="Windsor\Debugging\IContainerDebuggerExtension.cs" />
     <Compile Include="Windsor\Debugging\IContainerDebuggerExtensionHost.cs" />
-    <Compile Include="Windsor\Debugging\IDebuggerViewItem.cs" />
     <Compile Include="Windsor\Debugging\KernelDebuggerProxy.cs" />
     <Compile Include="Windsor\Debugging\Extensions\PotentiallyMisconfigurredComponents.cs" />
     <Compile Include="Windsor\IEnvironmentInfo.cs" />
