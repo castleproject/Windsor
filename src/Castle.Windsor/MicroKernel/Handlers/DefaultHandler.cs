@@ -16,7 +16,6 @@ namespace Castle.MicroKernel.Handlers
 {
 	using System;
 	using System.Collections.Generic;
-	using System.Diagnostics;
 	using System.Linq;
 
 	using Castle.Core;
@@ -25,7 +24,6 @@ namespace Castle.MicroKernel.Handlers
 	/// <summary>
 	/// Summary description for DefaultHandler.
 	/// </summary>
-	[DebuggerTypeProxy(typeof(Windsor.Debugging.HandlerDebuggerProxy))]
 #if !SILVERLIGHT
 	[Serializable]
 #endif

@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+  <components>
+    <component id="factory" type="DisposableComponentFactory" />
+    <component id="abstract" service="IComponent" factoryId="factory" factoryCreate="Create" />
+  </components>
+</configuration>
+

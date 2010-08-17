@@ -30,12 +30,14 @@ namespace Castle.Windsor.Tests.Facilities.FactorySupport
 	[TestFixture]
 	public class FactorySupportTestCase
 	{
-		IKernel kernel;
+		private IKernel kernel;
+		private IWindsorContainer container;
 
 		[SetUp]
 		public void SetUp()
 		{
-			kernel = new DefaultKernel();
+			container = new WindsorContainer();
+			kernel = container.Kernel;
 		}
 
 		[Test]
@@ -46,7 +48,7 @@ namespace Castle.Windsor.Tests.Facilities.FactorySupport
 		}
 
 		[Test]
-		public void DependancyIgnored()
+		public void DependencyIgnored()
 		{
 			kernel.AddFacility("factories", new FactorySupportFacility());
 			kernel.Register(Component.For(typeof(Factory)).Named("a"));
@@ -58,6 +60,18 @@ namespace Castle.Windsor.Tests.Facilities.FactorySupport
 			kernel.Resolve("hashtableComponent", typeof(HashTableDependentComponent));
 			kernel.Resolve("serviceComponent", typeof(ServiceDependentComponent));
 			kernel.Resolve("stringdictComponent", typeof(StringDictionaryDependentComponent));
+		}
+
+		[Test][Ignore("BUG: not working")]
+		public void Can_instantiate_abstract_service_via_factory()
+		{
+			container.AddFacility<FactorySupportFacility>();
+			container.Install(Castle.Windsor.Installer.
+			                  	Configuration.FromXmlFile(
+									ConfigHelper.ResolveConfigPath("Configuration2/abstract_component_factory.xml")));
+
+			container.Resolve<IComponent>("abstract");
+
 		}
 
 		[Test, Ignore("Bug confirmed, but cant fix it without undesired side effects")]
@@ -76,8 +90,8 @@ namespace Castle.Windsor.Tests.Facilities.FactorySupport
 			Assert.IsNull(service.SomeProperty);
 		}
 
-		[Test,Ignore("Since the facility is mostly for legacy stuff, I don't think it's crucial to support this.") ]
-		public void Late_bound_factory_properly_applies_lifetime_concenrns()
+		[Test, Ignore("Since the facility is mostly for legacy stuff, I don't think it's crucial to support this.") ]
+		public void Late_bound_factory_properly_applies_lifetime_concerns()
 		{
 			kernel.AddFacility("factories", new FactorySupportFacility());
 			kernel.Register(Component.For(typeof(DisposableComponentFactory)).Named("a"));

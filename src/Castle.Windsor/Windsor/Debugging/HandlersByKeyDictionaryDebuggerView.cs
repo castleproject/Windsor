@@ -27,14 +27,14 @@ namespace Castle.Windsor.Debugging
 
 		public HandlersByKeyDictionaryDebuggerView(IEnumerable<KeyValuePair<string, IHandler>> key2Handler)
 		{
-			items = key2Handler.Select(h => new HandlerByKeyDebuggerView(h.Key, h.Value)).ToArray();
+			items = key2Handler.Select(h =>
+			                           new HandlerByKeyDebuggerView(
+			                           	h.Key,
+			                           	h.Value,
+			                           	new DefaultComponentView(h.Value)
+			                           	)).ToArray();
 		}
 
-		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
-		public int Count
-		{
-			get { return items.Length; }
-		}
 
 		[DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
 		public HandlerByKeyDebuggerView[] Items
