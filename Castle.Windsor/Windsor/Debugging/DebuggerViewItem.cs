@@ -2,15 +2,14 @@
 {
 	using System.Diagnostics;
 
-	[DebuggerTypeProxy(typeof(DebuggerViewItemProxy))]
-	[DebuggerDisplay("{value}", Name = "{name}")]
-	public class DebuggerViewItem : IDebuggerViewItem
+	[DebuggerDisplay("{value}", Name = "{name,nq}")]
+	public class DebuggerViewItem
 	{
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
-		internal readonly string name;
+		private readonly string name;
 
-		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
-		internal readonly object value;
+		[DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
+		private readonly object value;
 
 		public DebuggerViewItem(string name, object value)
 		{

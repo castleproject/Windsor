@@ -48,7 +48,7 @@ namespace Castle.Core
 
 		void ICollection<InterceptorReference>.CopyTo(InterceptorReference[] array, int arrayIndex)
 		{
-		    list.CopyTo(array, arrayIndex);
+			list.CopyTo(array, arrayIndex);
 		}
 
 		public bool Remove(InterceptorReference item)

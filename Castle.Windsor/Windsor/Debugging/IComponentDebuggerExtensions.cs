@@ -4,6 +4,6 @@
 
 	public interface IComponentDebuggerExtensions
 	{
-		IEnumerable<IDebuggerViewItem> Attach();
+		IEnumerable<DebuggerViewItem> Attach();
 	}
 }

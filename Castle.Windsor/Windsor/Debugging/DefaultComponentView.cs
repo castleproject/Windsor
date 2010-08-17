@@ -16,6 +16,7 @@ namespace Castle.Windsor.Debugging
 {
 	using System;
 	using System.Collections.Generic;
+	using System.Linq;
 
 	using Castle.Core;
 	using Castle.MicroKernel;
@@ -60,7 +61,7 @@ namespace Castle.Windsor.Debugging
 			return message + info.ObtainDependencyDetails(new List<object>());
 		}
 
-		public IEnumerable<IDebuggerViewItem> Attach()
+		public IEnumerable<DebuggerViewItem> Attach()
 		{
 			yield return new DebuggerViewItem("Implementation", handler.ComponentModel.Implementation);
 			yield return new DebuggerViewItem("Service", handler.Service);
@@ -69,7 +70,8 @@ namespace Castle.Windsor.Debugging
 			if(HasInterceptors())
 			{
 				var interceptors = handler.ComponentModel.Interceptors;
-				yield return new DebuggerViewItemWithDescribtion("Interceptors", "Count = " + interceptors.Count, interceptors);
+				yield return
+					new DebuggerViewItem("Interceptors", interceptors.ToArray());
 			}
 		}
 

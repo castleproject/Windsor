@@ -16,22 +16,22 @@ namespace Castle.Windsor.Debugging
 {
 	using System.Diagnostics;
 
-	[DebuggerDisplay("{valueDescription}", Name = "{name}")]
-	public class DebuggerViewItemWithDescribtion:IDebuggerViewItem
+	[DebuggerDisplay("{key}", Name = "{name,nq}")]
+	public class DebuggerViewItemRich
 	{
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 		private readonly string name;
 
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
-		private readonly string valueDescription;
+		private readonly string key;
 
 		[DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
-		internal object value;
+		private object value;
 
-		public DebuggerViewItemWithDescribtion(string name, string valueDescription, object value)
+		public DebuggerViewItemRich(string name, string key, object value)
 		{
 			this.name = name;
-			this.valueDescription = valueDescription;
+			this.key = key;
 			this.value = value;
 		}
 	}

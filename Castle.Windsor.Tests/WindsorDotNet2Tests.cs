@@ -284,7 +284,7 @@ namespace Castle.Windsor.Tests
 		public void ParentResolverIntercetorShouldNotAffectGenericComponentInterceptor()
 		{
 			var container = new WindsorContainer();
-			((IWindsorContainer)container).Register(Component.For<CollectInterceptedIdInterceptor>());
+			container.Register(Component.For<CollectInterceptedIdInterceptor>());
 
 			container.Register(
 				Component.For<ISpecification>()
@@ -292,7 +292,7 @@ namespace Castle.Windsor.Tests
 					.Interceptors(new InterceptorReference(typeof(CollectInterceptedIdInterceptor)))
 					.Anywhere
 				);
-			((IWindsorContainer)container).Register(
+			container.Register(
 				Component.For(typeof(IRepository<>)).ImplementedBy(typeof(TransientRepository<>)).Named("repos"));
 
 			var specification = container.Resolve<ISpecification>();
