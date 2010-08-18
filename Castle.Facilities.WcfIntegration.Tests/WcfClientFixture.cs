@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -695,6 +695,31 @@ namespace Castle.Facilities.WcfIntegration.Tests
 			windsorContainer.Kernel.RemoveComponent("operations");
 			Assert.IsTrue(ChannelFactoryListener.ClosingCalled);
 			Assert.IsTrue(ChannelFactoryListener.ClosedCalled);
+		}
+
+
+		[Test]
+		public void WillApplyChannelFactoryAwareExtensionsWhenChannelCreated()
+		{
+			windsorContainer.Register(
+				Component.For<ChannelFactoryListener>(),
+				Component.For<IOperations>()
+					.Named("operations")
+					.AsWcfClient(new DefaultClientModel()
+					{
+						Endpoint = WcfEndpoint
+							.BoundTo(new NetTcpBinding { PortSharingEnabled = true })
+							.At("net.tcp://localhost/Operations")
+					})
+				);
+
+			CollectionAssert.IsEmpty(ChannelFactoryListener.ChannelsCreated);
+
+			var client = windsorContainer.Resolve<IOperations>("operations");
+
+			Assert.AreEqual(1, ChannelFactoryListener.ChannelsCreated.Count);
+			Assert.AreEqual(1, ChannelFactoryListener.ChannelsAvailable.Count);
+			CollectionAssert.AreEqual(new[] { client }, ChannelFactoryListener.ChannelsAvailable);
 		}
 
 		[Test]
@@ -1688,7 +1713,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 					.Register(Component.For<IOperations>()
 						.AsWcfClient(WcfEndpoint.Discover()
 							.InScope("urn:castle:rocks")
-							.SearchFor(TimeSpan.FromSeconds(2)))
+							.Span(TimeSpan.FromSeconds(2)))
 					))
 				{
 					var client = clientContainer.Resolve<IOperations>();
@@ -1839,7 +1864,35 @@ namespace Castle.Facilities.WcfIntegration.Tests
 					Assert.AreEqual(28, client.GetValueFromConstructor());
 				}
 			}
-		}	
+		}
+
+		[Test]
+		public void CanAccessDiscoverServiceEndpointMetadata()
+		{
+			using (new WindsorContainer()
+				.AddFacility<WcfFacility>(f => f.CloseTimeout = TimeSpan.Zero)
+				.Register(Component.For<Operations>()
+					.DependsOn(new { number = 28 })
+					.AsWcfService(new DefaultServiceModel()
+						.AddEndpoints(WcfEndpoint.ForContract<IOperations>()
+							.BoundTo(new NetTcpBinding { PortSharingEnabled = true })
+							.At("net.tcp://localhost/Operations2"))
+						.Discoverable()
+				)))
+			{
+				using (var clientContainer = new WindsorContainer()
+					.AddFacility<WcfFacility>()
+					.Register(Component.For<IOperations>()
+						.AsWcfClient(WcfEndpoint.Discover().InferBinding())
+					))
+				{
+					var client = clientContainer.Resolve<IOperations>();
+					var metadata = ((IContextChannel)client).Extensions.Find<DiscoveredEndpointMetadata>();
+					Assert.IsNotNull(metadata);
+					Assert.IsNotNull(metadata.Metadata);
+				}
+			}
+		}
 #endif
 		protected void RegisterLoggingFacility(IWindsorContainer container)
 		{

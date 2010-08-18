@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
 namespace Castle.Facilities.WcfIntegration
 {
 	using System.ServiceModel;
+	using System.ServiceModel.Channels;
 
 	/// <summary>
 	/// Extension for managing the lifecycle of a ChannelFactory.
@@ -56,5 +57,19 @@ namespace Castle.Facilities.WcfIntegration
 		/// </summary>
 		/// <param name="channelFactory">The channel factory.</param>
 		void Faulted(ChannelFactory channelFactory);
+
+		/// <summary>
+		///  Called when an <see cref="IChannel"/> is created.
+		/// </summary>
+		/// <param name="channelFactory"></param>
+		/// <param name="channel"></param>
+		void ChannelCreated(ChannelFactory channelFactory, IChannel channel);
+
+		/// <summary>
+		///  Called when an <see cref="IChannel"/> is available.
+		/// </summary>
+		/// <param name="channelFactory"></param>
+		/// <param name="channel"></param>
+		void ChannelAvailable(ChannelFactory channelFactory, IChannel channel);
 	}
 }

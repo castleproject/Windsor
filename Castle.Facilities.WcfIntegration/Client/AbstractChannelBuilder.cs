@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -143,12 +143,27 @@ namespace Castle.Facilities.WcfIntegration
 
 					if (binding == null && model.DeriveBinding == false)
 					{
-						binding = GetBindingFromMetadata(endpointMetadata);					
+						binding = GetBindingFromMetadata(endpointMetadata);
 					}
 					
 					var address = endpointMetadata.Address;
+					if (model.Identity != null)
+					{
+						address = new EndpointAddress(address.Uri, model.Identity, address.Headers);
+					}
+
 					binding = GetEffectiveBinding(binding, address.Uri);
-					channelCreator = GetChannel(contract, binding, address);
+					var innerCreator = GetChannel(contract, binding, address);
+					channelCreator = () =>
+					{
+						var channel = (IChannel)innerCreator();
+						if (channel is IContextChannel)
+						{
+							var metadata = new DiscoveredEndpointMetadata(endpointMetadata);
+							((IContextChannel)channel).Extensions.Add(metadata);
+						}
+						return channel;
+					};
 				}
 				else
 				{
@@ -173,7 +188,8 @@ namespace Castle.Facilities.WcfIntegration
 #if DOTNET40
 		private FindCriteria CreateSearchCriteria(DiscoveredEndpointModel model)
 		{
-			var criteria = new FindCriteria(contract) { MaxResults = 1 };
+			var searchContract = model.SearchContract ?? contract;
+			var criteria = new FindCriteria(searchContract) { MaxResults = 1 };
 
 			if (model.Duration.HasValue)
 			{

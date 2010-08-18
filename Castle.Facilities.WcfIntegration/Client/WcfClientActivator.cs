@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -29,10 +29,11 @@ namespace Castle.Facilities.WcfIntegration
 	using Castle.MicroKernel.ComponentActivator;
 	using Castle.MicroKernel.Context;
 	using Castle.MicroKernel.Facilities;
+	using System.ServiceModel.Channels;
 
 	public class WcfClientActivator : DefaultComponentActivator
 	{
-		private WcfProxyFactory proxyFactory;
+		private readonly WcfProxyFactory proxyFactory;
 		private ChannelCreator createChannel;
 		private IWcfBurden channelBurden;
 
@@ -78,7 +79,9 @@ namespace Castle.Facilities.WcfIntegration
 			try
 			{
 				var channelHolder = new WcfChannelHolder(channelCreator, burden);
-				return proxyFactory.Create(Kernel, channelHolder, Model, context);
+				var channel = (IChannel)proxyFactory.Create(Kernel, channelHolder, Model, context);
+				NotifyChannelCreatedOrAvailable(channel, burden, false);
+				return channel;
 			}
 			catch (CommunicationException)
 			{
@@ -114,9 +117,18 @@ namespace Castle.Facilities.WcfIntegration
 
 				creator = () =>
 				{
-					var client = (IClientChannel)inner();
+					var client = (IChannel)inner();
+					if (client is IContextChannel)
+					{
+						((IContextChannel)client).Extensions.Add(new WcfBurdenExtension<IContextChannel>(scopedBurden));
+					}
+					else
+					{
+						var parameters = client.GetProperty<ChannelParameterCollection>();
+						if (parameters != null) parameters.Add(scopedBurden);
+					}
+					NotifyChannelCreatedOrAvailable(client, scopedBurden, true);
 					client.Open();
-					client.Extensions.Add(new WcfBurdenExtension<IContextChannel>(scopedBurden));
 					return client;
 				};
 			}
@@ -126,7 +138,8 @@ namespace Castle.Facilities.WcfIntegration
 				var inner = CreateChannelCreator(Kernel, Model, clientModel, out channelBurden);
 				creator = createChannel = () =>
 				{
-					var client = (IClientChannel)inner();
+					var client = (IChannel)inner();
+					NotifyChannelCreatedOrAvailable(client, channelBurden, true);
 					client.Open();
 					return client;
 				};
@@ -190,6 +203,27 @@ namespace Castle.Facilities.WcfIntegration
 			}
 		}
 
+		private static void NotifyChannelCreatedOrAvailable(IChannel channel, IWcfBurden burden, bool created)
+		{
+			var channelFactory = burden.Dependencies.OfType<ChannelFactoryHolder>()
+				.Select(holder => holder.ChannelFactory).FirstOrDefault();
+
+			if (channelFactory != null)
+			{
+				foreach (var observer in burden.Dependencies.OfType<IChannelFactoryAware>())
+				{
+					if (created)
+					{
+						observer.ChannelCreated(channelFactory, channel);
+					}
+					else
+					{
+						observer.ChannelAvailable(channelFactory, channel);
+					}
+				}
+			}
+		}
+
 		private static ChannelCreator CreateChannelCreator(IKernel kernel, ComponentModel model,
 														   IWcfClientModel clientModel, out IWcfBurden burden)
 		{
@@ -214,7 +248,7 @@ namespace Castle.Facilities.WcfIntegration
 			IKernel kernel, IWcfClientModel clientModel, ComponentModel model, out IWcfBurden burden) 
 			where M : IWcfClientModel
 		{
-			var channelBuilder = kernel.Resolve<IClientChannelBuilder<M>>();
+			var channelBuilder = kernel.Resolve<IChannelBuilder<M>>();
 			return channelBuilder.GetChannelCreator((M) clientModel, model.Service, out burden);
 		}
 	}

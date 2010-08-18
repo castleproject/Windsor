@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
 namespace Castle.Facilities.WcfIntegration
 {
 	using System;
+	using System.Collections.Specialized;
 	using System.Reflection;
 	using Castle.Facilities.TypedFactory;
 	using Castle.MicroKernel;
@@ -40,25 +41,33 @@ namespace Castle.Facilities.WcfIntegration
 
 			public override object Resolve(IKernel kernel)
 			{
-				if (arguments.Length == 1)
-				{
-					var argument = arguments[0];
+				string key = null;
+				var argument = arguments[0];
 
-					if (argument is string)
-					{
-						return kernel.Resolve((string)argument, ComponentType);
-					}
-					else if (argument is IWcfClientModel || argument is IWcfEndpoint)
-					{
-						return kernel.Resolve(ComponentType, new { argument });
-					}
-					else if (argument is Uri)
-					{
-						var endpoint = WcfEndpoint.At((Uri)argument);
-						return kernel.Resolve(ComponentType, new { endpoint });
-					}
+				if (arguments.Length == 2)
+				{
+					key = (string)argument;
+					argument = arguments[1];
 				}
-				return null;
+				else if (argument is string)
+				{
+					return kernel.Resolve((string)argument, ComponentType);
+				}
+
+				if (argument is Uri)
+				{
+					argument = WcfEndpoint.At((Uri)argument);
+				}
+
+				var args = new HybridDictionary();
+				args.Add(Guid.NewGuid().ToString(), argument);
+
+				if (key == null)
+				{
+					return kernel.Resolve(ComponentType, args);
+				}
+
+				return kernel.Resolve(key, ComponentType, args);
 			}
 		}
 

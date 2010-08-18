@@ -23,6 +23,7 @@ namespace Castle.Facilities.WcfIntegration
 		private Binding defaultBinding;
 		private TimeSpan? closeTimeout;
 		private AspNetCompatibilityRequirementsMode? aspNetCompat;
+		private Action _afterInit;
 
 		internal static IKernel GlobalKernel;
 
@@ -76,13 +77,23 @@ namespace Castle.Facilities.WcfIntegration
 			kernel.ComponentModelCreated += Kernel_ComponentModelCreated;
 			kernel.ComponentRegistered += Kernel_ComponentRegistered;
 			kernel.ComponentUnregistered += Kernel_ComponentUnregistered;
+
+			if (_afterInit != null)
+			{
+				_afterInit();
+				_afterInit = null;
+			}
 		}
 
-		public WcfServiceExtension AddServiceHostBuilder<T, M>()
-			where T : IServiceHostBuilder<M>
-			where M : IWcfServiceModel
+		public WcfServiceExtension AddServiceHostBuilder<TBuilder>()
+			where TBuilder : IServiceHostBuilder
 		{
-			AddServiceHostBuilder<T, M>(true);
+			return AddServiceHostBuilder(typeof(TBuilder));
+		}
+
+		public WcfServiceExtension AddServiceHostBuilder(Type builder)
+		{
+			AddServiceHostBuilder(builder, true);
 			return this;
 		}
 
@@ -158,21 +169,47 @@ namespace Castle.Facilities.WcfIntegration
 
 		private void AddDefaultServiceHostBuilders()
 		{
-			AddServiceHostBuilder<DefaultServiceHostBuilder, DefaultServiceModel>(false);
-			AddServiceHostBuilder<RestServiceHostBuilder, RestServiceModel>(false);
+			AddServiceHostBuilder(typeof(DefaultServiceHostBuilder), false);
+			AddServiceHostBuilder(typeof(RestServiceHostBuilder), false);
 		}
 
-		internal void AddServiceHostBuilder<T, M>(bool force)
-			where T : IServiceHostBuilder<M>
-			where M : IWcfServiceModel
+		internal void AddServiceHostBuilder(Type builder, bool force)
 		{
-			if (force || kernel.HasComponent(typeof(IServiceHostBuilder<M>)) == false)
+			if (typeof(IServiceHostBuilder).IsAssignableFrom(builder) == false)
 			{
-				kernel.Register(Component.For<IServiceHostBuilder<M>>().ImplementedBy<T>());
+				throw new ArgumentException(string.Format(
+					"The type {0} does not represent an IServiceHostBuilder.",
+					builder.FullName), "builder");
+			}
+
+			var serviceHostBuilder = WcfUtils.GetClosedGenericDefinition(typeof(IServiceHostBuilder<>), builder);
+
+			if (serviceHostBuilder == null)
+			{
+				throw new ArgumentException(string.Format(
+					"The service model cannot be inferred from the builder {0}.  Did you implement IServiceHostBuilder<>?",
+					builder.FullName), "builder");
+			}
+
+			if (kernel == null)
+			{
+				_afterInit += () => RegisterServiceHostBuilder(serviceHostBuilder, builder, force);
+			}
+			else
+			{
+				RegisterServiceHostBuilder(serviceHostBuilder, builder, force);
 			}
 		}
 
-		private IEnumerable<IWcfServiceModel> ResolveServiceModels(ComponentModel model)
+		private void RegisterServiceHostBuilder(Type serviceHostBuilder, Type builder, bool force)
+		{
+			if (force || kernel.HasComponent(serviceHostBuilder) == false)
+			{
+				kernel.Register(Component.For(serviceHostBuilder).ImplementedBy(builder));
+			}
+		}
+
+		private static IEnumerable<IWcfServiceModel> ResolveServiceModels(ComponentModel model)
 		{
 			bool foundOne = false;
 

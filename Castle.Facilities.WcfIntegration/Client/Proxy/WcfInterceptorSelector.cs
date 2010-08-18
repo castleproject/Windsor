@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ namespace Castle.Facilities.WcfIntegration.Proxy
 	using System.Collections.Generic;
 	using System.Reflection;
 	using System.ServiceModel;
+	using System.ServiceModel.Channels;
 	using Castle.DynamicProxy;
 
 	[Serializable]
@@ -34,7 +35,6 @@ namespace Castle.Facilities.WcfIntegration.Proxy
 			this.userProvidedSelector = userProvidedSelector;
 		}
 
-
 		public override bool Equals(object obj)
 		{
 			if (ReferenceEquals(this, obj))
@@ -45,10 +45,10 @@ namespace Castle.Facilities.WcfIntegration.Proxy
 			if (ReferenceEquals(wcfInterceptorSelector, null))
 				return false;
 
-			if (!Equals(proxiedType, wcfInterceptorSelector.proxiedType))
+			if (Equals(proxiedType, wcfInterceptorSelector.proxiedType) == false)
 				return false;
 
-			if (!Equals(userProvidedSelector, wcfInterceptorSelector.userProvidedSelector))
+			if (Equals(userProvidedSelector, wcfInterceptorSelector.userProvidedSelector) == false)
 				return false;
 
 			return true;
@@ -76,12 +76,12 @@ namespace Castle.Facilities.WcfIntegration.Proxy
 			return interceptors;
 		}
 
-		private bool This_should_be_in_ProxyGenerationHook_IsProxyWrapperMethod(MethodInfo methodInfo)
+		private static bool This_should_be_in_ProxyGenerationHook_IsProxyWrapperMethod(MethodInfo methodInfo)
 		{
 			return methodInfo.DeclaringType.IsAssignableFrom(typeof(IWcfChannelHolder));
 		}
 
-		private IInterceptor[] SelectInterceptorsForServiceType(MethodInfo method, IInterceptor[] interceptors)
+		private static IInterceptor[] SelectInterceptorsForServiceType(MethodInfo method, IInterceptor[] interceptors)
 		{
 			return Array.FindAll(interceptors, i => i is IWcfInterceptor);
 		}
@@ -97,9 +97,9 @@ namespace Castle.Facilities.WcfIntegration.Proxy
 			return selectedInterceptors;
 		}
 
-		private void SplitInterceptors(IInterceptor[] interceptors, MethodInfo method,
-		                               out List<IInterceptor> infrastructureInterceptors,
-		                               out List<IInterceptor> userInterceptors)
+		private static void SplitInterceptors(IInterceptor[] interceptors, MethodInfo method,
+											  out List<IInterceptor> infrastructureInterceptors,
+											  out List<IInterceptor> userInterceptors)
 		{
 			userInterceptors = new List<IInterceptor>(interceptors.Length);
 			infrastructureInterceptors = new List<IInterceptor>(interceptors.Length);
@@ -129,12 +129,12 @@ namespace Castle.Facilities.WcfIntegration.Proxy
 			return selectedInterceptors;
 		}
 
-		private IInterceptor[] AddWcfInterceptors(List<IInterceptor> infrastructureInterceptors,
-		                                          IInterceptor[] selectedInterceptors)
+		private static IInterceptor[] AddWcfInterceptors(List<IInterceptor> infrastructureInterceptors,
+														 IInterceptor[] selectedInterceptors)
 		{
 			if (infrastructureInterceptors.Count > 0)
 			{
-				int index = selectedInterceptors.Length;
+				var index = selectedInterceptors.Length;
 				Array.Resize(ref selectedInterceptors, index + infrastructureInterceptors.Count);
 				infrastructureInterceptors.CopyTo(selectedInterceptors, index);
 			}
@@ -142,10 +142,11 @@ namespace Castle.Facilities.WcfIntegration.Proxy
 			return selectedInterceptors;
 		}
 
-		private bool IsServiceMethod(MethodInfo method)
+		private static bool IsServiceMethod(MethodInfo method)
 		{
-			Type type = method.DeclaringType;
-			return type.IsAssignableFrom(typeof(IClientChannel)) ||
+			var type = method.DeclaringType;
+			return type.IsAssignableFrom(typeof(IChannel)) ||
+				   type.IsAssignableFrom(typeof(IClientChannel)) ||
 			       type.IsAssignableFrom(typeof(IServiceChannel)) ||
 			       type.IsAssignableFrom(typeof(IDuplexContextChannel));
 		}

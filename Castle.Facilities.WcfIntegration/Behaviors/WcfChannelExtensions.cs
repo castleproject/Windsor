@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -37,11 +37,11 @@ namespace Castle.Facilities.WcfIntegration
 			visitor.VisitChannelExtension(this);
 		}
 
-		private void BindChannelFactoryAware(ChannelFactory channelFactory, IKernel kernel, IWcfBurden burden)
+		private static void BindChannelFactoryAware(ChannelFactory channelFactory, IKernel kernel, IWcfBurden burden)
 		{
 			WcfUtils.AddBehaviors<IWcfChannelPolicy>(kernel, WcfExtensionScope.Undefined, null, burden, null);
 			WcfUtils.AddBehaviors<IChannelFactoryAware>(kernel, WcfExtensionScope.Clients, null, burden,
-				delegate(IChannelFactoryAware channelFactoryAware)
+				channelFactoryAware =>
 				{
 					WcfUtils.BindChannelFactoryAware(channelFactory, channelFactoryAware, true);
 					return true;

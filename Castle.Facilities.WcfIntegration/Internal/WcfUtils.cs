@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ namespace Castle.Facilities.WcfIntegration.Internal
 	using System.Collections;
 	using System.Collections.Generic;
 	using System.Configuration;
+	using System.Linq;
 	using System.ServiceModel;
 	using System.ServiceModel.Description;
 	using System.ServiceModel.Dispatcher;
@@ -319,6 +320,17 @@ namespace Castle.Facilities.WcfIntegration.Internal
 				collection.Add(item);
 			}
 			return collection;
+		}
+
+		public static Type GetClosedGenericDefinition(Type openGenericDefinition, Type implementation)
+		{
+			var genericArgument =
+				(from @interface in implementation.GetInterfaces()
+				 where @interface.IsGenericType && @interface.GetGenericTypeDefinition() == openGenericDefinition
+				 select @interface.GetGenericArguments()[0]
+				 ).FirstOrDefault();
+
+			return (genericArgument != null) ? openGenericDefinition.MakeGenericType(genericArgument) : null;
 		}
 
 		public static T SafeInitialize<T>(ref T cache, Func<T> source) where T : class

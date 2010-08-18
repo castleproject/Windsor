@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -22,9 +22,15 @@ namespace Castle.Facilities.WcfIntegration
 
 		T GetClient<T>(IWcfClientModel model) where T : class;
 
+		T GetClient<T>(string name, IWcfClientModel model) where T : class;
+
 		T GetClient<T>(IWcfEndpoint endpoint) where T : class;
 
+		T GetClient<T>(string name, IWcfEndpoint endpoint) where T : class;
+
 		T GetClient<T>(Uri address) where T : class;
+
+		T GetClient<T>(string name, Uri address) where T : class;
 
 		void Release(object client);
 	}

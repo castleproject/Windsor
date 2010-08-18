@@ -19,7 +19,7 @@ namespace Castle.Facilities.WcfIntegration.Internal
 	public class WcfBurden : IWcfBurden
 	{
 		private readonly IKernel kernel;
-		private readonly List<object> dependencies = new List<object>();
+		private readonly HashSet<object> dependencies = new HashSet<object>();
 
 		public WcfBurden(IKernel kernel)
 		{

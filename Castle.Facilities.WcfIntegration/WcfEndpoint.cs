@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -64,10 +64,16 @@ namespace Castle.Facilities.WcfIntegration
 		{
 			return ForContract(typeof(Contract));
 		}
+
 #if DOTNET40
 		public static DiscoveredEndpointModel Discover()
 		{
 			return new ContractEndpointModel().Discover();
+		}
+
+		public static DiscoveredEndpointModel Discover(Type searchContract)
+		{
+			return new ContractEndpointModel().Discover(searchContract);
 		}
 #endif
 	}
@@ -130,6 +136,7 @@ namespace Castle.Facilities.WcfIntegration
 		{
 			return AddExtensions(typeof(PreserveObjectReferenceBehavior));
 		}
+
 #if DOTNET40
 		#region Discovery and Metadata
 
@@ -264,6 +271,11 @@ namespace Castle.Facilities.WcfIntegration
 		{
 			return new BindingEndpointModel(Contract, null).Discover();
 		}
+
+		public DiscoveredEndpointModel Discover(Type searchContract)
+		{
+			return new BindingEndpointModel(Contract, null).Discover(searchContract);
+		}
 #endif
 		protected override void Accept(IWcfEndpointVisitor visitor)
 		{
@@ -355,7 +367,12 @@ namespace Castle.Facilities.WcfIntegration
 #if DOTNET40
 		public DiscoveredEndpointModel Discover()
 		{
-			return new DiscoveredEndpointModel(Contract, Binding);
+			return new DiscoveredEndpointModel(Contract, Binding, null);
+		}
+
+		public DiscoveredEndpointModel Discover(Type searchContract)
+		{
+			return new DiscoveredEndpointModel(Contract, Binding, searchContract);
 		}
 #endif
 
@@ -430,20 +447,18 @@ namespace Castle.Facilities.WcfIntegration
 
 	public class DiscoveredEndpointModel : WcfEndpointBase<DiscoveredEndpointModel>
 	{
-		internal DiscoveredEndpointModel(Type contract)
+		internal DiscoveredEndpointModel(Type contract, Binding binding, Type searchContract)
 			: base(contract)
 		{
-		}
-
-		internal DiscoveredEndpointModel(Type contract, Binding binding)
-			: this(contract)
-		{
 			Binding = binding;
+			SearchContract = searchContract;
 		}
 
 		public Binding Binding { get; private set; }
 
 		public bool DeriveBinding { get; private set; }
+
+		public Type SearchContract { get; private set; }
 
 		public Uri ScopeMatchBy { get; private set; }
 
@@ -451,9 +466,17 @@ namespace Castle.Facilities.WcfIntegration
 
 		public DiscoveryEndpoint DiscoveryEndpoint { get; set; }
 
+		public EndpointIdentity Identity { get; private set; }
+
 		public DiscoveredEndpointModel InferBinding()
 		{
 			DeriveBinding = true;
+			return this;
+		}
+
+		public DiscoveredEndpointModel IdentifiedBy(EndpointIdentity identity)
+		{
+			Identity = identity;
 			return this;
 		}
 
@@ -463,7 +486,7 @@ namespace Castle.Facilities.WcfIntegration
 			return this;
 		}
 
-		public DiscoveredEndpointModel SearchFor(TimeSpan duration)
+		public DiscoveredEndpointModel Span(TimeSpan duration)
 		{
 			Duration = duration;
 			return this;
@@ -503,6 +526,5 @@ namespace Castle.Facilities.WcfIntegration
 
 	#endregion
 #endif
-
 }
 

@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -25,11 +25,13 @@ namespace Castle.Facilities.WcfIntegration
 	internal abstract class WcfExplicitExtension : AbstractWcfExtension, 
 		IWcfServiceExtension, IWcfChannelExtension, IWcfEndpointExtension
 	{
+		private object instance;
+
 		#region IWcfServiceExtension
 
 		public void Install(ServiceHost serviceHost, IKernel kernel, IWcfBurden burden)
 		{
-			object extension = GetExtensionInstance(kernel, burden);
+			object extension = GetInstance(kernel, burden);
 
 			if (extension is IServiceBehavior)
 			{
@@ -59,7 +61,7 @@ namespace Castle.Facilities.WcfIntegration
 
 		public void Install(ChannelFactory channelFactory, IKernel kernel, IWcfBurden burden)
 		{
-			object extension = GetExtensionInstance(kernel, burden);
+			var extension = GetInstance(kernel, burden);
 
 			if (extension is IChannelFactoryAware)
 			{
@@ -73,7 +75,7 @@ namespace Castle.Facilities.WcfIntegration
 
 		public void Install(ServiceEndpoint endpoint, bool withContract, IKernel kernel, IWcfBurden burden)
 		{
-			object extension = GetExtensionInstance(kernel, burden);
+			var extension = GetInstance(kernel, burden);
 
 			if (extension is IEndpointBehavior)
 			{
@@ -122,7 +124,17 @@ namespace Castle.Facilities.WcfIntegration
 
 		#endregion
 
-		protected abstract object GetExtensionInstance(IKernel kernel, IWcfBurden burden);
+		private object GetInstance(IKernel kernel, IWcfBurden burden)
+		{
+			if (instance == null)
+			{
+				instance = ResolveExtension(kernel);
+				burden.Add(instance);
+			}
+			return instance;
+		}
+
+		protected abstract object ResolveExtension(IKernel kernel);
 
 		internal static IWcfExtension CreateFrom(object extension)
 		{
@@ -163,11 +175,9 @@ namespace Castle.Facilities.WcfIntegration
 
 		public string Key { get; private set; }
 
-		protected override object GetExtensionInstance(IKernel kernel, IWcfBurden burden)
+		protected override object ResolveExtension(IKernel kernel)
 		{
-			object extension = kernel.Resolve(Key, WcfUtils.EmptyArguments);
-			burden.Add(extension);
-			return extension;
+			return kernel.Resolve(Key, WcfUtils.EmptyArguments);
 		}
 
 		public override void AddDependencies(IKernel kernel, ComponentModel model)
@@ -189,11 +199,9 @@ namespace Castle.Facilities.WcfIntegration
 
 		public Type ServiceType { get; private set; }
 
-		protected override object GetExtensionInstance(IKernel kernel, IWcfBurden burden)
+		protected override object ResolveExtension(IKernel kernel)
 		{
-			object extension = kernel.Resolve(ServiceType);
-			burden.Add(extension);
-			return extension;
+			return kernel.Resolve(ServiceType);
 		}
 
 		public override void AddDependencies(IKernel kernel, ComponentModel model)
@@ -215,9 +223,8 @@ namespace Castle.Facilities.WcfIntegration
 
 		public object Instance { get; private set; }
 
-		protected override object GetExtensionInstance(IKernel kernel, IWcfBurden burden)
+		protected override object ResolveExtension(IKernel kernel)
 		{
-			burden.Add(Instance);
 			return Instance;
 		}
 	}

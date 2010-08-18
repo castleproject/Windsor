@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@ namespace Castle.Facilities.WcfIntegration
 					"Did you forget to register that facility?");
 			}
 
-			if (Attribute.IsDefined(service, typeof(ServiceContractAttribute)) == false)
+			if (IsServiceContract(service) == false)
 			{
 				return null;
 			}
@@ -54,6 +54,21 @@ namespace Castle.Facilities.WcfIntegration
 			}
 
 			return Component.For(service).Named(key).LifeStyle.Transient.AsWcfClient(clientModel);
+		}
+
+		private static bool IsServiceContract(Type service)
+		{
+			if (service.IsDefined(typeof(ServiceContractAttribute), true))
+			{
+				return true;
+			}
+
+			if (service.IsInterface)
+			{
+				return service.GetInterfaces().Any(parent => IsServiceContract(parent));
+			}
+
+			return false;
 		}
 	}
 }

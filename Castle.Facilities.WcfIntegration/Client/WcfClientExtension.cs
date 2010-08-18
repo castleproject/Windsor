@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -35,6 +35,7 @@ namespace Castle.Facilities.WcfIntegration
 		private Binding defaultBinding;
 		private TimeSpan? closeTimeout;
 		private List<Func<Uri, Binding>> bindingPolicies;
+		private Action _afterInit;
 
 		public WcfClientExtension()
 		{
@@ -56,11 +57,15 @@ namespace Castle.Facilities.WcfIntegration
 
 		public IChannelActionPolicy DefaultChannelPolicy { get; set; }
 
-		public WcfClientExtension AddChannelBuilder<T, M>()
-			where T : IClientChannelBuilder<M>
-			where M : IWcfClientModel
+		public WcfClientExtension AddChannelBuilder<TBuilder>()
+			where TBuilder : IChannelBuilder
 		{
-			AddChannelBuilder<T, M>(true);
+			return AddChannelBuilder(typeof(TBuilder));
+		}
+
+		public WcfClientExtension AddChannelBuilder(Type builder)
+		{
+			AddChannelBuilder(builder, true);
 			return this;
 		}
 
@@ -98,6 +103,12 @@ namespace Castle.Facilities.WcfIntegration
 
 			kernel.ComponentModelCreated += Kernel_ComponentModelCreated;
 			kernel.ComponentUnregistered += Kernel_ComponentUnregistered;
+
+			if (_afterInit != null)
+			{
+				_afterInit();
+				_afterInit = null;
+			}
 		}
 
 		private void Kernel_ComponentModelCreated(ComponentModel model)
@@ -128,9 +139,9 @@ namespace Castle.Facilities.WcfIntegration
 
 		private void AddDefaultChannelBuilders()
 		{
-			AddChannelBuilder<DefaultChannelBuilder, DefaultClientModel>(false);
-			AddChannelBuilder<DuplexChannelBuilder, DuplexClientModel>(false);
-			AddChannelBuilder<RestChannelBuilder, RestClientModel>(false);
+			AddChannelBuilder(typeof(DefaultChannelBuilder), false);
+			AddChannelBuilder(typeof(DuplexChannelBuilder), false);
+			AddChannelBuilder(typeof(RestChannelBuilder), false);
         }
 
 		private void AddDefaultBindingPolicies()
@@ -148,13 +159,39 @@ namespace Castle.Facilities.WcfIntegration
 			AddBindingPolicy(address => address.Scheme == Uri.UriSchemeNetPipe ? pipeBinding : null);
 		}
 
-		internal void AddChannelBuilder<T, M>(bool force)
-			where T : IClientChannelBuilder<M>
-			where M : IWcfClientModel
+		internal void AddChannelBuilder(Type builder, bool force)
 		{
-			if (force || kernel.HasComponent(typeof(IClientChannelBuilder<M>)) == false)
+			if (typeof(IChannelBuilder).IsAssignableFrom(builder) == false)
 			{
-				kernel.Register(Component.For<IClientChannelBuilder<M>>().ImplementedBy<T>());
+				throw new ArgumentException(string.Format(
+					"The type {0} does not represent an IChannelBuilder.",
+					builder.FullName), "builder");
+			}
+
+			var channelBuilder = WcfUtils.GetClosedGenericDefinition(typeof(IChannelBuilder<>), builder);
+
+			if (channelBuilder == null)
+			{
+				throw new ArgumentException(string.Format(
+					"The client model cannot be inferred from the builder {0}.  Did you implement IChannelBuilder<>?",
+					builder.FullName), "builder");
+			}
+
+			if (kernel == null)
+			{
+				_afterInit += () => RegisterChannelBuilder(channelBuilder, builder, force);
+			}
+			else
+			{
+				RegisterChannelBuilder(channelBuilder, builder, force);
+			}
+		}
+
+		private void RegisterChannelBuilder(Type channelBuilder, Type builder, bool force)
+		{
+			if (force || kernel.HasComponent(channelBuilder) == false)
+			{
+				kernel.Register(Component.For(channelBuilder).ImplementedBy(builder));
 			}
 		}
 

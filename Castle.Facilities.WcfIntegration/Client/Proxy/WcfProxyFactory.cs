@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -55,6 +55,9 @@ namespace Castle.Facilities.WcfIntegration.Proxy
 
 			if (channelHolder == null)
 				throw new ArgumentException("Given instance is not an IWcfChannelHolder", "instance");
+
+			if (channelHolder.RealProxy == null)
+				return channelHolder.Channel;
 
 			var isDuplex = IsDuplex(channelHolder.RealProxy);
 			var proxyOptions = ProxyUtil.ObtainProxyOptions(model, true);

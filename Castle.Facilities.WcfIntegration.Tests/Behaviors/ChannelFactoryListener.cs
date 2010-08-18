@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -11,15 +11,19 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+using System.ServiceModel.Channels;
 
 namespace Castle.Facilities.WcfIntegration.Tests.Behaviors
 {
+	using System.Collections.Generic;
 	using System.ServiceModel;
 	using Castle.Facilities.WcfIntegration.Client;
 
 	public class ChannelFactoryListener : AbstractChannelFactoryAware
 	{
 		private static bool created, opening, opened, closing, closed, faulted;
+		private static List<IChannel> channelsCreated = new List<IChannel>();
+		private static List<IChannel> channelsAvailable = new List<IChannel>();
 
 		public static bool CreatedCalled
 		{
@@ -51,9 +55,21 @@ namespace Castle.Facilities.WcfIntegration.Tests.Behaviors
 			get { return faulted; }
 		}
 
+		public static ICollection<IChannel> ChannelsCreated
+		{
+			get { return channelsCreated; }
+		}
+
+		public static List<IChannel> ChannelsAvailable
+		{
+			get { return channelsAvailable; }
+		}
+
 		public static void Reset()
 		{
-			created = opening = opened = closing = closed = faulted = false;	
+			created = opening = opened = closing = closed = faulted = false;
+			channelsCreated.Clear();
+			channelsAvailable.Clear();
 		}
 
 		public override void Created(ChannelFactory serviceHost)
@@ -84,6 +100,16 @@ namespace Castle.Facilities.WcfIntegration.Tests.Behaviors
 		public override void Faulted(ChannelFactory serviceHost)
 		{
 			faulted = true;
+		}
+
+		public override void ChannelCreated(ChannelFactory channelFactory, IChannel channel)
+		{
+			channelsCreated.Add(channel);
+		}
+
+		public override void ChannelAvailable(ChannelFactory channelFactory, IChannel channel)
+		{
+			channelsAvailable.Add(channel);
 		}
 	}
 }

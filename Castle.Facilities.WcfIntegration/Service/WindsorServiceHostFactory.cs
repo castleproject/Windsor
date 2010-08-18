@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -49,7 +49,7 @@ namespace Castle.Facilities.WcfIntegration
 
 		public override ServiceHostBase CreateServiceHost(string constructorString, Uri[] baseAddresses)
 		{
-			Type maybeType = Type.GetType(constructorString, false);
+			var maybeType = Type.GetType(constructorString, false);
 			string constructorStringType;
 			IHandler handler;
 			if (maybeType != null)
@@ -69,8 +69,8 @@ namespace Castle.Facilities.WcfIntegration
 					constructorStringType, constructorString));
 			}
 
-			ComponentModel model = handler.ComponentModel;
-			IWcfServiceModel serviceModel = SelectBestHostedServiceModel(model);
+			var model = handler.ComponentModel;
+			var serviceModel = SelectBestHostedServiceModel(model);
 
 			if (serviceModel != null)
 			{
@@ -85,12 +85,11 @@ namespace Castle.Facilities.WcfIntegration
 			return ServiceHostBuilder.Build(serviceType, baseAddresses);
 		}
 
-		private IWcfServiceModel SelectBestHostedServiceModel(ComponentModel model)
+		private static IWcfServiceModel SelectBestHostedServiceModel(ComponentModel model)
 		{
 			IWcfServiceModel serviceModel = null;
 
-			foreach (var candidateServiceModel in WcfUtils
-						.FindDependencies<IWcfServiceModel>(model.CustomDependencies,
+			foreach (var candidateServiceModel in WcfUtils.FindDependencies<IWcfServiceModel>(model.CustomDependencies,
 						WcfUtils.IsHosted))
 			{
 				if (candidateServiceModel is M)

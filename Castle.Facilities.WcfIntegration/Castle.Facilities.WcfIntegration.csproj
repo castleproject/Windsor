@@ -20,7 +20,7 @@
     </UpgradeBackupLocation>
     <OldToolsVersion>2.0</OldToolsVersion>
     <IsWebBootstrapper>true</IsWebBootstrapper>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\buildscripts\CastleKey.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
@@ -29,7 +29,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;DOTNET35</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;DOTNET40;</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <NoWarn>1591;0067</NoWarn>
@@ -64,6 +64,7 @@
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Data" />
+    <Reference Include="System.IdentityModel" />
     <Reference Include="System.Runtime.Serialization">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
@@ -86,6 +87,12 @@
     <Compile Include="Behaviors\AbstractExtension.cs" />
     <Compile Include="Behaviors\IWcfMetadataProvider.cs" />
     <Compile Include="Behaviors\PreserveObjectReferenceBehavior.cs" />
+    <Compile Include="Behaviors\Security\CertificateCredentials.cs" />
+    <Compile Include="Behaviors\Security\AbstractCredentials.cs" />
+    <Compile Include="Behaviors\Security\FetchCertificate.cs" />
+    <Compile Include="Behaviors\Security\CustomPrincipalAuthorization.cs" />
+    <Compile Include="Behaviors\Security\FetchCertificateBySubject.cs" />
+    <Compile Include="Behaviors\Security\UserNameCredentials.cs" />
     <Compile Include="Behaviors\WcfDiscoveryExtension.cs" />
     <Compile Include="Behaviors\WcfErrorBehavior.cs" />
     <Compile Include="Behaviors\WcfChannelExtensions.cs" />
@@ -110,6 +117,7 @@
     <Compile Include="Behaviors\ServiceEndpointExtensions.cs" />
     <Compile Include="Client\AbstractChannelFactoryBuilder.cs" />
     <Compile Include="Client\Async\TypeSystem\AttributeHelpers.cs" />
+    <Compile Include="Client\Discovery\DiscoveredEndpointMetadata.cs" />
     <Compile Include="Client\IWcfClientFactory.cs" />
     <Compile Include="Client\Policies\ChannelReconnectPolicy.cs" />
     <Compile Include="Client\Policies\IChannelActionPolicy.cs" />
@@ -175,7 +183,7 @@
     <Compile Include="Client\Default\DefaultChannelBuilder.cs" />
     <Compile Include="Client\WcfClient.cs" />
     <Compile Include="Client\WcfClientDescriptor.cs" />
-    <Compile Include="Client\IClientChannelBuilder.cs" />
+    <Compile Include="Client\IChannelBuilder.cs" />
     <Compile Include="Client\AbstractChannelBuilder.cs" />
     <Compile Include="IWcfClientModel.cs" />
     <Compile Include="IWcfEndpointVisitor.cs" />

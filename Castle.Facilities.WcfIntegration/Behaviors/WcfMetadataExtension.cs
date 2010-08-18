@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -58,7 +58,7 @@ namespace Castle.Facilities.WcfIntegration
 				var mexAddress = address;
 				var scheme = baseAddress.Scheme;
 
-				if (scheme == Uri.UriSchemeHttp)
+				if (StringComparer.OrdinalIgnoreCase.Equals(scheme, Uri.UriSchemeHttp))
 				{
 					binding = FindCompatibleBinding(serviceHost, scheme);
 					if (binding == null)
@@ -67,7 +67,7 @@ namespace Castle.Facilities.WcfIntegration
 						mexAddress = relativeAddress ? string.Empty : baseAddress.AbsoluteUri;
 					}
 				}
-				else if (scheme == Uri.UriSchemeHttps)
+				else if (StringComparer.OrdinalIgnoreCase.Equals(scheme, Uri.UriSchemeHttps))
 				{
 					binding = FindCompatibleBinding(serviceHost, scheme);
 					if (binding == null)
@@ -76,7 +76,7 @@ namespace Castle.Facilities.WcfIntegration
 						mexAddress = relativeAddress ? string.Empty : baseAddress.AbsoluteUri;
 					}
 				}
-				else if (scheme == Uri.UriSchemeNetTcp)
+				else if (StringComparer.OrdinalIgnoreCase.Equals(scheme, Uri.UriSchemeNetTcp))
 				{
 					binding = MetadataExchangeBindings.CreateMexTcpBinding();
 					var tcpBinding = new CustomBinding(binding);
@@ -86,7 +86,7 @@ namespace Castle.Facilities.WcfIntegration
 					if (relativeAddress == false)
 						mexAddress = string.Format("{0}/{1}", baseAddress.AbsoluteUri, address);
 				}
-				else if (scheme == Uri.UriSchemeNetPipe)
+				else if (StringComparer.OrdinalIgnoreCase.Equals(scheme, Uri.UriSchemeNetPipe))
 				{
 					binding = MetadataExchangeBindings.CreateMexNamedPipeBinding();
 					if (relativeAddress == false)
@@ -107,11 +107,11 @@ namespace Castle.Facilities.WcfIntegration
 			bool relativeAddress;
 			foreach (var baseAddress in  GetBaseAddresses(serviceHost, out relativeAddress))
 			{
-				if (baseAddress.Scheme == Uri.UriSchemeHttp)
+				if (StringComparer.OrdinalIgnoreCase.Equals(baseAddress.Scheme, Uri.UriSchemeHttp))
 				{
 					metadataBehavior.HttpGetEnabled = enableHttpGet;
 				}
-				else if (baseAddress.Scheme == Uri.UriSchemeHttp)
+				else if (StringComparer.OrdinalIgnoreCase.Equals(baseAddress.Scheme, Uri.UriSchemeHttps))
 				{
 					metadataBehavior.HttpsGetEnabled = enableHttpGet;
 				}
@@ -123,7 +123,7 @@ namespace Castle.Facilities.WcfIntegration
 		private static Binding FindCompatibleBinding(ServiceHost serviceHost, string scheme)
 		{
 			return serviceHost.Description.Endpoints
-				.Where(endpoint => endpoint.Address.Uri.Scheme == scheme)
+				.Where(endpoint => StringComparer.OrdinalIgnoreCase.Equals(endpoint.Address.Uri.Scheme, scheme))
 				.Select(endpoint => endpoint.Binding).FirstOrDefault();
 		}
 

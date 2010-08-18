@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -21,19 +21,8 @@ namespace Castle.Facilities.WcfIntegration
 	/// <summary>
 	/// The contract for building service hosts.
 	/// </summary>
-	/// <typeparam name="M">The <see cref="IWcfServiceModel"/> type.</typeparam>
-	public interface IServiceHostBuilder<M> where M : IWcfServiceModel
+	public interface IServiceHostBuilder
 	{
-		/// <summary>
-		/// Builds a service host.
-		/// </summary>
-		/// <param name="model">The component model.</param>
-		/// <param name="serviceModel">The service model.</param>
-		/// <param name="baseAddresses">The base addresses.</param>
-		/// <returns>The service host.</returns>
-		/// 
-		ServiceHost Build(ComponentModel model, M serviceModel, params Uri[] baseAddresses);
-
 		/// <summary>
 		///  Builds a service host for a hosted environment.
 		/// </summary>
@@ -49,5 +38,23 @@ namespace Castle.Facilities.WcfIntegration
 		/// <param name="baseAddresses">The base addresses.</param>
 		/// <returns>The service host.</returns>
 		ServiceHost Build(Type serviceType, params Uri[] baseAddresses);
+	}
+
+	/// <summary>
+	/// The contract for building typed service hosts.
+	/// </summary>
+	/// <typeparam name="M">The <see cref="IWcfServiceModel"/> type.</typeparam>
+	public interface IServiceHostBuilder<M> : IServiceHostBuilder 
+		where M : IWcfServiceModel
+	{
+		/// <summary>
+		/// Builds a service host.
+		/// </summary>
+		/// <param name="model">The component model.</param>
+		/// <param name="serviceModel">The service model.</param>
+		/// <param name="baseAddresses">The base addresses.</param>
+		/// <returns>The service host.</returns>
+		/// 
+		ServiceHost Build(ComponentModel model, M serviceModel, params Uri[] baseAddresses);
 	}
 }

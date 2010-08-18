@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ namespace Castle.Facilities.WcfIntegration
 	using System.Runtime.Remoting;
 	using System.Runtime.Remoting.Proxies;
 	using System.ServiceModel;
+	using System.ServiceModel.Channels;
 	using Castle.Facilities.WcfIntegration.Internal;
 
 	public class WcfChannelHolder : IWcfChannelHolder
@@ -34,7 +35,7 @@ namespace Castle.Facilities.WcfIntegration
 			CreateChannel();
 		}
 
-		public IClientChannel Channel { get; private set; }
+		public IChannel Channel { get; private set; }
 
 		public RealProxy RealProxy { get; private set; }
 
@@ -63,9 +64,22 @@ namespace Castle.Facilities.WcfIntegration
 
 		public void Dispose()
 		{
-			foreach (var cleanUp in Channel.Extensions.FindAll<IWcfCleanUp>())
+			var context = Channel as IContextChannel;
+			if (context != null)
 			{
-				cleanUp.CleanUp();
+				foreach (var cleanUp in context.Extensions.FindAll<IWcfCleanUp>())
+				{
+					cleanUp.CleanUp();
+				}
+			}
+
+			var parameters = Channel.GetProperty<ChannelParameterCollection>();
+			if (parameters != null)
+			{
+				foreach (var cleanUp in parameters.OfType<IWcfCleanUp>())
+				{
+					cleanUp.CleanUp();
+				}
 			}
 
 			if (Channel != null)
@@ -76,7 +90,7 @@ namespace Castle.Facilities.WcfIntegration
 
 		private void CreateChannel()
 		{
-			Channel = (IClientChannel)channelCreator();
+			Channel = (IChannel)channelCreator();
 			RealProxy = RemotingServices.GetRealProxy(Channel);
 		}
 
