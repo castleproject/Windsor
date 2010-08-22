@@ -4,6 +4,41 @@
         <name>Castle.Core</name>
     </assembly>
     <members>
+        <member name="T:Castle.Components.DictionaryAdapter.DictionaryBehaviorAttribute">
+            <summary>
+            Assignes a specific dictionary key.
+            </summary>
+        </member>
+        <member name="T:Castle.Components.DictionaryAdapter.IDictionaryBehavior">
+            <summary>
+            Defines the contract for customizing dictionary access.
+            </summary>
+        </member>
+        <member name="P:Castle.Components.DictionaryAdapter.IDictionaryBehavior.ExecutionOrder">
+            <summary>
+            Determines relative order to apply related behaviors.
+            </summary>
+        </member>
+        <member name="P:Castle.Components.DictionaryAdapter.DictionaryBehaviorAttribute.ExecutionOrder">
+            <summary>
+            Determines relative order to apply related behaviors.
+            </summary>
+        </member>
+        <member name="T:Castle.Components.DictionaryAdapter.IDictionaryPropertySetter">
+            <summary>
+            Defines the contract for updating dictionary values.
+            </summary>
+        </member>
+        <member name="M:Castle.Components.DictionaryAdapter.IDictionaryPropertySetter.SetPropertyValue(Castle.Components.DictionaryAdapter.IDictionaryAdapter,System.String,System.Object@,Castle.Components.DictionaryAdapter.PropertyDescriptor)">
+            <summary>
+            Sets the stored dictionary value.
+            </summary>
+            <param name="dictionaryAdapter">The dictionary adapter.</param>
+            <param name="key">The key.</param>
+            <param name="value">The stored value.</param>
+            <param name="property">The property.</param>
+            <returns>true if the property should be stored.</returns>
+        </member>
         <member name="T:Castle.Components.DictionaryAdapter.AbstractDictionaryAdapter">
             <summary>
             Abstract adapter for the <see cref="T:System.Collections.IDictionary"/> support
@@ -141,26 +176,6 @@
             Identifies a property should be represented as a nested component.
             </summary>
         </member>
-        <member name="T:Castle.Components.DictionaryAdapter.DictionaryBehaviorAttribute">
-            <summary>
-            Assignes a specific dictionary key.
-            </summary>
-        </member>
-        <member name="T:Castle.Components.DictionaryAdapter.IDictionaryBehavior">
-            <summary>
-            Defines the contract for customizing dictionary access.
-            </summary>
-        </member>
-        <member name="P:Castle.Components.DictionaryAdapter.IDictionaryBehavior.ExecutionOrder">
-            <summary>
-            Determines relative order to apply related behaviors.
-            </summary>
-        </member>
-        <member name="P:Castle.Components.DictionaryAdapter.DictionaryBehaviorAttribute.ExecutionOrder">
-            <summary>
-            Determines relative order to apply related behaviors.
-            </summary>
-        </member>
         <member name="T:Castle.Components.DictionaryAdapter.IDictionaryKeyBuilder">
             <summary>
             Defines the contract for building typed dictionary keys.
@@ -190,21 +205,6 @@
             <param name="property">The property.</param>
             <param name="ifExists">true if return only existing.</param>
             <returns>The effective property value.</returns>
-        </member>
-        <member name="T:Castle.Components.DictionaryAdapter.IDictionaryPropertySetter">
-            <summary>
-            Defines the contract for updating dictionary values.
-            </summary>
-        </member>
-        <member name="M:Castle.Components.DictionaryAdapter.IDictionaryPropertySetter.SetPropertyValue(Castle.Components.DictionaryAdapter.IDictionaryAdapter,System.String,System.Object@,Castle.Components.DictionaryAdapter.PropertyDescriptor)">
-            <summary>
-            Sets the stored dictionary value.
-            </summary>
-            <param name="dictionaryAdapter">The dictionary adapter.</param>
-            <param name="key">The key.</param>
-            <param name="value">The stored value.</param>
-            <param name="property">The property.</param>
-            <returns>true if the property should be stored.</returns>
         </member>
         <member name="P:Castle.Components.DictionaryAdapter.ComponentAttribute.NoPrefix">
             <summary>
@@ -568,6 +568,12 @@
             <inheritdoc />
         </member>
         <member name="M:Castle.Components.DictionaryAdapter.DictionaryAdapterFactory.GetAdapter(System.Type,System.Collections.IDictionary,Castle.Components.DictionaryAdapter.PropertyDescriptor)">
+            <inheritdoc />
+        </member>
+        <member name="M:Castle.Components.DictionaryAdapter.DictionaryAdapterFactory.GetAdapter``2(System.Collections.Generic.IDictionary{System.String,``1})">
+            <inheritdoc />
+        </member>
+        <member name="M:Castle.Components.DictionaryAdapter.DictionaryAdapterFactory.GetAdapter``1(System.Type,System.Collections.Generic.IDictionary{System.String,``0})">
             <inheritdoc />
         </member>
         <member name="M:Castle.Components.DictionaryAdapter.DictionaryAdapterFactory.GetAdapter``1(System.Collections.Specialized.NameValueCollection)">
@@ -2788,26 +2794,6 @@
             legal to return other <see cref="T:Castle.DynamicProxy.IInterceptor"/> implementations than these provided in
             <paramref name="interceptors"/>.
             </remarks>
-        </member>
-        <member name="M:Castle.Core.Internal.LinkedList.GetNode(System.Int32)">
-            <summary>
-            Returns the node at the specified index.
-            </summary>
-            <param name="index">The lookup index.</param>
-            <returns>The node at the specified index.</returns>
-            <exception cref="T:System.ArgumentOutOfRangeException">
-            If the specified <paramref name="index"/> is greater than the
-            number of objects within the list.
-            </exception>
-        </member>
-        <member name="M:Castle.Core.Internal.LinkedList.ValidateIndex(System.Int32)">
-            <summary>
-            Validates the specified index.
-            </summary>
-            <param name="index">The lookup index.</param>
-            <exception cref="T:System.ArgumentOutOfRangeException">
-            If the index is invalid.
-            </exception>
         </member>
         <member name="M:Castle.Core.Internal.Lock.Create">
             <summary>
