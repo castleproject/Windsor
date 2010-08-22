@@ -62,6 +62,7 @@ namespace Castle.Windsor.Tests.Facilities.FactorySupport
 			kernel.Resolve("stringdictComponent", typeof(StringDictionaryDependentComponent));
 		}
 
+#if !SILVERLIGHT
 		[Test][Ignore("BUG: not working")]
 		public void Can_instantiate_abstract_service_via_factory()
 		{
@@ -71,8 +72,8 @@ namespace Castle.Windsor.Tests.Facilities.FactorySupport
 									ConfigHelper.ResolveConfigPath("Configuration2/abstract_component_factory.xml")));
 
 			container.Resolve<IComponent>("abstract");
-
 		}
+#endif
 
 		[Test, Ignore("Bug confirmed, but cant fix it without undesired side effects")]
 		public void KernelDoesNotTryToWireComponentsPropertiesWithFactoryConfiguration()
