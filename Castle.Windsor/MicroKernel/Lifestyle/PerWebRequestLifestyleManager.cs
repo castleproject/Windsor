@@ -46,7 +46,7 @@ namespace Castle.MicroKernel.Lifestyle
 				{
 					var message =
 						string.Format(
-							"Looks like you forgot to register the http module {0}{1}Add '<add name=\"PerRequestLifestyle\" type=\"Castle.MicroKernel.Lifestyle.PerWebRequestLifestyleModule, Castle.Windsor\" />' to the <httpModules> section on your web.config",
+							"Looks like you forgot to register the http module {0}{1}Add '<add name=\"PerRequestLifestyle\" type=\"Castle.MicroKernel.Lifestyle.PerWebRequestLifestyleModule, Castle.Windsor\" />' to the <httpModules> section on your web.config. If you're running IIS7 in Integrated Mode you will need to add it to <modules> section under <system.webServer>",
 							typeof(PerWebRequestLifestyleModule).FullName, Environment.NewLine);
 
 					throw new Exception(message);
