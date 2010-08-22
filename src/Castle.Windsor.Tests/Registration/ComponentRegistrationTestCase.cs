@@ -795,18 +795,5 @@ namespace Castle.MicroKernel.Tests.Registration
 			Kernel.ReleaseComponent(component);
 			Assert.IsTrue(component.Stopped);
 		}
-
-		[Test]
-		public void Can_Process_ComponentModel_Directly()
-		{
-			ComponentModel componentModel = null;
-
-			Kernel.Register(
-				Component.For<ICustomer>().ImplementedBy<CustomerImpl>()
-					.ProcessModel((kernel, model) => componentModel = model)
-				);
-
-			Assert.IsNotNull(componentModel);
-		}
 	}
 }
