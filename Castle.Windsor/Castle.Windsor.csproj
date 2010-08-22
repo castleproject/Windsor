@@ -404,7 +404,6 @@
     <Compile Include="MicroKernel\Registration\ComponentRegistration.nonGeneric.cs" />
     <Compile Include="MicroKernel\Registration\Configuration.cs" />
     <Compile Include="MicroKernel\Registration\ConfigurationDescriptor.cs" />
-    <Compile Include="MicroKernel\Registration\ProcessModelDescriptor.cs" />
     <Compile Include="MicroKernel\Registration\CustomDependencyDescriptor.cs" />
     <Compile Include="MicroKernel\Registration\ExtendedPropertiesDescriptor.cs" />
     <Compile Include="MicroKernel\Registration\Proxy\ProxyHook.cs" />
