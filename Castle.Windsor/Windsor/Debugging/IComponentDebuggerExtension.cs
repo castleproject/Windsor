@@ -2,7 +2,7 @@
 {
 	using System.Collections.Generic;
 
-	public interface IComponentDebuggerExtensions
+	public interface IComponentDebuggerExtension
 	{
 		IEnumerable<DebuggerViewItem> Attach();
 	}

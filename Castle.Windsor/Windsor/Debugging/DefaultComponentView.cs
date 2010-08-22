@@ -14,7 +14,6 @@
 
 namespace Castle.Windsor.Debugging
 {
-	using System;
 	using System.Collections.Generic;
 	using System.Linq;
 
@@ -22,7 +21,7 @@ namespace Castle.Windsor.Debugging
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Handlers;
 
-	public class DefaultComponentView : IComponentDebuggerExtensions
+	public class DefaultComponentView : IComponentDebuggerExtension
 	{
 		private readonly IHandler handler;
 

@@ -665,7 +665,7 @@
     <Compile Include="Windsor\Debugging\HandlerByKeyDebuggerView.cs" />
     <Compile Include="Windsor\Debugging\HandlerDebuggerProxy.cs" />
     <Compile Include="Windsor\Debugging\HandlersByKeyDictionaryDebuggerView.cs" />
-    <Compile Include="Windsor\Debugging\IComponentDebuggerExtensions.cs" />
+    <Compile Include="Windsor\Debugging\IComponentDebuggerExtension.cs" />
     <Compile Include="Windsor\Debugging\IContainerDebuggerExtension.cs" />
     <Compile Include="Windsor\Debugging\IContainerDebuggerExtensionHost.cs" />
     <Compile Include="Windsor\Debugging\KernelDebuggerProxy.cs" />

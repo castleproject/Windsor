@@ -25,7 +25,7 @@ namespace Castle.Windsor.Debugging
 	public class HandlerByKeyDebuggerView
 	{
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
-		private readonly IComponentDebuggerExtensions[] extensions;
+		private readonly IComponentDebuggerExtension[] extension;
 
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 		private readonly IHandler service;
@@ -33,17 +33,17 @@ namespace Castle.Windsor.Debugging
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 		private string key;
 
-		public HandlerByKeyDebuggerView(string key, IHandler service, params IComponentDebuggerExtensions[] defaultExtensions)
+		public HandlerByKeyDebuggerView(string key, IHandler service, params IComponentDebuggerExtension[] defaultExtension)
 		{
 			this.key = key;
 			this.service = service;
-			extensions = defaultExtensions.Concat(GetExtensions(service)).ToArray();
+			extension = defaultExtension.Concat(GetExtensions(service)).ToArray();
 		}
 
 		[DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
 		public DebuggerViewItem[] Extensions
 		{
-			get { return extensions.SelectMany(e => e.Attach()).ToArray(); }
+			get { return extension.SelectMany(e => e.Attach()).ToArray(); }
 		}
 
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
@@ -74,11 +74,11 @@ namespace Castle.Windsor.Debugging
 			}
 		}
 
-		private IEnumerable<IComponentDebuggerExtensions> GetExtensions(IHandler handler)
+		private IEnumerable<IComponentDebuggerExtension> GetExtensions(IHandler handler)
 		{
 			var handlerExtensions = handler.ComponentModel.ExtendedProperties["DebuggerExtensions"];
-			return (IEnumerable<IComponentDebuggerExtensions>)handlerExtensions ??
-			       Enumerable.Empty<IComponentDebuggerExtensions>();
+			return (IEnumerable<IComponentDebuggerExtension>)handlerExtensions ??
+			       Enumerable.Empty<IComponentDebuggerExtension>();
 		}
 	}
 }
