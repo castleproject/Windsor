@@ -251,7 +251,7 @@ namespace Castle.Windsor.Tests.Facilities.Startable
 			kernel.AddFacility<StartableFacility>();
 			kernel.Register(
 				Component.For<StartableComponent>()
-					.ProcessModel((_, model) => model.Dependencies.Add(dependsOnSomething))
+					.AddDescriptor(new AddDependency<StartableComponent>(dependsOnSomething))
 				);
 
 			Assert.False(startableCreatedBeforeResolved, "Component should not have started");
@@ -259,6 +259,21 @@ namespace Castle.Windsor.Tests.Facilities.Startable
 			kernel.Register(Component.For<ICommon>().ImplementedBy<CommonImpl1>());
 
 			Assert.True(startableCreatedBeforeResolved, "Component was not properly started");
+		}
+	}
+
+	public class AddDependency<T> : ComponentDescriptor<T>
+	{
+		private readonly DependencyModel dependency;
+
+		public AddDependency(DependencyModel dependency)
+		{
+			this.dependency = dependency;
+		}
+
+		protected override void ApplyToModel(IKernel kernel, ComponentModel model)
+		{
+			model.Dependencies.Add(dependency);
 		}
 	}
 }
