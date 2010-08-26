@@ -656,6 +656,7 @@
     <Compile Include="Windsor\Configuration\Interpreters\XmlProcessor\XmlProcessorException.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Windsor\Debugging\ComponentStatusDebuggerViewItem.cs" />
     <Compile Include="Windsor\Debugging\DebuggerViewItem.cs" />
     <Compile Include="Windsor\Debugging\DefaultComponentView.cs" />
     <Compile Include="Windsor\Debugging\Extensions\AllComponents.cs" />
@@ -669,7 +670,7 @@
     <Compile Include="Windsor\Debugging\IContainerDebuggerExtension.cs" />
     <Compile Include="Windsor\Debugging\IContainerDebuggerExtensionHost.cs" />
     <Compile Include="Windsor\Debugging\KernelDebuggerProxy.cs" />
-    <Compile Include="Windsor\Debugging\Extensions\PotentiallyMisconfigurredComponents.cs" />
+    <Compile Include="Windsor\Debugging\Extensions\PotentiallyMisconfiguredComponents.cs" />
     <Compile Include="Windsor\IEnvironmentInfo.cs" />
     <Compile Include="Windsor\InitializationException.cs">
       <SubType>Code</SubType>
