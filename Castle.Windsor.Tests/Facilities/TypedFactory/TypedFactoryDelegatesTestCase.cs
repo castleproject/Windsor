@@ -52,6 +52,14 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 		}
 
 		[Test]
+		public void Can_resolve_component_depending_on_delegate_when_inline_argumens_are_provided()
+		{
+			container.Register(Component.For<Foo>(),
+			                   Component.For<UsesFooDelegateAndInt>());
+			var component = container.Resolve<UsesFooDelegateAndInt>(new { additionalArgument = 5 });
+		}
+
+		[Test]
 		public void Can_resolve_multiple_delegates_just_fine()
 		{
 			container.Register(Component.For<Baz>());

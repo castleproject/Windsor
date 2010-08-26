@@ -15,6 +15,7 @@
 namespace Castle.MicroKernel.Handlers
 {
 	using System;
+	using System.Collections;
 	using System.Collections.Generic;
 	using System.Linq;
 
@@ -74,11 +75,6 @@ namespace Castle.MicroKernel.Handlers
 
 		private bool ResolveImpossible(CreationContext context)
 		{
-			if (context.HasAdditionalParameters)
-			{
-				return false; // we assume we can
-			}
-
 			if (CurrentState == HandlerState.Valid || CanResolvePendingDependencies(context))
 			{
 				return false;
@@ -95,6 +91,10 @@ namespace Castle.MicroKernel.Handlers
 
 			foreach (var dependency in DependenciesByService.Values.ToArray())
 			{
+				if(context.HasAdditionalParameters && MatchParameterToDependency(context.AdditionalParameters, dependency))
+				{
+					continue;
+				}
 				// a self-dependency is not allowed
 				var handler = Kernel.GetHandler(dependency.TargetType);
 				if (handler == this)
@@ -110,7 +110,18 @@ namespace Castle.MicroKernel.Handlers
 					}
 				}
 			}
-			return DependenciesByKey.Count == 0;
+			if (context.HasAdditionalParameters == false)
+			{
+				return DependenciesByKey.Count == 0;
+			}
+			return DependenciesByKey.Values.All(d => MatchParameterToDependency(context.AdditionalParameters, d));
+		}
+
+		private bool MatchParameterToDependency(IDictionary additionalParameters, DependencyModel dependency)
+		{
+			return additionalParameters[dependency.DependencyKey] != null ||
+			       additionalParameters[dependency.TargetType] != null;
+
 		}
 
 		/// <summary>
