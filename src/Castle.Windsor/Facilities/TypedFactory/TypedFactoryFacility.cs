@@ -59,25 +59,20 @@ namespace Castle.Facilities.TypedFactory
 		private void InitFacility()
 		{
 			Kernel.Register(Component.For<TypedFactoryInterceptor>()
-			                	.Named(InterceptorKey)
-			                	.Unless(Component.ServiceAlreadyRegistered),
+			                	.Named(InterceptorKey),
 			                Component.For<DelegateFactory>()
-			                	.Named(DelegateFactoryKey)
-			                	.Unless(Component.ServiceAlreadyRegistered),
+			                	.Named(DelegateFactoryKey),
 			                Component.For<IProxyFactoryExtension>()
 			                	.ImplementedBy<DelegateProxyFactory>()
 			                	.LifeStyle.Transient
-			                	.Named(DelegateProxyFactoryKey)
-								.Unless(Component.ServiceAlreadyRegistered));
+			                	.Named(DelegateProxyFactoryKey));
 		}
 
 		private void LegacyInit()
 		{
 			Kernel.Register(Component.For<FactoryInterceptor>().Named("typed.fac.interceptor"));
 
-			var converter = (ITypeConverter)
-			                Kernel.GetSubSystem(SubSystemConstants.ConversionManagerKey);
-
+			var converter = Kernel.GetConversionManager();
 			AddFactories(FacilityConfig, converter);
 		}
 

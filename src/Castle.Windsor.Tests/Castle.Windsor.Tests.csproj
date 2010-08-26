@@ -129,6 +129,7 @@
     <Compile Include="Components\ThrowsInCtorWithDisposableDependency.cs" />
     <Compile Include="Components\TwoCtorsWithDefaultValue.cs" />
     <Compile Include="DefaultValueTestCase.cs" />
+    <Compile Include="Facilities\TypedFactory\Components\TypedFactoryAndSubContainersTestCase.cs" />
     <Compile Include="FailureCleanUpTestCase.cs" />
     <Compile Include="Interceptors\ThrowInCtorInterceptor.cs" />
     <Compile Include="Lifestyle\Components\UsesComponentWithDispose.cs" />
