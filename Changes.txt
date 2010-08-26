@@ -1,4 +1,16 @@
+unreleased changes
+==================
+
+- Reverted back (to the way it was in v2.1) conditional registration of helper components used by TypedFactoryFacility as it would cause issues when used with nested containers (see the new test and thread "Typed Factories in sub Container (differences between 2.5 and 2.1)" on users group)
+
+- fixed bug where count of potentially misconfigured components would show invalid value
+
+- added raw handler access to default component view in debugger
+
+- changed how status message is displayed for potentially misconfigured components so that an actual visualizer for strings can be used to view this potentially long piece of text
+
 2.5.0 (2010-08-21)
+==================
 
 - debugger view support has been extracted to a separate subsystem (IContainerDebuggerExtensionHost) and can be extended by users code via IContainerDebuggerExtension and IComponentDebuggerExtension
 
