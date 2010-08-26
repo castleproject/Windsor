@@ -25,19 +25,13 @@ namespace Castle.MicroKernel.Tests
 	[TestFixture]
 	public class TypedDependenciesTestCase
 	{
-		[SetUp]
-		public void SetUpTests()
-		{
-			kernel = new DefaultKernel();
-		}
-
 		private IKernel kernel;
 
 		[Test]
 		public void Can_mix_typed_arguments_with_named()
 		{
-		    kernel.Register(Component.For<ClassWithArguments>());
-		    var arguments = new Dictionary<object, object>
+			kernel.Register(Component.For<ClassWithArguments>());
+			var arguments = new Dictionary<object, object>
 			{
 				{ "arg1", "foo" },
 				{ typeof(int), 2 }
@@ -52,8 +46,8 @@ namespace Castle.MicroKernel.Tests
 		[Test]
 		public void Can_named_arguments_take_precedense_over_typed()
 		{
-		    kernel.Register(Component.For<ClassWithArguments>());
-		    var arguments = new Dictionary<object, object>
+			kernel.Register(Component.For<ClassWithArguments>());
+			var arguments = new Dictionary<object, object>
 			{
 				{ "arg1", "named" },
 				{ typeof(string), "typed" },
@@ -69,8 +63,8 @@ namespace Castle.MicroKernel.Tests
 		[Test]
 		public void Can_resolve_component_with_typed_arguments()
 		{
-		    kernel.Register(Component.For<ClassWithArguments>());
-		    var arguments = new Dictionary<object, object>
+			kernel.Register(Component.For<ClassWithArguments>());
+			var arguments = new Dictionary<object, object>
 			{
 				{ typeof(string), "foo" },
 				{ typeof(int), 2 }
@@ -80,6 +74,12 @@ namespace Castle.MicroKernel.Tests
 
 			Assert.AreEqual("foo", item.Arg1);
 			Assert.AreEqual(2, item.Arg2);
+		}
+
+		[SetUp]
+		public void SetUpTests()
+		{
+			kernel = new DefaultKernel();
 		}
 
 		[Test]
@@ -136,7 +136,8 @@ namespace Castle.MicroKernel.Tests
 		{
 			kernel.Register(Component.For<ICommon>().ImplementedBy<CommonImpl1>().Named("default"));
 			kernel.Register(Component.For<ICommon>().ImplementedBy<CommonImpl2>().Named("non-default"));
-			kernel.Register(Component.For<CommonServiceUser>().ServiceOverrides(ServiceOverride.ForKey<ICommon>().Eq("non-default")));
+			kernel.Register(
+				Component.For<CommonServiceUser>().ServiceOverrides(ServiceOverride.ForKey<ICommon>().Eq("non-default")));
 
 			var item = kernel.Resolve<CommonServiceUser>();
 
@@ -148,7 +149,8 @@ namespace Castle.MicroKernel.Tests
 		{
 			kernel.Register(Component.For<IGeneric<string>>().ImplementedBy<GenericImpl1<string>>().Named("default"));
 			kernel.Register(Component.For<IGeneric<string>>().ImplementedBy<GenericImpl2<string>>().Named("non-default"));
-			kernel.Register(Component.For<UsesIGeneric<string>>().ServiceOverrides(ServiceOverride.ForKey<IGeneric<string>>().Eq("non-default")));
+			kernel.Register(
+				Component.For<UsesIGeneric<string>>().ServiceOverrides(ServiceOverride.ForKey<IGeneric<string>>().Eq("non-default")));
 
 			var item = kernel.Resolve<UsesIGeneric<string>>();
 
@@ -161,20 +163,7 @@ namespace Castle.MicroKernel.Tests
 			kernel.Register(Component.For(typeof(IGeneric<>)).ImplementedBy(typeof(GenericImpl1<>)).Named("default"));
 			kernel.Register(Component.For(typeof(IGeneric<>)).ImplementedBy(typeof(GenericImpl2<>)).Named("non-default"));
 			kernel.Register(Component.For(typeof(UsesIGeneric<>))
-								.ServiceOverrides(ServiceOverride.ForKey(typeof(IGeneric<string>)).Eq("non-default")));
-
-			var item = kernel.Resolve<UsesIGeneric<string>>();
-
-			Assert.IsInstanceOf<GenericImpl2<string>>(item.Dependency);
-		}
-
-		[Test]
-		public void Typed_arguments_work_for_open_generic_ServiceOverrides_open_service()
-		{
-			kernel.Register(Component.For(typeof(IGeneric<>)).ImplementedBy(typeof(GenericImpl1<>)).Named("default"));
-			kernel.Register(Component.For(typeof(IGeneric<>)).ImplementedBy(typeof(GenericImpl2<>)).Named("non-default"));
-			kernel.Register(Component.For(typeof(UsesIGeneric<>))
-			                	.ServiceOverrides(ServiceOverride.ForKey(typeof(IGeneric<>)).Eq("non-default")));
+			                	.ServiceOverrides(ServiceOverride.ForKey(typeof(IGeneric<string>)).Eq("non-default")));
 
 			var item = kernel.Resolve<UsesIGeneric<string>>();
 
@@ -202,6 +191,19 @@ namespace Castle.MicroKernel.Tests
 			Assert.AreEqual(1, (withString.Dependency as GenericImpl2<string>).Value);
 			Assert.IsInstanceOf<GenericImpl2<int>>(withInt.Dependency);
 			Assert.AreEqual(2, (withInt.Dependency as GenericImpl2<int>).Value);
+		}
+
+		[Test]
+		public void Typed_arguments_work_for_open_generic_ServiceOverrides_open_service()
+		{
+			kernel.Register(Component.For(typeof(IGeneric<>)).ImplementedBy(typeof(GenericImpl1<>)).Named("default"));
+			kernel.Register(Component.For(typeof(IGeneric<>)).ImplementedBy(typeof(GenericImpl2<>)).Named("non-default"));
+			kernel.Register(Component.For(typeof(UsesIGeneric<>))
+			                	.ServiceOverrides(ServiceOverride.ForKey(typeof(IGeneric<>)).Eq("non-default")));
+
+			var item = kernel.Resolve<UsesIGeneric<string>>();
+
+			Assert.IsInstanceOf<GenericImpl2<string>>(item.Dependency);
 		}
 	}
 }

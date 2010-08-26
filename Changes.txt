@@ -1,6 +1,8 @@
 unreleased changes
 ==================
 
+- fixed IOC-210 Typed Factory Facility treats constructor dependency as non-optional if resolved as a TFF component
+
 - Reverted back (to the way it was in v2.1) conditional registration of helper components used by TypedFactoryFacility as it would cause issues when used with nested containers (see the new test and thread "Typed Factories in sub Container (differences between 2.5 and 2.1)" on users group)
 
 - fixed bug where count of potentially misconfigured components would show invalid value
