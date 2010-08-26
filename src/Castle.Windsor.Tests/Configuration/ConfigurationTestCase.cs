@@ -16,6 +16,7 @@ namespace Castle.MicroKernel.Tests.Configuration
 {
 	using Castle.Core;
 	using Castle.Core.Configuration;
+	using Castle.MicroKernel.ComponentActivator;
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Resolvers;
 	using Castle.MicroKernel.Tests.ClassComponents;
@@ -184,11 +185,12 @@ namespace Castle.MicroKernel.Tests.Configuration
 		}
 
 		[Test]
-		[ExpectedException(typeof(DependencyResolverException))]
+		[ExpectedException(typeof(ComponentActivatorException))]
 		public void ConstructorWithUnsatisfiedParameters()
 		{
-			kernel.Register(Component.For(typeof(ClassWithConstructors)).Named("key"));
-			var res = kernel.Resolve("key", new Arguments());
+			kernel.Register(Component.For<ClassWithConstructors>().Named("key"));
+			
+			kernel.Resolve<ClassWithConstructors>("key");
 		}
 
 #if SILVERLIGHT

@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,21 +14,14 @@
 
 namespace Castle.MicroKernel.Tests.ClassComponents
 {
-	public class HasTwoConstructors3
+	public class HasTwoConstructors4
 	{
-		public SimpleComponent1 X { get; private set; }
-		public SimpleComponent2 Y { get; private set; }
-		public SimpleComponent3 A { get; private set; }
-
-		public HasTwoConstructors3(SimpleComponent3 a)
+		public HasTwoConstructors4(string text, SimpleComponent1 x, SimpleComponent2 y)
 		{
-			A = a;
 		}
 
-		public HasTwoConstructors3(SimpleComponent1 x, SimpleComponent2 y)
+		public HasTwoConstructors4(SimpleComponent1 x)
 		{
-			X = x;
-			Y = y;
 		}
 	}
 }
