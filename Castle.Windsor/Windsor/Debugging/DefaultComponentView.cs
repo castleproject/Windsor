@@ -44,27 +44,20 @@ namespace Castle.Windsor.Debugging
 			return lifestyle;
 		}
 
-		private object GetStatusMessage()
+		private object GetStatus()
 		{
 			if (handler.CurrentState == HandlerState.Valid)
 			{
 				return "All required dependencies can be resolved.";
 			}
-
-			var message = "Some dependencies of this component could not be statically resolved.";
-			var info = handler as IExposeDependencyInfo;
-			if (info == null)
-			{
-				return message;
-			}
-			return message + info.ObtainDependencyDetails(new List<object>());
+			return new ComponentStatusDebuggerViewItem(handler as IExposeDependencyInfo);
 		}
 
 		public IEnumerable<DebuggerViewItem> Attach()
 		{
 			yield return new DebuggerViewItem("Implementation", handler.ComponentModel.Implementation);
 			yield return new DebuggerViewItem("Service", handler.Service);
-			yield return new DebuggerViewItem("Status", GetStatusMessage());
+			yield return new DebuggerViewItem("Status", GetStatus());
 			yield return new DebuggerViewItem("Lifestyle", GetLifestyle());
 			if(HasInterceptors())
 			{
@@ -72,6 +65,7 @@ namespace Castle.Windsor.Debugging
 				yield return
 					new DebuggerViewItem("Interceptors", interceptors.ToArray());
 			}
+			yield return new DebuggerViewItem("Raw handler", handler);
 		}
 
 		private bool HasInterceptors()

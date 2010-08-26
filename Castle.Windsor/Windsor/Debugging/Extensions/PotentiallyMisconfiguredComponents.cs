@@ -20,7 +20,7 @@ namespace Castle.Windsor.Debugging.Extensions
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.SubSystems.Naming;
 
-	public class PotentiallyMisconfigurredComponents : IContainerDebuggerExtension
+	public class PotentiallyMisconfiguredComponents : IContainerDebuggerExtension
 	{
 		private INamingSubSystem naming;
 
@@ -33,7 +33,7 @@ namespace Castle.Windsor.Debugging.Extensions
 			{
 				yield break;
 			}
-			yield return new DebuggerViewItemRich("Potentially Misconfigured Components", "Count = " + naming.ComponentCount,
+			yield return new DebuggerViewItemRich("Potentially Misconfigured Components", "Count = " + waitingComponents.Length,
 			                                  new HandlersByKeyDictionaryDebuggerView(waitingComponents));
 		}
 

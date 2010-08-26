@@ -50,7 +50,7 @@ namespace Castle.Windsor.Debugging
 		protected virtual void InitStandardExtensions()
 		{
 			Add(new AllComponents());
-			Add(new PotentiallyMisconfigurredComponents());
+			Add(new PotentiallyMisconfiguredComponents());
 			Add(new Facilities());
 		}
 
