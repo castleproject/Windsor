@@ -18,6 +18,7 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 
 	using Castle.Core;
 	using Castle.Facilities.TypedFactory;
+	using Castle.MicroKernel;
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Releasers;
 	using Castle.Windsor;
@@ -56,7 +57,8 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 		{
 			container.Register(Component.For<Foo>(),
 			                   Component.For<UsesFooDelegateAndInt>());
-			var component = container.Resolve<UsesFooDelegateAndInt>(new { additionalArgument = 5 });
+
+			var component = container.Resolve<UsesFooDelegateAndInt>(new Arguments().Insert("additionalArgument", 5));
 		}
 
 		[Test]

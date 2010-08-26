@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 namespace Castle.MicroKernel.Tests
 {
 	using Castle.Core.Configuration;
@@ -154,6 +155,16 @@ namespace Castle.MicroKernel.Tests
 			Assert.IsNotNull(component.X);
 			Assert.IsNotNull(component.Y);
 			Assert.IsNull(component.A);
+		}
+
+		[Test]
+		public void Two_constructors_but_one_with_satisfiable_dependencies_issue_IoC_209()
+		{
+			kernel.Register(Component.For<SimpleComponent1>(),
+							Component.For<SimpleComponent2>(),
+							Component.For<HasTwoConstructors4>());
+			
+			kernel.Resolve<HasTwoConstructors4>();
 		}
 
 		[Test]

@@ -259,7 +259,7 @@ namespace Castle.MicroKernel.Tests
 		{
 			kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(BaseCommonComponent)).Named("abstract"));
 
-			string expectedMessage = string.Format("Type Castle.MicroKernel.Tests.ClassComponents.BaseCommonComponent is abstract.{0} As such, it is not possible to instansiate it as implementation of Castle.MicroKernel.Tests.ClassComponents.ICommon service", Environment.NewLine);
+			string expectedMessage = string.Format("Type Castle.MicroKernel.Tests.ClassComponents.BaseCommonComponent is abstract.{0} As such, it is not possible to instansiate it as implementation of service Castle.MicroKernel.Tests.ClassComponents.ICommon.", Environment.NewLine);
 			var exception =
 				Assert.Throws(typeof(ComponentRegistrationException), () =>
 				{
@@ -272,7 +272,7 @@ namespace Castle.MicroKernel.Tests
 		public void ShouldNotRegisterAbstractClass_With_Simple_Signature()
 		{
 			kernel.Register(Component.For(typeof(BaseCommonComponent)).Named("abstract"));
-			string expectedMessage = string.Format("Type Castle.MicroKernel.Tests.ClassComponents.BaseCommonComponent is abstract.{0} As such, it is not possible to instansiate it as implementation of Castle.MicroKernel.Tests.ClassComponents.BaseCommonComponent service", Environment.NewLine);
+			string expectedMessage = string.Format("Type Castle.MicroKernel.Tests.ClassComponents.BaseCommonComponent is abstract.{0} As such, it is not possible to instansiate it as implementation of service Castle.MicroKernel.Tests.ClassComponents.BaseCommonComponent.", Environment.NewLine);
 			var exception =
 				Assert.Throws(typeof(ComponentRegistrationException), () =>
 				{
@@ -285,7 +285,7 @@ namespace Castle.MicroKernel.Tests
 		public void ShouldNotRegisterAbstractClassAsComponentImplementation_With_LifestyleType_Signature()
 		{
 			kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(BaseCommonComponent)).Named("abstract").LifeStyle.Is(LifestyleType.Pooled));
-			string expectedMessage = string.Format("Type Castle.MicroKernel.Tests.ClassComponents.BaseCommonComponent is abstract.{0} As such, it is not possible to instansiate it as implementation of Castle.MicroKernel.Tests.ClassComponents.ICommon service", Environment.NewLine);
+			string expectedMessage = string.Format("Type Castle.MicroKernel.Tests.ClassComponents.BaseCommonComponent is abstract.{0} As such, it is not possible to instansiate it as implementation of service Castle.MicroKernel.Tests.ClassComponents.ICommon.", Environment.NewLine);
 			var exception =
 				Assert.Throws(typeof(ComponentRegistrationException), () =>
 				{
@@ -299,7 +299,7 @@ namespace Castle.MicroKernel.Tests
 		{
 			kernel.Register(Component.For(typeof(BaseCommonComponent)).Named("abstract").LifeStyle.Is(LifestyleType.Pooled));
 
-			string expectedMessage = string.Format("Type Castle.MicroKernel.Tests.ClassComponents.BaseCommonComponent is abstract.{0} As such, it is not possible to instansiate it as implementation of Castle.MicroKernel.Tests.ClassComponents.BaseCommonComponent service", Environment.NewLine);
+			string expectedMessage = string.Format("Type Castle.MicroKernel.Tests.ClassComponents.BaseCommonComponent is abstract.{0} As such, it is not possible to instansiate it as implementation of service Castle.MicroKernel.Tests.ClassComponents.BaseCommonComponent.", Environment.NewLine);
 			var exception =
 				Assert.Throws(typeof(ComponentRegistrationException), () =>
 				{
@@ -312,9 +312,9 @@ namespace Castle.MicroKernel.Tests
 		[Test]
 		public void ShouldNotRegisterAbstractClassAsComponentImplementation_With_LifestyleType_And_Override_Signature()
 		{
-            kernel.Register(Component.For<ICommon>().ImplementedBy<BaseCommonComponent>().Named("abstract").LifeStyle.Pooled);
+			kernel.Register(Component.For<ICommon>().ImplementedBy<BaseCommonComponent>().Named("abstract").LifeStyle.Pooled);
 
-			string expectedMessage = string.Format("Type Castle.MicroKernel.Tests.ClassComponents.BaseCommonComponent is abstract.{0} As such, it is not possible to instansiate it as implementation of Castle.MicroKernel.Tests.ClassComponents.ICommon service", Environment.NewLine);
+			string expectedMessage = string.Format("Type Castle.MicroKernel.Tests.ClassComponents.BaseCommonComponent is abstract.{0} As such, it is not possible to instansiate it as implementation of service Castle.MicroKernel.Tests.ClassComponents.ICommon.", Environment.NewLine);
 			var exception =
 				Assert.Throws(typeof(ComponentRegistrationException), () =>
 				{
@@ -326,9 +326,9 @@ namespace Castle.MicroKernel.Tests
 		[Test]
 		public void ShouldNotRegisterAbstractClass_With_LifestyleType_And_Override_Signature()
 		{
-            kernel.Register(Component.For<BaseCommonComponent>().Named("abstract").LifeStyle.Pooled);
+			kernel.Register(Component.For<BaseCommonComponent>().Named("abstract").LifeStyle.Pooled);
 
-			string expectedMessage = string.Format("Type Castle.MicroKernel.Tests.ClassComponents.BaseCommonComponent is abstract.{0} As such, it is not possible to instansiate it as implementation of Castle.MicroKernel.Tests.ClassComponents.BaseCommonComponent service", Environment.NewLine);
+			string expectedMessage = string.Format("Type Castle.MicroKernel.Tests.ClassComponents.BaseCommonComponent is abstract.{0} As such, it is not possible to instansiate it as implementation of service Castle.MicroKernel.Tests.ClassComponents.BaseCommonComponent.", Environment.NewLine);
 			var exception =
 				Assert.Throws(typeof(ComponentRegistrationException), () =>
 				{

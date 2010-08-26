@@ -96,6 +96,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ClassComponents\DisposableFoo.cs" />
+    <Compile Include="ClassComponents\HasTwoConstructors4.cs" />
     <Compile Include="ClassComponents\UsesDisposableFoo.cs" />
     <Compile Include="Configuration2\PrivateSettersTestCase.cs" />
     <Compile Include="DisposeOrderTestFixture.cs" />
