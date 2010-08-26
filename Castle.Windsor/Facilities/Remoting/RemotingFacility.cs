@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -25,43 +25,54 @@ namespace Castle.Facilities.Remoting
 	using Castle.MicroKernel.SubSystems.Conversion;
 
 	/// <summary>
-	/// Facility to allow the communication with remote kernel, using the .NET Remoting infraestructure.
+	///   Facility to allow the communication with remote kernel, using the .NET Remoting infraestructure.
 	/// </summary>
 	/// <remarks>
-	/// TODO
+	///   TODO
 	/// </remarks>
 	/// <example>
-	/// TODO
+	///   TODO
 	/// </example>
 	public class RemotingFacility : AbstractFacility
 	{
-		private ITypeConverter converter;
-
-		private bool isServer, isClient;
-		private bool disconnectLocalRegistry;
-		
 		/// <summary>
-		/// Used for client side (Expand explanation)
+		///   Used for client side (Expand explanation)
 		/// </summary>
 		private String baseUri;
 
+		private ITypeConverter converter;
+
+		private bool disconnectLocalRegistry;
+		private bool isClient;
+		private bool isServer;
+
 		/// <summary>
-		/// Used for server side. 
-		/// Holds the local registry
+		///   Used for server side. 
+		///   Holds the local registry
 		/// </summary>
 		private RemotingRegistry localRegistry;
 
 		/// <summary>
-		/// Used for client side. 
-		/// Holds a remote proxy to the server registry
+		///   Used for client side. 
+		///   Holds a remote proxy to the server registry
 		/// </summary>
 		private RemotingRegistry remoteRegistry;
 
 		/// <summary>
-		/// Constructs a RemotingFacility
+		///   Performs the tasks associated with freeing, releasing, or resetting
+		///   the facility resources.
 		/// </summary>
-		public RemotingFacility()
+		/// <remarks>
+		///   It can be overriden.
+		/// </remarks>
+		public override void Dispose()
 		{
+			if (disconnectLocalRegistry)
+			{
+				RemotingServices.Disconnect(localRegistry);
+			}
+
+			base.Dispose();
 		}
 
 		protected override void Init()
@@ -72,8 +83,8 @@ namespace Castle.Facilities.Remoting
 
 			baseUri = FacilityConfig.Attributes["baseUri"];
 
-		    var conversionManager = Kernel.GetConversionManager();
-		    if (conversionManager.PerformConversion<bool?>(FacilityConfig.Attributes["isServer"]) == true)
+			var conversionManager = Kernel.GetConversionManager();
+			if (conversionManager.PerformConversion<bool?>(FacilityConfig.Attributes["isServer"]) == true)
 			{
 				isServer = true;
 				ConfigureServerFacility();
@@ -89,29 +100,20 @@ namespace Castle.Facilities.Remoting
 				new RemotingInspector(converter, isServer, isClient, baseUri, remoteRegistry, localRegistry));
 		}
 
-		private void SetUpRemotingConfiguration()
+		private void ConfigureClientFacility()
 		{
-			String configurationFile = FacilityConfig.Attributes["remotingConfigurationFile"];
+			var remoteKernelUri = FacilityConfig.Attributes["remoteKernelUri"];
 
-			if (configurationFile == null) return;
-
-			if (!Path.IsPathRooted(configurationFile))
+			if (remoteKernelUri == null || remoteKernelUri.Length == 0)
 			{
-				configurationFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, configurationFile);
-			}
-
-			if (!File.Exists(configurationFile))
-			{
-				String message = String.Format("Remoting configuration file '{0}' does not exist", configurationFile);
+				var message = "When the remote facility is configured as " +
+				              "client you must supply the URI for the kernel using the attribute 'remoteKernelUri'";
 
 				throw new Exception(message);
 			}
 
-#if !MONO
-			RemotingConfiguration.Configure(configurationFile, false);
-#else
-			RemotingConfiguration.Configure(configurationFile);
-#endif
+			remoteRegistry = (RemotingRegistry)
+			                 RemotingServices.Connect(typeof(RemotingRegistry), remoteKernelUri);
 		}
 
 		private void ConfigureServerFacility()
@@ -120,12 +122,12 @@ namespace Castle.Facilities.Remoting
 
 			localRegistry = Kernel.Resolve<RemotingRegistry>();
 
-			String kernelUri = FacilityConfig.Attributes["registryUri"];
+			var kernelUri = FacilityConfig.Attributes["registryUri"];
 
 			if (string.IsNullOrEmpty(kernelUri))
 			{
-				String message = "When the remote facility is configured as " + 
-					"server you must supply the URI for the component registry using the attribute 'registryUri'";
+				var message = "When the remote facility is configured as " +
+				              "server you must supply the URI for the component registry using the attribute 'registryUri'";
 
 				throw new Exception(message);
 			}
@@ -135,37 +137,37 @@ namespace Castle.Facilities.Remoting
 			disconnectLocalRegistry = true;
 		}
 
-		private void ConfigureClientFacility()
+		private void ObtainConverter()
 		{
-			String remoteKernelUri = FacilityConfig.Attributes["remoteKernelUri"];
+			converter = (ITypeConverter)Kernel.GetSubSystem(SubSystemConstants.ConversionManagerKey);
+		}
 
-			if (remoteKernelUri == null || remoteKernelUri.Length == 0)
+		private void SetUpRemotingConfiguration()
+		{
+			var configurationFile = FacilityConfig.Attributes["remotingConfigurationFile"];
+
+			if (configurationFile == null)
 			{
-				String message = "When the remote facility is configured as " + 
-					"client you must supply the URI for the kernel using the attribute 'remoteKernelUri'";
+				return;
+			}
+
+			if (!Path.IsPathRooted(configurationFile))
+			{
+				configurationFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, configurationFile);
+			}
+
+			if (!File.Exists(configurationFile))
+			{
+				var message = String.Format("Remoting configuration file '{0}' does not exist", configurationFile);
 
 				throw new Exception(message);
 			}
 
-			remoteRegistry = (RemotingRegistry) 
-				RemotingServices.Connect(typeof(RemotingRegistry), remoteKernelUri);
-		}
-
-		private void ObtainConverter()
-		{
-			converter = (ITypeConverter) Kernel.GetSubSystem(SubSystemConstants.ConversionManagerKey);
-		}
-
-		/// <summary>
-		/// Performs the tasks associated with freeing, releasing, or resetting
-		/// the facility resources.
-		/// </summary>
-		/// <remarks>It can be overriden.</remarks>
-		public override void Dispose()
-		{
-			if (disconnectLocalRegistry) RemotingServices.Disconnect(localRegistry);
-
-			base.Dispose();
+#if !MONO
+			RemotingConfiguration.Configure(configurationFile, false);
+#else
+			RemotingConfiguration.Configure(configurationFile);
+#endif
 		}
 	}
 #endif
