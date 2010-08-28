@@ -14,9 +14,7 @@
 
 namespace Castle.Windsor.Tests.Bugs.IoC_169
 {
-    using System;
-
-    using Castle.Core;
+	using Castle.Core;
 	using Castle.Facilities.Startable;
 	using Castle.MicroKernel.Registration;
 	using Castle.Windsor;
@@ -77,7 +75,7 @@ namespace Castle.Windsor.Tests.Bugs.IoC_169
 
 			container.AddFacility("startable.facility", new StartableFacility());
 
-			((IWindsorContainer)container).Register(Component.For(typeof(IBlackboard)).ImplementedBy(typeof(Blackboard)).Named("blackboard"));
+			container.Register(Component.For(typeof(IBlackboard)).ImplementedBy(typeof(Blackboard)).Named("blackboard"));
 
 			BasedOnDescriptor registrations = AllTypes.
 				FromAssembly(GetType().Assembly)
