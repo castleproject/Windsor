@@ -64,7 +64,7 @@ namespace Castle.Windsor.Tests
 			Assert.IsFalse(releasePolicy.HasTrack(foo));
 		}
 
-		[Test][Ignore("This is currently not working. Review it.")]
+		[Test]
 		public void Release_doesnt_stop_tracking_component_singleton_until_container_is_disposed()
 		{
 			container.Register(Singleton<DisposableFoo>());
