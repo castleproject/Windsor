@@ -304,7 +304,7 @@ namespace Castle.MicroKernel.Resolvers
 
 				return HasComponentInValidState(value);
 			}
-			else if (dependency.TargetType == typeof(IKernel))
+			else if (dependency.TargetItemType == typeof(IKernel))
 			{
 				return true;
 			}
@@ -312,9 +312,9 @@ namespace Castle.MicroKernel.Resolvers
 			{
 				// Default behaviour
 
-				if (dependency.TargetType != null)
+				if (dependency.TargetItemType != null)
 				{
-					return HasComponentInValidState(context, dependency.TargetType);
+					return HasComponentInValidState(context, dependency.TargetItemType);
 				}
 				else
 				{
@@ -347,7 +347,7 @@ namespace Castle.MicroKernel.Resolvers
 				}
 			}
 
-			if (dependency.TargetType == typeof(IKernel))
+			if (dependency.TargetItemType == typeof(IKernel))
 			{
 				return kernel;
 			}
@@ -365,9 +365,9 @@ namespace Castle.MicroKernel.Resolvers
 				{
 					throw new DependencyResolverException(
 						string.Format(
-							"Missing dependency.{2}Component {0} has a dependency on {1}, which could not be resolved.{2}Make sure the dependency is correctly registered in the container as a service, or provided as inline argument",
+							"Missing dependency.{2}Component {0} has a dependency on {1}, which could not be resolved.{2}Make sure the dependency is correctly registered in the container as a service, or provided as inline argument.",
 							model.Name,
-							dependency.TargetType,
+							dependency.TargetItemType,
 							Environment.NewLine),
 						exception);
 				}
@@ -376,9 +376,9 @@ namespace Castle.MicroKernel.Resolvers
 				{
 					throw new DependencyResolverException(
 						string.Format(
-							"Cycle detected in configuration.{2}Component {0} has a dependency on {1}, but it doesn't provide an override.{2}You must provide an override if a component has a dependency on a service that it - itself - provides",
+							"Cycle detected in configuration.{2}Component {0} has a dependency on {1}, but it doesn't provide an override.{2}You must provide an override if a component has a dependency on a service that it - itself - provides.",
 							model.Name,
-							dependency.TargetType,
+							dependency.TargetItemType,
 							Environment.NewLine));
 				}
 			}
@@ -388,7 +388,7 @@ namespace Castle.MicroKernel.Resolvers
 				return null;
 			}
 
-			context = RebuildContextForParameter(context, dependency.TargetType);
+			context = RebuildContextForParameter(context, dependency.TargetItemType);
 
 			return handler.Resolve(context);
 		}
@@ -397,10 +397,11 @@ namespace Castle.MicroKernel.Resolvers
 		{
 			// we are doing it in two stages because it is likely to be faster to a lookup
 			// by key than a linear search
-			var handler = kernel.GetHandler(dependency.TargetType);
+			var itemType = dependency.TargetItemType;
+			var handler = kernel.GetHandler(itemType);
 			if (handler == null)
 			{
-				throw new HandlerException(string.Format("Handler for {0} was not found.", dependency.TargetType));
+				throw new HandlerException(string.Format("Handler for {0} was not found.", itemType));
 			}
 			if (handler.IsBeingResolvedInContext(context) == false)
 			{
@@ -409,7 +410,7 @@ namespace Castle.MicroKernel.Resolvers
 
 			// make a best effort to find another one that fit
 
-			IHandler[] handlers = kernel.GetHandlers(dependency.TargetType);
+			IHandler[] handlers = kernel.GetHandlers(itemType);
 
 			foreach (IHandler maybeCorrectHandler in handlers)
 			{
@@ -435,11 +436,11 @@ namespace Castle.MicroKernel.Resolvers
 				{
 					if (parameter.Value != null || parameter.ConfigValue == null)
 					{
-						return converter.PerformConversion(parameter.Value, dependency.TargetType);
+						return converter.PerformConversion(parameter.Value, dependency.TargetItemType);
 					}
 					else
 					{
-						return converter.PerformConversion(parameter.ConfigValue, dependency.TargetType);
+						return converter.PerformConversion(parameter.ConfigValue, dependency.TargetItemType);
 					}
 				}
 				finally
@@ -459,7 +460,7 @@ namespace Castle.MicroKernel.Resolvers
 
 		private ParameterModel ObtainParameterModelByType(DependencyModel dependency, ComponentModel model)
 		{
-			var type = dependency.TargetType;
+			var type = dependency.TargetItemType;
 			if (type == null)
 			{
 				// for example it's an interceptor

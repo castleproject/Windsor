@@ -117,7 +117,7 @@ namespace Castle.Core.Internal
 		/// </summary>
 		/// <param name="type"></param>
 		/// <returns></returns>
-		public static Type GetCompatibileArrayItemType(this Type type)
+		public static Type GetCompatibleArrayItemType(this Type type)
 		{
 			if (type.IsArray)
 			{

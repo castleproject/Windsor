@@ -83,6 +83,28 @@ namespace Castle.Core
 		}
 
 		/// <summary>
+		/// Gets the service type of the dependency.
+		/// This is the same type as <see cref="TargetType"/> or if <see cref="TargetType"/> is by ref,
+		/// then it's the element type of the reference. (in other words if dependency 
+		/// is <c>out IFoo foo</c> this will be <c>IFoo</c>, while <see cref="TargetType"/> will be <c>&amp;IFoo</c>);
+		/// </summary>
+		public Type TargetItemType
+		{
+			get
+			{
+				if(targetType == null)
+				{
+					return null;
+				}
+				if(targetType.IsByRef == false)
+				{
+					return targetType;
+				}
+				return targetType.GetElementType();
+			}
+		}
+
+		/// <summary>
 		/// Gets or sets whether this dependency is optional.
 		/// </summary>
 		/// <value>

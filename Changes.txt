@@ -1,6 +1,8 @@
 unreleased changes
 ==================
 
+- added support for byref construtor parameters.
+
 - fixed IOC-209 Bug in constructor selection when resolving - Windsor would pick unresolvable constructor
 
 - fixed IOC-210 Typed Factory Facility treats constructor dependency as non-optional if resolved as a TFF component

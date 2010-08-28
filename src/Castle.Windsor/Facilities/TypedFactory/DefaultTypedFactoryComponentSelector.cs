@@ -35,7 +35,7 @@ namespace Castle.Facilities.TypedFactory
 
 		protected virtual TypedFactoryComponent BuildFactoryComponent(MethodInfo method, string componentName, Type componentType, IDictionary additionalArguments)
 		{
-			var itemType = componentType.GetCompatibileArrayItemType();
+			var itemType = componentType.GetCompatibleArrayItemType();
 			if (itemType != null)
 			{
 				return new TypedFactoryComponentCollection(itemType, additionalArguments);
