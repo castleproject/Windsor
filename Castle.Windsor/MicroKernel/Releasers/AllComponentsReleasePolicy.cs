@@ -85,10 +85,8 @@ namespace Castle.MicroKernel.Releasers
 				{
 					if (instance2Burden.ContainsKey(burden.Key))
 					{
-						if (burden.Value.Release(this))
-						{
-							instance2Burden.Remove(burden.Key);
-						}
+						burden.Value.Release(this);
+						instance2Burden.Remove(burden.Key);
 					}
 				}
 			}
