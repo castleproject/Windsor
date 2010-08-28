@@ -21,8 +21,10 @@ namespace Castle.Windsor.Tests
 	using System;
 
 	using Castle.DynamicProxy;
+	using Castle.MicroKernel;
 	using Castle.MicroKernel.Registration;
 	using Castle.Windsor.Configuration.Interpreters;
+	using Castle.Windsor.Tests.ClassComponents;
 	using Castle.Windsor.Tests.Components;
 	using Castle.Core;
 	using Castle.Windsor.Tests.Interceptors;
@@ -117,6 +119,25 @@ namespace Castle.Windsor.Tests
 			Assert.AreEqual("Reviewer Repository", repos.Name);
 			Assert.IsNotNull(repos.Cache);
 			Assert.IsTrue(typeof(DictionaryCache<IReviewer>).IsInstanceOfType(repos.Cache));
+		}
+
+		[Test]
+		public void Can_resolve_type_with_by_ref_dependency_provided_inline()
+		{
+			var container = new WindsorContainer();
+			container.Register(Component.For<HasByRefCtorArgument>());
+
+			container.Resolve<HasByRefCtorArgument>(new Arguments().Insert("a", new A()));
+		}
+
+		[Test]
+		public void Can_resolve_type_with_by_ref_dependency()
+		{
+			var container = new WindsorContainer();
+			container.Register(Component.For<A>(),
+							   Component.For<HasByRefCtorArgument>());
+
+			container.Resolve<HasByRefCtorArgument>();
 		}
 
 		[Test]

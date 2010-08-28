@@ -95,6 +95,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ClassComponents\HasByRefCtorArgument.cs" />
+    <Compile Include="Components\ArrayRefDepAsConstructor.cs" />
     <Compile Include="LifecycledComponentsReleasePolicyTestCase.cs" />
     <Compile Include="ClassComponents\DisposableFoo.cs" />
     <Compile Include="ClassComponents\HasTwoConstructors4.cs" />

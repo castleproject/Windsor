@@ -77,6 +77,24 @@ namespace Castle.MicroKernel.Tests.SpecializedResolvers
 		}
 
 		[Test]
+		public void DependencyOn_ref_ArrayOfServices_OnConstructor()
+		{
+			kernel.Register(Component.For<IEmptyService>().ImplementedBy<EmptyServiceA>(),
+							Component.For<IEmptyService>().ImplementedBy<EmptyServiceB>(),
+							Component.For<ArrayRefDepAsConstructor>());
+
+			var comp = kernel.Resolve<ArrayRefDepAsConstructor>();
+
+			Assert.IsNotNull(comp);
+			Assert.IsNotNull(comp.Services);
+			Assert.AreEqual(2, comp.Services.Length);
+			foreach (var service in comp.Services)
+			{
+				Assert.IsNotNull(service);
+			}
+		}
+
+		[Test]
 		public void DependencyOnArrayWhenEmpty()
 		{
 			kernel.Resolver.AddSubResolver(new ArrayResolver(kernel, true));

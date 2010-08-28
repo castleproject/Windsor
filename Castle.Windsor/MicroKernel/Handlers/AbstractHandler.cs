@@ -295,15 +295,17 @@ namespace Castle.MicroKernel.Handlers
 		                              ComponentModel model, DependencyModel dependency)
 		{
 			if (HasCustomParameter(dependency.DependencyKey))
+			{
 				return customParameters[dependency.DependencyKey];
+			}
 
-			return customParameters[dependency.TargetType];
+			return customParameters[dependency.TargetItemType];
 		}
 
 		public virtual bool CanResolve(CreationContext context, ISubDependencyResolver contextHandlerResolver,
 		                               ComponentModel model, DependencyModel dependency)
 		{
-			return HasCustomParameter(dependency.DependencyKey) || HasCustomParameter(dependency.TargetType);
+			return HasCustomParameter(dependency.DependencyKey) || HasCustomParameter(dependency.TargetItemType);
 		}
 
 		public virtual void Dispose()
@@ -624,8 +626,8 @@ namespace Castle.MicroKernel.Handlers
 
 			return dependency.HasDefaultValue ||
 			       (dependency.DependencyType == DependencyType.Service &&
-			        dependency.TargetType != null &&
-			        DependenciesByService.ContainsKey(dependency.TargetType));
+			        dependency.TargetItemType != null &&
+			        DependenciesByService.ContainsKey(dependency.TargetItemType));
 		}
 
 		/// <summary>
@@ -642,34 +644,37 @@ namespace Castle.MicroKernel.Handlers
 		/// <param name = "dependency"></param>
 		protected void AddDependency(DependencyModel dependency)
 		{
+			var type = dependency.TargetItemType;
 			if (HasValidComponentFromResolver(dependency))
 			{
-				if (dependency.DependencyType == DependencyType.Service && dependency.TargetType != null)
+				if (dependency.DependencyType == DependencyType.Service && type != null)
 				{
-					IHandler depHandler = Kernel.GetHandler(dependency.TargetType);
-
-					if (depHandler != null)
-						AddGraphDependency(depHandler.ComponentModel);
+					var handler = Kernel.GetHandler(type);
+					if (handler != null)
+					{
+						AddGraphDependency(handler.ComponentModel);
+					}
 				}
 				else
 				{
-					IHandler depHandler = Kernel.GetHandler(dependency.DependencyKey);
-
-					if (depHandler != null)
-						AddGraphDependency(depHandler.ComponentModel);
+					var handler = Kernel.GetHandler(dependency.DependencyKey);
+					if (handler != null)
+					{
+						AddGraphDependency(handler.ComponentModel);
+					}
 				}
 
 				return;
 			}
 
-			if (dependency.DependencyType == DependencyType.Service && dependency.TargetType != null)
+			if (dependency.DependencyType == DependencyType.Service && type != null)
 			{
-				if (DependenciesByService.ContainsKey(dependency.TargetType))
+				if (DependenciesByService.ContainsKey(type))
 				{
 					return;
 				}
 
-				DependenciesByService.Add(dependency.TargetType, dependency);
+				DependenciesByService.Add(type, dependency);
 			}
 			else if (!DependenciesByKey.ContainsKey(dependency.DependencyKey))
 			{
@@ -717,7 +722,7 @@ namespace Castle.MicroKernel.Handlers
 						continue;
 
 					if (dependency.DependencyType == DependencyType.Service)
-						DependenciesByService.Remove(dependency.TargetType);
+						DependenciesByService.Remove(dependency.TargetItemType);
 					else
 						DependenciesByKey.Remove(dependency.DependencyKey);
 				}
@@ -862,7 +867,6 @@ namespace Castle.MicroKernel.Handlers
 		private DependencyModel[] Union(ICollection<DependencyModel> firstset, ICollection<DependencyModel> secondset)
 		{
 			var result = new DependencyModel[firstset.Count + secondset.Count];
-
 			firstset.CopyTo(result, 0);
 			secondset.CopyTo(result, firstset.Count);
 

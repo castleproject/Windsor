@@ -81,11 +81,13 @@ namespace Castle.MicroKernel.Tests
 		public void Missing_service_is_correctly_detected()
 		{
 			TestDelegate act = () =>
-			                   kernel.Resolve<CompB>(new Arguments().Insert("myArgument", 123));
-			var exception = Assert.Throws<HandlerException>(act);
+			
+			kernel.Resolve<CompB>(new Arguments().Insert("myArgument", 123));
+
+			var exception = Assert.Throws<DependencyResolverException>(act);
 			Assert.AreEqual(
 				string.Format(
-					"Can't create component 'compb' as it has dependencies to be satisfied. {0}compb is waiting for the following dependencies: {0}{0}Services: {0}- Castle.MicroKernel.Tests.RuntimeParameters.CompC which was not registered. {0}{0}Keys (components with specific keys){0}- myArgument which was not registered. {0}",
+					"Missing dependency.{0}Component compb has a dependency on Castle.MicroKernel.Tests.RuntimeParameters.CompC, which could not be resolved.{0}Make sure the dependency is correctly registered in the container as a service, or provided as inline argument.",
 					Environment.NewLine),
 				exception.Message);
 		}

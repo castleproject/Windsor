@@ -41,12 +41,12 @@ namespace Castle.MicroKernel.Resolvers.SpecializedResolvers
 		public bool CanResolve(CreationContext context, ISubDependencyResolver contextHandlerResolver, ComponentModel model,
 		                       DependencyModel dependency)
 		{
-			if (dependency.TargetType == null)
+			if (dependency.TargetItemType == null)
 			{
 				return false;
 			}
 
-			var itemType = dependency.TargetType.GetCompatibileArrayItemType();
+			var itemType = dependency.TargetItemType.GetCompatibleArrayItemType();
 			if (itemType == null)
 			{
 				return false;
@@ -58,7 +58,7 @@ namespace Castle.MicroKernel.Resolvers.SpecializedResolvers
 		public object Resolve(CreationContext context, ISubDependencyResolver contextHandlerResolver, ComponentModel model,
 		                      DependencyModel dependency)
 		{
-			return kernel.ResolveAll(dependency.TargetType.GetCompatibileArrayItemType(), null);
+			return kernel.ResolveAll(dependency.TargetItemType.GetCompatibleArrayItemType(), null);
 		}
 	}
 }

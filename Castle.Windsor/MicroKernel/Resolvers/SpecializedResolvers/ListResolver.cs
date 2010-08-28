@@ -72,7 +72,7 @@ namespace Castle.MicroKernel.Resolvers.SpecializedResolvers
 							  ComponentModel model,
 							  DependencyModel dependency)
 		{
-			var targetType = dependency.TargetType;
+			var targetType = dependency.TargetItemType;
 			var elementType = targetType.GetGenericArguments().Single();
 
 			var items = kernel.ResolveAll(elementType, null);
@@ -87,7 +87,7 @@ namespace Castle.MicroKernel.Resolvers.SpecializedResolvers
 							   ComponentModel model,
 							   DependencyModel dependency)
 		{
-			var targetType = dependency.TargetType;
+			var targetType = dependency.TargetItemType;
 			if (targetType == null || !targetType.IsGenericType || targetType.GetGenericTypeDefinition() != typeof(IList<>))
 			{
 				return false;

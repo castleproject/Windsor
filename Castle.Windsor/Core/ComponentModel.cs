@@ -347,7 +347,7 @@ namespace Castle.Core
 		/// <typeparam name="D">The dependency type.</typeparam>
 		public void Requires<D>() where D : class
 		{
-			Requires(p => p.Dependency.TargetType == typeof(D));
+			Requires(p => p.Dependency.TargetItemType == typeof(D));
 		}
 	}
 }
