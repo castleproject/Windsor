@@ -1,6 +1,8 @@
 unreleased changes
 ==================
 
+- implemented IOC-212 - Add ability to make IProxyGenerationHooks and IInterceptoSelectors IOnBehalfAware
+
 - added support for byref construtor parameters.
 
 - fixed IOC-209 Bug in constructor selection when resolving - Windsor would pick unresolvable constructor

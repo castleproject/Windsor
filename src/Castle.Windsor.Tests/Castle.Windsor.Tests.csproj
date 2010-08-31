@@ -97,6 +97,9 @@
   <ItemGroup>
     <Compile Include="ClassComponents\HasByRefCtorArgument.cs" />
     <Compile Include="Components\ArrayRefDepAsConstructor.cs" />
+    <Compile Include="Facilities\TypedFactory\Components\ServiceWithMultipleCtors.cs" />
+    <Compile Include="Facilities\TypedFactory\Components\ServiceFactory.cs" />
+    <Compile Include="Facilities\TypedFactory\Components\ServiceRedirect.cs" />
     <Compile Include="LifecycledComponentsReleasePolicyTestCase.cs" />
     <Compile Include="ClassComponents\DisposableFoo.cs" />
     <Compile Include="ClassComponents\HasTwoConstructors4.cs" />
@@ -138,6 +141,8 @@
     <Compile Include="FailureCleanUpTestCase.cs" />
     <Compile Include="Interceptors\ThrowInCtorInterceptor.cs" />
     <Compile Include="Lifestyle\Components\UsesComponentWithDispose.cs" />
+    <Compile Include="Proxy\OnBehalfAwareInterceptorSelector.cs" />
+    <Compile Include="Proxy\OnBehalfAwareProxyGenerationHook.cs" />
     <Compile Include="RegistrationWithAttributeTestCase.cs" />
     <Compile Include="ClassComponents\A.cs" />
     <Compile Include="ActionBasedInstaller.cs" />
