@@ -15,7 +15,10 @@
 namespace Castle.Windsor.Tests.Proxy
 {
 	using System;
+
+	using Castle.Core;
 	using Castle.DynamicProxy;
+	using Castle.MicroKernel.Proxy;
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Tests.ClassComponents;
 	using Castle.Windsor.Tests.Components;
@@ -24,6 +27,7 @@ namespace Castle.Windsor.Tests.Proxy
 	[TestFixture]
 	public class ProxyBehaviorTestCase
 	{
+
 #if !SILVERLIGHT // we do not support xml config on SL
 		[Test]
 		public void DefaultProxyBehaviorFromConfiguration()
@@ -64,6 +68,83 @@ namespace Castle.Windsor.Tests.Proxy
 			Assert.IsFalse(calcService is IDisposable, "Service proxy should not expose the IDisposable interface");
 		}
 #endif
+
+		[Test]
+		public void ProxyGenarationHook_can_be_OnBehalfAware()
+		{
+			OnBehalfAwareProxyGenerationHook.target = null;
+			var container = new WindsorContainer();
+			container.Register(Component.For<OnBehalfAwareProxyGenerationHook>().LifeStyle.Transient,
+			                   Component.For<StandardInterceptor>().LifeStyle.Transient,
+			                   Component.For<ISimpleService>()
+			                   	.ImplementedBy<SimpleService>()
+			                   	.LifeStyle.Transient
+			                   	.Interceptors<StandardInterceptor>()
+			                   	.Proxy.Hook(h => h.Service<OnBehalfAwareProxyGenerationHook>()));
+
+			var service = container.Resolve<ISimpleService>();
+
+			Assert.IsTrue(ProxyServices.IsDynamicProxy(service.GetType()));
+			Assert.IsNotNull(OnBehalfAwareProxyGenerationHook.target);
+			Assert.AreEqual(typeof(ISimpleService), OnBehalfAwareProxyGenerationHook.target.Service);
+		}
+
+		[Test]
+		public void OnBehalfAware_ProxyGenarationHook_works_on_dependencies()
+		{
+			OnBehalfAwareProxyGenerationHook.target = null;
+			var container = new WindsorContainer();
+			container.Register(Component.For<OnBehalfAwareProxyGenerationHook>().LifeStyle.Transient,
+							   Component.For<StandardInterceptor>().LifeStyle.Transient,
+							   Component.For<UsesSimpleComponent1>().LifeStyle.Transient,
+							   Component.For<SimpleComponent1>().LifeStyle.Transient
+								.Interceptors<StandardInterceptor>()
+								.Proxy.Hook(h => h.Service<OnBehalfAwareProxyGenerationHook>()));
+
+			var service = container.Resolve<UsesSimpleComponent1>();
+
+			Assert.IsTrue(ProxyServices.IsDynamicProxy(service.Dependency.GetType()));
+			Assert.IsNotNull(OnBehalfAwareProxyGenerationHook.target);
+			Assert.AreEqual(typeof(SimpleComponent1), OnBehalfAwareProxyGenerationHook.target.Service);
+		}
+
+		[Test]
+		public void InterceptorSelector_can_be_OnBehalfAware()
+		{
+			OnBehalfAwareInterceptorSelector.target = null;
+			var container = new WindsorContainer();
+			container.Register(Component.For<OnBehalfAwareInterceptorSelector>().LifeStyle.Transient,
+			                   Component.For<StandardInterceptor>().LifeStyle.Transient,
+			                   Component.For<ISimpleService>()
+			                   	.ImplementedBy<SimpleService>()
+			                   	.LifeStyle.Transient
+			                   	.Interceptors<StandardInterceptor>()
+			                   	.SelectInterceptorsWith(s => s.Service<OnBehalfAwareInterceptorSelector>()));
+
+			var service = container.Resolve<ISimpleService>();
+
+			Assert.IsTrue(ProxyServices.IsDynamicProxy(service.GetType()));
+			Assert.IsNotNull(OnBehalfAwareInterceptorSelector.target);
+			Assert.AreEqual(typeof(ISimpleService), OnBehalfAwareInterceptorSelector.target.Service);
+		}
+		[Test]
+		public void OnBehalfAware_InterceptorSelector_works_on_dependencies()
+		{
+			OnBehalfAwareInterceptorSelector.target = null;
+			var container = new WindsorContainer();
+			container.Register(Component.For<OnBehalfAwareInterceptorSelector>().LifeStyle.Transient,
+							   Component.For<StandardInterceptor>().LifeStyle.Transient,
+							   Component.For<UsesSimpleComponent1>().LifeStyle.Transient,
+							   Component.For<SimpleComponent1>().LifeStyle.Transient
+								.Interceptors<StandardInterceptor>()
+								.SelectInterceptorsWith(s => s.Service<OnBehalfAwareInterceptorSelector>()));
+
+			var service = container.Resolve<UsesSimpleComponent1>();
+
+			Assert.IsTrue(ProxyServices.IsDynamicProxy(service.Dependency.GetType()));
+			Assert.IsNotNull(OnBehalfAwareInterceptorSelector.target);
+			Assert.AreEqual(typeof(SimpleComponent1), OnBehalfAwareInterceptorSelector.target.Service);
+		}
 
 		[Test]
 		public void RequestSingleInterfaceProxyWithAttribute()

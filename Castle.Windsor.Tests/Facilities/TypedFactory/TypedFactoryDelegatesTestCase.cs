@@ -11,7 +11,6 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
 namespace Castle.Windsor.Tests.Facilities.TypedFactory
 {
 	using System;
@@ -21,6 +20,7 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Releasers;
+	using Castle.MicroKernel.Tests.ClassComponents;
 	using Castle.Windsor;
 	using Castle.Windsor.Tests.ClassComponents;
 	using Castle.Windsor.Tests.Facilities.TypedFactory.Components;
@@ -29,16 +29,11 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 
 	using NUnit.Framework;
 
+	using HasTwoConstructors = Castle.Windsor.Tests.Facilities.TypedFactory.Delegates.HasTwoConstructors;
+
 	[TestFixture]
 	public class TypedFactoryDelegatesTestCase
 	{
-		[SetUp]
-		public void SetUpTests()
-		{
-			container = new WindsorContainer();
-			container.AddFacility<TypedFactoryFacility>();
-		}
-
 		private WindsorContainer container;
 
 		[Test]
@@ -65,10 +60,10 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 		public void Can_resolve_multiple_delegates_just_fine()
 		{
 			container.Register(Component.For<Baz>());
-			container.Register(Component.For<A>());
+			container.Register(Component.For<Tests.A>());
 
 			var bazFactory = container.Resolve<Func<Baz>>();
-			var aFactory = container.Resolve<Func<A>>();
+			var aFactory = container.Resolve<Func<Tests.A>>();
 
 			bazFactory.Invoke();
 			aFactory.Invoke();
@@ -84,6 +79,49 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 			Assert.AreEqual(1, foo.Number);
 			foo = dependsOnFoo.GetFoo();
 			Assert.AreEqual(2, foo.Number);
+		}
+
+		[Test]
+		public void Delegate_based_factories_DO_NOT_implicitly_pick_registered_selector_explicitly_registered_factory()
+		{
+			DisposableSelector.InstancesCreated = 0;
+			DisposableSelector.InstancesDisposed = 0;
+			container.Register(
+				Component.For<ITypedFactoryComponentSelector>().ImplementedBy<DisposableSelector>().LifeStyle.Transient,
+				Component.For<Func<Foo>>().LifeStyle.Transient.AsFactory());
+
+			container.Resolve<Func<Foo>>();
+
+			Assert.AreEqual(0, DisposableSelector.InstancesCreated);
+		}
+
+		[Test]
+		public void Delegate_based_factories_DO_NOT_implicitly_pick_registered_selector_implicitly_registered_factory()
+		{
+			DisposableSelector.InstancesCreated = 0;
+			DisposableSelector.InstancesDisposed = 0;
+			container.Register(
+				Component.For<ITypedFactoryComponentSelector>().ImplementedBy<DisposableSelector>().LifeStyle.Transient);
+
+			container.Resolve<Func<Foo>>();
+
+			Assert.AreEqual(0, DisposableSelector.InstancesCreated);
+		}
+
+		[Test]
+		public void Delegate_based_factories_explicitly_pick_registered_selector()
+		{
+			DisposableSelector.InstancesCreated = 0;
+			SimpleSelector.InstancesCreated = 0;
+			container.Register(
+				Component.For<ITypedFactoryComponentSelector>().ImplementedBy<DisposableSelector>().Named("1").LifeStyle.Transient,
+				Component.For<ITypedFactoryComponentSelector>().ImplementedBy<SimpleSelector>().Named("2").LifeStyle.Transient,
+				Component.For<Func<Foo>>().LifeStyle.Transient.AsFactory(x => x.SelectedWith("2")));
+
+			container.Resolve<Func<Foo>>();
+
+			Assert.AreEqual(0, DisposableSelector.InstancesCreated);
+			Assert.AreEqual(1, SimpleSelector.InstancesCreated);
 		}
 
 		[Test]
@@ -117,83 +155,6 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 			Assert.AreEqual(1, foo.Number);
 			foo = dependsOnFoo.GetFoo();
 			Assert.AreEqual(1, foo.Number);
-		}
-
-		[Test]
-		public void Delegate_based_factories_explicitly_pick_registered_selector()
-		{
-			DisposableSelector.InstancesCreated = 0;
-			SimpleSelector.InstancesCreated = 0;
-			container.Register(
-				Component.For<ITypedFactoryComponentSelector>().ImplementedBy<DisposableSelector>().Named("1").LifeStyle.Transient,
-				Component.For<ITypedFactoryComponentSelector>().ImplementedBy<SimpleSelector>().Named("2").LifeStyle.Transient,
-				Component.For<Func<Foo>>().LifeStyle.Transient.AsFactory(x => x.SelectedWith("2")));
-
-			container.Resolve<Func<Foo>>();
-
-			Assert.AreEqual(0, DisposableSelector.InstancesCreated);
-			Assert.AreEqual(1, SimpleSelector.InstancesCreated);
-		}
-
-		[Test]
-		public void Selector_pick_by_name()
-		{
-			container.Register(
-				Component.For<IDummyComponent>().ImplementedBy<Component1>().Named("one").LifeStyle.Transient,
-				Component.For<IDummyComponent>().ImplementedBy<Component2>().Named("two").LifeStyle.Transient,
-				Component.For<Func<IDummyComponent>>().AsFactory(c => c.SelectedWith("factoryTwo")),
-				Component.For<ITypedFactoryComponentSelector>().ImplementedBy<Component1Selector>().Named("factoryOne"),
-				Component.For<ITypedFactoryComponentSelector>().ImplementedBy<Component2Selector>().Named("factoryTwo"));
-
-			Assert.IsTrue(container.Kernel.HasComponent(typeof(Func<IDummyComponent>)));
-			var factory = container.Resolve<Func<IDummyComponent>>();
-			var component = factory.Invoke();
-
-			Assert.IsInstanceOf<Component2>(component);
-		}
-
-		[Test]
-		public void Delegate_based_factories_DO_NOT_implicitly_pick_registered_selector_implicitly_registered_factory()
-		{
-			DisposableSelector.InstancesCreated = 0;
-			DisposableSelector.InstancesDisposed = 0;
-			container.Register(
-				Component.For<ITypedFactoryComponentSelector>().ImplementedBy<DisposableSelector>().LifeStyle.Transient);
-
-			container.Resolve<Func<Foo>>();
-
-			Assert.AreEqual(0, DisposableSelector.InstancesCreated);
-		}
-
-		[Test]
-		public void Delegate_based_factories_DO_NOT_implicitly_pick_registered_selector_explicitly_registered_factory()
-		{
-			DisposableSelector.InstancesCreated = 0;
-			DisposableSelector.InstancesDisposed = 0;
-			container.Register(
-				Component.For<ITypedFactoryComponentSelector>().ImplementedBy<DisposableSelector>().LifeStyle.Transient,
-				Component.For<Func<Foo>>().LifeStyle.Transient.AsFactory());
-
-			container.Resolve<Func<Foo>>();
-
-			Assert.AreEqual(0, DisposableSelector.InstancesCreated);
-		}
-
-		[Test]
-		public void Releasing_factory_releases_selector()
-		{
-			DisposableSelector.InstancesCreated = 0;
-			DisposableSelector.InstancesDisposed = 0;
-			container.Register(
-				Component.For<DisposableSelector>().LifeStyle.Transient,
-				Component.For<Func<Foo>>().LifeStyle.Transient.AsFactory(x => x.SelectedWith<DisposableSelector>()));
-			var factory = container.Resolve<Func<Foo>>();
-
-			Assert.AreEqual(1, DisposableSelector.InstancesCreated);
-
-			container.Release(factory);
-
-			Assert.AreEqual(1, DisposableSelector.InstancesDisposed);
 		}
 
 		[Test]
@@ -258,6 +219,62 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 			Assert.AreEqual(0, DisposableFoo.DisposedCount);
 			container.Release(dependsOnFoo);
 			Assert.AreEqual(1, DisposableFoo.DisposedCount);
+		}
+
+		[Test]
+		public void Releasing_factory_releases_selector()
+		{
+			DisposableSelector.InstancesCreated = 0;
+			DisposableSelector.InstancesDisposed = 0;
+			container.Register(
+				Component.For<DisposableSelector>().LifeStyle.Transient,
+				Component.For<Func<Foo>>().LifeStyle.Transient.AsFactory(x => x.SelectedWith<DisposableSelector>()));
+			var factory = container.Resolve<Func<Foo>>();
+
+			Assert.AreEqual(1, DisposableSelector.InstancesCreated);
+
+			container.Release(factory);
+
+			Assert.AreEqual(1, DisposableSelector.InstancesDisposed);
+		}
+
+		[Test]
+		public void
+			Resolution_ShouldNotThrow_When_TwoDelegateFactoriesAreResolvedWithOnePreviouslyLazyLoaded_WithMultipleCtors()
+		{
+			container.Register(Component.For<SimpleComponent1>(),
+			                   Component.For<SimpleComponent2>(),
+			                   Component.For<SimpleComponent3>(),
+			                   Component.For<ServiceFactory>(),
+			                   Component.For<ServiceRedirect>(),
+			                   Component.For<ServiceWithMultipleCtors>());
+
+			var factory = container.Resolve<ServiceFactory>();
+			factory.Factory();
+		}
+
+		[Test]
+		public void Selector_pick_by_name()
+		{
+			container.Register(
+				Component.For<IDummyComponent>().ImplementedBy<Component1>().Named("one").LifeStyle.Transient,
+				Component.For<IDummyComponent>().ImplementedBy<Component2>().Named("two").LifeStyle.Transient,
+				Component.For<Func<IDummyComponent>>().AsFactory(c => c.SelectedWith("factoryTwo")),
+				Component.For<ITypedFactoryComponentSelector>().ImplementedBy<Component1Selector>().Named("factoryOne"),
+				Component.For<ITypedFactoryComponentSelector>().ImplementedBy<Component2Selector>().Named("factoryTwo"));
+
+			Assert.IsTrue(container.Kernel.HasComponent(typeof(Func<IDummyComponent>)));
+			var factory = container.Resolve<Func<IDummyComponent>>();
+			var component = factory.Invoke();
+
+			Assert.IsInstanceOf<Component2>(component);
+		}
+
+		[SetUp]
+		public void SetUpTests()
+		{
+			container = new WindsorContainer();
+			container.AddFacility<TypedFactoryFacility>();
 		}
 
 		[Test]
