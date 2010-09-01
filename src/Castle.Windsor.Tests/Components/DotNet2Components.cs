@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,45 +12,32 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
-using System.Collections.Generic;
-
 namespace Castle.Windsor.Tests
 {
 	using System;
-	using System.Collections;
+	using System.Collections.Generic;
+
 	using Castle.Windsor.Tests.Components;
 
 	public interface IRepository<T>
 	{
 		T Get(int id);
-    }
+	}
 
-    //[Castle.Core.Transient] //Test passes if this attributed added
-    public class RepositoryNotMarkedAsTransient<T> : IRepository<T> where T : new()
-    {
-        public T Get(int id)
-        {
-            return new T();
-        }
-    }
-    
-    public class DemoRepository<T> : IRepository<T>
+	//[Castle.Core.Transient] //Test passes if this attributed added
+	public class RepositoryNotMarkedAsTransient<T> : IRepository<T> where T : new()
 	{
-		private string name;
-		private ICache<T> cache;
-
-		public ICache<T> Cache
+		public T Get(int id)
 		{
-			get { return cache; }
-			set { cache = value; }
+			return new T();
 		}
+	}
 
-		public string Name
-		{
-			get { return name; }
-			set { name = value; }
-		}
+	public class DemoRepository<T> : IRepository<T>
+	{
+		public ICache<T> Cache { get; set; }
+
+		public string Name { get; set; }
 
 		public T Get(int id)
 		{
@@ -60,20 +47,9 @@ namespace Castle.Windsor.Tests
 
 	public class ReviewerRepository : DemoRepository<IReviewer>
 	{
-		private string name;
-		private ICache<IReviewer> cache;
+		public new ICache<IReviewer> Cache { get; set; }
 
-		public new ICache<IReviewer> Cache
-		{
-			get { return cache; }
-			set { cache = value; }
-		}
-
-		public new string Name
-		{
-			get { return name; }
-			set { name = value; }
-		}
+		public new string Name { get; set; }
 
 		public new IReviewer Get(int id)
 		{
@@ -83,34 +59,35 @@ namespace Castle.Windsor.Tests
 
 	public interface ICache<T>
 	{
-		void Put(string key, T item);
 		T Get(string key);
+
+		void Put(string key, T item);
 	}
 
 	public class DictionaryCache<T> : ICache<T>
 	{
 		private Dictionary<string, object> hash = new Dictionary<string, object>();
 
+		public T Get(string key)
+		{
+			return (T)hash[key];
+		}
+
 		public void Put(string key, T item)
 		{
 			hash[key] = item;
-		}
-
-		public T Get(string key)
-		{
-			return (T) hash[key];
 		}
 	}
 
 	public class NullCache<T> : ICache<T>
 	{
-		public void Put(string key, T item)
-		{
-		}
-
 		public T Get(string key)
 		{
 			return default(T);
+		}
+
+		public void Put(string key, T item)
+		{
 		}
 	}
 
@@ -127,7 +104,7 @@ namespace Castle.Windsor.Tests
 			this.inner = inner;
 		}
 
-	    public T Get(int id)
+		public T Get(int id)
 		{
 			Console.WriteLine("Getting {0}", id);
 			return inner.Get(id);

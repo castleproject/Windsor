@@ -284,13 +284,24 @@ namespace Castle.MicroKernel.Registration
 		/// <summary>
 		/// Specify custom dependencies using <see cref="Property.ForKey(string)"/> or <see cref="Property.ForKey(System.Type)"/>.
 		/// <para />
-		/// Use <see cref="ServiceOverrides(ServiceOverride[])"/> to specify the components
+		/// You can pass <see cref="ServiceOverride"/>s to specify the components
 		/// this component should be resolved with.
 		/// </summary>
 		/// <param name="dependencies">The dependencies.</param>
 		/// <returns></returns>
 		public ComponentRegistration<TService> DependsOn(params Property[] dependencies)
 		{
+			if(dependencies == null || dependencies.Length == 0)
+			{
+				return this;
+			}
+
+			var serviceOverrides = dependencies.OfType<ServiceOverride>().ToArray();
+			if(serviceOverrides.Length>0)
+			{
+				AddDescriptor(new ServiceOverrideDescriptor<TService>(serviceOverrides));
+				dependencies = dependencies.Except(serviceOverrides).ToArray();
+			}
 			return AddDescriptor(new CustomDependencyDescriptor<TService>(dependencies));
 		}
 

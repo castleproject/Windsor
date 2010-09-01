@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,31 +12,31 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using NUnit.Framework;
-
 namespace Castle.Windsor.Tests.Bugs
 {
-    using Castle.MicroKernel.Registration;
+	using Castle.MicroKernel.Registration;
+	using Castle.Windsor.Tests.Components;
 
-    [TestFixture]
-    public class IoC_127
-    {
-        [Test]
-        public void AddComponentInstanceAndChildContainers()
-        {
-            IWindsorContainer parent = new WindsorContainer();
-            IWindsorContainer child = new WindsorContainer();
-            parent.AddChildContainer(child);
+	using NUnit.Framework;
 
-            IClock clock1 = new IsraelClock();
-            IClock clock2 = new WorldClock();
+	[TestFixture]
+	public class IoC_127
+	{
+		[Test]
+		public void AddComponentInstanceAndChildContainers()
+		{
+			IWindsorContainer parent = new WindsorContainer();
+			IWindsorContainer child = new WindsorContainer();
+			parent.AddChildContainer(child);
 
-            parent.Kernel.Register(Component.For(typeof(IClock)).Instance(clock2));
-            child.Kernel.Register(Component.For(typeof(IClock)).Instance(clock1));
+			IEmptyService clock1 = new EmptyServiceA();
+			IEmptyService clock2 = new EmptyServiceB();
 
-            Assert.AreSame(clock2,parent.Resolve<IClock>());
-            Assert.AreSame(clock1, child.Resolve<IClock>());
+			parent.Kernel.Register(Component.For(typeof(IEmptyService)).Instance(clock2));
+			child.Kernel.Register(Component.For(typeof(IEmptyService)).Instance(clock1));
 
-        }
-    }
+			Assert.AreSame(clock2, parent.Resolve<IEmptyService>());
+			Assert.AreSame(clock1, child.Resolve<IEmptyService>());
+		}
+	}
 }
