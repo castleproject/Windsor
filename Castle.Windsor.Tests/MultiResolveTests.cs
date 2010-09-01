@@ -14,12 +14,8 @@
 
 namespace Castle.Windsor.Tests
 {
-	using System;
-
-	using Castle.MicroKernel;
 	using Castle.MicroKernel.Registration;
-	using Castle.Windsor.Debugging;
-	using Castle.Windsor.Debugging.Extensions;
+	using Castle.Windsor.Tests.Components;
 
 	using NUnit.Framework;
 
@@ -29,9 +25,10 @@ namespace Castle.Windsor.Tests
 		[Test]
 		public void CanResolveMoreThanSingleComponentForService()
 		{
-			IWindsorContainer container = ((IWindsorContainer)new WindsorContainer()).Register(Component.For(typeof(IClock)).ImplementedBy(typeof(IsraelClock))).Register(Component.For(typeof(IClock)).ImplementedBy(typeof(WorldClock)));
-
-			IClock[] clocks = container.ResolveAll<IClock>();
+			IWindsorContainer container = new WindsorContainer()
+				.Register(Component.For<IEmptyService>().ImplementedBy<EmptyServiceA>(),
+				          Component.For<IEmptyService>().ImplementedBy<EmptyServiceB>());
+			IEmptyService[] clocks = container.ResolveAll<IEmptyService>();
 
 			Assert.AreEqual(2, clocks.Length);
 		}
@@ -39,44 +36,39 @@ namespace Castle.Windsor.Tests
 		[Test]
 		public void MultiResolveWillResolveInRegistrationOrder()
 		{
-			IWindsorContainer container = ((IWindsorContainer)new WindsorContainer()).Register(Component.For(typeof(IClock)).ImplementedBy(typeof(IsraelClock))).Register(Component.For(typeof(IClock)).ImplementedBy(typeof(WorldClock)));
+			IWindsorContainer container = new WindsorContainer()
+				.Register(Component.For<IEmptyService>().ImplementedBy<EmptyServiceA>(),
+						  Component.For<IEmptyService>().ImplementedBy<EmptyServiceB>());
 
-			IClock[] clocks = container.ResolveAll<IClock>();
+			IEmptyService[] clocks = container.ResolveAll<IEmptyService>();
 
-			Assert.AreEqual(typeof(IsraelClock), clocks[0].GetType());
-			Assert.AreEqual(typeof(WorldClock), clocks[1].GetType());
+			Assert.AreEqual(typeof(EmptyServiceA), clocks[0].GetType());
+			Assert.AreEqual(typeof(EmptyServiceB), clocks[1].GetType());
 
 			//reversing order
-		    container = ((IWindsorContainer)new WindsorContainer()).Register(Component.For(typeof(IClock)).ImplementedBy(typeof(WorldClock))).Register(Component.For(typeof(IClock)).ImplementedBy(typeof(IsraelClock)));
 
-		    clocks = container.ResolveAll<IClock>();
+			container = new WindsorContainer()
+				.Register(Component.For<IEmptyService>().ImplementedBy<EmptyServiceB>(),
+						  Component.For<IEmptyService>().ImplementedBy<EmptyServiceA>());
 
-			Assert.AreEqual(typeof(WorldClock), clocks[0].GetType());
-			Assert.AreEqual(typeof(IsraelClock), clocks[1].GetType());
+			clocks = container.ResolveAll<IEmptyService>();
+
+			Assert.AreEqual(typeof(EmptyServiceB), clocks[0].GetType());
+			Assert.AreEqual(typeof(EmptyServiceA), clocks[1].GetType());
 		}
 
 		[Test]
 		public void CanUseMutliResolveWithGenericSpecialization()
 		{
-            IWindsorContainer container = new WindsorContainer()
-				.Register(Component.For(typeof(IRepository<>)).ImplementedBy(typeof(DemoRepository<>)).Named("demo"),
-				          Component.For(typeof(IRepository<>)).ImplementedBy(typeof(TransientRepository<>)).Named("trans"));
+			IWindsorContainer container = new WindsorContainer()
+				.Register(Component.For(typeof(IRepository<>)).ImplementedBy(typeof(DemoRepository<>)),
+				          Component.For(typeof(IRepository<>)).ImplementedBy(typeof(TransientRepository<>)));
 
-			var resolve = container.Resolve<IRepository<IClock>>();
+			var resolve = container.Resolve<IRepository<IEmptyService>>();
 			Assert.IsNotNull(resolve);
-
-			IRepository<IsraelClock>[] repositories = container.ResolveAll<IRepository<IsraelClock>>();
+			
+			IRepository<EmptyServiceA>[] repositories = container.ResolveAll<IRepository<EmptyServiceA>>();
 			Assert.AreEqual(2, repositories.Length);
-		}
-	}
-
-	public interface IClock{}
-	public class IsraelClock : IClock{}
-	public class WorldClock : IClock{}
-	public class DependantClock : IClock
-	{
-		public DependantClock(IDisposable disposable)
-		{
 		}
 	}
 }

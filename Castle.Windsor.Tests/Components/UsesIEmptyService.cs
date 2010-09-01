@@ -16,8 +16,11 @@ namespace Castle.Windsor.Tests.Components
 {
 	public class UsesIEmptyService
 	{
+		public IEmptyService EmptyService { get; private set; }
+
 		public UsesIEmptyService(IEmptyService emptyService)
 		{
+			EmptyService = emptyService;
 		}
 	}
 }
