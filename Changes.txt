@@ -1,5 +1,6 @@
 unreleased changes
 ==================
+- implemented IOC-215 - Hide obsolete members from IntelliSense
 
 - implemented IOC-212 - Add ability to make IProxyGenerationHooks and IInterceptoSelectors IOnBehalfAware
 

@@ -17,6 +17,7 @@ namespace Castle.MicroKernel
 	using System;
 	using System.Collections;
 	using System.Collections.Generic;
+	using System.ComponentModel;
 
 	using Castle.Core;
 	using Castle.MicroKernel.Handlers;
@@ -28,12 +29,14 @@ namespace Castle.MicroKernel
 #endif
 	{
 		[Obsolete("Use Resolve(key, new Arguments()) instead")]
+		[EditorBrowsable(EditorBrowsableState.Advanced)]
 		public virtual object this[String key]
 		{
 			get { return Resolve(key, new Arguments()); }
 		}
 
 		[Obsolete("Use Resolve(service) instead")]
+		[EditorBrowsable(EditorBrowsableState.Advanced)]
 		public virtual object this[Type service]
 		{
 			get { return Resolve(service); }
