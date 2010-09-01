@@ -15,6 +15,7 @@
 namespace Castle.Facilities.TypedFactory
 {
 	using System;
+	using System.ComponentModel;
 
 	using Castle.Core;
 	using Castle.Core.Configuration;
@@ -22,9 +23,10 @@ namespace Castle.Facilities.TypedFactory
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Facilities;
 	using Castle.MicroKernel.Proxy;
-	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.SubSystems.Conversion;
 	using Castle.MicroKernel.Util;
+
+	using Component = Castle.MicroKernel.Registration.Component;
 
 	/// <summary>
 	/// Summary description for TypedFactoryFacility.
@@ -36,6 +38,7 @@ namespace Castle.Facilities.TypedFactory
 		public static readonly string DelegateProxyFactoryKey = "Castle.TypedFactory.DelegateProxyFactory";
 
 		[Obsolete("This method is obsolete. Use AsFactory() extension method on fluent registration API instead.")]
+		[EditorBrowsable(EditorBrowsableState.Advanced)]
 		public void AddTypedFactoryEntry(FactoryEntry entry)
 		{
 			var model = new ComponentModel(entry.Id, entry.FactoryInterface, typeof(Empty)) { LifestyleType = LifestyleType.Singleton };

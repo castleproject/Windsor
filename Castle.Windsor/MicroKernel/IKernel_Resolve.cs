@@ -16,6 +16,8 @@ namespace Castle.MicroKernel
 {
 	using System;
 	using System.Collections;
+	using System.ComponentModel;
+
 	using Castle.Core;
 
 	public partial interface IKernel : IServiceProviderEx, IKernelEvents, IDisposable
@@ -24,12 +26,14 @@ namespace Castle.MicroKernel
 		/// Returns the component instance by the key
 		/// </summary>
 		[Obsolete("Use Resolve(key, new Arguments()) instead")]
+		[EditorBrowsable(EditorBrowsableState.Advanced)]
 		object this[String key] { get; }
 
 		/// <summary>
 		/// Returns the component instance by the service type
 		/// </summary>
 		[Obsolete("Use Resolve(service) or generic strongly typed version instead")]
+		[EditorBrowsable(EditorBrowsableState.Advanced)]
 		object this[Type service] { get; }
 
 		/// <summary>
