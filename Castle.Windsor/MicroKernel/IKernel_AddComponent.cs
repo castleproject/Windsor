@@ -47,7 +47,7 @@ namespace Castle.MicroKernel
 		/// <exception cref="ArgumentException">
 		/// Thrown if <paramref name="lifestyle"/> is <see cref="LifestyleType.Undefined"/>.
 		/// </exception>
-		[Obsolete("Use Register(Component.For(classType).Named(key)).Lifestyle.Is(lifestyle) instead.")]
+		[Obsolete("Use Register(Component.For(classType).Named(key)).Lifestyle.Is(lifestyle)) instead.")]
 		void AddComponent(String key, Type classType, LifestyleType lifestyle);
 
 		/// <summary>
@@ -72,7 +72,7 @@ namespace Castle.MicroKernel
 		/// </exception>
 		/// <exception cref="ArgumentException" />
 		/// Thrown if <paramref name="lifestyle"/> is <see cref="LifestyleType.Undefined"/>.
-		[Obsolete("Use Register(Component.For(classType).Named(key)).Lifestyle.Is(lifestyle) instead.")]
+		[Obsolete("Use Register(Component.For(classType).Named(key)).Lifestyle.Is(lifestyle)) instead.")]
 		void AddComponent(String key, Type classType, LifestyleType lifestyle, bool overwriteLifestyle);
 
 		/// <summary>
@@ -105,7 +105,7 @@ namespace Castle.MicroKernel
 		/// <exception cref="ArgumentException">
 		/// Thrown if <paramref name="lifestyle"/> is <see cref="LifestyleType.Undefined"/>.
 		/// </exception>
-		[Obsolete("Use Register(Component.For(serviceType).ImplementedBy(classType).Named(key)).Lifestyle.Is(lifestyle) instead.")]
+		[Obsolete("Use Register(Component.For(serviceType).ImplementedBy(classType).Named(key)).Lifestyle.Is(lifestyle)) instead.")]
 		void AddComponent(String key, Type serviceType, Type classType, LifestyleType lifestyle);
 
 		/// <summary>
@@ -132,7 +132,7 @@ namespace Castle.MicroKernel
 		/// <exception cref="ArgumentException">
 		/// Thrown if <paramref name="lifestyle"/> is <see cref="LifestyleType.Undefined"/>.
 		/// </exception>
-		[Obsolete("Use Register(Component.For(serviceType).ImplementedBy(classType).Named(key)).Lifestyle.Is(lifestyle) instead.")]
+		[Obsolete("Use Register(Component.For(serviceType).ImplementedBy(classType).Named(key)).Lifestyle.Is(lifestyle)) instead.")]
 		void AddComponent(string key, Type serviceType, Type classType, LifestyleType lifestyle, bool overwriteLifestyle);
 
 		/// <summary>

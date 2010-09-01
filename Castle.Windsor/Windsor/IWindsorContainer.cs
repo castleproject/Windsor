@@ -118,7 +118,7 @@ namespace Castle.Windsor
 		/// <param name="key">The key by which the component gets indexed.</param>
 		/// <param name="classType">The <see cref="Type"/> to manage.</param>
 		/// <param name="lifestyle">The <see cref="LifestyleType"/> with which to manage the component.</param>
-		[Obsolete("Use Register(Component.For(classType).Named(key)).Lifestyle.Is(lifestyle) instead.")]
+		[Obsolete("Use Register(Component.For(classType).Named(key)).Lifestyle.Is(lifestyle)) instead.")]
 		IWindsorContainer AddComponentLifeStyle(String key, Type classType, LifestyleType lifestyle);
 
 		/// <summary>
@@ -128,7 +128,7 @@ namespace Castle.Windsor
 		/// <param name="serviceType">The service <see cref="Type"/> that the component implements.</param>
 		/// <param name="classType">The <see cref="Type"/> to manage.</param>
 		/// <param name="lifestyle">The <see cref="LifestyleType"/> with which to manage the component.</param>
-		[Obsolete("Use Register(Component.For(serviceType).ImplementedBy(classType).Named(key)).Lifestyle.Is(lifestyle) instead.")]
+		[Obsolete("Use Register(Component.For(serviceType).ImplementedBy(classType).Named(key)).Lifestyle.Is(lifestyle)) instead.")]
 		IWindsorContainer AddComponentLifeStyle(String key, Type serviceType, Type classType, LifestyleType lifestyle);
 
 		/// <summary>
