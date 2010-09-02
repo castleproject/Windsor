@@ -4630,7 +4630,7 @@
             	<paramref name="key"/> is null. </exception>
             <exception cref="T:System.NotSupportedException">The <see cref="T:System.Collections.IDictionary"/> object is read-only.-or- The <see cref="T:System.Collections.IDictionary"/> has a fixed size. </exception>
         </member>
-        <member name="M:Castle.Core.ReflectionBasedDictionaryAdapter.System#Collections#ICollection#CopyTo(System.Array,System.Int32)">
+        <member name="M:Castle.Core.ReflectionBasedDictionaryAdapter.CopyTo(System.Array,System.Int32)">
             <summary>
             Copies the elements of the <see cref="T:System.Collections.ICollection"/> to an <see cref="T:System.Array"/>, starting at a particular <see cref="T:System.Array"/> index.
             </summary>
@@ -4679,7 +4679,7 @@
             <value></value>
             <returns>true if the <see cref="T:System.Collections.IDictionary"/> object is read-only; otherwise, false.</returns>
         </member>
-        <member name="P:Castle.Core.ReflectionBasedDictionaryAdapter.System#Collections#IDictionary#IsFixedSize">
+        <member name="P:Castle.Core.ReflectionBasedDictionaryAdapter.IsFixedSize">
             <summary>
             Gets a value indicating whether the <see cref="T:System.Collections.IDictionary"/> object has a fixed size.
             </summary>
