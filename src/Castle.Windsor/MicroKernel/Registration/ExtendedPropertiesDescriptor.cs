@@ -14,7 +14,6 @@
 
 namespace Castle.MicroKernel.Registration
 {
-	using System;
 	using System.Collections;
 	using Castle.Core;
 
@@ -29,12 +28,12 @@ namespace Castle.MicroKernel.Registration
 			: base(dictionary)
 		{
 		}
-#if !SILVERLIGHT
+
 		public ExtendedPropertiesDescriptor(object overridesAsAnonymousType)
 			: base(new ReflectionBasedDictionaryAdapter(overridesAsAnonymousType))
 		{
 		}
-#endif
+
 		protected override void ApplyProperty(IKernel kernel, ComponentModel model, object key, object value, Property property)
 		{
 			model.ExtendedProperties[key] = value;

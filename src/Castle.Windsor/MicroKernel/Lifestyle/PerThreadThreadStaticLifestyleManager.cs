@@ -15,6 +15,7 @@
 
 namespace Castle.MicroKernel.Lifestyle
 {
+#if (SILVERLIGHT)
 	using System;
 	using System.Collections.Generic;
 
@@ -23,14 +24,8 @@ namespace Castle.MicroKernel.Lifestyle
 	/// <summary>
 	/// per thread LifestyleManager implementation compatibile with Silverlight.
 	/// </summary>
-#if (!SILVERLIGHT)
-	[Serializable]
-#endif
 	public class PerThreadThreadStaticLifestyleManager : AbstractLifestyleManager
 	{
-#if (!SILVERLIGHT)
-		[NonSerialized]
-#endif
 		[ThreadStatic]
 		private static Dictionary<IComponentActivator, object> map;
 
@@ -78,4 +73,5 @@ namespace Castle.MicroKernel.Lifestyle
 		}
 
 	}
+#endif
 }

@@ -117,27 +117,23 @@ namespace Castle.Core.Internal
 		/// </summary>
 		/// <param name="type"></param>
 		/// <returns></returns>
-		public static Type GetCompatibileArrayItemType(this Type type)
+		public static Type GetCompatibleArrayItemType(this Type type)
 		{
 			if (type.IsArray)
 			{
 				return type.GetElementType();
 			}
-			if (!type.IsGenericType)
+			if (type.IsGenericType == false || type.IsGenericTypeDefinition)
 			{
 				return null;
 			}
-			var enumerable = GetEnumerableType(type);
-			if (enumerable != null)
+			var openGeneric = type.GetGenericTypeDefinition();
+			if (openGeneric == typeof(IList<>) ||
+				openGeneric == typeof(ICollection<>) ||
+				openGeneric == typeof(IEnumerable<>))
 			{
-				var itemType = enumerable.GetGenericArguments().Single();
-				var array = itemType.MakeArrayType();
-				if (type.IsAssignableFrom(array))
-				{
-					return itemType;
-				}
+				return type.GetGenericArguments().Single();
 			}
-
 			return null;
 		}
 
@@ -223,13 +219,6 @@ namespace Castle.Core.Internal
 				assemblyName = new AssemblyName { CodeBase = filePath };
 			}
 			return assemblyName;
-		}
-
-		private static Type GetEnumerableType(Type type)
-		{
-			return type.GetAllInterfaces()
-				.Where(@interface => @interface.IsGenericType)
-				.SingleOrDefault(@interface => @interface.GetGenericTypeDefinition() == typeof(IEnumerable<>));
 		}
 
 		private static TBase Instantiate<TBase>(Type subtypeofTBase, object[] ctorArgs)

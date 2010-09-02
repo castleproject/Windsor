@@ -105,5 +105,46 @@ namespace Castle.MicroKernel.Registration
 		{
 			return new Property(key, value);
 		}
+
+		/// <summary>
+		/// Builds a service override using other component registered with given <paramref name="componentName"/> as value for dependency with given <see cref="Key"/>.
+		/// </summary>
+		/// <param name="componentName"></param>
+		/// <returns></returns>
+		public ServiceOverride Is(string componentName)
+		{
+			return GetServiceOverrideKey().Eq(componentName);
+		}
+
+		/// <summary>
+		/// Builds a service override using other component registered with given <paramref name="componentImplementation"/> and no explicit name, as value for dependency with given <see cref="Key"/>.
+		/// </summary>
+		/// <returns></returns>
+		public ServiceOverride Is(Type componentImplementation)
+		{
+			if (componentImplementation == null)
+			{
+				throw new ArgumentNullException("componentImplementation");
+			}
+			return GetServiceOverrideKey().Eq(componentImplementation.FullName);
+		}
+
+		/// <summary>
+		/// Builds a service override using other component registered with given <typeparam name="TComponentImplementation"/> and no explicit name, as value for dependency with given <see cref="Key"/>.
+		/// </summary>
+		/// <returns></returns>
+		public ServiceOverride Is<TComponentImplementation>()
+		{
+			return Is(typeof(TComponentImplementation));
+		}
+		private ServiceOverrideKey GetServiceOverrideKey()
+		{
+
+			if (key is Type)
+			{
+				return ServiceOverride.ForKey((Type)key);
+			}
+			return ServiceOverride.ForKey((string)key);
+		}
 	}
 }

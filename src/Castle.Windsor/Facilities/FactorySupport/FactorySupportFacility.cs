@@ -15,11 +15,14 @@
 namespace Castle.Facilities.FactorySupport
 {
 	using System;
+	using System.ComponentModel;
+
 	using Castle.Core;
 	using Castle.Core.Configuration;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Facilities;
-	using Castle.MicroKernel.Registration;
+
+	using Component = Castle.MicroKernel.Registration.Component;
 
 	public class FactorySupportFacility : AbstractFacility
 	{
@@ -67,6 +70,7 @@ namespace Castle.Facilities.FactorySupport
 		#region Programmatic configuration support
 
 		[Obsolete("Use 'UsingFactoryMethod' method in fluent registration API")]
+		[EditorBrowsable(EditorBrowsableState.Advanced)]
 		public void AddAccessor<TService, TFactory>(
 			string serviceKey, string instanceAccessorMethod)
 		{
@@ -75,6 +79,7 @@ namespace Castle.Facilities.FactorySupport
 		}
 
 		[Obsolete("Use 'UsingFactoryMethod' method in fluent registration API")]
+		[EditorBrowsable(EditorBrowsableState.Advanced)]
 		public void AddAccessor<TService, TFactory>(
 			string serviceKey, string instanceAccessorMethod, string factoryId)
 		{
@@ -85,6 +90,7 @@ namespace Castle.Facilities.FactorySupport
 		}
 
 		[Obsolete("Use 'UsingFactoryMethod' method in fluent registration API")]
+		[EditorBrowsable(EditorBrowsableState.Advanced)]
 		public void AddFactory<TService, TFactory>(
 			string serviceKey, string factoryCreateMethodName)
 		{
@@ -93,6 +99,7 @@ namespace Castle.Facilities.FactorySupport
 		}
 
 		[Obsolete("Use 'UsingFactoryMethod' method in fluent registration API")]
+		[EditorBrowsable(EditorBrowsableState.Advanced)]
 		public void AddFactory<TService, TFactory>(
 			string serviceKey, string factoryCreateMethodName, string factoryId)
 		{

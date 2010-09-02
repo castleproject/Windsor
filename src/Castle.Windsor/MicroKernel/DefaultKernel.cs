@@ -326,7 +326,6 @@ namespace Castle.MicroKernel
 			}
 		}
 
-#if !SILVERLIGHT
 		/// <summary>
 		/// Associates objects with a component handler,
 		/// allowing it to use the specified dictionary
@@ -338,7 +337,6 @@ namespace Castle.MicroKernel
 		{
 			RegisterCustomDependencies(service, new ReflectionBasedDictionaryAdapter(dependenciesAsAnonymousType));
 		}
-#endif
 
 		/// <summary>
 		/// Associates objects with a component handler,
@@ -357,7 +355,6 @@ namespace Castle.MicroKernel
 			}
 		}
 
-#if !SILVERLIGHT
 		/// <summary>
 		/// Associates objects with a component handler,
 		/// allowing it to use the specified dictionary
@@ -369,7 +366,6 @@ namespace Castle.MicroKernel
 		{
 			RegisterCustomDependencies(key, new ReflectionBasedDictionaryAdapter(dependenciesAsAnonymousType));
 		}
-#endif
 
 		/// <summary>
 		/// Releases a component instance. This allows

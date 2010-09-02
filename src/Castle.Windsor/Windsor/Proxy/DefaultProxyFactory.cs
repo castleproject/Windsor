@@ -11,12 +11,14 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 namespace Castle.Windsor.Proxy
 {
 	using System;
 	using System.Runtime.Serialization;
 
 	using Castle.Core;
+	using Castle.Core.Interceptor;
 	using Castle.DynamicProxy;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Context;
@@ -61,7 +63,7 @@ namespace Castle.Windsor.Proxy
 		{
 			var interceptors = ObtainInterceptors(kernel, model, context);
 			var proxyOptions = ProxyUtil.ObtainProxyOptions(model, true);
-			var proxyGenOptions = CreateProxyGenerationOptionsFrom(proxyOptions, kernel, context);
+			var proxyGenOptions = CreateProxyGenerationOptionsFrom(proxyOptions, kernel, context, model);
 
 			CustomizeOptions(proxyGenOptions, kernel, model, constructorArguments);
 			var builder = generator.ProxyBuilder;
@@ -98,7 +100,7 @@ namespace Castle.Windsor.Proxy
 			var interceptors = ObtainInterceptors(kernel, model, context);
 
 			var proxyOptions = ProxyUtil.ObtainProxyOptions(model, true);
-			var proxyGenOptions = CreateProxyGenerationOptionsFrom(proxyOptions, kernel, context);
+			var proxyGenOptions = CreateProxyGenerationOptionsFrom(proxyOptions, kernel, context, model);
 
 			CustomizeOptions(proxyGenOptions, kernel, model, constructorArguments);
 
@@ -138,19 +140,26 @@ namespace Castle.Windsor.Proxy
 			return proxy;
 		}
 
-		protected static ProxyGenerationOptions CreateProxyGenerationOptionsFrom(ProxyOptions proxyOptions, IKernel kernel,
-		                                                                         CreationContext context)
+		protected static ProxyGenerationOptions CreateProxyGenerationOptionsFrom(ProxyOptions proxyOptions, IKernel kernel, CreationContext context, ComponentModel model)
 		{
 			var proxyGenOptions = new ProxyGenerationOptions();
 			if (proxyOptions.Hook != null)
 			{
 				var hook = proxyOptions.Hook.Resolve(kernel, context);
+				if(hook != null && hook is IOnBehalfAware)
+				{
+					((IOnBehalfAware)hook).SetInterceptedComponentModel(model);
+				}
 				proxyGenOptions.Hook = hook;
 			}
 
 			if (proxyOptions.Selector != null)
 			{
 				var selector = proxyOptions.Selector.Resolve(kernel, context);
+				if (selector != null && selector is IOnBehalfAware)
+				{
+					((IOnBehalfAware)selector).SetInterceptedComponentModel(model);
+				}
 				proxyGenOptions.Selector = selector;
 			}
 #if (!SILVERLIGHT)

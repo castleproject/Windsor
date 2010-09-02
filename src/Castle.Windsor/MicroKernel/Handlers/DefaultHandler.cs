@@ -16,7 +16,6 @@ namespace Castle.MicroKernel.Handlers
 {
 	using System;
 	using System.Collections.Generic;
-	using System.Diagnostics;
 	using System.Linq;
 
 	using Castle.Core;
@@ -25,7 +24,6 @@ namespace Castle.MicroKernel.Handlers
 	/// <summary>
 	/// Summary description for DefaultHandler.
 	/// </summary>
-	[DebuggerTypeProxy(typeof(Windsor.Debugging.HandlerDebuggerProxy))]
 #if !SILVERLIGHT
 	[Serializable]
 #endif
@@ -49,7 +47,7 @@ namespace Castle.MicroKernel.Handlers
 		/// <returns></returns>
 		protected override object ResolveCore(CreationContext context, bool requiresDecommission, bool instanceRequired)
 		{
-			if (ResolveImpossible(context))
+			if (CanResolvePendingDependencies(context) == false)
 			{
 				if (instanceRequired == false)
 				{
@@ -74,45 +72,39 @@ namespace Castle.MicroKernel.Handlers
 			return track || ComponentModel.Lifecycle.HasDecommissionConcerns;
 		}
 
-		private bool ResolveImpossible(CreationContext context)
-		{
-			if (context.HasAdditionalParameters)
-			{
-				return false; // we assume we can
-			}
-
-			if (CurrentState == HandlerState.Valid || CanResolvePendingDependencies(context))
-			{
-				return false;
-			}
-
-			return true;
-		}
-
 		private bool CanResolvePendingDependencies(CreationContext context)
 		{
+			if (CurrentState == HandlerState.Valid)
+			{
+				return true;
+			}
 			// detect circular dependencies
 			if (IsBeingResolvedInContext(context))
-				return false;
-
+			{
+				return context.HasAdditionalParameters;
+			}
+			var canResolveAll = true;
 			foreach (var dependency in DependenciesByService.Values.ToArray())
 			{
+				
 				// a self-dependency is not allowed
-				var handler = Kernel.GetHandler(dependency.TargetType);
+				var handler = Kernel.GetHandler(dependency.TargetItemType);
 				if (handler == this)
 				{
-					return false;
+					canResolveAll = false;
+					continue;
 				}
 				if(handler == null)
 				{
 					// ask the kernel
-					if (Kernel.LazyLoadComponentByType(dependency.DependencyKey, dependency.TargetType, context.AdditionalParameters) == false)
+					if (Kernel.LazyLoadComponentByType(dependency.DependencyKey, dependency.TargetItemType, context.AdditionalParameters) == false)
 					{
-						return false;
+						canResolveAll = false;
+						continue;
 					}
 				}
 			}
-			return DependenciesByKey.Count == 0;
+			return (canResolveAll && DependenciesByKey.Count == 0) || context.HasAdditionalParameters;
 		}
 
 		/// <summary>

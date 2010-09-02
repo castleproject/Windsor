@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Threading;
-
 namespace Castle.MicroKernel.SubSystems.Conversion
 {
 	using System;
+	using System.Threading;
+
 	using Castle.Core.Configuration;
 
 	/// <summary>
@@ -27,11 +27,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 #endif
 	public class PrimitiveConverter : AbstractTypeConverter
 	{
-		private Type[] types;
-
-		public PrimitiveConverter()
-		{
-			types = new Type[]
+		private readonly Type[] types = new[]
 				{
 					typeof(Char),
 					typeof(DateTime),
@@ -49,7 +45,6 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 					typeof(Double),
 					typeof(String)
 				};
-		}
 
 		public override bool CanHandleType(Type type)
 		{

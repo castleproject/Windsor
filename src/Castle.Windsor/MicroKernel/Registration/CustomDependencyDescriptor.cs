@@ -29,12 +29,12 @@ namespace Castle.MicroKernel.Registration
 		{
 		}
 
-#if !SILVERLIGHT
+
 		public CustomDependencyDescriptor(object overridesAsAnonymousType)
 			: base(new ReflectionBasedDictionaryAdapter(overridesAsAnonymousType))
 		{
 		}
-#endif
+
 
 		protected override void ApplyProperty(IKernel kernel, ComponentModel model, object key, object value, Property property)
 		{

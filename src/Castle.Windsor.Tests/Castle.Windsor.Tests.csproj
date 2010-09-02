@@ -95,7 +95,15 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ClassComponents\HasByRefCtorArgument.cs" />
+    <Compile Include="Components\ArrayRefDepAsConstructor.cs" />
+    <Compile Include="Facilities\TypedFactory\Components\ServiceWithMultipleCtors.cs" />
+    <Compile Include="Facilities\TypedFactory\Components\ServiceFactory.cs" />
+    <Compile Include="Facilities\TypedFactory\Components\ServiceRedirect.cs" />
+    <Compile Include="InternalsVisibleTo.cs" />
+    <Compile Include="LifecycledComponentsReleasePolicyTestCase.cs" />
     <Compile Include="ClassComponents\DisposableFoo.cs" />
+    <Compile Include="ClassComponents\HasTwoConstructors4.cs" />
     <Compile Include="ClassComponents\UsesDisposableFoo.cs" />
     <Compile Include="Configuration2\PrivateSettersTestCase.cs" />
     <Compile Include="DisposeOrderTestFixture.cs" />
@@ -129,9 +137,13 @@
     <Compile Include="Components\ThrowsInCtorWithDisposableDependency.cs" />
     <Compile Include="Components\TwoCtorsWithDefaultValue.cs" />
     <Compile Include="DefaultValueTestCase.cs" />
+    <Compile Include="Facilities\TypedFactory\Delegates\UsesFooDelegateAndInt.cs" />
+    <Compile Include="Facilities\TypedFactory\TypedFactoryAndSubContainersTestCase.cs" />
     <Compile Include="FailureCleanUpTestCase.cs" />
     <Compile Include="Interceptors\ThrowInCtorInterceptor.cs" />
     <Compile Include="Lifestyle\Components\UsesComponentWithDispose.cs" />
+    <Compile Include="Proxy\OnBehalfAwareInterceptorSelector.cs" />
+    <Compile Include="Proxy\OnBehalfAwareProxyGenerationHook.cs" />
     <Compile Include="RegistrationWithAttributeTestCase.cs" />
     <Compile Include="ClassComponents\A.cs" />
     <Compile Include="ActionBasedInstaller.cs" />
@@ -182,6 +194,7 @@
     <Compile Include="ClassComponents\CycleB.cs" />
     <Compile Include="Facilities\EventWiring\FluentRegistrationTestCase.cs" />
     <Compile Include="Facilities\EventWiring\Model\ListenerWithOnEventMethod.cs" />
+    <Compile Include="Facilities\Startable\Components\StartableWithError.cs" />
     <Compile Include="Facilities\Startable\OptimizedForSingleInstallTestCase.cs" />
     <Compile Include="Facilities\Startable\Components\Startable.cs" />
     <Compile Include="Facilities\TypedFactory\Delegates\Bar.cs" />
@@ -236,8 +249,9 @@
     <Compile Include="Proxy\ComponentProxyRegistrationTestCase.cs" />
     <Compile Include="Proxy\DisposableHook.cs" />
     <Compile Include="Registration\ComponentRegistrationByNamespaceTestCase.cs" />
+    <Compile Include="Registration\ServiceOverridesTestCase.cs" />
     <Compile Include="Registration\WithServiceTestCase.cs" />
-    <Compile Include="ServiceOverridesTestCase.cs" />
+    <Compile Include="ServiceOverridesStackOverflowTestCase.cs" />
     <Compile Include="SpecializedResolvers\CollectionResolverTestCase.cs" />
     <Compile Include="TypedDependenciesTestCase.cs" />
     <Compile Include="ArgumentsTestCase.cs" />
@@ -638,6 +652,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="Configuration2\class_with_private_setter.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Configuration2\abstract_component_factory.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
     <Content Include="ignoreprop.xml">

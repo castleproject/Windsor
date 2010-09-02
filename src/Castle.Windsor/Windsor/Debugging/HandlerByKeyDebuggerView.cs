@@ -14,34 +14,46 @@
 
 namespace Castle.Windsor.Debugging
 {
+	using System.Collections.Generic;
 	using System.Diagnostics;
+	using System.Linq;
 
 	using Castle.Core.Internal;
 	using Castle.MicroKernel;
 
-	[DebuggerDisplay("{Key} / [{ServiceString}]")]
+	[DebuggerDisplay("{key} / [{ServiceString}]")]
 	public class HandlerByKeyDebuggerView
 	{
-		public HandlerByKeyDebuggerView(string key, IHandler service)
-		{
-			Key = key;
-			Service = service;
-		}
+		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
+		private readonly IComponentDebuggerExtension[] extension;
 
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
-		public string Key { get; private set; }
+		private readonly IHandler service;
+
+		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
+		private string key;
+
+		public HandlerByKeyDebuggerView(string key, IHandler service, params IComponentDebuggerExtension[] defaultExtension)
+		{
+			this.key = key;
+			this.service = service;
+			extension = defaultExtension.Concat(GetExtensions(service)).ToArray();
+		}
 
 		[DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
-		public IHandler Service { get; private set; }
+		public DebuggerViewItem[] Extensions
+		{
+			get { return extension.SelectMany(e => e.Attach()).ToArray(); }
+		}
 
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 		private string ServiceString
 		{
 			get
 			{
-				var value = Service.Service.Name;
-				var impl = Service.ComponentModel.Implementation;
-				if (impl == Service.Service)
+				var value = service.Service.Name;
+				var impl = service.ComponentModel.Implementation;
+				if (impl == service.Service)
 				{
 					return value;
 				}
@@ -60,6 +72,13 @@ namespace Castle.Windsor.Debugging
 				}
 				return value;
 			}
+		}
+
+		private IEnumerable<IComponentDebuggerExtension> GetExtensions(IHandler handler)
+		{
+			var handlerExtensions = handler.ComponentModel.ExtendedProperties["DebuggerExtensions"];
+			return (IEnumerable<IComponentDebuggerExtension>)handlerExtensions ??
+			       Enumerable.Empty<IComponentDebuggerExtension>();
 		}
 	}
 }

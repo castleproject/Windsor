@@ -67,13 +67,13 @@ namespace Castle.Windsor.Tests
 		[Test]
 		public void Can_handle_multi_generic_with_multi_generic_of_generics_properly_1()
 		{
-			var type = typeof(IDoubleGeneric<IDoubleGeneric<ICustomer, IClock>, ICustomer>);
+			var type = typeof(IDoubleGeneric<IDoubleGeneric<ICustomer, IEmptyService>, ICustomer>);
 			var name = typeof(IDoubleGeneric<,>).Name
 			           + "[[" +
 			           typeof(IDoubleGeneric<,>).Name +
 			           "[[" +
 			           typeof(ICustomer).Name + "],[" +
-			           typeof(IClock).Name
+			           typeof(IEmptyService).Name
 			           + "]]"
 					   + "],[" +
 			           typeof(ICustomer).Name + 
@@ -89,14 +89,14 @@ namespace Castle.Windsor.Tests
 		[Test]
 		public void Can_handle_multi_generic_with_multi_generic_of_generics_properly_2()
 		{
-			var type = typeof(IDoubleGeneric<ICustomer, IDoubleGeneric<ICustomer, IClock>>);
+			var type = typeof(IDoubleGeneric<ICustomer, IDoubleGeneric<ICustomer, IEmptyService>>);
 			var name = typeof(IDoubleGeneric<,>).Name
 			           + "[[" +
 						   typeof(ICustomer).Name + "],[" +
 						   typeof(IDoubleGeneric<,>).Name + 
 						   "[[" +
 							   typeof(ICustomer).Name + "],[" +
-							   typeof(IClock).Name
+							   typeof(IEmptyService).Name
 						   + "]]"
 			           + "]]";
 			var result = converter.PerformConversion(name, typeof(Type));

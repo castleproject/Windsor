@@ -16,7 +16,6 @@
 namespace Castle.Windsor.Tests
 {
 	using System;
-	using System.Configuration;
 	using System.IO;
 
 	internal sealed class ConfigHelper

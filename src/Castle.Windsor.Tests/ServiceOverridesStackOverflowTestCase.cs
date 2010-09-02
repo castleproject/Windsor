@@ -23,7 +23,7 @@ namespace Castle.Windsor.Tests
 	using NUnit.Framework;
 
 	[TestFixture]
-	public class ServiceOverridesTestCase
+	public class ServiceOverridesStackOverflowTestCase
 	{
 		[Test]
 		public void Should_not_StackOverflow()

@@ -14,16 +14,16 @@
 
 namespace Castle.Windsor.Tests.Facilities.Startable
 {
+	using System;
 	using System.Collections.Generic;
-
 	using Castle.Core;
 	using Castle.Core.Configuration;
 	using Castle.Facilities.Startable;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Registration;
+	using Castle.MicroKernel.Tests.ClassComponents;
 	using Castle.Windsor.Tests.ClassComponents;
 	using Castle.Windsor.Tests.Facilities.Startable.Components;
-
 	using NUnit.Framework;
 
 	[TestFixture]
@@ -223,6 +223,57 @@ namespace Castle.Windsor.Tests.Facilities.Startable
 
 			Assert.AreEqual(1, HasThrowingPropertyDependency.InstancesCreated);
 			Assert.AreEqual(1, HasThrowingPropertyDependency.InstancesStarted);
+		}
+
+		[Test]
+		public void TestStartableCallsStartOnlyOnceOnError()
+		{
+			StartableWithError.StartedCount = 0;
+			kernel.AddFacility<StartableFacility>();
+
+			var ex = 
+			Assert.Throws<Exception>(()=>
+			kernel.Register(Component.For<StartableWithError>(),
+			                Component.For<ICommon>().ImplementedBy<CommonImpl1>()));
+
+			// Every additional registration causes Start to be called again and again...
+			Assert.AreEqual("This should go bonk", ex.Message);
+			Assert.AreEqual(1, StartableWithError.StartedCount);
+		}
+
+		[Test]
+		public void TestStartableExplicitFakeDependencies()
+		{
+			kernel.ComponentCreated += OnStartableComponentStarted;
+
+			var dependsOnSomething = new DependencyModel(DependencyType.Service, null, typeof(ICommon), false);
+
+			kernel.AddFacility<StartableFacility>();
+			kernel.Register(
+				Component.For<StartableComponent>()
+					.AddDescriptor(new AddDependency<StartableComponent>(dependsOnSomething))
+				);
+
+			Assert.False(startableCreatedBeforeResolved, "Component should not have started");
+
+			kernel.Register(Component.For<ICommon>().ImplementedBy<CommonImpl1>());
+
+			Assert.True(startableCreatedBeforeResolved, "Component was not properly started");
+		}
+	}
+
+	public class AddDependency<T> : ComponentDescriptor<T>
+	{
+		private readonly DependencyModel dependency;
+
+		public AddDependency(DependencyModel dependency)
+		{
+			this.dependency = dependency;
+		}
+
+		protected override void ApplyToModel(IKernel kernel, ComponentModel model)
+		{
+			model.Dependencies.Add(dependency);
 		}
 	}
 }

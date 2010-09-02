@@ -1,3 +1,34 @@
+unreleased changes
+==================
+- added to Silverlight version API from .NET version that took anonymous object as a shorthand for named arguments. This works in SL, but requires [assembly: InternalsVisibleTo(Castle.Core.Internal.InternalsVisible.ToCastleCore)]
+
+- implemented IOC-216 - Make it possible to specify service overrides in DependsOn, either via Property, or ServiceOverride entry class.
+
+- implemented IOC-215 - Hide obsolete members from IntelliSense
+
+- implemented IOC-212 - Add ability to make IProxyGenerationHooks and IInterceptoSelectors IOnBehalfAware
+
+- added support for byref construtor parameters.
+
+- fixed IOC-209 Bug in constructor selection when resolving - Windsor would pick unresolvable constructor
+
+- fixed IOC-210 Typed Factory Facility treats constructor dependency as non-optional if resolved as a TFF component
+
+- Reverted back (to the way it was in v2.1) conditional registration of helper components used by TypedFactoryFacility as it would cause issues when used with nested containers (see the new test and thread "Typed Factories in sub Container (differences between 2.5 and 2.1)" on users group)
+
+- fixed bug where count of potentially misconfigured components would show invalid value
+
+- added raw handler access to default component view in debugger
+
+- changed how status message is displayed for potentially misconfigured components so that an actual visualizer for strings can be used to view this potentially long piece of text
+
+2.5.0 (2010-08-21)
+==================
+
+- debugger view support has been extracted to a separate subsystem (IContainerDebuggerExtensionHost) and can be extended by users code via IContainerDebuggerExtension and IComponentDebuggerExtension
+
+- calling IHandler.TryStart will no longer silently ignore all the exceptions.
+
 - added CollectionResolver which is a more general version of ArrayResolver and ListResolver and supports in addition ICollection<Foo> and IEnumerable<Foo>
 
 - fixed issue where dependencies would not be cleaned up when component creation failed

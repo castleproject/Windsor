@@ -127,9 +127,6 @@ namespace Castle.MicroKernel.Context
 
 		private IDictionary EnsureAdditionalArgumentsWriteable(IDictionary dictionary)
 		{
-#if SILVERLIGHT
-			return dictionary;
-#else
 			// NOTE: this is actually here mostly to workaround the fact that ReflectionBasedDictionaryAdapter is read only
 			// we could make it writeable instead, but I'm not sure that would make sense.
 			// NOTE: As noted in IOC-ISSUE-190 that may lead to issues with custom IDictionary implementations
@@ -145,7 +142,6 @@ namespace Castle.MicroKernel.Context
 				return dictionary;
 			}
 			return new Arguments(dictionary);
-#endif
 		}
 
 		#region ISubDependencyResolver
@@ -157,25 +153,26 @@ namespace Castle.MicroKernel.Context
 			             "CanResolve(context, contextHandlerResolver, model, dependency)");
 
 			var inlineArgument = additionalParameters[dependency.DependencyKey];
+			var targetType = dependency.TargetItemType;
 			if (inlineArgument != null)
 			{
 				if (converter != null &&
-				    !dependency.TargetType.IsInstanceOfType(inlineArgument) &&
+				    !targetType.IsInstanceOfType(inlineArgument) &&
 				    dependency.DependencyType == DependencyType.Parameter)
 				{
-					return converter.PerformConversion(inlineArgument.ToString(), dependency.TargetType);
+					return converter.PerformConversion(inlineArgument.ToString(), targetType);
 				}
 
 				return inlineArgument;
 			}
 
-			inlineArgument = additionalParameters[dependency.TargetType];
+			inlineArgument = additionalParameters[targetType];
 			if (inlineArgument != null &&
 			    converter != null &&
-			    !dependency.TargetType.IsInstanceOfType(inlineArgument) &&
+			    !targetType.IsInstanceOfType(inlineArgument) &&
 			    dependency.DependencyType == DependencyType.Parameter)
 			{
-				return converter.PerformConversion(inlineArgument.ToString(), dependency.TargetType);
+				return converter.PerformConversion(inlineArgument.ToString(), targetType);
 			}
 
 			return inlineArgument;
@@ -195,12 +192,13 @@ namespace Castle.MicroKernel.Context
 
 		private bool CanResolveByType(DependencyModel dependency)
 		{
-			if (dependency.TargetType == null)
+			var type = dependency.TargetItemType;
+			if (type == null)
 			{
 				return false;
 			}
 			Debug.Assert(additionalParameters != null, "additionalArguments != null");
-			return CanResolve(dependency, additionalParameters[dependency.TargetType]);
+			return CanResolve(dependency, additionalParameters[type]);
 		}
 
 		private bool CanResolveByKey(DependencyModel dependency)
@@ -215,14 +213,15 @@ namespace Castle.MicroKernel.Context
 
 		private bool CanResolve(DependencyModel dependency, object inlineArgument)
 		{
-			if (inlineArgument == null)
+			var type = dependency.TargetItemType;
+			if (inlineArgument == null || type == null)
 			{
 				return false;
 			}
-			return dependency.TargetType.IsInstanceOfType(inlineArgument) ||
+			return type.IsInstanceOfType(inlineArgument) ||
 			       (converter != null &&
 			        dependency.DependencyType == DependencyType.Parameter &&
-			        converter.CanHandleType(dependency.TargetType));
+			        converter.CanHandleType(type));
 		}
 
 		#endregion

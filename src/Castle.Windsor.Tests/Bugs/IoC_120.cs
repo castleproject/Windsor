@@ -37,7 +37,7 @@ namespace Castle.Windsor.Tests.Bugs
 				string.Format("Type {0} does not have a public default constructor and could not be instantiated.",
 				              typeof(HasInternalConstructor).FullName);
 #else
-				string.Format("Could not find a public constructor for the type {0}", typeof(HasInternalConstructor).FullName);
+ string.Format("Could not find a public constructor for type {0}. Windsor can not instantiate types that don't expose public constructors. To expose the type as a service add public constructor, or use custom component activator.", typeof(HasInternalConstructor).FullName);
 #endif
 
 			Assert.AreEqual(expected,

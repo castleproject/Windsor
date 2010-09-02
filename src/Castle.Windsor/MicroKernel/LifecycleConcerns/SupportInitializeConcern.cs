@@ -14,7 +14,6 @@
 
 namespace Castle.MicroKernel.LifecycleConcerns
 {
-#if (!SILVERLIGHT)
 	using System;
 	using System.ComponentModel;
 
@@ -23,7 +22,9 @@ namespace Castle.MicroKernel.LifecycleConcerns
 	/// <summary>
 	/// Summary description for SupportInitializeConcern.
 	/// </summary>
+#if (!SILVERLIGHT)
 	[Serializable]
+#endif
 	public class SupportInitializeConcern : ICommissionConcern
 	{
 		private static readonly SupportInitializeConcern instance = new SupportInitializeConcern();
@@ -48,5 +49,4 @@ namespace Castle.MicroKernel.LifecycleConcerns
 			get { return instance; }
 		}
 	}
-#endif
 }

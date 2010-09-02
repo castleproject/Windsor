@@ -66,7 +66,6 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 			{
 				lateBoundCommissionConcern.AddConcern<IInitializable>(InitializationConcern.Instance);
 			}
-#if (!SILVERLIGHT)
 			if (model.Implementation.Is<ISupportInitialize>())
 			{
 				model.Lifecycle.Add(SupportInitializeConcern.Instance);
@@ -75,7 +74,6 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 			{
 				lateBoundCommissionConcern.AddConcern<ISupportInitialize>(SupportInitializeConcern.Instance);
 			}
-#endif
 			if (model.Implementation.Is<IDisposable>())
 			{
 				model.Lifecycle.Add(DisposalConcern.Instance);
@@ -98,12 +96,10 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 			{
 				model.Lifecycle.Add(InitializationConcern.Instance);
 			}
-#if (!SILVERLIGHT)
 			if (model.Implementation.Is<ISupportInitialize>())
 			{
 				model.Lifecycle.Add(SupportInitializeConcern.Instance);
 			}
-#endif
 			if (model.Implementation.Is<IDisposable>())
 			{
 				model.Lifecycle.Add(DisposalConcern.Instance);

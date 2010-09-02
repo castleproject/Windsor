@@ -28,7 +28,7 @@ namespace Castle.MicroKernel.Context
 		public DependencyTrackingScope(CreationContext creationContext, ComponentModel model, MemberInfo info,
 									   DependencyModel dependencyModel)
 		{
-			if (dependencyModel.TargetType == typeof (IKernel))
+			if (dependencyModel.TargetItemType == typeof (IKernel))
 				return;
 
 			this.dependencies = creationContext.Dependencies;

@@ -20,7 +20,7 @@ namespace Castle.Windsor.Debugging
 
 	public interface IContainerDebuggerExtension
 	{
-		IEnumerable<DebuggerViewItem> Attach();
+		IEnumerable<DebuggerViewItemRich> Attach();
 
 		void Init(IKernel kernel);
 	}

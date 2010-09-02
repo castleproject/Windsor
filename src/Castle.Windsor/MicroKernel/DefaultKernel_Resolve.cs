@@ -17,6 +17,7 @@ namespace Castle.MicroKernel
 	using System;
 	using System.Collections;
 	using System.Collections.Generic;
+	using System.ComponentModel;
 
 	using Castle.Core;
 	using Castle.MicroKernel.Handlers;
@@ -28,12 +29,14 @@ namespace Castle.MicroKernel
 #endif
 	{
 		[Obsolete("Use Resolve(key, new Arguments()) instead")]
+		[EditorBrowsable(EditorBrowsableState.Advanced)]
 		public virtual object this[String key]
 		{
 			get { return Resolve(key, new Arguments()); }
 		}
 
 		[Obsolete("Use Resolve(service) instead")]
+		[EditorBrowsable(EditorBrowsableState.Advanced)]
 		public virtual object this[Type service]
 		{
 			get { return Resolve(service); }
@@ -104,7 +107,6 @@ namespace Castle.MicroKernel
 			return (T)Resolve(serviceType, arguments);
 		}
 
-#if !SILVERLIGHT
 		/// <summary>
 		///   Returns the component instance by the service type
 		///   using dynamic arguments
@@ -115,7 +117,6 @@ namespace Castle.MicroKernel
 		{
 			return Resolve<T>(new ReflectionBasedDictionaryAdapter(argumentsAsAnonymousType));
 		}
-#endif
 
 		/// <summary>
 		///   Returns the component instance by the component key
@@ -202,7 +203,6 @@ namespace Castle.MicroKernel
 			return ResolveComponent(handler, service, arguments);
 		}
 
-#if !SILVERLIGHT
 		/// <summary>
 		///   Returns the component instance by the service type
 		///   using dynamic arguments
@@ -214,7 +214,6 @@ namespace Castle.MicroKernel
 		{
 			return Resolve(service, new ReflectionBasedDictionaryAdapter(argumentsAsAnonymousType));
 		}
-#endif
 
 		/// <summary>
 		///   Returns the component instance by the component key
@@ -244,7 +243,6 @@ namespace Castle.MicroKernel
 			return ResolveComponent(handler, arguments);
 		}
 
-#if !SILVERLIGHT
 		/// <summary>
 		///   Returns the component instance by the component key
 		///   using dynamic arguments
@@ -256,7 +254,6 @@ namespace Castle.MicroKernel
 		{
 			return Resolve(key, new ReflectionBasedDictionaryAdapter(argumentsAsAnonymousType));
 		}
-#endif
 
 		/// <summary>
 		///   Returns all the valid component instances by
@@ -304,7 +301,6 @@ namespace Castle.MicroKernel
 			return components;
 		}
 
-#if !SILVERLIGHT
 		/// <summary>
 		///   Returns all the valid component instances by
 		///   the service type
@@ -328,7 +324,6 @@ namespace Castle.MicroKernel
 		{
 			return (TService[])ResolveAll(typeof(TService), argumentsAsAnonymousType);
 		}
-#endif
 
 		/// <summary>
 		///   Returns component instances that implement TService
@@ -351,7 +346,6 @@ namespace Castle.MicroKernel
 			return (TService[])ResolveAll(typeof(TService), new Arguments());
 		}
 
-#if !SILVERLIGHT
 		/// <summary>
 		///   Resolves the specified key.
 		/// </summary>
@@ -365,6 +359,5 @@ namespace Castle.MicroKernel
 		{
 			return Resolve(key, service, new ReflectionBasedDictionaryAdapter(argumentsAsAnonymousType));
 		}
-#endif
 	}
 }

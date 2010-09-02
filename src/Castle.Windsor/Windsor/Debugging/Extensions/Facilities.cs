@@ -22,14 +22,14 @@ namespace Castle.Windsor.Debugging.Extensions
 	{
 		private IKernel kernel;
 
-		public IEnumerable<DebuggerViewItem> Attach()
+		public IEnumerable<DebuggerViewItemRich> Attach()
 		{
 			var facilities = kernel.GetFacilities();
 			if (facilities.Length == 0)
 			{
 				yield break;
 			}
-			yield return new DebuggerViewItem("Facilities", "Count = " + facilities.Length, facilities);
+			yield return new DebuggerViewItemRich("Facilities", "Count = " + facilities.Length, facilities);
 		}
 
 		public void Init(IKernel kernel)

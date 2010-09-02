@@ -24,8 +24,8 @@ namespace Castle.Windsor.Tests.Components
 	public class CalculatorServiceWithLifecycle : MarshalByRefObject, ICalcService, IInitializable, IDisposable
 #endif
 	{
-		private bool _initialized;
-		private bool _disposed;
+		private bool initialized;
+		private bool disposed;
 
 		public int Sum(int x, int y)
 		{
@@ -34,22 +34,22 @@ namespace Castle.Windsor.Tests.Components
 
 		public void Initialize()
 		{
-			_initialized = true;
+			initialized = true;
 		}
 
 		public void Dispose()
 		{
-			_disposed = true;
+			disposed = true;
 		}
 
 		public bool Initialized
 		{
-			get { return _initialized; }
+			get { return initialized; }
 		}
 
 		public bool Disposed
 		{
-			get { return _disposed; }
+			get { return disposed; }
 		}
 
 	}

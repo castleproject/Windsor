@@ -18,6 +18,7 @@ namespace Castle.MicroKernel.Registration
 	using System.Collections.Generic;
 	using System.Globalization;
 	using System.IO;
+	using System.Linq;
 	using System.Reflection;
 
 	using Castle.Core.Internal;
@@ -128,6 +129,10 @@ namespace Castle.MicroKernel.Registration
 		{
 			try
 			{
+				if(Directory.Exists(directoryName) == false)
+				{
+					return Enumerable.Empty<string>();
+				}
 				if (string.IsNullOrEmpty(mask))
 				{
 #if DOTNET35 || SL3
@@ -164,7 +169,7 @@ namespace Castle.MicroKernel.Registration
 			}
 			catch (BadImageFormatException)
 			{
-				// Dlls that contain native code are not loaded, but do not invalidate the Directory
+				// Dlls that contain native code or assemblies for wrong runtime (like .NET 4 asembly when we're in CLR2 process)
 			}
 			catch (ReflectionTypeLoadException)
 			{

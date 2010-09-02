@@ -15,6 +15,7 @@
 namespace Castle.Windsor.Tests.Installer
 {
 	using System;
+	using System.IO;
 	using System.Reflection;
 
 	using Castle.MicroKernel.Registration;
@@ -74,12 +75,37 @@ namespace Castle.Windsor.Tests.Installer
 		}
 
 #if !SILVERLIGHT
+
+		[Test]
+		public void Install_from_assembly_by_directory_ignores_non_existing_path()
+		{
+			var location = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Guid.NewGuid().ToString("N"));
+
+			container.Install(FromAssembly.InDirectory(new AssemblyFilter(location)));
+
+			Assert.AreEqual(0, container.Kernel.GraphNodes.Length);
+		}
+
 		[Test]
 		public void Install_from_assembly_by_directory_executes_assembly_condition()
 		{
 			var location = AppDomain.CurrentDomain.BaseDirectory;
 			var called = false;
 			container.Install(FromAssembly.InDirectory(new AssemblyFilter(location).FilterByAssembly(a =>
+			{
+				called = true;
+				return true;
+			})));
+
+			Assert.IsTrue(called);
+			Assert.IsTrue(container.Kernel.HasComponent("Customer-by-CustomerInstaller"));
+		}
+
+		[Test]
+		public void Install_from_assembly_by_directory_empty_name_searches_currentDirectory()
+		{
+			var called = false;
+			container.Install(FromAssembly.InDirectory(new AssemblyFilter(string.Empty).FilterByAssembly(a =>
 			{
 				called = true;
 				return true;

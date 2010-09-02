@@ -68,16 +68,17 @@ namespace Castle.MicroKernel.Resolvers.SpecializedResolvers
 		                      ComponentModel model,
 		                      DependencyModel dependency)
 		{
-			return kernel.ResolveAll(dependency.TargetType.GetElementType(), null);
+			return kernel.ResolveAll(dependency.TargetItemType.GetElementType(), null);
 		}
 
 		public bool CanResolve(CreationContext context, ISubDependencyResolver contextHandlerResolver,
 		                       ComponentModel model,
 		                       DependencyModel dependency)
 		{
-			return dependency.TargetType != null &&
-			       dependency.TargetType.IsArray &&
-			       (allowEmptyArray || kernel.HasComponent(dependency.TargetType.GetElementType()));
+			var targetType = dependency.TargetItemType;
+			return targetType != null &&
+			       targetType.IsArray &&
+			       (allowEmptyArray || kernel.HasComponent(targetType.GetElementType()));
 		}
 	}
 }

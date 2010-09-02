@@ -81,12 +81,13 @@ namespace Castle.MicroKernel.Tests
 		public void Missing_service_is_correctly_detected()
 		{
 			TestDelegate act = () =>
-			                   kernel.Resolve<CompB>(new Arguments().Insert("myArgument", 123));
-			var exception =
-				Assert.Throws<DependencyResolverException>(act);
+			
+			kernel.Resolve<CompB>(new Arguments().Insert("myArgument", 123));
+
+			var exception = Assert.Throws<DependencyResolverException>(act);
 			Assert.AreEqual(
 				string.Format(
-					"Missing dependency.{0}Component compb has a dependency on Castle.MicroKernel.Tests.RuntimeParameters.CompC, which could not be resolved.{0}Make sure the dependency is correctly registered in the container as a service, or provided as inline argument",
+					"Missing dependency.{0}Component compb has a dependency on Castle.MicroKernel.Tests.RuntimeParameters.CompC, which could not be resolved.{0}Make sure the dependency is correctly registered in the container as a service, or provided as inline argument.",
 					Environment.NewLine),
 				exception.Message);
 		}

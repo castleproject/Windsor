@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,7 +16,9 @@ namespace Castle.MicroKernel.ComponentActivator
 {
 	using System;
 	using System.Collections.Generic;
+#if SILVERLIGHT || DOTNET35
 	using System.Linq;
+#endif
 	using System.Reflection;
 	using System.Security;
 	using System.Security.Permissions;
@@ -45,16 +47,17 @@ namespace Castle.MicroKernel.ComponentActivator
 #if (!SILVERLIGHT)
 		private readonly bool useFastCreateInstance;
 #endif
+
 		/// <summary>
-		/// Initializes a new instance of the <see cref="DefaultComponentActivator"/> class.
+		///   Initializes a new instance of the <see cref = "DefaultComponentActivator" /> class.
 		/// </summary>
-		/// <param name="model"></param>
-		/// <param name="kernel"></param>
-		/// <param name="onCreation"></param>
-		/// <param name="onDestruction"></param>
+		/// <param name = "model"></param>
+		/// <param name = "kernel"></param>
+		/// <param name = "onCreation"></param>
+		/// <param name = "onDestruction"></param>
 		public DefaultComponentActivator(ComponentModel model, IKernel kernel,
-										 ComponentInstanceDelegate onCreation,
-										 ComponentInstanceDelegate onDestruction)
+		                                 ComponentInstanceDelegate onCreation,
+		                                 ComponentInstanceDelegate onDestruction)
 			: base(model, kernel, onCreation, onDestruction)
 		{
 #if (!SILVERLIGHT)
@@ -74,6 +77,7 @@ namespace Castle.MicroKernel.ComponentActivator
 #endif
 		}
 #endif
+
 		#region AbstractComponentActivator Members
 
 		protected override object InternalCreate(CreationContext context)
@@ -97,10 +101,10 @@ namespace Castle.MicroKernel.ComponentActivator
 
 		protected virtual object Instantiate(CreationContext context)
 		{
-			ConstructorCandidate candidate = SelectEligibleConstructor(context);
+			var candidate = SelectEligibleConstructor(context);
 
 			Type[] signature;
-			object[] arguments = CreateConstructorArguments(candidate, context, out signature);
+			var arguments = CreateConstructorArguments(candidate, context, out signature);
 
 			return CreateInstance(context, arguments, signature);
 		}
@@ -109,21 +113,20 @@ namespace Castle.MicroKernel.ComponentActivator
 		{
 			object instance = null;
 
-			Type implType = Model.Implementation;
+			var implType = Model.Implementation;
 
-			bool createProxy = Kernel.ProxyFactory.ShouldCreateProxy(Model);
-			bool createInstance = true;
+			var createProxy = Kernel.ProxyFactory.ShouldCreateProxy(Model);
+			var createInstance = true;
 
 			if (createProxy == false && Model.Implementation.IsAbstract)
 			{
 				throw new ComponentRegistrationException(
 					string.Format(
-						"Type {0} is abstract.{2} As such, it is not possible to instansiate it as implementation of {1} service",
+						"Type {0} is abstract.{2} As such, it is not possible to instansiate it as implementation of service {1}.",
 						Model.Implementation.FullName,
 						Model.Service.FullName,
 						Environment.NewLine));
 			}
-
 
 			if (createProxy)
 			{
@@ -146,7 +149,6 @@ namespace Castle.MicroKernel.ComponentActivator
 						instance = implType.CreateInstance<object>(arguments);
 					}
 #endif
-
 				}
 				catch (Exception ex)
 				{
@@ -184,24 +186,28 @@ namespace Castle.MicroKernel.ComponentActivator
 
 			return instance;
 		}
-		
+
 #if (!SILVERLIGHT)
 		private static object FastCreateInstance(Type implType, object[] arguments, Type[] signature)
 		{
 			// otherwise GetConstructor wil blow up instead of returning null
-			if (signature == null) signature = new Type[0];
+			if (signature == null)
+			{
+				signature = new Type[0];
+			}
 
-			ConstructorInfo cinfo = implType.GetConstructor(
+			var cinfo = implType.GetConstructor(
 				BindingFlags.Public | BindingFlags.Instance, null, signature, null);
 
 			if (cinfo == null)
 			{
-				string message = "Could not find a public constructor for the type {0}";
-				message = string.Format(message, implType);
-				throw new ComponentActivatorException(message);
+				throw new ComponentActivatorException(
+					string.Format(
+						"Could not find a public constructor for type {0}. Windsor can not instantiate types that don't expose public constructors. To expose the type as a service add public constructor, or use custom component activator.",
+						implType));
 			}
 
-			object instance = System.Runtime.Serialization.FormatterServices.GetUninitializedObject(implType);
+			var instance = System.Runtime.Serialization.FormatterServices.GetUninitializedObject(implType);
 
 			cinfo.Invoke(instance, arguments);
 			return instance;
@@ -210,26 +216,32 @@ namespace Castle.MicroKernel.ComponentActivator
 
 		protected virtual void ApplyCommissionConcerns(object instance)
 		{
-			if(Model.Lifecycle.HasCommissionConcerns == false) return;
+			if (Model.Lifecycle.HasCommissionConcerns == false)
+			{
+				return;
+			}
 
 			instance = ProxyUtil.GetUnproxiedInstance(instance);
 			ApplyConcerns(Model.Lifecycle.CommissionConcerns
 #if DOTNET35 || SILVERLIGHT
 				.ToArray()
 #endif
-				, instance);
+			              , instance);
 		}
 
 		protected virtual void ApplyDecommissionConcerns(object instance)
 		{
-			if(Model.Lifecycle.HasDecommissionConcerns == false) return;
+			if (Model.Lifecycle.HasDecommissionConcerns == false)
+			{
+				return;
+			}
 
 			instance = ProxyUtil.GetUnproxiedInstance(instance);
 			ApplyConcerns(Model.Lifecycle.DecommissionConcerns
 #if DOTNET35 || SILVERLIGHT
 				.ToArray()
 #endif
-, instance);
+			              , instance);
 		}
 
 		protected virtual void ApplyConcerns(IEnumerable<ILifecycleConcern> steps, object instance)
@@ -255,24 +267,13 @@ namespace Castle.MicroKernel.ComponentActivator
 
 			ConstructorCandidate winnerCandidate = null;
 
-			int winnerPoints = 0;
-			foreach (ConstructorCandidate candidate in Model.Constructors)
+			var winnerPoints = 0;
+			foreach (var candidate in Model.Constructors)
 			{
-				int candidatePoints = 0;
-				foreach (DependencyModel dep in candidate.Dependencies)
+				int candidatePoints;
+				if (CheckCtorCandidate(candidate, context, out candidatePoints) == false)
 				{
-					if (CanSatisfyDependency(context, dep))
-					{
-						candidatePoints += 100;
-					}
-					else if (dep.HasDefaultValue)
-					{
-						candidatePoints += 1;
-					}
-					else
-					{
-						candidatePoints -= 100;
-					}
+					continue;
 				}
 
 				if (winnerCandidate == null || winnerPoints < candidatePoints)
@@ -284,10 +285,32 @@ namespace Castle.MicroKernel.ComponentActivator
 
 			if (winnerCandidate == null)
 			{
-				throw new ComponentActivatorException("Could not find eligible constructor for " + Model.Implementation.FullName);
+				throw new ComponentActivatorException(string.Format("Could not find resolvable constructor for {0}. Make sure all required dependencies are provided.", Model.Implementation.FullName));
 			}
 
 			return winnerCandidate;
+		}
+
+		private bool CheckCtorCandidate(ConstructorCandidate candidate, CreationContext context, out int candidatePoints)
+		{
+			candidatePoints = 0;
+			foreach (var dep in candidate.Dependencies)
+			{
+				if (CanSatisfyDependency(context, dep))
+				{
+					candidatePoints += 100;
+				}
+				else if (dep.HasDefaultValue)
+				{
+					candidatePoints += 1;
+				}
+				else
+				{
+					candidatePoints = 0;
+					return false;
+				}
+			}
+			return true;
 		}
 
 		protected virtual bool CanSatisfyDependency(CreationContext context, DependencyModel dep)
@@ -300,7 +323,10 @@ namespace Castle.MicroKernel.ComponentActivator
 		{
 			signature = null;
 
-			if (constructor == null) return null;
+			if (constructor == null)
+			{
+				return null;
+			}
 
 			var arguments = new object[constructor.Constructor.GetParameters().Length];
 			if (arguments.Length == 0)
@@ -317,7 +343,10 @@ namespace Castle.MicroKernel.ComponentActivator
 			{
 				foreach (var argument in arguments)
 				{
-					if (argument == null) break;
+					if (argument == null)
+					{
+						break;
+					}
 					Kernel.ReleaseComponent(argument);
 				}
 				throw;
@@ -326,9 +355,10 @@ namespace Castle.MicroKernel.ComponentActivator
 			return arguments;
 		}
 
-		private void CreateConstructorArgumentsCore(ConstructorCandidate constructor, object[] arguments, CreationContext context, Type[] signature)
+		private void CreateConstructorArgumentsCore(ConstructorCandidate constructor, object[] arguments,
+		                                            CreationContext context, Type[] signature)
 		{
-			int index = 0;
+			var index = 0;
 			foreach (var dependency in constructor.Dependencies)
 			{
 				object value;
@@ -345,10 +375,13 @@ namespace Castle.MicroKernel.ComponentActivator
 		{
 			instance = ProxyUtil.GetUnproxiedInstance(instance);
 			var resolver = Kernel.Resolver;
-			foreach (PropertySet property in Model.Properties)
+			foreach (var property in Model.Properties)
 			{
 				var value = ObtainPropertyValue(context, property, resolver);
-				if (value == null) continue;
+				if (value == null)
+				{
+					continue;
+				}
 
 				var setMethod = property.Property.GetSetMethod();
 				try
@@ -357,7 +390,7 @@ namespace Castle.MicroKernel.ComponentActivator
 				}
 				catch (Exception ex)
 				{
-					String message =
+					var message =
 						String.Format(
 							"Error setting property {0} on type {1}, Component id is {2}. See inner exception for more information.",
 							setMethod.Name, instance.GetType().FullName, Model.Name);
