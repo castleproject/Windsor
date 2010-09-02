@@ -24,12 +24,6 @@ namespace Castle.MicroKernel.Releasers
 #endif
 	public class NoTrackingReleasePolicy : IReleasePolicy
 	{
-		/// <summary>
-		/// Initializes a new instance of the <see cref="NoTrackingReleasePolicy"/> class.
-		/// </summary>
-		public NoTrackingReleasePolicy()
-		{
-		}
 
 		public void Track(object instance, Burden burden)
 		{

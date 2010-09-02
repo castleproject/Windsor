@@ -19,7 +19,7 @@ namespace Castle.MicroKernel.Tests
 	using System.IO;
 	using System.Runtime.Serialization.Formatters.Binary;
 	using System.Security.Policy;
-	using Castle.Core;
+
 	using Castle.Core.Internal;
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Tests.ClassComponents;

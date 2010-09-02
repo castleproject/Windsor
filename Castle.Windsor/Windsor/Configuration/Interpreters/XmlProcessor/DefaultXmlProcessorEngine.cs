@@ -20,7 +20,6 @@ namespace Castle.Windsor.Configuration.Interpreters.XmlProcessor
 	using System.Text.RegularExpressions;
 	using System.Xml;
 
-	using Castle.Core;
 	using Castle.Core.Internal;
 	using Castle.Core.Resource;
 	using Castle.MicroKernel.SubSystems.Resource;

@@ -48,7 +48,6 @@ namespace Castle.MicroKernel.Registration
 			return arguments;
 		}
 
-#if !SILVERLIGHT
 		/// <summary>
 		/// Inserts a set of typed arguments. Property names of the anonymous type will be used as key.
 		/// </summary>
@@ -61,7 +60,6 @@ namespace Castle.MicroKernel.Registration
 
 			return arguments;
 		}
-#endif
 
 		/// <summary>
 		/// Inserts a set of typed arguments. Actual type of the arguments will be used as key.
