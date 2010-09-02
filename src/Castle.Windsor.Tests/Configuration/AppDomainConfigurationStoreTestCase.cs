@@ -13,8 +13,6 @@
 // limitations under the License.
 
 #if !SILVERLIGHT // we do not support xml config on SL
-
-
 namespace Castle.Windsor.Tests.Configuration
 {
 	using Castle.Core.Configuration;

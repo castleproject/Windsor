@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
 namespace Castle.MicroKernel.SubSystems.Conversion
 {
 	using System;
@@ -22,22 +21,17 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 
 	using Castle.Core.Configuration;
 
-
 #if (!SILVERLIGHT)
 	[Serializable]
 #endif
 	public class ListConverter : AbstractTypeConverter
 	{
-		public ListConverter()
-		{
-		}
-
 		public override bool CanHandleType(Type type)
 		{
 #if(SILVERLIGHT)
 			return (type == typeof(IList));
 #else
-            return (type == typeof(IList) || type == typeof(ArrayList));
+			return (type == typeof(IList) || type == typeof(ArrayList));
 #endif
 		}
 
@@ -52,9 +46,9 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 
 			var list = new List<object>();
 			var convertTo = GetConvertToType(configuration);
-			foreach(var itemConfig in configuration.Children)
+			foreach (var itemConfig in configuration.Children)
 			{
-				list.Add( Context.Composition.PerformConversion(itemConfig.Value, convertTo) );
+				list.Add(Context.Composition.PerformConversion(itemConfig.Value, convertTo));
 			}
 
 			return list;

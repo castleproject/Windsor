@@ -107,7 +107,6 @@ namespace Castle.MicroKernel
 			return (T)Resolve(serviceType, arguments);
 		}
 
-#if !SILVERLIGHT
 		/// <summary>
 		///   Returns the component instance by the service type
 		///   using dynamic arguments
@@ -118,7 +117,6 @@ namespace Castle.MicroKernel
 		{
 			return Resolve<T>(new ReflectionBasedDictionaryAdapter(argumentsAsAnonymousType));
 		}
-#endif
 
 		/// <summary>
 		///   Returns the component instance by the component key
@@ -205,7 +203,6 @@ namespace Castle.MicroKernel
 			return ResolveComponent(handler, service, arguments);
 		}
 
-#if !SILVERLIGHT
 		/// <summary>
 		///   Returns the component instance by the service type
 		///   using dynamic arguments
@@ -217,7 +214,6 @@ namespace Castle.MicroKernel
 		{
 			return Resolve(service, new ReflectionBasedDictionaryAdapter(argumentsAsAnonymousType));
 		}
-#endif
 
 		/// <summary>
 		///   Returns the component instance by the component key
@@ -247,7 +243,6 @@ namespace Castle.MicroKernel
 			return ResolveComponent(handler, arguments);
 		}
 
-#if !SILVERLIGHT
 		/// <summary>
 		///   Returns the component instance by the component key
 		///   using dynamic arguments
@@ -259,7 +254,6 @@ namespace Castle.MicroKernel
 		{
 			return Resolve(key, new ReflectionBasedDictionaryAdapter(argumentsAsAnonymousType));
 		}
-#endif
 
 		/// <summary>
 		///   Returns all the valid component instances by
@@ -307,7 +301,6 @@ namespace Castle.MicroKernel
 			return components;
 		}
 
-#if !SILVERLIGHT
 		/// <summary>
 		///   Returns all the valid component instances by
 		///   the service type
@@ -331,7 +324,6 @@ namespace Castle.MicroKernel
 		{
 			return (TService[])ResolveAll(typeof(TService), argumentsAsAnonymousType);
 		}
-#endif
 
 		/// <summary>
 		///   Returns component instances that implement TService
@@ -354,7 +346,6 @@ namespace Castle.MicroKernel
 			return (TService[])ResolveAll(typeof(TService), new Arguments());
 		}
 
-#if !SILVERLIGHT
 		/// <summary>
 		///   Resolves the specified key.
 		/// </summary>
@@ -368,6 +359,5 @@ namespace Castle.MicroKernel
 		{
 			return Resolve(key, service, new ReflectionBasedDictionaryAdapter(argumentsAsAnonymousType));
 		}
-#endif
 	}
 }

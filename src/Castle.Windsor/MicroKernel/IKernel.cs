@@ -84,7 +84,6 @@ namespace Castle.MicroKernel
 		void RegisterCustomDependencies(Type service, IDictionary dependencies);
 
 
-#if !SILVERLIGHT
 		/// <summary>
 		/// Associates objects with a component handler,
 		/// allowing it to use the specified dictionary
@@ -93,7 +92,6 @@ namespace Castle.MicroKernel
 		/// <param name="service"></param>
 		/// <param name="dependenciesAsAnonymousType"></param>
 		void RegisterCustomDependencies(Type service, object dependenciesAsAnonymousType);
-#endif
 
 		/// <summary>
 		/// Associates objects with a component handler,
@@ -104,7 +102,6 @@ namespace Castle.MicroKernel
 		/// <param name="dependencies"></param>
 		void RegisterCustomDependencies(String key, IDictionary dependencies);
 		
-#if !SILVERLIGHT
 		/// <summary>
 		/// Associates objects with a component handler,
 		/// allowing it to use the specified dictionary
@@ -113,7 +110,6 @@ namespace Castle.MicroKernel
 		/// <param name="key"></param>
 		/// <param name="dependenciesAsAnonymousType"></param>
 		void RegisterCustomDependencies(String key, object dependenciesAsAnonymousType);
-#endif
 
 		/// <summary>
 		/// Releases a component instance. This allows

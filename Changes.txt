@@ -1,5 +1,7 @@
 unreleased changes
 ==================
+- added to Silverlight version API from .NET version that took anonymous object as a shorthand for named arguments. This works in SL, but requires [assembly: InternalsVisibleTo(Castle.Core.Internal.InternalsVisible.ToCastleCore)]
+
 - implemented IOC-216 - Make it possible to specify service overrides in DependsOn, either via Property, or ServiceOverride entry class.
 
 - implemented IOC-215 - Hide obsolete members from IntelliSense

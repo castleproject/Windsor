@@ -707,7 +707,6 @@ namespace Castle.Windsor
 			return kernel.Resolve(service, arguments);
 		}
 
-#if !SILVERLIGHT
 		/// <summary>
 		/// Returns a component instance by the service
 		/// </summary>
@@ -718,7 +717,6 @@ namespace Castle.Windsor
 		{
 			return Resolve(service, new ReflectionBasedDictionaryAdapter(argumentsAsAnonymousType));
 		}
-#endif
 
 		/// <summary>
 		/// Returns a component instance by the key
@@ -731,7 +729,6 @@ namespace Castle.Windsor
 			return kernel.Resolve(key, arguments);
 		}
 
-#if !SILVERLIGHT
 		/// <summary>
 		/// Returns a component instance by the key
 		/// </summary>
@@ -742,7 +739,6 @@ namespace Castle.Windsor
 		{
 			return Resolve(key, new ReflectionBasedDictionaryAdapter(argumentsAsAnonymousType));
 		}
-#endif
 
 		/// <summary>
 		/// Returns a component instance by the service
@@ -773,12 +769,10 @@ namespace Castle.Windsor
 			return kernel.ResolveAll(service, arguments);
 		}
 
-#if !SILVERLIGHT
 		public Array ResolveAll(Type service, object argumentsAsAnonymousType)
 		{
 			return ResolveAll(service, new ReflectionBasedDictionaryAdapter(argumentsAsAnonymousType));
 		}
-#endif
 
 		/// <summary>
 		/// Resolve all valid components that match this type.
@@ -790,7 +784,6 @@ namespace Castle.Windsor
 			return (T[])ResolveAll(typeof(T), arguments);
 		}
 
-#if !SILVERLIGHT
 		/// <summary>
 		/// Resolve all valid components that match this type.
 		/// <typeparam name="T">The service type</typeparam>
@@ -800,7 +793,6 @@ namespace Castle.Windsor
 		{
 			return ResolveAll<T>(new ReflectionBasedDictionaryAdapter(argumentsAsAnonymousType));
 		}
-#endif
 
 		/// <summary>
 		/// Shortcut to the method <see cref="Resolve(String, IDictionary)"/>
@@ -845,7 +837,6 @@ namespace Castle.Windsor
 			return kernel.Resolve(key, service, arguments);
 		}
 
-#if !SILVERLIGHT
 		/// <summary>
 		/// Returns a component instance by the key
 		/// </summary>
@@ -857,7 +848,6 @@ namespace Castle.Windsor
 		{
 			return Resolve(key, service, new ReflectionBasedDictionaryAdapter(argumentsAsAnonymousType));
 		}
-#endif
 
 		/// <summary>
 		/// Returns a component instance by the service 
@@ -870,7 +860,6 @@ namespace Castle.Windsor
 			return (T)Resolve(typeof(T), arguments);
 		}
 
-#if !SILVERLIGHT
 		/// <summary>
 		/// Returns a component instance by the service 
 		/// </summary>
@@ -881,7 +870,6 @@ namespace Castle.Windsor
 		{
 			return Resolve<T>(new ReflectionBasedDictionaryAdapter(argumentsAsAnonymousType));
 		}
-#endif
 
 		/// <summary>
 		/// Returns a component instance by the key
@@ -894,7 +882,6 @@ namespace Castle.Windsor
 			return (T)Resolve(key, typeof(T), arguments);
 		}
 
-#if !SILVERLIGHT
 		/// <summary>
 		/// Returns a component instance by the key
 		/// </summary>
@@ -905,7 +892,6 @@ namespace Castle.Windsor
 		{
 			return Resolve<T>(key, new ReflectionBasedDictionaryAdapter(argumentsAsAnonymousType));
 		}
-#endif
 
 		/// <summary>
 		/// Returns a component instance by the service 

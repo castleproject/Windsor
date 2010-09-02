@@ -263,6 +263,15 @@ namespace Castle.Windsor.Tests
 		}
 
 		[Test]
+		public void Can_resolve_type_with_by_ref_dependency_provided_inline_via_anonymous_type()
+		{
+			var container = new WindsorContainer();
+			container.Register(Component.For<HasByRefCtorArgument>());
+
+			container.Resolve<HasByRefCtorArgument>(new { a = new A() });
+		}
+
+		[Test]
 		public void Can_resolve_type_with_by_ref_dependency()
 		{
 			var container = new WindsorContainer();

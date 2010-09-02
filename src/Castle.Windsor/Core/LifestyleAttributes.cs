@@ -23,26 +23,20 @@ namespace Castle.Core
 	[AttributeUsage(AttributeTargets.Class, AllowMultiple=false)]
 	public abstract class LifestyleAttribute : Attribute
 	{
-		private LifestyleType type;
-
 		/// <summary>
 		/// Initializes a new instance of the <see cref="LifestyleAttribute"/> class.
 		/// </summary>
 		/// <param name="type">The type.</param>
 		protected LifestyleAttribute(LifestyleType type)
 		{
-			this.type = type;
+			this.Lifestyle = type;
 		}
 
 		/// <summary>
 		/// Gets or sets the lifestyle.
 		/// </summary>
 		/// <value>The lifestyle.</value>
-		public LifestyleType Lifestyle
-		{
-			get { return type; }
-			set { type = value; }
-		}
+		public LifestyleType Lifestyle { get; set; }
 	}
 
 	/// <summary>

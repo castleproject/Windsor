@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,23 +12,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#if !SILVERLIGHT // we do not support xml config on SL
-
-using Castle.Core.Resource;
-using Castle.Windsor;
-using Castle.Windsor.Configuration.Interpreters;
+#if !SILVERLIGHT
+// we do not support xml config on SL
 
 namespace Castle.Windsor.Tests.Bugs.IoC73
 {
+	using Castle.Core.Resource;
+	using Castle.Windsor.Configuration.Interpreters;
+
 	using NUnit.Framework;
 
 	[TestFixture]
-    public class IoC73
-    {
+	public class IoC73
+	{
 		[Test]
 		public void ShouldNotThrowCircularDependencyException()
 		{
-			string config = @"
+			var config =
+				@"
 <configuration>
     <facilities>
     </facilities>
@@ -52,12 +53,12 @@ namespace Castle.Windsor.Tests.Bugs.IoC73
     </components>
 </configuration>";
 
-            IWindsorContainer container = new WindsorContainer
-                (new XmlInterpreter(new StaticContentResource(config)));
-            ClassUser classUser = container.Resolve<ClassUser>();
-            classUser.Bar();
-        }
-    }
+			IWindsorContainer container = new WindsorContainer
+				(new XmlInterpreter(new StaticContentResource(config)));
+			var classUser = container.Resolve<ClassUser>();
+			classUser.Bar();
+		}
+	}
 }
 
 #endif

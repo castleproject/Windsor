@@ -56,7 +56,6 @@ namespace Castle.MicroKernel
 		/// <param name="arguments">Arguments to resolve the services</param>
 		Array ResolveAll(Type service, IDictionary arguments);
 		
-#if !SILVERLIGHT
 		/// <summary>
 		/// Returns all the valid component instances by
 		/// the service type
@@ -64,7 +63,7 @@ namespace Castle.MicroKernel
 		/// <param name="service">The service type</param>
 		/// <param name="argumentsAsAnonymousType">Arguments to resolve the services</param>
 		Array ResolveAll(Type service, object argumentsAsAnonymousType);
-#endif
+
 		/// <summary>
 		/// Returns the component instance by the service type
 		/// using dynamic arguments
@@ -83,7 +82,6 @@ namespace Castle.MicroKernel
 		/// <returns></returns>
 		object Resolve(String key, IDictionary arguments);
 		
-#if !SILVERLIGHT
 		/// <summary>
 		/// Returns the component instance by the service type
 		/// using dynamic arguments
@@ -101,7 +99,7 @@ namespace Castle.MicroKernel
 		/// <param name="argumentsAsAnonymousType">Arguments to resolve the services</param>
 		/// <returns></returns>
 		object Resolve(String key, object argumentsAsAnonymousType);
-#endif
+
 		/// <summary>
 		/// Returns a component instance by the key
 		/// </summary>
@@ -118,7 +116,6 @@ namespace Castle.MicroKernel
 		/// <returns></returns>
 		T Resolve<T>(IDictionary arguments);
 		
-#if !SILVERLIGHT
 		/// <summary>
 		/// Returns the component instance by the service type
 		/// using dynamic arguments
@@ -126,7 +123,7 @@ namespace Castle.MicroKernel
 		/// <param name="argumentsAsAnonymousType">Arguments to resolve the services</param>
 		/// <returns></returns>
 		T Resolve<T>(object argumentsAsAnonymousType);
-#endif
+
 		/// <summary>
 		/// Returns the component instance by the component key
 		/// </summary>
@@ -164,14 +161,13 @@ namespace Castle.MicroKernel
 		/// <returns></returns>
 		TService[] ResolveAll<TService>(IDictionary arguments);
 		
-#if !SILVERLIGHT
 		/// <summary>
 		/// Returns component instances that implement TService
 		/// </summary>
 		/// <typeparam name="TService"></typeparam>
 		/// <returns></returns>
 		TService[] ResolveAll<TService>(object argumentsAsAnonymousType);
-#endif
+
 		/// <summary>
 		/// Returns a component instance by the key
 		/// </summary>

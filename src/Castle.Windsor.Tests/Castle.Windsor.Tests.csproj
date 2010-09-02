@@ -100,6 +100,7 @@
     <Compile Include="Facilities\TypedFactory\Components\ServiceWithMultipleCtors.cs" />
     <Compile Include="Facilities\TypedFactory\Components\ServiceFactory.cs" />
     <Compile Include="Facilities\TypedFactory\Components\ServiceRedirect.cs" />
+    <Compile Include="InternalsVisibleTo.cs" />
     <Compile Include="LifecycledComponentsReleasePolicyTestCase.cs" />
     <Compile Include="ClassComponents\DisposableFoo.cs" />
     <Compile Include="ClassComponents\HasTwoConstructors4.cs" />
