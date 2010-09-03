@@ -54,6 +54,14 @@ limitations under the License.
 		<TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
 	</PropertyGroup>
 
+	<!-- Mono 2.6 -->
+	<PropertyGroup Condition="$(BuildConfigKey)=='MONO26'">
+		<BuildFramework>$(BuildConfigKey)</BuildFramework>
+		<BuildConstants>MONO MONO26</BuildConstants>
+		<TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+		<BuildConfigDescription>Mono 2.6 - $(TargetFrameworkVersion) Profile</BuildConfigDescription>
+	</PropertyGroup>
+
 	<!--Silverlight 3.0 runtime-->
 	<PropertyGroup Condition="$(BuildConfigKey)=='SL3'">
 		<SolutionName>$(ProjectName)-SL</SolutionName>
@@ -73,6 +81,11 @@ limitations under the License.
 		<TargetFrameworkVersion>4.0</TargetFrameworkVersion>
 	</PropertyGroup>
 
+	<PropertyGroup>
+		<BuildConfigDescription Condition=" '$(BuildConfigDescription)' == '' ">$(TargetFrameworkIdentifier) $(TargetFrameworkVersion)</BuildConfigDescription>
+		<BuildConfigDescription Condition=" '$(TargetFrameworkProfile)' != '' ">$(BuildConfigDescription) Client Profile</BuildConfigDescription>
+	</PropertyGroup>
+
 	<!-- Project folders -->
 	<PropertyGroup>
 		<TargetFrameworkIdentifier Condition="'$(TargetFrameworkIdentifier)' ==''">.NETFramework</TargetFrameworkIdentifier> <!-- MSBuild 4.0 defines this -->
@@ -82,8 +95,8 @@ limitations under the License.
 		<BuildScriptsPath Condition="'$(BuildScriptsPath)' ==''">$(RootPath)/buildscripts</BuildScriptsPath>
 		<ToolsPath Condition="'$(ToolsPath)' == ''">$(RootPath)/tools</ToolsPath>
 		<SolutionName Condition="'$(SolutionName)' == ''">$(ProjectName)</SolutionName>
-		<SolutionPath Condition="'$(SolutionPath)' == '' and '$(SolutionName)' != ''">$(RootPath)/$(SolutionName)-vs2010.sln</SolutionPath>
-		<SolutionPath Condition="'$(SolutionPath)' == ''">$(RootPath)/$(ProjectName)-vs2010.sln</SolutionPath>
+		<SolutionPath Condition="'$(SolutionPath)' == '' and '$(SolutionName)' != ''">$(RootPath)/$(SolutionName).sln</SolutionPath>
+		<SolutionPath Condition="'$(SolutionPath)' == ''">$(RootPath)/$(ProjectName).sln</SolutionPath>
 		<TestResultsPath Condition="'$(TestResultsPath)' == ''">$(OutputPath)/test-results</TestResultsPath>
 	</PropertyGroup>
 
@@ -91,7 +104,7 @@ limitations under the License.
 	<!-- AssemblyInfo Properties -->
 	<PropertyGroup>
 		<AssemblyInfoFile Condition="'$(AssemblyInfoFile)' == ''">AssemblyInfo.cs</AssemblyInfoFile>
-		<AssemblyTitle Condition="'$(AssemblyTitle)' == ''">$(ProjectName)</AssemblyTitle>
+		<AssemblyTitle Condition="'$(AssemblyTitle)' == ''">$(ProjectName) for $(BuildConfigDescription)</AssemblyTitle>
 		<AssemblyProduct Condition="'$(AssemblyProduct)' == ''">$(ProjectName)</AssemblyProduct>
 		<AssemblyDescription Condition="'$(AssemblyDescription)' != ''">$(AssemblyDescription)</AssemblyDescription>
 		<ComVisible Condition="'$(ComVisible)' == ''">false</ComVisible>
@@ -112,11 +125,17 @@ limitations under the License.
 		<Project_Major Condition="'$(Project_Major)' == ''">1</Project_Major>
 		<Project_Minor Condition="'$(Project_Minor)' == ''">0</Project_Minor>
 		<Project_Build Condition="'$(Project_Build)' == ''">3</Project_Build>
+		
+		<!-- Picks up TeamCity's Build_Number property, or default to zero when not running under TeamCity -->
+		<Build_Number Condition="'$(Build_Number)' == ''">0</Build_Number>
+		<Build_Revision>$(Build_Number)</Build_Revision>
 	</PropertyGroup>
 
 	
 	<!-- Testing Properties -->
 	<PropertyGroup>
+		<TestDetectionExpression>.[\.]((Integration|Unit)?Test[s]{0,1}?)</TestDetectionExpression>
+
 		<TestRunner_Enabled Condition="'$(TestRunner_Enabled)' == ''">true</TestRunner_Enabled>
 		<!-- Controls whether tests are run -->
 		<TestRunner_Timeout Condition="'$(TestRunner_Timeout)' == ''">180000</TestRunner_Timeout>
@@ -130,7 +149,7 @@ limitations under the License.
 	
 	<!-- 3rd Party Program Paths -->
 	<PropertyGroup>
-		<NUnitPath Condition="'$(NUnitPath)' == ''">$(ToolsPath)/nunit/bin</NUnitPath>
+		<NUnitPath Condition="'$(NUnitPath)' == ''">$(ToolsPath)/NUnit/bin</NUnitPath>
 		<NCoverPath Condition="'$(NCoverPath)' == ''">$(ProgramFiles)/NCover</NCoverPath>
 		<MSBuildCommunityTasksPath Condition="'$(MSBuildCommunityTasksPath)' == ''">$(ToolsPath)/MSBuildCommunityTasks</MSBuildCommunityTasksPath>
 	</PropertyGroup>
@@ -153,7 +172,6 @@ limitations under the License.
 	to ensure that we only ever update the AssemblyInfo files if a compile is actually going to take place.-->
 	<Target
 		Name="UpdateAssemblyInfoFiles"
-		DependsOnTargets="GetBuildRevision" 
 		Inputs="$(MSBuildAllProjects);
 					@(Compile);
 					@(ManifestResourceWithNoCulture);
@@ -166,47 +184,20 @@ limitations under the License.
 					@(CustomAdditionalCompileInputs)"
 		Outputs="@(IntermediateAssembly);$(AssemblyInfoFile)"
 		>
-
-		<AssemblyInfo
-			CodeLanguage="cs"
-			OutputFile="$(AssemblyInfoFile)"
-			AssemblyTitle="$(AssemblyTitle)"
-			AssemblyProduct="$(AssemblyProduct)"
-			AssemblyDescription="$(AssemblyDescription)"
-			AssemblyVersion="$(Project_Major).$(Project_Minor).$(Project_Build).0"
-			AssemblyInformationalVersion="$(Project_Major).$(Project_Minor).$(Project_Build).$(Build_Revision)"
-			AssemblyFileVersion="$(Project_Major).$(Project_Minor).$(Project_Build).$(Build_Revision)"
-			ComVisible="$(ComVisible)"
-			CLSCompliant="$(CLSCompliant)"
-			AllowPartiallyTrustedCallers="$(AllowPartiallyTrustedCallers)"
-			/>
-	
-	</Target>
-
-	
-	<!-- Sets property $(Build_Revision)-->
-	<Target
-		Name="GetBuildRevision"
-		Inputs="$(MSBuildAllProjects);
-					@(Compile);
-					@(ManifestResourceWithNoCulture);
-					$(ApplicationIcon);
-					$(AssemblyOriginatorKeyFile);
-					@(ManifestNonResxWithNoCultureOnDisk);
-					@(ReferencePath);
-					@(CompiledLicenseFile);
-					@(EmbeddedDocumentation);                
-					@(CustomAdditionalCompileInputs)"
-		Outputs="@(IntermediateAssembly)"
-		>
 		
-		<PropertyGroup>
-			<Build_Number Condition="'$(Build_Number)' == ''">0</Build_Number>
-			<Build_Revision>$(Build_Number)</Build_Revision>
-		</PropertyGroup>
-
+		<WriteLinesToFile File="$(AssemblyInfoFile)" Overwrite="true"
+			Lines='// ------------------------------------------------------------------------------&#xD;&#xA;//  &lt;autogenerated&gt;&#xD;&#xA;//      Changes to this file will be lost if the code is regenerated.&#xD;&#xA;//  &lt;/autogenerated&gt;&#xD;&#xA;// ------------------------------------------------------------------------------'
+		/>
+		<WriteLinesToFile File="$(AssemblyInfoFile)" Lines='[assembly: System.Runtime.InteropServices.ComVisible($(ComVisible))]' />
+		<WriteLinesToFile File="$(AssemblyInfoFile)" Lines='[assembly: System.CLSCompliant($(CLSCompliant))]' />
+		<WriteLinesToFile File="$(AssemblyInfoFile)" Lines='[assembly: System.Reflection.AssemblyTitle("$(AssemblyTitle)")]' />
+		<WriteLinesToFile File="$(AssemblyInfoFile)" Lines='[assembly: System.Reflection.AssemblyProduct("$(AssemblyProduct)")]' />
+		<WriteLinesToFile File="$(AssemblyInfoFile)" Lines='[assembly: System.Reflection.AssemblyVersion("$(Project_Major).$(Project_Minor).$(Project_Build).0")]' />
+		<WriteLinesToFile File="$(AssemblyInfoFile)" Lines='[assembly: System.Reflection.AssemblyFileVersion("$(Project_Major).$(Project_Minor).$(Project_Build).$(Build_Revision)")]' />
+		<WriteLinesToFile File="$(AssemblyInfoFile)" Lines='[assembly: System.Reflection.AssemblyInformationalVersion("$(Project_Major).$(Project_Minor).$(Project_Build).$(Build_Revision)")]' />
+		<WriteLinesToFile File="$(AssemblyInfoFile)" Lines='[assembly: System.Security.AllowPartiallyTrustedCallers]' Condition="$(AllowPartiallyTrustedCallers)" />
+	
 	</Target>
-
 
 	<!-- User targets can be run as the lastest -->
 	<Import Condition="Exists('$(RootPath)/Common.User.Targets')" Project="$(RootPath)/Common.User.Targets" />

@@ -31,7 +31,7 @@ limitations under the License.
 
 	<!-- Project Properties -->
 	<PropertyGroup>
-		<ProjectName>Castle.InversionOfControl</ProjectName>
+		<ProjectName>Castle.Windsor</ProjectName>
 		
 		<!-- Versioning -->
 		<Project_Major>2</Project_Major>
