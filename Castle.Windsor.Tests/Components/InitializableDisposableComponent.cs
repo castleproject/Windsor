@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,50 +12,38 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.MicroKernel.Tests.Lifecycle.Components
+namespace Castle.Windsor.Tests.Components
 {
 	using System;
+
 	using Castle.Core;
 
-	/// <summary>
-	/// Summary description for HttpFakeServer.
-	/// </summary>
 	[Transient]
-	public class HttpFakeServer : IInitializable, IDisposable
+	public class InitializableDisposableComponent : IInitializable, IDisposable
 	{
-		private bool _isInitialized;
-		private bool _isDisposed;
-
-		public HttpFakeServer()
-		{
-		}
-
-		#region IInitialize Members
+		private bool isDisposed;
+		private bool isInitialized;
 
 		public void Initialize()
 		{
-			_isInitialized = true;
-		}
-
-		#endregion
-
-		public bool IsInitialized
-		{
-			get { return _isInitialized; }
+			isInitialized = true;
 		}
 
 		public bool IsDisposed
 		{
-			get { return _isDisposed; }
+			get { return isDisposed; }
 		}
 
-		#region IDisposable Members
+		public bool IsInitialized
+		{
+			get { return isInitialized; }
+		}
+
 
 		public void Dispose()
 		{
-			_isDisposed = true;
+			isDisposed = true;
 		}
 
-		#endregion
 	}
 }
