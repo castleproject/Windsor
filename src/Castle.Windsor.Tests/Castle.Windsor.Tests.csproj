@@ -95,9 +95,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AbstractContainerTestFixture.cs" />
     <Compile Include="ClassComponents\HasByRefCtorArgument.cs" />
     <Compile Include="Components\ArrayRefDepAsConstructor.cs" />
+    <Compile Include="Components\InitializableComponent.cs" />
     <Compile Include="Components\InitializableDisposableComponent.cs" />
+    <Compile Include="Components\SimpleServiceInitializable.cs" />
     <Compile Include="Facilities\TypedFactory\Components\ServiceWithMultipleCtors.cs" />
     <Compile Include="Facilities\TypedFactory\Components\ServiceFactory.cs" />
     <Compile Include="Facilities\TypedFactory\Components\ServiceRedirect.cs" />
@@ -142,6 +145,7 @@
     <Compile Include="Facilities\TypedFactory\TypedFactoryAndSubContainersTestCase.cs" />
     <Compile Include="FailureCleanUpTestCase.cs" />
     <Compile Include="Interceptors\ThrowInCtorInterceptor.cs" />
+    <Compile Include="Lifecycle\DisposeTestCase.cs" />
     <Compile Include="Lifestyle\Components\UsesComponentWithDispose.cs" />
     <Compile Include="Proxy\OnBehalfAwareInterceptorSelector.cs" />
     <Compile Include="Proxy\OnBehalfAwareProxyGenerationHook.cs" />
@@ -396,7 +400,7 @@
     <Compile Include="Lifestyle\Components\DisposableBase.cs" />
     <Compile Include="Lifestyle\Components\MyCustomerActivator.cs" />
     <Compile Include="Lifestyle\DecomissioningResponsibilitiesTestCase.cs" />
-    <Compile Include="Lifecycle\LifecycleTestCase.cs">
+    <Compile Include="Lifecycle\InitializableTestCase.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Lifestyle\Components\PerWebRequestComponent.cs" />

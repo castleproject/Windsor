@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,46 +14,33 @@
 
 namespace Castle.Windsor.Tests.Lifecycle
 {
-	using Castle.MicroKernel;
 	using Castle.MicroKernel.Registration;
 
 	using NUnit.Framework;
 
 	[TestFixture]
-	public class OnCreateTestCase
+	public class OnCreateTestCase : AbstractContainerTestFixture
 	{
-
-		#region Setup/Teardown
-
-		[SetUp]
-		public void SetUp()
-		{
-			container = new DefaultKernel();
-		}
-
-		#endregion
-
-		private IKernel container;
-
 		[Test]
 		public void CanModify_when_singleton()
 		{
-			container.Register(Component.For<IService>().ImplementedBy<MyService>()
-			                   	.OnCreate((kernel, instance) => instance.Name+="a"));
-			var service = container.Resolve<IService>();
+			Container.Register(Component.For<IService>().ImplementedBy<MyService>()
+			                   	.OnCreate((kernel, instance) => instance.Name += "a"));
+			var service = Container.Resolve<IService>();
 			Assert.That(service.Name, Is.EqualTo("a"));
-			service = container.Resolve<IService>();
+			service = Container.Resolve<IService>();
 			Assert.That(service.Name, Is.EqualTo("a"));
 		}
+
 		[Test]
 		public void CanModify_when_singleton_multiple_ordered()
 		{
-			container.Register(Component.For<IService>().ImplementedBy<MyService>()
-			                   	.OnCreate((kernel, instance) => instance.Name+="a",
-			                   	          (kernel, instance) => instance.Name+="b"));
-			var service = container.Resolve<IService>();
+			Container.Register(Component.For<IService>().ImplementedBy<MyService>()
+			                   	.OnCreate((kernel, instance) => instance.Name += "a",
+			                   	          (kernel, instance) => instance.Name += "b"));
+			var service = Container.Resolve<IService>();
 			Assert.That(service.Name, Is.EqualTo("ab"));
-			service = container.Resolve<IService>();
+			service = Container.Resolve<IService>();
 			Assert.That(service.Name, Is.EqualTo("ab"));
 		}
 
@@ -61,11 +48,11 @@ namespace Castle.Windsor.Tests.Lifecycle
 		public void CanModify_when_transient()
 		{
 			MyService2.staticname = "";
-			container.Register(Component.For<IService2>().ImplementedBy<MyService2>()
-			                   	.LifeStyle.Transient.OnCreate((kernel, instance) => instance.Name+="a"));
-			var service = container.Resolve<IService2>();
+			Container.Register(Component.For<IService2>().ImplementedBy<MyService2>()
+			                   	.LifeStyle.Transient.OnCreate((kernel, instance) => instance.Name += "a"));
+			var service = Container.Resolve<IService2>();
 			Assert.That(service.Name, Is.EqualTo("a"));
-			service = container.Resolve<IService2>();
+			service = Container.Resolve<IService2>();
 			Assert.That(service.Name, Is.EqualTo("aa"));
 		}
 
@@ -73,15 +60,26 @@ namespace Castle.Windsor.Tests.Lifecycle
 		public void CanModify_when_transient_multiple_ordered()
 		{
 			MyService2.staticname = "";
-			container.Register(Component.For<IService2>().ImplementedBy<MyService2>()
-			                   	.LifeStyle.Transient.OnCreate((kernel, instance) => instance.Name+="a",
-			                   	                              (kernel, instance) => instance.Name+="b"));
-			var service = container.Resolve<IService2>();
+			Container.Register(Component.For<IService2>().ImplementedBy<MyService2>()
+			                   	.LifeStyle.Transient.OnCreate((kernel, instance) => instance.Name += "a",
+			                   	                              (kernel, instance) => instance.Name += "b"));
+			var service = Container.Resolve<IService2>();
 			Assert.That(service.Name, Is.EqualTo("ab"));
 
-			service = container.Resolve<IService2>();
+			service = Container.Resolve<IService2>();
 			Assert.That(service.Name, Is.EqualTo("abab"));
+		}
 
+		[Test]
+		public void Works_for_components_obtained_via_factory()
+		{
+			Container.Register(Component.For<IService>()
+			                   	.UsingFactoryMethod(() => new MyService())
+			                   	.OnCreate((kernel, instance) => instance.Name += "a"));
+
+			var service = Container.Resolve<IService>();
+
+			Assert.That(service.Name, Is.EqualTo("a"));
 		}
 	}
 
@@ -94,15 +92,15 @@ namespace Castle.Windsor.Tests.Lifecycle
 	{
 		public MyService()
 		{
-			Name = "";
+			Name = string.Empty;
 		}
+
 		#region IService Members
 
 		public string Name { get; set; }
 
 		#endregion
 	}
-
 
 	public interface IService2
 	{
@@ -111,11 +109,6 @@ namespace Castle.Windsor.Tests.Lifecycle
 
 	public class MyService2 : IService2
 	{
-		static MyService2()
-		{
-			staticname = "";
-		}
-
 		public static string staticname;
 
 		#region IService2 Members
@@ -127,7 +120,10 @@ namespace Castle.Windsor.Tests.Lifecycle
 		}
 
 		#endregion
+
+		static MyService2()
+		{
+			staticname = string.Empty;
+		}
 	}
 }
-
-
