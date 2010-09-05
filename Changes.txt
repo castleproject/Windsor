@@ -1,18 +1,22 @@
 unreleased changes
 ==================
-- added to Silverlight version API from .NET version that took anonymous object as a shorthand for named arguments. This works in SL, but requires [assembly: InternalsVisibleTo(Castle.Core.Internal.InternalsVisible.ToCastleCore)]
+- fixed IOC-218 Enable methods that take arguments as anonymous objects in Silverlight version. This works in SL, but requires [assembly: InternalsVisibleTo(Castle.Core.Internal.InternalsVisible.ToCastleCore)]
 
-- implemented IOC-216 - Make it possible to specify service overrides in DependsOn, either via Property, or ServiceOverride entry class.
+- fixed IOC-217 Enable ISupportInitialize support as lifecyclecle concern
 
-- implemented IOC-215 - Hide obsolete members from IntelliSense
+- implemented IOC-216 Make it possible to specify service overrides in DependsOn, either via Property, or ServiceOverride entry class.
 
-- implemented IOC-212 - Add ability to make IProxyGenerationHooks and IInterceptoSelectors IOnBehalfAware
+- implemented IOC-215 Hide obsolete members from IntelliSense
 
-- added support for byref construtor parameters.
+- fixed IOC-214 Missing bracket in obsolete warning text
 
-- fixed IOC-209 Bug in constructor selection when resolving - Windsor would pick unresolvable constructor
+- implemented IOC-212 Add ability to make IProxyGenerationHooks and IInterceptoSelectors IOnBehalfAware
+
+- fixed IOC-211 Resolve doesn't work with constructor's ref argument
 
 - fixed IOC-210 Typed Factory Facility treats constructor dependency as non-optional if resolved as a TFF component
+
+- fixed IOC-209 Bug in constructor selection when resolving - Windsor would pick unresolvable constructor
 
 - Reverted back (to the way it was in v2.1) conditional registration of helper components used by TypedFactoryFacility as it would cause issues when used with nested containers (see the new test and thread "Typed Factories in sub Container (differences between 2.5 and 2.1)" on users group)
 
