@@ -27,26 +27,26 @@ namespace Castle.MicroKernel.LifecycleConcerns
 #endif
 	public class LateBoundConcerns : ICommissionConcern, IDecommissionConcern
 	{
-		private IDictionary<Type, ILifecycleConcern> steps;
+		private IDictionary<Type, ILifecycleConcern> concerns;
 
 		public void AddConcern<TForType>(ILifecycleConcern lifecycleConcern)
 		{
-			if (steps == null)
+			if (concerns == null)
 			{
-				steps = new Dictionary<Type, ILifecycleConcern>();
+				concerns = new Dictionary<Type, ILifecycleConcern>(2);
 			}
-			steps.Add(typeof(TForType), lifecycleConcern);
+			concerns.Add(typeof(TForType), lifecycleConcern);
 		}
 
 		public bool HasConcerns
 		{
-			get { return steps != null; }
+			get { return concerns != null; }
 		}
 
 		public void Apply(ComponentModel model, object component)
 		{
 			var type = component.GetType();
-			foreach (var step in steps)
+			foreach (var step in concerns)
 			{
 				if (step.Key.IsAssignableFrom(type))
 				{

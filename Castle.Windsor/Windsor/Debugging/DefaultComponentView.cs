@@ -18,6 +18,7 @@ namespace Castle.Windsor.Debugging
 	using System.Linq;
 
 	using Castle.Core;
+	using Castle.Core.Internal;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Handlers;
 
@@ -28,6 +29,16 @@ namespace Castle.Windsor.Debugging
 		public DefaultComponentView(IHandler handler)
 		{
 			this.handler = handler;
+		}
+
+		private object GetImplementation()
+		{
+			var implementation = handler.ComponentModel.Implementation;
+			if (implementation != typeof(LateBoundComponent))
+			{
+				return implementation;
+			}
+			return LateBoundComponent.Instance;
 		}
 
 		private object GetLifestyle()
@@ -53,24 +64,24 @@ namespace Castle.Windsor.Debugging
 			return new ComponentStatusDebuggerViewItem(handler as IExposeDependencyInfo);
 		}
 
+		private bool HasInterceptors()
+		{
+			return handler.ComponentModel.Interceptors.HasInterceptors;
+		}
+
 		public IEnumerable<DebuggerViewItem> Attach()
 		{
-			yield return new DebuggerViewItem("Implementation", handler.ComponentModel.Implementation);
+			yield return new DebuggerViewItem("Implementation", GetImplementation());
 			yield return new DebuggerViewItem("Service", handler.Service);
 			yield return new DebuggerViewItem("Status", GetStatus());
 			yield return new DebuggerViewItem("Lifestyle", GetLifestyle());
-			if(HasInterceptors())
+			if (HasInterceptors())
 			{
 				var interceptors = handler.ComponentModel.Interceptors;
 				yield return
 					new DebuggerViewItem("Interceptors", interceptors.ToArray());
 			}
 			yield return new DebuggerViewItem("Raw handler", handler);
-		}
-
-		private bool HasInterceptors()
-		{
-			return handler.ComponentModel.Interceptors.HasInterceptors;
 		}
 	}
 }
