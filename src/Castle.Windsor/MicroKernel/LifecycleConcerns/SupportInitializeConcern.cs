@@ -14,6 +14,7 @@
 
 namespace Castle.MicroKernel.LifecycleConcerns
 {
+#if !SL3 // in SL3 the interface is internal
 	using System;
 	using System.ComponentModel;
 
@@ -49,4 +50,5 @@ namespace Castle.MicroKernel.LifecycleConcerns
 			get { return instance; }
 		}
 	}
+#endif
 }
