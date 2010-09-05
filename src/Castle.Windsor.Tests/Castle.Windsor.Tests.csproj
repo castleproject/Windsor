@@ -97,6 +97,7 @@
   <ItemGroup>
     <Compile Include="ClassComponents\HasByRefCtorArgument.cs" />
     <Compile Include="Components\ArrayRefDepAsConstructor.cs" />
+    <Compile Include="Components\InitializableDisposableComponent.cs" />
     <Compile Include="Facilities\TypedFactory\Components\ServiceWithMultipleCtors.cs" />
     <Compile Include="Facilities\TypedFactory\Components\ServiceFactory.cs" />
     <Compile Include="Facilities\TypedFactory\Components\ServiceRedirect.cs" />
@@ -392,9 +393,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="LazyLoadingTestCase.cs" />
-    <Compile Include="Lifecycle\Components\HttpFakeServer.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Lifestyle\Components\DisposableBase.cs" />
     <Compile Include="Lifestyle\Components\MyCustomerActivator.cs" />
     <Compile Include="Lifestyle\DecomissioningResponsibilitiesTestCase.cs" />

@@ -12,15 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.MicroKernel.Tests.Lifecycle
+namespace Castle.Windsor.Tests.Lifecycle
 {
-	using System;
-
 	using Castle.Core;
 	using Castle.Facilities.Startable;
+	using Castle.MicroKernel;
 	using Castle.MicroKernel.Context;
 	using Castle.MicroKernel.Registration;
-	using Castle.MicroKernel.Tests.Lifecycle.Components;
+	using Castle.Windsor.Tests.Components;
+
 	using NUnit.Framework;
 
 	/// <summary>
@@ -46,9 +46,9 @@ namespace Castle.MicroKernel.Tests.Lifecycle
 		[Test]
 		public void InitializeLifecycle()
 		{
-			kernel.Register(Component.For<HttpFakeServer>());
+			kernel.Register(Component.For<InitializableDisposableComponent>());
 
-			var server = kernel.Resolve<HttpFakeServer>();
+			var server = kernel.Resolve<InitializableDisposableComponent>();
 
 			Assert.IsTrue(server.IsInitialized);
 		}
@@ -56,10 +56,10 @@ namespace Castle.MicroKernel.Tests.Lifecycle
 		[Test]
 		public void DisposableLifecycle()
 		{
-			kernel.Register(Component.For<HttpFakeServer>());
+			kernel.Register(Component.For<InitializableDisposableComponent>());
 			
-			var handler = kernel.GetHandler(typeof(HttpFakeServer));
-			var server = (HttpFakeServer) handler.Resolve(CreationContext.Empty);
+			var handler = kernel.GetHandler(typeof(InitializableDisposableComponent));
+			var server = (InitializableDisposableComponent) handler.Resolve(CreationContext.Empty);
 
 			handler.Release(server);
 
