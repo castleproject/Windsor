@@ -14,93 +14,95 @@
 
 namespace Castle.Windsor.Tests
 {
-	 using Castle.MicroKernel;
-	 using Castle.MicroKernel.Registration;
-	 using Castle.Windsor.Tests.Lifecycle;
+	using Castle.MicroKernel;
+	using Castle.MicroKernel.Registration;
+	using Castle.Windsor.Tests.Lifecycle;
 
-	 using NUnit.Framework;
+	using NUnit.Framework;
 
-	 [TestFixture]
-	 public class CustomActivatorTestCase
-	 {
-		  private IKernel kernel;
+	[TestFixture]
+	public class CustomActivatorTestCase
+	{
+		private IKernel kernel;
 
-		  [SetUp]
-		  public void SetUp()
-		  {
-				kernel = new DefaultKernel();
-		  }
+		[Test]
+		public void Can_resolve_component_with_primitive_dependency_via_factory()
+		{
+			kernel.Register(
+				Component.For<ClassWithPrimitiveDependency>()
+					.UsingFactoryMethod(() => new ClassWithPrimitiveDependency(2)));
 
-		  [Test]
-		  public void Can_resolve_component_with_primitive_dependency_via_factory()
-		  {
-				kernel.Register(
-					 Component.For<ClassWithPrimitiveDependency>()
-						  .UsingFactoryMethod( () => new ClassWithPrimitiveDependency( 2 ) ) );
+			kernel.Resolve<ClassWithPrimitiveDependency>();
+		}
 
-				kernel.Resolve<ClassWithPrimitiveDependency>();
-		  }
+		[Test]
+		public void Can_resolve_component_with_primitive_dependency_via_instance()
+		{
+			kernel.Register(
+				Component.For<ClassWithPrimitiveDependency>()
+					.Instance(new ClassWithPrimitiveDependency(2)));
 
-		  [Test]
-		  public void Can_resolve_component_with_primitive_dependency_via_instance()
-		  {
-				kernel.Register(
-					 Component.For<ClassWithPrimitiveDependency>()
-						  .Instance( new ClassWithPrimitiveDependency( 2 ) ) );
+			kernel.Resolve<ClassWithPrimitiveDependency>();
+		}
 
-				kernel.Resolve<ClassWithPrimitiveDependency>();
-		  }
+		[Test]
+		public void Can_resolve_component_with_service_dependency_via_factory()
+		{
+			kernel.Register(
+				Component.For<ClassWithServiceDependency>()
+					.UsingFactoryMethod(() => new ClassWithServiceDependency(null)));
 
-		  [Test]
-		  public void Can_resolve_component_with_service_dependency_via_factory()
-		  {
-				kernel.Register(
-					 Component.For<ClassWithServiceDependency>()
-						  .UsingFactoryMethod( () => new ClassWithServiceDependency( null ) ) );
+			kernel.Resolve<ClassWithServiceDependency>();
+		}
 
-				kernel.Resolve<ClassWithServiceDependency>();
-		  }
+		[Test]
+		public void Can_resolve_component_with_service_dependency_via_instance()
+		{
+			kernel.Register(
+				Component.For<ClassWithServiceDependency>()
+					.Instance(new ClassWithServiceDependency(null)));
 
-		  [Test]
-		  public void Can_resolve_component_with_service_dependency_via_instance()
-		  {
-				kernel.Register(
-					 Component.For<ClassWithServiceDependency>()
-						  .Instance( new ClassWithServiceDependency( null ) ) );
+			kernel.Resolve<ClassWithServiceDependency>();
+		}
 
-				kernel.Resolve<ClassWithServiceDependency>();
-		  }
+		[SetUp]
+		public void SetUp()
+		{
+			kernel = new DefaultKernel();
+		}
 
+		[TearDown]
+		public void TearDown()
+		{
+			kernel.Dispose();
+		}
+	}
 
-		  [TearDown]
-		  public void TearDown()
-		  {
-				kernel.Dispose();
-		  }
-	 }
-	 public class ClassWithPrimitiveDependencyFactory
-	 {
-		  public ClassWithPrimitiveDependency Create()
-		  {
-				return new ClassWithPrimitiveDependency( 2 );
-		  }
-	 }
-	 public class ClassWithPrimitiveDependency
-	 {
-		  private int dependency;
+	public class ClassWithPrimitiveDependencyFactory
+	{
+		public ClassWithPrimitiveDependency Create()
+		{
+			return new ClassWithPrimitiveDependency(2);
+		}
+	}
 
-		  public ClassWithPrimitiveDependency( int dependency )
-		  {
-				this.dependency = dependency;
-		  }
-	 }
-	 public class ClassWithServiceDependency
-	 {
-		  private IService dependency;
+	public class ClassWithPrimitiveDependency
+	{
+		private int dependency;
 
-		  public ClassWithServiceDependency( IService dependency )
-		  {
-				this.dependency = dependency;
-		  }
-	 }
+		public ClassWithPrimitiveDependency(int dependency)
+		{
+			this.dependency = dependency;
+		}
+	}
+
+	public class ClassWithServiceDependency
+	{
+		private IService dependency;
+
+		public ClassWithServiceDependency(IService dependency)
+		{
+			this.dependency = dependency;
+		}
+	}
 }
