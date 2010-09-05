@@ -14,6 +14,8 @@
 
 namespace Castle.Core.Internal
 {
+	using System.Diagnostics;
+
 	/// <summary>
 	/// Marker class used to denote components that have late bound type
 	/// That is the actual type is not known exactly at the time when <see cref="ComponentModel"/>
@@ -21,6 +23,12 @@ namespace Castle.Core.Internal
 	/// </summary>
 	public sealed class LateBoundComponent
 	{
-		
+		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
+		public static object Instance = new LateBoundComponent();
+
+		public override string ToString()
+		{
+			return "Late bound component, actual type is not known statically.";
+		}
 	}
 }

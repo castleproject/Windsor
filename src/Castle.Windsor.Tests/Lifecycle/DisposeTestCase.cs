@@ -46,6 +46,9 @@ namespace Castle.Windsor.Tests.Lifecycle
 			                   	.LifeStyle.Transient);
 
 			var service = Container.Resolve<ISimpleService>();
+
+			Assert.AreEqual(0, SimpleServiceDisposable.DisposedCount);
+
 			Container.Release(service);
 
 			Assert.AreEqual(1, SimpleServiceDisposable.DisposedCount);
