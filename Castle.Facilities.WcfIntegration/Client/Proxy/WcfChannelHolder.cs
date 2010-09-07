@@ -27,10 +27,11 @@ namespace Castle.Facilities.WcfIntegration
 	{
 		private readonly ChannelCreator channelCreator;
 
-		public WcfChannelHolder(ChannelCreator channelCreator, IWcfBurden burden)
+		public WcfChannelHolder(ChannelCreator channelCreator, IWcfBurden burden, TimeSpan? closeTimeout)
 		{
 			this.channelCreator = channelCreator;
 			ChannelBurden = burden;
+			CloseTimeout = closeTimeout;
 			ObtainChannelFactory();
 			CreateChannel();
 		}
@@ -42,6 +43,8 @@ namespace Castle.Facilities.WcfIntegration
 		public ChannelFactory ChannelFactory { get; private set; }
 
 		public IWcfBurden ChannelBurden { get; private set; }
+
+		public TimeSpan? CloseTimeout { get; private set; }
 
 		public bool IsChannelUsable
 		{
@@ -55,7 +58,7 @@ namespace Castle.Facilities.WcfIntegration
 			{
 				if (Channel != null)
 				{
-					WcfUtils.ReleaseCommunicationObject(Channel, TimeSpan.Zero);
+					WcfUtils.ReleaseCommunicationObject(Channel, CloseTimeout);
 				}
 
 				CreateChannel();
@@ -84,7 +87,7 @@ namespace Castle.Facilities.WcfIntegration
 
 			if (Channel != null)
 			{
-				WcfUtils.ReleaseCommunicationObject(Channel, TimeSpan.Zero);
+				WcfUtils.ReleaseCommunicationObject(Channel, CloseTimeout);
 			}
 		}
 

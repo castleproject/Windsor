@@ -34,7 +34,7 @@ namespace Castle.Facilities.WcfIntegration
 					"Did you forget to register that facility?");
 			}
 
-			if (IsServiceContract(service) == false)
+			if (service == null || IsServiceContract(service) == false)
 			{
 				return null;
 			}

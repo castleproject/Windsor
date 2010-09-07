@@ -29,6 +29,7 @@ namespace Castle.Facilities.WcfIntegration
 		{
 			BindServiceHostAware(serviceHost, kernel, burden);
 			AddServiceBehaviors(serviceHost, kernel, burden);
+			AddServiceHostExtensions(serviceHost, kernel, burden);
 			AddErrorHandlers(serviceHost, kernel, burden);
 		}
 
@@ -36,6 +37,7 @@ namespace Castle.Facilities.WcfIntegration
 		{
 			WcfUtils.AddExtensionDependencies<IServiceBehavior>(kernel, WcfExtensionScope.Services, model);
 			WcfUtils.AddExtensionDependencies<IServiceHostAware>(kernel, WcfExtensionScope.Services, model);
+			WcfUtils.AddExtensionDependencies<IExtension<ServiceHostBase>>(kernel, WcfExtensionScope.Services, model);
 			WcfUtils.AddExtensionDependencies<IErrorHandler>(kernel, WcfExtensionScope.Services, model);
 		}
 
@@ -74,13 +76,21 @@ namespace Castle.Facilities.WcfIntegration
 			});
 		}
 
+		private static void AddServiceHostExtensions(ServiceHost serviceHost, IKernel kernel, IWcfBurden burden)
+		{
+			var extensions = new KeyedByTypeCollection<IExtension<ServiceHostBase>>();
+			WcfUtils.AddBehaviors(kernel, WcfExtensionScope.Services, extensions, burden, extension =>
+			{
+				serviceHost.Extensions.Add(extension);
+				return true;
+			});
+		}
+
 		private static void AddErrorHandlers(ServiceHost serviceHost, IKernel kernel, IWcfBurden burden)
 		{
 			var errorHandlers = new KeyedByTypeCollection<IErrorHandler>();
 			WcfUtils.AddBehaviors(kernel, WcfExtensionScope.Services, errorHandlers, burden, errorHandler =>
-			{
-				return WcfUtils.RegisterErrorHandler(serviceHost, errorHandler, true);
-			});
+				WcfUtils.RegisterErrorHandler(serviceHost, errorHandler, true));
 		}
 	}
 }

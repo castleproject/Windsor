@@ -102,7 +102,7 @@ namespace Castle.Facilities.WcfIntegration
 			{
 				WcfUtils.RegisterErrorHandler(endpoint, (IErrorHandler)extension, true);
 			}
-			else if (!WcfUtils.AttachExtension(endpoint.Behaviors, extension))
+			else if (WcfUtils.AttachExtension(endpoint.Behaviors, extension) == false)
 			{
 				if (withContract && !WcfUtils.AttachExtension(endpoint.Contract.Behaviors, extension))
 				{

@@ -34,6 +34,7 @@ namespace Castle.Facilities.WcfIntegration
 	public class WcfClientActivator : DefaultComponentActivator
 	{
 		private readonly WcfProxyFactory proxyFactory;
+		private readonly WcfClientExtension clients;
 		private ChannelCreator createChannel;
 		private IWcfBurden channelBurden;
 
@@ -60,7 +61,7 @@ namespace Castle.Facilities.WcfIntegration
 			ComponentInstanceDelegate onCreation, ComponentInstanceDelegate onDestruction)
 			: base(model, kernel, onCreation, onDestruction)
 		{
-			var clients = kernel.Resolve<WcfClientExtension>();
+			clients = kernel.Resolve<WcfClientExtension>();
 			proxyFactory = new WcfProxyFactory(new ProxyGenerator(), clients);
 		}
 
@@ -78,7 +79,7 @@ namespace Castle.Facilities.WcfIntegration
 
 			try
 			{
-				var channelHolder = new WcfChannelHolder(channelCreator, burden);
+				var channelHolder = new WcfChannelHolder(channelCreator, burden, clients.CloseTimeout);
 				var channel = (IChannel)proxyFactory.Create(Kernel, channelHolder, Model, context);
 				NotifyChannelCreatedOrAvailable(channel, burden, false);
 				return channel;
