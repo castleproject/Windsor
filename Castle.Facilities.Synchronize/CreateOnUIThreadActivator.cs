@@ -39,8 +39,7 @@ namespace Castle.Facilities.Synchronize
 		/// <param name="kernel">The kernel.</param>
 		/// <param name="onCreation">Delegate called on construction.</param>
 		/// <param name="onDestruction">Delegate called on destruction.</param>
-		public CreateOnUIThreadActivator(ComponentModel model, IKernel kernel,
-		                                 ComponentInstanceDelegate onCreation,
+		public CreateOnUIThreadActivator(ComponentModel model, IKernel kernel, ComponentInstanceDelegate onCreation,
 		                                 ComponentInstanceDelegate onDestruction)
 			: base(model, kernel, onCreation, onDestruction)
 		{
