@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,17 +12,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#if !SILVERLIGHT // we do not support xml config on SL
-namespace Castle.Windsor.Tests.Configuration
+#if !SILVERLIGHT
+// we do not support xml config on SL
+
+namespace Castle.Windsor.Tests.Config
 {
-	using Castle.Core.Configuration;
 	using Castle.Core.Resource;
 	using Castle.MicroKernel.SubSystems.Configuration;
 	using Castle.Windsor.Configuration.Interpreters;
+
 	using NUnit.Framework;
 
 	/// <summary>
-	/// Summary description for AppDomainConfigSourceTestCase.
+	///   Summary description for AppDomainConfigSourceTestCase.
 	/// </summary>
 	[TestFixture]
 	public class AppDomainConfigSourceTestCase
@@ -30,15 +32,15 @@ namespace Castle.Windsor.Tests.Configuration
 		[Test]
 		public void ProperDeserialization()
 		{
-			DefaultConfigurationStore store = new DefaultConfigurationStore();
-			XmlInterpreter interpreter = new XmlInterpreter(new ConfigResource());
+			var store = new DefaultConfigurationStore();
+			var interpreter = new XmlInterpreter(new ConfigResource());
 			interpreter.ProcessResource(interpreter.Source, store);
 
 			Assert.AreEqual(2, store.GetFacilities().Length);
 			Assert.AreEqual(3, store.GetComponents().Length);
 
-			IConfiguration config = store.GetFacilityConfiguration("testidengine");
-			IConfiguration childItem = config.Children["item"];
+			var config = store.GetFacilityConfiguration("testidengine");
+			var childItem = config.Children["item"];
 			Assert.IsNotNull(childItem);
 			Assert.AreEqual("value", childItem.Value);
 

@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
 #if(!SILVERLIGHT)
+
 namespace Castle.Windsor.Tests.Facilities.Remoting
 {
 	using System;
@@ -25,65 +25,70 @@ namespace Castle.Windsor.Tests.Facilities.Remoting
 
 	using NUnit.Framework;
 
-	[TestFixture, Serializable]
+	[TestFixture]
+	[Serializable]
 	public class RemoteGenericComponentTestCase : AbstractRemoteTestCase
 	{
-		protected override String GetServerConfigFile()
+		[Test]
+		public void ClientContainerConsumingRemoteCustomComponentUsingGenericInterface()
 		{
-			return ConfigHelper.ResolveConfigPath("Facilities/Remoting/Configs/server_kernelgenericcomponent.xml");
+			clientDomain.DoCallBack(ClientContainerConsumingRemoteCustomComponentUsingGenericInterfaceCallback);
+		}
+
+		public void ClientContainerConsumingRemoteCustomComponentUsingGenericInterfaceCallback()
+		{
+			var clientContainer = CreateRemoteContainer(clientDomain,
+			                                            ConfigHelper.ResolveConfigPath(
+			                                            	"Facilities/Remoting/Configs/client_kernelgenericcomponent.xml"));
+
+			var service = clientContainer.Resolve<IGenericToStringService<StringBuilder>>();
+
+			Assert.IsTrue(RemotingServices.IsTransparentProxy(service));
+			Assert.IsTrue(RemotingServices.IsObjectOutOfAppDomain(service));
+
+			Assert.AreEqual("33", service.ToString(new StringBuilder("one"), new StringBuilder("two")));
 		}
 
 		[Test]
-        public void ClientContainerConsumingRemoteGenericComponent()
+		public void ClientContainerConsumingRemoteGenericComponent()
 		{
-            clientDomain.DoCallBack(new CrossAppDomainDelegate(ClientContainerConsumingRemoteGenericComponentCallback));
+			clientDomain.DoCallBack(ClientContainerConsumingRemoteGenericComponentCallback);
 		}
 
 		public void ClientContainerConsumingRemoteGenericComponentCallback()
 		{
-            IWindsorContainer clientContainer = CreateRemoteContainer(clientDomain, ConfigHelper.ResolveConfigPath("Facilities/Remoting/Configs/client_kernelgenericcomponent.xml"));
+			var clientContainer = CreateRemoteContainer(clientDomain,
+			                                            ConfigHelper.ResolveConfigPath(
+			                                            	"Facilities/Remoting/Configs/client_kernelgenericcomponent.xml"));
 
-            IGenericToStringService<String> service = clientContainer.Resolve<IGenericToStringService<String>>();
+			var service = clientContainer.Resolve<IGenericToStringService<String>>();
 
-			Assert.IsTrue( RemotingServices.IsTransparentProxy(service) );
-			Assert.IsTrue( RemotingServices.IsObjectOutOfAppDomain(service) );
+			Assert.IsTrue(RemotingServices.IsTransparentProxy(service));
+			Assert.IsTrue(RemotingServices.IsObjectOutOfAppDomain(service));
 
 			Assert.AreEqual("onetwo", service.ToString("one", "two"));
 		}
 
-        [Test]
-        [ExpectedException(typeof(Castle.MicroKernel.ComponentNotFoundException))]
-        public void ClientContainerConsumingRemoteGenericComponentWhichDoesNotExistOnServer()
-        {
-            clientDomain.DoCallBack(new CrossAppDomainDelegate(ClientContainerConsumingRemoteGenericComponentWhichDoesNotExistOnServerCallback));
-        }
+		[Test]
+		[ExpectedException(typeof(Castle.MicroKernel.ComponentNotFoundException))]
+		public void ClientContainerConsumingRemoteGenericComponentWhichDoesNotExistOnServer()
+		{
+			clientDomain.DoCallBack(ClientContainerConsumingRemoteGenericComponentWhichDoesNotExistOnServerCallback);
+		}
 
-        public void ClientContainerConsumingRemoteGenericComponentWhichDoesNotExistOnServerCallback()
-        {
-            IWindsorContainer clientContainer = CreateRemoteContainer(clientDomain, ConfigHelper.ResolveConfigPath("Facilities/Remoting/Configs/client_kernelgenericcomponent.xml"));
+		public void ClientContainerConsumingRemoteGenericComponentWhichDoesNotExistOnServerCallback()
+		{
+			var clientContainer = CreateRemoteContainer(clientDomain,
+			                                            ConfigHelper.ResolveConfigPath(
+			                                            	"Facilities/Remoting/Configs/client_kernelgenericcomponent.xml"));
 
-            GenericToStringServiceImpl<String> service = clientContainer.Resolve<GenericToStringServiceImpl<String>>();        
-        }
+			var service = clientContainer.Resolve<GenericToStringServiceImpl<String>>();
+		}
 
-
-        [Test]
-        public void ClientContainerConsumingRemoteCustomComponentUsingGenericInterface()
-        {
-            clientDomain.DoCallBack(new CrossAppDomainDelegate(ClientContainerConsumingRemoteCustomComponentUsingGenericInterfaceCallback));
-        }
-
-        public void ClientContainerConsumingRemoteCustomComponentUsingGenericInterfaceCallback()
-        {
-            IWindsorContainer clientContainer = CreateRemoteContainer(clientDomain, ConfigHelper.ResolveConfigPath("Facilities/Remoting/Configs/client_kernelgenericcomponent.xml"));
-
-            
-            IGenericToStringService<StringBuilder> service = clientContainer.Resolve<IGenericToStringService<StringBuilder>>();
-
-            Assert.IsTrue(RemotingServices.IsTransparentProxy(service));
-            Assert.IsTrue(RemotingServices.IsObjectOutOfAppDomain(service));
-
-            Assert.AreEqual("33", service.ToString(new StringBuilder("one"), new StringBuilder("two")));
-        }
+		protected override String GetServerConfigFile()
+		{
+			return ConfigHelper.ResolveConfigPath("Facilities/Remoting/Configs/server_kernelgenericcomponent.xml");
+		}
 	}
 }
 

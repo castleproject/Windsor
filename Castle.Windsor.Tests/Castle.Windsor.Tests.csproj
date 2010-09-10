@@ -96,6 +96,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AbstractContainerTestFixture.cs" />
+    <Compile Include="ByRefDependenciesTestCase.cs" />
     <Compile Include="ClassComponents\HasByRefCtorArgument.cs" />
     <Compile Include="Components\ArrayRefDepAsConstructor.cs" />
     <Compile Include="Components\InitializableComponent.cs" />
@@ -103,6 +104,7 @@
     <Compile Include="Components\SimpleServiceInitializable.cs" />
     <Compile Include="Components\SimpleServiceSupportInitialize.cs" />
     <Compile Include="Components\SupportInitializeComponent.cs" />
+    <Compile Include="ContainerAndGenericsInConfigTestCase.cs" />
     <Compile Include="Facilities\TypedFactory\Components\ServiceWithMultipleCtors.cs" />
     <Compile Include="Facilities\TypedFactory\Components\ServiceFactory.cs" />
     <Compile Include="Facilities\TypedFactory\Components\ServiceRedirect.cs" />
@@ -191,12 +193,12 @@
     <Compile Include="Components\WebServiceResultFinder.cs" />
     <Compile Include="Configuration2\ConfigurationInstallersTestCase.cs" />
     <Compile Include="Configuration2\UsingAssemblyTestCase.cs" />
-    <Compile Include="Configuration\AppDomainConfigurationStoreTestCase.cs" />
-    <Compile Include="Configuration\Components\ClassWithComplexParameter.cs" />
-    <Compile Include="Configuration\Components\ClassWithConstructors.cs" />
-    <Compile Include="Configuration\ConfigTestCase.cs" />
-    <Compile Include="Configuration\ConfigurationTestCase.cs" />
-    <Compile Include="Configuration\ConfigXmlInterpreterTestCase.cs" />
+    <Compile Include="Config\AppDomainConfigurationStoreTestCase.cs" />
+    <Compile Include="Config\Components\ClassWithComplexParameter.cs" />
+    <Compile Include="Config\Components\ClassWithConstructors.cs" />
+    <Compile Include="Config\ConfigTestCase.cs" />
+    <Compile Include="Config\ConfigurationTestCase.cs" />
+    <Compile Include="Config\ConfigXmlInterpreterTestCase.cs" />
     <Compile Include="CustomActivatorTestCase.cs" />
     <Compile Include="ClassComponents\CycleA.cs" />
     <Compile Include="ClassComponents\CycleB.cs" />
@@ -262,8 +264,8 @@
     <Compile Include="ServiceOverridesStackOverflowTestCase.cs" />
     <Compile Include="SpecializedResolvers\CollectionResolverTestCase.cs" />
     <Compile Include="TypedDependenciesTestCase.cs" />
-    <Compile Include="ArgumentsTestCase.cs" />
-    <Compile Include="BestConstructorTestCase.cs">
+    <Compile Include="MicroKernel\ArgumentsTestCase.cs" />
+    <Compile Include="Activators\BestConstructorTestCase.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="BinaryTreeComponentNameTestCase.cs">
@@ -393,7 +395,7 @@
     <Compile Include="Facilities\Startable\StartableFacilityTestCase.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="FacilityTestCase.cs">
+    <Compile Include="Facilities\FacilityTestCase.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="GraphTestCase.cs">
@@ -650,10 +652,10 @@
     <EmbeddedResource Include="Channel1.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="Configuration\OneComponentInTwoPieces.xml">
+    <EmbeddedResource Include="Config\OneComponentInTwoPieces.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="Configuration\sample_config.xml">
+    <EmbeddedResource Include="Config\sample_config.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="Configuration2\class_with_private_setter.xml">
@@ -662,22 +664,26 @@
     <EmbeddedResource Include="Configuration2\abstract_component_factory.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
+    <Content Include="Config\RecursiveDecoratorConfigOpenGeneric.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="ignoreprop.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="DotNet2Config\ComplexGenericConfig.xml">
+    <Content Include="Config\ComplexGenericConfig.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Config\GenericDecoratorConfig.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="DotNet2Config\GenericDecoratorConfig.xml">
+    <Content Include="Config\MissingDecoratorConfig.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="DotNet2Config\MissingDecoratorConfig.xml">
+    <Content Include="Config\RecursiveDecoratorConfig.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="DotNet2Config\RecursiveDecoratorConfig.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="DotNet2Config\DecoratorConfig.xml">
+    <Content Include="Config\DecoratorConfig.xml">
       <SubType>
       </SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -711,7 +717,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Windsor.Tests\ContainerWrapperTestsCase.cs" />
-    <Compile Include="WindsorDotNet2Tests.cs" />
+    <Compile Include="ContainerAndGenericsInCodeTestCase.cs" />
     <Compile Include="XmlProcessor\XmlProcessorTestCase.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -739,8 +745,9 @@
     <Content Include="Configuration2\Properties\properties_using_properties.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="DotNet2Config\GenericsConfig.xml">
+    <Content Include="Config\GenericsConfig.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="installerconfig.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -952,10 +959,10 @@
     <EmbeddedResource Include="AdditionalInterfaces.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
-    <None Include="DotNet2Config\chainOfRespnsability.config">
+    <None Include="Config\chainOfResponsibility.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="DotNet2Config\chainOfRespnsability_smart.config">
+    <None Include="Config\chainOfResponsibility_smart.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <EmbeddedResource Include="InterceptorsMultiple.config">
