@@ -51,5 +51,11 @@ namespace Castle.Windsor.Tests
 		{
 			return new WindsorContainer();
 		}
+
+		protected virtual void ResetContainer()
+		{
+			CleanUp();
+			Init();
+		}
 	}
 }

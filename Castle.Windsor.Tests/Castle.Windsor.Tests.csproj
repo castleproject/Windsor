@@ -700,7 +700,7 @@
     <Compile Include="InterceptorsTestCase.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="MultiResolveTests.cs" />
+    <Compile Include="ResolveAllTestCase.cs" />
     <Compile Include="PropertiesInspectionBehaviorTestCase.cs" />
     <Compile Include="Proxy\ProxyNothingHook.cs" />
     <Compile Include="Proxy\FactorySupportTestCase.cs" />
