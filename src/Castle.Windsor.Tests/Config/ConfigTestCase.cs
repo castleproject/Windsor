@@ -1,4 +1,4 @@
-namespace Castle.Windsor.Tests.Configuration
+namespace Castle.Windsor.Tests.Config
 {
 #if !SILVERLIGHT
 	using Castle.Windsor.Tests.Components;

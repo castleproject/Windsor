@@ -12,9 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.MicroKernel.Tests
+namespace Castle.Windsor.Tests.Activators
 {
 	using Castle.Core.Configuration;
+	using Castle.MicroKernel;
+	using Castle.MicroKernel.ComponentActivator;
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.SubSystems.Configuration;
 	using Castle.MicroKernel.Tests.ClassComponents;
@@ -22,35 +24,18 @@ namespace Castle.MicroKernel.Tests
 
 	using NUnit.Framework;
 
-	/// <summary>
-	/// Summary description for BestConstructorTestCase.
-	/// </summary>
 	[TestFixture]
-	public class BestConstructorTestCase
+	public class BestConstructorTestCase : AbstractContainerTestFixture
 	{
-		[SetUp]
-		public void Init()
-		{
-			kernel = new DefaultKernel();
-		}
-
-		[TearDown]
-		public void Dispose()
-		{
-			kernel.Dispose();
-		}
-
-		private IKernel kernel;
-
 		[Test]
 		public void ConstructorWithMoreArguments()
 		{
-			kernel.Register(Component.For<A>().Named("a"),
-			                Component.For<B>().Named("b"),
-			                Component.For<C>().Named("c"),
-			                Component.For<ServiceUser>().Named("service"));
+			Container.Register(Component.For<A>(),
+			                   Component.For<B>(),
+			                   Component.For<C>(),
+			                   Component.For<ServiceUser>());
 
-			var service = kernel.Resolve<ServiceUser>("service");
+			var service = Container.Resolve<ServiceUser>();
 
 			Assert.IsNotNull(service);
 			Assert.IsNotNull(service.AComponent);
@@ -61,10 +46,10 @@ namespace Castle.MicroKernel.Tests
 		[Test]
 		public void ConstructorWithOneArgument()
 		{
-			kernel.Register(Component.For<A>().Named("a"),
-			                Component.For<ServiceUser>().Named("service"));
+			Container.Register(Component.For<A>().Named("a"),
+			                   Component.For<ServiceUser>().Named("service"));
 
-			var service = kernel.Resolve<ServiceUser>("service");
+			var service = Container.Resolve<ServiceUser>("service");
 
 			Assert.IsNotNull(service);
 			Assert.IsNotNull(service.AComponent);
@@ -75,16 +60,27 @@ namespace Castle.MicroKernel.Tests
 		[Test]
 		public void ConstructorWithTwoArguments()
 		{
-			kernel.Register(Component.For<A>().Named("a"),
-			                Component.For<B>().Named("b"),
-			                Component.For<ServiceUser>().Named("service"));
+			Container.Register(Component.For<A>().Named("a"),
+			                   Component.For<B>().Named("b"),
+			                   Component.For<ServiceUser>().Named("service"));
 
-			var service = kernel.Resolve<ServiceUser>("service");
+			var service = Container.Resolve<ServiceUser>("service");
 
 			Assert.IsNotNull(service);
 			Assert.IsNotNull(service.AComponent);
 			Assert.IsNotNull(service.BComponent);
 			Assert.IsNull(service.CComponent);
+		}
+
+		[Test]
+		public void DefaultComponentActivator_is_used_by_default()
+		{
+			Container.Register(Component.For<A>());
+
+			var handler = Kernel.GetHandler(typeof(A));
+			var activator = ((IKernelInternal)Kernel).CreateComponentActivator(handler.ComponentModel);
+
+			Assert.IsInstanceOf<DefaultComponentActivator>(activator);
 		}
 
 		[Test]
@@ -100,12 +96,12 @@ namespace Castle.MicroKernel.Tests
 
 			store.AddComponentConfiguration("service", config);
 
-			kernel.ConfigurationStore = store;
+			Kernel.ConfigurationStore = store;
 
-			kernel.Register(Component.For<A>().Named("a"),
-			                Component.For<ServiceUser2>().Named("service"));
+			Container.Register(Component.For<A>().Named("a"),
+			                   Component.For<ServiceUser2>().Named("service"));
 
-			var service = kernel.Resolve<ServiceUser2>("service");
+			var service = Container.Resolve<ServiceUser2>("service");
 
 			Assert.IsNotNull(service);
 			Assert.IsNotNull(service.AComponent);
@@ -129,12 +125,12 @@ namespace Castle.MicroKernel.Tests
 
 			store.AddComponentConfiguration("service", config);
 
-			kernel.ConfigurationStore = store;
+			Kernel.ConfigurationStore = store;
 
-			kernel.Register(Component.For<A>().Named("a"),
-			                Component.For<ServiceUser2>().Named("service"));
+			Container.Register(Component.For<A>().Named("a"),
+			                   Component.For<ServiceUser2>().Named("service"));
 
-			var service = kernel.Resolve<ServiceUser2>("service");
+			var service = Container.Resolve<ServiceUser2>("service");
 
 			Assert.IsNotNull(service);
 			Assert.IsNotNull(service.AComponent);
@@ -148,10 +144,10 @@ namespace Castle.MicroKernel.Tests
 		[Test]
 		public void Two_constructors_but_one_with_satisfiable_dependencies()
 		{
-			kernel.Register(Component.For<SimpleComponent1>(),
-			                Component.For<SimpleComponent2>(),
-			                Component.For<HasTwoConstructors3>());
-			var component = kernel.Resolve<HasTwoConstructors3>();
+			Container.Register(Component.For<SimpleComponent1>(),
+			                   Component.For<SimpleComponent2>(),
+			                   Component.For<HasTwoConstructors3>());
+			var component = Container.Resolve<HasTwoConstructors3>();
 			Assert.IsNotNull(component.X);
 			Assert.IsNotNull(component.Y);
 			Assert.IsNull(component.A);
@@ -160,20 +156,20 @@ namespace Castle.MicroKernel.Tests
 		[Test]
 		public void Two_constructors_but_one_with_satisfiable_dependencies_issue_IoC_209()
 		{
-			kernel.Register(Component.For<SimpleComponent1>(),
-							Component.For<SimpleComponent2>(),
-							Component.For<HasTwoConstructors4>());
-			
-			kernel.Resolve<HasTwoConstructors4>();
+			Container.Register(Component.For<SimpleComponent1>(),
+			                   Component.For<SimpleComponent2>(),
+			                   Component.For<HasTwoConstructors4>());
+
+			Container.Resolve<HasTwoConstructors4>();
 		}
 
 		[Test]
 		public void Two_constructors_but_one_with_satisfiable_dependencies_registering_dependencies_last()
 		{
-			kernel.Register(Component.For<HasTwoConstructors3>(),
-			                Component.For<SimpleComponent1>(),
-			                Component.For<SimpleComponent2>());
-			var component = kernel.Resolve<HasTwoConstructors3>();
+			Container.Register(Component.For<HasTwoConstructors3>(),
+			                   Component.For<SimpleComponent1>(),
+			                   Component.For<SimpleComponent2>());
+			var component = Container.Resolve<HasTwoConstructors3>();
 			Assert.IsNotNull(component.X);
 			Assert.IsNotNull(component.Y);
 			Assert.IsNull(component.A);
@@ -182,24 +178,24 @@ namespace Castle.MicroKernel.Tests
 		[Test]
 		public void Two_constructors_equal_number_of_parameters_pick_one_that_can_be_satisfied()
 		{
-			kernel.Register(Component.For<ICommon>().ImplementedBy<CommonImpl1>(),
-			                Component.For<HasTwoConstructors>());
+			Container.Register(Component.For<ICommon>().ImplementedBy<CommonImpl1>(),
+			                   Component.For<HasTwoConstructors>());
 
-			kernel.Resolve<HasTwoConstructors>();
+			Container.Resolve<HasTwoConstructors>();
 		}
 
 		[Test]
 		public void Two_satisfiable_constructors_equal_number_of_inline_parameters_pick_one_with_more_service_overrides()
 		{
-			kernel.Register(Component.For<ICommon>().ImplementedBy<CommonImpl1>().Named("Mucha"),
-			                Component.For<ICustomer>().ImplementedBy<CustomerImpl>().Named("Stefan"),
-			                Component.For<HasTwoConstructors>().Named("first")
-			                	.ServiceOverrides(ServiceOverride.ForKey("customer").Eq("Stefan")),
-			                Component.For<HasTwoConstructors>().Named("second")
-			                	.ServiceOverrides(ServiceOverride.ForKey("common").Eq("Mucha")));
+			Container.Register(Component.For<ICommon>().ImplementedBy<CommonImpl1>().Named("Mucha"),
+			                   Component.For<ICustomer>().ImplementedBy<CustomerImpl>().Named("Stefan"),
+			                   Component.For<HasTwoConstructors>().Named("first")
+			                   	.ServiceOverrides(ServiceOverride.ForKey("customer").Eq("Stefan")),
+			                   Component.For<HasTwoConstructors>().Named("second")
+			                   	.ServiceOverrides(ServiceOverride.ForKey("common").Eq("Mucha")));
 
-			var first = kernel.Resolve<HasTwoConstructors>("first");
-			var second = kernel.Resolve<HasTwoConstructors>("second");
+			var first = Container.Resolve<HasTwoConstructors>("first");
+			var second = Container.Resolve<HasTwoConstructors>("second");
 
 			Assert.IsNotNull(first.Customer);
 			Assert.IsNotNull(second.Common);
@@ -208,11 +204,11 @@ namespace Castle.MicroKernel.Tests
 		[Test]
 		public void Two_satisfiable_constructors_identical_dependency_kinds_pick_based_on_parameter_names()
 		{
-			kernel.Register(Component.For<ICommon>().ImplementedBy<CommonImpl1>(),
-			                Component.For<ICustomer>().ImplementedBy<CustomerImpl>(),
-			                Component.For<HasTwoConstructors>());
+			Container.Register(Component.For<ICommon>().ImplementedBy<CommonImpl1>(),
+			                   Component.For<ICustomer>().ImplementedBy<CustomerImpl>(),
+			                   Component.For<HasTwoConstructors>());
 
-			var component = kernel.Resolve<HasTwoConstructors>();
+			var component = Container.Resolve<HasTwoConstructors>();
 
 			// common is 'smaller' so we pick ctor with dependency named 'common'
 			Assert.Less("common", "customer");
@@ -222,11 +218,11 @@ namespace Castle.MicroKernel.Tests
 		[Test]
 		public void Two_satisfiable_constructors_pick_one_with_more_inline_parameters()
 		{
-			kernel.Register(Component.For<ICommon>().ImplementedBy<CommonImpl1>(),
-			                Component.For<HasTwoConstructors2>()
-			                	.Parameters(Parameter.ForKey("param").Eq("foo")));
+			Container.Register(Component.For<ICommon>().ImplementedBy<CommonImpl1>(),
+			                   Component.For<HasTwoConstructors2>()
+			                   	.Parameters(Parameter.ForKey("param").Eq("foo")));
 
-			var component = kernel.Resolve<HasTwoConstructors2>();
+			var component = Container.Resolve<HasTwoConstructors2>();
 
 			Assert.AreEqual("foo", component.Param);
 		}

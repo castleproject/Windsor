@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,136 +12,111 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.MicroKernel.Tests.DependencyResolving
+namespace Castle.Windsor.Tests
 {
-    using System;
-    using System.Collections.Generic;
+	using System;
+	using System.Collections.Generic;
 
 	using Castle.Core;
 	using Castle.Core.Configuration;
-    using Castle.MicroKernel.Registration;
-    using Castle.MicroKernel.Tests.ClassComponents;
+	using Castle.MicroKernel.Registration;
+	using Castle.MicroKernel.Tests.ClassComponents;
 
 	using NUnit.Framework;
 
-	/// <summary>
-	/// This test case ensures that the resolving event
-	/// is fired properly.
-	/// </summary>
 	[TestFixture]
-	public class EventTests
+	public class EventTests:AbstractContainerTestFixture
 	{
-		private IKernel kernel;
-
 		private ComponentModel expectedClient;
 		private List<DependencyModel> expectedModels;
 
-		#region Setup / Teardown
-
 		[SetUp]
-		public void SetUp()
+		public void Subscribe()
 		{
-			kernel = new DefaultKernel();
-			kernel.DependencyResolving += new DependencyDelegate(AssertEvent);
+			Kernel.DependencyResolving += AssertEvent;
 		}
 
-		[TearDown]
-		public void TearDown()
+		[Test]
+		public void ResolvingConcreteClassThroughConstructor()
 		{
-			kernel.Dispose();
+			Kernel.Register(Component.For(typeof(DefaultSpamServiceWithConstructor)).Named("spamservice"));
+			Kernel.Register(Component.For(typeof(DefaultMailSenderService)).Named("mailsender"));
+			Kernel.Register(Component.For(typeof(DefaultTemplateEngine)).Named("templateengine"));
+
+			var mailservice = Kernel.Resolve<DefaultMailSenderService>("mailsender");
+			var templateengine = Kernel.Resolve<DefaultTemplateEngine>("templateengine");
+
+			Assert.IsNotNull(mailservice);
+			Assert.IsNotNull(templateengine);
+
+			expectedClient = Kernel.GetHandler("spamservice").ComponentModel;
+			expectedModels =
+				new List<DependencyModel>(
+					Kernel.GetHandler("spamservice").ComponentModel.Constructors.FewerArgumentsCandidate.Dependencies);
+
+			var spamservice =
+				Kernel.Resolve<DefaultSpamServiceWithConstructor>("spamservice");
+
+			Assert.IsNotNull(spamservice);
 		}
 
-		#endregion
+		[Test]
+		public void ResolvingConcreteClassThroughProperties()
+		{
+			Kernel.Register(Component.For(typeof(DefaultSpamService)).Named("spamservice"));
+			Kernel.Register(Component.For(typeof(DefaultMailSenderService)).Named("mailsender"));
+			Kernel.Register(Component.For(typeof(DefaultTemplateEngine)).Named("templateengine"));
+
+			var mailservice = Kernel.Resolve<DefaultMailSenderService>("mailsender");
+			var templateengine = Kernel.Resolve<DefaultTemplateEngine>("templateengine");
+
+			Assert.IsNotNull(mailservice);
+			Assert.IsNotNull(templateengine);
+
+			expectedClient = Kernel.GetHandler("spamservice").ComponentModel;
+			expectedModels = new List<DependencyModel>();
+			foreach (var prop in Kernel.GetHandler("spamservice").ComponentModel.Properties)
+			{
+				expectedModels.Add(prop.Dependency);
+			}
+
+			var spamservice = Kernel.Resolve<DefaultSpamService>("spamservice");
+
+			Assert.IsNotNull(spamservice);
+		}
 
 		[Test]
 		public void ResolvingPrimitivesThroughProperties()
 		{
-			MutableConfiguration config = new MutableConfiguration("component");
+			var config = new MutableConfiguration("component");
 
-			MutableConfiguration parameters = new MutableConfiguration("parameters");
+			var parameters = new MutableConfiguration("parameters");
 			config.Children.Add(parameters);
 
 			parameters.Children.Add(new MutableConfiguration("name", "hammett"));
 			parameters.Children.Add(new MutableConfiguration("address", "something"));
 			parameters.Children.Add(new MutableConfiguration("age", "25"));
 
-			kernel.ConfigurationStore.AddComponentConfiguration("customer", config);
+			Kernel.ConfigurationStore.AddComponentConfiguration("customer", config);
 
-			kernel.Register(Component.For(typeof (ICustomer)).ImplementedBy(typeof (CustomerImpl)).Named("customer"));
+			Kernel.Register(Component.For(typeof(ICustomer)).ImplementedBy(typeof(CustomerImpl)).Named("customer"));
 
-			expectedClient = kernel.GetHandler("customer").ComponentModel;
+			expectedClient = Kernel.GetHandler("customer").ComponentModel;
 			expectedModels = new List<DependencyModel>();
-			foreach (PropertySet prop in kernel.GetHandler("customer").ComponentModel.Properties)
+			foreach (var prop in Kernel.GetHandler("customer").ComponentModel.Properties)
 			{
 				expectedModels.Add(prop.Dependency);
 			}
 
-			var customer = kernel.Resolve<ICustomer>("customer");
+			var customer = Kernel.Resolve<ICustomer>("customer");
 
 			Assert.IsNotNull(customer);
 		}
 
-		[Test]
-		public void ResolvingConcreteClassThroughProperties()
+		private void AssertEvent(ComponentModel client, DependencyModel model, object dependency)
 		{
-			kernel.Register(Component.For(typeof(DefaultSpamService)).Named("spamservice"));
-			kernel.Register(Component.For(typeof(DefaultMailSenderService)).Named("mailsender"));
-			kernel.Register(Component.For(typeof(DefaultTemplateEngine)).Named("templateengine"));
-
-			var mailservice = kernel.Resolve<DefaultMailSenderService>("mailsender");
-			DefaultTemplateEngine templateengine = kernel.Resolve<DefaultTemplateEngine>("templateengine");
-
-			Assert.IsNotNull(mailservice);
-			Assert.IsNotNull(templateengine);
-
-			expectedClient = kernel.GetHandler("spamservice").ComponentModel;
-			expectedModels = new List<DependencyModel>();
-			foreach(PropertySet prop in kernel.GetHandler("spamservice").ComponentModel.Properties)
-			{
-				expectedModels.Add(prop.Dependency);
-			}
-
-			DefaultSpamService spamservice = (DefaultSpamService) kernel.Resolve<DefaultSpamService>("spamservice");
-
-			Assert.IsNotNull(spamservice);
-		}
-
-		[Test]
-		public void ResolvingConcreteClassThroughConstructor()
-		{
-			kernel.Register(Component.For(typeof(DefaultSpamServiceWithConstructor)).Named("spamservice"));
-			kernel.Register(Component.For(typeof(DefaultMailSenderService)).Named("mailsender"));
-			kernel.Register(Component.For(typeof(DefaultTemplateEngine)).Named("templateengine"));
-
-			DefaultMailSenderService mailservice = (DefaultMailSenderService) kernel.Resolve<DefaultMailSenderService>("mailsender");
-			DefaultTemplateEngine templateengine = (DefaultTemplateEngine) kernel.Resolve<DefaultTemplateEngine>("templateengine");
-
-			Assert.IsNotNull(mailservice);
-			Assert.IsNotNull(templateengine);
-
-			expectedClient = kernel.GetHandler("spamservice").ComponentModel;
-			expectedModels =
-				new List<DependencyModel>(kernel.GetHandler("spamservice").ComponentModel.Constructors.FewerArgumentsCandidate.Dependencies);
-
-			DefaultSpamServiceWithConstructor spamservice =
-				(DefaultSpamServiceWithConstructor) kernel.Resolve<DefaultSpamServiceWithConstructor>("spamservice");
-
-			Assert.IsNotNull(spamservice);
-		}
-
-		private void AssertEvent(Castle.Core.ComponentModel client, Castle.Core.DependencyModel model, object dependency)
-		{
-			bool ok = false;
 			Assert.AreEqual(expectedClient, client);
-			foreach(DependencyModel expectedModel in expectedModels)
-			{
-				if (expectedModel.Equals(model))
-				{
-					ok = true;
-					break;
-				}
-			}
-			Assert.IsTrue(ok);
+			Assert.IsTrue(expectedModels.Contains(model));
 			Assert.IsNotNull(dependency);
 		}
 	}

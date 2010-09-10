@@ -282,7 +282,7 @@ namespace Castle.Windsor.Tests
 
 		public void Init(IKernel kernel, Core.Configuration.IConfiguration facilityConfig)
 		{
-			kernel.ComponentRegistered += new ComponentDataDelegate(OnComponentRegistered);
+			kernel.ComponentRegistered += OnComponentRegistered;
 		}
 
 		public void Terminate()
@@ -307,7 +307,7 @@ namespace Castle.Windsor.Tests
 
 		public void Init(IKernel kernel, Core.Configuration.IConfiguration facilityConfig)
 		{
-			kernel.ComponentRegistered += new ComponentDataDelegate(OnComponentRegistered);
+			kernel.ComponentRegistered += OnComponentRegistered;
 		}
 
 		public void Terminate()

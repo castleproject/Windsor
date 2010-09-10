@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,63 +12,61 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.MicroKernel.Tests
+namespace Castle.Windsor.Tests.Facilities
 {
 	using Castle.Core.Configuration;
 	using Castle.Facilities.Startable;
+	using Castle.MicroKernel;
 	using Castle.MicroKernel.Tests.ClassComponents;
+
 	using NUnit.Framework;
 
 	[TestFixture]
 	public class FacilityTestCase
 	{
 		private const string FacilityKey = "testFacility";
-		private IKernel _kernel;
-		private HiperFacility _facility;
+		private HiperFacility facility;
+		private IKernel kernel;
 
-		public FacilityTestCase()
+		[Test]
+		public void Creation()
 		{
+			var facility = kernel.GetFacilities()[0];
+
+			Assert.IsNotNull(facility);
+			Assert.AreSame(this.facility, facility);
 		}
 
 		[SetUp]
 		public void Init()
 		{
-			_kernel = new DefaultKernel();
+			kernel = new DefaultKernel();
 
 			IConfiguration confignode = new MutableConfiguration("facility");
 			IConfiguration facilityConf = new MutableConfiguration(FacilityKey);
 			confignode.Children.Add(facilityConf);
-			_kernel.ConfigurationStore.AddFacilityConfiguration(FacilityKey, confignode);
+			kernel.ConfigurationStore.AddFacilityConfiguration(FacilityKey, confignode);
 
-			_facility = new HiperFacility();
+			facility = new HiperFacility();
 
-			Assert.IsFalse(_facility.Initialized);
-			_kernel.AddFacility(FacilityKey, _facility);
-		}
-
-		[Test]
-		public void Creation()
-		{
-			IFacility facility = _kernel.GetFacilities()[0];
-
-			Assert.IsNotNull(facility);
-			Assert.AreSame(_facility, facility);
+			Assert.IsFalse(facility.Initialized);
+			kernel.AddFacility(FacilityKey, facility);
 		}
 
 		[Test]
 		public void LifeCycle()
 		{
-			Assert.IsFalse(_facility.Terminated);
+			Assert.IsFalse(this.facility.Terminated);
 
-			IFacility facility = _kernel.GetFacilities()[0];
+			var facility = kernel.GetFacilities()[0];
 
-			Assert.IsTrue(_facility.Initialized);
-			Assert.IsFalse(_facility.Terminated);
+			Assert.IsTrue(this.facility.Initialized);
+			Assert.IsFalse(this.facility.Terminated);
 
-			_kernel.Dispose();
+			kernel.Dispose();
 
-			Assert.IsTrue(_facility.Initialized);
-			Assert.IsTrue(_facility.Terminated);
+			Assert.IsTrue(this.facility.Initialized);
+			Assert.IsTrue(this.facility.Terminated);
 		}
 
 		[Test]
@@ -76,10 +74,7 @@ namespace Castle.MicroKernel.Tests
 		{
 			StartableFacility facility = null;
 
-			_kernel.AddFacility<StartableFacility>(delegate(StartableFacility f)
-			{
-				facility = f;
-			});
+			kernel.AddFacility<StartableFacility>(f => facility = f);
 
 			Assert.IsNotNull(facility);
 		}
