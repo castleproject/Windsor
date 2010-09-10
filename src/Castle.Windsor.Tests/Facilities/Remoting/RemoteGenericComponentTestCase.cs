@@ -20,7 +20,6 @@ namespace Castle.Windsor.Tests.Facilities.Remoting
 	using System.Text;
 	using System.Runtime.Remoting;
 
-	using Castle.Windsor;
 	using Castle.Windsor.Tests;
 
 	using NUnit.Framework;
