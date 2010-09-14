@@ -118,8 +118,7 @@ namespace Castle.Facilities.Synchronize
 		/// <param name="model">The model.</param>
 		/// <param name="methods">The methods.</param>
 		/// <param name="metaModel">The meta model.</param>
-		protected override void ProcessMeta(ComponentModel model, IList<MethodInfo> methods,
-		                                    MethodMetaModel metaModel)
+		protected override void ProcessMeta(ComponentModel model, IList<MethodInfo> methods, MethodMetaModel metaModel)
 		{
 			metaStore.PopulateMetaFromConfig(model.Implementation, methods, metaModel.ConfigNode);
 		}
@@ -131,12 +130,10 @@ namespace Castle.Facilities.Synchronize
 		private void CheckFromAttributes(ComponentModel model)
 		{
 			var attributes = model.Implementation.GetAttributes<SynchronizeAttribute>();
-			if (attributes.Length == 0)
+			if (attributes.Length != 0)
 			{
-				return;
+				metaStore.CreateMetaFromType(model.Implementation);
 			}
-			metaStore.CreateMetaFromType(model.Implementation);
-
 		}
 
 		/// <summary>
@@ -148,8 +145,7 @@ namespace Castle.Facilities.Synchronize
 		/// </returns>
 		private static bool HasImplicitSynchronization(ComponentModel model)
 		{
-			return model.Implementation.Is<ISynchronizeInvoke>() ||
-			       model.Implementation.Is<DispatcherObject>();
+			return model.Implementation.Is<ISynchronizeInvoke>() || model.Implementation.Is<DispatcherObject>();
 		}
 
 		/// <summary>
@@ -160,11 +156,8 @@ namespace Castle.Facilities.Synchronize
 		private void ApplySynchronization(ComponentModel model, IKernel kernel)
 		{
 			var options = ProxyUtil.ObtainProxyOptions(model, true);
-			options.UseSingleInterfaceProxy = true;
 
-			model.Dependencies.Add(new DependencyModel(DependencyType.Service, null,
-			                                           typeof(SynchronizeInterceptor), false));
-
+			model.Dependencies.Add(new DependencyModel(DependencyType.Service, null, typeof(SynchronizeInterceptor), false));
 			model.Interceptors.Add(new InterceptorReference(typeof(SynchronizeInterceptor)));
 
 			var metaInfo = metaStore.GetMetaFor(model.Implementation);
@@ -177,13 +170,11 @@ namespace Castle.Facilities.Synchronize
 					userSelector = options.Selector.Resolve(kernel, CreationContext.Empty);
 				}
 
-				options.Selector = new InstanceReference<IInterceptorSelector>(
-					new SynchronizeInterceptorSelector(metaInfo, userSelector));
+				options.Selector = new InstanceReference<IInterceptorSelector>(new SynchronizeInterceptorSelector(metaInfo, userSelector));
 
 				foreach(var reference in metaInfo.GetUniqueSynchContextReferences())
 				{
-					model.Dependencies.Add(new DependencyModel(DependencyType.Service, reference.ComponentKey,
-					                                           reference.ServiceType, false));
+					model.Dependencies.Add(new DependencyModel(DependencyType.Service, reference.ComponentKey, reference.ServiceType, false));
 				}
 			}
 		}
@@ -213,7 +204,7 @@ namespace Castle.Facilities.Synchronize
 
 			foreach (var method in meta.Methods)
 			{
-				if (!method.IsVirtual)
+				if (method.IsVirtual == false)
 				{
 					methodCulprits.Add(method.Name);
 				}

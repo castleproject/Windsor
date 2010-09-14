@@ -17,6 +17,7 @@ namespace Castle.MicroKernel.Proxy
 	using System;
 	using System.Collections;
 	using System.Collections.Generic;
+	using System.ComponentModel;
 	using Castle.DynamicProxy;
 
 	/// <summary>
@@ -32,7 +33,9 @@ namespace Castle.MicroKernel.Proxy
 		/// </summary>
 		public ProxyOptions()
 		{
+#pragma warning disable 0618 //call to obsolete method
 			UseSingleInterfaceProxy = false;
+#pragma warning restore
 			OmitTarget = false;
 		}
 
@@ -60,6 +63,8 @@ namespace Castle.MicroKernel.Proxy
 		/// Determines if the proxied component should only include
 		/// the service interface.
 		/// </summary>
+		[Obsolete("Prefer using a IProxyGenerationHook.")]
+		[EditorBrowsable(EditorBrowsableState.Advanced)]
 		public bool UseSingleInterfaceProxy { get; set; }
 
 #if (!SILVERLIGHT)
@@ -179,7 +184,9 @@ namespace Castle.MicroKernel.Proxy
 			if (proxyOptions == null) return false;
 			if (!Equals(this.Hook, proxyOptions.Hook)) return false;
 			if (!Equals(this.Selector, proxyOptions.Selector)) return false;
+#pragma warning disable 0618 //call to obsolete method
 			if (!Equals(this.UseSingleInterfaceProxy, proxyOptions.UseSingleInterfaceProxy)) return false;
+#pragma warning restore
 			if (!Equals(this.OmitTarget, proxyOptions.OmitTarget)) return false;
 			if (!AdditionalInterfacesAreEquals(proxyOptions)) return false;
 			return MixInsAreEquals(proxyOptions);
