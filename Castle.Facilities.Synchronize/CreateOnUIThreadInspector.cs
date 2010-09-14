@@ -17,10 +17,8 @@ namespace Castle.Facilities.Synchronize
 	using System;
 	using System.Configuration;
 	using System.Runtime.Remoting;
-	using System.Threading;
 	using System.Windows;
 	using System.Windows.Forms;
-	using System.Windows.Threading;
 	using Castle.Core;
 	using Castle.Core.Configuration;
 	using Castle.Core.Internal;
@@ -29,7 +27,6 @@ namespace Castle.Facilities.Synchronize
 	using Castle.MicroKernel.Context;
 	using Castle.MicroKernel.ModelBuilder;
 	using Castle.MicroKernel.Proxy;
-	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.SubSystems.Conversion;
 	using Castle.MicroKernel.Util;
 
@@ -90,8 +87,7 @@ namespace Castle.Facilities.Synchronize
 		{
 			if (marshalingControl.InvokeRequired)
 			{
-				return marshalingControl.Invoke((CreateOnUIThreadDelegate)CreateOnWinformsUIThread,
-					new object[] { performCreation, context });
+				return marshalingControl.Invoke((CreateOnUIThreadDelegate)CreateOnWinformsUIThread, performCreation, context);
 			}
 
 			var component = performCreation(context);
@@ -109,8 +105,7 @@ namespace Castle.Facilities.Synchronize
 
 			if (application != null && application.CheckAccess() == false)
 			{
-				return application.Dispatcher.Invoke((CreateOnUIThreadDelegate)
-					CreateOnDispatcherUIThread, performCreation, context);
+				return application.Dispatcher.Invoke((CreateOnUIThreadDelegate)CreateOnDispatcherUIThread, performCreation, context);
 			}
 
 			return performCreation(context);

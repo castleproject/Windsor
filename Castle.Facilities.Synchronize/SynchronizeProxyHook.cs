@@ -43,7 +43,7 @@ namespace Castle.Facilities.Synchronize
 		/// <returns>true if not a System namespace, false otherwise.</returns>
 		public bool ShouldInterceptMethod(Type type, MethodInfo methodInfo)
 		{
-			return !methodInfo.DeclaringType.Namespace.StartsWith("System.");
+			return methodInfo.DeclaringType.Namespace.StartsWith("System.") == false;
 		}
 
 		/// <summary>

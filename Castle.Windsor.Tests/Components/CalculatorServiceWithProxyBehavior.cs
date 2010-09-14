@@ -37,7 +37,9 @@ namespace Castle.Windsor.Tests.Components
 	/// Summary description for CalculatorServiceWithAttributes.
 	/// </summary>
 	[Interceptor(typeof(StandardInterceptor))]
+#pragma warning disable 0618 //call to obsolete method
 	[ComponentProxyBehavior(UseSingleInterfaceProxy = true)]
+#pragma warning restore
 	public class CalculatorServiceWithSingleProxyBehavior : CalculatorService, IDisposable
 	{
 		public CalculatorServiceWithSingleProxyBehavior()
@@ -53,7 +55,9 @@ namespace Castle.Windsor.Tests.Components
 	/// Summary description for CalculatorServiceWithAttributes.
 	/// </summary>
 	[Interceptor(typeof(StandardInterceptor))]
+#pragma warning disable 0618 //call to obsolete method
 	[ComponentProxyBehavior(UseSingleInterfaceProxy = false)]
+#pragma warning restore
 	public class CalculatorServiceWithoutSingleProxyBehavior : CalculatorService, IDisposable
 	{
 		public CalculatorServiceWithoutSingleProxyBehavior()
