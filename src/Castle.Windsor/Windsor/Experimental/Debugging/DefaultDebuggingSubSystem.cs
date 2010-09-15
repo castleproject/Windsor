@@ -12,13 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Windsor.Debugging
+namespace Castle.Windsor.Experimental.Debugging
 {
 	using System.Collections;
 	using System.Collections.Generic;
 
 	using Castle.MicroKernel;
-	using Castle.Windsor.Debugging.Extensions;
+	using Castle.Windsor.Experimental.Debugging.Extensions;
 
 	public class DefaultDebuggingSubSystem : IContainerDebuggerExtensionHost, ISubSystem
 	{

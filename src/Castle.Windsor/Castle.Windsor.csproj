@@ -656,21 +656,21 @@
     <Compile Include="Windsor\Configuration\Interpreters\XmlProcessor\XmlProcessorException.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Windsor\Debugging\ComponentStatusDebuggerViewItem.cs" />
-    <Compile Include="Windsor\Debugging\DebuggerViewItem.cs" />
-    <Compile Include="Windsor\Debugging\DefaultComponentView.cs" />
-    <Compile Include="Windsor\Debugging\Extensions\AllComponents.cs" />
-    <Compile Include="Windsor\Debugging\DefaultDebuggingSubSystem.cs" />
-    <Compile Include="Windsor\Debugging\DebuggerViewItemRich.cs" />
-    <Compile Include="Windsor\Debugging\Extensions\Facilities.cs" />
-    <Compile Include="Windsor\Debugging\HandlerByKeyDebuggerView.cs" />
-    <Compile Include="Windsor\Debugging\HandlerDebuggerProxy.cs" />
-    <Compile Include="Windsor\Debugging\HandlersByKeyDictionaryDebuggerView.cs" />
-    <Compile Include="Windsor\Debugging\IComponentDebuggerExtension.cs" />
-    <Compile Include="Windsor\Debugging\IContainerDebuggerExtension.cs" />
-    <Compile Include="Windsor\Debugging\IContainerDebuggerExtensionHost.cs" />
-    <Compile Include="Windsor\Debugging\KernelDebuggerProxy.cs" />
-    <Compile Include="Windsor\Debugging\Extensions\PotentiallyMisconfiguredComponents.cs" />
+    <Compile Include="Windsor\Experimental\Debugging\ComponentStatusDebuggerViewItem.cs" />
+    <Compile Include="Windsor\Experimental\Debugging\DebuggerViewItem.cs" />
+    <Compile Include="Windsor\Experimental\Debugging\DefaultComponentView.cs" />
+    <Compile Include="Windsor\Experimental\Debugging\Extensions\AllComponents.cs" />
+    <Compile Include="Windsor\Experimental\Debugging\DefaultDebuggingSubSystem.cs" />
+    <Compile Include="Windsor\Experimental\Debugging\DebuggerViewItemRich.cs" />
+    <Compile Include="Windsor\Experimental\Debugging\Extensions\Facilities.cs" />
+    <Compile Include="Windsor\Experimental\Debugging\HandlerByKeyDebuggerView.cs" />
+    <Compile Include="Windsor\Experimental\Debugging\HandlerDebuggerProxy.cs" />
+    <Compile Include="Windsor\Experimental\Debugging\HandlersByKeyDictionaryDebuggerView.cs" />
+    <Compile Include="Windsor\Experimental\Debugging\IComponentDebuggerExtension.cs" />
+    <Compile Include="Windsor\Experimental\Debugging\IContainerDebuggerExtension.cs" />
+    <Compile Include="Windsor\Experimental\Debugging\IContainerDebuggerExtensionHost.cs" />
+    <Compile Include="Windsor\Experimental\Debugging\KernelDebuggerProxy.cs" />
+    <Compile Include="Windsor\Experimental\Debugging\Extensions\PotentiallyMisconfiguredComponents.cs" />
     <Compile Include="Windsor\IEnvironmentInfo.cs" />
     <Compile Include="Windsor\InitializationException.cs">
       <SubType>Code</SubType>

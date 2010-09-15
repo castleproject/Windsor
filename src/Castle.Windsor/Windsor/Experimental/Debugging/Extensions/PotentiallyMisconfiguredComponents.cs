@@ -12,22 +12,29 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Windsor.Debugging.Extensions
+namespace Castle.Windsor.Experimental.Debugging.Extensions
 {
 	using System.Collections.Generic;
+	using System.Linq;
 
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.SubSystems.Naming;
 
-	public class AllComponents : IContainerDebuggerExtension
+	public class PotentiallyMisconfiguredComponents : IContainerDebuggerExtension
 	{
 		private INamingSubSystem naming;
 
 		public IEnumerable<DebuggerViewItemRich> Attach()
 		{
-			yield return new DebuggerViewItemRich("All Components", "Count = " + naming.ComponentCount,
-			                                  new HandlersByKeyDictionaryDebuggerView(
-			                                  	naming.GetKey2Handler()));
+			var waitingComponents = naming.GetKey2Handler()
+				.Where(h => h.Value.CurrentState == HandlerState.WaitingDependency)
+				.ToArray();
+			if (waitingComponents.Length == 0)
+			{
+				yield break;
+			}
+			yield return new DebuggerViewItemRich("Potentially Misconfigured Components", "Count = " + waitingComponents.Length,
+			                                  new HandlersByKeyDictionaryDebuggerView(waitingComponents));
 		}
 
 		public void Init(IKernel kernel)

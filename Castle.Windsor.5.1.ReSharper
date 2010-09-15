@@ -163,7 +163,7 @@ II.2.12 <HandlesEvent />
   </Pattern>
 
   <!--Default pattern-->
-  <Pattern>
+  <Pattern RemoveAllRegions="true">
     <!--according to http://castleproject.org/community/codingstandards.html-->
     <!--constants-->
     <Entry>

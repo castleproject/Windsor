@@ -1,4 +1,4 @@
-﻿namespace Castle.Windsor.Debugging
+﻿namespace Castle.Windsor.Experimental.Debugging
 {
 	using System.Collections.Generic;
 
