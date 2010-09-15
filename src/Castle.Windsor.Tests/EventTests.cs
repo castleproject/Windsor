@@ -33,6 +33,10 @@ namespace Castle.Windsor.Tests
 		[SetUp]
 		public void Subscribe()
 		{
+#if SILVERLIGHT
+			// Silverlight testing framework can't handle SetUp method on base class so we have to call it explicitly
+			Init();
+#endif
 			Kernel.DependencyResolving += AssertEvent;
 		}
 
