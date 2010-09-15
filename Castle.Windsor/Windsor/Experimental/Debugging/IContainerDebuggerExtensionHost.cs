@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,29 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Windsor.Debugging.Extensions
+namespace Castle.Windsor.Experimental.Debugging
 {
 	using System.Collections.Generic;
 
-	using Castle.MicroKernel;
-
-	public class Facilities : IContainerDebuggerExtension
+	public interface IContainerDebuggerExtensionHost : IEnumerable<IContainerDebuggerExtension>
 	{
-		private IKernel kernel;
-
-		public IEnumerable<DebuggerViewItemRich> Attach()
-		{
-			var facilities = kernel.GetFacilities();
-			if (facilities.Length == 0)
-			{
-				yield break;
-			}
-			yield return new DebuggerViewItemRich("Facilities", "Count = " + facilities.Length, facilities);
-		}
-
-		public void Init(IKernel kernel)
-		{
-			this.kernel = kernel;
-		}
+		void Add(IContainerDebuggerExtension extension);
 	}
 }

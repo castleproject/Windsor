@@ -12,12 +12,27 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Windsor.Debugging
+namespace Castle.Windsor.Experimental.Debugging.Extensions
 {
 	using System.Collections.Generic;
 
-	public interface IContainerDebuggerExtensionHost : IEnumerable<IContainerDebuggerExtension>
+	using Castle.MicroKernel;
+	using Castle.MicroKernel.SubSystems.Naming;
+
+	public class AllComponents : IContainerDebuggerExtension
 	{
-		void Add(IContainerDebuggerExtension extension);
+		private INamingSubSystem naming;
+
+		public IEnumerable<DebuggerViewItemRich> Attach()
+		{
+			yield return new DebuggerViewItemRich("All Components", "Count = " + naming.ComponentCount,
+			                                  new HandlersByKeyDictionaryDebuggerView(
+			                                  	naming.GetKey2Handler()));
+		}
+
+		public void Init(IKernel kernel)
+		{
+			naming = kernel.GetSubSystem(SubSystemConstants.NamingKey) as INamingSubSystem;
+		}
 	}
 }

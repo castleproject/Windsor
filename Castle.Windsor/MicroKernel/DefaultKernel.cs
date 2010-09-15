@@ -36,14 +36,14 @@ namespace Castle.MicroKernel
 	using Castle.MicroKernel.SubSystems.Conversion;
 	using Castle.MicroKernel.SubSystems.Naming;
 	using Castle.MicroKernel.SubSystems.Resource;
-	using Castle.Windsor.Debugging;
+	using Castle.Windsor.Experimental.Debugging;
 
 	/// <summary>
 	/// Default implementation of <see cref="IKernel"/>. 
 	/// This implementation is complete and also support a kernel 
 	/// hierarchy (sub containers).
 	/// </summary>
-	[DebuggerTypeProxy(typeof(Windsor.Debugging.KernelDebuggerProxy))]
+	[DebuggerTypeProxy(typeof(KernelDebuggerProxy))]
 #if !SILVERLIGHT
 	[Serializable]
 	public partial class DefaultKernel : MarshalByRefObject, IKernel, IKernelEvents, IKernelInternal, IDeserializationCallback

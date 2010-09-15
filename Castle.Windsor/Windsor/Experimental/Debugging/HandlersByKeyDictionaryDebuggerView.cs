@@ -12,39 +12,34 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Windsor.Debugging
+namespace Castle.Windsor.Experimental.Debugging
 {
 	using System.Collections.Generic;
 	using System.Diagnostics;
+	using System.Linq;
 
-	using Castle.MicroKernel.Handlers;
+	using Castle.MicroKernel;
 
-	public class ComponentStatusDebuggerViewItem
+	public class HandlersByKeyDictionaryDebuggerView
 	{
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
-		private readonly IExposeDependencyInfo handler;
+		private readonly HandlerByKeyDebuggerView[] items;
 
-		public ComponentStatusDebuggerViewItem(IExposeDependencyInfo handler)
+		public HandlersByKeyDictionaryDebuggerView(IEnumerable<KeyValuePair<string, IHandler>> key2Handler)
 		{
-			this.handler = handler;
+			items = key2Handler.Select(h =>
+			                           new HandlerByKeyDebuggerView(
+			                           	h.Key,
+			                           	h.Value,
+			                           	new DefaultComponentView(h.Value)
+			                           	)).ToArray();
 		}
 
-		public string Message
-		{
-			get
-			{
-				var message = "Some dependencies of this component could not be statically resolved.";
-				if (handler == null)
-				{
-					return message;
-				}
-				return message + handler.ObtainDependencyDetails(new List<object>());
-			}
-		}
 
-		public override string ToString()
+		[DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
+		public HandlerByKeyDebuggerView[] Items
 		{
-			return "This component may not resolve properly.";
+			get { return items; }
 		}
 	}
 }

@@ -26,6 +26,7 @@ namespace Castle.Windsor
 	using Castle.MicroKernel.SubSystems.Configuration;
 	using Castle.Windsor.Configuration;
 	using Castle.Windsor.Configuration.Interpreters;
+	using Castle.Windsor.Experimental.Debugging;
 	using Castle.Windsor.Installer;
 	using Castle.Windsor.Proxy;
 
@@ -33,7 +34,7 @@ namespace Castle.Windsor
 	/// Implementation of <see cref="IWindsorContainer"/>
 	/// which delegates to <see cref="IKernel"/> implementation.
 	/// </summary>
-	[DebuggerTypeProxy(typeof(Debugging.KernelDebuggerProxy))]
+	[DebuggerTypeProxy(typeof(KernelDebuggerProxy))]
 #if (SILVERLIGHT)
 	public class WindsorContainer : IWindsorContainer
 #else

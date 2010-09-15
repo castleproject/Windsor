@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,34 +12,29 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Windsor.Debugging.Extensions
+namespace Castle.Windsor.Experimental.Debugging.Extensions
 {
 	using System.Collections.Generic;
-	using System.Linq;
 
 	using Castle.MicroKernel;
-	using Castle.MicroKernel.SubSystems.Naming;
 
-	public class PotentiallyMisconfiguredComponents : IContainerDebuggerExtension
+	public class Facilities : IContainerDebuggerExtension
 	{
-		private INamingSubSystem naming;
+		private IKernel kernel;
 
 		public IEnumerable<DebuggerViewItemRich> Attach()
 		{
-			var waitingComponents = naming.GetKey2Handler()
-				.Where(h => h.Value.CurrentState == HandlerState.WaitingDependency)
-				.ToArray();
-			if (waitingComponents.Length == 0)
+			var facilities = kernel.GetFacilities();
+			if (facilities.Length == 0)
 			{
 				yield break;
 			}
-			yield return new DebuggerViewItemRich("Potentially Misconfigured Components", "Count = " + waitingComponents.Length,
-			                                  new HandlersByKeyDictionaryDebuggerView(waitingComponents));
+			yield return new DebuggerViewItemRich("Facilities", "Count = " + facilities.Length, facilities);
 		}
 
 		public void Init(IKernel kernel)
 		{
-			naming = kernel.GetSubSystem(SubSystemConstants.NamingKey) as INamingSubSystem;
+			this.kernel = kernel;
 		}
 	}
 }
