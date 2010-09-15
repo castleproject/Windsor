@@ -31,8 +31,8 @@ namespace Castle.Windsor
 	using Castle.Windsor.Proxy;
 
 	/// <summary>
-	/// Implementation of <see cref="IWindsorContainer"/>
-	/// which delegates to <see cref="IKernel"/> implementation.
+	///   Implementation of <see cref = "IWindsorContainer" />
+	///   which delegates to <see cref = "IKernel" /> implementation.
 	/// </summary>
 	[DebuggerTypeProxy(typeof(KernelDebuggerProxy))]
 #if (SILVERLIGHT)
@@ -42,28 +42,27 @@ namespace Castle.Windsor
 	public class WindsorContainer : MarshalByRefObject, IWindsorContainer
 #endif
 	{
-
-		private readonly string name = Guid.NewGuid().ToString();
 		private readonly Dictionary<string, IWindsorContainer> childContainers = new Dictionary<string, IWindsorContainer>();
 		private readonly object childContainersLocker = new object();
-
-		private readonly IKernel kernel;
-		private IWindsorContainer parent;
 		private readonly IComponentsInstaller installer;
 
+		private readonly IKernel kernel;
+		private readonly string name = Guid.NewGuid().ToString();
+		private IWindsorContainer parent;
+
 		/// <summary>
-		/// Constructs a container without any external 
-		/// configuration reference
+		///   Constructs a container without any external 
+		///   configuration reference
 		/// </summary>
 		public WindsorContainer() : this(new DefaultKernel(), new DefaultComponentInstaller())
 		{
 		}
 
 		/// <summary>
-		/// Constructs a container using the specified 
-		/// <see cref="IConfigurationStore"/> implementation.
+		///   Constructs a container using the specified 
+		///   <see cref = "IConfigurationStore" /> implementation.
 		/// </summary>
-		/// <param name="store">The instance of an <see cref="IConfigurationStore"/> implementation.</param>
+		/// <param name = "store">The instance of an <see cref = "IConfigurationStore" /> implementation.</param>
 		public WindsorContainer(IConfigurationStore store) : this()
 		{
 			kernel.ConfigurationStore = store;
@@ -72,10 +71,10 @@ namespace Castle.Windsor
 		}
 
 		/// <summary>
-		/// Constructs a container using the specified 
-		/// <see cref="IConfigurationInterpreter"/> implementation.
+		///   Constructs a container using the specified 
+		///   <see cref = "IConfigurationInterpreter" /> implementation.
 		/// </summary>
-		/// <param name="interpreter">The instance of an <see cref="IConfigurationInterpreter"/> implementation.</param>
+		/// <param name = "interpreter">The instance of an <see cref = "IConfigurationInterpreter" /> implementation.</param>
 		public WindsorContainer(IConfigurationInterpreter interpreter) : this()
 		{
 			if (interpreter == null)
@@ -89,10 +88,10 @@ namespace Castle.Windsor
 		}
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="WindsorContainer"/> class.
+		///   Initializes a new instance of the <see cref = "WindsorContainer" /> class.
 		/// </summary>
-		/// <param name="interpreter">The interpreter.</param>
-		/// <param name="environmentInfo">The environment info.</param>
+		/// <param name = "interpreter">The interpreter.</param>
+		/// <param name = "environmentInfo">The environment info.</param>
 		public WindsorContainer(IConfigurationInterpreter interpreter, IEnvironmentInfo environmentInfo) : this()
 		{
 			if (interpreter == null)
@@ -112,44 +111,44 @@ namespace Castle.Windsor
 
 #if !SILVERLIGHT
 		/// <summary>
-		/// Initializes a new instance of the <see cref="WindsorContainer"/> class using a
-		/// xml file to configure it.
-		/// <para>
-		/// Equivalent to the use of <c>new WindsorContainer(new XmlInterpreter(xmlFile))</c>
-		/// </para>
+		///   Initializes a new instance of the <see cref = "WindsorContainer" /> class using a
+		///   xml file to configure it.
+		///   <para>
+		///     Equivalent to the use of <c>new WindsorContainer(new XmlInterpreter(xmlFile))</c>
+		///   </para>
 		/// </summary>
-		/// <param name="xmlFile">The XML file.</param>
+		/// <param name = "xmlFile">The XML file.</param>
 		public WindsorContainer(String xmlFile) : this(new XmlInterpreter(xmlFile))
 		{
 		}
 #endif
 
 		/// <summary>
-		/// Constructs a container using the specified <see cref="IKernel"/>
-		/// implementation. Rarely used.
+		///   Constructs a container using the specified <see cref = "IKernel" />
+		///   implementation. Rarely used.
 		/// </summary>
 		/// <remarks>
-		/// This constructs sets the Kernel.ProxyFactory property to
-		/// <c>Proxy.DefaultProxyFactory</c>
+		///   This constructs sets the Kernel.ProxyFactory property to
+		///   <c>Proxy.DefaultProxyFactory</c>
 		/// </remarks>
-		/// <param name="kernel">Kernel instance</param>
-		/// <param name="installer">Installer instance</param>
+		/// <param name = "kernel">Kernel instance</param>
+		/// <param name = "installer">Installer instance</param>
 		public WindsorContainer(IKernel kernel, IComponentsInstaller installer)
 			: this(Guid.NewGuid().ToString(), kernel, installer)
 		{
 		}
 
 		/// <summary>
-		/// Constructs a container using the specified <see cref="IKernel"/>
-		/// implementation. Rarely used.
+		///   Constructs a container using the specified <see cref = "IKernel" />
+		///   implementation. Rarely used.
 		/// </summary>
 		/// <remarks>
-		/// This constructs sets the Kernel.ProxyFactory property to
-		/// <c>Proxy.DefaultProxyFactory</c>
+		///   This constructs sets the Kernel.ProxyFactory property to
+		///   <c>Proxy.DefaultProxyFactory</c>
 		/// </remarks>
-		/// <param name="name">Container's name</param>
-		/// <param name="kernel">Kernel instance</param>
-		/// <param name="installer">Installer instance</param>
+		/// <param name = "name">Container's name</param>
+		/// <param name = "kernel">Kernel instance</param>
+		/// <param name = "installer">Installer instance</param>
 		public WindsorContainer(String name, IKernel kernel, IComponentsInstaller installer)
 		{
 			if (name == null)
@@ -172,9 +171,9 @@ namespace Castle.Windsor
 		}
 
 		/// <summary>
-		/// Constructs with a given <see cref="IProxyFactory"/>.
+		///   Constructs with a given <see cref = "IProxyFactory" />.
 		/// </summary>
-		/// <param name="proxyFactory">A instance of an <see cref="IProxyFactory"/>.</param>
+		/// <param name = "proxyFactory">A instance of an <see cref = "IProxyFactory" />.</param>
 		public WindsorContainer(IProxyFactory proxyFactory)
 		{
 			if (proxyFactory == null)
@@ -188,11 +187,11 @@ namespace Castle.Windsor
 		}
 
 		/// <summary>
-		/// Constructs a container assigning a parent container 
-		/// before starting the dependency resolution.
+		///   Constructs a container assigning a parent container 
+		///   before starting the dependency resolution.
 		/// </summary>
-		/// <param name="parent">The instance of an <see cref="IWindsorContainer"/></param>
-		/// <param name="interpreter">The instance of an <see cref="IConfigurationInterpreter"/> implementation</param>
+		/// <param name = "parent">The instance of an <see cref = "IWindsorContainer" /></param>
+		/// <param name = "interpreter">The instance of an <see cref = "IConfigurationInterpreter" /> implementation</param>
 		public WindsorContainer(IWindsorContainer parent, IConfigurationInterpreter interpreter) : this()
 		{
 			if (parent == null)
@@ -212,11 +211,11 @@ namespace Castle.Windsor
 		}
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="WindsorContainer"/> class.
+		///   Initializes a new instance of the <see cref = "WindsorContainer" /> class.
 		/// </summary>
-		/// <param name="name">The container's name.</param>
-		/// <param name="parent">The parent.</param>
-		/// <param name="interpreter">The interpreter.</param>
+		/// <param name = "name">The container's name.</param>
+		/// <param name = "parent">The parent.</param>
+		/// <param name = "interpreter">The interpreter.</param>
 		public WindsorContainer(string name, IWindsorContainer parent, IConfigurationInterpreter interpreter) : this()
 		{
 			if (name == null)
@@ -241,11 +240,44 @@ namespace Castle.Windsor
 			RunInstaller();
 		}
 
+		public IComponentsInstaller Installer
+		{
+			get { return installer; }
+		}
+
 		/// <summary>
-		/// Gets the container's name
+		///   Shortcut to the method <see cref = "Resolve(String, IDictionary)" />
+		/// </summary>
+		[Obsolete("Use Resolve(key, new Arguments()) or Resolve<TService>(key) instead")]
+		[EditorBrowsable(EditorBrowsableState.Advanced)]
+		public virtual object this[String key]
+		{
+			get { return Resolve(key, new Arguments()); }
+		}
+
+		/// <summary>
+		///   Shortcut to the method <see cref = "Resolve(Type)" />
+		/// </summary>
+		[Obsolete("Use Resolve(service) or generic version instead")]
+		[EditorBrowsable(EditorBrowsableState.Advanced)]
+		public virtual object this[Type service]
+		{
+			get { return Resolve(service); }
+		}
+
+		/// <summary>
+		///   Returns the inner instance of the MicroKernel
+		/// </summary>
+		public virtual IKernel Kernel
+		{
+			get { return kernel; }
+		}
+
+		/// <summary>
+		///   Gets the container's name
 		/// </summary>
 		/// <remarks>
-		/// Only useful when child containers are being used
+		///   Only useful when child containers are being used
 		/// </remarks>
 		/// <value>The container's name.</value>
 		public string Name
@@ -254,16 +286,8 @@ namespace Castle.Windsor
 		}
 
 		/// <summary>
-		/// Returns the inner instance of the MicroKernel
-		/// </summary>
-		public virtual IKernel Kernel
-		{
-			get { return kernel; }
-		}
-
-		/// <summary>
-		/// Gets or sets the parent container if this instance
-		/// is a sub container.
+		///   Gets or sets the parent container if this instance
+		///   is a sub container.
 		/// </summary>
 		public virtual IWindsorContainer Parent
 		{
@@ -289,99 +313,91 @@ namespace Castle.Windsor
 			}
 		}
 
-		/// <summary>
-		/// Registers a facility within the kernel.
-		/// </summary>
-		/// <param name="key"></param>
-		/// <param name="facility"></param>
-		public virtual IWindsorContainer AddFacility(String key, IFacility facility)
+		protected virtual void RunInstaller()
 		{
-			kernel.AddFacility(key, facility);
-			return this;
+			if (installer != null)
+			{
+				installer.SetUp(this, kernel.ConfigurationStore);
+			}
+		}
+
+		private void Install(IWindsorInstaller[] installers, DefaultComponentInstaller scope)
+		{
+			using (var store = new PartialConfigurationStore(kernel))
+			{
+				foreach (var windsorInstaller in installers)
+				{
+					windsorInstaller.Install(this, store);
+				}
+
+				scope.SetUp(this, store);
+			}
 		}
 
 		/// <summary>
-		/// Creates and adds an <see cref="IFacility"/> facility to the container.
+		///   Executes Dispose on underlying <see cref = "IKernel" />
 		/// </summary>
-		/// <typeparam name="T">The facility type.</typeparam>
-		/// <param name="key"></param>
-		/// <returns></returns>
-		public IWindsorContainer AddFacility<T>(String key) where T : IFacility, new()
+		public virtual void Dispose()
 		{
-			kernel.AddFacility<T>(key);
-			return this;
+			Parent = null;
+			childContainers.Clear();
+			kernel.Dispose();
 		}
 
 		/// <summary>
-		/// Creates and adds an <see cref="IFacility"/> facility to the container.
+		///   Gets the service object of the specified type.
 		/// </summary>
-		/// <typeparam name="T">The facility type.</typeparam>
-		/// <param name="key"></param>
-		/// <param name="onCreate">The callback for creation.</param>
-		/// <returns></returns>
-		public IWindsorContainer AddFacility<T>(String key, Action<T> onCreate)
-			where T : IFacility, new()
+		/// <returns>
+		///   A service object of type serviceType.
+		/// </returns>
+		/// <param name = "serviceType">An object that specifies the type of service object to get. </param>
+		public object GetService(Type serviceType)
 		{
-			kernel.AddFacility(key, onCreate);
-			return this;
+			return kernel.GetService(serviceType);
 		}
 
 		/// <summary>
-		/// Creates and adds an <see cref="IFacility"/> facility to the container.
+		///   Gets the service object of the specified type.
 		/// </summary>
-		/// <typeparam name="T">The facility type.</typeparam>
-		/// <param name="key"></param>
-		/// <param name="onCreate">The callback for creation.</param>
-		/// <returns></returns>
-		public IWindsorContainer AddFacility<T>(String key, Func<T, object> onCreate)
-			where T : IFacility, new()
+		/// <returns>
+		///   A service object of type serviceType.
+		/// </returns>
+		public T GetService<T>() where T : class
 		{
-			kernel.AddFacility(key, onCreate);
-			return this;
+			return kernel.GetService<T>();
 		}
 
 		/// <summary>
-		/// Creates and adds an <see cref="IFacility"/> facility to the container.
+		///   Registers a subcontainer. The components exposed
+		///   by this container will be accessible from subcontainers.
 		/// </summary>
-		/// <typeparam name="T">The facility type.</typeparam>
-		/// <returns></returns>
-		public IWindsorContainer AddFacility<T>() where T : IFacility, new()
+		/// <param name = "childContainer"></param>
+		public virtual void AddChildContainer(IWindsorContainer childContainer)
 		{
-			kernel.AddFacility<T>();
-			return this;
+			if (childContainer == null)
+			{
+				throw new ArgumentNullException("childContainer");
+			}
+
+			if (!childContainers.ContainsKey(childContainer.Name))
+			{
+				lock (childContainersLocker)
+				{
+					if (!childContainers.ContainsKey(childContainer.Name))
+					{
+						kernel.AddChildKernel(childContainer.Kernel);
+						childContainers.Add(childContainer.Name, childContainer);
+						childContainer.Parent = this;
+					}
+				}
+			}
 		}
 
 		/// <summary>
-		/// Creates and adds an <see cref="IFacility"/> facility to the container.
+		///   Adds a component to be managed by the container
 		/// </summary>
-		/// <typeparam name="T">The facility type.</typeparam>
-		/// <param name="onCreate">The callback for creation.</param>
-		/// <returns></returns>
-		public IWindsorContainer AddFacility<T>(Action<T> onCreate)
-			where T : IFacility, new()
-		{
-			kernel.AddFacility(onCreate);
-			return this;
-		}
-
-		/// <summary>
-		/// Creates and adds an <see cref="IFacility"/> facility to the container.
-		/// </summary>
-		/// <typeparam name="T">The facility type.</typeparam>
-		/// <param name="onCreate">The callback for creation.</param>
-		/// <returns></returns>
-		public IWindsorContainer AddFacility<T>(Func<T, object> onCreate)
-			where T : IFacility, new()
-		{
-			kernel.AddFacility(onCreate);
-			return this;
-		}
-
-		/// <summary>
-		/// Adds a component to be managed by the container
-		/// </summary>
-		/// <param name="key"></param>
-		/// <param name="classType"></param>
+		/// <param name = "key"></param>
+		/// <param name = "classType"></param>
 		[Obsolete("Use Register(Component.For(classType).Named(key)) instead.")]
 		[EditorBrowsable(EditorBrowsableState.Advanced)]
 		public virtual IWindsorContainer AddComponent(String key, Type classType)
@@ -391,11 +407,11 @@ namespace Castle.Windsor
 		}
 
 		/// <summary>
-		/// Adds a component to be managed by the container
+		///   Adds a component to be managed by the container
 		/// </summary>
-		/// <param name="key"></param>
-		/// <param name="serviceType"></param>
-		/// <param name="classType"></param>
+		/// <param name = "key"></param>
+		/// <param name = "serviceType"></param>
+		/// <param name = "classType"></param>
 		[Obsolete("Use Register(Component.For(serviceType).ImplementedBy(classType).Named(key)) instead.")]
 		[EditorBrowsable(EditorBrowsableState.Advanced)]
 		public virtual IWindsorContainer AddComponent(String key, Type serviceType, Type classType)
@@ -405,11 +421,67 @@ namespace Castle.Windsor
 		}
 
 		/// <summary>
-		/// Adds a component to be managed by the container
+		///   Adds a component to be managed by the container.
+		///   The key to obtain the component will be the FullName of the type.
 		/// </summary>
-		/// <param name="key">The key by which the component gets indexed.</param>
-		/// <param name="classType">The <see cref="Type"/> to manage.</param>
-		/// <param name="lifestyle">The <see cref="LifestyleType"/> with which to manage the component.</param>
+		/// <typeparam name = "T">The <see cref = "Type" /> to manage.</typeparam>
+		[Obsolete("Use Register(Component.For<T>()) instead.")]
+		[EditorBrowsable(EditorBrowsableState.Advanced)]
+		public IWindsorContainer AddComponent<T>()
+		{
+			var t = typeof(T);
+			AddComponent(t.FullName, t);
+			return this;
+		}
+
+		/// <summary>
+		///   Adds a component to be managed by the container
+		/// </summary>
+		/// <typeparam name = "T">The <see cref = "Type" /> to manage.</typeparam>
+		/// <param name = "key">The key by which the component gets indexed.</param>
+		[Obsolete("Use Register(Component.For<T>().Named(key)) instead.")]
+		[EditorBrowsable(EditorBrowsableState.Advanced)]
+		public IWindsorContainer AddComponent<T>(string key)
+		{
+			AddComponent(key, typeof(T));
+			return this;
+		}
+
+		/// <summary>
+		///   Adds a component to be managed by the container
+		/// </summary>
+		/// <typeparam name = "I">The service <see cref = "Type" /> that the component implements.</typeparam>
+		/// <typeparam name = "T">The <see cref = "Type" /> to manage.</typeparam>
+		/// <param name = "key">The key by which the component gets indexed.</param>
+		[Obsolete("Use Register(Component.For<I>().ImplementedBy<T>().Named(key)) instead.")]
+		[EditorBrowsable(EditorBrowsableState.Advanced)]
+		public IWindsorContainer AddComponent<I, T>(string key) where T : class
+		{
+			AddComponent(key, typeof(I), typeof(T));
+			return this;
+		}
+
+		/// <summary>
+		///   Adds a component to be managed by the container
+		///   The key to obtain the component will be the FullName of the type.
+		/// </summary>
+		/// <typeparam name = "I">The service <see cref = "Type" /> that the component implements.</typeparam>
+		/// <typeparam name = "T">The <see cref = "Type" /> to manage.</typeparam>
+		[Obsolete("Use Register(Component.For<I>().ImplementedBy<T>()) instead.")]
+		[EditorBrowsable(EditorBrowsableState.Advanced)]
+		public IWindsorContainer AddComponent<I, T>() where T : class
+		{
+			var t = typeof(T);
+			AddComponent(t.FullName, typeof(I), t);
+			return this;
+		}
+
+		/// <summary>
+		///   Adds a component to be managed by the container
+		/// </summary>
+		/// <param name = "key">The key by which the component gets indexed.</param>
+		/// <param name = "classType">The <see cref = "Type" /> to manage.</param>
+		/// <param name = "lifestyle">The <see cref = "LifestyleType" /> with which to manage the component.</param>
 		[Obsolete("Use Register(Component.For(classType).Named(key)).Lifestyle.Is(lifestyle)) instead.")]
 		[EditorBrowsable(EditorBrowsableState.Advanced)]
 		public IWindsorContainer AddComponentLifeStyle(string key, Type classType, LifestyleType lifestyle)
@@ -419,18 +491,114 @@ namespace Castle.Windsor
 		}
 
 		/// <summary>
-		/// Adds a component to be managed by the container
+		///   Adds a component to be managed by the container
 		/// </summary>
-		/// <param name="key">The key by which the component gets indexed.</param>
-		/// <param name="serviceType">The service <see cref="Type"/> that the component implements.</param>
-		/// <param name="classType">The <see cref="Type"/> to manage.</param>
-		/// <param name="lifestyle">The <see cref="LifestyleType"/> with which to manage the component.</param>
+		/// <param name = "key">The key by which the component gets indexed.</param>
+		/// <param name = "serviceType">The service <see cref = "Type" /> that the component implements.</param>
+		/// <param name = "classType">The <see cref = "Type" /> to manage.</param>
+		/// <param name = "lifestyle">The <see cref = "LifestyleType" /> with which to manage the component.</param>
 		[Obsolete(
 			"Use Register(Component.For(serviceType).ImplementedBy(classType).Named(key)).Lifestyle.Is(lifestyle)) instead.")]
 		[EditorBrowsable(EditorBrowsableState.Advanced)]
 		public IWindsorContainer AddComponentLifeStyle(string key, Type serviceType, Type classType, LifestyleType lifestyle)
 		{
 			kernel.AddComponent(key, serviceType, classType, lifestyle, true);
+			return this;
+		}
+
+		/// <summary>
+		///   Adds a component to be managed by the container.
+		///   The key to obtain the component will be the FullName of the type.
+		/// </summary>
+		/// <typeparam name = "T">The <see cref = "Type" /> to manage.</typeparam>
+		/// <param name = "lifestyle">The <see cref = "LifestyleType" /> with which to manage the component.</param>
+		[Obsolete("Use Register(Component.For<T>().Lifestyle.Is(lifestyle)) instead.")]
+		[EditorBrowsable(EditorBrowsableState.Advanced)]
+		public IWindsorContainer AddComponentLifeStyle<T>(LifestyleType lifestyle)
+		{
+			var t = typeof(T);
+			AddComponentLifeStyle(t.FullName, t, lifestyle);
+			return this;
+		}
+
+		/// <summary>
+		///   Adds a component to be managed by the container
+		///   The key to obtain the component will be the FullName of the type.
+		/// </summary>
+		/// <typeparam name = "I">The service <see cref = "Type" /> that the component implements.</typeparam>
+		/// <typeparam name = "T">The <see cref = "Type" /> to manage.</typeparam>
+		/// <param name = "lifestyle">The <see cref = "LifestyleType" /> with which to manage the component.</param>
+		[Obsolete("Use Register(Component.For<I>().ImplementedBy<T>().Lifestyle.Is(lifestyle)) instead.")]
+		[EditorBrowsable(EditorBrowsableState.Advanced)]
+		public IWindsorContainer AddComponentLifeStyle<I, T>(LifestyleType lifestyle) where T : class
+		{
+			var t = typeof(T);
+			AddComponentLifeStyle(t.FullName, typeof(I), t, lifestyle);
+			return this;
+		}
+
+		/// <summary>
+		///   Adds a component to be managed by the container
+		/// </summary>
+		/// <typeparam name = "T">The <see cref = "Type" /> to manage.</typeparam>
+		/// <param name = "key">The key by which the component gets indexed.</param>
+		/// <param name = "lifestyle">The <see cref = "LifestyleType" /> with which to manage the component.</param>
+		[Obsolete("Use Register(Component.For<T>().Named(key).Lifestyle.Is(lifestyle)) instead.")]
+		[EditorBrowsable(EditorBrowsableState.Advanced)]
+		public IWindsorContainer AddComponentLifeStyle<T>(string key, LifestyleType lifestyle)
+		{
+			AddComponentLifeStyle(key, typeof(T), lifestyle);
+			return this;
+		}
+
+		/// <summary>
+		///   Adds a component to be managed by the container
+		/// </summary>
+		/// <typeparam name = "I">The service <see cref = "Type" /> that the component implements.</typeparam>
+		/// <typeparam name = "T">The <see cref = "Type" /> to manage.</typeparam>
+		/// <param name = "key">The key by which the component gets indexed.</param>
+		/// <param name = "lifestyle">The <see cref = "LifestyleType" /> with which to manage the component.</param>
+		[Obsolete("Use Register(Component.For<I>().ImplementedBy<T>().Named(key).Lifestyle.Is(lifestyle)) instead.")]
+		[EditorBrowsable(EditorBrowsableState.Advanced)]
+		public IWindsorContainer AddComponentLifeStyle<I, T>(string key, LifestyleType lifestyle) where T : class
+		{
+			AddComponentLifeStyle(key, typeof(I), typeof(T), lifestyle);
+			return this;
+		}
+
+		/// <summary>
+		///   Adds a concrete class and an interface 
+		///   as a component and specify the extended properties.
+		///   Used by facilities, mostly.
+		///   The key to obtain the component will be the FullName of the type.
+		/// </summary>
+		/// <typeparam name = "I"></typeparam>
+		/// <typeparam name = "T"></typeparam>
+		/// <param name = "extendedProperties"></param>
+		[Obsolete("Use Register(Component.For<I>().ImplementedBy<T>().ExtendedProperties(extendedProperties)) instead.")]
+		[EditorBrowsable(EditorBrowsableState.Advanced)]
+		public IWindsorContainer AddComponentProperties<I, T>(IDictionary extendedProperties) where T : class
+		{
+			var t = typeof(T);
+			AddComponentWithProperties(t.FullName, typeof(I), t, extendedProperties);
+			return this;
+		}
+
+		/// <summary>
+		///   Adds a concrete class and an interface 
+		///   as a component and specify the extended properties.
+		///   Used by facilities, mostly.
+		/// </summary>
+		/// <typeparam name = "I"></typeparam>
+		/// <typeparam name = "T"></typeparam>
+		/// <param name = "key"></param>
+		/// <param name = "extendedProperties"></param>
+		[Obsolete(
+			"Use Register(Component.For<I>().ImplementedBy<T>().Named(key).ExtendedProperties(extendedProperties)) instead.")]
+		[EditorBrowsable(EditorBrowsableState.Advanced)]
+		public IWindsorContainer AddComponentProperties<I, T>(string key, IDictionary extendedProperties) where T : class
+		{
+			AddComponentWithProperties(key, typeof(I), typeof(T), extendedProperties);
 			return this;
 		}
 
@@ -454,128 +622,12 @@ namespace Castle.Windsor
 		}
 
 		/// <summary>
-		/// Adds a component to be managed by the container.
-		/// The key to obtain the component will be the FullName of the type.
+		///   Adds a concrete class as a component and specify the extended properties.
+		///   Used by facilities, mostly.
+		///   The key to obtain the component will be the FullName of the type.
 		/// </summary>
-		/// <typeparam name="T">The <see cref="Type"/> to manage.</typeparam>
-		[Obsolete("Use Register(Component.For<T>()) instead.")]
-		[EditorBrowsable(EditorBrowsableState.Advanced)]
-		public IWindsorContainer AddComponent<T>()
-		{
-			var t = typeof(T);
-			AddComponent(t.FullName, t);
-			return this;
-		}
-
-		/// <summary>
-		/// Adds a component to be managed by the container
-		/// </summary>
-		/// <typeparam name="T">The <see cref="Type"/> to manage.</typeparam>
-		/// <param name="key">The key by which the component gets indexed.</param>		
-		[Obsolete("Use Register(Component.For<T>().Named(key)) instead.")]
-		[EditorBrowsable(EditorBrowsableState.Advanced)]
-		public IWindsorContainer AddComponent<T>(string key)
-		{
-			AddComponent(key, typeof(T));
-			return this;
-		}
-
-		/// <summary>
-		/// Adds a component to be managed by the container.
-		/// The key to obtain the component will be the FullName of the type.
-		/// </summary>
-		/// <typeparam name="T">The <see cref="Type"/> to manage.</typeparam>
-		/// <param name="lifestyle">The <see cref="LifestyleType"/> with which to manage the component.</param>
-		[Obsolete("Use Register(Component.For<T>().Lifestyle.Is(lifestyle)) instead.")]
-		[EditorBrowsable(EditorBrowsableState.Advanced)]
-		public IWindsorContainer AddComponentLifeStyle<T>(LifestyleType lifestyle)
-		{
-			var t = typeof(T);
-			AddComponentLifeStyle(t.FullName, t, lifestyle);
-			return this;
-		}
-
-		/// <summary>
-		/// Adds a component to be managed by the container
-		/// </summary>
-		/// <typeparam name="I">The service <see cref="Type"/> that the component implements.</typeparam>
-		/// <typeparam name="T">The <see cref="Type"/> to manage.</typeparam>
-		/// <param name="key">The key by which the component gets indexed.</param>
-		[Obsolete("Use Register(Component.For<I>().ImplementedBy<T>().Named(key)) instead.")]
-		[EditorBrowsable(EditorBrowsableState.Advanced)]
-		public IWindsorContainer AddComponent<I, T>(string key) where T : class
-		{
-			AddComponent(key, typeof(I), typeof(T));
-			return this;
-		}
-
-		/// <summary>
-		/// Adds a component to be managed by the container
-		/// The key to obtain the component will be the FullName of the type.
-		/// </summary>
-		/// <typeparam name="I">The service <see cref="Type"/> that the component implements.</typeparam>
-		/// <typeparam name="T">The <see cref="Type"/> to manage.</typeparam>
-		/// <param name="lifestyle">The <see cref="LifestyleType"/> with which to manage the component.</param>
-		[Obsolete("Use Register(Component.For<I>().ImplementedBy<T>().Lifestyle.Is(lifestyle)) instead.")]
-		[EditorBrowsable(EditorBrowsableState.Advanced)]
-		public IWindsorContainer AddComponentLifeStyle<I, T>(LifestyleType lifestyle) where T : class
-		{
-			var t = typeof(T);
-			AddComponentLifeStyle(t.FullName, typeof(I), t, lifestyle);
-			return this;
-		}
-
-		/// <summary>
-		/// Adds a component to be managed by the container
-		/// </summary>
-		/// <typeparam name="T">The <see cref="Type"/> to manage.</typeparam>
-		/// <param name="key">The key by which the component gets indexed.</param>		
-		/// <param name="lifestyle">The <see cref="LifestyleType"/> with which to manage the component.</param>
-		[Obsolete("Use Register(Component.For<T>().Named(key).Lifestyle.Is(lifestyle)) instead.")]
-		[EditorBrowsable(EditorBrowsableState.Advanced)]
-		public IWindsorContainer AddComponentLifeStyle<T>(string key, LifestyleType lifestyle)
-		{
-			AddComponentLifeStyle(key, typeof(T), lifestyle);
-			return this;
-		}
-
-		/// <summary>
-		/// Adds a component to be managed by the container
-		/// The key to obtain the component will be the FullName of the type.
-		/// </summary>
-		/// <typeparam name="I">The service <see cref="Type"/> that the component implements.</typeparam>
-		/// <typeparam name="T">The <see cref="Type"/> to manage.</typeparam>
-		[Obsolete("Use Register(Component.For<I>().ImplementedBy<T>()) instead.")]
-		[EditorBrowsable(EditorBrowsableState.Advanced)]
-		public IWindsorContainer AddComponent<I, T>() where T : class
-		{
-			var t = typeof(T);
-			AddComponent(t.FullName, typeof(I), t);
-			return this;
-		}
-
-		/// <summary>
-		/// Adds a component to be managed by the container
-		/// </summary>
-		/// <typeparam name="I">The service <see cref="Type"/> that the component implements.</typeparam>
-		/// <typeparam name="T">The <see cref="Type"/> to manage.</typeparam>
-		/// <param name="key">The key by which the component gets indexed.</param>
-		/// <param name="lifestyle">The <see cref="LifestyleType"/> with which to manage the component.</param>
-		[Obsolete("Use Register(Component.For<I>().ImplementedBy<T>().Named(key).Lifestyle.Is(lifestyle)) instead.")]
-		[EditorBrowsable(EditorBrowsableState.Advanced)]
-		public IWindsorContainer AddComponentLifeStyle<I, T>(string key, LifestyleType lifestyle) where T : class
-		{
-			AddComponentLifeStyle(key, typeof(I), typeof(T), lifestyle);
-			return this;
-		}
-
-		/// <summary>
-		/// Adds a concrete class as a component and specify the extended properties.
-		/// Used by facilities, mostly.
-		/// The key to obtain the component will be the FullName of the type.
-		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <param name="extendedProperties"></param>
+		/// <typeparam name = "T"></typeparam>
+		/// <param name = "extendedProperties"></param>
 		[Obsolete("Use Register(Component.For<T>().ExtendedProperties(extendedProperties)) instead.")]
 		[EditorBrowsable(EditorBrowsableState.Advanced)]
 		public IWindsorContainer AddComponentWithProperties<T>(IDictionary extendedProperties)
@@ -586,12 +638,12 @@ namespace Castle.Windsor
 		}
 
 		/// <summary>
-		/// Adds a concrete class as a component and specify the extended properties.
-		/// Used by facilities, mostly.
+		///   Adds a concrete class as a component and specify the extended properties.
+		///   Used by facilities, mostly.
 		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <param name="key"></param>		
-		/// <param name="extendedProperties"></param>
+		/// <typeparam name = "T"></typeparam>
+		/// <param name = "key"></param>
+		/// <param name = "extendedProperties"></param>
 		[Obsolete("Use Register(Component.For<T>().Named(key).ExtendedProperties(extendedProperties)) instead.")]
 		[EditorBrowsable(EditorBrowsableState.Advanced)]
 		public IWindsorContainer AddComponentWithProperties<T>(string key, IDictionary extendedProperties)
@@ -601,58 +653,110 @@ namespace Castle.Windsor
 		}
 
 		/// <summary>
-		/// Adds a concrete class and an interface 
-		/// as a component and specify the extended properties.
-		/// Used by facilities, mostly.
-		/// The key to obtain the component will be the FullName of the type.
+		///   Registers a facility within the kernel.
 		/// </summary>
-		/// <typeparam name="I"></typeparam>
-		/// <typeparam name="T"></typeparam>
-		/// <param name="extendedProperties"></param>
-		[Obsolete("Use Register(Component.For<I>().ImplementedBy<T>().ExtendedProperties(extendedProperties)) instead.")]
-		[EditorBrowsable(EditorBrowsableState.Advanced)]
-		public IWindsorContainer AddComponentProperties<I, T>(IDictionary extendedProperties) where T : class
+		/// <param name = "key"></param>
+		/// <param name = "facility"></param>
+		public virtual IWindsorContainer AddFacility(String key, IFacility facility)
 		{
-			var t = typeof(T);
-			AddComponentWithProperties(t.FullName, typeof(I), t, extendedProperties);
+			kernel.AddFacility(key, facility);
 			return this;
 		}
 
 		/// <summary>
-		/// Adds a concrete class and an interface 
-		/// as a component and specify the extended properties.
-		/// Used by facilities, mostly.
+		///   Creates and adds an <see cref = "IFacility" /> facility to the container.
 		/// </summary>
-		/// <typeparam name="I"></typeparam>
-		/// <typeparam name="T"></typeparam>
-		/// <param name="key"></param>
-		/// <param name="extendedProperties"></param>
-		[Obsolete(
-			"Use Register(Component.For<I>().ImplementedBy<T>().Named(key).ExtendedProperties(extendedProperties)) instead.")]
-		[EditorBrowsable(EditorBrowsableState.Advanced)]
-		public IWindsorContainer AddComponentProperties<I, T>(string key, IDictionary extendedProperties) where T : class
+		/// <typeparam name = "T">The facility type.</typeparam>
+		/// <param name = "key"></param>
+		/// <returns></returns>
+		public IWindsorContainer AddFacility<T>(String key) where T : IFacility, new()
 		{
-			AddComponentWithProperties(key, typeof(I), typeof(T), extendedProperties);
+			kernel.AddFacility<T>(key);
 			return this;
 		}
 
 		/// <summary>
-		/// Registers the components described by the <see cref="ComponentRegistration{S}"/>s
-		/// with the <see cref="IWindsorContainer"/>.
-		/// <param name="registrations">The component registrations.</param>
-		/// <returns>The container.</returns>
+		///   Creates and adds an <see cref = "IFacility" /> facility to the container.
 		/// </summary>
-		public IWindsorContainer Register(params IRegistration[] registrations)
+		/// <typeparam name = "T">The facility type.</typeparam>
+		/// <param name = "key"></param>
+		/// <param name = "onCreate">The callback for creation.</param>
+		/// <returns></returns>
+		public IWindsorContainer AddFacility<T>(String key, Action<T> onCreate)
+			where T : IFacility, new()
 		{
-			Kernel.Register(registrations);
+			kernel.AddFacility(key, onCreate);
 			return this;
 		}
 
 		/// <summary>
-		/// Installs the components provided by the <see cref="IWindsorInstaller"/>s
-		/// with the <see cref="IWindsorContainer"/>.
-		/// <param name="installers">The component installers.</param>
-		/// <returns>The container.</returns>
+		///   Creates and adds an <see cref = "IFacility" /> facility to the container.
+		/// </summary>
+		/// <typeparam name = "T">The facility type.</typeparam>
+		/// <param name = "key"></param>
+		/// <param name = "onCreate">The callback for creation.</param>
+		/// <returns></returns>
+		public IWindsorContainer AddFacility<T>(String key, Func<T, object> onCreate)
+			where T : IFacility, new()
+		{
+			kernel.AddFacility(key, onCreate);
+			return this;
+		}
+
+		/// <summary>
+		///   Creates and adds an <see cref = "IFacility" /> facility to the container.
+		/// </summary>
+		/// <typeparam name = "T">The facility type.</typeparam>
+		/// <returns></returns>
+		public IWindsorContainer AddFacility<T>() where T : IFacility, new()
+		{
+			kernel.AddFacility<T>();
+			return this;
+		}
+
+		/// <summary>
+		///   Creates and adds an <see cref = "IFacility" /> facility to the container.
+		/// </summary>
+		/// <typeparam name = "T">The facility type.</typeparam>
+		/// <param name = "onCreate">The callback for creation.</param>
+		/// <returns></returns>
+		public IWindsorContainer AddFacility<T>(Action<T> onCreate)
+			where T : IFacility, new()
+		{
+			kernel.AddFacility(onCreate);
+			return this;
+		}
+
+		/// <summary>
+		///   Creates and adds an <see cref = "IFacility" /> facility to the container.
+		/// </summary>
+		/// <typeparam name = "T">The facility type.</typeparam>
+		/// <param name = "onCreate">The callback for creation.</param>
+		/// <returns></returns>
+		public IWindsorContainer AddFacility<T>(Func<T, object> onCreate)
+			where T : IFacility, new()
+		{
+			kernel.AddFacility(onCreate);
+			return this;
+		}
+
+		/// <summary>
+		///   Gets a child container instance by name.
+		/// </summary>
+		/// <param name = "name">The container's name.</param>
+		/// <returns>The child container instance or null</returns>
+		public IWindsorContainer GetChildContainer(string name)
+		{
+			IWindsorContainer windsorContainer;
+			childContainers.TryGetValue(name, out windsorContainer);
+			return windsorContainer;
+		}
+
+		/// <summary>
+		///   Installs the components provided by the <see cref = "IWindsorInstaller" />s
+		///   with the <see cref = "IWindsorContainer" />.
+		///   <param name = "installers">The component installers.</param>
+		///   <returns>The container.</returns>
 		/// </summary>
 		public IWindsorContainer Install(params IWindsorInstaller[] installers)
 		{
@@ -684,276 +788,32 @@ namespace Castle.Windsor
 			return this;
 		}
 
-		private void Install(IWindsorInstaller[] installers, DefaultComponentInstaller scope)
+		/// <summary>
+		///   Registers the components described by the <see cref = "ComponentRegistration{S}" />s
+		///   with the <see cref = "IWindsorContainer" />.
+		///   <param name = "registrations">The component registrations.</param>
+		///   <returns>The container.</returns>
+		/// </summary>
+		public IWindsorContainer Register(params IRegistration[] registrations)
 		{
-			using (var store = new PartialConfigurationStore(kernel))
-			{
-				foreach (var windsorInstaller in installers)
-				{
-					windsorInstaller.Install(this, store);
-				}
-
-				scope.SetUp(this, store);
-			}
+			Kernel.Register(registrations);
+			return this;
 		}
 
 		/// <summary>
-		/// Returns a component instance by the service
+		///   Releases a component instance
 		/// </summary>
-		/// <param name="service"></param>
-		/// <param name="arguments"></param>
-		/// <returns></returns>
-		public virtual object Resolve(Type service, IDictionary arguments)
-		{
-			return kernel.Resolve(service, arguments);
-		}
-
-		/// <summary>
-		/// Returns a component instance by the service
-		/// </summary>
-		/// <param name="service"></param>
-		/// <param name="argumentsAsAnonymousType"></param>
-		/// <returns></returns>
-		public virtual object Resolve(Type service, object argumentsAsAnonymousType)
-		{
-			return Resolve(service, new ReflectionBasedDictionaryAdapter(argumentsAsAnonymousType));
-		}
-
-		/// <summary>
-		/// Returns a component instance by the key
-		/// </summary>
-		/// <param name="key"></param>
-		/// <param name="arguments"></param>
-		/// <returns></returns>
-		public virtual object Resolve(String key, IDictionary arguments)
-		{
-			return kernel.Resolve(key, arguments);
-		}
-
-		/// <summary>
-		/// Returns a component instance by the key
-		/// </summary>
-		/// <param name="key"></param>
-		/// <param name="argumentsAsAnonymousType"></param>
-		/// <returns></returns>
-		public virtual object Resolve(String key, object argumentsAsAnonymousType)
-		{
-			return Resolve(key, new ReflectionBasedDictionaryAdapter(argumentsAsAnonymousType));
-		}
-
-		/// <summary>
-		/// Returns a component instance by the service
-		/// </summary>
-		/// <param name="service"></param>
-		/// <returns></returns>
-		public virtual object Resolve(Type service)
-		{
-			return kernel.Resolve(service);
-		}
-
-		/// <summary>
-		/// Resolve all valid components that match this type.
-		/// </summary>
-		/// <typeparam name="T">The service type</typeparam>
-		public T[] ResolveAll<T>()
-		{
-			return (T[])ResolveAll(typeof(T));
-		}
-
-		public Array ResolveAll(Type service)
-		{
-			return kernel.ResolveAll(service);
-		}
-
-		public Array ResolveAll(Type service, IDictionary arguments)
-		{
-			return kernel.ResolveAll(service, arguments);
-		}
-
-		public Array ResolveAll(Type service, object argumentsAsAnonymousType)
-		{
-			return ResolveAll(service, new ReflectionBasedDictionaryAdapter(argumentsAsAnonymousType));
-		}
-
-		/// <summary>
-		/// Resolve all valid components that match this type.
-		/// <typeparam name="T">The service type</typeparam>
-		/// <param name="arguments">Arguments to resolve the service</param>
-		/// </summary>
-		public T[] ResolveAll<T>(IDictionary arguments)
-		{
-			return (T[])ResolveAll(typeof(T), arguments);
-		}
-
-		/// <summary>
-		/// Resolve all valid components that match this type.
-		/// <typeparam name="T">The service type</typeparam>
-		/// <param name="argumentsAsAnonymousType">Arguments to resolve the service</param>
-		/// </summary>
-		public T[] ResolveAll<T>(object argumentsAsAnonymousType)
-		{
-			return ResolveAll<T>(new ReflectionBasedDictionaryAdapter(argumentsAsAnonymousType));
-		}
-
-		/// <summary>
-		/// Shortcut to the method <see cref="Resolve(String, IDictionary)"/>
-		/// </summary>
-		[Obsolete("Use Resolve(key, new Arguments()) or Resolve<TService>(key) instead")]
-		[EditorBrowsable(EditorBrowsableState.Advanced)]
-		public virtual object this[String key]
-		{
-			get { return Resolve(key, new Arguments()); }
-		}
-
-		/// <summary>
-		/// Shortcut to the method <see cref="Resolve(Type)"/>
-		/// </summary>
-		[Obsolete("Use Resolve(service) or generic version instead")]
-		[EditorBrowsable(EditorBrowsableState.Advanced)]
-		public virtual object this[Type service]
-		{
-			get { return Resolve(service); }
-		}
-
-		/// <summary>
-		/// Returns a component instance by the key
-		/// </summary>
-		/// <param name="key"></param>
-		/// <param name="service"></param>
-		/// <returns></returns>
-		public virtual object Resolve(String key, Type service)
-		{
-			return kernel.Resolve(key, service);
-		}
-
-		/// <summary>
-		/// Returns a component instance by the key
-		/// </summary>
-		/// <param name="key"></param>
-		/// <param name="service"></param>
-		/// <param name="arguments"></param>
-		/// <returns></returns>
-		public virtual object Resolve(String key, Type service, IDictionary arguments)
-		{
-			return kernel.Resolve(key, service, arguments);
-		}
-
-		/// <summary>
-		/// Returns a component instance by the key
-		/// </summary>
-		/// <param name="key"></param>
-		/// <param name="service"></param>
-		/// <param name="argumentsAsAnonymousType"></param>
-		/// <returns></returns>
-		public virtual object Resolve(String key, Type service, object argumentsAsAnonymousType)
-		{
-			return Resolve(key, service, new ReflectionBasedDictionaryAdapter(argumentsAsAnonymousType));
-		}
-
-		/// <summary>
-		/// Returns a component instance by the service 
-		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <param name="arguments"></param>
-		/// <returns></returns>
-		public T Resolve<T>(IDictionary arguments)
-		{
-			return (T)Resolve(typeof(T), arguments);
-		}
-
-		/// <summary>
-		/// Returns a component instance by the service 
-		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <param name="argumentsAsAnonymousType"></param>
-		/// <returns></returns>
-		public T Resolve<T>(object argumentsAsAnonymousType)
-		{
-			return Resolve<T>(new ReflectionBasedDictionaryAdapter(argumentsAsAnonymousType));
-		}
-
-		/// <summary>
-		/// Returns a component instance by the key
-		/// </summary>
-		/// <param name="key"></param>
-		/// <param name="arguments"></param>
-		/// <returns></returns>
-		public virtual T Resolve<T>(String key, IDictionary arguments)
-		{
-			return (T)Resolve(key, typeof(T), arguments);
-		}
-
-		/// <summary>
-		/// Returns a component instance by the key
-		/// </summary>
-		/// <param name="key"></param>
-		/// <param name="argumentsAsAnonymousType"></param>
-		/// <returns></returns>
-		public virtual T Resolve<T>(String key, object argumentsAsAnonymousType)
-		{
-			return Resolve<T>(key, new ReflectionBasedDictionaryAdapter(argumentsAsAnonymousType));
-		}
-
-		/// <summary>
-		/// Returns a component instance by the service 
-		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <returns></returns>
-		public T Resolve<T>()
-		{
-			return (T)Resolve(typeof(T));
-		}
-
-		/// <summary>
-		/// Returns a component instance by the key
-		/// </summary>
-		/// <param name="key"></param>
-		/// <returns></returns>
-		public virtual T Resolve<T>(String key)
-		{
-			return (T)Resolve(key, typeof(T));
-		}
-
-		/// <summary>
-		/// Releases a component instance
-		/// </summary>
-		/// <param name="instance"></param>
+		/// <param name = "instance"></param>
 		public virtual void Release(object instance)
 		{
 			kernel.ReleaseComponent(instance);
 		}
 
 		/// <summary>
-		/// Registers a subcontainer. The components exposed
-		/// by this container will be accessible from subcontainers.
+		///   Removes (unregisters) a subcontainer.  The components exposed by this container
+		///   will no longer be accessible to the child container.
 		/// </summary>
-		/// <param name="childContainer"></param>
-		public virtual void AddChildContainer(IWindsorContainer childContainer)
-		{
-			if (childContainer == null)
-			{
-				throw new ArgumentNullException("childContainer");
-			}
-
-			if (!childContainers.ContainsKey(childContainer.Name))
-			{
-				lock (childContainersLocker)
-				{
-					if (!childContainers.ContainsKey(childContainer.Name))
-					{
-						kernel.AddChildKernel(childContainer.Kernel);
-						childContainers.Add(childContainer.Name, childContainer);
-						childContainer.Parent = this;
-					}
-				}
-			}
-		}
-
-		/// <summary>
-		/// Removes (unregisters) a subcontainer.  The components exposed by this container
-		/// will no longer be accessible to the child container.
-		/// </summary>
-		/// <param name="childContainer"></param>
+		/// <param name = "childContainer"></param>
 		public virtual void RemoveChildContainer(IWindsorContainer childContainer)
 		{
 			if (childContainer == null)
@@ -976,62 +836,200 @@ namespace Castle.Windsor
 		}
 
 		/// <summary>
-		/// Gets a child container instance by name.
+		///   Returns a component instance by the service
 		/// </summary>
-		/// <param name="name">The container's name.</param>
-		/// <returns>The child container instance or null</returns>
-		public IWindsorContainer GetChildContainer(string name)
+		/// <param name = "service"></param>
+		/// <param name = "arguments"></param>
+		/// <returns></returns>
+		public virtual object Resolve(Type service, IDictionary arguments)
 		{
-			IWindsorContainer windsorContainer;
-			childContainers.TryGetValue(name, out windsorContainer);
-			return windsorContainer;
+			return kernel.Resolve(service, arguments);
 		}
 
 		/// <summary>
-		/// Gets the service object of the specified type.
+		///   Returns a component instance by the service
 		/// </summary>
-		/// <returns>
-		/// A service object of type serviceType.
-		/// </returns>
-		/// <param name="serviceType">An object that specifies the type of service object to get. </param>
-		public object GetService(Type serviceType)
+		/// <param name = "service"></param>
+		/// <param name = "argumentsAsAnonymousType"></param>
+		/// <returns></returns>
+		public virtual object Resolve(Type service, object argumentsAsAnonymousType)
 		{
-			return kernel.GetService(serviceType);
+			return Resolve(service, new ReflectionBasedDictionaryAdapter(argumentsAsAnonymousType));
 		}
 
 		/// <summary>
-		/// Gets the service object of the specified type.
+		///   Returns a component instance by the key
 		/// </summary>
-		/// <returns>
-		/// A service object of type serviceType.
-		/// </returns>
-		public T GetService<T>() where T : class
+		/// <param name = "key"></param>
+		/// <param name = "arguments"></param>
+		/// <returns></returns>
+		public virtual object Resolve(String key, IDictionary arguments)
 		{
-			return kernel.GetService<T>();
+			return kernel.Resolve(key, arguments);
 		}
 
 		/// <summary>
-		/// Executes Dispose on underlying <see cref="IKernel"/>
+		///   Returns a component instance by the key
 		/// </summary>
-		public virtual void Dispose()
+		/// <param name = "key"></param>
+		/// <param name = "argumentsAsAnonymousType"></param>
+		/// <returns></returns>
+		public virtual object Resolve(String key, object argumentsAsAnonymousType)
 		{
-			Parent = null;
-			childContainers.Clear();
-			kernel.Dispose();
-		}
-		
-
-		public IComponentsInstaller Installer
-		{
-			get { return installer; }
+			return Resolve(key, new ReflectionBasedDictionaryAdapter(argumentsAsAnonymousType));
 		}
 
-		protected virtual void RunInstaller()
+		/// <summary>
+		///   Returns a component instance by the service
+		/// </summary>
+		/// <param name = "service"></param>
+		/// <returns></returns>
+		public virtual object Resolve(Type service)
 		{
-			if (installer != null)
-			{
-				installer.SetUp(this, kernel.ConfigurationStore);
-			}
+			return kernel.Resolve(service);
+		}
+
+		/// <summary>
+		///   Returns a component instance by the key
+		/// </summary>
+		/// <param name = "key"></param>
+		/// <param name = "service"></param>
+		/// <returns></returns>
+		public virtual object Resolve(String key, Type service)
+		{
+			return kernel.Resolve(key, service);
+		}
+
+		/// <summary>
+		///   Returns a component instance by the key
+		/// </summary>
+		/// <param name = "key"></param>
+		/// <param name = "service"></param>
+		/// <param name = "arguments"></param>
+		/// <returns></returns>
+		public virtual object Resolve(String key, Type service, IDictionary arguments)
+		{
+			return kernel.Resolve(key, service, arguments);
+		}
+
+		/// <summary>
+		///   Returns a component instance by the key
+		/// </summary>
+		/// <param name = "key"></param>
+		/// <param name = "service"></param>
+		/// <param name = "argumentsAsAnonymousType"></param>
+		/// <returns></returns>
+		public virtual object Resolve(String key, Type service, object argumentsAsAnonymousType)
+		{
+			return Resolve(key, service, new ReflectionBasedDictionaryAdapter(argumentsAsAnonymousType));
+		}
+
+		/// <summary>
+		///   Returns a component instance by the service
+		/// </summary>
+		/// <typeparam name = "T"></typeparam>
+		/// <param name = "arguments"></param>
+		/// <returns></returns>
+		public T Resolve<T>(IDictionary arguments)
+		{
+			return (T)Resolve(typeof(T), arguments);
+		}
+
+		/// <summary>
+		///   Returns a component instance by the service
+		/// </summary>
+		/// <typeparam name = "T"></typeparam>
+		/// <param name = "argumentsAsAnonymousType"></param>
+		/// <returns></returns>
+		public T Resolve<T>(object argumentsAsAnonymousType)
+		{
+			return Resolve<T>(new ReflectionBasedDictionaryAdapter(argumentsAsAnonymousType));
+		}
+
+		/// <summary>
+		///   Returns a component instance by the key
+		/// </summary>
+		/// <param name = "key"></param>
+		/// <param name = "arguments"></param>
+		/// <returns></returns>
+		public virtual T Resolve<T>(String key, IDictionary arguments)
+		{
+			return (T)Resolve(key, typeof(T), arguments);
+		}
+
+		/// <summary>
+		///   Returns a component instance by the key
+		/// </summary>
+		/// <param name = "key"></param>
+		/// <param name = "argumentsAsAnonymousType"></param>
+		/// <returns></returns>
+		public virtual T Resolve<T>(String key, object argumentsAsAnonymousType)
+		{
+			return Resolve<T>(key, new ReflectionBasedDictionaryAdapter(argumentsAsAnonymousType));
+		}
+
+		/// <summary>
+		///   Returns a component instance by the service
+		/// </summary>
+		/// <typeparam name = "T"></typeparam>
+		/// <returns></returns>
+		public T Resolve<T>()
+		{
+			return (T)Resolve(typeof(T));
+		}
+
+		/// <summary>
+		///   Returns a component instance by the key
+		/// </summary>
+		/// <param name = "key"></param>
+		/// <returns></returns>
+		public virtual T Resolve<T>(String key)
+		{
+			return (T)Resolve(key, typeof(T));
+		}
+
+		/// <summary>
+		///   Resolve all valid components that match this type.
+		/// </summary>
+		/// <typeparam name = "T">The service type</typeparam>
+		public T[] ResolveAll<T>()
+		{
+			return (T[])ResolveAll(typeof(T));
+		}
+
+		public Array ResolveAll(Type service)
+		{
+			return kernel.ResolveAll(service);
+		}
+
+		public Array ResolveAll(Type service, IDictionary arguments)
+		{
+			return kernel.ResolveAll(service, arguments);
+		}
+
+		public Array ResolveAll(Type service, object argumentsAsAnonymousType)
+		{
+			return ResolveAll(service, new ReflectionBasedDictionaryAdapter(argumentsAsAnonymousType));
+		}
+
+		/// <summary>
+		///   Resolve all valid components that match this type.
+		///   <typeparam name = "T">The service type</typeparam>
+		///   <param name = "arguments">Arguments to resolve the service</param>
+		/// </summary>
+		public T[] ResolveAll<T>(IDictionary arguments)
+		{
+			return (T[])ResolveAll(typeof(T), arguments);
+		}
+
+		/// <summary>
+		///   Resolve all valid components that match this type.
+		///   <typeparam name = "T">The service type</typeparam>
+		///   <param name = "argumentsAsAnonymousType">Arguments to resolve the service</param>
+		/// </summary>
+		public T[] ResolveAll<T>(object argumentsAsAnonymousType)
+		{
+			return ResolveAll<T>(new ReflectionBasedDictionaryAdapter(argumentsAsAnonymousType));
 		}
 	}
 }
