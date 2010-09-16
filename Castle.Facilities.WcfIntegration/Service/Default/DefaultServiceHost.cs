@@ -17,6 +17,7 @@ namespace Castle.Facilities.WcfIntegration
 	using System;
 	using System.Linq;
 	using System.ServiceModel;
+	using System.ServiceModel.Channels;
 	using Castle.Core;
 
 	public class DefaultServiceHost : ServiceHost, IWcfServiceHost
@@ -24,7 +25,7 @@ namespace Castle.Facilities.WcfIntegration
 		private readonly ComponentModel model;
 
 		public event EventHandler<EndpointCreatedArgs> EndpointCreated;
-        
+
 		public DefaultServiceHost(ComponentModel model, params Uri[] baseAddresses)
 			: base(model.Implementation, baseAddresses)
 		{
@@ -35,7 +36,7 @@ namespace Castle.Facilities.WcfIntegration
 			: base(serviceType, baseAddresses)
 		{
 		}
-#if DOTNET40
+
 		protected override void OnOpening()
 		{
 			base.OnOpening();
@@ -45,6 +46,7 @@ namespace Castle.Facilities.WcfIntegration
 
 		private void AddDefaultEndpointIfNoneFound()
 		{
+#if DOTNET40
 			if (Description != null && Description.NonSystemEndpoints().Any() == false)
 			{
 				foreach (var endpoint in AddDefaultEndpoints())
@@ -55,6 +57,62 @@ namespace Castle.Facilities.WcfIntegration
 					}
 				}
 			}
+#else
+			if (Description != null && Description.Endpoints.Count == 0)
+			{
+				Type contract = ObtainDefaultContract();
+
+				if (contract != null)
+				{
+					foreach (Uri baseAddress in BaseAddresses)
+					{
+						Binding binding = null;
+
+						if (baseAddress.Scheme == Uri.UriSchemeHttp)
+						{
+							binding = new BasicHttpBinding();
+						}
+						else if (baseAddress.Scheme == Uri.UriSchemeHttps)
+						{
+							binding = new BasicHttpBinding(BasicHttpSecurityMode.Transport);
+						}
+						else if (baseAddress.Scheme == Uri.UriSchemeNetTcp)
+						{
+							binding = new NetTcpBinding();
+						}
+
+						if (binding != null)
+						{
+							var endpoint = AddServiceEndpoint(contract, binding, baseAddress);
+
+							if (EndpointCreated != null)
+							{
+								EndpointCreated(this, new EndpointCreatedArgs(endpoint));
+							}
+						}
+					}
+				}
+			}
+#endif
+		}
+
+#if !DOTNET40
+		private Type ObtainDefaultContract()
+		{
+			if (model != null && model.Service.IsInterface)
+			{
+				return model.Service;
+			}
+
+			if (ImplementedContracts.Count == 1)
+			{
+				foreach (var contract in ImplementedContracts.Values)
+				{
+					return contract.ContractType;
+				}
+			}
+
+			return null;
 		}
 #endif
 	}
