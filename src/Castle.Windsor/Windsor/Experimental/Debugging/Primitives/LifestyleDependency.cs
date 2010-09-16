@@ -57,10 +57,10 @@ namespace Castle.Windsor.Experimental.Debugging.Primitives
 
 		public bool Mismatched()
 		{
-			return MismatchedDirectly() || MismatchedIndirectly();
+			return MismatchedDirectly(handler) || MismatchedIndirectly();
 		}
 
-		private bool MismatchedDirectly()
+		private bool MismatchedDirectly(IHandler handler)
 		{
 			return handler.ComponentModel.LifestyleType == LifestyleType.Transient ||
 			       handler.ComponentModel.LifestyleType == LifestyleType.PerWebRequest;
@@ -75,13 +75,15 @@ namespace Castle.Windsor.Experimental.Debugging.Primitives
 		{
 			return items.Select(
 				item =>
-				new DebuggerViewItem(string.Format("Mismatched {0} depedency", item.handler.ComponentModel.LifestyleType),
-				                     item.value.Key,
-				                     new ComponentDebuggerView(item.handler,
-				                                               item.value,
-				                                               new DefaultComponentView(
-				                                               	item.handler,
-				                                               	value.Value.ToArray()))));
+				new DebuggerViewItem(
+					string.Format("Mismatched {0} depedency",
+					              MismatchedDirectly(item.handler) ? item.handler.ComponentModel.LifestyleType.ToString() : "indirect"),
+					item.value.Key,
+					new ComponentDebuggerView(item.handler,
+					                          item.value,
+					                          new DefaultComponentView(
+					                          	item.handler,
+					                          	value.Value.ToArray()))));
 		}
 	}
 }
