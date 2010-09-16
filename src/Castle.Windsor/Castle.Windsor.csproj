@@ -656,16 +656,17 @@
     <Compile Include="Windsor\Configuration\Interpreters\XmlProcessor\XmlProcessorException.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Windsor\Experimental\Debugging\ComponentStatusDebuggerViewItem.cs" />
-    <Compile Include="Windsor\Experimental\Debugging\DebuggerViewItem.cs" />
-    <Compile Include="Windsor\Experimental\Debugging\DefaultComponentView.cs" />
+    <Compile Include="Windsor\Experimental\Debugging\Primitives\ComponentStatusDebuggerViewItem.cs" />
+    <Compile Include="Windsor\Experimental\Debugging\Primitives\DefaultComponentView.cs" />
+    <Compile Include="Windsor\Experimental\Debugging\Extensions\AbstractContainerDebuggerExtension.cs" />
     <Compile Include="Windsor\Experimental\Debugging\Extensions\AllComponents.cs" />
     <Compile Include="Windsor\Experimental\Debugging\DefaultDebuggingSubSystem.cs" />
-    <Compile Include="Windsor\Experimental\Debugging\DebuggerViewItemRich.cs" />
+    <Compile Include="Windsor\Experimental\Debugging\Primitives\DebuggerViewItem.cs" />
     <Compile Include="Windsor\Experimental\Debugging\Extensions\Facilities.cs" />
-    <Compile Include="Windsor\Experimental\Debugging\HandlerByKeyDebuggerView.cs" />
-    <Compile Include="Windsor\Experimental\Debugging\HandlerDebuggerProxy.cs" />
-    <Compile Include="Windsor\Experimental\Debugging\HandlersByKeyDictionaryDebuggerView.cs" />
+    <Compile Include="Windsor\Experimental\Debugging\Primitives\LifestyleDependency.cs" />
+    <Compile Include="Windsor\Experimental\Debugging\Extensions\PotentialLifestyleMismatches.cs" />
+    <Compile Include="Windsor\Experimental\Debugging\Primitives\ComponentDebuggerView.cs" />
+    <Compile Include="Windsor\Experimental\Debugging\Primitives\ComponentDebuggerViewCollection.cs" />
     <Compile Include="Windsor\Experimental\Debugging\IComponentDebuggerExtension.cs" />
     <Compile Include="Windsor\Experimental\Debugging\IContainerDebuggerExtension.cs" />
     <Compile Include="Windsor\Experimental\Debugging\IContainerDebuggerExtensionHost.cs" />

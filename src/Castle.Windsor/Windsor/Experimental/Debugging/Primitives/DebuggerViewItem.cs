@@ -12,27 +12,52 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Windsor.Experimental.Debugging
+namespace Castle.Windsor.Experimental.Debugging.Primitives
 {
 	using System.Diagnostics;
 
 	[DebuggerDisplay("{key}", Name = "{name,nq}")]
-	public class DebuggerViewItemRich
+	public class DebuggerViewItem
 	{
+		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
+		private readonly object key;
+
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 		private readonly string name;
 
-		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
-		private readonly string key;
-
 		[DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
-		private object value;
+		private readonly object value;
 
-		public DebuggerViewItemRich(string name, string key, object value)
+		public DebuggerViewItem(string name, string key, object value)
 		{
 			this.name = name;
 			this.key = key;
 			this.value = value;
+		}
+
+		public DebuggerViewItem(string name, object value)
+		{
+			this.name = name;
+			key = value;
+			this.value = value;
+		}
+
+		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
+		public object Key
+		{
+			get { return key; }
+		}
+
+		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
+		public string Name
+		{
+			get { return name; }
+		}
+
+		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
+		public object Value
+		{
+			get { return value; }
 		}
 	}
 }

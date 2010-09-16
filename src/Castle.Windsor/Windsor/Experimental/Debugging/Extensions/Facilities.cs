@@ -17,19 +17,20 @@ namespace Castle.Windsor.Experimental.Debugging.Extensions
 	using System.Collections.Generic;
 
 	using Castle.MicroKernel;
+	using Castle.Windsor.Experimental.Debugging.Primitives;
 
 	public class Facilities : IContainerDebuggerExtension
 	{
 		private IKernel kernel;
 
-		public IEnumerable<DebuggerViewItemRich> Attach()
+		public IEnumerable<DebuggerViewItem> Attach()
 		{
 			var facilities = kernel.GetFacilities();
 			if (facilities.Length == 0)
 			{
 				yield break;
 			}
-			yield return new DebuggerViewItemRich("Facilities", "Count = " + facilities.Length, facilities);
+			yield return new DebuggerViewItem("Facilities", "Count = " + facilities.Length, facilities);
 		}
 
 		public void Init(IKernel kernel)

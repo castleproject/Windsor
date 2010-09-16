@@ -12,8 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Windsor.Experimental.Debugging
+namespace Castle.Windsor.Experimental.Debugging.Primitives
 {
+	using System;
 	using System.Collections.Generic;
 	using System.Linq;
 
@@ -24,11 +25,13 @@ namespace Castle.Windsor.Experimental.Debugging
 
 	public class DefaultComponentView : IComponentDebuggerExtension
 	{
+		private readonly Type[] forwardedTypes;
 		private readonly IHandler handler;
 
-		public DefaultComponentView(IHandler handler)
+		public DefaultComponentView(IHandler handler, params Type[] forwardedTypes)
 		{
 			this.handler = handler;
+			this.forwardedTypes = forwardedTypes;
 		}
 
 		private object GetImplementation()
@@ -38,6 +41,7 @@ namespace Castle.Windsor.Experimental.Debugging
 			{
 				return implementation;
 			}
+
 			return LateBoundComponent.Instance;
 		}
 
@@ -73,6 +77,10 @@ namespace Castle.Windsor.Experimental.Debugging
 		{
 			yield return new DebuggerViewItem("Implementation", GetImplementation());
 			yield return new DebuggerViewItem("Service", handler.Service);
+			foreach (var forwardedType in forwardedTypes)
+			{
+				yield return new DebuggerViewItem("Service", forwardedType);
+			}
 			yield return new DebuggerViewItem("Status", GetStatus());
 			yield return new DebuggerViewItem("Lifestyle", GetLifestyle());
 			if (HasInterceptors())

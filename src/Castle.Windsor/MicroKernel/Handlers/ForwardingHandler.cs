@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,13 +15,14 @@
 namespace Castle.MicroKernel.Handlers
 {
 	using System;
+
 	using Castle.Core;
 	using Castle.MicroKernel.Context;
 
 	public class ForwardingHandler : IHandler
 	{
-		private readonly IHandler target;
 		private readonly Type forwardedType;
+		private readonly IHandler target;
 
 		public ForwardingHandler(IHandler target, Type forwardedType)
 		{
@@ -34,21 +35,49 @@ namespace Castle.MicroKernel.Handlers
 			get { return target; }
 		}
 
+		public ComponentModel ComponentModel
+		{
+			get { return target.ComponentModel; }
+		}
+
+		public HandlerState CurrentState
+		{
+			get { return target.CurrentState; }
+		}
+
+		public Type Service
+		{
+			get { return forwardedType; }
+		}
+
+		public void AddCustomDependencyValue(object key, object value)
+		{
+			target.AddCustomDependencyValue(key, value);
+		}
+
+		public bool HasCustomParameter(object key)
+		{
+			return target.HasCustomParameter(key);
+		}
+
 		public void Init(IKernel kernel)
 		{
 			Target.Init(kernel);
 		}
 
-		public object Resolve(CreationContext context, ISubDependencyResolver contextHandlerResolver,
-							  ComponentModel model, DependencyModel dependency)
+		public bool IsBeingResolvedInContext(CreationContext context)
 		{
-			return target.Resolve(context, contextHandlerResolver, model, dependency);
+			return context.IsInResolutionContext(this) || target.IsBeingResolvedInContext(context);
 		}
 
-		public bool CanResolve(CreationContext context, ISubDependencyResolver contextHandlerResolver, 
-							   ComponentModel model, DependencyModel dependency)
+		public bool Release(object instance)
 		{
-			return target.CanResolve(context, contextHandlerResolver, model, dependency);
+			return target.Release(instance);
+		}
+
+		public void RemoveCustomDependencyValue(object key)
+		{
+			target.RemoveCustomDependencyValue(key);
 		}
 
 		public object Resolve(CreationContext context)
@@ -61,24 +90,16 @@ namespace Castle.MicroKernel.Handlers
 			return target.TryResolve(context);
 		}
 
-		public bool Release(object instance)
+		public bool CanResolve(CreationContext context, ISubDependencyResolver contextHandlerResolver,
+		                       ComponentModel model, DependencyModel dependency)
 		{
-			return target.Release(instance);
+			return target.CanResolve(context, contextHandlerResolver, model, dependency);
 		}
 
-		public HandlerState CurrentState
+		public object Resolve(CreationContext context, ISubDependencyResolver contextHandlerResolver,
+		                      ComponentModel model, DependencyModel dependency)
 		{
-			get { return target.CurrentState; }
-		}
-
-		public ComponentModel ComponentModel
-		{
-			get { return target.ComponentModel; }
-		}
-
-		public Type Service
-		{
-			get { return forwardedType; }
+			return target.Resolve(context, contextHandlerResolver, model, dependency);
 		}
 
 		public event HandlerStateDelegate OnHandlerStateChanged
@@ -86,25 +107,5 @@ namespace Castle.MicroKernel.Handlers
 			add { target.OnHandlerStateChanged += value; }
 			remove { target.OnHandlerStateChanged -= value; }
 		}
-
-		public void AddCustomDependencyValue(object key, object value)
-		{
-			target.AddCustomDependencyValue(key, value);
-		}
-
-		public void RemoveCustomDependencyValue(object key)
-		{
-			target.RemoveCustomDependencyValue(key);
-		}
-
-		public bool HasCustomParameter(object key)
-		{
-			return target.HasCustomParameter(key);
-		}
-
-	    public bool IsBeingResolvedInContext(CreationContext context)
-	    {
-	        return context.IsInResolutionContext(this) || target.IsBeingResolvedInContext(context);
-	    }
 	}
 }

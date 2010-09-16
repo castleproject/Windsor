@@ -12,92 +12,85 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.MicroKernel.Tests
+namespace Castle.Windsor.Tests
 {
 	using Castle.MicroKernel.Registration;
 
 	using NUnit.Framework;
 
 	[TestFixture]
-	public class HandlerForwardingTestCase
+	public class HandlerForwardingTestCase:AbstractContainerTestFixture
 	{
-		private IKernel kernel;
 
 		[Test]
 		public void Can_register_handler_forwarding()
 		{
-			kernel.Register(
+			Container.Register(
 				Component.For<IUserRepository, IRepository>()
 					.ImplementedBy<MyRepository>()
 				);
 
 			Assert.AreSame(
-				kernel.Resolve<IRepository>(),
-				kernel.Resolve<IUserRepository>()
+				Container.Resolve<IRepository>(),
+				Container.Resolve<IUserRepository>()
 				);
 		}
 
 		[Test]
 		public void Can_register_handler_forwarding_using_generics()
 		{
-			kernel.Register(
+			Container.Register(
 				Component.For<IUserRepository, IRepository<User>>()
 					.ImplementedBy<MyRepository>()
 				);
 			Assert.AreSame(
-				kernel.Resolve<IRepository<User>>(),
-				kernel.Resolve<IUserRepository>()
+				Container.Resolve<IRepository<User>>(),
+				Container.Resolve<IUserRepository>()
 				);
 		}
 
 		[Test]
 		public void Can_register_handler_forwarding_with_dependencies()
 		{
-			kernel.Register(
+			Container.Register(
 				Component.For<IUserRepository, IRepository>()
 					.ImplementedBy<MyRepository2>(),
 				Component.For<ServiceUsingRepository>(),
 				Component.For<User>()
 				);
 
-			kernel.Resolve<ServiceUsingRepository>();
+			Container.Resolve<ServiceUsingRepository>();
 		}
 
 		[Test]
 		public void Can_register_several_handler_forwarding()
 		{
-			kernel.Register(
+			Container.Register(
 				Component.For<IUserRepository>()
 					.Forward<IRepository, IRepository<User>>()
 					.ImplementedBy<MyRepository>()
 				);
 
 			Assert.AreSame(
-				kernel.Resolve<IRepository<User>>(),
-				kernel.Resolve<IUserRepository>()
+				Container.Resolve<IRepository<User>>(),
+				Container.Resolve<IUserRepository>()
 				);
 			Assert.AreSame(
-				kernel.Resolve<IRepository>(),
-				kernel.Resolve<IUserRepository>()
+				Container.Resolve<IRepository>(),
+				Container.Resolve<IUserRepository>()
 				);
 		}
 
 		[Test]
 		public void ResolveAll_Will_Only_Resolve_Unique_Handlers()
 		{
-			kernel.Register(
+			Container.Register(
 				Component.For<IUserRepository, IRepository>()
 					.ImplementedBy<MyRepository>()
 				);
 
-			var repos = kernel.ResolveAll<IRepository>();
+			var repos = Container.ResolveAll<IRepository>();
 			Assert.AreEqual(1, repos.Length);
-		}
-
-		[SetUp]
-		public void SetUp()
-		{
-			kernel = new DefaultKernel();
 		}
 
 		#region Nested type: IRepository
