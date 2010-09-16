@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,48 +20,117 @@ namespace Castle.MicroKernel.Handlers
 	using Castle.MicroKernel.Context;
 
 	/// <summary>
-	/// Redirects resolution to the main resolver, and if not found uses
-	/// the parent handler.
+	///   Redirects resolution to the main resolver, and if not found uses
+	///   the parent handler.
 	/// </summary>
 	public class ParentHandlerWithChildResolver : IHandler, IDisposable
 	{
-		private readonly IHandler parentHandler;
 		private readonly ISubDependencyResolver childResolver;
-		private IKernel kernel;
+		private readonly IHandler parentHandler;
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="ParentHandlerWithChildResolver"/> class.
+		///   Initializes a new instance of the <see cref = "ParentHandlerWithChildResolver" /> class.
 		/// </summary>
-		/// <param name="parentHandler">The parent handler.</param>
-		/// <param name="childResolver">The child resolver.</param>
-		public ParentHandlerWithChildResolver(IHandler parentHandler, ISubDependencyResolver childResolver) 
+		/// <param name = "parentHandler">The parent handler.</param>
+		/// <param name = "childResolver">The child resolver.</param>
+		public ParentHandlerWithChildResolver(IHandler parentHandler, ISubDependencyResolver childResolver)
 		{
-			if (parentHandler == null) throw new ArgumentNullException("parentHandler");
-			if (childResolver == null) throw new ArgumentNullException("childResolver");
+			if (parentHandler == null)
+			{
+				throw new ArgumentNullException("parentHandler");
+			}
+			if (childResolver == null)
+			{
+				throw new ArgumentNullException("childResolver");
+			}
 
 			this.parentHandler = parentHandler;
 			parentHandler.OnHandlerStateChanged += RaiseHandlerStateChanged;
 			this.childResolver = childResolver;
 		}
 
-		#region ISubDependencyResolver Members
-
-		public virtual object Resolve(CreationContext context, ISubDependencyResolver contextHandlerResolver, ComponentModel model, DependencyModel dependency)
+		public virtual ComponentModel ComponentModel
 		{
-
-			object value = childResolver.Resolve(context, null, model, dependency);
-
-			if (value == null)
-			{
-				value = parentHandler.Resolve(context, contextHandlerResolver, model, dependency);
-			}
-
-			return value;
+			get { return parentHandler.ComponentModel; }
 		}
 
-		public virtual bool CanResolve(CreationContext context, ISubDependencyResolver contextHandlerResolver, ComponentModel model, DependencyModel dependency)
+		public virtual HandlerState CurrentState
 		{
-			bool canResolve = false;
+			get { return parentHandler.CurrentState; }
+		}
+
+		public Type Service
+		{
+			get { return ComponentModel.Service; }
+		}
+
+		protected virtual void Dispose(bool disposing)
+		{
+			if (disposing)
+			{
+				if (parentHandler != null)
+				{
+					parentHandler.OnHandlerStateChanged -= RaiseHandlerStateChanged;
+				}
+			}
+		}
+
+		protected virtual void RaiseHandlerStateChanged(object s, EventArgs e)
+		{
+			if (OnHandlerStateChanged != null)
+			{
+				OnHandlerStateChanged(s, e);
+			}
+		}
+
+		public void Dispose()
+		{
+			Dispose(true);
+		}
+
+		public virtual void AddCustomDependencyValue(object key, object value)
+		{
+			parentHandler.AddCustomDependencyValue(key, value);
+		}
+
+		public virtual bool HasCustomParameter(object key)
+		{
+			return parentHandler.HasCustomParameter(key);
+		}
+
+		public virtual void Init(IKernel kernel)
+		{
+		}
+
+		public bool IsBeingResolvedInContext(CreationContext context)
+		{
+			return context.IsInResolutionContext(this) || parentHandler.IsBeingResolvedInContext(context);
+		}
+
+		public virtual bool Release(object instance)
+		{
+			return parentHandler.Release(instance);
+		}
+
+		public virtual void RemoveCustomDependencyValue(object key)
+		{
+			parentHandler.RemoveCustomDependencyValue(key);
+		}
+
+		public virtual object Resolve(CreationContext context)
+		{
+			return parentHandler.Resolve(context);
+		}
+
+		public object TryResolve(CreationContext context)
+		{
+			return parentHandler.Resolve(context);
+		}
+
+		public virtual bool CanResolve(CreationContext context, ISubDependencyResolver contextHandlerResolver,
+		                               ComponentModel model, DependencyModel dependency)
+		{
+			var canResolve = false;
 
 			if (contextHandlerResolver != null)
 			{
@@ -76,95 +145,19 @@ namespace Castle.MicroKernel.Handlers
 			return canResolve;
 		}
 
-		#endregion
-
-		#region IHandler Members
-
-		public virtual void Init(IKernel kernel)
+		public virtual object Resolve(CreationContext context, ISubDependencyResolver contextHandlerResolver,
+		                              ComponentModel model, DependencyModel dependency)
 		{
-			this.kernel = kernel;
-		}
+			var value = childResolver.Resolve(context, null, model, dependency);
 
-		public virtual object Resolve(CreationContext context)
-		{
-			return parentHandler.Resolve(context);
-		}
+			if (value == null)
+			{
+				value = parentHandler.Resolve(context, contextHandlerResolver, model, dependency);
+			}
 
-		public object TryResolve(CreationContext context)
-		{
-			return parentHandler.Resolve(context);
-		}
-
-		public virtual bool Release(object instance)
-		{
-			return parentHandler.Release(instance);
-		}
-
-		public virtual HandlerState CurrentState
-		{
-			get { return parentHandler.CurrentState; }
-		}
-
-		public virtual ComponentModel ComponentModel
-		{
-			get { return parentHandler.ComponentModel; }
-		}
-
-		public Type Service
-		{
-			get { return ComponentModel.Service; }
+			return value;
 		}
 
 		public event HandlerStateDelegate OnHandlerStateChanged;
-
-		protected virtual void RaiseHandlerStateChanged(object s, EventArgs e)
-		{
-			if (OnHandlerStateChanged != null)
-			{
-				OnHandlerStateChanged(s, e);
-			}
-		}
-
-		public virtual void AddCustomDependencyValue(object key, object value)
-		{
-			parentHandler.AddCustomDependencyValue(key, value);
-		}
-
-		public virtual void RemoveCustomDependencyValue(object key)
-		{
-			parentHandler.RemoveCustomDependencyValue(key);
-		}
-
-		public virtual bool HasCustomParameter(object key)
-		{
-			return parentHandler.HasCustomParameter(key);
-		}
-
-	    public bool IsBeingResolvedInContext(CreationContext context)
-	    {
-	        return context.IsInResolutionContext(this) || parentHandler.IsBeingResolvedInContext(context);
-	    }
-
-	    #endregion
-
-		#region IDisposable Members
-
-		public void Dispose()
-		{
-			Dispose(true);
-		}
-
-		protected virtual void Dispose(bool disposing)
-		{
-			if (disposing)
-			{
-				if (parentHandler != null)
-				{
-					parentHandler.OnHandlerStateChanged -= new HandlerStateDelegate(RaiseHandlerStateChanged);
-				}
-			}
-		}
-
-		#endregion
 	}
 }
