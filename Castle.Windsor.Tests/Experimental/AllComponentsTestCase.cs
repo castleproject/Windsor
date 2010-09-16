@@ -1,0 +1,58 @@
+﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// 
+//     http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+namespace Castle.Windsor.Tests.Experimental
+{
+	using System.Linq;
+
+	using Castle.MicroKernel;
+	using Castle.MicroKernel.Registration;
+	using Castle.Windsor.Experimental.Debugging;
+	using Castle.Windsor.Experimental.Debugging.Primitives;
+	using Castle.Windsor.Tests.Components;
+
+	using NUnit.Framework;
+
+	public class AllComponentsTestCase : AbstractContainerTestFixture
+	{
+		private DefaultDebuggingSubSystem subSystem;
+
+		[Test]
+		public void Forwarded_components_are_kept_together()
+		{
+			Container.Register(Component.For<IEmptyService, EmptyServiceA>().ImplementedBy<EmptyServiceA>().Named("A"));
+
+			var allComponents = GetAllComponents();
+			Assert.IsNotNull(allComponents);
+			var view = allComponents.Value as ComponentDebuggerViewCollection;
+			Assert.IsNotNull(view);
+			Assert.AreEqual(1, view.Items.Length);
+			var item = view.Items.Single();
+			Assert.IsNotNull(item.Extensions.SingleOrDefault(e => e.Name == "Service" && Equals(e.Value, typeof(EmptyServiceA))));
+			Assert.IsNotNull(item.Extensions.SingleOrDefault(e => e.Name == "Service" && Equals(e.Value, typeof(IEmptyService))));
+		}
+
+		[SetUp]
+		public void SetSubSystem()
+		{
+			subSystem = new DefaultDebuggingSubSystem();
+			Kernel.AddSubSystem(SubSystemConstants.DebuggingKey, subSystem);
+		}
+
+		private DebuggerViewItem GetAllComponents()
+		{
+			return subSystem.SelectMany(e => e.Attach()).SingleOrDefault(i => i.Name == "All Components");
+		}
+	}
+}

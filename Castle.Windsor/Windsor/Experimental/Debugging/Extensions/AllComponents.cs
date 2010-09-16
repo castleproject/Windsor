@@ -15,22 +15,25 @@
 namespace Castle.Windsor.Experimental.Debugging.Extensions
 {
 	using System.Collections.Generic;
+	using System.Linq;
 
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.SubSystems.Naming;
+	using Castle.Windsor.Experimental.Debugging.Primitives;
 
-	public class AllComponents : IContainerDebuggerExtension
+	public class AllComponents : AbstractContainerDebuggerExtension
 	{
 		private INamingSubSystem naming;
 
-		public IEnumerable<DebuggerViewItemRich> Attach()
+		public override IEnumerable<DebuggerViewItem> Attach()
 		{
-			yield return new DebuggerViewItemRich("All Components", "Count = " + naming.ComponentCount,
-			                                  new HandlersByKeyDictionaryDebuggerView(
-			                                  	naming.GetKey2Handler()));
+			var lookup = GetKeyToHandlersLookup(naming.GetKey2Handler());
+			var items = lookup.Select(DefaultComponentView).ToArray();
+			yield return new DebuggerViewItem("All Components", "Count = " + items.Length,
+			                                      new ComponentDebuggerViewCollection(items));
 		}
 
-		public void Init(IKernel kernel)
+		public override void Init(IKernel kernel)
 		{
 			naming = kernel.GetSubSystem(SubSystemConstants.NamingKey) as INamingSubSystem;
 		}

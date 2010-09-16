@@ -20,6 +20,7 @@ namespace Castle.Windsor.Experimental.Debugging
 	using System.Linq;
 
 	using Castle.MicroKernel;
+	using Castle.Windsor.Experimental.Debugging.Primitives;
 
 	[DebuggerDisplay("")]
 	internal class KernelDebuggerProxy
@@ -40,7 +41,7 @@ namespace Castle.Windsor.Experimental.Debugging
 
 		[DebuggerDisplay("")]
 		[DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
-		public DebuggerViewItemRich[] Extensions
+		public DebuggerViewItem[] Extensions
 		{
 			get { return extensions.SelectMany(e => e.Attach()).ToArray(); }
 		}

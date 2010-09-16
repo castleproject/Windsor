@@ -31,11 +31,11 @@ namespace Castle.Windsor.Tests
 
 	public class CImpl : IC
 	{
-		private R _r = null;
+		private R r = null;
 
 		public R R
 		{
-			set { _r = value; }
+			set { r = value; }
 		}
 
 		public CImpl()

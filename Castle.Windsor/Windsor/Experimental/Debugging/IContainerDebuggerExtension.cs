@@ -17,10 +17,11 @@ namespace Castle.Windsor.Experimental.Debugging
 	using System.Collections.Generic;
 
 	using Castle.MicroKernel;
+	using Castle.Windsor.Experimental.Debugging.Primitives;
 
 	public interface IContainerDebuggerExtension
 	{
-		IEnumerable<DebuggerViewItemRich> Attach();
+		IEnumerable<DebuggerViewItem> Attach();
 
 		void Init(IKernel kernel);
 	}
