@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -26,16 +26,18 @@ namespace Castle.MicroKernel.Context
 		private readonly DependencyModelCollection dependencies;
 
 		public DependencyTrackingScope(CreationContext creationContext, ComponentModel model, MemberInfo info,
-									   DependencyModel dependencyModel)
+		                               DependencyModel dependencyModel)
 		{
-			if (dependencyModel.TargetItemType == typeof (IKernel))
+			if (dependencyModel.TargetItemType == typeof(IKernel))
+			{
 				return;
+			}
 
-			this.dependencies = creationContext.Dependencies;
+			dependencies = creationContext.Dependencies;
 
 			// We track dependencies in order to detect cycled graphs
 			// This prevents a stack overflow
-			this.dependencyTrackingKey = TrackDependency(model, info, dependencyModel);
+			dependencyTrackingKey = TrackDependency(model, info, dependencyModel);
 		}
 
 		public void Dispose()
@@ -50,37 +52,35 @@ namespace Castle.MicroKernel.Context
 
 		private DependencyModelExtended TrackDependency(ComponentModel model, MemberInfo info, DependencyModel dependencyModel)
 		{
-			DependencyModelExtended trackingKey = new DependencyModelExtended(model, dependencyModel, info);
+			var trackingKey = new DependencyModelExtended(model, dependencyModel, info);
 
 			if (dependencies.Contains(trackingKey))
 			{
-				StringBuilder sb = new StringBuilder("A cycle was detected when trying to resolve a dependency. ");
+				var message = new StringBuilder("A cycle was detected when trying to resolve a dependency. ");
+				message.Append("The dependency graph that resulted in a cycle is:");
 
-				sb.Append("The dependency graph that resulted in a cycle is:");
-
-				foreach(DependencyModel key in dependencies)
+				foreach (var key in dependencies)
 				{
-					DependencyModelExtended extendedInfo = key as DependencyModelExtended;
-
+					var extendedInfo = key as DependencyModelExtended;
 					if (extendedInfo != null)
 					{
-						sb.AppendLine();
-						sb.AppendFormat(" - {0} for {1} in type {2}",
-						                key, extendedInfo.Info, extendedInfo.Info.DeclaringType);
+						message.AppendLine();
+						message.AppendFormat(" - {0} for {1} in type {2}",
+						                     key, extendedInfo.Info, extendedInfo.Info.DeclaringType);
 					}
 					else
 					{
-						sb.AppendLine();
-						sb.AppendFormat(" - {0}", key);
+						message.AppendLine();
+						message.AppendFormat(" - {0}", key);
 					}
 				}
 
-				sb.AppendLine();
-				sb.AppendFormat(" + {0} for {1} in {2}",
-				                dependencyModel, info, info.DeclaringType);
-				sb.AppendLine();
+				message.AppendLine();
+				message.AppendFormat(" + {0} for {1} in {2}",
+				                     dependencyModel, info, info.DeclaringType);
+				message.AppendLine();
 
-				throw new CircularDependencyException(sb.ToString());
+				throw new CircularDependencyException(message.ToString());
 			}
 
 			dependencies.Add(trackingKey);
@@ -125,17 +125,19 @@ namespace Castle.MicroKernel.Context
 
 			public override bool Equals(object obj)
 			{
-				DependencyModelExtended other = obj as DependencyModelExtended;
+				var other = obj as DependencyModelExtended;
 				if (other == null)
+				{
 					return false;
-				return other.Info == this.Info &&
+				}
+				return other.Info == Info &&
 				       other.model == model &&
 				       base.Equals(other);
 			}
 
 			public override int GetHashCode()
 			{
-				int infoHash = 37 ^ Info.GetHashCode();
+				var infoHash = 37 ^ Info.GetHashCode();
 				return base.GetHashCode() + infoHash;
 			}
 		}

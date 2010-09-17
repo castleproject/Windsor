@@ -284,7 +284,7 @@ namespace Castle.MicroKernel
 					actualHandler = ((ForwardingHandler)handler).Target;
 				}
 
-				if (resolved.ContainsKey(actualHandler))
+				if (resolved.ContainsKey(actualHandler) || handler.IsBeingResolvedInContext(currentCreationContext))
 				{
 					continue;
 				}

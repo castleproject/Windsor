@@ -99,6 +99,7 @@
     <Compile Include="ByRefDependenciesTestCase.cs" />
     <Compile Include="ClassComponents\HasByRefCtorArgument.cs" />
     <Compile Include="Components\ArrayRefDepAsConstructor.cs" />
+    <Compile Include="Components\EmptyServiceComposite.cs" />
     <Compile Include="Components\InitializableComponent.cs" />
     <Compile Include="Components\InitializableDisposableComponent.cs" />
     <Compile Include="Components\SimpleServiceInitializable.cs" />
