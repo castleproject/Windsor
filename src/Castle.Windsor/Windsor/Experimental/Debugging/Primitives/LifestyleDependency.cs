@@ -76,14 +76,10 @@ namespace Castle.Windsor.Experimental.Debugging.Primitives
 			return items.Select(
 				item =>
 				new DebuggerViewItem(
-					string.Format("Mismatched {0} depedency",
-					              MismatchedDirectly(item.handler) ? item.handler.ComponentModel.LifestyleType.ToString() : "indirect"),
-					item.value.Key,
-					new ComponentDebuggerView(item.handler,
-					                          item.value,
-					                          new DefaultComponentView(
-					                          	item.handler,
-					                          	value.Value.ToArray()))));
+					string.Format("Mismatched {0} depedency on \"{1}\"",
+					              (MismatchedDirectly(item.handler) ? "" : "indirect"), item.value.Key),
+					item.handler.ComponentModel.LifestyleType.ToString(),
+					new MismatchedDependency(new DefaultComponentView(item.handler, value.Value.ToArray()), "bla bla bla")));
 		}
 	}
 }

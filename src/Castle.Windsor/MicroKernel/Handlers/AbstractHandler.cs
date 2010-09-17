@@ -431,7 +431,7 @@ namespace Castle.MicroKernel.Handlers
 					var handler = Kernel.GetHandler(type);
 					if (handler != null)
 					{
-						AddGraphDependency(handler.ComponentModel);
+						AddGraphDependency(handler);
 					}
 				}
 				else
@@ -439,7 +439,7 @@ namespace Castle.MicroKernel.Handlers
 					var handler = Kernel.GetHandler(dependency.DependencyKey);
 					if (handler != null)
 					{
-						AddGraphDependency(handler.ComponentModel);
+						AddGraphDependency(handler);
 					}
 				}
 
@@ -574,7 +574,6 @@ namespace Castle.MicroKernel.Handlers
 		protected void DependencySatisfied(ref bool stateChanged)
 		{
 			// Check within the handler
-
 			if (customParameters != null && customParameters.Count != 0)
 			{
 				var dependencies = Union(DependenciesByService.Values, DependenciesByKey.Values);
@@ -608,7 +607,7 @@ namespace Castle.MicroKernel.Handlers
 					var dependingHandler = kernel.GetHandler(service);
 					if (dependingHandler != null) //may not be real handler, if comes from resolver
 					{
-						AddGraphDependency(dependingHandler.ComponentModel);
+						AddGraphDependency(dependingHandler);
 					}
 				}
 			}
@@ -621,9 +620,9 @@ namespace Castle.MicroKernel.Handlers
 				{
 					DependenciesByKey.Remove(key);
 					var dependingHandler = kernel.GetHandler(key);
-					if (dependingHandler != null) //may not be real handler, if we are using sub resovler
+					if (dependingHandler != null) //may not be real handler, if we are using sub resolver
 					{
-						AddGraphDependency(dependingHandler.ComponentModel);
+						AddGraphDependency(dependingHandler);
 					}
 				}
 			}
@@ -776,9 +775,9 @@ namespace Castle.MicroKernel.Handlers
 			state = newState;
 		}
 
-		private void AddGraphDependency(ComponentModel model)
+		private void AddGraphDependency(IHandler handler)
 		{
-			ComponentModel.AddDependent(model);
+			ComponentModel.AddDependent(handler.ComponentModel);
 		}
 
 		private void DisconnectEvents()
