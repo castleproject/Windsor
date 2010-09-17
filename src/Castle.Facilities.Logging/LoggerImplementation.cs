@@ -26,9 +26,6 @@ namespace Castle.Facilities.Logging
 		Console,
 #if !SILVERLIGHT
 		Diagnostics,
-#if !CLIENTPROFILE
-		Web,
-#endif
 		NLog,
 		Log4net,
 		ExtendedNLog,

@@ -254,10 +254,6 @@ namespace Castle.Facilities.Logging
 					return typeof(DiagnosticsLoggerFactory);
 				case LoggerImplementation.Trace:
 					return typeof(TraceLoggerFactory);
-#if !CLIENTPROFILE
-				case LoggerImplementation.Web:
-					return typeof(WebLoggerFactory);
-#endif
 				case LoggerImplementation.Log4net:
 					return converter.PerformConversion<Type>(Log4NetLoggerFactoryTypeName);
 				case LoggerImplementation.NLog:
