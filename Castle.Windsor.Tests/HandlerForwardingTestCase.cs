@@ -19,9 +19,8 @@ namespace Castle.Windsor.Tests
 	using NUnit.Framework;
 
 	[TestFixture]
-	public class HandlerForwardingTestCase:AbstractContainerTestFixture
+	public class HandlerForwardingTestCase : AbstractContainerTestFixture
 	{
-
 		[Test]
 		public void Can_register_handler_forwarding()
 		{
@@ -82,6 +81,31 @@ namespace Castle.Windsor.Tests
 		}
 
 		[Test]
+		public void Forwarding_main_service_is_ignored()
+		{
+			Container.Register(
+				Component.For<IUserRepository>()
+					.Forward<IUserRepository>()
+					.ImplementedBy<MyRepository>());
+
+			var allHandlers = Kernel.GetAssignableHandlers(typeof(object));
+			Assert.AreEqual(1, allHandlers.Length);
+		}
+
+		[Test]
+		public void Forwarding_same_service_twice_is_ignored()
+		{
+			Container.Register(
+				Component.For<IUserRepository>()
+					.Forward<IRepository>()
+					.Forward<IRepository>()
+					.ImplementedBy<MyRepository>());
+
+			var allHandlers = Kernel.GetAssignableHandlers(typeof(object));
+			Assert.AreEqual(2, allHandlers.Length);
+		}
+
+		[Test]
 		public void ResolveAll_Will_Only_Resolve_Unique_Handlers()
 		{
 			Container.Register(
@@ -93,8 +117,6 @@ namespace Castle.Windsor.Tests
 			Assert.AreEqual(1, repos.Length);
 		}
 
-		#region Nested type: IRepository
-
 		public interface IRepository
 		{
 		}
@@ -103,25 +125,13 @@ namespace Castle.Windsor.Tests
 		{
 		}
 
-		#endregion
-
-		#region Nested type: IUserRepository
-
 		public interface IUserRepository : IRepository<User>
 		{
 		}
 
-		#endregion
-
-		#region Nested type: MyRepository
-
 		public class MyRepository : IUserRepository
 		{
 		}
-
-		#endregion
-
-		#region Nested type: MyRepository2
 
 		public class MyRepository2 : IUserRepository
 		{
@@ -130,10 +140,6 @@ namespace Castle.Windsor.Tests
 			}
 		}
 
-		#endregion
-
-		#region Nested type: ServiceUsingRepository
-
 		public class ServiceUsingRepository
 		{
 			public ServiceUsingRepository(IRepository repos)
@@ -141,14 +147,8 @@ namespace Castle.Windsor.Tests
 			}
 		}
 
-		#endregion
-
-		#region Nested type: User
-
 		public class User
 		{
 		}
-
-		#endregion
 	}
 }

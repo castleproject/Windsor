@@ -49,9 +49,9 @@ namespace Castle.MicroKernel.Registration
 	/// <typeparam name="TService">The service type</typeparam>
 	public class ComponentRegistration<TService> : IRegistration
 	{
-		private readonly List<IRegistration> additionalRegistrations;
-		private readonly List<ComponentDescriptor<TService>> descriptors;
-		private readonly List<Type> forwardedTypes;
+		private readonly ICollection<IRegistration> additionalRegistrations;
+		private readonly ICollection<ComponentDescriptor<TService>> descriptors;
+		private readonly ICollection<Type> forwardedTypes;
 		private ComponentModel componentModel;
 		private ComponentFilter ifFilter;
 		private Type implementation;
@@ -454,7 +454,7 @@ namespace Castle.MicroKernel.Registration
 		{
 			foreach (Type type in types)
 			{
-				if (!forwardedTypes.Contains(type))
+				if (!forwardedTypes.Contains(type) && type != serviceType)
 				{
 					forwardedTypes.Add(type);
 				}
