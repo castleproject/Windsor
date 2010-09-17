@@ -11,7 +11,6 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
 namespace Castle.Windsor.Experimental.Debugging.Extensions
 {
 	using System;
@@ -41,8 +40,8 @@ namespace Castle.Windsor.Experimental.Debugging.Extensions
 				yield break;
 			}
 			yield return new DebuggerViewItem("Potential Lifestyle Mismatches",
-			                                      "Count = " + mismatches.Count,
-			                                      new ComponentDebuggerViewCollection(mismatches.ToArray()));
+			                                  "Count = " + mismatches.Count,
+			                                  new ComponentDebuggerViewCollection(mismatches.ToArray()));
 		}
 
 		public override void Init(IKernel kernel)
@@ -57,7 +56,7 @@ namespace Castle.Windsor.Experimental.Debugging.Extensions
 		{
 			var pair = component2Handlers[component];
 			var handler = pair.Key;
-			var item = new LifestyleDependency(handler,pair.Value);
+			var item = new LifestyleDependency(handler, pair.Value);
 			if (item.Mismatched())
 			{
 				return item;
@@ -70,6 +69,7 @@ namespace Castle.Windsor.Experimental.Debugging.Extensions
 					item.Add(mismatch);
 				}
 			}
+
 			if (item.Mismatched())
 			{
 				return item;
@@ -97,7 +97,7 @@ namespace Castle.Windsor.Experimental.Debugging.Extensions
 			}
 			if (item.Empty == false)
 			{
-				yield return new ComponentDebuggerView(handler, component.Value, "Issues count = " + item.Count.ToString(), item);
+				yield return new ComponentDebuggerView(handler, component.Value, "Issues count = " + item.Count, item);
 			}
 		}
 
