@@ -182,8 +182,8 @@ II.2.12 <HandlesEvent />
       </Match>
       <Sort>
         <Static/>
-        <Readonly/>
         <Access/>
+        <Readonly/>
         <Name/>
       </Sort>
     </Entry>
@@ -216,8 +216,8 @@ II.2.12 <HandlesEvent />
       <Sort>
         <Kind Order="property indexer method"/>
         <Abstract/>
-        <ImplementsInterface/>
         <Access/>
+        <ImplementsInterface/>
         <Readonly/>
         <Name/>
       </Sort>
@@ -238,8 +238,8 @@ II.2.12 <HandlesEvent />
       <Sort>
         <Kind Order="property indexer method"/>
         <Abstract/>
-        <ImplementsInterface/>
         <Access/>
+        <ImplementsInterface/>
         <Readonly/>
         <Name/>
       </Sort>
