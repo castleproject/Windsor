@@ -320,8 +320,8 @@ namespace Castle.Facilities.Logging
 			if (factory is IExtendedLoggerFactory)
 			{
 				var defaultLogger = ((IExtendedLoggerFactory)factory).Create("Default");
-				Kernel.Register(Component.For<IExtendedLogger>().Named("ilogger.default").Instance(defaultLogger));
-				Kernel.Register(Component.For<ILogger>().Named("ilogger.default.base").Instance(defaultLogger));
+				Kernel.Register(Component.For<IExtendedLogger>().Named("ilogger.default").Instance(defaultLogger),
+				                Component.For<ILogger>().Named("ilogger.default.base").Instance(defaultLogger));
 			}
 			else
 			{
@@ -334,8 +334,8 @@ namespace Castle.Facilities.Logging
 			if (factory is IExtendedLoggerFactory)
 			{
 				Kernel.Register(
-					Component.For<IExtendedLoggerFactory>().Named("iloggerfactory").Instance((IExtendedLoggerFactory)factory));
-				Kernel.Register(Component.For<ILoggerFactory>().Named("iloggerfactory.base").Instance(factory));
+					Component.For<IExtendedLoggerFactory>().Named("iloggerfactory").Instance((IExtendedLoggerFactory)factory),
+					Component.For<ILoggerFactory>().Named("iloggerfactory.base").Instance(factory));
 			}
 			else
 			{
