@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,33 +15,46 @@
 namespace Castle.Facilities.Logging
 {
 	using System;
+
 	using Castle.Core;
 	using Castle.Core.Logging;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Context;
 
 	/// <summary>
-	/// Custom resolver used by the MicroKernel. It gives
-	/// us some contextual information that we use to set up a logging
-	/// before satisfying the dependency
+	///   Custom resolver used by Windsor. It gives
+	///   us some contextual information that we use to set up a logging
+	///   before satisfying the dependency
 	/// </summary>
 	public class LoggerResolver : ISubDependencyResolver
 	{
-		private readonly ILoggerFactory loggerFactory;
 		private readonly IExtendedLoggerFactory extendedLoggerFactory;
+		private readonly ILoggerFactory loggerFactory;
 
 		public LoggerResolver(ILoggerFactory loggerFactory)
 		{
-			if (loggerFactory == null) throw new ArgumentNullException("loggerFactory");
+			if (loggerFactory == null)
+			{
+				throw new ArgumentNullException("loggerFactory");
+			}
 
 			this.loggerFactory = loggerFactory;
 		}
 
 		public LoggerResolver(IExtendedLoggerFactory extendedLoggerFactory)
 		{
-			if (extendedLoggerFactory == null) throw new ArgumentNullException("extendedLoggerFactory");
+			if (extendedLoggerFactory == null)
+			{
+				throw new ArgumentNullException("extendedLoggerFactory");
+			}
 
 			this.extendedLoggerFactory = extendedLoggerFactory;
+		}
+
+		public bool CanResolve(CreationContext context, ISubDependencyResolver parentResolver, ComponentModel model,
+		                       DependencyModel dependency)
+		{
+			return dependency.TargetType == typeof(ILogger) || dependency.TargetType == typeof(IExtendedLogger);
 		}
 
 		public object Resolve(CreationContext context, ISubDependencyResolver parentResolver, ComponentModel model,
@@ -60,12 +73,6 @@ namespace Castle.Facilities.Logging
 				throw new LoggerException("Unable to resolve proper LoggerFactory for Logger.");
 			}
 			return null;
-		}
-
-		public bool CanResolve(CreationContext context, ISubDependencyResolver parentResolver, ComponentModel model,
-		                       DependencyModel dependency)
-		{
-			return dependency.TargetType == typeof(ILogger) || dependency.TargetType == typeof(IExtendedLogger);
 		}
 	}
 }
