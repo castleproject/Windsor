@@ -20,47 +20,34 @@ namespace Castle.MicroKernel.Tests.SpecializedResolvers
 	using Castle.MicroKernel.Handlers;
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Resolvers.SpecializedResolvers;
+	using Castle.Windsor.Tests;
 	using Castle.Windsor.Tests.Components;
 
 	using NUnit.Framework;
 
 	[TestFixture]
-	public class CollectionResolverTestCase
+	public class CollectionResolverTestCase : AbstractContainerTestFixture
 	{
-		[SetUp]
-		public void SetUp()
+		[Test]
+		public void Composite_service_can_be_resolved_without_triggering_circular_dependency_detection_fuse()
 		{
-			kernel = new DefaultKernel();
-			kernel.Resolver.AddSubResolver(new CollectionResolver(kernel));
-		}
+			Container.Register(AllTypes.FromThisAssembly()
+			                   	.BasedOn<IEmptyService>()
+			                   	.WithService.Base()
+			                   	.ConfigureFor<EmptyServiceComposite>(r => r.Forward<EmptyServiceComposite>()));
 
-		private IKernel kernel;
+			var composite = Container.Resolve<EmptyServiceComposite>();
+			Assert.AreEqual(2, composite.Inner.Length);
+		}
 
 		[Test]
 		public void DependencyOnArrayOfServices_OnConstructor()
 		{
-			kernel.Register(Component.For<IEmptyService>().ImplementedBy<EmptyServiceA>(),
-			                Component.For<IEmptyService>().ImplementedBy<EmptyServiceB>(),
-			                Component.For<ArrayDepAsConstructor>());
+			Container.Register(Component.For<IEmptyService>().ImplementedBy<EmptyServiceA>(),
+			                   Component.For<IEmptyService>().ImplementedBy<EmptyServiceB>(),
+			                   Component.For<ArrayDepAsConstructor>());
 
-			var component = kernel.Resolve<ArrayDepAsConstructor>();
-
-			Assert.IsNotNull(component.Services);
-			Assert.AreEqual(2, component.Services.Length);
-			foreach (var service in component.Services)
-			{
-				Assert.IsNotNull(service);
-			}
-		}
-
-		[Test]
-		public void DependencyOn_ref_ArrayOfServices_OnConstructor()
-		{
-			kernel.Register(Component.For<IEmptyService>().ImplementedBy<EmptyServiceA>(),
-							Component.For<IEmptyService>().ImplementedBy<EmptyServiceB>(),
-							Component.For<ArrayRefDepAsConstructor>());
-
-			var component = kernel.Resolve<ArrayRefDepAsConstructor>();
+			var component = Container.Resolve<ArrayDepAsConstructor>();
 
 			Assert.IsNotNull(component.Services);
 			Assert.AreEqual(2, component.Services.Length);
@@ -73,10 +60,10 @@ namespace Castle.MicroKernel.Tests.SpecializedResolvers
 		[Test]
 		public void DependencyOnArrayOfServices_OnConstructor_empty_allowed_empty_provided()
 		{
-			kernel.Resolver.AddSubResolver(new CollectionResolver(kernel, allowEmptyCollections: true));
-			kernel.Register(Component.For<ArrayDepAsConstructor>());
+			Kernel.Resolver.AddSubResolver(new CollectionResolver(Kernel, allowEmptyCollections: true));
+			Container.Register(Component.For<ArrayDepAsConstructor>());
 
-			var component = kernel.Resolve<ArrayDepAsConstructor>();
+			var component = Container.Resolve<ArrayDepAsConstructor>();
 
 			Assert.IsNotNull(component.Services);
 			Assert.IsEmpty(component.Services);
@@ -85,19 +72,19 @@ namespace Castle.MicroKernel.Tests.SpecializedResolvers
 		[Test]
 		public void DependencyOnArrayOfServices_OnConstructor_empty_not_allowed_throws()
 		{
-			kernel.Register(Component.For<ArrayDepAsConstructor>());
+			Container.Register(Component.For<ArrayDepAsConstructor>());
 
-			Assert.Throws<HandlerException>(() => kernel.Resolve<ArrayDepAsConstructor>());
+			Assert.Throws<HandlerException>(() => Container.Resolve<ArrayDepAsConstructor>());
 		}
 
 		[Test]
 		public void DependencyOnArrayOfServices_OnProperty()
 		{
-			kernel.Register(Component.For<IEmptyService>().ImplementedBy<EmptyServiceA>(),
-			                Component.For<IEmptyService>().ImplementedBy<EmptyServiceB>(),
-			                Component.For<ArrayDepAsProperty>());
+			Container.Register(Component.For<IEmptyService>().ImplementedBy<EmptyServiceA>(),
+			                   Component.For<IEmptyService>().ImplementedBy<EmptyServiceB>(),
+			                   Component.For<ArrayDepAsProperty>());
 
-			var component = kernel.Resolve<ArrayDepAsProperty>();
+			var component = Container.Resolve<ArrayDepAsProperty>();
 
 			Assert.IsNotNull(component.Services);
 			Assert.AreEqual(2, component.Services.Length);
@@ -110,10 +97,10 @@ namespace Castle.MicroKernel.Tests.SpecializedResolvers
 		[Test]
 		public void DependencyOnArrayOfServices_OnProperty_empty()
 		{
-			kernel.Resolver.AddSubResolver(new CollectionResolver(kernel, allowEmptyCollections: true));
-			kernel.Register(Component.For<ArrayDepAsProperty>());
+			Kernel.Resolver.AddSubResolver(new CollectionResolver(Kernel, allowEmptyCollections: true));
+			Container.Register(Component.For<ArrayDepAsProperty>());
 
-			var component = kernel.Resolve<ArrayDepAsProperty>();
+			var component = Container.Resolve<ArrayDepAsProperty>();
 
 			Assert.IsNotNull(component.Services);
 			Assert.IsEmpty(component.Services);
@@ -122,20 +109,20 @@ namespace Castle.MicroKernel.Tests.SpecializedResolvers
 		[Test]
 		public void DependencyOnArrayOfServices_OnProperty_empty_not_allowed_null()
 		{
-			kernel.Register(Component.For<ArrayDepAsProperty>());
+			Container.Register(Component.For<ArrayDepAsProperty>());
 
-			var component = kernel.Resolve<ArrayDepAsProperty>();
+			var component = Container.Resolve<ArrayDepAsProperty>();
 			Assert.IsNull(component.Services);
 		}
 
 		[Test]
 		public void DependencyOnCollectionOfServices_OnConstructor()
 		{
-			kernel.Register(Component.For<IEmptyService>().ImplementedBy<EmptyServiceA>(),
-			                Component.For<IEmptyService>().ImplementedBy<EmptyServiceB>(),
-			                Component.For<CollectionDepAsConstructor>());
+			Container.Register(Component.For<IEmptyService>().ImplementedBy<EmptyServiceA>(),
+			                   Component.For<IEmptyService>().ImplementedBy<EmptyServiceB>(),
+			                   Component.For<CollectionDepAsConstructor>());
 
-			var component = kernel.Resolve<CollectionDepAsConstructor>();
+			var component = Container.Resolve<CollectionDepAsConstructor>();
 
 			Assert.IsNotNull(component.Services);
 			Assert.AreEqual(2, component.Services.Count);
@@ -148,10 +135,10 @@ namespace Castle.MicroKernel.Tests.SpecializedResolvers
 		[Test]
 		public void DependencyOnCollectionOfServices_OnConstructor_empty()
 		{
-			kernel.Resolver.AddSubResolver(new CollectionResolver(kernel, allowEmptyCollections: true));
-			kernel.Register(Component.For<CollectionDepAsConstructor>());
+			Kernel.Resolver.AddSubResolver(new CollectionResolver(Kernel, allowEmptyCollections: true));
+			Container.Register(Component.For<CollectionDepAsConstructor>());
 
-			var component = kernel.Resolve<CollectionDepAsConstructor>();
+			var component = Container.Resolve<CollectionDepAsConstructor>();
 
 			Assert.IsNotNull(component.Services);
 			Assert.AreEqual(0, component.Services.Count);
@@ -160,19 +147,19 @@ namespace Castle.MicroKernel.Tests.SpecializedResolvers
 		[Test]
 		public void DependencyOnCollectionOfServices_OnConstructor_empty_not_allowed_throws()
 		{
-			kernel.Register(Component.For<CollectionDepAsConstructor>());
+			Container.Register(Component.For<CollectionDepAsConstructor>());
 
-			Assert.Throws<HandlerException>(() => kernel.Resolve<CollectionDepAsConstructor>());
+			Assert.Throws<HandlerException>(() => Container.Resolve<CollectionDepAsConstructor>());
 		}
 
 		[Test]
 		public void DependencyOnCollectionOfServices_OnProperty()
 		{
-			kernel.Register(Component.For<IEmptyService>().ImplementedBy<EmptyServiceA>(),
-			                Component.For<IEmptyService>().ImplementedBy<EmptyServiceB>(),
-			                Component.For<CollectionDepAsProperty>());
+			Container.Register(Component.For<IEmptyService>().ImplementedBy<EmptyServiceA>(),
+			                   Component.For<IEmptyService>().ImplementedBy<EmptyServiceB>(),
+			                   Component.For<CollectionDepAsProperty>());
 
-			var component = kernel.Resolve<CollectionDepAsProperty>();
+			var component = Container.Resolve<CollectionDepAsProperty>();
 
 			Assert.IsNotNull(component.Services);
 			Assert.AreEqual(2, component.Services.Count);
@@ -185,10 +172,10 @@ namespace Castle.MicroKernel.Tests.SpecializedResolvers
 		[Test]
 		public void DependencyOnCollectionOfServices_OnProperty_empty()
 		{
-			kernel.Resolver.AddSubResolver(new CollectionResolver(kernel, allowEmptyCollections: true));
-			kernel.Register(Component.For<CollectionDepAsProperty>());
+			Kernel.Resolver.AddSubResolver(new CollectionResolver(Kernel, allowEmptyCollections: true));
+			Container.Register(Component.For<CollectionDepAsProperty>());
 
-			var component = kernel.Resolve<CollectionDepAsProperty>();
+			var component = Container.Resolve<CollectionDepAsProperty>();
 
 			Assert.IsNotNull(component.Services);
 			Assert.AreEqual(0, component.Services.Count);
@@ -197,19 +184,19 @@ namespace Castle.MicroKernel.Tests.SpecializedResolvers
 		[Test]
 		public void DependencyOnCollectionOfServices_OnProperty_empty_not_allowed_throws()
 		{
-			kernel.Register(Component.For<CollectionDepAsConstructor>());
+			Container.Register(Component.For<CollectionDepAsConstructor>());
 
-			Assert.Throws<HandlerException>(() => kernel.Resolve<CollectionDepAsConstructor>());
+			Assert.Throws<HandlerException>(() => Container.Resolve<CollectionDepAsConstructor>());
 		}
 
 		[Test]
 		public void DependencyOnEnumerableOfServices_OnConstructor()
 		{
-			kernel.Register(Component.For<IEmptyService>().ImplementedBy<EmptyServiceA>(),
-			                Component.For<IEmptyService>().ImplementedBy<EmptyServiceB>(),
-			                Component.For<EnumerableDepAsProperty>());
+			Container.Register(Component.For<IEmptyService>().ImplementedBy<EmptyServiceA>(),
+			                   Component.For<IEmptyService>().ImplementedBy<EmptyServiceB>(),
+			                   Component.For<EnumerableDepAsProperty>());
 
-			var component = kernel.Resolve<EnumerableDepAsProperty>();
+			var component = Container.Resolve<EnumerableDepAsProperty>();
 
 			Assert.IsNotNull(component.Services);
 			Assert.AreEqual(2, component.Services.Count());
@@ -222,10 +209,10 @@ namespace Castle.MicroKernel.Tests.SpecializedResolvers
 		[Test]
 		public void DependencyOnEnumerableOfServices_OnConstructor_empty()
 		{
-			kernel.Resolver.AddSubResolver(new CollectionResolver(kernel, allowEmptyCollections: true));
-			kernel.Register(Component.For<EnumerableDepAsProperty>());
+			Kernel.Resolver.AddSubResolver(new CollectionResolver(Kernel, allowEmptyCollections: true));
+			Container.Register(Component.For<EnumerableDepAsProperty>());
 
-			var component = kernel.Resolve<EnumerableDepAsProperty>();
+			var component = Container.Resolve<EnumerableDepAsProperty>();
 
 			Assert.IsNotNull(component.Services);
 			Assert.IsFalse(component.Services.Any());
@@ -234,19 +221,19 @@ namespace Castle.MicroKernel.Tests.SpecializedResolvers
 		[Test]
 		public void DependencyOnEnumerableOfServices_OnConstructor_empty_not_allowed_throws()
 		{
-			kernel.Register(Component.For<EnumerableDepAsConstructor>());
+			Container.Register(Component.For<EnumerableDepAsConstructor>());
 
-			Assert.Throws<HandlerException>(() => kernel.Resolve<EnumerableDepAsConstructor>());
+			Assert.Throws<HandlerException>(() => Container.Resolve<EnumerableDepAsConstructor>());
 		}
 
 		[Test]
 		public void DependencyOnEnumerableOfServices_OnProperty()
 		{
-			kernel.Register(Component.For<IEmptyService>().ImplementedBy<EmptyServiceA>(),
-			                Component.For<IEmptyService>().ImplementedBy<EmptyServiceB>(),
-			                Component.For<EnumerableDepAsProperty>());
+			Container.Register(Component.For<IEmptyService>().ImplementedBy<EmptyServiceA>(),
+			                   Component.For<IEmptyService>().ImplementedBy<EmptyServiceB>(),
+			                   Component.For<EnumerableDepAsProperty>());
 
-			var component = kernel.Resolve<EnumerableDepAsProperty>();
+			var component = Container.Resolve<EnumerableDepAsProperty>();
 
 			Assert.IsNotNull(component.Services);
 			Assert.AreEqual(2, component.Services.Count());
@@ -259,10 +246,10 @@ namespace Castle.MicroKernel.Tests.SpecializedResolvers
 		[Test]
 		public void DependencyOnEnumerableOfServices_OnProperty_empty()
 		{
-			kernel.Resolver.AddSubResolver(new CollectionResolver(kernel, allowEmptyCollections: true));
-			kernel.Register(Component.For<EnumerableDepAsProperty>());
+			Kernel.Resolver.AddSubResolver(new CollectionResolver(Kernel, allowEmptyCollections: true));
+			Container.Register(Component.For<EnumerableDepAsProperty>());
 
-			var component = kernel.Resolve<EnumerableDepAsProperty>();
+			var component = Container.Resolve<EnumerableDepAsProperty>();
 
 			Assert.IsNotNull(component.Services);
 			Assert.IsFalse(component.Services.Any());
@@ -271,20 +258,20 @@ namespace Castle.MicroKernel.Tests.SpecializedResolvers
 		[Test]
 		public void DependencyOnEnumerableOfServices_OnProperty_empty_not_allowed_null()
 		{
-			kernel.Register(Component.For<EnumerableDepAsProperty>());
+			Container.Register(Component.For<EnumerableDepAsProperty>());
 
-			var component = kernel.Resolve<EnumerableDepAsProperty>();
+			var component = Container.Resolve<EnumerableDepAsProperty>();
 			Assert.IsNull(component.Services);
 		}
 
 		[Test]
 		public void DependencyOnListOfServices_OnConstructor()
 		{
-			kernel.Register(Component.For<IEmptyService>().ImplementedBy<EmptyServiceA>(),
-			                Component.For<IEmptyService>().ImplementedBy<EmptyServiceB>(),
-			                Component.For<ListDepAsConstructor>());
+			Container.Register(Component.For<IEmptyService>().ImplementedBy<EmptyServiceA>(),
+			                   Component.For<IEmptyService>().ImplementedBy<EmptyServiceB>(),
+			                   Component.For<ListDepAsConstructor>());
 
-			var component = kernel.Resolve<ListDepAsConstructor>();
+			var component = Container.Resolve<ListDepAsConstructor>();
 
 			Assert.IsNotNull(component.Services);
 			Assert.AreEqual(2, component.Services.Count);
@@ -297,10 +284,10 @@ namespace Castle.MicroKernel.Tests.SpecializedResolvers
 		[Test]
 		public void DependencyOnListOfServices_OnConstructor_empty()
 		{
-			kernel.Resolver.AddSubResolver(new CollectionResolver(kernel, allowEmptyCollections: true));
-			kernel.Register(Component.For<ListDepAsConstructor>());
+			Kernel.Resolver.AddSubResolver(new CollectionResolver(Kernel, allowEmptyCollections: true));
+			Container.Register(Component.For<ListDepAsConstructor>());
 
-			var component = kernel.Resolve<ListDepAsConstructor>();
+			var component = Container.Resolve<ListDepAsConstructor>();
 
 			Assert.IsNotNull(component.Services);
 			Assert.AreEqual(0, component.Services.Count);
@@ -309,19 +296,19 @@ namespace Castle.MicroKernel.Tests.SpecializedResolvers
 		[Test]
 		public void DependencyOnListOfServices_OnConstructor_empty_not_allowed_throws()
 		{
-			kernel.Register(Component.For<ListDepAsConstructor>());
+			Container.Register(Component.For<ListDepAsConstructor>());
 
-			Assert.Throws<HandlerException>(() => kernel.Resolve<ListDepAsConstructor>());
+			Assert.Throws<HandlerException>(() => Container.Resolve<ListDepAsConstructor>());
 		}
 
 		[Test]
 		public void DependencyOnListOfServices_OnProperty()
 		{
-			kernel.Register(Component.For<IEmptyService>().ImplementedBy<EmptyServiceA>(),
-			                Component.For<IEmptyService>().ImplementedBy<EmptyServiceB>(),
-			                Component.For<ListDepAsProperty>());
+			Container.Register(Component.For<IEmptyService>().ImplementedBy<EmptyServiceA>(),
+			                   Component.For<IEmptyService>().ImplementedBy<EmptyServiceB>(),
+			                   Component.For<ListDepAsProperty>());
 
-			var component = kernel.Resolve<ListDepAsProperty>();
+			var component = Container.Resolve<ListDepAsProperty>();
 
 			Assert.IsNotNull(component.Services);
 			Assert.AreEqual(2, component.Services.Count);
@@ -334,10 +321,10 @@ namespace Castle.MicroKernel.Tests.SpecializedResolvers
 		[Test]
 		public void DependencyOnListOfServices_OnProperty_empty()
 		{
-			kernel.Resolver.AddSubResolver(new CollectionResolver(kernel, allowEmptyCollections: true));
-			kernel.Register(Component.For<ListDepAsProperty>());
+			Kernel.Resolver.AddSubResolver(new CollectionResolver(Kernel, allowEmptyCollections: true));
+			Container.Register(Component.For<ListDepAsProperty>());
 
-			var component = kernel.Resolve<ListDepAsProperty>();
+			var component = Container.Resolve<ListDepAsProperty>();
 
 			Assert.IsNotNull(component.Services);
 			Assert.AreEqual(0, component.Services.Count);
@@ -346,23 +333,46 @@ namespace Castle.MicroKernel.Tests.SpecializedResolvers
 		[Test]
 		public void DependencyOnListOfServices_OnProperty_empty_not_allowed_null()
 		{
-			kernel.Register(Component.For<ListDepAsProperty>());
+			Container.Register(Component.For<ListDepAsProperty>());
 
-			var component = kernel.Resolve<ListDepAsProperty>();
+			var component = Container.Resolve<ListDepAsProperty>();
 			Assert.IsNull(component.Services);
+		}
+
+		[Test]
+		public void DependencyOn_ref_ArrayOfServices_OnConstructor()
+		{
+			Container.Register(Component.For<IEmptyService>().ImplementedBy<EmptyServiceA>(),
+			                   Component.For<IEmptyService>().ImplementedBy<EmptyServiceB>(),
+			                   Component.For<ArrayRefDepAsConstructor>());
+
+			var component = Container.Resolve<ArrayRefDepAsConstructor>();
+
+			Assert.IsNotNull(component.Services);
+			Assert.AreEqual(2, component.Services.Length);
+			foreach (var service in component.Services)
+			{
+				Assert.IsNotNull(service);
+			}
 		}
 
 		[Test]
 		public void List_is_readonly()
 		{
-			kernel.Register(Component.For<IEmptyService>().ImplementedBy<EmptyServiceA>(),
-			                Component.For<IEmptyService>().ImplementedBy<EmptyServiceB>(),
-			                Component.For<ListDepAsConstructor>());
+			Container.Register(Component.For<IEmptyService>().ImplementedBy<EmptyServiceA>(),
+			                   Component.For<IEmptyService>().ImplementedBy<EmptyServiceB>(),
+			                   Component.For<ListDepAsConstructor>());
 
-			var component = kernel.Resolve<ListDepAsConstructor>();
+			var component = Container.Resolve<ListDepAsConstructor>();
 
 			Assert.IsTrue(component.Services.IsReadOnly);
 			Assert.Throws<NotSupportedException>(() => component.Services.Add(new EmptyServiceA()));
+		}
+
+		[SetUp]
+		public void SetUp()
+		{
+			Kernel.Resolver.AddSubResolver(new CollectionResolver(Kernel));
 		}
 	}
 }
