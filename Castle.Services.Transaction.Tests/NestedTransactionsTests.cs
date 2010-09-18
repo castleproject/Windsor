@@ -186,5 +186,59 @@ namespace Castle.Services.Transaction.Tests
 			Assert.That(rfail.Committed, Is.False);
 			Assert.That(rsucc.Committed, Is.False);
 		}
+
+		[Test]
+		public void SynchronizationsAndCommit_NestedTransaction()
+		{
+			ITransaction root =
+				tm.CreateTransaction(TransactionMode.Requires, IsolationMode.Unspecified);
+			Assert.IsTrue(root is TalkativeTransaction);
+			root.Begin();
+
+			ITransaction child1 = tm.CreateTransaction(TransactionMode.Requires, IsolationMode.Unspecified);
+			Assert.IsTrue(child1 is ChildTransaction);
+			Assert.IsTrue(child1.IsChildTransaction);
+			child1.Begin();
+
+			SynchronizationImpl sync = new SynchronizationImpl();
+
+			child1.RegisterSynchronization(sync);
+
+			Assert.AreEqual(DateTime.MinValue, sync.Before);
+			Assert.AreEqual(DateTime.MinValue, sync.After);
+
+			child1.Commit();
+			root.Commit();
+
+			Assert.IsTrue(sync.Before > DateTime.MinValue);
+			Assert.IsTrue(sync.After > DateTime.MinValue);
+		}
+
+		[Test]
+		public void SynchronizationsAndRollback_NestedTransaction()
+		{
+			ITransaction root =
+				tm.CreateTransaction(TransactionMode.Requires, IsolationMode.Unspecified);
+			Assert.IsTrue(root is TalkativeTransaction);
+			root.Begin();
+
+			ITransaction child1 = tm.CreateTransaction(TransactionMode.Requires, IsolationMode.Unspecified);
+			Assert.IsTrue(child1 is ChildTransaction);
+			Assert.IsTrue(child1.IsChildTransaction);
+			child1.Begin();
+
+			SynchronizationImpl sync = new SynchronizationImpl();
+
+			child1.RegisterSynchronization(sync);
+
+			Assert.AreEqual(DateTime.MinValue, sync.Before);
+			Assert.AreEqual(DateTime.MinValue, sync.After);
+
+			child1.Rollback();
+			root.Rollback();
+
+			Assert.IsTrue(sync.Before > DateTime.MinValue);
+			Assert.IsTrue(sync.After > DateTime.MinValue);
+		}
 	}
 }

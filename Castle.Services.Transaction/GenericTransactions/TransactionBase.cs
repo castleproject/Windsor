@@ -315,7 +315,7 @@ namespace Castle.Services.Transaction
 		///             (commit or rollback)
 		/// </summary>
 		/// <param name="s"/>
-		public void RegisterSynchronization(ISynchronization s)
+		public virtual void RegisterSynchronization(ISynchronization s)
 		{
 			if (s == null) throw new ArgumentNullException("s");
 

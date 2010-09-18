@@ -72,6 +72,11 @@ namespace Castle.Services.Transaction
 			_Parent.Enlist(resource);
 		}
 
+		public override void RegisterSynchronization(ISynchronization s)
+		{
+			_Parent.RegisterSynchronization(s);
+		}
+
 		public override bool IsAmbient { 
 			get { return true; }
 			protected set { } 
