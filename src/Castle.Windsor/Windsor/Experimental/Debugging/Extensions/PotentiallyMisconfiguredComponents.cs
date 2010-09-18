@@ -14,7 +14,6 @@
 
 namespace Castle.Windsor.Experimental.Debugging.Extensions
 {
-	using System;
 	using System.Collections.Generic;
 	using System.Linq;
 
@@ -37,9 +36,8 @@ namespace Castle.Windsor.Experimental.Debugging.Extensions
 			var waiting = GetKeyToHandlersLookup(waitingComponents.ToDictionary(k => k.Key, v => v.Value));
 			var components = waiting.Select(DefaultComponentView).ToArray();
 			yield return new DebuggerViewItem("Potentially Misconfigured Components",
-			                                      "Count = " + components.Length,
-			                                      new ComponentDebuggerViewCollection(
-			                                      	components));
+			                                  "Count = " + components.Length,
+			                                  components);
 		}
 
 		public override void Init(IKernel kernel)

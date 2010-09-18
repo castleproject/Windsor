@@ -11,7 +11,6 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
 namespace Castle.Windsor.Experimental.Debugging.Primitives
 {
 	using System;
@@ -33,12 +32,6 @@ namespace Castle.Windsor.Experimental.Debugging.Primitives
 
 		private readonly KeyValuePair<string, IList<Type>> value;
 
-		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
-		public string Name
-		{
-			get { return value.Key; }
-		}
-
 		public LifestyleDependency(IHandler handler, KeyValuePair<string, IList<Type>> value,
 		                           LifestyleDependency parent = null)
 		{
@@ -47,17 +40,25 @@ namespace Castle.Windsor.Experimental.Debugging.Primitives
 			this.parent = parent;
 		}
 
+		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
+		public string Name
+		{
+			get { return value.Key; }
+		}
+
 		public bool Mismatched()
 		{
-			return MismatchedDirectly(handler);
+			return MismatchedDirectly();
 		}
 
 		public IEnumerable<DebuggerViewItem> Attach()
 		{
-			yield return new DebuggerViewItem(GetName(), GetKey(), GetItem());
+			LifestyleDependency root;
+			var item = GetItem(out root);
+			yield return new DebuggerViewItem(GetName(root), GetKey(), item);
 		}
 
-		private void AppendMismatchMessage(StringBuilder message, LifestyleDependency mismatched)
+		private void AppendMismatchMessage(StringBuilder message, LifestyleDependency mismatched, out LifestyleDependency root)
 		{
 			if (ImTheRoot())
 			{
@@ -66,23 +67,24 @@ namespace Castle.Windsor.Experimental.Debugging.Primitives
 
 				message.AppendFormat("depends on '{0}' with lifestyle {1}", mismatched.value.Key,
 				                     GetLifestyleDescription(mismatched.handler.ComponentModel));
+				root = this;
 				return;
 			}
-			parent.AppendMismatchMessage(message, mismatched);
+			parent.AppendMismatchMessage(message, mismatched, out root);
 			message.AppendLine();
 			message.AppendFormat("\tvia '{0}' with lifestyle {1}", value.Key,
 			                     GetLifestyleDescription(handler.ComponentModel));
 		}
 
-		private MismatchedDependency GetItem()
+		private MismatchedDependency GetItem(out LifestyleDependency root)
 		{
 			return new MismatchedDependency(new DefaultComponentView(handler, value.Value.ToArray()),
-			                                GetMismatchMessage());
+			                                GetMismatchMessage(out root));
 		}
 
 		private string GetKey()
 		{
-			return handler.ComponentModel.LifestyleType.ToString();
+			return string.Format("\"{0}\" {1}", value.Key, GetLifestyleDescription(handler.ComponentModel));
 		}
 
 		private string GetLifestyleDescription(ComponentModel componentModel)
@@ -94,23 +96,21 @@ namespace Castle.Windsor.Experimental.Debugging.Primitives
 			return string.Format("custom ({0})", componentModel.CustomLifestyle.FullName);
 		}
 
-		private string GetMismatchMessage()
+		private string GetMismatchMessage(out LifestyleDependency root)
 		{
 			var message = new StringBuilder();
 			Debug.Assert(parent != null, "parent != null");
 			//now we're going down letting the root to append first:
-			parent.AppendMismatchMessage(message, this);
+			parent.AppendMismatchMessage(message, this, out root);
 			message.AppendLine();
 			message.AppendFormat(
 				"This kind of dependency is usually not desired and may lead to various kinds of bugs.");
 			return message.ToString();
 		}
 
-		private string GetName()
+		private string GetName(LifestyleDependency root)
 		{
-			return string.Format("Mismatched {0}depedency on \"{1}\"",
-			                     (MismatchedDirectly(handler) ? "" : "indirect "),
-			                     value.Key);
+			return string.Format("\"{0}\" {1} ->", root.value.Key, GetLifestyleDescription(root.handler.ComponentModel));
 		}
 
 		private bool ImTheRoot()
@@ -118,7 +118,7 @@ namespace Castle.Windsor.Experimental.Debugging.Primitives
 			return parent == null;
 		}
 
-		private bool MismatchedDirectly(IHandler handler)
+		private bool MismatchedDirectly()
 		{
 			return handler.ComponentModel.LifestyleType == LifestyleType.Transient ||
 			       handler.ComponentModel.LifestyleType == LifestyleType.PerWebRequest;

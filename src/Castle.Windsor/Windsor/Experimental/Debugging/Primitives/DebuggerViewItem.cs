@@ -16,7 +16,7 @@ namespace Castle.Windsor.Experimental.Debugging.Primitives
 {
 	using System.Diagnostics;
 
-	[DebuggerDisplay("{key}", Name = "{name,nq}")]
+	[DebuggerDisplay("{key,nq}", Name = "{name,nq}")]
 	public class DebuggerViewItem
 	{
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]

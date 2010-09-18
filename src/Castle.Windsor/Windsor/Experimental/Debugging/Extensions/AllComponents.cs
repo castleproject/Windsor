@@ -30,7 +30,7 @@ namespace Castle.Windsor.Experimental.Debugging.Extensions
 			var lookup = GetKeyToHandlersLookup(naming.GetKey2Handler());
 			var items = lookup.Select(DefaultComponentView).ToArray();
 			yield return new DebuggerViewItem("All Components", "Count = " + items.Length,
-			                                      new ComponentDebuggerViewCollection(items));
+			                                      items);
 		}
 
 		public override void Init(IKernel kernel)

@@ -30,7 +30,7 @@ namespace Castle.Windsor.Experimental.Debugging.Extensions
 		public override IEnumerable<DebuggerViewItem> Attach()
 		{
 			var all = GetKeyToHandlersLookup(naming.GetKey2Handler());
-			var mismatches = new List<ComponentDebuggerView>();
+			var mismatches = new List<LifestyleDependency>();
 			var component2Handlers = all.ToDictionary(p => p.Key.ComponentModel);
 			foreach (var component in all)
 			{
@@ -42,7 +42,7 @@ namespace Castle.Windsor.Experimental.Debugging.Extensions
 			}
 			yield return new DebuggerViewItem("Potential Lifestyle Mismatches",
 			                                  "Count = " + mismatches.Count,
-			                                  new ComponentDebuggerViewCollection(mismatches.ToArray()));
+			                                  mismatches.SelectMany(m => m.Attach()).ToArray());
 		}
 
 		public override void Init(IKernel kernel)
@@ -50,7 +50,11 @@ namespace Castle.Windsor.Experimental.Debugging.Extensions
 			naming = kernel.GetSubSystem(SubSystemConstants.NamingKey) as INamingSubSystem;
 		}
 
-		private IEnumerable<LifestyleDependency> GetMismatch(LifestyleDependency parent, ComponentModel component, IDictionary<ComponentModel, KeyValuePair<IHandler, KeyValuePair<string, IList<Type>>>> component2Handlers)
+		private IEnumerable<LifestyleDependency> GetMismatch(LifestyleDependency parent, ComponentModel component,
+		                                                     IDictionary
+		                                                     	<ComponentModel,
+		                                                     	KeyValuePair<IHandler, KeyValuePair<string, IList<Type>>>>
+		                                                     	component2Handlers)
 		{
 			var pair = component2Handlers[component];
 			var handler = pair.Key;
@@ -59,16 +63,19 @@ namespace Castle.Windsor.Experimental.Debugging.Extensions
 			{
 				yield return item;
 			}
-			else foreach (ComponentModel dependent in handler.ComponentModel.Dependents)
+			else
 			{
-				foreach (var mismatch in GetMismatch(item, dependent, component2Handlers))
+				foreach (ComponentModel dependent in handler.ComponentModel.Dependents)
 				{
-					yield return mismatch;
+					foreach (var mismatch in GetMismatch(item, dependent, component2Handlers))
+					{
+						yield return mismatch;
+					}
 				}
 			}
 		}
 
-		private IEnumerable<ComponentDebuggerView> GetMismatches(
+		private IEnumerable<LifestyleDependency> GetMismatches(
 			KeyValuePair<IHandler, KeyValuePair<string, IList<Type>>> component,
 			IDictionary<ComponentModel, KeyValuePair<IHandler, KeyValuePair<string, IList<Type>>>> component2Handlers)
 		{
@@ -82,8 +89,7 @@ namespace Castle.Windsor.Experimental.Debugging.Extensions
 			{
 				foreach (var mismatch in GetMismatch(root, dependent, component2Handlers))
 				{
-					yield return
-						new ComponentDebuggerView(handler, component.Value, string.Format("-> \"{0}\"", mismatch.Name), mismatch);
+					yield return mismatch;
 				}
 			}
 		}

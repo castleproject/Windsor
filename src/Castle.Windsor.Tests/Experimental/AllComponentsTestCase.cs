@@ -35,10 +35,10 @@ namespace Castle.Windsor.Tests.Experimental
 
 			var allComponents = GetAllComponents();
 			Assert.IsNotNull(allComponents);
-			var view = allComponents.Value as ComponentDebuggerViewCollection;
+			var view = allComponents.Value as ComponentDebuggerView[];
 			Assert.IsNotNull(view);
-			Assert.AreEqual(1, view.Items.Length);
-			var item = view.Items.Single();
+			Assert.AreEqual(1, view.Length);
+			var item = view.Single();
 			Assert.IsNotNull(item.Extensions.SingleOrDefault(e => e.Name == "Service" && Equals(e.Value, typeof(EmptyServiceA))));
 			Assert.IsNotNull(item.Extensions.SingleOrDefault(e => e.Name == "Service" && Equals(e.Value, typeof(IEmptyService))));
 		}

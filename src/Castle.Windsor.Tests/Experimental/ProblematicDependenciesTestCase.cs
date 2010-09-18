@@ -36,9 +36,9 @@ namespace Castle.Windsor.Tests.Experimental
 			var faultyComponents =
 				subSystem.SelectMany(e => e.Attach()).SingleOrDefault(i => i.Name == "Potential Lifestyle Mismatches");
 			Assert.IsNotNull(faultyComponents);
-			var components = faultyComponents.Value as ComponentDebuggerViewCollection;
+			var components = faultyComponents.Value as DebuggerViewItem[];
 			Assert.IsNotNull(components);
-			Assert.AreEqual(1, components.Items.Length);
+			Assert.AreEqual(1, components.Length);
 		}
 
 		[Test]
@@ -52,10 +52,10 @@ namespace Castle.Windsor.Tests.Experimental
 			var faultyComponents =
 				subSystem.SelectMany(e => e.Attach()).SingleOrDefault(i => i.Name == "Potential Lifestyle Mismatches");
 			Assert.IsNotNull(faultyComponents);
-			var components = faultyComponents.Value as ComponentDebuggerViewCollection;
+			var components = faultyComponents.Value as DebuggerViewItem[];
 			Assert.IsNotNull(components);
-			Assert.AreEqual(2, components.Items.Length);
-			var debuggerViewItems = components.Items.SelectMany(i=>i.Extensions).ToArray();
+			Assert.AreEqual(2, components.Length);
+			var debuggerViewItems = components.Select(i => i.Value).ToArray();
 			Assert.AreEqual(2, debuggerViewItems.Length);
 		}
 
