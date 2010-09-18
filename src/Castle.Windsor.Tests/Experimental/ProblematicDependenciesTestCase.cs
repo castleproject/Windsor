@@ -55,6 +55,8 @@ namespace Castle.Windsor.Tests.Experimental
 			var components = faultyComponents.Value as ComponentDebuggerViewCollection;
 			Assert.IsNotNull(components);
 			Assert.AreEqual(2, components.Items.Length);
+			var debuggerViewItems = components.Items.SelectMany(i=>i.Extensions).ToArray();
+			Assert.AreEqual(2, debuggerViewItems.Length);
 		}
 
 		[SetUp]
