@@ -14,24 +14,22 @@
 
 namespace Castle.Facilities.NHibernateIntegration.Tests.SessionCreation
 {
-	using System;
-
+	using MicroKernel.Registration;
 	using NUnit.Framework;
-
 
 	[TestFixture]
 	public class DaoTestCase : AbstractNHibernateTestCase
 	{
 		protected override void ConfigureContainer()
 		{
-			container.AddComponent( "mydao", typeof(MyDao) );
-			container.AddComponent( "myseconddao", typeof(MySecondDao) );
+			container.Register(Component.For<MyDao>().Named("mydao"));
+			container.Register(Component.For<MySecondDao>().Named("myseconddao"));
 		}
 
 		[Test]
 		public void SessionIsShared()
 		{
-			MyDao dao = (MyDao) container[typeof(MyDao)];
+			MyDao dao = container.Resolve<MyDao>();
 
 			dao.PerformComplexOperation1();
 		}
@@ -39,7 +37,7 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.SessionCreation
 		[Test]
 		public void SessionDisposedIsNotReused()
 		{
-			MyDao dao = (MyDao) container[typeof(MyDao)];
+			MyDao dao = container.Resolve<MyDao>();
 
 			dao.PerformComplexOperation2();
 		}
@@ -47,7 +45,7 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.SessionCreation
 		[Test]
 		public void ClosingAndDisposing()
 		{
-			MyDao dao = (MyDao) container[typeof(MyDao)];
+			MyDao dao = container.Resolve<MyDao>();
 
 			dao.DoOpenCloseAndDispose();
 		}

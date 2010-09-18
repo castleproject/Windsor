@@ -93,8 +93,8 @@ namespace Castle.Facilities.NHibernateIntegration.Internal
 				throw new FacilityException("An ISessionFactory component was " + 
 					"not mapped for the specified alias: " + alias);
 			}
-			
-			return kernel[componentKey] as ISessionFactory;
+
+			return kernel.Resolve<ISessionFactory>(componentKey);
 		}
 	}
 }

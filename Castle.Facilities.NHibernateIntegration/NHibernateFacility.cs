@@ -114,8 +114,9 @@ namespace Castle.Facilities.NHibernateIntegration
 		{
 			if (Kernel.HasComponent(typeof(ILoggerFactory)))
 			{
-				log = ((ILoggerFactory)Kernel[typeof(ILoggerFactory)]).Create(GetType());
+				log = Kernel.Resolve<ILoggerFactory>().Create(GetType());
 			}
+
 			AssertHasConfig();
 			AssertHasAtLeastOneFactoryConfigured();
 			RegisterComponents();
@@ -332,10 +333,12 @@ namespace Castle.Facilities.NHibernateIntegration
 
 				throw new ConfigurationErrorsException(message);
 			}
-			else if (string.IsNullOrEmpty(alias))
+			
+			if (string.IsNullOrEmpty(alias))
 			{
 				alias = Constants.DefaultAlias;
 			}
+
 			string configurationBuilderType = config.Attributes[ConfigurationBuilderConfigurationKey];
 			string configurationbuilderKey = string.Format(ConfigurationBuilderForFactoryFormat, id);
 			IConfigurationBuilder configBuilder;
@@ -355,18 +358,12 @@ namespace Castle.Facilities.NHibernateIntegration
 		    Kernel.Register(Component.For<NHibernate.Cfg.Configuration>().Instance(cfg).Named(String.Format("{0}.cfg", id)));
 
 			// If a Session Factory level interceptor was provided, we use it
-
 			if (Kernel.HasComponent(SessionInterceptorKey))
 			{
-				cfg.Interceptor = (IInterceptor)Kernel[SessionInterceptorKey];
+				cfg.Interceptor = Kernel.Resolve<IInterceptor>(SessionInterceptorKey);
 			}
-			// Registers the ISessionFactory as a component
 
-			//var model = new ComponentModel(id, typeof(ISessionFactory), typeof(Empty));
-			//model.LifestyleType = LifestyleType.Singleton;
-			//model.ExtendedProperties[Constants.SessionFactoryConfiguration] = cfg;
-			//model.CustomComponentActivator = typeof (SessionFactoryActivator);
-			//Kernel.AddCustomComponent(model);
+			// Registers the ISessionFactory as a component
 			Kernel.Register(Component
 			                	.For<ISessionFactory>()
 			                	.Named(id)

@@ -14,6 +14,7 @@
 
 namespace Castle.Facilities.NHibernateIntegration.Tests.Wiring
 {
+	using MicroKernel.Registration;
 	using NUnit.Framework;
 
 	[TestFixture]
@@ -21,13 +22,13 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Wiring
 	{
 		protected override void ConfigureContainer()
 		{
-			container.AddComponent( "mydao", typeof(MyDao) );
+			container.Register(Component.For<MyDao>().Named("mydao"));
 		}
 
 		[Test]
 		public void NHComponentsAvailableToWire()
 		{
-			MyDao dao = (MyDao) container[typeof(MyDao)];
+			MyDao dao = container.Resolve<MyDao>();
 
 			Assert.IsNotNull(dao);
 			Assert.IsNotNull(dao.Cfg);

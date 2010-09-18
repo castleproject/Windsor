@@ -57,7 +57,7 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Issues.Facilities103
 		{
 			using (mockRepository.Record())
 			{
-				Expect.Call(kernel[typeof(ITransactionManager)]).Return(transactionManager);
+				Expect.Call(kernel.Resolve<ITransactionManager>()).Return(transactionManager);
 				Expect.Call(transactionManager.CurrentTransaction).Return(transaction);
 				Expect.Call(factoryResolver.GetSessionFactory(Alias)).Return(sessionFactory);
 				Expect.Call(kernel.HasComponent(string.Format(InterceptorFormatString, Alias))).Return(false);

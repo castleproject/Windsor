@@ -78,7 +78,7 @@ namespace Castle.Facilities.NHibernateIntegration.Components.Web
 		{
 			IWindsorContainer container = ObtainContainer();
 
-			ISessionManager sessManager = (ISessionManager) container[ typeof(ISessionManager) ];
+			ISessionManager sessManager = container.Resolve<ISessionManager>();
 
 			HttpContext.Current.Items.Add(SessionKey, sessManager.OpenSession());
 		}

@@ -191,7 +191,7 @@ namespace Castle.Facilities.NHibernateIntegration
 
 		private ITransaction ObtainCurrentTransaction()
 		{
-			ITransactionManager transactionManager = kernel[ typeof(ITransactionManager) ] as ITransactionManager;
+			ITransactionManager transactionManager = kernel.Resolve<ITransactionManager>();
 
 			return transactionManager.CurrentTransaction;
 		}
@@ -217,13 +217,13 @@ namespace Castle.Facilities.NHibernateIntegration
 			
 			if (kernel.HasComponent(aliasedInterceptorId))
 			{
-				IInterceptor interceptor = (IInterceptor) kernel[aliasedInterceptorId];
+				IInterceptor interceptor = kernel.Resolve<IInterceptor>(aliasedInterceptorId);
 				
 				session = sessionFactory.OpenSession(interceptor);
 			}
 			else if (kernel.HasComponent(InterceptorName))
 			{
-				IInterceptor interceptor = (IInterceptor) kernel[InterceptorName];
+				IInterceptor interceptor = kernel.Resolve<IInterceptor>(InterceptorName);
 				
 				session =  sessionFactory.OpenSession(interceptor);
 			}

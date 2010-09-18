@@ -31,15 +31,15 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Internals
 		[Test]
 		public void NullAlias()
 		{
-			ISessionStore store = (ISessionStore) container[typeof(ISessionStore)];
+			ISessionStore store = container.Resolve<ISessionStore>();
 			Assert.Throws<ArgumentNullException>(() => store.FindCompatibleSession(null));
 		}
 
 		[Test]
 		public void FindCompatibleSession()
 		{
-			ISessionStore store = (ISessionStore) container[typeof(ISessionStore)];
-			ISessionFactory factory = (ISessionFactory) container[typeof(ISessionFactory)];
+			ISessionStore store = container.Resolve<ISessionStore>();
+			ISessionFactory factory = container.Resolve<ISessionFactory>();
 
 			ISession session = store.FindCompatibleSession( Constants.DefaultAlias );
 
@@ -76,8 +76,8 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Internals
 		[Test]
 		public void FindCompatibleSessionWithTwoThreads()
 		{
-			ISessionStore store = (ISessionStore) container[typeof(ISessionStore)];
-			ISessionFactory factory = (ISessionFactory) container[typeof(ISessionFactory)];
+			ISessionStore store = container.Resolve<ISessionStore>();
+			ISessionFactory factory = container.Resolve<ISessionFactory>();
 
 			ISession session = factory.OpenSession();
 
@@ -90,7 +90,7 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Internals
 			Assert.IsNotNull(session2);
 			Assert.AreSame(sessDelegate, session2);
 
-			Thread newThread = new Thread(new ThreadStart(FindCompatibleSessionOnOtherThread));
+			Thread newThread = new Thread(FindCompatibleSessionOnOtherThread);
 			newThread.Start();
 
 			arEvent.WaitOne();
@@ -102,7 +102,7 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Internals
 
 		private void FindCompatibleSessionOnOtherThread()
 		{
-			ISessionStore store = (ISessionStore) container[typeof(ISessionStore)];
+			ISessionStore store = container.Resolve<ISessionStore>();
 
 			ISession session = store.FindCompatibleSession( "something in the way she moves" );
 

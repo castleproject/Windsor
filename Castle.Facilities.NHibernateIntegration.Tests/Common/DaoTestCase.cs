@@ -15,7 +15,7 @@
 namespace Castle.Facilities.NHibernateIntegration.Tests.Common
 {
 	using System.Collections;
-
+	using MicroKernel.Registration;
 	using NUnit.Framework;
 
 
@@ -25,9 +25,9 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Common
 		[Test]
 		public void CommonUsage()
 		{
-			container.AddComponent("blogdao", typeof(BlogDao));
+			container.Register(Component.For<BlogDao>().Named("blogdao"));
 			
-			BlogDao dao = (BlogDao) container["blogdao"];
+			BlogDao dao = container.Resolve<BlogDao>("blogdao");
 			dao.CreateBlog("my blog");
 
 			IList blogs = dao.ObtainBlogs();

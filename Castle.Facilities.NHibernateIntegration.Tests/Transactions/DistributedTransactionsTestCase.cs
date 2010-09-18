@@ -16,7 +16,7 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Transactions
 {
 	using System;
 	using Castle.Facilities.AutoTx;
-
+	using MicroKernel.Registration;
 	using NUnit.Framework;
 	using Services.Transaction;
 
@@ -34,17 +34,17 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Transactions
 		{
 			container.AddFacility("transactions", new TransactionFacility());
 
-			container.AddComponent("root", typeof(RootService2));
-			container.AddComponent("myfirstdao", typeof(FirstDao2));
-			container.AddComponent("myseconddao", typeof(SecondDao2));
-			container.AddComponent("myorderdao", typeof(OrderDao2));
+			container.Register(Component.For<RootService2>().Named("root"));
+			container.Register(Component.For<FirstDao2>().Named("myfirstdao"));
+			container.Register(Component.For<SecondDao2>().Named("myseconddao"));
+			container.Register(Component.For<OrderDao2>().Named("myorderdao"));
 		}
 
 		[Test]
 		public void SuccessfulSituationWithTwoDatabases()
 		{
-			RootService2 service = (RootService2) container["root"];
-			OrderDao2 orderDao = (OrderDao2) container["myorderdao"];
+			RootService2 service = container.Resolve<RootService2>();
+			OrderDao2 orderDao = container.Resolve<OrderDao2>("myorderdao");
 
 			try
 			{
@@ -72,8 +72,8 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Transactions
 		[Test]
 		public void ExceptionOnEndWithTwoDatabases()
 		{
-			RootService2 service = (RootService2)container["root"];
-			OrderDao2 orderDao = (OrderDao2)container["myorderdao"];
+			RootService2 service = container.Resolve<RootService2>();
+			OrderDao2 orderDao = container.Resolve<OrderDao2>("myorderdao");
 
 			try
 			{

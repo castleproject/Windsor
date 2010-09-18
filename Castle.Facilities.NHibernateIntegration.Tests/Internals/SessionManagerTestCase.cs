@@ -42,8 +42,7 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Internals
 		[Test]
 		public void TwoDatabases()
 		{
-			ISessionManager manager = (ISessionManager) 
-				container[typeof(ISessionManager)];
+			ISessionManager manager = container.Resolve<ISessionManager>();
 
 			ISession session1 = manager.OpenSession();
 			ISession session2 = manager.OpenSession("db2");
@@ -56,15 +55,14 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Internals
 			session2.Dispose();
 			session1.Dispose();
 
-			Assert.IsTrue( (container[typeof(ISessionStore)] 
-				as ISessionStore).IsCurrentActivityEmptyFor( Constants.DefaultAlias ) );
+			Assert.IsTrue(container.Resolve<ISessionStore>().IsCurrentActivityEmptyFor(Constants.DefaultAlias));
 		}
 
 		[Test]
 		public void NonInterceptedSession()
 		{
-			ISessionManager manager = (ISessionManager)
-				container[typeof(ISessionManager)];
+			ISessionManager manager = container.Resolve<ISessionManager>();
+
 			string sessionAlias = "db2";
 
 			ISession session = manager.OpenSession(sessionAlias);
@@ -77,7 +75,7 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Internals
 			session.Get(typeof(Order), 1);
 			session.Close();
 			
-			TestInterceptor interceptor = container["nhibernate.session.interceptor.intercepted"] as TestInterceptor;
+			TestInterceptor interceptor = container.Resolve<TestInterceptor>("nhibernate.session.interceptor.intercepted");
 			Assert.IsNotNull(interceptor);
 			Assert.IsFalse(interceptor.ConfirmOnSaveCall());
 			Assert.IsFalse(interceptor.ConfirmInstantiationCall());
@@ -87,8 +85,7 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Internals
 		[Test]
 		public void InterceptedSessionByConfiguration()
 		{
-			ISessionManager manager = (ISessionManager)
-				container[typeof(ISessionManager)];
+			ISessionManager manager = container.Resolve<ISessionManager>();
 
 			string sessionAlias = "intercepted";
 
@@ -101,8 +98,8 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Internals
 			session = manager.OpenSession(sessionAlias);
 			session.Get(typeof(Order), 1);
 			session.Close();
-			
-			TestInterceptor interceptor = container["nhibernate.session.interceptor.intercepted"] as TestInterceptor;
+
+			TestInterceptor interceptor = container.Resolve<TestInterceptor>("nhibernate.session.interceptor.intercepted");
 			Assert.IsNotNull(interceptor);
 			Assert.IsTrue(interceptor.ConfirmOnSaveCall());
 			Assert.IsTrue(interceptor.ConfirmInstantiationCall());
@@ -112,16 +109,15 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Internals
 		[Test]
 		public void NonExistentAlias()
 		{
-			ISessionManager manager = (ISessionManager) 
-				container[typeof(ISessionManager)];
+			ISessionManager manager = container.Resolve<ISessionManager>();
+
 			Assert.Throws<FacilityException>(() => manager.OpenSession("something in the way she moves"));
 		}
 
 		[Test]
 		public void SharedSession()
 		{
-			ISessionManager manager = (ISessionManager) 
-				container[typeof(ISessionManager)];
+			ISessionManager manager = container.Resolve<ISessionManager>();
 
 			ISession session1 = manager.OpenSession();
 			ISession session2 = manager.OpenSession();
@@ -138,8 +134,7 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Internals
 			session2.Dispose();
 			session1.Dispose();
 
-			Assert.IsTrue( (container[typeof(ISessionStore)] 
-				as ISessionStore).IsCurrentActivityEmptyFor( Constants.DefaultAlias ) );
+			Assert.IsTrue(container.Resolve<ISessionStore>().IsCurrentActivityEmptyFor(Constants.DefaultAlias));
 		}
 
 		/// <summary>
@@ -151,11 +146,9 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Internals
 		// [Ignore("This doesn't work with the NH 1.2 transaction property, needs to be fixed")]
 		public void NewTransactionBeforeUsingSession()
 		{
-			ISessionManager manager = (ISessionManager) 
-				container[typeof(ISessionManager)];
+			ISessionManager manager = container.Resolve<ISessionManager>();
 
-			ITransactionManager tmanager = (ITransactionManager)
-				container[typeof(ITransactionManager)];
+			ITransactionManager tmanager = container.Resolve<ITransactionManager>();
 
 			ITransaction transaction = tmanager.CreateTransaction( 
 				TransactionMode.Requires, IsolationMode.Serializable );
@@ -175,8 +168,7 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Internals
 
 			session.Dispose();
 
-			Assert.IsTrue( (container[typeof(ISessionStore)] 
-				as ISessionStore).IsCurrentActivityEmptyFor( Constants.DefaultAlias ) );
+			Assert.IsTrue(container.Resolve<ISessionStore>().IsCurrentActivityEmptyFor(Constants.DefaultAlias));
 		}
 
 		/// <summary>
@@ -188,13 +180,11 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Internals
 		// [Ignore("This doesn't work with the NH 1.2 transaction property, needs to be fixed")]
 		public void NewTransactionAfterUsingSession()
 		{
-			ISessionManager manager = (ISessionManager) 
-				container[typeof(ISessionManager)];
+			ISessionManager manager = container.Resolve<ISessionManager>();
 
-			ISession session1 = manager.OpenSession();			
+			ISession session1 = manager.OpenSession();
 
-			ITransactionManager tmanager = (ITransactionManager)
-				container[typeof(ITransactionManager)];
+			ITransactionManager tmanager = container.Resolve<ITransactionManager>();
 
 			ITransaction transaction = tmanager.CreateTransaction( 
 				TransactionMode.Requires, IsolationMode.Serializable );
@@ -230,8 +220,7 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Internals
 
 			session1.Dispose();
 
-			Assert.IsTrue( (container[typeof(ISessionStore)] 
-				as ISessionStore).IsCurrentActivityEmptyFor( Constants.DefaultAlias ) );
+			Assert.IsTrue(container.Resolve<ISessionStore>().IsCurrentActivityEmptyFor(Constants.DefaultAlias));
 		}
 
 		/// <summary>
@@ -242,11 +231,9 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Internals
 		//[Ignore("This doesn't work with the NH 1.2 transaction property, needs to be fixed")]
 		public void NewTransactionBeforeUsingSessionWithTwoDatabases()
 		{
-			ISessionManager manager = (ISessionManager) 
-				container[typeof(ISessionManager)];
+			ISessionManager manager = container.Resolve<ISessionManager>();
 
-			ITransactionManager tmanager = (ITransactionManager)
-				container[typeof(ITransactionManager)];
+			ITransactionManager tmanager = container.Resolve<ITransactionManager>();
 
 			ITransaction transaction = tmanager.CreateTransaction( 
 				TransactionMode.Requires, IsolationMode.Serializable );
@@ -273,8 +260,7 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Internals
 			session2.Dispose();
 			session1.Dispose();
 
-			Assert.IsTrue( (container[typeof(ISessionStore)] 
-				as ISessionStore).IsCurrentActivityEmptyFor( Constants.DefaultAlias ) );
+			Assert.IsTrue(container.Resolve<ISessionStore>().IsCurrentActivityEmptyFor(Constants.DefaultAlias));
 		}
 
 		/// <summary>
@@ -285,11 +271,9 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Internals
 		//[Ignore("This doesn't work with the NH 1.2 transaction property, needs to be fixed")]
 		public void SecondDatabaseSessionEnlistedOnlyOnceInActualTransaction()
 		{
-			ISessionManager manager = (ISessionManager) 
-				container[typeof(ISessionManager)];
+			ISessionManager manager = container.Resolve<ISessionManager>();
 
-			ITransactionManager tmanager = (ITransactionManager)
-				container[typeof(ITransactionManager)];
+			ITransactionManager tmanager = container.Resolve<ITransactionManager>();
 
 			ITransaction transaction = tmanager.CreateTransaction( 
 				TransactionMode.Requires, IsolationMode.Serializable );
@@ -322,8 +306,7 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Internals
 			
 			session1.Dispose();
 
-			Assert.IsTrue( (container[typeof(ISessionStore)] 
-				as ISessionStore).IsCurrentActivityEmptyFor( Constants.DefaultAlias ) );
+			Assert.IsTrue(container.Resolve<ISessionStore>().IsCurrentActivityEmptyFor(Constants.DefaultAlias));
 		}		
 	}
 }
