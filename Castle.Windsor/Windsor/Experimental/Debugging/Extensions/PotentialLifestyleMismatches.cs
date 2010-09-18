@@ -50,32 +50,22 @@ namespace Castle.Windsor.Experimental.Debugging.Extensions
 			naming = kernel.GetSubSystem(SubSystemConstants.NamingKey) as INamingSubSystem;
 		}
 
-		private LifestyleDependency GetMismatch(ComponentModel component,
-		                                        IDictionary
-		                                        	<ComponentModel, KeyValuePair<IHandler, KeyValuePair<string, IList<Type>>>>
-		                                        	component2Handlers)
+		private IEnumerable<LifestyleDependency> GetMismatch(LifestyleDependency parent, ComponentModel component, IDictionary<ComponentModel, KeyValuePair<IHandler, KeyValuePair<string, IList<Type>>>> component2Handlers)
 		{
 			var pair = component2Handlers[component];
 			var handler = pair.Key;
-			var item = new LifestyleDependency(handler, pair.Value);
+			var item = new LifestyleDependency(handler, pair.Value, parent);
 			if (item.Mismatched())
 			{
-				return item;
+				yield return item;
 			}
-			foreach (ComponentModel dependent in handler.ComponentModel.Dependents)
+			else foreach (ComponentModel dependent in handler.ComponentModel.Dependents)
 			{
-				var mismatch = GetMismatch(dependent, component2Handlers);
-				if (mismatch != null)
+				foreach (var mismatch in GetMismatch(item, dependent, component2Handlers))
 				{
-					item.Add(mismatch);
+					yield return mismatch;
 				}
 			}
-
-			if (item.Mismatched())
-			{
-				return item;
-			}
-			return null;
 		}
 
 		private IEnumerable<ComponentDebuggerView> GetMismatches(
@@ -87,18 +77,14 @@ namespace Castle.Windsor.Experimental.Debugging.Extensions
 			{
 				yield break;
 			}
-			var item = new LifestyleDependency(handler, component.Value);
+			var root = new LifestyleDependency(handler, component.Value);
 			foreach (ComponentModel dependent in handler.ComponentModel.Dependents)
 			{
-				var mismatch = GetMismatch(dependent, component2Handlers);
-				if (mismatch != null)
+				foreach (var mismatch in GetMismatch(root, dependent, component2Handlers))
 				{
-					item.Add(mismatch);
+					yield return
+						new ComponentDebuggerView(handler, component.Value, string.Format("-> \"{0}\"", mismatch.Name), mismatch);
 				}
-			}
-			if (item.Empty == false)
-			{
-				yield return new ComponentDebuggerView(handler, component.Value, "Issues count = " + item.Count, item);
 			}
 		}
 

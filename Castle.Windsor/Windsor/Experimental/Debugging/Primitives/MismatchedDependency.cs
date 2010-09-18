@@ -19,6 +19,7 @@ namespace Castle.Windsor.Experimental.Debugging.Primitives
 
 	public class MismatchedDependency
 	{
+		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 		private readonly string description;
 
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
