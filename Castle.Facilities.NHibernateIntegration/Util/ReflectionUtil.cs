@@ -1,16 +1,21 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+#region License
+
+//  Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+//  
+//  Licensed under the Apache License, Version 2.0 (the "License");
+//  you may not use this file except in compliance with the License.
+//  You may obtain a copy of the License at
+//  
+//      http://www.apache.org/licenses/LICENSE-2.0
+//  
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
 // 
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-// 
-//     http://www.apache.org/licenses/LICENSE-2.0
-// 
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+
+#endregion
 
 namespace Castle.Facilities.NHibernateIntegration.Util
 {
@@ -59,7 +64,8 @@ namespace Castle.Facilities.NHibernateIntegration.Util
 		private static FieldInfo GetField(object obj, string field)
 		{
 			Type type = obj.GetType();
-			return type.GetField(field, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.IgnoreCase);
+			return type.GetField(field,
+			                     BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.IgnoreCase);
 		}
 
 		/// <summary>
@@ -86,7 +92,7 @@ namespace Castle.Facilities.NHibernateIntegration.Util
 		public static bool IsSimpleType(Type type)
 		{
 			if (type.IsEnum || type.IsPrimitive || type == typeof (string)
-				|| type==typeof(DateTime))
+			    || type == typeof (DateTime))
 				return true;
 			else
 				return false;
@@ -281,12 +287,12 @@ namespace Castle.Facilities.NHibernateIntegration.Util
 		/// </summary>
 		/// <param name="obj">The obj.</param>
 		/// <returns></returns>
-		public static PropertyInfo [] GetProperties(object obj)
+		public static PropertyInfo[] GetProperties(object obj)
 		{
 			return obj.GetType().
-				GetProperties(BindingFlags.Instance|
-				BindingFlags.GetProperty|BindingFlags.Public|
-				BindingFlags.NonPublic);
+				GetProperties(BindingFlags.Instance |
+				              BindingFlags.GetProperty | BindingFlags.Public |
+				              BindingFlags.NonPublic);
 		}
 
 		/// <summary>
@@ -302,7 +308,7 @@ namespace Castle.Facilities.NHibernateIntegration.Util
 				if (ReflectionUtil.IsSimpleType(property.PropertyType))
 					return property.GetValue(obj, null);
 				else
-					return property.GetValue(obj,null);
+					return property.GetValue(obj, null);
 			}
 			return "{indexed or write only property}";
 		}
@@ -317,9 +323,9 @@ namespace Castle.Facilities.NHibernateIntegration.Util
 			object propertyValue = null;
 			Hashtable ht = new Hashtable();
 			foreach (PropertyInfo property in obj.GetType().
-				GetProperties(BindingFlags.Instance|
-				BindingFlags.GetProperty|BindingFlags.Public|
-				BindingFlags.NonPublic))
+				GetProperties(BindingFlags.Instance |
+				              BindingFlags.GetProperty | BindingFlags.Public |
+				              BindingFlags.NonPublic))
 			{
 				if (property.CanRead && property.GetIndexParameters().Length == 0)
 				{
@@ -329,7 +335,7 @@ namespace Castle.Facilities.NHibernateIntegration.Util
 						ht[property.Name] = (propertyValue == null ? null : propertyValue.ToString());
 					}
 					else
-						ht[property.Name] = property.GetValue(obj,null);
+						ht[property.Name] = property.GetValue(obj, null);
 				}
 			}
 			return ht;

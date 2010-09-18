@@ -1,22 +1,26 @@
-﻿// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
-// 
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-// 
-//     http://www.apache.org/licenses/LICENSE-2.0
-// 
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+﻿#region License
 
-using System.Text.RegularExpressions;
+//  Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+//  
+//  Licensed under the Apache License, Version 2.0 (the "License");
+//  you may not use this file except in compliance with the License.
+//  You may obtain a copy of the License at
+//  
+//      http://www.apache.org/licenses/LICENSE-2.0
+//  
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+// 
+
+#endregion
 
 namespace Castle.Facilities.NHibernateIntegration.Builders
 {
 	using System.Collections.Generic;
+	using System.Text.RegularExpressions;
 	using Core.Configuration;
 	using log4net;
 	using NHibernate.Cfg;
@@ -29,7 +33,7 @@ namespace Castle.Facilities.NHibernateIntegration.Builders
 	{
 		private const string DEFAULT_EXTENSION = "dat";
 
-		private static readonly ILog log = LogManager.GetLogger(typeof(PersistentConfigurationBuilder));
+		private static readonly ILog log = LogManager.GetLogger(typeof (PersistentConfigurationBuilder));
 
 		private readonly IConfigurationPersister configurationPersister;
 
@@ -60,19 +64,19 @@ namespace Castle.Facilities.NHibernateIntegration.Builders
 		{
 			log.Debug("Building the Configuration");
 
-			string filename = this.GetFilenameFrom(config);
-			IList<string> dependentFilenames = this.GetDependentFilenamesFrom(config);
+			string filename = GetFilenameFrom(config);
+			IList<string> dependentFilenames = GetDependentFilenamesFrom(config);
 
 			Configuration cfg;
-			if (this.configurationPersister.IsNewConfigurationRequired(filename, dependentFilenames))
+			if (configurationPersister.IsNewConfigurationRequired(filename, dependentFilenames))
 			{
 				log.Debug("Configuration is either old or some of the dependencies have changed");
 				cfg = base.GetConfiguration(config);
-				this.configurationPersister.WriteConfiguration(filename, cfg);
+				configurationPersister.WriteConfiguration(filename, cfg);
 			}
 			else
 			{
-				cfg = this.configurationPersister.ReadConfiguration(filename);
+				cfg = configurationPersister.ReadConfiguration(filename);
 			}
 			return cfg;
 		}
@@ -80,7 +84,7 @@ namespace Castle.Facilities.NHibernateIntegration.Builders
 		private string GetFilenameFrom(IConfiguration config)
 		{
 			var filename = config.Attributes["fileName"] ?? config.Attributes["id"] + "." + DEFAULT_EXTENSION;
-			return this.StripInvalidCharacters(filename);
+			return StripInvalidCharacters(filename);
 		}
 
 		private string StripInvalidCharacters(string input)
@@ -100,7 +104,7 @@ namespace Castle.Facilities.NHibernateIntegration.Builders
 					list.Add(assembly.Value + ".dll");
 				}
 			}
-			
+
 			IConfiguration dependsOn = config.Children["dependsOn"];
 			if (dependsOn != null)
 			{

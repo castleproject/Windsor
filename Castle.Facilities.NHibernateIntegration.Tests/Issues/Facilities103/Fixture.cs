@@ -1,26 +1,43 @@
+#region License
+
+//  Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+//  
+//  Licensed under the Apache License, Version 2.0 (the "License");
+//  you may not use this file except in compliance with the License.
+//  You may obtain a copy of the License at
+//  
+//      http://www.apache.org/licenses/LICENSE-2.0
+//  
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+// 
+
+#endregion
+
 namespace Castle.Facilities.NHibernateIntegration.Tests.Issues.Facilities103
 {
 	using System;
 	using System.Collections;
 	using System.Data;
-	using Castle.MicroKernel;
-	using Castle.Services.Transaction;
+	using MicroKernel;
 	using NHibernate;
 	using NUnit.Framework;
 	using Rhino.Mocks;
-	using ITransaction = Castle.Services.Transaction.ITransaction;
+	using Services.Transaction;
 	using SessionStores;
+	using ITransaction = Services.Transaction.ITransaction;
 
 	[TestFixture]
 	public class DefaultSessionManagerTestCase : IssueTestCase
 	{
 		protected override string ConfigurationFile
 		{
-			get
-			{
-				return "EmptyConfiguration.xml";
-			}
+			get { return "EmptyConfiguration.xml"; }
 		}
+
 		public override void OnSetUp()
 		{
 			sessionStore = new CallContextSessionStore();
@@ -33,7 +50,7 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Issues.Facilities103
 			contextDictionary = new Hashtable();
 			sessionManager = new DefaultSessionManager(sessionStore, kernel, factoryResolver);
 		}
-		
+
 		private const string Alias = "myAlias";
 		private const string InterceptorFormatString = DefaultSessionManager.InterceptorFormatString;
 		private const string InterceptorName = DefaultSessionManager.InterceptorName;
@@ -41,6 +58,7 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Issues.Facilities103
 		private const IsolationLevel DefaultIsolationLevel = IsolationLevel.ReadUncommitted;
 
 		#region mock variables
+
 		private ISessionStore sessionStore;
 		private IKernel kernel;
 		private ISessionFactoryResolver factoryResolver;
@@ -50,6 +68,7 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Issues.Facilities103
 		private ISession session;
 		private IDictionary contextDictionary;
 		private ISessionManager sessionManager;
+
 		#endregion
 
 		[Test]
@@ -81,7 +100,8 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Issues.Facilities103
 					//ignore
 					//Console.WriteLine(ex.ToString());
 				}
-				Assert.IsNull(sessionStore.FindCompatibleSession(Alias),"The sessionStore shouldn't contain compatible session if the session creation fails");
+				Assert.IsNull(sessionStore.FindCompatibleSession(Alias),
+				              "The sessionStore shouldn't contain compatible session if the session creation fails");
 			}
 		}
 	}

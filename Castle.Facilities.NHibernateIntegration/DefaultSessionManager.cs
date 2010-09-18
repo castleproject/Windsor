@@ -1,21 +1,25 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+#region License
+
+//  Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+//  
+//  Licensed under the Apache License, Version 2.0 (the "License");
+//  you may not use this file except in compliance with the License.
+//  You may obtain a copy of the License at
+//  
+//      http://www.apache.org/licenses/LICENSE-2.0
+//  
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
 // 
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-// 
-//     http://www.apache.org/licenses/LICENSE-2.0
-// 
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+
+#endregion
 
 namespace Castle.Facilities.NHibernateIntegration
 {
 	using System;
-	using System.Collections;
 	using System.Collections.Generic;
 	using System.Data;
 	using Internal;
@@ -23,7 +27,7 @@ namespace Castle.Facilities.NHibernateIntegration
 	using MicroKernel.Facilities;
 	using NHibernate;
 	using Services.Transaction;
-	using ITransaction=Castle.Services.Transaction.ITransaction;
+	using ITransaction = Services.Transaction.ITransaction;
 
 	/// <summary>
 	/// 
@@ -31,6 +35,7 @@ namespace Castle.Facilities.NHibernateIntegration
 	public class DefaultSessionManager : MarshalByRefObject, ISessionManager
 	{
 		#region constants
+
 		/// <summary>
 		/// Format string for NHibernate interceptor components
 		/// </summary>
@@ -40,6 +45,7 @@ namespace Castle.Facilities.NHibernateIntegration
 		/// Name for NHibernate Interceptor componentInterceptorName
 		/// </summary>
 		public const string InterceptorName = "nhibernate.session.interceptor";
+
 		#endregion
 
 		private readonly IKernel kernel;
@@ -108,7 +114,7 @@ namespace Castle.Facilities.NHibernateIntegration
 				EnlistIfNecessary(false, transaction, wrapped);
 				wrapped = WrapSession(true, wrapped.InnerSession);
 			}
-			
+
 			return wrapped;
 		}
 
@@ -119,8 +125,8 @@ namespace Castle.Facilities.NHibernateIntegration
 		/// <param name="transaction">The transaction.</param>
 		/// <param name="session">The session.</param>
 		/// <returns></returns>
-		protected bool EnlistIfNecessary(bool weAreSessionOwner, 
-		                                 ITransaction transaction, 
+		protected bool EnlistIfNecessary(bool weAreSessionOwner,
+		                                 ITransaction transaction,
 		                                 SessionDelegate session)
 		{
 			if (transaction == null) return false;
@@ -139,7 +145,7 @@ namespace Castle.Facilities.NHibernateIntegration
 			{
 				shouldEnlist = true;
 
-				foreach(ISession sess in list)
+				foreach (ISession sess in list)
 				{
 					if (SessionDelegate.AreEqual(session, sess))
 					{
@@ -151,7 +157,7 @@ namespace Castle.Facilities.NHibernateIntegration
 
 			if (shouldEnlist)
 			{
-				if (session.Transaction==null || !session.Transaction.IsActive)
+				if (session.Transaction == null || !session.Transaction.IsActive)
 				{
 					transaction.Context["nh.session.enlisted"] = list;
 
@@ -172,7 +178,7 @@ namespace Castle.Facilities.NHibernateIntegration
 
 		private static IsolationLevel TranslateIsolationLevel(IsolationMode mode)
 		{
-			switch(mode)
+			switch (mode)
 			{
 				case IsolationMode.Chaos:
 					return IsolationLevel.Chaos;
@@ -198,7 +204,7 @@ namespace Castle.Facilities.NHibernateIntegration
 
 		private SessionDelegate WrapSession(bool hasTransaction, ISession session)
 		{
-			return new SessionDelegate( !hasTransaction, session, sessionStore );
+			return new SessionDelegate(!hasTransaction, session, sessionStore);
 		}
 
 		private ISession CreateSession(String alias)
@@ -207,35 +213,34 @@ namespace Castle.Facilities.NHibernateIntegration
 
 			if (sessionFactory == null)
 			{
-				throw new FacilityException("No ISessionFactory implementation " + 
+				throw new FacilityException("No ISessionFactory implementation " +
 				                            "associated with the given alias: " + alias);
 			}
-			
+
 			ISession session;
 
 			string aliasedInterceptorId = string.Format(InterceptorFormatString, alias);
-			
+
 			if (kernel.HasComponent(aliasedInterceptorId))
 			{
 				IInterceptor interceptor = kernel.Resolve<IInterceptor>(aliasedInterceptorId);
-				
+
 				session = sessionFactory.OpenSession(interceptor);
 			}
 			else if (kernel.HasComponent(InterceptorName))
 			{
 				IInterceptor interceptor = kernel.Resolve<IInterceptor>(InterceptorName);
-				
-				session =  sessionFactory.OpenSession(interceptor);
+
+				session = sessionFactory.OpenSession(interceptor);
 			}
 			else
 			{
-				session =  sessionFactory.OpenSession();
+				session = sessionFactory.OpenSession();
 			}
 
 			session.FlushMode = defaultFlushMode;
 
 			return session;
 		}
-
 	}
 }

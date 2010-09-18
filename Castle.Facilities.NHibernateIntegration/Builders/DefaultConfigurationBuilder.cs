@@ -1,16 +1,21 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+#region License
+
+//  Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+//  
+//  Licensed under the Apache License, Version 2.0 (the "License");
+//  you may not use this file except in compliance with the License.
+//  You may obtain a copy of the License at
+//  
+//      http://www.apache.org/licenses/LICENSE-2.0
+//  
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
 // 
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-// 
-//     http://www.apache.org/licenses/LICENSE-2.0
-// 
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+
+#endregion
 
 namespace Castle.Facilities.NHibernateIntegration.Builders
 {
@@ -20,7 +25,7 @@ namespace Castle.Facilities.NHibernateIntegration.Builders
 	using System.Reflection;
 	using Core.Configuration;
 	using NHibernate.Event;
-	using Configuration=NHibernate.Cfg.Configuration;
+	using Configuration = NHibernate.Cfg.Configuration;
 
 	/// <summary>
 	/// Default imlementation of <see cref="IConfigurationBuilder"/>
@@ -38,10 +43,10 @@ namespace Castle.Facilities.NHibernateIntegration.Builders
 		{
 			Configuration cfg = new Configuration();
 
-			this.ApplyConfigurationSettings(cfg, config.Children["settings"]);
-			this.RegisterAssemblies(cfg, config.Children["assemblies"]);
-			this.RegisterResources(cfg, config.Children["resources"]);
-			this.RegisterListeners(cfg, config.Children["listeners"]);
+			ApplyConfigurationSettings(cfg, config.Children["settings"]);
+			RegisterAssemblies(cfg, config.Children["assemblies"]);
+			RegisterResources(cfg, config.Children["resources"]);
+			RegisterListeners(cfg, config.Children["listeners"]);
 			return cfg;
 		}
 
@@ -62,6 +67,7 @@ namespace Castle.Facilities.NHibernateIntegration.Builders
 				cfg.SetProperty(key, value);
 			}
 		}
+
 		/// <summary>
 		/// Registers the resources.
 		/// </summary>
@@ -78,7 +84,7 @@ namespace Castle.Facilities.NHibernateIntegration.Builders
 
 				if (assembly != null)
 				{
-					cfg.AddResource(name, this.ObtainAssembly(assembly));
+					cfg.AddResource(name, ObtainAssembly(assembly));
 				}
 				else
 				{
@@ -101,12 +107,15 @@ namespace Castle.Facilities.NHibernateIntegration.Builders
 				String eventName = item.Attributes["event"];
 				String typeName = item.Attributes["type"];
 
-				if (!Enum.IsDefined(typeof(ListenerType), eventName)) throw new ConfigurationErrorsException("An invalid listener type was specified.");
+				if (!Enum.IsDefined(typeof (ListenerType), eventName))
+					throw new ConfigurationErrorsException("An invalid listener type was specified.");
 
 				Type classType = Type.GetType(typeName);
-				if (classType == null) throw new ConfigurationErrorsException("The full type name of the listener class must be specified.");
 
-				ListenerType listenerType = (ListenerType)Enum.Parse(typeof(ListenerType), eventName);
+				//if (classType == null)
+				//    throw new ConfigurationErrorsException("The full type name of the listener class must be specified.");
+
+				ListenerType listenerType = (ListenerType) Enum.Parse(typeof (ListenerType), eventName);
 				object listenerInstance = Activator.CreateInstance(classType);
 
 				cfg.SetListener(listenerType, listenerInstance);
@@ -128,7 +137,7 @@ namespace Castle.Facilities.NHibernateIntegration.Builders
 
 				cfg.AddAssembly(assembly);
 
-				this.GenerateMappingFromAttributesIfNeeded(cfg, assembly);
+				GenerateMappingFromAttributesIfNeeded(cfg, assembly);
 			}
 		}
 
@@ -152,21 +161,23 @@ namespace Castle.Facilities.NHibernateIntegration.Builders
 			AssemblyName[] refAssemblies = Assembly.Load(targetAssembly).GetReferencedAssemblies();
 
 			//If assembly "NHibernate.Mapping.Attributes" is referenced in targetAssembly
-			if (Array.Exists<AssemblyName>(refAssemblies, delegate(AssemblyName an) { return an.Name.Equals(NHMappingAttributesAssemblyName); }))
+			if (Array.Exists(refAssemblies,delegate(AssemblyName an) { return an.Name.Equals(NHMappingAttributesAssemblyName); }))
 			{
 				//Obtains, by reflexion, the necessary tools to generate NH mapping from attributes
-				Type HbmSerializerType = Type.GetType(String.Concat(NHMappingAttributesAssemblyName, ".HbmSerializer, ", NHMappingAttributesAssemblyName));
+				Type HbmSerializerType =
+					Type.GetType(String.Concat(NHMappingAttributesAssemblyName, ".HbmSerializer, ", NHMappingAttributesAssemblyName));
 				Object hbmSerializer = Activator.CreateInstance(HbmSerializerType);
 				PropertyInfo validate = HbmSerializerType.GetProperty("Validate");
-				MethodInfo serialize = HbmSerializerType.GetMethod("Serialize", new Type[] { typeof(Assembly) });
+				MethodInfo serialize = HbmSerializerType.GetMethod("Serialize", new[] {typeof (Assembly)});
 
 				//Enable validation of mapping documents generated from the mapping attributes
 				validate.SetValue(hbmSerializer, true, null);
 
 				//Generates a stream of mapping documents from all decorated classes in targetAssembly and add it to NH config
-				cfg.AddInputStream((MemoryStream)serialize.Invoke(hbmSerializer, new object[] { Assembly.Load(targetAssembly) }));
+				cfg.AddInputStream((MemoryStream) serialize.Invoke(hbmSerializer, new object[] {Assembly.Load(targetAssembly)}));
 			}
 		}
+
 		private Assembly ObtainAssembly(String assembly)
 		{
 			try

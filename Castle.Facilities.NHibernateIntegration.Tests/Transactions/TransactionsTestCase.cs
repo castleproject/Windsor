@@ -1,22 +1,26 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+#region License
+
+//  Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+//  
+//  Licensed under the Apache License, Version 2.0 (the "License");
+//  you may not use this file except in compliance with the License.
+//  You may obtain a copy of the License at
+//  
+//      http://www.apache.org/licenses/LICENSE-2.0
+//  
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
 // 
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-// 
-//     http://www.apache.org/licenses/LICENSE-2.0
-// 
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+
+#endregion
 
 namespace Castle.Facilities.NHibernateIntegration.Tests.Transactions
 {
 	using System;
-
-	using Castle.Facilities.AutoTx;
+	using AutoTx;
 	using MicroKernel.Registration;
 	using NHibernate;
 	using NUnit.Framework;
@@ -44,7 +48,7 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Transactions
 			try
 			{
 				service.DoBlogRefOperation(blog);
-				
+
 				// Expects a constraint exception on Commit
 				Assert.Fail("Must fail");
 			}
@@ -61,7 +65,7 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Transactions
 
 			ITransaction transaction;
 
-			using(ISession session = sessionManager.OpenSession())
+			using (ISession session = sessionManager.OpenSession())
 			{
 				transaction = session.Transaction;
 
@@ -74,7 +78,7 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Transactions
 
 				RootService rootService = container.Resolve<RootService>();
 
-				Array blogs = rootService.FindAll(typeof(Blog));
+				Array blogs = rootService.FindAll(typeof (Blog));
 				Assert.AreEqual(1, blogs.Length);
 			}
 
@@ -88,7 +92,7 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Transactions
 
 			ITransaction transaction;
 
-			using(ISession session = sessionManager.OpenSession())
+			using (ISession session = sessionManager.OpenSession())
 			{
 				transaction = session.Transaction;
 				Assert.IsFalse(transaction.IsActive);
@@ -106,7 +110,7 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Transactions
 
 				RootService rootService = container.Resolve<RootService>();
 
-				Array blogs = rootService.FindAll(typeof(Blog));
+				Array blogs = rootService.FindAll(typeof (Blog));
 				Assert.AreEqual(3, blogs.Length);
 			}
 
@@ -120,7 +124,7 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Transactions
 
 			ITransaction transaction;
 
-			using(ISession session = sessionManager.OpenSession())
+			using (ISession session = sessionManager.OpenSession())
 			{
 				transaction = session.Transaction;
 
@@ -139,7 +143,7 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Transactions
 				{
 					second.CreateWithException2(blog);
 				}
-				catch(Exception)
+				catch (Exception)
 				{
 					// Expected
 				}
@@ -149,9 +153,9 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Transactions
 
 				RootService rootService = container.Resolve<RootService>();
 
-				Array blogs = rootService.FindAll(typeof(Blog));
+				Array blogs = rootService.FindAll(typeof (Blog));
 				Assert.AreEqual(1, blogs.Length);
-				Array blogitems = rootService.FindAll(typeof(BlogItem));
+				Array blogitems = rootService.FindAll(typeof (BlogItem));
 				Assert.IsEmpty(blogitems);
 			}
 		}
@@ -163,8 +167,8 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Transactions
 
 			service.SuccessFullCall();
 
-			Array blogs = service.FindAll(typeof(Blog));
-			Array blogitems = service.FindAll(typeof(BlogItem));
+			Array blogs = service.FindAll(typeof (Blog));
+			Array blogitems = service.FindAll(typeof (BlogItem));
 
 			Assert.IsNotNull(blogs);
 			Assert.IsNotNull(blogitems);
@@ -187,8 +191,8 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Transactions
 
 			// Ensure rollback happened
 
-			Array blogs = service.FindAll(typeof(Blog));
-			Array blogitems = service.FindAll(typeof(BlogItem));
+			Array blogs = service.FindAll(typeof (Blog));
+			Array blogitems = service.FindAll(typeof (BlogItem));
 
 			Assert.IsEmpty(blogs);
 			Assert.IsEmpty(blogitems);
@@ -209,8 +213,8 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Transactions
 
 			// Ensure rollback happened
 
-			Array blogs = service.FindAll(typeof(Blog));
-			Array blogitems = service.FindAll(typeof(BlogItem));
+			Array blogs = service.FindAll(typeof (Blog));
+			Array blogitems = service.FindAll(typeof (BlogItem));
 
 			Assert.IsEmpty(blogs);
 			Assert.IsEmpty(blogitems);

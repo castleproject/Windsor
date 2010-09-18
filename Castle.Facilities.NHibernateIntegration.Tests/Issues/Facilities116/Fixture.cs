@@ -1,18 +1,36 @@
-﻿using System.Configuration;
+﻿#region License
+
+//  Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+//  
+//  Licensed under the Apache License, Version 2.0 (the "License");
+//  you may not use this file except in compliance with the License.
+//  You may obtain a copy of the License at
+//  
+//      http://www.apache.org/licenses/LICENSE-2.0
+//  
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+// 
+
+#endregion
 
 namespace Castle.Facilities.NHibernateIntegration.Tests.Issues.Facilities116
 {
 	using System;
+	using System.Configuration;
 	using System.IO;
 	using System.Runtime.Serialization.Formatters.Binary;
 	using System.Threading;
-	using Castle.Core.Configuration;
-	using Castle.Core.Resource;
-	using Castle.Facilities.NHibernateIntegration.Builders;
-	using Castle.MicroKernel.SubSystems.Configuration;
-	using Castle.Windsor.Configuration.Interpreters;
-	using NHibernate.Cfg;
+	using Builders;
+	using Core.Configuration;
+	using Core.Resource;
+	using MicroKernel.SubSystems.Configuration;
 	using NUnit.Framework;
+	using Windsor.Configuration.Interpreters;
+	using Configuration = NHibernate.Cfg.Configuration;
 
 	[TestFixture]
 	public class Fixture : IssueTestCase
@@ -91,7 +109,7 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Issues.Facilities116
 			nhConfig = configurationBuilder.GetConfiguration(configuration);
 			Assert.Greater(File.GetLastWriteTime(filename), dateTime2);
 			Assert.IsNotNull(configuration);
-			
+
 			ConfigureConnectionSettings(nhConfig);
 
 			nhConfig.BuildSessionFactory();
@@ -104,7 +122,8 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Issues.Facilities116
 			nhConfig.Properties["connection.provider"] = ConfigurationManager.AppSettings["nhf.connection.provider"];
 			nhConfig.Properties["connection.connection_string"] =
 				ConfigurationManager.AppSettings["nhf.connection.connection_string.1"];
-			nhConfig.Properties["proxyfactory.factory_class"] = ConfigurationManager.AppSettings["nhf.proxyfactory.factory_class"];
+			nhConfig.Properties["proxyfactory.factory_class"] =
+				ConfigurationManager.AppSettings["nhf.proxyfactory.factory_class"];
 		}
 	}
 }

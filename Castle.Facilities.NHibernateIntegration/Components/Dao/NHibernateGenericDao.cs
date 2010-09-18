@@ -1,16 +1,21 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+#region License
+
+//  Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+//  
+//  Licensed under the Apache License, Version 2.0 (the "License");
+//  you may not use this file except in compliance with the License.
+//  You may obtain a copy of the License at
+//  
+//      http://www.apache.org/licenses/LICENSE-2.0
+//  
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
 // 
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-// 
-//     http://www.apache.org/licenses/LICENSE-2.0
-// 
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+
+#endregion
 
 namespace Castle.Facilities.NHibernateIntegration.Components.Dao
 {
@@ -58,7 +63,7 @@ namespace Castle.Facilities.NHibernateIntegration.Components.Dao
 		/// <value>The session manager.</value>
 		protected ISessionManager SessionManager
 		{
-			get { return this.sessionManager; }
+			get { return sessionManager; }
 		}
 
 		/// <summary>
@@ -67,8 +72,8 @@ namespace Castle.Facilities.NHibernateIntegration.Components.Dao
 		/// <value>The session factory alias.</value>
 		public string SessionFactoryAlias
 		{
-			get { return this.sessionFactoryAlias; }
-			set { this.sessionFactoryAlias = value; }
+			get { return sessionFactoryAlias; }
+			set { sessionFactoryAlias = value; }
 		}
 
 		#region IGenericDAO Members
@@ -80,7 +85,7 @@ namespace Castle.Facilities.NHibernateIntegration.Components.Dao
 		/// <returns>The <see cref="Array"/> of results</returns>
 		public virtual Array FindAll(Type type)
 		{
-			return this.FindAll(type, int.MinValue, int.MinValue);
+			return FindAll(type, int.MinValue, int.MinValue);
 		}
 
 		/// <summary>
@@ -92,7 +97,7 @@ namespace Castle.Facilities.NHibernateIntegration.Components.Dao
 		/// <returns>The <see cref="Array"/> of results</returns>
 		public virtual Array FindAll(Type type, int firstRow, int maxRows)
 		{
-			using(ISession session = this.GetSession())
+			using (ISession session = GetSession())
 			{
 				try
 				{
@@ -107,7 +112,7 @@ namespace Castle.Facilities.NHibernateIntegration.Components.Dao
 
 					return array;
 				}
-				catch(Exception ex)
+				catch (Exception ex)
 				{
 					throw new DataException("Could not perform FindAll for " + type.Name, ex);
 				}
@@ -122,17 +127,17 @@ namespace Castle.Facilities.NHibernateIntegration.Components.Dao
 		/// <returns>The object instance.</returns>
 		public virtual object FindById(Type type, object id)
 		{
-			using(ISession session = this.GetSession())
+			using (ISession session = GetSession())
 			{
 				try
 				{
 					return session.Load(type, id);
 				}
-				catch(ObjectNotFoundException)
+				catch (ObjectNotFoundException)
 				{
 					throw;
 				}
-				catch(Exception ex)
+				catch (Exception ex)
 				{
 					throw new DataException("Could not perform FindByPrimaryKey for " + type.Name, ex);
 				}
@@ -146,13 +151,13 @@ namespace Castle.Facilities.NHibernateIntegration.Components.Dao
 		/// <returns>The instance</returns>
 		public virtual object Create(object instance)
 		{
-			using(ISession session = this.GetSession())
+			using (ISession session = GetSession())
 			{
 				try
 				{
 					return session.Save(instance);
 				}
-				catch(Exception ex)
+				catch (Exception ex)
 				{
 					throw new DataException("Could not perform Create for " + instance.GetType().Name, ex);
 				}
@@ -165,13 +170,13 @@ namespace Castle.Facilities.NHibernateIntegration.Components.Dao
 		/// <param name="instance">The instance to be deleted from the database</param>
 		public virtual void Delete(object instance)
 		{
-			using(ISession session = this.GetSession())
+			using (ISession session = GetSession())
 			{
 				try
 				{
 					session.Delete(instance);
 				}
-				catch(Exception ex)
+				catch (Exception ex)
 				{
 					throw new DataException("Could not perform Delete for " + instance.GetType().Name, ex);
 				}
@@ -185,13 +190,13 @@ namespace Castle.Facilities.NHibernateIntegration.Components.Dao
 		/// <param name="instance">The instance to be updated on the database</param>
 		public virtual void Update(object instance)
 		{
-			using(ISession session = this.GetSession())
+			using (ISession session = GetSession())
 			{
 				try
 				{
 					session.Update(instance);
 				}
-				catch(Exception ex)
+				catch (Exception ex)
 				{
 					throw new DataException("Could not perform Update for " + instance.GetType().Name, ex);
 				}
@@ -204,13 +209,13 @@ namespace Castle.Facilities.NHibernateIntegration.Components.Dao
 		/// <param name="type">type on which the rows on the database should be deleted</param>
 		public virtual void DeleteAll(Type type)
 		{
-			using(ISession session = this.GetSession())
+			using (ISession session = GetSession())
 			{
 				try
 				{
 					session.Delete(String.Format("from {0}", type.Name));
 				}
-				catch(Exception ex)
+				catch (Exception ex)
 				{
 					throw new DataException("Could not perform DeleteAll for " + type.Name, ex);
 				}
@@ -228,13 +233,13 @@ namespace Castle.Facilities.NHibernateIntegration.Components.Dao
 		/// <param name="instance">The instance to be saved</param>
 		public virtual void Save(object instance)
 		{
-			using(ISession session = this.GetSession())
+			using (ISession session = GetSession())
 			{
 				try
 				{
 					session.SaveOrUpdate(instance);
 				}
-				catch(Exception ex)
+				catch (Exception ex)
 				{
 					throw new DataException("Could not perform Save for " + instance.GetType().Name, ex);
 				}
@@ -254,7 +259,7 @@ namespace Castle.Facilities.NHibernateIntegration.Components.Dao
 		/// <returns>The <see cref="Array"/> of results.</returns>
 		public virtual Array FindAll(Type type, ICriterion[] criterias)
 		{
-			return this.FindAll(type, criterias, null, int.MinValue, int.MinValue);
+			return FindAll(type, criterias, null, int.MinValue, int.MinValue);
 		}
 
 		/// <summary>
@@ -268,7 +273,7 @@ namespace Castle.Facilities.NHibernateIntegration.Components.Dao
 		/// <returns>The <see cref="Array"/> of results.</returns>
 		public virtual Array FindAll(Type type, ICriterion[] criterias, int firstRow, int maxRows)
 		{
-			return this.FindAll(type, criterias, null, firstRow, maxRows);
+			return FindAll(type, criterias, null, firstRow, maxRows);
 		}
 
 		/// <summary>
@@ -281,7 +286,7 @@ namespace Castle.Facilities.NHibernateIntegration.Components.Dao
 		/// <returns>The <see cref="Array"/> of results.</returns>
 		public virtual Array FindAll(Type type, ICriterion[] criterias, Order[] sortItems)
 		{
-			return this.FindAll(type, criterias, sortItems, int.MinValue, int.MinValue);
+			return FindAll(type, criterias, sortItems, int.MinValue, int.MinValue);
 		}
 
 		/// <summary>
@@ -296,7 +301,7 @@ namespace Castle.Facilities.NHibernateIntegration.Components.Dao
 		/// <returns>The <see cref="Array"/> of results.</returns>
 		public virtual Array FindAll(Type type, ICriterion[] criterias, Order[] sortItems, int firstRow, int maxRows)
 		{
-			using(ISession session = this.GetSession())
+			using (ISession session = GetSession())
 			{
 				try
 				{
@@ -304,7 +309,7 @@ namespace Castle.Facilities.NHibernateIntegration.Components.Dao
 
 					if (criterias != null)
 					{
-						foreach(ICriterion cond in criterias)
+						foreach (ICriterion cond in criterias)
 						{
 							criteria.Add(cond);
 						}
@@ -312,7 +317,7 @@ namespace Castle.Facilities.NHibernateIntegration.Components.Dao
 
 					if (sortItems != null)
 					{
-						foreach(Order order in sortItems)
+						foreach (Order order in sortItems)
 						{
 							criteria.AddOrder(order);
 						}
@@ -327,7 +332,7 @@ namespace Castle.Facilities.NHibernateIntegration.Components.Dao
 
 					return array;
 				}
-				catch(Exception ex)
+				catch (Exception ex)
 				{
 					throw new DataException("Could not perform FindAll for " + type.Name, ex);
 				}
@@ -341,7 +346,7 @@ namespace Castle.Facilities.NHibernateIntegration.Components.Dao
 		/// <returns></returns>
 		public virtual Array FindAllWithCustomQuery(string queryString)
 		{
-			return this.FindAllWithCustomQuery(queryString, int.MinValue, int.MinValue);
+			return FindAllWithCustomQuery(queryString, int.MinValue, int.MinValue);
 		}
 
 		/// <summary>
@@ -355,7 +360,7 @@ namespace Castle.Facilities.NHibernateIntegration.Components.Dao
 		{
 			if (string.IsNullOrEmpty(queryString)) throw new ArgumentNullException("queryString");
 
-			using(ISession session = this.GetSession())
+			using (ISession session = GetSession())
 			{
 				try
 				{
@@ -371,7 +376,7 @@ namespace Castle.Facilities.NHibernateIntegration.Components.Dao
 
 					return array;
 				}
-				catch(Exception ex)
+				catch (Exception ex)
 				{
 					throw new DataException("Could not perform Find for custom query : " + queryString, ex);
 				}
@@ -386,7 +391,7 @@ namespace Castle.Facilities.NHibernateIntegration.Components.Dao
 		/// <returns></returns>
 		public virtual Array FindAllWithNamedQuery(string namedQuery)
 		{
-			return this.FindAllWithNamedQuery(namedQuery, int.MinValue, int.MinValue);
+			return FindAllWithNamedQuery(namedQuery, int.MinValue, int.MinValue);
 		}
 
 		/// <summary>
@@ -400,7 +405,7 @@ namespace Castle.Facilities.NHibernateIntegration.Components.Dao
 		{
 			if (string.IsNullOrEmpty(namedQuery)) throw new ArgumentNullException("namedQuery");
 
-			using(ISession session = this.GetSession())
+			using (ISession session = GetSession())
 			{
 				try
 				{
@@ -417,7 +422,7 @@ namespace Castle.Facilities.NHibernateIntegration.Components.Dao
 
 					return array;
 				}
-				catch(Exception ex)
+				catch (Exception ex)
 				{
 					throw new DataException("Could not perform Find for named query : " + namedQuery, ex);
 				}
@@ -432,9 +437,9 @@ namespace Castle.Facilities.NHibernateIntegration.Components.Dao
 		{
 			if (instance == null) throw new ArgumentNullException("instance");
 
-			using(ISession session = this.GetSession())
+			using (ISession session = GetSession())
 			{
-				foreach(object val in ReflectionUtility.GetPropertiesDictionary(instance).Values)
+				foreach (object val in ReflectionUtility.GetPropertiesDictionary(instance).Values)
 				{
 					if (val is INHibernateProxy || val is IPersistentCollection)
 					{
@@ -464,7 +469,7 @@ namespace Castle.Facilities.NHibernateIntegration.Components.Dao
 				                                                      + propertyName + " doest not exist for type "
 				                                                      + instance.GetType().ToString() + ".");
 
-			using(ISession session = this.GetSession())
+			using (ISession session = GetSession())
 			{
 				object val = properties[propertyName];
 
@@ -485,13 +490,13 @@ namespace Castle.Facilities.NHibernateIntegration.Components.Dao
 
 		private ISession GetSession()
 		{
-			if (string.IsNullOrEmpty(this.sessionFactoryAlias))
+			if (string.IsNullOrEmpty(sessionFactoryAlias))
 			{
-				return this.sessionManager.OpenSession();
+				return sessionManager.OpenSession();
 			}
 			else
 			{
-				return this.sessionManager.OpenSession(this.sessionFactoryAlias);
+				return sessionManager.OpenSession(sessionFactoryAlias);
 			}
 		}
 

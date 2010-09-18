@@ -1,30 +1,34 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
-// 
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-// 
-//     http://www.apache.org/licenses/LICENSE-2.0
-// 
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+#region License
 
-using System.Configuration;
-using Castle.Core.Configuration;
-using Castle.Facilities.NHibernateIntegration.Builders;
-using NHibernate;
-using NUnit.Framework;
-using Configuration = NHibernate.Cfg.Configuration;
-using Castle.Core.Resource;
-using Castle.MicroKernel.Facilities;
-using Castle.Windsor;
-using Castle.Windsor.Configuration.Interpreters;
+//  Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+//  
+//  Licensed under the Apache License, Version 2.0 (the "License");
+//  you may not use this file except in compliance with the License.
+//  You may obtain a copy of the License at
+//  
+//      http://www.apache.org/licenses/LICENSE-2.0
+//  
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+// 
+
+#endregion
 
 namespace Castle.Facilities.NHibernateIntegration.Tests.Internals
 {
+	using System.Configuration;
+	using Builders;
+	using Core.Configuration;
+	using Core.Resource;
+	using MicroKernel.Facilities;
+	using NHibernate;
+	using NUnit.Framework;
+	using Windsor;
+	using Windsor.Configuration.Interpreters;
+	using Configuration = NHibernate.Cfg.Configuration;
 
 	public class CustomConfigurationBuilder : IConfigurationBuilder
 	{
@@ -50,9 +54,10 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Internals
 			if (config.Attributes["id"] != "sessionFactory1")
 			{
 				nhConfig.Properties["connection.connection_string"] =
-				ConfigurationManager.AppSettings["nhf.connection.connection_string.2"];
+					ConfigurationManager.AppSettings["nhf.connection.connection_string.2"];
 			}
-			nhConfig.Properties["proxyfactory.factory_class"] = ConfigurationManager.AppSettings["nhf.proxyfactory.factory_class"];
+			nhConfig.Properties["proxyfactory.factory_class"] =
+				ConfigurationManager.AppSettings["nhf.proxyfactory.factory_class"];
 			return nhConfig;
 		}
 
@@ -102,7 +107,8 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Internals
 	public class InvalidCustomConfigurationBuilderTestCase : AbstractNHibernateTestCase
 	{
 		[Test]
-		[ExpectedException(typeof(FacilityException), ExpectedMessage = "ConfigurationBuilder type 'InvalidType' invalid or not found")]
+		[ExpectedException(typeof (FacilityException),
+			ExpectedMessage = "ConfigurationBuilder type 'InvalidType' invalid or not found")]
 		public void ThrowsWithMessage()
 		{
 			container = new WindsorContainer(new XmlInterpreter(new AssemblyResource(GetContainerFile())));
@@ -120,6 +126,5 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Internals
 		{
 			get { return "invalidConfigurationBuilder.xml"; }
 		}
-		
 	}
 }
