@@ -666,7 +666,6 @@
     <Compile Include="Windsor\Experimental\Debugging\Primitives\LifestyleDependency.cs" />
     <Compile Include="Windsor\Experimental\Debugging\Extensions\PotentialLifestyleMismatches.cs" />
     <Compile Include="Windsor\Experimental\Debugging\Primitives\ComponentDebuggerView.cs" />
-    <Compile Include="Windsor\Experimental\Debugging\Primitives\ComponentDebuggerViewCollection.cs" />
     <Compile Include="Windsor\Experimental\Debugging\IComponentDebuggerExtension.cs" />
     <Compile Include="Windsor\Experimental\Debugging\IContainerDebuggerExtension.cs" />
     <Compile Include="Windsor\Experimental\Debugging\IContainerDebuggerExtensionHost.cs" />
