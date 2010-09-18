@@ -17,6 +17,7 @@
 
 namespace Castle.Facilities.AutoTx.Tests
 {
+	using MicroKernel.Registration;
 	using MicroKernel.SubSystems.Configuration;
 	using NUnit.Framework;
 	using Services.Transaction;
@@ -31,8 +32,8 @@ namespace Castle.Facilities.AutoTx.Tests
 			WindsorContainer c = new WindsorContainer(new DefaultConfigurationStore());
 
 			c.AddFacility("transactionmanagement", new TransactionFacility());
-			c.AddComponent("transactionmanager", typeof(ITransactionManager), typeof(MockTransactionManager));
-			c.AddComponent("AClass", typeof(ISomething), typeof(AClass));
+			c.Register(Component.For<ITransactionManager>().ImplementedBy<MockTransactionManager>().Named("transactionmanager"));
+			c.Register(Component.For<ISomething>().ImplementedBy<AClass>().Named("AClass"));
 
 			var something = c.Resolve<ISomething>();
 
@@ -50,16 +51,16 @@ namespace Castle.Facilities.AutoTx.Tests
 			var container = new WindsorContainer();
 
 			container.AddFacility("transactionmanagement", new TransactionFacility());
-			container.AddComponent("transactionmanager", typeof(ITransactionManager), typeof(MockTransactionManager));
+			container.Register(Component.For<ITransactionManager>().ImplementedBy<MockTransactionManager>().Named("transactionmanager"));
 
-			container.AddComponent("mycomp", typeof(CustomerService));
-			container.AddComponent("delegatecomp", typeof(ProxyService));
+			container.Register(Component.For<CustomerService>().Named("mycomp"));
+			container.Register(Component.For<ProxyService>().Named("delegatecomp"));
 
 			var serv = container.Resolve<ProxyService>("delegatecomp");
 
 			serv.DelegateInsert("John", "Home Address");
 
-			var transactionManager = (MockTransactionManager) container["transactionmanager"];
+			MockTransactionManager transactionManager = container.Resolve<MockTransactionManager>("transactionmanager");
 
 			Assert.AreEqual(2, transactionManager.TransactionCount);
 			Assert.AreEqual(0, transactionManager.RolledBackCount);
@@ -71,10 +72,10 @@ namespace Castle.Facilities.AutoTx.Tests
 			var container = new WindsorContainer();
 
 			container.AddFacility("transactionmanagement", new TransactionFacility());
-			container.AddComponent("transactionmanager", typeof(ITransactionManager), typeof(MockTransactionManager));
+			container.Register(Component.For<ITransactionManager>().ImplementedBy<MockTransactionManager>().Named("transactionmanager"));
 
-			container.AddComponent("mycomp", typeof(CustomerService));
-			container.AddComponent("delegatecomp", typeof(ProxyService));
+			container.Register(Component.For<CustomerService>().Named("mycomp"));
+			container.Register(Component.For<ProxyService>().Named("delegatecomp"));
 
 			var fa = (FileAdapter)container.Resolve<IFileAdapter>();
 			Assert.That(fa.TxManager, Is.Not.Null);
@@ -89,11 +90,11 @@ namespace Castle.Facilities.AutoTx.Tests
 			var container = new WindsorContainer();
 
 			// these lines have been permuted
-			container.AddComponent("transactionmanager", typeof(ITransactionManager), typeof(MockTransactionManager)); 
+			container.Register(Component.For<ITransactionManager>().ImplementedBy<MockTransactionManager>().Named("transactionmanager")); 
 			container.AddFacility("transactionmanagement", new TransactionFacility());
 
-			container.AddComponent("mycomp", typeof(CustomerService));
-			container.AddComponent("delegatecomp", typeof(ProxyService));
+			container.Register(Component.For<CustomerService>().Named("mycomp"));
+			container.Register(Component.For<ProxyService>().Named("delegatecomp"));
 
 			var fa = (FileAdapter)container.Resolve<IFileAdapter>();
 			Assert.That(fa.TxManager, Is.Not.Null);

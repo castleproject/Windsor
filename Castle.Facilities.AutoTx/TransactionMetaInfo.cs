@@ -91,6 +91,9 @@ namespace Castle.Facilities.AutoTx
 			}
 		}
 
+		/// <summary>
+		/// True if methods is transactional. Otherwise else
+		/// </summary>
 		public bool Contains(MethodInfo info)
 		{
 			lock (locker)
@@ -117,6 +120,9 @@ namespace Castle.Facilities.AutoTx
 			return injectMethods.Contains(info);
 		}
 
+		/// <summary>
+		/// Returns the transaction metadata for a given method.
+		/// </summary>
 		public TransactionAttribute GetTransactionAttributeFor(MethodInfo methodInfo)
 		{
 			return method2Att[methodInfo];

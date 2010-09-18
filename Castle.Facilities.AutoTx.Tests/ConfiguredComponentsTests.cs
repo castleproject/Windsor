@@ -37,8 +37,7 @@ namespace Castle.Facilities.AutoTx.Tests
 		{
 			WindsorContainer container = new WindsorContainer( "HasIsTransactionalButNothingIsConfigured.xml" );
 
-			TransactionMetaInfoStore metaInfoStore = (TransactionMetaInfoStore) 
-				container[typeof(TransactionMetaInfoStore)];
+			TransactionMetaInfoStore metaInfoStore = container.Resolve<TransactionMetaInfoStore>();
 
 			TransactionMetaInfo meta = metaInfoStore.GetMetaFor(typeof(TransactionalComp1));
 			Assert.IsNull(meta);
@@ -49,8 +48,7 @@ namespace Castle.Facilities.AutoTx.Tests
 		{
 			WindsorContainer container = new WindsorContainer( "HasConfiguration.xml" );
 
-			TransactionMetaInfoStore metaInfoStore = (TransactionMetaInfoStore) 
-				container[typeof(TransactionMetaInfoStore)];
+			TransactionMetaInfoStore metaInfoStore = container.Resolve<TransactionMetaInfoStore>();
 
 			TransactionMetaInfo meta = metaInfoStore.GetMetaFor(typeof(TransactionalComp1));
 			Assert.IsNotNull(meta);
@@ -68,8 +66,7 @@ namespace Castle.Facilities.AutoTx.Tests
 		{
 			WindsorContainer container = new WindsorContainer( "ValidConfigForInheritedMethods.xml" );
 
-			TransactionMetaInfoStore metaInfoStore = (TransactionMetaInfoStore) 
-				container[typeof(TransactionMetaInfoStore)];
+			TransactionMetaInfoStore metaInfoStore = container.Resolve<TransactionMetaInfoStore>();
 
 			TransactionMetaInfo meta = metaInfoStore.GetMetaFor(typeof(TransactionalComp2));
 			Assert.IsNotNull(meta);
@@ -81,8 +78,7 @@ namespace Castle.Facilities.AutoTx.Tests
 		{
 			WindsorContainer container = new WindsorContainer( "ConfigForServiceWithInterface.xml" );
 
-			TransactionMetaInfoStore metaInfoStore = (TransactionMetaInfoStore) 
-				container[typeof(TransactionMetaInfoStore)];
+			TransactionMetaInfoStore metaInfoStore = container.Resolve<TransactionMetaInfoStore>();
 
 			TransactionMetaInfo meta = metaInfoStore.GetMetaFor(typeof(TransactionalComp3));
 			Assert.IsNotNull(meta);

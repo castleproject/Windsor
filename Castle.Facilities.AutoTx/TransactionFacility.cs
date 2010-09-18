@@ -30,10 +30,18 @@ namespace Castle.Facilities.AutoTx
 		private bool _AllowAccessOutsideRootFolder = true;
 		private string _RootFolder;
 
+		/// <summary>
+		/// Constructor.
+		/// </summary>
 		public TransactionFacility()
 		{
 		}
 
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="allowAccessOutsideRootFolder"><see cref="AllowAccessOutsideRootFolder"/></param>
+		/// <param name="rootFolder"></param>
 		public TransactionFacility(bool allowAccessOutsideRootFolder,
 		                           string rootFolder)
 		{
@@ -50,6 +58,9 @@ namespace Castle.Facilities.AutoTx
 			set { _AllowAccessOutsideRootFolder = value; }
 		}
 
+		/// <summary>
+		/// Gets or sets the root folder for file transactions.
+		/// </summary>
 		public string RootFolder
 		{
 			get { return _RootFolder; }
@@ -108,12 +119,14 @@ namespace Castle.Facilities.AutoTx
 			}
 		}
 
+		/// <summary>
+		/// Disposes the facilitiy.
+		/// </summary>
 		public override void Dispose()
 		{
 			Kernel.ComponentRegistered -= Kernel_ComponentRegistered;
 			base.Dispose();
 		}
-
 
 		private void AssertHasDirectories()
 		{

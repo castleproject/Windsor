@@ -48,7 +48,7 @@ namespace Castle.Facilities.AutoTx.Tests
 		[Transaction]
 		public virtual void Update(int id)
 		{
-			ITransactionManager tm = (ITransactionManager) kernel[typeof(ITransactionManager)];
+			ITransactionManager tm = kernel.Resolve<ITransactionManager>();
 
 			Assert.IsNotNull(tm.CurrentTransaction);
 			Assert.AreEqual(TransactionStatus.Active, tm.CurrentTransaction.Status);

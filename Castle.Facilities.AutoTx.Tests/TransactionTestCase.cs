@@ -17,6 +17,7 @@
 namespace Castle.Facilities.AutoTx.Tests
 {
 	using System;
+	using MicroKernel.Registration;
 	using MicroKernel.SubSystems.Configuration;
 	using NUnit.Framework;
 	using Services.Transaction;
@@ -32,17 +33,14 @@ namespace Castle.Facilities.AutoTx.Tests
 
 			container.AddFacility("transactionmanagement", new TransactionFacility());
 
-			container.AddComponent("transactionmanager",
-								   typeof(ITransactionManager), typeof(MockTransactionManager));
+			container.Register(Component.For<ITransactionManager>().ImplementedBy<MockTransactionManager>().Named("transactionmanager"));
+			container.Register(Component.For<SubTransactionalComp>().Named("comp"));
 
-			container.AddComponent("comp", typeof(SubTransactionalComp));
-
-			SubTransactionalComp service = (SubTransactionalComp)container["comp"];
+			SubTransactionalComp service = container.Resolve<SubTransactionalComp>("comp");
 
 			service.BaseMethod();
 
-			MockTransactionManager transactionManager = (MockTransactionManager)
-														container["transactionmanager"];
+			MockTransactionManager transactionManager = container.Resolve<MockTransactionManager>("transactionmanager");
 
 			Assert.AreEqual(1, transactionManager.TransactionCount);
 			Assert.AreEqual(1, transactionManager.CommittedCount);
@@ -56,17 +54,15 @@ namespace Castle.Facilities.AutoTx.Tests
 
 			container.AddFacility("transactionmanagement", new TransactionFacility());
 
-			container.AddComponent("transactionmanager",
-								   typeof(ITransactionManager), typeof(MockTransactionManager));
+			container.Register(Component.For<ITransactionManager>().ImplementedBy<MockTransactionManager>().Named("transactionmanager"));
 
-			container.AddComponent("services.customer", typeof(CustomerService));
+			container.Register(Component.For<CustomerService>().Named("services.customer"));
 
-			CustomerService service = (CustomerService)container["services.customer"];
+			CustomerService service = container.Resolve<CustomerService>("services.customer");
 
 			service.Insert("TestCustomer", "Rua P Leite, 33");
 
-			MockTransactionManager transactionManager = (MockTransactionManager)
-														container["transactionmanager"];
+			MockTransactionManager transactionManager = container.Resolve<MockTransactionManager>("transactionmanager");
 
 			Assert.AreEqual(1, transactionManager.TransactionCount);
 			Assert.AreEqual(1, transactionManager.CommittedCount);
@@ -92,14 +88,14 @@ namespace Castle.Facilities.AutoTx.Tests
 			WindsorContainer container = new WindsorContainer(new DefaultConfigurationStore());
 
 			container.AddFacility("transactionmanagement", new TransactionFacility());
-			container.AddComponent("transactionmanager", typeof(ITransactionManager), typeof(MockTransactionManager));
-			container.AddComponent("services.customer", typeof(ICustomerService), typeof(AnotherCustomerService));
+			container.Register(Component.For<ITransactionManager>().ImplementedBy<MockTransactionManager>().Named("transactionmanager"));
+			container.Register(Component.For<ICustomerService>().ImplementedBy<AnotherCustomerService>().Named("services.customer"));
 
-			ICustomerService service = (ICustomerService)container["services.customer"];
+			ICustomerService service = container.Resolve<ICustomerService>("services.customer");
 
 			service.Insert("TestCustomer", "Rua P Leite, 33");
 
-			MockTransactionManager transactionManager = (MockTransactionManager)container["transactionmanager"];
+			MockTransactionManager transactionManager = container.Resolve<MockTransactionManager>("transactionmanager");
 
 			Assert.AreEqual(1, transactionManager.TransactionCount);
 			Assert.AreEqual(1, transactionManager.CommittedCount);
@@ -125,14 +121,14 @@ namespace Castle.Facilities.AutoTx.Tests
 			WindsorContainer container = new WindsorContainer(new DefaultConfigurationStore());
 
 			container.AddFacility("transactionmanagement", new TransactionFacility());
-			container.AddComponent("transactionmanager", typeof(ITransactionManager), typeof(MockTransactionManager));
-			container.AddComponent("generic.services", typeof(GenericService<>));
+			container.Register(Component.For<ITransactionManager>().ImplementedBy<MockTransactionManager>().Named("transactionmanager"));
+			container.Register(Component.For(typeof(GenericService<>)).Named("generic.services"));
 
 			GenericService<string> genericService = container.Resolve<GenericService<string>>();
 
 			genericService.Foo();
 
-			MockTransactionManager transactionManager = (MockTransactionManager)container["transactionmanager"];
+			MockTransactionManager transactionManager = container.Resolve<MockTransactionManager>("transactionmanager");
 
 			Assert.AreEqual(1, transactionManager.TransactionCount);
 			Assert.AreEqual(1, transactionManager.CommittedCount);
@@ -176,8 +172,7 @@ namespace Castle.Facilities.AutoTx.Tests
 		{
 			WindsorContainer container = new WindsorContainer("HasConfiguration.xml");
 
-			container.AddComponent("transactionmanager",
-								   typeof(ITransactionManager), typeof(MockTransactionManager));
+			container.Register(Component.For<ITransactionManager>().ImplementedBy<MockTransactionManager>().Named("transactionmanager"));
 
 			TransactionalComp1 comp1 = container.Resolve<TransactionalComp1>("mycomp");
 
@@ -187,8 +182,7 @@ namespace Castle.Facilities.AutoTx.Tests
 
 			comp1.Save();
 
-			MockTransactionManager transactionManager = (MockTransactionManager)
-														container["transactionmanager"];
+			MockTransactionManager transactionManager = container.Resolve<MockTransactionManager>("transactionmanager");
 
 			Assert.AreEqual(3, transactionManager.TransactionCount);
 			Assert.AreEqual(3, transactionManager.CommittedCount);
@@ -207,17 +201,15 @@ namespace Castle.Facilities.AutoTx.Tests
 
 			container.AddFacility("transactionmanagement", new TransactionFacility());
 
-			container.AddComponent("transactionmanager",
-								   typeof(ITransactionManager), typeof(MockTransactionManager));
+			container.Register(Component.For<ITransactionManager>().ImplementedBy<MockTransactionManager>().Named("transactionmanager"));
 
-			container.AddComponent("mycomp", typeof(CustomerService));
+			container.Register(Component.For<CustomerService>().Named("mycomp"));
 			
 			CustomerService serv = container.Resolve<CustomerService>("mycomp");
 
 			serv.Update(1);
 
-			MockTransactionManager transactionManager = (MockTransactionManager)
-												container["transactionmanager"];
+			MockTransactionManager transactionManager = container.Resolve<MockTransactionManager>("transactionmanager");
 
 			Assert.AreEqual(1, transactionManager.TransactionCount);
 			Assert.AreEqual(1, transactionManager.RolledBackCount);

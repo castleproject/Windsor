@@ -37,6 +37,10 @@ namespace Castle.Facilities.AutoTx
 
 		#region MarshalByRefObject overrides
 
+		/// <summary>
+		/// Overrides the MBRO Lifetime initialization
+		/// </summary>
+		/// <returns>Null</returns>
 		public override object InitializeLifetimeService()
 		{
 			return null;
@@ -57,7 +61,7 @@ namespace Castle.Facilities.AutoTx
 			return metaInfo;
 		}
 
-		private void PopulateMetaInfoFromType(TransactionMetaInfo metaInfo, Type implementation)
+		private static void PopulateMetaInfoFromType(TransactionMetaInfo metaInfo, Type implementation)
 		{
 			if (implementation == typeof(object) || implementation == typeof(MarshalByRefObject)) return;
 
@@ -120,7 +124,7 @@ namespace Castle.Facilities.AutoTx
 			return (TransactionMetaInfo)type2MetaInfo[implementation];
 		}
 
-		private TransactionMode ObtainTransactionMode(Type implementation, MethodInfo method, string mode)
+		private static TransactionMode ObtainTransactionMode(Type implementation, MethodInfo method, string mode)
 		{
 			if (mode == null)
 			{
