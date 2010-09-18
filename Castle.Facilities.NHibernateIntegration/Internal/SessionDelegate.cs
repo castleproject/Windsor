@@ -17,7 +17,7 @@ namespace Castle.Facilities.NHibernateIntegration
 	using System;
 	using System.Data;
 	using System.Collections;
-
+	using System.Linq.Expressions;
 	using NHibernate;
 	using NHibernate.Stat;
 	using NHibernate.Type;
@@ -1120,6 +1120,30 @@ namespace Castle.Facilities.NHibernateIntegration
 		}
 
 		/// <summary>
+		/// Creates a new <c>IQueryOver&lt;T&gt;</c> for the entity class.
+		/// </summary>
+		/// <typeparam name="T">The entity class</typeparam>
+		/// <returns>
+		/// An ICriteria&lt;T&gt; object
+		/// </returns>
+		public IQueryOver<T, T> QueryOver<T>() where T : class
+		{
+			return inner.QueryOver<T>();
+		}
+
+		/// <summary>
+		/// Creates a new <c>IQueryOver&lt;T&gt;</c> for the entity class.
+		/// </summary>
+		/// <typeparam name="T">The entity class</typeparam>
+		/// <returns>
+		/// An ICriteria&lt;T&gt; object
+		/// </returns>
+		public IQueryOver<T, T> QueryOver<T>(Expression<Func<T>> alias) where T : class
+		{
+			return inner.QueryOver(alias);
+		}
+
+		/// <summary>
 		/// Create a new instance of <c>Query</c> for the given query string
 		/// </summary>
 		/// <param name="queryString">A hibernate query string</param>
@@ -1127,6 +1151,16 @@ namespace Castle.Facilities.NHibernateIntegration
 		public IQuery CreateQuery(string queryString)
 		{
 			return inner.CreateQuery(queryString);
+		}
+
+		/// <summary>
+		/// Create a new instance of <c>Query</c> for the given query expression
+		/// </summary>
+		/// <param name="queryExpression">A hibernate query expression</param>
+		/// <returns>The query</returns>
+		public IQuery CreateQuery(IQueryExpression queryExpression)
+		{
+			return inner.CreateQuery(queryExpression);
 		}
 
 		/// <summary>

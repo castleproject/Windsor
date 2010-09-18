@@ -22,12 +22,13 @@ namespace Castle.Facilities.NHibernateIntegration
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.SubSystems.Conversion;
 	using Castle.Services.Transaction;
-	using Castle.Core;
 	using Core.Logging;
 	using Internal;
 	using MicroKernel;
 	using NHibernate;
 	using SessionStores;
+	using ILogger = Core.Logging.ILogger;
+	using ILoggerFactory = Core.Logging.ILoggerFactory;
 
 	/// <summary>
 	/// Provides a basic level of integration with the NHibernate project
