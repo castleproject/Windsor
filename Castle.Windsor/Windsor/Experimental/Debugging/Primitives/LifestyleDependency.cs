@@ -39,6 +39,11 @@ namespace Castle.Windsor.Experimental.Debugging.Primitives
 			this.parent = parent;
 		}
 
+		public IHandler Handler
+		{
+			get { return handler; }
+		}
+
 		public string Name
 		{
 			get { return value.Key; }
@@ -51,26 +56,31 @@ namespace Castle.Windsor.Experimental.Debugging.Primitives
 			return new DebuggerViewItem(GetName(root), GetKey(), item);
 		}
 
+		public DebuggerViewItem GetItemView()
+		{
+			var item = new ComponentDebuggerView(handler, value, new DefaultComponentView(handler, value.Value.ToArray()));
+			return new DebuggerViewItem(value.Key, GetLifestyleDescription(handler.ComponentModel), item);
+		}
+
 		public bool Mismatched()
 		{
 			return MismatchedDirectly();
 		}
 
-		private void ContributeItem(LifestyleDependency mismatched, StringBuilder message, IList<DebuggerViewItem> items, out LifestyleDependency root)
+		private void ContributeItem(LifestyleDependency mismatched, StringBuilder message, IList<LifestyleDependency> items)
 		{
 			if (ImTheRoot())
 			{
-				items.Add(GetItemView());
+				items.Add(this);
 				message.AppendFormat("Component '{0}' with lifestyle {1} ", value.Key,
 				                     GetLifestyleDescription(handler.ComponentModel));
 
 				message.AppendFormat("depends on '{0}' with lifestyle {1}", mismatched.value.Key,
 				                     GetLifestyleDescription(mismatched.handler.ComponentModel));
-				root = this;
 				return;
 			}
-			parent.ContributeItem(mismatched, message, items, out root);
-			items.Add(GetItemView());
+			parent.ContributeItem(mismatched, message, items);
+			items.Add(this);
 			message.AppendLine();
 			message.AppendFormat("\tvia '{0}' with lifestyle {1}", value.Key,
 			                     GetLifestyleDescription(handler.ComponentModel));
@@ -78,9 +88,10 @@ namespace Castle.Windsor.Experimental.Debugging.Primitives
 
 		private MismatchedDependency GetItem(out LifestyleDependency root)
 		{
-			var items = new List<DebuggerViewItem>();
-			var message = GetMismatchMessage(out root, items);
-			return new MismatchedDependency(message,items.ToArray());
+			var items = new List<LifestyleDependency>();
+			var message = GetMismatchMessage(items);
+			root = items.First();
+			return new MismatchedDependency(message, items.ToArray());
 		}
 
 		private string GetKey()
@@ -97,24 +108,18 @@ namespace Castle.Windsor.Experimental.Debugging.Primitives
 			return string.Format("custom ({0})", componentModel.CustomLifestyle.FullName);
 		}
 
-		private string GetMismatchMessage(out LifestyleDependency root, IList<DebuggerViewItem> items)
+		private string GetMismatchMessage(IList<LifestyleDependency> items)
 		{
 			var message = new StringBuilder();
 			Debug.Assert(parent != null, "parent != null");
 			//now we're going down letting the root to append first:
-			parent.ContributeItem(this, message, items, out root);
-			items.Add(GetItemView());
+			parent.ContributeItem(this, message, items);
+			items.Add(this);
 
 			message.AppendLine();
 			message.AppendFormat(
 				"This kind of dependency is usually not desired and may lead to various kinds of bugs.");
 			return message.ToString();
-		}
-
-		private DebuggerViewItem GetItemView()
-		{
-			var item = new ComponentDebuggerView(handler, value, new DefaultComponentView(handler, value.Value.ToArray()));
-			return new DebuggerViewItem(value.Key, GetLifestyleDescription(handler.ComponentModel), item);
 		}
 
 		private string GetName(LifestyleDependency root)
