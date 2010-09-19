@@ -28,14 +28,13 @@ namespace Castle.Windsor.Experimental.Debugging.Extensions
 
 		public abstract void Init(IKernel kernel);
 
-		protected ComponentDebuggerView DefaultComponentView(KeyValuePair<IHandler, KeyValuePair<string, IList<Type>>> handler)
+		protected ComponentDebuggerView DefaultComponentView(MetaComponent component)
 		{
-			return new ComponentDebuggerView(handler.Key,
-			                                 handler.Value,
-			                                 new DefaultComponentView(handler.Key, handler.Value.Value.ToArray()));
+			return new ComponentDebuggerView(component,
+			                                 new DefaultComponentView(component.Handler, component.ForwardedTypes));
 		}
 
-		protected IDictionary<IHandler, KeyValuePair<string, IList<Type>>> GetKeyToHandlersLookup(
+		protected IEnumerable<MetaComponent> GetMetaComponents(
 			IDictionary<string, IHandler> flatKeyHandlers)
 		{
 			var lookup = new Dictionary<IHandler, KeyValuePair<string, IList<Type>>>();
@@ -58,7 +57,7 @@ namespace Castle.Windsor.Experimental.Debugging.Extensions
 					list.Value.Add(forwarding.Service);
 				}
 			}
-			return lookup;
+			return lookup.Select(c => new MetaComponent(c.Value.Key, c.Key, c.Value.Value));
 		}
 	}
 }

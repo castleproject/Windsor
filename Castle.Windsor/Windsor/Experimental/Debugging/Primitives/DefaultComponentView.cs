@@ -25,10 +25,10 @@ namespace Castle.Windsor.Experimental.Debugging.Primitives
 
 	public class DefaultComponentView : IComponentDebuggerExtension
 	{
-		private readonly Type[] forwardedTypes;
+		private readonly IEnumerable<Type> forwardedTypes;
 		private readonly IHandler handler;
 
-		public DefaultComponentView(IHandler handler, params Type[] forwardedTypes)
+		public DefaultComponentView(IHandler handler, IEnumerable<Type> forwardedTypes)
 		{
 			this.handler = handler;
 			this.forwardedTypes = forwardedTypes;

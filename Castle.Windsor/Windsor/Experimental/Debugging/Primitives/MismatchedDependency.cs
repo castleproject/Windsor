@@ -20,15 +20,21 @@ namespace Castle.Windsor.Experimental.Debugging.Primitives
 	public class MismatchedDependency
 	{
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
-		private readonly string description;
+		private readonly LifestyleDependency[] components;
 
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
-		private readonly LifestyleDependency[] details;
+		private readonly string description;
 
-		public MismatchedDependency(string description, LifestyleDependency[] details)
+		public MismatchedDependency(string description, LifestyleDependency[] components)
 		{
-			this.details = details;
+			this.components = components;
 			this.description = description;
+		}
+
+		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
+		public LifestyleDependency[] Components
+		{
+			get { return components; }
 		}
 
 		public string Description
@@ -36,16 +42,10 @@ namespace Castle.Windsor.Experimental.Debugging.Primitives
 			get { return description; }
 		}
 
-		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
-		public LifestyleDependency[] Details
-		{
-			get { return details; }
-		}
-
 		[DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
-		public DebuggerViewItem[] DetailsView
+		public DebuggerViewItem[] ViewItems
 		{
-			get { return details.Select(d => d.GetItemView()).ToArray(); }
+			get { return components.Select(d => d.ComponentView).ToArray(); }
 		}
 	}
 }
