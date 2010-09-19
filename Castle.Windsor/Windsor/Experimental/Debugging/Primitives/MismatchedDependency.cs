@@ -15,7 +15,6 @@
 namespace Castle.Windsor.Experimental.Debugging.Primitives
 {
 	using System.Diagnostics;
-	using System.Linq;
 
 	public class MismatchedDependency
 	{
@@ -23,9 +22,9 @@ namespace Castle.Windsor.Experimental.Debugging.Primitives
 		private readonly string description;
 
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
-		private readonly DefaultComponentView details;
+		private readonly DebuggerViewItem[] details;
 
-		public MismatchedDependency(DefaultComponentView details, string description)
+		public MismatchedDependency(string description, params DebuggerViewItem[] details)
 		{
 			this.details = details;
 			this.description = description;
@@ -39,7 +38,7 @@ namespace Castle.Windsor.Experimental.Debugging.Primitives
 		[DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
 		public DebuggerViewItem[] Details
 		{
-			get { return details.Attach().ToArray(); }
+			get { return details; }
 		}
 	}
 }
