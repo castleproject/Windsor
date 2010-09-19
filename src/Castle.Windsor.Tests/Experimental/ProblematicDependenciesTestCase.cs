@@ -20,6 +20,7 @@ namespace Castle.Windsor.Tests.Experimental
 	using Castle.MicroKernel.Registration;
 	using Castle.Windsor.Experimental.Debugging;
 	using Castle.Windsor.Experimental.Debugging.Primitives;
+	using Castle.Windsor.Tests.ClassComponents;
 
 	using NUnit.Framework;
 
@@ -33,30 +34,32 @@ namespace Castle.Windsor.Tests.Experimental
 			Container.Register(Component.For<B>().LifeStyle.Singleton,
 			                   Component.For<A>().LifeStyle.Transient);
 
-			var faultyComponents =
-				subSystem.SelectMany(e => e.Attach()).SingleOrDefault(i => i.Name == "Potential Lifestyle Mismatches");
-			Assert.IsNotNull(faultyComponents);
-			var components = faultyComponents.Value as DebuggerViewItem[];
-			Assert.IsNotNull(components);
-			Assert.AreEqual(1, components.Length);
+			var mismatches = GetMismatches();
+			Assert.AreEqual(1, mismatches.Length);
 		}
 
 		[Test]
-		public void Can_detect_singleton_depending_on_transient_indirectory()
+		public void Can_detect_singleton_depending_on_transient_directly_and_indirectly()
+		{
+			Container.Register(Component.For<CBA>().LifeStyle.Singleton,
+			                   Component.For<B>().LifeStyle.Singleton,
+			                   Component.For<A>().LifeStyle.Transient);
+
+			var items = GetMismatches();
+			Assert.AreEqual(3, items.Length);
+			var cbaMismatches = items.Where(i => i.Details.First().Handler.Service == typeof(CBA)).ToArray();
+			Assert.AreEqual(2, cbaMismatches.Length);
+		}
+
+		[Test]
+		public void Can_detect_singleton_depending_on_transient_indirectly()
 		{
 			Container.Register(Component.For<C>().LifeStyle.Singleton,
 			                   Component.For<B>().LifeStyle.Singleton,
 			                   Component.For<A>().LifeStyle.Transient);
-			
 
-			var faultyComponents =
-				subSystem.SelectMany(e => e.Attach()).SingleOrDefault(i => i.Name == "Potential Lifestyle Mismatches");
-			Assert.IsNotNull(faultyComponents);
-			var components = faultyComponents.Value as DebuggerViewItem[];
-			Assert.IsNotNull(components);
-			Assert.AreEqual(2, components.Length);
-			var debuggerViewItems = components.Select(i => i.Value).ToArray();
-			Assert.AreEqual(2, debuggerViewItems.Length);
+			var mismatches = GetMismatches();
+			Assert.AreEqual(2, mismatches.Length);
 		}
 
 		[SetUp]
@@ -64,6 +67,16 @@ namespace Castle.Windsor.Tests.Experimental
 		{
 			subSystem = new DefaultDebuggingSubSystem();
 			Kernel.AddSubSystem(SubSystemConstants.DebuggingKey, subSystem);
+		}
+
+		private MismatchedDependency[] GetMismatches()
+		{
+			var faultyComponents =
+				subSystem.SelectMany(e => e.Attach()).SingleOrDefault(i => i.Name == "Potential Lifestyle Mismatches");
+			Assert.IsNotNull(faultyComponents);
+			var components = faultyComponents.Value as DebuggerViewItem[];
+			Assert.IsNotNull(components);
+			return components.Select(i => (MismatchedDependency)i.Value).ToArray();
 		}
 	}
 }
