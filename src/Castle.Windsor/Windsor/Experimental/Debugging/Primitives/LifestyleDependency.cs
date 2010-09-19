@@ -14,7 +14,6 @@
 
 namespace Castle.Windsor.Experimental.Debugging.Primitives
 {
-	using System;
 	using System.Collections.Generic;
 	using System.Diagnostics;
 	using System.Linq;
@@ -25,47 +24,51 @@ namespace Castle.Windsor.Experimental.Debugging.Primitives
 
 	public class LifestyleDependency
 	{
-		private readonly IHandler handler;
+		private readonly MetaComponent component;
 
 		private readonly LifestyleDependency parent;
 
-		private readonly KeyValuePair<string, IList<Type>> value;
-
-		public LifestyleDependency(IHandler handler, KeyValuePair<string, IList<Type>> value,
-		                           LifestyleDependency parent = null)
+		public LifestyleDependency(MetaComponent component, LifestyleDependency parent = null)
 		{
-			this.handler = handler;
-			this.value = value;
+			this.component = component;
 			this.parent = parent;
+		}
+
+		public DebuggerViewItem ComponentView
+		{
+			get
+			{
+				var item = new ComponentDebuggerView(component,
+				                                     new DefaultComponentView(component.Handler, component.ForwardedTypes));
+				return new DebuggerViewItem(component.Name, GetLifestyleDescription(component.Model), item);
+			}
 		}
 
 		public IHandler Handler
 		{
-			get { return handler; }
+			get { return component.Handler; }
+		}
+
+		public DebuggerViewItem MismatchView
+		{
+			get
+			{
+				var item = GetItem();
+				var key = GetKey();
+				var name = GetName(item.Components.First());
+				return new DebuggerViewItem(name, key, item);
+			}
 		}
 
 		public string Name
 		{
-			get { return value.Key; }
-		}
-
-		public DebuggerViewItem BuildItem()
-		{
-			LifestyleDependency root;
-			var item = GetItem(out root);
-			return new DebuggerViewItem(GetName(root), GetKey(), item);
-		}
-
-		public DebuggerViewItem GetItemView()
-		{
-			var item = new ComponentDebuggerView(handler, value, new DefaultComponentView(handler, value.Value.ToArray()));
-			return new DebuggerViewItem(value.Key, GetLifestyleDescription(handler.ComponentModel), item);
+			get { return component.Name; }
 		}
 
 		public bool Mismatched()
 		{
-			return handler.ComponentModel.LifestyleType == LifestyleType.Transient ||
-			       handler.ComponentModel.LifestyleType == LifestyleType.PerWebRequest;
+			return component.Model.LifestyleType == LifestyleType.Transient ||
+			       component.Model.LifestyleType == LifestyleType.PerWebRequest;
 		}
 
 		private void ContributeItem(LifestyleDependency mismatched, StringBuilder message, IList<LifestyleDependency> items)
@@ -73,31 +76,30 @@ namespace Castle.Windsor.Experimental.Debugging.Primitives
 			if (ImTheRoot())
 			{
 				items.Add(this);
-				message.AppendFormat("Component '{0}' with lifestyle {1} ", value.Key,
-				                     GetLifestyleDescription(handler.ComponentModel));
+				message.AppendFormat("Component '{0}' with lifestyle {1} ", component.Name,
+				                     GetLifestyleDescription(component.Model));
 
-				message.AppendFormat("depends on '{0}' with lifestyle {1}", mismatched.value.Key,
-				                     GetLifestyleDescription(mismatched.handler.ComponentModel));
+				message.AppendFormat("depends on '{0}' with lifestyle {1}", mismatched.Name,
+				                     GetLifestyleDescription(mismatched.Handler.ComponentModel));
 				return;
 			}
 			parent.ContributeItem(mismatched, message, items);
 			items.Add(this);
 			message.AppendLine();
-			message.AppendFormat("\tvia '{0}' with lifestyle {1}", value.Key,
-			                     GetLifestyleDescription(handler.ComponentModel));
+			message.AppendFormat("\tvia '{0}' with lifestyle {1}", component.Name,
+			                     GetLifestyleDescription(component.Model));
 		}
 
-		private MismatchedDependency GetItem(out LifestyleDependency root)
+		private MismatchedDependency GetItem()
 		{
 			var items = new List<LifestyleDependency>();
 			var message = GetMismatchMessage(items);
-			root = items.First();
 			return new MismatchedDependency(message, items.ToArray());
 		}
 
 		private string GetKey()
 		{
-			return string.Format("\"{0}\" {1}", value.Key, GetLifestyleDescription(handler.ComponentModel));
+			return string.Format("\"{0}\" {1}", component.Name, GetLifestyleDescription(component.Model));
 		}
 
 		private string GetLifestyleDescription(ComponentModel componentModel)
@@ -125,7 +127,7 @@ namespace Castle.Windsor.Experimental.Debugging.Primitives
 
 		private string GetName(LifestyleDependency root)
 		{
-			return string.Format("\"{0}\" {1} ->", root.value.Key, GetLifestyleDescription(root.handler.ComponentModel));
+			return string.Format("\"{0}\" {1} ->", root.Name, GetLifestyleDescription(root.Handler.ComponentModel));
 		}
 
 		private bool ImTheRoot()

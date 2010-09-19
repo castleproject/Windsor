@@ -33,7 +33,7 @@ namespace Castle.Windsor.Experimental.Debugging.Extensions
 			{
 				yield break;
 			}
-			var waiting = GetKeyToHandlersLookup(waitingComponents.ToDictionary(k => k.Key, v => v.Value));
+			var waiting = GetMetaComponents(waitingComponents.ToDictionary(k => k.Key, v => v.Value));
 			var components = waiting.Select(DefaultComponentView).ToArray();
 			yield return new DebuggerViewItem("Potentially Misconfigured Components",
 			                                  "Count = " + components.Length,

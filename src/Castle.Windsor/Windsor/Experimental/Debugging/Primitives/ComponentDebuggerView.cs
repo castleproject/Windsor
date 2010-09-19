@@ -27,6 +27,9 @@ namespace Castle.Windsor.Experimental.Debugging.Primitives
 	public class ComponentDebuggerView
 	{
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
+		private readonly string description;
+
+		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 		private readonly IComponentDebuggerExtension[] extension;
 
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
@@ -36,19 +39,15 @@ namespace Castle.Windsor.Experimental.Debugging.Primitives
 		private readonly IHandler handler;
 
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
-		private readonly string description;
-
-		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 		private string key;
 
-		public ComponentDebuggerView(IHandler handler, KeyValuePair<string, IList<Type>> meta,
+		public ComponentDebuggerView(MetaComponent component,
 		                             params IComponentDebuggerExtension[] defaultExtension)
 		{
-			key = meta.Key;
-			forwardedCount = meta.Value.Count;
-			this.handler = handler;
-			extension = defaultExtension.Concat(GetExtensions(handler))
-				.ToArray();
+			key = component.Name;
+			forwardedCount = component.ForwardedTypesCount;
+			handler = component.Handler;
+			extension = defaultExtension.Concat(GetExtensions(handler)).ToArray();
 		}
 
 		public ComponentDebuggerView(IHandler handler, KeyValuePair<string, IList<Type>> meta,

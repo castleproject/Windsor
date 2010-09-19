@@ -656,6 +656,7 @@
     <Compile Include="Windsor\Configuration\Interpreters\XmlProcessor\XmlProcessorException.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Windsor\Experimental\Debugging\Primitives\MetaComponent.cs" />
     <Compile Include="Windsor\Experimental\Debugging\Primitives\ComponentStatusDebuggerViewItem.cs" />
     <Compile Include="Windsor\Experimental\Debugging\Primitives\DefaultComponentView.cs" />
     <Compile Include="Windsor\Experimental\Debugging\Extensions\AbstractContainerDebuggerExtension.cs" />

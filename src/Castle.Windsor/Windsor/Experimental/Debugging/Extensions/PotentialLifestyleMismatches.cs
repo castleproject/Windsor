@@ -21,14 +21,8 @@ namespace Castle.Windsor.Experimental.Debugging.Extensions
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.SubSystems.Naming;
 	using Castle.Windsor.Experimental.Debugging.Primitives;
-	using MetaComponent = System.Collections.Generic.KeyValuePair<
-			MicroKernel.IHandler,
-			System.Collections.Generic.KeyValuePair<string, System.Collections.Generic.IList<System.Type>>>;
-	using ComponentsMap = System.Collections.Generic.IDictionary<
-		Core.ComponentModel,
-		System.Collections.Generic.KeyValuePair<
-			MicroKernel.IHandler,
-			System.Collections.Generic.KeyValuePair<string, System.Collections.Generic.IList<System.Type>>>>;
+
+	using ComponentsMap = System.Collections.Generic.IDictionary<Core.ComponentModel, Primitives.MetaComponent>;
 
 	public class PotentialLifestyleMismatches : AbstractContainerDebuggerExtension
 	{
@@ -36,12 +30,12 @@ namespace Castle.Windsor.Experimental.Debugging.Extensions
 
 		public override IEnumerable<DebuggerViewItem> Attach()
 		{
-			var all = GetKeyToHandlersLookup(naming.GetKey2Handler());
-			var mismatches = new List<LifestyleDependency>();
-			var component2Handlers = all.ToDictionary(p => p.Key.ComponentModel);
-			foreach (var component in all)
+			var all = GetMetaComponents(naming.GetKey2Handler());
+			var mismatches = new List<DebuggerViewItem>();
+			var model2Meta = all.ToDictionary(p => p.Model);
+			foreach (var component in model2Meta.Values)
 			{
-				mismatches.AddRange(GetMismatches(component, component2Handlers));
+				mismatches.AddRange(GetMismatches(component, model2Meta));
 			}
 			if (mismatches.Count == 0)
 			{
@@ -49,7 +43,7 @@ namespace Castle.Windsor.Experimental.Debugging.Extensions
 			}
 			yield return new DebuggerViewItem("Potential Lifestyle Mismatches",
 			                                  "Count = " + mismatches.Count,
-			                                  mismatches.Select(m => m.BuildItem()).ToArray());
+			                                  mismatches.ToArray());
 		}
 
 		public override void Init(IKernel kernel)
@@ -57,11 +51,12 @@ namespace Castle.Windsor.Experimental.Debugging.Extensions
 			naming = kernel.GetSubSystem(SubSystemConstants.NamingKey) as INamingSubSystem;
 		}
 
-		private IEnumerable<LifestyleDependency> GetMismatch(LifestyleDependency parent, ComponentModel component, ComponentsMap component2Handlers)
+		private IEnumerable<LifestyleDependency> GetMismatch(LifestyleDependency parent, ComponentModel component,
+		                                                     ComponentsMap model2Meta)
 		{
-			var pair = component2Handlers[component];
-			var handler = pair.Key;
-			var item = new LifestyleDependency(handler, pair.Value, parent);
+			var pair = model2Meta[component];
+			var handler = pair.Handler;
+			var item = new LifestyleDependency(pair, parent);
 			if (item.Mismatched())
 			{
 				yield return item;
@@ -70,7 +65,7 @@ namespace Castle.Windsor.Experimental.Debugging.Extensions
 			{
 				foreach (ComponentModel dependent in handler.ComponentModel.Dependents)
 				{
-					foreach (var mismatch in GetMismatch(item, dependent, component2Handlers))
+					foreach (var mismatch in GetMismatch(item, dependent, model2Meta))
 					{
 						yield return mismatch;
 					}
@@ -78,19 +73,19 @@ namespace Castle.Windsor.Experimental.Debugging.Extensions
 			}
 		}
 
-		private IEnumerable<LifestyleDependency> GetMismatches(MetaComponent component, ComponentsMap component2Handlers)
+		private IEnumerable<DebuggerViewItem> GetMismatches(MetaComponent component, ComponentsMap component2Handlers)
 		{
-			var handler = component.Key;
+			var handler = component.Handler;
 			if (IsSingleton(handler) == false)
 			{
 				yield break;
 			}
-			var root = new LifestyleDependency(handler, component.Value);
+			var root = new LifestyleDependency(component);
 			foreach (ComponentModel dependent in handler.ComponentModel.Dependents)
 			{
 				foreach (var mismatch in GetMismatch(root, dependent, component2Handlers))
 				{
-					yield return mismatch;
+					yield return mismatch.MismatchView;
 				}
 			}
 		}

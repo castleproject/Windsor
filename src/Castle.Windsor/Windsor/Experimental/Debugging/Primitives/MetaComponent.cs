@@ -12,30 +12,42 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Windsor.Experimental.Debugging.Extensions
+namespace Castle.Windsor.Experimental.Debugging.Primitives
 {
+	using System;
 	using System.Collections.Generic;
-	using System.Linq;
 
+	using Castle.Core;
 	using Castle.MicroKernel;
-	using Castle.MicroKernel.SubSystems.Naming;
-	using Castle.Windsor.Experimental.Debugging.Primitives;
 
-	public class AllComponents : AbstractContainerDebuggerExtension
+	public class MetaComponent
 	{
-		private INamingSubSystem naming;
+		private readonly IList<Type> forwardedTypes;
 
-		public override IEnumerable<DebuggerViewItem> Attach()
+		public MetaComponent(string name, IHandler handler, IList<Type> forwardedTypes)
 		{
-			var lookup = GetMetaComponents(naming.GetKey2Handler());
-			var items = lookup.Select(DefaultComponentView).ToArray();
-			yield return new DebuggerViewItem("All Components", "Count = " + items.Length,
-			                                  items);
+			Name = name;
+			Handler = handler;
+			this.forwardedTypes = forwardedTypes;
 		}
 
-		public override void Init(IKernel kernel)
+		public IEnumerable<Type> ForwardedTypes
 		{
-			naming = kernel.GetSubSystem(SubSystemConstants.NamingKey) as INamingSubSystem;
+			get { return forwardedTypes; }
 		}
+
+		public int ForwardedTypesCount
+		{
+			get { return forwardedTypes.Count; }
+		}
+
+		public IHandler Handler { get; private set; }
+
+		public ComponentModel Model
+		{
+			get { return Handler.ComponentModel; }
+		}
+
+		public string Name { get; private set; }
 	}
 }
