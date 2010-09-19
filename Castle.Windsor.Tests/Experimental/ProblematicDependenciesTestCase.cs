@@ -52,6 +52,19 @@ namespace Castle.Windsor.Tests.Experimental
 		}
 
 		[Test]
+		public void Can_detect_singleton_depending_on_two_transients_directly_and_indirectly()
+		{
+			Container.Register(Component.For<CBA>().LifeStyle.Singleton,
+							   Component.For<B>().LifeStyle.Transient,
+							   Component.For<A>().LifeStyle.Transient);
+
+			var items = GetMismatches();
+			Assert.AreEqual(2, items.Length);
+			var cbaMismatches = items.Where(i => i.Details.First().Handler.Service == typeof(CBA)).ToArray();
+			Assert.AreEqual(2, cbaMismatches.Length);
+		}
+
+		[Test]
 		public void Can_detect_singleton_depending_on_transient_indirectly()
 		{
 			Container.Register(Component.For<C>().LifeStyle.Singleton,

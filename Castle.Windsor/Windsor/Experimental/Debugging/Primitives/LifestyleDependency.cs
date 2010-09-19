@@ -64,7 +64,8 @@ namespace Castle.Windsor.Experimental.Debugging.Primitives
 
 		public bool Mismatched()
 		{
-			return MismatchedDirectly();
+			return handler.ComponentModel.LifestyleType == LifestyleType.Transient ||
+			       handler.ComponentModel.LifestyleType == LifestyleType.PerWebRequest;
 		}
 
 		private void ContributeItem(LifestyleDependency mismatched, StringBuilder message, IList<LifestyleDependency> items)
@@ -130,12 +131,6 @@ namespace Castle.Windsor.Experimental.Debugging.Primitives
 		private bool ImTheRoot()
 		{
 			return parent == null;
-		}
-
-		private bool MismatchedDirectly()
-		{
-			return handler.ComponentModel.LifestyleType == LifestyleType.Transient ||
-			       handler.ComponentModel.LifestyleType == LifestyleType.PerWebRequest;
 		}
 	}
 }

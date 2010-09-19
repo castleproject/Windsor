@@ -14,7 +14,6 @@
 
 namespace Castle.Windsor.Experimental.Debugging.Extensions
 {
-	using System;
 	using System.Collections.Generic;
 	using System.Linq;
 
@@ -22,6 +21,14 @@ namespace Castle.Windsor.Experimental.Debugging.Extensions
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.SubSystems.Naming;
 	using Castle.Windsor.Experimental.Debugging.Primitives;
+	using MetaComponent = System.Collections.Generic.KeyValuePair<
+			MicroKernel.IHandler,
+			System.Collections.Generic.KeyValuePair<string, System.Collections.Generic.IList<System.Type>>>;
+	using ComponentsMap = System.Collections.Generic.IDictionary<
+		Core.ComponentModel,
+		System.Collections.Generic.KeyValuePair<
+			MicroKernel.IHandler,
+			System.Collections.Generic.KeyValuePair<string, System.Collections.Generic.IList<System.Type>>>>;
 
 	public class PotentialLifestyleMismatches : AbstractContainerDebuggerExtension
 	{
@@ -50,11 +57,7 @@ namespace Castle.Windsor.Experimental.Debugging.Extensions
 			naming = kernel.GetSubSystem(SubSystemConstants.NamingKey) as INamingSubSystem;
 		}
 
-		private IEnumerable<LifestyleDependency> GetMismatch(LifestyleDependency parent, ComponentModel component,
-		                                                     IDictionary
-		                                                     	<ComponentModel,
-		                                                     	KeyValuePair<IHandler, KeyValuePair<string, IList<Type>>>>
-		                                                     	component2Handlers)
+		private IEnumerable<LifestyleDependency> GetMismatch(LifestyleDependency parent, ComponentModel component, ComponentsMap component2Handlers)
 		{
 			var pair = component2Handlers[component];
 			var handler = pair.Key;
@@ -75,9 +78,7 @@ namespace Castle.Windsor.Experimental.Debugging.Extensions
 			}
 		}
 
-		private IEnumerable<LifestyleDependency> GetMismatches(
-			KeyValuePair<IHandler, KeyValuePair<string, IList<Type>>> component,
-			IDictionary<ComponentModel, KeyValuePair<IHandler, KeyValuePair<string, IList<Type>>>> component2Handlers)
+		private IEnumerable<LifestyleDependency> GetMismatches(MetaComponent component, ComponentsMap component2Handlers)
 		{
 			var handler = component.Key;
 			if (IsSingleton(handler) == false)
