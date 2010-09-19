@@ -85,7 +85,7 @@ namespace Castle.Windsor.Experimental.Debugging.Extensions
 			{
 				foreach (var mismatch in GetMismatch(root, dependent, component2Handlers))
 				{
-					yield return mismatch.MismatchView;
+					yield return mismatch.ViewItem;
 				}
 			}
 		}
