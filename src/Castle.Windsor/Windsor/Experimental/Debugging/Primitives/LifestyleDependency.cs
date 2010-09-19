@@ -34,22 +34,12 @@ namespace Castle.Windsor.Experimental.Debugging.Primitives
 			this.parent = parent;
 		}
 
-		public DebuggerViewItem ComponentView
-		{
-			get
-			{
-				var item = new ComponentDebuggerView(component,
-				                                     new DefaultComponentView(component.Handler, component.ForwardedTypes));
-				return new DebuggerViewItem(component.Name, GetLifestyleDescription(component.Model), item);
-			}
-		}
-
 		public IHandler Handler
 		{
 			get { return component.Handler; }
 		}
 
-		public DebuggerViewItem MismatchView
+		public DebuggerViewItem ViewItem
 		{
 			get
 			{
@@ -71,53 +61,44 @@ namespace Castle.Windsor.Experimental.Debugging.Primitives
 			       component.Model.LifestyleType == LifestyleType.PerWebRequest;
 		}
 
-		private void ContributeItem(LifestyleDependency mismatched, StringBuilder message, IList<LifestyleDependency> items)
+		private void ContributeItem(MetaComponent mismatched, StringBuilder message, IList<MetaComponent> items)
 		{
 			if (ImTheRoot())
 			{
-				items.Add(this);
+				items.Add(component);
 				message.AppendFormat("Component '{0}' with lifestyle {1} ", component.Name,
-				                     GetLifestyleDescription(component.Model));
+				                     component.Model.GetLifestyleDescription());
 
 				message.AppendFormat("depends on '{0}' with lifestyle {1}", mismatched.Name,
-				                     GetLifestyleDescription(mismatched.Handler.ComponentModel));
+				                     mismatched.Model.GetLifestyleDescription());
 				return;
 			}
 			parent.ContributeItem(mismatched, message, items);
-			items.Add(this);
+			items.Add(component);
 			message.AppendLine();
 			message.AppendFormat("\tvia '{0}' with lifestyle {1}", component.Name,
-			                     GetLifestyleDescription(component.Model));
+								 component.Model.GetLifestyleDescription());
 		}
 
 		private MismatchedDependency GetItem()
 		{
-			var items = new List<LifestyleDependency>();
+			var items = new List<MetaComponent>();
 			var message = GetMismatchMessage(items);
 			return new MismatchedDependency(message, items.ToArray());
 		}
 
 		private string GetKey()
 		{
-			return string.Format("\"{0}\" {1}", component.Name, GetLifestyleDescription(component.Model));
+			return string.Format("\"{0}\" {1}", component.Name, component.Model.GetLifestyleDescription());
 		}
 
-		private string GetLifestyleDescription(ComponentModel componentModel)
-		{
-			if (componentModel.LifestyleType != LifestyleType.Custom)
-			{
-				return componentModel.LifestyleType.ToString();
-			}
-			return string.Format("custom ({0})", componentModel.CustomLifestyle.FullName);
-		}
-
-		private string GetMismatchMessage(IList<LifestyleDependency> items)
+		private string GetMismatchMessage(IList<MetaComponent> items)
 		{
 			var message = new StringBuilder();
 			Debug.Assert(parent != null, "parent != null");
 			//now we're going down letting the root to append first:
-			parent.ContributeItem(this, message, items);
-			items.Add(this);
+			parent.ContributeItem(component, message, items);
+			items.Add(component);
 
 			message.AppendLine();
 			message.AppendFormat(
@@ -125,9 +106,9 @@ namespace Castle.Windsor.Experimental.Debugging.Primitives
 			return message.ToString();
 		}
 
-		private string GetName(LifestyleDependency root)
+		private string GetName(MetaComponent root)
 		{
-			return string.Format("\"{0}\" {1} ->", root.Name, GetLifestyleDescription(root.Handler.ComponentModel));
+			return string.Format("\"{0}\" {1} ->", root.Name, root.Model.GetLifestyleDescription());
 		}
 
 		private bool ImTheRoot()
