@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 namespace Castle.Windsor.Experimental.Debugging.Primitives
 {
 	using System;
@@ -22,12 +23,10 @@ namespace Castle.Windsor.Experimental.Debugging.Primitives
 	using Castle.Core;
 	using Castle.MicroKernel;
 
-	public class LifestyleDependency : IComponentDebuggerExtension
+	public class LifestyleDependency
 	{
-		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 		private readonly IHandler handler;
 
-		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 		private readonly LifestyleDependency parent;
 
 		private readonly KeyValuePair<string, IList<Type>> value;
@@ -40,10 +39,16 @@ namespace Castle.Windsor.Experimental.Debugging.Primitives
 			this.parent = parent;
 		}
 
-		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 		public string Name
 		{
 			get { return value.Key; }
+		}
+
+		public DebuggerViewItem BuildItem()
+		{
+			LifestyleDependency root;
+			var item = GetItem(out root);
+			return new DebuggerViewItem(GetName(root), GetKey(), item);
 		}
 
 		public bool Mismatched()
@@ -51,17 +56,11 @@ namespace Castle.Windsor.Experimental.Debugging.Primitives
 			return MismatchedDirectly();
 		}
 
-		public IEnumerable<DebuggerViewItem> Attach()
-		{
-			LifestyleDependency root;
-			var item = GetItem(out root);
-			yield return new DebuggerViewItem(GetName(root), GetKey(), item);
-		}
-
-		private void AppendMismatchMessage(StringBuilder message, LifestyleDependency mismatched, out LifestyleDependency root)
+		private void ContributeItem(LifestyleDependency mismatched, StringBuilder message, IList<DebuggerViewItem> items, out LifestyleDependency root)
 		{
 			if (ImTheRoot())
 			{
+				items.Add(GetItemView());
 				message.AppendFormat("Component '{0}' with lifestyle {1} ", value.Key,
 				                     GetLifestyleDescription(handler.ComponentModel));
 
@@ -70,7 +69,8 @@ namespace Castle.Windsor.Experimental.Debugging.Primitives
 				root = this;
 				return;
 			}
-			parent.AppendMismatchMessage(message, mismatched, out root);
+			parent.ContributeItem(mismatched, message, items, out root);
+			items.Add(GetItemView());
 			message.AppendLine();
 			message.AppendFormat("\tvia '{0}' with lifestyle {1}", value.Key,
 			                     GetLifestyleDescription(handler.ComponentModel));
@@ -78,8 +78,9 @@ namespace Castle.Windsor.Experimental.Debugging.Primitives
 
 		private MismatchedDependency GetItem(out LifestyleDependency root)
 		{
-			return new MismatchedDependency(new DefaultComponentView(handler, value.Value.ToArray()),
-			                                GetMismatchMessage(out root));
+			var items = new List<DebuggerViewItem>();
+			var message = GetMismatchMessage(out root, items);
+			return new MismatchedDependency(message,items.ToArray());
 		}
 
 		private string GetKey()
@@ -96,16 +97,24 @@ namespace Castle.Windsor.Experimental.Debugging.Primitives
 			return string.Format("custom ({0})", componentModel.CustomLifestyle.FullName);
 		}
 
-		private string GetMismatchMessage(out LifestyleDependency root)
+		private string GetMismatchMessage(out LifestyleDependency root, IList<DebuggerViewItem> items)
 		{
 			var message = new StringBuilder();
 			Debug.Assert(parent != null, "parent != null");
 			//now we're going down letting the root to append first:
-			parent.AppendMismatchMessage(message, this, out root);
+			parent.ContributeItem(this, message, items, out root);
+			items.Add(GetItemView());
+
 			message.AppendLine();
 			message.AppendFormat(
 				"This kind of dependency is usually not desired and may lead to various kinds of bugs.");
 			return message.ToString();
+		}
+
+		private DebuggerViewItem GetItemView()
+		{
+			var item = new ComponentDebuggerView(handler, value, new DefaultComponentView(handler, value.Value.ToArray()));
+			return new DebuggerViewItem(value.Key, GetLifestyleDescription(handler.ComponentModel), item);
 		}
 
 		private string GetName(LifestyleDependency root)

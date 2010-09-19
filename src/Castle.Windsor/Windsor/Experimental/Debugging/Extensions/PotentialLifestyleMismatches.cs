@@ -42,7 +42,7 @@ namespace Castle.Windsor.Experimental.Debugging.Extensions
 			}
 			yield return new DebuggerViewItem("Potential Lifestyle Mismatches",
 			                                  "Count = " + mismatches.Count,
-			                                  mismatches.SelectMany(m => m.Attach()).ToArray());
+			                                  mismatches.Select(m => m.BuildItem()).ToArray());
 		}
 
 		public override void Init(IKernel kernel)
