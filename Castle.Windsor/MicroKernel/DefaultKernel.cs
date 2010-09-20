@@ -11,13 +11,13 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 namespace Castle.MicroKernel
 {
 	using System;
 	using System.Collections;
 	using System.Collections.Generic;
 	using System.Diagnostics;
-	using System.Reflection;
 	using System.Runtime.CompilerServices;
 	using System.Runtime.Serialization;
 
@@ -145,7 +145,7 @@ namespace Castle.MicroKernel
 			resolver.Initialize(RaiseDependencyResolving);
 		}
 
-#if (!SILVERLIGHT)
+#if !SILVERLIGHT
 		public DefaultKernel(SerializationInfo info, StreamingContext context)
 		{
 			var members = FormatterServices.GetSerializableMembers(GetType(), context);
@@ -156,16 +156,6 @@ namespace Castle.MicroKernel
 			AddHandler(HandlerRegisteredEvent, (Delegate)info.GetValue("HandlerRegisteredEvent", typeof(Delegate)));
 		}
 #endif
-
-		protected IConversionManager ConversionSubSystem
-		{
-			get { return GetSubSystem(SubSystemConstants.ConversionManagerKey) as IConversionManager; }
-		}
-
-		protected INamingSubSystem NamingSubSystem
-		{
-			get { return GetSubSystem(SubSystemConstants.NamingKey) as INamingSubSystem; }
-		}
 
 		public IComponentModelBuilder ComponentModelBuilder
 		{
@@ -252,6 +242,16 @@ namespace Castle.MicroKernel
 			get { return resolver; }
 		}
 
+		protected IConversionManager ConversionSubSystem
+		{
+			get { return GetSubSystem(SubSystemConstants.ConversionManagerKey) as IConversionManager; }
+		}
+
+		protected INamingSubSystem NamingSubSystem
+		{
+			get { return GetSubSystem(SubSystemConstants.NamingKey) as INamingSubSystem; }
+		}
+
 #if !SILVERLIGHT
 		public void GetObjectData(SerializationInfo info, StreamingContext context)
 		{
@@ -262,239 +262,6 @@ namespace Castle.MicroKernel
 			info.AddValue("members", kernelmembers, typeof(object[]));
 
 			info.AddValue("HandlerRegisteredEvent", GetEventHandlers<HandlerDelegate>(HandlerRegisteredEvent));
-		}
-#endif
-
-		protected CreationContext CreateCreationContext(IHandler handler, Type typeToExtractGenericArguments,
-		                                                IDictionary additionalArguments)
-		{
-			return new CreationContext(handler, ReleasePolicy, typeToExtractGenericArguments, additionalArguments,
-			                           ConversionSubSystem);
-		}
-
-		protected void DisposeHandler(IHandler handler)
-		{
-			if (handler == null)
-			{
-				return;
-			}
-
-			if (handler is IDisposable)
-			{
-				((IDisposable)handler).Dispose();
-			}
-		}
-
-		protected void RegisterHandler(String key, IHandler handler)
-		{
-			RegisterHandler(key, handler, false);
-		}
-
-		protected void RegisterHandler(String key, IHandler handler, bool skipRegistration)
-		{
-			if (!skipRegistration)
-			{
-				NamingSubSystem.Register(key, handler);
-			}
-
-			RaiseHandlerRegistered(handler);
-			RaiseHandlersChanged();
-			RaiseComponentRegistered(key, handler);
-		}
-
-		protected virtual void RegisterSubSystems()
-		{
-			AddSubSystem(SubSystemConstants.ConfigurationStoreKey,
-			             new DefaultConfigurationStore());
-
-			AddSubSystem(SubSystemConstants.ConversionManagerKey,
-			             new DefaultConversionManager());
-
-			AddSubSystem(SubSystemConstants.NamingKey,
-			             new DefaultNamingSubSystem());
-
-			AddSubSystem(SubSystemConstants.ResourceKey,
-			             new DefaultResourceSubSystem());
-
-			if (Debugger.IsAttached)
-			{
-				AddSubSystem(SubSystemConstants.DebuggingKey, new DefaultDebuggingSubSystem());
-			}
-		}
-
-		protected object ResolveComponent(IHandler handler)
-		{
-			return ResolveComponent(handler, handler.ComponentModel.Service);
-		}
-
-		protected object ResolveComponent(IHandler handler, Type service)
-		{
-			return ResolveComponent(handler, service, null);
-		}
-
-		protected object ResolveComponent(IHandler handler, IDictionary additionalArguments)
-		{
-			return ResolveComponent(handler, handler.ComponentModel.Service, additionalArguments);
-		}
-
-		protected object ResolveComponent(IHandler handler, Type service, IDictionary additionalArguments)
-		{
-			var prev = currentCreationContext;
-			var context = CreateCreationContext(handler, service, additionalArguments);
-			currentCreationContext = context;
-
-			using (context.ParentResolutionContext(prev))
-			{
-				try
-				{
-					return handler.Resolve(context);
-				}
-				finally
-				{
-					currentCreationContext = prev;
-				}
-			}
-		}
-
-		protected object TryResolveComponent(IHandler handler, Type service, IDictionary additionalArguments)
-		{
-			var prev = currentCreationContext;
-			var context = CreateCreationContext(handler, service, additionalArguments);
-			currentCreationContext = context;
-
-			using (context.ParentResolutionContext(prev))
-			{
-				try
-				{
-					return handler.TryResolve(context);
-				}
-				finally
-				{
-					currentCreationContext = prev;
-				}
-			}
-		}
-
-		protected virtual IHandler WrapParentHandler(IHandler parentHandler)
-		{
-			if (parentHandler == null)
-			{
-				return null;
-			}
-
-			var handler = new ParentHandlerWithChildResolver(parentHandler, Resolver);
-			handler.Init(this);
-			return handler;
-		}
-
-		private void DisposeComponentsInstancesWithinTracker()
-		{
-			ReleasePolicy.Dispose();
-		}
-
-		private void DisposeHandlers()
-		{
-			var nodes = GraphNodes;
-			var vertices = TopologicalSortAlgo.Sort(nodes);
-
-			for (var i = 0; i < vertices.Length; i++)
-			{
-				var model = (ComponentModel)vertices[i];
-
-				// Prevent the removal of a component that belongs 
-				// to other container
-				if (!NamingSubSystem.Contains(model.Name))
-				{
-					continue;
-				}
-
-				RemoveComponent(model.Name);
-			}
-		}
-
-		private void DisposeSubKernels()
-		{
-			foreach (var childKernel in childKernels)
-			{
-				childKernel.Dispose();
-			}
-		}
-
-		private void HandlerRegisteredOnParentKernel(IHandler handler, ref bool stateChanged)
-		{
-			RaiseHandlerRegistered(handler);
-		}
-
-		private void HandlersChangedOnParentKernel(ref bool changed)
-		{
-			RaiseHandlersChanged();
-		}
-
-		private bool LazyLoad(string key, Type service, IDictionary arguments)
-		{
-			if (isCheckingLazyLoaders)
-			{
-				return false;
-			}
-
-			isCheckingLazyLoaders = true;
-			try
-			{
-				foreach (var loader in ResolveAll<ILazyComponentLoader>())
-				{
-					var registration = loader.Load(key, service, arguments);
-					if (registration != null)
-					{
-						registration.Register(this);
-						return true;
-					}
-				}
-				return false;
-			}
-			finally
-			{
-				isCheckingLazyLoaders = false;
-			}
-		}
-
-		private void SubscribeToParentKernel()
-		{
-			if (parentKernel == null)
-			{
-				return;
-			}
-
-			parentKernel.HandlerRegistered += HandlerRegisteredOnParentKernel;
-			parentKernel.HandlersChanged += HandlersChangedOnParentKernel;
-			parentKernel.ComponentRegistered += RaiseComponentRegistered;
-			parentKernel.ComponentUnregistered += RaiseComponentUnregistered;
-		}
-
-		private void TerminateFacilities()
-		{
-			foreach (var facility in facilities)
-			{
-				facility.Terminate();
-			}
-		}
-
-		private void UnsubscribeFromParentKernel()
-		{
-			if (parentKernel == null)
-			{
-				return;
-			}
-
-			parentKernel.HandlerRegistered -= HandlerRegisteredOnParentKernel;
-			parentKernel.HandlersChanged -= HandlersChangedOnParentKernel;
-			parentKernel.ComponentRegistered -= RaiseComponentRegistered;
-			parentKernel.ComponentUnregistered -= RaiseComponentUnregistered;
-		}
-		
-#if !SILVERLIGHT
-		void IDeserializationCallback.OnDeserialization(object sender)
-		{
-			// NOTE: It's pointless to have this method if it doesn't do anything, ain't it?
 		}
 #endif
 
@@ -1000,6 +767,267 @@ namespace Castle.MicroKernel
 			return activator;
 		}
 
+		///<summary>
+		///  Gets the service object of the specified type.
+		///</summary>
+		///<returns>
+		///  A service object of type serviceType.
+		///</returns>
+		///<param name = "serviceType">An object that specifies the type of service object to get. </param>
+		public object GetService(Type serviceType)
+		{
+			if ((this as IKernelInternal).LazyLoadComponentByType(null, serviceType, null) == false)
+			{
+				return null;
+			}
+
+			return Resolve(serviceType);
+		}
+
+		///<summary>
+		///  Gets the service object of the specified type.
+		///</summary>
+		///<returns>
+		///  A service object of type serviceType.
+		///</returns>
+		public T GetService<T>() where T : class
+		{
+			return (T)GetService(typeof(T));
+		}
+
+		protected CreationContext CreateCreationContext(IHandler handler, Type typeToExtractGenericArguments,
+		                                                IDictionary additionalArguments)
+		{
+			return new CreationContext(handler, ReleasePolicy, typeToExtractGenericArguments, additionalArguments,
+			                           ConversionSubSystem);
+		}
+
+		protected void DisposeHandler(IHandler handler)
+		{
+			if (handler == null)
+			{
+				return;
+			}
+
+			if (handler is IDisposable)
+			{
+				((IDisposable)handler).Dispose();
+			}
+		}
+
+		protected void RegisterHandler(String key, IHandler handler)
+		{
+			RegisterHandler(key, handler, false);
+		}
+
+		protected void RegisterHandler(String key, IHandler handler, bool skipRegistration)
+		{
+			if (!skipRegistration)
+			{
+				NamingSubSystem.Register(key, handler);
+			}
+
+			RaiseHandlerRegistered(handler);
+			RaiseHandlersChanged();
+			RaiseComponentRegistered(key, handler);
+		}
+
+		protected virtual void RegisterSubSystems()
+		{
+			AddSubSystem(SubSystemConstants.ConfigurationStoreKey,
+			             new DefaultConfigurationStore());
+
+			AddSubSystem(SubSystemConstants.ConversionManagerKey,
+			             new DefaultConversionManager());
+
+			AddSubSystem(SubSystemConstants.NamingKey,
+			             new DefaultNamingSubSystem());
+
+			AddSubSystem(SubSystemConstants.ResourceKey,
+			             new DefaultResourceSubSystem());
+
+			if (Debugger.IsAttached)
+			{
+				AddSubSystem(SubSystemConstants.DebuggingKey, new DefaultDebuggingSubSystem());
+			}
+		}
+
+		protected object ResolveComponent(IHandler handler)
+		{
+			return ResolveComponent(handler, handler.ComponentModel.Service);
+		}
+
+		protected object ResolveComponent(IHandler handler, Type service)
+		{
+			return ResolveComponent(handler, service, null);
+		}
+
+		protected object ResolveComponent(IHandler handler, IDictionary additionalArguments)
+		{
+			return ResolveComponent(handler, handler.ComponentModel.Service, additionalArguments);
+		}
+
+		protected object ResolveComponent(IHandler handler, Type service, IDictionary additionalArguments)
+		{
+			var prev = currentCreationContext;
+			var context = CreateCreationContext(handler, service, additionalArguments);
+			currentCreationContext = context;
+
+			using (context.ParentResolutionContext(prev))
+			{
+				try
+				{
+					return handler.Resolve(context);
+				}
+				finally
+				{
+					currentCreationContext = prev;
+				}
+			}
+		}
+
+		protected object TryResolveComponent(IHandler handler, Type service, IDictionary additionalArguments)
+		{
+			var prev = currentCreationContext;
+			var context = CreateCreationContext(handler, service, additionalArguments);
+			currentCreationContext = context;
+
+			using (context.ParentResolutionContext(prev))
+			{
+				try
+				{
+					return handler.TryResolve(context);
+				}
+				finally
+				{
+					currentCreationContext = prev;
+				}
+			}
+		}
+
+		protected virtual IHandler WrapParentHandler(IHandler parentHandler)
+		{
+			if (parentHandler == null)
+			{
+				return null;
+			}
+
+			var handler = new ParentHandlerWithChildResolver(parentHandler, Resolver);
+			handler.Init(this);
+			return handler;
+		}
+
+		private void DisposeComponentsInstancesWithinTracker()
+		{
+			ReleasePolicy.Dispose();
+		}
+
+		private void DisposeHandlers()
+		{
+			var nodes = GraphNodes;
+			var vertices = TopologicalSortAlgo.Sort(nodes);
+
+			for (var i = 0; i < vertices.Length; i++)
+			{
+				var model = (ComponentModel)vertices[i];
+
+				// Prevent the removal of a component that belongs 
+				// to other container
+				if (!NamingSubSystem.Contains(model.Name))
+				{
+					continue;
+				}
+
+				RemoveComponent(model.Name);
+			}
+		}
+
+		private void DisposeSubKernels()
+		{
+			foreach (var childKernel in childKernels)
+			{
+				childKernel.Dispose();
+			}
+		}
+
+		private void HandlerRegisteredOnParentKernel(IHandler handler, ref bool stateChanged)
+		{
+			RaiseHandlerRegistered(handler);
+		}
+
+		private void HandlersChangedOnParentKernel(ref bool changed)
+		{
+			RaiseHandlersChanged();
+		}
+
+		private bool LazyLoad(string key, Type service, IDictionary arguments)
+		{
+			if (isCheckingLazyLoaders)
+			{
+				return false;
+			}
+
+			isCheckingLazyLoaders = true;
+			try
+			{
+				foreach (var loader in ResolveAll<ILazyComponentLoader>())
+				{
+					var registration = loader.Load(key, service, arguments);
+					if (registration != null)
+					{
+						registration.Register(this);
+						return true;
+					}
+				}
+				return false;
+			}
+			finally
+			{
+				isCheckingLazyLoaders = false;
+			}
+		}
+
+		private void SubscribeToParentKernel()
+		{
+			if (parentKernel == null)
+			{
+				return;
+			}
+
+			parentKernel.HandlerRegistered += HandlerRegisteredOnParentKernel;
+			parentKernel.HandlersChanged += HandlersChangedOnParentKernel;
+			parentKernel.ComponentRegistered += RaiseComponentRegistered;
+			parentKernel.ComponentUnregistered += RaiseComponentUnregistered;
+		}
+
+		private void TerminateFacilities()
+		{
+			foreach (var facility in facilities)
+			{
+				facility.Terminate();
+			}
+		}
+
+		private void UnsubscribeFromParentKernel()
+		{
+			if (parentKernel == null)
+			{
+				return;
+			}
+
+			parentKernel.HandlerRegistered -= HandlerRegisteredOnParentKernel;
+			parentKernel.HandlersChanged -= HandlersChangedOnParentKernel;
+			parentKernel.ComponentRegistered -= RaiseComponentRegistered;
+			parentKernel.ComponentUnregistered -= RaiseComponentUnregistered;
+		}
+
+#if !SILVERLIGHT
+		void IDeserializationCallback.OnDeserialization(object sender)
+		{
+			// NOTE: It's pointless to have this method if it doesn't do anything, ain't it?
+		}
+#endif
+
 		[MethodImpl(MethodImplOptions.Synchronized)]
 		bool IKernelInternal.LazyLoadComponentByKey(string key, Type service, IDictionary arguments)
 		{
@@ -1041,34 +1069,6 @@ namespace Castle.MicroKernel
 
 			var handler = HandlerFactory.CreateForwarding(target, forwardedType);
 			RegisterHandler(name + ", ForwardedType=" + forwardedType.FullName, handler);
-		}
-
-		///<summary>
-		///  Gets the service object of the specified type.
-		///</summary>
-		///<returns>
-		///  A service object of type serviceType.
-		///</returns>
-		///<param name = "serviceType">An object that specifies the type of service object to get. </param>
-		public object GetService(Type serviceType)
-		{
-			if ((this as IKernelInternal).LazyLoadComponentByType(null, serviceType, null) == false)
-			{
-				return null;
-			}
-
-			return Resolve(serviceType);
-		}
-
-		///<summary>
-		///  Gets the service object of the specified type.
-		///</summary>
-		///<returns>
-		///  A service object of type serviceType.
-		///</returns>
-		public T GetService<T>() where T : class
-		{
-			return (T)GetService(typeof(T));
 		}
 	}
 }
