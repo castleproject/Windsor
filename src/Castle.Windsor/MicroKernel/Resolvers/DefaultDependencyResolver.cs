@@ -304,23 +304,17 @@ namespace Castle.MicroKernel.Resolvers
 
 				return HasComponentInValidState(value);
 			}
-			else if (dependency.TargetItemType == typeof(IKernel))
+			if (dependency.TargetItemType == typeof(IKernel))
 			{
 				return true;
 			}
-			else
-			{
-				// Default behaviour
+			// Default behaviour
 
-				if (dependency.TargetItemType != null)
-				{
-					return HasComponentInValidState(context, dependency.TargetItemType);
-				}
-				else
-				{
-					return HasComponentInValidState(dependency.DependencyKey);
-				}
+			if (dependency.TargetItemType != null)
+			{
+				return HasComponentInValidState(context, dependency.TargetItemType);
 			}
+			return HasComponentInValidState(dependency.DependencyKey);
 		}
 
 		protected virtual bool CanResolveParameterDependency(ComponentModel model, DependencyModel dependency)
@@ -561,7 +555,7 @@ namespace Castle.MicroKernel.Resolvers
 		///   This method rebuild the context for the parameter type.
 		///   Naive implementation.
 		/// </summary>
-		private CreationContext RebuildContextForParameter(CreationContext current, Type parameterType)
+		protected virtual CreationContext RebuildContextForParameter(CreationContext current, Type parameterType)
 		{
 			if (parameterType.ContainsGenericParameters)
 			{
