@@ -56,7 +56,7 @@ namespace Castle.Windsor.Tests.Experimental
 		{
 			Container.Register(Component.For<CBA>().LifeStyle.Singleton,
 							   Component.For<B>().LifeStyle.Transient,
-							   Component.For<A>().LifeStyle.Transient);
+							   Component.For<A>().LifeStyle.PerWebRequest);
 
 			var items = GetMismatches();
 			Assert.AreEqual(2, items.Length);

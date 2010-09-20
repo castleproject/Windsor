@@ -42,7 +42,7 @@ namespace Castle.Facilities.TypedFactory.Internal
 			{
 				Logger = logger
 			};
-			return generator.GetProxyType(builder);
+			return generator.GetProxyType();
 		}
 	}
 }

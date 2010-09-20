@@ -39,6 +39,17 @@
             <param name="property">The property.</param>
             <returns>true if the property should be stored.</returns>
         </member>
+        <member name="T:Castle.Components.DictionaryAdapter.IDictionaryBehaviorBuilder">
+            <summary>
+            Defines the contract for building <see cref="T:Castle.Components.DictionaryAdapter.IDictionaryBehavior"/>s.
+            </summary>
+        </member>
+        <member name="M:Castle.Components.DictionaryAdapter.IDictionaryBehaviorBuilder.BuildBehaviors">
+            <summary>
+            Builds the dictionary behaviors.
+            </summary>
+            <returns></returns>
+        </member>
         <member name="T:Castle.Components.DictionaryAdapter.AbstractDictionaryAdapter">
             <summary>
             Abstract adapter for the <see cref="T:System.Collections.IDictionary"/> support
@@ -623,6 +634,13 @@
             <param name="property">The property.</param>
             <param name="behaviors">The property behaviors.</param>
         </member>
+        <member name="M:Castle.Components.DictionaryAdapter.PropertyDescriptor.#ctor(Castle.Components.DictionaryAdapter.PropertyDescriptor,System.Boolean)">
+            <summary>
+             Copies an existinginstance of the <see cref="T:Castle.Components.DictionaryAdapter.PropertyDescriptor"/> class.
+            </summary>
+            <param name="source"></param>
+            <param name="copyBehaviors"></param>
+        </member>
         <member name="M:Castle.Components.DictionaryAdapter.PropertyDescriptor.GetKey(Castle.Components.DictionaryAdapter.IDictionaryAdapter,System.String,Castle.Components.DictionaryAdapter.PropertyDescriptor)">
             <summary>
             Gets the key.
@@ -746,6 +764,13 @@
             Adds the behaviors.
             </summary>
             <param name="behaviors"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Castle.Components.DictionaryAdapter.PropertyDescriptor.AddBehaviors(Castle.Components.DictionaryAdapter.IDictionaryBehaviorBuilder[])">
+            <summary>
+            Adds the behaviors from the builders.
+            </summary>
+            <param name="builders"></param>
             <returns></returns>
         </member>
         <member name="M:Castle.Components.DictionaryAdapter.PropertyDescriptor.CopyBehaviors(Castle.Components.DictionaryAdapter.PropertyDescriptor)">
@@ -1249,26 +1274,26 @@
         </member>
         <member name="T:Castle.DynamicProxy.Generators.BaseProxyGenerator">
             <summary>
-            Base class that exposes the common functionalities
-            to proxy generation.
+              Base class that exposes the common functionalities
+              to proxy generation.
             </summary>
         </member>
         <member name="M:Castle.DynamicProxy.Generators.BaseProxyGenerator.GenerateParameterlessConstructor(Castle.DynamicProxy.Generators.Emitters.ClassEmitter,System.Type,Castle.DynamicProxy.Generators.Emitters.SimpleAST.FieldReference)">
             <summary>
-            Generates a parameters constructor that initializes the proxy
-            state with <see cref="T:Castle.DynamicProxy.StandardInterceptor"/> just to make it non-null.
-            <para>
-            This constructor is important to allow proxies to be XML serializable
-            </para>
+              Generates a parameters constructor that initializes the proxy
+              state with <see cref="T:Castle.DynamicProxy.StandardInterceptor"/> just to make it non-null.
+              <para>
+                This constructor is important to allow proxies to be XML serializable
+              </para>
             </summary>
         </member>
         <member name="M:Castle.DynamicProxy.Generators.BaseProxyGenerator.AddMappingNoCheck(System.Type,Castle.DynamicProxy.Contributors.ITypeContributor,System.Collections.Generic.IDictionary{System.Type,Castle.DynamicProxy.Contributors.ITypeContributor})">
             <summary>
-            It is safe to add mapping (no mapping for the interface exists)
+              It is safe to add mapping (no mapping for the interface exists)
             </summary>
-            <param name="implementer"></param>
-            <param name="interface"></param>
-            <param name="mapping"></param>
+            <param name = "implementer"></param>
+            <param name = "interface"></param>
+            <param name = "mapping"></param>
         </member>
         <member name="M:Castle.DynamicProxy.Generators.InvocationTypeGenerator.GetBaseCtorArguments(System.Type,Castle.DynamicProxy.ProxyGenerationOptions,System.Reflection.ConstructorInfo@)">
             <summary>
@@ -1281,7 +1306,7 @@
         </member>
         <member name="T:Castle.DynamicProxy.DefaultProxyBuilder">
             <summary>
-            Default implementation of <see cref="T:Castle.DynamicProxy.IProxyBuilder"/> interface producing in-memory proxy assemblies.
+              Default implementation of <see cref="T:Castle.DynamicProxy.IProxyBuilder"/> interface producing in-memory proxy assemblies.
             </summary>
         </member>
         <member name="T:Castle.DynamicProxy.IProxyBuilder">
@@ -1406,12 +1431,12 @@
         </member>
         <member name="M:Castle.DynamicProxy.DefaultProxyBuilder.#ctor">
             <summary>
-            Initializes a new instance of the <see cref="T:Castle.DynamicProxy.DefaultProxyBuilder"/> class with new <see cref="T:Castle.DynamicProxy.ModuleScope"/>.
+              Initializes a new instance of the <see cref="T:Castle.DynamicProxy.DefaultProxyBuilder"/> class with new <see cref="T:Castle.DynamicProxy.ModuleScope"/>.
             </summary>
         </member>
         <member name="M:Castle.DynamicProxy.DefaultProxyBuilder.#ctor(Castle.DynamicProxy.ModuleScope)">
             <summary>
-            Initializes a new instance of the <see cref="T:Castle.DynamicProxy.DefaultProxyBuilder"/> class.
+              Initializes a new instance of the <see cref="T:Castle.DynamicProxy.DefaultProxyBuilder"/> class.
             </summary>
             <param name="scope">The module scope for generated proxy types.</param>
         </member>
@@ -1449,11 +1474,6 @@
             <param name="target">Type of the target.</param>
             <param name="interfaces">The interfaces.</param>
             <param name="options">The options.</param>
-        </member>
-        <member name="T:Castle.DynamicProxy.Generators.ClassProxyGenerator">
-            <summary>
-            
-            </summary>
         </member>
         <member name="T:Castle.DynamicProxy.Generators.Emitters.LdcOpCodesDictionary">
             <summary>s
@@ -1569,11 +1589,6 @@
             </summary>
             <returns>New naming scope.</returns>
         </member>
-        <member name="T:Castle.DynamicProxy.Generators.InterfaceProxyWithTargetGenerator">
-            <summary>
-            
-            </summary>
-        </member>
         <member name="T:Castle.DynamicProxy.Generators.MethodFinder">
             <summary>
             Returns the methods implemented by a type. Use this instead of Type.GetMethods() to work around a CLR issue
@@ -1633,23 +1648,33 @@
             </summary>
             <param name="savePhysicalAssembly">If set to <c>true</c> saves the generated module.</param>
         </member>
-        <member name="M:Castle.DynamicProxy.ModuleScope.#ctor(System.Boolean,System.String,System.String,System.String,System.String)">
+        <member name="M:Castle.DynamicProxy.ModuleScope.#ctor(System.Boolean,System.Boolean)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Castle.DynamicProxy.ModuleScope"/> class, allowing to specify whether the assemblies generated by this instance
+            should be saved.
+            </summary>
+            <param name="savePhysicalAssembly">If set to <c>true</c> saves the generated module.</param>
+            <param name="disableSignedModule">If set to <c>true</c> disables ability to generate signed module. This should be used in cases where ran under constrained permissions.</param>
+        </member>
+        <member name="M:Castle.DynamicProxy.ModuleScope.#ctor(System.Boolean,System.Boolean,System.String,System.String,System.String,System.String)">
             <summary>
             Initializes a new instance of the <see cref="T:Castle.DynamicProxy.ModuleScope"/> class, allowing to specify whether the assemblies generated by this instance
             should be saved and what simple names are to be assigned to them.
             </summary>
             <param name="savePhysicalAssembly">If set to <c>true</c> saves the generated module.</param>
+            <param name="disableSignedModule">If set to <c>true</c> disables ability to generate signed module. This should be used in cases where ran under constrained permissions.</param>
             <param name="strongAssemblyName">The simple name of the strong-named assembly generated by this <see cref="T:Castle.DynamicProxy.ModuleScope"/>.</param>
             <param name="strongModulePath">The path and file name of the manifest module of the strong-named assembly generated by this <see cref="T:Castle.DynamicProxy.ModuleScope"/>.</param>
             <param name="weakAssemblyName">The simple name of the weak-named assembly generated by this <see cref="T:Castle.DynamicProxy.ModuleScope"/>.</param>
             <param name="weakModulePath">The path and file name of the manifest module of the weak-named assembly generated by this <see cref="T:Castle.DynamicProxy.ModuleScope"/>.</param>
         </member>
-        <member name="M:Castle.DynamicProxy.ModuleScope.#ctor(System.Boolean,Castle.DynamicProxy.Generators.INamingScope,System.String,System.String,System.String,System.String)">
+        <member name="M:Castle.DynamicProxy.ModuleScope.#ctor(System.Boolean,System.Boolean,Castle.DynamicProxy.Generators.INamingScope,System.String,System.String,System.String,System.String)">
             <summary>
             Initializes a new instance of the <see cref="T:Castle.DynamicProxy.ModuleScope"/> class, allowing to specify whether the assemblies generated by this instance
             should be saved and what simple names are to be assigned to them.
             </summary>
             <param name="savePhysicalAssembly">If set to <c>true</c> saves the generated module.</param>
+            <param name="disableSignedModule">If set to <c>true</c> disables ability to generate signed module. This should be used in cases where ran under constrained permissions.</param>
             <param name="namingScope">Naming scope used to provide unique names to generated types and their members (usually via sub-scopes).</param>
             <param name="strongAssemblyName">The simple name of the strong-named assembly generated by this <see cref="T:Castle.DynamicProxy.ModuleScope"/>.</param>
             <param name="strongModulePath">The path and file name of the manifest module of the strong-named assembly generated by this <see cref="T:Castle.DynamicProxy.ModuleScope"/>.</param>
@@ -4341,61 +4366,6 @@
             <param name="loggerName">The Subname of this logger.</param>
             <returns>The New ILogger instance.</returns> 
         </member>
-        <member name="T:Castle.Core.Logging.WebLogger">
-            <summary>
-            The WebLogger sends everything to the HttpContext.Trace 
-            </summary>
-            <remarks>
-            Trace must be enabled on the Asp.Net configuration file (web.config or machine.config)
-            </remarks>
-        </member>
-        <member name="M:Castle.Core.Logging.WebLogger.#ctor">
-            <summary>
-            Creates a new WebLogger with the priority set to DEBUG.
-            </summary>
-        </member>
-        <member name="M:Castle.Core.Logging.WebLogger.#ctor(Castle.Core.Logging.LoggerLevel)">
-            <summary>
-            Creates a new WebLogger.
-            </summary>
-            <param name="logLevel">The Log level typecode.</param>
-        </member>
-        <member name="M:Castle.Core.Logging.WebLogger.#ctor(System.String)">
-            <summary>
-            Creates a new WebLogger.
-            </summary>
-            <param name="name">The Log name.</param>
-        </member>
-        <member name="M:Castle.Core.Logging.WebLogger.#ctor(System.String,Castle.Core.Logging.LoggerLevel)">
-            <summary>
-            Creates a new WebLogger.
-            </summary>
-            <param name="name">The Log name.</param>
-            <param name="loggerLevel">The Log level typecode.</param>
-        </member>
-        <member name="M:Castle.Core.Logging.WebLogger.Log(Castle.Core.Logging.LoggerLevel,System.String,System.String,System.Exception)">
-            <summary>
-            A Common method to log.
-            </summary>
-            <param name="loggerLevel">The level of logging</param>
-            <param name="loggerName">The Log name.</param>
-            <param name="message">The Message</param>
-            <param name="exception">The Exception</param>
-        </member>
-        <member name="M:Castle.Core.Logging.WebLogger.CreateChildLogger(System.String)">
-            <summary>
-            Just returns this logger (<c>WebLogger</c> is not hierarchical).
-            </summary>
-            <param name="loggerName">Ignored</param>
-            <returns>This ILogger instance.</returns> 
-        </member>
-        <member name="M:Castle.Core.Logging.WebLogger.TryToGetTraceContext">
-            <summary>
-            Tries to get the current http context's trace context.
-            </summary>
-            <returns>The current http context's trace context or null if none is 
-            available</returns>
-        </member>
         <member name="T:Castle.Core.Configuration.AbstractConfiguration">
             <summary>
             This is an abstract <see cref="T:Castle.Core.Configuration.IConfiguration"/> implementation
@@ -4630,7 +4600,7 @@
             	<paramref name="key"/> is null. </exception>
             <exception cref="T:System.NotSupportedException">The <see cref="T:System.Collections.IDictionary"/> object is read-only.-or- The <see cref="T:System.Collections.IDictionary"/> has a fixed size. </exception>
         </member>
-        <member name="M:Castle.Core.ReflectionBasedDictionaryAdapter.CopyTo(System.Array,System.Int32)">
+        <member name="M:Castle.Core.ReflectionBasedDictionaryAdapter.System#Collections#ICollection#CopyTo(System.Array,System.Int32)">
             <summary>
             Copies the elements of the <see cref="T:System.Collections.ICollection"/> to an <see cref="T:System.Array"/>, starting at a particular <see cref="T:System.Array"/> index.
             </summary>
@@ -4679,7 +4649,7 @@
             <value></value>
             <returns>true if the <see cref="T:System.Collections.IDictionary"/> object is read-only; otherwise, false.</returns>
         </member>
-        <member name="P:Castle.Core.ReflectionBasedDictionaryAdapter.IsFixedSize">
+        <member name="P:Castle.Core.ReflectionBasedDictionaryAdapter.System#Collections#IDictionary#IsFixedSize">
             <summary>
             Gets a value indicating whether the <see cref="T:System.Collections.IDictionary"/> object has a fixed size.
             </summary>
