@@ -57,8 +57,11 @@ namespace Castle.Windsor.Experimental.Debugging.Primitives
 
 		public bool Mismatched()
 		{
-			return component.Model.LifestyleType == LifestyleType.Transient ||
-			       component.Model.LifestyleType == LifestyleType.PerWebRequest;
+			return
+#if !SILVERLIGHT
+				component.Model.LifestyleType == LifestyleType.PerWebRequest ||
+#endif
+				component.Model.LifestyleType == LifestyleType.Transient;
 		}
 
 		private void ContributeItem(MetaComponent mismatched, StringBuilder message, IList<MetaComponent> items)

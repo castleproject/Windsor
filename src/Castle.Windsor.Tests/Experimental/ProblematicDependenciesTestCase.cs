@@ -55,8 +55,8 @@ namespace Castle.Windsor.Tests.Experimental
 		public void Can_detect_singleton_depending_on_two_transients_directly_and_indirectly()
 		{
 			Container.Register(Component.For<CBA>().LifeStyle.Singleton,
-							   Component.For<B>().LifeStyle.Transient,
-							   Component.For<A>().LifeStyle.PerWebRequest);
+			                   Component.For<B>().LifeStyle.Transient,
+							   Component.For<A>().LifeStyle.Transient);
 
 			var items = GetMismatches();
 			Assert.AreEqual(2, items.Length);
@@ -78,6 +78,9 @@ namespace Castle.Windsor.Tests.Experimental
 		[SetUp]
 		public void SetSubSystem()
 		{
+#if SILVERLIGHT
+			Init();
+#endif
 			subSystem = new DefaultDebuggingSubSystem();
 			Kernel.AddSubSystem(SubSystemConstants.DebuggingKey, subSystem);
 		}

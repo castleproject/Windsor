@@ -372,6 +372,9 @@ namespace Castle.MicroKernel.Tests.SpecializedResolvers
 		[SetUp]
 		public void SetUp()
 		{
+#if SILVERLIGHT
+			Init();
+#endif
 			Kernel.Resolver.AddSubResolver(new CollectionResolver(Kernel));
 		}
 	}

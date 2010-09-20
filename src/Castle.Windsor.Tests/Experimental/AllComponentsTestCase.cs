@@ -46,6 +46,9 @@ namespace Castle.Windsor.Tests.Experimental
 		[SetUp]
 		public void SetSubSystem()
 		{
+#if SILVERLIGHT
+			Init();
+#endif
 			subSystem = new DefaultDebuggingSubSystem();
 			Kernel.AddSubSystem(SubSystemConstants.DebuggingKey, subSystem);
 		}
