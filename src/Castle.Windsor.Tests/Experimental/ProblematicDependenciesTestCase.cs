@@ -18,6 +18,7 @@ namespace Castle.Windsor.Tests.Experimental
 
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Registration;
+	using Castle.MicroKernel.Tests.ClassComponents;
 	using Castle.Windsor.Experimental.Debugging;
 	using Castle.Windsor.Experimental.Debugging.Primitives;
 	using Castle.Windsor.Tests.ClassComponents;
@@ -52,19 +53,6 @@ namespace Castle.Windsor.Tests.Experimental
 		}
 
 		[Test]
-		public void Can_detect_singleton_depending_on_two_transients_directly_and_indirectly()
-		{
-			Container.Register(Component.For<CBA>().LifeStyle.Singleton,
-			                   Component.For<B>().LifeStyle.Transient,
-							   Component.For<A>().LifeStyle.Transient);
-
-			var items = GetMismatches();
-			Assert.AreEqual(2, items.Length);
-			var cbaMismatches = items.Where(i => i.Components.First().Handler.Service == typeof(CBA)).ToArray();
-			Assert.AreEqual(2, cbaMismatches.Length);
-		}
-
-		[Test]
 		public void Can_detect_singleton_depending_on_transient_indirectly()
 		{
 			Container.Register(Component.For<C>().LifeStyle.Singleton,
@@ -73,6 +61,30 @@ namespace Castle.Windsor.Tests.Experimental
 
 			var mismatches = GetMismatches();
 			Assert.AreEqual(2, mismatches.Length);
+		}
+
+		[Test]
+		public void Can_detect_singleton_depending_on_transient_indirectly_via_custom_lifestyle()
+		{
+			Container.Register(Component.For<C>().LifeStyle.Singleton,
+			                   Component.For<B>().LifeStyle.Custom<CustomLifestyleManager>(),
+			                   Component.For<A>().LifeStyle.Transient);
+
+			var mismatches = GetMismatches();
+			Assert.AreEqual(1, mismatches.Length);
+		}
+
+		[Test]
+		public void Can_detect_singleton_depending_on_two_transients_directly_and_indirectly()
+		{
+			Container.Register(Component.For<CBA>().LifeStyle.Singleton,
+			                   Component.For<B>().LifeStyle.Transient,
+			                   Component.For<A>().LifeStyle.Transient);
+
+			var items = GetMismatches();
+			Assert.AreEqual(2, items.Length);
+			var cbaMismatches = items.Where(i => i.Components.First().Handler.Service == typeof(CBA)).ToArray();
+			Assert.AreEqual(2, cbaMismatches.Length);
 		}
 
 		[SetUp]

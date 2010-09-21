@@ -1,12 +1,23 @@
-unreleased changes
+2.5.1 (2010-09-21)
 ==================
+
+- added "Potential lifestyle mismatches" debugger view item, that will detect and list situations where Singleton depends on Transient or PerWebRequest component (which is usually a bug)
+
+- fixed issue where forwarding main type would create additional, superfluous handler
+
+- WebLogger/WebLoggerFactory was removed from Castle.Core so all references to that are removed from Windsor as well
+
+- obseleted UseSingleProxyInterface in preference over IProxyGenerationHook
+
+- fixed IOC-220 Composite pattern with CollectionResolver should be properly supported without throwing "cycle detected" exception
+
 - fixed IOC-218 Enable methods that take arguments as anonymous objects in Silverlight version. This works in SL, but requires [assembly: InternalsVisibleTo(Castle.Core.Internal.InternalsVisible.ToCastleCore)]
 
-- fixed IOC-217 Enable ISupportInitialize support as lifecyclecle concern
+- fixed IOC-217 Enable ISupportInitialize support as lifecyclecle concern in Silverlight 4
 
-- implemented IOC-216 Make it possible to specify service overrides in DependsOn, either via Property, or ServiceOverride entry class.
+- implemented IOC-216 Make it possible to specify service overrides in DependsOn, either via Property, or ServiceOverride entry class
 
-- implemented IOC-215 Hide obsolete members from IntelliSense
+- implemented IOC-215 Hide obsolete members from IntelliSense (in basic view. By default in VB they won't be showed, but will in C# :( )
 
 - fixed IOC-214 Missing bracket in obsolete warning text
 
@@ -18,7 +29,11 @@ unreleased changes
 
 - fixed IOC-209 Bug in constructor selection when resolving - Windsor would pick unresolvable constructor
 
-- Reverted back (to the way it was in v2.1) conditional registration of helper components used by TypedFactoryFacility as it would cause issues when used with nested containers (see the new test and thread "Typed Factories in sub Container (differences between 2.5 and 2.1)" on users group)
+- reverted back (to the way it was in v2.1) conditional registration of helper components used by TypedFactoryFacility as it would cause issues when used with nested containers (see the new test and thread "Typed Factories in sub Container (differences between 2.5 and 2.1)" on users group)
+
+- added framework information the assembly was built for to the AssemblyTitle attribute
+
+- improved how late bound types are displayed in debugger
 
 - fixed bug where count of potentially misconfigured components would show invalid value
 

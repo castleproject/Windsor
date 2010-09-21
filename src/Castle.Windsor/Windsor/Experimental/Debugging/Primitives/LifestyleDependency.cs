@@ -92,7 +92,7 @@ namespace Castle.Windsor.Experimental.Debugging.Primitives
 
 		private string GetKey()
 		{
-			return string.Format("\"{0}\" {1}", component.Name, component.Model.GetLifestyleDescription());
+			return string.Format("\"{0}\" »{1}«", component.Name, component.Model.GetLifestyleDescription());
 		}
 
 		private string GetMismatchMessage(IList<MetaComponent> items)
@@ -111,7 +111,8 @@ namespace Castle.Windsor.Experimental.Debugging.Primitives
 
 		private string GetName(MetaComponent root)
 		{
-			return string.Format("\"{0}\" {1} ->", root.Name, root.Model.GetLifestyleDescription());
+			var indirect = (parent.component == root) ? string.Empty : "indirectly ";
+			return string.Format("\"{0}\" »{1}« {2}depends on", root.Name, root.Model.GetLifestyleDescription(), indirect);
 		}
 
 		private bool ImTheRoot()
