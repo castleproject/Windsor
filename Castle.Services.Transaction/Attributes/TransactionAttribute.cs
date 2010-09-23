@@ -83,5 +83,10 @@ namespace Castle.Services.Transaction
 		/// <c>true</c> if a distributed transaction should be created; otherwise, <c>false</c>.
 		/// </value>
 		public bool Distributed { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the transaction should be read only.
+        /// </summary>
+        public bool ReadOnly { get; set; }
 	}
 }

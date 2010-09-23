@@ -86,5 +86,11 @@ namespace Castle.Services.Transaction
 		{
 			get { return _Parent.IsRollbackOnlySet; }
 		}
+
+        public override bool IsReadOnly
+        {
+            get { return _Parent.IsReadOnly; }
+            protected set { }
+        }
 	}
 }
