@@ -53,7 +53,7 @@ namespace Castle.Facilities.ActiveRecordIntegration.Tests
 		[Test]
 		public void ComponentAutoWiring()
 		{
-			WiringSession wsession = (WiringSession) container["wiring.service"];
+			WiringSession wsession = container.Resolve<WiringSession>("wiring.service");
 
 			wsession.UsingISessionFactory();
 

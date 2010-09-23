@@ -21,6 +21,7 @@ namespace Castle.Facilities.ActiveRecordIntegration.Tests
 	
 	using Castle.ActiveRecord;
 	using Castle.Windsor.Configuration.Interpreters;
+	using MicroKernel.Registration;
 	using NUnit.Framework;
 
 	using Castle.Facilities.ActiveRecordIntegration.Tests.Model;
@@ -37,10 +38,10 @@ namespace Castle.Facilities.ActiveRecordIntegration.Tests
 			container.AddFacility("transactionfacility", new TransactionFacility() );
 			container.AddFacility("arfacility", new ActiveRecordFacility() );
 
-			container.AddComponent( "blog.service", typeof(BlogService) );
-			container.AddComponent( "post.service", typeof(PostService) );
-			container.AddComponent( "first.service", typeof(FirstService) );
-			container.AddComponent( "wiring.service", typeof(WiringSession) );
+			container.Register(Component.For<BlogService>().Named("blog.service"));
+			container.Register(Component.For<PostService>().Named("post.service"));
+			container.Register(Component.For<FirstService>().Named("first.service"));
+			container.Register(Component.For<WiringSession>().Named("wiring.service"));
 
 			Recreate();
 		}

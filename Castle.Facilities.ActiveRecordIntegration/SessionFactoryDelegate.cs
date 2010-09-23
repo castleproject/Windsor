@@ -12,17 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Castle.Core.Interceptor;
-using Castle.DynamicProxy;
 
 namespace Castle.Facilities.ActiveRecordIntegration
 {
 	using System;
 	using System.Data;
 
-	using NHibernate;
-
 	using Castle.ActiveRecord.Framework;
+	using Castle.DynamicProxy;
+
+	using NHibernate;
+	using IInterceptor = DynamicProxy.IInterceptor;
 
 	/// <summary>
 	/// Implements <see cref="ISessionFactory"/> allowing 
@@ -45,7 +45,7 @@ namespace Castle.Facilities.ActiveRecordIntegration
 			return (ISessionFactory)proxy;
 		}
 
-		private class SessionFactoryDelegateProxy : Castle.Core.Interceptor.IInterceptor
+		private class SessionFactoryDelegateProxy : IInterceptor
 		{
 			private readonly ISessionFactoryHolder sessionFactoryHolder;
 			private readonly Type arType;

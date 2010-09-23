@@ -17,7 +17,7 @@ namespace Castle.Facilities.ActiveRecordIntegration
 	using System;
 	using System.Collections;
 	using System.Data;
-
+	using System.Linq.Expressions;
 	using NHibernate;
 	using NHibernate.Stat;
 	using NHibernate.Type;
@@ -178,13 +178,13 @@ namespace Castle.Facilities.ActiveRecordIntegration
 			if (!wasClosed)
 			{
 				wasClosed = true;
+				
 				holder.ReleaseSession( innerSession );
+
 				return null;
 			}
-			else
-			{
-				throw new InvalidOperationException("Session was closed");
-			}
+			
+			throw new InvalidOperationException("Session was closed");
 		}
 
 		/// <summary>
@@ -721,161 +721,6 @@ namespace Castle.Facilities.ActiveRecordIntegration
 		}
 
 		/// <summary>
-		/// Execute a query, binding a value to a "?" parameter in the query string.
-		/// </summary>
-		/// <param name="query">The query string</param>
-		/// <param name="value">A value to be bound to a "?" placeholder</param>
-		/// <param name="type">The Hibernate type of the value</param>
-		/// <returns>A distinct list of instances</returns>
-		/// <remarks>See <see cref="M:NHibernate.IQuery.List"/> for implications of <c>cache</c> usage.</remarks>
-		public IList Find(String query, object value, IType type)
-		{
-			// TODO: This is deprecated. Use ISession.CreateQuery().SetXYZ().List()
-			return innerSession.Find(query, value, type);
-		}
-
-		/// <summary>
-		/// Execute a query, binding an array of values to a "?" parameters in the query string.
-		/// </summary>
-		/// <param name="query">The query string</param>
-		/// <param name="values">An array of values to be bound to the "?" placeholders</param>
-		/// <param name="types">An array of Hibernate types of the values</param>
-		/// <returns>A distinct list of instances</returns>
-		/// <remarks>See <see cref="M:NHibernate.IQuery.List"/> for implications of <c>cache</c> usage.</remarks>
-		public IList Find(String query, object[] values, IType[] types)
-		{
-			// TODO: This is deprecated. Use ISession.CreateQuery().SetXYZ().List()
-			return innerSession.Find(query, values, types);
-		}
-
-		/// <summary>
-		/// Execute a query and return the results in an interator.
-		/// </summary>
-		/// <param name="query">The query string</param>
-		/// <returns>An enumerator</returns>
-		/// <remarks>
-		/// 	<para>
-		/// If the query has multiple return values, values will be returned in an array of
-		/// type <c>object[]</c>.
-		/// </para>
-		/// 	<para>
-		/// Entities returned as results are initialized on demand. The first SQL query returns
-		/// identifiers only. So <c>Enumerator()</c> is usually a less efficient way to retrieve
-		/// object than <c>List()</c>.
-		/// </para>
-		/// </remarks>
-		public IEnumerable Enumerable(String query)
-		{
-			// TODO: This is deprecated. Use ISession.CreateQuery().SetXYZ().List()
-			return innerSession.Enumerable(query);
-		}
-
-		/// <summary>
-		/// Execute a query and return the results in an interator,
-		/// binding a value to a "?" parameter in the query string.
-		/// </summary>
-		/// <param name="query">The query string</param>
-		/// <param name="value">A value to be written to a "?" placeholder in the query string</param>
-		/// <param name="type">The hibernate type of the value</param>
-		/// <returns>An enumerator</returns>
-		/// <remarks>
-		/// 	<para>
-		/// If the query has multiple return values, values will be returned in an array of
-		/// type <c>object[]</c>.
-		/// </para>
-		/// 	<para>
-		/// Entities returned as results are initialized on demand. The first SQL query returns
-		/// identifiers only. So <c>Enumerator()</c> is usually a less efficient way to retrieve
-		/// object than <c>List()</c>.
-		/// </para>
-		/// </remarks>
-		public IEnumerable Enumerable(String query, object value, IType type)
-		{
-			// TODO: This is deprecated. Use ISession.CreateQuery().SetXYZ().List()
-			return innerSession.Enumerable(query, value, type);
-		}
-
-		/// <summary>
-		/// Execute a query and return the results in an interator,
-		/// binding the values to "?"s parameters in the query string.
-		/// </summary>
-		/// <param name="query">The query string</param>
-		/// <param name="values">A list of values to be written to "?" placeholders in the query</param>
-		/// <param name="types">A list of hibernate types of the values</param>
-		/// <returns>An enumerator</returns>
-		/// <remarks>
-		/// 	<para>
-		/// If the query has multiple return values, values will be returned in an array of
-		/// type <c>object[]</c>.
-		/// </para>
-		/// 	<para>
-		/// Entities returned as results are initialized on demand. The first SQL query returns
-		/// identifiers only. So <c>Enumerator()</c> is usually a less efficient way to retrieve
-		/// object than <c>List()</c>.
-		/// </para>
-		/// </remarks>
-		public IEnumerable Enumerable(String query, object[] values, IType[] types)
-		{
-			// TODO: This is deprecated. Use ISession.CreateQuery().SetXYZ().List()
-			return innerSession.Enumerable(query, values, types);
-		}
-
-		/// <summary>
-		/// Apply a filter to a persistent collection.
-		/// </summary>
-		/// <param name="collection">A persistent collection to filter</param>
-		/// <param name="filter">A filter query string</param>
-		/// <returns>The resulting collection</returns>
-		/// <remarks>
-		/// A filter is a Hibernate query that may refer to <c>this</c>, the collection element.
-		/// Filters allow efficient access to very large lazy collections. (Executing the filter
-		/// does not initialize the collection.)
-		/// </remarks>
-		public ICollection Filter(object collection, String filter)
-		{
-			// TODO: This is deprecated. Use ISession.CreateQuery().SetXYZ().List()
-			return innerSession.Filter(collection, filter);
-		}
-
-		/// <summary>
-		/// Apply a filter to a persistent collection, binding the given parameter to a "?" placeholder
-		/// </summary>
-		/// <param name="collection">A persistent collection to filter</param>
-		/// <param name="filter">A filter query string</param>
-		/// <param name="value">A value to be written to a "?" placeholder in the query</param>
-		/// <param name="type">The hibernate type of value</param>
-		/// <returns>A collection</returns>
-		/// <remarks>
-		/// A filter is a Hibernate query that may refer to <c>this</c>, the collection element.
-		/// Filters allow efficient access to very large lazy collections. (Executing the filter
-		/// does not initialize the collection.)
-		/// </remarks>
-		public ICollection Filter(object collection, String filter, object value, IType type)
-		{
-			// TODO: This is deprecated. Use ISession.CreateQuery().SetXYZ().List()
-			return innerSession.Filter(collection, filter, value, type);
-		}
-
-		/// <summary>
-		/// Apply a filter to a persistent collection, binding the given parameters to "?" placeholders.
-		/// </summary>
-		/// <param name="collection">A persistent collection to filter</param>
-		/// <param name="filter">A filter query string</param>
-		/// <param name="values">The values to be written to "?" placeholders in the query</param>
-		/// <param name="types">The hibernate types of the values</param>
-		/// <returns>A collection</returns>
-		/// <remarks>
-		/// A filter is a Hibernate query that may refer to <c>this</c>, the collection element.
-		/// Filters allow efficient access to very large lazy collections. (Executing the filter
-		/// does not initialize the collection.)
-		/// </remarks>
-		public ICollection Filter(object collection, String filter, object[] values, IType[] types)
-		{
-			// TODO: This is deprecated. Use ISession.CreateQuery().SetXYZ().List()
-			return innerSession.Filter(collection, filter, values, types);
-		}
-
-		/// <summary>
 		/// Return the entity name for a persistent entity
 		/// </summary>
 		/// <param name="obj">a persistent entity</param>
@@ -1128,6 +973,30 @@ namespace Castle.Facilities.ActiveRecordIntegration
 		}
 
 		/// <summary>
+		/// Creates a new <c>IQueryOver&lt;T&gt;</c> for the entity class.
+		/// </summary>
+		/// <typeparam name="T">The entity class</typeparam>
+		/// <returns>
+		/// An ICriteria&lt;T&gt; object
+		/// </returns>
+		public IQueryOver<T, T> QueryOver<T>() where T : class
+		{
+			return innerSession.QueryOver<T>();
+		}
+
+		/// <summary>
+		/// Creates a new <c>IQueryOver&lt;T&gt;</c> for the entity class.
+		/// </summary>
+		/// <typeparam name="T">The entity class</typeparam>
+		/// <returns>
+		/// An ICriteria&lt;T&gt; object
+		/// </returns>
+		public IQueryOver<T, T> QueryOver<T>(Expression<Func<T>> alias) where T : class
+		{
+			return innerSession.QueryOver(alias);
+		}
+
+		/// <summary>
 		/// Create a new instance of <c>Query</c> for the given query string
 		/// </summary>
 		/// <param name="queryString">A hibernate query string</param>
@@ -1135,6 +1004,16 @@ namespace Castle.Facilities.ActiveRecordIntegration
 		public IQuery CreateQuery(String queryString)
 		{
 			return innerSession.CreateQuery(queryString);
+		}
+
+		/// <summary>
+		/// Create a new instance of <c>Query</c> for the given query expression
+		/// </summary>
+		/// <param name="queryExpression">A hibernate query expression</param>
+		/// <returns>The query</returns>
+		public IQuery CreateQuery(IQueryExpression queryExpression)
+		{
+			return innerSession.CreateQuery(queryExpression);
 		}
 
 		/// <summary>
@@ -1174,34 +1053,6 @@ namespace Castle.Facilities.ActiveRecordIntegration
 		public ISQLQuery CreateSQLQuery(string queryString)
 		{
 			return innerSession.CreateSQLQuery(queryString);
-		}
-
-		/// <summary>
-		/// Create a new instance of <c>IQuery</c> for the given SQL string.
-		/// </summary>
-		/// <param name="sql">a query expressed in SQL</param>
-		/// <param name="returnAlias">a table alias that appears inside <c>{}</c> in the SQL string</param>
-		/// <param name="returnClass">the returned persistent class</param>
-		/// <returns>
-		/// An <see cref="T:NHibernate.IQuery"/> from the SQL string
-		/// </returns>
-		public IQuery CreateSQLQuery(String sql, String returnAlias, Type returnClass)
-		{
-			return innerSession.CreateSQLQuery(sql, returnAlias, returnClass);
-		}
-
-		/// <summary>
-		/// Create a new instance of <see cref="T:NHibernate.IQuery"/> for the given SQL string.
-		/// </summary>
-		/// <param name="sql">a query expressed in SQL</param>
-		/// <param name="returnAliases">an array of table aliases that appear inside <c>{}</c> in the SQL string</param>
-		/// <param name="returnClasses">the returned persistent classes</param>
-		/// <returns>
-		/// An <see cref="T:NHibernate.IQuery"/> from the SQL string
-		/// </returns>
-		public IQuery CreateSQLQuery(String sql, String[] returnAliases, Type[] returnClasses)
-		{
-			return innerSession.CreateSQLQuery(sql, returnAliases, returnClasses);
 		}
 
 		/// <summary>

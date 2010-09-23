@@ -34,7 +34,7 @@ namespace Castle.Facilities.ActiveRecordIntegration.Tests
 			{
 				Blog.FindAll(); // side effects only
 
-				BlogService service = (BlogService) container[ typeof(BlogService) ];
+				BlogService service = container.Resolve<BlogService>();
 				service.Create( "name", "author" );
 			}
 
@@ -51,7 +51,7 @@ namespace Castle.Facilities.ActiveRecordIntegration.Tests
 			{
 				Blog.FindAll(); // side effects only
 
-				BlogService service = (BlogService) container[ typeof(BlogService) ];
+				BlogService service = container.Resolve<BlogService>();
 				Blog blog = service.Create( "name", "author" );
 
 				try
@@ -76,7 +76,7 @@ namespace Castle.Facilities.ActiveRecordIntegration.Tests
 			{
 				Blog.FindAll(); // side effects only
 
-				BlogService service = (BlogService) container[ typeof(BlogService) ];
+				BlogService service = container.Resolve<BlogService>();
 				Blog blog = service.Create( "name", "author" );
 
 				try
@@ -98,7 +98,7 @@ namespace Castle.Facilities.ActiveRecordIntegration.Tests
 			Post.DeleteAll();
 			Blog.DeleteAll();
 
-			BlogService service = (BlogService) container[ typeof(BlogService) ];
+			BlogService service = container.Resolve<BlogService>();
 
 			using(new SessionScope())
 			{
@@ -122,7 +122,7 @@ namespace Castle.Facilities.ActiveRecordIntegration.Tests
 			Post.DeleteAll();
 			Blog.DeleteAll();
 
-			BlogService service = (BlogService) container[ typeof(BlogService) ];
+			BlogService service = container.Resolve<BlogService>();
 
 			using(new SessionScope())
 			{
@@ -146,7 +146,7 @@ namespace Castle.Facilities.ActiveRecordIntegration.Tests
 			Post.DeleteAll();
 			Blog.DeleteAll();
 
-			BlogService service = (BlogService) container[ typeof(BlogService) ];
+			BlogService service = container.Resolve<BlogService>();
 
 			using(new SessionScope())
 			{
@@ -170,7 +170,7 @@ namespace Castle.Facilities.ActiveRecordIntegration.Tests
 			Post.DeleteAll();
 			Blog.DeleteAll();
 
-			FirstService service = (FirstService) container[ typeof(FirstService) ];
+			FirstService service = container.Resolve<FirstService>();
 
 			using(new SessionScope())
 			{
@@ -189,7 +189,7 @@ namespace Castle.Facilities.ActiveRecordIntegration.Tests
 			Post.DeleteAll();
 			Blog.DeleteAll();
 
-			FirstService service = (FirstService) container[ typeof(FirstService) ];
+			FirstService service = container.Resolve<FirstService>();
 
 			using(new SessionScope())
 			{
