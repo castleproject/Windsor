@@ -4,14 +4,14 @@
     <ProjectType>Local</ProjectType>
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{67CDFD3A-450F-4CD4-9401-EF15361E2713}</ProjectGuid>
+    <ProjectGuid>{8A7E5413-3F2C-4C09-92A7-F5A3AC9F2F93}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ApplicationIcon>
     </ApplicationIcon>
     <AssemblyKeyContainerName>
     </AssemblyKeyContainerName>
-    <AssemblyName>Castle.Services.Transaction.Tests</AssemblyName>
+    <AssemblyName>Castle.Facilities.AutoTx.Tests</AssemblyName>
     <AssemblyOriginatorKeyFile>
     </AssemblyOriginatorKeyFile>
     <DefaultClientScript>JScript</DefaultClientScript>
@@ -19,7 +19,7 @@
     <DefaultTargetSchema>IE50</DefaultTargetSchema>
     <DelaySign>false</DelaySign>
     <OutputType>Library</OutputType>
-    <RootNamespace>Castle.Services.Transaction.Tests</RootNamespace>
+    <RootNamespace>Castle.Facilities.AutoTx.Tests</RootNamespace>
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
     <StartupObject>
     </StartupObject>
@@ -28,7 +28,9 @@
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
     <OldToolsVersion>3.5</OldToolsVersion>
-    <PublishUrl>http://localhost/Castle.Services.Transaction.Tests/</PublishUrl>
+    <IsWebBootstrapper>true</IsWebBootstrapper>
+    <TargetFrameworkVersion>$(TargetFrameworkVersion)</TargetFrameworkVersion>
+    <PublishUrl>http://localhost/Castle.Facilities.AutomaticTransactionManagement.Tests/</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Web</InstallFrom>
     <UpdateEnabled>true</UpdateEnabled>
@@ -40,11 +42,8 @@
     <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>0</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>true</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <OutputPath>bin\Debug\</OutputPath>
@@ -64,7 +63,7 @@
     <Optimize>false</Optimize>
     <RegisterForComInterop>false</RegisterForComInterop>
     <RemoveIntegerChecks>false</RemoveIntegerChecks>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <WarningLevel>4</WarningLevel>
     <DebugType>full</DebugType>
     <ErrorReport>prompt</ErrorReport>
@@ -98,55 +97,39 @@
     <Reference Include="Castle.Core">
       <HintPath>..\..\lib\net-3.5\Castle.Core.dll</HintPath>
     </Reference>
+    <Reference Include="Castle.Windsor">
+      <HintPath>..\..\lib\net-3.5\Castle.Windsor.dll</HintPath>
+    </Reference>
     <Reference Include="log4net">
       <HintPath>..\..\lib\net-3.5\loggingFacility\log4net.dll</HintPath>
     </Reference>
-    <Reference Include="nunit.framework">
-      <Name>nunit.framework</Name>
+    <Reference Include="nunit.framework, Version=2.5.0.9122, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="System">
       <Name>System</Name>
     </Reference>
+    <Reference Include="System.configuration" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Data">
       <Name>System.Data</Name>
     </Reference>
-    <Reference Include="System.Transactions" />
     <Reference Include="System.Xml">
       <Name>System.XML</Name>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DirectoryAdapterTests.cs" />
-    <Compile Include="FileTransactions_Directory_Tests.cs" />
-    <Compile Include="FileTransactions_File_Tests.cs" />
-    <Compile Include="MiscTests.cs" />
-    <Compile Include="TestClasses\Exts.cs" />
-    <Compile Include="FileTransactionTests.cs" />
-    <Compile Include="FileTransaction_WithManager_Tests.cs" />
-    <Compile Include="NestedTransactionsTests.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="TestClasses\ResourceImpl.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="TestClasses\SynchronizationImpl.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="TestClasses\TestResource.cs" />
-    <Compile Include="TestClasses\ThrowsExceptionResource.cs" />
-    <Compile Include="TransactionManagerTests.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="TestClasses\TransientActivityManager.cs" />
-  </ItemGroup>
-  <ItemGroup>
     <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />
   </ItemGroup>
   <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
     <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
       <Visible>False</Visible>
       <ProductName>.NET Framework 2.0 %28x86%29</ProductName>
@@ -162,15 +145,55 @@
       <ProductName>.NET Framework 3.5</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Castle.Facilities.AutoTx\Castle.Facilities.AutoTx.csproj">
+      <Project>{9962F772-E75C-4998-A45B-3CD99C2E2903}</Project>
+      <Name>Castle.Facilities.AutoTx</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Castle.Services.Transaction\Castle.Services.Transaction.csproj">
       <Project>{0F611C1B-EDFD-46E6-9C3A-95420946E9CC}</Project>
       <Name>Castle.Services.Transaction</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App.config">
+    <Compile Include="AutoTxFacilityTests.cs" />
+    <Compile Include="ConfiguredComponentsTests.cs" />
+    <Compile Include="TestClasses\AClass.cs" />
+    <Compile Include="TestClasses\AnotherCustomerService.cs" />
+    <Compile Include="TestClasses\BaseTransactionalComp.cs" />
+    <Compile Include="TestClasses\CustomerService.cs" />
+    <Compile Include="TestClasses\GenericService.cs" />
+    <Compile Include="TestClasses\ICustomerService.cs" />
+    <Compile Include="TestClasses\ISomething.cs" />
+    <Compile Include="TestClasses\MockTransaction.cs" />
+    <Compile Include="TestClasses\MockTransactionManager.cs" />
+    <Compile Include="TestClasses\TransactionalComp1.cs" />
+    <Compile Include="TestClasses\TransactionalComp3.cs" />
+    <Compile Include="TransactionTestCase.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="ConfigForServiceWithInterface.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="HasConfiguration.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="HasInvalidMethod.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="HasIsTransactionalButNothingIsConfigured.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="IsTransactionalMissing.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ValidConfigForInheritedMethods.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
