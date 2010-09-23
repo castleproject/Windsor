@@ -134,11 +134,6 @@
     <Reference Include="System.Xml">
       <Name>System.XML</Name>
     </Reference>
-    <ProjectReference Include="..\Castle.Facilities.ActiveRecordIntegration\Castle.Facilities.ActiveRecordIntegration-vs2008.csproj">
-      <Name>Castle.Facilities.ActiveRecordIntegration-vs2008</Name>
-      <Project>{0C47AD89-6D32-4FD8-963F-EF29075EED68}</Project>
-      <Package>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</Package>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AbstractActiveRecordTest.cs">
@@ -202,6 +197,12 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Castle.Facilities.ActiveRecordIntegration\Castle.Facilities.ActiveRecordIntegration-vs2010.csproj">
+      <Project>{0C47AD89-6D32-4FD8-963F-EF29075EED68}</Project>
+      <Name>Castle.Facilities.ActiveRecordIntegration-vs2010</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
