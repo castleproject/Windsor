@@ -23,8 +23,15 @@ namespace Castle.Facilities.WcfIntegration
 
 	public class WcfMetadataExtension : AbstractServiceHostAware
 	{
+		private bool newBinding;
 		private bool enableHttpGet;
 		private string address = "mex";
+
+		public WcfMetadataExtension NewBinding()
+		{
+			newBinding = true;
+			return this;
+		}
 
 		public WcfMetadataExtension EnableHttpGet()
 		{
@@ -60,7 +67,7 @@ namespace Castle.Facilities.WcfIntegration
 
 				if (StringComparer.OrdinalIgnoreCase.Equals(scheme, Uri.UriSchemeHttp))
 				{
-					binding = FindCompatibleBinding(serviceHost, scheme);
+					binding = newBinding ? null : FindCompatibleBinding(serviceHost, scheme);
 					if (binding == null)
 					{
 						binding = MetadataExchangeBindings.CreateMexHttpBinding();
@@ -69,7 +76,7 @@ namespace Castle.Facilities.WcfIntegration
 				}
 				else if (StringComparer.OrdinalIgnoreCase.Equals(scheme, Uri.UriSchemeHttps))
 				{
-					binding = FindCompatibleBinding(serviceHost, scheme);
+					binding = newBinding ? null : FindCompatibleBinding(serviceHost, scheme);
 					if (binding == null)
 					{
 						binding = MetadataExchangeBindings.CreateMexHttpsBinding();

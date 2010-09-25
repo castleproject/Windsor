@@ -450,9 +450,12 @@ namespace Castle.Facilities.WcfIntegration
 		internal DiscoveredEndpointModel(Type contract, Binding binding, Type searchContract)
 			: base(contract)
 		{
+			MaxResults = 1;
 			Binding = binding;
 			SearchContract = searchContract;
 		}
+
+		public int MaxResults { get; private set; }
 
 		public Binding Binding { get; private set; }
 
@@ -468,9 +471,23 @@ namespace Castle.Facilities.WcfIntegration
 
 		public EndpointIdentity Identity { get; private set; }
 
+		public Func<IList<EndpointDiscoveryMetadata>, EndpointDiscoveryMetadata> EndpointPreference { get; private set; }
+
+		public DiscoveredEndpointModel Limit(int maxResults)
+		{
+			MaxResults = maxResults;
+			return this;
+		}
+
 		public DiscoveredEndpointModel InferBinding()
 		{
 			DeriveBinding = true;
+			return this;
+		}
+
+		public DiscoveredEndpointModel PreferEndpoint(Func<IList<EndpointDiscoveryMetadata>, EndpointDiscoveryMetadata> selector)
+		{
+			EndpointPreference = selector;
 			return this;
 		}
 

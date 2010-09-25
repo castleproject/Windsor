@@ -140,6 +140,18 @@ namespace Castle.Facilities.WcfIntegration
 				{
 					var binding = model.Binding;
 					var endpointMetadata = discovered.Endpoints[0];
+					if (discovered.Endpoints.Count > 1 && model.EndpointPreference != null)
+					{
+						endpointMetadata = model.EndpointPreference(discovered.Endpoints);
+						if (endpointMetadata == null)
+						{
+							throw new EndpointNotFoundException(string.Format(
+								"More than one endpoint was discovered for contract {0}.  " +
+								"However, an endpoint could be selected.  This is most likely " +
+								"a bug with the user-defined endpoint prefeence.",
+								contract.FullName));
+						}
+					}
 
 					if (binding == null && model.DeriveBinding == false)
 					{
@@ -168,7 +180,7 @@ namespace Castle.Facilities.WcfIntegration
 				else
 				{
 					throw new EndpointNotFoundException(string.Format(
-						"Unable to discover the endpoint address for contract {0}.  " + 
+						"Unable to discover the endpoint for contract {0}.  " + 
 						"Either no service exists or it does not support discovery.",
 						contract.FullName));
 				}
@@ -189,7 +201,7 @@ namespace Castle.Facilities.WcfIntegration
 		private FindCriteria CreateSearchCriteria(DiscoveredEndpointModel model)
 		{
 			var searchContract = model.SearchContract ?? contract;
-			var criteria = new FindCriteria(searchContract) { MaxResults = 1 };
+			var criteria = new FindCriteria(searchContract) { MaxResults = model.MaxResults };
 
 			if (model.Duration.HasValue)
 			{

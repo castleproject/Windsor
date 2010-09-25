@@ -1694,6 +1694,48 @@ namespace Castle.Facilities.WcfIntegration.Tests
 			}
 		}
 
+		[Test]
+		public void CanDiscoverServiceEndpointFromMetadataWithPreference()
+		{
+			var preferenceMade = false;
+
+			using (new WindsorContainer()
+				.AddFacility<WcfFacility>(f => f.CloseTimeout = TimeSpan.Zero)
+				.Register(Component.For<Operations>()
+					.DependsOn(new { number = 28 })
+					.AsWcfService(new DefaultServiceModel()
+						.AddEndpoints(WcfEndpoint.ForContract<IOperations>()
+							.BoundTo(new NetTcpBinding(SecurityMode.Transport, true)
+							{
+								PortSharingEnabled = true
+							})
+							.At("net.tcp://localhost/Operations2"))
+						.AddEndpoints(WcfEndpoint.ForContract<IOperations>()
+							.BoundTo(new NetTcpBinding(SecurityMode.Transport, true)
+							{
+								PortSharingEnabled = true
+							})
+							.At("net.tcp://localhost/Operations2a"))
+						.Discoverable()
+				)))
+			{
+				using (var clientContainer = new WindsorContainer()
+					.AddFacility<WcfFacility>()
+					.Register(Component.For<IOperations>()
+						.AsWcfClient(WcfEndpoint.Discover().Limit(2).PreferEndpoint(endpoints =>
+						{
+							preferenceMade = true;
+							return endpoints[0];
+						}))
+					))
+				{
+					var client = clientContainer.Resolve<IOperations>();
+					Assert.AreEqual(28, client.GetValueFromConstructor());
+					Assert.IsTrue(preferenceMade);
+				}
+			}
+		}
+
 		[Test, ExpectedException(typeof(EndpointNotFoundException))]
 		public void WillNotDiscoverServiceEndpointIfScopesDontMatch()
 		{
