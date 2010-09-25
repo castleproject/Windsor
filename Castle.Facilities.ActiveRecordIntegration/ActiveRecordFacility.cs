@@ -237,8 +237,8 @@ namespace Castle.Facilities.ActiveRecordIntegration
 	{
 		public ConfigurationSourceAdapter(IConfiguration facilityConfig)
 		{
-			String isWeb = facilityConfig.Attributes["isWeb"];
-			String threadinfotype = facilityConfig.Attributes["threadinfotype"];
+			string isWeb = facilityConfig.Attributes["isWeb"];
+			string threadinfotype = facilityConfig.Attributes["threadinfotype"];
 			string isDebug = facilityConfig.Attributes["isDebug"];
 			string sessionfactoryholdertype = facilityConfig.Attributes["sessionfactoryholdertype"];
 			string isLazyByDefault = facilityConfig.Attributes["default-lazy"];
@@ -246,6 +246,7 @@ namespace Castle.Facilities.ActiveRecordIntegration
 			string verifyModelsAgainstDBSchema = facilityConfig.Attributes["verifyModelsAgainstDBSchema"];
 			string defaultFlushType = facilityConfig.Attributes["flush"];
 			string namingstrategytype = facilityConfig.Attributes["namingstrategytype"];
+			string searchable = facilityConfig.Attributes["searchable"];
 
 			SetUpThreadInfoType(ConvertBool(isWeb), threadinfotype);
 			SetDebugFlag(ConvertBool(isDebug));
@@ -253,12 +254,17 @@ namespace Castle.Facilities.ActiveRecordIntegration
 			SetIsLazyByDefault(ConvertBool(isLazyByDefault));
 			PluralizeTableNames = ConvertBool(pluralize);
 			VerifyModelsAgainstDBSchema = ConvertBool(verifyModelsAgainstDBSchema);
+			
 			if (string.IsNullOrEmpty(defaultFlushType))
 				SetDefaultFlushType(DefaultFlushType.Classic);
 			else
 				SetDefaultFlushType(defaultFlushType);
+
 			if (!string.IsNullOrEmpty(namingstrategytype))
 				SetUpNamingStrategyType(namingstrategytype);
+
+			if (!string.IsNullOrEmpty(searchable))
+				Searchable = ConvertBool(searchable); 
 
 			foreach(IConfiguration config in facilityConfig.Children)
 			{
