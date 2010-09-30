@@ -124,7 +124,7 @@ namespace Castle.MicroKernel.Registration
 #else
 					new HashSet<Type>();
 #endif
-				if(implements!=null)
+				if (implements != null)
 				{
 					AddFromInterface(type, implements, matches);
 				}
@@ -135,14 +135,17 @@ namespace Castle.MicroKernel.Registration
 						AddFromInterface(type, baseType, matches);
 					}
 				}
-				foreach (var baseType in baseTypes)
-				{
 
-					if (matches.Count == 0 && baseType.IsAssignableFrom(type))
+				if (matches.Count == 0)
+				{
+					foreach (var baseType in baseTypes.Where(t => t != typeof(object)))
 					{
-						matches.Add(baseType);
+						if (baseType.IsAssignableFrom(type))
+						{
+							matches.Add(baseType);
+							break;
+						}
 					}
-					
 				}
 
 				return matches;
