@@ -16,6 +16,7 @@ namespace Castle.MicroKernel
 {
 	using System;
 	using System.Collections;
+	using System.ComponentModel;
 
 	using Castle.Core;
 	using Castle.MicroKernel.ComponentActivator;
@@ -26,116 +27,43 @@ namespace Castle.MicroKernel
 	public partial class DefaultKernel
 #endif
 	{
+		[Obsolete("Use Register(Component.For(classType).Named(key)) or generic version instead.")]
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public virtual void AddComponent(String key, Type classType)
 		{
 			AddComponent(key, classType, classType);
 		}
 
-		/// <summary>
-		/// Adds a concrete class
-		/// as a component with the specified <paramref name="lifestyle"/>.
-		/// </summary>
-		/// <param name="key">The key with which to index the component.</param>
-		/// <param name="classType">The <see cref="Type"/> of the component.</param>
-		/// <param name="lifestyle">The specified <see cref="LifestyleType"/> for the component.</param>
-		/// <remarks>
-		/// If you have indicated a lifestyle for the specified <paramref name="classType"/> using
-		/// attributes, this method will not overwrite that lifestyle. To do that, use the
-		/// <see cref="IKernel.AddComponent(string,Type,LifestyleType,bool)"/> method.
-		/// </remarks>
-		/// <exception cref="ArgumentNullException">
-		/// Thrown if <paramref name="key"/> or <paramref name="classType"/>
-		/// are <see langword="null"/>.
-		/// </exception>
-		/// <exception cref="ArgumentException">
-		/// Thrown if <paramref name="lifestyle"/> is <see cref="LifestyleType.Undefined"/>.
-		/// </exception>
+		[Obsolete("Use Register(Component.For(classType).Named(key).Lifestyle.Is(lifestyle)) or generic version instead.")]
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public void AddComponent(string key, Type classType, LifestyleType lifestyle)
 		{
 			AddComponent(key, classType, classType, lifestyle);
 		}
 
-		/// <summary>
-		/// Adds a concrete class
-		/// as a component with the specified <paramref name="lifestyle"/>.
-		/// </summary>
-		/// <param name="key">The key with which to index the component.</param>
-		/// <param name="classType">The <see cref="Type"/> of the component.</param>
-		/// <param name="lifestyle">The specified <see cref="LifestyleType"/> for the component.</param>
-		/// <param name="overwriteLifestyle">
-		/// If <see langword="true"/>, then ignores all other configurations
-		/// for lifestyle and uses the value in the <paramref name="lifestyle"/> parameter.
-		/// </param>
-		/// <remarks>
-		/// If you have indicated a lifestyle for the specified <paramref name="classType"/> using
-		/// attributes, this method will not overwrite that lifestyle. To do that, use the
-		/// <see cref="IKernel.AddComponent(string,Type,Type,LifestyleType,bool)"/> method.
-		/// </remarks>
-		/// <exception cref="ArgumentNullException">
-		/// Thrown if <paramref name="key"/> or <paramref name="classType"/>
-		/// are <see langword="null"/>.
-		/// </exception>
-		/// <exception cref="ArgumentException" />
-		/// Thrown if <paramref name="lifestyle"/> is <see cref="LifestyleType.Undefined"/>.
+		[Obsolete("Use Register(Component.For(classType).Named(key).Lifestyle.Is(lifestyle)) or generic version instead.")]
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public void AddComponent(string key, Type classType, LifestyleType lifestyle, bool overwriteLifestyle)
 		{
 			AddComponent(key, classType, classType, lifestyle, overwriteLifestyle);
 		}
 
+		[Obsolete("Use Register(Component.For(serviceType).ImplementedBy(classType).Named(key)) or generic version instead.")]
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public virtual void AddComponent(String key, Type serviceType, Type classType)
 		{
 			AddComponent(key, serviceType, classType, LifestyleType.Singleton);
 		}
 
-		/// <summary>
-		/// Adds a concrete class and an interface 
-		/// as a component with the specified <paramref name="lifestyle"/>.
-		/// </summary>
-		/// <param name="key">The key with which to index the component.</param>
-		/// <param name="serviceType">The service <see cref="Type"/> that this component implements.</param>
-		/// <param name="classType">The <see cref="Type"/> of the component.</param>
-		/// <param name="lifestyle">The specified <see cref="LifestyleType"/> for the component.</param>
-		/// <remarks>
-		/// If you have indicated a lifestyle for the specified <paramref name="classType"/> using
-		/// attributes, this method will not overwrite that lifestyle. To do that, use the
-		/// <see cref="AddComponent(string,Type,Type,LifestyleType,bool)"/> method.
-		/// </remarks>
-		/// <exception cref="ArgumentNullException">
-		/// Thrown if <paramref name="key"/>, <paramref name="serviceType"/>, or <paramref name="classType"/>
-		/// are <see langword="null"/>.
-		/// </exception>
-		/// <exception cref="ArgumentException">
-		/// Thrown if <paramref name="lifestyle"/> is <see cref="LifestyleType.Undefined"/>.
-		/// </exception>
+		[Obsolete("Use Register(Component.For(serviceType).ImplementedBy(classType).Named(key).Lifestyle.Is(lifestyle)) or generic version instead.")]
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public void AddComponent(string key, Type serviceType, Type classType, LifestyleType lifestyle)
 		{
 			AddComponent(key, serviceType, classType, lifestyle, false);
 		}
 
-		/// <summary>
-		/// Adds a concrete class and an interface 
-		/// as a component with the specified <paramref name="lifestyle"/>.
-		/// </summary>
-		/// <param name="key">The key with which to index the component.</param>
-		/// <param name="serviceType">The service <see cref="Type"/> that this component implements.</param>
-		/// <param name="classType">The <see cref="Type"/> of the component.</param>
-		/// <param name="lifestyle">The specified <see cref="LifestyleType"/> for the component.</param>
-		/// <param name="overwriteLifestyle">
-		/// If <see langword="true"/>, then ignores all other configurations
-		/// for lifestyle and uses the value in the <paramref name="lifestyle"/> parameter.
-		/// </param>
-		/// <remarks>
-		/// If you have indicated a lifestyle for the specified <paramref name="classType"/> using
-		/// attributes, this method will not overwrite that lifestyle. To do that, use the
-		/// <see cref="AddComponent(string,Type,Type,LifestyleType,bool)"/> method.
-		/// </remarks>
-		/// <exception cref="ArgumentNullException">
-		/// Thrown if <paramref name="key"/>, <paramref name="serviceType"/>, or <paramref name="classType"/>
-		/// are <see langword="null"/>.
-		/// </exception>
-		/// <exception cref="ArgumentException">
-		/// Thrown if <paramref name="lifestyle"/> is <see cref="LifestyleType.Undefined"/>.
-		/// </exception>
+		[Obsolete("Use Register(Component.For(serviceType).ImplementedBy(classType).Named(key).Lifestyle.Is(lifestyle)) or generic version instead.")]
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public void AddComponent(string key, Type serviceType, Type classType, LifestyleType lifestyle,
 								 bool overwriteLifestyle)
 		{
@@ -157,49 +85,36 @@ namespace Castle.MicroKernel
 			RegisterHandler(key, handler);
 		}
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="key"></param>
-		/// <param name="classType"></param>
-		/// <param name="parameters"></param>
-		public virtual void AddComponentWithExtendedProperties(String key, Type classType, IDictionary parameters)
+		[Obsolete("Use Register(Component.For(classType).Named(key).ExtendedProperties(extendedProperties)) or generic version instead.")]
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public virtual void AddComponentWithExtendedProperties(String key, Type classType, IDictionary extendedProperties)
 		{
 			if (key == null) throw new ArgumentNullException("key");
-			if (parameters == null) throw new ArgumentNullException("parameters");
+			if (extendedProperties == null) throw new ArgumentNullException("extendedProperties");
 			if (classType == null) throw new ArgumentNullException("classType");
 
-			ComponentModel model = ComponentModelBuilder.BuildModel(key, classType, classType, parameters);
+			ComponentModel model = ComponentModelBuilder.BuildModel(key, classType, classType, extendedProperties);
 			RaiseComponentModelCreated(model);
 			IHandler handler = HandlerFactory.Create(model);
 			RegisterHandler(key, handler);
 		}
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="key"></param>
-		/// <param name="serviceType"></param>
-		/// <param name="classType"></param>
-		/// <param name="parameters"></param>
+		[Obsolete("Use Register(Component.For(serviceType).ImplementedBy(classType).Named(key).ExtendedProperties(extendedProperties)) or generic version instead.")]
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public virtual void AddComponentWithExtendedProperties(String key, Type serviceType, Type classType,
-															   IDictionary parameters)
+															   IDictionary extendedProperties)
 		{
 			if (key == null) throw new ArgumentNullException("key");
-			if (parameters == null) throw new ArgumentNullException("parameters");
+			if (extendedProperties == null) throw new ArgumentNullException("extendedProperties");
 			if (serviceType == null) throw new ArgumentNullException("serviceType");
 			if (classType == null) throw new ArgumentNullException("classType");
 
-			ComponentModel model = ComponentModelBuilder.BuildModel(key, serviceType, classType, parameters);
+			ComponentModel model = ComponentModelBuilder.BuildModel(key, serviceType, classType, extendedProperties);
 			RaiseComponentModelCreated(model);
 			IHandler handler = HandlerFactory.Create(model);
 			RegisterHandler(key, handler);
 		}
-
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="model"></param>
+		// NOTE: this is from IKernelInternal
 		public virtual void AddCustomComponent(ComponentModel model)
 		{
 			if (model == null) throw new ArgumentNullException("model");
@@ -219,12 +134,8 @@ namespace Castle.MicroKernel
 			}
 		}
 
-		/// <summary>
-		/// Used mostly by facilities. Adds an instance
-		/// to be used as a component.
-		/// </summary>
-		/// <param name="key"></param>
-		/// <param name="instance"></param>
+		[Obsolete("Use Register(Component.For(instance.GetType()).Named(key).Instance(instance)) or generic version instead.")]
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public void AddComponentInstance(String key, object instance)
 		{
 			if (key == null) throw new ArgumentNullException("key");
@@ -244,18 +155,15 @@ namespace Castle.MicroKernel
 			RegisterHandler(key, handler);
 		}
 
-		/// <summary>
-		/// Used mostly by facilities. Adds an instance
-		/// to be used as a component.
-		/// </summary>
-		/// <param name="key"></param>
-		/// <param name="serviceType"></param>
-		/// <param name="instance"></param>
+		[Obsolete("Use Register(Component.For(serviceType).Named(key).Instance(instance)) or generic version instead.")]
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public void AddComponentInstance(String key, Type serviceType, object instance)
 		{
 			AddComponentInstance(key, serviceType, instance.GetType(), instance);
 		}
 
+		[Obsolete("Use Register(Component.For(serviceType).ImplementedBy(classType).Named(key).Instance(instance)) or generic version instead.")]
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public void AddComponentInstance(string key, Type serviceType, Type classType, object instance)
 		{
 			if (key == null) throw new ArgumentNullException("key");
@@ -275,133 +183,64 @@ namespace Castle.MicroKernel
 			RegisterHandler(key, handler);
 		}
 
-		/// <summary>
-		/// Adds a concrete class as a component
-		/// </summary>
+		[Obsolete("Use Register(Component.For<T>()) instead.")]
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public void AddComponent<T>()
 		{
 			Type classType = typeof(T);
 			AddComponent(classType.FullName, classType);
 		}
 
-		/// <summary>
-		/// Adds a concrete class
-		/// as a component with the specified <paramref name="lifestyle"/>.
-		/// </summary>
-		/// <param name="lifestyle">The specified <see cref="LifestyleType"/> for the component.</param>
-		/// <remarks>
-		/// If you have indicated a lifestyle for the specified T using
-		/// attributes, this method will not overwrite that lifestyle. To do that, use the
-		/// <see cref="AddComponent(string,Type,LifestyleType,bool)"/> method.
-		/// </remarks>
-		/// <exception cref="ArgumentException">
-		/// Thrown if <paramref name="lifestyle"/> is <see cref="LifestyleType.Undefined"/>.
-		/// </exception>
+		[Obsolete("Use Register(Component.For<T>().Lifestyle.Is(lifestyle)) instead.")]
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public void AddComponent<T>(LifestyleType lifestyle)
 		{
 			Type classType = typeof(T);
 			AddComponent(classType.FullName, classType, lifestyle);
 		}
 
-		/// <summary>
-		/// Adds a concrete class
-		/// as a component with the specified <paramref name="lifestyle"/>.
-		/// </summary>
-		/// <param name="lifestyle">The specified <see cref="LifestyleType"/> for the component.</param>
-		/// <param name="overwriteLifestyle">If <see langword="true"/>, then ignores all other configurations
-		/// for lifestyle and uses the value in the <paramref name="lifestyle"/> parameter.</param>
-		/// <remarks>
-		/// If you have indicated a lifestyle for the specified T using
-		/// attributes, this method will not overwrite that lifestyle. To do that, use the
-		/// <see cref="AddComponent(string,Type,LifestyleType,bool)"/> method.
-		/// </remarks>
-		/// <exception cref="ArgumentException"/>
-		/// Thrown if 
-		/// <paramref name="lifestyle"/>
-		///  is 
-		/// <see cref="LifestyleType.Undefined"/>
-		/// .
+		[Obsolete("Use Register(Component.For<T>().Lifestyle.Is(lifestyle)) instead.")]
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public void AddComponent<T>(LifestyleType lifestyle, bool overwriteLifestyle)
 		{
 			Type classType = typeof(T);
 			AddComponent(classType.FullName, classType, lifestyle, overwriteLifestyle);
 		}
 
-		/// <summary>
-		/// Adds a concrete class and an interface
-		/// as a component
-		/// </summary>
-		/// <param name="serviceType">The service <see cref="Type"/> that this component implements.</param>
+		[Obsolete("Use Register(Component.For(serviceType).ImplementedBy<T>()) or generic version instead.")]
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public void AddComponent<T>(Type serviceType)
 		{
 			Type classType = typeof(T);
 			AddComponent(classType.FullName, serviceType, classType);
 		}
 
-		/// <summary>
-		/// Adds a concrete class and an interface
-		/// as a component with the specified <paramref name="lifestyle"/>.
-		/// </summary>
-		/// <param name="serviceType">The service <see cref="Type"/> that this component implements.</param>
-		/// <param name="lifestyle">The specified <see cref="LifestyleType"/> for the component.</param>
-		/// <remarks>
-		/// If you have indicated a lifestyle for the specified T using
-		/// attributes, this method will not overwrite that lifestyle. To do that, use the
-		/// <see cref="AddComponent(string,Type,Type,LifestyleType,bool)"/> method.
-		/// </remarks>
-		/// <exception cref="ArgumentNullException">
-		/// are <see langword="null"/>.
-		/// </exception>
-		/// <exception cref="ArgumentException">
-		/// Thrown if <paramref name="lifestyle"/> is <see cref="LifestyleType.Undefined"/>.
-		/// </exception>
+		[Obsolete("Use Register(Component.For(serviceType).ImplementedBy<T>()) or generic version instead.")]
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public void AddComponent<T>(Type serviceType, LifestyleType lifestyle)
 		{
 			Type classType = typeof(T);
 			AddComponent(classType.FullName, serviceType, classType, lifestyle);
 		}
 
-		/// <summary>
-		/// Adds a concrete class and an interface
-		/// as a component with the specified <paramref name="lifestyle"/>.
-		/// </summary>
-		/// <param name="serviceType">The service <see cref="Type"/> that this component implements.</param>
-		/// <param name="lifestyle">The specified <see cref="LifestyleType"/> for the component.</param>
-		/// <param name="overwriteLifestyle">If <see langword="true"/>, then ignores all other configurations
-		/// for lifestyle and uses the value in the <paramref name="lifestyle"/> parameter.</param>
-		/// <remarks>
-		/// attributes, this method will not overwrite that lifestyle. To do that, use the
-		/// <see cref="AddComponent(string,Type,Type,LifestyleType,bool)"/> method.
-		/// </remarks>
-		/// <exception cref="ArgumentNullException">
-		/// are <see langword="null"/>.
-		/// </exception>
-		/// <exception cref="ArgumentException">
-		/// Thrown if <paramref name="lifestyle"/> is <see cref="LifestyleType.Undefined"/>.
-		/// </exception>
+		[Obsolete("Use Register(Component.For(serviceType).ImplementedBy<T>().Lifestyle.Is(lifestyle)) or generic version instead.")]
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public void AddComponent<T>(Type serviceType, LifestyleType lifestyle, bool overwriteLifestyle)
 		{
 			Type classType = typeof(T);
 			AddComponent(classType.FullName, serviceType, classType, lifestyle, overwriteLifestyle);
 		}
 
-		/// <summary>
-		/// Used mostly by facilities. Adds an instance
-		/// to be used as a component.
-		/// </summary>
-		/// <param name="instance"></param>
+		[Obsolete("Use Register(Component.For<T>().Instance(instance)) instead.")]
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public void AddComponentInstance<T>(object instance)
 		{
 			Type serviceType = typeof(T);
 			AddComponentInstance(serviceType.FullName, serviceType, instance);
 		}
 
-		/// <summary>
-		/// Used mostly by facilities. Adds an instance
-		/// to be used as a component.
-		/// </summary>
-		/// <param name="serviceType"></param>
-		/// <param name="instance"></param>
+		[Obsolete("Use Register(Component.For<T>().Instance(instance)) instead.")]
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public void AddComponentInstance<T>(Type serviceType, object instance)
 		{
 			Type classType = typeof(T);
