@@ -245,20 +245,14 @@ namespace Castle.Windsor
 			get { return installer; }
 		}
 
-		/// <summary>
-		///   Shortcut to the method <see cref = "Resolve(String, IDictionary)" />
-		/// </summary>
-		[Obsolete("Use Resolve(key, new Arguments()) or Resolve<TService>(key) instead")]
+		[Obsolete("Use Resolve(key, new Arguments()) or Resolve<TService>(key) instead.")]
 		[EditorBrowsable(EditorBrowsableState.Advanced)]
 		public virtual object this[String key]
 		{
 			get { return Resolve(key, new Arguments()); }
 		}
 
-		/// <summary>
-		///   Shortcut to the method <see cref = "Resolve(Type)" />
-		/// </summary>
-		[Obsolete("Use Resolve(service) or generic version instead")]
+		[Obsolete("Use Resolve(service) or generic version instead.")]
 		[EditorBrowsable(EditorBrowsableState.Advanced)]
 		public virtual object this[Type service]
 		{
@@ -393,12 +387,7 @@ namespace Castle.Windsor
 			}
 		}
 
-		/// <summary>
-		///   Adds a component to be managed by the container
-		/// </summary>
-		/// <param name = "key"></param>
-		/// <param name = "classType"></param>
-		[Obsolete("Use Register(Component.For(classType).Named(key)) instead.")]
+		[Obsolete("Use Register(Component.For(classType).Named(key)) or generic version instead.")]
 		[EditorBrowsable(EditorBrowsableState.Advanced)]
 		public virtual IWindsorContainer AddComponent(String key, Type classType)
 		{
@@ -406,13 +395,7 @@ namespace Castle.Windsor
 			return this;
 		}
 
-		/// <summary>
-		///   Adds a component to be managed by the container
-		/// </summary>
-		/// <param name = "key"></param>
-		/// <param name = "serviceType"></param>
-		/// <param name = "classType"></param>
-		[Obsolete("Use Register(Component.For(serviceType).ImplementedBy(classType).Named(key)) instead.")]
+		[Obsolete("Use Register(Component.For(serviceType).ImplementedBy(classType).Named(key)) or generic version instead.")]
 		[EditorBrowsable(EditorBrowsableState.Advanced)]
 		public virtual IWindsorContainer AddComponent(String key, Type serviceType, Type classType)
 		{
@@ -420,11 +403,6 @@ namespace Castle.Windsor
 			return this;
 		}
 
-		/// <summary>
-		///   Adds a component to be managed by the container.
-		///   The key to obtain the component will be the FullName of the type.
-		/// </summary>
-		/// <typeparam name = "T">The <see cref = "Type" /> to manage.</typeparam>
 		[Obsolete("Use Register(Component.For<T>()) instead.")]
 		[EditorBrowsable(EditorBrowsableState.Advanced)]
 		public IWindsorContainer AddComponent<T>()
@@ -434,11 +412,6 @@ namespace Castle.Windsor
 			return this;
 		}
 
-		/// <summary>
-		///   Adds a component to be managed by the container
-		/// </summary>
-		/// <typeparam name = "T">The <see cref = "Type" /> to manage.</typeparam>
-		/// <param name = "key">The key by which the component gets indexed.</param>
 		[Obsolete("Use Register(Component.For<T>().Named(key)) instead.")]
 		[EditorBrowsable(EditorBrowsableState.Advanced)]
 		public IWindsorContainer AddComponent<T>(string key)
@@ -447,12 +420,6 @@ namespace Castle.Windsor
 			return this;
 		}
 
-		/// <summary>
-		///   Adds a component to be managed by the container
-		/// </summary>
-		/// <typeparam name = "I">The service <see cref = "Type" /> that the component implements.</typeparam>
-		/// <typeparam name = "T">The <see cref = "Type" /> to manage.</typeparam>
-		/// <param name = "key">The key by which the component gets indexed.</param>
 		[Obsolete("Use Register(Component.For<I>().ImplementedBy<T>().Named(key)) instead.")]
 		[EditorBrowsable(EditorBrowsableState.Advanced)]
 		public IWindsorContainer AddComponent<I, T>(string key) where T : class
@@ -461,12 +428,6 @@ namespace Castle.Windsor
 			return this;
 		}
 
-		/// <summary>
-		///   Adds a component to be managed by the container
-		///   The key to obtain the component will be the FullName of the type.
-		/// </summary>
-		/// <typeparam name = "I">The service <see cref = "Type" /> that the component implements.</typeparam>
-		/// <typeparam name = "T">The <see cref = "Type" /> to manage.</typeparam>
 		[Obsolete("Use Register(Component.For<I>().ImplementedBy<T>()) instead.")]
 		[EditorBrowsable(EditorBrowsableState.Advanced)]
 		public IWindsorContainer AddComponent<I, T>() where T : class
@@ -476,13 +437,7 @@ namespace Castle.Windsor
 			return this;
 		}
 
-		/// <summary>
-		///   Adds a component to be managed by the container
-		/// </summary>
-		/// <param name = "key">The key by which the component gets indexed.</param>
-		/// <param name = "classType">The <see cref = "Type" /> to manage.</param>
-		/// <param name = "lifestyle">The <see cref = "LifestyleType" /> with which to manage the component.</param>
-		[Obsolete("Use Register(Component.For(classType).Named(key)).Lifestyle.Is(lifestyle)) instead.")]
+		[Obsolete("Use Register(Component.For(classType).Named(key).Lifestyle.Is(lifestyle)) or generic version instead.")]
 		[EditorBrowsable(EditorBrowsableState.Advanced)]
 		public IWindsorContainer AddComponentLifeStyle(string key, Type classType, LifestyleType lifestyle)
 		{
@@ -490,15 +445,8 @@ namespace Castle.Windsor
 			return this;
 		}
 
-		/// <summary>
-		///   Adds a component to be managed by the container
-		/// </summary>
-		/// <param name = "key">The key by which the component gets indexed.</param>
-		/// <param name = "serviceType">The service <see cref = "Type" /> that the component implements.</param>
-		/// <param name = "classType">The <see cref = "Type" /> to manage.</param>
-		/// <param name = "lifestyle">The <see cref = "LifestyleType" /> with which to manage the component.</param>
 		[Obsolete(
-			"Use Register(Component.For(serviceType).ImplementedBy(classType).Named(key)).Lifestyle.Is(lifestyle)) instead.")]
+			"Use Register(Component.For(serviceType).ImplementedBy(classType).Named(key).Lifestyle.Is(lifestyle)) or generic version instead.")]
 		[EditorBrowsable(EditorBrowsableState.Advanced)]
 		public IWindsorContainer AddComponentLifeStyle(string key, Type serviceType, Type classType, LifestyleType lifestyle)
 		{
@@ -506,12 +454,6 @@ namespace Castle.Windsor
 			return this;
 		}
 
-		/// <summary>
-		///   Adds a component to be managed by the container.
-		///   The key to obtain the component will be the FullName of the type.
-		/// </summary>
-		/// <typeparam name = "T">The <see cref = "Type" /> to manage.</typeparam>
-		/// <param name = "lifestyle">The <see cref = "LifestyleType" /> with which to manage the component.</param>
 		[Obsolete("Use Register(Component.For<T>().Lifestyle.Is(lifestyle)) instead.")]
 		[EditorBrowsable(EditorBrowsableState.Advanced)]
 		public IWindsorContainer AddComponentLifeStyle<T>(LifestyleType lifestyle)
@@ -521,13 +463,6 @@ namespace Castle.Windsor
 			return this;
 		}
 
-		/// <summary>
-		///   Adds a component to be managed by the container
-		///   The key to obtain the component will be the FullName of the type.
-		/// </summary>
-		/// <typeparam name = "I">The service <see cref = "Type" /> that the component implements.</typeparam>
-		/// <typeparam name = "T">The <see cref = "Type" /> to manage.</typeparam>
-		/// <param name = "lifestyle">The <see cref = "LifestyleType" /> with which to manage the component.</param>
 		[Obsolete("Use Register(Component.For<I>().ImplementedBy<T>().Lifestyle.Is(lifestyle)) instead.")]
 		[EditorBrowsable(EditorBrowsableState.Advanced)]
 		public IWindsorContainer AddComponentLifeStyle<I, T>(LifestyleType lifestyle) where T : class
@@ -537,12 +472,6 @@ namespace Castle.Windsor
 			return this;
 		}
 
-		/// <summary>
-		///   Adds a component to be managed by the container
-		/// </summary>
-		/// <typeparam name = "T">The <see cref = "Type" /> to manage.</typeparam>
-		/// <param name = "key">The key by which the component gets indexed.</param>
-		/// <param name = "lifestyle">The <see cref = "LifestyleType" /> with which to manage the component.</param>
 		[Obsolete("Use Register(Component.For<T>().Named(key).Lifestyle.Is(lifestyle)) instead.")]
 		[EditorBrowsable(EditorBrowsableState.Advanced)]
 		public IWindsorContainer AddComponentLifeStyle<T>(string key, LifestyleType lifestyle)
@@ -551,13 +480,6 @@ namespace Castle.Windsor
 			return this;
 		}
 
-		/// <summary>
-		///   Adds a component to be managed by the container
-		/// </summary>
-		/// <typeparam name = "I">The service <see cref = "Type" /> that the component implements.</typeparam>
-		/// <typeparam name = "T">The <see cref = "Type" /> to manage.</typeparam>
-		/// <param name = "key">The key by which the component gets indexed.</param>
-		/// <param name = "lifestyle">The <see cref = "LifestyleType" /> with which to manage the component.</param>
 		[Obsolete("Use Register(Component.For<I>().ImplementedBy<T>().Named(key).Lifestyle.Is(lifestyle)) instead.")]
 		[EditorBrowsable(EditorBrowsableState.Advanced)]
 		public IWindsorContainer AddComponentLifeStyle<I, T>(string key, LifestyleType lifestyle) where T : class
@@ -566,15 +488,6 @@ namespace Castle.Windsor
 			return this;
 		}
 
-		/// <summary>
-		///   Adds a concrete class and an interface 
-		///   as a component and specify the extended properties.
-		///   Used by facilities, mostly.
-		///   The key to obtain the component will be the FullName of the type.
-		/// </summary>
-		/// <typeparam name = "I"></typeparam>
-		/// <typeparam name = "T"></typeparam>
-		/// <param name = "extendedProperties"></param>
 		[Obsolete("Use Register(Component.For<I>().ImplementedBy<T>().ExtendedProperties(extendedProperties)) instead.")]
 		[EditorBrowsable(EditorBrowsableState.Advanced)]
 		public IWindsorContainer AddComponentProperties<I, T>(IDictionary extendedProperties) where T : class
@@ -584,15 +497,6 @@ namespace Castle.Windsor
 			return this;
 		}
 
-		/// <summary>
-		///   Adds a concrete class and an interface 
-		///   as a component and specify the extended properties.
-		///   Used by facilities, mostly.
-		/// </summary>
-		/// <typeparam name = "I"></typeparam>
-		/// <typeparam name = "T"></typeparam>
-		/// <param name = "key"></param>
-		/// <param name = "extendedProperties"></param>
 		[Obsolete(
 			"Use Register(Component.For<I>().ImplementedBy<T>().Named(key).ExtendedProperties(extendedProperties)) instead.")]
 		[EditorBrowsable(EditorBrowsableState.Advanced)]
@@ -602,7 +506,7 @@ namespace Castle.Windsor
 			return this;
 		}
 
-		[Obsolete("Use Register(Component.For(classType).Named(key)).ExtendedProperties(extendedProperties)) instead.")]
+		[Obsolete("Use Register(Component.For(classType).Named(key).ExtendedProperties(extendedProperties)) or generic version instead.")]
 		[EditorBrowsable(EditorBrowsableState.Advanced)]
 		public virtual IWindsorContainer AddComponentWithProperties(string key, Type classType, IDictionary extendedProperties)
 		{
@@ -611,7 +515,7 @@ namespace Castle.Windsor
 		}
 
 		[Obsolete(
-			"Use Register(Component.For(serviceType).ImplementedBy(classType).Named(key).ExtendedProperties(extendedProperties)) instead."
+			"Use Register(Component.For(serviceType).ImplementedBy(classType).Named(key).ExtendedProperties(extendedProperties)) or generic version instead."
 			)]
 		[EditorBrowsable(EditorBrowsableState.Advanced)]
 		public virtual IWindsorContainer AddComponentWithProperties(string key, Type serviceType, Type classType,
@@ -621,13 +525,6 @@ namespace Castle.Windsor
 			return this;
 		}
 
-		/// <summary>
-		///   Adds a concrete class as a component and specify the extended properties.
-		///   Used by facilities, mostly.
-		///   The key to obtain the component will be the FullName of the type.
-		/// </summary>
-		/// <typeparam name = "T"></typeparam>
-		/// <param name = "extendedProperties"></param>
 		[Obsolete("Use Register(Component.For<T>().ExtendedProperties(extendedProperties)) instead.")]
 		[EditorBrowsable(EditorBrowsableState.Advanced)]
 		public IWindsorContainer AddComponentWithProperties<T>(IDictionary extendedProperties)
@@ -637,13 +534,6 @@ namespace Castle.Windsor
 			return this;
 		}
 
-		/// <summary>
-		///   Adds a concrete class as a component and specify the extended properties.
-		///   Used by facilities, mostly.
-		/// </summary>
-		/// <typeparam name = "T"></typeparam>
-		/// <param name = "key"></param>
-		/// <param name = "extendedProperties"></param>
 		[Obsolete("Use Register(Component.For<T>().Named(key).ExtendedProperties(extendedProperties)) instead.")]
 		[EditorBrowsable(EditorBrowsableState.Advanced)]
 		public IWindsorContainer AddComponentWithProperties<T>(string key, IDictionary extendedProperties)
