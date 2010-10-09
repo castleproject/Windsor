@@ -11,7 +11,6 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
 namespace Castle.Facilities.WcfIntegration
 {
 	using System;
@@ -19,7 +18,9 @@ namespace Castle.Facilities.WcfIntegration
 	using System.Linq;
 	using System.ServiceModel;
 	using System.ServiceModel.Channels;
+
 	using Castle.Core;
+	using Castle.DynamicProxy;
 	using Castle.Facilities.TypedFactory;
 	using Castle.Facilities.WcfIntegration.Async;
 	using Castle.Facilities.WcfIntegration.Internal;
@@ -29,23 +30,17 @@ namespace Castle.Facilities.WcfIntegration
 
 	public class WcfClientExtension : IDisposable
 	{
-		private IKernel kernel;
-		private WcfFacility facility;
-		private Binding defaultBinding;
-		private TimeSpan? closeTimeout;
-		private List<Func<Uri, Binding>> bindingPolicies;
+		private readonly List<Func<Uri, Binding>> bindingPolicies = new List<Func<Uri, Binding>>();
 		private Action _afterInit;
+		private TimeSpan? closeTimeout;
+		private Binding defaultBinding;
+		private WcfFacility facility;
+		private IKernel kernel;
+		private readonly ProxyGenerator proxyGenerator = new ProxyGenerator();
 
 		public WcfClientExtension()
 		{
 			DefaultChannelPolicy = new ChannelReconnectPolicy();
-			bindingPolicies = new List<Func<Uri,Binding>>();
-		}
-
-		public Binding DefaultBinding
-		{
-			get { return defaultBinding ?? facility.DefaultBinding; }
-			set { defaultBinding = value; }
 		}
 
 		public TimeSpan? CloseTimeout
@@ -54,7 +49,24 @@ namespace Castle.Facilities.WcfIntegration
 			set { closeTimeout = value; }
 		}
 
+		public Binding DefaultBinding
+		{
+			get { return defaultBinding ?? facility.DefaultBinding; }
+			set { defaultBinding = value; }
+		}
+
 		public IChannelActionPolicy DefaultChannelPolicy { get; set; }
+
+		internal ProxyGenerator ProxyGenerator
+		{
+			get { return proxyGenerator; }
+		}
+
+		public WcfClientExtension AddBindingPolicy(Func<Uri, Binding> policy)
+		{
+			bindingPolicies.Insert(0, policy);
+			return this;
+		}
 
 		public WcfClientExtension AddChannelBuilder<TBuilder>()
 			where TBuilder : IChannelBuilder
@@ -68,94 +80,13 @@ namespace Castle.Facilities.WcfIntegration
 			return this;
 		}
 
-		public WcfClientExtension AddBindingPolicy(Func<Uri, Binding> policy)
-		{
-			bindingPolicies.Insert(0, policy);
-			return this;
-		}
-
 		public Binding InferBinding(Uri address)
 		{
 			return bindingPolicies.Select(policy => policy(address)).FirstOrDefault(binding => binding != null);
 		}
 
-		internal void Init(WcfFacility facility)
+		public void Dispose()
 		{
-			this.facility = facility;
-			kernel = facility.Kernel;
-
-			AddDefaultChannelBuilders();
-			AddDefaultBindingPolicies();
-
-			kernel.Register(
-				Component.For(typeof(IChannelFactoryBuilder<>))
-					.ImplementedBy(typeof(AsynChannelFactoryBuilder<>))
-					.Unless(Component.ServiceAlreadyRegistered)
-					);
-
-			if (kernel.GetFacilities().OfType<TypedFactoryFacility>().Any())
-			{
-				kernel.Register(
-					Component.For<IWcfClientFactory>().AsFactory(c => c.SelectedWith(new WcfClientFactorySelector()))
-					);
-			}
-
-			kernel.ComponentModelCreated += Kernel_ComponentModelCreated;
-			kernel.ComponentUnregistered += Kernel_ComponentUnregistered;
-
-			if (_afterInit != null)
-			{
-				_afterInit();
-				_afterInit = null;
-			}
-		}
-
-		private void Kernel_ComponentModelCreated(ComponentModel model)
-		{
-			var clientModel = ResolveClientModel(model);
-
-			if (clientModel != null && model.Implementation == model.Service)
-			{
-				model.CustomComponentActivator = typeof(WcfClientActivator);
-				model.ExtendedProperties[WcfConstants.ClientModelKey] = clientModel;
-				model.Lifecycle.Add(DisposalConcern.Instance);
-
-				var dependencies = new ExtensionDependencies(model, kernel)
-					.Apply(new WcfEndpointExtensions(WcfExtensionScope.Clients))
-					.Apply(clientModel.Extensions);
-
-				if (clientModel.Endpoint != null)
-					dependencies.Apply(clientModel.Endpoint.Extensions);
-			}
-		}
-
-		private static void Kernel_ComponentUnregistered(string key, IHandler handler)
-		{
-			ComponentModel model = handler.ComponentModel;
-			var burden = model.ExtendedProperties[WcfConstants.ClientBurdenKey] as IWcfBurden;
-			if (burden != null) burden.CleanUp();
-		}
-
-		private void AddDefaultChannelBuilders()
-		{
-			AddChannelBuilder(typeof(DefaultChannelBuilder), false);
-			AddChannelBuilder(typeof(DuplexChannelBuilder), false);
-			AddChannelBuilder(typeof(RestChannelBuilder), false);
-        }
-
-		private void AddDefaultBindingPolicies()
-		{
-			var httpBinding = new BasicHttpBinding();
-			AddBindingPolicy(address => address.Scheme == Uri.UriSchemeHttp ? httpBinding : null);
-
-			var httpsBinding = new BasicHttpBinding(BasicHttpSecurityMode.Transport);
-			AddBindingPolicy(address => address.Scheme == Uri.UriSchemeHttps ? httpsBinding : null);
-
-			var tcpBinding = new NetTcpBinding { PortSharingEnabled = true };
-			AddBindingPolicy(address => address.Scheme == Uri.UriSchemeNetTcp ? tcpBinding : null);
-
-			var pipeBinding = new NetNamedPipeBinding();
-			AddBindingPolicy(address => address.Scheme == Uri.UriSchemeNetPipe ? pipeBinding : null);
 		}
 
 		internal void AddChannelBuilder(Type builder, bool force)
@@ -186,6 +117,81 @@ namespace Castle.Facilities.WcfIntegration
 			}
 		}
 
+		internal void Init(WcfFacility facility)
+		{
+			this.facility = facility;
+			kernel = facility.Kernel;
+
+			AddDefaultChannelBuilders();
+			AddDefaultBindingPolicies();
+
+			kernel.Register(
+				Component.For(typeof(IChannelFactoryBuilder<>))
+					.ImplementedBy(typeof(AsynChannelFactoryBuilder<>))
+					.DependsOn(Property.ForKey<ProxyGenerator>().Eq(proxyGenerator))
+					.Unless(Component.ServiceAlreadyRegistered)
+				);
+
+			if (kernel.GetFacilities().OfType<TypedFactoryFacility>().Any())
+			{
+				kernel.Register(
+					Component.For<IWcfClientFactory>().AsFactory(c => c.SelectedWith(new WcfClientFactorySelector()))
+					);
+			}
+
+			kernel.ComponentModelCreated += Kernel_ComponentModelCreated;
+			kernel.ComponentUnregistered += Kernel_ComponentUnregistered;
+
+			if (_afterInit != null)
+			{
+				_afterInit();
+				_afterInit = null;
+			}
+		}
+
+		private void AddDefaultBindingPolicies()
+		{
+			var httpBinding = new BasicHttpBinding();
+			AddBindingPolicy(address => address.Scheme == Uri.UriSchemeHttp ? httpBinding : null);
+
+			var httpsBinding = new BasicHttpBinding(BasicHttpSecurityMode.Transport);
+			AddBindingPolicy(address => address.Scheme == Uri.UriSchemeHttps ? httpsBinding : null);
+
+			var tcpBinding = new NetTcpBinding { PortSharingEnabled = true };
+			AddBindingPolicy(address => address.Scheme == Uri.UriSchemeNetTcp ? tcpBinding : null);
+
+			var pipeBinding = new NetNamedPipeBinding();
+			AddBindingPolicy(address => address.Scheme == Uri.UriSchemeNetPipe ? pipeBinding : null);
+		}
+
+		private void AddDefaultChannelBuilders()
+		{
+			AddChannelBuilder(typeof(DefaultChannelBuilder), false);
+			AddChannelBuilder(typeof(DuplexChannelBuilder), false);
+			AddChannelBuilder(typeof(RestChannelBuilder), false);
+		}
+
+		private void Kernel_ComponentModelCreated(ComponentModel model)
+		{
+			var clientModel = ResolveClientModel(model);
+
+			if (clientModel != null && model.Implementation == model.Service)
+			{
+				model.CustomComponentActivator = typeof(WcfClientActivator);
+				model.ExtendedProperties[WcfConstants.ClientModelKey] = clientModel;
+				model.Lifecycle.Add(DisposalConcern.Instance);
+
+				var dependencies = new ExtensionDependencies(model, kernel)
+					.Apply(new WcfEndpointExtensions(WcfExtensionScope.Clients))
+					.Apply(clientModel.Extensions);
+
+				if (clientModel.Endpoint != null)
+				{
+					dependencies.Apply(clientModel.Endpoint.Extensions);
+				}
+			}
+		}
+
 		private void RegisterChannelBuilder(Type channelBuilder, Type builder, bool force)
 		{
 			if (force || kernel.HasComponent(channelBuilder) == false)
@@ -194,12 +200,22 @@ namespace Castle.Facilities.WcfIntegration
 			}
 		}
 
+		private static void Kernel_ComponentUnregistered(string key, IHandler handler)
+		{
+			var model = handler.ComponentModel;
+			var burden = model.ExtendedProperties[WcfConstants.ClientBurdenKey] as IWcfBurden;
+			if (burden != null)
+			{
+				burden.CleanUp();
+			}
+		}
+
 		private static IWcfClientModel ResolveClientModel(ComponentModel model)
 		{
 			if (model.Service.IsInterface)
 			{
 				var clientModel = WcfUtils.FindDependencies<IWcfClientModel>(model.CustomDependencies).FirstOrDefault();
-				if(clientModel != null)
+				if (clientModel != null)
 				{
 					return clientModel;
 				}
@@ -207,7 +223,7 @@ namespace Castle.Facilities.WcfIntegration
 
 			if (model.Configuration != null)
 			{
-				string endpointConfiguration =
+				var endpointConfiguration =
 					model.Configuration.Attributes[WcfConstants.EndpointConfiguration];
 
 				if (!string.IsNullOrEmpty(endpointConfiguration))
@@ -217,10 +233,6 @@ namespace Castle.Facilities.WcfIntegration
 			}
 
 			return null;
-		}
-
-		public void Dispose()
-		{
 		}
 	}
 }

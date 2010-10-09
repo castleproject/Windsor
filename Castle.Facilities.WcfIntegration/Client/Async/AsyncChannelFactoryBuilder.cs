@@ -29,10 +29,10 @@ namespace Castle.Facilities.WcfIntegration.Async
 		private readonly ProxyGenerator generator;
 		private readonly AsyncChannelFactoryProxyHook asyncChannelFactoryProxyHook;
 
-		public AsynChannelFactoryBuilder()
+		public AsynChannelFactoryBuilder(ProxyGenerator generator)
 		{
-			generator = new ProxyGenerator();
 			asyncChannelFactoryProxyHook = new AsyncChannelFactoryProxyHook();
+			this.generator = generator;
 		}
 
 		public override ChannelFactory CreateChannelFactory(Type channelFactoryType, M clientModel, 

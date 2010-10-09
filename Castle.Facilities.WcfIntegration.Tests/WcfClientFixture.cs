@@ -1328,7 +1328,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 						.BoundTo(new NetTcpBinding { PortSharingEnabled = true })
 						.At("net.tcp://localhost/Operations")
 				};
-			var asyncBuilder = new AsynChannelFactoryBuilder<DefaultClientModel>();
+			var asyncBuilder = new AsynChannelFactoryBuilder<DefaultClientModel>(new ProxyGenerator());
 			var channelFactory = asyncBuilder.CreateChannelFactory<ChannelFactory<IOperations>>(
 				model, new NetTcpBinding(), "net.tcp://localhost/Operations");
 

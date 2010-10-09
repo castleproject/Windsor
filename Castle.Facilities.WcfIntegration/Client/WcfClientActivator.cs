@@ -62,7 +62,7 @@ namespace Castle.Facilities.WcfIntegration
 			: base(model, kernel, onCreation, onDestruction)
 		{
 			clients = kernel.Resolve<WcfClientExtension>();
-			proxyFactory = new WcfProxyFactory(new ProxyGenerator(), clients);
+			proxyFactory = new WcfProxyFactory(clients.ProxyGenerator, clients);
 		}
 
 		protected override object InternalCreate(CreationContext context)
