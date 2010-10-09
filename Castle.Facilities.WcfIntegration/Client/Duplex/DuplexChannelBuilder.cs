@@ -17,35 +17,37 @@ namespace Castle.Facilities.WcfIntegration
 	using System;
 	using System.ServiceModel;
 	using System.ServiceModel.Channels;
+
 	using Castle.MicroKernel;
 
-    public class DuplexChannelBuilder : AbstractChannelBuilder<DuplexClientModel>
-    {
-		public DuplexChannelBuilder(IKernel kernel, IChannelFactoryBuilder<DuplexClientModel> channelFactoryBuilder) 
+	public class DuplexChannelBuilder : AbstractChannelBuilder<DuplexClientModel>
+	{
+		public DuplexChannelBuilder(IKernel kernel, IChannelFactoryBuilder<DuplexClientModel> channelFactoryBuilder)
 			: base(kernel, channelFactoryBuilder)
-        {
-        }
+		{
+		}
 
-        protected override ChannelCreator GetChannel(DuplexClientModel clientModel, Type contract, Binding binding, string address)
-        {
-            return CreateChannelCreator(contract, clientModel, clientModel.CallbackContext, binding, address);
-        }
-
-        protected override ChannelCreator GetChannel(DuplexClientModel clientModel, Type contract, Binding binding,
-                                                     EndpointAddress address)
-        {
-            return CreateChannelCreator(contract, clientModel, clientModel.CallbackContext, binding, address);
-        }
-
-        protected override ChannelCreator CreateChannelCreator(Type contract, DuplexClientModel clientModel,
-                                                               params object[] channelFactoryArgs)
-        {
-			var type = typeof(DuplexChannelFactory<>).MakeGenericType(new Type[] { contract });
+		protected override ChannelCreator CreateChannelCreator(Type contract, DuplexClientModel clientModel,
+		                                                       params object[] channelFactoryArgs)
+		{
+			var type = typeof(DuplexChannelFactory<>).MakeGenericType(new[] { contract });
 			var channelFactory = ChannelFactoryBuilder.CreateChannelFactory(type, clientModel, channelFactoryArgs);
 			ConfigureChannelFactory(channelFactory);
 
 			var methodInfo = type.GetMethod("CreateChannel", new Type[0]);
-            return (ChannelCreator)Delegate.CreateDelegate(typeof(ChannelCreator), channelFactory, methodInfo);
-        }
-    }
+			return (ChannelCreator)Delegate.CreateDelegate(typeof(ChannelCreator), channelFactory, methodInfo);
+		}
+
+		protected override ChannelCreator GetChannel(DuplexClientModel clientModel, Type contract, Binding binding,
+		                                             string address)
+		{
+			return CreateChannelCreator(contract, clientModel, clientModel.CallbackContext, binding, address);
+		}
+
+		protected override ChannelCreator GetChannel(DuplexClientModel clientModel, Type contract, Binding binding,
+		                                             EndpointAddress address)
+		{
+			return CreateChannelCreator(contract, clientModel, clientModel.CallbackContext, binding, address);
+		}
+	}
 }

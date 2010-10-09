@@ -16,7 +16,6 @@ namespace Castle.Facilities.WcfIntegration
 {
 	using System;
 	using System.ServiceModel;
-	using System.ServiceModel.Channels;
 
 	public interface IChannelFactoryBuilder<M>
 		where M : IWcfClientModel

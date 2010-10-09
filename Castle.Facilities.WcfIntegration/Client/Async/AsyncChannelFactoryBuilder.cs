@@ -19,7 +19,7 @@ namespace Castle.Facilities.WcfIntegration.Async
 	using System.Reflection;
 	using System.ServiceModel;
 	using System.ServiceModel.Description;
-	using Castle.Core.Interceptor;
+
 	using Castle.DynamicProxy;
 	using Castle.Facilities.WcfIntegration.Async.TypeSystem;
 
