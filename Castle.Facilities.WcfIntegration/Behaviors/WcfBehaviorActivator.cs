@@ -35,7 +35,7 @@ namespace Castle.Facilities.WcfIntegration
 
 			var behavior = ProxyUtil.GetUnproxiedInstance(instance);
 			var scope = WcfUtils.GetScope(Model);
-			WcfUtils.ExtendBehavior(Kernel, scope, behavior);
+			WcfUtils.ExtendBehavior(Kernel, scope, behavior, context);
 
 			return instance;
 		}

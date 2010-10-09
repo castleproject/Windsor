@@ -88,6 +88,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AsyncChannelFactoryFixture.cs" />
+    <Compile Include="BehaviorsTestCase.cs" />
+    <Compile Include="Behaviors\ExtensibleBehaviorExtension.cs" />
     <Compile Include="Behaviors\CallCountServiceBehavior.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -96,6 +98,7 @@
     <Compile Include="Behaviors\ChannelFactoryListener.cs" />
     <Compile Include="Behaviors\DummyContractBehavior.cs" />
     <Compile Include="Behaviors\ErrorLogger.cs" />
+    <Compile Include="Behaviors\ExtensibleBehavior.cs" />
     <Compile Include="Behaviors\RefreshChannelPolicy.cs" />
     <Compile Include="Behaviors\StoreMessageBody.cs" />
     <Compile Include="Behaviors\NetDataContractFormatBehavior.cs" />

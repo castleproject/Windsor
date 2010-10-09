@@ -37,7 +37,7 @@ namespace Castle.Facilities.WcfIntegration.Internal
 		}
 
 		public static WcfExtensionScope GetScope(ComponentModel model)
-        {
+		{
 			if (model.Configuration != null)
 			{
 				var scopeAttrib = model.Configuration.Attributes[WcfConstants.ExtensionScopeKey];
@@ -58,7 +58,7 @@ namespace Castle.Facilities.WcfIntegration.Internal
 				}
 			}
 			return WcfExtensionScope.Undefined;
-        }
+		}
 
 		public static void AddBehaviors<T>(IKernel kernel, WcfExtensionScope scope,
 										   KeyedByTypeCollection<T> behaviors, IWcfBurden burden)
@@ -81,22 +81,19 @@ namespace Castle.Facilities.WcfIntegration.Internal
 			}
 		}
 
-		public static void ExtendBehavior(IKernel kernel, WcfExtensionScope scope, object behavior)
+		public static void ExtendBehavior(IKernel kernel, WcfExtensionScope scope, object behavior, CreationContext context)
 		{
-			var type = behavior.GetType();
-			var extensibleType = type.GetInterface(typeof(IExtensibleObject<>).FullName);
-			if (extensibleType != null)
+			var behaviorType = behavior.GetType();
+			if(IsExtensibleOfItself(behaviorType) == false)
 			{
-				var args = extensibleType.GetGenericArguments();
-				if (args.Length == 1 && args[0] == type)
-				{
-					var extensionType = typeof(IExtension<>).MakeGenericType(type);
-					foreach (var extHandler in FindExtensions(kernel, scope, extensionType))
-					{
-						object extension = extHandler.Resolve(CreationContext.Empty);
-						AttachExtension(behavior, extension);
-					}
-				}
+				return;
+			}
+			
+			var extensionType = typeof(IExtension<>).MakeGenericType(behaviorType);
+			foreach (var extensionHandler in FindExtensions(kernel, scope, extensionType))
+			{
+				var extension = extensionHandler.Resolve(context);
+				AttachExtension(behavior, extension);
 			}
 		}
 
@@ -110,16 +107,10 @@ namespace Castle.Facilities.WcfIntegration.Internal
 			foreach (var handler in kernel.GetAssignableHandlers(type))
 			{
 				var model = handler.ComponentModel;
-
-				var modelScope = GetScope(model);
-
-				if (modelScope != WcfExtensionScope.Explicit || scope == WcfExtensionScope.Explicit)
+				var extensionsScope = GetScope(model);
+				if (ScopesCompatible(scope, extensionsScope))
 				{
-					if (scope == modelScope || scope == WcfExtensionScope.Undefined
-						|| modelScope == WcfExtensionScope.Undefined)
-					{
-						yield return handler;
-					}
+					yield return handler;
 				}
 			}
 		}
@@ -341,6 +332,36 @@ namespace Castle.Facilities.WcfIntegration.Internal
 			getCache = source();
 			T updatedCache = Interlocked.CompareExchange(ref cache, getCache, null);
 			return updatedCache ?? getCache;
+		}
+
+		/// <summary>
+		/// Checks if given <paramref name="type"/> <c>Foo</c> implements <c>IExtensibleObject&lt;Foo&gt;</c>
+		/// </summary>
+		/// <param name="type"></param>
+		/// <returns></returns>
+		private static bool IsExtensibleOfItself(Type type)
+		{
+			var extensibleType = type.GetInterface(typeof(IExtensibleObject<>).FullName);
+			if (extensibleType == null)
+			{
+				return false;
+			}
+			var args = extensibleType.GetGenericArguments();
+			if (args.Length != 1 || args[0] != type)
+			{
+				return false;
+			}
+			return true;
+		}
+
+		private static bool ScopesCompatible(WcfExtensionScope extendeeScope, WcfExtensionScope extensionScope)
+		{
+			if ((extensionScope != WcfExtensionScope.Explicit || extendeeScope == WcfExtensionScope.Explicit))
+			{
+				return (extendeeScope == extensionScope || extendeeScope == WcfExtensionScope.Undefined ||
+						extensionScope == WcfExtensionScope.Undefined);
+			}
+			return false;
 		}
 	}
 }
