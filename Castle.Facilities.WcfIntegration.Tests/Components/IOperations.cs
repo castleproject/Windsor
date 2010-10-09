@@ -18,9 +18,9 @@ namespace Castle.Facilities.WcfIntegration.Tests
 	using System.Collections.Generic;
 	using System.ServiceModel;
 
-	[ServiceContract]
-	public interface IOperations
-	{
+		[ServiceContract]
+		public interface IOperations
+		{
 		[OperationContract]
 		int GetValueFromConstructor();
 
@@ -41,9 +41,9 @@ namespace Castle.Facilities.WcfIntegration.Tests
 		IAsyncResult BeginGetValueFromConstructor(AsyncCallback callback, object asyncState);
 		int EndGetValueFromConstructor(IAsyncResult result);
 
-        [OperationContract(AsyncPattern = true)]
-        IAsyncResult BeginGetValueFromConstructorAsRef(ref int refValue, AsyncCallback callback, object asyncState);
-        int EndGetValueFromConstructorAsRef(ref int refValue, IAsyncResult result);
+		[OperationContract(AsyncPattern = true)]
+		IAsyncResult BeginGetValueFromConstructorAsRef(ref int refValue, AsyncCallback callback, object asyncState);
+		int EndGetValueFromConstructorAsRef(ref int refValue, IAsyncResult result);
 
 		[OperationContract(AsyncPattern = true)]
 		IAsyncResult BeginGetValueFromConstructorAsRefAndOut(ref int refValue, AsyncCallback callback, object asyncState);

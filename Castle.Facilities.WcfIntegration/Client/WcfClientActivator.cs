@@ -47,7 +47,7 @@ namespace Castle.Facilities.WcfIntegration
 		private static readonly MethodInfo createChannelMethod =
 			typeof(WcfClientActivator).GetMethod("CreateChannelCreatorInternal",
 				BindingFlags.NonPublic | BindingFlags.Static, null,
-					new Type[] { typeof(IKernel), typeof(IWcfClientModel),
+					new[] { typeof(IKernel), typeof(IWcfClientModel),
 						typeof(ComponentModel), typeof(IWcfBurden).MakeByRefType() },
 					null
 				);

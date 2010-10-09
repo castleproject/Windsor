@@ -23,7 +23,6 @@ namespace Castle.Facilities.WcfIntegration
 	using Castle.Facilities.TypedFactory;
 	using Castle.Facilities.WcfIntegration.Async;
 	using Castle.Facilities.WcfIntegration.Internal;
-	using Castle.Facilities.WcfIntegration.Rest;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.LifecycleConcerns;
 	using Castle.MicroKernel.Registration;
@@ -199,7 +198,8 @@ namespace Castle.Facilities.WcfIntegration
 		{
 			if (model.Service.IsInterface)
 			{
-				foreach (var clientModel in WcfUtils.FindDependencies<IWcfClientModel>(model.CustomDependencies))
+				var clientModel = WcfUtils.FindDependencies<IWcfClientModel>(model.CustomDependencies).FirstOrDefault();
+				if(clientModel != null)
 				{
 					return clientModel;
 				}
