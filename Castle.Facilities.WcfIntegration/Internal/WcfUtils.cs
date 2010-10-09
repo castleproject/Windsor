@@ -60,13 +60,13 @@ namespace Castle.Facilities.WcfIntegration.Internal
 			return WcfExtensionScope.Undefined;
 		}
 
-		public static void AddBehaviors<T>(IKernel kernel, WcfExtensionScope scope,
+		internal static void AddBehaviors<T>(IKernel kernel, WcfExtensionScope scope,
 										   KeyedByTypeCollection<T> behaviors, IWcfBurden burden)
 		{
 			AddBehaviors(kernel, scope, behaviors, burden, null);
 		}
 
-		public static void AddBehaviors<T>(IKernel kernel, WcfExtensionScope scope,
+		internal static void AddBehaviors<T>(IKernel kernel, WcfExtensionScope scope,
 										   KeyedByTypeCollection<T> behaviors, IWcfBurden burden,
 										   Predicate<T> predicate)
 		{
