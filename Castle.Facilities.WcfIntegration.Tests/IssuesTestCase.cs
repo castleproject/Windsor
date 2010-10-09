@@ -15,13 +15,14 @@
 namespace Castle.Facilities.WcfIntegration.Tests
 {
 	using Castle.Facilities.WcfIntegration.Tests.Behaviors;
+	using Castle.Facilities.WcfIntegration.Tests.PlumbingClasses;
 	using Castle.MicroKernel.Registration;
 	using Castle.Windsor;
 
 	using NUnit.Framework;
 
 	[TestFixture]
-	public class BehaviorsTestCase
+	public class IssuesTestCase
 	{
 		private IWindsorContainer container;
 
@@ -32,6 +33,21 @@ namespace Castle.Facilities.WcfIntegration.Tests
 			                   Component.For<ExtensibleBehaviorExtension>().LifeStyle.Transient);
 
 			container.Resolve<ExtensibleBehavior>();
+		}
+
+		[Test(Description = "This test would trigger a stack overflow if failing.")]
+		public void Can_resolve_client_with_interceptors_selector_depending_on_the_wcf_client_proxy()
+		{
+			container.Register(
+				Component.For<SelectorDependsOnIOperations>()
+					.LifeStyle.Transient,
+				Component.For<IOperations>()
+					.Named("operations")
+					.SelectInterceptorsWith(r => r.Service<SelectorDependsOnIOperations>())
+					.LifeStyle.Transient
+					.AsWcfClient(WcfEndpoint.At("http://localhost")));
+
+			container.Resolve<IOperations>();
 		}
 
 		[SetUp]

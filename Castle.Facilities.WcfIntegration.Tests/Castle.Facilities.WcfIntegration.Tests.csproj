@@ -88,7 +88,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AsyncChannelFactoryFixture.cs" />
-    <Compile Include="BehaviorsTestCase.cs" />
+    <Compile Include="IssuesTestCase.cs" />
     <Compile Include="Behaviors\ExtensibleBehaviorExtension.cs" />
     <Compile Include="Behaviors\CallCountServiceBehavior.cs">
       <SubType>Code</SubType>
@@ -125,6 +125,7 @@
     <Compile Include="Components\One.cs" />
     <Compile Include="PerWcfOperationLifestyleTestCase.cs" />
     <Compile Include="PerWcfSessionLifestyleTestCase.cs" />
+    <Compile Include="PlumbingClasses\SelectorDependsOnIOperations.cs" />
     <Compile Include="Rest\RestClientFixture.cs" />
     <Compile Include="Rest\RestServiceFixture.cs" />
     <Compile Include="Components\ServiceWithSession.cs" />

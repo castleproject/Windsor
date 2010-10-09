@@ -54,14 +54,18 @@ namespace Castle.Facilities.WcfIntegration.Proxy
 			var channelHolder = instance as IWcfChannelHolder;
 
 			if (channelHolder == null)
-				throw new ArgumentException("Given instance is not an IWcfChannelHolder", "instance");
+			{
+				throw new ArgumentException(string.Format("Given instance is not an {0}", typeof(IWcfChannelHolder)), "instance");
+			}
 
 			if (channelHolder.RealProxy == null)
+			{
 				return channelHolder.Channel;
+			}
 
 			var isDuplex = IsDuplex(channelHolder.RealProxy);
 			var proxyOptions = ProxyUtil.ObtainProxyOptions(model, true);
-			var generationOptions = CreateProxyGenerationOptions(model.Service, proxyOptions, kernel);
+			var generationOptions = CreateProxyGenerationOptions(model.Service, proxyOptions, kernel, context);
 			var additionalInterfaces = GetInterfaces(model.Service, proxyOptions, isDuplex);
 			var interceptors = GetInterceptors(kernel, model, context);
 
@@ -82,6 +86,7 @@ namespace Castle.Facilities.WcfIntegration.Proxy
 
 		protected virtual Type[] GetInterfaces(Type service, ProxyOptions proxyOptions, bool isDuplex)
 		{
+			// TODO: this should be static and happen in IContributeComponentModelConstruction preferably
 			var additionalInterfaces = proxyOptions.AdditionalInterfaces ?? Type.EmptyTypes;
 			Array.Resize(ref additionalInterfaces, additionalInterfaces.Length + (isDuplex ? 4 : 3));
 			int index = additionalInterfaces.Length;
@@ -98,6 +103,8 @@ namespace Castle.Facilities.WcfIntegration.Proxy
 		private IInterceptor[] GetInterceptors(IKernel kernel, ComponentModel model, CreationContext context)
 		{
 			var interceptors = ObtainInterceptors(kernel, model, context);
+
+			// TODO: this should be static and happen in IContributeComponentModelConstruction preferably
 			var clientModel = (IWcfClientModel)model.ExtendedProperties[WcfConstants.ClientModelKey];
 			Array.Resize(ref interceptors, interceptors.Length + (clientModel.WantsAsyncCapability ? 2 : 1));
 			int index = interceptors.Length;
@@ -114,7 +121,7 @@ namespace Castle.Facilities.WcfIntegration.Proxy
 			return interceptors;
 		}
 
-		private ProxyGenerationOptions CreateProxyGenerationOptions(Type service, ProxyOptions proxyOptions, IKernel kernel)
+		private ProxyGenerationOptions CreateProxyGenerationOptions(Type service, ProxyOptions proxyOptions, IKernel kernel, CreationContext context)
 		{
 			if (proxyOptions.MixIns != null && proxyOptions.MixIns.Count() > 0)
 			{
@@ -124,7 +131,7 @@ namespace Castle.Facilities.WcfIntegration.Proxy
 
 			IInterceptorSelector userProvidedSelector = null;
 			if (proxyOptions.Selector != null)
-				userProvidedSelector = proxyOptions.Selector.Resolve(kernel, CreationContext.Empty);
+				userProvidedSelector = proxyOptions.Selector.Resolve(kernel, context);
 
 			var proxyGenOptions = new ProxyGenerationOptions(wcfProxyGenerationHook)
 			{
