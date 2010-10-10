@@ -14,7 +14,6 @@
 
 namespace Castle.Facilities.WcfIntegration
 {
-	using System;
 	using System.ServiceModel;
 
 	internal class ChannelFactoryHolder : IWcfCleanUp

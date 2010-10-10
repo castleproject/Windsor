@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 namespace Castle.Facilities.WcfIntegration
 {
 	using System;
@@ -31,7 +32,7 @@ namespace Castle.Facilities.WcfIntegration
 	public class WcfClientExtension : IDisposable
 	{
 		private readonly List<Func<Uri, Binding>> bindingPolicies = new List<Func<Uri, Binding>>();
-		private Action _afterInit;
+		private Action afterInit;
 		private TimeSpan? closeTimeout;
 		private Binding defaultBinding;
 		private WcfFacility facility;
@@ -109,7 +110,7 @@ namespace Castle.Facilities.WcfIntegration
 
 			if (kernel == null)
 			{
-				_afterInit += () => RegisterChannelBuilder(channelBuilder, builder, force);
+				afterInit += () => RegisterChannelBuilder(channelBuilder, builder, force);
 			}
 			else
 			{
@@ -142,10 +143,10 @@ namespace Castle.Facilities.WcfIntegration
 			kernel.ComponentModelCreated += Kernel_ComponentModelCreated;
 			kernel.ComponentUnregistered += Kernel_ComponentUnregistered;
 
-			if (_afterInit != null)
+			if (afterInit != null)
 			{
-				_afterInit();
-				_afterInit = null;
+				afterInit();
+				afterInit = null;
 			}
 		}
 

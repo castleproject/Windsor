@@ -13,7 +13,7 @@ namespace Castle.Facilities.WcfIntegration.Internal
 {
 	using System.Collections.Generic;
 	using System.ServiceModel;
-	using Castle.Facilities.WcfIntegration.Behaviors;
+
 	using Castle.MicroKernel;
 
 	public class WcfBurden : IWcfBurden

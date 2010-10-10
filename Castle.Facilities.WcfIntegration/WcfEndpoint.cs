@@ -59,10 +59,10 @@ namespace Castle.Facilities.WcfIntegration
 			return new ContractEndpointModel(contract);
 		}
 
-		public static ContractEndpointModel ForContract<Contract>()
-			where Contract : class
+		public static ContractEndpointModel ForContract<TContract>()
+			where TContract : class
 		{
-			return ForContract(typeof(Contract));
+			return ForContract(typeof(TContract));
 		}
 
 #if DOTNET40

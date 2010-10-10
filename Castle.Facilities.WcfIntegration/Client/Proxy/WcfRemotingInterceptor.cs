@@ -43,7 +43,7 @@ namespace Castle.Facilities.WcfIntegration.Proxy
 				throw new ArgumentException("The given Proxy is not valid WCF dynamic proxy.");
 			}
 
-			ApplyRefreshPolicy(channelHolder, invocation);
+			ApplyRefreshPolicy(invocation, channelHolder);
 
 			PerformInvocation(invocation, channelHolder);
 		}
@@ -77,24 +77,26 @@ namespace Castle.Facilities.WcfIntegration.Proxy
 			return true;
 		}
 
-		protected void ApplyRefreshPolicy(IWcfChannelHolder channelHolder, IInvocation invocation)
+		protected void ApplyRefreshPolicy(IInvocation invocation, IWcfChannelHolder channelHolder)
 		{
-			if (!channelHolder.IsChannelUsable)
+			if (channelHolder.IsChannelUsable)
 			{
-				bool hasCustomRefreshPolicy = false;
-				var channelBurden = channelHolder.ChannelBurden;
+				return;
+			}
 
-				foreach (var refreshPolicy in channelBurden.Dependencies
-					.OfType<IRefreshChannelPolicy>().OrderBy(p => p.ExecutionOrder))
-				{
-					refreshPolicy.WantsToUseUnusableChannel(channelHolder, invocation.Method);
-					hasCustomRefreshPolicy = true;
-				}
+			var hasCustomRefreshPolicy = false;
+			var channelBurden = channelHolder.ChannelBurden;
 
-				if (!hasCustomRefreshPolicy)
-				{
-					channelHolder.RefreshChannel();
-				}
+			foreach (var refreshPolicy in channelBurden.Dependencies
+				.OfType<IRefreshChannelPolicy>().OrderBy(p => p.ExecutionOrder))
+			{
+				refreshPolicy.WantsToUseUnusableChannel(channelHolder, invocation.Method);
+				hasCustomRefreshPolicy = true;
+			}
+
+			if (!hasCustomRefreshPolicy)
+			{
+				channelHolder.RefreshChannel();
 			}
 		}
 

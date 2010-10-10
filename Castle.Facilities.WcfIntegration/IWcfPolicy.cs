@@ -17,7 +17,7 @@ namespace Castle.Facilities.WcfIntegration
 	/// <summary>
 	/// Marker interface to annotate wcf policies.
 	/// </summary>
-	public interface IWcfPolicy 
+	public interface IWcfPolicy
 	{
 		int ExecutionOrder { get; }
 	}

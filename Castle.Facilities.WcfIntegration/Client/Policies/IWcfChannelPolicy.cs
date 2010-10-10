@@ -17,7 +17,7 @@ namespace Castle.Facilities.WcfIntegration
 	/// <summary>
 	/// Marker interface to annotate wcf channel policies.
 	/// </summary>
-	public interface IWcfChannelPolicy : IWcfPolicy 
+	public interface IWcfChannelPolicy : IWcfPolicy
 	{
 	}
 }

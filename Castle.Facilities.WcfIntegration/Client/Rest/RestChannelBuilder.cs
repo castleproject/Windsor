@@ -54,7 +54,7 @@ namespace Castle.Facilities.WcfIntegration
 		protected override ChannelCreator CreateChannelCreator(Type contract, RestClientModel clientModel,
 			                                                   params object[] channelFactoryArgs)
 		{
-			var type = typeof(WebChannelFactory<>).MakeGenericType(new Type[] { contract });
+			var type = typeof(WebChannelFactory<>).MakeGenericType(new[] { contract });
 			var channelFactory = ChannelFactoryBuilder.CreateChannelFactory(type, clientModel, channelFactoryArgs);
 			ConfigureChannelFactory(channelFactory);
 
