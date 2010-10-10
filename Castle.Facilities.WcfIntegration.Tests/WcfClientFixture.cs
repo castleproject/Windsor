@@ -878,16 +878,12 @@ namespace Castle.Facilities.WcfIntegration.Tests
 			windsorContainer.Register(
 				Component.For<IOperationsEx>()
 					.Named("operations")
-					.AsWcfClient(new DefaultClientModel()
-					{
-						Endpoint = WcfEndpoint
-							.BoundTo(new NetTcpBinding { PortSharingEnabled = true })
-							.At("net.tcp://localhost/Operations1/Ex")
-							.AddExtensions(new ChannelReconnectPolicy())
-					})
-				);
+					.AsWcfClient(WcfEndpoint
+					             	.BoundTo(new NetTcpBinding { PortSharingEnabled = true })
+					             	.At("net.tcp://localhost/Operations1/Ex")
+					             	.AddExtensions(new ChannelReconnectPolicy())));
 
-			IOperationsEx client = null;
+			IOperationsEx client;
 
 			using (createLocalContainer())
 			{
@@ -931,7 +927,6 @@ namespace Castle.Facilities.WcfIntegration.Tests
 							.At("net.tcp://localhost/Operations1/Ex")
 					})
 				);
-
 			IOperationsEx client = null;
 
 			using (createLocalContainer())
