@@ -325,11 +325,24 @@ namespace Castle.Facilities.WcfIntegration.Tests
 		}
 
 		[Test, ExpectedException(typeof(FacilityException),
-			ExpectedMessage = "The IWcfClientFactory is only available with the TypedFactoryFacility.  Did you forget to register that facility?")]
+			ExpectedMessage = "The IWcfClientFactory is only available with the TypedFactoryFacility.  Did you forget to register that facility? Also make sure that TypedFactoryFacility was registred before WcfFacility.")]
 		public void WillGetFriendlyErrorWhenFactoryIsNotAvailable()
 		{
 			using (var clientContainer = new WindsorContainer()
 					.AddFacility<WcfFacility>(f => f.CloseTimeout = TimeSpan.Zero))
+			{
+				clientContainer.Resolve<IWcfClientFactory>();
+			}
+		}
+
+
+		[Test, ExpectedException(typeof(FacilityException),
+			ExpectedMessage = "The IWcfClientFactory is only available with the TypedFactoryFacility.  Did you forget to register that facility? Also make sure that TypedFactoryFacility was registred before WcfFacility.")]
+		public void WillGetFriendlyErrorWhenFactoryIsNotAvailable_because_TypedFactoryFacility_was_registered_after_WCFFacility()
+		{
+			using (var clientContainer = new WindsorContainer()
+					.AddFacility<WcfFacility>(f => f.CloseTimeout = TimeSpan.Zero)
+					.AddFacility<TypedFactoryFacility>())
 			{
 				clientContainer.Resolve<IWcfClientFactory>();
 			}

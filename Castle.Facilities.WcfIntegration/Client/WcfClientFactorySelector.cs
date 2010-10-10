@@ -35,9 +35,9 @@ namespace Castle.Facilities.WcfIntegration
 
 			public ClientComponent(Type componentType, object[] arguments)
 				: base(null, componentType, null)
-            {
+			{
 				this.arguments = arguments;
-            }
+			}
 
 			public override object Resolve(IKernel kernel)
 			{
@@ -59,8 +59,7 @@ namespace Castle.Facilities.WcfIntegration
 					argument = WcfEndpoint.At((Uri)argument);
 				}
 
-				var args = new HybridDictionary();
-				args.Add(Guid.NewGuid().ToString(), argument);
+				var args = new HybridDictionary { { Guid.NewGuid().ToString(), argument } };
 
 				if (key == null)
 				{

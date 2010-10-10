@@ -31,7 +31,7 @@ namespace Castle.Facilities.WcfIntegration
 			{
 				throw new FacilityException(
 					"The IWcfClientFactory is only available with the TypedFactoryFacility.  " +
-					"Did you forget to register that facility?");
+					"Did you forget to register that facility? Also make sure that TypedFactoryFacility was registred before WcfFacility.");
 			}
 
 			if (service == null || IsServiceContract(service) == false)
