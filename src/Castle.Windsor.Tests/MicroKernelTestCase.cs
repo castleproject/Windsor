@@ -16,6 +16,8 @@ namespace Castle.MicroKernel.Tests
 {
 	using System;
 	using System.Collections.Generic;
+	using System.Linq;
+
 	using Castle.Core;
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Tests.ClassComponents;
@@ -220,6 +222,30 @@ namespace Castle.MicroKernel.Tests
 			Assert.DoesNotThrow(() => 
 				cs = kernel.ResolveAll<C>());
 			Assert.IsEmpty(cs);
+		}
+
+		[Test]
+		public void ResolveAll_ForwardedHandlerForGenericType_Resolves()
+		{
+			kernel
+				.Register(Component.For<IOtherService, IGenericTest<object>>().ImplementedBy<GenericTest>());
+
+			var services = kernel.ResolveAll<IGenericTest<object>>();
+
+			var service = services.Single();
+			Assert.That(service is GenericTest);
+		}
+
+		private interface IGenericTest<T>
+		{
+		}
+
+		private interface IOtherService
+		{
+		}
+
+		public class GenericTest : IOtherService, IGenericTest<object>
+		{
 		}
 
 		[Test]
