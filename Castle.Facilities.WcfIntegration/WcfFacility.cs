@@ -16,25 +16,40 @@ namespace Castle.Facilities.WcfIntegration
 {
 	using System;
 	using System.ServiceModel.Channels;
-	using System.ServiceModel.Description;
-	using System.ServiceModel.Dispatcher;
-	using Castle.Core;
+
+	using Castle.Facilities.WcfIntegration.Internal;
 	using Castle.MicroKernel.Facilities;
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Resolvers;
 
 	/// <summary>
-	/// Facility to simplify the management of WCF clients and services. 
+	///   Facility to simplify the management of WCF clients and services.
 	/// </summary>
 	public class WcfFacility : AbstractFacility
 	{
-		private readonly WcfClientExtension clientExtension;
-		private readonly WcfServiceExtension serviceExtension;
+		private readonly WcfClientExtension clientExtension = new WcfClientExtension();
+		private readonly WcfServiceExtension serviceExtension = new WcfServiceExtension();
 
-		public WcfFacility()
+		public WcfClientExtension Clients
 		{
-			clientExtension = new WcfClientExtension();
-			serviceExtension = new WcfServiceExtension();
+			get { return clientExtension; }
+		}
+
+		public TimeSpan? CloseTimeout { get; set; }
+
+		public Binding DefaultBinding { get; set; }
+
+		public WcfServiceExtension Services
+		{
+			get { return serviceExtension; }
+		}
+
+		public override void Dispose()
+		{
+			base.Dispose();
+
+			clientExtension.Dispose();
+			serviceExtension.Dispose();
 		}
 
 		protected override void Init()
@@ -48,50 +63,7 @@ namespace Castle.Facilities.WcfIntegration
 				Component.For<ILazyComponentLoader>().ImplementedBy<WcfClientComponentLoader>()
 				);
 
-			Kernel.ComponentModelCreated += Kernel_ComponentModelCreated;
-		}
-
-		public WcfClientExtension Clients
-		{
-			get { return clientExtension; }
-		}
-
-		public WcfServiceExtension Services
-		{
-			get { return serviceExtension; }
-		}
-
-		public Binding DefaultBinding { get; set; }
-
-		public TimeSpan? CloseTimeout { get; set; }
-
-		private void Kernel_ComponentModelCreated(ComponentModel model)
-		{
-			var implementation = model.Implementation;
-
-			if (typeof(IServiceBehavior).IsAssignableFrom(implementation) ||
-				typeof(IEndpointBehavior).IsAssignableFrom(implementation) ||
-				typeof(IOperationBehavior).IsAssignableFrom(implementation) ||
-				typeof(IContractBehavior).IsAssignableFrom(implementation) ||
-				typeof(IErrorHandler).IsAssignableFrom(implementation)
-				)
-			{
-				model.LifestyleType = LifestyleType.Transient;
-
-				if (model.CustomComponentActivator == null)
-				{
-					model.CustomComponentActivator = typeof(WcfBehaviorActivator);
-				}
-			}
-		}
-
-		public override void Dispose()
-		{
-			base.Dispose();
-
-			if (clientExtension != null) clientExtension.Dispose();
-			if (serviceExtension != null) serviceExtension.Dispose();
+			Kernel.ComponentModelBuilder.AddContributor(new WcfBehaviorInspector());
 		}
 	}
 }
-
