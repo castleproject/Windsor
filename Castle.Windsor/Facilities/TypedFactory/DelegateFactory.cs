@@ -27,9 +27,7 @@ namespace Castle.Facilities.TypedFactory
 	[Singleton]
 	public class DelegateFactory : ILazyComponentLoader
 	{
-		private static ITypedFactoryComponentSelector defaultSelector = new DefaultDelegateComponentSelector();
-
-		#region ILazyComponentLoader Members
+		private static readonly ITypedFactoryComponentSelector defaultSelector = new DefaultDelegateComponentSelector();
 
 		public IRegistration Load(string key, Type service, IDictionary arguments)
 		{
@@ -88,8 +86,6 @@ namespace Castle.Facilities.TypedFactory
 		{
 			return true;
 		}
-
-		#endregion
 
 		protected static bool HasReturn(MethodInfo invoke)
 		{

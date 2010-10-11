@@ -18,7 +18,6 @@ namespace Castle.Facilities.TypedFactory
 	using System.Collections;
 	using System.Reflection;
 
-	using Castle.Core;
 	using Castle.Core.Internal;
 	using Castle.MicroKernel;
 
