@@ -52,7 +52,7 @@ namespace Castle.Facilities.TypedFactory
 
 		private bool IsFunc(Type type)
 		{
-			return type.FullName.StartsWith("System.Func");
+			return type.FullName != null && type.FullName.StartsWith("System.Func");
 		}
 	}
 }
