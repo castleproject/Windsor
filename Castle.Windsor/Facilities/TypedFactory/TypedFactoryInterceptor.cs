@@ -22,6 +22,7 @@ namespace Castle.Facilities.TypedFactory
 	using Castle.Core;
 	using Castle.Core.Interceptor;
 	using Castle.DynamicProxy;
+	using Castle.Facilities.TypedFactory.Internal;
 	using Castle.MicroKernel;
 
 	[Transient]

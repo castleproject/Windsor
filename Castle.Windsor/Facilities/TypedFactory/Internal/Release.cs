@@ -12,12 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Facilities.TypedFactory
+namespace Castle.Facilities.TypedFactory.Internal
 {
-	using Castle.DynamicProxy;
-	using Castle.MicroKernel;
+    using Castle.DynamicProxy;
+    using Castle.MicroKernel;
 
-	/// <summary>
+    /// <summary>
 	///   Releases components passed as arguments from the container.
 	/// </summary>
 	public class Release : ITypedFactoryMethod
