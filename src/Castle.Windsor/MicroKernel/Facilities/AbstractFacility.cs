@@ -31,7 +31,7 @@ namespace Castle.MicroKernel.Facilities
 		/// </summary>
 		/// <value>The <see cref = "IConfiguration" /> representing 
 		///   the facility configuration.</value>
-		public IConfiguration FacilityConfig
+		protected IConfiguration FacilityConfig
 		{
 			get { return facilityConfig; }
 		}
@@ -40,7 +40,7 @@ namespace Castle.MicroKernel.Facilities
 		///   Gets the <see cref = "IKernel" /> where the facility is registered.
 		/// </summary>
 		/// <value>The <see cref = "IKernel" />.</value>
-		public IKernel Kernel
+		protected IKernel Kernel
 		{
 			get { return kernel; }
 		}
@@ -60,8 +60,13 @@ namespace Castle.MicroKernel.Facilities
 		/// <remarks>
 		///   It can be overriden.
 		/// </remarks>
-		public virtual void Dispose()
+		protected virtual void Dispose()
 		{
+		}
+
+		void IDisposable.Dispose()
+		{
+			Dispose();
 		}
 
 		/// <summary>
@@ -72,7 +77,7 @@ namespace Castle.MicroKernel.Facilities
 		/// </summary>
 		/// <param name = "kernel"></param>
 		/// <param name = "facilityConfig"></param>
-		public void Init(IKernel kernel, IConfiguration facilityConfig)
+		void IFacility.Init(IKernel kernel, IConfiguration facilityConfig)
 		{
 			this.kernel = kernel;
 			this.facilityConfig = facilityConfig;
@@ -84,7 +89,7 @@ namespace Castle.MicroKernel.Facilities
 		///   Terminates the Facility, invokes the <see cref = "Dispose" /> method and sets 
 		///   the Kernel to a null reference.
 		/// </summary>
-		public void Terminate()
+		void IFacility.Terminate()
 		{
 			Dispose();
 

@@ -1,3 +1,23 @@
+change - Changed visibility of members on AbstractFacility to protected and implementation of
+	interface members to explicit.
+
+impact - low
+fixability - easy
+revision - 
+
+description - To make it less confusing to users when fluently configuring facilities (via 
+	AddFacility<SomeFacility>(f => f.ConfigureSomething()) method) visibility of certain members
+	of AbstractFacility class was changed. Public properties FacilityConfig and Kernel are now
+	protected, and all methods from IFacility interface are implemented explicitly. Additionally
+	protected Dispose method was introduced to allow inheriting classes to still be disposed.
+
+fix - If you were using FacilityConfig and/or Kernel properties outside of inherited classes
+	refactor your code accordingly not to do so. If you were overriding Dispose method change
+	its signature from
+	public override void Dispose() to
+	protected override void Dispose()
+================================================================================================
+release 2.5.1 ==================================================================================
 ================================================================================================
 change - ILazyComponentLoader.Load now accepts a third argument for additional arguments.
 
