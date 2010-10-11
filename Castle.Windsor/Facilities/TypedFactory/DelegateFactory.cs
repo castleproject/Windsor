@@ -18,6 +18,7 @@ namespace Castle.Facilities.TypedFactory
 	using System.Collections;
 	using System.Diagnostics;
 	using System.Reflection;
+
 	using Castle.Core;
 	using Castle.Core.Internal;
 	using Castle.MicroKernel;
@@ -66,30 +67,25 @@ namespace Castle.Facilities.TypedFactory
 				});
 		}
 
+		protected virtual bool ShouldLoad(string key, Type service)
+		{
+			return true;
+		}
+
 		public static MethodInfo ExtractInvokeMethod(Type service)
 		{
 			if (!service.Is<MulticastDelegate>())
 			{
 				return null;
 			}
-			
+
 			var invoke = GetInvokeMethod(service);
-			if (!HasReturn(invoke)) 
+			if (!HasReturn(invoke))
 			{
 				return null;
 			}
-			
+
 			return invoke;
-		}
-
-		protected virtual bool ShouldLoad(string key, Type service)
-		{
-			return true;
-		}
-
-		protected static bool HasReturn(MethodInfo invoke)
-		{
-			return invoke.ReturnType != typeof(void);
 		}
 
 		protected static MethodInfo GetInvokeMethod(Type @delegate)
@@ -97,6 +93,11 @@ namespace Castle.Facilities.TypedFactory
 			var invoke = @delegate.GetMethod("Invoke");
 			Debug.Assert(invoke != null, "invoke != null");
 			return invoke;
+		}
+
+		protected static bool HasReturn(MethodInfo invoke)
+		{
+			return invoke.ReturnType != typeof(void);
 		}
 	}
 }

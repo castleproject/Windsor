@@ -32,7 +32,8 @@ namespace Castle.Facilities.TypedFactory
 			return BuildFactoryComponent(method, componentName, componentType, additionalArguments);
 		}
 
-		protected virtual TypedFactoryComponent BuildFactoryComponent(MethodInfo method, string componentName, Type componentType, IDictionary additionalArguments)
+		protected virtual TypedFactoryComponent BuildFactoryComponent(MethodInfo method, string componentName,
+		                                                              Type componentType, IDictionary additionalArguments)
 		{
 			var itemType = componentType.GetCompatibleArrayItemType();
 			if (itemType != null)
@@ -42,9 +43,15 @@ namespace Castle.Facilities.TypedFactory
 			return new TypedFactoryComponent(componentName, componentType, additionalArguments);
 		}
 
-		protected virtual Type GetComponentType(MethodInfo method, object[] arguments)
+		protected virtual IDictionary GetArguments(MethodInfo method, object[] arguments)
 		{
-			return method.ReturnType;
+			var argumentMap = new Arguments();
+			var parameters = method.GetParameters();
+			for (var i = 0; i < parameters.Length; i++)
+			{
+				argumentMap.Add(parameters[i].Name, arguments[i]);
+			}
+			return argumentMap;
 		}
 
 		protected virtual string GetComponentName(MethodInfo method, object[] arguments)
@@ -57,15 +64,9 @@ namespace Castle.Facilities.TypedFactory
 			return componentName;
 		}
 
-		protected virtual IDictionary GetArguments(MethodInfo method, object[] arguments)
+		protected virtual Type GetComponentType(MethodInfo method, object[] arguments)
 		{
-			var argumentMap = new Arguments();
-			var parameters = method.GetParameters();
-			for (int i = 0; i < parameters.Length; i++)
-			{
-				argumentMap.Add(parameters[i].Name, arguments[i]);
-			}
-			return argumentMap;
+			return method.ReturnType;
 		}
 	}
 }

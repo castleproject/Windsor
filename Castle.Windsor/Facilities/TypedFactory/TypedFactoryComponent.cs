@@ -20,14 +20,13 @@ namespace Castle.Facilities.TypedFactory
 	using Castle.MicroKernel;
 
 	/// <summary>
-	/// Represents a single component to be resolved via Typed Factory
+	///   Represents a single component to be resolved via Typed Factory
 	/// </summary>
 	public class TypedFactoryComponent
 	{
-		private readonly Type componentType;
-		private readonly string componentName;
 		private readonly IDictionary additionalArguments;
-
+		private readonly string componentName;
+		private readonly Type componentType;
 
 		public TypedFactoryComponent(string componentName, Type componentType, IDictionary additionalArguments)
 		{
@@ -42,9 +41,9 @@ namespace Castle.Facilities.TypedFactory
 			this.additionalArguments = additionalArguments ?? new Arguments();
 		}
 
-		public Type ComponentType
+		public IDictionary AdditionalArguments
 		{
-			get { return componentType; }
+			get { return additionalArguments; }
 		}
 
 		public string ComponentName
@@ -52,15 +51,15 @@ namespace Castle.Facilities.TypedFactory
 			get { return componentName; }
 		}
 
-		public IDictionary AdditionalArguments
+		public Type ComponentType
 		{
-			get { return additionalArguments; }
+			get { return componentType; }
 		}
 
 		/// <summary>
-		/// Resolves the component(s) from given kernel.
+		///   Resolves the component(s) from given kernel.
 		/// </summary>
-		/// <param name="kernel"></param>
+		/// <param name = "kernel"></param>
 		/// <returns>Resolved component(s).</returns>
 		public virtual object Resolve(IKernel kernel)
 		{

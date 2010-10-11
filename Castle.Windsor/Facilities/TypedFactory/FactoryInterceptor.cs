@@ -21,7 +21,7 @@ namespace Castle.Facilities.TypedFactory
 	using Castle.MicroKernel;
 
 	/// <summary>
-	/// Summary description for FactoryInterceptor.
+	/// Legacy interceptor for old impl. of the facility.
 	/// </summary>
 	[Transient]
 	public class FactoryInterceptor : IInterceptor, IOnBehalfAware

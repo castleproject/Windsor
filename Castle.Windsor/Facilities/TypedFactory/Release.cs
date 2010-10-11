@@ -18,7 +18,7 @@ namespace Castle.Facilities.TypedFactory
 	using Castle.MicroKernel;
 
 	/// <summary>
-	/// Releases components passed as arguments from the container.
+	///   Releases components passed as arguments from the container.
 	/// </summary>
 	public class Release : ITypedFactoryMethod
 	{
@@ -33,7 +33,10 @@ namespace Castle.Facilities.TypedFactory
 		{
 			foreach (var argument in invocation.Arguments)
 			{
-				if (argument == null) continue;
+				if (argument == null)
+				{
+					continue;
+				}
 
 				kernel.ReleaseComponent(argument);
 			}

@@ -20,15 +20,15 @@ namespace Castle.Facilities.TypedFactory
 	using Castle.MicroKernel;
 
 	/// <summary>
-	/// Represents a set of components to be resolved via Typed Factory. Uses <see cref="IKernel.ResolveAll(System.Type,System.Collections.IDictionary)"/> to resolve the components.
+	///   Represents a set of components to be resolved via Typed Factory. Uses <see cref = "IKernel.ResolveAll(System.Type,System.Collections.IDictionary)" /> to resolve the components.
 	/// </summary>
 	public class TypedFactoryComponentCollection : TypedFactoryComponent
 	{
 		/// <summary>
-		/// Creates new instance of <see cref="TypedFactoryComponentCollection"/>.
+		///   Creates new instance of <see cref = "TypedFactoryComponentCollection" />.
 		/// </summary>
-		/// <param name="componentCollectionType">Collection type to resolve. Must be an array (SomeComponent[]) or IEnumerable{SomeComponent}. Type of the element of the collection will be used as first argument to <see cref="IKernel.ResolveAll(System.Type,System.Collections.IDictionary)"/></param>
-		/// <param name="additionalArguments">Additional arguents that will be passed as second argument to <see cref="IKernel.ResolveAll(System.Type,System.Collections.IDictionary)"/></param>
+		/// <param name = "componentCollectionType">Collection type to resolve. Must be an array (SomeComponent[]) or IEnumerable{SomeComponent}. Type of the element of the collection will be used as first argument to <see cref = "IKernel.ResolveAll(System.Type,System.Collections.IDictionary)" /></param>
+		/// <param name = "additionalArguments">Additional arguents that will be passed as second argument to <see cref = "IKernel.ResolveAll(System.Type,System.Collections.IDictionary)" /></param>
 		public TypedFactoryComponentCollection(Type componentCollectionType, IDictionary additionalArguments)
 			: base(null, componentCollectionType, additionalArguments)
 		{
