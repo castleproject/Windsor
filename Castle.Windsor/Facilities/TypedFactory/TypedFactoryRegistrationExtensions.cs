@@ -88,12 +88,7 @@ namespace Castle.Facilities.TypedFactory
 			ComponentRegistration<TFactory> componentRegistration, Action<TypedFactoryConfiguration> configuration,
 			ITypedFactoryComponentSelector defaultComponentSelector)
 		{
-			var factoryConfiguration = new TypedFactoryConfiguration();
-
-			if (configuration != null)
-			{
-				configuration.Invoke(factoryConfiguration);
-			}
+			var factoryConfiguration = GetFactoryConfiguration(configuration);
 			var selectorReference = factoryConfiguration.Reference;
 			if (selectorReference == null)
 			{
@@ -111,6 +106,17 @@ namespace Castle.Facilities.TypedFactory
 			});
 		}
 
+		private static TypedFactoryConfiguration GetFactoryConfiguration(Action<TypedFactoryConfiguration> configuration)
+		{
+			var factoryConfiguration = new TypedFactoryConfiguration();
+
+			if (configuration != null)
+			{
+				configuration.Invoke(factoryConfiguration);
+			}
+			return factoryConfiguration;
+		}
+
 		private static ComponentRegistration<T> AttachDelegateFactory<T>(ComponentRegistration<T> registration)
 		{
 			return registration.UsingFactoryMethod((k, m, c) =>
@@ -124,8 +130,8 @@ namespace Castle.Facilities.TypedFactory
 			});
 		}
 
-		private static ComponentRegistration<TDelegate> AttachFactoryInterceptor<TDelegate>(
-			ComponentRegistration<TDelegate> registration)
+		private static ComponentRegistration<TFactory> AttachFactoryInterceptor<TFactory>(
+			ComponentRegistration<TFactory> registration)
 		{
 			return registration.Interceptors(new InterceptorReference(TypedFactoryFacility.InterceptorKey)).Last;
 		}
