@@ -14,6 +14,7 @@
 
 namespace Castle.MicroKernel
 {
+	using Castle.Core;
 	using Castle.MicroKernel.Context;
 
 	/// <summary>
@@ -24,12 +25,18 @@ namespace Castle.MicroKernel
 	{
 		/// <summary>
 		/// Resolves object referenced by this reference, optionally using provided <paramref name="kernel"/>.
-		/// If object is resolved from the kernel, the <paramref name="context"/>should be used to guard
+		/// If object is resolved from the kernel, the <paramref name="context"/> should be used to guard
 		/// against against cyclic dependencies.
 		/// </summary>
 		/// <param name="kernel"></param>
 		/// <param name="context"></param>
 		/// <returns></returns>
 		T Resolve(IKernel kernel, CreationContext context);
+
+		/// <summary>
+		/// If the reference introduces dependency on a component, should return <see cref="DependencyModel"/> for that dependency, otherwise <c>null</c>.
+		/// </summary>
+		/// <returns></returns>
+		DependencyModel GetDependency();
 	}
 }

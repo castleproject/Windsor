@@ -83,16 +83,12 @@ namespace Castle.Facilities.TypedFactory
 			ComponentRegistration<TFactory> componentRegistration, Action<TypedFactoryConfiguration> configuration,
 			string defaultComponentSelectorKey)
 		{
-			var factoryConfiguration = GetFactoryConfiguration(configuration);
+			var factoryConfiguration = GetFactoryConfiguration(configuration, defaultComponentSelectorKey);
 			var selectorReference = factoryConfiguration.Reference;
-			if (selectorReference == null)
+			var selectorDependency = selectorReference.GetDependency();
+			if (selectorDependency != null)
 			{
-				return componentRegistration.DynamicParameters((k, d) =>
-				{
-					var selector = k.Resolve<ITypedFactoryComponentSelector>(defaultComponentSelectorKey);
-					d.Insert(selector);
-					return k2 => k2.ReleaseComponent(selector);
-				});
+				componentRegistration.AddDescriptor(new DependencyDescriptor<TFactory>(selectorDependency));
 			}
 			return componentRegistration.DynamicParameters((k, c, d) =>
 			{
@@ -121,9 +117,10 @@ namespace Castle.Facilities.TypedFactory
 			return registration.Interceptors(new InterceptorReference(TypedFactoryFacility.InterceptorKey)).Last;
 		}
 
-		private static TypedFactoryConfiguration GetFactoryConfiguration(Action<TypedFactoryConfiguration> configuration)
+		private static TypedFactoryConfiguration GetFactoryConfiguration(Action<TypedFactoryConfiguration> configuration,
+		                                                                 string defaultComponentSelectorKey)
 		{
-			var factoryConfiguration = new TypedFactoryConfiguration();
+			var factoryConfiguration = new TypedFactoryConfiguration(defaultComponentSelectorKey);
 
 			if (configuration != null)
 			{
@@ -153,7 +150,7 @@ namespace Castle.Facilities.TypedFactory
 					string.Format("Delegate type {0} can not be used as typed factory because it has void return type.",
 					              registration.ServiceType));
 			}
-			var settings = new TypedFactoryConfiguration();
+			var settings = new TypedFactoryConfiguration(TypedFactoryFacility.DefaultDelegateSelectorKey);
 			if (configuration != null)
 			{
 				configuration.Invoke(settings);
