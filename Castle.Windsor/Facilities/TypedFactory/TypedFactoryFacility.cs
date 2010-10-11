@@ -33,14 +33,19 @@ namespace Castle.Facilities.TypedFactory
 	/// </summary>
 	public class TypedFactoryFacility : AbstractFacility
 	{
-		public static readonly string DefaultDelegateSelectorKey = "Castle.TypedFactory.DefaultDelegateFactoryComponentSelector";
-		public static readonly string DefaultInterfaceSelectorKey = "Castle.TypedFactory.DefaultInterfaceFactoryComponentSelector";
-		public static readonly string DelegateFactoryKey = "Castle.TypedFactory.DelegateFactory";
-		public static readonly string DelegateProxyFactoryKey = "Castle.TypedFactory.DelegateProxyFactory";
 		public static readonly string InterceptorKey = "Castle.TypedFactory.Interceptor";
 
+		internal static readonly string DefaultDelegateSelectorKey =
+			"Castle.TypedFactory.DefaultDelegateFactoryComponentSelector";
+
+		internal static readonly string DefaultInterfaceSelectorKey =
+			"Castle.TypedFactory.DefaultInterfaceFactoryComponentSelector";
+
+		internal static readonly string DelegateProxyFactoryKey = "Castle.TypedFactory.DelegateProxyFactory";
+		private static readonly string DelegateFactoryKey = "Castle.TypedFactory.DelegateFactory";
+
 		[Obsolete("This method is obsolete. Use AsFactory() extension method on fluent registration API instead.")]
-		[EditorBrowsable(EditorBrowsableState.Advanced)]
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public void AddTypedFactoryEntry(FactoryEntry entry)
 		{
 			var model = new ComponentModel(entry.Id, entry.FactoryInterface, typeof(Empty))
@@ -72,11 +77,11 @@ namespace Castle.Facilities.TypedFactory
 				if (string.IsNullOrEmpty(creation))
 				{
 					var selector = config.Attributes["selector"];
-					RegisterFactoryLegacy(id, factoryType, selector);
+					RegisterFactory(id, factoryType, selector);
 					continue;
 				}
 
-				RegisterFactoryLegacy(creation, id, factoryType, destruction);
+				LegacyRegisterFactory(id, factoryType, creation, destruction);
 			}
 		}
 
@@ -85,6 +90,23 @@ namespace Castle.Facilities.TypedFactory
 			InitFacility();
 
 			LegacyInit();
+		}
+
+		// registers factory from configuration
+		protected void RegisterFactory(string id, Type type, string selector)
+		{
+			var factory = Component.For(type).Named(id);
+			if (selector == null)
+			{
+				factory.AsFactory();
+			}
+			else
+			{
+				var selectorKey = ReferenceExpressionUtil.ExtractComponentKey(selector);
+				factory.AsFactory(x => x.SelectedWith(selectorKey));
+			}
+
+			Kernel.Register(factory);
 		}
 
 		private void InitFacility()
@@ -113,23 +135,7 @@ namespace Castle.Facilities.TypedFactory
 			AddFactories(FacilityConfig, converter);
 		}
 
-		private void RegisterFactoryLegacy(string id, Type type, string selector)
-		{
-			var factory = Component.For(type).Named(id);
-			if (selector == null)
-			{
-				factory.AsFactory();
-			}
-			else
-			{
-				var selectorKey = ReferenceExpressionUtil.ExtractComponentKey(selector);
-				factory.AsFactory(x => x.SelectedWith(selectorKey));
-			}
-
-			Kernel.Register(factory);
-		}
-
-		private void RegisterFactoryLegacy(string creation, string id, Type factoryType, string destruction)
+		private void LegacyRegisterFactory(string id, Type factoryType, string creation, string destruction)
 		{
 			try
 			{
