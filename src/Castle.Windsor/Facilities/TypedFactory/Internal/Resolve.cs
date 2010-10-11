@@ -12,15 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Facilities.TypedFactory
+namespace Castle.Facilities.TypedFactory.Internal
 {
-	using System;
+    using System;
 
-	using Castle.DynamicProxy;
-	using Castle.MicroKernel;
-	using Castle.MicroKernel.Facilities;
+    using Castle.DynamicProxy;
+    using Castle.MicroKernel;
+    using Castle.MicroKernel.Facilities;
 
-	/// <summary>
+    /// <summary>
 	///   resolves componet selected by given <see cref = "ITypedFactoryComponentSelector" /> from the container
 	/// </summary>
 	public class Resolve : ITypedFactoryMethod
