@@ -37,7 +37,7 @@ namespace Castle.Facilities.TypedFactory
 		private bool disposed;
 
 		private ComponentModel target;
-		
+
 		public TypedFactoryInterceptor(IKernel kernel, ITypedFactoryComponentSelector componentSelector)
 		{
 			ComponentSelector = componentSelector;
@@ -45,49 +45,6 @@ namespace Castle.Facilities.TypedFactory
 		}
 
 		public ITypedFactoryComponentSelector ComponentSelector { get; private set; }
-
-		protected virtual void BuildHandlersMap(Type service)
-		{
-			if (service.Equals(typeof(IDisposable)))
-			{
-				var method = service.GetMethods().Single();
-				methods.Add(method, new Dispose(Dispose));
-				return;
-			}
-
-			foreach (MethodInfo method in service.GetMethods())
-			{
-				if (IsReleaseMethod(method))
-				{
-					methods.Add(method, new Release(kernel));
-					continue;
-				}
-				methods.Add(method, new Resolve(kernel, ComponentSelector, trackedComponents.Add));
-			}
-
-			foreach (var @interface in service.GetInterfaces())
-			{
-				BuildHandlersMap(@interface);
-			}
-		}
-
-		private bool IsReleaseMethod(MethodInfo methodInfo)
-		{
-			return methodInfo.ReturnType == typeof(void);
-		}
-
-		private bool TryGetMethod(IInvocation invocation, out ITypedFactoryMethod method)
-		{
-			if (methods.TryGetValue(invocation.Method, out method))
-			{
-				return true;
-			}
-			if (invocation.Method.IsGenericMethod == false)
-			{
-				return false;
-			}
-			return methods.TryGetValue(invocation.Method.GetGenericMethodDefinition(), out method);
-		}
 
 		public void Dispose()
 		{
@@ -121,6 +78,49 @@ namespace Castle.Facilities.TypedFactory
 		{
 			this.target = target;
 			BuildHandlersMap(this.target.Service);
+		}
+
+		protected virtual void BuildHandlersMap(Type service)
+		{
+			if (service.Equals(typeof(IDisposable)))
+			{
+				var method = service.GetMethods().Single();
+				methods.Add(method, new Dispose(Dispose));
+				return;
+			}
+
+			foreach (var method in service.GetMethods())
+			{
+				if (IsReleaseMethod(method))
+				{
+					methods.Add(method, new Release(kernel));
+					continue;
+				}
+				methods.Add(method, new Resolve(kernel, ComponentSelector, trackedComponents.Add));
+			}
+
+			foreach (var @interface in service.GetInterfaces())
+			{
+				BuildHandlersMap(@interface);
+			}
+		}
+
+		private bool IsReleaseMethod(MethodInfo methodInfo)
+		{
+			return methodInfo.ReturnType == typeof(void);
+		}
+
+		private bool TryGetMethod(IInvocation invocation, out ITypedFactoryMethod method)
+		{
+			if (methods.TryGetValue(invocation.Method, out method))
+			{
+				return true;
+			}
+			if (invocation.Method.IsGenericMethod == false)
+			{
+				return false;
+			}
+			return methods.TryGetValue(invocation.Method.GetGenericMethodDefinition(), out method);
 		}
 	}
 }
