@@ -33,6 +33,8 @@ namespace Castle.Facilities.TypedFactory
 	/// </summary>
 	public class TypedFactoryFacility : AbstractFacility
 	{
+		public static readonly string DefaultDelegateSelectorKey = "Castle.TypedFactory.DefaultDelegateFactoryComponentSelector";
+		public static readonly string DefaultInterfaceSelectorKey = "Castle.TypedFactory.DefaultInterfaceFactoryComponentSelector";
 		public static readonly string DelegateFactoryKey = "Castle.TypedFactory.DelegateFactory";
 		public static readonly string DelegateProxyFactoryKey = "Castle.TypedFactory.DelegateProxyFactory";
 		public static readonly string InterceptorKey = "Castle.TypedFactory.Interceptor";
@@ -70,7 +72,7 @@ namespace Castle.Facilities.TypedFactory
 				if (string.IsNullOrEmpty(creation))
 				{
 					var selector = config.Attributes["selector"];
-					RegisterFactory(id, factoryType, selector);
+					RegisterFactoryLegacy(id, factoryType, selector);
 					continue;
 				}
 
@@ -94,7 +96,13 @@ namespace Castle.Facilities.TypedFactory
 			                Component.For<IProxyFactoryExtension>()
 			                	.ImplementedBy<DelegateProxyFactory>()
 			                	.LifeStyle.Transient
-			                	.Named(DelegateProxyFactoryKey));
+			                	.Named(DelegateProxyFactoryKey),
+			                Component.For<ITypedFactoryComponentSelector>()
+			                	.ImplementedBy<DefaultTypedFactoryComponentSelector>()
+			                	.Named(DefaultInterfaceSelectorKey),
+			                Component.For<ITypedFactoryComponentSelector>()
+			                	.ImplementedBy<DefaultDelegateComponentSelector>()
+			                	.Named(DefaultDelegateSelectorKey));
 		}
 
 		private void LegacyInit()
@@ -105,7 +113,7 @@ namespace Castle.Facilities.TypedFactory
 			AddFactories(FacilityConfig, converter);
 		}
 
-		private void RegisterFactory(string id, Type type, string selector)
+		private void RegisterFactoryLegacy(string id, Type type, string selector)
 		{
 			var factory = Component.For(type).Named(id);
 			if (selector == null)

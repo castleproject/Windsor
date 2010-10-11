@@ -28,8 +28,6 @@ namespace Castle.Facilities.TypedFactory.Internal
 	[Singleton]
 	public class DelegateFactory : ILazyComponentLoader
 	{
-		private static readonly ITypedFactoryComponentSelector defaultSelector = new DefaultDelegateComponentSelector();
-
 		public IRegistration Load(string key, Type service, IDictionary arguments)
 		{
 			if (service == null)
@@ -62,8 +60,9 @@ namespace Castle.Facilities.TypedFactory.Internal
 					return @delegate;
 				}).DynamicParameters((k, d) =>
 				{
-					var selector = defaultSelector;
+					var selector = k.Resolve<ITypedFactoryComponentSelector>(TypedFactoryFacility.DefaultDelegateSelectorKey);
 					d.Insert(selector);
+					return k2 => k2.ReleaseComponent(selector);
 				});
 		}
 
