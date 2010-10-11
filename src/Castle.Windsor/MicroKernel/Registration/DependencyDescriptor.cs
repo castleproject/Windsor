@@ -12,34 +12,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.MicroKernel
+namespace Castle.MicroKernel.Registration
 {
-	using System;
-
 	using Castle.Core;
-	using Castle.MicroKernel.Context;
 
-	/// <summary>
-	/// Represents a reference to an existing object.
-	/// </summary>
-	/// <typeparam name="T"></typeparam>
-	public class InstanceReference<T> : IReference<T>
+	public class DependencyDescriptor<S> : ComponentDescriptor<S>
 	{
-		private readonly T instance;
+		private readonly DependencyModel dependency;
 
-		public InstanceReference(T instance)
+		public DependencyDescriptor(DependencyModel dependency)
 		{
-			this.instance = instance;
+			this.dependency = dependency;
 		}
 
-		public T Resolve(IKernel kernel, CreationContext context)
+		protected internal override void ApplyToModel(IKernel kernel, ComponentModel model)
 		{
-			return instance;
-		}
-
-		public DependencyModel GetDependency()
-		{
-			return null;
+			model.Dependencies.Add(dependency);
 		}
 	}
 }

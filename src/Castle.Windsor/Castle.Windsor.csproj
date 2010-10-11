@@ -402,6 +402,7 @@
     <Compile Include="MicroKernel\Registration\Configuration.cs" />
     <Compile Include="MicroKernel\Registration\ConfigurationDescriptor.cs" />
     <Compile Include="MicroKernel\Registration\CustomDependencyDescriptor.cs" />
+    <Compile Include="MicroKernel\Registration\DependencyDescriptor.cs" />
     <Compile Include="MicroKernel\Registration\ExtendedPropertiesDescriptor.cs" />
     <Compile Include="MicroKernel\Registration\Proxy\ProxyHook.cs" />
     <Compile Include="MicroKernel\Registration\IWindsorInstaller.cs" />

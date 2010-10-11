@@ -16,6 +16,7 @@ namespace Castle.MicroKernel
 {
 	using System;
 
+	using Castle.Core;
 	using Castle.MicroKernel.Context;
 
 	/// <summary>
@@ -80,6 +81,16 @@ namespace Castle.MicroKernel
 			{
 				throw new Exception(string.Format("Component {0} is not compatible with type {1}.", componentKey, typeof(T)), e);
 			}
+		}
+
+		public DependencyModel GetDependency()
+		{
+			if (componentKey != null)
+			{
+				return new DependencyModel(DependencyType.ServiceOverride, componentKey, null, false);
+			}
+
+			return new DependencyModel(DependencyType.Service, null, actualComponentType, false);
 		}
 	}
 }
