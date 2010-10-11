@@ -65,7 +65,7 @@ namespace Castle.Facilities.Remoting
 		/// <remarks>
 		///   It can be overriden.
 		/// </remarks>
-		public override void Dispose()
+		protected override void Dispose()
 		{
 			if (disconnectLocalRegistry)
 			{
