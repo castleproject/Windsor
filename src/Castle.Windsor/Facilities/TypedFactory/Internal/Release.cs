@@ -14,10 +14,10 @@
 
 namespace Castle.Facilities.TypedFactory.Internal
 {
-    using Castle.DynamicProxy;
-    using Castle.MicroKernel;
+	using Castle.DynamicProxy;
+	using Castle.MicroKernel;
 
-    /// <summary>
+	/// <summary>
 	///   Releases components passed as arguments from the container.
 	/// </summary>
 	public class Release : ITypedFactoryMethod
