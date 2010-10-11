@@ -25,12 +25,6 @@ namespace Castle.Facilities.TypedFactory
 
 	public static class TypedFactoryRegistrationExtensions
 	{
-		private static readonly ITypedFactoryComponentSelector defaultDelegateComponentSelector =
-			new DefaultDelegateComponentSelector();
-
-		private static readonly ITypedFactoryComponentSelector defaultInterfaceComponentSelector =
-			new DefaultTypedFactoryComponentSelector();
-
 		/// <summary>
 		///   Marks the component as typed factory.
 		/// </summary>
@@ -87,7 +81,7 @@ namespace Castle.Facilities.TypedFactory
 
 		private static ComponentRegistration<TFactory> AttachConfiguration<TFactory>(
 			ComponentRegistration<TFactory> componentRegistration, Action<TypedFactoryConfiguration> configuration,
-			ITypedFactoryComponentSelector defaultComponentSelector)
+			string defaultComponentSelectorKey)
 		{
 			var factoryConfiguration = GetFactoryConfiguration(configuration);
 			var selectorReference = factoryConfiguration.Reference;
@@ -95,8 +89,9 @@ namespace Castle.Facilities.TypedFactory
 			{
 				return componentRegistration.DynamicParameters((k, d) =>
 				{
-					var selector = defaultComponentSelector;
+					var selector = k.Resolve<ITypedFactoryComponentSelector>(defaultComponentSelectorKey);
 					d.Insert(selector);
+					return k2 => k2.ReleaseComponent(selector);
 				});
 			}
 			return componentRegistration.DynamicParameters((k, c, d) =>
@@ -166,7 +161,7 @@ namespace Castle.Facilities.TypedFactory
 
 			var componentRegistration = AttachFactoryInterceptor(registration);
 			componentRegistration = AttachDelegateFactory(componentRegistration);
-			return AttachConfiguration(componentRegistration, configuration, defaultDelegateComponentSelector);
+			return AttachConfiguration(componentRegistration, configuration, TypedFactoryFacility.DefaultDelegateSelectorKey);
 		}
 
 		private static ComponentRegistration<TFactoryInterface> RegisterInterfaceBasedFactory<TFactoryInterface>(
@@ -179,7 +174,7 @@ namespace Castle.Facilities.TypedFactory
 					              registration.ServiceType));
 			}
 			var componentRegistration = AttachFactoryInterceptor(registration);
-			return AttachConfiguration(componentRegistration, configuration, defaultInterfaceComponentSelector);
+			return AttachConfiguration(componentRegistration, configuration, TypedFactoryFacility.DefaultInterfaceSelectorKey);
 		}
 	}
 }
