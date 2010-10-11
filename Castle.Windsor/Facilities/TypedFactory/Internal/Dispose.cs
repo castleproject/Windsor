@@ -14,11 +14,11 @@
 
 namespace Castle.Facilities.TypedFactory.Internal
 {
-    using System;
+	using System;
 
-    using Castle.DynamicProxy;
+	using Castle.DynamicProxy;
 
-    public class Dispose : ITypedFactoryMethod
+	public class Dispose : ITypedFactoryMethod
 	{
 		private readonly Action disposeCallback;
 
