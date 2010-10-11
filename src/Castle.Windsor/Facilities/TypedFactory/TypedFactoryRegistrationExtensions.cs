@@ -31,16 +31,16 @@ namespace Castle.Facilities.TypedFactory
 			new DefaultTypedFactoryComponentSelector();
 
 		/// <summary>
-		/// Marks the component as typed factory.
+		///   Marks the component as typed factory.
 		/// </summary>
-		/// <typeparam name="TFactoryInterface"></typeparam>
-		/// <param name="registration"></param>
+		/// <typeparam name = "TFactoryInterface"></typeparam>
+		/// <param name = "registration"></param>
 		/// <returns></returns>
 		/// <remarks>
-		/// Only interfaces are legal to use as typed factories. Methods with out parameters are not allowed.
-		/// When registering component as typed factory no implementation should be provided (in case there is any it will be ignored).
-		/// Typed factories rely on <see cref="IInterceptorSelector"/> set internally, so users should not set interceptor selectors explicitly;
-		/// otherwise the factory will not function correctly.
+		///   Only interfaces are legal to use as typed factories. Methods with out parameters are not allowed.
+		///   When registering component as typed factory no implementation should be provided (in case there is any it will be ignored).
+		///   Typed factories rely on <see cref = "IInterceptorSelector" /> set internally, so users should not set interceptor selectors explicitly;
+		///   otherwise the factory will not function correctly.
 		/// </remarks>
 		public static ComponentRegistration<TFactoryInterface> AsFactory<TFactoryInterface>(
 			this ComponentRegistration<TFactoryInterface> registration)
@@ -49,17 +49,17 @@ namespace Castle.Facilities.TypedFactory
 		}
 
 		/// <summary>
-		/// Marks the component as typed factory.
+		///   Marks the component as typed factory.
 		/// </summary>
-		/// <typeparam name="TFactoryInterface"></typeparam>
-		/// <param name="registration"></param>
-		/// <param name="configuration"></param>
+		/// <typeparam name = "TFactoryInterface"></typeparam>
+		/// <param name = "registration"></param>
+		/// <param name = "configuration"></param>
 		/// <returns></returns>
 		/// <remarks>
-		/// Only interfaces are legal to use as typed factories. Methods with out parameters are not allowed.
-		/// When registering component as typed factory no implementation should be provided (in case there is any it will be ignored).
-		/// Typed factories rely on <see cref="IInterceptorSelector"/> set internally, so users should not set interceptor selectors explicitly;
-		/// otherwise the factory will not function correctly.
+		///   Only interfaces are legal to use as typed factories. Methods with out parameters are not allowed.
+		///   When registering component as typed factory no implementation should be provided (in case there is any it will be ignored).
+		///   Typed factories rely on <see cref = "IInterceptorSelector" /> set internally, so users should not set interceptor selectors explicitly;
+		///   otherwise the factory will not function correctly.
 		/// </remarks>
 		public static ComponentRegistration<TFactoryInterface> AsFactory<TFactoryInterface>(
 			this ComponentRegistration<TFactoryInterface> registration, Action<TypedFactoryConfiguration> configuration)
@@ -106,17 +106,6 @@ namespace Castle.Facilities.TypedFactory
 			});
 		}
 
-		private static TypedFactoryConfiguration GetFactoryConfiguration(Action<TypedFactoryConfiguration> configuration)
-		{
-			var factoryConfiguration = new TypedFactoryConfiguration();
-
-			if (configuration != null)
-			{
-				configuration.Invoke(factoryConfiguration);
-			}
-			return factoryConfiguration;
-		}
-
 		private static ComponentRegistration<T> AttachDelegateFactory<T>(ComponentRegistration<T> registration)
 		{
 			return registration.UsingFactoryMethod((k, m, c) =>
@@ -134,6 +123,17 @@ namespace Castle.Facilities.TypedFactory
 			ComponentRegistration<TFactory> registration)
 		{
 			return registration.Interceptors(new InterceptorReference(TypedFactoryFacility.InterceptorKey)).Last;
+		}
+
+		private static TypedFactoryConfiguration GetFactoryConfiguration(Action<TypedFactoryConfiguration> configuration)
+		{
+			var factoryConfiguration = new TypedFactoryConfiguration();
+
+			if (configuration != null)
+			{
+				configuration.Invoke(factoryConfiguration);
+			}
+			return factoryConfiguration;
 		}
 
 		private static bool HasOutArguments(Type serviceType)

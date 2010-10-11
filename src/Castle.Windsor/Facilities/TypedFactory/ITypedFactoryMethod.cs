@@ -16,12 +16,12 @@ namespace Castle.Facilities.TypedFactory
 {
 	using Castle.DynamicProxy;
 
-    public interface ITypedFactoryMethod
+	public interface ITypedFactoryMethod
 	{
 		/// <summary>
-		/// Performs actual invocation of typed factory method.
+		///   Performs actual invocation of typed factory method.
 		/// </summary>
-		/// <param name="invocation"></param>
+		/// <param name = "invocation"></param>
 		void Invoke(IInvocation invocation);
 	}
 }
