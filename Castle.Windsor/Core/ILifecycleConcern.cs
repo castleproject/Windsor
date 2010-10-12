@@ -16,13 +16,13 @@ namespace Castle.Core
 {
 	/// <summary>
 	/// Represents a concern that will be applied to a component instance
-	/// during commission or decomission phase. 
+	/// during commission or decommission phase. 
 	/// </summary>
 	public interface ILifecycleConcern
 	{
 		/// <summary>
 		/// Implementors should act on the instance in response to 
-		/// a decomission or commission phase. 
+		/// a decommission or commission phase. 
 		/// </summary>
 		/// <param name="model">The model.</param>
 		/// <param name="component">The component.</param>

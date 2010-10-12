@@ -36,7 +36,7 @@ namespace Castle.MicroKernel
 		bool LazyLoadComponentByType(string key, Type service, IDictionary arguments);
 
 		/// <summary>
-		/// Raise the hanlder registered event, required so
+		/// Raise the handler registered event, required so
 		/// dependant handlers will be notified about their dependant moving
 		/// to valid state.
 		/// </summary>

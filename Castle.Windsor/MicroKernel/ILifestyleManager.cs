@@ -20,11 +20,11 @@ namespace Castle.MicroKernel
 
 	/// <summary>
 	/// The <c>ILifestyleManager</c> implements 
-	/// a strategy for a given lifestyle, like singleton, perthread
+	/// a strategy for a given lifestyle, like singleton, per-thread
 	/// and transient.
 	/// </summary>
 	/// <remarks>
-	/// The responsability of <c>ILifestyleManager</c>
+	/// The responsibility of <c>ILifestyleManager</c>
 	/// is only the management of lifestyle. It should rely on
 	/// <see cref="IComponentActivator"/> to obtain a new component instance
 	/// </remarks>

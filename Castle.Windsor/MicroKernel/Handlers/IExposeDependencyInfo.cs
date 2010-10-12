@@ -27,7 +27,7 @@ namespace Castle.MicroKernel.Handlers
 		/// <summary>
 		/// Returns human readable list of dependencies 
 		/// this handler is waiting for.
-		/// <param name="dependenciesChecked">list of the dependecies that was already checked, used to avoid cycles.</param>
+		/// <param name="dependenciesChecked">list of the dependencies that was already checked, used to avoid cycles.</param>
 		/// </summary>
 		String ObtainDependencyDetails(IList dependenciesChecked);
 	}

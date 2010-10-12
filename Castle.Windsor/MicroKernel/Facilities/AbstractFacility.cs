@@ -48,7 +48,7 @@ namespace Castle.MicroKernel.Facilities
 		/// <summary>
 		/// The custom initialization for the Facility.
 		/// </summary>
-		/// <remarks>It must be overriden.</remarks>
+		/// <remarks>It must be overridden.</remarks>
 		protected abstract void Init();
 
 		#region IFacility Members
@@ -57,7 +57,7 @@ namespace Castle.MicroKernel.Facilities
 		/// Initializes the facility. First it performs the initialization common for all 
 		/// facilities, setting the <see cref="Kernel"/> and the 
 		/// <see cref="FacilityConfig"/>. After it, the <c>Init</c> method is invoked
-		/// and the custom initilization is perfomed.
+		/// and the custom initialization is performed.
 		/// </summary>
 		/// <param name="kernel"></param>
 		/// <param name="facilityConfig"></param>
@@ -88,7 +88,7 @@ namespace Castle.MicroKernel.Facilities
 		/// Performs the tasks associated with freeing, releasing, or resetting 
 		/// the facility resources.
 		/// </summary>
-		/// <remarks>It can be overriden.</remarks>
+		/// <remarks>It can be overridden.</remarks>
 		public virtual void Dispose()
 		{
 		}

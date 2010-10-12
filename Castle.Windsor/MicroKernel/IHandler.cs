@@ -94,7 +94,7 @@ namespace Castle.MicroKernel
 		ComponentModel ComponentModel { get; }
 
 		/// <summary>
-		/// The serivce that this handler handles
+		/// The service that this handler handles
 		/// </summary>
 		Type Service { get;  }
 
