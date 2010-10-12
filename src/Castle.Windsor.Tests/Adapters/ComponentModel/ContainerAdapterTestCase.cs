@@ -268,7 +268,7 @@ namespace Castle.Windsor.Tests.Adapters.ComponentModel
 		}
 
 		[Test]
-		[ExpectedException(typeof(ArgumentException), ExpectedMessage = "Cannot remove an instrinsic service")]
+		[ExpectedException(typeof(ArgumentException), ExpectedMessage = "Cannot remove an intrinsic service")]
 		public void RemoveInstrinsicService()
 		{
 			container.RemoveService(typeof(IWindsorContainer));
