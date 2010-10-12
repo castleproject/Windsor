@@ -1,3 +1,19 @@
+================================================================================================
+change - Method IDependencyResolver.Initialize change signature
+
+impact - low
+fixability - easy
+revision - 
+
+description - To make it possible to use custom DependencyResolver inheriting from 
+	DefaultDependencyResolver initialization of DefaultDependencyResolver was moved out of its
+	constructor and to IDependencyResolver.Initialize method which now takes IKernel as its
+	additional parameter
+
+fix - if you're implementing the interface adjust signature of the overriding method to
+	public void Initialize(IKernel kernel, DependencyDelegate dependencyDelegate)
+	The method is called by the kernel at the end of its constructor.
+================================================================================================
 change - Changed visibility of members on AbstractFacility to protected and implementation of
 	interface members to explicit.
 

@@ -19,7 +19,9 @@ namespace Castle.MicroKernel.Tests
 	using Castle.Core;
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Tests.ClassComponents;
+	using Castle.Windsor.Proxy;
 	using Castle.Windsor.Tests;
+	using Castle.Windsor.Tests.MicroKernel;
 
 	using NUnit.Framework;
 
@@ -38,6 +40,15 @@ namespace Castle.MicroKernel.Tests
 		public void Dispose()
 		{
 			kernel.Dispose();
+		}
+
+		[Test]
+		public void Can_use_custom_dependencyResolver()
+		{
+			var resolver = new NotImplementedDependencyResolver();
+			var defaultKernel = new DefaultKernel(resolver, new DefaultProxyFactory());
+			Assert.AreSame(resolver, defaultKernel.Resolver);
+			Assert.AreSame(defaultKernel, resolver.Kernel);
 		}
 
 		[Test]
@@ -72,7 +83,7 @@ namespace Castle.MicroKernel.Tests
 		public void AddComponentInstance()
 		{
 			CustomerImpl customer = new CustomerImpl();
-		    kernel.Register(Component.For<ICustomer>().Named("key").Instance(customer));
+			kernel.Register(Component.For<ICustomer>().Named("key").Instance(customer));
 			Assert.IsTrue(kernel.HasComponent("key"));
 
 			CustomerImpl customer2 = kernel.Resolve("key", new Arguments()) as CustomerImpl;
@@ -248,7 +259,7 @@ namespace Castle.MicroKernel.Tests
 			    { "address", "customer2Address" },
 			    { "age", 18 }
 			};
-		    var customer2 = kernel.Resolve<ICustomer>("cust2", dictionary);
+			var customer2 = kernel.Resolve<ICustomer>("cust2", dictionary);
 
 			Assert.AreEqual(customer.GetType(), typeof(CustomerImpl));
 			Assert.AreEqual(customer2.GetType(), typeof(CustomerImpl2));
@@ -261,10 +272,7 @@ namespace Castle.MicroKernel.Tests
 
 			string expectedMessage = string.Format("Type Castle.MicroKernel.Tests.ClassComponents.BaseCommonComponent is abstract.{0} As such, it is not possible to instansiate it as implementation of service Castle.MicroKernel.Tests.ClassComponents.ICommon.", Environment.NewLine);
 			var exception =
-				Assert.Throws(typeof(ComponentRegistrationException), () =>
-				{
-					kernel.Resolve<ICommon>("abstract");
-				});
+				Assert.Throws(typeof(ComponentRegistrationException), () => kernel.Resolve<ICommon>("abstract"));
 			Assert.AreEqual(expectedMessage,exception.Message);
 		}
 
@@ -274,10 +282,7 @@ namespace Castle.MicroKernel.Tests
 			kernel.Register(Component.For(typeof(BaseCommonComponent)).Named("abstract"));
 			string expectedMessage = string.Format("Type Castle.MicroKernel.Tests.ClassComponents.BaseCommonComponent is abstract.{0} As such, it is not possible to instansiate it as implementation of service Castle.MicroKernel.Tests.ClassComponents.BaseCommonComponent.", Environment.NewLine);
 			var exception =
-				Assert.Throws(typeof(ComponentRegistrationException), () =>
-				{
-					kernel.Resolve<ICommon>("abstract");
-				});
+				Assert.Throws(typeof(ComponentRegistrationException), () => kernel.Resolve<ICommon>("abstract"));
 			Assert.AreEqual(expectedMessage, exception.Message);
 		}
 
@@ -287,10 +292,7 @@ namespace Castle.MicroKernel.Tests
 			kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(BaseCommonComponent)).Named("abstract").LifeStyle.Is(LifestyleType.Pooled));
 			string expectedMessage = string.Format("Type Castle.MicroKernel.Tests.ClassComponents.BaseCommonComponent is abstract.{0} As such, it is not possible to instansiate it as implementation of service Castle.MicroKernel.Tests.ClassComponents.ICommon.", Environment.NewLine);
 			var exception =
-				Assert.Throws(typeof(ComponentRegistrationException), () =>
-				{
-					kernel.Resolve<ICommon>("abstract");
-				});
+				Assert.Throws(typeof(ComponentRegistrationException), () => kernel.Resolve<ICommon>("abstract"));
 			Assert.AreEqual(expectedMessage, exception.Message);
 		}
 
@@ -301,10 +303,7 @@ namespace Castle.MicroKernel.Tests
 
 			string expectedMessage = string.Format("Type Castle.MicroKernel.Tests.ClassComponents.BaseCommonComponent is abstract.{0} As such, it is not possible to instansiate it as implementation of service Castle.MicroKernel.Tests.ClassComponents.BaseCommonComponent.", Environment.NewLine);
 			var exception =
-				Assert.Throws(typeof(ComponentRegistrationException), () =>
-				{
-					kernel.Resolve<ICommon>("abstract");
-				});
+				Assert.Throws(typeof(ComponentRegistrationException), () => kernel.Resolve<ICommon>("abstract"));
 			Assert.AreEqual(expectedMessage, exception.Message);
 		}
 
@@ -316,10 +315,7 @@ namespace Castle.MicroKernel.Tests
 
 			string expectedMessage = string.Format("Type Castle.MicroKernel.Tests.ClassComponents.BaseCommonComponent is abstract.{0} As such, it is not possible to instansiate it as implementation of service Castle.MicroKernel.Tests.ClassComponents.ICommon.", Environment.NewLine);
 			var exception =
-				Assert.Throws(typeof(ComponentRegistrationException), () =>
-				{
-					kernel.Resolve<ICommon>("abstract");
-				});
+				Assert.Throws(typeof(ComponentRegistrationException), () => kernel.Resolve<ICommon>("abstract"));
 			Assert.AreEqual(expectedMessage, exception.Message);
 		}
 
@@ -362,7 +358,7 @@ namespace Castle.MicroKernel.Tests
 			kernel.Register(Component.For(typeof(ExtendedCustomer)).Named("custex").LifeStyle.Is(LifestyleType.Transient));
 
 			var dictionary = new Dictionary<string, object> { { "Name", "name" }, { "Address", "address" }, { "Age", "18" } };
-		    var customer = kernel.Resolve<ICustomer>("cust", dictionary);
+			var customer = kernel.Resolve<ICustomer>("cust", dictionary);
 
 			Assert.AreEqual("name", customer.Name);
 			Assert.AreEqual("address", customer.Address);

@@ -33,30 +33,20 @@ namespace Castle.MicroKernel.Resolvers
 #endif
 	public class DefaultDependencyResolver : IDependencyResolver
 	{
-		private readonly IKernel kernel;
-		private readonly ITypeConverter converter;
+		private IKernel kernel;
+		private ITypeConverter converter;
 		private readonly IList<ISubDependencyResolver> subResolvers = new List<ISubDependencyResolver>();
 		private DependencyDelegate dependencyResolvingDelegate;
 
 		/// <summary>
-		///   Initializes a new instance of the
-		///   <see cref = "DefaultDependencyResolver" />
-		///   class.
-		/// </summary>
-		/// <param name = "kernel">The kernel.</param>
-		public DefaultDependencyResolver(IKernel kernel)
-		{
-			this.kernel = kernel;
-
-			converter = (ITypeConverter)kernel.GetSubSystem(SubSystemConstants.ConversionManagerKey);
-		}
-
-		/// <summary>
 		///   Initializes this instance with the specified dependency delegate.
 		/// </summary>
+		/// <param name="kernel">kernel</param>
 		/// <param name = "dependencyDelegate">The dependency delegate.</param>
-		public void Initialize(DependencyDelegate dependencyDelegate)
+		public void Initialize(IKernel kernel, DependencyDelegate dependencyDelegate)
 		{
+			this.kernel = kernel;
+			converter = kernel.GetConversionManager();
 			dependencyResolvingDelegate = dependencyDelegate;
 		}
 
