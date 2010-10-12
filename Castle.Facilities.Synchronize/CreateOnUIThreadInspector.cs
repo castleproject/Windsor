@@ -119,12 +119,6 @@ namespace Castle.Facilities.Synchronize
 			}
 			var proxyOptions = ProxyUtil.ObtainProxyOptions(model, true);
 			proxyOptions.Hook = controlProxyHook;
-
-			var hookDependency = controlProxyHook.GetDependency();
-			if (hookDependency != null)
-			{
-				model.Dependencies.Add(hookDependency);
-			}
 		}
 
 		private static IReference<IProxyGenerationHook> ObtainProxyHook(IKernel kernel, IConfiguration config)

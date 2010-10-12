@@ -16,18 +16,18 @@ namespace Castle.MicroKernel.Registration
 {
 	using Castle.Core;
 
-	public class DependencyDescriptor<S> : ComponentDescriptor<S>
+	public class ReferenceDependencyDescriptor<S> : ComponentDescriptor<S>
 	{
-		private readonly DependencyModel dependency;
+		private readonly IReference<object> dependency;
 
-		public DependencyDescriptor(DependencyModel dependency)
+		public ReferenceDependencyDescriptor(IReference<object> dependency)
 		{
 			this.dependency = dependency;
 		}
 
 		protected internal override void ApplyToModel(IKernel kernel, ComponentModel model)
 		{
-			model.Dependencies.Add(dependency);
+			dependency.Attach(model.Dependencies);
 		}
 	}
 }

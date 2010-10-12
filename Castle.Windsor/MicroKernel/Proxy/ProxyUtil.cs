@@ -19,7 +19,7 @@ namespace Castle.MicroKernel.Proxy
 	using Castle.Core;
 	using Castle.DynamicProxy;
 
-    /// <summary>
+	/// <summary>
 	/// Helper support for proxy configuration.
 	/// </summary>
 	public abstract class ProxyUtil
@@ -32,11 +32,11 @@ namespace Castle.MicroKernel.Proxy
 		/// <returns>The associated proxy options for the component model.</returns>
 		public static ProxyOptions ObtainProxyOptions(ComponentModel model, bool createOnDemand)
 		{
-			ProxyOptions options = model.ExtendedProperties[ProxyConstants.ProxyOptionsKey] as ProxyOptions;
+			var options = model.ExtendedProperties[ProxyConstants.ProxyOptionsKey] as ProxyOptions;
 
 			if (options == null && createOnDemand)
 			{
-				options = new ProxyOptions();
+				options = new ProxyOptions(model.Dependencies);
 				model.ExtendedProperties[ProxyConstants.ProxyOptionsKey] = options;
 			}
 
