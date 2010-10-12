@@ -12,17 +12,34 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Facilities.TypedFactory
+namespace Castle.Facilities.TypedFactory.Internal
 {
-	using System;
-
+	using Castle.DynamicProxy;
 	using Castle.MicroKernel;
 
-	public class NoUniqueComponentException : ComponentNotFoundException
+	/// <summary>
+	///   Releases components passed as arguments from the container.
+	/// </summary>
+	public class Release : ITypedFactoryMethod
 	{
-		public NoUniqueComponentException(Type service, string message)
-			: base(service, message)
+		private readonly IKernel kernel;
+
+		public Release(IKernel kernel)
 		{
+			this.kernel = kernel;
+		}
+
+		public void Invoke(IInvocation invocation)
+		{
+			foreach (var argument in invocation.Arguments)
+			{
+				if (argument == null)
+				{
+					continue;
+				}
+
+				kernel.ReleaseComponent(argument);
+			}
 		}
 	}
 }

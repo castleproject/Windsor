@@ -113,11 +113,12 @@ namespace Castle.Facilities.Synchronize
 
 		private void ConfigureProxyOptions(ComponentModel model)
 		{
-			if (controlProxyHook != null)
+			if (controlProxyHook == null)
 			{
-				var proxyOptions = ProxyUtil.ObtainProxyOptions(model, true);
-				proxyOptions.Hook = controlProxyHook;
+				return;
 			}
+			var proxyOptions = ProxyUtil.ObtainProxyOptions(model, true);
+			proxyOptions.Hook = controlProxyHook;
 		}
 
 		private static IReference<IProxyGenerationHook> ObtainProxyHook(IKernel kernel, IConfiguration config)

@@ -105,11 +105,8 @@
     <Compile Include="Facilities\EventWiring\OpCodeValues.cs" />
     <Compile Include="Facilities\Startable\StartableContributor.cs" />
     <Compile Include="Facilities\TypedFactory\DefaultDelegateComponentSelector.cs" />
-    <Compile Include="Facilities\TypedFactory\DelegateInvocation.cs" />
-    <Compile Include="Facilities\TypedFactory\IDelegateGenerator.cs" />
-    <Compile Include="Facilities\TypedFactory\DelegateFactory.cs" />
+    <Compile Include="Facilities\TypedFactory\Internal\DelegateFactory.cs" />
     <Compile Include="Facilities\TypedFactory\Internal\DelegateProxyFactory.cs" />
-    <Compile Include="Facilities\TypedFactory\NoUniqueComponentException.cs" />
     <Compile Include="Facilities\TypedFactory\TypedFactoryConfiguration.cs" />
     <Compile Include="MicroKernel\ComponentActivator\AbstractComponentActivator.cs">
       <SubType>Code</SubType>
@@ -217,26 +214,26 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Facilities\TypedFactory\DefaultTypedFactoryComponentSelector.cs" />
-    <Compile Include="Facilities\TypedFactory\Dispose.cs" />
-    <Compile Include="Facilities\TypedFactory\Empty.cs">
+    <Compile Include="Facilities\TypedFactory\Internal\Dispose.cs" />
+    <Compile Include="Facilities\TypedFactory\Internal\Empty.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Facilities\TypedFactory\FactoryEntry.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Facilities\TypedFactory\FactoryInterceptor.cs">
+    <Compile Include="Facilities\TypedFactory\Internal\FactoryInterceptor.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Facilities\TypedFactory\ITypedFactoryComponentSelector.cs" />
-    <Compile Include="Facilities\TypedFactory\ITypedFactoryMethod.cs" />
-    <Compile Include="Facilities\TypedFactory\Release.cs" />
-    <Compile Include="Facilities\TypedFactory\Resolve.cs" />
+    <Compile Include="Facilities\TypedFactory\Internal\ITypedFactoryMethod.cs" />
+    <Compile Include="Facilities\TypedFactory\Internal\Release.cs" />
+    <Compile Include="Facilities\TypedFactory\Internal\Resolve.cs" />
     <Compile Include="Facilities\TypedFactory\TypedFactoryComponent.cs" />
     <Compile Include="Facilities\TypedFactory\TypedFactoryComponentCollection.cs" />
     <Compile Include="Facilities\TypedFactory\TypedFactoryFacility.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Facilities\TypedFactory\TypedFactoryInterceptor.cs" />
+    <Compile Include="Facilities\TypedFactory\Internal\TypedFactoryInterceptor.cs" />
     <Compile Include="Facilities\TypedFactory\TypedFactoryRegistrationExtensions.cs" />
     <Compile Include="MicroKernel\Handlers\AbstractHandler.cs">
       <SubType>Code</SubType>
@@ -405,6 +402,7 @@
     <Compile Include="MicroKernel\Registration\Configuration.cs" />
     <Compile Include="MicroKernel\Registration\ConfigurationDescriptor.cs" />
     <Compile Include="MicroKernel\Registration\CustomDependencyDescriptor.cs" />
+    <Compile Include="MicroKernel\Registration\DependencyDescriptor.cs" />
     <Compile Include="MicroKernel\Registration\ExtendedPropertiesDescriptor.cs" />
     <Compile Include="MicroKernel\Registration\Proxy\ProxyHook.cs" />
     <Compile Include="MicroKernel\Registration\IWindsorInstaller.cs" />

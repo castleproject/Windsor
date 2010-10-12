@@ -19,28 +19,23 @@ namespace Castle.Facilities.TypedFactory
 
 	using Castle.Core;
 	using Castle.DynamicProxy;
+	using Castle.Facilities.TypedFactory.Internal;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Registration;
 
 	public static class TypedFactoryRegistrationExtensions
 	{
-		private static readonly ITypedFactoryComponentSelector defaultDelegateComponentSelector =
-			new DefaultDelegateComponentSelector();
-
-		private static readonly ITypedFactoryComponentSelector defaultInterfaceComponentSelector =
-			new DefaultTypedFactoryComponentSelector();
-
 		/// <summary>
-		/// Marks the component as typed factory.
+		///   Marks the component as typed factory.
 		/// </summary>
-		/// <typeparam name="TFactoryInterface"></typeparam>
-		/// <param name="registration"></param>
+		/// <typeparam name = "TFactoryInterface"></typeparam>
+		/// <param name = "registration"></param>
 		/// <returns></returns>
 		/// <remarks>
-		/// Only interfaces are legal to use as typed factories. Methods with out parameters are not allowed.
-		/// When registering component as typed factory no implementation should be provided (in case there is any it will be ignored).
-		/// Typed factories rely on <see cref="IInterceptorSelector"/> set internally, so users should not set interceptor selectors explicitly;
-		/// otherwise the factory will not function correctly.
+		///   Only interfaces are legal to use as typed factories. Methods with out parameters are not allowed.
+		///   When registering component as typed factory no implementation should be provided (in case there is any it will be ignored).
+		///   Typed factories rely on <see cref = "IInterceptorSelector" /> set internally, so users should not set interceptor selectors explicitly;
+		///   otherwise the factory will not function correctly.
 		/// </remarks>
 		public static ComponentRegistration<TFactoryInterface> AsFactory<TFactoryInterface>(
 			this ComponentRegistration<TFactoryInterface> registration)
@@ -49,17 +44,17 @@ namespace Castle.Facilities.TypedFactory
 		}
 
 		/// <summary>
-		/// Marks the component as typed factory.
+		///   Marks the component as typed factory.
 		/// </summary>
-		/// <typeparam name="TFactoryInterface"></typeparam>
-		/// <param name="registration"></param>
-		/// <param name="configuration"></param>
+		/// <typeparam name = "TFactoryInterface"></typeparam>
+		/// <param name = "registration"></param>
+		/// <param name = "configuration"></param>
 		/// <returns></returns>
 		/// <remarks>
-		/// Only interfaces are legal to use as typed factories. Methods with out parameters are not allowed.
-		/// When registering component as typed factory no implementation should be provided (in case there is any it will be ignored).
-		/// Typed factories rely on <see cref="IInterceptorSelector"/> set internally, so users should not set interceptor selectors explicitly;
-		/// otherwise the factory will not function correctly.
+		///   Only interfaces are legal to use as typed factories. Methods with out parameters are not allowed.
+		///   When registering component as typed factory no implementation should be provided (in case there is any it will be ignored).
+		///   Typed factories rely on <see cref = "IInterceptorSelector" /> set internally, so users should not set interceptor selectors explicitly;
+		///   otherwise the factory will not function correctly.
 		/// </remarks>
 		public static ComponentRegistration<TFactoryInterface> AsFactory<TFactoryInterface>(
 			this ComponentRegistration<TFactoryInterface> registration, Action<TypedFactoryConfiguration> configuration)
@@ -86,23 +81,11 @@ namespace Castle.Facilities.TypedFactory
 
 		private static ComponentRegistration<TFactory> AttachConfiguration<TFactory>(
 			ComponentRegistration<TFactory> componentRegistration, Action<TypedFactoryConfiguration> configuration,
-			ITypedFactoryComponentSelector defaultComponentSelector)
+			string defaultComponentSelectorKey)
 		{
-			var factoryConfiguration = new TypedFactoryConfiguration();
-
-			if (configuration != null)
-			{
-				configuration.Invoke(factoryConfiguration);
-			}
+			var factoryConfiguration = GetFactoryConfiguration(configuration, defaultComponentSelectorKey);
 			var selectorReference = factoryConfiguration.Reference;
-			if (selectorReference == null)
-			{
-				return componentRegistration.DynamicParameters((k, d) =>
-				{
-					var selector = defaultComponentSelector;
-					d.Insert(selector);
-				});
-			}
+			componentRegistration.AddDescriptor(new ReferenceDependencyDescriptor<TFactory>(selectorReference));
 			return componentRegistration.DynamicParameters((k, c, d) =>
 			{
 				var selector = selectorReference.Resolve(k, c);
@@ -124,10 +107,22 @@ namespace Castle.Facilities.TypedFactory
 			});
 		}
 
-		private static ComponentRegistration<TDelegate> AttachFactoryInterceptor<TDelegate>(
-			ComponentRegistration<TDelegate> registration)
+		private static ComponentRegistration<TFactory> AttachFactoryInterceptor<TFactory>(
+			ComponentRegistration<TFactory> registration)
 		{
 			return registration.Interceptors(new InterceptorReference(TypedFactoryFacility.InterceptorKey)).Last;
+		}
+
+		private static TypedFactoryConfiguration GetFactoryConfiguration(Action<TypedFactoryConfiguration> configuration,
+		                                                                 string defaultComponentSelectorKey)
+		{
+			var factoryConfiguration = new TypedFactoryConfiguration(defaultComponentSelectorKey);
+
+			if (configuration != null)
+			{
+				configuration.Invoke(factoryConfiguration);
+			}
+			return factoryConfiguration;
 		}
 
 		private static bool HasOutArguments(Type serviceType)
@@ -151,7 +146,7 @@ namespace Castle.Facilities.TypedFactory
 					string.Format("Delegate type {0} can not be used as typed factory because it has void return type.",
 					              registration.ServiceType));
 			}
-			var settings = new TypedFactoryConfiguration();
+			var settings = new TypedFactoryConfiguration(TypedFactoryFacility.DefaultDelegateSelectorKey);
 			if (configuration != null)
 			{
 				configuration.Invoke(settings);
@@ -159,7 +154,7 @@ namespace Castle.Facilities.TypedFactory
 
 			var componentRegistration = AttachFactoryInterceptor(registration);
 			componentRegistration = AttachDelegateFactory(componentRegistration);
-			return AttachConfiguration(componentRegistration, configuration, defaultDelegateComponentSelector);
+			return AttachConfiguration(componentRegistration, configuration, TypedFactoryFacility.DefaultDelegateSelectorKey);
 		}
 
 		private static ComponentRegistration<TFactoryInterface> RegisterInterfaceBasedFactory<TFactoryInterface>(
@@ -172,7 +167,7 @@ namespace Castle.Facilities.TypedFactory
 					              registration.ServiceType));
 			}
 			var componentRegistration = AttachFactoryInterceptor(registration);
-			return AttachConfiguration(componentRegistration, configuration, defaultInterfaceComponentSelector);
+			return AttachConfiguration(componentRegistration, configuration, TypedFactoryFacility.DefaultInterfaceSelectorKey);
 		}
 	}
 }

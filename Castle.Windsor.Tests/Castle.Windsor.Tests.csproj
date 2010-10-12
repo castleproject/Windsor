@@ -112,6 +112,7 @@
     <Compile Include="Facilities\TypedFactory\Components\ServiceWithMultipleCtors.cs" />
     <Compile Include="Facilities\TypedFactory\Components\ServiceFactory.cs" />
     <Compile Include="Facilities\TypedFactory\Components\ServiceRedirect.cs" />
+    <Compile Include="Facilities\TypedFactory\TypedFactoryDependenciesTestCase.cs" />
     <Compile Include="InternalsVisibleTo.cs" />
     <Compile Include="LifecycledComponentsReleasePolicyTestCase.cs" />
     <Compile Include="ClassComponents\DisposableFoo.cs" />
@@ -156,6 +157,7 @@
     <Compile Include="Lifecycle\DisposeTestCase.cs" />
     <Compile Include="Lifecycle\SupportsInitializeTestCase.cs" />
     <Compile Include="Lifestyle\Components\UsesComponentWithDispose.cs" />
+    <Compile Include="MicroKernel\NotImplementedDependencyResolver.cs" />
     <Compile Include="Proxy\OnBehalfAwareInterceptorSelector.cs" />
     <Compile Include="Proxy\OnBehalfAwareProxyGenerationHook.cs" />
     <Compile Include="RegistrationWithAttributeTestCase.cs" />
