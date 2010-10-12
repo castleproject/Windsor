@@ -15,6 +15,7 @@
 namespace Castle.MicroKernel
 {
 	using System;
+	using System.Collections.Generic;
 
 	using Castle.Core;
 	using Castle.MicroKernel.Context;
@@ -27,6 +28,7 @@ namespace Castle.MicroKernel
 	{
 		private readonly Type actualComponentType;
 		private readonly string componentKey;
+		private DependencyModel dependency;
 
 		public ComponentReference(string componentKey)
 		{
@@ -36,6 +38,8 @@ namespace Castle.MicroKernel
 			}
 
 			this.componentKey = componentKey;
+
+			dependency =  new DependencyModel(DependencyType.ServiceOverride, componentKey, null, false);
 		}
 
 		public ComponentReference(Type actualComponentType)
@@ -45,6 +49,8 @@ namespace Castle.MicroKernel
 				throw new ArgumentNullException("actualComponentType");
 			}
 			this.actualComponentType = actualComponentType;
+
+			dependency = new DependencyModel(DependencyType.Service, null, actualComponentType, false);
 		}
 
 		public ComponentReference() : this(typeof(T))
@@ -83,14 +89,14 @@ namespace Castle.MicroKernel
 			}
 		}
 
-		public DependencyModel GetDependency()
+		public void Attach(ICollection<DependencyModel> dependencies)
 		{
-			if (componentKey != null)
-			{
-				return new DependencyModel(DependencyType.ServiceOverride, componentKey, null, false);
-			}
+			dependencies.Add(dependency);
+		}
 
-			return new DependencyModel(DependencyType.Service, null, actualComponentType, false);
+		public void Detach(ICollection<DependencyModel> dependencies)
+		{
+			dependencies.Remove(dependency);
 		}
 	}
 }

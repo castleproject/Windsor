@@ -14,6 +14,8 @@
 
 namespace Castle.MicroKernel
 {
+	using System.Collections.Generic;
+
 	using Castle.Core;
 	using Castle.MicroKernel.Context;
 
@@ -36,7 +38,10 @@ namespace Castle.MicroKernel
 		/// <summary>
 		/// If the reference introduces dependency on a component, should return <see cref="DependencyModel"/> for that dependency, otherwise <c>null</c>.
 		/// </summary>
+		/// <param name="dependencies"></param>
 		/// <returns></returns>
-		DependencyModel GetDependency();
+		void Attach(ICollection<DependencyModel> dependencies);
+
+		void Detach(ICollection<DependencyModel> dependencies);
 	}
 }
