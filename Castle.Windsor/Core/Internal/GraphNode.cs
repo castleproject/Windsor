@@ -68,7 +68,7 @@ namespace Castle.Core.Internal
 		}
 
 		/// <summary>
-		/// The nodes that dependes on this node
+		/// The nodes that depends on this node
 		/// </summary>
 		public GraphNode[] Dependers
 		{
