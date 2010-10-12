@@ -113,7 +113,7 @@ namespace Castle.MicroKernel
 
 		/// <summary>
 		/// Releases a component instance. This allows
-		/// the kernel to execute the proper decomission 
+		/// the kernel to execute the proper decommission 
 		/// lifecycles on the component instance.
 		/// </summary>
 		/// <param name="instance"></param>
@@ -281,7 +281,7 @@ namespace Castle.MicroKernel
 		void RemoveChildKernel(IKernel kernel);
 
 		/// <summary>
-		/// Graph of components and iteractions.
+		/// Graph of components and interactions.
 		/// </summary>
 		GraphNode[] GraphNodes { get; }
 

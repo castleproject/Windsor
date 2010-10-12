@@ -49,13 +49,13 @@ namespace Castle.MicroKernel
 		bool RequiresTargetInstance(IKernel kernel, ComponentModel model);
 
 		/// <summary>
-		/// Add the selector to the list of selectors that can affect interecptors decisions
+		/// Add the selector to the list of selectors that can affect interceptor's decisions
 		/// in the container.
 		/// </summary>
 		void AddInterceptorSelector(IModelInterceptorsSelector selector);
 
 		/// <summary>
-		/// Determains whatever we need to create a proxy for this model
+		/// Determines whatever we need to create a proxy for this model
 		/// </summary>
 		/// <param name="model"></param>
 		/// <returns></returns>
