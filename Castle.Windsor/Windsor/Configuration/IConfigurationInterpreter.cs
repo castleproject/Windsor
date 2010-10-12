@@ -19,7 +19,7 @@ namespace Castle.Windsor.Configuration
 
 	/// <summary>
 	/// Interpreter of a specific language to describe 
-	/// configuration nodes in a hierachical manner.
+	/// configuration nodes in a hierarchical manner.
 	/// </summary>
 	public interface IConfigurationInterpreter
 	{
