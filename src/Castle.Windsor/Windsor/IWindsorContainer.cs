@@ -363,20 +363,20 @@ namespace Castle.Windsor
 		T[] ResolveAll<T>();
 
 		/// <summary>
-		///   Resolve all valid components that mathc this service
+		///   Resolve all valid components that match this service
 		///   <param name = "service">the service to match</param>
 		/// </summary>
 		Array ResolveAll(Type service);
 
 		/// <summary>
-		///   Resolve all valid components that mathc this service
+		///   Resolve all valid components that match this service
 		///   <param name = "service">the service to match</param>
 		///   <param name = "arguments">Arguments to resolve the service</param>
 		/// </summary>
 		Array ResolveAll(Type service, IDictionary arguments);
 
 		/// <summary>
-		///   Resolve all valid components that mathc this service
+		///   Resolve all valid components that match this service
 		///   <param name = "service">the service to match</param>
 		///   <param name = "argumentsAsAnonymousType">Arguments to resolve the service</param>
 		/// </summary>

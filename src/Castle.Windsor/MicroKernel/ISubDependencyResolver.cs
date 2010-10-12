@@ -27,7 +27,7 @@ namespace Castle.MicroKernel
 		/// <summary>
 		/// Should return an instance of a service or property values as
 		/// specified by the dependency model instance. 
-		/// It is also the responsability of <see cref="IDependencyResolver"/>
+		/// It is also the responsibility of <see cref="IDependencyResolver"/>
 		/// to throw an exception in the case a non-optional dependency 
 		/// could not be resolved.
 		/// </summary>
