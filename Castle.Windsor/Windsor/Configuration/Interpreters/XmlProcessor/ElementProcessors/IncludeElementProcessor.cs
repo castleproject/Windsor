@@ -32,7 +32,7 @@ namespace Castle.Windsor.Configuration.Interpreters.XmlProcessor.ElementProcesso
 		/// Check if node has the same name as the processor and the node.NodeType
 		/// is in the AcceptNodeTypes List
 		/// NOTE: since the BatchRegistrationFacility already uses an include
-		/// element we will distringish between both by looking for the presence of an uri attribute
+		/// element we will distinguish between both by looking for the presence of an uri attribute
 		/// we should revisit this later by using xml-namespaces
 		/// </summary>
 		/// <param name="node">The node.</param>
