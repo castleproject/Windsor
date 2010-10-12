@@ -39,7 +39,7 @@ namespace Castle.Facilities.TypedFactory
 							              method.DeclaringType, parameters[i].ParameterType));
 					}
 
-					// else we jsut ignore it. It will likely be matched by name so we don't want to throw prematurely. We could log this though.
+					// else we just ignore it. It will likely be matched by name so we don't want to throw prematurely. We could log this though.
 				}
 				else
 				{
