@@ -225,7 +225,7 @@ namespace Castle.Facilities.Synchronize
 		#region IAsyncResult Members
 
 		/// <summary>
-		/// Gets the asynchournous state.
+		/// Gets the asynchronous state.
 		/// </summary>
 		public object AsyncState
 		{
