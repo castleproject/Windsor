@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,131 +15,66 @@
 namespace Castle.Core
 {
 	using System;
-	using System.Diagnostics;
+	using System.Collections.Generic;
 
-	public enum InterceptorReferenceType
-	{
-		Interface,
-		Key
-	}
+	using Castle.DynamicProxy;
+	using Castle.MicroKernel;
+	using Castle.MicroKernel.Context;
+	using Castle.MicroKernel.Proxy;
+	using Castle.MicroKernel.Resolvers;
 
 	/// <summary>
-	/// Represents an reference to a Interceptor component.
+	///   Represents an reference to a Interceptor component.
 	/// </summary>
 #if !SILVERLIGHT
 	[Serializable]
 #endif
-	public class InterceptorReference : IEquatable<InterceptorReference>
+	public class InterceptorReference : IReference<IInterceptor>, IEquatable<InterceptorReference>
 	{
-		private readonly InterceptorReferenceType refType;
+		private readonly string componentKey;
 		private readonly Type serviceType;
-		private readonly String componentKey;
+		private DependencyModel dependencyModel;
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="InterceptorReference"/> class.
+		///   Initializes a new instance of the <see cref = "InterceptorReference" /> class.
 		/// </summary>
-		/// <param name="componentKey">The component key.</param>
+		/// <param name = "componentKey">The component key.</param>
 		public InterceptorReference(String componentKey)
 		{
 			if (componentKey == null)
 			{
 				throw new ArgumentNullException("componentKey");
 			}
-
-			refType = InterceptorReferenceType.Key;
 			this.componentKey = componentKey;
+			dependencyModel = new DependencyModel(DependencyType.ServiceOverride, componentKey, serviceType, false);
 		}
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="InterceptorReference"/> class.
+		///   Initializes a new instance of the <see cref = "InterceptorReference" /> class.
 		/// </summary>
-		/// <param name="serviceType">Type of the service.</param>
+		/// <param name = "serviceType">Type of the service.</param>
 		public InterceptorReference(Type serviceType)
 		{
 			if (serviceType == null)
 			{
 				throw new ArgumentNullException("serviceType");
 			}
-
-			refType = InterceptorReferenceType.Interface;
 			this.serviceType = serviceType;
-		}
-
-		/// <summary>
-		/// Gets the type of the service.
-		/// </summary>
-		/// <value>The type of the service.</value>
-		public Type ServiceType
-		{
-			get { return serviceType; }
-		}
-
-		/// <summary>
-		/// Gets the interceptor component key.
-		/// </summary>
-		/// <value>The component key.</value>
-		public String ComponentKey
-		{
-			get { return componentKey; }
-		}
-
-		/// <summary>
-		/// Gets the type of the reference.
-		/// </summary>
-		/// <value>The type of the reference.</value>
-		public InterceptorReferenceType ReferenceType
-		{
-			get { return refType; }
-		}
-
-		/// <summary>
-		/// Gets an <see cref="InterceptorReference"/> for the component key.
-		/// </summary>
-		/// <param name="key">The component key.</param>
-		/// <returns>The <see cref="InterceptorReference"/></returns>
-		public static InterceptorReference ForKey(String key)
-		{
-			return new InterceptorReference(key);
-		}
-
-		/// <summary>
-		/// Gets an <see cref="InterceptorReference"/> for the service.
-		/// </summary>
-		/// <param name="service">The service.</param>
-		/// <returns>The <see cref="InterceptorReference"/></returns>
-		public static InterceptorReference ForType(Type service)
-		{
-			return new InterceptorReference(service);
-		}
-
-		/// <summary>
-		/// Gets an <see cref="InterceptorReference"/> for the service.
-		/// </summary>
-		/// <typeparam name="T">The service type.</typeparam>
-		/// <returns>The <see cref="InterceptorReference"/></returns>
-		public static InterceptorReference ForType<T>()
-		{
-			return new InterceptorReference(typeof(T));
-		}
-
-		public bool Equals(InterceptorReference other)
-		{
-			if (other == null) return false;
-			if (!Equals(refType, other.refType)) return false;
-			if (!Equals(serviceType, other.serviceType)) return false;
-			if (!Equals(componentKey, other.componentKey)) return false;
-			return true;
+			dependencyModel = new DependencyModel(DependencyType.Service, componentKey, serviceType, false);
 		}
 
 		public override bool Equals(object obj)
 		{
-			if (ReferenceEquals(this, obj)) return true;
+			if (ReferenceEquals(this, obj))
+			{
+				return true;
+			}
 			return Equals(obj as InterceptorReference);
 		}
 
 		public override int GetHashCode()
 		{
-			int result = refType.GetHashCode();
+			var result = 0;
 			result = 29*result + (serviceType != null ? serviceType.GetHashCode() : 0);
 			result = 29*result + (componentKey != null ? componentKey.GetHashCode() : 0);
 			return result;
@@ -147,13 +82,107 @@ namespace Castle.Core
 
 		public override string ToString()
 		{
-			if (refType == InterceptorReferenceType.Key)
+			if (serviceType == null)
 			{
 				return componentKey;
 			}
+			return serviceType.FullName ?? string.Empty;
+		}
 
-			Debug.Assert(serviceType != null);
-			return serviceType.FullName;
+		public bool Equals(InterceptorReference other)
+		{
+			if (other == null)
+			{
+				return false;
+			}
+			if (!Equals(serviceType, other.serviceType))
+			{
+				return false;
+			}
+			if (!Equals(componentKey, other.componentKey))
+			{
+				return false;
+			}
+			return true;
+		}
+
+		private IHandler GetInterceptorHandler(IKernel kernel)
+		{
+			if (serviceType != null)
+			{
+				return kernel.GetHandler(serviceType);
+			}
+			return kernel.GetHandler(componentKey);
+		}
+
+		private CreationContext RebuildContext(Type parameterType, CreationContext current)
+		{
+			if (parameterType.ContainsGenericParameters)
+			{
+				return current;
+			}
+
+			return new CreationContext(parameterType, current, true);
+		}
+
+		void IReference<IInterceptor>.Attach(ICollection<DependencyModel> dependencies)
+		{
+			dependencies.Add(dependencyModel);
+		}
+
+		void IReference<IInterceptor>.Detach(ICollection<DependencyModel> dependencies)
+		{
+			dependencies.Remove(dependencyModel);
+		}
+
+		IInterceptor IReference<IInterceptor>.Resolve(IKernel kernel, CreationContext context)
+		{
+			var handler = GetInterceptorHandler(kernel);
+			if (handler == null)
+			{
+				throw new DependencyResolverException(string.Format("The interceptor {0} could not be resolved", ToString()));
+			}
+
+			if (handler.IsBeingResolvedInContext(context))
+			{
+				throw new DependencyResolverException(
+					string.Format(
+						"Cycle detected - interceptor {0} wants to use itself as its interceptor. This usually signifies a bug in custom {1}",
+						handler.ComponentModel.Name, typeof(IModelInterceptorsSelector).Name));
+			}
+
+			var contextForInterceptor = RebuildContext(handler.Service, context);
+			return (IInterceptor)handler.Resolve(contextForInterceptor);
+		}
+
+		/// <summary>
+		///   Gets an <see cref = "InterceptorReference" /> for the component key.
+		/// </summary>
+		/// <param name = "key">The component key.</param>
+		/// <returns>The <see cref = "InterceptorReference" /></returns>
+		public static InterceptorReference ForKey(String key)
+		{
+			return new InterceptorReference(key);
+		}
+
+		/// <summary>
+		///   Gets an <see cref = "InterceptorReference" /> for the service.
+		/// </summary>
+		/// <param name = "service">The service.</param>
+		/// <returns>The <see cref = "InterceptorReference" /></returns>
+		public static InterceptorReference ForType(Type service)
+		{
+			return new InterceptorReference(service);
+		}
+
+		/// <summary>
+		///   Gets an <see cref = "InterceptorReference" /> for the service.
+		/// </summary>
+		/// <typeparam name = "T">The service type.</typeparam>
+		/// <returns>The <see cref = "InterceptorReference" /></returns>
+		public static InterceptorReference ForType<T>()
+		{
+			return new InterceptorReference(typeof(T));
 		}
 	}
 }

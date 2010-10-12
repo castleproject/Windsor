@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,28 +17,27 @@ namespace Castle.Core
 	using System;
 
 	/// <summary>
-	/// Used to declare that a component wants interceptors acting on it.
+	///   Used to declare that a component wants interceptors acting on it.
 	/// </summary>
-	[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1019:DefineAccessorsForAttributeArguments"), AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
 	public sealed class InterceptorAttribute : Attribute
 	{
 		private readonly InterceptorReference interceptorRef;
 
 		/// <summary>
-		/// Constructs the InterceptorAttribute pointing to
-		/// a key to a interceptor
+		///   Constructs the InterceptorAttribute pointing to
+		///   a key to a interceptor
 		/// </summary>
-		/// <param name="componentKey"></param>
+		/// <param name = "componentKey"></param>
 		public InterceptorAttribute(string componentKey)
 		{
 			interceptorRef = new InterceptorReference(componentKey);
 		}
 
 		/// <summary>
-		/// Constructs the InterceptorAttribute pointing to
-		/// a service
+		///   Constructs the InterceptorAttribute pointing to
+		///   a service
 		/// </summary>
-		/// <param name="interceptorType"></param>
+		/// <param name = "interceptorType"></param>
 		public InterceptorAttribute(Type interceptorType)
 		{
 			interceptorRef = new InterceptorReference(interceptorType);

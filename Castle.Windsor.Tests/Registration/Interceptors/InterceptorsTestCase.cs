@@ -150,8 +150,7 @@ namespace Castle.MicroKernel.Tests.Registration.Interceptors
 		private void AssertInterceptorReferencesAreEqual(IHandler handler, InterceptorsTestCaseHelper helper)
 		{
 			CollectionAssert.AreEqual(helper.GetExpectedInterceptorsInCorrectOrder(),
-									  handler.ComponentModel.Interceptors,
-									  new InterceptorReferenceComparer());
+			                          handler.ComponentModel.Interceptors);
 		}
 	}
 }

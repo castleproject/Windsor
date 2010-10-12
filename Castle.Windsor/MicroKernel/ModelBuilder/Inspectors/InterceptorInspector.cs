@@ -63,7 +63,6 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 				var reference = new InterceptorReference(ReferenceExpressionUtil.ExtractComponentKey(value));
 
 				model.Interceptors.Add(reference);
-				model.Dependencies.Add(CreateDependencyModel(reference));
 			}
 		}
 
@@ -109,18 +108,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 			foreach (InterceptorAttribute attribute in attributes)
 			{
 				AddInterceptor(attribute.Interceptor, model.Interceptors);
-				model.Dependencies.Add(CreateDependencyModel(attribute.Interceptor));
 			}
-		}
-
-		protected virtual DependencyModel CreateDependencyModel(InterceptorReference interceptor)
-		{
-			if (string.IsNullOrEmpty(interceptor.ComponentKey))
-			{
-				return new DependencyModel(DependencyType.Service, interceptor.ComponentKey, interceptor.ServiceType, false);
-			}
-
-			return new DependencyModel(DependencyType.ServiceOverride, interceptor.ComponentKey, interceptor.ServiceType, false);
 		}
 
 		protected virtual void AddInterceptor(InterceptorReference interceptorRef, InterceptorReferenceCollection interceptors)

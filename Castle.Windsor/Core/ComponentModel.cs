@@ -246,7 +246,7 @@ namespace Castle.Core
 					{
 						if (interceptors == null)
 						{
-							interceptors = new InterceptorReferenceCollection();
+							interceptors = new InterceptorReferenceCollection(this.Dependencies);
 						}
 					}
 				}

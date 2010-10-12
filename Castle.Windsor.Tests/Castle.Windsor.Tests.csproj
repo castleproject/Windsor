@@ -456,7 +456,6 @@
     </Compile>
     <Compile Include="Registration\ComponentRegistrationTestCase.cs" />
     <Compile Include="Registration\AllTypesTestCase.cs" />
-    <Compile Include="Registration\Interceptors\InterceptorReferenceComparer.cs" />
     <Compile Include="Registration\Interceptors\InterceptorsTestCase.cs" />
     <Compile Include="Registration\Interceptors\InterceptorsTestCaseHelper.cs" />
     <Compile Include="Registration\Interceptors\Multiple\GenericInterceptorsInSingleCall.cs" />
