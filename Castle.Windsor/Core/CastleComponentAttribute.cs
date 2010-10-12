@@ -16,7 +16,7 @@ namespace Castle.Core
 	using System;
 
 	/// <summary>
-	/// This attribute is usefull only when you want to register all components
+	/// This attribute is useful only when you want to register all components
 	/// on an assembly as a batch process. 
 	/// By doing so, the batch register will look 
 	/// for this attribute to distinguish components from other classes.
