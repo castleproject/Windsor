@@ -12,13 +12,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Facilities.TypedFactory
+namespace Castle.MicroKernel.Registration
 {
-	using System;
-	using System.Reflection;
+	using Castle.Core;
 
-	public interface IDelegateGenerator
+	public class ReferenceDependencyDescriptor<S> : ComponentDescriptor<S>
 	{
-		Delegate BuildDelegate(DelegateInvocation invocation, MethodInfo invoke, Type delegateType);
+		private readonly IReference<object> dependency;
+
+		public ReferenceDependencyDescriptor(IReference<object> dependency)
+		{
+			this.dependency = dependency;
+		}
+
+		protected internal override void ApplyToModel(IKernel kernel, ComponentModel model)
+		{
+			dependency.Attach(model.Dependencies);
+		}
 	}
 }

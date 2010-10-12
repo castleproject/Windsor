@@ -20,11 +20,25 @@ namespace Castle.Facilities.TypedFactory
 
 	public class TypedFactoryConfiguration
 	{
+		private readonly string defaultComponentSelectorKey;
 		private IReference<ITypedFactoryComponentSelector> selectorReference;
+
+		public TypedFactoryConfiguration(string defaultComponentSelectorKey)
+		{
+			this.defaultComponentSelectorKey = defaultComponentSelectorKey;
+		}
 
 		internal IReference<ITypedFactoryComponentSelector> Reference
 		{
-			get { return selectorReference; }
+			get
+			{
+				if (selectorReference == null)
+				{
+					SelectedWith(defaultComponentSelectorKey);
+				}
+
+				return selectorReference;
+			}
 		}
 
 		public void SelectedWith(string selectorComponentName)

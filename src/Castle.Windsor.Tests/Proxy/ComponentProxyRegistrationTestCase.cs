@@ -14,6 +14,10 @@
 
 namespace Castle.Windsor.Tests.Proxy
 {
+	using System;
+
+	using Castle.MicroKernel;
+	using Castle.MicroKernel.Handlers;
 	using Castle.MicroKernel.Registration;
 	using Castle.Windsor.Tests.Components;
 	using Castle.Windsor.Tests.Interceptors;
@@ -23,12 +27,6 @@ namespace Castle.Windsor.Tests.Proxy
 	[TestFixture]
 	public class ComponentProxyRegistrationTestCase
 	{
-		[SetUp]
-		public void SetUp()
-		{
-			container = new WindsorContainer();
-		}
-
 		private WindsorContainer container;
 
 		[Test]
@@ -90,6 +88,66 @@ namespace Castle.Windsor.Tests.Proxy
 		}
 
 		[Test]
+		public void Missing_dependency_on_hook_statically_detected()
+		{
+			container.Register(Component.For<ICalcService>()
+			                   	.ImplementedBy<CalculatorService>()
+			                   	.Proxy.Hook(h => h.Service<ProxyNothingHook>()));
+
+			var calc = container.Kernel.GetHandler(typeof(ICalcService));
+			Assert.AreEqual(HandlerState.WaitingDependency, calc.CurrentState);
+
+			var exception =
+			Assert.Throws<HandlerException>(() =>
+			container.Resolve<ICalcService>());
+			Assert.AreEqual(
+				string.Format(
+					"Can't create component 'Castle.Windsor.Tests.Components.CalculatorService' as it has dependencies to be satisfied. {0}Castle.Windsor.Tests.Components.CalculatorService is waiting for the following dependencies: {0}{0}Services: {0}- Castle.Windsor.Tests.Proxy.ProxyNothingHook which was not registered. {0}",
+					Environment.NewLine),
+				exception.Message);
+		}
+
+		[Test]
+		public void Missing_dependency_on_mixin_statically_detected()
+		{
+			container.Register(Component.For<ICalcService>()
+			                   	.ImplementedBy<CalculatorService>()
+			                   	.Proxy.MixIns(m => m.Service<A>()));
+
+			var calc = container.Kernel.GetHandler(typeof(ICalcService));
+			Assert.AreEqual(HandlerState.WaitingDependency, calc.CurrentState);
+
+			var exception =
+			Assert.Throws<HandlerException>(() =>
+			container.Resolve<ICalcService>());
+			Assert.AreEqual(
+				string.Format(
+					"Can't create component 'Castle.Windsor.Tests.Components.CalculatorService' as it has dependencies to be satisfied. {0}Castle.Windsor.Tests.Components.CalculatorService is waiting for the following dependencies: {0}{0}Services: {0}- Castle.Windsor.Tests.A which was not registered. {0}",
+					Environment.NewLine),
+				exception.Message);
+		}
+
+		[Test]
+		public void Missing_dependency_on_selector_statically_detected()
+		{
+			container.Register(Component.For<ICalcService>()
+			                   	.ImplementedBy<CalculatorService>()
+			                   	.SelectInterceptorsWith(s => s.Service<DummyInterceptorSelector>()));
+
+			var calc = container.Kernel.GetHandler(typeof(ICalcService));
+			Assert.AreEqual(HandlerState.WaitingDependency, calc.CurrentState);
+
+			var exception =
+			Assert.Throws<HandlerException>(() =>
+			container.Resolve<ICalcService>());
+			Assert.AreEqual(
+				string.Format(
+					"Can't create component 'Castle.Windsor.Tests.Components.CalculatorService' as it has dependencies to be satisfied. {0}Castle.Windsor.Tests.Components.CalculatorService is waiting for the following dependencies: {0}{0}Services: {0}- Castle.Windsor.Tests.Interceptors.DummyInterceptorSelector which was not registered. {0}",
+					Environment.NewLine),
+				exception.Message);
+		}
+
+		[Test]
 		public void Releasing_MixIn_releases_all_parts()
 		{
 			SimpleServiceDisposable.DisposedCount = 0;
@@ -107,6 +165,12 @@ namespace Castle.Windsor.Tests.Proxy
 			mixin.Operation();
 			container.Release(mixin);
 			Assert.AreEqual(1, SimpleServiceDisposable.DisposedCount);
+		}
+
+		[SetUp]
+		public void SetUp()
+		{
+			container = new WindsorContainer();
 		}
 
 		[Test]

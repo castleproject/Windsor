@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Facilities.TypedFactory
+namespace Castle.Facilities.TypedFactory.Internal
 {
 	using System;
 
@@ -21,7 +21,7 @@ namespace Castle.Facilities.TypedFactory
 	using Castle.MicroKernel.Facilities;
 
 	/// <summary>
-	/// resolves componet selected by given <see cref="ITypedFactoryComponentSelector"/> from the container
+	///   resolves componet selected by given <see cref = "ITypedFactoryComponentSelector" /> from the container
 	/// </summary>
 	public class Resolve : ITypedFactoryMethod
 	{
@@ -39,7 +39,7 @@ namespace Castle.Facilities.TypedFactory
 		public void Invoke(IInvocation invocation)
 		{
 			var component = selector.SelectComponent(invocation.Method, invocation.TargetType, invocation.Arguments);
-			if(component == null)
+			if (component == null)
 			{
 				throw new FacilityException(
 					string.Format(
@@ -47,7 +47,7 @@ namespace Castle.Facilities.TypedFactory
 						invocation.Method));
 			}
 			var instance = component.Resolve(kernel);
-			if(kernel.ReleasePolicy.HasTrack(instance))
+			if (kernel.ReleasePolicy.HasTrack(instance))
 			{
 				trackComponentCallback(instance);
 			}

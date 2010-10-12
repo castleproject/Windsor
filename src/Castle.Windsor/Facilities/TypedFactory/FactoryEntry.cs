@@ -15,7 +15,12 @@
 namespace Castle.Facilities.TypedFactory
 {
 	using System;
+	using System.ComponentModel;
 
+	/// <summary>
+	/// Legacy class from old impl. of the facility. Do not use it.
+	/// </summary>
+	[EditorBrowsable(EditorBrowsableState.Never)]
 	public class FactoryEntry
 	{
 		private readonly String id;

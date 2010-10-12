@@ -18,7 +18,6 @@ namespace Castle.Facilities.TypedFactory
 	using System.Collections;
 	using System.Reflection;
 
-	using Castle.Core;
 	using Castle.Core.Internal;
 	using Castle.MicroKernel;
 
@@ -33,21 +32,54 @@ namespace Castle.Facilities.TypedFactory
 			return BuildFactoryComponent(method, componentName, componentType, additionalArguments);
 		}
 
-		protected virtual TypedFactoryComponent BuildFactoryComponent(MethodInfo method, string componentName, Type componentType, IDictionary additionalArguments)
+		/// <summary>
+		///   Builds <see cref = "TypedFactoryComponent" /> for given call.
+		///   By default if <paramref name = "componentType" /> is a collection
+		///   returns <see cref = "TypedFactoryComponentCollection" /> for the collection's item type,
+		///   otherwise standard <see cref = "TypedFactoryComponent" />.
+		/// </summary>
+		/// <param name = "method"></param>
+		/// <param name = "componentName"></param>
+		/// <param name = "componentType"></param>
+		/// <param name = "additionalArguments"></param>
+		/// <returns></returns>
+		protected virtual TypedFactoryComponent BuildFactoryComponent(MethodInfo method, string componentName,
+		                                                              Type componentType, IDictionary additionalArguments)
 		{
 			var itemType = componentType.GetCompatibleArrayItemType();
-			if (itemType != null)
+			if (itemType == null)
 			{
-				return new TypedFactoryComponentCollection(itemType, additionalArguments);
+				return new TypedFactoryComponent(componentName, componentType, additionalArguments);
 			}
-			return new TypedFactoryComponent(componentName, componentType, additionalArguments);
+			return new TypedFactoryComponentCollection(itemType, additionalArguments);
 		}
 
-		protected virtual Type GetComponentType(MethodInfo method, object[] arguments)
+		/// <summary>
+		///   Selects arguments to be passed to resolution pipeline.
+		///   By default passes all given <paramref name = "arguments" /> 
+		///   keyed by names of their corresponding <paramref name = "method" /> parameters.
+		/// </summary>
+		/// <param name = "method"></param>
+		/// <param name = "arguments"></param>
+		/// <returns></returns>
+		protected virtual IDictionary GetArguments(MethodInfo method, object[] arguments)
 		{
-			return method.ReturnType;
+			var argumentMap = new Arguments();
+			var parameters = method.GetParameters();
+			for (var i = 0; i < parameters.Length; i++)
+			{
+				argumentMap.Add(parameters[i].Name, arguments[i]);
+			}
+			return argumentMap;
 		}
 
+		/// <summary>
+		///   Selects name of the component to resolve.
+		///   If <paramref name = "method" /> Name is GetFoo returns "Foo", otherwise <c>null</c>.
+		/// </summary>
+		/// <param name = "method"></param>
+		/// <param name = "arguments"></param>
+		/// <returns></returns>
 		protected virtual string GetComponentName(MethodInfo method, object[] arguments)
 		{
 			string componentName = null;
@@ -58,15 +90,15 @@ namespace Castle.Facilities.TypedFactory
 			return componentName;
 		}
 
-		protected virtual IDictionary GetArguments(MethodInfo method, object[] arguments)
+		/// <summary>
+		///   Selects type of the component to resolve. Uses <paramref name = "method" /> return type.
+		/// </summary>
+		/// <param name = "method"></param>
+		/// <param name = "arguments"></param>
+		/// <returns></returns>
+		protected virtual Type GetComponentType(MethodInfo method, object[] arguments)
 		{
-			var argumentMap = new Arguments();
-			var parameters = method.GetParameters();
-			for (int i = 0; i < parameters.Length; i++)
-			{
-				argumentMap.Add(parameters[i].Name, arguments[i]);
-			}
-			return argumentMap;
+			return method.ReturnType;
 		}
 	}
 }
