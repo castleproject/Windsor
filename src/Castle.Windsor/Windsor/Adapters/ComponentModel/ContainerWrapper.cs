@@ -153,7 +153,7 @@ namespace Castle.Windsor.Adapters.ComponentModel
 
 						try
 						{
-						    Kernel.Register(Component.For<IComponent>().Named(newSite.EffectiveName).Instance(component));
+							Kernel.Register(Component.For<IComponent>().Named(newSite.EffectiveName).Instance(component));
 						}
 						catch (ComponentRegistrationException ex)
 						{
@@ -225,7 +225,7 @@ namespace Castle.Windsor.Adapters.ComponentModel
 		/// Gets the service object of the specified type.
 		/// </summary>
 		/// <param name="serviceType">The type of service.</param>
-		/// <returns>An object inplementing service, or null.</returns>
+		/// <returns>An object implementing service, or null.</returns>
 		public virtual object GetService(Type serviceType)
 		{
 			if(serviceType == null)
@@ -233,7 +233,7 @@ namespace Castle.Windsor.Adapters.ComponentModel
 				return null;
 			}
 
-			// Check for instrinsic services.
+			// Check for intrinsic services.
 			if (serviceType == typeof(IContainerAdapter) ||
 				serviceType == typeof(IContainerAccessor) ||
 				serviceType == typeof(IServiceContainer) ||
@@ -344,7 +344,7 @@ namespace Castle.Windsor.Adapters.ComponentModel
 			}
 
 			String serviceName = GetServiceName(serviceType);
-		    Kernel.Register(Component.For(serviceType).Named(serviceName).Instance(serviceInstance));
+			Kernel.Register(Component.For(serviceType).Named(serviceName).Instance(serviceInstance));
 		}
 		
 		/// <summary>
@@ -356,45 +356,45 @@ namespace Castle.Windsor.Adapters.ComponentModel
 		/// <param name="promote">true to promote this request to any parent service containers.</param>
 		public virtual void AddService(Type serviceType, ServiceCreatorCallback callback, bool promote)
 		{
-		    if (promote)
-		    {
-		        IServiceContainer parentServices = ParentServices;
+			if (promote)
+			{
+				IServiceContainer parentServices = ParentServices;
 
-		        if (parentServices != null)
-		        {
-		            parentServices.AddService(serviceType, callback, promote);
-		            return;
-		        }
-		    }
+				if (parentServices != null)
+				{
+					parentServices.AddService(serviceType, callback, promote);
+					return;
+				}
+			}
 
-		    if (serviceType == null)
-		    {
-		        throw new ArgumentNullException("serviceType");
-		    }
+			if (serviceType == null)
+			{
+				throw new ArgumentNullException("serviceType");
+			}
 
-		    if (callback == null)
-		    {
-		        throw new ArgumentNullException("callback");
-		    }
+			if (callback == null)
+			{
+				throw new ArgumentNullException("callback");
+			}
 
-		    if (HasService(serviceType))
-		    {
-		        throw new ArgumentException(String.Format(
-		            "A service for type '{0}' already exists", serviceType.FullName),
-		                                    "serviceType");
-		    }
+			if (HasService(serviceType))
+			{
+				throw new ArgumentException(String.Format(
+					"A service for type '{0}' already exists", serviceType.FullName),
+											"serviceType");
+			}
 
-		    Kernel.Register(MicroKernel.Registration.Component.For(serviceType)
-		                        .Named(GetServiceName(serviceType))
-		                        .Activator<ServiceCreatorCallbackActivator>()
-		                        .ExtendedProperties(
-		                            Property.ForKey(ServiceCreatorCallbackActivator.ServiceContainerKey)
-		                                .Eq(GetService(typeof(IServiceContainer))),
-		                            Property.ForKey(ServiceCreatorCallbackActivator.ServiceCreatorCallbackKey)
-		                                .Eq(callback)));
+			Kernel.Register(MicroKernel.Registration.Component.For(serviceType)
+								.Named(GetServiceName(serviceType))
+								.Activator<ServiceCreatorCallbackActivator>()
+								.ExtendedProperties(
+									Property.ForKey(ServiceCreatorCallbackActivator.ServiceContainerKey)
+										.Eq(GetService(typeof(IServiceContainer))),
+									Property.ForKey(ServiceCreatorCallbackActivator.ServiceCreatorCallbackKey)
+										.Eq(callback)));
 		}
 
-        /// <summary>
+		/// <summary>
 		/// Removes the specified service type from the service container.
 		/// </summary>
 		/// <param name="serviceType">The type of service to remove.</param>
@@ -429,7 +429,7 @@ namespace Castle.Windsor.Adapters.ComponentModel
 
 			if (IsIntrinsicService(serviceType))
 			{
-				throw new ArgumentException("Cannot remove an instrinsic service");
+				throw new ArgumentException("Cannot remove an intrinsic service");
 			}
 
 			String serviceName = GetServiceName(serviceType);
@@ -441,7 +441,7 @@ namespace Castle.Windsor.Adapters.ComponentModel
 		}
 
 		/// <summary>
-		/// Determins if the service type represents an intrinsic service.
+		/// Determines if the service type represents an intrinsic service.
 		/// </summary>
 		/// <param name="serviceType">The type of service to remove.</param>
 		/// <returns>true if the service type is an intrinsic service.</returns>
@@ -454,7 +454,7 @@ namespace Castle.Windsor.Adapters.ComponentModel
 		}
 
 		/// <summary>
-		/// Determins if the specified service type exists in the service container.
+		/// Determines if the specified service type exists in the service container.
 		/// </summary>
 		/// <param name="serviceType">The type of service to remove.</param>
 		/// <returns>true if the service type exists.</returns>

@@ -189,7 +189,7 @@ namespace Castle.Windsor.Configuration.Interpreters
 			if (attributesCount != 1)
 			{
 				throw new Exception(
-					"install must have exactly one of the following attibutes defined: 'type', 'assembly' or 'directory'.");
+					"install must have exactly one of the following attributes defined: 'type', 'assembly' or 'directory'.");
 			}
 			AddInstallerConfig(config, store);
 		}

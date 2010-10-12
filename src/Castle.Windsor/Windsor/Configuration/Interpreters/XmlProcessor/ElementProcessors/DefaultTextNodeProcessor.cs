@@ -101,7 +101,7 @@ namespace Castle.Windsor.Configuration.Interpreters.XmlProcessor.ElementProcesso
 			}
 
 			// we only process when there was at least one match
-			// even when the framents contents is empty since
+			// even when the fragment contents is empty since
 			// that could mean that there was a match but the property
 			// reference was a silent property
 			if (pos > 0)
