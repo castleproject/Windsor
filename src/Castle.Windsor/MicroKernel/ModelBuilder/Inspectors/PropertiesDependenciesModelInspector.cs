@@ -25,7 +25,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 
 	/// <summary>
 	/// This implementation of <see cref="IContributeComponentModelConstruction"/>
-	/// collects all potential writable puplic properties exposed by the component 
+	/// collects all potential writable public properties exposed by the component 
 	/// implementation and populates the model with them.
 	/// The Kernel might be able to set some of these properties when the component 
 	/// is requested.

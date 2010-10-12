@@ -346,7 +346,7 @@ namespace Castle.MicroKernel.Registration
 		}
 
 		/// <summary>
-		/// Allows custom dependencies to by defined dyncamically with releasing capability.
+		/// Allows custom dependencies to by defined dynamically with releasing capability.
 		/// </summary>
 		/// <param name="resolve">The delegate used for providing dynamic parameters.</param>
 		/// <returns></returns>
@@ -699,7 +699,7 @@ namespace Castle.MicroKernel.Registration
 		/// The component will only be registered into the kernel 
 		/// if this predicate is not satisfied (or not assigned at all).
 		/// </summary>
-		/// <param name="unlessFilter">The predicate not to satisify.</param>
+		/// <param name="unlessFilter">The predicate not to satisfy.</param>
 		/// <returns></returns>
 		public ComponentRegistration<TService> Unless(ComponentFilter unlessFilter)
 		{

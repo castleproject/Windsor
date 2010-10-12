@@ -173,7 +173,7 @@ namespace Castle.MicroKernel.Proxy
 		}
 
 		/// <summary>
-		/// Equalses the specified obj.
+		/// Equals the specified obj.
 		/// </summary>
 		/// <param name="obj">The obj.</param>
 		/// <returns>true if equal.</returns>

@@ -37,7 +37,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 	public class ComponentProxyInspector : IContributeComponentModelConstruction
 	{
 		/// <summary>
-		/// Seaches for proxy behavior in the configuration and, if unsuccessful
+		/// Searches for proxy behavior in the configuration and, if unsuccessful
 		/// look for the <see cref="ComponentProxyBehaviorAttribute"/> attribute in 
 		/// the implementation type.
 		/// </summary>

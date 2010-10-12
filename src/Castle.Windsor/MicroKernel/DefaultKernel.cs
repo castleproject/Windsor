@@ -99,7 +99,7 @@ namespace Castle.MicroKernel
 
 		/// <summary>
 		///   Implements a policy to control component's
-		///   disposal that the usef forgot.
+		///   disposal that the user forgot.
 		/// </summary>
 		private IReleasePolicy releaserPolicy;
 
@@ -170,7 +170,7 @@ namespace Castle.MicroKernel
 		}
 
 		/// <summary>
-		///   Graph of components and iteractions.
+		///   Graph of components and interactions.
 		/// </summary>
 		public GraphNode[] GraphNodes
 		{
@@ -643,7 +643,7 @@ namespace Castle.MicroKernel
 
 		/// <summary>
 		///   Releases a component instance. This allows
-		///   the kernel to execute the proper decomission
+		///   the kernel to execute the proper decommission
 		///   lifecycles on the component instance.
 		/// </summary>
 		/// <param name = "instance"></param>

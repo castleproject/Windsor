@@ -37,7 +37,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 		private IConversionManager converter;
 
 		/// <summary>
-		/// Seaches for the component activator in the configuration and, if unsuccessful
+		/// Searches for the component activator in the configuration and, if unsuccessful
 		/// look for the component activator attribute in the implementation type.
 		/// </summary>
 		/// <param name="kernel">The kernel instance</param>
