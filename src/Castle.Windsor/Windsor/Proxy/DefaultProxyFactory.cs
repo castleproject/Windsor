@@ -30,7 +30,7 @@ namespace Castle.Windsor.Proxy
 
 	/// <summary>
 	/// This implementation of <see cref="IProxyFactory"/> relies 
-	/// on DynamicProxy to expose proxy capabilies.
+	/// on DynamicProxy to expose proxy capabilities.
 	/// </summary>
 	/// <remarks>
 	/// Note that only virtual methods can be intercepted in a 
@@ -190,7 +190,7 @@ namespace Castle.Windsor.Proxy
 		}
 
 		/// <summary>
-		/// Determines if the component requiries a target instance for proxying.
+		/// Determines if the component requires a target instance for proxying.
 		/// </summary>
 		/// <param name="kernel">The kernel.</param>
 		/// <param name="model">The model.</param>
