@@ -118,17 +118,6 @@ namespace Castle.MicroKernel
 		/// <param name = "resolver"></param>
 		/// <param name = "proxyFactory"></param>
 		public DefaultKernel(IDependencyResolver resolver, IProxyFactory proxyFactory)
-			: this(proxyFactory)
-		{
-			this.resolver = resolver;
-			this.resolver.Initialize(RaiseDependencyResolving);
-		}
-
-		/// <summary>
-		///   Constructs a DefaultKernel with the specified
-		///   implementation of <see cref = "IProxyFactory" />
-		/// </summary>
-		public DefaultKernel(IProxyFactory proxyFactory)
 		{
 			this.proxyFactory = proxyFactory;
 
@@ -141,8 +130,17 @@ namespace Castle.MicroKernel
 			releaserPolicy = new LifecycledComponentsReleasePolicy();
 			handlerFactory = new DefaultHandlerFactory(this);
 			modelBuilder = new DefaultComponentModelBuilder(this);
-			resolver = new DefaultDependencyResolver(this);
-			resolver.Initialize(RaiseDependencyResolving);
+			this.resolver = resolver;
+			resolver.Initialize(this, RaiseDependencyResolving);
+		}
+
+		/// <summary>
+		///   Constructs a DefaultKernel with the specified
+		///   implementation of <see cref = "IProxyFactory" />
+		/// </summary>
+		public DefaultKernel(IProxyFactory proxyFactory)
+			: this(new DefaultDependencyResolver(),proxyFactory)
+		{
 		}
 
 #if !SILVERLIGHT
