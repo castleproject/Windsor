@@ -39,7 +39,7 @@ namespace Castle.Facilities.Startable
 		///   This method changes behavior of the facility. Deferred mode should be used when you
 		///   have single call to <see cref = "IWindsorContainer.Install" /> and register all your components there.
 		///   Enabling this mode will optimize the behavior of the facility so that it will wait 'till the end of
-		///   intallation and only after all <see cref = "IWindsorInstaller" />s were ran it will instantiate and
+		///   installation and only after all <see cref = "IWindsorInstaller" />s were ran it will instantiate and
 		///   start all the startable components. An exception will be thrown if a startable component can't be 
 		///   instantiated and started. This will help you fail fast and diagnose issues quickly. If you don't want
 		///   the exception to be thrown and you prefer the component to fail silently, use <see cref = "DeferredTryStart" /> method instead.
@@ -57,7 +57,7 @@ namespace Castle.Facilities.Startable
 		///   This method changes behavior of the facility. Deferred mode should be used when you
 		///   have single call to <see cref = "IWindsorContainer.Install" /> and register all your components there.
 		///   Enabling this mode will optimize the behavior of the facility so that it will wait 'till the end of
-		///   intallation and only after all <see cref = "IWindsorInstaller" />s were ran it will instantiate and
+		///   installation and only after all <see cref = "IWindsorInstaller" />s were ran it will instantiate and
 		///   start all the startable components. No exception will be thrown if a startable component can't be 
 		///   instantiated and started. If you'd rather fail fast and diagnose issues quickly, use <see cref = "DeferredStart" /> method instead.
 		/// </summary>
