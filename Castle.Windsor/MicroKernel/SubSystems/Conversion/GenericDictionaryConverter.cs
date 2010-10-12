@@ -114,7 +114,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 					if (convertKeyTo.Is<TKey>() == false)
 					{
 						throw new ArgumentException(
-							string.Format("Could not create dictionary<{0},{1}> because {2} is not assignmable to key type {0}", typeof(TKey),
+							string.Format("Could not create dictionary<{0},{1}> because {2} is not assignable to key type {0}", typeof(TKey),
 							              typeof(TValue), convertKeyTo));
 					}
 
@@ -132,7 +132,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 					if (convertValueTo.Is<TValue>() == false)
 					{
 						throw new ArgumentException(
-							string.Format("Could not create dictionary<{0},{1}> because {2} is not assignmable to value type {1}",
+							string.Format("Could not create dictionary<{0},{1}> because {2} is not assignable to value type {1}",
 							              typeof(TKey), typeof(TValue), convertValueTo));
 					}
 					var value = (TValue) parent.Context.Composition.PerformConversion(itemConfig.Value, convertValueTo);

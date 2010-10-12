@@ -22,7 +22,7 @@ namespace Castle.MicroKernel.Lifestyle
 	using Castle.MicroKernel.Context;
 
 	/// <summary>
-	/// per thread LifestyleManager implementation compatibile with Silverlight.
+	/// per thread LifestyleManager implementation compatible with Silverlight.
 	/// </summary>
 	public class PerThreadThreadStaticLifestyleManager : AbstractLifestyleManager
 	{

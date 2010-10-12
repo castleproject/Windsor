@@ -23,7 +23,7 @@ namespace Castle.MicroKernel.Registration
 	///   Delegate for custom registration configuration.
 	/// </summary>
 	/// <param name = "registration">The component registration.</param>
-	/// <returns>Not uaed.</returns>
+	/// <returns>Not used.</returns>
 	public delegate object ConfigureDelegate(ComponentRegistration registration);
 
 	/// <summary>

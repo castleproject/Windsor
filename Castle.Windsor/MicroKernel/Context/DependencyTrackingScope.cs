@@ -97,7 +97,7 @@ namespace Castle.MicroKernel.Context
 
 		/// <summary>
 		/// Extends <see cref="DependencyModel"/> adding <see cref="MemberInfo"/> and <see cref="ComponentModel"/>
-		/// information. Th MemberInfo is only useful to provide detailed information 
+		/// information. The MemberInfo is only useful to provide detailed information 
 		/// on exceptions. 
 		/// The ComponentModel is required so we can get resolve an object that takes as a parameter itself, but
 		/// with difference model. (See IoC 51 for the details)

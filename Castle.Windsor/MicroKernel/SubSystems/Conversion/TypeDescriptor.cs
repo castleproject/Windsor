@@ -24,7 +24,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 	/// <summary>
 	/// Our own minimalistic implementation of TypeDescriptor class, which does not exist in Silverlight.
 	/// It exists solely to support functionality of <see cref="ComponentModelConverter"/> and does not provide
-	/// full functionality of the actualy thing from the full .NET framework.
+	/// full functionality of the actually thing from the full .NET framework.
 	/// </summary>
 	public class TypeDescriptor
 	{

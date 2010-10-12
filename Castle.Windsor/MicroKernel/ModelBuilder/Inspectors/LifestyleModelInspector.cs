@@ -28,7 +28,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 	/// <remarks>
 	/// This inspector is not guarantee to always set up an lifestyle type. 
 	/// If nothing could be found it wont touch the model. In this case is up to
-	/// the kernel to estabish a default lifestyle for components.
+	/// the kernel to establish a default lifestyle for components.
 	/// </remarks>
 #if (!SILVERLIGHT)
 	[Serializable]
@@ -38,7 +38,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 		private IConversionManager converter;
 
 		/// <summary>
-		/// Seaches for the lifestyle in the configuration and, if unsuccessful
+		/// Searches for the lifestyle in the configuration and, if unsuccessful
 		/// look for the lifestyle attribute in the implementation type.
 		/// </summary>
 		public virtual void ProcessModel(IKernel kernel, ComponentModel model)

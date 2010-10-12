@@ -100,7 +100,7 @@ namespace Castle.MicroKernel.Registration
 		}
 
 		/// <summary>
-		/// Create a component registration for an exisiting <see cref="ComponentModel"/>
+		/// Create a component registration for an existing <see cref="ComponentModel"/>
 		/// </summary>
 		/// <param name="model">The component model.</param>
 		/// <returns>The component registration.</returns>

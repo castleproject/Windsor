@@ -93,7 +93,7 @@ namespace Castle.MicroKernel.Registration
 		/// <summary>
 		/// Builds the <see cref="ServiceOverride"/> with key/value.
 		/// </summary>
-		/// <param name="value">The service overeride value.</param>
+		/// <param name="value">The service override value.</param>
 		/// <returns>The new <see cref="ServiceOverride"/></returns>
 		public ServiceOverride Eq(String value)
 		{
@@ -103,7 +103,7 @@ namespace Castle.MicroKernel.Registration
 		/// <summary>
 		/// Builds the <see cref="ServiceOverride"/> with key/values.
 		/// </summary>
-		/// <param name="value">The service overeride values.</param>
+		/// <param name="value">The service override values.</param>
 		/// <returns>The new <see cref="ServiceOverride"/></returns>
 		public ServiceOverride Eq(params String[] value)
 		{
@@ -113,7 +113,7 @@ namespace Castle.MicroKernel.Registration
 		/// <summary>
 		/// Builds the <see cref="ServiceOverride"/> with key/values.
 		/// </summary>
-		/// <param name="value">The service overeride values.</param>
+		/// <param name="value">The service override values.</param>
 		/// <returns>The new <see cref="ServiceOverride"/></returns>
 		/// <typeparam name="V">The value type.</typeparam>
 		public ServiceOverride Eq<V>(params String[] value)
@@ -124,7 +124,7 @@ namespace Castle.MicroKernel.Registration
 		/// <summary>
 		/// Builds the <see cref="ServiceOverride"/> with key/values.
 		/// </summary>
-		/// <param name="value">The service overeride values.</param>
+		/// <param name="value">The service override values.</param>
 		/// <returns>The new <see cref="ServiceOverride"/></returns>
 		public ServiceOverride Eq(IEnumerable<String> value)
 		{
@@ -134,7 +134,7 @@ namespace Castle.MicroKernel.Registration
 		/// <summary>
 		/// Builds the <see cref="ServiceOverride"/> with key/values.
 		/// </summary>
-		/// <param name="value">The service overeride values.</param>
+		/// <param name="value">The service override values.</param>
 		/// <returns>The new <see cref="ServiceOverride"/></returns>
 		/// <typeparam name="V">The value type.</typeparam>
 		public ServiceOverride Eq<V>(IEnumerable<String> value)
