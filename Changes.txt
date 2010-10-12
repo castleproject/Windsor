@@ -1,4 +1,5 @@
-- implemented IOC-228 - Chicken and egg problem when trying to inherit from DefaultDependencyResolver 
+- fixed IOC-229 - Qurerying for subsystem is case sensitive
+- implemented IOC-228 - Chicken and egg problem when trying to inherit from DefaultDependencyResolver
 
 2.5.1 (2010-09-21)
 ==================
