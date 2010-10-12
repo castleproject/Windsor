@@ -1,3 +1,4 @@
+- fixed IOC-230 - Missing Mixins/InterceptorSelectors/ProxyGenerationHooks and TypedFactoryFacility's component selectors are not detected until resolution time
 - fixed IOC-229 - Qurerying for subsystem is case sensitive
 - implemented IOC-228 - Chicken and egg problem when trying to inherit from DefaultDependencyResolver
 

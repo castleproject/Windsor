@@ -1,4 +1,19 @@
 ================================================================================================
+change - IReference<> interface has two now methods
+
+impact - low
+fixability - easy
+revision - 
+
+description - To make it possible to statically analyze dynamic dependencies provided by 
+	the IReference interface two new methods were added:
+			void Attach(ICollection<DependencyModel> dependencies);
+			void Detach(ICollection<DependencyModel> dependencies);
+
+fix - if you're providing dependencies on a component from the container call Attach so that 
+	reference gets a chance to create and add DependencyModel for that dependency so that
+	it can be statically analyzed by the container.
+================================================================================================
 change - Method IDependencyResolver.Initialize change signature
 
 impact - low
