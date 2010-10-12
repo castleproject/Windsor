@@ -25,7 +25,7 @@ namespace Castle.Facilities.Remoting
 	using Castle.MicroKernel.SubSystems.Conversion;
 
 	/// <summary>
-	///   Facility to allow the communication with remote kernel, using the .NET Remoting infraestructure.
+	///   Facility to allow the communication with remote kernel, using the .NET Remoting infrastructure.
 	/// </summary>
 	/// <remarks>
 	///   TODO
@@ -63,7 +63,7 @@ namespace Castle.Facilities.Remoting
 		///   the facility resources.
 		/// </summary>
 		/// <remarks>
-		///   It can be overriden.
+		///   It can be overridden.
 		/// </remarks>
 		public override void Dispose()
 		{
