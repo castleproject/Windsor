@@ -48,7 +48,7 @@ namespace Castle.Facilities.Synchronize
 		}
 
 		/// <summary>
-		/// Adds the synchronizaed method to the store.
+		/// Adds the synchronized method to the store.
 		/// </summary>
 		/// <param name="method">The method.</param>
 		/// <param name="syncAttrib">The method synchronization.</param>
@@ -83,7 +83,7 @@ namespace Castle.Facilities.Synchronize
 		/// requested by the method.
 		/// </summary>
 		/// <param name="methodInfo">The method.</param>
-		/// <returns>The synchroniztion context reference or null.</returns>
+		/// <returns>The synchronization context reference or null.</returns>
 		public SynchronizeContextReference GetSynchronizedContextFor(MethodInfo methodInfo)
 		{
 			SynchronizeAttribute syncAttrib;

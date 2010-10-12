@@ -29,7 +29,7 @@ namespace Castle.Facilities.Synchronize
 		private readonly IInterceptorSelector existingSelector;
 
 		/// <summary>
-		/// Contructs the selector with the existing selector.
+		/// Constructs the selector with the existing selector.
 		/// </summary>
 		/// <param name="metaInfo">The sync metadata.</param>
 		/// <param name="existingSelector">The existing selector.</param>
