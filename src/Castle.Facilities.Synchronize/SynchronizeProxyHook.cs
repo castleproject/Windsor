@@ -24,7 +24,7 @@ namespace Castle.Facilities.Synchronize
 	public class SynchronizeProxyHook : IProxyGenerationHook
 	{
 		/// <summary>
-		/// Singleton instancce.
+		/// Singleton instance.
 		/// </summary>
 		public static readonly SynchronizeProxyHook Instance = new SynchronizeProxyHook();
 

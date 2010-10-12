@@ -175,7 +175,7 @@ namespace Castle.Facilities.Synchronize
 		}
 
 		/// <summary>
-		/// Releases the marshaling control.
+		/// Releases the marshalling control.
 		/// </summary>
 		void IDisposable.Dispose()
 		{
