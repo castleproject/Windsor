@@ -110,7 +110,7 @@ namespace Castle.Facilities.EventWiring
 		private const string SubscriberList = "evts.subscriber.list";
 		
 		/// <summary>
-		/// Overriden. Initializes the facility, subscribing to the <see cref="IKernelEvents.ComponentModelCreated"/>,
+		/// Overridden. Initializes the facility, subscribing to the <see cref="IKernelEvents.ComponentModelCreated"/>,
 		/// <see cref="IKernelEvents.ComponentCreated"/>, <see cref="IKernelEvents.ComponentDestroyed"/> Kernel events.
 		/// </summary>
 		protected override void Init()
