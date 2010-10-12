@@ -375,6 +375,14 @@ namespace Castle.MicroKernel.Tests
 		}
 
 		[Test]
+		public void Subsystems_are_case_insensitive()
+		{
+			Assert.IsNotNull(kernel.GetSubSystem(SubSystemConstants.ConfigurationStoreKey));
+			Assert.IsNotNull(kernel.GetSubSystem(SubSystemConstants.ConfigurationStoreKey.ToLower()));
+			Assert.IsNotNull(kernel.GetSubSystem(SubSystemConstants.ConfigurationStoreKey.ToUpper()));
+		}
+
+		[Test]
 		[ExpectedException(typeof(ComponentNotFoundException))]
 		public void UnregisteredComponentByKey()
 		{

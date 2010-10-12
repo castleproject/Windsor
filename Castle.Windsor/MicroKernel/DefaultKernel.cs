@@ -80,7 +80,8 @@ namespace Castle.MicroKernel
 		/// <summary>
 		///   Map of subsystems registered.
 		/// </summary>
-		private readonly Dictionary<string, ISubSystem> subsystems = new Dictionary<string, ISubSystem>();
+		private readonly Dictionary<string, ISubSystem> subsystems =
+			new Dictionary<string, ISubSystem>(StringComparer.OrdinalIgnoreCase);
 
 		/// <summary>
 		///   The implementation of <see cref = "IComponentModelBuilder" />
@@ -406,9 +407,7 @@ namespace Castle.MicroKernel
 		/// <returns></returns>
 		public virtual IFacility[] GetFacilities()
 		{
-			var list = new IFacility[facilities.Count];
-			facilities.CopyTo(list, 0);
-			return list;
+			return facilities.ToArray();
 		}
 
 		public virtual IHandler GetHandler(String key)
