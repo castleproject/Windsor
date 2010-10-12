@@ -71,32 +71,13 @@ namespace Castle.Windsor.Proxy
 		protected IInterceptor[] ObtainInterceptors(IKernel kernel, ComponentModel model, CreationContext context)
 		{
 			var interceptors = new List<IInterceptor>();
-			foreach (var interceptorRef in GetInterceptorsFor(model))
+			foreach (IReference<IInterceptor> interceptorRef in GetInterceptorsFor(model))
 			{
-				var handler = GetInterceptorHandler(interceptorRef, kernel);
-				if (handler == null)
-				{
-					// This should be virtually impossible to happen
-					// Seriously!
-					throw new DependencyResolverException(string.Format("The interceptor {0} could not be resolved", interceptorRef));
-				}
-
-				if(handler.IsBeingResolvedInContext(context))
-				{
-					throw new DependencyResolverException(
-						string.Format(
-							"Cycle detected - interceptor {0} wants to use itself as its interceptor. This usually signifies a bug in custom {1}",
-							handler.ComponentModel.Name, typeof(IModelInterceptorsSelector).Name));
-				}
-
 				try
 				{
-					var contextForInterceptor = RebuildContext(handler.Service, context);
-					var interceptor = (IInterceptor)handler.Resolve(contextForInterceptor);
-
-					interceptors.Add(interceptor);
-
+					var interceptor = interceptorRef.Resolve(kernel, context);
 					SetOnBehalfAware(interceptor as IOnBehalfAware, model);
+					interceptors.Add(interceptor);
 				}
 				catch (Exception e)
 				{
@@ -120,29 +101,6 @@ namespace Castle.Windsor.Proxy
 			return interceptors.ToArray();
 		}
 
-		private IHandler GetInterceptorHandler(InterceptorReference interceptorRef, IKernel kernel)
-		{
-			IHandler handler;
-			if (interceptorRef.ReferenceType == InterceptorReferenceType.Interface)
-			{
-				handler = kernel.GetHandler(interceptorRef.ServiceType);
-			}
-			else
-			{
-				handler = kernel.GetHandler(interceptorRef.ComponentKey);
-			}
-			return handler;
-		}
-
-		private CreationContext RebuildContext(Type parameterType, CreationContext current)
-		{
-			if (parameterType.ContainsGenericParameters)
-			{
-				return current;
-			}
-
-			return new CreationContext(parameterType, current, true);
-		}
 
 		public void AddInterceptorSelector(IModelInterceptorsSelector selector)
 		{

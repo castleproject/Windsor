@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,94 +17,32 @@ namespace Castle.Core
 	using System;
 	using System.Collections;
 	using System.Collections.Generic;
+	using System.Linq;
+
+	using Castle.DynamicProxy;
+	using Castle.MicroKernel;
 
 	/// <summary>
-	/// Collection of <see cref="InterceptorReference"/>
+	///   Collection of <see cref = "InterceptorReference" />
 	/// </summary>
 #if !SILVERLIGHT
 	[Serializable]
 #endif
 	public class InterceptorReferenceCollection : ICollection<InterceptorReference>
 	{
+		private readonly ICollection<DependencyModel> dependencies;
 		private readonly LinkedList<InterceptorReference> list = new LinkedList<InterceptorReference>();
-		/// <summary>
-		/// Adds the specified item.
-		/// </summary>
-		/// <param name="item">The interceptor.</param>
-		public void Add(InterceptorReference item)
-		{
-			list.AddLast(item);
-		}
 
-		public void Clear()
+		public InterceptorReferenceCollection(ICollection<DependencyModel> dependencies)
 		{
-			list.Clear();
-		}
-
-		public bool Contains(InterceptorReference item)
-		{
-			return list.Contains(item);
-		}
-
-		void ICollection<InterceptorReference>.CopyTo(InterceptorReference[] array, int arrayIndex)
-		{
-			list.CopyTo(array, arrayIndex);
-		}
-
-		public bool Remove(InterceptorReference item)
-		{
-			list.Remove(item);
-			return true;
+			this.dependencies = dependencies;
 		}
 
 		/// <summary>
-		/// Adds the specified interceptor as the first.
-		/// </summary>
-		/// <param name="item">The interceptor.</param>
-		public void AddFirst(InterceptorReference item)
-		{
-			list.AddFirst(item);
-		}
-
-		/// <summary>
-		/// Adds the specified interceptor as the last.
-		/// </summary>
-		/// <param name="item">The interceptor.</param>
-		public void AddLast(InterceptorReference item)
-		{
-			list.AddLast(item);
-		}
-
-		/// <summary>
-		/// Inserts the specified interceptor at the specified index.
-		/// </summary>
-		/// <param name="index">The index.</param>
-		/// <param name="item">The interceptor.</param>
-		public void Insert(int index, InterceptorReference item)
-		{
-			if(index==0)
-			{
-				AddFirst(item);
-				return;
-			}
-			if(index == list.Count)
-			{
-				AddLast(item);
-				return;
-			}
-			var previous = list.First;
-			for (int i = 1; i < index; i++)
-			{
-				previous = previous.Next;
-			}
-			list.AddAfter(previous, item);
-		}
-
-		/// <summary>
-		/// Gets a value indicating whether this instance has interceptors.
+		///   Gets a value indicating whether this instance has interceptors.
 		/// </summary>
 		/// <value>
-		/// 	<c>true</c> if this instance has interceptors; otherwise, <c>false</c>.
+		///   <c>true</c> if this instance has interceptors; otherwise, <c>false</c>.
 		/// </value>
 		public bool HasInterceptors
 		{
@@ -112,8 +50,8 @@ namespace Castle.Core
 		}
 
 		/// <summary>
-		/// Gets the number of
-		/// elements contained in the <see cref="T:System.Collections.ICollection"/>.
+		///   Gets the number of
+		///   elements contained in the <see cref = "T:System.Collections.ICollection" />.
 		/// </summary>
 		/// <value></value>
 		public int Count
@@ -127,33 +65,131 @@ namespace Castle.Core
 		}
 
 		/// <summary>
-		/// Returns an enumerator that can iterate through a collection.
+		///   Adds the specified interceptor as the first.
+		/// </summary>
+		/// <param name = "item">The interceptor.</param>
+		public void AddFirst(InterceptorReference item)
+		{
+			list.AddFirst(item);
+			Attach(item);
+		}
+
+		/// <summary>
+		///   Adds the interceptor to the end of the interceptors list if it does not exist already.
+		/// </summary>
+		/// <param name = "interceptorReference">The interceptor reference.</param>
+		public void AddIfNotInCollection(InterceptorReference interceptorReference)
+		{
+			if (list.Contains(interceptorReference) == false)
+			{
+				list.AddLast(interceptorReference);
+			}
+		}
+
+		/// <summary>
+		///   Adds the specified interceptor as the last.
+		/// </summary>
+		/// <param name = "item">The interceptor.</param>
+		public void AddLast(InterceptorReference item)
+		{
+			list.AddLast(item);
+			Attach(item);
+		}
+
+		/// <summary>
+		///   Inserts the specified interceptor at the specified index.
+		/// </summary>
+		/// <param name = "index">The index.</param>
+		/// <param name = "item">The interceptor.</param>
+		public void Insert(int index, InterceptorReference item)
+		{
+			if (index == 0)
+			{
+				AddFirst(item);
+				return;
+			}
+			if (index == list.Count)
+			{
+				AddLast(item);
+				return;
+			}
+			var previous = list.First;
+			for (var i = 1; i < index; i++)
+			{
+				previous = previous.Next;
+			}
+			list.AddAfter(previous, item);
+			Attach(item);
+		}
+
+		/// <summary>
+		///   Adds the specified item.
+		/// </summary>
+		/// <param name = "item">The interceptor.</param>
+		public void Add(InterceptorReference item)
+		{
+			list.AddLast(item);
+			Attach(item);
+		}
+
+		public void Clear()
+		{
+			var references = list.ToArray();
+			list.Clear();
+			foreach (var reference in references)
+			{
+				Detach(reference);
+			}
+		}
+
+		public bool Contains(InterceptorReference item)
+		{
+			return list.Contains(item);
+		}
+
+		public bool Remove(InterceptorReference item)
+		{
+			if (list.Remove(item))
+			{
+				Detach(item);
+				return true;
+			}
+			return false;
+		}
+
+		/// <summary>
+		///   Returns an enumerator that can iterate through a collection.
 		/// </summary>
 		/// <returns>
-		/// An <see cref="T:System.Collections.IEnumerator"/>
-		/// that can be used to iterate through the collection.
+		///   An <see cref = "T:System.Collections.IEnumerator" />
+		///   that can be used to iterate through the collection.
 		/// </returns>
 		public IEnumerator GetEnumerator()
 		{
 			return list.GetEnumerator();
 		}
 
-		/// <summary>
-		/// Adds the interceptor to the end of the interceptors list if it does not exist already.
-		/// </summary>
-		/// <param name="interceptorReference">The interceptor reference.</param>
-		public void AddIfNotInCollection(InterceptorReference interceptorReference)
+		private void Attach(IReference<IInterceptor> interceptor)
 		{
-			if (list.Contains(interceptorReference) == false)
-				list.AddLast(interceptorReference);
+			interceptor.Attach(dependencies);
+		}
+
+		private void Detach(IReference<IInterceptor> interceptor)
+		{
+			interceptor.Detach(dependencies);
+		}
+
+		void ICollection<InterceptorReference>.CopyTo(InterceptorReference[] array, int arrayIndex)
+		{
+			list.CopyTo(array, arrayIndex);
 		}
 
 		IEnumerator<InterceptorReference> IEnumerable<InterceptorReference>.GetEnumerator()
 		{
-		    foreach (var reference in list)
-		    {
-		        yield return reference;
-		    }
+			foreach (var reference in list)
+			{
+				yield return reference;
+			}
 		}
 	}
 }
