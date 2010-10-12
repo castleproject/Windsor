@@ -12,31 +12,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Facilities.TypedFactory
+namespace Castle.Facilities.TypedFactory.Internal
 {
+	using System;
+
 	using Castle.DynamicProxy;
-	using Castle.MicroKernel;
 
-	/// <summary>
-	/// Releases components passed as arguments from the container.
-	/// </summary>
-	public class Release : ITypedFactoryMethod
+	public class Dispose : ITypedFactoryMethod
 	{
-		private readonly IKernel kernel;
+		private readonly Action disposeCallback;
 
-		public Release(IKernel kernel)
+		public Dispose(Action disposeCallback)
 		{
-			this.kernel = kernel;
+			this.disposeCallback = disposeCallback;
 		}
 
 		public void Invoke(IInvocation invocation)
 		{
-			foreach (var argument in invocation.Arguments)
-			{
-				if (argument == null) continue;
-
-				kernel.ReleaseComponent(argument);
-			}
+			disposeCallback();
 		}
 	}
 }

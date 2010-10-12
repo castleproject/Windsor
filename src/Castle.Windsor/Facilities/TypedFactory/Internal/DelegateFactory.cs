@@ -12,12 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Facilities.TypedFactory
+namespace Castle.Facilities.TypedFactory.Internal
 {
 	using System;
 	using System.Collections;
 	using System.Diagnostics;
 	using System.Reflection;
+
 	using Castle.Core;
 	using Castle.Core.Internal;
 	using Castle.MicroKernel;
@@ -27,10 +28,6 @@ namespace Castle.Facilities.TypedFactory
 	[Singleton]
 	public class DelegateFactory : ILazyComponentLoader
 	{
-		private static ITypedFactoryComponentSelector defaultSelector = new DefaultDelegateComponentSelector();
-
-		#region ILazyComponentLoader Members
-
 		public IRegistration Load(string key, Type service, IDictionary arguments)
 		{
 			if (service == null)
@@ -63,9 +60,15 @@ namespace Castle.Facilities.TypedFactory
 					return @delegate;
 				}).DynamicParameters((k, d) =>
 				{
-					var selector = defaultSelector;
+					var selector = k.Resolve<ITypedFactoryComponentSelector>(TypedFactoryFacility.DefaultDelegateSelectorKey);
 					d.Insert(selector);
+					return k2 => k2.ReleaseComponent(selector);
 				});
+		}
+
+		protected virtual bool ShouldLoad(string key, Type service)
+		{
+			return true;
 		}
 
 		public static MethodInfo ExtractInvokeMethod(Type service)
@@ -74,26 +77,14 @@ namespace Castle.Facilities.TypedFactory
 			{
 				return null;
 			}
-			
+
 			var invoke = GetInvokeMethod(service);
-			if (!HasReturn(invoke)) 
+			if (!HasReturn(invoke))
 			{
 				return null;
 			}
-			
+
 			return invoke;
-		}
-
-		protected virtual bool ShouldLoad(string key, Type service)
-		{
-			return true;
-		}
-
-		#endregion
-
-		protected static bool HasReturn(MethodInfo invoke)
-		{
-			return invoke.ReturnType != typeof(void);
 		}
 
 		protected static MethodInfo GetInvokeMethod(Type @delegate)
@@ -101,6 +92,11 @@ namespace Castle.Facilities.TypedFactory
 			var invoke = @delegate.GetMethod("Invoke");
 			Debug.Assert(invoke != null, "invoke != null");
 			return invoke;
+		}
+
+		protected static bool HasReturn(MethodInfo invoke)
+		{
+			return invoke.ReturnType != typeof(void);
 		}
 	}
 }

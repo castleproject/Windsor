@@ -305,6 +305,26 @@ namespace Castle.Facilities.Synchronize.Tests
 		}
 
 		[Test]
+		public void RegisterFacility_With_missing_ControlProxyHook_ThrowsConfigurationException()
+		{
+			var container2 = new WindsorContainer();
+			var facNode = new MutableConfiguration("facility");
+			facNode.Attributes["id"] = "sync.facility";
+			facNode.Attributes[Constants.ControlProxyHookAttrib] = "${missing.component}";
+			container2.Kernel.ConfigurationStore.AddFacilityConfiguration("sync.facility", facNode);
+			container2.AddFacility("sync.facility", new SynchronizeFacility());
+			container2.Register(Component.For<DummyForm>());
+
+			var exception = Assert.Throws<HandlerException>(() => container2.Resolve<DummyForm>());
+
+			var expected =
+				string.Format(
+					"Can't create component 'Castle.Facilities.Synchronize.Tests.DummyForm' as it has dependencies to be satisfied. {0}Castle.Facilities.Synchronize.Tests.DummyForm is waiting for the following dependencies: {0}{0}Keys (components with specific keys){0}- missing.component which was not registered. {0}",
+					Environment.NewLine);
+			Assert.AreEqual(expected, exception.Message);
+		}
+
+		[Test]
 		public void RegisterFacility_WithControlProxyHook_WorksFine()
 		{
 			var container2 = new WindsorContainer();

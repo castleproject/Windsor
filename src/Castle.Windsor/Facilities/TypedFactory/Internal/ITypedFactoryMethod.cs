@@ -12,24 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Facilities.TypedFactory
+namespace Castle.Facilities.TypedFactory.Internal
 {
-	using System;
-
 	using Castle.DynamicProxy;
 
-    public class Dispose : ITypedFactoryMethod
+	public interface ITypedFactoryMethod
 	{
-		private readonly Action disposeCallback;
-
-		public Dispose(Action disposeCallback)
-		{
-			this.disposeCallback = disposeCallback;
-		}
-
-		public void Invoke(IInvocation invocation)
-		{
-			disposeCallback();
-		}
+		/// <summary>
+		///   Performs actual invocation of typed factory method.
+		/// </summary>
+		/// <param name = "invocation"></param>
+		void Invoke(IInvocation invocation);
 	}
 }

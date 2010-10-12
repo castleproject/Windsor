@@ -29,19 +29,29 @@ namespace Castle.Facilities.TypedFactory
 	using Component = Castle.MicroKernel.Registration.Component;
 
 	/// <summary>
-	/// Summary description for TypedFactoryFacility.
+	///   Provides automatically generated factories on top of interfaces or delegates that
+	///   you can use to pull components out of the container without ever referencing it 
+	///   explicitly.
 	/// </summary>
 	public class TypedFactoryFacility : AbstractFacility
 	{
 		public static readonly string InterceptorKey = "Castle.TypedFactory.Interceptor";
-		public static readonly string DelegateFactoryKey = "Castle.TypedFactory.DelegateFactory";
-		public static readonly string DelegateProxyFactoryKey = "Castle.TypedFactory.DelegateProxyFactory";
+
+		internal static readonly string DefaultDelegateSelectorKey =
+			"Castle.TypedFactory.DefaultDelegateFactoryComponentSelector";
+
+		internal static readonly string DefaultInterfaceSelectorKey =
+			"Castle.TypedFactory.DefaultInterfaceFactoryComponentSelector";
+
+		internal static readonly string DelegateProxyFactoryKey = "Castle.TypedFactory.DelegateProxyFactory";
+		private static readonly string DelegateFactoryKey = "Castle.TypedFactory.DelegateFactory";
 
 		[Obsolete("This method is obsolete. Use AsFactory() extension method on fluent registration API instead.")]
-		[EditorBrowsable(EditorBrowsableState.Advanced)]
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public void AddTypedFactoryEntry(FactoryEntry entry)
 		{
-			var model = new ComponentModel(entry.Id, entry.FactoryInterface, typeof(Empty)) { LifestyleType = LifestyleType.Singleton };
+			var model = new ComponentModel(entry.Id, entry.FactoryInterface, typeof(Empty))
+			{ LifestyleType = LifestyleType.Singleton };
 
 			model.ExtendedProperties["typed.fac.entry"] = entry;
 			model.Interceptors.Add(new InterceptorReference(typeof(FactoryInterceptor)));
@@ -50,33 +60,6 @@ namespace Castle.Facilities.TypedFactory
 			proxyOptions.OmitTarget = true;
 
 			((IKernelInternal)Kernel).AddCustomComponent(model);
-		}
-
-		protected override void Init()
-		{
-			InitFacility();
-
-			LegacyInit();
-		}
-
-		private void InitFacility()
-		{
-			Kernel.Register(Component.For<TypedFactoryInterceptor>()
-			                	.Named(InterceptorKey),
-			                Component.For<DelegateFactory>()
-			                	.Named(DelegateFactoryKey),
-			                Component.For<IProxyFactoryExtension>()
-			                	.ImplementedBy<DelegateProxyFactory>()
-			                	.LifeStyle.Transient
-			                	.Named(DelegateProxyFactoryKey));
-		}
-
-		private void LegacyInit()
-		{
-			Kernel.Register(Component.For<FactoryInterceptor>().Named("typed.fac.interceptor"));
-
-			var converter = Kernel.GetConversionManager();
-			AddFactories(FacilityConfig, converter);
 		}
 
 		protected virtual void AddFactories(IConfiguration facilityConfig, ITypeConverter converter)
@@ -93,18 +76,26 @@ namespace Castle.Facilities.TypedFactory
 				var destruction = config.Attributes["destruction"];
 
 				var factoryType = converter.PerformConversion<Type>(config.Attributes["interface"]);
-				if(string.IsNullOrEmpty(creation))
+				if (string.IsNullOrEmpty(creation))
 				{
 					var selector = config.Attributes["selector"];
 					RegisterFactory(id, factoryType, selector);
 					continue;
 				}
 
-				RegisterFactoryLegacy(creation, id, factoryType, destruction);
+				LegacyRegisterFactory(id, factoryType, creation, destruction);
 			}
 		}
 
-		private void RegisterFactory(string id, Type type, string selector)
+		protected override void Init()
+		{
+			InitFacility();
+
+			LegacyInit();
+		}
+
+		// registers factory from configuration
+		protected void RegisterFactory(string id, Type type, string selector)
 		{
 			var factory = Component.For(type).Named(id);
 			if (selector == null)
@@ -120,7 +111,33 @@ namespace Castle.Facilities.TypedFactory
 			Kernel.Register(factory);
 		}
 
-		private void RegisterFactoryLegacy(string creation, string id, Type factoryType, string destruction)
+		private void InitFacility()
+		{
+			Kernel.Register(Component.For<TypedFactoryInterceptor>()
+			                	.Named(InterceptorKey),
+			                Component.For<DelegateFactory>()
+			                	.Named(DelegateFactoryKey),
+			                Component.For<IProxyFactoryExtension>()
+			                	.ImplementedBy<DelegateProxyFactory>()
+			                	.LifeStyle.Transient
+			                	.Named(DelegateProxyFactoryKey),
+			                Component.For<ITypedFactoryComponentSelector>()
+			                	.ImplementedBy<DefaultTypedFactoryComponentSelector>()
+			                	.Named(DefaultInterfaceSelectorKey),
+			                Component.For<ITypedFactoryComponentSelector>()
+			                	.ImplementedBy<DefaultDelegateComponentSelector>()
+			                	.Named(DefaultDelegateSelectorKey));
+		}
+
+		private void LegacyInit()
+		{
+			Kernel.Register(Component.For<FactoryInterceptor>().Named("typed.fac.interceptor"));
+
+			var converter = Kernel.GetConversionManager();
+			AddFactories(FacilityConfig, converter);
+		}
+
+		private void LegacyRegisterFactory(string id, Type factoryType, string creation, string destruction)
 		{
 			try
 			{
@@ -130,7 +147,7 @@ namespace Castle.Facilities.TypedFactory
 			}
 			catch (Exception)
 			{
-				string message = "Invalid factory entry in configuration";
+				var message = "Invalid factory entry in configuration";
 
 				throw new Exception(message);
 			}

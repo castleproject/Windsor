@@ -12,16 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Facilities.TypedFactory
+namespace Castle.Facilities.TypedFactory.Internal
 {
 	using System;
+
 	using Castle.Core;
 	using Castle.Core.Interceptor;
 	using Castle.DynamicProxy;
 	using Castle.MicroKernel;
 
 	/// <summary>
-	/// Summary description for FactoryInterceptor.
+	/// Legacy interceptor for old impl. of the facility.
 	/// </summary>
 	[Transient]
 	public class FactoryInterceptor : IInterceptor, IOnBehalfAware
