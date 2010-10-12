@@ -60,12 +60,12 @@ namespace Castle.MicroKernel
 		/// <summary>
 		///   List of sub containers.
 		/// </summary>
-		private readonly List<IKernel> childKernels;
+		private readonly List<IKernel> childKernels = new List<IKernel>();
 
 		/// <summary>
 		///   List of <see cref = "IFacility" /> registered.
 		/// </summary>
-		private readonly List<IFacility> facilities;
+		private readonly List<IFacility> facilities = new List<IFacility>();
 
 		/// <summary>
 		///   The implementation of <see cref = "IHandlerFactory" />
@@ -80,7 +80,7 @@ namespace Castle.MicroKernel
 		/// <summary>
 		///   Map of subsystems registered.
 		/// </summary>
-		private readonly Dictionary<string, ISubSystem> subsystems;
+		private readonly Dictionary<string, ISubSystem> subsystems = new Dictionary<string, ISubSystem>();
 
 		/// <summary>
 		///   The implementation of <see cref = "IComponentModelBuilder" />
@@ -101,7 +101,7 @@ namespace Castle.MicroKernel
 		///   Implements a policy to control component's
 		///   disposal that the usef forgot.
 		/// </summary>
-		private IReleasePolicy releaserPolicy;
+		private IReleasePolicy releasePolicy;
 
 		/// <summary>
 		///   Constructs a DefaultKernel with no component
@@ -119,17 +119,12 @@ namespace Castle.MicroKernel
 		/// <param name = "proxyFactory"></param>
 		public DefaultKernel(IDependencyResolver resolver, IProxyFactory proxyFactory)
 		{
-			this.proxyFactory = proxyFactory;
-
-			childKernels = new List<IKernel>();
-			facilities = new List<IFacility>();
-			subsystems = new Dictionary<string, ISubSystem>();
-
 			RegisterSubSystems();
 
-			releaserPolicy = new LifecycledComponentsReleasePolicy();
+			releasePolicy = new LifecycledComponentsReleasePolicy();
 			handlerFactory = new DefaultHandlerFactory(this);
 			modelBuilder = new DefaultComponentModelBuilder(this);
+			this.proxyFactory = proxyFactory;
 			this.resolver = resolver;
 			resolver.Initialize(this, RaiseDependencyResolving);
 		}
@@ -231,8 +226,8 @@ namespace Castle.MicroKernel
 
 		public virtual IReleasePolicy ReleasePolicy
 		{
-			get { return releaserPolicy; }
-			set { releaserPolicy = value; }
+			get { return releasePolicy; }
+			set { releasePolicy = value; }
 		}
 
 		public IDependencyResolver Resolver
@@ -846,7 +841,8 @@ namespace Castle.MicroKernel
 
 			if (Debugger.IsAttached)
 			{
-				AddSubSystem(SubSystemConstants.DebuggingKey, new DefaultDebuggingSubSystem());
+				AddSubSystem(SubSystemConstants.DebuggingKey,
+				             new DefaultDebuggingSubSystem());
 			}
 		}
 
