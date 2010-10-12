@@ -261,6 +261,7 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 
 			Assert.IsInstanceOf<Component1>(component);
 		}
+
 		[Test]
 		public void Can_resolve_component()
 		{
