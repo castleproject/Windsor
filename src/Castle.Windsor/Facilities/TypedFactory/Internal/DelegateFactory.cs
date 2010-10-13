@@ -41,13 +41,8 @@ namespace Castle.Facilities.TypedFactory.Internal
 				return null;
 			}
 
-			if (ShouldLoad(key, service) == false)
-			{
-				return null;
-			}
-
 			return Component.For(service)
-				.Named(key)
+				.Named(GetName(service))
 				.LifeStyle.Transient
 				.Interceptors(new InterceptorReference(TypedFactoryFacility.InterceptorKey)).Last
 				.UsingFactoryMethod((k, m, c) =>
@@ -66,9 +61,13 @@ namespace Castle.Facilities.TypedFactory.Internal
 				});
 		}
 
-		protected virtual bool ShouldLoad(string key, Type service)
+		protected string GetName(Type service)
 		{
-			return true;
+			if (string.IsNullOrEmpty(service.FullName))
+			{
+				return "auto-factory: " + Guid.NewGuid();
+			}
+			return "auto-factory: " + service.FullName;
 		}
 
 		public static MethodInfo ExtractInvokeMethod(Type service)
