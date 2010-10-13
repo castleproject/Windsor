@@ -15,6 +15,7 @@
 namespace Castle.Facilities.Logging
 {
 	using System;
+	using System.Diagnostics;
 
 	using Castle.Core;
 	using Castle.Core.Logging;
@@ -60,19 +61,15 @@ namespace Castle.Facilities.Logging
 		public object Resolve(CreationContext context, ISubDependencyResolver parentResolver, ComponentModel model,
 		                      DependencyModel dependency)
 		{
-			if (CanResolve(context, parentResolver, model, dependency))
+			Debug.Assert(CanResolve(context, parentResolver, model, dependency));
+
+			if (extendedLoggerFactory != null)
 			{
-				if (extendedLoggerFactory != null)
-				{
-					return extendedLoggerFactory.Create(model.Implementation);
-				}
-				if (loggerFactory != null)
-				{
-					return loggerFactory.Create(model.Implementation);
-				}
-				throw new LoggerException("Unable to resolve proper LoggerFactory for Logger.");
+				return extendedLoggerFactory.Create(model.Implementation);
 			}
-			return null;
+
+			Debug.Assert(loggerFactory != null);
+			return loggerFactory.Create(model.Implementation);
 		}
 	}
 }
