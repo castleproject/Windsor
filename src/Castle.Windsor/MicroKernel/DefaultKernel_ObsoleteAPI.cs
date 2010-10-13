@@ -27,6 +27,20 @@ namespace Castle.MicroKernel
 	public partial class DefaultKernel
 #endif
 	{
+		[Obsolete("Use Resolve(key, new Arguments()) instead")]
+		[EditorBrowsable(EditorBrowsableState.Advanced)]
+		public virtual object this[String key]
+		{
+			get { return Resolve(key, new Arguments()); }
+		}
+
+		[Obsolete("Use Resolve(service) instead")]
+		[EditorBrowsable(EditorBrowsableState.Advanced)]
+		public virtual object this[Type service]
+		{
+			get { return Resolve(service); }
+		}
+
 		[Obsolete("Use Register(Component.For(classType).Named(key)) or generic version instead.")]
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public virtual void AddComponent(String key, Type classType)
@@ -114,26 +128,7 @@ namespace Castle.MicroKernel
 			IHandler handler = HandlerFactory.Create(model);
 			RegisterHandler(key, handler);
 		}
-		// NOTE: this is from IKernelInternal
-		public virtual void AddCustomComponent(ComponentModel model)
-		{
-			if (model == null) throw new ArgumentNullException("model");
-
-			RaiseComponentModelCreated(model);
-			IHandler handler = HandlerFactory.Create(model);
-
-			object skipRegistration = model.ExtendedProperties[ComponentModel.SkipRegistration];
-
-			if (skipRegistration != null)
-			{
-				RegisterHandler(model.Name, handler, (bool)skipRegistration);
-			}
-			else
-			{
-				RegisterHandler(model.Name, handler);
-			}
-		}
-
+		
 		[Obsolete("Use Register(Component.For(instance.GetType()).Named(key).Instance(instance)) or generic version instead.")]
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public void AddComponentInstance(String key, object instance)
