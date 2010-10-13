@@ -31,7 +31,7 @@ namespace Castle.Core
 	public class InterceptorReferenceCollection : ICollection<InterceptorReference>
 	{
 		private readonly ICollection<DependencyModel> dependencies;
-		private readonly LinkedList<InterceptorReference> list = new LinkedList<InterceptorReference>();
+		private readonly IList<InterceptorReference> list = new List<InterceptorReference>();
 
 		public InterceptorReferenceCollection(ICollection<DependencyModel> dependencies)
 		{
@@ -70,8 +70,7 @@ namespace Castle.Core
 		/// <param name = "item">The interceptor.</param>
 		public void AddFirst(InterceptorReference item)
 		{
-			list.AddFirst(item);
-			Attach(item);
+			Insert(0, item);
 		}
 
 		/// <summary>
@@ -82,7 +81,7 @@ namespace Castle.Core
 		{
 			if (list.Contains(interceptorReference) == false)
 			{
-				list.AddLast(interceptorReference);
+				AddLast(interceptorReference);
 			}
 		}
 
@@ -92,7 +91,7 @@ namespace Castle.Core
 		/// <param name = "item">The interceptor.</param>
 		public void AddLast(InterceptorReference item)
 		{
-			list.AddLast(item);
+			list.Add(item);
 			Attach(item);
 		}
 
@@ -103,22 +102,7 @@ namespace Castle.Core
 		/// <param name = "item">The interceptor.</param>
 		public void Insert(int index, InterceptorReference item)
 		{
-			if (index == 0)
-			{
-				AddFirst(item);
-				return;
-			}
-			if (index == list.Count)
-			{
-				AddLast(item);
-				return;
-			}
-			var previous = list.First;
-			for (var i = 1; i < index; i++)
-			{
-				previous = previous.Next;
-			}
-			list.AddAfter(previous, item);
+			list.Insert(index, item);
 			Attach(item);
 		}
 
@@ -128,8 +112,7 @@ namespace Castle.Core
 		/// <param name = "item">The interceptor.</param>
 		public void Add(InterceptorReference item)
 		{
-			list.AddLast(item);
-			Attach(item);
+			AddLast(item);
 		}
 
 		public void Clear()
@@ -186,10 +169,7 @@ namespace Castle.Core
 
 		IEnumerator<InterceptorReference> IEnumerable<InterceptorReference>.GetEnumerator()
 		{
-			foreach (var reference in list)
-			{
-				yield return reference;
-			}
+			return list.GetEnumerator();
 		}
 	}
 }
