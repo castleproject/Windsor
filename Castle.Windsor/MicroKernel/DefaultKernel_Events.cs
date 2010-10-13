@@ -49,8 +49,7 @@ namespace Castle.MicroKernel
 #if (!SILVERLIGHT)
 		[NonSerialized]
 #endif
-		private readonly IDictionary<object,Delegate> events = new Dictionary<object,Delegate>();
-
+		private readonly IDictionary<object, Delegate> events = new Dictionary<object, Delegate>();
 #if !SILVERLIGHT
 		public override object InitializeLifetimeService()
 		{
@@ -58,9 +57,6 @@ namespace Castle.MicroKernel
 		}
 #endif
 
-		/// <summary>
-		/// Pending
-		/// </summary>
 		public event HandlerDelegate HandlerRegistered
 		{
 			add { AddHandler(HandlerRegisteredEvent, value); }
@@ -73,69 +69,42 @@ namespace Castle.MicroKernel
 			remove { RemoveHandler(HandlersChangedEvent, value); }
 		}
 
-		/// <summary>
-		/// Pending
-		/// </summary>
-		/// <value></value>
 		public event ComponentDataDelegate ComponentRegistered
 		{
 			add { AddHandler(ComponentRegisteredEvent, value); }
 			remove { RemoveHandler(ComponentRegisteredEvent, value); }
 		}
 
-		/// <summary>
-		/// Pending
-		/// </summary>
-		/// <value></value>
 		public event ComponentDataDelegate ComponentUnregistered
 		{
 			add { AddHandler(ComponentUnregisteredEvent, value); }
 			remove { RemoveHandler(ComponentUnregisteredEvent, value); }
 		}
 
-		/// <summary>
-		/// Pending
-		/// </summary>
-		/// <value></value>
 		public event ComponentInstanceDelegate ComponentCreated
 		{
 			add { AddHandler(ComponentCreatedEvent, value); }
 			remove { RemoveHandler(ComponentCreatedEvent, value); }
 		}
 
-		/// <summary>
-		/// Pending
-		/// </summary>
-		/// <value></value>
 		public event ComponentInstanceDelegate ComponentDestroyed
 		{
 			add { AddHandler(ComponentDestroyedEvent, value); }
 			remove { RemoveHandler(ComponentDestroyedEvent, value); }
 		}
 
-		/// <summary>
-		/// Pending
-		/// </summary>
-		/// <value></value>
 		public event EventHandler AddedAsChildKernel
 		{
 			add { AddHandler(AddedAsChildKernelEvent, value); }
 			remove { RemoveHandler(AddedAsChildKernelEvent, value); }
 		}
 
-		/// <summary>
-		/// Pending
-		/// </summary>
 		public event EventHandler RemovedAsChildKernel
 		{
 			add { AddHandler(RemovedAsChildKernelEvent, value); }
 			remove { RemoveHandler(RemovedAsChildKernelEvent, value); }
 		}
 
-		/// <summary>
-		/// Pending
-		/// </summary>
-		/// <value></value>
 		public event ComponentModelDelegate ComponentModelCreated
 		{
 			add { AddHandler(ComponentModelCreatedEvent, value); }

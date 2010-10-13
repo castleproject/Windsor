@@ -258,7 +258,7 @@ namespace Castle.MicroKernel
 			info.AddValue("HandlerRegisteredEvent", GetEventHandlers<HandlerDelegate>(HandlerRegisteredEvent));
 		}
 #endif
-
+		
 		/// <summary>
 		///   Starts the process of component disposal.
 		/// </summary>
@@ -280,6 +280,26 @@ namespace Castle.MicroKernel
 
 			childKernel.Parent = this;
 			childKernels.Add(childKernel);
+		}
+
+		// NOTE: this is from IKernelInternal
+		public virtual void AddCustomComponent(ComponentModel model)
+		{
+			if (model == null) throw new ArgumentNullException("model");
+
+			RaiseComponentModelCreated(model);
+			IHandler handler = HandlerFactory.Create(model);
+
+			object skipRegistration = model.ExtendedProperties[ComponentModel.SkipRegistration];
+
+			if (skipRegistration != null)
+			{
+				RegisterHandler(model.Name, handler, (bool)skipRegistration);
+			}
+			else
+			{
+				RegisterHandler(model.Name, handler);
+			}
 		}
 
 		public virtual IKernel AddFacility(String key, IFacility facility)

@@ -17,7 +17,6 @@ namespace Castle.MicroKernel
 	using System;
 	using System.Collections;
 	using System.Collections.Generic;
-	using System.ComponentModel;
 
 	using Castle.Core;
 	using Castle.MicroKernel.Handlers;
@@ -28,20 +27,6 @@ namespace Castle.MicroKernel
 	public partial class DefaultKernel
 #endif
 	{
-		[Obsolete("Use Resolve(key, new Arguments()) instead")]
-		[EditorBrowsable(EditorBrowsableState.Advanced)]
-		public virtual object this[String key]
-		{
-			get { return Resolve(key, new Arguments()); }
-		}
-
-		[Obsolete("Use Resolve(service) instead")]
-		[EditorBrowsable(EditorBrowsableState.Advanced)]
-		public virtual object this[Type service]
-		{
-			get { return Resolve(service); }
-		}
-
 		/// <summary>
 		///   Returns a component instance by the key
 		/// </summary>
@@ -344,20 +329,6 @@ namespace Castle.MicroKernel
 		public TService[] ResolveAll<TService>()
 		{
 			return (TService[])ResolveAll(typeof(TService), new Arguments());
-		}
-
-		/// <summary>
-		///   Resolves the specified key.
-		/// </summary>
-		/// <param name="key">The key.</param>
-		/// <param name="service">The service.</param>
-		/// <param name="argumentsAsAnonymousType">
-		///   Type of the arguments as anonymous.
-		/// </param>
-		/// <returns></returns>
-		public virtual object Resolve(String key, Type service, object argumentsAsAnonymousType)
-		{
-			return Resolve(key, service, new ReflectionBasedDictionaryAdapter(argumentsAsAnonymousType));
 		}
 	}
 }

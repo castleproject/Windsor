@@ -144,7 +144,7 @@
     <Compile Include="MicroKernel\DefaultKernel.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="MicroKernel\DefaultKernel_AddComponent.cs" />
+    <Compile Include="MicroKernel\DefaultKernel_ObsoleteAPI.cs" />
     <Compile Include="MicroKernel\DefaultKernel_Events.cs" />
     <Compile Include="MicroKernel\DefaultKernel_Resolve.cs" />
     <Compile Include="MicroKernel\CircularDependencyException.cs" />
