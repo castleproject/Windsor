@@ -14,8 +14,6 @@
 
 namespace Castle.MicroKernel
 {
-	using System.Collections.Generic;
-
 	using Castle.Core;
 	using Castle.MicroKernel.Context;
 
@@ -37,12 +35,12 @@ namespace Castle.MicroKernel
 			return instance;
 		}
 
-		public void Attach(ICollection<DependencyModel> dependencies)
+		public void Attach(DependencyModelCollection dependencies)
 		{
 			// we might provide the instance as dependency's default value...
 		}
 
-		public void Detach(ICollection<DependencyModel> dependencies)
+		public void Detach(DependencyModelCollection dependencies)
 		{
 		}
 	}

@@ -32,8 +32,8 @@ namespace Castle.Core
 	public class InterceptorReference : IReference<IInterceptor>, IEquatable<InterceptorReference>
 	{
 		private readonly string componentKey;
+		private readonly DependencyModel dependencyModel;
 		private readonly Type serviceType;
-		private DependencyModel dependencyModel;
 
 		/// <summary>
 		///   Initializes a new instance of the <see cref = "InterceptorReference" /> class.
@@ -125,12 +125,12 @@ namespace Castle.Core
 			return new CreationContext(parameterType, current, true);
 		}
 
-		void IReference<IInterceptor>.Attach(ICollection<DependencyModel> dependencies)
+		void IReference<IInterceptor>.Attach(DependencyModelCollection dependencies)
 		{
 			dependencies.Add(dependencyModel);
 		}
 
-		void IReference<IInterceptor>.Detach(ICollection<DependencyModel> dependencies)
+		void IReference<IInterceptor>.Detach(DependencyModelCollection dependencies)
 		{
 			dependencies.Remove(dependencyModel);
 		}

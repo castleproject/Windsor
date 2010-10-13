@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,56 +15,80 @@
 namespace Castle.Core
 {
 	using System;
+	using System.Collections;
 	using System.Collections.Generic;
-	using System.Collections.ObjectModel;
 
 	/// <summary>
-	/// Collection of <see cref="DependencyModel"/>.
+	///   Collection of <see cref = "DependencyModel" />.
 	/// </summary>
 #if !SILVERLIGHT
 	[Serializable]
 #endif
-	public class DependencyModelCollection : Collection<DependencyModel>
+	public class DependencyModelCollection : IEnumerable<DependencyModel>
 	{
-		/// <summary>
-		/// Initializes a new instance of the <see cref="DependencyModelCollection"/> class.
-		/// </summary>
-		public DependencyModelCollection()
-		{
-		}
+		private readonly ICollection<DependencyModel> dependencies =
+#if DOTNET35
+			new List<DependencyModel>();
+#else
+			new HashSet<DependencyModel>();
+#endif
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="DependencyModelCollection"/> class.
-		/// </summary>
-		/// <param name="dependencies">The dependencies.</param>
-		public DependencyModelCollection(IEnumerable<DependencyModel> dependencies)
+		public void Add(DependencyModel dependencyModel)
 		{
-			if (dependencies == null) return;
-
-			foreach (DependencyModel depModel in dependencies)
+			if (dependencyModel == null)
 			{
-				if (depModel == null)
-				{
-					throw new ArgumentNullException("dependencies", "dependencies has null entry");
-				}
-
-				Add(depModel);
+				throw new ArgumentNullException("dependencyModel");
 			}
+#if DOTNET35
+			if(dependencies.Contains(dependencyModel))
+			{
+				return;
+			}
+#endif
+			dependencies.Add(dependencyModel);
 		}
 
 		public void AddRange(DependencyModelCollection dependencies)
 		{
-			if (dependencies == null) return;
+			if (dependencies == null)
+			{
+				return;
+			}
 
-			foreach(DependencyModel model in dependencies)
+			foreach (var model in dependencies)
 			{
 				if (model == null)
 				{
 					throw new ArgumentNullException("dependencies", "item in the collection is null");
 				}
-				
+
 				Add(model);
 			}
+		}
+
+		public void Clear()
+		{
+			dependencies.Clear();
+		}
+
+		public bool Contains(DependencyModel dependencyModel)
+		{
+			return dependencies.Contains(dependencyModel);
+		}
+
+		public bool Remove(DependencyModel dependencyModel)
+		{
+			return dependencies.Remove(dependencyModel);
+		}
+
+		public IEnumerator<DependencyModel> GetEnumerator()
+		{
+			return dependencies.GetEnumerator();
+		}
+
+		IEnumerator IEnumerable.GetEnumerator()
+		{
+			return GetEnumerator();
 		}
 	}
 }

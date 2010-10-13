@@ -46,14 +46,8 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 				var componentKey = ReferenceExpressionUtil.ExtractComponentKey(value);
 				var mixIn = new ComponentReference<object>(componentKey);
 				options.AddMixinReference(mixIn);
-				model.Dependencies.Add(CreateDependencyModel(componentKey));
 			}
 
-		}
-
-		protected DependencyModel CreateDependencyModel(string componentKey)
-		{
-			return new DependencyModel(DependencyType.ServiceOverride, componentKey, typeof(object), false);
 		}
 	}
 }

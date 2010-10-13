@@ -40,8 +40,8 @@ namespace Castle.MicroKernel
 		/// </summary>
 		/// <param name="dependencies"></param>
 		/// <returns></returns>
-		void Attach(ICollection<DependencyModel> dependencies);
+		void Attach(DependencyModelCollection dependencies);
 
-		void Detach(ICollection<DependencyModel> dependencies);
+		void Detach(DependencyModelCollection dependencies);
 	}
 }

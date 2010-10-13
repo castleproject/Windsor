@@ -77,7 +77,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 					continue;
 				}
 				
-				String newKey = ReferenceExpressionUtil.ExtractComponentKey(parameter.Value);
+				var newKey = ReferenceExpressionUtil.ExtractComponentKey(parameter.Value);
 				
 				// Update dependencies to ServiceOverride
 				

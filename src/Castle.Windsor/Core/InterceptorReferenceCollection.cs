@@ -30,10 +30,10 @@ namespace Castle.Core
 #endif
 	public class InterceptorReferenceCollection : ICollection<InterceptorReference>
 	{
-		private readonly ICollection<DependencyModel> dependencies;
+		private readonly DependencyModelCollection dependencies;
 		private readonly IList<InterceptorReference> list = new List<InterceptorReference>();
 
-		public InterceptorReferenceCollection(ICollection<DependencyModel> dependencies)
+		public InterceptorReferenceCollection(DependencyModelCollection dependencies)
 		{
 			this.dependencies = dependencies;
 		}
