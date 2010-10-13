@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 namespace Castle.Windsor.Tests.Facilities.TypedFactory
 {
 	using System;
@@ -25,6 +26,7 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 	using Castle.Windsor.Tests.ClassComponents;
 	using Castle.Windsor.Tests.Facilities.TypedFactory.Components;
 	using Castle.Windsor.Tests.Facilities.TypedFactory.Delegates;
+	using Castle.Windsor.Tests.Facilities.TypedFactory.Factories;
 	using Castle.Windsor.Tests.Facilities.TypedFactory.Selectors;
 
 	using NUnit.Framework;
@@ -57,13 +59,34 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 		}
 
 		[Test]
+		public void Can_resolve_delegate_of_generic()
+		{
+			container.Register(Component.For(typeof(GenericComponent<>)).LifeStyle.Transient);
+			var one = container.Resolve<Func<GenericComponent<int>>>();
+			var two = container.Resolve<Func<GenericComponent<string>>>();
+			one();
+			two();
+		}
+
+		[Test]
+		public void Can_resolve_generic_depending_on_delegate_of_generic()
+		{
+			container.Register(Component.For(typeof(GenericComponent<>)).LifeStyle.Transient,
+			                   Component.For(typeof(GenericUsesFuncOfGenerics<>)).LifeStyle.Transient);
+			var one = container.Resolve<GenericUsesFuncOfGenerics<int>>();
+			var two = container.Resolve<GenericUsesFuncOfGenerics<string>>();
+			one.Func();
+			two.Func();
+		}
+
+		[Test]
 		public void Can_resolve_multiple_delegates_just_fine()
 		{
 			container.Register(Component.For<Baz>());
-			container.Register(Component.For<Tests.A>());
+			container.Register(Component.For<A>());
 
 			var bazFactory = container.Resolve<Func<Baz>>();
-			var aFactory = container.Resolve<Func<Tests.A>>();
+			var aFactory = container.Resolve<Func<A>>();
 
 			bazFactory.Invoke();
 			aFactory.Invoke();
@@ -79,6 +102,35 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 			Assert.AreEqual(1, foo.Number);
 			foo = dependsOnFoo.GetFoo();
 			Assert.AreEqual(2, foo.Number);
+		}
+
+		[Test]
+		public void Can_resolve_two_services_depending_on_identical_delegates()
+		{
+			container.Register(Component.For<Foo>().LifeStyle.Transient,
+			                   Component.For<UsesFooDelegate>(),
+			                   Component.For<UsesFooDelegateAndInt>().DependsOn(new Arguments().Insert(5)));
+			var one = container.Resolve<UsesFooDelegate>();
+			var two = container.Resolve<UsesFooDelegateAndInt>();
+			one.GetFoo();
+			two.GetFoo();
+		}
+
+		[Test]
+		public void Can_resolve_two_services_depending_on_identical_delegates_via_interface_based_factory()
+		{
+			container.Register(Component.For<Foo>().LifeStyle.Transient,
+			                   Component.For<UsesFooDelegate>(),
+			                   Component.For<UsesFooDelegateAndInt>().DependsOn(new Arguments().Insert(5)),
+			                   Component.For<IGenericComponentsFactory>().AsFactory());
+
+			var factory = container.Resolve<IGenericComponentsFactory>();
+
+			var one = factory.CreateGeneric<UsesFooDelegate>();
+			var two = factory.CreateGeneric<UsesFooDelegateAndInt>();
+
+			one.GetFoo();
+			two.GetFoo();
 		}
 
 		[Test]
