@@ -89,12 +89,12 @@ namespace Castle.MicroKernel
 			}
 		}
 
-		public void Attach(ICollection<DependencyModel> dependencies)
+		public void Attach(DependencyModelCollection dependencies)
 		{
 			dependencies.Add(dependency);
 		}
 
-		public void Detach(ICollection<DependencyModel> dependencies)
+		public void Detach(DependencyModelCollection dependencies)
 		{
 			dependencies.Remove(dependency);
 		}

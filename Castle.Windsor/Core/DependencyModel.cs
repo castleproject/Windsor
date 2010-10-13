@@ -25,8 +25,8 @@ namespace Castle.Core
 	}
 
 	/// <summary>
-	/// Represents a dependency (other component or a 
-	/// fixed value available through external configuration).
+	///   Represents a dependency (other component or a 
+	///   fixed value available through external configuration).
 	/// </summary>
 #if !SILVERLIGHT
 	[Serializable]
@@ -36,12 +36,12 @@ namespace Castle.Core
 		private readonly Type targetType;
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="DependencyModel"/> class.
+		///   Initializes a new instance of the <see cref = "DependencyModel" /> class.
 		/// </summary>
-		/// <param name="dependencyType">The type.</param>
-		/// <param name="dependencyKey">The dependency key.</param>
-		/// <param name="targetType">Type of the target.</param>
-		/// <param name="isOptional">if set to <c>true</c> [is optional].</param>
+		/// <param name = "dependencyType">The type.</param>
+		/// <param name = "dependencyKey">The dependency key.</param>
+		/// <param name = "targetType">Type of the target.</param>
+		/// <param name = "isOptional">if set to <c>true</c> [is optional].</param>
 		public DependencyModel(DependencyType dependencyType, String dependencyKey,
 		                       Type targetType, bool isOptional)
 			: this(dependencyType, dependencyKey, targetType, isOptional, false, null)
@@ -62,41 +62,42 @@ namespace Castle.Core
 		public object DefaultValue { get; private set; }
 
 		/// <summary>
-		/// Gets or sets the type of the dependency.
-		/// </summary>
-		/// <value>The type of the dependency.</value>
-		public DependencyType DependencyType { get; set; }
-
-		/// <summary>
-		/// Gets or sets the dependency key.
+		///   Gets or sets the dependency key.
 		/// </summary>
 		/// <value>The dependency key.</value>
 		public string DependencyKey { get; set; }
 
 		/// <summary>
-		/// Gets the type of the target.
+		///   Gets or sets the type of the dependency.
 		/// </summary>
-		/// <value>The type of the target.</value>
-		public Type TargetType
-		{
-			get { return targetType; }
-		}
+		/// <value>The type of the dependency.</value>
+		public DependencyType DependencyType { get; set; }
+
+		public bool HasDefaultValue { get; private set; }
 
 		/// <summary>
-		/// Gets the service type of the dependency.
-		/// This is the same type as <see cref="TargetType"/> or if <see cref="TargetType"/> is by ref,
-		/// then it's the element type of the reference. (in other words if dependency 
-		/// is <c>out IFoo foo</c> this will be <c>IFoo</c>, while <see cref="TargetType"/> will be <c>&amp;IFoo</c>);
+		///   Gets or sets whether this dependency is optional.
+		/// </summary>
+		/// <value>
+		///   <c>true</c> if this dependency is optional; otherwise, <c>false</c>.
+		/// </value>
+		public bool IsOptional { get; set; }
+
+		/// <summary>
+		///   Gets the service type of the dependency.
+		///   This is the same type as <see cref = "TargetType" /> or if <see cref = "TargetType" /> is by ref,
+		///   then it's the element type of the reference. (in other words if dependency 
+		///   is <c>out IFoo foo</c> this will be <c>IFoo</c>, while <see cref = "TargetType" /> will be <c>&amp;IFoo</c>);
 		/// </summary>
 		public Type TargetItemType
 		{
 			get
 			{
-				if(targetType == null)
+				if (targetType == null)
 				{
 					return null;
 				}
-				if(targetType.IsByRef == false)
+				if (targetType.IsByRef == false)
 				{
 					return targetType;
 				}
@@ -105,79 +106,79 @@ namespace Castle.Core
 		}
 
 		/// <summary>
-		/// Gets or sets whether this dependency is optional.
+		///   Gets the type of the target.
 		/// </summary>
-		/// <value>
-		/// 	<c>true</c> if this dependency is optional; otherwise, <c>false</c>.
-		/// </value>
-		public bool IsOptional { get; set; }
+		/// <value>The type of the target.</value>
+		public Type TargetType
+		{
+			get { return targetType; }
+		}
 
-		public bool HasDefaultValue { get; private set; }
+		public bool Equals(DependencyModel other)
+		{
+			if (ReferenceEquals(null, other))
+			{
+				return false;
+			}
+			if (ReferenceEquals(this, other))
+			{
+				return true;
+			}
+			return Equals(other.targetType, targetType) &&
+			       Equals(other.DefaultValue, DefaultValue) &&
+			       Equals(other.DependencyType, DependencyType) &&
+			       Equals(other.DependencyKey, DependencyKey) &&
+			       other.IsOptional.Equals(IsOptional) &&
+			       other.HasDefaultValue.Equals(HasDefaultValue);
+		}
+
+		public override bool Equals(object obj)
+		{
+			if (ReferenceEquals(null, obj))
+			{
+				return false;
+			}
+			if (ReferenceEquals(this, obj))
+			{
+				return true;
+			}
+			if (obj.GetType() != typeof(DependencyModel))
+			{
+				return false;
+			}
+			var other = (DependencyModel)obj;
+			return Equals(other.targetType, targetType) &&
+			       Equals(other.DefaultValue, DefaultValue) &&
+			       Equals(other.DependencyType, DependencyType) &&
+			       Equals(other.DependencyKey, DependencyKey) &&
+			       other.IsOptional.Equals(IsOptional) &&
+			       other.HasDefaultValue.Equals(HasDefaultValue);
+		}
+
+		public override int GetHashCode()
+		{
+			unchecked
+			{
+				var result = (targetType != null ? targetType.GetHashCode() : 0);
+				result = (result*397) ^ (DefaultValue != null ? DefaultValue.GetHashCode() : 0);
+				result = (result*397) ^ DependencyType.GetHashCode();
+				result = (result*397) ^ (DependencyKey != null ? DependencyKey.GetHashCode() : 0);
+				result = (result*397) ^ IsOptional.GetHashCode();
+				result = (result*397) ^ HasDefaultValue.GetHashCode();
+				return result;
+			}
+		}
 
 		/// <summary>
-		/// Returns a <see cref="T:System.String"/> that represents the current <see cref="T:System.Object"/>.
+		///   Returns a <see cref = "T:System.String" /> that represents the current <see cref = "T:System.Object" />.
 		/// </summary>
 		/// <returns>
-		/// A <see cref="T:System.String"/> that represents the current <see cref="T:System.Object"/>.
+		///   A <see cref = "T:System.String" /> that represents the current <see cref = "T:System.Object" />.
 		/// </returns>
 		public override string ToString()
 		{
 			return string.Format(CultureInfo.CurrentCulture, "{0} dependency '{1}' type '{2}'",
 			                     DependencyType, DependencyKey, TargetType);
-		}
-
-		/// <summary>
-		/// Serves as a hash function for a particular type, suitable
-		/// for use in hashing algorithms and data structures like a hash table.
-		/// </summary>
-		/// <returns>
-		/// A hash code for the current <see cref="T:System.Object"/>.
-		/// </returns>
-		public override int GetHashCode()
-		{
-			var result = DependencyKey.GetHashCode();
-			result += 37 ^ targetType.GetHashCode();
-			result += 37 ^ IsOptional.GetHashCode();
-			result += 37 ^ DependencyType.GetHashCode();
-			return result;
-		}
-
-		/// <summary>
-		/// Determines whether the specified <see cref="T:System.Object"/> is equal to the current <see cref="T:System.Object"/>.
-		/// </summary>
-		/// <param name="obj">The <see cref="T:System.Object"/> to compare with the current <see cref="T:System.Object"/>.</param>
-		/// <returns>
-		/// 	<see langword="true"/> if the specified <see cref="T:System.Object"/> is equal to the
-		/// current <see cref="T:System.Object"/>; otherwise, <see langword="false"/>.
-		/// </returns>
-		public override bool Equals(object obj)
-		{
-			if (this == obj)
-			{
-				return true;
-			}
-			var dependencyModel = obj as DependencyModel;
-			if (dependencyModel == null)
-			{
-				return false;
-			}
-			if (!Equals(DependencyKey, dependencyModel.DependencyKey))
-			{
-				return false;
-			}
-			if (!Equals(targetType, dependencyModel.targetType))
-			{
-				return false;
-			}
-			if (!Equals(IsOptional, dependencyModel.IsOptional))
-			{
-				return false;
-			}
-			if (!Equals(DependencyType, dependencyModel.DependencyType))
-			{
-				return false;
-			}
-			return true;
 		}
 	}
 }

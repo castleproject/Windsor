@@ -157,7 +157,6 @@ namespace Castle.Facilities.Synchronize
 		{
 			var options = ProxyUtil.ObtainProxyOptions(model, true);
 
-			model.Dependencies.Add(new DependencyModel(DependencyType.Service, null, typeof(SynchronizeInterceptor), false));
 			model.Interceptors.Add(new InterceptorReference(typeof(SynchronizeInterceptor)));
 
 			var metaInfo = metaStore.GetMetaFor(model.Implementation);
