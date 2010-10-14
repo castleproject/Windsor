@@ -19,7 +19,7 @@ namespace Castle.Windsor.Tests
 	using NUnit.Framework;
 
 	[TestFixture]
-	public class HandlerForwardingTestCase : AbstractContainerTestFixture
+	public class ForwardedTypesRegistrationTestCase : AbstractContainerTestFixture
 	{
 		[Test]
 		public void Can_register_handler_forwarding()
@@ -46,6 +46,19 @@ namespace Castle.Windsor.Tests
 				Container.Resolve<IRepository<User>>(),
 				Container.Resolve<IUserRepository>()
 				);
+		}
+
+		[Test]
+		public void Can_register_handler_forwarding_using_generics_and_resolveAll()
+		{
+			Container.Register(
+				Component.For<IRepository, IRepository<User>>()
+					.ImplementedBy<MyRepository>()
+				);
+			var services = Container.ResolveAll<IRepository<User>>();
+
+			Assert.AreEqual(1, services.Length);
+			Assert.That(services[0] is MyRepository);
 		}
 
 		[Test]
