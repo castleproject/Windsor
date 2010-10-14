@@ -1,5 +1,5 @@
 ================================================================================================
-change - IReference<> interface has two now methods
+change - IReference<> interface has two new methods
 
 impact - low
 fixability - easy

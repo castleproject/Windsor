@@ -1,9 +1,12 @@
+- fixed IOC-232 - Exception when using delegate based factories can throw when registered implicitly and used as dependencies of generic component 
 - fixed IOC-231 - Boilerplate methods on facilities should be hidden from IntelliSense when configuring a facility
 - fixed IOC-230 - Missing Mixins/InterceptorSelectors/ProxyGenerationHooks and TypedFactoryFacility's component selectors are not detected until resolution time
 - fixed IOC-229 - Qurerying for subsystem is case sensitive
 - implemented IOC-228 - Chicken and egg problem when trying to inherit from DefaultDependencyResolver
+- fixed IOC-227 - ResolveAll fails for generic forwarded registrations 
 - fixed IOC-224 - Obsolete message on some members of old obsolete API don't compile
 - fixed IOC-223 - Fluent registration registers components with System.Object service when no BasedOn discriminator is provided
+
 2.5.1 (2010-09-21)
 ==================
 
