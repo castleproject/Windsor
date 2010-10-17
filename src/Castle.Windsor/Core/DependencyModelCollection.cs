@@ -27,7 +27,7 @@ namespace Castle.Core
 	public class DependencyModelCollection : IEnumerable<DependencyModel>
 	{
 		private readonly ICollection<DependencyModel> dependencies =
-#if DOTNET35
+#if DOTNET35 || SL3
 			new List<DependencyModel>();
 #else
 			new HashSet<DependencyModel>();
@@ -39,7 +39,7 @@ namespace Castle.Core
 			{
 				throw new ArgumentNullException("dependencyModel");
 			}
-#if DOTNET35
+#if DOTNET35 || SL3
 			if(dependencies.Contains(dependencyModel))
 			{
 				return;
