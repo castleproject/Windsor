@@ -83,8 +83,7 @@ namespace Castle.Facilities.TypedFactory
 			ComponentRegistration<TFactory> componentRegistration, Action<TypedFactoryConfiguration> configuration,
 			string defaultComponentSelectorKey)
 		{
-			var factoryConfiguration = GetFactoryConfiguration(configuration, defaultComponentSelectorKey);
-			var selectorReference = factoryConfiguration.Reference;
+			var selectorReference = GetSelectorReference(configuration, defaultComponentSelectorKey);
 			componentRegistration.AddDescriptor(new ReferenceDependencyDescriptor<TFactory>(selectorReference));
 			return componentRegistration.DynamicParameters((k, c, d) =>
 			{
@@ -113,8 +112,8 @@ namespace Castle.Facilities.TypedFactory
 			return registration.Interceptors(new InterceptorReference(TypedFactoryFacility.InterceptorKey)).Last;
 		}
 
-		private static TypedFactoryConfiguration GetFactoryConfiguration(Action<TypedFactoryConfiguration> configuration,
-		                                                                 string defaultComponentSelectorKey)
+		private static IReference<ITypedFactoryComponentSelector> GetSelectorReference(
+			Action<TypedFactoryConfiguration> configuration, string defaultComponentSelectorKey)
 		{
 			var factoryConfiguration = new TypedFactoryConfiguration(defaultComponentSelectorKey);
 
@@ -122,7 +121,7 @@ namespace Castle.Facilities.TypedFactory
 			{
 				configuration.Invoke(factoryConfiguration);
 			}
-			return factoryConfiguration;
+			return factoryConfiguration.Reference;
 		}
 
 		private static bool HasOutArguments(Type serviceType)
