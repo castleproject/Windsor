@@ -101,6 +101,8 @@
     <Compile Include="ClassComponents\HasByRefCtorArgument.cs" />
     <Compile Include="Components\ArrayRefDepAsConstructor.cs" />
     <Compile Include="Components\EmptyServiceComposite.cs" />
+    <Compile Include="Components\EmptyServiceDecorator.cs" />
+    <Compile Include="Components\EmptyServiceDecoratorViaProperty.cs" />
     <Compile Include="Components\InitializableComponent.cs" />
     <Compile Include="Components\InitializableDisposableComponent.cs" />
     <Compile Include="Components\SimpleServiceInitializable.cs" />
@@ -724,6 +726,7 @@
     </Compile>
     <Compile Include="Windsor.Tests\ContainerWrapperTestsCase.cs" />
     <Compile Include="ContainerAndGenericsInCodeTestCase.cs" />
+    <Compile Include="Windsor.Tests\Debugging\DebuggingSubsystemTestCase.cs" />
     <Compile Include="XmlProcessor\XmlProcessorTestCase.cs">
       <SubType>Code</SubType>
     </Compile>

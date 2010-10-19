@@ -1,3 +1,4 @@
+- fixed IOC-234 - StackOverflow causing inability to use debugger view when there are components with dependency cycles in the container
 - fixed IOC-232 - Exception when using delegate based factories can throw when registered implicitly and used as dependencies of generic component 
 - fixed IOC-231 - Boilerplate methods on facilities should be hidden from IntelliSense when configuring a facility
 - fixed IOC-230 - Missing Mixins/InterceptorSelectors/ProxyGenerationHooks and TypedFactoryFacility's component selectors are not detected until resolution time
