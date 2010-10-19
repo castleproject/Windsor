@@ -35,6 +35,7 @@ namespace Castle.Facilities.TypedFactory
 	/// </summary>
 	public class TypedFactoryFacility : AbstractFacility
 	{
+		public static readonly string DelegateFactoryKey = "Castle.TypedFactory.DelegateFactory";
 		public static readonly string InterceptorKey = "Castle.TypedFactory.Interceptor";
 
 		internal static readonly string DefaultDelegateSelectorKey =
@@ -44,7 +45,6 @@ namespace Castle.Facilities.TypedFactory
 			"Castle.TypedFactory.DefaultInterfaceFactoryComponentSelector";
 
 		internal static readonly string DelegateProxyFactoryKey = "Castle.TypedFactory.DelegateProxyFactory";
-		private static readonly string DelegateFactoryKey = "Castle.TypedFactory.DelegateFactory";
 
 		[Obsolete("This method is obsolete. Use AsFactory() extension method on fluent registration API instead.")]
 		[EditorBrowsable(EditorBrowsableState.Never)]
