@@ -37,7 +37,7 @@ namespace Castle.MicroKernel.Tests.SpecializedResolvers
 			                   	.ConfigureFor<EmptyServiceComposite>(r => r.Forward<EmptyServiceComposite>()));
 
 			var composite = Container.Resolve<EmptyServiceComposite>();
-			Assert.AreEqual(2, composite.Inner.Length);
+			Assert.AreEqual(4, composite.Inner.Length);
 		}
 
 		[Test]

@@ -54,6 +54,11 @@ namespace Castle.Windsor.Experimental.Debugging.Extensions
 		private IEnumerable<LifestyleDependency> GetMismatch(LifestyleDependency parent, ComponentModel component,
 		                                                     ComponentsMap model2Meta)
 		{
+			if (parent.Handler.ComponentModel == component)
+			{
+				yield break;
+			}
+
 			var pair = model2Meta[component];
 			var handler = pair.Handler;
 			var item = new LifestyleDependency(pair, parent);
