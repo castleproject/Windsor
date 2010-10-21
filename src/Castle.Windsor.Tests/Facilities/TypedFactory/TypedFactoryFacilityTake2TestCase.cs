@@ -292,6 +292,24 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 		}
 
 		[Test]
+		public void Factory_interface_can_be_hierarchical_with_repetitions()
+		{
+			container.Register(
+				Component.For<ComponentWithOptionalParameter>()
+					.LifeStyle.Transient,
+				Component.For<IFactoryWithParametersTwoBases>()
+					.AsFactory());
+			var factory = container.Resolve<IFactoryWithParametersTwoBases>();
+
+			var one = factory.BuildComponent("one");
+			var two = factory.BuildComponent2("two");
+			var three = factory.BuildComponent2("three");
+			Assert.AreEqual("one", one.Parameter);
+			Assert.AreEqual("two", two.Parameter);
+			Assert.AreEqual("three", three.Parameter);
+		}
+
+		[Test]
 		public void Releasing_factory_release_components()
 		{
 			container.Register(

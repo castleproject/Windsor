@@ -93,10 +93,10 @@ namespace Castle.Facilities.TypedFactory.Internal
 			{
 				if (IsReleaseMethod(method))
 				{
-					methods.Add(method, new Release(kernel));
+					methods[method] = new Release(kernel);
 					continue;
 				}
-				methods.Add(method, new Resolve(kernel, ComponentSelector, trackedComponents.Add));
+				methods[method] = new Resolve(kernel, ComponentSelector, trackedComponents.Add);
 			}
 
 			foreach (var @interface in service.GetInterfaces())
