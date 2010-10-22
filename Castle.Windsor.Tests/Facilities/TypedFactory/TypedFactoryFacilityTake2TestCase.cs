@@ -469,6 +469,36 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 		}
 
 		[Test]
+		public void Typed_factory_lets_go_of_component_reference_on_dispose()
+		{
+			container.Register(
+				Component.For<IDisposableFactory>().LifeStyle.Transient.AsFactory(),
+				Component.For<DisposableComponent>().LifeStyle.Transient);
+			var factory = container.Resolve<IDisposableFactory>();
+			var component = factory.Create();
+			var weakComponentReference = new WeakReference(component);
+			factory.Dispose();
+			component = null;
+			GC.Collect();
+			Assert.IsFalse(weakComponentReference.IsAlive);
+		}
+
+		[Test]
+		public void Typed_factory_lets_go_of_component_reference_on_release()
+		{
+			container.Register(
+				Component.For<IDisposableFactory>().LifeStyle.Transient.AsFactory(),
+				Component.For<DisposableComponent>().LifeStyle.Transient);
+			var factory = container.Resolve<IDisposableFactory>();
+			var component = factory.Create();
+			var weakComponentReference = new WeakReference(component);
+			factory.Destroy(component);
+			component = null;
+			GC.Collect();
+			Assert.IsFalse(weakComponentReference.IsAlive);
+		}
+
+		[Test]
 		public void Typed_factory_obeys_release_policy_non_tracking()
 		{
 			container.Kernel.ReleasePolicy = new NoTrackingReleasePolicy();

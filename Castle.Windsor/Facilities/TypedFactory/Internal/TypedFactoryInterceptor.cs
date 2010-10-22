@@ -126,6 +126,7 @@ namespace Castle.Facilities.TypedFactory.Internal
 				}
 
 				kernel.ReleaseComponent(argument);
+				trackedComponents.Remove(argument);
 			}
 		}
 
