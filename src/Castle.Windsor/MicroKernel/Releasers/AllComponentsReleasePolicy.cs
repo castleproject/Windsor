@@ -55,7 +55,6 @@ namespace Castle.MicroKernel.Releasers
 			using (var locker = @lock.ForReadingUpgradeable())
 			{
 				Burden burden;
-
 				if (!instance2Burden.TryGetValue(instance, out burden))
 					return;
 

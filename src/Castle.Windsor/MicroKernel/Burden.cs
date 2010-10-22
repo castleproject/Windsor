@@ -25,7 +25,8 @@ namespace Castle.MicroKernel
 	{
 		private object instance;
 		private IHandler handler;
-		private bool instanceRequiresDecommission, childRequiresDecommission;
+		private bool instanceRequiresDecommission;
+		private bool childRequiresDecommission;
 		private readonly List<Burden> children = new List<Burden>();
 
 		public void SetRootInstance(object instance, IHandler handler, bool hasDecomission)
@@ -35,7 +36,7 @@ namespace Castle.MicroKernel
 
 			this.instance = instance;
 			this.handler = handler;
-			this.instanceRequiresDecommission = hasDecomission;
+			instanceRequiresDecommission = hasDecomission;
 		}
 
 		public void AddChild(Burden child)

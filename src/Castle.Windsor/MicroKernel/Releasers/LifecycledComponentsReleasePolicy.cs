@@ -28,8 +28,7 @@ namespace Castle.MicroKernel.Releasers
 	{
 		public override void Track(object instance, Burden burden)
 		{
-			ComponentModel model = burden.Model;
-
+			var model = burden.Model;
 			if (burden.GraphRequiresDecommission || model.LifestyleType == LifestyleType.Pooled)
 			{
 				base.Track(instance, burden);
