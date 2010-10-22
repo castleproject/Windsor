@@ -115,6 +115,7 @@
     <Compile Include="Facilities\TypedFactory\Components\ServiceFactory.cs" />
     <Compile Include="Facilities\TypedFactory\Components\ServiceRedirect.cs" />
     <Compile Include="Facilities\TypedFactory\Delegates\GenericUsesFuncOfGenerics.cs" />
+    <Compile Include="Facilities\TypedFactory\Factories\IComponentFactory2.cs" />
     <Compile Include="Facilities\TypedFactory\Factories\IFactoryWithParametersExtended.cs" />
     <Compile Include="Facilities\TypedFactory\Factories\IFactoryWithParametersTwoBases.cs" />
     <Compile Include="Facilities\TypedFactory\TypedFactoryDependenciesTestCase.cs" />
@@ -643,7 +644,7 @@
     <Compile Include="Facilities\TypedFactory\ExternalConfigurationTestCase.cs" />
     <Compile Include="Facilities\TypedFactory\Factories\IDisposableFactory.cs" />
     <Compile Include="Facilities\TypedFactory\Factories\DummyComponentFactory.cs" />
-    <Compile Include="Facilities\TypedFactory\Factories\IComponentFactory.cs" />
+    <Compile Include="Facilities\TypedFactory\Factories\IComponentFactory1.cs" />
     <Compile Include="Facilities\TypedFactory\Factories\IFactoryWithParameters.cs" />
     <Compile Include="Facilities\TypedFactory\Factories\IGenericComponentsFactory.cs" />
     <Compile Include="Facilities\TypedFactory\Factories\IProtocolHandlerFactory.cs" />
