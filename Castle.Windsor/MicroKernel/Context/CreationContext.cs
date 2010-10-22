@@ -144,8 +144,6 @@ namespace Castle.MicroKernel.Context
 			return new Arguments(dictionary);
 		}
 
-		#region ISubDependencyResolver
-
 		public virtual object Resolve(CreationContext context, ISubDependencyResolver contextHandlerResolver,
 		                              ComponentModel model, DependencyModel dependency)
 		{
@@ -224,8 +222,6 @@ namespace Castle.MicroKernel.Context
 			        converter.CanHandleType(type));
 		}
 
-		#endregion
-
 		public IReleasePolicy ReleasePolicy
 		{
 			get { return releasePolicy; }
@@ -248,22 +244,15 @@ namespace Castle.MicroKernel.Context
 			get { return additionalParameters != null && additionalParameters.Count != 0; }
 		}
 
-		/// <summary>
-		/// Pendent
-		/// </summary>
 		public IHandler Handler
 		{
 			get { return handler; }
 		}
 
-		#region Cycle detection related members
-
 		public DependencyModelCollection Dependencies
 		{
 			get { return dependencies; }
 		}
-
-		#endregion
 
 		public Type[] GenericArguments
 		{
@@ -341,13 +330,13 @@ namespace Castle.MicroKernel.Context
 
 		public ResolutionContext EnterResolutionContext(IHandler handlerBeingResolved, bool createBurden)
 		{
-			var resCtx = new ResolutionContext(this, createBurden ? new Burden() : null);
+			var resolutionContext = new ResolutionContext(this, createBurden ? new Burden() : null);
 			handlerStack.Push(handlerBeingResolved);
 			if (createBurden)
 			{
-				resolutionStack.Push(resCtx);
+				resolutionStack.Push(resolutionContext);
 			}
-			return resCtx;
+			return resolutionContext;
 		}
 
 		/// <summary>
