@@ -23,14 +23,15 @@ namespace Castle.Facilities.TypedFactory.Internal
 	using Castle.Core.Interceptor;
 	using Castle.DynamicProxy;
 	using Castle.MicroKernel;
+	using Castle.MicroKernel.Facilities;
 
 	[Transient]
 	public class TypedFactoryInterceptor : IInterceptor, IOnBehalfAware, IDisposable
 	{
 		private readonly IKernel kernel;
 
-		private readonly IDictionary<MethodInfo, ITypedFactoryMethod> methods =
-			new Dictionary<MethodInfo, ITypedFactoryMethod>();
+		private readonly IDictionary<MethodInfo, Action<IInvocation>> methods =
+			new Dictionary<MethodInfo, Action<IInvocation>>();
 
 		private readonly List<object> trackedComponents = new List<object>();
 
@@ -64,7 +65,7 @@ namespace Castle.Facilities.TypedFactory.Internal
 				throw new ObjectDisposedException("this", "The factory was disposed and can no longer be used.");
 			}
 
-			ITypedFactoryMethod method;
+			Action<IInvocation> method;
 			if (TryGetMethod(invocation, out method) == false)
 			{
 				throw new Exception(
@@ -85,7 +86,7 @@ namespace Castle.Facilities.TypedFactory.Internal
 			if (service.Equals(typeof(IDisposable)))
 			{
 				var method = service.GetMethods().Single();
-				methods.Add(method, new Dispose(Dispose));
+				methods.Add(method, Dispose);
 				return;
 			}
 
@@ -93,10 +94,10 @@ namespace Castle.Facilities.TypedFactory.Internal
 			{
 				if (IsReleaseMethod(method))
 				{
-					methods[method] = new Release(kernel);
+					methods[method] = Release;
 					continue;
 				}
-				methods[method] = new Resolve(kernel, ComponentSelector, trackedComponents.Add);
+				methods[method] = Resolve;
 			}
 
 			foreach (var @interface in service.GetInterfaces())
@@ -105,12 +106,49 @@ namespace Castle.Facilities.TypedFactory.Internal
 			}
 		}
 
+		private void Dispose(IInvocation invocation)
+		{
+			Dispose();
+		}
+
 		private bool IsReleaseMethod(MethodInfo methodInfo)
 		{
 			return methodInfo.ReturnType == typeof(void);
 		}
 
-		private bool TryGetMethod(IInvocation invocation, out ITypedFactoryMethod method)
+		private void Release(IInvocation invocation)
+		{
+			foreach (var argument in invocation.Arguments)
+			{
+				if (argument == null)
+				{
+					continue;
+				}
+
+				kernel.ReleaseComponent(argument);
+			}
+		}
+
+		private void Resolve(IInvocation invocation)
+		{
+			var component = ComponentSelector.SelectComponent(invocation.Method, invocation.TargetType, invocation.Arguments);
+			if (component == null)
+			{
+				throw new FacilityException(
+					string.Format(
+						"Selector {0} didn't select any component for method {1}. This usually signifies a bug in the selector.",
+						ComponentSelector,
+						invocation.Method));
+			}
+			var instance = component.Resolve(kernel);
+			if (kernel.ReleasePolicy.HasTrack(instance))
+			{
+				trackedComponents.Add(instance);
+			}
+			invocation.ReturnValue = instance;
+		}
+
+		private bool TryGetMethod(IInvocation invocation, out Action<IInvocation> method)
 		{
 			if (methods.TryGetValue(invocation.Method, out method))
 			{

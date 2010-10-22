@@ -214,7 +214,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Facilities\TypedFactory\DefaultTypedFactoryComponentSelector.cs" />
-    <Compile Include="Facilities\TypedFactory\Internal\Dispose.cs" />
     <Compile Include="Facilities\TypedFactory\Internal\Empty.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -225,9 +224,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Facilities\TypedFactory\ITypedFactoryComponentSelector.cs" />
-    <Compile Include="Facilities\TypedFactory\Internal\ITypedFactoryMethod.cs" />
-    <Compile Include="Facilities\TypedFactory\Internal\Release.cs" />
-    <Compile Include="Facilities\TypedFactory\Internal\Resolve.cs" />
     <Compile Include="Facilities\TypedFactory\TypedFactoryComponent.cs" />
     <Compile Include="Facilities\TypedFactory\TypedFactoryComponentCollection.cs" />
     <Compile Include="Facilities\TypedFactory\TypedFactoryFacility.cs">
