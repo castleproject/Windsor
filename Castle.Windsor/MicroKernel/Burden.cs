@@ -16,7 +16,8 @@ namespace Castle.MicroKernel
 {
 	using System;
 	using System.Collections.Generic;
-	using Core;
+
+	using Castle.Core;
 
 	/// <summary>
 	/// 

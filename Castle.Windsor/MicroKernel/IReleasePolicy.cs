@@ -17,7 +17,7 @@ namespace Castle.MicroKernel
 	using System;
 
 	/// <summary>
-	/// Summary description for IReleasePolicy.
+	/// Policy managing lifetime of components, and in particular their release process.
 	/// </summary>
 	public interface IReleasePolicy : IDisposable
 	{
