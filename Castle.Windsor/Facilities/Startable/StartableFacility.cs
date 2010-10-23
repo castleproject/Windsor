@@ -76,7 +76,15 @@ namespace Castle.Facilities.Startable
 			Kernel.ComponentModelBuilder.AddContributor(new StartableContributor(converter));
 			if (optimizeForSingleInstall)
 			{
-				Kernel.HandlersChanged += StartAll;
+				var hack = Kernel as IKernelEventsInternal;
+				if (hack != null)
+				{
+					hack.RegistrationCompleted += StartAllInternal;
+				}
+				else
+				{
+					Kernel.HandlersChanged += StartAll;
+				}
 				Kernel.ComponentRegistered += CacheForStart;
 				return;
 			}
@@ -150,6 +158,11 @@ namespace Castle.Facilities.Startable
 		}
 
 		private void StartAll(ref bool statechanged)
+		{
+			StartAllInternal(null, null);
+		}
+
+		private void StartAllInternal(object sender, EventArgs e)
 		{
 			var array = waitList.ToArray();
 			waitList.Clear();

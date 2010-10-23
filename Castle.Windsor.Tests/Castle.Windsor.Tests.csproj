@@ -111,6 +111,7 @@
     <Compile Include="ContainerAndGenericsInConfigTestCase.cs" />
     <Compile Include="Experimental\AllComponentsTestCase.cs" />
     <Compile Include="Experimental\ProblematicDependenciesTestCase.cs" />
+    <Compile Include="Facilities\Startable\StartableAndDecoratorsTestCase.cs" />
     <Compile Include="Facilities\TypedFactory\Components\ServiceWithMultipleCtors.cs" />
     <Compile Include="Facilities\TypedFactory\Components\ServiceFactory.cs" />
     <Compile Include="Facilities\TypedFactory\Components\ServiceRedirect.cs" />

@@ -154,6 +154,7 @@
     <Compile Include="MicroKernel\ComponentRegistrationException.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="MicroKernel\IKernelEventsInternal.cs" />
     <Compile Include="MicroKernel\IKernelInternal.cs" />
     <Compile Include="MicroKernel\IProxyFactoryExtension.cs" />
     <Compile Include="MicroKernel\KernelException.cs">
