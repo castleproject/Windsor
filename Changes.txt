@@ -1,4 +1,5 @@
-- fixed 	IOC-235 	- TypedFactoryFacility with inherited interfaces throws an exception
+- fixed IOC-237 - Castle Windsor : Possible bug with Startable Facility and “decorator pattern” dependencies
+- fixed IOC-235 - TypedFactoryFacility with inherited interfaces throws an exception
 - fixed IOC-234 - StackOverflow causing inability to use debugger view when there are components with dependency cycles in the container
 - fixed IOC-232 - Exception when using delegate based factories can throw when registered implicitly and used as dependencies of generic component
 - fixed IOC-231 - Boilerplate methods on facilities should be hidden from IntelliSense when configuring a facility

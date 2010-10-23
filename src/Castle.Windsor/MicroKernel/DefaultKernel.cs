@@ -46,9 +46,9 @@ namespace Castle.MicroKernel
 #if !SILVERLIGHT
 	[Serializable]
 	public partial class DefaultKernel : MarshalByRefObject, IKernel, IKernelEvents, IKernelInternal,
-	                                     IDeserializationCallback
+	                                     IDeserializationCallback, IKernelEventsInternal
 #else
-	public partial class DefaultKernel : IKernel, IKernelEvents, IKernelInternal
+	public partial class DefaultKernel : IKernel, IKernelEvents, IKernelInternal, IKernelEventsInternal
 #endif
 	{
 		[ThreadStatic]
