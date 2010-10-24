@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,42 +19,42 @@ namespace Castle.MicroKernel.Resolvers.SpecializedResolvers
 	using Core;
 
 	/// <summary>
-	/// Handle dependencies of services in the format of typed arrays.
+	///   Handle dependencies of services in the format of typed arrays.
 	/// </summary>
 	/// <remarks>
-	/// This is a complimentary <see cref="ISubDependencyResolver"/> implementation 
-	/// that is capable of satisfying dependencies of services as typed arrays.
-	/// <para>
-	/// Note that it will take precedence over service override for arrays defined 
-	/// on the configuration.
-	/// </para>
+	///   This is a complimentary <see cref = "ISubDependencyResolver" /> implementation 
+	///   that is capable of satisfying dependencies of services as typed arrays.
+	///   <para>
+	///     Note that it will take precedence over service override for arrays defined 
+	///     on the configuration.
+	///   </para>
 	/// </remarks>
 	/// <example>
-	/// In order to install the resolver:
-	/// <code>
-	/// var kernel = new DefaultKernel();
-	/// kernel.Resolver.AddSubResolver(new ArrayResolver(kernel));
-	/// </code>
+	///   In order to install the resolver:
+	///   <code>
+	///     var kernel = new DefaultKernel();
+	///     kernel.Resolver.AddSubResolver(new ArrayResolver(kernel));
+	///   </code>
 	/// 
-	/// <para>
-	/// To use it, assuming that IService is on the container:
-	/// </para>
+	///   <para>
+	///     To use it, assuming that IService is on the container:
+	///   </para>
 	/// 
-	/// <code>
-	/// public class Component
-	/// {
+	///   <code>
+	///     public class Component
+	///     {
 	///     public Component(IService[] services)
 	///     {
 	///     }
-	/// }
-	/// </code>
+	///     }
+	///   </code>
 	/// </example>
 	public class ArrayResolver : ISubDependencyResolver
 	{
-		private readonly IKernel kernel;
 		private readonly bool allowEmptyArray;
+		private readonly IKernel kernel;
 
-		public ArrayResolver(IKernel kernel):this(kernel,false)
+		public ArrayResolver(IKernel kernel) : this(kernel, false)
 		{
 		}
 
@@ -62,13 +62,6 @@ namespace Castle.MicroKernel.Resolvers.SpecializedResolvers
 		{
 			this.kernel = kernel;
 			this.allowEmptyArray = allowEmptyArray;
-		}
-
-		public object Resolve(CreationContext context, ISubDependencyResolver contextHandlerResolver,
-		                      ComponentModel model,
-		                      DependencyModel dependency)
-		{
-			return kernel.ResolveAll(dependency.TargetItemType.GetElementType(), null);
 		}
 
 		public bool CanResolve(CreationContext context, ISubDependencyResolver contextHandlerResolver,
@@ -79,6 +72,13 @@ namespace Castle.MicroKernel.Resolvers.SpecializedResolvers
 			return targetType != null &&
 			       targetType.IsArray &&
 			       (allowEmptyArray || kernel.HasComponent(targetType.GetElementType()));
+		}
+
+		public object Resolve(CreationContext context, ISubDependencyResolver contextHandlerResolver,
+		                      ComponentModel model,
+		                      DependencyModel dependency)
+		{
+			return kernel.ResolveAll(dependency.TargetItemType.GetElementType(), null);
 		}
 	}
 }
