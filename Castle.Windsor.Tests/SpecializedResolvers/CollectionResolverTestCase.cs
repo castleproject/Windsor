@@ -40,6 +40,21 @@ namespace Castle.MicroKernel.Tests.SpecializedResolvers
 			Assert.AreEqual(4, composite.Inner.Length);
 		}
 
+		[Test(Description = "IOC-238")]
+		public void Composite_service_can_be_resolved_without_triggering_circular_dependency_detection_fuse_composite_registered_first()
+		{
+			Container.Register(
+				Component.For<IEmptyService, EmptyServiceComposite>().ImplementedBy<EmptyServiceComposite>(),
+				Component.For<IEmptyService>().ImplementedBy<EmptyServiceA>(),
+				Component.For<IEmptyService>().ImplementedBy<EmptyServiceB>(),
+				Component.For<IEmptyService>().ImplementedBy<EmptyServiceDecorator>(),
+				Component.For<IEmptyService>().ImplementedBy<EmptyServiceDecoratorViaProperty>()
+				);
+
+			var composite = Container.Resolve<EmptyServiceComposite>();
+			Assert.AreEqual(4, composite.Inner.Length);
+		}
+
 		[Test]
 		public void DependencyOnArrayOfServices_OnConstructor()
 		{

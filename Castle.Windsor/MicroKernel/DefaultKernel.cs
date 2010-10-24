@@ -807,11 +807,14 @@ namespace Castle.MicroKernel
 			return (T)GetService(typeof(T));
 		}
 
-		protected CreationContext CreateCreationContext(IHandler handler, Type typeToExtractGenericArguments,
-		                                                IDictionary additionalArguments)
+		protected CreationContext CreateCreationContext(IHandler handler, Type typeToExtractGenericArguments, IDictionary additionalArguments, CreationContext parent)
 		{
-			return new CreationContext(handler, ReleasePolicy, typeToExtractGenericArguments, additionalArguments,
-			                           ConversionSubSystem);
+			return new CreationContext(handler,
+			                           ReleasePolicy,
+			                           typeToExtractGenericArguments,
+			                           additionalArguments,
+			                           ConversionSubSystem,
+			                           parent);
 		}
 
 		protected void DisposeHandler(IHandler handler)
@@ -882,39 +885,33 @@ namespace Castle.MicroKernel
 
 		protected object ResolveComponent(IHandler handler, Type service, IDictionary additionalArguments)
 		{
-			var prev = currentCreationContext;
-			var context = CreateCreationContext(handler, service, additionalArguments);
+			var parent = currentCreationContext;
+			var context = CreateCreationContext(handler, service, additionalArguments, parent);
 			currentCreationContext = context;
 
-			using (context.ParentResolutionContext(prev))
+			try
 			{
-				try
-				{
-					return handler.Resolve(context);
-				}
-				finally
-				{
-					currentCreationContext = prev;
-				}
+				return handler.Resolve(context);
+			}
+			finally
+			{
+				currentCreationContext = parent;
 			}
 		}
 
 		protected object TryResolveComponent(IHandler handler, Type service, IDictionary additionalArguments)
 		{
-			var prev = currentCreationContext;
-			var context = CreateCreationContext(handler, service, additionalArguments);
+			var parent = currentCreationContext;
+			var context = CreateCreationContext(handler, service, additionalArguments, parent);
 			currentCreationContext = context;
 
-			using (context.ParentResolutionContext(prev))
+			try
 			{
-				try
-				{
-					return handler.TryResolve(context);
-				}
-				finally
-				{
-					currentCreationContext = prev;
-				}
+				return handler.TryResolve(context);
+			}
+			finally
+			{
+				currentCreationContext = parent;
 			}
 		}
 

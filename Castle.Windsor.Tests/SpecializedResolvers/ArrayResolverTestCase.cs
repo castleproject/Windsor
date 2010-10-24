@@ -16,35 +16,49 @@ namespace Castle.MicroKernel.Tests.SpecializedResolvers
 {
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Resolvers.SpecializedResolvers;
+	using Castle.Windsor.Tests;
 	using Castle.Windsor.Tests.Components;
 
 	using NUnit.Framework;
 
 	[TestFixture]
-	public class ArrayResolverTestCase
+	public class ArrayResolverTestCase : AbstractContainerTestFixture
 	{
-		private IKernel kernel;
-
 		[Test]
 		public void Composite_service_can_be_resolved_without_triggering_circular_dependency_detection_fuse()
 		{
-			kernel.Register(AllTypes.FromThisAssembly()
-			                	.BasedOn<IEmptyService>()
-			                	.WithService.Base()
-			                	.ConfigureFor<EmptyServiceComposite>(r => r.Forward<EmptyServiceComposite>()));
+			Container.Register(AllTypes.FromThisAssembly()
+			                   	.BasedOn<IEmptyService>()
+			                   	.WithService.Base()
+			                   	.ConfigureFor<EmptyServiceComposite>(r => r.Forward<EmptyServiceComposite>()));
 
-			var composite = kernel.Resolve<EmptyServiceComposite>();
+			var composite = Container.Resolve<EmptyServiceComposite>();
+			Assert.AreEqual(4, composite.Inner.Length);
+		}
+
+		[Test(Description = "IOC-238")]
+		public void Composite_service_can_be_resolved_without_triggering_circular_dependency_detection_fuse_composite_registered_first()
+		{
+			Container.Register(
+				Component.For<IEmptyService, EmptyServiceComposite>().ImplementedBy<EmptyServiceComposite>(),
+				Component.For<IEmptyService>().ImplementedBy<EmptyServiceA>(),
+				Component.For<IEmptyService>().ImplementedBy<EmptyServiceB>(),
+				Component.For<IEmptyService>().ImplementedBy<EmptyServiceDecorator>(),
+				Component.For<IEmptyService>().ImplementedBy<EmptyServiceDecoratorViaProperty>()
+				);
+
+			var composite = Container.Resolve<EmptyServiceComposite>();
 			Assert.AreEqual(4, composite.Inner.Length);
 		}
 
 		[Test]
 		public void DependencyOnArrayOfServices_OnConstructor()
 		{
-			kernel.Register(Component.For<IEmptyService>().ImplementedBy<EmptyServiceA>(),
-			                Component.For<IEmptyService>().ImplementedBy<EmptyServiceB>(),
-			                Component.For<ArrayDepAsConstructor>());
+			Container.Register(Component.For<IEmptyService>().ImplementedBy<EmptyServiceA>(),
+			                   Component.For<IEmptyService>().ImplementedBy<EmptyServiceB>(),
+			                   Component.For<ArrayDepAsConstructor>());
 
-			var comp = kernel.Resolve<ArrayDepAsConstructor>();
+			var comp = Container.Resolve<ArrayDepAsConstructor>();
 
 			Assert.IsNotNull(comp);
 			Assert.IsNotNull(comp.Services);
@@ -58,11 +72,11 @@ namespace Castle.MicroKernel.Tests.SpecializedResolvers
 		[Test]
 		public void DependencyOnArrayOfServices_OnProperty()
 		{
-			kernel.Register(Component.For<IEmptyService>().ImplementedBy<EmptyServiceA>(),
-			                Component.For<IEmptyService>().ImplementedBy<EmptyServiceB>(),
-			                Component.For<ArrayDepAsProperty>());
+			Container.Register(Component.For<IEmptyService>().ImplementedBy<EmptyServiceA>(),
+			                   Component.For<IEmptyService>().ImplementedBy<EmptyServiceB>(),
+			                   Component.For<ArrayDepAsProperty>());
 
-			var comp = kernel.Resolve<ArrayDepAsProperty>();
+			var comp = Container.Resolve<ArrayDepAsProperty>();
 
 			Assert.IsNotNull(comp);
 			Assert.IsNotNull(comp.Services);
@@ -76,25 +90,25 @@ namespace Castle.MicroKernel.Tests.SpecializedResolvers
 		[Test]
 		public void DependencyOnArrayWhenEmpty()
 		{
-			kernel.Resolver.AddSubResolver(new ArrayResolver(kernel, true));
-			kernel.Register(Component.For<ArrayDepAsConstructor>(),
-			                Component.For<ArrayDepAsProperty>());
+			Kernel.Resolver.AddSubResolver(new ArrayResolver(Kernel, true));
+			Container.Register(Component.For<ArrayDepAsConstructor>(),
+			                   Component.For<ArrayDepAsProperty>());
 
-			var proxy = kernel.Resolve<ArrayDepAsConstructor>();
+			var proxy = Container.Resolve<ArrayDepAsConstructor>();
 			Assert.IsNotNull(proxy.Services);
 
-			var proxy2 = kernel.Resolve<ArrayDepAsProperty>();
+			var proxy2 = Container.Resolve<ArrayDepAsProperty>();
 			Assert.IsNotNull(proxy2.Services);
 		}
 
 		[Test]
 		public void DependencyOn_ref_ArrayOfServices_OnConstructor()
 		{
-			kernel.Register(Component.For<IEmptyService>().ImplementedBy<EmptyServiceA>(),
-			                Component.For<IEmptyService>().ImplementedBy<EmptyServiceB>(),
-			                Component.For<ArrayRefDepAsConstructor>());
+			Container.Register(Component.For<IEmptyService>().ImplementedBy<EmptyServiceA>(),
+			                   Component.For<IEmptyService>().ImplementedBy<EmptyServiceB>(),
+			                   Component.For<ArrayRefDepAsConstructor>());
 
-			var comp = kernel.Resolve<ArrayRefDepAsConstructor>();
+			var comp = Container.Resolve<ArrayRefDepAsConstructor>();
 
 			Assert.IsNotNull(comp);
 			Assert.IsNotNull(comp.Services);
@@ -105,17 +119,13 @@ namespace Castle.MicroKernel.Tests.SpecializedResolvers
 			}
 		}
 
-		[TearDown]
-		public void Dispose()
-		{
-			kernel.Dispose();
-		}
-
 		[SetUp]
-		public void Init()
+		public void SetUp()
 		{
-			kernel = new DefaultKernel();
-			kernel.Resolver.AddSubResolver(new ArrayResolver(kernel));
+#if SILVERLIGHT
+			Init();
+#endif
+			Kernel.Resolver.AddSubResolver(new ArrayResolver(Kernel));
 		}
 	}
 }
