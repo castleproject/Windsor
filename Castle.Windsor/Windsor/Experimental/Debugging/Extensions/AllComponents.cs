@@ -21,6 +21,7 @@ namespace Castle.Windsor.Experimental.Debugging.Extensions
 	using Castle.MicroKernel.SubSystems.Naming;
 	using Castle.Windsor.Experimental.Debugging.Primitives;
 
+#if !SILVERLIGHT
 	public class AllComponents : AbstractContainerDebuggerExtension
 	{
 		private INamingSubSystem naming;
@@ -38,4 +39,5 @@ namespace Castle.Windsor.Experimental.Debugging.Extensions
 			naming = kernel.GetSubSystem(SubSystemConstants.NamingKey) as INamingSubSystem;
 		}
 	}
+#endif
 }

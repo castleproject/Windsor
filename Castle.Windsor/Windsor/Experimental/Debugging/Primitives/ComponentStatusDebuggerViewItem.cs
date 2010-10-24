@@ -19,6 +19,7 @@ namespace Castle.Windsor.Experimental.Debugging.Primitives
 
 	using Castle.MicroKernel.Handlers;
 
+#if !SILVERLIGHT
 	public class ComponentStatusDebuggerViewItem
 	{
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
@@ -47,4 +48,5 @@ namespace Castle.Windsor.Experimental.Debugging.Primitives
 			return "This component may not resolve properly.";
 		}
 	}
+#endif
 }

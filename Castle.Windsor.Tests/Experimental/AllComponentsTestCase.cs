@@ -14,6 +14,7 @@
 
 namespace Castle.Windsor.Tests.Experimental
 {
+#if !SILVERLIGHT
 	using System.Linq;
 
 	using Castle.MicroKernel;
@@ -58,4 +59,5 @@ namespace Castle.Windsor.Tests.Experimental
 			return subSystem.SelectMany(e => e.Attach()).SingleOrDefault(i => i.Name == "All Components");
 		}
 	}
+#endif
 }

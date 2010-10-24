@@ -23,6 +23,7 @@ namespace Castle.Windsor.Experimental.Debugging.Primitives
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Handlers;
 
+#if !SILVERLIGHT
 	public class DefaultComponentView : IComponentDebuggerExtension
 	{
 		private readonly IEnumerable<Type> forwardedTypes;
@@ -92,4 +93,5 @@ namespace Castle.Windsor.Experimental.Debugging.Primitives
 			yield return new DebuggerViewItem("Raw handler", handler);
 		}
 	}
+#endif
 }

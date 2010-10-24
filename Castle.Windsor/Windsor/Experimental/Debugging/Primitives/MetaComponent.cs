@@ -20,6 +20,7 @@ namespace Castle.Windsor.Experimental.Debugging.Primitives
 	using Castle.Core;
 	using Castle.MicroKernel;
 
+#if !SILVERLIGHT
 	public class MetaComponent
 	{
 		private readonly IList<Type> forwardedTypes;
@@ -50,4 +51,5 @@ namespace Castle.Windsor.Experimental.Debugging.Primitives
 
 		public string Name { get; private set; }
 	}
+#endif
 }

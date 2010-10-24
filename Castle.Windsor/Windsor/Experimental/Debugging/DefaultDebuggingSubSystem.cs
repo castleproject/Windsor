@@ -14,6 +14,7 @@
 
 namespace Castle.Windsor.Experimental.Debugging
 {
+#if !SILVERLIGHT
 	using System.Collections;
 	using System.Collections.Generic;
 
@@ -59,4 +60,5 @@ namespace Castle.Windsor.Experimental.Debugging
 		{
 		}
 	}
+#endif
 }

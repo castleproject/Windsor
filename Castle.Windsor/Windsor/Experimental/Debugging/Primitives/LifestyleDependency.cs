@@ -22,6 +22,7 @@ namespace Castle.Windsor.Experimental.Debugging.Primitives
 	using Castle.Core;
 	using Castle.MicroKernel;
 
+#if !SILVERLIGHT
 	public class LifestyleDependency
 	{
 		private readonly MetaComponent component;
@@ -57,11 +58,8 @@ namespace Castle.Windsor.Experimental.Debugging.Primitives
 
 		public bool Mismatched()
 		{
-			return
-#if !SILVERLIGHT
-				component.Model.LifestyleType == LifestyleType.PerWebRequest ||
-#endif
-				component.Model.LifestyleType == LifestyleType.Transient;
+			return component.Model.LifestyleType == LifestyleType.PerWebRequest ||
+			       component.Model.LifestyleType == LifestyleType.Transient;
 		}
 
 		private void ContributeItem(MetaComponent mismatched, StringBuilder message, IList<MetaComponent> items)
@@ -120,4 +118,5 @@ namespace Castle.Windsor.Experimental.Debugging.Primitives
 			return parent == null;
 		}
 	}
+#endif
 }

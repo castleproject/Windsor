@@ -19,6 +19,7 @@ namespace Castle.Windsor.Experimental.Debugging.Extensions
 	using Castle.MicroKernel;
 	using Castle.Windsor.Experimental.Debugging.Primitives;
 
+#if !SILVERLIGHT
 	public class Facilities : IContainerDebuggerExtension
 	{
 		private IKernel kernel;
@@ -38,4 +39,5 @@ namespace Castle.Windsor.Experimental.Debugging.Extensions
 			this.kernel = kernel;
 		}
 	}
+#endif
 }

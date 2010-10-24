@@ -14,6 +14,7 @@
 
 namespace Castle.Windsor.Experimental.Debugging.Extensions
 {
+#if !SILVERLIGHT
 	using System.Collections.Generic;
 	using System.Linq;
 
@@ -101,4 +102,5 @@ namespace Castle.Windsor.Experimental.Debugging.Extensions
 			return lifestyle == LifestyleType.Undefined || lifestyle == LifestyleType.Singleton;
 		}
 	}
+#endif
 }

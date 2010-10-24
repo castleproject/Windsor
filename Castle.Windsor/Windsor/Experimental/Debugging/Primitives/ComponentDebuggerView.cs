@@ -23,6 +23,7 @@ namespace Castle.Windsor.Experimental.Debugging.Primitives
 	using Castle.Core.Internal;
 	using Castle.MicroKernel;
 
+#if !SILVERLIGHT
 	[DebuggerDisplay("{key} {Description,nq}")]
 	public class ComponentDebuggerView
 	{
@@ -111,4 +112,5 @@ namespace Castle.Windsor.Experimental.Debugging.Primitives
 			       Enumerable.Empty<IComponentDebuggerExtension>();
 		}
 	}
+#endif
 }

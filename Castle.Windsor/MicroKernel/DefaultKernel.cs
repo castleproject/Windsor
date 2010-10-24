@@ -35,16 +35,18 @@ namespace Castle.MicroKernel
 	using Castle.MicroKernel.SubSystems.Conversion;
 	using Castle.MicroKernel.SubSystems.Naming;
 	using Castle.MicroKernel.SubSystems.Resource;
+#if !SILVERLIGHT
 	using Castle.Windsor.Experimental.Debugging;
+#endif
 
 	/// <summary>
 	///   Default implementation of <see cref = "IKernel" />. 
 	///   This implementation is complete and also support a kernel 
 	///   hierarchy (sub containers).
 	/// </summary>
-	[DebuggerTypeProxy(typeof(KernelDebuggerProxy))]
 #if !SILVERLIGHT
 	[Serializable]
+	[DebuggerTypeProxy(typeof(KernelDebuggerProxy))]
 	public partial class DefaultKernel : MarshalByRefObject, IKernel, IKernelEvents, IKernelInternal,
 	                                     IDeserializationCallback, IKernelEventsInternal
 #else
@@ -860,12 +862,13 @@ namespace Castle.MicroKernel
 
 			AddSubSystem(SubSystemConstants.ResourceKey,
 			             new DefaultResourceSubSystem());
-
+#if !SILVERLIGHT
 			if (Debugger.IsAttached)
 			{
 				AddSubSystem(SubSystemConstants.DebuggingKey,
 				             new DefaultDebuggingSubSystem());
 			}
+#endif
 		}
 
 		protected object ResolveComponent(IHandler handler)

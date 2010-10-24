@@ -14,6 +14,7 @@
 
 namespace Castle.Windsor.Tests.Experimental
 {
+#if !SILVERLIGHT
 	using System.Linq;
 
 	using Castle.MicroKernel;
@@ -107,4 +108,5 @@ namespace Castle.Windsor.Tests.Experimental
 			return components.Select(i => (MismatchedDependency)i.Value).ToArray();
 		}
 	}
+#endif
 }

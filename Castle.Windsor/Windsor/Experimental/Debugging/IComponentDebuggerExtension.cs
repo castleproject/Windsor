@@ -18,8 +18,10 @@ namespace Castle.Windsor.Experimental.Debugging
 
 	using Castle.Windsor.Experimental.Debugging.Primitives;
 
+#if !SILVERLIGHT
 	public interface IComponentDebuggerExtension
 	{
 		IEnumerable<DebuggerViewItem> Attach();
 	}
+#endif
 }

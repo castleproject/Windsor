@@ -14,6 +14,7 @@
 
 namespace Castle.Windsor.Tests.Windsor.Tests.Debugging
 {
+#if !SILVERLIGHT
 	using System.Linq;
 
 	using Castle.MicroKernel;
@@ -32,9 +33,7 @@ namespace Castle.Windsor.Tests.Windsor.Tests.Debugging
 		[SetUp]
 		public void InitSubSystem()
 		{
-#if SILVERLIGHT
 			Init();
-#endif
 			subSystem = new DefaultDebuggingSubSystem();
 			Kernel.AddSubSystem(SubSystemConstants.DebuggingKey, subSystem);
 		}
@@ -49,4 +48,5 @@ namespace Castle.Windsor.Tests.Windsor.Tests.Debugging
 			Assert.IsNull(mismatches);
 		}
 	}
+#endif
 }

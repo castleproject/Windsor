@@ -17,6 +17,7 @@ namespace Castle.Windsor.Experimental.Debugging.Primitives
 	using System.Diagnostics;
 	using System.Linq;
 
+#if !SILVERLIGHT
 	public class MismatchedDependency
 	{
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
@@ -55,4 +56,5 @@ namespace Castle.Windsor.Experimental.Debugging.Primitives
 			return new DebuggerViewItem(component.Name, component.Model.GetLifestyleDescription(), item);
 		}
 	}
+#endif
 }
