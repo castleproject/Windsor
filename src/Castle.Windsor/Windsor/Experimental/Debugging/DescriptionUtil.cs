@@ -16,6 +16,7 @@ namespace Castle.Windsor.Experimental.Debugging
 {
 	using Castle.Core;
 
+#if !SILVERLIGHT
 	public static class DescriptionUtil
 	{
 		public static string GetLifestyleDescription(this ComponentModel componentModel)
@@ -27,4 +28,5 @@ namespace Castle.Windsor.Experimental.Debugging
 			return string.Format("custom ({0})", componentModel.CustomLifestyle.FullName);
 		}
 	}
+#endif
 }

@@ -34,11 +34,11 @@ namespace Castle.Windsor
 	///   Implementation of <see cref = "IWindsorContainer" />
 	///   which delegates to <see cref = "IKernel" /> implementation.
 	/// </summary>
-	[DebuggerTypeProxy(typeof(KernelDebuggerProxy))]
 #if (SILVERLIGHT)
 	public class WindsorContainer : IWindsorContainer
 #else
 	[Serializable]
+	[DebuggerTypeProxy(typeof(KernelDebuggerProxy))]
 	public class WindsorContainer : MarshalByRefObject, IWindsorContainer
 #endif
 	{

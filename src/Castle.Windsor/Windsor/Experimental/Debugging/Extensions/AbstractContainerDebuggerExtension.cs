@@ -21,7 +21,8 @@ namespace Castle.Windsor.Experimental.Debugging.Extensions
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Handlers;
 	using Castle.Windsor.Experimental.Debugging.Primitives;
-
+	
+#if !SILVERLIGHT
 	public abstract class AbstractContainerDebuggerExtension : IContainerDebuggerExtension
 	{
 		public abstract IEnumerable<DebuggerViewItem> Attach();
@@ -60,4 +61,5 @@ namespace Castle.Windsor.Experimental.Debugging.Extensions
 			return lookup.Select(c => new MetaComponent(c.Value.Key, c.Key, c.Value.Value));
 		}
 	}
+#endif
 }

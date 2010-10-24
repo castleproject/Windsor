@@ -19,10 +19,12 @@ namespace Castle.Windsor.Experimental.Debugging
 	using Castle.MicroKernel;
 	using Castle.Windsor.Experimental.Debugging.Primitives;
 
+#if !SILVERLIGHT
 	public interface IContainerDebuggerExtension
 	{
 		IEnumerable<DebuggerViewItem> Attach();
 
 		void Init(IKernel kernel);
 	}
+#endif
 }

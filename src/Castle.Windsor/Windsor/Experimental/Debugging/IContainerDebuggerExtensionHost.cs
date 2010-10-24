@@ -16,8 +16,10 @@ namespace Castle.Windsor.Experimental.Debugging
 {
 	using System.Collections.Generic;
 
+#if !SILVERLIGHT
 	public interface IContainerDebuggerExtensionHost : IEnumerable<IContainerDebuggerExtension>
 	{
 		void Add(IContainerDebuggerExtension extension);
 	}
+#endif
 }
