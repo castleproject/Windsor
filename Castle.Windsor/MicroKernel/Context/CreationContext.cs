@@ -213,12 +213,11 @@ namespace Castle.MicroKernel.Context
 
 		public IDisposable ParentResolutionContext(CreationContext parent)
 		{
-			if (parent == null)
+			if (parent != null)
 			{
-				return new RemoveDependencies(dependencies, null);
+				dependencies.AddRange(parent.Dependencies);
 			}
-			dependencies.AddRange(parent.Dependencies);
-			return new RemoveDependencies(dependencies, parent.Dependencies);
+			return new NotVeryUsefulAnymore();
 		}
 
 		public virtual bool CanResolve(CreationContext context, ISubDependencyResolver contextHandlerResolver,
@@ -351,29 +350,11 @@ namespace Castle.MicroKernel.Context
 			return typeToExtractGenericArguments.GetGenericArguments();
 		}
 
-		internal class RemoveDependencies : IDisposable
+		private class NotVeryUsefulAnymore : IDisposable
 		{
-			private readonly DependencyModelCollection dependencies;
-			private readonly DependencyModelCollection parentDependencies;
-
-			public RemoveDependencies(DependencyModelCollection dependencies,
-			                          DependencyModelCollection parentDependencies)
-			{
-				this.dependencies = dependencies;
-				this.parentDependencies = parentDependencies;
-			}
-
 			public void Dispose()
 			{
-				if (parentDependencies == null)
-				{
-					return;
-				}
-
-				foreach (var model in parentDependencies)
-				{
-					dependencies.Remove(model);
-				}
+				// NOTE: do nothing. Left here not to break API. It used to do something but it appears there would be no sideeffects to removing it.
 			}
 		}
 
