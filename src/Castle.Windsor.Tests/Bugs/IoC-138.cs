@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,55 +14,52 @@
 
 namespace Castle.Windsor.Tests.Bugs
 {
-    using System;
-    using System.Collections.Generic;
+	using System.Collections.Generic;
 
-	using Castle.MicroKernel;
-    using Castle.MicroKernel.Registration;
+	using Castle.MicroKernel.Registration;
 
-    using NUnit.Framework;
+	using NUnit.Framework;
 
 	[TestFixture]
-    public class IoC_138
-    {
-        [Test]
-        public void TestResolveSubComponentInConstructorWithParameters()
-        {
-            IWindsorContainer container = new WindsorContainer();
-            container.Register(Component.For(typeof(A)).Named("A"));
-            container.Register(Component.For(typeof(B)).Named("B"));
+	public class IoC_138
+	{
+		[Test]
+		public void TestResolveSubComponentInConstructorWithParameters()
+		{
+			var container = new WindsorContainer();
+			ServiceLocator.Container = container;
+			container.Register(Component.For<UsesServiceLocaator>().Named("A"),
+			                   Component.For<DependsOnStringTest2>().Named("B"));
 
-            var parameters = new Dictionary<string,string>
-                                     {
-                                     	{
-                                     		"test", "bla"
-                                     		}
-                                     };
+			var component = container.Resolve<UsesServiceLocaator>(new Dictionary<string, string> { { "test", "bla" } });
+			Assert.IsNotNull(component.Other);
+		}
 
-        	A a = container.Resolve<A>(parameters);
-            Assert.IsNotNull(a);
-        }
+		public class DependsOnStringTest2
+		{
+			public DependsOnStringTest2(string test2)
+			{
+			}
+		}
 
+		public static class ServiceLocator
+		{
+			public static IWindsorContainer Container { get; set; }
+		}
 
-        public class A
-        {
-            private B b;
+		public class UsesServiceLocaator
+		{
+			private readonly DependsOnStringTest2 other;
 
-            public A(IKernel kernel, string test)
-            {
-                var parameters = new Dictionary<string,string>();
-                parameters.Add("test2", "bla");
-                b = kernel.Resolve<B>(parameters);
-            }
-        }
+			public UsesServiceLocaator(string test)
+			{
+				other = ServiceLocator.Container.Resolve<DependsOnStringTest2>(new Dictionary<string, string> { { "test2", "bla" } });
+			}
 
-        public class B
-        {
-            public B(string test2)
-            {
-
-            }
-        }
-
-    }
+			public DependsOnStringTest2 Other
+			{
+				get { return other; }
+			}
+		}
+	}
 }
