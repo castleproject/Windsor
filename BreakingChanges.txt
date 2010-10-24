@@ -1,4 +1,25 @@
 ================================================================================================
+change - One of CreationContext constructors has now additional argument; parent CreationContext
+	Method public IDisposable ParentResolutionContext(...) on CreationContext was removed
+	Method protected CreationContext CreateCreationContext(...) has now additional argument;
+	parent CreationContext
+
+impact - low
+fixability - medium
+revision - 
+
+description - To fix issue with false positive cycle detection (see issue IOC-238) changes had
+	to be made to how parent creation context gets propagated in certain situation (when call
+	to kernel.Resolve/ResolveAll is performed as part of resolution process, for example when
+	CollectionResolver is being used).
+
+fix - If you override CreateCreationContext method on DefaultKernel pass the additional argument
+	as new constructor parameter to CreationContext.
+	If you were using ParentResolutionContext method it should be fairly safe to remove the call
+	if it was preceded by call to updated CreationContext constructor and the CreationContext is
+	not used outside of local scope. In other cases it's best to consult Castle users group for
+	advice on how to proceed.
+================================================================================================
 change - IReference<> interface has two new methods
 
 impact - low

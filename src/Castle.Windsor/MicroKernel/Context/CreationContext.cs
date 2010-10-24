@@ -69,9 +69,13 @@ namespace Castle.MicroKernel.Context
 		/// <param name = "propagateInlineDependencies">When set to <c>true</c> will clone <paramref name = "parentContext" /> <see cref = "AdditionalParameters" />.</param>
 		public CreationContext(Type typeToExtractGenericArguments, CreationContext parentContext,
 		                       bool propagateInlineDependencies)
-			: this(parentContext.Handler, parentContext.ReleasePolicy, typeToExtractGenericArguments, null, null)
+			: this(parentContext.Handler, parentContext.ReleasePolicy, typeToExtractGenericArguments, null, null, parentContext)
 		{
-			resolutionStack = parentContext.resolutionStack;
+			if (parentContext == null)
+			{
+				throw new ArgumentNullException("parentContext");
+			}
+
 			if (parentContext.extendedProperties != null)
 			{
 				extendedProperties = new Dictionary<object, object>(parentContext.extendedProperties.Count);
@@ -79,10 +83,6 @@ namespace Castle.MicroKernel.Context
 				{
 					extendedProperties.Add(parentProperty.Key, parentProperty.Value);
 				}
-			}
-			foreach (var handlerItem in parentContext.handlerStack)
-			{
-				handlerStack.Push(handlerItem);
 			}
 
 			if (propagateInlineDependencies && parentContext.HasAdditionalParameters)
@@ -99,17 +99,27 @@ namespace Castle.MicroKernel.Context
 		/// <param name = "typeToExtractGenericArguments">The type to extract generic arguments.</param>
 		/// <param name = "additionalArguments">The additional arguments.</param>
 		/// <param name = "conversionManager">The conversion manager.</param>
+		/// <param name="parent">Parent context</param>
 		public CreationContext(IHandler handler, IReleasePolicy releasePolicy,
 		                       Type typeToExtractGenericArguments, IDictionary additionalArguments,
-		                       ITypeConverter conversionManager)
+							   ITypeConverter conversionManager, CreationContext parent)
 		{
 			this.handler = handler;
 			this.releasePolicy = releasePolicy;
 			additionalParameters = EnsureAdditionalArgumentsWriteable(additionalArguments);
 			converter = conversionManager;
 			dependencies = new DependencyModelCollection();
-
 			genericArguments = ExtractGenericArguments(typeToExtractGenericArguments);
+
+			if (parent != null)
+			{
+				resolutionStack = parent.resolutionStack;
+				dependencies.AddRange(parent.Dependencies);
+				foreach (var handlerItem in parent.handlerStack)
+				{
+					handlerStack.Push(handlerItem);
+				}
+			}
 		}
 
 		/// <summary>
@@ -209,15 +219,6 @@ namespace Castle.MicroKernel.Context
 		public bool IsInResolutionContext(IHandler handler)
 		{
 			return handlerStack.Contains(handler);
-		}
-
-		public IDisposable ParentResolutionContext(CreationContext parent)
-		{
-			if (parent != null)
-			{
-				dependencies.AddRange(parent.Dependencies);
-			}
-			return new NotVeryUsefulAnymore();
 		}
 
 		public virtual bool CanResolve(CreationContext context, ISubDependencyResolver contextHandlerResolver,
@@ -348,14 +349,6 @@ namespace Castle.MicroKernel.Context
 		private static Type[] ExtractGenericArguments(Type typeToExtractGenericArguments)
 		{
 			return typeToExtractGenericArguments.GetGenericArguments();
-		}
-
-		private class NotVeryUsefulAnymore : IDisposable
-		{
-			public void Dispose()
-			{
-				// NOTE: do nothing. Left here not to break API. It used to do something but it appears there would be no sideeffects to removing it.
-			}
 		}
 
 		public class ResolutionContext : IDisposable
