@@ -26,38 +26,30 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 	using NUnit.Framework;
 
 	[TestFixture]
-	public class TypedFactoryDependenciesTestCase
+	public class TypedFactoryDependenciesTestCase : AbstractContainerTestFixture
 	{
-		private WindsorContainer container;
-
-		[SetUp]
-		public void SetUp()
-		{
-			container = new WindsorContainer();
-		}
-
-		[Test]
-		public void Interface_factory_depends_on_default_interceptor()
-		{
-			container.AddFacility<TypedFactoryFacility>()
-				.Register(Component.For<DummyComponentFactory>().AsFactory());
-
-			AssertHasDependency<DummyComponentFactory>(TypedFactoryFacility.InterceptorKey);
-		}
-
 		[Test]
 		public void Delegate_factory_depends_on_default_interceptor()
 		{
-			container.AddFacility<TypedFactoryFacility>()
+			Container.AddFacility<TypedFactoryFacility>()
 				.Register(Component.For<Func<A>>().AsFactory());
 
 			AssertHasDependency<Func<A>>(TypedFactoryFacility.InterceptorKey);
 		}
 
 		[Test]
+		public void Interface_factory_depends_on_default_interceptor()
+		{
+			Container.AddFacility<TypedFactoryFacility>()
+				.Register(Component.For<DummyComponentFactory>().AsFactory());
+
+			AssertHasDependency<DummyComponentFactory>(TypedFactoryFacility.InterceptorKey);
+		}
+
+		[Test]
 		public void Interface_factory_depends_on_default_selector_by_default()
 		{
-			container.AddFacility<TypedFactoryFacility>()
+			Container.AddFacility<TypedFactoryFacility>()
 				.Register(Component.For<DummyComponentFactory>().AsFactory());
 
 			AssertHasDependency<DummyComponentFactory>("Castle.TypedFactory.DefaultInterfaceFactoryComponentSelector");
@@ -66,7 +58,8 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 		private void AssertHasDependency<TComponnet>(string key)
 		{
 			var handler = GetHandler<TComponnet>();
-			Assert.IsTrue(handler.ComponentModel.Dependencies.Any(d => d.DependencyKey == key), "Dependencies found: {0}", BuildDependencyByKeyList(handler));
+			Assert.IsTrue(handler.ComponentModel.Dependencies.Any(d => d.DependencyKey == key), "Dependencies found: {0}",
+			              BuildDependencyByKeyList(handler));
 		}
 
 		private string BuildDependencyByKeyList(IHandler handler)
@@ -81,7 +74,7 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 
 		private IHandler GetHandler<T>()
 		{
-			var handler = container.Kernel.GetHandler(typeof(T));
+			var handler = Container.Kernel.GetHandler(typeof(T));
 			Assert.IsNotNull(handler);
 			return handler;
 		}
