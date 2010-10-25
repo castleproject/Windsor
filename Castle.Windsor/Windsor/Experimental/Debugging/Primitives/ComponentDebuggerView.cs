@@ -48,6 +48,7 @@ namespace Castle.Windsor.Experimental.Debugging.Primitives
 			forwardedCount = component.ForwardedTypesCount;
 			handler = component.Handler;
 			extension = defaultExtension.Concat(GetExtensions(handler)).ToArray();
+			description = BuildDescription();
 		}
 
 		[DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
@@ -59,10 +60,10 @@ namespace Castle.Windsor.Experimental.Debugging.Primitives
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 		private string Description
 		{
-			get { return description ?? BuildDefaultDescription(); }
+			get { return description; }
 		}
 
-		private string BuildDefaultDescription()
+		private string BuildDescription()
 		{
 			var message = new StringBuilder(handler.Service.Name);
 			if (forwardedCount == 1)
