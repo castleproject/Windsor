@@ -39,17 +39,6 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 		private WindsorContainer container;
 
 		[Test]
-		public void Affects_constructor_resolution()
-		{
-			container.Register(Component.For<Baz>().Named("baz"));
-			container.Register(Component.For<HasTwoConstructors>().Named("fizz"));
-			var factory = container.Resolve<Func<string, HasTwoConstructors>>();
-
-			var obj = factory("naaaameee");
-			Assert.AreEqual("naaaameee", obj.Name);
-		}
-
-		[Test]
 		public void Can_resolve_component_depending_on_delegate_when_inline_argumens_are_provided()
 		{
 			container.Register(Component.For<Foo>(),
@@ -134,7 +123,18 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 		}
 
 		[Test]
-		public void Delegate_based_factories_DO_NOT_implicitly_pick_registered_selector_explicitly_registered_factory()
+		[Ignore("Not supported for Func delegates")]
+		public void Does_not_duplicate_arguments_matching_delegate_parameters()
+		{
+			container.Register(Component.For(typeof(HasOnlyOneArgMatchingDelegatesParameter)).Named("fizz"));
+			var factory = container.Resolve<Func<string, string, HasOnlyOneArgMatchingDelegatesParameter>>("fizzFactory");
+			var obj = factory("arg1", "name");
+			Assert.AreEqual("name", obj.Name);
+			Assert.AreEqual("arg1", obj.Arg1);
+		}
+
+		[Test]
+		public void Factory_DOES_NOT_implicitly_pick_registered_selector_explicitly_registered_factory()
 		{
 			DisposableSelector.InstancesCreated = 0;
 			DisposableSelector.InstancesDisposed = 0;
@@ -148,7 +148,7 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 		}
 
 		[Test]
-		public void Delegate_based_factories_DO_NOT_implicitly_pick_registered_selector_implicitly_registered_factory()
+		public void Factory_DOES_NOT_implicitly_pick_registered_selector_implicitly_registered_factory()
 		{
 			DisposableSelector.InstancesCreated = 0;
 			DisposableSelector.InstancesDisposed = 0;
@@ -161,7 +161,18 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 		}
 
 		[Test]
-		public void Delegate_based_factories_explicitly_pick_registered_selector()
+		public void Factory_affects_constructor_resolution()
+		{
+			container.Register(Component.For<Baz>().Named("baz"));
+			container.Register(Component.For<HasTwoConstructors>().Named("fizz"));
+			var factory = container.Resolve<Func<string, HasTwoConstructors>>();
+
+			var obj = factory("naaaameee");
+			Assert.AreEqual("naaaameee", obj.Name);
+		}
+
+		[Test]
+		public void Factory_explicitly_pick_registered_selector()
 		{
 			DisposableSelector.InstancesCreated = 0;
 			SimpleSelector.InstancesCreated = 0;
@@ -177,28 +188,7 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 		}
 
 		[Test]
-		public void Delegate_factory_obeys_release_policy_non_tracking()
-		{
-			container.Kernel.ReleasePolicy = new NoTrackingReleasePolicy();
-			container.Register(Component.For<DisposableFoo>().LifeStyle.Transient,
-			                   Component.For<UsesDisposableFooDelegate>().LifeStyle.Transient);
-			var dependsOnFoo = container.Resolve<UsesDisposableFooDelegate>();
-			var foo = dependsOnFoo.GetFoo();
-			Assert.IsFalse(container.Kernel.ReleasePolicy.HasTrack(foo));
-		}
-
-		[Test]
-		public void Delegate_factory_obeys_release_policy_tracking()
-		{
-			container.Register(Component.For<DisposableFoo>().LifeStyle.Transient,
-			                   Component.For<UsesDisposableFooDelegate>().LifeStyle.Transient);
-			var dependsOnFoo = container.Resolve<UsesDisposableFooDelegate>();
-			var foo = dependsOnFoo.GetFoo();
-			Assert.IsTrue(container.Kernel.ReleasePolicy.HasTrack(foo));
-		}
-
-		[Test]
-		public void Delegate_obeys_lifestyle()
+		public void Factory_obeys_lifestyle()
 		{
 			container.Register(Component.For<Foo>().Named("MyFoo").LifeStyle.Is(LifestyleType.Singleton));
 			container.Register(Component.For<UsesFooDelegate>());
@@ -210,8 +200,29 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 		}
 
 		[Test]
+		public void Factory_obeys_release_policy_non_tracking()
+		{
+			container.Kernel.ReleasePolicy = new NoTrackingReleasePolicy();
+			container.Register(Component.For<DisposableFoo>().LifeStyle.Transient,
+			                   Component.For<UsesDisposableFooDelegate>().LifeStyle.Transient);
+			var dependsOnFoo = container.Resolve<UsesDisposableFooDelegate>();
+			var foo = dependsOnFoo.GetFoo();
+			Assert.IsFalse(container.Kernel.ReleasePolicy.HasTrack(foo));
+		}
+
+		[Test]
+		public void Factory_obeys_release_policy_tracking()
+		{
+			container.Register(Component.For<DisposableFoo>().LifeStyle.Transient,
+			                   Component.For<UsesDisposableFooDelegate>().LifeStyle.Transient);
+			var dependsOnFoo = container.Resolve<UsesDisposableFooDelegate>();
+			var foo = dependsOnFoo.GetFoo();
+			Assert.IsTrue(container.Kernel.ReleasePolicy.HasTrack(foo));
+		}
+
+		[Test]
 		[Ignore("Not supported for Func delegates")]
-		public void Delegate_parameters_are_used_in_order_first_ctor_then_properties()
+		public void Factory_parameters_are_used_in_order_first_ctor_then_properties()
 		{
 			container.Register(Component.For(typeof(Baz)).Named("baz"));
 			container.Register(Component.For(typeof(Bar)).Named("bar"));
@@ -225,7 +236,7 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 
 		[Test]
 		[Ignore("Not supported for Func delegates")]
-		public void Delegate_pulls_unspecified_dependencies_from_container()
+		public void Factory_pulls_unspecified_dependencies_from_container()
 		{
 			container.Register(Component.For(typeof(Baz)).Named("baz"));
 			container.Register(Component.For(typeof(Bar)).Named("bar"));
@@ -236,14 +247,23 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 		}
 
 		[Test]
-		[Ignore("Not supported for Func delegates")]
-		public void Does_not_duplicate_arguments_matching_delegate_parameters()
+		public void Func_delegate_with_duplicated_Parameter_types_throws_exception()
 		{
-			container.Register(Component.For(typeof(HasOnlyOneArgMatchingDelegatesParameter)).Named("fizz"));
-			var factory = container.Resolve<Func<string, string, HasOnlyOneArgMatchingDelegatesParameter>>("fizzFactory");
-			var obj = factory("arg1", "name");
-			Assert.AreEqual("name", obj.Name);
-			Assert.AreEqual("arg1", obj.Arg1);
+			container.Register(Component.For<Baz>().Named("baz"),
+			                   Component.For<Bar>().Named("bar"),
+			                   Component.For<UsesBarDelegate>());
+
+			var user = container.Resolve<UsesBarDelegate>();
+
+			var exception =
+				Assert.Throws<ArgumentException>(() =>
+				                                 user.GetBar("aaa", "bbb"));
+
+			Assert.AreEqual(
+				"Factory delegate System.Func`3[System.String,System.String,Castle.Windsor.Tests.Facilities.TypedFactory.Delegates.Bar] has duplicated arguments of type System.String. " +
+				"Using generic purpose delegates with duplicated argument types is unsupported, because then it is not possible to match arguments properly. " +
+				"Use some custom delegate with meaningful argument names or interface based factory instead.",
+				exception.Message);
 		}
 
 		[Test]
@@ -259,7 +279,7 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 		}
 
 		[Test]
-		public void Releasing_component_depending_on_the_delegate_factory_releases_what_was_pulled_from_it()
+		public void Releasing_component_depending_on_a_factory_releases_what_was_pulled_from_it()
 		{
 			DisposableFoo.DisposedCount = 0;
 
@@ -327,26 +347,6 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 		{
 			container = new WindsorContainer();
 			container.AddFacility<TypedFactoryFacility>();
-		}
-
-		[Test]
-		public void Using_Func_delegate_with_duplicated_Parameter_types_throws_exception()
-		{
-			container.Register(Component.For<Baz>().Named("baz"),
-			                   Component.For<Bar>().Named("bar"),
-			                   Component.For<UsesBarDelegate>());
-
-			var user = container.Resolve<UsesBarDelegate>();
-
-			var exception =
-				Assert.Throws<ArgumentException>(() =>
-				                                 user.GetBar("aaa", "bbb"));
-
-			Assert.AreEqual(
-				"Factory delegate System.Func`3[System.String,System.String,Castle.Windsor.Tests.Facilities.TypedFactory.Delegates.Bar] has duplicated arguments of type System.String. " +
-				"Using generic purpose delegates with duplicated argument types is unsupported, because then it is not possible to match arguments properly. " +
-				"Use some custom delegate with meaningful argument names or interface based factory instead.",
-				exception.Message);
 		}
 	}
 }
