@@ -55,7 +55,7 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 			container.Register(Component.For<Foo>(),
 			                   Component.For<UsesFooDelegateAndInt>());
 
-			var component = container.Resolve<UsesFooDelegateAndInt>(new Arguments().Insert("additionalArgument", 5));
+			container.Resolve<UsesFooDelegateAndInt>(new { additionalArgument = 5 });
 		}
 
 		[Test]
@@ -69,7 +69,7 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 		}
 
 		[Test]
-		public void Can_resolve_generic_depending_on_delegate_of_generic()
+		public void Can_resolve_generic_component_depending_on_delegate_of_generic()
 		{
 			container.Register(Component.For(typeof(GenericComponent<>)).LifeStyle.Transient,
 			                   Component.For(typeof(GenericUsesFuncOfGenerics<>)).LifeStyle.Transient);
@@ -80,7 +80,7 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 		}
 
 		[Test]
-		public void Can_resolve_multiple_delegates_just_fine()
+		public void Can_resolve_multiple_delegates()
 		{
 			container.Register(Component.For<Baz>());
 			container.Register(Component.For<A>());
