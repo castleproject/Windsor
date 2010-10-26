@@ -248,6 +248,60 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 		}
 
 		[Test]
+		public void Component_released_out_of_band_is_not_tracked()
+		{
+			container.Register(
+				Component.For<INonDisposableFactory>().LifeStyle.Transient.AsFactory(),
+				Component.For<DisposableComponent>().LifeStyle.Transient);
+
+			var factory = container.Resolve<INonDisposableFactory>();
+			var component = factory.Create();
+			var weakComponent = new WeakReference(component);
+
+			container.Release(component);
+			component = null;
+			GC.Collect();
+
+			Assert.IsFalse(weakComponent.IsAlive);
+		}
+
+		[Test]
+		public void Component_released_via_disposing_factory_is_not_tracked()
+		{
+			container.Register(
+				Component.For<IDisposableFactory>().LifeStyle.Transient.AsFactory(),
+				Component.For<DisposableComponent>().LifeStyle.Transient);
+
+			var factory = container.Resolve<IDisposableFactory>();
+			var component = factory.Create();
+			var weakComponent = new WeakReference(component);
+
+			factory.Dispose();
+			component = null;
+			GC.Collect();
+
+			Assert.IsFalse(weakComponent.IsAlive);
+		}
+
+		[Test]
+		public void Component_released_via_factory_is_not_tracked()
+		{
+			container.Register(
+				Component.For<INonDisposableFactory>().LifeStyle.Transient.AsFactory(),
+				Component.For<DisposableComponent>().LifeStyle.Transient);
+
+			var factory = container.Resolve<INonDisposableFactory>();
+			var component = factory.Create();
+			var weakComponent = new WeakReference(component);
+
+			factory.LetGo(component);
+			component = null;
+			GC.Collect();
+
+			Assert.IsFalse(weakComponent.IsAlive);
+		}
+
+		[Test]
 		public void Disposing_factory_destroys_transient_components()
 		{
 			container.Register(
@@ -307,6 +361,16 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 			Assert.AreEqual("one", one.Parameter);
 			Assert.AreEqual("two", two.Parameter);
 			Assert.AreEqual("three", three.Parameter);
+		}
+
+		[Test]
+		public void Factory_is_tracked_by_the_container()
+		{
+			container.Register(Component.For<DummyComponentFactory>().AsFactory());
+
+			var factory = container.Resolve<DummyComponentFactory>();
+
+			Assert.IsTrue(container.Kernel.ReleasePolicy.HasTrack(factory));
 		}
 
 		[Test]
