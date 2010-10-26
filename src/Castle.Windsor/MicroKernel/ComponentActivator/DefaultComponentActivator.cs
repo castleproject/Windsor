@@ -285,7 +285,7 @@ namespace Castle.MicroKernel.ComponentActivator
 
 			if (winnerCandidate == null)
 			{
-				throw new ComponentActivatorException(string.Format("Could not find resolvable constructor for {0}. Make sure all required dependencies are provided.", Model.Implementation.FullName));
+				throw new NoResolvableConstructorFoundException(Model.Implementation);
 			}
 
 			return winnerCandidate;

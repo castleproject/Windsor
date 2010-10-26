@@ -21,9 +21,46 @@ namespace Castle.MicroKernel.Tests.SpecializedResolvers
 
 	using NUnit.Framework;
 
+	using Component = Castle.MicroKernel.Registration.Component;
+
 	[TestFixture]
 	public class ArrayResolverTestCase : AbstractContainerTestFixture
 	{
+		[Test(Description = "IOC-239")]
+		public void ArrayResolution_UnresolvableDependencyCausesResolutionFailure()
+		{
+			Kernel.Resolver.AddSubResolver(new ArrayResolver(Kernel, true));
+			Container.Register(
+				Component.For<IDependency>().ImplementedBy<ResolvableDependency>(),
+				Component.For<IDependency>().ImplementedBy<UnresolvalbeDependencyWithPrimitiveConstructor>(),
+				Component.For<IDependOnArray>().ImplementedBy<DependsOnArray>()
+				);
+			Container.Resolve<IDependOnArray>();
+		}
+
+		[Test(Description = "IOC-239")]
+		public void ArrayResolution_UnresolvableDependencyCausesResolutionFailure_ServiceConstructor()
+		{
+			Kernel.Resolver.AddSubResolver(new ArrayResolver(Kernel, true));
+			Container.Register(
+				Component.For<IDependency>().ImplementedBy<ResolvableDependency>(),
+				Component.For<IDependency>().ImplementedBy<UnresolvalbeDependencyWithAdditionalServiceConstructor>(),
+				Component.For<IDependOnArray>().ImplementedBy<DependsOnArray>()
+				);
+			Container.Resolve<IDependOnArray>();
+		}
+
+		[Test(Description = "IOC-239")]
+		public void ArrayResolution_UnresolvableDependencyIsNotIncluded()
+		{
+			Container.Register(
+				Component.For<IDependency>().ImplementedBy<ResolvableDependency>(),
+				Component.For<IDependency>().ImplementedBy<UnresolvalbeDependency>(),
+				Component.For<IDependOnArray>().ImplementedBy<DependsOnArray>()
+				);
+			Container.Resolve<IDependOnArray>();
+		}
+
 		[Test]
 		public void Composite_service_can_be_resolved_without_triggering_circular_dependency_detection_fuse()
 		{

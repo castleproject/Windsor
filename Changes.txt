@@ -1,3 +1,4 @@
+- fixed IOC-239 - ArrayResolver attempts to instantiate an unresolvable array dependency
 - fixed IOC-238 - Resolving Composite depending on a Decorator may fire up cycle detection fuse
 - fixed IOC-237 - Castle Windsor : Possible bug with Startable Facility and “decorator pattern” dependencies
 - fixed IOC-235 - TypedFactoryFacility with inherited interfaces throws an exception
