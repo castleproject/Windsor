@@ -17,7 +17,6 @@ namespace Castle.MicroKernel.Resolvers.SpecializedResolvers
 	using Castle.Core;
 	using Castle.MicroKernel.Context;
 
-
 	/// <summary>
 	///   Handle dependencies of services in the format of typed arrays.
 	/// </summary>
