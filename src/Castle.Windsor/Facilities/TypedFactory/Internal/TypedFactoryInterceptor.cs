@@ -28,14 +28,17 @@ namespace Castle.Facilities.TypedFactory.Internal
 	[Transient]
 	public class TypedFactoryInterceptor : IInterceptor, IOnBehalfAware, IDisposable
 	{
+		private const int SweepFrequency = 100;
+
 		private readonly IKernel kernel;
 
 		private readonly IDictionary<MethodInfo, Action<IInvocation>> methods =
 			new Dictionary<MethodInfo, Action<IInvocation>>();
 
-		private readonly List<object> trackedComponents = new List<object>();
+		private readonly List<WeakReference> resolvedTrackedComponents = new List<WeakReference>();
 
 		private bool disposed;
+		private int resolveCount;
 
 		private ComponentModel target;
 
@@ -50,11 +53,11 @@ namespace Castle.Facilities.TypedFactory.Internal
 		public void Dispose()
 		{
 			disposed = true;
-			var components = trackedComponents.ToArray();
-			trackedComponents.Clear();
+			var components = resolvedTrackedComponents.ToArray();
+			resolvedTrackedComponents.Clear();
 			foreach (var component in components)
 			{
-				kernel.ReleaseComponent(component);
+				kernel.ReleaseComponent(component.Target);
 			}
 		}
 
@@ -106,6 +109,19 @@ namespace Castle.Facilities.TypedFactory.Internal
 			}
 		}
 
+		private void CollectDeadReferences()
+		{
+			resolveCount++;
+			if (resolveCount != SweepFrequency)
+			{
+				return;
+			}
+
+			resolveCount = 0;
+			// we go ahead and remove dead references from the list
+			resolvedTrackedComponents.RemoveAll(c => c.IsAlive == false);
+		}
+
 		private void Dispose(IInvocation invocation)
 		{
 			Dispose();
@@ -126,7 +142,6 @@ namespace Castle.Facilities.TypedFactory.Internal
 				}
 
 				kernel.ReleaseComponent(argument);
-				trackedComponents.Remove(argument);
 			}
 		}
 
@@ -144,7 +159,8 @@ namespace Castle.Facilities.TypedFactory.Internal
 			var instance = component.Resolve(kernel);
 			if (kernel.ReleasePolicy.HasTrack(instance))
 			{
-				trackedComponents.Add(instance);
+				CollectDeadReferences();
+				resolvedTrackedComponents.Add(new WeakReference(instance));
 			}
 			invocation.ReturnValue = instance;
 		}

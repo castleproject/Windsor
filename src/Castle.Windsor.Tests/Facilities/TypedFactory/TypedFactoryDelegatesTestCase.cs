@@ -16,7 +16,6 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 {
 	using System;
 
-	using Castle.Core;
 	using Castle.Facilities.TypedFactory;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Registration;
@@ -134,6 +133,16 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 		}
 
 		[Test]
+		public void Explicitly_registered_factory_is_tracked()
+		{
+			container.Register(Component.For<Func<A>>().AsFactory());
+
+			var factory = container.Resolve<Func<A>>();
+
+			Assert.IsTrue(container.Kernel.ReleasePolicy.HasTrack(factory));
+		}
+
+		[Test]
 		public void Factory_DOES_NOT_implicitly_pick_registered_selector_explicitly_registered_factory()
 		{
 			DisposableSelector.InstancesCreated = 0;
@@ -172,6 +181,26 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 		}
 
 		[Test]
+		public void Factory_does_not_referece_components_after_theyve_been_released()
+		{
+			DisposableFoo.DisposedCount = 0;
+
+			container.Register(Component.For<DisposableFoo>().LifeStyle.Transient,
+			                   Component.For<UsesDisposableFooDelegate>().LifeStyle.Transient);
+			var dependsOnFoo = container.Resolve<UsesDisposableFooDelegate>();
+			var foo = dependsOnFoo.GetFoo();
+
+			Assert.AreEqual(0, DisposableFoo.DisposedCount);
+			container.Release(foo);
+			Assert.AreEqual(1, DisposableFoo.DisposedCount);
+
+			var weakFoo = new WeakReference(foo);
+			foo = null;
+			GC.Collect();
+			Assert.IsFalse(weakFoo.IsAlive);
+		}
+
+		[Test]
 		public void Factory_explicitly_pick_registered_selector()
 		{
 			DisposableSelector.InstancesCreated = 0;
@@ -190,7 +219,7 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 		[Test]
 		public void Factory_obeys_lifestyle()
 		{
-			container.Register(Component.For<Foo>().Named("MyFoo").LifeStyle.Is(LifestyleType.Singleton));
+			container.Register(Component.For<Foo>().Named("MyFoo").LifeStyle.Singleton);
 			container.Register(Component.For<UsesFooDelegate>());
 			var dependsOnFoo = container.Resolve<UsesFooDelegate>();
 			var foo = dependsOnFoo.GetFoo();
@@ -267,6 +296,14 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 		}
 
 		[Test]
+		public void Implicitly_registered_factory_is_tracked()
+		{
+			var factory = container.Resolve<Func<A>>();
+
+			Assert.IsTrue(container.Kernel.ReleasePolicy.HasTrack(factory));
+		}
+
+		[Test]
 		public void Registered_Delegate_prefered_over_factory()
 		{
 			var foo = new DisposableFoo();
@@ -311,8 +348,7 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 		}
 
 		[Test]
-		public void
-			Resolution_ShouldNotThrow_When_TwoDelegateFactoriesAreResolvedWithOnePreviouslyLazyLoaded_WithMultipleCtors()
+		public void Resolution_ShouldNotThrow_When_TwoDelegateFactoriesAreResolvedWithOnePreviouslyLazyLoaded_WithMultipleCtors()
 		{
 			container.Register(Component.For<SimpleComponent1>(),
 			                   Component.For<SimpleComponent2>(),
