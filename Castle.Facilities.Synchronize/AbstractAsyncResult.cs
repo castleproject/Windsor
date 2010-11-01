@@ -26,7 +26,6 @@ namespace Castle.Facilities.Synchronize
 		private int completed;
 		private int invokedCallback;
 		private readonly AsyncCallback callback;
-		private bool completedSynchronously;
 		private bool endCalled;
 		private Timeout timeout;
 		private Exception exception;
@@ -63,14 +62,7 @@ namespace Castle.Facilities.Synchronize
 		/// <summary>
 		/// Determines if the result completed synchronously.
 		/// </summary>
-		public bool CompletedSynchronously
-		{
-			get { return completedSynchronously; }
-			protected internal set
-            {
-            	 completedSynchronously = value;
-            }
-		}
+		public bool CompletedSynchronously { get; protected internal set; }
 
 		/// <summary>
 		/// Gets the asynchronous <see cref="WaitHandle"/>.
@@ -156,6 +148,17 @@ namespace Castle.Facilities.Synchronize
 			return result.result;
 		}
 
+		/// <summary>
+		/// Ends the asynchronous request.
+		/// </summary>
+		/// <typeparam name="TResult"></typeparam>
+		/// <param name="asyncResult">The asynchronous result.</param>
+		/// <returns>The typed result.</returns>
+		public static TResult End<TResult>(IAsyncResult asyncResult)
+		{
+			return (TResult)End(asyncResult);
+		}
+
 		#endregion
 
 		/// <summary>
@@ -164,7 +167,7 @@ namespace Castle.Facilities.Synchronize
 		/// <param name="synchronously">true if synchronously.</param>
 		protected void Complete(bool synchronously)
 		{
-			completedSynchronously = synchronously;
+			CompletedSynchronously = synchronously;
 
 			Interlocked.Increment(ref completed);
 
