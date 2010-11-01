@@ -663,12 +663,6 @@ namespace Castle.MicroKernel.Handlers
 				return;
 			}
 
-			// Custom activators should deal with this case
-			if (ComponentModel.Constructors.Count == 0)
-			{
-				return;
-			}
-
 			// Property dependencies may not be optional
 
 			foreach (var property in ComponentModel.Properties)
@@ -823,6 +817,11 @@ namespace Castle.MicroKernel.Handlers
 
 		private IEnumerable<ConstructorCandidate> GetCandidateConstructors()
 		{
+			if (ComponentModel.Constructors.Count == 0)
+			{
+				return ComponentModel.Constructors;
+			}
+
 			if (ComponentModel.Constructors.HasAmbiguousFewerArgumentsCandidate == false &&
 			    CanSatisfyConstructor(ComponentModel.Constructors.FewerArgumentsCandidate))
 			{
