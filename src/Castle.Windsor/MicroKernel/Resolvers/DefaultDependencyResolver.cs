@@ -410,8 +410,7 @@ namespace Castle.MicroKernel.Resolvers
 		protected virtual object ResolveParameterDependency(CreationContext context, ComponentModel model,
 		                                                    DependencyModel dependency)
 		{
-			ParameterModel parameter = ObtainParameterModelMatchingDependency(dependency, model);
-
+			var parameter = ObtainParameterModelMatchingDependency(dependency, model);
 			if (parameter != null)
 			{
 				converter.Context.Push(model, context);
