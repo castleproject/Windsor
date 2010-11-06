@@ -14,14 +14,16 @@
 
 namespace Castle.MicroKernel.Tests.SpecializedResolvers
 {
+	using System.Linq;
+
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Resolvers.SpecializedResolvers;
+	using Castle.MicroKernel.SubSystems.Configuration;
+	using Castle.Windsor;
 	using Castle.Windsor.Tests;
 	using Castle.Windsor.Tests.Components;
 
 	using NUnit.Framework;
-
-	using Component = Castle.MicroKernel.Registration.Component;
 
 	[TestFixture]
 	public class ArrayResolverTestCase : AbstractContainerTestFixture
@@ -53,6 +55,7 @@ namespace Castle.MicroKernel.Tests.SpecializedResolvers
 		[Test(Description = "IOC-239")]
 		public void ArrayResolution_UnresolvableDependencyIsNotIncluded()
 		{
+			Kernel.Resolver.AddSubResolver(new ArrayResolver(Kernel));
 			Container.Register(
 				Component.For<IDependency>().ImplementedBy<ResolvableDependency>(),
 				Component.For<IDependency>().ImplementedBy<UnresolvalbeDependency>(),
@@ -64,6 +67,7 @@ namespace Castle.MicroKernel.Tests.SpecializedResolvers
 		[Test]
 		public void Composite_service_can_be_resolved_without_triggering_circular_dependency_detection_fuse()
 		{
+			Kernel.Resolver.AddSubResolver(new ArrayResolver(Kernel));
 			Container.Register(AllTypes.FromThisAssembly()
 			                   	.BasedOn<IEmptyService>()
 			                   	.WithService.Base()
@@ -76,6 +80,7 @@ namespace Castle.MicroKernel.Tests.SpecializedResolvers
 		[Test(Description = "IOC-238")]
 		public void Composite_service_can_be_resolved_without_triggering_circular_dependency_detection_fuse_composite_registered_first()
 		{
+			Kernel.Resolver.AddSubResolver(new ArrayResolver(Kernel));
 			Container.Register(
 				Component.For<IEmptyService, EmptyServiceComposite>().ImplementedBy<EmptyServiceComposite>(),
 				Component.For<IEmptyService>().ImplementedBy<EmptyServiceA>(),
@@ -91,6 +96,7 @@ namespace Castle.MicroKernel.Tests.SpecializedResolvers
 		[Test]
 		public void DependencyOnArrayOfServices_OnConstructor()
 		{
+			Kernel.Resolver.AddSubResolver(new ArrayResolver(Kernel));
 			Container.Register(Component.For<IEmptyService>().ImplementedBy<EmptyServiceA>(),
 			                   Component.For<IEmptyService>().ImplementedBy<EmptyServiceB>(),
 			                   Component.For<ArrayDepAsConstructor>());
@@ -109,6 +115,7 @@ namespace Castle.MicroKernel.Tests.SpecializedResolvers
 		[Test]
 		public void DependencyOnArrayOfServices_OnProperty()
 		{
+			Kernel.Resolver.AddSubResolver(new ArrayResolver(Kernel));
 			Container.Register(Component.For<IEmptyService>().ImplementedBy<EmptyServiceA>(),
 			                   Component.For<IEmptyService>().ImplementedBy<EmptyServiceB>(),
 			                   Component.For<ArrayDepAsProperty>());
@@ -141,6 +148,7 @@ namespace Castle.MicroKernel.Tests.SpecializedResolvers
 		[Test]
 		public void DependencyOn_ref_ArrayOfServices_OnConstructor()
 		{
+			Kernel.Resolver.AddSubResolver(new ArrayResolver(Kernel));
 			Container.Register(Component.For<IEmptyService>().ImplementedBy<EmptyServiceA>(),
 			                   Component.For<IEmptyService>().ImplementedBy<EmptyServiceB>(),
 			                   Component.For<ArrayRefDepAsConstructor>());
@@ -156,13 +164,82 @@ namespace Castle.MicroKernel.Tests.SpecializedResolvers
 			}
 		}
 
-		[SetUp]
-		public void SetUp()
+		[Test(Description = "IOC-240")]
+		[Ignore("Not implemented yet.")]
+		public void InjectAll()
 		{
-#if SILVERLIGHT
-			Init();
-#endif
-			Kernel.Resolver.AddSubResolver(new ArrayResolver(Kernel));
+			Container.Kernel.Resolver.AddSubResolver(new ArrayResolver(Container.Kernel, true));
+			Container.Install(new TestInstaller());
+			var fooItemTest = Container.Resolve<ArrayDepAsConstructor>("InjectAll");
+			var dependencies = fooItemTest.Services.Select(d => d.GetType()).ToList();
+			Assert.That(dependencies, Has.Count.EqualTo(3));
+			Assert.That(dependencies, Has.Member(typeof(EmptyServiceA)));
+			Assert.That(dependencies, Has.Member(typeof(EmptyServiceB)));
+			Assert.That(dependencies, Has.Member(typeof(EmptyServiceDecoratorViaProperty)));
+		}
+
+		[Test(Description = "IOC-240")]
+		[Ignore("Not implemented yet.")]
+		public void InjectFooAndBarOnly_WithArrayResolver()
+		{
+			//Container.Kernel.Resolver.AddSubResolver(new ArrayResolver(Container.Kernel, true));
+			Container.Install(new TestInstaller());
+			var fooItemTest = Container.Resolve<ArrayDepAsConstructor>("InjectFooAndBarOnly");
+			var dependencies = fooItemTest.Services.Select(d => d.GetType()).ToList();
+			Assert.That(dependencies, Has.Count.EqualTo(2));
+			Assert.That(dependencies, Has.Member(typeof(EmptyServiceA)));
+			Assert.That(dependencies, Has.Member(typeof(EmptyServiceB)));
+		}
+
+		[Test(Description = "IOC-240")]
+		[Ignore("Not implemented yet.")]
+		public void InjectFooAndBarOnly_WithoutArrayResolver()
+		{
+			Container.Install(new TestInstaller());
+			var fooItemTest = Container.Resolve<ArrayDepAsConstructor>("InjectFooAndBarOnly");
+			var dependencies = fooItemTest.Services.Select(d => d.GetType()).ToList();
+			Assert.That(dependencies, Has.Count.EqualTo(2));
+			Assert.That(dependencies, Has.Member(typeof(EmptyServiceA)));
+			Assert.That(dependencies, Has.Member(typeof(EmptyServiceB)));
+		}
+
+		[Test(Description = "IOC-240")]
+		[Ignore("Not implemented yet.")]
+		public void InjectFooOnly_WithArrayResolver()
+		{
+			Container.Kernel.Resolver.AddSubResolver(new ArrayResolver(Container.Kernel, true));
+			Container.Install(new TestInstaller());
+			var fooItemTest = Container.Resolve<ArrayDepAsConstructor>("InjectFooOnly");
+			var dependencies = fooItemTest.Services.Select(d => d.GetType()).ToList();
+			Assert.That(dependencies, Has.Count.EqualTo(1));
+			Assert.That(dependencies, Has.Member(typeof(EmptyServiceA)));
+		}
+
+		[Test(Description = "IOC-240")]
+		[Ignore("Not implemented yet.")]
+		public void InjectFooOnly_WithoutArrayResolver()
+		{
+			Container.Install(new TestInstaller());
+			var fooItemTest = Container.Resolve<ArrayDepAsConstructor>("InjectFooOnly");
+			var dependencies = fooItemTest.Services.Select(d => d.GetType()).ToList();
+			Assert.That(dependencies, Has.Count.EqualTo(1));
+			Assert.That(dependencies, Has.Member(typeof(EmptyServiceA)));
+		}
+
+		private class TestInstaller : IWindsorInstaller
+		{
+			public void Install(IWindsorContainer container, IConfigurationStore store)
+			{
+				container.Register(
+					Component.For<IEmptyService>().ImplementedBy<EmptyServiceA>().Named("foo"),
+					Component.For<IEmptyService>().ImplementedBy<EmptyServiceB>().Named("bar"),
+					Component.For<IEmptyService>().ImplementedBy<EmptyServiceDecoratorViaProperty>().Named("baz"),
+					Component.For<ArrayDepAsConstructor>().Named("InjectAll"),
+					Component.For<ArrayDepAsConstructor>().Named("InjectFooOnly")
+						.ServiceOverrides(ServiceOverride.ForKey("services").Eq(new[] { "foo" })),
+					Component.For<ArrayDepAsConstructor>().Named("InjectFooAndBarOnly")
+						.ServiceOverrides(ServiceOverride.ForKey("services").Eq(new[] { "foo", "bar" })));
+			}
 		}
 	}
 }
