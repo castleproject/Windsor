@@ -1,3 +1,4 @@
+- implemented IOC-243 - Unseal the InterceptorAttribute class
 - fixed IOC-239 - ArrayResolver attempts to instantiate an unresolvable array dependency
 - fixed IOC-238 - Resolving Composite depending on a Decorator may fire up cycle detection fuse
 - fixed IOC-237 - Castle Windsor : Possible bug with Startable Facility and “decorator pattern” dependencies
@@ -15,183 +16,106 @@
 
 2.5.1 (2010-09-21)
 ==================
-
 - added "Potential lifestyle mismatches" debugger view item, that will detect and list situations where Singleton depends on Transient or PerWebRequest component (which is usually a bug)
-
 - fixed issue where forwarding main type would create additional, superfluous handler
-
 - WebLogger/WebLoggerFactory was removed from Castle.Core so all references to that are removed from Windsor as well
-
 - obseleted UseSingleProxyInterface in preference over IProxyGenerationHook
-
 - fixed IOC-220 Composite pattern with CollectionResolver should be properly supported without throwing "cycle detected" exception
-
 - fixed IOC-218 Enable methods that take arguments as anonymous objects in Silverlight version. This works in SL, but requires [assembly: InternalsVisibleTo(Castle.Core.Internal.InternalsVisible.ToCastleCore)]
-
 - fixed IOC-217 Enable ISupportInitialize support as lifecyclecle concern in Silverlight 4
-
 - implemented IOC-216 Make it possible to specify service overrides in DependsOn, either via Property, or ServiceOverride entry class
-
 - implemented IOC-215 Hide obsolete members from IntelliSense (in basic view. By default in VB they won't be showed, but will in C# :( )
-
 - fixed IOC-214 Missing bracket in obsolete warning text
-
 - implemented IOC-212 Add ability to make IProxyGenerationHooks and IInterceptoSelectors IOnBehalfAware
-
 - fixed IOC-211 Resolve doesn't work with constructor's ref argument
-
 - fixed IOC-210 Typed Factory Facility treats constructor dependency as non-optional if resolved as a TFF component
-
 - fixed IOC-209 Bug in constructor selection when resolving - Windsor would pick unresolvable constructor
-
 - reverted back (to the way it was in v2.1) conditional registration of helper components used by TypedFactoryFacility as it would cause issues when used with nested containers (see the new test and thread "Typed Factories in sub Container (differences between 2.5 and 2.1)" on users group)
-
 - added framework information the assembly was built for to the AssemblyTitle attribute
-
 - improved how late bound types are displayed in debugger
-
 - fixed bug where count of potentially misconfigured components would show invalid value
-
 - added raw handler access to default component view in debugger
-
 - changed how status message is displayed for potentially misconfigured components so that an actual visualizer for strings can be used to view this potentially long piece of text
 
 2.5.0 (2010-08-21)
 ==================
-
 - debugger view support has been extracted to a separate subsystem (IContainerDebuggerExtensionHost) and can be extended by users code via IContainerDebuggerExtension and IComponentDebuggerExtension
-
 - calling IHandler.TryStart will no longer silently ignore all the exceptions.
-
 - added CollectionResolver which is a more general version of ArrayResolver and ListResolver and supports in addition ICollection<Foo> and IEnumerable<Foo>
-
 - fixed issue where dependencies would not be cleaned up when component creation failed
-
 - fixed issue where startable component would be created twice when property dependency could not be resolved
-
 - passing arguments to ILazyComponentLoader (see breakingchanges.txt)
-
 - fixed bug that caused exception when proxied component and it's proxied property dependency shared interceptor
 
 2.5.0 beta2 (2010-07-21)
 ==================
-
 - added support for selecting components based on custom attributes and their properties. See Component.HasAttribute<T>() methods
-
 - added WithService.DefaultInterface() to fluent API.IT matches Foo to IFoo, SuperFooExtended to IFoo and IFooExtended etc
-
 - added support for CastleComponentAttribute in fluent Api. Also added helper filter method Component.IsCastleComponent
-
 - added ability to specify interceptors selector as a service, not just as instance
-
 - added ability to specify proxy hook in fluent API: 
-
 - indexers on IKernel are now obsolete.
-
 - added WithAppConfig() method to logging facility to point to loging configuration in AppDomain's config file (web.config or app.config)
-
 - Restructured lifecycle concerns - introduced ICommissionConcern and IDecommissionConcern and favors them over old enum driven style.
-
 - Fixed how contextual arguments are handled. Null is no longer considered a valid value (That would cause an exception later on, now it's ignored).
-
 - Changed method DeferredStart on StartableFacility. It now does not take a bool parameter. A DeferredTryStart() method was introduced instead.
 
 2.5.0 beta1 (2010-07-05)
 ==================
 - Typed Factories will not implicitly pick default ITypedFactoryComponentSelector registered in the container anymore
-
 - Obsoleted all the AddComponent* methods in favor of using Installers and fluent registration API
-
 - ServiceSelector delegate (used in WithService.Select calls) changed signature to fix a bug: http://3.ly/eP5Q
-
 - moved IWindsorInstaller to Castle.MicroKernel.Registration namespace
-
 - typed factories will now obey container release policy, that is if the container does not track the component, so won't the factory.
-
 - added helper methods to fluently configure logging facility using: container.AddFacility<LoggingFacility>( f = > f.Fluent().Magic().Here() );
-
 - added overload for UsingFactoryMethod which exposees ComponentModel of component to the factory
-
 - added generic overloads for ITypeConverter.PerformConversion to reduce casting.
-
 - it is now possible to call WithService.Foo().WithService.Bar() and both services will be used. Also more methods were added: WithService.Self() and WithService.AllInterfaces()
-
 - added simple debugger visualizer to help diagnosing misconfigured components.
-
 - added optimized mode to StartableFacility for Single-call-to-Install scenario that won't start anything before the end of Install (at which point the container is assumed to be completely configured and all components should be there) and it will throw if it can't resolve and start the component.
-
 - added OptimizeDependencyResolution around calls to Install
-
 - Component.IsInNamespace and its sister methods have now overload that let you include components from subnamespaces as well.
-
 - added ability to load assemblies from designated directory (with fair bit of optional filtering using new AssemblyFilter class). It works in three places:
 	- AllTypes.FromAssemblyInDirectory() - picks assemblies for registration
 	- FromAssembly.InDirectory() - installs installers from assemblies in the directory
 	- <install directory="" /> - installs installers from assemblies in directory via XML
-
 - TypedFactoryFacility - added ability to configure factory inline: Component.For<IFooFactory>().AsFactory(f => f.SelectedWith("selectorKey")) 
-
 - Changed IModelInterceptorSelector's signature and behavior (see breakingChanges.txt for details)
-
 - removed IProxyHook interface (see breakingchanges.txt)
-
 - added support for specifying typed factory component selectors on a per-factory basis
-
 - added support for using services as mixins
-
 - added autogenerated delegate-based factories. Taking dependency on Func<IFoo> and calling the delegate will return IFoo from the container
-
 - implemented IOC-ISSUE-203 - Add to fluent API scanning assemblies for IWindsorInstallers and installing them
-
 - added fluent API for EventWiringFacility
-
 - added ability to specify assemblies that will be scanned for types when shorthened type name is using via XML using the following syntax:
 	<using assembly="Assembly name or path to file.dll" />
-
 - added ability to specify installers (IWindsorInstaller) via XML using either of the following:
   <installers>
 	<install type="Castle.Windsor.Tests.Installers.CustomerInstaller"/>
 	<install assembly="Castle.Windsor.Tests"/>
   </installers>
   installers must be public and have default constructor.
-
 - Xml config does not require assembly qualified type name any more - specifying just type name, or typename+namespace should be enough. Works only for types in already loaded assemblies.
-
 - ResolveAll will now resolve components that are not in Valid state when inline/dynamic arguments are provided
-
 - TypedFactoryFacility: TypedFactoryComponent will now fallback to resolving by type if no component with designated name can be found
-
 - fixed issue with per-web-request components not being released properly in some cases
-
 - fixed IOC-ISSUE-199 - NamingPartsSubSystem broken when RegisterHandlerForwarding is used
-
 - TypedFactoryFacility: added ability to resolve multiple components
-
 - TypedFactoryFacility: added ability to put custom resolving logic
-
 - fixed another case of IoC-168 where a component with two constructors of different parameter length couldn't be resolved when the fewer parameter constructor was not satisfied
-
 - If and Unless functions on fluent registration API are now cumulative - it is legal to call them multiple times and all conditions will be checked. This is a minor breaking change from previous behavior where last call would win.
-
 - added typed arguments (specified by type rather than by name).
 	It works for:
 	- call site (Resolve with Dictionary, specifying System.Type as value of key. A helper class 'Arguments' should be used for this.)
 	- DynamicParameters - there's an extension method Insert that should make using it nicer
 	- fluent Api (DependsOn(Property.ForKey<string>().Eq("typed"))
-
 - added 'Insert' extension method on IDictionary, specifically so simplify usage in DynamicParameters method and similar situations. It behaves like IDictionary's indexer setter
-
 - added 'Arguments' class to carry inline arguments (typed or named) for components. It is recommended to use this class rather than Hashtable or Dictionary<>
-
 - added strongly typed overloads for StartUsingMethod and StopUsingMethod from startable facility's registration API. It is now possible to call .StartUsingMethod(x => x.Start).StopUsingMethod(x => x.Stop)
-
 - moved StartUsingMethod/StopUsingMethod to extension methods in StartableFacility's namespace. Startable() method was removed as superfluous.
-
 - changed the UsingFactoryMethod (and UsingFactory) methods in fluent registration API to not rely on FactorySupportFacility. They now work even if facility is not used.
-
 - fixed IOC-ISSUE-190 - "Resolve with argumentsAsAnonymousType overload is now case sensitive".
 	This fixed a regression bug introduced in v2.1, and brings the behavior back to what it was in v2.0.
-
 - added support for specifying interceptorsSelector, proxyHook and mixins from config (see new tests for example). This also means some small impact breaking changes:
 	- DefaultProxyFactory.CreateProxyGenerationOptionsFrom protected method has changed signature - it now also takes IKernel and CreationContext, to be used by IReferences to do resolve (see below)
 	- DefaultProxyFactory.CustomizeProxy protected virtual method has changed signature, for the same reason as above
@@ -200,7 +124,6 @@
 		Hook from IProxyHook to IReference<IProxyHook>
 		MixIns from object[] to IEnumerable<IReference<object>>
 	IReference abstraction allows to use components resolved from the container, similar to InterceptorReferences.
-
 - Moved several types from Core:
 	ComponentActivatorAttribute
 	ComponentProxyBehaviorAttribute
@@ -246,8 +169,7 @@
 	"Extra constructors on LoggingFacility"
   - Added test case supplied by chris ortman
   - Register base logger and factory when using extended logger.
-  - Fixed FACILITIES-77
-	"ILoggerFactory instance creation requires constructor with one argument"
+  - Fixed FACILITIES-77 - ILoggerFactory instance creation requires constructor with one argument
 
 - simplified API for attaching interceptors.
 

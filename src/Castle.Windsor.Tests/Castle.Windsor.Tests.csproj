@@ -100,9 +100,11 @@
     <Compile Include="ClassComponents\CBA.cs" />
     <Compile Include="ClassComponents\HasByRefCtorArgument.cs" />
     <Compile Include="Components\ArrayRefDepAsConstructor.cs" />
+    <Compile Include="Components\CalculatorServiceWithFooInterceptor.cs" />
     <Compile Include="Components\CalculatorServiceWithMultipleInterfaces.cs" />
     <Compile Include="Components\CalculatorServiceWithoutSingleProxyBehavior.cs" />
     <Compile Include="Components\CalculatorServiceWithSingleProxyBehavior.cs" />
+    <Compile Include="Components\CalculatorServiceWithStandardInterceptor.cs" />
     <Compile Include="Components\DependsOnArray.cs" />
     <Compile Include="Components\EmptyServiceComposite.cs" />
     <Compile Include="Components\EmptyServiceDecorator.cs" />
@@ -114,11 +116,13 @@
     <Compile Include="Components\ResolvableDependency.cs" />
     <Compile Include="Components\SimpleServiceInitializable.cs" />
     <Compile Include="Components\SimpleServiceSupportInitialize.cs" />
+    <Compile Include="Components\StandardInterceptorAttribute.cs" />
     <Compile Include="Components\SupportInitializeComponent.cs" />
     <Compile Include="Components\UnresolvalbeDependency.cs" />
     <Compile Include="Components\UnresolvalbeDependencyWithAdditionalServiceConstructor.cs" />
     <Compile Include="Components\UnresolvalbeDependencyWithPrimitiveConstructor.cs" />
     <Compile Include="ContainerAndGenericsInConfigTestCase.cs" />
+    <Compile Include="Core.Tests\InterceptorAttributeTestCase.cs" />
     <Compile Include="Experimental\AllComponentsTestCase.cs" />
     <Compile Include="Experimental\ProblematicDependenciesTestCase.cs" />
     <Compile Include="Facilities\Startable\StartableAndDecoratorsTestCase.cs" />

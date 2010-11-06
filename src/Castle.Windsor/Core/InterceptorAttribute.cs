@@ -43,7 +43,7 @@ namespace Castle.Core
 			interceptorRef = new InterceptorReference(interceptorType);
 		}
 
-		public InterceptorReference Interceptor
+		public virtual InterceptorReference Interceptor
 		{
 			get { return interceptorRef; }
 		}
