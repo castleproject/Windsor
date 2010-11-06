@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,71 +15,16 @@
 namespace Castle.Windsor.Tests.Components
 {
 	using System;
+
 	using Castle.Core;
 	using Castle.DynamicProxy;
 
-    /// <summary>
-	/// Summary description for CalculatorServiceWithAttributes.
-	/// </summary>
-	[Interceptor(typeof(StandardInterceptor))]
-	public class CalculatorServiceWithMultipleInterfaces : CalculatorService, IDisposable
-	{
-		public CalculatorServiceWithMultipleInterfaces()
-		{
-		}
-
-		public void Dispose()
-		{
-		}
-	}
-
-	/// <summary>
-	/// Summary description for CalculatorServiceWithAttributes.
-	/// </summary>
-	[Interceptor(typeof(StandardInterceptor))]
-#pragma warning disable 0618 //call to obsolete method
-	[ComponentProxyBehavior(UseSingleInterfaceProxy = true)]
-#pragma warning restore
-	public class CalculatorServiceWithSingleProxyBehavior : CalculatorService, IDisposable
-	{
-		public CalculatorServiceWithSingleProxyBehavior()
-		{
-		}
-
-		public void Dispose()
-		{
-		}
-	}
-
-	/// <summary>
-	/// Summary description for CalculatorServiceWithAttributes.
-	/// </summary>
-	[Interceptor(typeof(StandardInterceptor))]
-#pragma warning disable 0618 //call to obsolete method
-	[ComponentProxyBehavior(UseSingleInterfaceProxy = false)]
-#pragma warning restore
-	public class CalculatorServiceWithoutSingleProxyBehavior : CalculatorService, IDisposable
-	{
-		public CalculatorServiceWithoutSingleProxyBehavior()
-		{
-		}
-
-		public void Dispose()
-		{
-		}
-	}
 #if !SILVERLIGHT
-	/// <summary>
-	/// Summary description for CalculatorServiceWithAttributes.
-	/// </summary>
+
 	[Interceptor(typeof(StandardInterceptor))]
 	[ComponentProxyBehavior(UseMarshalByRefProxy = true)]
 	public class CalculatorServiceWithMarshalByRefProxyBehavior : CalculatorService, IDisposable
 	{
-		public CalculatorServiceWithMarshalByRefProxyBehavior()
-		{
-		}
-
 		public void Dispose()
 		{
 		}

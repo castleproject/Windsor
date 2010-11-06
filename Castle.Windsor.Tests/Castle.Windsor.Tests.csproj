@@ -100,6 +100,9 @@
     <Compile Include="ClassComponents\CBA.cs" />
     <Compile Include="ClassComponents\HasByRefCtorArgument.cs" />
     <Compile Include="Components\ArrayRefDepAsConstructor.cs" />
+    <Compile Include="Components\CalculatorServiceWithMultipleInterfaces.cs" />
+    <Compile Include="Components\CalculatorServiceWithoutSingleProxyBehavior.cs" />
+    <Compile Include="Components\CalculatorServiceWithSingleProxyBehavior.cs" />
     <Compile Include="Components\DependsOnArray.cs" />
     <Compile Include="Components\EmptyServiceComposite.cs" />
     <Compile Include="Components\EmptyServiceDecorator.cs" />
