@@ -113,7 +113,8 @@
       <HintPath>..\..\lib\log4net.dll</HintPath>
     </Reference>
     <Reference Include="NLog">
-      <HintPath>..\..\lib\NLog.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>$(RootPath)\lib\$(BuildConfigKey)\NLog.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework">
       <HintPath>..\..\lib\NUnit.Framework.dll</HintPath>
