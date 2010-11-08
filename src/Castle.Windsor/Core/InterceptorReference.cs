@@ -15,7 +15,6 @@
 namespace Castle.Core
 {
 	using System;
-	using System.Collections.Generic;
 
 	using Castle.DynamicProxy;
 	using Castle.MicroKernel;

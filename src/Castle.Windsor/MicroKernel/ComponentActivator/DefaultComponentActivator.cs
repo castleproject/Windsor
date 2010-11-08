@@ -20,7 +20,6 @@ namespace Castle.MicroKernel.ComponentActivator
 	using System.Linq;
 #endif
 	using System.Reflection;
-	using System.Security;
 	using System.Security.Permissions;
 
 	using Castle.Core;
@@ -61,24 +60,9 @@ namespace Castle.MicroKernel.ComponentActivator
 			: base(model, kernel, onCreation, onDestruction)
 		{
 #if (!SILVERLIGHT)
-			useFastCreateInstance = !model.Implementation.IsContextful && HasSerializationFormatterPermission();
+			useFastCreateInstance = !model.Implementation.IsContextful && new SecurityPermission(SecurityPermissionFlag.SerializationFormatter).IsGranted();
 #endif
 		}
-
-#if(!SILVERLIGHT)
-		private bool HasSerializationFormatterPermission()
-		{
-#if(DOTNET35)
-			return SecurityManager.IsGranted(new SecurityPermission(SecurityPermissionFlag.SerializationFormatter));
-#else
-			var permission = new PermissionSet(PermissionState.None);
-			permission.AddPermission(new SecurityPermission(SecurityPermissionFlag.UnmanagedCode));
-			return permission.IsSubsetOf(AppDomain.CurrentDomain.PermissionSet);
-#endif
-		}
-#endif
-
-		#region AbstractComponentActivator Members
 
 		protected override object InternalCreate(CreationContext context)
 		{
@@ -96,8 +80,6 @@ namespace Castle.MicroKernel.ComponentActivator
 		{
 			ApplyDecommissionConcerns(instance);
 		}
-
-		#endregion
 
 		protected virtual object Instantiate(CreationContext context)
 		{
@@ -285,7 +267,7 @@ namespace Castle.MicroKernel.ComponentActivator
 
 			if (winnerCandidate == null)
 			{
-				throw new ComponentActivatorException(string.Format("Could not find resolvable constructor for {0}. Make sure all required dependencies are provided.", Model.Implementation.FullName));
+				throw new NoResolvableConstructorFoundException(Model.Implementation);
 			}
 
 			return winnerCandidate;

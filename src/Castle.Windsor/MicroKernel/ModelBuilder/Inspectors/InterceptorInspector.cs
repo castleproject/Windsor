@@ -17,6 +17,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 	using System;
 	using Castle.Core;
 	using Castle.Core.Configuration;
+	using Castle.Core.Internal;
 	using Castle.DynamicProxy;
 	using Castle.MicroKernel.Proxy;
 	using Castle.MicroKernel.Util;
@@ -104,8 +105,8 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 
 		protected virtual void CollectFromAttributes(ComponentModel model)
 		{
-			var attributes = Attribute.GetCustomAttributes(model.Implementation, typeof(InterceptorAttribute), true);
-			foreach (InterceptorAttribute attribute in attributes)
+			var attributes = model.Implementation.GetAttributes<InterceptorAttribute>();
+			foreach (var attribute in attributes)
 			{
 				AddInterceptor(attribute.Interceptor, model.Interceptors);
 			}

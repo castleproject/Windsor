@@ -390,6 +390,13 @@ namespace Castle.MicroKernel.Handlers
 				// TODO: this should be logged
 				return null;
 			}
+			catch(NoResolvableConstructorFoundException)
+			{
+				// it's pretty obvious when this exception is thrown methinks.
+				// this was added as temporary (how many times have you heard someone say that)
+				// workaround for issue IOC-239
+				return null;
+			}
 		}
 
 		public virtual bool CanResolve(CreationContext context, ISubDependencyResolver contextHandlerResolver,
@@ -656,12 +663,6 @@ namespace Castle.MicroKernel.Handlers
 				return;
 			}
 
-			// Custom activators should deal with this case
-			if (ComponentModel.Constructors.Count == 0)
-			{
-				return;
-			}
-
 			// Property dependencies may not be optional
 
 			foreach (var property in ComponentModel.Properties)
@@ -816,6 +817,11 @@ namespace Castle.MicroKernel.Handlers
 
 		private IEnumerable<ConstructorCandidate> GetCandidateConstructors()
 		{
+			if (ComponentModel.Constructors.Count == 0)
+			{
+				return ComponentModel.Constructors;
+			}
+
 			if (ComponentModel.Constructors.HasAmbiguousFewerArgumentsCandidate == false &&
 			    CanSatisfyConstructor(ComponentModel.Constructors.FewerArgumentsCandidate))
 			{

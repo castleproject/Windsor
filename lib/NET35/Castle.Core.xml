@@ -1088,11 +1088,11 @@
         </member>
         <member name="M:Castle.DynamicProxy.IInvocation.GetConcreteMethod">
             <summary>
-            Returns the concrete instantiation of the <see cref="P:Castle.DynamicProxy.IInvocation.Method"/>, with any generic
+            Returns the concrete instantiation of the <see cref="P:Castle.DynamicProxy.IInvocation.Method"/> on the proxy, with any generic
             parameters bound to real types.
             </summary>
             <returns>
-            The concrete instantiation of the <see cref="P:Castle.DynamicProxy.IInvocation.Method"/>, or the <see cref="P:Castle.DynamicProxy.IInvocation.Method"/> if
+            The concrete instantiation of the <see cref="P:Castle.DynamicProxy.IInvocation.Method"/> on the proxy, or the <see cref="P:Castle.DynamicProxy.IInvocation.Method"/> if
             not a generic method.
             </returns>
             <remarks>Can be slower than calling <see cref="P:Castle.DynamicProxy.IInvocation.Method"/>.</remarks>
@@ -1101,10 +1101,11 @@
             <summary>
             Returns the concrete instantiation of <see cref="P:Castle.DynamicProxy.IInvocation.MethodInvocationTarget"/>, with any
             generic parameters bound to real types.
+            For interface proxies, this will point to the <see cref="T:System.Reflection.MethodInfo"/> on the target class.
             </summary>
             <returns>The concrete instantiation of <see cref="P:Castle.DynamicProxy.IInvocation.MethodInvocationTarget"/>, or
             <see cref="P:Castle.DynamicProxy.IInvocation.MethodInvocationTarget"/> if not a generic method.</returns>
-            <remarks>Can be slower than calling <see cref="P:Castle.DynamicProxy.IInvocation.MethodInvocationTarget"/>.</remarks>
+            <remarks>In debug builds this can be slower than calling <see cref="P:Castle.DynamicProxy.IInvocation.MethodInvocationTarget"/>.</remarks>
         </member>
         <member name="M:Castle.DynamicProxy.IInvocation.Proceed">
             <summary>
@@ -1150,7 +1151,7 @@
         </member>
         <member name="P:Castle.DynamicProxy.IInvocation.Method">
             <summary>
-            Gets the <see cref="T:System.Reflection.MethodInfo"/> representing the method being invoked.
+            Gets the <see cref="T:System.Reflection.MethodInfo"/> representing the method being invoked on the proxy.
             </summary>
             <value>The <see cref="T:System.Reflection.MethodInfo"/> representing the method being invoked.</value>
         </member>
@@ -4390,7 +4391,7 @@
             </summary>
             <param name="type">The <see cref="T:System.Type"/></param>
             <param name="defaultValue">
-            The Default value returned if the convertion fails.
+            The Default value returned if the conversion fails.
             </param>
             <returns>The Value converted into the specified type.</returns>
         </member>
@@ -4744,7 +4745,7 @@
             </summary>
             <remarks>
             Implementors should return <c>true</c>
-            only if the given identificator is supported
+            only if the given identifier is supported
             by the resource factory
             </remarks>
             <param name="uri"></param>

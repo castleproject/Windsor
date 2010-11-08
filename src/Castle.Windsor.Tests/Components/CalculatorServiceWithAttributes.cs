@@ -28,10 +28,6 @@ namespace Castle.Windsor.Tests.Components
 	public class CalculatorServiceWithAttributes : MarshalByRefObject
 #endif
 	{
-		public CalculatorServiceWithAttributes()
-		{
-		}
-
 		public virtual int Sum(int x, int y)
 		{
 			return x + y;
