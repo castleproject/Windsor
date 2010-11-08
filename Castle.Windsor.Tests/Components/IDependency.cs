@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,23 +14,7 @@
 
 namespace Castle.Windsor.Tests.Components
 {
-	using System;
-	using Castle.Core;
-	using Castle.Windsor.Tests.Interceptors;
-
-	/// <summary>
-	/// Summary description for CalculatorServiceWithAttributes.
-	/// </summary>
-	[Interceptor(typeof(ResultModifierInterceptor))]
-#if (SILVERLIGHT)
-	public class CalculatorServiceWithAttributes 
-#else
-	public class CalculatorServiceWithAttributes : MarshalByRefObject
-#endif
+	public interface IDependency
 	{
-		public virtual int Sum(int x, int y)
-		{
-			return x + y;
-		}
 	}
 }

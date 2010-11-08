@@ -18,7 +18,7 @@ namespace Castle.Windsor.Tests.Components
 	using Castle.Core;
 	using Castle.DynamicProxy;
 
-    internal interface IInternal
+	internal interface IInternal
 	{
 		void Do();
 	}

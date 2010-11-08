@@ -185,7 +185,7 @@ namespace Castle.MicroKernel.Tests.Configuration
 		}
 
 		[Test]
-		[ExpectedException(typeof(ComponentActivatorException))]
+		[ExpectedException(typeof(NoResolvableConstructorFoundException))]
 		public void ConstructorWithUnsatisfiedParameters()
 		{
 			kernel.Register(Component.For<ClassWithConstructors>().Named("key"));
