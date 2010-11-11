@@ -1,5 +1,6 @@
 2.5.2 (2010-11-15)
 ==================
+- fixed IOC-245 - Proxies (for interface services) should not implicitly proxy all interfaces that the service implementation type happens to implement
 - implemented IOC-243 - Remove obsolete UseSingleInterfaceProxy option
 - implemented IOC-243 - Unseal the InterceptorAttribute class
 - fixed IOC-239 - ArrayResolver attempts to instantiate an unresolvable array dependency

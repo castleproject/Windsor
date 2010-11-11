@@ -15,6 +15,7 @@
 namespace Castle.Windsor.Proxy
 {
 	using System;
+	using System.Linq;
 	using System.Runtime.Serialization;
 
 	using Castle.Core;
@@ -105,30 +106,43 @@ namespace Castle.Windsor.Proxy
 			CustomizeOptions(proxyGenOptions, kernel, model, constructorArguments);
 
 			var interfaces = proxyOptions.AdditionalInterfaces;
-
-			if (model.Service.IsInterface)
+			var classServices = model.Services.Where(s => s.IsClass).ToArray();
+			if (classServices.Length == 0)
 			{
+				var firstService = model.Services.First();
+				var additionalInterfaces = model.Services.Skip(1).Concat(interfaces).ToArray();
 				if (proxyOptions.OmitTarget)
 				{
-					proxy = generator.CreateInterfaceProxyWithoutTarget(model.Service, interfaces,
+					proxy = generator.CreateInterfaceProxyWithoutTarget(firstService, additionalInterfaces,
 					                                                    proxyGenOptions, interceptors);
 				}
 				else if (proxyOptions.AllowChangeTarget)
 				{
-					proxy = generator.CreateInterfaceProxyWithTargetInterface(model.Service, interfaces, target,
+					proxy = generator.CreateInterfaceProxyWithTargetInterface(firstService, additionalInterfaces, target,
 					                                                          proxyGenOptions, interceptors);
 				}
 				else
 				{
-					interfaces = CollectInterfaces(interfaces, model);
-					proxy = generator.CreateInterfaceProxyWithTarget(model.Service, interfaces,
+					proxy = generator.CreateInterfaceProxyWithTarget(firstService, additionalInterfaces,
 					                                                 target, proxyGenOptions, interceptors);
 				}
 			}
+			else if (classServices.Length == 1)
+			{
+				var classToProxy = classServices.Single();
+				var additionalInterfaces = model.Services
+					.Except(new[] { classToProxy })
+					.Concat(interfaces)
+					.ToArray();
+				proxy = generator.CreateClassProxy(classToProxy, additionalInterfaces, proxyGenOptions,
+				                                   constructorArguments, interceptors);
+			}
 			else
 			{
-				proxy = generator.CreateClassProxy(model.Implementation, interfaces, proxyGenOptions,
-				                                   constructorArguments, interceptors);
+				throw new NotSupportedException(
+					string.Format(
+						"Component {0} has {1} classes as service. This is not legal on CLR - a component may only have at most one class as its service. This is most likely a bug in your registration.",
+						model.Name, classServices.Length));
 			}
 
 			CustomizeProxy(proxy, proxyGenOptions, kernel, model);
@@ -194,32 +208,6 @@ namespace Castle.Windsor.Proxy
 			var proxyOptions = ProxyUtil.ObtainProxyOptions(model, true);
 
 			return model.Service.IsInterface && !proxyOptions.OmitTarget;
-		}
-
-		protected Type[] CollectInterfaces(Type[] interfaces, ComponentModel model)
-		{
-			var modelInterfaces = model.Implementation.FindInterfaces(EmptyTypeFilter, model.Service);
-
-			if (interfaces == null || interfaces.Length == 0)
-			{
-				interfaces = modelInterfaces;
-			}
-			else if (modelInterfaces.Length > 0)
-			{
-				var allInterfaces = new Type[interfaces.Length + modelInterfaces.Length];
-				interfaces.CopyTo(allInterfaces, 0);
-				modelInterfaces.CopyTo(allInterfaces, interfaces.Length);
-				interfaces = allInterfaces;
-			}
-
-			return interfaces;
-		}
-
-		private bool EmptyTypeFilter(Type type, object criteria)
-		{
-			var mainInterface = (Type)criteria;
-
-			return !type.IsAssignableFrom(mainInterface) && type.IsPublic;
 		}
 
 #if (!SILVERLIGHT)

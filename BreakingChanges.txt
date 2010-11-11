@@ -1,4 +1,22 @@
 ================================================================================================
+change - Proxies no longer implicitly implement all interfaces of component implementation type.
+
+impact - medium
+fixability - medium
+
+description - This original behavior was actually a bug and would produce onpredictible behavior
+	for components exposing several services including their class.
+
+fix - if you were depending on the additional non-service intrfaces being forwarded to the proxy
+	specify them explicitly as addtional interfaces to proxy:
+	container.Register(Component.For<CountingInterceptor>()
+						.Named("a"),
+					Component.For<ICommon>()
+						.ImplementedBy<TwoInterfacesImpl>()
+						.Interceptors("a")
+						.Proxy.AdditionalInterfaces(typeof(ICommon2))
+						.LifeStyle.Transient);
+================================================================================================
 change - UseSingleInterfaceProxy option was removed
 
 impact - low
