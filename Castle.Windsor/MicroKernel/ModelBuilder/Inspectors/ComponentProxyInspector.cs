@@ -108,11 +108,11 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 
 		private static void EnsureComponentRegisteredWithInterface(ComponentModel model)
 		{
-			if (!model.Service.IsInterface)
+			if (model.ClassService != null)
 			{
-				String message = String.Format("The class {0} requested a single interface proxy, " +
-				                               "however the service {1} does not represent an interface",
-				                               model.Implementation.FullName, model.Service.FullName);
+				var message = String.Format("The class {0} requested a single interface proxy, " +
+				                            "however the service {1} does not represent an interface",
+				                            model.Implementation.FullName, model.ClassService.FullName);
 
 				throw new ComponentRegistrationException(message);
 			}

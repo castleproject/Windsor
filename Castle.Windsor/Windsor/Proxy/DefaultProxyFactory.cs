@@ -178,13 +178,11 @@ namespace Castle.Windsor.Proxy
 			return proxyGenOptions;
 		}
 
-		protected virtual void CustomizeProxy(object proxy, ProxyGenerationOptions options, IKernel kernel,
-		                                      ComponentModel model)
+		protected virtual void CustomizeProxy(object proxy, ProxyGenerationOptions options, IKernel kernel, ComponentModel model)
 		{
 		}
 
-		protected virtual void CustomizeOptions(ProxyGenerationOptions options, IKernel kernel, ComponentModel model,
-		                                        object[] arguments)
+		protected virtual void CustomizeOptions(ProxyGenerationOptions options, IKernel kernel, ComponentModel model, object[] arguments)
 		{
 		}
 
@@ -198,11 +196,11 @@ namespace Castle.Windsor.Proxy
 		{
 			var proxyOptions = ProxyUtil.ObtainProxyOptions(model, true);
 
-			return model.Service.IsInterface && !proxyOptions.OmitTarget;
+			return model.ClassService == null &&
+			       proxyOptions.OmitTarget == false;
 		}
 
-#if (!SILVERLIGHT)
-
+#if !SILVERLIGHT
 		public void OnDeserialization(object sender)
 		{
 			Init();
