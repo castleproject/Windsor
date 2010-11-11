@@ -98,7 +98,7 @@ namespace Castle.Windsor.Tests
 			container.Register(Component.For(typeof(A)).Named("A"));
 			container.Register(Component.For(typeof(B)).Named("B"));
 			container.Register(Component.For(typeof(C)).Named("C"));
-			container.Register(Component.For(typeof(int)).Named("NotUsed"));
+			container.Register(Component.For(typeof(object)).Named("NotUsed"));
 
 			Assert.IsNotNull(container.Resolve<A>("A"));
 			Assert.IsNotNull(container.Resolve<B>("B"));

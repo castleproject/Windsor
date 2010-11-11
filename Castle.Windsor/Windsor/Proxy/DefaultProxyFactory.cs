@@ -106,11 +106,11 @@ namespace Castle.Windsor.Proxy
 			CustomizeOptions(proxyGenOptions, kernel, model, constructorArguments);
 
 			var interfaces = proxyOptions.AdditionalInterfaces;
-			var classServices = model.Services.Where(s => s.IsClass).ToArray();
-			if (classServices.Length == 0)
+			var classService = model.ClassService;
+			if (classService == null)
 			{
-				var firstService = model.Services.First();
-				var additionalInterfaces = model.Services.Skip(1).Concat(interfaces).ToArray();
+				var firstService = model.InterfaceServices.First();
+				var additionalInterfaces = model.InterfaceServices.Skip(1).Concat(interfaces).ToArray();
 				if (proxyOptions.OmitTarget)
 				{
 					proxy = generator.CreateInterfaceProxyWithoutTarget(firstService, additionalInterfaces,
@@ -127,22 +127,13 @@ namespace Castle.Windsor.Proxy
 					                                                 target, proxyGenOptions, interceptors);
 				}
 			}
-			else if (classServices.Length == 1)
-			{
-				var classToProxy = classServices.Single();
-				var additionalInterfaces = model.Services
-					.Except(new[] { classToProxy })
-					.Concat(interfaces)
-					.ToArray();
-				proxy = generator.CreateClassProxy(classToProxy, additionalInterfaces, proxyGenOptions,
-				                                   constructorArguments, interceptors);
-			}
 			else
 			{
-				throw new NotSupportedException(
-					string.Format(
-						"Component {0} has {1} classes as service. This is not legal on CLR - a component may only have at most one class as its service. This is most likely a bug in your registration.",
-						model.Name, classServices.Length));
+				var additionalInterfaces = model.InterfaceServices
+					.Concat(interfaces)
+					.ToArray();
+				proxy = generator.CreateClassProxy(classService, additionalInterfaces, proxyGenOptions,
+				                                   constructorArguments, interceptors);
 			}
 
 			CustomizeProxy(proxy, proxyGenOptions, kernel, model);

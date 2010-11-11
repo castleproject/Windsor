@@ -35,15 +35,16 @@ namespace Castle.Core
 	{
 		public const string SkipRegistration = "skip.registration";
 
-
 		// Note the use of volatile for fields used in the double checked lock pattern.
 		// This is necessary to ensure the pattern works correctly.
+
+		private Type classService;
 
 		/// <summary>Extended properties</summary>
 #if !SILVERLIGHT
 		[NonSerialized]
 #endif
-			private volatile IDictionary extended;
+		private volatile IDictionary extended;
 
 		/// <summary>
 		///   Dependencies the kernel must resolve
@@ -65,7 +66,7 @@ namespace Castle.Core
 		/// </summary>
 		private volatile LifecycleConcernsCollection lifecycle;
 
-		private readonly ICollection<Type> services = new HashSet<Type>();
+		private readonly ICollection<Type> interfaceServices = new HashSet<Type>();
 
 		/// <summary>
 		///   External parameters
@@ -81,10 +82,9 @@ namespace Castle.Core
 #if !SILVERLIGHT
 		[NonSerialized]
 #endif
-			private volatile IDictionary customDependencies;
+		private volatile IDictionary customDependencies;
 
 		private readonly object syncRoot = new object();
-
 
 		/// <summary>
 		///   Constructs a ComponentModel
@@ -92,7 +92,7 @@ namespace Castle.Core
 		public ComponentModel(String name, Type service, Type implementation)
 		{
 			Name = name;
-			services.Add(service);
+			AddService(service);
 			Implementation = implementation;
 			LifestyleType = LifestyleType.Undefined;
 			InspectionBehavior = PropertiesInspectionBehavior.Undefined;
@@ -103,13 +103,32 @@ namespace Castle.Core
 		/// </summary>
 		public string Name { get; set; }
 
+		public Type ClassService
+		{
+			get { return classService; }
+			private set
+			{
+				lock(syncRoot)
+				{
+					if(classService!=null)
+					{
+						throw new InvalidOperationException(string.Format("This component already has a class service set ({0}).",
+						                                                  classService));
+					}
+
+					Debug.Assert(value.IsClass, "value.IsClass");
+					classService = value;
+				}
+			}
+		}
+
 		/// <summary>
 		///   Gets or sets the service exposed.
 		/// </summary>
 		/// <value>The service.</value>
-		public IEnumerable<Type> Services
+		public IEnumerable<Type> InterfaceServices
 		{
-			get { return services; }
+			get { return interfaceServices; }
 		}
 
 		/// <summary>
@@ -118,8 +137,9 @@ namespace Castle.Core
 		/// <value>The service.</value>
 		public Type Service
 		{
-			get { return services.FirstOrDefault(); }
+			get { return ClassService ?? interfaceServices.FirstOrDefault(); }
 		}
+
 		/// <summary>
 		///   Gets or sets the component implementation.
 		/// </summary>
@@ -344,6 +364,25 @@ namespace Castle.Core
 			}
 		}
 
+		public void AddService(Type type)
+		{
+			if (type == null)
+			{
+				return;
+			}
+			if(type.IsClass)
+			{
+				ClassService = type;
+				return;
+			}
+			if(type.IsInterface == false)
+			{
+				throw new ArgumentException(
+					string.Format("Type {0} is not a class nor an interface, and those are the only values allowed.", type));
+			}
+			interfaceServices.Add(type);
+		}
+
 		/// <summary>
 		///   Requires the selected property dependencies.
 		/// </summary>
@@ -370,11 +409,6 @@ namespace Castle.Core
 		public void Requires<D>() where D : class
 		{
 			Requires(p => p.Dependency.TargetItemType == typeof(D));
-		}
-
-		public void AddService(Type type)
-		{
-			services.Add(type);
 		}
 	}
 }
