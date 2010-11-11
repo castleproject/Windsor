@@ -109,12 +109,9 @@ namespace Castle.Windsor.Proxy
 
 		public bool ShouldCreateProxy(ComponentModel model)
 		{
-			foreach (var selector in selectors)
+			if (selectors.Any(s => s.HasInterceptors(model)))
 			{
-				if (selector.HasInterceptors(model))
-				{
-					return true;
-				}
+				return true;
 			}
 
 			if (model.Interceptors.HasInterceptors)

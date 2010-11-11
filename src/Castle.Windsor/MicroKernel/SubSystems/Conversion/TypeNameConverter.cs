@@ -79,7 +79,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 				if (type == null)
 				{
 					var message = String.Format(
-						"Could not convert from '{0}' to {1} - Maybe type could not be found",
+						"Could not convert from '{0}' to {1} - Make sure that the type name is correct and that its assembly is deployed.",
 						value, targetType.FullName);
 
 					throw new ConverterException(message);
