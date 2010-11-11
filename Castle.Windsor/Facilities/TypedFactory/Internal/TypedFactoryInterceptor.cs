@@ -81,8 +81,7 @@ namespace Castle.Facilities.TypedFactory.Internal
 		public void SetInterceptedComponentModel(ComponentModel target)
 		{
 			this.target = target;
-			BuildHandlersMap(this.target.ClassService);
-			foreach (var service in this.target.InterfaceServices)
+			foreach (var service in this.target.AllServices)
 			{
 				BuildHandlersMap(service);
 			}

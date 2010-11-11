@@ -122,6 +122,21 @@ namespace Castle.Core
 			}
 		}
 
+		public IEnumerable<Type> AllServices
+		{
+			get
+			{
+				if(classService != null)
+				{
+					yield return classService;
+				}
+				foreach (var interfaceService in interfaceServices)
+				{
+					yield return interfaceService;
+				}
+			}
+		}
+
 		/// <summary>
 		///   Gets or sets the service exposed.
 		/// </summary>

@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
 namespace Castle.MicroKernel.ModelBuilder.Inspectors
 {
 	using System;
+	using System.Linq;
 
 	using Castle.Core;
 
@@ -25,7 +26,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 	{
 		public void ProcessModel(IKernel kernel, ComponentModel model)
 		{
-			model.RequiresGenericArguments = model.Service.IsGenericTypeDefinition;
+			model.RequiresGenericArguments = model.AllServices.Any(s => s.IsGenericTypeDefinition);
 		}
 	}
 }
