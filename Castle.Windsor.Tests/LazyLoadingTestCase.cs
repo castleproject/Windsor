@@ -17,27 +17,23 @@ namespace Castle.MicroKernel.Tests
 	using System;
 	using System.Collections;
 	using System.Threading;
+
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Resolvers;
+	using Castle.Windsor.Tests;
 	using Castle.Windsor.Tests.Components;
+
 	using NUnit.Framework;
 
 	[TestFixture]
-	public class LazyLoadingTestCase
+	public class LazyLoadingTestCase:AbstractContainerTestFixture
 	{
-		[SetUp]
-		public void SetUp()
-		{
-			kernel = new DefaultKernel();
-			kernel.Register(Component.For<ILazyComponentLoader>().ImplementedBy<Loader>());
-		}
-
-		private IKernel kernel;
 
 		[Test]
 		public void Can_Lazily_resolve_component()
 		{
-			var service = kernel.Resolve("foo", typeof(IHasDefaultImplementation));
+			Container.Register(Component.For<LoaderForDefaultImplementations>());
+			var service = Container.Resolve("foo", typeof(IHasDefaultImplementation));
 			Assert.IsNotNull(service);
 			Assert.IsInstanceOf<Implementation>(service);
 		}
@@ -45,24 +41,32 @@ namespace Castle.MicroKernel.Tests
 		[Test]
 		public void Can_lazily_resolve_dependency()
 		{
-			kernel.Register(Component.For<UsingLazyComponent>());
-			var component = kernel.Resolve<UsingLazyComponent>();
+			Container.Register(Component.For<LoaderForDefaultImplementations>());
+			Container.Register(Component.For<UsingLazyComponent>());
+			var component = Container.Resolve<UsingLazyComponent>();
 			Assert.IsNotNull(component.Dependency);
 		}
 
 		[Test]
 		public void Can_lazily_resolve_explicit_dependency()
 		{
-			kernel.Register(Component.For<LoaderUsingDependency>());
-			var component = kernel.Resolve<UsingString>(new Arguments().Insert("parameter", "Hello"));
+			Container.Register(Component.For<LoaderUsingDependency>());
+			var component = Container.Resolve<UsingString>(new Arguments().Insert("parameter", "Hello"));
 			Assert.AreEqual("Hello", component.Parameter);
+		}
+
+		[Test]
+		public void Component_loaded_lazily_can_have_lazy_dependencies()
+		{
+			Container.Register(Component.For<ABLoader>());
+			Container.Resolve<B>();
 		}
 
 		[Test]
 		[Timeout(2000)]
 		public void Loaders_are_thread_safe()
 		{
-			kernel.Register(Component.For<SlowLoader>());
+			Container.Register(Component.For<SlowLoader>());
 			var @event = new ManualResetEvent(false);
 			int[] count = { 10 };
 			Exception exception = null;
@@ -72,7 +76,7 @@ namespace Castle.MicroKernel.Tests
 				{
 					try
 					{
-						kernel.Resolve<Implementation>("not registered");
+						Container.Resolve<Implementation>("not registered");
 						if (Interlocked.Decrement(ref count[0]) == 0)
 						{
 							@event.Set();
@@ -96,10 +100,22 @@ namespace Castle.MicroKernel.Tests
 		[Test]
 		public void Loaders_with_dependencies_dont_overflow_the_stack()
 		{
-			kernel.Register(Component.For<LoaderWithDependency>());
+			Container.Register(Component.For<LoaderWithDependency>());
 
 			Assert.Throws<ComponentNotFoundException>(() =>
-			                                          kernel.Resolve<ISpecification>("some not registered service"));
+			                                          Container.Resolve<ISpecification>("some not registered service"));
+		}
+	}
+
+	public class ABLoader : ILazyComponentLoader
+	{
+		public IRegistration Load(string key, Type service, IDictionary arguments)
+		{
+			if (service == typeof(A) || service == typeof(B))
+			{
+				return Component.For(service);
+			}
+			return null;
 		}
 	}
 
@@ -127,7 +143,7 @@ namespace Castle.MicroKernel.Tests
 		}
 	}
 
-	public class Loader : ILazyComponentLoader
+	public class LoaderForDefaultImplementations : ILazyComponentLoader
 	{
 		public IRegistration Load(string key, Type service, IDictionary arguments)
 		{
