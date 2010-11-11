@@ -18,13 +18,14 @@ namespace Castle.Core
 	using System.Collections;
 	using System.Collections.Generic;
 	using System.Diagnostics;
+	using System.Linq;
 
 	using Castle.Core.Configuration;
 	using Castle.Core.Internal;
 
 	/// <summary>
-	/// Represents the collection of information and
-	/// meta information collected about a component.
+	///   Represents the collection of information and
+	///   meta information collected about a component.
 	/// </summary>
 	[DebuggerDisplay("{Implementation} / {Service}")]
 #if !SILVERLIGHT
@@ -34,7 +35,6 @@ namespace Castle.Core
 	{
 		public const string SkipRegistration = "skip.registration";
 
-		#region Fields
 
 		// Note the use of volatile for fields used in the double checked lock pattern.
 		// This is necessary to ensure the pattern works correctly.
@@ -45,24 +45,36 @@ namespace Castle.Core
 #endif
 			private volatile IDictionary extended;
 
-		/// <summary>Dependencies the kernel must resolve</summary>
+		/// <summary>
+		///   Dependencies the kernel must resolve
+		/// </summary>
 		private volatile DependencyModelCollection dependencies;
 
-		/// <summary>All available constructors</summary>
+		/// <summary>
+		///   All available constructors
+		/// </summary>
 		private volatile ConstructorCandidateCollection constructors;
 
-		/// <summary>All potential properties that can be setted by the kernel</summary>
+		/// <summary>
+		///   All potential properties that can be setted by the kernel
+		/// </summary>
 		private volatile PropertySetCollection properties;
 
-		//private MethodMetaModelCollection methodMetaModels;
-
-		/// <summary>Steps of lifecycle</summary>
+		/// <summary>
+		///   Steps of lifecycle
+		/// </summary>
 		private volatile LifecycleConcernsCollection lifecycle;
 
-		/// <summary>External parameters</summary>
+		private readonly ICollection<Type> services = new HashSet<Type>();
+
+		/// <summary>
+		///   External parameters
+		/// </summary>
 		private volatile ParameterModelCollection parameters;
 
-		/// <summary>Interceptors associated</summary>
+		/// <summary>
+		///   Interceptors associated
+		/// </summary>
 		private volatile InterceptorReferenceCollection interceptors;
 
 		/// <summary>/// Custom dependencies/// </summary>
@@ -73,47 +85,57 @@ namespace Castle.Core
 
 		private readonly object syncRoot = new object();
 
-		#endregion
 
 		/// <summary>
-		/// Constructs a ComponentModel
+		///   Constructs a ComponentModel
 		/// </summary>
 		public ComponentModel(String name, Type service, Type implementation)
 		{
 			Name = name;
-			Service = service;
+			services.Add(service);
 			Implementation = implementation;
 			LifestyleType = LifestyleType.Undefined;
 			InspectionBehavior = PropertiesInspectionBehavior.Undefined;
 		}
 
 		/// <summary>
-		/// Sets or returns the component key
+		///   Sets or returns the component key
 		/// </summary>
 		public string Name { get; set; }
 
 		/// <summary>
-		/// Gets or sets the service exposed.
+		///   Gets or sets the service exposed.
 		/// </summary>
 		/// <value>The service.</value>
-		public Type Service { get; set; }
+		public IEnumerable<Type> Services
+		{
+			get { return services; }
+		}
 
 		/// <summary>
-		/// Gets or sets the component implementation.
+		///   Gets or sets the service exposed.
+		/// </summary>
+		/// <value>The service.</value>
+		public Type Service
+		{
+			get { return services.FirstOrDefault(); }
+		}
+		/// <summary>
+		///   Gets or sets the component implementation.
 		/// </summary>
 		/// <value>The implementation.</value>
 		public Type Implementation { get; set; }
 
 		/// <summary>
-		/// Gets or sets a value indicating whether the component requires generic arguments.
+		///   Gets or sets a value indicating whether the component requires generic arguments.
 		/// </summary>
 		/// <value>
-		/// <c>true</c> if generic arguments are required; otherwise, <c>false</c>.
+		///   <c>true</c> if generic arguments are required; otherwise, <c>false</c>.
 		/// </value>
 		public bool RequiresGenericArguments { get; set; }
 
 		/// <summary>
-		/// Gets or sets the extended properties.
+		///   Gets or sets the extended properties.
 		/// </summary>
 		/// <value>The extended properties.</value>
 		public IDictionary ExtendedProperties
@@ -136,7 +158,7 @@ namespace Castle.Core
 		}
 
 		/// <summary>
-		/// Gets the constructors candidates.
+		///   Gets the constructors candidates.
 		/// </summary>
 		/// <value>The constructors.</value>
 		public ConstructorCandidateCollection Constructors
@@ -158,7 +180,7 @@ namespace Castle.Core
 		}
 
 		/// <summary>
-		/// Gets the properties set.
+		///   Gets the properties set.
 		/// </summary>
 		/// <value>The properties.</value>
 		public PropertySetCollection Properties
@@ -180,13 +202,13 @@ namespace Castle.Core
 		}
 
 		/// <summary>
-		/// Gets or sets the configuration.
+		///   Gets or sets the configuration.
 		/// </summary>
 		/// <value>The configuration.</value>
 		public IConfiguration Configuration { get; set; }
 
 		/// <summary>
-		/// Gets the lifecycle steps.
+		///   Gets the lifecycle steps.
 		/// </summary>
 		/// <value>The lifecycle steps.</value>
 		public LifecycleConcernsCollection Lifecycle
@@ -208,32 +230,32 @@ namespace Castle.Core
 		}
 
 		/// <summary>
-		/// Gets or sets the lifestyle type.
+		///   Gets or sets the lifestyle type.
 		/// </summary>
 		/// <value>The type of the lifestyle.</value>
 		public LifestyleType LifestyleType { get; set; }
 
 		/// <summary>
-		/// Gets or sets the strategy for
-		/// inspecting public properties 
-		/// on the components
+		///   Gets or sets the strategy for
+		///   inspecting public properties 
+		///   on the components
 		/// </summary>
 		public PropertiesInspectionBehavior InspectionBehavior { get; set; }
 
 		/// <summary>
-		/// Gets or sets the custom lifestyle.
+		///   Gets or sets the custom lifestyle.
 		/// </summary>
 		/// <value>The custom lifestyle.</value>
 		public Type CustomLifestyle { get; set; }
 
 		/// <summary>
-		/// Gets or sets the custom component activator.
+		///   Gets or sets the custom component activator.
 		/// </summary>
 		/// <value>The custom component activator.</value>
 		public Type CustomComponentActivator { get; set; }
 
 		/// <summary>
-		/// Gets the interceptors.
+		///   Gets the interceptors.
 		/// </summary>
 		/// <value>The interceptors.</value>
 		public InterceptorReferenceCollection Interceptors
@@ -255,7 +277,7 @@ namespace Castle.Core
 		}
 
 		/// <summary>
-		/// Gets the parameter collection.
+		///   Gets the parameter collection.
 		/// </summary>
 		/// <value>The parameters.</value>
 		public ParameterModelCollection Parameters
@@ -277,10 +299,10 @@ namespace Castle.Core
 		}
 
 		/// <summary>
-		/// Dependencies are kept within constructors and
-		/// properties. Others dependencies must be 
-		/// registered here, so the kernel (as a matter 
-		/// of fact the handler) can check them
+		///   Dependencies are kept within constructors and
+		///   properties. Others dependencies must be 
+		///   registered here, so the kernel (as a matter 
+		///   of fact the handler) can check them
 		/// </summary>
 		public DependencyModelCollection Dependencies
 		{
@@ -301,7 +323,7 @@ namespace Castle.Core
 		}
 
 		/// <summary>
-		/// Gets the custom dependencies.
+		///   Gets the custom dependencies.
 		/// </summary>
 		/// <value>The custom dependencies.</value>
 		public IDictionary CustomDependencies
@@ -323,9 +345,9 @@ namespace Castle.Core
 		}
 
 		/// <summary>
-		/// Requires the selected property dependencies.
+		///   Requires the selected property dependencies.
 		/// </summary>
-		/// <param name="selectors">The property selector.</param>
+		/// <param name = "selectors">The property selector.</param>
 		public void Requires(params Predicate<PropertySet>[] selectors)
 		{
 			foreach (var property in Properties)
@@ -342,9 +364,9 @@ namespace Castle.Core
 		}
 
 		/// <summary>
-		/// Requires the property dependencies of type <typeparamref name="D"/>.
+		///   Requires the property dependencies of type <typeparamref name = "D" />.
 		/// </summary>
-		/// <typeparam name="D">The dependency type.</typeparam>
+		/// <typeparam name = "D">The dependency type.</typeparam>
 		public void Requires<D>() where D : class
 		{
 			Requires(p => p.Dependency.TargetItemType == typeof(D));
