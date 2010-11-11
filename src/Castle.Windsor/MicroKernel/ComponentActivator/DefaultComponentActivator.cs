@@ -105,9 +105,9 @@ namespace Castle.MicroKernel.ComponentActivator
 			{
 				throw new ComponentRegistrationException(
 					string.Format(
-						"Type {0} is abstract.{2} As such, it is not possible to instansiate it as implementation of service {1}.",
+						"Type {0} is abstract.{2} As such, it is not possible to instansiate it as implementation of service '{1}'.",
 						Model.Implementation.FullName,
-						Model.Service.FullName,
+						Model.Name,
 						Environment.NewLine));
 			}
 

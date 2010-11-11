@@ -878,11 +878,6 @@ namespace Castle.MicroKernel
 #endif
 		}
 
-		protected object ResolveComponent(IHandler handler)
-		{
-			return ResolveComponent(handler, handler.ComponentModel.Service);
-		}
-
 		protected object ResolveComponent(IHandler handler, Type service)
 		{
 			return ResolveComponent(handler, service, null);
