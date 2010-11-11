@@ -1,4 +1,16 @@
 ================================================================================================
+change - NamingPartsSubSystem, KeySearchNamingSubSystem, ComponentName, BinaryTreeComponentName
+	and TreeNode types were removed.
+
+impact - medium
+fixability - medium
+
+description - As part of internal cleanup these esoteric, alternative implementations of naming
+	subsystem were removed.
+
+fix - behavior of these implementations of naming subsystem can be easily emulated with default
+	naming subsystem and custom IHandlerSelectors, which is the recommended way to go.
+================================================================================================
 change - Proxies no longer implicitly implement all interfaces of component implementation type.
 
 impact - medium
