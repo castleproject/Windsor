@@ -15,7 +15,6 @@
 namespace Castle.Core
 {
 	using System;
-	using System.ComponentModel;
 
 	/// <summary>
 	/// Specifies the proxying behavior for a component.
@@ -33,14 +32,6 @@ namespace Castle.Core
 		public bool UseMarshalByRefProxy { get; set; }
 
 #endif
-
-		/// <summary>
-		/// Determines if the component requires a single interface proxy.
-		/// </summary>
-		/// <value><c>true</c> if the component requires a single interface proxy.</value>
-		[Obsolete("Prefer using a IProxyGenerationHook.")]
-		[EditorBrowsable(EditorBrowsableState.Advanced)]
-		public bool UseSingleInterfaceProxy { get; set; }
 
 		/// <summary>
 		///  Gets or sets the additional interfaces used during proxy generation.

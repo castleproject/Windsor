@@ -28,7 +28,7 @@ namespace Castle.Core.Tests
 		{
 			Container.Register(
 				Component.For<StandardInterceptor>().Named("FooInterceptor"),
-				Component.For<ICalcService>().ImplementedBy<CalculatorServiceWithFooInterceptor>());
+				Component.For<ICalcService>().ImplementedBy<CalculatorServiceWithFooInterceptorNamed>());
 			var calcService = Container.Resolve<ICalcService>();
 			Assert.IsTrue(IsProxy(calcService));
 		}
@@ -38,7 +38,7 @@ namespace Castle.Core.Tests
 		{
 			Container.Register(
 				Component.For<StandardInterceptor>(),
-				Component.For<ICalcService>().ImplementedBy<CalculatorServiceWithSingleProxyBehavior>());
+				Component.For<ICalcService>().ImplementedBy<CalculatorServiceWithStandartInterceptorTyped>());
 			var calcService = Container.Resolve<ICalcService>();
 			Assert.IsTrue(IsProxy(calcService));
 		}

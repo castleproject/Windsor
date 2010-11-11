@@ -15,9 +15,10 @@
 namespace Castle.Windsor.Tests.Components
 {
 	using Castle.Core;
+	using Castle.DynamicProxy;
 
-	[Interceptor("fooInterceptor")]
-	public class CalculatorServiceWithFooInterceptor : CalculatorService
+	[Interceptor(typeof(StandardInterceptor))]
+	public class CalculatorServiceWithStandartInterceptorTyped : CalculatorService
 	{
 	}
 }

@@ -120,13 +120,7 @@ namespace Castle.Windsor.Proxy
 				}
 				else
 				{
-#pragma warning disable 0618 //call to obsolete method
-					if (!proxyOptions.UseSingleInterfaceProxy)
-#pragma warning restore
-					{
-						interfaces = CollectInterfaces(interfaces, model);
-					}
-
+					interfaces = CollectInterfaces(interfaces, model);
 					proxy = generator.CreateInterfaceProxyWithTarget(model.Service, interfaces,
 					                                                 target, proxyGenOptions, interceptors);
 				}

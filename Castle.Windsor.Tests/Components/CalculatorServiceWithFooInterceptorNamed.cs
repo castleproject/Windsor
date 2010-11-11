@@ -14,19 +14,10 @@
 
 namespace Castle.Windsor.Tests.Components
 {
-	using System;
-
 	using Castle.Core;
-	using Castle.DynamicProxy;
 
-	[Interceptor(typeof(StandardInterceptor))]
-#pragma warning disable 0618 //call to obsolete method
-	[ComponentProxyBehavior(UseSingleInterfaceProxy = false)]
-#pragma warning restore
-	public class CalculatorServiceWithoutSingleProxyBehavior : CalculatorService, IDisposable
+	[Interceptor("fooInterceptor")]
+	public class CalculatorServiceWithFooInterceptorNamed : CalculatorService
 	{
-		public void Dispose()
-		{
-		}
 	}
 }
