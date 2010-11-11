@@ -16,6 +16,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 {
 	using System;
 	using System.ComponentModel;
+	using System.Linq;
 
 	using Castle.Core;
 	using Castle.Core.Internal;
@@ -31,11 +32,11 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 	public class LifecycleModelInspector : IContributeComponentModelConstruction
 	{
 		/// <summary>
-		/// Checks if the type implements <see cref="IInitializable"/> and or
-		/// <see cref="IDisposable"/> interfaces.
+		///   Checks if the type implements <see cref = "IInitializable" /> and or
+		///   <see cref = "IDisposable" /> interfaces.
 		/// </summary>
-		/// <param name="kernel"></param>
-		/// <param name="model"></param>
+		/// <param name = "kernel"></param>
+		/// <param name = "model"></param>
 		public virtual void ProcessModel(IKernel kernel, ComponentModel model)
 		{
 			if (model == null)
@@ -57,9 +58,8 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 
 		private void ProcessLateBoundModel(ComponentModel model)
 		{
-			var service = model.Service;
 			var commission = new LateBoundConcerns();
-			if (service.Is<IInitializable>())
+			if (model.AllServices.Any(s => s.Is<IInitializable>()))
 			{
 				model.Lifecycle.Add(InitializationConcern.Instance);
 			}
@@ -68,7 +68,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 				commission.AddConcern<IInitializable>(InitializationConcern.Instance);
 			}
 #if !SL3
-			if (service.Is<ISupportInitialize>())
+			if (model.AllServices.Any(s => s.Is<ISupportInitialize>()))
 			{
 				model.Lifecycle.Add(SupportInitializeConcern.Instance);
 			}
@@ -77,7 +77,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 				commission.AddConcern<ISupportInitialize>(SupportInitializeConcern.Instance);
 			}
 #endif
-			if (service.Is<IDisposable>())
+			if (model.AllServices.Any(s => s.Is<IDisposable>()))
 			{
 				model.Lifecycle.Add(DisposalConcern.Instance);
 			}
