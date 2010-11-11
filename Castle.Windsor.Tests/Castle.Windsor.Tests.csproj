@@ -497,9 +497,6 @@
     <Compile Include="Activators\BestConstructorTestCase.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="BinaryTreeComponentNameTestCase.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Bugs\IoC-108.cs" />
     <Compile Include="Bugs\IoC-114.cs" />
     <Compile Include="Bugs\IoC-117.cs" />
@@ -605,7 +602,6 @@
     <Compile Include="Facilities\Startable\Components\StartableComponentWithCustomDependencies.cs" />
     <Compile Include="Registration\DynamicParametersTestCase.cs" />
     <Compile Include="ForwardedTypesRegistrationTestCase.cs" />
-    <Compile Include="KeySearchNamingSubSystemTestCase.cs" />
     <Compile Include="DefaultConversionManagerTestCase.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -663,9 +659,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="MicroKernelTestCase.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="NamingPartsSubSystemTestCase.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Pools\MultithreadedPooledTestCase.cs">

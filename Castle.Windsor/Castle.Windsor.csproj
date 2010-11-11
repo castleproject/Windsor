@@ -794,22 +794,12 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="MicroKernel\SubSystems\Conversion\TypeNameParser.cs" />
-    <Compile Include="MicroKernel\SubSystems\Naming\BinaryTreeComponentName.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="MicroKernel\SubSystems\Naming\ComponentName.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="MicroKernel\SubSystems\Naming\DefaultNamingSubSystem.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="MicroKernel\IHandlerSelector.cs" />
     <Compile Include="MicroKernel\Resolvers\ILazyComponentLoader.cs" />
-    <Compile Include="MicroKernel\SubSystems\Naming\KeySearchNamingSubSystem.cs" />
     <Compile Include="MicroKernel\SubSystems\Naming\INamingSubSystem.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="MicroKernel\SubSystems\Naming\NamingPartsSubSystem.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="MicroKernel\SubSystems\Resource\DefaultResourceSubSystem.cs">
