@@ -60,6 +60,7 @@ namespace Castle.MicroKernel.Handlers
 
 		public IHandler CreateForwarding(IHandler target, Type forwardedType)
 		{
+			target.ComponentModel.AddService(forwardedType);
 			return new ForwardingHandler(target, forwardedType);
 		}
 	}

@@ -371,5 +371,10 @@ namespace Castle.Core
 		{
 			Requires(p => p.Dependency.TargetItemType == typeof(D));
 		}
+
+		public void AddService(Type type)
+		{
+			services.Add(type);
+		}
 	}
 }

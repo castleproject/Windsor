@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -21,31 +21,23 @@ namespace Castle.Windsor.Tests.Proxy
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Tests.ClassComponents;
 	using Castle.Windsor.Tests.Components;
+	using Castle.Windsor.Tests.Interceptors;
+
 	using NUnit.Framework;
 
 	[TestFixture]
-	public class ProxyBehaviorTestCase
+	public class ProxyBehaviorTestCase : AbstractContainerTestFixture
 	{
-
-#if !SILVERLIGHT // we do not support xml config on SL
+#if !SILVERLIGHT
+		// we do not support xml config on SL
 		[Test]
-		public void DefaultProxyBehaviorFromConfiguration()
+		public void Proxy_exposes_only_service_interfaces__from_configuration()
 		{
-			var container = new WindsorContainer(ConfigHelper.ResolveConfigPath("Proxy/proxyBehavior.xml"));
-
-			var calcService = container.Resolve<ICalcService>("default");
+			Container.Install(
+				Castle.Windsor.Installer.Configuration.FromXmlFile(ConfigHelper.ResolveConfigPath("Proxy/proxyBehavior.xml")));
+			var calcService = Container.Resolve<ICalcService>("default");
 			Assert.IsNotNull(calcService);
-			Assert.IsTrue(calcService is IDisposable, "Service proxy should expose the IDisposable interface");
-		}
-
-		[Test]
-		public void NoSingleInterfaceProxyBehaviorFromConfiguration()
-		{
-			var container = new WindsorContainer(ConfigHelper.ResolveConfigPath("Proxy/proxyBehavior.xml"));
-
-			var calcService = container.Resolve<ICalcService>("noSingle");
-			Assert.IsNotNull(calcService);
-			Assert.IsTrue(calcService is IDisposable, "Service proxy should expose the IDisposable interface");
+			Assert.IsNotInstanceOf<IDisposable>(calcService, "Service proxy should NOT expose the IDisposable interface");
 		}
 #endif
 
@@ -53,8 +45,7 @@ namespace Castle.Windsor.Tests.Proxy
 		public void ProxyGenarationHook_can_be_OnBehalfAware()
 		{
 			OnBehalfAwareProxyGenerationHook.target = null;
-			var container = new WindsorContainer();
-			container.Register(Component.For<OnBehalfAwareProxyGenerationHook>().LifeStyle.Transient,
+			Container.Register(Component.For<OnBehalfAwareProxyGenerationHook>().LifeStyle.Transient,
 			                   Component.For<StandardInterceptor>().LifeStyle.Transient,
 			                   Component.For<ISimpleService>()
 			                   	.ImplementedBy<SimpleService>()
@@ -62,7 +53,7 @@ namespace Castle.Windsor.Tests.Proxy
 			                   	.Interceptors<StandardInterceptor>()
 			                   	.Proxy.Hook(h => h.Service<OnBehalfAwareProxyGenerationHook>()));
 
-			var service = container.Resolve<ISimpleService>();
+			var service = Container.Resolve<ISimpleService>();
 
 			Assert.IsTrue(ProxyServices.IsDynamicProxy(service.GetType()));
 			Assert.IsNotNull(OnBehalfAwareProxyGenerationHook.target);
@@ -73,15 +64,14 @@ namespace Castle.Windsor.Tests.Proxy
 		public void OnBehalfAware_ProxyGenarationHook_works_on_dependencies()
 		{
 			OnBehalfAwareProxyGenerationHook.target = null;
-			var container = new WindsorContainer();
-			container.Register(Component.For<OnBehalfAwareProxyGenerationHook>().LifeStyle.Transient,
-							   Component.For<StandardInterceptor>().LifeStyle.Transient,
-							   Component.For<UsesSimpleComponent1>().LifeStyle.Transient,
-							   Component.For<SimpleComponent1>().LifeStyle.Transient
-								.Interceptors<StandardInterceptor>()
-								.Proxy.Hook(h => h.Service<OnBehalfAwareProxyGenerationHook>()));
+			Container.Register(Component.For<OnBehalfAwareProxyGenerationHook>().LifeStyle.Transient,
+			                   Component.For<StandardInterceptor>().LifeStyle.Transient,
+			                   Component.For<UsesSimpleComponent1>().LifeStyle.Transient,
+			                   Component.For<SimpleComponent1>().LifeStyle.Transient
+			                   	.Interceptors<StandardInterceptor>()
+			                   	.Proxy.Hook(h => h.Service<OnBehalfAwareProxyGenerationHook>()));
 
-			var service = container.Resolve<UsesSimpleComponent1>();
+			var service = Container.Resolve<UsesSimpleComponent1>();
 
 			Assert.IsTrue(ProxyServices.IsDynamicProxy(service.Dependency.GetType()));
 			Assert.IsNotNull(OnBehalfAwareProxyGenerationHook.target);
@@ -92,8 +82,7 @@ namespace Castle.Windsor.Tests.Proxy
 		public void InterceptorSelector_can_be_OnBehalfAware()
 		{
 			OnBehalfAwareInterceptorSelector.target = null;
-			var container = new WindsorContainer();
-			container.Register(Component.For<OnBehalfAwareInterceptorSelector>().LifeStyle.Transient,
+			Container.Register(Component.For<OnBehalfAwareInterceptorSelector>().LifeStyle.Transient,
 			                   Component.For<StandardInterceptor>().LifeStyle.Transient,
 			                   Component.For<ISimpleService>()
 			                   	.ImplementedBy<SimpleService>()
@@ -101,25 +90,25 @@ namespace Castle.Windsor.Tests.Proxy
 			                   	.Interceptors<StandardInterceptor>()
 			                   	.SelectInterceptorsWith(s => s.Service<OnBehalfAwareInterceptorSelector>()));
 
-			var service = container.Resolve<ISimpleService>();
+			var service = Container.Resolve<ISimpleService>();
 
 			Assert.IsTrue(ProxyServices.IsDynamicProxy(service.GetType()));
 			Assert.IsNotNull(OnBehalfAwareInterceptorSelector.target);
 			Assert.AreEqual(typeof(ISimpleService), OnBehalfAwareInterceptorSelector.target.Service);
 		}
+
 		[Test]
 		public void OnBehalfAware_InterceptorSelector_works_on_dependencies()
 		{
 			OnBehalfAwareInterceptorSelector.target = null;
-			var container = new WindsorContainer();
-			container.Register(Component.For<OnBehalfAwareInterceptorSelector>().LifeStyle.Transient,
-							   Component.For<StandardInterceptor>().LifeStyle.Transient,
-							   Component.For<UsesSimpleComponent1>().LifeStyle.Transient,
-							   Component.For<SimpleComponent1>().LifeStyle.Transient
-								.Interceptors<StandardInterceptor>()
-								.SelectInterceptorsWith(s => s.Service<OnBehalfAwareInterceptorSelector>()));
+			Container.Register(Component.For<OnBehalfAwareInterceptorSelector>().LifeStyle.Transient,
+			                   Component.For<StandardInterceptor>().LifeStyle.Transient,
+			                   Component.For<UsesSimpleComponent1>().LifeStyle.Transient,
+			                   Component.For<SimpleComponent1>().LifeStyle.Transient
+			                   	.Interceptors<StandardInterceptor>()
+			                   	.SelectInterceptorsWith(s => s.Service<OnBehalfAwareInterceptorSelector>()));
 
-			var service = container.Resolve<UsesSimpleComponent1>();
+			var service = Container.Resolve<UsesSimpleComponent1>();
 
 			Assert.IsTrue(ProxyServices.IsDynamicProxy(service.Dependency.GetType()));
 			Assert.IsNotNull(OnBehalfAwareInterceptorSelector.target);
@@ -127,23 +116,9 @@ namespace Castle.Windsor.Tests.Proxy
 		}
 
 		[Test]
-		public void NoSingleInterfaceProxyWithAttribute()
+		public void Forwarded_type_proxy_implements_all_service_types_interface_services_only()
 		{
-			var container = new WindsorContainer();
-
-			container.Register(Component.For<StandardInterceptor>(),
-			                   Component.For<ICalcService>().ImplementedBy<CalculatorServiceWithMultipleInterfaces>());
-
-			var calcService = container.Resolve<ICalcService>();
-			Assert.IsNotNull(calcService);
-			Assert.IsTrue(calcService is IDisposable, "Service proxy should expose the IDisposable interface");
-		}
-
-		[Test]
-		public void Forwarded_type_proxy_does_what_questionMark()
-		{
-			var container = new WindsorContainer();
-			container.Register(Component.For<StandardInterceptor>()
+			Container.Register(Component.For<StandardInterceptor>()
 			                   	.Named("a")
 			                   	.LifeStyle.Transient,
 			                   Component.For<ICommon, ICommon2>()
@@ -151,10 +126,78 @@ namespace Castle.Windsor.Tests.Proxy
 			                   	.Interceptors("a")
 			                   	.LifeStyle.Transient);
 
-			var common = container.Resolve<ICommon>();
-			var common2 = container.Resolve<ICommon2>();
-			
-			Assert.IsInstanceOf<ICommon>(common2);
+			var common = Container.Resolve<ICommon>();
+			var common2 = Container.Resolve<ICommon2>();
+
+			Assert.AreSame(common.GetType(), common2.GetType());
+		}
+
+		[Test]
+		public void Forwarded_type_proxy_implements_all_service_types_interface_and_class_services()
+		{
+			Container.Register(Component.For<StandardInterceptor>()
+			                   	.Named("a")
+			                   	.LifeStyle.Transient,
+			                   Component.For<ICommon, ICommon2, TwoInterfacesImpl>()
+			                   	.ImplementedBy<TwoInterfacesImpl>()
+			                   	.Interceptors("a")
+			                   	.LifeStyle.Transient);
+
+			var common = Container.Resolve<ICommon>();
+			var common2 = Container.Resolve<ICommon2>();
+			var impl = Container.Resolve<TwoInterfacesImpl>();
+
+			Assert.AreSame(common.GetType(), common2.GetType());
+			Assert.AreSame(common.GetType(), impl.GetType());
+		}
+
+		[Test]
+		public void Forwarded_type_proxy_implements_all_service_types_class_and_interface_services()
+		{
+			Container.Register(Component.For<StandardInterceptor>()
+			                   	.Named("a")
+			                   	.LifeStyle.Transient,
+			                   Component.For<TwoInterfacesImpl, ICommon2, ICommon>()
+			                   	.ImplementedBy<TwoInterfacesImpl>()
+			                   	.Interceptors("a")
+			                   	.LifeStyle.Transient);
+
+			var common = Container.Resolve<ICommon>();
+			var common2 = Container.Resolve<ICommon2>();
+			var impl = Container.Resolve<TwoInterfacesImpl>();
+
+			Assert.AreSame(common.GetType(), common2.GetType());
+			Assert.AreSame(common.GetType(), impl.GetType());
+		}
+
+		[Test]
+		public void Proxy_implements_only_service_interfaces()
+		{
+			Container.Register(Component.For<CountingInterceptor>()
+			                   	.Named("a"),
+			                   Component.For<ICommon>()
+			                   	.ImplementedBy<TwoInterfacesImpl>()
+			                   	.Interceptors("a")
+			                   	.LifeStyle.Transient);
+
+			var common = Container.Resolve<ICommon>();
+
+			Assert.IsNotInstanceOf<ICommon2>(common);
+		}
+
+		[Test]
+		public void Proxy_implements_only_service_interfaces_or_explicitly_added_interfaces()
+		{
+			Container.Register(Component.For<CountingInterceptor>()
+			                   	.Named("a"),
+			                   Component.For<ICommon>()
+			                   	.ImplementedBy<TwoInterfacesImpl>()
+			                   	.Interceptors("a")
+			                   	.Proxy.AdditionalInterfaces(typeof(ICommon2))
+			                   	.LifeStyle.Transient);
+
+			var common = Container.Resolve<ICommon>();
+
 			Assert.IsInstanceOf<ICommon2>(common);
 		}
 
@@ -162,24 +205,24 @@ namespace Castle.Windsor.Tests.Proxy
 		[Test]
 		public void RequestMarshalByRefProxyWithAttribute()
 		{
-			var container = new WindsorContainer();
+			Container.Register(Component.For<StandardInterceptor>().Named("standard.interceptor"),
+			                   Component.For<ICalcService>().ImplementedBy<CalculatorServiceWithMarshalByRefProxyBehavior>());
 
-			container.Register(Component.For<StandardInterceptor>().Named("standard.interceptor"),
-							   Component.For<ICalcService>().ImplementedBy<CalculatorServiceWithMarshalByRefProxyBehavior>()
-								.Named("useMarshal"));
+			var calcService = Container.Resolve<ICalcService>();
 
-			var calcService = container.Resolve<ICalcService>("useMarshal");
-			Assert.IsNotNull(calcService);
-			Assert.IsFalse(calcService is CalculatorServiceWithMarshalByRefProxyBehavior, "Service proxy should not expose CalculatorServiceWithMarshalByRefProxyBehavior");
-			Assert.IsTrue(calcService is MarshalByRefObject, "Service proxy should expose MarshalByRefObject");
-			Assert.IsTrue(calcService is IDisposable, "Service proxy should expose the IDisposable interface");
+			Assert.IsNotInstanceOf<CalculatorServiceWithMarshalByRefProxyBehavior>(calcService,
+			                                                                       "Service proxy should not expose CalculatorServiceWithMarshalByRefProxyBehavior");
+			Assert.IsInstanceOf<MarshalByRefObject>(calcService, "Service proxy should expose MarshalByRefObject");
+			Assert.IsNotInstanceOf<IDisposable>(calcService, "Service proxy should expose the IDisposable interface");
 		}
 
 		[Test]
 		public void InternalInterfaceIgnoredByProxy()
 		{
-			var container = new WindsorContainer(ConfigHelper.ResolveConfigPath("Proxy/proxyBehavior.xml"));
-			Assert.DoesNotThrow(() => container.Resolve<object>("hasInternalInterface"));
+			Container.Install(
+				Castle.Windsor.Installer.Configuration.FromXmlFile(ConfigHelper.ResolveConfigPath("Proxy/proxyBehavior.xml")));
+
+			Assert.DoesNotThrow(() => Container.Resolve<object>("hasInternalInterface"));
 		}
 #endif
 	}
