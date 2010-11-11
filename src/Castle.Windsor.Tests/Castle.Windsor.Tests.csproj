@@ -302,10 +302,9 @@
     <Compile Include="ClassComponents\CBA.cs" />
     <Compile Include="ClassComponents\HasByRefCtorArgument.cs" />
     <Compile Include="Components\ArrayRefDepAsConstructor.cs" />
-    <Compile Include="Components\CalculatorServiceWithFooInterceptor.cs" />
+    <Compile Include="Components\CalculatorServiceWithStandartInterceptorTyped.cs" />
+    <Compile Include="Components\CalculatorServiceWithFooInterceptorNamed.cs" />
     <Compile Include="Components\CalculatorServiceWithMultipleInterfaces.cs" />
-    <Compile Include="Components\CalculatorServiceWithoutSingleProxyBehavior.cs" />
-    <Compile Include="Components\CalculatorServiceWithSingleProxyBehavior.cs" />
     <Compile Include="Components\CalculatorServiceWithStandardInterceptor.cs" />
     <Compile Include="Components\DependsOnArray.cs" />
     <Compile Include="Components\EmptyServiceComposite.cs" />
@@ -932,7 +931,6 @@
     <Compile Include="Proxy\ProxyNothingHook.cs" />
     <Compile Include="Proxy\FactorySupportTestCase.cs" />
     <Compile Include="Proxy\TypedFactoryFacilityTestCase.cs" />
-    <Compile Include="Proxy\ProxyBehaviorInvalidTestCase.cs" />
     <Compile Include="Proxy\ProxyBehaviorTestCase.cs" />
     <Compile Include="ReportedProblemTestCase.cs">
       <SubType>Code</SubType>
@@ -1307,9 +1305,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Proxy\typedFactory.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Proxy\proxyBehaviorInvalidConfig.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Proxy\proxyBehavior.xml">

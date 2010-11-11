@@ -64,20 +64,11 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 				proxyBehaviorAtt = new ComponentProxyBehaviorAttribute();
 			}
 
-			string useSingleInterfaceProxyAttrib = model.Configuration != null ? model.Configuration.Attributes["useSingleInterfaceProxy"] : null;
-			
 #if !SILVERLIGHT
 			string marshalByRefProxyAttrib = model.Configuration != null ? model.Configuration.Attributes["marshalByRefProxy"] : null;
 #endif
 
 			var converter = kernel.GetConversionManager();
-			if (useSingleInterfaceProxyAttrib != null)
-			{
-#pragma warning disable 0618 //call to obsolete method
-				proxyBehaviorAtt.UseSingleInterfaceProxy =
-					converter.PerformConversion<bool?>(useSingleInterfaceProxyAttrib).GetValueOrDefault(false);
-#pragma warning restore
-			}
 #if !SILVERLIGHT
 			if (marshalByRefProxyAttrib != null)
 			{
@@ -100,24 +91,19 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 
 		private static void ApplyProxyBehavior(ComponentProxyBehaviorAttribute behavior, ComponentModel model)
 		{
-#pragma warning disable 0618 //call to obsolete method
-			if (behavior.UseSingleInterfaceProxy
-#if (!SILVERLIGHT)
-				|| behavior.UseMarshalByRefProxy
+#if !SILVERLIGHT
+			if (behavior.UseMarshalByRefProxy)
 #endif
-				)
 			{
 				EnsureComponentRegisteredWithInterface(model);
 			}
 
 			ProxyOptions options = ProxyUtil.ObtainProxyOptions(model, true);
 
-			options.UseSingleInterfaceProxy = behavior.UseSingleInterfaceProxy;
 #if (!SILVERLIGHT)
 			options.UseMarshalByRefAsBaseClass = behavior.UseMarshalByRefProxy;
 #endif
 			options.AddAdditionalInterfaces(behavior.AdditionalInterfaces);
-#pragma warning restore
 		}
 
 		private static void EnsureComponentRegisteredWithInterface(ComponentModel model)

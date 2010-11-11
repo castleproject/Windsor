@@ -1,4 +1,17 @@
 ================================================================================================
+change - UseSingleInterfaceProxy option was removed
+
+impact - low
+fixability - easy
+
+description - As part of clean up of the obsolete API the option was removed to enable certain
+	internal changes for the release.
+
+fix - if you were using this option and you have to use it, use a IProxyGenerationHook impl
+	and choose to only proxy members of that single interface.
+================================================================================================
+release 2.5.2 ==================================================================================
+================================================================================================
 change - One of CreationContext constructors has now additional argument; parent CreationContext
 	Method public IDisposable ParentResolutionContext(...) on CreationContext was removed
 	Method protected CreationContext CreateCreationContext(...) has now additional argument;
@@ -6,7 +19,6 @@ change - One of CreationContext constructors has now additional argument; parent
 
 impact - low
 fixability - medium
-revision - 
 
 description - To fix issue with false positive cycle detection (see issue IOC-238) changes had
 	to be made to how parent creation context gets propagated in certain situation (when call

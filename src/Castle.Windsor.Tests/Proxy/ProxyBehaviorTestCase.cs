@@ -47,25 +47,6 @@ namespace Castle.Windsor.Tests.Proxy
 			Assert.IsNotNull(calcService);
 			Assert.IsTrue(calcService is IDisposable, "Service proxy should expose the IDisposable interface");
 		}
-
-		[Test]
-		public void UseSingleInterfaceProxyBehaviorFromConfiguration()
-		{
-			var container = new WindsorContainer(ConfigHelper.ResolveConfigPath("Proxy/proxyBehavior.xml"));
-
-			var calcService = container.Resolve<ICalcService>("useSingle");
-			Assert.IsNotNull(calcService);
-			Assert.IsFalse(calcService is IDisposable, "Service proxy should not expose the IDisposable interface");
-		}
-
-		[Test]
-		public void UseSingleInterfaceProxyBehaviorFromAttribute()
-		{
-			var container = new WindsorContainer(ConfigHelper.ResolveConfigPath("Proxy/proxyBehavior.xml"));
-
-			var calcService = container.Resolve<ICalcService>("useSingleAttribute");
-			Assert.IsFalse(calcService is IDisposable, "Service proxy should not expose the IDisposable interface");
-		}
 #endif
 
 		[Test]
@@ -146,24 +127,12 @@ namespace Castle.Windsor.Tests.Proxy
 		}
 
 		[Test]
-		public void RequestSingleInterfaceProxyWithAttribute()
-		{
-			var container = new WindsorContainer();
-			container.Register(Component.For<StandardInterceptor>(),
-			                   Component.For<ICalcService>().ImplementedBy<CalculatorServiceWithSingleProxyBehavior>());
-
-			var calcService = container.Resolve<ICalcService>();
-			Assert.IsNotNull(calcService);
-			Assert.IsFalse(calcService is IDisposable, "Service proxy should not expose the IDisposable interface");
-		}
-
-		[Test]
 		public void NoSingleInterfaceProxyWithAttribute()
 		{
 			var container = new WindsorContainer();
 
 			container.Register(Component.For<StandardInterceptor>(),
-			                   Component.For<ICalcService>().ImplementedBy<CalculatorServiceWithoutSingleProxyBehavior>());
+			                   Component.For<ICalcService>().ImplementedBy<CalculatorServiceWithMultipleInterfaces>());
 
 			var calcService = container.Resolve<ICalcService>();
 			Assert.IsNotNull(calcService);

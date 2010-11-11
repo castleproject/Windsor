@@ -16,7 +16,6 @@ namespace Castle.MicroKernel.Proxy
 	using System;
 	using System.Collections;
 	using System.Collections.Generic;
-	using System.ComponentModel;
 
 	using Castle.Core;
 	using Castle.DynamicProxy;
@@ -40,9 +39,6 @@ namespace Castle.MicroKernel.Proxy
 		public ProxyOptions(DependencyModelCollection dependencies)
 		{
 			this.dependencies = dependencies;
-#pragma warning disable 0618 //call to obsolete method
-			UseSingleInterfaceProxy = false;
-#pragma warning restore
 			OmitTarget = false;
 		}
 
@@ -118,14 +114,6 @@ namespace Castle.MicroKernel.Proxy
 			get { return selector; }
 			set { SetReferenceValue(ref selector, value); }
 		}
-
-		/// <summary>
-		///   Determines if the proxied component should only include
-		///   the service interface.
-		/// </summary>
-		[Obsolete("Prefer using a IProxyGenerationHook.")]
-		[EditorBrowsable(EditorBrowsableState.Advanced)]
-		public bool UseSingleInterfaceProxy { get; set; }
 
 		/// <summary>
 		///   Adds the additional interfaces to proxy.
@@ -213,12 +201,6 @@ namespace Castle.MicroKernel.Proxy
 			{
 				return false;
 			}
-#pragma warning disable 0618 //call to obsolete method
-			if (!Equals(UseSingleInterfaceProxy, proxyOptions.UseSingleInterfaceProxy))
-			{
-				return false;
-			}
-#pragma warning restore
 			if (!Equals(OmitTarget, proxyOptions.OmitTarget))
 			{
 				return false;
