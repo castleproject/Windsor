@@ -1,4 +1,4 @@
-- implemented IOC-246 - Remove altermative naming subsystems 
+- implemented IOC-246 - Remove alternative naming subsystems 
 - fixed IOC-245 - Proxies (for interface services) should not implicitly proxy all interfaces that the service implementation type happens to implement
 - implemented IOC-243 - Remove obsolete UseSingleInterfaceProxy option
 
