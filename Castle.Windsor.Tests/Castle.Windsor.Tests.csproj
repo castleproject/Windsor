@@ -134,6 +134,7 @@
     <Compile Include="Facilities\TypedFactory\Factories\IFactoryWithParametersExtended.cs" />
     <Compile Include="Facilities\TypedFactory\Factories\IFactoryWithParametersTwoBases.cs" />
     <Compile Include="Facilities\TypedFactory\TypedFactoryDependenciesTestCase.cs" />
+    <Compile Include="Handlers\EmptyConstructorTestCase.cs" />
     <Compile Include="InternalsVisibleTo.cs" />
     <Compile Include="LifecycledComponentsReleasePolicyTestCase.cs" />
     <Compile Include="ClassComponents\DisposableFoo.cs" />
