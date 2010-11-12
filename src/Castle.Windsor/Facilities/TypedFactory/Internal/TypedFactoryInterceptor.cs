@@ -119,7 +119,11 @@ namespace Castle.Facilities.TypedFactory.Internal
 
 			resolveCount = 0;
 			// we go ahead and remove dead references from the list
+#if !SILVERLIGHT
 			resolvedTrackedComponents.RemoveAll(c => c.IsAlive == false);
+#else
+			resolvedTrackedComponents.Where(c => c.IsAlive == false).ToList().ForEach(x => resolvedTrackedComponents.Remove(x));
+#endif
 		}
 
 		private void Dispose(IInvocation invocation)
