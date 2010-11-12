@@ -16,6 +16,7 @@ namespace Castle.Facilities.Remoting.CustomActivators
 {
 #if (!SILVERLIGHT)
 	using System.Runtime.Remoting;
+	using System.Security;
 
 	using Castle.Core;
 	using Castle.MicroKernel;
@@ -38,12 +39,23 @@ namespace Castle.Facilities.Remoting.CustomActivators
 		{
 		}
 
+#if DOTNET40
+		[SecuritySafeCritical]
+#endif
 		protected override object Instantiate(CreationContext context)
+		{
+			return InternalInstantiate();
+		}
+
+#if DOTNET40
+		[SecurityCritical]
+#endif
+		private object InternalInstantiate()
 		{
 			string uri = (string) Model.ExtendedProperties["remoting.uri"];
 			
 			RemotingRegistry registry = (RemotingRegistry) 
-				Model.ExtendedProperties["remoting.remoteregistry"];
+			                            Model.ExtendedProperties["remoting.remoteregistry"];
 
 
 			if (Model.Service.IsGenericType)
@@ -54,7 +66,7 @@ namespace Castle.Facilities.Remoting.CustomActivators
 
 			registry.Publish(Model.Name);
 				
-			return RemotingServices.Connect(Model.Service, uri); 
+			return RemotingServices.Connect(Model.Service, uri);
 		}
 	}
 #endif
