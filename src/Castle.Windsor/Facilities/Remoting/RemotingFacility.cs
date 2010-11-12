@@ -18,6 +18,7 @@ namespace Castle.Facilities.Remoting
 	using System;
 	using System.IO;
 	using System.Runtime.Remoting;
+	using System.Security;
 
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Facilities;
@@ -65,17 +66,39 @@ namespace Castle.Facilities.Remoting
 		/// <remarks>
 		///   It can be overridden.
 		/// </remarks>
+#if DOTNET40
+		[SecuritySafeCritical]
+#endif
 		protected override void Dispose()
+		{
+			DisconnectLocalRegistry();
+
+			base.Dispose();
+		}
+
+#if DOTNET40
+		[SecurityCritical]
+#endif
+		private void DisconnectLocalRegistry()
 		{
 			if (disconnectLocalRegistry)
 			{
 				RemotingServices.Disconnect(localRegistry);
 			}
-
-			base.Dispose();
 		}
 
+#if DOTNET40
+		[SecuritySafeCritical]
+#endif
 		protected override void Init()
+		{
+			InternalInit();
+		}
+
+#if DOTNET40
+		[SecurityCritical]
+#endif
+		private void InternalInit()
 		{
 			ObtainConverter();
 
@@ -100,6 +123,9 @@ namespace Castle.Facilities.Remoting
 				new RemotingInspector(converter, isServer, isClient, baseUri, remoteRegistry, localRegistry));
 		}
 
+#if DOTNET40
+		[SecurityCritical]
+#endif
 		private void ConfigureClientFacility()
 		{
 			var remoteKernelUri = FacilityConfig.Attributes["remoteKernelUri"];

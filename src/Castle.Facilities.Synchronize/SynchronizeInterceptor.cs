@@ -74,7 +74,7 @@ namespace Castle.Facilities.Synchronize
 		/// </summary>
 		/// <param name="invocation">The invocation.</param>
 #if DOTNET40
-		[SecurityCritical]
+		[SecuritySafeCritical]
 #endif
 		public void Intercept(IInvocation invocation)
 		{
@@ -108,7 +108,6 @@ namespace Castle.Facilities.Synchronize
 		/// </returns>
 #if DOTNET40
 		[SecurityCritical]
-		[SecuritySafeCritical]
 #endif
 		private bool InvokeInSynchronizationContext(IInvocation invocation)
 		{
@@ -205,7 +204,6 @@ namespace Castle.Facilities.Synchronize
 
 #if DOTNET40
 		[SecurityCritical]
-		[SecuritySafeCritical]
 #endif
 		private static bool InvokeWithSynchronizedTarget<T>(IInvocation invocation, 
 			Func<T, bool> canCallOnThread, Action<T, IInvocation, Result> post) where T : class
@@ -235,7 +233,6 @@ namespace Castle.Facilities.Synchronize
 		/// <param name="result">The result holder.</param>
 #if DOTNET40
 		[SecurityCritical]
-		[SecuritySafeCritical]
 #endif
 		private static void InvokeSynchronously(IInvocation invocation, Result result)
 		{
@@ -281,7 +278,6 @@ namespace Castle.Facilities.Synchronize
 		/// <returns>Holds the invocation result.</returns>
 #if DOTNET40
 		[SecurityCritical]
-		[SecuritySafeCritical]
 #endif
 		private static Result CreateResult(IInvocation invocation)
 		{
@@ -322,7 +318,6 @@ namespace Castle.Facilities.Synchronize
 		/// <returns>The default value for the type.</returns>
 #if DOTNET40
 		[SecurityCritical]
-		[SecuritySafeCritical]
 #endif
 		private static object GetDefault(Type type)
 		{
