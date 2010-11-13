@@ -47,14 +47,15 @@ namespace Castle.Facilities.Logging.Tests
 #if !SILVERLIGHT
 			switch (loggerApi)
 			{
-				case LoggerImplementation.Log4net:
-				{
-					configFile = "log4net.facilities.test.config";
-					break;
-				}
 				case LoggerImplementation.NLog:
 				{
 					configFile = "NLog.facilities.test.config";
+					break;
+				}
+#if !CLIENTPROFILE
+				case LoggerImplementation.Log4net:
+				{
+					configFile = "log4net.facilities.test.config";
 					break;
 				}
 				case LoggerImplementation.ExtendedLog4net:
@@ -67,6 +68,7 @@ namespace Castle.Facilities.Logging.Tests
 					configFile = "NLog.facilities.test.config";
 					break;
 				}
+#endif
 			}
 #endif
 			return configFile;
