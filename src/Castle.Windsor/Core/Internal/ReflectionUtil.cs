@@ -23,8 +23,6 @@ namespace Castle.Core.Internal
 	using System.Reflection;
 	using System.Text;
 
-	using Castle.DynamicProxy.Generators.Emitters;
-
 	public static class ReflectionUtil
 	{
 		private static readonly IDictionary<ConstructorInfo, Func<object[], object>> factories =
