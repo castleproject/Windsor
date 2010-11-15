@@ -15,6 +15,7 @@
 namespace Castle.MicroKernel
 {
 	using System;
+	using System.Security;
 #if (SILVERLIGHT)
 	public abstract class AbstractSubSystem : ISubSystem
 #else
@@ -25,6 +26,9 @@ namespace Castle.MicroKernel
 		private IKernel kernel;
 
 #if (!SILVERLIGHT)
+#if DOTNET40
+		[SecurityCritical]
+#endif
 		public override object InitializeLifetimeService()
 		{
 			return null;

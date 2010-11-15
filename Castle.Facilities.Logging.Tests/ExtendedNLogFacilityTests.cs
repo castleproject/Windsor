@@ -14,7 +14,7 @@
 
 namespace Castle.Facilities.Logging.Tests
 {
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !CLIENTPROFILE
 	using System;
 
 	using Castle.Facilities.Logging.Tests.Classes;
