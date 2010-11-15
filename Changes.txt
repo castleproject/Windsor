@@ -1,3 +1,5 @@
+2.5.2 (2010-11-15)
+==================
 - implemented IOC-243 - Unseal the InterceptorAttribute class
 - fixed IOC-239 - ArrayResolver attempts to instantiate an unresolvable array dependency
 - fixed IOC-238 - Resolving Composite depending on a Decorator may fire up cycle detection fuse

@@ -1011,45 +1011,52 @@
             </summary>
             <value></value>
         </member>
-        <member name="T:Castle.Components.DictionaryAdapter.AttributesUtil">
+        <member name="T:Castle.Core.Internal.AttributesUtil">
             <summary>
-            Helper class for retrieving attributes.
+              Helper class for retrieving attributes.
             </summary>
         </member>
-        <member name="M:Castle.Components.DictionaryAdapter.AttributesUtil.GetTypeAttribute``1(System.Type)">
+        <member name="M:Castle.Core.Internal.AttributesUtil.GetAttribute``1(System.Reflection.ICustomAttributeProvider)">
             <summary>
-            Gets the type attribute.
+              Gets the attribute.
             </summary>
-            <param name="type">The type.</param>
-            <returns>The type attribute.</returns>
-        </member>
-        <member name="M:Castle.Components.DictionaryAdapter.AttributesUtil.GetAttribute``1(System.Reflection.MemberInfo)">
-            <summary>
-            Gets the attribute.
-            </summary>
-            <param name="member">The member.</param>
+            <param name = "member">The member.</param>
             <returns>The member attribute.</returns>
         </member>
-        <member name="M:Castle.Components.DictionaryAdapter.AttributesUtil.GetTypeAttributes``1(System.Type)">
+        <member name="M:Castle.Core.Internal.AttributesUtil.GetAttributes``1(System.Reflection.ICustomAttributeProvider)">
             <summary>
-            Gets the type attributes.
+              Gets the attributes. Does not consider inherited attributes!
             </summary>
-            <param name="type">The type.</param>
-            <returns>The type attributes.</returns>
-        </member>
-        <member name="M:Castle.Components.DictionaryAdapter.AttributesUtil.GetAttributes``1(System.Reflection.MemberInfo)">
-            <summary>
-            Gets the attributes.
-            </summary>
-            <param name="member">The member.</param>
+            <param name = "member">The member.</param>
             <returns>The member attributes.</returns>
         </member>
-        <member name="M:Castle.Components.DictionaryAdapter.AttributesUtil.GetTypeConverter(System.Reflection.MemberInfo)">
+        <member name="M:Castle.Core.Internal.AttributesUtil.GetTypeAttribute``1(System.Type)">
             <summary>
-            Gets the type converter.
+              Gets the type attribute.
             </summary>
-            <param name="member">The member.</param>
+            <param name = "type">The type.</param>
+            <returns>The type attribute.</returns>
+        </member>
+        <member name="M:Castle.Core.Internal.AttributesUtil.GetTypeAttributes``1(System.Type)">
+            <summary>
+              Gets the type attributes.
+            </summary>
+            <param name = "type">The type.</param>
+            <returns>The type attributes.</returns>
+        </member>
+        <member name="M:Castle.Core.Internal.AttributesUtil.GetTypeConverter(System.Reflection.MemberInfo)">
+            <summary>
+              Gets the type converter.
+            </summary>
+            <param name = "member">The member.</param>
             <returns></returns>
+        </member>
+        <member name="M:Castle.Core.Internal.AttributesUtil.HasAttribute``1(System.Reflection.ICustomAttributeProvider)">
+            <summary>
+              Gets the attribute.
+            </summary>
+            <param name = "member">The member.</param>
+            <returns>The member attribute.</returns>
         </member>
         <member name="T:Castle.Components.DictionaryAdapter.IDynamicValue`1">
             <summary>
@@ -1550,7 +1557,7 @@
             <summary>
               Returns list of all unique interfaces implemented given types, including their base interfaces.
             </summary>
-            <param name="types"></param>
+            <param name = "types"></param>
             <returns></returns>
         </member>
         <member name="M:Castle.DynamicProxy.Generators.MetaEvent.#ctor(System.String,System.Type,System.Type,Castle.DynamicProxy.Generators.MetaMethod,Castle.DynamicProxy.Generators.MetaMethod,System.Reflection.EventAttributes)">

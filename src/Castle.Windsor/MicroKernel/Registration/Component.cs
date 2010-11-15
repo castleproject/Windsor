@@ -109,7 +109,7 @@ namespace Castle.MicroKernel.Registration
 			return new ComponentRegistration(model);
 		}
 
-		public static bool HasAttribute<TAttribute>(Type type) where TAttribute:Attribute
+		public static bool HasAttribute<TAttribute>(Type type) where TAttribute : Attribute
 		{
 			return Attribute.IsDefined(type, typeof(TAttribute));
 		}
