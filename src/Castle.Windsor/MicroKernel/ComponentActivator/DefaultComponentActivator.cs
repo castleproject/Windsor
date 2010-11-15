@@ -20,6 +20,7 @@ namespace Castle.MicroKernel.ComponentActivator
 	using System.Linq;
 #endif
 	using System.Reflection;
+	using System.Security;
 	using System.Security.Permissions;
 
 	using Castle.Core;
@@ -170,6 +171,9 @@ namespace Castle.MicroKernel.ComponentActivator
 		}
 
 #if (!SILVERLIGHT)
+#if DOTNET40
+		[SecuritySafeCritical]
+#endif
 		private static object FastCreateInstance(Type implType, object[] arguments, Type[] signature)
 		{
 			// otherwise GetConstructor wil blow up instead of returning null

@@ -31,6 +31,7 @@ namespace Castle.Facilities.Logging
 	public class LoggingFacility : AbstractFacility
 	{
 #if !SILVERLIGHT
+#if !CLIENTPROFILE
 		private static readonly String ExtendedLog4NetLoggerFactoryTypeName =
 			"Castle.Services.Logging.Log4netIntegration.ExtendedLog4netFactory," +
 			"Castle.Services.Logging.Log4netIntegration,Version=2.5.1.0, Culture=neutral," +
@@ -45,7 +46,7 @@ namespace Castle.Facilities.Logging
 			"Castle.Services.Logging.Log4netIntegration.Log4netFactory," +
 			"Castle.Services.Logging.Log4netIntegration,Version=2.5.1.0, Culture=neutral," +
 			"PublicKeyToken=407dd0808d44fbdc";
-
+#endif
 		private static readonly String NLogLoggerFactoryTypeName =
 			"Castle.Services.Logging.NLogIntegration.NLogFactory," +
 			"Castle.Services.Logging.NLogIntegration,Version=2.5.1.0, Culture=neutral," +
@@ -253,14 +254,16 @@ namespace Castle.Facilities.Logging
 					return typeof(DiagnosticsLoggerFactory);
 				case LoggerImplementation.Trace:
 					return typeof(TraceLoggerFactory);
-				case LoggerImplementation.Log4net:
-					return converter.PerformConversion<Type>(Log4NetLoggerFactoryTypeName);
 				case LoggerImplementation.NLog:
 					return converter.PerformConversion<Type>(NLogLoggerFactoryTypeName);
+#if !CLIENTPROFILE
+				case LoggerImplementation.Log4net:
+					return converter.PerformConversion<Type>(Log4NetLoggerFactoryTypeName);
 				case LoggerImplementation.ExtendedLog4net:
 					return converter.PerformConversion<Type>(ExtendedLog4NetLoggerFactoryTypeName);
 				case LoggerImplementation.ExtendedNLog:
 					return converter.PerformConversion<Type>(ExtendedNLogLoggerFactoryTypeName);
+#endif
 #endif
 				default:
 				{

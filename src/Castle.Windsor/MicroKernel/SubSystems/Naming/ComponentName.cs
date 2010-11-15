@@ -18,6 +18,9 @@ namespace Castle.MicroKernel.SubSystems.Naming
 	using System.Collections.Generic;
 	using System.Text;
 	using System.Runtime.Serialization;
+#if DOTNET40
+	using System.Security;
+#endif
 
 #if (SILVERLIGHT)
 	public class ComponentName 
@@ -236,6 +239,9 @@ namespace Castle.MicroKernel.SubSystems.Naming
 
 		
 #if (!SILVERLIGHT)
+#if DOTNET40
+		[SecurityCritical]
+#endif
 		public void GetObjectData(SerializationInfo info, StreamingContext context)
 		{
 			info.AddValue("service", internalService);

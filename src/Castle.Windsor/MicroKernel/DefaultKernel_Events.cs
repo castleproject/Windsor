@@ -16,6 +16,7 @@ namespace Castle.MicroKernel
 	using System;
 	using System.Collections.Generic;
 	using System.Runtime.CompilerServices;
+	using System.Security;
 
 	using Castle.Core;
 
@@ -53,6 +54,9 @@ namespace Castle.MicroKernel
 			private readonly IDictionary<object, Delegate> events = new Dictionary<object, Delegate>();
 
 #if !SILVERLIGHT
+#if DOTNET40
+		[SecurityCritical]
+#endif
 		public override object InitializeLifetimeService()
 		{
 			return null;

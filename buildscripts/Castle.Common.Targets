@@ -23,62 +23,63 @@ limitations under the License.
 
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 	<!--
-		Overridables properties
+		Overridable properties
 	-->
 	<PropertyGroup>
-		<BuildConfigKey Condition="$(BuildConfigKey)==''">NET40</BuildConfigKey>
-		<Configuration Condition="$(Configuration)==''">Release</Configuration>
-		<TargetFrameworkProfile></TargetFrameworkProfile>
+		<Configuration Condition="$(Configuration)=='' or $(Configuration)=='Release'">NET40-Release</Configuration>
 	</PropertyGroup>
 
 
 	<!-- .NET 4.0 (default) -->
-	<PropertyGroup Condition="$(BuildConfigKey)=='NET40'">
-		<BuildFramework></BuildFramework>
-		<BuildConstants>DOTNET DOTNET40</BuildConstants>
+	<PropertyGroup Condition="$(Configuration) == 'NET40-Release' or $(Configuration) == 'NET40-Debug'">
+		<BuildConfigKey>NET40</BuildConfigKey>
 		<TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
 	</PropertyGroup>
 
 	<!-- .NET 4.0 Client Profile -->
-	<PropertyGroup Condition="$(BuildConfigKey)=='NET40CP'">
-		<BuildFramework>NET40CP</BuildFramework>
-		<BuildConstants>DOTNET DOTNET40 CLIENTPROFILE</BuildConstants>
+	<PropertyGroup Condition="$(Configuration) == 'NET40CP-Release' or $(Configuration) == 'NET40CP-Debug'">
+		<BuildConfigKey>NET40CP</BuildConfigKey>
 		<TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
 		<TargetFrameworkProfile>Client</TargetFrameworkProfile>
 	</PropertyGroup>
 
 	<!-- .NET 3.5 -->
-	<PropertyGroup Condition="$(BuildConfigKey)=='NET35'">
-		<BuildFramework>$(BuildConfigKey)</BuildFramework>
-		<BuildConstants>DOTNET DOTNET35</BuildConstants>
+	<PropertyGroup Condition="$(Configuration) == 'NET35-Release' or $(Configuration) == 'NET35-Debug'">
+		<BuildConfigKey>NET35</BuildConfigKey>
 		<TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
 	</PropertyGroup>
 
 	<!-- Mono 2.6 -->
-	<PropertyGroup Condition="$(BuildConfigKey)=='MONO26'">
-		<BuildFramework>$(BuildConfigKey)</BuildFramework>
-		<BuildConstants>MONO MONO26</BuildConstants>
+	<PropertyGroup Condition="$(Configuration) == 'MONO26-Release' or $(Configuration) == 'MONO26-Debug'">
+		<BuildConfigKey>MONO26</BuildConfigKey>
 		<TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
 		<BuildConfigDescription>Mono 2.6 - $(TargetFrameworkVersion) Profile</BuildConfigDescription>
+		<MonoShell>mono-2.6</MonoShell>
+	</PropertyGroup>
+
+	<!-- Mono 2.8 -->
+	<PropertyGroup Condition="$(Configuration) == 'MONO28-Release' or $(Configuration) == 'MONO28-Debug'">
+		<BuildConfigKey>MONO28</BuildConfigKey>
+		<TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+		<BuildConfigDescription>Mono 2.8 - $(TargetFrameworkVersion) Profile</BuildConfigDescription>
+		<MonoShell>mono-2.8</MonoShell>
 	</PropertyGroup>
 
 	<!--Silverlight 3.0 runtime-->
-	<PropertyGroup Condition="$(BuildConfigKey)=='SL3'">
-		<SolutionName>$(ProjectName)-SL</SolutionName>
-		<BuildFramework>$(BuildConfigKey)</BuildFramework>
-		<BuildConstants>SILVERLIGHT SL3</BuildConstants>
+	<PropertyGroup Condition="$(Configuration) == 'SL3-Release' or $(Configuration) == 'SL3-Debug'">
+		<BuildConfigKey>SL3</BuildConfigKey>
+		<TargetFrameworkIdentifier>Silverlight</TargetFrameworkIdentifier>
 		<MSBuildTargets>Silverlight 3.0</MSBuildTargets>
-		<TargetFrameworkVersion>3.0</TargetFrameworkVersion>
+		<TargetFrameworkVersion>v3.0</TargetFrameworkVersion>
 		<GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
 	</PropertyGroup>
 
 	<!--Silverlight 4.0 runtime-->
-	<PropertyGroup Condition="$(BuildConfigKey)=='SL4'">
-		<SolutionName>$(ProjectName)-SL</SolutionName>
-		<BuildFramework>$(BuildConfigKey)</BuildFramework>
-		<BuildConstants>SILVERLIGHT SL4</BuildConstants>
+	<PropertyGroup Condition="$(Configuration) == 'SL4-Release' or $(Configuration) == 'SL4-Debug'">
+		<BuildConfigKey>SL4</BuildConfigKey>
+		<TargetFrameworkIdentifier>Silverlight</TargetFrameworkIdentifier>
 		<MSBuildTargets>Silverlight 4.0</MSBuildTargets>
-		<TargetFrameworkVersion>4.0</TargetFrameworkVersion>
+		<TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -91,13 +92,12 @@ limitations under the License.
 		<TargetFrameworkIdentifier Condition="'$(TargetFrameworkIdentifier)' ==''">.NETFramework</TargetFrameworkIdentifier> <!-- MSBuild 4.0 defines this -->
 		<BuildPath Condition="$(BuildPath)==''">$(RootPath)/build</BuildPath>
 		<OutputPath Condition="'$(OutputPath)' == ''">$(BuildPath)/$(BuildConfigKey)/$(Configuration)/bin/</OutputPath>
-		<OutputType Condition="'$(OutputType)' == ''">Library</OutputType>
 		<BuildScriptsPath Condition="'$(BuildScriptsPath)' ==''">$(RootPath)/buildscripts</BuildScriptsPath>
 		<ToolsPath Condition="'$(ToolsPath)' == ''">$(RootPath)/tools</ToolsPath>
 		<SolutionName Condition="'$(SolutionName)' == ''">$(ProjectName)</SolutionName>
 		<SolutionPath Condition="'$(SolutionPath)' == '' and '$(SolutionName)' != ''">$(RootPath)/$(SolutionName).sln</SolutionPath>
 		<SolutionPath Condition="'$(SolutionPath)' == ''">$(RootPath)/$(ProjectName).sln</SolutionPath>
-		<TestResultsPath Condition="'$(TestResultsPath)' == ''">$(OutputPath)/test-results</TestResultsPath>
+		<TestResultsPath Condition="'$(TestResultsPath)' == ''">$(OutputPath)test-results</TestResultsPath>
 	</PropertyGroup>
 
 	
@@ -110,6 +110,12 @@ limitations under the License.
 		<ComVisible Condition="'$(ComVisible)' == ''">false</ComVisible>
 		<CLSCompliant Condition="'$(CLSCompliant)' == ''">true</CLSCompliant>
 		<AllowPartiallyTrustedCallers Condition="'$(AllowPartiallyTrustedCallers)' == ''">false</AllowPartiallyTrustedCallers>
+
+		<!-- Assembly versioning. These can be overridden to vary file and assembly versions. -->
+		<AssemblyVersion_Major Condition="'$(AssemblyVersion_Major)' == ''">$(Project_Major)</AssemblyVersion_Major>
+		<AssemblyVersion_Minor Condition="'$(AssemblyVersion_Minor)' == ''">$(Project_Minor)</AssemblyVersion_Minor>
+		<AssemblyVersion_Build Condition="'$(AssemblyVersion_Build)' == ''">$(Project_Build)</AssemblyVersion_Build>
+
 	</PropertyGroup>
 
 	
@@ -122,10 +128,6 @@ limitations under the License.
 	
 	<!-- Versioning Properties -->
 	<PropertyGroup>
-		<Project_Major Condition="'$(Project_Major)' == ''">1</Project_Major>
-		<Project_Minor Condition="'$(Project_Minor)' == ''">0</Project_Minor>
-		<Project_Build Condition="'$(Project_Build)' == ''">3</Project_Build>
-		
 		<!-- Picks up TeamCity's Build_Number property, or default to zero when not running under TeamCity -->
 		<Build_Number Condition="'$(Build_Number)' == ''">0</Build_Number>
 		<Build_Revision>$(Build_Number)</Build_Revision>
@@ -192,14 +194,16 @@ limitations under the License.
 		<WriteLinesToFile File="$(AssemblyInfoFile)" Lines='[assembly: System.CLSCompliant($(CLSCompliant))]' />
 		<WriteLinesToFile File="$(AssemblyInfoFile)" Lines='[assembly: System.Reflection.AssemblyTitle("$(AssemblyTitle)")]' />
 		<WriteLinesToFile File="$(AssemblyInfoFile)" Lines='[assembly: System.Reflection.AssemblyProduct("$(AssemblyProduct)")]' />
-		<WriteLinesToFile File="$(AssemblyInfoFile)" Lines='[assembly: System.Reflection.AssemblyVersion("$(Project_Major).$(Project_Minor).$(Project_Build).0")]' />
+		<WriteLinesToFile File="$(AssemblyInfoFile)" Lines='[assembly: System.Reflection.AssemblyVersion("$(AssemblyVersion_Major).$(AssemblyVersion_Minor).$(AssemblyVersion_Build).0")]' />
 		<WriteLinesToFile File="$(AssemblyInfoFile)" Lines='[assembly: System.Reflection.AssemblyFileVersion("$(Project_Major).$(Project_Minor).$(Project_Build).$(Build_Revision)")]' />
 		<WriteLinesToFile File="$(AssemblyInfoFile)" Lines='[assembly: System.Reflection.AssemblyInformationalVersion("$(Project_Major).$(Project_Minor).$(Project_Build).$(Build_Revision)")]' />
-		<WriteLinesToFile File="$(AssemblyInfoFile)" Lines='[assembly: System.Security.AllowPartiallyTrustedCallers]' Condition="$(AllowPartiallyTrustedCallers)" />
+		<WriteLinesToFile File="$(AssemblyInfoFile)" Lines='[assembly: System.Security.AllowPartiallyTrustedCallers]' Condition="$(AllowPartiallyTrustedCallers) and $(BuildConfigKey) != 'NET40'" />
+		<WriteLinesToFile File="$(AssemblyInfoFile)" Lines='[assembly: System.Security.AllowPartiallyTrustedCallers(PartialTrustVisibilityLevel=System.Security.PartialTrustVisibilityLevel.NotVisibleByDefault)]' Condition="$(AllowPartiallyTrustedCallers) and $(BuildConfigKey) == 'NET40'" />
+		<WriteLinesToFile File="$(AssemblyInfoFile)" Lines='[assembly: System.Security.SecurityRules(System.Security.SecurityRuleSet.Level2)]' Condition="$(AllowPartiallyTrustedCallers) and $(BuildConfigKey) == 'NET40'" />
 	
 	</Target>
 
-	<!-- User targets can be run as the lastest -->
+	<!-- Run user targets last -->
 	<Import Condition="Exists('$(RootPath)/Common.User.Targets')" Project="$(RootPath)/Common.User.Targets" />
 
 </Project>

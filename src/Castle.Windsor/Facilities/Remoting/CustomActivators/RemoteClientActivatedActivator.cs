@@ -17,6 +17,7 @@ namespace Castle.Facilities.Remoting.CustomActivators
 #if (!SILVERLIGHT)
 	using System;
 	using System.Runtime.Remoting.Activation;
+	using System.Security;
 
 	using Castle.Core;
 	using Castle.MicroKernel;
@@ -39,7 +40,18 @@ namespace Castle.Facilities.Remoting.CustomActivators
 		{
 		}
 
+#if DOTNET40
+		[SecuritySafeCritical]
+#endif
 		protected override object Instantiate(CreationContext context)
+		{
+			return InternalInstantiate();
+		}
+
+#if DOTNET40
+		[SecurityCritical]
+#endif
+		private object InternalInstantiate()
 		{
 			String url = (String) Model.ExtendedProperties["remoting.appuri"];
 

@@ -17,6 +17,7 @@ namespace Castle.Facilities.Remoting
 #if (!SILVERLIGHT)
 	using System;
 	using System.Collections.Generic;
+	using System.Security;
 
 	using Castle.Core;
 	using Castle.Facilities.Remoting.CustomActivators;
@@ -35,6 +36,9 @@ namespace Castle.Facilities.Remoting
 			this.kernel = kernel;
 		}
 
+#if DOTNET40
+		[SecurityCritical]
+#endif
 		public override object InitializeLifetimeService()
 		{
 			return null;
