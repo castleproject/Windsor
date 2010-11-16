@@ -93,13 +93,11 @@ namespace Castle.Windsor.Proxy
 		/// <param name="constructorArguments">The constructor arguments.</param>
 		/// <param name="context">The creation context</param>
 		/// <returns>The component proxy.</returns>
-		public override object Create(IKernel kernel, object target, ComponentModel model, CreationContext context,
-		                              params object[] constructorArguments)
+		public override object Create(IKernel kernel, object target, ComponentModel model, CreationContext context, params object[] constructorArguments)
 		{
 			object proxy;
 
 			var interceptors = ObtainInterceptors(kernel, model, context);
-
 			var proxyOptions = ProxyUtil.ObtainProxyOptions(model, true);
 			var proxyGenOptions = CreateProxyGenerationOptionsFrom(proxyOptions, kernel, context, model);
 

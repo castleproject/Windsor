@@ -81,6 +81,7 @@ namespace Castle.Facilities.TypedFactory.Internal
 		public void SetInterceptedComponentModel(ComponentModel target)
 		{
 			this.target = target;
+			// this will either be sole, class service for a delegate, or just interface services for interface-based factory
 			foreach (var service in this.target.AllServices)
 			{
 				BuildHandlersMap(service);
