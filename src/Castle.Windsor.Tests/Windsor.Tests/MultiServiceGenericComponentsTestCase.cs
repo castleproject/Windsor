@@ -15,6 +15,8 @@
 namespace Castle.Windsor.Tests
 {
 	using Castle.Generics;
+	using Castle.MicroKernel;
+	using Castle.MicroKernel.Handlers;
 	using Castle.MicroKernel.Registration;
 
 	using NUnit.Framework;
@@ -140,9 +142,38 @@ namespace Castle.Windsor.Tests
 				);
 
 			Container.Resolve<Generics.IRepository<A>>("repo");
+		}
 
-			// TODO: how to handle scenario when this one is requested? Should we throw nice exception?
-			// Container.Resolve<IARepository>("repo");
+		[Test]
+		public void Open_generic_component_with_generic_and_non_generic_service__generic_first_resolve_by_key_Object_throws_friendly_message()
+		{
+			Container.Register(
+				Component.For(typeof(Generics.IRepository<>)).Forward<IRepository>()
+					.ImplementedBy(typeof(Repository<>))
+					.Named("repo")
+				);
+
+			var exception = Assert.Throws<HandlerException>(() => Container.Resolve("repo", new Arguments()));
+
+			Assert.AreEqual(
+				"Requested type System.Object has 0 generic parameter(s), whereas component implementation type Castle.Generics.Repository`1[T] requires 1. This means that Windsor does not have enough information to properly create that component for you. This is most likely a bug in your registration code.",
+				exception.Message);
+		}
+
+		[Test]
+		public void Open_generic_component_with_generic_and_non_generic_service__generic_first_resolve_by_key_non_generic_throws_friendly_message()
+		{
+			Container.Register(
+				Component.For(typeof(Generics.IRepository<>)).Forward<IRepository>()
+					.ImplementedBy(typeof(Repository<>))
+					.Named("repo")
+				);
+
+			var exception = Assert.Throws<HandlerException>(() => Container.Resolve<IRepository>("repo"));
+
+			Assert.AreEqual(
+				"Requested type Castle.Generics.IRepository has 0 generic parameter(s), whereas component implementation type Castle.Generics.Repository`1[T] requires 1. This means that Windsor does not have enough information to properly create that component for you. This is most likely a bug in your registration code.",
+				exception.Message);
 		}
 
 		[Test]
@@ -154,13 +185,9 @@ namespace Castle.Windsor.Tests
 				);
 
 			Container.Resolve<Generics.IRepository<A>>();
-
-			// TODO: how to handle scenario when this one is requested? Should we throw nice exception?
-			// Container.Resolve<IARepository>("repo");
 		}
 
 		[Test(Description = "IOC-248")]
-		[Ignore("failing now")]
 		public void Open_generic_component_with_generic_and_non_generic_service__non_generic_first_resolve_by_key()
 		{
 			Container.Register(
@@ -170,13 +197,9 @@ namespace Castle.Windsor.Tests
 				);
 
 			Container.Resolve<Generics.IRepository<A>>("repo");
-
-			// TODO: how to handle scenario when this one is requested? Should we throw nice exception?
-			// Container.Resolve<IARepository>("repo");
 		}
 
 		[Test(Description = "IOC-248")]
-		[Ignore("failing now")]
 		public void Open_generic_component_with_generic_and_non_generic_service__non_generic_first_resolve_by_type()
 		{
 			Container.Register(
@@ -185,9 +208,6 @@ namespace Castle.Windsor.Tests
 				);
 
 			Container.Resolve<Generics.IRepository<A>>();
-
-			// TODO: how to handle scenario when this one is requested? Should we throw nice exception?
-			// Container.Resolve<IARepository>("repo");
 		}
 	}
 }

@@ -42,7 +42,7 @@ namespace Castle.MicroKernel.Context
 		///   Holds the scoped dependencies being resolved. 
 		///   If a dependency appears twice on the same scope, we'd have a cycle.
 		/// </summary>
-		private readonly DependencyModelCollection dependencies;
+		private readonly DependencyModelCollection dependencies = new DependencyModelCollection();
 
 		private readonly Type[] genericArguments;
 		private readonly IHandler handler;
@@ -60,16 +60,17 @@ namespace Castle.MicroKernel.Context
 		private readonly Stack<ResolutionContext> resolutionStack = new Stack<ResolutionContext>();
 		private IDictionary additionalParameters;
 		private IDictionary extendedProperties;
+		private readonly Type requestedType;
 
 		/// <summary>
 		///   Initializes a new instance of the <see cref = "CreationContext" /> class.
 		/// </summary>
-		/// <param name = "typeToExtractGenericArguments">The type to extract generic arguments.</param>
+		/// <param name = "requestedType">The type to extract generic arguments.</param>
 		/// <param name = "parentContext">The parent context.</param>
 		/// <param name = "propagateInlineDependencies">When set to <c>true</c> will clone <paramref name = "parentContext" /> <see cref = "AdditionalParameters" />.</param>
-		public CreationContext(Type typeToExtractGenericArguments, CreationContext parentContext,
+		public CreationContext(Type requestedType, CreationContext parentContext,
 		                       bool propagateInlineDependencies)
-			: this(parentContext.Handler, parentContext.ReleasePolicy, typeToExtractGenericArguments, null, null, parentContext)
+			: this(parentContext.Handler, parentContext.ReleasePolicy, requestedType, null, null, parentContext)
 		{
 			if (parentContext == null)
 			{
@@ -96,20 +97,20 @@ namespace Castle.MicroKernel.Context
 		/// </summary>
 		/// <param name = "handler">The handler.</param>
 		/// <param name = "releasePolicy">The release policy.</param>
-		/// <param name = "typeToExtractGenericArguments">The type to extract generic arguments.</param>
+		/// <param name = "requestedType">The type to extract generic arguments.</param>
 		/// <param name = "additionalArguments">The additional arguments.</param>
 		/// <param name = "conversionManager">The conversion manager.</param>
-		/// <param name="parent">Parent context</param>
+		/// <param name = "parent">Parent context</param>
 		public CreationContext(IHandler handler, IReleasePolicy releasePolicy,
-		                       Type typeToExtractGenericArguments, IDictionary additionalArguments,
-							   ITypeConverter conversionManager, CreationContext parent)
+		                       Type requestedType, IDictionary additionalArguments,
+		                       ITypeConverter conversionManager, CreationContext parent)
 		{
+			this.requestedType = requestedType;
 			this.handler = handler;
 			this.releasePolicy = releasePolicy;
 			additionalParameters = EnsureAdditionalArgumentsWriteable(additionalArguments);
 			converter = conversionManager;
-			dependencies = new DependencyModelCollection();
-			genericArguments = ExtractGenericArguments(typeToExtractGenericArguments);
+			genericArguments = ExtractGenericArguments(requestedType);
 
 			if (parent != null)
 			{
@@ -127,8 +128,12 @@ namespace Castle.MicroKernel.Context
 		/// </summary>
 		private CreationContext()
 		{
-			dependencies = new DependencyModelCollection();
 			releasePolicy = new NoTrackingReleasePolicy();
+		}
+
+		public Type RequestedType
+		{
+			get { return requestedType; }
 		}
 
 		public IDictionary AdditionalParameters

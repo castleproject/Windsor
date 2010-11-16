@@ -820,11 +820,11 @@ namespace Castle.MicroKernel
 			return (T)GetService(typeof(T));
 		}
 
-		protected CreationContext CreateCreationContext(IHandler handler, Type typeToExtractGenericArguments, IDictionary additionalArguments, CreationContext parent)
+		protected CreationContext CreateCreationContext(IHandler handler, Type requestedType, IDictionary additionalArguments, CreationContext parent)
 		{
 			return new CreationContext(handler,
 			                           ReleasePolicy,
-			                           typeToExtractGenericArguments,
+			                           requestedType,
 			                           additionalArguments,
 			                           ConversionSubSystem,
 			                           parent);
@@ -889,8 +889,8 @@ namespace Castle.MicroKernel
 
 		protected object ResolveComponent(IHandler handler, IDictionary additionalArguments)
 		{
-			// NOTE: how will this handler.Services.First() affect our ability to properly extract generic arguments here?
-			return ResolveComponent(handler, handler.Services.First(), additionalArguments);
+			// NOTE: This should best be removed.
+			return ResolveComponent(handler, typeof(object), additionalArguments);
 		}
 
 		protected object ResolveComponent(IHandler handler, Type service, IDictionary additionalArguments)
