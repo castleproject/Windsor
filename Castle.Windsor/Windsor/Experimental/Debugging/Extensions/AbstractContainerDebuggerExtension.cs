@@ -19,7 +19,6 @@ namespace Castle.Windsor.Experimental.Debugging.Extensions
 	using System.Linq;
 
 	using Castle.MicroKernel;
-	using Castle.MicroKernel.Handlers;
 	using Castle.Windsor.Experimental.Debugging.Primitives;
 	
 #if !SILVERLIGHT
@@ -32,7 +31,7 @@ namespace Castle.Windsor.Experimental.Debugging.Extensions
 		protected ComponentDebuggerView DefaultComponentView(MetaComponent component)
 		{
 			return new ComponentDebuggerView(component,
-			                                 new DefaultComponentView(component.Handler, component.ForwardedTypes));
+			                                 new DefaultComponentView(component.Handler));
 		}
 
 		protected IEnumerable<MetaComponent> GetMetaComponents(
@@ -42,23 +41,18 @@ namespace Castle.Windsor.Experimental.Debugging.Extensions
 			foreach (var handler in flatKeyHandlers)
 			{
 				var actual = handler.Value;
-				var forwarding = handler.Value as ForwardingHandler;
-				if (forwarding != null)
-				{
-					actual = forwarding.Target;
-				}
 				KeyValuePair<string, IList<Type>> list;
 				if (lookup.TryGetValue(actual, out list) == false)
 				{
 					list = new KeyValuePair<string, IList<Type>>(handler.Key, new List<Type>(4));
 					lookup.Add(actual, list);
 				}
-				if (forwarding != null)
+				foreach (var service in actual.Services)
 				{
-					list.Value.Add(forwarding.Service);
+					list.Value.Add(service);
 				}
 			}
-			return lookup.Select(c => new MetaComponent(c.Value.Key, c.Key, c.Value.Value));
+			return lookup.Select(c => new MetaComponent(c.Value.Key, c.Key));
 		}
 	}
 #endif

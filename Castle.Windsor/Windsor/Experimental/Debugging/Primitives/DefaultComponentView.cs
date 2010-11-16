@@ -14,7 +14,6 @@
 
 namespace Castle.Windsor.Experimental.Debugging.Primitives
 {
-	using System;
 	using System.Collections.Generic;
 	using System.Linq;
 
@@ -26,13 +25,11 @@ namespace Castle.Windsor.Experimental.Debugging.Primitives
 #if !SILVERLIGHT
 	public class DefaultComponentView : IComponentDebuggerExtension
 	{
-		private readonly IEnumerable<Type> forwardedTypes;
 		private readonly IHandler handler;
 
-		public DefaultComponentView(IHandler handler, IEnumerable<Type> forwardedTypes)
+		public DefaultComponentView(IHandler handler)
 		{
 			this.handler = handler;
-			this.forwardedTypes = forwardedTypes;
 		}
 
 		private object GetImplementation()
@@ -77,10 +74,9 @@ namespace Castle.Windsor.Experimental.Debugging.Primitives
 		public IEnumerable<DebuggerViewItem> Attach()
 		{
 			yield return new DebuggerViewItem("Implementation", GetImplementation());
-			yield return new DebuggerViewItem("Service", handler.Service);
-			foreach (var forwardedType in forwardedTypes)
+			foreach (var service in handler.Services)
 			{
-				yield return new DebuggerViewItem("Service", forwardedType);
+				yield return new DebuggerViewItem("Service", service);
 			}
 			yield return new DebuggerViewItem("Status", GetStatus());
 			yield return new DebuggerViewItem("Lifestyle", GetLifestyle());

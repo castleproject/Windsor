@@ -68,8 +68,6 @@ namespace Castle.MicroKernel.Handlers
 
 		private IKernelInternal kernel;
 
-		private Type service;
-
 		private HandlerState state;
 
 		/// <summary>
@@ -99,16 +97,15 @@ namespace Castle.MicroKernel.Handlers
 			get { return state; }
 		}
 
+		public IEnumerable<Type> Services
+		{
+			get { return ComponentModel.AllServices; }
+		}
+
+		// TODO: this has to go
 		public Type Service
 		{
-			get
-			{
-				if (service == null)
-				{
-					service = ComponentModel.Service;
-				}
-				return service;
-			}
+			get { return Services.First(); }
 		}
 
 		protected IDictionary<string, DependencyModel> DependenciesByKey

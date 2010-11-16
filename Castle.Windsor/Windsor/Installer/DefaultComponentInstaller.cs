@@ -207,8 +207,9 @@ namespace Castle.Windsor.Installer
 				Debug.Assert(type != null);
 				Debug.Assert(service != null);
 
-				container.Register(Component.For(service).ImplementedBy(type).Named(id));
-				SetUpComponentForwardedTypes(container.Kernel as IKernelInternal, component, typeName, id, converter);
+				var services = new List<Type> { service };
+				CollectForwardedTypes(container.Kernel as IKernelInternal, component, typeName, id, converter, services);
+				container.Register(Component.For(services).ImplementedBy(type).Named(id));
 			}
 		}
 
@@ -226,8 +227,8 @@ namespace Castle.Windsor.Installer
 			}
 		}
 
-		private void SetUpComponentForwardedTypes(IKernelInternal kernel, IConfiguration component, string typeName, string id,
-		                                          IConversionManager converter)
+		private void CollectForwardedTypes(IKernelInternal kernel, IConfiguration component, string typeName, string id,
+		                                          IConversionManager converter, List<Type> services)
 		{
 			if (kernel == null)
 			{
@@ -239,14 +240,13 @@ namespace Castle.Windsor.Installer
 				return;
 			}
 
-			var forwarded = new List<Type>();
 			foreach (var forwardedType in forwardedTypes.Children
-				.Where(c => c.Name.Equals("add", StringComparison.InvariantCultureIgnoreCase)))
+				.Where(c => c.Name.Trim().Equals("add", StringComparison.InvariantCultureIgnoreCase)))
 			{
 				var forwardedServiceTypeName = forwardedType.Attributes["service"];
 				try
 				{
-					forwarded.Add(converter.PerformConversion<Type>(forwardedServiceTypeName));
+					services.Add(converter.PerformConversion<Type>(forwardedServiceTypeName));
 				}
 				catch (Exception e)
 				{
@@ -255,10 +255,6 @@ namespace Castle.Windsor.Installer
 				}
 			}
 
-			foreach (var forwadedType in forwarded)
-			{
-				kernel.RegisterHandlerForwarding(forwadedType, id);
-			}
 		}
 
 #if !SILVERLIGHT

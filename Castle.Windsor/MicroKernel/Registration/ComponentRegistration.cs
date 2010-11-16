@@ -34,14 +34,6 @@ namespace Castle.MicroKernel.Registration
 	using Castle.MicroKernel.Registration.Proxy;
 
 	/// <summary>
-	/// Delegate to filter component registration.
-	/// </summary>
-	/// <param name="kernel">The kernel.</param>
-	/// <param name="model">The component model.</param>
-	/// <returns>true if accepted.</returns>
-	public delegate bool ComponentFilter(IKernel kernel, ComponentModel model);
-
-	/// <summary>
 	/// Registration for a single type as a component with the kernel.
 	/// <para />
 	/// You can create a new registration with the <see cref="Component"/> factory.
@@ -49,29 +41,26 @@ namespace Castle.MicroKernel.Registration
 	/// <typeparam name="TService">The service type</typeparam>
 	public class ComponentRegistration<TService> : IRegistration
 	{
-		private readonly ICollection<IRegistration> additionalRegistrations;
-		private readonly ICollection<ComponentDescriptor<TService>> descriptors;
-		private readonly ICollection<Type> forwardedTypes;
+		private readonly List<ComponentDescriptor<TService>> descriptors = new List<ComponentDescriptor<TService>>();
+		private readonly List<Type> interfaceServices = new List<Type>();
+		private Type classService;
 		private ComponentModel componentModel;
-		private ComponentFilter ifFilter;
 		private Type implementation;
 		private String name;
 		private bool overwrite;
 		private bool registered;
-		private Type serviceType;
-		private ComponentFilter unlessFilter;
+		private bool registerNewServicesOnly;
+
+		public ComponentRegistration():this(typeof(TService))
+		{
+		}
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ComponentRegistration{S}"/> class.
 		/// </summary>
-		public ComponentRegistration()
+		public ComponentRegistration(params Type[] services)
 		{
-			overwrite = false;
-			registered = false;
-			serviceType = typeof(TService);
-			forwardedTypes = new List<Type>();
-			descriptors = new List<ComponentDescriptor<TService>>();
-			additionalRegistrations = new List<IRegistration>();
+			Forward(services);
 		}
 
 		/// <summary>
@@ -88,19 +77,9 @@ namespace Castle.MicroKernel.Registration
 
 			this.componentModel = componentModel;
 			name = componentModel.Name;
-			serviceType = componentModel.Service;
+			classService = componentModel.ClassService;
+			interfaceServices.AddRange(componentModel.InterfaceServices);
 			implementation = componentModel.Implementation;
-		}
-
-		/// <summary>
-		/// Gets the forwarded service types on behalf of this component.
-		/// <para />
-		/// Add more types to forward using <see cref="Forward(Type[])"/>.
-		/// </summary>
-		/// <value>The types of the forwarded services.</value>
-		public Type[] ForwardedTypes
-		{
-			get { return forwardedTypes.ToArray(); }
 		}
 
 		/// <summary>
@@ -155,8 +134,9 @@ namespace Castle.MicroKernel.Registration
 		/// <value>The type of the service.</value>
 		public Type ServiceType
 		{
-			get { return serviceType; }
-			protected set { serviceType = value; }
+			// TODO: this is temporary...
+			get { return DefaultService(); }
+			protected set { Forward(value); }
 		}
 
 		internal bool IsOverWrite
@@ -242,6 +222,18 @@ namespace Castle.MicroKernel.Registration
 		public ComponentRegistration<TService> Configuration(IConfiguration configuration)
 		{
 			return AddDescriptor(new ConfigurationDescriptor<TService>(configuration));
+		}
+
+		public ComponentRegistration<TService> OnlyNewServices()
+		{
+			if(componentModel!=null)
+			{
+				throw new InvalidOperationException(
+					string.Format("This operation is not allowed for registration built for pre-existing {0}.", typeof(ComponentModel)));
+			}
+
+			registerNewServicesOnly = true;
+			return this;
 		}
 
 #if !SILVERLIGHT
@@ -454,25 +446,17 @@ namespace Castle.MicroKernel.Registration
 		{
 			foreach (Type type in types)
 			{
-				if (!forwardedTypes.Contains(type) && type != serviceType)
+				if(type.IsClass && classService == null)
 				{
-					forwardedTypes.Add(type);
+					classService = type;
+					continue;
+				}
+
+				if (!interfaceServices.Contains(type))
+				{
+					interfaceServices.Add(type);
 				}
 			}
-			return this;
-		}
-
-		/// <summary>
-		/// Assigns a conditional predication which must be satisfied.
-		/// <para />
-		/// The component will only be registered into the kernel 
-		/// if this predicate is satisfied (or not assigned at all).
-		/// </summary>
-		/// <param name="ifFilter">The predicate to satisfy.</param>
-		/// <returns></returns>
-		public ComponentRegistration<TService> If(ComponentFilter ifFilter)
-		{
-			this.ifFilter += ifFilter;
 			return this;
 		}
 
@@ -694,20 +678,6 @@ namespace Castle.MicroKernel.Registration
 		}
 
 		/// <summary>
-		/// Assigns a conditional predication which must not be satisfied. 
-		/// <para />
-		/// The component will only be registered into the kernel 
-		/// if this predicate is not satisfied (or not assigned at all).
-		/// </summary>
-		/// <param name="unlessFilter">The predicate not to satisfy.</param>
-		/// <returns></returns>
-		public ComponentRegistration<TService> Unless(ComponentFilter unlessFilter)
-		{
-			this.unlessFilter += unlessFilter;
-			return this;
-		}
-
-		/// <summary>
 		/// Uses a factory to instantiate the component
 		/// </summary>
 		/// <typeparam name="U">Factory type. This factory has to be registered in the kernel.</typeparam>
@@ -753,7 +723,7 @@ namespace Castle.MicroKernel.Registration
 			Activator<FactoryMethodActivator<TImpl>>()
 				.ExtendedProperties(Property.ForKey("factoryMethodDelegate").Eq(factoryMethod));
 
-			if (implementation == null && serviceType.IsSealed == false)
+			if (implementation == null && (classService == null || classService.IsSealed == false))
 			{
 				implementation = typeof(LateBoundComponent);
 			}
@@ -811,37 +781,6 @@ namespace Castle.MicroKernel.Registration
 			return parameters;
 		}
 
-		private bool ExecuteIfCondition(IKernel kernel)
-		{
-			if (ifFilter == null)
-			{
-				return true;
-			}
-			foreach (ComponentFilter filter in ifFilter.GetInvocationList())
-			{
-				if (filter(kernel, componentModel) == false)
-				{
-					return false;
-				}
-			}
-			return true;
-		}
-
-		private bool ExecuteUnlessCondition(IKernel kernel)
-		{
-			if (unlessFilter == null)
-			{
-				return false;
-			}
-			foreach (ComponentFilter filter in unlessFilter.GetInvocationList())
-			{
-				if (filter(kernel, componentModel))
-				{
-					return true;
-				}
-			}
-			return false;
-		}
 
 		private IKernelInternal GetInternalKernel(IKernel kernel)
 		{
@@ -858,15 +797,15 @@ namespace Castle.MicroKernel.Registration
 		{
 			if (implementation == null)
 			{
-				implementation = serviceType;
+				implementation = DefaultService();
 			}
 
-			if (String.IsNullOrEmpty(name))
+			if (string.IsNullOrEmpty(name))
 			{
 				
 				if(implementation == typeof(LateBoundComponent))
 				{
-					name = "Late bound " + serviceType.FullName;
+					name = "Late bound " + DefaultService().FullName;
 				}
 				else
 				{
@@ -875,9 +814,9 @@ namespace Castle.MicroKernel.Registration
 			}
 		}
 
-		private bool IsMatch(IKernel kernel)
+		private Type DefaultService()
 		{
-			return ExecuteIfCondition(kernel) && !ExecuteUnlessCondition(kernel);
+			return classService ?? interfaceServices.First();
 		}
 
 		/// <summary>
@@ -886,52 +825,62 @@ namespace Castle.MicroKernel.Registration
 		/// <param name="kernel">The kernel.</param>
 		void IRegistration.Register(IKernel kernel)
 		{
-			if (!registered)
+			if (registered)
 			{
-				registered = true;
-				InitializeDefaults();
-
-				var configuration = EnsureComponentConfiguration(kernel);
-
-				foreach (var descriptor in descriptors)
-				{
-					descriptor.ApplyToConfiguration(kernel, configuration);
-				}
-
-				if (componentModel == null)
-				{
-					componentModel = kernel.ComponentModelBuilder.BuildModel(name, serviceType, implementation, null);
-				}
-
-				foreach (var descriptor in descriptors)
-				{
-					descriptor.ApplyToModel(kernel, componentModel);
-				}
-
-				if (componentModel.Implementation.IsInterface && componentModel.Interceptors.Count > 0)
-				{
-					var options = ProxyUtil.ObtainProxyOptions(componentModel, true);
-					options.OmitTarget = true;
-				}
-
-				if (IsMatch(kernel))
-				{
-					var internalKernel = GetInternalKernel(kernel);
-					internalKernel.AddCustomComponent(componentModel);
-					if (forwardedTypes.Count > 0)
-					{
-						foreach (var type in forwardedTypes)
-						{
-							internalKernel.RegisterHandlerForwarding(type, name);
-						}
-					}
-
-					foreach (var r in additionalRegistrations)
-					{
-						r.Register(kernel);
-					}
-				}
+				return;
 			}
+			registered = true;
+
+			var services = FilterServices(kernel);
+			if(services.Count == 0)
+			{
+				return;
+			}
+			InitializeDefaults();
+
+			var configuration = EnsureComponentConfiguration(kernel);
+
+			foreach (var descriptor in descriptors)
+			{
+				descriptor.ApplyToConfiguration(kernel, configuration);
+			}
+
+			if (componentModel == null)
+			{
+				componentModel = kernel.ComponentModelBuilder.BuildModel(name, services, implementation, null);
+			}
+
+			foreach (var descriptor in descriptors)
+			{
+				descriptor.ApplyToModel(kernel, componentModel);
+			}
+
+			if (componentModel.Implementation.IsInterface && componentModel.Interceptors.Count > 0)
+			{
+				var options = ProxyUtil.ObtainProxyOptions(componentModel, true);
+				options.OmitTarget = true;
+			}
+
+			var internalKernel = GetInternalKernel(kernel);
+			internalKernel.AddCustomComponent(componentModel);
+		}
+
+		private ICollection<Type> FilterServices(IKernel kernel)
+		{
+			var services = new List<Type>(interfaceServices.Count + 1);
+			if(classService!=null)
+			{
+				services.Add(classService);
+			}
+			if (registerNewServicesOnly == false)
+			{
+				services.AddRange(interfaceServices);
+			}
+			else
+			{
+				services.AddRange(interfaceServices.Where(s => kernel.HasComponent(s) == false));
+			}
+			return services;
 		}
 	}
 }

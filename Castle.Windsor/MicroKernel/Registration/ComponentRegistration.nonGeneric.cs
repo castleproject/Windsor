@@ -25,32 +25,14 @@ namespace Castle.MicroKernel.Registration
 	/// </summary>
 	public class ComponentRegistration : ComponentRegistration<object>
 	{
-		public ComponentRegistration()
-		{
-		}
-
-		public ComponentRegistration(Type serviceType, params Type[] forwaredTypes)
-		{
-			ServiceType = serviceType;
-			Forward(forwaredTypes);
-		}
-
 		public ComponentRegistration(ComponentModel componentModel)
 			: base(componentModel)
 		{
 		}
 
-		public ComponentRegistration For(Type serviceType, params Type[] forwaredTypes)
+		public ComponentRegistration(params Type[] serviceTypes):base(serviceTypes)
 		{
-			if (ServiceType != null)
-			{
-				var message = String.Format("This component has already been assigned service type {0}", ServiceType.FullName);
-				throw new ComponentRegistrationException(message);
-			}
-
-			ServiceType = serviceType;
-			Forward(forwaredTypes);
-			return this;
+			
 		}
 	}
 }

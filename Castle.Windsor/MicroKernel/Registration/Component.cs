@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 namespace Castle.MicroKernel.Registration
 {
 	using System;
@@ -51,13 +52,7 @@ namespace Castle.MicroKernel.Registration
 			{
 				throw new ArgumentException("At least one service type must be supplied");
 			}
-
-			var forwardTypes = new Type[serviceTypes.Length - 1];
-			Array.Copy(serviceTypes, 1, forwardTypes, 0, serviceTypes.Length - 1);
-
-			var registration = For(serviceTypes[0]);
-			registration.Forward(forwardTypes);
-			return registration;
+			return new ComponentRegistration(serviceTypes);
 		}
 
 		/// <summary>
@@ -125,7 +120,7 @@ namespace Castle.MicroKernel.Registration
 		/// </summary>
 		/// <returns>true if the service is a Castle Component.</returns>
 		/// <remarks>
-		/// This method is usually used as argument for <see cref="ComponentRegistration{TService}.If"/> method.
+		/// This method is usually used as argument for <see cref="BasedOnDescriptor.If"/> method.
 		/// </remarks>
 		public static bool IsCastleComponent(Type type)
 		{
@@ -199,17 +194,6 @@ namespace Castle.MicroKernel.Registration
 		public static Predicate<Type> IsInSameNamespaceAs<T>(bool includeSubnamespaces) where T : class
 		{
 			return IsInSameNamespaceAs(typeof(T), includeSubnamespaces);
-		}
-
-		/// <summary>
-		/// Determines if the component service is already registered.
-		/// </summary>
-		/// <param name="kernel">The kernel.</param>
-		/// <param name="model">The component model.</param>
-		/// <returns>true if the service is already registered.</returns>
-		public static bool ServiceAlreadyRegistered(IKernel kernel, ComponentModel model)
-		{
-			return kernel.HasComponent(model.Service);
 		}
 
 		#region Forwarded Service Types

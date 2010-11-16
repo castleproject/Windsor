@@ -16,6 +16,7 @@ namespace Castle.MicroKernel
 {
 	using System;
 	using System.Collections;
+	using System.Collections.Generic;
 
 	using Castle.Core;
 
@@ -33,11 +34,11 @@ namespace Castle.MicroKernel
 		/// the registered contributors.
 		/// </summary>
 		/// <param name="key"></param>
-		/// <param name="service"></param>
+		/// <param name="services"></param>
 		/// <param name="classType"></param>
 		/// <param name="extendedProperties"></param>
 		/// <returns></returns>
-		ComponentModel BuildModel(String key, Type service, Type classType, IDictionary extendedProperties);
+		ComponentModel BuildModel(string key, ICollection<Type> services, Type classType, IDictionary extendedProperties);
 
 		/// <summary>
 		/// "To give or supply in common with others; give to a 

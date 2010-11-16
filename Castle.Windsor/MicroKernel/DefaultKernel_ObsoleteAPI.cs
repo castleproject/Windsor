@@ -86,7 +86,7 @@ namespace Castle.MicroKernel
 			if (classType == null) throw new ArgumentNullException("classType");
 			if (LifestyleType.Undefined == lifestyle)
 				throw new ArgumentException("The specified lifestyle must be Thread, Transient, or Singleton.", "lifestyle");
-			ComponentModel model = ComponentModelBuilder.BuildModel(key, serviceType, classType, null);
+			ComponentModel model = ComponentModelBuilder.BuildModel(key, new[] { serviceType }, classType, null);
 
 			if (overwriteLifestyle || LifestyleType.Undefined == model.LifestyleType)
 			{
@@ -107,7 +107,7 @@ namespace Castle.MicroKernel
 			if (extendedProperties == null) throw new ArgumentNullException("extendedProperties");
 			if (classType == null) throw new ArgumentNullException("classType");
 
-			ComponentModel model = ComponentModelBuilder.BuildModel(key, classType, classType, extendedProperties);
+			ComponentModel model = ComponentModelBuilder.BuildModel(key, new[] { classType }, classType, extendedProperties);
 			RaiseComponentModelCreated(model);
 			IHandler handler = HandlerFactory.Create(model);
 			RegisterHandler(key, handler);
@@ -123,7 +123,7 @@ namespace Castle.MicroKernel
 			if (serviceType == null) throw new ArgumentNullException("serviceType");
 			if (classType == null) throw new ArgumentNullException("classType");
 
-			ComponentModel model = ComponentModelBuilder.BuildModel(key, serviceType, classType, extendedProperties);
+			ComponentModel model = ComponentModelBuilder.BuildModel(key, new[] { serviceType }, classType, extendedProperties);
 			RaiseComponentModelCreated(model);
 			IHandler handler = HandlerFactory.Create(model);
 			RegisterHandler(key, handler);
@@ -138,7 +138,7 @@ namespace Castle.MicroKernel
 
 			Type classType = instance.GetType();
 
-			var model = new ComponentModel(key, classType, classType)
+			var model = new ComponentModel(key, new[] { classType }, classType)
 			{
 				LifestyleType = LifestyleType.Singleton,
 				CustomComponentActivator = typeof(ExternalInstanceActivator)
@@ -166,7 +166,7 @@ namespace Castle.MicroKernel
 			if (instance == null) throw new ArgumentNullException("instance");
 			if (classType == null) throw new ArgumentNullException("classType");
 
-			var model = new ComponentModel(key, serviceType, classType)
+			var model = new ComponentModel(key, new[] { serviceType }, classType)
 			{
 				LifestyleType = LifestyleType.Singleton,
 				CustomComponentActivator = typeof(ExternalInstanceActivator)

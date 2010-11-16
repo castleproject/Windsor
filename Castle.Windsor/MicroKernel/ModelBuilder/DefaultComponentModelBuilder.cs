@@ -49,14 +49,13 @@ namespace Castle.MicroKernel.ModelBuilder
 		/// the registered contributors.
 		/// </summary>
 		/// <param name="key"></param>
-		/// <param name="service"></param>
+		/// <param name="services"></param>
 		/// <param name="classType"></param>
 		/// <param name="extendedProperties"></param>
 		/// <returns></returns>
-		public ComponentModel BuildModel(String key, Type service, Type classType, IDictionary extendedProperties)
+		public ComponentModel BuildModel(string key, ICollection<Type> services, Type classType, IDictionary extendedProperties)
 		{
-			ComponentModel model = new ComponentModel(key, service, classType);
-			
+			var model = new ComponentModel(key, services, classType);
 			if (extendedProperties != null)
 			{
 				model.ExtendedProperties = extendedProperties;

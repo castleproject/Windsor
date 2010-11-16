@@ -14,6 +14,8 @@
 
 namespace Castle.Windsor.Tests
 {
+	using System.Linq;
+
 	using Castle.MicroKernel.Registration;
 
 	using NUnit.Framework;
@@ -115,7 +117,8 @@ namespace Castle.Windsor.Tests
 					.ImplementedBy<MyRepository>());
 
 			var allHandlers = Kernel.GetAssignableHandlers(typeof(object));
-			Assert.AreEqual(2, allHandlers.Length);
+			Assert.AreEqual(1, allHandlers.Length);
+			Assert.AreEqual(2, allHandlers.Single().Services.Count());
 		}
 
 		[Test]

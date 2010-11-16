@@ -16,6 +16,7 @@ namespace Castle.MicroKernel.SubSystems.Naming
 {
 	using System;
 	using System.Collections.Generic;
+	using System.Linq;
 
 	using Castle.Core.Internal;
 
@@ -65,7 +66,6 @@ namespace Castle.MicroKernel.SubSystems.Naming
 
 		public virtual void Register(String key, IHandler handler)
 		{
-			Type service = handler.Service;
 
 			using(@lock.ForWriting())
 			{
@@ -74,10 +74,12 @@ namespace Castle.MicroKernel.SubSystems.Naming
 					throw new ComponentRegistrationException(
 						String.Format("There is a component already registered for the given key {0}", key));
 				}
-
-				if (!service2Handler.ContainsKey(service))
+				foreach (var service in handler.Services)
 				{
-					this[service] = handler;
+					if (!service2Handler.ContainsKey(service))
+					{
+						this[service] = handler;
+					}
 				}
 
 				this[key] = handler;
@@ -246,22 +248,33 @@ namespace Castle.MicroKernel.SubSystems.Naming
 
 			using (@lock.ForWriting())
 			{
-
 				var handlers = GetHandlers();
-				var list = new List<IHandler>(handlers.Length);
-				foreach (IHandler handler in handlers)
+#if DOTNET35
+				var list = new List<IHandler>();
+#else
+				var list = new HashSet<IHandler>();
+#endif
+				foreach (var handler in handlers)
 				{
-					Type handlerService = handler.Service;
-					if (service.IsAssignableFrom(handlerService))
+					foreach (var handlerService in handler.Services)
 					{
-						list.Add(handler);
-					}
-					else
-					{
-						if (service.IsGenericType &&
-						    service.GetGenericTypeDefinition().IsAssignableFrom(handlerService))
+						if (service.IsAssignableFrom(handlerService))
 						{
+#if DOTNET35
+							if(list.Contains(handler) == false)
+#endif
 							list.Add(handler);
+						}
+						else
+						{
+							if (service.IsGenericType &&
+								service.GetGenericTypeDefinition().IsAssignableFrom(handlerService))
+							{
+#if DOTNET35
+								if(list.Contains(handler) == false)
+#endif
+								list.Add(handler);
+							}
 						}
 					}
 				}

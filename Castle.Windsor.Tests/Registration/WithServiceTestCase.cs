@@ -30,10 +30,10 @@ namespace Castle.MicroKernel.Tests.Registration
 		public void AllInterfaces_uses_all_implemented_interfaces()
 		{
 			Kernel.Register(AllTypes.FromThisAssembly().Where(t => t == typeof(TwoInterfacesImpl)).WithService.AllInterfaces());
-			var handlers = Kernel.GetAssignableHandlers(typeof(object));
-			Assert.AreEqual(2, handlers.Length);
-			Assert.True(handlers.Any(h => h.Service == typeof(ICommon)));
-			Assert.True(handlers.Any(h => h.Service == typeof(ICommon2)));
+			var services = Kernel.GetAssignableHandlers(typeof(object)).Single().Services.ToArray();
+			Assert.AreEqual(2, services.Length);
+			Assert.True(services.Any(s => s == typeof(ICommon)));
+			Assert.True(services.Any(s => s == typeof(ICommon2)));
 		}
 
 		[Test]
@@ -85,11 +85,11 @@ namespace Castle.MicroKernel.Tests.Registration
 			Kernel.Register(AllTypes.FromThisAssembly().Where(t => t == typeof(TwoInterfacesImpl))
 			                	.WithService.AllInterfaces()
 			                	.WithService.Self());
-			var handlers = Kernel.GetAssignableHandlers(typeof(object));
-			Assert.AreEqual(3, handlers.Length);
-			Assert.True(handlers.Any(h => h.Service == typeof(ICommon)));
-			Assert.True(handlers.Any(h => h.Service == typeof(ICommon2)));
-			Assert.True(handlers.Any(h => h.Service == typeof(TwoInterfacesImpl)));
+			var services = Kernel.GetAssignableHandlers(typeof(object)).Single().Services.ToArray();
+			Assert.AreEqual(3, services.Length);
+			Assert.True(services.Any(s => s == typeof(ICommon)));
+			Assert.True(services.Any(s => s == typeof(ICommon2)));
+			Assert.True(services.Any(s => s == typeof(TwoInterfacesImpl)));
 		}
 
 		[Test]
@@ -99,9 +99,10 @@ namespace Castle.MicroKernel.Tests.Registration
 			                	.WithService.AllInterfaces()
 			                	.WithService.FirstInterface());
 			var handlers = Kernel.GetAssignableHandlers(typeof(object));
-			Assert.AreEqual(2, handlers.Length);
-			Assert.True(handlers.Any(h => h.Service == typeof(ICommon)));
-			Assert.True(handlers.Any(h => h.Service == typeof(ICommon2)));
+			Assert.AreEqual(1, handlers.Length);
+			var handler = handlers.Single();
+			Assert.True(handler.Services.Any(s => s == typeof(ICommon)));
+			Assert.True(handler.Services.Any(s => s == typeof(ICommon2)));
 		}
 
 		[Test]

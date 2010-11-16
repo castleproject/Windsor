@@ -15,6 +15,7 @@
 namespace Castle.MicroKernel
 {
 	using System;
+	using System.Collections.Generic;
 
 	using Castle.Core;
 	using Castle.MicroKernel.Context;
@@ -97,6 +98,8 @@ namespace Castle.MicroKernel
 		/// The service that this handler handles
 		/// </summary>
 		Type Service { get;  }
+
+		IEnumerable<Type> Services { get; }
 
 		/// <summary>
 		/// Allow to track state changes of a handler that is modified directly.
