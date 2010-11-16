@@ -14,6 +14,8 @@
 
 namespace Castle.Windsor.Tests.Interceptors
 {
+	using System.Linq;
+
 	using Castle.Core;
 	using Castle.MicroKernel.Proxy;
 
@@ -21,7 +23,7 @@ namespace Castle.Windsor.Tests.Interceptors
 	{
 		public bool HasInterceptors(ComponentModel model)
 		{
-			return model.Service == typeof(IWatcher);
+			return model.AllServices.Any(s => s == typeof(IWatcher));
 		}
 
 		public InterceptorReference[] SelectInterceptors(ComponentModel model, InterceptorReference[] interceptors)

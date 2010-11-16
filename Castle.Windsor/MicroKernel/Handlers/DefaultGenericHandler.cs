@@ -25,8 +25,7 @@ namespace Castle.MicroKernel.Handlers
 	///   Summary description for DefaultGenericHandler.
 	/// </summary>
 	/// <remarks>
-	///   TODO: Consider refactoring AbstractHandler moving lifestylemanager
-	///   creation to DefaultHandler
+	///   TODO: Consider refactoring AbstractHandler moving lifestylemanager creation to DefaultHandler
 	/// </remarks>
 	[Serializable]
 	public class DefaultGenericHandler : AbstractHandler
