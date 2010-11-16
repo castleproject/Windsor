@@ -19,9 +19,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 
 	using Castle.Core;
 
-#if (!SILVERLIGHT)
 	[Serializable]
-#endif
 	public class GenericInspector : IContributeComponentModelConstruction
 	{
 		public void ProcessModel(IKernel kernel, ComponentModel model)

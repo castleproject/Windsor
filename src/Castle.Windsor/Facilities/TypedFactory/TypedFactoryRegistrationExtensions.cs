@@ -15,6 +15,7 @@
 namespace Castle.Facilities.TypedFactory
 {
 	using System;
+	using System.Diagnostics;
 	using System.Linq;
 
 	using Castle.Core;
@@ -63,14 +64,21 @@ namespace Castle.Facilities.TypedFactory
 			{
 				throw new ArgumentNullException("registration");
 			}
-
-			if (registration.ServiceType.IsInterface)
+			if(registration.ClassService == null)
 			{
+				Debug.Assert(registration.InterfaceServices.Count > 0, "registration.InterfaceServices.Count > 0");
 				return RegisterInterfaceBasedFactory(registration, configuration);
 			}
-			if (registration.ServiceType.BaseType == typeof(MulticastDelegate))
+			if (registration.ClassService.BaseType == typeof(MulticastDelegate))
 			{
-				return RegisterDelegateBasedFactory(registration, configuration);
+				if (registration.InterfaceServices.Count > 0)
+				{
+					return RegisterDelegateBasedFactory(registration, configuration);
+				}
+				throw new ComponentRegistrationException(
+					string.Format(
+						"Type {0} is a delegate, however the component has also {1} inteface(s) specified as it's service. Delegate-based typed factories can't expose any additional services.",
+						registration.ClassService, registration.InterfaceServices.Count));
 			}
 
 			throw new ComponentRegistrationException(
