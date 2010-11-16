@@ -16,6 +16,7 @@ namespace Castle.MicroKernel.Tests.Registration
 {
 	using System;
 	using System.Collections.Generic;
+	using System.Linq;
 
 	using Castle.Core;
 	using Castle.Core.Configuration;
@@ -47,7 +48,7 @@ namespace Castle.MicroKernel.Tests.Registration
 				Component.For<CustomerImpl>());
 
 			var handler = Kernel.GetHandler(typeof(CustomerImpl));
-			Assert.AreEqual(typeof(CustomerImpl), handler.ComponentModel.Service);
+			Assert.AreEqual(typeof(CustomerImpl), handler.Services.Single());
 			Assert.AreEqual(typeof(CustomerImpl), handler.ComponentModel.Implementation);
 
 			var customer = Kernel.Resolve<CustomerImpl>();
@@ -97,7 +98,7 @@ namespace Castle.MicroKernel.Tests.Registration
 
 			var handler = Kernel.GetHandler("customer");
 			Assert.AreEqual("customer", handler.ComponentModel.Name);
-			Assert.AreEqual(typeof(CustomerImpl), handler.ComponentModel.Service);
+			Assert.AreEqual(typeof(CustomerImpl), handler.Services.Single());
 			Assert.AreEqual(typeof(CustomerImpl), handler.ComponentModel.Implementation);
 
 			var customer = Kernel.Resolve<CustomerImpl>("customer");
