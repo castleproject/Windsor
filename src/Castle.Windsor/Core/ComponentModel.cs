@@ -89,13 +89,16 @@ namespace Castle.Core
 		/// <summary>
 		///   Constructs a ComponentModel
 		/// </summary>
-		public ComponentModel(String name, Type service, Type implementation)
+		public ComponentModel(String name, ICollection<Type> services, Type implementation)
 		{
 			Name = name;
-			AddService(service);
 			Implementation = implementation;
 			LifestyleType = LifestyleType.Undefined;
 			InspectionBehavior = PropertiesInspectionBehavior.Undefined;
+			foreach (var type in services)
+			{
+				AddService(type);
+			}
 		}
 
 		/// <summary>

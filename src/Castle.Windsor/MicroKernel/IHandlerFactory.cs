@@ -14,8 +14,6 @@
 
 namespace Castle.MicroKernel
 {
-	using System;
-
 	using Castle.Core;
 
 	/// <summary>
@@ -25,7 +23,5 @@ namespace Castle.MicroKernel
 	public interface IHandlerFactory
 	{
 		IHandler Create(ComponentModel model);
-
-		IHandler CreateForwarding(IHandler target, Type forwardedType);
 	}
 }

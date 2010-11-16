@@ -51,7 +51,7 @@ namespace Castle.Windsor.Experimental.Debugging.Primitives
 
 		private DebuggerViewItem BuildComponentView(MetaComponent component)
 		{
-			var defaultExtension = new DefaultComponentView(component.Handler, component.ForwardedTypes);
+			var defaultExtension = new DefaultComponentView(component.Handler);
 			var item = new ComponentDebuggerView(component, defaultExtension);
 			return new DebuggerViewItem(component.Name, component.Model.GetLifestyleDescription(), item);
 		}

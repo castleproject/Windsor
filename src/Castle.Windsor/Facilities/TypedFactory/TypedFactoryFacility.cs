@@ -50,7 +50,7 @@ namespace Castle.Facilities.TypedFactory
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public void AddTypedFactoryEntry(FactoryEntry entry)
 		{
-			var model = new ComponentModel(entry.Id, entry.FactoryInterface, typeof(Empty))
+			var model = new ComponentModel(entry.Id, new[] { entry.FactoryInterface }, typeof(Empty))
 			{ LifestyleType = LifestyleType.Singleton };
 
 			model.ExtendedProperties["typed.fac.entry"] = entry;

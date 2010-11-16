@@ -23,7 +23,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'NET40-Release|AnyCPU'">
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile></TargetFrameworkProfile>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
     <OutputPath>bin\NET40-Release\</OutputPath>
     <DefineConstants>TRACE;DOTNET DOTNET40 </DefineConstants>
     <DocumentationFile>bin\NET40-Release\Castle.Windsor.XML</DocumentationFile>
@@ -45,7 +46,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'NET40-Debug|AnyCPU'">
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile></TargetFrameworkProfile>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\NET40-Debug\</OutputPath>
     <DefineConstants>TRACE;DEBUG;DOTNET DOTNET40 </DefineConstants>
@@ -343,7 +345,7 @@
       <HintPath>..\..\lib\$(BuildConfigKey)\Castle.Core.dll</HintPath>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Core"/>
+    <Reference Include="System.Core" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup Condition="$(TargetFrameworkProfile)!='Client' and $(MSBuildTargets)!='Silverlight 3.0' and $(MSBuildTargets)!='Silverlight 4.0'">
@@ -506,7 +508,6 @@
     <Compile Include="MicroKernel\Handlers\AbstractHandler.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="MicroKernel\Handlers\ForwardingHandler.cs" />
     <Compile Include="MicroKernel\Handlers\ParentHandlerWithChildResolver.cs" />
     <Compile Include="MicroKernel\Handlers\DefaultGenericHandler.cs" />
     <Compile Include="MicroKernel\Handlers\DefaultHandler.cs">

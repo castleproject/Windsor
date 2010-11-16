@@ -93,7 +93,7 @@ namespace Castle.MicroKernel.Handlers
 					Type service = ComponentModel.Service.MakeGenericType(context.GenericArguments);
 
 					ComponentModel newModel = Kernel.ComponentModelBuilder.BuildModel(
-						ComponentModel.Name, service, genericType, ComponentModel.ExtendedProperties);
+						ComponentModel.Name, new[] { service }, genericType, ComponentModel.ExtendedProperties);
 
 					newModel.ExtendedProperties[ComponentModel.SkipRegistration] = true;
 					CloneParentProperties(newModel);

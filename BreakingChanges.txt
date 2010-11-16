@@ -1,4 +1,62 @@
 ================================================================================================
+change - Removed ComponentRegistration.If and ComponentRegistration.Until methods, as well as
+	Component.ServiceAlreadyRegistered method, and replaced their most common usage with
+	ComponentRegistration.OnlyNewServices method
+
+impact - medium
+fixability - easy/hard
+
+description - To make the API simpler easier to discover as well as to allow changes in internal
+	architecture, the aforementioned changes were made.
+
+fix - Most of the time the removed methods were used in the following combination:
+	Component.For<Foo>().Unless(Component.ServiceAlreadyRegistered)
+	In this case the fix is simple. Just replace the .Unless(Component.ServiceAlreadyRegistered)
+	with .OnlyNewServices()
+	If you were using the method in some other way, the fix may be more complicated and depend
+	on your particular scenario. In those cases it's best to consult Castle users group for
+	advice on how to proceed.
+================================================================================================
+change - Rebuilt how components exposing multiple services are handled internally. This includes
+	several changes to the API:
+	ForwardingHandler class and IHandlerFactory.CreateForwarding method were removed.
+	ComponentModel.Service property was removed replaced with ClassService and InterfaceServices
+	properties. Also AddService method was added. Constructor's argument for service was changed
+	to be Type[] instead of single Type.
+	IHandler.Service property was removed, replaced by Services property.
+	IComponentModelBuilder.BuildModel method takes now ICollection<Type> isntead of single Type
+	as services.
+	ComponentRegistration.For(Type serviceType, params Type[] forwaredTypes) method was removed.
+	ComponentFilter delegate type was removed as no longer needed
+
+impact - low
+fixability - easy
+
+description - As part of improvement to internal architecture changed how components exposing 
+	more than one service are handled.
+
+fix - This change should not affect most users, unless extending internals of the container. If
+	that's the case, adjust your calls to the new signatures, and change code anticipating
+	ForwardedHandlers to use Services collection from the solve IHnadler for any given component
+================================================================================================
+change - Proxies no longer implicitly implement all interfaces of component implementation type.
+
+impact - medium
+fixability - medium
+
+description - This original behavior was actually a bug and would produce onpredictible behavior
+	for components exposing several services including their class.
+
+fix - if you were depending on the additional non-service intrfaces being forwarded to the proxy
+	specify them explicitly as addtional interfaces to proxy:
+	container.Register(Component.For<CountingInterceptor>()
+						.Named("a"),
+					Component.For<ICommon>()
+						.ImplementedBy<TwoInterfacesImpl>()
+						.Interceptors("a")
+						.Proxy.AdditionalInterfaces(typeof(ICommon2))
+						.LifeStyle.Transient);
+================================================================================================
 change - NamingPartsSubSystem, KeySearchNamingSubSystem, ComponentName, BinaryTreeComponentName
 	and TreeNode types were removed.
 

@@ -46,15 +46,6 @@ namespace Castle.MicroKernel
 		void RaiseHandlersChanged();
 
 		/// <summary>
-		/// Registers the <paramref name="forwardedType"/> to be forwarded 
-		/// to the component registered with <paramref name="name"/>.
-		/// </summary>
-		/// <param name="forwardedType">The service type that gets forwarded.</param>
-		/// <param name="name">The name of the component to forward to.</param>
-		void RegisterHandlerForwarding(Type forwardedType, string name);
-
-
-		/// <summary>
 		/// Adds a custom made <see cref="ComponentModel"/>.
 		/// Used by facilities.
 		/// </summary>

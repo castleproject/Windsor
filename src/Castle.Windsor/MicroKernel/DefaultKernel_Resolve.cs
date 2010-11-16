@@ -19,7 +19,6 @@ namespace Castle.MicroKernel
 	using System.Collections.Generic;
 
 	using Castle.Core;
-	using Castle.MicroKernel.Handlers;
 
 #if (SILVERLIGHT)
 	public partial class DefaultKernel : IKernel, IKernelEvents
@@ -263,21 +262,15 @@ namespace Castle.MicroKernel
 			var resolved = new Dictionary<IHandler, object>();
 			foreach (var handler in GetAssignableHandlers(service))
 			{
-				var actualHandler = handler;
-				if (handler is ForwardingHandler)
-				{
-					actualHandler = ((ForwardingHandler)handler).Target;
-				}
-
-				if (resolved.ContainsKey(actualHandler) || handler.IsBeingResolvedInContext(currentCreationContext))
+				if (resolved.ContainsKey(handler) || handler.IsBeingResolvedInContext(currentCreationContext))
 				{
 					continue;
 				}
 
-				var component = TryResolveComponent(actualHandler, service, arguments);
+				var component = TryResolveComponent(handler, service, arguments);
 				if (component != null)
 				{
-					resolved.Add(actualHandler, component);
+					resolved.Add(handler, component);
 				}
 			}
 

@@ -40,47 +40,6 @@ namespace Castle.MicroKernel.Tests.Registration
 			// Previously the kernel assummed everything was OK, and null reffed instead.
 			Kernel.Register(Component.For(Type.GetType("NonExistentType, WohooAssembly")));
 		}
-
-		[Test]
-		public void If_conditions_are_cumulative()
-		{
-			var firstCalled = false;
-			var secondCalled = false;
-			Kernel.Register(
-				Component.For<CustomerImpl>().If(delegate
-				{
-					firstCalled = true;
-					return true;
-				}).If(delegate
-				{
-					secondCalled = true;
-					return true;
-				}));
-
-			Assert.IsTrue(firstCalled);
-			Assert.IsTrue(secondCalled);
-		}
-
-		[Test]
-		public void If_conditions_are_executed_until_first_false()
-		{
-			var firstCalled = false;
-			var secondCalled = false;
-			Kernel.Register(
-				Component.For<CustomerImpl>().If(delegate
-				{
-					firstCalled = true;
-					return false;
-				}).If(delegate
-				{
-					secondCalled = true;
-					return true;
-				}));
-
-			Assert.IsTrue(firstCalled);
-			Assert.IsFalse(secondCalled);
-		}
-
 		[Test]
 		public void AddComponent_WithServiceOnly_RegisteredWithServiceTypeName()
 		{
@@ -566,38 +525,6 @@ namespace Castle.MicroKernel.Tests.Registration
 
 			var instance = Kernel.Resolve<IGenericClassWithParameter<int>>();
 			Assert.AreEqual("NewName", instance.Name);
-		}
-
-		[Test]
-		public void AddComponent_UnlessCondition_SkipsRegistration()
-		{
-			Kernel.Register(Component.For<ICustomer>()
-			                	.ImplementedBy<CustomerImpl>()
-				);
-
-			Kernel.Register(Component.For<ICustomer>()
-			                	.ImplementedBy<CustomerChain1>()
-			                	.Unless(Component.ServiceAlreadyRegistered)
-				);
-
-			var handlers = Kernel.GetHandlers(typeof(ICustomer));
-			Assert.AreEqual(1, handlers.Length);
-		}
-
-		[Test]
-		public void AddComponent_IfCondition_RegistersComponent()
-		{
-			Kernel.Register(Component.For<ICustomer>()
-			                	.ImplementedBy<CustomerImpl>()
-				);
-
-			Kernel.Register(Component.For<ICustomer>()
-			                	.ImplementedBy<CustomerChain1>()
-			                	.If(Component.ServiceAlreadyRegistered)
-				);
-
-			var handlers = Kernel.GetHandlers(typeof(ICustomer));
-			Assert.AreEqual(2, handlers.Length);
 		}
 
 		[Test]

@@ -1073,17 +1073,5 @@ namespace Castle.MicroKernel
 
 			return LazyLoad(key, service, arguments);
 		}
-
-		void IKernelInternal.RegisterHandlerForwarding(Type forwardedType, string name)
-		{
-			var target = GetHandler(name);
-			if (target == null)
-			{
-				throw new InvalidOperationException("There is no handler named " + name);
-			}
-
-			var handler = HandlerFactory.CreateForwarding(target, forwardedType);
-			RegisterHandler(name + ", ForwardedType=" + forwardedType.FullName, handler);
-		}
 	}
 }

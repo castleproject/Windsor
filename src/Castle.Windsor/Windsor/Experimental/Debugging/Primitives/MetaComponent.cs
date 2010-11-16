@@ -14,8 +14,7 @@
 
 namespace Castle.Windsor.Experimental.Debugging.Primitives
 {
-	using System;
-	using System.Collections.Generic;
+	using System.Linq;
 
 	using Castle.Core;
 	using Castle.MicroKernel;
@@ -23,23 +22,15 @@ namespace Castle.Windsor.Experimental.Debugging.Primitives
 #if !SILVERLIGHT
 	public class MetaComponent
 	{
-		private readonly IList<Type> forwardedTypes;
-
-		public MetaComponent(string name, IHandler handler, IList<Type> forwardedTypes)
+		public MetaComponent(string name, IHandler handler)
 		{
 			Name = name;
 			Handler = handler;
-			this.forwardedTypes = forwardedTypes;
 		}
 
-		public IEnumerable<Type> ForwardedTypes
+		public int ServicesCount
 		{
-			get { return forwardedTypes; }
-		}
-
-		public int ForwardedTypesCount
-		{
-			get { return forwardedTypes.Count; }
+			get { return Handler.Services.Count(); }
 		}
 
 		public IHandler Handler { get; private set; }

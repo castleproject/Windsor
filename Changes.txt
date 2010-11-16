@@ -1,4 +1,5 @@
-- implemented IOC-246 - Remove alternative naming subsystems 
+- fixed IOC-247 - Make ComponentModel/IHandler expose all services for given component, instead of piggybacking them via ForwardedHandlers
+- implemented IOC-246 - Remove alternative naming subsystems
 - fixed IOC-245 - Proxies (for interface services) should not implicitly proxy all interfaces that the service implementation type happens to implement
 - implemented IOC-243 - Remove obsolete UseSingleInterfaceProxy option
 

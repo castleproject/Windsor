@@ -67,8 +67,6 @@ namespace Castle.Facilities.FactorySupport
 			}
 		}
 
-		#region Programmatic configuration support
-
 		[Obsolete("Use 'UsingFactoryMethod' method in fluent registration API")]
 		[EditorBrowsable(EditorBrowsableState.Advanced)]
 		public void AddAccessor<TService, TFactory>(
@@ -108,8 +106,6 @@ namespace Castle.Facilities.FactorySupport
 			AddFactoryComponent<TService, TFactory>(cfg, factoryId, serviceKey);
 		}
 
-		#region Helpers
-
 		private void AddFactoryComponent<TService, TFactory>(
 			IConfiguration cfg, string factoryId, string serviceKey)
 		{
@@ -118,7 +114,7 @@ namespace Castle.Facilities.FactorySupport
 
 			EnsureFactoryIsRegistered(factoryId, factoryType);
 
-			var serviceModel = Kernel.ComponentModelBuilder.BuildModel(serviceKey, serviceType, factoryType, null);
+			var serviceModel = Kernel.ComponentModelBuilder.BuildModel(serviceKey, new[] { serviceType }, factoryType, null);
 			cfg.Attributes["factoryId"] = factoryId;
 			serviceModel.Configuration = cfg;
 			((IKernelInternal)Kernel).AddCustomComponent(serviceModel);
@@ -128,12 +124,8 @@ namespace Castle.Facilities.FactorySupport
 		{
 			if (!Kernel.HasComponent(factoryType))
 			{
-			    Kernel.Register(Component.For(factoryType).Named(factoryId));
+				Kernel.Register(Component.For(factoryType).Named(factoryId));
 			}
 		}
-
-		#endregion
-
-		#endregion
 	}
 }

@@ -15,6 +15,7 @@
 namespace Castle.MicroKernel.Handlers
 {
 	using System;
+	using System.Collections.Generic;
 
 	using Castle.Core;
 	using Castle.MicroKernel.Context;
@@ -62,6 +63,11 @@ namespace Castle.MicroKernel.Handlers
 		public Type Service
 		{
 			get { return ComponentModel.Service; }
+		}
+
+		public IEnumerable<Type> Services
+		{
+			get { return ComponentModel.AllServices; }
 		}
 
 		protected virtual void Dispose(bool disposing)

@@ -33,7 +33,7 @@ namespace Castle.Windsor.Experimental.Debugging.Primitives
 		private readonly IComponentDebuggerExtension[] extension;
 
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
-		private readonly int forwardedCount;
+		private readonly int additionalServicesCount;
 
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 		private readonly IHandler handler;
@@ -41,11 +41,10 @@ namespace Castle.Windsor.Experimental.Debugging.Primitives
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 		private string key;
 
-		public ComponentDebuggerView(MetaComponent component,
-		                             params IComponentDebuggerExtension[] defaultExtension)
+		public ComponentDebuggerView(MetaComponent component, params IComponentDebuggerExtension[] defaultExtension)
 		{
 			key = component.Name;
-			forwardedCount = component.ForwardedTypesCount;
+			additionalServicesCount = component.ServicesCount - 1;
 			handler = component.Handler;
 			extension = defaultExtension.Concat(GetExtensions(handler)).ToArray();
 			description = BuildDescription();
@@ -66,16 +65,16 @@ namespace Castle.Windsor.Experimental.Debugging.Primitives
 		private string BuildDescription()
 		{
 			var message = new StringBuilder(handler.Service.Name);
-			if (forwardedCount == 1)
+			if (additionalServicesCount == 1)
 			{
 				message.Append(" (and one more type)");
 			}
-			else if (forwardedCount > 1)
+			else if (additionalServicesCount > 1)
 			{
-				message.AppendFormat(" (and {0} more types)", forwardedCount);
+				message.AppendFormat(" (and {0} more types)", additionalServicesCount);
 			}
 			var impl = handler.ComponentModel.Implementation;
-			if (impl == handler.Service && forwardedCount == 0)
+			if (impl == handler.Service && additionalServicesCount == 0)
 			{
 				return message.ToString();
 			}
