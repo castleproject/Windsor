@@ -165,7 +165,7 @@ namespace Castle.Facilities.Remoting
 
 		private void ObtainConverter()
 		{
-			converter = (ITypeConverter)Kernel.GetSubSystem(SubSystemConstants.ConversionManagerKey);
+			converter = Kernel.GetConversionManager();
 		}
 
 		private void SetUpRemotingConfiguration()
