@@ -49,7 +49,7 @@ namespace Castle.Windsor.Tests.Experimental
 
 			var items = GetMismatches();
 			Assert.AreEqual(3, items.Length);
-			var cbaMismatches = items.Where(i => i.Components.First().Handler.Service == typeof(CBA)).ToArray();
+			var cbaMismatches = items.Where(i => i.Components.First().Handler.Services.Single() == typeof(CBA)).ToArray();
 			Assert.AreEqual(2, cbaMismatches.Length);
 		}
 
@@ -84,7 +84,7 @@ namespace Castle.Windsor.Tests.Experimental
 
 			var items = GetMismatches();
 			Assert.AreEqual(2, items.Length);
-			var cbaMismatches = items.Where(i => i.Components.First().Handler.Service == typeof(CBA)).ToArray();
+			var cbaMismatches = items.Where(i => i.Components.First().Handler.Services.Single() == typeof(CBA)).ToArray();
 			Assert.AreEqual(2, cbaMismatches.Length);
 		}
 

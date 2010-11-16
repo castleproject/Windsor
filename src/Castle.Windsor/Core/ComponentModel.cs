@@ -18,7 +18,6 @@ namespace Castle.Core
 	using System.Collections;
 	using System.Collections.Generic;
 	using System.Diagnostics;
-	using System.Linq;
 
 	using Castle.Core.Configuration;
 	using Castle.Core.Internal;
@@ -369,15 +368,6 @@ namespace Castle.Core
 		///   <c>true</c> if generic arguments are required; otherwise, <c>false</c>.
 		/// </value>
 		public bool RequiresGenericArguments { get; set; }
-
-		/// <summary>
-		///   Gets or sets the service exposed.
-		/// </summary>
-		/// <value>The service.</value>
-		public Type Service
-		{
-			get { return ClassService ?? interfaceServices.FirstOrDefault(); }
-		}
 
 		public void AddService(Type type)
 		{
