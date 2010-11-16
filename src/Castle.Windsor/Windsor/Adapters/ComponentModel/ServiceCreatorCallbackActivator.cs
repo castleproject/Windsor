@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,14 +17,15 @@ namespace Castle.Windsor.Adapters.ComponentModel
 #if (!SILVERLIGHT)
 	using System;
 	using System.ComponentModel.Design;
-	
+	using System.Linq;
+
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.ComponentActivator;
 	using Castle.Core;
 	using Castle.MicroKernel.Context;
 
 	/// <summary>
-	/// Custom activator to create the instance on demand.
+	///   Custom activator to create the instance on demand.
 	/// </summary>
 	internal class ServiceCreatorCallbackActivator : AbstractComponentActivator
 	{
@@ -41,17 +42,17 @@ namespace Castle.Windsor.Adapters.ComponentModel
 
 		protected override object InternalCreate(CreationContext context)
 		{
-			IServiceContainer container = (IServiceContainer)
-				Model.ExtendedProperties[ServiceContainerKey];
+			var container = (IServiceContainer)
+			                Model.ExtendedProperties[ServiceContainerKey];
 
-			ServiceCreatorCallback callback = (ServiceCreatorCallback)
-				Model.ExtendedProperties[ServiceCreatorCallbackKey];
-
-			Type serviceType = Model.Service;
-			object service = callback(container, serviceType);
+			var callback = (ServiceCreatorCallback)
+			               Model.ExtendedProperties[ServiceCreatorCallbackKey];
+			// there can be only one
+			var serviceType = Model.AllServices.Single();
+			var service = callback(container, serviceType);
 
 			if (!(service == null || service.GetType().IsCOMObject ||
-				serviceType.IsAssignableFrom(service.GetType())))
+			      serviceType.IsAssignableFrom(service.GetType())))
 			{
 				service = null;
 			}

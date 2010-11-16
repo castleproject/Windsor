@@ -16,6 +16,7 @@ namespace Castle.Facilities.Remoting
 {
 #if (!SILVERLIGHT)
 	using System;
+	using System.Linq;
 	using System.Runtime.Remoting;
 
 	using Castle.Core;
@@ -101,7 +102,7 @@ namespace Castle.Facilities.Remoting
 
 			ConfigureServerComponent(server, model.Implementation, model);
 
-			ConfigureClientComponent(client, model.Service, model);
+			ConfigureClientComponent(client, model.AllServices.Single(), model);
 		}
 
 		private String BuildUri(ComponentModel model)
@@ -110,10 +111,11 @@ namespace Castle.Facilities.Remoting
 
 			// if the remoted component is a generic component then ensure a unique uri is built 
 			// for the requested service
-			if (model.Service.IsGenericType)
+			var service = model.AllServices.Single();
+			if (service.IsGenericType)
 			{
-				cpntUri = model.Service.Name;
-				foreach (var genericArgument in model.Service.GetGenericArguments())
+				cpntUri = service.Name;
+				foreach (var genericArgument in service.GetGenericArguments())
 				{
 					cpntUri += genericArgument.FullName;
 				}
@@ -355,6 +357,15 @@ namespace Castle.Facilities.Remoting
 				var message = String.Format("Component {0} was marked with remoteserver='component', " +
 				                            "but you must enable the remoting facility with isServer='true' to serve components this way",
 				                            model.Name);
+
+				throw new FacilityException(message);
+			}
+			var count = model.AllServices.Count();
+			if(count > 1)
+			{
+				var message = String.Format("Component {0} exposes {1} services, " +
+				                            "Remoting facility only supports components with single service.",
+				                            model.Name, count);
 
 				throw new FacilityException(message);
 			}

@@ -384,14 +384,14 @@ namespace Castle.Windsor.Adapters.ComponentModel
 											"serviceType");
 			}
 
-			Kernel.Register(MicroKernel.Registration.Component.For(serviceType)
-								.Named(GetServiceName(serviceType))
-								.Activator<ServiceCreatorCallbackActivator>()
-								.ExtendedProperties(
-									Property.ForKey(ServiceCreatorCallbackActivator.ServiceContainerKey)
-										.Eq(GetService(typeof(IServiceContainer))),
-									Property.ForKey(ServiceCreatorCallbackActivator.ServiceCreatorCallbackKey)
-										.Eq(callback)));
+			Kernel.Register(Component.For(serviceType)
+			                	.Named(GetServiceName(serviceType))
+			                	.Activator<ServiceCreatorCallbackActivator>()
+			                	.ExtendedProperties(
+			                		Property.ForKey(ServiceCreatorCallbackActivator.ServiceContainerKey)
+			                			.Eq(GetService(typeof(IServiceContainer))),
+			                		Property.ForKey(ServiceCreatorCallbackActivator.ServiceCreatorCallbackKey)
+			                			.Eq(callback)));
 		}
 
 		/// <summary>

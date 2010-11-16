@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -11,11 +11,11 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
 namespace Castle.Facilities.Remoting.CustomActivators
 {
 #if (!SILVERLIGHT)
 	using System;
+	using System.Linq;
 	using System.Runtime.Remoting;
 
 	using Castle.Core;
@@ -24,24 +24,26 @@ namespace Castle.Facilities.Remoting.CustomActivators
 	using Castle.MicroKernel.Context;
 
 	/// <summary>
-	/// Activates and publishes a server object.
+	///   Activates and publishes a server object.
 	/// </summary>
 	public class RemoteMarshallerActivator : DefaultComponentActivator
 	{
 		/// <summary>
-		/// Initializes a new instance of the <see cref="RemoteMarshallerActivator"/> class.
+		///   Initializes a new instance of the <see cref = "RemoteMarshallerActivator" /> class.
 		/// </summary>
-		/// <param name="model">The model.</param>
-		/// <param name="kernel">The kernel.</param>
-		/// <param name="onCreation">The oncreation event handler.</param>
-		/// <param name="onDestruction">The ondestruction event handler.</param>
-		public RemoteMarshallerActivator(ComponentModel model, IKernel kernel, ComponentInstanceDelegate onCreation, ComponentInstanceDelegate onDestruction) : base(model, kernel, onCreation, onDestruction)
+		/// <param name = "model">The model.</param>
+		/// <param name = "kernel">The kernel.</param>
+		/// <param name = "onCreation">The oncreation event handler.</param>
+		/// <param name = "onDestruction">The ondestruction event handler.</param>
+		public RemoteMarshallerActivator(ComponentModel model, IKernel kernel, ComponentInstanceDelegate onCreation,
+		                                 ComponentInstanceDelegate onDestruction)
+			: base(model, kernel, onCreation, onDestruction)
 		{
 		}
 
 		protected override object Instantiate(CreationContext context)
 		{
-			object instance = base.Instantiate(context);
+			var instance = base.Instantiate(context);
 
 			Marshal(instance, Model);
 
@@ -50,14 +52,15 @@ namespace Castle.Facilities.Remoting.CustomActivators
 
 		internal static void Marshal(object instance, ComponentModel model)
 		{
-			MarshalByRefObject mbr = (MarshalByRefObject) instance;
-			
+			var mbr = (MarshalByRefObject)instance;
+
 			if (!Convert.ToBoolean(model.ExtendedProperties["remoting.published"]))
 			{
-				string uri = (string) model.ExtendedProperties["remoting.uri"];
-			
-				RemotingServices.Marshal(mbr, uri, model.Service);
-				
+				var uri = (string)model.ExtendedProperties["remoting.uri"];
+
+				var service = model.AllServices.Single();
+				RemotingServices.Marshal(mbr, uri, service);
+
 				model.ExtendedProperties["remoting.published"] = true;
 			}
 		}
