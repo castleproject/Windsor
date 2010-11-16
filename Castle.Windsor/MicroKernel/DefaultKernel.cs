@@ -18,6 +18,7 @@ namespace Castle.MicroKernel
 	using System.Collections;
 	using System.Collections.Generic;
 	using System.Diagnostics;
+	using System.Linq;
 	using System.Runtime.CompilerServices;
 	using System.Runtime.Serialization;
 	using System.Security;
@@ -728,17 +729,20 @@ namespace Castle.MicroKernel
 			}
 
 			NamingSubSystem.UnRegister(key);
+			// TODO: this is broken, always was - should be removed
+			foreach (var service in handler.Services)
+			{
+				var assignableHandlers = NamingSubSystem.GetAssignableHandlers(service);
+				if (assignableHandlers.Length > 0)
+				{
+					NamingSubSystem[service] = assignableHandlers[0];
+				}
+				else
+				{
+					NamingSubSystem.UnRegister(service);
+				}
+			}
 
-			var service = handler.ComponentModel.Service;
-			var assignableHandlers = NamingSubSystem.GetAssignableHandlers(service);
-			if (assignableHandlers.Length > 0)
-			{
-				NamingSubSystem[handler.ComponentModel.Service] = assignableHandlers[0];
-			}
-			else
-			{
-				NamingSubSystem.UnRegister(service);
-			}
 
 			foreach (ComponentModel model in handler.ComponentModel.Dependents)
 			{
@@ -885,7 +889,8 @@ namespace Castle.MicroKernel
 
 		protected object ResolveComponent(IHandler handler, IDictionary additionalArguments)
 		{
-			return ResolveComponent(handler, handler.ComponentModel.Service, additionalArguments);
+			// NOTE: how will this handler.Services.First() affect our ability to properly extract generic arguments here?
+			return ResolveComponent(handler, handler.Services.First(), additionalArguments);
 		}
 
 		protected object ResolveComponent(IHandler handler, Type service, IDictionary additionalArguments)

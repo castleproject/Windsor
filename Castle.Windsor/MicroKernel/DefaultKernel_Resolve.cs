@@ -222,8 +222,7 @@ namespace Castle.MicroKernel
 				throw new ComponentNotFoundException(key);
 			}
 
-			IHandler handler = GetHandler(key);
-
+			var handler = GetHandler(key);
 			return ResolveComponent(handler, arguments);
 		}
 

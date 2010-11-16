@@ -17,6 +17,7 @@ namespace Castle.Facilities.Remoting
 #if (!SILVERLIGHT)
 	using System;
 	using System.Collections.Generic;
+	using System.Linq;
 	using System.Security;
 
 	using Castle.Core;
@@ -46,9 +47,10 @@ namespace Castle.Facilities.Remoting
 
 		public void AddComponentEntry(ComponentModel model)
 		{
-			if (model.Service.IsGenericType)
+			var service = model.AllServices.Single();
+			if (service.IsGenericType)
 			{
-				genericEntries[model.Service] = model;
+				genericEntries[service] = model;
 				return;
 			}
 

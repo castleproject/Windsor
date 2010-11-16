@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
 namespace Castle.Facilities.Remoting.CustomActivators
 {
 #if (!SILVERLIGHT)
+	using System.Linq;
 	using System.Runtime.Remoting;
 	using System.Security;
 
@@ -24,18 +25,20 @@ namespace Castle.Facilities.Remoting.CustomActivators
 	using Castle.MicroKernel.Context;
 
 	/// <summary>
-	/// Activates a client connecting to the remote server, enforcing the uri and the server activation.
+	///   Activates a client connecting to the remote server, enforcing the uri and the server activation.
 	/// </summary>
 	public class RemoteActivatorThroughConnector : DefaultComponentActivator
 	{
 		/// <summary>
-		/// Initializes a new instance of the <see cref="RemoteActivatorThroughConnector"/> class.
+		///   Initializes a new instance of the <see cref = "RemoteActivatorThroughConnector" /> class.
 		/// </summary>
-		/// <param name="model">The model.</param>
-		/// <param name="kernel">The kernel.</param>
-		/// <param name="onCreation">The oncreation event handler.</param>
-		/// <param name="onDestruction">The ondestruction event handler.</param>
-		public RemoteActivatorThroughConnector(ComponentModel model, IKernel kernel, ComponentInstanceDelegate onCreation, ComponentInstanceDelegate onDestruction) : base(model, kernel, onCreation, onDestruction)
+		/// <param name = "model">The model.</param>
+		/// <param name = "kernel">The kernel.</param>
+		/// <param name = "onCreation">The oncreation event handler.</param>
+		/// <param name = "onDestruction">The ondestruction event handler.</param>
+		public RemoteActivatorThroughConnector(ComponentModel model, IKernel kernel, ComponentInstanceDelegate onCreation,
+		                                       ComponentInstanceDelegate onDestruction)
+			: base(model, kernel, onCreation, onDestruction)
 		{
 		}
 
@@ -52,21 +55,19 @@ namespace Castle.Facilities.Remoting.CustomActivators
 #endif
 		private object InternalInstantiate()
 		{
-			string uri = (string) Model.ExtendedProperties["remoting.uri"];
-			
-			RemotingRegistry registry = (RemotingRegistry) 
-			                            Model.ExtendedProperties["remoting.remoteregistry"];
+			var uri = (string)Model.ExtendedProperties["remoting.uri"];
+			var registry = (RemotingRegistry)Model.ExtendedProperties["remoting.remoteregistry"];
 
-
-			if (Model.Service.IsGenericType)
+			var service = Model.AllServices.Single();
+			if (service.IsGenericType)
 			{
-				registry.Publish(Model.Service);
-				return RemotingServices.Connect(Model.Service, uri);
+				registry.Publish(service);
+				return RemotingServices.Connect(service, uri);
 			}
 
 			registry.Publish(Model.Name);
-				
-			return RemotingServices.Connect(Model.Service, uri);
+
+			return RemotingServices.Connect(service, uri);
 		}
 	}
 #endif

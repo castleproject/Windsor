@@ -48,6 +48,7 @@ namespace Castle.MicroKernel.Handlers
 			Type implType;
 			try
 			{
+				// TODO: what if ComponentModel.Implementation is a LateBoundComponent?
 				implType = ComponentModel.Implementation.MakeGenericType(context.GenericArguments);
 			}
 			catch (ArgumentException)

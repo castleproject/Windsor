@@ -16,6 +16,7 @@ namespace Castle.Facilities.Remoting.CustomActivators
 {
 #if (!SILVERLIGHT)
 	using System;
+	using System.Linq;
 	using System.Runtime.Remoting;
 	using System.Security;
 
@@ -53,11 +54,9 @@ namespace Castle.Facilities.Remoting.CustomActivators
 #endif
 		private object InternalInstantiate()
 		{
-			String url = (String) Model.ExtendedProperties["remoting.uri"];
-
-			// return Activator.GetObject(Model.Service, url);
-
-			return RemotingServices.Connect( Model.Service, url );
+			var url = (String) Model.ExtendedProperties["remoting.uri"];
+			var service = Model.AllServices.Single();
+			return RemotingServices.Connect( service, url );
 		}
 	}
 #endif
