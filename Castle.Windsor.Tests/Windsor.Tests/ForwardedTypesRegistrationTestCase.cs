@@ -21,35 +21,8 @@ namespace Castle.Windsor.Tests
 	using NUnit.Framework;
 
 	[TestFixture]
-	public class ForwardedTypesRegistrationTestCase : AbstractContainerTestFixture
+	public class MultiServiceComponentsTestCase : AbstractContainerTestFixture
 	{
-		[Test]
-		public void Can_register_handler_forwarding()
-		{
-			Container.Register(
-				Component.For<IUserRepository, IRepository>()
-					.ImplementedBy<MyRepository>()
-				);
-
-			Assert.AreSame(
-				Container.Resolve<IRepository>(),
-				Container.Resolve<IUserRepository>()
-				);
-		}
-
-		[Test]
-		public void Can_register_handler_forwarding_using_generics()
-		{
-			Container.Register(
-				Component.For<IUserRepository, IRepository<User>>()
-					.ImplementedBy<MyRepository>()
-				);
-			Assert.AreSame(
-				Container.Resolve<IRepository<User>>(),
-				Container.Resolve<IUserRepository>()
-				);
-		}
-
 		[Test]
 		public void Can_register_handler_forwarding_using_generics_and_resolveAll()
 		{
@@ -74,6 +47,46 @@ namespace Castle.Windsor.Tests
 				);
 
 			Container.Resolve<ServiceUsingRepository>();
+		}
+
+		[Test]
+		public void Can_register_multiService_component()
+		{
+			Container.Register(
+				Component.For<IUserRepository, IRepository>()
+					.ImplementedBy<MyRepository>()
+				);
+
+			Assert.AreSame(
+				Container.Resolve<IRepository>(),
+				Container.Resolve<IUserRepository>()
+				);
+		}
+
+		[Test]
+		public void Can_register_non_generic_multiService_component_with_generic_and_non_generic_service_generic_first()
+		{
+			Container.Register(
+				Component.For<IRepository<User>, IUserRepository>()
+					.ImplementedBy<MyRepository>()
+				);
+			Assert.AreSame(
+				Container.Resolve<IRepository<User>>(),
+				Container.Resolve<IUserRepository>()
+				);
+		}
+
+		[Test]
+		public void Can_register_non_generic_multiService_component_with_generic_and_non_generic_service_non_generic_first()
+		{
+			Container.Register(
+				Component.For<IUserRepository, IRepository<User>>()
+					.ImplementedBy<MyRepository>()
+				);
+			Assert.AreSame(
+				Container.Resolve<IRepository<User>>(),
+				Container.Resolve<IUserRepository>()
+				);
 		}
 
 		[Test]
@@ -105,6 +118,7 @@ namespace Castle.Windsor.Tests
 
 			var allHandlers = Kernel.GetAssignableHandlers(typeof(object));
 			Assert.AreEqual(1, allHandlers.Length);
+			Assert.AreEqual(1, allHandlers.Single().Services.Count());
 		}
 
 		[Test]
