@@ -64,7 +64,7 @@ namespace Castle.Facilities.TypedFactory
 			{
 				throw new ArgumentNullException("registration");
 			}
-			if(registration.ClassService == null)
+			if (registration.ClassService == null)
 			{
 				Debug.Assert(registration.InterfaceServices.Count > 0, "registration.InterfaceServices.Count > 0");
 				return RegisterInterfaceBasedFactory(registration, configuration);
@@ -84,7 +84,7 @@ namespace Castle.Facilities.TypedFactory
 			throw new ComponentRegistrationException(
 				string.Format(
 					"Type {0} is not an interface nor a delegate. Only interfaces and delegates may be used as typed factories.",
-					registration.ServiceType));
+					registration.ClassService));
 		}
 
 		private static ComponentRegistration<TFactory> AttachConfiguration<TFactory>(
@@ -98,19 +98,6 @@ namespace Castle.Facilities.TypedFactory
 				var selector = selectorReference.Resolve(k, c);
 				d.Insert(selector);
 				return k2 => k2.ReleaseComponent(selector);
-			});
-		}
-
-		private static ComponentRegistration<T> AttachDelegateFactory<T>(ComponentRegistration<T> registration)
-		{
-			return registration.UsingFactoryMethod((k, m, c) =>
-			{
-				var delegateProxyFactory = k.Resolve<IProxyFactoryExtension>(TypedFactoryFacility.DelegateProxyFactoryKey,
-				                                                             new Arguments()
-				                                                             	.Insert("targetDelegateType", registration.ServiceType));
-				var @delegate = k.ProxyFactory.Create(delegateProxyFactory, k, m, c);
-				k.ReleaseComponent(delegateProxyFactory);
-				return (T)@delegate;
 			});
 		}
 
@@ -140,18 +127,19 @@ namespace Castle.Facilities.TypedFactory
 		private static ComponentRegistration<TDelegate> RegisterDelegateBasedFactory<TDelegate>(
 			ComponentRegistration<TDelegate> registration, Action<TypedFactoryConfiguration> configuration)
 		{
-			if (HasOutArguments(registration.ServiceType))
+			var delegateType = registration.ClassService;
+			if (HasOutArguments(delegateType))
 			{
 				throw new ComponentRegistrationException(
 					string.Format("Delegate type {0} can not be used as typed factory because it has 'out' arguments.",
-					              registration.ServiceType));
+					              delegateType));
 			}
-			var invoke = DelegateFactory.ExtractInvokeMethod(registration.ServiceType);
+			var invoke = DelegateFactory.ExtractInvokeMethod(delegateType);
 			if (invoke == null)
 			{
 				throw new ComponentRegistrationException(
 					string.Format("Delegate type {0} can not be used as typed factory because it has void return type.",
-					              registration.ServiceType));
+					              delegateType));
 			}
 			var settings = new TypedFactoryConfiguration(TypedFactoryFacility.DefaultDelegateSelectorKey);
 			if (configuration != null)
@@ -160,18 +148,28 @@ namespace Castle.Facilities.TypedFactory
 			}
 
 			var componentRegistration = AttachFactoryInterceptor(registration);
-			componentRegistration = AttachDelegateFactory(componentRegistration);
+			componentRegistration.UsingFactoryMethod((k, m, c) =>
+			{
+				var delegateProxyFactory = k.Resolve<IProxyFactoryExtension>(TypedFactoryFacility.DelegateProxyFactoryKey,
+				                                                             new Arguments()
+				                                                             	.Insert("targetDelegateType", delegateType));
+				var @delegate = k.ProxyFactory.Create(delegateProxyFactory, k, m, c);
+				k.ReleaseComponent(delegateProxyFactory);
+				return (TDelegate)@delegate;
+			});
 			return AttachConfiguration(componentRegistration, configuration, TypedFactoryFacility.DefaultDelegateSelectorKey);
 		}
 
 		private static ComponentRegistration<TFactoryInterface> RegisterInterfaceBasedFactory<TFactoryInterface>(
 			ComponentRegistration<TFactoryInterface> registration, Action<TypedFactoryConfiguration> configuration)
 		{
-			if (HasOutArguments(registration.ServiceType))
+			foreach (var serviceType in registration.InterfaceServices)
 			{
-				throw new ComponentRegistrationException(
-					string.Format("Type {0} can not be used as typed factory because it has methods with 'out' arguments.",
-					              registration.ServiceType));
+				if (HasOutArguments(serviceType))
+				{
+					throw new ComponentRegistrationException(
+						string.Format("Type {0} can not be used as typed factory because it has methods with 'out' arguments.", serviceType));
+				}
 			}
 			var componentRegistration = AttachFactoryInterceptor(registration);
 			return AttachConfiguration(componentRegistration, configuration, TypedFactoryFacility.DefaultInterfaceSelectorKey);

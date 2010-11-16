@@ -511,8 +511,6 @@ namespace Castle.MicroKernel.Tests.Registration
 
 			var handler = Kernel.GetHandler(typeof(ICustomer));
 			var component = Component.For(handler.ComponentModel);
-
-			Assert.AreEqual(typeof(ICustomer), component.ServiceType);
 			Assert.AreEqual(typeof(CustomerImpl), component.Implementation);
 		}
 
