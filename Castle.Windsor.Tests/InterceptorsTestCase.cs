@@ -15,8 +15,10 @@
 namespace Castle.Windsor.Tests
 {
 	using System;
+	using System.Linq;
 	using System.Threading;
 	using Castle.Core;
+	using Castle.Core.Internal;
 	using Castle.DynamicProxy;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Handlers;
@@ -318,7 +320,7 @@ namespace Castle.Windsor.Tests
 
 		private void OnComponentRegistered(String key, IHandler handler)
 		{
-			if (typeof(IInterceptor).IsAssignableFrom(handler.ComponentModel.Service))
+			if(handler.ComponentModel.AllServices.Any(s=>s.Is<IInterceptor>()))
 			{
 				return;
 			}

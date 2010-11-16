@@ -15,6 +15,7 @@
 namespace Castle.Windsor.Tests.Proxy
 {
 	using System;
+	using System.Linq;
 
 	using Castle.Core;
 	using Castle.DynamicProxy;
@@ -57,7 +58,7 @@ namespace Castle.Windsor.Tests.Proxy
 
 			Assert.IsTrue(ProxyServices.IsDynamicProxy(service.GetType()));
 			Assert.IsNotNull(OnBehalfAwareProxyGenerationHook.target);
-			Assert.AreEqual(typeof(ISimpleService), OnBehalfAwareProxyGenerationHook.target.Service);
+			Assert.AreEqual(typeof(ISimpleService), OnBehalfAwareProxyGenerationHook.target.AllServices.Single());
 		}
 
 		[Test]
@@ -75,7 +76,7 @@ namespace Castle.Windsor.Tests.Proxy
 
 			Assert.IsTrue(ProxyServices.IsDynamicProxy(service.Dependency.GetType()));
 			Assert.IsNotNull(OnBehalfAwareProxyGenerationHook.target);
-			Assert.AreEqual(typeof(SimpleComponent1), OnBehalfAwareProxyGenerationHook.target.Service);
+			Assert.AreEqual(typeof(SimpleComponent1), OnBehalfAwareProxyGenerationHook.target.AllServices.Single());
 		}
 
 		[Test]
@@ -94,7 +95,7 @@ namespace Castle.Windsor.Tests.Proxy
 
 			Assert.IsTrue(ProxyServices.IsDynamicProxy(service.GetType()));
 			Assert.IsNotNull(OnBehalfAwareInterceptorSelector.target);
-			Assert.AreEqual(typeof(ISimpleService), OnBehalfAwareInterceptorSelector.target.Service);
+			Assert.AreEqual(typeof(ISimpleService), OnBehalfAwareInterceptorSelector.target.AllServices.Single());
 		}
 
 		[Test]
@@ -112,7 +113,7 @@ namespace Castle.Windsor.Tests.Proxy
 
 			Assert.IsTrue(ProxyServices.IsDynamicProxy(service.Dependency.GetType()));
 			Assert.IsNotNull(OnBehalfAwareInterceptorSelector.target);
-			Assert.AreEqual(typeof(SimpleComponent1), OnBehalfAwareInterceptorSelector.target.Service);
+			Assert.AreEqual(typeof(SimpleComponent1), OnBehalfAwareInterceptorSelector.target.AllServices.Single());
 		}
 
 		[Test]

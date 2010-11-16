@@ -15,6 +15,7 @@
 namespace Castle.Windsor.Tests.Interceptors
 {
 	using System;
+	using System.Linq;
 
 	using Castle.Core;
 	using Castle.Core.Internal;
@@ -32,7 +33,7 @@ namespace Castle.Windsor.Tests.Interceptors
 
 		public bool HasInterceptors(ComponentModel model)
 		{
-			return model.Service.Is<IInterceptor>() == false;
+			return model.AllServices.All(s => s.Is<IInterceptor>() == false);
 		}
 
 		public InterceptorReference[] SelectInterceptors(ComponentModel model, InterceptorReference[] interceptors)
