@@ -31,7 +31,8 @@ namespace Castle.Windsor.Tests.Configuration2
 		[Test]
 		public void FileResourceAndIncludes()
 		{
-			container = new WindsorContainer(ConfigHelper.ResolveConfigPath("Configuration2/config_with_include.xml"));
+			var path = ConfigHelper.ResolveConfigPath("Windsor.Tests/XmlConfig/config_with_include.xml");
+			container = new WindsorContainer(path);
 
 			AssertConfiguration();
 		}
@@ -55,7 +56,7 @@ namespace Castle.Windsor.Tests.Configuration2
 		[Test]
 		public void AssemblyResourceAndIncludes()
 		{
-			IResource resource = new AssemblyResource("assembly://Castle.Windsor.Tests/Configuration2/resource_config_with_include.xml");
+			IResource resource = new AssemblyResource("assembly://Castle.Windsor.Tests/Castle.Windsor.Tests.XmlConfig.resource_config_with_include.xml");
 
 			container = new WindsorContainer(new XmlInterpreter(resource));
 

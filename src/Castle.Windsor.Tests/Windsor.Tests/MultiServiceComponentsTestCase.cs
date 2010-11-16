@@ -64,32 +64,6 @@ namespace Castle.Windsor.Tests
 		}
 
 		[Test]
-		public void Can_register_non_generic_multiService_component_with_generic_and_non_generic_service_generic_first()
-		{
-			Container.Register(
-				Component.For<IRepository<User>, IUserRepository>()
-					.ImplementedBy<MyRepository>()
-				);
-			Assert.AreSame(
-				Container.Resolve<IRepository<User>>(),
-				Container.Resolve<IUserRepository>()
-				);
-		}
-
-		[Test]
-		public void Can_register_non_generic_multiService_component_with_generic_and_non_generic_service_non_generic_first()
-		{
-			Container.Register(
-				Component.For<IUserRepository, IRepository<User>>()
-					.ImplementedBy<MyRepository>()
-				);
-			Assert.AreSame(
-				Container.Resolve<IRepository<User>>(),
-				Container.Resolve<IUserRepository>()
-				);
-		}
-
-		[Test]
 		public void Can_register_several_handler_forwarding()
 		{
 			Container.Register(
@@ -163,6 +137,9 @@ namespace Castle.Windsor.Tests
 		{
 		}
 
+		public class User
+		{
+		}
 		public class MyRepository2 : IUserRepository
 		{
 			public MyRepository2(User user)
@@ -175,10 +152,6 @@ namespace Castle.Windsor.Tests
 			public ServiceUsingRepository(IRepository repos)
 			{
 			}
-		}
-
-		public class User
-		{
 		}
 	}
 }

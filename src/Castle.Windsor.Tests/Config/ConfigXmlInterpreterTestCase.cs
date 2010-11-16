@@ -100,7 +100,7 @@ namespace Castle.Windsor.Tests
 		{
 			DefaultConfigurationStore store = new DefaultConfigurationStore();
 			XmlInterpreter interpreter = new XmlInterpreter(
-				new AssemblyResource("assembly://Castle.Windsor.Tests/Config/sample_config.xml"));
+				new AssemblyResource("assembly://Castle.Windsor.Tests/Castle.Windsor.Tests.XmlConfig.sample_config.xml"));
 			interpreter.ProcessResource(interpreter.Source, store);
 
 			Assert.AreEqual(2, store.GetFacilities().Length);
