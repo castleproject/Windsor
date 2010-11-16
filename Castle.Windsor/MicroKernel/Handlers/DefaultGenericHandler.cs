@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,31 +16,72 @@ namespace Castle.MicroKernel.Handlers
 {
 	using System;
 	using System.Collections.Generic;
+
 	using Castle.Core;
 	using Castle.MicroKernel.Context;
 	using Castle.MicroKernel.Proxy;
 
 	/// <summary>
-	/// Summary description for DefaultGenericHandler.
+	///   Summary description for DefaultGenericHandler.
 	/// </summary>
 	/// <remarks>
-	/// TODO: Consider refactoring AbstractHandler moving lifestylemanager
-	/// creation to DefaultHandler
+	///   TODO: Consider refactoring AbstractHandler moving lifestylemanager
+	///   creation to DefaultHandler
 	/// </remarks>
-#if (!SILVERLIGHT)
 	[Serializable]
-#endif
 	public class DefaultGenericHandler : AbstractHandler
 	{
 		private readonly IDictionary<Type, IHandler> type2SubHandler;
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="DefaultGenericHandler"/> class.
+		///   Initializes a new instance of the <see cref = "DefaultGenericHandler" /> class.
 		/// </summary>
-		/// <param name="model"></param>
+		/// <param name = "model"></param>
 		public DefaultGenericHandler(ComponentModel model) : base(model)
 		{
 			type2SubHandler = new Dictionary<Type, IHandler>();
+		}
+
+		public override bool ReleaseCore(object instance)
+		{
+			var genericType = ProxyUtil.GetUnproxiedType(instance);
+
+			var handler = GetSubHandler(CreationContext.Empty, genericType);
+
+			return handler.Release(instance);
+		}
+
+		protected IHandler GetSubHandler(CreationContext context, Type genericType)
+		{
+			lock (type2SubHandler)
+			{
+				IHandler handler;
+
+				if (type2SubHandler.ContainsKey(genericType))
+				{
+					handler = type2SubHandler[genericType];
+				}
+				else
+				{
+					// TODO: we should probably match the requested type to existing services and close them over its generic arguments
+					var service = context.RequestedType;
+					var newModel = Kernel.ComponentModelBuilder.BuildModel(
+						ComponentModel.Name, new[] { service }, genericType, ComponentModel.ExtendedProperties);
+
+					newModel.ExtendedProperties[ComponentModel.SkipRegistration] = true;
+					CloneParentProperties(newModel);
+
+					// Create the handler and add to type2SubHandler before we add to the kernel.
+					// Adding to the kernel could satisfy other dependencies and cause this method
+					// to be called again which would result in extra instances being created.
+					handler = Kernel.HandlerFactory.Create(newModel);
+					type2SubHandler[genericType] = handler;
+
+					Kernel.AddCustomComponent(newModel);
+				}
+
+				return handler;
+			}
 		}
 
 		protected override object ResolveCore(CreationContext context, bool requiresDecommission, bool instanceRequired)
@@ -77,69 +118,27 @@ namespace Castle.MicroKernel.Handlers
 			var handler = GetSubHandler(context, implType);
 
 			// so the generic version wouldn't be considered as well
-			using(context.EnterResolutionContext(this, false))
+			using (context.EnterResolutionContext(this, false))
 			{
 				return handler.Resolve(context);
 			}
 		}
 
-		public override bool ReleaseCore(object instance)
-		{
-			Type genericType = ProxyUtil.GetUnproxiedType(instance);
-
-			IHandler handler = GetSubHandler(CreationContext.Empty, genericType);
-
-			return handler.Release(instance);
-		}
-
-		protected IHandler GetSubHandler(CreationContext context, Type genericType)
-		{
-			lock (type2SubHandler)
-			{
-				IHandler handler;
-
-				if (type2SubHandler.ContainsKey(genericType))
-				{
-					handler = type2SubHandler[genericType];
-				}
-				else
-				{
-					// TODO: we should probably match the requested type to existing services and close them over its generic arguments
-					var service = context.RequestedType;
-					ComponentModel newModel = Kernel.ComponentModelBuilder.BuildModel(
-						ComponentModel.Name, new[] { service }, genericType, ComponentModel.ExtendedProperties);
-
-					newModel.ExtendedProperties[ComponentModel.SkipRegistration] = true;
-					CloneParentProperties(newModel);
-
-					// Create the handler and add to type2SubHandler before we add to the kernel.
-					// Adding to the kernel could satisfy other dependencies and cause this method
-					// to be called again which would result in extra instances being created.
-					handler = Kernel.HandlerFactory.Create(newModel);
-					type2SubHandler[genericType] = handler;
-
-					Kernel.AddCustomComponent(newModel);
-				}
-
-				return handler;
-			}
-		}
-
-		/// <summary>
-		/// Clone some of the parent componentmodel properties to the generic subhandler.
-		/// </summary>
-		/// <remarks>
-		/// The following properties are copied:
-		/// <list type="bullet">
-		/// <item>
-		///		<description>The <see cref="LifestyleType"/></description>
-		/// </item>
-		/// <item>
-		///		<description>The <see cref="ComponentModel.Interceptors"/></description>
-		/// </item>
-		/// </list>
-		/// </remarks>
-		/// <param name="newModel">the subhandler</param>
+		///<summary>
+		///  Clone some of the parent componentmodel properties to the generic subhandler.
+		///</summary>
+		///<remarks>
+		///  The following properties are copied:
+		///  <list type = "bullet">
+		///    <item>
+		///      <description>The <see cref = "LifestyleType" /></description>
+		///    </item>
+		///    <item>
+		///      <description>The <see cref = "ComponentModel.Interceptors" /></description>
+		///    </item>
+		///  </list>
+		///</remarks>
+		///<param name = "newModel">the subhandler</param>
 		private void CloneParentProperties(ComponentModel newModel)
 		{
 			// Inherits from LifeStyle's context.
