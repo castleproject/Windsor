@@ -60,11 +60,6 @@ namespace Castle.MicroKernel.Handlers
 			get { return parentHandler.CurrentState; }
 		}
 
-		public Type Service
-		{
-			get { return ComponentModel.Service; }
-		}
-
 		public IEnumerable<Type> Services
 		{
 			get { return ComponentModel.AllServices; }

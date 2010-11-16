@@ -216,13 +216,22 @@ namespace Castle.MicroKernel.SubSystems.Naming
 			{
 
 				var handlers = GetHandlers();
-
+#if DOTNET35
 				var list = new List<IHandler>(handlers.Length);
+#else
+				var list = new HashSet<IHandler>();
+#endif
 				foreach (IHandler handler in handlers)
 				{
-					if (service == handler.Service)
+					foreach (var type in handler.Services)
 					{
-						list.Add(handler);
+						if (service == type)
+						{
+#if DOTNET35
+							if(list.Contains(handler) == false)
+#endif
+							list.Add(handler);
+						}
 					}
 				}
 

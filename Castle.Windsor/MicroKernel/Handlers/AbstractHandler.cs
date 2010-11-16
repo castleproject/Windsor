@@ -103,10 +103,6 @@ namespace Castle.MicroKernel.Handlers
 		}
 
 		// TODO: this has to go
-		public Type Service
-		{
-			get { return Services.First(); }
-		}
 
 		protected IDictionary<string, DependencyModel> DependenciesByKey
 		{
@@ -204,7 +200,7 @@ namespace Castle.MicroKernel.Handlers
 						                "did you forget to add a parameter name to differentiate between the " +
 						                "two dependencies? ", type.FullName, Environment.NewLine);
 						sb.AppendLine();
-						foreach (var maybeDecoratedHandler in kernel.GetHandlers(handler.Service))
+						foreach (var maybeDecoratedHandler in kernel.GetHandlers(type))
 						{
 							if (maybeDecoratedHandler == this)
 							{

@@ -64,7 +64,8 @@ namespace Castle.Windsor.Experimental.Debugging.Primitives
 
 		private string BuildDescription()
 		{
-			var message = new StringBuilder(handler.Service.Name);
+			var services = handler.Services.ToArray();
+			var message = new StringBuilder(services[0].Name);
 			if (additionalServicesCount == 1)
 			{
 				message.Append(" (and one more type)");
@@ -74,7 +75,7 @@ namespace Castle.Windsor.Experimental.Debugging.Primitives
 				message.AppendFormat(" (and {0} more types)", additionalServicesCount);
 			}
 			var impl = handler.ComponentModel.Implementation;
-			if (impl == handler.Service && additionalServicesCount == 0)
+			if (additionalServicesCount == 0 && impl == services[0])
 			{
 				return message.ToString();
 			}

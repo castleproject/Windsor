@@ -15,7 +15,9 @@
 namespace Castle.Core
 {
 	using System;
+	using System.Linq;
 
+	using Castle.Core.Internal;
 	using Castle.DynamicProxy;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Context;
@@ -114,14 +116,14 @@ namespace Castle.Core
 			return kernel.GetHandler(componentKey);
 		}
 
-		private CreationContext RebuildContext(Type parameterType, CreationContext current)
+		private CreationContext RebuildContext(Type handlerType, CreationContext current)
 		{
-			if (parameterType.ContainsGenericParameters)
+			if (handlerType.ContainsGenericParameters)
 			{
 				return current;
 			}
 
-			return new CreationContext(parameterType, current, true);
+			return new CreationContext(handlerType, current, true);
 		}
 
 		void IReference<IInterceptor>.Attach(DependencyModelCollection dependencies)
@@ -150,8 +152,26 @@ namespace Castle.Core
 						handler.ComponentModel.Name, typeof(IModelInterceptorsSelector).Name));
 			}
 
-			var contextForInterceptor = RebuildContext(handler.Service, context);
+			var contextForInterceptor = RebuildContext(GetHandlerType(handler), context);
 			return (IInterceptor)handler.Resolve(contextForInterceptor);
+		}
+
+		private Type GetHandlerType(IHandler handler)
+		{
+			try
+			{
+				return serviceType ??
+				       handler.Services.SingleOrDefault(s => s == typeof(IInterceptor)) ??
+				       handler.Services.Single(s => s.Is<IInterceptor>());
+			}
+			catch (InvalidOperationException e)
+			{
+
+				throw new DependencyResolverException(
+					string.Format(
+						"Ambiguous service - interceptor {0} has more than one service compabtible with type {1}. Register the interceptor explicitly as {1} or pick single type compabtible with this interface",
+						handler.ComponentModel.Name, typeof(IInterceptor).Name), e);
+			}
 		}
 
 		/// <summary>
