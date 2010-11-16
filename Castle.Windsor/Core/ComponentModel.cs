@@ -90,7 +90,7 @@ namespace Castle.Core
 			Implementation = implementation;
 			LifestyleType = LifestyleType.Undefined;
 			InspectionBehavior = PropertiesInspectionBehavior.Undefined;
-			foreach (var type in services)
+			foreach (Type type in services)
 			{
 				AddService(type);
 			}
@@ -104,7 +104,7 @@ namespace Castle.Core
 				{
 					yield return classService;
 				}
-				foreach (var interfaceService in interfaceServices)
+				foreach (Type interfaceService in interfaceServices)
 				{
 					yield return interfaceService;
 				}
@@ -394,7 +394,7 @@ namespace Castle.Core
 		/// <param name = "selectors">The property selector.</param>
 		public void Requires(params Predicate<PropertySet>[] selectors)
 		{
-			foreach (var property in Properties)
+			foreach (PropertySet property in Properties)
 			{
 				foreach (var select in selectors)
 				{
