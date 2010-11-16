@@ -111,6 +111,7 @@ namespace Castle.Core
 			get { return classService; }
 			private set
 			{
+				Debug.Assert(value.IsClass, "value.IsClass");
 				lock(syncRoot)
 				{
 					if(classService!=null)
