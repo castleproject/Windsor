@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -23,23 +23,21 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 	using Castle.MicroKernel.SubSystems.Conversion;
 
 	/// <summary>
-	/// Inspects the component configuration and type looking for information
-	/// that can influence the generation of a proxy for that component.
-	/// <para>
-	/// We specifically look for <c>useSingleInterfaceProxy</c> and <c>marshalByRefProxy</c> 
-	/// on the component configuration or the <see cref="ComponentProxyBehaviorAttribute"/> 
-	/// attribute.
-	/// </para>
+	///   Inspects the component configuration and type looking for information
+	///   that can influence the generation of a proxy for that component.
+	///   <para>
+	///     We specifically look for <c>useSingleInterfaceProxy</c> and <c>marshalByRefProxy</c> 
+	///     on the component configuration or the <see cref = "ComponentProxyBehaviorAttribute" /> 
+	///     attribute.
+	///   </para>
 	/// </summary>
-#if (!SILVERLIGHT)
 	[Serializable]
-#endif
 	public class ComponentProxyInspector : IContributeComponentModelConstruction
 	{
 		/// <summary>
-		/// Searches for proxy behavior in the configuration and, if unsuccessful
-		/// look for the <see cref="ComponentProxyBehaviorAttribute"/> attribute in 
-		/// the implementation type.
+		///   Searches for proxy behavior in the configuration and, if unsuccessful
+		///   look for the <see cref = "ComponentProxyBehaviorAttribute" /> attribute in 
+		///   the implementation type.
 		/// </summary>
 		public virtual void ProcessModel(IKernel kernel, ComponentModel model)
 		{
@@ -47,17 +45,27 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 		}
 
 		/// <summary>
-		/// Reads the proxy behavior associated with the 
-		/// component configuration/type and applies it to the model.
+		///   Returns a <see cref = "ComponentProxyBehaviorAttribute" /> instance if the type
+		///   uses the attribute. Otherwise returns null.
 		/// </summary>
-		/// <exception cref="System.Exception">
-		/// If the conversion fails
+		/// <param name = "implementation"></param>
+		protected virtual ComponentProxyBehaviorAttribute GetProxyBehaviorFromType(Type implementation)
+		{
+			return implementation.GetAttributes<ComponentProxyBehaviorAttribute>().FirstOrDefault();
+		}
+
+		/// <summary>
+		///   Reads the proxy behavior associated with the 
+		///   component configuration/type and applies it to the model.
+		/// </summary>
+		/// <exception cref = "System.Exception">
+		///   If the conversion fails
 		/// </exception>
-		/// <param name="kernel"></param>
-		/// <param name="model"></param>
+		/// <param name = "kernel"></param>
+		/// <param name = "model"></param>
 		protected virtual void ReadProxyBehavior(IKernel kernel, ComponentModel model)
 		{
-			ComponentProxyBehaviorAttribute proxyBehaviorAtt = GetProxyBehaviorFromType(model.Implementation);
+			var proxyBehaviorAtt = GetProxyBehaviorFromType(model.Implementation);
 
 			if (proxyBehaviorAtt == null)
 			{
@@ -65,7 +73,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 			}
 
 #if !SILVERLIGHT
-			string marshalByRefProxyAttrib = model.Configuration != null ? model.Configuration.Attributes["marshalByRefProxy"] : null;
+			var marshalByRefProxyAttrib = model.Configuration != null ? model.Configuration.Attributes["marshalByRefProxy"] : null;
 #endif
 
 			var converter = kernel.GetConversionManager();
@@ -79,26 +87,16 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 			ApplyProxyBehavior(proxyBehaviorAtt, model);
 		}
 
-		/// <summary>
-		/// Returns a <see cref="ComponentProxyBehaviorAttribute"/> instance if the type
-		/// uses the attribute. Otherwise returns null.
-		/// </summary>
-		/// <param name="implementation"></param>
-		protected virtual ComponentProxyBehaviorAttribute GetProxyBehaviorFromType(Type implementation)
-		{
-			return implementation.GetAttributes<ComponentProxyBehaviorAttribute>().FirstOrDefault();
-		}
-
 		private static void ApplyProxyBehavior(ComponentProxyBehaviorAttribute behavior, ComponentModel model)
 		{
 #if !SILVERLIGHT
 			if (behavior.UseMarshalByRefProxy)
-#endif
 			{
 				EnsureComponentRegisteredWithInterface(model);
 			}
+#endif
 
-			ProxyOptions options = ProxyUtil.ObtainProxyOptions(model, true);
+			var options = ProxyUtil.ObtainProxyOptions(model, true);
 
 #if (!SILVERLIGHT)
 			options.UseMarshalByRefAsBaseClass = behavior.UseMarshalByRefProxy;

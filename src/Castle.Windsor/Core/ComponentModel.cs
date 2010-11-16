@@ -28,28 +28,17 @@ namespace Castle.Core
 	///   meta information collected about a component.
 	/// </summary>
 	[DebuggerDisplay("{Implementation} / {Service}")]
-#if !SILVERLIGHT
 	[Serializable]
-#endif
 	public sealed class ComponentModel : GraphNode
 	{
 		public const string SkipRegistration = "skip.registration";
+		private readonly ICollection<Type> interfaceServices = new HashSet<Type>();
+		private readonly object syncRoot = new object();
 
 		// Note the use of volatile for fields used in the double checked lock pattern.
 		// This is necessary to ensure the pattern works correctly.
 
 		private Type classService;
-
-		/// <summary>Extended properties</summary>
-#if !SILVERLIGHT
-		[NonSerialized]
-#endif
-		private volatile IDictionary extended;
-
-		/// <summary>
-		///   Dependencies the kernel must resolve
-		/// </summary>
-		private volatile DependencyModelCollection dependencies;
 
 		/// <summary>
 		///   All available constructors
@@ -57,16 +46,31 @@ namespace Castle.Core
 		private volatile ConstructorCandidateCollection constructors;
 
 		/// <summary>
-		///   All potential properties that can be setted by the kernel
+		///   /// Custom dependencies///
 		/// </summary>
-		private volatile PropertySetCollection properties;
+		[NonSerialized]
+		private volatile IDictionary customDependencies;
+
+		/// <summary>
+		///   Dependencies the kernel must resolve
+		/// </summary>
+		private volatile DependencyModelCollection dependencies;
+
+		/// <summary>
+		///   Extended properties
+		/// </summary>
+		[NonSerialized]
+		private volatile IDictionary extended;
+
+		/// <summary>
+		///   Interceptors associated
+		/// </summary>
+		private volatile InterceptorReferenceCollection interceptors;
 
 		/// <summary>
 		///   Steps of lifecycle
 		/// </summary>
 		private volatile LifecycleConcernsCollection lifecycle;
-
-		private readonly ICollection<Type> interfaceServices = new HashSet<Type>();
 
 		/// <summary>
 		///   External parameters
@@ -74,17 +78,9 @@ namespace Castle.Core
 		private volatile ParameterModelCollection parameters;
 
 		/// <summary>
-		///   Interceptors associated
+		///   All potential properties that can be setted by the kernel
 		/// </summary>
-		private volatile InterceptorReferenceCollection interceptors;
-
-		/// <summary>/// Custom dependencies/// </summary>
-#if !SILVERLIGHT
-		[NonSerialized]
-#endif
-		private volatile IDictionary customDependencies;
-
-		private readonly object syncRoot = new object();
+		private volatile PropertySetCollection properties;
 
 		/// <summary>
 		///   Constructs a ComponentModel
@@ -101,10 +97,20 @@ namespace Castle.Core
 			}
 		}
 
-		/// <summary>
-		///   Sets or returns the component key
-		/// </summary>
-		public string Name { get; set; }
+		public IEnumerable<Type> AllServices
+		{
+			get
+			{
+				if (classService != null)
+				{
+					yield return classService;
+				}
+				foreach (var interfaceService in interfaceServices)
+				{
+					yield return interfaceService;
+				}
+			}
+		}
 
 		public Type ClassService
 		{
@@ -112,9 +118,9 @@ namespace Castle.Core
 			private set
 			{
 				Debug.Assert(value.IsClass, "value.IsClass");
-				lock(syncRoot)
+				lock (syncRoot)
 				{
-					if(classService!=null)
+					if (classService != null)
 					{
 						throw new InvalidOperationException(string.Format("This component already has a class service set ({0}).",
 						                                                  classService));
@@ -126,52 +132,91 @@ namespace Castle.Core
 			}
 		}
 
-		public IEnumerable<Type> AllServices
+		/// <summary>
+		///   Gets or sets the configuration.
+		/// </summary>
+		/// <value>The configuration.</value>
+		public IConfiguration Configuration { get; set; }
+
+		/// <summary>
+		///   Gets the constructors candidates.
+		/// </summary>
+		/// <value>The constructors.</value>
+		public ConstructorCandidateCollection Constructors
 		{
 			get
 			{
-				if(classService != null)
+				if (constructors == null)
 				{
-					yield return classService;
+					lock (syncRoot)
+					{
+						if (constructors == null)
+						{
+							constructors = new ConstructorCandidateCollection();
+						}
+					}
 				}
-				foreach (var interfaceService in interfaceServices)
-				{
-					yield return interfaceService;
-				}
+				return constructors;
 			}
 		}
 
 		/// <summary>
-		///   Gets or sets the service exposed.
+		///   Gets or sets the custom component activator.
 		/// </summary>
-		/// <value>The service.</value>
-		public IEnumerable<Type> InterfaceServices
+		/// <value>The custom component activator.</value>
+		public Type CustomComponentActivator { get; set; }
+
+		/// <summary>
+		///   Gets the custom dependencies.
+		/// </summary>
+		/// <value>The custom dependencies.</value>
+		public IDictionary CustomDependencies
 		{
-			get { return interfaceServices; }
+			get
+			{
+				if (customDependencies == null)
+				{
+					lock (syncRoot)
+					{
+						if (customDependencies == null)
+						{
+							customDependencies = new Dictionary<object, object>();
+						}
+					}
+				}
+				return customDependencies;
+			}
 		}
 
 		/// <summary>
-		///   Gets or sets the service exposed.
+		///   Gets or sets the custom lifestyle.
 		/// </summary>
-		/// <value>The service.</value>
-		public Type Service
+		/// <value>The custom lifestyle.</value>
+		public Type CustomLifestyle { get; set; }
+
+		/// <summary>
+		///   Dependencies are kept within constructors and
+		///   properties. Others dependencies must be 
+		///   registered here, so the kernel (as a matter 
+		///   of fact the handler) can check them
+		/// </summary>
+		public DependencyModelCollection Dependencies
 		{
-			get { return ClassService ?? interfaceServices.FirstOrDefault(); }
+			get
+			{
+				if (dependencies == null)
+				{
+					lock (syncRoot)
+					{
+						if (dependencies == null)
+						{
+							dependencies = new DependencyModelCollection();
+						}
+					}
+				}
+				return dependencies;
+			}
 		}
-
-		/// <summary>
-		///   Gets or sets the component implementation.
-		/// </summary>
-		/// <value>The implementation.</value>
-		public Type Implementation { get; set; }
-
-		/// <summary>
-		///   Gets or sets a value indicating whether the component requires generic arguments.
-		/// </summary>
-		/// <value>
-		///   <c>true</c> if generic arguments are required; otherwise, <c>false</c>.
-		/// </value>
-		public bool RequiresGenericArguments { get; set; }
 
 		/// <summary>
 		///   Gets or sets the extended properties.
@@ -197,54 +242,48 @@ namespace Castle.Core
 		}
 
 		/// <summary>
-		///   Gets the constructors candidates.
+		///   Gets or sets the component implementation.
 		/// </summary>
-		/// <value>The constructors.</value>
-		public ConstructorCandidateCollection Constructors
+		/// <value>The implementation.</value>
+		public Type Implementation { get; set; }
+
+		/// <summary>
+		///   Gets or sets the strategy for
+		///   inspecting public properties 
+		///   on the components
+		/// </summary>
+		public PropertiesInspectionBehavior InspectionBehavior { get; set; }
+
+		/// <summary>
+		///   Gets the interceptors.
+		/// </summary>
+		/// <value>The interceptors.</value>
+		public InterceptorReferenceCollection Interceptors
 		{
 			get
 			{
-				if (constructors == null)
+				if (interceptors == null)
 				{
 					lock (syncRoot)
 					{
-						if (constructors == null)
+						if (interceptors == null)
 						{
-							constructors = new ConstructorCandidateCollection();
+							interceptors = new InterceptorReferenceCollection(Dependencies);
 						}
 					}
 				}
-				return constructors;
+				return interceptors;
 			}
 		}
 
 		/// <summary>
-		///   Gets the properties set.
+		///   Gets or sets the service exposed.
 		/// </summary>
-		/// <value>The properties.</value>
-		public PropertySetCollection Properties
+		/// <value>The service.</value>
+		public IEnumerable<Type> InterfaceServices
 		{
-			get
-			{
-				if (properties == null)
-				{
-					lock (syncRoot)
-					{
-						if (properties == null)
-						{
-							properties = new PropertySetCollection();
-						}
-					}
-				}
-				return properties;
-			}
+			get { return interfaceServices; }
 		}
-
-		/// <summary>
-		///   Gets or sets the configuration.
-		/// </summary>
-		/// <value>The configuration.</value>
-		public IConfiguration Configuration { get; set; }
 
 		/// <summary>
 		///   Gets the lifecycle steps.
@@ -275,45 +314,9 @@ namespace Castle.Core
 		public LifestyleType LifestyleType { get; set; }
 
 		/// <summary>
-		///   Gets or sets the strategy for
-		///   inspecting public properties 
-		///   on the components
+		///   Sets or returns the component key
 		/// </summary>
-		public PropertiesInspectionBehavior InspectionBehavior { get; set; }
-
-		/// <summary>
-		///   Gets or sets the custom lifestyle.
-		/// </summary>
-		/// <value>The custom lifestyle.</value>
-		public Type CustomLifestyle { get; set; }
-
-		/// <summary>
-		///   Gets or sets the custom component activator.
-		/// </summary>
-		/// <value>The custom component activator.</value>
-		public Type CustomComponentActivator { get; set; }
-
-		/// <summary>
-		///   Gets the interceptors.
-		/// </summary>
-		/// <value>The interceptors.</value>
-		public InterceptorReferenceCollection Interceptors
-		{
-			get
-			{
-				if (interceptors == null)
-				{
-					lock (syncRoot)
-					{
-						if (interceptors == null)
-						{
-							interceptors = new InterceptorReferenceCollection(Dependencies);
-						}
-					}
-				}
-				return interceptors;
-			}
-		}
+		public string Name { get; set; }
 
 		/// <summary>
 		///   Gets the parameter collection.
@@ -338,49 +341,42 @@ namespace Castle.Core
 		}
 
 		/// <summary>
-		///   Dependencies are kept within constructors and
-		///   properties. Others dependencies must be 
-		///   registered here, so the kernel (as a matter 
-		///   of fact the handler) can check them
+		///   Gets the properties set.
 		/// </summary>
-		public DependencyModelCollection Dependencies
+		/// <value>The properties.</value>
+		public PropertySetCollection Properties
 		{
 			get
 			{
-				if (dependencies == null)
+				if (properties == null)
 				{
 					lock (syncRoot)
 					{
-						if (dependencies == null)
+						if (properties == null)
 						{
-							dependencies = new DependencyModelCollection();
+							properties = new PropertySetCollection();
 						}
 					}
 				}
-				return dependencies;
+				return properties;
 			}
 		}
 
 		/// <summary>
-		///   Gets the custom dependencies.
+		///   Gets or sets a value indicating whether the component requires generic arguments.
 		/// </summary>
-		/// <value>The custom dependencies.</value>
-		public IDictionary CustomDependencies
+		/// <value>
+		///   <c>true</c> if generic arguments are required; otherwise, <c>false</c>.
+		/// </value>
+		public bool RequiresGenericArguments { get; set; }
+
+		/// <summary>
+		///   Gets or sets the service exposed.
+		/// </summary>
+		/// <value>The service.</value>
+		public Type Service
 		{
-			get
-			{
-				if (customDependencies == null)
-				{
-					lock (syncRoot)
-					{
-						if (customDependencies == null)
-						{
-							customDependencies = new Dictionary<object, object>();
-						}
-					}
-				}
-				return customDependencies;
-			}
+			get { return ClassService ?? interfaceServices.FirstOrDefault(); }
 		}
 
 		public void AddService(Type type)
@@ -389,12 +385,12 @@ namespace Castle.Core
 			{
 				return;
 			}
-			if(type.IsClass)
+			if (type.IsClass)
 			{
 				ClassService = type;
 				return;
 			}
-			if(type.IsInterface == false)
+			if (type.IsInterface == false)
 			{
 				throw new ArgumentException(
 					string.Format("Type {0} is not a class nor an interface, and those are the only values allowed.", type));

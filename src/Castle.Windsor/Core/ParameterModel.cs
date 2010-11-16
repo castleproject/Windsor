@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,26 +15,25 @@
 namespace Castle.Core
 {
 	using System;
+
 	using Castle.Core.Configuration;
 
 	/// <summary>
-	/// Represents a parameter. Usually the parameter
-	/// comes from the external world, ie, an external configuration.
+	///   Represents a parameter. Usually the parameter
+	///   comes from the external world, ie, an external configuration.
 	/// </summary>
-#if !SILVERLIGHT
 	[Serializable]
-#endif
 	public class ParameterModel
 	{
-		private String name;
-		private String value;
-		private IConfiguration configValue;
+		private readonly IConfiguration configValue;
+		private readonly String name;
+		private readonly String value;
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="ParameterModel"/> class.
+		///   Initializes a new instance of the <see cref = "ParameterModel" /> class.
 		/// </summary>
-		/// <param name="name">The name.</param>
-		/// <param name="value">The value.</param>
+		/// <param name = "name">The name.</param>
+		/// <param name = "value">The value.</param>
 		public ParameterModel(String name, String value)
 		{
 			this.name = name;
@@ -42,10 +41,10 @@ namespace Castle.Core
 		}
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="ParameterModel"/> class.
+		///   Initializes a new instance of the <see cref = "ParameterModel" /> class.
 		/// </summary>
-		/// <param name="name">The name.</param>
-		/// <param name="value">The value.</param>
+		/// <param name = "name">The name.</param>
+		/// <param name = "value">The value.</param>
 		public ParameterModel(String name, IConfiguration value)
 		{
 			this.name = name;
@@ -53,7 +52,16 @@ namespace Castle.Core
 		}
 
 		/// <summary>
-		/// Gets the name.
+		///   Gets the config value.
+		/// </summary>
+		/// <value>The config value.</value>
+		public IConfiguration ConfigValue
+		{
+			get { return configValue; }
+		}
+
+		/// <summary>
+		///   Gets the name.
 		/// </summary>
 		/// <value>The name.</value>
 		public String Name
@@ -62,21 +70,12 @@ namespace Castle.Core
 		}
 
 		/// <summary>
-		/// Gets the value.
+		///   Gets the value.
 		/// </summary>
 		/// <value>The value.</value>
 		public String Value
 		{
 			get { return value; }
-		}
-
-		/// <summary>
-		/// Gets the config value.
-		/// </summary>
-		/// <value>The config value.</value>
-		public IConfiguration ConfigValue
-		{
-			get { return configValue; }
 		}
 	}
 }
