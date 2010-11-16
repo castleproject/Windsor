@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,17 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 namespace Castle.Facilities.Logging.Tests.Classes
 {
 	using Castle.Core.Logging;
 
 	public class ComplexLoggingComponent
 	{
-		IExtendedLogger logger;
+		private IExtendedLogger logger;
+
 		public ComplexLoggingComponent(IExtendedLogger logger)
 		{
 			this.logger = logger;
@@ -31,17 +28,17 @@ namespace Castle.Facilities.Logging.Tests.Classes
 		public void DoSomeContextual()
 		{
 			using (logger.ThreadStacks["NDC"].Push("Outside"))
-      {
-				for (int i = 0; i < 3; i++)
+			{
+				for (var i = 0; i < 3; i++)
 				{
 					using (logger.ThreadStacks["NDC"].Push("Inside" + i))
-          {
+					{
 						logger.ThreadProperties["foo"] = "bar";
 						logger.GlobalProperties["flim"] = "flam";
 						logger.Debug("Bim, bam boom.");
-          }
+					}
 				}
-      }
+			}
 		}
 	}
 }
