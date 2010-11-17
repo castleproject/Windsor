@@ -49,23 +49,6 @@ namespace Castle.MicroKernel.Tests.Lifestyle
 			kernel.Dispose();
 		}
 
-		[Test]
-		public void Reregistration_should_not_maintain_old_lifestyle_IoC_Issue_160()
-		{
-			kernel.Register(Component.For<ICommon>().ImplementedBy<CommonImpl1>().Named("foo").LifeStyle.Singleton);
-
-			var handler = kernel.GetHandler("foo");
-			Assert.AreEqual(LifestyleType.Singleton, handler.ComponentModel.LifestyleType);
-
-			var removed = kernel.RemoveComponent("foo");
-			Assert.IsTrue(removed);
-
-			var registration = Component.For<ICommon>().ImplementedBy<CommonImpl2>().Named("foo").LifeStyle.Transient;
-			kernel.Register(registration);
-
-			handler = kernel.GetHandler("foo");
-			Assert.AreEqual(LifestyleType.Transient, handler.ComponentModel.LifestyleType);
-		}
 
 		[Test]
 		public void TestTransient()

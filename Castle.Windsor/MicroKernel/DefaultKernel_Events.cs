@@ -35,7 +35,6 @@ namespace Castle.MicroKernel
 		private static readonly object HandlerRegisteredEvent = new object();
 		private static readonly object HandlersChangedEvent = new object();
 		private static readonly object ComponentRegisteredEvent = new object();
-		private static readonly object ComponentUnregisteredEvent = new object();
 		private static readonly object ComponentCreatedEvent = new object();
 		private static readonly object ComponentDestroyedEvent = new object();
 		private static readonly object AddedAsChildKernelEvent = new object();
@@ -79,12 +78,6 @@ namespace Castle.MicroKernel
 		{
 			add { AddHandler(ComponentRegisteredEvent, value); }
 			remove { RemoveHandler(ComponentRegisteredEvent, value); }
-		}
-
-		public event ComponentDataDelegate ComponentUnregistered
-		{
-			add { AddHandler(ComponentUnregisteredEvent, value); }
-			remove { RemoveHandler(ComponentUnregisteredEvent, value); }
 		}
 
 		public event ComponentInstanceDelegate ComponentCreated
@@ -132,15 +125,6 @@ namespace Castle.MicroKernel
 		protected virtual void RaiseComponentRegistered(String key, IHandler handler)
 		{
 			var eventDelegate = GetEventHandlers<ComponentDataDelegate>(ComponentRegisteredEvent);
-			if (eventDelegate != null)
-			{
-				eventDelegate(key, handler);
-			}
-		}
-
-		protected virtual void RaiseComponentUnregistered(String key, IHandler handler)
-		{
-			var eventDelegate = GetEventHandlers<ComponentDataDelegate>(ComponentUnregisteredEvent);
 			if (eventDelegate != null)
 			{
 				eventDelegate(key, handler);

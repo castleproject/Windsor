@@ -29,12 +29,6 @@ namespace Castle.MicroKernel.SubSystems.Naming
 		int ComponentCount { get; }
 
 		/// <summary>
-		/// Associates a <see cref="IHandler"/> with 
-		/// the specified service
-		/// </summary>
-		IHandler this[Type service] { set; }
-
-		/// <summary>
 		/// Register a new component resolver that can take part in the decision
 		/// making about which handler to resolve
 		/// </summary>
@@ -79,16 +73,6 @@ namespace Castle.MicroKernel.SubSystems.Naming
 		IHandler GetHandler(Type service);
 
 		/// <summary>
-		/// Returns the <see cref="IHandler"/> associated with
-		/// the specified key with the service type.
-		/// <remarks>
-		/// It is expected that this will be used mainly to resolve a generic service
-		/// by its key.
-		/// </remarks>
-		/// </summary>
-		IHandler GetHandler(string key, Type service);
-
-		/// <summary>
 		/// Returns an array of <see cref="IHandler"/> associated with
 		/// the specified service.
 		/// </summary>
@@ -108,28 +92,11 @@ namespace Castle.MicroKernel.SubSystems.Naming
 		IDictionary<string, IHandler> GetKey2Handler();
 
 		/// <summary>
-		/// List of handler by service
-		/// </summary>
-		IDictionary<Type, IHandler> GetService2Handler();
-
-		/// <summary>
 		/// Implementors should register the key and service pointing 
 		/// to the specified handler
 		/// </summary>
 		/// <param name="key"></param>
 		/// <param name="handler"></param>
 		void Register(String key, IHandler handler);
-
-		/// <summary>
-		/// Unregister the handler by the given key
-		/// </summary>
-		/// <param name="key"></param>
-		void UnRegister(String key);
-
-		/// <summary>
-		/// Unregister the handler by the given service
-		/// </summary>
-		/// <param name="service"></param>
-		void UnRegister(Type service);
 	}
 }

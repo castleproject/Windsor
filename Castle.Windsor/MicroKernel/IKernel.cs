@@ -52,14 +52,6 @@ namespace Castle.MicroKernel
 		IKernel Register(params IRegistration[] registrations);
 
 		/// <summary>
-		/// Returns true if the specified component was 
-		/// found and could be removed (i.e. no other component depends on it)
-		/// </summary>
-		/// <param name="key">The component's key</param>
-		/// <returns></returns>
-		bool RemoveComponent(String key);
-
-		/// <summary>
 		/// Returns true if the specified key was registered
 		/// </summary>
 		/// <param name="key"></param>

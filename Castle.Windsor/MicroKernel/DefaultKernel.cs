@@ -695,67 +695,6 @@ namespace Castle.MicroKernel
 			childKernels.Remove(childKernel);
 		}
 
-		/// <summary>
-		///   Returns true if the specified component was
-		///   found and could be removed (i.e. no other component depends on it)
-		/// </summary>
-		/// <param name = "key">The component's key</param>
-		/// <returns></returns>
-		public virtual bool RemoveComponent(String key)
-		{
-			if (key == null)
-			{
-				throw new ArgumentNullException("key");
-			}
-
-			if (!NamingSubSystem.Contains(key))
-			{
-				if (Parent == null)
-				{
-					return false;
-				}
-
-				return Parent.RemoveComponent(key);
-			}
-
-			var handler = GetHandler(key);
-
-			if (handler.ComponentModel.Dependers.Length != 0)
-			{
-				// We can't remove this component as there are
-				// others which depends on it
-
-				return false;
-			}
-
-			NamingSubSystem.UnRegister(key);
-			// TODO: this is broken, always was - should be removed
-			foreach (var service in handler.Services)
-			{
-				var assignableHandlers = NamingSubSystem.GetAssignableHandlers(service);
-				if (assignableHandlers.Length > 0)
-				{
-					NamingSubSystem[service] = assignableHandlers[0];
-				}
-				else
-				{
-					NamingSubSystem.UnRegister(service);
-				}
-			}
-
-
-			foreach (ComponentModel model in handler.ComponentModel.Dependents)
-			{
-				model.RemoveDepender(handler.ComponentModel);
-			}
-
-			RaiseComponentUnregistered(key, handler);
-
-			DisposeHandler(handler);
-
-			return true;
-		}
-
 		public virtual IComponentActivator CreateComponentActivator(ComponentModel model)
 		{
 			if (model == null)
@@ -951,14 +890,11 @@ namespace Castle.MicroKernel
 			{
 				var model = (ComponentModel)vertices[i];
 
-				// Prevent the removal of a component that belongs 
-				// to other container
-				if (!NamingSubSystem.Contains(model.Name))
+				if (NamingSubSystem.Contains(model.Name))
 				{
-					continue;
+					var handler = GetHandler(model.Name);
+					DisposeHandler(handler);
 				}
-
-				RemoveComponent(model.Name);
 			}
 		}
 
@@ -1017,7 +953,6 @@ namespace Castle.MicroKernel
 			parentKernel.HandlerRegistered += HandlerRegisteredOnParentKernel;
 			parentKernel.HandlersChanged += HandlersChangedOnParentKernel;
 			parentKernel.ComponentRegistered += RaiseComponentRegistered;
-			parentKernel.ComponentUnregistered += RaiseComponentUnregistered;
 		}
 
 		private void TerminateFacilities()
@@ -1038,7 +973,6 @@ namespace Castle.MicroKernel
 			parentKernel.HandlerRegistered -= HandlerRegisteredOnParentKernel;
 			parentKernel.HandlersChanged -= HandlersChangedOnParentKernel;
 			parentKernel.ComponentRegistered -= RaiseComponentRegistered;
-			parentKernel.ComponentUnregistered -= RaiseComponentUnregistered;
 		}
 
 #if !SILVERLIGHT
