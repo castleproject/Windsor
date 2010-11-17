@@ -127,19 +127,6 @@ namespace Castle.MicroKernel.Registration
 			get { return new ProxyGroup<TService>(this); }
 		}
 
-		/// <summary>
-		///   The type of the service, the same as <typeparamref name = "TService" />.
-		///   <para />
-		///   This is the first type passed to <see cref = "Component.For(Type)" />.
-		/// </summary>
-		/// <value>The type of the service.</value>
-		public Type ServiceType
-		{
-			// TODO: this is temporary...
-			get { return DefaultService(); }
-			protected set { Forward(value); }
-		}
-
 		internal bool IsOverWrite
 		{
 			get { return overwrite; }
@@ -462,10 +449,8 @@ namespace Castle.MicroKernel.Registration
 				if (type.IsClass && classService == null)
 				{
 					classService = type;
-					continue;
 				}
-
-				if (!interfaceServices.Contains(type))
+				else if (!interfaceServices.Contains(type))
 				{
 					interfaceServices.Add(type);
 				}
@@ -476,7 +461,7 @@ namespace Castle.MicroKernel.Registration
 		/// <summary>
 		///   Sets the concrete type that implements the service to <typeparamref name = "TImpl" />.
 		///   <para />
-		///   If not set, the <see cref = "ServiceType" /> will be used as the implementation for this component.
+		///   If not set, the class service type or first registered interface will be used as the implementation for this component.
 		/// </summary>
 		/// <typeparam name = "TImpl">The type that is the implementation for the service.</typeparam>
 		/// <returns></returns>
@@ -488,7 +473,7 @@ namespace Castle.MicroKernel.Registration
 		/// <summary>
 		///   Sets the concrete type that implements the service to <paramref name = "type" />.
 		///   <para />
-		///   If not set, the <see cref = "ServiceType" /> will be used as the implementation for this component.
+		///   If not set, the class service type or first registered interface will be used as the implementation for this component.
 		/// </summary>
 		/// <param name = "type">The type that is the implementation for the service.</param>
 		/// <returns></returns>
