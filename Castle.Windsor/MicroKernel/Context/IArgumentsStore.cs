@@ -29,9 +29,9 @@ namespace Castle.MicroKernel.Context
 
 		void Clear();
 
-		void Remove(object key);
+		bool Remove(object key);
 
-		void Insert(object key, object value);
+		bool Insert(object key, object value);
 
 		object GetItem(object key);
 	}

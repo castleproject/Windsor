@@ -17,25 +17,25 @@ namespace Castle.MicroKernel
 	using System;
 	using System.Collections;
 	using System.Collections.Generic;
+	using System.Diagnostics;
 	using System.Linq;
 
 	using Castle.Core;
 	using Castle.MicroKernel.Context;
 
 	/// <summary>
-	/// Represents collection of arguments used when resolving a component.
+	///   Represents collection of arguments used when resolving a component.
 	/// </summary>
 	public class Arguments : IDictionary
 	{
 		private readonly IList<IArgumentsStore> stores = new List<IArgumentsStore>();
 		private readonly object syncRoot = new object();
-
+		private int count;
 
 		public Arguments(object namedArgumentsAsAnonymousType, params IArgumentsStore[] customStores)
 			: this(new ReflectionBasedDictionaryAdapter(namedArgumentsAsAnonymousType), customStores)
 		{
 		}
-
 
 		public Arguments(IDictionary values, params IArgumentsStore[] customStores)
 			: this(customStores)
@@ -67,28 +67,27 @@ namespace Castle.MicroKernel
 			{
 				foreach (var store in customStores)
 				{
-					if (store == null) continue;
-
+					if (store == null)
+					{
+						continue;
+					}
 					// first one wins, so stores passed via .ctor will get picked over the default ones
+					count += store.Count;
 					stores.Add(store);
 				}
 			}
-			AddStores(stores);
+			stores.Add(new NamedArgumentsStore());
+			stores.Add(new TypedArgumentsStore());
+			stores.Add(new FallbackArgumentsStore());
 		}
 
 		public int Count
 		{
-			get { return stores.Sum(s => s.Count); }
-		}
-
-		bool ICollection.IsSynchronized
-		{
-			get { return false; }
-		}
-
-		object ICollection.SyncRoot
-		{
-			get { return syncRoot; }
+			get
+			{
+				Debug.Assert(count == stores.Sum(s => s.Count), "count == stores.Sum(s => s.Count)");
+				return count;
+			}
 		}
 
 		public object this[object key]
@@ -109,7 +108,10 @@ namespace Castle.MicroKernel
 					throw new ArgumentNullException("key");
 				}
 				var store = GetSupportingStore(key);
-				store.Insert(key, value);
+				if (store.Insert(key, value))
+				{
+					count++;
+				}
 			}
 		}
 
@@ -139,6 +141,16 @@ namespace Castle.MicroKernel
 			}
 		}
 
+		bool ICollection.IsSynchronized
+		{
+			get { return false; }
+		}
+
+		object ICollection.SyncRoot
+		{
+			get { return syncRoot; }
+		}
+
 		bool IDictionary.IsFixedSize
 		{
 			get { return false; }
@@ -149,11 +161,60 @@ namespace Castle.MicroKernel
 			get { return false; }
 		}
 
-		protected virtual void AddStores(IList<IArgumentsStore> list)
+		public void Add(object key, object value)
 		{
-			list.Add(new NamedArgumentsStore());
-			list.Add(new TypedArgumentsStore());
-			list.Add(new FallbackArgumentsStore());
+			if (key == null)
+			{
+				throw new ArgumentNullException("key");
+			}
+
+			var store = GetSupportingStore(key);
+			store.Add(key, value);
+			count++;
+		}
+
+		public void Clear()
+		{
+			if (count == 0)
+			{
+				return;
+			}
+			foreach (var store in stores)
+			{
+				store.Clear();
+			}
+			count = 0;
+		}
+
+		public bool Contains(object key)
+		{
+			if (count == 0)
+			{
+				return false;
+			}
+			return stores.Any(s => s.Contains(key));
+		}
+
+		public IDictionaryEnumerator GetEnumerator()
+		{
+			return new ComponentArgumentsEnumerator(stores);
+		}
+
+		public void Remove(object key)
+		{
+			if (key == null)
+			{
+				throw new ArgumentNullException("key");
+			}
+			if (count == 0)
+			{
+				return;
+			}
+			var store = GetSupportingStore(key);
+			if (store.Remove(key))
+			{
+				count--;
+			}
 		}
 
 		protected virtual IArgumentsStore GetSupportingStore(object key)
@@ -175,46 +236,6 @@ namespace Castle.MicroKernel
 				array.SetValue(item.Value, currentIndex);
 				currentIndex++;
 			}
-		}
-
-		public void Add(object key, object value)
-		{
-			if (key == null)
-			{
-				throw new ArgumentNullException("key");
-			}
-
-			var store = GetSupportingStore(key);
-			store.Add(key, value);
-		}
-
-		public void Clear()
-		{
-			foreach (var store in stores)
-			{
-				store.Clear();
-			}
-		}
-
-		public bool Contains(object key)
-		{
-			return stores.Any(s => s.Contains(key));
-		}
-
-		public IDictionaryEnumerator GetEnumerator()
-		{
-			return new ComponentArgumentsEnumerator(stores);
-		}
-
-		public void Remove(object key)
-		{
-			if (key == null)
-			{
-				throw new ArgumentNullException("key");
-			}
-
-			var store = GetSupportingStore(key);
-			store.Remove(key);
 		}
 
 		IEnumerator IEnumerable.GetEnumerator()
