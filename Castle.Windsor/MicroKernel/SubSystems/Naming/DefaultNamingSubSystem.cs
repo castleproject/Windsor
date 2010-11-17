@@ -26,9 +26,7 @@ namespace Castle.MicroKernel.SubSystems.Naming
 	/// Keeps key map as a list dictionary to maintain order.
 	/// Does not support a query string.
 	/// </summary>
-#if (!SILVERLIGHT)
 	[Serializable]
-#endif
 	public class DefaultNamingSubSystem : AbstractSubSystem, INamingSubSystem
 	{
 		/// <summary>
@@ -54,15 +52,6 @@ namespace Castle.MicroKernel.SubSystems.Naming
 		private readonly List<IHandler> allHandlers = new List<IHandler>();
 		private readonly Lock @lock = Lock.Create();
 		private readonly IList<IHandlerSelector> selectors = new List<IHandlerSelector>();
-
-		/// <summary>
-		/// Initializes a new instance of the <see cref="DefaultNamingSubSystem"/> class.
-		/// </summary>
-		public DefaultNamingSubSystem()
-		{
-		}
-
-		#region INamingSubSystem Members
 
 		public virtual void Register(String key, IHandler handler)
 		{
@@ -214,29 +203,20 @@ namespace Castle.MicroKernel.SubSystems.Naming
 
 			using (@lock.ForWriting())
 			{
-
 				var handlers = GetHandlers();
-#if DOTNET35
-				var list = new List<IHandler>(handlers.Length);
-#else
 				var list = new HashSet<IHandler>();
-#endif
 				foreach (IHandler handler in handlers)
 				{
 					foreach (var type in handler.Services)
 					{
 						if (service == type)
 						{
-#if DOTNET35
-							if(list.Contains(handler) == false)
-#endif
 							list.Add(handler);
 						}
 					}
 				}
 
 				result = list.ToArray();
-
 				handlerListsByTypeCache[service] = result;
 
 			}
@@ -258,20 +238,13 @@ namespace Castle.MicroKernel.SubSystems.Naming
 			using (@lock.ForWriting())
 			{
 				var handlers = GetHandlers();
-#if DOTNET35
-				var list = new List<IHandler>();
-#else
 				var list = new HashSet<IHandler>();
-#endif
 				foreach (var handler in handlers)
 				{
 					foreach (var handlerService in handler.Services)
 					{
 						if (service.IsAssignableFrom(handlerService))
 						{
-#if DOTNET35
-							if(list.Contains(handler) == false)
-#endif
 							list.Add(handler);
 						}
 						else
@@ -279,9 +252,6 @@ namespace Castle.MicroKernel.SubSystems.Naming
 							if (service.IsGenericType &&
 								service.GetGenericTypeDefinition().IsAssignableFrom(handlerService))
 							{
-#if DOTNET35
-								if(list.Contains(handler) == false)
-#endif
 								list.Add(handler);
 							}
 						}
@@ -367,7 +337,5 @@ namespace Castle.MicroKernel.SubSystems.Naming
 			}
 			return null;
 		}
-
-		#endregion
 	}
 }
