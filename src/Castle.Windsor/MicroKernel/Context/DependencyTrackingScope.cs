@@ -93,8 +93,6 @@ namespace Castle.MicroKernel.Context
 			dependencies.Remove(model);
 		}
 
-		#region DependencyModelExtended
-
 		/// <summary>
 		/// Extends <see cref="DependencyModel"/> adding <see cref="MemberInfo"/> and <see cref="ComponentModel"/>
 		/// information. The MemberInfo is only useful to provide detailed information 
@@ -102,10 +100,8 @@ namespace Castle.MicroKernel.Context
 		/// The ComponentModel is required so we can get resolve an object that takes as a parameter itself, but
 		/// with difference model. (See IoC 51 for the details)
 		/// </summary>
-#if (!SILVERLIGHT)
 		[Serializable]
-#endif
-		internal class DependencyModelExtended : DependencyModel
+		private class DependencyModelExtended : DependencyModel
 		{
 			private readonly ComponentModel model;
 			private readonly MemberInfo info;
@@ -137,11 +133,14 @@ namespace Castle.MicroKernel.Context
 
 			public override int GetHashCode()
 			{
-				var infoHash = 37 ^ Info.GetHashCode();
-				return base.GetHashCode() + infoHash;
+				unchecked
+				{
+					var result = Info.GetHashCode();
+					result = (result * 397) ^ (base.GetHashCode());
+					return result;
+				}
 			}
 		}
 
-		#endregion
 	}
 }

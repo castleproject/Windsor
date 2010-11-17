@@ -112,7 +112,6 @@ namespace Castle.Windsor.Proxy
 
 		public bool ShouldCreateProxy(ComponentModel model)
 		{
-
 			if (model.HasInterceptors)
 			{
 				return true;

@@ -28,11 +28,10 @@ namespace Castle.Core
 	///   Represents a dependency (other component or a 
 	///   fixed value available through external configuration).
 	/// </summary>
-#if !SILVERLIGHT
 	[Serializable]
-#endif
 	public class DependencyModel
 	{
+		private readonly Type targetItemType;
 		private readonly Type targetType;
 
 		/// <summary>
@@ -52,6 +51,14 @@ namespace Castle.Core
 		                       bool hasDefaultValue, object defaultValue)
 		{
 			this.targetType = targetType;
+			if (targetType != null && targetType.IsByRef)
+			{
+				targetItemType = targetType.GetElementType();
+			}
+			else
+			{
+				targetItemType = targetType;
+			}
 			DependencyType = dependencyType;
 			DependencyKey = dependencyKey;
 			IsOptional = isOptional;
@@ -91,18 +98,7 @@ namespace Castle.Core
 		/// </summary>
 		public Type TargetItemType
 		{
-			get
-			{
-				if (targetType == null)
-				{
-					return null;
-				}
-				if (targetType.IsByRef == false)
-				{
-					return targetType;
-				}
-				return targetType.GetElementType();
-			}
+			get { return targetItemType; }
 		}
 
 		/// <summary>
@@ -112,24 +108,6 @@ namespace Castle.Core
 		public Type TargetType
 		{
 			get { return targetType; }
-		}
-
-		public bool Equals(DependencyModel other)
-		{
-			if (ReferenceEquals(null, other))
-			{
-				return false;
-			}
-			if (ReferenceEquals(this, other))
-			{
-				return true;
-			}
-			return Equals(other.targetType, targetType) &&
-			       Equals(other.DefaultValue, DefaultValue) &&
-			       Equals(other.DependencyType, DependencyType) &&
-			       Equals(other.DependencyKey, DependencyKey) &&
-			       other.IsOptional.Equals(IsOptional) &&
-			       other.HasDefaultValue.Equals(HasDefaultValue);
 		}
 
 		public override bool Equals(object obj)
@@ -142,17 +120,13 @@ namespace Castle.Core
 			{
 				return true;
 			}
-			if (obj.GetType() != typeof(DependencyModel))
+			var other = obj as DependencyModel;
+			if (other == null)
 			{
 				return false;
 			}
-			var other = (DependencyModel)obj;
 			return Equals(other.targetType, targetType) &&
-			       Equals(other.DefaultValue, DefaultValue) &&
-			       Equals(other.DependencyType, DependencyType) &&
-			       Equals(other.DependencyKey, DependencyKey) &&
-			       other.IsOptional.Equals(IsOptional) &&
-			       other.HasDefaultValue.Equals(HasDefaultValue);
+			       Equals(other.DependencyKey, DependencyKey);
 		}
 
 		public override int GetHashCode()
@@ -160,11 +134,7 @@ namespace Castle.Core
 			unchecked
 			{
 				var result = (targetType != null ? targetType.GetHashCode() : 0);
-				result = (result*397) ^ (DefaultValue != null ? DefaultValue.GetHashCode() : 0);
-				result = (result*397) ^ DependencyType.GetHashCode();
 				result = (result*397) ^ (DependencyKey != null ? DependencyKey.GetHashCode() : 0);
-				result = (result*397) ^ IsOptional.GetHashCode();
-				result = (result*397) ^ HasDefaultValue.GetHashCode();
 				return result;
 			}
 		}
