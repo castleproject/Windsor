@@ -29,8 +29,8 @@ namespace Castle.MicroKernel.Context
 	///   to detected cycled dependency graphs and now it's also being used
 	///   to provide arguments to components.
 	/// </summary>
-#if (!SILVERLIGHT)
 	[Serializable]
+#if (!SILVERLIGHT)
 	public class CreationContext : MarshalByRefObject, ISubDependencyResolver
 #else
 	public class CreationContext : ISubDependencyResolver
@@ -59,7 +59,7 @@ namespace Castle.MicroKernel.Context
 
 		private readonly Stack<ResolutionContext> resolutionStack = new Stack<ResolutionContext>();
 		private IDictionary additionalParameters;
-		private IDictionary extendedProperties;
+		private Dictionary<object, object> extendedProperties;
 		private readonly Type requestedType;
 
 		/// <summary>
@@ -68,8 +68,7 @@ namespace Castle.MicroKernel.Context
 		/// <param name = "requestedType">The type to extract generic arguments.</param>
 		/// <param name = "parentContext">The parent context.</param>
 		/// <param name = "propagateInlineDependencies">When set to <c>true</c> will clone <paramref name = "parentContext" /> <see cref = "AdditionalParameters" />.</param>
-		public CreationContext(Type requestedType, CreationContext parentContext,
-		                       bool propagateInlineDependencies)
+		public CreationContext(Type requestedType, CreationContext parentContext, bool propagateInlineDependencies)
 			: this(parentContext.Handler, parentContext.ReleasePolicy, requestedType, null, null, parentContext)
 		{
 			if (parentContext == null)
@@ -79,11 +78,7 @@ namespace Castle.MicroKernel.Context
 
 			if (parentContext.extendedProperties != null)
 			{
-				extendedProperties = new Dictionary<object, object>(parentContext.extendedProperties.Count);
-				foreach (DictionaryEntry parentProperty in parentContext.extendedProperties)
-				{
-					extendedProperties.Add(parentProperty.Key, parentProperty.Value);
-				}
+				extendedProperties = new Dictionary<object, object>(parentContext.extendedProperties);
 			}
 
 			if (propagateInlineDependencies && parentContext.HasAdditionalParameters)
@@ -112,14 +107,15 @@ namespace Castle.MicroKernel.Context
 			converter = conversionManager;
 			genericArguments = ExtractGenericArguments(requestedType);
 
-			if (parent != null)
+			if (parent == null)
 			{
-				resolutionStack = parent.resolutionStack;
-				dependencies.AddRange(parent.Dependencies);
-				foreach (var handlerItem in parent.handlerStack)
-				{
-					handlerStack.Push(handlerItem);
-				}
+				return;
+			}
+			resolutionStack = parent.resolutionStack;
+			dependencies.AddRange(parent.Dependencies);
+			foreach (var handlerItem in parent.handlerStack)
+			{
+				handlerStack.Push(handlerItem);
 			}
 		}
 
@@ -209,7 +205,9 @@ namespace Castle.MicroKernel.Context
 				return null;
 			}
 
-			return extendedProperties[key];
+			object value;
+			extendedProperties.TryGetValue(key, out value);
+			return value;
 		}
 
 		/// <summary>
@@ -226,8 +224,7 @@ namespace Castle.MicroKernel.Context
 			return handlerStack.Contains(handler);
 		}
 
-		public virtual bool CanResolve(CreationContext context, ISubDependencyResolver contextHandlerResolver,
-		                               ComponentModel model, DependencyModel dependency)
+		public virtual bool CanResolve(CreationContext context, ISubDependencyResolver contextHandlerResolver, ComponentModel model, DependencyModel dependency)
 		{
 			if (additionalParameters == null)
 			{
@@ -238,11 +235,9 @@ namespace Castle.MicroKernel.Context
 			return canResolveByKey || canResolveByType;
 		}
 
-		public virtual object Resolve(CreationContext context, ISubDependencyResolver contextHandlerResolver,
-		                              ComponentModel model, DependencyModel dependency)
+		public virtual object Resolve(CreationContext context, ISubDependencyResolver contextHandlerResolver, ComponentModel model, DependencyModel dependency)
 		{
-			Debug.Assert(CanResolve(context, contextHandlerResolver, model, dependency),
-			             "CanResolve(context, contextHandlerResolver, model, dependency)");
+			Debug.Assert(CanResolve(context, contextHandlerResolver, model, dependency), "CanResolve(context, contextHandlerResolver, model, dependency)");
 
 			var inlineArgument = additionalParameters[dependency.DependencyKey];
 			var targetType = dependency.TargetItemType;
@@ -353,7 +348,11 @@ namespace Castle.MicroKernel.Context
 
 		private static Type[] ExtractGenericArguments(Type typeToExtractGenericArguments)
 		{
-			return typeToExtractGenericArguments.GetGenericArguments();
+			if(typeToExtractGenericArguments.IsGenericType)
+			{
+				return typeToExtractGenericArguments.GetGenericArguments();
+			}
+			return Type.EmptyTypes;
 		}
 
 		public class ResolutionContext : IDisposable
