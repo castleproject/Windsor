@@ -18,12 +18,12 @@ namespace System
 	using System.Diagnostics;
 
 	[Conditional("THIS_IS_NEVER_TRUE")]
-	public class SerializableAttribute : Attribute
+	internal class SerializableAttribute : Attribute
 	{
 	}
 
 	[Conditional("THIS_IS_NEVER_TRUE")]
-	public class NonSerializedAttribute : Attribute
+	internal class NonSerializedAttribute : Attribute
 	{
 	}
 }
