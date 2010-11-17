@@ -52,14 +52,12 @@ namespace Castle.Facilities.Logging
 			this.extendedLoggerFactory = extendedLoggerFactory;
 		}
 
-		public bool CanResolve(CreationContext context, ISubDependencyResolver parentResolver, ComponentModel model,
-		                       DependencyModel dependency)
+		public bool CanResolve(CreationContext context, ISubDependencyResolver parentResolver, ComponentModel model, DependencyModel dependency)
 		{
 			return dependency.TargetType == typeof(ILogger) || dependency.TargetType == typeof(IExtendedLogger);
 		}
 
-		public object Resolve(CreationContext context, ISubDependencyResolver parentResolver, ComponentModel model,
-		                      DependencyModel dependency)
+		public object Resolve(CreationContext context, ISubDependencyResolver parentResolver, ComponentModel model, DependencyModel dependency)
 		{
 			Debug.Assert(CanResolve(context, parentResolver, model, dependency));
 

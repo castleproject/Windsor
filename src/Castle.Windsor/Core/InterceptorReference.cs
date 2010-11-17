@@ -27,9 +27,7 @@ namespace Castle.Core
 	/// <summary>
 	///   Represents an reference to a Interceptor component.
 	/// </summary>
-#if !SILVERLIGHT
 	[Serializable]
-#endif
 	public class InterceptorReference : IReference<IInterceptor>, IEquatable<InterceptorReference>
 	{
 		private readonly string componentKey;
@@ -107,6 +105,23 @@ namespace Castle.Core
 			return true;
 		}
 
+		private Type GetHandlerType(IHandler handler)
+		{
+			try
+			{
+				return serviceType ??
+				       handler.Services.SingleOrDefault(s => s == typeof(IInterceptor)) ??
+				       handler.Services.Single(s => s.Is<IInterceptor>());
+			}
+			catch (InvalidOperationException e)
+			{
+				throw new DependencyResolverException(
+					string.Format(
+						"Ambiguous service - interceptor {0} has more than one service compabtible with type {1}. Register the interceptor explicitly as {1} or pick single type compabtible with this interface",
+						handler.ComponentModel.Name, typeof(IInterceptor).Name), e);
+			}
+		}
+
 		private IHandler GetInterceptorHandler(IKernel kernel)
 		{
 			if (serviceType != null)
@@ -154,24 +169,6 @@ namespace Castle.Core
 
 			var contextForInterceptor = RebuildContext(GetHandlerType(handler), context);
 			return (IInterceptor)handler.Resolve(contextForInterceptor);
-		}
-
-		private Type GetHandlerType(IHandler handler)
-		{
-			try
-			{
-				return serviceType ??
-				       handler.Services.SingleOrDefault(s => s == typeof(IInterceptor)) ??
-				       handler.Services.Single(s => s.Is<IInterceptor>());
-			}
-			catch (InvalidOperationException e)
-			{
-
-				throw new DependencyResolverException(
-					string.Format(
-						"Ambiguous service - interceptor {0} has more than one service compabtible with type {1}. Register the interceptor explicitly as {1} or pick single type compabtible with this interface",
-						handler.ComponentModel.Name, typeof(IInterceptor).Name), e);
-			}
 		}
 
 		/// <summary>
