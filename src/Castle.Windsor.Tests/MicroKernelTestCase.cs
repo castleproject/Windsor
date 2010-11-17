@@ -160,8 +160,6 @@ namespace Castle.MicroKernel.Tests
 			var result = kernel.Resolve("key", new Arguments());
 			Assert.IsNotNull(result);
 
-			kernel.RemoveComponent("key");
-
 			result = kernel.Resolve<ICustomer>();
 			Assert.IsNotNull(result);
 		}

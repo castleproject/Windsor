@@ -69,11 +69,6 @@ namespace Castle.MicroKernel
 		event ComponentDataDelegate ComponentRegistered;
 
 		/// <summary>
-		/// Event fired when a component is removed from the kernel.
-		/// </summary>
-		event ComponentDataDelegate ComponentUnregistered;
-
-		/// <summary>
 		/// Event fired after the ComponentModel is created.
 		/// Allows customizations that may affect the handler.
 		/// </summary>

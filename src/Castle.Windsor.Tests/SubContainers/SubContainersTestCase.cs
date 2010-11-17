@@ -383,10 +383,6 @@ namespace Castle.MicroKernel.Tests.SubContainers
 			spamservice = kernel.Resolve<DefaultSpamService>("spamservice");
 			Assert.AreNotEqual(spamservice.TemplateEngine, sub_templateengine);
 			Assert.AreEqual(spamservice.TemplateEngine, templateengine);
-
-			kernel.RemoveComponent("templateengine");
-			spamservice = kernel.Resolve<DefaultSpamService>("spamservice");
-			Assert.IsNull(spamservice.TemplateEngine);
 		}
 	}
 }

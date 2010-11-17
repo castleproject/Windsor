@@ -68,7 +68,7 @@ namespace Castle.Core.Internal
 		}
 
 		/// <summary>
-		/// The nodes that depends on this node
+		///   The nodes that depends on this node
 		/// </summary>
 		public GraphNode[] Dependers
 		{
@@ -83,7 +83,7 @@ namespace Castle.Core.Internal
 		}
 
 		/// <summary>
-		/// The nodes that this node depends
+		///   The nodes that this node depends
 		/// </summary>
 		public GraphNode[] Dependents
 		{
@@ -95,17 +95,6 @@ namespace Castle.Core.Internal
 				}
 				return outgoing.ToArray();
 			}
-		}
-
-		public void RemoveDepender(GraphNode depender)
-		{
-			Incoming.Remove(depender);
-			depender.RemoveDependent(this);
-		}
-
-		private void RemoveDependent(GraphNode graphNode)
-		{
-			Outgoing.Remove(graphNode);
 		}
 	}
 }

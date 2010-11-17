@@ -36,27 +36,11 @@ namespace Castle.Core.Tests
 		}
 
 		[Test]
-		public void Removal()
-		{
-			GraphNode parent = new GraphNode();
-			GraphNode child = new GraphNode();
-			
-			parent.AddDependent(child);
-			
-			child.RemoveDepender(parent);
-
-			Assert.IsTrue( parent.Dependents.Length == 0 );
-			Assert.IsTrue( parent.Dependers.Length == 0 );
-			Assert.IsTrue( child.Dependers.Length == 0 );
-			Assert.IsTrue( child.Dependents.Length == 0 );
-		}
-
-		[Test]
 		public void TopologicalSortOneElement()
 		{
 			GraphNode alone = new TestGraphNode("alone");
 
-			IVertex[] nodes = TopologicalSortAlgo.Sort( new GraphNode[] { alone } );
+			IVertex[] nodes = TopologicalSortAlgo.Sort( new[] { alone } );
 
 			Assert.AreSame( alone, nodes[0] );
 		}

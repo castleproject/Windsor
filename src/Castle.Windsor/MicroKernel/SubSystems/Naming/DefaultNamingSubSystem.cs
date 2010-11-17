@@ -63,17 +63,6 @@ namespace Castle.MicroKernel.SubSystems.Naming
 			}
 		}
 
-		public virtual IHandler this[Type service]
-		{
-			set
-			{
-				using (@lock.ForWriting())
-				{
-					service2Handler[service] = value;
-				}
-			}
-		}
-
 		protected virtual IHandler this[String key]
 		{
 			set
@@ -269,11 +258,6 @@ namespace Castle.MicroKernel.SubSystems.Naming
 			return key2Handler;
 		}
 
-		public IDictionary<Type, IHandler> GetService2Handler()
-		{
-			return service2Handler;
-		}
-
 		public virtual void Register(String key, IHandler handler)
 		{
 			using (@lock.ForWriting())
@@ -285,31 +269,15 @@ namespace Castle.MicroKernel.SubSystems.Naming
 				}
 				foreach (var service in handler.Services)
 				{
-					if (!service2Handler.ContainsKey(service))
+					if (service2Handler.ContainsKey(service))
 					{
-						this[service] = handler;
+						// first one wins
+						continue;
 					}
+					service2Handler.Add(service, handler);
 				}
 
 				this[key] = handler;
-				InvalidateCache();
-			}
-		}
-
-		public virtual void UnRegister(String key)
-		{
-			using (@lock.ForWriting())
-			{
-				key2Handler.Remove(key);
-				InvalidateCache();
-			}
-		}
-
-		public virtual void UnRegister(Type service)
-		{
-			using (@lock.ForWriting())
-			{
-				service2Handler.Remove(service);
 				InvalidateCache();
 			}
 		}

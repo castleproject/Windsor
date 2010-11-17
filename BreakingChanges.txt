@@ -1,11 +1,30 @@
 ================================================================================================
+change - Removed the following methods:
+	GraphNode.RemoveDepender,
+	GraphNode.RemoveDependent,
+	IKernel.RemoveComponent,
+	IKernelEvents.ComponentUnregistered,
+	INamingSubSystem.this[Type service],
+	INamingSubSystem.GetHandler,
+	INamingSubSystem.GetService2Handler,
+	INamingSubSystem.UnRegister(String key),
+	INamingSubSystem.UnRegister(Type service)
+
+impact - low
+fixability - none
+
+description - The methods were implementation of "remove component from the container" feature
+	which was flawed and problematic, hecen was scraped.
+
+fix - Working around is quite dependant on your specific usage. Try utilizing IHandlerSelectors.
+================================================================================================
 change - Removed the following types: ContainerAdapter, ContainerWrapper, IContainerAdapter,
 	IContainerAdapterSite
 
 impact - low
 fixability - none
 
-description - These types require aility to remove componetns from a container. This ability was
+description - These types require aility to remove components from a container. This ability was
 	removed and since these types are hardly ever used, they were removed as well.
 
 fix - No quick fix is possible. If you are depending on this functionality proaly your best shot

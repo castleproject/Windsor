@@ -59,19 +59,5 @@ namespace Castle.MicroKernel.Tests
 			Assert.AreEqual("a", (vertices[2] as ComponentModel).Name);
 		}
 
-		[Test]
-		public void RemoveComponent()
-		{
-			kernel.Register(Component.For(typeof(A)).Named("a"));
-			kernel.Register(Component.For(typeof(B)).Named("b"));
-			kernel.Register(Component.For(typeof(C)).Named("c"));
-
-			Assert.IsFalse(kernel.RemoveComponent("a"));
-			Assert.IsFalse(kernel.RemoveComponent("b"));
-
-			Assert.IsTrue(kernel.RemoveComponent("c"));
-			Assert.IsTrue(kernel.RemoveComponent("b"));
-			Assert.IsTrue(kernel.RemoveComponent("a"));
-		}
 	}
 }
