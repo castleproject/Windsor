@@ -71,7 +71,7 @@ namespace Castle.Facilities.TypedFactory
 			}
 			if (registration.ClassService.BaseType == typeof(MulticastDelegate))
 			{
-				if (registration.InterfaceServices.Count > 0)
+				if (registration.InterfaceServices.Count == 0)
 				{
 					return RegisterDelegateBasedFactory(registration, configuration);
 				}

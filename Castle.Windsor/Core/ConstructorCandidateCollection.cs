@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,45 +15,26 @@
 namespace Castle.Core
 {
 	using System;
-	using System.Collections.ObjectModel;
+	using System.Collections;
+	using System.Collections.Generic;
 
 	/// <summary>
-	/// Collection of <see cref="ConstructorCandidate"/>
+	///   Collection of <see cref = "ConstructorCandidate" />
 	/// </summary>
-#if !SILVERLIGHT
 	[Serializable]
-#endif
-	public class ConstructorCandidateCollection : Collection<ConstructorCandidate>
+	public class ConstructorCandidateCollection : IEnumerable<ConstructorCandidate>
 	{
-		private bool hasAmbiguousFewerArgumentsCandidate;
+		private readonly IList<ConstructorCandidate> ctors = new List<ConstructorCandidate>(4);
 		private ConstructorCandidate fewerArgumentsCandidate;
+		private bool hasAmbiguousFewerArgumentsCandidate;
 
-		public new void Add(ConstructorCandidate item)
+		public int Count
 		{
-			if (fewerArgumentsCandidate == null)
-			{
-				fewerArgumentsCandidate = item;
-				hasAmbiguousFewerArgumentsCandidate = false;
-			}
-			else
-			{
-				int constructorParamCount = item.Constructor.GetParameters().Length;
-				int fewerArgumentsCount = fewerArgumentsCandidate.Constructor.GetParameters().Length;
-
-				if (constructorParamCount < fewerArgumentsCount)
-				{
-					fewerArgumentsCandidate = item;
-				}
-				else if (constructorParamCount == fewerArgumentsCount)
-				{
-					hasAmbiguousFewerArgumentsCandidate = true;
-				}
-			}
-			base.Add(item);
+			get { return ctors.Count; }
 		}
 
 		/// <summary>
-		/// Gets the fewer arguments candidate.
+		///   Gets the fewer arguments candidate.
 		/// </summary>
 		/// <value>The fewer arguments candidate.</value>
 		public ConstructorCandidate FewerArgumentsCandidate
@@ -64,6 +45,45 @@ namespace Castle.Core
 		public bool HasAmbiguousFewerArgumentsCandidate
 		{
 			get { return hasAmbiguousFewerArgumentsCandidate; }
+		}
+
+		public void Add(ConstructorCandidate item)
+		{
+			if (fewerArgumentsCandidate == null)
+			{
+				fewerArgumentsCandidate = item;
+				hasAmbiguousFewerArgumentsCandidate = false;
+			}
+			else
+			{
+				var constructorParamCount = item.Constructor.GetParameters().Length;
+				var fewerArgumentsCount = fewerArgumentsCandidate.Constructor.GetParameters().Length;
+
+				if (constructorParamCount < fewerArgumentsCount)
+				{
+					fewerArgumentsCandidate = item;
+				}
+				else if (constructorParamCount == fewerArgumentsCount)
+				{
+					hasAmbiguousFewerArgumentsCandidate = true;
+				}
+			}
+			ctors.Add(item);
+		}
+
+		public IEnumerator<ConstructorCandidate> GetEnumerator()
+		{
+			return ctors.GetEnumerator();
+		}
+
+		IEnumerator IEnumerable.GetEnumerator()
+		{
+			return GetEnumerator();
+		}
+
+		public void Clear()
+		{
+			ctors.Clear();
 		}
 	}
 }
