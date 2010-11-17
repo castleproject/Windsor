@@ -21,17 +21,10 @@ namespace Castle.Core
 	/// <summary>
 	///   Collection of <see cref = "DependencyModel" />.
 	/// </summary>
-#if !SILVERLIGHT
 	[Serializable]
-#endif
 	public class DependencyModelCollection : IEnumerable<DependencyModel>
 	{
-		private readonly ICollection<DependencyModel> dependencies =
-#if DOTNET35 || SL3
-			new List<DependencyModel>();
-#else
-			new HashSet<DependencyModel>();
-#endif
+		private readonly ICollection<DependencyModel> dependencies = new HashSet<DependencyModel>();
 
 		public void Add(DependencyModel dependencyModel)
 		{
@@ -39,18 +32,12 @@ namespace Castle.Core
 			{
 				throw new ArgumentNullException("dependencyModel");
 			}
-#if DOTNET35 || SL3
-			if(dependencies.Contains(dependencyModel))
-			{
-				return;
-			}
-#endif
 			dependencies.Add(dependencyModel);
 		}
 
 		public void AddRange(DependencyModelCollection dependencies)
 		{
-			if (dependencies == null)
+			if (dependencies == null || dependencies.dependencies.Count == 0)
 			{
 				return;
 			}
