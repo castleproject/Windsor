@@ -71,18 +71,20 @@ namespace Castle.MicroKernel.Context
 			return value;
 		}
 
-		public void Insert(object key, object value)
+		public bool Insert(object key, object value)
 		{
 			VerifyKey(key);
 			VerifyValueType((Type)key, value);
 
+			var isOverwriting = arguments.ContainsKey((Type)key);
 			arguments[(Type)key] = value;
+			return isOverwriting == false;
 		}
 
-		public void Remove(object key)
+		public bool Remove(object key)
 		{
 			VerifyKey(key);
-			arguments.Remove((Type)key);
+			return arguments.Remove((Type)key);
 		}
 
 		public bool Supports(Type keyType)

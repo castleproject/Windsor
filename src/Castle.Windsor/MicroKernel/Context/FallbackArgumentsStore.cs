@@ -61,14 +61,16 @@ namespace Castle.MicroKernel.Context
 			items.Clear();
 		}
 
-		public void Remove(object key)
+		public bool Remove(object key)
 		{
-			items.Remove(key);
+			return items.Remove(key);
 		}
 
-		public void Insert(object key, object value)
+		public bool Insert(object key, object value)
 		{
+			var isOverwriting = items.ContainsKey(key);
 			items[key] = value;
+			return isOverwriting == false;
 		}
 
 		public object GetItem(object key)

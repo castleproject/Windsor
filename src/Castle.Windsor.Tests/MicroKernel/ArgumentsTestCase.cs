@@ -111,7 +111,7 @@ namespace Castle.Windsor.Tests.MicroKernel
 
 		public int Count
 		{
-			get { throw new NotImplementedException(); }
+			get { return 0; }
 		}
 
 		public bool Supports(Type keyType)
@@ -129,12 +129,12 @@ namespace Castle.Windsor.Tests.MicroKernel
 			throw new NotImplementedException();
 		}
 
-		public void Remove(object key)
+		public bool Remove(object key)
 		{
 			throw new NotImplementedException();
 		}
 
-		public void Insert(object key, object value)
+		public bool Insert(object key, object value)
 		{
 			throw new NotImplementedException();
 		}
