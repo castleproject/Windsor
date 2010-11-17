@@ -1,3 +1,4 @@
+- Removed the following types: ContainerAdapter, ContainerWrapper, IContainerAdapter, IContainerAdapterSite types.
 - fixed IOC-248 - Open generic components with multiple services, some of which are generic fail to properly instantiate in certain cases 
 - fixed IOC-247 - Make ComponentModel/IHandler expose all services for given component, instead of piggybacking them via ForwardedHandlers
 - implemented IOC-246 - Remove alternative naming subsystems

@@ -824,18 +824,6 @@
     <Compile Include="..\..\buildscripts\CommonAssemblyInfo.cs">
       <Link>CommonAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="Windsor\Adapters\ComponentModel\ContainerAdapterSite.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Windsor\Adapters\ComponentModel\IContainerAdapter.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Windsor\Adapters\ComponentModel\IContainerAdapterSite.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Windsor\Adapters\ComponentModel\ServiceCreatorCallbackActivator.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="Windsor\Configuration\AppDomain\CastleSectionHandler.cs">
       <SubType>Code</SubType>
@@ -961,14 +949,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Windsor\WindsorContainer.cs">
-      <SubType>Code</SubType>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup Condition="$(MSBuildTargets)!='Silverlight 3.0' and $(MSBuildTargets)!='Silverlight 4.0'">
-    <Compile Include="Windsor\Adapters\ComponentModel\ContainerAdapter.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Windsor\Adapters\ComponentModel\ContainerWrapper.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>

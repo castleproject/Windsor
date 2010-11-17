@@ -720,12 +720,6 @@
     <Compile Include="UnsatisfiedDependenciesTestCase.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Adapters\ComponentModel\ContainerAdapterTestCase.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Adapters\ComponentModel\TestComponent.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="Bugs\FACILITIES-ISSUE-111\Components\A_Facilities_Issue_111.cs" />
     <Compile Include="Bugs\FACILITIES-ISSUE-111\Components\B_Facilities_Issue_111.cs" />
     <Compile Include="Bugs\FACILITIES-ISSUE-111\Components\IA_Facilities_Issue_111.cs" />
@@ -946,7 +940,6 @@
     <Compile Include="SmartProxyTestCase.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Windsor.Tests\ContainerWrapperTestsCase.cs" />
     <Compile Include="ContainerAndGenericsInCodeTestCase.cs" />
     <Compile Include="Windsor.Tests\Debugging\DebuggingSubsystemTestCase.cs" />
     <Compile Include="Windsor.Tests\MultiServiceGenericComponentsTestCase.cs" />
@@ -1121,10 +1114,6 @@
     <Content Include="XmlProcessor\TestFiles\SimpleTestResult.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <EmbeddedResource Include="Adapters\ComponentModel\TestComponent.resx">
-      <DependentUpon>TestComponent.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
     <EmbeddedResource Include="Configuration2\config_with_choose_stmt.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>

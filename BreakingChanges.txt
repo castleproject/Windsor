@@ -1,4 +1,17 @@
 ================================================================================================
+change - Removed the following types: ContainerAdapter, ContainerWrapper, IContainerAdapter,
+	IContainerAdapterSite
+
+impact - low
+fixability - none
+
+description - These types require aility to remove componetns from a container. This ability was
+	removed and since these types are hardly ever used, they were removed as well.
+
+fix - No quick fix is possible. If you are depending on this functionality proaly your best shot
+	is to replicate it, espeicially catering for the removal of components which is no longer
+	available in Windsor.
+================================================================================================
 change - Removed ComponentRegistration.If and ComponentRegistration.Until methods, as well as
 	Component.ServiceAlreadyRegistered method, and replaced their most common usage with
 	ComponentRegistration.OnlyNewServices method
