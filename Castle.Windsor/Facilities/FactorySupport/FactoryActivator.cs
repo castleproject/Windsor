@@ -158,7 +158,7 @@ namespace Castle.Facilities.FactorySupport
 				throw new FacilityException(message, ex);
 			}
 
-			if (Model.Interceptors.HasInterceptors)
+			if (Model.HasInterceptors)
 			{
 				try
 				{

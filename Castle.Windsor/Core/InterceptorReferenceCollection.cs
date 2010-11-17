@@ -17,7 +17,6 @@ namespace Castle.Core
 	using System;
 	using System.Collections;
 	using System.Collections.Generic;
-	using System.Linq;
 
 	using Castle.DynamicProxy;
 	using Castle.MicroKernel;
@@ -25,13 +24,11 @@ namespace Castle.Core
 	/// <summary>
 	///   Collection of <see cref = "InterceptorReference" />
 	/// </summary>
-#if !SILVERLIGHT
 	[Serializable]
-#endif
-	public class InterceptorReferenceCollection : ICollection<InterceptorReference>
+	public class InterceptorReferenceCollection : IEnumerable<InterceptorReference>
 	{
 		private readonly DependencyModelCollection dependencies;
-		private readonly IList<InterceptorReference> list = new List<InterceptorReference>();
+		private readonly List<InterceptorReference> list = new List<InterceptorReference>();
 
 		public InterceptorReferenceCollection(DependencyModelCollection dependencies)
 		{
@@ -46,22 +43,16 @@ namespace Castle.Core
 		/// </value>
 		public bool HasInterceptors
 		{
-			get { return Count != 0; }
+			get { return list.Count != 0; }
 		}
 
 		/// <summary>
-		///   Gets the number of
-		///   elements contained in the <see cref = "T:System.Collections.ICollection" />.
+		///   Adds the specified item.
 		/// </summary>
-		/// <value></value>
-		public int Count
+		/// <param name = "item">The interceptor.</param>
+		public void Add(InterceptorReference item)
 		{
-			get { return list.Count; }
-		}
-
-		bool ICollection<InterceptorReference>.IsReadOnly
-		{
-			get { return false; }
+			AddLast(item);
 		}
 
 		/// <summary>
@@ -106,38 +97,9 @@ namespace Castle.Core
 			Attach(item);
 		}
 
-		/// <summary>
-		///   Adds the specified item.
-		/// </summary>
-		/// <param name = "item">The interceptor.</param>
-		public void Add(InterceptorReference item)
+		public InterceptorReference[] ToArray()
 		{
-			AddLast(item);
-		}
-
-		public void Clear()
-		{
-			var references = list.ToArray();
-			list.Clear();
-			foreach (var reference in references)
-			{
-				Detach(reference);
-			}
-		}
-
-		public bool Contains(InterceptorReference item)
-		{
-			return list.Contains(item);
-		}
-
-		public bool Remove(InterceptorReference item)
-		{
-			if (list.Remove(item))
-			{
-				Detach(item);
-				return true;
-			}
-			return false;
+			return list.ToArray();
 		}
 
 		/// <summary>
@@ -155,16 +117,6 @@ namespace Castle.Core
 		private void Attach(IReference<IInterceptor> interceptor)
 		{
 			interceptor.Attach(dependencies);
-		}
-
-		private void Detach(IReference<IInterceptor> interceptor)
-		{
-			interceptor.Detach(dependencies);
-		}
-
-		void ICollection<InterceptorReference>.CopyTo(InterceptorReference[] array, int arrayIndex)
-		{
-			list.CopyTo(array, arrayIndex);
 		}
 
 		IEnumerator<InterceptorReference> IEnumerable<InterceptorReference>.GetEnumerator()

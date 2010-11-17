@@ -68,7 +68,7 @@ namespace Castle.Windsor.Experimental.Debugging.Primitives
 
 		private bool HasInterceptors()
 		{
-			return handler.ComponentModel.Interceptors.HasInterceptors;
+			return handler.ComponentModel.HasInterceptors;
 		}
 
 		public IEnumerable<DebuggerViewItem> Attach()

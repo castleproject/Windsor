@@ -851,7 +851,7 @@ namespace Castle.MicroKernel.Registration
 				descriptor.ApplyToModel(kernel, componentModel);
 			}
 
-			if (componentModel.Implementation.IsInterface && componentModel.Interceptors.Count > 0)
+			if (componentModel.Implementation.IsInterface && componentModel.HasInterceptors)
 			{
 				var options = ProxyUtil.ObtainProxyOptions(componentModel, true);
 				options.OmitTarget = true;

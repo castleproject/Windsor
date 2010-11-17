@@ -74,7 +74,7 @@ namespace Castle.MicroKernel.ComponentActivator
 
 			Type implType = Model.Implementation;
 
-			bool createProxy = Model.Interceptors.HasInterceptors;
+			bool createProxy = Model.HasInterceptors;
 			bool createInstance = true;
 
 			if (createProxy)

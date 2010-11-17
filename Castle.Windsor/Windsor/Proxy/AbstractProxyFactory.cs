@@ -28,7 +28,7 @@ namespace Castle.Windsor.Proxy
 
 	public abstract class AbstractProxyFactory : IProxyFactory
 	{
-		private readonly IList<IModelInterceptorsSelector> selectors = new List<IModelInterceptorsSelector>();
+		private List<IModelInterceptorsSelector> selectors;
 
 		public abstract object Create(IKernel kernel, object instance, ComponentModel model, CreationContext context,
 		                              params object[] constructorArguments);
@@ -41,24 +41,23 @@ namespace Castle.Windsor.Proxy
 		protected IEnumerable<InterceptorReference> GetInterceptorsFor(ComponentModel model)
 		{
 			var interceptors = model.Interceptors.ToArray();
-			foreach (var selector in selectors)
+			if (selectors != null)
 			{
-				if (selector.HasInterceptors(model) == false)
+				foreach (var selector in selectors)
 				{
-					continue;
-				}
+					if (selector.HasInterceptors(model) == false)
+					{
+						continue;
+					}
 
-				interceptors = selector.SelectInterceptors(model, interceptors);
-				if (interceptors == null)
-				{
-					interceptors = new InterceptorReference[0];
+					interceptors = selector.SelectInterceptors(model, interceptors);
+					if (interceptors == null)
+					{
+						interceptors = new InterceptorReference[0];
+					}
 				}
 			}
-
-			foreach (var interceptor in interceptors)
-			{
-				yield return interceptor;
-			}
+			return interceptors;
 		}
 
 		/// <summary>
@@ -104,28 +103,32 @@ namespace Castle.Windsor.Proxy
 
 		public void AddInterceptorSelector(IModelInterceptorsSelector selector)
 		{
+			if(selectors == null)
+			{
+				selectors = new List<IModelInterceptorsSelector>();
+			}
 			selectors.Add(selector);
 		}
 
 		public bool ShouldCreateProxy(ComponentModel model)
 		{
-			if (selectors.Any(s => s.HasInterceptors(model)))
-			{
-				return true;
-			}
 
-			if (model.Interceptors.HasInterceptors)
+			if (model.HasInterceptors)
 			{
 				return true;
 			}
 
 			var options = ProxyUtil.ObtainProxyOptions(model, false);
-			if (options == null)
+			if (options != null && options.RequiresProxy())
 			{
-				return false;
+				return true;
+			}
+			if (selectors != null && selectors.Any(s => s.HasInterceptors(model)))
+			{
+				return true;
 			}
 
-			return options.MixIns.Any() || options.AdditionalInterfaces.Any();
+			return false;
 		}
 
 		protected static void SetOnBehalfAware(IOnBehalfAware onBehalfAware, ComponentModel target)
