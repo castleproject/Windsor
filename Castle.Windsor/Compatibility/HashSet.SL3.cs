@@ -15,59 +15,68 @@
 #if SL3
 namespace System.Collections.Generic
 {
-    internal class HashSet<T> : ICollection<T>
-    {
-        private readonly IDictionary<T, object> items = new Dictionary<T, object>();
+	internal class HashSet<T> : ICollection<T>
+	{
+		private readonly IDictionary<T, object> items = new Dictionary<T, object>();
 
-        public int Count
-        {
-            get { return items.Count; }
-        }
+		public int Count
+		{
+			get { return items.Count; }
+		}
 
-        public bool IsReadOnly
-        {
-            get { return items.IsReadOnly; }
-        }
+		public bool IsReadOnly
+		{
+			get { return items.IsReadOnly; }
+		}
 
-        public void Add(T item)
-        {
-            if (Contains(item))
-            {
-                return;
-            }
+		public void Add(T item)
+		{
+			if (Contains(item))
+			{
+				return;
+			}
 
-            items.Add(item, null);
-        }
+			items.Add(item, null);
+		}
 
-        public void Clear()
-        {
-            items.Clear();
-        }
+		public void Clear()
+		{
+			items.Clear();
+		}
 
-        public bool Contains(T item)
-        {
-            return items.ContainsKey(item);
-        }
+		public bool Contains(T item)
+		{
+			return items.ContainsKey(item);
+		}
 
-        public void CopyTo(T[] array, int arrayIndex)
-        {
-            items.Keys.CopyTo(array, arrayIndex);
-        }
+		public void CopyTo(T[] array, int arrayIndex)
+		{
+			items.Keys.CopyTo(array, arrayIndex);
+		}
 
-        public bool Remove(T item)
-        {
-            return items.Remove(item);
-        }
+		public void UnionWith(HashSet<T> other)
+		{
+			foreach (var item in other)
+			{
+				Add(item);
+			}
+		}
 
-        public IEnumerator<T> GetEnumerator()
-        {
-            return items.Keys.GetEnumerator();
-        }
+		public bool Remove(T item)
+		{
+			return items.Remove(item);
+		}
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
-    }
+		public IEnumerator<T> GetEnumerator()
+		{
+			return items.Keys.GetEnumerator();
+		}
+
+		IEnumerator IEnumerable.GetEnumerator()
+		{
+			return GetEnumerator();
+		}
+	}
 }
+
 #endif

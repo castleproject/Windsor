@@ -24,7 +24,7 @@ namespace Castle.Core
 	[Serializable]
 	public class DependencyModelCollection : IEnumerable<DependencyModel>
 	{
-		private readonly ICollection<DependencyModel> dependencies = new HashSet<DependencyModel>();
+		private readonly HashSet<DependencyModel> dependencies = new HashSet<DependencyModel>();
 
 		public void Add(DependencyModel dependencyModel)
 		{
@@ -35,22 +35,13 @@ namespace Castle.Core
 			dependencies.Add(dependencyModel);
 		}
 
-		public void AddRange(DependencyModelCollection dependencies)
+		public void AddRange(DependencyModelCollection other)
 		{
-			if (dependencies == null || dependencies.dependencies.Count == 0)
+			if (other == null || other.dependencies.Count == 0)
 			{
 				return;
 			}
-
-			foreach (var model in dependencies)
-			{
-				if (model == null)
-				{
-					throw new ArgumentNullException("dependencies", "item in the collection is null");
-				}
-
-				Add(model);
-			}
+			dependencies.UnionWith(other.dependencies);
 		}
 
 		public void Clear()
