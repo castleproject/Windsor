@@ -1,4 +1,7 @@
 ================================================================================================
+rename -  INamingSubSystem.GetHandlers -> INamingSubSystem.GetAllHandlers
+description - readability change. No affect on behavior
+================================================================================================
 change - Removed the following methods:
 	GraphNode.RemoveDepender,
 	GraphNode.RemoveDependent,

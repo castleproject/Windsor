@@ -84,7 +84,7 @@ namespace Castle.MicroKernel.SubSystems.Naming
 		/// Returns all <see cref="IHandler"/> registered.
 		/// </summary>
 		/// <returns></returns>
-		IHandler[] GetHandlers();
+		IHandler[] GetAllHandlers();
 
 		/// <summary>
 		/// List of handler by key
