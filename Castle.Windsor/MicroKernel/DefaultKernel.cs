@@ -1001,6 +1001,7 @@ namespace Castle.MicroKernel
 			{
 				throw new ArgumentNullException("service");
 			}
+
 			if (HasComponent(service))
 			{
 				return true;

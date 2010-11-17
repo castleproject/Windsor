@@ -743,6 +743,7 @@ namespace Castle.MicroKernel.Handlers
 				if (Kernel.Parent.HasComponent(key))
 				{
 					shouldExecuteDependencyChanged = true;
+					break;
 				}
 			}
 

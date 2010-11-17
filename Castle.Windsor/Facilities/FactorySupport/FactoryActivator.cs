@@ -42,7 +42,8 @@ namespace Castle.Facilities.FactorySupport
 			String factoryId = (String)Model.ExtendedProperties["factoryId"];
 			String factoryCreate = (String)Model.ExtendedProperties["factoryCreate"];
 
-			if (!Kernel.HasComponent(factoryId))
+			IHandler factoryHandler = Kernel.GetHandler(factoryId);
+			if (factoryHandler == null)
 			{
 				String message = String.Format("You have specified a factory ('{2}') " +
 					"for the component '{0}' {1} but the kernel does not have this " +
@@ -50,8 +51,6 @@ namespace Castle.Facilities.FactorySupport
 					Model.Name, Model.Implementation.FullName, factoryId);
 				throw new FacilityException(message);
 			}
-
-			IHandler factoryHandler = Kernel.GetHandler(factoryId);
 
 			// Let's find out whether the create method is a static or instance method
 
