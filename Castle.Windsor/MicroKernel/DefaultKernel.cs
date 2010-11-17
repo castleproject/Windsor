@@ -180,7 +180,7 @@ namespace Castle.MicroKernel
 				var nodes = new GraphNode[NamingSubSystem.ComponentCount];
 				var index = 0;
 
-				var handlers = NamingSubSystem.GetHandlers();
+				var handlers = NamingSubSystem.GetAllHandlers();
 				foreach (var handler in handlers)
 				{
 					nodes[index++] = handler.ComponentModel;
@@ -889,12 +889,8 @@ namespace Castle.MicroKernel
 			for (var i = 0; i < vertices.Length; i++)
 			{
 				var model = (ComponentModel)vertices[i];
-
-				if (NamingSubSystem.Contains(model.Name))
-				{
-					var handler = GetHandler(model.Name);
-					DisposeHandler(handler);
-				}
+				var handler = NamingSubSystem.GetHandler(model.Name);
+				DisposeHandler(handler);
 			}
 		}
 
