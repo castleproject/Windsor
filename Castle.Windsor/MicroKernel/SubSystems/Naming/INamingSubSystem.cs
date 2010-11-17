@@ -35,12 +35,6 @@ namespace Castle.MicroKernel.SubSystems.Naming
 		IHandler this[Type service] { set; }
 
 		/// <summary>
-		/// Associates a <see cref="IHandler"/> with
-		/// the specified key
-		/// </summary>
-		IHandler this[String key] { set; }
-
-		/// <summary>
 		/// Register a new component resolver that can take part in the decision
 		/// making about which handler to resolve
 		/// </summary>
@@ -93,14 +87,6 @@ namespace Castle.MicroKernel.SubSystems.Naming
 		/// </remarks>
 		/// </summary>
 		IHandler GetHandler(string key, Type service);
-
-		/// <summary>
-		/// Returns an array of <see cref="IHandler"/> that
-		/// satisfies the specified query.
-		/// </summary>
-		/// <param name="query"></param>
-		/// <returns></returns>
-		IHandler[] GetHandlers(String query);
 
 		/// <summary>
 		/// Returns an array of <see cref="IHandler"/> associated with

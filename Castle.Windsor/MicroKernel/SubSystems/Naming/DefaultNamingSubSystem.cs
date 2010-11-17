@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 namespace Castle.MicroKernel.SubSystems.Naming
 {
 	using System;
@@ -45,7 +46,6 @@ namespace Castle.MicroKernel.SubSystems.Naming
 		/// </summary>
 		protected readonly IDictionary<Type, IHandler> service2Handler = new Dictionary<Type, IHandler>();
 
-		private readonly List<IHandler> allHandlers = new List<IHandler>();
 		private readonly IDictionary<Type, IHandler[]> assignableHandlerListsByTypeCache = new Dictionary<Type, IHandler[]>();
 		private readonly IDictionary<Type, IHandler[]> handlerListsByTypeCache = new Dictionary<Type, IHandler[]>();
 		private readonly Lock @lock = Lock.Create();
@@ -58,7 +58,7 @@ namespace Castle.MicroKernel.SubSystems.Naming
 			{
 				using (@lock.ForReading())
 				{
-					return allHandlers.Count;
+					return key2Handler.Count;
 				}
 			}
 		}
@@ -74,14 +74,13 @@ namespace Castle.MicroKernel.SubSystems.Naming
 			}
 		}
 
-		public virtual IHandler this[String key]
+		protected virtual IHandler this[String key]
 		{
 			set
 			{
 				using (@lock.ForWriting())
 				{
 					key2Handler[key] = value;
-					allHandlers.Add(value);
 				}
 			}
 		}
@@ -211,11 +210,6 @@ namespace Castle.MicroKernel.SubSystems.Naming
 			}
 		}
 
-		public virtual IHandler[] GetHandlers(String query)
-		{
-			throw new NotImplementedException();
-		}
-
 		public virtual IHandler[] GetHandlers(Type service)
 		{
 			if (service == null)
@@ -306,11 +300,6 @@ namespace Castle.MicroKernel.SubSystems.Naming
 		{
 			using (@lock.ForWriting())
 			{
-				IHandler value;
-				if (key2Handler.TryGetValue(key, out value))
-				{
-					allHandlers.Remove(value);
-				}
 				key2Handler.Remove(key);
 				InvalidateCache();
 			}
