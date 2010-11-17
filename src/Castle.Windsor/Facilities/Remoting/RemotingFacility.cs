@@ -20,7 +20,6 @@ namespace Castle.Facilities.Remoting
 	using System.Runtime.Remoting;
 	using System.Security;
 
-	using Castle.MicroKernel;
 	using Castle.MicroKernel.Facilities;
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.SubSystems.Conversion;
@@ -106,14 +105,13 @@ namespace Castle.Facilities.Remoting
 
 			baseUri = FacilityConfig.Attributes["baseUri"];
 
-			var conversionManager = Kernel.GetConversionManager();
-			if (conversionManager.PerformConversion<bool?>(FacilityConfig.Attributes["isServer"]) == true)
+			if (converter.PerformConversion<bool?>(FacilityConfig.Attributes["isServer"]) == true)
 			{
 				isServer = true;
 				ConfigureServerFacility();
 			}
 
-			if (conversionManager.PerformConversion<bool?>(FacilityConfig.Attributes["isClient"]) == true)
+			if (converter.PerformConversion<bool?>(FacilityConfig.Attributes["isClient"]) == true)
 			{
 				isClient = true;
 				ConfigureClientFacility();
@@ -130,7 +128,7 @@ namespace Castle.Facilities.Remoting
 		{
 			var remoteKernelUri = FacilityConfig.Attributes["remoteKernelUri"];
 
-			if (remoteKernelUri == null || remoteKernelUri.Length == 0)
+			if (string.IsNullOrEmpty(remoteKernelUri))
 			{
 				var message = "When the remote facility is configured as " +
 				              "client you must supply the URI for the kernel using the attribute 'remoteKernelUri'";

@@ -11,7 +11,6 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
 namespace Castle.MicroKernel.SubSystems.Naming
 {
 	using System;
@@ -126,28 +125,15 @@ namespace Castle.MicroKernel.SubSystems.Naming
 
 			using (@lock.ForWriting())
 			{
-				var handlers = GetHandlers();
-				var list = new HashSet<IHandler>();
-				foreach (var handler in handlers)
+				if (assignableHandlerListsByTypeCache.TryGetValue(service, out result))
 				{
-					foreach (var handlerService in handler.Services)
-					{
-						if (service.IsAssignableFrom(handlerService))
-						{
-							list.Add(handler);
-						}
-						else
-						{
-							if (service.IsGenericType &&
-							    service.GetGenericTypeDefinition().IsAssignableFrom(handlerService))
-							{
-								list.Add(handler);
-							}
-						}
-					}
+					return result;
 				}
 
-				result = list.ToArray();
+				var handlers = GetHandlers();
+				result = handlers
+					.Where(h => h.Services.Any(s => IsAssignable(service, s)))
+					.ToArray();
 				assignableHandlerListsByTypeCache[service] = result;
 			}
 
@@ -278,11 +264,8 @@ namespace Castle.MicroKernel.SubSystems.Naming
 				}
 
 				var list = new IHandler[key2Handler.Values.Count];
-
 				key2Handler.Values.CopyTo(list, 0);
-
 				allHandlersCache = list;
-
 				return list;
 			}
 		}
@@ -370,6 +353,12 @@ namespace Castle.MicroKernel.SubSystems.Naming
 			handlerListsByTypeCache.Clear();
 			assignableHandlerListsByTypeCache.Clear();
 			allHandlersCache = null;
+		}
+
+		private bool IsAssignable(Type thisOne, Type fromThisOne)
+		{
+			return thisOne.IsAssignableFrom(fromThisOne) ||
+			       (thisOne.IsGenericType && thisOne.GetGenericTypeDefinition().IsAssignableFrom(fromThisOne));
 		}
 	}
 }
