@@ -89,15 +89,11 @@ namespace Castle.MicroKernel.Proxy
 		{
 			get
 			{
-				if (mixInList == null)
+				if (mixInList != null)
 				{
-					yield break;
+					return mixInList;
 				}
-
-				foreach (var reference in mixInList)
-				{
-					yield return reference;
-				}
+				return new IReference<object>[] { };
 			}
 		}
 
@@ -121,9 +117,9 @@ namespace Castle.MicroKernel.Proxy
 		/// <param name = "interfaces">The interfaces.</param>
 		public void AddAdditionalInterfaces(params Type[] interfaces)
 		{
-			if (interfaces == null)
+			if (interfaces == null || interfaces.Length == 0)
 			{
-				throw new ArgumentNullException("interfaces");
+				return;
 			}
 
 			if (interfaceList == null)
@@ -140,9 +136,9 @@ namespace Castle.MicroKernel.Proxy
 		/// <param name = "mixIns">The mix ins.</param>
 		public void AddMixIns(params object[] mixIns)
 		{
-			if (mixIns == null)
+			if (mixIns == null || mixIns.Length == 0)
 			{
-				throw new ArgumentNullException("mixIns");
+				return;
 			}
 
 			if (mixInList == null)
@@ -245,6 +241,11 @@ namespace Castle.MicroKernel.Proxy
 				}
 			}
 			return true;
+		}
+
+		public bool RequiresProxy()
+		{
+			return interfaceList != null || mixInList != null;
 		}
 
 		private int GetCollectionHashCode(IEnumerable items)

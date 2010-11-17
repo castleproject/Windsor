@@ -275,6 +275,15 @@ namespace Castle.Core
 			}
 		}
 
+		public bool HasInterceptors
+		{
+			get
+			{
+				var interceptorsLocal = interceptors;
+				return interceptorsLocal != null && interceptorsLocal.HasInterceptors;
+			}
+		}
+
 		/// <summary>
 		///   Gets or sets the service exposed.
 		/// </summary>
