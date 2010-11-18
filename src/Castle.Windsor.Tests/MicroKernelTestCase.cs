@@ -300,7 +300,8 @@ namespace Castle.MicroKernel.Tests
 					"Type Castle.MicroKernel.Tests.ClassComponents.BaseCommonComponent is abstract.{0} As such, it is not possible to instansiate it as implementation of service 'abstract'.",
 					Environment.NewLine);
 			var exception =
-				Assert.Throws(typeof(ComponentRegistrationException), () => kernel.Resolve<ICommon>("abstract"));
+				Assert.Throws(typeof(ComponentRegistrationException), () => 
+					kernel.Resolve<ICommon>("abstract"));
 			Assert.AreEqual(expectedMessage, exception.Message);
 		}
 

@@ -24,7 +24,7 @@ namespace Castle.Core
 	[Serializable]
 	public class DependencyModelCollection : IEnumerable<DependencyModel>
 	{
-		private readonly HashSet<DependencyModel> dependencies = new HashSet<DependencyModel>();
+		private readonly List<DependencyModel> dependencies = new List<DependencyModel>(8);
 
 		public void Add(DependencyModel dependencyModel)
 		{
@@ -41,7 +41,7 @@ namespace Castle.Core
 			{
 				return;
 			}
-			dependencies.UnionWith(other.dependencies);
+			dependencies.AddRange(other.dependencies);
 		}
 
 		public void Clear()
