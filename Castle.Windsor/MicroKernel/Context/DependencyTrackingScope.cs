@@ -25,8 +25,7 @@ namespace Castle.MicroKernel.Context
 		private readonly DependencyModel dependencyTrackingKey;
 		private readonly DependencyModelCollection dependencies;
 
-		public DependencyTrackingScope(CreationContext creationContext, ComponentModel model, MemberInfo info,
-		                               DependencyModel dependencyModel)
+		public DependencyTrackingScope(CreationContext creationContext, ComponentModel model, MemberInfo info, DependencyModel dependencyModel)
 		{
 			if (dependencyModel.TargetItemType == typeof(IKernel))
 			{
