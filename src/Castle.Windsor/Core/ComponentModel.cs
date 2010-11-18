@@ -229,6 +229,15 @@ namespace Castle.Core
 			set { extended = value; }
 		}
 
+		public bool HasCustomDependencies
+		{
+			get
+			{
+				var dependencies = customDependencies;
+				return dependencies != null && dependencies.Count > 0;
+			}
+		}
+
 		public bool HasInterceptors
 		{
 			get

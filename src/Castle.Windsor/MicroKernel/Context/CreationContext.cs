@@ -112,7 +112,10 @@ namespace Castle.MicroKernel.Context
 				return;
 			}
 			resolutionStack = parent.resolutionStack;
-			dependencies.AddRange(parent.Dependencies);
+			if(parent.dependencies != null && parent.dependencies.HasDependencies)
+			{
+				dependencies.AddRange(parent.dependencies);
+			}
 			foreach (var handlerItem in parent.handlerStack)
 			{
 				handlerStack.Push(handlerItem);

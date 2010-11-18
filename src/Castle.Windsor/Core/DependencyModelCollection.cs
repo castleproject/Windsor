@@ -26,6 +26,15 @@ namespace Castle.Core
 	{
 		private readonly List<DependencyModel> dependencies = new List<DependencyModel>(8);
 
+		public DependencyModelCollection()
+		{
+		}
+
+		public bool HasDependencies
+		{
+			get { return dependencies.Count > 0; }
+		}
+
 		public void Add(DependencyModel dependencyModel)
 		{
 			if (dependencyModel == null)
