@@ -56,8 +56,8 @@ namespace Castle.Core
 			}
 			else
 			{
-				var constructorParamCount = item.Constructor.GetParameters().Length;
-				var fewerArgumentsCount = fewerArgumentsCandidate.Constructor.GetParameters().Length;
+				var constructorParamCount = item.Dependencies.Length;
+				var fewerArgumentsCount = fewerArgumentsCandidate.Dependencies.Length;
 
 				if (constructorParamCount < fewerArgumentsCount)
 				{

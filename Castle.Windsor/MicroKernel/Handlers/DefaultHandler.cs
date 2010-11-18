@@ -24,9 +24,7 @@ namespace Castle.MicroKernel.Handlers
 	/// <summary>
 	/// Summary description for DefaultHandler.
 	/// </summary>
-#if !SILVERLIGHT
 	[Serializable]
-#endif
 	public class DefaultHandler : AbstractHandler
 	{
 		/// <summary>
