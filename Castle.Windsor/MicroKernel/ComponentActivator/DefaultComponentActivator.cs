@@ -86,13 +86,12 @@ namespace Castle.MicroKernel.ComponentActivator
 		{
 			var candidate = SelectEligibleConstructor(context);
 
-			Type[] signature;
-			var arguments = CreateConstructorArguments(candidate, context, out signature);
+			var arguments = CreateConstructorArguments(candidate, context);
 
-			return CreateInstance(context, arguments, signature);
+			return CreateInstance(context, candidate, arguments);
 		}
 
-		protected virtual object CreateInstance(CreationContext context, object[] arguments, Type[] signature)
+		protected virtual object CreateInstance(CreationContext context, ConstructorCandidate constructor, object[] arguments)
 		{
 			object instance = null;
 
@@ -125,7 +124,7 @@ namespace Castle.MicroKernel.ComponentActivator
 #else
 					if (useFastCreateInstance)
 					{
-						instance = FastCreateInstance(implType, arguments, signature);
+						instance = FastCreateInstance(implType, arguments, constructor);
 					}
 					else
 					{
@@ -174,28 +173,18 @@ namespace Castle.MicroKernel.ComponentActivator
 #if DOTNET40
 		[SecuritySafeCritical]
 #endif
-		private static object FastCreateInstance(Type implType, object[] arguments, Type[] signature)
+		private static object FastCreateInstance(Type implType, object[] arguments, ConstructorCandidate constructor)
 		{
-			// otherwise GetConstructor wil blow up instead of returning null
-			if (signature == null)
-			{
-				signature = new Type[0];
-			}
-
-			var cinfo = implType.GetConstructor(
-				BindingFlags.Public | BindingFlags.Instance, null, signature, null);
-
-			if (cinfo == null)
+			if (constructor == null || constructor.Constructor == null)
 			{
 				throw new ComponentActivatorException(
 					string.Format(
 						"Could not find a public constructor for type {0}. Windsor can not instantiate types that don't expose public constructors. To expose the type as a service add public constructor, or use custom component activator.",
 						implType));
 			}
-
 			var instance = System.Runtime.Serialization.FormatterServices.GetUninitializedObject(implType);
 
-			cinfo.Invoke(instance, arguments);
+			constructor.Constructor.Invoke(instance, arguments);
 			return instance;
 		}
 #endif
@@ -304,17 +293,14 @@ namespace Castle.MicroKernel.ComponentActivator
 			return Kernel.Resolver.CanResolve(context, context.Handler, Model, dep);
 		}
 
-		protected virtual object[] CreateConstructorArguments(
-			ConstructorCandidate constructor, CreationContext context, out Type[] signature)
+		protected virtual object[] CreateConstructorArguments(ConstructorCandidate constructor, CreationContext context)
 		{
-			signature = null;
-
 			if (constructor == null)
 			{
 				return null;
 			}
 
-			var arguments = new object[constructor.Constructor.GetParameters().Length];
+			var arguments = new object[constructor.Dependencies.Length];
 			if (arguments.Length == 0)
 			{
 				return null;
@@ -322,8 +308,7 @@ namespace Castle.MicroKernel.ComponentActivator
 
 			try
 			{
-				signature = new Type[arguments.Length];
-				CreateConstructorArgumentsCore(constructor, arguments, context, signature);
+				CreateConstructorArgumentsCore(constructor, arguments, context);
 			}
 			catch
 			{
@@ -341,19 +326,17 @@ namespace Castle.MicroKernel.ComponentActivator
 			return arguments;
 		}
 
-		private void CreateConstructorArgumentsCore(ConstructorCandidate constructor, object[] arguments,
-		                                            CreationContext context, Type[] signature)
+		private void CreateConstructorArgumentsCore(ConstructorCandidate constructor, object[] arguments, CreationContext context)
 		{
-			var index = 0;
-			foreach (var dependency in constructor.Dependencies)
+			for (int i = 0; i < constructor.Dependencies.Length; i++)
 			{
+				var dependency = constructor.Dependencies[i];
 				object value;
 				using (new DependencyTrackingScope(context, Model, constructor.Constructor, dependency))
 				{
 					value = Kernel.Resolver.Resolve(context, context.Handler, Model, dependency);
 				}
-				arguments[index] = value;
-				signature[index++] = dependency.TargetType;
+				arguments[i] = value;
 			}
 		}
 

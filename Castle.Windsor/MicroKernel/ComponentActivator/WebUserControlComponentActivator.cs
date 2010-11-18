@@ -17,6 +17,7 @@
 namespace Castle.MicroKernel.ComponentActivator
 {
 	using System;
+	using System.Reflection;
 	using System.Web;
 	using System.Web.UI;
 	using Castle.Core;
@@ -65,10 +66,10 @@ namespace Castle.MicroKernel.ComponentActivator
 		/// Creates the instance.
 		/// </summary>
 		/// <param name="context">The context.</param>
+		/// <param name="constructor"></param>
 		/// <param name="arguments">The arguments.</param>
-		/// <param name="signature">The signature.</param>
 		/// <returns></returns>
-		protected override object CreateInstance(CreationContext context, object[] arguments, Type[] signature)
+		protected override object CreateInstance(CreationContext context, ConstructorCandidate constructor, object[] arguments)
 		{
 			object instance = null;
 
