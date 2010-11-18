@@ -17,6 +17,7 @@ namespace Castle.Windsor.Tests
 	using Castle.Core;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Context;
+	using Castle.MicroKernel.Handlers;
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Resolvers;
 	using NUnit.Framework;
@@ -87,7 +88,10 @@ namespace Castle.Windsor.Tests
 			public bool CanResolve(CreationContext context, ISubDependencyResolver contextHandlerResolver, ComponentModel model,
 			                       DependencyModel dependency)
 			{
-				return dependency.TargetType == typeof(IBookStore);
+				return dependency.TargetType == typeof(IBookStore) && contextHandlerResolver.CanResolve(context, contextHandlerResolver, model,
+				                                                                                        new DependencyModel(DependencyType.Service,
+				                                                                                                            typeof(IBookStore).FullName,
+				                                                                                                            typeof(IBookStore), false));
 			}
 		}
 
@@ -106,7 +110,7 @@ namespace Castle.Windsor.Tests
 		}
 
 		[Test]
-		[ExpectedException(typeof(DependencyResolverException))]
+		[ExpectedException(typeof(HandlerException))]
 		public void UsingGoodResolver()
 		{
 			IWindsorContainer container = new WindsorContainer();

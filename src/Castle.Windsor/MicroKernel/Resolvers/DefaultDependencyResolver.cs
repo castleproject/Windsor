@@ -88,8 +88,7 @@ namespace Castle.MicroKernel.Resolvers
 		/// <returns>
 		///   <c>true</c>
 		///   if the dependency can be satisfied</returns>
-		public bool CanResolve(CreationContext context, ISubDependencyResolver contextHandlerResolver, ComponentModel model,
-		                       DependencyModel dependency)
+		public bool CanResolve(CreationContext context, ISubDependencyResolver contextHandlerResolver, ComponentModel model, DependencyModel dependency)
 		{
 			// 1 - check for the dependency on CreationContext, if present
 

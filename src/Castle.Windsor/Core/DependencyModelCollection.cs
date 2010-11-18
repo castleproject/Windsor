@@ -24,11 +24,7 @@ namespace Castle.Core
 	[Serializable]
 	public class DependencyModelCollection : IEnumerable<DependencyModel>
 	{
-		private readonly List<DependencyModel> dependencies = new List<DependencyModel>(8);
-
-		public DependencyModelCollection()
-		{
-		}
+		private readonly List<DependencyModel> dependencies = new List<DependencyModel>();
 
 		public bool HasDependencies
 		{
