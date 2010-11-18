@@ -18,8 +18,6 @@ namespace Castle.MicroKernel
 	using System.Collections;
 	using System.Collections.Generic;
 	using System.Diagnostics;
-	using System.Linq;
-	using System.Runtime.CompilerServices;
 	using System.Runtime.Serialization;
 	using System.Security;
 
@@ -49,8 +47,7 @@ namespace Castle.MicroKernel
 #if !SILVERLIGHT
 	[Serializable]
 	[DebuggerTypeProxy(typeof(KernelDebuggerProxy))]
-	public partial class DefaultKernel : MarshalByRefObject, IKernel, IKernelEvents, IKernelInternal,
-	                                     IDeserializationCallback, IKernelEventsInternal
+	public partial class DefaultKernel : MarshalByRefObject, IKernel, IKernelEvents, IKernelInternal, IKernelEventsInternal
 #else
 	public partial class DefaultKernel : IKernel, IKernelEvents, IKernelInternal, IKernelEventsInternal
 #endif
@@ -102,6 +99,8 @@ namespace Castle.MicroKernel
 		///   disposal that the user forgot.
 		/// </summary>
 		private IReleasePolicy releasePolicy;
+
+		private readonly object lazyLoadingLock = new object();
 
 		/// <summary>
 		///   Constructs a DefaultKernel with no component
@@ -731,7 +730,7 @@ namespace Castle.MicroKernel
 		///<param name = "serviceType">An object that specifies the type of service object to get. </param>
 		public object GetService(Type serviceType)
 		{
-			if ((this as IKernelInternal).LazyLoadComponentByType(null, serviceType, null) == false)
+			if ((this as IKernelInternal).LazyLoadComponentByType(null, serviceType, null) == null)
 			{
 				return null;
 			}
@@ -903,33 +902,6 @@ namespace Castle.MicroKernel
 			RaiseHandlersChanged();
 		}
 
-		private bool LazyLoad(string key, Type service, IDictionary arguments)
-		{
-			if (isCheckingLazyLoaders)
-			{
-				return false;
-			}
-
-			isCheckingLazyLoaders = true;
-			try
-			{
-				foreach (var loader in ResolveAll<ILazyComponentLoader>())
-				{
-					var registration = loader.Load(key, service, arguments);
-					if (registration != null)
-					{
-						registration.Register(this);
-						return true;
-					}
-				}
-				return false;
-			}
-			finally
-			{
-				isCheckingLazyLoaders = false;
-			}
-		}
-
 		private void SubscribeToParentKernel()
 		{
 			if (parentKernel == null)
@@ -962,43 +934,97 @@ namespace Castle.MicroKernel
 			parentKernel.ComponentRegistered -= RaiseComponentRegistered;
 		}
 
-#if !SILVERLIGHT
-		void IDeserializationCallback.OnDeserialization(object sender)
-		{
-			// NOTE: It's pointless to have this method if it doesn't do anything, ain't it?
-		}
-#endif
-
-		[MethodImpl(MethodImplOptions.Synchronized)]
-		bool IKernelInternal.LazyLoadComponentByKey(string key, Type service, IDictionary arguments)
+		IHandler IKernelInternal.LazyLoadComponentByKey(string key, Type service, IDictionary arguments)
 		{
 			if (key == null)
 			{
 				throw new ArgumentNullException("key");
 			}
 
-			if (HasComponent(key))
+			var handler = GetHandler(key);
+			if(handler != null)
 			{
-				return true;
+				return handler;
 			}
+			lock(lazyLoadingLock)
+			{
+				handler = GetHandler(key);
+				if (handler != null)
+				{
+					return handler;
+				}
 
-			return LazyLoad(key, service, arguments);
+				if (isCheckingLazyLoaders)
+				{
+					return null;
+				}
+
+				isCheckingLazyLoaders = true;
+				try
+				{
+					foreach (var loader in ResolveAll<ILazyComponentLoader>())
+					{
+						var registration = loader.Load(key, service, arguments);
+						if (registration != null)
+						{
+							registration.Register(this);
+							return GetHandler(key);
+						}
+					}
+					return null;
+				}
+				finally
+				{
+					isCheckingLazyLoaders = false;
+				}
+			}
 		}
 
-		[MethodImpl(MethodImplOptions.Synchronized)]
-		bool IKernelInternal.LazyLoadComponentByType(string key, Type service, IDictionary arguments)
+		IHandler IKernelInternal.LazyLoadComponentByType(string key, Type service, IDictionary arguments)
 		{
 			if (service == null)
 			{
 				throw new ArgumentNullException("service");
 			}
 
-			if (HasComponent(service))
+			var handler = GetHandler(service);
+			if (handler != null)
 			{
-				return true;
+				return handler;
 			}
 
-			return LazyLoad(key, service, arguments);
+			lock (lazyLoadingLock)
+			{
+				handler = GetHandler(service);
+				if (handler != null)
+				{
+					return handler;
+				}
+
+				if (isCheckingLazyLoaders)
+				{
+					return null;
+				}
+
+				isCheckingLazyLoaders = true;
+				try
+				{
+					foreach (var loader in ResolveAll<ILazyComponentLoader>())
+					{
+						var registration = loader.Load(key, service, arguments);
+						if (registration != null)
+						{
+							registration.Register(this);
+							return GetHandler(service);
+						}
+					}
+					return null;
+				}
+				finally
+				{
+					isCheckingLazyLoaders = false;
+				}
+			}
 		}
 	}
 }

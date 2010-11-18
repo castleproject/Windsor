@@ -88,20 +88,11 @@ namespace Castle.MicroKernel.Handlers
 			{
 				
 				// a self-dependency is not allowed
-				var handler = Kernel.GetHandler(dependency.TargetItemType);
-				if (handler == this)
+				var handler = Kernel.LazyLoadComponentByType(dependency.DependencyKey, dependency.TargetItemType, context.AdditionalParameters);
+				if (handler == this || handler == null)
 				{
 					canResolveAll = false;
-					continue;
-				}
-				if(handler == null)
-				{
-					// ask the kernel
-					if (Kernel.LazyLoadComponentByType(dependency.DependencyKey, dependency.TargetItemType, context.AdditionalParameters) == false)
-					{
-						canResolveAll = false;
-						continue;
-					}
+					break;
 				}
 			}
 			return (canResolveAll && DependenciesByKey.Count == 0) || context.HasAdditionalParameters;

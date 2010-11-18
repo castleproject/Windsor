@@ -31,9 +31,9 @@ namespace Castle.MicroKernel
 		/// <returns></returns>
 		IComponentActivator CreateComponentActivator(ComponentModel model);
 
-		bool LazyLoadComponentByKey(string key, Type service, IDictionary arguments);
+		IHandler LazyLoadComponentByKey(string key, Type service, IDictionary arguments);
 
-		bool LazyLoadComponentByType(string key, Type service, IDictionary arguments);
+		IHandler LazyLoadComponentByType(string key, Type service, IDictionary arguments);
 
 		/// <summary>
 		/// Raise the handler registered event, required so

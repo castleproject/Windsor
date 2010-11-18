@@ -42,13 +42,12 @@ namespace Castle.MicroKernel
 			{
 				throw new ArgumentNullException("service");
 			}
-
-			if ((this as IKernelInternal).LazyLoadComponentByKey(key, service, null) == false)
+			var handler = (this as IKernelInternal).LazyLoadComponentByKey(key, service, null);
+			if (handler == null)
 			{
 				throw new ComponentNotFoundException(key);
 			}
 
-			var handler = GetHandler(key);
 			return ResolveComponent(handler, service);
 		}
 
@@ -70,12 +69,12 @@ namespace Castle.MicroKernel
 				throw new ArgumentNullException("service");
 			}
 
-			if ((this as IKernelInternal).LazyLoadComponentByKey(key, service, arguments) == false)
+			var handler = (this as IKernelInternal).LazyLoadComponentByKey(key, service, arguments);
+			if (handler == null)
 			{
 				throw new ComponentNotFoundException(key);
 			}
 
-			var handler = GetHandler(key);
 			return ResolveComponent(handler, service, arguments);
 		}
 
@@ -151,12 +150,12 @@ namespace Castle.MicroKernel
 				throw new ArgumentNullException("service");
 			}
 
-			if ((this as IKernelInternal).LazyLoadComponentByType(null, service, null) == false)
+			var handler = (this as IKernelInternal).LazyLoadComponentByType(null, service, null);
+			if (handler == null)
 			{
 				throw new ComponentNotFoundException(service);
 			}
 
-			var handler = GetHandler(service);
 			return ResolveComponent(handler, service);
 		}
 
@@ -178,12 +177,12 @@ namespace Castle.MicroKernel
 				throw new ArgumentNullException("arguments");
 			}
 
-			if ((this as IKernelInternal).LazyLoadComponentByType(null, service, arguments) == false)
+			var handler = (this as IKernelInternal).LazyLoadComponentByType(null, service, arguments);
+			if (handler == null)
 			{
 				throw new ComponentNotFoundException(service);
 			}
 
-			var handler = GetHandler(service);
 			return ResolveComponent(handler, service, arguments);
 		}
 
@@ -217,12 +216,12 @@ namespace Castle.MicroKernel
 				throw new ArgumentNullException("arguments");
 			}
 
-			if ((this as IKernelInternal).LazyLoadComponentByKey(key, null, arguments) == false)
+			var handler = (this as IKernelInternal).LazyLoadComponentByKey(key, null, arguments);
+			if (handler == null)
 			{
 				throw new ComponentNotFoundException(key);
 			}
 
-			var handler = GetHandler(key);
 			return ResolveComponent(handler, arguments);
 		}
 
