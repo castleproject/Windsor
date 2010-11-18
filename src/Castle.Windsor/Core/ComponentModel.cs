@@ -31,7 +31,9 @@ namespace Castle.Core
 	public sealed class ComponentModel : GraphNode
 	{
 		public const string SkipRegistration = "skip.registration";
+
 		private readonly ICollection<Type> interfaceServices = new HashSet<Type>();
+
 		private readonly object syncRoot = new object();
 
 		// Note the use of volatile for fields used in the double checked lock pattern.
@@ -42,7 +44,7 @@ namespace Castle.Core
 		/// <summary>
 		///   All available constructors
 		/// </summary>
-		private volatile ConstructorCandidateCollection constructors;
+		private volatile ConstructorCandidateCollection constructors = new ConstructorCandidateCollection();
 
 		/// <summary>
 		///   /// Custom dependencies///
@@ -69,7 +71,7 @@ namespace Castle.Core
 		/// <summary>
 		///   Steps of lifecycle
 		/// </summary>
-		private volatile LifecycleConcernsCollection lifecycle;
+		private volatile LifecycleConcernsCollection lifecycle = new LifecycleConcernsCollection();
 
 		/// <summary>
 		///   External parameters
@@ -90,7 +92,7 @@ namespace Castle.Core
 			Implementation = implementation;
 			LifestyleType = LifestyleType.Undefined;
 			InspectionBehavior = PropertiesInspectionBehavior.Undefined;
-			foreach (Type type in services)
+			foreach (var type in services)
 			{
 				AddService(type);
 			}
@@ -104,7 +106,7 @@ namespace Castle.Core
 				{
 					yield return classService;
 				}
-				foreach (Type interfaceService in interfaceServices)
+				foreach (var interfaceService in interfaceServices)
 				{
 					yield return interfaceService;
 				}
@@ -143,20 +145,7 @@ namespace Castle.Core
 		/// <value>The constructors.</value>
 		public ConstructorCandidateCollection Constructors
 		{
-			get
-			{
-				if (constructors == null)
-				{
-					lock (syncRoot)
-					{
-						if (constructors == null)
-						{
-							constructors = new ConstructorCandidateCollection();
-						}
-					}
-				}
-				return constructors;
-			}
+			get { return constructors; }
 		}
 
 		/// <summary>
@@ -240,6 +229,15 @@ namespace Castle.Core
 			set { extended = value; }
 		}
 
+		public bool HasInterceptors
+		{
+			get
+			{
+				var interceptorsLocal = interceptors;
+				return interceptorsLocal != null && interceptorsLocal.HasInterceptors;
+			}
+		}
+
 		/// <summary>
 		///   Gets or sets the component implementation.
 		/// </summary>
@@ -275,15 +273,6 @@ namespace Castle.Core
 			}
 		}
 
-		public bool HasInterceptors
-		{
-			get
-			{
-				var interceptorsLocal = interceptors;
-				return interceptorsLocal != null && interceptorsLocal.HasInterceptors;
-			}
-		}
-
 		/// <summary>
 		///   Gets or sets the service exposed.
 		/// </summary>
@@ -299,20 +288,7 @@ namespace Castle.Core
 		/// <value>The lifecycle steps.</value>
 		public LifecycleConcernsCollection Lifecycle
 		{
-			get
-			{
-				if (lifecycle == null)
-				{
-					lock (syncRoot)
-					{
-						if (lifecycle == null)
-						{
-							lifecycle = new LifecycleConcernsCollection();
-						}
-					}
-				}
-				return lifecycle;
-			}
+			get { return lifecycle; }
 		}
 
 		/// <summary>
@@ -403,7 +379,7 @@ namespace Castle.Core
 		/// <param name = "selectors">The property selector.</param>
 		public void Requires(params Predicate<PropertySet>[] selectors)
 		{
-			foreach (PropertySet property in Properties)
+			foreach (var property in Properties)
 			{
 				foreach (var select in selectors)
 				{
