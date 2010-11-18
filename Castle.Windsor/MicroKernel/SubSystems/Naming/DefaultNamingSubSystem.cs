@@ -11,7 +11,6 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
 namespace Castle.MicroKernel.SubSystems.Naming
 {
 	using System;
@@ -37,8 +36,6 @@ namespace Castle.MicroKernel.SubSystems.Naming
 
 		protected readonly Lock @lock = Lock.Create();
 
-		protected readonly IList<IHandlerSelector> selectors = new List<IHandlerSelector>();
-
 		/// <summary>
 		///   Map(Type, IHandler) to map a service
 		///   to <see cref = "IHandler" />.
@@ -48,6 +45,8 @@ namespace Castle.MicroKernel.SubSystems.Naming
 		///   a type.
 		/// </summary>
 		protected readonly IDictionary<Type, IHandler> service2Handler = new Dictionary<Type, IHandler>();
+
+		protected IList<IHandlerSelector> selectors;
 
 		private readonly IDictionary<Type, IHandler[]> assignableHandlerListsByTypeCache = new Dictionary<Type, IHandler[]>();
 		private readonly IDictionary<Type, IHandler[]> handlerListsByTypeCache = new Dictionary<Type, IHandler[]>();
@@ -66,6 +65,10 @@ namespace Castle.MicroKernel.SubSystems.Naming
 
 		public void AddHandlerSelector(IHandlerSelector selector)
 		{
+			if (selectors == null)
+			{
+				selectors = new List<IHandlerSelector>();
+			}
 			selectors.Add(selector);
 		}
 
@@ -255,6 +258,10 @@ namespace Castle.MicroKernel.SubSystems.Naming
 
 		protected virtual IHandler GetSelectorsOpinion(string key, Type type)
 		{
+			if (selectors == null)
+			{
+				return null;
+			}
 			type = type ?? typeof(object); // if type is null, we want everything, so object does well for that
 			IHandler[] handlers = null; //only init if we have a selector with an opinion about this type
 			foreach (var selector in selectors)
