@@ -392,15 +392,14 @@ namespace Castle.MicroKernel.Handlers
 			}
 		}
 
-		public virtual bool CanResolve(CreationContext context, ISubDependencyResolver contextHandlerResolver,
-		                               ComponentModel model, DependencyModel dependency)
+		public virtual bool CanResolve(CreationContext context, ISubDependencyResolver contextHandlerResolver, ComponentModel model, DependencyModel dependency)
 		{
 			return HasCustomParameter(dependency.DependencyKey) || HasCustomParameter(dependency.TargetItemType);
 		}
 
-		public virtual object Resolve(CreationContext context, ISubDependencyResolver contextHandlerResolver,
-		                              ComponentModel model, DependencyModel dependency)
+		public virtual object Resolve(CreationContext context, ISubDependencyResolver contextHandlerResolver, ComponentModel model, DependencyModel dependency)
 		{
+			Debug.Assert(CanResolve(context, contextHandlerResolver, model, dependency), "CanResolve(context, contextHandlerResolver, model, dependency)");
 			if (HasCustomParameter(dependency.DependencyKey))
 			{
 				return customParameters[dependency.DependencyKey];
@@ -901,6 +900,10 @@ namespace Castle.MicroKernel.Handlers
 
 		private void InitializeCustomDependencies()
 		{
+			if(model.HasCustomDependencies == false)
+			{
+				return;
+			}
 			customParameters = new Arguments();
 			foreach (DictionaryEntry customParameter in model.CustomDependencies)
 			{
