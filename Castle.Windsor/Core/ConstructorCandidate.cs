@@ -32,7 +32,7 @@ namespace Castle.Core
 		/// </summary>
 		/// <param name="constructorInfo">The constructor info.</param>
 		/// <param name="dependencies">The dependencies.</param>
-		public ConstructorCandidate(ConstructorInfo constructorInfo, params DependencyModel[] dependencies)
+		public ConstructorCandidate(ConstructorInfo constructorInfo, DependencyModel[] dependencies)
 		{
 			this.constructorInfo = constructorInfo;
 			this.dependencies = dependencies;
