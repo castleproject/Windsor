@@ -158,6 +158,7 @@
     <Compile Include="Components\Web\SessionWebModule.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="StatelessSessionDelegate.cs" />
     <Compile Include="Util\FieldInfoCollection.cs">
       <SubType>Code</SubType>
     </Compile>
