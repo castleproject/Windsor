@@ -190,6 +190,7 @@
     <Compile Include="Common\TestInterceptor.cs" />
     <Compile Include="Components\NHibernateGenericDaoTestCase.cs" />
     <Compile Include="Components\ReflectionUtilityTests.cs" />
+    <Compile Include="FacilityFluentConfigTestCase.cs" />
     <Compile Include="Internals\ConfigurationBuilderTestCase.cs" />
     <Compile Include="Internals\CustomConfigurationBuilderTestCase.cs" />
     <Compile Include="Internals\SessionManagerTestCase.cs">
@@ -326,6 +327,9 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="invalidConfigurationBuilder.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="MinimalConfiguration.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(RootPath)\Settings.proj" />
