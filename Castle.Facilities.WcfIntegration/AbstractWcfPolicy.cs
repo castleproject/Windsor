@@ -24,7 +24,7 @@ namespace Castle.Facilities.WcfIntegration
 	{
 		public AbstractWcfPolicy()
 		{
-			ExecutionOrder = Int32.MaxValue;
+			ExecutionOrder = Int32.MaxValue / 2;
 		}
 
 		public int ExecutionOrder { get; set; }

@@ -116,13 +116,15 @@
     <Compile Include="Client\AbstractChannelBuilder.Generic.cs" />
     <Compile Include="Behaviors\ServiceEndpointExtensions.cs" />
     <Compile Include="Client\AbstractChannelFactoryBuilder.cs" />
+    <Compile Include="Client\AdHocChannelFactoryAware.cs" />
+    <Compile Include="Client\AdHocChannelFactoryAwareExtensions.cs" />
     <Compile Include="Client\Async\TypeSystem\AttributeHelpers.cs" />
     <Compile Include="Client\Discovery\DiscoveredEndpointMetadata.cs" />
     <Compile Include="Client\IWcfClientFactory.cs" />
-    <Compile Include="Client\Policies\ChannelReconnectPolicy.cs" />
-    <Compile Include="Client\Policies\IChannelActionPolicy.cs" />
-    <Compile Include="Client\Policies\IRefreshChannelPolicy.cs" />
+    <Compile Include="Client\Policies\ChannelInvocation.cs" />
     <Compile Include="Client\Policies\IWcfChannelPolicy.cs" />
+    <Compile Include="Client\Policies\ReconnectChannelPolicy.cs" />
+    <Compile Include="Client\Policies\RefreshChannelPolicy.cs" />
     <Compile Include="Client\Proxy\IWcfChannelHolder.cs" />
     <Compile Include="Client\Proxy\WcfProxyFactory.cs" />
     <Compile Include="Client\Async\WcfAsync.cs" />
@@ -171,6 +173,8 @@
     <Compile Include="Lifestyles\AbstractWcfLifestyleManager.cs" />
     <Compile Include="Client\WcfClientComponentLoader.cs" />
     <Compile Include="Internal\WcfBehaviorInspector.cs" />
+    <Compile Include="Service\AdHocServiceHostAware.cs" />
+    <Compile Include="Service\AdHocServiceHostAwareExtensions.cs" />
     <Compile Include="WcfContextChannel.cs" />
     <Compile Include="Client\IChannelFactoryAware.cs" />
     <Compile Include="IWcfBurden.cs" />

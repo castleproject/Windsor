@@ -22,16 +22,11 @@ namespace Castle.Facilities.WcfIntegration.Proxy
 
 	public class WcfRemotingInterceptor : IWcfInterceptor
 	{
-		private readonly WcfClientExtension clients;
+		private readonly IWcfChannelPolicy[] pipeline;
 
-		public WcfRemotingInterceptor(WcfClientExtension clients)
+		public WcfRemotingInterceptor(WcfClientExtension clients, IWcfChannelHolder channelHolder)
 		{
-			this.clients = clients;
-		}
-
-		public WcfClientExtension Clients
-		{
-			get { return clients; }
+			pipeline = CreateChannelPipeline(clients, channelHolder);
 		}
 
 		public void Intercept(IInvocation invocation)
@@ -43,8 +38,6 @@ namespace Castle.Facilities.WcfIntegration.Proxy
 				throw new ArgumentException("The given Proxy is not valid WCF dynamic proxy.");
 			}
 
-			ApplyRefreshPolicy(invocation, channelHolder);
-
 			PerformInvocation(invocation, channelHolder);
 		}
 
@@ -52,19 +45,16 @@ namespace Castle.Facilities.WcfIntegration.Proxy
 		{
 			Action sendAction = () =>
 			{
-				var proxy = channelHolder.RealProxy;
+				var realProxy = channelHolder.RealProxy;
 				var message = new MethodCallMessage(invocation.Method, invocation.Arguments);
-				var returnMessage = (IMethodReturnMessage)proxy.Invoke(message);
-
+				var returnMessage = (IMethodReturnMessage)realProxy.Invoke(message);
 				if (returnMessage.Exception != null)
 				{
 					throw returnMessage.Exception;
 				}
-
 				invocation.ReturnValue = returnMessage.ReturnValue;
 			};
-
-			ApplyActionPolicy(channelHolder, invocation, sendAction);
+			InvokeChannelPipeline(invocation, channelHolder, sendAction);
 		}
 
 		bool IWcfInterceptor.Handles(MethodInfo method)
@@ -77,55 +67,39 @@ namespace Castle.Facilities.WcfIntegration.Proxy
 			return true;
 		}
 
-		protected void ApplyRefreshPolicy(IInvocation invocation, IWcfChannelHolder channelHolder)
+		protected void InvokeChannelPipeline(IInvocation invocation, IWcfChannelHolder channelHolder, Action action)
 		{
-			if (channelHolder.IsChannelUsable)
+			if (pipeline == null)
 			{
-				return;
+				action();
 			}
-
-			var hasCustomRefreshPolicy = false;
-			var channelBurden = channelHolder.ChannelBurden;
-
-			foreach (var refreshPolicy in channelBurden.Dependencies
-				.OfType<IRefreshChannelPolicy>().OrderBy(p => p.ExecutionOrder))
+			else
 			{
-				refreshPolicy.WantsToUseUnusableChannel(channelHolder, invocation.Method);
-				hasCustomRefreshPolicy = true;
-			}
-
-			if (!hasCustomRefreshPolicy)
-			{
-				channelHolder.RefreshChannel();
+				InvokeChannelPipeline(0, new ChannelInvocation(invocation, channelHolder), action);
 			}
 		}
 
-		protected void ApplyActionPolicy(IWcfChannelHolder channelHolder, IInvocation invocation, Action action)
+		private void InvokeChannelPipeline(int policyIndex, ChannelInvocation invocation, Action action)
 		{
-			bool actionPolicyApplied = false;
-			var channelBurden = channelHolder.ChannelBurden;
-
-			foreach (var actionPolicy in channelBurden.Dependencies
-				.OfType<IChannelActionPolicy>().OrderBy(p => p.ExecutionOrder))
+			int nextIndex;
+			if (policyIndex >= pipeline.Length)
 			{
-				if (actionPolicy.Perform(channelHolder, invocation.Method, action))
-				{
-					actionPolicyApplied = true;
-					break;
-				}
+				action();
 			}
-
-			if (!actionPolicyApplied)
+			else
 			{
-				if (clients.DefaultChannelPolicy != null)
-				{
-					clients.DefaultChannelPolicy.Perform(channelHolder, invocation.Method, action);
-				}
-				else
-				{
-					action();
-				}
+				nextIndex = policyIndex + 1;
+				invocation.SetProceedDelegate(() => InvokeChannelPipeline(nextIndex, invocation, action));
+				pipeline[policyIndex].Intercept(invocation);
 			}
+		}
+
+		private static IWcfChannelPolicy[] CreateChannelPipeline(WcfClientExtension clients, IWcfChannelHolder channelHolder)
+		{
+			var policies = channelHolder.ChannelBurden.Dependencies.OfType<IWcfChannelPolicy>()
+				.OrderBy(policy => policy.ExecutionOrder).ToArray();
+
+			return (policies.Length == 0) ? clients.DefaultChannelPolicy.ToArray() : policies;
 		}
 	}
 }

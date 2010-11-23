@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Facilities.WcfIntegration.Service
+namespace Castle.Facilities.WcfIntegration
 {
 	using System.ServiceModel;
 

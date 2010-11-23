@@ -17,7 +17,6 @@ namespace Castle.Facilities.WcfIntegration.Tests.Behaviors
 {
 	using System.Collections.Generic;
 	using System.ServiceModel;
-	using Castle.Facilities.WcfIntegration.Client;
 
 	public class ChannelFactoryListener : AbstractChannelFactoryAware
 	{

@@ -67,7 +67,7 @@ namespace Castle.Facilities.WcfIntegration.Proxy
 			var proxyOptions = ProxyUtil.ObtainProxyOptions(model, true);
 			var generationOptions = CreateProxyGenerationOptions(model.Service, proxyOptions, kernel, context);
 			var additionalInterfaces = GetInterfaces(model.Service, proxyOptions, isDuplex);
-			var interceptors = GetInterceptors(kernel, model, context);
+			var interceptors = GetInterceptors(kernel, model, channelHolder, context);
 
 			return generator.CreateInterfaceProxyWithTarget(typeof(IWcfChannelHolder),
 				additionalInterfaces, channelHolder, generationOptions, interceptors);
@@ -78,7 +78,7 @@ namespace Castle.Facilities.WcfIntegration.Proxy
 			return true;
 		}
 
-		protected bool IsDuplex(object realProxy)
+		protected static bool IsDuplex(object realProxy)
 		{
 			var typeInfo = (IRemotingTypeInfo)realProxy;
 			return typeInfo.CanCastTo(typeof(IDuplexContextChannel), null);
@@ -100,7 +100,7 @@ namespace Castle.Facilities.WcfIntegration.Proxy
 			return additionalInterfaces;
 		}
 
-		private IInterceptor[] GetInterceptors(IKernel kernel, ComponentModel model, CreationContext context)
+		private IInterceptor[] GetInterceptors(IKernel kernel, ComponentModel model,IWcfChannelHolder channelHolder, CreationContext context)
 		{
 			var interceptors = ObtainInterceptors(kernel, model, context);
 
@@ -109,13 +109,13 @@ namespace Castle.Facilities.WcfIntegration.Proxy
 			Array.Resize(ref interceptors, interceptors.Length + (clientModel.WantsAsyncCapability ? 2 : 1));
 			int index = interceptors.Length;
 
-			interceptors[--index] = new WcfRemotingInterceptor(clients);
+			interceptors[--index] = new WcfRemotingInterceptor(clients, channelHolder);
 
 			if (clientModel.WantsAsyncCapability)
 			{
 				var getAsyncType = WcfUtils.SafeInitialize(ref asyncType,
 					() => AsyncType.GetAsyncType(model.Service));
-				interceptors[--index] = new WcfRemotingAsyncInterceptor(getAsyncType, clients);
+				interceptors[--index] = new WcfRemotingAsyncInterceptor(getAsyncType, clients, channelHolder);
 			}
 
 			return interceptors;
@@ -129,9 +129,7 @@ namespace Castle.Facilities.WcfIntegration.Proxy
 					"Support for mixins is not yet implemented. How about contributing a patch?");
 			}
 
-			IInterceptorSelector userProvidedSelector = null;
-			if (proxyOptions.Selector != null)
-				userProvidedSelector = proxyOptions.Selector.Resolve(kernel, context);
+			var userProvidedSelector = (proxyOptions.Selector != null) ? proxyOptions.Selector.Resolve(kernel, context) : null;
 
 			var proxyGenOptions = new ProxyGenerationOptions(wcfProxyGenerationHook)
 			{

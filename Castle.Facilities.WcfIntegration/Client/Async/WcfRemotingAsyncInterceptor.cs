@@ -28,8 +28,8 @@ namespace Castle.Facilities.WcfIntegration.Async
 		[ThreadStatic]
 		private static AsyncWcfCallContext callContext;
 
-		public WcfRemotingAsyncInterceptor(AsyncType asyncType, WcfClientExtension clients)
-			: base(clients)
+		public WcfRemotingAsyncInterceptor(AsyncType asyncType, WcfClientExtension clients, IWcfChannelHolder channelHolder)
+			: base(clients, channelHolder)
 		{
 			this.asyncType = asyncType;
 		}
@@ -66,30 +66,33 @@ namespace Castle.Facilities.WcfIntegration.Async
 			var context = callContext;
 			callContext = null;
 
-			CallBeginMethod(invocation, context);
+			CallBeginMethod(invocation, context, channelHolder);
 		}
 
-		private void CallBeginMethod(IInvocation invocation, AsyncWcfCallContext context)
+		private void CallBeginMethod(IInvocation invocation, AsyncWcfCallContext context, IWcfChannelHolder channelHolder)
 		{
 			context.Init(invocation.Method, invocation.Arguments);
-
-			Action beginAction = () =>
+			Action action = () =>
 			{
 				var message = context.CreateBeginMessage();
 				var returnMessage = context.ChannelHolder.RealProxy.Invoke(message) as IMethodReturnMessage;
 				invocation.ReturnValue = context.PostProcess(returnMessage);
 			};
+			InvokeChannelPipeline(invocation, channelHolder, action);
+		}
 
-			ApplyActionPolicy(context.ChannelHolder, invocation, beginAction);
+		public void EndCall(AsyncWcfCallContext context, out object[] outs)
+		{
+			CallEndMethod(context, out outs);
 		}
 
 		public TResult EndCall<TResult>(AsyncWcfCallContext context, out object[] outs)
-		{
+		{	
 			var returnMessage = CallEndMethod(context, out outs);
 			return (TResult) returnMessage.ReturnValue;
 		}
 
-		private IMethodReturnMessage CallEndMethod(AsyncWcfCallContext context, out object[] outs)
+		private static IMethodReturnMessage CallEndMethod(AsyncWcfCallContext context, out object[] outs)
 		{
 			outs = new object[0];
 			var message = context.CreateEndMessage();
@@ -102,11 +105,6 @@ namespace Castle.Facilities.WcfIntegration.Async
 
 			outs = message.OutArgs;
 			return returnMessage;
-		}
-
-		public void EndCall(AsyncWcfCallContext context, out object[] outs)
-		{
-			CallEndMethod(context, out outs);
 		}
 	}
 }

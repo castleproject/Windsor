@@ -21,7 +21,6 @@ namespace Castle.Facilities.WcfIntegration.Behaviors
 	using System.ServiceModel;
 	using System.ServiceModel.Description;
 	using System.ServiceModel.Security;
-	using Castle.Facilities.WcfIntegration.Client;
 	
 	public abstract class AbstractCredentials : AbstractChannelFactoryAware
 	{

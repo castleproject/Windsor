@@ -15,7 +15,6 @@
 namespace Castle.Facilities.WcfIntegration.Tests.Behaviors
 {
 	using System.ServiceModel;
-	using Castle.Facilities.WcfIntegration.Service;
 
 	public class CaptureServiceHost : AbstractServiceHostAware
 	{

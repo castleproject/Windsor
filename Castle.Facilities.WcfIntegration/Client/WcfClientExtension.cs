@@ -39,9 +39,12 @@ namespace Castle.Facilities.WcfIntegration
 		private IKernel kernel;
 		private readonly ProxyGenerator proxyGenerator = new ProxyGenerator();
 
+		private static readonly IWcfChannelPolicy[] ReconnectChannelPolicy = 
+			new IWcfChannelPolicy[] { new RefreshChannelPolicy(), new ReconnectChannelPolicy() };
+
 		public WcfClientExtension()
 		{
-			DefaultChannelPolicy = new ChannelReconnectPolicy();
+			DefaultChannelPolicy = ReconnectChannelPolicy;
 		}
 
 		public TimeSpan? CloseTimeout
@@ -56,7 +59,7 @@ namespace Castle.Facilities.WcfIntegration
 			set { defaultBinding = value; }
 		}
 
-		public IChannelActionPolicy DefaultChannelPolicy { get; set; }
+		public IEnumerable<IWcfChannelPolicy> DefaultChannelPolicy { get; set; }
 
 		internal ProxyGenerator ProxyGenerator
 		{
@@ -118,10 +121,10 @@ namespace Castle.Facilities.WcfIntegration
 			}
 		}
 
-		internal void Init(WcfFacility facility)
+		internal void Init(IKernel kernel, WcfFacility facility)
 		{
+			this.kernel = kernel;
 			this.facility = facility;
-			kernel = facility.Kernel;
 
 			AddDefaultChannelBuilders();
 			AddDefaultBindingPolicies();

@@ -19,7 +19,6 @@ namespace Castle.Facilities.WcfIntegration
 	using System.ServiceModel;
 	using System.ServiceModel.Channels;
 	using System.ServiceModel.Description;
-	using Castle.Facilities.WcfIntegration.Service;
 
 	public class WcfMetadataExtension : AbstractServiceHostAware
 	{

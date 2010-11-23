@@ -16,7 +16,6 @@ namespace Castle.Facilities.WcfIntegration.Behaviors
 {
 	using System.ServiceModel;
 	using System.ServiceModel.Description;
-	using Castle.Facilities.WcfIntegration.Service;
 
 	public class CustomPrincipalAuthorization : AbstractServiceHostAware
 	{

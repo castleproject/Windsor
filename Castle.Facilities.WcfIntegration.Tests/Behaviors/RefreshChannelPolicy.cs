@@ -14,18 +14,18 @@
 
 namespace Castle.Facilities.WcfIntegration.Tests.Behaviors
 {
-	using System.Reflection;
-
-	public class RefreshChannelPolicy : AbstractWcfPolicy, IRefreshChannelPolicy
+	public class RefreshChannelPolicy : AbstractWcfPolicy, IWcfChannelPolicy
 	{
 		public bool Refresh { get; set; }
 
-		public void WantsToUseUnusableChannel(IWcfChannelHolder channelHolder, MethodInfo method)
+		public void Intercept(ChannelInvocation invocation)
 		{
 			if (Refresh)
 			{
-				channelHolder.RefreshChannel();
+				invocation.Refresh();
 			}
+
+			invocation.Proceed();
 		}
 	}
 }

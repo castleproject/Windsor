@@ -44,7 +44,7 @@ namespace Castle.Facilities.WcfIntegration
 			get { return serviceExtension; }
 		}
 
-		public override void Dispose()
+		protected override void Dispose()
 		{
 			base.Dispose();
 
@@ -54,8 +54,8 @@ namespace Castle.Facilities.WcfIntegration
 
 		protected override void Init()
 		{
-			clientExtension.Init(this);
-			serviceExtension.Init(this);
+			clientExtension.Init(Kernel, this);
+			serviceExtension.Init(Kernel, this);
 
 			Kernel.Register(
 				Component.For<WcfClientExtension>().Instance(clientExtension),

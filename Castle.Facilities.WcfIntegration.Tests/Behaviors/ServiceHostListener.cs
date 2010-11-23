@@ -14,9 +14,7 @@
 
 namespace Castle.Facilities.WcfIntegration.Tests.Behaviors
 {
-	using System;
 	using System.ServiceModel;
-	using Castle.Facilities.WcfIntegration.Service;
 
 	internal class ServiceHostListener : AbstractServiceHostAware
 	{

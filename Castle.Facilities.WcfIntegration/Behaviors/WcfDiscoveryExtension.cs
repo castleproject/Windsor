@@ -23,7 +23,6 @@ namespace Castle.Facilities.WcfIntegration
 	using System.ServiceModel.Description;
 	using System.ServiceModel.Discovery;
 	using System.Xml.Linq;
-	using Castle.Facilities.WcfIntegration.Service;
 	using Castle.Facilities.WcfIntegration.Internal;
 
 	public class WcfDiscoveryExtension : AbstractServiceHostAware

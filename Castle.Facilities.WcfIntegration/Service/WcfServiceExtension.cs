@@ -65,10 +65,10 @@ namespace Castle.Facilities.WcfIntegration
 			set { aspNetCompat = value; }
 		}
 
-		internal void Init(WcfFacility facility)
+		internal void Init(IKernel kernel, WcfFacility facility)
 		{
+			this.kernel = kernel;
 			this.facility = facility;
-			kernel = facility.Kernel;
 
 			ConfigureAspNetCompatibility();
 			AddDefaultServiceHostBuilders();
@@ -157,7 +157,7 @@ namespace Castle.Facilities.WcfIntegration
 		{
 			if (aspNetCompat.HasValue)
 			{
-				facility.Kernel.Register(
+				kernel.Register(
 					Component.For<AspNetCompatibilityRequirementsAttribute>()
 						.Instance(new AspNetCompatibilityRequirementsAttribute
 						{

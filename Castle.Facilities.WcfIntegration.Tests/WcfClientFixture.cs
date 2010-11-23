@@ -38,7 +38,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 	using log4net.Core;
 	using NUnit.Framework;
 
-	[TestFixture]
+    [TestFixture]
 	public class WcfClientFixture
 	{
 		private MemoryAppender memoryAppender;
@@ -843,7 +843,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 					);
 
 			windsorContainer.Register(
-				Component.For<ChannelReconnectPolicy>(),
+				Component.For<ReconnectChannelPolicy>(),
 				Component.For<IOperationsEx>()
 					.Named("operations")
 					.AsWcfClient(new DefaultClientModel()
@@ -894,7 +894,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 					.AsWcfClient(WcfEndpoint
 					             	.BoundTo(new NetTcpBinding { PortSharingEnabled = true })
 					             	.At("net.tcp://localhost/Operations1/Ex")
-					             	.AddExtensions(new ChannelReconnectPolicy())));
+					             	.AddExtensions(new ReconnectChannelPolicy())));
 
 			IOperationsEx client;
 

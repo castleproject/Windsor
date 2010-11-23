@@ -10,24 +10,24 @@
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
-// limitations under the License
+// limitations under the License.
 
 namespace Castle.Facilities.WcfIntegration
 {
-	using System.Reflection;
-
 	/// <summary>
-	/// Policy for determining if channels should be refreshed when
-	/// they are in an invalid state.  i.e. closed, faulted, or aborted.
+	/// Policy to recover from a <see cref="T:System.ServiceModel.CommunicationException" />
+	/// by refreshing the channel.
 	/// </summary>
-	public interface IRefreshChannelPolicy : IWcfChannelPolicy
+	public class RefreshChannelPolicy : AbstractWcfPolicy, IWcfChannelPolicy
 	{
-		/// <summary>
-		/// Called when an attempt is made to use a channel in an invalid state
-		/// 	i.e. closed or faulted, or aborted./>
-		/// </summary>
-		/// <param name="channelHolder">The channel holder.</param>
-		/// <param name="method">The attempted method.</param>
-		void WantsToUseUnusableChannel(IWcfChannelHolder channelHolder, MethodInfo method);
+		public RefreshChannelPolicy()
+		{
+			ExecutionOrder = 0;
+		}
+
+		public void Intercept(ChannelInvocation invocation)
+		{
+			invocation.Refresh().Proceed();
+		}
 	}
 }

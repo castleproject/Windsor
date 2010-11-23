@@ -15,9 +15,10 @@
 namespace Castle.Facilities.WcfIntegration
 {
 	/// <summary>
-	/// Marker interface to annotate wcf channel policies.
+	/// Policy to add behavior to invocation of a channel.
 	/// </summary>
 	public interface IWcfChannelPolicy : IWcfPolicy
 	{
+		void Intercept(ChannelInvocation invocation);
 	}
 }
