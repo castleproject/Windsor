@@ -44,8 +44,8 @@ namespace Castle.MicroKernel
 	///   This implementation is complete and also support a kernel 
 	///   hierarchy (sub containers).
 	/// </summary>
-#if !SILVERLIGHT
 	[Serializable]
+#if !SILVERLIGHT
 	[DebuggerTypeProxy(typeof(KernelDebuggerProxy))]
 	public partial class DefaultKernel : MarshalByRefObject, IKernel, IKernelEvents, IKernelInternal, IKernelEventsInternal
 #else
@@ -719,34 +719,6 @@ namespace Castle.MicroKernel
 			}
 
 			return activator;
-		}
-
-		///<summary>
-		///  Gets the service object of the specified type.
-		///</summary>
-		///<returns>
-		///  A service object of type serviceType.
-		///</returns>
-		///<param name = "serviceType">An object that specifies the type of service object to get. </param>
-		public object GetService(Type serviceType)
-		{
-			if ((this as IKernelInternal).LazyLoadComponentByType(null, serviceType, null) == null)
-			{
-				return null;
-			}
-
-			return Resolve(serviceType);
-		}
-
-		///<summary>
-		///  Gets the service object of the specified type.
-		///</summary>
-		///<returns>
-		///  A service object of type serviceType.
-		///</returns>
-		public T GetService<T>() where T : class
-		{
-			return (T)GetService(typeof(T));
 		}
 
 		protected CreationContext CreateCreationContext(IHandler handler, Type requestedType, IDictionary additionalArguments, CreationContext parent)

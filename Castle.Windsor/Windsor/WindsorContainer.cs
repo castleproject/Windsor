@@ -337,30 +337,6 @@ namespace Castle.Windsor
 			childContainers.Clear();
 			kernel.Dispose();
 		}
-
-		/// <summary>
-		///   Gets the service object of the specified type.
-		/// </summary>
-		/// <returns>
-		///   A service object of type serviceType.
-		/// </returns>
-		/// <param name = "serviceType">An object that specifies the type of service object to get. </param>
-		public object GetService(Type serviceType)
-		{
-			return kernel.GetService(serviceType);
-		}
-
-		/// <summary>
-		///   Gets the service object of the specified type.
-		/// </summary>
-		/// <returns>
-		///   A service object of type serviceType.
-		/// </returns>
-		public T GetService<T>() where T : class
-		{
-			return kernel.GetService<T>();
-		}
-
 		/// <summary>
 		///   Registers a subcontainer. The components exposed
 		///   by this container will be accessible from subcontainers.

@@ -26,7 +26,7 @@ namespace Castle.Windsor
 	///   The <c>IWindsorContainer</c> interface exposes all the 
 	///   functionality the Windsor implements.
 	/// </summary>
-	public interface IWindsorContainer : IServiceProviderEx, IDisposable
+	public interface IWindsorContainer : IDisposable
 	{
 		[Obsolete("Use Resolve(key, new Arguments()) instead.")]
 		[EditorBrowsable(EditorBrowsableState.Advanced)]

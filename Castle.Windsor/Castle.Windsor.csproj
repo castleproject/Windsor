@@ -951,6 +951,7 @@
     <Compile Include="Windsor\WindsorContainer.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Windsor\WindsorServiceProvider.cs" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />

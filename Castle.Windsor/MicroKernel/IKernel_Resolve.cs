@@ -18,9 +18,7 @@ namespace Castle.MicroKernel
 	using System.Collections;
 	using System.ComponentModel;
 
-	using Castle.Core;
-
-	public partial interface IKernel : IServiceProviderEx, IKernelEvents, IDisposable
+	public partial interface IKernel : IKernelEvents, IDisposable
 	{
 		/// <summary>
 		/// Returns the component instance by the key
