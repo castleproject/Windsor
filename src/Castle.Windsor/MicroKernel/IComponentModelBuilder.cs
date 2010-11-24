@@ -38,7 +38,7 @@ namespace Castle.MicroKernel
 		/// <param name="classType"></param>
 		/// <param name="extendedProperties"></param>
 		/// <returns></returns>
-		ComponentModel BuildModel(string key, ICollection<Type> services, Type classType, IDictionary extendedProperties);
+		ComponentModel BuildModel(string key, Type[] services, Type classType, IDictionary extendedProperties);
 
 		/// <summary>
 		/// "To give or supply in common with others; give to a 
