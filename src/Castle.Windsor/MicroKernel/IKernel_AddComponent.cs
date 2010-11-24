@@ -21,7 +21,7 @@ namespace Castle.MicroKernel
 
 	using System.Collections;
 
-	public partial interface IKernel : IServiceProviderEx, IKernelEvents, IDisposable
+	public partial interface IKernel : IKernelEvents, IDisposable
 	{
 		[Obsolete("Use Register(Component.For(classType).Named(key)) or generic version instead.")]
 		[EditorBrowsable(EditorBrowsableState.Advanced)]

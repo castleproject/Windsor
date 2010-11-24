@@ -1,4 +1,14 @@
 ================================================================================================
+change - IServiceProviderEx was removed as base interface for IWindsorContainer and IKernel
+
+impact - low
+fixability - easy
+
+description - To make the interface for the container more compact the functionality was 
+	extracted to external class - WindsorServiceProvider.
+
+fix - Use WindsorServiceProvider instead.
+================================================================================================
 rename -  INamingSubSystem.GetHandlers -> INamingSubSystem.GetAllHandlers
 description - readability change. No affect on behavior
 ================================================================================================

@@ -1,3 +1,4 @@
+- IServiceProviderEx was removed as base interface for IWindsorContainer and IKernel
 - completed IOC-249 - Remove aility to remove components from the Container
 - Removed the following types: ContainerAdapter, ContainerWrapper, IContainerAdapter, IContainerAdapterSite types
 - fixed IOC-248 - Open generic components with multiple services, some of which are generic fail to properly instantiate in certain cases

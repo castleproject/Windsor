@@ -16,7 +16,7 @@ namespace Castle.MicroKernel
 {
 	using System;
 	using System.Collections;
-	using Castle.Core;
+
 	using Castle.Core.Internal;
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.SubSystems.Configuration;
@@ -34,7 +34,7 @@ namespace Castle.MicroKernel
 	/// <seealso cref="IFacility"/>
 	/// <seealso cref="ISubSystem"/>
 	/// </remarks>
-	public partial interface IKernel : IServiceProviderEx, IKernelEvents, IDisposable
+	public partial interface IKernel : IKernelEvents, IDisposable
 	{
 		/// <summary>
 		/// Registers the components provided by the <see cref="IRegistration"/>s

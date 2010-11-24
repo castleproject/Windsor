@@ -20,11 +20,7 @@ namespace Castle.MicroKernel
 
 	using Castle.Core;
 
-#if (SILVERLIGHT)
-	public partial class DefaultKernel : IKernel, IKernelEvents
-#else
 	public partial class DefaultKernel
-#endif
 	{
 		/// <summary>
 		///   Returns a component instance by the key
