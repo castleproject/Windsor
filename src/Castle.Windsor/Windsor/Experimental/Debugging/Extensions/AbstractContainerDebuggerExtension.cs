@@ -14,7 +14,6 @@
 
 namespace Castle.Windsor.Experimental.Debugging.Extensions
 {
-	using System;
 	using System.Collections.Generic;
 	using System.Linq;
 
@@ -30,29 +29,12 @@ namespace Castle.Windsor.Experimental.Debugging.Extensions
 
 		protected ComponentDebuggerView DefaultComponentView(MetaComponent component)
 		{
-			return new ComponentDebuggerView(component,
-			                                 new DefaultComponentView(component.Handler));
+			return new ComponentDebuggerView(component, new DefaultComponentView(component.Handler));
 		}
 
-		protected IEnumerable<MetaComponent> GetMetaComponents(
-			IDictionary<string, IHandler> flatKeyHandlers)
+		protected IEnumerable<MetaComponent> GetMetaComponents(IDictionary<string, IHandler> flatKeyHandlers)
 		{
-			var lookup = new Dictionary<IHandler, KeyValuePair<string, IList<Type>>>();
-			foreach (var handler in flatKeyHandlers)
-			{
-				var actual = handler.Value;
-				KeyValuePair<string, IList<Type>> list;
-				if (lookup.TryGetValue(actual, out list) == false)
-				{
-					list = new KeyValuePair<string, IList<Type>>(handler.Key, new List<Type>(4));
-					lookup.Add(actual, list);
-				}
-				foreach (var service in actual.Services)
-				{
-					list.Value.Add(service);
-				}
-			}
-			return lookup.Select(c => new MetaComponent(c.Value.Key, c.Key));
+			return flatKeyHandlers.Select(c => new MetaComponent(c.Key, c.Value));
 		}
 	}
 #endif
