@@ -828,7 +828,7 @@ namespace Castle.MicroKernel.Registration
 			registered = true;
 
 			var services = FilterServices(kernel);
-			if (services.Count == 0)
+			if (services.Length == 0)
 			{
 				return;
 			}
@@ -861,7 +861,7 @@ namespace Castle.MicroKernel.Registration
 			internalKernel.AddCustomComponent(componentModel);
 		}
 
-		private ICollection<Type> FilterServices(IKernel kernel)
+		private Type[] FilterServices(IKernel kernel)
 		{
 			var services = new List<Type>(interfaceServices.Count + 1);
 			if (classService != null)
@@ -876,7 +876,7 @@ namespace Castle.MicroKernel.Registration
 			{
 				services.AddRange(interfaceServices.Where(s => kernel.HasComponent(s) == false));
 			}
-			return services;
+			return services.ToArray();
 		}
 	}
 }

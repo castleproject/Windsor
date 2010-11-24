@@ -53,7 +53,7 @@ namespace Castle.MicroKernel.ModelBuilder
 		/// <param name="classType"></param>
 		/// <param name="extendedProperties"></param>
 		/// <returns></returns>
-		public ComponentModel BuildModel(string key, ICollection<Type> services, Type classType, IDictionary extendedProperties)
+		public ComponentModel BuildModel(string key, Type[] services, Type classType, IDictionary extendedProperties)
 		{
 			var model = new ComponentModel(key, services, classType);
 			if (extendedProperties != null)
