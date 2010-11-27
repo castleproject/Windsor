@@ -111,6 +111,11 @@ namespace Castle.Facilities.NHibernateIntegration
 		{
 		}
 
+		///<summary>
+		/// Gets or sets the custom Configuration Builder Type.
+		///</summary>
+		public Type CustomConfigurationBuilder { get; set; }
+
 		/// <summary>
 		/// The custom initialization for the Facility.
 		/// </summary>
@@ -149,24 +154,39 @@ namespace Castle.Facilities.NHibernateIntegration
 		/// </summary>
 		private void RegisterDefaultConfigurationBuilder()
 		{
-			string defaultConfigurationBuilder = FacilityConfig.Attributes[ConfigurationBuilderConfigurationKey];
-			if (!string.IsNullOrEmpty(defaultConfigurationBuilder))
+			string customConfigurationBuilder = FacilityConfig.Attributes[ConfigurationBuilderConfigurationKey];
+
+			if (!string.IsNullOrEmpty(customConfigurationBuilder) || CustomConfigurationBuilder != null)
 			{
-				var converter = (IConversionManager) Kernel.GetSubSystem(SubSystemConstants.ConversionManagerKey);
-				try
+				if (CustomConfigurationBuilder != null)
 				{
-					var configurationBuilderType = (Type) converter.PerformConversion(defaultConfigurationBuilder, typeof (Type));
-					Kernel.Register(
-						Component.For<IConfigurationBuilder>()
-							.ImplementedBy(configurationBuilderType)
-							.Named(DefaultConfigurationBuilderKey)
-						);
+					if (!typeof(IConfigurationBuilder).IsAssignableFrom(CustomConfigurationBuilder))
+					{
+						throw new FacilityException(
+							string.Format(
+								"ConfigurationBuilder type '{0}' invalid. The type must implement the IConfigurationBuilder contract",
+								CustomConfigurationBuilder.FullName));
+					}
 				}
-				catch (ConverterException)
+				else
 				{
-					throw new FacilityException(string.Format("ConfigurationBuilder type '{0}' invalid or not found",
-					                                          defaultConfigurationBuilder));
+					var converter = (IConversionManager) Kernel.GetSubSystem(SubSystemConstants.ConversionManagerKey);
+
+					try
+					{
+						CustomConfigurationBuilder = (Type) converter.PerformConversion(customConfigurationBuilder, typeof(Type));
+					}
+					catch (ConverterException)
+					{
+						throw new FacilityException(string.Format("ConfigurationBuilder type '{0}' invalid or not found",
+						                                          customConfigurationBuilder));
+					}
 				}
+
+				Kernel.Register(Component
+				                	.For<IConfigurationBuilder>()
+				                	.ImplementedBy(CustomConfigurationBuilder)
+				                	.Named(DefaultConfigurationBuilderKey));
 			}
 			else
 				Kernel.Register(
