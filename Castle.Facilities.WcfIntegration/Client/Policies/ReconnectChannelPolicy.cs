@@ -24,16 +24,16 @@ namespace Castle.Facilities.WcfIntegration
     /// handle situations in which a connection has been reset on the
     /// server which invalidates the the client channel.
     /// </summary>
-    public class ReconnectChannelPolicy : AbstractWcfPolicy, IWcfChannelPolicy, IWcfPolicy
+    public class ReconnectChannelPolicy : AbstractWcfPolicy, IWcfPolicy
     {
         /// <inheritdoc />
-        public void Intercept(ChannelInvocation invocation)
+        public override void Apply(WcfInvocation wcfInvocation)
         {
             var reconnect = false;
 
             try
             {
-                invocation.Proceed();
+                wcfInvocation.Refresh().Proceed();
             }
             catch (ChannelTerminatedException)
             {
@@ -62,7 +62,7 @@ namespace Castle.Facilities.WcfIntegration
 
             if (reconnect)
             {
-                invocation.Refresh().Proceed();
+                wcfInvocation.Refresh().Proceed();
             }
         }
     }

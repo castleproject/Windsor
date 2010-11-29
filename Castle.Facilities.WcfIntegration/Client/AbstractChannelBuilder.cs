@@ -228,7 +228,7 @@ namespace Castle.Facilities.WcfIntegration
 			return criteria;
 		}
 
-		private static Binding GetBindingFromMetadata(EndpointDiscoveryMetadata metadata)
+		internal static Binding GetBindingFromMetadata(EndpointDiscoveryMetadata metadata)
 		{
 			var metadataExtension = 
 				(from extension in metadata.Extensions

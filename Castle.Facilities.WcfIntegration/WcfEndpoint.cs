@@ -467,7 +467,7 @@ namespace Castle.Facilities.WcfIntegration
 
 		public TimeSpan? Duration { get; private set; }
 
-		public DiscoveryEndpoint DiscoveryEndpoint { get; set; }
+		public DiscoveryEndpoint DiscoveryEndpoint { get; private set; }
 
 		public EndpointIdentity Identity { get; private set; }
 
@@ -497,7 +497,14 @@ namespace Castle.Facilities.WcfIntegration
 			return this;
 		}
 
-		public DiscoveredEndpointModel With(DiscoveryEndpoint endpoint)
+		public DiscoveredEndpointModel ManagedBy(BindingAddressEndpointModel endpoint)
+		{
+			var endpointAddress = endpoint.EndpointAddress ?? new EndpointAddress(endpoint.Address);
+			DiscoveryEndpoint = new DiscoveryEndpoint(endpoint.Binding, endpointAddress);
+			return this;
+		}
+
+		public DiscoveredEndpointModel ManagedBy(DiscoveryEndpoint endpoint)
 		{
 			DiscoveryEndpoint = endpoint;
 			return this;

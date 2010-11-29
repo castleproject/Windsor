@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -10,17 +10,18 @@
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
-// limitations under the License
+// limitations under the License.
 
 namespace Castle.Facilities.WcfIntegration
 {
-	/// <summary>
-	/// Marker interface to annotate wcf policies.
-	/// </summary>
-	public interface IWcfPolicy
-	{
-		int ExecutionOrder { get; }
+#if DOTNET40
+    using System.Collections;
+    using System.Collections.Generic;
+	using System.ServiceModel.Discovery;
 
-		void Apply(WcfInvocation invocation);
-	}
+    public interface IServiceContractGroup : ICollection<EndpointDiscoveryMetadata>
+    {
+    }
+#endif
 }
+

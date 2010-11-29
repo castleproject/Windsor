@@ -28,5 +28,7 @@ namespace Castle.Facilities.WcfIntegration
 		}
 
 		public int ExecutionOrder { get; set; }
+
+		public abstract void Apply(WcfInvocation invocation);
 	}
 }

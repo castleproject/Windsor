@@ -54,7 +54,7 @@ namespace Castle.Facilities.WcfIntegration
 		[MethodImpl(MethodImplOptions.Synchronized)]
 		public void RefreshChannel()
 		{
-			if (Channel == null || !IsChannelUsable)
+			if (Channel == null || IsChannelUsable == false)
 			{
 				if (Channel != null)
 				{

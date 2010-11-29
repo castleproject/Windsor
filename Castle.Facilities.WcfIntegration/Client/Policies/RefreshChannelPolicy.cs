@@ -18,14 +18,14 @@ namespace Castle.Facilities.WcfIntegration
 	/// Policy to recover from a <see cref="T:System.ServiceModel.CommunicationException" />
 	/// by refreshing the channel.
 	/// </summary>
-	public class RefreshChannelPolicy : AbstractWcfPolicy, IWcfChannelPolicy
+	public class RefreshChannelPolicy : AbstractWcfPolicy
 	{
 		public RefreshChannelPolicy()
 		{
-			ExecutionOrder = 0;
+			ExecutionOrder = ExecutionOrder / 2;
 		}
 
-		public void Intercept(ChannelInvocation invocation)
+		public override void Apply(WcfInvocation invocation)
 		{
 			invocation.Refresh().Proceed();
 		}

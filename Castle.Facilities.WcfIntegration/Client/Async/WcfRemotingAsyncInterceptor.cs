@@ -72,13 +72,12 @@ namespace Castle.Facilities.WcfIntegration.Async
 		private void CallBeginMethod(IInvocation invocation, AsyncWcfCallContext context, IWcfChannelHolder channelHolder)
 		{
 			context.Init(invocation.Method, invocation.Arguments);
-			Action action = () =>
+			PerformInvocation(invocation, channelHolder, wcfInvocation =>
 			{
 				var message = context.CreateBeginMessage();
 				var returnMessage = context.ChannelHolder.RealProxy.Invoke(message) as IMethodReturnMessage;
-				invocation.ReturnValue = context.PostProcess(returnMessage);
-			};
-			InvokeChannelPipeline(invocation, channelHolder, action);
+				wcfInvocation.ReturnValue = context.PostProcess(returnMessage);
+			});
 		}
 
 		public void EndCall(AsyncWcfCallContext context, out object[] outs)

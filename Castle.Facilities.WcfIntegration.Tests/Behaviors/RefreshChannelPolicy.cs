@@ -14,11 +14,11 @@
 
 namespace Castle.Facilities.WcfIntegration.Tests.Behaviors
 {
-	public class RefreshChannelPolicy : AbstractWcfPolicy, IWcfChannelPolicy
+	public class RefreshChannelPolicy : AbstractWcfPolicy
 	{
 		public bool Refresh { get; set; }
 
-		public void Intercept(ChannelInvocation invocation)
+		public override void Apply(WcfInvocation invocation)
 		{
 			if (Refresh)
 			{

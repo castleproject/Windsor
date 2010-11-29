@@ -22,7 +22,7 @@ namespace Castle.Facilities.WcfIntegration.Proxy
 
 	public class WcfRemotingInterceptor : IWcfInterceptor
 	{
-		private readonly IWcfChannelPolicy[] pipeline;
+		private readonly IWcfPolicy[] pipeline;
 
 		public WcfRemotingInterceptor(WcfClientExtension clients, IWcfChannelHolder channelHolder)
 		{
@@ -43,18 +43,17 @@ namespace Castle.Facilities.WcfIntegration.Proxy
 
 		protected virtual void PerformInvocation(IInvocation invocation, IWcfChannelHolder channelHolder)
 		{
-			Action sendAction = () =>
+			PerformInvocation(invocation, channelHolder, wcfInvocation =>
 			{
 				var realProxy = channelHolder.RealProxy;
-				var message = new MethodCallMessage(invocation.Method, invocation.Arguments);
+				var message = new MethodCallMessage(wcfInvocation.Method, wcfInvocation.Arguments);
 				var returnMessage = (IMethodReturnMessage)realProxy.Invoke(message);
 				if (returnMessage.Exception != null)
 				{
 					throw returnMessage.Exception;
 				}
-				invocation.ReturnValue = returnMessage.ReturnValue;
-			};
-			InvokeChannelPipeline(invocation, channelHolder, sendAction);
+				wcfInvocation.ReturnValue = returnMessage.ReturnValue;
+			});
 		}
 
 		bool IWcfInterceptor.Handles(MethodInfo method)
@@ -67,39 +66,36 @@ namespace Castle.Facilities.WcfIntegration.Proxy
 			return true;
 		}
 
-		protected void InvokeChannelPipeline(IInvocation invocation, IWcfChannelHolder channelHolder, Action action)
+		protected void PerformInvocation(IInvocation invocation, IWcfChannelHolder channelHolder, Action<WcfInvocation> action)
 		{
-			if (pipeline == null)
-			{
-				action();
-			}
-			else
-			{
-				InvokeChannelPipeline(0, new ChannelInvocation(invocation, channelHolder), action);
-			}
+			var wcfInvocation = new WcfInvocation(channelHolder, invocation);
+			InvokeChannelPipeline(0, wcfInvocation, action);
+			invocation.ReturnValue = wcfInvocation.ReturnValue;
 		}
 
-		private void InvokeChannelPipeline(int policyIndex, ChannelInvocation invocation, Action action)
+		private void InvokeChannelPipeline(int policyIndex, WcfInvocation wcfInvocation, Action<WcfInvocation> action)
 		{
-			int nextIndex;
 			if (policyIndex >= pipeline.Length)
 			{
-				action();
+				action(wcfInvocation);
+				return;
 			}
-			else
-			{
-				nextIndex = policyIndex + 1;
-				invocation.SetProceedDelegate(() => InvokeChannelPipeline(nextIndex, invocation, action));
-				pipeline[policyIndex].Intercept(invocation);
-			}
+			int nextIndex = policyIndex + 1;
+			wcfInvocation.SetProceedDelegate(() => InvokeChannelPipeline(nextIndex, wcfInvocation, action));
+			pipeline[policyIndex].Apply(wcfInvocation);
 		}
 
-		private static IWcfChannelPolicy[] CreateChannelPipeline(WcfClientExtension clients, IWcfChannelHolder channelHolder)
+		private static IWcfPolicy[] CreateChannelPipeline(WcfClientExtension clients, IWcfChannelHolder channelHolder)
 		{
-			var policies = channelHolder.ChannelBurden.Dependencies.OfType<IWcfChannelPolicy>()
+			var policies = channelHolder.ChannelBurden.Dependencies.OfType<IWcfPolicy>()
 				.OrderBy(policy => policy.ExecutionOrder).ToArray();
 
-			return (policies.Length == 0) ? clients.DefaultChannelPolicy.ToArray() : policies;
+			if (policies.Length == 0 && clients.DefaultChannelPolicy != null)
+			{
+				policies = clients.DefaultChannelPolicy.ToArray();
+			}
+
+			return policies;
 		}
 	}
 }

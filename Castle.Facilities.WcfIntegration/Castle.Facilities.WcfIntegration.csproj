@@ -93,7 +93,16 @@
     <Compile Include="Behaviors\Security\CustomPrincipalAuthorization.cs" />
     <Compile Include="Behaviors\Security\FetchCertificateBySubject.cs" />
     <Compile Include="Behaviors\Security\UserNameCredentials.cs" />
-    <Compile Include="Behaviors\WcfDiscoveryExtension.cs" />
+    <Compile Include="Service\Discovery\AdHocServiceCatalogDiscovery.cs" />
+    <Compile Include="Service\Discovery\InMemoryServiceCatalog.cs" />
+    <Compile Include="Service\Discovery\IServiceCatalog.cs" />
+    <Compile Include="Service\Discovery\IServiceCatalogImplementation.cs" />
+    <Compile Include="Service\Discovery\IServiceContractGroup.cs" />
+    <Compile Include="Service\Discovery\IServiceContractStrategy.cs" />
+    <Compile Include="Service\Discovery\RoundRobinGroup.cs" />
+    <Compile Include="Service\Discovery\ServiceCatalog.cs" />
+    <Compile Include="Service\Discovery\ServiceCatalogEndpoint.cs" />
+    <Compile Include="Service\Discovery\WcfDiscoveryExtension.cs" />
     <Compile Include="Behaviors\WcfErrorBehavior.cs" />
     <Compile Include="Behaviors\WcfChannelExtensions.cs" />
     <Compile Include="Behaviors\Lifecyle\AbstractMessageEnvelopeAction.cs" />
@@ -121,8 +130,7 @@
     <Compile Include="Client\Async\TypeSystem\AttributeHelpers.cs" />
     <Compile Include="Client\Discovery\DiscoveredEndpointMetadata.cs" />
     <Compile Include="Client\IWcfClientFactory.cs" />
-    <Compile Include="Client\Policies\ChannelInvocation.cs" />
-    <Compile Include="Client\Policies\IWcfChannelPolicy.cs" />
+    <Compile Include="WcfInvocation.cs" />
     <Compile Include="Client\Policies\ReconnectChannelPolicy.cs" />
     <Compile Include="Client\Policies\RefreshChannelPolicy.cs" />
     <Compile Include="Client\Proxy\IWcfChannelHolder.cs" />
@@ -157,7 +165,9 @@
     <Compile Include="Client\ChannelFactoryExtensions.cs" />
     <Compile Include="AbstractWcfPolicy.cs" />
     <Compile Include="Client\WcfClientFactorySelector.cs" />
+    <Compile Include="Internal\AsyncResult.cs" />
     <Compile Include="Internal\ConcurrentDictionary.cs" />
+    <Compile Include="Internal\SynchronousResult.cs" />
     <Compile Include="IWcfPolicy.cs" />
     <Compile Include="IWcfCleanUp.cs" />
     <Compile Include="Lifestyles\AbstractWcfLifestyleCache.cs" />

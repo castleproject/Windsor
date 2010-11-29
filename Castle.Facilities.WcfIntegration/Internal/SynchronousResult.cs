@@ -10,17 +10,27 @@
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
-// limitations under the License
+// limitations under the License.
 
-namespace Castle.Facilities.WcfIntegration
+namespace Castle.Facilities.WcfIntegration.Internal
 {
-	/// <summary>
-	/// Marker interface to annotate wcf policies.
-	/// </summary>
-	public interface IWcfPolicy
-	{
-		int ExecutionOrder { get; }
+	using System;
 
-		void Apply(WcfInvocation invocation);
+	/// <summary>
+	/// Represents a synchronous result.
+	/// </summary>
+	public class SynchronousResult : AsyncResult
+	{
+		public SynchronousResult(AsyncCallback callback, object state)
+			: base(callback, state)
+		{
+			base.Complete(true);
+		}
+
+		public SynchronousResult(AsyncCallback callback, object state, object result)
+			: base(callback, state)
+		{
+			base.Complete(true, result);
+		}
 	}
 }

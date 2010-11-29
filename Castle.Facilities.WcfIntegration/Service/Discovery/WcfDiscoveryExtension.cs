@@ -1,5 +1,4 @@
-﻿
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -29,8 +28,9 @@ namespace Castle.Facilities.WcfIntegration
 	{
 		private bool strict;
 		private DiscoveryEndpoint discoveryEndpoint;
-		private readonly List<Uri> scopes = new List<Uri>();
+		private readonly HashSet<Uri> scopes = new HashSet<Uri>();
 		private readonly List<XElement> metadata = new List<XElement>();
+		private HashSet<AnnouncementEndpoint> announceEndpoints;
 
 		public WcfDiscoveryExtension Strict()
 		{
@@ -40,13 +40,13 @@ namespace Castle.Facilities.WcfIntegration
 
 		public WcfDiscoveryExtension InScope(params Uri[] scopes)
 		{
-			this.scopes.AddRange(scopes);
+			this.scopes.AddAll(scopes);
 			return this;
 		}
 
 		public WcfDiscoveryExtension InScope(params string[] scopes)
 		{
-			this.scopes.AddRange(scopes.Select(scope => new Uri(scope)));
+			this.scopes.AddAll(scopes.Select(scope => new Uri(scope)));
 			return this;
 		}
 
@@ -62,12 +62,38 @@ namespace Castle.Facilities.WcfIntegration
 			return this;
 		}
 
+		public WcfDiscoveryExtension Announce()
+		{
+			if (announceEndpoints == null)
+			{
+				announceEndpoints = new HashSet<AnnouncementEndpoint>();
+				announceEndpoints.Add(new UdpAnnouncementEndpoint());
+			}
+			return this;
+		}
+
+		public WcfDiscoveryExtension AnnounceUsing(AnnouncementEndpoint endpoint)
+		{
+			if (announceEndpoints == null)
+			{
+				announceEndpoints = new HashSet<AnnouncementEndpoint>();
+			}
+			announceEndpoints.Add(endpoint);
+			return this;
+		}
+
 		protected override void Opening(ServiceHost serviceHost)
 		{
 			var serviceDiscovery = serviceHost.Description.Behaviors.Find<ServiceDiscoveryBehavior>();
 			if (serviceDiscovery == null)
 			{
-				serviceHost.Description.Behaviors.Add(new ServiceDiscoveryBehavior());
+				serviceDiscovery = new ServiceDiscoveryBehavior();
+				serviceHost.Description.Behaviors.Add(serviceDiscovery);
+			}
+
+			if (announceEndpoints != null)
+			{
+				serviceDiscovery.AnnouncementEndpoints.AddAll(announceEndpoints);
 			}
 
 			foreach (var endpoint in serviceHost.Description.NonSystemEndpoints())
@@ -80,9 +106,7 @@ namespace Castle.Facilities.WcfIntegration
 				}
 
 				discovery.Scopes.AddAll(scopes);
-
 				discovery.Extensions.AddAll(metadata);
-
 				AddAdditionalMetadata(serviceHost, discovery);
 
 				if (strict == false)
@@ -96,19 +120,13 @@ namespace Castle.Facilities.WcfIntegration
 
 		private void AddDiscoveryEndpoint(ServiceHost serviceHost)
 		{
-			if (serviceHost.Description.Endpoints.OfType<DiscoveryEndpoint>().Any() == false)
-			{
-				var endpoint = discoveryEndpoint ?? new UdpDiscoveryEndpoint();
-				serviceHost.Description.Endpoints.Add(endpoint);
-			}
+			serviceHost.Description.Endpoints.Add(discoveryEndpoint ?? new UdpDiscoveryEndpoint());
 		}
 
 		private static void AddAdditionalMetadata(ServiceHost serviceHost, EndpointDiscoveryBehavior discovery)
 		{
 			var meatadata = serviceHost.Extensions.FindAll<IWcfMetadataProvider>();
-
 			discovery.Scopes.AddAll(meatadata.SelectMany(meta => meta.Scopes));
-
 			discovery.Extensions.AddAll(meatadata.SelectMany(meta => meta.Extensions));
 		}
 

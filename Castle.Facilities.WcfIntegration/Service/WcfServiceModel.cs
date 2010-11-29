@@ -139,6 +139,16 @@ namespace Castle.Facilities.WcfIntegration
 			return AddExtensions(typeof(TMeta));
 		}
 
+		public T ProvideMetadata(Type metaProvider)
+		{
+			if (typeof(IWcfMetadataProvider).IsAssignableFrom(metaProvider) == false)
+			{
+				throw new ArgumentException(string.Format("The metaProvider {0} does not implement {1}.",
+					metaProvider, typeof(IWcfMetadataProvider)));
+			}
+			return AddExtensions(metaProvider);
+		}
+
 		public T ProviderMetadata(IWcfMetadataProvider provider)
 		{
 			return AddExtensions(provider);

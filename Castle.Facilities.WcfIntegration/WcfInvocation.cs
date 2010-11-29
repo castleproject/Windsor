@@ -15,19 +15,25 @@
 namespace Castle.Facilities.WcfIntegration
 {
 	using System;
+	using System.Reflection;
 	using Castle.DynamicProxy;
 
-	public class ChannelInvocation
+	public class WcfInvocation
     {
         private Action proceed;
 
-        public ChannelInvocation(IInvocation invocation, IWcfChannelHolder channelHolder)
+        public WcfInvocation(IWcfChannelHolder channelHolder, IInvocation invocation)
         {
-            Invocation = invocation;
             ChannelHolder = channelHolder;
+			Arguments = invocation.Arguments;
+			Method = invocation.Method;
         }
 
-		public IInvocation Invocation { get; private set; }
+		public object ReturnValue { get; set; }
+
+		public object[] Arguments { get; private set; }
+
+		public MethodInfo Method { get; private set; }
 
 		public IWcfChannelHolder ChannelHolder { get; private set; }
 
@@ -44,7 +50,7 @@ namespace Castle.Facilities.WcfIntegration
             }
         }
 
-        public ChannelInvocation Refresh()
+        public WcfInvocation Refresh()
         {
             ChannelHolder.RefreshChannel();
             return this;

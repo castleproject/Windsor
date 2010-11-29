@@ -14,22 +14,24 @@
 
 namespace Castle.Facilities.WcfIntegration
 {
-	using System.Xml.Linq;
+#if DOTNET40
+    using System;
+    using System.ServiceModel.Discovery;
 
-    internal static class WcfConstants
+    public interface IServiceCatalogImplementation
     {
-		public const string ExtensionScopeKey = "scope";
+		EndpointDiscoveryMetadata[] ListServices();
 
-        public const string ServiceHostsKey = "wcf.serviceHosts";
-		public const string ServiceHostEnabled = "wcfServiceHost";
+        void FindService(FindRequestContext findRequestContext);
 
-		public const string ClientModelKey = "wcf.clientModel";
-		public const string ClientBurdenKey = "wcf.clientBurden";
-		public const string EndpointConfiguration = "wcfEndpointConfiguration";
+        EndpointDiscoveryMetadata[] FindServices(FindCriteria criteria);
 
-		public const string Namespace = "urn:www.castleproject.org:wcf";
+        void RegisterService(EndpointDiscoveryMetadata endpointDiscoveryMetadata);
 
-		public static readonly XName EndpointMetadata = XName.Get("Endpoint", Namespace);
-	}
+        bool RemoveService(EndpointDiscoveryMetadata endpointDiscoveryMetadata);
+
+        EndpointDiscoveryMetadata ResolveService(ResolveCriteria resolveCriteria);
+    }
+#endif
 }
 
