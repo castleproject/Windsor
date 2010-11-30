@@ -17,26 +17,13 @@ namespace Castle.Windsor.Tests.Lifecycle
 	using Castle.MicroKernel.Registration;
 	using Castle.Windsor.Tests.ClassComponents;
 	using Castle.Windsor.Tests.Components;
+	using Castle.Windsor.Tests.Facilities.TypedFactory.Components;
 
 	using NUnit.Framework;
 
 	[TestFixture]
 	public class DisposeTestCase : AbstractContainerTestFixture
 	{
-		[Test]
-		public void Disposable_component_for_nondisposable_service_should_be_disposed_when_released()
-		{
-			SimpleServiceDisposable.DisposedCount = 0;
-			Container.Register(Component.For<ISimpleService>()
-			                   	.ImplementedBy<SimpleServiceDisposable>()
-			                   	.LifeStyle.Transient);
-
-			var service = Container.Resolve<ISimpleService>();
-			Container.Release(service);
-
-			Assert.AreEqual(1, SimpleServiceDisposable.DisposedCount);
-		}
-
 		[Test]
 		public void Disposable_component_for_nondisposable_service_built_via_factory_should_be_disposed_when_released()
 		{
@@ -53,6 +40,21 @@ namespace Castle.Windsor.Tests.Lifecycle
 
 			Assert.AreEqual(1, SimpleServiceDisposable.DisposedCount);
 		}
+
+		[Test]
+		public void Disposable_component_for_nondisposable_service_should_be_disposed_when_released()
+		{
+			SimpleServiceDisposable.DisposedCount = 0;
+			Container.Register(Component.For<ISimpleService>()
+			                   	.ImplementedBy<SimpleServiceDisposable>()
+			                   	.LifeStyle.Transient);
+
+			var service = Container.Resolve<ISimpleService>();
+			Container.Release(service);
+
+			Assert.AreEqual(1, SimpleServiceDisposable.DisposedCount);
+		}
+
 		[Test]
 		public void Disposable_component_for_nondisposable_service_should_be_tracked()
 		{
@@ -85,6 +87,22 @@ namespace Castle.Windsor.Tests.Lifecycle
 			var foo = Container.Resolve<DisposableFoo>();
 
 			Assert.IsTrue(Kernel.ReleasePolicy.HasTrack(foo));
+		}
+
+		[Test]
+		public void Disposable_singleton_dependency_of_transient_open_generic_is_disposed()
+		{
+			DisposableFoo.DisposedCount = 0;
+			Container.Register(
+				Component.For(typeof(GenericComponent<>)).LifeStyle.Transient,
+				Component.For<DisposableFoo>().LifeStyle.Singleton
+				);
+
+			var depender = Container.Resolve<GenericComponent<DisposableFoo>>();
+			Container.Dispose();
+
+			Assert.AreEqual(1, DisposableFoo.DisposedCount);
+			Assert.IsFalse(Kernel.ReleasePolicy.HasTrack(depender.Value));
 		}
 	}
 }
