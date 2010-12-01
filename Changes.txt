@@ -1,3 +1,4 @@
+- fixed IOC-250 - Dispose not being called on open generic registrations
 - IServiceProviderEx was removed as base interface for IWindsorContainer and IKernel
 - completed IOC-249 - Remove aility to remove components from the Container
 - Removed the following types: ContainerAdapter, ContainerWrapper, IContainerAdapter, IContainerAdapterSite types
