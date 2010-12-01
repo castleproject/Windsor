@@ -34,6 +34,13 @@ namespace Castle.MicroKernel.Lifestyle
 
 		public object GetInstance(CreationContext context, IComponentActivator activator)
 		{
+			// this is based on assumption that entire resolution happens on a single thread
+			var instanceFromContext = context.GetContextualProperty(activator);
+			if (instanceFromContext != null)
+			{
+				//we've been called recursively, by some dependency from base.Resolve call
+				return instanceFromContext;
+			}
 			var threadId = Thread.CurrentThread.ManagedThreadId;
 			IDictionary<IComponentActivator, object> currentThreadLookup;
 			if (allLookup.TryGetValue(threadId,out currentThreadLookup) == false)
