@@ -17,6 +17,7 @@ namespace Castle.MicroKernel
 	using System;
 	using System.Collections;
 	using Castle.Core;
+	using Castle.MicroKernel.Lifestyle;
 
 	/// <summary>
 	/// Extended contract of kernel, used internally.
@@ -53,5 +54,7 @@ namespace Castle.MicroKernel
 		void AddCustomComponent(ComponentModel model);
 
 		IDisposable OptimizeDependencyResolution();
+
+		IInstanceScope PerThreadScope { get; }
 	}
 }
