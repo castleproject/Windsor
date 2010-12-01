@@ -16,16 +16,15 @@ namespace Castle.MicroKernel.Lifestyle
 {
 	using System;
 	using System.Collections.Generic;
+	using System.Threading;
 
 	using Castle.MicroKernel.Context;
 
 	public class ThreadInstanceScope : IInstanceScope
 	{
-		[ThreadStatic]
-		private static IDictionary<IComponentActivator, object> perThreadLookup;
+		private readonly IDictionary<int, IDictionary<IComponentActivator, object>> allLookup = new Dictionary<int, IDictionary<IComponentActivator, object>>();
 
 		private readonly IKernelEvents events;
-		private readonly IDictionary<IComponentActivator, object> perContainerLookup = new Dictionary<IComponentActivator, object>();
 
 		public ThreadInstanceScope(IKernelEvents events)
 		{
@@ -35,16 +34,22 @@ namespace Castle.MicroKernel.Lifestyle
 
 		public object GetInstance(CreationContext context, IComponentActivator activator)
 		{
-			if (perThreadLookup == null)
+			var threadId = Thread.CurrentThread.ManagedThreadId;
+			IDictionary<IComponentActivator, object> currentThreadLookup;
+			if (allLookup.TryGetValue(threadId,out currentThreadLookup) == false)
 			{
-				perThreadLookup = new Dictionary<IComponentActivator, object>();
+				currentThreadLookup = new Dictionary<IComponentActivator, object>();
+				lock(allLookup)
+				{
+					allLookup[threadId] = currentThreadLookup;
+				}
 			}
+
 			object instance;
-			if (!perThreadLookup.TryGetValue(activator, out instance))
+			if (!currentThreadLookup.TryGetValue(activator, out instance))
 			{
 				instance = activator.Create(context);
-				perThreadLookup.Add(activator, instance);
-				perContainerLookup.Add(activator, instance);
+				currentThreadLookup.Add(activator, instance);
 			}
 
 			return instance;
@@ -52,12 +57,14 @@ namespace Castle.MicroKernel.Lifestyle
 
 		private void CleanUp(object sender, EventArgs e)
 		{
-			foreach (var instance in perContainerLookup)
+			foreach (var thread in allLookup.Values)
 			{
-				instance.Key.Destroy(instance.Value);
-				perThreadLookup.Remove(instance.Key);
+				foreach (var instance in thread)
+				{
+					instance.Key.Destroy(instance.Value);
+				}
 			}
-			perThreadLookup.Clear();
+			allLookup.Clear();
 			events.ContainerDisposed -= CleanUp;
 		}
 	}

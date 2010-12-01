@@ -21,9 +21,7 @@ namespace Castle.MicroKernel.Lifestyle
 	/// <summary>
 	/// Summary description for SingletonLifestyleManager.
 	/// </summary>
-#if (!SILVERLIGHT)
 	[Serializable]
-#endif
 	public class SingletonLifestyleManager : AbstractLifestyleManager
 	{
 		private volatile Object instance;
