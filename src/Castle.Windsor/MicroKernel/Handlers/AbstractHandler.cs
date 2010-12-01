@@ -514,10 +514,10 @@ namespace Castle.MicroKernel.Handlers
 			switch (type)
 			{
 				case LifestyleType.Thread:
-#if (!SILVERLIGHT)
-					manager = new PerThreadLifestyleManager();
-#else
+#if SILVERLIGHT
 					manager = new PerThreadThreadStaticLifestyleManager();
+#else
+					manager = new PerThreadLifestyleManager();
 #endif
 					break;
 				case LifestyleType.Transient:
