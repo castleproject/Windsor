@@ -14,6 +14,7 @@
 
 namespace Castle.Windsor.Tests
 {
+	using System;
 	using System.Threading;
 
 	using Castle.MicroKernel.Registration;
@@ -34,6 +35,22 @@ namespace Castle.Windsor.Tests
 		}
 
 		[Test]
+		public void Disposable_components_are_decommissioned_on_container_Dispose_all_threads()
+		{
+			Container.Register(Component.For<DisposableComponent>().LifeStyle.PerThread);
+			var a1 = Container.Resolve<DisposableComponent>();
+			DisposableComponent a2 = null;
+
+			ExecuteOnAnotherThreadAndWait(() => a2 = Container.Resolve<DisposableComponent>());
+			Container.Dispose();
+			Assert.IsTrue(a1.Disposed);
+			Assert.IsTrue(a2.Disposed);
+
+			Assert.IsFalse(Kernel.ReleasePolicy.HasTrack(a1));
+			Assert.IsFalse(Kernel.ReleasePolicy.HasTrack(a2));
+		}
+
+		[Test]
 		public void Disposable_components_are_not_decommissioned_on_Release_call()
 		{
 			Container.Register(Component.For<DisposableComponent>().LifeStyle.PerThread);
@@ -48,7 +65,7 @@ namespace Castle.Windsor.Tests
 			Container.Register(Component.For<A>().LifeStyle.PerThread);
 			var a1 = Container.Resolve<A>();
 			A a2 = null;
-			ThreadPool.QueueUserWorkItem(o => a2 = Container.Resolve<A>());
+			ExecuteOnAnotherThreadAndWait(() => a2 = Container.Resolve<A>());
 
 			Assert.AreNotSame(a1, a2);
 		}
@@ -71,6 +88,17 @@ namespace Castle.Windsor.Tests
 			Container.AddChildContainer(child);
 			var a2 = child.Resolve<A>();
 			Assert.AreSame(a1, a2);
+		}
+
+		private void ExecuteOnAnotherThreadAndWait(Action action)
+		{
+			var @event = new ManualResetEvent(false);
+			new Thread(() =>
+			{
+				action.Invoke();
+				@event.Set();
+			}).Start();
+			@event.WaitOne();
 		}
 	}
 }
