@@ -16,9 +16,6 @@
 namespace Castle.MicroKernel.Lifestyle
 {
 	using System;
-	using System.Collections.Generic;
-	using System.Threading;
-	using System.Runtime.Serialization;
 
 	using Castle.MicroKernel.Context;
 
@@ -26,27 +23,17 @@ namespace Castle.MicroKernel.Lifestyle
 	///   Summary description for PerThreadLifestyleManager.
 	/// </summary>
 	[Serializable]
-	public class PerThreadLifestyleManager : AbstractLifestyleManager, IDeserializationCallback
+	public class PerThreadLifestyleManager : AbstractLifestyleManager
 	{
-		[NonSerialized]
-		private static LocalDataStoreSlot slot = Thread.AllocateNamedDataSlot("CastlePerThread");
+		private readonly IInstanceScope scope;
 
-		[NonSerialized]
-		private IList<object> instances = new List<object>();
+		public PerThreadLifestyleManager(IInstanceScope scope)
+		{
+			this.scope = scope;
+		}
 
-		/// <summary>
-		/// </summary>
 		public override void Dispose()
 		{
-			foreach (var instance in instances)
-			{
-				base.Release(instance);
-			}
-
-			instances.Clear();
-
-			// This doesn't seem right. it will collapse if there are multiple instances of the container
-			Thread.FreeNamedDataSlot("CastlePerThread");
 		}
 
 		public override bool Release(object instance)
@@ -57,36 +44,8 @@ namespace Castle.MicroKernel.Lifestyle
 
 		public override object Resolve(CreationContext context)
 		{
-			lock (slot)
-			{
-				var map = (Dictionary<IComponentActivator, object>)Thread.GetData(slot);
-
-				if (map == null)
-				{
-					map = new Dictionary<IComponentActivator, object>();
-
-					Thread.SetData(slot, map);
-				}
-
-				Object instance;
-
-				if (!map.TryGetValue(ComponentActivator, out instance))
-				{
-					instance = base.Resolve(context);
-					map.Add(ComponentActivator, instance);
-					instances.Add(instance);
-				}
-
-				return instance;
-			}
-		}
-
-		public void OnDeserialization(object sender)
-		{
-			slot = Thread.AllocateNamedDataSlot("CastlePerThread");
-			instances = new List<object>();
+			return scope.GetInstance(context, ComponentActivator);
 		}
 	}
 }
-
 #endif

@@ -613,6 +613,7 @@
     <Compile Include="Facilities\Startable\Components\StartableChainWithGenerics.cs" />
     <Compile Include="Facilities\Startable\Components\StartableComponentWithCustomDependencies.cs" />
     <Compile Include="Registration\DynamicParametersTestCase.cs" />
+    <Compile Include="Windsor.Tests\LitestylePerThreadTestCase.cs" />
     <Compile Include="Windsor.Tests\MultiServiceComponentsTestCase.cs" />
     <Compile Include="DefaultConversionManagerTestCase.cs">
       <SubType>Code</SubType>

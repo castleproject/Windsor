@@ -517,7 +517,7 @@ namespace Castle.MicroKernel.Handlers
 #if SILVERLIGHT
 					manager = new PerThreadThreadStaticLifestyleManager();
 #else
-					manager = new PerThreadLifestyleManager();
+					manager = new PerThreadLifestyleManager(Kernel.PerThreadScope);
 #endif
 					break;
 				case LifestyleType.Transient:
