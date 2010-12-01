@@ -15,8 +15,58 @@
 namespace Castle.MicroKernel.Lifestyle
 {
 	using System;
+	using System.Collections.Generic;
 
 	using Castle.MicroKernel.Context;
+
+	public class SingletonInstanceScope : IInstanceScope
+	{
+		private readonly IDictionary<IComponentActivator, object> instanceCache = new Dictionary<IComponentActivator, object>();
+
+		private readonly IKernelEvents events;
+
+		public SingletonInstanceScope(IKernelEvents events)
+		{
+			this.events = events;
+			events.ContainerDisposed += CleanUp;
+		}
+
+		private void CleanUp(object sender, EventArgs e)
+		{
+			foreach (var instance in instanceCache)
+			{
+				instance.Key.Destroy(instance.Value);
+			}
+			instanceCache.Clear();
+			events.ContainerDisposed -= CleanUp;
+		}
+
+		public object GetInstance(CreationContext context, IComponentActivator activator)
+		{
+			var instanceFromContext = context.GetContextualProperty(activator);
+			if (instanceFromContext != null)
+			{
+				//we've been called recursively, by some dependency from base.Resolve call
+				return instanceFromContext;
+			}
+			object instance;
+			if(instanceCache.TryGetValue(activator,out instance))
+			{
+				return instance;
+			}
+
+			lock (activator)
+			{
+				if (instanceCache.TryGetValue(activator, out instance))
+				{
+					return instance;
+				}
+				instance = activator.Create(context);
+				instanceCache[activator] = instance;
+			}
+			return instance;
+		}
+	}
 
 	/// <summary>
 	/// Summary description for SingletonLifestyleManager.
@@ -24,33 +74,20 @@ namespace Castle.MicroKernel.Lifestyle
 	[Serializable]
 	public class SingletonLifestyleManager : AbstractLifestyleManager
 	{
-		private volatile Object instance;
+		private readonly IInstanceScope scope;
+
+		public SingletonLifestyleManager(IInstanceScope scope)
+		{
+			this.scope = scope;
+		}
 
 		public override void Dispose()
 		{
-			if (instance != null) base.Release( instance );
 		}
 
 		public override object Resolve(CreationContext context)
 		{
-			if (instance == null)
-			{
-				var instanceFromContext = context.GetContextualProperty(ComponentActivator);
-				if (instanceFromContext != null)
-				{
-					//we've been called recursively, by some dependency from base.Resolve call
-					return instanceFromContext;
-				}
-				lock (ComponentActivator)
-				{
-					if (instance == null)
-					{
-						instance = base.Resolve(context);
-					}
-				}
-			}
-
-			return instance;
+			return scope.GetInstance(context, ComponentActivator);
 		}
 
 		public override bool Release(object instance)
