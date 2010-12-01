@@ -16,6 +16,7 @@ namespace Castle.MicroKernel.Handlers
 {
 	using System;
 	using System.Collections.Generic;
+	using System.Linq;
 
 	using Castle.Core;
 	using Castle.MicroKernel.Context;
@@ -30,7 +31,7 @@ namespace Castle.MicroKernel.Handlers
 	[Serializable]
 	public class DefaultGenericHandler : AbstractHandler
 	{
-		private readonly IDictionary<Type, IHandler> type2SubHandler;
+		private readonly IDictionary<Type, IHandler> type2SubHandler = new Dictionary<Type, IHandler>();
 
 		/// <summary>
 		///   Initializes a new instance of the <see cref = "DefaultGenericHandler" /> class.
@@ -38,7 +39,21 @@ namespace Castle.MicroKernel.Handlers
 		/// <param name = "model"></param>
 		public DefaultGenericHandler(ComponentModel model) : base(model)
 		{
-			type2SubHandler = new Dictionary<Type, IHandler>();
+		}
+
+		public override void Dispose()
+		{
+			var handlers = type2SubHandler.Values.ToArray();
+			type2SubHandler.Clear();
+			foreach (var handler in handlers)
+			{
+				var disposable = handler as IDisposable;
+				if (disposable == null)
+				{
+					continue;
+				}
+				disposable.Dispose();
+			}
 		}
 
 		public override bool ReleaseCore(object instance)
