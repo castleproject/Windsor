@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,20 +15,36 @@
 namespace Castle.MicroKernel.Lifestyle
 {
 	using System;
+
 	using Castle.Core;
 	using Castle.MicroKernel.Context;
 
 	/// <summary>
-	/// Summary description for AbstractLifestyleManager.
+	///   Summary description for AbstractLifestyleManager.
 	/// </summary>
-#if (!SILVERLIGHT)
 	[Serializable]
-#endif
 	public abstract class AbstractLifestyleManager : ILifestyleManager
 	{
-		private IKernel kernel;
 		private IComponentActivator componentActivator;
+		private IKernel kernel;
 		private ComponentModel model;
+
+		protected IComponentActivator ComponentActivator
+		{
+			get { return componentActivator; }
+		}
+
+		protected IKernel Kernel
+		{
+			get { return kernel; }
+		}
+
+		protected ComponentModel Model
+		{
+			get { return model; }
+		}
+
+		public abstract void Dispose();
 
 		public virtual void Init(IComponentActivator componentActivator, IKernel kernel, ComponentModel model)
 		{
@@ -37,32 +53,15 @@ namespace Castle.MicroKernel.Lifestyle
 			this.model = model;
 		}
 
-		public virtual object Resolve(CreationContext context)
-		{
-			return componentActivator.Create(context);
-		}
-
 		public virtual bool Release(object instance)
 		{
 			componentActivator.Destroy(instance);
 			return true;
 		}
 
-		public abstract void Dispose();
-
-		protected IKernel Kernel
+		public virtual object Resolve(CreationContext context)
 		{
-			get { return kernel; }
-		}
-
-		protected IComponentActivator ComponentActivator
-		{
-			get { return componentActivator; }
-		}
-
-		protected ComponentModel Model
-		{
-			get { return model; }
+			return componentActivator.Create(context);
 		}
 	}
 }
