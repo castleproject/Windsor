@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,10 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
+#if (!SILVERLIGHT)
 namespace Castle.MicroKernel.Lifestyle
 {
-#if (!SILVERLIGHT)
 	using System;
 	using System.Collections.Generic;
 	using System.Threading;
@@ -24,7 +23,7 @@ namespace Castle.MicroKernel.Lifestyle
 	using Castle.MicroKernel.Context;
 
 	/// <summary>
-	/// Summary description for PerThreadLifestyleManager.
+	///   Summary description for PerThreadLifestyleManager.
 	/// </summary>
 	[Serializable]
 	public class PerThreadLifestyleManager : AbstractLifestyleManager, IDeserializationCallback
@@ -33,27 +32,32 @@ namespace Castle.MicroKernel.Lifestyle
 		private static LocalDataStoreSlot slot = Thread.AllocateNamedDataSlot("CastlePerThread");
 
 		[NonSerialized]
-		private IList<object> instances =  new List<object>();
+		private IList<object> instances = new List<object>();
 
 		/// <summary>
-		/// 
 		/// </summary>
 		public override void Dispose()
 		{
-			foreach( object instance in instances )
+			foreach (var instance in instances)
 			{
-				base.Release( instance );
+				base.Release(instance);
 			}
 
 			instances.Clear();
 
 			// This doesn't seem right. it will collapse if there are multiple instances of the container
-			Thread.FreeNamedDataSlot( "CastlePerThread" );
+			Thread.FreeNamedDataSlot("CastlePerThread");
+		}
+
+		public override bool Release(object instance)
+		{
+			// Do nothing.
+			return false;
 		}
 
 		public override object Resolve(CreationContext context)
 		{
-			lock(slot)
+			lock (slot)
 			{
 				var map = (Dictionary<IComponentActivator, object>)Thread.GetData(slot);
 
@@ -61,7 +65,7 @@ namespace Castle.MicroKernel.Lifestyle
 				{
 					map = new Dictionary<IComponentActivator, object>();
 
-					Thread.SetData( slot, map );
+					Thread.SetData(slot, map);
 				}
 
 				Object instance;
@@ -77,17 +81,12 @@ namespace Castle.MicroKernel.Lifestyle
 			}
 		}
 
-		public override bool Release(object instance)
-		{
-			// Do nothing.
-			return false;
-		}
-		
 		public void OnDeserialization(object sender)
 		{
 			slot = Thread.AllocateNamedDataSlot("CastlePerThread");
 			instances = new List<object>();
 		}
 	}
-#endif
 }
+
+#endif
