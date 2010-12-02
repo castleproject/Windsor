@@ -23,14 +23,12 @@ namespace Castle.MicroKernel.Lifestyle
 	/// <summary>
 	/// Implements a Poolable Lifestyle Manager. 
 	/// </summary>
-#if (!SILVERLIGHT)
 	[Serializable]
-#endif
 	public class PoolableLifestyleManager : AbstractLifestyleManager
 	{
 		private IPool pool;
-		private int initialSize;
-		private int maxSize;
+		private readonly int initialSize;
+		private readonly int maxSize;
 
 		public PoolableLifestyleManager(int initialSize, int maxSize)
 		{
