@@ -1,4 +1,7 @@
 ================================================================================================
+rename -  CreationContext.Empty -> CreationContext.CreateEmpty()
+description - readability change to make it obvious that new instance is created each time.
+================================================================================================
 change - IServiceProviderEx was removed as base interface for IWindsorContainer and IKernel
 
 impact - low

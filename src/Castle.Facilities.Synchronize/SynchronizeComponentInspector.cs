@@ -166,7 +166,7 @@ namespace Castle.Facilities.Synchronize
 				IInterceptorSelector userSelector = null;
 				if (options.Selector != null)
 				{
-					userSelector = options.Selector.Resolve(kernel, CreationContext.Empty);
+					userSelector = options.Selector.Resolve(kernel, CreationContext.CreateEmpty());
 				}
 
 				options.Selector = new InstanceReference<IInterceptorSelector>(new SynchronizeInterceptorSelector(metaInfo, userSelector));

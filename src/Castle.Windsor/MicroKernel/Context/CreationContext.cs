@@ -112,7 +112,7 @@ namespace Castle.MicroKernel.Context
 				return;
 			}
 			resolutionStack = parent.resolutionStack;
-			if(parent.dependencies != null && parent.dependencies.HasDependencies)
+			if (parent.dependencies != null && parent.dependencies.HasDependencies)
 			{
 				dependencies.AddRange(parent.dependencies);
 			}
@@ -344,14 +344,14 @@ namespace Castle.MicroKernel.Context
 		/// <remarks>
 		///   A new CreationContext should be created every time, as the contexts keeps some state related to dependency resolution.
 		/// </remarks>
-		public static CreationContext Empty
+		public static CreationContext CreateEmpty()
 		{
-			get { return new CreationContext(); }
+			return new CreationContext();
 		}
 
 		private static Type[] ExtractGenericArguments(Type typeToExtractGenericArguments)
 		{
-			if(typeToExtractGenericArguments.IsGenericType)
+			if (typeToExtractGenericArguments.IsGenericType)
 			{
 				return typeToExtractGenericArguments.GetGenericArguments();
 			}

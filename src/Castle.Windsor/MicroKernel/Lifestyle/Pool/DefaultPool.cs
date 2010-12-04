@@ -138,7 +138,7 @@ namespace Castle.MicroKernel.Lifestyle.Pool
 
 			for(int i=0; i < initialsize; i++)
 			{
-				tempInstance.Add(Request(CreationContext.Empty));
+				tempInstance.Add(Request(CreationContext.CreateEmpty()));
 			}
 
 			for(int i=0; i < initialsize; i++)

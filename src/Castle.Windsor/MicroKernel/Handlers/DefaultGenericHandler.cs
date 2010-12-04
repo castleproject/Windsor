@@ -60,7 +60,7 @@ namespace Castle.MicroKernel.Handlers
 		{
 			var genericType = ProxyUtil.GetUnproxiedType(instance);
 
-			var handler = GetSubHandler(CreationContext.Empty, genericType);
+			var handler = GetSubHandler(CreationContext.CreateEmpty(), genericType);
 
 			return handler.Release(instance);
 		}

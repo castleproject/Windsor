@@ -154,7 +154,7 @@ namespace Castle.Facilities.Startable
 
 		private void Start(IHandler handler)
 		{
-			handler.Resolve(CreationContext.Empty);
+			handler.Resolve(CreationContext.CreateEmpty());
 		}
 
 		private void StartAll(ref bool statechanged)
@@ -190,7 +190,7 @@ namespace Castle.Facilities.Startable
 			try
 			{
 				inStart = true;
-				return handler.TryResolve(CreationContext.Empty) != null;
+				return handler.TryResolve(CreationContext.CreateEmpty()) != null;
 			}
 			finally
 			{

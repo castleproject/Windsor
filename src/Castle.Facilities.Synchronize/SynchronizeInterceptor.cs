@@ -137,7 +137,7 @@ namespace Castle.Facilities.Synchronize
 						throw new ApplicationException("The synchronization context could not be resolved.  Did you forget to register it in the container?");
 					}
 
-					syncContext = handler.Resolve(CreationContext.Empty) as SynchronizationContext;
+					syncContext = handler.Resolve(CreationContext.CreateEmpty()) as SynchronizationContext;
 
 					if (syncContext == null)
 					{
