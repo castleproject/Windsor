@@ -57,7 +57,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 
 			DependencyModel dependency = new DependencyModel(DependencyType.ServiceOverride, key, targetType, false);
 
-			return Context.Kernel.Resolver.Resolve(Context.CurrentCreationContext ?? CreationContext.Empty, null,
+			return Context.Kernel.Resolver.Resolve(Context.CurrentCreationContext ?? CreationContext.CreateEmpty(), null,
 			                                       Context.CurrentModel, dependency);
 		}
 

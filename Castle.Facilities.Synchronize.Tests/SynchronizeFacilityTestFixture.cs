@@ -338,7 +338,7 @@ namespace Castle.Facilities.Synchronize.Tests
 			var model = container2.Kernel.GetHandler("dummy.form.class").ComponentModel;
 			var options = ProxyUtil.ObtainProxyOptions(model, false);
 			Assert.IsNotNull(options, "Proxy options should not be null");
-			Assert.IsTrue(options.Hook.Resolve(container2.Kernel, CreationContext.Empty) is DummyProxyHook,
+			Assert.IsTrue(options.Hook.Resolve(container2.Kernel, CreationContext.CreateEmpty()) is DummyProxyHook,
 			              "Proxy hook should be a DummyProxyHook");
 		}
 
