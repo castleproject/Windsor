@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,29 +19,30 @@ namespace Castle.MicroKernel
 
 	using Castle.Core;
 
-	/// <summary>
-	/// 
-	/// </summary>
 	public class Burden
 	{
-		private object instance;
-		private IHandler handler;
-		private bool instanceRequiresDecommission;
 		private bool childRequiresDecommission;
-		private readonly List<Burden> children = new List<Burden>();
+		private List<Burden> children;
+		private IHandler handler;
+		private object instance;
+		private bool instanceRequiresDecommission;
 
-		public void SetRootInstance(object instance, IHandler handler, bool hasDecomission)
+		public bool GraphRequiresDecommission
 		{
-			if (instance == null) throw new ArgumentNullException("instance");
-			if (handler == null) throw new ArgumentNullException("handler");
+			get { return instanceRequiresDecommission || childRequiresDecommission; }
+		}
 
-			this.instance = instance;
-			this.handler = handler;
-			instanceRequiresDecommission = hasDecomission;
+		public ComponentModel Model
+		{
+			get { return handler.ComponentModel; }
 		}
 
 		public void AddChild(Burden child)
 		{
+			if (children == null)
+			{
+				children = new List<Burden>();
+			}
 			children.Add(child);
 
 			if (child.GraphRequiresDecommission)
@@ -50,36 +51,42 @@ namespace Castle.MicroKernel
 			}
 		}
 
-		public bool GraphRequiresDecommission
-		{
-			get
-			{
-				return instanceRequiresDecommission || childRequiresDecommission;
-			}
-		}
-
-		public bool HasChildren
-		{
-			get { return children.Count != 0; }
-		}
-
-		public ComponentModel Model
-		{
-			get { return handler.ComponentModel; }
-		}
-
 		public bool Release(IReleasePolicy policy)
 		{
-			if (policy == null) throw new ArgumentNullException("policy");
+			if (policy == null)
+			{
+				throw new ArgumentNullException("policy");
+			}
 
 			if (handler.Release(instance) == false)
-				return false;
-
-			foreach (Burden child in children)
 			{
-				policy.Release(child.instance);
+				return false;
+			}
+
+			if (children != null)
+			{
+				foreach (var child in children)
+				{
+					policy.Release(child.instance);
+				}
 			}
 			return true;
+		}
+
+		public void SetRootInstance(object instance, IHandler handler, bool hasDecomission)
+		{
+			if (instance == null)
+			{
+				throw new ArgumentNullException("instance");
+			}
+			if (handler == null)
+			{
+				throw new ArgumentNullException("handler");
+			}
+
+			this.instance = instance;
+			this.handler = handler;
+			instanceRequiresDecommission = hasDecomission;
 		}
 	}
 }
