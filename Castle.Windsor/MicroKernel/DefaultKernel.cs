@@ -823,7 +823,7 @@ namespace Castle.MicroKernel
 
 			try
 			{
-				return handler.Resolve(context).Instance;
+				return handler.Resolve(context);
 			}
 			finally
 			{
@@ -839,12 +839,7 @@ namespace Castle.MicroKernel
 
 			try
 			{
-				var burden = handler.TryResolve(context);
-				if(burden == null)
-				{
-					return null;
-				}
-				return burden.Instance;
+				return handler.TryResolve(context);
 			}
 			finally
 			{

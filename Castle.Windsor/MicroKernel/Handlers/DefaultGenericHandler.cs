@@ -98,7 +98,7 @@ namespace Castle.MicroKernel.Handlers
 			}
 		}
 
-		protected override Burden ResolveCore(CreationContext context, bool requiresDecommission, bool instanceRequired)
+		protected override object ResolveCore(CreationContext context, bool requiresDecommission, bool instanceRequired)
 		{
 			var implType = GetClosedImplementationType(context, instanceRequired);
 			if (implType == null)
