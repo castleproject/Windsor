@@ -100,6 +100,7 @@ namespace Castle.MicroKernel.Handlers
 
 		protected override object ResolveCore(CreationContext context, bool requiresDecommission, bool instanceRequired)
 		{
+			// NOTE: requiresDecommission is ignored here.
 			var implType = GetClosedImplementationType(context, instanceRequired);
 			if (implType == null)
 			{
