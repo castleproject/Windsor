@@ -25,11 +25,17 @@ namespace Castle.MicroKernel
 		private List<Burden> children;
 		private IHandler handler;
 		private object instance;
+
 		private bool instanceRequiresDecommission;
 
 		public bool GraphRequiresDecommission
 		{
 			get { return instanceRequiresDecommission || childRequiresDecommission; }
+		}
+
+		public object Instance
+		{
+			get { return instance; }
 		}
 
 		public ComponentModel Model

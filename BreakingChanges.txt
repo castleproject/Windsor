@@ -1,4 +1,16 @@
 ================================================================================================
+change - IHandler.Resolve and IHandler.TryResolve return now Burden instead of Object instance.
+
+impact - low
+fixability - easy
+
+description - To enable some internal improvements, and make room for changes to lifestyles
+	in the future, a Burden instance related to resolved instance is being returned instead.
+
+fix - Burden.Instance to get access to the actual object. When using TryResolve be aware that
+	when object can't be obtained a null Burden is being returned, so check for null before
+	accessing its Instance property.
+================================================================================================
 rename -  CreationContext.Empty -> CreationContext.CreateEmpty()
 description - readability change to make it obvious that new instance is created each time.
 ================================================================================================

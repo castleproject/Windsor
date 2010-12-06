@@ -57,8 +57,8 @@ namespace Castle.MicroKernel.Tests.Lifestyle
 
 			IHandler handler = kernel.GetHandler("a");
 
-			IComponent instance1 = handler.Resolve(CreationContext.CreateEmpty()) as IComponent;
-			IComponent instance2 = handler.Resolve(CreationContext.CreateEmpty()) as IComponent;
+			IComponent instance1 = handler.Resolve(CreationContext.CreateEmpty()).Instance as IComponent;
+			IComponent instance2 = handler.Resolve(CreationContext.CreateEmpty()).Instance as IComponent;
 
 			Assert.IsNotNull(instance1);
 			Assert.IsNotNull(instance2);
@@ -235,8 +235,8 @@ namespace Castle.MicroKernel.Tests.Lifestyle
 
 			IHandler handler = kernel.GetHandler("a");
 
-			IComponent instance1 = handler.Resolve(CreationContext.CreateEmpty()) as IComponent;
-			IComponent instance2 = handler.Resolve(CreationContext.CreateEmpty()) as IComponent;
+			IComponent instance1 = handler.Resolve(CreationContext.CreateEmpty()).Instance as IComponent;
+			IComponent instance2 = handler.Resolve(CreationContext.CreateEmpty()).Instance as IComponent;
 
 			Assert.IsNotNull(instance1);
 			Assert.IsNotNull(instance2);
@@ -255,7 +255,7 @@ namespace Castle.MicroKernel.Tests.Lifestyle
 
 			IHandler handler = kernel.GetHandler("a");
 
-			IComponent instance1 = handler.Resolve(CreationContext.CreateEmpty()) as IComponent;
+			IComponent instance1 = handler.Resolve(CreationContext.CreateEmpty()).Instance as IComponent;
 
 			Assert.IsNotNull(instance1);
 		}
@@ -285,8 +285,8 @@ namespace Castle.MicroKernel.Tests.Lifestyle
 
 			IHandler handler = kernel.GetHandler("a");
 
-			IComponent instance1 = handler.Resolve(CreationContext.CreateEmpty()) as IComponent;
-			IComponent instance2 = handler.Resolve(CreationContext.CreateEmpty()) as IComponent;
+			IComponent instance1 = handler.Resolve(CreationContext.CreateEmpty()).Instance as IComponent;
+			IComponent instance2 = handler.Resolve(CreationContext.CreateEmpty()).Instance as IComponent;
 
 			Assert.IsNotNull(instance1);
 			Assert.IsNotNull(instance2);
@@ -309,7 +309,7 @@ namespace Castle.MicroKernel.Tests.Lifestyle
 		private void OtherThread()
 		{
 			IHandler handler = kernel.GetHandler("a");
-			instance3 = handler.Resolve(CreationContext.CreateEmpty()) as IComponent;
+			instance3 = handler.Resolve(CreationContext.CreateEmpty()).Instance as IComponent;
 		}
 	}
 }

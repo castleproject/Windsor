@@ -44,9 +44,7 @@ namespace Castle.MicroKernel.Handlers
 
 		public override void Dispose()
 		{
-			var handlers = type2SubHandler.Values.ToArray();
-			type2SubHandler.Clear();
-			foreach (var handler in handlers)
+			foreach (var handler in type2SubHandler.Values)
 			{
 				var disposable = handler as IDisposable;
 				if (disposable == null)
@@ -55,6 +53,7 @@ namespace Castle.MicroKernel.Handlers
 				}
 				disposable.Dispose();
 			}
+			type2SubHandler.Clear();
 		}
 
 		public override bool ReleaseCore(object instance)
@@ -68,38 +67,38 @@ namespace Castle.MicroKernel.Handlers
 
 		protected IHandler GetSubHandler(CreationContext context, Type genericType)
 		{
+			IHandler handler;
+			if (type2SubHandler.TryGetValue(genericType, out handler))
+			{
+				return handler;
+			}
 			lock (type2SubHandler)
 			{
-				IHandler handler;
-
-				if (type2SubHandler.ContainsKey(genericType))
+				if (type2SubHandler.TryGetValue(genericType, out handler))
 				{
-					handler = type2SubHandler[genericType];
+					return handler;
 				}
-				else
-				{
-					// TODO: we should probably match the requested type to existing services and close them over its generic arguments
-					var service = context.RequestedType;
-					var newModel = Kernel.ComponentModelBuilder.BuildModel(
-						ComponentModel.Name, new[] { service }, genericType, ComponentModel.ExtendedProperties);
+				// TODO: we should probably match the requested type to existing services and close them over its generic arguments
+				var service = context.RequestedType;
+				var newModel = Kernel.ComponentModelBuilder.BuildModel(
+					ComponentModel.Name, new[] { service }, genericType, ComponentModel.ExtendedProperties);
 
-					newModel.ExtendedProperties[ComponentModel.SkipRegistration] = true;
-					CloneParentProperties(newModel);
+				newModel.ExtendedProperties[ComponentModel.SkipRegistration] = true;
+				CloneParentProperties(newModel);
 
-					// Create the handler and add to type2SubHandler before we add to the kernel.
-					// Adding to the kernel could satisfy other dependencies and cause this method
-					// to be called again which would result in extra instances being created.
-					handler = Kernel.HandlerFactory.Create(newModel);
-					type2SubHandler[genericType] = handler;
+				// Create the handler and add to type2SubHandler before we add to the kernel.
+				// Adding to the kernel could satisfy other dependencies and cause this method
+				// to be called again which would result in extra instances being created.
+				handler = Kernel.HandlerFactory.Create(newModel);
+				type2SubHandler[genericType] = handler;
 
-					Kernel.AddCustomComponent(newModel);
-				}
+				Kernel.AddCustomComponent(newModel);
 
 				return handler;
 			}
 		}
 
-		protected override object ResolveCore(CreationContext context, bool requiresDecommission, bool instanceRequired)
+		protected override Burden ResolveCore(CreationContext context, bool requiresDecommission, bool instanceRequired)
 		{
 			var implType = GetClosedImplementationType(context, instanceRequired);
 			if (implType == null)
@@ -109,7 +108,6 @@ namespace Castle.MicroKernel.Handlers
 			}
 
 			var handler = GetSubHandler(context, implType);
-
 			// so the generic version wouldn't be considered as well
 			using (context.EnterResolutionContext(this, false))
 			{

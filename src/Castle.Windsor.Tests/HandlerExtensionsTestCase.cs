@@ -133,7 +133,9 @@ namespace Castle.Windsor.Tests
 			{
 				invocation.Proceed();
 			}
-			invocation.ReturnValue = a;
+			var burden = new Burden();
+			burden.SetRootInstance(a, invocation.Context.Handler, false);
+			invocation.Burden = burden;
 		}
 	}
 

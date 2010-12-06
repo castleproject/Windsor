@@ -150,7 +150,7 @@ namespace Castle.MicroKernel.Handlers
 		/// <param name = "requiresDecommission"></param>
 		/// <param name = "instanceRequired">When <c>false</c>, handler can not create valid instance and return <c>null</c> instead.</param>
 		/// <returns></returns>
-		protected abstract object ResolveCore(CreationContext context, bool requiresDecommission, bool instanceRequired);
+		protected abstract Burden ResolveCore(CreationContext context, bool requiresDecommission, bool instanceRequired);
 
 		public virtual void Dispose()
 		{
@@ -357,12 +357,12 @@ namespace Castle.MicroKernel.Handlers
 		/// </summary>
 		/// <param name = "context"></param>
 		/// <returns></returns>
-		public object Resolve(CreationContext context)
+		public Burden Resolve(CreationContext context)
 		{
 			return Resolve(context, true);
 		}
 
-		public object TryResolve(CreationContext context)
+		public Burden TryResolve(CreationContext context)
 		{
 			try
 			{
@@ -759,7 +759,7 @@ namespace Castle.MicroKernel.Handlers
 		/// <param name = "context"></param>
 		/// <param name = "instanceRequired">when <c>false</c>, handler can not create valid instance and return <c>null</c> instead </param>
 		/// <returns></returns>
-		protected virtual object Resolve(CreationContext context, bool instanceRequired)
+		protected virtual Burden Resolve(CreationContext context, bool instanceRequired)
 		{
 			return ResolveCore(context, false, instanceRequired);
 		}
