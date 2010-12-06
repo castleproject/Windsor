@@ -43,7 +43,7 @@ namespace Castle.MicroKernel.Handlers
 		/// <param name="requiresDecommission"></param>
 		/// <param name="instanceRequired"></param>
 		/// <returns></returns>
-		protected override object ResolveCore(CreationContext context, bool requiresDecommission, bool instanceRequired)
+		protected override Burden ResolveCore(CreationContext context, bool requiresDecommission, bool instanceRequired)
 		{
 			if (CanResolvePendingDependencies(context) == false)
 			{
@@ -61,7 +61,7 @@ namespace Castle.MicroKernel.Handlers
 				resolutionContext.Burden.SetRootInstance(instance, this, HasDecomission(requiresDecommission));
 				context.ReleasePolicy.Track(instance, resolutionContext.Burden);
 
-				return instance;
+				return resolutionContext.Burden;
 			}
 		}
 

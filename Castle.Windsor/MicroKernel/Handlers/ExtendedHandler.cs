@@ -71,7 +71,7 @@ namespace Castle.MicroKernel.Handlers
 			return invocation.ReturnValue;
 		}
 
-		protected override object Resolve(CreationContext context, bool instanceRequired)
+		protected override Burden Resolve(CreationContext context, bool instanceRequired)
 		{
 			if (resolveExtensions == null)
 			{
@@ -79,7 +79,7 @@ namespace Castle.MicroKernel.Handlers
 			}
 			var invocation = new ResolveInvocation(context, instanceRequired);
 			InvokeResolvePipeline(0, invocation);
-			return invocation.ReturnValue;
+			return invocation.Burden;
 		}
 
 		private void InvokeReleasePipeline(int extensionIndex, ReleaseInvocation invocation)
@@ -98,7 +98,7 @@ namespace Castle.MicroKernel.Handlers
 		{
 			if (extensionIndex >= resolveExtensions.Length)
 			{
-				invocation.ReturnValue = ResolveCore(invocation.Context, invocation.DecommissionRequired,
+				invocation.Burden = ResolveCore(invocation.Context, invocation.DecommissionRequired,
 				                                     invocation.InstanceRequired);
 				return;
 			}

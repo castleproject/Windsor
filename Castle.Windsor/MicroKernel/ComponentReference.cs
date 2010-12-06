@@ -81,7 +81,7 @@ namespace Castle.MicroKernel
 
 			try
 			{
-				return (T)handler.Resolve(context);
+				return (T)handler.Resolve(context).Instance;
 			}
 			catch (InvalidCastException e)
 			{
