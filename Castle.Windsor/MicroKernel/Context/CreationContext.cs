@@ -233,39 +233,35 @@ namespace Castle.MicroKernel.Context
 			{
 				return false;
 			}
-			var canResolveByKey = CanResolveByKey(dependency);
-			var canResolveByType = CanResolveByType(dependency);
-			return canResolveByKey || canResolveByType;
+			return CanResolveByKey(dependency) || CanResolveByType(dependency);
 		}
 
 		public virtual object Resolve(CreationContext context, ISubDependencyResolver contextHandlerResolver, ComponentModel model, DependencyModel dependency)
 		{
 			Debug.Assert(CanResolve(context, contextHandlerResolver, model, dependency), "CanResolve(context, contextHandlerResolver, model, dependency)");
+			object result = null;
+			if (dependency.DependencyKey != null)
+			{
+				result = Resolve(dependency, additionalParameters[dependency.DependencyKey]);
+			}
+			return result ?? Resolve(dependency, additionalParameters[dependency.TargetType]);
+		}
 
-			var inlineArgument = additionalParameters[dependency.DependencyKey];
+		private object Resolve(DependencyModel dependency, object inlineArgument)
+		{
 			var targetType = dependency.TargetItemType;
 			if (inlineArgument != null)
 			{
-				if (converter != null &&
-				    !targetType.IsInstanceOfType(inlineArgument) &&
-				    dependency.DependencyType == DependencyType.Parameter)
+				if (targetType.IsInstanceOfType(inlineArgument))
+				{
+					return inlineArgument;
+				}
+				if (CanConvertParameter(dependency, targetType))
 				{
 					return converter.PerformConversion(inlineArgument.ToString(), targetType);
 				}
-
-				return inlineArgument;
 			}
-
-			inlineArgument = additionalParameters[targetType];
-			if (inlineArgument != null &&
-			    converter != null &&
-			    !targetType.IsInstanceOfType(inlineArgument) &&
-			    dependency.DependencyType == DependencyType.Parameter)
-			{
-				return converter.PerformConversion(inlineArgument.ToString(), targetType);
-			}
-
-			return inlineArgument;
+			return null;
 		}
 
 		private bool CanResolve(DependencyModel dependency, object inlineArgument)
@@ -275,10 +271,14 @@ namespace Castle.MicroKernel.Context
 			{
 				return false;
 			}
-			return type.IsInstanceOfType(inlineArgument) ||
-			       (converter != null &&
-			        dependency.DependencyType == DependencyType.Parameter &&
-			        converter.CanHandleType(type));
+			return type.IsInstanceOfType(inlineArgument) || CanConvertParameter(dependency, type);
+		}
+
+		private bool CanConvertParameter(DependencyModel dependency, Type type)
+		{
+			return converter != null &&
+			       dependency.DependencyType == DependencyType.Parameter &&
+			       converter.CanHandleType(type);
 		}
 
 		private bool CanResolveByKey(DependencyModel dependency)
