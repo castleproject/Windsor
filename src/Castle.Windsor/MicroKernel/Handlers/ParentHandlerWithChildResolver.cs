@@ -118,12 +118,12 @@ namespace Castle.MicroKernel.Handlers
 			parentHandler.RemoveCustomDependencyValue(key);
 		}
 
-		public virtual Burden Resolve(CreationContext context)
+		public virtual object Resolve(CreationContext context)
 		{
 			return parentHandler.Resolve(context);
 		}
 
-		public Burden TryResolve(CreationContext context)
+		public object TryResolve(CreationContext context)
 		{
 			return parentHandler.Resolve(context);
 		}

@@ -168,7 +168,7 @@ namespace Castle.Core
 			}
 
 			var contextForInterceptor = RebuildContext(GetHandlerType(handler), context);
-			return (IInterceptor)handler.Resolve(contextForInterceptor).Instance;
+			return (IInterceptor)handler.Resolve(contextForInterceptor);
 		}
 
 		/// <summary>
