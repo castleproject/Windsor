@@ -16,6 +16,7 @@ namespace Castle.MicroKernel.Handlers
 {
 	using System;
 	using System.Collections.Generic;
+	using System.Diagnostics;
 	using System.Linq;
 
 	using Castle.Core;
@@ -100,33 +101,11 @@ namespace Castle.MicroKernel.Handlers
 
 		protected override object ResolveCore(CreationContext context, bool requiresDecommission, bool instanceRequired)
 		{
-			Type implType;
-			try
+			var implType = GetClosedImplementationType(context, instanceRequired);
+			if (implType == null)
 			{
-				// TODO: what if ComponentModel.Implementation is a LateBoundComponent?
-				implType = ComponentModel.Implementation.MakeGenericType(context.GenericArguments);
-			}
-			catch (ArgumentException e)
-			{
-				// may throw in some cases when impl has generic constraints that service hasn't
-				if (instanceRequired == false)
-				{
-					return null;
-				}
-
-				// ok, let's do some investigation now what might have been the cause of the error
-				var arguments = ComponentModel.Implementation.GetGenericArguments();
-				if (arguments.Length > context.GenericArguments.Length)
-				{
-					var message =
-						string.Format(
-							"Requested type {0} has {1} generic parameter(s), whereas component implementation type {2} requires {3}. This means that Windsor does not have enough information to properly create that component for you. This is most likely a bug in your registration code.",
-							context.RequestedType, context.GenericArguments.Length, ComponentModel.Implementation, arguments.Length);
-					throw new HandlerException(message, e);
-				}
-				// we have correct number of generic arguments, that means probably some generic constraing was violated.
-				// the CLR exception should suffice
-				throw;
+				Debug.Assert(instanceRequired == false, "instanceRequired == false");
+				return null;
 			}
 
 			var handler = GetSubHandler(context, implType);
@@ -164,6 +143,37 @@ namespace Castle.MicroKernel.Handlers
 				// we need to check that we are not adding the inteceptor again, if it was added
 				// by a facility already
 				newModel.Interceptors.AddIfNotInCollection(interceptor);
+			}
+		}
+
+		private Type GetClosedImplementationType(CreationContext context, bool instanceRequired)
+		{
+			try
+			{
+				// TODO: what if ComponentModel.Implementation is a LateBoundComponent?
+				return ComponentModel.Implementation.MakeGenericType(context.GenericArguments);
+			}
+			catch (ArgumentException e)
+			{
+				// may throw in some cases when impl has generic constraints that service hasn't
+				if (instanceRequired == false)
+				{
+					return null;
+				}
+
+				// ok, let's do some investigation now what might have been the cause of the error
+				var arguments = ComponentModel.Implementation.GetGenericArguments();
+				if (arguments.Length > context.GenericArguments.Length)
+				{
+					var message =
+						string.Format(
+							"Requested type {0} has {1} generic parameter(s), whereas component implementation type {2} requires {3}. This means that Windsor does not have enough information to properly create that component for you. This is most likely a bug in your registration code.",
+							context.RequestedType, context.GenericArguments.Length, ComponentModel.Implementation, arguments.Length);
+					throw new HandlerException(message, e);
+				}
+				// we have correct number of generic arguments, that means probably some generic constraing was violated.
+				// the CLR exception should suffice
+				throw;
 			}
 		}
 	}
