@@ -165,25 +165,6 @@ namespace Castle.Facilities.NHibernateIntegration.Components.Dao
 		}
 
 		/// <summary>
-		/// Deletes the instance from the database.
-		/// </summary>
-		/// <param name="instance">The instance to be deleted from the database</param>
-		public virtual void Delete(object instance)
-		{
-			using (ISession session = GetSession())
-			{
-				try
-				{
-					session.Delete(instance);
-				}
-				catch (Exception ex)
-				{
-					throw new DataException("Could not perform Delete for " + instance.GetType().Name, ex);
-				}
-			}
-		}
-
-		/// <summary>
 		/// Persists the modification on the instance
 		/// state to the database.
 		/// </summary>
@@ -199,6 +180,25 @@ namespace Castle.Facilities.NHibernateIntegration.Components.Dao
 				catch (Exception ex)
 				{
 					throw new DataException("Could not perform Update for " + instance.GetType().Name, ex);
+				}
+			}
+		}
+
+		/// <summary>
+		/// Deletes the instance from the database.
+		/// </summary>
+		/// <param name="instance">The instance to be deleted from the database</param>
+		public virtual void Delete(object instance)
+		{
+			using (ISession session = this.GetSession())
+			{
+				try
+				{
+					session.Delete(instance);
+				}
+				catch (Exception ex)
+				{
+					throw new DataException("Could not perform Delete for " + instance.GetType().Name, ex);
 				}
 			}
 		}
@@ -308,6 +308,83 @@ namespace Castle.Facilities.NHibernateIntegration.Components.Dao
 				catch (Exception ex)
 				{
 					throw new DataException("Could not perform FindByIdStateless for " + type.Name, ex);
+				}
+			}
+		}
+
+		/// <summary>
+		/// Creates (saves or inserts) a new instance to the database using IStatelessSession.
+		/// </summary>
+		/// <param name="instance">The instance to be created on the database</param>
+		/// <returns>The instance</returns>
+		public object CreateStateless(object instance)
+		{
+			using (IStatelessSession session = GetStatelessSession())
+			{
+				try
+				{
+					return session.Insert(instance);
+				}
+				catch (Exception ex)
+				{
+					throw new DataException("Could not perform CreateStateless for " + instance.GetType().Name, ex);
+				}
+			}
+		}
+
+		/// <summary>
+		/// Persists the modification on the instance state to the database using IStatelessSession.
+		/// </summary>
+		/// <param name="instance">The instance to be updated on the database</param>
+		public void UpdateStateless(object instance)
+		{
+			using (IStatelessSession session = GetStatelessSession())
+			{
+				try
+				{
+					session.Update(instance);
+				}
+				catch (Exception ex)
+				{
+					throw new DataException("Could not perform UpdateStateless for " + instance.GetType().Name, ex);
+				}
+			}
+		}
+
+		/// <summary>
+		/// Deletes the instance from the database using IStatelessSession.
+		/// </summary>
+		/// <param name="instance">The instance to be deleted from the database</param>
+		public void DeleteStateless(object instance)
+		{
+			using (IStatelessSession session = this.GetStatelessSession())
+			{
+				try
+				{
+					session.Delete(instance);
+				}
+				catch (Exception ex)
+				{
+					throw new DataException("Could not perform DeleteStateless for " + instance.GetType().Name, ex);
+				}
+			}
+		}
+
+		/// <summary>
+		/// Deletes all rows for the specified type using IStatelessSession.
+		/// </summary>
+		/// <param name="type">type on which the rows on the database should be deleted</param>
+		public void DeleteAllStateless(Type type)
+		{
+			using (IStatelessSession session = GetStatelessSession())
+			{
+				try
+				{
+					session.Delete(String.Format("from {0}", type.Name));
+				}
+				catch (Exception ex)
+				{
+					throw new DataException("Could not perform DeleteAllStateless for " + type.Name, ex);
 				}
 			}
 		}
@@ -532,7 +609,7 @@ namespace Castle.Facilities.NHibernateIntegration.Components.Dao
 			if (! properties.ContainsKey(propertyName))
 				throw new ArgumentOutOfRangeException("propertyName", "Property "
 				                                                      + propertyName + " doest not exist for type "
-				                                                      + instance.GetType().ToString() + ".");
+				                                                      + instance.GetType() + ".");
 
 			using (ISession session = this.GetSession())
 			{

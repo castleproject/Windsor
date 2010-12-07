@@ -107,5 +107,74 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Transactions
 			Assert.AreEqual(0, blogitems.Length);
 			Assert.AreEqual(0, orders.Length);
 		}
+
+		[Test, Ignore]
+		// TODO: System.Data.SqlClient.SqlException : New request is not allowed to start because it should come with valid transaction descriptor.
+		// TODO: NHibernate doesn't support IStatelessSession.BeginTransaction(IsolationLevel) yet.
+		public void SuccessfulSituationWithTwoDatabasesStateless()
+		{
+			RootService2 service = container.Resolve<RootService2>();
+			OrderDao2 orderDao = container.Resolve<OrderDao2>("myorderdao");
+
+			try
+			{
+				service.DoTwoDBOperation_Create_Stateless(false);
+			}
+			catch (Exception ex)
+			{
+				if (ex.InnerException != null && ex.InnerException.GetType().Name == "TransactionManagerCommunicationException")
+					Assert.Ignore("MTS is not available");
+				throw;
+			}
+
+			Array blogs = service.FindAllStateless(typeof(Blog));
+			Array blogitems = service.FindAllStateless(typeof(BlogItem));
+			Array orders = orderDao.FindAllStateless(typeof(Order));
+
+			Assert.IsNotNull(blogs);
+			Assert.IsNotNull(blogitems);
+			Assert.IsNotNull(orders);
+			Assert.AreEqual(1, blogs.Length);
+			Assert.AreEqual(1, blogitems.Length);
+			Assert.AreEqual(1, orders.Length);
+		}
+
+		[Test, Ignore]
+		// TODO: System.Data.SqlClient.SqlException : New request is not allowed to start because it should come with valid transaction descriptor.
+		// TODO: NHibernate doesn't support IStatelessSession.BeginTransaction(IsolationLevel) yet.
+		public void ExceptionOnEndWithTwoDatabasesStateless()
+		{
+			RootService2 service = container.Resolve<RootService2>();
+			OrderDao2 orderDao = container.Resolve<OrderDao2>("myorderdao");
+
+			try
+			{
+				service.DoTwoDBOperation_Create_Stateless(true);
+			}
+			catch (InvalidOperationException)
+			{
+				// Expected
+			}
+			catch (RollbackResourceException e)
+			{
+				foreach (var resource in e.FailedResources)
+				{
+					Console.WriteLine(resource.Second);
+				}
+
+				throw;
+			}
+
+			Array blogs = service.FindAllStateless(typeof(Blog));
+			Array blogitems = service.FindAllStateless(typeof(BlogItem));
+			Array orders = orderDao.FindAllStateless(typeof(Order));
+
+			Assert.IsNotNull(blogs);
+			Assert.IsNotNull(blogitems);
+			Assert.IsNotNull(orders);
+			Assert.AreEqual(0, blogs.Length);
+			Assert.AreEqual(0, blogitems.Length);
+			Assert.AreEqual(0, orders.Length);
+		}
 	}
 }

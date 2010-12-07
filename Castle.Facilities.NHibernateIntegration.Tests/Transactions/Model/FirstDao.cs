@@ -77,5 +77,49 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Transactions
 				session.Save(blogRef);
 			}
 		}
+
+		[Transaction]
+		public virtual Blog CreateStateless()
+		{
+			return CreateStateless("xbox blog");
+		}
+
+		[Transaction]
+		public virtual Blog CreateStateless(String name)
+		{
+			NHibernate.ITransaction tran;
+
+			using (IStatelessSession session = sessManager.OpenStatelessSession())
+			{
+				tran = session.Transaction;
+
+				NUnit.Framework.Assert.IsNotNull(session.Transaction);
+				NUnit.Framework.Assert.IsTrue(session.Transaction.IsActive);
+
+				Blog blog = new Blog();
+				blog.Name = name;
+				session.Insert(blog);
+				return blog;
+			}
+		}
+
+		[Transaction]
+		public virtual void DeleteStateless(String name)
+		{
+			using (IStatelessSession session = sessManager.OpenStatelessSession())
+			{
+				NUnit.Framework.Assert.IsNotNull(session.Transaction);
+				session.Delete("from Blog b where b.Name ='" + name + "'");
+			}
+		}
+
+
+		public virtual void AddBlogRefStateless(BlogRef blogRef)
+		{
+			using (IStatelessSession session = sessManager.OpenStatelessSession())
+			{
+				session.Insert(blogRef);
+			}
+		}
 	}
 }

@@ -50,5 +50,23 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Transactions
 				return blog;
 			}
 		}
+
+		[Transaction]
+		public virtual Blog CreateStateless()
+		{
+			return Create("xbox blog");
+		}
+
+		[Transaction]
+		public virtual Blog CreateStateless(String name)
+		{
+			using (IStatelessSession session = sessManager.OpenStatelessSession())
+			{
+				Blog blog = new Blog();
+				blog.Name = name;
+				session.Insert(blog);
+				return blog;
+			}
+		}
 	}
 }

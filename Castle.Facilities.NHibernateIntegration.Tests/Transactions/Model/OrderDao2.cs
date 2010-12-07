@@ -47,5 +47,20 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Transactions
 				return order;
 			}
 		}
+
+		[Transaction]
+		public virtual Order CreateStateless(float val)
+		{
+			using (IStatelessSession session = sessManager.OpenStatelessSession("db2"))
+			{
+				NUnit.Framework.Assert.IsNotNull(session.Transaction);
+
+				Order order = new Order();
+				order.Value = val;
+				session.Insert(order);
+
+				return order;
+			}
+		}
 	}
 }

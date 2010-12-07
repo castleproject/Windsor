@@ -113,5 +113,30 @@ namespace Castle.Facilities.NHibernateIntegration.Components.Dao
 		/// <param name="id">ID value</param>
 		/// <returns>The object instance.</returns>
 		object FindByIdStateless(Type type, object id);
+
+		/// <summary>
+		/// Creates (saves or inserts) a new instance to the database using IStatelessSession.
+		/// </summary>
+		/// <param name="instance">The instance to be created on the database</param>
+		/// <returns>The instance</returns>
+		object CreateStateless(object instance);
+
+		/// <summary>
+		/// Persists the modification on the instance state to the database using IStatelessSession.
+		/// </summary>
+		/// <param name="instance">The instance to be updated on the database</param>
+		void UpdateStateless(object instance);
+
+		/// <summary>
+		/// Deletes the instance from the database using IStatelessSession.
+		/// </summary>
+		/// <param name="instance">The instance to be deleted from the database</param>
+		void DeleteStateless(object instance);
+
+		/// <summary>
+		/// Deletes all rows for the specified type using IStatelessSession.
+		/// </summary>
+		/// <param name="type">type on which the rows on the database should be deleted</param>
+		void DeleteAllStateless(Type type);
 	}
 }

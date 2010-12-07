@@ -88,5 +88,52 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Transactions
 			Assert.AreEqual(0, blogitems.Length);
 			Assert.AreEqual(0, orders.Length);
 		}
+
+		[Test]
+		public void SuccessfulSituationWithTwoDatabasesStateless()
+		{
+			RootService service = container.Resolve<RootService>();
+			OrderDao orderDao = container.Resolve<OrderDao>("myorderdao");
+
+			service.DoTwoDBOperation_Create_Stateless(false);
+
+			Array blogs = service.FindAllStateless(typeof(Blog));
+			Array blogitems = service.FindAllStateless(typeof(BlogItem));
+			Array orders = orderDao.FindAllStateless(typeof(Order));
+
+			Assert.IsNotNull(blogs);
+			Assert.IsNotNull(blogitems);
+			Assert.IsNotNull(orders);
+			Assert.AreEqual(1, blogs.Length);
+			Assert.AreEqual(1, blogitems.Length);
+			Assert.AreEqual(1, orders.Length);
+		}
+
+		[Test]
+		public void ExceptionOnEndWithTwoDatabasesStateless()
+		{
+			RootService service = container.Resolve<RootService>();
+			OrderDao orderDao = container.Resolve<OrderDao>("myorderdao");
+
+			try
+			{
+				service.DoTwoDBOperation_Create_Stateless(true);
+			}
+			catch (InvalidOperationException)
+			{
+				// Expected
+			}
+
+			Array blogs = service.FindAllStateless(typeof(Blog));
+			Array blogitems = service.FindAllStateless(typeof(BlogItem));
+			Array orders = orderDao.FindAllStateless(typeof(Order));
+
+			Assert.IsNotNull(blogs);
+			Assert.IsNotNull(blogitems);
+			Assert.IsNotNull(orders);
+			Assert.AreEqual(0, blogs.Length);
+			Assert.AreEqual(0, blogitems.Length);
+			Assert.AreEqual(0, orders.Length);
+		}
 	}
 }

@@ -87,5 +87,51 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Transactions
 				throw new InvalidOperationException("Nah, giving up");
 			}
 		}
+
+		[Transaction]
+		public virtual BlogItem SuccessFullCallStateless()
+		{
+			Blog blog = firstDao.CreateStateless();
+			return secondDao.CreateStateless(blog);
+		}
+
+		[Transaction]
+		public virtual void CallWithExceptionStateless()
+		{
+			Blog blog = firstDao.CreateStateless();
+			secondDao.CreateWithExceptionStateless(blog);
+		}
+
+		[Transaction]
+		public virtual void CallWithExceptionStateless2()
+		{
+			Blog blog = firstDao.CreateStateless();
+			secondDao.CreateWithExceptionStateless2(blog);
+		}
+
+		[Transaction]
+		public virtual void DoBlogRefOperationStateless(Blog blog)
+		{
+			BlogRef blogRef = new BlogRef();
+			blogRef.ParentBlog = blog;
+			blogRef.Title = "title";
+			firstDao.AddBlogRefStateless(blogRef);
+
+			//constraint exception
+			firstDao.DeleteStateless("Blog1");
+		}
+
+		[Transaction]
+		public virtual void DoTwoDBOperation_Create_Stateless(bool throwException)
+		{
+			Blog blog = firstDao.CreateStateless();
+			secondDao.CreateStateless(blog);
+			orderDao.CreateStateless(1.122f);
+
+			if (throwException)
+			{
+				throw new InvalidOperationException("Nah, giving up");
+			}
+		}
 	}
 }
