@@ -64,5 +64,13 @@ namespace Castle.Facilities.NHibernateIntegration.Tests
 				session.Delete("from Blog");
 			}
 		}
+
+		public IList ObtainBlogsStateless()
+		{
+			using (IStatelessSession session = sessManager.OpenStatelessSession())
+			{
+				return session.CreateQuery("from Blog").List();
+			}
+		}
 	}
 }

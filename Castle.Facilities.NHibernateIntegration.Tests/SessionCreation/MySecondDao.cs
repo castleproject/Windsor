@@ -54,5 +54,27 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.SessionCreation
 				Assert.IsFalse(Object.ReferenceEquals(sess, prevSession));
 			}
 		}
+
+		public void PerformStatelessPieceOfOperation(IStatelessSession previousSession)
+		{
+			Assert.IsNotNull(previousSession);
+
+			using (IStatelessSession session = sessManager.OpenStatelessSession())
+			{
+				Assert.IsNotNull(session);
+				Assert.IsTrue(StatelessSessionDelegate.AreEqual(session, previousSession));
+			}
+		}
+
+		public void PerformStatelessPieceOfOperation2(IStatelessSession previousSession)
+		{
+			Assert.IsNotNull(previousSession);
+
+			using (IStatelessSession session = sessManager.OpenStatelessSession())
+			{
+				Assert.IsNotNull(session);
+				Assert.IsFalse(Object.ReferenceEquals(session, previousSession));
+			}
+		}
 	}
 }

@@ -39,5 +39,19 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Common
 			Assert.IsNotNull(blogs);
 			Assert.AreEqual(1, blogs.Count);
 		}
+
+		[Test, Ignore]
+		public void CommonStatelessUsage()
+		{
+			container.Register(Component.For<BlogDao>().Named("blogdao"));
+
+			BlogDao dao = container.Resolve<BlogDao>("blogdao");
+			dao.CreateBlog("my blog");
+
+			IList blogs = dao.ObtainBlogsStateless();
+
+			Assert.IsNotNull(blogs);
+			Assert.AreEqual(1, blogs.Count);
+		}
 	}
 }

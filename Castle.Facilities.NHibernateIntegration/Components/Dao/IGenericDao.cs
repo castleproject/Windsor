@@ -89,5 +89,29 @@ namespace Castle.Facilities.NHibernateIntegration.Components.Dao
 		/// </summary>
 		/// <param name="instance">The instance to be saved</param>
 		void Save(object instance);
+
+		/// <summary>
+		/// Returns all instances found for the specified type using IStatelessSession.
+		/// </summary>
+		/// <param name="type">The target type.</param>
+		/// <returns>The <see cref="Array"/> of results</returns>
+		Array FindAllStateless(Type type);
+
+		/// <summary>
+		/// Returns a portion of the query results (sliced) using IStatelessSession.
+		/// </summary>
+		/// <param name="type">The target type.</param>
+		/// <param name="firstRow">The number of the first row to retrieve.</param>
+		/// <param name="maxRows">The maximum number of results retrieved.</param>
+		/// <returns>The <see cref="Array"/> of results</returns>
+		Array FindAllStateless(Type type, int firstRow, int maxRows);
+
+		/// <summary>
+		/// Finds an object instance by an unique ID using IStatelessSession.
+		/// </summary>
+		/// <param name="type">The AR subclass type</param>
+		/// <param name="id">ID value</param>
+		/// <returns>The object instance.</returns>
+		object FindByIdStateless(Type type, object id);
 	}
 }

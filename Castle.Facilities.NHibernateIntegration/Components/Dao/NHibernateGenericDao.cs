@@ -139,7 +139,7 @@ namespace Castle.Facilities.NHibernateIntegration.Components.Dao
 				}
 				catch (Exception ex)
 				{
-					throw new DataException("Could not perform FindByPrimaryKey for " + type.Name, ex);
+					throw new DataException("Could not perform FindById for " + type.Name, ex);
 				}
 			}
 		}
@@ -242,6 +242,72 @@ namespace Castle.Facilities.NHibernateIntegration.Components.Dao
 				catch (Exception ex)
 				{
 					throw new DataException("Could not perform Save for " + instance.GetType().Name, ex);
+				}
+			}
+		}
+
+		/// <summary>
+		/// Returns all instances found for the specified type using IStatelessSession.
+		/// </summary>
+		/// <param name="type">The target type.</param>
+		/// <returns>The <see cref="Array"/> of results</returns>
+		public virtual Array FindAllStateless(Type type)
+		{
+			return FindAllStateless(type, int.MinValue, int.MinValue);
+		}
+
+		/// <summary>
+		/// Returns a portion of the query results (sliced) using IStatelessSession.
+		/// </summary>
+		/// <param name="type">The target type.</param>
+		/// <param name="firstRow">The number of the first row to retrieve.</param>
+		/// <param name="maxRows">The maximum number of results retrieved.</param>
+		/// <returns>The <see cref="Array"/> of results</returns>
+		public virtual Array FindAllStateless(Type type, int firstRow, int maxRows)
+		{
+			using (IStatelessSession session = this.GetStatelessSession())
+			{
+				try
+				{
+					ICriteria criteria = session.CreateCriteria(type);
+
+					if (firstRow != int.MinValue) criteria.SetFirstResult(firstRow);
+					if (maxRows != int.MinValue) criteria.SetMaxResults(maxRows);
+					IList result = criteria.List();
+
+					Array array = Array.CreateInstance(type, result.Count);
+					result.CopyTo(array, 0);
+
+					return array;
+				}
+				catch (Exception ex)
+				{
+					throw new DataException("Could not perform FindAllStateless for " + type.Name, ex);
+				}
+			}
+		}
+
+		/// <summary>
+		/// Finds an object instance by an unique ID using IStatelessSession.
+		/// </summary>
+		/// <param name="type">The AR subclass type</param>
+		/// <param name="id">ID value</param>
+		/// <returns>The object instance.</returns>
+		public object FindByIdStateless(Type type, object id)
+		{
+			using (IStatelessSession session = this.GetStatelessSession())
+			{
+				try
+				{
+					return session.Get(type.FullName, id);
+				}
+				catch (ObjectNotFoundException)
+				{
+					throw;
+				}
+				catch (Exception ex)
+				{
+					throw new DataException("Could not perform FindByIdStateless for " + type.Name, ex);
 				}
 			}
 		}
@@ -383,7 +449,6 @@ namespace Castle.Facilities.NHibernateIntegration.Components.Dao
 			}
 		}
 
-
 		/// <summary>
 		/// Finds all with named HQL query.
 		/// </summary>
@@ -405,7 +470,7 @@ namespace Castle.Facilities.NHibernateIntegration.Components.Dao
 		{
 			if (string.IsNullOrEmpty(namedQuery)) throw new ArgumentNullException("namedQuery");
 
-			using (ISession session = GetSession())
+			using (ISession session = this.GetSession())
 			{
 				try
 				{
@@ -437,7 +502,7 @@ namespace Castle.Facilities.NHibernateIntegration.Components.Dao
 		{
 			if (instance == null) throw new ArgumentNullException("instance");
 
-			using (ISession session = GetSession())
+			using (ISession session = this.GetSession())
 			{
 				foreach (object val in ReflectionUtility.GetPropertiesDictionary(instance).Values)
 				{
@@ -469,7 +534,7 @@ namespace Castle.Facilities.NHibernateIntegration.Components.Dao
 				                                                      + propertyName + " doest not exist for type "
 				                                                      + instance.GetType().ToString() + ".");
 
-			using (ISession session = GetSession())
+			using (ISession session = this.GetSession())
 			{
 				object val = properties[propertyName];
 
@@ -480,6 +545,185 @@ namespace Castle.Facilities.NHibernateIntegration.Components.Dao
 						session.Lock(instance, LockMode.None);
 						NHibernateUtil.Initialize(val);
 					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Returns all instances found for the specified type
+		/// using criteria and IStatelessSession.
+		/// </summary>
+		/// <param name="type">The target type.</param>
+		/// <param name="criterias">The criteria expression</param>
+		/// <returns>The <see cref="Array"/> of results.</returns>
+		public virtual Array FindAllStateless(Type type, ICriterion[] criterias)
+		{
+			return FindAllStateless(type, criterias, null, int.MinValue, int.MinValue);
+		}
+
+		/// <summary>
+		/// Returns all instances found for the specified type
+		/// using criteria and IStatelessSession.
+		/// </summary>
+		/// <param name="type">The target type.</param>
+		/// <param name="criterias">The criteria expression</param>
+		/// <param name="firstRow">The number of the first row to retrieve.</param>
+		/// <param name="maxRows">The maximum number of results retrieved.</param>
+		/// <returns>The <see cref="Array"/> of results.</returns>
+		public virtual Array FindAllStateless(Type type, ICriterion[] criterias, int firstRow, int maxRows)
+		{
+			return FindAllStateless(type, criterias, null, firstRow, maxRows);
+		}
+
+		/// <summary>
+		/// Returns all instances found for the specified type
+		/// using criteria and IStatelessSession.
+		/// </summary>
+		/// <param name="type">The target type.</param>
+		/// <param name="criterias">The criteria expression</param>
+		/// <param name="sortItems">An <see cref="Array"/> of <see cref="Order"/> objects.</param>
+		/// <returns>The <see cref="Array"/> of results.</returns>
+		public virtual Array FindAllStateless(Type type, ICriterion[] criterias, Order[] sortItems)
+		{
+			return FindAllStateless(type, criterias, sortItems, int.MinValue, int.MinValue);
+		}
+
+		/// <summary>
+		/// Returns all instances found for the specified type
+		/// using criteria and IStatelessSession.
+		/// </summary>
+		/// <param name="type">The target type.</param>
+		/// <param name="criterias">The criteria expression</param>
+		/// <param name="sortItems">An <see cref="Array"/> of <see cref="Order"/> objects.</param>
+		/// <param name="firstRow">The number of the first row to retrieve.</param>
+		/// <param name="maxRows">The maximum number of results retrieved.</param>
+		/// <returns>The <see cref="Array"/> of results.</returns>
+		public virtual Array FindAllStateless(Type type, ICriterion[] criterias, Order[] sortItems, int firstRow, int maxRows)
+		{
+			using (IStatelessSession session = GetStatelessSession())
+			{
+				try
+				{
+					ICriteria criteria = session.CreateCriteria(type);
+
+					if (criterias != null)
+					{
+						foreach (ICriterion cond in criterias)
+						{
+							criteria.Add(cond);
+						}
+					}
+
+					if (sortItems != null)
+					{
+						foreach (Order order in sortItems)
+						{
+							criteria.AddOrder(order);
+						}
+					}
+
+					if (firstRow != int.MinValue) criteria.SetFirstResult(firstRow);
+					if (maxRows != int.MinValue) criteria.SetMaxResults(maxRows);
+					IList result = criteria.List();
+
+					Array array = Array.CreateInstance(type, result.Count);
+					result.CopyTo(array, 0);
+
+					return array;
+				}
+				catch (Exception ex)
+				{
+					throw new DataException("Could not perform FindAllStateless for " + type.Name, ex);
+				}
+			}
+		}
+
+		/// <summary>
+		/// Finds all with custom query using IStatelessSession.
+		/// </summary>
+		/// <param name="queryString">The query string.</param>
+		/// <returns></returns>
+		public virtual Array FindAllWithCustomQueryStateless(string queryString)
+		{
+			return FindAllWithCustomQueryStateless(queryString, int.MinValue, int.MinValue);
+		}
+
+		/// <summary>
+		/// Finds all with custom HQL query using IStatelessSession.
+		/// </summary>
+		/// <param name="queryString">The query string.</param>
+		/// <param name="firstRow">The number of the first row to retrieve.</param>
+		/// <param name="maxRows">The maximum number of results retrieved.</param>
+		/// <returns></returns>
+		public virtual Array FindAllWithCustomQueryStateless(string queryString, int firstRow, int maxRows)
+		{
+			if (string.IsNullOrEmpty(queryString)) throw new ArgumentNullException("queryString");
+
+			using (IStatelessSession session = GetStatelessSession())
+			{
+				try
+				{
+					IQuery query = session.CreateQuery(queryString);
+
+					if (firstRow != int.MinValue) query.SetFirstResult(firstRow);
+					if (maxRows != int.MinValue) query.SetMaxResults(maxRows);
+					IList result = query.List();
+					if (result == null || result.Count == 0) return null;
+
+					Array array = Array.CreateInstance(result[0].GetType(), result.Count);
+					result.CopyTo(array, 0);
+
+					return array;
+				}
+				catch (Exception ex)
+				{
+					throw new DataException("Could not perform FindAllWithCustomQueryStateless: " + queryString, ex);
+				}
+			}
+		}
+
+
+		/// <summary>
+		/// Finds all with named HQL query using IStatelessSession.
+		/// </summary>
+		/// <param name="namedQuery">The named query.</param>
+		/// <returns></returns>
+		public virtual Array FindAllWithNamedQueryStateless(string namedQuery)
+		{
+			return FindAllWithNamedQueryStateless(namedQuery, int.MinValue, int.MinValue);
+		}
+
+		/// <summary>
+		/// Finds all with named HQL query using IStatelessSession.
+		/// </summary>
+		/// <param name="namedQuery">The named query.</param>
+		/// <param name="firstRow">The number of the first row to retrieve.</param>
+		/// <param name="maxRows">The maximum number of results retrieved.</param>
+		/// <returns></returns>
+		public virtual Array FindAllWithNamedQueryStateless(string namedQuery, int firstRow, int maxRows)
+		{
+			if (string.IsNullOrEmpty(namedQuery)) throw new ArgumentNullException("namedQuery");
+
+			using (IStatelessSession session = this.GetStatelessSession())
+			{
+				try
+				{
+					IQuery query = session.GetNamedQuery(namedQuery);
+					if (query == null) throw new ArgumentException("Cannot find named query", "namedQuery");
+
+					if (firstRow != int.MinValue) query.SetFirstResult(firstRow);
+					if (maxRows != int.MinValue) query.SetMaxResults(maxRows);
+					IList result = query.List();
+					if (result == null || result.Count == 0) return null;
+
+					Array array = Array.CreateInstance(result[0].GetType(), result.Count);
+					result.CopyTo(array, 0);
+
+					return array;
+				}
+				catch (Exception ex)
+				{
+					throw new DataException("Could not perform FindAllWithNamedQueryStateless: " + namedQuery, ex);
 				}
 			}
 		}
@@ -497,6 +741,18 @@ namespace Castle.Facilities.NHibernateIntegration.Components.Dao
 			else
 			{
 				return sessionManager.OpenSession(sessionFactoryAlias);
+			}
+		}
+
+		private IStatelessSession GetStatelessSession()
+		{
+			if (string.IsNullOrEmpty(sessionFactoryAlias))
+			{
+				return sessionManager.OpenStatelessSession();
+			}
+			else
+			{
+				return sessionManager.OpenStatelessSession(sessionFactoryAlias);
 			}
 		}
 

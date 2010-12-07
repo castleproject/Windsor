@@ -68,5 +68,42 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.SessionCreation
 				Assert.IsFalse(sess.IsOpen);
 			}
 		}
+
+		public void PerformStatelessComplexOperation1()
+		{
+			using (IStatelessSession session = sessManager.OpenStatelessSession())
+			{
+				Assert.IsNotNull(session);
+
+				otherDao.PerformStatelessPieceOfOperation(session);
+			}
+		}
+
+		public void PerformStatelessComplexOperation2()
+		{
+			IStatelessSession previousSession = null;
+
+			using (IStatelessSession session = sessManager.OpenStatelessSession())
+			{
+				previousSession = session;
+			}
+
+			otherDao.PerformStatelessPieceOfOperation2(previousSession);
+		}
+
+		// TODO: StatelessSessionImpl supports both IsConnected and IsOpen, but not IStatelessSession (see NH-2445)
+		public void DoStatelessOpenCloseAndDispose()
+		{
+			////using (IStatelessSession session = sessManager.OpenStatelessSession())
+			////{
+			////    Assert.IsTrue(session.IsConnected);
+			////    Assert.IsTrue(session.IsOpen);
+
+			////    session.Close();
+
+			////    Assert.IsFalse(session.IsConnected);
+			////    Assert.IsFalse(session.IsOpen);
+			////}
+		}
 	}
 }

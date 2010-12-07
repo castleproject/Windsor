@@ -394,5 +394,169 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Components
 				Assert.That(results, Has.Length.EqualTo(2));
 			}
 		}
+
+
+		[Test, Ignore]
+		public void CanFindAllStateless()
+		{
+			using (var session = sessionManager.OpenStatelessSession())
+			{
+				var results = nhGenericDao.FindAllStateless(typeof(Blog));
+				Assert.That(results, Has.Length.EqualTo(3));
+			}
+		}
+
+		[Test, Ignore]
+		public void CanFindAllWithCriterionStateless()
+		{
+			using (var session = sessionManager.OpenStatelessSession())
+			{
+				var results = nhGenericDao.FindAllStateless(
+					typeof(Blog),
+					new[] { Restrictions.Eq("Name", "myblog2") });
+
+				Assert.That(results, Has.Length.EqualTo(1));
+				Assert.That(((Blog) results.GetValue(0)).Name, Is.EqualTo("myblog2"));
+			}
+		}
+
+		[Test, Ignore]
+		public void CanFindAllWithCriterionOrderByStateless()
+		{
+			using (var session = sessionManager.OpenStatelessSession())
+			{
+				var results = nhGenericDao.FindAllStateless(
+					typeof(BlogItem),
+					new[] { Restrictions.Eq("Text", "Hello") },
+					new[] { Order.Desc("Title") });
+
+				Assert.That(results, Has.Length.EqualTo(2));
+				Assert.That(((BlogItem) results.GetValue(0)).Title, Is.EqualTo("mytitle2"));
+				Assert.That(((BlogItem) results.GetValue(1)).Title, Is.EqualTo("mytitle1"));
+			}
+		}
+
+		[Test, Ignore]
+		public void CanFindAllWithCriterionOrderByLimitsStateless()
+		{
+			using (var session = sessionManager.OpenStatelessSession())
+			{
+				var results = nhGenericDao.FindAll(typeof(BlogItem),
+												   new[] { Restrictions.Eq("Text", "Hello") },
+												   new[] { Order.Desc("Title") }, 1, 1);
+
+				Assert.That(results, Has.Length.EqualTo(1));
+				Assert.That(((BlogItem) results.GetValue(0)).Title, Is.EqualTo("mytitle1"));
+			}
+		}
+
+		[Test, Ignore]
+		public void CanFindAllWithCriterionOrderByLimitsOutOfRangeReturnsEmptyArrayStateless()
+		{
+			using (var session = sessionManager.OpenStatelessSession())
+			{
+				var results = nhGenericDao.FindAllStateless(
+					typeof(BlogItem),
+					new[] { Restrictions.Eq("Text", "Hello") },
+					new[] { Order.Desc("Title") }, 2, 3);
+
+				Assert.That(results, Has.Length.EqualTo(0));
+			}
+		}
+
+		[Test, Ignore]
+		public void CanFindAllWithLimitsStateless()
+		{
+			using (var session = sessionManager.OpenStatelessSession())
+			{
+				var results = nhGenericDao.FindAllStateless(typeof(BlogItem), 1, 2);
+				Assert.That(results, Has.Length.EqualTo(2));
+			}
+		}
+
+		[Test, Ignore]
+		public void CanFindAllWithLimitsOutOfRangeReturnsEmptyArrayStateless()
+		{
+			using (var session = sessionManager.OpenStatelessSession())
+			{
+				var results = nhGenericDao.FindAllStateless(typeof(BlogItem), 3, 4);
+				Assert.That(results, Has.Length.EqualTo(0));
+			}
+		}
+
+		[Test, Ignore]
+		public void CanFindAllWithCriterionLimitStateless()
+		{
+			using (var session = sessionManager.OpenStatelessSession())
+			{
+				var results = nhGenericDao.FindAllStateless(
+					typeof(BlogItem),
+					new[] { Restrictions.Eq("Text", "Hello") },
+					0,
+					1);
+				Assert.That(results, Has.Length.EqualTo(1));
+				Assert.That(((BlogItem) results.GetValue(0)).Title, Is.EqualTo("mytitle1"));
+			}
+		}
+
+		[Test, Ignore]
+		public void FindAllWithCustomQueryStateless()
+		{
+			using (var session = sessionManager.OpenStatelessSession())
+			{
+				var results = nhGenericDao.FindAllWithCustomQueryStateless("from BlogItem b where b.Text='Hello'");
+				Assert.That(results, Has.Length.EqualTo(2));
+			}
+		}
+
+		[Test, Ignore]
+		public void FindAllWithCustomQueryLimitsStateless()
+		{
+			using (var session = sessionManager.OpenStatelessSession())
+			{
+				var results = nhGenericDao.FindAllWithCustomQueryStateless("from BlogItem b where b.Text='Hello'", 1, 1);
+				Assert.That(results, Has.Length.EqualTo(1));
+			}
+		}
+
+		[Test, Ignore]
+		public void GetByNamedQueryStateless()
+		{
+			using (var session = sessionManager.OpenStatelessSession())
+			{
+				var results = nhGenericDao.FindAllWithNamedQueryStateless("getAllBlogs");
+
+				Assert.That(results, Has.Length.EqualTo(3));
+			}
+		}
+
+		[Test, Ignore]
+		public void GetByNamedQueryThrowsExceptionWhenNullParameterStateless()
+		{
+			using (var session = sessionManager.OpenStatelessSession())
+			{
+				Assert.Throws<ArgumentNullException>(() => nhGenericDao.FindAllWithNamedQueryStateless(null));
+			}
+		}
+
+		[Test, Ignore]
+		public void GetByNamedQueryThrowsExceptionWhenNonExistingQueryStateless()
+		{
+			using (var session = sessionManager.OpenStatelessSession())
+			{
+				Assert.Throws<DataException>(() => nhGenericDao.FindAllWithNamedQueryStateless("getMyBlogs"));
+			}
+		}
+
+		[Test, Ignore]
+		public void GetByNamedQueryWithLimitsStateless()
+		{
+			using (var session = sessionManager.OpenStatelessSession())
+			{
+				var results = nhGenericDao.FindAllWithNamedQueryStateless("getAllBlogs", 1, 2);
+
+				Assert.That(results, Has.Length.EqualTo(2));
+			}
+		}
 	}
 }
