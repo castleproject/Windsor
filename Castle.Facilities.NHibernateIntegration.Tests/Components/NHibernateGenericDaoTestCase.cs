@@ -396,7 +396,7 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Components
 		}
 
 
-		[Test, Ignore]
+		[Test]
 		public void CanFindAllStateless()
 		{
 			using (var session = sessionManager.OpenStatelessSession())
@@ -406,7 +406,7 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Components
 			}
 		}
 
-		[Test, Ignore]
+		[Test]
 		public void CanFindAllWithCriterionStateless()
 		{
 			using (var session = sessionManager.OpenStatelessSession())
@@ -420,7 +420,7 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Components
 			}
 		}
 
-		[Test, Ignore]
+		[Test]
 		public void CanFindAllWithCriterionOrderByStateless()
 		{
 			using (var session = sessionManager.OpenStatelessSession())
@@ -436,7 +436,7 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Components
 			}
 		}
 
-		[Test, Ignore]
+		[Test]
 		public void CanFindAllWithCriterionOrderByLimitsStateless()
 		{
 			using (var session = sessionManager.OpenStatelessSession())
@@ -450,7 +450,7 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Components
 			}
 		}
 
-		[Test, Ignore]
+		[Test]
 		public void CanFindAllWithCriterionOrderByLimitsOutOfRangeReturnsEmptyArrayStateless()
 		{
 			using (var session = sessionManager.OpenStatelessSession())
@@ -464,7 +464,7 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Components
 			}
 		}
 
-		[Test, Ignore]
+		[Test]
 		public void CanFindAllWithLimitsStateless()
 		{
 			using (var session = sessionManager.OpenStatelessSession())
@@ -474,7 +474,7 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Components
 			}
 		}
 
-		[Test, Ignore]
+		[Test]
 		public void CanFindAllWithLimitsOutOfRangeReturnsEmptyArrayStateless()
 		{
 			using (var session = sessionManager.OpenStatelessSession())
@@ -484,7 +484,7 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Components
 			}
 		}
 
-		[Test, Ignore]
+		[Test]
 		public void CanFindAllWithCriterionLimitStateless()
 		{
 			using (var session = sessionManager.OpenStatelessSession())
@@ -499,7 +499,7 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Components
 			}
 		}
 
-		[Test, Ignore]
+		[Test]
 		public void FindAllWithCustomQueryStateless()
 		{
 			using (var session = sessionManager.OpenStatelessSession())
@@ -509,7 +509,7 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Components
 			}
 		}
 
-		[Test, Ignore]
+		[Test]
 		public void FindAllWithCustomQueryLimitsStateless()
 		{
 			using (var session = sessionManager.OpenStatelessSession())
@@ -519,7 +519,7 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Components
 			}
 		}
 
-		[Test, Ignore]
+		[Test]
 		public void GetByNamedQueryStateless()
 		{
 			using (var session = sessionManager.OpenStatelessSession())
@@ -530,7 +530,7 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Components
 			}
 		}
 
-		[Test, Ignore]
+		[Test]
 		public void GetByNamedQueryThrowsExceptionWhenNullParameterStateless()
 		{
 			using (var session = sessionManager.OpenStatelessSession())
@@ -539,7 +539,7 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Components
 			}
 		}
 
-		[Test, Ignore]
+		[Test]
 		public void GetByNamedQueryThrowsExceptionWhenNonExistingQueryStateless()
 		{
 			using (var session = sessionManager.OpenStatelessSession())
@@ -548,7 +548,7 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Components
 			}
 		}
 
-		[Test, Ignore]
+		[Test]
 		public void GetByNamedQueryWithLimitsStateless()
 		{
 			using (var session = sessionManager.OpenStatelessSession())

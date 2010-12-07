@@ -55,7 +55,7 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.SessionCreation
 			dao.DoOpenCloseAndDispose();
 		}
 
-		[Test, Ignore]
+		[Test]
 		public void StatelessSessionIsShared()
 		{
 			MyDao dao = container.Resolve<MyDao>();
@@ -63,7 +63,7 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.SessionCreation
 			dao.PerformStatelessComplexOperation1();
 		}
 
-		[Test, Ignore]
+		[Test]
 		public void StatelessSessionDisposedIsNotReused()
 		{
 			MyDao dao = container.Resolve<MyDao>();

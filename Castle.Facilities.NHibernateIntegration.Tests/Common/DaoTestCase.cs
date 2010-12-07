@@ -40,7 +40,7 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Common
 			Assert.AreEqual(1, blogs.Count);
 		}
 
-		[Test, Ignore]
+		[Test]
 		public void CommonStatelessUsage()
 		{
 			container.Register(Component.For<BlogDao>().Named("blogdao"));

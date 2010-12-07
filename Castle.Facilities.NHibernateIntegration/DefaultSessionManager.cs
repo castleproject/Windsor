@@ -124,7 +124,8 @@ namespace Castle.Facilities.NHibernateIntegration
 		/// <returns></returns>
 		public IStatelessSession OpenStatelessSession()
 		{
-			return null;
+			return this.OpenStatelessSession(Constants.DefaultAlias);
+
 		}
 
 		/// <summary>
@@ -135,7 +136,29 @@ namespace Castle.Facilities.NHibernateIntegration
 		/// <returns></returns>
 		public IStatelessSession OpenStatelessSession(String alias)
 		{
-			return null;
+			if (alias == null) throw new ArgumentNullException("alias");
+
+			ITransaction transaction = ObtainCurrentTransaction();
+
+			StatelessSessionDelegate wrapped = sessionStore.FindCompatibleStatelessSession(alias);
+
+			IStatelessSession session;
+
+			if (wrapped == null)
+			{
+				session = CreateStatelessSession(alias);
+
+				wrapped = WrapSession(transaction != null, session);
+				EnlistIfNecessary(true, transaction, wrapped);
+				sessionStore.Store(alias, wrapped);
+			}
+			else
+			{
+				EnlistIfNecessary(false, transaction, wrapped);
+				wrapped = WrapSession(true, wrapped.InnerSession);
+			}
+
+			return wrapped;
 		}
 
 		/// <summary>
@@ -146,8 +169,8 @@ namespace Castle.Facilities.NHibernateIntegration
 		/// <param name="session">The session.</param>
 		/// <returns></returns>
 		protected bool EnlistIfNecessary(bool weAreSessionOwner,
-		                                 ITransaction transaction,
-		                                 SessionDelegate session)
+										 ITransaction transaction,
+										 SessionDelegate session)
 		{
 			if (transaction == null) return false;
 
@@ -196,6 +219,66 @@ namespace Castle.Facilities.NHibernateIntegration
 			return true;
 		}
 
+		/// <summary>
+		/// Enlists if necessary.
+		/// </summary>
+		/// <param name="weAreSessionOwner">if set to <c>true</c> [we are session owner].</param>
+		/// <param name="transaction">The transaction.</param>
+		/// <param name="session">The session.</param>
+		/// <returns></returns>
+		protected bool EnlistIfNecessary(bool weAreSessionOwner,
+										 ITransaction transaction,
+										 StatelessSessionDelegate session)
+		{
+			if (transaction == null) return false;
+
+			var list = (IList<IStatelessSession>) transaction.Context["nh.statelessSession.enlisted"];
+
+			bool shouldEnlist;
+
+			if (list == null)
+			{
+				list = new List<IStatelessSession>();
+
+				shouldEnlist = true;
+			}
+			else
+			{
+				shouldEnlist = true;
+
+				foreach (IStatelessSession sess in list)
+				{
+					if (StatelessSessionDelegate.AreEqual(session, sess))
+					{
+						shouldEnlist = false;
+						break;
+					}
+				}
+			}
+
+			if (shouldEnlist)
+			{
+				if (session.Transaction == null || !session.Transaction.IsActive)
+				{
+					transaction.Context["nh.statelessSession.enlisted"] = list;
+
+					// TODO: IStatelessSession.BeginTransation(IsolationLevel) isn't yet supported by NHibernate
+					////IsolationLevel level = TranslateIsolationLevel(transaction.IsolationMode);
+					////transaction.Enlist(new ResourceAdapter(session.BeginTransaction(level), transaction.IsAmbient));
+					transaction.Enlist(new ResourceAdapter(session.BeginTransaction(), transaction.IsAmbient));
+
+					list.Add(session);
+				}
+
+				if (weAreSessionOwner)
+				{
+					transaction.RegisterSynchronization(new StatelessSessionDisposeSynchronization(session));
+				}
+			}
+
+			return true;
+		}
+
 		private static IsolationLevel TranslateIsolationLevel(IsolationMode mode)
 		{
 			switch (mode)
@@ -227,6 +310,11 @@ namespace Castle.Facilities.NHibernateIntegration
 			return new SessionDelegate(!hasTransaction, session, sessionStore);
 		}
 
+		private StatelessSessionDelegate WrapSession(bool hasTransaction, IStatelessSession session)
+		{
+			return new StatelessSessionDelegate(!hasTransaction, session, sessionStore);
+		}
+		
 		private ISession CreateSession(String alias)
 		{
 			ISessionFactory sessionFactory = factoryResolver.GetSessionFactory(alias);
@@ -234,7 +322,7 @@ namespace Castle.Facilities.NHibernateIntegration
 			if (sessionFactory == null)
 			{
 				throw new FacilityException("No ISessionFactory implementation " +
-				                            "associated with the given alias: " + alias);
+											"associated with the given alias: " + alias);
 			}
 
 			ISession session;
@@ -259,6 +347,21 @@ namespace Castle.Facilities.NHibernateIntegration
 			}
 
 			session.FlushMode = defaultFlushMode;
+
+			return session;
+		}
+
+		private IStatelessSession CreateStatelessSession(String alias)
+		{
+			ISessionFactory sessionFactory = factoryResolver.GetSessionFactory(alias);
+
+			if (sessionFactory == null)
+			{
+				throw new FacilityException("No ISessionFactory implementation " +
+											"associated with the given alias: " + alias);
+			}
+
+			IStatelessSession session = sessionFactory.OpenStatelessSession();
 
 			return session;
 		}

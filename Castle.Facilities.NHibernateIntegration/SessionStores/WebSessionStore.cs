@@ -19,6 +19,7 @@
 
 namespace Castle.Facilities.NHibernateIntegration.SessionStores
 {
+	using System;
 	using System.Collections;
 	using System.Web;
 	using MicroKernel.Facilities;
@@ -49,6 +50,28 @@ namespace Castle.Facilities.NHibernateIntegration.SessionStores
 			HttpContext curContext = ObtainSessionContext();
 
 			curContext.Items[SlotKey] = dictionary;
+		}
+
+		/// <summary>
+		/// Gets the IStatelessSession dictionary.
+		/// </summary>
+		/// <returns>A dictionary.</returns>
+		protected override IDictionary GetStatelessSessionDictionary()
+		{
+			HttpContext currentContext = ObtainSessionContext();
+
+			return currentContext.Items[this.StatelessSessionSlotKey] as IDictionary;
+		}
+
+		/// <summary>
+		/// Stores the IStatelessSession dictionary.
+		/// </summary>
+		/// <param name="dictionary">The dictionary.</param>
+		protected override void StoreStatelessSessionDictionary(IDictionary dictionary)
+		{
+			HttpContext currentContext = ObtainSessionContext();
+
+			currentContext.Items[this.StatelessSessionSlotKey] = dictionary;
 		}
 
 		private static HttpContext ObtainSessionContext()

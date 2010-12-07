@@ -14,14 +14,42 @@
 	[Serializable]
 	public class StatelessSessionDelegate : MarshalByRefObject, IStatelessSession
 	{
+		private readonly IStatelessSession _innerSession;
+		private readonly ISessionStore _sessionStore;
+		private readonly bool _canClose;
+		private bool _disposed;
+		private object _cookie;
+
 		/// <summary>
 		/// Initializes a new instance of the <see cref="StatelessSessionDelegate"/> class.
 		/// </summary>
 		/// <param name="canClose">if set to <c>true</c> [can close].</param>
-		/// <param name="inner">The inner.</param>
+		/// <param name="innerSession">The inner session.</param>
 		/// <param name="sessionStore">The session store.</param>
-		public StatelessSessionDelegate(bool canClose, IStatelessSession inner, ISessionStore sessionStore)
+		public StatelessSessionDelegate(bool canClose, IStatelessSession innerSession, ISessionStore sessionStore)
 		{
+			this._innerSession = innerSession;
+			this._sessionStore = sessionStore;
+			this._canClose = canClose;
+		}
+
+		/// <summary>
+		/// Gets the inner session.
+		/// </summary>
+		/// <value>The inner session.</value>
+		public IStatelessSession InnerSession
+		{
+			get { return this._innerSession; }
+		}
+
+		/// <summary>
+		/// Gets or sets the session store cookie.
+		/// </summary>
+		/// <value>The session store cookie.</value>
+		public object SessionStoreCookie
+		{
+			get { return this._cookie; }
+			set { this._cookie = value; }
 		}
 
 		#region IStatelessSession delegation
@@ -37,10 +65,7 @@
 		/// </remarks>
 		public IDbConnection Connection
 		{
-			get
-			{
-				throw new NotImplementedException();
-			}
+			get { return this._innerSession.Connection; }
 		}
 
 		/// <summary>
@@ -48,10 +73,7 @@
 		/// </summary>
 		public ITransaction Transaction
 		{
-			get
-			{
-				throw new NotImplementedException();
-			}
+			get { return this._innerSession.Transaction; }
 		}
 
 		/// <summary>
@@ -59,7 +81,7 @@
 		/// </summary>
 		public ITransaction BeginTransaction()
 		{
-			throw new NotImplementedException();
+			return this._innerSession.BeginTransaction();
 		}
 
 		/// <summary>
@@ -67,7 +89,7 @@
 		/// </summary>
 		public void Close()
 		{
-			throw new NotImplementedException();
+			this._innerSession.Close();
 		}
 
 		/// <summary>
@@ -83,7 +105,7 @@
 		/// </remarks>
 		public ICriteria CreateCriteria<T>() where T : class
 		{
-			throw new NotImplementedException();
+			return this._innerSession.CreateCriteria<T>();
 		}
 
 		/// <summary>
@@ -100,7 +122,7 @@
 		/// </remarks>
 		public ICriteria CreateCriteria<T>(string alias) where T : class
 		{
-			throw new NotImplementedException();
+			return this._innerSession.CreateCriteria<T>(alias);
 		}
 
 		/// <summary>
@@ -116,7 +138,7 @@
 		/// </remarks>
 		public ICriteria CreateCriteria(Type entityType)
 		{
-			throw new NotImplementedException();
+			return this._innerSession.CreateCriteria(entityType);
 		}
 
 		/// <summary>
@@ -133,7 +155,7 @@
 		/// </remarks>
 		public ICriteria CreateCriteria(Type entityType, string alias)
 		{
-			throw new NotImplementedException();
+			return this._innerSession.CreateCriteria(entityType, alias);
 		}
 
 		/// <summary>
@@ -148,7 +170,7 @@
 		/// </remarks>
 		public ICriteria CreateCriteria(string entityName)
 		{
-			throw new NotImplementedException();
+			return this._innerSession.CreateCriteria(entityName);
 		}
 
 		/// <summary>
@@ -165,7 +187,7 @@
 		/// </remarks>
 		public ICriteria CreateCriteria(string entityName, string alias)
 		{
-			throw new NotImplementedException();
+			return this._innerSession.CreateCriteria(entityName, alias);
 		}
 
 		/// <summary>
@@ -176,7 +198,7 @@
 		/// </remarks>
 		public IQuery CreateQuery(string queryString)
 		{
-			throw new NotImplementedException();
+			return this._innerSession.CreateQuery(queryString);
 		}
 
 		/// <summary>
@@ -189,7 +211,7 @@
 		/// </returns>
 		public ISQLQuery CreateSQLQuery(string queryString)
 		{
-			throw new NotImplementedException();
+			return this._innerSession.CreateSQLQuery(queryString);
 		}
 
 		/// <summary>
@@ -198,7 +220,7 @@
 		/// <param name="entity">a detached entity instance </param>
 		public void Delete(object entity)
 		{
-			throw new NotImplementedException();
+			this._innerSession.Delete(entity);
 		}
 
 		/// <summary>
@@ -208,7 +230,7 @@
 		/// <param name="entity">a detached entity instance </param>
 		public void Delete(string entityName, object entity)
 		{
-			throw new NotImplementedException();
+			this._innerSession.Delete(entityName, entity);
 		}
 
 		/// <summary>
@@ -219,7 +241,7 @@
 		/// </returns>
 		public object Get(string entityName, object id)
 		{
-			throw new NotImplementedException();
+			return this._innerSession.Get(entityName, id);
 		}
 
 		/// <summary>
@@ -230,7 +252,7 @@
 		/// </returns>
 		public T Get<T>(object id)
 		{
-			throw new NotImplementedException();
+			return this._innerSession.Get<T>(id);
 		}
 
 		/// <summary>
@@ -241,7 +263,7 @@
 		/// </returns>
 		public object Get(string entityName, object id, LockMode lockMode)
 		{
-			throw new NotImplementedException();
+			return this._innerSession.Get(entityName, id, lockMode);
 		}
 
 		/// <summary>
@@ -252,7 +274,7 @@
 		/// </returns>
 		public T Get<T>(object id, LockMode lockMode)
 		{
-			throw new NotImplementedException();
+			return this._innerSession.Get<T>(id, lockMode);
 		}
 
 		/// <summary>
@@ -265,7 +287,7 @@
 		/// </remarks>
 		public IQuery GetNamedQuery(string queryName)
 		{
-			throw new NotImplementedException();
+			return this._innerSession.GetNamedQuery(queryName);
 		}
 
 		/// <summary>
@@ -277,7 +299,7 @@
 		/// </returns>
 		public object Insert(object entity)
 		{
-			throw new NotImplementedException();
+			return this._innerSession.Insert(entity);
 		}
 
 		/// <summary>
@@ -290,7 +312,7 @@
 		/// </returns>
 		public object Insert(string entityName, object entity)
 		{
-			throw new NotImplementedException();
+			return this._innerSession.Insert(entityName, entity);
 		}
 
 		/// <summary>
@@ -299,7 +321,7 @@
 		/// <param name="entity">The entity to be refreshed. </param>
 		public void Refresh(object entity)
 		{
-			throw new NotImplementedException();
+			this._innerSession.Refresh(entity);
 		}
 
 		/// <summary>
@@ -309,7 +331,7 @@
 		/// <param name="entity">The entity to be refreshed.</param>
 		public void Refresh(string entityName, object entity)
 		{
-			throw new NotImplementedException();
+			this._innerSession.Refresh(entityName, entity);
 		}
 
 		/// <summary>
@@ -319,7 +341,7 @@
 		/// <param name="lockMode">The LockMode to be applied.</param>
 		public void Refresh(object entity, LockMode lockMode)
 		{
-			throw new NotImplementedException();
+			this._innerSession.Refresh(entity, lockMode);
 		}
 
 		/// <summary>
@@ -330,7 +352,7 @@
 		/// <param name="lockMode">The LockMode to be applied. </param>
 		public void Refresh(string entityName, object entity, LockMode lockMode)
 		{
-			throw new NotImplementedException();
+			this._innerSession.Refresh(entityName, entity, lockMode);
 		}
 
 		/// <summary>
@@ -339,7 +361,7 @@
 		/// <param name="entity">a detached entity instance </param>
 		public void Update(object entity)
 		{
-			throw new NotImplementedException();
+			this._innerSession.Update(entity);
 		}
 
 		/// <summary>
@@ -349,7 +371,7 @@
 		/// <param name="entity">a detached entity instance </param>
 		public void Update(string entityName, object entity)
 		{
-			throw new NotImplementedException();
+			this._innerSession.Update(entityName, entity);
 		}
 
 		#endregion
@@ -362,11 +384,47 @@
 		/// <filterpriority>2</filterpriority>
 		public void Dispose()
 		{
-			throw new NotImplementedException();
+			this.DoClose(false);
 		}
 
 		#endregion
-	
+
+		/// <summary>
+		/// Does the close.
+		/// </summary>
+		/// <param name="closing">if set to <c>true</c> [closing].</param>
+		/// <returns></returns>
+		protected IDbConnection DoClose(bool closing)
+		{
+			if (this._disposed) return null;
+
+			if (this._canClose)
+			{
+				return this.InternalClose(closing);
+			}
+
+			return null;
+		}
+
+		internal IDbConnection InternalClose(bool closing)
+		{
+			IDbConnection conn = null;
+
+			this._sessionStore.Remove(this);
+
+			if (closing)
+			{
+				conn = this._innerSession.Connection;
+				this._innerSession.Close();
+			}
+
+			this._innerSession.Dispose();
+
+			this._disposed = true;
+
+			return conn;
+		}
+
 		/// <summary>
 		/// Returns <see langword="true"/> if the supplied stateless sessions are equal, <see langword="false"/> otherwise.
 		/// </summary>
@@ -375,7 +433,18 @@
 		/// <returns></returns>
 		public static bool AreEqual(IStatelessSession left, IStatelessSession right)
 		{
-			return false;
+			StatelessSessionDelegate ssdLeft = left as StatelessSessionDelegate;
+			StatelessSessionDelegate ssdRight = right as StatelessSessionDelegate;
+
+			if (ssdLeft != null && ssdRight != null)
+			{
+				return Object.ReferenceEquals(ssdLeft._innerSession, ssdRight._innerSession);
+			}
+			else
+			{
+				throw new NotSupportedException("AreEqual: left is " +
+												left.GetType().Name + " and right is " + right.GetType().Name);
+			}
 		}
 	}
 }

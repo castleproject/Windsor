@@ -31,6 +31,7 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Internals
 	public class SessionStoreTestCase : AbstractNHibernateTestCase
 	{
 		private AutoResetEvent arEvent = new AutoResetEvent(false);
+		private AutoResetEvent _event = new AutoResetEvent(false);
 
 		[Test]
 		public void NullAlias()
@@ -113,6 +114,93 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Internals
 			Assert.IsNull(session);
 
 			ISession session2 = store.FindCompatibleSession(Constants.DefaultAlias);
+
+			Assert.IsNull(session2);
+
+			arEvent.Set();
+		}
+
+		[Test]
+		public void NullAliasStateless()
+		{
+			ISessionStore store = container.Resolve<ISessionStore>();
+			Assert.Throws<ArgumentNullException>(() => store.FindCompatibleStatelessSession(null));
+		}
+
+		[Test]
+		public void FindCompatibleStatelessSession()
+		{
+			ISessionStore store = container.Resolve<ISessionStore>();
+			ISessionFactory factory = container.Resolve<ISessionFactory>();
+
+			IStatelessSession session = store.FindCompatibleStatelessSession(Constants.DefaultAlias);
+
+			Assert.IsNull(session);
+
+			session = factory.OpenStatelessSession();
+
+			StatelessSessionDelegate sessionDelegate = new StatelessSessionDelegate(true, session, store);
+
+			store.Store(Constants.DefaultAlias, sessionDelegate);
+
+			Assert.IsNotNull(sessionDelegate.SessionStoreCookie);
+
+			IStatelessSession session2 = store.FindCompatibleStatelessSession("something in the way she moves");
+
+			Assert.IsNull(session2);
+
+			session2 = store.FindCompatibleStatelessSession(Constants.DefaultAlias);
+
+			Assert.IsNotNull(session2);
+			Assert.AreSame(sessionDelegate, session2);
+
+			session.Dispose();
+
+			store.Remove(sessionDelegate);
+
+			session = store.FindCompatibleStatelessSession(Constants.DefaultAlias);
+
+			Assert.IsNull(session);
+
+			Assert.IsTrue(store.IsCurrentActivityEmptyFor(Constants.DefaultAlias));
+		}
+
+		[Test]
+		public void FindCompatibleStatelessSessionWithTwoThreads()
+		{
+			ISessionStore store = container.Resolve<ISessionStore>();
+			ISessionFactory factory = container.Resolve<ISessionFactory>();
+
+			IStatelessSession session = factory.OpenStatelessSession();
+
+			StatelessSessionDelegate sessionDelegate = new StatelessSessionDelegate(true, session, store);
+
+			store.Store(Constants.DefaultAlias, sessionDelegate);
+
+			IStatelessSession session2 = store.FindCompatibleStatelessSession(Constants.DefaultAlias);
+
+			Assert.IsNotNull(session2);
+			Assert.AreSame(sessionDelegate, session2);
+
+			Thread newThread = new Thread(FindCompatibleStatelessSessionOnOtherThread);
+			newThread.Start();
+
+			arEvent.WaitOne();
+
+			sessionDelegate.Dispose();
+
+			Assert.IsTrue(store.IsCurrentActivityEmptyFor(Constants.DefaultAlias));
+		}
+
+		private void FindCompatibleStatelessSessionOnOtherThread()
+		{
+			ISessionStore store = container.Resolve<ISessionStore>();
+
+			IStatelessSession session = store.FindCompatibleStatelessSession("something in the way she moves");
+
+			Assert.IsNull(session);
+
+			IStatelessSession session2 = store.FindCompatibleStatelessSession(Constants.DefaultAlias);
 
 			Assert.IsNull(session2);
 
