@@ -47,6 +47,7 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Issues.Facilities103
 			transaction = mockRepository.DynamicMock<ITransaction>();
 			sessionFactory = mockRepository.DynamicMock<ISessionFactory>();
 			session = mockRepository.DynamicMock<ISession>();
+			statelessSession = mockRepository.DynamicMock<IStatelessSession>();
 			contextDictionary = new Hashtable();
 			sessionManager = new DefaultSessionManager(sessionStore, kernel, factoryResolver);
 		}
@@ -66,6 +67,7 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Issues.Facilities103
 		private ITransaction transaction;
 		private ISessionFactory sessionFactory;
 		private ISession session;
+		private IStatelessSession statelessSession;
 		private IDictionary contextDictionary;
 		private ISessionManager sessionManager;
 
@@ -102,6 +104,40 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Issues.Facilities103
 				}
 				Assert.IsNull(sessionStore.FindCompatibleSession(Alias),
 				              "The sessionStore shouldn't contain compatible session if the session creation fails");
+			}
+		}
+
+		[Test]
+		public void WhenBeginTransactionFailsStatelessSessionIsRemovedFromSessionStore()
+		{
+			using (mockRepository.Record())
+			{
+				Expect.Call(kernel.Resolve<ITransactionManager>()).Return(transactionManager);
+				Expect.Call(transactionManager.CurrentTransaction).Return(transaction);
+				Expect.Call(factoryResolver.GetSessionFactory(Alias)).Return(sessionFactory);
+				Expect.Call(sessionFactory.OpenStatelessSession()).Return(statelessSession);
+				Expect.Call(transaction.Context).Return(contextDictionary).Repeat.Any();
+				// TODO: NHibernate doesn't support IStatelessSession.BeginTransaction(IsolationLevel) yet.
+				////Expect.Call(transaction.IsolationMode).Return(DefaultIsolationMode).Repeat.Any();
+				////Expect.Call(statelessSession.BeginTransaction(DefaultIsolationMode)).Throw(new Exception());
+				Expect.Call(statelessSession.BeginTransaction()).Throw(new Exception());
+			}
+
+			using (mockRepository.Playback())
+			{
+				try
+				{
+					sessionManager.OpenStatelessSession(Alias);
+					Assert.Fail("DbException not thrown");
+				}
+				catch (Exception)
+				{
+					//ignore
+					//Console.WriteLine(ex.ToString());
+				}
+				Assert.IsNull(
+					sessionStore.FindCompatibleStatelessSession(Alias),
+					"The sessionStore shouldn't contain compatible session if the session creation fails");
 			}
 		}
 	}

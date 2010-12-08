@@ -43,7 +43,21 @@ namespace Castle.Facilities.NHibernateIntegration.SessionStores
 			}
 		}
 
+		/// <summary>
+		/// Name used for storage in <see cref="CallContext"/>
+		/// </summary>
+		protected String StatelessSessionSlotKey
+		{
+			get
+			{
+				if (string.IsNullOrEmpty(this._statelessSessionSlotKey))
+					this._statelessSessionSlotKey = string.Format("nh.facility.stacks.{0}", Guid.NewGuid());
+				return this._statelessSessionSlotKey;
+			}
+		}
+		
 		private string slotKey;
+		private string _statelessSessionSlotKey;
 
 		/// <summary>
 		/// Gets the stack of <see cref="SessionDelegate"/> objects for the specified <paramref name="alias"/>.
@@ -87,5 +101,48 @@ namespace Castle.Facilities.NHibernateIntegration.SessionStores
 		/// </summary>
 		/// <param name="dictionary">The dictionary.</param>
 		protected abstract void StoreDictionary(IDictionary dictionary);
+
+		/// <summary>
+		/// Gets the stack of <see cref="StatelessSessionDelegate"/> objects
+		/// for the specified <paramref name="alias"/>.
+		/// </summary>
+		/// <param name="alias">The alias.</param>
+		/// <returns></returns>
+		protected override Stack GetStatelessSessionStackFor(string alias)
+		{
+			if (alias == null) throw new ArgumentNullException("alias");
+
+			IDictionary alias2Stack = GetDictionary();
+
+			if (alias2Stack == null)
+			{
+				alias2Stack = new HybridDictionary(true);
+
+				StoreDictionary(alias2Stack);
+			}
+
+			Stack stack = alias2Stack[alias] as Stack;
+
+			if (stack == null)
+			{
+				stack = Stack.Synchronized(new Stack());
+
+				alias2Stack[alias] = stack;
+			}
+
+			return stack;
+		}
+
+		/// <summary>
+		/// Gets the IStatelessSession dictionary.
+		/// </summary>
+		/// <returns>A dictionary.</returns>
+		protected abstract IDictionary GetStatelessSessionDictionary();
+
+		/// <summary>
+		/// Stores the IStatelessSession dictionary.
+		/// </summary>
+		/// <param name="dictionary">The dictionary.</param>
+		protected abstract void StoreStatelessSessionDictionary(IDictionary dictionary);
 	}
 }

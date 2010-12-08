@@ -89,5 +89,54 @@ namespace Castle.Facilities.NHibernateIntegration.Components.Dao
 		/// </summary>
 		/// <param name="instance">The instance to be saved</param>
 		void Save(object instance);
+
+		/// <summary>
+		/// Returns all instances found for the specified type using IStatelessSession.
+		/// </summary>
+		/// <param name="type">The target type.</param>
+		/// <returns>The <see cref="Array"/> of results</returns>
+		Array FindAllStateless(Type type);
+
+		/// <summary>
+		/// Returns a portion of the query results (sliced) using IStatelessSession.
+		/// </summary>
+		/// <param name="type">The target type.</param>
+		/// <param name="firstRow">The number of the first row to retrieve.</param>
+		/// <param name="maxRows">The maximum number of results retrieved.</param>
+		/// <returns>The <see cref="Array"/> of results</returns>
+		Array FindAllStateless(Type type, int firstRow, int maxRows);
+
+		/// <summary>
+		/// Finds an object instance by an unique ID using IStatelessSession.
+		/// </summary>
+		/// <param name="type">The AR subclass type</param>
+		/// <param name="id">ID value</param>
+		/// <returns>The object instance.</returns>
+		object FindByIdStateless(Type type, object id);
+
+		/// <summary>
+		/// Creates (saves or inserts) a new instance to the database using IStatelessSession.
+		/// </summary>
+		/// <param name="instance">The instance to be created on the database</param>
+		/// <returns>The instance</returns>
+		object CreateStateless(object instance);
+
+		/// <summary>
+		/// Persists the modification on the instance state to the database using IStatelessSession.
+		/// </summary>
+		/// <param name="instance">The instance to be updated on the database</param>
+		void UpdateStateless(object instance);
+
+		/// <summary>
+		/// Deletes the instance from the database using IStatelessSession.
+		/// </summary>
+		/// <param name="instance">The instance to be deleted from the database</param>
+		void DeleteStateless(object instance);
+
+		/// <summary>
+		/// Deletes all rows for the specified type using IStatelessSession.
+		/// </summary>
+		/// <param name="type">type on which the rows on the database should be deleted</param>
+		void DeleteAllStateless(Type type);
 	}
 }

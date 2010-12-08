@@ -47,5 +47,22 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Transactions
 				return item;
 			}
 		}
+
+		public BlogItem CreateStateless(Blog blog)
+		{
+			using (IStatelessSession session = sessManager.OpenStatelessSession())
+			{
+				BlogItem item = new BlogItem();
+
+				item.ParentBlog = blog;
+				item.ItemDate = DateTime.Now;
+				item.Text = "x";
+				item.Title = "splinter cell is cool!";
+
+				session.Insert(item);
+
+				return item;
+			}
+		}
 	}
 }

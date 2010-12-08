@@ -19,6 +19,7 @@
 
 namespace Castle.Facilities.NHibernateIntegration.SessionStores
 {
+	using System;
 	using System.Collections;
 	using System.Runtime.Remoting.Messaging;
 
@@ -44,6 +45,24 @@ namespace Castle.Facilities.NHibernateIntegration.SessionStores
 		protected override void StoreDictionary(IDictionary dictionary)
 		{
 			CallContext.SetData(SlotKey, dictionary);
+		}
+
+		/// <summary>
+		/// Gets the IStatelessSession dictionary.
+		/// </summary>
+		/// <returns>A dictionary.</returns>
+		protected override IDictionary GetStatelessSessionDictionary()
+		{
+			return CallContext.GetData(this.StatelessSessionSlotKey) as IDictionary;
+		}
+
+		/// <summary>
+		/// Stores the IStatelessSession dictionary.
+		/// </summary>
+		/// <param name="dictionary">The dictionary.</param>
+		protected override void StoreStatelessSessionDictionary(IDictionary dictionary)
+		{
+			CallContext.SetData(this.StatelessSessionSlotKey, dictionary);
 		}
 	}
 }

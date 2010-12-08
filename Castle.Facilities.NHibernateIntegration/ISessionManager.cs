@@ -35,7 +35,7 @@ namespace Castle.Facilities.NHibernateIntegration
 		FlushMode DefaultFlushMode { get; set; }
 
 		/// <summary>
-		/// Returns a valid opened and connected ISession instance
+		/// Returns a valid opened and connected ISession instance.
 		/// </summary>
 		/// <returns></returns>
 		ISession OpenSession();
@@ -47,5 +47,19 @@ namespace Castle.Facilities.NHibernateIntegration
 		/// <param name="alias"></param>
 		/// <returns></returns>
 		ISession OpenSession(String alias);
+
+		/// <summary>
+		/// Returns a valid opened and connected IStatelessSession instance.
+		/// </summary>
+		/// <returns></returns>
+		IStatelessSession OpenStatelessSession();
+
+		/// <summary>
+		/// Returns a valid opened and connected IStatelessSession instance
+		/// for the given connection alias.
+		/// </summary>
+		/// <param name="alias"></param>
+		/// <returns></returns>
+		IStatelessSession OpenStatelessSession(String alias);
 	}
 }

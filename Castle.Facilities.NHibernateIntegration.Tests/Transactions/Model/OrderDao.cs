@@ -73,5 +73,46 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Transactions
 				session.Delete(order);
 			}
 		}
+
+		[Transaction]
+		public virtual Order CreateStateless(float val)
+		{
+			using (IStatelessSession session = sessManager.OpenStatelessSession("db2"))
+			{
+				NUnit.Framework.Assert.IsNotNull(session.Transaction);
+
+				Order order = new Order();
+				order.Value = val;
+				session.Insert(order);
+
+				return order;
+			}
+		}
+
+		[Transaction]
+		public virtual void UpdateStateless(Order order, float newval)
+		{
+			using (IStatelessSession session = sessManager.OpenStatelessSession("db2"))
+			{
+				NUnit.Framework.Assert.IsNotNull(session.Transaction);
+
+				order.Value = newval;
+
+				session.Update(order);
+			}
+		}
+
+		[Transaction]
+		public virtual void DeleteStateless(int orderId)
+		{
+			using (IStatelessSession session = sessManager.OpenStatelessSession("db2"))
+			{
+				NUnit.Framework.Assert.IsNotNull(session.Transaction);
+
+				Order order = (Order) session.Get(typeof(Order).FullName, orderId);
+
+				session.Delete(order);
+			}
+		}
 	}
 }

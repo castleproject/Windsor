@@ -55,5 +55,18 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Transactions
 				throw new InvalidOperationException("Nah, giving up");
 			}
 		}
+
+		[Transaction(Distributed = true)]
+		public virtual void DoTwoDBOperation_Create_Stateless(bool throwException)
+		{
+			Blog blog = firstDao.CreateStateless();
+			secondDao.CreateStateless(blog);
+			orderDao.CreateStateless(1.122f);
+
+			if (throwException)
+			{
+				throw new InvalidOperationException("Nah, giving up");
+			}
+		}
 	}
 }

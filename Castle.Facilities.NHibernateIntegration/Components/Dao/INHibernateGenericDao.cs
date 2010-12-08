@@ -116,5 +116,79 @@ namespace Castle.Facilities.NHibernateIntegration.Components.Dao
 		/// <param name="instance">The instance.</param>
 		/// <param name="propertyName">Name of the property.</param>
 		void InitializeLazyProperty(object instance, string propertyName);
+
+		/// <summary>
+		/// Returns all instances found for the specified type
+		/// using criteria and IStatelessSession.
+		/// </summary>
+		/// <param name="type">The target type.</param>
+		/// <param name="criterias">The criteria expression</param>
+		/// <returns>The <see cref="Array"/> of results.</returns>
+		Array FindAllStateless(Type type, ICriterion[] criterias);
+
+		/// <summary>
+		/// Returns all instances found for the specified type
+		/// using criteria and IStatelessSession.
+		/// </summary>
+		/// <param name="type">The target type.</param>
+		/// <param name="criterias">The criteria expression</param>
+		/// <param name="firstRow">The number of the first row to retrieve.</param>
+		/// <param name="maxRows">The maximum number of results retrieved.</param>
+		/// <returns>The <see cref="Array"/> of results.</returns>
+		Array FindAllStateless(Type type, ICriterion[] criterias, int firstRow, int maxRows);
+
+		/// <summary>
+		/// Returns all instances found for the specified type
+		/// using criteria and IStatelessSession.
+		/// </summary>
+		/// <param name="type">The target type.</param>
+		/// <param name="criterias">The criteria expression</param>
+		/// <param name="sortItems">An <see cref="Array"/> of <see cref="Order"/> objects.</param>
+		/// <returns>The <see cref="Array"/> of results.</returns>
+		Array FindAllStateless(Type type, ICriterion[] criterias, Order[] sortItems);
+
+		/// <summary>
+		/// Returns all instances found for the specified type
+		/// using criteria and IStatelessSession.
+		/// </summary>
+		/// <param name="type">The target type.</param>
+		/// <param name="criterias">The criteria expression</param>
+		/// <param name="sortItems">An <see cref="Array"/> of <see cref="Order"/> objects.</param>
+		/// <param name="firstRow">The number of the first row to retrieve.</param>
+		/// <param name="maxRows">The maximum number of results retrieved.</param>
+		/// <returns>The <see cref="Array"/> of results.</returns>
+		Array FindAllStateless(Type type, ICriterion[] criterias, Order[] sortItems, int firstRow, int maxRows);
+
+		/// <summary>
+		/// Finds all with custom query using IStatelessSession.
+		/// </summary>
+		/// <param name="queryString">The query string.</param>
+		/// <returns></returns>
+		Array FindAllWithCustomQueryStateless(string queryString);
+
+		/// <summary>
+		/// Finds all with custom HQL query using IStatelessSession.
+		/// </summary>
+		/// <param name="queryString">The query string.</param>
+		/// <param name="firstRow">The number of the first row to retrieve.</param>
+		/// <param name="maxRows">The maximum number of results retrieved.</param>
+		/// <returns></returns>
+		Array FindAllWithCustomQueryStateless(string queryString, int firstRow, int maxRows);
+
+		/// <summary>
+		/// Finds all with named HQL query using IStatelessSession.
+		/// </summary>
+		/// <param name="namedQuery">The named query.</param>
+		/// <returns></returns>
+		Array FindAllWithNamedQueryStateless(string namedQuery);
+
+		/// <summary>
+		/// Finds all with named HQL query using IStatelessSession.
+		/// </summary>
+		/// <param name="namedQuery">The named query.</param>
+		/// <param name="firstRow">The number of the first row to retrieve.</param>
+		/// <param name="maxRows">The maximum number of results retrieved.</param>
+		/// <returns></returns>
+		Array FindAllWithNamedQueryStateless(string namedQuery, int firstRow, int maxRows);
 	}
 }
