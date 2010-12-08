@@ -158,6 +158,9 @@
     <Compile Include="Components\Web\SessionWebModule.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="NHSessionAttribute.cs" />
+    <Compile Include="Internal\NHSessionComponentInspector.cs" />
+    <Compile Include="Internal\NHSessionInterceptor.cs" />
     <Compile Include="Util\FieldInfoCollection.cs">
       <SubType>Code</SubType>
     </Compile>
