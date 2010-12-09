@@ -57,7 +57,12 @@ namespace Castle.Facilities.TypedFactory.Internal
 			resolvedTrackedComponents.Clear();
 			foreach (var component in components)
 			{
-				kernel.ReleaseComponent(component.Target);
+				var instance = component.Target;
+				if (instance == null)
+				{
+					continue;
+				}
+				kernel.ReleaseComponent(instance);
 			}
 		}
 
@@ -90,7 +95,7 @@ namespace Castle.Facilities.TypedFactory.Internal
 
 		protected virtual void BuildHandlersMap(Type service)
 		{
-			if(service == null)
+			if (service == null)
 			{
 				return;
 			}
