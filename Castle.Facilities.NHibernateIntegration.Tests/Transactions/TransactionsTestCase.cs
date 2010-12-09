@@ -38,6 +38,39 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Transactions
 		}
 
 		[Test]
+		public void TestTransactionUsingDetachedCriteria()
+		{
+			RootService service = container.Resolve<RootService>();
+
+			string blogName = "Delicious Food!";
+
+			var blogA = service.CreateBlogStatelessUsingDetachedCriteria(blogName);
+			Assert.IsNotNull(blogA);
+
+			var blogB = service.FindBlogUsingDetachedCriteria(blogName);
+			Assert.IsNotNull(blogB);
+
+			Assert.AreEqual(blogA.Name, blogB.Name);
+		}
+
+		[Test]
+		// TODO: RootService.FindBlogStatelessUsingDetachedCriteria() works, but with a hack on obtaining IStatelessSession
+		public void TestTransactionStatelessUsingDetachedCriteria()
+		{
+			RootService service = container.Resolve<RootService>();
+
+			string blogName = "Delicious Food!";
+
+			var blogA = service.CreateBlogStatelessUsingDetachedCriteria(blogName);
+			Assert.IsNotNull(blogA);
+
+			var blogB = service.FindBlogStatelessUsingDetachedCriteria(blogName);
+			Assert.IsNotNull(blogB);
+
+			Assert.AreEqual(blogA.Name, blogB.Name);
+		}
+
+		[Test]
 		public void TestTransaction()
 		{
 			RootService service = container.Resolve<RootService>();

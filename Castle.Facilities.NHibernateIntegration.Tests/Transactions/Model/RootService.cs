@@ -20,6 +20,9 @@
 namespace Castle.Facilities.NHibernateIntegration.Tests.Transactions
 {
 	using System;
+
+	using NHibernate.Criterion;
+
 	using NHibernateIntegration.Components.Dao;
 	using Services.Transaction;
 
@@ -40,6 +43,32 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Transactions
 		{
 			get { return orderDao; }
 			set { orderDao = value; }
+		}
+
+		[Transaction]
+		public virtual Blog CreateBlogStatelessUsingDetachedCriteria(string name)
+		{
+			return this.firstDao.CreateStateless(name);
+		}
+
+		[Transaction]
+		public virtual Blog FindBlogUsingDetachedCriteria(string name)
+		{
+			DetachedCriteria dc = DetachedCriteria.For<Blog>();
+			dc.Add(Property.ForName("Name").Eq(name));
+
+			var session = this.SessionManager.OpenSession();
+			return dc.GetExecutableCriteria(session).UniqueResult<Blog>();
+		}
+
+		[Transaction]
+		public virtual Blog FindBlogStatelessUsingDetachedCriteria(string name)
+		{
+			DetachedCriteria dc = DetachedCriteria.For<Blog>();
+			dc.Add(Property.ForName("Name").Eq(name));
+
+			var session = this.SessionManager.OpenStatelessSession();
+			return dc.GetExecutableCriteria(((StatelessSessionDelegate) session).InnerSession).UniqueResult<Blog>();
 		}
 
 		[Transaction]
