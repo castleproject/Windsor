@@ -179,9 +179,10 @@
     <Compile Include="Common\BlogRef.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Common\BlogRepository.cs" />
     <Compile Include="Common\CustomDeleteListener.cs" />
     <Compile Include="Common\CustomSaveUpdateListener.cs" />
-    <Compile Include="Common\DaoTestCase.cs">
+    <Compile Include="DaoTestCase.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Common\Order.cs">
@@ -219,6 +220,7 @@
     <Compile Include="SessionCreation\MySecondDao.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="SessionManagementInterceptorsTestCase.cs" />
     <Compile Include="TestConfigurationBuilder.cs" />
     <Compile Include="Transactions\DistributedTransactionsTestCase.cs" />
     <Compile Include="Transactions\Model\FirstDao.cs">

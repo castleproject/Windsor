@@ -32,6 +32,7 @@ namespace Castle.Facilities.NHibernateIntegration
 	using NHibernate;
 	using Services.Transaction;
 	using SessionStores;
+	using IInterceptor = NHibernate.IInterceptor;
 	using ILogger = Core.Logging.ILogger;
 	using ILoggerFactory = Core.Logging.ILoggerFactory;
 
@@ -140,6 +141,9 @@ namespace Castle.Facilities.NHibernateIntegration
 		/// </summary>
 		protected virtual void RegisterComponents()
 		{
+			Kernel.Register(Component.For<NHSessionInterceptor>().Named("nhsession.interceptor"));
+			Kernel.ComponentModelBuilder.AddContributor(new NHSessionComponentInspector());
+
 			RegisterDefaultConfigurationBuilder();
 			RegisterSessionFactoryResolver();
 			RegisterSessionStore();
