@@ -60,12 +60,18 @@ namespace Castle.MicroKernel.Releasers
 				if (!instance2Burden.TryGetValue(instance, out burden))
 					return;
 
-				if (instance2Burden.Remove(instance))
+				// we remove first, then release so that if we recursively end up here again, the first TryGetValue call breaks the circuit
+				var existed = instance2Burden.Remove(instance);
+				if (existed == false)
 				{
-					if (burden.Release(this) == false)
-					{
-						instance2Burden[instance] = burden;
-					}
+					// NOTE: this should not be humanly possible. We should not even have this code here.
+					return;
+				}
+
+				if (burden.Release(this) == false)
+				{
+					// NOTE: ok we didn't remove this component, so let's put it back to the cache so that we can try again later, perhaps with better luck
+					instance2Burden[instance] = burden;
 				}
 			}
 		}
