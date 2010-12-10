@@ -248,7 +248,7 @@ namespace Castle.MicroKernel.Tests.Registration
 				Component.For<ICustomer>()
 					.Named("customer")
 					.ImplementedBy<CustomerImpl>()
-					.LifeStyle.Custom<MyLifestyleHandler>()
+					.LifeStyle.Custom<CustomLifestyleManager>()
 				);
 
 			var handler = Kernel.GetHandler("customer");

@@ -653,9 +653,6 @@
     <Compile Include="Lifestyle\Components\IComponent.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Lifestyle\Components\MyLifestyleHandler.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Lifestyle\Components\NoInfoComponent.cs">
       <SubType>Code</SubType>
     </Compile>
