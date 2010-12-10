@@ -140,8 +140,6 @@ namespace Castle.MicroKernel
 
 		public event EventHandler AddedAsChildKernel = delegate { };
 
-		public event EventHandler ContainerDisposed = delegate { };
-
 		public event EventHandler RegistrationCompleted = delegate { };
 
 		public event EventHandler RemovedAsChildKernel = delegate { };
@@ -180,11 +178,6 @@ namespace Castle.MicroKernel
 					}
 				}
 			}
-		}
-
-		private void RaiseContainerDisposed()
-		{
-			ContainerDisposed(this, EventArgs.Empty);
 		}
 	}
 }

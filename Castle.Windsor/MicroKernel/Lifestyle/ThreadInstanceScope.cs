@@ -22,9 +22,11 @@ namespace Castle.MicroKernel.Lifestyle
 
 	public class ThreadInstanceScope : IInstanceScope
 	{
-		private readonly IDictionary<int, IDictionary<IComponentActivator, object>> allLookup = new Dictionary<int, IDictionary<IComponentActivator, object>>();
+		[ThreadStatic]
+		private static IDictionary<IComponentActivator, object> perThreadLookup;
 
 		private readonly IKernelEvents events;
+		private readonly IDictionary<IComponentActivator, object> perContainerLookup = new Dictionary<IComponentActivator, object>();
 
 		public ThreadInstanceScope(IKernelEvents events)
 		{
@@ -34,22 +36,16 @@ namespace Castle.MicroKernel.Lifestyle
 
 		public object GetInstance(CreationContext context, IComponentActivator activator)
 		{
-			var threadId = Thread.CurrentThread.ManagedThreadId;
-			IDictionary<IComponentActivator, object> currentThreadLookup;
-			if (allLookup.TryGetValue(threadId,out currentThreadLookup) == false)
+			if (perThreadLookup == null)
 			{
-				currentThreadLookup = new Dictionary<IComponentActivator, object>();
-				lock(allLookup)
-				{
-					allLookup[threadId] = currentThreadLookup;
-				}
+				perThreadLookup = new Dictionary<IComponentActivator, object>();
 			}
-
 			object instance;
-			if (!currentThreadLookup.TryGetValue(activator, out instance))
+			if (!perThreadLookup.TryGetValue(activator, out instance))
 			{
 				instance = activator.Create(context);
-				currentThreadLookup.Add(activator, instance);
+				perThreadLookup.Add(activator, instance);
+				perContainerLookup.Add(activator, instance);
 			}
 
 			return instance;
@@ -57,14 +53,12 @@ namespace Castle.MicroKernel.Lifestyle
 
 		private void CleanUp(object sender, EventArgs e)
 		{
-			foreach (var thread in allLookup.Values)
+			foreach (var instance in perContainerLookup)
 			{
-				foreach (var instance in thread)
-				{
-					instance.Key.Destroy(instance.Value);
-				}
+				instance.Key.Destroy(instance.Value);
+				perThreadLookup.Remove(instance.Key);
 			}
-			allLookup.Clear();
+			perThreadLookup.Clear();
 			events.ContainerDisposed -= CleanUp;
 		}
 	}
