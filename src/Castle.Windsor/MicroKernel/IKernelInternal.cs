@@ -56,6 +56,5 @@ namespace Castle.MicroKernel
 		IDisposable OptimizeDependencyResolution();
 
 		IInstanceScope PerThreadScope { get; }
-		IInstanceScope SingletonScope { get; }
 	}
 }
