@@ -105,7 +105,6 @@ namespace Castle.MicroKernel
 		private IReleasePolicy releasePolicy;
 
 		private readonly object lazyLoadingLock = new object();
-		private IInstanceScope singletonScope;
 
 		/// <summary>
 		///   Constructs a DefaultKernel with no component
@@ -124,7 +123,6 @@ namespace Castle.MicroKernel
 		public DefaultKernel(IDependencyResolver resolver, IProxyFactory proxyFactory)
 		{
 			perThreadScope = new Lazy<IInstanceScope>(() => new ThreadInstanceScope(this), LazyThreadSafetyMode.PublicationOnly);
-			singletonScope = new SingletonInstanceScope(this);
 			RegisterSubSystems();
 
 			releasePolicy = new LifecycledComponentsReleasePolicy();
@@ -316,11 +314,6 @@ namespace Castle.MicroKernel
 		public IInstanceScope PerThreadScope
 		{
 			get { return perThreadScope.Value; }
-		}
-
-		public IInstanceScope SingletonScope
-		{
-			get { return singletonScope; }
 		}
 
 		public virtual IKernel AddFacility(String key, IFacility facility)

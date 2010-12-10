@@ -551,7 +551,7 @@ namespace Castle.MicroKernel.Handlers
 					break;
 				default:
 					//this includes LifestyleType.Undefined, LifestyleType.Singleton and invalid values
-					manager = new SingletonLifestyleManager(kernel.SingletonScope);
+					manager = new SingletonLifestyleManager();
 					break;
 			}
 
