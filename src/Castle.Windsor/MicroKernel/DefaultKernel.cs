@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 namespace Castle.MicroKernel
 {
 	using System;
@@ -19,14 +20,12 @@ namespace Castle.MicroKernel
 	using System.Diagnostics;
 	using System.Runtime.Serialization;
 	using System.Security;
-	using System.Threading;
 
 	using Castle.Core;
 	using Castle.Core.Internal;
 	using Castle.MicroKernel.ComponentActivator;
 	using Castle.MicroKernel.Context;
 	using Castle.MicroKernel.Handlers;
-	using Castle.MicroKernel.Lifestyle;
 	using Castle.MicroKernel.ModelBuilder;
 	using Castle.MicroKernel.Proxy;
 	using Castle.MicroKernel.Registration;
@@ -38,7 +37,6 @@ namespace Castle.MicroKernel
 	using Castle.MicroKernel.SubSystems.Resource;
 #if !SILVERLIGHT
 	using Castle.Windsor.Experimental.Debugging;
-
 #endif
 
 	/// <summary>
@@ -54,8 +52,6 @@ namespace Castle.MicroKernel
 	public partial class DefaultKernel : IKernel, IKernelEvents, IKernelInternal, IKernelEventsInternal
 #endif
 	{
-		private Lazy<IInstanceScope> perThreadScope;
-
 		[ThreadStatic]
 		private static CreationContext currentCreationContext;
 
@@ -122,7 +118,6 @@ namespace Castle.MicroKernel
 		/// <param name = "proxyFactory"></param>
 		public DefaultKernel(IDependencyResolver resolver, IProxyFactory proxyFactory)
 		{
-			perThreadScope = new Lazy<IInstanceScope>(() => new ThreadInstanceScope(this), LazyThreadSafetyMode.PublicationOnly);
 			RegisterSubSystems();
 
 			releasePolicy = new LifecycledComponentsReleasePolicy();
@@ -138,7 +133,7 @@ namespace Castle.MicroKernel
 		///   implementation of <see cref = "IProxyFactory" />
 		/// </summary>
 		public DefaultKernel(IProxyFactory proxyFactory)
-			: this(new DefaultDependencyResolver(), proxyFactory)
+			: this(new DefaultDependencyResolver(),proxyFactory)
 		{
 		}
 
@@ -263,7 +258,7 @@ namespace Castle.MicroKernel
 			info.AddValue("HandlerRegisteredEvent", HandlerRegistered);
 		}
 #endif
-
+		
 		/// <summary>
 		///   Starts the process of component disposal.
 		/// </summary>
@@ -274,7 +269,6 @@ namespace Castle.MicroKernel
 			DisposeComponentsInstancesWithinTracker();
 			DisposeHandlers();
 			UnsubscribeFromParentKernel();
-			RaiseContainerDisposed();
 		}
 
 		public virtual void AddChildKernel(IKernel childKernel)
@@ -291,15 +285,12 @@ namespace Castle.MicroKernel
 		// NOTE: this is from IKernelInternal
 		public virtual void AddCustomComponent(ComponentModel model)
 		{
-			if (model == null)
-			{
-				throw new ArgumentNullException("model");
-			}
+			if (model == null) throw new ArgumentNullException("model");
 
 			RaiseComponentModelCreated(model);
-			var handler = HandlerFactory.Create(model);
+			IHandler handler = HandlerFactory.Create(model);
 
-			var skipRegistration = model.ExtendedProperties[ComponentModel.SkipRegistration];
+			object skipRegistration = model.ExtendedProperties[ComponentModel.SkipRegistration];
 
 			if (skipRegistration != null)
 			{
@@ -309,11 +300,6 @@ namespace Castle.MicroKernel
 			{
 				RegisterHandler(model.Name, handler);
 			}
-		}
-
-		public IInstanceScope PerThreadScope
-		{
-			get { return perThreadScope.Value; }
 		}
 
 		public virtual IKernel AddFacility(String key, IFacility facility)
@@ -928,11 +914,11 @@ namespace Castle.MicroKernel
 			}
 
 			var handler = GetHandler(key);
-			if (handler != null)
+			if(handler != null)
 			{
 				return handler;
 			}
-			lock (lazyLoadingLock)
+			lock(lazyLoadingLock)
 			{
 				handler = GetHandler(key);
 				if (handler != null)

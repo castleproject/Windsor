@@ -566,7 +566,6 @@
     <Compile Include="MicroKernel\ILifestyleManager.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="MicroKernel\Lifestyle\IInstanceScope.cs" />
     <Compile Include="MicroKernel\Lifestyle\PerThreadLifestyleManager.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -592,7 +591,6 @@
     <Compile Include="MicroKernel\Lifestyle\SingletonLifestyleManager.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="MicroKernel\Lifestyle\ThreadInstanceScope.cs" />
     <Compile Include="MicroKernel\Lifestyle\TransientLifestyleManager.cs">
       <SubType>Code</SubType>
     </Compile>

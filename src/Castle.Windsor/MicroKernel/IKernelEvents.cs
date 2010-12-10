@@ -114,7 +114,5 @@ namespace Castle.MicroKernel
 		/// but the client ComponentModel must not be changed.
 		/// </summary>
 		event DependencyDelegate DependencyResolving;
-
-		event EventHandler ContainerDisposed;
 	}
 }
