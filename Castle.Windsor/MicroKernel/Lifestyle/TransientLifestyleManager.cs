@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@ namespace Castle.MicroKernel.Lifestyle
 	using System;
 
 	/// <summary>
-	/// Summary description for TransientLifestyleManager.
+	///   Transient components are never reused. Since their lifetime does not have any externally constrained end, they have to be manually released if resolved explicitly, to ensure proper decomission.
 	/// </summary>
 	[Serializable]
 	public class TransientLifestyleManager : AbstractLifestyleManager
