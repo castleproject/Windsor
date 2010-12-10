@@ -15,11 +15,12 @@
 namespace Castle.MicroKernel.Tests.Lifestyle.Components
 {
 	using Castle.Core;
+	using Castle.MicroKernel.Tests.ClassComponents;
 
 	/// <summary>
 	/// Summary description for CustomComponent.
 	/// </summary>
-	[CustomLifestyle(typeof(MyLifestyleHandler))]
+	[CustomLifestyle(typeof(CustomLifestyleManager))]
 	public class CustomComponent : IComponent
 	{
 		public CustomComponent()
