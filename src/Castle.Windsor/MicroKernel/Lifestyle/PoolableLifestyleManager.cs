@@ -36,6 +36,11 @@ namespace Castle.MicroKernel.Lifestyle
 			this.maxSize = maxSize;
 		}
 
+		public override void Track(object instance, Burden burden, IReleasePolicy releasePolicy)
+		{
+			releasePolicy.Track(instance, burden);
+		}
+
 		public override object Resolve(CreationContext context)
 		{
 			if (pool == null)

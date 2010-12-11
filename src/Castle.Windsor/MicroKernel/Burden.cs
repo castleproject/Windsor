@@ -21,15 +21,19 @@ namespace Castle.MicroKernel
 
 	public class Burden
 	{
-		private bool childRequiresDecommission;
-		private List<Burden> children;
-		private IHandler handler;
+		private readonly IHandler handler;
+		private bool requiresDecommission;
+		private List<Burden> items;
 		private object instance;
-		private bool instanceRequiresDecommission;
 
-		public bool GraphRequiresDecommission
+		public Burden(IHandler handler)
 		{
-			get { return instanceRequiresDecommission || childRequiresDecommission; }
+			this.handler = handler;
+		}
+
+		public bool RequiresDecommission
+		{
+			get { return requiresDecommission; }
 		}
 
 		public ComponentModel Model
@@ -39,15 +43,15 @@ namespace Castle.MicroKernel
 
 		public void AddChild(Burden child)
 		{
-			if (children == null)
+			if (items == null)
 			{
-				children = new List<Burden>();
+				items = new List<Burden>(Model.Dependents.Length);
 			}
-			children.Add(child);
+			items.Add(child);
 
-			if (child.GraphRequiresDecommission)
+			if (child.RequiresDecommission)
 			{
-				childRequiresDecommission = true;
+				requiresDecommission = true;
 			}
 		}
 
@@ -63,30 +67,22 @@ namespace Castle.MicroKernel
 				return false;
 			}
 
-			if (children != null)
+			if (items != null)
 			{
-				foreach (var child in children)
-				{
-					policy.Release(child.instance);
-				}
+				items.ForEach(c => policy.Release(c.instance));
 			}
 			return true;
 		}
 
-		public void SetRootInstance(object instance, IHandler handler, bool hasDecomission)
+		public void SetRootInstance(object instance, bool hasDecomission)
 		{
 			if (instance == null)
 			{
 				throw new ArgumentNullException("instance");
 			}
-			if (handler == null)
-			{
-				throw new ArgumentNullException("handler");
-			}
 
 			this.instance = instance;
-			this.handler = handler;
-			instanceRequiresDecommission = hasDecomission;
+			requiresDecommission = requiresDecommission || hasDecomission;
 		}
 	}
 }

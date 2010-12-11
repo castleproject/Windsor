@@ -58,8 +58,8 @@ namespace Castle.MicroKernel.Handlers
 			{
 				var instance = lifestyleManager.Resolve(context);
 
-				resolutionContext.Burden.SetRootInstance(instance, this, HasDecomission(requiresDecommission));
-				context.ReleasePolicy.Track(instance, resolutionContext.Burden);
+				resolutionContext.Burden.SetRootInstance(instance, HasDecomission(requiresDecommission));
+				lifestyleManager.Track(instance, resolutionContext.Burden, context.ReleasePolicy);
 
 				return instance;
 			}
