@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,39 +14,22 @@
 
 namespace Castle.Windsor.Tests.Components
 {
-	using System;
-	using Castle.Core;
-	using Castle.DynamicProxy;
-
-	[Interceptor(typeof(StandardInterceptor))]
-	public class CalculatorServiceWithInternalInterface : ICalcService, IInternal
+	public class Controller : IController
 	{
-		#region ICalcService Members
+		private IView view;
 
-		public int Sum(int x, int y)
+		public Controller(IView view)
 		{
-			throw new NotImplementedException();
+			this.view = view;
 		}
 
-		public bool Initialized
+		public IView View
 		{
-			get { throw new NotImplementedException(); }
+			get { return view; }
 		}
 
-		public bool Disposed
+		public void Process()
 		{
-			get { throw new NotImplementedException(); }
 		}
-
-		#endregion
-
-		#region IInternal Members
-
-		public void Do()
-		{
-			throw new NotImplementedException();
-		}
-
-		#endregion
 	}
 }

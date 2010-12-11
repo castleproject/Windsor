@@ -56,8 +56,8 @@ namespace Castle.Windsor.Tests
 		[Test]
 		public void InterfaceInheritance()
 		{
-			container.Register(Component.For(typeof(StandardInterceptor)).Named("interceptor"));
-			container.Register(Component.For(typeof(ICameraService)).ImplementedBy(typeof(CameraService)).Named("key"));
+			container.Register(Component.For<StandardInterceptor>().Named("interceptor"));
+			container.Register(Component.For<ICameraService>().ImplementedBy<CameraService>());
 
 			var service = container.Resolve<ICameraService>("key");
 

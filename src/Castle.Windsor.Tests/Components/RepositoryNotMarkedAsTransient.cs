@@ -12,17 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.MicroKernel.Tests.ClassComponents
+namespace Castle.Windsor.Tests
 {
-	using Castle.MicroKernel.Lifestyle;
-
-	/// <summary>
-	///   Summary description for MyLifestyleHandler.
-	/// </summary>
-	public class CustomLifestyleManager : AbstractLifestyleManager
+	//[Castle.Core.Transient] //Test passes if this attributed added
+	public class RepositoryNotMarkedAsTransient<T> : IRepository<T> where T : new()
 	{
-		public override void Dispose()
+		public T Get(int id)
 		{
+			return new T();
 		}
 	}
 }

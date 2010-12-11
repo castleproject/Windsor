@@ -14,39 +14,12 @@
 
 namespace Castle.Windsor.Tests.Components
 {
-	using System;
-	using Castle.Core;
-	using Castle.DynamicProxy;
-
-	[Interceptor(typeof(StandardInterceptor))]
-	public class CalculatorServiceWithInternalInterface : ICalcService, IInternal
+	public class View : IView
 	{
-		#region ICalcService Members
+		public IController Controller { get; set; }
 
-		public int Sum(int x, int y)
+		public void Display()
 		{
-			throw new NotImplementedException();
 		}
-
-		public bool Initialized
-		{
-			get { throw new NotImplementedException(); }
-		}
-
-		public bool Disposed
-		{
-			get { throw new NotImplementedException(); }
-		}
-
-		#endregion
-
-		#region IInternal Members
-
-		public void Do()
-		{
-			throw new NotImplementedException();
-		}
-
-		#endregion
 	}
 }

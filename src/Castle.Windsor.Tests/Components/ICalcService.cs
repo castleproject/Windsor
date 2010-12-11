@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,15 +14,11 @@
 
 namespace Castle.Windsor.Tests.Components
 {
-	/// <summary>
-	/// Summary description for ICalcService.
-	/// </summary>
 	public interface ICalcService
 	{
-		int Sum(int x, int y);
-
+		bool Disposed { get; }
 		bool Initialized { get; }
 
-		bool Disposed { get; }
+		int Sum(int x, int y);
 	}
 }
