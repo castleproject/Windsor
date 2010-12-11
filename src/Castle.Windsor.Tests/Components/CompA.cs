@@ -18,6 +18,9 @@ namespace Castle.Windsor.Tests.Components
 	{
 		public CompA(CompB compb)
 		{
+			Compb = compb;
 		}
+
+		public CompB Compb { get; private set; }
 	}
 }

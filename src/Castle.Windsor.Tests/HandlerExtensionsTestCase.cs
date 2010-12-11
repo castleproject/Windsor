@@ -25,16 +25,8 @@ namespace Castle.Windsor.Tests
 	using NUnit.Framework;
 
 	[TestFixture]
-	public class HandlerExtensionsTestCase
+	public class HandlerExtensionsTestCase:AbstractContainerTestFixture
 	{
-		[SetUp]
-		public void SetUp()
-		{
-			kernel = new DefaultKernel();
-		}
-
-		private DefaultKernel kernel;
-
 		private ComponentRegistration<A> AddResolveExtensions(ComponentRegistration<A> componentRegistration,
 		                                                      params IResolveExtension[] items)
 		{
@@ -46,7 +38,7 @@ namespace Castle.Windsor.Tests
 			return componentRegistration.ExtendedProperties(Property.ForKey("Castle.ResolveExtensions").Eq(resolveExtensions));
 		}
 
-		private ComponentRegistration<TComponent> AddReleaseExtensions<TComponent>(
+		private ComponentRegistration<TComponent> WithReleaseExtensions<TComponent>(
 			ComponentRegistration<TComponent> componentRegistration, params IReleaseExtension[] items)
 		{
 			var releaseExtensions = new List<IReleaseExtension>();
@@ -62,8 +54,8 @@ namespace Castle.Windsor.Tests
 		{
 			var a = new A();
 			var collector = new CollectItemsExtension();
-			kernel.Register(AddResolveExtensions(Component.For<A>(), collector, new ReturnAExtension(a)));
-			kernel.Resolve<A>();
+			Kernel.Register(AddResolveExtensions(Component.For<A>(), collector, new ReturnAExtension(a)));
+			Kernel.Resolve<A>();
 			Assert.AreSame(a, collector.ResolvedItems.Single());
 		}
 
@@ -72,18 +64,29 @@ namespace Castle.Windsor.Tests
 		{
 			var a = new A();
 			var componentRegistration = Component.For<A>();
-			kernel.Register(AddResolveExtensions(componentRegistration, new ReturnAExtension(a)));
-			var resolvedA = kernel.Resolve<A>();
+			Kernel.Register(AddResolveExtensions(componentRegistration, new ReturnAExtension(a)));
+			var resolvedA = Kernel.Resolve<A>();
 			Assert.AreSame(a, resolvedA);
 		}
 
 		[Test]
-		public void Can_proceed_and_inspect_released_value()
+		public void Can_proceed_and_inspect_released_value_on_singleton()
 		{
 			var collector = new CollectItemsExtension();
-			kernel.Register(AddReleaseExtensions(Component.For<DisposableFoo>(), collector));
-			var a = kernel.Resolve<DisposableFoo>();
-			kernel.ReleaseComponent(a);
+			Kernel.Register(WithReleaseExtensions(Component.For<DisposableFoo>(), collector));
+			var a = Kernel.Resolve<DisposableFoo>();
+			Kernel.Dispose();
+			Assert.AreEqual(1, collector.ReleasedItems.Count);
+			Assert.AreSame(a, collector.ReleasedItems[0]);
+		}
+
+		[Test]
+		public void Can_proceed_and_inspect_released_value_on_transinet()
+		{
+			var collector = new CollectItemsExtension();
+			Kernel.Register(WithReleaseExtensions(Component.For<DisposableFoo>().LifeStyle.Transient, collector));
+			var a = Kernel.Resolve<DisposableFoo>();
+			Kernel.ReleaseComponent(a);
 			Assert.AreEqual(1, collector.ReleasedItems.Count);
 			Assert.AreSame(a, collector.ReleasedItems[0]);
 		}
@@ -92,9 +95,9 @@ namespace Castle.Windsor.Tests
 		public void Can_proceed_and_inspect_returned_value()
 		{
 			var collector = new CollectItemsExtension();
-			kernel.Register(AddResolveExtensions(Component.For<A>(), collector));
-			kernel.Resolve<A>();
-			var resolved = kernel.Resolve<A>();
+			Kernel.Register(AddResolveExtensions(Component.For<A>(), collector));
+			Kernel.Resolve<A>();
+			var resolved = Kernel.Resolve<A>();
 			Assert.AreEqual(2, collector.ResolvedItems.Count);
 			Assert.AreSame(resolved, collector.ResolvedItems[0]);
 			Assert.AreSame(resolved, collector.ResolvedItems[1]);
@@ -105,8 +108,8 @@ namespace Castle.Windsor.Tests
 		{
 			var a = new A();
 			var componentRegistration = Component.For<A>();
-			kernel.Register(AddResolveExtensions(componentRegistration, new ReturnAExtension(a, proceed: true)));
-			var resolvedA = kernel.Resolve<A>();
+			Kernel.Register(AddResolveExtensions(componentRegistration, new ReturnAExtension(a, proceed: true)));
+			var resolvedA = Kernel.Resolve<A>();
 			Assert.AreSame(a, resolvedA);
 		}
 	}
