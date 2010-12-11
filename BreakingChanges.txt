@@ -1,4 +1,20 @@
 ================================================================================================
+change - AllComponentsReleasePolicy was removed, ILifestyleManager has one new method:
+	void Track(object instance, Burden burden, IReleasePolicy releasePolicy);
+
+impact - low
+fixability - easy
+
+description - Handling of decision regarding tracking is now happening in two steps. First step
+	happens in the new Track method of ILifestyleManager, which, if it wants the release policy
+	to track the component, can call policy's Track method.
+
+fix - If you implement custom lifestyle inheriting AbstractLifestyleManager you don't need to do
+	anything. The base implementation replicates the default behavior - if burden requires 
+	decommission it will ask the release policy to track it.
+	If you implement the interface directly, then depending on your needs, if you want
+	to track the component, call track on release policy, or not.
+================================================================================================
 rename -  CreationContext.Empty -> CreationContext.CreateEmpty()
 description - readability change to make it obvious that new instance is created each time.
 ================================================================================================

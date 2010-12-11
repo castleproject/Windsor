@@ -705,13 +705,12 @@
     <Compile Include="MicroKernel\Registration\FromDescriptor.cs" />
     <Compile Include="MicroKernel\Registration\ServiceDescriptor.cs" />
     <Compile Include="MicroKernel\Registration\BasedOnDescriptor.cs" />
-    <Compile Include="MicroKernel\Releasers\AllComponentsReleasePolicy.cs">
+    <Compile Include="MicroKernel\Releasers\LifecycledComponentsReleasePolicy.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="MicroKernel\IReleasePolicy.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="MicroKernel\Releasers\LifecycledComponentsReleasePolicy.cs" />
     <Compile Include="MicroKernel\Releasers\NoTrackingReleasePolicy.cs">
       <SubType>Code</SubType>
     </Compile>

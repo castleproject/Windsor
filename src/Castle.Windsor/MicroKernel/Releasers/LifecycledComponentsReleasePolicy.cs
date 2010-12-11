@@ -15,13 +15,88 @@
 namespace Castle.MicroKernel.Releasers
 {
 	using System;
+	using System.Collections.Generic;
+	using System.Linq;
+
+	using Castle.Core.Internal;
 
 	/// <summary>
 	///   Only tracks components that have decommission steps
 	///   registered or have pooled lifestyle.
 	/// </summary>
 	[Serializable]
-	public class LifecycledComponentsReleasePolicy : AllComponentsReleasePolicy
+	public class LifecycledComponentsReleasePolicy : IReleasePolicy
 	{
+		private readonly IDictionary<object, Burden> instance2Burden =
+			new Dictionary<object, Burden>(new Util.ReferenceEqualityComparer());
+
+		private readonly Lock @lock = Lock.Create();
+
+		public virtual void Track(object instance, Burden burden)
+		{
+			using(@lock.ForWriting())
+			{
+				instance2Burden[instance] = burden;
+			}
+		}
+
+		public bool HasTrack(object instance)
+		{
+			if (instance == null) throw new ArgumentNullException("instance");
+
+			using(@lock.ForReading())
+			{
+				return instance2Burden.ContainsKey(instance);
+			}
+		}
+
+		public void Release(object instance)
+		{
+			if (instance == null) throw new ArgumentNullException("instance");
+
+			using (var locker = @lock.ForReadingUpgradeable())
+			{
+				Burden burden;
+				if (!instance2Burden.TryGetValue(instance, out burden))
+					return;
+
+				locker.Upgrade();
+				if (!instance2Burden.TryGetValue(instance, out burden))
+					return;
+
+				// we remove first, then release so that if we recursively end up here again, the first TryGetValue call breaks the circuit
+				var existed = instance2Burden.Remove(instance);
+				if (existed == false)
+				{
+					// NOTE: this should not be humanly possible. We should not even have this code here.
+					return;
+				}
+
+				if (burden.Release(this) == false)
+				{
+					// NOTE: ok we didn't remove this component, so let's put it back to the cache so that we can try again later, perhaps with better luck
+					instance2Burden[instance] = burden;
+				}
+			}
+		}
+
+		public void Dispose()
+		{
+			using(@lock.ForWriting())
+			{
+				var burdens = new KeyValuePair<object, Burden>[instance2Burden.Count];
+				instance2Burden.CopyTo(burdens, 0);
+
+				// NOTE: This is relying on a undocumented behavior that order of items when enumerating Dictionary<> will be oldest --> latest
+				foreach (var burden in burdens.Reverse())
+				{
+					if (instance2Burden.ContainsKey(burden.Key))
+					{
+						burden.Value.Release(this);
+						instance2Burden.Remove(burden.Key);
+					}
+				}
+			}
+		}
 	}
 }
