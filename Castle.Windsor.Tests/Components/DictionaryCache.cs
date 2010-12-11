@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,17 +12,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.MicroKernel.Tests.ClassComponents
+namespace Castle.Windsor.Tests
 {
-	using Castle.MicroKernel.Lifestyle;
+	using System.Collections.Generic;
 
-	/// <summary>
-	///   Summary description for MyLifestyleHandler.
-	/// </summary>
-	public class CustomLifestyleManager : AbstractLifestyleManager
+	public class DictionaryCache<T> : ICache<T>
 	{
-		public override void Dispose()
+		private Dictionary<string, object> hash = new Dictionary<string, object>();
+
+		public T Get(string key)
 		{
+			return (T)hash[key];
+		}
+
+		public void Put(string key, T item)
+		{
+			hash[key] = item;
 		}
 	}
 }

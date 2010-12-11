@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,64 +14,10 @@
 
 namespace Castle.Windsor.Tests.Components
 {
-	using System;
-
-	public interface ICamera
-	{
-		int Id { get; }
-		string Name { get; set; }
-		string IPNumber { get; set; }
-	}
-
-	public interface ICameraServiceBase
-	{
-		ICamera Add(String name, string ipNumber);
-	}
-
-	public interface ICameraService : ICameraServiceBase
-	{
-		void Record(ICamera cam);
-	}
-
 	public class Camera : ICamera
 	{
-		private int myId;
-		private string myName;
-		private string myIPNumber;
-
-		public int Id
-		{
-			get { return myId; }
-			set { myId = value; }
-		}
-
-		public string Name
-		{
-			get { return myName; }
-			set { myName = value; }
-		}
-
-		public String IPNumber
-		{
-			get { return myIPNumber; }
-			set { myIPNumber = value; }
-		}
-	}
-
-#if (SILVERLIGHT)
-	public class CameraService : ICameraService
-#else
-	public class CameraService : MarshalByRefObject, ICameraService
-#endif
-	{
-		public ICamera Add(String name, String ipNumber)
-		{
-			return new Camera();
-		}
-
-		public void Record(ICamera cam)
-		{
-			Console.WriteLine("Recording...");
-		}
+		public string IPNumber { get; set; }
+		public int Id { get; set; }
+		public string Name { get; set; }
 	}
 }

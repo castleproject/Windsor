@@ -12,17 +12,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.MicroKernel.Tests.ClassComponents
+namespace Castle.Windsor.Tests
 {
-	using Castle.MicroKernel.Lifestyle;
+	using Castle.MicroKernel.Registration;
+	using Castle.Windsor.Tests.Components;
 
-	/// <summary>
-	///   Summary description for MyLifestyleHandler.
-	/// </summary>
-	public class CustomLifestyleManager : AbstractLifestyleManager
+	using NUnit.Framework;
+
+	public class GenericVarianceTestCase : AbstractContainerTestFixture
 	{
-		public override void Dispose()
+		[Test]
+		public void ResolveAll_can_resolve_contravariant_components()
 		{
+			Container.Register(Component.For<IAmContravariant<EmptyBase>>().ImplementedBy<ContravariantBase>(),
+			                   Component.For<IAmContravariant<EmptySub1>>().ImplementedBy<ContravariantDerived>());
+
+			var convariantOfDerived = Container.ResolveAll<IAmContravariant<EmptySub1>>();
+			Assert.AreEqual(2, convariantOfDerived.Length);
 		}
 	}
 }

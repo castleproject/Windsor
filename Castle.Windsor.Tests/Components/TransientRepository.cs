@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,17 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.MicroKernel.Tests.ClassComponents
+namespace Castle.Windsor.Tests
 {
-	using Castle.MicroKernel.Lifestyle;
+	using Castle.Core;
 
-	/// <summary>
-	///   Summary description for MyLifestyleHandler.
-	/// </summary>
-	public class CustomLifestyleManager : AbstractLifestyleManager
+	[Transient]
+	public class TransientRepository<T> : IRepository<T> where T : new()
 	{
-		public override void Dispose()
+		public T Get(int id)
 		{
+			return new T();
 		}
 	}
 }

@@ -310,21 +310,49 @@
     <Compile Include="Components\CalculatorServiceWithFooInterceptorNamed.cs" />
     <Compile Include="Components\CalculatorServiceWithMultipleInterfaces.cs" />
     <Compile Include="Components\CalculatorServiceWithStandardInterceptor.cs" />
+    <Compile Include="Components\CameraService.cs" />
+    <Compile Include="Components\CompA.cs" />
+    <Compile Include="Components\CompB.cs" />
+    <Compile Include="Components\CompC.cs" />
+    <Compile Include="Components\CompD.cs" />
+    <Compile Include="Components\Controller.cs" />
+    <Compile Include="Components\ContravariantBase.cs" />
+    <Compile Include="Components\ContravariantDerived.cs" />
+    <Compile Include="Components\DemoRepository.cs" />
     <Compile Include="Components\DependsOnArray.cs" />
+    <Compile Include="Components\DictionaryCache.cs" />
     <Compile Include="Components\DisposableGeneric.cs" />
     <Compile Include="Components\DisposableGenericA.cs" />
     <Compile Include="Components\EmptyServiceComposite.cs" />
     <Compile Include="Components\EmptyServiceDecorator.cs" />
     <Compile Include="Components\EmptyServiceDecoratorViaProperty.cs" />
+    <Compile Include="Components\HumanArm.cs" />
+    <Compile Include="Components\IAmContravariant.cs" />
+    <Compile Include="Components\IArm.cs" />
+    <Compile Include="Components\ICache.cs" />
+    <Compile Include="Components\ICamera.cs" />
+    <Compile Include="Components\ICameraService.cs" />
+    <Compile Include="Components\ICameraServiceBase.cs" />
+    <Compile Include="Components\IController.cs" />
     <Compile Include="Components\IDependency.cs" />
     <Compile Include="Components\IDependOnArray.cs" />
+    <Compile Include="Components\IInternal.cs" />
     <Compile Include="Components\InitializableComponent.cs" />
     <Compile Include="Components\InitializableDisposableComponent.cs" />
+    <Compile Include="Components\IRepository.cs" />
+    <Compile Include="Components\ISimpleMixIn.cs" />
+    <Compile Include="Components\IView.cs" />
+    <Compile Include="Components\LoggingRepositoryDecorator.cs" />
+    <Compile Include="Components\NeedsGenericType.cs" />
+    <Compile Include="Components\NullCache.cs" />
+    <Compile Include="Components\PlasmaGunArm.cs" />
     <Compile Include="Components\ResolvableDependency.cs" />
+    <Compile Include="Components\ReviewerRepository.cs" />
     <Compile Include="Components\SimpleServiceInitializable.cs" />
     <Compile Include="Components\SimpleServiceSupportInitialize.cs" />
     <Compile Include="Components\StandardInterceptorAttribute.cs" />
     <Compile Include="Components\SupportInitializeComponent.cs" />
+    <Compile Include="Components\TransientRepository.cs" />
     <Compile Include="Components\UnresolvalbeDependency.cs" />
     <Compile Include="Components\UnresolvalbeDependencyWithAdditionalServiceConstructor.cs" />
     <Compile Include="Components\UnresolvalbeDependencyWithPrimitiveConstructor.cs" />
@@ -613,6 +641,7 @@
     <Compile Include="Facilities\Startable\Components\StartableChainWithGenerics.cs" />
     <Compile Include="Facilities\Startable\Components\StartableComponentWithCustomDependencies.cs" />
     <Compile Include="Registration\DynamicParametersTestCase.cs" />
+    <Compile Include="Windsor.Tests\GenericVarianceTestCase.cs" />
     <Compile Include="Windsor.Tests\LitestylePerThreadTestCase.cs" />
     <Compile Include="Windsor.Tests\MultiServiceComponentsTestCase.cs" />
     <Compile Include="DefaultConversionManagerTestCase.cs">
@@ -757,12 +786,12 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Components\Camera.cs" />
-    <Compile Include="Components\CircularDependencyComponents.cs" />
+    <Compile Include="Components\View.cs" />
     <Compile Include="Components\ComponentWithConfigs.cs" />
     <Compile Include="Components\ComponentWithProperties.cs" />
     <Compile Include="Components\ComponentWithStringProperty.cs" />
-    <Compile Include="Components\CalculatorServiceWithProxyBehavior.cs" />
-    <Compile Include="Components\DotNet2Components.cs" />
+    <Compile Include="Components\CalculatorServiceWithMarshalByRefProxyBehavior.cs" />
+    <Compile Include="Components\RepositoryNotMarkedAsTransient.cs" />
     <Compile Include="Components\Employee.cs">
       <SubType>Code</SubType>
     </Compile>
