@@ -19,26 +19,34 @@ namespace Castle.MicroKernel
 
 	using Castle.Core;
 
+	public delegate void BurdenReleased(Burden burden);
+
 	public class Burden
 	{
 		private readonly IHandler handler;
-		private bool requiresDecommission;
-		private List<Burden> items;
+
 		private object instance;
+		private List<Burden> items;
+		private bool requiresDecommission;
 
 		public Burden(IHandler handler)
 		{
 			this.handler = handler;
 		}
 
-		public bool RequiresDecommission
+		public object Instance
 		{
-			get { return requiresDecommission; }
+			get { return instance; }
 		}
 
 		public ComponentModel Model
 		{
 			get { return handler.ComponentModel; }
+		}
+
+		public bool RequiresDecommission
+		{
+			get { return requiresDecommission; }
 		}
 
 		public void AddChild(Burden child)
@@ -55,21 +63,18 @@ namespace Castle.MicroKernel
 			}
 		}
 
-		public bool Release(IReleasePolicy policy)
+		public bool Release()
 		{
-			if (policy == null)
-			{
-				throw new ArgumentNullException("policy");
-			}
-
-			if (handler.Release(instance) == false)
+			if (handler.Release(this) == false)
 			{
 				return false;
 			}
 
+			Released(this);
+
 			if (items != null)
 			{
-				items.ForEach(c => policy.Release(c.instance));
+				items.ForEach(c => c.Release());
 			}
 			return true;
 		}
@@ -84,5 +89,7 @@ namespace Castle.MicroKernel
 			this.instance = instance;
 			requiresDecommission = requiresDecommission || hasDecomission;
 		}
+
+		public event BurdenReleased Released = delegate{};
 	}
 }

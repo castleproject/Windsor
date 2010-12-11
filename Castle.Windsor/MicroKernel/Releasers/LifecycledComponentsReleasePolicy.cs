@@ -21,13 +21,12 @@ namespace Castle.MicroKernel.Releasers
 	using Castle.Core.Internal;
 
 	/// <summary>
-	///   Only tracks components that have decommission steps
-	///   registered or have pooled lifestyle.
+	///   Tracks all components if asked.
 	/// </summary>
 	[Serializable]
 	public class LifecycledComponentsReleasePolicy : IReleasePolicy
 	{
-		private readonly IDictionary<object, Burden> instance2Burden =
+		private readonly Dictionary<object, Burden> instance2Burden =
 			new Dictionary<object, Burden>(new Util.ReferenceEqualityComparer());
 
 		private readonly Lock @lock = Lock.Create();
@@ -36,13 +35,30 @@ namespace Castle.MicroKernel.Releasers
 		{
 			using(@lock.ForWriting())
 			{
+				var oldCount = instance2Burden.Count;
 				instance2Burden[instance] = burden;
+				if(oldCount < instance2Burden.Count)
+				{
+					burden.Released += OnInstanceReleased;
+				}
+			}
+		}
+
+		private void OnInstanceReleased(Burden burden)
+		{
+			using (@lock.ForWriting())
+			{
+				instance2Burden.Remove(burden.Instance);
+				burden.Released -= OnInstanceReleased;
 			}
 		}
 
 		public bool HasTrack(object instance)
 		{
-			if (instance == null) throw new ArgumentNullException("instance");
+			if (instance == null)
+			{
+				return false;
+			}
 
 			using(@lock.ForReading())
 			{
@@ -52,7 +68,10 @@ namespace Castle.MicroKernel.Releasers
 
 		public void Release(object instance)
 		{
-			if (instance == null) throw new ArgumentNullException("instance");
+			if (instance == null)
+			{
+				return;
+			}
 
 			using (var locker = @lock.ForReadingUpgradeable())
 			{
@@ -72,7 +91,7 @@ namespace Castle.MicroKernel.Releasers
 					return;
 				}
 
-				if (burden.Release(this) == false)
+				if (burden.Release() == false)
 				{
 					// NOTE: ok we didn't remove this component, so let's put it back to the cache so that we can try again later, perhaps with better luck
 					instance2Burden[instance] = burden;
@@ -84,17 +103,12 @@ namespace Castle.MicroKernel.Releasers
 		{
 			using(@lock.ForWriting())
 			{
-				var burdens = new KeyValuePair<object, Burden>[instance2Burden.Count];
-				instance2Burden.CopyTo(burdens, 0);
-
+				var burdens = instance2Burden.ToArray();
+				instance2Burden.Clear();
 				// NOTE: This is relying on a undocumented behavior that order of items when enumerating Dictionary<> will be oldest --> latest
 				foreach (var burden in burdens.Reverse())
 				{
-					if (instance2Burden.ContainsKey(burden.Key))
-					{
-						burden.Value.Release(this);
-						instance2Burden.Remove(burden.Key);
-					}
+					burden.Value.Release();
 				}
 			}
 		}

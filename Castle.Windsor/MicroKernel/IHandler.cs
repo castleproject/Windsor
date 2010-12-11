@@ -79,9 +79,9 @@ namespace Castle.MicroKernel
 		/// <summary>
 		/// Implementors should dispose the component instance
 		/// </summary>
-		/// <param name="instance"></param>
+		/// <param name="burden"></param>
 		/// <returns>true if destroyed.</returns>
-		bool Release(object instance);
+		bool Release(Burden burden);
 
 		/// <summary>
 		/// Gets the state of the handler

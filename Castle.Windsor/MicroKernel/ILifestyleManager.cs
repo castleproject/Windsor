@@ -55,6 +55,6 @@ namespace Castle.MicroKernel
 		/// <param name="instance"></param>
 		bool Release(object instance);
 
-		void Track(object instance, Burden burden, IReleasePolicy releasePolicy);
+		void Track(Burden burden, IReleasePolicy releasePolicy);
 	}
 }
