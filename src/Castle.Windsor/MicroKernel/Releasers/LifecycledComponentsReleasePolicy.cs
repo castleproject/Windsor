@@ -11,7 +11,6 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
 namespace Castle.MicroKernel.Releasers
 {
 	using System;
@@ -31,25 +30,20 @@ namespace Castle.MicroKernel.Releasers
 
 		private readonly Lock @lock = Lock.Create();
 
-		public virtual void Track(object instance, Burden burden)
-		{
-			using(@lock.ForWriting())
-			{
-				var oldCount = instance2Burden.Count;
-				instance2Burden[instance] = burden;
-				if(oldCount < instance2Burden.Count)
-				{
-					burden.Released += OnInstanceReleased;
-				}
-			}
-		}
-
-		private void OnInstanceReleased(Burden burden)
+		public void Dispose()
 		{
 			using (@lock.ForWriting())
 			{
-				instance2Burden.Remove(burden.Instance);
-				burden.Released -= OnInstanceReleased;
+				var burdens = instance2Burden.ToArray();
+				instance2Burden.Clear();
+				// NOTE: This is relying on a undocumented behavior that order of items when enumerating Dictionary<> will be oldest --> latest
+				foreach (var burden in burdens.Reverse())
+				{
+					if(burden.Value.RequiresDecommission)
+					{
+						burden.Value.Release();
+					}
+				}
 			}
 		}
 
@@ -60,7 +54,7 @@ namespace Castle.MicroKernel.Releasers
 				return false;
 			}
 
-			using(@lock.ForReading())
+			using (@lock.ForReading())
 			{
 				return instance2Burden.ContainsKey(instance);
 			}
@@ -77,11 +71,19 @@ namespace Castle.MicroKernel.Releasers
 			{
 				Burden burden;
 				if (!instance2Burden.TryGetValue(instance, out burden))
+				{
 					return;
+				}
 
 				locker.Upgrade();
 				if (!instance2Burden.TryGetValue(instance, out burden))
+				{
 					return;
+				}
+				if (burden.RequiresDecommission == false)
+				{
+					return;
+				}
 
 				// we remove first, then release so that if we recursively end up here again, the first TryGetValue call breaks the circuit
 				var existed = instance2Burden.Remove(instance);
@@ -99,17 +101,25 @@ namespace Castle.MicroKernel.Releasers
 			}
 		}
 
-		public void Dispose()
+		public virtual void Track(object instance, Burden burden)
 		{
-			using(@lock.ForWriting())
+			using (@lock.ForWriting())
 			{
-				var burdens = instance2Burden.ToArray();
-				instance2Burden.Clear();
-				// NOTE: This is relying on a undocumented behavior that order of items when enumerating Dictionary<> will be oldest --> latest
-				foreach (var burden in burdens.Reverse())
+				var oldCount = instance2Burden.Count;
+				instance2Burden[instance] = burden;
+				if (oldCount < instance2Burden.Count)
 				{
-					burden.Value.Release();
+					burden.Released += OnInstanceReleased;
 				}
+			}
+		}
+
+		private void OnInstanceReleased(Burden burden)
+		{
+			using (@lock.ForWriting())
+			{
+				instance2Burden.Remove(burden.Instance);
+				burden.Released -= OnInstanceReleased;
 			}
 		}
 	}

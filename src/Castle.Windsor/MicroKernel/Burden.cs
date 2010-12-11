@@ -11,7 +11,6 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
 namespace Castle.MicroKernel
 {
 	using System;
@@ -27,7 +26,6 @@ namespace Castle.MicroKernel
 
 		private object instance;
 		private List<Burden> items;
-		private bool requiresDecommission;
 
 		public Burden(IHandler handler)
 		{
@@ -44,10 +42,7 @@ namespace Castle.MicroKernel
 			get { return handler.ComponentModel; }
 		}
 
-		public bool RequiresDecommission
-		{
-			get { return requiresDecommission; }
-		}
+		public bool RequiresDecommission { get; set; }
 
 		public void AddChild(Burden child)
 		{
@@ -59,7 +54,7 @@ namespace Castle.MicroKernel
 
 			if (child.RequiresDecommission)
 			{
-				requiresDecommission = true;
+				RequiresDecommission = true;
 			}
 		}
 
@@ -87,9 +82,9 @@ namespace Castle.MicroKernel
 			}
 
 			this.instance = instance;
-			requiresDecommission = requiresDecommission || hasDecomission;
+			RequiresDecommission = RequiresDecommission || hasDecomission;
 		}
 
-		public event BurdenReleased Released = delegate{};
+		public event BurdenReleased Released = delegate { };
 	}
 }

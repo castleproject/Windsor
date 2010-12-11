@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -21,14 +21,14 @@ namespace Castle.MicroKernel.Lifestyle
 	using Castle.MicroKernel.Registration;
 
 	/// <summary>
-	/// Implements a Poolable Lifestyle Manager. 
+	///   Manages a pool of objects.
 	/// </summary>
 	[Serializable]
 	public class PoolableLifestyleManager : AbstractLifestyleManager
 	{
-		private IPool pool;
 		private readonly int initialSize;
 		private readonly int maxSize;
+		private IPool pool;
 
 		public PoolableLifestyleManager(int initialSize, int maxSize)
 		{
@@ -36,9 +36,21 @@ namespace Castle.MicroKernel.Lifestyle
 			this.maxSize = maxSize;
 		}
 
-		public override void Track(Burden burden, IReleasePolicy releasePolicy)
+		public override void Dispose()
 		{
-			releasePolicy.Track(burden.Instance, burden);
+			if (pool != null)
+			{
+				pool.Dispose();
+			}
+		}
+
+		public override bool Release(object instance)
+		{
+			if (pool != null)
+			{
+				return pool.Release(instance);
+			}
+			return false;
 		}
 
 		public override object Resolve(CreationContext context)
@@ -57,21 +69,10 @@ namespace Castle.MicroKernel.Lifestyle
 			return pool.Request(context);
 		}
 
-		public override bool Release(object instance)
+		public override void Track(Burden burden, IReleasePolicy releasePolicy)
 		{
-			if (pool != null)
-			{
-				return pool.Release(instance);
-			}
-			return false;
-		}
-
-		public override void Dispose()
-		{
-			if (pool != null)
-			{
-				pool.Dispose();
-			}
+			burden.RequiresDecommission = true;
+			releasePolicy.Track(burden.Instance, burden);
 		}
 
 		protected IPool CreatePool(int initialSize, int maxSize)
