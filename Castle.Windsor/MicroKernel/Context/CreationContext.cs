@@ -192,7 +192,7 @@ namespace Castle.MicroKernel.Context
 
 		public ResolutionContext EnterResolutionContext(IHandler handlerBeingResolved, bool createBurden)
 		{
-			var resolutionContext = new ResolutionContext(this, createBurden ? new Burden() : null);
+			var resolutionContext = new ResolutionContext(this, createBurden ? new Burden(handlerBeingResolved) : null);
 			handlerStack.Push(handlerBeingResolved);
 			if (createBurden)
 			{

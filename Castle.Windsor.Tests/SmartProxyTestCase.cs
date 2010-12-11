@@ -59,7 +59,7 @@ namespace Castle.Windsor.Tests
 			container.Register(Component.For<StandardInterceptor>().Named("interceptor"));
 			container.Register(Component.For<ICameraService>().ImplementedBy<CameraService>());
 
-			var service = container.Resolve<ICameraService>("key");
+			var service = container.Resolve<ICameraService>();
 
 			Assert.IsNotNull(service);
 		}

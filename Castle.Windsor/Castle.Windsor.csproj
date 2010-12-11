@@ -570,6 +570,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="MicroKernel\Lifestyle\PerThreadThreadStaticLifestyleManager.cs" />
+    <Compile Include="MicroKernel\Lifestyle\PerWebRequestLifestyleModule.cs" />
     <Compile Include="MicroKernel\Lifestyle\PoolableLifestyleManager.cs">
       <SubType>Code</SubType>
     </Compile>

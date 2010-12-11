@@ -28,9 +28,12 @@ namespace Castle.MicroKernel.Lifestyle
 
 		public override void Dispose()
 		{
-			if (instance != null) base.Release( instance );
+			if (instance != null && base.Release(instance))
+			{
+				instance = null;
+			}
 		}
-
+		
 		public override object Resolve(CreationContext context)
 		{
 			if (instance == null)
