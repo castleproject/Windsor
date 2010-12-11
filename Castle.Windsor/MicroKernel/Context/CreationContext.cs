@@ -331,7 +331,10 @@ namespace Castle.MicroKernel.Context
 			}
 
 			resolutionStack.Pop();
-
+			if(burden.RequiresDecommission == false)
+			{
+				return;
+			}
 			if (resolutionStack.Count != 0)
 			{
 				resolutionStack.Peek().Burden.AddChild(burden);

@@ -305,6 +305,7 @@
     <Compile Include="ByRefDependenciesTestCase.cs" />
     <Compile Include="ClassComponents\CBA.cs" />
     <Compile Include="ClassComponents\HasByRefCtorArgument.cs" />
+    <Compile Include="ClassComponents\HasCtorDependency.cs" />
     <Compile Include="Components\ArrayRefDepAsConstructor.cs" />
     <Compile Include="Components\CalculatorServiceWithStandartInterceptorTyped.cs" />
     <Compile Include="Components\CalculatorServiceWithFooInterceptorNamed.cs" />
@@ -641,6 +642,7 @@
     <Compile Include="Facilities\Startable\Components\StartableChainWithGenerics.cs" />
     <Compile Include="Facilities\Startable\Components\StartableComponentWithCustomDependencies.cs" />
     <Compile Include="Registration\DynamicParametersTestCase.cs" />
+    <Compile Include="Windsor.Tests\LifecycledComponentsReleasePolicyComponentTrackingTestCase.cs" />
     <Compile Include="Windsor.Tests\GenericVarianceTestCase.cs" />
     <Compile Include="Windsor.Tests\LitestylePerThreadTestCase.cs" />
     <Compile Include="Windsor.Tests\MultiServiceComponentsTestCase.cs" />

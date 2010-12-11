@@ -15,6 +15,7 @@
 namespace Castle.MicroKernel.Lifestyle
 {
 	using System;
+	using System.Threading;
 
 	using Castle.MicroKernel.Context;
 
@@ -25,6 +26,7 @@ namespace Castle.MicroKernel.Lifestyle
 	public class SingletonLifestyleManager : AbstractLifestyleManager
 	{
 		private Object instance;
+		private Burden burden;
 
 		public override void Dispose()
 		{
@@ -32,15 +34,21 @@ namespace Castle.MicroKernel.Lifestyle
 			if (localInstance != null)
 			{
 				instance = null;
-
-				base.Release(localInstance);
+				burden.Release();
 			}
 		}
 
-		public override bool Release(object instance)
+		public override void Track(Burden burden, IReleasePolicy releasePolicy)
 		{
-			// Do nothing
-			return false;
+			var track = burden.RequiresDecommission;
+			burden.RequiresDecommission = false;
+			if(Interlocked.CompareExchange(ref this.burden, burden, null) == null)
+			{
+				if(track)
+				{
+					releasePolicy.Track(burden.Instance, burden);
+				}
+			}
 		}
 
 		public override object Resolve(CreationContext context)
