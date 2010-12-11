@@ -65,9 +65,6 @@ namespace Castle.MicroKernel.Tests.Lifestyle
 
 			Assert.IsTrue(!instance1.Equals(instance2));
 			Assert.IsTrue(instance1.ID != instance2.ID);
-
-			handler.Release(instance1);
-			handler.Release(instance2);
 		}
 
 		[Test]
@@ -243,9 +240,6 @@ namespace Castle.MicroKernel.Tests.Lifestyle
 
 			Assert.IsTrue(instance1.Equals(instance2));
 			Assert.IsTrue(instance1.ID == instance2.ID);
-
-			handler.Release(instance1);
-			handler.Release(instance2);
 		}
 
 		[Test]
@@ -301,9 +295,6 @@ namespace Castle.MicroKernel.Tests.Lifestyle
 			Assert.IsNotNull(instance3);
 			Assert.IsTrue(!instance1.Equals(instance3));
 			Assert.IsTrue(instance1.ID != instance3.ID);
-
-			handler.Release(instance1);
-			handler.Release(instance2);
 		}
 
 		private void OtherThread()
