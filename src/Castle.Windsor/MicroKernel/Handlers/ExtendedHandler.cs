@@ -59,14 +59,14 @@ namespace Castle.MicroKernel.Handlers
 			}
 		}
 
-		public override bool Release(object instance)
+		public override bool Release(Burden burden)
 		{
 			if (releaseExtensions == null)
 			{
-				return base.Release(instance);
+				return base.Release(burden);
 			}
 
-			var invocation = new ReleaseInvocation(instance);
+			var invocation = new ReleaseInvocation(burden);
 			InvokeReleasePipeline(0, invocation);
 			return invocation.ReturnValue;
 		}
@@ -86,7 +86,7 @@ namespace Castle.MicroKernel.Handlers
 		{
 			if (extensionIndex >= releaseExtensions.Length)
 			{
-				invocation.ReturnValue = base.Release(invocation.Instance);
+				invocation.ReturnValue = base.Release(invocation.Burden);
 				return;
 			}
 			var nextIndex = extensionIndex + 1;

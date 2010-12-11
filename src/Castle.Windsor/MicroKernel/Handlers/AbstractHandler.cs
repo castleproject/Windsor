@@ -137,9 +137,9 @@ namespace Castle.MicroKernel.Handlers
 		///   Should be implemented by derived classes: 
 		///   disposes the component instance (or recycle it)
 		/// </summary>
-		/// <param name = "instance"></param>
+		/// <param name = "burden"></param>
 		/// <returns>true if destroyed.</returns>
-		public abstract bool ReleaseCore(object instance);
+		public abstract bool ReleaseCore(Burden burden);
 
 		/// <summary>
 		///   Should be implemented by derived classes: 
@@ -335,11 +335,11 @@ namespace Castle.MicroKernel.Handlers
 		/// <summary>
 		///   disposes the component instance (or recycle it).
 		/// </summary>
-		/// <param name = "instance"></param>
+		/// <param name = "burden"></param>
 		/// <returns></returns>
-		public virtual bool Release(object instance)
+		public virtual bool Release(Burden burden)
 		{
-			return ReleaseCore(instance);
+			return ReleaseCore(burden);
 		}
 
 		public void RemoveCustomDependencyValue(object key)

@@ -59,11 +59,11 @@ namespace Castle.MicroKernel.Lifestyle
 			return true;
 		}
 
-		public virtual void Track(object instance, Burden burden, IReleasePolicy releasePolicy)
+		public virtual void Track(Burden burden, IReleasePolicy releasePolicy)
 		{
 			if(burden.RequiresDecommission)
 			{
-				releasePolicy.Track(instance, burden);
+				releasePolicy.Track(burden.Instance, burden);
 			}
 		}
 

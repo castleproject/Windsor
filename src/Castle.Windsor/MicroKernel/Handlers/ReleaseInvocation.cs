@@ -20,12 +20,17 @@ namespace Castle.MicroKernel.Handlers
 	{
 		private Action proceed;
 
-		public ReleaseInvocation(object instance)
+		public ReleaseInvocation(Burden burden)
 		{
-			Instance = instance;
+			Burden = burden;
 		}
 
-		public object Instance { get; private set; }
+		public Burden Burden { get; private set; }
+
+		public object Instance
+		{
+			get { return Burden.Instance; }
+		}
 
 		public bool ReturnValue { get; set; }
 

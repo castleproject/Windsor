@@ -108,9 +108,9 @@ namespace Castle.MicroKernel.Handlers
 			return (context != null && context.IsInResolutionContext(this)) || parentHandler.IsBeingResolvedInContext(context);
 		}
 
-		public virtual bool Release(object instance)
+		public virtual bool Release(Burden burden)
 		{
-			return parentHandler.Release(instance);
+			return parentHandler.Release(burden);
 		}
 
 		public virtual void RemoveCustomDependencyValue(object key)

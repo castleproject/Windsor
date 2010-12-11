@@ -96,7 +96,7 @@ namespace Castle.MicroKernel.Lifestyle
 			return instance;
 		}
 
-		public override void Track(object instance, Burden burden, IReleasePolicy releasePolicy)
+		public override void Track(Burden burden, IReleasePolicy releasePolicy)
 		{
 			return;
 		}

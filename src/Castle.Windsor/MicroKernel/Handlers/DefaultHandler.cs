@@ -59,7 +59,7 @@ namespace Castle.MicroKernel.Handlers
 				var instance = lifestyleManager.Resolve(context);
 
 				resolutionContext.Burden.SetRootInstance(instance, HasDecomission(requiresDecommission));
-				lifestyleManager.Track(instance, resolutionContext.Burden, context.ReleasePolicy);
+				lifestyleManager.Track(resolutionContext.Burden, context.ReleasePolicy);
 
 				return instance;
 			}
@@ -99,11 +99,11 @@ namespace Castle.MicroKernel.Handlers
 		/// <summary>
 		/// disposes the component instance (or recycle it)
 		/// </summary>
-		/// <param name="instance"></param>
+		/// <param name="burden"></param>
 		/// <returns>true if destroyed</returns>
-		public override bool ReleaseCore(object instance)
+		public override bool ReleaseCore(Burden burden)
 		{
-			return lifestyleManager.Release(instance);
+			return lifestyleManager.Release(burden.Instance);
 		}
 
 		protected void AssertNotWaitingForDependency()
