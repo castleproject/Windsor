@@ -58,6 +58,8 @@ namespace Castle.MicroKernel
 		[ThreadStatic]
 		private static bool isCheckingLazyLoaders;
 
+		private ThreadSafeFlag disposed;
+
 		/// <summary>
 		///   List of sub containers.
 		/// </summary>
@@ -264,6 +266,11 @@ namespace Castle.MicroKernel
 		/// </summary>
 		public virtual void Dispose()
 		{
+			if (!disposed.Signal())
+			{
+				return;
+			}
+
 			DisposeSubKernels();
 			TerminateFacilities();
 			DisposeComponentsInstancesWithinTracker();
@@ -731,17 +738,18 @@ namespace Castle.MicroKernel
 			                           parent);
 		}
 
+		/// <remarks>
+		/// It is the responsibility of the kernel to ensure that handler is only ever disposed once.
+		/// </remarks>
 		protected void DisposeHandler(IHandler handler)
 		{
-			if (handler == null)
+			var disposable = handler as IDisposable;
+			if(disposable==null)
 			{
 				return;
 			}
 
-			if (handler is IDisposable)
-			{
-				((IDisposable)handler).Dispose();
-			}
+			disposable.Dispose();
 		}
 
 		protected void RegisterHandler(String key, IHandler handler)
@@ -845,8 +853,7 @@ namespace Castle.MicroKernel
 
 		private void DisposeHandlers()
 		{
-			var nodes = GraphNodes;
-			var vertices = TopologicalSortAlgo.Sort(nodes);
+			var vertices = TopologicalSortAlgo.Sort(GraphNodes);
 
 			for (var i = 0; i < vertices.Length; i++)
 			{

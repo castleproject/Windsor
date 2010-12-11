@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,47 +19,51 @@ namespace Castle.MicroKernel.Lifestyle
 	using Castle.MicroKernel.Context;
 
 	/// <summary>
-	/// Summary description for SingletonLifestyleManager.
+	///   Only one instance is created first time an instance of the component is requested, and it is then reused for all subseque.
 	/// </summary>
 	[Serializable]
 	public class SingletonLifestyleManager : AbstractLifestyleManager
 	{
-		private volatile Object instance;
+		private Object instance;
 
 		public override void Dispose()
 		{
-			if (instance != null && base.Release(instance))
+			var localInstance = instance;
+			if (localInstance != null)
 			{
 				instance = null;
-			}
-		}
-		
-		public override object Resolve(CreationContext context)
-		{
-			if (instance == null)
-			{
-				var instanceFromContext = context.GetContextualProperty(ComponentActivator);
-				if (instanceFromContext != null)
-				{
-					//we've been called recursively, by some dependency from base.Resolve call
-					return instanceFromContext;
-				}
-				lock (ComponentActivator)
-				{
-					if (instance == null)
-					{
-						instance = base.Resolve(context);
-					}
-				}
-			}
 
-			return instance;
+				base.Release(localInstance);
+			}
 		}
 
 		public override bool Release(object instance)
 		{
 			// Do nothing
 			return false;
+		}
+
+		public override object Resolve(CreationContext context)
+		{
+			if (instance != null)
+			{
+				return instance;
+			}
+			var instanceFromContext = context.GetContextualProperty(ComponentActivator);
+			if (instanceFromContext != null)
+			{
+				//we've been called recursively, by some dependency from base.Resolve call
+				return instanceFromContext;
+			}
+			lock (ComponentActivator)
+			{
+				if (instance == null)
+				{
+					instance = base.Resolve(context);
+				}
+			}
+
+			return instance;
 		}
 	}
 }
