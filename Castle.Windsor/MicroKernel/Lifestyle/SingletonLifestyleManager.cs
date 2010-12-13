@@ -58,13 +58,18 @@ namespace Castle.MicroKernel.Lifestyle
 				instance = base.CreateInstance(context, burden);
 				cachedBurden = burden;
 			}
+			Track(burden, releasePolicy);
+			return instance;
+		}
+
+		protected override void Track(Burden burden, IReleasePolicy releasePolicy)
+		{
 			var track = burden.RequiresPolicyRelease;
 			burden.RequiresPolicyRelease = false;
 			if (track)
 			{
 				releasePolicy.Track(burden.Instance, burden);
 			}
-			return instance;
 		}
 	}
 }

@@ -32,15 +32,23 @@ namespace Castle.MicroKernel.Lifestyle
 		private static LocalDataStoreSlot slot = Thread.AllocateNamedDataSlot("CastlePerThread");
 
 		[NonSerialized]
-		private IList<object> instances = new List<object>();
+		private IList<Burden> instances = new List<Burden>();
 
-		/// <summary>
-		/// </summary>
+		protected override void Track(Burden burden, IReleasePolicy releasePolicy)
+		{
+			var track = burden.RequiresPolicyRelease;
+			burden.RequiresPolicyRelease = false;
+			if (track)
+			{
+				releasePolicy.Track(burden.Instance, burden);
+			}
+		}
+
 		public override void Dispose()
 		{
 			foreach (var instance in instances)
 			{
-				base.Release(instance);
+				instance.Release();
 			}
 
 			instances.Clear();
@@ -49,13 +57,7 @@ namespace Castle.MicroKernel.Lifestyle
 			Thread.FreeNamedDataSlot("CastlePerThread");
 		}
 
-		public override bool Release(object instance)
-		{
-			// Do nothing.
-			return false;
-		}
-
-		protected override object CreateInstance(CreationContext context, Burden burden)
+		public override object Resolve(CreationContext context, Burden burden, IReleasePolicy releasePolicy)
 		{
 			lock (slot)
 			{
@@ -72,9 +74,9 @@ namespace Castle.MicroKernel.Lifestyle
 
 				if (!map.TryGetValue(ComponentActivator, out instance))
 				{
-					instance = base.CreateInstance(context, burden);
+					instance = base.Resolve(context, burden, releasePolicy);
 					map.Add(ComponentActivator, instance);
-					instances.Add(instance);
+					instances.Add(burden);
 				}
 
 				return instance;
@@ -84,7 +86,7 @@ namespace Castle.MicroKernel.Lifestyle
 		public void OnDeserialization(object sender)
 		{
 			slot = Thread.AllocateNamedDataSlot("CastlePerThread");
-			instances = new List<object>();
+			instances = new List<Burden>();
 		}
 	}
 }

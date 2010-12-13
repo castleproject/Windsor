@@ -13,9 +13,11 @@
 // limitations under the License.
 
 #if (!SILVERLIGHT)
+
 namespace Castle.MicroKernel.Lifestyle
 {
 	using System;
+	using System.Web;
 
 	using Castle.MicroKernel.Context;
 
@@ -26,37 +28,66 @@ namespace Castle.MicroKernel.Lifestyle
 	[Serializable]
 	public class PerWebRequestLifestyleManager : AbstractLifestyleManager
 	{
-		private readonly string instanceId = "PerRequestLifestyleManager_" + Guid.NewGuid();
+		private readonly string PerRequestObjectID = "PerRequestLifestyleManager_" + Guid.NewGuid();
 
 		public override void Dispose()
 		{
-			// NOTE: I don't like it.
-			PerWebRequestLifestyleModule.Evict(instanceId);
+			var current = HttpContext.Current;
+			if (current == null)
+			{
+				return;
+			}
+
+			var burden = (Burden)current.Items[PerRequestObjectID];
+			if (burden == null)
+			{
+				return;
+			}
+			burden.Release();
 		}
 
 		public override object Resolve(CreationContext context, Burden burden, IReleasePolicy releasePolicy)
 		{
-			var retrievedBurden = PerWebRequestLifestyleModule.Retrieve(instanceId);
-			if (retrievedBurden != null)
+			var current = HttpContext.Current;
+
+			if (current == null)
 			{
-				return retrievedBurden;
+				throw new InvalidOperationException(
+					"HttpContext.Current is null. PerWebRequestLifestyle can only be used in ASP.Net");
 			}
 
-			var instance = context.GetContextualProperty(ComponentActivator);
-			if (instance != null)
+			var cachedBurden = current.Items[PerRequestObjectID];
+			if (cachedBurden != null)
 			{
-				//we've been called recursively, by some dependency from base.Resolve call
-				return instance;
+				return cachedBurden;
 			}
-			instance = base.CreateInstance(context, burden);
-			PerWebRequestLifestyleModule.Store(instanceId, burden);
+			if (!PerWebRequestLifestyleModule.Initialized)
+			{
+				var message =
+					string.Format(
+						"Looks like you forgot to register the http module {0}{1}Add '<add name=\"PerRequestLifestyle\" type=\"Castle.MicroKernel.Lifestyle.PerWebRequestLifestyleModule, Castle.Windsor\" />' to the <httpModules> section on your web.config. If you're running IIS7 in Integrated Mode you will need to add it to <modules> section under <system.webServer>",
+						typeof(PerWebRequestLifestyleModule).FullName, Environment.NewLine);
+
+				throw new Exception(message);
+			}
+
+			var instance = base.Resolve(context, burden, releasePolicy);
+			current.Items[PerRequestObjectID] = burden;
+			PerWebRequestLifestyleModule.RegisterForEviction(this, burden);
+
+			return instance;
+		}
+
+		protected override void Track(Burden burden, IReleasePolicy releasePolicy)
+		{
+			var track = burden.RequiresPolicyRelease;
 			burden.RequiresPolicyRelease = false;
-			if (burden.RequiresPolicyRelease)
+			if (track)
 			{
 				releasePolicy.Track(burden.Instance, burden);
 			}
-			return instance;
 		}
 	}
 }
+
 #endif
