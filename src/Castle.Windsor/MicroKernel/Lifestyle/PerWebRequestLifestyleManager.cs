@@ -16,7 +16,6 @@
 namespace Castle.MicroKernel.Lifestyle
 {
 	using System;
-	using System.Web;
 
 	using Castle.MicroKernel.Context;
 
@@ -27,109 +26,37 @@ namespace Castle.MicroKernel.Lifestyle
 	[Serializable]
 	public class PerWebRequestLifestyleManager : AbstractLifestyleManager
 	{
-		private readonly string PerRequestObjectID = "PerRequestLifestyleManager_" + Guid.NewGuid();
-		private bool evicting;
+		private readonly string instanceId = "PerRequestLifestyleManager_" + Guid.NewGuid();
 
 		public override void Dispose()
 		{
-			var current = HttpContext.Current;
-			if (current == null)
-			{
-				return;
-			}
-
-			var instance = current.Items[PerRequestObjectID];
-			if (instance == null)
-			{
-				return;
-			}
-
-			Evict(instance);
+			// NOTE: I don't like it.
+			PerWebRequestLifestyleModule.Evict(instanceId);
 		}
 
-		public override bool Release(object instance)
+		public override object Resolve(CreationContext context, Burden burden, IReleasePolicy releasePolicy)
 		{
-			// Since this method is called by the kernel when an external
-			// request to release the component is made, it must do nothing
-			// to ensure the component is available during the duration of 
-			// the web request.  An internal Evict method is provided to
-			// allow the actual releasing of the component at the end of
-			// the web request.
-
-			if (evicting == false)
+			var retrievedBurden = PerWebRequestLifestyleModule.Retrieve(instanceId);
+			if (retrievedBurden != null)
 			{
-				return false;
+				return retrievedBurden;
 			}
 
-			return base.Release(instance);
-		}
-
-		public override object Resolve(CreationContext context)
-		{
-			var current = HttpContext.Current;
-
-			if (current == null)
-			{
-				throw new InvalidOperationException(
-					"HttpContext.Current is null. PerWebRequestLifestyle can only be used in ASP.Net");
-			}
-
-			var instance = current.Items[PerRequestObjectID];
+			var instance = context.GetContextualProperty(ComponentActivator);
 			if (instance != null)
 			{
+				//we've been called recursively, by some dependency from base.Resolve call
 				return instance;
 			}
-			if (!PerWebRequestLifestyleModule.Initialized)
+			instance = base.CreateInstance(context, burden);
+			PerWebRequestLifestyleModule.Store(instanceId, burden);
+			burden.RequiresPolicyRelease = false;
+			if (burden.RequiresPolicyRelease)
 			{
-				var message =
-					string.Format(
-						"Looks like you forgot to register the http module {0}{1}Add '<add name=\"PerRequestLifestyle\" type=\"Castle.MicroKernel.Lifestyle.PerWebRequestLifestyleModule, Castle.Windsor\" />' to the <httpModules> section on your web.config. If you're running IIS7 in Integrated Mode you will need to add it to <modules> section under <system.webServer>",
-						typeof(PerWebRequestLifestyleModule).FullName, Environment.NewLine);
-
-				throw new Exception(message);
+				releasePolicy.Track(burden.Instance, burden);
 			}
-
-			instance = base.Resolve(context);
-			current.Items[PerRequestObjectID] = instance;
-			PerWebRequestLifestyleModule.RegisterForEviction(this, instance);
-
 			return instance;
 		}
-
-		public override void Track(Burden burden, IReleasePolicy releasePolicy)
-		{
-			return;
-		}
-
-		internal void Evict(object instance)
-		{
-			using (new EvictionScope(this))
-			{
-				// that's not really thread safe, should we care about it?
-				Kernel.ReleaseComponent(instance);
-			}
-		}
-
-		private class EvictionScope : IDisposable
-		{
-			private readonly PerWebRequestLifestyleManager owner;
-
-			public EvictionScope(PerWebRequestLifestyleManager owner)
-			{
-				this.owner = owner;
-				this.owner.evicting = true;
-			}
-
-			public void Dispose()
-			{
-				owner.evicting = false;
-			}
-		}
 	}
-
-	#region PerWebRequestLifestyleModule
-
-	#endregion
 }
-
 #endif

@@ -55,7 +55,7 @@ namespace Castle.MicroKernel.Lifestyle
 			return false;
 		}
 
-		public override object Resolve(CreationContext context)
+		protected override object CreateInstance(CreationContext context, Burden burden)
 		{
 			lock (slot)
 			{
@@ -72,7 +72,7 @@ namespace Castle.MicroKernel.Lifestyle
 
 				if (!map.TryGetValue(ComponentActivator, out instance))
 				{
-					instance = base.Resolve(context);
+					instance = base.CreateInstance(context, burden);
 					map.Add(ComponentActivator, instance);
 					instances.Add(instance);
 				}

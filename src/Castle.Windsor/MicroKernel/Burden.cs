@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 namespace Castle.MicroKernel
 {
 	using System;
@@ -27,9 +28,10 @@ namespace Castle.MicroKernel
 		private object instance;
 		private List<Burden> items;
 
-		public Burden(IHandler handler)
+		public Burden(IHandler handler, bool requiresDecommission)
 		{
 			this.handler = handler;
+			RequiresPolicyRelease = requiresDecommission;
 		}
 
 		public object Instance
@@ -42,7 +44,10 @@ namespace Castle.MicroKernel
 			get { return handler.ComponentModel; }
 		}
 
-		public bool RequiresDecommission { get; set; }
+		/// <summary>
+		/// If <c>true</c> requires release by <see cref="IReleasePolicy"/>. If <c>false</c>, the object has a well defined, detectable end of life (web-request end, disposal of the container etc), and will be released externally.
+		/// </summary>
+		public bool RequiresPolicyRelease { get; set; }
 
 		public void AddChild(Burden child)
 		{
@@ -52,9 +57,9 @@ namespace Castle.MicroKernel
 			}
 			items.Add(child);
 
-			if (child.RequiresDecommission)
+			if (child.RequiresPolicyRelease)
 			{
-				RequiresDecommission = true;
+				RequiresPolicyRelease = true;
 			}
 		}
 
@@ -74,15 +79,13 @@ namespace Castle.MicroKernel
 			return true;
 		}
 
-		public void SetRootInstance(object instance, bool hasDecomission)
+		public void SetRootInstance(object instance)
 		{
 			if (instance == null)
 			{
 				throw new ArgumentNullException("instance");
 			}
-
 			this.instance = instance;
-			RequiresDecommission = RequiresDecommission || hasDecomission;
 		}
 
 		public event BurdenReleased Released = delegate { };
