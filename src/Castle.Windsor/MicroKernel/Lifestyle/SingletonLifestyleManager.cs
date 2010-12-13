@@ -15,7 +15,6 @@
 namespace Castle.MicroKernel.Lifestyle
 {
 	using System;
-	using System.Threading;
 
 	using Castle.MicroKernel.Context;
 
@@ -25,37 +24,23 @@ namespace Castle.MicroKernel.Lifestyle
 	[Serializable]
 	public class SingletonLifestyleManager : AbstractLifestyleManager
 	{
-		private Object instance;
-		private Burden burden;
+		private Burden cachedBurden;
 
 		public override void Dispose()
 		{
-			var localInstance = instance;
+			var localInstance = cachedBurden;
 			if (localInstance != null)
 			{
-				instance = null;
-				burden.Release();
+				localInstance.Release();
+				cachedBurden = null;
 			}
 		}
 
-		public override void Track(Burden burden, IReleasePolicy releasePolicy)
+		public override object Resolve(CreationContext context, Burden burden, IReleasePolicy releasePolicy)
 		{
-			var track = burden.RequiresDecommission;
-			burden.RequiresDecommission = false;
-			if(Interlocked.CompareExchange(ref this.burden, burden, null) == null)
+			if (cachedBurden != null)
 			{
-				if(track)
-				{
-					releasePolicy.Track(burden.Instance, burden);
-				}
-			}
-		}
-
-		public override object Resolve(CreationContext context)
-		{
-			if (instance != null)
-			{
-				return instance;
+				return cachedBurden.Instance;
 			}
 			var instanceFromContext = context.GetContextualProperty(ComponentActivator);
 			if (instanceFromContext != null)
@@ -63,14 +48,22 @@ namespace Castle.MicroKernel.Lifestyle
 				//we've been called recursively, by some dependency from base.Resolve call
 				return instanceFromContext;
 			}
+			object instance;
 			lock (ComponentActivator)
 			{
-				if (instance == null)
+				if (cachedBurden != null)
 				{
-					instance = base.Resolve(context);
+					return cachedBurden.Instance;
 				}
+				instance = base.CreateInstance(context, burden);
+				cachedBurden = burden;
 			}
-
+			var track = burden.RequiresPolicyRelease;
+			burden.RequiresPolicyRelease = false;
+			if (track)
+			{
+				releasePolicy.Track(burden.Instance, burden);
+			}
 			return instance;
 		}
 	}
