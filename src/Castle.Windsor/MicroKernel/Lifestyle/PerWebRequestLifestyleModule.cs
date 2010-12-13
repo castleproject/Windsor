@@ -38,7 +38,7 @@ namespace Castle.MicroKernel.Lifestyle
 		protected void Application_EndRequest(Object sender, EventArgs e)
 		{
 			var application = (HttpApplication)sender;
-			var candidates = (IDictionary<PerWebRequestLifestyleManager, object>)application.Context.Items[PerRequestEvict];
+			var candidates = (IDictionary<PerWebRequestLifestyleManager, Burden>)application.Context.Items[PerRequestEvict];
 
 			if (candidates == null)
 			{
@@ -48,8 +48,7 @@ namespace Castle.MicroKernel.Lifestyle
 			// NOTE: This is relying on a undocumented behavior that order of items when enumeratinc Dictionary<> will be oldest --> latest
 			foreach (var candidate in candidates.Reverse())
 			{
-				var manager = candidate.Key;
-				manager.Evict(candidate.Value);
+				candidate.Value.Release();
 			}
 
 			application.Context.Items.Remove(PerRequestEvict);
@@ -60,19 +59,19 @@ namespace Castle.MicroKernel.Lifestyle
 			get { return initialized; }
 		}
 
-		internal static void RegisterForEviction(PerWebRequestLifestyleManager manager, object instance)
+		internal static void RegisterForEviction(PerWebRequestLifestyleManager manager, Burden burden)
 		{
 			var context = HttpContext.Current;
 
-			var candidates = (IDictionary<PerWebRequestLifestyleManager, object>)context.Items[PerRequestEvict];
+			var candidates = (IDictionary<PerWebRequestLifestyleManager, Burden>)context.Items[PerRequestEvict];
 
 			if (candidates == null)
 			{
-				candidates = new Dictionary<PerWebRequestLifestyleManager, object>();
+				candidates = new Dictionary<PerWebRequestLifestyleManager, Burden>();
 				context.Items[PerRequestEvict] = candidates;
 			}
 
-			candidates.Add(manager, instance);
+			candidates.Add(manager, burden);
 		}
 	}
 }
