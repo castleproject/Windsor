@@ -185,14 +185,14 @@ namespace Castle.MicroKernel.Context
 			extendedProperties.Add(key, value);
 		}
 
-		public ResolutionContext EnterResolutionContext(IHandler handlerBeingResolved)
+		public ResolutionContext EnterResolutionContext(IHandler handlerBeingResolved, bool requiresDecommission)
 		{
-			return EnterResolutionContext(handlerBeingResolved, true);
+			return EnterResolutionContext(handlerBeingResolved, true, requiresDecommission);
 		}
 
-		public ResolutionContext EnterResolutionContext(IHandler handlerBeingResolved, bool createBurden)
+		public ResolutionContext EnterResolutionContext(IHandler handlerBeingResolved, bool createBurden,bool requiresDecommission)
 		{
-			var resolutionContext = new ResolutionContext(this, createBurden ? new Burden(handlerBeingResolved) : null);
+			var resolutionContext = new ResolutionContext(this, createBurden ? new Burden(handlerBeingResolved,requiresDecommission) : null);
 			handlerStack.Push(handlerBeingResolved);
 			if (createBurden)
 			{
@@ -331,7 +331,7 @@ namespace Castle.MicroKernel.Context
 			}
 
 			resolutionStack.Pop();
-			if(burden.RequiresDecommission == false)
+			if(burden.RequiresPolicyRelease == false)
 			{
 				return;
 			}

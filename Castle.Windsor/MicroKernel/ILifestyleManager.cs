@@ -44,7 +44,7 @@ namespace Castle.MicroKernel
 		/// on the lifestyle semantic.
 		/// </summary>
 		/// <returns></returns>
-		object Resolve(CreationContext context);
+		object Resolve(CreationContext context, Burden burden,IReleasePolicy releasePolicy);
 
 		/// <summary>
 		/// Implementors should release the component instance based
@@ -54,7 +54,5 @@ namespace Castle.MicroKernel
 		/// </summary>
 		/// <param name="instance"></param>
 		bool Release(object instance);
-
-		void Track(Burden burden, IReleasePolicy releasePolicy);
 	}
 }

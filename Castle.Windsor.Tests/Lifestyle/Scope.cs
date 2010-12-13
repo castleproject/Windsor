@@ -43,7 +43,7 @@ namespace Castle.MicroKernel.Tests.Lifestyle
 		{
 		}
 
-		public override object Resolve(CreationContext context)
+		protected override object CreateInstance(CreationContext context, Burden burden)
 		{
 			var scope = InstanceScope.Current;
 			if (scope == null)
@@ -54,7 +54,7 @@ namespace Castle.MicroKernel.Tests.Lifestyle
 			object instance;
 			if (scope.Cache.TryGetValue(Model, out instance) == false)
 			{
-				instance = base.Resolve(context);
+				instance = base.CreateInstance(context, burden);
 				scope.Cache[Model] = instance;
 			}
 			return instance;

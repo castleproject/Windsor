@@ -53,23 +53,33 @@ namespace Castle.MicroKernel.Lifestyle
 			this.model = model;
 		}
 
+		public virtual object Resolve(CreationContext context, Burden burden, IReleasePolicy releasePolicy)
+		{
+			var instance = CreateInstance(context, burden);
+			Track(burden, releasePolicy);
+			return instance;
+
+		}
+
 		public virtual bool Release(object instance)
 		{
 			componentActivator.Destroy(instance);
 			return true;
 		}
 
-		public virtual void Track(Burden burden, IReleasePolicy releasePolicy)
+		protected virtual void Track(Burden burden, IReleasePolicy releasePolicy)
 		{
-			if(burden.RequiresDecommission)
+			if(burden.RequiresPolicyRelease)
 			{
 				releasePolicy.Track(burden.Instance, burden);
 			}
 		}
 
-		public virtual object Resolve(CreationContext context)
+		protected virtual object CreateInstance(CreationContext context, Burden burden)
 		{
-			return componentActivator.Create(context);
+			var instance = componentActivator.Create(context);
+			burden.SetRootInstance(instance);
+			return instance;
 		}
 	}
 }

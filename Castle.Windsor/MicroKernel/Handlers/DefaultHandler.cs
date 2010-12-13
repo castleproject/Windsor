@@ -54,13 +54,9 @@ namespace Castle.MicroKernel.Handlers
 
 				AssertNotWaitingForDependency();
 			}
-			using (var resolutionContext = context.EnterResolutionContext(this))
+			using (var resolutionContext = context.EnterResolutionContext(this,HasDecomission(requiresDecommission)))
 			{
-				var instance = lifestyleManager.Resolve(context);
-
-				resolutionContext.Burden.SetRootInstance(instance, HasDecomission(requiresDecommission));
-				lifestyleManager.Track(resolutionContext.Burden, context.ReleasePolicy);
-
+				var instance = lifestyleManager.Resolve(context, resolutionContext.Burden, context.ReleasePolicy);
 				return instance;
 			}
 		}

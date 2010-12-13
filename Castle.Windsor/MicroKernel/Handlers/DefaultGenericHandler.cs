@@ -110,7 +110,7 @@ namespace Castle.MicroKernel.Handlers
 
 			var handler = GetSubHandler(context, implType);
 			// so the generic version wouldn't be considered as well
-			using (context.EnterResolutionContext(this, false))
+			using (context.EnterResolutionContext(this, false, false))
 			{
 				return handler.Resolve(context);
 			}
