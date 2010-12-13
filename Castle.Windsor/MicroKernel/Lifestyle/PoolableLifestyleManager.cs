@@ -53,7 +53,7 @@ namespace Castle.MicroKernel.Lifestyle
 			return false;
 		}
 
-		public override object Resolve(CreationContext context)
+		protected override object CreateInstance(CreationContext context, Burden burden)
 		{
 			if (pool == null)
 			{
@@ -66,12 +66,14 @@ namespace Castle.MicroKernel.Lifestyle
 				}
 			}
 
-			return pool.Request(context);
+			var instance = pool.Request(context);
+			burden.SetRootInstance(instance);
+			return instance;
 		}
 
-		public override void Track(Burden burden, IReleasePolicy releasePolicy)
+		protected override void Track(Burden burden, IReleasePolicy releasePolicy)
 		{
-			burden.RequiresDecommission = true;
+			burden.RequiresPolicyRelease = true;
 			releasePolicy.Track(burden.Instance, burden);
 		}
 

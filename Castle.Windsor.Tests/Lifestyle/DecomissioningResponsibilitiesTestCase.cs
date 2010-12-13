@@ -173,8 +173,8 @@ namespace Castle.MicroKernel.Tests.Lifestyle
 		[Test]
 		public void GenericTransientComponentsAreReleasedInChain()
 		{
-			kernel.Register(Component.For(typeof(GenA<>)).Named("gena").LifeStyle.Transient);
-			kernel.Register(Component.For(typeof(GenB<>)).Named("genb").LifeStyle.Transient);
+			kernel.Register(Component.For(typeof(GenA<>)).LifeStyle.Transient);
+			kernel.Register(Component.For(typeof(GenB<>)).LifeStyle.Transient);
 
 			var instance1 = kernel.Resolve<GenA<string>>();
 			Assert.IsFalse(instance1.IsDisposed);
