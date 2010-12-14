@@ -40,11 +40,12 @@ namespace Castle.MicroKernel
 		void Init(IComponentActivator componentActivator, IKernel kernel, ComponentModel model);
 
 		/// <summary>
-		/// Implementors should return the component instance based 
-		/// on the lifestyle semantic.
+		/// Implementors should return the component instance based on the lifestyle semantic.
+		/// Also the instance should be set to <see cref="Burden.SetRootInstance"/>, <see cref="Burden.RequiresPolicyRelease"/> should be also set if needed
+		/// and if a new instance was created it should be passed on to <see cref="IReleasePolicy.Track"/> of <param name="releasePolicy"/>.
 		/// </summary>
 		/// <returns></returns>
-		object Resolve(CreationContext context, Burden burden,IReleasePolicy releasePolicy);
+		object Resolve(CreationContext context, Burden burden, IReleasePolicy releasePolicy);
 
 		/// <summary>
 		/// Implementors should release the component instance based
