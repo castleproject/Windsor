@@ -14,7 +14,6 @@
 
 namespace Castle.Core.Internal
 {
-	using System.Collections;
 	using System.Collections.Generic;
 
 	internal enum VertexColor
@@ -41,7 +40,7 @@ namespace Castle.Core.Internal
 	/// </summary>
 	internal class ColorsSet
 	{
-		private IDictionary<IVertex, VertexColor> items = new Dictionary<IVertex, VertexColor>();
+		private readonly IDictionary<IVertex, VertexColor> items = new Dictionary<IVertex, VertexColor>();
 
 		public ColorsSet(IVertex[] items)
 		{
@@ -59,7 +58,7 @@ namespace Castle.Core.Internal
 		public VertexColor ColorOf(IVertex item)
 		{
 			if (!items.ContainsKey(item)) return VertexColor.NotInThisSet;
-			return (VertexColor) items[item];
+			return items[item];
 		}
 	}
 
@@ -69,11 +68,7 @@ namespace Castle.Core.Internal
 	/// </summary>
 	internal class TimestampSet
 	{
-		private IDictionary<IVertex, int> items = new Dictionary<IVertex, int>();
-
-		public TimestampSet()
-		{
-		}
+		private readonly IDictionary<IVertex, int> items = new Dictionary<IVertex, int>();
 
 		public void Register(IVertex item, int time)
 		{
@@ -82,7 +77,7 @@ namespace Castle.Core.Internal
 
 		public int TimeOf(IVertex item)
 		{
-			return (int) items[item];
+			return items[item];
 		}
 	}
 }
