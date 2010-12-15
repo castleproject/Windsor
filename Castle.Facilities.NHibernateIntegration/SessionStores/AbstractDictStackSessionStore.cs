@@ -108,17 +108,18 @@ namespace Castle.Facilities.NHibernateIntegration.SessionStores
 		/// </summary>
 		/// <param name="alias">The alias.</param>
 		/// <returns></returns>
+		[MethodImpl(MethodImplOptions.Synchronized)]
 		protected override Stack GetStatelessSessionStackFor(string alias)
 		{
 			if (alias == null) throw new ArgumentNullException("alias");
 
-			IDictionary alias2Stack = GetDictionary();
+			IDictionary alias2Stack = GetStatelessSessionDictionary();
 
 			if (alias2Stack == null)
 			{
 				alias2Stack = new HybridDictionary(true);
 
-				StoreDictionary(alias2Stack);
+				StoreStatelessSessionDictionary(alias2Stack);
 			}
 
 			Stack stack = alias2Stack[alias] as Stack;

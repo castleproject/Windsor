@@ -68,6 +68,7 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Transactions
 			dc.Add(Property.ForName("Name").Eq(name));
 
 			var session = this.SessionManager.OpenStatelessSession();
+			////return dc.GetExecutableCriteria(session).UniqueResult<Blog>();
 			return dc.GetExecutableCriteria(((StatelessSessionDelegate) session).InnerSession).UniqueResult<Blog>();
 		}
 

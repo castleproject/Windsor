@@ -103,7 +103,7 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Issues.Facilities103
 					//Console.WriteLine(ex.ToString());
 				}
 				Assert.IsNull(sessionStore.FindCompatibleSession(Alias),
-				              "The sessionStore shouldn't contain compatible session if the session creation fails");
+					"The sessionStore shouldn't contain compatible session if the session creation fails");
 			}
 		}
 
@@ -119,7 +119,7 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Issues.Facilities103
 				Expect.Call(transaction.Context).Return(contextDictionary).Repeat.Any();
 				// TODO: NHibernate doesn't support IStatelessSession.BeginTransaction(IsolationLevel) yet.
 				////Expect.Call(transaction.IsolationMode).Return(DefaultIsolationMode).Repeat.Any();
-				////Expect.Call(statelessSession.BeginTransaction(DefaultIsolationMode)).Throw(new Exception());
+				////Expect.Call(statelessSession.BeginTransaction(DefaultIsolationLevel)).Throw(new Exception());
 				Expect.Call(statelessSession.BeginTransaction()).Throw(new Exception());
 			}
 
