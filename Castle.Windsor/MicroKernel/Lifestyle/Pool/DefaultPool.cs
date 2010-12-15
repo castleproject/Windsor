@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
 namespace Castle.MicroKernel.Lifestyle.Pool
 {
 	using System;
@@ -22,9 +21,7 @@ namespace Castle.MicroKernel.Lifestyle.Pool
 	using Castle.Core.Internal;
 	using Castle.MicroKernel.Context;
 
-#if (!SILVERLIGHT)
 	[Serializable]
-#endif
 	public class DefaultPool : IPool, IDisposable
 	{
 		private readonly Stack<object> available = new Stack<object>();
