@@ -256,7 +256,7 @@ namespace Castle.MicroKernel
 			var resolved = new Dictionary<IHandler, object>();
 			foreach (var handler in GetAssignableHandlers(service))
 			{
-				if (resolved.ContainsKey(handler) || handler.IsBeingResolvedInContext(currentCreationContext))
+				if (handler.IsBeingResolvedInContext(currentCreationContext))
 				{
 					continue;
 				}
