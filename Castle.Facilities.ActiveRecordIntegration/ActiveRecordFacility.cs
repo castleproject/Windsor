@@ -27,7 +27,7 @@ namespace Castle.Facilities.ActiveRecordIntegration
 	using Castle.Core.Configuration;
 	using Castle.Core.Logging;
 	using Castle.Services.Transaction;
-	
+	using MicroKernel.Registration;
 	using TransactionMode = Castle.Services.Transaction.TransactionMode;
 
 	/// <summary>
@@ -72,7 +72,7 @@ namespace Castle.Facilities.ActiveRecordIntegration
 		{
 			if (Kernel.HasComponent(typeof(ILoggerFactory)))
 			{
-				log = ((ILoggerFactory) Kernel[typeof(ILoggerFactory)]).Create(GetType());
+				log = Kernel.Resolve<ILoggerFactory>().Create(GetType());
 			}
 
 			if (!skipARInitialization)
@@ -81,7 +81,7 @@ namespace Castle.Facilities.ActiveRecordIntegration
 
 				if (FacilityConfig == null)
 				{
-					log.FatalError("Configuration for AR Facility not found.");
+					log.Fatal("Configuration for AR Facility not found.");
 					throw new FacilityException("Sorry, but the ActiveRecord Facility depends on a proper configuration node.");
 				}
 
@@ -89,7 +89,7 @@ namespace Castle.Facilities.ActiveRecordIntegration
 
 				if (assemblyConfig == null || assemblyConfig.Children.Count == 0)
 				{
-					log.FatalError("No assembly specified on AR Facility config.");
+					log.Fatal("No assembly specified on AR Facility config.");
 
 					throw new FacilityException("You need to specify at least one assembly that contains " +
 						"the ActiveRecord classes. For example, <assemblies><item>MyAssembly</item></assemblies>");
@@ -119,7 +119,7 @@ namespace Castle.Facilities.ActiveRecordIntegration
 		/// the facility resources.
 		/// </summary>
 		/// <remarks>It can be overriden.</remarks>
-		public override void Dispose()
+		protected override void Dispose()
 		{
 			log.Info("AR Facility is being disposed.");
 			base.Dispose();
@@ -159,8 +159,7 @@ namespace Castle.Facilities.ActiveRecordIntegration
 			{
 				log.Info("No Transaction Manager registered on Kernel, registering AR Transaction Manager");
 
-				Kernel.AddComponent("ar.transaction.manager",
-				                    typeof(ITransactionManager), typeof(DefaultTransactionManager));
+				Kernel.Register(Component.For<ITransactionManager>().ImplementedBy<DefaultTransactionManager>().Named("ar.transaction.manager"));
 			}
 		}
 
@@ -205,8 +204,8 @@ namespace Castle.Facilities.ActiveRecordIntegration
 			}
 
 			log.Info("Registering SessionFactoryHolder named '{0}': {1}", componentName, holder);
-			Kernel.AddComponentInstance(
-				componentName, typeof(ISessionFactoryHolder), holder);
+			
+			Kernel.Register(Component.For<ISessionFactoryHolder>().Named(componentName).Instance(holder));
 		}
 
 		private void OnRootTypeRegistered(object sender, Type rootType)
@@ -226,10 +225,12 @@ namespace Castle.Facilities.ActiveRecordIntegration
 			}
 
 			log.Info("Registering SessionFactory named '{0}' for the root type {1}: {2}", componentName, rootType, sender);
-			Kernel.AddComponentInstance(
-				componentName,
-				typeof(NHibernate.ISessionFactory),
-				SessionFactoryDelegate.Create((ISessionFactoryHolder) sender, rootType));
+			
+			Kernel.Register(
+				Component
+					.For<NHibernate.ISessionFactory>()
+					.Named(componentName)
+					.Instance(SessionFactoryDelegate.Create((ISessionFactoryHolder) sender, rootType)));
 		}
 	}
 
