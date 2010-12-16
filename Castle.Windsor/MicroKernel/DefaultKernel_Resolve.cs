@@ -253,7 +253,7 @@ namespace Castle.MicroKernel
 		/// </param>
 		public Array ResolveAll(Type service, IDictionary arguments)
 		{
-			var resolved = new Dictionary<IHandler, object>();
+			var resolved = new List<object>();
 			foreach (var handler in GetAssignableHandlers(service))
 			{
 				if (handler.IsBeingResolvedInContext(currentCreationContext))
@@ -264,12 +264,12 @@ namespace Castle.MicroKernel
 				var component = TryResolveComponent(handler, service, arguments);
 				if (component != null)
 				{
-					resolved.Add(handler, component);
+					resolved.Add(component);
 				}
 			}
 
 			var components = Array.CreateInstance(service, resolved.Count);
-			((ICollection)resolved.Values).CopyTo(components, 0);
+			((ICollection)resolved).CopyTo(components, 0);
 			return components;
 		}
 
