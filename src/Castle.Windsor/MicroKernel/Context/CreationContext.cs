@@ -96,9 +96,7 @@ namespace Castle.MicroKernel.Context
 		/// <param name = "additionalArguments">The additional arguments.</param>
 		/// <param name = "conversionManager">The conversion manager.</param>
 		/// <param name = "parent">Parent context</param>
-		public CreationContext(IHandler handler, IReleasePolicy releasePolicy,
-		                       Type requestedType, IDictionary additionalArguments,
-		                       ITypeConverter conversionManager, CreationContext parent)
+		public CreationContext(IHandler handler, IReleasePolicy releasePolicy, Type requestedType, IDictionary additionalArguments, ITypeConverter conversionManager, CreationContext parent)
 		{
 			this.requestedType = requestedType;
 			this.handler = handler;
