@@ -19,7 +19,6 @@ namespace Castle.MicroKernel.ComponentActivator
 #if SILVERLIGHT || DOTNET35
 	using System.Linq;
 #endif
-	using System.Reflection;
 	using System.Security;
 	using System.Security.Permissions;
 
@@ -53,9 +52,7 @@ namespace Castle.MicroKernel.ComponentActivator
 		/// <param name = "kernel"></param>
 		/// <param name = "onCreation"></param>
 		/// <param name = "onDestruction"></param>
-		public DefaultComponentActivator(ComponentModel model, IKernel kernel,
-		                                 ComponentInstanceDelegate onCreation,
-		                                 ComponentInstanceDelegate onDestruction)
+		public DefaultComponentActivator(ComponentModel model, IKernel kernel, ComponentInstanceDelegate onCreation, ComponentInstanceDelegate onDestruction)
 			: base(model, kernel, onCreation, onDestruction)
 		{
 #if (!SILVERLIGHT)

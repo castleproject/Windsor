@@ -54,7 +54,7 @@ namespace Castle.MicroKernel.Handlers
 
 				AssertNotWaitingForDependency();
 			}
-			using (var resolutionContext = context.EnterResolutionContext(this,HasDecomission(requiresDecommission)))
+			using (var resolutionContext = context.EnterResolutionContext(this, HasDecomission(requiresDecommission)))
 			{
 				var instance = lifestyleManager.Resolve(context, resolutionContext.Burden, context.ReleasePolicy);
 				return instance;

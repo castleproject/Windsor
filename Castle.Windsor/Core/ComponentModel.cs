@@ -127,7 +127,6 @@ namespace Castle.Core
 						                                                  classService));
 					}
 
-					Debug.Assert(value.IsClass, "value.IsClass");
 					classService = value;
 				}
 			}
