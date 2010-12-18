@@ -28,7 +28,7 @@ namespace Castle.Windsor
 	/// </summary>
 	public interface IWindsorContainer : IDisposable
 	{
-		[Obsolete("Use Resolve(key, new Arguments()) instead.")]
+		[Obsolete("Use Resolve<object>(key) instead.")]
 		[EditorBrowsable(EditorBrowsableState.Advanced)]
 		object this[String key] { get; }
 
@@ -256,6 +256,7 @@ namespace Castle.Windsor
 		/// <param name = "key"></param>
 		/// <param name = "argumentsAsAnonymousType"></param>
 		/// <returns></returns>
+		[Obsolete("Use Resolve<object>(key, argumentsAsAnonymousType) instead.")]
 		object Resolve(String key, object argumentsAsAnonymousType);
 
 		/// <summary>
