@@ -20,9 +20,7 @@ namespace Castle.MicroKernel
 	/// <summary>
 	/// Exception throw when a circular dependency is detected
 	/// </summary>
-#if (!SILVERLIGHT)
 	[Serializable]
-#endif
 	public class CircularDependencyException : Exception
 	{
 		/// <summary>

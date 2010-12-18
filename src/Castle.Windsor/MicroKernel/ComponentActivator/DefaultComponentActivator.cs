@@ -326,11 +326,7 @@ namespace Castle.MicroKernel.ComponentActivator
 			for (int i = 0; i < constructor.Dependencies.Length; i++)
 			{
 				var dependency = constructor.Dependencies[i];
-				object value;
-				using (new DependencyTrackingScope(context, Model, constructor.Constructor, dependency))
-				{
-					value = Kernel.Resolver.Resolve(context, context.Handler, Model, dependency);
-				}
+				var value = Kernel.Resolver.Resolve(context, context.Handler, Model, dependency);
 				arguments[i] = value;
 			}
 		}
@@ -365,13 +361,10 @@ namespace Castle.MicroKernel.ComponentActivator
 
 		private object ObtainPropertyValue(CreationContext context, PropertySet property, IDependencyResolver resolver)
 		{
-			using (new DependencyTrackingScope(context, Model, property.Property, property.Dependency))
+			if (property.Dependency.IsOptional == false ||
+				resolver.CanResolve(context, context.Handler, Model, property.Dependency))
 			{
-				if (property.Dependency.IsOptional == false ||
-				    resolver.CanResolve(context, context.Handler, Model, property.Dependency))
-				{
-					return ObtainPropertyValueCore(context, property, resolver);
-				}
+				return ObtainPropertyValueCore(context, property, resolver);
 			}
 			return null;
 		}
