@@ -93,7 +93,7 @@ namespace Castle.MicroKernel.Tests.Configuration
 
 			kernel.Register(Component.For(typeof(ClassWithConstructors)).Named("key"));
 
-			var instance = (ClassWithConstructors)kernel.Resolve("key", new Arguments());
+			var instance = kernel.Resolve<ClassWithConstructors>("key");
 			Assert.IsNotNull(instance);
 			Assert.IsNull(instance.Host);
 			Assert.AreEqual("castle", instance.Hosts[0]);
@@ -124,7 +124,7 @@ namespace Castle.MicroKernel.Tests.Configuration
 			kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(CommonImpl1)).Named("commonservice1"));
 			kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(CommonImpl2)).Named("commonservice2"));
 
-			var instance = (ClassWithArrayConstructor)kernel.Resolve("key", new Arguments());
+			var instance = kernel.Resolve<ClassWithArrayConstructor>("key");
 			Assert.IsNotNull(instance.Services);
 			Assert.AreEqual(2, instance.Services.Length);
 			Assert.AreEqual("CommonImpl1", instance.Services[0].GetType().Name);
@@ -157,7 +157,7 @@ namespace Castle.MicroKernel.Tests.Configuration
 			kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(CommonImpl1)).Named("commonservice1"));
 			kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(CommonImpl2)).Named("commonservice2"));
 
-			var instance = (ClassWithListConstructor)kernel.Resolve("key", new Arguments());
+			var instance = kernel.Resolve<ClassWithListConstructor>("key");
 			Assert.IsNotNull(instance.Services);
 			Assert.AreEqual(2, instance.Services.Count);
 			Assert.AreEqual("CommonImpl1", instance.Services[0].GetType().Name);
@@ -176,9 +176,9 @@ namespace Castle.MicroKernel.Tests.Configuration
 
 			kernel.ConfigurationStore.AddComponentConfiguration("key", confignode);
 
-			kernel.Register(Component.For(typeof(ClassWithConstructors)).Named("key"));
+			kernel.Register(Component.For<ClassWithConstructors>().Named("key"));
 
-			var instance = (ClassWithConstructors)kernel.Resolve("key", new Arguments());
+			var instance = kernel.Resolve<ClassWithConstructors>("key");
 			Assert.IsNotNull(instance);
 			Assert.IsNotNull(instance.Host);
 			Assert.AreEqual("castleproject.org", instance.Host);

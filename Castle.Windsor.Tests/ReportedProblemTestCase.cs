@@ -39,9 +39,9 @@ namespace Castle.Windsor.Tests
 			container.Register(Component.For(typeof(Reviewer)).Named("B"));
 			container.Register(Component.For(typeof(ReviewableEmployee)).Named("A"));
 
-			Assert.IsNotNull(container.Resolve("A", new Arguments()));
-			Assert.IsNotNull(container.Resolve("B", new Arguments()));
-			Assert.IsNotNull(container.Resolve("C", new Arguments()));
+			Assert.IsNotNull(container.Resolve<ReviewableEmployee>("A"));
+			Assert.IsNotNull(container.Resolve<Reviewer>("B"));
+			Assert.IsNotNull(container.Resolve<Employee>("C"));
 
 		}
 	}

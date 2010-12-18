@@ -249,7 +249,7 @@ namespace Castle.Windsor
 		[EditorBrowsable(EditorBrowsableState.Advanced)]
 		public virtual object this[String key]
 		{
-			get { return Resolve(key, new Arguments()); }
+			get { return Resolve<object>(key); }
 		}
 
 		[Obsolete("Use Resolve(service) or generic version instead.")]
@@ -731,7 +731,7 @@ namespace Castle.Windsor
 		/// <returns></returns>
 		public virtual object Resolve(String key, IDictionary arguments)
 		{
-			return kernel.Resolve(key, arguments);
+			return kernel.Resolve<object>(key, arguments);
 		}
 
 		/// <summary>
@@ -742,7 +742,7 @@ namespace Castle.Windsor
 		/// <returns></returns>
 		public virtual object Resolve(String key, object argumentsAsAnonymousType)
 		{
-			return Resolve(key, new ReflectionBasedDictionaryAdapter(argumentsAsAnonymousType));
+			return Resolve<object>(key, new ReflectionBasedDictionaryAdapter(argumentsAsAnonymousType));
 		}
 
 		/// <summary>

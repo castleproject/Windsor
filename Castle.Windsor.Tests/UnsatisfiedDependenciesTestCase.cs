@@ -55,7 +55,7 @@ namespace Castle.MicroKernel.Tests
 			kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(CommonImpl1)).Named("common1"));
 			kernel.Register(Component.For(typeof(CommonServiceUser3)).Named("key"));
 			var exception =
-				Assert.Throws(typeof(HandlerException), () => kernel.Resolve("key", new Arguments()));
+				Assert.Throws(typeof(HandlerException), () => kernel.Resolve<CommonServiceUser3>("key"));
 			var expectedMessage =
 				string.Format(
 					"Can't create component 'key' as it has dependencies to be satisfied. {0}key is waiting for the following dependencies: {0}{0}Keys (components with specific keys){0}- common2 which was not registered. {0}",
@@ -78,7 +78,7 @@ namespace Castle.MicroKernel.Tests
 			kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(CommonImpl1)).Named("common1"));
 			kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(CommonImpl2)).Named("common2"));
 			kernel.Register(Component.For(typeof(CommonServiceUser)).Named("key"));
-			var instance = (CommonServiceUser)kernel.Resolve("key", new Arguments());
+			var instance = kernel.Resolve<CommonServiceUser>("key");
 
 			Assert.IsNotNull(instance);
 			Assert.IsNotNull(instance.CommonService);
@@ -139,7 +139,7 @@ namespace Castle.MicroKernel.Tests
 			kernel.Register(Component.For(typeof(CustomerImpl2)).Named("key"));
 
 			var exception =
-				Assert.Throws(typeof(HandlerException), () => { var instance = kernel.Resolve("key", new Arguments()); });
+				Assert.Throws(typeof(HandlerException), () => { kernel.Resolve<CustomerImpl2>("key"); });
 			var expectedMessage =
 				string.Format(
 					"Can't create component 'key' as it has dependencies to be satisfied. {0}key is waiting for the following dependencies: {0}{0}" +
@@ -164,7 +164,7 @@ namespace Castle.MicroKernel.Tests
 			kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(CommonImpl1)).Named("common1"));
 			kernel.Register(Component.For(typeof(CommonServiceUser)).Named("key"));
 			var exception =
-				Assert.Throws(typeof(HandlerException), () => { var instance = kernel.Resolve("key", new Arguments()); });
+				Assert.Throws(typeof(HandlerException), () => kernel.Resolve<CommonServiceUser>("key"));
 			var expectedMessage =
 				string.Format(
 					"Can't create component 'key' as it has dependencies to be satisfied. {0}key is waiting for the following dependencies: {0}{0}Keys (components with specific keys){0}- common2 which was not registered. {0}",
@@ -177,7 +177,7 @@ namespace Castle.MicroKernel.Tests
 		{
 			kernel.Register(Component.For(typeof(CommonServiceUser)).Named("key"));
 
-			Assert.Throws(typeof(HandlerException), () => { var instance = kernel.Resolve("key", new Arguments()); });
+			Assert.Throws(typeof(HandlerException), () => kernel.Resolve<CommonServiceUser>("key"));
 		}
 	}
 }

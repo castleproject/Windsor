@@ -64,7 +64,7 @@ namespace Castle.Facilities.FactorySupport
 			{
 				return Create(null, factoryId, staticCreateMethod, factoryCreate, context);
 			}
-			object factoryInstance = Kernel.Resolve(factoryId, new Arguments());
+			var factoryInstance = Kernel.Resolve<object>(factoryId);
 
 			MethodInfo instanceCreateMethod =
 				factoryInstance.GetType().GetMethod(factoryCreate,

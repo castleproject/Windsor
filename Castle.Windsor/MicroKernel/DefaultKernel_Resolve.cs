@@ -230,7 +230,7 @@ namespace Castle.MicroKernel
 		/// <returns></returns>
 		public object Resolve(string key, object argumentsAsAnonymousType)
 		{
-			return Resolve(key, new ReflectionBasedDictionaryAdapter(argumentsAsAnonymousType));
+			return Resolve<object>(key, new ReflectionBasedDictionaryAdapter(argumentsAsAnonymousType));
 		}
 
 		/// <summary>

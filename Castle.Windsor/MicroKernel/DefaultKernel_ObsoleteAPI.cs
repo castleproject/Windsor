@@ -31,7 +31,7 @@ namespace Castle.MicroKernel
 		[EditorBrowsable(EditorBrowsableState.Advanced)]
 		public virtual object this[String key]
 		{
-			get { return Resolve(key, new Arguments()); }
+			get { return Resolve<object>(key); }
 		}
 
 		[Obsolete("Use Resolve(service) instead")]

@@ -27,51 +27,49 @@ namespace Castle.MicroKernel.Tests
 	using NUnit.Framework;
 
 	[TestFixture]
-	public class MicroKernelTestCase
+	public class MicroKernelTestCase:AbstractContainerTestFixture
 	{
-		private IKernel kernel;
-
 		[Test]
 		public void AddClassComponentWithInterface()
 		{
-			kernel.Register(Component.For<CustomerImpl>().Named("key"));
-			Assert.IsTrue(kernel.HasComponent("key"));
+			Kernel.Register(Component.For<CustomerImpl>().Named("key"));
+			Assert.IsTrue(Kernel.HasComponent("key"));
 		}
 
 		[Test]
 		public void AddClassComponentWithNoInterface()
 		{
-			kernel.Register(Component.For(typeof(DefaultCustomer)).Named("key"));
-			Assert.IsTrue(kernel.HasComponent("key"));
+			Kernel.Register(Component.For(typeof(DefaultCustomer)).Named("key"));
+			Assert.IsTrue(Kernel.HasComponent("key"));
 		}
 
 		[Test]
 		public void AddClassThatHasTwoParametersOfSameTypeAndNoOverloads()
 		{
-			kernel.Register(Component.For(typeof(ClassWithTwoParametersWithSameType)).Named("test"));
-			kernel.Register(Component.For<ICommon>().ImplementedBy(typeof(CommonImpl1)).Named("test2"));
-			var resolved = kernel.Resolve(typeof(ClassWithTwoParametersWithSameType), new Dictionary<object, object>());
+			Kernel.Register(Component.For(typeof(ClassWithTwoParametersWithSameType)).Named("test"));
+			Kernel.Register(Component.For<ICommon>().ImplementedBy(typeof(CommonImpl1)).Named("test2"));
+			var resolved = Kernel.Resolve(typeof(ClassWithTwoParametersWithSameType), new Dictionary<object, object>());
 			Assert.IsNotNull(resolved);
 		}
 
 		[Test]
 		public void AddCommonComponent()
 		{
-			kernel.Register(Component.For<ICustomer>().ImplementedBy<CustomerImpl>().Named("key"));
-			Assert.IsTrue(kernel.HasComponent("key"));
+			Kernel.Register(Component.For<ICustomer>().ImplementedBy<CustomerImpl>().Named("key"));
+			Assert.IsTrue(Kernel.HasComponent("key"));
 		}
 
 		[Test]
 		public void AddComponentInstance()
 		{
 			var customer = new CustomerImpl();
-			kernel.Register(Component.For<ICustomer>().Named("key").Instance(customer));
-			Assert.IsTrue(kernel.HasComponent("key"));
+			Kernel.Register(Component.For<ICustomer>().Named("key").Instance(customer));
+			Assert.IsTrue(Kernel.HasComponent("key"));
 
-			var customer2 = kernel.Resolve<CustomerImpl>("key");
+			var customer2 = Kernel.Resolve<CustomerImpl>("key");
 			Assert.AreSame(customer, customer2);
 
-			customer2 = kernel.Resolve<ICustomer>() as CustomerImpl;
+			customer2 = Kernel.Resolve<ICustomer>() as CustomerImpl;
 			Assert.AreSame(customer, customer2);
 		}
 
@@ -80,13 +78,13 @@ namespace Castle.MicroKernel.Tests
 		{
 			var customer = new CustomerImpl();
 
-			kernel.Register(Component.For<CustomerImpl>().Named("key").Instance(customer));
-			Assert.IsTrue(kernel.HasComponent("key"));
+			Kernel.Register(Component.For<CustomerImpl>().Named("key").Instance(customer));
+			Assert.IsTrue(Kernel.HasComponent("key"));
 
-			var customer2 = kernel.Resolve<CustomerImpl>("key");
+			var customer2 = Kernel.Resolve<CustomerImpl>("key");
 			Assert.AreSame(customer, customer2);
 
-			customer2 = kernel.Resolve<CustomerImpl>();
+			customer2 = Kernel.Resolve<CustomerImpl>();
 			Assert.AreSame(customer, customer2);
 		}
 
@@ -95,19 +93,19 @@ namespace Castle.MicroKernel.Tests
 		{
 			var customer = new CustomerImpl();
 
-			kernel.Register(Component.For<ICustomer>().Instance(customer));
-			Assert.AreSame(kernel.Resolve<ICustomer>(), customer);
+			Kernel.Register(Component.For<ICustomer>().Instance(customer));
+			Assert.AreSame(Kernel.Resolve<ICustomer>(), customer);
 		}
 
 		[Test]
 		public void AdditionalParametersShouldNotBePropagatedInTheDependencyChain()
 		{
-			kernel.Register(
+			Kernel.Register(
 				Component.For<ICustomer>().ImplementedBy<CustomerImpl>().Named("cust").LifeStyle.Transient);
-			kernel.Register(Component.For<ExtendedCustomer>().Named("custex").LifeStyle.Transient);
+			Kernel.Register(Component.For<ExtendedCustomer>().Named("custex").LifeStyle.Transient);
 
 			var dictionary = new Dictionary<string, object> { { "Name", "name" }, { "Address", "address" }, { "Age", "18" } };
-			var customer = kernel.Resolve<ICustomer>("cust", dictionary);
+			var customer = Kernel.Resolve<ICustomer>("cust", dictionary);
 
 			Assert.AreEqual("name", customer.Name);
 			Assert.AreEqual("address", customer.Address);
@@ -133,111 +131,105 @@ namespace Castle.MicroKernel.Tests
 		[TearDown]
 		public void Dispose()
 		{
-			kernel.Dispose();
+			Kernel.Dispose();
 		}
 
 		[Test]
 		public void HandlerForClassComponent()
 		{
-			kernel.Register(Component.For<CustomerImpl>().Named("key"));
-			var handler = kernel.GetHandler("key");
+			Kernel.Register(Component.For<CustomerImpl>().Named("key"));
+			var handler = Kernel.GetHandler("key");
 			Assert.IsNotNull(handler);
 		}
 
 		[Test]
 		public void HandlerForClassWithNoInterface()
 		{
-			kernel.Register(Component.For<DefaultCustomer>().Named("key"));
-			var handler = kernel.GetHandler("key");
+			Kernel.Register(Component.For<DefaultCustomer>().Named("key"));
+			var handler = Kernel.GetHandler("key");
 			Assert.IsNotNull(handler);
 		}
 
 		[Test]
 		public void IOC_50_AddTwoComponentWithSameService_RequestFirstByKey_RemoveFirst_RequestByService_ShouldReturnSecond()
 		{
-			kernel.Register(Component.For<ICustomer>().ImplementedBy<CustomerImpl>().Named("key"));
-			kernel.Register(Component.For<ICustomer>().ImplementedBy<CustomerImpl>().Named("key2"));
-			var result = kernel.Resolve("key", new Arguments());
+			Kernel.Register(Component.For<ICustomer>().ImplementedBy<CustomerImpl>().Named("key"));
+			Kernel.Register(Component.For<ICustomer>().ImplementedBy<CustomerImpl>().Named("key2"));
+			var result = Kernel.Resolve<object>("key");
 			Assert.IsNotNull(result);
 
-			result = kernel.Resolve<ICustomer>();
+			result = Kernel.Resolve<ICustomer>();
 			Assert.IsNotNull(result);
-		}
-
-		[SetUp]
-		public void Init()
-		{
-			kernel = new DefaultKernel();
 		}
 
 		[Test]
 		[ExpectedException(typeof(ComponentRegistrationException))]
 		public void KeyCollision()
 		{
-			kernel.Register(Component.For<CustomerImpl>().Named("key"));
-			kernel.Register(Component.For<CustomerImpl>().Named("key"));
+			Kernel.Register(Component.For<CustomerImpl>().Named("key"));
+			Kernel.Register(Component.For<CustomerImpl>().Named("key"));
 		}
 
 		[Test]
 		public void ResolveAll()
 		{
-			kernel.Register(Component.For<ICommon>().ImplementedBy<CommonImpl2>());
-			kernel.Register(Component.For<ICommon>().ImplementedBy<CommonImpl1>());
-			var services = kernel.ResolveAll<ICommon>();
+			Kernel.Register(Component.For<ICommon>().ImplementedBy<CommonImpl2>());
+			Kernel.Register(Component.For<ICommon>().ImplementedBy<CommonImpl1>());
+			var services = Kernel.ResolveAll<ICommon>();
 			Assert.AreEqual(2, services.Length);
 		}
 
 		[Test]
 		public void ResolveAllAccountsForAssignableServices()
 		{
-			kernel.Register(Component.For<ICommon>().ImplementedBy<CommonImpl2>().Named("test"));
-			kernel.Register(Component.For<ICommonSub1>().ImplementedBy<CommonSub1Impl>().Named("test2"));
-			var services = kernel.ResolveAll<ICommon>();
+			Kernel.Register(Component.For<ICommon>().ImplementedBy<CommonImpl2>().Named("test"));
+			Kernel.Register(Component.For<ICommonSub1>().ImplementedBy<CommonSub1Impl>().Named("test2"));
+			var services = Kernel.ResolveAll<ICommon>();
 			Assert.AreEqual(2, services.Length);
 		}
 
 		[Test]
 		public void ResolveAllWaitingOnDependencies()
 		{
-			kernel.Register(Component.For<ICommon>().ImplementedBy<CommonImplWithDependency>().Named("test"));
-			var services = kernel.ResolveAll<ICommon>();
+			Kernel.Register(Component.For<ICommon>().ImplementedBy<CommonImplWithDependency>().Named("test"));
+			var services = Kernel.ResolveAll<ICommon>();
 			Assert.AreEqual(0, services.Length);
 		}
 
 		[Test]
 		public void ResolveAll_resolves_when_dependency_provideded_dynamically()
 		{
-			kernel.Register(Component.For<ICommon>()
+			Kernel.Register(Component.For<ICommon>()
 			                	.ImplementedBy<CommonImplWithDependency>()
 			                	.DynamicParameters((k, d) => d.Insert<ICustomer>(new CustomerImpl()))
 				);
 
-			var services = kernel.ResolveAll<ICommon>();
+			var services = Kernel.ResolveAll<ICommon>();
 			Assert.AreEqual(1, services.Length);
 		}
 
 		[Test]
 		public void ResolveAll_resolves_when_dependency_provideded_inline()
 		{
-			kernel.Register(Component.For<ICommon>().ImplementedBy(typeof(CommonImplWithDependency)).Named("test"));
-			var services = kernel.ResolveAll<ICommon>(new Arguments().Insert("customer", new CustomerImpl()));
+			Kernel.Register(Component.For<ICommon>().ImplementedBy(typeof(CommonImplWithDependency)).Named("test"));
+			var services = Kernel.ResolveAll<ICommon>(new Arguments().Insert("customer", new CustomerImpl()));
 			Assert.AreEqual(1, services.Length);
 		}
 
 		[Test]
 		public void ResolveUsingAddionalParametersForConfigurationInsteadOfServices()
 		{
-			kernel.Register(
+			Kernel.Register(
 				Component.For<ICustomer>().ImplementedBy<CustomerImpl>().Named("cust").LifeStyle.Is(
 					LifestyleType.Transient));
 
-			var customer = kernel.Resolve<ICustomer>("cust");
+			var customer = Kernel.Resolve<ICustomer>("cust");
 			Assert.IsNull(customer.Address);
 			Assert.IsNull(customer.Name);
 			Assert.AreEqual(0, customer.Age);
 
 			var dictionary = new Dictionary<string, object> { { "Name", "name" }, { "Address", "address" }, { "Age", "18" } };
-			customer = kernel.Resolve<ICustomer>("cust", dictionary);
+			customer = Kernel.Resolve<ICustomer>("cust", dictionary);
 
 			Assert.AreEqual("name", customer.Name);
 			Assert.AreEqual("address", customer.Address);
@@ -247,9 +239,9 @@ namespace Castle.MicroKernel.Tests
 		[Test]
 		public void ResolveViaGenerics()
 		{
-			kernel.Register(Component.For<ICustomer>().ImplementedBy<CustomerImpl>().Named("cust"));
-			kernel.Register(Component.For<ICustomer>().ImplementedBy<CustomerImpl2>().Named("cust2"));
-			var customer = kernel.Resolve<ICustomer>("cust");
+			Kernel.Register(Component.For<ICustomer>().ImplementedBy<CustomerImpl>().Named("cust"));
+			Kernel.Register(Component.For<ICustomer>().ImplementedBy<CustomerImpl2>().Named("cust2"));
+			var customer = Kernel.Resolve<ICustomer>("cust");
 
 			var dictionary = new Dictionary<string, object>
 			{
@@ -257,7 +249,7 @@ namespace Castle.MicroKernel.Tests
 				{ "address", "customer2Address" },
 				{ "age", 18 }
 			};
-			var customer2 = kernel.Resolve<ICustomer>("cust2", dictionary);
+			var customer2 = Kernel.Resolve<ICustomer>("cust2", dictionary);
 
 			Assert.AreEqual(customer.GetType(), typeof(CustomerImpl));
 			Assert.AreEqual(customer2.GetType(), typeof(CustomerImpl2));
@@ -266,34 +258,34 @@ namespace Castle.MicroKernel.Tests
 		[Test]
 		public void Resolve_all_when_dependency_is_missing_should_not_throw()
 		{
-			kernel.Register(
+			Kernel.Register(
 				Component.For<C>());
 			// the dependency goes C --> B --> A
 
 			C[] cs = null;
 			Assert.DoesNotThrow(() =>
-			                    cs = kernel.ResolveAll<C>(new Arguments().Insert("fakeDependency", "Stefan!")));
+			                    cs = Kernel.ResolveAll<C>(new Arguments().Insert("fakeDependency", "Stefan!")));
 			Assert.IsEmpty(cs);
 		}
 
 		[Test]
 		public void Resolve_all_when_dependency_is_unresolvable_should_not_throw()
 		{
-			kernel.Register(
+			Kernel.Register(
 				Component.For<B>(),
 				Component.For<C>());
 			// the dependency goes C --> B --> A
 
 			C[] cs = null;
 			Assert.DoesNotThrow(() =>
-			                    cs = kernel.ResolveAll<C>());
+			                    cs = Kernel.ResolveAll<C>());
 			Assert.IsEmpty(cs);
 		}
 
 		[Test]
 		public void ShouldNotRegisterAbstractClassAsComponentImplementation_With_LifestyleType_And_Override_Signature()
 		{
-			kernel.Register(Component.For<ICommon>().ImplementedBy<BaseCommonComponent>().Named("abstract").LifeStyle.Pooled);
+			Kernel.Register(Component.For<ICommon>().ImplementedBy<BaseCommonComponent>().Named("abstract").LifeStyle.Pooled);
 
 			var expectedMessage =
 				string.Format(
@@ -301,100 +293,100 @@ namespace Castle.MicroKernel.Tests
 					Environment.NewLine);
 			var exception =
 				Assert.Throws(typeof(ComponentRegistrationException), () => 
-					kernel.Resolve<ICommon>("abstract"));
+					Kernel.Resolve<ICommon>("abstract"));
 			Assert.AreEqual(expectedMessage, exception.Message);
 		}
 
 		[Test]
 		public void ShouldNotRegisterAbstractClassAsComponentImplementation_With_LifestyleType_Signature()
 		{
-			kernel.Register(Component.For<ICommon>().ImplementedBy<BaseCommonComponent>().Named("abstract").LifeStyle.Pooled);
+			Kernel.Register(Component.For<ICommon>().ImplementedBy<BaseCommonComponent>().Named("abstract").LifeStyle.Pooled);
 			var expectedMessage =
 				string.Format(
 					"Type Castle.MicroKernel.Tests.ClassComponents.BaseCommonComponent is abstract.{0} As such, it is not possible to instansiate it as implementation of service 'abstract'. Did you forget to proxy it?",
 					Environment.NewLine);
 			var exception =
-				Assert.Throws(typeof(ComponentRegistrationException), () => kernel.Resolve<ICommon>("abstract"));
+				Assert.Throws(typeof(ComponentRegistrationException), () => Kernel.Resolve<ICommon>("abstract"));
 			Assert.AreEqual(expectedMessage, exception.Message);
 		}
 
 		[Test]
 		public void ShouldNotRegisterAbstractClassAsComponentImplementation_With_Simple_Signature()
 		{
-			kernel.Register(Component.For<ICommon>().ImplementedBy<BaseCommonComponent>().Named("abstract"));
+			Kernel.Register(Component.For<ICommon>().ImplementedBy<BaseCommonComponent>().Named("abstract"));
 
 			var expectedMessage =
 				string.Format(
 					"Type Castle.MicroKernel.Tests.ClassComponents.BaseCommonComponent is abstract.{0} As such, it is not possible to instansiate it as implementation of service 'abstract'. Did you forget to proxy it?",
 					Environment.NewLine);
 			var exception =
-				Assert.Throws(typeof(ComponentRegistrationException), () => kernel.Resolve<ICommon>("abstract"));
+				Assert.Throws(typeof(ComponentRegistrationException), () => Kernel.Resolve<ICommon>("abstract"));
 			Assert.AreEqual(expectedMessage, exception.Message);
 		}
 
 		[Test]
 		public void ShouldNotRegisterAbstractClass_With_LifestyleType_And_Override_Signature()
 		{
-			kernel.Register(Component.For<BaseCommonComponent>().Named("abstract").LifeStyle.Pooled);
+			Kernel.Register(Component.For<BaseCommonComponent>().Named("abstract").LifeStyle.Pooled);
 
 			var expectedMessage =
 				string.Format(
 					"Type Castle.MicroKernel.Tests.ClassComponents.BaseCommonComponent is abstract.{0} As such, it is not possible to instansiate it as implementation of service 'abstract'. Did you forget to proxy it?",
 					Environment.NewLine);
 			var exception =
-				Assert.Throws<ComponentRegistrationException>(() => kernel.Resolve<ICommon>("abstract"));
+				Assert.Throws<ComponentRegistrationException>(() => Kernel.Resolve<ICommon>("abstract"));
 			Assert.AreEqual(expectedMessage, exception.Message);
 		}
 
 		[Test]
 		public void ShouldNotRegisterAbstractClass_With_LifestyleType_Signature()
 		{
-			kernel.Register(Component.For<BaseCommonComponent>().Named("abstract").LifeStyle.Pooled);
+			Kernel.Register(Component.For<BaseCommonComponent>().Named("abstract").LifeStyle.Pooled);
 
 			var expectedMessage =
 				string.Format(
 					"Type Castle.MicroKernel.Tests.ClassComponents.BaseCommonComponent is abstract.{0} As such, it is not possible to instansiate it as implementation of service 'abstract'. Did you forget to proxy it?",
 					Environment.NewLine);
 			var exception =
-				Assert.Throws(typeof(ComponentRegistrationException), () => kernel.Resolve<ICommon>("abstract"));
+				Assert.Throws(typeof(ComponentRegistrationException), () => Kernel.Resolve<ICommon>("abstract"));
 			Assert.AreEqual(expectedMessage, exception.Message);
 		}
 
 		[Test]
 		public void ShouldNotRegisterAbstractClass_With_Simple_Signature()
 		{
-			kernel.Register(Component.For<BaseCommonComponent>().Named("abstract"));
+			Kernel.Register(Component.For<BaseCommonComponent>().Named("abstract"));
 			var expectedMessage =
 				string.Format(
 					"Type Castle.MicroKernel.Tests.ClassComponents.BaseCommonComponent is abstract.{0} As such, it is not possible to instansiate it as implementation of service 'abstract'. Did you forget to proxy it?",
 					Environment.NewLine);
 			var exception =
-				Assert.Throws(typeof(ComponentRegistrationException), () => kernel.Resolve<ICommon>("abstract"));
+				Assert.Throws(typeof(ComponentRegistrationException), () => Kernel.Resolve<ICommon>("abstract"));
 			Assert.AreEqual(expectedMessage, exception.Message);
 		}
 
 		[Test]
 		public void Subsystems_are_case_insensitive()
 		{
-			Assert.IsNotNull(kernel.GetSubSystem(SubSystemConstants.ConfigurationStoreKey));
-			Assert.IsNotNull(kernel.GetSubSystem(SubSystemConstants.ConfigurationStoreKey.ToLower()));
-			Assert.IsNotNull(kernel.GetSubSystem(SubSystemConstants.ConfigurationStoreKey.ToUpper()));
+			Assert.IsNotNull(Kernel.GetSubSystem(SubSystemConstants.ConfigurationStoreKey));
+			Assert.IsNotNull(Kernel.GetSubSystem(SubSystemConstants.ConfigurationStoreKey.ToLower()));
+			Assert.IsNotNull(Kernel.GetSubSystem(SubSystemConstants.ConfigurationStoreKey.ToUpper()));
 		}
 
 		[Test]
 		[ExpectedException(typeof(ComponentNotFoundException))]
 		public void UnregisteredComponentByKey()
 		{
-			kernel.Register(Component.For<CustomerImpl>().Named("key1"));
-			var component = kernel.Resolve("key2", new Arguments());
+			Kernel.Register(Component.For<CustomerImpl>().Named("key1"));
+			Kernel.Resolve<object>("key2");
 		}
 
 		[Test]
 		[ExpectedException(typeof(ComponentNotFoundException))]
 		public void UnregisteredComponentByService()
 		{
-			kernel.Register(Component.For<CustomerImpl>().Named("key1"));
-			kernel.Resolve<IDisposable>();
+			Kernel.Register(Component.For<CustomerImpl>().Named("key1"));
+			Kernel.Resolve<IDisposable>();
 		}
 	}
 }

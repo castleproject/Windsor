@@ -265,7 +265,7 @@ namespace Castle.Facilities.EventWiring
 
 				try
 				{
-					subscriberInstance = Kernel.Resolve(subscriberKey, new Arguments());
+					subscriberInstance = Kernel.Resolve<object>(subscriberKey);
 				}
 				catch (Exception ex)
 				{

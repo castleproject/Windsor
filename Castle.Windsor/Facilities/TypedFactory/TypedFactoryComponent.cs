@@ -67,7 +67,7 @@ namespace Castle.Facilities.TypedFactory
 			{
 				if (ComponentType == null)
 				{
-					return kernel.Resolve(ComponentName, AdditionalArguments);
+					return kernel.Resolve<object>(ComponentName, AdditionalArguments);
 				}
 
 				return kernel.Resolve(ComponentName, ComponentType, AdditionalArguments);
