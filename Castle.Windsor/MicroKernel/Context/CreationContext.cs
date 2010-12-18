@@ -38,12 +38,6 @@ namespace Castle.MicroKernel.Context
 	{
 		private readonly ITypeConverter converter;
 
-		/// <summary>
-		///   Holds the scoped dependencies being resolved. 
-		///   If a dependency appears twice on the same scope, we'd have a cycle.
-		/// </summary>
-		private readonly DependencyModelCollection dependencies = new DependencyModelCollection();
-
 		private readonly Type[] genericArguments;
 		private readonly IHandler handler;
 
@@ -110,10 +104,6 @@ namespace Castle.MicroKernel.Context
 				return;
 			}
 			resolutionStack = parent.resolutionStack;
-			if (parent.dependencies != null && parent.dependencies.HasDependencies)
-			{
-				dependencies.AddRange(parent.dependencies);
-			}
 			foreach (var handlerItem in parent.handlerStack)
 			{
 				handlerStack.Push(handlerItem);
@@ -143,11 +133,6 @@ namespace Castle.MicroKernel.Context
 				}
 				return additionalParameters;
 			}
-		}
-
-		public DependencyModelCollection Dependencies
-		{
-			get { return dependencies; }
 		}
 
 		public Type[] GenericArguments

@@ -400,7 +400,6 @@
     <Compile Include="MicroKernel\Context\ComponentArgumentsEnumerator.cs" />
     <Compile Include="MicroKernel\Context\FallbackArgumentsStore.cs" />
     <Compile Include="MicroKernel\Context\NamedArgumentsStore.cs" />
-    <Compile Include="MicroKernel\Context\DependencyTrackingScope.cs" />
     <Compile Include="MicroKernel\ComponentActivator\ExternalInstanceActivator.cs">
       <SubType>Code</SubType>
     </Compile>

@@ -810,6 +810,11 @@ namespace Castle.MicroKernel
 
 			try
 			{
+				if(handler.IsBeingResolvedInContext(context))
+				{
+					var message = string.Format("Dependency cycle has been detected when trying to resolve {0} as dependency of {1}", service, context.RequestedType);
+					throw new CircularDependencyException(message);
+				}
 				return handler.Resolve(context);
 			}
 			finally
@@ -826,6 +831,10 @@ namespace Castle.MicroKernel
 
 			try
 			{
+				if (handler.IsBeingResolvedInContext(context))
+				{
+					return null;
+				}
 				return handler.TryResolve(context);
 			}
 			finally
