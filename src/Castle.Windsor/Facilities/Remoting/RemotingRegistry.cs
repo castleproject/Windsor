@@ -61,7 +61,7 @@ namespace Castle.Facilities.Remoting
 		{
 			GetModel(key);
 
-			return kernel.Resolve(key, new Arguments());
+			return kernel.Resolve<object>(key);
 		}
 
 		private ComponentModel GetModel(string key)
@@ -78,7 +78,7 @@ namespace Castle.Facilities.Remoting
 		public void Publish(string key)
 		{
 			// Resolve first
-			var mbr = (MarshalByRefObject)kernel.Resolve(key, new Arguments());
+			var mbr = kernel.Resolve<MarshalByRefObject>(key);
 
 			// then get the model
 			var model = GetModel(key);

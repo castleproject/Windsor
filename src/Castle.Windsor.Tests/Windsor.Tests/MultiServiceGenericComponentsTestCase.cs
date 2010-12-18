@@ -153,7 +153,7 @@ namespace Castle.Windsor.Tests
 					.Named("repo")
 				);
 
-			var exception = Assert.Throws<HandlerException>(() => Container.Resolve("repo", new Arguments()));
+			var exception = Assert.Throws<HandlerException>(() => Container.Resolve<object>("repo", new Arguments()));
 
 			Assert.AreEqual(
 				"Requested type System.Object has 0 generic parameter(s), whereas component implementation type Castle.Generics.Repository`1[T] requires 1. This means that Windsor does not have enough information to properly create that component for you. This is most likely a bug in your registration code.",
