@@ -94,9 +94,9 @@ namespace Castle.MicroKernel.Handlers
 					releasingHandlers = new Dictionary<object, IList<ComponentReleasingDelegate>>(ReferenceEqualityComparer.Instance);
 				}
 
-				if (releasingHandlers.ContainsKey(invocation.ReturnValue) == false)
+				if (releasingHandlers.ContainsKey(invocation.ResolvedInstance) == false)
 				{
-					releasingHandlers.Add(invocation.ReturnValue, releasers);
+					releasingHandlers.Add(invocation.ResolvedInstance, releasers);
 				}
 			}
 		}

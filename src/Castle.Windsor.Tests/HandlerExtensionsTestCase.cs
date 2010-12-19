@@ -136,7 +136,7 @@ namespace Castle.Windsor.Tests
 			{
 				invocation.Proceed();
 			}
-			invocation.ReturnValue = a;
+			invocation.ResolvedInstance = a;
 		}
 	}
 
@@ -169,7 +169,7 @@ namespace Castle.Windsor.Tests
 		public void Intercept(ResolveInvocation invocation)
 		{
 			invocation.Proceed();
-			resolvedItems.Add(invocation.ReturnValue);
+			resolvedItems.Add(invocation.ResolvedInstance);
 		}
 	}
 }
