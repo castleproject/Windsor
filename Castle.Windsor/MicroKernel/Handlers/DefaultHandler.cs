@@ -34,6 +34,7 @@ namespace Castle.MicroKernel.Handlers
 		public DefaultHandler(ComponentModel model) : base(model)
 		{
 		}
+		
 
 		/// <summary>
 		/// Returns an instance of the component this handler
@@ -43,7 +44,7 @@ namespace Castle.MicroKernel.Handlers
 		/// <param name="requiresDecommission"></param>
 		/// <param name="instanceRequired"></param>
 		/// <returns></returns>
-		protected override object ResolveCore(CreationContext context, bool requiresDecommission, bool instanceRequired)
+		protected object ResolveCore(CreationContext context, bool requiresDecommission, bool instanceRequired)
 		{
 			if (CanResolvePendingDependencies(context) == false)
 			{
@@ -100,6 +101,11 @@ namespace Castle.MicroKernel.Handlers
 		public override bool ReleaseCore(Burden burden)
 		{
 			return lifestyleManager.Release(burden.Instance);
+		}
+
+		protected override object Resolve(CreationContext context, bool instanceRequired)
+		{
+			return ResolveCore(context, false, instanceRequired);
 		}
 
 		protected void AssertNotWaitingForDependency()

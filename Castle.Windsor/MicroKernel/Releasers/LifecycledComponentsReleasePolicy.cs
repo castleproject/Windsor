@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 namespace Castle.MicroKernel.Releasers
 {
 	using System;
@@ -18,6 +19,7 @@ namespace Castle.MicroKernel.Releasers
 	using System.Linq;
 
 	using Castle.Core.Internal;
+	using Castle.MicroKernel.Util;
 
 	/// <summary>
 	///   Tracks all components if asked. Releases those requiring decomission (<see cref="Burden.RequiresPolicyRelease"/>)
@@ -26,7 +28,7 @@ namespace Castle.MicroKernel.Releasers
 	public class LifecycledComponentsReleasePolicy : IReleasePolicy
 	{
 		private readonly Dictionary<object, Burden> instance2Burden =
-			new Dictionary<object, Burden>(new Util.ReferenceEqualityComparer());
+			new Dictionary<object, Burden>(ReferenceEqualityComparer.Instance);
 
 		private readonly Lock @lock = Lock.Create();
 

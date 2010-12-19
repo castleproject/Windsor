@@ -18,6 +18,8 @@ namespace Castle.MicroKernel.Handlers
 
 	using System.Collections.Generic;
 
+	using Castle.MicroKernel.Util;
+
 	public delegate ComponentReleasingDelegate ComponentResolvingDelegate(IKernel kernel, CreationContext context);
 
 	public delegate void ComponentReleasingDelegate(IKernel kernel);
@@ -89,7 +91,7 @@ namespace Castle.MicroKernel.Handlers
 			{
 				if (releasingHandlers == null)
 				{
-					releasingHandlers = new Dictionary<object, IList<ComponentReleasingDelegate>>();
+					releasingHandlers = new Dictionary<object, IList<ComponentReleasingDelegate>>(ReferenceEqualityComparer.Instance);
 				}
 
 				if (releasingHandlers.ContainsKey(invocation.ReturnValue) == false)
