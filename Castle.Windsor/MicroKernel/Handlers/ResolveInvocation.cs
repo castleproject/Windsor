@@ -32,7 +32,7 @@ namespace Castle.MicroKernel.Handlers
 		public CreationContext Context { get; private set; }
 		public bool InstanceRequired { get; private set; }
 
-		public object ReturnValue { get; set; }
+		public object ResolvedInstance { get; set; }
 
 		internal bool DecommissionRequired
 		{
