@@ -98,8 +98,9 @@ namespace Castle.MicroKernel.Handlers
 		{
 			if (extensionIndex >= resolveExtensions.Length)
 			{
-				invocation.ReturnValue = ResolveCore(invocation.Context, invocation.DecommissionRequired,
-				                                     invocation.InstanceRequired);
+				invocation.ReturnValue = ResolveCore(invocation.Context,
+				                                        invocation.DecommissionRequired,
+				                                        invocation.InstanceRequired);
 				return;
 			}
 			var nextIndex = extensionIndex + 1;

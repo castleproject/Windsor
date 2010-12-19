@@ -17,7 +17,6 @@ namespace Castle.MicroKernel.Handlers
 	using System;
 	using System.Collections.Generic;
 	using System.Diagnostics;
-	using System.Linq;
 
 	using Castle.Core;
 	using Castle.MicroKernel.Context;
@@ -98,9 +97,8 @@ namespace Castle.MicroKernel.Handlers
 			}
 		}
 
-		protected override object ResolveCore(CreationContext context, bool requiresDecommission, bool instanceRequired)
+		protected override object Resolve(CreationContext context, bool instanceRequired)
 		{
-			// NOTE: requiresDecommission is ignored here.
 			var implType = GetClosedImplementationType(context, instanceRequired);
 			if (implType == null)
 			{

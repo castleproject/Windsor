@@ -34,11 +34,11 @@ namespace Castle.MicroKernel.Handlers
 	///   Implements the basis of
 	///   <see cref = "IHandler" />
 	/// </summary>
+	[Serializable]
 	[DebuggerDisplay("Model: {ComponentModel.Service} / {ComponentModel.Implementation} ")]
 #if SILVERLIGHT
 	public abstract class AbstractHandler : IHandler, IExposeDependencyInfo, IDisposable
 #else
-	[Serializable]
 	public abstract class AbstractHandler : MarshalByRefObject, IHandler, IExposeDependencyInfo, IDisposable
 #endif
 	{
@@ -140,17 +140,6 @@ namespace Castle.MicroKernel.Handlers
 		/// <param name = "burden"></param>
 		/// <returns>true if destroyed.</returns>
 		public abstract bool ReleaseCore(Burden burden);
-
-		/// <summary>
-		///   Should be implemented by derived classes: 
-		///   returns an instance of the component this handler
-		///   is responsible for
-		/// </summary>
-		/// <param name = "context"></param>
-		/// <param name = "requiresDecommission"></param>
-		/// <param name = "instanceRequired">When <c>false</c>, handler can not create valid instance and return <c>null</c> instead.</param>
-		/// <returns></returns>
-		protected abstract object ResolveCore(CreationContext context, bool requiresDecommission, bool instanceRequired);
 
 		public virtual void Dispose()
 		{
@@ -759,10 +748,7 @@ namespace Castle.MicroKernel.Handlers
 		/// <param name = "context"></param>
 		/// <param name = "instanceRequired">when <c>false</c>, handler can not create valid instance and return <c>null</c> instead </param>
 		/// <returns></returns>
-		protected virtual object Resolve(CreationContext context, bool instanceRequired)
-		{
-			return ResolveCore(context, false, instanceRequired);
-		}
+		protected abstract object Resolve(CreationContext context, bool instanceRequired);
 
 		protected void SetNewState(HandlerState newState)
 		{
