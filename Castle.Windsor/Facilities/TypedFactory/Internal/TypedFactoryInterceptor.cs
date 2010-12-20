@@ -16,7 +16,6 @@ namespace Castle.Facilities.TypedFactory.Internal
 {
 	using System;
 	using System.Collections.Generic;
-	using System.Linq;
 	using System.Reflection;
 
 	using Castle.Core;
@@ -32,15 +31,11 @@ namespace Castle.Facilities.TypedFactory.Internal
 
 		private readonly IKernel kernel;
 
-		private readonly IDictionary<MethodInfo, Action<IInvocation>> methods =
-			new Dictionary<MethodInfo, Action<IInvocation>>();
-
 		private readonly List<WeakReference> resolvedTrackedComponents = new List<WeakReference>();
 
 		private bool disposed;
+		private IDictionary<MethodInfo, FactoryMethod> methods;
 		private int resolveCount;
-
-		private ComponentModel target;
 
 		public TypedFactoryInterceptor(IKernel kernel, ITypedFactoryComponentSelector componentSelector)
 		{
@@ -73,53 +68,33 @@ namespace Castle.Facilities.TypedFactory.Internal
 				throw new ObjectDisposedException("this", "The factory was disposed and can no longer be used.");
 			}
 
-			Action<IInvocation> method;
+			FactoryMethod method;
 			if (TryGetMethod(invocation, out method) == false)
 			{
 				throw new Exception(
 					string.Format("Can't find information about factory method {0}. This is most likely a bug. Please report it.",
 					              invocation.Method));
 			}
-			method.Invoke(invocation);
+			switch (method)
+			{
+				case FactoryMethod.Resolve:
+					Resolve(invocation);
+					break;
+				case FactoryMethod.Release:
+					Release(invocation);
+					break;
+				case FactoryMethod.Dispose:
+					Dispose();
+					break;
+			}
 		}
 
 		public void SetInterceptedComponentModel(ComponentModel target)
 		{
-			this.target = target;
-			// this will either be sole, class service for a delegate, or just interface services for interface-based factory
-			foreach (var service in this.target.AllServices)
+			methods = (IDictionary<MethodInfo, FactoryMethod>)target.ExtendedProperties[TypedFactoryFacility.FactoryMapCacheKey];
+			if (methods == null)
 			{
-				BuildHandlersMap(service);
-			}
-		}
-
-		protected virtual void BuildHandlersMap(Type service)
-		{
-			if (service == null)
-			{
-				return;
-			}
-
-			if (service.Equals(typeof(IDisposable)))
-			{
-				var method = service.GetMethods().Single();
-				methods.Add(method, Dispose);
-				return;
-			}
-
-			foreach (var method in service.GetMethods())
-			{
-				if (IsReleaseMethod(method))
-				{
-					methods[method] = Release;
-					continue;
-				}
-				methods[method] = Resolve;
-			}
-
-			foreach (var @interface in service.GetInterfaces())
-			{
-				BuildHandlersMap(@interface);
+				throw new ArgumentException(string.Format("Component {0} is not a typed factory. {1} only works with typed factories.", target.Name, GetType()));
 			}
 		}
 
@@ -138,16 +113,6 @@ namespace Castle.Facilities.TypedFactory.Internal
 #else
 			resolvedTrackedComponents.Where(c => c.IsAlive == false).ToList().ForEach(x => resolvedTrackedComponents.Remove(x));
 #endif
-		}
-
-		private void Dispose(IInvocation invocation)
-		{
-			Dispose();
-		}
-
-		private bool IsReleaseMethod(MethodInfo methodInfo)
-		{
-			return methodInfo.ReturnType == typeof(void);
 		}
 
 		private void Release(IInvocation invocation)
@@ -183,7 +148,7 @@ namespace Castle.Facilities.TypedFactory.Internal
 			invocation.ReturnValue = instance;
 		}
 
-		private bool TryGetMethod(IInvocation invocation, out Action<IInvocation> method)
+		private bool TryGetMethod(IInvocation invocation, out FactoryMethod method)
 		{
 			if (methods.TryGetValue(invocation.Method, out method))
 			{

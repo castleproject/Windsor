@@ -58,7 +58,8 @@ namespace Castle.Facilities.TypedFactory.Internal
 					var selector = k.Resolve<ITypedFactoryComponentSelector>(TypedFactoryFacility.DefaultDelegateSelectorKey);
 					d.Insert(selector);
 					return k2 => k2.ReleaseComponent(selector);
-				});
+				})
+				.AddDescriptor(new FactoryCacheDescriptor<object>());
 		}
 
 		protected string GetName(Type service)

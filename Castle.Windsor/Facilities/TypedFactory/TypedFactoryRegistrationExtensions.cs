@@ -88,11 +88,13 @@ namespace Castle.Facilities.TypedFactory
 		}
 
 		private static ComponentRegistration<TFactory> AttachConfiguration<TFactory>(
-			ComponentRegistration<TFactory> componentRegistration, Action<TypedFactoryConfiguration> configuration,
+			ComponentRegistration<TFactory> componentRegistration,
+			Action<TypedFactoryConfiguration> configuration,
 			string defaultComponentSelectorKey)
 		{
 			var selectorReference = GetSelectorReference(configuration, defaultComponentSelectorKey);
 			componentRegistration.AddDescriptor(new ReferenceDependencyDescriptor<TFactory>(selectorReference));
+			componentRegistration.AddDescriptor(new FactoryCacheDescriptor<TFactory>());
 			return componentRegistration.DynamicParameters((k, c, d) =>
 			{
 				var selector = selectorReference.Resolve(k, c);

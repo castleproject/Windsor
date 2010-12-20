@@ -380,8 +380,10 @@
     <Compile Include="Facilities\EventWiring\OpCodeValues.cs" />
     <Compile Include="Facilities\Startable\StartableContributor.cs" />
     <Compile Include="Facilities\TypedFactory\DefaultDelegateComponentSelector.cs" />
+    <Compile Include="Facilities\TypedFactory\FactoryCacheDescriptor.cs" />
     <Compile Include="Facilities\TypedFactory\Internal\DelegateFactory.cs" />
     <Compile Include="Facilities\TypedFactory\Internal\DelegateProxyFactory.cs" />
+    <Compile Include="Facilities\TypedFactory\Internal\FactoryMethod.cs" />
     <Compile Include="Facilities\TypedFactory\TypedFactoryConfiguration.cs" />
     <Compile Include="MicroKernel\ComponentActivator\AbstractComponentActivator.cs">
       <SubType>Code</SubType>
