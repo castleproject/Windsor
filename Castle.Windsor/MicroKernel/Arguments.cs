@@ -17,8 +17,6 @@ namespace Castle.MicroKernel
 	using System;
 	using System.Collections;
 	using System.Collections.Generic;
-	using System.Diagnostics;
-	using System.Linq;
 
 	using Castle.Core;
 	using Castle.MicroKernel.Context;
@@ -28,17 +26,15 @@ namespace Castle.MicroKernel
 	/// </summary>
 	public class Arguments : IDictionary
 	{
-		private readonly IList<IArgumentsStore> stores = new List<IArgumentsStore>();
-		private readonly object syncRoot = new object();
-		private int count;
+		protected IDictionary arguments;
 
-		public Arguments(object namedArgumentsAsAnonymousType, params IArgumentsStore[] customStores)
-			: this(new ReflectionBasedDictionaryAdapter(namedArgumentsAsAnonymousType), customStores)
+		public Arguments(object namedArgumentsAsAnonymousType, params IArgumentsComparer[] customComparers)
+			: this(new ReflectionBasedDictionaryAdapter(namedArgumentsAsAnonymousType), customComparers)
 		{
 		}
 
-		public Arguments(IDictionary values, params IArgumentsStore[] customStores)
-			: this(customStores)
+		public Arguments(IDictionary values, params IArgumentsComparer[] customComparers)
+			: this(customComparers)
 		{
 			foreach (DictionaryEntry entry in values)
 			{
@@ -46,8 +42,8 @@ namespace Castle.MicroKernel
 			}
 		}
 
-		public Arguments(object[] typedArguments, params IArgumentsStore[] customStores)
-			: this(customStores)
+		public Arguments(object[] typedArguments, params IArgumentsComparer[] customComparers)
+			: this(customComparers)
 		{
 			foreach (var @object in typedArguments)
 			{
@@ -61,186 +57,151 @@ namespace Castle.MicroKernel
 			}
 		}
 
-		public Arguments(params IArgumentsStore[] customStores)
+		public Arguments(params IArgumentsComparer[] customComparers)
 		{
-			if (customStores != null)
+			if (customComparers == null || customComparers.Length == 0)
 			{
-				foreach (var store in customStores)
-				{
-					if (store == null)
-					{
-						continue;
-					}
-					// first one wins, so stores passed via .ctor will get picked over the default ones
-					count += store.Count;
-					stores.Add(store);
-				}
+				arguments = new Dictionary<object, object>(new ArgumentsComparer());
 			}
-			stores.Add(new NamedArgumentsStore());
-			stores.Add(new TypedArgumentsStore());
-			stores.Add(new FallbackArgumentsStore());
+			else
+			{
+				arguments = new Dictionary<object, object>(new ArgumentsComparerExtended(customComparers));
+			}
 		}
 
 		public int Count
 		{
-			get
-			{
-				Debug.Assert(count == stores.Sum(s => s.Count), "count == stores.Sum(s => s.Count)");
-				return count;
-			}
+			get { return arguments.Count; }
 		}
 
 		public object this[object key]
 		{
-			get
-			{
-				if (key == null)
-				{
-					throw new ArgumentNullException("key");
-				}
-				var store = GetSupportingStore(key);
-				return store.GetItem(key);
-			}
-			set
-			{
-				if (key == null)
-				{
-					throw new ArgumentNullException("key");
-				}
-				var store = GetSupportingStore(key);
-				if (store.Insert(key, value))
-				{
-					count++;
-				}
-			}
+			get { return arguments[key]; }
+			set { arguments[key] = value; }
 		}
 
 		public ICollection Keys
 		{
-			get
-			{
-				var values = new List<object>(Count);
-				foreach (DictionaryEntry value in this)
-				{
-					values.Add(value.Key);
-				}
-				return values;
-			}
+			get { return arguments.Keys; }
 		}
 
 		public ICollection Values
 		{
-			get
-			{
-				var values = new List<object>(Count);
-				foreach (DictionaryEntry value in this)
-				{
-					values.Add(value.Value);
-				}
-				return values;
-			}
+			get { return arguments.Values; }
 		}
 
 		bool ICollection.IsSynchronized
 		{
-			get { return false; }
+			get { return arguments.IsSynchronized; }
 		}
 
 		object ICollection.SyncRoot
 		{
-			get { return syncRoot; }
+			get { return arguments.SyncRoot; }
 		}
 
 		bool IDictionary.IsFixedSize
 		{
-			get { return false; }
+			get { return arguments.IsFixedSize; }
 		}
 
 		bool IDictionary.IsReadOnly
 		{
-			get { return false; }
+			get { return arguments.IsReadOnly; }
 		}
 
 		public void Add(object key, object value)
 		{
-			if (key == null)
-			{
-				throw new ArgumentNullException("key");
-			}
-
-			var store = GetSupportingStore(key);
-			store.Add(key, value);
-			count++;
+			arguments.Add(key, value);
 		}
 
 		public void Clear()
 		{
-			if (count == 0)
-			{
-				return;
-			}
-			foreach (var store in stores)
-			{
-				store.Clear();
-			}
-			count = 0;
+			arguments.Clear();
 		}
 
 		public bool Contains(object key)
 		{
-			if (count == 0)
-			{
-				return false;
-			}
-			return stores.Any(s => s.Contains(key));
+			return arguments.Contains(key);
 		}
 
 		public IDictionaryEnumerator GetEnumerator()
 		{
-			return new ComponentArgumentsEnumerator(stores);
+			return arguments.GetEnumerator();
 		}
 
 		public void Remove(object key)
 		{
-			if (key == null)
-			{
-				throw new ArgumentNullException("key");
-			}
-			if (count == 0)
-			{
-				return;
-			}
-			var store = GetSupportingStore(key);
-			if (store.Remove(key))
-			{
-				count--;
-			}
-		}
-
-		protected virtual IArgumentsStore GetSupportingStore(object key)
-		{
-			var keyType = key.GetType();
-			var store = stores.FirstOrDefault(s => s.Supports(keyType));
-			if (store == null)
-			{
-				throw new NotSupportedException(string.Format("Key type {0} is not supported.", keyType));
-			}
-			return store;
+			arguments.Remove(key);
 		}
 
 		void ICollection.CopyTo(Array array, int index)
 		{
-			var currentIndex = index;
-			foreach (DictionaryEntry item in this)
-			{
-				array.SetValue(item.Value, currentIndex);
-				currentIndex++;
-			}
+			arguments.CopyTo(array, index);
 		}
 
 		IEnumerator IEnumerable.GetEnumerator()
 		{
 			return GetEnumerator();
+		}
+
+		private class ArgumentsComparer : IEqualityComparer<object>
+		{
+			public new virtual bool Equals(object x, object y)
+			{
+				var a = x as string;
+				if (a != null)
+				{
+					return StringComparer.OrdinalIgnoreCase.Equals(a, y as string);
+				}
+				return Object.Equals(x, y);
+			}
+
+			public virtual int GetHashCode(object obj)
+			{
+				var str = obj as string;
+				if (str != null)
+				{
+					return StringComparer.OrdinalIgnoreCase.GetHashCode(str);
+				}
+				return obj.GetHashCode();
+			}
+		}
+
+		private class ArgumentsComparerExtended : ArgumentsComparer
+		{
+			private readonly IList<IArgumentsComparer> stores = new List<IArgumentsComparer>();
+
+			public ArgumentsComparerExtended(IEnumerable<IArgumentsComparer> customStores)
+			{
+				stores = new List<IArgumentsComparer>(customStores);
+			}
+
+			public override bool Equals(object x, object y)
+			{
+				foreach (var store in stores)
+				{
+					bool areEqual;
+					if (store.RunEqualityComparison(x, y, out areEqual))
+					{
+						return areEqual;
+					}
+				}
+				return base.Equals(x, y);
+			}
+
+			public override int GetHashCode(object obj)
+			{
+				foreach (var store in stores)
+				{
+					int hashCode;
+					if (store.RunHasCodeCalculation(obj, out hashCode))
+					{
+						return hashCode;
+					}
+				}
+				return base.GetHashCode(obj);
+			}
 		}
 	}
 }
