@@ -14,25 +14,10 @@
 
 namespace Castle.MicroKernel.Context
 {
-	using System;
-	using System.Collections.Generic;
-
-	public interface IArgumentsStore : IEnumerable<KeyValuePair<object, object>>
+	public interface IArgumentsComparer
 	{
-		bool Contains(object key);
+		bool RunEqualityComparison(object x, object y, out bool areEqual);
 
-		int Count { get; }
-
-		bool Supports(Type keyType);
-
-		void Add(object key, object value);
-
-		void Clear();
-
-		bool Remove(object key);
-
-		bool Insert(object key, object value);
-
-		object GetItem(object key);
+		bool RunHasCodeCalculation(object o, out int hashCode);
 	}
 }

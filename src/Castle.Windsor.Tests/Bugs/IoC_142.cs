@@ -40,8 +40,8 @@ namespace Castle.Windsor.Tests.Bugs
 			var container = new WindsorContainer();
 			container.Register(Component.For<ClassTakingNullable>());
 
-			var s = container.Resolve<ClassTakingNullable>(
-				new Arguments().Insert("SomeVal", 5));
+			var arguments = new Arguments().Insert("SomeVal", 5);
+			var s = container.Resolve<ClassTakingNullable>(arguments);
 
 			Assert.IsNotNull(s.SomeVal);
 		}

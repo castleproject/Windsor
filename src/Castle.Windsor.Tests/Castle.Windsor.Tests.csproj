@@ -630,7 +630,6 @@
     <Compile Include="ClassComponents\SimpleComponent3.cs" />
     <Compile Include="ClassComponents\TwoInterfacesImpl.cs" />
     <Compile Include="ClassComponents\UsesIGeneric.cs" />
-    <Compile Include="ComponentArgumentsEnumeratorTestCase.cs" />
     <Compile Include="DecoratorsTestCase.cs" />
     <Compile Include="DependencyResolvingTestCase.cs" />
     <Compile Include="EventTests.cs" />

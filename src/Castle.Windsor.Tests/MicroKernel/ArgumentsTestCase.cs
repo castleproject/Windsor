@@ -14,10 +14,6 @@
 
 namespace Castle.Windsor.Tests.MicroKernel
 {
-	using System;
-	using System.Collections;
-	using System.Collections.Generic;
-
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Context;
 
@@ -70,19 +66,19 @@ namespace Castle.Windsor.Tests.MicroKernel
 		[Test]
 		public void Custom_stores_get_picked_over_default_ones()
 		{
-			var arguments = new Arguments(new CustomStringStore());
+			var arguments = new Arguments(new CustomStringComparer());
 			var key = "foo";
 			var value = new object();
 
 			arguments.Add(key, value);
 
-			Assert.AreEqual("boo!", arguments[key]);
+			Assert.AreEqual(value, arguments["boo!"]);
 		}
 
 		[Test]
 		public void By_default_any_type_as_key_is_supported()
 		{
-			var arguments = new Arguments(new CustomStringStore());
+			var arguments = new Arguments(new CustomStringComparer());
 			var key = new object();
 			var value = "foo";
 
@@ -92,56 +88,29 @@ namespace Castle.Windsor.Tests.MicroKernel
 		}
 	}
 
-	public class CustomStringStore : IArgumentsStore
+	public class CustomStringComparer : IArgumentsComparer
 	{
-		public IEnumerator<KeyValuePair<object, object>> GetEnumerator()
+		public bool RunEqualityComparison(object x, object y, out bool areEqual)
 		{
-			throw new NotImplementedException();
-		}
-
-		IEnumerator IEnumerable.GetEnumerator()
-		{
-			return GetEnumerator();
-		}
-
-		public bool Contains(object key)
-		{
+			if (x is string)
+			{
+				areEqual = true;
+				return true;
+			}
+			areEqual = false;
 			return false;
 		}
 
-		public int Count
+		public bool RunHasCodeCalculation(object o, out int hashCode)
 		{
-			get { return 0; }
-		}
+			if(o is string )
+			{
+				hashCode = "boo!".GetHashCode();
+				return true;
+			}
+			hashCode = 0;
+			return false;
 
-		public bool Supports(Type keyType)
-		{
-			return keyType == typeof(string);
-		}
-
-		public void Add(object key, object value)
-		{
-			// ignore
-		}
-
-		public void Clear()
-		{
-			throw new NotImplementedException();
-		}
-
-		public bool Remove(object key)
-		{
-			throw new NotImplementedException();
-		}
-
-		public bool Insert(object key, object value)
-		{
-			throw new NotImplementedException();
-		}
-
-		public object GetItem(object key)
-		{
-			return "boo!";
 		}
 	}
 }

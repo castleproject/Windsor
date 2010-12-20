@@ -14,10 +14,9 @@
 
 namespace Castle.MicroKernel.Handlers
 {
-	using Castle.MicroKernel.Context;
-
 	using System.Collections.Generic;
 
+	using Castle.MicroKernel.Context;
 	using Castle.MicroKernel.Util;
 
 	public delegate ComponentReleasingDelegate ComponentResolvingDelegate(IKernel kernel, CreationContext context);
