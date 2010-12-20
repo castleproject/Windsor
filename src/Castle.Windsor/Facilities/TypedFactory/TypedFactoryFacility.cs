@@ -35,6 +35,7 @@ namespace Castle.Facilities.TypedFactory
 	/// </summary>
 	public class TypedFactoryFacility : AbstractFacility
 	{
+		public static readonly object FactoryMapCacheKey = "Castle.TypedFactory.MapCache";
 		public static readonly string DelegateFactoryKey = "Castle.TypedFactory.DelegateFactory";
 		public static readonly string InterceptorKey = "Castle.TypedFactory.Interceptor";
 
