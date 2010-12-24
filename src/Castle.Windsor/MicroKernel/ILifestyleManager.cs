@@ -55,9 +55,8 @@ namespace Castle.MicroKernel
 		///   and if a new instance was created it should be passed on to <see cref = "IReleasePolicy.Track" /> of <paramref name = "releasePolicy" />.
 		/// </summary>
 		/// <param name = "context" />
-		/// <param name = "burden" />
 		/// <param name = "releasePolicy" />
 		/// <returns></returns>
-		object Resolve(CreationContext context, Burden burden, IReleasePolicy releasePolicy);
+		object Resolve(CreationContext context, IReleasePolicy releasePolicy);
 	}
 }

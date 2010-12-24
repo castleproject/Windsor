@@ -43,7 +43,7 @@ namespace Castle.MicroKernel.Tests.Lifestyle
 		{
 		}
 
-		protected override object CreateInstance(CreationContext context, Burden burden)
+		protected override Burden CreateInstance(CreationContext context)
 		{
 			var scope = InstanceScope.Current;
 			if (scope == null)
@@ -51,10 +51,10 @@ namespace Castle.MicroKernel.Tests.Lifestyle
 				throw new InvalidOperationException("Scope is null");
 			}
 
-			object instance;
+			Burden instance;
 			if (scope.Cache.TryGetValue(Model, out instance) == false)
 			{
-				instance = base.CreateInstance(context, burden);
+				instance = base.CreateInstance(context);
 				scope.Cache[Model] = instance;
 			}
 			return instance;
@@ -66,7 +66,7 @@ namespace Castle.MicroKernel.Tests.Lifestyle
 		[ThreadStatic]
 		private static Stack<InstanceScope> localScopes;
 
-		private IDictionary<ComponentModel, object> cache = new Dictionary<ComponentModel, object>();
+		private IDictionary<ComponentModel, Burden> cache = new Dictionary<ComponentModel, Burden>();
 
 		public InstanceScope()
 		{
@@ -77,7 +77,7 @@ namespace Castle.MicroKernel.Tests.Lifestyle
 			localScopes.Push(this);
 		}
 
-		public IDictionary<ComponentModel, object> Cache
+		public IDictionary<ComponentModel, Burden> Cache
 		{
 			get { return cache; }
 		}

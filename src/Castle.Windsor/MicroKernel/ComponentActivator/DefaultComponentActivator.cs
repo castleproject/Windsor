@@ -63,7 +63,7 @@ namespace Castle.MicroKernel.ComponentActivator
 		protected override object InternalCreate(CreationContext context)
 		{
 			var instance = Instantiate(context);
-			context.AddContextualProperty(this, instance);
+			context.SetContextualProperty(this, instance);
 
 			SetUpProperties(instance, context);
 

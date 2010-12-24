@@ -402,6 +402,8 @@
     <Compile Include="MicroKernel\ComponentActivator\ExternalInstanceActivator.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="MicroKernel\HandlerState.cs" />
+    <Compile Include="MicroKernel\HandlerStateDelegate.cs" />
     <Compile Include="MicroKernel\Handlers\ComponentLifecycleExtension.cs" />
     <Compile Include="MicroKernel\Handlers\ExtendedHandler.cs" />
     <Compile Include="MicroKernel\Handlers\HandlerExtensionsUtil.cs" />

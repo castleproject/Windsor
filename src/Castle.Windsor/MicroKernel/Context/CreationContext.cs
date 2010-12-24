@@ -20,6 +20,7 @@ namespace Castle.MicroKernel.Context
 	using System.Diagnostics;
 
 	using Castle.Core;
+	using Castle.MicroKernel.ComponentActivator;
 	using Castle.MicroKernel.Releasers;
 	using Castle.MicroKernel.SubSystems.Conversion;
 
@@ -155,7 +156,7 @@ namespace Castle.MicroKernel.Context
 			get { return releasePolicy; }
 		}
 
-		public void AddContextualProperty(object key, object value)
+		public void SetContextualProperty(object key, object value)
 		{
 			if (key == null)
 			{
@@ -165,7 +166,7 @@ namespace Castle.MicroKernel.Context
 			{
 				extendedProperties = new Dictionary<object, object>();
 			}
-			extendedProperties.Add(key, value);
+			extendedProperties[key] = value;
 		}
 
 		public ResolutionContext EnterResolutionContext(IHandler handlerBeingResolved, bool requiresDecommission)
@@ -364,6 +365,22 @@ namespace Castle.MicroKernel.Context
 			{
 				context.ExitResolutionContext(burden);
 			}
+		}
+
+		public Burden ActivateNewInstance(IComponentActivator componentActivator)
+		{
+			ResolutionContext resolutionContext;
+			try
+			{
+				resolutionContext = resolutionStack.Peek();
+			}
+			catch (InvalidOperationException)
+			{
+				throw new ComponentActivatorException("Not in a resolution context. 'ActivateNewInstance' method can only be called withing a resoltion scope. (after 'EnterResolutionContext' was called within a handler)");
+			}
+			var burden = resolutionContext.Burden;
+			burden.SetRootInstance(componentActivator.Create(this));
+			return burden;
 		}
 	}
 }

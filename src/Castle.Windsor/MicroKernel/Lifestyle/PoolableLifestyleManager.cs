@@ -44,6 +44,11 @@ namespace Castle.MicroKernel.Lifestyle
 			}
 		}
 
+		public override object Resolve(CreationContext context, IReleasePolicy releasePolicy)
+		{
+			return Pool.Request(() => PoolCreationCallback(context, releasePolicy));
+		}
+
 		public override bool Release(object instance)
 		{
 			if (pool != null)
@@ -53,22 +58,29 @@ namespace Castle.MicroKernel.Lifestyle
 			return false;
 		}
 
-		protected override object CreateInstance(CreationContext context, Burden burden)
+		protected virtual object PoolCreationCallback(CreationContext context, IReleasePolicy releasePolicy)
 		{
-			if (pool == null)
+			var burden = base.CreateInstance(context);
+			Track(burden, releasePolicy);
+			return burden.Instance;
+		}
+
+		private IPool Pool
+		{
+			get
 			{
-				lock (ComponentActivator)
+				if (pool == null)
 				{
-					if (pool == null)
+					lock (ComponentActivator)
 					{
-						pool = CreatePool(initialSize, maxSize);
+						if (pool == null)
+						{
+							pool = CreatePool(initialSize, maxSize);
+						}
 					}
 				}
+				return pool;
 			}
-
-			var instance = pool.Request(context);
-			burden.SetRootInstance(instance);
-			return instance;
 		}
 
 		protected override void Track(Burden burden, IReleasePolicy releasePolicy)

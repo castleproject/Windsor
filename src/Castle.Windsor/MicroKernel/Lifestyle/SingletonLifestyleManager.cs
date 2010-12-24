@@ -36,8 +36,9 @@ namespace Castle.MicroKernel.Lifestyle
 			}
 		}
 
-		public override object Resolve(CreationContext context, Burden burden, IReleasePolicy releasePolicy)
+		public override object Resolve(CreationContext context, IReleasePolicy releasePolicy)
 		{
+			// 1. read from cache
 			if (cachedBurden != null)
 			{
 				return cachedBurden.Instance;
@@ -48,18 +49,23 @@ namespace Castle.MicroKernel.Lifestyle
 				//we've been called recursively, by some dependency from base.Resolve call
 				return instanceFromContext;
 			}
-			object instance;
+
 			lock (ComponentActivator)
 			{
 				if (cachedBurden != null)
 				{
 					return cachedBurden.Instance;
 				}
-				instance = base.CreateInstance(context, burden);
-				cachedBurden = burden;
+				return GetNewInstance(context, releasePolicy);
 			}
+		}
+
+		private object GetNewInstance(CreationContext context, IReleasePolicy releasePolicy)
+		{
+			var burden = CreateInstance(context);
+			cachedBurden = burden;
 			Track(burden, releasePolicy);
-			return instance;
+			return burden.Instance;
 		}
 
 		protected override void Track(Burden burden, IReleasePolicy releasePolicy)

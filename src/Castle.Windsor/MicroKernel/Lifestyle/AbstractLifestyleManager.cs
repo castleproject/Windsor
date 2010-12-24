@@ -53,11 +53,11 @@ namespace Castle.MicroKernel.Lifestyle
 			this.model = model;
 		}
 
-		public virtual object Resolve(CreationContext context, Burden burden, IReleasePolicy releasePolicy)
+		public virtual object Resolve(CreationContext context, IReleasePolicy releasePolicy)
 		{
-			var instance = CreateInstance(context, burden);
+			var burden = CreateInstance(context);
 			Track(burden, releasePolicy);
-			return instance;
+			return burden.Instance;
 
 		}
 
@@ -75,11 +75,9 @@ namespace Castle.MicroKernel.Lifestyle
 			}
 		}
 
-		protected virtual object CreateInstance(CreationContext context, Burden burden)
+		protected virtual Burden CreateInstance(CreationContext context)
 		{
-			var instance = componentActivator.Create(context);
-			burden.SetRootInstance(instance);
-			return instance;
+			return context.ActivateNewInstance(ComponentActivator);
 		}
 	}
 }

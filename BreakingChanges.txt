@@ -24,7 +24,24 @@ description - Handling of decision regarding tracking is now happening in two st
 	own (trigger) the release process.
 
 fix - If you implement custom lifestyle consult the implementation of standard lifestyles for
-	examples how to handle each aspect of component lifestyle management.
+	examples how to handle each aspect of component lifestyle management. Broadly speaking the
+	behavior should be the following (*do* inherit from AbstractLifestyleManager for your own
+	convenience):
+	- if your lifestyle employs caching, it should cache Burdens, not the objects resolved
+	directly. Look up its cache, and if you find matching burden return object it manages 
+	(accessed via 'Instance' property)
+	- on cache miss call base.CreateInstance to obtain new instnace from activator. This method
+	will not return the managed object directly but rather a Burden instance.
+	- inspect burden's RequiresPolicyRelease property. If its value is true that means either
+	the intsance obtained or at least one of its dependencies can not be released out of band
+	and will require to be released explicitly. If the property is set to true you are required
+	to track the componetn obtained with releasePolicy provided (you can use base.Track method 
+	to acheave that). If your lifestyle provides out of band release mechanism (that is other
+	than call to container.Release, you can set this property to false before passing to release
+	policy. If the property is false, release policy will ignore the component when container's
+	Release method is called, and rely on your out of band handling).
+	- cache your newly obtained instance if needed.
+	- return the intance, (burden.Instance)
 ================================================================================================
 rename -  CreationContext.Empty -> CreationContext.CreateEmpty()
 description - readability change to make it obvious that new instance is created each time.

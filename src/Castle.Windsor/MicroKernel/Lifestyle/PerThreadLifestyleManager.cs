@@ -57,29 +57,29 @@ namespace Castle.MicroKernel.Lifestyle
 			Thread.FreeNamedDataSlot("CastlePerThread");
 		}
 
-		public override object Resolve(CreationContext context, Burden burden, IReleasePolicy releasePolicy)
+		public override object Resolve(CreationContext context, IReleasePolicy releasePolicy)
 		{
 			lock (slot)
 			{
-				var map = (Dictionary<IComponentActivator, object>)Thread.GetData(slot);
+				var map = (Dictionary<IComponentActivator, Burden>)Thread.GetData(slot);
 
 				if (map == null)
 				{
-					map = new Dictionary<IComponentActivator, object>();
+					map = new Dictionary<IComponentActivator, Burden>();
 
 					Thread.SetData(slot, map);
 				}
 
-				Object instance;
-
-				if (!map.TryGetValue(ComponentActivator, out instance))
+				Burden burden;
+				if (!map.TryGetValue(ComponentActivator, out burden))
 				{
-					instance = base.Resolve(context, burden, releasePolicy);
-					map.Add(ComponentActivator, instance);
+					burden = base.CreateInstance(context);
+					map.Add(ComponentActivator, burden);
 					instances.Add(burden);
+					Track(burden, releasePolicy);
 				}
 
-				return instance;
+				return burden.Instance;
 			}
 		}
 
