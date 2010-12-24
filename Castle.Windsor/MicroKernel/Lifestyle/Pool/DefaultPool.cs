@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,67 +19,41 @@ namespace Castle.MicroKernel.Lifestyle.Pool
 
 	using Castle.Core;
 	using Castle.Core.Internal;
-	using Castle.MicroKernel.Context;
 
 	[Serializable]
 	public class DefaultPool : IPool, IDisposable
 	{
 		private readonly Stack<object> available = new Stack<object>();
+		private readonly IComponentActivator componentActivator;
 		private readonly List<object> inUse = new List<object>();
-		private readonly int initialsize;
+		private readonly int initialSize;
+		private readonly IKernel kernel;
 		private readonly int maxsize;
 		private readonly Lock rwlock = Lock.Create();
-		private readonly IComponentActivator componentActivator;
-		private readonly IKernel kernel;
 		private bool evicting;
+		private bool initialized;
 
-		public DefaultPool(int initialsize, int maxsize, IComponentActivator componentActivator, IKernel kernel)
+		public DefaultPool(int initialSize, int maxsize, IComponentActivator componentActivator, IKernel kernel)
 		{
-			this.initialsize = initialsize;
+			this.initialSize = initialSize;
 			this.maxsize = maxsize;
 			this.componentActivator = componentActivator;
 			this.kernel = kernel;
-
-			InitPool();
 		}
 
-		#region IPool Members
-
-		public virtual object Request(CreationContext context)
+		public virtual void Dispose()
 		{
-			object instance;
+			evicting = true;
 
-			using(rwlock.ForWriting())
+			foreach (var instance in available)
 			{
-
-				if (available.Count != 0)
-				{
-					instance = available.Pop();
-
-					if (instance == null)
-					{
-						throw new PoolException("Invalid instance on the pool stack");
-					}
-				}
-				else
-				{
-					instance = componentActivator.Create(context);
-
-					if (instance == null)
-					{
-						throw new PoolException("Activator didn't return a valid instance");
-					}
-				}
-
-				inUse.Add(instance);
+				kernel.ReleaseComponent(instance);
 			}
-
-			return instance;
 		}
 
 		public virtual bool Release(object instance)
 		{
-			using(rwlock.ForWriting())
+			using (rwlock.ForWriting())
 			{
 				if (inUse.Contains(instance) == false)
 				{
@@ -96,52 +70,63 @@ namespace Castle.MicroKernel.Lifestyle.Pool
 					}
 
 					available.Push(instance);
-					
 					return false;
+				}
+				// Pool is full
+				componentActivator.Destroy(instance);
+				return true;
+			}
+		}
+
+		public virtual object Request(Func<object> createCallback)
+		{
+			object instance;
+
+			using (rwlock.ForWriting())
+			{
+				if (!initialized)
+				{
+					Intitialize(createCallback);
+				}
+				if (available.Count != 0)
+				{
+					instance = available.Pop();
+
+					if (instance == null)
+					{
+						throw new PoolException("Invalid instance on the pool stack");
+					}
 				}
 				else
 				{
-					// Pool is full
-					componentActivator.Destroy(instance);
-					
-					return true;
+					instance = createCallback.Invoke();
+
+					if (instance == null)
+					{
+						throw new PoolException("Activator didn't return a valid instance");
+					}
 				}
+
+				inUse.Add(instance);
 			}
+
+			return instance;
 		}
 
-		#endregion
-
-		#region IDisposable Members
-
-		public virtual void Dispose()
+		protected virtual void Intitialize(Func<object> createCallback)
 		{
-			evicting = true;
+			var tempInstance = new List<object>();
 
-			foreach(object instance in available)
+			for (var i = 0; i < initialSize; i++)
 			{
-				kernel.ReleaseComponent(instance);
-			}
-		}
-
-		#endregion
-
-		/// <summary>
-		/// Initializes the pool to a initial size by requesting
-		/// n components and then releasing them.
-		/// </summary>
-		private void InitPool()
-		{
-			List<object> tempInstance = new List<object>();
-
-			for(int i=0; i < initialsize; i++)
-			{
-				tempInstance.Add(Request(CreationContext.CreateEmpty()));
+				tempInstance.Add(createCallback.Invoke());
 			}
 
-			for(int i=0; i < initialsize; i++)
+			for (var i = 0; i < initialSize; i++)
 			{
 				Release(tempInstance[i]);
 			}
+			initialized = true;
 		}
 	}
 }

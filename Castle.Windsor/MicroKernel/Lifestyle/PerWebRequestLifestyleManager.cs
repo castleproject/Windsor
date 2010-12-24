@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#if (!SILVERLIGHT)
-
+#if !SILVERLIGHT
 namespace Castle.MicroKernel.Lifestyle
 {
 	using System;
@@ -28,7 +27,7 @@ namespace Castle.MicroKernel.Lifestyle
 	[Serializable]
 	public class PerWebRequestLifestyleManager : AbstractLifestyleManager
 	{
-		private readonly string PerRequestObjectID = "PerRequestLifestyleManager_" + Guid.NewGuid();
+		private readonly string perRequestObjectId = "PerRequestLifestyleManager_" + Guid.NewGuid();
 
 		public override void Dispose()
 		{
@@ -38,7 +37,7 @@ namespace Castle.MicroKernel.Lifestyle
 				return;
 			}
 
-			var burden = (Burden)current.Items[PerRequestObjectID];
+			var burden = (Burden)current.Items[perRequestObjectId];
 			if (burden == null)
 			{
 				return;
@@ -46,7 +45,7 @@ namespace Castle.MicroKernel.Lifestyle
 			burden.Release();
 		}
 
-		public override object Resolve(CreationContext context, Burden burden, IReleasePolicy releasePolicy)
+		public override object Resolve(CreationContext context, IReleasePolicy releasePolicy)
 		{
 			var current = HttpContext.Current;
 
@@ -56,7 +55,7 @@ namespace Castle.MicroKernel.Lifestyle
 					"HttpContext.Current is null. PerWebRequestLifestyle can only be used in ASP.Net");
 			}
 
-			var cachedBurden = current.Items[PerRequestObjectID];
+			var cachedBurden = current.Items[perRequestObjectId];
 			if (cachedBurden != null)
 			{
 				return cachedBurden;
@@ -71,11 +70,11 @@ namespace Castle.MicroKernel.Lifestyle
 				throw new Exception(message);
 			}
 
-			var instance = base.Resolve(context, burden, releasePolicy);
-			current.Items[PerRequestObjectID] = burden;
+			var burden = base.CreateInstance(context);
+			current.Items[perRequestObjectId] = burden;
 			PerWebRequestLifestyleModule.RegisterForEviction(this, burden);
-
-			return instance;
+			Track(burden, releasePolicy);
+			return burden;
 		}
 
 		protected override void Track(Burden burden, IReleasePolicy releasePolicy)
@@ -89,5 +88,4 @@ namespace Castle.MicroKernel.Lifestyle
 		}
 	}
 }
-
 #endif

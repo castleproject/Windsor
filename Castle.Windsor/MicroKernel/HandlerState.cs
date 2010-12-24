@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,22 +12,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.MicroKernel.Lifestyle.Pool
+namespace Castle.MicroKernel
 {
-	using System;
-
 	/// <summary>
-	/// Pool implementation contract.
+	///   Possible states for a IHandler instance
 	/// </summary>
-	public interface IPool : IDisposable
+	public enum HandlerState
 	{
 		/// <summary>
-		/// Implementors should release the instance or put it
-		/// on the pool
+		///   The component can be requested
 		/// </summary>
-		/// <param name="instance"></param>
-		bool Release(object instance);
-
-		object Request(Func<object> createCallback);
+		Valid,
+		/// <summary>
+		///   The component can not be requested 
+		///   as it still depending on a external 
+		///   dependency not yet available
+		/// </summary>
+		WaitingDependency
 	}
 }
