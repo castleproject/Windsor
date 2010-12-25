@@ -176,7 +176,7 @@ namespace Castle.MicroKernel.Context
 
 		public ResolutionContext EnterResolutionContext(IHandler handlerBeingResolved, bool createBurden,bool requiresDecommission)
 		{
-			var resolutionContext = new ResolutionContext(this, createBurden ? new Burden(handlerBeingResolved,requiresDecommission) : null);
+			var resolutionContext = new ResolutionContext(this, handlerBeingResolved,requiresDecommission);
 			handlerStack.Push(handlerBeingResolved);
 			if (createBurden)
 			{
@@ -321,7 +321,12 @@ namespace Castle.MicroKernel.Context
 			}
 			if (resolutionStack.Count != 0)
 			{
-				resolutionStack.Peek().Burden.AddChild(burden);
+				var parent = resolutionStack.Peek().Burden;
+				if(parent == null)
+				{
+					return;
+				}
+				parent.AddChild(burden);
 			}
 		}
 
@@ -345,28 +350,6 @@ namespace Castle.MicroKernel.Context
 			return Type.EmptyTypes;
 		}
 
-		public class ResolutionContext : IDisposable
-		{
-			private readonly Burden burden;
-			private readonly CreationContext context;
-
-			public ResolutionContext(CreationContext context, Burden burden)
-			{
-				this.context = context;
-				this.burden = burden;
-			}
-
-			public Burden Burden
-			{
-				get { return burden; }
-			}
-
-			public void Dispose()
-			{
-				context.ExitResolutionContext(burden);
-			}
-		}
-
 		public Burden ActivateNewInstance(IComponentActivator componentActivator)
 		{
 			ResolutionContext resolutionContext;
@@ -378,9 +361,42 @@ namespace Castle.MicroKernel.Context
 			{
 				throw new ComponentActivatorException("Not in a resolution context. 'ActivateNewInstance' method can only be called withing a resoltion scope. (after 'EnterResolutionContext' was called within a handler)");
 			}
-			var burden = resolutionContext.Burden;
+			var burden = resolutionContext.CreateBurden();
 			burden.SetRootInstance(componentActivator.Create(this));
 			return burden;
+		}
+
+		public class ResolutionContext : IDisposable
+		{
+			private readonly CreationContext context;
+			private readonly bool requiresDecommission;
+			private readonly IHandler handler;
+			private Burden burden;
+
+			public ResolutionContext(CreationContext context, IHandler handler, bool requiresDecommission)
+			{
+				this.context = context;
+				this.requiresDecommission = requiresDecommission;
+				this.handler = handler;
+			}
+
+			public Burden Burden
+			{
+				get { return burden; }
+			}
+
+			public void Dispose()
+			{
+				context.ExitResolutionContext(burden);
+			}
+
+			public Burden CreateBurden()
+			{
+				// NOTE: not sure we should allow crreating burden again, when it was already created...
+				// this is currently employed by pooled lifestyle
+				burden = new Burden(handler, requiresDecommission);
+				return burden;
+			}
 		}
 	}
 }

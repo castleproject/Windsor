@@ -19,47 +19,46 @@ namespace Castle.MicroKernel.Lifestyle.Pool
 
 	using Castle.Core;
 	using Castle.Core.Internal;
+	using Castle.MicroKernel.Context;
 
 	[Serializable]
 	public class DefaultPool : IPool, IDisposable
 	{
-		private readonly Stack<object> available = new Stack<object>();
+		private readonly Stack<Burden> available = new Stack<Burden>();
 		private readonly IComponentActivator componentActivator;
-		private readonly List<object> inUse = new List<object>();
+		private readonly Dictionary<object, Burden> inUse = new Dictionary<object, Burden>();
 		private readonly int initialSize;
-		private readonly IKernel kernel;
 		private readonly int maxsize;
 		private readonly Lock rwlock = Lock.Create();
-		private bool evicting;
 		private bool initialized;
 
-		public DefaultPool(int initialSize, int maxsize, IComponentActivator componentActivator, IKernel kernel)
+		public DefaultPool(int initialSize, int maxsize, IComponentActivator componentActivator)
 		{
 			this.initialSize = initialSize;
 			this.maxsize = maxsize;
 			this.componentActivator = componentActivator;
-			this.kernel = kernel;
 		}
 
 		public virtual void Dispose()
 		{
-			evicting = true;
-
-			foreach (var instance in available)
+			foreach (var burden in available)
 			{
-				kernel.ReleaseComponent(instance);
+				burden.Release();
 			}
+			inUse.Clear();
+			available.Clear();
+
 		}
 
 		public virtual bool Release(object instance)
 		{
 			using (rwlock.ForWriting())
 			{
-				if (inUse.Contains(instance) == false)
+				Burden burden;
+				if (inUse.TryGetValue(instance, out burden) == false)
 				{
-					return evicting;
+					return false;
 				}
-
 				inUse.Remove(instance);
 
 				if (available.Count < maxsize)
@@ -69,7 +68,7 @@ namespace Castle.MicroKernel.Lifestyle.Pool
 						(instance as IRecyclable).Recycle();
 					}
 
-					available.Push(instance);
+					available.Push(burden);
 					return false;
 				}
 				// Pool is full
@@ -78,55 +77,48 @@ namespace Castle.MicroKernel.Lifestyle.Pool
 			}
 		}
 
-		public virtual object Request(Func<object> createCallback)
+		public virtual object Request(CreationContext context, Func<CreationContext, Burden> creationCallback)
 		{
-			object instance;
-
 			using (rwlock.ForWriting())
 			{
 				if (!initialized)
 				{
-					Intitialize(createCallback);
+					Intitialize(creationCallback, context);
 				}
+
+				Burden burden;
 				if (available.Count != 0)
 				{
-					instance = available.Pop();
-
-					if (instance == null)
-					{
-						throw new PoolException("Invalid instance on the pool stack");
-					}
+					burden = available.Pop();
 				}
 				else
 				{
-					instance = createCallback.Invoke();
-
-					if (instance == null)
-					{
-						throw new PoolException("Activator didn't return a valid instance");
-					}
+					burden = creationCallback.Invoke(context);
 				}
-
-				inUse.Add(instance);
+				try
+				{
+					inUse.Add(burden.Instance, burden);
+				}
+				catch (NullReferenceException)
+				{
+					throw new PoolException("creationCallback didn't return a valid burden");
+				}
+				catch (ArgumentNullException)
+				{
+					throw new PoolException("burden returned by creationCallback does not have root instance associated with it (its Instance property is null).");
+				}
+				return burden.Instance;
 			}
-
-			return instance;
 		}
 
-		protected virtual void Intitialize(Func<object> createCallback)
+		protected virtual void Intitialize(Func<CreationContext, Burden> createCallback, CreationContext c)
 		{
-			var tempInstance = new List<object>();
-
-			for (var i = 0; i < initialSize; i++)
-			{
-				tempInstance.Add(createCallback.Invoke());
-			}
-
-			for (var i = 0; i < initialSize; i++)
-			{
-				Release(tempInstance[i]);
-			}
 			initialized = true;
+			for (var i = 0; i < initialSize; i++)
+			{
+				var burden = createCallback(c);
+				available.Push(burden);
+			}
 		}
 	}
 }
