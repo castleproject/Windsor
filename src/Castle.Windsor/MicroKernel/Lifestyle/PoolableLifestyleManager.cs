@@ -46,7 +46,7 @@ namespace Castle.MicroKernel.Lifestyle
 
 		public override object Resolve(CreationContext context, IReleasePolicy releasePolicy)
 		{
-			return Pool.Request(() => PoolCreationCallback(context, releasePolicy));
+			return Pool.Request(context, c => PoolCreationCallback(c, releasePolicy));
 		}
 
 		public override bool Release(object instance)
@@ -58,11 +58,11 @@ namespace Castle.MicroKernel.Lifestyle
 			return false;
 		}
 
-		protected virtual object PoolCreationCallback(CreationContext context, IReleasePolicy releasePolicy)
+		protected virtual Burden PoolCreationCallback(CreationContext context, IReleasePolicy releasePolicy)
 		{
 			var burden = base.CreateInstance(context);
 			Track(burden, releasePolicy);
-			return burden.Instance;
+			return burden;
 		}
 
 		private IPool Pool

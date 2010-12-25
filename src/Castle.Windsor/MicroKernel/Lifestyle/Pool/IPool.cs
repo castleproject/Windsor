@@ -16,6 +16,8 @@ namespace Castle.MicroKernel.Lifestyle.Pool
 {
 	using System;
 
+	using Castle.MicroKernel.Context;
+
 	/// <summary>
 	/// Pool implementation contract.
 	/// </summary>
@@ -28,6 +30,6 @@ namespace Castle.MicroKernel.Lifestyle.Pool
 		/// <param name="instance"></param>
 		bool Release(object instance);
 
-		object Request(Func<object> createCallback);
+		object Request(CreationContext context, Func<CreationContext, Burden> creationCallback);
 	}
 }
