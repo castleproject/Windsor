@@ -11,7 +11,6 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
 namespace Castle.MicroKernel
 {
 	using System;
@@ -28,10 +27,11 @@ namespace Castle.MicroKernel
 		private object instance;
 		private List<Burden> items;
 
-		public Burden(IHandler handler, bool requiresDecommission)
+		public Burden(IHandler handler, bool requiresDecommission, bool trackedExternally)
 		{
 			this.handler = handler;
-			RequiresPolicyRelease = requiresDecommission;
+			RequiresDecommission = requiresDecommission;
+			TrackedExternally = trackedExternally;
 		}
 
 		public object Instance
@@ -44,10 +44,17 @@ namespace Castle.MicroKernel
 			get { return handler.ComponentModel; }
 		}
 
+		public bool RequiresDecommission { get; set; }
+
 		/// <summary>
-		/// If <c>true</c> requires release by <see cref="IReleasePolicy"/>. If <c>false</c>, the object has a well defined, detectable end of life (web-request end, disposal of the container etc), and will be released externally.
+		///   If <c>true</c> requires release by <see cref = "IReleasePolicy" />. If <c>false</c>, the object has a well defined, detectable end of life (web-request end, disposal of the container etc), and will be released externally.
 		/// </summary>
-		public bool RequiresPolicyRelease { get; set; }
+		public bool RequiresPolicyRelease
+		{
+			get { return TrackedExternally == false && RequiresDecommission; }
+		}
+
+		public bool TrackedExternally { get; set; }
 
 		public void AddChild(Burden child)
 		{
@@ -57,9 +64,9 @@ namespace Castle.MicroKernel
 			}
 			items.Add(child);
 
-			if (child.RequiresPolicyRelease)
+			if (child.RequiresDecommission)
 			{
-				RequiresPolicyRelease = true;
+				RequiresDecommission = true;
 			}
 		}
 

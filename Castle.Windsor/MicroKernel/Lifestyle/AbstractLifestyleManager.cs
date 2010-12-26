@@ -55,7 +55,7 @@ namespace Castle.MicroKernel.Lifestyle
 
 		public virtual object Resolve(CreationContext context, IReleasePolicy releasePolicy)
 		{
-			var burden = CreateInstance(context);
+			var burden = CreateInstance(context, false);
 			Track(burden, releasePolicy);
 			return burden.Instance;
 
@@ -69,15 +69,15 @@ namespace Castle.MicroKernel.Lifestyle
 
 		protected virtual void Track(Burden burden, IReleasePolicy releasePolicy)
 		{
-			if(burden.RequiresPolicyRelease)
+			if(burden.RequiresDecommission)
 			{
 				releasePolicy.Track(burden.Instance, burden);
 			}
 		}
 
-		protected virtual Burden CreateInstance(CreationContext context)
+		protected virtual Burden CreateInstance(CreationContext context, bool trackedExternally)
 		{
-			return context.ActivateNewInstance(ComponentActivator);
+			return context.ActivateNewInstance(ComponentActivator,trackedExternally);
 		}
 	}
 }

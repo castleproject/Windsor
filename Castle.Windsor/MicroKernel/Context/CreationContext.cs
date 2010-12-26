@@ -350,7 +350,7 @@ namespace Castle.MicroKernel.Context
 			return Type.EmptyTypes;
 		}
 
-		public Burden ActivateNewInstance(IComponentActivator componentActivator)
+		public Burden ActivateNewInstance(IComponentActivator componentActivator, bool trackedExternally)
 		{
 			ResolutionContext resolutionContext;
 			try
@@ -361,7 +361,7 @@ namespace Castle.MicroKernel.Context
 			{
 				throw new ComponentActivatorException("Not in a resolution context. 'ActivateNewInstance' method can only be called withing a resoltion scope. (after 'EnterResolutionContext' was called within a handler)");
 			}
-			var burden = resolutionContext.CreateBurden();
+			var burden = resolutionContext.CreateBurden(trackedExternally);
 			burden.SetRootInstance(componentActivator.Create(this));
 			return burden;
 		}
@@ -390,11 +390,11 @@ namespace Castle.MicroKernel.Context
 				context.ExitResolutionContext(burden);
 			}
 
-			public Burden CreateBurden()
+			public Burden CreateBurden(bool trackedExternally)
 			{
 				// NOTE: not sure we should allow crreating burden again, when it was already created...
 				// this is currently employed by pooled lifestyle
-				burden = new Burden(handler, requiresDecommission);
+				burden = new Burden(handler, requiresDecommission,trackedExternally);
 				return burden;
 			}
 		}
