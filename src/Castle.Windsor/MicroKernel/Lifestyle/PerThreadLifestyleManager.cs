@@ -34,16 +34,6 @@ namespace Castle.MicroKernel.Lifestyle
 		[NonSerialized]
 		private IList<Burden> instances = new List<Burden>();
 
-		protected override void Track(Burden burden, IReleasePolicy releasePolicy)
-		{
-			var track = burden.RequiresPolicyRelease;
-			burden.RequiresPolicyRelease = false;
-			if (track)
-			{
-				releasePolicy.Track(burden.Instance, burden);
-			}
-		}
-
 		public override void Dispose()
 		{
 			foreach (var instance in instances)
@@ -73,7 +63,7 @@ namespace Castle.MicroKernel.Lifestyle
 				Burden burden;
 				if (!map.TryGetValue(ComponentActivator, out burden))
 				{
-					burden = base.CreateInstance(context);
+					burden = base.CreateInstance(context, true);
 					map.Add(ComponentActivator, burden);
 					instances.Add(burden);
 					Track(burden, releasePolicy);

@@ -70,21 +70,11 @@ namespace Castle.MicroKernel.Lifestyle
 				throw new Exception(message);
 			}
 
-			var burden = base.CreateInstance(context);
+			var burden = base.CreateInstance(context, true);
 			current.Items[perRequestObjectId] = burden;
 			PerWebRequestLifestyleModule.RegisterForEviction(this, burden);
 			Track(burden, releasePolicy);
 			return burden;
-		}
-
-		protected override void Track(Burden burden, IReleasePolicy releasePolicy)
-		{
-			var track = burden.RequiresPolicyRelease;
-			burden.RequiresPolicyRelease = false;
-			if (track)
-			{
-				releasePolicy.Track(burden.Instance, burden);
-			}
 		}
 	}
 }

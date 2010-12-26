@@ -19,13 +19,6 @@ namespace Castle.MicroKernel.Lifestyle.Pool
 	[Serializable]
 	public class DefaultPoolFactory : IPoolFactory
 	{
-		private readonly IKernel kernel;
-
-		public DefaultPoolFactory(IKernel kernel)
-		{
-			this.kernel = kernel;
-		}
-
 		public IPool Create(int initialsize, int maxSize, IComponentActivator activator)
 		{
 			return new DefaultPool(initialsize, maxSize, activator);

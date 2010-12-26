@@ -60,7 +60,7 @@ namespace Castle.MicroKernel.Lifestyle
 
 		protected virtual Burden PoolCreationCallback(CreationContext context, IReleasePolicy releasePolicy)
 		{
-			var burden = base.CreateInstance(context);
+			var burden = base.CreateInstance(context, false);
 			Track(burden, releasePolicy);
 			return burden;
 		}
@@ -85,7 +85,7 @@ namespace Castle.MicroKernel.Lifestyle
 
 		protected override void Track(Burden burden, IReleasePolicy releasePolicy)
 		{
-			burden.RequiresPolicyRelease = true;
+			burden.RequiresDecommission = true;
 			releasePolicy.Track(burden.Instance, burden);
 		}
 
