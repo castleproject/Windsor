@@ -422,6 +422,8 @@
     <Compile Include="Lifecycle\SupportsInitializeTestCase.cs" />
     <Compile Include="Lifestyle\Components\UsesComponentWithDispose.cs" />
     <Compile Include="MicroKernel\NotImplementedDependencyResolver.cs" />
+    <Compile Include="Pools\RecyclableComponent.cs" />
+    <Compile Include="Pools\UseRecyclableComponent.cs" />
     <Compile Include="Proxy\OnBehalfAwareInterceptorSelector.cs" />
     <Compile Include="Proxy\OnBehalfAwareProxyGenerationHook.cs" />
     <Compile Include="RegistrationWithAttributeTestCase.cs" />
