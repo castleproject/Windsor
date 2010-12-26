@@ -58,6 +58,71 @@ namespace Castle.MicroKernel.Tests.Pools
 		}
 
 		[Test]
+		public void Poolable_component_is_always_tracked()
+		{
+			Kernel.Register(Component.For<A>().LifeStyle.Pooled);
+
+			var component = Kernel.Resolve<A>();
+
+			Assert.IsTrue(Kernel.ReleasePolicy.HasTrack(component));
+		}
+
+		[Test]
+		public void Recyclable_component_as_dependency_can_be_reused()
+		{
+			Kernel.Register(Component.For<RecyclableComponent>().LifeStyle.PooledWithSize(1, null),
+			                Component.For<UseRecyclableComponent>().LifeStyle.Transient);
+			var component = Kernel.Resolve<UseRecyclableComponent>();
+			Container.Release(component);
+			var componentAgain = Kernel.Resolve<UseRecyclableComponent>();
+
+			Assert.AreSame(componentAgain.Dependency, component.Dependency);
+
+			Container.Release(componentAgain);
+			Assert.AreEqual(2, componentAgain.Dependency.RecycledCount);
+		}
+
+		[Test]
+		public void Recyclable_component_can_be_reused()
+		{
+			Kernel.Register(Component.For<RecyclableComponent>().LifeStyle.PooledWithSize(1, null));
+			var component = Kernel.Resolve<RecyclableComponent>();
+			Container.Release(component);
+			var componentAgain = Kernel.Resolve<RecyclableComponent>();
+
+			Assert.AreSame(componentAgain, component);
+
+			Container.Release(componentAgain);
+			Assert.AreEqual(2, componentAgain.RecycledCount);
+		}
+
+		[Test]
+		public void Recyclable_component_gets_recycled_just_once_on_subsequent_release()
+		{
+			Kernel.Register(Component.For<RecyclableComponent>().LifeStyle.PooledWithSize(1, null));
+			var component = Kernel.Resolve<RecyclableComponent>();
+
+			Assert.AreEqual(0, component.RecycledCount);
+
+			Container.Release(component);
+			Container.Release(component);
+			Container.Release(component);
+			Assert.AreEqual(1, component.RecycledCount);
+		}
+
+		[Test]
+		public void Recyclable_component_gets_recycled_on_release()
+		{
+			Kernel.Register(Component.For<RecyclableComponent>().LifeStyle.PooledWithSize(1, null));
+			var component = Kernel.Resolve<RecyclableComponent>();
+
+			Assert.AreEqual(0, component.RecycledCount);
+
+			Container.Release(component);
+			Assert.AreEqual(1, component.RecycledCount);
+		}
+
+		[Test]
 		public void SimpleUsage()
 		{
 			Kernel.Register(Component.For<PoolableComponent1>());
@@ -70,7 +135,6 @@ namespace Castle.MicroKernel.Tests.Pools
 
 			var other1 = Kernel.Resolve<PoolableComponent1>();
 			var other2 = Kernel.Resolve<PoolableComponent1>();
-
 
 			Assert.AreSame(inst1, other1);
 			Assert.AreSame(inst2, other2);

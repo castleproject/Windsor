@@ -90,6 +90,7 @@ namespace Castle.MicroKernel.Lifestyle.Pool
 				if (available.Count != 0)
 				{
 					burden = available.Pop();
+					context.AttachExistingBurden(burden);
 				}
 				else
 				{

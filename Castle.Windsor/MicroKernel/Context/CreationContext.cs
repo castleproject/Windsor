@@ -366,6 +366,20 @@ namespace Castle.MicroKernel.Context
 			return burden;
 		}
 
+		public void AttachExistingBurden(Burden burden)
+		{
+			ResolutionContext resolutionContext;
+			try
+			{
+				resolutionContext = resolutionStack.Peek();
+			}
+			catch (InvalidOperationException)
+			{
+				throw new ComponentActivatorException("Not in a resolution context. 'ActivateNewInstance' method can only be called withing a resoltion scope. (after 'EnterResolutionContext' was called within a handler)");
+			}
+			resolutionContext.AttachBurden(burden);
+		}
+
 		public class ResolutionContext : IDisposable
 		{
 			private readonly CreationContext context;
@@ -396,6 +410,11 @@ namespace Castle.MicroKernel.Context
 				// this is currently employed by pooled lifestyle
 				burden = new Burden(handler, requiresDecommission,trackedExternally);
 				return burden;
+			}
+
+			public void AttachBurden(Burden burden)
+			{
+				this.burden = burden;
 			}
 		}
 	}
