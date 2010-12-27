@@ -76,7 +76,7 @@ namespace Castle.MicroKernel.Handlers
 			// detect circular dependencies
 			if (IsBeingResolvedInContext(context))
 			{
-				return context.HasAdditionalParameters;
+				return context.HasAdditionalArguments;
 			}
 			var canResolveAll = true;
 			foreach (var dependency in DependenciesByService.Values.ToArray())
@@ -90,7 +90,7 @@ namespace Castle.MicroKernel.Handlers
 					break;
 				}
 			}
-			return (canResolveAll && DependenciesByKey.Count == 0) || context.HasAdditionalParameters;
+			return (canResolveAll && DependenciesByKey.Count == 0) || context.HasAdditionalArguments;
 		}
 
 		/// <summary>

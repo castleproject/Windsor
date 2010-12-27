@@ -372,7 +372,7 @@ namespace Castle.MicroKernel.Handlers
 				// TODO: this should be logged
 				return null;
 			}
-			catch(NoResolvableConstructorFoundException)
+			catch (NoResolvableConstructorFoundException)
 			{
 				// it's pretty obvious when this exception is thrown methinks.
 				// this was added as temporary (how many times have you heard someone say that)
@@ -383,6 +383,10 @@ namespace Castle.MicroKernel.Handlers
 
 		public virtual bool CanResolve(CreationContext context, ISubDependencyResolver contextHandlerResolver, ComponentModel model, DependencyModel dependency)
 		{
+			if (customParameters == null || customParameters.Count == 0)
+			{
+				return false;
+			}
 			return HasCustomParameter(dependency.DependencyKey) || HasCustomParameter(dependency.TargetItemType);
 		}
 
@@ -886,7 +890,7 @@ namespace Castle.MicroKernel.Handlers
 
 		private void InitializeCustomDependencies()
 		{
-			if(model.HasCustomDependencies == false)
+			if (model.HasCustomDependencies == false)
 			{
 				return;
 			}

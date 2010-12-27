@@ -77,7 +77,7 @@ namespace Castle.MicroKernel.Context
 				extendedProperties = new Dictionary<object, object>(parentContext.extendedProperties);
 			}
 
-			if (propagateInlineDependencies && parentContext.HasAdditionalParameters)
+			if (propagateInlineDependencies && parentContext.HasAdditionalArguments)
 			{
 				additionalArguments = new Arguments(parentContext.additionalArguments);
 			}
@@ -144,7 +144,7 @@ namespace Castle.MicroKernel.Context
 			get { return handler; }
 		}
 
-		public bool HasAdditionalParameters
+		public bool HasAdditionalArguments
 		{
 			get { return additionalArguments != null && additionalArguments.Count != 0; }
 		}
@@ -211,7 +211,7 @@ namespace Castle.MicroKernel.Context
 
 		public virtual bool CanResolve(CreationContext context, ISubDependencyResolver contextHandlerResolver, ComponentModel model, DependencyModel dependency)
 		{
-			if (additionalArguments == null)
+			if (additionalArguments == null || additionalArguments.Count == 0)
 			{
 				return false;
 			}
