@@ -88,12 +88,8 @@ namespace Castle.MicroKernel.Releasers
 		{
 			using (@lock.ForWriting())
 			{
-				var oldCount = instance2Burden.Count;
-				instance2Burden[instance] = burden;
-				if (oldCount < instance2Burden.Count)
-				{
-					burden.Released += OnInstanceReleased;
-				}
+				instance2Burden.Add(instance, burden);
+				burden.Released += OnInstanceReleased;
 			}
 		}
 

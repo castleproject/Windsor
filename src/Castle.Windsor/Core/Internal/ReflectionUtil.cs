@@ -15,6 +15,9 @@
 namespace Castle.Core.Internal
 {
 	using System;
+#if DOTNET40
+	using System.Collections.Concurrent;
+#endif
 	using System.Collections.Generic;
 	using System.Diagnostics;
 	using System.IO;
@@ -25,11 +28,15 @@ namespace Castle.Core.Internal
 
 	public static class ReflectionUtil
 	{
+#if DOTNET40
+		private static readonly ConcurrentDictionary<ConstructorInfo, Func<object[], object>> factories =
+			new ConcurrentDictionary<ConstructorInfo, Func<object[], object>>();
+#else
 		private static readonly IDictionary<ConstructorInfo, Func<object[], object>> factories =
 			new Dictionary<ConstructorInfo, Func<object[], object>>();
 
 		private static readonly Lock @lock = Lock.Create();
-
+#endif
 		public static TBase CreateInstance<TBase>(this Type subtypeofTBase, params object[] ctorArgs)
 		{
 			EnsureIsAssignable<TBase>(subtypeofTBase);
@@ -222,7 +229,11 @@ namespace Castle.Core.Internal
 		private static TBase Instantiate<TBase>(Type subtypeofTBase, object[] ctorArgs)
 		{
 			ctorArgs = ctorArgs ?? new object[0];
+#if SILVERLIGHT
 			var types = ctorArgs.Select(a => a == null ? typeof(object) : a.GetType()).ToArray();
+#else
+			var types = Array.ConvertAll(ctorArgs, a => a == null ? typeof(object) : a.GetType());
+#endif
 			var constructor = subtypeofTBase.GetConstructor(BindingFlags.Instance | BindingFlags.Public, null, types, null);
 			if (constructor != null)
 			{
@@ -264,6 +275,9 @@ namespace Castle.Core.Internal
 		private static object Instantiate(ConstructorInfo ctor, object[] ctorArgs)
 		{
 			Func<object[], object> factory;
+#if DOTNET40
+			factory = factories.GetOrAdd(ctor, BuildFactory);
+#else
 			if (factories.TryGetValue(ctor, out factory) == false)
 			{
 				using (@lock.ForWriting())
@@ -275,6 +289,7 @@ namespace Castle.Core.Internal
 					}
 				}
 			}
+#endif
 			return factory.Invoke(ctorArgs);
 		}
 

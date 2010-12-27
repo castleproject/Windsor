@@ -523,7 +523,12 @@ namespace Castle.MicroKernel.Registration
 		/// <returns></returns>
 		public ComponentRegistration<TService> Interceptors(params Type[] interceptors)
 		{
-			return AddDescriptor(new InterceptorDescriptor<TService>(interceptors.Select(t => new InterceptorReference(t)).ToArray()));
+#if SILVERLIGHT
+			var references = interceptors.Select(t => new InterceptorReference(t)).ToArray();
+#else
+			var references = Array.ConvertAll(interceptors, t => new InterceptorReference(t));
+#endif
+			return AddDescriptor(new InterceptorDescriptor<TService>(references));
 		}
 
 		/// <summary>
@@ -552,7 +557,12 @@ namespace Castle.MicroKernel.Registration
 		/// <returns></returns>
 		public ComponentRegistration<TService> Interceptors(params string[] keys)
 		{
-			return AddDescriptor(new InterceptorDescriptor<TService>(keys.Select(InterceptorReference.ForKey).ToArray()));
+#if SILVERLIGHT
+			var interceptors = keys.Select(InterceptorReference.ForKey).ToArray();
+#else
+			var interceptors = Array.ConvertAll(keys, InterceptorReference.ForKey);
+#endif
+			return AddDescriptor(new InterceptorDescriptor<TService>(interceptors));
 		}
 
 		/// <summary>
