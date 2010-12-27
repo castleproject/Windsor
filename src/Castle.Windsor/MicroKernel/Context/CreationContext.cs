@@ -40,6 +40,7 @@ namespace Castle.MicroKernel.Context
 		private readonly ITypeConverter converter;
 
 		private readonly Type[] genericArguments;
+
 		private readonly IHandler handler;
 
 		/// <summary>
@@ -171,11 +172,11 @@ namespace Castle.MicroKernel.Context
 			return EnterResolutionContext(handlerBeingResolved, true, requiresDecommission);
 		}
 
-		public ResolutionContext EnterResolutionContext(IHandler handlerBeingResolved, bool createBurden, bool requiresDecommission)
+		public ResolutionContext EnterResolutionContext(IHandler handlerBeingResolved, bool trackContext, bool requiresDecommission)
 		{
-			var resolutionContext = new ResolutionContext(this, handlerBeingResolved, requiresDecommission);
+			var resolutionContext = new ResolutionContext(this, handlerBeingResolved, requiresDecommission, trackContext);
 			handlerStack.Push(handlerBeingResolved);
-			if (createBurden)
+			if (trackContext)
 			{
 				resolutionStack.Push(resolutionContext);
 			}
@@ -302,24 +303,26 @@ namespace Castle.MicroKernel.Context
 			return new Arguments(dictionary);
 		}
 
-		private void ExitResolutionContext(Burden burden)
+		private void ExitResolutionContext(Burden burden, bool trackContext)
 		{
 			handlerStack.Pop();
 
+			if (trackContext)
+			{
+				resolutionStack.Pop();
+			}
 			if (burden == null)
 			{
 				return;
 			}
-
-			resolutionStack.Pop();
-			if(burden.RequiresPolicyRelease == false)
+			if (burden.RequiresPolicyRelease == false)
 			{
 				return;
 			}
 			if (resolutionStack.Count != 0)
 			{
 				var parent = resolutionStack.Peek().Burden;
-				if(parent == null)
+				if (parent == null)
 				{
 					return;
 				}
@@ -356,7 +359,8 @@ namespace Castle.MicroKernel.Context
 			}
 			catch (InvalidOperationException)
 			{
-				throw new ComponentActivatorException("Not in a resolution context. 'ActivateNewInstance' method can only be called withing a resoltion scope. (after 'EnterResolutionContext' was called within a handler)");
+				throw new ComponentActivatorException(
+					"Not in a resolution context. 'ActivateNewInstance' method can only be called withing a resoltion scope. (after 'EnterResolutionContext' was called within a handler)");
 			}
 			var burden = resolutionContext.CreateBurden(trackedExternally);
 			burden.SetRootInstance(componentActivator.Create(this));
@@ -372,7 +376,8 @@ namespace Castle.MicroKernel.Context
 			}
 			catch (InvalidOperationException)
 			{
-				throw new ComponentActivatorException("Not in a resolution context. 'ActivateNewInstance' method can only be called withing a resoltion scope. (after 'EnterResolutionContext' was called within a handler)");
+				throw new ComponentActivatorException(
+					"Not in a resolution context. 'ActivateNewInstance' method can only be called withing a resoltion scope. (after 'EnterResolutionContext' was called within a handler)");
 			}
 			resolutionContext.AttachBurden(burden);
 		}
@@ -380,14 +385,16 @@ namespace Castle.MicroKernel.Context
 		public class ResolutionContext : IDisposable
 		{
 			private readonly CreationContext context;
-			private readonly bool requiresDecommission;
 			private readonly IHandler handler;
+			private readonly bool requiresDecommission;
+			private readonly bool trackContext;
 			private Burden burden;
 
-			public ResolutionContext(CreationContext context, IHandler handler, bool requiresDecommission)
+			public ResolutionContext(CreationContext context, IHandler handler, bool requiresDecommission, bool trackContext)
 			{
 				this.context = context;
 				this.requiresDecommission = requiresDecommission;
+				this.trackContext = trackContext;
 				this.handler = handler;
 			}
 
@@ -396,22 +403,22 @@ namespace Castle.MicroKernel.Context
 				get { return burden; }
 			}
 
-			public void Dispose()
+			public void AttachBurden(Burden burden)
 			{
-				context.ExitResolutionContext(burden);
+				this.burden = burden;
 			}
 
 			public Burden CreateBurden(bool trackedExternally)
 			{
 				// NOTE: not sure we should allow crreating burden again, when it was already created...
 				// this is currently employed by pooled lifestyle
-				burden = new Burden(handler, requiresDecommission,trackedExternally);
+				burden = new Burden(handler, requiresDecommission, trackedExternally);
 				return burden;
 			}
 
-			public void AttachBurden(Burden burden)
+			public void Dispose()
 			{
-				this.burden = burden;
+				context.ExitResolutionContext(burden, trackContext);
 			}
 		}
 	}
