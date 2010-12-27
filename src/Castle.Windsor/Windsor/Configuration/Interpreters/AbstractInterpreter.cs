@@ -34,7 +34,6 @@ namespace Castle.Windsor.Configuration.Interpreters
 		protected static readonly string FacilitiesNodeName = "facilities";
 		protected static readonly string FacilityNodeName = "facility";
 		protected static readonly string ComponentsNodeName = "components";
-		protected static readonly string BootstrapNodeName = "bootstrap";
 		protected static readonly string ComponentNodeName = "component";
 		protected static readonly string InstallersNodeName = "installers";
 		protected static readonly string InstallNodeName = "install";
@@ -168,15 +167,6 @@ namespace Castle.Windsor.Configuration.Interpreters
 		protected static void AddInstallerConfig(IConfiguration installer, IConfigurationStore store)
 		{
 			store.AddInstallerConfiguration(installer);
-		}
-
-		protected static void AddBootstrapComponentConfig(string id, IConfiguration component, IConfigurationStore store)
-		{
-			AssertValidId(id);
-
-			// TODO: Use import collection on type and service attribute (if they exist)
-
-			store.AddBootstrapComponentConfiguration(id, component);
 		}
 
 		private static void AssertValidId(string id)

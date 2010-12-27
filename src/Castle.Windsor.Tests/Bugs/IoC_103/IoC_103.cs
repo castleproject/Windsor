@@ -37,7 +37,7 @@ namespace Castle.Windsor.Tests.Bugs.IoC_103 {
 			string message = e.Message;
 
 			string explaintestfail =
-				"the exception message is expected to contains 'conteainers',' facilities',' components', 'bootstrap' and such explaination, but was '" +
+				"the exception message is expected to contains 'conteainers',' facilities',' components' and such explaination, but was '" +
 				message + "'";
 			Assert.IsTrue(message.Contains("<containers>"), explaintestfail);
 			// At that point of parsing, properties and includes are not resolved, so they will not be mentioned.
@@ -45,7 +45,6 @@ namespace Castle.Windsor.Tests.Bugs.IoC_103 {
 			// Assert.IsTrue(message.Contains("<properties>"), explaintestfail);
 			Assert.IsTrue(message.Contains("<facilities>"), explaintestfail);
 			Assert.IsTrue(message.Contains("<components>"), explaintestfail);
-			Assert.IsTrue(message.Contains("<bootstrap>"), explaintestfail);
 		}
 	}
 }

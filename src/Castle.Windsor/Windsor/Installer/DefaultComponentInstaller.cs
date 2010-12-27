@@ -47,7 +47,6 @@ namespace Castle.Windsor.Installer
 		{
 			var converter = container.Kernel.GetSubSystem(SubSystemConstants.ConversionManagerKey) as IConversionManager;
 			SetUpInstallers(store.GetInstallers(), container, converter);
-			SetUpComponents(store.GetBootstrapComponents(), container, converter);
 			SetUpFacilities(store.GetFacilities(), container, converter);
 			SetUpComponents(store.GetComponents(), container, converter);
 #if !SILVERLIGHT

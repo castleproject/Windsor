@@ -22,9 +22,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 	/// Uses the ConfigurationStore registered in the kernel to obtain
 	/// an <see cref="IConfiguration"/> associated with the component.
 	/// </summary>
-#if (!SILVERLIGHT)
 	[Serializable]
-#endif
 	public class ConfigurationModelInspector : IContributeComponentModelConstruction
 	{
 		/// <summary>
@@ -35,9 +33,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 		/// <param name="model"></param>
 		public virtual void ProcessModel(IKernel kernel, ComponentModel model)
 		{
-			IConfiguration config = kernel.ConfigurationStore.GetComponentConfiguration(model.Name) ??
-									kernel.ConfigurationStore.GetBootstrapComponentConfiguration(model.Name);
-
+			var config = kernel.ConfigurationStore.GetComponentConfiguration(model.Name);
 			model.Configuration = config;
 		}
 	}

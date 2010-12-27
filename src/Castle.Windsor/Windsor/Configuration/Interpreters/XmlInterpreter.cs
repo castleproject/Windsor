@@ -141,17 +141,13 @@ namespace Castle.Windsor.Configuration.Interpreters
 			{
 				DeserializeComponents(node.ChildNodes, store);
 			}
-			else if (BootstrapNodeName.Equals(node.Name))
-			{
-				DeserializeBootstrapComponents(node.ChildNodes, store);
-			}
 			else
 			{
 				string message = string.Format(
 					"Configuration parser encountered <{0}>, but it was expecting to find " +
-					"<{1}>, <{2}>, <{3}> or <{4}>. There might be either a typo on <{0}> or " +
+					"<{1}>, <{2}> or <{3}>. There might be either a typo on <{0}> or " +
 					"you might have forgotten to nest it properly.",
-					node.Name, ContainersNodeName, FacilitiesNodeName, ComponentsNodeName, BootstrapNodeName);
+					node.Name, ContainersNodeName, FacilitiesNodeName, ComponentsNodeName);
 				throw new Exception(message);
 			}
 		}
@@ -255,30 +251,11 @@ namespace Castle.Windsor.Configuration.Interpreters
 			}
 		}
 
-		private static void DeserializeBootstrapComponents(XmlNodeList nodes, IConfigurationStore store)
-		{
-			foreach(XmlNode node in nodes)
-			{
-				if (node.NodeType != XmlNodeType.Element) continue;
-
-				AssertNodeName(node, ComponentNodeName);
-				DeserializeBootstrapComponent(node, store);
-			}
-		}
-
 		private static void DeserializeComponent(XmlNode node, IConfigurationStore store)
 		{
 			var config = XmlConfigurationDeserializer.GetDeserializedNode(node);
 			var id = GetRequiredAttributeValue(config, "id");
 			AddComponentConfig(id, config, store);
-		}
-
-		private static void DeserializeBootstrapComponent(XmlNode node, IConfigurationStore store)
-		{
-			IConfiguration config = XmlConfigurationDeserializer.GetDeserializedNode(node);
-
-			string id = GetRequiredAttributeValue(config, "id");
-			AddBootstrapComponentConfig(id, config, store);
 		}
 
 		private static string GetRequiredAttributeValue(IConfiguration configuration, string attributeName)
