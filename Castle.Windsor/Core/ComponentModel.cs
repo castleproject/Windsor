@@ -246,6 +246,15 @@ namespace Castle.Core
 			}
 		}
 
+		public bool HasParameters
+		{
+			get
+			{
+				var parameterModelCollection = parameters;
+				return parameterModelCollection != null && parameterModelCollection.Count > 0;
+			}
+		}
+
 		/// <summary>
 		///   Gets or sets the component implementation.
 		/// </summary>

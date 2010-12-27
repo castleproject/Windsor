@@ -16,6 +16,7 @@ namespace Castle.MicroKernel.Resolvers
 {
 	using System;
 	using System.Collections.Generic;
+	using System.Linq;
 
 	using Castle.Core;
 	using Castle.MicroKernel.Context;
@@ -68,11 +69,6 @@ namespace Castle.MicroKernel.Resolvers
 		/// <param name = "subResolver">The subresolver instance</param>
 		public void RemoveSubResolver(ISubDependencyResolver subResolver)
 		{
-			if (subResolver == null)
-			{
-				throw new ArgumentNullException("subResolver");
-			}
-
 			subResolvers.Remove(subResolver);
 		}
 
@@ -90,47 +86,37 @@ namespace Castle.MicroKernel.Resolvers
 		{
 			// 1 - check for the dependency on CreationContext, if present
 
-			if (context != null)
+			if (context != null && context.CanResolve(context, contextHandlerResolver, model, dependency))
 			{
-				if (context.CanResolve(context, contextHandlerResolver, model, dependency))
-				{
-					return true;
-				}
+				return true;
 			}
 
 			// 2 - check with the model's handler, if not the same as the parent resolver
 
 			var handler = kernel.GetHandler(model.Name);
-			if (handler != null && handler != contextHandlerResolver)
+			if (handler != null && handler != contextHandlerResolver && handler.CanResolve(context, contextHandlerResolver, model, dependency))
 			{
-				if (handler.CanResolve(context, contextHandlerResolver, model, dependency))
-				{
-					return true;
-				}
+				return true;
 			}
 
 			// 3 - check within parent resolver, if present
 
-			if (contextHandlerResolver != null)
+			if (contextHandlerResolver != null && contextHandlerResolver.CanResolve(context, contextHandlerResolver, model, dependency))
 			{
-				if (contextHandlerResolver.CanResolve(context, contextHandlerResolver, model, dependency))
-				{
-					return true;
-				}
+				return true;
 			}
 
 			// 4 - check within subresolvers
 
-			foreach (ISubDependencyResolver subResolver in subResolvers)
+			if(subResolvers.Count > 0)
 			{
-				if (subResolver.CanResolve(context, contextHandlerResolver, model, dependency))
+				if (subResolvers.Any(s => s.CanResolve(context, contextHandlerResolver, model, dependency)))
 				{
 					return true;
 				}
 			}
 
 			// 5 - normal flow, checking against the kernel
-
 			if (dependency.DependencyType == DependencyType.Service ||
 			    dependency.DependencyType == DependencyType.ServiceOverride)
 			{
@@ -180,45 +166,37 @@ namespace Castle.MicroKernel.Resolvers
 
 			// 1 - check for the dependency on CreationContext, if present
 
-			if (context != null)
+			if (context != null && context.CanResolve(context, contextHandlerResolver, model, dependency))
 			{
-				if (context.CanResolve(context, contextHandlerResolver, model, dependency))
-				{
-					value = context.Resolve(context, contextHandlerResolver, model, dependency);
-					resolved = true;
-				}
+				value = context.Resolve(context, contextHandlerResolver, model, dependency);
+				resolved = true;
 			}
 
 			// 2 - check with the model's handler, if not the same as the parent resolver
 
 			IHandler handler = kernel.GetHandler(model.Name);
 
-			if (!resolved && handler != contextHandlerResolver)
+			if (!resolved && handler != contextHandlerResolver && handler.CanResolve(context, contextHandlerResolver, model, dependency))
 			{
-				if (handler.CanResolve(context, contextHandlerResolver, model, dependency))
-				{
-					value = handler.Resolve(context, contextHandlerResolver, model, dependency);
-					resolved = true;
-				}
+				value = handler.Resolve(context, contextHandlerResolver, model, dependency);
+				resolved = true;
 			}
 
 			// 3 - check within parent resolver, if present
 
-			if (!resolved && contextHandlerResolver != null)
+			if (!resolved && contextHandlerResolver != null && contextHandlerResolver.CanResolve(context, contextHandlerResolver, model, dependency))
 			{
-				if (contextHandlerResolver.CanResolve(context, contextHandlerResolver, model, dependency))
-				{
-					value = contextHandlerResolver.Resolve(context, contextHandlerResolver, model, dependency);
-					resolved = true;
-				}
+				value = contextHandlerResolver.Resolve(context, contextHandlerResolver, model, dependency);
+				resolved = true;
 			}
 
 			// 4 - check within subresolvers
 
-			if (!resolved)
+			if (!resolved && subResolvers.Count > 0)
 			{
-				foreach (ISubDependencyResolver subResolver in subResolvers)
+				for (int index = 0; index < subResolvers.Count; index++)
 				{
+					ISubDependencyResolver subResolver = subResolvers[index];
 					if (subResolver.CanResolve(context, contextHandlerResolver, model, dependency))
 					{
 						value = subResolver.Resolve(context, contextHandlerResolver, model, dependency);
@@ -251,14 +229,13 @@ namespace Castle.MicroKernel.Resolvers
 				}
 				else if (dependency.IsOptional == false)
 				{
-					String implementation = String.Empty;
-
+					var implementation = String.Empty;
 					if (model.Implementation != null)
 					{
 						implementation = model.Implementation.FullName;
 					}
 
-					String message = String.Format(
+					var message = String.Format(
 						"Could not resolve non-optional dependency for '{0}' ({1}). Parameter '{2}' type '{3}'",
 						model.Name, implementation, dependency.DependencyKey, dependency.TargetType.FullName);
 
@@ -271,22 +248,19 @@ namespace Castle.MicroKernel.Resolvers
 			return value;
 		}
 
-		protected virtual bool CanResolveServiceDependency(CreationContext context, ComponentModel model,
-		                                                   DependencyModel dependency)
+		protected virtual bool CanResolveServiceDependency(CreationContext context, ComponentModel model, DependencyModel dependency)
 		{
 			if (dependency.DependencyType == DependencyType.ServiceOverride)
 			{
 				return HasComponentInValidState(dependency.DependencyKey);
 			}
 
-			ParameterModel parameter = ObtainParameterModelMatchingDependency(dependency, model);
-
+			var parameter = ObtainParameterModelMatchingDependency(dependency, model);
 			if (parameter != null)
 			{
 				// User wants to override
 
-				String value = ExtractComponentKey(parameter.Value, parameter.Name);
-
+				var value = ExtractComponentKey(parameter.Value, parameter.Name);
 				return HasComponentInValidState(value);
 			}
 			if (dependency.TargetItemType == typeof(IKernel))
@@ -430,9 +404,12 @@ namespace Castle.MicroKernel.Resolvers
 			return null;
 		}
 
-		protected virtual ParameterModel ObtainParameterModelMatchingDependency(DependencyModel dependency,
-		                                                                        ComponentModel model)
+		protected virtual ParameterModel ObtainParameterModelMatchingDependency(DependencyModel dependency, ComponentModel model)
 		{
+			if(model.HasParameters == false)
+			{
+				return null;
+			}
 			return ObtainParameterModelByKey(dependency, model) ?? ObtainParameterModelByType(dependency, model);
 		}
 
@@ -505,15 +482,26 @@ namespace Castle.MicroKernel.Resolvers
 
 		private bool HasComponentInValidState(string key)
 		{
-			IHandler handler = kernel.GetHandler(key);
-
+			var handler = kernel.GetHandler(key);
 			return IsHandlerInValidState(handler);
 		}
 
 		private bool HasComponentInValidState(CreationContext context, Type service)
 		{
-			IHandler[] handlers = kernel.GetHandlers(service);
+			var firstHandler = kernel.GetHandler(service);
+			if(firstHandler == null)
+			{
+				return false;
+			}
+			if (context == null || firstHandler.IsBeingResolvedInContext(context) == false)
+			{
+				if (IsHandlerInValidState(firstHandler))
+				{
+					return true;
+				}
+			}
 
+			IHandler[] handlers = kernel.GetHandlers(service);
 			foreach (IHandler handler in handlers)
 			{
 				if (context == null || handler.IsBeingResolvedInContext(context) == false)
