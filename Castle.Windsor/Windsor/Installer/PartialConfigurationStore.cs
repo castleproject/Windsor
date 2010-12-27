@@ -45,12 +45,6 @@ namespace Castle.Windsor.Installer
 			partial.AddComponentConfiguration(key, config);
 		}
 
-		public void AddBootstrapComponentConfiguration(String key, IConfiguration config)
-		{
-			inner.AddBootstrapComponentConfiguration(key, config);
-			partial.AddBootstrapComponentConfiguration(key, config);
-		}
-
 		public void AddChildContainerConfiguration(String name, IConfiguration config)
 		{
 			inner.AddChildContainerConfiguration(name, config);
@@ -78,11 +72,6 @@ namespace Castle.Windsor.Installer
 			return partial.GetComponentConfiguration(key);
 		}
 
-		public IConfiguration GetBootstrapComponentConfiguration(String key)
-		{
-			return partial.GetBootstrapComponentConfiguration(key);
-		}
-
 		public IConfiguration[] GetFacilities()
 		{
 			return partial.GetFacilities();
@@ -96,11 +85,6 @@ namespace Castle.Windsor.Installer
 		public IConfiguration[] GetInstallers()
 		{
 			return partial.GetInstallers();
-		}
-
-		public IConfiguration[] GetBootstrapComponents()
-		{
-			return partial.GetBootstrapComponents();
 		}
 
 		public IConfiguration[] GetConfigurationForChildContainers()

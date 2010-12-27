@@ -32,20 +32,10 @@ namespace Castle.MicroKernel.SubSystems.Configuration
 	[Serializable]
 	public class DefaultConfigurationStore : AbstractSubSystem, IConfigurationStore
 	{
-		private readonly IDictionary<string, IConfiguration> bootstrapcomponents = new Dictionary<string, IConfiguration>();
 		private readonly IDictionary<string, IConfiguration> childContainers = new Dictionary<string, IConfiguration>();
 		private readonly IDictionary<string, IConfiguration> components = new Dictionary<string, IConfiguration>();
 		private readonly IDictionary<string, IConfiguration> facilities = new Dictionary<string, IConfiguration>();
 		private readonly ICollection<IConfiguration> installers = new List<IConfiguration>();
-
-		/// <summary>
-		///   Associates a configuration node with a bootstrap component key
-		/// </summary>
-		[MethodImpl(MethodImplOptions.Synchronized)]
-		public void AddBootstrapComponentConfiguration(string key, IConfiguration config)
-		{
-			throw new NotImplementedException();
-		}
 
 		/// <summary>
 		///   Adds the child container configuration.
@@ -84,31 +74,6 @@ namespace Castle.MicroKernel.SubSystems.Configuration
 		public void AddInstallerConfiguration(IConfiguration config)
 		{
 			installers.Add(config);
-		}
-
-		/// <summary>
-		///   Returns the configuration node associated with 
-		///   the specified component key. Should return null
-		///   if no association exists.
-		/// </summary>
-		/// <param name = "key"></param>
-		/// <returns></returns>
-		[MethodImpl(MethodImplOptions.Synchronized)]
-		public IConfiguration GetBootstrapComponentConfiguration(string key)
-		{
-			IConfiguration value;
-			bootstrapcomponents.TryGetValue(key, out value);
-			return value;
-		}
-
-		/// <summary>
-		///   Returns all configuration nodes for bootstrap components
-		/// </summary>
-		/// <returns></returns>
-		[MethodImpl(MethodImplOptions.Synchronized)]
-		public IConfiguration[] GetBootstrapComponents()
-		{
-			return bootstrapcomponents.Values.ToArray();
 		}
 
 		/// <summary>
