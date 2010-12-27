@@ -149,7 +149,7 @@ namespace Castle.MicroKernel.Tests.Registration
 				Component.For<ICarProvider>()
 					.UsingFactoryMethod((k, ctx) =>
 										new AbstractCarProviderFactory()
-											.Create(k.Resolve<User>(ctx.AdditionalParameters)))
+											.Create(k.Resolve<User>(ctx.AdditionalArguments)))
 				);
 			var carProvider = Kernel.Resolve<ICarProvider>(new Arguments().Insert("FiscalStability", FiscalStability.MrMoneyBags));
 			Assert.IsInstanceOf<FerrariProvider>(carProvider);

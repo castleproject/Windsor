@@ -53,7 +53,7 @@ namespace Castle.MicroKernel.Context
 		private readonly IReleasePolicy releasePolicy;
 
 		private readonly Stack<ResolutionContext> resolutionStack = new Stack<ResolutionContext>();
-		private IDictionary additionalParameters;
+		private IDictionary additionalArguments;
 		private Dictionary<object, object> extendedProperties;
 		private readonly Type requestedType;
 
@@ -62,7 +62,7 @@ namespace Castle.MicroKernel.Context
 		/// </summary>
 		/// <param name = "requestedType">The type to extract generic arguments.</param>
 		/// <param name = "parentContext">The parent context.</param>
-		/// <param name = "propagateInlineDependencies">When set to <c>true</c> will clone <paramref name = "parentContext" /> <see cref = "AdditionalParameters" />.</param>
+		/// <param name = "propagateInlineDependencies">When set to <c>true</c> will clone <paramref name = "parentContext" /> <see cref = "AdditionalArguments" />.</param>
 		public CreationContext(Type requestedType, CreationContext parentContext, bool propagateInlineDependencies)
 			: this(parentContext.Handler, parentContext.ReleasePolicy, requestedType, null, null, parentContext)
 		{
@@ -78,7 +78,7 @@ namespace Castle.MicroKernel.Context
 
 			if (propagateInlineDependencies && parentContext.HasAdditionalParameters)
 			{
-				additionalParameters = new Arguments(parentContext.additionalParameters);
+				additionalArguments = new Arguments(parentContext.additionalArguments);
 			}
 		}
 
@@ -96,7 +96,7 @@ namespace Castle.MicroKernel.Context
 			this.requestedType = requestedType;
 			this.handler = handler;
 			this.releasePolicy = releasePolicy;
-			additionalParameters = EnsureAdditionalArgumentsWriteable(additionalArguments);
+			this.additionalArguments = EnsureAdditionalArgumentsWriteable(additionalArguments);
 			converter = conversionManager;
 			genericArguments = ExtractGenericArguments(requestedType);
 
@@ -105,10 +105,7 @@ namespace Castle.MicroKernel.Context
 				return;
 			}
 			resolutionStack = parent.resolutionStack;
-			foreach (var handlerItem in parent.handlerStack)
-			{
-				handlerStack.Push(handlerItem);
-			}
+			handlerStack = parent.handlerStack;
 		}
 
 		/// <summary>
@@ -124,15 +121,15 @@ namespace Castle.MicroKernel.Context
 			get { return requestedType; }
 		}
 
-		public IDictionary AdditionalParameters
+		public IDictionary AdditionalArguments
 		{
 			get
 			{
-				if (additionalParameters == null)
+				if (additionalArguments == null)
 				{
-					additionalParameters = new Arguments();
+					additionalArguments = new Arguments();
 				}
-				return additionalParameters;
+				return additionalArguments;
 			}
 		}
 
@@ -148,7 +145,7 @@ namespace Castle.MicroKernel.Context
 
 		public bool HasAdditionalParameters
 		{
-			get { return additionalParameters != null && additionalParameters.Count != 0; }
+			get { return additionalArguments != null && additionalArguments.Count != 0; }
 		}
 
 		public IReleasePolicy ReleasePolicy
@@ -174,9 +171,9 @@ namespace Castle.MicroKernel.Context
 			return EnterResolutionContext(handlerBeingResolved, true, requiresDecommission);
 		}
 
-		public ResolutionContext EnterResolutionContext(IHandler handlerBeingResolved, bool createBurden,bool requiresDecommission)
+		public ResolutionContext EnterResolutionContext(IHandler handlerBeingResolved, bool createBurden, bool requiresDecommission)
 		{
-			var resolutionContext = new ResolutionContext(this, handlerBeingResolved,requiresDecommission);
+			var resolutionContext = new ResolutionContext(this, handlerBeingResolved, requiresDecommission);
 			handlerStack.Push(handlerBeingResolved);
 			if (createBurden)
 			{
@@ -213,7 +210,7 @@ namespace Castle.MicroKernel.Context
 
 		public virtual bool CanResolve(CreationContext context, ISubDependencyResolver contextHandlerResolver, ComponentModel model, DependencyModel dependency)
 		{
-			if (additionalParameters == null)
+			if (additionalArguments == null)
 			{
 				return false;
 			}
@@ -226,9 +223,9 @@ namespace Castle.MicroKernel.Context
 			object result = null;
 			if (dependency.DependencyKey != null)
 			{
-				result = Resolve(dependency, additionalParameters[dependency.DependencyKey]);
+				result = Resolve(dependency, additionalArguments[dependency.DependencyKey]);
 			}
-			return result ?? Resolve(dependency, additionalParameters[dependency.TargetType]);
+			return result ?? Resolve(dependency, additionalArguments[dependency.TargetType]);
 		}
 
 		private object Resolve(DependencyModel dependency, object inlineArgument)
@@ -271,8 +268,8 @@ namespace Castle.MicroKernel.Context
 			{
 				return false;
 			}
-			Debug.Assert(additionalParameters != null, "additionalArguments != null");
-			return CanResolve(dependency, additionalParameters[dependency.DependencyKey]);
+			Debug.Assert(additionalArguments != null, "additionalArguments != null");
+			return CanResolve(dependency, additionalArguments[dependency.DependencyKey]);
 		}
 
 		private bool CanResolveByType(DependencyModel dependency)
@@ -282,8 +279,8 @@ namespace Castle.MicroKernel.Context
 			{
 				return false;
 			}
-			Debug.Assert(additionalParameters != null, "additionalArguments != null");
-			return CanResolve(dependency, additionalParameters[type]);
+			Debug.Assert(additionalArguments != null, "additionalArguments != null");
+			return CanResolve(dependency, additionalArguments[type]);
 		}
 
 		private IDictionary EnsureAdditionalArgumentsWriteable(IDictionary dictionary)
