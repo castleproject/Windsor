@@ -27,28 +27,24 @@ namespace Castle.MicroKernel.Util
 		{
 		}
 
-		public new bool Equals(object x, object y)
+		bool IEqualityComparer.Equals(object x, object y)
 		{
 			return ReferenceEquals(x, y);
 		}
 
 		public int GetHashCode(object obj)
 		{
-			if (obj == null)
-			{
-				throw new ArgumentNullException("obj");
-			}
 			return obj.GetHashCode();
 		}
 
 		bool IEqualityComparer<object>.Equals(object x, object y)
 		{
-			return Equals(x, y);
+			return ReferenceEquals(x, y);
 		}
 
 		int IEqualityComparer<object>.GetHashCode(object obj)
 		{
-			return GetHashCode(obj);
+			return obj.GetHashCode();
 		}
 
 		public static ReferenceEqualityComparer Instance

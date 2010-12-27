@@ -40,7 +40,7 @@ namespace Castle.MicroKernel.Registration
 		protected internal override void ApplyToModel(IKernel kernel, ComponentModel model)
 		{
 			var dynamicParameters = GetDynamicParametersExtension(model);
-			dynamicParameters.AddHandler((k, c) => resolve(k, c, c.AdditionalParameters));
+			dynamicParameters.AddHandler((k, c) => resolve(k, c, c.AdditionalArguments));
 		}
 
 		private ComponentLifecycleExtension GetDynamicParametersExtension(ComponentModel model)
