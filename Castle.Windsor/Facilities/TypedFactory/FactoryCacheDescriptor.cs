@@ -37,7 +37,7 @@ namespace Castle.Facilities.TypedFactory
 			model.ExtendedProperties[TypedFactoryFacility.FactoryMapCacheKey] = map;
 		}
 
-		private void BuildHandlersMap(Type service, Dictionary<MethodInfo, FactoryMethod> methods)
+		private void BuildHandlersMap(Type service, Dictionary<MethodInfo, FactoryMethod> map)
 		{
 			if (service == null)
 			{
@@ -47,23 +47,24 @@ namespace Castle.Facilities.TypedFactory
 			if (service.Equals(typeof(IDisposable)))
 			{
 				var method = service.GetMethods().Single();
-				methods[method] = FactoryMethod.Dispose;
+				map[method] = FactoryMethod.Dispose;
 				return;
 			}
 
-			foreach (var method in service.GetMethods())
+			var methods = service.GetMethods(BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.Public);
+			foreach (var method in methods)
 			{
 				if (IsReleaseMethod(method))
 				{
-					methods[method] = FactoryMethod.Release;
+					map[method] = FactoryMethod.Release;
 					continue;
 				}
-				methods[method] = FactoryMethod.Resolve;
+				map[method] = FactoryMethod.Resolve;
 			}
 
 			foreach (var @interface in service.GetInterfaces())
 			{
-				BuildHandlersMap(@interface, methods);
+				BuildHandlersMap(@interface, map);
 			}
 		}
 
