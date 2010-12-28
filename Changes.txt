@@ -1,3 +1,4 @@
+- implemented IOC-257 - Same as in code, specifying type for facility in XML should be enough - Id should be optional
 - implemented IOC-256 - Same as in code, specifying type for component in XML should be enough - Id should be optional
 - implemented IOC-255 - Specifying custom lifestyle type in XML should be enough, for it to be picked up
 - fixed bug with NullReferenceException when TypedFactoryFacility is used and disposed
