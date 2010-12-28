@@ -604,7 +604,6 @@
     <Compile Include="MicroKernel\ModelBuilder\IContributeComponentModelConstruction.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="MicroKernel\ModelBuilder\Inspectors\AdditionalInterfacesInspector.cs" />
     <Compile Include="MicroKernel\ModelBuilder\Inspectors\ComponentActivatorInspector.cs" />
     <Compile Include="MicroKernel\ModelBuilder\Inspectors\ComponentProxyInspector.cs" />
     <Compile Include="MicroKernel\ModelBuilder\Inspectors\ConfigurationModelInspector.cs">

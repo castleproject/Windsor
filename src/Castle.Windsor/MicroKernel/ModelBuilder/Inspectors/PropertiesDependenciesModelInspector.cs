@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,13 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
 namespace Castle.MicroKernel.ModelBuilder.Inspectors
 {
 	using System;
-	using System.Collections.Generic;
 	using System.Linq;
 	using System.Reflection;
+
 	using Castle.Core;
 	using Castle.MicroKernel.SubSystems.Conversion;
 	using Castle.Core.Configuration;
@@ -30,36 +29,24 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 	/// The Kernel might be able to set some of these properties when the component 
 	/// is requested.
 	/// </summary>
-#if (!SILVERLIGHT)
 	[Serializable]
-#endif
 	public class PropertiesDependenciesModelInspector : IContributeComponentModelConstruction
 	{
-#if (!SILVERLIGHT)
 		[NonSerialized]
-#endif
-		private IConversionManager converter;
+		private readonly IConversionManager converter;
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="PropertiesDependenciesModelInspector"/> class.
-		/// </summary>
-		public PropertiesDependenciesModelInspector()
+		public PropertiesDependenciesModelInspector(IConversionManager converter)
 		{
+			this.converter = converter;
 		}
 
 		/// <summary>
-		/// Adds the properties as optional dependencies of this component.
+		///   Adds the properties as optional dependencies of this component.
 		/// </summary>
-		/// <param name="kernel"></param>
-		/// <param name="model"></param>
+		/// <param name = "kernel"></param>
+		/// <param name = "model"></param>
 		public virtual void ProcessModel(IKernel kernel, ComponentModel model)
 		{
-			if (converter == null)
-			{
-				converter = (IConversionManager) 
-					kernel.GetSubSystem( SubSystemConstants.ConversionManagerKey );
-			}
-
 			InspectProperties(model);
 		}
 
@@ -73,13 +60,13 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 			{
 				model.InspectionBehavior = GetInspectionBehaviorFromTheConfiguration(model.Configuration);
 			}
-			
+
 			if (model.InspectionBehavior == PropertiesInspectionBehavior.None)
 			{
 				// Nothing to be inspected
 				return;
 			}
-			
+
 			BindingFlags bindingFlags;
 			if (model.InspectionBehavior == PropertiesInspectionBehavior.DeclaredOnly)
 			{
@@ -89,22 +76,22 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 			{
 				bindingFlags = BindingFlags.Public | BindingFlags.Instance;
 			}
-			
+
 			var properties = targetType.GetProperties(bindingFlags);
-			foreach(var property in properties)
+			foreach (var property in properties)
 			{
 				if (!property.CanWrite || property.GetSetMethod() == null)
 				{
 					continue;
 				}
 
-				ParameterInfo[] indexerParams = property.GetIndexParameters();
+				var indexerParams = property.GetIndexParameters();
 
 				if (indexerParams != null && indexerParams.Length != 0)
 				{
 					continue;
 				}
-				
+
 				if (property.IsDefined(typeof(DoNotWireAttribute), true))
 				{
 					continue;
@@ -112,18 +99,18 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 
 				DependencyModel dependency;
 
-				Type propertyType = property.PropertyType;
+				var propertyType = property.PropertyType;
 
 				// All these dependencies are simple guesses
 				// So we make them optional (the 'true' parameter below)
 
-				if ( converter.IsSupportedAndPrimitiveType(propertyType) )
+				if (converter.IsSupportedAndPrimitiveType(propertyType))
 				{
-					dependency = new DependencyModel(DependencyType.Parameter, property.Name, propertyType, true);
+					dependency = new DependencyModel(DependencyType.Parameter, property.Name, propertyType, isOptional: true);
 				}
 				else if (propertyType.IsInterface || propertyType.IsClass)
 				{
-					dependency = new DependencyModel(DependencyType.Service, property.Name, propertyType, true);
+					dependency = new DependencyModel(DependencyType.Service, property.Name, propertyType, isOptional: true);
 				}
 				else
 				{
@@ -133,7 +120,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 					continue;
 				}
 
-				model.Properties.Add( new PropertySet(property, dependency) );
+				model.Properties.Add(new PropertySet(property, dependency));
 			}
 		}
 
@@ -145,22 +132,22 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 				return PropertiesInspectionBehavior.All;
 			}
 
-			String enumStringVal = config.Attributes["inspectionBehavior"];
+			var enumStringVal = config.Attributes["inspectionBehavior"];
 
 			try
 			{
-				return (PropertiesInspectionBehavior) 
-					Enum.Parse(typeof(PropertiesInspectionBehavior), enumStringVal, true);
+				return (PropertiesInspectionBehavior)
+				       Enum.Parse(typeof(PropertiesInspectionBehavior), enumStringVal, true);
 			}
-			catch(Exception)
+			catch (Exception)
 			{
-				Type enumType = typeof(PropertiesInspectionBehavior);
-				FieldInfo[] infos = enumType.GetFields(BindingFlags.Public | BindingFlags.Static);
-				IEnumerable<string> enumNames = infos.Select(x => x.Name);
-				String message = String.Format("Error on properties inspection. Could not convert the inspectionBehavior attribute value into an expected enum value. " + 
-					"Value found is '{0}' while possible values are '{1}'", 
-						enumStringVal, String.Join(",", enumNames.ToArray()));
-				
+				var enumType = typeof(PropertiesInspectionBehavior);
+				var infos = enumType.GetFields(BindingFlags.Public | BindingFlags.Static);
+				var enumNames = infos.Select(x => x.Name);
+				var message = String.Format("Error on properties inspection. Could not convert the inspectionBehavior attribute value into an expected enum value. " +
+				                            "Value found is '{0}' while possible values are '{1}'",
+				                            enumStringVal, String.Join(",", enumNames.ToArray()));
+
 				throw new KernelException(message);
 			}
 		}

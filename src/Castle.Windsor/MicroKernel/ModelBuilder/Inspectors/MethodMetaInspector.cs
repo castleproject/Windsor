@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,58 +12,72 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
-
 namespace Castle.MicroKernel.ModelBuilder.Inspectors
 {
 	using System.Globalization;
 	using System;
 	using System.Collections.Generic;
 	using System.Reflection;
+
 	using Castle.Core;
-	using Castle.Core.Configuration;
 	using Castle.MicroKernel.SubSystems.Conversion;
 
 	/// <summary>
-	/// Base for inspectors that want configuration associated with methods.
-	/// For each child a <see cref="MethodMetaModel"/> is created
-	/// and added to ComponentModel's methods collection
+	///   Base for inspectors that want configuration associated with methods.
+	///   For each child a <see cref = "MethodMetaModel" /> is created
+	///   and added to ComponentModel's methods collection
 	/// </summary>
 	/// <remarks>
-	/// Implementors should override the <see cref="ObtainNodeName"/> return
-	/// the name of the node to be inspected. For example:
-	/// <code>
-	/// <![CDATA[
+	///   Implementors should override the <see cref = "ObtainNodeName" /> return
+	///   the name of the node to be inspected. For example:
+	///   <code>
+	///     <![CDATA[
 	///   <transactions>
 	///     <method name="Save" transaction="requires" />
 	///   </transactions>
 	/// ]]>
-	/// </code>
+	///   </code>
 	/// </remarks>
 	public abstract class MethodMetaInspector : IContributeComponentModelConstruction
 	{
-		private static readonly BindingFlags AllMethods = 
-			BindingFlags.Public|BindingFlags.NonPublic|
-			BindingFlags.Instance|BindingFlags.Static|
-			BindingFlags.IgnoreCase|BindingFlags.IgnoreReturn;
+		private static readonly BindingFlags AllMethods =
+			BindingFlags.Public | BindingFlags.NonPublic |
+			BindingFlags.Instance | BindingFlags.Static |
+			BindingFlags.IgnoreCase | BindingFlags.IgnoreReturn;
 
 		private ITypeConverter converter;
 
+		protected virtual bool ShouldUseMetaModel
+		{
+			get { return false; }
+		}
+
+		protected abstract String ObtainNodeName();
+
 		public virtual void ProcessModel(IKernel kernel, ComponentModel model)
 		{
-			if (model == null) throw new ArgumentNullException("model");
+			if (model == null)
+			{
+				throw new ArgumentNullException("model");
+			}
 
-			if (model.Configuration == null || model.Implementation == null) return;
+			if (model.Configuration == null || model.Implementation == null)
+			{
+				return;
+			}
 
-			IConfiguration methodsNode = model.Configuration.Children[ObtainNodeName()];
+			var methodsNode = model.Configuration.Children[ObtainNodeName()];
 
-			if (methodsNode == null) return;
+			if (methodsNode == null)
+			{
+				return;
+			}
 
 			EnsureHasReferenceToConverter(kernel);
 
-			foreach(IConfiguration methodNode in methodsNode.Children)
+			foreach (var methodNode in methodsNode.Children)
 			{
-				String name = methodNode.Name;
+				var name = methodNode.Name;
 
 				if ("method".Equals(name))
 				{
@@ -72,7 +86,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 
 				AssertNameIsNotNull(name, model);
 
-				MethodMetaModel metaModel = new MethodMetaModel(methodNode);
+				var metaModel = new MethodMetaModel(methodNode);
 
 				if (IsValidMeta(model, metaModel))
 				{
@@ -81,14 +95,14 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 						// model.MethodMetaModels.Add( metaModel );
 					}
 
-					String signature = methodNode.Attributes["signature"];
+					var signature = methodNode.Attributes["signature"];
 
-					IList<MethodInfo> methods = GetMethods(model.Implementation, name, signature);
+					var methods = GetMethods(model.Implementation, name, signature);
 
 					if (methods.Count == 0)
 					{
-						String message = String.Format( "The class {0} has tried to expose configuration for " + 
-							"a method named {1} which could not be found.", model.Implementation.FullName, name );
+						var message = String.Format("The class {0} has tried to expose configuration for " +
+						                            "a method named {1} which could not be found.", model.Implementation.FullName, name);
 
 						throw new Exception(message);
 					}
@@ -103,51 +117,72 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 			}
 		}
 
-		protected virtual void ProcessMeta(ComponentModel model, IList<MethodInfo> methods, MethodMetaModel metaModel)
-		{
-		}
-
 		protected virtual bool IsValidMeta(ComponentModel model, MethodMetaModel metaModel)
 		{
 			return true;
 		}
 
-		protected virtual bool ShouldUseMetaModel
+		protected virtual void ProcessMeta(ComponentModel model, IList<MethodInfo> methods, MethodMetaModel metaModel)
 		{
-			get { return false; }
 		}
-
-		protected abstract String ObtainNodeName();
 
 		private void AssertNameIsNotNull(string name, ComponentModel model)
 		{
 			if (name == null)
 			{
-				String message = String.Format("The configuration nodes within 'methods' " + 
-					"for the component '{0}' does not have a name. You can either name " + 
-					"the node as the method name or provide an attribute 'name'", model.Name);
+				var message = String.Format("The configuration nodes within 'methods' " +
+				                            "for the component '{0}' does not have a name. You can either name " +
+				                            "the node as the method name or provide an attribute 'name'", model.Name);
 
 				throw new Exception(message);
 			}
 		}
 
+		private Type[] ConvertSignature(string signature)
+		{
+			var parameters = signature.Split(';');
+
+			var types = new List<Type>();
+
+			foreach (var param in parameters)
+			{
+				try
+				{
+					types.Add(converter.PerformConversion<Type>(param));
+				}
+				catch (Exception)
+				{
+					var message = String.Format("The signature {0} contains an entry type {1} " +
+					                            "that could not be converted to System.Type. Check the inner exception for " +
+					                            "details", signature, param);
+
+					throw new Exception(message);
+				}
+			}
+
+			return types.ToArray();
+		}
+
 		private void EnsureHasReferenceToConverter(IKernel kernel)
 		{
-			if (converter != null) return;
+			if (converter != null)
+			{
+				return;
+			}
 
-			converter = (ITypeConverter) 
-				kernel.GetSubSystem( SubSystemConstants.ConversionManagerKey );
+			converter = (ITypeConverter)
+			            kernel.GetSubSystem(SubSystemConstants.ConversionManagerKey);
 		}
 
 		private IList<MethodInfo> GetMethods(Type implementation, String name, String signature)
 		{
 			if (string.IsNullOrEmpty(signature))
 			{
-				MethodInfo[] allmethods = implementation.GetMethods(AllMethods);
+				var allmethods = implementation.GetMethods(AllMethods);
 
-				List<MethodInfo> methods = new List<MethodInfo>();
+				var methods = new List<MethodInfo>();
 
-				foreach(MethodInfo method in allmethods)
+				foreach (var method in allmethods)
 				{
 					if (CultureInfo.InvariantCulture.CompareInfo.Compare(method.Name, name, CompareOptions.IgnoreCase) == 0)
 					{
@@ -155,41 +190,19 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 					}
 				}
 
-			    return methods;
+				return methods;
 			}
 			else
 			{
-				MethodInfo methodInfo = implementation.GetMethod(name, AllMethods, null, ConvertSignature(signature), null );
+				var methodInfo = implementation.GetMethod(name, AllMethods, null, ConvertSignature(signature), null);
 
-				if (methodInfo == null) return new MethodInfo[0];
+				if (methodInfo == null)
+				{
+					return new MethodInfo[0];
+				}
 
 				return new List<MethodInfo> { methodInfo };
 			}
-		}
-
-		private Type[] ConvertSignature(string signature)
-		{
-			String[] parameters = signature.Split(';');
-
-			var types = new List<Type>();
-
-			foreach(String param in parameters)
-			{
-				try
-				{
-					types.Add( converter.PerformConversion<Type>( param ) );
-				}
-				catch(Exception)
-				{
-					String message = String.Format("The signature {0} contains an entry type {1} " + 
-						"that could not be converted to System.Type. Check the inner exception for " + 
-						"details", signature, param);
-
-					throw new Exception(message);
-				}
-			}
-
-			return  types.ToArray();
 		}
 	}
 }

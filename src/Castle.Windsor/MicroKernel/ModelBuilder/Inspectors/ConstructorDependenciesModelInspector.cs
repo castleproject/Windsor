@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,46 +15,36 @@
 namespace Castle.MicroKernel.ModelBuilder.Inspectors
 {
 	using System;
-	using System.ComponentModel;
-	using System.Linq;
 	using System.Reflection;
+
 	using Castle.Core;
 	using Castle.Core.Internal;
 	using Castle.MicroKernel.SubSystems.Conversion;
 	using Castle.MicroKernel.Util;
 
 	/// <summary>
-	/// This implementation of <see cref="IContributeComponentModelConstruction"/>
-	/// collects all available constructors and populates them in the model
-	/// as candidates. The Kernel will pick up one of the candidates
-	/// according to a heuristic.
+	///   This implementation of <see cref = "IContributeComponentModelConstruction" />
+	///   collects all available constructors and populates them in the model
+	///   as candidates. The Kernel will pick up one of the candidates
+	///   according to a heuristic.
 	/// </summary>
-#if (!SILVERLIGHT)
 	[Serializable]
-#endif
 	public class ConstructorDependenciesModelInspector : IContributeComponentModelConstruction
 	{
-#if (!SILVERLIGHT)
 		[NonSerialized]
-#endif
-		private IConversionManager converter;
+		private readonly IConversionManager converter;
 
-		public ConstructorDependenciesModelInspector()
+		public ConstructorDependenciesModelInspector(IConversionManager converter)
 		{
+			this.converter = converter;
 		}
 
 		public virtual void ProcessModel(IKernel kernel, ComponentModel model)
 		{
-			if (converter == null)
-			{
-				converter = kernel.GetConversionManager();
-			}
-
 			var targetType = model.Implementation;
-
 			var constructors = targetType.GetConstructors(BindingFlags.Public | BindingFlags.Instance);
 
-			foreach(var constructor in constructors)
+			foreach (var constructor in constructors)
 			{
 				// We register each public constructor
 				// and let the ComponentFactory select an 
@@ -69,7 +59,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 
 			var dependencies = new DependencyModel[parameters.Length];
 
-			for(int i = 0; i < parameters.Length; i++)
+			for (var i = 0; i < parameters.Length; i++)
 			{
 				var parameter = parameters[i];
 				var paramType = parameter.ParameterType;
@@ -90,7 +80,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 					{
 						var key = ReferenceExpressionUtil.ExtractComponentKey(modelParameter.Value);
 
-						dependencies[i] = new DependencyModel(DependencyType.ServiceOverride, key, paramType, false ,hasDefaultValue, defaultValue);
+						dependencies[i] = new DependencyModel(DependencyType.ServiceOverride, key, paramType, false, hasDefaultValue, defaultValue);
 					}
 					else
 					{

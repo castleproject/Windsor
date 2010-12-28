@@ -14,7 +14,9 @@
 namespace Castle.Windsor.Tests
 {
 #if !SILVERLIGHT
+	using Castle.Core;
 	using Castle.MicroKernel.Registration;
+	using Castle.MicroKernel.Tests.ClassComponents;
 	using Castle.Windsor.Tests.Components;
 
 	using NUnit.Framework;
@@ -63,6 +65,17 @@ namespace Castle.Windsor.Tests
 			Assert.IsInstanceOf<LoggingRepositoryDecorator<int>>(repos);
 			Assert.IsInstanceOf<DemoRepository<int>>(((LoggingRepositoryDecorator<int>)repos).inner);
 			Assert.AreEqual("second", ((DemoRepository<int>)((LoggingRepositoryDecorator<int>)repos).inner).Name);
+		}
+
+		[Test]
+		public void Custom_lifestyle_can_be_specify_via_type_only()
+		{
+			Container.Install(FromFile("CustomLifestyle.xml"));
+			var handler = Kernel.GetHandler(typeof(A));
+
+			Assert.IsNotNull(handler);
+			Assert.AreEqual(LifestyleType.Custom,handler.ComponentModel.LifestyleType);
+			Assert.AreEqual(typeof(CustomLifestyleManager), handler.ComponentModel.CustomLifestyle);
 		}
 
 		[Test]
