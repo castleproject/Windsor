@@ -15,6 +15,9 @@
 namespace Castle.Facilities.TypedFactory.Internal
 {
 	using System;
+#if SILVERLIGHT
+	using System.Linq;
+#endif
 	using System.Collections.Generic;
 	using System.Reflection;
 

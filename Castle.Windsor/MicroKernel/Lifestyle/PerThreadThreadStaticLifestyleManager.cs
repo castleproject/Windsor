@@ -14,7 +14,7 @@
 
 namespace Castle.MicroKernel.Lifestyle
 {
-#if (SILVERLIGHT)
+#if SILVERLIGHT
 	using System;
 	using System.Collections.Generic;
 
@@ -27,48 +27,44 @@ namespace Castle.MicroKernel.Lifestyle
 	{
 		[ThreadStatic]
 		private static Dictionary<IComponentActivator, Burden> map;
+		private readonly List<Burden> instances = new List<Burden>();
+		private readonly object @lock  = new object();
 
-		/// <summary>
-		/// </summary>
 		public override void Dispose()
 		{
-			if (map == null)
+			if (instances.Count == 0)
 			{
 				return;
 			}
-
-			var dictionary = Map;
-			Burden burden;
-			if (dictionary.TryGetValue(ComponentActivator, out burden))
+			Burden[] array;
+			lock(@lock)
 			{
-				map.Remove(ComponentActivator);
+				array = instances.ToArray();
+				instances.Clear();
+			}
+			foreach (var burden in array)
+			{
 				burden.Release();
 			}
 		}
 
-		public override object Resolve(CreationContext context, Burden burden, IReleasePolicy releasePolicy)
+		public override object Resolve(CreationContext context, IReleasePolicy releasePolicy)
 		{
 			Burden cachedBurden;
 
 			var dictionary = Map;
 			if (dictionary.TryGetValue(ComponentActivator, out cachedBurden))
 			{
-				return burden.Instance;
+				return cachedBurden.Instance;
 			}
-			var instance = base.Resolve(context, burden, releasePolicy);
+			var burden = CreateInstance(context, true);
 			dictionary.Add(ComponentActivator, burden);
-
-			return instance;
-		}
-
-		protected override void Track(Burden burden, IReleasePolicy releasePolicy)
-		{
-			var track = burden.RequiresPolicyRelease;
-			burden.RequiresPolicyRelease = false;
-			if (track)
+			lock(@lock)
 			{
-				releasePolicy.Track(burden.Instance, burden);
+				instances.Add(burden);
 			}
+			Track(burden, releasePolicy);
+			return burden.Instance;
 		}
 
 		public static Dictionary<IComponentActivator, Burden> Map
