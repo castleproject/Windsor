@@ -12,10 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#if !SILVERLIGHT // we do not support xml config on SL
+#if !SILVERLIGHT
+// we do not support xml config on SL
+
 namespace Castle.Windsor.Tests
 {
+	using System.Linq;
+
 	using Castle.Core;
+	using Castle.Facilities.Startable;
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Tests.ClassComponents;
 	using Castle.XmlFiles;
@@ -25,7 +30,6 @@ namespace Castle.Windsor.Tests
 	[TestFixture]
 	public class XmlConfigStructureTestCase : AbstractContainerTestFixture
 	{
-
 		[Test]
 		public void Custom_lifestyle_can_be_specify_via_type_only()
 		{
@@ -37,18 +41,28 @@ namespace Castle.Windsor.Tests
 			Assert.AreEqual(typeof(CustomLifestyleManager), handler.ComponentModel.CustomLifestyle);
 		}
 
-		private IWindsorInstaller FromFile(string fileName)
-		{
-			var file = Xml.Embedded(fileName);
-			return Castle.Windsor.Installer.Configuration.FromXml(file);
-		}
-
 		[Test]
 		public void Id_is_not_required_for_component_if_type_is_specified()
 		{
 			Container.Install(FromFile("componentWithoutId.xml"));
 			Kernel.Resolve<A>();
 		}
+
+		[Test]
+		public void Id_is_not_required_for_facility_if_type_is_specified()
+		{
+			Container.Install(FromFile("facilityWithoutId.xml"));
+			var facilities = Kernel.GetFacilities();
+			Assert.IsNotEmpty(facilities);
+			Assert.IsInstanceOf<StartableFacility>(facilities.Single());
+		}
+
+		private IWindsorInstaller FromFile(string fileName)
+		{
+			var file = Xml.Embedded(fileName);
+			return Castle.Windsor.Installer.Configuration.FromXml(file);
+		}
 	}
 }
+
 #endif

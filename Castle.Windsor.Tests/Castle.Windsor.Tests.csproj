@@ -1025,6 +1025,7 @@
     <Content Include="sample_config.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <EmbeddedResource Include="XmlFiles\facilityWithoutId.xml" />
     <Content Include="XmlProcessor\TestFiles\AssemblyIncludeTestDisabled.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
