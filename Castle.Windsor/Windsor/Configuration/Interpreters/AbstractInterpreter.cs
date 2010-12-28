@@ -127,16 +127,6 @@ namespace Castle.Windsor.Configuration.Interpreters
 
 		#region Helpers to populate IConfigurationStore
 
-		protected static void AddFacilityConfig(IConfiguration facility, IConfigurationStore store)
-		{
-			AddFacilityConfig( facility.Attributes["id"], facility, store );
-		}
-
-		protected static void AddComponentConfig(IConfiguration component, IConfigurationStore store)
-		{
-			AddComponentConfig( component.Attributes["id"], component, store );
-		}
-
 		protected static void AddChildContainerConfig(string name, IConfiguration childContainer, IConfigurationStore store)
 		{
 			AssertValidId(name);
@@ -173,28 +163,11 @@ namespace Castle.Windsor.Configuration.Interpreters
 		{
 			if (string.IsNullOrEmpty(id))
 			{
-				const string message = "Component or Facility was declared without a proper 'id' attribute";
-
+				const string message = "Component or Facility was declared without a proper 'id' or 'type' attribute.";
 				throw new Exception(message);
 			}
 		}
 
 		#endregion
-		
-		protected void ProcessInclude(string uri, IConfigurationStore store)
-		{
-			IResource resource = store.GetResource(uri, CurrentResource);
-
-			if (resource == null)
-			{
-				// TODO: Proper Exception
-			}
-
-			PushResource(resource);
-			
-			ProcessResource(resource, store);
-			
-			PopResource();
-		}		
 	}
 }

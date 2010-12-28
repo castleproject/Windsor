@@ -924,6 +924,9 @@
     <EmbeddedResource Include="Config\CustomLifestyle.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
+    <EmbeddedResource Include="Config\componentWithoutId.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
     <Content Include="Config\RecursiveDecoratorConfigOpenGeneric.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
