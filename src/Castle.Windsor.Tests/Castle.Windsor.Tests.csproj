@@ -906,13 +906,15 @@
     <Compile Include="DependencyProblem.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Windsor.Tests\XmlConfigStructureTestCase.cs" />
+    <Compile Include="XmlFiles\Xml.cs" />
     <EmbeddedResource Include="Channel1.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="Config\OneComponentInTwoPieces.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="Windsor.Tests\XmlConfig\sample_config.xml">
+    <EmbeddedResource Include="XmlFiles\sample_config.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="Configuration2\class_with_private_setter.xml">
@@ -921,12 +923,8 @@
     <EmbeddedResource Include="Configuration2\abstract_component_factory.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="Config\CustomLifestyle.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Config\componentWithoutId.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
+    <EmbeddedResource Include="XmlFiles\CustomLifestyle.xml" />
+    <EmbeddedResource Include="XmlFiles\componentWithoutId.xml" />
     <Content Include="Config\RecursiveDecoratorConfigOpenGeneric.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -1170,7 +1168,7 @@
     <EmbeddedResource Include="Configuration2\config_with_if_stmt.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="Windsor.Tests\XmlConfig\config_with_include.xml">
+    <EmbeddedResource Include="XmlFiles\hasFileIncludes.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="Configuration2\config_with_include_relative.xml">
@@ -1179,10 +1177,10 @@
     <EmbeddedResource Include="Configuration2\config_with_include_relative2.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="Windsor.Tests\XmlConfig\include1.xml">
+    <EmbeddedResource Include="XmlFiles\include1.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="Windsor.Tests\XmlConfig\include2.xml">
+    <EmbeddedResource Include="XmlFiles\include2.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="Configuration2\RelativeTest\rel_include1.xml">
@@ -1191,7 +1189,7 @@
     <EmbeddedResource Include="Configuration2\RelativeTest\rel_include2.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="Windsor.Tests\XmlConfig\resource_config_with_include.xml">
+    <EmbeddedResource Include="XmlFiles\hasResourceIncludes.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="XmlProcessor\TestFiles\AssemblyInclude1.xml">

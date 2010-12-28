@@ -69,24 +69,6 @@ namespace Castle.Windsor.Tests
 		}
 
 		[Test]
-		public void Custom_lifestyle_can_be_specify_via_type_only()
-		{
-			Container.Install(FromFile("CustomLifestyle.xml"));
-			var handler = Kernel.GetHandler(typeof(A));
-
-			Assert.IsNotNull(handler);
-			Assert.AreEqual(LifestyleType.Custom,handler.ComponentModel.LifestyleType);
-			Assert.AreEqual(typeof(CustomLifestyleManager), handler.ComponentModel.CustomLifestyle);
-		}
-
-		[Test]
-		public void Id_is_not_required_for_component_if_type_is_specified()
-		{
-			Container.Install(FromFile("componentWithoutId.xml"));
-			Kernel.Resolve<A>();
-		}
-
-		[Test]
 		public void Can_resolve_open_generic_service_with_service_overrides()
 		{
 			Container.Install(FromFile("ComplexGenericConfig.xml"));
