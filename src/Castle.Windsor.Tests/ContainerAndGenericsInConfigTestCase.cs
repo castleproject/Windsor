@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 namespace Castle.Windsor.Tests
 {
 #if !SILVERLIGHT
@@ -76,6 +77,13 @@ namespace Castle.Windsor.Tests
 			Assert.IsNotNull(handler);
 			Assert.AreEqual(LifestyleType.Custom,handler.ComponentModel.LifestyleType);
 			Assert.AreEqual(typeof(CustomLifestyleManager), handler.ComponentModel.CustomLifestyle);
+		}
+
+		[Test]
+		public void Id_is_not_required_for_component_if_type_is_specified()
+		{
+			Container.Install(FromFile("componentWithoutId.xml"));
+			Kernel.Resolve<A>();
 		}
 
 		[Test]

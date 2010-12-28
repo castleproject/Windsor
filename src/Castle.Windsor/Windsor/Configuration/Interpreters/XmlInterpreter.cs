@@ -254,7 +254,12 @@ namespace Castle.Windsor.Configuration.Interpreters
 		private static void DeserializeComponent(XmlNode node, IConfigurationStore store)
 		{
 			var config = XmlConfigurationDeserializer.GetDeserializedNode(node);
-			var id = GetRequiredAttributeValue(config, "id");
+			var id = config.Attributes["id"];
+			if(string.IsNullOrEmpty(id))
+			{
+				id = config.Attributes["type"];
+				config.Attributes["id"] = id;
+			}
 			AddComponentConfig(id, config, store);
 		}
 
