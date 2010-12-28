@@ -15,24 +15,29 @@
 namespace Castle.MicroKernel.ModelBuilder.Inspectors
 {
 	using System;
+	using System.Collections.Generic;
 
 	using Castle.Core;
 	using Castle.MicroKernel.Proxy;
 	using Castle.MicroKernel.Util;
 
-#if !(SILVERLIGHT)
 	[Serializable]
-#endif
 	public class MixinInspector : IContributeComponentModelConstruction
 	{
 		public void ProcessModel(IKernel kernel, ComponentModel model)
 		{
-			if (model.Configuration == null) return;
+			if (model.Configuration == null)
+			{
+				return;
+			}
 
 			var mixins = model.Configuration.Children["mixins"];
-			if (mixins == null) return;
+			if (mixins == null)
+			{
+				return;
+			}
 
-			var options = ProxyUtil.ObtainProxyOptions(model, true);
+			var mixinReferences = new List<ComponentReference<object>>();
 			foreach (var mixin in mixins.Children)
 			{
 				var value = mixin.Value;
@@ -44,10 +49,14 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 				}
 
 				var componentKey = ReferenceExpressionUtil.ExtractComponentKey(value);
-				var mixIn = new ComponentReference<object>(componentKey);
-				options.AddMixinReference(mixIn);
+				mixinReferences.Add(new ComponentReference<object>(componentKey));
 			}
-
+			if(mixinReferences.Count == 0)
+			{
+				return;
+			}
+			var options = ProxyUtil.ObtainProxyOptions(model, true);
+			mixinReferences.ForEach(options.AddMixinReference);
 		}
 	}
 }

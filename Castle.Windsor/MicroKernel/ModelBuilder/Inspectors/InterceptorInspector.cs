@@ -15,6 +15,7 @@
 namespace Castle.MicroKernel.ModelBuilder.Inspectors
 {
 	using System;
+
 	using Castle.Core;
 	using Castle.Core.Configuration;
 	using Castle.Core.Internal;
@@ -26,9 +27,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 	/// Inspect the component for <c>InterceptorAttribute</c> and
 	/// the configuration for the interceptors node
 	/// </summary>
-#if (!SILVERLIGHT)
 	[Serializable]
-#endif
 	public class InterceptorInspector : IContributeComponentModelConstruction
 	{
 		public virtual void ProcessModel(IKernel kernel, ComponentModel model)
@@ -39,10 +38,16 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 
 		protected virtual void CollectFromConfiguration(ComponentModel model)
 		{
-			if (model.Configuration == null) return;
+			if (model.Configuration == null)
+			{
+				return;
+			}
 
 			var interceptors = model.Configuration.Children["interceptors"];
-			if (interceptors == null) return;
+			if (interceptors == null)
+			{
+				return;
+			}
 
 			CollectInterceptors(model, interceptors);
 			var options = ProxyUtil.ObtainProxyOptions(model, true);
@@ -118,4 +123,3 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 		}
 	}
 }
-

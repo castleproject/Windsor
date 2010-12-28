@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
 namespace Castle.MicroKernel.ModelBuilder.Inspectors
 {
 	using System;
+
 	using Castle.MicroKernel.Util;
 	using Castle.Core;
 	using Castle.Core.Configuration;
@@ -24,33 +25,36 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 	/// configuration. For each child it, a ParameterModel is created
 	/// and added to ComponentModel's Parameters collection
 	/// </summary>
-#if (!SILVERLIGHT)
 	[Serializable]
-#endif
 	public class ConfigurationParametersInspector : IContributeComponentModelConstruction
 	{
 		/// <summary>
-		/// Inspect the configuration associated with the component
-		/// and populates the parameter model collection accordingly
+		///   Inspect the configuration associated with the component
+		///   and populates the parameter model collection accordingly
 		/// </summary>
-		/// <param name="kernel"></param>
-		/// <param name="model"></param>
+		/// <param name = "kernel"></param>
+		/// <param name = "model"></param>
 		public virtual void ProcessModel(IKernel kernel, ComponentModel model)
 		{
-			if (model.Configuration == null) return;
-
-			IConfiguration parameters = model.Configuration.Children["parameters"];
-
-			if (parameters == null) return;
-
-			foreach(IConfiguration parameter in parameters.Children)
+			if (model.Configuration == null)
 			{
-				String name = parameter.Name;
-				String value = parameter.Value;
+				return;
+			}
+
+			var parameters = model.Configuration.Children["parameters"];
+			if (parameters == null)
+			{
+				return;
+			}
+
+			foreach (var parameter in parameters.Children)
+			{
+				var name = parameter.Name;
+				var value = parameter.Value;
 
 				if (value == null && parameter.Children.Count != 0)
 				{
-					IConfiguration parameterValue = parameter.Children[0];
+					var parameterValue = parameter.Children[0];
 					model.Parameters.Add(name, parameterValue);
 				}
 				else
@@ -58,29 +62,32 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 					model.Parameters.Add(name, value);
 				}
 			}
-			
-			// Experimental code
-			
-			foreach(ParameterModel parameter in model.Parameters)
-			{
 
-				if(parameter.ConfigValue != null)
+			// Experimental code
+			InspectCollections(model);
+		}
+
+		private void InspectCollections(ComponentModel model)
+		{
+			foreach (ParameterModel parameter in model.Parameters)
+			{
+				if (parameter.ConfigValue != null)
 				{
-					if(IsArray(parameter) || IsList(parameter))
+					if (IsArray(parameter) || IsList(parameter))
 					{
 						AddAnyServiceOverrides(model, parameter.ConfigValue);
 					}
 				}
-				
+
 				if (parameter.Value == null || !ReferenceExpressionUtil.IsReference(parameter.Value))
 				{
 					continue;
 				}
-				
+
 				var newKey = ReferenceExpressionUtil.ExtractComponentKey(parameter.Value);
-				
+
 				// Update dependencies to ServiceOverride
-				
+
 				model.Dependencies.Add(new DependencyModel(DependencyType.ServiceOverride, newKey, null, false));
 			}
 		}
@@ -97,7 +104,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 
 		private void AddAnyServiceOverrides(ComponentModel model, IConfiguration config)
 		{
-			foreach(var item in config.Children)
+			foreach (var item in config.Children)
 			{
 				if (item.Children.Count > 0)
 				{
@@ -112,8 +119,6 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 				var newKey = ReferenceExpressionUtil.ExtractComponentKey(item.Value);
 				model.Dependencies.Add(new DependencyModel(DependencyType.ServiceOverride, newKey, null, false));
 			}
-
-
 		}
 	}
 }

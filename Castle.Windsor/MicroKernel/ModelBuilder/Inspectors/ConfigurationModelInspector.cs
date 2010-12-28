@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,22 +15,23 @@
 namespace Castle.MicroKernel.ModelBuilder.Inspectors
 {
 	using System;
+
 	using Castle.Core;
 	using Castle.Core.Configuration;
 
 	/// <summary>
-	/// Uses the ConfigurationStore registered in the kernel to obtain
-	/// an <see cref="IConfiguration"/> associated with the component.
+	///   Uses the ConfigurationStore registered in the kernel to obtain
+	///   an <see cref = "IConfiguration" /> associated with the component.
 	/// </summary>
 	[Serializable]
 	public class ConfigurationModelInspector : IContributeComponentModelConstruction
 	{
 		/// <summary>
-		/// Queries the kernel's ConfigurationStore for a configuration
-		/// associated with the component name.
+		///   Queries the kernel's ConfigurationStore for a configuration
+		///   associated with the component name.
 		/// </summary>
-		/// <param name="kernel"></param>
-		/// <param name="model"></param>
+		/// <param name = "kernel"></param>
+		/// <param name = "model"></param>
 		public virtual void ProcessModel(IKernel kernel, ComponentModel model)
 		{
 			var config = kernel.ConfigurationStore.GetComponentConfiguration(model.Name);

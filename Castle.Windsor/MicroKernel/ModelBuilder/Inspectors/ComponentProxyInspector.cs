@@ -15,6 +15,7 @@
 namespace Castle.MicroKernel.ModelBuilder.Inspectors
 {
 	using System;
+	using System.Collections.Generic;
 	using System.Linq;
 
 	using Castle.Core;
@@ -34,6 +35,13 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 	[Serializable]
 	public class ComponentProxyInspector : IContributeComponentModelConstruction
 	{
+		private readonly IConversionManager converter;
+
+		public ComponentProxyInspector(IConversionManager converter)
+		{
+			this.converter = converter;
+		}
+
 		/// <summary>
 		///   Searches for proxy behavior in the configuration and, if unsuccessful
 		///   look for the <see cref = "ComponentProxyBehaviorAttribute" /> attribute in 
@@ -49,7 +57,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 		///   uses the attribute. Otherwise returns null.
 		/// </summary>
 		/// <param name = "implementation"></param>
-		protected virtual ComponentProxyBehaviorAttribute GetProxyBehaviorFromType(Type implementation)
+		protected virtual ComponentProxyBehaviorAttribute ReadProxyBehaviorFromType(Type implementation)
 		{
 			return implementation.GetAttributes<ComponentProxyBehaviorAttribute>().FirstOrDefault();
 		}
@@ -65,45 +73,60 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 		/// <param name = "model"></param>
 		protected virtual void ReadProxyBehavior(IKernel kernel, ComponentModel model)
 		{
-			var proxyBehaviorAtt = GetProxyBehaviorFromType(model.Implementation);
-
-			if (proxyBehaviorAtt == null)
+			var proxyBehaviorAttribute = ReadProxyBehaviorFromType(model.Implementation);
+			if (proxyBehaviorAttribute == null)
 			{
-				proxyBehaviorAtt = new ComponentProxyBehaviorAttribute();
+				proxyBehaviorAttribute = new ComponentProxyBehaviorAttribute();
 			}
 
-#if !SILVERLIGHT
-			var marshalByRefProxyAttrib = model.Configuration != null ? model.Configuration.Attributes["marshalByRefProxy"] : null;
-#endif
+			ReadProxyBehaviorFromConfig(model, proxyBehaviorAttribute);
 
-			var converter = kernel.GetConversionManager();
-#if !SILVERLIGHT
-			if (marshalByRefProxyAttrib != null)
+			ApplyProxyBehavior(proxyBehaviorAttribute, model);
+		}
+
+		private void ReadProxyBehaviorFromConfig(ComponentModel model, ComponentProxyBehaviorAttribute behavior)
+		{
+			if(model.Configuration == null)
 			{
-				proxyBehaviorAtt.UseMarshalByRefProxy =
-					converter.PerformConversion<bool?>(marshalByRefProxyAttrib).GetValueOrDefault(false);
+				return;
+			}
+#if !SILVERLIGHT
+			var mbrProxy = model.Configuration.Attributes["marshalByRefProxy"];
+			if (mbrProxy != null)
+			{
+				behavior.UseMarshalByRefProxy = converter.PerformConversion<bool?>(mbrProxy).GetValueOrDefault(false);
 			}
 #endif
-			ApplyProxyBehavior(proxyBehaviorAtt, model);
+			var interfaces = model.Configuration.Children["additionalInterfaces"];
+			if (interfaces == null)
+			{
+				return;
+			}
+			var list = new List<Type>(behavior.AdditionalInterfaces);
+			foreach (var node in interfaces.Children)
+			{
+				var interfaceTypeName = node.Attributes["interface"];
+				var @interface = converter.PerformConversion<Type>(interfaceTypeName);
+				list.Add(@interface);
+			}
+			behavior.AdditionalInterfaces = list.ToArray();
+
 		}
 
 		private static void ApplyProxyBehavior(ComponentProxyBehaviorAttribute behavior, ComponentModel model)
 		{
+			var options = ProxyUtil.ObtainProxyOptions(model, true);
 #if !SILVERLIGHT
 			if (behavior.UseMarshalByRefProxy)
 			{
 				EnsureComponentRegisteredWithInterface(model);
 			}
-#endif
-
-			var options = ProxyUtil.ObtainProxyOptions(model, true);
-
-#if (!SILVERLIGHT)
 			options.UseMarshalByRefAsBaseClass = behavior.UseMarshalByRefProxy;
 #endif
 			options.AddAdditionalInterfaces(behavior.AdditionalInterfaces);
 		}
-
+		
+#if !SILVERLIGHT
 		private static void EnsureComponentRegisteredWithInterface(ComponentModel model)
 		{
 			if (model.ClassService != null)
@@ -115,5 +138,6 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 				throw new ComponentRegistrationException(message);
 			}
 		}
+#endif
 	}
 }
