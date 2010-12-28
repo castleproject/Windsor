@@ -1,4 +1,0 @@
-<configuration>
-  <include uri="assembly://Castle.Windsor.Tests/Castle.Windsor.Tests.XmlConfig.include1.xml" />
-  <include uri="assembly://Castle.Windsor.Tests/Castle.Windsor.Tests.XmlConfig.include2.xml" />
-</configuration>

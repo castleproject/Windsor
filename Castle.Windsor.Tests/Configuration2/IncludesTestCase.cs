@@ -13,13 +13,12 @@
 // limitations under the License.
 
 #if !SILVERLIGHT // we do not support xml config on SL
-
 namespace Castle.Windsor.Tests.Configuration2
 {
 	using Castle.Core.Configuration;
-	using Castle.Core.Resource;
 	using Castle.MicroKernel.SubSystems.Configuration;
 	using Castle.Windsor.Configuration.Interpreters;
+	using Castle.XmlFiles;
 
 	using NUnit.Framework;
 
@@ -31,8 +30,7 @@ namespace Castle.Windsor.Tests.Configuration2
 		[Test]
 		public void FileResourceAndIncludes()
 		{
-			var path = ConfigHelper.ResolveConfigPath("Windsor.Tests/XmlConfig/config_with_include.xml");
-			container = new WindsorContainer(path);
+			container = new WindsorContainer(new XmlInterpreter(Xml.File("hasFileIncludes.xml")));
 
 			AssertConfiguration();
 		}
@@ -56,9 +54,7 @@ namespace Castle.Windsor.Tests.Configuration2
 		[Test]
 		public void AssemblyResourceAndIncludes()
 		{
-			IResource resource = new AssemblyResource("assembly://Castle.Windsor.Tests/Castle.Windsor.Tests.XmlConfig.resource_config_with_include.xml");
-
-			container = new WindsorContainer(new XmlInterpreter(resource));
+			container = new WindsorContainer(new XmlInterpreter(Xml.Embedded("hasResourceIncludes.xml")));
 
 			AssertConfiguration();
 		}

@@ -22,6 +22,8 @@ namespace Castle.Windsor.Tests
 	using Castle.MicroKernel.SubSystems.Configuration;
 	using Castle.Windsor.Configuration.Interpreters;
 	using Castle.Windsor.Configuration.Interpreters.XmlProcessor;
+	using Castle.XmlFiles;
+
 	using Components;
 	using NUnit.Framework;
 
@@ -99,8 +101,7 @@ namespace Castle.Windsor.Tests
 		public void ProperManifestDeserialization()
 		{
 			DefaultConfigurationStore store = new DefaultConfigurationStore();
-			XmlInterpreter interpreter = new XmlInterpreter(
-				new AssemblyResource("assembly://Castle.Windsor.Tests/Castle.Windsor.Tests.XmlConfig.sample_config.xml"));
+			XmlInterpreter interpreter = new XmlInterpreter(Xml.File("sample_config.xml"));
 			interpreter.ProcessResource(interpreter.Source, store);
 
 			Assert.AreEqual(2, store.GetFacilities().Length);
