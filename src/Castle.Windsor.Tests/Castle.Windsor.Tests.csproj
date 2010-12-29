@@ -369,6 +369,11 @@
     <Compile Include="Facilities\TypedFactory\Factories\IComponentFactory2.cs" />
     <Compile Include="Facilities\TypedFactory\Factories\IFactoryWithParametersExtended.cs" />
     <Compile Include="Facilities\TypedFactory\Factories\IFactoryWithParametersTwoBases.cs" />
+    <Compile Include="Facilities\TypedFactory\Factories\IGenericFactoryClosed.cs" />
+    <Compile Include="Facilities\TypedFactory\Factories\IGenericFactoryClosedDoubly.cs" />
+    <Compile Include="Facilities\TypedFactory\Factories\IGenericFactoryDouble.cs" />
+    <Compile Include="Facilities\TypedFactory\Factories\IGenericFactoryWithArg.cs" />
+    <Compile Include="Facilities\TypedFactory\Factories\IObjectFactory.cs" />
     <Compile Include="Facilities\TypedFactory\TypedFactoryDependenciesTestCase.cs" />
     <Compile Include="Generics\ARepository.cs" />
     <Compile Include="Generics\ARepository.T.cs" />
@@ -898,7 +903,7 @@
     <Compile Include="Facilities\TypedFactory\TypedFactoryFacilityTake2TestCase.cs" />
     <Compile Include="InterceptorSelectorTestCase.cs" />
     <Compile Include="OpenGenericsTestCase.cs" />
-    <Compile Include="ProxyAllHook.cs" />
+    <Compile Include="Proxy\ProxyAllHook.cs" />
     <Compile Include="RegisteringTwoServicesForSameType.cs" />
     <Compile Include="SelectAllSelector.cs" />
     <Compile Include="SubResolversShouldNotBeTrustedToBeCorrect.cs" />

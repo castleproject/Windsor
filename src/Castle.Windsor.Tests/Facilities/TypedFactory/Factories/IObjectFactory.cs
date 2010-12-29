@@ -14,8 +14,8 @@
 
 namespace Castle.Windsor.Tests.Facilities.TypedFactory.Factories
 {
-	public interface IGenericFactory<T>
+	public interface IObjectFactory
 	{
-		T Create();
+		object GetItemByWithParameter(object parameter);
 	}
 }
