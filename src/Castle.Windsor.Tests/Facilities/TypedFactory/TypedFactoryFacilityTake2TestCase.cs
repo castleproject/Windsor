@@ -39,10 +39,10 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 			container.Register(AllTypes.FromAssemblyContaining<TypedFactoryFacilityTake2TestCase>()
 			                   	.BasedOn(typeof(GenericComponent<>))
 			                   	.WithService.Base().Configure(c => c.LifeStyle.Transient),
-			                   Component.For<IGenericFactory>().AsFactory(s => s.SelectedWith<SelectorByClosedArgumentType>()),
+			                   Component.For<IObjectFactory>().AsFactory(s => s.SelectedWith<SelectorByClosedArgumentType>()),
 			                   Component.For<SelectorByClosedArgumentType>());
 
-			var factory = container.Resolve<IGenericFactory>();
+			var factory = container.Resolve<IObjectFactory>();
 
 			var one = factory.GetItemByWithParameter(3);
 			var two = factory.GetItemByWithParameter("two");
@@ -217,7 +217,7 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 		}
 
 		[Test]
-		public void Can_resolve_via_generic_factory()
+		public void Can_resolve_via_factory_with_generic_method()
 		{
 			container.Register(
 				Component.For<IGenericComponentsFactory>().AsFactory());
@@ -225,6 +225,51 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 			var factory = container.Resolve<IGenericComponentsFactory>();
 			var component = factory.CreateGeneric<IDummyComponent>();
 			Assert.IsInstanceOf<Component1>(component);
+		}
+
+		[Test]
+		public void Can_resolve_via_generic_factory()
+		{
+			container.Register(Component.For(typeof(IGenericFactory<>)).AsFactory());
+
+			var factory = container.Resolve<IGenericFactory<IDummyComponent>>();
+
+			var component = factory.Create();
+			Assert.IsNotNull(component);
+		}
+
+		[Test]
+		public void Can_resolve_via_generic_factory_closed()
+		{
+			container.Register(Component.For<IGenericFactoryClosed>().AsFactory());
+
+			var factory = container.Resolve<IGenericFactoryClosed>();
+
+			var component = factory.Create();
+			Assert.IsNotNull(component);
+		}
+
+		[Test]
+		public void Can_resolve_via_generic_factory_closed_doubly()
+		{
+			container.Register(Component.For<IGenericFactoryClosedDoubly>().AsFactory());
+
+			var factory = container.Resolve<IGenericFactoryClosedDoubly>() as IGenericFactory<IDummyComponent>;
+
+			var component = factory.Create();
+			Assert.IsNotNull(component);
+		}
+
+		[Test]
+		public void Can_resolve_via_generic_factory_inherited_semi_closing()
+		{
+			container.Register(Component.For(typeof(IGenericFactoryDouble<,>)).AsFactory(),
+			                   Component.For<IProtocolHandler>().ImplementedBy<MirandaProtocolHandler>().LifeStyle.Transient);
+
+			var factory = container.Resolve<IGenericFactoryDouble<IDummyComponent, IProtocolHandler>>();
+
+			factory.Create();
+			factory.Create2();
 		}
 
 		[Test]

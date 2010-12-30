@@ -14,8 +14,9 @@
 
 namespace Castle.Windsor.Tests.Facilities.TypedFactory.Factories
 {
-	public interface IGenericFactory<T>
+	using Castle.Windsor.Tests.Facilities.TypedFactory.Components;
+
+	public interface IGenericFactoryClosed : IGenericFactory<IDummyComponent>
 	{
-		T Create();
 	}
 }
