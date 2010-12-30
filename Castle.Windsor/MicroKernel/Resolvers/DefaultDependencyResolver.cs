@@ -283,14 +283,12 @@ namespace Castle.MicroKernel.Resolvers
 			return parameter != null;
 		}
 
-		protected virtual object ResolveServiceDependency(CreationContext context, ComponentModel model,
-		                                                  DependencyModel dependency)
+		protected virtual object ResolveServiceDependency(CreationContext context, ComponentModel model, DependencyModel dependency)
 		{
 			IHandler handler;
 			if (dependency.DependencyType == DependencyType.Service)
 			{
-				ParameterModel parameter = ObtainParameterModelMatchingDependency(dependency, model);
-
+				var parameter = ObtainParameterModelMatchingDependency(dependency, model);
 				if (parameter != null)
 				{
 					// User wants to override, we then 
@@ -364,7 +362,6 @@ namespace Castle.MicroKernel.Resolvers
 			// make a best effort to find another one that fit
 
 			IHandler[] handlers = kernel.GetHandlers(itemType);
-
 			foreach (IHandler maybeCorrectHandler in handlers)
 			{
 				if (maybeCorrectHandler.IsBeingResolvedInContext(context) == false)
@@ -376,8 +373,7 @@ namespace Castle.MicroKernel.Resolvers
 			return handler;
 		}
 
-		protected virtual object ResolveParameterDependency(CreationContext context, ComponentModel model,
-		                                                    DependencyModel dependency)
+		protected virtual object ResolveParameterDependency(CreationContext context, ComponentModel model, DependencyModel dependency)
 		{
 			var parameter = ObtainParameterModelMatchingDependency(dependency, model);
 			if (parameter != null)

@@ -385,6 +385,7 @@
     <Compile Include="Facilities\TypedFactory\Internal\DelegateProxyFactory.cs" />
     <Compile Include="Facilities\TypedFactory\Internal\FactoryMethod.cs" />
     <Compile Include="Facilities\TypedFactory\TypedFactoryConfiguration.cs" />
+    <Compile Include="Facilities\TypedFactory\TypedFactoryCachingInspector.cs" />
     <Compile Include="MicroKernel\ComponentActivator\AbstractComponentActivator.cs">
       <SubType>Code</SubType>
     </Compile>

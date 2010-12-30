@@ -230,7 +230,9 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 		[Test]
 		public void Can_resolve_via_generic_factory_with_generic_method()
 		{
-			container.Register(Component.For(typeof(IGenericFactoryWithGenericMethod<>)).AsFactory());
+			container.Register(
+				Component.For(typeof(IDummyComponent<>)).ImplementedBy(typeof(DummyComponent<>)).LifeStyle.Transient,
+				Component.For(typeof(IGenericFactoryWithGenericMethod<>)).AsFactory());
 
 			var factory = container.Resolve<IGenericFactoryWithGenericMethod<A>>();
 			factory.Create<IDummyComponent<A>>();

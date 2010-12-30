@@ -14,63 +14,17 @@
 
 namespace Castle.Facilities.TypedFactory
 {
-	using System;
-	using System.Collections.Generic;
-	using System.Linq;
-	using System.Reflection;
-
 	using Castle.Core;
-	using Castle.Facilities.TypedFactory.Internal;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Registration;
 
 	public class FactoryCacheDescriptor<TFactory> : ComponentDescriptor<TFactory>
 	{
+		private readonly TypedFactoryCachingInspector cacheBuilder = new TypedFactoryCachingInspector();
+
 		protected internal override void ApplyToModel(IKernel kernel, ComponentModel model)
 		{
-			var map = new Dictionary<MethodInfo, FactoryMethod>();
-			foreach (var service in model.AllServices)
-			{
-				BuildHandlersMap(service, map);
-			}
-
-			model.ExtendedProperties[TypedFactoryFacility.FactoryMapCacheKey] = map;
-		}
-
-		private void BuildHandlersMap(Type service, Dictionary<MethodInfo, FactoryMethod> map)
-		{
-			if (service == null)
-			{
-				return;
-			}
-
-			if (service.Equals(typeof(IDisposable)))
-			{
-				var method = service.GetMethods().Single();
-				map[method] = FactoryMethod.Dispose;
-				return;
-			}
-
-			var methods = service.GetMethods(BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.Public);
-			foreach (var method in methods)
-			{
-				if (IsReleaseMethod(method))
-				{
-					map[method] = FactoryMethod.Release;
-					continue;
-				}
-				map[method] = FactoryMethod.Resolve;
-			}
-
-			foreach (var @interface in service.GetInterfaces())
-			{
-				BuildHandlersMap(@interface, map);
-			}
-		}
-
-		private bool IsReleaseMethod(MethodInfo methodInfo)
-		{
-			return methodInfo.ReturnType == typeof(void);
+			cacheBuilder.BuildCache(model);
 		}
 	}
 }
