@@ -14,6 +14,7 @@
 
 namespace Castle.Windsor.Tests.Lifecycle
 {
+	using Castle.Components;
 	using Castle.MicroKernel.Registration;
 	using Castle.Windsor.Tests.ClassComponents;
 	using Castle.Windsor.Tests.Components;
@@ -103,6 +104,72 @@ namespace Castle.Windsor.Tests.Lifecycle
 
 			Assert.AreEqual(1, DisposableFoo.DisposedCount);
 			Assert.IsFalse(Kernel.ReleasePolicy.HasTrack(depender.Value));
+		}
+
+		[Test]
+		public void Disposable_singleton_generic_closed_disposed()
+		{
+			Container.Register(Component.For<DisposableGeneric<A>>());
+			var component = Container.Resolve<DisposableGeneric<A>>();
+
+			Container.Dispose();
+
+			Assert.IsTrue(component.Disposed);
+		}
+
+		[Test]
+		public void Disposable_singleton_generic_closed_inherited_disposed()
+		{
+			Container.Register(Component.For<DisposableGenericA>());
+			var component = Container.Resolve<DisposableGenericA>();
+
+			Container.Dispose();
+
+			Assert.IsTrue(component.Disposed);
+		}
+
+		[Test]
+		public void Disposable_singleton_generic_open_disposed()
+		{
+			Container.Register(Component.For(typeof(DisposableGeneric<>)));
+			var component = Container.Resolve<DisposableGeneric<A>>();
+
+			Container.Dispose();
+
+			Assert.IsTrue(component.Disposed);
+		}
+
+		[Test]
+		public void Disposable_transient_generic_closed_disposed()
+		{
+			Container.Register(Component.For<DisposableGeneric<A>>().LifeStyle.Transient);
+			var component = Container.Resolve<DisposableGeneric<A>>();
+
+			Container.Dispose();
+
+			Assert.IsTrue(component.Disposed);
+		}
+
+		[Test]
+		public void Disposable_transient_generic_closed_inherited_disposed()
+		{
+			Container.Register(Component.For<DisposableGenericA>().LifeStyle.Transient);
+			var component = Container.Resolve<DisposableGenericA>();
+
+			Container.Dispose();
+
+			Assert.IsTrue(component.Disposed);
+		}
+
+		[Test]
+		public void Disposable_transient_generic_open_disposed()
+		{
+			Container.Register(Component.For(typeof(DisposableGeneric<>)).LifeStyle.Transient);
+			var component = Container.Resolve<DisposableGeneric<A>>();
+
+			Container.Dispose();
+
+			Assert.IsTrue(component.Disposed);
 		}
 	}
 }

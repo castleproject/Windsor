@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,6 +16,8 @@ namespace Castle.MicroKernel.Handlers
 {
 	using System;
 	using System.Collections.Generic;
+	using System.Linq;
+
 	using Castle.Core;
 	using Castle.MicroKernel.Context;
 	using Castle.MicroKernel.Proxy;
@@ -32,7 +34,7 @@ namespace Castle.MicroKernel.Handlers
 #endif
 	public class DefaultGenericHandler : AbstractHandler
 	{
-		private readonly IDictionary<Type, IHandler> type2SubHandler;
+		private readonly IDictionary<Type, IHandler> type2SubHandler = new Dictionary<Type, IHandler>();
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="DefaultGenericHandler"/> class.
@@ -40,7 +42,6 @@ namespace Castle.MicroKernel.Handlers
 		/// <param name="model"></param>
 		public DefaultGenericHandler(ComponentModel model) : base(model)
 		{
-			type2SubHandler = new Dictionary<Type, IHandler>();
 		}
 
 		protected override object ResolveCore(CreationContext context, bool requiresDecommission, bool instanceRequired)
@@ -69,11 +70,26 @@ namespace Castle.MicroKernel.Handlers
 			}
 		}
 
+		public override void Dispose()
+		{
+			var handlers = type2SubHandler.Values.ToArray();
+			type2SubHandler.Clear();
+			foreach (var handler in handlers)
+			{
+				var disposable = handler as IDisposable;
+				if (disposable == null)
+				{
+					continue;
+				}
+				disposable.Dispose();
+			}
+		}
+
 		public override bool ReleaseCore(object instance)
 		{
-			Type genericType = ProxyUtil.GetUnproxiedType(instance);
+			var genericType = ProxyUtil.GetUnproxiedType(instance);
 
-			IHandler handler = GetSubHandler(CreationContext.Empty, genericType);
+			var handler = GetSubHandler(CreationContext.Empty, genericType);
 
 			return handler.Release(instance);
 		}
