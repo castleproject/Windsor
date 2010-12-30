@@ -28,7 +28,7 @@ namespace Castle.Windsor
 	/// </summary>
 	public interface IWindsorContainer : IServiceProviderEx, IDisposable
 	{
-		[Obsolete("Use Resolve(key, new Arguments()) instead.")]
+		[Obsolete("Use Resolve<object>(key) instead.")]
 		[EditorBrowsable(EditorBrowsableState.Advanced)]
 		object this[String key] { get; }
 
@@ -91,8 +91,7 @@ namespace Castle.Windsor
 		[EditorBrowsable(EditorBrowsableState.Advanced)]
 		IWindsorContainer AddComponentLifeStyle(String key, Type classType, LifestyleType lifestyle);
 
-		[Obsolete(
-			"Use Register(Component.For(serviceType).ImplementedBy(classType).Named(key).Lifestyle.Is(lifestyle)) or generic version instead.")]
+		[Obsolete("Use Register(Component.For(serviceType).ImplementedBy(classType).Named(key).Lifestyle.Is(lifestyle)) or generic version instead.")]
 		[EditorBrowsable(EditorBrowsableState.Advanced)]
 		IWindsorContainer AddComponentLifeStyle(String key, Type serviceType, Type classType, LifestyleType lifestyle);
 
@@ -116,8 +115,7 @@ namespace Castle.Windsor
 		[EditorBrowsable(EditorBrowsableState.Advanced)]
 		IWindsorContainer AddComponentProperties<I, T>(IDictionary extendedProperties) where T : class;
 
-		[Obsolete(
-			"Use Register(Component.For<I>().ImplementedBy<T>().Named(key).ExtendedProperties(extendedProperties)) instead.")]
+		[Obsolete("Use Register(Component.For<I>().ImplementedBy<T>().Named(key).ExtendedProperties(extendedProperties)) instead.")]
 		[EditorBrowsable(EditorBrowsableState.Advanced)]
 		IWindsorContainer AddComponentProperties<I, T>(String key, IDictionary extendedProperties) where T : class;
 
@@ -125,9 +123,7 @@ namespace Castle.Windsor
 		[EditorBrowsable(EditorBrowsableState.Advanced)]
 		IWindsorContainer AddComponentWithProperties(String key, Type classType, IDictionary extendedProperties);
 
-		[Obsolete(
-			"Use Register(Component.For(serviceType).ImplementedBy(classType).Named(key).ExtendedProperties(extendedProperties)) or generic version instead."
-			)]
+		[Obsolete("Use Register(Component.For(serviceType).ImplementedBy(classType).Named(key).ExtendedProperties(extendedProperties)) or generic version instead.")]
 		[EditorBrowsable(EditorBrowsableState.Advanced)]
 		IWindsorContainer AddComponentWithProperties(String key, Type serviceType, Type classType,
 		                                             IDictionary extendedProperties);
@@ -256,6 +252,8 @@ namespace Castle.Windsor
 		/// <param name = "key"></param>
 		/// <param name = "argumentsAsAnonymousType"></param>
 		/// <returns></returns>
+		[Obsolete("Use Resolve<object>(key, argumentsAsAnonymousType) instead.")]
+		[EditorBrowsable(EditorBrowsableState.Advanced)]
 		object Resolve(String key, object argumentsAsAnonymousType);
 
 		/// <summary>

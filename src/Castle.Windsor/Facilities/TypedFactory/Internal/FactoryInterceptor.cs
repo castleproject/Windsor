@@ -51,7 +51,7 @@ namespace Castle.Facilities.TypedFactory.Internal
 					invocation.ReturnValue = kernel.Resolve(invocation.Method.ReturnType);
 					return;
 				}
-				invocation.ReturnValue = kernel.Resolve((String)args[0], new Arguments());
+				invocation.ReturnValue = kernel.Resolve<object>((String)args[0]);
 				return;
 			}
 

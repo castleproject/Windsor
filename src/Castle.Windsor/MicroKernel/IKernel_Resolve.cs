@@ -25,7 +25,7 @@ namespace Castle.MicroKernel
 		/// <summary>
 		/// Returns the component instance by the key
 		/// </summary>
-		[Obsolete("Use Resolve(key, new Arguments()) instead")]
+		[Obsolete("Use Resolve<object>(key) instead")]
 		[EditorBrowsable(EditorBrowsableState.Advanced)]
 		object this[String key] { get; }
 
@@ -80,6 +80,8 @@ namespace Castle.MicroKernel
 		/// <param name="key"></param>
 		/// <param name="arguments"></param>
 		/// <returns></returns>
+		[Obsolete("Use Resolve<object>(key, arguments) instead")]
+		[EditorBrowsable(EditorBrowsableState.Advanced)]
 		object Resolve(String key, IDictionary arguments);
 		
 		/// <summary>
@@ -98,6 +100,8 @@ namespace Castle.MicroKernel
 		/// <param name="key">Key to resolve</param>
 		/// <param name="argumentsAsAnonymousType">Arguments to resolve the services</param>
 		/// <returns></returns>
+		[Obsolete("Use Resolve<object>(key, argumentsAsAnonymousType) instead")]
+		[EditorBrowsable(EditorBrowsableState.Advanced)]
 		object Resolve(String key, object argumentsAsAnonymousType);
 
 		/// <summary>

@@ -157,7 +157,7 @@ namespace Castle.MicroKernel.Tests
 		{
 			kernel.Register(Component.For<ICustomer>().ImplementedBy<CustomerImpl>().Named("key"));
 			kernel.Register(Component.For<ICustomer>().ImplementedBy<CustomerImpl>().Named("key2"));
-			var result = kernel.Resolve("key", new Arguments());
+			var result = kernel.Resolve<object>("key");
 			Assert.IsNotNull(result);
 
 			kernel.RemoveComponent("key");
@@ -387,7 +387,7 @@ namespace Castle.MicroKernel.Tests
 		public void UnregisteredComponentByKey()
 		{
 			kernel.Register(Component.For<CustomerImpl>().Named("key1"));
-			var component = kernel.Resolve("key2", new Arguments());
+			kernel.Resolve<object>("key2");
 		}
 
 		[Test]

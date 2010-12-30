@@ -94,7 +94,7 @@ namespace Castle.MicroKernel.Tests.Registration
 			var customer = Kernel.Resolve<CustomerImpl>();
 			Assert.IsNotNull(customer);
 
-			var customer1 = Kernel.Resolve(typeof(CustomerImpl).FullName, new Arguments());
+			var customer1 = Kernel.Resolve<object>(typeof(CustomerImpl).FullName);
 			Assert.IsNotNull(customer1);
 			Assert.AreSame(customer, customer1);
 		}
@@ -180,7 +180,7 @@ namespace Castle.MicroKernel.Tests.Registration
 			var customer = Kernel.Resolve<ICustomer>();
 			Assert.IsNotNull(customer);
 
-			var customer1 = Kernel.Resolve(typeof(CustomerImpl).FullName, new Arguments());
+			var customer1 = Kernel.Resolve<object>(typeof(CustomerImpl).FullName);
 			Assert.IsNotNull(customer1);
 		}
 
@@ -211,7 +211,7 @@ namespace Castle.MicroKernel.Tests.Registration
 			var handler = Kernel.GetHandler("key");
 			Assert.AreEqual(customer.GetType(), handler.ComponentModel.Implementation);
 
-			var customer2 = Kernel.Resolve("key", new Arguments()) as CustomerImpl;
+			var customer2 = Kernel.Resolve<CustomerImpl>("key");
 			Assert.AreSame(customer, customer2);
 
 			customer2 = Kernel.Resolve<ICustomer>() as CustomerImpl;
@@ -232,7 +232,7 @@ namespace Castle.MicroKernel.Tests.Registration
 			var handler = Kernel.GetHandler("key");
 			Assert.AreEqual(customer.GetType(), handler.ComponentModel.Implementation);
 
-			var customer2 = Kernel.Resolve("key", new Arguments()) as CustomerImpl2;
+			var customer2 = Kernel.Resolve<CustomerImpl2>("key");
 			Assert.AreSame(customer, customer2);
 
 			customer2 = Kernel.Resolve<ICustomer>() as CustomerImpl2;

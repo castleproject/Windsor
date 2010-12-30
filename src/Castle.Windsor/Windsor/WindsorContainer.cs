@@ -755,7 +755,7 @@ namespace Castle.Windsor
 		/// <returns></returns>
 		public virtual object Resolve(String key, IDictionary arguments)
 		{
-			return kernel.Resolve(key, arguments);
+			return kernel.Resolve<object>(key, arguments);
 		}
 
 		/// <summary>
