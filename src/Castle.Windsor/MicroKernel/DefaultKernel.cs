@@ -87,11 +87,6 @@ namespace Castle.MicroKernel
 			new Dictionary<string, ISubSystem>(StringComparer.OrdinalIgnoreCase);
 
 		/// <summary>
-		///   The implementation of <see cref = "IComponentModelBuilder" />
-		/// </summary>
-		private IComponentModelBuilder modelBuilder;
-
-		/// <summary>
 		///   The parent kernel, if exists.
 		/// </summary>
 		private IKernel parentKernel;
@@ -127,7 +122,7 @@ namespace Castle.MicroKernel
 
 			releasePolicy = new LifecycledComponentsReleasePolicy();
 			handlerFactory = new DefaultHandlerFactory(this);
-			modelBuilder = new DefaultComponentModelBuilder(this);
+			ComponentModelBuilder = new DefaultComponentModelBuilder(this);
 			this.proxyFactory = proxyFactory;
 			this.resolver = resolver;
 			resolver.Initialize(this, RaiseDependencyResolving);
@@ -153,15 +148,11 @@ namespace Castle.MicroKernel
 
 			FormatterServices.PopulateObjectMembers(this, members, kernelmembers);
 
-			AddHandler(HandlerRegisteredEvent, (Delegate)info.GetValue("HandlerRegisteredEvent", typeof(Delegate)));
+			HandlerRegistered += (HandlerDelegate)info.GetValue("HandlerRegisteredEvent", typeof(Delegate));
 		}
 #endif
 
-		public IComponentModelBuilder ComponentModelBuilder
-		{
-			get { return modelBuilder; }
-			set { modelBuilder = value; }
-		}
+		public IComponentModelBuilder ComponentModelBuilder { get; set; }
 
 		public virtual IConfigurationStore ConfigurationStore
 		{
@@ -264,7 +255,7 @@ namespace Castle.MicroKernel
 
 			info.AddValue("members", kernelmembers, typeof(object[]));
 
-			info.AddValue("HandlerRegisteredEvent", GetEventHandlers<HandlerDelegate>(HandlerRegisteredEvent));
+			info.AddValue("HandlerRegisteredEvent", HandlerRegistered);
 		}
 #endif
 		
