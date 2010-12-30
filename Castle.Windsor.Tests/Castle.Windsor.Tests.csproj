@@ -327,6 +327,7 @@
     <Compile Include="Components\EmptyServiceComposite.cs" />
     <Compile Include="Components\EmptyServiceDecorator.cs" />
     <Compile Include="Components\EmptyServiceDecoratorViaProperty.cs" />
+    <Compile Include="Components\HasNullDefaultForServiceDependency.cs" />
     <Compile Include="Components\HumanArm.cs" />
     <Compile Include="Components\IAmContravariant.cs" />
     <Compile Include="Components\IArm.cs" />
