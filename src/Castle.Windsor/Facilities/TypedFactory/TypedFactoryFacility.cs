@@ -35,9 +35,10 @@ namespace Castle.Facilities.TypedFactory
 	/// </summary>
 	public class TypedFactoryFacility : AbstractFacility
 	{
-		public static readonly object FactoryMapCacheKey = "Castle.TypedFactory.MapCache";
 		public static readonly string DelegateFactoryKey = "Castle.TypedFactory.DelegateFactory";
+		public static readonly string FactoryMapCacheKey = "Castle.TypedFactory.MapCache";
 		public static readonly string InterceptorKey = "Castle.TypedFactory.Interceptor";
+		public static readonly string IsFactoryKey = "Castle.TypedFactory.IsFactory";
 
 		internal static readonly string DefaultDelegateSelectorKey =
 			"Castle.TypedFactory.DefaultDelegateFactoryComponentSelector";
@@ -128,6 +129,8 @@ namespace Castle.Facilities.TypedFactory
 			                Component.For<ITypedFactoryComponentSelector>()
 			                	.ImplementedBy<DefaultDelegateComponentSelector>()
 			                	.Named(DefaultDelegateSelectorKey));
+
+			Kernel.ComponentModelBuilder.AddContributor(new TypedFactoryCachingInspector());
 		}
 
 		private void LegacyInit()

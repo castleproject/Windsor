@@ -94,13 +94,33 @@ namespace Castle.Facilities.TypedFactory
 		{
 			var selectorReference = GetSelectorReference(configuration, defaultComponentSelectorKey);
 			componentRegistration.AddDescriptor(new ReferenceDependencyDescriptor<TFactory>(selectorReference));
-			componentRegistration.AddDescriptor(new FactoryCacheDescriptor<TFactory>());
+			if(IsAnyServiceOpenGeneric(componentRegistration))
+			{
+				componentRegistration.AddAttributeDescriptor(TypedFactoryFacility.IsFactoryKey, "true");
+			}
+			else
+			{
+				componentRegistration.AddDescriptor(new FactoryCacheDescriptor<TFactory>());
+			}
 			return componentRegistration.DynamicParameters((k, c, d) =>
 			{
 				var selector = selectorReference.Resolve(k, c);
 				d.Insert(selector);
 				return k2 => k2.ReleaseComponent(selector);
 			});
+		}
+
+		private static bool IsAnyServiceOpenGeneric<TFactory>(ComponentRegistration<TFactory> componentRegistration)
+		{
+			if (componentRegistration.InterfaceServices.Any(i => i.ContainsGenericParameters))
+			{
+				return true;
+			}
+			if (componentRegistration.ClassService == null)
+			{
+				return false;
+			}
+			return componentRegistration.ClassService.ContainsGenericParameters;
 		}
 
 		private static ComponentRegistration<TFactory> AttachFactoryInterceptor<TFactory>(

@@ -46,6 +46,13 @@ namespace Castle.Facilities.TypedFactory.Internal
 			this.kernel = kernel;
 		}
 
+		public TypedFactoryInterceptor(IKernel kernel, ITypedFactoryComponentSelector componentSelector, IDictionary<MethodInfo, FactoryMethod> methods)
+		{
+			ComponentSelector = componentSelector;
+			this.kernel = kernel;
+			this.methods = methods;
+		}
+
 		public ITypedFactoryComponentSelector ComponentSelector { get; private set; }
 
 		public void Dispose()
@@ -94,6 +101,11 @@ namespace Castle.Facilities.TypedFactory.Internal
 
 		public void SetInterceptedComponentModel(ComponentModel target)
 		{
+			if(methods!=null)
+			{
+				//we initialized that via the 
+				return;
+			}
 			methods = (IDictionary<MethodInfo, FactoryMethod>)target.ExtendedProperties[TypedFactoryFacility.FactoryMapCacheKey];
 			if (methods == null)
 			{
