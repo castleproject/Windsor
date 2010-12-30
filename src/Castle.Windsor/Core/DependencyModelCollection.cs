@@ -26,12 +26,7 @@ namespace Castle.Core
 #endif
 	public class DependencyModelCollection : IEnumerable<DependencyModel>
 	{
-		private readonly ICollection<DependencyModel> dependencies =
-#if DOTNET35 || SL3
-			new List<DependencyModel>();
-#else
-			new HashSet<DependencyModel>();
-#endif
+		private readonly List<DependencyModel> dependencies = new List<DependencyModel>(8);
 
 		public void Add(DependencyModel dependencyModel)
 		{
@@ -39,31 +34,16 @@ namespace Castle.Core
 			{
 				throw new ArgumentNullException("dependencyModel");
 			}
-#if DOTNET35 || SL3
-			if(dependencies.Contains(dependencyModel))
-			{
-				return;
-			}
-#endif
 			dependencies.Add(dependencyModel);
 		}
 
-		public void AddRange(DependencyModelCollection dependencies)
+		public void AddRange(DependencyModelCollection other)
 		{
-			if (dependencies == null)
+			if (other == null || other.dependencies.Count == 0)
 			{
 				return;
 			}
-
-			foreach (var model in dependencies)
-			{
-				if (model == null)
-				{
-					throw new ArgumentNullException("dependencies", "item in the collection is null");
-				}
-
-				Add(model);
-			}
+			dependencies.AddRange(other.dependencies);
 		}
 
 		public void Clear()
