@@ -313,6 +313,7 @@
     <Compile Include="Components\EmptyServiceComposite.cs" />
     <Compile Include="Components\EmptyServiceDecorator.cs" />
     <Compile Include="Components\EmptyServiceDecoratorViaProperty.cs" />
+    <Compile Include="Components\HasNullDefaultForServiceDependency.cs" />
     <Compile Include="Components\IDependency.cs" />
     <Compile Include="Components\IDependOnArray.cs" />
     <Compile Include="Components\InitializableComponent.cs" />

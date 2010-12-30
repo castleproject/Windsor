@@ -1,4 +1,5 @@
 - fixed IOC-261 - Disposing of typed-factory can throw argument null exception
+- fixed IOC-254 - Optional non-primitive .ctor parameters don't work
 - fixed IOC-250 - Dispose not being called on open generic registrations
 
 2.5.2 (2010-11-15)

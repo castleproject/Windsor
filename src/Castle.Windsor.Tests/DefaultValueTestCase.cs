@@ -14,6 +14,7 @@
 
 namespace Castle.Windsor.Tests
 {
+	using Castle.Components;
 	using Castle.MicroKernel.Registration;
 	using Castle.Windsor.Tests.Components;
 
@@ -37,6 +38,17 @@ namespace Castle.Windsor.Tests
 
 			container.Resolve<CtorWithDefaultValue>();
 		}
+
+		[Test]
+		public void Can_resolve_component_with_default_ctor_value_null_for_service_dependency()
+		{
+			container.Register(Component.For<HasNullDefaultForServiceDependency>());
+
+			var service = container.Resolve<HasNullDefaultForServiceDependency>();
+
+			Assert.IsNull(service.Dependency);
+		}
+
 
 		[Test]
 		public void Null_is_a_valid_default_value()
