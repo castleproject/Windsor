@@ -250,6 +250,11 @@ namespace Castle.MicroKernel.Resolvers
 
 		protected virtual bool CanResolveServiceDependency(CreationContext context, ComponentModel model, DependencyModel dependency)
 		{
+			return CanResolveServiceDependencyMandatory(dependency, model, context) || dependency.HasDefaultValue;
+		}
+
+		private bool CanResolveServiceDependencyMandatory(DependencyModel dependency, ComponentModel model, CreationContext context)
+		{
 			if (dependency.DependencyType == DependencyType.ServiceOverride)
 			{
 				return HasComponentInValidState(dependency.DependencyKey);
@@ -314,6 +319,10 @@ namespace Castle.MicroKernel.Resolvers
 				}
 				catch (HandlerException exception)
 				{
+					if(dependency.HasDefaultValue)
+					{
+						return dependency.DefaultValue;
+					}
 					throw new DependencyResolverException(
 						string.Format(
 							"Missing dependency.{2}Component {0} has a dependency on {1}, which could not be resolved.{2}Make sure the dependency is correctly registered in the container as a service, or provided as inline argument.",
@@ -325,6 +334,10 @@ namespace Castle.MicroKernel.Resolvers
 
 				if (handler == null)
 				{
+					if (dependency.HasDefaultValue)
+					{
+						return dependency.DefaultValue;
+					}
 					throw new DependencyResolverException(
 						string.Format(
 							"Cycle detected in configuration.{2}Component {0} has a dependency on {1}, but it doesn't provide an override.{2}You must provide an override if a component has a dependency on a service that it - itself - provides.",
