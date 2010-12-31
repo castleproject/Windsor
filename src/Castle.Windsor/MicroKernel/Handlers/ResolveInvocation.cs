@@ -20,14 +20,16 @@ namespace Castle.MicroKernel.Handlers
 
 	public class ResolveInvocation
 	{
-		private Action proceed;
 		private bool decommissionRequired;
+		private Action proceed;
 
 		public ResolveInvocation(CreationContext context, bool instanceRequired)
 		{
 			Context = context;
 			InstanceRequired = instanceRequired;
 		}
+
+		public Burden Burden { get; set; }
 
 		public CreationContext Context { get; private set; }
 		public bool InstanceRequired { get; private set; }
@@ -36,17 +38,17 @@ namespace Castle.MicroKernel.Handlers
 
 		internal bool DecommissionRequired
 		{
-			get {return decommissionRequired;}
-		}
-
-		public void RequireDecommission()
-		{
-			decommissionRequired = true;
+			get { return decommissionRequired; }
 		}
 
 		public void Proceed()
 		{
 			proceed.Invoke();
+		}
+
+		public void RequireDecommission()
+		{
+			decommissionRequired = true;
 		}
 
 		internal void SetProceedDelegate(Action value)

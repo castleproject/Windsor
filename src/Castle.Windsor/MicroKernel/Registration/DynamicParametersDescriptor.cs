@@ -53,7 +53,6 @@ namespace Castle.MicroKernel.Registration
 			var dynamicParameters = new ComponentLifecycleExtension();
 			model.ExtendedProperties[key] = dynamicParameters;
 			model.ResolveExtensions(true).Add(dynamicParameters);
-			model.ReleaseExtensions(true).Add(dynamicParameters);
 			return dynamicParameters;
 		}
 	}
