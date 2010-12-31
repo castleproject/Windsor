@@ -752,7 +752,7 @@ namespace Castle.Windsor
 		/// <returns></returns>
 		public virtual object Resolve(Type service)
 		{
-			return kernel.Resolve(service);
+			return kernel.Resolve(service, arguments: null);
 		}
 
 		/// <summary>
@@ -763,7 +763,7 @@ namespace Castle.Windsor
 		/// <returns></returns>
 		public virtual object Resolve(String key, Type service)
 		{
-			return kernel.Resolve(key, service);
+			return kernel.Resolve(key, service, arguments: null);
 		}
 
 		/// <summary>
@@ -787,7 +787,7 @@ namespace Castle.Windsor
 		/// <returns></returns>
 		public virtual object Resolve(String key, Type service, object argumentsAsAnonymousType)
 		{
-			return Resolve(key, service, new ReflectionBasedDictionaryAdapter(argumentsAsAnonymousType));
+			return kernel.Resolve(key, service, new ReflectionBasedDictionaryAdapter(argumentsAsAnonymousType));
 		}
 
 		/// <summary>
@@ -798,7 +798,7 @@ namespace Castle.Windsor
 		/// <returns></returns>
 		public T Resolve<T>(IDictionary arguments)
 		{
-			return (T)Resolve(typeof(T), arguments);
+			return (T)kernel.Resolve(typeof(T), arguments);
 		}
 
 		/// <summary>
@@ -809,7 +809,7 @@ namespace Castle.Windsor
 		/// <returns></returns>
 		public T Resolve<T>(object argumentsAsAnonymousType)
 		{
-			return Resolve<T>(new ReflectionBasedDictionaryAdapter(argumentsAsAnonymousType));
+			return (T)kernel.Resolve(typeof(T), new ReflectionBasedDictionaryAdapter(argumentsAsAnonymousType));
 		}
 
 		/// <summary>
@@ -820,7 +820,7 @@ namespace Castle.Windsor
 		/// <returns></returns>
 		public virtual T Resolve<T>(String key, IDictionary arguments)
 		{
-			return (T)Resolve(key, typeof(T), arguments);
+			return (T)kernel.Resolve(key, typeof(T), arguments);
 		}
 
 		/// <summary>
@@ -831,7 +831,7 @@ namespace Castle.Windsor
 		/// <returns></returns>
 		public virtual T Resolve<T>(String key, object argumentsAsAnonymousType)
 		{
-			return Resolve<T>(key, new ReflectionBasedDictionaryAdapter(argumentsAsAnonymousType));
+			return (T)kernel.Resolve(key, typeof(T), new ReflectionBasedDictionaryAdapter(argumentsAsAnonymousType));
 		}
 
 		/// <summary>
@@ -841,7 +841,7 @@ namespace Castle.Windsor
 		/// <returns></returns>
 		public T Resolve<T>()
 		{
-			return (T)Resolve(typeof(T));
+			return (T)kernel.Resolve(typeof(T), arguments: null);
 		}
 
 		/// <summary>
@@ -851,7 +851,7 @@ namespace Castle.Windsor
 		/// <returns></returns>
 		public virtual T Resolve<T>(String key)
 		{
-			return (T)Resolve(key, typeof(T));
+			return (T)kernel.Resolve(key, typeof(T), arguments: null);
 		}
 
 		/// <summary>
