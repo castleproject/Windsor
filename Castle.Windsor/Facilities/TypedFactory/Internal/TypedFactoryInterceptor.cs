@@ -31,10 +31,10 @@ namespace Castle.Facilities.TypedFactory.Internal
 	public class TypedFactoryInterceptor : IInterceptor, IOnBehalfAware, IDisposable
 	{
 		private readonly IKernelInternal kernel;
+		private readonly IReleasePolicy scope;
 
 		private bool disposed;
 		private IDictionary<MethodInfo, FactoryMethod> methods;
-		private readonly IReleasePolicy scope;
 
 		public TypedFactoryInterceptor(IKernelInternal kernel, ITypedFactoryComponentSelector componentSelector)
 		{
@@ -81,15 +81,11 @@ namespace Castle.Facilities.TypedFactory.Internal
 
 		public void SetInterceptedComponentModel(ComponentModel target)
 		{
-			if(methods!=null)
-			{
-				//we initialized that via the 
-				return;
-			}
 			methods = (IDictionary<MethodInfo, FactoryMethod>)target.ExtendedProperties[TypedFactoryFacility.FactoryMapCacheKey];
 			if (methods == null)
 			{
-				throw new ArgumentException(string.Format("Component {0} is not a typed factory. {1} only works with typed factories.", target.Name, GetType()));
+				throw new ArgumentException(
+					string.Format("Component {0} is not a typed factory. {1} only works with typed factories.", target.Name, GetType().Name));
 			}
 		}
 
@@ -117,8 +113,7 @@ namespace Castle.Facilities.TypedFactory.Internal
 						ComponentSelector,
 						invocation.Method));
 			}
-			var instance = component.Resolve(kernel, scope);
-			invocation.ReturnValue = instance;
+			invocation.ReturnValue = component.Resolve(kernel, scope);
 		}
 
 		private bool TryGetMethod(IInvocation invocation, out FactoryMethod method)
