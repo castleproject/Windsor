@@ -42,7 +42,7 @@ namespace Castle.Windsor
 
 		public object GetService(Type serviceType)
 		{
-			if (kernel.LazyLoadComponentByType(null, serviceType, null) == null)
+			if (kernel.LoadHandlerByType(null, serviceType, null) == null)
 			{
 				return kernel.Resolve(serviceType);
 			}
