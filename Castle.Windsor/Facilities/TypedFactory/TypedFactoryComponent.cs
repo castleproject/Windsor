@@ -63,17 +63,12 @@ namespace Castle.Facilities.TypedFactory
 		/// <returns>Resolved component(s).</returns>
 		public virtual object Resolve(IKernel kernel)
 		{
-			if (string.IsNullOrEmpty(ComponentName) == false && kernel.HasComponent(ComponentName))
+			if (kernel.HasComponent(ComponentName) == false)
 			{
-				if (ComponentType == null)
-				{
-					return kernel.Resolve<object>(ComponentName, AdditionalArguments);
-				}
-
-				return kernel.Resolve(ComponentName, ComponentType, AdditionalArguments);
+				return kernel.Resolve(ComponentType, AdditionalArguments);
 			}
 
-			return kernel.Resolve(ComponentType, AdditionalArguments);
+			return kernel.Resolve(ComponentName, ComponentType, AdditionalArguments);
 		}
 	}
 }
