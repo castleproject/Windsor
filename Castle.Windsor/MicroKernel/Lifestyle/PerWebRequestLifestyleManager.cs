@@ -74,7 +74,7 @@ namespace Castle.MicroKernel.Lifestyle
 			current.Items[perRequestObjectId] = burden;
 			PerWebRequestLifestyleModule.RegisterForEviction(this, burden);
 			Track(burden, releasePolicy);
-			return burden;
+			return burden.Instance;
 		}
 	}
 }
