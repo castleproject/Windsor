@@ -728,10 +728,10 @@ namespace Castle.MicroKernel
 			return activator;
 		}
 
-		protected CreationContext CreateCreationContext(IHandler handler, Type requestedType, IDictionary additionalArguments, CreationContext parent)
+		protected CreationContext CreateCreationContext(IHandler handler, Type requestedType, IDictionary additionalArguments, CreationContext parent, IReleasePolicy policy)
 		{
 			return new CreationContext(handler,
-			                           ReleasePolicy,
+			                           policy,
 			                           requestedType,
 			                           additionalArguments,
 			                           ConversionSubSystem,
@@ -791,10 +791,14 @@ namespace Castle.MicroKernel
 #endif
 		}
 
-		protected object ResolveComponent(IHandler handler, Type service, IDictionary additionalArguments)
+		protected object ResolveComponent(IHandler handler, Type service, IDictionary additionalArguments, IReleasePolicy policy)
 		{
+			if (handler == null)
+			{
+				throw new ComponentNotFoundException(service);
+			}
 			var parent = currentCreationContext;
-			var context = CreateCreationContext(handler, service, additionalArguments, parent);
+			var context = CreateCreationContext(handler, service, additionalArguments, parent, policy);
 			currentCreationContext = context;
 
 			try
@@ -812,10 +816,10 @@ namespace Castle.MicroKernel
 			}
 		}
 
-		protected object TryResolveComponent(IHandler handler, Type service, IDictionary additionalArguments)
+		protected object TryResolveComponent(IHandler handler, Type service, IDictionary additionalArguments, IReleasePolicy policy)
 		{
 			var parent = currentCreationContext;
-			var context = CreateCreationContext(handler, service, additionalArguments, parent);
+			var context = CreateCreationContext(handler, service, additionalArguments, parent, policy);
 			currentCreationContext = context;
 
 			try
