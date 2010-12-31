@@ -384,6 +384,7 @@
     <Compile Include="Facilities\TypedFactory\Internal\DelegateFactory.cs" />
     <Compile Include="Facilities\TypedFactory\Internal\DelegateProxyFactory.cs" />
     <Compile Include="Facilities\TypedFactory\Internal\FactoryMethod.cs" />
+    <Compile Include="Facilities\TypedFactory\ITypedFactoryComponentResolver.cs" />
     <Compile Include="Facilities\TypedFactory\TypedFactoryConfiguration.cs" />
     <Compile Include="Facilities\TypedFactory\TypedFactoryCachingInspector.cs" />
     <Compile Include="MicroKernel\ComponentActivator\AbstractComponentActivator.cs">
@@ -501,8 +502,8 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Facilities\TypedFactory\ITypedFactoryComponentSelector.cs" />
-    <Compile Include="Facilities\TypedFactory\TypedFactoryComponent.cs" />
-    <Compile Include="Facilities\TypedFactory\TypedFactoryComponentCollection.cs" />
+    <Compile Include="Facilities\TypedFactory\TypedFactoryComponentResolver.cs" />
+    <Compile Include="Facilities\TypedFactory\TypedFactoryCollectionResolver.cs" />
     <Compile Include="Facilities\TypedFactory\TypedFactoryFacility.cs">
       <SubType>Code</SubType>
     </Compile>
