@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -22,49 +22,74 @@ namespace Castle.MicroKernel.Handlers
 	using Castle.MicroKernel.Context;
 
 	/// <summary>
-	/// Summary description for DefaultHandler.
+	///   Summary description for DefaultHandler.
 	/// </summary>
 	[Serializable]
 	public class DefaultHandler : AbstractHandler
 	{
 		/// <summary>
-		/// Initializes a new instance of the <see cref="DefaultHandler"/> class.
+		///   Initializes a new instance of the <see cref = "DefaultHandler" /> class.
 		/// </summary>
-		/// <param name="model"></param>
+		/// <param name = "model"></param>
 		public DefaultHandler(ComponentModel model) : base(model)
 		{
 		}
-		
 
 		/// <summary>
-		/// Returns an instance of the component this handler
-		/// is responsible for
+		///   disposes the component instance (or recycle it)
 		/// </summary>
-		/// <param name="context"></param>
-		/// <param name="requiresDecommission"></param>
-		/// <param name="instanceRequired"></param>
+		/// <param name = "burden"></param>
+		/// <returns>true if destroyed</returns>
+		public override bool ReleaseCore(Burden burden)
+		{
+			return lifestyleManager.Release(burden.Instance);
+		}
+
+		protected void AssertNotWaitingForDependency()
+		{
+			if (CurrentState == HandlerState.WaitingDependency)
+			{
+				var message = String.Format("Can't create component '{1}' " +
+				                            "as it has dependencies to be satisfied. {0}",
+				                            ObtainDependencyDetails(new List<object>()), ComponentModel.Name);
+
+				throw new HandlerException(message);
+			}
+		}
+
+		protected override object Resolve(CreationContext context, bool instanceRequired)
+		{
+			Burden burden;
+			return ResolveCore(context, false, instanceRequired, out burden);
+		}
+
+		/// <summary>
+		///   Returns an instance of the component this handler
+		///   is responsible for
+		/// </summary>
+		/// <param name = "context"></param>
+		/// <param name = "requiresDecommission"></param>
+		/// <param name = "instanceRequired"></param>
+		/// <param name="burden"></param>
 		/// <returns></returns>
-		protected object ResolveCore(CreationContext context, bool requiresDecommission, bool instanceRequired)
+		protected object ResolveCore(CreationContext context, bool requiresDecommission, bool instanceRequired, out Burden burden)
 		{
 			if (CanResolvePendingDependencies(context) == false)
 			{
 				if (instanceRequired == false)
 				{
+					burden = null;
 					return null;
 				}
 
 				AssertNotWaitingForDependency();
 			}
-			using (context.EnterResolutionContext(this, HasDecomission(requiresDecommission)))
+			using (var ctx = context.EnterResolutionContext(this, HasDecomission(requiresDecommission)))
 			{
 				var instance = lifestyleManager.Resolve(context, context.ReleasePolicy);
+				burden = ctx.Burden;
 				return instance;
 			}
-		}
-
-		private bool HasDecomission(bool track)
-		{
-			return track || ComponentModel.Lifecycle.HasDecommissionConcerns;
 		}
 
 		private bool CanResolvePendingDependencies(CreationContext context)
@@ -81,7 +106,6 @@ namespace Castle.MicroKernel.Handlers
 			var canResolveAll = true;
 			foreach (var dependency in DependenciesByService.Values.ToArray())
 			{
-				
 				// a self-dependency is not allowed
 				var handler = Kernel.LoadHandlerByType(dependency.DependencyKey, dependency.TargetItemType, context.AdditionalArguments);
 				if (handler == this || handler == null)
@@ -93,31 +117,9 @@ namespace Castle.MicroKernel.Handlers
 			return (canResolveAll && DependenciesByKey.Count == 0) || context.HasAdditionalArguments;
 		}
 
-		/// <summary>
-		/// disposes the component instance (or recycle it)
-		/// </summary>
-		/// <param name="burden"></param>
-		/// <returns>true if destroyed</returns>
-		public override bool ReleaseCore(Burden burden)
+		private bool HasDecomission(bool track)
 		{
-			return lifestyleManager.Release(burden.Instance);
-		}
-
-		protected override object Resolve(CreationContext context, bool instanceRequired)
-		{
-			return ResolveCore(context, false, instanceRequired);
-		}
-
-		protected void AssertNotWaitingForDependency()
-		{
-			if (CurrentState == HandlerState.WaitingDependency)
-			{
-				String message = String.Format("Can't create component '{1}' " +
-					"as it has dependencies to be satisfied. {0}",
-					ObtainDependencyDetails(new List<object>()), ComponentModel.Name);
-
-				throw new HandlerException(message);
-			}
+			return track || ComponentModel.Lifecycle.HasDecommissionConcerns;
 		}
 	}
 }

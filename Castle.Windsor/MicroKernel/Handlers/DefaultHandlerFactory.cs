@@ -15,16 +15,13 @@
 namespace Castle.MicroKernel.Handlers
 {
 	using System;
-	using System.Collections.Generic;
 
 	using Castle.Core;
 
 	/// <summary>
 	/// Summary description for DefaultHandlerFactory.
 	/// </summary>
-#if (!SILVERLIGHT)
 	[Serializable]
-#endif
 	public class DefaultHandlerFactory : IHandlerFactory
 	{
 		private readonly IKernel kernel;

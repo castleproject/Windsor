@@ -16,42 +16,14 @@ namespace Castle.MicroKernel.Handlers
 {
 	using System.Collections.Generic;
 
-	using Castle.MicroKernel.Context;
-	using Castle.MicroKernel.Util;
-
-	public delegate ComponentReleasingDelegate ComponentResolvingDelegate(IKernel kernel, CreationContext context);
-
-	public delegate void ComponentReleasingDelegate(IKernel kernel);
-
-	public class ComponentLifecycleExtension : IResolveExtension, IReleaseExtension
+	public class ComponentLifecycleExtension : IResolveExtension
 	{
+		private readonly List<ComponentResolvingDelegate> resolvers = new List<ComponentResolvingDelegate>(4);
 		private IKernel kernel;
-		private IDictionary<object, IList<ComponentReleasingDelegate>> releasingHandlers;
-		private ComponentResolvingDelegate resolvingHandler;
 
-		public void Intercept(ReleaseInvocation invocation)
+		public void AddHandler(ComponentResolvingDelegate handler)
 		{
-			if (releasingHandlers != null)
-			{
-				IList<ComponentReleasingDelegate> releasers;
-
-				lock (releasingHandlers)
-				{
-					if (releasingHandlers.TryGetValue(invocation.Instance, out releasers))
-					{
-						releasingHandlers.Remove(invocation.Instance);
-					}
-				}
-
-				if (releasers != null)
-				{
-					foreach (var releaser in releasers)
-					{
-						releaser(kernel);
-					}
-				}
-			}
-			invocation.Proceed();
+			resolvers.Add(handler);
 		}
 
 		public void Init(IKernel kernel, IHandler handler)
@@ -62,9 +34,9 @@ namespace Castle.MicroKernel.Handlers
 		public void Intercept(ResolveInvocation invocation)
 		{
 			List<ComponentReleasingDelegate> releasers = null;
-			if (resolvingHandler != null)
+			if (resolvers.Count > 0)
 			{
-				foreach (ComponentResolvingDelegate resolver in resolvingHandler.GetInvocationList())
+				foreach (var resolver in resolvers)
 				{
 					var releaser = resolver(kernel, invocation.Context);
 					if (releaser != null)
@@ -85,29 +57,12 @@ namespace Castle.MicroKernel.Handlers
 			{
 				return;
 			}
-
-			lock (resolvingHandler)
+			var burden = invocation.Burden;
+			if (burden == null)
 			{
-				if (releasingHandlers == null)
-				{
-					releasingHandlers = new Dictionary<object, IList<ComponentReleasingDelegate>>(ReferenceEqualityComparer.Instance);
-				}
-
-				if (releasingHandlers.ContainsKey(invocation.ResolvedInstance) == false)
-				{
-					releasingHandlers.Add(invocation.ResolvedInstance, releasers);
-				}
-			}
-		}
-
-		public void AddHandler(ComponentResolvingDelegate handler)
-		{
-			if(resolvingHandler==null)
-			{
-				resolvingHandler = handler;
 				return;
 			}
-			resolvingHandler += handler;
+			burden.Released += delegate { releasers.ForEach(r => r.Invoke(kernel)); };
 		}
 	}
 }

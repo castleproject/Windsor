@@ -407,6 +407,8 @@
     <Compile Include="MicroKernel\HandlerState.cs" />
     <Compile Include="MicroKernel\HandlerStateDelegate.cs" />
     <Compile Include="MicroKernel\Handlers\ComponentLifecycleExtension.cs" />
+    <Compile Include="MicroKernel\Handlers\ComponentReleasingDelegate.cs" />
+    <Compile Include="MicroKernel\Handlers\ComponentResolvingDelegate.cs" />
     <Compile Include="MicroKernel\Handlers\ExtendedHandler.cs" />
     <Compile Include="MicroKernel\Handlers\HandlerExtensionsUtil.cs" />
     <Compile Include="MicroKernel\Handlers\IReleaseExtension.cs" />
