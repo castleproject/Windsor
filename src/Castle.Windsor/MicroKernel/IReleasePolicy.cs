@@ -26,5 +26,7 @@ namespace Castle.MicroKernel
 		bool HasTrack(object instance);
 
 		void Release(object instance);
+
+		IReleasePolicy CreateSubPolicy();
 	}
 }

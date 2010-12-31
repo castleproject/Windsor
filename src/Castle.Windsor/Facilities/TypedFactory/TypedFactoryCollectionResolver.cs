@@ -38,9 +38,9 @@ namespace Castle.Facilities.TypedFactory
 			this.additionalArguments = additionalArguments;
 		}
 
-		public object Resolve(IKernel kernel)
+		public object Resolve(IKernelInternal kernel, IReleasePolicy scope)
 		{
-			var result = kernel.ResolveAll(componentCollectionType, additionalArguments);
+			var result = kernel.ResolveAll(componentCollectionType, additionalArguments, scope);
 			return result;
 		}
 	}

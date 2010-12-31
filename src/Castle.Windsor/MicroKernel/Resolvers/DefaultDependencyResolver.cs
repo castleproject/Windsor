@@ -268,7 +268,7 @@ namespace Castle.MicroKernel.Resolvers
 				var value = ExtractComponentKey(parameter.Value, parameter.Name);
 				return HasComponentInValidState(value);
 			}
-			if (dependency.TargetItemType == typeof(IKernel))
+			if (typeof(IKernel).IsAssignableFrom(dependency.TargetItemType))
 			{
 				return true;
 			}
@@ -303,7 +303,7 @@ namespace Castle.MicroKernel.Resolvers
 				}
 			}
 
-			if (dependency.TargetItemType == typeof(IKernel))
+			if (typeof(IKernel).IsAssignableFrom(dependency.TargetItemType))
 			{
 				return kernel;
 			}

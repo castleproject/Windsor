@@ -1,4 +1,15 @@
 ================================================================================================
+change - IReleasePolicy interface has a new method: IReleasePolicy CreateSubPolicy();
+
+impact - low
+fixability - easy
+
+description - This was added as an attempt to enable more fine grained lifetime scoping (mostly
+	for per-typed-factory right now, but in the future also say - per-window in client app).
+
+fix - Method should return new object that promotes calls to Track to its parent scope, and also
+	when disposed releases all objects it's tracking. See SubReleasPolicy implementation.
+================================================================================================
 change - IHandler.Release now takes Burden, not object as its parameter. Burden.Release now has
 	no arguments (used to take IReleasePolicy)
 
