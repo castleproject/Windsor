@@ -53,5 +53,19 @@ namespace Castle.MicroKernel
 		void AddCustomComponent(ComponentModel model);
 
 		IDisposable OptimizeDependencyResolution();
+
+		Array ResolveAll(Type service, IDictionary arguments, IReleasePolicy policy);
+
+		object Resolve(Type service, IDictionary arguments, IReleasePolicy policy);
+
+		/// <summary>
+		///   Returns a component instance by the key
+		/// </summary>
+		/// <param name="key"></param>
+		/// <param name="service"></param>
+		/// <param name="arguments"></param>
+		/// <param name="policy"></param>
+		/// <returns></returns>
+		object Resolve(String key, Type service, IDictionary arguments, IReleasePolicy policy);
 	}
 }
