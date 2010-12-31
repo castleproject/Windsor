@@ -27,8 +27,6 @@ namespace Castle.Windsor.Configuration.Interpreters
 	/// </summary>
 	public abstract class AbstractInterpreter : IConfigurationInterpreter
 	{
-		#region Fields
-
 		protected static readonly string ContainersNodeName = "containers";
 		protected static readonly string ContainerNodeName = "container";
 		protected static readonly string FacilitiesNodeName = "facilities";
@@ -38,13 +36,8 @@ namespace Castle.Windsor.Configuration.Interpreters
 		protected static readonly string InstallersNodeName = "installers";
 		protected static readonly string InstallNodeName = "install";
 
-		// private ImportDirectiveCollection imports = new ImportDirectiveCollection();
 		private readonly IResource source;
 		private readonly Stack<IResource> resourceStack = new Stack<IResource>();
-
-		#endregion
-
-		#region Constructors
 
 		protected AbstractInterpreter(IResource source)
 		{
@@ -68,8 +61,6 @@ namespace Castle.Windsor.Configuration.Interpreters
 		}
 #endif
 
-		#endregion
-
 		/// <summary>
 		///   Should obtain the contents from the resource,
 		///   interpret it and populate the <see cref = "IConfigurationStore" />
@@ -78,8 +69,6 @@ namespace Castle.Windsor.Configuration.Interpreters
 		/// <param name = "resource"></param>
 		/// <param name = "store"></param>
 		public abstract void ProcessResource(IResource resource, IConfigurationStore store);
-
-		#region Support for Resource stack
 
 		protected void PushResource(IResource resource)
 		{
@@ -104,10 +93,6 @@ namespace Castle.Windsor.Configuration.Interpreters
 			}
 		}
 
-		#endregion
-
-		#region Properties
-
 		/// <summary>
 		///   Exposes the reference to <see cref = "IResource" />
 		///   which the interpreter is likely to hold
@@ -123,10 +108,6 @@ namespace Castle.Windsor.Configuration.Interpreters
 		/// </summary>
 		/// <value>The name of the environment.</value>
 		public string EnvironmentName { get; set; }
-
-		#endregion
-
-		#region Helpers to populate IConfigurationStore
 
 		protected static void AddChildContainerConfig(string name, IConfiguration childContainer, IConfigurationStore store)
 		{
@@ -168,7 +149,5 @@ namespace Castle.Windsor.Configuration.Interpreters
 				throw new Exception(message);
 			}
 		}
-
-		#endregion
 	}
 }
