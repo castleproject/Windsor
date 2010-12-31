@@ -12,12 +12,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Facilities.TypedFactory
+namespace Castle.MicroKernel.Releasers
 {
-	using Castle.MicroKernel;
+	using System;
 
-	public interface ITypedFactoryComponentResolver
+	[Serializable]
+	public class SubReleasePolicy : LifecycledComponentsReleasePolicy
 	{
-		object Resolve(IKernelInternal kernel, IReleasePolicy scope);
+		private readonly IReleasePolicy parent;
+
+		public SubReleasePolicy(IReleasePolicy parent)
+		{
+			this.parent = parent;
+		}
+
+		public override void Track(object instance, Burden burden)
+		{
+			base.Track(instance, burden);
+			parent.Track(instance, burden);
+		}
 	}
 }

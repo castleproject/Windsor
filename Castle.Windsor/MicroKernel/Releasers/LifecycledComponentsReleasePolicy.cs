@@ -22,7 +22,7 @@ namespace Castle.MicroKernel.Releasers
 	using Castle.MicroKernel.Util;
 
 	/// <summary>
-	///   Tracks all components if asked. Releases those requiring decomission (<see cref="Burden.RequiresPolicyRelease"/>)
+	///   Tracks all components if asked. Releases those requiring decomission (<see cref = "Burden.RequiresPolicyRelease" />)
 	/// </summary>
 	[Serializable]
 	public class LifecycledComponentsReleasePolicy : IReleasePolicy
@@ -41,12 +41,17 @@ namespace Castle.MicroKernel.Releasers
 				// NOTE: This is relying on a undocumented behavior that order of items when enumerating Dictionary<> will be oldest --> latest
 				foreach (var burden in burdens.Reverse())
 				{
-					if(burden.Value.RequiresPolicyRelease)
+					if (burden.Value.RequiresPolicyRelease)
 					{
 						burden.Value.Release();
 					}
 				}
 			}
+		}
+
+		public IReleasePolicy CreateSubPolicy()
+		{
+			return new SubReleasePolicy(this);
 		}
 
 		public bool HasTrack(object instance)
@@ -97,7 +102,7 @@ namespace Castle.MicroKernel.Releasers
 		{
 			using (@lock.ForWriting())
 			{
-				if(instance2Burden.Remove(burden.Instance))
+				if (instance2Burden.Remove(burden.Instance))
 				{
 					burden.Released -= OnInstanceReleased;
 				}

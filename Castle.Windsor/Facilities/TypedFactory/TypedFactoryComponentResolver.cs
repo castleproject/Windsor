@@ -60,15 +60,16 @@ namespace Castle.Facilities.TypedFactory
 		///   Resolves the component(s) from given kernel.
 		/// </summary>
 		/// <param name = "kernel"></param>
+		/// <param name = "scope"></param>
 		/// <returns>Resolved component(s).</returns>
-		public virtual object Resolve(IKernel kernel)
+		public virtual object Resolve(IKernelInternal kernel, IReleasePolicy scope)
 		{
 			if (kernel.HasComponent(ComponentName) == false)
 			{
-				return kernel.Resolve(ComponentType, AdditionalArguments);
+				return kernel.Resolve(ComponentType, AdditionalArguments, scope);
 			}
 
-			return kernel.Resolve(ComponentName, ComponentType, AdditionalArguments);
+			return kernel.Resolve(ComponentName, ComponentType, AdditionalArguments, scope);
 		}
 	}
 }

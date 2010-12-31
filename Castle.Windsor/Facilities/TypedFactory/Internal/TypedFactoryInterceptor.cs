@@ -30,27 +30,17 @@ namespace Castle.Facilities.TypedFactory.Internal
 	[Transient]
 	public class TypedFactoryInterceptor : IInterceptor, IOnBehalfAware, IDisposable
 	{
-		private const int SweepFrequency = 100;
-
-		private readonly IKernel kernel;
-
-		private readonly List<WeakReference> resolvedTrackedComponents = new List<WeakReference>();
+		private readonly IKernelInternal kernel;
 
 		private bool disposed;
 		private IDictionary<MethodInfo, FactoryMethod> methods;
-		private int resolveCount;
+		private readonly IReleasePolicy scope;
 
-		public TypedFactoryInterceptor(IKernel kernel, ITypedFactoryComponentSelector componentSelector)
+		public TypedFactoryInterceptor(IKernelInternal kernel, ITypedFactoryComponentSelector componentSelector)
 		{
 			ComponentSelector = componentSelector;
 			this.kernel = kernel;
-		}
-
-		public TypedFactoryInterceptor(IKernel kernel, ITypedFactoryComponentSelector componentSelector, IDictionary<MethodInfo, FactoryMethod> methods)
-		{
-			ComponentSelector = componentSelector;
-			this.kernel = kernel;
-			this.methods = methods;
+			scope = kernel.ReleasePolicy.CreateSubPolicy();
 		}
 
 		public ITypedFactoryComponentSelector ComponentSelector { get; private set; }
@@ -58,17 +48,7 @@ namespace Castle.Facilities.TypedFactory.Internal
 		public void Dispose()
 		{
 			disposed = true;
-			var components = resolvedTrackedComponents.ToArray();
-			resolvedTrackedComponents.Clear();
-			foreach (var component in components)
-			{
-				var instance = component.Target;
-				if (instance == null)
-				{
-					continue;
-				}
-				kernel.ReleaseComponent(instance);
-			}
+			scope.Dispose();
 		}
 
 		public void Intercept(IInvocation invocation)
@@ -113,23 +93,6 @@ namespace Castle.Facilities.TypedFactory.Internal
 			}
 		}
 
-		private void CollectDeadReferences()
-		{
-			resolveCount++;
-			if (resolveCount != SweepFrequency)
-			{
-				return;
-			}
-
-			resolveCount = 0;
-			// we go ahead and remove dead references from the list
-#if !SILVERLIGHT
-			resolvedTrackedComponents.RemoveAll(c => c.IsAlive == false);
-#else
-			resolvedTrackedComponents.Where(c => c.IsAlive == false).ToList().ForEach(x => resolvedTrackedComponents.Remove(x));
-#endif
-		}
-
 		private void Release(IInvocation invocation)
 		{
 			foreach (var argument in invocation.Arguments)
@@ -154,12 +117,7 @@ namespace Castle.Facilities.TypedFactory.Internal
 						ComponentSelector,
 						invocation.Method));
 			}
-			var instance = component.Resolve(kernel);
-			if (kernel.ReleasePolicy.HasTrack(instance))
-			{
-				CollectDeadReferences();
-				resolvedTrackedComponents.Add(new WeakReference(instance));
-			}
+			var instance = component.Resolve(kernel, scope);
 			invocation.ReturnValue = instance;
 		}
 
