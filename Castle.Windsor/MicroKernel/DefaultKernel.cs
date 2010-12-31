@@ -791,17 +791,6 @@ namespace Castle.MicroKernel
 #endif
 		}
 
-		protected object ResolveComponent(IHandler handler, Type service)
-		{
-			return ResolveComponent(handler, service, null);
-		}
-
-		protected object ResolveComponent(IHandler handler, IDictionary additionalArguments)
-		{
-			// NOTE: This should best be removed.
-			return ResolveComponent(handler, typeof(object), additionalArguments);
-		}
-
 		protected object ResolveComponent(IHandler handler, Type service, IDictionary additionalArguments)
 		{
 			var parent = currentCreationContext;
@@ -922,7 +911,7 @@ namespace Castle.MicroKernel
 			parentKernel.ComponentRegistered -= RaiseComponentRegistered;
 		}
 
-		IHandler IKernelInternal.LazyLoadComponentByKey(string key, Type service, IDictionary arguments)
+		IHandler IKernelInternal.LoadHandlerByKey(string key, Type service, IDictionary arguments)
 		{
 			if (key == null)
 			{
@@ -968,7 +957,7 @@ namespace Castle.MicroKernel
 			}
 		}
 
-		IHandler IKernelInternal.LazyLoadComponentByType(string key, Type service, IDictionary arguments)
+		IHandler IKernelInternal.LoadHandlerByType(string key, Type service, IDictionary arguments)
 		{
 			if (service == null)
 			{

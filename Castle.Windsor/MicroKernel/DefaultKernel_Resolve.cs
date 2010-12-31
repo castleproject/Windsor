@@ -30,21 +30,7 @@ namespace Castle.MicroKernel
 		/// <returns></returns>
 		public virtual object Resolve(String key, Type service)
 		{
-			if (key == null)
-			{
-				throw new ArgumentNullException("key");
-			}
-			if (service == null)
-			{
-				throw new ArgumentNullException("service");
-			}
-			var handler = (this as IKernelInternal).LazyLoadComponentByKey(key, service, null);
-			if (handler == null)
-			{
-				throw new ComponentNotFoundException(key);
-			}
-
-			return ResolveComponent(handler, service);
+			return Resolve(key, service, null);
 		}
 
 		/// <summary>
@@ -56,22 +42,13 @@ namespace Castle.MicroKernel
 		/// <returns></returns>
 		public virtual object Resolve(String key, Type service, IDictionary arguments)
 		{
-			if (key == null)
-			{
-				throw new ArgumentNullException("key");
-			}
-			if (service == null)
-			{
-				throw new ArgumentNullException("service");
-			}
-
-			var handler = (this as IKernelInternal).LazyLoadComponentByKey(key, service, arguments);
+			var handler = (this as IKernelInternal).LoadHandlerByKey(key, service, arguments);
 			if (handler == null)
 			{
 				throw new ComponentNotFoundException(key);
 			}
 
-			return ResolveComponent(handler, service, arguments);
+			return ResolveComponent(handler, service ?? typeof(object), arguments);
 		}
 
 		/// <summary>
@@ -82,8 +59,7 @@ namespace Castle.MicroKernel
 		/// <returns></returns>
 		public T Resolve<T>(IDictionary arguments)
 		{
-			Type serviceType = typeof(T);
-			return (T)Resolve(serviceType, arguments);
+			return (T)Resolve(typeof(T), arguments);
 		}
 
 		/// <summary>
@@ -94,7 +70,7 @@ namespace Castle.MicroKernel
 		/// <returns></returns>
 		public T Resolve<T>(object argumentsAsAnonymousType)
 		{
-			return Resolve<T>(new ReflectionBasedDictionaryAdapter(argumentsAsAnonymousType));
+			return (T)Resolve(typeof(T),new ReflectionBasedDictionaryAdapter(argumentsAsAnonymousType));
 		}
 
 		/// <summary>
@@ -103,8 +79,7 @@ namespace Castle.MicroKernel
 		/// <returns></returns>
 		public T Resolve<T>()
 		{
-			Type serviceType = typeof(T);
-			return (T)Resolve(serviceType);
+			return (T)Resolve(typeof(T), null);
 		}
 
 		/// <summary>
@@ -117,8 +92,7 @@ namespace Castle.MicroKernel
 		/// </returns>
 		public T Resolve<T>(String key)
 		{
-			Type serviceType = typeof(T);
-			return (T)Resolve(key, serviceType);
+			return (T)Resolve(key, typeof(T), arguments: null);
 		}
 
 		/// <summary>
@@ -132,8 +106,7 @@ namespace Castle.MicroKernel
 		/// </returns>
 		public T Resolve<T>(String key, IDictionary arguments)
 		{
-			Type serviceType = typeof(T);
-			return (T)Resolve(key, serviceType, arguments);
+			return (T)Resolve(key, typeof(T), arguments);
 		}
 
 		/// <summary>
@@ -141,18 +114,7 @@ namespace Castle.MicroKernel
 		/// </summary>
 		public object Resolve(Type service)
 		{
-			if (service == null)
-			{
-				throw new ArgumentNullException("service");
-			}
-
-			var handler = (this as IKernelInternal).LazyLoadComponentByType(null, service, null);
-			if (handler == null)
-			{
-				throw new ComponentNotFoundException(service);
-			}
-
-			return ResolveComponent(handler, service);
+			return Resolve(service, arguments: null);
 		}
 
 		/// <summary>
@@ -164,16 +126,7 @@ namespace Castle.MicroKernel
 		/// <returns></returns>
 		public object Resolve(Type service, IDictionary arguments)
 		{
-			if (service == null)
-			{
-				throw new ArgumentNullException("service");
-			}
-			if (arguments == null)
-			{
-				throw new ArgumentNullException("arguments");
-			}
-
-			var handler = (this as IKernelInternal).LazyLoadComponentByType(null, service, arguments);
+			var handler = (this as IKernelInternal).LoadHandlerByType(null, service, arguments);
 			if (handler == null)
 			{
 				throw new ComponentNotFoundException(service);
@@ -203,22 +156,7 @@ namespace Castle.MicroKernel
 		/// <returns></returns>
 		public object Resolve(string key, IDictionary arguments)
 		{
-			if (key == null)
-			{
-				throw new ArgumentNullException("key");
-			}
-			if (arguments == null)
-			{
-				throw new ArgumentNullException("arguments");
-			}
-
-			var handler = (this as IKernelInternal).LazyLoadComponentByKey(key, null, arguments);
-			if (handler == null)
-			{
-				throw new ComponentNotFoundException(key);
-			}
-
-			return ResolveComponent(handler, arguments);
+			return Resolve(key, service: null, arguments: arguments);
 		}
 
 		/// <summary>
@@ -230,7 +168,7 @@ namespace Castle.MicroKernel
 		/// <returns></returns>
 		public object Resolve(string key, object argumentsAsAnonymousType)
 		{
-			return Resolve<object>(key, new ReflectionBasedDictionaryAdapter(argumentsAsAnonymousType));
+			return Resolve(key, service: null, arguments: new ReflectionBasedDictionaryAdapter(argumentsAsAnonymousType));
 		}
 
 		/// <summary>
