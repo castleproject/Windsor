@@ -22,21 +22,25 @@ namespace Castle.Facilities.TypedFactory
 	/// <summary>
 	///   Represents a set of components to be resolved via Typed Factory. Uses <see cref = "IKernel.ResolveAll(System.Type,System.Collections.IDictionary)" /> to resolve the components.
 	/// </summary>
-	public class TypedFactoryComponentCollection : TypedFactoryComponent
+	public class TypedFactoryCollectionResolver : ITypedFactoryComponentResolver
 	{
+		private readonly Type componentCollectionType;
+		private readonly IDictionary additionalArguments;
+
 		/// <summary>
-		///   Creates new instance of <see cref = "TypedFactoryComponentCollection" />.
+		///   Creates new instance of <see cref = "TypedFactoryCollectionResolver" />.
 		/// </summary>
 		/// <param name = "componentCollectionType">Collection type to resolve. Must be an array (SomeComponent[]) or IEnumerable{SomeComponent}. Type of the element of the collection will be used as first argument to <see cref = "IKernel.ResolveAll(System.Type,System.Collections.IDictionary)" /></param>
 		/// <param name = "additionalArguments">Additional arguents that will be passed as second argument to <see cref = "IKernel.ResolveAll(System.Type,System.Collections.IDictionary)" /></param>
-		public TypedFactoryComponentCollection(Type componentCollectionType, IDictionary additionalArguments)
-			: base(null, componentCollectionType, additionalArguments)
+		public TypedFactoryCollectionResolver(Type componentCollectionType, IDictionary additionalArguments)
 		{
+			this.componentCollectionType = componentCollectionType;
+			this.additionalArguments = additionalArguments;
 		}
 
-		public override object Resolve(IKernel kernel)
+		public object Resolve(IKernel kernel)
 		{
-			var result = kernel.ResolveAll(ComponentType, AdditionalArguments);
+			var result = kernel.ResolveAll(componentCollectionType, additionalArguments);
 			return result;
 		}
 	}

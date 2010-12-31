@@ -12,18 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Windsor.Tests.Facilities.TypedFactory.Selectors
+namespace Castle.Facilities.TypedFactory
 {
-	using System;
-	using System.Reflection;
+	using Castle.MicroKernel;
 
-	using Castle.Facilities.TypedFactory;
-
-	public class FooSelector : ITypedFactoryComponentSelector
+	public interface ITypedFactoryComponentResolver
 	{
-		public ITypedFactoryComponentResolver SelectComponent(MethodInfo method, Type type, object[] arguments)
-		{
-			return new TypedFactoryComponentResolver("foo", null, null);
-		}
+		object Resolve(IKernel kernel);
 	}
 }

@@ -22,13 +22,13 @@ namespace Castle.Facilities.TypedFactory
 	/// <summary>
 	///   Represents a single component to be resolved via Typed Factory
 	/// </summary>
-	public class TypedFactoryComponent
+	public class TypedFactoryComponentResolver : ITypedFactoryComponentResolver
 	{
 		private readonly IDictionary additionalArguments;
 		private readonly string componentName;
 		private readonly Type componentType;
 
-		public TypedFactoryComponent(string componentName, Type componentType, IDictionary additionalArguments)
+		public TypedFactoryComponentResolver(string componentName, Type componentType, IDictionary additionalArguments)
 		{
 			if (string.IsNullOrEmpty(componentName) && componentType == null)
 			{

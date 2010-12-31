@@ -23,7 +23,7 @@ namespace Castle.Facilities.TypedFactory
 
 	public class DefaultTypedFactoryComponentSelector : ITypedFactoryComponentSelector
 	{
-		public TypedFactoryComponent SelectComponent(MethodInfo method, Type type, object[] arguments)
+		public ITypedFactoryComponentResolver SelectComponent(MethodInfo method, Type type, object[] arguments)
 		{
 			var componentName = GetComponentName(method, arguments);
 			var componentType = GetComponentType(method, arguments);
@@ -33,25 +33,24 @@ namespace Castle.Facilities.TypedFactory
 		}
 
 		/// <summary>
-		///   Builds <see cref = "TypedFactoryComponent" /> for given call.
+		///   Builds <see cref = "TypedFactoryComponentResolver" /> for given call.
 		///   By default if <paramref name = "componentType" /> is a collection
-		///   returns <see cref = "TypedFactoryComponentCollection" /> for the collection's item type,
-		///   otherwise standard <see cref = "TypedFactoryComponent" />.
+		///   returns <see cref = "TypedFactoryCollectionResolver" /> for the collection's item type,
+		///   otherwise standard <see cref = "TypedFactoryComponentResolver" />.
 		/// </summary>
 		/// <param name = "method"></param>
 		/// <param name = "componentName"></param>
 		/// <param name = "componentType"></param>
 		/// <param name = "additionalArguments"></param>
 		/// <returns></returns>
-		protected virtual TypedFactoryComponent BuildFactoryComponent(MethodInfo method, string componentName,
-		                                                              Type componentType, IDictionary additionalArguments)
+		protected virtual ITypedFactoryComponentResolver BuildFactoryComponent(MethodInfo method, string componentName, Type componentType, IDictionary additionalArguments)
 		{
 			var itemType = componentType.GetCompatibleArrayItemType();
 			if (itemType == null)
 			{
-				return new TypedFactoryComponent(componentName, componentType, additionalArguments);
+				return new TypedFactoryComponentResolver(componentName, componentType, additionalArguments);
 			}
-			return new TypedFactoryComponentCollection(itemType, additionalArguments);
+			return new TypedFactoryCollectionResolver(itemType, additionalArguments);
 		}
 
 		/// <summary>

@@ -31,6 +31,6 @@ namespace Castle.Facilities.TypedFactory
 		/// <param name="type"></param>
 		/// <param name="arguments"></param>
 		/// <returns></returns>
-		TypedFactoryComponent SelectComponent(MethodInfo method, Type type, object[] arguments);
+		ITypedFactoryComponentResolver SelectComponent(MethodInfo method, Type type, object[] arguments);
 	}
 }

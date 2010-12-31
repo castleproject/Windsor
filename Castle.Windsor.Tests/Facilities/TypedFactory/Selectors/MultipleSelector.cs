@@ -21,9 +21,9 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory.Selectors
 
 	public class MultipleSelector : ITypedFactoryComponentSelector
 	{
-		public TypedFactoryComponent SelectComponent(MethodInfo method, Type type, object[] arguments)
+		public ITypedFactoryComponentResolver SelectComponent(MethodInfo method, Type type, object[] arguments)
 		{
-			return new TypedFactoryComponentCollection(method.ReturnType, null);
+			return new TypedFactoryCollectionResolver(method.ReturnType, null);
 		}
 	}
 }
