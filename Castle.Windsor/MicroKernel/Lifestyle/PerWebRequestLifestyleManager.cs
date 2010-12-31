@@ -55,10 +55,10 @@ namespace Castle.MicroKernel.Lifestyle
 					"HttpContext.Current is null. PerWebRequestLifestyle can only be used in ASP.Net");
 			}
 
-			var cachedBurden = current.Items[perRequestObjectId];
+			var cachedBurden = (Burden)current.Items[perRequestObjectId];
 			if (cachedBurden != null)
 			{
-				return cachedBurden;
+				return cachedBurden.Instance;
 			}
 			if (!PerWebRequestLifestyleModule.Initialized)
 			{
@@ -74,7 +74,7 @@ namespace Castle.MicroKernel.Lifestyle
 			current.Items[perRequestObjectId] = burden;
 			PerWebRequestLifestyleModule.RegisterForEviction(this, burden);
 			Track(burden, releasePolicy);
-			return burden;
+			return burden.Instance;
 		}
 	}
 }
