@@ -537,7 +537,7 @@ namespace Castle.MicroKernel
 		{
 			if (key == null)
 			{
-				throw new ArgumentNullException("key");
+				return false;
 			}
 
 			if (NamingSubSystem.Contains(key))
@@ -557,7 +557,7 @@ namespace Castle.MicroKernel
 		{
 			if (serviceType == null)
 			{
-				throw new ArgumentNullException("serviceType");
+				return false;
 			}
 
 			if (NamingSubSystem.Contains(serviceType))
