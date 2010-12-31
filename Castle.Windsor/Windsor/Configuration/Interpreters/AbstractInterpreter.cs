@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,18 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
 namespace Castle.Windsor.Configuration.Interpreters
 {
 	using System.Collections.Generic;
 	using System;
+
 	using Castle.Core.Resource;
 	using Castle.Core.Configuration;
 	using Castle.MicroKernel.SubSystems.Configuration;
 
 	/// <summary>
-	/// Provides common methods for those who wants 
-	/// to implement <see cref="IConfigurationInterpreter"/>
+	///   Provides common methods for those who wants 
+	///   to implement <see cref = "IConfigurationInterpreter" />
 	/// </summary>
 	public abstract class AbstractInterpreter : IConfigurationInterpreter
 	{
@@ -41,7 +41,6 @@ namespace Castle.Windsor.Configuration.Interpreters
 		// private ImportDirectiveCollection imports = new ImportDirectiveCollection();
 		private readonly IResource source;
 		private readonly Stack<IResource> resourceStack = new Stack<IResource>();
-		private string environmentName;
 
 		#endregion
 
@@ -49,16 +48,19 @@ namespace Castle.Windsor.Configuration.Interpreters
 
 		protected AbstractInterpreter(IResource source)
 		{
-			if (source == null) throw new ArgumentNullException("source", "IResource is null");
+			if (source == null)
+			{
+				throw new ArgumentNullException("source", "IResource is null");
+			}
 
 			this.source = source;
 
 			PushResource(source);
-		} 
+		}
 
 		public AbstractInterpreter(string filename) : this(new FileResource(filename))
 		{
-		} 
+		}
 
 #if !SILVERLIGHT
 		public AbstractInterpreter() : this(new ConfigResource())
@@ -69,12 +71,12 @@ namespace Castle.Windsor.Configuration.Interpreters
 		#endregion
 
 		/// <summary>
-		/// Should obtain the contents from the resource,
-		/// interpret it and populate the <see cref="IConfigurationStore"/>
-		/// accordingly.
+		///   Should obtain the contents from the resource,
+		///   interpret it and populate the <see cref = "IConfigurationStore" />
+		///   accordingly.
 		/// </summary>
-		/// <param name="resource"></param>
-		/// <param name="store"></param>
+		/// <param name = "resource"></param>
+		/// <param name = "store"></param>
 		public abstract void ProcessResource(IResource resource, IConfigurationStore store);
 
 		#region Support for Resource stack
@@ -93,7 +95,10 @@ namespace Castle.Windsor.Configuration.Interpreters
 		{
 			get
 			{
-				if (resourceStack.Count == 0) return null;
+				if (resourceStack.Count == 0)
+				{
+					return null;
+				}
 
 				return resourceStack.Peek();
 			}
@@ -104,8 +109,8 @@ namespace Castle.Windsor.Configuration.Interpreters
 		#region Properties
 
 		/// <summary>
-		/// Exposes the reference to <see cref="IResource"/>
-		/// which the interpreter is likely to hold
+		///   Exposes the reference to <see cref = "IResource" />
+		///   which the interpreter is likely to hold
 		/// </summary>
 		/// <value></value>
 		public IResource Source
@@ -114,14 +119,10 @@ namespace Castle.Windsor.Configuration.Interpreters
 		}
 
 		/// <summary>
-		/// Gets or sets the name of the environment.
+		///   Gets or sets the name of the environment.
 		/// </summary>
 		/// <value>The name of the environment.</value>
-		public string EnvironmentName
-		{
-			get { return environmentName; }
-			set { environmentName = value; }
-		}
+		public string EnvironmentName { get; set; }
 
 		#endregion
 
@@ -142,7 +143,7 @@ namespace Castle.Windsor.Configuration.Interpreters
 
 			// TODO: Use import collection on type attribute (if it exists)
 
-			store.AddFacilityConfiguration( id, facility );
+			store.AddFacilityConfiguration(id, facility);
 		}
 
 		protected static void AddComponentConfig(string id, IConfiguration component, IConfigurationStore store)
@@ -150,8 +151,8 @@ namespace Castle.Windsor.Configuration.Interpreters
 			AssertValidId(id);
 
 			// TODO: Use import collection on type and service attribute (if they exist)
-			
-			store.AddComponentConfiguration( id, component );
+
+			store.AddComponentConfiguration(id, component);
 		}
 
 		protected static void AddInstallerConfig(IConfiguration installer, IConfigurationStore store)
