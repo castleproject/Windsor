@@ -28,15 +28,15 @@ namespace Castle.MicroKernel.ComponentActivator
 	using Castle.MicroKernel.Proxy;
 
 	/// <summary>
-	/// Standard implementation of <see cref="IComponentActivator"/>.
-	/// Handles the selection of the best constructor, fills the
-	/// writable properties the component exposes, run the commission 
-	/// and decommission lifecycles, etc.
+	///   Standard implementation of <see cref = "IComponentActivator" />.
+	///   Handles the selection of the best constructor, fills the
+	///   writable properties the component exposes, run the commission 
+	///   and decommission lifecycles, etc.
 	/// </summary>
 	/// <remarks>
-	/// Custom implementors can just override the <c>CreateInstance</c> method.
-	/// Please note however that the activator is responsible for the proxy creation
-	/// when needed.
+	///   Custom implementors can just override the <c>CreateInstance</c> method.
+	///   Please note however that the activator is responsible for the proxy creation
+	///   when needed.
 	/// </remarks>
 	[Serializable]
 	public class DefaultComponentActivator : AbstractComponentActivator
@@ -295,39 +295,28 @@ namespace Castle.MicroKernel.ComponentActivator
 				return null;
 			}
 
-			var arguments = new object[constructor.Dependencies.Length];
-			if (arguments.Length == 0)
+			var dependencyCount = constructor.Dependencies.Length;
+			if (dependencyCount == 0)
 			{
 				return null;
 			}
 
+			var arguments = new object[dependencyCount];
 			try
 			{
-				CreateConstructorArgumentsCore(constructor, arguments, context);
+				for (var i = 0; i < dependencyCount; i++)
+				{
+					arguments[i] = Kernel.Resolver.Resolve(context, context.Handler, Model, constructor.Dependencies[i]);
+				}
+				return arguments;
 			}
 			catch
 			{
 				foreach (var argument in arguments)
 				{
-					if (argument == null)
-					{
-						break;
-					}
 					Kernel.ReleaseComponent(argument);
 				}
 				throw;
-			}
-
-			return arguments;
-		}
-
-		private void CreateConstructorArgumentsCore(ConstructorCandidate constructor, object[] arguments, CreationContext context)
-		{
-			for (int i = 0; i < constructor.Dependencies.Length; i++)
-			{
-				var dependency = constructor.Dependencies[i];
-				var value = Kernel.Resolver.Resolve(context, context.Handler, Model, dependency);
-				arguments[i] = value;
 			}
 		}
 
@@ -335,8 +324,9 @@ namespace Castle.MicroKernel.ComponentActivator
 		{
 			instance = ProxyUtil.GetUnproxiedInstance(instance);
 			var resolver = Kernel.Resolver;
-			foreach (var property in Model.Properties)
+			for (var i = 0; i < Model.Properties.Count; i++)
 			{
+				var property = Model.Properties[i];
 				var value = ObtainPropertyValue(context, property, resolver);
 				if (value == null)
 				{
@@ -362,27 +352,21 @@ namespace Castle.MicroKernel.ComponentActivator
 		private object ObtainPropertyValue(CreationContext context, PropertySet property, IDependencyResolver resolver)
 		{
 			if (property.Dependency.IsOptional == false ||
-				resolver.CanResolve(context, context.Handler, Model, property.Dependency))
+			    resolver.CanResolve(context, context.Handler, Model, property.Dependency))
 			{
-				return ObtainPropertyValueCore(context, property, resolver);
+				try
+				{
+					return resolver.Resolve(context, context.Handler, Model, property.Dependency);
+				}
+				catch (Exception)
+				{
+					if (property.Dependency.IsOptional == false)
+					{
+						throw;
+					}
+				}
 			}
 			return null;
-		}
-
-		private object ObtainPropertyValueCore(CreationContext context, PropertySet property, IDependencyResolver resolver)
-		{
-			try
-			{
-				return resolver.Resolve(context, context.Handler, Model, property.Dependency);
-			}
-			catch (Exception)
-			{
-				if (property.Dependency.IsOptional)
-				{
-					return null;
-				}
-				throw;
-			}
 		}
 	}
 }
