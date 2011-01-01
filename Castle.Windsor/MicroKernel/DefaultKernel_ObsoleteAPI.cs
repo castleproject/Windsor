@@ -20,6 +20,7 @@ namespace Castle.MicroKernel
 
 	using Castle.Core;
 	using Castle.MicroKernel.ComponentActivator;
+	using Castle.MicroKernel.Registration;
 
 #if (SILVERLIGHT)
 	public partial class DefaultKernel : IKernel, IKernelEvents
@@ -138,12 +139,11 @@ namespace Castle.MicroKernel
 
 			Type classType = instance.GetType();
 
-			var model = new ComponentModel(key, new[] { classType }, classType)
+			var model = new ComponentModel(key, new[] { classType }, classType, new Arguments().Insert("instance",instance))
 			{
 				LifestyleType = LifestyleType.Singleton,
 				CustomComponentActivator = typeof(ExternalInstanceActivator)
 			};
-			model.ExtendedProperties["instance"] = instance;
 
 			RaiseComponentModelCreated(model);
 			IHandler handler = HandlerFactory.Create(model);
@@ -166,12 +166,11 @@ namespace Castle.MicroKernel
 			if (instance == null) throw new ArgumentNullException("instance");
 			if (classType == null) throw new ArgumentNullException("classType");
 
-			var model = new ComponentModel(key, new[] { serviceType }, classType)
+			var model = new ComponentModel(key, new[] { serviceType }, classType, new Arguments().Insert("instance", instance))
 			{
 				LifestyleType = LifestyleType.Singleton,
 				CustomComponentActivator = typeof(ExternalInstanceActivator)
 			};
-			model.ExtendedProperties["instance"] = instance;
 
 			RaiseComponentModelCreated(model);
 			IHandler handler = HandlerFactory.Create(model);

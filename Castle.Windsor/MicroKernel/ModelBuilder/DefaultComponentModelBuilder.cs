@@ -74,11 +74,7 @@ namespace Castle.MicroKernel.ModelBuilder
 		/// <returns></returns>
 		public ComponentModel BuildModel(string key, Type[] services, Type classType, IDictionary extendedProperties)
 		{
-			var model = new ComponentModel(key, services, classType);
-			if (extendedProperties != null)
-			{
-				model.ExtendedProperties = extendedProperties;
-			}
+			var model = new ComponentModel(key, services, classType,extendedProperties);
 
 			foreach (var contributor in contributors)
 			{
