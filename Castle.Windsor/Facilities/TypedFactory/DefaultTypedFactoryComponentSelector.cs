@@ -16,6 +16,7 @@ namespace Castle.Facilities.TypedFactory
 {
 	using System;
 	using System.Collections;
+	using System.Globalization;
 	using System.Reflection;
 
 	using Castle.Core.Internal;
@@ -82,7 +83,7 @@ namespace Castle.Facilities.TypedFactory
 		protected virtual string GetComponentName(MethodInfo method, object[] arguments)
 		{
 			string componentName = null;
-			if (method.Name.StartsWith("Get"))
+			if (method.Name.StartsWith("Get", StringComparison.OrdinalIgnoreCase))
 			{
 				componentName = method.Name.Substring("Get".Length);
 			}
