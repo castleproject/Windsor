@@ -18,80 +18,78 @@ namespace Castle.Core
 	using System.Collections;
 	using System.Collections.Generic;
 	using System.Diagnostics;
+	using System.Linq;
+	using System.Threading;
 
 	using Castle.Core.Configuration;
 	using Castle.Core.Internal;
+	using Castle.MicroKernel;
 
 	/// <summary>
 	///   Represents the collection of information and
 	///   meta information collected about a component.
 	/// </summary>
-	[DebuggerDisplay("{Implementation} / {Service}")]
 	[Serializable]
 	public sealed class ComponentModel : GraphNode
 	{
 		public const string SkipRegistration = "skip.registration";
 
-		private readonly ICollection<Type> interfaceServices = new HashSet<Type>();
-
-		private readonly object syncRoot = new object();
-
-		// Note the use of volatile for fields used in the double checked lock pattern.
-		// This is necessary to ensure the pattern works correctly.
-
-		private Type classService;
-
 		/// <summary>
 		///   All available constructors
 		/// </summary>
-		private volatile ConstructorCandidateCollection constructors = new ConstructorCandidateCollection();
+		private readonly ConstructorCandidateCollection constructors = new ConstructorCandidateCollection();
+
+		private readonly ICollection<Type> interfaceServices = new HashSet<Type>();
+
+		/// <summary>
+		///   Steps of lifecycle
+		/// </summary>
+		private readonly LifecycleConcernsCollection lifecycle = new LifecycleConcernsCollection();
+
+		private Type classService;
 
 		/// <summary>
 		///   /// Custom dependencies///
 		/// </summary>
 		[NonSerialized]
-		private volatile IDictionary customDependencies;
+		private IDictionary customDependencies;
 
 		/// <summary>
 		///   Dependencies the kernel must resolve
 		/// </summary>
-		private volatile DependencyModelCollection dependencies;
+		private DependencyModelCollection dependencies;
 
 		/// <summary>
 		///   Extended properties
 		/// </summary>
 		[NonSerialized]
-		private volatile IDictionary extended;
+		private IDictionary extendedProperties;
 
 		/// <summary>
 		///   Interceptors associated
 		/// </summary>
-		private volatile InterceptorReferenceCollection interceptors;
-
-		/// <summary>
-		///   Steps of lifecycle
-		/// </summary>
-		private volatile LifecycleConcernsCollection lifecycle = new LifecycleConcernsCollection();
+		private InterceptorReferenceCollection interceptors;
 
 		/// <summary>
 		///   External parameters
 		/// </summary>
-		private volatile ParameterModelCollection parameters;
+		private ParameterModelCollection parameters;
 
 		/// <summary>
 		///   All potential properties that can be setted by the kernel
 		/// </summary>
-		private volatile PropertySetCollection properties;
+		private PropertySetCollection properties;
 
 		/// <summary>
 		///   Constructs a ComponentModel
 		/// </summary>
-		public ComponentModel(String name, ICollection<Type> services, Type implementation)
+		public ComponentModel(string name, ICollection<Type> services, Type implementation, IDictionary extendedProperties)
 		{
 			Name = name;
 			Implementation = implementation;
 			LifestyleType = LifestyleType.Undefined;
 			InspectionBehavior = PropertiesInspectionBehavior.Undefined;
+			this.extendedProperties = extendedProperties;
 			foreach (var type in services)
 			{
 				AddService(type);
@@ -102,9 +100,10 @@ namespace Castle.Core
 		{
 			get
 			{
-				if (classService != null)
+				var @class = classService;
+				if (@class != null)
 				{
-					yield return classService;
+					yield return @class;
 				}
 				foreach (var interfaceService in interfaceServices)
 				{
@@ -119,15 +118,11 @@ namespace Castle.Core
 			private set
 			{
 				Debug.Assert(value.IsClass, "value.IsClass");
-				lock (syncRoot)
+				var originalValue = Interlocked.CompareExchange(ref classService, value, null);
+				if (originalValue != null)
 				{
-					if (classService != null)
-					{
-						throw new InvalidOperationException(string.Format("This component already has a class service set ({0}).",
-						                                                  classService));
-					}
-
-					classService = value;
+					throw new InvalidOperationException(string.Format("This component already has a class service set ({0}).",
+					                                                  originalValue));
 				}
 			}
 		}
@@ -161,17 +156,14 @@ namespace Castle.Core
 		{
 			get
 			{
-				if (customDependencies == null)
+				var value = customDependencies;
+				if (value != null)
 				{
-					lock (syncRoot)
-					{
-						if (customDependencies == null)
-						{
-							customDependencies = new Dictionary<object, object>();
-						}
-					}
+					return value;
 				}
-				return customDependencies;
+				value = new Arguments();
+				var originalValue = Interlocked.CompareExchange(ref customDependencies, value, null);
+				return originalValue ?? value;
 			}
 		}
 
@@ -191,17 +183,14 @@ namespace Castle.Core
 		{
 			get
 			{
-				if (dependencies == null)
+				var value = dependencies;
+				if (value != null)
 				{
-					lock (syncRoot)
-					{
-						if (dependencies == null)
-						{
-							dependencies = new DependencyModelCollection();
-						}
-					}
+					return value;
 				}
-				return dependencies;
+				value = new DependencyModelCollection();
+				var originalValue = Interlocked.CompareExchange(ref dependencies, value, null);
+				return originalValue ?? value;
 			}
 		}
 
@@ -213,27 +202,23 @@ namespace Castle.Core
 		{
 			get
 			{
-				if (extended == null)
+				var value = extendedProperties;
+				if (value != null)
 				{
-					lock (syncRoot)
-					{
-						if (extended == null)
-						{
-							extended = new Dictionary<object, object>();
-						}
-					}
+					return value;
 				}
-				return extended;
+				value = new Arguments();
+				var originalValue = Interlocked.CompareExchange(ref extendedProperties, value, null);
+				return originalValue ?? value;
 			}
-			set { extended = value; }
 		}
 
 		public bool HasCustomDependencies
 		{
 			get
 			{
-				var dependencies = customDependencies;
-				return dependencies != null && dependencies.Count > 0;
+				var value = customDependencies;
+				return value != null && value.Count > 0;
 			}
 		}
 
@@ -241,8 +226,8 @@ namespace Castle.Core
 		{
 			get
 			{
-				var interceptorsLocal = interceptors;
-				return interceptorsLocal != null && interceptorsLocal.HasInterceptors;
+				var value = interceptors;
+				return value != null && value.HasInterceptors;
 			}
 		}
 
@@ -250,8 +235,8 @@ namespace Castle.Core
 		{
 			get
 			{
-				var parameterModelCollection = parameters;
-				return parameterModelCollection != null && parameterModelCollection.Count > 0;
+				var value = parameters;
+				return value != null && value.Count > 0;
 			}
 		}
 
@@ -276,17 +261,14 @@ namespace Castle.Core
 		{
 			get
 			{
-				if (interceptors == null)
+				var value = interceptors;
+				if (value != null)
 				{
-					lock (syncRoot)
-					{
-						if (interceptors == null)
-						{
-							interceptors = new InterceptorReferenceCollection(Dependencies);
-						}
-					}
+					return value;
 				}
-				return interceptors;
+				value = new InterceptorReferenceCollection(Dependencies);
+				var originalValue = Interlocked.CompareExchange(ref interceptors, value, null);
+				return originalValue ?? value;
 			}
 		}
 
@@ -327,17 +309,14 @@ namespace Castle.Core
 		{
 			get
 			{
-				if (parameters == null)
+				var value = parameters;
+				if (value != null)
 				{
-					lock (syncRoot)
-					{
-						if (parameters == null)
-						{
-							parameters = new ParameterModelCollection();
-						}
-					}
+					return value;
 				}
-				return parameters;
+				value = new ParameterModelCollection();
+				var originalValue = Interlocked.CompareExchange(ref parameters, value, null);
+				return originalValue ?? value;
 			}
 		}
 
@@ -349,17 +328,14 @@ namespace Castle.Core
 		{
 			get
 			{
-				if (properties == null)
+				var value = properties;
+				if (value != null)
 				{
-					lock (syncRoot)
-					{
-						if (properties == null)
-						{
-							properties = new PropertySetCollection();
-						}
-					}
+					return value;
 				}
-				return properties;
+				value = new PropertySetCollection();
+				var originalValue = Interlocked.CompareExchange(ref properties, value, null);
+				return originalValue ?? value;
 			}
 		}
 
@@ -416,6 +392,17 @@ namespace Castle.Core
 		public void Requires<D>() where D : class
 		{
 			Requires(p => p.Dependency.TargetItemType == typeof(D));
+		}
+
+		public override string ToString()
+		{
+			var services = AllServices.ToArray();
+			var value = string.Format("{0} / {1}", Implementation.Name, services[0].Name);
+			if (services.Length > 1)
+			{
+				value += string.Format(" and {0} other services", services.Length - 1);
+			}
+			return value;
 		}
 	}
 }

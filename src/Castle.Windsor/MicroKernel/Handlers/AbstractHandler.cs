@@ -11,7 +11,6 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
 namespace Castle.MicroKernel.Handlers
 {
 	using System;
@@ -35,7 +34,6 @@ namespace Castle.MicroKernel.Handlers
 	///   <see cref = "IHandler" />
 	/// </summary>
 	[Serializable]
-	[DebuggerDisplay("Model: {ComponentModel.Service} / {ComponentModel.Implementation} ")]
 #if SILVERLIGHT
 	public abstract class AbstractHandler : IHandler, IExposeDependencyInfo, IDisposable
 #else
@@ -964,5 +962,10 @@ namespace Castle.MicroKernel.Handlers
 		}
 
 		public event HandlerStateDelegate OnHandlerStateChanged;
+
+		public override string ToString()
+		{
+			return string.Format("Model: {0}", model);
+		}
 	}
 }
