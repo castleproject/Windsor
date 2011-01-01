@@ -77,7 +77,7 @@ namespace Castle.MicroKernel.Lifestyle
 
 		protected virtual Burden CreateInstance(CreationContext context, bool trackedExternally)
 		{
-			return context.ActivateNewInstance(ComponentActivator,trackedExternally);
+			return context.ActivateNewInstance(ComponentActivator, trackedExternally);
 		}
 	}
 }
