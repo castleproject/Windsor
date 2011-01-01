@@ -16,8 +16,6 @@ namespace Castle.MicroKernel
 {
 	using System;
 
-	using Castle.MicroKernel.SubSystems.Conversion;
-
 	/// <summary>
 	/// Holds the keys used by Kernel to register/request 
 	/// a subsystem.

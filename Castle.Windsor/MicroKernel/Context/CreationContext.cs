@@ -11,7 +11,6 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
 namespace Castle.MicroKernel.Context
 {
 	using System;
@@ -39,7 +38,7 @@ namespace Castle.MicroKernel.Context
 	{
 		private readonly ITypeConverter converter;
 
-		private readonly Type[] genericArguments;
+		private Type[] genericArguments;
 
 		private readonly IHandler handler;
 
@@ -92,14 +91,14 @@ namespace Castle.MicroKernel.Context
 		/// <param name = "additionalArguments">The additional arguments.</param>
 		/// <param name = "conversionManager">The conversion manager.</param>
 		/// <param name = "parent">Parent context</param>
-		public CreationContext(IHandler handler, IReleasePolicy releasePolicy, Type requestedType, IDictionary additionalArguments, ITypeConverter conversionManager, CreationContext parent)
+		public CreationContext(IHandler handler, IReleasePolicy releasePolicy, Type requestedType, IDictionary additionalArguments, ITypeConverter conversionManager,
+		                       CreationContext parent)
 		{
 			this.requestedType = requestedType;
 			this.handler = handler;
 			this.releasePolicy = releasePolicy;
 			this.additionalArguments = EnsureAdditionalArgumentsWriteable(additionalArguments);
 			converter = conversionManager;
-			genericArguments = ExtractGenericArguments(requestedType);
 
 			if (parent == null)
 			{
@@ -136,7 +135,14 @@ namespace Castle.MicroKernel.Context
 
 		public Type[] GenericArguments
 		{
-			get { return genericArguments; }
+			get
+			{
+				if (genericArguments == null)
+				{
+					genericArguments = ExtractGenericArguments(requestedType);
+				}
+				return genericArguments;
+			}
 		}
 
 		public IHandler Handler

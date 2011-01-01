@@ -21,9 +21,7 @@ namespace Castle.MicroKernel
 	/// Exception threw by Kernel operations that failed
 	/// for some reason.
 	/// </summary>
-#if (!SILVERLIGHT)
 	[Serializable]
-#endif
 	public class KernelException : Exception
 	{
 		/// <summary>
