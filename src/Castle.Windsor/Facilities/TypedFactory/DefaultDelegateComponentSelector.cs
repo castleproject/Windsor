@@ -50,6 +50,11 @@ namespace Castle.Facilities.TypedFactory
 			return arg;
 		}
 
+		protected override string GetComponentName(MethodInfo method, object[] arguments)
+		{
+			return null;
+		}
+
 		private bool IsFunc(Type type)
 		{
 			return type.FullName != null && type.FullName.StartsWith("System.Func");
