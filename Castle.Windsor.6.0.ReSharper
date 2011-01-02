@@ -290,6 +290,10 @@ II.2.12 <HandlesEvent />
 </Patterns>
 ]]></CustomMemberReorderingPatterns>
     </CSharp>
+    <JavaScript>
+      <FormatSettings />
+      <Naming2 />
+    </JavaScript>
     <VB>
       <FormatSettings />
       <ImportsSettings />
