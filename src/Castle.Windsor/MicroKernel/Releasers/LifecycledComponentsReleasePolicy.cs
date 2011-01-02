@@ -41,17 +41,14 @@ namespace Castle.MicroKernel.Releasers
 				// NOTE: This is relying on a undocumented behavior that order of items when enumerating Dictionary<> will be oldest --> latest
 				foreach (var burden in burdens.Reverse())
 				{
-					if (burden.Value.RequiresPolicyRelease)
-					{
-						burden.Value.Release();
-					}
+					burden.Value.Release();
 				}
 			}
 		}
 
 		public IReleasePolicy CreateSubPolicy()
 		{
-			return new SubReleasePolicy(this);
+			return new LifecycledComponentsReleasePolicy();
 		}
 
 		public bool HasTrack(object instance)
@@ -81,16 +78,21 @@ namespace Castle.MicroKernel.Releasers
 				{
 					return;
 				}
-				if (burden.RequiresPolicyRelease == false)
-				{
-					return;
-				}
 				burden.Release();
 			}
 		}
 
 		public virtual void Track(object instance, Burden burden)
 		{
+			if(burden.RequiresPolicyRelease == false)
+			{
+				var lifestyle = ((object)burden.Model.CustomLifestyle) ?? burden.Model.LifestyleType;
+				throw new ArgumentException(
+					string.Format(
+						"Release policy was asked to track object '{0}', but its burden has 'RequiresPolicyRelease' set to false. If object is to be tracked the flag must be true. This is likely a bug in the lifetime manager '{1}'.",
+						instance, lifestyle));
+				;
+			}
 			using (@lock.ForWriting())
 			{
 				instance2Burden.Add(instance, burden);

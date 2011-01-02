@@ -717,7 +717,6 @@
     <Compile Include="MicroKernel\Releasers\NoTrackingReleasePolicy.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="MicroKernel\Releasers\SubReleasePolicy.cs" />
     <Compile Include="MicroKernel\Resolvers\DefaultDependencyResolver.cs">
       <SubType>Code</SubType>
     </Compile>

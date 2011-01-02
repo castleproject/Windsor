@@ -29,20 +29,18 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 	using NUnit.Framework;
 
 	[TestFixture]
-	public class TypedFactoryFacilityTake2TestCase
+	public class TypedFactoryFacilityTake2TestCase:AbstractContainerTestFixture
 	{
-		private WindsorContainer container;
-
 		[Test]
 		public void Can_Resolve_by_closed_generic_closed_on_arguments_type_with_custom_selector()
 		{
-			container.Register(AllTypes.FromAssemblyContaining<TypedFactoryFacilityTake2TestCase>()
+			Container.Register(AllTypes.FromAssemblyContaining<TypedFactoryFacilityTake2TestCase>()
 			                   	.BasedOn(typeof(GenericComponent<>))
 			                   	.WithService.Base().Configure(c => c.LifeStyle.Transient),
 			                   Component.For<IObjectFactory>().AsFactory(s => s.SelectedWith<SelectorByClosedArgumentType>()),
 			                   Component.For<SelectorByClosedArgumentType>());
 
-			var factory = container.Resolve<IObjectFactory>();
+			var factory = Container.Resolve<IObjectFactory>();
 
 			var one = factory.GetItemByWithParameter(3);
 			var two = factory.GetItemByWithParameter("two");
@@ -56,7 +54,7 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 		[Test]
 		public void Can_Resolve_by_name_with_custom_selector()
 		{
-			container.Register(
+			Container.Register(
 				Component.For<IDummyComponent>()
 					.ImplementedBy<Component1>()
 					.Named("one"),
@@ -66,7 +64,7 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 				Component.For<IFactoryById>().AsFactory(f => f.SelectedWith<SelectorById>()),
 				Component.For<SelectorById>());
 
-			var factory = container.Resolve<IFactoryById>();
+			var factory = Container.Resolve<IFactoryById>();
 
 			var one = factory.ComponentNamed("one");
 			var two = factory.ComponentNamed("two");
@@ -77,13 +75,13 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 		[Test]
 		public void Can_Resolve_multiple_components_at_once_with_default_selector_list()
 		{
-			container.Register(
+			Container.Register(
 				Component.For<IDummyComponent>()
 					.ImplementedBy<Component2>()
 					.LifeStyle.Transient,
 				Component.For<DummyComponentListFactory>()
 					.AsFactory());
-			var factory = container.Resolve<DummyComponentListFactory>();
+			var factory = Container.Resolve<DummyComponentListFactory>();
 
 			var all = factory.All();
 			Assert.IsNotNull(all);
@@ -95,7 +93,7 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 		[Test]
 		public void Can_Resolve_multiple_components_at_once_with_non_default_selector_array()
 		{
-			container.Register(
+			Container.Register(
 				Component.For<IDummyComponent>()
 					.ImplementedBy<Component2>()
 					.LifeStyle.Transient,
@@ -103,7 +101,7 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 					.AsFactory(),
 				Component.For<ITypedFactoryComponentSelector>()
 					.ImplementedBy<MultipleSelector>());
-			var factory = container.Resolve<DummyComponentArrayFactory>();
+			var factory = Container.Resolve<DummyComponentArrayFactory>();
 
 			var all = factory.All();
 			Assert.IsNotNull(all);
@@ -115,7 +113,7 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 		[Test]
 		public void Can_Resolve_multiple_components_at_once_with_non_default_selector_collection()
 		{
-			container.Register(
+			Container.Register(
 				Component.For<IDummyComponent>()
 					.ImplementedBy<Component2>()
 					.LifeStyle.Transient,
@@ -123,7 +121,7 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 					.AsFactory(),
 				Component.For<ITypedFactoryComponentSelector>()
 					.ImplementedBy<MultipleSelector>());
-			var factory = container.Resolve<DummyComponentCollectionFactory>();
+			var factory = Container.Resolve<DummyComponentCollectionFactory>();
 
 			var all = factory.All().ToArray();
 			Assert.IsNotNull(all);
@@ -135,7 +133,7 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 		[Test]
 		public void Can_Resolve_multiple_components_at_once_with_non_default_selector_enumerable()
 		{
-			container.Register(
+			Container.Register(
 				Component.For<IDummyComponent>()
 					.ImplementedBy<Component2>()
 					.LifeStyle.Transient,
@@ -143,7 +141,7 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 					.AsFactory(),
 				Component.For<ITypedFactoryComponentSelector>()
 					.ImplementedBy<MultipleSelector>());
-			var factory = container.Resolve<DummyComponentEnumerableFactory>();
+			var factory = Container.Resolve<DummyComponentEnumerableFactory>();
 
 			var all = factory.All().ToArray();
 			Assert.IsNotNull(all);
@@ -155,7 +153,7 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 		[Test]
 		public void Can_Resolve_multiple_components_at_once_with_non_default_selector_list()
 		{
-			container.Register(
+			Container.Register(
 				Component.For<IDummyComponent>()
 					.ImplementedBy<Component2>()
 					.LifeStyle.Transient,
@@ -163,7 +161,7 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 					.AsFactory(),
 				Component.For<ITypedFactoryComponentSelector>()
 					.ImplementedBy<MultipleSelector>());
-			var factory = container.Resolve<DummyComponentListFactory>();
+			var factory = Container.Resolve<DummyComponentListFactory>();
 
 			var all = factory.All();
 			Assert.IsNotNull(all);
@@ -175,8 +173,8 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 		[Test]
 		public void Can_resolve_component()
 		{
-			container.Register(Component.For<DummyComponentFactory>().AsFactory());
-			var factory = container.Resolve<DummyComponentFactory>();
+			Container.Register(Component.For<DummyComponentFactory>().AsFactory());
+			var factory = Container.Resolve<DummyComponentFactory>();
 
 			var component = factory.CreateDummyComponent();
 			Assert.IsNotNull(component);
@@ -185,14 +183,14 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 		[Test]
 		public void Can_resolve_component_by_name_with_default_selector()
 		{
-			container.Register(
+			Container.Register(
 				Component.For<IDummyComponent>()
 					.ImplementedBy<Component2>()
 					.Named("SecondComponent")
 					.LifeStyle.Transient,
 				Component.For<DummyComponentFactory>()
 					.AsFactory());
-			var factory = container.Resolve<DummyComponentFactory>();
+			var factory = Container.Resolve<DummyComponentFactory>();
 
 			var component = factory.GetSecondComponent();
 			Assert.IsNotNull(component);
@@ -202,12 +200,12 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 		[Test]
 		public void Can_resolve_open_generic_components()
 		{
-			container.Register(
+			Container.Register(
 				Component.For<IGenericComponentsFactory>().AsFactory(),
 				Component.For(typeof(GenericComponentWithIntArg<>)).LifeStyle.Singleton,
 				Component.For(typeof(GenericComponent<>)).LifeStyle.Singleton);
 
-			var factory = container.Resolve<IGenericComponentsFactory>();
+			var factory = Container.Resolve<IGenericComponentsFactory>();
 
 			factory.CreateGeneric<GenericComponent<int>>();
 			factory.CreateGeneric<GenericComponent<IDisposable>>();
@@ -219,10 +217,10 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 		[Test]
 		public void Can_resolve_via_factory_with_generic_method()
 		{
-			container.Register(
+			Container.Register(
 				Component.For<IGenericComponentsFactory>().AsFactory());
 
-			var factory = container.Resolve<IGenericComponentsFactory>();
+			var factory = Container.Resolve<IGenericComponentsFactory>();
 			var component = factory.CreateGeneric<IDummyComponent>();
 			Assert.IsInstanceOf<Component1>(component);
 		}
@@ -230,20 +228,20 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 		[Test]
 		public void Can_resolve_via_generic_factory_with_generic_method()
 		{
-			container.Register(
+			Container.Register(
 				Component.For(typeof(IDummyComponent<>)).ImplementedBy(typeof(DummyComponent<>)).LifeStyle.Transient,
 				Component.For(typeof(IGenericFactoryWithGenericMethod<>)).AsFactory());
 
-			var factory = container.Resolve<IGenericFactoryWithGenericMethod<A>>();
+			var factory = Container.Resolve<IGenericFactoryWithGenericMethod<A>>();
 			factory.Create<IDummyComponent<A>>();
 		}
 
 		[Test]
 		public void Can_resolve_via_generic_factory()
 		{
-			container.Register(Component.For(typeof(IGenericFactory<>)).AsFactory());
+			Container.Register(Component.For(typeof(IGenericFactory<>)).AsFactory());
 
-			var factory = container.Resolve<IGenericFactory<IDummyComponent>>();
+			var factory = Container.Resolve<IGenericFactory<IDummyComponent>>();
 
 			var component = factory.Create();
 			Assert.IsNotNull(component);
@@ -252,9 +250,9 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 		[Test]
 		public void Can_resolve_via_generic_factory_closed()
 		{
-			container.Register(Component.For<IGenericFactoryClosed>().AsFactory());
+			Container.Register(Component.For<IGenericFactoryClosed>().AsFactory());
 
-			var factory = container.Resolve<IGenericFactoryClosed>();
+			var factory = Container.Resolve<IGenericFactoryClosed>();
 
 			var component = factory.Create();
 			Assert.IsNotNull(component);
@@ -263,9 +261,9 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 		[Test]
 		public void Can_resolve_via_generic_factory_closed_doubly()
 		{
-			container.Register(Component.For<IGenericFactoryClosedDoubly>().AsFactory());
+			Container.Register(Component.For<IGenericFactoryClosedDoubly>().AsFactory());
 
-			var factory = container.Resolve<IGenericFactoryClosedDoubly>() as IGenericFactory<IDummyComponent>;
+			var factory = Container.Resolve<IGenericFactoryClosedDoubly>() as IGenericFactory<IDummyComponent>;
 
 			var component = factory.Create();
 			Assert.IsNotNull(component);
@@ -274,10 +272,10 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 		[Test]
 		public void Can_resolve_via_generic_factory_inherited_semi_closing()
 		{
-			container.Register(Component.For(typeof(IGenericFactoryDouble<,>)).AsFactory(),
+			Container.Register(Component.For(typeof(IGenericFactoryDouble<,>)).AsFactory(),
 			                   Component.For<IProtocolHandler>().ImplementedBy<MirandaProtocolHandler>().LifeStyle.Transient);
 
-			var factory = container.Resolve<IGenericFactoryDouble<IDummyComponent, IProtocolHandler>>();
+			var factory = Container.Resolve<IGenericFactoryDouble<IDummyComponent, IProtocolHandler>>();
 
 			factory.Create();
 			factory.Create2();
@@ -286,7 +284,7 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 		[Test]
 		public void Can_use_non_default_selector()
 		{
-			container.Register(
+			Container.Register(
 				Component.For<IDummyComponent>()
 					.ImplementedBy<Component2>()
 					.Named("foo")
@@ -294,7 +292,7 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 				Component.For<DummyComponentFactory>()
 					.AsFactory(f => f.SelectedWith<FooSelector>()),
 				Component.For<FooSelector>());
-			var factory = container.Resolve<DummyComponentFactory>();
+			var factory = Container.Resolve<DummyComponentFactory>();
 
 			var component = factory.GetSecondComponent();
 			Assert.IsInstanceOf<Component2>(component);
@@ -304,31 +302,31 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 		}
 
 		[Test]
-		public void Component_released_out_of_band_is_not_tracked()
+		public void Component_released_out_of_band_is_STILL_tracked()
 		{
-			container.Register(
+			Container.Register(
 				Component.For<INonDisposableFactory>().LifeStyle.Transient.AsFactory(),
 				Component.For<DisposableComponent>().LifeStyle.Transient);
 
-			var factory = container.Resolve<INonDisposableFactory>();
+			var factory = Container.Resolve<INonDisposableFactory>();
 			var component = factory.Create();
 			var weakComponent = new WeakReference(component);
 
-			container.Release(component);
+			Container.Release(component);
 			component = null;
 			GC.Collect();
 
-			Assert.IsFalse(weakComponent.IsAlive);
+			Assert.IsTrue(weakComponent.IsAlive);
 		}
 
 		[Test]
 		public void Component_released_via_disposing_factory_is_not_tracked()
 		{
-			container.Register(
+			Container.Register(
 				Component.For<IDisposableFactory>().LifeStyle.Transient.AsFactory(),
 				Component.For<DisposableComponent>().LifeStyle.Transient);
 
-			var factory = container.Resolve<IDisposableFactory>();
+			var factory = Container.Resolve<IDisposableFactory>();
 			var component = factory.Create();
 			var weakComponent = new WeakReference(component);
 
@@ -342,11 +340,11 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 		[Test]
 		public void Component_released_via_factory_is_not_tracked()
 		{
-			container.Register(
+			Container.Register(
 				Component.For<INonDisposableFactory>().LifeStyle.Transient.AsFactory(),
 				Component.For<DisposableComponent>().LifeStyle.Transient);
 
-			var factory = container.Resolve<INonDisposableFactory>();
+			var factory = Container.Resolve<INonDisposableFactory>();
 			var component = factory.Create();
 			var weakComponent = new WeakReference(component);
 
@@ -360,10 +358,10 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 		[Test]
 		public void Disposing_factory_destroys_transient_components()
 		{
-			container.Register(
+			Container.Register(
 				Component.For<IDisposableFactory>().AsFactory(),
 				Component.For<DisposableComponent>().LifeStyle.Transient);
-			var factory = container.Resolve<IDisposableFactory>();
+			var factory = Container.Resolve<IDisposableFactory>();
 			var component = factory.Create();
 			Assert.IsFalse(component.Disposed);
 
@@ -374,10 +372,10 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 		[Test]
 		public void Disposing_factory_does_not_destroy_singleton_components()
 		{
-			container.Register(
+			Container.Register(
 				Component.For<IDisposableFactory>().AsFactory(),
 				Component.For<DisposableComponent>().LifeStyle.Singleton);
-			var factory = container.Resolve<IDisposableFactory>();
+			var factory = Container.Resolve<IDisposableFactory>();
 			var component = factory.Create();
 			Assert.IsFalse(component.Disposed);
 
@@ -388,12 +386,12 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 		[Test]
 		public void Factory_interface_can_be_hierarchical()
 		{
-			container.Register(
+			Container.Register(
 				Component.For<ComponentWithOptionalParameter>()
 					.LifeStyle.Transient,
 				Component.For<IFactoryWithParametersExtended>()
 					.AsFactory());
-			var factory = container.Resolve<IFactoryWithParametersExtended>();
+			var factory = Container.Resolve<IFactoryWithParametersExtended>();
 
 			var one = factory.BuildComponent("one");
 			var two = factory.BuildComponent2("two");
@@ -404,12 +402,12 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 		[Test]
 		public void Factory_interface_can_be_hierarchical_with_repetitions()
 		{
-			container.Register(
+			Container.Register(
 				Component.For<ComponentWithOptionalParameter>()
 					.LifeStyle.Transient,
 				Component.For<IFactoryWithParametersTwoBases>()
 					.AsFactory());
-			var factory = container.Resolve<IFactoryWithParametersTwoBases>();
+			var factory = Container.Resolve<IFactoryWithParametersTwoBases>();
 
 			var one = factory.BuildComponent("one");
 			var two = factory.BuildComponent2("two");
@@ -422,24 +420,28 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 		[Test]
 		public void Factory_is_tracked_by_the_container()
 		{
-			container.Register(Component.For<DummyComponentFactory>().AsFactory());
+			Container.Register(Component.For<DummyComponentFactory>().AsFactory());
 
-			var factory = container.Resolve<DummyComponentFactory>();
+			var factory = Container.Resolve<DummyComponentFactory>();
+			var weak = new WeakReference(factory);
+			factory = null;
 
-			Assert.IsTrue(container.Kernel.ReleasePolicy.HasTrack(factory));
+			GC.Collect();
+
+			Assert.IsTrue(weak.IsAlive);
 		}
 
 		[Test]
 		public void Releasing_factory_release_components()
 		{
-			container.Register(
+			Container.Register(
 				Component.For<INonDisposableFactory>().LifeStyle.Transient.AsFactory(),
 				Component.For<DisposableComponent>().LifeStyle.Transient);
-			var factory = container.Resolve<INonDisposableFactory>();
+			var factory = Container.Resolve<INonDisposableFactory>();
 			var component = factory.Create();
 			Assert.IsFalse(component.Disposed);
 
-			container.Release(factory);
+			Container.Release(factory);
 			Assert.IsTrue(component.Disposed);
 		}
 
@@ -448,12 +450,12 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 		{
 			DisposableSelector.InstancesCreated = 0;
 			DisposableSelector.InstancesDisposed = 0;
-			container.Register(
+			Container.Register(
 				Component.For<DummyComponentFactory>().AsFactory(f => f.SelectedWith<DisposableSelector>()).LifeStyle.Transient,
 				Component.For<DisposableSelector>().LifeStyle.Transient);
-			var factory = container.Resolve<DummyComponentFactory>();
+			var factory = Container.Resolve<DummyComponentFactory>();
 
-			container.Release(factory);
+			Container.Release(factory);
 
 			Assert.AreEqual(1, DisposableSelector.InstancesDisposed);
 		}
@@ -461,10 +463,10 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 		[Test]
 		public void Resolve_component_by_name_with_default_selector_falls_back_to_by_type_when_no_name_found()
 		{
-			container.Register(
+			Container.Register(
 				Component.For<DummyComponentFactory>()
 					.AsFactory());
-			var factory = container.Resolve<DummyComponentFactory>();
+			var factory = Container.Resolve<DummyComponentFactory>();
 
 			var component = factory.GetSecondComponent();
 			Assert.IsNotNull(component);
@@ -474,13 +476,13 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 		[Test]
 		public void Resolve_multiple_components_at_once_with_default_selector_collection_unasignable_from_array()
 		{
-			container.Register(
+			Container.Register(
 				Component.For<IDummyComponent>()
 					.ImplementedBy<Component2>()
 					.LifeStyle.Transient,
 				Component.For<InvalidDummyComponentListFactory>()
 					.AsFactory());
-			var factory = container.Resolve<InvalidDummyComponentListFactory>();
+			var factory = Container.Resolve<InvalidDummyComponentListFactory>();
 
 			Assert.Throws<ComponentNotFoundException>(() => factory.All());
 		}
@@ -488,14 +490,14 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 		[Test]
 		public void Selector_WILL_NOT_be_picked_implicitly()
 		{
-			container.Register(
+			Container.Register(
 				Component.For<IDummyComponent>().ImplementedBy<Component1>().Named("one").LifeStyle.Transient,
 				Component.For<IDummyComponent>().ImplementedBy<Component2>().Named("two").LifeStyle.Transient,
 				Component.For<DummyComponentFactory>().AsFactory(),
 				Component.For<ITypedFactoryComponentSelector>().ImplementedBy<Component1Selector>(),
 				Component.For<Component2Selector, ITypedFactoryComponentSelector>());
 
-			var factory = container.Resolve<DummyComponentFactory>();
+			var factory = Container.Resolve<DummyComponentFactory>();
 			var component = factory.CreateDummyComponent();
 
 			Assert.IsInstanceOf<Component1>(component);
@@ -504,12 +506,12 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 		[Test]
 		public void Selector_pick_by_instance()
 		{
-			container.Register(
+			Container.Register(
 				Component.For<IDummyComponent>().ImplementedBy<Component1>().Named("one").LifeStyle.Transient,
 				Component.For<IDummyComponent>().ImplementedBy<Component2>().Named("two").LifeStyle.Transient,
 				Component.For<DummyComponentFactory>().AsFactory(c => c.SelectedWith(new Component2Selector())));
 
-			var factory = container.Resolve<DummyComponentFactory>();
+			var factory = Container.Resolve<DummyComponentFactory>();
 			var component = factory.CreateDummyComponent();
 
 			Assert.IsInstanceOf<Component2>(component);
@@ -518,14 +520,14 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 		[Test]
 		public void Selector_pick_by_name()
 		{
-			container.Register(
+			Container.Register(
 				Component.For<IDummyComponent>().ImplementedBy<Component1>().Named("one").LifeStyle.Transient,
 				Component.For<IDummyComponent>().ImplementedBy<Component2>().Named("two").LifeStyle.Transient,
 				Component.For<DummyComponentFactory>().AsFactory(c => c.SelectedWith("factoryTwo")),
 				Component.For<ITypedFactoryComponentSelector>().ImplementedBy<Component1Selector>().Named("factoryOne"),
 				Component.For<ITypedFactoryComponentSelector>().ImplementedBy<Component2Selector>().Named("factoryTwo"));
 
-			var factory = container.Resolve<DummyComponentFactory>();
+			var factory = Container.Resolve<DummyComponentFactory>();
 			var component = factory.CreateDummyComponent();
 
 			Assert.IsInstanceOf<Component2>(component);
@@ -534,7 +536,7 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 		[Test]
 		public void Selector_pick_by_name_multiple_factories()
 		{
-			container.Register(
+			Container.Register(
 				Component.For<IDummyComponent>().ImplementedBy<Component1>().Named("one").LifeStyle.Transient,
 				Component.For<IDummyComponent>().ImplementedBy<Component2>().Named("two").LifeStyle.Transient,
 				Component.For<DummyComponentFactory>().AsFactory(c => c.SelectedWith("factoryTwo")).Named("2"),
@@ -542,11 +544,11 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 				Component.For<ITypedFactoryComponentSelector>().ImplementedBy<Component1Selector>().Named("factoryOne"),
 				Component.For<ITypedFactoryComponentSelector>().ImplementedBy<Component2Selector>().Named("factoryTwo"));
 
-			var factory2 = container.Resolve<DummyComponentFactory>("2");
+			var factory2 = Container.Resolve<DummyComponentFactory>("2");
 			var component2 = factory2.CreateDummyComponent();
 			Assert.IsInstanceOf<Component2>(component2);
 
-			var factory1 = container.Resolve<DummyComponentFactory>("1");
+			var factory1 = Container.Resolve<DummyComponentFactory>("1");
 			var component1 = factory1.CreateDummyComponent();
 			Assert.IsInstanceOf<Component1>(component1);
 		}
@@ -554,35 +556,27 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 		[Test]
 		public void Selector_pick_by_type()
 		{
-			container.Register(
+			Container.Register(
 				Component.For<IDummyComponent>().ImplementedBy<Component1>().Named("one").LifeStyle.Transient,
 				Component.For<IDummyComponent>().ImplementedBy<Component2>().Named("two").LifeStyle.Transient,
 				Component.For<DummyComponentFactory>().AsFactory(c => c.SelectedWith<Component2Selector>()),
 				Component.For<ITypedFactoryComponentSelector>().ImplementedBy<Component1Selector>(),
 				Component.For<Component2Selector, ITypedFactoryComponentSelector>());
 
-			var factory = container.Resolve<DummyComponentFactory>();
+			var factory = Container.Resolve<DummyComponentFactory>();
 			var component = factory.CreateDummyComponent();
 
 			Assert.IsInstanceOf<Component2>(component);
 		}
 
-		[SetUp]
-		public void SetUp()
-		{
-			container = new WindsorContainer();
-			container.AddFacility<TypedFactoryFacility>();
-			container.Register(Component.For<IDummyComponent>().ImplementedBy<Component1>().LifeStyle.Transient);
-		}
-
 		[Test]
 		public void Should_match_arguments_ignoring_case()
 		{
-			container.Register(
+			Container.Register(
 				Component.For<IFactoryWithParameters>().AsFactory(),
 				Component.For<ComponentWithOptionalParameter>());
 
-			var factory = container.Resolve<IFactoryWithParameters>();
+			var factory = Container.Resolve<IFactoryWithParameters>();
 			var component = factory.BuildComponent("foo");
 
 			Assert.AreEqual("foo", component.Parameter);
@@ -591,10 +585,10 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 		[Test]
 		public void Typed_factory_lets_go_of_component_reference_on_dispose()
 		{
-			container.Register(
+			Container.Register(
 				Component.For<IDisposableFactory>().LifeStyle.Transient.AsFactory(),
 				Component.For<DisposableComponent>().LifeStyle.Transient);
-			var factory = container.Resolve<IDisposableFactory>();
+			var factory = Container.Resolve<IDisposableFactory>();
 			var component = factory.Create();
 			var weakComponentReference = new WeakReference(component);
 			factory.Dispose();
@@ -606,10 +600,10 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 		[Test]
 		public void Typed_factory_lets_go_of_component_reference_on_release()
 		{
-			container.Register(
+			Container.Register(
 				Component.For<IDisposableFactory>().LifeStyle.Transient.AsFactory(),
 				Component.For<DisposableComponent>().LifeStyle.Transient);
-			var factory = container.Resolve<IDisposableFactory>();
+			var factory = Container.Resolve<IDisposableFactory>();
 			var component = factory.Create();
 			var weakComponentReference = new WeakReference(component);
 			factory.Destroy(component);
@@ -621,38 +615,56 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 		[Test]
 		public void Typed_factory_obeys_release_policy_non_tracking()
 		{
-			container.Kernel.ReleasePolicy = new NoTrackingReleasePolicy();
-			container.Register(
+			Container.Kernel.ReleasePolicy = new NoTrackingReleasePolicy();
+			Container.Register(
 				Component.For<INonDisposableFactory>().LifeStyle.Transient.AsFactory(),
 				Component.For<DisposableComponent>().LifeStyle.Transient);
-			var factory = container.Resolve<INonDisposableFactory>();
+
+			var factory = Container.Resolve<INonDisposableFactory>();
 			var component = factory.Create();
-			Assert.IsFalse(container.Kernel.ReleasePolicy.HasTrack(component));
+
+			var weakComponentReference = new WeakReference(component);
+			Container.Release(component);
+			component = null;
+			GC.Collect();
+
+			Assert.IsFalse(weakComponentReference.IsAlive);
 		}
 
 		[Test]
 		public void Typed_factory_obeys_release_policy_tracking()
 		{
-			container.Register(
+			Container.Register(
 				Component.For<INonDisposableFactory>().LifeStyle.Transient.AsFactory(),
 				Component.For<DisposableComponent>().LifeStyle.Transient);
-			var factory = container.Resolve<INonDisposableFactory>();
+			var factory = Container.Resolve<INonDisposableFactory>();
 			var component = factory.Create();
-			Assert.IsTrue(container.Kernel.ReleasePolicy.HasTrack(component));
+			var weak = new WeakReference(component);
+			component = null;
+			GC.Collect();
+			Assert.IsTrue(weak.IsAlive);
 		}
 
 		[Test]
 		public void Void_methods_release_components()
 		{
-			container.Register(
+			Container.Register(
 				Component.For<IDisposableFactory>().AsFactory(),
 				Component.For<DisposableComponent>().LifeStyle.Transient);
-			var factory = container.Resolve<IDisposableFactory>();
+			var factory = Container.Resolve<IDisposableFactory>();
 			var component = factory.Create();
 			Assert.IsFalse(component.Disposed);
 
 			factory.Destroy(component);
 			Assert.IsTrue(component.Disposed);
+		}
+
+		protected override WindsorContainer BuildContainer()
+		{
+			var windsorContainer = new WindsorContainer();
+			windsorContainer.AddFacility<TypedFactoryFacility>();
+			windsorContainer.Register(Component.For<IDummyComponent>().ImplementedBy<Component1>().LifeStyle.Transient);
+			return windsorContainer;
 		}
 	}
 }

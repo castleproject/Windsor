@@ -14,6 +14,8 @@
 
 namespace Castle.Windsor.Tests.Lifecycle
 {
+	using System;
+
 	using Castle.MicroKernel.Registration;
 	using Castle.Windsor.Tests.Components;
 
@@ -31,8 +33,11 @@ namespace Castle.Windsor.Tests.Lifecycle
 			                   	.LifeStyle.Transient);
 
 			var server = Container.Resolve<ISimpleService>();
+			var weak = new WeakReference(server);
+			server = null;
+			GC.Collect();
 
-			Assert.IsFalse(Kernel.ReleasePolicy.HasTrack(server));
+			Assert.IsFalse(weak.IsAlive);
 		}
 
 		[Test]

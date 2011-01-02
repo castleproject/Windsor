@@ -1,14 +1,45 @@
 ================================================================================================
-change - IReleasePolicy interface has a new method: IReleasePolicy CreateSubPolicy();
+change - Release policies have now slightly different semantics.
 
-impact - low
+impact - medium
+fixability - medium
+
+description - To limit unnecessary tracking of components, which unnecessarily consumes memory
+	and causes contention in multithreaded scenarios the following change was made to release
+	policy semantics:
+	- only objects whose decommission is managed by the policy (ie which are released by call to
+	policy.Release, or indirectly: container.Release) can now be Tracked. This is determined by
+	the 'RequiresPolicyRelease' flag on Burden. If the flag is not set the policy can throw.
+
+fix - The change is likely to affect code using custom lifetime managers. It is now up to the
+	manager to decide if it will release the object itself (then it should pass 'true' to
+	'public Burden CreateBurden(bool trackedExternally)' method on CreationContext). Tracking
+	happens also for objects that require it ('RequiresDecommission' on burden is 'true').
+	If lifestyle manager wants to make sure the object will be tracked it can set this flag.
+	Otherwise it is up to Windsor to decide if it needs to track the object or not.
+	Another side-effect of the change is that calling 'container.Kernel.ReleasePolicy.HasTrack'
+	may now return 'false', when it previously would return 'true', if the object does not meet
+	the criteria mentioned above. If you were using this method, make sure you review your code
+	that depends on it, and adjust it to the new requirements. The semantics of 'HasTrack' is 
+	'does the release policy track this object', not 'does anything in the container track it'
+	anymore.
+================================================================================================
+change - IReleasePolicy interface has a new method: IReleasePolicy CreateSubPolicy(); usage of
+	sub-policies changes how typed factories handle out-of-band-release of components (see
+	description)
+
+impact - medium
 fixability - easy
 
 description - This was added as an attempt to enable more fine grained lifetime scoping (mostly
 	for per-typed-factory right now, but in the future also say - per-window in client app).
+	As a side-effect of that (and change to release policy behavior described above) it is no
+	longer possible to release objects resolved via typed factories, using container.Release.
+	As the objects are now tracked only in the scope of the factory they will be released only
+	if a call to factory releasing method is made, or when the factory itself is released.
 
-fix - Method should return new object that promotes calls to Track to its parent scope, and also
-	when disposed releases all objects it's tracking. See SubReleasPolicy implementation.
+fix - Method should return new object that exposes the same behavior as the 'parent' usually it
+	is just best to return object of the same type (as the built-in release policies do).
 ================================================================================================
 change - IHandler.Release now takes Burden, not object as its parameter. Burden.Release now has
 	no arguments (used to take IReleasePolicy)

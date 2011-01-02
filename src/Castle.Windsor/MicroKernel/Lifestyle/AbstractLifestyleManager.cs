@@ -69,7 +69,7 @@ namespace Castle.MicroKernel.Lifestyle
 
 		protected virtual void Track(Burden burden, IReleasePolicy releasePolicy)
 		{
-			if(burden.RequiresDecommission)
+			if(burden.RequiresPolicyRelease)
 			{
 				releasePolicy.Track(burden.Instance, burden);
 			}

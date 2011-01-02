@@ -138,8 +138,11 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 			container.Register(Component.For<Func<A>>().AsFactory());
 
 			var factory = container.Resolve<Func<A>>();
+			var weak = new WeakReference(factory);
+			factory = null;
+			GC.Collect();
 
-			Assert.IsTrue(container.Kernel.ReleasePolicy.HasTrack(factory));
+			Assert.IsTrue(weak.IsAlive);
 		}
 
 		[Test]
@@ -191,7 +194,7 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 			var foo = dependsOnFoo.GetFoo();
 
 			Assert.AreEqual(0, DisposableFoo.DisposedCount);
-			container.Release(foo);
+			container.Release(dependsOnFoo);
 			Assert.AreEqual(1, DisposableFoo.DisposedCount);
 
 			var weakFoo = new WeakReference(foo);
@@ -236,7 +239,11 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 			                   Component.For<UsesDisposableFooDelegate>().LifeStyle.Transient);
 			var dependsOnFoo = container.Resolve<UsesDisposableFooDelegate>();
 			var foo = dependsOnFoo.GetFoo();
-			Assert.IsFalse(container.Kernel.ReleasePolicy.HasTrack(foo));
+			var weak = new WeakReference(foo);
+			foo = null;
+			GC.Collect();
+
+			Assert.IsFalse(weak.IsAlive);
 		}
 
 		[Test]
@@ -244,9 +251,14 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 		{
 			container.Register(Component.For<DisposableFoo>().LifeStyle.Transient,
 			                   Component.For<UsesDisposableFooDelegate>().LifeStyle.Transient);
+
 			var dependsOnFoo = container.Resolve<UsesDisposableFooDelegate>();
 			var foo = dependsOnFoo.GetFoo();
-			Assert.IsTrue(container.Kernel.ReleasePolicy.HasTrack(foo));
+			var weak = new WeakReference(foo);
+			foo = null;
+			GC.Collect();
+
+			Assert.IsTrue(weak.IsAlive);
 		}
 
 		[Test]
@@ -296,7 +308,7 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 		}
 
 		[Test]
-		public void Implicitly_registered_factory_is_tracked()
+		public void Implicitly_registered_factory_is_always_tracked()
 		{
 			var factory = container.Resolve<Func<A>>();
 
