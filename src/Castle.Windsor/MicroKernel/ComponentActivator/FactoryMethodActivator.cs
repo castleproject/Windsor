@@ -21,9 +21,9 @@ namespace Castle.MicroKernel.ComponentActivator
 
 	public class FactoryMethodActivator<T> : DefaultComponentActivator, IDependencyAwareActivator
 	{
-		private readonly Func<IKernel,ComponentModel, CreationContext, T> creator;
+		private readonly Func<IKernel, ComponentModel, CreationContext, T> creator;
 
-		public FactoryMethodActivator(ComponentModel model, IKernel kernel, ComponentInstanceDelegate onCreation, ComponentInstanceDelegate onDestruction) 
+		public FactoryMethodActivator(ComponentModel model, IKernel kernel, ComponentInstanceDelegate onCreation, ComponentInstanceDelegate onDestruction)
 			: base(model, kernel, onCreation, onDestruction)
 		{
 			creator = Model.ExtendedProperties["factoryMethodDelegate"] as Func<IKernel, ComponentModel, CreationContext, T>;
@@ -36,15 +36,19 @@ namespace Castle.MicroKernel.ComponentActivator
 			}
 		}
 
-		protected override object Instantiate(CreationContext context)
-		{
-			return creator(Kernel, Model, context);
-		}
-		
 		public bool CanProvideRequiredDependencies(ComponentModel component)
 		{
 			// the factory will take care of providing all dependencies.
 			return true;
+		}
+
+		protected override object Instantiate(CreationContext context)
+		{
+			return creator(Kernel, Model, context);
+		}
+
+		protected override void SetUpProperties(object instance, CreationContext context)
+		{
 		}
 	}
 }
