@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 namespace Castle.MicroKernel.Context
 {
 	using System;
@@ -48,13 +49,13 @@ namespace Castle.MicroKernel.Context
 		///   We track that in order to try to avoid attempts to resolve a service
 		///   with itself.
 		/// </summary>
-		private readonly Stack<IHandler> handlerStack = new Stack<IHandler>();
+		private readonly Stack<IHandler> handlerStack;
 
 		private readonly IReleasePolicy releasePolicy;
 
-		private readonly Stack<ResolutionContext> resolutionStack = new Stack<ResolutionContext>();
+		private readonly Stack<ResolutionContext> resolutionStack;
 		private IDictionary additionalArguments;
-		private Dictionary<object, object> extendedProperties;
+		private IDictionary extendedProperties;
 		private readonly Type requestedType;
 
 		/// <summary>
@@ -73,7 +74,7 @@ namespace Castle.MicroKernel.Context
 
 			if (parentContext.extendedProperties != null)
 			{
-				extendedProperties = new Dictionary<object, object>(parentContext.extendedProperties);
+				extendedProperties = new Arguments(parentContext.extendedProperties);
 			}
 
 			if (propagateInlineDependencies && parentContext.HasAdditionalArguments)
@@ -89,23 +90,24 @@ namespace Castle.MicroKernel.Context
 		/// <param name = "releasePolicy">The release policy.</param>
 		/// <param name = "requestedType">The type to extract generic arguments.</param>
 		/// <param name = "additionalArguments">The additional arguments.</param>
-		/// <param name = "conversionManager">The conversion manager.</param>
+		/// <param name = "converter">The conversion manager.</param>
 		/// <param name = "parent">Parent context</param>
-		public CreationContext(IHandler handler, IReleasePolicy releasePolicy, Type requestedType, IDictionary additionalArguments, ITypeConverter conversionManager,
-		                       CreationContext parent)
+		public CreationContext(IHandler handler, IReleasePolicy releasePolicy, Type requestedType, IDictionary additionalArguments, ITypeConverter converter, CreationContext parent)
 		{
 			this.requestedType = requestedType;
 			this.handler = handler;
 			this.releasePolicy = releasePolicy;
 			this.additionalArguments = EnsureAdditionalArgumentsWriteable(additionalArguments);
-			converter = conversionManager;
+			this.converter = converter;
 
-			if (parent == null)
+			if (parent != null)
 			{
+				resolutionStack = parent.resolutionStack;
+				handlerStack = parent.handlerStack;
 				return;
 			}
-			resolutionStack = parent.resolutionStack;
-			handlerStack = parent.handlerStack;
+			handlerStack = new Stack<IHandler>();
+			resolutionStack = new Stack<ResolutionContext>();
 		}
 
 		/// <summary>
@@ -114,6 +116,8 @@ namespace Castle.MicroKernel.Context
 		private CreationContext()
 		{
 			releasePolicy = new NoTrackingReleasePolicy();
+			handlerStack = new Stack<IHandler>();
+			resolutionStack = new Stack<ResolutionContext>();
 		}
 
 		public Type RequestedType
@@ -168,7 +172,7 @@ namespace Castle.MicroKernel.Context
 			}
 			if (extendedProperties == null)
 			{
-				extendedProperties = new Dictionary<object, object>();
+				extendedProperties = new Arguments();
 			}
 			extendedProperties[key] = value;
 		}
@@ -196,8 +200,7 @@ namespace Castle.MicroKernel.Context
 				return null;
 			}
 
-			object value;
-			extendedProperties.TryGetValue(key, out value);
+			var value = extendedProperties[key];
 			return value;
 		}
 
