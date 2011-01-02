@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 namespace Castle.MicroKernel.Handlers
 {
 	using System;
@@ -855,6 +856,16 @@ namespace Castle.MicroKernel.Handlers
 
 		private bool HasValidComponent(Type service, DependencyModel dependency)
 		{
+			var handlr = kernel.GetHandler(service);
+			if (handlr == null)
+			{
+				return false;
+			}
+			if (IsValidHandlerState(handlr))
+			{
+				return true;
+			}
+
 			foreach (var handler in kernel.GetHandlers(service))
 			{
 				if (IsValidHandlerState(handler))
@@ -879,11 +890,7 @@ namespace Castle.MicroKernel.Handlers
 
 		private bool HasValidComponentFromResolver(DependencyModel dependency)
 		{
-			if (Kernel.Resolver.CanResolve(null, this, model, dependency))
-			{
-				return true;
-			}
-			return false;
+			return Kernel.Resolver.CanResolve(null, this, model, dependency);
 		}
 
 		private void InitializeCustomDependencies()
