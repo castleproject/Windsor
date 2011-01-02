@@ -23,19 +23,6 @@ namespace Castle.Windsor.Tests
 	public class LifecycledComponentsReleasePolicyComponentTrackingTestCase : AbstractContainerTestFixture
 	{
 		[Test]
-		[Ignore("We don't need release policy to track this guy. If we don't though, we can't check if it's tracked by its lifestyle manager...")]
-		public void Disposable_singleton_as_dependency_of_non_disposable_transient_is_not_tracked()
-		{
-			SimpleServiceDisposable.DisposedCount = 0;
-			Container.Register(Component.For<HasCtorDependency>().LifeStyle.Transient,
-			                   Component.For<ISimpleService>().ImplementedBy<SimpleServiceDisposable>());
-
-			var root = Container.Resolve<HasCtorDependency>();
-
-			Assert.IsFalse(Kernel.ReleasePolicy.HasTrack(root.Dependency));
-		}
-
-		[Test]
 		public void Non_disposable_transient_with_disposable_singleton_as_dependency_is_not_tracked()
 		{
 			SimpleServiceDisposable.DisposedCount = 0;

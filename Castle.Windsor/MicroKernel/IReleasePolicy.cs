@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,16 +17,22 @@ namespace Castle.MicroKernel
 	using System;
 
 	/// <summary>
-	/// Policy managing lifetime of components, and in particular their release process.
+	///   Policy managing lifetime of components, and in particular their release process.
 	/// </summary>
 	public interface IReleasePolicy : IDisposable
 	{
-		void Track(object instance, Burden burden);
+		IReleasePolicy CreateSubPolicy();
 
 		bool HasTrack(object instance);
 
 		void Release(object instance);
 
-		IReleasePolicy CreateSubPolicy();
+		/// <summary>
+		///   Asks the policy to track given object. The object will be released when a call to <see cref = "Release" /> is made.
+		/// </summary>
+		/// <param name = "instance"></param>
+		/// <param name = "burden"></param>
+		/// <exception cref = "ArgumentException">Thrown when <paramref name = "burden" /> does NOT have its <see cref = "Burden.RequiresPolicyRelease" /> flag set.</exception>
+		void Track(object instance, Burden burden);
 	}
 }

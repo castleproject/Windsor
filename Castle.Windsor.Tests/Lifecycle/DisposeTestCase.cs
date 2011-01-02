@@ -14,6 +14,8 @@
 
 namespace Castle.Windsor.Tests.Lifecycle
 {
+	using System;
+
 	using Castle.Components;
 	using Castle.MicroKernel.Registration;
 	using Castle.Windsor.Tests.ClassComponents;
@@ -57,7 +59,7 @@ namespace Castle.Windsor.Tests.Lifecycle
 		}
 
 		[Test]
-		public void Disposable_component_for_nondisposable_service_should_be_tracked()
+		public void Disposable_component_for_nondisposable_service_is_tracked()
 		{
 			Container.Register(Component.For<ISimpleService>()
 			                   	.ImplementedBy<SimpleServiceDisposable>()
@@ -81,7 +83,7 @@ namespace Castle.Windsor.Tests.Lifecycle
 		}
 
 		[Test]
-		public void Disposable_services_should_be_tracked()
+		public void Disposable_service_is_tracked()
 		{
 			Container.Register(Component.For<DisposableFoo>().LifeStyle.Transient);
 
@@ -100,10 +102,13 @@ namespace Castle.Windsor.Tests.Lifecycle
 				);
 
 			var depender = Container.Resolve<GenericComponent<DisposableFoo>>();
+			var weak = new WeakReference(depender.Value);
+			depender = null;
 			Container.Dispose();
+			GC.Collect();
 
 			Assert.AreEqual(1, DisposableFoo.DisposedCount);
-			Assert.IsFalse(Kernel.ReleasePolicy.HasTrack(depender.Value));
+			Assert.IsFalse(weak.IsAlive);
 		}
 
 		[Test]

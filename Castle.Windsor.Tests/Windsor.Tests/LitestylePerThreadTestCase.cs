@@ -40,14 +40,12 @@ namespace Castle.Windsor.Tests
 			Container.Register(Component.For<DisposableComponent>().LifeStyle.PerThread);
 			var a1 = Container.Resolve<DisposableComponent>();
 			DisposableComponent a2 = null;
-
 			ExecuteOnAnotherThreadAndWait(() => a2 = Container.Resolve<DisposableComponent>());
+
 			Container.Dispose();
+
 			Assert.IsTrue(a1.Disposed);
 			Assert.IsTrue(a2.Disposed);
-
-			Assert.IsFalse(Kernel.ReleasePolicy.HasTrack(a1));
-			Assert.IsFalse(Kernel.ReleasePolicy.HasTrack(a2));
 		}
 
 		[Test]

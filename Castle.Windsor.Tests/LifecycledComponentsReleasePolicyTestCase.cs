@@ -14,6 +14,8 @@
 
 namespace Castle.Windsor.Tests
 {
+	using System;
+
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Releasers;
@@ -44,7 +46,7 @@ namespace Castle.Windsor.Tests
 		}
 
 		[Test]
-		public void Doesnt_track_simple_components_singleton()
+		public void Doesnt_track_singleton()
 		{
 			container.Register(Singleton<A>());
 
@@ -67,16 +69,23 @@ namespace Castle.Windsor.Tests
 		[Test]
 		public void Release_doesnt_stop_tracking_component_singleton_until_container_is_disposed()
 		{
+			DisposableFoo.DisposedCount = 0;
 			container.Register(Singleton<DisposableFoo>());
 			var foo = container.Resolve<DisposableFoo>();
+			var fooWeak = new WeakReference(foo);
 
 			container.Release(foo);
+			foo = null;
+			GC.Collect();
 
-			Assert.IsTrue(releasePolicy.HasTrack(foo));
+			Assert.IsTrue(fooWeak.IsAlive);
+			Assert.AreEqual(0, DisposableFoo.DisposedCount);
 
 			container.Dispose();
+			GC.Collect();
 
-			Assert.IsFalse(releasePolicy.HasTrack(foo));
+			Assert.IsFalse(fooWeak.IsAlive);
+			Assert.AreEqual(1, DisposableFoo.DisposedCount);
 		}
 
 
