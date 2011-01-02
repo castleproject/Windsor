@@ -29,8 +29,8 @@ namespace Castle.MicroKernel.Tests.Registration
 		public void Can_dispose_component_on_release_disposable_service()
 		{
 			Kernel.Register(Component.For<DisposableComponent>()
-								.LifeStyle.Transient
-								.UsingFactoryMethod(() => new DisposableComponent()));
+			                	.LifeStyle.Transient
+			                	.UsingFactoryMethod(() => new DisposableComponent()));
 			var component = Kernel.Resolve<DisposableComponent>();
 			Assert.IsFalse(component.Disposed);
 
@@ -43,8 +43,8 @@ namespace Castle.MicroKernel.Tests.Registration
 		public void Can_dispose_component_on_release_non_disposable_service_and_impl()
 		{
 			Kernel.Register(Component.For<IComponent>()
-								.LifeStyle.Transient
-								.UsingFactoryMethod(() => new ComponentWithDispose()));
+			                	.LifeStyle.Transient
+			                	.UsingFactoryMethod(() => new ComponentWithDispose()));
 			var component = Kernel.Resolve<IComponent>() as ComponentWithDispose;
 			Assert.IsFalse(component.Disposed);
 
@@ -57,9 +57,9 @@ namespace Castle.MicroKernel.Tests.Registration
 		public void Can_dispose_component_on_release_non_disposable_service_disposable_impl()
 		{
 			Kernel.Register(Component.For<IComponent>()
-								.ImplementedBy<ComponentWithDispose>()
-								.LifeStyle.Transient
-								.UsingFactoryMethod(() => new ComponentWithDispose()));
+			                	.ImplementedBy<ComponentWithDispose>()
+			                	.LifeStyle.Transient
+			                	.UsingFactoryMethod(() => new ComponentWithDispose()));
 			var component = Kernel.Resolve<IComponent>() as ComponentWithDispose;
 			Assert.IsFalse(component.Disposed);
 
@@ -148,8 +148,8 @@ namespace Castle.MicroKernel.Tests.Registration
 				Component.For<AbstractCarProviderFactory>(),
 				Component.For<ICarProvider>()
 					.UsingFactoryMethod((k, ctx) =>
-										new AbstractCarProviderFactory()
-											.Create(k.Resolve<User>(ctx.AdditionalArguments)))
+					                    new AbstractCarProviderFactory()
+					                    	.Create(k.Resolve<User>(ctx.AdditionalArguments)))
 				);
 			var carProvider = Kernel.Resolve<ICarProvider>(new Arguments().Insert("FiscalStability", FiscalStability.MrMoneyBags));
 			Assert.IsInstanceOf<FerrariProvider>(carProvider);
@@ -164,6 +164,17 @@ namespace Castle.MicroKernel.Tests.Registration
 						.UsingFactoryMethod(() => new ClassWithPrimitiveDependency(2)),
 					Component.For<ClassWithServiceDependency>()
 						.UsingFactoryMethod(() => new ClassWithServiceDependency(null))));
+		}
+
+		[Test]
+		public void Does_not_try_to_set_properties_on_component_resolved_via_factory_method()
+		{
+			Kernel.Register(
+				Component.For<AProp>().UsingFactoryMethod(() => new AProp()),
+				Component.For<A>());
+
+			var aProp = Kernel.Resolve<AProp>();
+			Assert.IsNull(aProp.Prop);
 		}
 	}
 }
