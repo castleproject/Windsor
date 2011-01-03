@@ -14,20 +14,20 @@
 
 namespace Castle.MicroKernel.Tests.Lifestyle.Components
 {
-	using System;
+	using Castle.Windsor.Tests.Components;
 
-	public class ComponentWithDispose : IComponent, IDisposable
+	public class TrivialComponentWithDependency : IComponent
 	{
-		public bool Disposed { get; private set; }
+		public TrivialComponentWithDependency(ISimpleService dependency)
+		{
+			Dependency = dependency;
+		}
+
+		public ISimpleService Dependency { get; private set; }
 
 		public int ID
 		{
-			get { return 42; }
-		}
-
-		public void Dispose()
-		{
-			Disposed = true;
+			get { return 0; }
 		}
 	}
 }

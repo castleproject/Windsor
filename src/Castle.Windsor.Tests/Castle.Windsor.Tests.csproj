@@ -430,7 +430,9 @@
     <Compile Include="Lifecycle\DisposeTestCase.cs" />
     <Compile Include="Lifecycle\SupportsInitializeTestCase.cs" />
     <Compile Include="Lifestyle\Components\SealedComponent.cs" />
+    <Compile Include="Lifestyle\Components\SealedComponentDisposable.cs" />
     <Compile Include="Lifestyle\Components\SealedComponentWithDependency.cs" />
+    <Compile Include="Lifestyle\Components\TrivialComponentWithDependency.cs" />
     <Compile Include="Lifestyle\Components\UsesComponentWithDispose.cs" />
     <Compile Include="MicroKernel\NotImplementedDependencyResolver.cs" />
     <Compile Include="Pools\RecyclableComponent.cs" />
