@@ -22,7 +22,7 @@ namespace Castle.MicroKernel.Releasers
 	using Castle.MicroKernel.Util;
 
 	/// <summary>
-	///   Tracks all components if asked. Releases those requiring decomission (<see cref = "Burden.RequiresPolicyRelease" />)
+	///   Tracks all components requiring decomission (<see cref = "Burden.RequiresPolicyRelease" />)
 	/// </summary>
 	[Serializable]
 	public class LifecycledComponentsReleasePolicy : IReleasePolicy

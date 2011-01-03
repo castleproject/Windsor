@@ -21,7 +21,6 @@ namespace Castle.MicroKernel.Tests.Lifestyle
 	using Castle.MicroKernel.Context;
 	using Castle.MicroKernel.Handlers;
 	using Castle.MicroKernel.Registration;
-	using Castle.MicroKernel.Tests.ClassComponents;
 	using Castle.MicroKernel.Tests.Lifestyle.Components;
 	using Castle.Windsor.Tests.ClassComponents;
 
@@ -73,7 +72,7 @@ namespace Castle.MicroKernel.Tests.Lifestyle
 			Assert.Throws<ArgumentOutOfRangeException>(()=>
 
 			kernel.Register(Component.For(typeof(IComponent))
-				.ImplementedBy(typeof(NoInfoComponent))
+				.ImplementedBy(typeof(TrivialComponent))
 				.Named("a")
 				.LifeStyle.Is(LifestyleType.Undefined)));
 
@@ -82,20 +81,20 @@ namespace Castle.MicroKernel.Tests.Lifestyle
 		[Test]
 		public void LifestyleSetProgramatically()
 		{
-			TestHandlersLifestyle(typeof(NoInfoComponent), LifestyleType.Transient, false);
-			TestHandlersLifestyle(typeof(NoInfoComponent), LifestyleType.Singleton, false);
-			TestHandlersLifestyle(typeof(NoInfoComponent), LifestyleType.Thread, false);
-			TestHandlersLifestyle(typeof(NoInfoComponent), LifestyleType.Transient, false);
+			TestHandlersLifestyle(typeof(TrivialComponent), LifestyleType.Transient, false);
+			TestHandlersLifestyle(typeof(TrivialComponent), LifestyleType.Singleton, false);
+			TestHandlersLifestyle(typeof(TrivialComponent), LifestyleType.Thread, false);
+			TestHandlersLifestyle(typeof(TrivialComponent), LifestyleType.Transient, false);
 #if (!SILVERLIGHT)
-			TestHandlersLifestyle(typeof(NoInfoComponent), LifestyleType.PerWebRequest, false);
+			TestHandlersLifestyle(typeof(TrivialComponent), LifestyleType.PerWebRequest, false);
 #endif
 
-			TestHandlersLifestyleWithService(typeof(NoInfoComponent), LifestyleType.Transient, false);
-			TestHandlersLifestyleWithService(typeof(NoInfoComponent), LifestyleType.Singleton, false);
-			TestHandlersLifestyleWithService(typeof(NoInfoComponent), LifestyleType.Thread, false);
-			TestHandlersLifestyleWithService(typeof(NoInfoComponent), LifestyleType.Transient, false);
+			TestHandlersLifestyleWithService(typeof(TrivialComponent), LifestyleType.Transient, false);
+			TestHandlersLifestyleWithService(typeof(TrivialComponent), LifestyleType.Singleton, false);
+			TestHandlersLifestyleWithService(typeof(TrivialComponent), LifestyleType.Thread, false);
+			TestHandlersLifestyleWithService(typeof(TrivialComponent), LifestyleType.Transient, false);
 #if (!SILVERLIGHT)
-			TestHandlersLifestyleWithService(typeof(NoInfoComponent), LifestyleType.PerWebRequest, false);
+			TestHandlersLifestyleWithService(typeof(TrivialComponent), LifestyleType.PerWebRequest, false);
 #endif
 
 			TestLifestyleAndSameness(typeof(PerThreadComponent), LifestyleType.Transient, true, false);
@@ -179,28 +178,28 @@ namespace Castle.MicroKernel.Tests.Lifestyle
 			IConfiguration confignode = new MutableConfiguration("component");
 			confignode.Attributes.Add("lifestyle", "transient");
 			kernel.ConfigurationStore.AddComponentConfiguration("a", confignode);
-			kernel.Register(Component.For(typeof(NoInfoComponent)).Named("a"));
+			kernel.Register(Component.For(typeof(TrivialComponent)).Named("a"));
 			IHandler handler = kernel.GetHandler("a");
 			Assert.AreEqual(LifestyleType.Transient, handler.ComponentModel.LifestyleType);
 
 			confignode = new MutableConfiguration("component");
 			confignode.Attributes.Add("lifestyle", "singleton");
 			kernel.ConfigurationStore.AddComponentConfiguration("b", confignode);
-			kernel.Register(Component.For(typeof(NoInfoComponent)).Named("b"));
+			kernel.Register(Component.For(typeof(TrivialComponent)).Named("b"));
 			handler = kernel.GetHandler("b");
 			Assert.AreEqual(LifestyleType.Singleton, handler.ComponentModel.LifestyleType);
 
 			confignode = new MutableConfiguration("component");
 			confignode.Attributes.Add("lifestyle", "thread");
 			kernel.ConfigurationStore.AddComponentConfiguration("c", confignode);
-			kernel.Register(Component.For(typeof(NoInfoComponent)).Named("c"));
+			kernel.Register(Component.For(typeof(TrivialComponent)).Named("c"));
 			handler = kernel.GetHandler("c");
 			Assert.AreEqual(LifestyleType.Thread, handler.ComponentModel.LifestyleType);
 #if (!SILVERLIGHT)
 			confignode = new MutableConfiguration("component");
 			confignode.Attributes.Add("lifestyle", "perWebRequest");
 			kernel.ConfigurationStore.AddComponentConfiguration("d", confignode);
-			kernel.Register(Component.For(typeof(NoInfoComponent)).Named("d"));
+			kernel.Register(Component.For(typeof(TrivialComponent)).Named("d"));
 			handler = kernel.GetHandler("d");
 			Assert.AreEqual(LifestyleType.PerWebRequest, handler.ComponentModel.LifestyleType);
 #endif
