@@ -29,8 +29,8 @@ namespace Castle.MicroKernel
 		private readonly IHandler handler;
 		private Decommission decommission = Decommission.No;
 
-		private object instance;
 		private List<Burden> dependencies;
+		private object instance;
 
 		internal Burden(IHandler handler, bool requiresDecommission, bool trackedExternally)
 		{
