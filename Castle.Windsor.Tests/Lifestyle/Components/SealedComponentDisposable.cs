@@ -16,13 +16,13 @@ namespace Castle.MicroKernel.Tests.Lifestyle.Components
 {
 	using System;
 
-	public class ComponentWithDispose : IComponent, IDisposable
+	public sealed class SealedComponentDisposable : IComponent, IDisposable
 	{
 		public bool Disposed { get; private set; }
 
 		public int ID
 		{
-			get { return 42; }
+			get { return 0; }
 		}
 
 		public void Dispose()
