@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,14 +20,17 @@ namespace Castle.MicroKernel.LifecycleConcerns
 	using Castle.Core;
 
 	/// <summary>
-	/// Lifetime concern that works for components that don't have their actual type determined upfront
+	///   Lifetime concern that works for components that don't have their actual type determined upfront
 	/// </summary>
-#if (!SILVERLIGHT)
 	[Serializable]
-#endif
 	public class LateBoundConcerns : ICommissionConcern, IDecommissionConcern
 	{
 		private IDictionary<Type, ILifecycleConcern> concerns;
+
+		public bool HasConcerns
+		{
+			get { return concerns != null; }
+		}
 
 		public void AddConcern<TForType>(ILifecycleConcern lifecycleConcern)
 		{
@@ -36,11 +39,6 @@ namespace Castle.MicroKernel.LifecycleConcerns
 				concerns = new Dictionary<Type, ILifecycleConcern>(2);
 			}
 			concerns.Add(typeof(TForType), lifecycleConcern);
-		}
-
-		public bool HasConcerns
-		{
-			get { return concerns != null; }
 		}
 
 		public void Apply(ComponentModel model, object component)
