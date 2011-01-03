@@ -1,4 +1,4 @@
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,14 +14,11 @@
 
 namespace Castle.MicroKernel.Tests.Lifestyle.Components
 {
-	public class TrivialComponent : IComponent
+	public sealed class SealedComponent : IComponent
 	{
 		public int ID
 		{
-			get
-			{
-				return 0;
-			}
+			get { return 0; }
 		}
 	}
 }

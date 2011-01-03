@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -84,11 +84,11 @@ namespace Castle.MicroKernel.Tests.Registration
 		[Test]
 		public void Can_properly_resolve_component_from_UsingFactoryMethod()
 		{
-			var user = new User { FiscalStability = FiscalStability.DirtFarmer };
 			Kernel.Register(
 				Component.For<ICarProvider>()
-					.UsingFactoryMethod(() => new AbstractCarProviderFactory().Create(user))
+					.UsingFactoryMethod(() => new AbstractCarProviderFactory().Create(new User { FiscalStability = FiscalStability.DirtFarmer }))
 				);
+
 			Assert.IsInstanceOf<HondaProvider>(Kernel.Resolve<ICarProvider>());
 		}
 
@@ -113,9 +113,8 @@ namespace Castle.MicroKernel.Tests.Registration
 		[Test]
 		public void Can_properly_resolve_component_from_UsingFactoryMethod_with_kernel()
 		{
-			var user = new User { FiscalStability = FiscalStability.MrMoneyBags };
 			Kernel.Register(
-				Component.For<User>().Instance(user),
+				Component.For<User>().Instance(new User { FiscalStability = FiscalStability.MrMoneyBags }),
 				Component.For<ICarProvider>()
 					.UsingFactoryMethod(k => new AbstractCarProviderFactory().Create(k.Resolve<User>()))
 				);
@@ -175,6 +174,34 @@ namespace Castle.MicroKernel.Tests.Registration
 
 			var aProp = Kernel.Resolve<AProp>();
 			Assert.IsNull(aProp.Prop);
+		}
+
+		[Test]
+		public void Trivial_non_sealed_services_with_factory_activator_are_always_tracked()
+		{
+			Kernel.Register(Component.For<IComponent>()
+			                	.LifeStyle.Transient
+			                	.UsingFactoryMethod(() => new TrivialComponent()));
+
+			var component = Kernel.Resolve<IComponent>();
+
+			Assert.IsTrue(Kernel.ReleasePolicy.HasTrack(component));
+
+			Kernel.ReleaseComponent(component);
+
+			Assert.IsFalse(Kernel.ReleasePolicy.HasTrack(component));
+		}
+
+		[Test]
+		public void Trivial_sealed_services_with_factory_activator_are_not_tracked()
+		{
+			Kernel.Register(Component.For<SealedComponent>()
+			                	.LifeStyle.Transient
+			                	.UsingFactoryMethod(() => new SealedComponent()));
+
+			var component = Kernel.Resolve<SealedComponent>();
+
+			Assert.IsFalse(Kernel.ReleasePolicy.HasTrack(component));
 		}
 	}
 }
