@@ -178,7 +178,7 @@ namespace Castle.MicroKernel.Tests.Registration
 		}
 
 		[Test]
-		public void Factory_created_abstract_non_disposable_class_services_are_tracked()
+		public void Factory_created_abstract_non_disposable_class_services_are_NOT_tracked()
 		{
 			Kernel.Register(Component.For<TrivialComponent>()
 			                	.LifeStyle.Transient
@@ -186,15 +186,11 @@ namespace Castle.MicroKernel.Tests.Registration
 
 			var component = Kernel.Resolve<TrivialComponent>();
 
-			Assert.IsTrue(Kernel.ReleasePolicy.HasTrack(component));
-
-			Kernel.ReleaseComponent(component);
-
 			Assert.IsFalse(Kernel.ReleasePolicy.HasTrack(component));
 		}
 
 		[Test]
-		public void Factory_created_abstract_non_disposable_interface_services_are_tracked()
+		public void Factory_created_abstract_non_disposable_interface_services_are_NOT_tracked()
 		{
 			Kernel.Register(Component.For<IComponent>()
 			                	.LifeStyle.Transient
@@ -202,7 +198,7 @@ namespace Castle.MicroKernel.Tests.Registration
 
 			var component = Kernel.Resolve<IComponent>();
 
-			Assert.IsTrue(Kernel.ReleasePolicy.HasTrack(component));
+			Assert.IsFalse(Kernel.ReleasePolicy.HasTrack(component));
 		}
 
 		[Test]
@@ -220,7 +216,7 @@ namespace Castle.MicroKernel.Tests.Registration
 		}
 
 		[Test]
-		public void Factory_created_abstract_non_disposable_services_with_non_disposable_dependency_are_tracked()
+		public void Factory_created_abstract_non_disposable_services_with_non_disposable_dependency_are_NOT_tracked()
 		{
 			Kernel.Register(
 				Component.For<IComponent>().LifeStyle.Transient
@@ -229,7 +225,7 @@ namespace Castle.MicroKernel.Tests.Registration
 
 			var component = Kernel.Resolve<IComponent>() as TrivialComponentWithDependency;
 
-			Assert.IsTrue(Kernel.ReleasePolicy.HasTrack(component));
+			Assert.IsFalse(Kernel.ReleasePolicy.HasTrack(component));
 			Assert.IsFalse(Kernel.ReleasePolicy.HasTrack(component.Dependency));
 		}
 
@@ -277,7 +273,7 @@ namespace Castle.MicroKernel.Tests.Registration
 		}
 
 		[Test]
-		public void Factory_created_sealed_non_disposable_services_with_non_disposable_dependency_are_not_tracked()
+		public void Factory_created_sealed_non_disposable_services_with_non_disposable_dependency_are_NOT_tracked()
 		{
 			Kernel.Register(
 				Component.For<SealedComponentWithDependency>().LifeStyle.Transient

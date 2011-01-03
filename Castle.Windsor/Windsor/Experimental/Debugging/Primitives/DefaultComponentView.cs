@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
 namespace Castle.Windsor.Experimental.Debugging.Primitives
 {
 	using System.Collections.Generic;
-	using System.Linq;
 
 	using Castle.Core;
 	using Castle.Core.Internal;
@@ -30,6 +29,24 @@ namespace Castle.Windsor.Experimental.Debugging.Primitives
 		public DefaultComponentView(IHandler handler)
 		{
 			this.handler = handler;
+		}
+
+		public IEnumerable<DebuggerViewItem> Attach()
+		{
+			yield return new DebuggerViewItem("Implementation", GetImplementation());
+			foreach (var service in handler.Services)
+			{
+				yield return new DebuggerViewItem("Service", service);
+			}
+			yield return new DebuggerViewItem("Status", GetStatus());
+			yield return new DebuggerViewItem("Lifestyle", GetLifestyle());
+			if (HasInterceptors())
+			{
+				var interceptors = handler.ComponentModel.Interceptors;
+				yield return
+					new DebuggerViewItem("Interceptors", interceptors.ToArray());
+			}
+			yield return new DebuggerViewItem("Raw handler", handler);
 		}
 
 		private object GetImplementation()
@@ -69,24 +86,6 @@ namespace Castle.Windsor.Experimental.Debugging.Primitives
 		private bool HasInterceptors()
 		{
 			return handler.ComponentModel.HasInterceptors;
-		}
-
-		public IEnumerable<DebuggerViewItem> Attach()
-		{
-			yield return new DebuggerViewItem("Implementation", GetImplementation());
-			foreach (var service in handler.Services)
-			{
-				yield return new DebuggerViewItem("Service", service);
-			}
-			yield return new DebuggerViewItem("Status", GetStatus());
-			yield return new DebuggerViewItem("Lifestyle", GetLifestyle());
-			if (HasInterceptors())
-			{
-				var interceptors = handler.ComponentModel.Interceptors;
-				yield return
-					new DebuggerViewItem("Interceptors", interceptors.ToArray());
-			}
-			yield return new DebuggerViewItem("Raw handler", handler);
 		}
 	}
 #endif

@@ -16,23 +16,41 @@ namespace Castle.MicroKernel
 {
 	using System;
 	using System.Collections.Generic;
+	using System.Linq;
 
 	using Castle.Core;
+	using Castle.Core.Internal;
+	using Castle.MicroKernel.LifecycleConcerns;
 
 	public delegate void BurdenReleased(Burden burden);
 
 	public class Burden
 	{
 		private readonly IHandler handler;
+		private Decommission decommission = Decommission.No;
 
 		private object instance;
-		private List<Burden> items;
+		private List<Burden> dependencies;
 
 		internal Burden(IHandler handler, bool requiresDecommission, bool trackedExternally)
 		{
 			this.handler = handler;
 			TrackedExternally = trackedExternally;
-			RequiresDecommission = requiresDecommission || Model.Lifecycle.HasDecommissionConcerns;
+			if (requiresDecommission)
+			{
+				decommission = Decommission.Yes;
+			}
+			else if (Model.Lifecycle.HasDecommissionConcerns)
+			{
+				if (Model.Implementation == typeof(LateBoundComponent) && Model.Lifecycle.DecommissionConcerns.All(c => c is LateBoundConcerns))
+				{
+					decommission = Decommission.LateBound;
+				}
+				else
+				{
+					decommission = Decommission.Yes;
+				}
+			}
 		}
 
 		public object Instance
@@ -45,7 +63,21 @@ namespace Castle.MicroKernel
 			get { return handler.ComponentModel; }
 		}
 
-		public bool RequiresDecommission { get; set; }
+		public bool RequiresDecommission
+		{
+			get { return decommission != Decommission.No; }
+			set
+			{
+				if (value)
+				{
+					decommission = Decommission.Yes;
+				}
+				else
+				{
+					decommission = Decommission.No;
+				}
+			}
+		}
 
 		/// <summary>
 		///   If <c>true</c> requires release by <see cref = "IReleasePolicy" />. If <c>false</c>, the object has a well defined, detectable end of life (web-request end, disposal of the container etc), and will be released externally.
@@ -59,15 +91,15 @@ namespace Castle.MicroKernel
 
 		public void AddChild(Burden child)
 		{
-			if (items == null)
+			if (dependencies == null)
 			{
-				items = new List<Burden>(Model.Dependents.Length);
+				dependencies = new List<Burden>(Model.Dependents.Length);
 			}
-			items.Add(child);
+			dependencies.Add(child);
 
 			if (child.RequiresDecommission)
 			{
-				RequiresDecommission = true;
+				decommission = Decommission.Yes;
 			}
 		}
 
@@ -80,9 +112,9 @@ namespace Castle.MicroKernel
 
 			Released(this);
 
-			if (items != null)
+			if (dependencies != null)
 			{
-				items.ForEach(c => c.Release());
+				dependencies.ForEach(c => c.Release());
 			}
 			return true;
 		}
@@ -94,8 +126,20 @@ namespace Castle.MicroKernel
 				throw new ArgumentNullException("instance");
 			}
 			this.instance = instance;
+			if (decommission == Decommission.LateBound)
+			{
+				// NOTE: this may need to be extended if we lazily provide any other decimmission concerns
+				RequiresDecommission = instance is IDisposable;
+			}
 		}
 
 		public event BurdenReleased Released = delegate { };
+
+		private enum Decommission
+		{
+			No,
+			Yes,
+			LateBound
+		}
 	}
 }
