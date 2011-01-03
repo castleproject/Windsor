@@ -24,7 +24,7 @@ namespace Castle.MicroKernel.Lifestyle.Pool
 	[Serializable]
 	public class DefaultPool : IPool, IDisposable
 	{
-		private readonly Stack<Burden> available = new Stack<Burden>();
+		private readonly Stack<Burden> available;
 		private readonly IComponentActivator componentActivator;
 		private readonly Dictionary<object, Burden> inUse = new Dictionary<object, Burden>();
 		private readonly int initialSize;
@@ -34,6 +34,7 @@ namespace Castle.MicroKernel.Lifestyle.Pool
 
 		public DefaultPool(int initialSize, int maxsize, IComponentActivator componentActivator)
 		{
+			available = new Stack<Burden>(initialSize);
 			this.initialSize = initialSize;
 			this.maxsize = maxsize;
 			this.componentActivator = componentActivator;

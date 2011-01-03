@@ -106,8 +106,8 @@ namespace Castle.MicroKernel.Context
 				handlerStack = parent.handlerStack;
 				return;
 			}
-			handlerStack = new Stack<IHandler>();
-			resolutionStack = new Stack<ResolutionContext>();
+			handlerStack = new Stack<IHandler>(4);
+			resolutionStack = new Stack<ResolutionContext>(4);
 		}
 
 		/// <summary>
@@ -116,8 +116,8 @@ namespace Castle.MicroKernel.Context
 		private CreationContext()
 		{
 			releasePolicy = new NoTrackingReleasePolicy();
-			handlerStack = new Stack<IHandler>();
-			resolutionStack = new Stack<ResolutionContext>();
+			handlerStack = new Stack<IHandler>(4);
+			resolutionStack = new Stack<ResolutionContext>(4);
 		}
 
 		public Type RequestedType
