@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,14 +17,14 @@ namespace Castle.Core.Internal
 	using System.Diagnostics;
 
 	/// <summary>
-	/// Marker class used to denote components that have late bound type
-	/// That is the actual type is not known exactly at the time when <see cref="ComponentModel"/>
-	/// is created. Those are for example components instantiated via abstract factory.
+	///   Marker class used to denote components that have late bound type
+	///   That is the actual type is not known exactly at the time when <see cref = "ComponentModel" />
+	///   is created. Those are for example components instantiated via abstract factory.
 	/// </summary>
 	public sealed class LateBoundComponent
 	{
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
-		public static object Instance = new LateBoundComponent();
+		public static readonly object Instance = new LateBoundComponent();
 
 		public override string ToString()
 		{
