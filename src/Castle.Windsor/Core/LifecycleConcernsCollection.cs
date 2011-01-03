@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,15 +18,67 @@ namespace Castle.Core
 	using System.Collections.Generic;
 
 	/// <summary>
-	/// Represents a collection of ordered lifecycle concerns.
+	///   Represents a collection of ordered lifecycle concerns.
 	/// </summary>
-#if !SILVERLIGHT
 	[Serializable]
-#endif
 	public class LifecycleConcernsCollection
 	{
 		private List<ICommissionConcern> commission;
 		private List<IDecommissionConcern> decommission;
+
+		/// <summary>
+		///   Returns all concerns for the commission phase
+		/// </summary>
+		/// <value></value>
+		public IEnumerable<ICommissionConcern> CommissionConcerns
+		{
+			get
+			{
+				if (HasCommissionConcerns == false)
+				{
+					return new ICommissionConcern[0];
+				}
+				return commission;
+			}
+		}
+
+		/// <summary>
+		///   Returns all concerns for the decommission phase
+		/// </summary>
+		/// <value></value>
+		public IEnumerable<IDecommissionConcern> DecommissionConcerns
+		{
+			get
+			{
+				if (HasDecommissionConcerns == false)
+				{
+					return new IDecommissionConcern[0];
+				}
+				return decommission;
+			}
+		}
+
+		/// <summary>
+		///   Gets a value indicating whether this instance has commission steps.
+		/// </summary>
+		/// <value>
+		///   <c>true</c> if this instance has commission steps; otherwise, <c>false</c>.
+		/// </value>
+		public bool HasCommissionConcerns
+		{
+			get { return commission != null && commission.Count != 0; }
+		}
+
+		/// <summary>
+		///   Gets a value indicating whether this instance has decommission steps.
+		/// </summary>
+		/// <value>
+		///   <c>true</c> if this instance has decommission steps; otherwise, <c>false</c>.
+		/// </value>
+		public bool HasDecommissionConcerns
+		{
+			get { return decommission != null && decommission.Count != 0; }
+		}
 
 		private List<ICommissionConcern> Commission
 		{
@@ -50,66 +102,6 @@ namespace Castle.Core
 				}
 				return decommission;
 			}
-		}
-
-		/// <summary>
-		/// Returns all concerns for the commission phase
-		/// </summary>
-		/// <value></value>
-		public IEnumerable<ICommissionConcern> CommissionConcerns
-		{
-			get
-			{
-				if (HasCommissionConcerns == false)
-				{
-					yield break;
-				}
-				foreach (var commissionConcern in commission)
-				{
-					yield return commissionConcern;
-				}
-			}
-		}
-
-		/// <summary>
-		/// Returns all concerns for the decommission phase
-		/// </summary>
-		/// <value></value>
-		public IEnumerable<IDecommissionConcern> DecommissionConcerns
-		{
-			get
-			{
-				if (HasDecommissionConcerns == false)
-				{
-					yield break;
-				}
-				foreach (var decommissionConcern in decommission)
-				{
-					yield return decommissionConcern;
-				}
-			}
-		}
-
-		/// <summary>
-		/// Gets a value indicating whether this instance has commission steps.
-		/// </summary>
-		/// <value>
-		/// 	<c>true</c> if this instance has commission steps; otherwise, <c>false</c>.
-		/// </value>
-		public bool HasCommissionConcerns
-		{
-			get { return commission != null && commission.Count != 0; }
-		}
-
-		/// <summary>
-		/// Gets a value indicating whether this instance has decommission steps.
-		/// </summary>
-		/// <value>
-		/// 	<c>true</c> if this instance has decommission steps; otherwise, <c>false</c>.
-		/// </value>
-		public bool HasDecommissionConcerns
-		{
-			get { return decommission != null && decommission.Count != 0; }
 		}
 
 		public void Add(ICommissionConcern concern)

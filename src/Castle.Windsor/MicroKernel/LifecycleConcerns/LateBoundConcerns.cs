@@ -18,6 +18,12 @@ namespace Castle.MicroKernel.LifecycleConcerns
 	using System.Collections.Generic;
 
 	using Castle.Core;
+#if DOTNET40
+	using System.Collections.Concurrent;
+
+#else
+	using Castle.Core.Internal;
+#endif
 
 	/// <summary>
 	///   Lifetime concern that works for components that don't have their actual type determined upfront
@@ -26,6 +32,13 @@ namespace Castle.MicroKernel.LifecycleConcerns
 	public class LateBoundConcerns : ICommissionConcern, IDecommissionConcern
 	{
 		private IDictionary<Type, ILifecycleConcern> concerns;
+#if DOTNET40
+		private ConcurrentDictionary<Type, List<ILifecycleConcern>> concernsCache;
+#else
+		private IDictionary<Type, List<ILifecycleConcern>> concernsCache;
+		private readonly Lock cacheLock = Lock.Create();
+
+#endif
 
 		public bool HasConcerns
 		{
@@ -37,20 +50,66 @@ namespace Castle.MicroKernel.LifecycleConcerns
 			if (concerns == null)
 			{
 				concerns = new Dictionary<Type, ILifecycleConcern>(2);
+#if DOTNET40
+				concernsCache = new ConcurrentDictionary<Type, List<ILifecycleConcern>>(2, 2);
+#else
+				concernsCache = new Dictionary<Type, List<ILifecycleConcern>>(2);
+#endif
 			}
 			concerns.Add(typeof(TForType), lifecycleConcern);
 		}
 
 		public void Apply(ComponentModel model, object component)
 		{
-			var type = component.GetType();
-			foreach (var step in concerns)
+			var componentConcerns = GetComponentConcerns(component.GetType());
+			if (componentConcerns == null)
 			{
-				if (step.Key.IsAssignableFrom(type))
+				return;
+			}
+			componentConcerns.ForEach(c => c.Apply(model, component));
+		}
+
+		private List<ILifecycleConcern> BuildConcernCache(Type type)
+		{
+			var componentConcerns = new List<ILifecycleConcern>(concerns.Count);
+			foreach (var concern in concerns)
+			{
+				if (concern.Key.IsAssignableFrom(type))
 				{
-					step.Value.Apply(model, component);
+					componentConcerns.Add(concern.Value);
 				}
 			}
+			if (componentConcerns.Count > 0)
+			{
+				return componentConcerns;
+			}
+			return null;
+		}
+
+		private List<ILifecycleConcern> GetComponentConcerns(Type type)
+		{
+#if DOTNET40
+			return concernsCache.GetOrAdd(type, BuildConcernCache);
+#else
+			List<ILifecycleConcern> componentConcerns;
+			using(var @lock = cacheLock.ForReadingUpgradeable())
+			{
+				if (concernsCache.TryGetValue(type, out componentConcerns))
+				{
+					return componentConcerns;
+				}
+
+				@lock.Upgrade();
+				if (concernsCache.TryGetValue(type, out componentConcerns))
+				{
+					return componentConcerns;
+				}
+
+				componentConcerns = BuildConcernCache(type);
+				concernsCache.Add(type, componentConcerns);
+				return componentConcerns;
+			}
+#endif
 		}
 	}
 }
