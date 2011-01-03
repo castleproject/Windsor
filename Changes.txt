@@ -1,8 +1,9 @@
-- fixed IOC-254 - Optional non-primitive .ctor parameters don't work
+- fixed IOC-262 objects created via UsingFactoryMethod are always tracked, even if they could safely not be
 - fixed 	IOC-260 - Generic Typed Factories no longer working in trunk
 - implemented IOC-257 - Same as in code, specifying type for facility in XML should be enough - Id should be optional
 - implemented IOC-256 - Same as in code, specifying type for component in XML should be enough - Id should be optional
 - implemented IOC-255 - Specifying custom lifestyle type in XML should be enough, for it to be picked up
+- fixed IOC-254 - Optional non-primitive .ctor parameters don't work
 - fixed bug with NullReferenceException when TypedFactoryFacility is used and disposed
 - fixed IOC-250 - Dispose not being called on open generic registrations
 - IServiceProviderEx was removed as base interface for IWindsorContainer and IKernel
