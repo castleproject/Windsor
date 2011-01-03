@@ -84,7 +84,7 @@ namespace Castle.MicroKernel.Handlers
 
 				AssertNotWaitingForDependency();
 			}
-			using (var ctx = context.EnterResolutionContext(this, HasDecomission(requiresDecommission)))
+			using (var ctx = context.EnterResolutionContext(this, requiresDecommission))
 			{
 				var instance = lifestyleManager.Resolve(context, context.ReleasePolicy);
 				burden = ctx.Burden;
@@ -115,11 +115,6 @@ namespace Castle.MicroKernel.Handlers
 				}
 			}
 			return (canResolveAll && DependenciesByKey.Count == 0) || context.HasAdditionalArguments;
-		}
-
-		private bool HasDecomission(bool track)
-		{
-			return track || ComponentModel.Lifecycle.HasDecommissionConcerns;
 		}
 	}
 }

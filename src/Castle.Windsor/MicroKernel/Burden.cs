@@ -31,8 +31,8 @@ namespace Castle.MicroKernel
 		internal Burden(IHandler handler, bool requiresDecommission, bool trackedExternally)
 		{
 			this.handler = handler;
-			RequiresDecommission = requiresDecommission;
 			TrackedExternally = trackedExternally;
+			RequiresDecommission = requiresDecommission || Model.Lifecycle.HasDecommissionConcerns;
 		}
 
 		public object Instance
