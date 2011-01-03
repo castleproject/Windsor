@@ -18,6 +18,7 @@ namespace Castle.MicroKernel.Tests.Registration
 	using Castle.MicroKernel.Tests.Lifestyle.Components;
 	using Castle.Windsor.Tests;
 	using Castle.Windsor.Tests.ClassComponents;
+	using Castle.Windsor.Tests.Components;
 	using Castle.Windsor.Tests.Facilities.FactorySupport;
 
 	using NUnit.Framework;
@@ -190,6 +191,34 @@ namespace Castle.MicroKernel.Tests.Registration
 			Kernel.ReleaseComponent(component);
 
 			Assert.IsFalse(Kernel.ReleasePolicy.HasTrack(component));
+		}
+
+		[Test]
+		public void Trivial_sealed_services_with_factory_activator_and_disposable_dependency_are_tracked()
+		{
+			Kernel.Register(
+				Component.For<ISimpleService>().ImplementedBy<SimpleServiceDisposable>().LifeStyle.Transient,
+				Component.For<SealedComponentWithDependency>().LifeStyle.Transient
+					.UsingFactoryMethod(k => new SealedComponentWithDependency(k.Resolve<ISimpleService>())));
+
+			var component = Kernel.Resolve<SealedComponentWithDependency>();
+
+			Assert.IsTrue(Kernel.ReleasePolicy.HasTrack(component));
+			Assert.IsTrue(Kernel.ReleasePolicy.HasTrack(component.Dependency));
+		}
+
+		[Test]
+		public void Trivial_sealed_services_with_factory_activator_and_non_disposable_dependency_are_not_tracked()
+		{
+			Kernel.Register(
+				Component.For<ISimpleService>().ImplementedBy<SimpleService>().LifeStyle.Transient,
+				Component.For<SealedComponentWithDependency>().LifeStyle.Transient
+					.UsingFactoryMethod(k => new SealedComponentWithDependency(k.Resolve<ISimpleService>())));
+
+			var component = Kernel.Resolve<SealedComponentWithDependency>();
+
+			Assert.IsFalse(Kernel.ReleasePolicy.HasTrack(component));
+			Assert.IsFalse(Kernel.ReleasePolicy.HasTrack(component.Dependency));
 		}
 
 		[Test]
