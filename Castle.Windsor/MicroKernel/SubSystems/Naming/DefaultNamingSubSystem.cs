@@ -46,12 +46,12 @@ namespace Castle.MicroKernel.SubSystems.Naming
 		///   It serve as a fast lookup for the common case of having a single handler for 
 		///   a type.
 		/// </summary>
-		protected readonly Dictionary<Type, IHandler> service2Handler = new Dictionary<Type, IHandler>(ReferenceEqualityComparer.Instance);
+		protected readonly Dictionary<Type, IHandler> service2Handler = new Dictionary<Type, IHandler>(SimpleTypeEqualityComparer.Instance);
 
 		protected IList<IHandlerSelector> selectors;
 
-		private readonly IDictionary<Type, IHandler[]> assignableHandlerListsByTypeCache = new Dictionary<Type, IHandler[]>(ReferenceEqualityComparer.Instance);
-		private readonly IDictionary<Type, IHandler[]> handlerListsByTypeCache = new Dictionary<Type, IHandler[]>(ReferenceEqualityComparer.Instance);
+		private readonly IDictionary<Type, IHandler[]> assignableHandlerListsByTypeCache = new Dictionary<Type, IHandler[]>(SimpleTypeEqualityComparer.Instance);
+		private readonly IDictionary<Type, IHandler[]> handlerListsByTypeCache = new Dictionary<Type, IHandler[]>(SimpleTypeEqualityComparer.Instance);
 		private Dictionary<string, IHandler> key2HandlerCache;
 		private Dictionary<Type, IHandler> service2HandlerCache;
 
