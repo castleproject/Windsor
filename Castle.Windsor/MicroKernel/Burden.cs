@@ -42,7 +42,7 @@ namespace Castle.MicroKernel
 			}
 			else if (Model.Lifecycle.HasDecommissionConcerns)
 			{
-				if (Model.Implementation == typeof(LateBoundComponent) && Model.Lifecycle.DecommissionConcerns.All(c => c is LateBoundConcerns))
+				if (Model.Implementation == typeof(LateBoundComponent) && Model.Lifecycle.DecommissionConcerns.All(IsLateBound))
 				{
 					decommission = Decommission.LateBound;
 				}
@@ -131,6 +131,11 @@ namespace Castle.MicroKernel
 				// NOTE: this may need to be extended if we lazily provide any other decimmission concerns
 				RequiresDecommission = instance is IDisposable;
 			}
+		}
+
+		private bool IsLateBound(IDecommissionConcern arg)
+		{
+			return arg is LateBoundConcerns;
 		}
 
 		public event BurdenReleased Released = delegate { };

@@ -523,11 +523,6 @@ namespace Castle.MicroKernel
 
 		public virtual ISubSystem GetSubSystem(String key)
 		{
-			if (key == null)
-			{
-				throw new ArgumentNullException("key");
-			}
-
 			ISubSystem subsystem;
 			subsystems.TryGetValue(key, out subsystem);
 			return subsystem;

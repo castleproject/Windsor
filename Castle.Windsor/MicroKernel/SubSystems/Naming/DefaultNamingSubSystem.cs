@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ namespace Castle.MicroKernel.SubSystems.Naming
 	using System.Collections.Generic;
 
 	using Castle.Core.Internal;
+	using Castle.MicroKernel.Util;
 
 	/// <summary>
 	///   Default <see cref = "INamingSubSystem" /> implementation.
@@ -45,12 +46,12 @@ namespace Castle.MicroKernel.SubSystems.Naming
 		///   It serve as a fast lookup for the common case of having a single handler for 
 		///   a type.
 		/// </summary>
-		protected readonly Dictionary<Type, IHandler> service2Handler = new Dictionary<Type, IHandler>();
+		protected readonly Dictionary<Type, IHandler> service2Handler = new Dictionary<Type, IHandler>(ReferenceEqualityComparer.Instance);
 
 		protected IList<IHandlerSelector> selectors;
 
-		private readonly IDictionary<Type, IHandler[]> assignableHandlerListsByTypeCache = new Dictionary<Type, IHandler[]>();
-		private readonly IDictionary<Type, IHandler[]> handlerListsByTypeCache = new Dictionary<Type, IHandler[]>();
+		private readonly IDictionary<Type, IHandler[]> assignableHandlerListsByTypeCache = new Dictionary<Type, IHandler[]>(ReferenceEqualityComparer.Instance);
+		private readonly IDictionary<Type, IHandler[]> handlerListsByTypeCache = new Dictionary<Type, IHandler[]>(ReferenceEqualityComparer.Instance);
 		private Dictionary<string, IHandler> key2HandlerCache;
 		private Dictionary<Type, IHandler> service2HandlerCache;
 
@@ -174,10 +175,13 @@ namespace Castle.MicroKernel.SubSystems.Naming
 				throw new ArgumentNullException("key");
 			}
 
-			var selectorsOpinion = GetSelectorsOpinion(key, null);
-			if (selectorsOpinion != null)
+			if (selectors != null)
 			{
-				return selectorsOpinion;
+				var selectorsOpinion = GetSelectorsOpinion(key, null);
+				if (selectorsOpinion != null)
+				{
+					return selectorsOpinion;
+				}
 			}
 
 			IHandler value;
@@ -191,11 +195,13 @@ namespace Castle.MicroKernel.SubSystems.Naming
 			{
 				throw new ArgumentNullException("service");
 			}
-
-			var selectorsOpinion = GetSelectorsOpinion(null, service);
-			if (selectorsOpinion != null)
+			if (selectors != null)
 			{
-				return selectorsOpinion;
+				var selectorsOpinion = GetSelectorsOpinion(null, service);
+				if (selectorsOpinion != null)
+				{
+					return selectorsOpinion;
+				}
 			}
 			IHandler handler;
 			HandlerByServiceCache.TryGetValue(service, out handler);
