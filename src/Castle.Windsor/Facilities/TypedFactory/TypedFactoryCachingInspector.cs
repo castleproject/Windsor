@@ -23,12 +23,13 @@ namespace Castle.Facilities.TypedFactory
 	using Castle.Facilities.TypedFactory.Internal;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.ModelBuilder;
+	using Castle.MicroKernel.Util;
 
 	public class TypedFactoryCachingInspector : IContributeComponentModelConstruction
 	{
 		public virtual void BuildCache(ComponentModel model)
 		{
-			var map = new Dictionary<MethodInfo, FactoryMethod>();
+			var map = new Dictionary<MethodInfo, FactoryMethod>(new SimpleMethodEqualityComparer());
 			foreach (var service in model.AllServices)
 			{
 				BuildHandlersMap(service, map);
