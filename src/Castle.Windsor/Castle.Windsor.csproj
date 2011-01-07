@@ -369,6 +369,7 @@
     <Compile Include="Core\Internal\LateBoundComponent.cs" />
     <Compile Include="Core\Internal\ReflectionUtil.cs" />
     <Compile Include="Compatibility\SilverlightHacks.cs" />
+    <Compile Include="Core\Internal\ThreadSafeInit.cs" />
     <Compile Include="Core\LifestyleAttributes.cs" />
     <Compile Include="Core\LifestyleType.cs" />
     <Compile Include="Core\PropertiesInspectionBehavior.cs" />

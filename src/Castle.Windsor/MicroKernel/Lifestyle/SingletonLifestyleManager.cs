@@ -16,6 +16,7 @@ namespace Castle.MicroKernel.Lifestyle
 {
 	using System;
 
+	using Castle.Core.Internal;
 	using Castle.MicroKernel.Context;
 
 	/// <summary>
@@ -25,6 +26,7 @@ namespace Castle.MicroKernel.Lifestyle
 	public class SingletonLifestyleManager : AbstractLifestyleManager
 	{
 		private Burden cachedBurden;
+		private readonly ThreadSafeInit init = new ThreadSafeInit();
 
 		public override void Dispose()
 		{
@@ -50,22 +52,26 @@ namespace Castle.MicroKernel.Lifestyle
 				return instanceFromContext;
 			}
 
-			lock (ComponentActivator)
+			var initializing = false;
+			try
 			{
+				initializing = init.ExecuteThreadSafeOnce();
 				if (cachedBurden != null)
 				{
 					return cachedBurden.Instance;
 				}
-				return GetNewInstance(context, releasePolicy);
+				var burden = CreateInstance(context, true);
+				cachedBurden = burden;
+				Track(burden, releasePolicy);
+				return burden.Instance;
 			}
-		}
-
-		private object GetNewInstance(CreationContext context, IReleasePolicy releasePolicy)
-		{
-			var burden = CreateInstance(context, true);
-			cachedBurden = burden;
-			Track(burden, releasePolicy);
-			return burden.Instance;
+			finally
+			{
+				if(initializing)
+				{
+					init.EndThreadSafeOnceSection();
+				}
+			}
 		}
 	}
 }
