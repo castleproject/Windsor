@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,14 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Windsor.Experimental.Debugging
+namespace Castle.Windsor.Experimental.Diagnostics
 {
 #if !SILVERLIGHT
 	using System.Collections;
 	using System.Collections.Generic;
 
 	using Castle.MicroKernel;
-	using Castle.Windsor.Experimental.Debugging.Extensions;
+	using Castle.Windsor.Experimental.Diagnostics.Extensions;
 
 	public class DefaultDebuggingSubSystem : IContainerDebuggerExtensionHost, ISubSystem
 	{
@@ -30,11 +30,6 @@ namespace Castle.Windsor.Experimental.Debugging
 		{
 			item.Init(kernel);
 			extensions.Add(item);
-		}
-
-		IEnumerator IEnumerable.GetEnumerator()
-		{
-			return GetEnumerator();
 		}
 
 		public IEnumerator<IContainerDebuggerExtension> GetEnumerator()
@@ -48,6 +43,10 @@ namespace Castle.Windsor.Experimental.Debugging
 			InitStandardExtensions();
 		}
 
+		public void Terminate()
+		{
+		}
+
 		protected virtual void InitStandardExtensions()
 		{
 			Add(new AllComponents());
@@ -57,8 +56,9 @@ namespace Castle.Windsor.Experimental.Debugging
 			Add(new Facilities());
 		}
 
-		public void Terminate()
+		IEnumerator IEnumerable.GetEnumerator()
 		{
+			return GetEnumerator();
 		}
 	}
 #endif

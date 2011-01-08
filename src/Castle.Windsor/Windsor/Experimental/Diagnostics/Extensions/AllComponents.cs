@@ -12,14 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Windsor.Experimental.Debugging.Extensions
+namespace Castle.Windsor.Experimental.Diagnostics.Extensions
 {
 	using System;
 	using System.Collections.Generic;
 
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.SubSystems.Naming;
-	using Castle.Windsor.Experimental.Debugging.Primitives;
+	using Castle.Windsor.Experimental.Diagnostics.Primitives;
 
 #if !SILVERLIGHT
 	public class AllComponents : AbstractContainerDebuggerExtension

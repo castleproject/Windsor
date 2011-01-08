@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Windsor.Experimental.Debugging.Primitives
+namespace Castle.Windsor.Experimental.Diagnostics.Primitives
 {
 	using System;
 	using System.Diagnostics;
@@ -22,7 +22,6 @@ namespace Castle.Windsor.Experimental.Debugging.Primitives
 #if !SILVERLIGHT
 	public class MismatchedDependency
 	{
-
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 		private readonly string description;
 
@@ -35,21 +34,21 @@ namespace Castle.Windsor.Experimental.Debugging.Primitives
 			this.handlers = handlers;
 		}
 
+		public string Description
+		{
+			get { return description; }
+		}
+
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 		public IHandler[] Handlers
 		{
 			get { return handlers; }
 		}
 
-		public string Description
-		{
-			get { return description; }
-		}
-
 		[DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
 		public DebuggerViewItem[] ViewItems
 		{
-			get { return Array.ConvertAll(handlers,BuildComponentView); }
+			get { return Array.ConvertAll(handlers, BuildComponentView); }
 		}
 
 		private DebuggerViewItem BuildComponentView(IHandler handler)

@@ -12,23 +12,31 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Windsor.Experimental.Debugging.Extensions
+namespace Castle.Windsor.Experimental.Diagnostics.Extensions
 {
 	using System.Collections.Generic;
 
 	using Castle.MicroKernel;
-	using Castle.Windsor.Experimental.Debugging.Primitives;
+	using Castle.Windsor.Experimental.Diagnostics.Primitives;
 
 #if !SILVERLIGHT
-	public abstract class AbstractContainerDebuggerExtension : IContainerDebuggerExtension
+	public class Facilities : IContainerDebuggerExtension
 	{
-		public abstract IEnumerable<DebuggerViewItem> Attach();
+		private IKernel kernel;
 
-		public abstract void Init(IKernel kernel);
-
-		protected ComponentDebuggerView DefaultComponentView(IHandler handler)
+		public IEnumerable<DebuggerViewItem> Attach()
 		{
-			return new ComponentDebuggerView(handler, new DefaultComponentView(handler));
+			var facilities = kernel.GetFacilities();
+			if (facilities.Length == 0)
+			{
+				yield break;
+			}
+			yield return new DebuggerViewItem("Facilities", "Count = " + facilities.Length, facilities);
+		}
+
+		public void Init(IKernel kernel)
+		{
+			this.kernel = kernel;
 		}
 	}
 #endif

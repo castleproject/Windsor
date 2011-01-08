@@ -26,7 +26,7 @@ namespace Castle.Windsor
 	using Castle.MicroKernel.SubSystems.Configuration;
 	using Castle.Windsor.Configuration;
 	using Castle.Windsor.Configuration.Interpreters;
-	using Castle.Windsor.Experimental.Debugging;
+	using Castle.Windsor.Experimental.Diagnostics;
 	using Castle.Windsor.Installer;
 	using Castle.Windsor.Proxy;
 

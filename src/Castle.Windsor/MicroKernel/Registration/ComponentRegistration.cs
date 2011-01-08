@@ -566,7 +566,7 @@ namespace Castle.MicroKernel.Registration
 		}
 
 		/// <summary>
-		///   Change the name of this registration. 
+		///   Set a name of this registration.
 		///   This will be the key for the component in the kernel.
 		///   <para />
 		///   If not set, the <see cref = "Type.FullName" /> of the <see cref = "Implementation" />

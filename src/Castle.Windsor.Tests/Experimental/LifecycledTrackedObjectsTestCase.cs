@@ -15,15 +15,14 @@
 namespace Castle.Windsor.Tests.Experimental
 {
 #if !SILVERLIGHT
-	using System;
 	using System.Linq;
 
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Releasers;
-	using Castle.Windsor.Experimental.Debugging;
-	using Castle.Windsor.Experimental.Debugging.Extensions;
-	using Castle.Windsor.Experimental.Debugging.Primitives;
+	using Castle.Windsor.Experimental.Diagnostics;
+	using Castle.Windsor.Experimental.Diagnostics.Extensions;
+	using Castle.Windsor.Experimental.Diagnostics.Primitives;
 	using Castle.Windsor.Tests.ClassComponents;
 
 	using NUnit.Framework;

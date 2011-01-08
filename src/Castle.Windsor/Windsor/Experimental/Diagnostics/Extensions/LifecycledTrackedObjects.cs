@@ -12,13 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Windsor.Experimental.Debugging.Extensions
+namespace Castle.Windsor.Experimental.Diagnostics.Extensions
 {
 	using System.Collections.Generic;
 
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Releasers;
-	using Castle.Windsor.Experimental.Debugging.Primitives;
+	using Castle.Windsor.Experimental.Diagnostics.Primitives;
 
 #if !SILVERLIGHT
 	public class LifecycledTrackedObjects : AbstractContainerDebuggerExtension
