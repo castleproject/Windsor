@@ -21,8 +21,8 @@ namespace Castle.Windsor.Tests.Experimental
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Tests.ClassComponents;
 	using Castle.Windsor.Experimental.Diagnostics;
+	using Castle.Windsor.Experimental.Diagnostics.DebuggerViews;
 	using Castle.Windsor.Experimental.Diagnostics.Extensions;
-	using Castle.Windsor.Experimental.Diagnostics.Primitives;
 	using Castle.Windsor.Tests.ClassComponents;
 
 	using NUnit.Framework;
@@ -99,14 +99,14 @@ namespace Castle.Windsor.Tests.Experimental
 			Kernel.AddSubSystem(SubSystemConstants.DebuggingKey, subSystem);
 		}
 
-		private MismatchedDependency[] GetMismatches()
+		private MismatchedDependencyDebuggerViewItem[] GetMismatches()
 		{
 			var faultyComponents =
 				subSystem.SelectMany(e => e.Attach()).SingleOrDefault(i => i.Name == PotentialLifestyleMismatches.Name);
 			Assert.IsNotNull(faultyComponents);
 			var components = faultyComponents.Value as DebuggerViewItem[];
 			Assert.IsNotNull(components);
-			return components.Select(i => (MismatchedDependency)i.Value).ToArray();
+			return components.Select(i => (MismatchedDependencyDebuggerViewItem)i.Value).ToArray();
 		}
 	}
 #endif

@@ -21,7 +21,8 @@ namespace Castle.Windsor.Experimental.Diagnostics.Extensions
 	using Castle.Core;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.SubSystems.Naming;
-	using Castle.Windsor.Experimental.Diagnostics.Primitives;
+	using Castle.Windsor.Experimental.Diagnostics.DebuggerViews;
+	using Castle.Windsor.Experimental.Diagnostics.Helpers;
 
 	public class PotentialLifestyleMismatches : AbstractContainerDebuggerExtension
 	{
@@ -51,7 +52,7 @@ namespace Castle.Windsor.Experimental.Diagnostics.Extensions
 			naming = kernel.GetSubSystem(SubSystemConstants.NamingKey) as INamingSubSystem;
 		}
 
-		private IEnumerable<LifestyleDependency> GetMismatch(LifestyleDependency parent, ComponentModel component,
+		private IEnumerable<MismatchedLifestyleDependencyViewBuilder> GetMismatch(MismatchedLifestyleDependencyViewBuilder parent, ComponentModel component,
 		                                                     Dictionary<ComponentModel, IHandler> model2Handler)
 		{
 			if (parent.Handler.ComponentModel == component)
@@ -60,7 +61,7 @@ namespace Castle.Windsor.Experimental.Diagnostics.Extensions
 			}
 
 			var handler = model2Handler[component];
-			var item = new LifestyleDependency(handler, parent);
+			var item = new MismatchedLifestyleDependencyViewBuilder(handler, parent);
 			if (item.Mismatched())
 			{
 				yield return item;
@@ -83,7 +84,7 @@ namespace Castle.Windsor.Experimental.Diagnostics.Extensions
 			{
 				yield break;
 			}
-			var root = new LifestyleDependency(handler);
+			var root = new MismatchedLifestyleDependencyViewBuilder(handler);
 			foreach (ComponentModel dependent in handler.ComponentModel.Dependents)
 			{
 				foreach (var mismatch in GetMismatch(root, dependent, model2Handler))

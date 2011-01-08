@@ -20,7 +20,7 @@ namespace Castle.Windsor.Experimental.Diagnostics
 	using System.Linq;
 
 	using Castle.MicroKernel;
-	using Castle.Windsor.Experimental.Diagnostics.Primitives;
+	using Castle.Windsor.Experimental.Diagnostics.DebuggerViews;
 
 #if !SILVERLIGHT
 	[DebuggerDisplay("")]

@@ -17,7 +17,7 @@ namespace Castle.Windsor.Experimental.Diagnostics
 	using System.Collections.Generic;
 
 	using Castle.MicroKernel;
-	using Castle.Windsor.Experimental.Diagnostics.Primitives;
+	using Castle.Windsor.Experimental.Diagnostics.DebuggerViews;
 
 #if !SILVERLIGHT
 	public interface IContainerDebuggerExtension

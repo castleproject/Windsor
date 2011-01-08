@@ -12,23 +12,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Windsor.Experimental.Diagnostics.Primitives
+namespace Castle.Windsor.Experimental.Diagnostics.DebuggerViews
 {
 	using System.Collections.Generic;
 	using System.Diagnostics;
 	using System.Linq;
-	using System.Text;
 
-	using Castle.Core.Internal;
 	using Castle.MicroKernel;
+	using Castle.Windsor.Experimental.Diagnostics.Helpers;
 
 #if !SILVERLIGHT
-	[DebuggerDisplay("{key} {Description,nq}")]
+	[DebuggerDisplay("{key} {description,nq}")]
 	public class ComponentDebuggerView
 	{
-		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
-		private readonly int additionalServicesCount;
-
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 		private readonly string description;
 
@@ -44,10 +40,9 @@ namespace Castle.Windsor.Experimental.Diagnostics.Primitives
 		public ComponentDebuggerView(IHandler handler, params IComponentDebuggerExtension[] defaultExtension)
 		{
 			key = handler.ComponentModel.Name;
-			additionalServicesCount = handler.Services.Count() - 1;
 			this.handler = handler;
 			extension = defaultExtension.Concat(GetExtensions(handler)).ToArray();
-			description = BuildDescription();
+			description = handler.GetServicesDescription();
 		}
 
 		[DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
@@ -56,44 +51,6 @@ namespace Castle.Windsor.Experimental.Diagnostics.Primitives
 			get { return extension.SelectMany(e => e.Attach()).ToArray(); }
 		}
 
-		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
-		private string Description
-		{
-			get { return description; }
-		}
-
-		private string BuildDescription()
-		{
-			var services = handler.Services.ToArray();
-			var message = new StringBuilder(services[0].Name);
-			if (additionalServicesCount == 1)
-			{
-				message.Append(" (and one more type)");
-			}
-			else if (additionalServicesCount > 1)
-			{
-				message.AppendFormat(" (and {0} more types)", additionalServicesCount);
-			}
-			var impl = handler.ComponentModel.Implementation;
-			if (additionalServicesCount == 0 && impl == services[0])
-			{
-				return message.ToString();
-			}
-			message.Append(" / ");
-			if (impl == null)
-			{
-				message.Append("no type");
-			}
-			else if (impl == typeof(LateBoundComponent))
-			{
-				message.Append("late bound type");
-			}
-			else
-			{
-				message.Append(impl.Name);
-			}
-			return message.ToString();
-		}
 
 		private IEnumerable<IComponentDebuggerExtension> GetExtensions(IHandler handler)
 		{

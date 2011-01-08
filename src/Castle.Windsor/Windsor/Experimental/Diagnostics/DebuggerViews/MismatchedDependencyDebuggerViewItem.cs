@@ -12,15 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Windsor.Experimental.Diagnostics.Primitives
+namespace Castle.Windsor.Experimental.Diagnostics.DebuggerViews
 {
 	using System;
 	using System.Diagnostics;
 
 	using Castle.MicroKernel;
+	using Castle.Windsor.Experimental.Diagnostics.Helpers;
 
 #if !SILVERLIGHT
-	public class MismatchedDependency
+	public class MismatchedDependencyDebuggerViewItem
 	{
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 		private readonly string description;
@@ -28,7 +29,7 @@ namespace Castle.Windsor.Experimental.Diagnostics.Primitives
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 		private readonly IHandler[] handlers;
 
-		public MismatchedDependency(string description, IHandler[] handlers)
+		public MismatchedDependencyDebuggerViewItem(string description, IHandler[] handlers)
 		{
 			this.description = description;
 			this.handlers = handlers;
@@ -53,8 +54,7 @@ namespace Castle.Windsor.Experimental.Diagnostics.Primitives
 
 		private DebuggerViewItem BuildComponentView(IHandler handler)
 		{
-			var defaultExtension = new DefaultComponentView(handler);
-			var item = new ComponentDebuggerView(handler, defaultExtension);
+			var item = new ComponentDebuggerView(handler, new DefaultComponentViewBuilder(handler));
 			return new DebuggerViewItem(handler.ComponentModel.Name, handler.ComponentModel.GetLifestyleDescription(), item);
 		}
 	}
