@@ -14,28 +14,31 @@
 
 namespace Castle.Windsor.Experimental.Debugging.Primitives
 {
+	using System;
 	using System.Diagnostics;
-	using System.Linq;
+
+	using Castle.MicroKernel;
 
 #if !SILVERLIGHT
 	public class MismatchedDependency
 	{
-		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
-		private readonly MetaComponent[] components;
 
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 		private readonly string description;
 
-		public MismatchedDependency(string description, MetaComponent[] components)
+		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
+		private readonly IHandler[] handlers;
+
+		public MismatchedDependency(string description, IHandler[] handlers)
 		{
-			this.components = components;
 			this.description = description;
+			this.handlers = handlers;
 		}
 
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
-		public MetaComponent[] Components
+		public IHandler[] Handlers
 		{
-			get { return components; }
+			get { return handlers; }
 		}
 
 		public string Description
@@ -46,14 +49,14 @@ namespace Castle.Windsor.Experimental.Debugging.Primitives
 		[DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
 		public DebuggerViewItem[] ViewItems
 		{
-			get { return components.Select(BuildComponentView).ToArray(); }
+			get { return Array.ConvertAll(handlers,BuildComponentView); }
 		}
 
-		private DebuggerViewItem BuildComponentView(MetaComponent component)
+		private DebuggerViewItem BuildComponentView(IHandler handler)
 		{
-			var defaultExtension = new DefaultComponentView(component.Handler);
-			var item = new ComponentDebuggerView(component, defaultExtension);
-			return new DebuggerViewItem(component.Name, component.Model.GetLifestyleDescription(), item);
+			var defaultExtension = new DefaultComponentView(handler);
+			var item = new ComponentDebuggerView(handler, defaultExtension);
+			return new DebuggerViewItem(handler.ComponentModel.Name, handler.ComponentModel.GetLifestyleDescription(), item);
 		}
 	}
 #endif

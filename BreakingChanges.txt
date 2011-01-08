@@ -110,8 +110,10 @@ change - Removed the following methods:
 	INamingSubSystem.this[Type service],
 	INamingSubSystem.GetHandler,
 	INamingSubSystem.GetService2Handler,
+	INamingSubSystem.GetKey2Handler,
 	INamingSubSystem.UnRegister(String key),
 	INamingSubSystem.UnRegister(Type service)
+Also INamingSubSystem.Register now takes only IHandler as its argument
 
 impact - low
 fixability - none
@@ -120,6 +122,9 @@ description - The methods were implementation of "remove component from the cont
 	which was flawed and problematic, hecen was scraped.
 
 fix - Working around is quite dependant on your specific usage. Try utilizing IHandlerSelectors.
+	For changed Register method, just update your calling code not to pass the name.
+	handler.ComponentModel.Name is now used as the key, as it was happening in all places so far
+	anyway, so this change should have no real impact.
 ================================================================================================
 change - Removed the following types: ContainerAdapter, ContainerWrapper, IContainerAdapter,
 	IContainerAdapterSite
@@ -127,8 +132,8 @@ change - Removed the following types: ContainerAdapter, ContainerWrapper, IConta
 impact - low
 fixability - none
 
-description - These types require aility to remove components from a container. This ability was
-	removed and since these types are hardly ever used, they were removed as well.
+description - These types require ability to remove components from a container. This ability
+	was removed and since these types are hardly ever used, they were removed as well.
 
 fix - No quick fix is possible. If you are depending on this functionality proaly your best shot
 	is to replicate it, espeicially catering for the removal of components which is no longer
@@ -204,24 +209,6 @@ description - As part of internal cleanup these esoteric, alternative implementa
 fix - behavior of these implementations of naming subsystem can be easily emulated with default
 	naming subsystem and custom IHandlerSelectors, which is the recommended way to go.
 ================================================================================================
-change - Proxies no longer implicitly implement all interfaces of component implementation type.
-
-impact - medium
-fixability - medium
-
-description - This original behavior was actually a bug and would produce onpredictible behavior
-	for components exposing several services including their class.
-
-fix - if you were depending on the additional non-service intrfaces being forwarded to the proxy
-	specify them explicitly as addtional interfaces to proxy:
-	container.Register(Component.For<CountingInterceptor>()
-						.Named("a"),
-					Component.For<ICommon>()
-						.ImplementedBy<TwoInterfacesImpl>()
-						.Interceptors("a")
-						.Proxy.AdditionalInterfaces(typeof(ICommon2))
-						.LifeStyle.Transient);
-================================================================================================
 change - UseSingleInterfaceProxy option was removed
 
 impact - low
@@ -232,6 +219,8 @@ description - As part of clean up of the obsolete API the option was removed to 
 
 fix - if you were using this option and you have to use it, use a IProxyGenerationHook impl
 	and choose to only proxy members of that single interface.
+
+
 ================================================================================================
 release 2.5.2 ==================================================================================
 ================================================================================================

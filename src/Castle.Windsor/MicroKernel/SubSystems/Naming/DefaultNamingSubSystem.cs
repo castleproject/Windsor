@@ -16,6 +16,7 @@ namespace Castle.MicroKernel.SubSystems.Naming
 {
 	using System;
 	using System.Collections.Generic;
+	using System.Diagnostics;
 
 	using Castle.Core.Internal;
 	using Castle.MicroKernel.Util;
@@ -249,19 +250,15 @@ namespace Castle.MicroKernel.SubSystems.Naming
 			return result;
 		}
 
-		public IDictionary<string, IHandler> GetKey2Handler()
+		public virtual void Register(IHandler handler)
 		{
-			return HandlerByKeyCache;
-		}
-
-		public virtual void Register(String key, IHandler handler)
-		{
+			var key = handler.ComponentModel.Name;
 			using (@lock.ForWriting())
 			{
 				if (key2Handler.ContainsKey(key))
 				{
 					throw new ComponentRegistrationException(
-						String.Format("There is a component already registered for the given key {0}", key));
+						String.Format("There is a component already registered for the given name {0}", key));
 				}
 
 				key2Handler.Add(key, handler);

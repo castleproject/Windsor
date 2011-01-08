@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -25,19 +25,23 @@ namespace Castle.Windsor.Experimental.Debugging.Primitives
 #if !SILVERLIGHT
 	public class LifestyleDependency
 	{
-		private readonly MetaComponent component;
-
+		private readonly IHandler handler;
 		private readonly LifestyleDependency parent;
 
-		public LifestyleDependency(MetaComponent component, LifestyleDependency parent = null)
+		public LifestyleDependency(IHandler handler, LifestyleDependency parent = null)
 		{
-			this.component = component;
+			this.handler = handler;
 			this.parent = parent;
 		}
 
 		public IHandler Handler
 		{
-			get { return component.Handler; }
+			get { return handler; }
+		}
+
+		public string Name
+		{
+			get { return handler.ComponentModel.Name; }
 		}
 
 		public DebuggerViewItem ViewItem
@@ -46,60 +50,61 @@ namespace Castle.Windsor.Experimental.Debugging.Primitives
 			{
 				var item = GetItem();
 				var key = GetKey();
-				var name = GetName(item.Components.First());
+				var name = GetName(item.Handlers.First());
 				return new DebuggerViewItem(name, key, item);
 			}
 		}
 
-		public string Name
+		private ComponentModel Model
 		{
-			get { return component.Name; }
+			get { return handler.ComponentModel; }
 		}
 
 		public bool Mismatched()
 		{
-			return component.Model.LifestyleType == LifestyleType.PerWebRequest ||
-			       component.Model.LifestyleType == LifestyleType.Transient;
+			return Model.LifestyleType == LifestyleType.PerWebRequest ||
+			       Model.LifestyleType == LifestyleType.Transient;
 		}
 
-		private void ContributeItem(MetaComponent mismatched, StringBuilder message, IList<MetaComponent> items)
+		private void ContributeItem(IHandler mismatched, StringBuilder message, List<IHandler> items)
 		{
 			if (ImTheRoot())
 			{
-				items.Add(component);
-				message.AppendFormat("Component '{0}' with lifestyle {1} ", component.Name,
-				                     component.Model.GetLifestyleDescription());
+				items.Add(handler);
+				message.AppendFormat("Component '{0}' with lifestyle {1} ", Name,
+				                     Model.GetLifestyleDescription());
 
-				message.AppendFormat("depends on '{0}' with lifestyle {1}", mismatched.Name,
-				                     mismatched.Model.GetLifestyleDescription());
+				message.AppendFormat("depends on '{0}' with lifestyle {1}",
+				                     mismatched.ComponentModel.Name,
+				                     mismatched.ComponentModel.GetLifestyleDescription());
 				return;
 			}
 			parent.ContributeItem(mismatched, message, items);
-			items.Add(component);
+			items.Add(handler);
 			message.AppendLine();
-			message.AppendFormat("\tvia '{0}' with lifestyle {1}", component.Name,
-								 component.Model.GetLifestyleDescription());
+			message.AppendFormat("\tvia '{0}' with lifestyle {1}", Name,
+			                     Model.GetLifestyleDescription());
 		}
 
 		private MismatchedDependency GetItem()
 		{
-			var items = new List<MetaComponent>();
+			var items = new List<IHandler>();
 			var message = GetMismatchMessage(items);
 			return new MismatchedDependency(message, items.ToArray());
 		}
 
 		private string GetKey()
 		{
-			return string.Format("\"{0}\" »{1}«", component.Name, component.Model.GetLifestyleDescription());
+			return string.Format("\"{0}\" »{1}«", Name, Model.GetLifestyleDescription());
 		}
 
-		private string GetMismatchMessage(IList<MetaComponent> items)
+		private string GetMismatchMessage(List<IHandler> items)
 		{
 			var message = new StringBuilder();
 			Debug.Assert(parent != null, "parent != null");
 			//now we're going down letting the root to append first:
-			parent.ContributeItem(component, message, items);
-			items.Add(component);
+			parent.ContributeItem(handler, message, items);
+			items.Add(handler);
 
 			message.AppendLine();
 			message.AppendFormat(
@@ -107,10 +112,10 @@ namespace Castle.Windsor.Experimental.Debugging.Primitives
 			return message.ToString();
 		}
 
-		private string GetName(MetaComponent root)
+		private string GetName(IHandler root)
 		{
-			var indirect = (parent.component == root) ? string.Empty : "indirectly ";
-			return string.Format("\"{0}\" »{1}« {2}depends on", root.Name, root.Model.GetLifestyleDescription(), indirect);
+			var indirect = (parent.Handler == root) ? string.Empty : "indirectly ";
+			return string.Format("\"{0}\" »{1}« {2}depends on", root.ComponentModel.Name, root.ComponentModel.GetLifestyleDescription(), indirect);
 		}
 
 		private bool ImTheRoot()

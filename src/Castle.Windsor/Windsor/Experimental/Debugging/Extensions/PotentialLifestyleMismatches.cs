@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -23,20 +23,18 @@ namespace Castle.Windsor.Experimental.Debugging.Extensions
 	using Castle.MicroKernel.SubSystems.Naming;
 	using Castle.Windsor.Experimental.Debugging.Primitives;
 
-	using ComponentsMap = System.Collections.Generic.IDictionary<Core.ComponentModel, Primitives.MetaComponent>;
-
 	public class PotentialLifestyleMismatches : AbstractContainerDebuggerExtension
 	{
 		private INamingSubSystem naming;
 
 		public override IEnumerable<DebuggerViewItem> Attach()
 		{
-			var all = GetMetaComponents(naming.GetKey2Handler());
+			var model2Handler = naming.GetAllHandlers().ToDictionary(p => p.ComponentModel);
+
 			var mismatches = new List<DebuggerViewItem>();
-			var model2Meta = all.ToDictionary(p => p.Model);
-			foreach (var component in model2Meta.Values)
+			foreach (var handler in model2Handler.Values)
 			{
-				mismatches.AddRange(GetMismatches(component, model2Meta));
+				mismatches.AddRange(GetMismatches(model2Handler, handler));
 			}
 			if (mismatches.Count == 0)
 			{
@@ -53,16 +51,15 @@ namespace Castle.Windsor.Experimental.Debugging.Extensions
 		}
 
 		private IEnumerable<LifestyleDependency> GetMismatch(LifestyleDependency parent, ComponentModel component,
-		                                                     ComponentsMap model2Meta)
+		                                                     Dictionary<ComponentModel, IHandler> model2Handler)
 		{
 			if (parent.Handler.ComponentModel == component)
 			{
 				yield break;
 			}
 
-			var pair = model2Meta[component];
-			var handler = pair.Handler;
-			var item = new LifestyleDependency(pair, parent);
+			var handler = model2Handler[component];
+			var item = new LifestyleDependency(handler, parent);
 			if (item.Mismatched())
 			{
 				yield return item;
@@ -71,7 +68,7 @@ namespace Castle.Windsor.Experimental.Debugging.Extensions
 			{
 				foreach (ComponentModel dependent in handler.ComponentModel.Dependents)
 				{
-					foreach (var mismatch in GetMismatch(item, dependent, model2Meta))
+					foreach (var mismatch in GetMismatch(item, dependent, model2Handler))
 					{
 						yield return mismatch;
 					}
@@ -79,17 +76,16 @@ namespace Castle.Windsor.Experimental.Debugging.Extensions
 			}
 		}
 
-		private IEnumerable<DebuggerViewItem> GetMismatches(MetaComponent component, ComponentsMap component2Handlers)
+		private IEnumerable<DebuggerViewItem> GetMismatches(Dictionary<ComponentModel, IHandler> model2Handler, IHandler handler)
 		{
-			var handler = component.Handler;
 			if (IsSingleton(handler) == false)
 			{
 				yield break;
 			}
-			var root = new LifestyleDependency(component);
+			var root = new LifestyleDependency(handler);
 			foreach (ComponentModel dependent in handler.ComponentModel.Dependents)
 			{
-				foreach (var mismatch in GetMismatch(root, dependent, component2Handlers))
+				foreach (var mismatch in GetMismatch(root, dependent, model2Handler))
 				{
 					yield return mismatch.ViewItem;
 				}

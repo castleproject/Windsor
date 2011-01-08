@@ -41,11 +41,11 @@ namespace Castle.Windsor.Experimental.Debugging.Primitives
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 		private string key;
 
-		public ComponentDebuggerView(MetaComponent component, params IComponentDebuggerExtension[] defaultExtension)
+		public ComponentDebuggerView(IHandler handler, params IComponentDebuggerExtension[] defaultExtension)
 		{
-			key = component.Name;
-			additionalServicesCount = component.ServicesCount - 1;
-			handler = component.Handler;
+			key = handler.ComponentModel.Name;
+			additionalServicesCount = handler.Services.Count() - 1;
+			this.handler = handler;
 			extension = defaultExtension.Concat(GetExtensions(handler)).ToArray();
 			description = BuildDescription();
 		}
