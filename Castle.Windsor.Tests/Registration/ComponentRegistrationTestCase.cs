@@ -120,7 +120,7 @@ namespace Castle.MicroKernel.Tests.Registration
 
 		[Test]
 		[ExpectedException(typeof(ComponentRegistrationException),
-			ExpectedMessage = "There is a component already registered for the given key customer")]
+			ExpectedMessage = "There is a component already registered for the given name customer")]
 		public void AddComponent_WithSameName_ThrowsException()
 		{
 			Kernel.Register(

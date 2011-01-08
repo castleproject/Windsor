@@ -15,7 +15,8 @@
 namespace Castle.MicroKernel.SubSystems.Naming
 {
 	using System;
-	using System.Collections.Generic;
+
+	using Castle.Core;
 
 	/// <summary>
 	/// Contract for SubSystem that wishes to keep and coordinate
@@ -87,16 +88,11 @@ namespace Castle.MicroKernel.SubSystems.Naming
 		IHandler[] GetAllHandlers();
 
 		/// <summary>
-		/// List of handler by key
+		/// Implementors should register the <see cref="IHandler"/> with all <see cref="IHandler.Services"/> it exposes.
+		/// The handler should also be accessible via unique <see cref="ComponentModel.Name"/> of its <see cref="IHandler.ComponentModel"/>.
 		/// </summary>
-		IDictionary<string, IHandler> GetKey2Handler();
-
-		/// <summary>
-		/// Implementors should register the key and service pointing 
-		/// to the specified handler
-		/// </summary>
-		/// <param name="key"></param>
 		/// <param name="handler"></param>
-		void Register(String key, IHandler handler);
+		/// <exception cref="ComponentRegistrationException">Thrown if the <see cref="ComponentModel.Name"/> of <paramref name="handler"/>'s <see cref="IHandler.ComponentModel"/> is not unique and a handler with the same name has already been registered.</exception>
+		void Register(IHandler handler);
 	}
 }

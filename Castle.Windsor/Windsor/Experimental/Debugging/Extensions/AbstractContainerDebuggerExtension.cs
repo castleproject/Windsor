@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,11 +15,10 @@
 namespace Castle.Windsor.Experimental.Debugging.Extensions
 {
 	using System.Collections.Generic;
-	using System.Linq;
 
 	using Castle.MicroKernel;
 	using Castle.Windsor.Experimental.Debugging.Primitives;
-	
+
 #if !SILVERLIGHT
 	public abstract class AbstractContainerDebuggerExtension : IContainerDebuggerExtension
 	{
@@ -27,14 +26,9 @@ namespace Castle.Windsor.Experimental.Debugging.Extensions
 
 		public abstract void Init(IKernel kernel);
 
-		protected ComponentDebuggerView DefaultComponentView(MetaComponent component)
+		protected ComponentDebuggerView DefaultComponentView(IHandler handler)
 		{
-			return new ComponentDebuggerView(component, new DefaultComponentView(component.Handler));
-		}
-
-		protected IEnumerable<MetaComponent> GetMetaComponents(IDictionary<string, IHandler> flatKeyHandlers)
-		{
-			return flatKeyHandlers.Select(c => new MetaComponent(c.Key, c.Value));
+			return new ComponentDebuggerView(handler, new DefaultComponentView(handler));
 		}
 	}
 #endif

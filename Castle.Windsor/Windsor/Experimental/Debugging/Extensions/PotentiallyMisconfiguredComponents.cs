@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,6 +14,7 @@
 
 namespace Castle.Windsor.Experimental.Debugging.Extensions
 {
+	using System;
 	using System.Collections.Generic;
 	using System.Linq;
 
@@ -28,17 +29,18 @@ namespace Castle.Windsor.Experimental.Debugging.Extensions
 
 		public override IEnumerable<DebuggerViewItem> Attach()
 		{
-			var waitingComponents = naming.GetKey2Handler()
-				.Where(h => h.Value.CurrentState == HandlerState.WaitingDependency);
-			if (waitingComponents.Any() == false)
+			var waiting = Array.FindAll(naming.GetAllHandlers(),h => h.CurrentState == HandlerState.WaitingDependency);
+			if (waiting.Length ==0)
 			{
-				yield break;
+				return Enumerable.Empty<DebuggerViewItem>();
 			}
-			var waiting = GetMetaComponents(waitingComponents.ToDictionary(k => k.Key, v => v.Value));
-			var components = waiting.Select(DefaultComponentView).ToArray();
-			yield return new DebuggerViewItem("Potentially Misconfigured Components",
-			                                  "Count = " + components.Length,
-			                                  components);
+			var components = Array.ConvertAll(waiting, DefaultComponentView);
+			return new[]
+			{
+				new DebuggerViewItem("Potentially Misconfigured Components",
+				                     "Count = " + components.Length,
+				                     components)
+			};
 		}
 
 		public override void Init(IKernel kernel)

@@ -756,7 +756,7 @@ namespace Castle.MicroKernel
 		{
 			if (!skipRegistration)
 			{
-				NamingSubSystem.Register(key, handler);
+				NamingSubSystem.Register(handler);
 			}
 
 			RaiseHandlerRegistered(handler);

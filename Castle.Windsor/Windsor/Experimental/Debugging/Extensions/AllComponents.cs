@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,8 +14,8 @@
 
 namespace Castle.Windsor.Experimental.Debugging.Extensions
 {
+	using System;
 	using System.Collections.Generic;
-	using System.Linq;
 
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.SubSystems.Naming;
@@ -28,10 +28,11 @@ namespace Castle.Windsor.Experimental.Debugging.Extensions
 
 		public override IEnumerable<DebuggerViewItem> Attach()
 		{
-			var lookup = GetMetaComponents(naming.GetKey2Handler());
-			var items = lookup.Select(DefaultComponentView).ToArray();
-			yield return new DebuggerViewItem("All Components", "Count = " + items.Length,
-			                                  items);
+			var items = Array.ConvertAll(naming.GetAllHandlers(), DefaultComponentView);
+			return new[]
+			{
+				new DebuggerViewItem("All Components", "Count = " + items.Length, items)
+			};
 		}
 
 		public override void Init(IKernel kernel)
