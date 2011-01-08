@@ -909,24 +909,24 @@
     <Compile Include="Windsor\Configuration\Interpreters\XmlProcessor\XmlProcessorException.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Windsor\Experimental\Debugging\DescriptionUtil.cs" />
-    <Compile Include="Windsor\Experimental\Debugging\Extensions\LifecycledTrackedObjects.cs" />
-    <Compile Include="Windsor\Experimental\Debugging\Primitives\ComponentStatusDebuggerViewItem.cs" />
-    <Compile Include="Windsor\Experimental\Debugging\Primitives\DefaultComponentView.cs" />
-    <Compile Include="Windsor\Experimental\Debugging\Extensions\AbstractContainerDebuggerExtension.cs" />
-    <Compile Include="Windsor\Experimental\Debugging\Extensions\AllComponents.cs" />
-    <Compile Include="Windsor\Experimental\Debugging\DefaultDebuggingSubSystem.cs" />
-    <Compile Include="Windsor\Experimental\Debugging\Primitives\DebuggerViewItem.cs" />
-    <Compile Include="Windsor\Experimental\Debugging\Extensions\Facilities.cs" />
-    <Compile Include="Windsor\Experimental\Debugging\Primitives\LifestyleDependency.cs" />
-    <Compile Include="Windsor\Experimental\Debugging\Extensions\PotentialLifestyleMismatches.cs" />
-    <Compile Include="Windsor\Experimental\Debugging\Primitives\ComponentDebuggerView.cs" />
-    <Compile Include="Windsor\Experimental\Debugging\IComponentDebuggerExtension.cs" />
-    <Compile Include="Windsor\Experimental\Debugging\IContainerDebuggerExtension.cs" />
-    <Compile Include="Windsor\Experimental\Debugging\IContainerDebuggerExtensionHost.cs" />
-    <Compile Include="Windsor\Experimental\Debugging\KernelDebuggerProxy.cs" />
-    <Compile Include="Windsor\Experimental\Debugging\Extensions\PotentiallyMisconfiguredComponents.cs" />
-    <Compile Include="Windsor\Experimental\Debugging\Primitives\MismatchedDependency.cs" />
+    <Compile Include="Windsor\Experimental\Diagnostics\DescriptionUtil.cs" />
+    <Compile Include="Windsor\Experimental\Diagnostics\Extensions\LifecycledTrackedObjects.cs" />
+    <Compile Include="Windsor\Experimental\Diagnostics\Primitives\ComponentStatusDebuggerViewItem.cs" />
+    <Compile Include="Windsor\Experimental\Diagnostics\Primitives\DefaultComponentView.cs" />
+    <Compile Include="Windsor\Experimental\Diagnostics\Extensions\AbstractContainerDebuggerExtension.cs" />
+    <Compile Include="Windsor\Experimental\Diagnostics\Extensions\AllComponents.cs" />
+    <Compile Include="Windsor\Experimental\Diagnostics\DefaultDebuggingSubSystem.cs" />
+    <Compile Include="Windsor\Experimental\Diagnostics\Primitives\DebuggerViewItem.cs" />
+    <Compile Include="Windsor\Experimental\Diagnostics\Extensions\Facilities.cs" />
+    <Compile Include="Windsor\Experimental\Diagnostics\Primitives\LifestyleDependency.cs" />
+    <Compile Include="Windsor\Experimental\Diagnostics\Extensions\PotentialLifestyleMismatches.cs" />
+    <Compile Include="Windsor\Experimental\Diagnostics\Primitives\ComponentDebuggerView.cs" />
+    <Compile Include="Windsor\Experimental\Diagnostics\IComponentDebuggerExtension.cs" />
+    <Compile Include="Windsor\Experimental\Diagnostics\IContainerDebuggerExtension.cs" />
+    <Compile Include="Windsor\Experimental\Diagnostics\IContainerDebuggerExtensionHost.cs" />
+    <Compile Include="Windsor\Experimental\Diagnostics\KernelDebuggerProxy.cs" />
+    <Compile Include="Windsor\Experimental\Diagnostics\Extensions\PotentiallyMisconfiguredComponents.cs" />
+    <Compile Include="Windsor\Experimental\Diagnostics\Primitives\MismatchedDependency.cs" />
     <Compile Include="Windsor\IEnvironmentInfo.cs" />
     <Compile Include="Windsor\InitializationException.cs">
       <SubType>Code</SubType>

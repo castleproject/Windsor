@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Windsor.Experimental.Debugging.Primitives
+namespace Castle.Windsor.Experimental.Diagnostics.Primitives
 {
 	using System.Collections.Generic;
 	using System.Diagnostics;

@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,8 +20,8 @@ namespace Castle.Windsor.Tests.Experimental
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Tests.ClassComponents;
-	using Castle.Windsor.Experimental.Debugging;
-	using Castle.Windsor.Experimental.Debugging.Primitives;
+	using Castle.Windsor.Experimental.Diagnostics;
+	using Castle.Windsor.Experimental.Diagnostics.Primitives;
 	using Castle.Windsor.Tests.ClassComponents;
 
 	using NUnit.Framework;

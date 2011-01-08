@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Windsor.Experimental.Debugging.Extensions
+namespace Castle.Windsor.Experimental.Diagnostics.Extensions
 {
 #if !SILVERLIGHT
 	using System.Collections.Generic;
@@ -21,7 +21,7 @@ namespace Castle.Windsor.Experimental.Debugging.Extensions
 	using Castle.Core;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.SubSystems.Naming;
-	using Castle.Windsor.Experimental.Debugging.Primitives;
+	using Castle.Windsor.Experimental.Diagnostics.Primitives;
 
 	public class PotentialLifestyleMismatches : AbstractContainerDebuggerExtension
 	{

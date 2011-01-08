@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Windsor.Experimental.Debugging
+namespace Castle.Windsor.Experimental.Diagnostics
 {
 	using System;
 	using System.Collections.Generic;
@@ -20,15 +20,17 @@ namespace Castle.Windsor.Experimental.Debugging
 	using System.Linq;
 
 	using Castle.MicroKernel;
-	using Castle.Windsor.Experimental.Debugging.Primitives;
-	
+	using Castle.Windsor.Experimental.Diagnostics.Primitives;
+
 #if !SILVERLIGHT
 	[DebuggerDisplay("")]
 	internal class KernelDebuggerProxy
 	{
 		private readonly IEnumerable<IContainerDebuggerExtension> extensions;
 
-		public KernelDebuggerProxy(IWindsorContainer container):this(container.Kernel){}
+		public KernelDebuggerProxy(IWindsorContainer container) : this(container.Kernel)
+		{
+		}
 
 		public KernelDebuggerProxy(IKernel kernel)
 		{
