@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Windsor.Experimental.Diagnostics.Primitives
+namespace Castle.Windsor.Experimental.Diagnostics.Helpers
 {
 	using System.Collections.Generic;
 
@@ -20,13 +20,14 @@ namespace Castle.Windsor.Experimental.Diagnostics.Primitives
 	using Castle.Core.Internal;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Handlers;
+	using Castle.Windsor.Experimental.Diagnostics.DebuggerViews;
 
 #if !SILVERLIGHT
-	public class DefaultComponentView : IComponentDebuggerExtension
+	public class DefaultComponentViewBuilder : IComponentDebuggerExtension
 	{
 		private readonly IHandler handler;
 
-		public DefaultComponentView(IHandler handler)
+		public DefaultComponentViewBuilder(IHandler handler)
 		{
 			this.handler = handler;
 		}
@@ -39,7 +40,7 @@ namespace Castle.Windsor.Experimental.Diagnostics.Primitives
 				yield return new DebuggerViewItem("Service", service);
 			}
 			yield return new DebuggerViewItem("Status", GetStatus());
-			yield return new DebuggerViewItem("Lifestyle", GetLifestyle());
+			yield return new DebuggerViewItem("Lifestyle", GetLifestyleDescription(handler.ComponentModel));
 			if (HasInterceptors())
 			{
 				var interceptors = handler.ComponentModel.Interceptors;
@@ -60,12 +61,13 @@ namespace Castle.Windsor.Experimental.Diagnostics.Primitives
 			return LateBoundComponent.Instance;
 		}
 
-		private object GetLifestyle()
+		// TODO: this should go to the description util
+		private object GetLifestyleDescription(ComponentModel componentModel)
 		{
-			var lifestyle = handler.ComponentModel.LifestyleType;
+			var lifestyle = componentModel.LifestyleType;
 			if (lifestyle == LifestyleType.Custom)
 			{
-				return "Custom: " + handler.ComponentModel.CustomLifestyle.Name;
+				return "Custom: " + componentModel.CustomLifestyle.Name;
 			}
 			if (lifestyle == LifestyleType.Undefined)
 			{

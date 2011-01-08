@@ -17,7 +17,8 @@ namespace Castle.Windsor.Experimental.Diagnostics.Extensions
 	using System.Collections.Generic;
 
 	using Castle.MicroKernel;
-	using Castle.Windsor.Experimental.Diagnostics.Primitives;
+	using Castle.Windsor.Experimental.Diagnostics.DebuggerViews;
+	using Castle.Windsor.Experimental.Diagnostics.Helpers;
 
 #if !SILVERLIGHT
 	public abstract class AbstractContainerDebuggerExtension : IContainerDebuggerExtension
@@ -28,7 +29,7 @@ namespace Castle.Windsor.Experimental.Diagnostics.Extensions
 
 		protected ComponentDebuggerView DefaultComponentView(IHandler handler)
 		{
-			return new ComponentDebuggerView(handler, new DefaultComponentView(handler));
+			return new ComponentDebuggerView(handler, new DefaultComponentViewBuilder(handler));
 		}
 	}
 #endif

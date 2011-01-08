@@ -23,8 +23,8 @@ namespace Castle.Windsor.Tests.Experimental
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Releasers;
 	using Castle.Windsor.Experimental.Diagnostics;
+	using Castle.Windsor.Experimental.Diagnostics.DebuggerViews;
 	using Castle.Windsor.Experimental.Diagnostics.Extensions;
-	using Castle.Windsor.Experimental.Diagnostics.Primitives;
 	using Castle.Windsor.Tests.ClassComponents;
 
 	using NUnit.Framework;

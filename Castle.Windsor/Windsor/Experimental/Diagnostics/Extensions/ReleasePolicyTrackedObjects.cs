@@ -18,7 +18,7 @@ namespace Castle.Windsor.Experimental.Diagnostics.Extensions
 
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Releasers;
-	using Castle.Windsor.Experimental.Diagnostics.Primitives;
+	using Castle.Windsor.Experimental.Diagnostics.DebuggerViews;
 
 #if !SILVERLIGHT
 	public class ReleasePolicyTrackedObjects : AbstractContainerDebuggerExtension

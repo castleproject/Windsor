@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Windsor.Experimental.Diagnostics.Primitives
+namespace Castle.Windsor.Experimental.Diagnostics.Helpers
 {
 	using System.Collections.Generic;
 	using System.Diagnostics;
@@ -21,14 +21,15 @@ namespace Castle.Windsor.Experimental.Diagnostics.Primitives
 
 	using Castle.Core;
 	using Castle.MicroKernel;
+	using Castle.Windsor.Experimental.Diagnostics.DebuggerViews;
 
 #if !SILVERLIGHT
-	public class LifestyleDependency
+	public class MismatchedLifestyleDependencyViewBuilder
 	{
 		private readonly IHandler handler;
-		private readonly LifestyleDependency parent;
+		private readonly MismatchedLifestyleDependencyViewBuilder parent;
 
-		public LifestyleDependency(IHandler handler, LifestyleDependency parent = null)
+		public MismatchedLifestyleDependencyViewBuilder(IHandler handler, MismatchedLifestyleDependencyViewBuilder parent = null)
 		{
 			this.handler = handler;
 			this.parent = parent;
@@ -37,11 +38,6 @@ namespace Castle.Windsor.Experimental.Diagnostics.Primitives
 		public IHandler Handler
 		{
 			get { return handler; }
-		}
-
-		public string Name
-		{
-			get { return handler.ComponentModel.Name; }
 		}
 
 		public DebuggerViewItem ViewItem
@@ -58,6 +54,11 @@ namespace Castle.Windsor.Experimental.Diagnostics.Primitives
 		private ComponentModel Model
 		{
 			get { return handler.ComponentModel; }
+		}
+
+		private string Name
+		{
+			get { return Model.Name; }
 		}
 
 		public bool Mismatched()
@@ -86,11 +87,11 @@ namespace Castle.Windsor.Experimental.Diagnostics.Primitives
 			                     Model.GetLifestyleDescription());
 		}
 
-		private MismatchedDependency GetItem()
+		private MismatchedDependencyDebuggerViewItem GetItem()
 		{
 			var items = new List<IHandler>();
 			var message = GetMismatchMessage(items);
-			return new MismatchedDependency(message, items.ToArray());
+			return new MismatchedDependencyDebuggerViewItem(message, items.ToArray());
 		}
 
 		private string GetKey()
