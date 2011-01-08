@@ -52,7 +52,7 @@ namespace Castle.Windsor.Experimental.Diagnostics
 			Add(new AllComponents());
 			Add(new PotentiallyMisconfiguredComponents());
 			Add(new PotentialLifestyleMismatches());
-			Add(new LifecycledTrackedObjects());
+			Add(new ReleasePolicyTrackedObjects());
 			Add(new Facilities());
 		}
 

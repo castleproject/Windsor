@@ -361,7 +361,8 @@
     <Compile Include="ContainerAndGenericsInConfigTestCase.cs" />
     <Compile Include="Core.Tests\InterceptorAttributeTestCase.cs" />
     <Compile Include="Experimental\AllComponentsTestCase.cs" />
-    <Compile Include="Experimental\LifecycledTrackedObjectsTestCase.cs" />
+    <Compile Include="Experimental\ReleasePolicyTrackedObjectsTestCase.cs" />
+    <Compile Include="Experimental\MyCustomReleasePolicy.cs" />
     <Compile Include="Experimental\ProblematicDependenciesTestCase.cs" />
     <Compile Include="Facilities\Startable\StartableAndDecoratorsTestCase.cs" />
     <Compile Include="Facilities\TypedFactory\Components\DummyComponent.cs" />

@@ -29,7 +29,7 @@ namespace Castle.Windsor.Tests.Experimental
 
 	using NUnit.Framework;
 
-	public class LifecycledTrackedObjectsTestCase : AbstractContainerTestFixture
+	public class ReleasePolicyTrackedObjectsTestCase : AbstractContainerTestFixture
 	{
 		private DefaultDebuggingSubSystem subSystem;
 
@@ -111,7 +111,7 @@ namespace Castle.Windsor.Tests.Experimental
 
 		private DebuggerViewItem GetTrackedObjects()
 		{
-			return subSystem.SelectMany(e => e.Attach()).SingleOrDefault(i => i.Name == LifecycledTrackedObjects.Name);
+			return subSystem.SelectMany(e => e.Attach()).SingleOrDefault(i => i.Name == ReleasePolicyTrackedObjects.Name);
 		}
 
 		private void Register<T>()
@@ -120,29 +120,5 @@ namespace Castle.Windsor.Tests.Experimental
 		}
 	}
 
-	public class MyCustomReleasePolicy : IReleasePolicy
-	{
-		public void Dispose()
-		{
-		}
-
-		public IReleasePolicy CreateSubPolicy()
-		{
-			return this;
-		}
-
-		public bool HasTrack(object instance)
-		{
-			return false;
-		}
-
-		public void Release(object instance)
-		{
-		}
-
-		public void Track(object instance, Burden burden)
-		{
-		}
-	}
 #endif
 }

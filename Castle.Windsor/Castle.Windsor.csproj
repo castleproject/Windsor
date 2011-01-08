@@ -910,7 +910,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Windsor\Experimental\Diagnostics\DescriptionUtil.cs" />
-    <Compile Include="Windsor\Experimental\Diagnostics\Extensions\LifecycledTrackedObjects.cs" />
+    <Compile Include="Windsor\Experimental\Diagnostics\Extensions\ReleasePolicyTrackedObjects.cs" />
     <Compile Include="Windsor\Experimental\Diagnostics\Primitives\ComponentStatusDebuggerViewItem.cs" />
     <Compile Include="Windsor\Experimental\Diagnostics\Primitives\DefaultComponentView.cs" />
     <Compile Include="Windsor\Experimental\Diagnostics\Extensions\AbstractContainerDebuggerExtension.cs" />
