@@ -1,5 +1,12 @@
-internal changes and refactorings to do:
+**internal changes and refactorings to do**
+
 - de-emphasize key/name/id of component. By default components are registered by type and the fact that any form of unique ID is being used is an implementation detail that we should not expose to the users.
 	This means that we should still use IDs but make them less visible and less prominent unless specified explicitly
 	This will be especially beneficial for readability of debugger diagnostics if we lose the key and instead of showing:
 	>"AcmeFoo,Bar.Acme" IFoo / Foo< as the component name we will show only >IFoo / Foo< that is all the user cares about.
+
+- move old and rarely used facilities out of Castle.Windsor.dll
+	namely:
+		- EventWiringFacility
+		- RemotingFacility
+		- FactorySupportFacility

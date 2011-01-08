@@ -24,6 +24,8 @@ namespace Castle.Windsor.Experimental.Diagnostics.Extensions
 #if !SILVERLIGHT
 	public class AllComponents : AbstractContainerDebuggerExtension
 	{
+		private const string name = "All Components";
+
 		private INamingSubSystem naming;
 
 		public override IEnumerable<DebuggerViewItem> Attach()
@@ -31,13 +33,18 @@ namespace Castle.Windsor.Experimental.Diagnostics.Extensions
 			var items = Array.ConvertAll(naming.GetAllHandlers(), DefaultComponentView);
 			return new[]
 			{
-				new DebuggerViewItem("All Components", "Count = " + items.Length, items)
+				new DebuggerViewItem(name, "Count = " + items.Length, items)
 			};
 		}
 
 		public override void Init(IKernel kernel)
 		{
 			naming = kernel.GetSubSystem(SubSystemConstants.NamingKey) as INamingSubSystem;
+		}
+
+		public static string Name
+		{
+			get { return name; }
 		}
 	}
 #endif

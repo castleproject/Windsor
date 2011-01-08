@@ -25,6 +25,7 @@ namespace Castle.Windsor.Experimental.Diagnostics.Extensions
 #if !SILVERLIGHT
 	public class PotentiallyMisconfiguredComponents : AbstractContainerDebuggerExtension
 	{
+		private const string name = "Potentially Misconfigured Components";
 		private INamingSubSystem naming;
 
 		public override IEnumerable<DebuggerViewItem> Attach()
@@ -37,7 +38,7 @@ namespace Castle.Windsor.Experimental.Diagnostics.Extensions
 			var components = Array.ConvertAll(waiting, DefaultComponentView);
 			return new[]
 			{
-				new DebuggerViewItem("Potentially Misconfigured Components",
+				new DebuggerViewItem(name,
 				                     "Count = " + components.Length,
 				                     components)
 			};
@@ -46,6 +47,11 @@ namespace Castle.Windsor.Experimental.Diagnostics.Extensions
 		public override void Init(IKernel kernel)
 		{
 			naming = kernel.GetSubSystem(SubSystemConstants.NamingKey) as INamingSubSystem;
+		}
+
+		public static string Name
+		{
+			get { return name; }
 		}
 	}
 #endif

@@ -23,7 +23,7 @@ namespace Castle.Windsor.Experimental.Diagnostics.Extensions
 #if !SILVERLIGHT
 	public class LifecycledTrackedObjects : AbstractContainerDebuggerExtension
 	{
-		private const string title = "Objects tracked by release policy";
+		private const string name = "Objects tracked by release policy";
 		private IKernel kernel;
 
 		public override IEnumerable<DebuggerViewItem> Attach()
@@ -37,13 +37,13 @@ namespace Castle.Windsor.Experimental.Diagnostics.Extensions
 			{
 				var localPolicy = policy as LifecycledComponentsReleasePolicy;
 				var items = localPolicy.TrackedObjects;
-				return new[] { new DebuggerViewItem(title, "Count = " + items.Length, items) };
+				return new[] { new DebuggerViewItem(name, "Count = " + items.Length, items) };
 			}
 			if (policy is NoTrackingReleasePolicy)
 			{
-				return new[] { new DebuggerViewItem(title, "No objects are ever tracked", null) };
+				return new[] { new DebuggerViewItem(name, "No objects are ever tracked", null) };
 			}
-			return new[] { new DebuggerViewItem(title, "Not supported with " + policy.GetType().Name, null) };
+			return new[] { new DebuggerViewItem(name, "Not supported with " + policy.GetType().Name, null) };
 		}
 
 		public override void Init(IKernel kernel)
@@ -51,9 +51,9 @@ namespace Castle.Windsor.Experimental.Diagnostics.Extensions
 			this.kernel = kernel;
 		}
 
-		public static string Title
+		public static string Name
 		{
-			get { return title; }
+			get { return name; }
 		}
 	}
 #endif

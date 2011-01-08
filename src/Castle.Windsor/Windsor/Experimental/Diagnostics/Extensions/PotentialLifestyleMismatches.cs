@@ -25,6 +25,7 @@ namespace Castle.Windsor.Experimental.Diagnostics.Extensions
 
 	public class PotentialLifestyleMismatches : AbstractContainerDebuggerExtension
 	{
+		private const string name = "Potential Lifestyle Mismatches";
 		private INamingSubSystem naming;
 
 		public override IEnumerable<DebuggerViewItem> Attach()
@@ -40,7 +41,7 @@ namespace Castle.Windsor.Experimental.Diagnostics.Extensions
 			{
 				yield break;
 			}
-			yield return new DebuggerViewItem("Potential Lifestyle Mismatches",
+			yield return new DebuggerViewItem(name,
 			                                  "Count = " + mismatches.Count,
 			                                  mismatches.ToArray());
 		}
@@ -96,6 +97,11 @@ namespace Castle.Windsor.Experimental.Diagnostics.Extensions
 		{
 			var lifestyle = component.ComponentModel.LifestyleType;
 			return lifestyle == LifestyleType.Undefined || lifestyle == LifestyleType.Singleton;
+		}
+
+		public static string Name
+		{
+			get { return name; }
 		}
 	}
 #endif

@@ -20,6 +20,7 @@ namespace Castle.Windsor.Tests.Experimental
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Registration;
 	using Castle.Windsor.Experimental.Diagnostics;
+	using Castle.Windsor.Experimental.Diagnostics.Extensions;
 	using Castle.Windsor.Experimental.Diagnostics.Primitives;
 	using Castle.Windsor.Tests.Components;
 
@@ -53,7 +54,7 @@ namespace Castle.Windsor.Tests.Experimental
 
 		private DebuggerViewItem GetAllComponents()
 		{
-			return subSystem.SelectMany(e => e.Attach()).SingleOrDefault(i => i.Name == "All Components");
+			return subSystem.SelectMany(e => e.Attach()).SingleOrDefault(i => i.Name == AllComponents.Name);
 		}
 	}
 

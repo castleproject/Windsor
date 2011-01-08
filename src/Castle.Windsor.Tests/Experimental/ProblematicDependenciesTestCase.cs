@@ -21,6 +21,7 @@ namespace Castle.Windsor.Tests.Experimental
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Tests.ClassComponents;
 	using Castle.Windsor.Experimental.Diagnostics;
+	using Castle.Windsor.Experimental.Diagnostics.Extensions;
 	using Castle.Windsor.Experimental.Diagnostics.Primitives;
 	using Castle.Windsor.Tests.ClassComponents;
 
@@ -101,7 +102,7 @@ namespace Castle.Windsor.Tests.Experimental
 		private MismatchedDependency[] GetMismatches()
 		{
 			var faultyComponents =
-				subSystem.SelectMany(e => e.Attach()).SingleOrDefault(i => i.Name == "Potential Lifestyle Mismatches");
+				subSystem.SelectMany(e => e.Attach()).SingleOrDefault(i => i.Name == PotentialLifestyleMismatches.Name);
 			Assert.IsNotNull(faultyComponents);
 			var components = faultyComponents.Value as DebuggerViewItem[];
 			Assert.IsNotNull(components);
