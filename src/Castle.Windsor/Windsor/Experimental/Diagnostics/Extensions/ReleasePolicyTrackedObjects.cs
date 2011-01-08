@@ -21,7 +21,7 @@ namespace Castle.Windsor.Experimental.Diagnostics.Extensions
 	using Castle.Windsor.Experimental.Diagnostics.Primitives;
 
 #if !SILVERLIGHT
-	public class LifecycledTrackedObjects : AbstractContainerDebuggerExtension
+	public class ReleasePolicyTrackedObjects : AbstractContainerDebuggerExtension
 	{
 		private const string name = "Objects tracked by release policy";
 		private IKernel kernel;
