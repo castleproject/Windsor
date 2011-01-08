@@ -36,8 +36,9 @@ namespace Castle.Windsor.Experimental.Diagnostics.Extensions
 			if (policy is LifecycledComponentsReleasePolicy)
 			{
 				var localPolicy = policy as LifecycledComponentsReleasePolicy;
-				var items = localPolicy.TrackedObjects;
-				return new[] { new DebuggerViewItem(name, "Count = " + items.Length, items) };
+				var items = new List<Burden>(localPolicy.TrackedObjects);
+				AddFromSubScopes(items, localPolicy.SubScopes);
+				return new[] { new DebuggerViewItem(name, "Count = " + items.Count, items.ToArray()) };
 			}
 			if (policy is NoTrackingReleasePolicy)
 			{
@@ -49,6 +50,15 @@ namespace Castle.Windsor.Experimental.Diagnostics.Extensions
 		public override void Init(IKernel kernel)
 		{
 			this.kernel = kernel;
+		}
+
+		private void AddFromSubScopes(List<Burden> items, LifecycledComponentsReleasePolicy[] subScopes)
+		{
+			foreach (var scope in subScopes)
+			{
+				items.AddRange(scope.TrackedObjects);
+				AddFromSubScopes(items, scope.SubScopes);
+			}
 		}
 
 		public static string Name

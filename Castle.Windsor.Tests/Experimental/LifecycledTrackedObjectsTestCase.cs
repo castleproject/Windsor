@@ -15,8 +15,10 @@
 namespace Castle.Windsor.Tests.Experimental
 {
 #if !SILVERLIGHT
+	using System;
 	using System.Linq;
 
+	using Castle.Facilities.TypedFactory;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Releasers;
@@ -44,25 +46,17 @@ namespace Castle.Windsor.Tests.Experimental
 		}
 
 		[Test]
-		public void NoTrackingReleasePolicy_has_special_message()
+		public void List_tracked_alive_instances_in_subscopes()
 		{
-			Kernel.ReleasePolicy = new NoTrackingReleasePolicy();
 			Register<DisposableFoo>();
+			Container.AddFacility<TypedFactoryFacility>();
 			var foo1 = Container.Resolve<DisposableFoo>();
-			var objects = GetTrackedObjects();
-			Assert.AreEqual("No objects are ever tracked", objects.Key);
-			Assert.IsNull(objects.Value);
-		}
+			var fooFactory = Container.Resolve<Func<DisposableFoo>>();
+			var foo2 = fooFactory.Invoke();
 
-		[Test]
-		public void custom_ReleasePolicy_has_special_message()
-		{
-			Kernel.ReleasePolicy = new MyCustomReleasePolicy();
-			Register<DisposableFoo>();
-			var foo1 = Container.Resolve<DisposableFoo>();
 			var objects = GetTrackedObjects();
-			Assert.AreEqual("Not supported with MyCustomReleasePolicy", objects.Key);
-			Assert.IsNull(objects.Value);
+			var values = (Burden[])objects.Value;
+			Assert.AreEqual(4, values.Length);
 		}
 
 		[Test]
@@ -80,6 +74,17 @@ namespace Castle.Windsor.Tests.Experimental
 		}
 
 		[Test]
+		public void NoTrackingReleasePolicy_has_special_message()
+		{
+			Kernel.ReleasePolicy = new NoTrackingReleasePolicy();
+			Register<DisposableFoo>();
+			var foo1 = Container.Resolve<DisposableFoo>();
+			var objects = GetTrackedObjects();
+			Assert.AreEqual("No objects are ever tracked", objects.Key);
+			Assert.IsNull(objects.Value);
+		}
+
+		[Test]
 		public void Present_even_when_no_objects_were_created()
 		{
 			var objects = GetTrackedObjects();
@@ -91,6 +96,17 @@ namespace Castle.Windsor.Tests.Experimental
 		{
 			subSystem = new DefaultDebuggingSubSystem();
 			Kernel.AddSubSystem(SubSystemConstants.DebuggingKey, subSystem);
+		}
+
+		[Test]
+		public void custom_ReleasePolicy_has_special_message()
+		{
+			Kernel.ReleasePolicy = new MyCustomReleasePolicy();
+			Register<DisposableFoo>();
+			var foo1 = Container.Resolve<DisposableFoo>();
+			var objects = GetTrackedObjects();
+			Assert.AreEqual("Not supported with MyCustomReleasePolicy", objects.Key);
+			Assert.IsNull(objects.Value);
 		}
 
 		private DebuggerViewItem GetTrackedObjects()
@@ -108,7 +124,6 @@ namespace Castle.Windsor.Tests.Experimental
 	{
 		public void Dispose()
 		{
-			
 		}
 
 		public IReleasePolicy CreateSubPolicy()
