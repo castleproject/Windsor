@@ -87,7 +87,7 @@ namespace Castle.MicroKernel
 			if (classType == null) throw new ArgumentNullException("classType");
 			if (LifestyleType.Undefined == lifestyle)
 				throw new ArgumentException("The specified lifestyle must be Thread, Transient, or Singleton.", "lifestyle");
-			ComponentModel model = ComponentModelBuilder.BuildModel(key, new[] { serviceType }, classType, null);
+			var model = ComponentModelBuilder.BuildModel(key, new[] { serviceType }, classType, null);
 
 			if (overwriteLifestyle || LifestyleType.Undefined == model.LifestyleType)
 			{

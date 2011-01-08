@@ -44,9 +44,8 @@ namespace Castle.MicroKernel.Releasers
 						// we could wait indefinatelly. I guess the best way to proceed is to add a 200ms timepout to accquire the lock, and if not succeeded
 						// assume that the other thread just waits and is not going anywhere and go ahead and read this anyway...
 					}
-					var burdens = new Burden[instance2Burden.Count];
-					instance2Burden.Values.CopyTo(burdens, 0);
-					return burdens;
+					var array = instance2Burden.Values.ToArray();
+					return array;
 				}
 			}
 		}
