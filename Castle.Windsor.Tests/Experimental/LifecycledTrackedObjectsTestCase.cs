@@ -95,7 +95,7 @@ namespace Castle.Windsor.Tests.Experimental
 
 		private DebuggerViewItem GetTrackedObjects()
 		{
-			return subSystem.SelectMany(e => e.Attach()).SingleOrDefault(i => i.Name == LifecycledTrackedObjects.Title);
+			return subSystem.SelectMany(e => e.Attach()).SingleOrDefault(i => i.Name == LifecycledTrackedObjects.Name);
 		}
 
 		private void Register<T>()
