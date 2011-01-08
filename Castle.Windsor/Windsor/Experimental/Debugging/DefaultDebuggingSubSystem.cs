@@ -53,6 +53,7 @@ namespace Castle.Windsor.Experimental.Debugging
 			Add(new AllComponents());
 			Add(new PotentiallyMisconfiguredComponents());
 			Add(new PotentialLifestyleMismatches());
+			Add(new LifecycledTrackedObjects());
 			Add(new Facilities());
 		}
 

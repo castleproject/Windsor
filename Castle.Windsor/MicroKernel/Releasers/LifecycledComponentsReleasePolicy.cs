@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -31,6 +31,25 @@ namespace Castle.MicroKernel.Releasers
 			new Dictionary<object, Burden>(ReferenceEqualityComparer.Instance);
 
 		private readonly Lock @lock = Lock.Create();
+
+		public Burden[] TrackedObjects
+		{
+			get
+			{
+				using (var holder = @lock.ForReading(false))
+				{
+					if (holder.LockAcquired == false)
+					{
+						// TODO: that's sad... perhaps we should have waited...? But what do we do now? We're in the debugger. If some thread is keeping the lock
+						// we could wait indefinatelly. I guess the best way to proceed is to add a 200ms timepout to accquire the lock, and if not succeeded
+						// assume that the other thread just waits and is not going anywhere and go ahead and read this anyway...
+					}
+					var burdens = new Burden[instance2Burden.Count];
+					instance2Burden.Values.CopyTo(burdens, 0);
+					return burdens;
+				}
+			}
+		}
 
 		public void Dispose()
 		{
@@ -84,7 +103,7 @@ namespace Castle.MicroKernel.Releasers
 
 		public virtual void Track(object instance, Burden burden)
 		{
-			if(burden.RequiresPolicyRelease == false)
+			if (burden.RequiresPolicyRelease == false)
 			{
 				var lifestyle = ((object)burden.Model.CustomLifestyle) ?? burden.Model.LifestyleType;
 				throw new ArgumentException(

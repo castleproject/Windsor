@@ -32,7 +32,7 @@ namespace Castle.MicroKernel.Tests.Registration
 		public void RegisterAssemblyTypes_BasedOn_RegisteredInContainer()
 		{
 			Kernel.Register(AllTypes
-			                	.FromAssembly(Assembly.GetExecutingAssembly())
+			                	.FromThisAssembly()
 			                	.BasedOn(typeof(ICommon))
 				);
 

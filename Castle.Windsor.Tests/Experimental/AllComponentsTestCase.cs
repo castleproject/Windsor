@@ -47,9 +47,6 @@ namespace Castle.Windsor.Tests.Experimental
 		[SetUp]
 		public void SetSubSystem()
 		{
-#if SILVERLIGHT
-			Init();
-#endif
 			subSystem = new DefaultDebuggingSubSystem();
 			Kernel.AddSubSystem(SubSystemConstants.DebuggingKey, subSystem);
 		}
@@ -59,5 +56,6 @@ namespace Castle.Windsor.Tests.Experimental
 			return subSystem.SelectMany(e => e.Attach()).SingleOrDefault(i => i.Name == "All Components");
 		}
 	}
+
 #endif
 }
