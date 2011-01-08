@@ -31,8 +31,41 @@ namespace Castle.MicroKernel.Releasers
 			new Dictionary<object, Burden>(ReferenceEqualityComparer.Instance);
 
 		private readonly Lock @lock = Lock.Create();
+		private readonly LifecycledComponentsReleasePolicy parent;
+		private List<LifecycledComponentsReleasePolicy> subscopes;
 
-		public Burden[] TrackedObjects
+		public LifecycledComponentsReleasePolicy()
+		{
+		}
+
+		private LifecycledComponentsReleasePolicy(LifecycledComponentsReleasePolicy parent)
+		{
+			this.parent = parent;
+		}
+
+		internal LifecycledComponentsReleasePolicy[] SubScopes
+		{
+			get
+			{
+				using (var holder = @lock.ForReading(false))
+				{
+					if (holder.LockAcquired == false)
+					{
+						// TODO: that's sad... perhaps we should have waited...? But what do we do now? We're in the debugger. If some thread is keeping the lock
+						// we could wait indefinatelly. I guess the best way to proceed is to add a 200ms timepout to accquire the lock, and if not succeeded
+						// assume that the other thread just waits and is not going anywhere and go ahead and read this anyway...
+					}
+					if (subscopes == null)
+					{
+						return new LifecycledComponentsReleasePolicy[0];
+					}
+					var array = subscopes.ToArray();
+					return array;
+				}
+			}
+		}
+
+		internal Burden[] TrackedObjects
 		{
 			get
 			{
@@ -62,11 +95,28 @@ namespace Castle.MicroKernel.Releasers
 					burden.Value.Release();
 				}
 			}
+			var parent = this.parent;
+			if (parent != null)
+			{
+				using (parent.@lock.ForWriting())
+				{
+					parent.subscopes.Remove(this);
+				}
+			}
 		}
 
 		public IReleasePolicy CreateSubPolicy()
 		{
-			return new LifecycledComponentsReleasePolicy();
+			var policy = new LifecycledComponentsReleasePolicy(this);
+			using (@lock.ForWriting())
+			{
+				if (subscopes == null)
+				{
+					subscopes = new List<LifecycledComponentsReleasePolicy>();
+				}
+				subscopes.Add(policy);
+			}
+			return policy;
 		}
 
 		public bool HasTrack(object instance)
