@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -74,8 +74,7 @@ namespace Castle.MicroKernel.ModelBuilder
 		/// <returns></returns>
 		public ComponentModel BuildModel(string key, Type[] services, Type classType, IDictionary extendedProperties)
 		{
-			var model = new ComponentModel(key, services, classType,extendedProperties);
-
+			var model = new ComponentModel(key, services, classType, extendedProperties);
 			foreach (var contributor in contributors)
 			{
 				contributor.ProcessModel(kernel, model);

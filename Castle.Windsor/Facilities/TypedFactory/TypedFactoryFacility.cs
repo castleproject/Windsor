@@ -53,7 +53,7 @@ namespace Castle.Facilities.TypedFactory
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public void AddTypedFactoryEntry(FactoryEntry entry)
 		{
-			var model = new ComponentModel(entry.Id, new[] { entry.FactoryInterface }, typeof(Empty), new Arguments().Insert("typed.fac.entry",entry))
+			var model = new ComponentModel(entry.Id, new[] { entry.FactoryInterface }, typeof(Empty), new Arguments().Insert("typed.fac.entry", entry))
 			{ LifestyleType = LifestyleType.Singleton };
 
 			model.Interceptors.Add(new InterceptorReference(typeof(FactoryInterceptor)));
