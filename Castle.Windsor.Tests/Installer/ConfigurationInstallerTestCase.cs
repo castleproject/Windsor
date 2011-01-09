@@ -22,6 +22,8 @@ namespace Castle.Windsor.Tests.Installer
 	using Castle.MicroKernel.SubSystems.Configuration;
 	using Castle.Windsor.Installer;
 	using Castle.Windsor.Tests.Components;
+	using Castle.XmlFiles;
+
 	using NUnit.Framework;
 
 	[TestFixture]
@@ -48,8 +50,7 @@ namespace Castle.Windsor.Tests.Installer
 		public void InstallComponents_FromXmlFile_ComponentsInstalled()
 		{
 			container.Install(
-				Configuration.FromXmlFile(
-					ConfigHelper.ResolveConfigPath("installerconfig.xml")));
+				Configuration.FromXml(Xml.Embedded("installerconfig.xml")));
 
 			Assert.IsTrue(container.Kernel.HasComponent(typeof(ICalcService)));
 			Assert.IsTrue(container.Kernel.HasComponent("calcservice"));
@@ -59,7 +60,7 @@ namespace Castle.Windsor.Tests.Installer
 		public void InstallComponents_FromXmlFile_first_and_from_code()
 		{
 			container.Install(
-				Configuration.FromXmlFile(ConfigHelper.ResolveConfigPath("JustConfiguration.xml")),
+				Configuration.FromXml(Xml.Embedded("justConfiguration.xml")),
 				new Installer(c => c.Register(Component.For<ICamera>()
 				                              	.ImplementedBy<Camera>()
 				                              	.Named("camera"))));
@@ -75,7 +76,7 @@ namespace Castle.Windsor.Tests.Installer
 				new Installer(c => c.Register(Component.For<ICamera>()
 				                              	.ImplementedBy<Camera>()
 				                              	.Named("camera"))),
-				Configuration.FromXmlFile(ConfigHelper.ResolveConfigPath("JustConfiguration.xml"))
+				Configuration.FromXml(Xml.Embedded("justConfiguration.xml"))
 				);
 
 			var camera = container.Resolve<ICamera>();
@@ -87,10 +88,8 @@ namespace Castle.Windsor.Tests.Installer
 		{
 			container.Install(
 				Configuration.FromAppConfig(),
-				Configuration.FromXmlFile(
-					ConfigHelper.ResolveConfigPath("ignoreprop.xml")),
-				Configuration.FromXmlFile(
-					ConfigHelper.ResolveConfigPath("robotwireconfig.xml"))
+				Configuration.FromXml(Xml.Embedded("ignoreprop.xml")),
+				Configuration.FromXml(Xml.Embedded("robotwireconfig.xml"))
 				);
 
 			Assert.IsTrue(container.Kernel.HasComponent(typeof(ICalcService)));
