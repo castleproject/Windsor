@@ -14,11 +14,7 @@
 
 namespace Castle.Windsor.Experimental.Diagnostics.Helpers
 {
-	using System.Linq;
-	using System.Text;
-
 	using Castle.Core;
-	using Castle.Core.Internal;
 	using Castle.MicroKernel;
 
 #if !SILVERLIGHT
@@ -30,41 +26,12 @@ namespace Castle.Windsor.Experimental.Diagnostics.Helpers
 			{
 				return componentModel.LifestyleType.ToString();
 			}
-			return string.Format("custom ({0})", componentModel.CustomLifestyle.FullName);
+			return string.Format("custom ({0})", componentModel.CustomLifestyle.Name);
 		}
 
 		public static string GetServicesDescription(this IHandler handler)
 		{
-			var services = handler.Services.ToArray();
-			var additionalServicesCount = services.Length - 1;
-			var message = new StringBuilder(services[0].Name);
-			if (additionalServicesCount == 1)
-			{
-				message.Append(" (and one more type)");
-			}
-			else if (additionalServicesCount > 1)
-			{
-				message.AppendFormat(" (and {0} more types)", additionalServicesCount);
-			}
-			var impl = handler.ComponentModel.Implementation;
-			if (additionalServicesCount == 0 && impl == services[0])
-			{
-				return message.ToString();
-			}
-			message.Append(" / ");
-			if (impl == null)
-			{
-				message.Append("no type");
-			}
-			else if (impl == typeof(LateBoundComponent))
-			{
-				message.Append("late bound type");
-			}
-			else
-			{
-				message.Append(impl.Name);
-			}
-			return message.ToString();
+			return handler.ComponentModel.ToString();
 		}
 	}
 #endif
