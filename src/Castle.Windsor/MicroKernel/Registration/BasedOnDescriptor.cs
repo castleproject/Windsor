@@ -185,9 +185,9 @@ namespace Castle.MicroKernel.Registration
 			{
 				return false;
 			}
-			var defaults = InitializeDefaults(type);
+			var defaults = CastleComponentAttribute.GetDefaultsFor(type);
 			var serviceTypes = service.GetServices(type, baseTypes);
-			if(serviceTypes.Count == 0)
+			if(serviceTypes.Count == 0 && defaults.Service != null)
 			{
 				serviceTypes = new[] { defaults.Service };
 			}
@@ -198,7 +198,8 @@ namespace Castle.MicroKernel.Registration
 			{
 				configurer.Apply(registration);
 			}
-			if (String.IsNullOrEmpty(registration.Name))
+			if (String.IsNullOrEmpty(registration.Name) &&
+				String.IsNullOrEmpty(defaults.Key) == false)
 			{
 				registration.Named(defaults.Key);
 			}
@@ -209,11 +210,6 @@ namespace Castle.MicroKernel.Registration
 			}
 
 			return true;
-		}
-
-		private CastleComponentAttribute InitializeDefaults(Type type)
-		{
-			return CastleComponentAttribute.GetDefaultsFor(type);
 		}
 
 		private bool Accepts(Type type, out Type[] baseTypes)

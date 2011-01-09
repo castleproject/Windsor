@@ -50,19 +50,15 @@ namespace Castle.Core
 		public static CastleComponentAttribute GetDefaultsFor(Type type)
 		{
 			var attribute = (CastleComponentAttribute)GetCustomAttribute(type, typeof(CastleComponentAttribute));
-			if (attribute == null)
+			if (attribute != null)
 			{
-				return new CastleComponentAttribute(type.FullName, type);
+				if(attribute.Service == null)
+				{
+					attribute.Service = type;
+				}
+				return attribute;
 			}
-			if (attribute.Service == null)
-			{
-				attribute.Service = type;
-			}
-			if (attribute.Key == null)
-			{
-				attribute.Key = type.FullName;
-			}
-			return attribute;
+			return new CastleComponentAttribute(type);
 		}
 	}
 }
