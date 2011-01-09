@@ -357,6 +357,7 @@
   <ItemGroup>
     <Compile Include="Core\CastleComponentAttribute.cs" />
     <Compile Include="Core\ComponentActivatorAttribute.cs" />
+    <Compile Include="Core\ComponentName.cs" />
     <Compile Include="Core\ComponentProxyBehaviorAttribute.cs" />
     <Compile Include="Core\DoNotWireAttribute.cs" />
     <Compile Include="Core\ICommissionConcern.cs" />

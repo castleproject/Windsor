@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ namespace Castle.Facilities.Logging
 	using Castle.MicroKernel.SubSystems.Conversion;
 
 	/// <summary>
-	/// A facility for logging support.
+	///   A facility for logging support.
 	/// </summary>
 	public class LoggingFacility : AbstractFacility
 	{
@@ -47,6 +47,7 @@ namespace Castle.Facilities.Logging
 			"Castle.Services.Logging.Log4netIntegration,Version=2.5.1.0, Culture=neutral," +
 			"PublicKeyToken=407dd0808d44fbdc";
 #endif
+
 		private static readonly String NLogLoggerFactoryTypeName =
 			"Castle.Services.Logging.NLogIntegration.NLogFactory," +
 			"Castle.Services.Logging.NLogIntegration,Version=2.5.1.0, Culture=neutral," +
@@ -61,43 +62,43 @@ namespace Castle.Facilities.Logging
 		private Type loggingFactoryType;
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="LoggingFacility"/> class.
+		///   Initializes a new instance of the <see cref = "LoggingFacility" /> class.
 		/// </summary>
 		public LoggingFacility()
 		{
 		}
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="LoggingFacility"/> class.
+		///   Initializes a new instance of the <see cref = "LoggingFacility" /> class.
 		/// </summary>
-		/// <param name="loggingApi">
-		/// The LoggerImplementation that should be used
+		/// <param name = "loggingApi">
+		///   The LoggerImplementation that should be used
 		/// </param>
 		public LoggingFacility(LoggerImplementation loggingApi) : this(loggingApi, null)
 		{
 		}
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="LoggingFacility"/> class.
+		///   Initializes a new instance of the <see cref = "LoggingFacility" /> class.
 		/// </summary>
-		/// <param name="loggingApi">
-		/// The LoggerImplementation that should be used
+		/// <param name = "loggingApi">
+		///   The LoggerImplementation that should be used
 		/// </param>
-		/// <param name="configFile">
-		/// The configuration file that should be used by the chosen LoggerImplementation
+		/// <param name = "configFile">
+		///   The configuration file that should be used by the chosen LoggerImplementation
 		/// </param>
 		public LoggingFacility(LoggerImplementation loggingApi, string configFile) : this(loggingApi, null, configFile)
 		{
 		}
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="LoggingFacility"/> class using a custom LoggerImplementation
+		///   Initializes a new instance of the <see cref = "LoggingFacility" /> class using a custom LoggerImplementation
 		/// </summary>
-		/// <param name="configFile">
-		/// The configuration file that should be used by the chosen LoggerImplementation
+		/// <param name = "configFile">
+		///   The configuration file that should be used by the chosen LoggerImplementation
 		/// </param>
-		/// <param name="customLoggerFactory">
-		/// The type name of the type of the custom logger factory.
+		/// <param name = "customLoggerFactory">
+		///   The type name of the type of the custom logger factory.
 		/// </param>
 		public LoggingFacility(string customLoggerFactory, string configFile)
 			: this(LoggerImplementation.Custom, customLoggerFactory, configFile)
@@ -105,16 +106,16 @@ namespace Castle.Facilities.Logging
 		}
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="LoggingFacility"/> class.
+		///   Initializes a new instance of the <see cref = "LoggingFacility" /> class.
 		/// </summary>
-		/// <param name="loggingApi">
-		/// The LoggerImplementation that should be used
+		/// <param name = "loggingApi">
+		///   The LoggerImplementation that should be used
 		/// </param>
-		/// <param name="configFile">
-		/// The configuration file that should be used by the chosen LoggerImplementation
+		/// <param name = "configFile">
+		///   The configuration file that should be used by the chosen LoggerImplementation
 		/// </param>
-		/// <param name="customLoggerFactory">
-		/// The type name of the type of the custom logger factory. (only used when loggingApi is set to LoggerImplementation.Custom)
+		/// <param name = "customLoggerFactory">
+		///   The type name of the type of the custom logger factory. (only used when loggingApi is set to LoggerImplementation.Custom)
 		/// </param>
 		public LoggingFacility(LoggerImplementation loggingApi, string customLoggerFactory, string configFile)
 		{
@@ -150,10 +151,10 @@ namespace Castle.Facilities.Logging
 			configFileName = configFile;
 			return this;
 		}
-		
+
 #if !SILVERLIGHT
 		/// <summary>
-		/// loads configuration from current AppDomain's config file (aka web.config/app.config)
+		///   loads configuration from current AppDomain's config file (aka web.config/app.config)
 		/// </summary>
 		/// <returns></returns>
 		public LoggingFacility WithAppConfig()
@@ -162,6 +163,7 @@ namespace Castle.Facilities.Logging
 			return this;
 		}
 #endif
+
 		protected override void Init()
 		{
 			SetUpTypeConverter();
@@ -182,7 +184,7 @@ namespace Castle.Facilities.Logging
 
 		private Type EnsureIsValidLoggerFactoryType(Type loggerFactoryType)
 		{
-			if (loggerFactoryType.Is<ILoggerFactory>() ||loggerFactoryType.Is<IExtendedLoggerFactory>())
+			if (loggerFactoryType.Is<ILoggerFactory>() || loggerFactoryType.Is<IExtendedLoggerFactory>())
 			{
 				return loggerFactoryType;
 			}
@@ -322,12 +324,12 @@ namespace Castle.Facilities.Logging
 			if (factory is IExtendedLoggerFactory)
 			{
 				var defaultLogger = ((IExtendedLoggerFactory)factory).Create("Default");
-				Kernel.Register(Component.For<IExtendedLogger>().Named("ilogger.default").Instance(defaultLogger),
-				                Component.For<ILogger>().Named("ilogger.default.base").Instance(defaultLogger));
+				Kernel.Register(Component.For<IExtendedLogger>().NamedAutomatically("ilogger.default").Instance(defaultLogger),
+				                Component.For<ILogger>().NamedAutomatically("ilogger.default.base").Instance(defaultLogger));
 			}
 			else
 			{
-				Kernel.Register(Component.For<ILogger>().Named("ilogger.default").Instance(factory.Create("Default")));
+				Kernel.Register(Component.For<ILogger>().NamedAutomatically("ilogger.default").Instance(factory.Create("Default")));
 			}
 		}
 
@@ -336,12 +338,12 @@ namespace Castle.Facilities.Logging
 			if (factory is IExtendedLoggerFactory)
 			{
 				Kernel.Register(
-					Component.For<IExtendedLoggerFactory>().Named("iloggerfactory").Instance((IExtendedLoggerFactory)factory),
-					Component.For<ILoggerFactory>().Named("iloggerfactory.base").Instance(factory));
+					Component.For<IExtendedLoggerFactory>().NamedAutomatically("iloggerfactory").Instance((IExtendedLoggerFactory)factory),
+					Component.For<ILoggerFactory>().NamedAutomatically("iloggerfactory.base").Instance(factory));
 			}
 			else
 			{
-				Kernel.Register(Component.For<ILoggerFactory>().Named("iloggerfactory").Instance(factory));
+				Kernel.Register(Component.For<ILoggerFactory>().NamedAutomatically("iloggerfactory").Instance(factory));
 			}
 		}
 

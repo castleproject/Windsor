@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -47,6 +47,7 @@ namespace Castle.Core
 		private readonly LifecycleConcernsCollection lifecycle = new LifecycleConcernsCollection();
 
 		private Type classService;
+		private ComponentName componentName;
 
 		/// <summary>
 		///   /// Custom dependencies///
@@ -83,9 +84,9 @@ namespace Castle.Core
 		/// <summary>
 		///   Constructs a ComponentModel
 		/// </summary>
-		public ComponentModel(string name, ICollection<Type> services, Type implementation, IDictionary extendedProperties)
+		public ComponentModel(ComponentName name, ICollection<Type> services, Type implementation, IDictionary extendedProperties)
 		{
-			Name = name;
+			componentName = name;
 			Implementation = implementation;
 			LifestyleType = LifestyleType.Undefined;
 			InspectionBehavior = PropertiesInspectionBehavior.Undefined;
@@ -125,6 +126,11 @@ namespace Castle.Core
 					                                                  originalValue));
 				}
 			}
+		}
+
+		public ComponentName ComponentName
+		{
+			get { return componentName; }
 		}
 
 		/// <summary>
@@ -299,7 +305,11 @@ namespace Castle.Core
 		/// <summary>
 		///   Sets or returns the component key
 		/// </summary>
-		public string Name { get; set; }
+		public string Name
+		{
+			get { return componentName.Name; }
+			set { componentName.SetName(value); }
+		}
 
 		/// <summary>
 		///   Gets the parameter collection.

@@ -20,9 +20,7 @@ namespace Castle.MicroKernel.ComponentActivator
 	/// <summary>
 	/// Exception thrown when component has no resolvable constructor that can be used to create an instance.
 	/// </summary>
-#if (!SILVERLIGHT)
 	[Serializable]
-#endif
 	public class NoResolvableConstructorFoundException : ComponentActivatorException
 	{
 		private readonly Type type;
