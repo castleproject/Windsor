@@ -35,7 +35,7 @@ namespace Castle.Windsor.Tests
 		{
 			DefaultConfigurationStore store = new DefaultConfigurationStore();
 
-			XmlInterpreter interpreter = new XmlInterpreter(ConfigHelper.ResolveConfigPath("sample_config.xml"));
+			XmlInterpreter interpreter = new XmlInterpreter(Xml.Embedded("sample_config_complex.xml"));
 			interpreter.ProcessResource(interpreter.Source, store);
 
 			Assert.AreEqual(2, store.GetFacilities().Length);
@@ -76,7 +76,7 @@ namespace Castle.Windsor.Tests
 		public void CorrectConfigurationMapping()
 		{
 			DefaultConfigurationStore store = new DefaultConfigurationStore();
-			XmlInterpreter interpreter = new XmlInterpreter(ConfigHelper.ResolveConfigPath("sample_config.xml"));
+			XmlInterpreter interpreter = new XmlInterpreter(Xml.Embedded("sample_config.xml"));
 			interpreter.ProcessResource(interpreter.Source, store);
 
 			WindsorContainer container = new WindsorContainer(store);
@@ -88,7 +88,7 @@ namespace Castle.Windsor.Tests
 		public void ComponentIdGetsLoadedFromTheParsedConfiguration() {
 			
 			DefaultConfigurationStore store = new DefaultConfigurationStore();
-			XmlInterpreter interpreter = new XmlInterpreter(ConfigHelper.ResolveConfigPath("sample_config_with_spaces.xml"));
+			XmlInterpreter interpreter = new XmlInterpreter(Xml.Embedded("sample_config_with_spaces.xml"));
 			interpreter.ProcessResource(interpreter.Source, store);
 
 			WindsorContainer container = new WindsorContainer(store);
@@ -101,7 +101,7 @@ namespace Castle.Windsor.Tests
 		public void ProperManifestDeserialization()
 		{
 			DefaultConfigurationStore store = new DefaultConfigurationStore();
-			XmlInterpreter interpreter = new XmlInterpreter(Xml.File("sample_config.xml"));
+			XmlInterpreter interpreter = new XmlInterpreter(Xml.File("sample_config_complex.xml"));
 			interpreter.ProcessResource(interpreter.Source, store);
 
 			Assert.AreEqual(2, store.GetFacilities().Length);

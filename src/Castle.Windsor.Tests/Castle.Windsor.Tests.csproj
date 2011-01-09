@@ -930,7 +930,7 @@
     <EmbeddedResource Include="Config\OneComponentInTwoPieces.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="XmlFiles\sample_config.xml">
+    <EmbeddedResource Include="XmlFiles\sample_config_complex.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="Configuration2\class_with_private_setter.xml">
@@ -1038,9 +1038,7 @@
     <Content Include="robotwireconfig.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="sample_config.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <EmbeddedResource Include="XmlFiles\sample_config.xml" />
     <EmbeddedResource Include="XmlFiles\facilityWithoutId.xml" />
     <Content Include="XmlProcessor\TestFiles\AssemblyIncludeTestDisabled.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -1284,9 +1282,7 @@
     <Content Include="Configuration2\synchtest_config.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <EmbeddedResource Include="sample_config_with_spaces.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
+    <EmbeddedResource Include="XmlFiles\sample_config_with_spaces.xml" />
     <EmbeddedResource Include="Facilities\Remoting\Configs\client_12134_kernelcomponent.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
