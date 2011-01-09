@@ -79,8 +79,7 @@ namespace Castle.MicroKernel
 
 		[Obsolete("Use Register(Component.For(serviceType).ImplementedBy(classType).Named(key).Lifestyle.Is(lifestyle)) or generic version instead.")]
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		public void AddComponent(string key, Type serviceType, Type classType, LifestyleType lifestyle,
-								 bool overwriteLifestyle)
+		public void AddComponent(string key, Type serviceType, Type classType, LifestyleType lifestyle, bool overwriteLifestyle)
 		{
 			if (key == null) throw new ArgumentNullException("key");
 			if (serviceType == null) throw new ArgumentNullException("serviceType");
