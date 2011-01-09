@@ -56,11 +56,6 @@ namespace Castle.Windsor.Experimental.Diagnostics.Helpers
 			get { return handler.ComponentModel; }
 		}
 
-		private string Name
-		{
-			get { return Model.Name; }
-		}
-
 		public bool Mismatched()
 		{
 			return Model.LifestyleType == LifestyleType.PerWebRequest ||
@@ -72,18 +67,18 @@ namespace Castle.Windsor.Experimental.Diagnostics.Helpers
 			if (ImTheRoot())
 			{
 				items.Add(handler);
-				message.AppendFormat("Component '{0}' with lifestyle {1} ", Name,
+				message.AppendFormat("Component '{0}' with lifestyle {1} ", GetNameDescription(Model),
 				                     Model.GetLifestyleDescription());
 
 				message.AppendFormat("depends on '{0}' with lifestyle {1}",
-				                     mismatched.ComponentModel.Name,
+				                     GetNameDescription(mismatched.ComponentModel),
 				                     mismatched.ComponentModel.GetLifestyleDescription());
 				return;
 			}
 			parent.ContributeItem(mismatched, message, items);
 			items.Add(handler);
 			message.AppendLine();
-			message.AppendFormat("\tvia '{0}' with lifestyle {1}", Name,
+			message.AppendFormat("\tvia '{0}' with lifestyle {1}", GetNameDescription(Model),
 			                     Model.GetLifestyleDescription());
 		}
 
@@ -96,7 +91,7 @@ namespace Castle.Windsor.Experimental.Diagnostics.Helpers
 
 		private string GetKey()
 		{
-			return string.Format("\"{0}\" »{1}«", Name, Model.GetLifestyleDescription());
+			return string.Format("\"{0}\" »{1}«", GetNameDescription(Model), Model.GetLifestyleDescription());
 		}
 
 		private string GetMismatchMessage(List<IHandler> items)
@@ -116,7 +111,12 @@ namespace Castle.Windsor.Experimental.Diagnostics.Helpers
 		private string GetName(IHandler root)
 		{
 			var indirect = (parent.Handler == root) ? string.Empty : "indirectly ";
-			return string.Format("\"{0}\" »{1}« {2}depends on", root.ComponentModel.Name, root.ComponentModel.GetLifestyleDescription(), indirect);
+			return string.Format("\"{0}\" »{1}« {2}depends on", GetNameDescription(root.ComponentModel), root.ComponentModel.GetLifestyleDescription(), indirect);
+		}
+
+		private string GetNameDescription(ComponentModel componentModel)
+		{
+			return componentModel.ComponentName.SetByUser ? componentModel.ComponentName.Name : componentModel.ToString();
 		}
 
 		private bool ImTheRoot()

@@ -19,6 +19,7 @@ namespace Castle.Core
 	using System.Collections.Generic;
 	using System.Diagnostics;
 	using System.Linq;
+	using System.Text;
 	using System.Threading;
 
 	using Castle.Core.Configuration;
@@ -407,7 +408,26 @@ namespace Castle.Core
 		public override string ToString()
 		{
 			var services = AllServices.ToArray();
-			var value = string.Format("{0} / {1}", Implementation.Name, services[0].Name);
+			if(services.Length == 1 && services.Single() == Implementation)
+			{
+				return Implementation.Name;
+			}
+
+			string value;
+			if(Implementation == typeof(LateBoundComponent))
+			{
+
+				value = string.Format("late bound {0}", services[0].Name);
+			}
+			else if(Implementation == null)
+			{
+
+				value = "no impl / "+ services[0].Name;
+			}
+			else
+			{
+				value = string.Format("{0} / {1}", Implementation.Name, services[0].Name);
+			}
 			if (services.Length > 1)
 			{
 				value += string.Format(" and {0} other services", services.Length - 1);
