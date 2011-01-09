@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ namespace Castle.MicroKernel.Registration
 
 		protected internal override void ApplyToModel(IKernel kernel, ComponentModel model)
 		{
-			foreach(var parameter in parameters)
+			foreach (var parameter in parameters)
 			{
 				ApplyParameter(kernel, model, parameter);
 			}
@@ -41,7 +41,7 @@ namespace Castle.MicroKernel.Registration
 			}
 			else if (parameter.ConfigNode != null)
 			{
-				Registration.AddParameter(kernel, model, parameter.Key, parameter.ConfigNode);				
+				Registration.AddParameter(kernel, model, parameter.Key, parameter.ConfigNode);
 			}
 		}
 	}

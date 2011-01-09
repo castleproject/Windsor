@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -141,7 +141,6 @@ namespace Castle.MicroKernel.Registration
 		{
 			get { return interfaceServices; }
 		}
-
 
 		/// <summary>
 		///   Marks the components with one or more actors.
@@ -566,14 +565,14 @@ namespace Castle.MicroKernel.Registration
 		}
 
 		/// <summary>
-		///   Set a name of this registration.
-		///   This will be the key for the component in the kernel.
+		///   Set a name of this registration. This is required if you have multiple components for a given service and want to be able to resolve some specific ones. Then you'd provide the name so that Windsor knows which one of the bunch you know. Otherwise don't bother setting the name.
 		///   <para />
 		///   If not set, the <see cref = "Type.FullName" /> of the <see cref = "Implementation" />
 		///   will be used as the key to register the component.
 		/// </summary>
 		/// <param name = "name">The name of this registration.</param>
 		/// <returns></returns>
+		/// <remarks>Names have to be globally unique in the scope of the container.</remarks>
 		public ComponentRegistration<TService> Named(String name)
 		{
 			if (this.name != null)

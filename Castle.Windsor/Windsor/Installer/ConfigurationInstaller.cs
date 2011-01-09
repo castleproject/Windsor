@@ -71,7 +71,7 @@ namespace Castle.Windsor.Installer
 				interpreter.EnvironmentName = environment();
 			}
 
-			interpreter.ProcessResource(interpreter.Source, store);
+			interpreter.ProcessResource(interpreter.Source, store, container.Kernel);
 		}
 	}
 }

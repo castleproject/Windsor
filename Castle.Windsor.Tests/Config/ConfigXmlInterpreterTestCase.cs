@@ -36,7 +36,8 @@ namespace Castle.Windsor.Tests
 			DefaultConfigurationStore store = new DefaultConfigurationStore();
 
 			XmlInterpreter interpreter = new XmlInterpreter(Xml.Embedded("sample_config_complex.xml"));
-			interpreter.ProcessResource(interpreter.Source, store);
+			IKernel kernel = new DefaultKernel();
+			interpreter.ProcessResource(interpreter.Source, store, kernel);
 
 			Assert.AreEqual(2, store.GetFacilities().Length);
 			Assert.AreEqual(2, store.GetComponents().Length);
@@ -77,7 +78,8 @@ namespace Castle.Windsor.Tests
 		{
 			DefaultConfigurationStore store = new DefaultConfigurationStore();
 			XmlInterpreter interpreter = new XmlInterpreter(Xml.Embedded("sample_config.xml"));
-			interpreter.ProcessResource(interpreter.Source, store);
+			IKernel kernel = new DefaultKernel();
+			interpreter.ProcessResource(interpreter.Source, store, kernel);
 
 			WindsorContainer container = new WindsorContainer(store);
 
@@ -89,7 +91,8 @@ namespace Castle.Windsor.Tests
 			
 			DefaultConfigurationStore store = new DefaultConfigurationStore();
 			XmlInterpreter interpreter = new XmlInterpreter(Xml.Embedded("sample_config_with_spaces.xml"));
-			interpreter.ProcessResource(interpreter.Source, store);
+			IKernel kernel = new DefaultKernel();
+			interpreter.ProcessResource(interpreter.Source, store, kernel);
 
 			WindsorContainer container = new WindsorContainer(store);
 
@@ -102,7 +105,8 @@ namespace Castle.Windsor.Tests
 		{
 			DefaultConfigurationStore store = new DefaultConfigurationStore();
 			XmlInterpreter interpreter = new XmlInterpreter(Xml.File("sample_config_complex.xml"));
-			interpreter.ProcessResource(interpreter.Source, store);
+			IKernel kernel = new DefaultKernel();
+			interpreter.ProcessResource(interpreter.Source, store, kernel);
 
 			Assert.AreEqual(2, store.GetFacilities().Length);
 			Assert.AreEqual(2, store.GetComponents().Length);
@@ -144,7 +148,8 @@ namespace Castle.Windsor.Tests
 		{
 			DefaultConfigurationStore store = new DefaultConfigurationStore();
 			AssemblyResource source = new AssemblyResource("assembly://Castle.Windsor.Tests/missing_config.xml");
-			new XmlInterpreter(source).ProcessResource(source, store);
+			IKernel kernel = new DefaultKernel();
+			new XmlInterpreter(source).ProcessResource(source, store, kernel);
 		}
 	}
 

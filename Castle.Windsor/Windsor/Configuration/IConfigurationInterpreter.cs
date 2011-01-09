@@ -15,6 +15,7 @@
 namespace Castle.Windsor.Configuration
 {
 	using Castle.Core.Resource;
+	using Castle.MicroKernel;
 	using Castle.MicroKernel.SubSystems.Configuration;
 
 	/// <summary>
@@ -42,6 +43,7 @@ namespace Castle.Windsor.Configuration
 		/// </summary>
 		/// <param name="resource"></param>
 		/// <param name="store"></param>
-		void ProcessResource(IResource resource, IConfigurationStore store);
+		/// <param name="kernel"></param>
+		void ProcessResource(IResource resource, IConfigurationStore store, IKernel kernel);
 	}
 }

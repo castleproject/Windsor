@@ -82,8 +82,7 @@ namespace Castle.Windsor
 			{
 				throw new ArgumentNullException("interpreter");
 			}
-
-			interpreter.ProcessResource(interpreter.Source, kernel.ConfigurationStore);
+			interpreter.ProcessResource(interpreter.Source, kernel.ConfigurationStore, kernel);
 
 			RunInstaller();
 		}
@@ -105,7 +104,7 @@ namespace Castle.Windsor
 			}
 
 			interpreter.EnvironmentName = environmentInfo.GetEnvironmentName();
-			interpreter.ProcessResource(interpreter.Source, kernel.ConfigurationStore);
+			interpreter.ProcessResource(interpreter.Source, kernel.ConfigurationStore, kernel);
 
 			RunInstaller();
 		}
@@ -206,7 +205,7 @@ namespace Castle.Windsor
 
 			parent.AddChildContainer(this);
 
-			interpreter.ProcessResource(interpreter.Source, kernel.ConfigurationStore);
+			interpreter.ProcessResource(interpreter.Source, kernel.ConfigurationStore, kernel);
 
 			RunInstaller();
 		}
@@ -236,7 +235,7 @@ namespace Castle.Windsor
 
 			parent.AddChildContainer(this);
 
-			interpreter.ProcessResource(interpreter.Source, kernel.ConfigurationStore);
+			interpreter.ProcessResource(interpreter.Source, kernel.ConfigurationStore, kernel);
 
 			RunInstaller();
 		}
