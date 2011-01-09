@@ -17,7 +17,10 @@
 namespace Castle.Windsor.Tests
 {
 	using Castle.MicroKernel;
+	using Castle.Windsor.Configuration.Interpreters;
 	using Castle.Windsor.Tests.Components;
+	using Castle.XmlFiles;
+
 	using NUnit.Framework;
 
 	[TestFixture]
@@ -26,7 +29,7 @@ namespace Castle.Windsor.Tests
 		[Test]
 		public void PropertiesInspectionTestCase()
 		{
-			var container = new WindsorContainer(ConfigHelper.ResolveConfigPath("propertyInspectionBehavior.xml"));
+			var container = new WindsorContainer(new XmlInterpreter(Xml.Embedded("propertyInspectionBehavior.xml")));
 
 			var comp = container.Resolve<ExtendedComponentWithProperties>("comp1");
 			Assert.IsNull(comp.Prop1);
@@ -50,7 +53,7 @@ namespace Castle.Windsor.Tests
 		 	)]
 		public void InvalidOption()
 		{
-			new WindsorContainer(ConfigHelper.ResolveConfigPath("propertyInspectionBehaviorInvalid.xml"));
+			new WindsorContainer(new XmlInterpreter(Xml.Embedded("propertyInspectionBehaviorInvalid.xml")));
 		}
 	}
 }

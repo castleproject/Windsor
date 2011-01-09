@@ -659,6 +659,8 @@
     <Compile Include="Facilities\Startable\Components\StartableChainWithGenerics.cs" />
     <Compile Include="Facilities\Startable\Components\StartableComponentWithCustomDependencies.cs" />
     <Compile Include="Registration\DynamicParametersTestCase.cs" />
+    <Compile Include="TypedFactoryInterfaces\ICalculatorFactoryCreateWithoutId.cs" />
+    <Compile Include="TypedFactoryInterfaces\ICalculatorFactory.cs" />
     <Compile Include="Windsor.Tests\LifecycledComponentsReleasePolicyComponentTrackingTestCase.cs" />
     <Compile Include="Windsor.Tests\GenericVarianceTestCase.cs" />
     <Compile Include="Windsor.Tests\LitestylePerThreadTestCase.cs" />
@@ -924,9 +926,7 @@
     </Compile>
     <Compile Include="Windsor.Tests\XmlConfigStructureTestCase.cs" />
     <Compile Include="XmlFiles\Xml.cs" />
-    <EmbeddedResource Include="Channel1.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
+    <EmbeddedResource Include="XmlFiles\Channel1.xml" />
     <EmbeddedResource Include="Config\OneComponentInTwoPieces.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
@@ -1025,12 +1025,8 @@
       <SubType>Designer</SubType>
     </Content>
     <EmbeddedResource Include="XmlFiles\installerconfig.xml" />
-    <Content Include="propertyInspectionBehavior.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="propertyInspectionBehaviorInvalid.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <EmbeddedResource Include="XmlFiles\propertyInspectionBehavior.xml" />
+    <EmbeddedResource Include="XmlFiles\propertyInspectionBehaviorInvalid.xml" />
     <EmbeddedResource Include="XmlFiles\robotwireconfig.xml" />
     <EmbeddedResource Include="XmlFiles\sample_config.xml" />
     <EmbeddedResource Include="XmlFiles\facilityWithoutId.xml" />
@@ -1325,18 +1321,10 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <Content Include="IOC-51.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Proxy\typedFactory.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Proxy\proxyBehavior.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Proxy\typedFactoryCreateWithoutId.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <EmbeddedResource Include="XmlFiles\IOC-51.xml" />
+    <EmbeddedResource Include="XmlFiles\typedFactory.xml" />
+    <EmbeddedResource Include="XmlFiles\proxyBehavior.xml" />
+    <EmbeddedResource Include="XmlFiles\typedFactoryCreateWithoutId.xml" />
     <Content Include="XmlProcessor\TestFiles\DefineDefaultTestDisabled.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

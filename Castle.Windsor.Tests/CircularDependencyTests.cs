@@ -20,7 +20,9 @@ namespace Castle.Windsor.Tests
 	using Castle.Core;
 	using Castle.MicroKernel.Handlers;
 	using Castle.MicroKernel.Registration;
+	using Castle.Windsor.Configuration.Interpreters;
 	using Castle.Windsor.Tests.Components;
+	using Castle.XmlFiles;
 
 	using NUnit.Framework;
 
@@ -33,7 +35,7 @@ namespace Castle.Windsor.Tests
 		[Test]
 		public void ShouldNotGetCircularDepencyExceptionWhenResolvingTypeOnItselfWithDifferentModels()
 		{
-			var container = new WindsorContainer(ConfigHelper.ResolveConfigPath("IOC-51.xml"));
+			var container = new WindsorContainer(new XmlInterpreter(Xml.Embedded("IOC-51.xml")));
 			Assert.IsNotNull(container.Resolve<object>("path.fileFinder"));
 		}
 #endif

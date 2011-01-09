@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,35 +12,40 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#if !SILVERLIGHT // we do not support xml config on SL
+#if !SILVERLIGHT
+// we do not support xml config on SL
 
 namespace Castle.Windsor.Tests.Proxy
 {
-	using System;
 	using Castle.DynamicProxy;
-	using Castle.Windsor.Tests.Components;
+	using Castle.TypedFactoryInterfaces;
+	using Castle.Windsor.Configuration.Interpreters;
+	using Castle.XmlFiles;
+
 	using NUnit.Framework;
-
-	public interface ICalculatorFactory
-	{
-		ICalcService Create(String id);
-		void Release(ICalcService calculator);
-	}
-
-	public interface ICalculatorFactoryCreateWithoutId
-	{
-		ICalcService Create();
-	}
 
 	[TestFixture]
 	public class TypedFactoryFacilityTestCase
 	{
 		[Test]
+		public void TypedFactory_CreateMethodHasNoId_WorksFine()
+		{
+			var container = new WindsorContainer(new XmlInterpreter(Xml.Embedded("typedFactoryCreateWithoutId.xml")));
+
+			var calcFactory = container.Resolve<ICalculatorFactoryCreateWithoutId>();
+			Assert.IsNotNull(calcFactory);
+
+			var calculator = calcFactory.Create();
+			Assert.IsNotNull(calculator);
+			Assert.AreEqual(3, calculator.Sum(1, 2));
+		}
+
+		[Test]
 		public void TypedFactory_WithProxies_WorksFine()
 		{
-			var container = new WindsorContainer(ConfigHelper.ResolveConfigPath("Proxy/typedFactory.xml"));
+			var container = new WindsorContainer(new XmlInterpreter(Xml.Embedded("typedFactory.xml")));
 
-			var calcFactory = (ICalculatorFactory)container.Resolve(typeof(ICalculatorFactory));
+			var calcFactory = container.Resolve<ICalculatorFactory>();
 			Assert.IsNotNull(calcFactory);
 
 			var calculator = calcFactory.Create("default");
@@ -48,19 +53,6 @@ namespace Castle.Windsor.Tests.Proxy
 			Assert.AreEqual(3, calculator.Sum(1, 2));
 
 			calcFactory.Release(calculator);
-		}
-
-		[Test]
-		public void TypedFactory_CreateMethodHasNoId_WorksFine()
-		{
-			var container = new WindsorContainer(ConfigHelper.ResolveConfigPath("Proxy/typedFactoryCreateWithoutId.xml"));
-
-			var calcFactory = (ICalculatorFactoryCreateWithoutId)container.Resolve(typeof(ICalculatorFactoryCreateWithoutId));
-			Assert.IsNotNull(calcFactory);
-
-			var calculator = calcFactory.Create();
-			Assert.IsNotNull(calculator);
-			Assert.AreEqual(3, calculator.Sum(1, 2));
 		}
 	}
 }

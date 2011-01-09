@@ -18,6 +18,8 @@ namespace Castle.Windsor.Tests
 	using System.Collections.Generic;
 	using System.Linq;
 
+	using Castle.XmlFiles;
+
 	using NUnit.Framework;
 
 	[TestFixture]
@@ -27,7 +29,7 @@ namespace Castle.Windsor.Tests
 		public void Should_not_StackOverflow()
 		{
 			var container = new WindsorContainer()
-				.Install(Castle.Windsor.Installer.Configuration.FromXmlFile(ConfigHelper.ResolveConfigPath("channel1.xml")));
+				.Install(Castle.Windsor.Installer.Configuration.FromXml(Xml.Embedded("channel1.xml")));
 
 			var channel = container.Resolve<MessageChannel>("MessageChannel1");
 			var array = channel.RootDevice.Children.ToArray();
