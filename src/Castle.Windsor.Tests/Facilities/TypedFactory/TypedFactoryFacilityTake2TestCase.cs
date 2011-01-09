@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 	using NUnit.Framework;
 
 	[TestFixture]
-	public class TypedFactoryFacilityTake2TestCase:AbstractContainerTestFixture
+	public class TypedFactoryFacilityTake2TestCase : AbstractContainerTestFixture
 	{
 		[Test]
 		public void Can_Resolve_by_closed_generic_closed_on_arguments_type_with_custom_selector()
@@ -226,17 +226,6 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 		}
 
 		[Test]
-		public void Can_resolve_via_generic_factory_with_generic_method()
-		{
-			Container.Register(
-				Component.For(typeof(IDummyComponent<>)).ImplementedBy(typeof(DummyComponent<>)).LifeStyle.Transient,
-				Component.For(typeof(IGenericFactoryWithGenericMethod<>)).AsFactory());
-
-			var factory = Container.Resolve<IGenericFactoryWithGenericMethod<A>>();
-			factory.Create<IDummyComponent<A>>();
-		}
-
-		[Test]
 		public void Can_resolve_via_generic_factory()
 		{
 			Container.Register(Component.For(typeof(IGenericFactory<>)).AsFactory());
@@ -279,6 +268,17 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 
 			factory.Create();
 			factory.Create2();
+		}
+
+		[Test]
+		public void Can_resolve_via_generic_factory_with_generic_method()
+		{
+			Container.Register(
+				Component.For(typeof(IDummyComponent<>)).ImplementedBy(typeof(DummyComponent<>)).LifeStyle.Transient,
+				Component.For(typeof(IGenericFactoryWithGenericMethod<>)).AsFactory());
+
+			var factory = Container.Resolve<IGenericFactoryWithGenericMethod<A>>();
+			factory.Create<IDummyComponent<A>>();
 		}
 
 		[Test]

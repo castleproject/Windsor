@@ -135,7 +135,7 @@ namespace Castle.Facilities.TypedFactory
 
 		private void LegacyInit()
 		{
-			Kernel.Register(Component.For<FactoryInterceptor>().Named("typed.fac.interceptor"));
+			Kernel.Register(Component.For<FactoryInterceptor>().NamedAutomatically("typed.fac.interceptor"));
 
 			var converter = Kernel.GetConversionManager();
 			AddFactories(FacilityConfig, converter);

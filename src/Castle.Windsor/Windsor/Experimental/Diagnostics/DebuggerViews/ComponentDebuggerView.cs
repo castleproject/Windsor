@@ -22,7 +22,7 @@ namespace Castle.Windsor.Experimental.Diagnostics.DebuggerViews
 	using Castle.Windsor.Experimental.Diagnostics.Helpers;
 
 #if !SILVERLIGHT
-	[DebuggerDisplay("{key} {description,nq}")]
+	[DebuggerDisplay("{key,nq}{description,nq}")]
 	public class ComponentDebuggerView
 	{
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
@@ -35,11 +35,15 @@ namespace Castle.Windsor.Experimental.Diagnostics.DebuggerViews
 		private readonly IHandler handler;
 
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
-		private string key;
+		private string key = string.Empty;
 
 		public ComponentDebuggerView(IHandler handler, params IComponentDebuggerExtension[] defaultExtension)
 		{
-			key = handler.ComponentModel.Name;
+			var name = handler.ComponentModel.ComponentName;
+			if(name.SetByUser)
+			{
+				key = string.Format("\"{0}\" ", name.Name);
+			}
 			this.handler = handler;
 			extension = defaultExtension.Concat(GetExtensions(handler)).ToArray();
 			description = handler.GetServicesDescription();
