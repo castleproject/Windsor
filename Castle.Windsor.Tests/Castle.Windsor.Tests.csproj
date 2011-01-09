@@ -306,6 +306,7 @@
     <Compile Include="ClassComponents\CBA.cs" />
     <Compile Include="ClassComponents\HasByRefCtorArgument.cs" />
     <Compile Include="ClassComponents\HasCtorDependency.cs" />
+    <Compile Include="ComponentsParametersDivisionTestsCase.cs" />
     <Compile Include="Components\ArrayRefDepAsConstructor.cs" />
     <Compile Include="Components\CalculatorServiceWithStandartInterceptorTyped.cs" />
     <Compile Include="Components\CalculatorServiceWithFooInterceptorNamed.cs" />
