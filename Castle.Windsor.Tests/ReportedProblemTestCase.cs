@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,11 +14,9 @@
 
 namespace Castle.Windsor.Tests
 {
-    using System;
+	using Castle.MicroKernel.Registration;
+	using Castle.Windsor.Tests.Components;
 
-    using Castle.MicroKernel;
-    using Castle.MicroKernel.Registration;
-    using Castle.Windsor.Tests.Components;
 	using NUnit.Framework;
 
 	[TestFixture]
@@ -35,14 +33,13 @@ namespace Castle.Windsor.Tests
 		[Test]
 		public void StackOverflowProblem()
 		{
-			container.Register(Component.For(typeof(Employee)).Named("C"));
-			container.Register(Component.For(typeof(Reviewer)).Named("B"));
-			container.Register(Component.For(typeof(ReviewableEmployee)).Named("A"));
+			container.Register(Component.For<Employee>());
+			container.Register(Component.For<Reviewer>());
+			container.Register(Component.For<ReviewableEmployee>());
 
-			Assert.IsNotNull(container.Resolve<ReviewableEmployee>("A"));
-			Assert.IsNotNull(container.Resolve<Reviewer>("B"));
-			Assert.IsNotNull(container.Resolve<Employee>("C"));
-
+			Assert.IsNotNull(container.Resolve<ReviewableEmployee>());
+			Assert.IsNotNull(container.Resolve<Reviewer>());
+			Assert.IsNotNull(container.Resolve<Employee>());
 		}
 	}
 }
