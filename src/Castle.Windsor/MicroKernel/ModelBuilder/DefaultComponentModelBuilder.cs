@@ -72,7 +72,7 @@ namespace Castle.MicroKernel.ModelBuilder
 		/// <param name = "classType"></param>
 		/// <param name = "extendedProperties"></param>
 		/// <returns></returns>
-		public ComponentModel BuildModel(string name, Type[] services, Type classType, IDictionary extendedProperties)
+		public ComponentModel BuildModel(ComponentName name, Type[] services, Type classType, IDictionary extendedProperties)
 		{
 			var model = new ComponentModel(name, services, classType, extendedProperties);
 			foreach (var contributor in contributors)

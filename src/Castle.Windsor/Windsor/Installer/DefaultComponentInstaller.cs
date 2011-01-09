@@ -177,13 +177,11 @@ namespace Castle.Windsor.Installer
 			}
 		}
 
-		protected virtual void SetUpComponents(IConfiguration[] configurations, IWindsorContainer container,
-		                                       IConversionManager converter)
+		protected virtual void SetUpComponents(IConfiguration[] configurations, IWindsorContainer container, IConversionManager converter)
 		{
 			foreach (IConfiguration component in configurations)
 			{
 				var id = component.Attributes["id"];
-
 				var typeName = component.Attributes["type"];
 				var serviceTypeName = component.Attributes["service"];
 
@@ -208,7 +206,15 @@ namespace Castle.Windsor.Installer
 
 				var services = new List<Type> { service };
 				CollectForwardedTypes(container.Kernel as IKernelInternal, component, typeName, id, converter, services);
-				container.Register(Component.For(services).ImplementedBy(type).Named(id));
+				var registration = Component.For(services).ImplementedBy(type);
+				if(component.Attributes["id-automatic"] == true.ToString())
+				{
+					container.Register(registration.NamedAutomatically(id));
+				}
+				else
+				{
+				container.Register(registration.Named(id));
+				}
 			}
 		}
 

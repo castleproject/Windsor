@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -11,7 +11,6 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
 namespace Castle.Facilities.TypedFactory
 {
 	using System;
@@ -53,7 +52,8 @@ namespace Castle.Facilities.TypedFactory
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public void AddTypedFactoryEntry(FactoryEntry entry)
 		{
-			var model = new ComponentModel(entry.Id, new[] { entry.FactoryInterface }, typeof(Empty), new Arguments().Insert("typed.fac.entry", entry))
+			var model = new ComponentModel(new ComponentName(entry.Id, true), new[] { entry.FactoryInterface }, typeof(Empty),
+			                               new Arguments().Insert("typed.fac.entry", entry))
 			{ LifestyleType = LifestyleType.Singleton };
 
 			model.Interceptors.Add(new InterceptorReference(typeof(FactoryInterceptor)));
@@ -116,19 +116,19 @@ namespace Castle.Facilities.TypedFactory
 		private void InitFacility()
 		{
 			Kernel.Register(Component.For<TypedFactoryInterceptor>()
-			                	.Named(InterceptorKey),
+			                	.NamedAutomatically(InterceptorKey),
 			                Component.For<DelegateFactory>()
-			                	.Named(DelegateFactoryKey),
+			                	.NamedAutomatically(DelegateFactoryKey),
 			                Component.For<IProxyFactoryExtension>()
 			                	.ImplementedBy<DelegateProxyFactory>()
 			                	.LifeStyle.Transient
-			                	.Named(DelegateProxyFactoryKey),
+			                	.NamedAutomatically(DelegateProxyFactoryKey),
 			                Component.For<ITypedFactoryComponentSelector>()
 			                	.ImplementedBy<DefaultTypedFactoryComponentSelector>()
-			                	.Named(DefaultInterfaceSelectorKey),
+			                	.NamedAutomatically(DefaultInterfaceSelectorKey),
 			                Component.For<ITypedFactoryComponentSelector>()
 			                	.ImplementedBy<DefaultDelegateComponentSelector>()
-			                	.Named(DefaultDelegateSelectorKey));
+			                	.NamedAutomatically(DefaultDelegateSelectorKey));
 
 			Kernel.ComponentModelBuilder.AddContributor(new TypedFactoryCachingInspector());
 		}

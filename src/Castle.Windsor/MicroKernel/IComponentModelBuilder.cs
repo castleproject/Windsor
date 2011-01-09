@@ -47,7 +47,7 @@ namespace Castle.MicroKernel
 		/// <param name = "classType"></param>
 		/// <param name = "extendedProperties"></param>
 		/// <returns></returns>
-		ComponentModel BuildModel(string name, Type[] services, Type classType, IDictionary extendedProperties);
+		ComponentModel BuildModel(ComponentName name, Type[] services, Type classType, IDictionary extendedProperties);
 
 		/// <summary>
 		///   Removes the specified contributor

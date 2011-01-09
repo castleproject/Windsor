@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -36,35 +36,6 @@ namespace Castle.MicroKernel.Lifestyle
 			this.maxSize = maxSize;
 		}
 
-		public override void Dispose()
-		{
-			if (pool != null)
-			{
-				pool.Dispose();
-			}
-		}
-
-		public override object Resolve(CreationContext context, IReleasePolicy releasePolicy)
-		{
-			return Pool.Request(context, c => PoolCreationCallback(c, releasePolicy));
-		}
-
-		public override bool Release(object instance)
-		{
-			if (pool != null)
-			{
-				return pool.Release(instance);
-			}
-			return false;
-		}
-
-		protected virtual Burden PoolCreationCallback(CreationContext context, IReleasePolicy releasePolicy)
-		{
-			var burden = base.CreateInstance(context, false);
-			Track(burden, releasePolicy);
-			return burden;
-		}
-
 		private IPool Pool
 		{
 			get
@@ -83,10 +54,26 @@ namespace Castle.MicroKernel.Lifestyle
 			}
 		}
 
-		protected override void Track(Burden burden, IReleasePolicy releasePolicy)
+		public override void Dispose()
 		{
-			burden.RequiresDecommission = true;
-			releasePolicy.Track(burden.Instance, burden);
+			if (pool != null)
+			{
+				pool.Dispose();
+			}
+		}
+
+		public override bool Release(object instance)
+		{
+			if (pool != null)
+			{
+				return pool.Release(instance);
+			}
+			return false;
+		}
+
+		public override object Resolve(CreationContext context, IReleasePolicy releasePolicy)
+		{
+			return Pool.Request(context, c => PoolCreationCallback(c, releasePolicy));
 		}
 
 		protected IPool CreatePool(int initialSize, int maxSize)
@@ -96,11 +83,24 @@ namespace Castle.MicroKernel.Lifestyle
 				Kernel.Register(
 					Component.For<IPoolFactory>()
 						.ImplementedBy<DefaultPoolFactory>()
-						.Named("castle.internal.poolfactory"));
+						.NamedAutomatically("castle.internal.poolfactory"));
 			}
 
 			var factory = Kernel.Resolve<IPoolFactory>();
 			return factory.Create(initialSize, maxSize, ComponentActivator);
+		}
+
+		protected virtual Burden PoolCreationCallback(CreationContext context, IReleasePolicy releasePolicy)
+		{
+			var burden = base.CreateInstance(context, false);
+			Track(burden, releasePolicy);
+			return burden;
+		}
+
+		protected override void Track(Burden burden, IReleasePolicy releasePolicy)
+		{
+			burden.RequiresDecommission = true;
+			releasePolicy.Track(burden.Instance, burden);
 		}
 	}
 }

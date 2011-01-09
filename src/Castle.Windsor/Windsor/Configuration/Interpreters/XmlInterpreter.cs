@@ -228,6 +228,7 @@ namespace Castle.Windsor.Configuration.Interpreters
 				var type = converter.PerformConversion<Type>(config.Attributes["type"]);
 				id = type.FullName;
 				config.Attributes["id"] = id;
+				config.Attributes.Add("id-automatic", true.ToString());
 			}
 			AddFacilityConfig(id, config, store);
 		}
@@ -252,6 +253,7 @@ namespace Castle.Windsor.Configuration.Interpreters
 				var type = converter.PerformConversion<Type>(config.Attributes["type"]);
 				id = type.FullName;
 				config.Attributes["id"] = id;
+				config.Attributes.Add("id-automatic", true.ToString());
 			}
 			AddComponentConfig(id, config, store);
 		}
