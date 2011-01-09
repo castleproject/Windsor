@@ -1223,30 +1223,18 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <EmbeddedResource Include="InterceptorsWithHookAndSelector.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Mixins.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="AdditionalInterfaces.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
+    <EmbeddedResource Include="XmlFiles\interceptorsWithHookAndSelector.xml" />
+    <EmbeddedResource Include="XmlFiles\mixins.xml" />
+    <EmbeddedResource Include="XmlFiles\additionalInterfaces.xml" />
     <None Include="Config\chainOfResponsibility.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Config\chainOfResponsibility_smart.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <EmbeddedResource Include="InterceptorsMultiple.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="InterceptorsInvalid.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Interceptors.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
+    <EmbeddedResource Include="XmlFiles\interceptorsMultiple.xml" />
+    <EmbeddedResource Include="XmlFiles\interceptorsInvalid.xml" />
+    <EmbeddedResource Include="XmlFiles\interceptors.xml" />
     <Content Include="Bugs\IoC_103\sample1.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
