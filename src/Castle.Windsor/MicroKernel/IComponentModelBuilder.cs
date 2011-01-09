@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,45 +16,43 @@ namespace Castle.MicroKernel
 {
 	using System;
 	using System.Collections;
-	using System.Collections.Generic;
 
 	using Castle.Core;
-
 	using Castle.MicroKernel.ModelBuilder;
 
 	/// <summary>
-	/// Implementors must construct a populated
-	/// instance of ComponentModel by inspecting the component
-	/// and|or the configuration.
+	///   Implementors must construct a populated
+	///   instance of ComponentModel by inspecting the component
+	///   and|or the configuration.
 	/// </summary>
 	public interface IComponentModelBuilder
 	{
-		/// <summary>
-		/// Constructs a new ComponentModel by invoking
-		/// the registered contributors.
-		/// </summary>
-		/// <param name="key"></param>
-		/// <param name="services"></param>
-		/// <param name="classType"></param>
-		/// <param name="extendedProperties"></param>
-		/// <returns></returns>
-		ComponentModel BuildModel(string key, Type[] services, Type classType, IDictionary extendedProperties);
+		IContributeComponentModelConstruction[] Contributors { get; }
 
 		/// <summary>
-		/// "To give or supply in common with others; give to a 
-		/// common fund or for a common purpose". The contributor
-		/// should inspect the component, or even the configuration
-		/// associated with the component, to add or change information
-		/// in the model that can be used later.
+		///   "To give or supply in common with others; give to a 
+		///   common fund or for a common purpose". The contributor
+		///   should inspect the component, or even the configuration
+		///   associated with the component, to add or change information
+		///   in the model that can be used later.
 		/// </summary>
 		void AddContributor(IContributeComponentModelConstruction contributor);
 
 		/// <summary>
-		/// Removes the specified contributor
+		///   Constructs a new ComponentModel by invoking
+		///   the registered contributors.
 		/// </summary>
-		/// <param name="contributor"></param>
-		void RemoveContributor(IContributeComponentModelConstruction contributor);
+		/// <param name = "name"></param>
+		/// <param name = "services"></param>
+		/// <param name = "classType"></param>
+		/// <param name = "extendedProperties"></param>
+		/// <returns></returns>
+		ComponentModel BuildModel(string name, Type[] services, Type classType, IDictionary extendedProperties);
 
-		IContributeComponentModelConstruction[] Contributors { get; }
+		/// <summary>
+		///   Removes the specified contributor
+		/// </summary>
+		/// <param name = "contributor"></param>
+		void RemoveContributor(IContributeComponentModelConstruction contributor);
 	}
 }
