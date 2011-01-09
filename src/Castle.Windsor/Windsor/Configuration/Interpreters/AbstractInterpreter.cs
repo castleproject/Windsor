@@ -19,6 +19,7 @@ namespace Castle.Windsor.Configuration.Interpreters
 
 	using Castle.Core.Resource;
 	using Castle.Core.Configuration;
+	using Castle.MicroKernel;
 	using Castle.MicroKernel.SubSystems.Configuration;
 
 	/// <summary>
@@ -68,7 +69,8 @@ namespace Castle.Windsor.Configuration.Interpreters
 		/// </summary>
 		/// <param name = "resource"></param>
 		/// <param name = "store"></param>
-		public abstract void ProcessResource(IResource resource, IConfigurationStore store);
+		/// <param name="kernel"></param>
+		public abstract void ProcessResource(IResource resource, IConfigurationStore store, IKernel kernel);
 
 		protected void PushResource(IResource resource)
 		{

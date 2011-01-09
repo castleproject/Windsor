@@ -18,6 +18,7 @@
 namespace Castle.Windsor.Tests.Config
 {
 	using Castle.Core.Resource;
+	using Castle.MicroKernel;
 	using Castle.MicroKernel.SubSystems.Configuration;
 	using Castle.Windsor.Configuration.Interpreters;
 
@@ -34,7 +35,8 @@ namespace Castle.Windsor.Tests.Config
 		{
 			var store = new DefaultConfigurationStore();
 			var interpreter = new XmlInterpreter(new ConfigResource());
-			interpreter.ProcessResource(interpreter.Source, store);
+			IKernel kernel = new DefaultKernel();
+			interpreter.ProcessResource(interpreter.Source, store, kernel);
 
 			Assert.AreEqual(2, store.GetFacilities().Length);
 			Assert.AreEqual(3, store.GetComponents().Length);

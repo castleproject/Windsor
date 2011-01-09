@@ -23,6 +23,7 @@ namespace Castle.Windsor.Configuration.Interpreters
 	using Castle.Core.Configuration;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.SubSystems.Configuration;
+	using Castle.MicroKernel.SubSystems.Conversion;
 	using Castle.MicroKernel.SubSystems.Resource;
 	using Castle.Windsor.Configuration.Interpreters.XmlProcessor;
 
@@ -67,36 +68,22 @@ namespace Castle.Windsor.Configuration.Interpreters
 		/// Initializes a new instance of the <see cref="XmlInterpreter"/> class.
 		/// </summary>
 		/// <param name="source">The source.</param>
-		public XmlInterpreter(Castle.Core.Resource.IResource source) : base(source)
+		public XmlInterpreter(IResource source) : base(source)
 		{
 		}
 
 		#endregion
 
-		/// <summary>
-		/// Gets or sets the kernel.
-		/// </summary>
-		/// <value>The kernel.</value>
-		public IKernel Kernel { get; set; }
-
-		public override void ProcessResource(IResource source, IConfigurationStore store)
+		public override void ProcessResource(IResource source, IConfigurationStore store, IKernel kernel)
 		{
-			XmlProcessor.XmlProcessor processor;
-			if (Kernel == null)
-			{
-				processor = new XmlProcessor.XmlProcessor(EnvironmentName);
-			}
-			else
-			{
-				var resourceSubSystem = Kernel.GetSubSystem(SubSystemConstants.ResourceKey) as IResourceSubSystem;
-				processor = new XmlProcessor.XmlProcessor(EnvironmentName, resourceSubSystem);
-			}
+			var resourceSubSystem = kernel.GetSubSystem(SubSystemConstants.ResourceKey) as IResourceSubSystem;
+			var processor = new XmlProcessor.XmlProcessor(EnvironmentName, resourceSubSystem);
 
 			try
 			{
 				XmlNode element = processor.Process(source);
-
-				Deserialize(element, store);
+				var converter = kernel.GetConversionManager();
+				Deserialize(element, store, converter);
 			}
 			catch(XmlProcessorException)
 			{
@@ -106,7 +93,7 @@ namespace Castle.Windsor.Configuration.Interpreters
 			}
 		}
 
-		protected static void Deserialize(XmlNode section, IConfigurationStore store)
+		protected static void Deserialize(XmlNode section, IConfigurationStore store, IConversionManager converter)
 		{
 			foreach(XmlNode node in section)
 			{
@@ -118,12 +105,12 @@ namespace Castle.Windsor.Configuration.Interpreters
 				}
 				if (node.NodeType == XmlNodeType.Element)
 				{
-					DeserializeElement(node, store);
+					DeserializeElement(node, store, converter);
 				}
 			}
 		}
 
-		private static void DeserializeElement(XmlNode node, IConfigurationStore store)
+		private static void DeserializeElement(XmlNode node, IConfigurationStore store, IConversionManager converter)
 		{
 			if (ContainersNodeName.Equals(node.Name))
 			{
@@ -131,7 +118,7 @@ namespace Castle.Windsor.Configuration.Interpreters
 			}
 			else if (FacilitiesNodeName.Equals(node.Name))
 			{
-				DeserializeFacilities(node.ChildNodes, store);
+				DeserializeFacilities(node.ChildNodes, store, converter);
 			}
 			else if (InstallersNodeName.Equals(node.Name))
 			{
@@ -139,7 +126,7 @@ namespace Castle.Windsor.Configuration.Interpreters
 			}
 			else if (ComponentsNodeName.Equals(node.Name))
 			{
-				DeserializeComponents(node.ChildNodes, store);
+				DeserializeComponents(node.ChildNodes, store, converter);
 			}
 			else
 			{
@@ -221,47 +208,49 @@ namespace Castle.Windsor.Configuration.Interpreters
 			AddChildContainerConfig(name, newConfig, store);
 		}
 
-		private static void DeserializeFacilities(XmlNodeList nodes, IConfigurationStore store)
+		private static void DeserializeFacilities(XmlNodeList nodes, IConfigurationStore store, IConversionManager converter)
 		{
 			foreach(XmlNode node in nodes)
 			{
 				if (node.NodeType != XmlNodeType.Element) continue;
 				
 				AssertNodeName(node, FacilityNodeName);
-				DeserializeFacility(node, store);
+				DeserializeFacility(node, store, converter);
 			}
 		}
 
-		private static void DeserializeFacility(XmlNode node, IConfigurationStore store)
+		private static void DeserializeFacility(XmlNode node, IConfigurationStore store, IConversionManager converter)
 		{
 			var config = XmlConfigurationDeserializer.GetDeserializedNode(node);
 			var id = config.Attributes["id"];
 			if (string.IsNullOrEmpty(id))
 			{
-				id = config.Attributes["type"];
+				var type = converter.PerformConversion<Type>(config.Attributes["type"]);
+				id = type.FullName;
 				config.Attributes["id"] = id;
 			}
 			AddFacilityConfig(id, config, store);
 		}
 
-		private static void DeserializeComponents(XmlNodeList nodes, IConfigurationStore store)
+		private static void DeserializeComponents(XmlNodeList nodes, IConfigurationStore store, IConversionManager converter)
 		{
 			foreach(XmlNode node in nodes)
 			{
 				if (node.NodeType != XmlNodeType.Element) continue;
 
 				AssertNodeName(node, ComponentNodeName);
-				DeserializeComponent(node, store);
+				DeserializeComponent(node, store, converter);
 			}
 		}
 
-		private static void DeserializeComponent(XmlNode node, IConfigurationStore store)
+		private static void DeserializeComponent(XmlNode node, IConfigurationStore store, IConversionManager converter)
 		{
 			var config = XmlConfigurationDeserializer.GetDeserializedNode(node);
 			var id = config.Attributes["id"];
 			if(string.IsNullOrEmpty(id))
 			{
-				id = config.Attributes["type"];
+				var type = converter.PerformConversion<Type>(config.Attributes["type"]);
+				id = type.FullName;
 				config.Attributes["id"] = id;
 			}
 			AddComponentConfig(id, config, store);

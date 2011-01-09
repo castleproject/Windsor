@@ -1,4 +1,17 @@
 ================================================================================================
+change - IConfigurationInterpreter.ProcessResource now takes an additional argument: IKernel
+
+impact - low
+fixability - easy
+
+description - To accomodate ability not to specify id when configuring components or facilities
+	in XML config in conjunction with simple type name support in Windsor (this feature that
+	lets you specify just simple type name like Foo, instead of assembly qualified name like
+	Acme.Crm.Foo, Acme.Crm) access to conversion subsystem was required and it made sense to
+	grab entire kernel as some other things could be taken advantage of.
+
+fix - Pass the kernel in.
+================================================================================================
 change - Release policies have now slightly different semantics.
 
 impact - medium
