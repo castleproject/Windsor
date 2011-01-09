@@ -17,6 +17,8 @@
 namespace Castle.Windsor.Tests
 {
 	using Castle.Windsor.Tests.Components;
+	using Castle.XmlFiles;
+
 	using NUnit.Framework;
 
 	[TestFixture]
@@ -25,8 +27,8 @@ namespace Castle.Windsor.Tests
 		[Test]
 		public void TestIgnoreAttribute()
 		{
-			var container = new WindsorContainer(
-				ConfigHelper.ResolveConfigPath("ignoreprop.xml"));
+			var container = new WindsorContainer();
+			container.Install(Castle.Windsor.Installer.Configuration.FromXml(Xml.Embedded("ignoreprop.xml")));
 
 			var server = container.Resolve<ClassWithDoNotWireProperties>();
 

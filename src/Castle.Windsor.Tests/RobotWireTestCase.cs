@@ -17,6 +17,8 @@
 namespace Castle.Windsor.Tests
 {
 	using Castle.Windsor.Tests.Components;
+	using Castle.XmlFiles;
+
 	using NUnit.Framework;
 
 	/// <summary>
@@ -26,12 +28,11 @@ namespace Castle.Windsor.Tests
 	[TestFixture]
 	public class RobotWireTestCase
 	{
-		private IWindsorContainer container;
-
 		[Test]
 		public void WireTest()
 		{
-			container = new WindsorContainer(ConfigHelper.ResolveConfigPath("robotwireconfig.xml"));
+			var container = new WindsorContainer();
+			container.Install(Castle.Windsor.Installer.Configuration.FromXml(Xml.Embedded("robotwireconfig.xml")));
 
 			var robot = container.Resolve<Robot>();
 

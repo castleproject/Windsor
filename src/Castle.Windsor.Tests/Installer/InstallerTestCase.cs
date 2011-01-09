@@ -16,7 +16,10 @@
 
 namespace Castle.Windsor.Tests.Installer
 {
+	using Castle.Windsor.Configuration.Interpreters;
 	using Castle.Windsor.Tests.Components;
+	using Castle.XmlFiles;
+
 	using NUnit.Framework;
 
 	[TestFixture]
@@ -25,7 +28,7 @@ namespace Castle.Windsor.Tests.Installer
 		[Test]
 		public void InstallCalcService()
 		{
-			var container = new WindsorContainer(ConfigHelper.ResolveConfigPath("installerconfig.xml"));
+			var container = new WindsorContainer(new XmlInterpreter(Xml.Embedded("installerconfig.xml")));
 
 			Assert.IsTrue(container.Kernel.HasComponent(typeof(ICalcService)));
 			Assert.IsTrue(container.Kernel.HasComponent("calcservice"));
@@ -34,7 +37,7 @@ namespace Castle.Windsor.Tests.Installer
 		[Test]
 		public void InstallChildContainer()
 		{
-			var container = new WindsorContainer(ConfigHelper.ResolveConfigPath("installerconfig.xml"));
+			var container = new WindsorContainer(new XmlInterpreter(Xml.Embedded("installerconfig.xml")));
 			var child1 = container.GetChildContainer("child1");
 
 			Assert.IsNotNull(child1);
