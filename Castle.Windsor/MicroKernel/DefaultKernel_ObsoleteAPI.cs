@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -22,21 +22,17 @@ namespace Castle.MicroKernel
 	using Castle.MicroKernel.ComponentActivator;
 	using Castle.MicroKernel.Registration;
 
-#if (SILVERLIGHT)
-	public partial class DefaultKernel : IKernel, IKernelEvents
-#else
 	public partial class DefaultKernel
-#endif
 	{
 		[Obsolete("Use Resolve(key, new Arguments()) instead")]
-		[EditorBrowsable(EditorBrowsableState.Advanced)]
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public virtual object this[String key]
 		{
 			get { return Resolve<object>(key); }
 		}
 
 		[Obsolete("Use Resolve(service) instead")]
-		[EditorBrowsable(EditorBrowsableState.Advanced)]
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public virtual object this[Type service]
 		{
 			get { return Resolve(service); }
@@ -81,11 +77,22 @@ namespace Castle.MicroKernel
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public void AddComponent(string key, Type serviceType, Type classType, LifestyleType lifestyle, bool overwriteLifestyle)
 		{
-			if (key == null) throw new ArgumentNullException("key");
-			if (serviceType == null) throw new ArgumentNullException("serviceType");
-			if (classType == null) throw new ArgumentNullException("classType");
+			if (key == null)
+			{
+				throw new ArgumentNullException("key");
+			}
+			if (serviceType == null)
+			{
+				throw new ArgumentNullException("serviceType");
+			}
+			if (classType == null)
+			{
+				throw new ArgumentNullException("classType");
+			}
 			if (LifestyleType.Undefined == lifestyle)
+			{
 				throw new ArgumentException("The specified lifestyle must be Thread, Transient, or Singleton.", "lifestyle");
+			}
 			var model = ComponentModelBuilder.BuildModel(new ComponentName(key, true), new[] { serviceType }, classType, null);
 
 			if (overwriteLifestyle || LifestyleType.Undefined == model.LifestyleType)
@@ -95,56 +102,80 @@ namespace Castle.MicroKernel
 
 			RaiseComponentModelCreated(model);
 
-			IHandler handler = HandlerFactory.Create(model);
+			var handler = HandlerFactory.Create(model);
 			RegisterHandler(key, handler);
 		}
 
-		[Obsolete("Use Register(Component.For(classType).Named(key).ExtendedProperties(extendedProperties)) or generic version instead.")]
+		[Obsolete("Use Register(Component.For<T>()) instead.")]
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		public virtual void AddComponentWithExtendedProperties(String key, Type classType, IDictionary extendedProperties)
+		public void AddComponent<T>()
 		{
-			if (key == null) throw new ArgumentNullException("key");
-			if (extendedProperties == null) throw new ArgumentNullException("extendedProperties");
-			if (classType == null) throw new ArgumentNullException("classType");
-
-			ComponentModel model = ComponentModelBuilder.BuildModel(new ComponentName(key, true), new[] { classType }, classType, extendedProperties);
-			RaiseComponentModelCreated(model);
-			IHandler handler = HandlerFactory.Create(model);
-			RegisterHandler(key, handler);
+			var classType = typeof(T);
+			AddComponent(classType.FullName, classType);
 		}
 
-		[Obsolete("Use Register(Component.For(serviceType).ImplementedBy(classType).Named(key).ExtendedProperties(extendedProperties)) or generic version instead.")]
+		[Obsolete("Use Register(Component.For<T>().Lifestyle.Is(lifestyle)) instead.")]
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		public virtual void AddComponentWithExtendedProperties(String key, Type serviceType, Type classType,
-															   IDictionary extendedProperties)
+		public void AddComponent<T>(LifestyleType lifestyle)
 		{
-			if (key == null) throw new ArgumentNullException("key");
-			if (extendedProperties == null) throw new ArgumentNullException("extendedProperties");
-			if (serviceType == null) throw new ArgumentNullException("serviceType");
-			if (classType == null) throw new ArgumentNullException("classType");
-
-			ComponentModel model = ComponentModelBuilder.BuildModel(new ComponentName(key, true), new[] { serviceType }, classType, extendedProperties);
-			RaiseComponentModelCreated(model);
-			IHandler handler = HandlerFactory.Create(model);
-			RegisterHandler(key, handler);
+			var classType = typeof(T);
+			AddComponent(classType.FullName, classType, lifestyle);
 		}
-		
+
+		[Obsolete("Use Register(Component.For<T>().Lifestyle.Is(lifestyle)) instead.")]
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public void AddComponent<T>(LifestyleType lifestyle, bool overwriteLifestyle)
+		{
+			var classType = typeof(T);
+			AddComponent(classType.FullName, classType, lifestyle, overwriteLifestyle);
+		}
+
+		[Obsolete("Use Register(Component.For(serviceType).ImplementedBy<T>()) or generic version instead.")]
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public void AddComponent<T>(Type serviceType)
+		{
+			var classType = typeof(T);
+			AddComponent(classType.FullName, serviceType, classType);
+		}
+
+		[Obsolete("Use Register(Component.For(serviceType).ImplementedBy<T>()) or generic version instead.")]
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public void AddComponent<T>(Type serviceType, LifestyleType lifestyle)
+		{
+			var classType = typeof(T);
+			AddComponent(classType.FullName, serviceType, classType, lifestyle);
+		}
+
+		[Obsolete("Use Register(Component.For(serviceType).ImplementedBy<T>().Lifestyle.Is(lifestyle)) or generic version instead.")]
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public void AddComponent<T>(Type serviceType, LifestyleType lifestyle, bool overwriteLifestyle)
+		{
+			var classType = typeof(T);
+			AddComponent(classType.FullName, serviceType, classType, lifestyle, overwriteLifestyle);
+		}
+
 		[Obsolete("Use Register(Component.For(instance.GetType()).Named(key).Instance(instance)) or generic version instead.")]
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public void AddComponentInstance(String key, object instance)
 		{
-			if (key == null) throw new ArgumentNullException("key");
-			if (instance == null) throw new ArgumentNullException("instance");
+			if (key == null)
+			{
+				throw new ArgumentNullException("key");
+			}
+			if (instance == null)
+			{
+				throw new ArgumentNullException("instance");
+			}
 
 			var classType = instance.GetType();
-			var model = new ComponentModel(new ComponentName(key,true), new[] { classType }, classType, new Arguments().Insert("instance",instance))
+			var model = new ComponentModel(new ComponentName(key, true), new[] { classType }, classType, new Arguments().Insert("instance", instance))
 			{
 				LifestyleType = LifestyleType.Singleton,
 				CustomComponentActivator = typeof(ExternalInstanceActivator)
 			};
 
 			RaiseComponentModelCreated(model);
-			IHandler handler = HandlerFactory.Create(model);
+			var handler = HandlerFactory.Create(model);
 			RegisterHandler(key, handler);
 		}
 
@@ -159,10 +190,22 @@ namespace Castle.MicroKernel
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public void AddComponentInstance(string key, Type serviceType, Type classType, object instance)
 		{
-			if (key == null) throw new ArgumentNullException("key");
-			if (serviceType == null) throw new ArgumentNullException("serviceType");
-			if (instance == null) throw new ArgumentNullException("instance");
-			if (classType == null) throw new ArgumentNullException("classType");
+			if (key == null)
+			{
+				throw new ArgumentNullException("key");
+			}
+			if (serviceType == null)
+			{
+				throw new ArgumentNullException("serviceType");
+			}
+			if (instance == null)
+			{
+				throw new ArgumentNullException("instance");
+			}
+			if (classType == null)
+			{
+				throw new ArgumentNullException("classType");
+			}
 
 			var model = new ComponentModel(new ComponentName(key, true), new[] { serviceType }, classType, new Arguments().Insert("instance", instance))
 			{
@@ -171,63 +214,15 @@ namespace Castle.MicroKernel
 			};
 
 			RaiseComponentModelCreated(model);
-			IHandler handler = HandlerFactory.Create(model);
+			var handler = HandlerFactory.Create(model);
 			RegisterHandler(key, handler);
-		}
-
-		[Obsolete("Use Register(Component.For<T>()) instead.")]
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		public void AddComponent<T>()
-		{
-			Type classType = typeof(T);
-			AddComponent(classType.FullName, classType);
-		}
-
-		[Obsolete("Use Register(Component.For<T>().Lifestyle.Is(lifestyle)) instead.")]
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		public void AddComponent<T>(LifestyleType lifestyle)
-		{
-			Type classType = typeof(T);
-			AddComponent(classType.FullName, classType, lifestyle);
-		}
-
-		[Obsolete("Use Register(Component.For<T>().Lifestyle.Is(lifestyle)) instead.")]
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		public void AddComponent<T>(LifestyleType lifestyle, bool overwriteLifestyle)
-		{
-			Type classType = typeof(T);
-			AddComponent(classType.FullName, classType, lifestyle, overwriteLifestyle);
-		}
-
-		[Obsolete("Use Register(Component.For(serviceType).ImplementedBy<T>()) or generic version instead.")]
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		public void AddComponent<T>(Type serviceType)
-		{
-			Type classType = typeof(T);
-			AddComponent(classType.FullName, serviceType, classType);
-		}
-
-		[Obsolete("Use Register(Component.For(serviceType).ImplementedBy<T>()) or generic version instead.")]
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		public void AddComponent<T>(Type serviceType, LifestyleType lifestyle)
-		{
-			Type classType = typeof(T);
-			AddComponent(classType.FullName, serviceType, classType, lifestyle);
-		}
-
-		[Obsolete("Use Register(Component.For(serviceType).ImplementedBy<T>().Lifestyle.Is(lifestyle)) or generic version instead.")]
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		public void AddComponent<T>(Type serviceType, LifestyleType lifestyle, bool overwriteLifestyle)
-		{
-			Type classType = typeof(T);
-			AddComponent(classType.FullName, serviceType, classType, lifestyle, overwriteLifestyle);
 		}
 
 		[Obsolete("Use Register(Component.For<T>().Instance(instance)) instead.")]
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public void AddComponentInstance<T>(object instance)
 		{
-			Type serviceType = typeof(T);
+			var serviceType = typeof(T);
 			AddComponentInstance(serviceType.FullName, serviceType, instance);
 		}
 
@@ -235,8 +230,58 @@ namespace Castle.MicroKernel
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public void AddComponentInstance<T>(Type serviceType, object instance)
 		{
-			Type classType = typeof(T);
+			var classType = typeof(T);
 			AddComponentInstance(classType.FullName, serviceType, classType, instance);
+		}
+
+		[Obsolete("Use Register(Component.For(classType).Named(key).ExtendedProperties(extendedProperties)) or generic version instead.")]
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public virtual void AddComponentWithExtendedProperties(String key, Type classType, IDictionary extendedProperties)
+		{
+			if (key == null)
+			{
+				throw new ArgumentNullException("key");
+			}
+			if (extendedProperties == null)
+			{
+				throw new ArgumentNullException("extendedProperties");
+			}
+			if (classType == null)
+			{
+				throw new ArgumentNullException("classType");
+			}
+
+			var model = ComponentModelBuilder.BuildModel(new ComponentName(key, true), new[] { classType }, classType, extendedProperties);
+			RaiseComponentModelCreated(model);
+			var handler = HandlerFactory.Create(model);
+			RegisterHandler(key, handler);
+		}
+
+		[Obsolete("Use Register(Component.For(serviceType).ImplementedBy(classType).Named(key).ExtendedProperties(extendedProperties)) or generic version instead.")]
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public virtual void AddComponentWithExtendedProperties(String key, Type serviceType, Type classType, IDictionary extendedProperties)
+		{
+			if (key == null)
+			{
+				throw new ArgumentNullException("key");
+			}
+			if (extendedProperties == null)
+			{
+				throw new ArgumentNullException("extendedProperties");
+			}
+			if (serviceType == null)
+			{
+				throw new ArgumentNullException("serviceType");
+			}
+			if (classType == null)
+			{
+				throw new ArgumentNullException("classType");
+			}
+
+			var model = ComponentModelBuilder.BuildModel(new ComponentName(key, true), new[] { serviceType }, classType, extendedProperties);
+			RaiseComponentModelCreated(model);
+			var handler = HandlerFactory.Create(model);
+			RegisterHandler(key, handler);
 		}
 	}
 }
