@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,15 +12,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Windsor.Tests.Proxy
+namespace Castle.ProxyInfrastructure
 {
 	using System;
 	using System.Reflection;
 
 	using Castle.DynamicProxy;
 
-	public class ProxyNothingHook : IProxyGenerationHook
+	public class ProxyAllHook : IProxyGenerationHook
 	{
+		public static int Instances;
+
+		public ProxyAllHook()
+		{
+			Instances++;
+		}
+
 		public void MethodsInspected()
 		{
 		}
@@ -29,9 +36,9 @@ namespace Castle.Windsor.Tests.Proxy
 		{
 		}
 
-		public bool ShouldInterceptMethod(Type type, MethodInfo methodInfo)
+		public bool ShouldInterceptMethod(Type type, MethodInfo memberInfo)
 		{
-			return false;
+			return true;
 		}
 	}
 }

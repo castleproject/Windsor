@@ -3,7 +3,7 @@
 	<components>
 		<component id="myInterceptor" type="Castle.Windsor.Tests.Interceptors.ResultModifierInterceptor, Castle.Windsor.Tests"/>
 		<component id="testInterceptorSelector" type="Castle.Windsor.Tests.SelectAllSelector, Castle.Windsor.Tests"/>
-		<component id="testProxyHook" type="Castle.Windsor.Tests.ProxyAllHook, Castle.Windsor.Tests"/>
+		<component id="testProxyHook" type="ProxyAllHook"/>
 		<component
 			id="ValidComponent"
 			type="Castle.Windsor.Tests.Components.CalculatorService, Castle.Windsor.Tests">

@@ -15,10 +15,11 @@
 #if !SILVERLIGHT
 // we do not support xml config on SL
 
-namespace Castle.Windsor.Tests.Proxy
+namespace Castle.Proxies
 {
 	using Castle.DynamicProxy;
 	using Castle.TypedFactoryInterfaces;
+	using Castle.Windsor;
 	using Castle.Windsor.Configuration.Interpreters;
 	using Castle.XmlFiles;
 

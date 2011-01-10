@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,32 +12,30 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Windsor.Tests
+namespace Castle.ProxyInfrastructure
 {
 	using System;
 	using System.Reflection;
 
+	using Castle.Core;
+	using Castle.Core.Interceptor;
 	using Castle.DynamicProxy;
 
-	public class ProxyAllHook : IProxyGenerationHook
+	using NUnit.Framework;
+
+	public class OnBehalfAwareInterceptorSelector : IInterceptorSelector, IOnBehalfAware
 	{
-		public static int Instances;
-		public ProxyAllHook()
+		public static ComponentModel target;
+
+		public IInterceptor[] SelectInterceptors(Type type, MethodInfo method, IInterceptor[] interceptors)
 		{
-			Instances++;
+			Assert.IsNotNull(target);
+			return interceptors;
 		}
 
-		public bool ShouldInterceptMethod(Type type, MethodInfo memberInfo)
+		public void SetInterceptedComponentModel(ComponentModel target)
 		{
-			return true;
-		}
-
-		public void NonProxyableMemberNotification(Type type, MemberInfo memberInfo)
-		{
-		}
-
-		public void MethodsInspected()
-		{
+			OnBehalfAwareInterceptorSelector.target = target;
 		}
 	}
 }
