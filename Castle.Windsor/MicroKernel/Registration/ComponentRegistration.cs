@@ -44,7 +44,7 @@ namespace Castle.MicroKernel.Registration
 		private readonly List<ComponentDescriptor<TService>> descriptors = new List<ComponentDescriptor<TService>>();
 		private readonly List<Type> interfaceServices = new List<Type>();
 
-		private Type classService;
+		private SortedSet<Type> classServices;
 		private ComponentModel componentModel;
 		private Type implementation;
 		private ComponentName name;
@@ -78,7 +78,7 @@ namespace Castle.MicroKernel.Registration
 
 			this.componentModel = componentModel;
 			name = componentModel.ComponentName;
-			classService = componentModel.ClassService;
+			classServices = new SortedSet<Type>(componentModel.ClassServices,new TypeByInheritanceDepthMostSpecificFirstComparer());
 			interfaceServices.AddRange(componentModel.InterfaceServices);
 			implementation = componentModel.Implementation;
 		}
@@ -139,12 +139,12 @@ namespace Castle.MicroKernel.Registration
 			get { return overwrite; }
 		}
 
-		protected internal Type ClassService
+		protected internal ICollection<Type> ClassServices
 		{
-			get { return classService; }
+			get { return (ICollection<Type>)classServices ?? Type.EmptyTypes; }
 		}
 
-		protected internal List<Type> InterfaceServices
+		protected internal IList<Type> InterfaceServices
 		{
 			get { return interfaceServices; }
 		}
@@ -452,9 +452,13 @@ namespace Castle.MicroKernel.Registration
 		{
 			foreach (var type in types)
 			{
-				if (type.IsClass && classService == null)
+				if (type.IsClass)
 				{
-					classService = type;
+					if(classServices == null)
+					{
+						classServices = new SortedSet<Type>(new TypeByInheritanceDepthMostSpecificFirstComparer());
+					}
+					classServices.Add(type);
 				}
 				else if (!interfaceServices.Contains(type))
 				{
@@ -763,7 +767,7 @@ namespace Castle.MicroKernel.Registration
 			Activator<FactoryMethodActivator<TImpl>>()
 				.ExtendedProperties(Property.ForKey("factoryMethodDelegate").Eq(factoryMethod));
 
-			if (implementation == null && (classService == null || classService.IsSealed == false))
+			if (implementation == null && (classServices == null || classServices.Count == 0 || classServices.First().IsSealed == false))
 			{
 				implementation = typeof(LateBoundComponent);
 			}
@@ -854,7 +858,11 @@ namespace Castle.MicroKernel.Registration
 
 		private Type DefaultService()
 		{
-			return classService ?? interfaceServices.First();
+			if(classServices==null)
+			{
+				return interfaceServices.First();
+			}
+			return classServices.FirstOrDefault() ?? interfaceServices.First();
 		}
 
 		/// <summary>
@@ -905,18 +913,16 @@ namespace Castle.MicroKernel.Registration
 
 		private Type[] FilterServices(IKernel kernel)
 		{
-			var services = new List<Type>(interfaceServices.Count + 1);
-			if (classService != null)
+			var services = new List<Type>();
+			if (classServices != null)
 			{
-				services.Add(classService);
+				services.AddRange(classServices);
 			}
-			if (registerNewServicesOnly == false)
+			services.AddRange(interfaceServices);
+		
+			if (registerNewServicesOnly)
 			{
-				services.AddRange(interfaceServices);
-			}
-			else
-			{
-				services.AddRange(interfaceServices.Where(s => kernel.HasComponent(s) == false));
+				services.RemoveAll(kernel.HasComponent);
 			}
 			return services.ToArray();
 		}

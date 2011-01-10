@@ -17,6 +17,7 @@ namespace Castle.Facilities.Synchronize
 	using System;
 	using System.Collections.Generic;
 	using System.ComponentModel;
+	using System.Linq;
 	using System.Reflection;
 	using System.Windows.Threading;
 
@@ -194,7 +195,7 @@ namespace Castle.Facilities.Synchronize
 				return HasImplicitSynchronization(model);
 			}
 
-			if (model.ClassService == null)
+			if (model.ClassServices.Any() == false)
 			{
 				return true;
 			}

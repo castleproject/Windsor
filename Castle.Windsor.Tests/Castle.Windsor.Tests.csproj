@@ -306,6 +306,7 @@
     <Compile Include="ClassComponents\CBA.cs" />
     <Compile Include="ClassComponents\HasByRefCtorArgument.cs" />
     <Compile Include="ClassComponents\HasCtorDependency.cs" />
+    <Compile Include="ClassInheritanceTestCase.cs" />
     <Compile Include="ComponentsParametersDivisionTestsCase.cs" />
     <Compile Include="Components\ArrayRefDepAsConstructor.cs" />
     <Compile Include="Components\CalculatorServiceWithStandartInterceptorTyped.cs" />
@@ -346,6 +347,9 @@
     <Compile Include="Components\IRepository.cs" />
     <Compile Include="Components\ISimpleMixIn.cs" />
     <Compile Include="Components\IView.cs" />
+    <Compile Include="Components\John.cs" />
+    <Compile Include="Components\JohnGrandparent.cs" />
+    <Compile Include="Components\JohnParent.cs" />
     <Compile Include="Components\LoggingRepositoryDecorator.cs" />
     <Compile Include="Components\NeedsGenericType.cs" />
     <Compile Include="Components\NullCache.cs" />
@@ -552,6 +556,7 @@
     <Compile Include="Registration\WithServiceTestCase.cs" />
     <Compile Include="ServiceOverridesStackOverflowTestCase.cs" />
     <Compile Include="SpecializedResolvers\CollectionResolverTestCase.cs" />
+    <Compile Include="TypeComparerTestCase.cs" />
     <Compile Include="TypedDependenciesTestCase.cs" />
     <Compile Include="MicroKernel\ArgumentsTestCase.cs" />
     <Compile Include="Activators\BestConstructorTestCase.cs">

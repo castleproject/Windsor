@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -38,8 +38,7 @@ namespace Castle.Facilities.TypedFactory
 		///   Typed factories rely on <see cref = "IInterceptorSelector" /> set internally, so users should not set interceptor selectors explicitly;
 		///   otherwise the factory will not function correctly.
 		/// </remarks>
-		public static ComponentRegistration<TFactoryInterface> AsFactory<TFactoryInterface>(
-			this ComponentRegistration<TFactoryInterface> registration)
+		public static ComponentRegistration<TFactoryInterface> AsFactory<TFactoryInterface>(this ComponentRegistration<TFactoryInterface> registration)
 		{
 			return AsFactory(registration, null);
 		}
@@ -57,19 +56,25 @@ namespace Castle.Facilities.TypedFactory
 		///   Typed factories rely on <see cref = "IInterceptorSelector" /> set internally, so users should not set interceptor selectors explicitly;
 		///   otherwise the factory will not function correctly.
 		/// </remarks>
-		public static ComponentRegistration<TFactoryInterface> AsFactory<TFactoryInterface>(
-			this ComponentRegistration<TFactoryInterface> registration, Action<TypedFactoryConfiguration> configuration)
+		public static ComponentRegistration<TFactoryInterface> AsFactory<TFactoryInterface>(this ComponentRegistration<TFactoryInterface> registration,
+		                                                                                    Action<TypedFactoryConfiguration> configuration)
 		{
 			if (registration == null)
 			{
 				throw new ArgumentNullException("registration");
 			}
-			if (registration.ClassService == null)
+			if (registration.ClassServices.Any() == false)
 			{
 				Debug.Assert(registration.InterfaceServices.Count > 0, "registration.InterfaceServices.Count > 0");
 				return RegisterInterfaceBasedFactory(registration, configuration);
 			}
-			if (registration.ClassService.BaseType == typeof(MulticastDelegate))
+			if (registration.ClassServices.Count != 1)
+			{
+				throw new ComponentRegistrationException(
+					"This component can not be used as typed factory because it exposes more than one class service. Only component exposing single depegate, or interfaces can be used as typed factories.");
+			}
+			var classService = registration.ClassServices.Single();
+			if (classService.BaseType == typeof(MulticastDelegate))
 			{
 				if (registration.InterfaceServices.Count == 0)
 				{
@@ -78,23 +83,22 @@ namespace Castle.Facilities.TypedFactory
 				throw new ComponentRegistrationException(
 					string.Format(
 						"Type {0} is a delegate, however the component has also {1} inteface(s) specified as it's service. Delegate-based typed factories can't expose any additional services.",
-						registration.ClassService, registration.InterfaceServices.Count));
+						classService, registration.InterfaceServices.Count));
 			}
 
 			throw new ComponentRegistrationException(
 				string.Format(
 					"Type {0} is not an interface nor a delegate. Only interfaces and delegates may be used as typed factories.",
-					registration.ClassService));
+					classService));
 		}
 
-		private static ComponentRegistration<TFactory> AttachConfiguration<TFactory>(
-			ComponentRegistration<TFactory> componentRegistration,
-			Action<TypedFactoryConfiguration> configuration,
-			string defaultComponentSelectorKey)
+		private static ComponentRegistration<TFactory> AttachConfiguration<TFactory>(ComponentRegistration<TFactory> componentRegistration,
+		                                                                             Action<TypedFactoryConfiguration> configuration,
+		                                                                             string defaultComponentSelectorKey)
 		{
 			var selectorReference = GetSelectorReference(configuration, defaultComponentSelectorKey);
 			componentRegistration.AddDescriptor(new ReferenceDependencyDescriptor<TFactory>(selectorReference));
-			if(IsAnyServiceOpenGeneric(componentRegistration))
+			if (IsAnyServiceOpenGeneric(componentRegistration))
 			{
 				componentRegistration.AddAttributeDescriptor(TypedFactoryFacility.IsFactoryKey, "true");
 			}
@@ -110,27 +114,13 @@ namespace Castle.Facilities.TypedFactory
 			});
 		}
 
-		private static bool IsAnyServiceOpenGeneric<TFactory>(ComponentRegistration<TFactory> componentRegistration)
-		{
-			if (componentRegistration.InterfaceServices.Any(i => i.ContainsGenericParameters))
-			{
-				return true;
-			}
-			if (componentRegistration.ClassService == null)
-			{
-				return false;
-			}
-			return componentRegistration.ClassService.ContainsGenericParameters;
-		}
-
-		private static ComponentRegistration<TFactory> AttachFactoryInterceptor<TFactory>(
-			ComponentRegistration<TFactory> registration)
+		private static ComponentRegistration<TFactory> AttachFactoryInterceptor<TFactory>(ComponentRegistration<TFactory> registration)
 		{
 			return registration.Interceptors(new InterceptorReference(TypedFactoryFacility.InterceptorKey)).Last;
 		}
 
-		private static IReference<ITypedFactoryComponentSelector> GetSelectorReference(
-			Action<TypedFactoryConfiguration> configuration, string defaultComponentSelectorKey)
+		private static IReference<ITypedFactoryComponentSelector> GetSelectorReference(Action<TypedFactoryConfiguration> configuration,
+		                                                                               string defaultComponentSelectorKey)
 		{
 			var factoryConfiguration = new TypedFactoryConfiguration(defaultComponentSelectorKey);
 
@@ -146,10 +136,23 @@ namespace Castle.Facilities.TypedFactory
 			return serviceType.GetMethods().Any(m => m.GetParameters().Any(p => p.IsOut));
 		}
 
-		private static ComponentRegistration<TDelegate> RegisterDelegateBasedFactory<TDelegate>(
-			ComponentRegistration<TDelegate> registration, Action<TypedFactoryConfiguration> configuration)
+		private static bool IsAnyServiceOpenGeneric<TFactory>(ComponentRegistration<TFactory> componentRegistration)
 		{
-			var delegateType = registration.ClassService;
+			if (componentRegistration.InterfaceServices.Any(i => i.ContainsGenericParameters))
+			{
+				return true;
+			}
+			if (componentRegistration.ClassServices.Any(i => i.ContainsGenericParameters))
+			{
+				return true;
+			}
+			return false;
+		}
+
+		private static ComponentRegistration<TDelegate> RegisterDelegateBasedFactory<TDelegate>(ComponentRegistration<TDelegate> registration,
+		                                                                                        Action<TypedFactoryConfiguration> configuration)
+		{
+			var delegateType = registration.ClassServices.Single();
 			if (HasOutArguments(delegateType))
 			{
 				throw new ComponentRegistrationException(

@@ -20,7 +20,6 @@ namespace Castle.Proxies
 	using Castle.MicroKernel.Handlers;
 	using Castle.MicroKernel.Registration;
 	using Castle.ProxyInfrastructure;
-	using Castle.Windsor;
 	using Castle.Windsor.Tests;
 	using Castle.Windsor.Tests.Components;
 	using Castle.Windsor.Tests.Interceptors;

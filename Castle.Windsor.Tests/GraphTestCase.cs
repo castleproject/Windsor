@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,30 +14,28 @@
 
 namespace Castle.MicroKernel.Tests
 {
-    using System;
-
-    using Castle.Core;
+	using Castle.Core;
 	using Castle.Core.Internal;
-    using Castle.MicroKernel.Registration;
-    using Castle.Windsor.Tests;
+	using Castle.MicroKernel.Registration;
+	using Castle.Windsor.Tests;
 
-    using NUnit.Framework;
+	using NUnit.Framework;
 
 	[TestFixture]
 	public class GraphTestCase
 	{
 		private IKernel kernel;
 
-		[SetUp]
-		public void Init()
-		{
-			kernel = new DefaultKernel();
-		}
-
 		[TearDown]
 		public void Dispose()
 		{
 			kernel.Dispose();
+		}
+
+		[SetUp]
+		public void Init()
+		{
+			kernel = new DefaultKernel();
 		}
 
 		[Test]
@@ -47,17 +45,16 @@ namespace Castle.MicroKernel.Tests
 			kernel.Register(Component.For(typeof(B)).Named("b"));
 			kernel.Register(Component.For(typeof(C)).Named("c"));
 
-			GraphNode[] nodes = kernel.GraphNodes;
+			var nodes = kernel.GraphNodes;
 
 			Assert.IsNotNull(nodes);
 			Assert.AreEqual(3, nodes.Length);
 
-			IVertex[] vertices = TopologicalSortAlgo.Sort(nodes);
+			var vertices = TopologicalSortAlgo.Sort(nodes);
 
 			Assert.AreEqual("c", (vertices[0] as ComponentModel).Name);
 			Assert.AreEqual("b", (vertices[1] as ComponentModel).Name);
 			Assert.AreEqual("a", (vertices[2] as ComponentModel).Name);
 		}
-
 	}
 }

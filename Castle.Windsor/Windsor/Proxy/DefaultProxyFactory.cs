@@ -104,7 +104,7 @@ namespace Castle.Windsor.Proxy
 			CustomizeOptions(proxyGenOptions, kernel, model, constructorArguments);
 
 			var interfaces = proxyOptions.AdditionalInterfaces;
-			var classService = model.ClassService;
+			var classService = model.ClassServices.FirstOrDefault();
 			if (classService == null)
 			{
 				var firstService = model.InterfaceServices.First();
@@ -194,7 +194,7 @@ namespace Castle.Windsor.Proxy
 		{
 			var proxyOptions = ProxyUtil.ObtainProxyOptions(model, true);
 
-			return model.ClassService == null &&
+			return model.ClassServices.Any() == false &&
 			       proxyOptions.OmitTarget == false;
 		}
 
