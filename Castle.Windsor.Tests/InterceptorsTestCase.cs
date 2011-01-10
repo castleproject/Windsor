@@ -177,6 +177,9 @@ namespace Castle.Windsor.Tests
 		[Test]
 		public void Xml_hook_and_selector()
 		{
+			ProxyAllHook.Instances = 0;
+			SelectAllSelector.Calls = 0;
+			SelectAllSelector.Instances = 0;
 			container.Install(XmlResource("interceptorsWithHookAndSelector.xml"));
 			var model = container.Kernel.GetHandler("ValidComponent").ComponentModel;
 			var options = ProxyUtil.ObtainProxyOptions(model, false);
