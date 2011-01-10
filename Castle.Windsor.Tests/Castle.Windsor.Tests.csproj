@@ -312,6 +312,7 @@
     <Compile Include="Components\CalculatorServiceWithFooInterceptorNamed.cs" />
     <Compile Include="Components\CalculatorServiceWithMultipleInterfaces.cs" />
     <Compile Include="Components\CalculatorServiceWithStandardInterceptor.cs" />
+    <Compile Include="Components\CalulcatorFactory.cs" />
     <Compile Include="Components\CameraService.cs" />
     <Compile Include="Components\CompA.cs" />
     <Compile Include="Components\CompB.cs" />
@@ -440,8 +441,8 @@
     <Compile Include="MicroKernel\NotImplementedDependencyResolver.cs" />
     <Compile Include="Pools\RecyclableComponent.cs" />
     <Compile Include="Pools\UseRecyclableComponent.cs" />
-    <Compile Include="Proxy\OnBehalfAwareInterceptorSelector.cs" />
-    <Compile Include="Proxy\OnBehalfAwareProxyGenerationHook.cs" />
+    <Compile Include="ProxyInfrastructure\OnBehalfAwareInterceptorSelector.cs" />
+    <Compile Include="ProxyInfrastructure\OnBehalfAwareProxyGenerationHook.cs" />
     <Compile Include="RegistrationWithAttributeTestCase.cs" />
     <Compile Include="ClassComponents\A.cs" />
     <Compile Include="ActionBasedInstaller.cs" />
@@ -544,8 +545,8 @@
     <Compile Include="Interceptors\WatcherInterceptorSelector.cs" />
     <Compile Include="Lifestyle\Components\ComponentWithDispose.cs" />
     <Compile Include="Lifestyle\Scope.cs" />
-    <Compile Include="Proxy\ComponentProxyRegistrationTestCase.cs" />
-    <Compile Include="Proxy\DisposableHook.cs" />
+    <Compile Include="Proxies\ComponentProxyRegistrationTestCase.cs" />
+    <Compile Include="ProxyInfrastructure\DisposableHook.cs" />
     <Compile Include="Registration\ComponentRegistrationByNamespaceTestCase.cs" />
     <Compile Include="Registration\ServiceOverridesTestCase.cs" />
     <Compile Include="Registration\WithServiceTestCase.cs" />
@@ -916,7 +917,7 @@
     <Compile Include="Facilities\TypedFactory\TypedFactoryFacilityTake2TestCase.cs" />
     <Compile Include="InterceptorSelectorTestCase.cs" />
     <Compile Include="OpenGenericsTestCase.cs" />
-    <Compile Include="Proxy\ProxyAllHook.cs" />
+    <Compile Include="ProxyInfrastructure\ProxyAllHook.cs" />
     <Compile Include="RegisteringTwoServicesForSameType.cs" />
     <Compile Include="SelectAllSelector.cs" />
     <Compile Include="SubResolversShouldNotBeTrustedToBeCorrect.cs" />
@@ -977,10 +978,10 @@
     </Compile>
     <Compile Include="ResolveAllTestCase.cs" />
     <Compile Include="PropertiesInspectionBehaviorTestCase.cs" />
-    <Compile Include="Proxy\ProxyNothingHook.cs" />
-    <Compile Include="Proxy\FactorySupportTestCase.cs" />
-    <Compile Include="Proxy\TypedFactoryFacilityTestCase.cs" />
-    <Compile Include="Proxy\ProxyBehaviorTestCase.cs" />
+    <Compile Include="ProxyInfrastructure\ProxyNothingHook.cs" />
+    <Compile Include="Proxies\FactorySupportTestCase.cs" />
+    <Compile Include="Proxies\TypedFactoryFacilityTestCase.cs" />
+    <Compile Include="Proxies\ProxyBehaviorTestCase.cs" />
     <Compile Include="ReportedProblemTestCase.cs">
       <SubType>Code</SubType>
     </Compile>

@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,58 +12,43 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Windsor.Tests.Proxy
+namespace Castle.Proxies
 {
 	using System;
-	using Castle.Core;
+
 	using Castle.Core.Configuration;
 	using Castle.DynamicProxy;
 	using Castle.Facilities.FactorySupport;
 	using Castle.MicroKernel.Registration;
+	using Castle.Windsor.Tests;
 	using Castle.Windsor.Tests.Components;
+
 	using NUnit.Framework;
 
 	[TestFixture]
-	public class FactorySupportTestCase
+	public class FactorySupportTestCase : AbstractContainerTestFixture
 	{
-		private WindsorContainer container;
-
-		[SetUp]
-		public void SetUp()
-		{
-			container = new WindsorContainer();
-		}
-
 		[Test]
 		public void FactorySupport_UsingProxiedFactory_WorksFine()
 		{
-			container.AddFacility("factories", new FactorySupportFacility());
-			container.Register(Component.For(typeof(StandardInterceptor)).Named("standard.interceptor"));
-			container.Register(Component.For(typeof(CalulcatorFactory)).Named("factory"));
+			Container.AddFacility<FactorySupportFacility>();
+			Container.Register(Component.For<StandardInterceptor>(),
+			                   Component.For<CalulcatorFactory>().Named("factory"));
 
 			AddComponent("calculator", typeof(ICalcService), typeof(CalculatorService), "Create");
 
-			ICalcService service = container.Resolve<ICalcService>("calculator");
+			var service = Container.Resolve<ICalcService>("calculator");
 
 			Assert.IsNotNull(service);
 		}
 
 		private void AddComponent(string key, Type service, Type type, string factoryMethod)
 		{
-			MutableConfiguration config = new MutableConfiguration(key);
+			var config = new MutableConfiguration(key);
 			config.Attributes["factoryId"] = "factory";
 			config.Attributes["factoryCreate"] = factoryMethod;
-			container.Kernel.ConfigurationStore.AddComponentConfiguration(key, config);
-			container.Kernel.Register(Component.For(service).ImplementedBy(type).Named(key));
-		}
-		
-		[Interceptor(typeof(StandardInterceptor))]
-		public class CalulcatorFactory
-		{
-			public virtual ICalcService Create()
-			{
-				return new CalculatorService();
-			}
+			Container.Kernel.ConfigurationStore.AddComponentConfiguration(key, config);
+			Container.Kernel.Register(Component.For(service).ImplementedBy(type).Named(key));
 		}
 	}
 }

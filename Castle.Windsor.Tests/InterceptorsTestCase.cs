@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@ namespace Castle.Windsor.Tests
 	using System;
 	using System.Linq;
 	using System.Threading;
+
 	using Castle.Core;
 	using Castle.Core.Internal;
 	using Castle.DynamicProxy;
@@ -24,6 +25,7 @@ namespace Castle.Windsor.Tests
 	using Castle.MicroKernel.Handlers;
 	using Castle.MicroKernel.Proxy;
 	using Castle.MicroKernel.Registration;
+	using Castle.ProxyInfrastructure;
 	using Castle.Windsor.Installer;
 	using Castle.Windsor.Tests.Components;
 	using Castle.Windsor.Tests.Interceptors;
@@ -111,7 +113,8 @@ namespace Castle.Windsor.Tests
 			Assert.AreEqual(7, service.Sum(2, 2));
 		}
 
-#if (!SILVERLIGHT) //no xml in Silverlight
+#if (!SILVERLIGHT)
+		//no xml in Silverlight
 
 		[Test]
 		public void Xml_validComponent_resolves_correctly()
@@ -138,7 +141,7 @@ namespace Castle.Windsor.Tests
 		{
 			container.Install(XmlResource("interceptors.xml"));
 			Assert.Throws(typeof(HandlerException), () =>
-				container.Resolve<CalculatorService>("ComponentWithNonExistingInterceptor"));
+			                                        container.Resolve<CalculatorService>("ComponentWithNonExistingInterceptor"));
 		}
 
 		[Test]
@@ -168,15 +171,14 @@ namespace Castle.Windsor.Tests
 			Assert.IsInstanceOf<ISimpleMixIn>(service);
 
 			Assert.Throws(typeof(System.NotImplementedException), () =>
-
-				((ISimpleMixIn)service).DoSomething());
+			                                                      ((ISimpleMixIn)service).DoSomething());
 		}
 
 		[Test]
 		public void Xml_hook_and_selector()
 		{
 			container.Install(XmlResource("interceptorsWithHookAndSelector.xml"));
-			var model = this.container.Kernel.GetHandler("ValidComponent").ComponentModel;
+			var model = container.Kernel.GetHandler("ValidComponent").ComponentModel;
 			var options = ProxyUtil.ObtainProxyOptions(model, false);
 
 			Assert.IsNotNull(options);
@@ -185,7 +187,7 @@ namespace Castle.Windsor.Tests
 			Assert.AreEqual(0, SelectAllSelector.Instances);
 			Assert.AreEqual(0, ProxyAllHook.Instances);
 
-			service = this.container.Resolve<CalculatorService>("ValidComponent");
+			service = container.Resolve<CalculatorService>("ValidComponent");
 
 			Assert.AreEqual(1, SelectAllSelector.Instances);
 			Assert.AreEqual(0, SelectAllSelector.Calls);
@@ -196,6 +198,7 @@ namespace Castle.Windsor.Tests
 			Assert.AreEqual(1, SelectAllSelector.Calls);
 		}
 #endif
+
 		[Test]
 		public void OnBehalfOfTest()
 		{
@@ -236,17 +239,17 @@ namespace Castle.Windsor.Tests
 
 			const int threadCount = 10;
 
-			Thread[] threads = new Thread[threadCount];
+			var threads = new Thread[threadCount];
 
-			for(int i = 0; i < threadCount; i++)
+			for (var i = 0; i < threadCount; i++)
 			{
-				threads[i] = new Thread(new ThreadStart(ExecuteMethodUntilSignal));
+				threads[i] = new Thread(ExecuteMethodUntilSignal);
 				threads[i].Start();
 			}
 
 			startEvent.Set();
 
-			Thread.CurrentThread.Join(1 * 2000);
+			Thread.CurrentThread.Join(1*2000);
 
 			stopEvent.Set();
 		}
@@ -260,7 +263,7 @@ namespace Castle.Windsor.Tests
 				Component.For<ReturnDefaultInterceptor>()
 				);
 
-			ICalcService calcService = container.Resolve<ICalcService>();
+			var calcService = container.Resolve<ICalcService>();
 			Assert.AreEqual(0, calcService.Sum(1, 2));
 		}
 
@@ -268,7 +271,7 @@ namespace Castle.Windsor.Tests
 		{
 			startEvent.WaitOne(int.MaxValue);
 
-			while(!stopEvent.WaitOne(1))
+			while (!stopEvent.WaitOne(1))
 			{
 				Assert.AreEqual(7, service.Sum(2, 2));
 				Assert.AreEqual(8, service.Sum(3, 2));
@@ -284,8 +287,6 @@ namespace Castle.Windsor.Tests
 
 	public class MyInterceptorGreedyFacility : IFacility
 	{
-		#region IFacility Members
-
 		public void Init(IKernel kernel, Core.Configuration.IConfiguration facilityConfig)
 		{
 			kernel.ComponentRegistered += OnComponentRegistered;
@@ -294,8 +295,6 @@ namespace Castle.Windsor.Tests
 		public void Terminate()
 		{
 		}
-
-		#endregion
 
 		private void OnComponentRegistered(String key, IHandler handler)
 		{
@@ -309,8 +308,6 @@ namespace Castle.Windsor.Tests
 
 	public class MyInterceptorGreedyFacility2 : IFacility
 	{
-		#region IFacility Members
-
 		public void Init(IKernel kernel, Core.Configuration.IConfiguration facilityConfig)
 		{
 			kernel.ComponentRegistered += OnComponentRegistered;
@@ -320,11 +317,9 @@ namespace Castle.Windsor.Tests
 		{
 		}
 
-		#endregion
-
 		private void OnComponentRegistered(String key, IHandler handler)
 		{
-			if(handler.ComponentModel.AllServices.Any(s=>s.Is<IInterceptor>()))
+			if (handler.ComponentModel.AllServices.Any(s => s.Is<IInterceptor>()))
 			{
 				return;
 			}
