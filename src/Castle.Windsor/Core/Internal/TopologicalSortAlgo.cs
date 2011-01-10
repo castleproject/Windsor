@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -21,14 +21,14 @@ namespace Castle.Core.Internal
 	{
 		public static IVertex[] Sort(IVertex[] graphNodes)
 		{
-			ColorsSet colors = new ColorsSet(graphNodes);
-			TimestampSet discovery = new TimestampSet();
-			TimestampSet finish = new TimestampSet();
-			LinkedList<IVertex> list = new LinkedList<IVertex>();
+			var colors = new ColorsSet(graphNodes);
+			var discovery = new TimestampSet();
+			var finish = new TimestampSet();
+			var list = new LinkedList<IVertex>();
 
-			int time = 0;
+			var time = 0;
 
-			foreach(IVertex node in graphNodes)
+			foreach (var node in graphNodes)
 			{
 				if (colors.ColorOf(node) == VertexColor.White)
 				{
@@ -36,19 +36,18 @@ namespace Castle.Core.Internal
 				}
 			}
 
-			IVertex[] vertices = new IVertex[list.Count];
+			var vertices = new IVertex[list.Count];
 			list.CopyTo(vertices, 0);
 			return vertices;
 		}
 
-		private static void Visit(IVertex node, ColorsSet colors,
-								  TimestampSet discovery, TimestampSet finish, LinkedList<IVertex> list, ref int time)
+		private static void Visit(IVertex node, ColorsSet colors, TimestampSet discovery, TimestampSet finish, LinkedList<IVertex> list, ref int time)
 		{
 			colors.Set(node, VertexColor.Gray);
 
 			discovery.Register(node, time++);
 
-			foreach(IVertex child in node.Adjacencies)
+			foreach (var child in node.Adjacencies)
 			{
 				if (colors.ColorOf(child) == VertexColor.White)
 				{
@@ -58,9 +57,7 @@ namespace Castle.Core.Internal
 
 			finish.Register(node, time++);
 
-#if DEBUG
 			Debug.Assert(discovery.TimeOf(node) < finish.TimeOf(node));
-#endif
 
 			list.AddFirst(node);
 

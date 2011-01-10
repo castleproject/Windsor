@@ -17,9 +17,7 @@ namespace Castle.Core
 	using System;
 	using System.Collections;
 	using System.Collections.Generic;
-	using System.Diagnostics;
 	using System.Linq;
-	using System.Text;
 	using System.Threading;
 
 	using Castle.Core.Configuration;
@@ -41,14 +39,14 @@ namespace Castle.Core
 		private readonly ConstructorCandidateCollection constructors = new ConstructorCandidateCollection();
 
 		private readonly ICollection<Type> interfaceServices = new HashSet<Type>();
+		private readonly ICollection<Type> classServices = new SortedSet<Type>(new TypeByInheritanceDepthMostSpecificFirstComparer());
 
 		/// <summary>
 		///   Steps of lifecycle
 		/// </summary>
 		private readonly LifecycleConcernsCollection lifecycle = new LifecycleConcernsCollection();
 
-		private Type classService;
-		private ComponentName componentName;
+		private readonly ComponentName componentName;
 
 		/// <summary>
 		///   /// Custom dependencies///
@@ -100,33 +98,7 @@ namespace Castle.Core
 
 		public IEnumerable<Type> AllServices
 		{
-			get
-			{
-				var @class = classService;
-				if (@class != null)
-				{
-					yield return @class;
-				}
-				foreach (var interfaceService in interfaceServices)
-				{
-					yield return interfaceService;
-				}
-			}
-		}
-
-		public Type ClassService
-		{
-			get { return classService; }
-			private set
-			{
-				Debug.Assert(value.IsClass, "value.IsClass");
-				var originalValue = Interlocked.CompareExchange(ref classService, value, null);
-				if (originalValue != null)
-				{
-					throw new InvalidOperationException(string.Format("This component already has a class service set ({0}).",
-					                                                  originalValue));
-				}
-			}
+			get { return classServices.Concat(interfaceServices); }
 		}
 
 		public ComponentName ComponentName
@@ -280,12 +252,21 @@ namespace Castle.Core
 		}
 
 		/// <summary>
-		///   Gets or sets the service exposed.
+		///   Gets the interface services exposed.
 		/// </summary>
 		/// <value>The service.</value>
 		public IEnumerable<Type> InterfaceServices
 		{
 			get { return interfaceServices; }
+		}
+
+		/// <summary>
+		///   Gets the class services exposed
+		/// </summary>
+		/// <value>The service.</value>
+		public IEnumerable<Type> ClassServices
+		{
+			get { return classServices; }
 		}
 
 		/// <summary>
@@ -366,10 +347,10 @@ namespace Castle.Core
 			}
 			if (type.IsClass)
 			{
-				ClassService = type;
+				classServices.Add(type);
 				return;
 			}
-			if (type.IsInterface == false)
+			if (!type.IsInterface)
 			{
 				throw new ArgumentException(
 					string.Format("Type {0} is not a class nor an interface, and those are the only values allowed.", type));
@@ -435,4 +416,4 @@ namespace Castle.Core
 			return value;
 		}
 	}
-}
+} 

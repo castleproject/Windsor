@@ -129,11 +129,11 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 #if !SILVERLIGHT
 		private static void EnsureComponentRegisteredWithInterface(ComponentModel model)
 		{
-			if (model.ClassService != null)
+			if (model.ClassServices.Any())
 			{
 				var message = String.Format("The class {0} requested a single interface proxy, " +
 				                            "however the service {1} does not represent an interface",
-				                            model.Implementation.FullName, model.ClassService.FullName);
+				                            model.Implementation.FullName, model.ClassServices.First().FullName);
 
 				throw new ComponentRegistrationException(message);
 			}
