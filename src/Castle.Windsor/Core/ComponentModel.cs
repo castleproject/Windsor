@@ -33,24 +33,14 @@ namespace Castle.Core
 	{
 		public const string SkipRegistration = "skip.registration";
 
-		/// <summary>
-		///   All available constructors
-		/// </summary>
 		private readonly ConstructorCandidateCollection constructors = new ConstructorCandidateCollection();
 
-		private readonly ICollection<Type> interfaceServices = new HashSet<Type>();
-		private readonly ICollection<Type> classServices = new SortedSet<Type>(new TypeByInheritanceDepthMostSpecificFirstComparer());
+		private readonly List<Type> services = new List<Type>(4);
 
-		/// <summary>
-		///   Steps of lifecycle
-		/// </summary>
 		private readonly LifecycleConcernsCollection lifecycle = new LifecycleConcernsCollection();
 
 		private readonly ComponentName componentName;
 
-		/// <summary>
-		///   /// Custom dependencies///
-		/// </summary>
 		[NonSerialized]
 		private IDictionary customDependencies;
 
@@ -59,9 +49,6 @@ namespace Castle.Core
 		/// </summary>
 		private DependencyModelCollection dependencies;
 
-		/// <summary>
-		///   Extended properties
-		/// </summary>
 		[NonSerialized]
 		private IDictionary extendedProperties;
 
@@ -98,7 +85,7 @@ namespace Castle.Core
 
 		public IEnumerable<Type> AllServices
 		{
-			get { return classServices.Concat(interfaceServices); }
+			get { return services; }
 		}
 
 		public ComponentName ComponentName
@@ -252,21 +239,12 @@ namespace Castle.Core
 		}
 
 		/// <summary>
-		///   Gets the interface services exposed.
+		///   Gets the services exposed.
 		/// </summary>
 		/// <value>The service.</value>
-		public IEnumerable<Type> InterfaceServices
+		public IEnumerable<Type> Services
 		{
-			get { return interfaceServices; }
-		}
-
-		/// <summary>
-		///   Gets the class services exposed
-		/// </summary>
-		/// <value>The service.</value>
-		public IEnumerable<Type> ClassServices
-		{
-			get { return classServices; }
+			get { return services; }
 		}
 
 		/// <summary>
@@ -345,17 +323,8 @@ namespace Castle.Core
 			{
 				return;
 			}
-			if (type.IsClass)
-			{
-				classServices.Add(type);
-				return;
-			}
-			if (!type.IsInterface)
-			{
-				throw new ArgumentException(
-					string.Format("Type {0} is not a class nor an interface, and those are the only values allowed.", type));
-			}
-			interfaceServices.Add(type);
+
+			ComponentServicesUtil.AddService(services, type);
 		}
 
 		/// <summary>

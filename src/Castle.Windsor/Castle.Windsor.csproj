@@ -366,6 +366,7 @@
     <Compile Include="Core\IInitializable.cs" />
     <Compile Include="Core\InterceptorAttribute.cs" />
     <Compile Include="Compatibility\HashSet.SL3.cs" />
+    <Compile Include="Core\Internal\ComponentServicesUtil.cs" />
     <Compile Include="Core\Internal\ThreadSafeFlag.cs" />
     <Compile Include="Core\Internal\IAssemblyProvider.cs" />
     <Compile Include="Core\Internal\LateBoundComponent.cs" />
