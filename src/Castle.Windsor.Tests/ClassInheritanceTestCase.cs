@@ -11,25 +11,76 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
 namespace Castle
 {
 	using System;
 	using System.Linq;
 
 	using Castle.Components;
+	using Castle.DynamicProxy;
 	using Castle.MicroKernel.Registration;
 	using Castle.Windsor.Tests;
 	using Castle.Windsor.Tests.ClassComponents;
+	using Castle.Windsor.Tests.Components;
+	using Castle.Windsor.Tests.Interceptors;
 
 	using NUnit.Framework;
 
 	[TestFixture]
 	public class ClassInheritanceTestCase : AbstractContainerTestFixture
 	{
-
 		// TODO: add tests for generics in the hierarchy (open as well?)
 		// TODO: add tests for proxying to make sure we can always cast down
+		[Test]
+		public void Can_proxy_class_service_impl_explicitly()
+		{
+			RegisterInterceptor();
+			Container.Register(Component.For<JohnChild>().ImplementedBy<JohnChild>().LifeStyle.Transient.Interceptors<CountingInterceptor>());
+			var child = Container.Resolve<JohnChild>();
+			Assert.IsTrue(IsProxy(child));
+		}
+
+		[Test]
+		public void Can_proxy_class_service_with_inherited_implementation()
+		{
+			RegisterInterceptor();
+			Container.Register(Component.For<JohnParent>().ImplementedBy<JohnChild>().LifeStyle.Transient.Interceptors<CountingInterceptor>());
+			var obj = Container.Resolve<JohnParent>();
+			Assert.IsTrue(IsProxy(obj));
+			Assert.IsInstanceOf<JohnChild>(obj);
+		}
+
+		[Test]
+		public void Can_proxy_multiple_class_services_with_inherited_implementation()
+		{
+			RegisterInterceptor();
+			Container.Register(Component.For<JohnParent, JohnGrandparent>().ImplementedBy<JohnChild>().LifeStyle.Transient.Interceptors<CountingInterceptor>());
+			var obj = Container.Resolve<JohnParent>();
+			Assert.IsTrue(IsProxy(obj));
+			Assert.IsInstanceOf<JohnChild>(obj);
+		}
+
+		[Test]
+		public void Can_proxy_multiple_class_services_and_interface_with_inherited_implementation()
+		{
+			RegisterInterceptor();
+			Container.Register(Component.For<JohnParent, IEmptyService, JohnGrandparent>().ImplementedBy<JohnChild>()
+			                   	.LifeStyle.Transient.Interceptors<CountingInterceptor>());
+			var obj = Container.Resolve<JohnParent>();
+			Assert.IsTrue(IsProxy(obj));
+			Assert.IsInstanceOf<JohnChild>(obj);
+			Assert.IsInstanceOf<IEmptyService>(obj);
+		}
+
+		[Test]
+		public void Can_proxy_class_service_impl_implicitly()
+		{
+			RegisterInterceptor();
+			Container.Register(Component.For<JohnChild>().LifeStyle.Transient.Interceptors<StandardInterceptor>());
+			var child = Container.Resolve<JohnChild>();
+			Assert.IsTrue(IsProxy(child));
+		}
+
 		[Test]
 		public void GrandParent_and_Parent_of_impl_can_be_the_service()
 		{
@@ -99,6 +150,16 @@ namespace Castle
 			var handler = Kernel.GetHandler(typeof(A));
 			Assert.AreEqual(typeof(A), handler.Services.Single());
 			Assert.AreEqual(typeof(A), handler.ComponentModel.Implementation);
+		}
+
+		private bool IsProxy(object o)
+		{
+			return o is IProxyTargetAccessor;
+		}
+
+		private void RegisterInterceptor()
+		{
+			Container.Register(Component.For<CountingInterceptor>().LifeStyle.Transient);
 		}
 	}
 }
