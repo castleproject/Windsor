@@ -922,7 +922,11 @@ namespace Castle.MicroKernel.Registration
 		
 			if (registerNewServicesOnly)
 			{
+#if SILVERLIGHT
+				services.ToArray().Where(kernel.HasComponent).ForEach(t => services.Remove(t));
+#else
 				services.RemoveAll(kernel.HasComponent);
+#endif
 			}
 			return services.ToArray();
 		}

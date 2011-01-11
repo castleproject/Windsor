@@ -355,6 +355,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Compatibility\SortedSet.silverllight.net35.cs" />
     <Compile Include="Core\CastleComponentAttribute.cs" />
     <Compile Include="Core\ComponentActivatorAttribute.cs" />
     <Compile Include="Core\ComponentName.cs" />

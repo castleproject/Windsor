@@ -29,7 +29,9 @@ namespace Castle.Windsor.Tests
 	using Castle.Windsor.Installer;
 	using Castle.Windsor.Tests.Components;
 	using Castle.Windsor.Tests.Interceptors;
+#if !SILVERLIGHT
 	using Castle.XmlFiles;
+#endif
 
 	using NUnit.Framework;
 
@@ -281,11 +283,12 @@ namespace Castle.Windsor.Tests
 				Assert.AreEqual(10, service.Sum(3, 4));
 			}
 		}
-
+#if !SILVERLIGHT
 		private ConfigurationInstaller XmlResource(string fileName)
 		{
 			return Configuration.FromXml(Xml.Embedded(fileName));
 		}
+#endif
 	}
 
 	public class MyInterceptorGreedyFacility : IFacility
