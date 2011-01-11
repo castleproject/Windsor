@@ -36,7 +36,7 @@ namespace Castle.Core.Internal
 			}
 			var message = String.Format("Types {0} and {1} are unrelated. That is not allowed. Are you sure you want to make them both services on the same component?",
 			                            x, y);
-			throw new ArgumentOutOfRangeException("x", x, message);
+			throw new ArgumentOutOfRangeException("x", message);
 		}
 	}
 }

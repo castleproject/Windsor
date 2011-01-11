@@ -1,4 +1,4 @@
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -11,31 +11,55 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 namespace System.Collections.Generic
 {
-#if SL3
-	internal class HashSet<T> : ICollection<T>
+#if DOTNET35 ||SILVERLIGHT
+	public class SortedSet<T> : ICollection<T>
 	{
-		private readonly IDictionary<T, object> items = new Dictionary<T, object>();
+		private readonly IComparer<T> comparer;
+		private readonly List<T> items = new List<T>();
+
+		public SortedSet(IComparer<T> comparer)
+		{
+			this.comparer = comparer;
+		}
+
+		public SortedSet(IEnumerable<T> other, IComparer<T> comparer) : this(comparer)
+		{
+			foreach (var item in other)
+			{
+				Add(item);
+			}
+		}
 
 		public int Count
 		{
 			get { return items.Count; }
 		}
 
-		public bool IsReadOnly
+		bool ICollection<T>.IsReadOnly
 		{
-			get { return items.IsReadOnly; }
+			get { return false; }
 		}
 
 		public void Add(T item)
 		{
-			if (Contains(item))
+			var count = Count;
+			for (var i = 0; i < count; i++)
 			{
-				return;
+				var result = comparer.Compare(item, items[i]);
+				if (result < 0)
+				{
+					items.Insert(i, item);
+					return;
+				}
+				if (result == 0)
+				{
+					return;
+				}
 			}
-
-			items.Add(item, null);
+			items.Add(item);
 		}
 
 		public void Clear()
@@ -45,20 +69,12 @@ namespace System.Collections.Generic
 
 		public bool Contains(T item)
 		{
-			return items.ContainsKey(item);
+			return items.Contains(item);
 		}
 
 		public void CopyTo(T[] array, int arrayIndex)
 		{
-			items.Keys.CopyTo(array, arrayIndex);
-		}
-
-		public void UnionWith(HashSet<T> other)
-		{
-			foreach (var item in other)
-			{
-				Add(item);
-			}
+			items.CopyTo(array, arrayIndex);
 		}
 
 		public bool Remove(T item)
@@ -68,7 +84,7 @@ namespace System.Collections.Generic
 
 		public IEnumerator<T> GetEnumerator()
 		{
-			return items.Keys.GetEnumerator();
+			return items.GetEnumerator();
 		}
 
 		IEnumerator IEnumerable.GetEnumerator()

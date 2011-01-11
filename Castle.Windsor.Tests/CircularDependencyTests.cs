@@ -22,7 +22,9 @@ namespace Castle.Windsor.Tests
 	using Castle.MicroKernel.Registration;
 	using Castle.Windsor.Configuration.Interpreters;
 	using Castle.Windsor.Tests.Components;
+#if !SILVERLIGHT
 	using Castle.XmlFiles;
+#endif
 
 	using NUnit.Framework;
 
