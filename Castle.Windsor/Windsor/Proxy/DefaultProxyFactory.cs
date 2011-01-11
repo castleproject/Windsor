@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -30,29 +30,27 @@ namespace Castle.Windsor.Proxy
 #endif
 
 	/// <summary>
-	/// This implementation of <see cref="IProxyFactory"/> relies 
-	/// on DynamicProxy to expose proxy capabilities.
+	///   This implementation of <see cref = "IProxyFactory" /> relies 
+	///   on DynamicProxy to expose proxy capabilities.
 	/// </summary>
 	/// <remarks>
-	/// Note that only virtual methods can be intercepted in a 
-	/// concrete class. However, if the component 
-	/// was registered with a service interface, we proxy
-	/// the interface and the methods don't need to be virtual,
+	///   Note that only virtual methods can be intercepted in a 
+	///   concrete class. However, if the component 
+	///   was registered with a service interface, we proxy
+	///   the interface and the methods don't need to be virtual,
 	/// </remarks>
+	[Serializable]
 #if (SILVERLIGHT)
 	public class DefaultProxyFactory : AbstractProxyFactory
 #else
-	[Serializable]
 	public class DefaultProxyFactory : AbstractProxyFactory, IDeserializationCallback
 #endif
 	{
-#if (!SILVERLIGHT)
 		[NonSerialized]
-#endif
-			protected ProxyGenerator generator;
+		protected ProxyGenerator generator;
 
 		/// <summary>
-		/// Constructs a DefaultProxyFactory
+		///   Constructs a DefaultProxyFactory
 		/// </summary>
 		public DefaultProxyFactory()
 		{
@@ -85,13 +83,13 @@ namespace Castle.Windsor.Proxy
 		}
 
 		/// <summary>
-		/// Creates the proxy for the supplied component.
+		///   Creates the proxy for the supplied component.
 		/// </summary>
-		/// <param name="kernel">The kernel.</param>
-		/// <param name="target">The target.</param>
-		/// <param name="model">The model.</param>
-		/// <param name="constructorArguments">The constructor arguments.</param>
-		/// <param name="context">The creation context</param>
+		/// <param name = "kernel">The kernel.</param>
+		/// <param name = "target">The target.</param>
+		/// <param name = "model">The model.</param>
+		/// <param name = "constructorArguments">The constructor arguments.</param>
+		/// <param name = "context">The creation context</param>
 		/// <returns>The component proxy.</returns>
 		public override object Create(IKernel kernel, object target, ComponentModel model, CreationContext context, params object[] constructorArguments)
 		{
@@ -104,34 +102,30 @@ namespace Castle.Windsor.Proxy
 			CustomizeOptions(proxyGenOptions, kernel, model, constructorArguments);
 
 			var interfaces = proxyOptions.AdditionalInterfaces;
-			var classService = model.ClassServices.FirstOrDefault();
-			if (classService == null)
+			var firstService = model.Services.First();
+			if (firstService.IsClass)
 			{
-				var firstService = model.InterfaceServices.First();
-				var additionalInterfaces = model.InterfaceServices.Skip(1).Concat(interfaces).ToArray();
-				if (proxyOptions.OmitTarget)
-				{
-					proxy = generator.CreateInterfaceProxyWithoutTarget(firstService, additionalInterfaces,
-					                                                    proxyGenOptions, interceptors);
-				}
-				else if (proxyOptions.AllowChangeTarget)
-				{
-					proxy = generator.CreateInterfaceProxyWithTargetInterface(firstService, additionalInterfaces, target,
-					                                                          proxyGenOptions, interceptors);
-				}
-				else
-				{
-					proxy = generator.CreateInterfaceProxyWithTarget(firstService, additionalInterfaces,
-					                                                 target, proxyGenOptions, interceptors);
-				}
+				var additionalInterfaces = model.Services
+					.SkipWhile(c => c.IsClass)
+					.Concat(interfaces)
+					.ToArray();
+				proxy = generator.CreateClassProxy(firstService, additionalInterfaces, proxyGenOptions, constructorArguments, interceptors);
 			}
 			else
 			{
-				var additionalInterfaces = model.InterfaceServices
-					.Concat(interfaces)
-					.ToArray();
-				proxy = generator.CreateClassProxy(classService, additionalInterfaces, proxyGenOptions,
-				                                   constructorArguments, interceptors);
+				var additionalInterfaces = model.Services.Skip(1).Concat(interfaces).ToArray();
+				if (proxyOptions.OmitTarget)
+				{
+					proxy = generator.CreateInterfaceProxyWithoutTarget(firstService, additionalInterfaces, proxyGenOptions, interceptors);
+				}
+				else if (proxyOptions.AllowChangeTarget)
+				{
+					proxy = generator.CreateInterfaceProxyWithTargetInterface(firstService, additionalInterfaces, target, proxyGenOptions, interceptors);
+				}
+				else
+				{
+					proxy = generator.CreateInterfaceProxyWithTarget(firstService, additionalInterfaces, target, proxyGenOptions, interceptors);
+				}
 			}
 
 			CustomizeProxy(proxy, proxyGenOptions, kernel, model);
@@ -139,13 +133,14 @@ namespace Castle.Windsor.Proxy
 			return proxy;
 		}
 
-		protected static ProxyGenerationOptions CreateProxyGenerationOptionsFrom(ProxyOptions proxyOptions, IKernel kernel, CreationContext context, ComponentModel model)
+		protected static ProxyGenerationOptions CreateProxyGenerationOptionsFrom(ProxyOptions proxyOptions, IKernel kernel, CreationContext context,
+		                                                                         ComponentModel model)
 		{
 			var proxyGenOptions = new ProxyGenerationOptions();
 			if (proxyOptions.Hook != null)
 			{
 				var hook = proxyOptions.Hook.Resolve(kernel, context);
-				if(hook != null && hook is IOnBehalfAware)
+				if (hook != null && hook is IOnBehalfAware)
 				{
 					((IOnBehalfAware)hook).SetInterceptedComponentModel(model);
 				}
@@ -185,16 +180,16 @@ namespace Castle.Windsor.Proxy
 		}
 
 		/// <summary>
-		/// Determines if the component requires a target instance for proxying.
+		///   Determines if the component requires a target instance for proxying.
 		/// </summary>
-		/// <param name="kernel">The kernel.</param>
-		/// <param name="model">The model.</param>
+		/// <param name = "kernel">The kernel.</param>
+		/// <param name = "model">The model.</param>
 		/// <returns>true if an instance is required.</returns>
 		public override bool RequiresTargetInstance(IKernel kernel, ComponentModel model)
 		{
 			var proxyOptions = ProxyUtil.ObtainProxyOptions(model, true);
 
-			return model.ClassServices.Any() == false &&
+			return model.Services.First().IsClass == false &&
 			       proxyOptions.OmitTarget == false;
 		}
 

@@ -195,7 +195,7 @@ namespace Castle.Facilities.Synchronize
 				return HasImplicitSynchronization(model);
 			}
 
-			if (model.ClassServices.Any() == false)
+			if (model.Services.First().IsClass == false)
 			{
 				return true;
 			}
