@@ -103,8 +103,7 @@ namespace Castle.Windsor.Proxy
 			CustomizeOptions(proxyGenOptions, kernel, model, constructorArguments);
 
 			var interfaces = proxyOptions.AdditionalInterfaces;
-			var classService = model.ClassServices.FirstOrDefault();
-			if (classService == null)
+			if (model.HasClassServices == false)
 			{
 				var firstService = model.InterfaceServices.First();
 				var additionalInterfaces = model.InterfaceServices.Skip(1).Concat(interfaces).ToArray();
@@ -123,14 +122,19 @@ namespace Castle.Windsor.Proxy
 			}
 			else
 			{
+				Type classToProxy;
 				if (model.Implementation != null && model.Implementation != typeof(LateBoundComponent))
 				{
-					classService = model.Implementation;
+					classToProxy = model.Implementation;
+				}
+				else
+				{
+					classToProxy = model.AllServices.First();
 				}
 				var additionalInterfaces = model.InterfaceServices
 					.Concat(interfaces)
 					.ToArray();
-				proxy = generator.CreateClassProxy(classService, additionalInterfaces, proxyGenOptions, constructorArguments, interceptors);
+				proxy = generator.CreateClassProxy(classToProxy, additionalInterfaces, proxyGenOptions, constructorArguments, interceptors);
 			}
 
 			CustomizeProxy(proxy, proxyGenOptions, kernel, model);
@@ -194,7 +198,7 @@ namespace Castle.Windsor.Proxy
 		{
 			var proxyOptions = ProxyUtil.ObtainProxyOptions(model, true);
 
-			return model.ClassServices.Any() == false &&
+			return model.HasClassServices == false &&
 			       proxyOptions.OmitTarget == false;
 		}
 

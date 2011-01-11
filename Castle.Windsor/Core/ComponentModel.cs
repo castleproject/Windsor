@@ -32,6 +32,8 @@ namespace Castle.Core
 	public sealed class ComponentModel : GraphNode
 	{
 		public const string SkipRegistration = "skip.registration";
+		private readonly ICollection<Type> classServices = new SortedSet<Type>(new TypeByInheritanceDepthMostSpecificFirstComparer());
+		private readonly ComponentName componentName;
 
 		/// <summary>
 		///   All available constructors
@@ -39,14 +41,11 @@ namespace Castle.Core
 		private readonly ConstructorCandidateCollection constructors = new ConstructorCandidateCollection();
 
 		private readonly ICollection<Type> interfaceServices = new HashSet<Type>();
-		private readonly ICollection<Type> classServices = new SortedSet<Type>(new TypeByInheritanceDepthMostSpecificFirstComparer());
 
 		/// <summary>
 		///   Steps of lifecycle
 		/// </summary>
 		private readonly LifecycleConcernsCollection lifecycle = new LifecycleConcernsCollection();
-
-		private readonly ComponentName componentName;
 
 		/// <summary>
 		///   /// Custom dependencies///
@@ -87,8 +86,6 @@ namespace Castle.Core
 		{
 			componentName = name;
 			Implementation = implementation;
-			LifestyleType = LifestyleType.Undefined;
-			InspectionBehavior = PropertiesInspectionBehavior.Undefined;
 			this.extendedProperties = extendedProperties;
 			foreach (var type in services)
 			{
@@ -99,6 +96,15 @@ namespace Castle.Core
 		public IEnumerable<Type> AllServices
 		{
 			get { return classServices.Concat(interfaceServices); }
+		}
+
+		/// <summary>
+		///   Gets the class services exposed
+		/// </summary>
+		/// <value>The service.</value>
+		public IEnumerable<Type> ClassServices
+		{
+			get { return classServices; }
 		}
 
 		public ComponentName ComponentName
@@ -192,6 +198,11 @@ namespace Castle.Core
 			}
 		}
 
+		public bool HasClassServices
+		{
+			get { return classServices.Count > 0; }
+		}
+
 		public bool HasCustomDependencies
 		{
 			get
@@ -258,15 +269,6 @@ namespace Castle.Core
 		public IEnumerable<Type> InterfaceServices
 		{
 			get { return interfaceServices; }
-		}
-
-		/// <summary>
-		///   Gets the class services exposed
-		/// </summary>
-		/// <value>The service.</value>
-		public IEnumerable<Type> ClassServices
-		{
-			get { return classServices; }
 		}
 
 		/// <summary>
@@ -389,21 +391,19 @@ namespace Castle.Core
 		public override string ToString()
 		{
 			var services = AllServices.ToArray();
-			if(services.Length == 1 && services.Single() == Implementation)
+			if (services.Length == 1 && services.Single() == Implementation)
 			{
 				return Implementation.Name;
 			}
 
 			string value;
-			if(Implementation == typeof(LateBoundComponent))
+			if (Implementation == typeof(LateBoundComponent))
 			{
-
 				value = string.Format("late bound {0}", services[0].Name);
 			}
-			else if(Implementation == null)
+			else if (Implementation == null)
 			{
-
-				value = "no impl / "+ services[0].Name;
+				value = "no impl / " + services[0].Name;
 			}
 			else
 			{
@@ -416,4 +416,4 @@ namespace Castle.Core
 			return value;
 		}
 	}
-} 
+}
