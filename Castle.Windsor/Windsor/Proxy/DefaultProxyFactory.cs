@@ -58,8 +58,8 @@ namespace Castle.Windsor.Proxy
 			Init();
 		}
 
-		public override object Create(IProxyFactoryExtension customFactory, IKernel kernel, ComponentModel model,
-		                              CreationContext context, params object[] constructorArguments)
+		public override object Create(IProxyFactoryExtension customFactory, IKernel kernel, ComponentModel model, CreationContext context,
+		                              params object[] constructorArguments)
 		{
 			var interceptors = ObtainInterceptors(kernel, model, context);
 			var proxyOptions = ProxyUtil.ObtainProxyOptions(model, true);
@@ -110,18 +110,15 @@ namespace Castle.Windsor.Proxy
 				var additionalInterfaces = model.InterfaceServices.Skip(1).Concat(interfaces).ToArray();
 				if (proxyOptions.OmitTarget)
 				{
-					proxy = generator.CreateInterfaceProxyWithoutTarget(firstService, additionalInterfaces,
-					                                                    proxyGenOptions, interceptors);
+					proxy = generator.CreateInterfaceProxyWithoutTarget(firstService, additionalInterfaces, proxyGenOptions, interceptors);
 				}
 				else if (proxyOptions.AllowChangeTarget)
 				{
-					proxy = generator.CreateInterfaceProxyWithTargetInterface(firstService, additionalInterfaces, target,
-					                                                          proxyGenOptions, interceptors);
+					proxy = generator.CreateInterfaceProxyWithTargetInterface(firstService, additionalInterfaces, target, proxyGenOptions, interceptors);
 				}
 				else
 				{
-					proxy = generator.CreateInterfaceProxyWithTarget(firstService, additionalInterfaces,
-					                                                 target, proxyGenOptions, interceptors);
+					proxy = generator.CreateInterfaceProxyWithTarget(firstService, additionalInterfaces, target, proxyGenOptions, interceptors);
 				}
 			}
 			else
@@ -133,8 +130,7 @@ namespace Castle.Windsor.Proxy
 				var additionalInterfaces = model.InterfaceServices
 					.Concat(interfaces)
 					.ToArray();
-				proxy = generator.CreateClassProxy(classService, additionalInterfaces, proxyGenOptions,
-				                                   constructorArguments, interceptors);
+				proxy = generator.CreateClassProxy(classService, additionalInterfaces, proxyGenOptions, constructorArguments, interceptors);
 			}
 
 			CustomizeProxy(proxy, proxyGenOptions, kernel, model);
