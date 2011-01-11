@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ namespace Castle.Windsor.Proxy
 
 	using Castle.Core;
 	using Castle.Core.Interceptor;
+	using Castle.Core.Internal;
 	using Castle.DynamicProxy;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Context;
@@ -30,29 +31,27 @@ namespace Castle.Windsor.Proxy
 #endif
 
 	/// <summary>
-	/// This implementation of <see cref="IProxyFactory"/> relies 
-	/// on DynamicProxy to expose proxy capabilities.
+	///   This implementation of <see cref = "IProxyFactory" /> relies 
+	///   on DynamicProxy to expose proxy capabilities.
 	/// </summary>
 	/// <remarks>
-	/// Note that only virtual methods can be intercepted in a 
-	/// concrete class. However, if the component 
-	/// was registered with a service interface, we proxy
-	/// the interface and the methods don't need to be virtual,
+	///   Note that only virtual methods can be intercepted in a 
+	///   concrete class. However, if the component 
+	///   was registered with a service interface, we proxy
+	///   the interface and the methods don't need to be virtual,
 	/// </remarks>
+	[Serializable]
 #if (SILVERLIGHT)
 	public class DefaultProxyFactory : AbstractProxyFactory
 #else
-	[Serializable]
 	public class DefaultProxyFactory : AbstractProxyFactory, IDeserializationCallback
 #endif
 	{
-#if (!SILVERLIGHT)
 		[NonSerialized]
-#endif
-			protected ProxyGenerator generator;
+		protected ProxyGenerator generator;
 
 		/// <summary>
-		/// Constructs a DefaultProxyFactory
+		///   Constructs a DefaultProxyFactory
 		/// </summary>
 		public DefaultProxyFactory()
 		{
@@ -85,13 +84,13 @@ namespace Castle.Windsor.Proxy
 		}
 
 		/// <summary>
-		/// Creates the proxy for the supplied component.
+		///   Creates the proxy for the supplied component.
 		/// </summary>
-		/// <param name="kernel">The kernel.</param>
-		/// <param name="target">The target.</param>
-		/// <param name="model">The model.</param>
-		/// <param name="constructorArguments">The constructor arguments.</param>
-		/// <param name="context">The creation context</param>
+		/// <param name = "kernel">The kernel.</param>
+		/// <param name = "target">The target.</param>
+		/// <param name = "model">The model.</param>
+		/// <param name = "constructorArguments">The constructor arguments.</param>
+		/// <param name = "context">The creation context</param>
 		/// <returns>The component proxy.</returns>
 		public override object Create(IKernel kernel, object target, ComponentModel model, CreationContext context, params object[] constructorArguments)
 		{
@@ -127,6 +126,10 @@ namespace Castle.Windsor.Proxy
 			}
 			else
 			{
+				if (model.Implementation != null && model.Implementation != typeof(LateBoundComponent))
+				{
+					classService = model.Implementation;
+				}
 				var additionalInterfaces = model.InterfaceServices
 					.Concat(interfaces)
 					.ToArray();
@@ -139,13 +142,14 @@ namespace Castle.Windsor.Proxy
 			return proxy;
 		}
 
-		protected static ProxyGenerationOptions CreateProxyGenerationOptionsFrom(ProxyOptions proxyOptions, IKernel kernel, CreationContext context, ComponentModel model)
+		protected static ProxyGenerationOptions CreateProxyGenerationOptionsFrom(ProxyOptions proxyOptions, IKernel kernel, CreationContext context,
+		                                                                         ComponentModel model)
 		{
 			var proxyGenOptions = new ProxyGenerationOptions();
 			if (proxyOptions.Hook != null)
 			{
 				var hook = proxyOptions.Hook.Resolve(kernel, context);
-				if(hook != null && hook is IOnBehalfAware)
+				if (hook != null && hook is IOnBehalfAware)
 				{
 					((IOnBehalfAware)hook).SetInterceptedComponentModel(model);
 				}
@@ -185,10 +189,10 @@ namespace Castle.Windsor.Proxy
 		}
 
 		/// <summary>
-		/// Determines if the component requires a target instance for proxying.
+		///   Determines if the component requires a target instance for proxying.
 		/// </summary>
-		/// <param name="kernel">The kernel.</param>
-		/// <param name="model">The model.</param>
+		/// <param name = "kernel">The kernel.</param>
+		/// <param name = "model">The model.</param>
 		/// <returns>true if an instance is required.</returns>
 		public override bool RequiresTargetInstance(IKernel kernel, ComponentModel model)
 		{
