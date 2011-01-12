@@ -105,8 +105,8 @@ namespace Castle.Windsor.Proxy
 			var interfaces = proxyOptions.AdditionalInterfaces;
 			if (model.HasClassServices == false)
 			{
-				var firstService = model.InterfaceServices.First();
-				var additionalInterfaces = model.InterfaceServices.Skip(1).Concat(interfaces).ToArray();
+				var firstService = model.AllServices.First();
+				var additionalInterfaces = model.AllServices.Skip(1).Concat(interfaces).ToArray();
 				if (proxyOptions.OmitTarget)
 				{
 					proxy = generator.CreateInterfaceProxyWithoutTarget(firstService, additionalInterfaces, proxyGenOptions, interceptors);
@@ -131,7 +131,8 @@ namespace Castle.Windsor.Proxy
 				{
 					classToProxy = model.AllServices.First();
 				}
-				var additionalInterfaces = model.InterfaceServices
+				var additionalInterfaces = model.AllServices
+					.SkipWhile(s => s.IsClass)
 					.Concat(interfaces)
 					.ToArray();
 				proxy = generator.CreateClassProxy(classToProxy, additionalInterfaces, proxyGenOptions, constructorArguments, interceptors);

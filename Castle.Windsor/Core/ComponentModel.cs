@@ -47,9 +47,6 @@ namespace Castle.Core
 		/// </summary>
 		private readonly LifecycleConcernsCollection lifecycle = new LifecycleConcernsCollection();
 
-		/// <summary>
-		///   /// Custom dependencies///
-		/// </summary>
 		[NonSerialized]
 		private IDictionary customDependencies;
 
@@ -58,9 +55,6 @@ namespace Castle.Core
 		/// </summary>
 		private DependencyModelCollection dependencies;
 
-		/// <summary>
-		///   Extended properties
-		/// </summary>
 		[NonSerialized]
 		private IDictionary extendedProperties;
 
