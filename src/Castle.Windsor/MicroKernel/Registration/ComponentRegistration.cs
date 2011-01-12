@@ -42,9 +42,8 @@ namespace Castle.MicroKernel.Registration
 	public class ComponentRegistration<TService> : IRegistration
 	{
 		private readonly List<ComponentDescriptor<TService>> descriptors = new List<ComponentDescriptor<TService>>();
-		private readonly List<Type> interfaceServices = new List<Type>();
+		private readonly List<Type> potentialServices = new List<Type>();
 
-		private SortedSet<Type> classServices;
 		private ComponentModel componentModel;
 		private Type implementation;
 		private ComponentName name;
@@ -78,8 +77,7 @@ namespace Castle.MicroKernel.Registration
 
 			this.componentModel = componentModel;
 			name = componentModel.ComponentName;
-			classServices = new SortedSet<Type>(componentModel.ClassServices,new TypeByInheritanceDepthMostSpecificFirstComparer());
-			interfaceServices.AddRange(componentModel.InterfaceServices);
+			potentialServices.AddRange(componentModel.AllServices);
 			implementation = componentModel.Implementation;
 		}
 
@@ -139,14 +137,19 @@ namespace Castle.MicroKernel.Registration
 			get { return overwrite; }
 		}
 
-		protected internal ICollection<Type> ClassServices
+		protected internal IList<Type> Services
 		{
-			get { return (ICollection<Type>)classServices ?? Type.EmptyTypes; }
+			get { return potentialServices; }
 		}
 
-		protected internal IList<Type> InterfaceServices
+		public IEnumerable<Type> ClassServices
 		{
-			get { return interfaceServices; }
+			get { return potentialServices.Where(c => c.IsClass); }
+		}
+
+		public IEnumerable<Type> InterfaceServices
+		{
+			get { return potentialServices.Where(c => c.IsInterface); }
 		}
 
 		/// <summary>
@@ -452,18 +455,7 @@ namespace Castle.MicroKernel.Registration
 		{
 			foreach (var type in types)
 			{
-				if (type.IsClass)
-				{
-					if(classServices == null)
-					{
-						classServices = new SortedSet<Type>(new TypeByInheritanceDepthMostSpecificFirstComparer());
-					}
-					classServices.Add(type);
-				}
-				else if (!interfaceServices.Contains(type))
-				{
-					interfaceServices.Add(type);
-				}
+				ComponentServicesUtil.AddService(potentialServices, type);
 			}
 			return this;
 		}
@@ -767,7 +759,7 @@ namespace Castle.MicroKernel.Registration
 			Activator<FactoryMethodActivator<TImpl>>()
 				.ExtendedProperties(Property.ForKey("factoryMethodDelegate").Eq(factoryMethod));
 
-			if (implementation == null && (classServices == null || classServices.Count == 0 || classServices.First().IsSealed == false))
+			if (implementation == null && (potentialServices.First().IsClass == false || potentialServices.First().IsSealed == false))
 			{
 				implementation = typeof(LateBoundComponent);
 			}
@@ -858,11 +850,7 @@ namespace Castle.MicroKernel.Registration
 
 		private Type DefaultService()
 		{
-			if(classServices==null)
-			{
-				return interfaceServices.First();
-			}
-			return classServices.FirstOrDefault() ?? interfaceServices.First();
+			return potentialServices.First();
 		}
 
 		/// <summary>
@@ -913,13 +901,9 @@ namespace Castle.MicroKernel.Registration
 
 		private Type[] FilterServices(IKernel kernel)
 		{
-			var services = new List<Type>();
-			if (classServices != null)
-			{
-				services.AddRange(classServices);
-			}
-			services.AddRange(interfaceServices);
-		
+			var services = new List<Type>(potentialServices.Count);
+			services.AddRange(potentialServices);
+
 			if (registerNewServicesOnly)
 			{
 #if SILVERLIGHT
