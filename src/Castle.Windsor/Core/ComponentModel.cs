@@ -32,20 +32,12 @@ namespace Castle.Core
 	public sealed class ComponentModel : GraphNode
 	{
 		public const string SkipRegistration = "skip.registration";
-		private readonly ICollection<Type> classServices = new SortedSet<Type>(new TypeByInheritanceDepthMostSpecificFirstComparer());
 		private readonly ComponentName componentName;
 
-		/// <summary>
-		///   All available constructors
-		/// </summary>
 		private readonly ConstructorCandidateCollection constructors = new ConstructorCandidateCollection();
 
-		private readonly ICollection<Type> interfaceServices = new HashSet<Type>();
-
-		/// <summary>
-		///   Steps of lifecycle
-		/// </summary>
 		private readonly LifecycleConcernsCollection lifecycle = new LifecycleConcernsCollection();
+		private readonly List<Type> services = new List<Type>(4);
 
 		[NonSerialized]
 		private IDictionary customDependencies;
@@ -89,7 +81,7 @@ namespace Castle.Core
 
 		public IEnumerable<Type> AllServices
 		{
-			get { return classServices.Concat(interfaceServices); }
+			get { return services; }
 		}
 
 		/// <summary>
@@ -98,7 +90,7 @@ namespace Castle.Core
 		/// <value>The service.</value>
 		public IEnumerable<Type> ClassServices
 		{
-			get { return classServices; }
+			get { return services.TakeWhile(s => s.IsClass); }
 		}
 
 		public ComponentName ComponentName
@@ -194,7 +186,7 @@ namespace Castle.Core
 
 		public bool HasClassServices
 		{
-			get { return classServices.Count > 0; }
+			get { return services.First().IsClass; }
 		}
 
 		public bool HasCustomDependencies
@@ -262,7 +254,7 @@ namespace Castle.Core
 		/// <value>The service.</value>
 		public IEnumerable<Type> InterfaceServices
 		{
-			get { return interfaceServices; }
+			get { return services.SkipWhile(s => s.IsClass); }
 		}
 
 		/// <summary>
@@ -341,17 +333,8 @@ namespace Castle.Core
 			{
 				return;
 			}
-			if (type.IsClass)
-			{
-				classServices.Add(type);
-				return;
-			}
-			if (!type.IsInterface)
-			{
-				throw new ArgumentException(
-					string.Format("Type {0} is not a class nor an interface, and those are the only values allowed.", type));
-			}
-			interfaceServices.Add(type);
+
+			ComponentServicesUtil.AddService(services, type);
 		}
 
 		/// <summary>
