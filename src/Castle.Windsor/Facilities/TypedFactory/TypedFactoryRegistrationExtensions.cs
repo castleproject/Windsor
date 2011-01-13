@@ -64,33 +64,33 @@ namespace Castle.Facilities.TypedFactory
 				throw new ArgumentNullException("registration");
 			}
 			var classServices = registration.Services.TakeWhile(s => s.IsClass).ToArray();
-			if (classServices.Length == 0)
+			if (classServices.Any() == false)
 			{
-				Debug.Assert(registration.Services.Count > 0, "registration.services.Count > 0");
+				Debug.Assert(registration.Services.Count() > 0, "registration.Services.Count > 0");
 				return RegisterInterfaceBasedFactory(registration, configuration);
 			}
-			if (classServices.Length != 1)
+			if (classServices.Count() != 1)
 			{
 				throw new ComponentRegistrationException(
 					"This component can not be used as typed factory because it exposes more than one class service. Only component exposing single depegate, or interfaces can be used as typed factories.");
 			}
-			var classService = classServices[0];
+			var classService = classServices.Single();
 			if (classService.BaseType == typeof(MulticastDelegate))
 			{
-				if (registration.Services.Count == 1)
+				if (registration.ServicesCount == 1) // the delegate is the only service we expose
 				{
-					return RegisterDelegateBasedFactory(registration, configuration);
+					return RegisterDelegateBasedFactory(registration, configuration, classService);
 				}
 				throw new ComponentRegistrationException(
 					string.Format(
-						"Type {0} is a delegate, however the component has also {1} inteface(s) specified as it's service. Delegate-based typed factories can't expose any additional services.",
-						classService, registration.Services.Count - 1));
+						"Type {0} is a delegate, however the component has also {1} inteface(s) specified as its service. Delegate-based typed factories can't expose any additional services.",
+						classService.Name, registration.ServicesCount - 1));
 			}
 
 			throw new ComponentRegistrationException(
 				string.Format(
 					"Type {0} is not an interface nor a delegate. Only interfaces and delegates may be used as typed factories.",
-					classService));
+					classService.Name));
 		}
 
 		private static ComponentRegistration<TFactory> AttachConfiguration<TFactory>(ComponentRegistration<TFactory> componentRegistration,
@@ -147,9 +147,8 @@ namespace Castle.Facilities.TypedFactory
 		}
 
 		private static ComponentRegistration<TDelegate> RegisterDelegateBasedFactory<TDelegate>(ComponentRegistration<TDelegate> registration,
-		                                                                                        Action<TypedFactoryConfiguration> configuration)
+		                                                                                        Action<TypedFactoryConfiguration> configuration, Type delegateType)
 		{
-			var delegateType = registration.Services.Single();
 			if (HasOutArguments(delegateType))
 			{
 				throw new ComponentRegistrationException(
@@ -187,6 +186,7 @@ namespace Castle.Facilities.TypedFactory
 		{
 			foreach (var serviceType in registration.Services)
 			{
+				Debug.Assert(serviceType.IsInterface, "serviceType.IsInterface");
 				if (HasOutArguments(serviceType))
 				{
 					throw new ComponentRegistrationException(

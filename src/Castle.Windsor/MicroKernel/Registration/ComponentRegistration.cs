@@ -142,6 +142,11 @@ namespace Castle.MicroKernel.Registration
 			get { return potentialServices; }
 		}
 
+		protected internal int ServicesCount
+		{
+			get { return potentialServices.Count; }
+		}
+
 		/// <summary>
 		///   Marks the components with one or more actors.
 		/// </summary>
@@ -891,9 +896,7 @@ namespace Castle.MicroKernel.Registration
 
 		private Type[] FilterServices(IKernel kernel)
 		{
-			var services = new List<Type>(potentialServices.Count);
-			services.AddRange(potentialServices);
-
+			var services = new List<Type>(potentialServices);
 			if (registerNewServicesOnly)
 			{
 #if SILVERLIGHT

@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -102,7 +102,7 @@ namespace Castle.Facilities.Remoting
 
 			ConfigureServerComponent(server, model.Implementation, model);
 
-			ConfigureClientComponent(client, model.AllServices.Single(), model);
+			ConfigureClientComponent(client, model.Services.Single(), model);
 		}
 
 		private String BuildUri(ComponentModel model)
@@ -111,7 +111,7 @@ namespace Castle.Facilities.Remoting
 
 			// if the remoted component is a generic component then ensure a unique uri is built 
 			// for the requested service
-			var service = model.AllServices.Single();
+			var service = model.Services.Single();
 			if (service.IsGenericType)
 			{
 				cpntUri = service.Name;
@@ -360,8 +360,8 @@ namespace Castle.Facilities.Remoting
 
 				throw new FacilityException(message);
 			}
-			var count = model.AllServices.Count();
-			if(count > 1)
+			var count = model.Services.Count();
+			if (count > 1)
 			{
 				var message = String.Format("Component {0} exposes {1} services, " +
 				                            "Remoting facility only supports components with single service.",
