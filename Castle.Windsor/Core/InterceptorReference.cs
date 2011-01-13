@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
 namespace Castle.Core
 {
 	using System;
+	using System.Diagnostics;
 	using System.Linq;
 
 	using Castle.Core.Internal;
@@ -30,8 +31,13 @@ namespace Castle.Core
 	[Serializable]
 	public class InterceptorReference : IReference<IInterceptor>, IEquatable<InterceptorReference>
 	{
+		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 		private readonly string componentKey;
+
+		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 		private readonly DependencyModel dependencyModel;
+
+		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 		private readonly Type serviceType;
 
 		/// <summary>
@@ -85,7 +91,7 @@ namespace Castle.Core
 			{
 				return componentKey;
 			}
-			return serviceType.FullName ?? string.Empty;
+			return serviceType.Name ?? string.Empty;
 		}
 
 		public bool Equals(InterceptorReference other)
