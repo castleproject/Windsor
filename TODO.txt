@@ -10,3 +10,5 @@
 		- EventWiringFacility
 		- RemotingFacility
 		- FactorySupportFacility
+
+- test Interface_that_depends_on_service_it_is_intercepting causes debugger view to some reason not be able to evaluate children and die
