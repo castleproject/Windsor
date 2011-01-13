@@ -352,21 +352,21 @@ namespace Castle.Core
 			var services = Services.ToArray();
 			if (services.Length == 1 && services.Single() == Implementation)
 			{
-				return Implementation.Name;
+				return Implementation.ToCSharpString();
 			}
 
 			string value;
 			if (Implementation == typeof(LateBoundComponent))
 			{
-				value = string.Format("late bound {0}", services[0].Name);
+				value = string.Format("late bound {0}", services[0].ToCSharpString());
 			}
 			else if (Implementation == null)
 			{
-				value = "no impl / " + services[0].Name;
+				value = "no impl / " + services[0].ToCSharpString();
 			}
 			else
 			{
-				value = string.Format("{0} / {1}", Implementation.Name, services[0].Name);
+				value = string.Format("{0} / {1}", Implementation.ToCSharpString(), services[0].ToCSharpString());
 			}
 			if (services.Length > 1)
 			{
