@@ -22,7 +22,7 @@ namespace Castle.Windsor.Experimental.Diagnostics.DebuggerViews
 	using Castle.Windsor.Experimental.Diagnostics.Helpers;
 
 #if !SILVERLIGHT
-	[DebuggerDisplay("{key,nq}{description,nq}")]
+	[DebuggerDisplay("{description,nq}")]
 	public class ComponentDebuggerView
 	{
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
@@ -34,19 +34,25 @@ namespace Castle.Windsor.Experimental.Diagnostics.DebuggerViews
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 		private readonly IHandler handler;
 
-		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
-		private string key = string.Empty;
-
 		public ComponentDebuggerView(IHandler handler, params IComponentDebuggerExtension[] defaultExtension)
 		{
 			var name = handler.ComponentModel.ComponentName;
-			if(name.SetByUser)
+			if (name.SetByUser)
 			{
-				key = string.Format("\"{0}\" ", name.Name);
+				description = string.Format("\"{0}\" {1}", name.Name, handler.GetServicesDescription());
+			}
+			else
+			{
+				description = handler.GetServicesDescription();
 			}
 			this.handler = handler;
 			extension = defaultExtension.Concat(GetExtensions(handler)).ToArray();
-			description = handler.GetServicesDescription();
+		}
+
+		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
+		public string Description
+		{
+			get { return description; }
 		}
 
 		[DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
@@ -54,7 +60,6 @@ namespace Castle.Windsor.Experimental.Diagnostics.DebuggerViews
 		{
 			get { return extension.SelectMany(e => e.Attach()).ToArray(); }
 		}
-
 
 		private IEnumerable<IComponentDebuggerExtension> GetExtensions(IHandler handler)
 		{
