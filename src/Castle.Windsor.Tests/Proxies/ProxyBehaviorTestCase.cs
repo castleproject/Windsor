@@ -28,7 +28,6 @@ namespace Castle.Proxies
 #if !SILVERLIGHT
 	using Castle.XmlFiles;
 #endif
-
 	using NUnit.Framework;
 
 	[TestFixture]
@@ -63,7 +62,7 @@ namespace Castle.Proxies
 
 			Assert.IsTrue(ProxyServices.IsDynamicProxy(service.GetType()));
 			Assert.IsNotNull(OnBehalfAwareProxyGenerationHook.target);
-			Assert.AreEqual(typeof(ISimpleService), OnBehalfAwareProxyGenerationHook.target.AllServices.Single());
+			Assert.AreEqual(typeof(ISimpleService), OnBehalfAwareProxyGenerationHook.target.Services.Single());
 		}
 
 		[Test]
@@ -81,7 +80,7 @@ namespace Castle.Proxies
 
 			Assert.IsTrue(ProxyServices.IsDynamicProxy(service.Dependency.GetType()));
 			Assert.IsNotNull(OnBehalfAwareProxyGenerationHook.target);
-			Assert.AreEqual(typeof(SimpleComponent1), OnBehalfAwareProxyGenerationHook.target.AllServices.Single());
+			Assert.AreEqual(typeof(SimpleComponent1), OnBehalfAwareProxyGenerationHook.target.Services.Single());
 		}
 
 		[Test]
@@ -100,7 +99,7 @@ namespace Castle.Proxies
 
 			Assert.IsTrue(ProxyServices.IsDynamicProxy(service.GetType()));
 			Assert.IsNotNull(OnBehalfAwareInterceptorSelector.target);
-			Assert.AreEqual(typeof(ISimpleService), OnBehalfAwareInterceptorSelector.target.AllServices.Single());
+			Assert.AreEqual(typeof(ISimpleService), OnBehalfAwareInterceptorSelector.target.Services.Single());
 		}
 
 		[Test]
@@ -118,7 +117,7 @@ namespace Castle.Proxies
 
 			Assert.IsTrue(ProxyServices.IsDynamicProxy(service.Dependency.GetType()));
 			Assert.IsNotNull(OnBehalfAwareInterceptorSelector.target);
-			Assert.AreEqual(typeof(SimpleComponent1), OnBehalfAwareInterceptorSelector.target.AllServices.Single());
+			Assert.AreEqual(typeof(SimpleComponent1), OnBehalfAwareInterceptorSelector.target.Services.Single());
 		}
 
 		[Test]

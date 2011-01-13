@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -23,8 +23,8 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 	using Castle.MicroKernel.LifecycleConcerns;
 
 	/// <summary>
-	/// Inspects the type looking for interfaces that constitutes
-	/// lifecycle interfaces, defined in the Castle.Model namespace.
+	///   Inspects the type looking for interfaces that constitutes
+	///   lifecycle interfaces, defined in the Castle.Model namespace.
 	/// </summary>
 	[Serializable]
 	public class LifecycleModelInspector : IContributeComponentModelConstruction
@@ -57,7 +57,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 		private void ProcessLateBoundModel(ComponentModel model)
 		{
 			var commission = new LateBoundConcerns();
-			if (model.AllServices.Any(s => s.Is<IInitializable>()))
+			if (model.Services.Any(s => s.Is<IInitializable>()))
 			{
 				model.Lifecycle.Add(InitializationConcern.Instance);
 			}
@@ -66,7 +66,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 				commission.AddConcern<IInitializable>(InitializationConcern.Instance);
 			}
 #if !SL3
-			if (model.AllServices.Any(s => s.Is<ISupportInitialize>()))
+			if (model.Services.Any(s => s.Is<ISupportInitialize>()))
 			{
 				model.Lifecycle.Add(SupportInitializeConcern.Instance);
 			}
@@ -80,7 +80,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 				model.Lifecycle.Add(commission as ICommissionConcern);
 			}
 
-			if (model.AllServices.Any(s => s.Is<IDisposable>()))
+			if (model.Services.Any(s => s.Is<IDisposable>()))
 			{
 				model.Lifecycle.Add(DisposalConcern.Instance);
 			}

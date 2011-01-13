@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -33,7 +33,7 @@ namespace Castle.Windsor.Tests.Interceptors
 
 		public bool HasInterceptors(ComponentModel model)
 		{
-			return model.AllServices.All(s => s.Is<IInterceptor>() == false);
+			return model.Services.All(s => s.Is<IInterceptor>() == false);
 		}
 
 		public InterceptorReference[] SelectInterceptors(ComponentModel model, InterceptorReference[] interceptors)

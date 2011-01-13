@@ -79,20 +79,6 @@ namespace Castle.Core
 			}
 		}
 
-		public IEnumerable<Type> AllServices
-		{
-			get { return services; }
-		}
-
-		/// <summary>
-		///   Gets the class services exposed
-		/// </summary>
-		/// <value>The service.</value>
-		public IEnumerable<Type> ClassServices
-		{
-			get { return services.TakeWhile(s => s.IsClass); }
-		}
-
 		public ComponentName ComponentName
 		{
 			get { return componentName; }
@@ -249,15 +235,6 @@ namespace Castle.Core
 		}
 
 		/// <summary>
-		///   Gets the interface services exposed.
-		/// </summary>
-		/// <value>The service.</value>
-		public IEnumerable<Type> InterfaceServices
-		{
-			get { return services.SkipWhile(s => s.IsClass); }
-		}
-
-		/// <summary>
 		///   Gets the lifecycle steps.
 		/// </summary>
 		/// <value>The lifecycle steps.</value>
@@ -327,6 +304,11 @@ namespace Castle.Core
 		/// </value>
 		public bool RequiresGenericArguments { get; set; }
 
+		public IEnumerable<Type> Services
+		{
+			get { return services; }
+		}
+
 		public void AddService(Type type)
 		{
 			if (type == null)
@@ -367,7 +349,7 @@ namespace Castle.Core
 
 		public override string ToString()
 		{
-			var services = AllServices.ToArray();
+			var services = Services.ToArray();
 			if (services.Length == 1 && services.Single() == Implementation)
 			{
 				return Implementation.Name;
