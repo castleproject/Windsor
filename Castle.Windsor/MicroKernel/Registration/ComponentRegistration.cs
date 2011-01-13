@@ -77,7 +77,7 @@ namespace Castle.MicroKernel.Registration
 
 			this.componentModel = componentModel;
 			name = componentModel.ComponentName;
-			potentialServices.AddRange(componentModel.AllServices);
+			potentialServices.AddRange(componentModel.Services);
 			implementation = componentModel.Implementation;
 		}
 
@@ -901,9 +901,7 @@ namespace Castle.MicroKernel.Registration
 
 		private Type[] FilterServices(IKernel kernel)
 		{
-			var services = new List<Type>(potentialServices.Count);
-			services.AddRange(potentialServices);
-
+			var services = new List<Type>(potentialServices);
 			if (registerNewServicesOnly)
 			{
 #if SILVERLIGHT

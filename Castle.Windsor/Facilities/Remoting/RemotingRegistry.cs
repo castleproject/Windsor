@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -24,13 +24,11 @@ namespace Castle.Facilities.Remoting
 	using Castle.Facilities.Remoting.CustomActivators;
 	using Castle.MicroKernel;
 
-
 	public class RemotingRegistry : MarshalByRefObject, IDisposable
 	{
 		private readonly IKernel kernel;
-		private readonly Dictionary<string,ComponentModel> entries = new Dictionary<string, ComponentModel>();
+		private readonly Dictionary<string, ComponentModel> entries = new Dictionary<string, ComponentModel>();
 		private readonly Dictionary<Type, ComponentModel> genericEntries = new Dictionary<Type, ComponentModel>();
-
 
 		public RemotingRegistry(IKernel kernel)
 		{
@@ -47,7 +45,7 @@ namespace Castle.Facilities.Remoting
 
 		public void AddComponentEntry(ComponentModel model)
 		{
-			var service = model.AllServices.Single();
+			var service = model.Services.Single();
 			if (service.IsGenericType)
 			{
 				genericEntries[service] = model;
@@ -86,9 +84,9 @@ namespace Castle.Facilities.Remoting
 		}
 
 		/// <summary>
-		/// Used in case of generics:
+		///   Used in case of generics:
 		/// </summary>
-		/// <param name="serviceType"></param>
+		/// <param name = "serviceType"></param>
 		/// <returns></returns>
 		private ComponentModel GetModel(Type serviceType)
 		{
@@ -105,7 +103,6 @@ namespace Castle.Facilities.Remoting
 		{
 			return kernel.Resolve(serviceType);
 		}
-
 
 		public void Publish(Type serviceType)
 		{

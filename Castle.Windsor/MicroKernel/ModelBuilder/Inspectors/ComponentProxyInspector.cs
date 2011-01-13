@@ -132,7 +132,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 			{
 				var message = String.Format("The class {0} requested a single interface proxy, " +
 				                            "however the service {1} does not represent an interface",
-				                            model.Implementation.FullName, model.AllServices.First().FullName);
+				                            model.Implementation.FullName, model.Services.First().FullName);
 
 				throw new ComponentRegistrationException(message);
 			}

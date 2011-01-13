@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -62,26 +62,7 @@ namespace Castle.MicroKernel.Handlers
 
 		public IEnumerable<Type> Services
 		{
-			get { return ComponentModel.AllServices; }
-		}
-
-		protected virtual void Dispose(bool disposing)
-		{
-			if (disposing)
-			{
-				if (parentHandler != null)
-				{
-					parentHandler.OnHandlerStateChanged -= RaiseHandlerStateChanged;
-				}
-			}
-		}
-
-		protected virtual void RaiseHandlerStateChanged(object s, EventArgs e)
-		{
-			if (OnHandlerStateChanged != null)
-			{
-				OnHandlerStateChanged(s, e);
-			}
+			get { return ComponentModel.Services; }
 		}
 
 		public void Dispose()
@@ -157,6 +138,25 @@ namespace Castle.MicroKernel.Handlers
 			}
 
 			return value;
+		}
+
+		protected virtual void Dispose(bool disposing)
+		{
+			if (disposing)
+			{
+				if (parentHandler != null)
+				{
+					parentHandler.OnHandlerStateChanged -= RaiseHandlerStateChanged;
+				}
+			}
+		}
+
+		protected virtual void RaiseHandlerStateChanged(object s, EventArgs e)
+		{
+			if (OnHandlerStateChanged != null)
+			{
+				OnHandlerStateChanged(s, e);
+			}
 		}
 
 		public event HandlerStateDelegate OnHandlerStateChanged;
