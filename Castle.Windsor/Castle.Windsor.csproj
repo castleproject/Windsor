@@ -374,6 +374,7 @@
     <Compile Include="Compatibility\SilverlightHacks.cs" />
     <Compile Include="Core\Internal\ThreadSafeInit.cs" />
     <Compile Include="Core\Internal\TypeByInheritanceDepthMostSpecificFirstComparer.cs" />
+    <Compile Include="Core\Internal\TypeUtil.cs" />
     <Compile Include="Core\LifestyleAttributes.cs" />
     <Compile Include="Core\LifestyleType.cs" />
     <Compile Include="Core\PropertiesInspectionBehavior.cs" />
