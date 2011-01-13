@@ -32,7 +32,6 @@ namespace Castle.Windsor.Tests
 #if !SILVERLIGHT
 	using Castle.XmlFiles;
 #endif
-
 	using NUnit.Framework;
 
 	[TestFixture]
@@ -283,6 +282,7 @@ namespace Castle.Windsor.Tests
 				Assert.AreEqual(10, service.Sum(3, 4));
 			}
 		}
+
 #if !SILVERLIGHT
 		private ConfigurationInstaller XmlResource(string fileName)
 		{
@@ -325,7 +325,7 @@ namespace Castle.Windsor.Tests
 
 		private void OnComponentRegistered(String key, IHandler handler)
 		{
-			if (handler.ComponentModel.AllServices.Any(s => s.Is<IInterceptor>()))
+			if (handler.ComponentModel.Services.Any(s => s.Is<IInterceptor>()))
 			{
 				return;
 			}

@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -86,7 +86,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 
 		private void ReadProxyBehaviorFromConfig(ComponentModel model, ComponentProxyBehaviorAttribute behavior)
 		{
-			if(model.Configuration == null)
+			if (model.Configuration == null)
 			{
 				return;
 			}
@@ -110,7 +110,6 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 				list.Add(@interface);
 			}
 			behavior.AdditionalInterfaces = list.ToArray();
-
 		}
 
 		private static void ApplyProxyBehavior(ComponentProxyBehaviorAttribute behavior, ComponentModel model)
@@ -125,16 +124,15 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 #endif
 			options.AddAdditionalInterfaces(behavior.AdditionalInterfaces);
 		}
-		
+
 #if !SILVERLIGHT
 		private static void EnsureComponentRegisteredWithInterface(ComponentModel model)
 		{
-			var first = model.Services.First();
-			if (first.IsClass)
+			if (model.HasClassServices)
 			{
 				var message = String.Format("The class {0} requested a single interface proxy, " +
 				                            "however the service {1} does not represent an interface",
-											model.Implementation.FullName, first.FullName);
+				                            model.Implementation.FullName, model.Services.First().FullName);
 
 				throw new ComponentRegistrationException(message);
 			}

@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@ namespace Castle.Facilities.TypedFactory
 		public virtual void BuildCache(ComponentModel model)
 		{
 			var map = new Dictionary<MethodInfo, FactoryMethod>(new SimpleMethodEqualityComparer());
-			foreach (var service in model.AllServices)
+			foreach (var service in model.Services)
 			{
 				BuildHandlersMap(service, map);
 			}
@@ -76,11 +76,11 @@ namespace Castle.Facilities.TypedFactory
 
 		void IContributeComponentModelConstruction.ProcessModel(IKernel kernel, ComponentModel model)
 		{
-			if(model.Configuration == null)
+			if (model.Configuration == null)
 			{
 				return;
 			}
-			if(model.Configuration.Attributes[TypedFactoryFacility.IsFactoryKey] == null)
+			if (model.Configuration.Attributes[TypedFactoryFacility.IsFactoryKey] == null)
 			{
 				return;
 			}

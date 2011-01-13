@@ -20,6 +20,7 @@ namespace Castle.Windsor.Proxy
 
 	using Castle.Core;
 	using Castle.Core.Interceptor;
+	using Castle.Core.Internal;
 	using Castle.DynamicProxy;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Context;
@@ -57,8 +58,8 @@ namespace Castle.Windsor.Proxy
 			Init();
 		}
 
-		public override object Create(IProxyFactoryExtension customFactory, IKernel kernel, ComponentModel model,
-		                              CreationContext context, params object[] constructorArguments)
+		public override object Create(IProxyFactoryExtension customFactory, IKernel kernel, ComponentModel model, CreationContext context,
+		                              params object[] constructorArguments)
 		{
 			var interceptors = ObtainInterceptors(kernel, model, context);
 			var proxyOptions = ProxyUtil.ObtainProxyOptions(model, true);
@@ -102,17 +103,9 @@ namespace Castle.Windsor.Proxy
 			CustomizeOptions(proxyGenOptions, kernel, model, constructorArguments);
 
 			var interfaces = proxyOptions.AdditionalInterfaces;
-			var firstService = model.Services.First();
-			if (firstService.IsClass)
+			if (model.HasClassServices == false)
 			{
-				var additionalInterfaces = model.Services
-					.SkipWhile(c => c.IsClass)
-					.Concat(interfaces)
-					.ToArray();
-				proxy = generator.CreateClassProxy(firstService, additionalInterfaces, proxyGenOptions, constructorArguments, interceptors);
-			}
-			else
-			{
+				var firstService = model.Services.First();
 				var additionalInterfaces = model.Services.Skip(1).Concat(interfaces).ToArray();
 				if (proxyOptions.OmitTarget)
 				{
@@ -126,6 +119,23 @@ namespace Castle.Windsor.Proxy
 				{
 					proxy = generator.CreateInterfaceProxyWithTarget(firstService, additionalInterfaces, target, proxyGenOptions, interceptors);
 				}
+			}
+			else
+			{
+				Type classToProxy;
+				if (model.Implementation != null && model.Implementation != typeof(LateBoundComponent))
+				{
+					classToProxy = model.Implementation;
+				}
+				else
+				{
+					classToProxy = model.Services.First();
+				}
+				var additionalInterfaces = model.Services
+					.SkipWhile(s => s.IsClass)
+					.Concat(interfaces)
+					.ToArray();
+				proxy = generator.CreateClassProxy(classToProxy, additionalInterfaces, proxyGenOptions, constructorArguments, interceptors);
 			}
 
 			CustomizeProxy(proxy, proxyGenOptions, kernel, model);
@@ -189,7 +199,7 @@ namespace Castle.Windsor.Proxy
 		{
 			var proxyOptions = ProxyUtil.ObtainProxyOptions(model, true);
 
-			return model.Services.First().IsClass == false &&
+			return model.HasClassServices == false &&
 			       proxyOptions.OmitTarget == false;
 		}
 

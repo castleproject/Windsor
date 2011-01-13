@@ -32,14 +32,12 @@ namespace Castle.Core
 	public sealed class ComponentModel : GraphNode
 	{
 		public const string SkipRegistration = "skip.registration";
+		private readonly ComponentName componentName;
 
 		private readonly ConstructorCandidateCollection constructors = new ConstructorCandidateCollection();
 
-		private readonly List<Type> services = new List<Type>(4);
-
 		private readonly LifecycleConcernsCollection lifecycle = new LifecycleConcernsCollection();
-
-		private readonly ComponentName componentName;
+		private readonly List<Type> services = new List<Type>(4);
 
 		[NonSerialized]
 		private IDictionary customDependencies;
@@ -74,18 +72,11 @@ namespace Castle.Core
 		{
 			componentName = name;
 			Implementation = implementation;
-			LifestyleType = LifestyleType.Undefined;
-			InspectionBehavior = PropertiesInspectionBehavior.Undefined;
 			this.extendedProperties = extendedProperties;
 			foreach (var type in services)
 			{
 				AddService(type);
 			}
-		}
-
-		public IEnumerable<Type> AllServices
-		{
-			get { return services; }
 		}
 
 		public ComponentName ComponentName
@@ -179,6 +170,11 @@ namespace Castle.Core
 			}
 		}
 
+		public bool HasClassServices
+		{
+			get { return services.First().IsClass; }
+		}
+
 		public bool HasCustomDependencies
 		{
 			get
@@ -236,15 +232,6 @@ namespace Castle.Core
 				var originalValue = Interlocked.CompareExchange(ref interceptors, value, null);
 				return originalValue ?? value;
 			}
-		}
-
-		/// <summary>
-		///   Gets the services exposed.
-		/// </summary>
-		/// <value>The service.</value>
-		public IEnumerable<Type> Services
-		{
-			get { return services; }
 		}
 
 		/// <summary>
@@ -317,6 +304,11 @@ namespace Castle.Core
 		/// </value>
 		public bool RequiresGenericArguments { get; set; }
 
+		public IEnumerable<Type> Services
+		{
+			get { return services; }
+		}
+
 		public void AddService(Type type)
 		{
 			if (type == null)
@@ -357,22 +349,20 @@ namespace Castle.Core
 
 		public override string ToString()
 		{
-			var services = AllServices.ToArray();
-			if(services.Length == 1 && services.Single() == Implementation)
+			var services = Services.ToArray();
+			if (services.Length == 1 && services.Single() == Implementation)
 			{
 				return Implementation.Name;
 			}
 
 			string value;
-			if(Implementation == typeof(LateBoundComponent))
+			if (Implementation == typeof(LateBoundComponent))
 			{
-
 				value = string.Format("late bound {0}", services[0].Name);
 			}
-			else if(Implementation == null)
+			else if (Implementation == null)
 			{
-
-				value = "no impl / "+ services[0].Name;
+				value = "no impl / " + services[0].Name;
 			}
 			else
 			{
@@ -385,4 +375,4 @@ namespace Castle.Core
 			return value;
 		}
 	}
-} 
+}
