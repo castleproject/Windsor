@@ -142,14 +142,9 @@ namespace Castle.MicroKernel.Registration
 			get { return potentialServices; }
 		}
 
-		public IEnumerable<Type> ClassServices
+		protected internal int ServicesCount
 		{
-			get { return potentialServices.Where(c => c.IsClass); }
-		}
-
-		public IEnumerable<Type> InterfaceServices
-		{
-			get { return potentialServices.Where(c => c.IsInterface); }
+			get { return potentialServices.Count; }
 		}
 
 		/// <summary>
