@@ -80,7 +80,7 @@ namespace Castle.Windsor.Tests.Experimental
 			Register<DisposableFoo>();
 			var foo1 = Container.Resolve<DisposableFoo>();
 			var objects = GetTrackedObjects();
-			Assert.AreEqual("No objects are ever tracked", objects.Key);
+			Assert.AreEqual("No objects are ever tracked", objects.Description);
 			Assert.IsNull(objects.Value);
 		}
 
@@ -105,7 +105,7 @@ namespace Castle.Windsor.Tests.Experimental
 			Register<DisposableFoo>();
 			var foo1 = Container.Resolve<DisposableFoo>();
 			var objects = GetTrackedObjects();
-			Assert.AreEqual("Not supported with MyCustomReleasePolicy", objects.Key);
+			Assert.AreEqual("Not supported with MyCustomReleasePolicy", objects.Description);
 			Assert.IsNull(objects.Value);
 		}
 

@@ -17,11 +17,11 @@ namespace Castle.Windsor.Experimental.Diagnostics.DebuggerViews
 	using System.Diagnostics;
 
 #if !SILVERLIGHT
-	[DebuggerDisplay("{key,nq}", Name = "{name,nq}")]
+	[DebuggerDisplay("{description,nq}", Name = "{name,nq}")]
 	public class DebuggerViewItem
 	{
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
-		private readonly object key;
+		private readonly object description;
 
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 		private readonly string name;
@@ -29,24 +29,24 @@ namespace Castle.Windsor.Experimental.Diagnostics.DebuggerViews
 		[DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
 		private readonly object value;
 
-		public DebuggerViewItem(string name, string key, object value)
+		public DebuggerViewItem(string name, string description, object value)
 		{
 			this.name = name;
-			this.key = key;
+			this.description = description;
 			this.value = value;
 		}
 
 		public DebuggerViewItem(string name, object value)
 		{
 			this.name = name;
-			key = value;
+			description = value;
 			this.value = value;
 		}
 
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
-		public object Key
+		public object Description
 		{
-			get { return key; }
+			get { return description; }
 		}
 
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
