@@ -47,6 +47,7 @@ namespace Castle.Windsor.Experimental.Diagnostics.Helpers
 				var value = interceptors.ToArray();
 				yield return new DebuggerViewItem("Interceptors", "Count = " + value.Length, value);
 			}
+			yield return new DebuggerViewItem("Name", handler.ComponentModel.Name);
 			yield return new DebuggerViewItem("Raw handler", handler);
 		}
 
