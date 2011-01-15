@@ -26,6 +26,7 @@ namespace Castle.Windsor.Experimental.Diagnostics.Helpers
 #if !SILVERLIGHT
 	public class MismatchedLifestyleDependencyViewBuilder
 	{
+		private readonly ComponentModel ultimateRootComponent;
 		private readonly IHandler handler;
 		private readonly MismatchedLifestyleDependencyViewBuilder parent;
 
@@ -33,6 +34,14 @@ namespace Castle.Windsor.Experimental.Diagnostics.Helpers
 		{
 			this.handler = handler;
 			this.parent = parent;
+			if(parent == null)
+			{
+				ultimateRootComponent = handler.ComponentModel;
+			}
+			else
+			{
+				ultimateRootComponent = parent.ultimateRootComponent;
+			}
 		}
 
 		public IHandler Handler
@@ -54,6 +63,11 @@ namespace Castle.Windsor.Experimental.Diagnostics.Helpers
 		private ComponentModel Model
 		{
 			get { return handler.ComponentModel; }
+		}
+
+		public bool Checked(ComponentModel component)
+		{
+			return ultimateRootComponent == component;
 		}
 
 		public bool Mismatched()

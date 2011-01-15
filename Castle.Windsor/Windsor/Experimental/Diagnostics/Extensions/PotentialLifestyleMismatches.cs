@@ -55,7 +55,7 @@ namespace Castle.Windsor.Experimental.Diagnostics.Extensions
 		private IEnumerable<MismatchedLifestyleDependencyViewBuilder> GetMismatch(MismatchedLifestyleDependencyViewBuilder parent, ComponentModel component,
 		                                                     Dictionary<ComponentModel, IHandler> model2Handler)
 		{
-			if (parent.Handler.ComponentModel == component)
+			if (parent.Checked(component))
 			{
 				yield break;
 			}
