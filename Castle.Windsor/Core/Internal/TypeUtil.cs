@@ -52,13 +52,26 @@ namespace Castle.Core.Internal
 
 		private static void ToCSharpString(Type type, StringBuilder name)
 		{
+			if (type.IsArray)
+			{
+				var elementType = type.GetElementType();
+				ToCSharpString(elementType, name);
+				name.Append(type.Name.Substring(elementType.Name.Length));
+				return;
+			}
+			if (type.IsGenericParameter)
+			{
+				//NOTE: this has to go before type.IsNested because nested generic type is also a generic parameter and otherwise we'd have stack overflow
+				name.AppendFormat("·{0}·", type.Name);
+				return;
+			}
+			if (type.IsNested)
+			{
+				ToCSharpString(type.DeclaringType, name);
+				name.Append(".");
+			}
 			if (type.IsGenericType == false)
 			{
-				if (type.IsGenericParameter)
-				{
-					name.AppendFormat("·{0}·", type.Name);
-					return;
-				}
 				name.Append(type.Name);
 				return;
 			}
