@@ -304,8 +304,10 @@
     <Compile Include="AbstractContainerTestFixture.cs" />
     <Compile Include="ByRefDependenciesTestCase.cs" />
     <Compile Include="ClassComponents\CBA.cs" />
+    <Compile Include="ClassComponents\GenericHasNested.cs" />
     <Compile Include="ClassComponents\HasByRefCtorArgument.cs" />
     <Compile Include="ClassComponents\HasCtorDependency.cs" />
+    <Compile Include="ClassComponents\HasNestedType.cs" />
     <Compile Include="ClassInheritanceTestCase.cs" />
     <Compile Include="ComponentsParametersDivisionTestsCase.cs" />
     <Compile Include="Components\ArrayRefDepAsConstructor.cs" />
@@ -667,6 +669,7 @@
     <Compile Include="Registration\DynamicParametersTestCase.cs" />
     <Compile Include="TypedFactoryInterfaces\ICalculatorFactoryCreateWithoutId.cs" />
     <Compile Include="TypedFactoryInterfaces\ICalculatorFactory.cs" />
+    <Compile Include="TypeUtilTestCase.cs" />
     <Compile Include="Windsor.Tests\LifecycledComponentsReleasePolicyComponentTrackingTestCase.cs" />
     <Compile Include="Windsor.Tests\GenericVarianceTestCase.cs" />
     <Compile Include="Windsor.Tests\LitestylePerThreadTestCase.cs" />
