@@ -65,7 +65,11 @@ namespace Castle.Core.Internal
 				name.AppendFormat("·{0}·", type.Name);
 				return;
 			}
+#if SL3
+			if(type.DeclaringType != null)
+#else
 			if (type.IsNested)
+#endif
 			{
 				ToCSharpString(type.DeclaringType, name);
 				name.Append(".");
