@@ -22,11 +22,28 @@ namespace Castle.Windsor.Experimental.Diagnostics.Helpers
 	{
 		public static string GetLifestyleDescription(this ComponentModel componentModel)
 		{
+			if (componentModel.LifestyleType == LifestyleType.Undefined)
+			{
+				return string.Format("{0}*", LifestyleType.Singleton);
+			}
 			if (componentModel.LifestyleType != LifestyleType.Custom)
 			{
 				return componentModel.LifestyleType.ToString();
 			}
-			return string.Format("custom ({0})", componentModel.CustomLifestyle.Name);
+			return componentModel.CustomLifestyle.Name;
+		}
+
+		public static string GetLifestyleDescriptionLong(this ComponentModel componentModel)
+		{
+			if (componentModel.LifestyleType == LifestyleType.Undefined)
+			{
+				return string.Format("{0} (default lifestyle {1} will be used)", componentModel.LifestyleType, LifestyleType.Singleton);
+			}
+			if (componentModel.LifestyleType != LifestyleType.Custom)
+			{
+				return componentModel.LifestyleType.ToString();
+			}
+			return "Custom: " + componentModel.CustomLifestyle.Name;
 		}
 
 		public static string GetServicesDescription(this IHandler handler)

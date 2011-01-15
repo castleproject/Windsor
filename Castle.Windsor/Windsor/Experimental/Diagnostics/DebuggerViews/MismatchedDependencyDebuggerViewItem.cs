@@ -47,16 +47,14 @@ namespace Castle.Windsor.Experimental.Diagnostics.DebuggerViews
 		}
 
 		[DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
-		public DebuggerViewItem[] ViewItems
+		public ComponentDebuggerView[] ViewItems
 		{
 			get { return Array.ConvertAll(handlers, BuildComponentView); }
 		}
 
-		private DebuggerViewItem BuildComponentView(IHandler handler)
+		private ComponentDebuggerView BuildComponentView(IHandler handler)
 		{
-			var lifestyleDescription = handler.ComponentModel.GetLifestyleDescription();
-			var item = new ComponentDebuggerView(handler, lifestyleDescription, new DefaultComponentViewBuilder(handler));
-			return new DebuggerViewItem(handler.ComponentModel.Name, lifestyleDescription, item);
+			return new ComponentDebuggerView(handler, handler.ComponentModel.GetLifestyleDescription(), new DefaultComponentViewBuilder(handler));
 		}
 	}
 #endif
