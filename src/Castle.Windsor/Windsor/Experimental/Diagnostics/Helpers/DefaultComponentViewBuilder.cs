@@ -40,7 +40,7 @@ namespace Castle.Windsor.Experimental.Diagnostics.Helpers
 				yield return new DebuggerViewItem("Service", service);
 			}
 			yield return new DebuggerViewItem("Status", GetStatus());
-			yield return new DebuggerViewItem("Lifestyle", GetLifestyleDescription(handler.ComponentModel));
+			yield return new DebuggerViewItem("Lifestyle", handler.ComponentModel.GetLifestyleDescriptionLong());
 			if (HasInterceptors())
 			{
 				var interceptors = handler.ComponentModel.Interceptors;
@@ -60,21 +60,6 @@ namespace Castle.Windsor.Experimental.Diagnostics.Helpers
 			}
 
 			return LateBoundComponent.Instance;
-		}
-
-		// TODO: this should go to the description util
-		private object GetLifestyleDescription(ComponentModel componentModel)
-		{
-			var lifestyle = componentModel.LifestyleType;
-			if (lifestyle == LifestyleType.Custom)
-			{
-				return "Custom: " + componentModel.CustomLifestyle.Name;
-			}
-			if (lifestyle == LifestyleType.Undefined)
-			{
-				return string.Format("{0} (default lifestyle {1} will be used)", lifestyle, LifestyleType.Singleton);
-			}
-			return lifestyle;
 		}
 
 		private object GetStatus()
