@@ -14,13 +14,15 @@
 
 namespace Castle.Windsor.Experimental.Diagnostics.Extensions
 {
+#if !SILVERLIGHT
 	using System.Collections.Generic;
+	using System.Linq;
 
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Releasers;
 	using Castle.Windsor.Experimental.Diagnostics.DebuggerViews;
+	using Castle.Windsor.Experimental.Diagnostics.Helpers;
 
-#if !SILVERLIGHT
 	public class ReleasePolicyTrackedObjects : AbstractContainerDebuggerExtension
 	{
 		private const string name = "Objects tracked by release policy";
@@ -38,7 +40,9 @@ namespace Castle.Windsor.Experimental.Diagnostics.Extensions
 				var localPolicy = policy as LifecycledComponentsReleasePolicy;
 				var items = new List<Burden>(localPolicy.TrackedObjects);
 				AddFromSubScopes(items, localPolicy.SubScopes);
-				return new[] { new DebuggerViewItem(name, "Count = " + items.Count, items.ToArray()) };
+				var burdens = items.ToArray();
+				var result = burdens.ToLookup(b => b.Handler).Select(OnSelector).ToArray();
+				return new[] { new DebuggerViewItem(name, "Count = " + items.Count, result) };
 			}
 			if (policy is NoTrackingReleasePolicy)
 			{
@@ -59,6 +63,16 @@ namespace Castle.Windsor.Experimental.Diagnostics.Extensions
 				items.AddRange(scope.TrackedObjects);
 				AddFromSubScopes(items, scope.SubScopes);
 			}
+		}
+
+		private DebuggerViewItem OnSelector(IGrouping<IHandler, Burden> lookup)
+		{
+			var handler = lookup.Key;
+			var objects = lookup.Select(g => g.Instance).ToArray();
+			var view = ComponentDebuggerView.BuildFor(handler);
+			return new DebuggerViewItem(handler.GetComponentName(),
+			                            "Count = " + objects.Length,
+			                            new ReleasePolicyTrackedObjectsDebuggerViewItem(view, objects));
 		}
 
 		public static string Name

@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ namespace Castle.Windsor.Tests
 
 	using NUnit.Framework;
 
+	[TestFixture]
 	public class DisposeOrderTestFixture
 	{
 		[Test]
@@ -35,7 +36,7 @@ namespace Castle.Windsor.Tests
 				dictionary1[key] = new object();
 			}
 			var index = 0;
-			foreach (KeyValuePair<int, object> keyValuePair in dictionary1)
+			foreach (var keyValuePair in dictionary1)
 			{
 				Assert.AreEqual(expected1[index], keyValuePair.Key);
 				index++;
@@ -50,7 +51,7 @@ namespace Castle.Windsor.Tests
 			}
 
 			index = 0;
-			foreach (KeyValuePair<int, object> keyValuePair in dictionary2)
+			foreach (var keyValuePair in dictionary2)
 			{
 				Assert.AreEqual(expected2[index], keyValuePair.Key);
 				index++;
@@ -113,7 +114,6 @@ namespace Castle.Windsor.Tests
 
 		private class MyService : IMyService
 		{
-
 			private bool inUse;
 
 			public bool IsInUse
@@ -138,11 +138,6 @@ namespace Castle.Windsor.Tests
 
 			public bool IsInitialized { get; private set; }
 
-			public void Initialize()
-			{
-				IsInitialized = true;
-			}
-
 			public void Dispose()
 			{
 				if (IsInUse)
@@ -152,6 +147,10 @@ namespace Castle.Windsor.Tests
 				IsInitialized = false;
 			}
 
+			public void Initialize()
+			{
+				IsInitialized = true;
+			}
 		}
 	}
 }

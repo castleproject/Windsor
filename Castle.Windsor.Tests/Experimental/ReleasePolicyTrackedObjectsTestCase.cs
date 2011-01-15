@@ -29,6 +29,7 @@ namespace Castle.Windsor.Tests.Experimental
 
 	using NUnit.Framework;
 
+	[TestFixture]
 	public class ReleasePolicyTrackedObjectsTestCase : AbstractContainerTestFixture
 	{
 		private DefaultDebuggingSubSystem subSystem;
@@ -41,8 +42,10 @@ namespace Castle.Windsor.Tests.Experimental
 			var foo2 = Container.Resolve<DisposableFoo>();
 
 			var objects = GetTrackedObjects();
-			var values = (Burden[])objects.Value;
-			Assert.AreEqual(2, values.Length);
+			var values = (DebuggerViewItem[])objects.Value;
+			Assert.AreEqual(1, values.Length);
+			var viewItem = (ReleasePolicyTrackedObjectsDebuggerViewItem)values.Single().Value;
+			Assert.AreEqual(2, viewItem.Instances.Length);
 		}
 
 		[Test]
@@ -55,8 +58,10 @@ namespace Castle.Windsor.Tests.Experimental
 			var foo2 = fooFactory.Invoke();
 
 			var objects = GetTrackedObjects();
-			var values = (Burden[])objects.Value;
-			Assert.AreEqual(4, values.Length);
+			var values = (DebuggerViewItem[])objects.Value;
+			Assert.AreEqual(3, values.Length);
+			var instances = values.SelectMany(v => ((ReleasePolicyTrackedObjectsDebuggerViewItem)v.Value).Instances).ToArray();
+			Assert.AreEqual(4, instances.Length);
 		}
 
 		[Test]
@@ -68,9 +73,10 @@ namespace Castle.Windsor.Tests.Experimental
 			Container.Release(foo1);
 
 			var objects = GetTrackedObjects();
-			var values = (Burden[])objects.Value;
+			var values = (DebuggerViewItem[])objects.Value;
 			Assert.AreEqual(1, values.Length);
-			Assert.AreSame(foo2, values.Single().Instance);
+			var viewItem = (ReleasePolicyTrackedObjectsDebuggerViewItem)values.Single().Value;
+			Assert.AreEqual(1, viewItem.Instances.Length);
 		}
 
 		[Test]

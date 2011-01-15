@@ -16,7 +16,6 @@ namespace Castle.Windsor.Experimental.Diagnostics.Helpers
 {
 	using System.Collections.Generic;
 
-	using Castle.Core;
 	using Castle.Core.Internal;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Handlers;

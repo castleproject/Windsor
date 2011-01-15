@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,46 +14,33 @@
 
 namespace Castle.Windsor.Experimental.Diagnostics.DebuggerViews
 {
-	using System;
+#if !SILVERLIGHT
 	using System.Diagnostics;
 
-	using Castle.MicroKernel;
-
-#if !SILVERLIGHT
-	public class MismatchedDependencyDebuggerViewItem
+	public class ReleasePolicyTrackedObjectsDebuggerViewItem
 	{
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
-		private readonly string description;
+		private readonly ComponentDebuggerView component;
 
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
-		private readonly IHandler[] handlers;
+		private readonly object[] instances;
 
-		public MismatchedDependencyDebuggerViewItem(string description, IHandler[] handlers)
+		public ReleasePolicyTrackedObjectsDebuggerViewItem(ComponentDebuggerView component, object[] instances)
 		{
-			this.description = description;
-			this.handlers = handlers;
+			this.component = component;
+			this.instances = instances;
 		}
 
-		public string Description
+		[DebuggerDisplay("{component.Description,nq}")]
+		public ComponentDebuggerView Component
 		{
-			get { return description; }
-		}
-
-		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
-		public IHandler[] Handlers
-		{
-			get { return handlers; }
+			get { return component; }
 		}
 
 		[DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
-		public ComponentDebuggerView[] ViewItems
+		public object[] Instances
 		{
-			get { return Array.ConvertAll(handlers, BuildComponentView); }
-		}
-
-		private ComponentDebuggerView BuildComponentView(IHandler handler)
-		{
-			return ComponentDebuggerView.BuildFor(handler);
+			get { return instances; }
 		}
 	}
 #endif
