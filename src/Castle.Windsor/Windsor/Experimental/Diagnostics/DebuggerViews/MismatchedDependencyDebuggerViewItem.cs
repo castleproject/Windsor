@@ -54,8 +54,9 @@ namespace Castle.Windsor.Experimental.Diagnostics.DebuggerViews
 
 		private DebuggerViewItem BuildComponentView(IHandler handler)
 		{
-			var item = new ComponentDebuggerView(handler, new DefaultComponentViewBuilder(handler));
-			return new DebuggerViewItem(handler.ComponentModel.Name, handler.ComponentModel.GetLifestyleDescription(), item);
+			var lifestyleDescription = handler.ComponentModel.GetLifestyleDescription();
+			var item = new ComponentDebuggerView(handler, lifestyleDescription, new DefaultComponentViewBuilder(handler));
+			return new DebuggerViewItem(handler.ComponentModel.Name, lifestyleDescription, item);
 		}
 	}
 #endif
