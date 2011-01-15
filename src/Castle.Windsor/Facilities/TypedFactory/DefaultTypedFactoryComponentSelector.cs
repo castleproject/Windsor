@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,12 +16,13 @@ namespace Castle.Facilities.TypedFactory
 {
 	using System;
 	using System.Collections;
-	using System.Globalization;
 	using System.Reflection;
 
+	using Castle.Core;
 	using Castle.Core.Internal;
 	using Castle.MicroKernel;
 
+	[Singleton]
 	public class DefaultTypedFactoryComponentSelector : ITypedFactoryComponentSelector
 	{
 		public ITypedFactoryComponentResolver SelectComponent(MethodInfo method, Type type, object[] arguments)
@@ -44,7 +45,8 @@ namespace Castle.Facilities.TypedFactory
 		/// <param name = "componentType"></param>
 		/// <param name = "additionalArguments"></param>
 		/// <returns></returns>
-		protected virtual ITypedFactoryComponentResolver BuildFactoryComponent(MethodInfo method, string componentName, Type componentType, IDictionary additionalArguments)
+		protected virtual ITypedFactoryComponentResolver BuildFactoryComponent(MethodInfo method, string componentName, Type componentType,
+		                                                                       IDictionary additionalArguments)
 		{
 			var itemType = componentType.GetCompatibleArrayItemType();
 			if (itemType == null)
