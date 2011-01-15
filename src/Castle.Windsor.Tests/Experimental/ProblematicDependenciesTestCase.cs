@@ -24,6 +24,8 @@ namespace Castle.Windsor.Tests.Experimental
 	using Castle.Windsor.Experimental.Diagnostics.DebuggerViews;
 	using Castle.Windsor.Experimental.Diagnostics.Extensions;
 	using Castle.Windsor.Tests.ClassComponents;
+	using Castle.Windsor.Tests.Components;
+	using Castle.Windsor.Tests.Interceptors;
 
 	using NUnit.Framework;
 
@@ -89,6 +91,16 @@ namespace Castle.Windsor.Tests.Experimental
 			Assert.AreEqual(2, cbaMismatches.Length);
 		}
 
+		[Test(Description = "If the test fails, StackOverflowException is thrown")]
+		public void Does_not_crash_on_dependency_cycles()
+		{
+			Container.Register(Component.For<InterceptorThatCauseStackOverflow>().Named("interceptor"),
+			                   Component.For<ICameraService>().ImplementedBy<CameraService>().Interceptors<InterceptorThatCauseStackOverflow>(),
+			                   Component.For<ICameraService>().ImplementedBy<CameraService>().Named("ok to resolve - has no interceptors"));
+			var items = GetMismatches(expectNotExists: true);
+			Assert.IsEmpty(items);
+		}
+
 		[SetUp]
 		public void SetSubSystem()
 		{
@@ -96,11 +108,14 @@ namespace Castle.Windsor.Tests.Experimental
 			Kernel.AddSubSystem(SubSystemConstants.DebuggingKey, subSystem);
 		}
 
-		private MismatchedDependencyDebuggerViewItem[] GetMismatches()
+		private MismatchedDependencyDebuggerViewItem[] GetMismatches(bool expectNotExists = false)
 		{
-			var faultyComponents =
-				subSystem.SelectMany(e => e.Attach()).SingleOrDefault(i => i.Name == PotentialLifestyleMismatches.Name);
-			Assert.IsNotNull(faultyComponents);
+			var faultyComponents = subSystem.SelectMany(e => e.Attach()).SingleOrDefault(i => i.Name == PotentialLifestyleMismatches.Name);
+			Assert.AreEqual(expectNotExists, faultyComponents == null);
+			if (expectNotExists)
+			{
+				return new MismatchedDependencyDebuggerViewItem[0];
+			}
 			var components = faultyComponents.Value as DebuggerViewItem[];
 			Assert.IsNotNull(components);
 			return components.Select(i => (MismatchedDependencyDebuggerViewItem)i.Value).ToArray();
