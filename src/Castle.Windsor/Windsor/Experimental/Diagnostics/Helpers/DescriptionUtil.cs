@@ -20,6 +20,16 @@ namespace Castle.Windsor.Experimental.Diagnostics.Helpers
 #if !SILVERLIGHT
 	public static class DescriptionUtil
 	{
+		public static string GetComponentName(this IHandler handler)
+		{
+			var componentName = handler.ComponentModel.ComponentName;
+			if (componentName.SetByUser)
+			{
+				return string.Format("\"{0}\" {1}", componentName.Name, handler.GetServicesDescription());
+			}
+			return handler.GetServicesDescription();
+		}
+
 		public static string GetLifestyleDescription(this ComponentModel componentModel)
 		{
 			if (componentModel.LifestyleType == LifestyleType.Undefined)

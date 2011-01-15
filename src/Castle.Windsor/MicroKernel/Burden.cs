@@ -53,6 +53,11 @@ namespace Castle.MicroKernel
 			}
 		}
 
+		public IHandler Handler
+		{
+			get { return handler; }
+		}
+
 		public object Instance
 		{
 			get { return instance; }

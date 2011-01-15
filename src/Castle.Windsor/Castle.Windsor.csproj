@@ -914,6 +914,7 @@
     <Compile Include="Windsor\Configuration\Interpreters\XmlProcessor\XmlProcessorException.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Windsor\Experimental\Diagnostics\DebuggerViews\ReleasePolicyTrackedObjectsDebuggerViewItem.cs" />
     <Compile Include="Windsor\Experimental\Diagnostics\Helpers\DescriptionUtil.cs" />
     <Compile Include="Windsor\Experimental\Diagnostics\Extensions\ReleasePolicyTrackedObjects.cs" />
     <Compile Include="Windsor\Experimental\Diagnostics\DebuggerViews\ComponentStatusDebuggerViewItem.cs" />

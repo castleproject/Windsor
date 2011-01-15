@@ -39,18 +39,16 @@ namespace Castle.Windsor.Experimental.Diagnostics.DebuggerViews
 
 		public ComponentDebuggerView(IHandler handler, string description, params IComponentDebuggerExtension[] defaultExtension)
 		{
-			var componentName = handler.ComponentModel.ComponentName;
-			if (componentName.SetByUser)
-			{
-				name = string.Format("\"{0}\" {1}", componentName.Name, handler.GetServicesDescription());
-			}
-			else
-			{
-				name = handler.GetServicesDescription();
-			}
+			name = handler.GetComponentName();
 			this.handler = handler;
 			this.description = description;
 			extension = defaultExtension.Concat(GetExtensions(handler)).ToArray();
+		}
+
+		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
+		public string Description
+		{
+			get { return description; }
 		}
 
 		[DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
@@ -70,6 +68,11 @@ namespace Castle.Windsor.Experimental.Diagnostics.DebuggerViews
 			var handlerExtensions = handler.ComponentModel.ExtendedProperties["DebuggerExtensions"];
 			return (IEnumerable<IComponentDebuggerExtension>)handlerExtensions ??
 			       Enumerable.Empty<IComponentDebuggerExtension>();
+		}
+
+		public static ComponentDebuggerView BuildFor(IHandler handler)
+		{
+			return new ComponentDebuggerView(handler, handler.ComponentModel.GetLifestyleDescription(), new DefaultComponentViewBuilder(handler));
 		}
 	}
 #endif
