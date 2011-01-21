@@ -17,7 +17,8 @@ namespace Castle.MicroKernel.Registration
 	using Castle.Core;
 	using Castle.Core.Configuration;
 
-	public abstract class ComponentDescriptor<S>
+    public abstract class ComponentDescriptor<S>
+        where S : class 
 	{
 		private ComponentRegistration<S> registration;
 

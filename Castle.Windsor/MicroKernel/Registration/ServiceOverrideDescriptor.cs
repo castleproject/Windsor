@@ -22,7 +22,8 @@ namespace Castle.MicroKernel.Registration
 	using Castle.Core.Configuration;
 	using Castle.MicroKernel.Util;
 
-	public class ServiceOverrideDescriptor<S> : AbstractPropertyDescriptor<S>
+    public class ServiceOverrideDescriptor<S> : AbstractPropertyDescriptor<S>
+        where S : class 
 	{
 		public ServiceOverrideDescriptor(params ServiceOverride[] overrides)
 			: base(overrides)

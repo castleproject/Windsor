@@ -16,7 +16,8 @@ namespace Castle.MicroKernel.Registration
 {
 	using Castle.Core.Configuration;
 
-	public class ConfigurationDescriptor<S> : ComponentDescriptor<S>
+    public class ConfigurationDescriptor<S> : ComponentDescriptor<S>
+        where S : class 
 	{
 		private readonly IConfiguration configuration;
 		private readonly Node[] configNodes;

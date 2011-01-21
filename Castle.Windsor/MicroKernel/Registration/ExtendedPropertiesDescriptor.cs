@@ -17,7 +17,8 @@ namespace Castle.MicroKernel.Registration
 	using System.Collections;
 	using Castle.Core;
 
-	public class ExtendedPropertiesDescriptor<S> : AbstractPropertyDescriptor<S>
+    public class ExtendedPropertiesDescriptor<S> : AbstractPropertyDescriptor<S>
+        where S : class 
 	{
 		public ExtendedPropertiesDescriptor(params Property[] properties)
 			: base(properties)

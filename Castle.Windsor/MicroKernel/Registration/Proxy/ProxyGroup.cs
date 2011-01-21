@@ -18,7 +18,8 @@ namespace Castle.MicroKernel.Registration.Proxy
 
 	using Castle.DynamicProxy;
 
-	public class ProxyGroup<S> : RegistrationGroup<S>
+    public class ProxyGroup<S> : RegistrationGroup<S>
+        where S : class 
 	{
 		public ProxyGroup(ComponentRegistration<S> registration)
 			: base(registration)

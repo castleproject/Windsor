@@ -18,7 +18,8 @@ namespace Castle.MicroKernel.Registration.Interceptor
 
 	using Core;
 
-	public class InterceptorGroup<S> : RegistrationGroup<S>
+    public class InterceptorGroup<S> : RegistrationGroup<S>
+        where S : class 
 	{
 		private readonly InterceptorReference[] interceptors;
 

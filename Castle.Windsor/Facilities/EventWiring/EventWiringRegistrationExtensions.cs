@@ -22,7 +22,8 @@ namespace Castle.Facilities.EventWiring
 	public static class EventWiringRegistrationExtensions
 	{
 #if !SILVERLIGHT
-		public static ComponentRegistration<TPublisher> PublishEvent<TPublisher>(this ComponentRegistration<TPublisher> registration, Action<TPublisher> eventSubscribtion, Action<EventSubscribers> toSubscribers)
+        public static ComponentRegistration<TPublisher> PublishEvent<TPublisher>(this ComponentRegistration<TPublisher> registration, Action<TPublisher> eventSubscribtion, Action<EventSubscribers> toSubscribers)
+            where TPublisher : class 
 		{
 			var eventName = GetEventName(eventSubscribtion);
 
@@ -43,7 +44,8 @@ namespace Castle.Facilities.EventWiring
 			return registration;
 		}
 #endif
-		public static ComponentRegistration<TPublisher> PublishEvent<TPublisher>(this ComponentRegistration<TPublisher> registration, string eventName, Action<EventSubscribers> toSubscribers)
+        public static ComponentRegistration<TPublisher> PublishEvent<TPublisher>(this ComponentRegistration<TPublisher> registration, string eventName, Action<EventSubscribers> toSubscribers)
+            where TPublisher : class 
 		{
 			var subscribers = new EventSubscribers();
 			toSubscribers(subscribers);

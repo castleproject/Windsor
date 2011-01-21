@@ -19,7 +19,8 @@ namespace Castle.MicroKernel.Registration.Proxy
 	using Castle.Core;
 	using Castle.MicroKernel.Proxy;
 
-	public class ProxyMixIns<S> : ComponentDescriptor<S>
+    public class ProxyMixIns<S> : ComponentDescriptor<S>
+        where S : class 
 	{
 		private readonly MixinRegistration mixIns;
 

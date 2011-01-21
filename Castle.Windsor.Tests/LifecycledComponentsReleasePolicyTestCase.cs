@@ -181,15 +181,18 @@ namespace Castle.Windsor.Tests
 		}
 
 		private ComponentRegistration<T> Transient<T>()
+            where T : class 
 		{
 			return Component.For<T>().LifeStyle.Transient;
 		}
 
 		private ComponentRegistration<T> Pooled<T>()
+            where T : class 
 		{
 			return Component.For<T>().LifeStyle.Pooled;
 		}
-		private ComponentRegistration<T> Singleton<T>()
+        private ComponentRegistration<T> Singleton<T>()
+            where T : class 
 		{
 			return Component.For<T>().LifeStyle.Singleton;
 		}

@@ -18,7 +18,8 @@ namespace Castle.MicroKernel.Registration.Proxy
 	using Castle.Core;
 	using Castle.MicroKernel.Proxy;
 
-	public class ProxyInterfaces<S> : ComponentDescriptor<S>
+    public class ProxyInterfaces<S> : ComponentDescriptor<S>
+        where S : class 
 	{
 		private readonly Type[] interfaces;
 
