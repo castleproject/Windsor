@@ -283,5 +283,11 @@ namespace Castle.MicroKernel
 		/// making about which handler to resolve
 		/// </summary>
 		void AddHandlerSelector(IHandlerSelector selector);
-	}
+
+        /// <summary>
+        /// Register a new component resolver that can take part in the decision
+        /// making about which handler(s) to resolve and in which order
+        /// </summary>
+        void AddHandlerFilter(IHandlerFilter filter);
+    }
 }

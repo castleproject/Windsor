@@ -395,6 +395,7 @@
     <Compile Include="Generics\IRepository.cs" />
     <Compile Include="Generics\IRepository.T.cs" />
     <Compile Include="Generics\Repository.cs" />
+    <Compile Include="HandlerFilterTestCase.cs" />
     <Compile Include="Handlers\EmptyConstructorTestCase.cs" />
     <Compile Include="InternalsVisibleTo.cs" />
     <Compile Include="LifecycledComponentsReleasePolicyTestCase.cs" />

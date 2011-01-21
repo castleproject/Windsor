@@ -35,6 +35,12 @@ namespace Castle.MicroKernel.SubSystems.Naming
 		/// </summary>
 		void AddHandlerSelector(IHandlerSelector selector);
 
+        /// <summary>
+        /// Register a new component resolver that can take part in the decision
+        /// making about which handler(s) to resolve and in which order
+        /// </summary>
+        void AddHandlerFilter(IHandlerFilter filter);
+
 		/// <summary>
 		/// Returns true if there is a component registered 
 		/// for the specified key
