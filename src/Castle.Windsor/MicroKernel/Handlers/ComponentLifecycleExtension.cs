@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -33,7 +33,7 @@ namespace Castle.MicroKernel.Handlers
 
 		public void Intercept(ResolveInvocation invocation)
 		{
-			List<ComponentReleasingDelegate> releasers = null;
+			Releasing releasing = null;
 			if (resolvers.Count > 0)
 			{
 				foreach (var resolver in resolvers)
@@ -41,19 +41,19 @@ namespace Castle.MicroKernel.Handlers
 					var releaser = resolver(kernel, invocation.Context);
 					if (releaser != null)
 					{
-						if (releasers == null)
+						if (releasing == null)
 						{
-							releasers = new List<ComponentReleasingDelegate>();
+							releasing = new Releasing(resolvers.Count, kernel);
 							invocation.RequireDecommission();
 						}
-						releasers.Add(releaser);
+						releasing.Add(releaser);
 					}
 				}
 			}
 
 			invocation.Proceed();
 
-			if (releasers == null)
+			if (releasing == null)
 			{
 				return;
 			}
@@ -62,7 +62,30 @@ namespace Castle.MicroKernel.Handlers
 			{
 				return;
 			}
-			burden.Released += delegate { releasers.ForEach(r => r.Invoke(kernel)); };
+			burden.Releasing += releasing.Invoked;
+		}
+
+		private class Releasing
+		{
+			private readonly IKernel kernel;
+			private readonly List<ComponentReleasingDelegate> releasers;
+
+			public Releasing(int count, IKernel kernel)
+			{
+				this.kernel = kernel;
+				releasers = new List<ComponentReleasingDelegate>(count);
+			}
+
+			public void Add(ComponentReleasingDelegate releaser)
+			{
+				releasers.Add(releaser);
+			}
+
+			public void Invoked(Burden burden)
+			{
+				releasers.ForEach(r => r.Invoke(kernel));
+				burden.Releasing -= Invoked;
+			}
 		}
 	}
 }

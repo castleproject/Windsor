@@ -22,7 +22,7 @@ namespace Castle.MicroKernel
 	using Castle.Core.Internal;
 	using Castle.MicroKernel.LifecycleConcerns;
 
-	public delegate void BurdenReleased(Burden burden);
+	public delegate void BurdenReleaseDelegate(Burden burden);
 
 	public class Burden
 	{
@@ -110,6 +110,8 @@ namespace Castle.MicroKernel
 
 		public bool Release()
 		{
+			Releasing(this);
+
 			if (handler.Release(this) == false)
 			{
 				return false;
@@ -143,7 +145,8 @@ namespace Castle.MicroKernel
 			return arg is LateBoundConcerns;
 		}
 
-		public event BurdenReleased Released = delegate { };
+		public event BurdenReleaseDelegate Released = delegate { };
+		public event BurdenReleaseDelegate Releasing = delegate { };
 
 		private enum Decommission
 		{
