@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -94,6 +94,27 @@ namespace Castle.MicroKernel.Tests.Pools
 
 			Container.Release(componentAgain);
 			Assert.AreEqual(2, componentAgain.RecycledCount);
+		}
+
+		[Test]
+		public void Recyclable_component_with_on_release_action_not_released_more_than_necessary()
+		{
+			var count = 0;
+			Kernel.Register(Component.For<RecyclableComponent>().LifeStyle.PooledWithSize(1, null)
+			                	.DynamicParameters((k, d) =>
+			                	{
+			                		count++;
+			                		return delegate { count--; };
+			                	}));
+
+			RecyclableComponent component = null;
+			for (int i = 0; i < 10; i++)
+			{
+				component = Kernel.Resolve<RecyclableComponent>();
+				Container.Release(component);
+			}
+			Assert.AreEqual(10, component.RecycledCount);
+			Assert.AreEqual(0, count);
 		}
 
 		[Test]
