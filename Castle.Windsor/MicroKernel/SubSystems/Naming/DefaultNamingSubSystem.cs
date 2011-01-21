@@ -50,6 +50,7 @@ namespace Castle.MicroKernel.SubSystems.Naming
 		protected readonly Dictionary<Type, IHandler> service2Handler = new Dictionary<Type, IHandler>(SimpleTypeEqualityComparer.Instance);
 
 		protected IList<IHandlerSelector> selectors;
+        protected IList<IHandlerFilter> filters;
 
 		private readonly IDictionary<Type, IHandler[]> assignableHandlerListsByTypeCache = new Dictionary<Type, IHandler[]>(SimpleTypeEqualityComparer.Instance);
 		private readonly IDictionary<Type, IHandler[]> handlerListsByTypeCache = new Dictionary<Type, IHandler[]>(SimpleTypeEqualityComparer.Instance);
@@ -106,6 +107,15 @@ namespace Castle.MicroKernel.SubSystems.Naming
 			selectors.Add(selector);
 		}
 
+        public void AddHandlerFilter(IHandlerFilter filter)
+        {
+            if (filters == null)
+            {
+                filters = new List<IHandlerFilter>();
+            }
+            filters.Add(filter);
+        }
+
 		public virtual bool Contains(String key)
 		{
 			return HandlerByKeyCache.ContainsKey(key);
@@ -130,46 +140,71 @@ namespace Castle.MicroKernel.SubSystems.Naming
 			{
 				throw new ArgumentNullException("service");
 			}
-			if (service == typeof(object))
+            if (filters != null)
+            {
+                IHandler[] handlers = null;
+                foreach (var filter in filters)
+                {
+                    if (filter.HasOpinionAbout(service) == false)
+                    {
+                        continue;
+                    }
+                    if (handlers == null)
+                    {
+                        handlers = GetAssignableHandlersPossiblyFromCache(service);
+                    }
+                    handlers = filter.SelectHandlers(service, handlers);
+                }
+                // only return handlers if they were filtered - otherwise just continue
+                if (handlers != null)
+                {
+                    return handlers;
+                }
+            }
+            if (service == typeof(object))
 			{
 				return GetAllHandlers();
 			}
-
-			IHandler[] result;
-			using (var locker = @lock.ForReadingUpgradeable())
-			{
-				if (assignableHandlerListsByTypeCache.TryGetValue(service, out result))
-				{
-					return result;
-				}
-
-				locker.Upgrade();
-				if (assignableHandlerListsByTypeCache.TryGetValue(service, out result))
-				{
-					return result;
-				}
-
-				var handlers = key2Handler.Values;
-				var services = new List<IHandler>();
-				foreach (var handler in handlers)
-				{
-					foreach (var handlerService in handler.Services)
-					{
-						if (IsAssignable(service, handlerService))
-						{
-							services.Add(handler);
-							break;
-						}
-					}
-				}
-				result = services.ToArray();
-				assignableHandlerListsByTypeCache[service] = result;
-			}
-
-			return result;
+			return GetAssignableHandlersPossiblyFromCache(service);
 		}
 
-		public virtual IHandler GetHandler(String key)
+	    private IHandler[] GetAssignableHandlersPossiblyFromCache(Type service)
+	    {
+	        IHandler[] result;
+	        using (var locker = @lock.ForReadingUpgradeable())
+	        {
+	            if (assignableHandlerListsByTypeCache.TryGetValue(service, out result))
+	            {
+	                return result;
+	            }
+
+	            locker.Upgrade();
+	            if (assignableHandlerListsByTypeCache.TryGetValue(service, out result))
+	            {
+	                return result;
+	            }
+
+	            var handlers = key2Handler.Values;
+	            var services = new List<IHandler>();
+	            foreach (var handler in handlers)
+	            {
+	                foreach (var handlerService in handler.Services)
+	                {
+	                    if (IsAssignable(service, handlerService))
+	                    {
+	                        services.Add(handler);
+	                        break;
+	                    }
+	                }
+	            }
+	            result = services.ToArray();
+	            assignableHandlerListsByTypeCache[service] = result;
+	        }
+
+	        return result;
+	    }
+
+	    public virtual IHandler GetHandler(String key)
 		{
 			if (key == null)
 			{
