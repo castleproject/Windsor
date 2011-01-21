@@ -17,7 +17,8 @@ namespace Castle.MicroKernel.Registration
 	using System.Collections;
 	using Core;
 
-	public abstract class AbstractPropertyDescriptor<S> : ComponentDescriptor<S>
+    public abstract class AbstractPropertyDescriptor<S> : ComponentDescriptor<S>
+        where S : class 
 	{
 		private readonly Property[] properties;
 		private readonly IDictionary dictionary;

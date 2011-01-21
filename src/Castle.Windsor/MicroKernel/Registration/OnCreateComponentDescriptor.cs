@@ -21,7 +21,8 @@ namespace Castle.MicroKernel.Registration
 	/// Adds the actions to ExtendedProperties.
 	/// </summary>
 	/// <typeparam name="S"></typeparam>
-	public class OnCreateComponentDescriptor<S> : ComponentDescriptor<S>
+    public class OnCreateComponentDescriptor<S> : ComponentDescriptor<S>
+        where S : class 
 	{
 		private readonly OnCreateActionDelegate<S>[] actions;
 
