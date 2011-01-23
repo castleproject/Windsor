@@ -37,6 +37,7 @@ namespace Castle.MicroKernel
 	using Castle.MicroKernel.SubSystems.Resource;
 #if !SILVERLIGHT
 	using Castle.Windsor.Experimental.Diagnostics;
+
 #endif
 
 	/// <summary>
@@ -135,7 +136,7 @@ namespace Castle.MicroKernel
 		///   implementation of <see cref = "IProxyFactory" />
 		/// </summary>
 		public DefaultKernel(IProxyFactory proxyFactory)
-			: this(new DefaultDependencyResolver(),proxyFactory)
+			: this(new DefaultDependencyResolver(), proxyFactory)
 		{
 		}
 
@@ -260,7 +261,7 @@ namespace Castle.MicroKernel
 			info.AddValue("HandlerRegisteredEvent", HandlerRegistered);
 		}
 #endif
-		
+
 		/// <summary>
 		///   Starts the process of component disposal.
 		/// </summary>
@@ -292,12 +293,15 @@ namespace Castle.MicroKernel
 		// NOTE: this is from IKernelInternal
 		public virtual void AddCustomComponent(ComponentModel model)
 		{
-			if (model == null) throw new ArgumentNullException("model");
+			if (model == null)
+			{
+				throw new ArgumentNullException("model");
+			}
 
 			RaiseComponentModelCreated(model);
-			IHandler handler = HandlerFactory.Create(model);
+			var handler = HandlerFactory.Create(model);
 
-			object skipRegistration = model.ExtendedProperties[ComponentModel.SkipRegistration];
+			var skipRegistration = model.ExtendedProperties[ComponentModel.SkipRegistration];
 
 			if (skipRegistration != null)
 			{
@@ -385,10 +389,10 @@ namespace Castle.MicroKernel
 			NamingSubSystem.AddHandlerSelector(selector);
 		}
 
-        public void AddHandlerFilter(IHandlerFilter filter)
-        {
-            NamingSubSystem.AddHandlerFilter(filter);
-        }
+		public void AddHandlerFilter(IHandlerFilter filter)
+		{
+			NamingSubSystem.AddHandlerFilter(filter);
+		}
 
 		public virtual void AddSubSystem(String key, ISubSystem subsystem)
 		{
@@ -728,7 +732,8 @@ namespace Castle.MicroKernel
 			return activator;
 		}
 
-		protected CreationContext CreateCreationContext(IHandler handler, Type requestedType, IDictionary additionalArguments, CreationContext parent, IReleasePolicy policy)
+		protected CreationContext CreateCreationContext(IHandler handler, Type requestedType, IDictionary additionalArguments, CreationContext parent,
+		                                                IReleasePolicy policy)
 		{
 			return new CreationContext(handler,
 			                           policy,
@@ -739,12 +744,12 @@ namespace Castle.MicroKernel
 		}
 
 		/// <remarks>
-		/// It is the responsibility of the kernel to ensure that handler is only ever disposed once.
+		///   It is the responsibility of the kernel to ensure that handler is only ever disposed once.
 		/// </remarks>
 		protected void DisposeHandler(IHandler handler)
 		{
 			var disposable = handler as IDisposable;
-			if(disposable==null)
+			if (disposable == null)
 			{
 				return;
 			}
@@ -803,7 +808,7 @@ namespace Castle.MicroKernel
 
 			try
 			{
-				if(handler.IsBeingResolvedInContext(context))
+				if (handler.IsBeingResolvedInContext(context))
 				{
 					var message = string.Format("Dependency cycle has been detected when trying to resolve {0} as dependency of {1}", service, context.RequestedType);
 					throw new CircularDependencyException(message);
@@ -923,11 +928,11 @@ namespace Castle.MicroKernel
 			}
 
 			var handler = GetHandler(key);
-			if(handler != null)
+			if (handler != null)
 			{
 				return handler;
 			}
-			lock(lazyLoadingLock)
+			lock (lazyLoadingLock)
 			{
 				handler = GetHandler(key);
 				if (handler != null)

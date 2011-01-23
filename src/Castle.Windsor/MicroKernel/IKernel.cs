@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -22,272 +22,269 @@ namespace Castle.MicroKernel
 	using Castle.MicroKernel.SubSystems.Configuration;
 
 	/// <summary>
-	/// The <c>IKernel</c> interface exposes all the functionality
-	/// the MicroKernel implements.
+	///   The <c>IKernel</c> interface exposes all the functionality
+	///   the MicroKernel implements.
 	/// </summary>
 	/// <remarks>
-	/// It allows you to register components and
-	/// request them by the key or the service they implemented.
-	/// It also allow you to register facilities and subsystem, thus 
-	/// augmenting the functionality exposed by the kernel alone to fits 
-	/// your needs.
-	/// <seealso cref="IFacility"/>
-	/// <seealso cref="ISubSystem"/>
+	///   It allows you to register components and
+	///   request them by the key or the service they implemented.
+	///   It also allow you to register facilities and subsystem, thus 
+	///   augmenting the functionality exposed by the kernel alone to fits 
+	///   your needs.
+	///   <seealso cref = "IFacility" />
+	///   <seealso cref = "ISubSystem" />
 	/// </remarks>
 	public partial interface IKernel : IKernelEvents, IDisposable
 	{
 		/// <summary>
-		/// Registers the components provided by the <see cref="IRegistration"/>s
-		/// with the <see cref="IKernel"/>.
-		/// <para />
-		/// Create a new registration using <see cref="Component"/>.For() or <see cref="AllTypes"/>.
-		/// </summary>
-		/// <example>
-		/// <code>
-		/// kernel.Register(Component.For&lt;IService&gt;().ImplementedBy&lt;DefaultService&gt;());
-		/// </code>
-		/// </example>
-		/// <param name="registrations">The component registrations.</param>
-		/// <returns>The kernel.</returns>
-		IKernel Register(params IRegistration[] registrations);
-
-		/// <summary>
-		/// Returns true if the specified key was registered
-		/// </summary>
-		/// <param name="key"></param>
-		/// <returns></returns>
-		bool HasComponent(String key);
-
-		/// <summary>
-		/// Returns true if the specified service was registered
-		/// </summary>
-		/// <param name="service"></param>
-		/// <returns></returns>
-		bool HasComponent(Type service);
-
-
-		/// <summary>
-		/// Associates objects with a component handler,
-		/// allowing it to use the specified dictionary
-		/// when resolving dependencies
-		/// </summary>
-		/// <param name="service"></param>
-		/// <param name="dependencies"></param>
-		void RegisterCustomDependencies(Type service, IDictionary dependencies);
-
-
-		/// <summary>
-		/// Associates objects with a component handler,
-		/// allowing it to use the specified dictionary
-		/// when resolving dependencies
-		/// </summary>
-		/// <param name="service"></param>
-		/// <param name="dependenciesAsAnonymousType"></param>
-		void RegisterCustomDependencies(Type service, object dependenciesAsAnonymousType);
-
-		/// <summary>
-		/// Associates objects with a component handler,
-		/// allowing it to use the specified dictionary
-		/// when resolving dependencies
-		/// </summary>
-		/// <param name="key"></param>
-		/// <param name="dependencies"></param>
-		void RegisterCustomDependencies(String key, IDictionary dependencies);
-		
-		/// <summary>
-		/// Associates objects with a component handler,
-		/// allowing it to use the specified dictionary
-		/// when resolving dependencies
-		/// </summary>
-		/// <param name="key"></param>
-		/// <param name="dependenciesAsAnonymousType"></param>
-		void RegisterCustomDependencies(String key, object dependenciesAsAnonymousType);
-
-		/// <summary>
-		/// Releases a component instance. This allows
-		/// the kernel to execute the proper decommission 
-		/// lifecycles on the component instance.
-		/// </summary>
-		/// <param name="instance"></param>
-		void ReleaseComponent(object instance);
-
-		/// <summary>
-		/// Returns the implementation of <see cref="IComponentModelBuilder"/>
+		///   Returns the implementation of <see cref = "IComponentModelBuilder" />
 		/// </summary>
 		IComponentModelBuilder ComponentModelBuilder { get; }
 
 		/// <summary>
-		/// Returns the implementation of <see cref="IHandlerFactory"/>
-		/// </summary>
-		IHandlerFactory HandlerFactory { get; }
-
-		/// <summary>
-		/// Gets or sets the implementation of <see cref="IConfigurationStore"/>
+		///   Gets or sets the implementation of <see cref = "IConfigurationStore" />
 		/// </summary>
 		IConfigurationStore ConfigurationStore { get; set; }
 
 		/// <summary>
-		/// Returns the <see cref="IHandler"/>
-		/// for the specified component key.
+		///   Graph of components and interactions.
 		/// </summary>
-		/// <param name="key"></param>
-		/// <returns></returns>
-		IHandler GetHandler(String key);
+		GraphNode[] GraphNodes { get; }
 
 		/// <summary>
-		/// Returns the <see cref="IHandler"/>
-		/// for the specified service.
+		///   Returns the implementation of <see cref = "IHandlerFactory" />
 		/// </summary>
-		/// <param name="service"></param>
-		/// <returns></returns>
-		IHandler GetHandler(Type service);
+		IHandlerFactory HandlerFactory { get; }
 
 		/// <summary>
-		/// Return handlers for components that 
-		/// implements the specified service.
+		///   Returns the parent kernel
 		/// </summary>
-		/// <param name="service"></param>
-		/// <returns></returns>
-		IHandler[] GetHandlers(Type service);
+		IKernel Parent { get; set; }
 
 		/// <summary>
-		/// Return handlers for components that 
-		/// implements the specified service. 
-		/// The check is made using IsAssignableFrom
+		///   Gets or sets the implementation of <see cref = "IProxyFactory" />
+		///   allowing different strategies for proxy creation.
 		/// </summary>
-		/// <param name="service"></param>
-		/// <returns></returns>
-		IHandler[] GetAssignableHandlers(Type service);
+		IProxyFactory ProxyFactory { get; set; }
 
 		/// <summary>
-		/// Gets or sets the implementation for <see cref="IReleasePolicy"/>
+		///   Gets or sets the implementation for <see cref = "IReleasePolicy" />
 		/// </summary>
 		IReleasePolicy ReleasePolicy { get; set; }
 
 		/// <summary>
-		/// Returns the implementation for <see cref="IDependencyResolver"/>
+		///   Returns the implementation for <see cref = "IDependencyResolver" />
 		/// </summary>
 		IDependencyResolver Resolver { get; }
 
 		/// <summary>
-		/// Adds a <see cref="IFacility"/> to the kernel.
+		///   Support for kernel hierarchy
 		/// </summary>
-		/// <param name="key"></param>
-		/// <param name="facility"></param>
+		/// <param name = "kernel"></param>
+		void AddChildKernel(IKernel kernel);
+
+		/// <summary>
+		///   Adds a <see cref = "IFacility" /> to the kernel.
+		/// </summary>
+		/// <param name = "key"></param>
+		/// <param name = "facility"></param>
 		/// <returns></returns>
 		IKernel AddFacility(String key, IFacility facility);
 
 		/// <summary>
-		/// Creates and adds an <see cref="IFacility"/> facility to the kernel.
+		///   Creates and adds an <see cref = "IFacility" /> facility to the kernel.
 		/// </summary>
-		/// <typeparam name="T">The facility type.</typeparam>
-		/// <param name="key"></param>
+		/// <typeparam name = "T">The facility type.</typeparam>
+		/// <param name = "key"></param>
 		IKernel AddFacility<T>(String key) where T : IFacility, new();
 
 		/// <summary>
-		/// Creates and adds an <see cref="IFacility"/> facility to the kernel.
+		///   Creates and adds an <see cref = "IFacility" /> facility to the kernel.
 		/// </summary>
-		/// <typeparam name="T">The facility type.</typeparam>
-		/// <param name="key"></param>
-		/// <param name="onCreate">The callback for creation.</param>
+		/// <typeparam name = "T">The facility type.</typeparam>
+		/// <param name = "key"></param>
+		/// <param name = "onCreate">The callback for creation.</param>
 		IKernel AddFacility<T>(String key, Action<T> onCreate)
 			where T : IFacility, new();
 
 		/// <summary>
-		/// Creates and adds an <see cref="IFacility"/> facility to the kernel.
+		///   Creates and adds an <see cref = "IFacility" /> facility to the kernel.
 		/// </summary>
-		/// <typeparam name="T">The facility type.</typeparam>
-		/// <param name="key"></param>
-		/// <param name="onCreate">The callback for creation.</param>
+		/// <typeparam name = "T">The facility type.</typeparam>
+		/// <param name = "key"></param>
+		/// <param name = "onCreate">The callback for creation.</param>
 		IKernel AddFacility<T>(String key, Func<T, object> onCreate)
 			where T : IFacility, new();
 
 		/// <summary>
-		/// Creates and adds an <see cref="IFacility"/> facility to the kernel.
+		///   Creates and adds an <see cref = "IFacility" /> facility to the kernel.
 		/// </summary>
-		/// <typeparam name="T">The facility type.</typeparam>
+		/// <typeparam name = "T">The facility type.</typeparam>
 		/// <returns></returns>
 		IKernel AddFacility<T>() where T : IFacility, new();
 
 		/// <summary>
-		/// Creates and adds an <see cref="IFacility"/> facility to the kernel.
+		///   Creates and adds an <see cref = "IFacility" /> facility to the kernel.
 		/// </summary>
-		/// <typeparam name="T">The facility type.</typeparam>
-		/// <param name="onCreate">The callback for creation.</param>
+		/// <typeparam name = "T">The facility type.</typeparam>
+		/// <param name = "onCreate">The callback for creation.</param>
 		/// <returns></returns>
 		IKernel AddFacility<T>(Action<T> onCreate)
 			where T : IFacility, new();
 
 		/// <summary>
-		/// Creates and adds an <see cref="IFacility"/> facility to the kernel.
+		///   Creates and adds an <see cref = "IFacility" /> facility to the kernel.
 		/// </summary>
-		/// <typeparam name="T">The facility type.</typeparam>
-		/// <param name="onCreate">The callback for creation.</param>
+		/// <typeparam name = "T">The facility type.</typeparam>
+		/// <param name = "onCreate">The callback for creation.</param>
 		/// <returns></returns>
 		IKernel AddFacility<T>(Func<T, object> onCreate)
 			where T : IFacility, new();
 
 		/// <summary>
-		/// Returns the facilities registered on the kernel.
+		///   Register a new component resolver that can take part in the decision
+		///   making about which handler(s) to resolve and in which order
+		/// </summary>
+		void AddHandlerFilter(IHandlerFilter filter);
+
+		/// <summary>
+		///   Register a new component resolver that can take part in the decision
+		///   making about which handler to resolve
+		/// </summary>
+		void AddHandlerSelector(IHandlerSelector selector);
+
+		/// <summary>
+		///   Adds (or replaces) an <see cref = "ISubSystem" />
+		/// </summary>
+		/// <param name = "key"></param>
+		/// <param name = "subsystem"></param>
+		void AddSubSystem(String key, ISubSystem subsystem);
+
+		/// <summary>
+		///   Return handlers for components that 
+		///   implements the specified service. 
+		///   The check is made using IsAssignableFrom
+		/// </summary>
+		/// <param name = "service"></param>
+		/// <returns></returns>
+		IHandler[] GetAssignableHandlers(Type service);
+
+		/// <summary>
+		///   Returns the facilities registered on the kernel.
 		/// </summary>
 		/// <returns></returns>
 		IFacility[] GetFacilities();
 
 		/// <summary>
-		/// Adds (or replaces) an <see cref="ISubSystem"/>
+		///   Returns the <see cref = "IHandler" />
+		///   for the specified component key.
 		/// </summary>
-		/// <param name="key"></param>
-		/// <param name="subsystem"></param>
-		void AddSubSystem(String key, ISubSystem subsystem);
+		/// <param name = "key"></param>
+		/// <returns></returns>
+		IHandler GetHandler(String key);
 
 		/// <summary>
-		/// Returns an implementation of <see cref="ISubSystem"/>
-		/// for the specified key. 
-		/// <seealso cref="SubSystemConstants"/>
+		///   Returns the <see cref = "IHandler" />
+		///   for the specified service.
 		/// </summary>
-		/// <param name="key"></param>
+		/// <param name = "service"></param>
+		/// <returns></returns>
+		IHandler GetHandler(Type service);
+
+		/// <summary>
+		///   Return handlers for components that 
+		///   implements the specified service.
+		/// </summary>
+		/// <param name = "service"></param>
+		/// <returns></returns>
+		IHandler[] GetHandlers(Type service);
+
+		/// <summary>
+		///   Returns an implementation of <see cref = "ISubSystem" />
+		///   for the specified key. 
+		///   <seealso cref = "SubSystemConstants" />
+		/// </summary>
+		/// <param name = "key"></param>
 		/// <returns></returns>
 		ISubSystem GetSubSystem(String key);
 
 		/// <summary>
-		/// Gets or sets the implementation of <see cref="IProxyFactory"/>
-		/// allowing different strategies for proxy creation.
+		///   Returns true if the specified key was registered
 		/// </summary>
-		IProxyFactory ProxyFactory { get; set; }
+		/// <param name = "key"></param>
+		/// <returns></returns>
+		bool HasComponent(String key);
 
 		/// <summary>
-		/// Returns the parent kernel
+		///   Returns true if the specified service was registered
 		/// </summary>
-		IKernel Parent { get; set; }
+		/// <param name = "service"></param>
+		/// <returns></returns>
+		bool HasComponent(Type service);
 
 		/// <summary>
-		/// Support for kernel hierarchy
+		///   Registers the components provided by the <see cref = "IRegistration" />s
+		///   with the <see cref = "IKernel" />.
+		///   <para />
+		///   Create a new registration using <see cref = "Component" />.For() or <see cref = "AllTypes" />.
 		/// </summary>
-		/// <param name="kernel"></param>
-		void AddChildKernel(IKernel kernel);
+		/// <example>
+		///   <code>
+		///     kernel.Register(Component.For&lt;IService&gt;().ImplementedBy&lt;DefaultService&gt;());
+		///   </code>
+		/// </example>
+		/// <param name = "registrations">The component registrations.</param>
+		/// <returns>The kernel.</returns>
+		IKernel Register(params IRegistration[] registrations);
 
 		/// <summary>
-		/// Remove child kernel
+		///   Associates objects with a component handler,
+		///   allowing it to use the specified dictionary
+		///   when resolving dependencies
 		/// </summary>
-		/// <param name="kernel"></param>
+		/// <param name = "service"></param>
+		/// <param name = "dependencies"></param>
+		void RegisterCustomDependencies(Type service, IDictionary dependencies);
+
+		/// <summary>
+		///   Associates objects with a component handler,
+		///   allowing it to use the specified dictionary
+		///   when resolving dependencies
+		/// </summary>
+		/// <param name = "service"></param>
+		/// <param name = "dependenciesAsAnonymousType"></param>
+		void RegisterCustomDependencies(Type service, object dependenciesAsAnonymousType);
+
+		/// <summary>
+		///   Associates objects with a component handler,
+		///   allowing it to use the specified dictionary
+		///   when resolving dependencies
+		/// </summary>
+		/// <param name = "key"></param>
+		/// <param name = "dependencies"></param>
+		void RegisterCustomDependencies(String key, IDictionary dependencies);
+
+		/// <summary>
+		///   Associates objects with a component handler,
+		///   allowing it to use the specified dictionary
+		///   when resolving dependencies
+		/// </summary>
+		/// <param name = "key"></param>
+		/// <param name = "dependenciesAsAnonymousType"></param>
+		void RegisterCustomDependencies(String key, object dependenciesAsAnonymousType);
+
+		/// <summary>
+		///   Releases a component instance. This allows
+		///   the kernel to execute the proper decommission 
+		///   lifecycles on the component instance.
+		/// </summary>
+		/// <param name = "instance"></param>
+		void ReleaseComponent(object instance);
+
+		/// <summary>
+		///   Remove child kernel
+		/// </summary>
+		/// <param name = "kernel"></param>
 		void RemoveChildKernel(IKernel kernel);
-
-		/// <summary>
-		/// Graph of components and interactions.
-		/// </summary>
-		GraphNode[] GraphNodes { get; }
-
-
-		/// <summary>
-		/// Register a new component resolver that can take part in the decision
-		/// making about which handler to resolve
-		/// </summary>
-		void AddHandlerSelector(IHandlerSelector selector);
-
-        /// <summary>
-        /// Register a new component resolver that can take part in the decision
-        /// making about which handler(s) to resolve and in which order
-        /// </summary>
-        void AddHandlerFilter(IHandlerFilter filter);
-    }
+	}
 }
