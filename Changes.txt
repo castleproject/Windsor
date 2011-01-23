@@ -1,3 +1,4 @@
+- fixed IOC-267 - Register() on a System.ValueType (like an Int32 or an Enum) instance should throw an exception
 - fixed IOC-265 - In certain cases of cyclic dependencies debugger view times out because of stack overflow in MismatchedLifestyleDependencyViewBuilder 
 - implemented IOC-263 - Add new debugger diagnostics - tracked objects
 - fixed IOC-262 objects created via UsingFactoryMethod are always tracked, even if they could safely not be
