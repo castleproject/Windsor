@@ -23,21 +23,19 @@ namespace Castle.Windsor.Tests
 	using NUnit.Framework;
 
 	[TestFixture]
-	public class HandlerFilterTestCase
+	public class HandlerFilterTestCase : AbstractContainerTestFixture
 	{
 		[Test]
 		public void HandlerFilterGetsCalledLikeExpected()
 		{
-			var container = new WindsorContainer();
-
-			container.Register(Component.For<ISomeService>().ImplementedBy<FirstImplementation>(),
+			Container.Register(Component.For<ISomeService>().ImplementedBy<FirstImplementation>(),
 			                   Component.For<ISomeService>().ImplementedBy<SecondImplementation>(),
 			                   Component.For<ISomeService>().ImplementedBy<ThirdImplementation>());
 
 			var filter = new TestHandlerFilter();
-			container.Kernel.AddHandlerFilter(filter);
+			Container.Kernel.AddHandlerFilter(filter);
 
-			var services = container.ResolveAll(typeof(ISomeService));
+			var services = Container.ResolveAll(typeof(ISomeService));
 
 			Assert.IsTrue(filter.OpinionWasChecked, "Filter's opinion should have been checked once for each handler");
 		}
@@ -45,17 +43,15 @@ namespace Castle.Windsor.Tests
 		[Test]
 		public void HandlerFiltersPrioritizationAndOrderingIsRespected()
 		{
-			var container = new WindsorContainer();
-
-			container.Register(Component.For<ISomeTask>().ImplementedBy<Task5>(),
+			Container.Register(Component.For<ISomeTask>().ImplementedBy<Task5>(),
 			                   Component.For<ISomeTask>().ImplementedBy<Task3>(),
 			                   Component.For<ISomeTask>().ImplementedBy<Task2>(),
 			                   Component.For<ISomeTask>().ImplementedBy<Task4>(),
 			                   Component.For<ISomeTask>().ImplementedBy<Task1>());
 
-			container.Kernel.AddHandlerFilter(new FilterThatRemovedFourthTaskAndOrdersTheRest());
+			Container.Kernel.AddHandlerFilter(new FilterThatRemovedFourthTaskAndOrdersTheRest());
 
-			var instances = container.ResolveAll(typeof(ISomeTask));
+			var instances = Container.ResolveAll(typeof(ISomeTask));
 
 			Assert.That(instances, Has.Length.EqualTo(4));
 		}
@@ -63,13 +59,11 @@ namespace Castle.Windsor.Tests
 		[Test]
 		public void SelectionMethodIsNeverCalledOnFilterWhenItDoesNotHaveAnOpinionForThatService()
 		{
-			var container = new WindsorContainer();
+			Container.Register(Component.For<IUnimportantService>().ImplementedBy<UnimportantImpl>());
 
-			container.Register(Component.For<IUnimportantService>().ImplementedBy<UnimportantImpl>());
+			Container.Kernel.AddHandlerFilter(new FailIfCalled());
 
-			container.Kernel.AddHandlerFilter(new FailIfCalled());
-
-			container.ResolveAll(typeof(IUnimportantService));
+			Container.ResolveAll(typeof(IUnimportantService));
 		}
 
 		private class FailIfCalled : IHandlerFilter
