@@ -248,6 +248,8 @@ namespace Castle.Windsor
 		/// <param name = "key"></param>
 		/// <param name = "arguments"></param>
 		/// <returns></returns>
+		[Obsolete("Use Resolve<object>(key, arguments) instead.")]
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		object Resolve(String key, IDictionary arguments);
 
 		/// <summary>
