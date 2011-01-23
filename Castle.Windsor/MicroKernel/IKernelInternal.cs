@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,18 +16,26 @@ namespace Castle.MicroKernel
 {
 	using System;
 	using System.Collections;
+
 	using Castle.Core;
 
 	/// <summary>
-	/// Extended contract of kernel, used internally.
+	///   Extended contract of kernel, used internally.
 	/// </summary>
 	public interface IKernelInternal : IKernel
 	{
 		/// <summary>
-		/// Constructs an implementation of <see cref="IComponentActivator"/>
-		/// for the given <see cref="ComponentModel"/>
+		///   Adds a custom made <see cref = "ComponentModel" />.
+		///   Used by facilities.
 		/// </summary>
-		/// <param name="model"></param>
+		/// <param name = "model"></param>
+		void AddCustomComponent(ComponentModel model);
+
+		/// <summary>
+		///   Constructs an implementation of <see cref = "IComponentActivator" />
+		///   for the given <see cref = "ComponentModel" />
+		/// </summary>
+		/// <param name = "model"></param>
 		/// <returns></returns>
 		IComponentActivator CreateComponentActivator(ComponentModel model);
 
@@ -35,37 +43,66 @@ namespace Castle.MicroKernel
 
 		IHandler LoadHandlerByType(string key, Type service, IDictionary arguments);
 
+		IDisposable OptimizeDependencyResolution();
+
 		/// <summary>
-		/// Raise the handler registered event, required so
-		/// dependant handlers will be notified about their dependant moving
-		/// to valid state.
+		///   Raise the handler registered event, required so
+		///   dependant handlers will be notified about their dependant moving
+		///   to valid state.
 		/// </summary>
-		/// <param name="handler"></param>
+		/// <param name = "handler"></param>
 		void RaiseHandlerRegistered(IHandler handler);
 
 		void RaiseHandlersChanged();
 
 		/// <summary>
-		/// Adds a custom made <see cref="ComponentModel"/>.
-		/// Used by facilities.
+		///   Associates objects with a component handler,
+		///   allowing it to use the specified dictionary
+		///   when resolving dependencies
 		/// </summary>
-		/// <param name="model"></param>
-		void AddCustomComponent(ComponentModel model);
+		/// <param name = "service"></param>
+		/// <param name = "dependencies"></param>
+		void RegisterCustomDependencies(Type service, IDictionary dependencies);
 
-		IDisposable OptimizeDependencyResolution();
+		/// <summary>
+		///   Associates objects with a component handler,
+		///   allowing it to use the specified dictionary
+		///   when resolving dependencies
+		/// </summary>
+		/// <param name = "service"></param>
+		/// <param name = "dependenciesAsAnonymousType"></param>
+		void RegisterCustomDependencies(Type service, object dependenciesAsAnonymousType);
 
-		Array ResolveAll(Type service, IDictionary arguments, IReleasePolicy policy);
+		/// <summary>
+		///   Associates objects with a component handler,
+		///   allowing it to use the specified dictionary
+		///   when resolving dependencies
+		/// </summary>
+		/// <param name = "key"></param>
+		/// <param name = "dependencies"></param>
+		void RegisterCustomDependencies(String key, IDictionary dependencies);
+
+		/// <summary>
+		///   Associates objects with a component handler,
+		///   allowing it to use the specified dictionary
+		///   when resolving dependencies
+		/// </summary>
+		/// <param name = "key"></param>
+		/// <param name = "dependenciesAsAnonymousType"></param>
+		void RegisterCustomDependencies(String key, object dependenciesAsAnonymousType);
 
 		object Resolve(Type service, IDictionary arguments, IReleasePolicy policy);
 
 		/// <summary>
 		///   Returns a component instance by the key
 		/// </summary>
-		/// <param name="key"></param>
-		/// <param name="service"></param>
-		/// <param name="arguments"></param>
-		/// <param name="policy"></param>
+		/// <param name = "key"></param>
+		/// <param name = "service"></param>
+		/// <param name = "arguments"></param>
+		/// <param name = "policy"></param>
 		/// <returns></returns>
 		object Resolve(String key, Type service, IDictionary arguments, IReleasePolicy policy);
+
+		Array ResolveAll(Type service, IDictionary arguments, IReleasePolicy policy);
 	}
 }
