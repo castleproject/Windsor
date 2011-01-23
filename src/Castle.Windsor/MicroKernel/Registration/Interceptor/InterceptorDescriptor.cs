@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,22 +15,15 @@
 namespace Castle.MicroKernel.Registration.Interceptor
 {
 	using System;
+
 	using Castle.Core;
 
-    public class InterceptorDescriptor<S> : ComponentDescriptor<S>
-        where S : class 
+	public class InterceptorDescriptor<S> : ComponentDescriptor<S>
+		where S : class
 	{
-		private readonly Where where;
 		private readonly int insertIndex;
 		private readonly InterceptorReference[] interceptors;
-
-		public enum Where
-		{
-			First,
-			Last,
-			Insert,
-			Default
-		}
+		private readonly Where where;
 
 		public InterceptorDescriptor(InterceptorReference[] interceptors, Where where)
 		{
@@ -57,7 +50,7 @@ namespace Castle.MicroKernel.Registration.Interceptor
 
 		protected internal override void ApplyToModel(IKernel kernel, ComponentModel model)
 		{
-			foreach(var interceptor in interceptors)
+			foreach (var interceptor in interceptors)
 			{
 				switch (where)
 				{
@@ -78,6 +71,14 @@ namespace Castle.MicroKernel.Registration.Interceptor
 						break;
 				}
 			}
+		}
+
+		public enum Where
+		{
+			First,
+			Last,
+			Insert,
+			Default
 		}
 	}
 }

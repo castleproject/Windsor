@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,11 +15,12 @@
 namespace Castle.MicroKernel.Registration.Proxy
 {
 	using System;
+
 	using Castle.Core;
 	using Castle.MicroKernel.Proxy;
 
-    public class ProxyInterfaces<S> : ComponentDescriptor<S>
-        where S : class 
+	public class ProxyInterfaces<S> : ComponentDescriptor<S>
+		where S : class
 	{
 		private readonly Type[] interfaces;
 
@@ -32,7 +33,7 @@ namespace Castle.MicroKernel.Registration.Proxy
 		{
 			if (interfaces.Length > 0)
 			{
-				ProxyOptions options = ProxyUtil.ObtainProxyOptions(model, true);
+				var options = ProxyUtil.ObtainProxyOptions(model, true);
 				options.AddAdditionalInterfaces(interfaces);
 			}
 		}

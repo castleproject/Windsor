@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,11 +15,12 @@
 namespace Castle.MicroKernel.Registration.Lifestyle
 {
 	using System;
+
 	using Castle.Core;
 	using Castle.Core.Internal;
 
-    public class LifestyleGroup<S> : RegistrationGroup<S>
-        where S : class 
+	public class LifestyleGroup<S> : RegistrationGroup<S>
+		where S : class
 	{
 		public LifestyleGroup(ComponentRegistration<S> registration)
 			: base(registration)
@@ -27,9 +28,9 @@ namespace Castle.MicroKernel.Registration.Lifestyle
 		}
 
 		/// <summary>
-		/// Sets the lifestyle to the specified <paramref name="type"/>.
+		///   Sets the lifestyle to the specified <paramref name = "type" />.
 		/// </summary>
-		/// <param name="type">The type.</param>
+		/// <param name = "type">The type.</param>
 		/// <returns></returns>
 		public ComponentRegistration<S> Is(LifestyleType type)
 		{
@@ -37,9 +38,9 @@ namespace Castle.MicroKernel.Registration.Lifestyle
 			{
 				throw InvalidValue(type, "Not a valid lifestyle");
 			}
-			if(type == LifestyleType.Undefined)
+			if (type == LifestyleType.Undefined)
 			{
-				throw InvalidValue(type,string.Format("{0} is not a valid lifestyle type.", LifestyleType.Undefined));
+				throw InvalidValue(type, string.Format("{0} is not a valid lifestyle type.", LifestyleType.Undefined));
 			}
 
 			return AddDescriptor(new LifestyleDescriptor<S>(type));
@@ -68,7 +69,7 @@ namespace Castle.MicroKernel.Registration.Lifestyle
 		{
 			get { return AddDescriptor(new LifestyleDescriptor<S>(LifestyleType.Thread)); }
 		}
-		
+
 #if (!SILVERLIGHT)
 		public ComponentRegistration<S> PerWebRequest
 		{
@@ -84,11 +85,11 @@ namespace Castle.MicroKernel.Registration.Lifestyle
 		public ComponentRegistration<S> PooledWithSize(int? initialSize, int? maxSize)
 		{
 			var pooledWithSize = Pooled;
-			if(initialSize.HasValue)
+			if (initialSize.HasValue)
 			{
 				pooledWithSize = pooledWithSize.Attribute("initialPoolSize").Eq(initialSize);
 			}
-			if(maxSize.HasValue)
+			if (maxSize.HasValue)
 			{
 				pooledWithSize = pooledWithSize.Attribute("maxPoolSize").Eq(maxSize);
 			}
@@ -96,9 +97,9 @@ namespace Castle.MicroKernel.Registration.Lifestyle
 		}
 
 		/// <summary>
-		/// Assign a custom lifestyle type, that implements <see cref="ILifestyleManager"/>.
+		///   Assign a custom lifestyle type, that implements <see cref = "ILifestyleManager" />.
 		/// </summary>
-		/// <param name="customLifestyleType">Type of the custom lifestyle.</param>
+		/// <param name = "customLifestyleType">Type of the custom lifestyle.</param>
 		/// <returns></returns>
 		public ComponentRegistration<S> Custom(Type customLifestyleType)
 		{
@@ -114,9 +115,9 @@ namespace Castle.MicroKernel.Registration.Lifestyle
 		}
 
 		/// <summary>
-		/// Assign a custom lifestyle type, that implements <see cref="ILifestyleManager"/>.
+		///   Assign a custom lifestyle type, that implements <see cref = "ILifestyleManager" />.
 		/// </summary>
-		/// <typeparam name="L">The type of the custom lifestyle</typeparam>
+		/// <typeparam name = "L">The type of the custom lifestyle</typeparam>
 		/// <returns></returns>
 		public ComponentRegistration<S> Custom<L>()
 			where L : ILifestyleManager, new()

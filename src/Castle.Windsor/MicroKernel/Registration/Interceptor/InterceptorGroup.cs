@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,8 +18,8 @@ namespace Castle.MicroKernel.Registration.Interceptor
 
 	using Core;
 
-    public class InterceptorGroup<S> : RegistrationGroup<S>
-        where S : class 
+	public class InterceptorGroup<S> : RegistrationGroup<S>
+		where S : class
 	{
 		private readonly InterceptorReference[] interceptors;
 
@@ -44,7 +44,7 @@ namespace Castle.MicroKernel.Registration.Interceptor
 			get
 			{
 				AddDescriptor(new InterceptorDescriptor<S>(
-					interceptors, InterceptorDescriptor<S>.Where.First));
+				              	interceptors, InterceptorDescriptor<S>.Where.First));
 				return Registration;
 			}
 		}
@@ -54,7 +54,7 @@ namespace Castle.MicroKernel.Registration.Interceptor
 			get
 			{
 				AddDescriptor(new InterceptorDescriptor<S>(
-					interceptors, InterceptorDescriptor<S>.Where.Last));
+				              	interceptors, InterceptorDescriptor<S>.Where.Last));
 				return Registration;
 			}
 		}

@@ -120,8 +120,8 @@ namespace Castle.Windsor.Tests.Experimental
 			return subSystem.SelectMany(e => e.Attach()).SingleOrDefault(i => i.Name == ReleasePolicyTrackedObjects.Name);
 		}
 
-        private void Register<T>()
-            where T : class 
+		private void Register<T>()
+			where T : class
 		{
 			Container.Register(Component.For<T>().LifeStyle.Transient);
 		}

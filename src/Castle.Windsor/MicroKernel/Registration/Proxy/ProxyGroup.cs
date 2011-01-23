@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,47 +18,27 @@ namespace Castle.MicroKernel.Registration.Proxy
 
 	using Castle.DynamicProxy;
 
-    public class ProxyGroup<S> : RegistrationGroup<S>
-        where S : class 
+	public class ProxyGroup<S> : RegistrationGroup<S>
+		where S : class
 	{
 		public ProxyGroup(ComponentRegistration<S> registration)
 			: base(registration)
 		{
 		}
 
-		public ComponentRegistration<S> UsingSingleInterface
-		{
-			get
-			{
-				return AddAttributeDescriptor("useSingleInterfaceProxy", "true");
-			}
-		}
-
 		public ComponentRegistration<S> AsMarshalByRefClass
 		{
-			get
-			{
-				return AddAttributeDescriptor("marshalByRefProxy", "true");
-			}
+			get { return AddAttributeDescriptor("marshalByRefProxy", "true"); }
+		}
+
+		public ComponentRegistration<S> UsingSingleInterface
+		{
+			get { return AddAttributeDescriptor("useSingleInterfaceProxy", "true"); }
 		}
 
 		public ComponentRegistration<S> AdditionalInterfaces(params Type[] interfaces)
 		{
 			AddDescriptor(new ProxyInterfaces<S>(interfaces));
-			return Registration;
-		}
-
-		public ComponentRegistration<S> MixIns(params object[] mixIns)
-		{
-			return MixIns(r => r.Objects(mixIns));
-		}
-
-		public ComponentRegistration<S> MixIns(Action<MixinRegistration> mixinRegistration)
-		{
-			var mixins = new MixinRegistration();
-			mixinRegistration.Invoke(mixins);
-
-			AddDescriptor(new ProxyMixIns<S>(mixins));
 			return Registration;
 		}
 
@@ -73,6 +53,20 @@ namespace Castle.MicroKernel.Registration.Proxy
 			hookRegistration.Invoke(hook);
 
 			AddDescriptor(new ProxyHook<S>(hook.Item));
+			return Registration;
+		}
+
+		public ComponentRegistration<S> MixIns(params object[] mixIns)
+		{
+			return MixIns(r => r.Objects(mixIns));
+		}
+
+		public ComponentRegistration<S> MixIns(Action<MixinRegistration> mixinRegistration)
+		{
+			var mixins = new MixinRegistration();
+			mixinRegistration.Invoke(mixins);
+
+			AddDescriptor(new ProxyMixIns<S>(mixins));
 			return Registration;
 		}
 	}

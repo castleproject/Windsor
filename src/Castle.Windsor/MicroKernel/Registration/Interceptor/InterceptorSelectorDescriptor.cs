@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,8 +18,8 @@ namespace Castle.MicroKernel.Registration.Interceptor
 	using Castle.DynamicProxy;
 	using Castle.MicroKernel.Proxy;
 
-    public class InterceptorSelectorDescriptor<S> : ComponentDescriptor<S>
-        where S : class 
+	public class InterceptorSelectorDescriptor<S> : ComponentDescriptor<S>
+		where S : class
 	{
 		private readonly IReference<IInterceptorSelector> selector;
 
