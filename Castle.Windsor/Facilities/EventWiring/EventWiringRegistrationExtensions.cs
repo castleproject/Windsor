@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -22,8 +22,9 @@ namespace Castle.Facilities.EventWiring
 	public static class EventWiringRegistrationExtensions
 	{
 #if !SILVERLIGHT
-        public static ComponentRegistration<TPublisher> PublishEvent<TPublisher>(this ComponentRegistration<TPublisher> registration, Action<TPublisher> eventSubscribtion, Action<EventSubscribers> toSubscribers)
-            where TPublisher : class 
+		public static ComponentRegistration<TPublisher> PublishEvent<TPublisher>(this ComponentRegistration<TPublisher> registration,
+		                                                                         Action<TPublisher> eventSubscribtion, Action<EventSubscribers> toSubscribers)
+			where TPublisher : class
 		{
 			var eventName = GetEventName(eventSubscribtion);
 
@@ -33,7 +34,8 @@ namespace Castle.Facilities.EventWiring
 			return registration.AddDescriptor(new EventWiringDescriptor<TPublisher>(eventName, subscribers.Subscribers));
 		}
 
-		public static ComponentRegistration PublishEvent<TPublisher>(this ComponentRegistration registration, Action<TPublisher> eventSubscribtion, Action<EventSubscribers> toSubscribers)
+		public static ComponentRegistration PublishEvent<TPublisher>(this ComponentRegistration registration, Action<TPublisher> eventSubscribtion,
+		                                                             Action<EventSubscribers> toSubscribers)
 		{
 			var eventName = GetEventName(eventSubscribtion);
 
@@ -44,8 +46,10 @@ namespace Castle.Facilities.EventWiring
 			return registration;
 		}
 #endif
-        public static ComponentRegistration<TPublisher> PublishEvent<TPublisher>(this ComponentRegistration<TPublisher> registration, string eventName, Action<EventSubscribers> toSubscribers)
-            where TPublisher : class 
+
+		public static ComponentRegistration<TPublisher> PublishEvent<TPublisher>(this ComponentRegistration<TPublisher> registration, string eventName,
+		                                                                         Action<EventSubscribers> toSubscribers)
+			where TPublisher : class
 		{
 			var subscribers = new EventSubscribers();
 			toSubscribers(subscribers);
@@ -61,6 +65,7 @@ namespace Castle.Facilities.EventWiring
 			registration.AddDescriptor(new EventWiringDescriptor(eventName, subscribers.Subscribers));
 			return registration;
 		}
+
 #if !SILVERLIGHT
 		private static string GetEventName<TPublisher>(Action<TPublisher> eventSubscribtion)
 		{
@@ -75,13 +80,13 @@ namespace Castle.Facilities.EventWiring
 			}
 			catch (Exception)
 			{
-
 				throw new ArgumentException(
 					"Delegate given was not a method subscribption delegate. Please use something similar to: 'publisher => publisher += null'. " +
 					"If you did, than it's probably a bug. Please use the other overload and specify name of the event as string.");
 			}
 			return eventName;
 		}
+
 		private static string ExtractEventName(MethodBase calledMethod)
 		{
 			var methodName = calledMethod.Name;

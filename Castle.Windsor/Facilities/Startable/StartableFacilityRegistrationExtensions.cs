@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -23,39 +23,43 @@ namespace Castle.Facilities.Startable
 
 	public static class StartableFacilityRegistrationExtensions
 	{
-        public static ComponentRegistration<TService> Start<TService>(this ComponentRegistration<TService> registration)
-            where TService : class 
+		public static ComponentRegistration<TService> Start<TService>(this ComponentRegistration<TService> registration)
+			where TService : class
 		{
 			return registration.AddAttributeDescriptor("startable", true.ToString());
 		}
 
 		/// <summary>
-		/// Assigns the start method for the startable.
+		///   Assigns the start method for the startable.
 		/// </summary>
-		/// <param name="registration"></param>
-		/// <param name="startMethod">The start method.</param>
+		/// <param name = "registration"></param>
+		/// <param name = "startMethod">The start method.</param>
 		/// <returns></returns>
-		/// <remarks>Be sure that you first added the <see cref="Castle.Facilities.Startable.StartableFacility"/> 
-		/// to the kernel, before registering this component.</remarks>
+		/// <remarks>
+		///   Be sure that you first added the <see cref = "Castle.Facilities.Startable.StartableFacility" /> 
+		///   to the kernel, before registering this component.
+		/// </remarks>
 		public static ComponentRegistration<TService> StartUsingMethod<TService>(
-            this ComponentRegistration<TService> registration, string startMethod)
-            where TService : class 
+			this ComponentRegistration<TService> registration, string startMethod)
+			where TService : class
 		{
 			return Start(registration)
 				.AddAttributeDescriptor("startMethod", startMethod);
 		}
 
 		/// <summary>
-		/// Assigns the start method for the startable.
+		///   Assigns the start method for the startable.
 		/// </summary>
-		/// <param name="registration"></param>
-		/// <param name="methodToUse">Method to use. something like: StartUsingMethod(s => s.Start)</param>
+		/// <param name = "registration"></param>
+		/// <param name = "methodToUse">Method to use. something like: StartUsingMethod(s => s.Start)</param>
 		/// <returns></returns>
-		/// <remarks>Be sure that you first added the <see cref="Castle.Facilities.Startable.StartableFacility"/> 
-		/// to the kernel, before registering this component.</remarks>
+		/// <remarks>
+		///   Be sure that you first added the <see cref = "Castle.Facilities.Startable.StartableFacility" /> 
+		///   to the kernel, before registering this component.
+		/// </remarks>
 		public static ComponentRegistration<TService> StartUsingMethod<TService>(
-            this ComponentRegistration<TService> registration, Expression<Func<TService, Action>> methodToUse)
-            where TService : class 
+			this ComponentRegistration<TService> registration, Expression<Func<TService, Action>> methodToUse)
+			where TService : class
 		{
 			var startMethod = ObtainMethodName(methodToUse);
 			return Start(registration)
@@ -63,32 +67,36 @@ namespace Castle.Facilities.Startable
 		}
 
 		/// <summary>
-		/// Assigns the stop method for the startable.
+		///   Assigns the stop method for the startable.
 		/// </summary>
-		/// <param name="registration"></param>
-		/// <param name="stopMethod">The stop method.</param>
+		/// <param name = "registration"></param>
+		/// <param name = "stopMethod">The stop method.</param>
 		/// <returns></returns>
-		/// <remarks>Be sure that you first added the <see cref="Castle.Facilities.Startable.StartableFacility"/> 
-		/// to the kernel, before registering this component.</remarks>
+		/// <remarks>
+		///   Be sure that you first added the <see cref = "Castle.Facilities.Startable.StartableFacility" /> 
+		///   to the kernel, before registering this component.
+		/// </remarks>
 		public static ComponentRegistration<TService> StopUsingMethod<TService>(
-            this ComponentRegistration<TService> registration, string stopMethod)
-            where TService : class 
+			this ComponentRegistration<TService> registration, string stopMethod)
+			where TService : class
 		{
 			return Start(registration)
 				.AddAttributeDescriptor("stopMethod", stopMethod);
 		}
 
 		/// <summary>
-		/// Assigns the stop method for the startable.
+		///   Assigns the stop method for the startable.
 		/// </summary>
-		/// <param name="registration"></param>
-		/// <param name="methodToUse">Method to use. something like: StartUsingMethod(s => s.Start)</param>
+		/// <param name = "registration"></param>
+		/// <param name = "methodToUse">Method to use. something like: StartUsingMethod(s => s.Start)</param>
 		/// <returns></returns>
-		/// <remarks>Be sure that you first added the <see cref="Castle.Facilities.Startable.StartableFacility"/> 
-		/// to the kernel, before registering this component.</remarks>
+		/// <remarks>
+		///   Be sure that you first added the <see cref = "Castle.Facilities.Startable.StartableFacility" /> 
+		///   to the kernel, before registering this component.
+		/// </remarks>
 		public static ComponentRegistration<TService> StopUsingMethod<TService>(
-            this ComponentRegistration<TService> registration, Expression<Func<TService, Action>> methodToUse)
-            where TService : class 
+			this ComponentRegistration<TService> registration, Expression<Func<TService, Action>> methodToUse)
+			where TService : class
 		{
 			var stopMethod = ObtainMethodName(methodToUse);
 			;

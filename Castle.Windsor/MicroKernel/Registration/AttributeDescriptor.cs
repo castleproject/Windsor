@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,19 +15,20 @@
 namespace Castle.MicroKernel.Registration
 {
 	using System;
+
 	using Castle.Core.Configuration;
 
-    public class AttributeDescriptor<S> : ComponentDescriptor<S>
-        where S : class 
+	public class AttributeDescriptor<S> : ComponentDescriptor<S>
+		where S : class
 	{
 		private readonly String name;
 		private readonly String value;
 
 		/// <summary>
-		/// Constructs the <see cref="AttributeDescriptor{S}"/> descriptor with name and value.
+		///   Constructs the <see cref = "AttributeDescriptor{S}" /> descriptor with name and value.
 		/// </summary>
-		/// <param name="name">The attribute name.</param>
-		/// <param name="value">The attribute value.</param>
+		/// <param name = "name">The attribute name.</param>
+		/// <param name = "value">The attribute value.</param>
 		public AttributeDescriptor(String name, String value)
 		{
 			this.name = name;
@@ -44,16 +45,16 @@ namespace Castle.MicroKernel.Registration
 	}
 
 	public class AttributeKeyDescriptor<S>
-            where S : class 
+		where S : class
 	{
-		private readonly String name;
 		private readonly ComponentRegistration<S> component;
+		private readonly String name;
 
 		/// <summary>
-		/// Constructs the <see cref="AttributeKeyDescriptor{S}"/> descriptor with name.
+		///   Constructs the <see cref = "AttributeKeyDescriptor{S}" /> descriptor with name.
 		/// </summary>
-		/// <param name="component">The component.</param>
-		/// <param name="name">The attribute name.</param>
+		/// <param name = "component">The component.</param>
+		/// <param name = "name">The attribute name.</param>
 		public AttributeKeyDescriptor(ComponentRegistration<S> component, String name)
 		{
 			this.component = component;
@@ -61,13 +62,13 @@ namespace Castle.MicroKernel.Registration
 		}
 
 		/// <summary>
-		/// Builds the <see cref="AttributeKeyDescriptor{S}"/> with value.
+		///   Builds the <see cref = "AttributeKeyDescriptor{S}" /> with value.
 		/// </summary>
-		/// <param name="value">The attribute value.</param>
-		/// <returns>The <see cref="ComponentRegistration{S}"/></returns>
-		public  ComponentRegistration<S> Eq(Object value)
+		/// <param name = "value">The attribute value.</param>
+		/// <returns>The <see cref = "ComponentRegistration{S}" /></returns>
+		public ComponentRegistration<S> Eq(Object value)
 		{
-			string attribValue = (value != null) ? value.ToString() : "";
+			var attribValue = (value != null) ? value.ToString() : "";
 			return component.AddAttributeDescriptor(name, attribValue);
 		}
 	}

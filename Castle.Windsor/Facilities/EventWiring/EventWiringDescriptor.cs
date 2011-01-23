@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,12 +18,17 @@ namespace Castle.Facilities.EventWiring
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Registration;
 
-
-    public class EventWiringDescriptor<T> : ComponentDescriptor<T>
-        where T : class 
+	public class EventWiringDescriptor<T> : ComponentDescriptor<T>
+		where T : class
 	{
 		private readonly string eventName;
 		private readonly EventSubscriber[] subscribers;
+
+		public EventWiringDescriptor(string eventName, EventSubscriber[] subscribers)
+		{
+			this.eventName = eventName;
+			this.subscribers = subscribers;
+		}
 
 		protected internal override void ApplyToConfiguration(IKernel kernel, IConfiguration configuration)
 		{
@@ -52,12 +57,6 @@ namespace Castle.Facilities.EventWiring
 				configuration.Children.Add(node);
 			}
 			return node;
-		}
-
-		public EventWiringDescriptor(string eventName, EventSubscriber[] subscribers)
-		{
-			this.eventName = eventName;
-			this.subscribers = subscribers;
 		}
 	}
 
@@ -66,6 +65,12 @@ namespace Castle.Facilities.EventWiring
 		private readonly string eventName;
 		private readonly EventSubscriber[] subscribers;
 
+		public EventWiringDescriptor(string eventName, EventSubscriber[] subscribers)
+		{
+			this.eventName = eventName;
+			this.subscribers = subscribers;
+		}
+
 		protected internal override void ApplyToConfiguration(IKernel kernel, IConfiguration configuration)
 		{
 			var node = GetSubscribersNode(configuration);
@@ -93,12 +98,6 @@ namespace Castle.Facilities.EventWiring
 				configuration.Children.Add(node);
 			}
 			return node;
-		}
-
-		public EventWiringDescriptor(string eventName, EventSubscriber[] subscribers)
-		{
-			this.eventName = eventName;
-			this.subscribers = subscribers;
 		}
 	}
 }

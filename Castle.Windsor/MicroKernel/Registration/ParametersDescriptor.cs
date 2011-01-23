@@ -16,8 +16,8 @@ namespace Castle.MicroKernel.Registration
 {
 	using Castle.Core;
 
-    public class ParametersDescriptor<S> : ComponentDescriptor<S>
-        where S : class 
+	public class ParametersDescriptor<S> : ComponentDescriptor<S>
+		where S : class
 	{
 		private readonly Parameter[] parameters;
 

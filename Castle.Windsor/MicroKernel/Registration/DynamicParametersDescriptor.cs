@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -27,11 +27,11 @@ namespace Castle.MicroKernel.Registration
 
 	public delegate ComponentReleasingDelegate DynamicParametersResolveDelegate(IKernel kernel, IDictionary parameters);
 
-    public class DynamicParametersDescriptor<S> : ComponentDescriptor<S>
-            where S : class 
+	public class DynamicParametersDescriptor<S> : ComponentDescriptor<S>
+		where S : class
 	{
-		private readonly DynamicParametersWithContextResolveDelegate resolve;
 		private static readonly string key = "component_resolving_handler";
+		private readonly DynamicParametersWithContextResolveDelegate resolve;
 
 		public DynamicParametersDescriptor(DynamicParametersWithContextResolveDelegate resolve)
 		{
