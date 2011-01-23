@@ -18,7 +18,8 @@ namespace Castle.Facilities.TypedFactory
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Registration;
 
-	public class FactoryCacheDescriptor<TFactory> : ComponentDescriptor<TFactory>
+    public class FactoryCacheDescriptor<TFactory> : ComponentDescriptor<TFactory>
+        where TFactory : class 
 	{
 		private readonly TypedFactoryCachingInspector cacheBuilder = new TypedFactoryCachingInspector();
 

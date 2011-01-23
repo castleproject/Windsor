@@ -27,7 +27,8 @@ namespace Castle.MicroKernel.Registration
 
 	public delegate ComponentReleasingDelegate DynamicParametersResolveDelegate(IKernel kernel, IDictionary parameters);
 
-	public class DynamicParametersDescriptor<S> : ComponentDescriptor<S>
+    public class DynamicParametersDescriptor<S> : ComponentDescriptor<S>
+            where S : class 
 	{
 		private readonly DynamicParametersWithContextResolveDelegate resolve;
 		private static readonly string key = "component_resolving_handler";

@@ -21,7 +21,7 @@ namespace Castle.MicroKernel.Tests.Registration.Interceptors
 
 	public abstract class InterceptorsTestCaseHelper
 	{
-		public abstract IRegistration RegisterInterceptors<T>(ComponentRegistration<T> registration);
+		public abstract IRegistration RegisterInterceptors<T>(ComponentRegistration<T> registration) where T : class;
 
 		public abstract IEnumerable<InterceptorReference> GetExpectedInterceptorsInCorrectOrder();
 	}

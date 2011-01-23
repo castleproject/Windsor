@@ -39,7 +39,8 @@ namespace Castle.Windsor.Tests
 		}
 
 		private ComponentRegistration<TComponent> WithReleaseExtensions<TComponent>(
-			ComponentRegistration<TComponent> componentRegistration, params IReleaseExtension[] items)
+			ComponentRegistration<TComponent> componentRegistration, params IReleaseExtension[] items) 
+            where TComponent : class
 		{
 			var releaseExtensions = new List<IReleaseExtension>();
 			foreach (var item in items.Distinct())

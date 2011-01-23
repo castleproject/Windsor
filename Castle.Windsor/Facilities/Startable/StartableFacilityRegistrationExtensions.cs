@@ -23,7 +23,8 @@ namespace Castle.Facilities.Startable
 
 	public static class StartableFacilityRegistrationExtensions
 	{
-		public static ComponentRegistration<TService> Start<TService>(this ComponentRegistration<TService> registration)
+        public static ComponentRegistration<TService> Start<TService>(this ComponentRegistration<TService> registration)
+            where TService : class 
 		{
 			return registration.AddAttributeDescriptor("startable", true.ToString());
 		}
@@ -37,7 +38,8 @@ namespace Castle.Facilities.Startable
 		/// <remarks>Be sure that you first added the <see cref="Castle.Facilities.Startable.StartableFacility"/> 
 		/// to the kernel, before registering this component.</remarks>
 		public static ComponentRegistration<TService> StartUsingMethod<TService>(
-			this ComponentRegistration<TService> registration, string startMethod)
+            this ComponentRegistration<TService> registration, string startMethod)
+            where TService : class 
 		{
 			return Start(registration)
 				.AddAttributeDescriptor("startMethod", startMethod);
@@ -52,7 +54,8 @@ namespace Castle.Facilities.Startable
 		/// <remarks>Be sure that you first added the <see cref="Castle.Facilities.Startable.StartableFacility"/> 
 		/// to the kernel, before registering this component.</remarks>
 		public static ComponentRegistration<TService> StartUsingMethod<TService>(
-			this ComponentRegistration<TService> registration, Expression<Func<TService, Action>> methodToUse)
+            this ComponentRegistration<TService> registration, Expression<Func<TService, Action>> methodToUse)
+            where TService : class 
 		{
 			var startMethod = ObtainMethodName(methodToUse);
 			return Start(registration)
@@ -68,7 +71,8 @@ namespace Castle.Facilities.Startable
 		/// <remarks>Be sure that you first added the <see cref="Castle.Facilities.Startable.StartableFacility"/> 
 		/// to the kernel, before registering this component.</remarks>
 		public static ComponentRegistration<TService> StopUsingMethod<TService>(
-			this ComponentRegistration<TService> registration, string stopMethod)
+            this ComponentRegistration<TService> registration, string stopMethod)
+            where TService : class 
 		{
 			return Start(registration)
 				.AddAttributeDescriptor("stopMethod", stopMethod);
@@ -83,7 +87,8 @@ namespace Castle.Facilities.Startable
 		/// <remarks>Be sure that you first added the <see cref="Castle.Facilities.Startable.StartableFacility"/> 
 		/// to the kernel, before registering this component.</remarks>
 		public static ComponentRegistration<TService> StopUsingMethod<TService>(
-			this ComponentRegistration<TService> registration, Expression<Func<TService, Action>> methodToUse)
+            this ComponentRegistration<TService> registration, Expression<Func<TService, Action>> methodToUse)
+            where TService : class 
 		{
 			var stopMethod = ObtainMethodName(methodToUse);
 			;

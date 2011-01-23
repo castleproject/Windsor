@@ -18,7 +18,8 @@ namespace Castle.MicroKernel.Registration.Proxy
 	using Castle.DynamicProxy;
 	using Castle.MicroKernel.Proxy;
 
-	public class ProxyHook<S> : ComponentDescriptor<S>
+    public class ProxyHook<S> : ComponentDescriptor<S>
+        where S : class 
 	{
 		private readonly IReference<IProxyGenerationHook> hook;
 

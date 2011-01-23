@@ -17,7 +17,8 @@ namespace Castle.MicroKernel.Registration
 	using Castle.Core;
 	using Castle.Core.Configuration;
 
-	public class LifestyleDescriptor<S> : ComponentDescriptor<S>
+    public class LifestyleDescriptor<S> : ComponentDescriptor<S>
+        where S : class 
 	{
 		private readonly LifestyleType lifestyle;
 

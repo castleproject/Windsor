@@ -17,7 +17,8 @@ namespace Castle.MicroKernel.Registration
 	using System;
 	using Castle.Core.Configuration;
 
-	public class AttributeDescriptor<S> : ComponentDescriptor<S>
+    public class AttributeDescriptor<S> : ComponentDescriptor<S>
+        where S : class 
 	{
 		private readonly String name;
 		private readonly String value;
@@ -43,6 +44,7 @@ namespace Castle.MicroKernel.Registration
 	}
 
 	public class AttributeKeyDescriptor<S>
+            where S : class 
 	{
 		private readonly String name;
 		private readonly ComponentRegistration<S> component;
