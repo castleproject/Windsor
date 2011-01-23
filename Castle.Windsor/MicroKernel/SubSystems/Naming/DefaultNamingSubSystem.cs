@@ -16,7 +16,7 @@ namespace Castle.MicroKernel.SubSystems.Naming
 {
 	using System;
 	using System.Collections.Generic;
-	using System.Diagnostics;
+	using System.Linq;
 
 	using Castle.Core.Internal;
 	using Castle.MicroKernel.Util;
@@ -49,8 +49,8 @@ namespace Castle.MicroKernel.SubSystems.Naming
 		/// </summary>
 		protected readonly Dictionary<Type, IHandler> service2Handler = new Dictionary<Type, IHandler>(SimpleTypeEqualityComparer.Instance);
 
+		protected IList<IHandlerFilter> filters;
 		protected IList<IHandlerSelector> selectors;
-        protected IList<IHandlerFilter> filters;
 
 		private readonly IDictionary<Type, IHandler[]> assignableHandlerListsByTypeCache = new Dictionary<Type, IHandler[]>(SimpleTypeEqualityComparer.Instance);
 		private readonly IDictionary<Type, IHandler[]> handlerListsByTypeCache = new Dictionary<Type, IHandler[]>(SimpleTypeEqualityComparer.Instance);
@@ -98,6 +98,15 @@ namespace Castle.MicroKernel.SubSystems.Naming
 			}
 		}
 
+		public void AddHandlerFilter(IHandlerFilter filter)
+		{
+			if (filters == null)
+			{
+				filters = new List<IHandlerFilter>();
+			}
+			filters.Add(filter);
+		}
+
 		public void AddHandlerSelector(IHandlerSelector selector)
 		{
 			if (selectors == null)
@@ -106,15 +115,6 @@ namespace Castle.MicroKernel.SubSystems.Naming
 			}
 			selectors.Add(selector);
 		}
-
-        public void AddHandlerFilter(IHandlerFilter filter)
-        {
-            if (filters == null)
-            {
-                filters = new List<IHandlerFilter>();
-            }
-            filters.Add(filter);
-        }
 
 		public virtual bool Contains(String key)
 		{
@@ -140,71 +140,22 @@ namespace Castle.MicroKernel.SubSystems.Naming
 			{
 				throw new ArgumentNullException("service");
 			}
-            if (filters != null)
-            {
-                IHandler[] handlers = null;
-                foreach (var filter in filters)
-                {
-                    if (filter.HasOpinionAbout(service) == false)
-                    {
-                        continue;
-                    }
-                    if (handlers == null)
-                    {
-                        handlers = GetAssignableHandlersPossiblyFromCache(service);
-                    }
-                    handlers = filter.SelectHandlers(service, handlers);
-                }
-                // only return handlers if they were filtered - otherwise just continue
-                if (handlers != null)
-                {
-                    return handlers;
-                }
-            }
-            if (service == typeof(object))
+			if (filters != null)
+			{
+				var filtersOpinion = GetFiltersOpinion(service);
+				if (filtersOpinion != null)
+				{
+					return filtersOpinion;
+				}
+			}
+			if (service == typeof(object))
 			{
 				return GetAllHandlers();
 			}
-			return GetAssignableHandlersPossiblyFromCache(service);
+			return GetAssignableHandlersNoFiltering(service);
 		}
 
-	    private IHandler[] GetAssignableHandlersPossiblyFromCache(Type service)
-	    {
-	        IHandler[] result;
-	        using (var locker = @lock.ForReadingUpgradeable())
-	        {
-	            if (assignableHandlerListsByTypeCache.TryGetValue(service, out result))
-	            {
-	                return result;
-	            }
-
-	            locker.Upgrade();
-	            if (assignableHandlerListsByTypeCache.TryGetValue(service, out result))
-	            {
-	                return result;
-	            }
-
-	            var handlers = key2Handler.Values;
-	            var services = new List<IHandler>();
-	            foreach (var handler in handlers)
-	            {
-	                foreach (var handlerService in handler.Services)
-	                {
-	                    if (IsAssignable(service, handlerService))
-	                    {
-	                        services.Add(handler);
-	                        break;
-	                    }
-	                }
-	            }
-	            result = services.ToArray();
-	            assignableHandlerListsByTypeCache[service] = result;
-	        }
-
-	        return result;
-	    }
-
-	    public virtual IHandler GetHandler(String key)
+		public virtual IHandler GetHandler(String key)
 		{
 			if (key == null)
 			{
@@ -265,20 +216,9 @@ namespace Castle.MicroKernel.SubSystems.Naming
 					return result;
 				}
 
-				var list = new List<IHandler>();
-				foreach (var handler in key2Handler.Values)
-				{
-					foreach (var type in handler.Services)
-					{
-						if (service == type)
-						{
-							list.Add(handler);
-							break;
-						}
-					}
-				}
-
-				result = list.ToArray();
+				result = key2Handler.Values
+					.Where(h => h.Services.Any(s => s == service))
+					.ToArray();
 				handlerListsByTypeCache[service] = result;
 			}
 
@@ -308,6 +248,69 @@ namespace Castle.MicroKernel.SubSystems.Naming
 			}
 		}
 
+		protected IHandler[] GetAssignableHandlersNoFiltering(Type service)
+		{
+			IHandler[] result;
+			using (var locker = @lock.ForReadingUpgradeable())
+			{
+				if (assignableHandlerListsByTypeCache.TryGetValue(service, out result))
+				{
+					return result;
+				}
+
+				locker.Upgrade();
+				if (assignableHandlerListsByTypeCache.TryGetValue(service, out result))
+				{
+					return result;
+				}
+
+				var handlers = key2Handler.Values;
+				var services = new List<IHandler>();
+				foreach (var handler in handlers)
+				{
+					foreach (var handlerService in handler.Services)
+					{
+						if (IsAssignable(service, handlerService))
+						{
+							services.Add(handler);
+							break;
+						}
+					}
+				}
+				result = services.ToArray();
+				assignableHandlerListsByTypeCache[service] = result;
+			}
+
+			return result;
+		}
+
+		protected virtual IHandler[] GetFiltersOpinion(Type service)
+		{
+			if (filters == null)
+			{
+				return null;
+			}
+
+			IHandler[] handlers = null;
+			foreach (var filter in filters)
+			{
+				if (filter.HasOpinionAbout(service) == false)
+				{
+					continue;
+				}
+				if (handlers == null)
+				{
+					handlers = GetAssignableHandlersNoFiltering(service);
+				}
+				handlers = filter.SelectHandlers(service, handlers);
+				if (handlers != null && handlers.Length > 0)
+				{
+					return handlers;
+				}
+			}
+			return null;
+		}
+
 		protected virtual IHandler GetSelectorsOpinion(string key, Type type)
 		{
 			if (selectors == null)
@@ -324,7 +327,7 @@ namespace Castle.MicroKernel.SubSystems.Naming
 				}
 				if (handlers == null)
 				{
-					handlers = GetAssignableHandlers(type);
+					handlers = GetAssignableHandlersNoFiltering(type);
 				}
 				var handler = selector.SelectHandler(key, type, handlers);
 				if (handler != null)
