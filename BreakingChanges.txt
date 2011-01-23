@@ -1,4 +1,17 @@
 ================================================================================================
+change - IWindsorContainer.AddFacility and IKernel.AddFacility overloads that were taking
+	Func<TFacility,object> were removed.
+
+impact - low
+fixability - easy
+
+description - Those overloads were only cluttering the API and confusing users. There was no
+	point in keeping them
+
+fix - You should not have to fix that at all. C# compiler (in version 3 or higher) should be
+	smart enough to pick the Action<TFacility> overload automatically if you're using lambda
+	syntax. If you aren't, please do, or adjust the call to match the Action<TFacility> overload
+================================================================================================
 change - IComponentModelBuilder.BuildModel and ComponentModel constructor take ComponenName now
 	instead of string for 'name' parameter
 

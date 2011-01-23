@@ -111,15 +111,6 @@ namespace Castle.MicroKernel
 		///   Creates and adds an <see cref = "IFacility" /> facility to the kernel.
 		/// </summary>
 		/// <typeparam name = "T">The facility type.</typeparam>
-		/// <param name = "key"></param>
-		/// <param name = "onCreate">The callback for creation.</param>
-		IKernel AddFacility<T>(String key, Func<T, object> onCreate)
-			where T : IFacility, new();
-
-		/// <summary>
-		///   Creates and adds an <see cref = "IFacility" /> facility to the kernel.
-		/// </summary>
-		/// <typeparam name = "T">The facility type.</typeparam>
 		/// <returns></returns>
 		IKernel AddFacility<T>() where T : IFacility, new();
 
@@ -130,15 +121,6 @@ namespace Castle.MicroKernel
 		/// <param name = "onCreate">The callback for creation.</param>
 		/// <returns></returns>
 		IKernel AddFacility<T>(Action<T> onCreate)
-			where T : IFacility, new();
-
-		/// <summary>
-		///   Creates and adds an <see cref = "IFacility" /> facility to the kernel.
-		/// </summary>
-		/// <typeparam name = "T">The facility type.</typeparam>
-		/// <param name = "onCreate">The callback for creation.</param>
-		/// <returns></returns>
-		IKernel AddFacility<T>(Func<T, object> onCreate)
 			where T : IFacility, new();
 
 		/// <summary>
