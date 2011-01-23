@@ -28,7 +28,6 @@ namespace Castle.Windsor.Tests
 			Container.Register(Component.For<IEmptyService>().ImplementedBy<EmptyServiceA>(),
 			                   Component.For<IEmptyService>().ImplementedBy<EmptyServiceB>());
 			var clocks = Container.ResolveAll<IEmptyService>();
-
 			Assert.AreEqual(2, clocks.Length);
 		}
 
