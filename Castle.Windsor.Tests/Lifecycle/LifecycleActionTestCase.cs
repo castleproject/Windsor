@@ -71,6 +71,20 @@ namespace Castle.Windsor.Tests.Lifecycle
 		}
 
 		[Test]
+		public void OnDestroy_called_on_release()
+		{
+			var called = false;
+			Container.Register(Component.For<A>()
+			                   	.LifeStyle.Transient
+			                   	.OnDestroy((k, i) => { called = true; }));
+
+			var a = Container.Resolve<A>();
+			Container.Release(a);
+
+			Assert.IsTrue(called);
+		}
+
+		[Test]
 		public void Works_for_components_obtained_via_factory()
 		{
 			Container.Register(Component.For<IService>()

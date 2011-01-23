@@ -627,7 +627,7 @@ namespace Castle.MicroKernel.Registration
 
 		/// <summary>
 		///   Stores a set of <see cref = "LifecycleActionDelegate{T}" /> which will be invoked when the component
-		///   is destroyed which means when it's released or it's lifetime scope ends.
+		///   is destroyed which means when it's released or it's lifetime scope ends. Notice that usage of this method will cause instsances of the component to be tracked, even if they wouldn't be otherwise.
 		/// </summary>
 		/// <param name = "actions">A set of actions to be executed when the component is destroyed.</param>
 		public ComponentRegistration<TService> OnDestroy(params LifecycleActionDelegate<TService>[] actions)
