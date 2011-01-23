@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,12 +15,14 @@
 namespace Castle.MicroKernel.Registration
 {
 	using System.Collections;
-	using Core;
+
+	using Castle.Core;
 
 	public abstract class AbstractPropertyDescriptor<S> : ComponentDescriptor<S>
+		where S : class
 	{
-		private readonly Property[] properties;
 		private readonly IDictionary dictionary;
+		private readonly Property[] properties;
 
 		protected AbstractPropertyDescriptor(params Property[] properties)
 		{
@@ -32,24 +34,24 @@ namespace Castle.MicroKernel.Registration
 			this.dictionary = dictionary;
 		}
 
+		protected abstract void ApplyProperty(IKernel kernel, ComponentModel model, object key, object value, Property property);
+
 		protected internal override void ApplyToModel(IKernel kernel, ComponentModel model)
 		{
 			if (dictionary != null)
 			{
-				foreach(DictionaryEntry property in dictionary)
+				foreach (DictionaryEntry property in dictionary)
 				{
 					ApplyProperty(kernel, model, property.Key, property.Value, null);
 				}
 			}
 			else if (properties != null)
 			{
-				foreach(Property property in properties)
+				foreach (var property in properties)
 				{
 					ApplyProperty(kernel, model, property.Key, property.Value, property);
 				}
 			}
 		}
-
-		protected abstract void ApplyProperty(IKernel kernel, ComponentModel model, object key, object value, Property property);
 	}
 }

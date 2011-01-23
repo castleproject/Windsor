@@ -40,6 +40,7 @@ namespace Castle.MicroKernel.Registration
 	/// </summary>
 	/// <typeparam name = "TService">The service type</typeparam>
 	public class ComponentRegistration<TService> : IRegistration
+        where TService : class 
 	{
 		private readonly List<ComponentDescriptor<TService>> descriptors = new List<ComponentDescriptor<TService>>();
 		private readonly List<Type> potentialServices = new List<Type>();

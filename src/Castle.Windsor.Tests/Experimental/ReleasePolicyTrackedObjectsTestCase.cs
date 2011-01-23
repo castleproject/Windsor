@@ -121,6 +121,7 @@ namespace Castle.Windsor.Tests.Experimental
 		}
 
 		private void Register<T>()
+			where T : class
 		{
 			Container.Register(Component.For<T>().LifeStyle.Transient);
 		}

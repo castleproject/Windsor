@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -25,30 +25,8 @@ namespace Castle.Windsor.Tests
 	using NUnit.Framework;
 
 	[TestFixture]
-	public class HandlerExtensionsTestCase:AbstractContainerTestFixture
+	public class HandlerExtensionsTestCase : AbstractContainerTestFixture
 	{
-		private ComponentRegistration<A> AddResolveExtensions(ComponentRegistration<A> componentRegistration,
-		                                                      params IResolveExtension[] items)
-		{
-			var resolveExtensions = new List<IResolveExtension>();
-			foreach (var item in items.Distinct())
-			{
-				resolveExtensions.Add(item);
-			}
-			return componentRegistration.ExtendedProperties(Property.ForKey("Castle.ResolveExtensions").Eq(resolveExtensions));
-		}
-
-		private ComponentRegistration<TComponent> WithReleaseExtensions<TComponent>(
-			ComponentRegistration<TComponent> componentRegistration, params IReleaseExtension[] items)
-		{
-			var releaseExtensions = new List<IReleaseExtension>();
-			foreach (var item in items.Distinct())
-			{
-				releaseExtensions.Add(item);
-			}
-			return componentRegistration.ExtendedProperties(Property.ForKey("Castle.ReleaseExtensions").Eq(releaseExtensions));
-		}
-
 		[Test]
 		public void Can_chain_extensions()
 		{
@@ -112,6 +90,29 @@ namespace Castle.Windsor.Tests
 			var resolvedA = Kernel.Resolve<A>();
 			Assert.AreSame(a, resolvedA);
 		}
+
+		private ComponentRegistration<A> AddResolveExtensions(ComponentRegistration<A> componentRegistration,
+		                                                      params IResolveExtension[] items)
+		{
+			var resolveExtensions = new List<IResolveExtension>();
+			foreach (var item in items.Distinct())
+			{
+				resolveExtensions.Add(item);
+			}
+			return componentRegistration.ExtendedProperties(Property.ForKey("Castle.ResolveExtensions").Eq(resolveExtensions));
+		}
+
+		private ComponentRegistration<TComponent> WithReleaseExtensions<TComponent>(
+			ComponentRegistration<TComponent> componentRegistration, params IReleaseExtension[] items)
+			where TComponent : class
+		{
+			var releaseExtensions = new List<IReleaseExtension>();
+			foreach (var item in items.Distinct())
+			{
+				releaseExtensions.Add(item);
+			}
+			return componentRegistration.ExtendedProperties(Property.ForKey("Castle.ReleaseExtensions").Eq(releaseExtensions));
+		}
 	}
 
 	public class ReturnAExtension : IResolveExtension
@@ -127,7 +128,6 @@ namespace Castle.Windsor.Tests
 
 		public void Init(IKernel kernel, IHandler handler)
 		{
-			
 		}
 
 		public void Intercept(ResolveInvocation invocation)
@@ -163,7 +163,6 @@ namespace Castle.Windsor.Tests
 
 		public void Init(IKernel kernel, IHandler handler)
 		{
-			
 		}
 
 		public void Intercept(ResolveInvocation invocation)

@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ namespace Castle.MicroKernel.Registration
 	using Castle.MicroKernel.Util;
 
 	public class ServiceOverrideDescriptor<S> : AbstractPropertyDescriptor<S>
+		where S : class
 	{
 		public ServiceOverrideDescriptor(params ServiceOverride[] overrides)
 			: base(overrides)
@@ -33,7 +34,6 @@ namespace Castle.MicroKernel.Registration
 			: base(dictionary)
 		{
 		}
-
 
 		public ServiceOverrideDescriptor(object overridesAsAnonymousType)
 			: base(new ReflectionBasedDictionaryAdapter(overridesAsAnonymousType))
@@ -54,21 +54,6 @@ namespace Castle.MicroKernel.Registration
 			}
 		}
 
-		private void ApplySimpleReference(IKernel kernel, ComponentModel model,
-		                                  object key, String componentKey)
-		{
-			var reference = FormattedReferenceExpression(componentKey);
-			Registration.AddParameter(kernel, model, GetKeyString(key), reference);
-		}
-
-		private string GetKeyString(object key)
-		{
-			if ((key is Type))
-				return (key as Type).AssemblyQualifiedName;
-
-			return key.ToString();
-		}
-
 		private void ApplyReferenceList(IKernel kernel, ComponentModel model,
 		                                object key, IEnumerable<String> items,
 		                                ServiceOverride serviceOverride)
@@ -76,7 +61,9 @@ namespace Castle.MicroKernel.Registration
 			var list = new MutableConfiguration("list");
 
 			if (serviceOverride != null && serviceOverride.Type != null)
+			{
 				list.Attributes.Add("type", serviceOverride.Type.AssemblyQualifiedName);
+			}
 
 			foreach (var item in items)
 			{
@@ -88,10 +75,29 @@ namespace Castle.MicroKernel.Registration
 			Registration.AddParameter(kernel, model, GetKeyString(key), list);
 		}
 
+		private void ApplySimpleReference(IKernel kernel, ComponentModel model,
+		                                  object key, String componentKey)
+		{
+			var reference = FormattedReferenceExpression(componentKey);
+			Registration.AddParameter(kernel, model, GetKeyString(key), reference);
+		}
+
+		private string GetKeyString(object key)
+		{
+			if ((key is Type))
+			{
+				return (key as Type).AssemblyQualifiedName;
+			}
+
+			return key.ToString();
+		}
+
 		private static String FormattedReferenceExpression(String value)
 		{
 			if (!ReferenceExpressionUtil.IsReference(value))
+			{
 				value = String.Format("${{{0}}}", value);
+			}
 			return value;
 		}
 	}

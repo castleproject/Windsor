@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,14 +20,14 @@ namespace Castle.MicroKernel.Registration
 	using Castle.Core;
 
 	/// <summary>
-	/// Factory for creating <see cref="ComponentRegistration"/> objects.
+	///   Factory for creating <see cref = "ComponentRegistration" /> objects.
 	/// </summary>
 	public static class Component
 	{
 		/// <summary>
-		/// Creates a component registration for the <paramref name="serviceType"/>
+		///   Creates a component registration for the <paramref name = "serviceType" />
 		/// </summary>
-		/// <param name="serviceType">Type of the service.</param>
+		/// <param name = "serviceType">Type of the service.</param>
 		/// <returns>The component registration.</returns>
 		public static ComponentRegistration For(Type serviceType)
 		{
@@ -42,10 +42,11 @@ namespace Castle.MicroKernel.Registration
 		}
 
 		/// <summary>
-		/// Creates a component registration for the <paramref name="serviceTypes"/>
+		///   Creates a component registration for the <paramref name = "serviceTypes" />
 		/// </summary>
-		/// <param name="serviceTypes">Types of the service.</param>
-		/// <returns>The component registration.</returns>B
+		/// <param name = "serviceTypes">Types of the service.</param>
+		/// <returns>The component registration.</returns>
+		/// B
 		public static ComponentRegistration For(params Type[] serviceTypes)
 		{
 			if (serviceTypes.Length == 0)
@@ -56,15 +57,16 @@ namespace Castle.MicroKernel.Registration
 		}
 
 		/// <summary>
-		/// Creates a component registration for the <paramref name="serviceTypes"/>
+		///   Creates a component registration for the <paramref name = "serviceTypes" />
 		/// </summary>
-		/// <param name="serviceTypes">Types of the service.</param>
-		/// <returns>The component registration.</returns>B
+		/// <param name = "serviceTypes">Types of the service.</param>
+		/// <returns>The component registration.</returns>
+		/// B
 		public static ComponentRegistration For(IEnumerable<Type> serviceTypes)
 		{
 			ComponentRegistration registration = null;
 
-			foreach (Type serviceType in serviceTypes)
+			foreach (var serviceType in serviceTypes)
 			{
 				if (registration == null)
 				{
@@ -85,23 +87,78 @@ namespace Castle.MicroKernel.Registration
 		}
 
 		/// <summary>
-		/// Creates a component registration for the service type.
+		///   Creates a component registration for the service type.
 		/// </summary>
-		/// <typeparam name="S">The service type.</typeparam>
+		/// <typeparam name = "S">The service type.</typeparam>
 		/// <returns>The component registration.</returns>
 		public static ComponentRegistration<S> For<S>()
+			where S : class
 		{
 			return new ComponentRegistration<S>();
 		}
 
 		/// <summary>
-		/// Create a component registration for an existing <see cref="ComponentModel"/>
+		///   Create a component registration for an existing <see cref = "ComponentModel" />
 		/// </summary>
-		/// <param name="model">The component model.</param>
+		/// <param name = "model">The component model.</param>
 		/// <returns>The component registration.</returns>
 		public static ComponentRegistration For(ComponentModel model)
 		{
 			return new ComponentRegistration(model);
+		}
+
+		/// <summary>
+		///   Creates a component registration for the service types.
+		/// </summary>
+		/// <typeparam name = "S">The primary service type.</typeparam>
+		/// <typeparam name = "F">The forwarded type.</typeparam>
+		/// <returns>The component registration.</returns>
+		public static ComponentRegistration<S> For<S, F>()
+			where S : class
+		{
+			return new ComponentRegistration<S>().Forward<F>();
+		}
+
+		/// <summary>
+		///   Creates a component registration for the service types.
+		/// </summary>
+		/// <typeparam name = "S">The primary service type.</typeparam>
+		/// <typeparam name = "F1">The first forwarded type.</typeparam>
+		/// <typeparam name = "F2">The second forwarded type.</typeparam>
+		/// <returns>The component registration.</returns>
+		public static ComponentRegistration<S> For<S, F1, F2>()
+			where S : class
+		{
+			return new ComponentRegistration<S>().Forward<F1, F2>();
+		}
+
+		/// <summary>
+		///   Creates a component registration for the service types.
+		/// </summary>
+		/// <typeparam name = "S">The primary service type.</typeparam>
+		/// <typeparam name = "F1">The first forwarded type.</typeparam>
+		/// <typeparam name = "F2">The second forwarded type.</typeparam>
+		/// <typeparam name = "F3">The third forwarded type.</typeparam>
+		/// <returns>The component registration.</returns>
+		public static ComponentRegistration<S> For<S, F1, F2, F3>()
+			where S : class
+		{
+			return new ComponentRegistration<S>().Forward<F1, F2, F3>();
+		}
+
+		/// <summary>
+		///   Creates a component registration for the service types.
+		/// </summary>
+		/// <typeparam name = "S">The primary service type.</typeparam>
+		/// <typeparam name = "F1">The first forwarded type.</typeparam>
+		/// <typeparam name = "F2">The second forwarded type.</typeparam>
+		/// <typeparam name = "F3">The third forwarded type.</typeparam>
+		/// <typeparam name = "F4">The fourth forwarded type.</typeparam>
+		/// <returns>The component registration.</returns>
+		public static ComponentRegistration<S> For<S, F1, F2, F3, F4>()
+			where S : class
+		{
+			return new ComponentRegistration<S>().Forward<F1, F2, F3, F4>();
 		}
 
 		public static bool HasAttribute<TAttribute>(Type type) where TAttribute : Attribute
@@ -116,11 +173,11 @@ namespace Castle.MicroKernel.Registration
 		}
 
 		/// <summary>
-		/// Determines if the component is a Castle component, that is - if it has a <see cref="CastleComponentAttribute"/>.
+		///   Determines if the component is a Castle component, that is - if it has a <see cref = "CastleComponentAttribute" />.
 		/// </summary>
 		/// <returns>true if the service is a Castle Component.</returns>
 		/// <remarks>
-		/// This method is usually used as argument for <see cref="BasedOnDescriptor.If"/> method.
+		///   This method is usually used as argument for <see cref = "BasedOnDescriptor.If" /> method.
 		/// </remarks>
 		public static bool IsCastleComponent(Type type)
 		{
@@ -128,9 +185,9 @@ namespace Castle.MicroKernel.Registration
 		}
 
 		/// <summary>
-		/// Creates a predicate to check if a component is in a namespace.
+		///   Creates a predicate to check if a component is in a namespace.
 		/// </summary>
-		/// <param name="namespace">The namespace.</param>
+		/// <param name = "namespace">The namespace.</param>
 		/// <returns>true if the component type is in the namespace.</returns>
 		public static Predicate<Type> IsInNamespace(string @namespace)
 		{
@@ -138,10 +195,10 @@ namespace Castle.MicroKernel.Registration
 		}
 
 		/// <summary>
-		/// Creates a predicate to check if a component is in a namespace.
+		///   Creates a predicate to check if a component is in a namespace.
 		/// </summary>
-		/// <param name="namespace">The namespace.</param>
-		/// <param name="includeSubnamespaces">If set to true, will also include types from subnamespaces.</param>
+		/// <param name = "namespace">The namespace.</param>
+		/// <param name = "includeSubnamespaces">If set to true, will also include types from subnamespaces.</param>
 		/// <returns>true if the component type is in the namespace.</returns>
 		public static Predicate<Type> IsInNamespace(string @namespace, bool includeSubnamespaces)
 		{
@@ -155,9 +212,9 @@ namespace Castle.MicroKernel.Registration
 		}
 
 		/// <summary>
-		/// Creates a predicate to check if a component shares a namespace with another.
+		///   Creates a predicate to check if a component shares a namespace with another.
 		/// </summary>
-		/// <param name="type">The component type to test namespace against.</param>
+		/// <param name = "type">The component type to test namespace against.</param>
 		/// <returns>true if the component is in the same namespace.</returns>
 		public static Predicate<Type> IsInSameNamespaceAs(Type type)
 		{
@@ -165,10 +222,10 @@ namespace Castle.MicroKernel.Registration
 		}
 
 		/// <summary>
-		/// Creates a predicate to check if a component shares a namespace with another.
+		///   Creates a predicate to check if a component shares a namespace with another.
 		/// </summary>
-		/// <param name="type">The component type to test namespace against.</param>
-		/// <param name="includeSubnamespaces">If set to true, will also include types from subnamespaces.</param>
+		/// <param name = "type">The component type to test namespace against.</param>
+		/// <param name = "includeSubnamespaces">If set to true, will also include types from subnamespaces.</param>
 		/// <returns>true if the component is in the same namespace.</returns>
 		public static Predicate<Type> IsInSameNamespaceAs(Type type, bool includeSubnamespaces)
 		{
@@ -176,9 +233,9 @@ namespace Castle.MicroKernel.Registration
 		}
 
 		/// <summary>
-		/// Creates a predicate to check if a component shares a namespace with another.
+		///   Creates a predicate to check if a component shares a namespace with another.
 		/// </summary>
-		/// <typeparam name="T">The component type to test namespace against.</typeparam>
+		/// <typeparam name = "T">The component type to test namespace against.</typeparam>
 		/// <returns>true if the component is in the same namespace.</returns>
 		public static Predicate<Type> IsInSameNamespaceAs<T>() where T : class
 		{
@@ -186,68 +243,14 @@ namespace Castle.MicroKernel.Registration
 		}
 
 		/// <summary>
-		/// Creates a predicate to check if a component shares a namespace with another.
+		///   Creates a predicate to check if a component shares a namespace with another.
 		/// </summary>
-		/// <typeparam name="T">The component type to test namespace against.</typeparam>
-		/// <param name="includeSubnamespaces">If set to true, will also include types from subnamespaces.</param>
+		/// <typeparam name = "T">The component type to test namespace against.</typeparam>
+		/// <param name = "includeSubnamespaces">If set to true, will also include types from subnamespaces.</param>
 		/// <returns>true if the component is in the same namespace.</returns>
 		public static Predicate<Type> IsInSameNamespaceAs<T>(bool includeSubnamespaces) where T : class
 		{
 			return IsInSameNamespaceAs(typeof(T), includeSubnamespaces);
 		}
-
-		#region Forwarded Service Types
-
-		/// <summary>
-		/// Creates a component registration for the service types.
-		/// </summary>
-		/// <typeparam name="S">The primary service type.</typeparam>
-		/// <typeparam name="F">The forwarded type.</typeparam>
-		/// <returns>The component registration.</returns>
-		public static ComponentRegistration<S> For<S, F>()
-		{
-			return new ComponentRegistration<S>().Forward<F>();
-		}
-
-		/// <summary>
-		/// Creates a component registration for the service types.
-		/// </summary>
-		/// <typeparam name="S">The primary service type.</typeparam>
-		/// <typeparam name="F1">The first forwarded type.</typeparam>
-		/// <typeparam name="F2">The second forwarded type.</typeparam>
-		/// <returns>The component registration.</returns>
-		public static ComponentRegistration<S> For<S, F1, F2>()
-		{
-			return new ComponentRegistration<S>().Forward<F1, F2>();
-		}
-
-		/// <summary>
-		/// Creates a component registration for the service types.
-		/// </summary>
-		/// <typeparam name="S">The primary service type.</typeparam>
-		/// <typeparam name="F1">The first forwarded type.</typeparam>
-		/// <typeparam name="F2">The second forwarded type.</typeparam>
-		/// <typeparam name="F3">The third forwarded type.</typeparam>
-		/// <returns>The component registration.</returns>
-		public static ComponentRegistration<S> For<S, F1, F2, F3>()
-		{
-			return new ComponentRegistration<S>().Forward<F1, F2, F3>();
-		}
-
-		/// <summary>
-		/// Creates a component registration for the service types.
-		/// </summary>
-		/// <typeparam name="S">The primary service type.</typeparam>
-		/// <typeparam name="F1">The first forwarded type.</typeparam>
-		/// <typeparam name="F2">The second forwarded type.</typeparam>
-		/// <typeparam name="F3">The third forwarded type.</typeparam>
-		/// <typeparam name="F4">The fourth forwarded type.</typeparam>
-		/// <returns>The component registration.</returns>
-		public static ComponentRegistration<S> For<S, F1, F2, F3, F4>()
-		{
-			return new ComponentRegistration<S>().Forward<F1, F2, F3, F4>();
-		}
-
-		#endregion
 	}
 }

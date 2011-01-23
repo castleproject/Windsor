@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -46,50 +46,6 @@ namespace Castle.Windsor.Tests
 		}
 
 		[Test]
-		public void Doesnt_track_singleton()
-		{
-			container.Register(Singleton<A>());
-
-			var a = container.Resolve<A>();
-
-			Assert.IsFalse(releasePolicy.HasTrack(a));
-		}
-
-		[Test]
-		public void Release_stops_tracking_component_transient()
-		{
-			container.Register(Transient<DisposableFoo>());
-			var foo = container.Resolve<DisposableFoo>();
-
-			container.Release(foo);
-
-			Assert.IsFalse(releasePolicy.HasTrack(foo));
-		}
-
-		[Test]
-		public void Release_doesnt_stop_tracking_component_singleton_until_container_is_disposed()
-		{
-			DisposableFoo.DisposedCount = 0;
-			container.Register(Singleton<DisposableFoo>());
-			var foo = container.Resolve<DisposableFoo>();
-			var fooWeak = new WeakReference(foo);
-
-			container.Release(foo);
-			foo = null;
-			GC.Collect();
-
-			Assert.IsTrue(fooWeak.IsAlive);
-			Assert.AreEqual(0, DisposableFoo.DisposedCount);
-
-			container.Dispose();
-			GC.Collect();
-
-			Assert.IsFalse(fooWeak.IsAlive);
-			Assert.AreEqual(1, DisposableFoo.DisposedCount);
-		}
-
-
-		[Test]
 		public void Doesnt_track_simple_components_with_simple_DynamicDependencies()
 		{
 			container.Register(Transient<A>().DynamicParameters(delegate { }));
@@ -119,6 +75,49 @@ namespace Castle.Windsor.Tests
 			var b = container.Resolve<B>();
 
 			Assert.IsFalse(releasePolicy.HasTrack(b));
+		}
+
+		[Test]
+		public void Doesnt_track_singleton()
+		{
+			container.Register(Singleton<A>());
+
+			var a = container.Resolve<A>();
+
+			Assert.IsFalse(releasePolicy.HasTrack(a));
+		}
+
+		[Test]
+		public void Release_doesnt_stop_tracking_component_singleton_until_container_is_disposed()
+		{
+			DisposableFoo.DisposedCount = 0;
+			container.Register(Singleton<DisposableFoo>());
+			var foo = container.Resolve<DisposableFoo>();
+			var fooWeak = new WeakReference(foo);
+
+			container.Release(foo);
+			foo = null;
+			GC.Collect();
+
+			Assert.IsTrue(fooWeak.IsAlive);
+			Assert.AreEqual(0, DisposableFoo.DisposedCount);
+
+			container.Dispose();
+			GC.Collect();
+
+			Assert.IsFalse(fooWeak.IsAlive);
+			Assert.AreEqual(1, DisposableFoo.DisposedCount);
+		}
+
+		[Test]
+		public void Release_stops_tracking_component_transient()
+		{
+			container.Register(Transient<DisposableFoo>());
+			var foo = container.Resolve<DisposableFoo>();
+
+			container.Release(foo);
+
+			Assert.IsFalse(releasePolicy.HasTrack(foo));
 		}
 
 		[SetUp]
@@ -180,18 +179,22 @@ namespace Castle.Windsor.Tests
 			Assert.IsTrue(releasePolicy.HasTrack(b));
 		}
 
-		private ComponentRegistration<T> Transient<T>()
-		{
-			return Component.For<T>().LifeStyle.Transient;
-		}
-
 		private ComponentRegistration<T> Pooled<T>()
+			where T : class
 		{
 			return Component.For<T>().LifeStyle.Pooled;
 		}
+
 		private ComponentRegistration<T> Singleton<T>()
+			where T : class
 		{
 			return Component.For<T>().LifeStyle.Singleton;
+		}
+
+		private ComponentRegistration<T> Transient<T>()
+			where T : class
+		{
+			return Component.For<T>().LifeStyle.Transient;
 		}
 	}
 }
