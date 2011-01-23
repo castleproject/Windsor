@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -21,162 +21,162 @@ namespace Castle.MicroKernel
 	public partial interface IKernel : IKernelEvents, IDisposable
 	{
 		/// <summary>
-		/// Returns the component instance by the key
+		///   Returns the component instance by the key
 		/// </summary>
 		[Obsolete("Use Resolve<object>(key) instead")]
 		[EditorBrowsable(EditorBrowsableState.Advanced)]
 		object this[String key] { get; }
 
 		/// <summary>
-		/// Returns the component instance by the service type
+		///   Returns the component instance by the service type
 		/// </summary>
 		[Obsolete("Use Resolve(service) or generic strongly typed version instead")]
 		[EditorBrowsable(EditorBrowsableState.Advanced)]
 		object this[Type service] { get; }
 
 		/// <summary>
-		/// Returns the component instance by the service type
+		///   Returns the component instance by the service type
 		/// </summary>
 		object Resolve(Type service);
 
 		/// <summary>
-		/// Returns all the valid component instances by
-		/// the service type
+		///   Returns the component instance by the service type
+		///   using dynamic arguments
 		/// </summary>
-		/// <param name="service">The service type</param>
-		Array ResolveAll(Type service);
-
-		/// <summary>
-		/// Returns all the valid component instances by
-		/// the service type
-		/// </summary>
-		/// <param name="service">The service type</param>
-		/// <param name="arguments">Arguments to resolve the services</param>
-		Array ResolveAll(Type service, IDictionary arguments);
-		
-		/// <summary>
-		/// Returns all the valid component instances by
-		/// the service type
-		/// </summary>
-		/// <param name="service">The service type</param>
-		/// <param name="argumentsAsAnonymousType">Arguments to resolve the services</param>
-		Array ResolveAll(Type service, object argumentsAsAnonymousType);
-
-		/// <summary>
-		/// Returns the component instance by the service type
-		/// using dynamic arguments
-		/// </summary>
-		/// <param name="service"></param>
-		/// <param name="arguments"></param>
+		/// <param name = "service"></param>
+		/// <param name = "arguments"></param>
 		/// <returns></returns>
 		object Resolve(Type service, IDictionary arguments);
 
 		/// <summary>
-		/// Returns the component instance by the component key
-		/// using dynamic arguments
+		///   Returns the component instance by the component key
+		///   using dynamic arguments
 		/// </summary>
-		/// <param name="key"></param>
-		/// <param name="arguments"></param>
+		/// <param name = "key"></param>
+		/// <param name = "arguments"></param>
 		/// <returns></returns>
 		[Obsolete("Use Resolve<object>(key, arguments) instead")]
 		[EditorBrowsable(EditorBrowsableState.Advanced)]
 		object Resolve(String key, IDictionary arguments);
-		
+
 		/// <summary>
-		/// Returns the component instance by the service type
-		/// using dynamic arguments
+		///   Returns the component instance by the service type
+		///   using dynamic arguments
 		/// </summary>
-		/// <param name="service">Service to resolve</param>
-		/// <param name="argumentsAsAnonymousType">Arguments to resolve the services</param>
+		/// <param name = "service">Service to resolve</param>
+		/// <param name = "argumentsAsAnonymousType">Arguments to resolve the services</param>
 		/// <returns></returns>
 		object Resolve(Type service, object argumentsAsAnonymousType);
 
 		/// <summary>
-		/// Returns the component instance by the component key
-		/// using dynamic arguments
+		///   Returns the component instance by the component key
+		///   using dynamic arguments
 		/// </summary>
-		/// <param name="key">Key to resolve</param>
-		/// <param name="argumentsAsAnonymousType">Arguments to resolve the services</param>
+		/// <param name = "key">Key to resolve</param>
+		/// <param name = "argumentsAsAnonymousType">Arguments to resolve the services</param>
 		/// <returns></returns>
 		[Obsolete("Use Resolve<object>(key, argumentsAsAnonymousType) instead")]
 		[EditorBrowsable(EditorBrowsableState.Advanced)]
 		object Resolve(String key, object argumentsAsAnonymousType);
 
 		/// <summary>
-		/// Returns a component instance by the key
+		///   Returns a component instance by the key
 		/// </summary>
-		/// <param name="key"></param>
-		/// <param name="service"></param>
+		/// <param name = "key"></param>
+		/// <param name = "service"></param>
 		/// <returns></returns>
 		object Resolve(String key, Type service);
 
 		/// <summary>
-		/// Returns the component instance by the service type
-		/// using dynamic arguments
+		///   Returns the component instance by the service type
+		///   using dynamic arguments
 		/// </summary>
-		/// <param name="arguments"></param>
+		/// <param name = "arguments"></param>
 		/// <returns></returns>
 		T Resolve<T>(IDictionary arguments);
-		
+
 		/// <summary>
-		/// Returns the component instance by the service type
-		/// using dynamic arguments
+		///   Returns the component instance by the service type
+		///   using dynamic arguments
 		/// </summary>
-		/// <param name="argumentsAsAnonymousType">Arguments to resolve the services</param>
+		/// <param name = "argumentsAsAnonymousType">Arguments to resolve the services</param>
 		/// <returns></returns>
 		T Resolve<T>(object argumentsAsAnonymousType);
 
 		/// <summary>
-		/// Returns the component instance by the component key
+		///   Returns the component instance by the component key
 		/// </summary>
 		/// <returns></returns>
 		T Resolve<T>();
 
 		/// <summary>
-		/// Returns a component instance by the key
+		///   Returns a component instance by the key
 		/// </summary>
-		/// <param name="key">Component's key</param>
-		/// <typeparam name="T">Service type</typeparam>
+		/// <param name = "key">Component's key</param>
+		/// <typeparam name = "T">Service type</typeparam>
 		/// <returns>The Component instance</returns>
 		T Resolve<T>(String key);
 
 		/// <summary>
-		/// Returns a component instance by the key
+		///   Returns a component instance by the key
 		/// </summary>
-		/// <typeparam name="T">Service type</typeparam>
-		/// <param name="key">Component's key</param>
-		/// <param name="arguments"></param>
+		/// <typeparam name = "T">Service type</typeparam>
+		/// <param name = "key">Component's key</param>
+		/// <param name = "arguments"></param>
 		/// <returns>The Component instance</returns>
 		T Resolve<T>(String key, IDictionary arguments);
 
 		/// <summary>
-		/// Returns component instances that implement TService
+		///   Returns a component instance by the key
 		/// </summary>
-		/// <typeparam name="TService"></typeparam>
+		/// <param name = "key"></param>
+		/// <param name = "service"></param>
+		/// <param name = "arguments"></param>
+		/// <returns></returns>
+		object Resolve(String key, Type service, IDictionary arguments);
+
+		/// <summary>
+		///   Returns all the valid component instances by
+		///   the service type
+		/// </summary>
+		/// <param name = "service">The service type</param>
+		Array ResolveAll(Type service);
+
+		/// <summary>
+		///   Returns all the valid component instances by
+		///   the service type
+		/// </summary>
+		/// <param name = "service">The service type</param>
+		/// <param name = "arguments">Arguments to resolve the services</param>
+		Array ResolveAll(Type service, IDictionary arguments);
+
+		/// <summary>
+		///   Returns all the valid component instances by
+		///   the service type
+		/// </summary>
+		/// <param name = "service">The service type</param>
+		/// <param name = "argumentsAsAnonymousType">Arguments to resolve the services</param>
+		Array ResolveAll(Type service, object argumentsAsAnonymousType);
+
+		/// <summary>
+		///   Returns component instances that implement TService
+		/// </summary>
+		/// <typeparam name = "TService"></typeparam>
 		/// <returns></returns>
 		TService[] ResolveAll<TService>();
 
 		/// <summary>
-		/// Returns component instances that implement TService
+		///   Returns component instances that implement TService
 		/// </summary>
-		/// <typeparam name="TService"></typeparam>
+		/// <typeparam name = "TService"></typeparam>
 		/// <returns></returns>
 		TService[] ResolveAll<TService>(IDictionary arguments);
-		
-		/// <summary>
-		/// Returns component instances that implement TService
-		/// </summary>
-		/// <typeparam name="TService"></typeparam>
-		/// <returns></returns>
-		TService[] ResolveAll<TService>(object argumentsAsAnonymousType);
 
 		/// <summary>
-		/// Returns a component instance by the key
+		///   Returns component instances that implement TService
 		/// </summary>
-		/// <param name="key"></param>
-		/// <param name="service"></param>
-		/// <param name="arguments"></param>
+		/// <typeparam name = "TService"></typeparam>
 		/// <returns></returns>
-		object Resolve(String key, Type service, IDictionary arguments);
+		TService[] ResolveAll<TService>(object argumentsAsAnonymousType);
 	}
 }
