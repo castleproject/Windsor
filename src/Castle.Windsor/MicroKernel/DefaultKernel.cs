@@ -591,7 +591,7 @@ namespace Castle.MicroKernel
 		/// </summary>
 		/// <param name = "service"></param>
 		/// <param name = "dependencies"></param>
-		public void RegisterCustomDependencies(Type service, IDictionary dependencies)
+		void IKernelInternal.RegisterCustomDependencies(Type service, IDictionary dependencies)
 		{
 			var handler = GetHandler(service);
 
@@ -608,9 +608,9 @@ namespace Castle.MicroKernel
 		/// </summary>
 		/// <param name = "service"></param>
 		/// <param name = "dependenciesAsAnonymousType"></param>
-		public void RegisterCustomDependencies(Type service, object dependenciesAsAnonymousType)
+		void IKernelInternal.RegisterCustomDependencies(Type service, object dependenciesAsAnonymousType)
 		{
-			RegisterCustomDependencies(service, new ReflectionBasedDictionaryAdapter(dependenciesAsAnonymousType));
+			(this as IKernelInternal).RegisterCustomDependencies(service, new ReflectionBasedDictionaryAdapter(dependenciesAsAnonymousType));
 		}
 
 		/// <summary>
@@ -620,7 +620,7 @@ namespace Castle.MicroKernel
 		/// </summary>
 		/// <param name = "key"></param>
 		/// <param name = "dependencies"></param>
-		public void RegisterCustomDependencies(String key, IDictionary dependencies)
+		void IKernelInternal.RegisterCustomDependencies(String key, IDictionary dependencies)
 		{
 			var handler = GetHandler(key);
 
@@ -637,9 +637,9 @@ namespace Castle.MicroKernel
 		/// </summary>
 		/// <param name = "key"></param>
 		/// <param name = "dependenciesAsAnonymousType"></param>
-		public void RegisterCustomDependencies(String key, object dependenciesAsAnonymousType)
+		void IKernelInternal.RegisterCustomDependencies(String key, object dependenciesAsAnonymousType)
 		{
-			RegisterCustomDependencies(key, new ReflectionBasedDictionaryAdapter(dependenciesAsAnonymousType));
+			(this as IKernelInternal).RegisterCustomDependencies(key, new ReflectionBasedDictionaryAdapter(dependenciesAsAnonymousType));
 		}
 
 		/// <summary>

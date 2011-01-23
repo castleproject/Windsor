@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -27,6 +27,32 @@ namespace Castle.MicroKernel.Tests
 	[TestFixture]
 	public class RuntimeParametersTestCase
 	{
+		private Dictionary<string, object> deps;
+		private IKernel kernel;
+
+		[Test]
+		public void AddingDependencyToServiceWithCustomDependency()
+		{
+			var kernel = new DefaultKernel();
+			((IKernel)kernel).Register(Component.For(typeof(NeedClassWithCustomerDependency)).Named("NeedClassWithCustomerDependency"));
+			((IKernel)kernel).Register(Component.For(typeof(HasCustomDependency)).Named("HasCustomDependency"));
+
+			Assert.AreEqual(HandlerState.WaitingDependency, kernel.GetHandler("HasCustomDependency").CurrentState);
+
+			var hash = new Dictionary<object, object>();
+			hash["name"] = new CompA();
+			((IKernelInternal)kernel).RegisterCustomDependencies("HasCustomDependency", hash);
+			Assert.AreEqual(HandlerState.Valid, kernel.GetHandler("HasCustomDependency").CurrentState);
+
+			Assert.IsNotNull(kernel.Resolve(typeof(NeedClassWithCustomerDependency)));
+		}
+
+		[TearDown]
+		public void Dispose()
+		{
+			kernel.Dispose();
+		}
+
 		[SetUp]
 		public void Init()
 		{
@@ -39,50 +65,11 @@ namespace Castle.MicroKernel.Tests
 			deps.Add("myArgument", "ernst");
 		}
 
-		[TearDown]
-		public void Dispose()
-		{
-			kernel.Dispose();
-		}
-
-		private IKernel kernel;
-		private Dictionary<string, object> deps;
-
-		private void AssertDependencies(CompB compb)
-		{
-			Assert.IsNotNull(compb, "Component B should have been resolved");
-
-			Assert.IsNotNull(compb.Compc, "CompC property should not be null");
-			Assert.IsTrue(compb.MyArgument != string.Empty, "MyArgument property should not be empty");
-
-			Assert.AreSame(deps["cc"], compb.Compc, "CompC property should be the same instnace as in the hashtable argument");
-			Assert.IsTrue("ernst".Equals(compb.MyArgument),
-			              string.Format("The MyArgument property of compb should be equal to ernst, found {0}", compb.MyArgument));
-		}
-
-		[Test]
-		public void AddingDependencyToServiceWithCustomDependency()
-		{
-			var k = new DefaultKernel();
-			((IKernel)k).Register(Component.For(typeof(NeedClassWithCustomerDependency)).Named("NeedClassWithCustomerDependency"));
-			((IKernel)k).Register(Component.For(typeof(HasCustomDependency)).Named("HasCustomDependency"));
-
-			Assert.AreEqual(HandlerState.WaitingDependency, k.GetHandler("HasCustomDependency").CurrentState);
-
-			var hash = new Dictionary<object, object>();
-			hash["name"] = new CompA();
-			k.RegisterCustomDependencies("HasCustomDependency", hash);
-			Assert.AreEqual(HandlerState.Valid, k.GetHandler("HasCustomDependency").CurrentState);
-
-			Assert.IsNotNull(k.Resolve(typeof(NeedClassWithCustomerDependency)));
-		}
-
 		[Test]
 		public void Missing_service_is_correctly_detected()
 		{
 			TestDelegate act = () =>
-			
-			kernel.Resolve<CompB>(new Arguments().Insert("myArgument", 123));
+			                   kernel.Resolve<CompB>(new Arguments().Insert("myArgument", 123));
 
 			var exception = Assert.Throws<DependencyResolverException>(act);
 			Assert.AreEqual(
@@ -95,7 +82,7 @@ namespace Castle.MicroKernel.Tests
 		[Test]
 		public void ParametersPrecedence()
 		{
-			kernel.RegisterCustomDependencies("compb", deps);
+			((IKernelInternal)kernel).RegisterCustomDependencies("compb", deps);
 
 			var instance_with_model = kernel.Resolve<CompB>();
 			Assert.AreSame(deps["cc"], instance_with_model.Compc, "Model dependency should override kernel dependency");
@@ -121,7 +108,7 @@ namespace Castle.MicroKernel.Tests
 		[Test]
 		public void ResolveUsingParametersWithinTheHandler()
 		{
-			kernel.RegisterCustomDependencies("compb", deps);
+			((IKernelInternal)kernel).RegisterCustomDependencies("compb", deps);
 			var compb = kernel.Resolve<CompB>();
 
 			AssertDependencies(compb);
@@ -133,10 +120,10 @@ namespace Castle.MicroKernel.Tests
 			kernel.Register(Component.For(typeof(CompC)).Named("compc"));
 			var c_dependencies = new Dictionary<object, object>();
 			c_dependencies["test"] = 15;
-			kernel.RegisterCustomDependencies(typeof(CompC), c_dependencies);
+			((IKernelInternal)kernel).RegisterCustomDependencies(typeof(CompC), c_dependencies);
 			var b_dependencies = new Dictionary<object, object>();
 			b_dependencies["myArgument"] = "foo";
-			kernel.RegisterCustomDependencies(typeof(CompB), b_dependencies);
+			((IKernelInternal)kernel).RegisterCustomDependencies(typeof(CompB), b_dependencies);
 			var b = kernel.Resolve<CompB>("compb");
 			Assert.IsNotNull(b);
 			Assert.AreEqual(15, b.Compc.test);
@@ -151,6 +138,18 @@ namespace Castle.MicroKernel.Tests
 					Environment.NewLine);
 			var exception = Assert.Throws(typeof(HandlerException), () => kernel.Resolve<CompB>());
 			Assert.AreEqual(expectedMessage, exception.Message);
+		}
+
+		private void AssertDependencies(CompB compb)
+		{
+			Assert.IsNotNull(compb, "Component B should have been resolved");
+
+			Assert.IsNotNull(compb.Compc, "CompC property should not be null");
+			Assert.IsTrue(compb.MyArgument != string.Empty, "MyArgument property should not be empty");
+
+			Assert.AreSame(deps["cc"], compb.Compc, "CompC property should be the same instnace as in the hashtable argument");
+			Assert.IsTrue("ernst".Equals(compb.MyArgument),
+			              string.Format("The MyArgument property of compb should be equal to ernst, found {0}", compb.MyArgument));
 		}
 	}
 }

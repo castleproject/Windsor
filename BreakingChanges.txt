@@ -1,4 +1,15 @@
 ================================================================================================
+change - RegisterCustomDependencies methods were moved from IKernel to IKernelInternal.
+
+impact - low
+fixability - easy
+
+description - Those methods are hardly ever used these days so there was no point in polluting
+	the public API with them
+
+fix - Are you really using those methods? Perhaps you should be using the fluent API? If not
+	just cast the kernel to IKernelInternal and you can access them.
+================================================================================================
 change - IWindsorContainer.AddFacility and IKernel.AddFacility overloads that were taking
 	Func<TFacility,object> were removed.
 

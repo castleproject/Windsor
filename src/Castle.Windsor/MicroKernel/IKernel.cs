@@ -220,42 +220,6 @@ namespace Castle.MicroKernel
 		IKernel Register(params IRegistration[] registrations);
 
 		/// <summary>
-		///   Associates objects with a component handler,
-		///   allowing it to use the specified dictionary
-		///   when resolving dependencies
-		/// </summary>
-		/// <param name = "service"></param>
-		/// <param name = "dependencies"></param>
-		void RegisterCustomDependencies(Type service, IDictionary dependencies);
-
-		/// <summary>
-		///   Associates objects with a component handler,
-		///   allowing it to use the specified dictionary
-		///   when resolving dependencies
-		/// </summary>
-		/// <param name = "service"></param>
-		/// <param name = "dependenciesAsAnonymousType"></param>
-		void RegisterCustomDependencies(Type service, object dependenciesAsAnonymousType);
-
-		/// <summary>
-		///   Associates objects with a component handler,
-		///   allowing it to use the specified dictionary
-		///   when resolving dependencies
-		/// </summary>
-		/// <param name = "key"></param>
-		/// <param name = "dependencies"></param>
-		void RegisterCustomDependencies(String key, IDictionary dependencies);
-
-		/// <summary>
-		///   Associates objects with a component handler,
-		///   allowing it to use the specified dictionary
-		///   when resolving dependencies
-		/// </summary>
-		/// <param name = "key"></param>
-		/// <param name = "dependenciesAsAnonymousType"></param>
-		void RegisterCustomDependencies(String key, object dependenciesAsAnonymousType);
-
-		/// <summary>
 		///   Releases a component instance. This allows
 		///   the kernel to execute the proper decommission 
 		///   lifecycles on the component instance.
