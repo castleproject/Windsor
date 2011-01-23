@@ -143,44 +143,43 @@ namespace Castle.Windsor
 		/// <summary>
 		///   Registers a facility within the container.
 		/// </summary>
-		/// <param name = "key">The key by which the <see cref = "IFacility" /> gets indexed.</param>
+		/// <param name = "idInConfiguration">The key by which the <see cref = "IFacility" /> gets indexed.</param>
 		/// <param name = "facility">The <see cref = "IFacility" /> to add to the container.</param>
-		IWindsorContainer AddFacility(String key, IFacility facility);
+		IWindsorContainer AddFacility(String idInConfiguration, IFacility facility);
 
 		/// <summary>
 		///   Creates and adds an <see cref = "IFacility" /> facility to the container.
 		/// </summary>
-		/// <typeparam name = "T">The facility type.</typeparam>
-		/// <param name = "key"></param>
+		/// <typeparam name = "TFacility">The facility type.</typeparam>
+		/// <param name = "idInConfiguration"></param>
 		/// <returns></returns>
-		IWindsorContainer AddFacility<T>(String key) where T : IFacility, new();
+		IWindsorContainer AddFacility<TFacility>(String idInConfiguration) where TFacility : IFacility, new();
 
 		/// <summary>
 		///   Creates and adds an <see cref = "IFacility" /> facility to the container.
 		/// </summary>
-		/// <typeparam name = "T">The facility type.</typeparam>
-		/// <param name = "key"></param>
+		/// <typeparam name = "TFacility">The facility type.</typeparam>
+		/// <param name = "idInConfiguration"></param>
+		/// <param name = "configureFacility">The callback for creation.</param>
+		/// <returns></returns>
+		IWindsorContainer AddFacility<TFacility>(String idInConfiguration, Action<TFacility> configureFacility)
+			where TFacility : IFacility, new();
+
+		/// <summary>
+		///   Creates and adds an <see cref = "IFacility" /> facility to the container.
+		/// </summary>
+		/// <typeparam name = "TFacility">The facility type.</typeparam>
+		/// <returns></returns>
+		IWindsorContainer AddFacility<TFacility>() where TFacility : IFacility, new();
+
+		/// <summary>
+		///   Creates and adds an <see cref = "IFacility" /> facility to the container.
+		/// </summary>
+		/// <typeparam name = "TFacility">The facility type.</typeparam>
 		/// <param name = "onCreate">The callback for creation.</param>
 		/// <returns></returns>
-		IWindsorContainer AddFacility<T>(String key, Action<T> onCreate)
-			where T : IFacility, new();
-
-		/// <summary>
-		///   Creates and adds an <see cref = "IFacility" /> facility to the container.
-		/// </summary>
-		/// <typeparam name = "T">The facility type.</typeparam>
-		/// <returns></returns>
-		IWindsorContainer AddFacility<T>() where T : IFacility, new();
-
-		/// <summary>
-		///   Creates and adds an <see cref = "IFacility" /> facility to the container.
-		/// </summary>
-		/// <typeparam name = "T">The facility type.</typeparam>
-		/// <param name = "onCreate">The callback for creation.</param>
-		/// <returns></returns>
-		IWindsorContainer AddFacility<T>(Action<T> onCreate)
-			where T : IFacility, new();
-
+		IWindsorContainer AddFacility<TFacility>(Action<TFacility> onCreate)
+			where TFacility : IFacility, new();
 
 		/// <summary>
 		///   Gets a child container instance by name.

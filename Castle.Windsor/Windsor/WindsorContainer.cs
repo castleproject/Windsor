@@ -522,11 +522,11 @@ namespace Castle.Windsor
 		/// <summary>
 		///   Registers a facility within the kernel.
 		/// </summary>
-		/// <param name = "key"></param>
+		/// <param name = "idInConfiguration"></param>
 		/// <param name = "facility"></param>
-		public virtual IWindsorContainer AddFacility(String key, IFacility facility)
+		public virtual IWindsorContainer AddFacility(String idInConfiguration, IFacility facility)
 		{
-			kernel.AddFacility(key, facility);
+			kernel.AddFacility(idInConfiguration, facility);
 			return this;
 		}
 
@@ -534,11 +534,11 @@ namespace Castle.Windsor
 		///   Creates and adds an <see cref = "IFacility" /> facility to the container.
 		/// </summary>
 		/// <typeparam name = "T">The facility type.</typeparam>
-		/// <param name = "key"></param>
+		/// <param name = "idInConfiguration"></param>
 		/// <returns></returns>
-		public IWindsorContainer AddFacility<T>(String key) where T : IFacility, new()
+		public IWindsorContainer AddFacility<T>(String idInConfiguration) where T : IFacility, new()
 		{
-			kernel.AddFacility<T>(key);
+			kernel.AddFacility<T>(idInConfiguration);
 			return this;
 		}
 
@@ -546,13 +546,13 @@ namespace Castle.Windsor
 		///   Creates and adds an <see cref = "IFacility" /> facility to the container.
 		/// </summary>
 		/// <typeparam name = "T">The facility type.</typeparam>
-		/// <param name = "key"></param>
-		/// <param name = "onCreate">The callback for creation.</param>
+		/// <param name = "idInConfiguration"></param>
+		/// <param name = "configureFacility">The callback for creation.</param>
 		/// <returns></returns>
-		public IWindsorContainer AddFacility<T>(String key, Action<T> onCreate)
+		public IWindsorContainer AddFacility<T>(String idInConfiguration, Action<T> configureFacility)
 			where T : IFacility, new()
 		{
-			kernel.AddFacility(key, onCreate);
+			kernel.AddFacility(idInConfiguration, configureFacility);
 			return this;
 		}
 
