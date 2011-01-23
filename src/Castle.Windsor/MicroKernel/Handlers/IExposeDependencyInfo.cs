@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,16 +18,16 @@ namespace Castle.MicroKernel.Handlers
 	using System.Collections;
 
 	/// <summary>
-	/// Might be implemented by a handler 
-	/// so it can expose access to dependency information 
-	/// which is used to construct meaningful error messages
+	///   Might be implemented by a handler 
+	///   so it can expose access to dependency information 
+	///   which is used to construct meaningful error messages
 	/// </summary>
 	public interface IExposeDependencyInfo
 	{
 		/// <summary>
-		/// Returns human readable list of dependencies 
-		/// this handler is waiting for.
-		/// <param name="dependenciesChecked">list of the dependencies that was already checked, used to avoid cycles.</param>
+		///   Returns human readable list of dependencies 
+		///   this handler is waiting for.
+		///   <param name = "dependenciesChecked">list of the dependencies that was already checked, used to avoid cycles.</param>
 		/// </summary>
 		String ObtainDependencyDetails(IList dependenciesChecked);
 	}

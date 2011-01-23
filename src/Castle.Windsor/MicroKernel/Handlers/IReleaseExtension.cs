@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,8 +16,8 @@ namespace Castle.MicroKernel.Handlers
 {
 	public interface IReleaseExtension
 	{
-		void Intercept(ReleaseInvocation invocation);
-
 		void Init(IKernel kernel, IHandler handler);
+
+		void Intercept(ReleaseInvocation invocation);
 	}
 }
