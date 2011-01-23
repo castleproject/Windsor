@@ -30,7 +30,6 @@ namespace Castle.MicroKernel
 		private Decommission decommission = Decommission.No;
 
 		private List<Burden> dependencies;
-		private object instance;
 
 		internal Burden(IHandler handler, bool requiresDecommission, bool trackedExternally)
 		{
@@ -58,10 +57,7 @@ namespace Castle.MicroKernel
 			get { return handler; }
 		}
 
-		public object Instance
-		{
-			get { return instance; }
-		}
+		public object Instance { get; private set; }
 
 		public ComponentModel Model
 		{
@@ -110,14 +106,22 @@ namespace Castle.MicroKernel
 
 		public bool Release()
 		{
-			Releasing(this);
+			var releasing = Releasing;
+			if (releasing != null)
+			{
+				releasing(this);
+			}
 
 			if (handler.Release(this) == false)
 			{
 				return false;
 			}
 
-			Released(this);
+			var released = Released;
+			if (released != null)
+			{
+				released(this);
+			}
 
 			if (dependencies != null)
 			{
@@ -132,7 +136,7 @@ namespace Castle.MicroKernel
 			{
 				throw new ArgumentNullException("instance");
 			}
-			this.instance = instance;
+			Instance = instance;
 			if (decommission == Decommission.LateBound)
 			{
 				// NOTE: this may need to be extended if we lazily provide any other decimmission concerns
@@ -145,8 +149,8 @@ namespace Castle.MicroKernel
 			return arg is LateBoundConcerns;
 		}
 
-		public event BurdenReleaseDelegate Released = delegate { };
-		public event BurdenReleaseDelegate Releasing = delegate { };
+		public event BurdenReleaseDelegate Released;
+		public event BurdenReleaseDelegate Releasing;
 
 		private enum Decommission
 		{
