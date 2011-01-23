@@ -20,6 +20,7 @@ namespace Castle.MicroKernel.Releasers
 
 	using Castle.Core.Internal;
 	using Castle.MicroKernel.Util;
+	using Castle.Windsor.Experimental.Diagnostics;
 
 	/// <summary>
 	///   Tracks all components requiring decomission (<see cref = "Burden.RequiresPolicyRelease" />)
@@ -27,6 +28,8 @@ namespace Castle.MicroKernel.Releasers
 	[Serializable]
 	public class LifecycledComponentsReleasePolicy : IReleasePolicy
 	{
+		private readonly IPerformanceCounter countOfTrackedInstances;
+
 		private readonly Dictionary<object, Burden> instance2Burden =
 			new Dictionary<object, Burden>(ReferenceEqualityComparer.Instance);
 
@@ -34,13 +37,19 @@ namespace Castle.MicroKernel.Releasers
 		private readonly LifecycledComponentsReleasePolicy parent;
 		private List<LifecycledComponentsReleasePolicy> subscopes;
 
-		public LifecycledComponentsReleasePolicy()
+		public LifecycledComponentsReleasePolicy() : this(NullPerformanceCounter.Instance)
 		{
+		}
+
+		public LifecycledComponentsReleasePolicy(IPerformanceCounter countOfTrackedInstances)
+		{
+			this.countOfTrackedInstances = countOfTrackedInstances;
 		}
 
 		private LifecycledComponentsReleasePolicy(LifecycledComponentsReleasePolicy parent)
 		{
 			this.parent = parent;
+			countOfTrackedInstances = parent.countOfTrackedInstances;
 		}
 
 		internal LifecycledComponentsReleasePolicy[] SubScopes
@@ -166,17 +175,20 @@ namespace Castle.MicroKernel.Releasers
 				instance2Burden.Add(instance, burden);
 				burden.Released += OnInstanceReleased;
 			}
+			countOfTrackedInstances.Increment();
 		}
 
 		private void OnInstanceReleased(Burden burden)
 		{
 			using (@lock.ForWriting())
 			{
-				if (instance2Burden.Remove(burden.Instance))
+				if (instance2Burden.Remove(burden.Instance) == false)
 				{
-					burden.Released -= OnInstanceReleased;
+					return;
 				}
+				burden.Released -= OnInstanceReleased;
 			}
+			countOfTrackedInstances.Decrement();
 		}
 	}
 }

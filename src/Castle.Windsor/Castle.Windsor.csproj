@@ -930,9 +930,14 @@
     <Compile Include="Windsor\Experimental\Diagnostics\IComponentDebuggerExtension.cs" />
     <Compile Include="Windsor\Experimental\Diagnostics\IContainerDebuggerExtension.cs" />
     <Compile Include="Windsor\Experimental\Diagnostics\IContainerDebuggerExtensionHost.cs" />
+    <Compile Include="Windsor\Experimental\Diagnostics\IPerformanceCounter.cs" />
+    <Compile Include="Windsor\Experimental\Diagnostics\IPerformanceMetricsFactory.cs" />
     <Compile Include="Windsor\Experimental\Diagnostics\KernelDebuggerProxy.cs" />
     <Compile Include="Windsor\Experimental\Diagnostics\Extensions\PotentiallyMisconfiguredComponents.cs" />
     <Compile Include="Windsor\Experimental\Diagnostics\DebuggerViews\MismatchedDependencyDebuggerViewItem.cs" />
+    <Compile Include="Windsor\Experimental\Diagnostics\NullPerformanceCounter.cs" />
+    <Compile Include="Windsor\Experimental\Diagnostics\PerformanceCounterWrapper.cs" />
+    <Compile Include="Windsor\Experimental\Diagnostics\PerformanceMetricsFactory.cs" />
     <Compile Include="Windsor\IEnvironmentInfo.cs" />
     <Compile Include="Windsor\InitializationException.cs">
       <SubType>Code</SubType>
