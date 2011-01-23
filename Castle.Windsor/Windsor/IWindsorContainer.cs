@@ -169,16 +169,6 @@ namespace Castle.Windsor
 		///   Creates and adds an <see cref = "IFacility" /> facility to the container.
 		/// </summary>
 		/// <typeparam name = "T">The facility type.</typeparam>
-		/// <param name = "key"></param>
-		/// <param name = "onCreate">The callback for creation.</param>
-		/// <returns></returns>
-		IWindsorContainer AddFacility<T>(String key, Func<T, object> onCreate)
-			where T : IFacility, new();
-
-		/// <summary>
-		///   Creates and adds an <see cref = "IFacility" /> facility to the container.
-		/// </summary>
-		/// <typeparam name = "T">The facility type.</typeparam>
 		/// <returns></returns>
 		IWindsorContainer AddFacility<T>() where T : IFacility, new();
 
@@ -191,14 +181,6 @@ namespace Castle.Windsor
 		IWindsorContainer AddFacility<T>(Action<T> onCreate)
 			where T : IFacility, new();
 
-		/// <summary>
-		///   Creates and adds an <see cref = "IFacility" /> facility to the container.
-		/// </summary>
-		/// <typeparam name = "T">The facility type.</typeparam>
-		/// <param name = "onCreate">The callback for creation.</param>
-		/// <returns></returns>
-		IWindsorContainer AddFacility<T>(Func<T, object> onCreate)
-			where T : IFacility, new();
 
 		/// <summary>
 		///   Gets a child container instance by name.
