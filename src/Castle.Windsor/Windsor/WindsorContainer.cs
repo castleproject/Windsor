@@ -614,9 +614,12 @@ namespace Castle.Windsor
 		/// <returns>The child container instance or null</returns>
 		public IWindsorContainer GetChildContainer(string name)
 		{
-			IWindsorContainer windsorContainer;
-			childContainers.TryGetValue(name, out windsorContainer);
-			return windsorContainer;
+			lock (childContainersLocker)
+			{
+				IWindsorContainer windsorContainer;
+				childContainers.TryGetValue(name, out windsorContainer);
+				return windsorContainer;
+			}
 		}
 
 		/// <summary>
