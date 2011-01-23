@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,50 +16,48 @@ namespace Castle.Facilities.WcfIntegration
 {
 	using System;
 	using System.Reflection;
+
 	using Castle.DynamicProxy;
 
 	public class WcfInvocation
-    {
-        private Action proceed;
+	{
+		private Action proceed;
 
-        public WcfInvocation(IWcfChannelHolder channelHolder, IInvocation invocation)
-        {
-            ChannelHolder = channelHolder;
+		public WcfInvocation(IWcfChannelHolder channelHolder, IInvocation invocation)
+		{
+			ChannelHolder = channelHolder;
 			Arguments = invocation.Arguments;
 			Method = invocation.Method;
-        }
-
-		public object ReturnValue { get; set; }
+		}
 
 		public object[] Arguments { get; private set; }
 
-		public MethodInfo Method { get; private set; }
-
 		public IWcfChannelHolder ChannelHolder { get; private set; }
+		public MethodInfo Method { get; private set; }
+		public object ReturnValue { get; set; }
 
-        public void Proceed()
-        {
-            var next = proceed;
-            try
-            {
-                proceed();
-            }
-            finally
-            {
-                proceed = next;
-            }
-        }
+		public void Proceed()
+		{
+			var next = proceed;
+			try
+			{
+				proceed();
+			}
+			finally
+			{
+				proceed = next;
+			}
+		}
 
-        public WcfInvocation Refresh()
-        {
-            ChannelHolder.RefreshChannel();
-            return this;
-        }
+		public WcfInvocation Refresh()
+		{
+			ChannelHolder.RefreshChannel();
+			return this;
+		}
 
-        internal void SetProceedDelegate(Action value)
-        {
-            proceed = value;
-        }
-    }
+		internal void SetProceedDelegate(Action value)
+		{
+			proceed = value;
+		}
+	}
 }
-
