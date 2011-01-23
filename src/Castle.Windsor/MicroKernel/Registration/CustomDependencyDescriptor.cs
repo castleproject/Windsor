@@ -17,7 +17,8 @@ namespace Castle.MicroKernel.Registration
 	using System.Collections;
 	using Castle.Core;
 
-	public class CustomDependencyDescriptor<S> : AbstractPropertyDescriptor<S>
+    public class CustomDependencyDescriptor<S> : AbstractPropertyDescriptor<S>
+        where S : class 
 	{
 		public CustomDependencyDescriptor(params Property[] properties)
 			: base(properties)

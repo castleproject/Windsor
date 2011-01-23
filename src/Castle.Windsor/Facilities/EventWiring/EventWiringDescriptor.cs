@@ -19,7 +19,8 @@ namespace Castle.Facilities.EventWiring
 	using Castle.MicroKernel.Registration;
 
 
-	public class EventWiringDescriptor<T> : ComponentDescriptor<T>
+    public class EventWiringDescriptor<T> : ComponentDescriptor<T>
+        where T : class 
 	{
 		private readonly string eventName;
 		private readonly EventSubscriber[] subscribers;

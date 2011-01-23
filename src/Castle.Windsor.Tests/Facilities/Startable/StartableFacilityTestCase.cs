@@ -303,7 +303,8 @@ namespace Castle.Windsor.Tests.Facilities.Startable
 		}
 	}
 
-	public class AddDependency<T> : ComponentDescriptor<T>
+    public class AddDependency<T> : ComponentDescriptor<T>
+            where T : class 
 	{
 		private readonly DependencyModel dependency;
 

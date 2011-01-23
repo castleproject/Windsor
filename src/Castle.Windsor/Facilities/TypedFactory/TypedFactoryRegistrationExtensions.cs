@@ -38,7 +38,8 @@ namespace Castle.Facilities.TypedFactory
 		///   Typed factories rely on <see cref = "IInterceptorSelector" /> set internally, so users should not set interceptor selectors explicitly;
 		///   otherwise the factory will not function correctly.
 		/// </remarks>
-		public static ComponentRegistration<TFactoryInterface> AsFactory<TFactoryInterface>(this ComponentRegistration<TFactoryInterface> registration)
+        public static ComponentRegistration<TFactoryInterface> AsFactory<TFactoryInterface>(this ComponentRegistration<TFactoryInterface> registration)
+            where TFactoryInterface : class 
 		{
 			return AsFactory(registration, null);
 		}
@@ -57,7 +58,8 @@ namespace Castle.Facilities.TypedFactory
 		///   otherwise the factory will not function correctly.
 		/// </remarks>
 		public static ComponentRegistration<TFactoryInterface> AsFactory<TFactoryInterface>(this ComponentRegistration<TFactoryInterface> registration,
-		                                                                                    Action<TypedFactoryConfiguration> configuration)
+                                                                                            Action<TypedFactoryConfiguration> configuration)
+            where TFactoryInterface : class 
 		{
 			if (registration == null)
 			{
@@ -95,7 +97,8 @@ namespace Castle.Facilities.TypedFactory
 
 		private static ComponentRegistration<TFactory> AttachConfiguration<TFactory>(ComponentRegistration<TFactory> componentRegistration,
 		                                                                             Action<TypedFactoryConfiguration> configuration,
-		                                                                             string defaultComponentSelectorKey)
+                                                                                     string defaultComponentSelectorKey)
+            where TFactory : class 
 		{
 			var selectorReference = GetSelectorReference(configuration, defaultComponentSelectorKey);
 			componentRegistration.AddDescriptor(new ReferenceDependencyDescriptor<TFactory>(selectorReference));
@@ -116,6 +119,7 @@ namespace Castle.Facilities.TypedFactory
 		}
 
 		private static ComponentRegistration<TFactory> AttachFactoryInterceptor<TFactory>(ComponentRegistration<TFactory> registration)
+            where TFactory : class 
 		{
 			return registration.Interceptors(new InterceptorReference(TypedFactoryFacility.InterceptorKey)).Last;
 		}
@@ -138,6 +142,7 @@ namespace Castle.Facilities.TypedFactory
 		}
 
 		private static bool IsAnyServiceOpenGeneric<TFactory>(ComponentRegistration<TFactory> componentRegistration)
+            where TFactory : class 
 		{
 			if (componentRegistration.Services.Any(i => i.ContainsGenericParameters))
 			{
@@ -148,6 +153,7 @@ namespace Castle.Facilities.TypedFactory
 
 		private static ComponentRegistration<TDelegate> RegisterDelegateBasedFactory<TDelegate>(ComponentRegistration<TDelegate> registration,
 		                                                                                        Action<TypedFactoryConfiguration> configuration, Type delegateType)
+            where TDelegate : class 
 		{
 			if (HasOutArguments(delegateType))
 			{
@@ -182,7 +188,8 @@ namespace Castle.Facilities.TypedFactory
 		}
 
 		private static ComponentRegistration<TFactoryInterface> RegisterInterfaceBasedFactory<TFactoryInterface>(
-			ComponentRegistration<TFactoryInterface> registration, Action<TypedFactoryConfiguration> configuration)
+            ComponentRegistration<TFactoryInterface> registration, Action<TypedFactoryConfiguration> configuration)
+            where TFactoryInterface : class 
 		{
 			foreach (var serviceType in registration.Services)
 			{

@@ -18,7 +18,8 @@ namespace Castle.MicroKernel.Registration.Lifestyle
 	using Castle.Core;
 	using Castle.Core.Internal;
 
-	public class LifestyleGroup<S> : RegistrationGroup<S>
+    public class LifestyleGroup<S> : RegistrationGroup<S>
+        where S : class 
 	{
 		public LifestyleGroup(ComponentRegistration<S> registration)
 			: base(registration)

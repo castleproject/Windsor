@@ -89,7 +89,8 @@ namespace Castle.MicroKernel.Registration
 		/// </summary>
 		/// <typeparam name="S">The service type.</typeparam>
 		/// <returns>The component registration.</returns>
-		public static ComponentRegistration<S> For<S>()
+        public static ComponentRegistration<S> For<S>()
+            where S : class 
 		{
 			return new ComponentRegistration<S>();
 		}
@@ -204,7 +205,8 @@ namespace Castle.MicroKernel.Registration
 		/// <typeparam name="S">The primary service type.</typeparam>
 		/// <typeparam name="F">The forwarded type.</typeparam>
 		/// <returns>The component registration.</returns>
-		public static ComponentRegistration<S> For<S, F>()
+        public static ComponentRegistration<S> For<S, F>()
+            where S : class 
 		{
 			return new ComponentRegistration<S>().Forward<F>();
 		}
@@ -216,7 +218,8 @@ namespace Castle.MicroKernel.Registration
 		/// <typeparam name="F1">The first forwarded type.</typeparam>
 		/// <typeparam name="F2">The second forwarded type.</typeparam>
 		/// <returns>The component registration.</returns>
-		public static ComponentRegistration<S> For<S, F1, F2>()
+        public static ComponentRegistration<S> For<S, F1, F2>()
+            where S : class 
 		{
 			return new ComponentRegistration<S>().Forward<F1, F2>();
 		}
@@ -229,7 +232,8 @@ namespace Castle.MicroKernel.Registration
 		/// <typeparam name="F2">The second forwarded type.</typeparam>
 		/// <typeparam name="F3">The third forwarded type.</typeparam>
 		/// <returns>The component registration.</returns>
-		public static ComponentRegistration<S> For<S, F1, F2, F3>()
+        public static ComponentRegistration<S> For<S, F1, F2, F3>()
+            where S : class 
 		{
 			return new ComponentRegistration<S>().Forward<F1, F2, F3>();
 		}
@@ -243,7 +247,8 @@ namespace Castle.MicroKernel.Registration
 		/// <typeparam name="F3">The third forwarded type.</typeparam>
 		/// <typeparam name="F4">The fourth forwarded type.</typeparam>
 		/// <returns>The component registration.</returns>
-		public static ComponentRegistration<S> For<S, F1, F2, F3, F4>()
+        public static ComponentRegistration<S> For<S, F1, F2, F3, F4>()
+            where S : class 
 		{
 			return new ComponentRegistration<S>().Forward<F1, F2, F3, F4>();
 		}

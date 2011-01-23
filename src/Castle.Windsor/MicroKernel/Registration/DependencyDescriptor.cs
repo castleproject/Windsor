@@ -16,7 +16,8 @@ namespace Castle.MicroKernel.Registration
 {
 	using Castle.Core;
 
-	public class ReferenceDependencyDescriptor<S> : ComponentDescriptor<S>
+    public class ReferenceDependencyDescriptor<S> : ComponentDescriptor<S>
+        where S : class 
 	{
 		private readonly IReference<object> dependency;
 

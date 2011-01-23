@@ -15,6 +15,7 @@
 namespace Castle.MicroKernel.Registration
 {
 	public abstract class RegistrationGroup<S>
+        where S : class 
 	{
 		private readonly ComponentRegistration<S> registration;
 

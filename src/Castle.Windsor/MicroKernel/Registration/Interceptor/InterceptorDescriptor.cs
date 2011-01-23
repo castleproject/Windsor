@@ -17,7 +17,8 @@ namespace Castle.MicroKernel.Registration.Interceptor
 	using System;
 	using Castle.Core;
 
-	public class InterceptorDescriptor<S> : ComponentDescriptor<S>
+    public class InterceptorDescriptor<S> : ComponentDescriptor<S>
+        where S : class 
 	{
 		private readonly Where where;
 		private readonly int insertIndex;
