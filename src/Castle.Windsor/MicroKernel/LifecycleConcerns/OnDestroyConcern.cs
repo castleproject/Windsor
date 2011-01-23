@@ -12,17 +12,28 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Components
+namespace Castle.MicroKernel.LifecycleConcerns
 {
-	using Castle.Windsor.Tests.Components;
+	using Castle.Core;
 
-	public class HasNullDefaultForServiceDependency
+	public class OnDestroyConcern<TComponent> : IDecommissionConcern
 	{
-		public HasNullDefaultForServiceDependency(IEmptyService empty = null)
+		private readonly LifecycleActionDelegate<TComponent>[] actions;
+		private readonly IKernel kernel;
+
+		public OnDestroyConcern(LifecycleActionDelegate<TComponent>[] actions, IKernel kernel)
 		{
-			Dependency = empty;
+			this.actions = actions;
+			this.kernel = kernel;
 		}
 
-		public IEmptyService Dependency { get; private set; }
+		public void Apply(ComponentModel model, object component)
+		{
+			var item = (TComponent)component;
+			foreach (var action in actions)
+			{
+				action(kernel, item);
+			}
+		}
 	}
 }

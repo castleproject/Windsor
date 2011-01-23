@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,17 +17,13 @@ namespace Castle.Windsor.Tests.Components
 	using System;
 
 	/// <summary>
-	/// Summary description for CalculatorService.
+	///   Summary description for CalculatorService.
 	/// </summary>
 	public class CalculatorService : ICalcService
 	{
-		public CalculatorService()
+		public bool Disposed
 		{
-		}
-
-		public virtual int Sum(int x, int y)
-		{
-			return x + y;
+			get { throw new NotImplementedException(); }
 		}
 
 		public bool Initialized
@@ -35,9 +31,9 @@ namespace Castle.Windsor.Tests.Components
 			get { throw new NotImplementedException(); }
 		}
 
-		public bool Disposed
+		public virtual int Sum(int x, int y)
 		{
-			get { throw new NotImplementedException(); }
+			return x + y;
 		}
 	}
 }

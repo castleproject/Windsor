@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,16 +19,16 @@ namespace Castle.Windsor.Tests.Components
 		private readonly string name;
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="ComponentWithStringProperty"/> class.
+		///   Initializes a new instance of the <see cref = "ComponentWithStringProperty" /> class.
 		/// </summary>
-		/// <param name="name">The name.</param>
+		/// <param name = "name">The name.</param>
 		public ComponentWithStringProperty(string name)
 		{
 			this.name = name;
 		}
 
 		/// <summary>
-		/// Gets the name.
+		///   Gets the name.
 		/// </summary>
 		/// <value>The name.</value>
 		public string Name
