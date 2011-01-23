@@ -24,9 +24,9 @@ namespace Castle.MicroKernel.Registration
 	public class OnCreateComponentDescriptor<S> : ComponentDescriptor<S>
 		where S : class
 	{
-		private readonly OnCreateActionDelegate<S>[] actions;
+		private readonly LifecycleActionDelegate<S>[] actions;
 
-		public OnCreateComponentDescriptor(OnCreateActionDelegate<S>[] actions)
+		public OnCreateComponentDescriptor(LifecycleActionDelegate<S>[] actions)
 		{
 			this.actions = actions;
 		}

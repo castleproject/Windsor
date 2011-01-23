@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,28 +14,7 @@
 
 namespace Castle.Windsor.Tests.Components
 {
-	/// <summary>
-	/// Summary description for Reviewer.
-	/// </summary>
 	public class Reviewer : Employee, IReviewer
 	{
-		// private IIReviewableEmployeeList _employees = null;
-
-		public Reviewer()
-		{
-		}
-
-//		public IIReviewableEmployeeList Employees
-//		{
-//			get
-//			{
-//				if (_employees == null)
-//				{
-//					_employees = ReviewableEmployeeBuilder.Instance.GetEmployeesUnderManager(this.EmployeeID);
-//				}
-//				return _employees;
-//			}
-//			set { _employees = value; }
-//		}
 	}
 }

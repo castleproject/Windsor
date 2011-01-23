@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,16 +15,11 @@
 namespace Castle.Windsor.Tests.Components
 {
 	/// <summary>
-	/// Summary description for ReviewableEmployee.
+	///   Summary description for ReviewableEmployee.
 	/// </summary>
 	public class ReviewableEmployee : Employee, IReviewableEmployee
 	{
-		private IReviewer _reviewer = null;
-		private int _salaryThird = 0;
-
-		public ReviewableEmployee()
-		{
-		}
+		private IReviewer _reviewer;
 
 		public IReviewer Reviewer
 		{
@@ -32,15 +27,11 @@ namespace Castle.Windsor.Tests.Components
 			set { _reviewer = value; }
 		}
 
-		public int SalaryThird
-		{
-			get { return _salaryThird; }
-			set { _salaryThird = value; }
-		}
-
 		public string ReviewerID
 		{
 			get { return _reviewer.EmployeeID; }
 		}
+
+		public int SalaryThird { get; set; }
 	}
 }

@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,27 +15,22 @@
 namespace Castle.Windsor.Tests.Components
 {
 	/// <summary>
-	/// Summary description for IEmployee.
+	///   Summary description for IEmployee.
 	/// </summary>
 	public interface IEmployee
 	{
+		string Email { get; set; }
 		string EmployeeID { get; set; }
-
-		string NTLogin { get; }
-
-		string LastName { get; set; }
 
 		string FirstName { get; set; }
 
-		string MiddleName { get; set; }
-
+		string FullName { get; }
 		bool IsProxy { get; set; }
 
-		string FullName { get; }
-
-		string Email { get; set; }
-
 		bool IsSupervisor { get; set; }
+		string LastName { get; set; }
+		string MiddleName { get; set; }
+		string NTLogin { get; }
 
 		void SetNTLogin(string ntLogin);
 	}

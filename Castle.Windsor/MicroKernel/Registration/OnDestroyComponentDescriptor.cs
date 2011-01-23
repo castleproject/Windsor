@@ -12,17 +12,28 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Components
+namespace Castle.MicroKernel.Registration
 {
-	using Castle.Windsor.Tests.Components;
+	using Castle.Core;
+	using Castle.MicroKernel.LifecycleConcerns;
 
-	public class HasNullDefaultForServiceDependency
+	public class OnDestroyComponentDescriptor<S> : ComponentDescriptor<S>
+		where S : class
 	{
-		public HasNullDefaultForServiceDependency(IEmptyService empty = null)
+		private readonly LifecycleActionDelegate<S>[] actions;
+
+		public OnDestroyComponentDescriptor(LifecycleActionDelegate<S>[] actions)
 		{
-			Dependency = empty;
+			this.actions = actions;
 		}
 
-		public IEmptyService Dependency { get; private set; }
+		protected internal override void ApplyToModel(IKernel kernel, ComponentModel model)
+		{
+			if (actions == null)
+			{
+				return;
+			}
+			model.Lifecycle.Add(new OnCreatedConcern<S>(actions, kernel));
+		}
 	}
 }

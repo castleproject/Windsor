@@ -348,12 +348,15 @@
     <Compile Include="Components\InitializableComponent.cs" />
     <Compile Include="Components\InitializableDisposableComponent.cs" />
     <Compile Include="Components\IRepository.cs" />
+    <Compile Include="Components\IService.cs" />
+    <Compile Include="Components\IService2.cs" />
     <Compile Include="Components\ISimpleMixIn.cs" />
     <Compile Include="Components\IView.cs" />
-    <Compile Include="Components\John.cs" />
+    <Compile Include="Components\JohnChild.cs" />
     <Compile Include="Components\JohnGrandparent.cs" />
     <Compile Include="Components\JohnParent.cs" />
     <Compile Include="Components\LoggingRepositoryDecorator.cs" />
+    <Compile Include="Components\MyService2.cs" />
     <Compile Include="Components\NeedsGenericType.cs" />
     <Compile Include="Components\NullCache.cs" />
     <Compile Include="Components\PlasmaGunArm.cs" />
@@ -440,6 +443,7 @@
     <Compile Include="FailureCleanUpTestCase.cs" />
     <Compile Include="Interceptors\ThrowInCtorInterceptor.cs" />
     <Compile Include="Lifecycle\DisposeTestCase.cs" />
+    <Compile Include="Lifecycle\LifecycleActionTestCase.cs" />
     <Compile Include="Lifecycle\SupportsInitializeTestCase.cs" />
     <Compile Include="Lifestyle\Components\SealedComponent.cs" />
     <Compile Include="Lifestyle\Components\SealedComponentDisposable.cs" />
@@ -665,7 +669,7 @@
     <Compile Include="Facilities\FactorySupport\FactorySupportProgrammaticTestCase.cs" />
     <Compile Include="Facilities\FactorySupport\FactorySupportTestCase.cs" />
     <Compile Include="GraphNodeTests.cs" />
-    <Compile Include="Lifecycle\OnCreateTestCase.cs" />
+    <Compile Include="Components\MyService.cs" />
     <Compile Include="Facilities\Startable\Components\StartableChainWithGenerics.cs" />
     <Compile Include="Facilities\Startable\Components\StartableComponentWithCustomDependencies.cs" />
     <Compile Include="Registration\DynamicParametersTestCase.cs" />

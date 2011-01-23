@@ -40,7 +40,7 @@ namespace Castle.MicroKernel.Registration
 	/// </summary>
 	/// <typeparam name = "TService">The service type</typeparam>
 	public class ComponentRegistration<TService> : IRegistration
-        where TService : class 
+		where TService : class
 	{
 		private readonly List<ComponentDescriptor<TService>> descriptors = new List<ComponentDescriptor<TService>>();
 		private readonly List<Type> potentialServices = new List<Type>();
@@ -279,7 +279,8 @@ namespace Castle.MicroKernel.Registration
 #endif
 
 		/// <summary>
-		///   Specify custom dependencies using <see cref = "Property.ForKey(string)" /> or <see cref = "Property.ForKey(System.Type)" />.
+		///   Specify custom dependencies using <see cref = "Property.ForKey(string)" /> or <see
+		///    cref = "Property.ForKey(System.Type)" />.
 		///   <para />
 		///   You can pass <see cref = "ServiceOverride" />s to specify the components
 		///   this component should be resolved with.
@@ -611,13 +612,30 @@ namespace Castle.MicroKernel.Registration
 		}
 
 		/// <summary>
-		///   Stores a set of <see cref = "OnCreateActionDelegate{T}" /> which will be invoked when the component
+		///   Stores a set of <see cref = "LifecycleActionDelegate{T}" /> which will be invoked when the component
 		///   is created and before it's returned from the container.
 		/// </summary>
 		/// <param name = "actions">A set of actions to be executed right after the component is created and before it's returned from the container.</param>
-		public ComponentRegistration<TService> OnCreate(params OnCreateActionDelegate<TService>[] actions)
+		public ComponentRegistration<TService> OnCreate(params LifecycleActionDelegate<TService>[] actions)
 		{
-			AddDescriptor(new OnCreateComponentDescriptor<TService>(actions));
+			if (actions != null && actions.Length != 0)
+			{
+				AddDescriptor(new OnCreateComponentDescriptor<TService>(actions));
+			}
+			return this;
+		}
+
+		/// <summary>
+		///   Stores a set of <see cref = "LifecycleActionDelegate{T}" /> which will be invoked when the component
+		///   is destroyed which means when it's released or it's lifetime scope ends.
+		/// </summary>
+		/// <param name = "actions">A set of actions to be executed when the component is destroyed.</param>
+		public ComponentRegistration<TService> OnDestroy(params LifecycleActionDelegate<TService>[] actions)
+		{
+			if (actions != null && actions.Length != 0)
+			{
+				AddDescriptor(new OnDestroyComponentDescriptor<TService>(actions));
+			}
 			return this;
 		}
 

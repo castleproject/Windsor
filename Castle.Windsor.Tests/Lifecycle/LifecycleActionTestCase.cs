@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ namespace Castle.Windsor.Tests.Lifecycle
 	using NUnit.Framework;
 
 	[TestFixture]
-	public class OnCreateTestCase : AbstractContainerTestFixture
+	public class LifecycleActionTestCase : AbstractContainerTestFixture
 	{
 		[Test]
 		public void CanModify_when_singleton()
@@ -80,50 +80,6 @@ namespace Castle.Windsor.Tests.Lifecycle
 			var service = Container.Resolve<IService>();
 
 			Assert.That(service.Name, Is.EqualTo("a"));
-		}
-	}
-
-	public interface IService
-	{
-		string Name { get; set; }
-	}
-
-	public class MyService : IService
-	{
-		public MyService()
-		{
-			Name = string.Empty;
-		}
-
-		#region IService Members
-
-		public string Name { get; set; }
-
-		#endregion
-	}
-
-	public interface IService2
-	{
-		string Name { get; set; }
-	}
-
-	public class MyService2 : IService2
-	{
-		public static string staticname;
-
-		#region IService2 Members
-
-		public string Name
-		{
-			get { return staticname; }
-			set { staticname = value; }
-		}
-
-		#endregion
-
-		static MyService2()
-		{
-			staticname = string.Empty;
 		}
 	}
 }

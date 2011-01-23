@@ -564,8 +564,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="MicroKernel\LifecycleConcerns\LateBoundConcerns.cs" />
-    <Compile Include="MicroKernel\LifecycleConcerns\OnCreateActionDelegate.cs" />
+    <Compile Include="MicroKernel\LifecycleConcerns\LifecycleActionDelegate.cs" />
     <Compile Include="MicroKernel\LifecycleConcerns\OnCreatedConcern.cs" />
+    <Compile Include="MicroKernel\LifecycleConcerns\OnDestroyConcern.cs" />
     <Compile Include="MicroKernel\LifecycleConcerns\SupportInitializeConcern.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -686,6 +687,7 @@
     <Compile Include="MicroKernel\Registration\CustomDependencyDescriptor.cs" />
     <Compile Include="MicroKernel\Registration\DependencyDescriptor.cs" />
     <Compile Include="MicroKernel\Registration\ExtendedPropertiesDescriptor.cs" />
+    <Compile Include="MicroKernel\Registration\OnDestroyComponentDescriptor.cs" />
     <Compile Include="MicroKernel\Registration\Proxy\ProxyHook.cs" />
     <Compile Include="MicroKernel\Registration\IWindsorInstaller.cs" />
     <Compile Include="MicroKernel\Registration\OnCreateComponentDescriptor.cs" />

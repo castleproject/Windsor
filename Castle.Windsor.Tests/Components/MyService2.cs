@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,20 +12,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Windsor.Tests.Components
+namespace Castle.Windsor.Tests.Lifecycle
 {
-	public class MySpecification : ISpecification
+	public class MyService2 : IService2
 	{
-		private readonly IRepository<int> repository;
+		public static string staticname;
 
-		public MySpecification(IRepository<int> repository)
+		static MyService2()
 		{
-			this.repository = repository;
+			staticname = string.Empty;
 		}
 
-		public IRepository<int> Repository
+		public string Name
 		{
-			get { return repository; }
+			get { return staticname; }
+			set { staticname = value; }
 		}
 	}
 }

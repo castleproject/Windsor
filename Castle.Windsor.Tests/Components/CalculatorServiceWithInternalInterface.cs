@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,17 +15,16 @@
 namespace Castle.Windsor.Tests.Components
 {
 	using System;
+
 	using Castle.Core;
 	using Castle.DynamicProxy;
 
 	[Interceptor(typeof(StandardInterceptor))]
 	public class CalculatorServiceWithInternalInterface : ICalcService, IInternal
 	{
-		#region ICalcService Members
-
-		public int Sum(int x, int y)
+		public bool Disposed
 		{
-			throw new NotImplementedException();
+			get { throw new NotImplementedException(); }
 		}
 
 		public bool Initialized
@@ -33,20 +32,14 @@ namespace Castle.Windsor.Tests.Components
 			get { throw new NotImplementedException(); }
 		}
 
-		public bool Disposed
+		public int Sum(int x, int y)
 		{
-			get { throw new NotImplementedException(); }
+			throw new NotImplementedException();
 		}
-
-		#endregion
-
-		#region IInternal Members
 
 		public void Do()
 		{
 			throw new NotImplementedException();
 		}
-
-		#endregion
 	}
 }
