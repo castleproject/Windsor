@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,54 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#if !SILVERLIGHT // we do not support xml config on SL
-
 namespace Castle.Windsor.Tests
 {
-    using System;
+	using Castle.MicroKernel;
+	using Castle.MicroKernel.Registration;
+	using Castle.Windsor.Configuration.Interpreters;
 
-    using Castle.MicroKernel;
-    using Castle.MicroKernel.Registration;
-    using Castle.Windsor.Configuration.Interpreters;
 	using NUnit.Framework;
 
 	[TestFixture]
 	public class ChildContainerSupportTestCase
 	{
 		private IWindsorContainer container;
-
-		[SetUp]
-		public void Init()
-		{
-			container = new WindsorContainer();
-			container.Register(Component.For(typeof(A)).Named("A"));
-		}
-
-		[Test]
-		public void ResolveAgainstParentContainer()
-		{
-			IWindsorContainer childcontainer = new WindsorContainer();
-			container.AddChildContainer(childcontainer);
-
-			Assert.AreEqual(container, childcontainer.Parent);
-
-			childcontainer.Register(Component.For(typeof(B)).Named("B"));
-			var b = childcontainer.Resolve<B>("B");
-			Assert.IsNotNull(b);
-		}
-
-		[Test]
-		public void ResolveAgainstParentContainerWithProperty()
-		{
-			IWindsorContainer childcontainer = new WindsorContainer { Parent = container };
-
-			Assert.AreEqual(container, childcontainer.Parent);
-
-			childcontainer.Register(Component.For(typeof(B)).Named("B"));
-			var b = childcontainer.Resolve<B>("B");
-
-			Assert.IsNotNull(b);
-		}
 
 		[Test]
 		public void AddAndRemoveChildContainer()
@@ -109,6 +73,40 @@ namespace Castle.Windsor.Tests
 			childcontainer.Parent = container3;
 		}
 
+		[SetUp]
+		public void Init()
+		{
+			container = new WindsorContainer();
+			container.Register(Component.For(typeof(A)).Named("A"));
+		}
+
+		[Test]
+		public void ResolveAgainstParentContainer()
+		{
+			IWindsorContainer childcontainer = new WindsorContainer();
+			container.AddChildContainer(childcontainer);
+
+			Assert.AreEqual(container, childcontainer.Parent);
+
+			childcontainer.Register(Component.For(typeof(B)).Named("B"));
+			var b = childcontainer.Resolve<B>("B");
+			Assert.IsNotNull(b);
+		}
+
+		[Test]
+		public void ResolveAgainstParentContainerWithProperty()
+		{
+			IWindsorContainer childcontainer = new WindsorContainer { Parent = container };
+
+			Assert.AreEqual(container, childcontainer.Parent);
+
+			childcontainer.Register(Component.For(typeof(B)).Named("B"));
+			var b = childcontainer.Resolve<B>("B");
+
+			Assert.IsNotNull(b);
+		}
+
+#if !SILVERLIGHT
 		[Test]
 		public void StartWithParentContainer()
 		{
@@ -121,12 +119,10 @@ namespace Castle.Windsor.Tests
 
 			Assert.IsNotNull(b);
 		}
+#endif
 
 		public class A
 		{
-			public A()
-			{
-			}
 		}
 
 		public class B
@@ -137,5 +133,3 @@ namespace Castle.Windsor.Tests
 		}
 	}
 }
-
-#endif
