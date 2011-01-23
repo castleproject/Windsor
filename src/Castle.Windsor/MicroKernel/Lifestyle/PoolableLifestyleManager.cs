@@ -16,6 +16,7 @@ namespace Castle.MicroKernel.Lifestyle
 {
 	using System;
 
+	using Castle.Core.Internal;
 	using Castle.MicroKernel.Context;
 	using Castle.MicroKernel.Lifestyle.Pool;
 	using Castle.MicroKernel.Registration;
@@ -26,6 +27,7 @@ namespace Castle.MicroKernel.Lifestyle
 	[Serializable]
 	public class PoolableLifestyleManager : AbstractLifestyleManager
 	{
+		private readonly ThreadSafeInit init = new ThreadSafeInit();
 		private readonly int initialSize;
 		private readonly int maxSize;
 		private IPool pool;
@@ -36,21 +38,32 @@ namespace Castle.MicroKernel.Lifestyle
 			this.maxSize = maxSize;
 		}
 
-		private IPool Pool
+		protected IPool Pool
 		{
 			get
 			{
-				if (pool == null)
+				if (pool != null)
 				{
-					lock (ComponentActivator)
+					return pool;
+				}
+				var initializing = false;
+				try
+				{
+					initializing = init.ExecuteThreadSafeOnce();
+
+					if (pool == null)
 					{
-						if (pool == null)
-						{
-							pool = CreatePool(initialSize, maxSize);
-						}
+						pool = CreatePool(initialSize, maxSize);
+					}
+					return pool;
+				}
+				finally
+				{
+					if (initializing)
+					{
+						init.EndThreadSafeOnceSection();
 					}
 				}
-				return pool;
 			}
 		}
 
