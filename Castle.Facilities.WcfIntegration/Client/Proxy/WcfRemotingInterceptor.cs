@@ -80,7 +80,7 @@ namespace Castle.Facilities.WcfIntegration.Proxy
 				action(wcfInvocation);
 				return;
 			}
-			int nextIndex = policyIndex + 1;
+			var nextIndex = policyIndex + 1;
 			wcfInvocation.SetProceedDelegate(() => InvokeChannelPipeline(nextIndex, wcfInvocation, action));
 			pipeline[policyIndex].Apply(wcfInvocation);
 		}

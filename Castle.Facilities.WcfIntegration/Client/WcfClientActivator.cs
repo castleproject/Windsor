@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -21,55 +21,44 @@ namespace Castle.Facilities.WcfIntegration
 	using System.Linq;
 	using System.Reflection;
 	using System.ServiceModel;
+
 	using Castle.Core;
-	using Castle.DynamicProxy;
 	using Castle.Facilities.WcfIntegration.Internal;
 	using Castle.Facilities.WcfIntegration.Proxy;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.ComponentActivator;
 	using Castle.MicroKernel.Context;
 	using Castle.MicroKernel.Facilities;
+
 	using System.ServiceModel.Channels;
 
 	public class WcfClientActivator : DefaultComponentActivator
 	{
-		private readonly WcfProxyFactory proxyFactory;
-		private readonly WcfClientExtension clients;
-		private ChannelCreator createChannel;
-		private IWcfBurden channelBurden;
-
-		#region ClientChannelBuilder Delegate Fields
-
-		private delegate ChannelCreator CreateChannelDelegate(
-			IKernel kernel, IWcfClientModel clientModel, ComponentModel model, 
-			out IWcfBurden burden);
-
-		private static readonly MethodInfo createChannelMethod =
-			typeof(WcfClientActivator).GetMethod("CreateChannelCreatorInternal",
-				BindingFlags.NonPublic | BindingFlags.Static, null,
-					new[] { typeof(IKernel), typeof(IWcfClientModel),
-						typeof(ComponentModel), typeof(IWcfBurden).MakeByRefType() },
-					null
-				);
-
 		private static readonly ConcurrentDictionary<Type, CreateChannelDelegate>
 			createChannelCache = new ConcurrentDictionary<Type, CreateChannelDelegate>();
 
-		#endregion
+		private static readonly MethodInfo createChannelMethod =
+			typeof(WcfClientActivator).GetMethod("CreateChannelCreatorInternal",
+			                                     BindingFlags.NonPublic | BindingFlags.Static, null,
+			                                     new[]
+			                                     {
+			                                     	typeof(IKernel), typeof(IWcfClientModel),
+			                                     	typeof(ComponentModel), typeof(IWcfBurden).MakeByRefType()
+			                                     },
+			                                     null
+				);
+
+		private readonly WcfClientExtension clients;
+		private readonly WcfProxyFactory proxyFactory;
+		private IWcfBurden channelBurden;
+		private ChannelCreator createChannel;
 
 		public WcfClientActivator(ComponentModel model, IKernel kernel,
-			ComponentInstanceDelegate onCreation, ComponentInstanceDelegate onDestruction)
+		                          ComponentInstanceDelegate onCreation, ComponentInstanceDelegate onDestruction)
 			: base(model, kernel, onCreation, onDestruction)
 		{
 			clients = kernel.Resolve<WcfClientExtension>();
 			proxyFactory = new WcfProxyFactory(clients.ProxyGenerator, clients);
-		}
-
-		protected override object InternalCreate(CreationContext context)
-		{
-			object instance = Instantiate(context);
-			ApplyCommissionConcerns(instance);
-			return instance;
 		}
 
 		protected override object Instantiate(CreationContext context)
@@ -91,19 +80,24 @@ namespace Castle.Facilities.WcfIntegration
 			catch (Exception ex)
 			{
 				throw new ComponentActivatorException("WcfClientActivator: could not proxy service " +
-													  Model.Service.FullName, ex);
+				                                      Model.Service.FullName, ex);
 			}
 		}
 
+		protected override void SetUpProperties(object instance, CreationContext context)
+		{
+			//we don't... there should be no properties on WCF clients
+		}
+
 		/// <summary>
-		/// Creates the channel creator.
+		///   Creates the channel creator.
 		/// </summary>
-		/// <param name="context">The context for the creator.</param>
-		/// <param name="burden">Receives the channel burden.</param>
+		/// <param name = "context">The context for the creator.</param>
+		/// <param name = "burden">Receives the channel burden.</param>
 		/// <returns>The channel creator.</returns>
 		/// <remarks>
-		/// Always Open the channel before being used to prevent serialization of requests.
-		/// http://blogs.msdn.com/wenlong/archive/2007/10/26/best-practice-always-open-wcf-client-proxy-explicitly-when-it-is-shared.aspx 
+		///   Always Open the channel before being used to prevent serialization of requests.
+		///   http://blogs.msdn.com/wenlong/archive/2007/10/26/best-practice-always-open-wcf-client-proxy-explicitly-when-it-is-shared.aspx
 		/// </remarks>
 		private ChannelCreator GetChannelCreator(CreationContext context, out IWcfBurden burden)
 		{
@@ -126,7 +120,10 @@ namespace Castle.Facilities.WcfIntegration
 					else
 					{
 						var parameters = client.GetProperty<ChannelParameterCollection>();
-						if (parameters != null) parameters.Add(scopedBurden);
+						if (parameters != null)
+						{
+							parameters.Add(scopedBurden);
+						}
 					}
 					NotifyChannelCreatedOrAvailable(client, scopedBurden, true);
 					client.Open();
@@ -150,6 +147,55 @@ namespace Castle.Facilities.WcfIntegration
 			return creator;
 		}
 
+		private static ChannelCreator CreateChannelCreator(IKernel kernel, ComponentModel model,
+		                                                   IWcfClientModel clientModel, out IWcfBurden burden)
+		{
+			ValidateClientModel(clientModel, model);
+
+			var createChannelDelegate = createChannelCache.GetOrAdd(clientModel.GetType(), clientModelType =>
+			{
+				return (CreateChannelDelegate)Delegate.CreateDelegate(typeof(CreateChannelDelegate),
+				                                                      createChannelMethod.MakeGenericMethod(clientModelType));
+			});
+
+			var channelCreator = createChannelDelegate(kernel, clientModel, model, out burden);
+			if (channelCreator == null)
+			{
+				throw new CommunicationException("Unable to generate the channel creator.  " +
+				                                 "Either the endpoint could be be created or it's a bug so please report it.");
+			}
+			return channelCreator;
+		}
+
+		private static ChannelCreator CreateChannelCreatorInternal<TModel>(
+			IKernel kernel, IWcfClientModel clientModel, ComponentModel model, out IWcfBurden burden)
+			where TModel : IWcfClientModel
+		{
+			var channelBuilder = kernel.Resolve<IChannelBuilder<TModel>>();
+			return channelBuilder.GetChannelCreator((TModel)clientModel, model.Service, out burden);
+		}
+
+		private static void NotifyChannelCreatedOrAvailable(IChannel channel, IWcfBurden burden, bool created)
+		{
+			var channelFactory = burden.Dependencies.OfType<ChannelFactoryHolder>()
+				.Select(holder => holder.ChannelFactory).FirstOrDefault();
+
+			if (channelFactory != null)
+			{
+				foreach (var observer in burden.Dependencies.OfType<IChannelFactoryAware>())
+				{
+					if (created)
+					{
+						observer.ChannelCreated(channelFactory, channel);
+					}
+					else
+					{
+						observer.ChannelAvailable(channelFactory, channel);
+					}
+				}
+			}
+		}
+
 		private static IWcfClientModel ObtainClientModel(ComponentModel model)
 		{
 			return (IWcfClientModel)model.ExtendedProperties[WcfConstants.ClientModelKey];
@@ -166,7 +212,9 @@ namespace Castle.Facilities.WcfIntegration
 			if (endpoint != null)
 			{
 				if (clientModel == null)
+				{
 					clientModel = ObtainClientModel(model);
+				}
 
 				clientModel = clientModel.ForEndpoint(endpoint);
 			}
@@ -199,58 +247,13 @@ namespace Castle.Facilities.WcfIntegration
 			if ((model != null) && (clientModel.Contract != null) && (clientModel.Contract != model.Service))
 			{
 				throw new FacilityException(string.Format(
-					"The client endpoint contract {0} conflicts with the expected contract.",
+					"The client endpoint contract {0} conflicts with the expected contract {1}.",
 					clientModel.Contract.FullName, model.Service.FullName));
 			}
 		}
 
-		private static void NotifyChannelCreatedOrAvailable(IChannel channel, IWcfBurden burden, bool created)
-		{
-			var channelFactory = burden.Dependencies.OfType<ChannelFactoryHolder>()
-				.Select(holder => holder.ChannelFactory).FirstOrDefault();
-
-			if (channelFactory != null)
-			{
-				foreach (var observer in burden.Dependencies.OfType<IChannelFactoryAware>())
-				{
-					if (created)
-					{
-						observer.ChannelCreated(channelFactory, channel);
-					}
-					else
-					{
-						observer.ChannelAvailable(channelFactory, channel);
-					}
-				}
-			}
-		}
-
-		private static ChannelCreator CreateChannelCreator(IKernel kernel, ComponentModel model,
-														   IWcfClientModel clientModel, out IWcfBurden burden)
-		{
-			ValidateClientModel(clientModel, model);
-
-			var createChannelDelegate = createChannelCache.GetOrAdd(clientModel.GetType(), clientModelType =>
-			{
-				return (CreateChannelDelegate)Delegate.CreateDelegate(typeof(CreateChannelDelegate),
-						createChannelMethod.MakeGenericMethod(clientModelType));
-			});
-
-			var channelCreator = createChannelDelegate(kernel, clientModel, model, out burden);
-			if (channelCreator == null)
-			{
-				throw new CommunicationException("Unable to generate the channel creator.  " +
-					"Either the endpoint could be be created or it's a bug so please report it.");
-			}
-			return channelCreator;
-		}
-
-		private static ChannelCreator CreateChannelCreatorInternal<M>(
-			IKernel kernel, IWcfClientModel clientModel, ComponentModel model, out IWcfBurden burden) 
-			where M : IWcfClientModel
-		{
-			var channelBuilder = kernel.Resolve<IChannelBuilder<M>>();
-			return channelBuilder.GetChannelCreator((M) clientModel, model.Service, out burden);
-		}
+		private delegate ChannelCreator CreateChannelDelegate(
+			IKernel kernel, IWcfClientModel clientModel, ComponentModel model,
+			out IWcfBurden burden);
 	}
 }
