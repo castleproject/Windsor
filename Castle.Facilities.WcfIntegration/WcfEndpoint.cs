@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -24,6 +24,7 @@ namespace Castle.Facilities.WcfIntegration
 	using System.ServiceModel.Discovery;
 #endif
 	using System.Xml.Linq;
+
 	using Castle.Facilities.WcfIntegration.Behaviors;
 	using Castle.Facilities.WcfIntegration.Internal;
 
@@ -89,8 +90,6 @@ namespace Castle.Facilities.WcfIntegration
 			Contract = contract;
 		}
 
-		#region IWcfEndpoint Members
-
 		public Type Contract { get; set; }
 
 		public ICollection<IWcfExtension> Extensions
@@ -105,14 +104,12 @@ namespace Castle.Facilities.WcfIntegration
 			}
 		}
 
+		protected abstract void Accept(IWcfEndpointVisitor visitor);
+
 		void IWcfEndpoint.Accept(IWcfEndpointVisitor visitor)
 		{
 			Accept(visitor);
 		}
-
-		protected abstract void Accept(IWcfEndpointVisitor visitor);
-
-		#endregion
 	}
 
 	public abstract class WcfEndpointBase<T> : WcfEndpointBase
@@ -138,6 +135,7 @@ namespace Castle.Facilities.WcfIntegration
 		}
 
 #if DOTNET40
+
 		#region Discovery and Metadata
 
 		public T InScope(params Uri[] scopes)
@@ -162,9 +160,9 @@ namespace Castle.Facilities.WcfIntegration
 		private EndpointDiscoveryBehavior GetDiscoveryInstance()
 		{
 			var discovery = Extensions.OfType<WcfInstanceExtension>()
-						.Select(extension => extension.Instance)
-						.OfType<EndpointDiscoveryBehavior>()
-						.FirstOrDefault();
+				.Select(extension => extension.Instance)
+				.OfType<EndpointDiscoveryBehavior>()
+				.FirstOrDefault();
 
 			if (discovery == null)
 			{
@@ -176,7 +174,9 @@ namespace Castle.Facilities.WcfIntegration
 		}
 
 		#endregion
+
 #endif
+
 		#region Logging
 
 		public T LogMessages()
@@ -191,7 +191,7 @@ namespace Castle.Facilities.WcfIntegration
 		}
 
 		public T LogMessages<F>(string format)
-			where F : IFormatProvider, new() 
+			where F : IFormatProvider, new()
 		{
 			return LogMessages(new F(), format);
 		}
@@ -266,6 +266,7 @@ namespace Castle.Facilities.WcfIntegration
 		{
 			return new BindingEndpointModel(Contract, null).At(address);
 		}
+
 #if DOTNET40
 		public DiscoveredEndpointModel Discover()
 		{
@@ -277,6 +278,7 @@ namespace Castle.Facilities.WcfIntegration
 			return new BindingEndpointModel(Contract, null).Discover(searchContract);
 		}
 #endif
+
 		protected override void Accept(IWcfEndpointVisitor visitor)
 		{
 			visitor.VisitContractEndpoint(this);
@@ -406,26 +408,26 @@ namespace Castle.Facilities.WcfIntegration
 			endpointAddress = address;
 		}
 
-		public Binding Binding { get; private set; }
-
 		public string Address
 		{
 			get { return address ?? endpointAddress.Uri.AbsoluteUri; }
 		}
+
+		public Binding Binding { get; private set; }
 
 		public EndpointAddress EndpointAddress
 		{
 			get { return endpointAddress; }
 		}
 
-		public Uri ViaAddress
-		{
-			get { return new Uri(via, UriKind.Absolute); }
-		}
-
 		public bool HasViaAddress
 		{
 			get { return !string.IsNullOrEmpty(via); }
+		}
+
+		public Uri ViaAddress
+		{
+			get { return new Uri(via, UriKind.Absolute); }
 		}
 
 		public BindingAddressEndpointModel Via(string physicalAddress)
@@ -443,6 +445,7 @@ namespace Castle.Facilities.WcfIntegration
 	#endregion
 
 #if DOTNET40
+
 	#region Nested Class: DiscoveredEndpointModel
 
 	public class DiscoveredEndpointModel : WcfEndpointBase<DiscoveredEndpointModel>
@@ -455,27 +458,22 @@ namespace Castle.Facilities.WcfIntegration
 			SearchContract = searchContract;
 		}
 
-		public int MaxResults { get; private set; }
-
 		public Binding Binding { get; private set; }
 
 		public bool DeriveBinding { get; private set; }
 
-		public Type SearchContract { get; private set; }
-
-		public Uri ScopeMatchBy { get; private set; }
-
+		public DiscoveryEndpoint DiscoveryEndpoint { get; private set; }
 		public TimeSpan? Duration { get; private set; }
 
-		public DiscoveryEndpoint DiscoveryEndpoint { get; private set; }
-
-		public EndpointIdentity Identity { get; private set; }
-
 		public Func<IList<EndpointDiscoveryMetadata>, EndpointDiscoveryMetadata> EndpointPreference { get; private set; }
+		public EndpointIdentity Identity { get; private set; }
+		public int MaxResults { get; private set; }
+		public Uri ScopeMatchBy { get; private set; }
+		public Type SearchContract { get; private set; }
 
-		public DiscoveredEndpointModel Limit(int maxResults)
+		public DiscoveredEndpointModel IdentifiedBy(EndpointIdentity identity)
 		{
-			MaxResults = maxResults;
+			Identity = identity;
 			return this;
 		}
 
@@ -485,15 +483,9 @@ namespace Castle.Facilities.WcfIntegration
 			return this;
 		}
 
-		public DiscoveredEndpointModel PreferEndpoint(Func<IList<EndpointDiscoveryMetadata>, EndpointDiscoveryMetadata> selector)
+		public DiscoveredEndpointModel Limit(int maxResults)
 		{
-			EndpointPreference = selector;
-			return this;
-		}
-
-		public DiscoveredEndpointModel IdentifiedBy(EndpointIdentity identity)
-		{
-			Identity = identity;
+			MaxResults = maxResults;
 			return this;
 		}
 
@@ -510,15 +502,10 @@ namespace Castle.Facilities.WcfIntegration
 			return this;
 		}
 
-		public DiscoveredEndpointModel Span(TimeSpan duration)
+		public DiscoveredEndpointModel MatchScopeBy(Uri match)
 		{
-			Duration = duration;
+			ScopeMatchBy = match;
 			return this;
-		}
-
-		public DiscoveredEndpointModel MatchScopeExactly()
-		{
-			return MatchScopeBy(FindCriteria.ScopeMatchByExact);
 		}
 
 		public DiscoveredEndpointModel MatchScopeByLdap()
@@ -536,9 +523,20 @@ namespace Castle.Facilities.WcfIntegration
 			return MatchScopeBy(FindCriteria.ScopeMatchByUuid);
 		}
 
-		public DiscoveredEndpointModel MatchScopeBy(Uri match)
+		public DiscoveredEndpointModel MatchScopeExactly()
 		{
-			ScopeMatchBy = match;
+			return MatchScopeBy(FindCriteria.ScopeMatchByExact);
+		}
+
+		public DiscoveredEndpointModel PreferEndpoint(Func<IList<EndpointDiscoveryMetadata>, EndpointDiscoveryMetadata> selector)
+		{
+			EndpointPreference = selector;
+			return this;
+		}
+
+		public DiscoveredEndpointModel Span(TimeSpan duration)
+		{
+			Duration = duration;
 			return this;
 		}
 
@@ -549,6 +547,6 @@ namespace Castle.Facilities.WcfIntegration
 	}
 
 	#endregion
+
 #endif
 }
-

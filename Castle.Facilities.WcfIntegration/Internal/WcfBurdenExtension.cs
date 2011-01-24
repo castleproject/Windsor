@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,15 +12,28 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Facilities.WcfIntegration
+namespace Castle.Facilities.WcfIntegration.Internal
 {
-	using Castle.Core;
-	using Castle.MicroKernel;
+	using System.ServiceModel;
 
-	public interface IWcfExtension
+	public class WcfBurdenExtension<T> : AbstractExtension<T>, IWcfCleanUp
+		where T : class, IExtensibleObject<T>
 	{
-		void Accept(IWcfExtensionVisitor visitor);
+		private readonly IWcfBurden burden;
 
-		void AddDependencies(IKernel kernel, ComponentModel model);
+		public WcfBurdenExtension(IWcfBurden burden)
+		{
+			this.burden = burden;
+		}
+
+		public IWcfBurden Burden
+		{
+			get { return burden; }
+		}
+
+		public void CleanUp()
+		{
+			burden.CleanUp();
+		}
 	}
 }

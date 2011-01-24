@@ -1,4 +1,7 @@
-﻿// you may not use this file except in compliance with the License.
+﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 // 
 //     http://www.apache.org/licenses/LICENSE-2.0
@@ -12,23 +15,17 @@
 namespace Castle.Facilities.WcfIntegration.Internal
 {
 	using System.Collections.Generic;
-	using System.ServiceModel;
 
 	using Castle.MicroKernel;
 
 	public class WcfBurden : IWcfBurden
 	{
-		private readonly IKernel kernel;
 		private readonly HashSet<object> dependencies = new HashSet<object>();
+		private readonly IKernel kernel;
 
 		public WcfBurden(IKernel kernel)
 		{
 			this.kernel = kernel;
-		}
-
-		public void Add(object dependency)
-		{
-			dependencies.Add(dependency);
 		}
 
 		public IEnumerable<object> Dependencies
@@ -36,9 +33,14 @@ namespace Castle.Facilities.WcfIntegration.Internal
 			get { return dependencies; }
 		}
 
+		public void Add(object dependency)
+		{
+			dependencies.Add(dependency);
+		}
+
 		public void CleanUp()
 		{
-			foreach (object dependency in dependencies)
+			foreach (var dependency in dependencies)
 			{
 				if (dependency is IWcfCleanUp)
 				{
@@ -50,27 +52,6 @@ namespace Castle.Facilities.WcfIntegration.Internal
 				}
 			}
 			dependencies.Clear();
-		}
-	}
-
-	public class WcfBurdenExtension<T> : AbstractExtension<T>, IWcfCleanUp
-		where T : class, IExtensibleObject<T>
-	{
-		private readonly IWcfBurden burden;
-
-		public WcfBurdenExtension(IWcfBurden burden)
-		{
-			this.burden = burden;
-		}
-
-		public IWcfBurden Burden
-		{
-			get { return burden; }
-		}
-
-		public void CleanUp()
-		{
-			burden.CleanUp();
 		}
 	}
 }
