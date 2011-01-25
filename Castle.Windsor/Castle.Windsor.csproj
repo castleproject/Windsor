@@ -417,6 +417,7 @@
     <Compile Include="MicroKernel\Handlers\ComponentResolvingDelegate.cs" />
     <Compile Include="MicroKernel\Handlers\ExtendedHandler.cs" />
     <Compile Include="MicroKernel\Handlers\HandlerExtensionsUtil.cs" />
+    <Compile Include="MicroKernel\Handlers\IGenericImplementationMatchingStrategy.cs" />
     <Compile Include="MicroKernel\Handlers\IReleaseExtension.cs" />
     <Compile Include="MicroKernel\Handlers\IResolveExtension.cs" />
     <Compile Include="MicroKernel\Handlers\ReleaseInvocation.cs" />
