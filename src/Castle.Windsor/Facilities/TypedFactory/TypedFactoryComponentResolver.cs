@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -64,12 +64,11 @@ namespace Castle.Facilities.TypedFactory
 		/// <returns>Resolved component(s).</returns>
 		public virtual object Resolve(IKernelInternal kernel, IReleasePolicy scope)
 		{
-			if (kernel.HasComponent(ComponentName) == false)
+			if (ComponentName != null && kernel.LoadHandlerByKey(ComponentName, ComponentType, AdditionalArguments) != null)
 			{
-				return kernel.Resolve(ComponentType, AdditionalArguments, scope);
+				return kernel.Resolve(ComponentName, ComponentType, AdditionalArguments, scope);
 			}
-
-			return kernel.Resolve(ComponentName, ComponentType, AdditionalArguments, scope);
+			return kernel.Resolve(ComponentType, AdditionalArguments, scope);
 		}
 	}
 }
