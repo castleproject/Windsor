@@ -18,6 +18,7 @@ namespace Castle.MicroKernel
 	using System.Collections;
 	using System.Collections.Generic;
 	using System.Diagnostics;
+	using System.Linq;
 	using System.Runtime.Serialization;
 	using System.Security;
 
@@ -323,10 +324,21 @@ namespace Castle.MicroKernel
 			{
 				throw new ArgumentNullException("facility");
 			}
-
+			if (facilities.Any(f => f.GetType() == facility.GetType()))
+			{
+				throw new ArgumentException(
+					string.Format("Facility of type '{0}' has already been registered with the container. Only one facility of a given type can exist in the container.",
+					              facility.GetType().Name));
+			}
+			try
+			{
+				facilities.Add(facility);
+			}
+			catch (ArgumentException)
+			{
+			}
 			facility.Init(this, ConfigurationStore.GetFacilityConfiguration(key));
 
-			facilities.Add(facility);
 			return this;
 		}
 

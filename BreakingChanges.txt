@@ -1,4 +1,13 @@
 ================================================================================================
+change - Adding more than a single facility of any given type is not legal anymore
+
+impact - none (I hope)
+fixability - easy
+
+description - Doing so is a bug. Why would you do it in the first place?
+
+fix - Stop doing it.
+================================================================================================
 change - RegisterCustomDependencies methods were moved from IKernel to IKernelInternal.
 
 impact - low

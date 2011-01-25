@@ -203,6 +203,10 @@ namespace Castle.MicroKernel.Registration
 			{
 				registration.Named(defaults.Key);
 			}
+			else
+			{
+				registration.RegisterOptionally();
+			}
 
 			if (!kernel.HasComponent(registration.Name))
 			{
