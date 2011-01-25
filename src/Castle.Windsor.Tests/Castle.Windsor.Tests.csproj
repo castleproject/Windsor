@@ -322,6 +322,7 @@
     <Compile Include="Components\CompB.cs" />
     <Compile Include="Components\CompC.cs" />
     <Compile Include="Components\CompD.cs" />
+    <Compile Include="Components\CompositeEmptyService2.cs" />
     <Compile Include="Components\Controller.cs" />
     <Compile Include="Components\ContravariantBase.cs" />
     <Compile Include="Components\ContravariantDerived.cs" />
@@ -330,6 +331,11 @@
     <Compile Include="Components\DictionaryCache.cs" />
     <Compile Include="Components\DisposableGeneric.cs" />
     <Compile Include="Components\DisposableGenericA.cs" />
+    <Compile Include="Components\EmptyService2Impl1.cs" />
+    <Compile Include="Components\EmptyService2Impl2.cs" />
+    <Compile Include="Components\EmptyService2Impl3.cs" />
+    <Compile Include="Components\EmptyService2Impl4.cs" />
+    <Compile Include="Components\EmptyService2Impl5.cs" />
     <Compile Include="Components\EmptyServiceComposite.cs" />
     <Compile Include="Components\EmptyServiceDecorator.cs" />
     <Compile Include="Components\EmptyServiceDecoratorViaProperty.cs" />
@@ -344,6 +350,7 @@
     <Compile Include="Components\IController.cs" />
     <Compile Include="Components\IDependency.cs" />
     <Compile Include="Components\IDependOnArray.cs" />
+    <Compile Include="Components\IEmptyService2.cs" />
     <Compile Include="Components\IInternal.cs" />
     <Compile Include="Components\InitializableComponent.cs" />
     <Compile Include="Components\InitializableDisposableComponent.cs" />
@@ -370,6 +377,7 @@
     <Compile Include="Components\UnresolvalbeDependency.cs" />
     <Compile Include="Components\UnresolvalbeDependencyWithAdditionalServiceConstructor.cs" />
     <Compile Include="Components\UnresolvalbeDependencyWithPrimitiveConstructor.cs" />
+    <Compile Include="CompositePatternTestCase.cs" />
     <Compile Include="ContainerAndGenericsInConfigTestCase.cs" />
     <Compile Include="Core.Tests\InterceptorAttributeTestCase.cs" />
     <Compile Include="Experimental\AllComponentsTestCase.cs" />
@@ -393,8 +401,10 @@
     <Compile Include="Facilities\TypedFactory\Factories\IGenericFactoryWithGenericMethod.cs" />
     <Compile Include="Facilities\TypedFactory\Factories\IObjectFactory.cs" />
     <Compile Include="Facilities\TypedFactory\TypedFactoryDependenciesTestCase.cs" />
+    <Compile Include="GenericImplementationWithGreaterArityThanServiceTestCase.cs" />
     <Compile Include="Generics\ARepository.cs" />
     <Compile Include="Generics\ARepository.T.cs" />
+    <Compile Include="Generics\DoubleGenericRepository.cs" />
     <Compile Include="Generics\IARepository.T.cs" />
     <Compile Include="Generics\IRepository.cs" />
     <Compile Include="Generics\IRepository.T.cs" />

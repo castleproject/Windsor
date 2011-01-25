@@ -31,14 +31,17 @@ namespace Castle.MicroKernel.Handlers
 	[Serializable]
 	public class DefaultGenericHandler : AbstractHandler
 	{
+		private readonly IGenericImplementationMatchingStrategy implementationMatchingStrategy;
 		private readonly IDictionary<Type, IHandler> type2SubHandler = new Dictionary<Type, IHandler>();
 
 		/// <summary>
 		///   Initializes a new instance of the <see cref = "DefaultGenericHandler" /> class.
 		/// </summary>
 		/// <param name = "model"></param>
-		public DefaultGenericHandler(ComponentModel model) : base(model)
+		/// <param name = "implementationMatchingStrategy"></param>
+		public DefaultGenericHandler(ComponentModel model, IGenericImplementationMatchingStrategy implementationMatchingStrategy) : base(model)
 		{
+			this.implementationMatchingStrategy = implementationMatchingStrategy;
 		}
 
 		public override void Dispose()
@@ -147,6 +150,10 @@ namespace Castle.MicroKernel.Handlers
 		{
 			try
 			{
+				if (implementationMatchingStrategy != null)
+				{
+					return implementationMatchingStrategy.GetClosedImplementattionType(ComponentModel, context);
+				}
 				// TODO: what if ComponentModel.Implementation is a LateBoundComponent?
 				return ComponentModel.Implementation.MakeGenericType(context.GenericArguments);
 			}

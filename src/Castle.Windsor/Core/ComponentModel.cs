@@ -32,6 +32,7 @@ namespace Castle.Core
 	public sealed class ComponentModel : GraphNode
 	{
 		public const string SkipRegistration = "skip.registration";
+		public const string GenericImplementationMatchingStrategy = "generic.matching";
 		private readonly ComponentName componentName;
 
 		private readonly ConstructorCandidateCollection constructors = new ConstructorCandidateCollection();

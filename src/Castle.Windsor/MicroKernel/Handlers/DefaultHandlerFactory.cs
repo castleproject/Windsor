@@ -44,7 +44,8 @@ namespace Castle.MicroKernel.Handlers
 		{
 			if (model.RequiresGenericArguments)
 			{
-				return new DefaultGenericHandler(model);
+				var matchingStrategy = (IGenericImplementationMatchingStrategy)model.ExtendedProperties[ComponentModel.GenericImplementationMatchingStrategy];
+				return new DefaultGenericHandler(model, matchingStrategy);
 			}
 			var resolveExtensions = model.ResolveExtensions(false);
 			var releaseExtensions = model.ReleaseExtensions(false);
