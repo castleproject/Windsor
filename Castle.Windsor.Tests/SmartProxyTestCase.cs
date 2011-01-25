@@ -40,7 +40,7 @@ namespace Castle.Windsor.Tests
 #if (!SILVERLIGHT)
 			Assert.IsFalse(RemotingServices.IsTransparentProxy(service));
 #endif
-			Assert.AreEqual(7, service.Sum(2, 2));
+			Assert.AreEqual(5, service.Sum(2, 2));
 		}
 
 		[SetUp]
@@ -48,9 +48,7 @@ namespace Castle.Windsor.Tests
 		{
 			container = new WindsorContainer();
 
-			container.AddFacility("1", new MyInterceptorGreedyFacility());
-			container.AddFacility("2", new MyInterceptorGreedyFacility());
-			container.AddFacility("3", new MyInterceptorGreedyFacility());
+			container.AddFacility<MyInterceptorGreedyFacility>();
 		}
 
 		[Test]
@@ -76,7 +74,7 @@ namespace Castle.Windsor.Tests
 #if (!SILVERLIGHT)
 			Assert.IsFalse(RemotingServices.IsTransparentProxy(service));
 #endif
-			Assert.AreEqual(7, service.Sum(2, 2));
+			Assert.AreEqual(5, service.Sum(2, 2));
 		}
 
 		[TearDown]

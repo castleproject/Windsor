@@ -51,6 +51,7 @@ namespace Castle.MicroKernel.Registration
 		private bool overwrite;
 		private bool registered;
 		private bool registerNewServicesOnly;
+		private bool ifComponentRegisteredIgnore;
 
 		public ComponentRegistration() : this(typeof(TService))
 		{
@@ -910,6 +911,10 @@ namespace Castle.MicroKernel.Registration
 			}
 
 			var internalKernel = GetInternalKernel(kernel);
+			if (ifComponentRegisteredIgnore && internalKernel.HasComponent(componentModel.Name))
+			{
+				return;
+			}
 			internalKernel.AddCustomComponent(componentModel);
 		}
 
@@ -925,6 +930,11 @@ namespace Castle.MicroKernel.Registration
 #endif
 			}
 			return services.ToArray();
+		}
+
+		internal void RegisterOptionally()
+		{
+			ifComponentRegisteredIgnore = true;
 		}
 	}
 }

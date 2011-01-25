@@ -46,10 +46,7 @@ namespace Castle.Windsor.Tests
 		public void Init()
 		{
 			container = new WindsorContainer();
-
-			container.AddFacility("1", new MyInterceptorGreedyFacility());
-			container.AddFacility("2", new MyInterceptorGreedyFacility());
-			container.AddFacility("3", new MyInterceptorGreedyFacility());
+			container.AddFacility<MyInterceptorGreedyFacility>();
 		}
 
 		[TearDown]
@@ -67,7 +64,7 @@ namespace Castle.Windsor.Tests
 			var service = container.Resolve<ICalcService>("key");
 
 			Assert.IsNotNull(service);
-			Assert.AreEqual(7, service.Sum(2, 2));
+			Assert.AreEqual(5, service.Sum(2, 2));
 		}
 
 		[Test]
@@ -93,7 +90,7 @@ namespace Castle.Windsor.Tests
 
 			Assert.IsNotNull(service);
 			Assert.IsTrue(service.Initialized);
-			Assert.AreEqual(7, service.Sum(2, 2));
+			Assert.AreEqual(5, service.Sum(2, 2));
 
 			Assert.IsFalse(service.Disposed);
 
@@ -111,7 +108,7 @@ namespace Castle.Windsor.Tests
 			service = container.Resolve<CalculatorService>("key");
 
 			Assert.IsNotNull(service);
-			Assert.AreEqual(7, service.Sum(2, 2));
+			Assert.AreEqual(5, service.Sum(2, 2));
 		}
 
 #if (!SILVERLIGHT)
