@@ -148,14 +148,13 @@ namespace Castle.MicroKernel.Handlers
 
 		private Type GetClosedImplementationType(CreationContext context, bool instanceRequired)
 		{
+			var genericArguments = GetGenericArguments(context);
+
 			try
 			{
-				if (implementationMatchingStrategy != null)
-				{
-					return implementationMatchingStrategy.GetClosedImplementattionType(ComponentModel, context);
-				}
 				// TODO: what if ComponentModel.Implementation is a LateBoundComponent?
-				return ComponentModel.Implementation.MakeGenericType(context.GenericArguments);
+
+				return ComponentModel.Implementation.MakeGenericType(genericArguments);
 			}
 			catch (ArgumentException e)
 			{
@@ -167,7 +166,7 @@ namespace Castle.MicroKernel.Handlers
 
 				// ok, let's do some investigation now what might have been the cause of the error
 				var arguments = ComponentModel.Implementation.GetGenericArguments();
-				if (arguments.Length > context.GenericArguments.Length)
+				if (arguments.Length > genericArguments.Length)
 				{
 					var message =
 						string.Format(
@@ -179,6 +178,15 @@ namespace Castle.MicroKernel.Handlers
 				// the CLR exception should suffice
 				throw;
 			}
+		}
+
+		private Type[] GetGenericArguments(CreationContext context)
+		{
+			if (implementationMatchingStrategy == null)
+			{
+				return context.GenericArguments;
+			}
+			return implementationMatchingStrategy.GetGenericArguments(ComponentModel, context);
 		}
 	}
 }
