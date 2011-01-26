@@ -12,15 +12,27 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.MicroKernel.Handlers
+namespace Castle
 {
 	using System;
+	using System.Linq;
 
 	using Castle.Core;
 	using Castle.MicroKernel.Context;
+	using Castle.MicroKernel.Handlers;
 
-	public interface IGenericImplementationMatchingStrategy
+	public class DuplicateGenerics : IGenericImplementationMatchingStrategy
 	{
-		Type[] GetGenericArguments(ComponentModel model, CreationContext context);
+		public Type[] GetGenericArguments(ComponentModel model, CreationContext context)
+		{
+			var first = context.RequestedType.GetGenericArguments().First();
+			var length = model.Implementation.GetGenericArguments().Length;
+			var types = new Type[length];
+			for (var i = 0; i < length; i++)
+			{
+				types[i] = first;
+			}
+			return types;
+		}
 	}
 }

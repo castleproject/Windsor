@@ -380,6 +380,7 @@
     <Compile Include="CompositePatternTestCase.cs" />
     <Compile Include="ContainerAndGenericsInConfigTestCase.cs" />
     <Compile Include="Core.Tests\InterceptorAttributeTestCase.cs" />
+    <Compile Include="DuplicateGenerics.cs" />
     <Compile Include="Experimental\AllComponentsTestCase.cs" />
     <Compile Include="Experimental\ReleasePolicyTrackedObjectsTestCase.cs" />
     <Compile Include="Experimental\MyCustomReleasePolicy.cs" />
