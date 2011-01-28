@@ -126,7 +126,7 @@ namespace Castle.MicroKernel
 
 			releasePolicy = new LifecycledComponentsReleasePolicy();
 			handlerFactory = new DefaultHandlerFactory(this);
-			ComponentModelBuilder = new DefaultComponentModelBuilder(this);
+			ComponentModelFactory = new DefaultComponentModelFactory(this);
 			this.proxyFactory = proxyFactory;
 			this.resolver = resolver;
 			resolver.Initialize(this, RaiseDependencyResolving);
@@ -156,7 +156,7 @@ namespace Castle.MicroKernel
 		}
 #endif
 
-		public IComponentModelBuilder ComponentModelBuilder { get; set; }
+		public IComponentModelFactory ComponentModelFactory { get; set; }
 
 		public virtual IConfigurationStore ConfigurationStore
 		{

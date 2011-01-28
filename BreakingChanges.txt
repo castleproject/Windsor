@@ -1,4 +1,9 @@
 ================================================================================================
+rename - IComponentModelBuilder -> IComponentModelFactory
+	IKernel.ComponentModelBuilder -> IKernel.ComponentModelFactory
+description - Unifying naming with IHandlerFactory, making place for ComponentModelBuilder class
+	which is a different concept.
+================================================================================================
 change - Adding more than a single facility of any given type is not legal anymore
 
 impact - none (I hope)

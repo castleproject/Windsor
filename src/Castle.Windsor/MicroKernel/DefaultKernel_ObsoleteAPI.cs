@@ -93,7 +93,7 @@ namespace Castle.MicroKernel
 			{
 				throw new ArgumentException("The specified lifestyle must be Thread, Transient, or Singleton.", "lifestyle");
 			}
-			var model = ComponentModelBuilder.BuildModel(new ComponentName(key, true), new[] { serviceType }, classType, null);
+			var model = ComponentModelFactory.BuildModel(new ComponentName(key, true), new[] { serviceType }, classType, null);
 
 			if (overwriteLifestyle || LifestyleType.Undefined == model.LifestyleType)
 			{
@@ -251,7 +251,7 @@ namespace Castle.MicroKernel
 				throw new ArgumentNullException("classType");
 			}
 
-			var model = ComponentModelBuilder.BuildModel(new ComponentName(key, true), new[] { classType }, classType, extendedProperties);
+			var model = ComponentModelFactory.BuildModel(new ComponentName(key, true), new[] { classType }, classType, extendedProperties);
 			RaiseComponentModelCreated(model);
 			var handler = HandlerFactory.Create(model);
 			RegisterHandler(key, handler);
@@ -278,7 +278,7 @@ namespace Castle.MicroKernel
 				throw new ArgumentNullException("classType");
 			}
 
-			var model = ComponentModelBuilder.BuildModel(new ComponentName(key, true), new[] { serviceType }, classType, extendedProperties);
+			var model = ComponentModelFactory.BuildModel(new ComponentName(key, true), new[] { serviceType }, classType, extendedProperties);
 			RaiseComponentModelCreated(model);
 			var handler = HandlerFactory.Create(model);
 			RegisterHandler(key, handler);

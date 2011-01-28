@@ -15,7 +15,6 @@
 namespace Castle.MicroKernel
 {
 	using System;
-	using System.Collections;
 
 	using Castle.Core.Internal;
 	using Castle.MicroKernel.Registration;
@@ -37,9 +36,9 @@ namespace Castle.MicroKernel
 	public partial interface IKernel : IKernelEvents, IDisposable
 	{
 		/// <summary>
-		///   Returns the implementation of <see cref = "IComponentModelBuilder" />
+		///   Returns the implementation of <see cref = "IComponentModelFactory" />
 		/// </summary>
-		IComponentModelBuilder ComponentModelBuilder { get; }
+		IComponentModelFactory ComponentModelFactory { get; }
 
 		/// <summary>
 		///   Gets or sets the implementation of <see cref = "IConfigurationStore" />

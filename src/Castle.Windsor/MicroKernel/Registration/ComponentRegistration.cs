@@ -896,7 +896,7 @@ namespace Castle.MicroKernel.Registration
 
 			if (componentModel == null)
 			{
-				componentModel = kernel.ComponentModelBuilder.BuildModel(name, services, implementation, null);
+				componentModel = kernel.ComponentModelFactory.BuildModel(name, services, implementation, null);
 			}
 
 			foreach (var descriptor in descriptors)

@@ -71,7 +71,7 @@ namespace Castle.Facilities.FactorySupport
 
 			EnsureFactoryIsRegistered(factoryId, factoryType);
 
-			var serviceModel = Kernel.ComponentModelBuilder.BuildModel(new ComponentName(serviceKey, true), new[] { serviceType }, factoryType, null);
+			var serviceModel = Kernel.ComponentModelFactory.BuildModel(new ComponentName(serviceKey, true), new[] { serviceType }, factoryType, null);
 			cfg.Attributes["factoryId"] = factoryId;
 			serviceModel.Configuration = cfg;
 			((IKernelInternal)Kernel).AddCustomComponent(serviceModel);

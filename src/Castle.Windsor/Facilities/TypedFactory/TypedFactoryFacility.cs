@@ -131,7 +131,7 @@ namespace Castle.Facilities.TypedFactory
 			                	.ImplementedBy<DefaultDelegateComponentSelector>()
 			                	.NamedAutomatically(DefaultDelegateSelectorKey));
 
-			Kernel.ComponentModelBuilder.AddContributor(new TypedFactoryCachingInspector());
+			Kernel.ComponentModelFactory.AddContributor(new TypedFactoryCachingInspector());
 		}
 
 		private void LegacyInit()
