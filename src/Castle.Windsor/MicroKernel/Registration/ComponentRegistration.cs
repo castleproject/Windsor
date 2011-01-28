@@ -154,6 +154,7 @@ namespace Castle.MicroKernel.Registration
 		/// </summary>
 		/// <param name = "actors">The component actors.</param>
 		/// <returns></returns>
+		[Obsolete("If you're using WCF Facility use AsWcfClient/AsWcfService extension methods instead.")]
 		public ComponentRegistration<TService> ActAs(params object[] actors)
 		{
 			foreach (var actor in actors)
