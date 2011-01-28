@@ -82,7 +82,7 @@ namespace Castle.MicroKernel.Handlers
 				}
 				// TODO: we should probably match the requested type to existing services and close them over its generic arguments
 				var service = context.RequestedType;
-				var newModel = Kernel.ComponentModelBuilder.BuildModel(
+				var newModel = Kernel.ComponentModelFactory.BuildModel(
 					ComponentModel.ComponentName, new[] { service }, genericType, ComponentModel.ExtendedProperties);
 
 				newModel.ExtendedProperties[ComponentModel.SkipRegistration] = true;
