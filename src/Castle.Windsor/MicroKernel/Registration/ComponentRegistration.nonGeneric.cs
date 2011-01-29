@@ -17,6 +17,7 @@ namespace Castle.MicroKernel.Registration
 	using System;
 
 	using Castle.Core;
+	using Castle.MicroKernel.Handlers;
 
 	/// <summary>
 	/// A non-generic <see cref="ComponentRegistration{S}"/>.

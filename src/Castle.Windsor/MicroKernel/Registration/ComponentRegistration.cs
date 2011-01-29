@@ -27,6 +27,7 @@ namespace Castle.MicroKernel.Registration
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.ComponentActivator;
 	using Castle.MicroKernel.Context;
+	using Castle.MicroKernel.Handlers;
 	using Castle.MicroKernel.LifecycleConcerns;
 	using Castle.MicroKernel.Proxy;
 	using Castle.MicroKernel.Registration.Interceptor;
@@ -86,7 +87,7 @@ namespace Castle.MicroKernel.Registration
 		/// <summary>
 		///   The concrete type that implements the service.
 		///   <para />
-		///   To set the implementation, use <see cref = "ImplementedBy" />.
+		///   To set the implementation, use <see cref = "ImplementedBy(System.Type)" />.
 		/// </summary>
 		/// <value>The implementation of the service.</value>
 		public Type Implementation
@@ -480,6 +481,11 @@ namespace Castle.MicroKernel.Registration
 		/// <returns></returns>
 		public ComponentRegistration<TService> ImplementedBy(Type type)
 		{
+			return ImplementedBy(type, null);
+		}
+
+		public ComponentRegistration<TService> ImplementedBy(Type type, IGenericImplementationMatchingStrategy genericImplementationMatchingStrategy)
+		{
 			if (implementation != null && implementation != typeof(LateBoundComponent))
 			{
 				var message = String.Format("This component has already been assigned implementation {0}",
@@ -488,7 +494,11 @@ namespace Castle.MicroKernel.Registration
 			}
 
 			implementation = type;
-			return this;
+			if (genericImplementationMatchingStrategy == null)
+			{
+				return this;
+			}
+			return ExtendedProperties(Property.ForKey(ComponentModel.GenericImplementationMatchingStrategy).Eq(genericImplementationMatchingStrategy));
 		}
 
 		/// <summary>
