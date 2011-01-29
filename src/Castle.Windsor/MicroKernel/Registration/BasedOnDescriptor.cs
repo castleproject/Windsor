@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -47,14 +47,6 @@ namespace Castle.MicroKernel.Registration
 			this.from = from;
 			service = new ServiceDescriptor(this);
 			configurers = new List<ConfigureDescriptor>();
-		}
-
-		/// <summary>
-		///   Gets the type all types must be based on.
-		/// </summary>
-		internal Type InternalBasedOn
-		{
-			get { return basedOn; }
 		}
 
 		/// <summary>
@@ -187,7 +179,7 @@ namespace Castle.MicroKernel.Registration
 			}
 			var defaults = CastleComponentAttribute.GetDefaultsFor(type);
 			var serviceTypes = service.GetServices(type, baseTypes);
-			if(serviceTypes.Count == 0 && defaults.Service != null)
+			if (serviceTypes.Count == 0 && defaults.Service != null)
 			{
 				serviceTypes = new[] { defaults.Service };
 			}
@@ -198,8 +190,7 @@ namespace Castle.MicroKernel.Registration
 			{
 				configurer.Apply(registration);
 			}
-			if (String.IsNullOrEmpty(registration.Name) &&
-				String.IsNullOrEmpty(defaults.Key) == false)
+			if (String.IsNullOrEmpty(registration.Name) && !String.IsNullOrEmpty(defaults.Key))
 			{
 				registration.Named(defaults.Key);
 			}
@@ -207,12 +198,7 @@ namespace Castle.MicroKernel.Registration
 			{
 				registration.RegisterOptionally();
 			}
-
-			if (!kernel.HasComponent(registration.Name))
-			{
-				kernel.Register(registration);
-			}
-
+			kernel.Register(registration);
 			return true;
 		}
 
@@ -318,13 +304,9 @@ namespace Castle.MicroKernel.Registration
 			return baseTypes.Length > 0;
 		}
 
-		#region IRegistration Members
-
 		void IRegistration.Register(IKernel kernel)
 		{
 			((IRegistration)from).Register(kernel);
 		}
-
-		#endregion
 	}
 }
