@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -22,24 +22,16 @@ namespace Castle.Windsor.Tests
 	using NUnit.Framework;
 
 	[TestFixture]
-	public class OpenGenericsTestCase
+	public class OpenGenericsTestCase : AbstractContainerTestFixture
 	{
-		[SetUp]
-		public void Setup()
-		{
-			container = new WindsorContainer();
-		}
-
-		private WindsorContainer container;
-
 		[Test]
 		public void ExtendedProperties_incl_ProxyOptions_are_honored_for_open_generic_types()
 		{
-			container.Register(
+			Container.Register(
 				Component.For(typeof(Collection<>))
 					.Proxy.AdditionalInterfaces(typeof(ISimpleService)));
 
-			var proxy = container.Resolve<Collection<int>>();
+			var proxy = Container.Resolve<Collection<int>>();
 
 			Assert.IsInstanceOf<ISimpleService>(proxy);
 		}
@@ -47,11 +39,11 @@ namespace Castle.Windsor.Tests
 		[Test]
 		public void ResolveAll_properly_skips_open_generic_service_with_generic_constraints_that_dont_match()
 		{
-			container.Register(
+			Container.Register(
 				Component.For(typeof(IHasGenericConstraints<,>))
 					.ImplementedBy(typeof(HasGenericConstraintsImpl<,>)));
 
-			var invalid = container.ResolveAll<IHasGenericConstraints<EmptySub1, EmptyClass>>();
+			var invalid = Container.ResolveAll<IHasGenericConstraints<EmptySub1, EmptyClass>>();
 
 			Assert.AreEqual(0, invalid.Length);
 		}
@@ -59,11 +51,11 @@ namespace Castle.Windsor.Tests
 		[Test]
 		public void ResolveAll_returns_matching_open_generic_service_with_generic_constraints()
 		{
-			container.Register(
+			Container.Register(
 				Component.For(typeof(IHasGenericConstraints<,>))
 					.ImplementedBy(typeof(HasGenericConstraintsImpl<,>)));
 
-			var valid = container.ResolveAll<IHasGenericConstraints<EmptySub2WithMarkerInterface, EmptyClass>>();
+			var valid = Container.ResolveAll<IHasGenericConstraints<EmptySub2WithMarkerInterface, EmptyClass>>();
 
 			Assert.AreEqual(1, valid.Length);
 		}
