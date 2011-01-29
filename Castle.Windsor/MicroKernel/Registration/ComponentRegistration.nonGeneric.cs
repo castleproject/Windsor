@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,12 +17,11 @@ namespace Castle.MicroKernel.Registration
 	using System;
 
 	using Castle.Core;
-	using Castle.MicroKernel.Handlers;
 
 	/// <summary>
-	/// A non-generic <see cref="ComponentRegistration{S}"/>.
-	/// <para />
-	/// You can create a new registration with the <see cref="Component"/> factory.
+	///   A non-generic <see cref = "ComponentRegistration{S}" />.
+	///   <para />
+	///   You can create a new registration with the <see cref = "Component" /> factory.
 	/// </summary>
 	public class ComponentRegistration : ComponentRegistration<object>
 	{
@@ -31,9 +30,8 @@ namespace Castle.MicroKernel.Registration
 		{
 		}
 
-		public ComponentRegistration(params Type[] serviceTypes):base(serviceTypes)
+		public ComponentRegistration(params Type[] serviceTypes) : base(serviceTypes)
 		{
-			
 		}
 	}
 }

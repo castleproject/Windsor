@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,15 +18,15 @@ namespace Castle.MicroKernel.Registration
 	using Castle.Windsor;
 
 	/// <summary>
-	/// The contract to install components in the container.
+	///   The contract to install components in the container.
 	/// </summary>
 	public interface IWindsorInstaller
 	{
 		/// <summary>
-		/// Performs the installation in the <see cref="IWindsorContainer"/>.
+		///   Performs the installation in the <see cref = "IWindsorContainer" />.
 		/// </summary>
-		/// <param name="container">The container.</param>
-		/// <param name="store">The configuration store.</param>
+		/// <param name = "container">The container.</param>
+		/// <param name = "store">The configuration store.</param>
 		void Install(IWindsorContainer container, IConfigurationStore store);
 	}
 }
