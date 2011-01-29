@@ -17,20 +17,14 @@ namespace Castle.MicroKernel.Registration
 	using Castle.Core;
 	using Castle.Core.Configuration;
 
-	public abstract class ComponentDescriptor<S>
-		where S : class
+	public abstract class ComponentDescriptor<TService>
+		where TService : class
 	{
-		private ComponentRegistration<S> registration;
-
-		protected internal ComponentRegistration<S> Registration
-		{
-			get { return registration; }
-			set { registration = value; }
-		}
+		protected internal ComponentRegistration<TService> Registration { get; set; }
 
 		protected bool IsOverWrite
 		{
-			get { return registration.IsOverWrite; }
+			get { return Registration.IsOverWrite; }
 		}
 
 		protected internal virtual void ApplyToConfiguration(IKernel kernel, IConfiguration configuration)
