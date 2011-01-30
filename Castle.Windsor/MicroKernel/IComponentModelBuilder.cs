@@ -54,5 +54,7 @@ namespace Castle.MicroKernel
 		/// </summary>
 		/// <param name = "contributor"></param>
 		void RemoveContributor(IContributeComponentModelConstruction contributor);
+
+		ComponentModel BuildModel(IContributeComponentModelConstruction[] customContributors);
 	}
 }

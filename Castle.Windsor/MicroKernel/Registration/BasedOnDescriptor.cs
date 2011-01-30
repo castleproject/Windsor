@@ -179,9 +179,9 @@ namespace Castle.MicroKernel.Registration
 			}
 			var defaults = CastleComponentAttribute.GetDefaultsFor(type);
 			var serviceTypes = service.GetServices(type, baseTypes);
-			if (serviceTypes.Count == 0 && defaults.Service != null)
+			if (serviceTypes.Count == 0 && defaults.Services.Length > 0)
 			{
-				serviceTypes = new[] { defaults.Service };
+				serviceTypes = defaults.Services;
 			}
 			var registration = Component.For(serviceTypes);
 			registration.ImplementedBy(type);
@@ -190,9 +190,9 @@ namespace Castle.MicroKernel.Registration
 			{
 				configurer.Apply(registration);
 			}
-			if (String.IsNullOrEmpty(registration.Name) && !String.IsNullOrEmpty(defaults.Key))
+			if (String.IsNullOrEmpty(registration.Name) && !String.IsNullOrEmpty(defaults.Name))
 			{
-				registration.Named(defaults.Key);
+				registration.Named(defaults.Name);
 			}
 			else
 			{
