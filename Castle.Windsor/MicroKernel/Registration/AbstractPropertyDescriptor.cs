@@ -18,8 +18,8 @@ namespace Castle.MicroKernel.Registration
 
 	using Castle.Core;
 
-	public abstract class AbstractPropertyDescriptor<S> : ComponentDescriptor<S>
-		where S : class
+	public abstract class AbstractPropertyDescriptor<TService> : ComponentDescriptor<TService>
+		where TService : class
 	{
 		private readonly IDictionary dictionary;
 		private readonly Property[] properties;
@@ -36,7 +36,7 @@ namespace Castle.MicroKernel.Registration
 
 		protected abstract void ApplyProperty(IKernel kernel, ComponentModel model, object key, object value, Property property);
 
-		protected internal override void ApplyToModel(IKernel kernel, ComponentModel model)
+		public override void BuildComponentModel(IKernel kernel, ComponentModel model)
 		{
 			if (dictionary != null)
 			{

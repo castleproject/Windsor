@@ -614,6 +614,7 @@
     <Compile Include="MicroKernel\IComponentModelBuilder.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="MicroKernel\ModelBuilder\IComponentModelDescriptor.cs" />
     <Compile Include="MicroKernel\ModelBuilder\IContributeComponentModelConstruction.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -628,6 +629,7 @@
     <Compile Include="MicroKernel\ModelBuilder\Inspectors\ConstructorDependenciesModelInspector.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="MicroKernel\ModelBuilder\Inspectors\DefaultsInspector.cs" />
     <Compile Include="MicroKernel\ModelBuilder\Inspectors\ExtendedPropertiesConstants.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -635,6 +637,7 @@
     <Compile Include="MicroKernel\ModelBuilder\Inspectors\InterceptorInspector.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="MicroKernel\ModelBuilder\Inspectors\InterfaceProxyInspector.cs" />
     <Compile Include="MicroKernel\ModelBuilder\Inspectors\LifecycleModelInspector.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -645,6 +648,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="MicroKernel\ModelBuilder\Inspectors\MixinInspector.cs" />
+    <Compile Include="MicroKernel\ModelBuilder\Inspectors\ModelInspector.cs" />
     <Compile Include="MicroKernel\ModelBuilder\Inspectors\PropertiesDependenciesModelInspector.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -663,6 +667,7 @@
     <Compile Include="Core\PropertySet.cs" />
     <Compile Include="Core\PropertySetCollection.cs" />
     <Compile Include="MicroKernel\ComponentReference.cs" />
+    <Compile Include="MicroKernel\ModelBuilder\Inspectors\ServicesInspector.cs" />
     <Compile Include="MicroKernel\Proxy\IModelInterceptorsSelector.cs" />
     <Compile Include="MicroKernel\InstanceReference.cs" />
     <Compile Include="MicroKernel\IProxyFactory.cs">

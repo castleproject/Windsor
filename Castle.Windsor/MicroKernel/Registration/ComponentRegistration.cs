@@ -29,7 +29,8 @@ namespace Castle.MicroKernel.Registration
 	using Castle.MicroKernel.Context;
 	using Castle.MicroKernel.Handlers;
 	using Castle.MicroKernel.LifecycleConcerns;
-	using Castle.MicroKernel.Proxy;
+	using Castle.MicroKernel.ModelBuilder;
+	using Castle.MicroKernel.ModelBuilder.Inspectors;
 	using Castle.MicroKernel.Registration.Interceptor;
 	using Castle.MicroKernel.Registration.Lifestyle;
 	using Castle.MicroKernel.Registration.Proxy;
@@ -43,7 +44,7 @@ namespace Castle.MicroKernel.Registration
 	public class ComponentRegistration<TService> : IRegistration
 		where TService : class
 	{
-		private readonly List<ComponentDescriptor<TService>> descriptors = new List<ComponentDescriptor<TService>>();
+		private readonly List<IComponentModelDescriptor> descriptors = new List<IComponentModelDescriptor>();
 		private readonly List<Type> potentialServices = new List<Type>();
 
 		private ComponentModel componentModel;
@@ -803,46 +804,6 @@ namespace Castle.MicroKernel.Registration
 			return UsingFactoryMethod((k, m, c) => factoryMethod(k, c));
 		}
 
-		internal void AddParameter(IKernel kernel, ComponentModel model, String key, String value)
-		{
-			var parameters = EnsureParametersConfiguration(kernel);
-			var parameter = new MutableConfiguration(key, value);
-			parameters.Children.Add(parameter);
-			model.Parameters.Add(key, value);
-		}
-
-		internal void AddParameter(IKernel kernel, ComponentModel model, String key, IConfiguration value)
-		{
-			var parameters = EnsureParametersConfiguration(kernel);
-			var parameter = new MutableConfiguration(key);
-			parameter.Children.Add(value);
-			parameters.Children.Add(parameter);
-			model.Parameters.Add(key, value);
-		}
-
-		private IConfiguration EnsureComponentConfiguration(IKernel kernel)
-		{
-			var configuration = kernel.ConfigurationStore.GetComponentConfiguration(Name);
-			if (configuration == null)
-			{
-				configuration = new MutableConfiguration("component");
-				kernel.ConfigurationStore.AddComponentConfiguration(Name, configuration);
-			}
-			return configuration;
-		}
-
-		private IConfiguration EnsureParametersConfiguration(IKernel kernel)
-		{
-			var configuration = EnsureComponentConfiguration(kernel);
-			var parameters = configuration.Children["parameters"];
-			if (parameters == null)
-			{
-				parameters = new MutableConfiguration("parameters");
-				configuration.Children.Add(parameters);
-			}
-			return parameters;
-		}
-
 		private IKernelInternal GetInternalKernel(IKernel kernel)
 		{
 			var internalKernel = kernel as IKernelInternal;
@@ -854,29 +815,9 @@ namespace Castle.MicroKernel.Registration
 			return internalKernel;
 		}
 
-		private void InitializeDefaults()
+		private bool SkipRegistration(IKernelInternal internalKernel)
 		{
-			if (implementation == null)
-			{
-				implementation = DefaultService();
-			}
-
-			if (string.IsNullOrEmpty(Name))
-			{
-				if (implementation == typeof(LateBoundComponent))
-				{
-					name = new ComponentName("Late bound " + DefaultService().FullName, false);
-				}
-				else
-				{
-					name = new ComponentName(implementation.FullName, false);
-				}
-			}
-		}
-
-		private Type DefaultService()
-		{
-			return potentialServices.First();
+			return ifComponentRegisteredIgnore && internalKernel.HasComponent(componentModel.Name);
 		}
 
 		/// <summary>
@@ -890,43 +831,35 @@ namespace Castle.MicroKernel.Registration
 				return;
 			}
 			registered = true;
-
 			var services = FilterServices(kernel);
 			if (services.Length == 0)
 			{
 				return;
 			}
-			InitializeDefaults();
-
-			var configuration = EnsureComponentConfiguration(kernel);
-
-			foreach (var descriptor in descriptors)
-			{
-				descriptor.ApplyToConfiguration(kernel, configuration);
-			}
 
 			if (componentModel == null)
 			{
-				componentModel = kernel.ComponentModelFactory.BuildModel(name, services, implementation, null);
-			}
-
-			foreach (var descriptor in descriptors)
-			{
-				descriptor.ApplyToModel(kernel, componentModel);
-			}
-
-			if (componentModel.Implementation.IsInterface && componentModel.HasInterceptors)
-			{
-				var options = ProxyUtil.ObtainProxyOptions(componentModel, true);
-				options.OmitTarget = true;
+				componentModel = kernel.ComponentModelFactory.BuildModel(GetContributors(services));
 			}
 
 			var internalKernel = GetInternalKernel(kernel);
-			if (ifComponentRegisteredIgnore && internalKernel.HasComponent(componentModel.Name))
+			if (SkipRegistration(internalKernel))
 			{
 				return;
 			}
 			internalKernel.AddCustomComponent(componentModel);
+		}
+
+		private IComponentModelDescriptor[] GetContributors(Type[] services)
+		{
+			var list = new List<IComponentModelDescriptor>
+			{
+				new ServicesInspector(services),
+				new DefaultsInspector(name, implementation),
+			};
+			list.AddRange(descriptors);
+			list.Add(new InterfaceProxyInspector());
+			return list.ToArray();
 		}
 
 		private Type[] FilterServices(IKernel kernel)
