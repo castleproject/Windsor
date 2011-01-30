@@ -12,37 +12,28 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.MicroKernel.Registration
+namespace Castle.MicroKernel.ModelBuilder.Inspectors
 {
 	using System;
 
 	using Castle.Core;
 
-	public class ParametersDescriptor<S> : ComponentDescriptor<S>
-		where S : class
+	public class ServicesInspector : IComponentModelDescriptor
 	{
-		private readonly Parameter[] parameters;
+		private readonly Type[] services;
 
-		public ParametersDescriptor(params Parameter[] parameters)
+		public ServicesInspector(Type[] services)
 		{
-			this.parameters = parameters;
+			this.services = services;
 		}
 
-		public override void BuildComponentModel(IKernel kernel, ComponentModel model)
+		public void BuildComponentModel(IKernel kernel, ComponentModel model)
 		{
-			Array.ForEach(parameters, p => ApplyParameter(model, p));
+			Array.ForEach(services, model.AddService);
 		}
 
-		private void ApplyParameter(ComponentModel model, Parameter parameter)
+		public void ConfigureComponentModel(IKernel kernel, ComponentModel model)
 		{
-			if (parameter.Value != null)
-			{
-				AddParameter(model, parameter.Key, parameter.Value);
-			}
-			else if (parameter.ConfigNode != null)
-			{
-				AddParameter(model, parameter.Key, parameter.ConfigNode);
-			}
 		}
 	}
 }

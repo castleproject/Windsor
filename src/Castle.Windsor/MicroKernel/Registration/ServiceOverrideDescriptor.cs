@@ -40,12 +40,11 @@ namespace Castle.MicroKernel.Registration
 		{
 		}
 
-		protected override void ApplyProperty(IKernel kernel, ComponentModel model, object key, object value,
-		                                      Property property)
+		protected override void ApplyProperty(IKernel kernel, ComponentModel model, object key, object value, Property property)
 		{
 			if (value is string)
 			{
-				ApplySimpleReference(kernel, model, key, (String)value);
+				ApplySimpleReference(model, key, (String)value);
 			}
 			else if (value is IEnumerable<String>)
 			{
@@ -72,21 +71,20 @@ namespace Castle.MicroKernel.Registration
 				list.Children.Add(node);
 			}
 
-			Registration.AddParameter(kernel, model, GetKeyString(key), list);
+			AddParameter(model, GetKeyString(key), list);
 		}
 
-		private void ApplySimpleReference(IKernel kernel, ComponentModel model,
-		                                  object key, String componentKey)
+		private void ApplySimpleReference(ComponentModel model, object key, String componentKey)
 		{
 			var reference = FormattedReferenceExpression(componentKey);
-			Registration.AddParameter(kernel, model, GetKeyString(key), reference);
+			AddParameter(model, GetKeyString(key), reference);
 		}
 
 		private string GetKeyString(object key)
 		{
-			if ((key is Type))
+			if (key is Type)
 			{
-				return (key as Type).AssemblyQualifiedName;
+				return ((Type)key).AssemblyQualifiedName;
 			}
 
 			return key.ToString();

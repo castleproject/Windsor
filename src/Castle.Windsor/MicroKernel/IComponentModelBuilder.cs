@@ -49,12 +49,12 @@ namespace Castle.MicroKernel
 		/// <returns></returns>
 		ComponentModel BuildModel(ComponentName name, Type[] services, Type classType, IDictionary extendedProperties);
 
+		ComponentModel BuildModel(IComponentModelDescriptor[] customContributors);
+
 		/// <summary>
 		///   Removes the specified contributor
 		/// </summary>
 		/// <param name = "contributor"></param>
 		void RemoveContributor(IContributeComponentModelConstruction contributor);
-
-		ComponentModel BuildModel(IContributeComponentModelConstruction[] customContributors);
 	}
 }

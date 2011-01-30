@@ -80,11 +80,12 @@ namespace Castle.MicroKernel.ModelBuilder
 			return model;
 		}
 
-		public ComponentModel BuildModel(IContributeComponentModelConstruction[] customContributors)
+		public ComponentModel BuildModel(IComponentModelDescriptor[] customContributors)
 		{
 			var model = new ComponentModel();
-			Array.ForEach(customContributors, c => c.ProcessModel(kernel, model));
+			Array.ForEach(customContributors, c => c.BuildComponentModel(kernel, model));
 			contributors.ForEach(c => c.ProcessModel(kernel, model));
+			Array.ForEach(customContributors, c => c.ConfigureComponentModel(kernel, model));
 			return model;
 		}
 

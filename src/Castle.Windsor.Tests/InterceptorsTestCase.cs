@@ -250,7 +250,7 @@ namespace Castle.Windsor.Tests
 
 			startEvent.Set();
 
-			Thread.CurrentThread.Join(1*2000);
+			Thread.CurrentThread.Join(2000);
 
 			stopEvent.Set();
 		}
@@ -268,15 +268,15 @@ namespace Castle.Windsor.Tests
 			Assert.AreEqual(0, calcService.Sum(1, 2));
 		}
 
-		public void ExecuteMethodUntilSignal()
+		private void ExecuteMethodUntilSignal()
 		{
 			startEvent.WaitOne(int.MaxValue);
 
 			while (!stopEvent.WaitOne(1))
 			{
-				Assert.AreEqual(7, service.Sum(2, 2));
-				Assert.AreEqual(8, service.Sum(3, 2));
-				Assert.AreEqual(10, service.Sum(3, 4));
+				Assert.AreEqual(5, service.Sum(2, 2));
+				Assert.AreEqual(6, service.Sum(3, 2));
+				Assert.AreEqual(8, service.Sum(3, 4));
 			}
 		}
 
