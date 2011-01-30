@@ -17,6 +17,7 @@ namespace Castle.Core
 	using System;
 	using System.Collections;
 	using System.Collections.Generic;
+	using System.Diagnostics;
 	using System.Linq;
 	using System.Threading;
 
@@ -33,37 +34,49 @@ namespace Castle.Core
 	{
 		public const string GenericImplementationMatchingStrategy = "generic.matching";
 		public const string SkipRegistration = "skip.registration";
-		private readonly ComponentName componentName;
 
+		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 		private readonly ConstructorCandidateCollection constructors = new ConstructorCandidateCollection();
 
+		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 		private readonly LifecycleConcernsCollection lifecycle = new LifecycleConcernsCollection();
+
+		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 		private readonly List<Type> services = new List<Type>(4);
 
+		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
+		private ComponentName componentName;
+
 		[NonSerialized]
+		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 		private IDictionary customDependencies;
 
 		/// <summary>
 		///   Dependencies the kernel must resolve
 		/// </summary>
+		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 		private DependencyModelCollection dependencies;
 
 		[NonSerialized]
+		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 		private IDictionary extendedProperties;
 
 		/// <summary>
 		///   Interceptors associated
 		/// </summary>
+		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 		private InterceptorReferenceCollection interceptors;
 
 		/// <summary>
 		///   External parameters
 		/// </summary>
+		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 		private ParameterModelCollection parameters;
 
 		/// <summary>
 		///   All potential properties that can be setted by the kernel
 		/// </summary>
+		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 		private PropertySetCollection properties;
 
 		/// <summary>
@@ -87,6 +100,7 @@ namespace Castle.Core
 		public ComponentName ComponentName
 		{
 			get { return componentName; }
+			internal set { componentName = value; }
 		}
 
 		/// <summary>
@@ -99,6 +113,7 @@ namespace Castle.Core
 		///   Gets the constructors candidates.
 		/// </summary>
 		/// <value>The constructors.</value>
+		[DebuggerDisplay("Count = {constructors.Count}")]
 		public ConstructorCandidateCollection Constructors
 		{
 			get { return constructors; }
@@ -114,6 +129,7 @@ namespace Castle.Core
 		///   Gets the custom dependencies.
 		/// </summary>
 		/// <value>The custom dependencies.</value>
+		[DebuggerDisplay("Count = {customDependencies.Count}")]
 		public IDictionary CustomDependencies
 		{
 			get
@@ -141,6 +157,7 @@ namespace Castle.Core
 		///   registered here, so the kernel (as a matter 
 		///   of fact the handler) can check them
 		/// </summary>
+		[DebuggerDisplay("Count = {dependencies.dependencies.Count}")]
 		public DependencyModelCollection Dependencies
 		{
 			get
@@ -160,6 +177,7 @@ namespace Castle.Core
 		///   Gets or sets the extended properties.
 		/// </summary>
 		/// <value>The extended properties.</value>
+		[DebuggerDisplay("Count = {extendedProperties.Count}")]
 		public IDictionary ExtendedProperties
 		{
 			get
@@ -180,6 +198,7 @@ namespace Castle.Core
 			get { return services.First().IsClass; }
 		}
 
+		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 		public bool HasCustomDependencies
 		{
 			get
@@ -189,6 +208,7 @@ namespace Castle.Core
 			}
 		}
 
+		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 		public bool HasInterceptors
 		{
 			get
@@ -198,6 +218,7 @@ namespace Castle.Core
 			}
 		}
 
+		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 		public bool HasParameters
 		{
 			get
@@ -224,6 +245,7 @@ namespace Castle.Core
 		///   Gets the interceptors.
 		/// </summary>
 		/// <value>The interceptors.</value>
+		[DebuggerDisplay("Count = {interceptors.list.Count}")]
 		public InterceptorReferenceCollection Interceptors
 		{
 			get
@@ -243,6 +265,9 @@ namespace Castle.Core
 		///   Gets the lifecycle steps.
 		/// </summary>
 		/// <value>The lifecycle steps.</value>
+		[DebuggerDisplay(
+			"Count = {lifecycle.commission != null ? lifecycle.commission.Count : 0} commission, {lifecycle.decommission != null ? lifecycle.decommission.Count : 0} decommission concerns"
+			)]
 		public LifecycleConcernsCollection Lifecycle
 		{
 			get { return lifecycle; }
@@ -259,7 +284,7 @@ namespace Castle.Core
 		/// </summary>
 		public string Name
 		{
-			get { return componentName.Name; }
+			get { return componentName != null ? componentName.Name : null; }
 			set { componentName.SetName(value); }
 		}
 
@@ -286,6 +311,7 @@ namespace Castle.Core
 		///   Gets the properties set.
 		/// </summary>
 		/// <value>The properties.</value>
+		[DebuggerDisplay("Count = {properties.Count}")]
 		public PropertySetCollection Properties
 		{
 			get
@@ -309,6 +335,7 @@ namespace Castle.Core
 		/// </value>
 		public bool RequiresGenericArguments { get; set; }
 
+		[DebuggerDisplay("Count = {services.Count}")]
 		public IEnumerable<Type> Services
 		{
 			get { return services; }
