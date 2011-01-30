@@ -118,7 +118,7 @@ namespace Castle.Windsor.Proxy
 			}
 
 			var options = ProxyUtil.ObtainProxyOptions(model, false);
-			if (options != null && options.RequiresProxy())
+			if (options != null && options.RequiresProxy)
 			{
 				return true;
 			}
