@@ -33,8 +33,6 @@ namespace Castle.Core
 		private readonly IDictionary<string, ParameterModel> dictionary =
 			new Dictionary<string, ParameterModel>(StringComparer.OrdinalIgnoreCase);
 
-		private readonly object syncRoot = new object();
-
 		/// <summary>
 		///   Gets the count.
 		/// </summary>
@@ -42,40 +40,6 @@ namespace Castle.Core
 		public new int Count
 		{
 			get { return dictionary.Count; }
-		}
-
-		/// <summary>
-		///   Gets a value indicating whether this instance is fixed size.
-		/// </summary>
-		/// <value>
-		///   <c>true</c> if this instance is fixed size; otherwise, <c>false</c>.
-		/// </value>
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
-		public bool IsFixedSize
-		{
-			get { return false; }
-		}
-
-		/// <summary>
-		///   Gets a value indicating whether this instance is read only.
-		/// </summary>
-		/// <value>
-		///   <c>true</c> if this instance is read only; otherwise, <c>false</c>.
-		/// </value>
-		public bool IsReadOnly
-		{
-			get { return dictionary.IsReadOnly; }
-		}
-
-		/// <summary>
-		///   Gets a value indicating whether this instance is synchronized.
-		/// </summary>
-		/// <value>
-		///   <c>true</c> if this instance is synchronized; otherwise, <c>false</c>.
-		/// </value>
-		public bool IsSynchronized
-		{
-			get { return false; }
 		}
 
 		/// <summary>
@@ -93,48 +57,13 @@ namespace Castle.Core
 		}
 
 		/// <summary>
-		///   Gets the keys.
-		/// </summary>
-		/// <value>The keys.</value>
-		/// <remarks>
-		///   Not implemented
-		/// </remarks>
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
-		public ICollection Keys
-		{
-			get { throw new NotImplementedException(); }
-		}
-
-		/// <summary>
-		///   Gets the sync root.
-		/// </summary>
-		/// <value>The sync root.</value>
-		public object SyncRoot
-		{
-			get { return syncRoot; }
-		}
-
-		/// <summary>
-		///   Gets the values.
-		/// </summary>
-		/// <value>The values.</value>
-		/// <remarks>
-		///   Not implemented
-		/// </remarks>
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
-		public ICollection Values
-		{
-			get { throw new NotImplementedException(); }
-		}
-
-		/// <summary>
 		///   Adds the specified name.
 		/// </summary>
 		/// <param name = "name">The name.</param>
 		/// <param name = "value">The value.</param>
 		public void Add(string name, string value)
 		{
-			dictionary.Add(name, new ParameterModel(name, value));
+			Add(name, new ParameterModel(name, value) );
 		}
 
 		/// <summary>
@@ -144,7 +73,7 @@ namespace Castle.Core
 		/// <param name = "configNode">The config node.</param>
 		public void Add(string name, IConfiguration configNode)
 		{
-			dictionary.Add(name, new ParameterModel(name, configNode));
+			Add(name, new ParameterModel(name, configNode));
 		}
 
 		/// <summary>
@@ -155,11 +84,16 @@ namespace Castle.Core
 		/// </remarks>
 		/// <param name = "key">The key.</param>
 		/// <param name = "value">The value.</param>
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "key")]
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
-		public void Add(object key, object value)
+		private void Add(string key, ParameterModel value)
 		{
-			throw new NotImplementedException();
+			try
+			{
+				dictionary.Add(key, value);
+			}
+			catch (ArgumentException e)
+			{
+				throw new ArgumentException(string.Format("Parameter '{0}' already exists.", key), e);
+			}
 		}
 
 		/// <summary>
