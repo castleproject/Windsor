@@ -31,8 +31,8 @@ namespace Castle.Core
 	[Serializable]
 	public sealed class ComponentModel : GraphNode
 	{
-		public const string SkipRegistration = "skip.registration";
 		public const string GenericImplementationMatchingStrategy = "generic.matching";
+		public const string SkipRegistration = "skip.registration";
 		private readonly ComponentName componentName;
 
 		private readonly ConstructorCandidateCollection constructors = new ConstructorCandidateCollection();
@@ -78,6 +78,10 @@ namespace Castle.Core
 			{
 				AddService(type);
 			}
+		}
+
+		public ComponentModel()
+		{
 		}
 
 		public ComponentName ComponentName

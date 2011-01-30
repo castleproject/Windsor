@@ -75,11 +75,16 @@ namespace Castle.MicroKernel.ModelBuilder
 		public ComponentModel BuildModel(ComponentName name, Type[] services, Type classType, IDictionary extendedProperties)
 		{
 			var model = new ComponentModel(name, services, classType, extendedProperties);
-			foreach (var contributor in contributors)
-			{
-				contributor.ProcessModel(kernel, model);
-			}
+			contributors.ForEach(c => c.ProcessModel(kernel, model));
 
+			return model;
+		}
+
+		public ComponentModel BuildModel(IContributeComponentModelConstruction[] customContributors)
+		{
+			var model = new ComponentModel();
+			Array.ForEach(customContributors, c => c.ProcessModel(kernel, model));
+			contributors.ForEach(c => c.ProcessModel(kernel, model));
 			return model;
 		}
 
