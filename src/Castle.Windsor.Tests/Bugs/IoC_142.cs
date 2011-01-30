@@ -64,8 +64,7 @@ namespace Castle.Windsor.Tests.Bugs
 			configuration.CreateChild("foo", "5");
 			container.Register(Component.For<ClassTakingNullableViaCtor>().Configuration(configuration));
 
-			var s = container.Resolve<ClassTakingNullableViaCtor>();
-			Assert.IsNotNull(s);
+			container.Resolve<ClassTakingNullableViaCtor>();
 		}
 
 		[Test]
