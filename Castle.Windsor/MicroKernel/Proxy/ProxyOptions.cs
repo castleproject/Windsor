@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 namespace Castle.MicroKernel.Proxy
 {
 	using System;
@@ -174,7 +175,7 @@ namespace Castle.MicroKernel.Proxy
 		}
 
 		/// <summary>
-		/// Equals the specified obj.
+		///   Equals the specified obj.
 		/// </summary>
 		/// <param name = "obj">The obj.</param>
 		/// <returns>true if equal.</returns>
@@ -243,9 +244,9 @@ namespace Castle.MicroKernel.Proxy
 			return true;
 		}
 
-		public bool RequiresProxy()
+		public bool RequiresProxy
 		{
-			return interfaceList != null || mixInList != null;
+			get { return interfaceList != null || mixInList != null; }
 		}
 
 		private int GetCollectionHashCode(IEnumerable items)
