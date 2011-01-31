@@ -695,10 +695,10 @@
     <Compile Include="MicroKernel\Registration\DynamicParametersResolveDelegate.cs" />
     <Compile Include="MicroKernel\Registration\DynamicParametersWithContextResolveDelegate.cs" />
     <Compile Include="MicroKernel\Registration\ExtendedPropertiesDescriptor.cs" />
-    <Compile Include="MicroKernel\Registration\OnDestroyComponentDescriptor.cs" />
+    <Compile Include="MicroKernel\ModelBuilder\Descriptors\OnDestroyComponentDescriptor.cs" />
     <Compile Include="MicroKernel\ModelBuilder\Descriptors\ProxyHookDescriptor.cs" />
     <Compile Include="MicroKernel\Registration\IWindsorInstaller.cs" />
-    <Compile Include="MicroKernel\Registration\OnCreateComponentDescriptor.cs" />
+    <Compile Include="MicroKernel\ModelBuilder\Descriptors\OnCreateComponentDescriptor.cs" />
     <Compile Include="MicroKernel\Registration\DynamicParametersDelegate.cs" />
     <Compile Include="MicroKernel\ModelBuilder\Descriptors\InterceptorSelectorDescriptor.cs" />
     <Compile Include="MicroKernel\Registration\Interceptor\InterceptorDescriptor.cs" />
