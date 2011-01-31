@@ -569,7 +569,15 @@ namespace Castle.MicroKernel.Registration
 		{
 			if (actions != null && actions.Length != 0)
 			{
+#if SILVERLIGHT
+				var action = actions[0];
+				for (int i = 1; i < actions.Length; i++)
+				{
+					action = (LifecycleActionDelegate<TService>)Delegate.Combine(action, actions[i]);
+				}
+#else
 				var action = (LifecycleActionDelegate<TService>)Delegate.Combine(actions);
+#endif
 				AddDescriptor(new OnCreateComponentDescriptor<TService>(action));
 			}
 			return this;
@@ -584,7 +592,15 @@ namespace Castle.MicroKernel.Registration
 		{
 			if (actions != null && actions.Length != 0)
 			{
+#if SILVERLIGHT
+				var action = actions[0];
+				for (int i = 1; i < actions.Length; i++)
+				{
+					action = (LifecycleActionDelegate<TService>)Delegate.Combine(action, actions[i]);
+				}
+#else
 				var action = (LifecycleActionDelegate<TService>)Delegate.Combine(actions);
+#endif
 				AddDescriptor(new OnDestroyComponentDescriptor<TService>(action));
 			}
 			return this;
