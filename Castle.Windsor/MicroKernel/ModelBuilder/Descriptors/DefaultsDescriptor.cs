@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.MicroKernel.ModelBuilder.Inspectors
+namespace Castle.MicroKernel.ModelBuilder.Descriptors
 {
 	using System;
 	using System.Linq;
@@ -21,12 +21,12 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 	using Castle.Core.Configuration;
 	using Castle.Core.Internal;
 
-	public class DefaultsInspector : IComponentModelDescriptor
+	public class DefaultsDescriptor : IComponentModelDescriptor
 	{
 		private readonly Type implementation;
 		private readonly ComponentName name;
 
-		public DefaultsInspector(ComponentName name, Type implementation)
+		public DefaultsDescriptor(ComponentName name, Type implementation)
 		{
 			this.name = name;
 			this.implementation = implementation;

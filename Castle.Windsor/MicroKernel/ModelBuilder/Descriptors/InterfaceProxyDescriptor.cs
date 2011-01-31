@@ -12,12 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.MicroKernel.ModelBuilder.Inspectors
+namespace Castle.MicroKernel.ModelBuilder.Descriptors
 {
 	using Castle.Core;
 	using Castle.MicroKernel.Proxy;
 
-	public class InterfaceProxyInspector : IComponentModelDescriptor
+	public class InterfaceProxyDescriptor : IComponentModelDescriptor
 	{
 		public void BuildComponentModel(IKernel kernel, ComponentModel model)
 		{
