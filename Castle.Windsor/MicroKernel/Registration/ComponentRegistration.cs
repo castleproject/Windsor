@@ -47,13 +47,12 @@ namespace Castle.MicroKernel.Registration
 		private readonly List<IComponentModelDescriptor> descriptors = new List<IComponentModelDescriptor>();
 		private readonly List<Type> potentialServices = new List<Type>();
 
-		private ComponentModel componentModel;
+		private bool ifComponentRegisteredIgnore;
 		private Type implementation;
 		private ComponentName name;
 		private bool overwrite;
-		private bool registered;
 		private bool registerNewServicesOnly;
-		private bool ifComponentRegisteredIgnore;
+		private bool registered;
 
 		public ComponentRegistration() : this(typeof(TService))
 		{
@@ -65,24 +64,6 @@ namespace Castle.MicroKernel.Registration
 		public ComponentRegistration(params Type[] services)
 		{
 			Forward(services);
-		}
-
-		/// <summary>
-		///   Initializes a new instance of the <see cref = "ComponentRegistration{S}" /> class
-		///   with an existing <see cref = "ComponentModel" />.
-		/// </summary>
-		protected ComponentRegistration(ComponentModel componentModel)
-			: this()
-		{
-			if (componentModel == null)
-			{
-				throw new ArgumentNullException("componentModel");
-			}
-
-			this.componentModel = componentModel;
-			name = componentModel.ComponentName;
-			potentialServices.AddRange(componentModel.Services);
-			implementation = componentModel.Implementation;
 		}
 
 		/// <summary>
@@ -136,11 +117,6 @@ namespace Castle.MicroKernel.Registration
 			get { return new ProxyGroup<TService>(this); }
 		}
 
-		internal bool IsOverWrite
-		{
-			get { return overwrite; }
-		}
-
 		protected internal IList<Type> Services
 		{
 			get { return potentialServices; }
@@ -151,11 +127,17 @@ namespace Castle.MicroKernel.Registration
 			get { return potentialServices.Count; }
 		}
 
+		internal bool IsOverWrite
+		{
+			get { return overwrite; }
+		}
+
 		/// <summary>
 		///   Marks the components with one or more actors.
 		/// </summary>
 		/// <param name = "actors">The component actors.</param>
 		/// <returns></returns>
+		[EditorBrowsable(EditorBrowsableState.Advanced)]
 		[Obsolete("If you're using WCF Facility use AsWcfClient/AsWcfService extension methods instead.")]
 		public ComponentRegistration<TService> ActAs(params object[] actors)
 		{
@@ -234,18 +216,6 @@ namespace Castle.MicroKernel.Registration
 		public ComponentRegistration<TService> Configuration(IConfiguration configuration)
 		{
 			return AddDescriptor(new ConfigurationDescriptor(configuration));
-		}
-
-		public ComponentRegistration<TService> OnlyNewServices()
-		{
-			if (componentModel != null)
-			{
-				throw new InvalidOperationException(
-					string.Format("This operation is not allowed for registration built for pre-existing {0}.", typeof(ComponentModel)));
-			}
-
-			registerNewServicesOnly = true;
-			return this;
 		}
 
 		/// <summary>
@@ -621,6 +591,16 @@ namespace Castle.MicroKernel.Registration
 		}
 
 		/// <summary>
+		///   Services that are already present in the container will be skipped. If no new service is left the registration will not happen at all.
+		/// </summary>
+		/// <returns></returns>
+		public ComponentRegistration<TService> OnlyNewServices()
+		{
+			registerNewServicesOnly = true;
+			return this;
+		}
+
+		/// <summary>
 		///   With the overwrite.
 		/// </summary>
 		/// <returns></returns>
@@ -772,6 +752,37 @@ namespace Castle.MicroKernel.Registration
 			return UsingFactoryMethod((k, m, c) => factoryMethod(k, c));
 		}
 
+		internal void RegisterOptionally()
+		{
+			ifComponentRegisteredIgnore = true;
+		}
+
+		private Type[] FilterServices(IKernel kernel)
+		{
+			var services = new List<Type>(potentialServices);
+			if (registerNewServicesOnly)
+			{
+#if SILVERLIGHT
+				services.ToArray().Where(kernel.HasComponent).ForEach(t => services.Remove(t));
+#else
+				services.RemoveAll(kernel.HasComponent);
+#endif
+			}
+			return services.ToArray();
+		}
+
+		private IComponentModelDescriptor[] GetContributors(Type[] services)
+		{
+			var list = new List<IComponentModelDescriptor>
+			{
+				new ServicesDescriptor(services),
+				new DefaultsDescriptor(name, implementation),
+			};
+			list.AddRange(descriptors);
+			list.Add(new InterfaceProxyDescriptor());
+			return list.ToArray();
+		}
+
 		private IKernelInternal GetInternalKernel(IKernel kernel)
 		{
 			var internalKernel = kernel as IKernelInternal;
@@ -783,7 +794,7 @@ namespace Castle.MicroKernel.Registration
 			return internalKernel;
 		}
 
-		private bool SkipRegistration(IKernelInternal internalKernel)
+		private bool SkipRegistration(IKernelInternal internalKernel, ComponentModel componentModel)
 		{
 			return ifComponentRegisteredIgnore && internalKernel.HasComponent(componentModel.Name);
 		}
@@ -805,48 +816,13 @@ namespace Castle.MicroKernel.Registration
 				return;
 			}
 
-			if (componentModel == null)
-			{
-				componentModel = kernel.ComponentModelFactory.BuildModel(GetContributors(services));
-			}
-
 			var internalKernel = GetInternalKernel(kernel);
-			if (SkipRegistration(internalKernel))
+			var componentModel = kernel.ComponentModelFactory.BuildModel(GetContributors(services));
+			if (SkipRegistration(internalKernel, componentModel))
 			{
 				return;
 			}
 			internalKernel.AddCustomComponent(componentModel);
-		}
-
-		private IComponentModelDescriptor[] GetContributors(Type[] services)
-		{
-			var list = new List<IComponentModelDescriptor>
-			{
-				new ServicesDescriptor(services),
-				new DefaultsDescriptor(name, implementation),
-			};
-			list.AddRange(descriptors);
-			list.Add(new InterfaceProxyDescriptor());
-			return list.ToArray();
-		}
-
-		private Type[] FilterServices(IKernel kernel)
-		{
-			var services = new List<Type>(potentialServices);
-			if (registerNewServicesOnly)
-			{
-#if SILVERLIGHT
-				services.ToArray().Where(kernel.HasComponent).ForEach(t => services.Remove(t));
-#else
-				services.RemoveAll(kernel.HasComponent);
-#endif
-			}
-			return services.ToArray();
-		}
-
-		internal void RegisterOptionally()
-		{
-			ifComponentRegisteredIgnore = true;
 		}
 	}
 }

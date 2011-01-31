@@ -98,16 +98,6 @@ namespace Castle.MicroKernel.Registration
 		}
 
 		/// <summary>
-		///   Create a component registration for an existing <see cref = "ComponentModel" />
-		/// </summary>
-		/// <param name = "model">The component model.</param>
-		/// <returns>The component registration.</returns>
-		public static ComponentRegistration For(ComponentModel model)
-		{
-			return new ComponentRegistration(model);
-		}
-
-		/// <summary>
 		///   Creates a component registration for the service types.
 		/// </summary>
 		/// <typeparam name = "S">The primary service type.</typeparam>
