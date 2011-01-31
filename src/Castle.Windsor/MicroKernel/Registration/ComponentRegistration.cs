@@ -248,44 +248,6 @@ namespace Castle.MicroKernel.Registration
 			return this;
 		}
 
-#if !SILVERLIGHT
-		/// <summary>
-		///   Obsolete, use <see cref = "DependsOn(Property[])" /> instead.
-		/// </summary>
-		/// <param name = "dependencies">The dependencies.</param>
-		/// <returns></returns>
-		[Obsolete("Obsolete, use DependsOn(Property[]) instead.", true)]
-		[EditorBrowsable(EditorBrowsableState.Advanced)]
-		public ComponentRegistration<TService> CustomDependencies(params Property[] dependencies)
-		{
-			return DependsOn(dependencies);
-		}
-
-		/// <summary>
-		///   Obsolete, use <see cref = "DependsOn(IDictionary)" /> instead.
-		/// </summary>
-		/// <param name = "dependencies">The dependencies.</param>
-		/// <returns></returns>
-		[Obsolete("Obsolete, use DependsOn(IDictionary) instead.", true)]
-		[EditorBrowsable(EditorBrowsableState.Advanced)]
-		public ComponentRegistration<TService> CustomDependencies(IDictionary dependencies)
-		{
-			return DependsOn(dependencies);
-		}
-
-		/// <summary>
-		///   Obsolete, use <see cref = "DependsOn(object)" /> instead.
-		/// </summary>
-		/// <param name = "dependencies">The dependencies.</param>
-		/// <returns></returns>
-		[Obsolete("Obsolete, use DependsOn(object) instead.", true)]
-		[EditorBrowsable(EditorBrowsableState.Advanced)]
-		public ComponentRegistration<TService> CustomDependencies(object dependencies)
-		{
-			return DependsOn(dependencies);
-		}
-#endif
-
 		/// <summary>
 		///   Specify custom dependencies using <see cref = "Property.ForKey(string)" /> or <see
 		///    cref = "Property.ForKey(System.Type)" />.
