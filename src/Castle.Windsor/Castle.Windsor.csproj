@@ -694,7 +694,7 @@
     <Compile Include="MicroKernel\ModelBuilder\Descriptors\ReferenceDependencyDescriptor.cs" />
     <Compile Include="MicroKernel\Registration\ExtendedPropertiesDescriptor.cs" />
     <Compile Include="MicroKernel\Registration\OnDestroyComponentDescriptor.cs" />
-    <Compile Include="MicroKernel\Registration\Proxy\ProxyHook.cs" />
+    <Compile Include="MicroKernel\ModelBuilder\Descriptors\ProxyHookDescriptor.cs" />
     <Compile Include="MicroKernel\Registration\IWindsorInstaller.cs" />
     <Compile Include="MicroKernel\Registration\OnCreateComponentDescriptor.cs" />
     <Compile Include="MicroKernel\Registration\DynamicParametersDescriptor.cs" />
@@ -709,7 +709,7 @@
     <Compile Include="MicroKernel\Registration\Property.cs" />
     <Compile Include="MicroKernel\Registration\Proxy\ItemRegistration.cs" />
     <Compile Include="MicroKernel\Registration\Proxy\MixinRegistration.cs" />
-    <Compile Include="MicroKernel\Registration\Proxy\ProxyMixIns.cs" />
+    <Compile Include="MicroKernel\ModelBuilder\Descriptors\ProxyMixInsDescriptor.cs" />
     <Compile Include="MicroKernel\Registration\Proxy\ProxyGroup.cs" />
     <Compile Include="MicroKernel\Registration\Proxy\ProxyInterfaces.cs" />
     <Compile Include="MicroKernel\Registration\RegistrationGroup.cs" />

@@ -14,6 +14,8 @@
 
 namespace Castle.MicroKernel.Registration
 {
+	using Castle.MicroKernel.ModelBuilder;
+
 	public abstract class RegistrationGroup<S>
 		where S : class
 	{
@@ -34,7 +36,7 @@ namespace Castle.MicroKernel.Registration
 			return registration.AddDescriptor(new AttributeDescriptor<S>(name, value));
 		}
 
-		protected ComponentRegistration<S> AddDescriptor(ComponentDescriptor<S> descriptor)
+		protected ComponentRegistration<S> AddDescriptor(IComponentModelDescriptor descriptor)
 		{
 			return registration.AddDescriptor(descriptor);
 		}
