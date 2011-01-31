@@ -12,13 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.MicroKernel.Registration
+namespace Castle.MicroKernel.ModelBuilder.Descriptors
 {
 	using Castle.Core;
 	using Castle.Core.Configuration;
-	using Castle.MicroKernel.ModelBuilder.Descriptors;
 
-	public class LifestyleDescriptor<S> : ComponentDescriptor<S>
+	public class LifestyleDescriptor<S> : AbstractOverwriteableDescriptor<S>
 		where S : class
 	{
 		private readonly LifestyleType lifestyle;
@@ -28,7 +27,7 @@ namespace Castle.MicroKernel.Registration
 			this.lifestyle = lifestyle;
 		}
 
-		protected internal override void ApplyToConfiguration(IKernel kernel, IConfiguration configuration)
+		protected override void ApplyToConfiguration(IKernel kernel, IConfiguration configuration)
 		{
 			if (configuration.Attributes["lifestyle"] == null || IsOverWrite)
 			{

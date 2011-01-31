@@ -16,7 +16,7 @@ namespace Castle.Windsor.Tests.Handlers
 {
 	using Castle.Core;
 	using Castle.MicroKernel;
-	using Castle.MicroKernel.ModelBuilder.Descriptors;
+	using Castle.MicroKernel.ModelBuilder;
 	using Castle.MicroKernel.Registration;
 	using Castle.Windsor.Tests;
 	using Castle.Windsor.Tests.ClassComponents;
@@ -46,17 +46,25 @@ namespace Castle.Windsor.Tests.Handlers
 			Assert.AreEqual(HandlerState.WaitingDependency, handler.CurrentState);
 		}
 
-		private class ExplicitRequiredDependencyDescriptor : ComponentDescriptor<AProp>
+		private class ExplicitRequiredDependencyDescriptor : IComponentModelDescriptor
 		{
-			protected override void ApplyToModel(IKernel kernel, ComponentModel model)
+			public void BuildComponentModel(IKernel kernel, ComponentModel model)
 			{
 				model.Dependencies.Add(new DependencyModel(DependencyType.Service, "", typeof(B), false));
 			}
+
+			public void ConfigureComponentModel(IKernel kernel, ComponentModel model)
+			{
+			}
 		}
 
-		private class RequirePropertyDescriptor : ComponentDescriptor<AProp>
+		private class RequirePropertyDescriptor : IComponentModelDescriptor
 		{
-			protected override void ApplyToModel(IKernel kernel, ComponentModel model)
+			public void BuildComponentModel(IKernel kernel, ComponentModel model)
+			{
+			}
+
+			public void ConfigureComponentModel(IKernel kernel, ComponentModel model)
 			{
 				model.Requires<A>();
 			}

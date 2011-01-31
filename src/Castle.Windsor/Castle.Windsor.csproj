@@ -681,10 +681,10 @@
     <Compile Include="MicroKernel\Proxy\ProxyUtil.cs" />
     <Compile Include="MicroKernel\ModelBuilder\Descriptors\AbstractPropertyDescriptor.cs" />
     <Compile Include="MicroKernel\Registration\AssemblyFilter.cs" />
-    <Compile Include="MicroKernel\Registration\AttributeDescriptor.cs" />
+    <Compile Include="MicroKernel\ModelBuilder\Descriptors\AttributeDescriptor.cs" />
     <Compile Include="MicroKernel\Registration\Component.cs" />
     <Compile Include="MicroKernel\Registration\ComponentDependencyRegistrationExtensions.cs" />
-    <Compile Include="MicroKernel\ModelBuilder\Descriptors\ComponentDescriptor.cs" />
+    <Compile Include="MicroKernel\ModelBuilder\Descriptors\AbstractOverwriteableDescriptor.cs" />
     <Compile Include="MicroKernel\Registration\ComponentRegistration.cs" />
     <Compile Include="MicroKernel\Registration\ComponentRegistration.nonGeneric.cs" />
     <Compile Include="MicroKernel\Registration\Configuration.cs" />
@@ -703,7 +703,7 @@
     <Compile Include="MicroKernel\ModelBuilder\Descriptors\InterceptorDescriptor.cs" />
     <Compile Include="MicroKernel\Registration\Interceptor\InterceptorGroup.cs" />
     <Compile Include="MicroKernel\Registration\IRegistration.cs" />
-    <Compile Include="MicroKernel\Registration\LifestyleDescriptor.cs" />
+    <Compile Include="MicroKernel\ModelBuilder\Descriptors\LifestyleDescriptor.cs" />
     <Compile Include="MicroKernel\Registration\Lifestyle\LifestyleGroup.cs" />
     <Compile Include="MicroKernel\Registration\Parameter.cs" />
     <Compile Include="MicroKernel\ModelBuilder\Descriptors\ParametersDescriptor.cs" />

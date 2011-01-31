@@ -198,7 +198,7 @@ namespace Castle.MicroKernel.Registration
 		public ComponentRegistration<TService> AddDescriptor(IComponentModelDescriptor descriptor)
 		{
 			descriptors.Add(descriptor);
-			var componentDescriptor = descriptor as ComponentDescriptor<TService>;
+			var componentDescriptor = descriptor as AbstractOverwriteableDescriptor<TService>;
 			if (componentDescriptor != null)
 			{
 				componentDescriptor.Registration = this;
