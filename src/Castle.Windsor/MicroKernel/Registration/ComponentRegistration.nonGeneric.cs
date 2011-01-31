@@ -16,8 +16,6 @@ namespace Castle.MicroKernel.Registration
 {
 	using System;
 
-	using Castle.Core;
-
 	/// <summary>
 	///   A non-generic <see cref = "ComponentRegistration{S}" />.
 	///   <para />
@@ -25,11 +23,6 @@ namespace Castle.MicroKernel.Registration
 	/// </summary>
 	public class ComponentRegistration : ComponentRegistration<object>
 	{
-		public ComponentRegistration(ComponentModel componentModel)
-			: base(componentModel)
-		{
-		}
-
 		public ComponentRegistration(params Type[] serviceTypes) : base(serviceTypes)
 		{
 		}

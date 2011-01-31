@@ -1,4 +1,15 @@
 ================================================================================================
+change - Component.For(ComponentModel) overload was removed.
+
+impact - low
+fixability - medium
+
+description - To simplify internal structure of fluent registration API and bring it more in 
+	line with standard registration the overload was removed.
+
+fix - If you really need this overload you can create custom IRegistration that exposes this
+	functionality. Or better rethink why you need it in the first place.
+================================================================================================
 rename - IComponentModelBuilder -> IComponentModelFactory
 	IKernel.ComponentModelBuilder -> IKernel.ComponentModelFactory
 description - Unifying naming with IHandlerFactory, making place for ComponentModelBuilder class

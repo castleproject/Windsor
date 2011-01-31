@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -41,6 +41,7 @@ namespace Castle.MicroKernel.Tests.Registration
 			// Previously the kernel assummed everything was OK, and null reffed instead.
 			Kernel.Register(Component.For(Type.GetType("NonExistentType, WohooAssembly")));
 		}
+
 		[Test]
 		public void AddComponent_WithServiceOnly_RegisteredWithServiceTypeName()
 		{
@@ -418,7 +419,7 @@ namespace Castle.MicroKernel.Tests.Registration
 			Assert.AreEqual(customer.Address, "Fairyland");
 			Assert.AreEqual(customer.Age, 45);
 		}
-		
+
 		[Test]
 		public void AddComponent_ArrayConfigurationParameters_WorksFine()
 		{
@@ -502,19 +503,6 @@ namespace Castle.MicroKernel.Tests.Registration
 			Assert.IsNotNull(component.ComplexParam);
 			Assert.AreEqual("value1", component.ComplexParam.MandatoryValue);
 			Assert.AreEqual("value2", component.ComplexParam.OptionalValue);
-		}
-
-		[Test]
-		public void CanUseExistingComponentModelWithComponentRegistration()
-		{
-			Kernel.Register(Component.For<ICustomer>()
-			                	.ImplementedBy<CustomerImpl>()
-				);
-
-			var handler = Kernel.GetHandler(typeof(ICustomer));
-			var component = Component.For(handler.ComponentModel);
-
-			Assert.AreEqual(typeof(CustomerImpl), component.Implementation);
 		}
 
 		[Test]
