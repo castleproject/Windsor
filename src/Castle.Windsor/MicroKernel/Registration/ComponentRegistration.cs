@@ -371,7 +371,7 @@ namespace Castle.MicroKernel.Registration
 		/// </remarks>
 		public ComponentRegistration<TService> DynamicParameters(DynamicParametersWithContextResolveDelegate resolve)
 		{
-			AddDescriptor(new DynamicParametersDescriptor<TService>(resolve));
+			AddDescriptor(new DynamicParametersDescriptor(resolve));
 			return this;
 		}
 

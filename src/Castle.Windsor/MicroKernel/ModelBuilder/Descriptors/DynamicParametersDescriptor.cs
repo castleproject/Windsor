@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,23 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.MicroKernel.Registration
+namespace Castle.MicroKernel.ModelBuilder.Descriptors
 {
-	using System.Collections;
-
 	using Castle.Core;
-	using Castle.MicroKernel.Context;
 	using Castle.MicroKernel.Handlers;
+	using Castle.MicroKernel.Registration;
 
-	public delegate void DynamicParametersDelegate(IKernel kernel, IDictionary parameters);
-
-	public delegate ComponentReleasingDelegate DynamicParametersWithContextResolveDelegate(
-		IKernel kernel, CreationContext creationContext, IDictionary parameters);
-
-	public delegate ComponentReleasingDelegate DynamicParametersResolveDelegate(IKernel kernel, IDictionary parameters);
-
-	public class DynamicParametersDescriptor<S> : ComponentDescriptor<S>
-		where S : class
+	public class DynamicParametersDescriptor : IComponentModelDescriptor
 	{
 		private static readonly string key = "component_resolving_handler";
 		private readonly DynamicParametersWithContextResolveDelegate resolve;
@@ -38,10 +28,14 @@ namespace Castle.MicroKernel.Registration
 			this.resolve = resolve;
 		}
 
-		protected internal override void ApplyToModel(IKernel kernel, ComponentModel model)
+		public void BuildComponentModel(IKernel kernel, ComponentModel model)
 		{
 			var dynamicParameters = GetDynamicParametersExtension(model);
 			dynamicParameters.AddHandler((k, c) => resolve(k, c, c.AdditionalArguments));
+		}
+
+		public void ConfigureComponentModel(IKernel kernel, ComponentModel model)
+		{
 		}
 
 		private ComponentLifecycleExtension GetDynamicParametersExtension(ComponentModel model)
