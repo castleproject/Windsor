@@ -12,24 +12,25 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.MicroKernel.Registration.Proxy
+namespace Castle.MicroKernel.ModelBuilder.Descriptors
 {
+	using System.Collections.Generic;
 	using System.Linq;
 
 	using Castle.Core;
+	using Castle.MicroKernel.ModelBuilder;
 	using Castle.MicroKernel.Proxy;
 
-	public class ProxyMixIns<S> : ComponentDescriptor<S>
-		where S : class
+	public class ProxyMixInsDescriptor : IComponentModelDescriptor
 	{
-		private readonly MixinRegistration mixIns;
+		private readonly IEnumerable<IReference<object>> mixIns;
 
-		public ProxyMixIns(MixinRegistration mixIns)
+		public ProxyMixInsDescriptor(IEnumerable<IReference<object>> mixIns)
 		{
 			this.mixIns = mixIns;
 		}
 
-		protected internal override void ApplyToModel(IKernel kernel, ComponentModel model)
+		public void BuildComponentModel(IKernel kernel, ComponentModel model)
 		{
 			if (!mixIns.Any())
 			{
@@ -40,6 +41,10 @@ namespace Castle.MicroKernel.Registration.Proxy
 			{
 				options.AddMixinReference(mixIn);
 			}
+		}
+
+		public void ConfigureComponentModel(IKernel kernel, ComponentModel model)
+		{
 		}
 	}
 }

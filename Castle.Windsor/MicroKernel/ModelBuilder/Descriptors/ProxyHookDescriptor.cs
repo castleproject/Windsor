@@ -12,26 +12,30 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.MicroKernel.Registration.Proxy
+namespace Castle.MicroKernel.ModelBuilder.Descriptors
 {
 	using Castle.Core;
 	using Castle.DynamicProxy;
+	using Castle.MicroKernel.ModelBuilder;
 	using Castle.MicroKernel.Proxy;
 
-	public class ProxyHook<S> : ComponentDescriptor<S>
-		where S : class
+	public class ProxyHookDescriptor : IComponentModelDescriptor
 	{
 		private readonly IReference<IProxyGenerationHook> hook;
 
-		public ProxyHook(IReference<IProxyGenerationHook> hook)
+		public ProxyHookDescriptor(IReference<IProxyGenerationHook> hook)
 		{
 			this.hook = hook;
 		}
 
-		protected internal override void ApplyToModel(IKernel kernel, ComponentModel model)
+		public void BuildComponentModel(IKernel kernel, ComponentModel model)
 		{
 			var options = ProxyUtil.ObtainProxyOptions(model, true);
 			options.Hook = hook;
+		}
+
+		public void ConfigureComponentModel(IKernel kernel, ComponentModel model)
+		{
 		}
 	}
 }
