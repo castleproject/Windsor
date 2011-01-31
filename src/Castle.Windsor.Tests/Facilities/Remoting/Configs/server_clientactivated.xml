@@ -5,7 +5,7 @@
   
     <facility 
 		id="remote.facility" 
-		type="Castle.Facilities.Remoting.RemotingFacility, Castle.Windsor"
+		type="Castle.Facilities.Remoting.RemotingFacility, Castle.Facilities.Remoting"
 		remotingConfigurationFile="RemotingTcpConfig.config">
     
     </facility>

@@ -1,4 +1,16 @@
 ================================================================================================
+change - EventWiringFacility, FactorySupportFacility and RemotingFacility are extracted to their
+	own assemblies
+
+impact - low
+fixability - easy
+
+description - These facilities are rarely used and two of them (FactorySupportFacility and 
+	RemotingFacility) are mostly considered legacy. As such there's no point in keeping them
+	in Windsor's assembly, especially in Silverlight version.
+
+fix - Reference the new assemblies and update your references in XML if you use it.
+================================================================================================
 change - Component.For(ComponentModel) overload was removed.
 
 impact - low
