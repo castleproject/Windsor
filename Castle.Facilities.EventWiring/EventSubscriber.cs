@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,17 +19,12 @@ namespace Castle.Facilities.EventWiring
 
 	public class EventSubscriber
 	{
-		private string subscriberComponentName;
 		private string eventHandler;
+		private string subscriberComponentName;
 
 		private EventSubscriber(string subscriberComponentName)
 		{
 			this.subscriberComponentName = subscriberComponentName;
-		}
-
-		public string SubscriberComponentName
-		{
-			get { return subscriberComponentName; }
 		}
 
 		public string EventHandler
@@ -37,10 +32,11 @@ namespace Castle.Facilities.EventWiring
 			get { return eventHandler; }
 		}
 
-		public static EventSubscriber Named(string subscriberComponentName)
+		public string SubscriberComponentName
 		{
-			return new EventSubscriber(subscriberComponentName);
+			get { return subscriberComponentName; }
 		}
+
 		public EventSubscriber HandledBy(string eventHandlerMethodName)
 		{
 			eventHandler = eventHandlerMethodName;
@@ -62,6 +58,11 @@ namespace Castle.Facilities.EventWiring
 			}
 			throw new ArgumentException(
 				"Couldn't extract method to handle the event from given expression. Expression should point to method that ought to handle subscribed event, something like: 's => s.HandleClick(null, null)'.");
+		}
+
+		public static EventSubscriber Named(string subscriberComponentName)
+		{
+			return new EventSubscriber(subscriberComponentName);
 		}
 	}
 }

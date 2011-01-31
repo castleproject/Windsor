@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@ namespace Castle.Facilities.EventWiring
 {
 	using System;
 	using System.Runtime.Serialization;
-	
+
 	using Castle.MicroKernel.Facilities;
 
 	/// <summary>
@@ -28,28 +28,28 @@ namespace Castle.Facilities.EventWiring
 	public class EventWiringException : FacilityException
 	{
 		/// <summary>
-		/// Initializes a new instance of the <see cref="EventWiringException"/> class.
+		///   Initializes a new instance of the <see cref = "EventWiringException" /> class.
 		/// </summary>
-		/// <param name="message">The message.</param>
+		/// <param name = "message">The message.</param>
 		public EventWiringException(string message) : base(message)
 		{
 		}
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="EventWiringException"/> class.
+		///   Initializes a new instance of the <see cref = "EventWiringException" /> class.
 		/// </summary>
-		/// <param name="message">The message.</param>
-		/// <param name="innerException">The inner exception.</param>
+		/// <param name = "message">The message.</param>
+		/// <param name = "innerException">The inner exception.</param>
 		public EventWiringException(string message, Exception innerException) : base(message, innerException)
 		{
 		}
 
 #if (!SILVERLIGHT)
 		/// <summary>
-		/// Initializes a new instance of the <see cref="EventWiringException"/> class.
+		///   Initializes a new instance of the <see cref = "EventWiringException" /> class.
 		/// </summary>
-		/// <param name="info">The object that holds the serialized object data.</param>
-		/// <param name="context">The contextual information about the source or destination.</param>
+		/// <param name = "info">The object that holds the serialized object data.</param>
+		/// <param name = "context">The contextual information about the source or destination.</param>
 		public EventWiringException(SerializationInfo info, StreamingContext context) : base(info, context)
 		{
 		}
