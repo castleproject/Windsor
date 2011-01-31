@@ -544,7 +544,7 @@ namespace Castle.MicroKernel.Registration
 #else
 			var references = Array.ConvertAll(interceptors, t => new InterceptorReference(t));
 #endif
-			return AddDescriptor(new InterceptorDescriptor<TService>(references));
+			return AddDescriptor(new InterceptorDescriptor(references));
 		}
 
 		/// <summary>
@@ -553,7 +553,7 @@ namespace Castle.MicroKernel.Registration
 		/// <returns></returns>
 		public ComponentRegistration<TService> Interceptors<TInterceptor>() where TInterceptor : IInterceptor
 		{
-			return AddDescriptor(new InterceptorDescriptor<TService>(new[] { new InterceptorReference(typeof(TInterceptor)) }));
+			return AddDescriptor(new InterceptorDescriptor(new[] { new InterceptorReference(typeof(TInterceptor)) }));
 		}
 
 		/// <summary>
@@ -578,7 +578,7 @@ namespace Castle.MicroKernel.Registration
 #else
 			var interceptors = Array.ConvertAll(keys, InterceptorReference.ForKey);
 #endif
-			return AddDescriptor(new InterceptorDescriptor<TService>(interceptors));
+			return AddDescriptor(new InterceptorDescriptor(interceptors));
 		}
 
 		/// <summary>
