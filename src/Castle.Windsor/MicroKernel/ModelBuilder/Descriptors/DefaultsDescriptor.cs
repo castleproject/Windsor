@@ -64,7 +64,7 @@ namespace Castle.MicroKernel.ModelBuilder.Descriptors
 		{
 		}
 
-		private IConfiguration EnsureComponentConfiguration(IKernel kernel, ComponentModel model)
+		private void EnsureComponentConfiguration(IKernel kernel, ComponentModel model)
 		{
 			var configuration = kernel.ConfigurationStore.GetComponentConfiguration(model.Name);
 			if (configuration == null)
@@ -76,7 +76,7 @@ namespace Castle.MicroKernel.ModelBuilder.Descriptors
 			{
 				model.Configuration = configuration;
 			}
-			return configuration;
+			return;
 		}
 
 		private Type FirstService(ComponentModel model)

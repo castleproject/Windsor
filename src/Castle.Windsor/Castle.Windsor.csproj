@@ -425,7 +425,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="MicroKernel\Context\CreationContext.cs" />
-    <Compile Include="MicroKernel\Context\IArgumentsStore.cs" />
+    <Compile Include="MicroKernel\Context\IArgumentsComparer.cs" />
     <Compile Include="MicroKernel\DefaultKernel.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -833,7 +833,6 @@
     <Compile Include="MicroKernel\SubSystemConstants.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="MicroKernel\Util\GenericTypeNameProvider.cs" />
     <Compile Include="MicroKernel\Util\ReferenceComparer.cs">
       <SubType>Code</SubType>
     </Compile>
