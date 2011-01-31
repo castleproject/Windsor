@@ -12,17 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.MicroKernel.ModelBuilder.Inspectors
+namespace Castle.MicroKernel.ModelBuilder.Descriptors
 {
 	using System;
 
 	using Castle.Core;
 
-	public class ServicesInspector : IComponentModelDescriptor
+	public class ServicesDescriptor : IComponentModelDescriptor
 	{
 		private readonly Type[] services;
 
-		public ServicesInspector(Type[] services)
+		public ServicesDescriptor(Type[] services)
 		{
 			this.services = services;
 		}

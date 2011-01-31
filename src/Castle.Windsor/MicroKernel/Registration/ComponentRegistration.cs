@@ -30,6 +30,7 @@ namespace Castle.MicroKernel.Registration
 	using Castle.MicroKernel.Handlers;
 	using Castle.MicroKernel.LifecycleConcerns;
 	using Castle.MicroKernel.ModelBuilder;
+	using Castle.MicroKernel.ModelBuilder.Descriptors;
 	using Castle.MicroKernel.ModelBuilder.Inspectors;
 	using Castle.MicroKernel.Registration.Interceptor;
 	using Castle.MicroKernel.Registration.Lifestyle;
@@ -854,11 +855,11 @@ namespace Castle.MicroKernel.Registration
 		{
 			var list = new List<IComponentModelDescriptor>
 			{
-				new ServicesInspector(services),
-				new DefaultsInspector(name, implementation),
+				new ServicesDescriptor(services),
+				new DefaultsDescriptor(name, implementation),
 			};
 			list.AddRange(descriptors);
-			list.Add(new InterfaceProxyInspector());
+			list.Add(new InterfaceProxyDescriptor());
 			return list.ToArray();
 		}
 
