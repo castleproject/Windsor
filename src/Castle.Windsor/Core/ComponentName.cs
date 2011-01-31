@@ -25,6 +25,11 @@ namespace Castle.Core
 		public string Name { get; private set; }
 		public bool SetByUser { get; private set; }
 
+		public override string ToString()
+		{
+			return Name;
+		}
+
 		internal void SetName(string value)
 		{
 			Name = value;
