@@ -698,7 +698,7 @@
     <Compile Include="MicroKernel\Registration\IWindsorInstaller.cs" />
     <Compile Include="MicroKernel\Registration\OnCreateComponentDescriptor.cs" />
     <Compile Include="MicroKernel\Registration\DynamicParametersDescriptor.cs" />
-    <Compile Include="MicroKernel\Registration\Interceptor\InterceptorSelectorDescriptor.cs" />
+    <Compile Include="MicroKernel\ModelBuilder\Descriptors\InterceptorSelectorDescriptor.cs" />
     <Compile Include="MicroKernel\Registration\Interceptor\InterceptorDescriptor.cs" />
     <Compile Include="MicroKernel\Registration\Interceptor\InterceptorGroup.cs" />
     <Compile Include="MicroKernel\Registration\IRegistration.cs" />
