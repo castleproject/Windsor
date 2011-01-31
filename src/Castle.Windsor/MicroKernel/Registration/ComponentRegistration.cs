@@ -31,7 +31,6 @@ namespace Castle.MicroKernel.Registration
 	using Castle.MicroKernel.LifecycleConcerns;
 	using Castle.MicroKernel.ModelBuilder;
 	using Castle.MicroKernel.ModelBuilder.Descriptors;
-	using Castle.MicroKernel.ModelBuilder.Inspectors;
 	using Castle.MicroKernel.Registration.Interceptor;
 	using Castle.MicroKernel.Registration.Lifestyle;
 	using Castle.MicroKernel.Registration.Proxy;
@@ -196,10 +195,14 @@ namespace Castle.MicroKernel.Registration
 		/// </summary>
 		/// <param name = "descriptor">The descriptor.</param>
 		/// <returns></returns>
-		public ComponentRegistration<TService> AddDescriptor(ComponentDescriptor<TService> descriptor)
+		public ComponentRegistration<TService> AddDescriptor(IComponentModelDescriptor descriptor)
 		{
-			descriptor.Registration = this;
 			descriptors.Add(descriptor);
+			var componentDescriptor = descriptor as ComponentDescriptor<TService>;
+			if (componentDescriptor != null)
+			{
+				componentDescriptor.Registration = this;
+			}
 			return this;
 		}
 
@@ -220,7 +223,7 @@ namespace Castle.MicroKernel.Registration
 		/// <returns></returns>
 		public ComponentRegistration<TService> Configuration(params Node[] configNodes)
 		{
-			return AddDescriptor(new ConfigurationDescriptor<TService>(configNodes));
+			return AddDescriptor(new ConfigurationDescriptor(configNodes));
 		}
 
 		/// <summary>
@@ -230,7 +233,7 @@ namespace Castle.MicroKernel.Registration
 		/// <returns></returns>
 		public ComponentRegistration<TService> Configuration(IConfiguration configuration)
 		{
-			return AddDescriptor(new ConfigurationDescriptor<TService>(configuration));
+			return AddDescriptor(new ConfigurationDescriptor(configuration));
 		}
 
 		public ComponentRegistration<TService> OnlyNewServices()

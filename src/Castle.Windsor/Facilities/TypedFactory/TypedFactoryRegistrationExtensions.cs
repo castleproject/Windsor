@@ -22,6 +22,7 @@ namespace Castle.Facilities.TypedFactory
 	using Castle.DynamicProxy;
 	using Castle.Facilities.TypedFactory.Internal;
 	using Castle.MicroKernel;
+	using Castle.MicroKernel.ModelBuilder.Descriptors;
 	using Castle.MicroKernel.Registration;
 
 	public static class TypedFactoryRegistrationExtensions
@@ -101,7 +102,7 @@ namespace Castle.Facilities.TypedFactory
 			where TFactory : class
 		{
 			var selectorReference = GetSelectorReference(configuration, defaultComponentSelectorKey);
-			componentRegistration.AddDescriptor(new ReferenceDependencyDescriptor<TFactory>(selectorReference));
+			componentRegistration.AddDescriptor(new ReferenceDependencyDescriptor(selectorReference));
 			if (IsAnyServiceOpenGeneric(componentRegistration))
 			{
 				componentRegistration.AddAttributeDescriptor(TypedFactoryFacility.IsFactoryKey, "true");

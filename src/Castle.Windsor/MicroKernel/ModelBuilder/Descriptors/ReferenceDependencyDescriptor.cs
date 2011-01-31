@@ -12,12 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.MicroKernel.Registration
+namespace Castle.MicroKernel.ModelBuilder.Descriptors
 {
 	using Castle.Core;
+	using Castle.MicroKernel.ModelBuilder;
 
-	public class ReferenceDependencyDescriptor<S> : ComponentDescriptor<S>
-		where S : class
+	public class ReferenceDependencyDescriptor : IComponentModelDescriptor
 	{
 		private readonly IReference<object> dependency;
 
@@ -26,9 +26,13 @@ namespace Castle.MicroKernel.Registration
 			this.dependency = dependency;
 		}
 
-		protected internal override void ApplyToModel(IKernel kernel, ComponentModel model)
+		public void BuildComponentModel(IKernel kernel, ComponentModel model)
 		{
 			dependency.Attach(model.Dependencies);
+		}
+
+		public void ConfigureComponentModel(IKernel kernel, ComponentModel model)
+		{
 		}
 	}
 }
