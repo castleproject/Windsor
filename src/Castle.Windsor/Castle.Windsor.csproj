@@ -446,15 +446,6 @@
     <Compile Include="MicroKernel\Facilities\FacilityException.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Facilities\FactorySupport\AccessorActivator.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Facilities\FactorySupport\FactoryActivator.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Facilities\FactorySupport\FactorySupportFacility.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="MicroKernel\IFacility.cs">
       <SubType>Code</SubType>
     </Compile>
