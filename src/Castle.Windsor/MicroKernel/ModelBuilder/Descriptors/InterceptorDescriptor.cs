@@ -12,14 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.MicroKernel.Registration.Interceptor
+namespace Castle.MicroKernel.ModelBuilder.Descriptors
 {
 	using System;
 
 	using Castle.Core;
+	using Castle.MicroKernel.ModelBuilder;
 
-	public class InterceptorDescriptor<S> : ComponentDescriptor<S>
-		where S : class
+	public class InterceptorDescriptor : IComponentModelDescriptor
 	{
 		private readonly int insertIndex;
 		private readonly InterceptorReference[] interceptors;
@@ -48,7 +48,11 @@ namespace Castle.MicroKernel.Registration.Interceptor
 			this.interceptors = interceptors;
 		}
 
-		protected internal override void ApplyToModel(IKernel kernel, ComponentModel model)
+		public void BuildComponentModel(IKernel kernel, ComponentModel model)
+		{
+		}
+
+		public void ConfigureComponentModel(IKernel kernel, ComponentModel model)
 		{
 			foreach (var interceptor in interceptors)
 			{

@@ -15,6 +15,7 @@
 namespace Castle.MicroKernel.Registration.Interceptor
 {
 	using Castle.DynamicProxy;
+	using Castle.MicroKernel.ModelBuilder.Descriptors;
 
 	using Core;
 
@@ -23,8 +24,7 @@ namespace Castle.MicroKernel.Registration.Interceptor
 	{
 		private readonly InterceptorReference[] interceptors;
 
-		public InterceptorGroup(ComponentRegistration<S> registration,
-		                        InterceptorReference[] interceptors)
+		public InterceptorGroup(ComponentRegistration<S> registration, InterceptorReference[] interceptors)
 			: base(registration)
 		{
 			this.interceptors = interceptors;
@@ -34,7 +34,7 @@ namespace Castle.MicroKernel.Registration.Interceptor
 		{
 			get
 			{
-				AddDescriptor(new InterceptorDescriptor<S>(interceptors));
+				AddDescriptor(new InterceptorDescriptor(interceptors));
 				return Registration;
 			}
 		}
@@ -43,8 +43,7 @@ namespace Castle.MicroKernel.Registration.Interceptor
 		{
 			get
 			{
-				AddDescriptor(new InterceptorDescriptor<S>(
-				              	interceptors, InterceptorDescriptor<S>.Where.First));
+				AddDescriptor(new InterceptorDescriptor(interceptors, InterceptorDescriptor.Where.First));
 				return Registration;
 			}
 		}
@@ -53,15 +52,14 @@ namespace Castle.MicroKernel.Registration.Interceptor
 		{
 			get
 			{
-				AddDescriptor(new InterceptorDescriptor<S>(
-				              	interceptors, InterceptorDescriptor<S>.Where.Last));
+				AddDescriptor(new InterceptorDescriptor(interceptors, InterceptorDescriptor.Where.Last));
 				return Registration;
 			}
 		}
 
 		public ComponentRegistration<S> AtIndex(int index)
 		{
-			AddDescriptor(new InterceptorDescriptor<S>(interceptors, index));
+			AddDescriptor(new InterceptorDescriptor(interceptors, index));
 			return Registration;
 		}
 

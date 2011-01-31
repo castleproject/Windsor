@@ -701,7 +701,7 @@
     <Compile Include="MicroKernel\ModelBuilder\Descriptors\OnCreateComponentDescriptor.cs" />
     <Compile Include="MicroKernel\Registration\DynamicParametersDelegate.cs" />
     <Compile Include="MicroKernel\ModelBuilder\Descriptors\InterceptorSelectorDescriptor.cs" />
-    <Compile Include="MicroKernel\Registration\Interceptor\InterceptorDescriptor.cs" />
+    <Compile Include="MicroKernel\ModelBuilder\Descriptors\InterceptorDescriptor.cs" />
     <Compile Include="MicroKernel\Registration\Interceptor\InterceptorGroup.cs" />
     <Compile Include="MicroKernel\Registration\IRegistration.cs" />
     <Compile Include="MicroKernel\Registration\LifestyleDescriptor.cs" />
