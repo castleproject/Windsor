@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,10 +20,10 @@ namespace Castle.MicroKernel.ComponentActivator
 	using Castle.MicroKernel.Context;
 
 	/// <summary>
-	/// Abstract implementation of <see cref="IComponentActivator"/>.
-	/// The implementors must only override the InternalCreate and 
-	/// InternalDestroy methods in order to perform their creation and
-	/// destruction logic.
+	///   Abstract implementation of <see cref = "IComponentActivator" />.
+	///   The implementors must only override the InternalCreate and 
+	///   InternalDestroy methods in order to perform their creation and
+	///   destruction logic.
 	/// </summary>
 	[Serializable]
 	public abstract class AbstractComponentActivator : IComponentActivator
@@ -34,7 +34,7 @@ namespace Castle.MicroKernel.ComponentActivator
 		private readonly ComponentInstanceDelegate onDestruction;
 
 		/// <summary>
-		/// Constructs an AbstractComponentActivator
+		///   Constructs an AbstractComponentActivator
 		/// </summary>
 		protected AbstractComponentActivator(ComponentModel model, IKernel kernel, ComponentInstanceDelegate onCreation, ComponentInstanceDelegate onDestruction)
 		{
@@ -64,11 +64,13 @@ namespace Castle.MicroKernel.ComponentActivator
 			get { return onDestruction; }
 		}
 
-		#region IComponentActivator Members
+		protected abstract object InternalCreate(CreationContext context);
+
+		protected abstract void InternalDestroy(object instance);
 
 		public virtual object Create(CreationContext context)
 		{
-			object instance = InternalCreate(context);
+			var instance = InternalCreate(context);
 
 			onCreation(model, instance);
 
@@ -81,11 +83,5 @@ namespace Castle.MicroKernel.ComponentActivator
 
 			onDestruction(model, instance);
 		}
-
-		#endregion
-
-		protected abstract object InternalCreate(CreationContext context);
-
-		protected abstract void InternalDestroy(object instance);
 	}
 }

@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,8 +19,15 @@ namespace Castle.MicroKernel.ComponentActivator
 
 	public class ExternalInstanceActivator : AbstractComponentActivator, IDependencyAwareActivator
 	{
-		public ExternalInstanceActivator(ComponentModel model, IKernel kernel, ComponentInstanceDelegate onCreation, ComponentInstanceDelegate onDestruction) : base(model, kernel, onCreation, onDestruction)
+		public ExternalInstanceActivator(ComponentModel model, IKernel kernel, ComponentInstanceDelegate onCreation, ComponentInstanceDelegate onDestruction)
+			: base(model, kernel, onCreation, onDestruction)
 		{
+		}
+
+		public bool CanProvideRequiredDependencies(ComponentModel component)
+		{
+			//we already have an instance so we don't need to provide any dependencies at all
+			return true;
 		}
 
 		protected override object InternalCreate(CreationContext context)
@@ -31,12 +38,6 @@ namespace Castle.MicroKernel.ComponentActivator
 		protected override void InternalDestroy(object instance)
 		{
 			// Nothing to do
-		}
-		
-		public bool CanProvideRequiredDependencies(ComponentModel component)
-		{
-			//we already have an instance so we don't need to provide any dependencies at all
-			return true;
 		}
 	}
 }
