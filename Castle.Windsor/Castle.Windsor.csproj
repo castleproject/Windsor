@@ -689,9 +689,9 @@
     <Compile Include="MicroKernel\Registration\ComponentRegistration.cs" />
     <Compile Include="MicroKernel\Registration\ComponentRegistration.nonGeneric.cs" />
     <Compile Include="MicroKernel\Registration\Configuration.cs" />
-    <Compile Include="MicroKernel\Registration\ConfigurationDescriptor.cs" />
+    <Compile Include="MicroKernel\ModelBuilder\Descriptors\ConfigurationDescriptor.cs" />
     <Compile Include="MicroKernel\Registration\CustomDependencyDescriptor.cs" />
-    <Compile Include="MicroKernel\Registration\DependencyDescriptor.cs" />
+    <Compile Include="MicroKernel\ModelBuilder\Descriptors\ReferenceDependencyDescriptor.cs" />
     <Compile Include="MicroKernel\Registration\ExtendedPropertiesDescriptor.cs" />
     <Compile Include="MicroKernel\Registration\OnDestroyComponentDescriptor.cs" />
     <Compile Include="MicroKernel\Registration\Proxy\ProxyHook.cs" />

@@ -12,12 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.MicroKernel.Registration
+namespace Castle.MicroKernel.ModelBuilder.Descriptors
 {
+	using Castle.Core;
 	using Castle.Core.Configuration;
+	using Castle.MicroKernel.ModelBuilder;
+	using Castle.MicroKernel.Registration;
 
-	public class ConfigurationDescriptor<S> : ComponentDescriptor<S>
-		where S : class
+	public class ConfigurationDescriptor : IComponentModelDescriptor
 	{
 		private readonly Node[] configNodes;
 		private readonly IConfiguration configuration;
@@ -32,19 +34,23 @@ namespace Castle.MicroKernel.Registration
 			this.configuration = configuration;
 		}
 
-		protected internal override void ApplyToConfiguration(IKernel kernel, IConfiguration compConfig)
+		public void BuildComponentModel(IKernel kernel, ComponentModel model)
 		{
 			if (configuration != null)
 			{
-				compConfig.Children.Add(configuration);
+				model.Configuration.Children.Add(configuration);
 			}
 			else
 			{
 				foreach (var configNode in configNodes)
 				{
-					configNode.ApplyTo(compConfig);
+					configNode.ApplyTo(model.Configuration);
 				}
 			}
+		}
+
+		public void ConfigureComponentModel(IKernel kernel, ComponentModel model)
+		{
 		}
 	}
 }
