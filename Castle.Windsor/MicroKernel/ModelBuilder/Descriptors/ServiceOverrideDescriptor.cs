@@ -77,8 +77,7 @@ namespace Castle.MicroKernel.ModelBuilder.Descriptors
 			foreach (var item in items)
 			{
 				var reference = FormattedReferenceExpression(item);
-				var node = new MutableConfiguration("item", reference);
-				list.Children.Add(node);
+				list.Children.Add(new MutableConfiguration("item", reference));
 			}
 
 			AddParameter(model, GetKeyString(key), list);
@@ -102,11 +101,11 @@ namespace Castle.MicroKernel.ModelBuilder.Descriptors
 
 		private static String FormattedReferenceExpression(String value)
 		{
-			if (!ReferenceExpressionUtil.IsReference(value))
+			if (ReferenceExpressionUtil.IsReference(value))
 			{
-				value = String.Format("${{{0}}}", value);
+				return value;
 			}
-			return value;
+			return String.Format("${{{0}}}", value);
 		}
 	}
 }

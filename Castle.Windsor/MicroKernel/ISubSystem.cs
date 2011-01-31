@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,20 +15,20 @@
 namespace Castle.MicroKernel
 {
 	/// <summary>
-	/// A subsystem is used by the MicroKernel to deal 
-	/// with a specific concern.  
+	///   A subsystem is used by the MicroKernel to deal 
+	///   with a specific concern.
 	/// </summary>
 	public interface ISubSystem
 	{
 		/// <summary>
-		/// Initializes the subsystem
+		///   Initializes the subsystem
 		/// </summary>
-		/// <param name="kernel"></param>
+		/// <param name = "kernel"></param>
 		void Init(IKernel kernel);
 
 		/// <summary>
-		/// Should perform the termination
-		/// of the subsystem instance.
+		///   Should perform the termination
+		///   of the subsystem instance.
 		/// </summary>
 		void Terminate();
 	}
