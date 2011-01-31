@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.MicroKernel.Registration
+namespace Castle.MicroKernel.ModelBuilder.Descriptors
 {
 	using System;
 	using System.Collections;
@@ -20,27 +20,40 @@ namespace Castle.MicroKernel.Registration
 
 	using Castle.Core;
 	using Castle.Core.Configuration;
+	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Util;
 
-	public class ServiceOverrideDescriptor<S> : AbstractPropertyDescriptor<S>
-		where S : class
+	public class ServiceOverrideDescriptor : AbstractPropertyDescriptor
 	{
+		private readonly IDictionary dictionary;
+		private readonly ServiceOverride[] overrides;
+
 		public ServiceOverrideDescriptor(params ServiceOverride[] overrides)
-			: base(overrides)
 		{
+			this.overrides = overrides;
 		}
 
 		public ServiceOverrideDescriptor(IDictionary dictionary)
-			: base(dictionary)
 		{
+			this.dictionary = dictionary;
 		}
 
-		public ServiceOverrideDescriptor(object overridesAsAnonymousType)
-			: base(new ReflectionBasedDictionaryAdapter(overridesAsAnonymousType))
+		public override void BuildComponentModel(IKernel kernel, ComponentModel model)
 		{
+			if (dictionary != null)
+			{
+				foreach (DictionaryEntry property in dictionary)
+				{
+					Apply(model, property.Key, property.Value, null);
+				}
+			}
+			if (overrides != null)
+			{
+				Array.ForEach(overrides, o => Apply(model, o.Key, o.Value, o));
+			}
 		}
 
-		protected override void ApplyProperty(IKernel kernel, ComponentModel model, object key, object value, Property property)
+		private void Apply(ComponentModel model, object key, object value, ServiceOverride @override)
 		{
 			if (value is string)
 			{
@@ -48,14 +61,11 @@ namespace Castle.MicroKernel.Registration
 			}
 			else if (value is IEnumerable<String>)
 			{
-				var serviceOverride = (ServiceOverride)property;
-				ApplyReferenceList(kernel, model, key, (IEnumerable<String>)value, serviceOverride);
+				ApplyReferenceList(model, key, (IEnumerable<String>)value, @override);
 			}
 		}
 
-		private void ApplyReferenceList(IKernel kernel, ComponentModel model,
-		                                object key, IEnumerable<String> items,
-		                                ServiceOverride serviceOverride)
+		private void ApplyReferenceList(ComponentModel model, object key, IEnumerable<String> items, ServiceOverride serviceOverride)
 		{
 			var list = new MutableConfiguration("list");
 
@@ -74,10 +84,10 @@ namespace Castle.MicroKernel.Registration
 			AddParameter(model, GetKeyString(key), list);
 		}
 
-		private void ApplySimpleReference(ComponentModel model, object key, String componentKey)
+		private void ApplySimpleReference(ComponentModel model, object dependencyKey, String componentKey)
 		{
 			var reference = FormattedReferenceExpression(componentKey);
-			AddParameter(model, GetKeyString(key), reference);
+			AddParameter(model, GetKeyString(dependencyKey), reference);
 		}
 
 		private string GetKeyString(object key)

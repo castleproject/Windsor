@@ -648,7 +648,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="MicroKernel\ModelBuilder\Inspectors\MixinInspector.cs" />
-    <Compile Include="MicroKernel\ModelBuilder\Inspectors\ModelInspector.cs" />
     <Compile Include="MicroKernel\ModelBuilder\Inspectors\PropertiesDependenciesModelInspector.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -680,21 +679,21 @@
     <Compile Include="MicroKernel\Proxy\ProxyConstants.cs" />
     <Compile Include="MicroKernel\Proxy\ProxyOptions.cs" />
     <Compile Include="MicroKernel\Proxy\ProxyUtil.cs" />
-    <Compile Include="MicroKernel\Registration\AbstractPropertyDescriptor.cs" />
+    <Compile Include="MicroKernel\ModelBuilder\Descriptors\AbstractPropertyDescriptor.cs" />
     <Compile Include="MicroKernel\Registration\AssemblyFilter.cs" />
     <Compile Include="MicroKernel\Registration\AttributeDescriptor.cs" />
     <Compile Include="MicroKernel\Registration\Component.cs" />
     <Compile Include="MicroKernel\Registration\ComponentDependencyRegistrationExtensions.cs" />
-    <Compile Include="MicroKernel\Registration\ComponentDescriptor.cs" />
+    <Compile Include="MicroKernel\ModelBuilder\Descriptors\ComponentDescriptor.cs" />
     <Compile Include="MicroKernel\Registration\ComponentRegistration.cs" />
     <Compile Include="MicroKernel\Registration\ComponentRegistration.nonGeneric.cs" />
     <Compile Include="MicroKernel\Registration\Configuration.cs" />
     <Compile Include="MicroKernel\ModelBuilder\Descriptors\ConfigurationDescriptor.cs" />
-    <Compile Include="MicroKernel\Registration\CustomDependencyDescriptor.cs" />
+    <Compile Include="MicroKernel\ModelBuilder\Descriptors\CustomDependencyDescriptor.cs" />
     <Compile Include="MicroKernel\ModelBuilder\Descriptors\ReferenceDependencyDescriptor.cs" />
     <Compile Include="MicroKernel\Registration\DynamicParametersResolveDelegate.cs" />
     <Compile Include="MicroKernel\Registration\DynamicParametersWithContextResolveDelegate.cs" />
-    <Compile Include="MicroKernel\Registration\ExtendedPropertiesDescriptor.cs" />
+    <Compile Include="MicroKernel\ModelBuilder\Descriptors\ExtendedPropertiesDescriptor.cs" />
     <Compile Include="MicroKernel\ModelBuilder\Descriptors\OnDestroyComponentDescriptor.cs" />
     <Compile Include="MicroKernel\ModelBuilder\Descriptors\ProxyHookDescriptor.cs" />
     <Compile Include="MicroKernel\Registration\IWindsorInstaller.cs" />
@@ -707,7 +706,7 @@
     <Compile Include="MicroKernel\Registration\LifestyleDescriptor.cs" />
     <Compile Include="MicroKernel\Registration\Lifestyle\LifestyleGroup.cs" />
     <Compile Include="MicroKernel\Registration\Parameter.cs" />
-    <Compile Include="MicroKernel\Registration\ParametersDescriptor.cs" />
+    <Compile Include="MicroKernel\ModelBuilder\Descriptors\ParametersDescriptor.cs" />
     <Compile Include="MicroKernel\Registration\Property.cs" />
     <Compile Include="MicroKernel\Registration\Proxy\ItemRegistration.cs" />
     <Compile Include="MicroKernel\Registration\Proxy\MixinRegistration.cs" />
@@ -716,7 +715,7 @@
     <Compile Include="MicroKernel\ModelBuilder\Descriptors\ProxyInterfacesDescriptor.cs" />
     <Compile Include="MicroKernel\Registration\RegistrationGroup.cs" />
     <Compile Include="MicroKernel\Registration\ServiceOverride.cs" />
-    <Compile Include="MicroKernel\Registration\ServiceOverrideDescriptor.cs" />
+    <Compile Include="MicroKernel\ModelBuilder\Descriptors\ServiceOverrideDescriptor.cs" />
     <Compile Include="MicroKernel\Registration\AllTypes.cs" />
     <Compile Include="MicroKernel\Registration\AllTypesOf.cs" />
     <Compile Include="MicroKernel\Registration\ConfigureDescriptor.cs" />
