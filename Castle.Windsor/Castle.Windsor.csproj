@@ -711,7 +711,7 @@
     <Compile Include="MicroKernel\Registration\Proxy\MixinRegistration.cs" />
     <Compile Include="MicroKernel\ModelBuilder\Descriptors\ProxyMixInsDescriptor.cs" />
     <Compile Include="MicroKernel\Registration\Proxy\ProxyGroup.cs" />
-    <Compile Include="MicroKernel\Registration\Proxy\ProxyInterfaces.cs" />
+    <Compile Include="MicroKernel\ModelBuilder\Descriptors\ProxyInterfacesDescriptor.cs" />
     <Compile Include="MicroKernel\Registration\RegistrationGroup.cs" />
     <Compile Include="MicroKernel\Registration\ServiceOverride.cs" />
     <Compile Include="MicroKernel\Registration\ServiceOverrideDescriptor.cs" />

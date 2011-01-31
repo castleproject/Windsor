@@ -39,7 +39,10 @@ namespace Castle.MicroKernel.Registration.Proxy
 
 		public ComponentRegistration<S> AdditionalInterfaces(params Type[] interfaces)
 		{
-			AddDescriptor(new ProxyInterfaces<S>(interfaces));
+			if (interfaces != null && interfaces.Length > 0)
+			{
+				AddDescriptor(new ProxyInterfacesDescriptor(interfaces));
+			}
 			return Registration;
 		}
 
