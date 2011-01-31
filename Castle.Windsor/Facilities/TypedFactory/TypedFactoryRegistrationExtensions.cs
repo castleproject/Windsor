@@ -102,21 +102,16 @@ namespace Castle.Facilities.TypedFactory
 			where TFactory : class
 		{
 			var selectorReference = GetSelectorReference(configuration, defaultComponentSelectorKey);
-			componentRegistration.AddDescriptor(new ReferenceDependencyDescriptor(selectorReference));
-			if (IsAnyServiceOpenGeneric(componentRegistration))
-			{
-				componentRegistration.AddAttributeDescriptor(TypedFactoryFacility.IsFactoryKey, "true");
-			}
-			else
-			{
-				componentRegistration.AddDescriptor(new FactoryCacheDescriptor<TFactory>());
-			}
-			return componentRegistration.DynamicParameters((k, c, d) =>
-			{
-				var selector = selectorReference.Resolve(k, c);
-				d.Insert(selector);
-				return k2 => k2.ReleaseComponent(selector);
-			});
+
+			return componentRegistration
+				.AddDescriptor(new ReferenceDependencyDescriptor(selectorReference))
+				.DynamicParameters((k, c, d) =>
+				{
+					var selector = selectorReference.Resolve(k, c);
+					d.Insert(selector);
+					return k2 => k2.ReleaseComponent(selector);
+				})
+				.AddAttributeDescriptor(TypedFactoryFacility.IsFactoryKey, "true");
 		}
 
 		private static ComponentRegistration<TFactory> AttachFactoryInterceptor<TFactory>(ComponentRegistration<TFactory> registration)
@@ -140,16 +135,6 @@ namespace Castle.Facilities.TypedFactory
 		private static bool HasOutArguments(Type serviceType)
 		{
 			return serviceType.GetMethods().Any(m => m.GetParameters().Any(p => p.IsOut));
-		}
-
-		private static bool IsAnyServiceOpenGeneric<TFactory>(ComponentRegistration<TFactory> componentRegistration)
-			where TFactory : class
-		{
-			if (componentRegistration.Services.Any(i => i.ContainsGenericParameters))
-			{
-				return true;
-			}
-			return false;
 		}
 
 		private static ComponentRegistration<TDelegate> RegisterDelegateBasedFactory<TDelegate>(ComponentRegistration<TDelegate> registration,

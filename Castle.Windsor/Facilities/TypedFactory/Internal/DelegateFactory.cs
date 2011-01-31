@@ -59,7 +59,7 @@ namespace Castle.Facilities.TypedFactory.Internal
 					d.Insert(selector);
 					return k2 => k2.ReleaseComponent(selector);
 				})
-				.AddDescriptor(new FactoryCacheDescriptor<object>());
+				.AddAttributeDescriptor(TypedFactoryFacility.IsFactoryKey, "true");
 		}
 
 		protected string GetName(Type service)
