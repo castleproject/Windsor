@@ -31,7 +31,7 @@ namespace Castle.Facilities.EventWiring
 			var subscribers = new EventSubscribers();
 			toSubscribers(subscribers);
 
-			return registration.AddDescriptor(new EventWiringDescriptor<TPublisher>(eventName, subscribers.Subscribers));
+			return registration.AddDescriptor(new EventWiringDescriptor(eventName, subscribers.Subscribers));
 		}
 
 		public static ComponentRegistration PublishEvent<TPublisher>(this ComponentRegistration registration, Action<TPublisher> eventSubscribtion,
@@ -54,7 +54,7 @@ namespace Castle.Facilities.EventWiring
 			var subscribers = new EventSubscribers();
 			toSubscribers(subscribers);
 
-			return registration.AddDescriptor(new EventWiringDescriptor<TPublisher>(eventName, subscribers.Subscribers));
+			return registration.AddDescriptor(new EventWiringDescriptor(eventName, subscribers.Subscribers));
 		}
 
 		public static ComponentRegistration PublishEvent(this ComponentRegistration registration, string eventName, Action<EventSubscribers> toSubscribers)
