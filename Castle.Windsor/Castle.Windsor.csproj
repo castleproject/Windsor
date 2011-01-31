@@ -614,6 +614,7 @@
     <Compile Include="MicroKernel\IComponentModelBuilder.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="MicroKernel\ModelBuilder\Descriptors\DynamicParametersDescriptor.cs" />
     <Compile Include="MicroKernel\ModelBuilder\IComponentModelDescriptor.cs" />
     <Compile Include="MicroKernel\ModelBuilder\IContributeComponentModelConstruction.cs">
       <SubType>Code</SubType>
@@ -692,12 +693,14 @@
     <Compile Include="MicroKernel\ModelBuilder\Descriptors\ConfigurationDescriptor.cs" />
     <Compile Include="MicroKernel\Registration\CustomDependencyDescriptor.cs" />
     <Compile Include="MicroKernel\ModelBuilder\Descriptors\ReferenceDependencyDescriptor.cs" />
+    <Compile Include="MicroKernel\Registration\DynamicParametersResolveDelegate.cs" />
+    <Compile Include="MicroKernel\Registration\DynamicParametersWithContextResolveDelegate.cs" />
     <Compile Include="MicroKernel\Registration\ExtendedPropertiesDescriptor.cs" />
     <Compile Include="MicroKernel\Registration\OnDestroyComponentDescriptor.cs" />
     <Compile Include="MicroKernel\ModelBuilder\Descriptors\ProxyHookDescriptor.cs" />
     <Compile Include="MicroKernel\Registration\IWindsorInstaller.cs" />
     <Compile Include="MicroKernel\Registration\OnCreateComponentDescriptor.cs" />
-    <Compile Include="MicroKernel\Registration\DynamicParametersDescriptor.cs" />
+    <Compile Include="MicroKernel\Registration\DynamicParametersDelegate.cs" />
     <Compile Include="MicroKernel\ModelBuilder\Descriptors\InterceptorSelectorDescriptor.cs" />
     <Compile Include="MicroKernel\Registration\Interceptor\InterceptorDescriptor.cs" />
     <Compile Include="MicroKernel\Registration\Interceptor\InterceptorGroup.cs" />
