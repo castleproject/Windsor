@@ -18,22 +18,19 @@ namespace Castle.MicroKernel.LifecycleConcerns
 
 	public class OnDestroyConcern<TComponent> : IDecommissionConcern
 	{
-		private readonly LifecycleActionDelegate<TComponent>[] actions;
+		private readonly LifecycleActionDelegate<TComponent> action;
 		private readonly IKernel kernel;
 
-		public OnDestroyConcern(LifecycleActionDelegate<TComponent>[] actions, IKernel kernel)
+		public OnDestroyConcern(LifecycleActionDelegate<TComponent> action, IKernel kernel)
 		{
-			this.actions = actions;
+			this.action = action;
 			this.kernel = kernel;
 		}
 
 		public void Apply(ComponentModel model, object component)
 		{
 			var item = (TComponent)component;
-			foreach (var action in actions)
-			{
-				action(kernel, item);
-			}
+			action(kernel, item);
 		}
 	}
 }

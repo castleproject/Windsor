@@ -18,22 +18,19 @@ namespace Castle.MicroKernel.LifecycleConcerns
 
 	public class OnCreatedConcern<TComponent> : ICommissionConcern
 	{
-		private readonly LifecycleActionDelegate<TComponent>[] actions;
+		private readonly LifecycleActionDelegate<TComponent> action;
 		private readonly IKernel kernel;
 
-		public OnCreatedConcern(LifecycleActionDelegate<TComponent>[] actions, IKernel kernel)
+		public OnCreatedConcern(LifecycleActionDelegate<TComponent> action, IKernel kernel)
 		{
-			this.actions = actions;
+			this.action = action;
 			this.kernel = kernel;
 		}
 
 		public void Apply(ComponentModel model, object component)
 		{
 			var item = (TComponent)component;
-			foreach (var action in actions)
-			{
-				action(kernel, item);
-			}
+			action(kernel, item);
 		}
 	}
 }

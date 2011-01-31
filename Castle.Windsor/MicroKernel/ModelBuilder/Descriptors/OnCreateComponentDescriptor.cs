@@ -12,32 +12,33 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.MicroKernel.Registration
+namespace Castle.MicroKernel.ModelBuilder.Descriptors
 {
 	using Castle.Core;
 	using Castle.MicroKernel.LifecycleConcerns;
+	using Castle.MicroKernel.ModelBuilder;
 
 	/// <summary>
 	///   Adds the actions to ExtendedProperties.
 	/// </summary>
 	/// <typeparam name = "S"></typeparam>
-	public class OnCreateComponentDescriptor<S> : ComponentDescriptor<S>
+	public class OnCreateComponentDescriptor<S> : IComponentModelDescriptor
 		where S : class
 	{
-		private readonly LifecycleActionDelegate<S>[] actions;
+		private readonly LifecycleActionDelegate<S> action;
 
-		public OnCreateComponentDescriptor(LifecycleActionDelegate<S>[] actions)
+		public OnCreateComponentDescriptor(LifecycleActionDelegate<S> action)
 		{
-			this.actions = actions;
+			this.action = action;
 		}
 
-		protected internal override void ApplyToModel(IKernel kernel, ComponentModel model)
+		public void BuildComponentModel(IKernel kernel, ComponentModel model)
 		{
-			if (actions == null)
-			{
-				return;
-			}
-			model.Lifecycle.AddFirst(new OnCreatedConcern<S>(actions, kernel));
+		}
+
+		public void ConfigureComponentModel(IKernel kernel, ComponentModel model)
+		{
+			model.Lifecycle.AddFirst(new OnCreatedConcern<S>(action, kernel));
 		}
 	}
 }

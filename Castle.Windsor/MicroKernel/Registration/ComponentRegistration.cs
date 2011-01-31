@@ -637,7 +637,8 @@ namespace Castle.MicroKernel.Registration
 		{
 			if (actions != null && actions.Length != 0)
 			{
-				AddDescriptor(new OnCreateComponentDescriptor<TService>(actions));
+				var action = (LifecycleActionDelegate<TService>)Delegate.Combine(actions);
+				AddDescriptor(new OnCreateComponentDescriptor<TService>(action));
 			}
 			return this;
 		}
@@ -651,7 +652,8 @@ namespace Castle.MicroKernel.Registration
 		{
 			if (actions != null && actions.Length != 0)
 			{
-				AddDescriptor(new OnDestroyComponentDescriptor<TService>(actions));
+				var action = (LifecycleActionDelegate<TService>)Delegate.Combine(actions);
+				AddDescriptor(new OnDestroyComponentDescriptor<TService>(action));
 			}
 			return this;
 		}

@@ -78,10 +78,23 @@ namespace Castle.Windsor.Tests.Lifecycle
 			                   	.LifeStyle.Transient
 			                   	.OnDestroy((k, i) => { called = true; }));
 
+			Assert.IsFalse(called);
 			var a = Container.Resolve<A>();
 			Container.Release(a);
 
 			Assert.IsTrue(called);
+		}
+
+		[Test]
+		public void OnDestroy_makes_transient_simple_component_tracked()
+		{
+			Container.Register(Component.For<A>()
+			                   	.LifeStyle.Transient
+			                   	.OnDestroy((k, i) => { }));
+
+			var a = Container.Resolve<A>();
+			Assert.IsTrue(Kernel.ReleasePolicy.HasTrack(a));
+			Container.Release(a);
 		}
 
 		[Test]
