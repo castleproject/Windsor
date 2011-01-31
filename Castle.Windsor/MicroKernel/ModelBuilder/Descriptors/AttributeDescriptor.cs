@@ -12,14 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.MicroKernel.Registration
+namespace Castle.MicroKernel.ModelBuilder.Descriptors
 {
 	using System;
 
 	using Castle.Core.Configuration;
-	using Castle.MicroKernel.ModelBuilder.Descriptors;
+	using Castle.MicroKernel.Registration;
 
-	public class AttributeDescriptor<S> : ComponentDescriptor<S>
+	public class AttributeDescriptor<S> : AbstractOverwriteableDescriptor<S>
 		where S : class
 	{
 		private readonly String name;
@@ -36,7 +36,7 @@ namespace Castle.MicroKernel.Registration
 			this.value = value;
 		}
 
-		protected internal override void ApplyToConfiguration(IKernel kernel, IConfiguration configuration)
+		protected override void ApplyToConfiguration(IKernel kernel, IConfiguration configuration)
 		{
 			if (configuration.Attributes[name] == null || IsOverWrite)
 			{

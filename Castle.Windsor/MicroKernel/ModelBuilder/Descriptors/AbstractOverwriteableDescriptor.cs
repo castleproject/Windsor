@@ -19,7 +19,7 @@ namespace Castle.MicroKernel.ModelBuilder.Descriptors
 	using Castle.MicroKernel.ModelBuilder;
 	using Castle.MicroKernel.Registration;
 
-	public abstract class ComponentDescriptor<TService> : IComponentModelDescriptor
+	public abstract class AbstractOverwriteableDescriptor<TService> : IComponentModelDescriptor
 		where TService : class
 	{
 		protected bool IsOverWrite
@@ -36,14 +36,9 @@ namespace Castle.MicroKernel.ModelBuilder.Descriptors
 
 		public virtual void ConfigureComponentModel(IKernel kernel, ComponentModel model)
 		{
-			ApplyToModel(kernel, model);
 		}
 
-		protected internal virtual void ApplyToConfiguration(IKernel kernel, IConfiguration configuration)
-		{
-		}
-
-		protected internal virtual void ApplyToModel(IKernel kernel, ComponentModel model)
+		protected virtual void ApplyToConfiguration(IKernel kernel, IConfiguration configuration)
 		{
 		}
 	}

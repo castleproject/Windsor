@@ -21,6 +21,7 @@ namespace Castle.Windsor.Tests.Facilities.Startable
 	using Castle.Core.Configuration;
 	using Castle.Facilities.Startable;
 	using Castle.MicroKernel;
+	using Castle.MicroKernel.ModelBuilder;
 	using Castle.MicroKernel.ModelBuilder.Descriptors;
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Tests.ClassComponents;
@@ -210,7 +211,7 @@ namespace Castle.Windsor.Tests.Facilities.Startable
 			kernel.AddFacility<StartableFacility>();
 			kernel.Register(
 				Component.For<StartableComponent>()
-					.AddDescriptor(new AddDependency<StartableComponent>(dependsOnSomething))
+					.AddDescriptor(new AddDependency(dependsOnSomething))
 				);
 
 			Assert.False(startableCreatedBeforeResolved, "Component should not have started");
@@ -304,8 +305,7 @@ namespace Castle.Windsor.Tests.Facilities.Startable
 		}
 	}
 
-	public class AddDependency<T> : ComponentDescriptor<T>
-		where T : class
+	public class AddDependency : IComponentModelDescriptor
 	{
 		private readonly DependencyModel dependency;
 
@@ -314,9 +314,13 @@ namespace Castle.Windsor.Tests.Facilities.Startable
 			this.dependency = dependency;
 		}
 
-		protected override void ApplyToModel(IKernel kernel, ComponentModel model)
+		public void BuildComponentModel(IKernel kernel, ComponentModel model)
 		{
 			model.Dependencies.Add(dependency);
+		}
+
+		public void ConfigureComponentModel(IKernel kernel, ComponentModel model)
+		{
 		}
 	}
 }

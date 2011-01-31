@@ -18,6 +18,7 @@ namespace Castle.MicroKernel.Registration.Lifestyle
 
 	using Castle.Core;
 	using Castle.Core.Internal;
+	using Castle.MicroKernel.ModelBuilder.Descriptors;
 
 	public class LifestyleGroup<S> : RegistrationGroup<S>
 		where S : class

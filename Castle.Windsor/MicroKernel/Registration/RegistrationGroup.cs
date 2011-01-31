@@ -15,6 +15,7 @@
 namespace Castle.MicroKernel.Registration
 {
 	using Castle.MicroKernel.ModelBuilder;
+	using Castle.MicroKernel.ModelBuilder.Descriptors;
 
 	public abstract class RegistrationGroup<S>
 		where S : class
