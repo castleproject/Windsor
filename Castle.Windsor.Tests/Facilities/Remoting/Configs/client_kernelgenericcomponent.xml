@@ -4,7 +4,7 @@
 
   <facilities>
 
-    <facility id="remote.facility" type="Castle.Facilities.Remoting.RemotingFacility, Castle.Windsor" remotingConfigurationFile="RemotingTcpConfigClient.config" isClient="true" remoteKernelUri="tcp://localhost:2133/kernel.rem" baseUri="tcp://localhost:2133" />
+    <facility id="remote.facility" type="Castle.Facilities.Remoting.RemotingFacility, Castle.Facilities.Remoting" remotingConfigurationFile="RemotingTcpConfigClient.config" isClient="true" remoteKernelUri="tcp://localhost:2133/kernel.rem" baseUri="tcp://localhost:2133" />
 
   </facilities>
 

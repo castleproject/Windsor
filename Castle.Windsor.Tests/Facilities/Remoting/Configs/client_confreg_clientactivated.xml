@@ -1,34 +1,34 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <configuration>
 
-	<facilities>
+  <facilities>
 
-		<facility
+    <facility
 			id="remote.facility"
-			type="Castle.Facilities.Remoting.RemotingFacility, Castle.Windsor"
+			type="Castle.Facilities.Remoting.RemotingFacility, Castle.Facilities.Remoting"
 			remotingConfigurationFile="RemotingTcpConfigClient.config"
 			baseUri="tcp://localhost:2133">
 
-		</facility>
+    </facility>
 
-	</facilities>
+  </facilities>
 
 
-	<components>
+  <components>
 
-		<component
+    <component
 			id="calcservice"
 			service="Castle.Windsor.Tests.Facilities.Remoting.ICalcService, Castle.Windsor.Tests"
 			type="Castle.Windsor.Tests.Facilities.Remoting.CalcServiceImpl, Castle.Windsor.Tests"
 			remoteclient="ClientActivated" />
 
-		<component
+    <component
 			id="calcservice2"
 			service="Castle.Windsor.Tests.Facilities.Remoting.ICalcService, Castle.Windsor.Tests"
 			type="Castle.Windsor.Tests.Facilities.Remoting.InterceptableCalcService, Castle.Windsor.Tests"
 			remoteclient="ClientActivated"
 			skipRemotingRegistration="true" />
 
-	</components>
+  </components>
 
 </configuration>
