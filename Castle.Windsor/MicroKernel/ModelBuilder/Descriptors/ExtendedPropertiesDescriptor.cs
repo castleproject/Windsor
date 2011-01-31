@@ -12,33 +12,47 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.MicroKernel.Registration
+namespace Castle.MicroKernel.ModelBuilder.Descriptors
 {
+	using System;
 	using System.Collections;
 
 	using Castle.Core;
+	using Castle.MicroKernel.ModelBuilder;
+	using Castle.MicroKernel.Registration;
 
-	public class ExtendedPropertiesDescriptor<S> : AbstractPropertyDescriptor<S>
-		where S : class
+	public class ExtendedPropertiesDescriptor : IComponentModelDescriptor
 	{
+		private readonly IDictionary dictionary;
+		private readonly Property[] properties;
+
 		public ExtendedPropertiesDescriptor(params Property[] properties)
-			: base(properties)
 		{
+			this.properties = properties;
 		}
 
 		public ExtendedPropertiesDescriptor(IDictionary dictionary)
-			: base(dictionary)
+		{
+			this.dictionary = dictionary;
+		}
+
+		public void BuildComponentModel(IKernel kernel, ComponentModel model)
 		{
 		}
 
-		public ExtendedPropertiesDescriptor(object overridesAsAnonymousType)
-			: base(new ReflectionBasedDictionaryAdapter(overridesAsAnonymousType))
+		public void ConfigureComponentModel(IKernel kernel, ComponentModel model)
 		{
-		}
-
-		protected override void ApplyProperty(IKernel kernel, ComponentModel model, object key, object value, Property property)
-		{
-			model.ExtendedProperties[key] = value;
+			if (dictionary != null)
+			{
+				foreach (DictionaryEntry property in dictionary)
+				{
+					model.ExtendedProperties[property.Key] = property.Value;
+				}
+			}
+			if (properties != null)
+			{
+				Array.ForEach(properties, p => model.ExtendedProperties[p.Key] = p.Value);
+			}
 		}
 	}
 }

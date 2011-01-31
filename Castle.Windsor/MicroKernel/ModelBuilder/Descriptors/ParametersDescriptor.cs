@@ -12,25 +12,37 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.MicroKernel.ModelBuilder.Inspectors
+namespace Castle.MicroKernel.ModelBuilder.Descriptors
 {
-	using System.Collections.Generic;
+	using System;
 
 	using Castle.Core;
 	using Castle.MicroKernel.Registration;
 
-	public class ModelInspector<T> : IContributeComponentModelConstruction where T : class
+	public class ParametersDescriptor : AbstractPropertyDescriptor
 	{
-		private readonly List<ComponentDescriptor<T>> descriptors;
+		private readonly Parameter[] parameters;
 
-		public ModelInspector(List<ComponentDescriptor<T>> descriptors)
+		public ParametersDescriptor(params Parameter[] parameters)
 		{
-			this.descriptors = descriptors;
+			this.parameters = parameters;
 		}
 
-		public void ProcessModel(IKernel kernel, ComponentModel model)
+		public override void BuildComponentModel(IKernel kernel, ComponentModel model)
 		{
-			descriptors.ForEach(d => d.ApplyToModel(kernel, model));
+			Array.ForEach(parameters, p => Apply(model, p));
+		}
+
+		private void Apply(ComponentModel model, Parameter parameter)
+		{
+			if (parameter.Value != null)
+			{
+				AddParameter(model, parameter.Key, parameter.Value);
+			}
+			else if (parameter.ConfigNode != null)
+			{
+				AddParameter(model, parameter.Key, parameter.ConfigNode);
+			}
 		}
 	}
 }

@@ -305,10 +305,10 @@ namespace Castle.MicroKernel.Registration
 			var serviceOverrides = dependencies.OfType<ServiceOverride>().ToArray();
 			if (serviceOverrides.Length > 0)
 			{
-				AddDescriptor(new ServiceOverrideDescriptor<TService>(serviceOverrides));
+				AddDescriptor(new ServiceOverrideDescriptor(serviceOverrides));
 				dependencies = dependencies.Except(serviceOverrides).ToArray();
 			}
-			return AddDescriptor(new CustomDependencyDescriptor<TService>(dependencies));
+			return AddDescriptor(new CustomDependencyDescriptor(dependencies));
 		}
 
 		/// <summary>
@@ -321,7 +321,7 @@ namespace Castle.MicroKernel.Registration
 		/// <returns></returns>
 		public ComponentRegistration<TService> DependsOn(IDictionary dependencies)
 		{
-			return AddDescriptor(new CustomDependencyDescriptor<TService>(dependencies));
+			return AddDescriptor(new CustomDependencyDescriptor(dependencies));
 		}
 
 		/// <summary>
@@ -334,7 +334,7 @@ namespace Castle.MicroKernel.Registration
 		/// <returns></returns>
 		public ComponentRegistration<TService> DependsOn(object anonymous)
 		{
-			return AddDescriptor(new CustomDependencyDescriptor<TService>(anonymous));
+			return AddDescriptor(new CustomDependencyDescriptor(new ReflectionBasedDictionaryAdapter(anonymous)));
 		}
 
 		/// <summary>
@@ -382,7 +382,7 @@ namespace Castle.MicroKernel.Registration
 		/// <returns></returns>
 		public ComponentRegistration<TService> ExtendedProperties(params Property[] properties)
 		{
-			return AddDescriptor(new ExtendedPropertiesDescriptor<TService>(properties));
+			return AddDescriptor(new ExtendedPropertiesDescriptor(properties));
 		}
 
 		/// <summary>
@@ -392,7 +392,7 @@ namespace Castle.MicroKernel.Registration
 		/// <returns></returns>
 		public ComponentRegistration<TService> ExtendedProperties(object anonymous)
 		{
-			return AddDescriptor(new ExtendedPropertiesDescriptor<TService>(anonymous));
+			return AddDescriptor(new ExtendedPropertiesDescriptor(new ReflectionBasedDictionaryAdapter(anonymous)));
 		}
 
 		/// <summary>
@@ -675,7 +675,7 @@ namespace Castle.MicroKernel.Registration
 		/// <returns></returns>
 		public ComponentRegistration<TService> Parameters(params Parameter[] parameters)
 		{
-			return AddDescriptor(new ParametersDescriptor<TService>(parameters));
+			return AddDescriptor(new ParametersDescriptor(parameters));
 		}
 
 		/// <summary>
@@ -713,7 +713,7 @@ namespace Castle.MicroKernel.Registration
 		/// <returns></returns>
 		public ComponentRegistration<TService> ServiceOverrides(params ServiceOverride[] overrides)
 		{
-			return AddDescriptor(new ServiceOverrideDescriptor<TService>(overrides));
+			return AddDescriptor(new ServiceOverrideDescriptor(overrides));
 		}
 
 		/// <summary>
@@ -728,7 +728,7 @@ namespace Castle.MicroKernel.Registration
 		/// <returns></returns>
 		public ComponentRegistration<TService> ServiceOverrides(IDictionary overrides)
 		{
-			return AddDescriptor(new ServiceOverrideDescriptor<TService>(overrides));
+			return AddDescriptor(new ServiceOverrideDescriptor(overrides));
 		}
 
 		/// <summary>
@@ -743,7 +743,7 @@ namespace Castle.MicroKernel.Registration
 		/// <returns></returns>
 		public ComponentRegistration<TService> ServiceOverrides(object anonymous)
 		{
-			return AddDescriptor(new ServiceOverrideDescriptor<TService>(anonymous));
+			return AddDescriptor(new ServiceOverrideDescriptor(new ReflectionBasedDictionaryAdapter(anonymous)));
 		}
 
 		/// <summary>

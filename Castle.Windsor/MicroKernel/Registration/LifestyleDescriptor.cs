@@ -16,6 +16,7 @@ namespace Castle.MicroKernel.Registration
 {
 	using Castle.Core;
 	using Castle.Core.Configuration;
+	using Castle.MicroKernel.ModelBuilder.Descriptors;
 
 	public class LifestyleDescriptor<S> : ComponentDescriptor<S>
 		where S : class
@@ -32,12 +33,7 @@ namespace Castle.MicroKernel.Registration
 			if (configuration.Attributes["lifestyle"] == null || IsOverWrite)
 			{
 				configuration.Attributes["lifestyle"] = lifestyle.ToString();
-				ApplyLifestyleDetails(configuration);
 			}
-		}
-
-		protected virtual void ApplyLifestyleDetails(IConfiguration configuration)
-		{
 		}
 	}
 }

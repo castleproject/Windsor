@@ -21,6 +21,7 @@ namespace Castle.Windsor.Tests.Facilities.Startable
 	using Castle.Core.Configuration;
 	using Castle.Facilities.Startable;
 	using Castle.MicroKernel;
+	using Castle.MicroKernel.ModelBuilder.Descriptors;
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Tests.ClassComponents;
 	using Castle.Windsor.Tests.ClassComponents;

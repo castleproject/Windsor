@@ -17,6 +17,7 @@ namespace Castle.MicroKernel.Registration
 	using System;
 
 	using Castle.Core.Configuration;
+	using Castle.MicroKernel.ModelBuilder.Descriptors;
 
 	public class AttributeDescriptor<S> : ComponentDescriptor<S>
 		where S : class
