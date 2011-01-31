@@ -378,12 +378,6 @@
     <Compile Include="Core\LifestyleAttributes.cs" />
     <Compile Include="Core\LifestyleType.cs" />
     <Compile Include="Core\PropertiesInspectionBehavior.cs" />
-    <Compile Include="Facilities\EventWiring\EventSubscriber.cs" />
-    <Compile Include="Facilities\EventWiring\EventSubscribers.cs" />
-    <Compile Include="Facilities\EventWiring\EventWiringDescriptor.cs" />
-    <Compile Include="Facilities\EventWiring\EventWiringRegistrationExtensions.cs" />
-    <Compile Include="Facilities\EventWiring\NaiveMethodNameExtractor.cs" />
-    <Compile Include="Facilities\EventWiring\OpCodeValues.cs" />
     <Compile Include="Facilities\Startable\StartableContributor.cs" />
     <Compile Include="Facilities\TypedFactory\DefaultDelegateComponentSelector.cs" />
     <Compile Include="Facilities\TypedFactory\Internal\DelegateFactory.cs" />
@@ -447,12 +441,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="MicroKernel\Facilities\AbstractFacility.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Facilities\EventWiring\EventWiringException.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Facilities\EventWiring\EventWiringFacility.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="MicroKernel\Facilities\FacilityException.cs">

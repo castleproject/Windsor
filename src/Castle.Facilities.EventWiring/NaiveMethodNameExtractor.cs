@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ namespace Castle.Facilities.EventWiring
 	using System.Reflection;
 
 	/// <summary>
-	/// Extracts MethodInfo of metho invoked in delegate. Based on ILReader class from http://www.gocosmos.org project
+	///   Extracts MethodInfo of metho invoked in delegate. Based on ILReader class from http://www.gocosmos.org project
 	/// </summary>
 	internal class NaiveMethodNameExtractor
 	{
@@ -29,11 +29,6 @@ namespace Castle.Facilities.EventWiring
 		private readonly MethodBase delegateMethod;
 		private readonly Module module;
 		private readonly MemoryStream stream;
-
-		public MethodBase CalledMethod
-		{
-			get { return calledMethod; }
-		}
 
 		private MethodBase calledMethod;
 
@@ -47,11 +42,9 @@ namespace Castle.Facilities.EventWiring
 			Read();
 		}
 
-		private static int OperandValueAsInt32(byte[] rawOperand)
+		public MethodBase CalledMethod
 		{
-			var value = new byte[4];
-			Array.Copy(rawOperand, value, Math.Min(4, rawOperand.Length));
-			return BitConverter.ToInt32(value, 0);
+			get { return calledMethod; }
 		}
 
 		private MethodBase GetCalledMethod(byte[] rawOperand)
@@ -88,11 +81,6 @@ namespace Castle.Facilities.EventWiring
 			}
 		}
 
-		private static bool IsSupportedOpCode(OpCodeValues currentOpCode)
-		{
-			return Enum.IsDefined(typeof(OpCodeValues), currentOpCode);
-		}
-
 		private bool ReadOpCode(out OpCodeValues opCodeValue)
 		{
 			var valueInt = stream.ReadByte();
@@ -122,12 +110,24 @@ namespace Castle.Facilities.EventWiring
 		private byte[] ReadOperand(byte operandSize)
 		{
 			var bytes = new byte[operandSize/8];
-			var actualSize = stream.Read(bytes,0,bytes.Length);
-			if(actualSize<bytes.Length)
+			var actualSize = stream.Read(bytes, 0, bytes.Length);
+			if (actualSize < bytes.Length)
 			{
 				throw new NotSupportedException();
 			}
 			return bytes;
+		}
+
+		private static bool IsSupportedOpCode(OpCodeValues currentOpCode)
+		{
+			return Enum.IsDefined(typeof(OpCodeValues), currentOpCode);
+		}
+
+		private static int OperandValueAsInt32(byte[] rawOperand)
+		{
+			var value = new byte[4];
+			Array.Copy(rawOperand, value, Math.Min(4, rawOperand.Length));
+			return BitConverter.ToInt32(value, 0);
 		}
 	}
 #endif
