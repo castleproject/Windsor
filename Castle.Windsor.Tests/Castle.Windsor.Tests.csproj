@@ -267,6 +267,10 @@
       <Project>{4BB0BD73-0CB7-4979-B790-C4DAC0A32294}</Project>
       <Name>Castle.Facilities.EventWiring</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Castle.Facilities.FactorySupport\Castle.Facilities.FactorySupport.csproj">
+      <Project>{50286B04-1FDA-46A7-89A1-6CFE9F5BB0DA}</Project>
+      <Name>Castle.Facilities.FactorySupport</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Castle.Windsor\Castle.Windsor.csproj">
       <Name>Castle.Windsor</Name>
       <Project>{60EFCB9B-E3FF-46A5-A2D2-D9F0EF75D5FE}</Project>
@@ -1281,6 +1285,7 @@
     </Content>
     <EmbeddedResource Include="Facilities\EventWiring\Config\dependencies.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Facilities\EventWiring\Config\invalid.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
