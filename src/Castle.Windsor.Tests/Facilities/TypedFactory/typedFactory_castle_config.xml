@@ -1,7 +1,7 @@
 <configuration>
 
   <facilities>
-    <facility id="typedfactory">
+    <facility type="TypedFactoryFacility">
       <factories>
         <factory id="compFactory1" interface="IComponentFactory1" creation="Construct" destruction="" />
 

@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -32,71 +32,8 @@ namespace Castle.Facilities.Synchronize.Tests
 	[TestFixture]
 	public class SynchronizeFacilityTestFixture
 	{
-		[SetUp]
-		public void SetUp()
-		{
-			uncaughtException = null;
-			container = new WindsorContainer();
-
-			container.AddFacility<SynchronizeFacility>()
-				.Register(Component.For<SynchronizationContext>(),
-				          Component.For<AsynchronousContext>(),
-				          Component.For<DummyForm>().Named("Dummy")
-				          	.Activator<DummyFormActivator>(),
-				          Component.For<IDummyForm>().ImplementedBy<DummyForm>(),
-				          Component.For<ClassUsingFormInWindowsContext>(),
-				          Component.For<ClassUsingFormInAmbientContext>(),
-				          Component.For<SyncClassWithoutContext>(),
-				          Component.For<SyncClassOverrideContext>(),
-				          Component.For(typeof(IClassUsingContext<>)).ImplementedBy(typeof(ClassUsingContext<>)),
-				          Component.For<IWorker>().ImplementedBy<SimpleWorker>(),
-				          Component.For<IWorkerWithOuts>().ImplementedBy<AsynchronousWorker>(),
-				          Component.For<ManualWorker>()
-				);
-
-			var componentNode = new MutableConfiguration("component");
-			componentNode.Attributes[Constants.SynchronizedAttrib] = "true";
-			var synchronizeNode = new MutableConfiguration("synchronize");
-			synchronizeNode.Attributes["contextType"] = typeof(WindowsFormsSynchronizationContext).AssemblyQualifiedName;
-			var doWorkMethod = new MutableConfiguration("method");
-			doWorkMethod.Attributes["name"] = "DoWork";
-			doWorkMethod.Attributes["contextType"] = typeof(WindowsFormsSynchronizationContext).AssemblyQualifiedName;
-			synchronizeNode.Children.Add(doWorkMethod);
-			componentNode.Children.Add(synchronizeNode);
-
-			container.Kernel.ConfigurationStore.AddComponentConfiguration("class.needing.context", componentNode);
-			container.Register(Component.For<ClassUsingForm>().Named("class.needing.context"));
-		}
-
 		private IWindsorContainer container;
 		private Exception uncaughtException;
-
-		private void ExecuteInThread(ThreadStart run)
-		{
-			var thread = new Thread(() =>
-			{
-				try
-				{
-					run();
-				}
-				catch (Exception e)
-				{
-					uncaughtException = e;
-				}
-
-				Application.DoEvents();
-				Application.Exit();
-			});
-
-			var form = new Form();
-			if (form.Handle == IntPtr.Zero)
-			{
-				throw new InvalidOperationException("Control handle could not be obtained");
-			}
-			form.BeginInvoke((MethodInvoker)delegate { thread.Start(); });
-
-			Application.Run();
-		}
 
 		[Test]
 		[ExpectedException(typeof(FacilityException))]
@@ -296,22 +233,43 @@ namespace Castle.Facilities.Synchronize.Tests
 		[ExpectedException(typeof(ConfigurationErrorsException))]
 		public void RegisterFacility_WithBadControlProxyHook_ThrowsConfigurationException()
 		{
+			var type = typeof(SynchronizeFacility).FullName;
 			var container2 = new WindsorContainer();
 			var facNode = new MutableConfiguration("facility");
-			facNode.Attributes["id"] = "sync.facility";
+			facNode.Attributes["type"] = type;
 			facNode.Attributes[Constants.ControlProxyHookAttrib] = typeof(string).AssemblyQualifiedName;
-			container2.Kernel.ConfigurationStore.AddFacilityConfiguration("sync.facility", facNode);
+			container2.Kernel.ConfigurationStore.AddFacilityConfiguration(type, facNode);
 			container2.AddFacility("sync.facility", new SynchronizeFacility());
+		}
+
+		[Test]
+		public void RegisterFacility_WithControlProxyHook_WorksFine()
+		{
+			var type = typeof(SynchronizeFacility).FullName;
+			var container2 = new WindsorContainer();
+			var facNode = new MutableConfiguration("facility");
+			facNode.Attributes["type"] = type;
+			facNode.Attributes[Constants.ControlProxyHookAttrib] = typeof(DummyProxyHook).AssemblyQualifiedName;
+			container2.Kernel.ConfigurationStore.AddFacilityConfiguration(type, facNode);
+			container2.AddFacility("sync.facility", new SynchronizeFacility());
+
+			container2.Register(Component.For<DummyForm>().Named("dummy.form.class"));
+			var model = container2.Kernel.GetHandler("dummy.form.class").ComponentModel;
+			var options = ProxyUtil.ObtainProxyOptions(model, false);
+			Assert.IsNotNull(options, "Proxy options should not be null");
+			Assert.IsTrue(options.Hook.Resolve(container2.Kernel, CreationContext.CreateEmpty()) is DummyProxyHook,
+			              "Proxy hook should be a DummyProxyHook");
 		}
 
 		[Test]
 		public void RegisterFacility_With_missing_ControlProxyHook_ThrowsConfigurationException()
 		{
+			var type = typeof(SynchronizeFacility).FullName;
 			var container2 = new WindsorContainer();
 			var facNode = new MutableConfiguration("facility");
-			facNode.Attributes["id"] = "sync.facility";
+			facNode.Attributes["type"] = type;
 			facNode.Attributes[Constants.ControlProxyHookAttrib] = "${missing.component}";
-			container2.Kernel.ConfigurationStore.AddFacilityConfiguration("sync.facility", facNode);
+			container2.Kernel.ConfigurationStore.AddFacilityConfiguration(type, facNode);
 			container2.AddFacility("sync.facility", new SynchronizeFacility());
 			container2.Register(Component.For<DummyForm>());
 
@@ -325,29 +283,47 @@ namespace Castle.Facilities.Synchronize.Tests
 		}
 
 		[Test]
-		public void RegisterFacility_WithControlProxyHook_WorksFine()
-		{
-			var container2 = new WindsorContainer();
-			var facNode = new MutableConfiguration("facility");
-			facNode.Attributes["id"] = "sync.facility";
-			facNode.Attributes[Constants.ControlProxyHookAttrib] = typeof(DummyProxyHook).AssemblyQualifiedName;
-			container2.Kernel.ConfigurationStore.AddFacilityConfiguration("sync.facility", facNode);
-			container2.AddFacility("sync.facility", new SynchronizeFacility());
-
-			container2.Register(Component.For<DummyForm>().Named("dummy.form.class"));
-			var model = container2.Kernel.GetHandler("dummy.form.class").ComponentModel;
-			var options = ProxyUtil.ObtainProxyOptions(model, false);
-			Assert.IsNotNull(options, "Proxy options should not be null");
-			Assert.IsTrue(options.Hook.Resolve(container2.Kernel, CreationContext.CreateEmpty()) is DummyProxyHook,
-			              "Proxy hook should be a DummyProxyHook");
-		}
-
-		[Test]
 		[ExpectedException(typeof(HandlerException))]
 		public void ResolveContextComponent_WithMissingDependency_ThrowsHandlerException()
 		{
 			container.Register(Component.For<ClassInContextWithMissingDependency>().Named("class.in.context.bad"));
 			container.Resolve<ClassInContextWithMissingDependency>("class.in.context.bad");
+		}
+
+		[SetUp]
+		public void SetUp()
+		{
+			uncaughtException = null;
+			container = new WindsorContainer();
+
+			container.AddFacility<SynchronizeFacility>()
+				.Register(Component.For<SynchronizationContext>(),
+				          Component.For<AsynchronousContext>(),
+				          Component.For<DummyForm>().Named("Dummy")
+				          	.Activator<DummyFormActivator>(),
+				          Component.For<IDummyForm>().ImplementedBy<DummyForm>(),
+				          Component.For<ClassUsingFormInWindowsContext>(),
+				          Component.For<ClassUsingFormInAmbientContext>(),
+				          Component.For<SyncClassWithoutContext>(),
+				          Component.For<SyncClassOverrideContext>(),
+				          Component.For(typeof(IClassUsingContext<>)).ImplementedBy(typeof(ClassUsingContext<>)),
+				          Component.For<IWorker>().ImplementedBy<SimpleWorker>(),
+				          Component.For<IWorkerWithOuts>().ImplementedBy<AsynchronousWorker>(),
+				          Component.For<ManualWorker>()
+				);
+
+			var componentNode = new MutableConfiguration("component");
+			componentNode.Attributes[Constants.SynchronizedAttrib] = "true";
+			var synchronizeNode = new MutableConfiguration("synchronize");
+			synchronizeNode.Attributes["contextType"] = typeof(WindowsFormsSynchronizationContext).AssemblyQualifiedName;
+			var doWorkMethod = new MutableConfiguration("method");
+			doWorkMethod.Attributes["name"] = "DoWork";
+			doWorkMethod.Attributes["contextType"] = typeof(WindowsFormsSynchronizationContext).AssemblyQualifiedName;
+			synchronizeNode.Children.Add(doWorkMethod);
+			componentNode.Children.Add(synchronizeNode);
+
+			container.Kernel.ConfigurationStore.AddComponentConfiguration("class.needing.context", componentNode);
+			container.Register(Component.For<ClassUsingForm>().Named("class.needing.context"));
 		}
 
 		[Test]
@@ -402,6 +378,33 @@ namespace Castle.Facilities.Synchronize.Tests
 		{
 			var sync = container.Resolve<SyncClassOverrideContext>();
 			sync.DoWork();
+		}
+
+		private void ExecuteInThread(ThreadStart run)
+		{
+			var thread = new Thread(() =>
+			{
+				try
+				{
+					run();
+				}
+				catch (Exception e)
+				{
+					uncaughtException = e;
+				}
+
+				Application.DoEvents();
+				Application.Exit();
+			});
+
+			var form = new Form();
+			if (form.Handle == IntPtr.Zero)
+			{
+				throw new InvalidOperationException("Control handle could not be obtained");
+			}
+			form.BeginInvoke((MethodInvoker)delegate { thread.Start(); });
+
+			Application.Run();
 		}
 	}
 }

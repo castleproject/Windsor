@@ -148,6 +148,12 @@ namespace Castle.Windsor
 		IWindsorContainer AddFacility(String idInConfiguration, IFacility facility);
 
 		/// <summary>
+		///   Registers a facility within the container.
+		/// </summary>
+		/// <param name = "facility">The <see cref = "IFacility" /> to add to the container.</param>
+		IWindsorContainer AddFacility(IFacility facility);
+
+		/// <summary>
 		///   Creates and adds an <see cref = "IFacility" /> facility to the container.
 		/// </summary>
 		/// <typeparam name = "TFacility">The facility type.</typeparam>

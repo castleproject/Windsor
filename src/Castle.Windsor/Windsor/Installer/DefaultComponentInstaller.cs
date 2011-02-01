@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@ namespace Castle.Windsor.Installer
 	using Castle.Windsor.Configuration.Interpreters;
 
 	/// <summary>
-	/// Default <see cref="IComponentsInstaller"/> implementation.
+	///   Default <see cref = "IComponentsInstaller" /> implementation.
 	/// </summary>
 	public class DefaultComponentInstaller : IComponentsInstaller
 	{
@@ -39,10 +39,10 @@ namespace Castle.Windsor.Installer
 		#region IComponentsInstaller Members
 
 		/// <summary>
-		/// Perform installation.
+		///   Perform installation.
 		/// </summary>
-		/// <param name="container">Target container</param>
-		/// <param name="store">Configuration store</param>
+		/// <param name = "container">Target container</param>
+		/// <param name = "store">Configuration store</param>
 		public void SetUp(IWindsorContainer container, IConfigurationStore store)
 		{
 			var converter = container.Kernel.GetSubSystem(SubSystemConstants.ConversionManagerKey) as IConversionManager;
@@ -154,32 +154,21 @@ namespace Castle.Windsor.Installer
 			}
 		}
 
-		protected virtual void SetUpFacilities(IConfiguration[] configurations, IWindsorContainer container,
-		                                       IConversionManager converter)
+		protected virtual void SetUpFacilities(IConfiguration[] configurations, IWindsorContainer container, IConversionManager converter)
 		{
-			foreach (IConfiguration facility in configurations)
+			foreach (var facility in configurations)
 			{
-				var id = facility.Attributes["id"];
-				var typeName = facility.Attributes["type"];
-				if (string.IsNullOrEmpty(typeName))
-				{
-					continue;
-				}
-
-				var type = converter.PerformConversion<Type>(typeName);
-
+				var type = converter.PerformConversion<Type>(facility.Attributes["type"]);
 				var facilityInstance = type.CreateInstance<IFacility>();
-
-				Debug.Assert(id != null);
 				Debug.Assert(facilityInstance != null);
 
-				container.AddFacility(id, facilityInstance);
+				container.AddFacility(facilityInstance);
 			}
 		}
 
 		protected virtual void SetUpComponents(IConfiguration[] configurations, IWindsorContainer container, IConversionManager converter)
 		{
-			foreach (IConfiguration component in configurations)
+			foreach (var component in configurations)
 			{
 				var id = component.Attributes["id"];
 				var typeName = component.Attributes["type"];
@@ -207,13 +196,13 @@ namespace Castle.Windsor.Installer
 				var services = new List<Type> { service };
 				CollectForwardedTypes(container.Kernel as IKernelInternal, component, typeName, id, converter, services);
 				var registration = Component.For(services).ImplementedBy(type);
-				if(component.Attributes["id-automatic"] == true.ToString())
+				if (component.Attributes["id-automatic"] == true.ToString())
 				{
 					container.Register(registration.NamedAutomatically(id));
 				}
 				else
 				{
-				container.Register(registration.Named(id));
+					container.Register(registration.Named(id));
 				}
 			}
 		}
@@ -233,7 +222,7 @@ namespace Castle.Windsor.Installer
 		}
 
 		private void CollectForwardedTypes(IKernelInternal kernel, IConfiguration component, string typeName, string id,
-		                                          IConversionManager converter, List<Type> services)
+		                                   IConversionManager converter, List<Type> services)
 		{
 			if (kernel == null)
 			{
@@ -259,13 +248,12 @@ namespace Castle.Windsor.Installer
 						string.Format("Component {0}-{1} defines invalid forwarded type.", id ?? string.Empty, typeName), e);
 				}
 			}
-
 		}
 
 #if !SILVERLIGHT
 		private static void SetUpChildContainers(IConfiguration[] configurations, IWindsorContainer parentContainer)
 		{
-			foreach (IConfiguration childContainerConfig in configurations)
+			foreach (var childContainerConfig in configurations)
 			{
 				var id = childContainerConfig.Attributes["name"];
 

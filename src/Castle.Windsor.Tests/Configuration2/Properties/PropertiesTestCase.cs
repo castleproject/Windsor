@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,13 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#if !SILVERLIGHT // we do not support xml config on SL
+
+#if !SILVERLIGHT
+// we do not support xml config on SL
 
 namespace Castle.Windsor.Tests.Configuration2.Properties
 {
-	using Castle.Core.Configuration;
-	using Castle.MicroKernel.SubSystems.Configuration;
+	using Castle.MicroKernel.Tests.ClassComponents;
 	using Castle.Windsor.Configuration.Interpreters.XmlProcessor;
+
 	using NUnit.Framework;
 
 	[TestFixture]
@@ -35,48 +37,10 @@ namespace Castle.Windsor.Tests.Configuration2.Properties
 		}
 
 		[Test]
-		public void SilentProperties()
-		{
-			container = new WindsorContainer(ConfigHelper.ResolveConfigPath("Configuration2/Properties/config_with_silent_properties.xml"));
-
-			IConfigurationStore store = container.Kernel.ConfigurationStore;
-
-			Assert.AreEqual(1, store.GetFacilities().Length, "Diff num of facilities");
-			Assert.AreEqual(1, store.GetComponents().Length, "Diff num of components");
-
-			IConfiguration config = store.GetFacilityConfiguration("facility1");
-			IConfiguration childItem = config.Children["param1"];
-			Assert.IsNotNull(childItem);
-			Assert.AreEqual("prop1 value", childItem.Value);
-			Assert.AreEqual("", childItem.Attributes["attr"]);
-
-			config = store.GetComponentConfiguration("component1");
-			childItem = config.Children["param1"];
-			Assert.IsNotNull(childItem);
-			Assert.AreEqual(null, childItem.Value);
-			Assert.AreEqual("prop1 value", childItem.Attributes["attr"]);
-		}
-
-		[Test, ExpectedException(typeof(ConfigurationProcessingException))]
+		[ExpectedException(typeof(ConfigurationProcessingException))]
 		public void MissingProperties()
 		{
 			container = new WindsorContainer(ConfigHelper.ResolveConfigPath("Configuration2/Properties/config_with_missing_properties.xml"));
-		}
-
-		[Test]
-		public void PropertiesWithinProperties()
-		{
-			container = new WindsorContainer(ConfigHelper.ResolveConfigPath("Configuration2/Properties/properties_using_properties.xml"));
-
-			AssertConfiguration();
-		}
-
-		[Test]
-		public void PropertiesAndIncludes()
-		{
-			container = new WindsorContainer(ConfigHelper.ResolveConfigPath("Configuration2/Properties/config_with_properties_and_includes.xml"));
-
-			AssertConfiguration();
 		}
 
 		[Test]
@@ -95,26 +59,65 @@ namespace Castle.Windsor.Tests.Configuration2.Properties
 			AssertConfiguration();
 		}
 
+		[Test]
+		public void PropertiesAndIncludes()
+		{
+			container = new WindsorContainer(ConfigHelper.ResolveConfigPath("Configuration2/Properties/config_with_properties_and_includes.xml"));
+
+			AssertConfiguration();
+		}
+
+		[Test]
+		public void PropertiesWithinProperties()
+		{
+			container = new WindsorContainer(ConfigHelper.ResolveConfigPath("Configuration2/Properties/properties_using_properties.xml"));
+
+			AssertConfiguration();
+		}
+
+		[Test]
+		public void SilentProperties()
+		{
+			container = new WindsorContainer(ConfigHelper.ResolveConfigPath("Configuration2/Properties/config_with_silent_properties.xml"));
+
+			var store = container.Kernel.ConfigurationStore;
+
+			Assert.AreEqual(1, store.GetFacilities().Length, "Diff num of facilities");
+			Assert.AreEqual(1, store.GetComponents().Length, "Diff num of components");
+
+			var config = store.GetFacilityConfiguration(typeof(NoopFacility).FullName);
+			var childItem = config.Children["param1"];
+			Assert.IsNotNull(childItem);
+			Assert.AreEqual("prop1 value", childItem.Value);
+			Assert.AreEqual("", childItem.Attributes["attr"]);
+
+			config = store.GetComponentConfiguration("component1");
+			childItem = config.Children["param1"];
+			Assert.IsNotNull(childItem);
+			Assert.AreEqual(null, childItem.Value);
+			Assert.AreEqual("prop1 value", childItem.Attributes["attr"]);
+		}
+
 		private void AssertConfiguration()
 		{
-			IConfigurationStore store = container.Kernel.ConfigurationStore;
+			var store = container.Kernel.ConfigurationStore;
 
 			Assert.AreEqual(3, store.GetFacilities().Length, "Diff num of facilities");
 			Assert.AreEqual(2, store.GetComponents().Length, "Diff num of components");
 
-			IConfiguration config = store.GetFacilityConfiguration("facility1");
-			IConfiguration childItem = config.Children["item"];
+			var config = store.GetFacilityConfiguration(typeof(NoopFacility).FullName);
+			var childItem = config.Children["item"];
 			Assert.IsNotNull(childItem);
 			Assert.AreEqual("prop1 value", childItem.Value);
 
-			config = store.GetFacilityConfiguration("facility2");
+			config = store.GetFacilityConfiguration(typeof(Noop2Facility).FullName);
 			Assert.IsNotNull(config);
 			childItem = config.Children["item"];
 			Assert.IsNotNull(childItem);
 			Assert.AreEqual("prop2 value", childItem.Attributes["value"]);
 			Assert.IsNull(childItem.Value);
 
-			config = store.GetFacilityConfiguration("facility3");
+			config = store.GetFacilityConfiguration(typeof(HiperFacility).FullName);
 			Assert.IsNotNull(config);
 			Assert.AreEqual(3, config.Children.Count, "facility3 should have 3 children");
 

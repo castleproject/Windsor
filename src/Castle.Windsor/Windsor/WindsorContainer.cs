@@ -520,13 +520,24 @@ namespace Castle.Windsor
 		}
 
 		/// <summary>
-		///   Registers a facility within the kernel.
+		///   Registers a facility within the container.
 		/// </summary>
 		/// <param name = "idInConfiguration"></param>
 		/// <param name = "facility"></param>
 		public virtual IWindsorContainer AddFacility(String idInConfiguration, IFacility facility)
 		{
 			kernel.AddFacility(idInConfiguration, facility);
+			return this;
+		}
+
+
+		/// <summary>
+		///   Registers a facility within the container.
+		/// </summary>
+		/// <param name = "facility"></param>
+		public IWindsorContainer AddFacility(IFacility facility)
+		{
+			kernel.AddFacility(facility);
 			return this;
 		}
 

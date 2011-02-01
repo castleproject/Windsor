@@ -91,6 +91,13 @@ namespace Castle.MicroKernel
 		IKernel AddFacility(String key, IFacility facility);
 
 		/// <summary>
+		///   Adds a <see cref = "IFacility" /> to the kernel.
+		/// </summary>
+		/// <param name = "facility"></param>
+		/// <returns></returns>
+		IKernel AddFacility(IFacility facility);
+
+		/// <summary>
 		///   Creates and adds an <see cref = "IFacility" /> facility to the kernel.
 		/// </summary>
 		/// <typeparam name = "T">The facility type.</typeparam>

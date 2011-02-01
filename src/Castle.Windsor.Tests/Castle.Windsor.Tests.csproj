@@ -321,6 +321,8 @@
     <Compile Include="ClassComponents\HasByRefCtorArgument.cs" />
     <Compile Include="ClassComponents\HasCtorDependency.cs" />
     <Compile Include="ClassComponents\HasNestedType.cs" />
+    <Compile Include="ClassComponents\Noop2Facility.cs" />
+    <Compile Include="ClassComponents\NoopFacility.cs" />
     <Compile Include="ClassInheritanceTestCase.cs" />
     <Compile Include="ComponentsParametersDivisionTestsCase.cs" />
     <Compile Include="Components\ArrayRefDepAsConstructor.cs" />

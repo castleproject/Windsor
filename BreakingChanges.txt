@@ -1,4 +1,23 @@
 ================================================================================================
+change - type attribute is now required and id is ignored in facility XML configuration
+
+impact - low
+fixability - easy
+
+description - Since type is uniquely identifying facilities there was no point in keeping the id
+	around anymore.
+
+fix - This change can affect you in two ways. If you were using facilities node in the XML and
+	not specifying the type it is now mandatory. Notice Windsor's ability to apply short type
+	names works here as well, so often just type name is enough - no need to specify assembly
+	qualified name. Also the assembly will now be instantiated by the container, so if you were
+	adding it in code later on, this is no longer required (in fact it will throw an exception
+	saying the assembly was already added).
+	The other thing that may affect you is if you were looking up facility config namnually via
+	IConfigurationStore.GetFacilityConfiguration method. It now expects full name of the type
+	as the key, so you should be calling it like this:
+	store.GetFacilityConfiguration(typeof(YourFacility).FullName);
+================================================================================================
 change - EventWiringFacility, FactorySupportFacility and RemotingFacility are extracted to their
 	own assemblies
 

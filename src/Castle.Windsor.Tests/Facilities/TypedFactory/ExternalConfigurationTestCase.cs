@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+
 #if (!SILVERLIGHT)
 
 namespace Castle.Windsor.Tests.Facilities.TypedFactory
 {
-	using Castle.Facilities.TypedFactory;
 	using Castle.MicroKernel.Registration;
 	using Castle.Windsor;
 	using Castle.Windsor.Installer;
@@ -29,29 +29,6 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 	[TestFixture]
 	public class ExternalConfigurationTestCase
 	{
-		[SetUp]
-		public void Init()
-		{
-			var path = ConfigHelper.ResolveConfigPath("Facilities/TypedFactory/typedFactory_castle_config.xml");
-
-			container = new WindsorContainer();
-			container.Install(Configuration.FromXmlFile(path));
-			container.AddFacility<TypedFactoryFacility>("typedfactory");
-
-			container.Register(
-				Component.For(typeof(IProtocolHandler)).ImplementedBy(typeof(MirandaProtocolHandler)).Named("miranda"));
-			container.Register(
-				Component.For(typeof(IProtocolHandler)).ImplementedBy(typeof(MessengerProtocolHandler)).Named("messenger"));
-			container.Register(Component.For(typeof(IDummyComponent)).ImplementedBy(typeof(Component1)).Named("comp1"));
-			container.Register(Component.For(typeof(IDummyComponent)).ImplementedBy(typeof(Component2)).Named("comp2"));
-		}
-
-		[TearDown]
-		public void Finish()
-		{
-			container.Dispose();
-		}
-
 		private IWindsorContainer container;
 
 		[Test]
@@ -113,6 +90,28 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 			var comp2 = (IDummyComponent)factory.Construct("comp2");
 			Assert.IsTrue(comp2 is Component2);
 			Assert.IsNotNull(comp2);
+		}
+
+		[TearDown]
+		public void Finish()
+		{
+			container.Dispose();
+		}
+
+		[SetUp]
+		public void Init()
+		{
+			var path = ConfigHelper.ResolveConfigPath("Facilities/TypedFactory/typedFactory_castle_config.xml");
+
+			container = new WindsorContainer();
+			container.Install(Configuration.FromXmlFile(path));
+
+			container.Register(
+				Component.For(typeof(IProtocolHandler)).ImplementedBy(typeof(MirandaProtocolHandler)).Named("miranda"));
+			container.Register(
+				Component.For(typeof(IProtocolHandler)).ImplementedBy(typeof(MessengerProtocolHandler)).Named("messenger"));
+			container.Register(Component.For(typeof(IDummyComponent)).ImplementedBy(typeof(Component1)).Named("comp1"));
+			container.Register(Component.For(typeof(IDummyComponent)).ImplementedBy(typeof(Component2)).Named("comp2"));
 		}
 
 		[Test]
