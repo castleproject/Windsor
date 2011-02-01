@@ -271,10 +271,6 @@
       <Project>{50286B04-1FDA-46A7-89A1-6CFE9F5BB0DA}</Project>
       <Name>Castle.Facilities.FactorySupport</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Castle.Facilities.Remoting\Castle.Facilities.Remoting.csproj">
-      <Project>{6DAC4325-B4AC-41A4-B892-2548185905BA}</Project>
-      <Name>Castle.Facilities.Remoting</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Castle.Windsor\Castle.Windsor.csproj">
       <Name>Castle.Windsor</Name>
       <Project>{60EFCB9B-E3FF-46A5-A2D2-D9F0EF75D5FE}</Project>
