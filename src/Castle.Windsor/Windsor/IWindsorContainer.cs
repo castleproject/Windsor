@@ -144,7 +144,9 @@ namespace Castle.Windsor
 		///   Registers a facility within the container.
 		/// </summary>
 		/// <param name = "idInConfiguration">The key by which the <see cref = "IFacility" /> gets indexed.</param>
-		/// <param name = "facility">The <see cref = "IFacility" /> to add to the container.</param>
+		/// <param name = "facility">The <see cref = "IFacility" /> to add to the container.</param> 
+		[Obsolete("Use AddFacility(IFacility) instead.")]
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		IWindsorContainer AddFacility(String idInConfiguration, IFacility facility);
 
 		/// <summary>
@@ -159,6 +161,8 @@ namespace Castle.Windsor
 		/// <typeparam name = "TFacility">The facility type.</typeparam>
 		/// <param name = "idInConfiguration"></param>
 		/// <returns></returns>
+		[Obsolete("Use AddFacility<TFacility>() instead.")]
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		IWindsorContainer AddFacility<TFacility>(String idInConfiguration) where TFacility : IFacility, new();
 
 		/// <summary>
@@ -168,6 +172,8 @@ namespace Castle.Windsor
 		/// <param name = "idInConfiguration"></param>
 		/// <param name = "configureFacility">The callback for creation.</param>
 		/// <returns></returns>
+		[Obsolete("Use AddFacility<TFacility>(Action<TFacility>) instead.")]
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		IWindsorContainer AddFacility<TFacility>(String idInConfiguration, Action<TFacility> configureFacility)
 			where TFacility : IFacility, new();
 

@@ -239,7 +239,7 @@ namespace Castle.Facilities.Synchronize.Tests
 			facNode.Attributes["type"] = type;
 			facNode.Attributes[Constants.ControlProxyHookAttrib] = typeof(string).AssemblyQualifiedName;
 			container2.Kernel.ConfigurationStore.AddFacilityConfiguration(type, facNode);
-			container2.AddFacility("sync.facility", new SynchronizeFacility());
+			container2.AddFacility(new SynchronizeFacility());
 		}
 
 		[Test]
@@ -251,7 +251,7 @@ namespace Castle.Facilities.Synchronize.Tests
 			facNode.Attributes["type"] = type;
 			facNode.Attributes[Constants.ControlProxyHookAttrib] = typeof(DummyProxyHook).AssemblyQualifiedName;
 			container2.Kernel.ConfigurationStore.AddFacilityConfiguration(type, facNode);
-			container2.AddFacility("sync.facility", new SynchronizeFacility());
+			container2.AddFacility(new SynchronizeFacility());
 
 			container2.Register(Component.For<DummyForm>().Named("dummy.form.class"));
 			var model = container2.Kernel.GetHandler("dummy.form.class").ComponentModel;
@@ -270,7 +270,7 @@ namespace Castle.Facilities.Synchronize.Tests
 			facNode.Attributes["type"] = type;
 			facNode.Attributes[Constants.ControlProxyHookAttrib] = "${missing.component}";
 			container2.Kernel.ConfigurationStore.AddFacilityConfiguration(type, facNode);
-			container2.AddFacility("sync.facility", new SynchronizeFacility());
+			container2.AddFacility(new SynchronizeFacility());
 			container2.Register(Component.For<DummyForm>());
 
 			var exception = Assert.Throws<HandlerException>(() => container2.Resolve<DummyForm>());
