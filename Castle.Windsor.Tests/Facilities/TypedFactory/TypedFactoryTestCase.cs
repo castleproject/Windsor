@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -24,25 +24,11 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 	using NUnit.Framework;
 
 	/// <summary>
-	/// Summary description for TypedFactoryTestCase.
+	///   Summary description for TypedFactoryTestCase.
 	/// </summary>
 	[TestFixture]
 	public class TypedFactoryTestCase
 	{
-		[SetUp]
-		public void Init()
-		{
-			container = new WindsorContainer(new DefaultConfigurationStore());
-			facility = new TypedFactoryFacility();
-			container.AddFacility("typedfactory", facility);
-		}
-
-		[TearDown]
-		public void Finish()
-		{
-			container.Dispose();
-		}
-
 		private IWindsorContainer container;
 		private TypedFactoryFacility facility;
 
@@ -109,7 +95,6 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 			container.Register(Component.For(typeof(IDummyComponent)).ImplementedBy(typeof(Component1)).Named("comp1"));
 			container.Register(Component.For(typeof(IDummyComponent)).ImplementedBy(typeof(Component2)).Named("comp2"));
 
-
 			var factory = container.Resolve<IComponentFactory1>("compFactory");
 			Assert.IsNotNull(factory);
 
@@ -143,6 +128,20 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 			var comp2 = (IDummyComponent)factory.Construct("comp2");
 			Assert.IsTrue(comp2 is Component2);
 			Assert.IsNotNull(comp2);
+		}
+
+		[TearDown]
+		public void Finish()
+		{
+			container.Dispose();
+		}
+
+		[SetUp]
+		public void Init()
+		{
+			container = new WindsorContainer(new DefaultConfigurationStore());
+			facility = new TypedFactoryFacility();
+			container.AddFacility(facility);
 		}
 	}
 }

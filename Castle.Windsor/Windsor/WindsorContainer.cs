@@ -524,6 +524,8 @@ namespace Castle.Windsor
 		/// </summary>
 		/// <param name = "idInConfiguration"></param>
 		/// <param name = "facility"></param>
+		[Obsolete("Use AddFacility(IFacility) instead.")]
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public virtual IWindsorContainer AddFacility(String idInConfiguration, IFacility facility)
 		{
 			kernel.AddFacility(idInConfiguration, facility);
@@ -547,6 +549,8 @@ namespace Castle.Windsor
 		/// <typeparam name = "T">The facility type.</typeparam>
 		/// <param name = "idInConfiguration"></param>
 		/// <returns></returns>
+		[Obsolete("Use AddFacility<TFacility>() instead.")]
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public IWindsorContainer AddFacility<T>(String idInConfiguration) where T : IFacility, new()
 		{
 			kernel.AddFacility<T>(idInConfiguration);
@@ -560,6 +564,8 @@ namespace Castle.Windsor
 		/// <param name = "idInConfiguration"></param>
 		/// <param name = "configureFacility">The callback for creation.</param>
 		/// <returns></returns>
+		[Obsolete("Use AddFacility<TFacility>(Action<TFacility>) instead.")]
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public IWindsorContainer AddFacility<T>(String idInConfiguration, Action<T> configureFacility)
 			where T : IFacility, new()
 		{

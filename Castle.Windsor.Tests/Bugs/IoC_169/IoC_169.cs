@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -73,11 +73,11 @@ namespace Castle.Windsor.Tests.Bugs.IoC_169
 
 			var container = new WindsorContainer();
 
-			container.AddFacility("startable.facility", new StartableFacility());
+			container.AddFacility(new StartableFacility());
 
 			container.Register(Component.For(typeof(IBlackboard)).ImplementedBy(typeof(Blackboard)).Named("blackboard"));
 
-			BasedOnDescriptor registrations = AllTypes.
+			var registrations = AllTypes.
 				FromAssembly(GetType().Assembly)
 				.BasedOn<IServiceWithoutImplementation>()
 				.Unless(t => container.Kernel.HasComponent(t));

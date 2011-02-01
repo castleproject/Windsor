@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -37,29 +37,29 @@ namespace Castle.Windsor.Tests.Facilities.EventWiring
 		{
 			container = new WindsorContainer();
 
-			store = (IConfigurationStore) 
-				container.Kernel.GetSubSystem(SubSystemConstants.ConfigurationStoreKey);
+			store = (IConfigurationStore)
+			        container.Kernel.GetSubSystem(SubSystemConstants.ConfigurationStoreKey);
 		}
 
 		[Test]
 		public void Wiring_WhenPublisherHasAProxy_ListenerShouldStillGetTheEvents()
 		{
-			MutableConfiguration config = new MutableConfiguration("component");
+			var config = new MutableConfiguration("component");
 			config.
 				CreateChild("subscribers").
-					CreateChild("subscriber").
-					Attribute("id", "listener").
-					Attribute("event", "Event").
-					Attribute("handler", "OnPublish");
+				CreateChild("subscriber").
+				Attribute("id", "listener").
+				Attribute("event", "Event").
+				Attribute("handler", "OnPublish");
 			store.AddComponentConfiguration("publisher", config);
 
-			container.AddFacility("event", new EventWiringFacility());
+			container.AddFacility(new EventWiringFacility());
 
 			// Registers interceptor as component
 			container.Register(Component.For<CountingInterceptor>().Named("my.interceptor"));
-			
+
 			container.Register(Component.For<SimpleListener>().Named("listener"));
-			
+
 			// Publisher has a reference to interceptor
 			container.Register(
 				Component.For<SimplePublisher>().
@@ -67,14 +67,14 @@ namespace Castle.Windsor.Tests.Facilities.EventWiring
 					Interceptors(new InterceptorReference("my.interceptor")).First);
 
 			// Triggers events
-			SimplePublisher publisher = container.Resolve<SimplePublisher>();
+			var publisher = container.Resolve<SimplePublisher>();
 			publisher.Trigger();
 
-			CountingInterceptor interceptor = container.Resolve<CountingInterceptor>();
+			var interceptor = container.Resolve<CountingInterceptor>();
 			Assert.AreEqual(1, interceptor.Intercepted);
 
 			// Assert that event was caught
-			SimpleListener listener = container.Resolve<SimpleListener>();
+			var listener = container.Resolve<SimpleListener>();
 			Assert.IsTrue(listener.Listened);
 			Assert.AreSame(publisher, listener.Sender);
 		}
