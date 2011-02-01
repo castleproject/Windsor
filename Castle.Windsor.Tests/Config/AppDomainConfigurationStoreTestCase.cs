@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+
 #if !SILVERLIGHT
 // we do not support xml config on SL
 
@@ -20,6 +21,7 @@ namespace Castle.Windsor.Tests.Config
 	using Castle.Core.Resource;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.SubSystems.Configuration;
+	using Castle.MicroKernel.Tests.ClassComponents;
 	using Castle.Windsor.Configuration.Interpreters;
 
 	using NUnit.Framework;
@@ -41,12 +43,12 @@ namespace Castle.Windsor.Tests.Config
 			Assert.AreEqual(2, store.GetFacilities().Length);
 			Assert.AreEqual(3, store.GetComponents().Length);
 
-			var config = store.GetFacilityConfiguration("testidengine");
+			var config = store.GetFacilityConfiguration(typeof(NoopFacility).FullName);
 			var childItem = config.Children["item"];
 			Assert.IsNotNull(childItem);
 			Assert.AreEqual("value", childItem.Value);
 
-			config = store.GetFacilityConfiguration("testidengine2");
+			config = store.GetFacilityConfiguration(typeof(Noop2Facility).FullName);
 			Assert.IsNotNull(config);
 			Assert.AreEqual("value within CDATA section", config.Value);
 

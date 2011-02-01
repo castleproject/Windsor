@@ -7,15 +7,15 @@
 	</properties>
 
 	<facilities>
-		<facility id="facility1" >
+    <facility type="NoopFacility" >
 			<item>#{prop1}</item>
 		</facility>
-	
-		<facility id="facility2" >
-			<item value="#{prop2}" />
-		</facility>	
 
-		<facility id="facility3">
+    <facility type="Noop2Facility" >
+			<item value="#{prop2}" />
+		</facility>
+
+    <facility type="HiperFacility">
 			<param1 attr="#{prop1}">#{prop2}</param1>
 			<param2 attr="#{prop2}">#{prop1}</param2>
 			<param3 attr="param3 attr"><value attr="param3 value attr">param3 value</value></param3>

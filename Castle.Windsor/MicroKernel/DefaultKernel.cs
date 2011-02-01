@@ -316,28 +316,24 @@ namespace Castle.MicroKernel
 
 		public virtual IKernel AddFacility(String key, IFacility facility)
 		{
-			if (key == null)
-			{
-				throw new ArgumentNullException("key");
-			}
+			return AddFacility(facility);
+		}
+
+		public virtual IKernel AddFacility(IFacility facility)
+		{
 			if (facility == null)
 			{
 				throw new ArgumentNullException("facility");
 			}
-			if (facilities.Any(f => f.GetType() == facility.GetType()))
+			var facilityType = facility.GetType();
+			if (facilities.Any(f => f.GetType() == facilityType))
 			{
 				throw new ArgumentException(
 					string.Format("Facility of type '{0}' has already been registered with the container. Only one facility of a given type can exist in the container.",
-					              facility.GetType().Name));
+					              facilityType.Name));
 			}
-			try
-			{
-				facilities.Add(facility);
-			}
-			catch (ArgumentException)
-			{
-			}
-			facility.Init(this, ConfigurationStore.GetFacilityConfiguration(key));
+			facilities.Add(facility);
+			facility.Init(this, ConfigurationStore.GetFacilityConfiguration(facilityType.FullName));
 
 			return this;
 		}

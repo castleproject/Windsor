@@ -16,24 +16,14 @@ namespace Castle.MicroKernel.Tests.ClassComponents
 {
 	using Castle.Core.Configuration;
 
-	using NUnit.Framework;
-
-	public class HiperFacility : IFacility
+	public class NoopFacility : IFacility
 	{
-		public bool Initialized { get; private set; }
-		public bool Terminated { get; private set; }
-
 		public void Init(IKernel kernel, IConfiguration facilityConfig)
 		{
-			Assert.IsNotNull(kernel);
-			Assert.IsNotNull(facilityConfig);
-
-			Initialized = true;
 		}
 
 		public void Terminate()
 		{
-			Terminated = true;
 		}
 	}
 }

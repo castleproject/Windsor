@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,11 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#if !SILVERLIGHT // we do not support xml config on SL
+#if !SILVERLIGHT
+// we do not support xml config on SL
+
 namespace Castle.Windsor.Tests.Configuration2
 {
-	using Castle.Core.Configuration;
-	using Castle.MicroKernel.SubSystems.Configuration;
+	using Castle.MicroKernel.Tests.ClassComponents;
 	using Castle.Windsor.Configuration.Interpreters;
 	using Castle.XmlFiles;
 
@@ -26,6 +27,14 @@ namespace Castle.Windsor.Tests.Configuration2
 	public class IncludesTestCase
 	{
 		private IWindsorContainer container;
+
+		[Test]
+		public void AssemblyResourceAndIncludes()
+		{
+			container = new WindsorContainer(new XmlInterpreter(Xml.Embedded("hasResourceIncludes.xml")));
+
+			AssertConfiguration();
+		}
 
 		[Test]
 		public void FileResourceAndIncludes()
@@ -51,27 +60,19 @@ namespace Castle.Windsor.Tests.Configuration2
 			AssertConfiguration();
 		}
 
-		[Test]
-		public void AssemblyResourceAndIncludes()
-		{
-			container = new WindsorContainer(new XmlInterpreter(Xml.Embedded("hasResourceIncludes.xml")));
-
-			AssertConfiguration();
-		}
-
 		private void AssertConfiguration()
 		{
-			IConfigurationStore store = container.Kernel.ConfigurationStore;
+			var store = container.Kernel.ConfigurationStore;
 
 			Assert.AreEqual(2, store.GetFacilities().Length);
 			Assert.AreEqual(2, store.GetComponents().Length);
 
-			IConfiguration config = store.GetFacilityConfiguration("testidengine");
-			IConfiguration childItem = config.Children["item"];
+			var config = store.GetFacilityConfiguration(typeof(NoopFacility).FullName);
+			var childItem = config.Children["item"];
 			Assert.IsNotNull(childItem);
 			Assert.AreEqual("value", childItem.Value);
 
-			config = store.GetFacilityConfiguration("testidengine2");
+			config = store.GetFacilityConfiguration(typeof(Noop2Facility).FullName);
 			Assert.IsNotNull(config);
 			Assert.AreEqual("value within CDATA section", config.Value);
 

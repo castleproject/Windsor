@@ -1,18 +1,18 @@
-﻿<?xml version="1.0" encoding="utf-8" ?> 
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <configuration>
 
-	<facilities>
+  <facilities>
 
-		<facility id="testidengine">
-		<item>value</item>
-		</facility>
+    <facility type="NoopFacility">
+      <item>value</item>
+    </facility>
 
-		<facility id="testidengine2">
-		<![CDATA[
+    <facility type="Noop2Facility">
+      <![CDATA[
         value within CDATA section
 		]]>
-		</facility>
+    </facility>
 
-	</facilities>
+  </facilities>
 
 </configuration>

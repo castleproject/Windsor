@@ -222,15 +222,9 @@ namespace Castle.Windsor.Configuration.Interpreters
 		private static void DeserializeFacility(XmlNode node, IConfigurationStore store, IConversionManager converter)
 		{
 			var config = XmlConfigurationDeserializer.GetDeserializedNode(node);
-			var id = config.Attributes["id"];
-			if (string.IsNullOrEmpty(id))
-			{
-				var type = converter.PerformConversion<Type>(config.Attributes["type"]);
-				id = type.FullName;
-				config.Attributes["id"] = id;
-				config.Attributes.Add("id-automatic", true.ToString());
-			}
-			AddFacilityConfig(id, config, store);
+			var typeName = GetRequiredAttributeValue(config, "type");
+			var type = converter.PerformConversion<Type>(typeName);
+			AddFacilityConfig(type.FullName, config, store);
 		}
 
 		private static void DeserializeComponents(XmlNodeList nodes, IConfigurationStore store, IConversionManager converter)

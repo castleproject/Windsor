@@ -14,13 +14,13 @@
 
   <facilities>
 
-    <facility id="testidengine">
+    <facility type="DummyFacility">
       <item>
         va<!--test-->lue
       </item>
     </facility>
 
-    <facility id="testidengine2">
+    <facility type="HiperFacility">
       <![CDATA[
         value within CDATA section
 		]]>
