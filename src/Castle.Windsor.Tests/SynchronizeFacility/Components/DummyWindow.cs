@@ -14,16 +14,30 @@
 
 namespace Castle.Facilities.Synchronize.Tests.Components
 {
-	using System.Threading;
+#if !SILVERLIGHT
+	using System.Windows;
 	using System.Windows.Controls;
 
-	[Synchronize(typeof(SynchronizationContext))]
-	public class ClassInDepdnencyContextWithMissingDependency
+	public class DummyWindow : Window, IDummyWindow
 	{
-		[Synchronize("foo")]
-		public virtual void DoWork(Panel panel)
+		private readonly StackPanel stackPanel;
+
+		public DummyWindow()
 		{
-			panel.Children.Add(new Button());
+			stackPanel = new StackPanel();
+			Content = stackPanel;
+		}
+
+		public Panel Panel
+		{
+			get { return stackPanel; }
+		}
+
+		public virtual int AddControl(Control control)
+		{
+			stackPanel.Children.Add(control);
+			return stackPanel.Children.Count;
 		}
 	}
+#endif
 }

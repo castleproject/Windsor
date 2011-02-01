@@ -260,8 +260,25 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\$(BuildConfigKey)\Castle.Core.dll</HintPath>
     </Reference>
+    <Reference Include="Castle.Services.Logging.Log4netIntegration">
+      <HintPath>..\..\lib\$(BuildConfigKey)\Castle.Services.Logging.Log4netIntegration.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.Services.Logging.NLogIntegration">
+      <HintPath>..\..\lib\$(BuildConfigKey)\Castle.Services.Logging.NLogIntegration.dll</HintPath>
+    </Reference>
+    <Reference Include="NLog">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>$(RootPath)\lib\$(BuildConfigKey)\NLog.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net">
+      <HintPath>..\..\lib\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore" Condition="$(MSBuildTargets)!='Silverlight 3.0' and $(MSBuildTargets)!='Silverlight 4.0'"/>
+    <Reference Include="PresentationFramework" Condition="$(MSBuildTargets)!='Silverlight 3.0' and $(MSBuildTargets)!='Silverlight 4.0'"/>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xaml" Condition="$(MSBuildTargets)!='Silverlight 3.0' and $(MSBuildTargets)!='Silverlight 4.0'"/>
     <Reference Include="System.Xml" />
     <ProjectReference Include="..\Castle.Facilities.EventWiring\Castle.Facilities.EventWiring.csproj">
       <Project>{4BB0BD73-0CB7-4979-B790-C4DAC0A32294}</Project>
@@ -271,9 +288,17 @@
       <Project>{50286B04-1FDA-46A7-89A1-6CFE9F5BB0DA}</Project>
       <Name>Castle.Facilities.FactorySupport</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Castle.Facilities.Remoting\Castle.Facilities.Remoting.csproj">
+    <ProjectReference Include="..\Castle.Facilities.Remoting\Castle.Facilities.Remoting.csproj" Condition="$(MSBuildTargets)!='Silverlight 3.0' and $(MSBuildTargets)!='Silverlight 4.0'">
       <Project>{6DAC4325-B4AC-41A4-B892-2548185905BA}</Project>
       <Name>Castle.Facilities.Remoting</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Castle.Facilities.Logging\Castle.Facilities.Logging.csproj">
+      <Project>{32D54D33-206F-44EE-8329-8480ABE049B1}</Project>
+      <Name>Castle.Facilities.Logging</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Castle.Facilities.Synchronize\Castle.Facilities.Synchronize.csproj" Condition="$(MSBuildTargets)!='Silverlight 3.0' and $(MSBuildTargets)!='Silverlight 4.0'">
+      <Project>{60C7AA6D-7DF1-432C-9E93-C01A64747ABD}</Project>
+      <Name>Castle.Facilities.Synchronize</Name>
     </ProjectReference>
     <ProjectReference Include="..\Castle.Windsor\Castle.Windsor.csproj">
       <Name>Castle.Windsor</Name>
@@ -281,6 +306,7 @@
       <Package>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</Package>
       <Private>True</Private>
     </ProjectReference>
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup Condition="$(MSBuildTargets)!='Silverlight 3.0' and $(MSBuildTargets)!='Silverlight 4.0'">
     <Reference Include="System.configuration" />
@@ -475,6 +501,19 @@
     <Compile Include="Lifestyle\Components\SealedComponentWithDependency.cs" />
     <Compile Include="Lifestyle\Components\TrivialComponentWithDependency.cs" />
     <Compile Include="Lifestyle\Components\UsesComponentWithDispose.cs" />
+    <Compile Include="LoggingFacility\BaseTest.cs" />
+    <Compile Include="LoggingFacility\Classes\ComplexLoggingComponent.cs" />
+    <Compile Include="LoggingFacility\Classes\ISmtpServer.cs" />
+    <Compile Include="LoggingFacility\Classes\SimpleLoggingComponent.cs" />
+    <Compile Include="LoggingFacility\Classes\SmtpServer.cs" />
+    <Compile Include="LoggingFacility\ConsoleFacitlyTest.cs" />
+    <Compile Include="LoggingFacility\ExtendedLog4NetFacilityTests.cs" />
+    <Compile Include="LoggingFacility\ExtendedNLogFacilityTests.cs" />
+    <Compile Include="LoggingFacility\Facilities77.cs" />
+    <Compile Include="LoggingFacility\Log4NetFacilityTests.cs" />
+    <Compile Include="LoggingFacility\NLogFacilityTests.cs" />
+    <Compile Include="LoggingFacility\NullFacitlyTest.cs" />
+    <Compile Include="LoggingFacility\TraceFacilityTest.cs" />
     <Compile Include="MicroKernel\NotImplementedDependencyResolver.cs" />
     <Compile Include="Pools\RecyclableComponent.cs" />
     <Compile Include="Pools\UseRecyclableComponent.cs" />
@@ -589,6 +628,20 @@
     <Compile Include="Registration\WithServiceTestCase.cs" />
     <Compile Include="ServiceOverridesStackOverflowTestCase.cs" />
     <Compile Include="SpecializedResolvers\CollectionResolverTestCase.cs" />
+    <Compile Include="SynchronizeFacility\Components\ClassInDepdnencyContextWithMissingDependency.cs" />
+    <Compile Include="SynchronizeFacility\Components\ClassInDispatcherContextWithoutVirtualMethod.cs" />
+    <Compile Include="SynchronizeFacility\Components\ClassUsingDispatcherContext.cs" />
+    <Compile Include="SynchronizeFacility\Components\ClassUsingWindow.cs" />
+    <Compile Include="SynchronizeFacility\Components\ClassUsingWindowInAmbientContext.cs" />
+    <Compile Include="SynchronizeFacility\Components\ClassUsingWindowInWindowsContext.cs" />
+    <Compile Include="SynchronizeFacility\Components\DummyWindow.cs" />
+    <Compile Include="SynchronizeFacility\Components\IClassUsingDepedenecyContext.cs" />
+    <Compile Include="SynchronizeFacility\Components\IDummyWindow.cs" />
+    <Compile Include="SynchronizeFacility\DispatcherObjectTestFixture.cs" />
+    <Compile Include="SynchronizeFacility\DummyClasses.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SynchronizeFacility\SynchronizeFacilityTestFixture.cs" />
     <Compile Include="TypeComparerTestCase.cs" />
     <Compile Include="TypedDependenciesTestCase.cs" />
     <Compile Include="MicroKernel\ArgumentsTestCase.cs" />
@@ -1390,6 +1443,13 @@
     <Content Include="XmlProcessor\TestFiles\PropertiesWithPI-IfStatementTestResult.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <None Include="LoggingFacility\log4net.facilities.test.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="LoggingFacility\NLog.facilities.test.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />

@@ -14,15 +14,12 @@
 
 namespace Castle.Facilities.Synchronize.Tests.Components
 {
-	using System.Windows.Controls;
+#if !SILVERLIGHT
+	using System.Windows.Threading;
 
-	public class ClassUsingWindow
+	[Synchronize(typeof(DispatcherSynchronizationContext))]
+	public class ClassUsingWindowInWindowsContext : ClassUsingWindow
 	{
-		[Synchronize]
-		public virtual int DoWork(Panel panel)
-		{
-			panel.Children.Add(new Button());
-			return panel.Children.Count;
-		}
 	}
+#endif
 }
