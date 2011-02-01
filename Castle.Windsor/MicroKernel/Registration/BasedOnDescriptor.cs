@@ -20,13 +20,6 @@ namespace Castle.MicroKernel.Registration
 	using Castle.Core;
 
 	/// <summary>
-	///   Delegate for custom registration configuration.
-	/// </summary>
-	/// <param name = "registration">The component registration.</param>
-	/// <returns>Not used.</returns>
-	public delegate object ConfigureDelegate(ComponentRegistration registration);
-
-	/// <summary>
 	///   Describes how to register a group of related types.
 	/// </summary>
 	public class BasedOnDescriptor : IRegistration
