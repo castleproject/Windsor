@@ -64,7 +64,7 @@ namespace Castle.Windsor.Tests.Facilities
 			facility = new HiperFacility();
 
 			Assert.IsFalse(facility.Initialized);
-			kernel.AddFacility(facilityKey, facility);
+			kernel.AddFacility(facility);
 		}
 
 		[Test]

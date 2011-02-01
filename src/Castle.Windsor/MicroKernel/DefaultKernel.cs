@@ -17,6 +17,7 @@ namespace Castle.MicroKernel
 	using System;
 	using System.Collections;
 	using System.Collections.Generic;
+	using System.ComponentModel;
 	using System.Diagnostics;
 	using System.Linq;
 	using System.Runtime.Serialization;
@@ -314,6 +315,8 @@ namespace Castle.MicroKernel
 			}
 		}
 
+		[Obsolete("Use AddFacility(IFacility) instead.")]
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public virtual IKernel AddFacility(String key, IFacility facility)
 		{
 			return AddFacility(facility);
@@ -338,25 +341,24 @@ namespace Castle.MicroKernel
 			return this;
 		}
 
+		[Obsolete("Use AddFacility<TFacility>() instead.")]
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public IKernel AddFacility<T>(String key) where T : IFacility, new()
 		{
-			return AddFacility(key, new T());
+			return AddFacility(new T());
 		}
 
+		[Obsolete("Use AddFacility<TFacility>(Action<TFacility>) instead.")]
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public IKernel AddFacility<T>(String key, Action<T> onCreate)
 			where T : IFacility, new()
 		{
-			var facility = new T();
-			if (onCreate != null)
-			{
-				onCreate(facility);
-			}
-			return AddFacility(key, facility);
+			return AddFacility(onCreate);
 		}
 
 		public IKernel AddFacility<T>() where T : IFacility, new()
 		{
-			return AddFacility<T>(typeof(T).FullName);
+			return AddFacility(new T());
 		}
 
 		public IKernel AddFacility<T>(Action<T> onCreate)
@@ -367,7 +369,7 @@ namespace Castle.MicroKernel
 			{
 				onCreate(facility);
 			}
-			return AddFacility(typeof(T).FullName, facility);
+			return AddFacility(facility);
 		}
 
 		public void AddHandlerSelector(IHandlerSelector selector)
