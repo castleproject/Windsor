@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#if !SILVERLIGHT
 [assembly: NUnit.Framework.RequiresSTA]
 
 namespace Castle.Facilities.Synchronize.Tests
@@ -285,3 +286,4 @@ namespace Castle.Facilities.Synchronize.Tests
 		}
 	}
 }
+#endif

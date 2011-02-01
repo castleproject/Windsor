@@ -14,6 +14,7 @@
 
 namespace Castle.Facilities.Synchronize.Tests
 {
+#if !SILVERLIGHT
 	using System;
 	using System.Configuration;
 	using System.Threading;
@@ -404,4 +405,5 @@ namespace Castle.Facilities.Synchronize.Tests
 			sync.DoWork();
 		}
 	}
+#endif
 }

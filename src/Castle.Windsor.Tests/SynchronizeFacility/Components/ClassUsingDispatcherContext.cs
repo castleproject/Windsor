@@ -14,10 +14,19 @@
 
 namespace Castle.Facilities.Synchronize.Tests.Components
 {
+#if !SILVERLIGHT
 	using System.Windows.Controls;
+	using System.Windows.Threading;
 
-	public interface IDummyWindow
+	[Synchronize]
+	public class ClassUsingDispatcherContext<T> : IClassUsingDepedenecyContext<T> where T : Panel
 	{
-		int AddControl(Control control);
+		[Synchronize(typeof(DispatcherSynchronizationContext))]
+		public T DoWork(T work)
+		{
+			work.Children.Add(new Button());
+			return work;
+		}
 	}
+#endif
 }
