@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -43,14 +43,14 @@ namespace Castle.Windsor.Tests.Facilities.FactorySupport
 		[Test]
 		public void NullModelConfigurationBug()
 		{
-			kernel.AddFacility("factories", new FactorySupportFacility());
+			kernel.AddFacility<FactorySupportFacility>();
 			kernel.Register(Component.For<ICustomer>().Named("a").Instance(new CustomerImpl()));
 		}
 
 		[Test]
 		public void DependencyIgnored()
 		{
-			kernel.AddFacility("factories", new FactorySupportFacility());
+			kernel.AddFacility<FactorySupportFacility>();
 			kernel.Register(Component.For(typeof(Factory)).Named("a"));
 
 			AddComponent("stringdictComponent", typeof(StringDictionaryDependentComponent), "CreateWithStringDictionary");
@@ -63,25 +63,27 @@ namespace Castle.Windsor.Tests.Facilities.FactorySupport
 		}
 
 #if !SILVERLIGHT
-		[Test][Ignore("BUG: not working")]
+		[Test]
+		[Ignore("BUG: not working")]
 		public void Can_instantiate_abstract_service_via_factory()
 		{
 			container.AddFacility<FactorySupportFacility>();
 			container.Install(Castle.Windsor.Installer.
 			                  	Configuration.FromXmlFile(
-									ConfigHelper.ResolveConfigPath("Configuration2/abstract_component_factory.xml")));
+			                  		ConfigHelper.ResolveConfigPath("Configuration2/abstract_component_factory.xml")));
 
 			container.Resolve<IComponent>("abstract");
 		}
 #endif
 
-		[Test, Ignore("Bug confirmed, but cant fix it without undesired side effects")]
+		[Test]
+		[Ignore("Bug confirmed, but cant fix it without undesired side effects")]
 		public void KernelDoesNotTryToWireComponentsPropertiesWithFactoryConfiguration()
 		{
-			kernel.AddFacility("factories", new FactorySupportFacility());
+			kernel.AddFacility<FactorySupportFacility>();
 			kernel.Register(Component.For(typeof(Factory)).Named("a"));
 
-			ComponentModel model = AddComponent("cool.service", typeof(MyCoolServiceWithProperties), "CreateCoolService");
+			var model = AddComponent("cool.service", typeof(MyCoolServiceWithProperties), "CreateCoolService");
 
 			model.Parameters.Add("someProperty", "Abc");
 
@@ -91,12 +93,13 @@ namespace Castle.Windsor.Tests.Facilities.FactorySupport
 			Assert.IsNull(service.SomeProperty);
 		}
 
-		[Test, Ignore("Since the facility is mostly for legacy stuff, I don't think it's crucial to support this.") ]
+		[Test]
+		[Ignore("Since the facility is mostly for legacy stuff, I don't think it's crucial to support this.")]
 		public void Late_bound_factory_properly_applies_lifetime_concerns()
 		{
-			kernel.AddFacility("factories", new FactorySupportFacility());
+			kernel.AddFacility<FactorySupportFacility>();
 			kernel.Register(Component.For(typeof(DisposableComponentFactory)).Named("a"));
-			var componentModel = AddComponent("foo", typeof (IComponent), "Create");
+			var componentModel = AddComponent("foo", typeof(IComponent), "Create");
 			componentModel.LifestyleType = LifestyleType.Transient;
 			var component = kernel.Resolve<IComponent>("foo") as ComponentWithDispose;
 			Assert.IsNotNull(component);
@@ -117,14 +120,14 @@ namespace Castle.Windsor.Tests.Facilities.FactorySupport
 
 		public class Factory
 		{
+			public static MyCoolServiceWithProperties CreateCoolService(string someProperty)
+			{
+				return new MyCoolServiceWithProperties();
+			}
+
 			public static HashTableDependentComponent CreateWithHashtable()
 			{
 				return new HashTableDependentComponent(null);
-			}
-
-			public static StringDictionaryDependentComponent CreateWithStringDictionary()
-			{
-				return new StringDictionaryDependentComponent(null);
 			}
 
 			public static ServiceDependentComponent CreateWithService()
@@ -132,9 +135,9 @@ namespace Castle.Windsor.Tests.Facilities.FactorySupport
 				return new ServiceDependentComponent(null);
 			}
 
-			public static MyCoolServiceWithProperties CreateCoolService(string someProperty)
+			public static StringDictionaryDependentComponent CreateWithStringDictionary()
 			{
-				return new MyCoolServiceWithProperties();
+				return new StringDictionaryDependentComponent(null);
 			}
 		}
 
@@ -170,7 +173,6 @@ namespace Castle.Windsor.Tests.Facilities.FactorySupport
 		public IComponent Create()
 		{
 			return new ComponentWithDispose();
-
 		}
 	}
 }

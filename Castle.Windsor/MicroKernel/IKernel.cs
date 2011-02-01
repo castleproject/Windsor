@@ -15,6 +15,7 @@
 namespace Castle.MicroKernel
 {
 	using System;
+	using System.ComponentModel;
 
 	using Castle.Core.Internal;
 	using Castle.MicroKernel.Registration;
@@ -88,6 +89,8 @@ namespace Castle.MicroKernel
 		/// <param name = "key"></param>
 		/// <param name = "facility"></param>
 		/// <returns></returns>
+		[Obsolete("Use AddFacility(IFacility) instead.")]
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		IKernel AddFacility(String key, IFacility facility);
 
 		/// <summary>
@@ -102,6 +105,8 @@ namespace Castle.MicroKernel
 		/// </summary>
 		/// <typeparam name = "T">The facility type.</typeparam>
 		/// <param name = "key"></param>
+		[Obsolete("Use AddFacility<TFacility>() instead.")]
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		IKernel AddFacility<T>(String key) where T : IFacility, new();
 
 		/// <summary>
@@ -110,6 +115,8 @@ namespace Castle.MicroKernel
 		/// <typeparam name = "T">The facility type.</typeparam>
 		/// <param name = "key"></param>
 		/// <param name = "onCreate">The callback for creation.</param>
+		[Obsolete("Use AddFacility<TFacility>(Action<TFacility>) instead.")]
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		IKernel AddFacility<T>(String key, Action<T> onCreate)
 			where T : IFacility, new();
 
@@ -214,7 +221,7 @@ namespace Castle.MicroKernel
 		///   Registers the components provided by the <see cref = "IRegistration" />s
 		///   with the <see cref = "IKernel" />.
 		///   <para />
-		///   Create a new registration using <see cref = "Component" />.For() or <see cref = "AllTypes" />.
+		///   Create a new registration using <see cref = "Registration.Component" />.For() or <see cref = "AllTypes" />.
 		/// </summary>
 		/// <example>
 		///   <code>
