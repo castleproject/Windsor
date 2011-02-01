@@ -14,16 +14,12 @@
 
 namespace Castle.Facilities.Synchronize.Tests.Components
 {
+#if !SILVERLIGHT
 	using System.Windows.Controls;
-	using System.Windows.Threading;
 
-	[Synchronize(typeof(DispatcherSynchronizationContext))]
-	public class ClassInDispatcherContextWithoutVirtualMethod
+	public interface IClassUsingDepedenecyContext<T> where T : Panel
 	{
-		[Synchronize]
-		public void DoWork(Panel panel)
-		{
-			panel.Children.Add(new Button());
-		}
+		T DoWork(T work);
 	}
+#endif
 }

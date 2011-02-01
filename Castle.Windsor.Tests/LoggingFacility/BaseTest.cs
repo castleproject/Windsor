@@ -49,23 +49,23 @@ namespace Castle.Facilities.Logging.Tests
 			{
 				case LoggerImplementation.NLog:
 				{
-					configFile = "NLog.facilities.test.config";
+					configFile = "LoggingFacility\\NLog.facilities.test.config";
 					break;
 				}
 #if !CLIENTPROFILE
 				case LoggerImplementation.Log4net:
 				{
-					configFile = "log4net.facilities.test.config";
+					configFile = "LoggingFacility\\log4net.facilities.test.config";
 					break;
 				}
 				case LoggerImplementation.ExtendedLog4net:
 				{
-					configFile = "log4net.facilities.test.config";
+					configFile = "LoggingFacility\\log4net.facilities.test.config";
 					break;
 				}
 				case LoggerImplementation.ExtendedNLog:
 				{
-					configFile = "NLog.facilities.test.config";
+					configFile = "LoggingFacility\\NLog.facilities.test.config";
 					break;
 				}
 #endif
