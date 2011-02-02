@@ -14,6 +14,8 @@
 
 namespace Castle.Windsor.Tests.Lifecycle
 {
+	using System;
+
 	using Castle.Components;
 	using Castle.MicroKernel.Registration;
 	using Castle.Windsor.Tests.ClassComponents;
@@ -170,6 +172,72 @@ namespace Castle.Windsor.Tests.Lifecycle
 			Container.Dispose();
 
 			Assert.IsTrue(component.Disposed);
+		}
+
+		[Test]
+		public void Test()
+		{
+			using (var container = new WindsorContainer())
+			{
+				container.Register(
+					Component.For<IDependencyOfGenericService>().ImplementedBy<DependencyOfGenericService>(),
+					Component.For(typeof(IGenericService<>)).ImplementedBy(typeof(GenericService<>))
+					);
+
+				var dependency = container.Resolve<IDependencyOfGenericService>();
+				var service = container.Resolve<IGenericService<int>>();
+
+				Assert.IsFalse(dependency.IsDisposed);
+				Assert.IsFalse(service.IsDisposed);
+				container.Dispose();
+
+				// Behavior in Windsor 2.5.2
+				//Assert.IsFalse(service.IsDisposed);
+				//Assert.IsFalse(dependency.IsDisposed);
+
+				// Behavior in Windsor 2.5 build #28
+				//Assert.IsTrue(service.IsDisposed);
+				//Assert.IsFalse(dependency.IsDisposed);
+
+				// Behavior in Windsor Master build #2204 (current trunk)
+				// THIS IS THE EXPECTED BEHAVIOR
+				Assert.IsTrue(service.IsDisposed);
+				Assert.IsTrue(dependency.IsDisposed);
+			}
+		}
+
+		public class DependencyOfGenericService : IDependencyOfGenericService
+		{
+			public bool IsDisposed { get; private set; }
+
+			public void Dispose()
+			{
+				IsDisposed = true;
+			}
+		}
+
+		public class GenericService<T> : IGenericService<T>
+		{
+			public GenericService(IDependencyOfGenericService factory)
+			{
+			}
+
+			public bool IsDisposed { get; private set; }
+
+			public void Dispose()
+			{
+				IsDisposed = true;
+			}
+		}
+
+		public interface IDependencyOfGenericService : IDisposable
+		{
+			bool IsDisposed { get; }
+		}
+
+		public interface IGenericService<T> : IDisposable
+		{
+			bool IsDisposed { get; }
 		}
 	}
 }

@@ -38,6 +38,7 @@ namespace Castle.MicroKernel
 	using Castle.MicroKernel.SubSystems.Resource;
 #if !SILVERLIGHT
 	using Castle.Windsor.Experimental.Debugging;
+
 #endif
 
 	/// <summary>
@@ -133,7 +134,7 @@ namespace Castle.MicroKernel
 		///   implementation of <see cref = "IProxyFactory" />
 		/// </summary>
 		public DefaultKernel(IProxyFactory proxyFactory)
-			: this(new DefaultDependencyResolver(),proxyFactory)
+			: this(new DefaultDependencyResolver(), proxyFactory)
 		{
 		}
 
@@ -258,7 +259,7 @@ namespace Castle.MicroKernel
 			info.AddValue("HandlerRegisteredEvent", HandlerRegistered);
 		}
 #endif
-		
+
 		/// <summary>
 		///   Starts the process of component disposal.
 		/// </summary>
@@ -285,12 +286,15 @@ namespace Castle.MicroKernel
 		// NOTE: this is from IKernelInternal
 		public virtual void AddCustomComponent(ComponentModel model)
 		{
-			if (model == null) throw new ArgumentNullException("model");
+			if (model == null)
+			{
+				throw new ArgumentNullException("model");
+			}
 
 			RaiseComponentModelCreated(model);
-			IHandler handler = HandlerFactory.Create(model);
+			var handler = HandlerFactory.Create(model);
 
-			object skipRegistration = model.ExtendedProperties[ComponentModel.SkipRegistration];
+			var skipRegistration = model.ExtendedProperties[ComponentModel.SkipRegistration];
 
 			if (skipRegistration != null)
 			{
@@ -685,19 +689,12 @@ namespace Castle.MicroKernel
 			childKernels.Remove(childKernel);
 		}
 
-		/// <summary>
-		///   Returns true if the specified component was
-		///   found and could be removed (i.e. no other component depends on it)
-		/// </summary>
-		/// <param name = "key">The component's key</param>
-		/// <returns></returns>
-		public virtual bool RemoveComponent(String key)
+		private bool DisposeAndRemoveComponent(string key, bool ensureDisposed)
 		{
 			if (key == null)
 			{
 				throw new ArgumentNullException("key");
 			}
-
 			if (!NamingSubSystem.Contains(key))
 			{
 				if (Parent == null)
@@ -707,19 +704,18 @@ namespace Castle.MicroKernel
 
 				return Parent.RemoveComponent(key);
 			}
-
 			var handler = GetHandler(key);
-
 			if (handler.ComponentModel.Dependers.Length != 0)
 			{
 				// We can't remove this component as there are
 				// others which depends on it
-
+				if (ensureDisposed)
+				{
+					DisposeHandler(handler);
+				}
 				return false;
 			}
-
 			NamingSubSystem.UnRegister(key);
-
 			var service = handler.ComponentModel.Service;
 			var assignableHandlers = NamingSubSystem.GetAssignableHandlers(service);
 			if (assignableHandlers.Length > 0)
@@ -730,17 +726,24 @@ namespace Castle.MicroKernel
 			{
 				NamingSubSystem.UnRegister(service);
 			}
-
 			foreach (ComponentModel model in handler.ComponentModel.Dependents)
 			{
 				model.RemoveDepender(handler.ComponentModel);
 			}
-
 			RaiseComponentUnregistered(key, handler);
-
 			DisposeHandler(handler);
-
 			return true;
+		}
+
+		/// <summary>
+		///   Returns true if the specified component was
+		///   found and could be removed (i.e. no other component depends on it)
+		/// </summary>
+		/// <param name = "key">The component's key</param>
+		/// <returns></returns>
+		public virtual bool RemoveComponent(String key)
+		{
+			return DisposeAndRemoveComponent(key, ensureDisposed: false);
 		}
 
 		public virtual IComponentActivator CreateComponentActivator(ComponentModel model)
@@ -807,7 +810,8 @@ namespace Castle.MicroKernel
 			return (T)GetService(typeof(T));
 		}
 
-		protected CreationContext CreateCreationContext(IHandler handler, Type typeToExtractGenericArguments, IDictionary additionalArguments, CreationContext parent)
+		protected CreationContext CreateCreationContext(IHandler handler, Type typeToExtractGenericArguments,
+		                                                IDictionary additionalArguments, CreationContext parent)
 		{
 			return new CreationContext(handler,
 			                           ReleasePolicy,
@@ -949,7 +953,7 @@ namespace Castle.MicroKernel
 					continue;
 				}
 
-				RemoveComponent(model.Name);
+				DisposeAndRemoveComponent(model.Name, ensureDisposed: true);
 			}
 		}
 
