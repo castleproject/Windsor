@@ -14,7 +14,6 @@
 
 namespace Castle.Facilities.Remoting.CustomActivators
 {
-#if (!SILVERLIGHT)
 	using System.Linq;
 	using System.Runtime.Remoting;
 	using System.Security;
@@ -36,8 +35,7 @@ namespace Castle.Facilities.Remoting.CustomActivators
 		/// <param name = "kernel">The kernel.</param>
 		/// <param name = "onCreation">The oncreation event handler.</param>
 		/// <param name = "onDestruction">The ondestruction event handler.</param>
-		public RemoteActivatorThroughConnector(ComponentModel model, IKernel kernel, ComponentInstanceDelegate onCreation,
-		                                       ComponentInstanceDelegate onDestruction)
+		public RemoteActivatorThroughConnector(ComponentModel model, IKernel kernel, ComponentInstanceDelegate onCreation, ComponentInstanceDelegate onDestruction)
 			: base(model, kernel, onCreation, onDestruction)
 		{
 		}
@@ -70,5 +68,4 @@ namespace Castle.Facilities.Remoting.CustomActivators
 			return RemotingServices.Connect(service, uri);
 		}
 	}
-#endif
 }

@@ -14,7 +14,6 @@
 
 namespace Castle.Facilities.Remoting
 {
-#if (!SILVERLIGHT)
 	using System;
 	using System.Collections.Generic;
 	using System.Linq;
@@ -126,5 +125,4 @@ namespace Castle.Facilities.Remoting
 
 		#endregion
 	}
-#endif
 }

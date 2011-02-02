@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,7 +14,6 @@
 
 namespace Castle.Facilities.Remoting.CustomActivators
 {
-#if (!SILVERLIGHT)
 	using System;
 	using System.Runtime.Remoting.Activation;
 	using System.Security;
@@ -25,18 +24,19 @@ namespace Castle.Facilities.Remoting.CustomActivators
 	using Castle.MicroKernel.Context;
 
 	/// <summary>
-	/// Activates a client activated object.
+	///   Activates a client activated object.
 	/// </summary>
 	public class RemoteClientActivatedActivator : DefaultComponentActivator
 	{
 		/// <summary>
-		/// Initializes a new instance of the <see cref="RemoteClientActivatedActivator"/> class.
+		///   Initializes a new instance of the <see cref = "RemoteClientActivatedActivator" /> class.
 		/// </summary>
-		/// <param name="model">The model.</param>
-		/// <param name="kernel">The kernel.</param>
-		/// <param name="onCreation">The oncreation event handler.</param>
-		/// <param name="onDestruction">The ondestruction event handler.</param>
-		public RemoteClientActivatedActivator(ComponentModel model, IKernel kernel, ComponentInstanceDelegate onCreation, ComponentInstanceDelegate onDestruction) : base(model, kernel, onCreation, onDestruction)
+		/// <param name = "model">The model.</param>
+		/// <param name = "kernel">The kernel.</param>
+		/// <param name = "onCreation">The oncreation event handler.</param>
+		/// <param name = "onDestruction">The ondestruction event handler.</param>
+		public RemoteClientActivatedActivator(ComponentModel model, IKernel kernel, ComponentInstanceDelegate onCreation, ComponentInstanceDelegate onDestruction)
+			: base(model, kernel, onCreation, onDestruction)
 		{
 		}
 
@@ -53,10 +53,9 @@ namespace Castle.Facilities.Remoting.CustomActivators
 #endif
 		private object InternalInstantiate()
 		{
-			String url = (String) Model.ExtendedProperties["remoting.appuri"];
+			var url = (String)Model.ExtendedProperties["remoting.appuri"];
 
-			return Activator.CreateInstance(Model.Implementation, null, new object[] { new UrlAttribute(url) } );
+			return Activator.CreateInstance(Model.Implementation, null, new object[] { new UrlAttribute(url) });
 		}
 	}
-#endif
 }
