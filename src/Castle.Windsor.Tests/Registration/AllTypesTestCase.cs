@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -150,7 +150,7 @@ namespace Castle.MicroKernel.Tests.Registration
 			                	})
 				);
 
-			foreach (IHandler handler in Kernel.GetAssignableHandlers(typeof(ICommon)))
+			foreach (var handler in Kernel.GetAssignableHandlers(typeof(ICommon)))
 			{
 				Assert.AreEqual(LifestyleType.Transient, handler.ComponentModel.LifestyleType);
 				Assert.AreEqual(handler.ComponentModel.Implementation.FullName + "XYZ", handler.ComponentModel.Name);
@@ -173,7 +173,7 @@ namespace Castle.MicroKernel.Tests.Registration
 			                		component => component.DependsOn(Property.ForKey("key2").Eq(2)))
 				);
 
-			foreach (IHandler handler in Kernel.GetAssignableHandlers(typeof(ICommon)))
+			foreach (var handler in Kernel.GetAssignableHandlers(typeof(ICommon)))
 			{
 				Assert.AreEqual(LifestyleType.Transient, handler.ComponentModel.LifestyleType);
 				Assert.AreEqual(handler.ComponentModel.Implementation.FullName + "XYZ", handler.ComponentModel.Name);
@@ -240,7 +240,7 @@ namespace Castle.MicroKernel.Tests.Registration
 		[Test]
 		public void RegisterAssemblyTypes_IfCondition_RegisteredInContainer()
 		{
-			Kernel.Register(AllTypes.FromAssembly(Assembly.GetExecutingAssembly())
+			Kernel.Register(AllTypes.FromThisAssembly()
 			                	.BasedOn<ICustomer>()
 			                	.If(t => t.FullName.Contains("Chain"))
 				);
@@ -248,7 +248,7 @@ namespace Castle.MicroKernel.Tests.Registration
 			var handlers = Kernel.GetAssignableHandlers(typeof(ICustomer));
 			Assert.AreNotEqual(0, handlers.Length);
 
-			foreach (IHandler handler in handlers)
+			foreach (var handler in handlers)
 			{
 				Assert.IsTrue(handler.ComponentModel.Implementation.FullName.Contains("Chain"));
 			}
@@ -257,7 +257,7 @@ namespace Castle.MicroKernel.Tests.Registration
 		[Test]
 		public void RegisterAssemblyTypes_MultipleIfCondition_RegisteredInContainer()
 		{
-			Kernel.Register(AllTypes.FromAssembly(Assembly.GetExecutingAssembly())
+			Kernel.Register(AllTypes.FromThisAssembly()
 			                	.BasedOn<ICustomer>()
 			                	.If(t => t.Name.EndsWith("2"))
 			                	.If(t => t.FullName.Contains("Chain"))
@@ -276,7 +276,7 @@ namespace Castle.MicroKernel.Tests.Registration
 			                	.Unless(t => typeof(CustomerChain1).IsAssignableFrom(t))
 				);
 
-			foreach (IHandler handler in Kernel.GetAssignableHandlers(typeof(ICustomer)))
+			foreach (var handler in Kernel.GetAssignableHandlers(typeof(ICustomer)))
 			{
 				Assert.IsFalse(typeof(CustomerChain1).IsAssignableFrom(handler.ComponentModel.Implementation));
 			}
@@ -326,7 +326,7 @@ namespace Castle.MicroKernel.Tests.Registration
 			                	)
 				);
 
-			foreach (IHandler handler in Kernel.GetAssignableHandlers(typeof(ICommon)))
+			foreach (var handler in Kernel.GetAssignableHandlers(typeof(ICommon)))
 			{
 				Assert.AreEqual(LifestyleType.Transient, handler.ComponentModel.LifestyleType);
 				Assert.AreEqual(handler.ComponentModel.Implementation.FullName + "XYZ", handler.ComponentModel.Name);
@@ -342,7 +342,7 @@ namespace Castle.MicroKernel.Tests.Registration
 			                	.Configure(component => component.LifeStyle.Transient)
 				);
 
-			foreach (IHandler handler in Kernel.GetAssignableHandlers(typeof(ICommon)))
+			foreach (var handler in Kernel.GetAssignableHandlers(typeof(ICommon)))
 			{
 				Assert.AreEqual(LifestyleType.Transient, handler.ComponentModel.LifestyleType);
 			}
@@ -370,7 +370,7 @@ namespace Castle.MicroKernel.Tests.Registration
 			handlers = Kernel.GetAssignableHandlers(typeof(ICustomer));
 			Assert.AreNotEqual(0, handlers.Length);
 
-			foreach (IHandler handler in handlers)
+			foreach (var handler in handlers)
 			{
 				Assert.IsTrue(handler.ComponentModel.Implementation.FullName.Contains("Chain"));
 			}

@@ -1,9 +1,3 @@
 **internal changes and refactorings to do**
 
-- move old and rarely used facilities out of Castle.Windsor.dll
-	namely:
-		- EventWiringFacility
-		- RemotingFacility
-		- FactorySupportFacility
-
 - change now interaction with Burden in the creation pipeline happen. Especially try to eliminate the ugly context.AttachExistingBurden(burden); call
