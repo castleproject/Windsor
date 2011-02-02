@@ -14,7 +14,7 @@
 
 namespace Castle.Facilities.Remoting.CustomActivators
 {
-#if (!SILVERLIGHT && !DOTNET40CP)
+#if !DOTNET40CP
 	using System.Linq;
 
 	using Castle.Core;
@@ -34,8 +34,7 @@ namespace Castle.Facilities.Remoting.CustomActivators
 		/// <param name = "kernel">The kernel.</param>
 		/// <param name = "onCreation">The oncreation event handler.</param>
 		/// <param name = "onDestruction">The ondestruction event handler.</param>
-		public RemoteActivatorThroughRegistry(ComponentModel model, IKernel kernel, ComponentInstanceDelegate onCreation,
-		                                      ComponentInstanceDelegate onDestruction)
+		public RemoteActivatorThroughRegistry(ComponentModel model, IKernel kernel, ComponentInstanceDelegate onCreation, ComponentInstanceDelegate onDestruction)
 			: base(model, kernel, onCreation, onDestruction)
 		{
 		}

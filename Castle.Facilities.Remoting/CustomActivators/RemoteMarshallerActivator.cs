@@ -14,7 +14,6 @@
 
 namespace Castle.Facilities.Remoting.CustomActivators
 {
-#if (!SILVERLIGHT)
 	using System;
 	using System.Linq;
 	using System.Runtime.Remoting;
@@ -36,8 +35,7 @@ namespace Castle.Facilities.Remoting.CustomActivators
 		/// <param name = "kernel">The kernel.</param>
 		/// <param name = "onCreation">The oncreation event handler.</param>
 		/// <param name = "onDestruction">The ondestruction event handler.</param>
-		public RemoteMarshallerActivator(ComponentModel model, IKernel kernel, ComponentInstanceDelegate onCreation,
-		                                 ComponentInstanceDelegate onDestruction)
+		public RemoteMarshallerActivator(ComponentModel model, IKernel kernel, ComponentInstanceDelegate onCreation, ComponentInstanceDelegate onDestruction)
 			: base(model, kernel, onCreation, onDestruction)
 		{
 		}
@@ -66,5 +64,4 @@ namespace Castle.Facilities.Remoting.CustomActivators
 			}
 		}
 	}
-#endif
 }

@@ -14,7 +14,6 @@
 
 namespace Castle.Facilities.Remoting.CustomActivators
 {
-#if (!SILVERLIGHT)
 	using System;
 	using System.Linq;
 	using System.Runtime.Remoting;
@@ -60,5 +59,4 @@ namespace Castle.Facilities.Remoting.CustomActivators
 			return RemotingServices.Connect(service, url);
 		}
 	}
-#endif
 }
