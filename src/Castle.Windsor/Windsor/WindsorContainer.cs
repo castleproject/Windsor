@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -246,14 +246,14 @@ namespace Castle.Windsor
 		}
 
 		[Obsolete("Use Resolve(key, new Arguments()) or Resolve<TService>(key) instead.")]
-		[EditorBrowsable(EditorBrowsableState.Advanced)]
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public virtual object this[String key]
 		{
 			get { return Resolve(key, new Arguments()); }
 		}
 
 		[Obsolete("Use Resolve(service) or generic version instead.")]
-		[EditorBrowsable(EditorBrowsableState.Advanced)]
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public virtual object this[Type service]
 		{
 			get { return Resolve(service); }
@@ -388,7 +388,7 @@ namespace Castle.Windsor
 		}
 
 		[Obsolete("Use Register(Component.For(classType).Named(key)) or generic version instead.")]
-		[EditorBrowsable(EditorBrowsableState.Advanced)]
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public virtual IWindsorContainer AddComponent(String key, Type classType)
 		{
 			kernel.AddComponent(key, classType);
@@ -396,7 +396,7 @@ namespace Castle.Windsor
 		}
 
 		[Obsolete("Use Register(Component.For(serviceType).ImplementedBy(classType).Named(key)) or generic version instead.")]
-		[EditorBrowsable(EditorBrowsableState.Advanced)]
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public virtual IWindsorContainer AddComponent(String key, Type serviceType, Type classType)
 		{
 			kernel.AddComponent(key, serviceType, classType);
@@ -404,7 +404,7 @@ namespace Castle.Windsor
 		}
 
 		[Obsolete("Use Register(Component.For<T>()) instead.")]
-		[EditorBrowsable(EditorBrowsableState.Advanced)]
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public IWindsorContainer AddComponent<T>()
 		{
 			var t = typeof(T);
@@ -413,7 +413,7 @@ namespace Castle.Windsor
 		}
 
 		[Obsolete("Use Register(Component.For<T>().Named(key)) instead.")]
-		[EditorBrowsable(EditorBrowsableState.Advanced)]
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public IWindsorContainer AddComponent<T>(string key)
 		{
 			AddComponent(key, typeof(T));
@@ -421,7 +421,7 @@ namespace Castle.Windsor
 		}
 
 		[Obsolete("Use Register(Component.For<I>().ImplementedBy<T>().Named(key)) instead.")]
-		[EditorBrowsable(EditorBrowsableState.Advanced)]
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public IWindsorContainer AddComponent<I, T>(string key) where T : class
 		{
 			AddComponent(key, typeof(I), typeof(T));
@@ -429,7 +429,7 @@ namespace Castle.Windsor
 		}
 
 		[Obsolete("Use Register(Component.For<I>().ImplementedBy<T>()) instead.")]
-		[EditorBrowsable(EditorBrowsableState.Advanced)]
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public IWindsorContainer AddComponent<I, T>() where T : class
 		{
 			var t = typeof(T);
@@ -438,7 +438,7 @@ namespace Castle.Windsor
 		}
 
 		[Obsolete("Use Register(Component.For(classType).Named(key).Lifestyle.Is(lifestyle)) or generic version instead.")]
-		[EditorBrowsable(EditorBrowsableState.Advanced)]
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public IWindsorContainer AddComponentLifeStyle(string key, Type classType, LifestyleType lifestyle)
 		{
 			kernel.AddComponent(key, classType, lifestyle, true);
@@ -447,7 +447,7 @@ namespace Castle.Windsor
 
 		[Obsolete(
 			"Use Register(Component.For(serviceType).ImplementedBy(classType).Named(key).Lifestyle.Is(lifestyle)) or generic version instead.")]
-		[EditorBrowsable(EditorBrowsableState.Advanced)]
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public IWindsorContainer AddComponentLifeStyle(string key, Type serviceType, Type classType, LifestyleType lifestyle)
 		{
 			kernel.AddComponent(key, serviceType, classType, lifestyle, true);
@@ -455,7 +455,7 @@ namespace Castle.Windsor
 		}
 
 		[Obsolete("Use Register(Component.For<T>().Lifestyle.Is(lifestyle)) instead.")]
-		[EditorBrowsable(EditorBrowsableState.Advanced)]
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public IWindsorContainer AddComponentLifeStyle<T>(LifestyleType lifestyle)
 		{
 			var t = typeof(T);
@@ -464,7 +464,7 @@ namespace Castle.Windsor
 		}
 
 		[Obsolete("Use Register(Component.For<I>().ImplementedBy<T>().Lifestyle.Is(lifestyle)) instead.")]
-		[EditorBrowsable(EditorBrowsableState.Advanced)]
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public IWindsorContainer AddComponentLifeStyle<I, T>(LifestyleType lifestyle) where T : class
 		{
 			var t = typeof(T);
@@ -473,7 +473,7 @@ namespace Castle.Windsor
 		}
 
 		[Obsolete("Use Register(Component.For<T>().Named(key).Lifestyle.Is(lifestyle)) instead.")]
-		[EditorBrowsable(EditorBrowsableState.Advanced)]
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public IWindsorContainer AddComponentLifeStyle<T>(string key, LifestyleType lifestyle)
 		{
 			AddComponentLifeStyle(key, typeof(T), lifestyle);
@@ -481,7 +481,7 @@ namespace Castle.Windsor
 		}
 
 		[Obsolete("Use Register(Component.For<I>().ImplementedBy<T>().Named(key).Lifestyle.Is(lifestyle)) instead.")]
-		[EditorBrowsable(EditorBrowsableState.Advanced)]
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public IWindsorContainer AddComponentLifeStyle<I, T>(string key, LifestyleType lifestyle) where T : class
 		{
 			AddComponentLifeStyle(key, typeof(I), typeof(T), lifestyle);
@@ -489,7 +489,7 @@ namespace Castle.Windsor
 		}
 
 		[Obsolete("Use Register(Component.For<I>().ImplementedBy<T>().ExtendedProperties(extendedProperties)) instead.")]
-		[EditorBrowsable(EditorBrowsableState.Advanced)]
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public IWindsorContainer AddComponentProperties<I, T>(IDictionary extendedProperties) where T : class
 		{
 			var t = typeof(T);
@@ -499,7 +499,7 @@ namespace Castle.Windsor
 
 		[Obsolete(
 			"Use Register(Component.For<I>().ImplementedBy<T>().Named(key).ExtendedProperties(extendedProperties)) instead.")]
-		[EditorBrowsable(EditorBrowsableState.Advanced)]
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public IWindsorContainer AddComponentProperties<I, T>(string key, IDictionary extendedProperties) where T : class
 		{
 			AddComponentWithProperties(key, typeof(I), typeof(T), extendedProperties);
@@ -507,7 +507,7 @@ namespace Castle.Windsor
 		}
 
 		[Obsolete("Use Register(Component.For(classType).Named(key).ExtendedProperties(extendedProperties)) or generic version instead.")]
-		[EditorBrowsable(EditorBrowsableState.Advanced)]
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public virtual IWindsorContainer AddComponentWithProperties(string key, Type classType, IDictionary extendedProperties)
 		{
 			kernel.AddComponentWithExtendedProperties(key, classType, extendedProperties);
@@ -517,7 +517,7 @@ namespace Castle.Windsor
 		[Obsolete(
 			"Use Register(Component.For(serviceType).ImplementedBy(classType).Named(key).ExtendedProperties(extendedProperties)) or generic version instead."
 			)]
-		[EditorBrowsable(EditorBrowsableState.Advanced)]
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public virtual IWindsorContainer AddComponentWithProperties(string key, Type serviceType, Type classType,
 		                                                            IDictionary extendedProperties)
 		{
@@ -526,7 +526,7 @@ namespace Castle.Windsor
 		}
 
 		[Obsolete("Use Register(Component.For<T>().ExtendedProperties(extendedProperties)) instead.")]
-		[EditorBrowsable(EditorBrowsableState.Advanced)]
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public IWindsorContainer AddComponentWithProperties<T>(IDictionary extendedProperties)
 		{
 			var t = typeof(T);
@@ -535,7 +535,7 @@ namespace Castle.Windsor
 		}
 
 		[Obsolete("Use Register(Component.For<T>().Named(key).ExtendedProperties(extendedProperties)) instead.")]
-		[EditorBrowsable(EditorBrowsableState.Advanced)]
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public IWindsorContainer AddComponentWithProperties<T>(string key, IDictionary extendedProperties)
 		{
 			AddComponentWithProperties(key, typeof(T), extendedProperties);
@@ -764,9 +764,11 @@ namespace Castle.Windsor
 		/// <param name = "key"></param>
 		/// <param name = "argumentsAsAnonymousType"></param>
 		/// <returns></returns>
+		[Obsolete("Use Resolve<object>(key, argumentsAsAnonymousType) instead.")]
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public virtual object Resolve(String key, object argumentsAsAnonymousType)
 		{
-			return Resolve(key, new ReflectionBasedDictionaryAdapter(argumentsAsAnonymousType));
+			return Resolve<object>(key, new ReflectionBasedDictionaryAdapter(argumentsAsAnonymousType));
 		}
 
 		/// <summary>
@@ -811,7 +813,7 @@ namespace Castle.Windsor
 		/// <returns></returns>
 		public virtual object Resolve(String key, Type service, object argumentsAsAnonymousType)
 		{
-			return Resolve(key, service, new ReflectionBasedDictionaryAdapter(argumentsAsAnonymousType));
+			return kernel.Resolve(key, service, new ReflectionBasedDictionaryAdapter(argumentsAsAnonymousType));
 		}
 
 		/// <summary>
@@ -822,7 +824,7 @@ namespace Castle.Windsor
 		/// <returns></returns>
 		public T Resolve<T>(IDictionary arguments)
 		{
-			return (T)Resolve(typeof(T), arguments);
+			return (T)kernel.Resolve(typeof(T), arguments);
 		}
 
 		/// <summary>
@@ -833,7 +835,7 @@ namespace Castle.Windsor
 		/// <returns></returns>
 		public T Resolve<T>(object argumentsAsAnonymousType)
 		{
-			return Resolve<T>(new ReflectionBasedDictionaryAdapter(argumentsAsAnonymousType));
+			return (T)kernel.Resolve(typeof(T), new ReflectionBasedDictionaryAdapter(argumentsAsAnonymousType));
 		}
 
 		/// <summary>
@@ -844,7 +846,7 @@ namespace Castle.Windsor
 		/// <returns></returns>
 		public virtual T Resolve<T>(String key, IDictionary arguments)
 		{
-			return (T)Resolve(key, typeof(T), arguments);
+			return (T)kernel.Resolve(key, typeof(T), arguments);
 		}
 
 		/// <summary>
@@ -855,7 +857,7 @@ namespace Castle.Windsor
 		/// <returns></returns>
 		public virtual T Resolve<T>(String key, object argumentsAsAnonymousType)
 		{
-			return Resolve<T>(key, new ReflectionBasedDictionaryAdapter(argumentsAsAnonymousType));
+			return (T)kernel.Resolve(key, typeof(T), new ReflectionBasedDictionaryAdapter(argumentsAsAnonymousType));
 		}
 
 		/// <summary>
@@ -865,7 +867,7 @@ namespace Castle.Windsor
 		/// <returns></returns>
 		public T Resolve<T>()
 		{
-			return (T)Resolve(typeof(T));
+			return (T)kernel.Resolve(typeof(T));
 		}
 
 		/// <summary>
@@ -875,7 +877,7 @@ namespace Castle.Windsor
 		/// <returns></returns>
 		public virtual T Resolve<T>(String key)
 		{
-			return (T)Resolve(key, typeof(T));
+			return (T)kernel.Resolve(key, typeof(T));
 		}
 
 		/// <summary>
