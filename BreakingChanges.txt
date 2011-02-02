@@ -1,4 +1,6 @@
 ================================================================================================
+release 2.5.2 ==================================================================================
+================================================================================================
 change - One of CreationContext constructors has now additional argument; parent CreationContext
 	Method public IDisposable ParentResolutionContext(...) on CreationContext was removed
 	Method protected CreationContext CreateCreationContext(...) has now additional argument;
