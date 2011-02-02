@@ -1,3 +1,5 @@
+2.5.3 (2011-02-02)
+==================
 - fixed IOC-266 - Dependency of a generic service is not disposed in Windsor 2.5.x 
 - fixed IOC-261 - Disposing of typed-factory can throw argument null exception
 - fixed IOC-254 - Optional non-primitive .ctor parameters don't work

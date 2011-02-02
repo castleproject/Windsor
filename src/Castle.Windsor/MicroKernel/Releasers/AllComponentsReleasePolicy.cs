@@ -19,8 +19,9 @@ namespace Castle.MicroKernel.Releasers
 	using System.Linq;
 
 	using Castle.Core.Internal;
-
+#if !SILVERLIGHT
 	[Serializable]
+#endif
 	public class AllComponentsReleasePolicy : IReleasePolicy
 	{
 		private readonly IDictionary<object, Burden> instance2Burden =
