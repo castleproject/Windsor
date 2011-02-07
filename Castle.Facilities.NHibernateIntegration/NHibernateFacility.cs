@@ -95,8 +95,10 @@ namespace Castle.Facilities.NHibernateIntegration
 		private readonly IConfigurationBuilder configurationBuilder;
 
 		private ILogger log = NullLogger.Instance;
+	    private Type customConfigurationBuilderType;
+	    private bool setToWeb;
 
-		/// <summary>
+	    /// <summary>
 		/// Instantiates the facility with the specified configuration builder.
 		/// </summary>
 		/// <param name="configurationBuilder"></param>
@@ -111,11 +113,6 @@ namespace Castle.Facilities.NHibernateIntegration
 		public NHibernateFacility() : this(new DefaultConfigurationBuilder())
 		{
 		}
-
-		///<summary>
-		/// Gets or sets the custom Configuration Builder Type.
-		///</summary>
-		public Type CustomConfigurationBuilder { get; set; }
 
 		/// <summary>
 		/// The custom initialization for the Facility.
@@ -160,16 +157,16 @@ namespace Castle.Facilities.NHibernateIntegration
 		{
 			string customConfigurationBuilder = FacilityConfig.Attributes[ConfigurationBuilderConfigurationKey];
 
-			if (!string.IsNullOrEmpty(customConfigurationBuilder) || CustomConfigurationBuilder != null)
+            if (!string.IsNullOrEmpty(customConfigurationBuilder) || customConfigurationBuilderType != null)
 			{
-				if (CustomConfigurationBuilder != null)
+				if (customConfigurationBuilderType != null)
 				{
-					if (!typeof(IConfigurationBuilder).IsAssignableFrom(CustomConfigurationBuilder))
+					if (!typeof(IConfigurationBuilder).IsAssignableFrom(customConfigurationBuilderType))
 					{
 						throw new FacilityException(
 							string.Format(
 								"ConfigurationBuilder type '{0}' invalid. The type must implement the IConfigurationBuilder contract",
-								CustomConfigurationBuilder.FullName));
+								customConfigurationBuilderType.FullName));
 					}
 				}
 				else
@@ -178,7 +175,7 @@ namespace Castle.Facilities.NHibernateIntegration
 
 					try
 					{
-						CustomConfigurationBuilder = (Type) converter.PerformConversion(customConfigurationBuilder, typeof(Type));
+						customConfigurationBuilderType = (Type) converter.PerformConversion(customConfigurationBuilder, typeof(Type));
 					}
 					catch (ConverterException)
 					{
@@ -189,7 +186,7 @@ namespace Castle.Facilities.NHibernateIntegration
 
 				Kernel.Register(Component
 				                	.For<IConfigurationBuilder>()
-				                	.ImplementedBy(CustomConfigurationBuilder)
+				                	.ImplementedBy(customConfigurationBuilderType)
 				                	.Named(DefaultConfigurationBuilderKey));
 			}
 			else
@@ -221,7 +218,7 @@ namespace Castle.Facilities.NHibernateIntegration
 			// Default implementation
 			Type sessionStoreType = typeof (CallContextSessionStore);
 
-			if ("true".Equals(isWeb))
+            if ("true".Equals(isWeb) || setToWeb)
 				sessionStoreType = typeof (WebSessionStore);
 
 			if (customStore != null)
@@ -435,5 +432,40 @@ namespace Castle.Facilities.NHibernateIntegration
 		}
 
 		#endregion
+
+        #region FluentConfiguration
+
+        /// <summary>
+        /// Sets a custom <see cref="IConfigurationBuilder"/>
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public NHibernateFacility ConfigurationBuilder<T>()
+            where T : IConfigurationBuilder
+        {
+            return ConfigurationBuilder(typeof (T));
+        }
+
+        /// <summary>
+        /// Sets a custom <see cref="IConfigurationBuilder"/>
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+	    public NHibernateFacility ConfigurationBuilder(Type type)
+	    {
+	        customConfigurationBuilderType = type;
+	        return this;
+        }
+
+        /// <summary>
+        /// Sets the facility to work on a web conext
+        /// </summary>
+        /// <returns></returns>
+        public NHibernateFacility IsWeb()
+        {
+            this.setToWeb = true;
+            return this;
+        }
+        #endregion
 	}
 }
