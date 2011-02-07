@@ -27,20 +27,16 @@ namespace Castle.Facilities.NHibernateIntegration.Tests
 	public class TestConfigurationBuilder : IConfigurationBuilder
 	{
 		private readonly IConfigurationBuilder defaultConfigurationBuilder;
-	    public static bool ConstructedConfiguration;
 
 	    public TestConfigurationBuilder()
 		{
 			defaultConfigurationBuilder = new DefaultConfigurationBuilder();
-	        ConstructedConfiguration = false;
 		}
 
 		#region IConfigurationBuilder Members
 
 		public Configuration GetConfiguration(IConfiguration config)
 		{
-		    ConstructedConfiguration = true;
-
 			Configuration nhConfig = defaultConfigurationBuilder.GetConfiguration(config);
 			nhConfig.Properties["dialect"] = ConfigurationManager.AppSettings["nhf.dialect"];
 			nhConfig.Properties["connection.driver_class"] = ConfigurationManager.AppSettings["nhf.connection.driver_class"];
