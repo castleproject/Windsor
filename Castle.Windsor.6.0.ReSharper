@@ -305,12 +305,12 @@ II.2.12 <HandlesEvent />
     <Web>
       <Naming2 />
     </Web>
-    <Xaml>
-      <Naming2 />
-    </Xaml>
     <XML>
       <FormatSettings />
     </XML>
+    <Xaml>
+      <Naming2 />
+    </Xaml>
     <FileHeader><![CDATA[Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 
 Licensed under the Apache License, Version 2.0 (the "License");
