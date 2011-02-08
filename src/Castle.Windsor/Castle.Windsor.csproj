@@ -560,6 +560,15 @@
     <Compile Include="MicroKernel\Lifestyle\Pool\PoolException.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="MicroKernel\Lifestyle\Scoped\IScopeAccessor.cs" />
+    <Compile Include="MicroKernel\Lifestyle\Scoped\IScopeManager.cs" />
+    <Compile Include="MicroKernel\Lifestyle\Scoped\LifestyleExtensions.cs" />
+    <Compile Include="MicroKernel\Lifestyle\Scoped\LifestyleScope.cs" />
+    <Compile Include="MicroKernel\Lifestyle\Scoped\ScopedLifestyleManager.cs" />
+    <Compile Include="MicroKernel\Lifestyle\Scoped\ScopeSelector.cs" />
+    <Compile Include="MicroKernel\Lifestyle\Scoped\ScopeSubsystem.cs" />
+    <Compile Include="MicroKernel\Lifestyle\Scoped\ThreadScopeAccessor.cs" />
+    <Compile Include="MicroKernel\Lifestyle\Scoped\WebScopeAccessor.cs" />
     <Compile Include="MicroKernel\Lifestyle\SingletonLifestyleManager.cs">
       <SubType>Code</SubType>
     </Compile>
