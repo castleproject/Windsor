@@ -355,6 +355,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AutoregisterPerWebRequestLifestyleModule.cs" />
     <Compile Include="Compatibility\SortedSet.silverllight.net35.cs" />
     <Compile Include="Core\CastleComponentAttribute.cs" />
     <Compile Include="Core\ComponentActivatorAttribute.cs" />
@@ -542,6 +543,7 @@
     </Compile>
     <Compile Include="MicroKernel\Lifestyle\PerThreadThreadStaticLifestyleManager.cs" />
     <Compile Include="MicroKernel\Lifestyle\PerWebRequestLifestyleModule.cs" />
+    <Compile Include="MicroKernel\Lifestyle\PerWebRequestLifestyleModuleRegistration.cs" />
     <Compile Include="MicroKernel\Lifestyle\PoolableLifestyleManager.cs">
       <SubType>Code</SubType>
     </Compile>

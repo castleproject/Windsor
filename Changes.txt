@@ -1,3 +1,4 @@
+- fixed IOC-273 - Auto register PerWebRequestLifestyleModule using PreApplicationStartMethodAttribute at runtime
 - EventWiringFacility, FactorySupportFacility and RemotingFacility are extracted to their own assemblies
 - implemented IOC-270 - Add OnDestroy method, symertical to OnCreate 
 - implemented IOC-268 - Hook that allows for filtering handlers during ResolveAll 
