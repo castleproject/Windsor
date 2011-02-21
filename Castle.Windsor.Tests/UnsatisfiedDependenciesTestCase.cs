@@ -45,7 +45,7 @@ namespace Castle.MicroKernel.Tests
 				Assert.Throws(typeof(HandlerException), () => Kernel.Resolve<CommonServiceUser3>("key"));
 			var expectedMessage =
 				string.Format(
-					"Can't create component 'key' as it has dependencies to be satisfied.{0}{0}'key' is waiting for the following dependencies:{0}Parameters and service overrides:{0}- 'common2' service which was not registered. Did you misspell the name?{0}",
+					"Can't create component 'key' as it has dependencies to be satisfied.{0}{0}'key' is waiting for the following dependencies:{0}- Service 'common2' (via override) which was not registered. Did you misspell the name?{0}",
 					Environment.NewLine);
 			Assert.AreEqual(expectedMessage, exception.Message);
 		}
@@ -130,7 +130,7 @@ namespace Castle.MicroKernel.Tests
 				                                Kernel.Resolve<CustomerImpl2>("key"));
 			var expectedMessage =
 				string.Format(
-					"Can't create component 'key' as it has dependencies to be satisfied.{0}{0}'key' is waiting for the following dependencies:{0}Parameters and service overrides:{0}- 'name' paramter which was not provided. Did you forget to set the dependency?{0}- 'address' paramter which was not provided. Did you forget to set the dependency?{0}- 'age' paramter which was not provided. Did you forget to set the dependency?{0}",
+					"Can't create component 'key' as it has dependencies to be satisfied.{0}{0}'key' is waiting for the following dependencies:{0}- Parameter 'name' which was not provided. Did you forget to set the dependency?{0}- Parameter 'address' which was not provided. Did you forget to set the dependency?{0}- Parameter 'age' which was not provided. Did you forget to set the dependency?{0}",
 					Environment.NewLine);
 			Assert.AreEqual(expectedMessage, exception.Message);
 		}
@@ -153,7 +153,7 @@ namespace Castle.MicroKernel.Tests
 				Assert.Throws(typeof(HandlerException), () => Kernel.Resolve<CommonServiceUser>("key"));
 			var expectedMessage =
 				string.Format(
-					"Can't create component 'key' as it has dependencies to be satisfied.{0}{0}'key' is waiting for the following dependencies:{0}Parameters and service overrides:{0}- 'common2' service which was not registered. Did you misspell the name?{0}",
+					"Can't create component 'key' as it has dependencies to be satisfied.{0}{0}'key' is waiting for the following dependencies:{0}- Service 'common2' (via override) which was not registered. Did you misspell the name?{0}",
 					Environment.NewLine);
 			Assert.AreEqual(expectedMessage, exception.Message);
 		}

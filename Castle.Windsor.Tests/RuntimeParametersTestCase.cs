@@ -139,7 +139,7 @@ namespace Castle.MicroKernel.Tests
 		{
 			var expectedMessage =
 				string.Format(
-					"Can't create component 'compb' as it has dependencies to be satisfied.{0}{0}'compb' is waiting for the following dependencies:{0}Services:{0}- Type 'Castle.MicroKernel.Tests.RuntimeParameters.CompC' which was not registered.{0}Parameters and service overrides:{0}- 'myArgument' paramter which was not provided. Did you forget to set the dependency?{0}",
+					"Can't create component 'compb' as it has dependencies to be satisfied.{0}{0}'compb' is waiting for the following dependencies:{0}- Service 'Castle.MicroKernel.Tests.RuntimeParameters.CompC' which was not registered.{0}- Parameter 'myArgument' which was not provided. Did you forget to set the dependency?{0}",
 					Environment.NewLine);
 			var exception = Assert.Throws(typeof(HandlerException), () => Kernel.Resolve<CompB>());
 			Assert.AreEqual(expectedMessage, exception.Message);

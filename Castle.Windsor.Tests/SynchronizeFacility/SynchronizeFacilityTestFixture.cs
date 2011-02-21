@@ -341,7 +341,7 @@ namespace Castle.Facilities.Synchronize.Tests
 
 			var expected =
 				string.Format(
-					"Can't create component 'Castle.Facilities.Synchronize.Tests.DummyForm' as it has dependencies to be satisfied.{0}{0}'Castle.Facilities.Synchronize.Tests.DummyForm' is waiting for the following dependencies:{0}Parameters and service overrides:{0}- 'missing.component' service which was not registered. Did you misspell the name?{0}",
+					"Can't create component 'Castle.Facilities.Synchronize.Tests.DummyForm' as it has dependencies to be satisfied.{0}{0}'Castle.Facilities.Synchronize.Tests.DummyForm' is waiting for the following dependencies:{0}- Service 'missing.component' (via override) which was not registered. Did you misspell the name?{0}",
 					Environment.NewLine);
 			Assert.AreEqual(expected, exception.Message);
 		}

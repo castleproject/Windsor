@@ -45,11 +45,11 @@ namespace Castle.MicroKernel.Tests
 				Component.For<IRepository>().ImplementedBy<DecoratedRepository2>()
 				);
 			var exception =
-				Assert.Throws(typeof(HandlerException), () => { Kernel.Resolve<IRepository>(); });
+				Assert.Throws<HandlerException>( () => Kernel.Resolve<IRepository>());
 
 			var expectedMessage =
 				string.Format(
-					"Can't create component 'Castle.MicroKernel.Tests.ClassComponents.Repository1' as it has dependencies to be satisfied.{0}{0}'Castle.MicroKernel.Tests.ClassComponents.Repository1' is waiting for the following dependencies:{0}Services:{0}- Type 'Castle.MicroKernel.Tests.ClassComponents.IRepository' which points back to the same component.{0}A dependency cannot be satisfied by itself, did you forget to make this a service override and point explicitly to different component exposing this service?{0}{0}'Castle.MicroKernel.Tests.ClassComponents.DecoratedRepository2' is registered and is matching the required service, but cannot be resolved.{0}'Castle.MicroKernel.Tests.ClassComponents.DecoratedRepository2' is waiting for the following dependencies:{0}Parameters and service overrides:{0}- 'name' paramter which was not provided. Did you forget to set the dependency?{0}",
+					"Can't create component 'Castle.MicroKernel.Tests.ClassComponents.Repository1' as it has dependencies to be satisfied.{0}{0}'Castle.MicroKernel.Tests.ClassComponents.Repository1' is waiting for the following dependencies:{0}- Service 'Castle.MicroKernel.Tests.ClassComponents.IRepository' which points back to the component itself.{0}A dependency cannot be satisfied by the component itself, did you forget to make this a service override and point explicitly to a different component exposing this service?{0}{0}The following components also expose the service, but none of them can be resolved:{0}'Castle.MicroKernel.Tests.ClassComponents.DecoratedRepository2' is waiting for the following dependencies:{0}- Parameter 'name' which was not provided. Did you forget to set the dependency?{0}",
 					Environment.NewLine);
 			Assert.AreEqual(expectedMessage, exception.Message);
 		}

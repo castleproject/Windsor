@@ -41,9 +41,10 @@ namespace Castle.Windsor.Experimental.Diagnostics.DebuggerViews
 				{
 					return message.ToString();
 				}
-				handler.ObtainDependencyDetails(new HashSet<IHandler>(), message);
+				var inspector = new DependencyInspector(message);
+				handler.ObtainDependencyDetails(inspector);
 
-				return message.ToString();
+				return inspector.Message;
 			}
 		}
 

@@ -54,9 +54,10 @@ namespace Castle.MicroKernel.Handlers
 				message.Append(ComponentModel.Name);
 				message.AppendLine("' as it has dependencies to be satisfied.");
 
-				ObtainDependencyDetails(new HashSet<IHandler>(), message);
+				var inspector = new DependencyInspector(message);
+				ObtainDependencyDetails(inspector);
 
-				throw new HandlerException(message.ToString());
+				throw new HandlerException(inspector.Message);
 			}
 		}
 

@@ -12,21 +12,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.MicroKernel.Handlers
+namespace Castle.Facilities.Synchronize
 {
 	/// <summary>
-	///   Might be implemented by a handler 
-	///   so it can expose access to dependency information 
-	///   which is used to construct meaningful error messages
+	///   Identifies the type of synchornization context reference.
 	/// </summary>
-	public interface IExposeDependencyInfo
+	public enum SynchronizeContextReferenceType
 	{
 		/// <summary>
-		/// Informs the <paramref name="inspector" /> about missing dependencies.
-		/// Implementers should ignore the call if no dependencies are missing and 
-		/// call back the inspector with the information required otherwise
+		///   Service interface reference.
 		/// </summary>
-		/// <param name="inspector"></param>
-		void ObtainDependencyDetails(IDependencyInspector inspector);
+		Interface,
+
+		/// <summary>
+		///   Component key reference.
+		/// </summary>
+		Key
 	}
 }

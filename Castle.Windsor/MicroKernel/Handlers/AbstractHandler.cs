@@ -20,7 +20,6 @@ namespace Castle.MicroKernel.Handlers
 	using System.Diagnostics;
 	using System.Linq;
 	using System.Reflection;
-	using System.Text;
 
 	using Castle.Core;
 	using Castle.Core.Internal;
@@ -143,119 +142,6 @@ namespace Castle.MicroKernel.Handlers
 		public virtual void Dispose()
 		{
 			lifestyleManager.Dispose();
-		}
-
-		/// <summary>
-		///   Returns human readable list of dependencies 
-		///   this handler is waiting for.
-		/// </summary>
-		/// <returns></returns>
-		public void ObtainDependencyDetails(ICollection<IHandler> dependenciesChecked, StringBuilder message)
-		{
-			if (CurrentState == HandlerState.Valid)
-			{
-				return;
-			}
-			if (dependenciesChecked.Contains(this))
-			{
-				return;
-			}
-			dependenciesChecked.Add(this);
-			message.AppendLine();
-			message.AppendFormat("'{0}' is waiting for the following dependencies:", ComponentModel.Name);
-			message.AppendLine();
-			if (DependenciesByService.Count != 0)
-			{
-				message.AppendLine("Services:");
-
-				foreach (var dependency in DependenciesByService)
-				{
-					var handler = Kernel.GetHandler(dependency.Key);
-					if (handler == null)
-					{
-						message.AppendFormat("- Type '{0}' which was not registered.", dependency.Key.FullName ?? dependency.Key.Name);
-						message.AppendLine();
-					}
-					else if (handler == this)
-					{
-						var alternatives = kernel.GetHandlers(dependency.Key);
-						message.AppendFormat("- Type '{0}' which points back to the same component.", dependency.Key.FullName);
-						message.AppendLine();
-						message.Append("A dependency cannot be satisfied by itself, did you forget to ");
-						if (alternatives.Length == 1)
-						{
-							message.AppendLine("register other components for this service?");
-						}
-						else
-						{
-							message.AppendLine("make this a service override and point explicitly to different component exposing this service?");
-							foreach (var maybeDecoratedHandler in alternatives)
-							{
-								if (maybeDecoratedHandler == this)
-								{
-									continue;
-								}
-								message.AppendLine();
-								message.AppendFormat("'{0}' is registered and is matching the required service, but cannot be resolved.",
-								                     maybeDecoratedHandler.ComponentModel.Name);
-								var info = maybeDecoratedHandler as IExposeDependencyInfo;
-								if (info != null)
-								{
-									info.ObtainDependencyDetails(dependenciesChecked, message);
-								}
-							}
-						}
-					}
-					else
-					{
-						message.AppendFormat("- '{0}' which was registered but is also waiting for dependencies.", dependency.Key.FullName);
-
-						var info = handler as IExposeDependencyInfo;
-						if (info != null)
-						{
-							info.ObtainDependencyDetails(dependenciesChecked, message);
-						}
-					}
-				}
-			}
-
-			if (DependenciesByKey.Count != 0)
-			{
-				message.AppendLine("Parameters and service overrides:");
-
-				foreach (var dependency in DependenciesByKey)
-				{
-					var key = dependency.Key;
-
-					var handler = Kernel.GetHandler(key);
-
-					if (handler == null)
-					{
-						message.AppendFormat("- '{0}' ", key);
-						if (dependency.Value.DependencyType == DependencyType.ServiceOverride)
-						{
-							message.AppendLine("service which was not registered. Did you misspell the name?");
-						}
-						else
-						{
-							message.AppendLine("paramter which was not provided. Did you forget to set the dependency?");
-						}
-					}
-					else
-					{
-						message.AppendFormat("- '{0}' service which was registered but is also waiting for dependencies.", key);
-						message.AppendLine();
-
-						var info = handler as IExposeDependencyInfo;
-						if (info != null)
-						{
-							info.ObtainDependencyDetails(dependenciesChecked, message);
-						}
-					}
-				}
-			}
-
-			return;
 		}
 
 		public void AddCustomDependencyValue(object key, object value)
@@ -975,6 +861,15 @@ namespace Castle.MicroKernel.Handlers
 		public override string ToString()
 		{
 			return string.Format("Model: {0}", model);
+		}
+
+		public void ObtainDependencyDetails(IDependencyInspector inspector)
+		{
+			if (CurrentState == HandlerState.Valid)
+			{
+				return;
+			}
+			inspector.Inspect(this, Union(DependenciesByService.Values, DependenciesByKey.Values), Kernel);
 		}
 	}
 }
