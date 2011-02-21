@@ -29,9 +29,29 @@ namespace Castle.Windsor.Tests.Experimental
 
 	using NUnit.Framework;
 
-	public class ProblematicDependenciesTestCase : AbstractContainerTestFixture
+	public class ProblematicDependenciesTestCase : AbstractContainerTestCase
 	{
+		[SetUp]
+		public void SetSubSystem()
+		{
+			subSystem = new DefaultDebuggingSubSystem();
+			Kernel.AddSubSystem(SubSystemConstants.DebuggingKey, subSystem);
+		}
+
 		private DefaultDebuggingSubSystem subSystem;
+
+		private MismatchedDependencyDebuggerViewItem[] GetMismatches(bool expectNotExists = false)
+		{
+			var faultyComponents = subSystem.SelectMany(e => e.Attach()).SingleOrDefault(i => i.Name == PotentialLifestyleMismatches.Name);
+			Assert.AreEqual(expectNotExists, faultyComponents == null);
+			if (expectNotExists)
+			{
+				return new MismatchedDependencyDebuggerViewItem[0];
+			}
+			var components = faultyComponents.Value as DebuggerViewItem[];
+			Assert.IsNotNull(components);
+			return components.Select(i => (MismatchedDependencyDebuggerViewItem)i.Value).ToArray();
+		}
 
 		[Test]
 		public void Can_detect_singleton_depending_on_transient()
@@ -99,26 +119,6 @@ namespace Castle.Windsor.Tests.Experimental
 			                   Component.For<ICameraService>().ImplementedBy<CameraService>().Named("ok to resolve - has no interceptors"));
 			var items = GetMismatches(expectNotExists: true);
 			Assert.IsEmpty(items);
-		}
-
-		[SetUp]
-		public void SetSubSystem()
-		{
-			subSystem = new DefaultDebuggingSubSystem();
-			Kernel.AddSubSystem(SubSystemConstants.DebuggingKey, subSystem);
-		}
-
-		private MismatchedDependencyDebuggerViewItem[] GetMismatches(bool expectNotExists = false)
-		{
-			var faultyComponents = subSystem.SelectMany(e => e.Attach()).SingleOrDefault(i => i.Name == PotentialLifestyleMismatches.Name);
-			Assert.AreEqual(expectNotExists, faultyComponents == null);
-			if (expectNotExists)
-			{
-				return new MismatchedDependencyDebuggerViewItem[0];
-			}
-			var components = faultyComponents.Value as DebuggerViewItem[];
-			Assert.IsNotNull(components);
-			return components.Select(i => (MismatchedDependencyDebuggerViewItem)i.Value).ToArray();
 		}
 	}
 #endif

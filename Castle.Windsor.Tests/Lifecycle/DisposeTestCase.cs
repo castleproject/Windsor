@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ namespace Castle.Windsor.Tests.Lifecycle
 	using NUnit.Framework;
 
 	[TestFixture]
-	public class DisposeTestCase : AbstractContainerTestFixture
+	public class DisposeTestCase : AbstractContainerTestCase
 	{
 		[Test]
 		public void Disposable_component_for_nondisposable_service_built_via_factory_should_be_disposed_when_released()
@@ -45,6 +45,18 @@ namespace Castle.Windsor.Tests.Lifecycle
 		}
 
 		[Test]
+		public void Disposable_component_for_nondisposable_service_is_tracked()
+		{
+			Container.Register(Component.For<ISimpleService>()
+			                   	.ImplementedBy<SimpleServiceDisposable>()
+			                   	.LifeStyle.Transient);
+
+			var service = Container.Resolve<ISimpleService>();
+
+			Assert.IsTrue(Kernel.ReleasePolicy.HasTrack(service));
+		}
+
+		[Test]
 		public void Disposable_component_for_nondisposable_service_should_be_disposed_when_released()
 		{
 			SimpleServiceDisposable.DisposedCount = 0;
@@ -59,15 +71,13 @@ namespace Castle.Windsor.Tests.Lifecycle
 		}
 
 		[Test]
-		public void Disposable_component_for_nondisposable_service_is_tracked()
+		public void Disposable_service_is_tracked()
 		{
-			Container.Register(Component.For<ISimpleService>()
-			                   	.ImplementedBy<SimpleServiceDisposable>()
-			                   	.LifeStyle.Transient);
+			Container.Register(Component.For<DisposableFoo>().LifeStyle.Transient);
 
-			var service = Container.Resolve<ISimpleService>();
+			var foo = Container.Resolve<DisposableFoo>();
 
-			Assert.IsTrue(Kernel.ReleasePolicy.HasTrack(service));
+			Assert.IsTrue(Kernel.ReleasePolicy.HasTrack(foo));
 		}
 
 		[Test]
@@ -80,16 +90,6 @@ namespace Castle.Windsor.Tests.Lifecycle
 			Container.Release(foo);
 
 			Assert.AreEqual(1, DisposableFoo.DisposedCount);
-		}
-
-		[Test]
-		public void Disposable_service_is_tracked()
-		{
-			Container.Register(Component.For<DisposableFoo>().LifeStyle.Transient);
-
-			var foo = Container.Resolve<DisposableFoo>();
-
-			Assert.IsTrue(Kernel.ReleasePolicy.HasTrack(foo));
 		}
 
 		[Test]

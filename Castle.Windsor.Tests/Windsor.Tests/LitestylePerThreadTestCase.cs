@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -23,8 +23,19 @@ namespace Castle.Windsor.Tests
 	using NUnit.Framework;
 
 	[TestFixture]
-	public class LitestylePerThreadTestCase : AbstractContainerTestFixture
+	public class LitestylePerThreadTestCase : AbstractContainerTestCase
 	{
+		private void ExecuteOnAnotherThreadAndWait(Action action)
+		{
+			var @event = new ManualResetEvent(false);
+			new Thread(() =>
+			{
+				action.Invoke();
+				@event.Set();
+			}).Start();
+			@event.WaitOne();
+		}
+
 		[Test]
 		public void Disposable_components_are_decommissioned_on_container_Dispose()
 		{
@@ -86,17 +97,6 @@ namespace Castle.Windsor.Tests
 			Container.AddChildContainer(child);
 			var a2 = child.Resolve<A>();
 			Assert.AreSame(a1, a2);
-		}
-
-		private void ExecuteOnAnotherThreadAndWait(Action action)
-		{
-			var @event = new ManualResetEvent(false);
-			new Thread(() =>
-			{
-				action.Invoke();
-				@event.Set();
-			}).Start();
-			@event.WaitOne();
 		}
 	}
 }

@@ -150,73 +150,70 @@ namespace Castle.MicroKernel.Handlers
 		///   this handler is waiting for.
 		/// </summary>
 		/// <returns></returns>
-		public String ObtainDependencyDetails(IList dependenciesChecked)
+		public void ObtainDependencyDetails(ICollection<IHandler> dependenciesChecked, StringBuilder message)
 		{
 			if (CurrentState == HandlerState.Valid)
 			{
-				return String.Empty;
+				return;
 			}
-
 			if (dependenciesChecked.Contains(this))
 			{
-				return String.Empty;
+				return;
 			}
-
 			dependenciesChecked.Add(this);
-
-			var sb = new StringBuilder();
-			sb.AppendLine();
-			sb.AppendFormat("{0} is waiting for the following dependencies: ", ComponentModel.Name);
-			sb.AppendLine();
+			message.AppendLine();
+			message.AppendFormat("'{0}' is waiting for the following dependencies:", ComponentModel.Name);
+			message.AppendLine();
 			if (DependenciesByService.Count != 0)
 			{
-				sb.AppendLine();
-				sb.AppendLine("Services: ");
+				message.AppendLine("Services:");
 
-				foreach (var type in DependenciesByService.Keys)
+				foreach (var dependency in DependenciesByService)
 				{
-					var handler = Kernel.GetHandler(type);
-
+					var handler = Kernel.GetHandler(dependency.Key);
 					if (handler == null)
 					{
-						sb.AppendFormat("- {0} which was not registered. ", type.FullName ?? type.Name);
-						sb.AppendLine();
+						message.AppendFormat("- Type '{0}' which was not registered.", dependency.Key.FullName ?? dependency.Key.Name);
+						message.AppendLine();
 					}
 					else if (handler == this)
 					{
-						sb.AppendFormat("- {0}. {1}  A dependency cannot be satisfied by itself, " +
-						                "did you forget to add a parameter name to differentiate between the " +
-						                "two dependencies? ", type.FullName, Environment.NewLine);
-						sb.AppendLine();
-						foreach (var maybeDecoratedHandler in kernel.GetHandlers(type))
+						var alternatives = kernel.GetHandlers(dependency.Key);
+						message.AppendFormat("- Type '{0}' which points back to the same component.", dependency.Key.FullName);
+						message.AppendLine();
+						message.Append("A dependency cannot be satisfied by itself, did you forget to ");
+						if (alternatives.Length == 1)
 						{
-							if (maybeDecoratedHandler == this)
+							message.AppendLine("register other components for this service?");
+						}
+						else
+						{
+							message.AppendLine("make this a service override and point explicitly to different component exposing this service?");
+							foreach (var maybeDecoratedHandler in alternatives)
 							{
-								continue;
-							}
-							sb.AppendLine();
-							sb.AppendFormat(
-								"{0} is registered and is matching the required service, but cannot be resolved.",
-								maybeDecoratedHandler.ComponentModel.Name);
-							sb.AppendLine();
-							var info = maybeDecoratedHandler as IExposeDependencyInfo;
-
-							if (info != null)
-							{
-								sb.Append(info.ObtainDependencyDetails(dependenciesChecked));
+								if (maybeDecoratedHandler == this)
+								{
+									continue;
+								}
+								message.AppendLine();
+								message.AppendFormat("'{0}' is registered and is matching the required service, but cannot be resolved.",
+								                     maybeDecoratedHandler.ComponentModel.Name);
+								var info = maybeDecoratedHandler as IExposeDependencyInfo;
+								if (info != null)
+								{
+									info.ObtainDependencyDetails(dependenciesChecked, message);
+								}
 							}
 						}
 					}
 					else
 					{
-						sb.AppendFormat("- {0} which was registered but is also waiting for dependencies. ", type.FullName);
-						sb.AppendLine();
+						message.AppendFormat("- '{0}' which was registered but is also waiting for dependencies.", dependency.Key.FullName);
 
 						var info = handler as IExposeDependencyInfo;
-
 						if (info != null)
 						{
-							sb.Append(info.ObtainDependencyDetails(dependenciesChecked));
+							info.ObtainDependencyDetails(dependenciesChecked, message);
 						}
 					}
 				}
@@ -224,8 +221,7 @@ namespace Castle.MicroKernel.Handlers
 
 			if (DependenciesByKey.Count != 0)
 			{
-				sb.AppendLine();
-				sb.AppendLine("Keys (components with specific keys)");
+				message.AppendLine("Parameters and service overrides:");
 
 				foreach (var dependency in DependenciesByKey)
 				{
@@ -235,25 +231,31 @@ namespace Castle.MicroKernel.Handlers
 
 					if (handler == null)
 					{
-						sb.AppendFormat("- {0} which was not registered. ", key);
-						sb.AppendLine();
+						message.AppendFormat("- '{0}' ", key);
+						if (dependency.Value.DependencyType == DependencyType.ServiceOverride)
+						{
+							message.AppendLine("service which was not registered. Did you misspell the name?");
+						}
+						else
+						{
+							message.AppendLine("paramter which was not provided. Did you forget to set the dependency?");
+						}
 					}
 					else
 					{
-						sb.AppendFormat("- {0} which was registered but is also waiting for dependencies.", key);
-						sb.AppendLine();
+						message.AppendFormat("- '{0}' service which was registered but is also waiting for dependencies.", key);
+						message.AppendLine();
 
 						var info = handler as IExposeDependencyInfo;
-
 						if (info != null)
 						{
-							sb.Append(info.ObtainDependencyDetails(dependenciesChecked));
+							info.ObtainDependencyDetails(dependenciesChecked, message);
 						}
 					}
 				}
 			}
 
-			return sb.ToString();
+			return;
 		}
 
 		public void AddCustomDependencyValue(object key, object value)

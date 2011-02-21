@@ -14,8 +14,8 @@
 
 namespace Castle.MicroKernel.Handlers
 {
-	using System;
-	using System.Collections;
+	using System.Collections.Generic;
+	using System.Text;
 
 	/// <summary>
 	///   Might be implemented by a handler 
@@ -28,7 +28,8 @@ namespace Castle.MicroKernel.Handlers
 		///   Returns human readable list of dependencies 
 		///   this handler is waiting for.
 		///   <param name = "dependenciesChecked">list of the dependencies that was already checked, used to avoid cycles.</param>
+		///   <param name = "message">StringBuilder to which the message should be written.</param>
 		/// </summary>
-		String ObtainDependencyDetails(IList dependenciesChecked);
+		void ObtainDependencyDetails(ICollection<IHandler> dependenciesChecked, StringBuilder message);
 	}
 }

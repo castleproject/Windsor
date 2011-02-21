@@ -17,6 +17,7 @@ namespace Castle.MicroKernel.Handlers
 	using System;
 	using System.Collections.Generic;
 	using System.Linq;
+	using System.Text;
 
 	using Castle.Core;
 	using Castle.MicroKernel.Context;
@@ -49,11 +50,13 @@ namespace Castle.MicroKernel.Handlers
 		{
 			if (CurrentState == HandlerState.WaitingDependency)
 			{
-				var message = String.Format("Can't create component '{1}' " +
-				                            "as it has dependencies to be satisfied. {0}",
-				                            ObtainDependencyDetails(new List<object>()), ComponentModel.Name);
+				var message = new StringBuilder("Can't create component '");
+				message.Append(ComponentModel.Name);
+				message.AppendLine("' as it has dependencies to be satisfied.");
 
-				throw new HandlerException(message);
+				ObtainDependencyDetails(new HashSet<IHandler>(), message);
+
+				throw new HandlerException(message.ToString());
 			}
 		}
 

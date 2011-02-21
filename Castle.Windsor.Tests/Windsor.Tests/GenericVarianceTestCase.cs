@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ namespace Castle.Windsor.Tests
 
 	using NUnit.Framework;
 
-	public class GenericVarianceTestCase : AbstractContainerTestFixture
+	public class GenericVarianceTestCase : AbstractContainerTestCase
 	{
 		[Test]
 		public void ResolveAll_can_resolve_contravariant_components()

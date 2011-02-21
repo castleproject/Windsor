@@ -26,8 +26,17 @@ namespace Castle.Proxies
 	using NUnit.Framework;
 
 	[TestFixture]
-	public class FactorySupportTestCase : AbstractContainerTestFixture
+	public class FactorySupportTestCase : AbstractContainerTestCase
 	{
+		private void AddComponent(string key, Type service, Type type, string factoryMethod)
+		{
+			var config = new MutableConfiguration(key);
+			config.Attributes["factoryId"] = "factory";
+			config.Attributes["factoryCreate"] = factoryMethod;
+			Container.Kernel.ConfigurationStore.AddComponentConfiguration(key, config);
+			Container.Kernel.Register(Component.For(service).ImplementedBy(type).Named(key));
+		}
+
 		[Test]
 		public void FactorySupport_UsingProxiedFactory_WorksFine()
 		{
@@ -40,15 +49,6 @@ namespace Castle.Proxies
 			var service = Container.Resolve<ICalcService>("calculator");
 
 			Assert.IsNotNull(service);
-		}
-
-		private void AddComponent(string key, Type service, Type type, string factoryMethod)
-		{
-			var config = new MutableConfiguration(key);
-			config.Attributes["factoryId"] = "factory";
-			config.Attributes["factoryCreate"] = factoryMethod;
-			Container.Kernel.ConfigurationStore.AddComponentConfiguration(key, config);
-			Container.Kernel.Register(Component.For(service).ImplementedBy(type).Named(key));
 		}
 	}
 }

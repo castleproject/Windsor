@@ -26,7 +26,7 @@ namespace Castle.MicroKernel.Tests
 
 	[TestFixture]
 	[Ignore("This is broken. Arbitrary division into Service/ServiceOverride/Parameter dependencies has to be removed or adjusted first.")]
-	public class ComponentsParametersDivisionTestsCase : AbstractContainerTestFixture
+	public class ComponentsParametersDivisionTestsCase : AbstractContainerTestCase
 	{
 		[Test]
 		public void Collection_should_be_resolvable_normally_named()

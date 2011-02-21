@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,7 +14,6 @@
 
 namespace Castle.Windsor.Tests
 {
-	using System;
 	using System.Collections.Generic;
 
 	using Castle.Core;
@@ -25,19 +24,26 @@ namespace Castle.Windsor.Tests
 	using NUnit.Framework;
 
 	[TestFixture]
-	public class EventTests:AbstractContainerTestFixture
+	public class KernelEventsTestCase : AbstractContainerTestCase
 	{
-		private ComponentModel expectedClient;
-		private List<DependencyModel> expectedModels;
-
 		[SetUp]
 		public void Subscribe()
 		{
 #if SILVERLIGHT
-			// Silverlight testing framework can't handle SetUp method on base class so we have to call it explicitly
+	// Silverlight testing framework can't handle SetUp method on base class so we have to call it explicitly
 			Init();
 #endif
 			Kernel.DependencyResolving += AssertEvent;
+		}
+
+		private ComponentModel expectedClient;
+		private List<DependencyModel> expectedModels;
+
+		private void AssertEvent(ComponentModel client, DependencyModel model, object dependency)
+		{
+			Assert.AreEqual(expectedClient, client);
+			Assert.IsTrue(expectedModels.Contains(model));
+			Assert.IsNotNull(dependency);
 		}
 
 		[Test]
@@ -115,13 +121,6 @@ namespace Castle.Windsor.Tests
 			var customer = Kernel.Resolve<ICustomer>("customer");
 
 			Assert.IsNotNull(customer);
-		}
-
-		private void AssertEvent(ComponentModel client, DependencyModel model, object dependency)
-		{
-			Assert.AreEqual(expectedClient, client);
-			Assert.IsTrue(expectedModels.Contains(model));
-			Assert.IsNotNull(dependency);
 		}
 	}
 }

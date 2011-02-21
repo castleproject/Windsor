@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -21,8 +21,13 @@ namespace Castle.Core.Tests
 
 	using NUnit.Framework;
 
-	public class InterceptorAttributeTestCase : AbstractContainerTestFixture
+	public class InterceptorAttributeTestCase : AbstractContainerTestCase
 	{
+		private bool IsProxy(object instance)
+		{
+			return instance is IProxyTargetAccessor;
+		}
+
 		[Test]
 		public void Can_set_interceptor_via_attribute_named()
 		{
@@ -51,11 +56,6 @@ namespace Castle.Core.Tests
 				Component.For<ICalcService>().ImplementedBy<CalculatorServiceWithInternalInterface>());
 			var calcService = Container.Resolve<ICalcService>();
 			Assert.IsTrue(IsProxy(calcService));
-		}
-
-		private bool IsProxy(object instance)
-		{
-			return instance is IProxyTargetAccessor;
 		}
 	}
 }

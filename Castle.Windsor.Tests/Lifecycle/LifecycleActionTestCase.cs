@@ -19,7 +19,7 @@ namespace Castle.Windsor.Tests.Lifecycle
 	using NUnit.Framework;
 
 	[TestFixture]
-	public class LifecycleActionTestCase : AbstractContainerTestFixture
+	public class LifecycleActionTestCase : AbstractContainerTestCase
 	{
 		[Test]
 		public void CanModify_when_singleton()
