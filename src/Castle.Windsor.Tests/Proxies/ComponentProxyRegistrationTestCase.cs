@@ -27,7 +27,7 @@ namespace Castle.Proxies
 	using NUnit.Framework;
 
 	[TestFixture]
-	public class ComponentProxyRegistrationTestCase : AbstractContainerTestFixture
+	public class ComponentProxyRegistrationTestCase : AbstractContainerTestCase
 	{
 		[Test]
 		public void AddComponent_WithMixIn_AddsMixin()
@@ -102,7 +102,7 @@ namespace Castle.Proxies
 				                                Container.Resolve<ICalcService>());
 			Assert.AreEqual(
 				string.Format(
-					"Can't create component 'Castle.Windsor.Tests.Components.CalculatorService' as it has dependencies to be satisfied. {0}Castle.Windsor.Tests.Components.CalculatorService is waiting for the following dependencies: {0}{0}Services: {0}- Castle.ProxyInfrastructure.ProxyNothingHook which was not registered. {0}",
+					"Can't create component 'Castle.Windsor.Tests.Components.CalculatorService' as it has dependencies to be satisfied.{0}{0}'Castle.Windsor.Tests.Components.CalculatorService' is waiting for the following dependencies:{0}Services:{0}- Type 'Castle.ProxyInfrastructure.ProxyNothingHook' which was not registered.{0}",
 					Environment.NewLine),
 				exception.Message);
 		}
@@ -122,7 +122,7 @@ namespace Castle.Proxies
 				                                Container.Resolve<ICalcService>());
 			Assert.AreEqual(
 				string.Format(
-					"Can't create component 'Castle.Windsor.Tests.Components.CalculatorService' as it has dependencies to be satisfied. {0}Castle.Windsor.Tests.Components.CalculatorService is waiting for the following dependencies: {0}{0}Services: {0}- Castle.Windsor.Tests.A which was not registered. {0}",
+					"Can't create component 'Castle.Windsor.Tests.Components.CalculatorService' as it has dependencies to be satisfied.{0}{0}'Castle.Windsor.Tests.Components.CalculatorService' is waiting for the following dependencies:{0}Services:{0}- Type 'Castle.Windsor.Tests.A' which was not registered.{0}",
 					Environment.NewLine),
 				exception.Message);
 		}
@@ -142,7 +142,7 @@ namespace Castle.Proxies
 				                                Container.Resolve<ICalcService>());
 			Assert.AreEqual(
 				string.Format(
-					"Can't create component 'Castle.Windsor.Tests.Components.CalculatorService' as it has dependencies to be satisfied. {0}Castle.Windsor.Tests.Components.CalculatorService is waiting for the following dependencies: {0}{0}Services: {0}- Castle.Windsor.Tests.Interceptors.DummyInterceptorSelector which was not registered. {0}",
+					"Can't create component 'Castle.Windsor.Tests.Components.CalculatorService' as it has dependencies to be satisfied.{0}{0}'Castle.Windsor.Tests.Components.CalculatorService' is waiting for the following dependencies:{0}Services:{0}- Type 'Castle.Windsor.Tests.Interceptors.DummyInterceptorSelector' which was not registered.{0}",
 					Environment.NewLine),
 				exception.Message);
 		}

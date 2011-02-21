@@ -26,10 +26,8 @@ namespace Castle.Windsor.Tests.Windsor.Tests.Debugging
 	using NUnit.Framework;
 
 	[TestFixture]
-	public class DebuggingSubsystemTestCase : AbstractContainerTestFixture
+	public class DebuggingSubsystemTestCase : AbstractContainerTestCase
 	{
-		private DefaultDebuggingSubSystem subSystem;
-
 		[SetUp]
 		public void InitSubSystem()
 		{
@@ -37,6 +35,8 @@ namespace Castle.Windsor.Tests.Windsor.Tests.Debugging
 			subSystem = new DefaultDebuggingSubSystem();
 			Kernel.AddSubSystem(SubSystemConstants.DebuggingKey, subSystem);
 		}
+
+		private DefaultDebuggingSubSystem subSystem;
 
 		[Test(Description = "When failing this test causes stack overflow")]
 		public void PotentialLifestyleMismatches_can_handle_dependency_cycles()

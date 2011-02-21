@@ -26,9 +26,21 @@ namespace Castle.Windsor.Tests.Experimental
 
 	using NUnit.Framework;
 
-	public class AllComponentsTestCase : AbstractContainerTestFixture
+	public class AllComponentsTestCase : AbstractContainerTestCase
 	{
+		[SetUp]
+		public void SetSubSystem()
+		{
+			subSystem = new DefaultDebuggingSubSystem();
+			Kernel.AddSubSystem(SubSystemConstants.DebuggingKey, subSystem);
+		}
+
 		private DefaultDebuggingSubSystem subSystem;
+
+		private DebuggerViewItem GetAllComponents()
+		{
+			return subSystem.SelectMany(e => e.Attach()).SingleOrDefault(i => i.Name == AllComponents.Name);
+		}
 
 		[Test]
 		public void Forwarded_components_are_kept_together()
@@ -43,18 +55,6 @@ namespace Castle.Windsor.Tests.Experimental
 			var item = view.Single();
 			Assert.IsNotNull(item.Extensions.SingleOrDefault(e => e.Name == "Service" && Equals(e.Value, typeof(EmptyServiceA))));
 			Assert.IsNotNull(item.Extensions.SingleOrDefault(e => e.Name == "Service" && Equals(e.Value, typeof(IEmptyService))));
-		}
-
-		[SetUp]
-		public void SetSubSystem()
-		{
-			subSystem = new DefaultDebuggingSubSystem();
-			Kernel.AddSubSystem(SubSystemConstants.DebuggingKey, subSystem);
-		}
-
-		private DebuggerViewItem GetAllComponents()
-		{
-			return subSystem.SelectMany(e => e.Attach()).SingleOrDefault(i => i.Name == AllComponents.Name);
 		}
 	}
 

@@ -268,13 +268,9 @@ namespace Castle.MicroKernel.SubSystems.Naming
 				var services = new List<IHandler>();
 				foreach (var handler in handlers)
 				{
-					foreach (var handlerService in handler.Services)
+					if (handler.Services.Any(handlerService => IsAssignable(service, handlerService)))
 					{
-						if (IsAssignable(service, handlerService))
-						{
-							services.Add(handler);
-							break;
-						}
+						services.Add(handler);
 					}
 				}
 				result = services.ToArray();

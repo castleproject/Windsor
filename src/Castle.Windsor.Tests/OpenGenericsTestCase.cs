@@ -16,13 +16,13 @@ namespace Castle.Windsor.Tests
 {
 	using System.Collections.ObjectModel;
 
-	using Castle.Windsor.Tests.Components;
 	using Castle.MicroKernel.Registration;
+	using Castle.Windsor.Tests.Components;
 
 	using NUnit.Framework;
 
 	[TestFixture]
-	public class OpenGenericsTestCase : AbstractContainerTestFixture
+	public class OpenGenericsTestCase : AbstractContainerTestCase
 	{
 		[Test]
 		public void ExtendedProperties_incl_ProxyOptions_are_honored_for_open_generic_types()

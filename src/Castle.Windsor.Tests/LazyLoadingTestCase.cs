@@ -26,7 +26,7 @@ namespace Castle.MicroKernel.Tests
 	using NUnit.Framework;
 
 	[TestFixture]
-	public class LazyLoadingTestCase : AbstractContainerTestFixture
+	public class LazyLoadingTestCase : AbstractContainerTestCase
 	{
 		[Test]
 		public void Can_Lazily_resolve_component()
@@ -182,7 +182,7 @@ namespace Castle.MicroKernel.Tests
 
 	public class UsingLazyComponent
 	{
-		private IHasDefaultImplementation dependency;
+		private readonly IHasDefaultImplementation dependency;
 
 		public UsingLazyComponent(IHasDefaultImplementation dependency)
 		{

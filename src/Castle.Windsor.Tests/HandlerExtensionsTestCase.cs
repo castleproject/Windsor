@@ -25,8 +25,31 @@ namespace Castle.Windsor.Tests
 	using NUnit.Framework;
 
 	[TestFixture]
-	public class HandlerExtensionsTestCase : AbstractContainerTestFixture
+	public class HandlerExtensionsTestCase : AbstractContainerTestCase
 	{
+		private ComponentRegistration<A> AddResolveExtensions(ComponentRegistration<A> componentRegistration,
+		                                                      params IResolveExtension[] items)
+		{
+			var resolveExtensions = new List<IResolveExtension>();
+			foreach (var item in items.Distinct())
+			{
+				resolveExtensions.Add(item);
+			}
+			return componentRegistration.ExtendedProperties(Property.ForKey("Castle.ResolveExtensions").Eq(resolveExtensions));
+		}
+
+		private ComponentRegistration<TComponent> WithReleaseExtensions<TComponent>(
+			ComponentRegistration<TComponent> componentRegistration, params IReleaseExtension[] items)
+			where TComponent : class
+		{
+			var releaseExtensions = new List<IReleaseExtension>();
+			foreach (var item in items.Distinct())
+			{
+				releaseExtensions.Add(item);
+			}
+			return componentRegistration.ExtendedProperties(Property.ForKey("Castle.ReleaseExtensions").Eq(releaseExtensions));
+		}
+
 		[Test]
 		public void Can_chain_extensions()
 		{
@@ -90,35 +113,12 @@ namespace Castle.Windsor.Tests
 			var resolvedA = Kernel.Resolve<A>();
 			Assert.AreSame(a, resolvedA);
 		}
-
-		private ComponentRegistration<A> AddResolveExtensions(ComponentRegistration<A> componentRegistration,
-		                                                      params IResolveExtension[] items)
-		{
-			var resolveExtensions = new List<IResolveExtension>();
-			foreach (var item in items.Distinct())
-			{
-				resolveExtensions.Add(item);
-			}
-			return componentRegistration.ExtendedProperties(Property.ForKey("Castle.ResolveExtensions").Eq(resolveExtensions));
-		}
-
-		private ComponentRegistration<TComponent> WithReleaseExtensions<TComponent>(
-			ComponentRegistration<TComponent> componentRegistration, params IReleaseExtension[] items)
-			where TComponent : class
-		{
-			var releaseExtensions = new List<IReleaseExtension>();
-			foreach (var item in items.Distinct())
-			{
-				releaseExtensions.Add(item);
-			}
-			return componentRegistration.ExtendedProperties(Property.ForKey("Castle.ReleaseExtensions").Eq(releaseExtensions));
-		}
 	}
 
 	public class ReturnAExtension : IResolveExtension
 	{
+		private readonly A a;
 		private readonly bool proceed;
-		private A a;
 
 		public ReturnAExtension(A a, bool proceed = false)
 		{

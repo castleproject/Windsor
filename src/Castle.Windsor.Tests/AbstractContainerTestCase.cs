@@ -19,7 +19,7 @@ namespace Castle.Windsor.Tests
 	using NUnit.Framework;
 
 	[TestFixture]
-	public abstract class AbstractContainerTestFixture
+	public abstract class AbstractContainerTestCase
 	{
 		private WindsorContainer container;
 		private IKernel kernel;

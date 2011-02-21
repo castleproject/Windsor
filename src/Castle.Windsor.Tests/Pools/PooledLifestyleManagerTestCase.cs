@@ -22,7 +22,7 @@ namespace Castle.MicroKernel.Tests.Pools
 	using NUnit.Framework;
 
 	[TestFixture]
-	public class PooledLifestyleManagerTestCase : AbstractContainerTestFixture
+	public class PooledLifestyleManagerTestCase : AbstractContainerTestCase
 	{
 		[Test]
 		public void MaxSize()
@@ -97,27 +97,6 @@ namespace Castle.MicroKernel.Tests.Pools
 		}
 
 		[Test]
-		public void Recyclable_component_with_on_release_action_not_released_more_than_necessary()
-		{
-			var count = 0;
-			Kernel.Register(Component.For<RecyclableComponent>().LifeStyle.PooledWithSize(1, null)
-			                	.DynamicParameters((k, d) =>
-			                	{
-			                		count++;
-			                		return delegate { count--; };
-			                	}));
-
-			RecyclableComponent component = null;
-			for (int i = 0; i < 10; i++)
-			{
-				component = Kernel.Resolve<RecyclableComponent>();
-				Container.Release(component);
-			}
-			Assert.AreEqual(10, component.RecycledCount);
-			Assert.AreEqual(0, count);
-		}
-
-		[Test]
 		public void Recyclable_component_gets_recycled_just_once_on_subsequent_release()
 		{
 			Kernel.Register(Component.For<RecyclableComponent>().LifeStyle.PooledWithSize(1, null));
@@ -141,6 +120,27 @@ namespace Castle.MicroKernel.Tests.Pools
 
 			Container.Release(component);
 			Assert.AreEqual(1, component.RecycledCount);
+		}
+
+		[Test]
+		public void Recyclable_component_with_on_release_action_not_released_more_than_necessary()
+		{
+			var count = 0;
+			Kernel.Register(Component.For<RecyclableComponent>().LifeStyle.PooledWithSize(1, null)
+			                	.DynamicParameters((k, d) =>
+			                	{
+			                		count++;
+			                		return delegate { count--; };
+			                	}));
+
+			RecyclableComponent component = null;
+			for (var i = 0; i < 10; i++)
+			{
+				component = Kernel.Resolve<RecyclableComponent>();
+				Container.Release(component);
+			}
+			Assert.AreEqual(10, component.RecycledCount);
+			Assert.AreEqual(0, count);
 		}
 
 		[Test]
