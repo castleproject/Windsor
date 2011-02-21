@@ -1,3 +1,4 @@
+- implemented IOC-275 - Exception message thrown when dependencies are missing is not always very clear and should be improved
 - fixed IOC-273 - Auto register PerWebRequestLifestyleModule using PreApplicationStartMethodAttribute at runtime
 - EventWiringFacility, FactorySupportFacility and RemotingFacility are extracted to their own assemblies
 - implemented IOC-270 - Add OnDestroy method, symertical to OnCreate 

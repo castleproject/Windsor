@@ -38,7 +38,7 @@ namespace Castle.MicroKernel.Tests
 				                                Kernel.Resolve<CycleA>("a"));
 			var expectedMessage =
 				string.Format(
-					"Can't create component 'a' as it has dependencies to be satisfied.{0}{0}'a' is waiting for the following dependencies:{0}Services:{0}- 'Castle.Windsor.Tests.CycleB' which was registered but is also waiting for dependencies.{0}'b' is waiting for the following dependencies:{0}Services:{0}- 'Castle.Windsor.Tests.CycleA' which was registered but is also waiting for dependencies.",
+					"Can't create component 'a' as it has dependencies to be satisfied.{0}{0}'a' is waiting for the following dependencies:{0}- Service 'b' which was registered but is also waiting for dependencies.{0}'b' is waiting for the following dependencies:{0}- Service 'a' which was registered but is also waiting for dependencies.",
 					Environment.NewLine);
 			Assert.AreEqual(expectedMessage, exception.Message);
 		}

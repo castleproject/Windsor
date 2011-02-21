@@ -88,7 +88,7 @@ namespace Castle.Windsor.Tests
 				Assert.Throws(typeof(HandlerException), () => Container.Resolve<CompA>("compA"));
 			var expectedMessage =
 				string.Format(
-					"Can't create component 'compA' as it has dependencies to be satisfied.{0}{0}'compA' is waiting for the following dependencies:{0}Services:{0}- 'Castle.Windsor.Tests.Components.CompB' which was registered but is also waiting for dependencies.{0}'compB' is waiting for the following dependencies:{0}Services:{0}- 'Castle.Windsor.Tests.Components.CompC' which was registered but is also waiting for dependencies.{0}'compC' is waiting for the following dependencies:{0}Services:{0}- 'Castle.Windsor.Tests.Components.CompD' which was registered but is also waiting for dependencies.{0}'compD' is waiting for the following dependencies:{0}Services:{0}- 'Castle.Windsor.Tests.Components.CompA' which was registered but is also waiting for dependencies.",
+					"Can't create component 'compA' as it has dependencies to be satisfied.{0}{0}'compA' is waiting for the following dependencies:{0}- Service 'compB' which was registered but is also waiting for dependencies.{0}'compB' is waiting for the following dependencies:{0}- Service 'compC' which was registered but is also waiting for dependencies.{0}'compC' is waiting for the following dependencies:{0}- Service 'compD' which was registered but is also waiting for dependencies.{0}'compD' is waiting for the following dependencies:{0}- Service 'compA' which was registered but is also waiting for dependencies.",
 					Environment.NewLine);
 			Assert.AreEqual(expectedMessage, exception.Message);
 		}
