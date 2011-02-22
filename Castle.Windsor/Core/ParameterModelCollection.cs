@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,19 +16,17 @@ namespace Castle.Core
 {
 	using System;
 	using System.Collections;
-	using System.Collections.ObjectModel;
+	using System.Collections.Generic;
 	using System.Diagnostics;
 
 	using Castle.Core.Configuration;
-
-	using System.Collections.Generic;
 
 	/// <summary>
 	///   Collection of <see cref = "ParameterModel" />
 	/// </summary>
 	[Serializable]
 	[DebuggerDisplay("Count = {dictionary.Count}")]
-	public class ParameterModelCollection : Collection<ParameterModel>
+	public class ParameterModelCollection : IEnumerable<ParameterModel>
 	{
 		private readonly IDictionary<string, ParameterModel> dictionary =
 			new Dictionary<string, ParameterModel>(StringComparer.OrdinalIgnoreCase);
@@ -37,7 +35,7 @@ namespace Castle.Core
 		///   Gets the count.
 		/// </summary>
 		/// <value>The count.</value>
-		public new int Count
+		public int Count
 		{
 			get { return dictionary.Count; }
 		}
@@ -63,7 +61,7 @@ namespace Castle.Core
 		/// <param name = "value">The value.</param>
 		public void Add(string name, string value)
 		{
-			Add(name, new ParameterModel(name, value) );
+			Add(name, new ParameterModel(name, value));
 		}
 
 		/// <summary>
@@ -74,6 +72,30 @@ namespace Castle.Core
 		public void Add(string name, IConfiguration configNode)
 		{
 			Add(name, new ParameterModel(name, configNode));
+		}
+
+		/// <summary>
+		///   Determines whether this collection contains the specified key.
+		/// </summary>
+		/// <param name = "key">The key.</param>
+		/// <returns>
+		///   <c>true</c> if yes; otherwise, <c>false</c>.
+		/// </returns>
+		public bool Contains(string key)
+		{
+			return dictionary.ContainsKey(key);
+		}
+
+		/// <summary>
+		///   Returns an enumerator that can iterate through a collection.
+		/// </summary>
+		/// <returns>
+		///   An <see cref = "T:System.Collections.IEnumerator" />
+		///   that can be used to iterate through the collection.
+		/// </returns>
+		public IEnumerator GetEnumerator()
+		{
+			return dictionary.Values.GetEnumerator();
 		}
 
 		/// <summary>
@@ -96,70 +118,9 @@ namespace Castle.Core
 			}
 		}
 
-		/// <summary>
-		///   Clears this instance.
-		/// </summary>
-		/// <remarks>
-		///   Not implemented
-		/// </remarks>
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
-		public new void Clear()
-		{
-			throw new NotImplementedException();
-		}
-
-		/// <summary>
-		///   Determines whether this collection contains the specified key.
-		/// </summary>
-		/// <param name = "key">The key.</param>
-		/// <returns>
-		///   <c>true</c> if yes; otherwise, <c>false</c>.
-		/// </returns>
-		public bool Contains(object key)
-		{
-			return dictionary.ContainsKey((string)key);
-		}
-
-		/// <summary>
-		///   Copy the content to the specified array
-		/// </summary>
-		/// <param name = "array">target array</param>
-		/// <param name = "index">target index</param>
-		/// <remarks>
-		///   Not implemented
-		/// </remarks>
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "index")]
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "array")]
-		public void CopyTo(Array array, int index)
-		{
-			throw new NotImplementedException();
-		}
-
-		/// <summary>
-		///   Returns an enumerator that can iterate through a collection.
-		/// </summary>
-		/// <returns>
-		///   An <see cref = "T:System.Collections.IEnumerator" />
-		///   that can be used to iterate through the collection.
-		/// </returns>
-		public new IEnumerator GetEnumerator()
+		IEnumerator<ParameterModel> IEnumerable<ParameterModel>.GetEnumerator()
 		{
 			return dictionary.Values.GetEnumerator();
-		}
-
-		/// <summary>
-		///   Removes the specified key.
-		/// </summary>
-		/// <param name = "key">The key.</param>
-		/// <remarks>
-		///   Not implemented
-		/// </remarks>
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "key")]
-		public void Remove(object key)
-		{
-			throw new NotImplementedException();
 		}
 	}
 }
