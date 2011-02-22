@@ -21,13 +21,12 @@ namespace Castle.MicroKernel.Lifestyle
 	using System.Collections.Generic;
 	using System.Linq;
 	using System.Text;
-	using System.Threading;
 	using System.Web;
 
 	public class PerWebRequestLifestyleModule : IHttpModule
 	{
 		private const string PerRequestEvict = "PerRequestLifestyleManager_Evict";
-		private static int initialized;
+		private static bool initialized;
 
 		public void Dispose()
 		{
@@ -35,10 +34,8 @@ namespace Castle.MicroKernel.Lifestyle
 
 		public void Init(HttpApplication context)
 		{
-			if (Interlocked.CompareExchange(ref initialized, 1, 0) != 1)
-			{
-				context.EndRequest += Application_EndRequest;
-			}
+			initialized = true;
+			context.EndRequest += Application_EndRequest;
 		}
 
 		protected void Application_EndRequest(Object sender, EventArgs e)
@@ -62,7 +59,7 @@ namespace Castle.MicroKernel.Lifestyle
 
 		public static void EnsureInitialized()
 		{
-			if (initialized == 1)
+			if (initialized)
 			{
 				return;
 			}
