@@ -14,6 +14,8 @@
 
 namespace Castle.Lifestyle
 {
+	using System;
+
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Lifestyle.Scoped;
 	using Castle.MicroKernel.Registration;
@@ -147,6 +149,35 @@ namespace Castle.Lifestyle
 			{
 				foo = Container.Resolve<DisposableFoo>();
 				Assert.IsFalse(Kernel.ReleasePolicy.HasTrack(foo));
+			}
+		}
+
+		[Test]
+		public void Transient_depending_on_scoped_component_is_not_tracked_by_the_container()
+		{
+			Container.Register(Component.For<DisposableFoo>().LifeStyle.Scoped(),
+			                   Component.For<UsesDisposableFoo>().LifeStyle.Transient);
+
+			using (Container.BeginScope())
+			{
+				var udf = Container.Resolve<UsesDisposableFoo>();
+				var weakUdt = new WeakReference(udf);
+				udf = null;
+				GC.Collect();
+				Assert.IsFalse(weakUdt.IsAlive);
+			}
+		}
+
+		[Test]
+		public void Transient_depending_on_scoped_component_is_not_tracked_by_the_release_policy()
+		{
+			Container.Register(Component.For<DisposableFoo>().LifeStyle.Scoped(),
+			                   Component.For<UsesDisposableFoo>().LifeStyle.Transient);
+
+			using (Container.BeginScope())
+			{
+				var udf = Container.Resolve<UsesDisposableFoo>();
+				Assert.IsFalse(Kernel.ReleasePolicy.HasTrack(udf));
 			}
 		}
 	}
