@@ -40,11 +40,11 @@ namespace Castle.Windsor.Tests.Experimental
 
 		private DefaultDebuggingSubSystem subSystem;
 
-		private MismatchedDependencyDebuggerViewItem[] GetMismatches(bool expectNotExists = false)
+		private MismatchedDependencyDebuggerViewItem[] GetMismatches(bool expectNoMismatches = false)
 		{
 			var faultyComponents = subSystem.SelectMany(e => e.Attach()).SingleOrDefault(i => i.Name == PotentialLifestyleMismatches.Name);
-			Assert.AreEqual(expectNotExists, faultyComponents == null);
-			if (expectNotExists)
+			Assert.AreEqual(expectNoMismatches, faultyComponents == null);
+			if (expectNoMismatches)
 			{
 				return new MismatchedDependencyDebuggerViewItem[0];
 			}
@@ -111,13 +111,22 @@ namespace Castle.Windsor.Tests.Experimental
 			Assert.AreEqual(2, cbaMismatches.Length);
 		}
 
+		[Test]
+		public void Decorators_dont_trigger_stack_overflow()
+		{
+			Container.Register(Component.For<IEmptyService>().ImplementedBy<EmptyServiceDecorator>(),
+			                   Component.For<IEmptyService>().ImplementedBy<EmptyServiceA>(),
+			                   Component.For<UsesIEmptyService>());
+			GetMismatches(expectNoMismatches: true);
+		}
+
 		[Test(Description = "If the test fails, StackOverflowException is thrown")]
 		public void Does_not_crash_on_dependency_cycles()
 		{
 			Container.Register(Component.For<InterceptorThatCauseStackOverflow>().Named("interceptor"),
 			                   Component.For<ICameraService>().ImplementedBy<CameraService>().Interceptors<InterceptorThatCauseStackOverflow>(),
 			                   Component.For<ICameraService>().ImplementedBy<CameraService>().Named("ok to resolve - has no interceptors"));
-			var items = GetMismatches(expectNotExists: true);
+			var items = GetMismatches(expectNoMismatches: true);
 			Assert.IsEmpty(items);
 		}
 	}
