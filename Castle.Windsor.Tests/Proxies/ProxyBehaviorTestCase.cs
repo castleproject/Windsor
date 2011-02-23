@@ -22,16 +22,18 @@ namespace Castle.Proxies
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Tests.ClassComponents;
 	using Castle.ProxyInfrastructure;
+	using Castle.Windsor.Installer;
 	using Castle.Windsor.Tests;
 	using Castle.Windsor.Tests.Components;
 	using Castle.Windsor.Tests.Interceptors;
 #if !SILVERLIGHT
 	using Castle.XmlFiles;
 #endif
+
 	using NUnit.Framework;
 
 	[TestFixture]
-	public class ProxyBehaviorTestCase : AbstractContainerTestFixture
+	public class ProxyBehaviorTestCase : AbstractContainerTestCase
 	{
 #if !SILVERLIGHT
 		// we do not support xml config on SL
@@ -39,7 +41,7 @@ namespace Castle.Proxies
 		public void Proxy_exposes_only_service_interfaces_from_configuration()
 		{
 			Container.Install(
-				Castle.Windsor.Installer.Configuration.FromXml(Xml.Embedded("proxyBehavior.xml")));
+				Configuration.FromXml(Xml.Embedded("proxyBehavior.xml")));
 			var calcService = Container.Resolve<ICalcService>("default");
 			Assert.IsNotNull(calcService);
 			Assert.IsNotInstanceOf<IDisposable>(calcService, "Service proxy should NOT expose the IDisposable interface");
@@ -225,7 +227,7 @@ namespace Castle.Proxies
 		public void InternalInterfaceIgnoredByProxy()
 		{
 			Container.Install(
-				Castle.Windsor.Installer.Configuration.FromXml(Xml.Embedded("proxyBehavior.xml")));
+				Configuration.FromXml(Xml.Embedded("proxyBehavior.xml")));
 
 			Assert.DoesNotThrow(() => Container.Resolve<object>("hasInternalInterface"));
 		}

@@ -27,27 +27,90 @@ namespace Castle.Facilities.Synchronize.Tests
 	using Castle.MicroKernel.Proxy;
 	using Castle.MicroKernel.Registration;
 	using Castle.Windsor;
+	using Castle.Windsor.Tests;
 
 	using NUnit.Framework;
 
 	[TestFixture]
-	public class SynchronizeFacilityTestFixture
+	public class SynchronizeFacilityTestFixture : AbstractContainerTestCase
 	{
-		private IWindsorContainer container;
+		protected override WindsorContainer BuildContainer()
+		{
+			uncaughtException = null;
+			var container = new WindsorContainer();
+
+			container.AddFacility<SynchronizeFacility>()
+				.Register(Component.For<SynchronizationContext>(),
+				          Component.For<AsynchronousContext>(),
+				          Component.For<DummyForm>().Named("Dummy")
+				          	.Activator<DummyFormActivator>(),
+				          Component.For<IDummyForm>().ImplementedBy<DummyForm>(),
+				          Component.For<ClassUsingFormInWindowsContext>(),
+				          Component.For<ClassUsingFormInAmbientContext>(),
+				          Component.For<SyncClassWithoutContext>(),
+				          Component.For<SyncClassOverrideContext>(),
+				          Component.For(typeof(IClassUsingContext<>)).ImplementedBy(typeof(ClassUsingContext<>)),
+				          Component.For<IWorker>().ImplementedBy<SimpleWorker>(),
+				          Component.For<IWorkerWithOuts>().ImplementedBy<AsynchronousWorker>(),
+				          Component.For<ManualWorker>()
+				);
+
+			var componentNode = new MutableConfiguration("component");
+			componentNode.Attributes[Constants.SynchronizedAttrib] = "true";
+			var synchronizeNode = new MutableConfiguration("synchronize");
+			synchronizeNode.Attributes["contextType"] = typeof(WindowsFormsSynchronizationContext).AssemblyQualifiedName;
+			var doWorkMethod = new MutableConfiguration("method");
+			doWorkMethod.Attributes["name"] = "DoWork";
+			doWorkMethod.Attributes["contextType"] = typeof(WindowsFormsSynchronizationContext).AssemblyQualifiedName;
+			synchronizeNode.Children.Add(doWorkMethod);
+			componentNode.Children.Add(synchronizeNode);
+
+			container.Kernel.ConfigurationStore.AddComponentConfiguration("class.needing.context", componentNode);
+			container.Register(Component.For<ClassUsingForm>().Named("class.needing.context"));
+			return container;
+		}
+
 		private Exception uncaughtException;
+
+		private void ExecuteInThread(ThreadStart run)
+		{
+			var thread = new Thread(() =>
+			{
+				try
+				{
+					run();
+				}
+				catch (Exception e)
+				{
+					uncaughtException = e;
+				}
+
+				Application.DoEvents();
+				Application.Exit();
+			});
+
+			var form = new Form();
+			if (form.Handle == IntPtr.Zero)
+			{
+				throw new InvalidOperationException("Control handle could not be obtained");
+			}
+			form.BeginInvoke((MethodInvoker)delegate { thread.Start(); });
+
+			Application.Run();
+		}
 
 		[Test]
 		[ExpectedException(typeof(FacilityException))]
 		public void AddContextComponent_WithoutVirtualMethod_ThrowsFacilityException()
 		{
-			container.Register(Component.For<ClassInContextWithoutVirtualMethod>().Named("class.in.context.bad"));
+			Container.Register(Component.For<ClassInContextWithoutVirtualMethod>().Named("class.in.context.bad"));
 		}
 
 		[Test]
 		public void AddControl_DifferentThreadInContextUsingConfiguration_UsesAmbientContext()
 		{
 			var form = new DummyForm();
-			var client = container.Resolve<ClassUsingFormInAmbientContext>();
+			var client = Container.Resolve<ClassUsingFormInAmbientContext>();
 			ExecuteInThread(() =>
 			{
 				using (var winCtx = new WindowsFormsSynchronizationContext())
@@ -63,7 +126,7 @@ namespace Castle.Facilities.Synchronize.Tests
 		public void AddControl_DifferentThreadInContextUsingConfiguration_WorksFine()
 		{
 			var form = new DummyForm();
-			var client = container.Resolve<ClassUsingForm>();
+			var client = Container.Resolve<ClassUsingForm>();
 			ExecuteInThread(() => client.DoWork(form));
 			Assert.IsNull(uncaughtException, "Expected no exception");
 		}
@@ -72,7 +135,7 @@ namespace Castle.Facilities.Synchronize.Tests
 		public void AddControl_DifferentThreadInContext_WorksFine()
 		{
 			var form = new DummyForm();
-			var client = container.Resolve<ClassUsingFormInWindowsContext>();
+			var client = Container.Resolve<ClassUsingFormInWindowsContext>();
 			ExecuteInThread(() => { client.DoWork(form); });
 			Assert.IsNull(uncaughtException, "Expected no exception");
 		}
@@ -80,7 +143,7 @@ namespace Castle.Facilities.Synchronize.Tests
 		[Test]
 		public void AddControl_DifferentThreadUsingClass_WorksFine()
 		{
-			var form = container.Resolve<DummyForm>();
+			var form = Container.Resolve<DummyForm>();
 			Assert.AreEqual(0, form.Controls.Count);
 			ExecuteInThread(() =>
 			{
@@ -93,7 +156,7 @@ namespace Castle.Facilities.Synchronize.Tests
 		[Test]
 		public void AddControl_DifferentThreadUsingService_WorksFine()
 		{
-			var form = container.Resolve<IDummyForm>();
+			var form = Container.Resolve<IDummyForm>();
 			ExecuteInThread(() =>
 			{
 				var count = form.AddControl(new Button());
@@ -120,7 +183,7 @@ namespace Castle.Facilities.Synchronize.Tests
 		public void DoWorkGeneric_DifferentThreadInContext_WorksFine()
 		{
 			var form = new DummyForm();
-			var client = container.Resolve<IClassUsingContext<DummyForm>>();
+			var client = Container.Resolve<IClassUsingContext<DummyForm>>();
 			ExecuteInThread(() => Assert.AreEqual(form, client.DoWork(form)));
 			Assert.IsNull(uncaughtException, "Expected no exception");
 		}
@@ -129,7 +192,7 @@ namespace Castle.Facilities.Synchronize.Tests
 		[ExpectedException(typeof(InvalidOperationException))]
 		public void GetResultOf_NotWithAnySynchronizationContext_ThrowsInvalidOperationException()
 		{
-			var sync = container.Resolve<SyncClassOverrideContext>();
+			var sync = Container.Resolve<SyncClassOverrideContext>();
 			sync.DoWork();
 
 			var worker = new AsynchronousWorker();
@@ -143,7 +206,7 @@ namespace Castle.Facilities.Synchronize.Tests
 			int passed;
 			var batch = "bar";
 			var called = new ManualResetEvent(false);
-			var worker = container.Resolve<ManualWorker>();
+			var worker = Container.Resolve<ManualWorker>();
 			var result = Result.Of(worker.DoWork(20, ref batch, out passed),
 			                       (Result<int> remaining) =>
 			                       {
@@ -163,7 +226,7 @@ namespace Castle.Facilities.Synchronize.Tests
 			int passed;
 			var batch = "bar";
 			var called = new ManualResetEvent(false);
-			var worker = container.Resolve<ManualWorker>();
+			var worker = Container.Resolve<ManualWorker>();
 			var result = Result.Of(worker.DoWork(20, ref batch, out passed));
 			Assert.AreEqual(40, result.End(out batch));
 			Assert.AreEqual("foo", batch);
@@ -177,7 +240,7 @@ namespace Castle.Facilities.Synchronize.Tests
 		[Test]
 		public void GetResultOf_UsingAsynchronousContext_WorksFine()
 		{
-			var worker = container.Resolve<IWorkerWithOuts>();
+			var worker = Container.Resolve<IWorkerWithOuts>();
 			var remaining = Result.Of(worker.DoWork(5));
 			Assert.AreEqual(10, remaining.End());
 			Assert.IsFalse(remaining.CompletedSynchronously);
@@ -187,7 +250,7 @@ namespace Castle.Facilities.Synchronize.Tests
 		public void GetResultOf_UsingSynchronousContext_CallsCallback()
 		{
 			var called = false;
-			var worker = container.Resolve<IWorker>();
+			var worker = Container.Resolve<IWorker>();
 			var result = Result.Of(worker.DoWork(2), (Result<int> remaining) =>
 			{
 				Assert.AreEqual(4, remaining.End());
@@ -201,7 +264,7 @@ namespace Castle.Facilities.Synchronize.Tests
 		[Test]
 		public void GetResultOf_UsingSynchronousContext_WorksFine()
 		{
-			var worker = container.Resolve<IWorker>();
+			var worker = Container.Resolve<IWorker>();
 			var remaining = Result.Of(worker.DoWork(2));
 			Assert.AreEqual(4, remaining.End());
 		}
@@ -210,7 +273,7 @@ namespace Castle.Facilities.Synchronize.Tests
 		[ExpectedException(typeof(ArgumentException), ExpectedMessage = "Bad Bad Bad...")]
 		public void GetResultOf_WaitingForResultThrowsException_WorksFine()
 		{
-			var worker = container.Resolve<ManualWorker>();
+			var worker = Container.Resolve<ManualWorker>();
 			var remaining = Result.Of(worker.DoWork(5));
 			ExecuteInThread(() => worker.Failed(new ArgumentException("Bad Bad Bad...")));
 			Assert.AreEqual(10, remaining.End());
@@ -219,7 +282,7 @@ namespace Castle.Facilities.Synchronize.Tests
 		[Test]
 		public void GetResultOf_WaitingForResult_WorksFine()
 		{
-			var worker = container.Resolve<ManualWorker>();
+			var worker = Container.Resolve<ManualWorker>();
 			var remaining = Result.Of(worker.DoWork(5));
 			ExecuteInThread(() =>
 			{
@@ -278,7 +341,7 @@ namespace Castle.Facilities.Synchronize.Tests
 
 			var expected =
 				string.Format(
-					"Can't create component 'Castle.Facilities.Synchronize.Tests.DummyForm' as it has dependencies to be satisfied. {0}Castle.Facilities.Synchronize.Tests.DummyForm is waiting for the following dependencies: {0}{0}Keys (components with specific keys){0}- missing.component which was not registered. {0}",
+					"Can't create component 'Castle.Facilities.Synchronize.Tests.DummyForm' as it has dependencies to be satisfied.{0}{0}'Castle.Facilities.Synchronize.Tests.DummyForm' is waiting for the following dependencies:{0}- Service 'missing.component' (via override) which was not registered. Did you misspell the name?{0}",
 					Environment.NewLine);
 			Assert.AreEqual(expected, exception.Message);
 		}
@@ -287,44 +350,8 @@ namespace Castle.Facilities.Synchronize.Tests
 		[ExpectedException(typeof(HandlerException))]
 		public void ResolveContextComponent_WithMissingDependency_ThrowsHandlerException()
 		{
-			container.Register(Component.For<ClassInContextWithMissingDependency>().Named("class.in.context.bad"));
-			container.Resolve<ClassInContextWithMissingDependency>("class.in.context.bad");
-		}
-
-		[SetUp]
-		public void SetUp()
-		{
-			uncaughtException = null;
-			container = new WindsorContainer();
-
-			container.AddFacility<SynchronizeFacility>()
-				.Register(Component.For<SynchronizationContext>(),
-				          Component.For<AsynchronousContext>(),
-				          Component.For<DummyForm>().Named("Dummy")
-				          	.Activator<DummyFormActivator>(),
-				          Component.For<IDummyForm>().ImplementedBy<DummyForm>(),
-				          Component.For<ClassUsingFormInWindowsContext>(),
-				          Component.For<ClassUsingFormInAmbientContext>(),
-				          Component.For<SyncClassWithoutContext>(),
-				          Component.For<SyncClassOverrideContext>(),
-				          Component.For(typeof(IClassUsingContext<>)).ImplementedBy(typeof(ClassUsingContext<>)),
-				          Component.For<IWorker>().ImplementedBy<SimpleWorker>(),
-				          Component.For<IWorkerWithOuts>().ImplementedBy<AsynchronousWorker>(),
-				          Component.For<ManualWorker>()
-				);
-
-			var componentNode = new MutableConfiguration("component");
-			componentNode.Attributes[Constants.SynchronizedAttrib] = "true";
-			var synchronizeNode = new MutableConfiguration("synchronize");
-			synchronizeNode.Attributes["contextType"] = typeof(WindowsFormsSynchronizationContext).AssemblyQualifiedName;
-			var doWorkMethod = new MutableConfiguration("method");
-			doWorkMethod.Attributes["name"] = "DoWork";
-			doWorkMethod.Attributes["contextType"] = typeof(WindowsFormsSynchronizationContext).AssemblyQualifiedName;
-			synchronizeNode.Children.Add(doWorkMethod);
-			componentNode.Children.Add(synchronizeNode);
-
-			container.Kernel.ConfigurationStore.AddComponentConfiguration("class.needing.context", componentNode);
-			container.Register(Component.For<ClassUsingForm>().Named("class.needing.context"));
+			Container.Register(Component.For<ClassInContextWithMissingDependency>().Named("class.in.context.bad"));
+			Container.Resolve<ClassInContextWithMissingDependency>("class.in.context.bad");
 		}
 
 		[Test]
@@ -370,42 +397,15 @@ namespace Castle.Facilities.Synchronize.Tests
 		[Test]
 		public void Synchronize_NoContextSpecified_DoesNotUseContext()
 		{
-			var sync = container.Resolve<SyncClassWithoutContext>();
+			var sync = Container.Resolve<SyncClassWithoutContext>();
 			sync.DoWork();
 		}
 
 		[Test]
 		public void Synchronize_OverrideContext_UsesContext()
 		{
-			var sync = container.Resolve<SyncClassOverrideContext>();
+			var sync = Container.Resolve<SyncClassOverrideContext>();
 			sync.DoWork();
-		}
-
-		private void ExecuteInThread(ThreadStart run)
-		{
-			var thread = new Thread(() =>
-			{
-				try
-				{
-					run();
-				}
-				catch (Exception e)
-				{
-					uncaughtException = e;
-				}
-
-				Application.DoEvents();
-				Application.Exit();
-			});
-
-			var form = new Form();
-			if (form.Handle == IntPtr.Zero)
-			{
-				throw new InvalidOperationException("Control handle could not be obtained");
-			}
-			form.BeginInvoke((MethodInvoker)delegate { thread.Start(); });
-
-			Application.Run();
 		}
 	}
 #endif

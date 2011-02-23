@@ -29,9 +29,19 @@ namespace Castle
 	using NUnit.Framework;
 
 	[TestFixture]
-	public class ClassInheritanceTestCase : AbstractContainerTestFixture
+	public class ClassInheritanceTestCase : AbstractContainerTestCase
 	{
 		// TODO: add tests for generics in the hierarchy (open as well?)
+		private bool IsProxy(object o)
+		{
+			return o is IProxyTargetAccessor;
+		}
+
+		private void RegisterInterceptor()
+		{
+			Container.Register(Component.For<CountingInterceptor>().LifeStyle.Transient);
+		}
+
 		[Test]
 		public void Can_proxy_class_service_impl_explicitly()
 		{
@@ -184,16 +194,6 @@ namespace Castle
 
 			Assert.AreEqual(typeof(A), handler.Services.Single());
 			Assert.AreEqual(typeof(A), handler.ComponentModel.Implementation);
-		}
-
-		private bool IsProxy(object o)
-		{
-			return o is IProxyTargetAccessor;
-		}
-
-		private void RegisterInterceptor()
-		{
-			Container.Register(Component.For<CountingInterceptor>().LifeStyle.Transient);
 		}
 	}
 }

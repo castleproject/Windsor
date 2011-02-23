@@ -23,7 +23,7 @@ namespace Castle.Facilities.Synchronize
 	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple=false)]
 	public class SynchronizeAttribute : Attribute
 	{
-		private SynchronizeContextReference interceptorRef;
+		private readonly SynchronizeContextReference interceptorReference;
 
 		/// <summary>
 		/// Constructs an empty SynchronizeAttribute.
@@ -38,7 +38,7 @@ namespace Castle.Facilities.Synchronize
 		/// <param name="componentKey">The component key.</param>
 		public SynchronizeAttribute(String componentKey)
 		{
-			interceptorRef = new SynchronizeContextReference(componentKey);
+			interceptorReference = new SynchronizeContextReference(componentKey);
 		}
 
 		/// <summary>
@@ -47,7 +47,7 @@ namespace Castle.Facilities.Synchronize
 		/// <param name="interceptorType">The service type.</param>
 		public SynchronizeAttribute(Type interceptorType)
 		{
-			interceptorRef = new SynchronizeContextReference(interceptorType);
+			interceptorReference = new SynchronizeContextReference(interceptorType);
 		}
 
 		/// <summary>
@@ -60,7 +60,7 @@ namespace Castle.Facilities.Synchronize
 		/// </summary>
 		public SynchronizeContextReference SynchronizeContext
 		{
-			get { return interceptorRef; }
+			get { return interceptorReference; }
 		}
 	}
 }

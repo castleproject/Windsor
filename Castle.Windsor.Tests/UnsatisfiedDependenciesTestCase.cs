@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,26 +20,13 @@ namespace Castle.MicroKernel.Tests
 	using Castle.MicroKernel.Handlers;
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Tests.ClassComponents;
+	using Castle.Windsor.Tests;
 
 	using NUnit.Framework;
 
 	[TestFixture]
-	public class UnsatisfiedDependenciesTestCase
+	public class UnsatisfiedDependenciesTestCase : AbstractContainerTestCase
 	{
-		[SetUp]
-		public void Init()
-		{
-			kernel = new DefaultKernel();
-		}
-
-		[TearDown]
-		public void Dispose()
-		{
-			kernel.Dispose();
-		}
-
-		private IKernel kernel;
-
 		[Test]
 		public void OverrideIsForcedDependency()
 		{
@@ -50,15 +37,15 @@ namespace Castle.MicroKernel.Tests
 
 			parameters.Children.Add(new MutableConfiguration("common", "${common2}"));
 
-			kernel.ConfigurationStore.AddComponentConfiguration("key", config);
+			Kernel.ConfigurationStore.AddComponentConfiguration("key", config);
 
-			kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(CommonImpl1)).Named("common1"));
-			kernel.Register(Component.For(typeof(CommonServiceUser3)).Named("key"));
+			Kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(CommonImpl1)).Named("common1"));
+			Kernel.Register(Component.For(typeof(CommonServiceUser3)).Named("key"));
 			var exception =
-				Assert.Throws(typeof(HandlerException), () => kernel.Resolve<CommonServiceUser3>("key"));
+				Assert.Throws(typeof(HandlerException), () => Kernel.Resolve<CommonServiceUser3>("key"));
 			var expectedMessage =
 				string.Format(
-					"Can't create component 'key' as it has dependencies to be satisfied. {0}key is waiting for the following dependencies: {0}{0}Keys (components with specific keys){0}- common2 which was not registered. {0}",
+					"Can't create component 'key' as it has dependencies to be satisfied.{0}{0}'key' is waiting for the following dependencies:{0}- Service 'common2' (via override) which was not registered. Did you misspell the name?{0}",
 					Environment.NewLine);
 			Assert.AreEqual(expectedMessage, exception.Message);
 		}
@@ -73,12 +60,12 @@ namespace Castle.MicroKernel.Tests
 
 			parameters.Children.Add(new MutableConfiguration("common", "${common2}"));
 
-			kernel.ConfigurationStore.AddComponentConfiguration("key", config);
+			Kernel.ConfigurationStore.AddComponentConfiguration("key", config);
 
-			kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(CommonImpl1)).Named("common1"));
-			kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(CommonImpl2)).Named("common2"));
-			kernel.Register(Component.For(typeof(CommonServiceUser)).Named("key"));
-			var instance = kernel.Resolve<CommonServiceUser>("key");
+			Kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(CommonImpl1)).Named("common1"));
+			Kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(CommonImpl2)).Named("common2"));
+			Kernel.Register(Component.For(typeof(CommonServiceUser)).Named("key"));
+			var instance = Kernel.Resolve<CommonServiceUser>("key");
 
 			Assert.IsNotNull(instance);
 			Assert.IsNotNull(instance.CommonService);
@@ -92,27 +79,27 @@ namespace Castle.MicroKernel.Tests
 			var parameters1 = new MutableConfiguration("parameters");
 			config1.Children.Add(parameters1);
 			parameters1.Children.Add(new MutableConfiguration("inner", "${repository2}"));
-			kernel.ConfigurationStore.AddComponentConfiguration("repository1", config1);
-			kernel.Register(Component.For(typeof(IRepository)).ImplementedBy(typeof(Repository1)).Named("repository1"));
+			Kernel.ConfigurationStore.AddComponentConfiguration("repository1", config1);
+			Kernel.Register(Component.For(typeof(IRepository)).ImplementedBy(typeof(Repository1)).Named("repository1"));
 
 			var config2 = new MutableConfiguration("component");
 			var parameters2 = new MutableConfiguration("parameters");
 			config2.Children.Add(parameters2);
 			parameters2.Children.Add(new MutableConfiguration("inner", "${repository3}"));
-			kernel.ConfigurationStore.AddComponentConfiguration("repository2", config2);
-			kernel.Register(Component.For(typeof(IRepository)).ImplementedBy(typeof(Repository2)).Named("repository2"));
+			Kernel.ConfigurationStore.AddComponentConfiguration("repository2", config2);
+			Kernel.Register(Component.For(typeof(IRepository)).ImplementedBy(typeof(Repository2)).Named("repository2"));
 
 			var config3 = new MutableConfiguration("component");
 			var parameters3 = new MutableConfiguration("parameters");
 			config3.Children.Add(parameters3);
 			parameters3.Children.Add(new MutableConfiguration("inner", "${decoratedRepository}"));
-			kernel.ConfigurationStore.AddComponentConfiguration("repository3", config3);
-			kernel.Register(Component.For(typeof(IRepository)).ImplementedBy(typeof(Repository3)).Named("repository3"));
+			Kernel.ConfigurationStore.AddComponentConfiguration("repository3", config3);
+			Kernel.Register(Component.For(typeof(IRepository)).ImplementedBy(typeof(Repository3)).Named("repository3"));
 
-			kernel.Register(
+			Kernel.Register(
 				Component.For(typeof(IRepository)).ImplementedBy(typeof(DecoratedRepository)).Named("decoratedRepository"));
 
-			var instance = kernel.Resolve<IRepository>();
+			var instance = Kernel.Resolve<IRepository>();
 
 			Assert.IsNotNull(instance);
 			Assert.IsInstanceOf<Repository1>(instance);
@@ -134,17 +121,16 @@ namespace Castle.MicroKernel.Tests
 
 			parameters.Children.Add(new MutableConfiguration("name", "hammett"));
 
-			kernel.ConfigurationStore.AddComponentConfiguration("customer", config);
+			Kernel.ConfigurationStore.AddComponentConfiguration("customer", config);
 
-			kernel.Register(Component.For(typeof(CustomerImpl2)).Named("key"));
+			Kernel.Register(Component.For(typeof(CustomerImpl2)).Named("key"));
 
 			var exception =
-				Assert.Throws(typeof(HandlerException), () => { kernel.Resolve<CustomerImpl2>("key"); });
+				Assert.Throws<HandlerException>(() =>
+				                                Kernel.Resolve<CustomerImpl2>("key"));
 			var expectedMessage =
 				string.Format(
-					"Can't create component 'key' as it has dependencies to be satisfied. {0}key is waiting for the following dependencies: {0}{0}" +
-					"Keys (components with specific keys){0}- name which was not registered. {0}- address which was not registered. {0}" +
-					"- age which was not registered. {0}",
+					"Can't create component 'key' as it has dependencies to be satisfied.{0}{0}'key' is waiting for the following dependencies:{0}- Parameter 'name' which was not provided. Did you forget to set the dependency?{0}- Parameter 'address' which was not provided. Did you forget to set the dependency?{0}- Parameter 'age' which was not provided. Did you forget to set the dependency?{0}",
 					Environment.NewLine);
 			Assert.AreEqual(expectedMessage, exception.Message);
 		}
@@ -159,15 +145,15 @@ namespace Castle.MicroKernel.Tests
 
 			parameters.Children.Add(new MutableConfiguration("common", "${common2}"));
 
-			kernel.ConfigurationStore.AddComponentConfiguration("key", config);
+			Kernel.ConfigurationStore.AddComponentConfiguration("key", config);
 
-			kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(CommonImpl1)).Named("common1"));
-			kernel.Register(Component.For(typeof(CommonServiceUser)).Named("key"));
+			Kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(CommonImpl1)).Named("common1"));
+			Kernel.Register(Component.For(typeof(CommonServiceUser)).Named("key"));
 			var exception =
-				Assert.Throws(typeof(HandlerException), () => kernel.Resolve<CommonServiceUser>("key"));
+				Assert.Throws(typeof(HandlerException), () => Kernel.Resolve<CommonServiceUser>("key"));
 			var expectedMessage =
 				string.Format(
-					"Can't create component 'key' as it has dependencies to be satisfied. {0}key is waiting for the following dependencies: {0}{0}Keys (components with specific keys){0}- common2 which was not registered. {0}",
+					"Can't create component 'key' as it has dependencies to be satisfied.{0}{0}'key' is waiting for the following dependencies:{0}- Service 'common2' (via override) which was not registered. Did you misspell the name?{0}",
 					Environment.NewLine);
 			Assert.AreEqual(expectedMessage, exception.Message);
 		}
@@ -175,9 +161,9 @@ namespace Castle.MicroKernel.Tests
 		[Test]
 		public void UnsatisfiedService()
 		{
-			kernel.Register(Component.For(typeof(CommonServiceUser)).Named("key"));
+			Kernel.Register(Component.For(typeof(CommonServiceUser)).Named("key"));
 
-			Assert.Throws(typeof(HandlerException), () => kernel.Resolve<CommonServiceUser>("key"));
+			Assert.Throws(typeof(HandlerException), () => Kernel.Resolve<CommonServiceUser>("key"));
 		}
 	}
 }

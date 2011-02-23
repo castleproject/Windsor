@@ -22,7 +22,7 @@ namespace Castle
 	using NUnit.Framework;
 
 	[TestFixture]
-	public class GenericImplementationWithGreaterArityThanServiceTestCase : AbstractContainerTestFixture
+	public class GenericImplementationWithGreaterArityThanServiceTestCase : AbstractContainerTestCase
 	{
 		[Test]
 		public void Can_create_component_with_simple_double_generic_impl_for_single_generic_service()
@@ -39,7 +39,6 @@ namespace Castle
 		public void Can_create_component_with_simple_double_generic_impl_for_single_generic_service_via_ImplementedBy()
 		{
 			Container.Register(Component.For(typeof(Generics.IRepository<>)).ImplementedBy(typeof(DoubleGenericRepository<,>), new DuplicateGenerics()));
-			
 
 			var repository = Container.Resolve<Generics.IRepository<A>>();
 

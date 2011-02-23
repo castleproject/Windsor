@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,15 +15,25 @@
 namespace Castle.Windsor.Tests
 {
 #if !SILVERLIGHT
-	using Castle.Core;
 	using Castle.MicroKernel.Registration;
-	using Castle.MicroKernel.Tests.ClassComponents;
+	using Castle.Windsor.Installer;
 	using Castle.Windsor.Tests.Components;
 
 	using NUnit.Framework;
 
-	public class ContainerAndGenericsInConfigTestCase : AbstractContainerTestFixture
+	public class ContainerAndGenericsInConfigTestCase : AbstractContainerTestCase
 	{
+		private IWindsorInstaller FromFile(string fileName)
+		{
+			return Configuration.FromXmlFile(
+				GetFilePath(fileName));
+		}
+
+		private string GetFilePath(string fileName)
+		{
+			return ConfigHelper.ResolveConfigPath("Config/" + fileName);
+		}
+
 		[Test]
 		public void Can_build_dependency_chains_of_open_generics()
 		{
@@ -204,17 +214,6 @@ namespace Castle.Windsor.Tests
 			var three = Container.Resolve<IRepository<int>>();
 			var four = Container.Resolve<IRepository<int>>();
 			Assert.AreSame(three, four);
-		}
-
-		private IWindsorInstaller FromFile(string fileName)
-		{
-			return Castle.Windsor.Installer.Configuration.FromXmlFile(
-				GetFilePath(fileName));
-		}
-
-		private string GetFilePath(string fileName)
-		{
-			return ConfigHelper.ResolveConfigPath("Config/" + fileName);
 		}
 	}
 #endif

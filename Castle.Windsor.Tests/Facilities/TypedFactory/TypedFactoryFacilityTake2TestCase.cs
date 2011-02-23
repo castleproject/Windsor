@@ -29,8 +29,16 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 	using NUnit.Framework;
 
 	[TestFixture]
-	public class TypedFactoryFacilityTake2TestCase : AbstractContainerTestFixture
+	public class TypedFactoryFacilityTake2TestCase : AbstractContainerTestCase
 	{
+		protected override WindsorContainer BuildContainer()
+		{
+			var windsorContainer = new WindsorContainer();
+			windsorContainer.AddFacility<TypedFactoryFacility>();
+			windsorContainer.Register(Component.For<IDummyComponent>().ImplementedBy<Component1>().LifeStyle.Transient);
+			return windsorContainer;
+		}
+
 		[Test]
 		public void Can_Resolve_by_closed_generic_closed_on_arguments_type_with_custom_selector()
 		{
@@ -657,14 +665,6 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 
 			factory.Destroy(component);
 			Assert.IsTrue(component.Disposed);
-		}
-
-		protected override WindsorContainer BuildContainer()
-		{
-			var windsorContainer = new WindsorContainer();
-			windsorContainer.AddFacility<TypedFactoryFacility>();
-			windsorContainer.Register(Component.For<IDummyComponent>().ImplementedBy<Component1>().LifeStyle.Transient);
-			return windsorContainer;
 		}
 	}
 }

@@ -22,7 +22,7 @@ namespace Castle
 	using NUnit.Framework;
 
 	[TestFixture]
-	public class CompositePatternTestCase : AbstractContainerTestFixture
+	public class CompositePatternTestCase : AbstractContainerTestCase
 	{
 		[Test]
 		public void Can_resolve_composite_based_solely_on_conventions()

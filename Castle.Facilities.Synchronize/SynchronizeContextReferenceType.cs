@@ -12,23 +12,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Windsor.Tests
+namespace Castle.Facilities.Synchronize
 {
-	using Castle.MicroKernel.Registration;
-	using Castle.Windsor.Tests.Components;
-
-	using NUnit.Framework;
-
-	public class GenericVarianceTestCase : AbstractContainerTestCase
+	/// <summary>
+	///   Identifies the type of synchornization context reference.
+	/// </summary>
+	public enum SynchronizeContextReferenceType
 	{
-		[Test]
-		public void ResolveAll_can_resolve_contravariant_components()
-		{
-			Container.Register(Component.For<IAmContravariant<EmptyBase>>().ImplementedBy<ContravariantBase>(),
-			                   Component.For<IAmContravariant<EmptySub1>>().ImplementedBy<ContravariantDerived>());
+		/// <summary>
+		///   Service interface reference.
+		/// </summary>
+		Interface,
 
-			var convariantOfDerived = Container.ResolveAll<IAmContravariant<EmptySub1>>();
-			Assert.AreEqual(2, convariantOfDerived.Length);
-		}
+		/// <summary>
+		///   Component key reference.
+		/// </summary>
+		Key
 	}
 }

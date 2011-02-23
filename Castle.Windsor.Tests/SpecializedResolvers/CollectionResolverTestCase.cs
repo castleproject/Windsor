@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -26,8 +26,17 @@ namespace Castle.MicroKernel.Tests.SpecializedResolvers
 	using NUnit.Framework;
 
 	[TestFixture]
-	public class CollectionResolverTestCase : AbstractContainerTestFixture
+	public class CollectionResolverTestCase : AbstractContainerTestCase
 	{
+		[SetUp]
+		public void SetUp()
+		{
+#if SILVERLIGHT
+			Init();
+#endif
+			Kernel.Resolver.AddSubResolver(new CollectionResolver(Kernel));
+		}
+
 		[Test]
 		public void Composite_service_can_be_resolved_without_triggering_circular_dependency_detection_fuse()
 		{
@@ -382,15 +391,6 @@ namespace Castle.MicroKernel.Tests.SpecializedResolvers
 
 			Assert.IsTrue(component.Services.IsReadOnly);
 			Assert.Throws<NotSupportedException>(() => component.Services.Add(new EmptyServiceA()));
-		}
-
-		[SetUp]
-		public void SetUp()
-		{
-#if SILVERLIGHT
-			Init();
-#endif
-			Kernel.Resolver.AddSubResolver(new CollectionResolver(Kernel));
 		}
 	}
 }

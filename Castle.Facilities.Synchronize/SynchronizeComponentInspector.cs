@@ -35,7 +35,8 @@ namespace Castle.Facilities.Synchronize
 	///  not available.
 	///</summary>
 	///<example>
-	///  <component id = "component1" synchronized = "true" service = "SyncTest.IService, SyncTest" type = "SyncTest.IService, SyncTest">
+	///  <component id = "component1" synchronized = "true" service = "SyncTest.IService, SyncTest"
+	///    type = "SyncTest.IService, SyncTest">
 	///    <synchronize contextRef = "DefaultContextKey">
 	///      <method name = "Method1" contextRef = "MyContextKey"></method>
 	///      <method name = "Method2" contextType = "SynchornizationContext"></method>
@@ -125,7 +126,14 @@ namespace Castle.Facilities.Synchronize
 
 				foreach (var reference in metaInfo.GetUniqueSynchContextReferences())
 				{
-					model.Dependencies.Add(new DependencyModel(DependencyType.Service, reference.ComponentKey, reference.ServiceType, false));
+					if (reference.ReferenceType == SynchronizeContextReferenceType.Interface)
+					{
+						model.Dependencies.Add(new DependencyModel(DependencyType.Service, reference.ComponentKey, reference.ServiceType, false));
+					}
+					else
+					{
+						model.Dependencies.Add(new DependencyModel(DependencyType.ServiceOverride, reference.ComponentKey, reference.ServiceType, false));
+					}
 				}
 			}
 		}

@@ -18,34 +18,13 @@ namespace Castle.Windsor.Tests.Handlers
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.ModelBuilder;
 	using Castle.MicroKernel.Registration;
-	using Castle.Windsor.Tests;
 	using Castle.Windsor.Tests.ClassComponents;
 
 	using NUnit.Framework;
 
 	[TestFixture]
-	public class EmptyConstructorTestCase : AbstractContainerTestFixture
+	public class EmptyConstructorTestCase : AbstractContainerTestCase
 	{
-		[Test]
-		public void Component_With_Explicit_Required_Dependency_Will_Be_Marked_Waiting()
-		{
-			Container.Register(Component.For<AProp>()
-			                   	.AddDescriptor(new ExplicitRequiredDependencyDescriptor()));
-
-			var handler = Container.Kernel.GetHandler(typeof(AProp));
-			Assert.AreEqual(HandlerState.WaitingDependency, handler.CurrentState);
-		}
-
-		[Test]
-		public void Component_With_Required_Properies_Will_Be_Marked_Waiting()
-		{
-			Container.Register(Component.For<AProp>()
-			                   	.AddDescriptor(new RequirePropertyDescriptor()));
-
-			var handler = Container.Kernel.GetHandler(typeof(AProp));
-			Assert.AreEqual(HandlerState.WaitingDependency, handler.CurrentState);
-		}
-
 		private class ExplicitRequiredDependencyDescriptor : IComponentModelDescriptor
 		{
 			public void BuildComponentModel(IKernel kernel, ComponentModel model)
@@ -68,6 +47,26 @@ namespace Castle.Windsor.Tests.Handlers
 			{
 				model.Requires<A>();
 			}
+		}
+
+		[Test]
+		public void Component_With_Explicit_Required_Dependency_Will_Be_Marked_Waiting()
+		{
+			Container.Register(Component.For<AProp>()
+			                   	.AddDescriptor(new ExplicitRequiredDependencyDescriptor()));
+
+			var handler = Container.Kernel.GetHandler(typeof(AProp));
+			Assert.AreEqual(HandlerState.WaitingDependency, handler.CurrentState);
+		}
+
+		[Test]
+		public void Component_With_Required_Properies_Will_Be_Marked_Waiting()
+		{
+			Container.Register(Component.For<AProp>()
+			                   	.AddDescriptor(new RequirePropertyDescriptor()));
+
+			var handler = Container.Kernel.GetHandler(typeof(AProp));
+			Assert.AreEqual(HandlerState.WaitingDependency, handler.CurrentState);
 		}
 	}
 }

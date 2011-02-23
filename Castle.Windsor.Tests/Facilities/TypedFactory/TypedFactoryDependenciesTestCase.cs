@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -26,8 +26,32 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 	using NUnit.Framework;
 
 	[TestFixture]
-	public class TypedFactoryDependenciesTestCase : AbstractContainerTestFixture
+	public class TypedFactoryDependenciesTestCase : AbstractContainerTestCase
 	{
+		private void AssertHasDependency<TComponnet>(string key)
+		{
+			var handler = GetHandler<TComponnet>();
+			Assert.IsTrue(handler.ComponentModel.Dependencies.Any(d => d.DependencyKey == key), "Dependencies found: {0}",
+			              BuildDependencyByKeyList(handler));
+		}
+
+		private string BuildDependencyByKeyList(IHandler handler)
+		{
+			var message = new StringBuilder();
+			foreach (var dependency in handler.ComponentModel.Dependencies)
+			{
+				message.AppendLine(dependency.DependencyKey);
+			}
+			return message.ToString();
+		}
+
+		private IHandler GetHandler<T>()
+		{
+			var handler = Container.Kernel.GetHandler(typeof(T));
+			Assert.IsNotNull(handler);
+			return handler;
+		}
+
 		[Test]
 		public void Delegate_factory_depends_on_default_interceptor()
 		{
@@ -53,30 +77,6 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 				.Register(Component.For<DummyComponentFactory>().AsFactory());
 
 			AssertHasDependency<DummyComponentFactory>("Castle.TypedFactory.DefaultInterfaceFactoryComponentSelector");
-		}
-
-		private void AssertHasDependency<TComponnet>(string key)
-		{
-			var handler = GetHandler<TComponnet>();
-			Assert.IsTrue(handler.ComponentModel.Dependencies.Any(d => d.DependencyKey == key), "Dependencies found: {0}",
-			              BuildDependencyByKeyList(handler));
-		}
-
-		private string BuildDependencyByKeyList(IHandler handler)
-		{
-			var message = new StringBuilder();
-			foreach (var dependency in handler.ComponentModel.Dependencies)
-			{
-				message.AppendLine(dependency.DependencyKey);
-			}
-			return message.ToString();
-		}
-
-		private IHandler GetHandler<T>()
-		{
-			var handler = Container.Kernel.GetHandler(typeof(T));
-			Assert.IsNotNull(handler);
-			return handler;
 		}
 	}
 }
