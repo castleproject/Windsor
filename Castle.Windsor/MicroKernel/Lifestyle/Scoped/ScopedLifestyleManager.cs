@@ -69,7 +69,10 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 			var scope = GetCurrentScope();
 			if (scope == null)
 			{
-				throw new InvalidOperationException("Not in a scope.  Did you forget to call BeginScope?");
+				throw new ComponentResolutionException(
+					string.Format(
+						"Component '{0}' has scoped lifestyle, and it could not be resolved because no scope is accessible.  Did you forget to call container.BeginScope()?",
+						Model.Name), Model);
 			}
 
 			if (scope.HasComponent(this))
