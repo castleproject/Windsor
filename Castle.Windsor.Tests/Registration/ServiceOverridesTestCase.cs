@@ -234,5 +234,18 @@ namespace Castle.MicroKernel.Tests.Registration
 			var service = Kernel.Resolve<UsesIEmptyService>();
 			Assert.IsInstanceOf<EmptyServiceB>(service.EmptyService);
 		}
+
+		[Test]
+		public void ServiceOverrides_works_via_DependsOn_typed_key_Named_value_on_open_generic_type()
+		{
+			Kernel.Register(
+				Component.For<IEmptyService>().UsingFactoryMethod(() => new EmptyServiceA()).Named("a"),
+				Component.For<IEmptyService>().UsingFactoryMethod(() => new EmptyServiceB()).Named("b"),
+				Component.For(typeof(IGeneric<>)).ImplementedBy(typeof(GenericImpl3<>)).DependsOn(Property.ForKey<IEmptyService>().Is("B")));
+
+			var root = (GenericImpl3<int>)Kernel.Resolve<IGeneric<int>>();
+
+			Assert.IsInstanceOf<EmptyServiceB>(root.Value);
+		}
 	}
 }
