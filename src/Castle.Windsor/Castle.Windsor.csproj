@@ -393,6 +393,7 @@
     <Compile Include="MicroKernel\ComponentActivator\ComponentActivatorException.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="MicroKernel\ComponentResolutionException.cs" />
     <Compile Include="MicroKernel\ComponentActivator\DefaultComponentActivator.cs">
       <SubType>Code</SubType>
     </Compile>
