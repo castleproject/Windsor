@@ -20,23 +20,24 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 
 	public class LifestyleScope : IDisposable
 	{
-		private readonly IDictionary<ScopedLifestyleManager, object> cache;
+		// NOTE: does that need to be thread safe?
+		private readonly IDictionary<ScopedLifestyleManager, Burden> cache;
 
 		public LifestyleScope()
 		{
-			cache = new Dictionary<ScopedLifestyleManager, object>();
+			cache = new Dictionary<ScopedLifestyleManager, Burden>();
 		}
 
-		public void AddComponent(ScopedLifestyleManager id, object component)
+		public void AddComponent(ScopedLifestyleManager id, Burden componentBurden)
 		{
-			cache.Add(id, component);
+			cache.Add(id, componentBurden);
 		}
 
-		public object GetComponent(ScopedLifestyleManager id)
+		public Burden GetComponentBurden(ScopedLifestyleManager id)
 		{
-			object instance;
-			cache.TryGetValue(id, out instance);
-			return instance;
+			Burden burden;
+			cache.TryGetValue(id, out burden);
+			return burden;
 		}
 
 		public bool HasComponent(ScopedLifestyleManager id)
@@ -46,9 +47,9 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 
 		public void Dispose()
 		{
-			foreach (var cacheEntry in cache.ToArray())
+			foreach (var cacheEntry in cache.Reverse().ToArray())
 			{
-				cacheEntry.Key.Evict(cacheEntry.Value);
+				cacheEntry.Value.Release();
 			}
 			cache.Clear();
 		}

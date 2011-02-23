@@ -136,7 +136,6 @@ namespace Castle.Lifestyle
 		}
 
 		[Test]
-		[Ignore("This fails... because it's implemented for the old model")]
 		public void Scoped_component_is_not_tracked_by_the_release_policy()
 		{
 			DisposableFoo foo;
