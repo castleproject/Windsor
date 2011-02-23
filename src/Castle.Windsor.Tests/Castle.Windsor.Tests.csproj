@@ -344,6 +344,7 @@
     <Compile Include="ByRefDependenciesTestCase.cs" />
     <Compile Include="ClassComponents\CBA.cs" />
     <Compile Include="ClassComponents\GenericHasNested.cs" />
+    <Compile Include="ClassComponents\GenericImpl3.cs" />
     <Compile Include="ClassComponents\HasByRefCtorArgument.cs" />
     <Compile Include="ClassComponents\HasCtorDependency.cs" />
     <Compile Include="ClassComponents\HasNestedType.cs" />
