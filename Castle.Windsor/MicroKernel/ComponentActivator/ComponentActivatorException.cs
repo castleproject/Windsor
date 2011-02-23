@@ -18,12 +18,10 @@ namespace Castle.MicroKernel.ComponentActivator
 	using System.Runtime.Serialization;
 
 	/// <summary>
-	/// Summary description for ComponentActivatorException.
+	///   Exception thrown whe a component could not be activated. THis should come from the component activator.
 	/// </summary>
-#if (!SILVERLIGHT)
 	[Serializable]
-#endif
-	public class ComponentActivatorException : Exception
+	public class ComponentActivatorException : ComponentResolutionException
 	{
 		public ComponentActivatorException(string message) : base(message)
 		{
