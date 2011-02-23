@@ -501,6 +501,7 @@
     <Compile Include="Lifestyle\Components\SealedComponentWithDependency.cs" />
     <Compile Include="Lifestyle\Components\TrivialComponentWithDependency.cs" />
     <Compile Include="Lifestyle\Components\UsesComponentWithDispose.cs" />
+    <Compile Include="Lifestyle\ScopedLifestyleTestCase.cs" />
     <Compile Include="LoggingFacility\BaseTest.cs" />
     <Compile Include="LoggingFacility\Classes\ComplexLoggingComponent.cs" />
     <Compile Include="LoggingFacility\Classes\ISmtpServer.cs" />
