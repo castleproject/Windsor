@@ -12,23 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Windsor.Tests
-{
-	using Castle.MicroKernel.Registration;
-	using Castle.Windsor.Tests.Components;
+#if !(SILVERLIGHT || CLIENTPROFILE || DOTNET35)
 
-	using NUnit.Framework;
+using System.Web;
 
-	public class GenericVarianceTestCase : AbstractContainerTestCase
-	{
-		[Test]
-		public void ResolveAll_can_resolve_contravariant_components()
-		{
-			Container.Register(Component.For<IAmContravariant<EmptyBase>>().ImplementedBy<ContravariantBase>(),
-			                   Component.For<IAmContravariant<EmptySub1>>().ImplementedBy<ContravariantDerived>());
+using Castle.MicroKernel.Lifestyle;
 
-			var convariantOfDerived = Container.ResolveAll<IAmContravariant<EmptySub1>>();
-			Assert.AreEqual(2, convariantOfDerived.Length);
-		}
-	}
-}
+[assembly: PreApplicationStartMethod(typeof(PerWebRequestLifestyleModuleRegistration), "Run")]
+#endif

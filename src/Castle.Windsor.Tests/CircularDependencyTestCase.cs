@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -11,7 +11,6 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
 
 namespace Castle.Windsor.Tests
 {
@@ -29,9 +28,8 @@ namespace Castle.Windsor.Tests
 	using NUnit.Framework;
 
 	[TestFixture]
-	public class CircularDependencyTests
+	public class CircularDependencyTestCase : AbstractContainerTestCase
 	{
-
 #if !SILVERLIGHT
 		// we do not support xml config on SL
 		[Test]
@@ -41,13 +39,13 @@ namespace Castle.Windsor.Tests
 			Assert.IsNotNull(container.Resolve<object>("path.fileFinder"));
 		}
 #endif
+
 		[Test]
 		public void ShouldNotSetTheViewControllerProperty()
 		{
-			IWindsorContainer container = new WindsorContainer();
-			container.Register(Component.For<IController>().ImplementedBy<Controller>().Named("controller"));
-			container.Register(Component.For<IView>().ImplementedBy<View>().Named("view"));
-			var controller = container.Resolve<Controller>("controller");
+			Container.Register(Component.For<IController>().ImplementedBy<Controller>().Named("controller"),
+			                   Component.For<IView>().ImplementedBy<View>().Named("view"));
+			var controller = Container.Resolve<Controller>("controller");
 			Assert.IsNotNull(controller.View);
 			Assert.IsNull(controller.View.Controller);
 		}
@@ -56,11 +54,10 @@ namespace Castle.Windsor.Tests
 		public void Should_not_try_to_instantiate_singletons_twice_when_circular_dependency()
 		{
 			SingletonComponent.CtorCallsCount = 0;
-			var container = new WindsorContainer();
-			container.Register(Component.For<SingletonComponent>(),
+			Container.Register(Component.For<SingletonComponent>(),
 			                   Component.For<SingletonDependency>());
 
-			var component = container.Resolve<SingletonComponent>();
+			var component = Container.Resolve<SingletonComponent>();
 			Assert.IsNotNull(component.Dependency);
 			Assert.AreEqual(1, SingletonComponent.CtorCallsCount);
 		}
@@ -70,11 +67,10 @@ namespace Castle.Windsor.Tests
 		public void Should_not_try_to_instantiate_singletons_twice_when_circular_property_dependency()
 		{
 			SingletonPropertyComponent.CtorCallsCount = 0;
-			var container = new WindsorContainer();
-			container.Register(Component.For<SingletonPropertyComponent>(),
+			Container.Register(Component.For<SingletonPropertyComponent>(),
 			                   Component.For<SingletonPropertyDependency>());
 
-			var component = container.Resolve<SingletonPropertyComponent>();
+			var component = Container.Resolve<SingletonPropertyComponent>();
 			Assert.IsNotNull(component.Dependency);
 			Assert.AreSame(component, component.Dependency.Component);
 			Assert.AreEqual(1, SingletonPropertyComponent.CtorCallsCount);
@@ -83,17 +79,16 @@ namespace Castle.Windsor.Tests
 		[Test]
 		public void ThrowsACircularDependencyException2()
 		{
-			IWindsorContainer container = new WindsorContainer();
-			container.Register(Component.For<CompA>().Named("compA"),
+			Container.Register(Component.For<CompA>().Named("compA"),
 			                   Component.For<CompB>().Named("compB"),
 			                   Component.For<CompC>().Named("compC"),
 			                   Component.For<CompD>().Named("compD"));
 
 			var exception =
-				Assert.Throws(typeof(HandlerException), () => container.Resolve<CompA>("compA"));
+				Assert.Throws(typeof(HandlerException), () => Container.Resolve<CompA>("compA"));
 			var expectedMessage =
 				string.Format(
-					"Can't create component 'compA' as it has dependencies to be satisfied. {0}compA is waiting for the following dependencies: {0}{0}Services: {0}- Castle.Windsor.Tests.Components.CompB which was registered but is also waiting for dependencies. {0}{0}compB is waiting for the following dependencies: {0}{0}Services: {0}- Castle.Windsor.Tests.Components.CompC which was registered but is also waiting for dependencies. {0}{0}compC is waiting for the following dependencies: {0}{0}Services: {0}- Castle.Windsor.Tests.Components.CompD which was registered but is also waiting for dependencies. {0}{0}compD is waiting for the following dependencies: {0}{0}Services: {0}- Castle.Windsor.Tests.Components.CompA which was registered but is also waiting for dependencies. {0}",
+					"Can't create component 'compA' as it has dependencies to be satisfied.{0}{0}'compA' is waiting for the following dependencies:{0}- Service 'compB' which was registered but is also waiting for dependencies.{0}'compB' is waiting for the following dependencies:{0}- Service 'compC' which was registered but is also waiting for dependencies.{0}'compC' is waiting for the following dependencies:{0}- Service 'compD' which was registered but is also waiting for dependencies.{0}'compD' is waiting for the following dependencies:{0}- Service 'compA' which was registered but is also waiting for dependencies.",
 					Environment.NewLine);
 			Assert.AreEqual(expectedMessage, exception.Message);
 		}
@@ -162,7 +157,7 @@ namespace Castle.Windsor.Tests
 
 		public class RelativeFilePath : IPathProvider
 		{
-			private string _path;
+			private readonly string _path;
 
 			public RelativeFilePath(IPathProvider basePathProvider, string extensionsPath)
 			{

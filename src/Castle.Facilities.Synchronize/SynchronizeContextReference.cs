@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,55 +17,38 @@ namespace Castle.Facilities.Synchronize
 	using System;
 
 	/// <summary>
-	/// Identifies the type of synchornization context reference. 
-	/// </summary>
-	public enum SynchronizeContextReferenceType
-	{
-		/// <summary>
-		/// Service interface reference.
-		/// </summary>
-		Interface,
-
-		/// <summary>
-		/// Component key reference.
-		/// </summary>
-		Key
-	}
-
-	/// <summary>
-	/// Represents a reference to a SynchronizeContext component.
+	///   Represents a reference to a SynchronizeContext component.
 	/// </summary>
 	[Serializable]
 	public class SynchronizeContextReference
 	{
-		private Type serviceType;
-		private String componentKey;
+		private readonly String componentKey;
 		private readonly SynchronizeContextReferenceType refType;
+		private readonly Type serviceType;
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="SynchronizeContextReference"/> class.
+		///   Initializes a new instance of the <see cref = "SynchronizeContextReference" /> class.
 		/// </summary>
-		/// <param name="componentKey">The component key.</param>
+		/// <param name = "componentKey">The component key.</param>
 		public SynchronizeContextReference(String componentKey)
 		{
 			if (componentKey == null)
 			{
-				throw new ArgumentNullException("componentKey cannot be null");
+				throw new ArgumentNullException("componentKey");
 			}
-
 			refType = SynchronizeContextReferenceType.Key;
 			this.componentKey = componentKey;
 		}
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="SynchronizeContextReference"/> class.
+		///   Initializes a new instance of the <see cref = "SynchronizeContextReference" /> class.
 		/// </summary>
-		/// <param name="serviceType">Type of the service.</param>
+		/// <param name = "serviceType">Type of the service.</param>
 		public SynchronizeContextReference(Type serviceType)
 		{
 			if (serviceType == null)
 			{
-				throw new ArgumentNullException("'serviceType' cannot be null");
+				throw new ArgumentNullException("serviceType");
 			}
 
 			refType = SynchronizeContextReferenceType.Interface;
@@ -73,16 +56,7 @@ namespace Castle.Facilities.Synchronize
 		}
 
 		/// <summary>
-		/// Gets the type of the synchronization service.
-		/// </summary>
-		/// <value>The type of the synchronization service.</value>
-		public Type ServiceType
-		{
-			get { return serviceType; }
-		}
-
-		/// <summary>
-		/// Gets the synchronization context component key.
+		///   Gets the synchronization context component key.
 		/// </summary>
 		/// <value>The synchronization component key.</value>
 		public String ComponentKey
@@ -91,7 +65,7 @@ namespace Castle.Facilities.Synchronize
 		}
 
 		/// <summary>
-		/// Gets the type of the reference.
+		///   Gets the type of the reference.
 		/// </summary>
 		/// <value>The type of the reference.</value>
 		public SynchronizeContextReferenceType ReferenceType
@@ -100,16 +74,31 @@ namespace Castle.Facilities.Synchronize
 		}
 
 		/// <summary>
-		/// Determines if the other reference is equal.
+		///   Gets the type of the synchronization service.
 		/// </summary>
-		/// <param name="obj">The other reference.</param>
+		/// <value>The type of the synchronization service.</value>
+		public Type ServiceType
+		{
+			get { return serviceType; }
+		}
+
+		/// <summary>
+		///   Determines if the other reference is equal.
+		/// </summary>
+		/// <param name = "obj">The other reference.</param>
 		/// <returns>true if equal, false otherwise.</returns>
 		public override bool Equals(object obj)
 		{
-			if (this == obj) return true;
+			if (this == obj)
+			{
+				return true;
+			}
 
 			var other = obj as SynchronizeContextReference;
-			if (other == null) return false;
+			if (other == null)
+			{
+				return false;
+			}
 
 			return refType == other.refType &&
 			       componentKey == other.componentKey &&
@@ -117,7 +106,7 @@ namespace Castle.Facilities.Synchronize
 		}
 
 		/// <summary>
-		/// Gets the hash code.
+		///   Gets the hash code.
 		/// </summary>
 		/// <returns>The hash code.</returns>
 		public override int GetHashCode()
@@ -129,12 +118,12 @@ namespace Castle.Facilities.Synchronize
 		}
 
 		/// <summary>
-		/// Gets the string representation of the reference.
+		///   Gets the string representation of the reference.
 		/// </summary>
 		/// <returns>The string representation of the reference.</returns>
 		public override string ToString()
 		{
-			string str = "SynchronizationContextReference : ";
+			var str = "SynchronizationContextReference : ";
 
 			if (refType == SynchronizeContextReferenceType.Key)
 			{

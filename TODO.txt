@@ -1,3 +1,5 @@
 **internal changes and refactorings to do**
 
 - change now interaction with Burden in the creation pipeline happen. Especially try to eliminate the ugly context.AttachExistingBurden(burden); call
+
+- add "default components" as replacement for removing components. Those would be used by Windsor as a fallback, but if something else is registered (no matter before or after) the other thing would be used.

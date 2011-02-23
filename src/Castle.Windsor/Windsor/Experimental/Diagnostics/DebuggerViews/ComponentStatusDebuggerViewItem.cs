@@ -16,7 +16,9 @@ namespace Castle.Windsor.Experimental.Diagnostics.DebuggerViews
 {
 	using System.Collections.Generic;
 	using System.Diagnostics;
+	using System.Text;
 
+	using Castle.MicroKernel;
 	using Castle.MicroKernel.Handlers;
 
 #if !SILVERLIGHT
@@ -34,12 +36,15 @@ namespace Castle.Windsor.Experimental.Diagnostics.DebuggerViews
 		{
 			get
 			{
-				var message = "Some dependencies of this component could not be statically resolved.";
+				var message = new StringBuilder("Some dependencies of this component could not be statically resolved.");
 				if (handler == null)
 				{
-					return message;
+					return message.ToString();
 				}
-				return message + handler.ObtainDependencyDetails(new List<object>());
+				var inspector = new DependencyInspector(message);
+				handler.ObtainDependencyDetails(inspector);
+
+				return inspector.Message;
 			}
 		}
 

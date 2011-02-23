@@ -26,7 +26,7 @@ namespace Castle.Windsor.Experimental.Diagnostics.Helpers
 #if !SILVERLIGHT
 	public class MismatchedLifestyleDependencyViewBuilder
 	{
-		private readonly ComponentModel ultimateRootComponent;
+		private readonly HashSet<ComponentModel> checkedComponents;
 		private readonly IHandler handler;
 		private readonly MismatchedLifestyleDependencyViewBuilder parent;
 
@@ -36,11 +36,11 @@ namespace Castle.Windsor.Experimental.Diagnostics.Helpers
 			this.parent = parent;
 			if(parent == null)
 			{
-				ultimateRootComponent = handler.ComponentModel;
+				checkedComponents = new HashSet<ComponentModel> { handler.ComponentModel };
 			}
 			else
 			{
-				ultimateRootComponent = parent.ultimateRootComponent;
+				checkedComponents = new HashSet<ComponentModel> { parent.Handler.ComponentModel };
 			}
 		}
 
@@ -67,7 +67,7 @@ namespace Castle.Windsor.Experimental.Diagnostics.Helpers
 
 		public bool Checked(ComponentModel component)
 		{
-			return ultimateRootComponent == component;
+			return checkedComponents.Add(component) == false;
 		}
 
 		public bool Mismatched()

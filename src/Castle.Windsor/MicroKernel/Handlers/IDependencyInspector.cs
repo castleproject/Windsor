@@ -12,23 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Windsor.Tests
+namespace Castle.MicroKernel.Handlers
 {
-	using Castle.MicroKernel.Registration;
-	using Castle.Windsor.Tests.Components;
+	using Castle.Core;
 
-	using NUnit.Framework;
-
-	public class GenericVarianceTestCase : AbstractContainerTestCase
+	/// <summary>
+	/// Inspects missings dependencies in the container. Default implementation is used to
+	/// construct helpful message for exceptions and debugger views, but other implementations
+	/// are also possible if needed.
+	/// </summary>
+	public interface IDependencyInspector
 	{
-		[Test]
-		public void ResolveAll_can_resolve_contravariant_components()
-		{
-			Container.Register(Component.For<IAmContravariant<EmptyBase>>().ImplementedBy<ContravariantBase>(),
-			                   Component.For<IAmContravariant<EmptySub1>>().ImplementedBy<ContravariantDerived>());
-
-			var convariantOfDerived = Container.ResolveAll<IAmContravariant<EmptySub1>>();
-			Assert.AreEqual(2, convariantOfDerived.Length);
-		}
+		void Inspect(IHandler handler, DependencyModel[] missingDependencies, IKernel kernel);
 	}
 }

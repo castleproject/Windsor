@@ -30,7 +30,7 @@ namespace Castle.Windsor.Tests.Experimental
 	using NUnit.Framework;
 
 	[TestFixture]
-	public class ReleasePolicyTrackedObjectsTestCase : AbstractContainerTestFixture
+	public class ReleasePolicyTrackedObjectsTestCase : AbstractContainerTestCase
 	{
 		private DefaultDebuggingSubSystem subSystem;
 

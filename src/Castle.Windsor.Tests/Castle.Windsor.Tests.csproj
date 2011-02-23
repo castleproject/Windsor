@@ -273,12 +273,12 @@
     <Reference Include="log4net">
       <HintPath>..\..\lib\log4net.dll</HintPath>
     </Reference>
-    <Reference Include="PresentationCore" Condition="$(MSBuildTargets)!='Silverlight 3.0' and $(MSBuildTargets)!='Silverlight 4.0'"/>
-    <Reference Include="PresentationFramework" Condition="$(MSBuildTargets)!='Silverlight 3.0' and $(MSBuildTargets)!='Silverlight 4.0'"/>
+    <Reference Include="PresentationCore" Condition="$(MSBuildTargets)!='Silverlight 3.0' and $(MSBuildTargets)!='Silverlight 4.0'" />
+    <Reference Include="PresentationFramework" Condition="$(MSBuildTargets)!='Silverlight 3.0' and $(MSBuildTargets)!='Silverlight 4.0'" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xaml" Condition="$(MSBuildTargets)!='Silverlight 3.0' and $(MSBuildTargets)!='Silverlight 4.0'"/>
+    <Reference Include="System.Xaml" Condition="$(MSBuildTargets)!='Silverlight 3.0' and $(MSBuildTargets)!='Silverlight 4.0'" />
     <Reference Include="System.Xml" />
     <ProjectReference Include="..\Castle.Facilities.EventWiring\Castle.Facilities.EventWiring.csproj">
       <Project>{4BB0BD73-0CB7-4979-B790-C4DAC0A32294}</Project>
@@ -339,7 +339,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AbstractContainerTestFixture.cs" />
+    <Compile Include="AbstractContainerTestCase.cs" />
     <Compile Include="Bugs\IoC-267.cs" />
     <Compile Include="ByRefDependenciesTestCase.cs" />
     <Compile Include="ClassComponents\CBA.cs" />
@@ -742,7 +742,7 @@
     <Compile Include="ClassComponents\UsesIGeneric.cs" />
     <Compile Include="DecoratorsTestCase.cs" />
     <Compile Include="DependencyResolvingTestCase.cs" />
-    <Compile Include="EventTests.cs" />
+    <Compile Include="KernelEventsTestCase.cs" />
     <Compile Include="Facilities\FactorySupport\FactorySupportFluentTestCase.cs" />
     <Compile Include="Facilities\FactorySupport\FactorySupportProgrammaticTestCase.cs" />
     <Compile Include="Facilities\FactorySupport\FactorySupportTestCase.cs" />
@@ -761,7 +761,7 @@
     <Compile Include="DefaultConversionManagerTestCase.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DependencyGraph.cs">
+    <Compile Include="DependencyGraphTestCase.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DependencyResolvers.cs">
@@ -888,7 +888,7 @@
     <Compile Include="ChildContainerSupportTestCase.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="CircularDependencyTests.cs" />
+    <Compile Include="CircularDependencyTestCase.cs" />
     <Compile Include="Components\CalculatorService.cs">
       <SubType>Code</SubType>
     </Compile>

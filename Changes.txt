@@ -1,3 +1,5 @@
+- implemented IOC-275 - Exception message thrown when dependencies are missing is not always very clear and should be improved
+- fixed IOC-273 - Auto register PerWebRequestLifestyleModule using PreApplicationStartMethodAttribute at runtime
 - EventWiringFacility, FactorySupportFacility and RemotingFacility are extracted to their own assemblies
 - implemented IOC-270 - Add OnDestroy method, symertical to OnCreate 
 - implemented IOC-268 - Hook that allows for filtering handlers during ResolveAll 
@@ -20,6 +22,13 @@
 - implemented IOC-246 - Remove alternative naming subsystems
 - fixed IOC-245 - Proxies (for interface services) should not implicitly proxy all interfaces that the service implementation type happens to implement
 - implemented IOC-243 - Remove obsolete UseSingleInterfaceProxy option
+
+2.5.3 (2011-02-02)
+==================
+- fixed IOC-266 - Dependency of a generic service is not disposed in Windsor 2.5.x 
+- fixed IOC-261 - Disposing of typed-factory can throw argument null exception
+- fixed IOC-254 - Optional non-primitive .ctor parameters don't work
+- fixed IOC-250 - Dispose not being called on open generic registrations
 
 2.5.2 (2010-11-15)
 ==================

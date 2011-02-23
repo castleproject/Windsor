@@ -1,4 +1,17 @@
 ================================================================================================
+change - IExposeDependencyInfo.ObtainDependencyDetails method signature has changed
+
+impact - low
+fixability - easy
+
+description - To move the code for constructing the exception when dependencies are missing
+	out of handlers and open way for different scenarios a new interface was introduced:
+	IDependencyInspector and it is now used by IExposeDependencyInfo to provide the same
+	functionality as before.
+
+fix - Adjust the calls to the new signature. If you have custom handler type take a look at
+	how built in handlers are now implemented.
+================================================================================================
 change - type attribute is now required and id is ignored in facility XML configuration
 
 impact - low

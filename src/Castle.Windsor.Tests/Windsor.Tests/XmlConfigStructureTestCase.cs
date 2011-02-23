@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+
 #if !SILVERLIGHT
 // we do not support xml config on SL
 
@@ -23,13 +24,20 @@ namespace Castle.Windsor.Tests
 	using Castle.Facilities.Startable;
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Tests.ClassComponents;
+	using Castle.Windsor.Installer;
 	using Castle.XmlFiles;
 
 	using NUnit.Framework;
 
 	[TestFixture]
-	public class XmlConfigStructureTestCase : AbstractContainerTestFixture
+	public class XmlConfigStructureTestCase : AbstractContainerTestCase
 	{
+		private IWindsorInstaller FromFile(string fileName)
+		{
+			var file = Xml.Embedded(fileName);
+			return Configuration.FromXml(file);
+		}
+
 		[Test]
 		public void Custom_lifestyle_can_be_specify_via_type_only()
 		{
@@ -55,12 +63,6 @@ namespace Castle.Windsor.Tests
 			var facilities = Kernel.GetFacilities();
 			Assert.IsNotEmpty(facilities);
 			Assert.IsInstanceOf<StartableFacility>(facilities.Single());
-		}
-
-		private IWindsorInstaller FromFile(string fileName)
-		{
-			var file = Xml.Embedded(fileName);
-			return Castle.Windsor.Installer.Configuration.FromXml(file);
 		}
 	}
 }

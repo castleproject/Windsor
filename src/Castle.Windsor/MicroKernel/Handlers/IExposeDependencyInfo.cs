@@ -14,9 +14,6 @@
 
 namespace Castle.MicroKernel.Handlers
 {
-	using System;
-	using System.Collections;
-
 	/// <summary>
 	///   Might be implemented by a handler 
 	///   so it can expose access to dependency information 
@@ -25,10 +22,11 @@ namespace Castle.MicroKernel.Handlers
 	public interface IExposeDependencyInfo
 	{
 		/// <summary>
-		///   Returns human readable list of dependencies 
-		///   this handler is waiting for.
-		///   <param name = "dependenciesChecked">list of the dependencies that was already checked, used to avoid cycles.</param>
+		/// Informs the <paramref name="inspector" /> about missing dependencies.
+		/// Implementers should ignore the call if no dependencies are missing and 
+		/// call back the inspector with the information required otherwise
 		/// </summary>
-		String ObtainDependencyDetails(IList dependenciesChecked);
+		/// <param name="inspector"></param>
+		void ObtainDependencyDetails(IDependencyInspector inspector);
 	}
 }

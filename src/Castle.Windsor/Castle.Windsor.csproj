@@ -355,6 +355,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AutoregisterPerWebRequestLifestyleModule.cs" />
     <Compile Include="Compatibility\SortedSet.silverllight.net35.cs" />
     <Compile Include="Core\CastleComponentAttribute.cs" />
     <Compile Include="Core\ComponentActivatorAttribute.cs" />
@@ -408,8 +409,10 @@
     <Compile Include="MicroKernel\Handlers\ComponentLifecycleExtension.cs" />
     <Compile Include="MicroKernel\Handlers\ComponentReleasingDelegate.cs" />
     <Compile Include="MicroKernel\Handlers\ComponentResolvingDelegate.cs" />
+    <Compile Include="MicroKernel\Handlers\DependencyInspector.cs" />
     <Compile Include="MicroKernel\Handlers\ExtendedHandler.cs" />
     <Compile Include="MicroKernel\Handlers\HandlerExtensionsUtil.cs" />
+    <Compile Include="MicroKernel\Handlers\IDependencyInspector.cs" />
     <Compile Include="MicroKernel\Handlers\IGenericImplementationMatchingStrategy.cs" />
     <Compile Include="MicroKernel\Handlers\IReleaseExtension.cs" />
     <Compile Include="MicroKernel\Handlers\IResolveExtension.cs" />
@@ -542,6 +545,7 @@
     </Compile>
     <Compile Include="MicroKernel\Lifestyle\PerThreadThreadStaticLifestyleManager.cs" />
     <Compile Include="MicroKernel\Lifestyle\PerWebRequestLifestyleModule.cs" />
+    <Compile Include="MicroKernel\Lifestyle\PerWebRequestLifestyleModuleRegistration.cs" />
     <Compile Include="MicroKernel\Lifestyle\PoolableLifestyleManager.cs">
       <SubType>Code</SubType>
     </Compile>

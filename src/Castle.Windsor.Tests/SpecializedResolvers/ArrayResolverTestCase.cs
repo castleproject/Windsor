@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -26,8 +26,24 @@ namespace Castle.MicroKernel.Tests.SpecializedResolvers
 	using NUnit.Framework;
 
 	[TestFixture]
-	public class ArrayResolverTestCase : AbstractContainerTestFixture
+	public class ArrayResolverTestCase : AbstractContainerTestCase
 	{
+		private class TestInstaller : IWindsorInstaller
+		{
+			public void Install(IWindsorContainer container, IConfigurationStore store)
+			{
+				container.Register(
+					Component.For<IEmptyService>().ImplementedBy<EmptyServiceA>().Named("foo"),
+					Component.For<IEmptyService>().ImplementedBy<EmptyServiceB>().Named("bar"),
+					Component.For<IEmptyService>().ImplementedBy<EmptyServiceDecoratorViaProperty>().Named("baz"),
+					Component.For<ArrayDepAsConstructor>().Named("InjectAll"),
+					Component.For<ArrayDepAsConstructor>().Named("InjectFooOnly")
+						.ServiceOverrides(ServiceOverride.ForKey("services").Eq(new[] { "foo" })),
+					Component.For<ArrayDepAsConstructor>().Named("InjectFooAndBarOnly")
+						.ServiceOverrides(ServiceOverride.ForKey("services").Eq(new[] { "foo", "bar" })));
+			}
+		}
+
 		[Test(Description = "IOC-239")]
 		public void ArrayResolution_UnresolvableDependencyCausesResolutionFailure()
 		{
@@ -224,22 +240,6 @@ namespace Castle.MicroKernel.Tests.SpecializedResolvers
 			var dependencies = fooItemTest.Services.Select(d => d.GetType()).ToList();
 			Assert.That(dependencies, Has.Count.EqualTo(1));
 			Assert.That(dependencies, Has.Member(typeof(EmptyServiceA)));
-		}
-
-		private class TestInstaller : IWindsorInstaller
-		{
-			public void Install(IWindsorContainer container, IConfigurationStore store)
-			{
-				container.Register(
-					Component.For<IEmptyService>().ImplementedBy<EmptyServiceA>().Named("foo"),
-					Component.For<IEmptyService>().ImplementedBy<EmptyServiceB>().Named("bar"),
-					Component.For<IEmptyService>().ImplementedBy<EmptyServiceDecoratorViaProperty>().Named("baz"),
-					Component.For<ArrayDepAsConstructor>().Named("InjectAll"),
-					Component.For<ArrayDepAsConstructor>().Named("InjectFooOnly")
-						.ServiceOverrides(ServiceOverride.ForKey("services").Eq(new[] { "foo" })),
-					Component.For<ArrayDepAsConstructor>().Named("InjectFooAndBarOnly")
-						.ServiceOverrides(ServiceOverride.ForKey("services").Eq(new[] { "foo", "bar" })));
-			}
 		}
 	}
 }

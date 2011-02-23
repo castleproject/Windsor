@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -27,8 +27,14 @@ namespace Castle.MicroKernel.Tests
 	using NUnit.Framework;
 
 	[TestFixture]
-	public class MicroKernelTestCase:AbstractContainerTestFixture
+	public class MicroKernelTestCase : AbstractContainerTestCase
 	{
+		[TearDown]
+		public void Dispose()
+		{
+			Kernel.Dispose();
+		}
+
 		[Test]
 		public void AddClassComponentWithInterface()
 		{
@@ -126,12 +132,6 @@ namespace Castle.MicroKernel.Tests
 			var defaultKernel = new DefaultKernel(resolver, new DefaultProxyFactory());
 			Assert.AreSame(resolver, defaultKernel.Resolver);
 			Assert.AreSame(defaultKernel, resolver.Kernel);
-		}
-
-		[TearDown]
-		public void Dispose()
-		{
-			Kernel.Dispose();
 		}
 
 		[Test]
@@ -292,8 +292,8 @@ namespace Castle.MicroKernel.Tests
 					"Type Castle.MicroKernel.Tests.ClassComponents.BaseCommonComponent is abstract.{0} As such, it is not possible to instansiate it as implementation of service 'abstract'. Did you forget to proxy it?",
 					Environment.NewLine);
 			var exception =
-				Assert.Throws(typeof(ComponentRegistrationException), () => 
-					Kernel.Resolve<ICommon>("abstract"));
+				Assert.Throws(typeof(ComponentRegistrationException), () =>
+				                                                      Kernel.Resolve<ICommon>("abstract"));
 			Assert.AreEqual(expectedMessage, exception.Message);
 		}
 
