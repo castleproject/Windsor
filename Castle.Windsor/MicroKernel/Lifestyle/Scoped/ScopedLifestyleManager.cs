@@ -17,13 +17,10 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 	using System;
 
 	using Castle.Core;
-	using Castle.MicroKernel;
 	using Castle.MicroKernel.Context;
-	using Castle.MicroKernel.Lifestyle;
 
 	public class ScopedLifestyleManager : AbstractLifestyleManager
 	{
-		private bool evicting;
 		private IScopeManager manager;
 
 		public override void Dispose()
@@ -34,13 +31,12 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 				return;
 			}
 
-			var instance = current.GetComponent(this);
+			var instance = current.GetComponentBurden(this);
 			if (instance == null)
 			{
 				return;
 			}
-
-			Evict(instance);
+			instance.Release();
 		}
 
 		public override void Init(IComponentActivator componentActivator, IKernel kernel, ComponentModel model)
@@ -54,16 +50,6 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 			}
 		}
 
-		public override bool Release(object instance)
-		{
-			if (evicting == false)
-			{
-				return false;
-			}
-
-			return base.Release(instance);
-		}
-
 		public override object Resolve(CreationContext context, IReleasePolicy releasePolicy)
 		{
 			var scope = GetCurrentScope();
@@ -74,44 +60,20 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 						"Component '{0}' has scoped lifestyle, and it could not be resolved because no scope is accessible.  Did you forget to call container.BeginScope()?",
 						Model.Name), Model);
 			}
-
-			if (scope.HasComponent(this))
+			var cachedBurden = scope.GetComponentBurden(this);
+			if (cachedBurden != null)
 			{
-				return scope.GetComponent(this);
+				return cachedBurden.Instance;
 			}
-
-			var component = base.Resolve(context, releasePolicy);
-			scope.AddComponent(this, component);
-			return component;
-		}
-
-		internal void Evict(object instance)
-		{
-			using (new EvictionScope(this))
-			{
-				Kernel.ReleaseComponent(instance);
-			}
+			var burden = base.CreateInstance(context, trackedExternally: true);
+			scope.AddComponent(this, burden);
+			Track(burden, releasePolicy);
+			return burden.Instance;
 		}
 
 		private LifestyleScope GetCurrentScope()
 		{
 			return manager.CurrentScope;
-		}
-
-		private class EvictionScope : IDisposable
-		{
-			private readonly ScopedLifestyleManager owner;
-
-			public EvictionScope(ScopedLifestyleManager owner)
-			{
-				this.owner = owner;
-				this.owner.evicting = true;
-			}
-
-			public void Dispose()
-			{
-				owner.evicting = false;
-			}
 		}
 	}
 }
