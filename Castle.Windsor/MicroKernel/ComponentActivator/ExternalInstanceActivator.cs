@@ -30,6 +30,11 @@ namespace Castle.MicroKernel.ComponentActivator
 			return true;
 		}
 
+		public bool IsManagedExternally(ComponentModel component)
+		{
+			return true;
+		}
+
 		protected override object InternalCreate(CreationContext context)
 		{
 			return Model.ExtendedProperties["instance"];

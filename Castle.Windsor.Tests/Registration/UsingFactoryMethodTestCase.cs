@@ -14,6 +14,8 @@
 
 namespace Castle.MicroKernel.Tests.Registration
 {
+	using System;
+
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Tests.Lifestyle.Components;
 	using Castle.Windsor.Tests;
@@ -67,6 +69,20 @@ namespace Castle.MicroKernel.Tests.Registration
 			Kernel.ReleaseComponent(component);
 
 			Assert.IsTrue(component.Disposed);
+		}
+
+		[Test]
+		public void Can_opt_out_of_applying_lifetime_concerns_to_factory_component()
+		{
+			Kernel.Register(Component.For<DisposableComponent>()
+			                	.LifeStyle.Transient
+			                	.UsingFactoryMethod(() => new DisposableComponent(), managedExternally: true));
+			var component = Kernel.Resolve<DisposableComponent>();
+			Assert.IsFalse(component.Disposed);
+
+			Kernel.ReleaseComponent(component);
+
+			Assert.IsFalse(component.Disposed);
 		}
 
 		[Test]
@@ -314,6 +330,31 @@ namespace Castle.MicroKernel.Tests.Registration
 
 			Assert.IsFalse(Kernel.ReleasePolicy.HasTrack(component));
 			Assert.IsFalse(Kernel.ReleasePolicy.HasTrack(component.Dependency));
+		}
+
+		[Test]
+		public void Managed_externally_factory_component_transient_is_not_tracked_by_release_policy()
+		{
+			Kernel.Register(Component.For<DisposableComponent>()
+			                	.LifeStyle.Transient
+			                	.UsingFactoryMethod(() => new DisposableComponent(), managedExternally: true));
+
+			var component = Kernel.Resolve<DisposableComponent>();
+
+			Assert.IsFalse(Kernel.ReleasePolicy.HasTrack(component));
+		}
+
+		[Test]
+		public void Managed_externally_factory_component_transient_is_not_tracked_by_the_container()
+		{
+			Kernel.Register(Component.For<DisposableComponent>()
+			                	.LifeStyle.Transient
+			                	.UsingFactoryMethod(() => new DisposableComponent(), managedExternally: true));
+
+			var weak = new WeakReference(Kernel.Resolve<DisposableComponent>());
+			GC.Collect();
+
+			Assert.IsFalse(weak.IsAlive);
 		}
 	}
 }

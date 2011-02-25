@@ -24,7 +24,6 @@ namespace Castle.MicroKernel.Registration
 	using Castle.Core.Configuration;
 	using Castle.Core.Internal;
 	using Castle.DynamicProxy;
-	using Castle.MicroKernel;
 	using Castle.MicroKernel.ComponentActivator;
 	using Castle.MicroKernel.Context;
 	using Castle.MicroKernel.Handlers;
@@ -721,10 +720,11 @@ namespace Castle.MicroKernel.Registration
 		/// </summary>
 		/// <typeparam name = "TImpl">Implementation type</typeparam>
 		/// <param name = "factoryMethod">Factory method</param>
+		/// <param name = "managedExternally">When set to <c>true</c> container will not assume ownership of this component, will not track it not apply and lifecycle concerns to it.</param>
 		/// <returns></returns>
-		public ComponentRegistration<TService> UsingFactoryMethod<TImpl>(Func<TImpl> factoryMethod) where TImpl : TService
+		public ComponentRegistration<TService> UsingFactoryMethod<TImpl>(Func<TImpl> factoryMethod, bool managedExternally = false) where TImpl : TService
 		{
-			return UsingFactoryMethod((k, m, c) => factoryMethod());
+			return UsingFactoryMethod((k, m, c) => factoryMethod(), managedExternally);
 		}
 
 		/// <summary>
@@ -732,10 +732,12 @@ namespace Castle.MicroKernel.Registration
 		/// </summary>
 		/// <typeparam name = "TImpl">Implementation type</typeparam>
 		/// <param name = "factoryMethod">Factory method</param>
+		/// <param name = "managedExternally">When set to <c>true</c> container will not assume ownership of this component, will not track it not apply and lifecycle concerns to it.</param>
 		/// <returns></returns>
-		public ComponentRegistration<TService> UsingFactoryMethod<TImpl>(Converter<IKernel, TImpl> factoryMethod) where TImpl : TService
+		public ComponentRegistration<TService> UsingFactoryMethod<TImpl>(Converter<IKernel, TImpl> factoryMethod, bool managedExternally = false)
+			where TImpl : TService
 		{
-			return UsingFactoryMethod((k, m, c) => factoryMethod(k));
+			return UsingFactoryMethod((k, m, c) => factoryMethod(k), managedExternally);
 		}
 
 		/// <summary>
@@ -743,12 +745,19 @@ namespace Castle.MicroKernel.Registration
 		/// </summary>
 		/// <typeparam name = "TImpl">Implementation type</typeparam>
 		/// <param name = "factoryMethod">Factory method</param>
+		/// <param name = "managedExternally">When set to <c>true</c> container will not assume ownership of this component, will not track it not apply and lifecycle concerns to it.</param>
 		/// <returns></returns>
-		public ComponentRegistration<TService> UsingFactoryMethod<TImpl>(Func<IKernel, ComponentModel, CreationContext, TImpl> factoryMethod)
+		public ComponentRegistration<TService> UsingFactoryMethod<TImpl>(Func<IKernel, ComponentModel, CreationContext, TImpl> factoryMethod,
+		                                                                 bool managedExternally = false)
 			where TImpl : TService
 		{
 			Activator<FactoryMethodActivator<TImpl>>()
 				.ExtendedProperties(Property.ForKey("factoryMethodDelegate").Eq(factoryMethod));
+
+			if (managedExternally)
+			{
+				ExtendedProperties(Property.ForKey("factory.managedExternally").Eq(managedExternally));
+			}
 
 			if (implementation == null && (potentialServices.First().IsClass == false || potentialServices.First().IsSealed == false))
 			{

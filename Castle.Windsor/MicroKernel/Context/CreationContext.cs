@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -63,7 +63,8 @@ namespace Castle.MicroKernel.Context
 		/// </summary>
 		/// <param name = "requestedType">The type to extract generic arguments.</param>
 		/// <param name = "parentContext">The parent context.</param>
-		/// <param name = "propagateInlineDependencies">When set to <c>true</c> will clone <paramref name = "parentContext" /> <see cref = "AdditionalArguments" />.</param>
+		/// <param name = "propagateInlineDependencies">When set to <c>true</c> will clone <paramref name = "parentContext" /> <see
+		///    cref = "AdditionalArguments" />.</param>
 		public CreationContext(Type requestedType, CreationContext parentContext, bool propagateInlineDependencies)
 			: this(parentContext.Handler, parentContext.ReleasePolicy, requestedType, null, null, parentContext)
 		{
@@ -92,7 +93,8 @@ namespace Castle.MicroKernel.Context
 		/// <param name = "additionalArguments">The additional arguments.</param>
 		/// <param name = "converter">The conversion manager.</param>
 		/// <param name = "parent">Parent context</param>
-		public CreationContext(IHandler handler, IReleasePolicy releasePolicy, Type requestedType, IDictionary additionalArguments, ITypeConverter converter, CreationContext parent)
+		public CreationContext(IHandler handler, IReleasePolicy releasePolicy, Type requestedType, IDictionary additionalArguments, ITypeConverter converter,
+		                       CreationContext parent)
 		{
 			this.requestedType = requestedType;
 			this.handler = handler;
@@ -371,6 +373,13 @@ namespace Castle.MicroKernel.Context
 				throw new ComponentActivatorException(
 					"Not in a resolution context. 'ActivateNewInstance' method can only be called withing a resoltion scope. (after 'EnterResolutionContext' was called within a handler)");
 			}
+
+			var activator = componentActivator as IDependencyAwareActivator;
+			if (activator != null)
+			{
+				trackedExternally |= activator.IsManagedExternally(resolutionContext.Handler.ComponentModel);
+			}
+
 			var burden = resolutionContext.CreateBurden(trackedExternally);
 			burden.SetRootInstance(componentActivator.Create(this));
 			return burden;
@@ -410,6 +419,11 @@ namespace Castle.MicroKernel.Context
 			public Burden Burden
 			{
 				get { return burden; }
+			}
+
+			public IHandler Handler
+			{
+				get { return handler; }
 			}
 
 			public void AttachBurden(Burden burden)
