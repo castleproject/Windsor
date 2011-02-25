@@ -1,4 +1,18 @@
 ================================================================================================
+change - IDependencyAwareActivator has new method: bool IsManagedExternally(ComponentModel);
+
+impact - low
+fixability - easy
+
+description - To implement feature IOC-277 this new customization point was introduced which
+	allows custom activators to specify whether the instance they activate shoud be managed
+	by the container. If true is returned this signifies to the container that the component
+	should not be tracked by the release policy. The activator should in that case also not
+	invoke any lifecycle steps. Notice that lifestyle manager can override the choice and that
+	this method will not be called in all cases.
+
+fix - Implement the method however makes sense to you. By default you should just return false.
+================================================================================================
 change - IExposeDependencyInfo.ObtainDependencyDetails method signature has changed
 
 impact - low

@@ -19,5 +19,7 @@ namespace Castle.MicroKernel.ComponentActivator
 	public interface IDependencyAwareActivator
 	{
 		bool CanProvideRequiredDependencies(ComponentModel component);
+
+		bool IsManagedExternally(ComponentModel component);
 	}
 }
