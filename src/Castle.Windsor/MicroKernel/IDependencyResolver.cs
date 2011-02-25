@@ -27,7 +27,7 @@ namespace Castle.MicroKernel
 		/// </summary>
 		/// <param name="kernel">kernel</param>
 		/// <param name="resolving">The delegate used to fire the event</param>
-		void Initialize(IKernel kernel, DependencyDelegate resolving);
+		void Initialize(IKernelInternal kernel, DependencyDelegate resolving);
 
 		/// <summary>
 		/// Registers a sub resolver instance

@@ -433,6 +433,8 @@
     <Compile Include="Facilities\TypedFactory\Components\ServiceFactory.cs" />
     <Compile Include="Facilities\TypedFactory\Components\ServiceRedirect.cs" />
     <Compile Include="Facilities\TypedFactory\Delegates\GenericUsesFuncOfGenerics.cs" />
+    <Compile Include="Facilities\TypedFactory\Delegates\UsesBarDelegateProperty.cs" />
+    <Compile Include="Facilities\TypedFactory\Delegates\UsesBarDelegateTwoConstructors.cs" />
     <Compile Include="Facilities\TypedFactory\Factories\IComponentFactory2.cs" />
     <Compile Include="Facilities\TypedFactory\Factories\IFactoryWithParametersExtended.cs" />
     <Compile Include="Facilities\TypedFactory\Factories\IFactoryWithParametersTwoBases.cs" />

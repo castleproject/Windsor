@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
 namespace Castle.MicroKernel.Resolvers
 {
 	using System;
+	using System.Collections;
 	using System.Collections.Generic;
 	using System.Linq;
 
@@ -35,7 +36,7 @@ namespace Castle.MicroKernel.Resolvers
 		private readonly IList<ISubDependencyResolver> subResolvers = new List<ISubDependencyResolver>();
 		private ITypeConverter converter;
 		private DependencyDelegate dependencyResolvingDelegate;
-		private IKernel kernel;
+		private IKernelInternal kernel;
 
 		/// <summary>
 		///   Registers a sub resolver instance
@@ -56,7 +57,7 @@ namespace Castle.MicroKernel.Resolvers
 		/// </summary>
 		/// <param name = "kernel">kernel</param>
 		/// <param name = "dependencyDelegate">The dependency delegate.</param>
-		public void Initialize(IKernel kernel, DependencyDelegate dependencyDelegate)
+		public void Initialize(IKernelInternal kernel, DependencyDelegate dependencyDelegate)
 		{
 			this.kernel = kernel;
 			converter = kernel.GetConversionManager();
@@ -187,49 +188,6 @@ namespace Castle.MicroKernel.Resolvers
 			RaiseDependencyResolving(model, dependency, value);
 
 			return value;
-		}
-
-		private object ResolveCore(CreationContext context, ISubDependencyResolver contextHandlerResolver, ComponentModel model, DependencyModel dependency)
-		{
-			// 1 - check for the dependency on CreationContext, if present
-			if (context != null && context.CanResolve(context, contextHandlerResolver, model, dependency))
-			{
-				return context.Resolve(context, contextHandlerResolver, model, dependency);
-			}
-
-			// 2 - check with the model's handler, if not the same as the parent resolver
-			var handler = kernel.GetHandler(model.Name);
-			if (handler != contextHandlerResolver && handler.CanResolve(context, contextHandlerResolver, model, dependency))
-			{
-				return handler.Resolve(context, contextHandlerResolver, model, dependency);
-			}
-
-			// 3 - check within parent resolver, if present
-			if (contextHandlerResolver != null && contextHandlerResolver.CanResolve(context, contextHandlerResolver, model, dependency))
-			{
-				return contextHandlerResolver.Resolve(context, contextHandlerResolver, model, dependency);
-			}
-
-			// 4 - check within subresolvers
-			if (subResolvers.Count > 0)
-			{
-				for (var index = 0; index < subResolvers.Count; index++)
-				{
-					var subResolver = subResolvers[index];
-					if (subResolver.CanResolve(context, contextHandlerResolver, model, dependency))
-					{
-						return subResolver.Resolve(context, contextHandlerResolver, model, dependency);
-					}
-				}
-			}
-
-			// 5 - normal flow, checking against the kernel
-			if (dependency.DependencyType == DependencyType.Service ||
-			    dependency.DependencyType == DependencyType.ServiceOverride)
-			{
-				return ResolveServiceDependency(context, model, dependency);
-			}
-			return ResolveParameterDependency(context, model, dependency);
 		}
 
 		protected virtual bool CanResolveParameterDependency(ComponentModel model, DependencyModel dependency)
@@ -386,7 +344,7 @@ namespace Castle.MicroKernel.Resolvers
 		{
 			if (dependency.DependencyType == DependencyType.ServiceOverride)
 			{
-				return HasComponentInValidState(dependency.DependencyKey);
+				return HasComponentInValidState(dependency.DependencyKey, dependency.TargetItemType, GetAdditionalArguments(context));
 			}
 
 			var parameter = ObtainParameterModelMatchingDependency(dependency, model);
@@ -395,7 +353,7 @@ namespace Castle.MicroKernel.Resolvers
 				// User wants to override
 
 				var value = ExtractComponentKey(parameter.Value, parameter.Name);
-				return HasComponentInValidState(value);
+				return HasComponentInValidState(value, dependency.TargetItemType, GetAdditionalArguments(context));
 			}
 			if (typeof(IKernel).IsAssignableFrom(dependency.TargetItemType))
 			{
@@ -405,9 +363,9 @@ namespace Castle.MicroKernel.Resolvers
 
 			if (dependency.TargetItemType != null)
 			{
-				return HasComponentInValidState(context, dependency.TargetItemType);
+				return HasAnyComponentInValidState(context, dependency.TargetItemType, dependency.DependencyKey, GetAdditionalArguments(context));
 			}
-			return HasComponentInValidState(dependency.DependencyKey);
+			return HasComponentInValidState(dependency.DependencyKey, dependency.TargetItemType, GetAdditionalArguments(context));
 		}
 
 		private ParameterModel GetParameterModelByType(Type type, ComponentModel model)
@@ -426,15 +384,9 @@ namespace Castle.MicroKernel.Resolvers
 			return model.Parameters[key];
 		}
 
-		private bool HasComponentInValidState(string key)
+		private bool HasAnyComponentInValidState(CreationContext context, Type service, string name, IDictionary arguments)
 		{
-			var handler = kernel.GetHandler(key);
-			return IsHandlerInValidState(handler);
-		}
-
-		private bool HasComponentInValidState(CreationContext context, Type service)
-		{
-			var firstHandler = kernel.GetHandler(service);
+			var firstHandler = kernel.LoadHandlerByType(name, service, arguments);
 			if (firstHandler == null)
 			{
 				return false;
@@ -457,6 +409,12 @@ namespace Castle.MicroKernel.Resolvers
 			}
 
 			return false;
+		}
+
+		private bool HasComponentInValidState(string key, Type type, IDictionary arguments)
+		{
+			var handler = kernel.LoadHandlerByKey(key, type, arguments);
+			return IsHandlerInValidState(handler);
 		}
 
 		private ParameterModel ObtainParameterModelByKey(DependencyModel dependency, ComponentModel model)
@@ -491,6 +449,49 @@ namespace Castle.MicroKernel.Resolvers
 			dependencyResolvingDelegate(model, dependency, value);
 		}
 
+		private object ResolveCore(CreationContext context, ISubDependencyResolver contextHandlerResolver, ComponentModel model, DependencyModel dependency)
+		{
+			// 1 - check for the dependency on CreationContext, if present
+			if (context != null && context.CanResolve(context, contextHandlerResolver, model, dependency))
+			{
+				return context.Resolve(context, contextHandlerResolver, model, dependency);
+			}
+
+			// 2 - check with the model's handler, if not the same as the parent resolver
+			var handler = kernel.GetHandler(model.Name);
+			if (handler != contextHandlerResolver && handler.CanResolve(context, contextHandlerResolver, model, dependency))
+			{
+				return handler.Resolve(context, contextHandlerResolver, model, dependency);
+			}
+
+			// 3 - check within parent resolver, if present
+			if (contextHandlerResolver != null && contextHandlerResolver.CanResolve(context, contextHandlerResolver, model, dependency))
+			{
+				return contextHandlerResolver.Resolve(context, contextHandlerResolver, model, dependency);
+			}
+
+			// 4 - check within subresolvers
+			if (subResolvers.Count > 0)
+			{
+				for (var index = 0; index < subResolvers.Count; index++)
+				{
+					var subResolver = subResolvers[index];
+					if (subResolver.CanResolve(context, contextHandlerResolver, model, dependency))
+					{
+						return subResolver.Resolve(context, contextHandlerResolver, model, dependency);
+					}
+				}
+			}
+
+			// 5 - normal flow, checking against the kernel
+			if (dependency.DependencyType == DependencyType.Service ||
+			    dependency.DependencyType == DependencyType.ServiceOverride)
+			{
+				return ResolveServiceDependency(context, model, dependency);
+			}
+			return ResolveParameterDependency(context, model, dependency);
+		}
+
 		private IHandler TryGetHandlerFromKernel(DependencyModel dependency, CreationContext context)
 		{
 			// we are doing it in two stages because it is likely to be faster to a lookup
@@ -518,6 +519,15 @@ namespace Castle.MicroKernel.Resolvers
 				}
 			}
 			return handler;
+		}
+
+		private static IDictionary GetAdditionalArguments(CreationContext context)
+		{
+			if (context != null)
+			{
+				return context.AdditionalArguments;
+			}
+			return null;
 		}
 
 		private static bool IsHandlerInValidState(IHandler handler)
