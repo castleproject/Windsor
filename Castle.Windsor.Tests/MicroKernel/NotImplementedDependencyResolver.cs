@@ -24,7 +24,7 @@ namespace Castle.Windsor.Tests.MicroKernel
 	{
 		public IKernel Kernel { get; set; }
 
-		public void Initialize(IKernel kernel, DependencyDelegate resolving)
+		public void Initialize(IKernelInternal kernel, DependencyDelegate resolving)
 		{
 			Kernel = kernel;
 		}
