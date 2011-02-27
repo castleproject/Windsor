@@ -3,6 +3,7 @@
 - implemented IOC-275 - Exception message thrown when dependencies are missing is not always very clear and should be improved
 - fixed IOC-273 - Auto register PerWebRequestLifestyleModule using PreApplicationStartMethodAttribute at runtime
 - EventWiringFacility, FactorySupportFacility and RemotingFacility are extracted to their own assemblies
+- implemented IOC-271 - Support open generic components where implementing class has more generic parameters than the service but the missing ones can be somehow inferred
 - implemented IOC-270 - Add OnDestroy method, symertical to OnCreate 
 - implemented IOC-268 - Hook that allows for filtering handlers during ResolveAll 
 - fixed IOC-267 - Register() on a System.ValueType (like an Int32 or an Enum) instance should throw an exception

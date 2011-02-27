@@ -14,9 +14,13 @@
 
 namespace Castle.MicroKernel.Tests.ClassComponents
 {
-	public interface IRepository<T> : IRepository
+	public class DoubleRepository<T, T2> : IRepository<T>
 		where T : class
+		where T2 : struct
 	{
-		T Find();
+		public T Find()
+		{
+			return null;
+		}
 	}
 }

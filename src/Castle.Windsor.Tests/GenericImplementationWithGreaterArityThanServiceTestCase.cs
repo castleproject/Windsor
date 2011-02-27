@@ -14,10 +14,15 @@
 
 namespace Castle
 {
+	using System;
+
 	using Castle.Core;
 	using Castle.Generics;
+	using Castle.MicroKernel.Handlers;
 	using Castle.MicroKernel.Registration;
+	using Castle.MicroKernel.Tests.ClassComponents;
 	using Castle.Windsor.Tests;
+	using Castle.Windsor.Tests.Components;
 
 	using NUnit.Framework;
 
@@ -43,6 +48,62 @@ namespace Castle
 			var repository = Container.Resolve<Generics.IRepository<A>>();
 
 			Assert.IsInstanceOf<DoubleGenericRepository<A, A>>(repository);
+		}
+
+		[Test]
+		public void Null_strategy_is_ignored()
+		{
+			Container.Register(Component.For(typeof(Generics.IRepository<>)).ImplementedBy(typeof(DoubleGenericRepository<,>))
+			                   	.ExtendedProperties(Property.ForKey(ComponentModel.GenericImplementationMatchingStrategy).Eq(null)));
+
+			var exception = Assert.Throws<HandlerException>(() =>
+			                                                Container.Resolve<Generics.IRepository<A>>());
+
+			var message =
+				@"Requested type Castle.Generics.IRepository`1[Castle.Windsor.Tests.A] has 1 generic parameter(s), whereas component implementation type Castle.Generics.DoubleGenericRepository`2[T1,T2] requires 2. This means that Windsor does not have enough information to properly create that component for you. This is most likely a bug in your registration code.";
+			Assert.AreEqual(message, exception.Message);
+		}
+
+		[Test]
+		public void Throws_helpful_message_when_generic_matching_strategy_returns_null()
+		{
+			Container.Register(Component.For(typeof(Generics.IRepository<>))
+			                   	.ImplementedBy(typeof(DoubleGenericRepository<,>), new StubGenericImplementationMatchingStrategy(default(Type[]))));
+
+			var exception = Assert.Throws<HandlerException>(() =>
+			                                                Container.Resolve<Generics.IRepository<A>>());
+
+			var message =
+				@"Custom IGenericImplementationMatchingStrategy (Castle.StubGenericImplementationMatchingStrategy) didn't select any generic parameters for implementation type of component 'Castle.Generics.DoubleGenericRepository`2'. This usually signifies bug in the IGenericImplementationMatchingStrategy.";
+			Assert.AreEqual(message, exception.Message);
+		}
+
+		[Test]
+		public void Throws_helpful_message_when_generic_matching_strategy_returns_too_few_types()
+		{
+			Container.Register(Component.For(typeof(MicroKernel.Tests.ClassComponents.IRepository<>))
+			                   	.ImplementedBy(typeof(DoubleRepository<,>), new StubGenericImplementationMatchingStrategy(typeof(string))));
+
+			var exception = Assert.Throws<HandlerException>(() =>
+			                                                Container.Resolve<MicroKernel.Tests.ClassComponents.IRepository<string>>());
+
+			var message =
+				@"Requested type Castle.MicroKernel.Tests.ClassComponents.IRepository`1[System.String] has 1 generic parameter(s), whereas component implementation type Castle.MicroKernel.Tests.ClassComponents.DoubleRepository`2[T,T2] requires 2. This means that Windsor does not have enough information to properly create that component for you. This is most likely a bug in your registration code.";
+			Assert.AreEqual(message, exception.Message);
+		}
+
+		[Test]
+		public void Throws_helpful_message_when_generic_matching_strategy_returns_types_that_wont_work_with_the_type()
+		{
+			Container.Register(Component.For(typeof(MicroKernel.Tests.ClassComponents.IRepository<>))
+			                   	.ImplementedBy(typeof(DoubleRepository<,>), new StubGenericImplementationMatchingStrategy(typeof(string), typeof(IEmployee))));
+
+			var exception = Assert.Throws<HandlerException>(() =>
+			                                                Container.Resolve<MicroKernel.Tests.ClassComponents.IRepository<string>>());
+
+			var message =
+				@"Types selected by Castle.StubGenericImplementationMatchingStrategy couldn't be used for generic arguments of implementation type for component Castle.MicroKernel.Tests.ClassComponents.DoubleRepository`2. See inner exception for more details.";
+			Assert.AreEqual(message, exception.Message);
 		}
 	}
 }
