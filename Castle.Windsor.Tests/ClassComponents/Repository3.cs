@@ -14,9 +14,18 @@
 
 namespace Castle.MicroKernel.Tests.ClassComponents
 {
-	public interface IRepository<T> : IRepository
-		where T : class
+	public class Repository3 : IRepository
 	{
-		T Find();
+		private readonly IRepository inner;
+
+		public Repository3(IRepository inner)
+		{
+			this.inner = inner;
+		}
+
+		public IRepository InnerRepository
+		{
+			get { return inner; }
+		}
 	}
 }

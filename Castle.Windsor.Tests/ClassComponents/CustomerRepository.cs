@@ -14,9 +14,11 @@
 
 namespace Castle.MicroKernel.Tests.ClassComponents
 {
-	public interface IRepository<T> : IRepository
-		where T : class
+	public class CustomerRepository : IRepository<ICustomer>
 	{
-		T Find();
+		public ICustomer Find()
+		{
+			return new CustomerImpl();
+		}
 	}
 }
