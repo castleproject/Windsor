@@ -65,15 +65,6 @@ limitations under the License.
 		<MonoShell>mono-2.8</MonoShell>
 	</PropertyGroup>
 
-	<!--Silverlight 3.0 runtime-->
-	<PropertyGroup Condition="$(Configuration) == 'SL3-Release' or $(Configuration) == 'SL3-Debug'">
-		<BuildConfigKey>SL3</BuildConfigKey>
-		<TargetFrameworkIdentifier>Silverlight</TargetFrameworkIdentifier>
-		<MSBuildTargets>Silverlight 3.0</MSBuildTargets>
-		<TargetFrameworkVersion>v3.0</TargetFrameworkVersion>
-		<GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
-	</PropertyGroup>
-
 	<!--Silverlight 4.0 runtime-->
 	<PropertyGroup Condition="$(Configuration) == 'SL4-Release' or $(Configuration) == 'SL4-Debug'">
 		<BuildConfigKey>SL4</BuildConfigKey>

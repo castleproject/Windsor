@@ -164,9 +164,9 @@ limitations under the License.
 		Condition="$(TestRunner_Enabled)"
 		>
 		
-		<CallTarget Targets="_ExecNUnit" Condition="$(BuildConfigKey) != 'SL3' and $(BuildConfigKey) != 'SL4'" />
+		<CallTarget Targets="_ExecNUnit" Condition="$(BuildConfigKey) != 'SL4'" />
 	
-		<CallTarget Targets="_ExecStatLight" Condition="$(BuildConfigKey) == 'SL3' or $(BuildConfigKey) == 'SL4'" />
+		<CallTarget Targets="_ExecStatLight" Condition="$(BuildConfigKey) == 'SL4'" />
 
 	</Target>
 	
