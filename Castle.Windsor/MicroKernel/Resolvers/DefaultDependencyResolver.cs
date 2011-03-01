@@ -118,8 +118,7 @@ namespace Castle.MicroKernel.Resolvers
 			}
 
 			// 5 - normal flow, checking against the kernel
-			return CanResolveServiceDependency(context, model, dependency) ||
-			       CanResolveParameterDependency(model, dependency);
+			return CanResolveCore(context, model, dependency);
 		}
 
 		/// <summary>
@@ -186,35 +185,9 @@ namespace Castle.MicroKernel.Resolvers
 			return value;
 		}
 
-		protected virtual bool CanResolveParameterDependency(ComponentModel model, DependencyModel dependency)
-		{
-			var parameter = ObtainParameterModelMatchingDependency(dependency, model);
-
-			return parameter != null;
-		}
-
-		protected virtual bool CanResolveServiceDependency(CreationContext context, ComponentModel model, DependencyModel dependency)
+		protected virtual bool CanResolveCore(CreationContext context, ComponentModel model, DependencyModel dependency)
 		{
 			return CanResolveServiceDependencyMandatory(dependency, model, context) || dependency.HasDefaultValue;
-		}
-
-		/// <summary>
-		///   Extracts the component name from the a ref strings which is
-		///   ${something}
-		/// </summary>
-		/// <param name = "name"></param>
-		/// <param name = "keyValue"></param>
-		/// <returns></returns>
-		protected virtual String ExtractComponentKey(String keyValue, String name)
-		{
-			if (!ReferenceExpressionUtil.IsReference(keyValue))
-			{
-				throw new DependencyResolverException(
-					String.Format("Key invalid for parameter {0}. " +
-					              "Thus the kernel was unable to override the service dependency", name));
-			}
-
-			return ReferenceExpressionUtil.ExtractComponentKey(keyValue);
 		}
 
 		protected virtual ParameterModel ObtainParameterModelMatchingDependency(DependencyModel dependency, ComponentModel model)
@@ -240,43 +213,39 @@ namespace Castle.MicroKernel.Resolvers
 			return new CreationContext(parameterType, current, false);
 		}
 
-		protected virtual object ResolveParameterDependency(CreationContext context, ComponentModel model, DependencyModel dependency)
-		{
-			var parameter = ObtainParameterModelMatchingDependency(dependency, model);
-			if (parameter != null)
-			{
-				converter.Context.Push(model, context);
-
-				try
-				{
-					if (parameter.Value != null || parameter.ConfigValue == null)
-					{
-						return converter.PerformConversion(parameter.Value, dependency.TargetItemType);
-					}
-					else
-					{
-						return converter.PerformConversion(parameter.ConfigValue, dependency.TargetItemType);
-					}
-				}
-				finally
-				{
-					converter.Context.Pop();
-				}
-			}
-
-			return null;
-		}
-
-		protected virtual object ResolveServiceDependency(CreationContext context, ComponentModel model, DependencyModel dependency)
+		protected virtual object ResolveCore(CreationContext context, ComponentModel model, DependencyModel dependency)
 		{
 			var isOverride = false;
 			var parameter = ObtainParameterModelMatchingDependency(dependency, model);
 			if (parameter != null)
 			{
-				// User wants to override, we then 
-				// change the type to ServiceOverride
-				dependency.DependencyKey = ExtractComponentKey(parameter.Value, parameter.Name);
-				isOverride = true;
+				if (ReferenceExpressionUtil.IsReference(parameter.Value))
+				{
+					// User wants to override, we then 
+					// change the type to ServiceOverride
+					dependency.DependencyKey = ReferenceExpressionUtil.ExtractComponentKey(parameter.Value);
+					isOverride = true;
+				}
+				else
+				{
+					converter.Context.Push(model, context);
+
+					try
+					{
+						if (parameter.Value != null || parameter.ConfigValue == null)
+						{
+							return converter.PerformConversion(parameter.Value, dependency.TargetItemType);
+						}
+						else
+						{
+							return converter.PerformConversion(parameter.ConfigValue, dependency.TargetItemType);
+						}
+					}
+					finally
+					{
+						converter.Context.Pop();
+					}
+				}
 			}
 
 			if (typeof(IKernel).IsAssignableFrom(dependency.TargetItemType))
@@ -338,10 +307,13 @@ namespace Castle.MicroKernel.Resolvers
 			var parameter = ObtainParameterModelMatchingDependency(dependency, model);
 			if (parameter != null)
 			{
-				// User wants to override
-
-				var value = ExtractComponentKey(parameter.Value, parameter.Name);
-				return HasComponentInValidState(value, dependency.TargetItemType, context);
+				if (ReferenceExpressionUtil.IsReference(parameter.Value))
+				{
+					// User wants to override
+					var value = ReferenceExpressionUtil.ExtractComponentKey(parameter.Value);
+					return HasComponentInValidState(value, dependency.TargetItemType, context);
+				}
+				return ObtainParameterModelMatchingDependency(dependency, model) != null;
 			}
 			if (typeof(IKernel).IsAssignableFrom(dependency.TargetItemType))
 			{
@@ -472,7 +444,7 @@ namespace Castle.MicroKernel.Resolvers
 			}
 
 			// 5 - normal flow, checking against the kernel
-			return ResolveServiceDependency(context, model, dependency) ?? ResolveParameterDependency(context, model, dependency);
+			return ResolveCore(context, model, dependency);
 		}
 
 		private IHandler TryGetHandlerFromKernel(DependencyModel dependency, CreationContext context)
