@@ -325,7 +325,7 @@ namespace Castle.MicroKernel.Resolvers
 
 		private bool CanResolveServiceDependencyMandatory(DependencyModel dependency, ComponentModel model, CreationContext context)
 		{
-			if (HasComponentInValidState(dependency.DependencyKey, dependency.TargetItemType, GetAdditionalArguments(context),context))
+			if (HasComponentInValidState(dependency.DependencyKey, dependency.TargetItemType, context))
 			{
 				return true;
 			}
@@ -336,7 +336,7 @@ namespace Castle.MicroKernel.Resolvers
 				// User wants to override
 
 				var value = ExtractComponentKey(parameter.Value, parameter.Name);
-				return HasComponentInValidState(value, dependency.TargetItemType, GetAdditionalArguments(context), context);
+				return HasComponentInValidState(value, dependency.TargetItemType, context);
 			}
 			if (typeof(IKernel).IsAssignableFrom(dependency.TargetItemType))
 			{
@@ -348,7 +348,7 @@ namespace Castle.MicroKernel.Resolvers
 			{
 				return HasAnyComponentInValidState(context, dependency.TargetItemType, dependency.DependencyKey, GetAdditionalArguments(context));
 			}
-			return HasComponentInValidState(dependency.DependencyKey, dependency.TargetItemType, GetAdditionalArguments(context), context);
+			return HasComponentInValidState(dependency.DependencyKey, dependency.TargetItemType, context);
 		}
 
 		private ParameterModel GetParameterModelByType(Type type, ComponentModel model)
@@ -394,9 +394,9 @@ namespace Castle.MicroKernel.Resolvers
 			return false;
 		}
 
-		private bool HasComponentInValidState(string key, Type type, IDictionary arguments, CreationContext context)
+		private bool HasComponentInValidState(string key, Type type, CreationContext context)
 		{
-			var handler = kernel.LoadHandlerByKey(key, type, arguments);
+			var handler = kernel.LoadHandlerByKey(key, type, GetAdditionalArguments(context));
 			return IsHandlerInValidState(handler) && handler.IsBeingResolvedInContext(context) == false;
 		}
 
