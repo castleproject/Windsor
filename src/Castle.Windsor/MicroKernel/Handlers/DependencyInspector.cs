@@ -20,6 +20,7 @@ namespace Castle.MicroKernel.Handlers
 	using System.Text;
 
 	using Castle.Core;
+	using Castle.MicroKernel.Util;
 
 	public class DependencyInspector : IDependencyInspector
 	{
@@ -50,17 +51,17 @@ namespace Castle.MicroKernel.Handlers
 			message.AppendLine();
 			foreach (var dependency in missingDependencies)
 			{
-				switch (dependency.DependencyType)
+				if (string.IsNullOrEmpty(dependency.DependencyKey))
 				{
-					case DependencyType.Service:
-						InspectServiceDependency(handler, dependency, kernel);
-						break;
-					case DependencyType.ServiceOverride:
-						InspectServiceOverrideDependency(dependency, kernel);
-						break;
-					case DependencyType.Parameter:
-						InspectParameterDependency(dependency);
-						break;
+					InspectServiceDependency(handler, dependency, kernel);
+				}
+				else if (ReferenceExpressionUtil.IsReference(dependency.DependencyKey))
+				{
+					InspectServiceOverrideDependency(dependency, kernel);
+				}
+				else
+				{
+					InspectParameterDependency(dependency);
 				}
 			}
 		}
@@ -107,7 +108,7 @@ namespace Castle.MicroKernel.Handlers
 						{
 							message.AppendLine();
 							message.AppendFormat("'{0}' is registered and is matching the required service, but cannot be resolved.",
-												 maybeDecoratedHandler.ComponentModel.Name);
+							                     maybeDecoratedHandler.ComponentModel.Name);
 						}
 					}
 				}

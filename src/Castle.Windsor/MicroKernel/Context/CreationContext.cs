@@ -249,7 +249,7 @@ namespace Castle.MicroKernel.Context
 				{
 					return inlineArgument;
 				}
-				if (CanConvertParameter(dependency, targetType))
+				if (CanConvertParameter(targetType))
 				{
 					return converter.PerformConversion(inlineArgument.ToString(), targetType);
 				}
@@ -264,14 +264,12 @@ namespace Castle.MicroKernel.Context
 			{
 				return false;
 			}
-			return type.IsInstanceOfType(inlineArgument) || CanConvertParameter(dependency, type);
+			return type.IsInstanceOfType(inlineArgument) || CanConvertParameter(type);
 		}
 
-		private bool CanConvertParameter(DependencyModel dependency, Type type)
+		private bool CanConvertParameter(Type type)
 		{
-			return converter != null &&
-			       dependency.DependencyType == DependencyType.Parameter &&
-			       converter.CanHandleType(type);
+			return converter != null && converter.CanHandleType(type);
 		}
 
 		private bool CanResolveByKey(DependencyModel dependency)

@@ -303,9 +303,18 @@ namespace Castle.MicroKernel.Handlers
 		protected void AddDependency(DependencyModel dependency)
 		{
 			var type = dependency.TargetItemType;
+			var key = dependency.DependencyKey;
 			if (HasValidComponentFromResolver(dependency))
 			{
-				if (dependency.DependencyType == DependencyType.Service && type != null)
+				if(string.IsNullOrEmpty(key) == false)
+				{
+					var handler = Kernel.GetHandler(key);
+					if (handler != null)
+					{
+						AddGraphDependency(handler);
+					}
+				}
+				else if (type != null)
 				{
 					var handler = Kernel.GetHandler(type);
 					if (handler != null)
@@ -313,30 +322,15 @@ namespace Castle.MicroKernel.Handlers
 						AddGraphDependency(handler);
 					}
 				}
-				else
-				{
-					var handler = Kernel.GetHandler(dependency.DependencyKey);
-					if (handler != null)
-					{
-						AddGraphDependency(handler);
-					}
-				}
-
 				return;
 			}
-
-			if (dependency.DependencyType == DependencyType.Service && type != null)
+			if (string.IsNullOrEmpty(key) == false && DependenciesByKey.ContainsKey(key) == false)
 			{
-				if (DependenciesByService.ContainsKey(type))
-				{
-					return;
-				}
-
-				DependenciesByService.Add(type, dependency);
+				DependenciesByKey.Add(key, dependency);
 			}
-			else if (!DependenciesByKey.ContainsKey(dependency.DependencyKey))
+			else if (type != null && DependenciesByService.ContainsKey(type) == false)
 			{
-				DependenciesByKey.Add(dependency.DependencyKey, dependency);
+				DependenciesByService.Add(type, dependency);
 			}
 
 			if (state != HandlerState.WaitingDependency)
@@ -369,9 +363,8 @@ namespace Castle.MicroKernel.Handlers
 			}
 
 			return dependency.HasDefaultValue ||
-			       (dependency.DependencyType == DependencyType.Service &&
 			        dependency.TargetItemType != null &&
-			        DependenciesByService.ContainsKey(dependency.TargetItemType));
+			        DependenciesByService.ContainsKey(dependency.TargetItemType);
 		}
 
 		/// <summary>
@@ -464,13 +457,13 @@ namespace Castle.MicroKernel.Handlers
 						continue;
 					}
 
-					if (dependency.DependencyType == DependencyType.Service)
+					if (string.IsNullOrEmpty(dependency.DependencyKey) == false)
 					{
-						DependenciesByService.Remove(dependency.TargetItemType);
+						DependenciesByKey.Remove(dependency.DependencyKey);
 					}
 					else
 					{
-						DependenciesByKey.Remove(dependency.DependencyKey);
+						DependenciesByService.Remove(dependency.TargetItemType);
 					}
 				}
 			}
@@ -541,9 +534,7 @@ namespace Castle.MicroKernel.Handlers
 			{
 				var dependency = property.Dependency;
 
-				if (dependency.IsOptional == false &&
-				    (dependency.DependencyType == DependencyType.Service ||
-				     dependency.DependencyType == DependencyType.ServiceOverride))
+				if (dependency.IsOptional == false)
 				{
 					AddDependency(dependency);
 				}
@@ -554,9 +545,7 @@ namespace Castle.MicroKernel.Handlers
 
 			foreach (var dependency in ComponentModel.Dependencies)
 			{
-				if (dependency.IsOptional == false &&
-				    (dependency.DependencyType == DependencyType.Service ||
-				     dependency.DependencyType == DependencyType.ServiceOverride))
+				if (dependency.IsOptional == false)
 				{
 					AddDependency(dependency);
 				}
@@ -569,17 +558,7 @@ namespace Castle.MicroKernel.Handlers
 					continue;
 				}
 
-				if (dependency.DependencyType == DependencyType.Service ||
-				    dependency.DependencyType == DependencyType.ServiceOverride)
-				{
-					AddDependency(dependency);
-				}
-				else if (dependency.DependencyType == DependencyType.Parameter &&
-				         !ComponentModel.Constructors.HasAmbiguousFewerArgumentsCandidate &&
-				         !ComponentModel.Parameters.Contains(dependency.DependencyKey))
-				{
-					AddDependency(dependency);
-				}
+				AddDependency(dependency);
 			}
 		}
 
@@ -664,8 +643,7 @@ namespace Castle.MicroKernel.Handlers
 			var bestCandidates = new List<ConstructorCandidate>();
 			foreach (var candidate in candidates)
 			{
-				var count = candidate.Dependencies.Count(d => d.DependencyType == DependencyType.Parameter ||
-				                                              d.DependencyType == DependencyType.ServiceOverride);
+				var count = candidate.Dependencies.Length;
 				if (count < parametersCount)
 				{
 					continue;
