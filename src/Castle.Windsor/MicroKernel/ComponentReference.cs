@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,20 +15,19 @@
 namespace Castle.MicroKernel
 {
 	using System;
-	using System.Collections.Generic;
 
 	using Castle.Core;
 	using Castle.MicroKernel.Context;
 
 	/// <summary>
-	/// Reference to component obtained from a container.
+	///   Reference to component obtained from a container.
 	/// </summary>
-	/// <typeparam name="T"></typeparam>
+	/// <typeparam name = "T"></typeparam>
 	public class ComponentReference<T> : IReference<T>
 	{
 		private readonly Type actualComponentType;
 		private readonly string componentKey;
-		private DependencyModel dependency;
+		private readonly DependencyModel dependency;
 
 		public ComponentReference(string componentKey)
 		{
@@ -39,7 +38,7 @@ namespace Castle.MicroKernel
 
 			this.componentKey = componentKey;
 
-			dependency =  new DependencyModel(DependencyType.ServiceOverride, componentKey, null, false);
+			dependency = new DependencyModel(componentKey, null, false);
 		}
 
 		public ComponentReference(Type actualComponentType)
@@ -50,7 +49,7 @@ namespace Castle.MicroKernel
 			}
 			this.actualComponentType = actualComponentType;
 
-			dependency = new DependencyModel(DependencyType.Service, null, actualComponentType, false);
+			dependency = new DependencyModel(null, actualComponentType, false);
 		}
 
 		public ComponentReference() : this(typeof(T))
@@ -58,14 +57,14 @@ namespace Castle.MicroKernel
 			// so that we don't have to specify the key
 		}
 
-		private IHandler GetHandler(IKernel kernel)
+		public void Attach(DependencyModelCollection dependencies)
 		{
-			if (componentKey != null)
-			{
-				return kernel.GetHandler(componentKey);
-			}
+			dependencies.Add(dependency);
+		}
 
-			return kernel.GetHandler(actualComponentType);
+		public void Detach(DependencyModelCollection dependencies)
+		{
+			dependencies.Remove(dependency);
 		}
 
 		public T Resolve(IKernel kernel, CreationContext context)
@@ -89,14 +88,14 @@ namespace Castle.MicroKernel
 			}
 		}
 
-		public void Attach(DependencyModelCollection dependencies)
+		private IHandler GetHandler(IKernel kernel)
 		{
-			dependencies.Add(dependency);
-		}
+			if (componentKey != null)
+			{
+				return kernel.GetHandler(componentKey);
+			}
 
-		public void Detach(DependencyModelCollection dependencies)
-		{
-			dependencies.Remove(dependency);
+			return kernel.GetHandler(actualComponentType);
 		}
 	}
 }

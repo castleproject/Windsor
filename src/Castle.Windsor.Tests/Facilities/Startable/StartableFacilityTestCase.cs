@@ -32,16 +32,38 @@ namespace Castle.Windsor.Tests.Facilities.Startable
 	[TestFixture]
 	public class StartableFacilityTestCase
 	{
-		private IKernel kernel;
-
-		private bool startableCreatedBeforeResolved;
-
 		[SetUp]
 		public void SetUp()
 		{
 			kernel = new DefaultKernel();
 
 			startableCreatedBeforeResolved = false;
+		}
+
+		private IKernel kernel;
+
+		private bool startableCreatedBeforeResolved;
+
+		private void OnNoInterfaceStartableComponentStarted(ComponentModel mode, object instance)
+		{
+			var startable = instance as NoInterfaceStartableComponent;
+
+			Assert.IsNotNull(startable);
+			Assert.IsTrue(startable.Started);
+			Assert.IsFalse(startable.Stopped);
+
+			startableCreatedBeforeResolved = true;
+		}
+
+		private void OnStartableComponentStarted(ComponentModel mode, object instance)
+		{
+			var startable = instance as StartableComponent;
+
+			Assert.IsNotNull(startable);
+			Assert.IsTrue(startable.Started);
+			Assert.IsFalse(startable.Stopped);
+
+			startableCreatedBeforeResolved = true;
 		}
 
 		[Test]
@@ -205,7 +227,7 @@ namespace Castle.Windsor.Tests.Facilities.Startable
 		{
 			kernel.ComponentCreated += OnStartableComponentStarted;
 
-			var dependsOnSomething = new DependencyModel(DependencyType.Service, null, typeof(ICommon), false);
+			var dependsOnSomething = new DependencyModel(null, typeof(ICommon), false);
 
 			kernel.AddFacility<StartableFacility>();
 			kernel.Register(
@@ -254,28 +276,6 @@ namespace Castle.Windsor.Tests.Facilities.Startable
 			Assert.IsTrue(c.StartCalled);
 			kernel.ReleaseComponent(c);
 			Assert.IsTrue(c.StopCalled);
-		}
-
-		private void OnNoInterfaceStartableComponentStarted(ComponentModel mode, object instance)
-		{
-			var startable = instance as NoInterfaceStartableComponent;
-
-			Assert.IsNotNull(startable);
-			Assert.IsTrue(startable.Started);
-			Assert.IsFalse(startable.Stopped);
-
-			startableCreatedBeforeResolved = true;
-		}
-
-		private void OnStartableComponentStarted(ComponentModel mode, object instance)
-		{
-			var startable = instance as StartableComponent;
-
-			Assert.IsNotNull(startable);
-			Assert.IsTrue(startable.Started);
-			Assert.IsFalse(startable.Stopped);
-
-			startableCreatedBeforeResolved = true;
 		}
 	}
 

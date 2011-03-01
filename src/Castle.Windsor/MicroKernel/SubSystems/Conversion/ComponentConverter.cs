@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,14 +16,12 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 {
 	using System;
 
-	using Castle.MicroKernel.Context;
-	using Castle.MicroKernel.Util;
 	using Castle.Core;
 	using Castle.Core.Configuration;
+	using Castle.MicroKernel.Context;
+	using Castle.MicroKernel.Util;
 
-#if (!SILVERLIGHT)
 	[Serializable]
-#endif
 	public class ComponentConverter : AbstractTypeConverter, IKernelDependentConverter
 	{
 		public override bool CanHandleType(Type type, IConfiguration configuration)
@@ -32,15 +30,15 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 			{
 				return ReferenceExpressionUtil.IsReference(configuration.Value.Trim());
 			}
-			else
-			{
-				return CanHandleType(type);
-			}
+			return CanHandleType(type);
 		}
 
 		public override bool CanHandleType(Type type)
 		{
-			if (Context.Kernel == null) return false;
+			if (Context.Kernel == null)
+			{
+				return false;
+			}
 
 			return Context.Kernel.HasComponent(type);
 		}
@@ -49,13 +47,13 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 		{
 			if (!ReferenceExpressionUtil.IsReference(value))
 			{
-				String message = String.Format("Could not convert expression {0} to type {1}. Expecting a reference override like ${some key}", value, targetType.FullName);
+				var message = String.Format("Could not convert expression {0} to type {1}. Expecting a reference override like ${{some key}}", value, targetType.FullName);
 				throw new ConverterException(message);
 			}
 
-			String key = ReferenceExpressionUtil.ExtractComponentKey(value);
+			var key = ReferenceExpressionUtil.ExtractComponentKey(value);
 
-			DependencyModel dependency = new DependencyModel(DependencyType.ServiceOverride, key, targetType, false);
+			var dependency = new DependencyModel(key, targetType, false);
 
 			return Context.Kernel.Resolver.Resolve(Context.CurrentCreationContext ?? CreationContext.CreateEmpty(), null,
 			                                       Context.CurrentModel, dependency);

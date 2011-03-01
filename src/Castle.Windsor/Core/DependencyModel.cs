@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,14 +15,6 @@
 namespace Castle.Core
 {
 	using System;
-	using System.Globalization;
-
-	public enum DependencyType
-	{
-		Service,
-		Parameter,
-		ServiceOverride
-	}
 
 	/// <summary>
 	///   Represents a dependency (other component or a 
@@ -37,17 +29,16 @@ namespace Castle.Core
 		/// <summary>
 		///   Initializes a new instance of the <see cref = "DependencyModel" /> class.
 		/// </summary>
-		/// <param name = "dependencyType">The type.</param>
 		/// <param name = "dependencyKey">The dependency key.</param>
 		/// <param name = "targetType">Type of the target.</param>
 		/// <param name = "isOptional">if set to <c>true</c> [is optional].</param>
-		public DependencyModel(DependencyType dependencyType, String dependencyKey,
+		public DependencyModel(String dependencyKey,
 		                       Type targetType, bool isOptional)
-			: this(dependencyType, dependencyKey, targetType, isOptional, false, null)
+			: this(dependencyKey, targetType, isOptional, false, null)
 		{
 		}
 
-		public DependencyModel(DependencyType dependencyType, string dependencyKey, Type targetType, bool isOptional,
+		public DependencyModel(string dependencyKey, Type targetType, bool isOptional,
 		                       bool hasDefaultValue, object defaultValue)
 		{
 			this.targetType = targetType;
@@ -59,7 +50,6 @@ namespace Castle.Core
 			{
 				targetItemType = targetType;
 			}
-			DependencyType = dependencyType;
 			DependencyKey = dependencyKey;
 			IsOptional = isOptional;
 			HasDefaultValue = hasDefaultValue;
@@ -73,12 +63,6 @@ namespace Castle.Core
 		/// </summary>
 		/// <value>The dependency key.</value>
 		public string DependencyKey { get; set; }
-
-		/// <summary>
-		///   Gets or sets the type of the dependency.
-		/// </summary>
-		/// <value>The type of the dependency.</value>
-		public DependencyType DependencyType { get; set; }
 
 		public bool HasDefaultValue { get; private set; }
 
@@ -147,8 +131,7 @@ namespace Castle.Core
 		/// </returns>
 		public override string ToString()
 		{
-			return string.Format(CultureInfo.CurrentCulture, "{0} dependency '{1}' type '{2}'",
-			                     DependencyType, DependencyKey, TargetType);
+			return string.Format("Dependency '{0}' type '{1}'", DependencyKey, TargetType);
 		}
 	}
 }
