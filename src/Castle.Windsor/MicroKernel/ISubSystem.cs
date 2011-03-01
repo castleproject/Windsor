@@ -24,7 +24,7 @@ namespace Castle.MicroKernel
 		///   Initializes the subsystem
 		/// </summary>
 		/// <param name = "kernel"></param>
-		void Init(IKernel kernel);
+		void Init(IKernelInternal kernel);
 
 		/// <summary>
 		///   Should perform the termination

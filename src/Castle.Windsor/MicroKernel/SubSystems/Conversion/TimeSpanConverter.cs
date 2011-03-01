@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,9 +16,9 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 {
 	using System;
 
-#if (!SILVERLIGHT)
+	using Castle.Core.Configuration;
+
 	[Serializable]
-#endif
 	public class TimeSpanConverter : AbstractTypeConverter
 	{
 		public override bool CanHandleType(Type type)
@@ -34,7 +34,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 			}
 			catch (Exception ex)
 			{
-				String message = String.Format(
+				var message = String.Format(
 					"Could not convert from '{0}' to {1}",
 					value, targetType.FullName);
 
@@ -42,7 +42,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 			}
 		}
 
-		public override object PerformConversion(Castle.Core.Configuration.IConfiguration configuration, Type targetType)
+		public override object PerformConversion(IConfiguration configuration, Type targetType)
 		{
 			return PerformConversion(configuration.Value, targetType);
 		}

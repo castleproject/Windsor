@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -22,29 +22,27 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 	/// <summary>
 	/// Implements all standard conversions.
 	/// </summary>
-#if (!SILVERLIGHT)
 	[Serializable]
-#endif
 	public class PrimitiveConverter : AbstractTypeConverter
 	{
 		private readonly Type[] types = new[]
-				{
-					typeof(Char),
-					typeof(DateTime),
-					typeof(Decimal),
-					typeof(Boolean),
-					typeof(Int16),
-					typeof(Int32),
-					typeof(Int64),
-					typeof(UInt16),
-					typeof(UInt32),
-					typeof(UInt64),
-					typeof(Byte),
-					typeof(SByte),
-					typeof(Single),
-					typeof(Double),
-					typeof(String)
-				};
+		{
+			typeof(Char),
+			typeof(DateTime),
+			typeof(Decimal),
+			typeof(Boolean),
+			typeof(Int16),
+			typeof(Int32),
+			typeof(Int64),
+			typeof(UInt16),
+			typeof(UInt32),
+			typeof(UInt64),
+			typeof(Byte),
+			typeof(SByte),
+			typeof(Single),
+			typeof(Double),
+			typeof(String)
+		};
 
 		public override bool CanHandleType(Type type)
 		{
@@ -53,15 +51,18 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 
 		public override object PerformConversion(String value, Type targetType)
 		{
-			if (targetType == typeof(String)) return value;
+			if (targetType == typeof(String))
+			{
+				return value;
+			}
 
 			try
 			{
-				return Convert.ChangeType(value, targetType,Thread.CurrentThread.CurrentCulture);
+				return Convert.ChangeType(value, targetType, Thread.CurrentThread.CurrentCulture);
 			}
-			catch(Exception ex)
+			catch (Exception ex)
 			{
-				String message = String.Format(
+				var message = String.Format(
 					"Could not convert from '{0}' to {1}",
 					value, targetType.FullName);
 

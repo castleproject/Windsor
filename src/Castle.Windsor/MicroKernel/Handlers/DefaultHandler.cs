@@ -109,6 +109,11 @@ namespace Castle.MicroKernel.Handlers
 			var canResolveAll = true;
 			foreach (var dependency in Dependencies.ToArray())
 			{
+				if (dependency.TargetItemType == null)
+				{
+					canResolveAll = false;
+					break;
+				}
 				// a self-dependency is not allowed
 				var handler = Kernel.LoadHandlerByType(dependency.DependencyKey, dependency.TargetItemType, context.AdditionalArguments);
 				if (handler == this || handler == null)
@@ -117,7 +122,7 @@ namespace Castle.MicroKernel.Handlers
 					break;
 				}
 			}
-			return (canResolveAll && Dependencies.Count == 0) || context.HasAdditionalArguments;
+			return canResolveAll || context.HasAdditionalArguments;
 		}
 	}
 }

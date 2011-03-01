@@ -17,16 +17,16 @@ namespace Castle.MicroKernel.Tests.ClassComponents
 	public class ClassWithArrayConstructor
 	{
 		private readonly ICommon[] services;
-		private readonly ICommon _first;
+		private readonly ICommon first;
 
 		public ICommon First
 		{
-			get { return _first; }
+			get { return first; }
 		}
 
 		public ClassWithArrayConstructor(ICommon first, ICommon[] services)
 		{
-			_first = first;
+			this.first = first;
 			this.services = services;
 		}
 

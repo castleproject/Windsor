@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,11 +19,9 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 	using Castle.Core.Configuration;
 
 	/// <summary>
-	/// Converts a string representation to an enum value
+	///   Converts a string representation to an enum value
 	/// </summary>
-#if (!SILVERLIGHT)
 	[Serializable]
-#endif
 	public class EnumConverter : AbstractTypeConverter
 	{
 		public override bool CanHandleType(Type type)
@@ -35,22 +33,22 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 		{
 			try
 			{
-				return Enum.Parse( targetType, value, true );
+				return Enum.Parse(targetType, value, true);
 			}
-			catch(ConverterException)
+			catch (ConverterException)
 			{
 				throw;
 			}
-			catch(Exception ex)
+			catch (Exception ex)
 			{
-				String message = String.Format(
-					"Could not convert from '{0}' to {1}.", 
+				var message = String.Format(
+					"Could not convert from '{0}' to {1}.",
 					value, targetType.FullName);
 
 				throw new ConverterException(message, ex);
 			}
 		}
-		
+
 		public override object PerformConversion(IConfiguration configuration, Type targetType)
 		{
 			return PerformConversion(configuration.Value, targetType);

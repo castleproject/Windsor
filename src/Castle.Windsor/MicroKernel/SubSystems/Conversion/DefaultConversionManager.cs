@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 namespace Castle.MicroKernel.SubSystems.Conversion
 {
 	using System;
@@ -24,8 +25,8 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 	/// <summary>
 	/// Composition of all available conversion managers
 	/// </summary>
-#if (!SILVERLIGHT)
 	[Serializable]
+#if (!SILVERLIGHT)
 #endif
 	public class DefaultConversionManager : AbstractSubSystem, IConversionManager, ITypeConverterContext
 	{
@@ -78,7 +79,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 
 		public bool IsSupportedAndPrimitiveType(Type type)
 		{
-			foreach (ITypeConverter converter in standAloneConverters)
+			foreach (var converter in standAloneConverters)
 			{
 				if (converter.CanHandleType(type))
 				{
@@ -101,7 +102,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 
 		public bool CanHandleType(Type type)
 		{
-			foreach (ITypeConverter converter in converters)
+			foreach (var converter in converters)
 			{
 				if (converter.CanHandleType(type))
 				{
@@ -114,7 +115,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 
 		public bool CanHandleType(Type type, IConfiguration configuration)
 		{
-			foreach (ITypeConverter converter in converters)
+			foreach (var converter in converters)
 			{
 				if (converter.CanHandleType(type, configuration))
 				{
@@ -127,7 +128,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 
 		public object PerformConversion(String value, Type targetType)
 		{
-			foreach (ITypeConverter converter in converters)
+			foreach (var converter in converters)
 			{
 				if (converter.CanHandleType(targetType))
 				{
@@ -143,7 +144,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 
 		public object PerformConversion(IConfiguration configuration, Type targetType)
 		{
-			foreach (ITypeConverter converter in converters)
+			foreach (var converter in converters)
 			{
 				if (converter.CanHandleType(targetType, configuration))
 				{
@@ -171,7 +172,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 
 		#region ITypeConverterContext Members
 
-		IKernel ITypeConverterContext.Kernel
+		IKernelInternal ITypeConverterContext.Kernel
 		{
 			get { return Kernel; }
 		}

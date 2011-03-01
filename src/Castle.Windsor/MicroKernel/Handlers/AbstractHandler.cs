@@ -94,8 +94,6 @@ namespace Castle.MicroKernel.Handlers
 			get { return ComponentModel.Services; }
 		}
 
-		// TODO: this has to go
-
 		protected ICollection<DependencyModel> Dependencies
 		{
 			get
@@ -288,7 +286,7 @@ namespace Castle.MicroKernel.Handlers
 			var key = dependency.DependencyKey;
 			if (HasValidComponentFromResolver(dependency))
 			{
-				if(string.IsNullOrEmpty(key) == false)
+				if (string.IsNullOrEmpty(key) == false)
 				{
 					var handler = Kernel.GetHandler(key);
 					if (handler != null)
@@ -542,7 +540,7 @@ namespace Castle.MicroKernel.Handlers
 			}
 			var stateChanged = false;
 			if (Dependencies.Any(d => Kernel.Parent.HasComponent(d.DependencyKey)) ||
-				Dependencies.Any(d => Kernel.Parent.HasComponent(d.TargetItemType)))
+			    Dependencies.Any(d => Kernel.Parent.HasComponent(d.TargetItemType)))
 			{
 				DependencySatisfied(ref stateChanged);
 			}

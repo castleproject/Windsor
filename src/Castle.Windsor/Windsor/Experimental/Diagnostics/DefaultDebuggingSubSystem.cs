@@ -37,7 +37,7 @@ namespace Castle.Windsor.Experimental.Diagnostics
 			return extensions.GetEnumerator();
 		}
 
-		public void Init(IKernel kernel)
+		public void Init(IKernelInternal kernel)
 		{
 			this.kernel = kernel;
 			InitStandardExtensions();
