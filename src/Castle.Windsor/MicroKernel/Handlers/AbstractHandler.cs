@@ -56,13 +56,7 @@ namespace Castle.MicroKernel.Handlers
 		///   Dictionary of key (string) to
 		///   <see cref = "DependencyModel" />
 		/// </summary>
-		private IDictionary<string, DependencyModel> dependenciesByKey;
-
-		/// <summary>
-		///   Dictionary of Type to a list of
-		///   <see cref = "DependencyModel" />
-		/// </summary>
-		private IDictionary<Type, DependencyModel> dependenciesByService;
+		private HashSet<DependencyModel> dependencies;
 
 		private IKernelInternal kernel;
 
@@ -102,27 +96,15 @@ namespace Castle.MicroKernel.Handlers
 
 		// TODO: this has to go
 
-		protected IDictionary<string, DependencyModel> DependenciesByKey
+		protected ICollection<DependencyModel> Dependencies
 		{
 			get
 			{
-				if (dependenciesByKey == null)
+				if (dependencies == null)
 				{
-					dependenciesByKey = new Dictionary<string, DependencyModel>(StringComparer.OrdinalIgnoreCase);
+					dependencies = new HashSet<DependencyModel>();
 				}
-				return dependenciesByKey;
-			}
-		}
-
-		protected IDictionary<Type, DependencyModel> DependenciesByService
-		{
-			get
-			{
-				if (dependenciesByService == null)
-				{
-					dependenciesByService = new Dictionary<Type, DependencyModel>();
-				}
-				return dependenciesByService;
+				return dependencies;
 			}
 		}
 
@@ -324,14 +306,8 @@ namespace Castle.MicroKernel.Handlers
 				}
 				return;
 			}
-			if (string.IsNullOrEmpty(key) == false && DependenciesByKey.ContainsKey(key) == false)
-			{
-				DependenciesByKey.Add(key, dependency);
-			}
-			else if (type != null && DependenciesByService.ContainsKey(type) == false)
-			{
-				DependenciesByService.Add(type, dependency);
-			}
+
+			Dependencies.Add(dependency);
 
 			if (state != HandlerState.WaitingDependency)
 			{
@@ -363,8 +339,8 @@ namespace Castle.MicroKernel.Handlers
 			}
 
 			return dependency.HasDefaultValue ||
-			        dependency.TargetItemType != null &&
-			        DependenciesByService.ContainsKey(dependency.TargetItemType);
+			       dependency.TargetItemType != null &&
+			       Dependencies.Any(d => d.TargetItemType == dependency.TargetItemType);
 		}
 
 		/// <summary>
@@ -448,58 +424,46 @@ namespace Castle.MicroKernel.Handlers
 			// Check within the handler
 			if (customParameters != null && customParameters.Count != 0)
 			{
-				var dependencies = Union(DependenciesByService.Values, DependenciesByKey.Values);
-
-				foreach (var dependency in dependencies)
+				foreach (var dependency in Dependencies.ToArray())
 				{
 					if (!HasCustomParameter(dependency.DependencyKey))
 					{
 						continue;
 					}
 
-					if (string.IsNullOrEmpty(dependency.DependencyKey) == false)
-					{
-						DependenciesByKey.Remove(dependency.DependencyKey);
-					}
-					else
-					{
-						DependenciesByService.Remove(dependency.TargetItemType);
-					}
+					Dependencies.Remove(dependency);
 				}
 			}
 
 			// Check within the Kernel
-			foreach (var pair in new Dictionary<Type, DependencyModel>(DependenciesByService))
+			foreach (var dependency in Dependencies.ToArray())
 			{
-				var service = pair.Key;
-				var dependency = pair.Value;
-				if (HasValidComponent(service, dependency))
+				var service = dependency.TargetItemType;
+				if (service != null && HasValidComponent(service, dependency))
 				{
-					DependenciesByService.Remove(service);
+					Dependencies.Remove(dependency);
 					var dependingHandler = kernel.GetHandler(service);
 					if (dependingHandler != null) //may not be real handler, if comes from resolver
 					{
 						AddGraphDependency(dependingHandler);
 					}
 				}
-			}
-
-			foreach (var pair in new Dictionary<string, DependencyModel>(DependenciesByKey))
-			{
-				var key = pair.Key;
-				var dependency = pair.Value;
-				if (HasValidComponent(key, dependency) || HasCustomParameter(key))
+				else
 				{
-					DependenciesByKey.Remove(key);
-					var dependingHandler = kernel.GetHandler(key);
-					if (dependingHandler != null) //may not be real handler, if we are using sub resolver
+					var name = dependency.DependencyKey;
+					if (name != null && (HasValidComponent(name, dependency) || HasCustomParameter(name)))
 					{
-						AddGraphDependency(dependingHandler);
+						Dependencies.Remove(dependency);
+						var dependingHandler = kernel.GetHandler(name);
+						if (dependingHandler != null) //may not be real handler, if we are using sub resolver
+						{
+							AddGraphDependency(dependingHandler);
+						}
 					}
 				}
 			}
 
-			if (DependenciesByService.Count == 0 && DependenciesByKey.Count == 0)
+			if (Dependencies.Count == 0)
 			{
 				SetNewState(HandlerState.Valid);
 				stateChanged = true;
@@ -508,8 +472,7 @@ namespace Castle.MicroKernel.Handlers
 
 				// We don't need these anymore
 
-				dependenciesByKey = null;
-				dependenciesByService = null;
+				dependencies = null;
 			}
 		}
 
@@ -573,39 +536,13 @@ namespace Castle.MicroKernel.Handlers
 		/// <param name = "e"></param>
 		protected void OnAddedAsChildKernel(object sender, EventArgs e)
 		{
-			if (DependenciesByKey.Count == 0 && DependenciesByService.Count == 0)
+			if (Dependencies.Count == 0)
 			{
 				return;
 			}
-			var shouldExecuteDependencyChanged = false;
 			var stateChanged = false;
-
-			var services = new Type[DependenciesByService.Count];
-
-			DependenciesByService.Keys.CopyTo(services, 0);
-
-			foreach (var service in services)
-			{
-				if (Kernel.Parent.HasComponent(service))
-				{
-					shouldExecuteDependencyChanged = true;
-				}
-			}
-
-			var keys = new String[DependenciesByKey.Count];
-
-			DependenciesByKey.Keys.CopyTo(keys, 0);
-
-			foreach (var key in keys)
-			{
-				if (Kernel.Parent.HasComponent(key))
-				{
-					shouldExecuteDependencyChanged = true;
-					break;
-				}
-			}
-
-			if (shouldExecuteDependencyChanged)
+			if (Dependencies.Any(d => Kernel.Parent.HasComponent(d.DependencyKey)) ||
+				Dependencies.Any(d => Kernel.Parent.HasComponent(d.TargetItemType)))
 			{
 				DependencySatisfied(ref stateChanged);
 			}
@@ -847,7 +784,7 @@ namespace Castle.MicroKernel.Handlers
 			{
 				return;
 			}
-			inspector.Inspect(this, Union(DependenciesByService.Values, DependenciesByKey.Values), Kernel);
+			inspector.Inspect(this, Dependencies.ToArray(), Kernel);
 		}
 	}
 }

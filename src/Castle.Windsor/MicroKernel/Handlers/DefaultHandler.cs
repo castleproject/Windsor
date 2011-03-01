@@ -15,7 +15,6 @@
 namespace Castle.MicroKernel.Handlers
 {
 	using System;
-	using System.Collections.Generic;
 	using System.Linq;
 	using System.Text;
 
@@ -108,7 +107,7 @@ namespace Castle.MicroKernel.Handlers
 				return context.HasAdditionalArguments;
 			}
 			var canResolveAll = true;
-			foreach (var dependency in DependenciesByService.Values.ToArray())
+			foreach (var dependency in Dependencies.ToArray())
 			{
 				// a self-dependency is not allowed
 				var handler = Kernel.LoadHandlerByType(dependency.DependencyKey, dependency.TargetItemType, context.AdditionalArguments);
@@ -118,7 +117,7 @@ namespace Castle.MicroKernel.Handlers
 					break;
 				}
 			}
-			return (canResolveAll && DependenciesByKey.Count == 0) || context.HasAdditionalArguments;
+			return (canResolveAll && Dependencies.Count == 0) || context.HasAdditionalArguments;
 		}
 	}
 }
