@@ -121,12 +121,11 @@ namespace Castle.Facilities.EventWiring
 
 		private void AddSubscriberDependecyToModel(string subscriberKey, ComponentModel model)
 		{
-			var dependencyModel = new DependencyModel(DependencyType.ServiceOverride, subscriberKey, null, false);
+			var dependencyModel = new DependencyModel(subscriberKey, null, false);
 			model.Dependencies.Add(dependencyModel);
 		}
 
-		private void ExtractAndAddEventInfo(IDictionary<string, List<WireInfo>> subscribers2Evts, string subscriberKey, IConfiguration subscriber,
-		                                    ComponentModel model)
+		private void ExtractAndAddEventInfo(IDictionary<string, List<WireInfo>> subscribers2Evts, string subscriberKey, IConfiguration subscriber, ComponentModel model)
 		{
 			List<WireInfo> wireInfoList;
 			if (subscribers2Evts.TryGetValue(subscriberKey, out wireInfoList) == false)
@@ -330,9 +329,9 @@ namespace Castle.Facilities.EventWiring
 	/// </summary>
 	internal class WireInfo
 	{
-		private String eventName;
+		private readonly String eventName;
 
-		private String handler;
+		private readonly String handler;
 
 		/// <summary>
 		///   Initializes a new instance of the <see cref = "WireInfo" /> class.

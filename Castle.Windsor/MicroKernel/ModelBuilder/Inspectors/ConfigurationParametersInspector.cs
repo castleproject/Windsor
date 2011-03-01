@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,14 +16,14 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 {
 	using System;
 
-	using Castle.MicroKernel.Util;
 	using Castle.Core;
 	using Castle.Core.Configuration;
+	using Castle.MicroKernel.Util;
 
 	/// <summary>
-	/// Check for a node 'parameters' within the component 
-	/// configuration. For each child it, a ParameterModel is created
-	/// and added to ComponentModel's Parameters collection
+	///   Check for a node 'parameters' within the component 
+	///   configuration. For each child it, a ParameterModel is created
+	///   and added to ComponentModel's Parameters collection
 	/// </summary>
 	[Serializable]
 	public class ConfigurationParametersInspector : IContributeComponentModelConstruction
@@ -67,6 +67,25 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 			InspectCollections(model);
 		}
 
+		private void AddAnyServiceOverrides(ComponentModel model, IConfiguration config)
+		{
+			foreach (var item in config.Children)
+			{
+				if (item.Children.Count > 0)
+				{
+					AddAnyServiceOverrides(model, item);
+				}
+
+				if (item.Value == null || !ReferenceExpressionUtil.IsReference(item.Value))
+				{
+					continue;
+				}
+
+				var newKey = ReferenceExpressionUtil.ExtractComponentKey(item.Value);
+				model.Dependencies.Add(new DependencyModel(newKey, null, false));
+			}
+		}
+
 		private void InspectCollections(ComponentModel model)
 		{
 			foreach (ParameterModel parameter in model.Parameters)
@@ -88,13 +107,8 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 
 				// Update dependencies to ServiceOverride
 
-				model.Dependencies.Add(new DependencyModel(DependencyType.ServiceOverride, newKey, null, false));
+				model.Dependencies.Add(new DependencyModel(newKey, null, false));
 			}
-		}
-
-		private bool IsList(ParameterModel parameter)
-		{
-			return parameter.ConfigValue.Name == "list";
 		}
 
 		private bool IsArray(ParameterModel parameter)
@@ -102,23 +116,9 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 			return parameter.ConfigValue.Name == "array";
 		}
 
-		private void AddAnyServiceOverrides(ComponentModel model, IConfiguration config)
+		private bool IsList(ParameterModel parameter)
 		{
-			foreach (var item in config.Children)
-			{
-				if (item.Children.Count > 0)
-				{
-					AddAnyServiceOverrides(model, item);
-				}
-
-				if (item.Value == null || !ReferenceExpressionUtil.IsReference(item.Value))
-				{
-					continue;
-				}
-
-				var newKey = ReferenceExpressionUtil.ExtractComponentKey(item.Value);
-				model.Dependencies.Add(new DependencyModel(DependencyType.ServiceOverride, newKey, null, false));
-			}
+			return parameter.ConfigValue.Name == "list";
 		}
 	}
 }

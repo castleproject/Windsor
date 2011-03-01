@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ namespace Castle.Windsor.Tests
 	using Castle.MicroKernel.Context;
 	using Castle.MicroKernel.Handlers;
 	using Castle.MicroKernel.Registration;
-	using Castle.MicroKernel.Resolvers;
+
 	using NUnit.Framework;
 
 	[TestFixture]
@@ -55,17 +55,11 @@ namespace Castle.Windsor.Tests
 
 		public class BadDependencyResolver : ISubDependencyResolver
 		{
-			private IKernel kernel;
+			private readonly IKernel kernel;
 
 			public BadDependencyResolver(IKernel kernel)
 			{
 				this.kernel = kernel;
-			}
-
-			public object Resolve(CreationContext context, ISubDependencyResolver contextHandlerResolver, ComponentModel model,
-			                      DependencyModel dependency)
-			{
-				return kernel.Resolve<IBookStore>();
 			}
 
 			public bool CanResolve(CreationContext context, ISubDependencyResolver contextHandlerResolver, ComponentModel model,
@@ -73,25 +67,30 @@ namespace Castle.Windsor.Tests
 			{
 				return dependency.TargetType == typeof(IBookStore);
 			}
+
+			public object Resolve(CreationContext context, ISubDependencyResolver contextHandlerResolver, ComponentModel model,
+			                      DependencyModel dependency)
+			{
+				return kernel.Resolve<IBookStore>();
+			}
 		}
 
 		public class GoodDependencyResolver : ISubDependencyResolver
 		{
-			public object Resolve(CreationContext context, ISubDependencyResolver contextHandlerResolver, ComponentModel model,
-			                      DependencyModel dependency)
-			{
-				return contextHandlerResolver.Resolve(context, contextHandlerResolver, model,
-				                                      new DependencyModel(DependencyType.Service, typeof(IBookStore).FullName,
-				                                                          typeof(IBookStore), false));
-			}
-
 			public bool CanResolve(CreationContext context, ISubDependencyResolver contextHandlerResolver, ComponentModel model,
 			                       DependencyModel dependency)
 			{
 				return dependency.TargetType == typeof(IBookStore) && contextHandlerResolver.CanResolve(context, contextHandlerResolver, model,
-				                                                                                        new DependencyModel(DependencyType.Service,
-				                                                                                                            typeof(IBookStore).FullName,
+				                                                                                        new DependencyModel(typeof(IBookStore).FullName,
 				                                                                                                            typeof(IBookStore), false));
+			}
+
+			public object Resolve(CreationContext context, ISubDependencyResolver contextHandlerResolver, ComponentModel model,
+			                      DependencyModel dependency)
+			{
+				return contextHandlerResolver.Resolve(context, contextHandlerResolver, model,
+				                                      new DependencyModel(typeof(IBookStore).FullName,
+				                                                          typeof(IBookStore), false));
 			}
 		}
 
@@ -103,8 +102,8 @@ namespace Castle.Windsor.Tests
 			container.Kernel.Resolver.AddSubResolver(new BadDependencyResolver(container.Kernel));
 			container
 				.Register(
-				Component.For<IItemService>().ImplementedBy<ItemService>(),
-				Component.For<IBookStore>().ImplementedBy<BookStore>()
+					Component.For<IItemService>().ImplementedBy<ItemService>(),
+					Component.For<IBookStore>().ImplementedBy<BookStore>()
 				);
 			container.Resolve<IItemService>();
 		}
@@ -117,8 +116,8 @@ namespace Castle.Windsor.Tests
 			container.Kernel.Resolver.AddSubResolver(new GoodDependencyResolver());
 			container
 				.Register(
-				Component.For<IItemService>().ImplementedBy<ItemService>(),
-				Component.For<IBookStore>().ImplementedBy<BookStore>()
+					Component.For<IItemService>().ImplementedBy<ItemService>(),
+					Component.For<IBookStore>().ImplementedBy<BookStore>()
 				);
 			container.Resolve<IItemService>();
 		}

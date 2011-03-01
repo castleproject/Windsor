@@ -51,7 +51,7 @@ namespace Castle.Core
 				throw new ArgumentNullException("componentKey");
 			}
 			this.componentKey = componentKey;
-			dependencyModel = new DependencyModel(DependencyType.ServiceOverride, componentKey, serviceType, false);
+			dependencyModel = new DependencyModel(componentKey, serviceType, false);
 		}
 
 		/// <summary>
@@ -65,7 +65,7 @@ namespace Castle.Core
 				throw new ArgumentNullException("serviceType");
 			}
 			this.serviceType = serviceType;
-			dependencyModel = new DependencyModel(DependencyType.Service, componentKey, serviceType, false);
+			dependencyModel = new DependencyModel(componentKey, serviceType, false);
 		}
 
 		public override bool Equals(object obj)

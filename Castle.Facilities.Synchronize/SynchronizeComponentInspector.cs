@@ -128,11 +128,11 @@ namespace Castle.Facilities.Synchronize
 				{
 					if (reference.ReferenceType == SynchronizeContextReferenceType.Interface)
 					{
-						model.Dependencies.Add(new DependencyModel(DependencyType.Service, reference.ComponentKey, reference.ServiceType, false));
+						model.Dependencies.Add(new DependencyModel(reference.ComponentKey, reference.ServiceType, false));
 					}
 					else
 					{
-						model.Dependencies.Add(new DependencyModel(DependencyType.ServiceOverride, reference.ComponentKey, reference.ServiceType, false));
+						model.Dependencies.Add(new DependencyModel(reference.ComponentKey, reference.ServiceType, false));
 					}
 				}
 			}

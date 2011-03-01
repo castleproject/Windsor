@@ -29,7 +29,7 @@ namespace Castle.Windsor.Tests.Handlers
 		{
 			public void BuildComponentModel(IKernel kernel, ComponentModel model)
 			{
-				model.Dependencies.Add(new DependencyModel(DependencyType.Service, "", typeof(B), false));
+				model.Dependencies.Add(new DependencyModel("", typeof(B), false));
 			}
 
 			public void ConfigureComponentModel(IKernel kernel, ComponentModel model)

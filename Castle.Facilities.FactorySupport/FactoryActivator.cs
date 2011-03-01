@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -11,7 +11,6 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
 
 namespace Castle.Facilities.FactorySupport
 {
@@ -28,7 +27,6 @@ namespace Castle.Facilities.FactorySupport
 	using Castle.MicroKernel.SubSystems.Conversion;
 
 	/// <summary>
-	/// 
 	/// </summary>
 	public class FactoryActivator : DefaultComponentActivator
 	{
@@ -39,26 +37,26 @@ namespace Castle.Facilities.FactorySupport
 
 		protected override object Instantiate(CreationContext context)
 		{
-			String factoryId = (String)Model.ExtendedProperties["factoryId"];
-			String factoryCreate = (String)Model.ExtendedProperties["factoryCreate"];
+			var factoryId = (String)Model.ExtendedProperties["factoryId"];
+			var factoryCreate = (String)Model.ExtendedProperties["factoryCreate"];
 
-			IHandler factoryHandler = Kernel.GetHandler(factoryId);
+			var factoryHandler = Kernel.GetHandler(factoryId);
 			if (factoryHandler == null)
 			{
-				String message = String.Format("You have specified a factory ('{2}') " +
-					"for the component '{0}' {1} but the kernel does not have this " +
-					"factory registered",
-					Model.Name, Model.Implementation.FullName, factoryId);
+				var message = String.Format("You have specified a factory ('{2}') " +
+				                            "for the component '{0}' {1} but the kernel does not have this " +
+				                            "factory registered",
+				                            Model.Name, Model.Implementation.FullName, factoryId);
 				throw new FacilityException(message);
 			}
 
 			// Let's find out whether the create method is a static or instance method
 
-			Type factoryType = factoryHandler.ComponentModel.Implementation;
+			var factoryType = factoryHandler.ComponentModel.Implementation;
 
-			MethodInfo staticCreateMethod =
+			var staticCreateMethod =
 				factoryType.GetMethod(factoryCreate,
-					BindingFlags.Public | BindingFlags.Static);
+				                      BindingFlags.Public | BindingFlags.Static);
 
 			if (staticCreateMethod != null)
 			{
@@ -66,7 +64,7 @@ namespace Castle.Facilities.FactorySupport
 			}
 			var factoryInstance = Kernel.Resolve<object>(factoryId);
 
-			MethodInfo instanceCreateMethod =
+			var instanceCreateMethod =
 				factoryInstance.GetType().GetMethod(factoryCreate,
 				                                    BindingFlags.Public | BindingFlags.Instance);
 
@@ -85,11 +83,11 @@ namespace Castle.Facilities.FactorySupport
 			}
 			else
 			{
-				String message = String.Format("You have specified a factory " +
-				                               "('{2}' - method to be called: {3}) " +
-				                               "for the component '{0}' {1} but we couldn't find the creation method" +
-				                               "(neither instance or static method with the name '{3}')",
-				                               Model.Name, Model.Implementation.FullName, factoryId, factoryCreate);
+				var message = String.Format("You have specified a factory " +
+				                            "('{2}' - method to be called: {3}) " +
+				                            "for the component '{0}' {1} but we couldn't find the creation method" +
+				                            "(neither instance or static method with the name '{3}')",
+				                            Model.Name, Model.Implementation.FullName, factoryId, factoryCreate);
 				throw new FacilityException(message);
 			}
 		}
@@ -97,19 +95,18 @@ namespace Castle.Facilities.FactorySupport
 		private object Create(object factoryInstance, string factoryId, MethodInfo instanceCreateMethod, string factoryCreate, CreationContext context)
 		{
 			object instance;
-			List<object> methodArgs = new List<object>();
+			var methodArgs = new List<object>();
 
-			IConversionManager converter = (IConversionManager)
-				Kernel.GetSubSystem(SubSystemConstants.ConversionManagerKey);
+			var converter = (IConversionManager)
+			                Kernel.GetSubSystem(SubSystemConstants.ConversionManagerKey);
 
 			try
 			{
-				ParameterInfo[] parameters = instanceCreateMethod.GetParameters();
+				var parameters = instanceCreateMethod.GetParameters();
 
-
-				foreach (ParameterInfo parameter in parameters)
+				foreach (var parameter in parameters)
 				{
-					Type paramType = parameter.ParameterType;
+					var paramType = parameter.ParameterType;
 
 					if (paramType == typeof(IKernel))
 					{
@@ -126,22 +123,22 @@ namespace Castle.Facilities.FactorySupport
 
 					if (converter.IsSupportedAndPrimitiveType(paramType))
 					{
-						depModel = new DependencyModel(DependencyType.Parameter, parameter.Name, paramType, false);
+						depModel = new DependencyModel(parameter.Name, paramType, false);
 					}
 					else
 					{
-						depModel = new DependencyModel(DependencyType.Service, parameter.Name, paramType, false);
+						depModel = new DependencyModel(parameter.Name, paramType, false);
 					}
 
 					if (!Kernel.Resolver.CanResolve(context, null, Model, depModel))
 					{
-						String message = String.Format(
+						var message = String.Format(
 							"Factory Method {0}.{1} requires an argument '{2}' that could not be resolved",
-								instanceCreateMethod.DeclaringType.FullName, instanceCreateMethod.Name, parameter.Name);
+							instanceCreateMethod.DeclaringType.FullName, instanceCreateMethod.Name, parameter.Name);
 						throw new FacilityException(message);
 					}
 
-					object arg = Kernel.Resolver.Resolve(context, null, Model, depModel);
+					var arg = Kernel.Resolver.Resolve(context, null, Model, depModel);
 
 					methodArgs.Add(arg);
 				}
@@ -150,10 +147,10 @@ namespace Castle.Facilities.FactorySupport
 			}
 			catch (Exception ex)
 			{
-				String message = String.Format("You have specified a factory " +
-					"('{2}' - method to be called: {3}) " +
-					"for the component '{0}' {1} that failed during invoke.",
-						Model.Name, Model.Implementation.FullName, factoryId, factoryCreate);
+				var message = String.Format("You have specified a factory " +
+				                            "('{2}' - method to be called: {3}) " +
+				                            "for the component '{0}' {1} that failed during invoke.",
+				                            Model.Name, Model.Implementation.FullName, factoryId, factoryCreate);
 
 				throw new FacilityException(message, ex);
 			}
@@ -167,7 +164,7 @@ namespace Castle.Facilities.FactorySupport
 				catch (Exception ex)
 				{
 					throw new ComponentActivatorException("FactoryActivator: could not proxy " +
-						 instance.GetType().FullName, ex);
+					                                      instance.GetType().FullName, ex);
 				}
 			}
 

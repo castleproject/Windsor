@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,15 +19,15 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 	using System.Reflection;
 
 	using Castle.Core;
-	using Castle.MicroKernel.SubSystems.Conversion;
 	using Castle.Core.Configuration;
+	using Castle.MicroKernel.SubSystems.Conversion;
 
 	/// <summary>
-	/// This implementation of <see cref="IContributeComponentModelConstruction"/>
-	/// collects all potential writable public properties exposed by the component 
-	/// implementation and populates the model with them.
-	/// The Kernel might be able to set some of these properties when the component 
-	/// is requested.
+	///   This implementation of <see cref = "IContributeComponentModelConstruction" />
+	///   collects all potential writable public properties exposed by the component 
+	///   implementation and populates the model with them.
+	///   The Kernel might be able to set some of these properties when the component 
+	///   is requested.
 	/// </summary>
 	[Serializable]
 	public class PropertiesDependenciesModelInspector : IContributeComponentModelConstruction
@@ -106,11 +106,11 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 
 				if (converter.IsSupportedAndPrimitiveType(propertyType))
 				{
-					dependency = new DependencyModel(DependencyType.Parameter, property.Name, propertyType, isOptional: true);
+					dependency = new DependencyModel(property.Name, propertyType, isOptional: true);
 				}
 				else if (propertyType.IsInterface || propertyType.IsClass)
 				{
-					dependency = new DependencyModel(DependencyType.Service, property.Name, propertyType, isOptional: true);
+					dependency = new DependencyModel(property.Name, propertyType, isOptional: true);
 				}
 				else
 				{

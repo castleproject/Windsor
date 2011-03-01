@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -70,7 +70,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 				// another strategy to differentiate types and classify dependencies
 				if (converter.IsSupportedAndPrimitiveType(paramType))
 				{
-					dependencies[i] = new DependencyModel(DependencyType.Parameter, parameter.Name, paramType, false, hasDefaultValue, defaultValue);
+					dependencies[i] = new DependencyModel(parameter.Name, paramType, false, hasDefaultValue, defaultValue);
 				}
 				else if (String.IsNullOrEmpty(parameter.Name) == false)
 				{
@@ -80,16 +80,16 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 					{
 						var key = ReferenceExpressionUtil.ExtractComponentKey(modelParameter.Value);
 
-						dependencies[i] = new DependencyModel(DependencyType.ServiceOverride, key, paramType, false, hasDefaultValue, defaultValue);
+						dependencies[i] = new DependencyModel(key, paramType, false, hasDefaultValue, defaultValue);
 					}
 					else
 					{
-						dependencies[i] = new DependencyModel(DependencyType.Service, parameter.Name, paramType, false, hasDefaultValue, defaultValue);
+						dependencies[i] = new DependencyModel(parameter.Name, paramType, false, hasDefaultValue, defaultValue);
 					}
 				}
 				else
 				{
-					dependencies[i] = new DependencyModel(DependencyType.Service, null, paramType, false, hasDefaultValue, defaultValue);
+					dependencies[i] = new DependencyModel(null, paramType, false, hasDefaultValue, defaultValue);
 				}
 			}
 
