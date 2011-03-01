@@ -18,8 +18,8 @@ namespace Castle.MicroKernel.Releasers
 	using System.Collections.Generic;
 	using System.Linq;
 
+	using Castle.Core;
 	using Castle.Core.Internal;
-	using Castle.MicroKernel.Util;
 	using Castle.Windsor.Experimental.Diagnostics;
 
 	/// <summary>
@@ -31,7 +31,7 @@ namespace Castle.MicroKernel.Releasers
 		private readonly IPerformanceCounter countOfTrackedInstances;
 
 		private readonly Dictionary<object, Burden> instance2Burden =
-			new Dictionary<object, Burden>(ReferenceEqualityComparer.Instance);
+			new Dictionary<object, Burden>(ReferenceEqualityComparer<object>.Instance);
 
 		private readonly Lock @lock = Lock.Create();
 		private readonly LifecycledComponentsReleasePolicy parent;

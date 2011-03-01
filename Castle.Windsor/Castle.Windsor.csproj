@@ -766,9 +766,6 @@
     <Compile Include="MicroKernel\SubSystemConstants.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="MicroKernel\Util\ReferenceComparer.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="MicroKernel\Util\ReferenceExpressionUtil.cs">
       <SubType>Code</SubType>
     </Compile>
