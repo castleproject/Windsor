@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -129,19 +129,19 @@ namespace Castle.MicroKernel.Registration
 		{
 			try
 			{
-				if(Directory.Exists(directoryName) == false)
+				if (Directory.Exists(directoryName) == false)
 				{
 					return Enumerable.Empty<string>();
 				}
 				if (string.IsNullOrEmpty(mask))
 				{
-#if DOTNET35 || SL3
+#if DOTNET35
 					return Directory.GetFiles(directoryName);
 #else
 					return Directory.EnumerateFiles(directoryName);
 #endif
 				}
-#if DOTNET35 || SL3
+#if DOTNET35
 				return Directory.GetFiles(directoryName, mask);
 #else
 				return Directory.EnumerateFiles(directoryName, mask);
@@ -181,7 +181,7 @@ namespace Castle.MicroKernel.Registration
 
 		IEnumerable<Assembly> IAssemblyProvider.GetAssemblies()
 		{
-			foreach (string file in GetFiles())
+			foreach (var file in GetFiles())
 			{
 				if (!ReflectionUtil.IsAssemblyFile(file))
 				{
@@ -198,14 +198,14 @@ namespace Castle.MicroKernel.Registration
 
 		private static string GetFullPath(string path)
 		{
-#if !SILVERLIGHT // NOTE: Can we support this somehow in SL?
+#if !SILVERLIGHT
+			// NOTE: Can we support this somehow in SL?
 			if (Path.IsPathRooted(path) == false && AppDomain.CurrentDomain.BaseDirectory != null)
 			{
 				path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, path);
 			}
 #endif
 			return Path.GetFullPath(path).ToUpper(CultureInfo.InvariantCulture);
-
 		}
 
 		private static bool IsTokenEqual(byte[] actualToken, byte[] expectedToken)

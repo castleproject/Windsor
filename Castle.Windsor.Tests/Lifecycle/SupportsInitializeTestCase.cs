@@ -21,8 +21,6 @@ namespace Castle.Windsor.Tests.Lifecycle
 
 	using NUnit.Framework;
 
-#if !SL3
-	// in SL3 the interface is internal
 	[TestFixture]
 	public class SupportsInitializeTestCase : AbstractContainerTestCase
 	{
@@ -79,5 +77,4 @@ namespace Castle.Windsor.Tests.Lifecycle
 			Assert.IsTrue(server.InitEnded);
 		}
 	}
-#endif
 }

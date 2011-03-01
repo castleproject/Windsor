@@ -14,8 +14,6 @@
 
 namespace Castle.Windsor.Tests.Components
 {
-#if !SL3
-	// in SL3 the interface is internal
 	using System;
 	using System.ComponentModel;
 
@@ -56,5 +54,4 @@ namespace Castle.Windsor.Tests.Components
 			initEnded = true;
 		}
 	}
-#endif
 }

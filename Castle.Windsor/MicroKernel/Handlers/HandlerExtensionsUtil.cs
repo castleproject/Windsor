@@ -34,11 +34,7 @@ namespace Castle.MicroKernel.Handlers
 			var releaseExtensions = model.ExtendedProperties[ReleaseExtensionsKey] as ICollection<IReleaseExtension>;
 			if (releaseExtensions == null && ensureExists)
 			{
-#if SL3
-				releaseExtensions = new List<IReleaseExtension>();
-#else
 				releaseExtensions = new HashSet<IReleaseExtension>();
-#endif
 				model.ExtendedProperties[ReleaseExtensionsKey] = releaseExtensions;
 			}
 			return releaseExtensions;
@@ -54,11 +50,7 @@ namespace Castle.MicroKernel.Handlers
 			var resolveExtensions = model.ExtendedProperties[ResolveExtensionsKey] as ICollection<IResolveExtension>;
 			if (resolveExtensions == null && ensureExists)
 			{
-#if SL3
-				resolveExtensions = new List<IResolveExtension>();
-#else
 				resolveExtensions = new HashSet<IResolveExtension>();
-#endif
 				model.ExtendedProperties[ResolveExtensionsKey] = resolveExtensions;
 			}
 			return resolveExtensions;

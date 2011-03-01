@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@ namespace Castle.Windsor.Installer
 {
 	using System;
 	using System.Collections.Generic;
-	using System.Linq;
 	using System.Reflection;
 
 	using Castle.Core.Internal;
@@ -25,7 +24,8 @@ namespace Castle.Windsor.Installer
 	public class FromAssembly
 	{
 		/// <summary>
-		/// Scans the assembly containing specified type for types implementing <see cref="IWindsorInstaller"/>, instantiates them and returns so that <see cref="IWindsorContainer.Install"/> can install them.
+		///   Scans the assembly containing specified type for types implementing <see cref = "IWindsorInstaller" />, instantiates them and returns so that <see
+		///    cref = "IWindsorContainer.Install" /> can install them.
 		/// </summary>
 		/// <returns></returns>
 		public static IWindsorInstaller Containing(Type type)
@@ -39,7 +39,8 @@ namespace Castle.Windsor.Installer
 		}
 
 		/// <summary>
-		/// Scans the assembly containing specified type for types implementing <see cref="IWindsorInstaller"/>, instantiates using given <see cref="InstallerFactory"/> and returns so that <see cref="IWindsorContainer.Install"/> can install them.
+		///   Scans the assembly containing specified type for types implementing <see cref = "IWindsorInstaller" />, instantiates using given <see
+		///    cref = "InstallerFactory" /> and returns so that <see cref = "IWindsorContainer.Install" /> can install them.
 		/// </summary>
 		/// <returns></returns>
 		public static IWindsorInstaller Containing(Type type, InstallerFactory installerFactory)
@@ -53,7 +54,8 @@ namespace Castle.Windsor.Installer
 		}
 
 		/// <summary>
-		/// Scans the assembly containing specified type for types implementing <see cref="IWindsorInstaller"/>, instantiates them and returns so that <see cref="IWindsorContainer.Install"/> can install them.
+		///   Scans the assembly containing specified type for types implementing <see cref = "IWindsorInstaller" />, instantiates them and returns so that <see
+		///    cref = "IWindsorContainer.Install" /> can install them.
 		/// </summary>
 		/// <returns></returns>
 		public static IWindsorInstaller Containing<T>()
@@ -62,7 +64,8 @@ namespace Castle.Windsor.Installer
 		}
 
 		/// <summary>
-		/// Scans the assembly containing specified type for types implementing <see cref="IWindsorInstaller"/>, instantiates using given <see cref="InstallerFactory"/> and returns so that <see cref="IWindsorContainer.Install"/> can install them.
+		///   Scans the assembly containing specified type for types implementing <see cref = "IWindsorInstaller" />, instantiates using given <see
+		///    cref = "InstallerFactory" /> and returns so that <see cref = "IWindsorContainer.Install" /> can install them.
 		/// </summary>
 		/// <returns></returns>
 		public static IWindsorInstaller Containing<T>(InstallerFactory installerFactory)
@@ -71,7 +74,38 @@ namespace Castle.Windsor.Installer
 		}
 
 		/// <summary>
-		/// Scans the specified assembly with specified name for types implementing <see cref="IWindsorInstaller"/>, instantiates them and returns so that <see cref="IWindsorContainer.Install"/> can install them.
+		///   Scans assemblies in directory specified by <paramref name = "filter" /> for types implementing <see
+		///    cref = "IWindsorInstaller" />, instantiates and returns so that <see cref = "IWindsorContainer.Install" /> can install them.
+		/// </summary>
+		/// <param name = "filter"></param>
+		/// <returns></returns>
+		public static IWindsorInstaller InDirectory(AssemblyFilter filter)
+		{
+			return InDirectory(filter, new InstallerFactory());
+		}
+
+		/// <summary>
+		///   Scans assemblies in directory specified by <paramref name = "filter" /> for types implementing <see
+		///    cref = "IWindsorInstaller" />, instantiates using given <see cref = "InstallerFactory" /> and returns so that <see
+		///    cref = "IWindsorContainer.Install" /> can install them.
+		/// </summary>
+		/// <param name = "filter"></param>
+		/// <param name = "installerFactory"></param>
+		/// <returns></returns>
+		public static IWindsorInstaller InDirectory(AssemblyFilter filter, InstallerFactory installerFactory)
+		{
+			var assemblies = new HashSet<Assembly>(ReflectionUtil.GetAssemblies(filter));
+			var installer = new CompositeInstaller();
+			foreach (var assembly in assemblies)
+			{
+				installer.Add(Instance(assembly, installerFactory));
+			}
+			return installer;
+		}
+
+		/// <summary>
+		///   Scans the specified assembly with specified name for types implementing <see cref = "IWindsorInstaller" />, instantiates them and returns so that <see
+		///    cref = "IWindsorContainer.Install" /> can install them.
 		/// </summary>
 		/// <returns></returns>
 		public static IWindsorInstaller Instance(Assembly assembly)
@@ -80,7 +114,8 @@ namespace Castle.Windsor.Installer
 		}
 
 		/// <summary>
-		/// Scans the specified assembly with specified name for types implementing <see cref="IWindsorInstaller"/>, instantiates using given <see cref="InstallerFactory"/> and returns so that <see cref="IWindsorContainer.Install"/> can install them.
+		///   Scans the specified assembly with specified name for types implementing <see cref = "IWindsorInstaller" />, instantiates using given <see
+		///    cref = "InstallerFactory" /> and returns so that <see cref = "IWindsorContainer.Install" /> can install them.
 		/// </summary>
 		/// <returns></returns>
 		public static IWindsorInstaller Instance(Assembly assembly, InstallerFactory installerFactory)
@@ -89,7 +124,8 @@ namespace Castle.Windsor.Installer
 		}
 
 		/// <summary>
-		/// Scans the assembly with specified name for types implementing <see cref="IWindsorInstaller"/>, instantiates them and returns so that <see cref="IWindsorContainer.Install"/> can install them.
+		///   Scans the assembly with specified name for types implementing <see cref = "IWindsorInstaller" />, instantiates them and returns so that <see
+		///    cref = "IWindsorContainer.Install" /> can install them.
 		/// </summary>
 		/// <returns></returns>
 		public static IWindsorInstaller Named(string assemblyName)
@@ -99,7 +135,8 @@ namespace Castle.Windsor.Installer
 		}
 
 		/// <summary>
-		/// Scans the assembly with specified name for types implementing <see cref="IWindsorInstaller"/>, instantiates using given <see cref="InstallerFactory"/> and returns so that <see cref="IWindsorContainer.Install"/> can install them.
+		///   Scans the assembly with specified name for types implementing <see cref = "IWindsorInstaller" />, instantiates using given <see
+		///    cref = "InstallerFactory" /> and returns so that <see cref = "IWindsorContainer.Install" /> can install them.
 		/// </summary>
 		/// <returns></returns>
 		public static IWindsorInstaller Named(string assemblyName, InstallerFactory installerFactory)
@@ -109,8 +146,8 @@ namespace Castle.Windsor.Installer
 		}
 
 		/// <summary>
-		/// Scans assembly that contains code calling this method for types implementing <see cref="IWindsorInstaller"/>, 
-		/// instantiates them and returns so that <see cref="IWindsorContainer.Install"/> can install them.
+		///   Scans assembly that contains code calling this method for types implementing <see cref = "IWindsorInstaller" />, 
+		///   instantiates them and returns so that <see cref = "IWindsorContainer.Install" /> can install them.
 		/// </summary>
 		/// <returns></returns>
 		public static IWindsorInstaller This()
@@ -119,43 +156,13 @@ namespace Castle.Windsor.Installer
 		}
 
 		/// <summary>
-		/// Scans assembly that contains code calling this method for types implementing <see cref="IWindsorInstaller"/>, instantiates using given <see cref="InstallerFactory"/> and returns so that <see cref="IWindsorContainer.Install"/> can install them.
+		///   Scans assembly that contains code calling this method for types implementing <see cref = "IWindsorInstaller" />, instantiates using given <see
+		///    cref = "InstallerFactory" /> and returns so that <see cref = "IWindsorContainer.Install" /> can install them.
 		/// </summary>
 		/// <returns></returns>
 		public static IWindsorInstaller This(InstallerFactory installerFactory)
 		{
 			return Instance(Assembly.GetCallingAssembly(), installerFactory);
-		}
-
-		/// <summary>
-		/// Scans assemblies in directory specified by <paramref name="filter"/> for types implementing <see cref="IWindsorInstaller"/>, instantiates and returns so that <see cref="IWindsorContainer.Install"/> can install them.
-		/// </summary>
-		/// <param name="filter"></param>
-		/// <returns></returns>
-		public static IWindsorInstaller InDirectory(AssemblyFilter filter)
-		{
-			return InDirectory(filter, new InstallerFactory());
-		}
-
-		/// <summary>
-		/// Scans assemblies in directory specified by <paramref name="filter"/> for types implementing <see cref="IWindsorInstaller"/>, instantiates using given <see cref="InstallerFactory"/> and returns so that <see cref="IWindsorContainer.Install"/> can install them.
-		/// </summary>
-		/// <param name="filter"></param>
-		/// <param name="installerFactory"></param>
-		/// <returns></returns>
-		public static IWindsorInstaller InDirectory(AssemblyFilter filter, InstallerFactory installerFactory)
-		{
-#if SL3
-			var assemblies = ReflectionUtil.GetAssemblies(filter).Distinct();
-#else
-			var assemblies = new HashSet<Assembly>(ReflectionUtil.GetAssemblies(filter));
-#endif
-			var installer = new CompositeInstaller();
-			foreach (var assembly in assemblies)
-			{
-				installer.Add(Instance(assembly, installerFactory));
-			}
-			return installer;
 		}
 	}
 }

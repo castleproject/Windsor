@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -21,18 +21,10 @@ namespace Castle.Windsor.Installer
 
 	public class CompositeInstaller : IWindsorInstaller
 	{
-		private readonly ICollection<IWindsorInstaller> installers =
-#if SL3
-			new List<IWindsorInstaller>();
-#else
-			new HashSet<IWindsorInstaller>();
-#endif
+		private readonly HashSet<IWindsorInstaller> installers = new HashSet<IWindsorInstaller>();
 
 		public void Add(IWindsorInstaller instance)
 		{
-#if SL3
-			if(installers.Contains(instance)) return;
-#endif
 			installers.Add(instance);
 		}
 

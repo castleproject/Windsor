@@ -14,7 +14,7 @@
 
 namespace System.Collections.Generic
 {
-#if DOTNET35 ||SILVERLIGHT
+#if DOTNET35 || SILVERLIGHT
 	public class SortedSet<T> : ICollection<T>
 	{
 		private readonly IComparer<T> comparer;
