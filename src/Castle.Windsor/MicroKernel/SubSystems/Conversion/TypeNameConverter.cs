@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,31 +17,25 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 	using System;
 	using System.Collections;
 	using System.Collections.Generic;
-	using System.Reflection;
 	using System.Linq;
+	using System.Reflection;
 	using System.Text;
-#if DOTNET35 || SL3
+
+	using Castle.Core.Configuration;
+#if DOTNET35
 	using System.Reflection.Emit; // needed for .NET 3.5 and SL 3
 	using System.Security;
 #endif
-	using Castle.Core.Configuration;
 
 	/// <summary>
-	/// Convert a type name to a Type instance.
+	///   Convert a type name to a Type instance.
 	/// </summary>
-#if (!SILVERLIGHT)
 	[Serializable]
-#endif
 	public class TypeNameConverter : AbstractTypeConverter
 	{
 		private static readonly Assembly mscorlib = typeof(object).Assembly;
 
-		private readonly ICollection<Assembly> assemblies = 
-#if SL3
-			new List<Assembly>();
-#else
-			new HashSet<Assembly>();
-#endif
+		private readonly HashSet<Assembly> assemblies = new HashSet<Assembly>();
 
 		private readonly IDictionary<string, MultiType> fullName2Type =
 			new Dictionary<string, MultiType>(StringComparer.OrdinalIgnoreCase);
@@ -51,7 +45,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 
 		private readonly ITypeNameParser parser;
 
-#if DOTNET35 || SL3
+#if DOTNET35
 		private static readonly Type AssemblyBuilderDotNet4 = Type.GetType("System.Reflection.Emit.InternalAssemblyBuilder",
 		                                                                   false, true);
 #endif
@@ -175,7 +169,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 		private void Scan(Assembly assembly)
 		{
 			// won't work for dynamic assemblies
-#if DOTNET35 || SL3
+#if DOTNET35
 			if (assembly is AssemblyBuilder || (AssemblyBuilderDotNet4 != null && assembly.GetType().Equals(AssemblyBuilderDotNet4)))
 #else
 			if (assembly.IsDynamic)
@@ -278,14 +272,14 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 				return this;
 			}
 
-			IEnumerator IEnumerable.GetEnumerator()
-			{
-				return ((IEnumerable)inner).GetEnumerator();
-			}
-
 			public IEnumerator<Type> GetEnumerator()
 			{
 				return inner.GetEnumerator();
+			}
+
+			IEnumerator IEnumerable.GetEnumerator()
+			{
+				return ((IEnumerable)inner).GetEnumerator();
 			}
 		}
 	}

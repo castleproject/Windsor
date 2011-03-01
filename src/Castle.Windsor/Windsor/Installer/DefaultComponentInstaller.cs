@@ -14,10 +14,10 @@
 
 namespace Castle.Windsor.Installer
 {
-	using System.Diagnostics;
-	using System.Linq;
 	using System;
 	using System.Collections.Generic;
+	using System.Diagnostics;
+	using System.Linq;
 	using System.Reflection;
 
 	using Castle.Core.Configuration;
@@ -60,12 +60,7 @@ namespace Castle.Windsor.Installer
 		                                       IConversionManager converter)
 		{
 			var instances = new Dictionary<Type, IWindsorInstaller>();
-			ICollection<Assembly> assemblies =
-#if SL3
-				new List<Assembly>();
-#else
-				new HashSet<Assembly>();
-#endif
+			var assemblies = new HashSet<Assembly>();
 			foreach (var installer in installers)
 			{
 				AddInstaller(installer, instances, converter, assemblies);

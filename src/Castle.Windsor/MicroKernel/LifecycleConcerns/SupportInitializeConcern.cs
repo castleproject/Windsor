@@ -14,19 +14,15 @@
 
 namespace Castle.MicroKernel.LifecycleConcerns
 {
-#if !SL3
-	// in SL3 the interface is internal
 	using System;
 	using System.ComponentModel;
 
 	using Castle.Core;
 
 	/// <summary>
-	/// Summary description for SupportInitializeConcern.
+	///   Summary description for SupportInitializeConcern.
 	/// </summary>
-#if (!SILVERLIGHT)
 	[Serializable]
-#endif
 	public class SupportInitializeConcern : ICommissionConcern
 	{
 		private static readonly SupportInitializeConcern instance = new SupportInitializeConcern();
@@ -51,5 +47,4 @@ namespace Castle.MicroKernel.LifecycleConcerns
 			get { return instance; }
 		}
 	}
-#endif
 }
