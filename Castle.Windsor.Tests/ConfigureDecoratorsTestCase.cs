@@ -90,9 +90,9 @@ namespace Castle.Windsor.Tests
 				Component.For<IDoNothingService>().ImplementedBy<DoNothingServiceDecorator>().Named("DoNothingServiceDecorator"),
 				Component.For<IDoNothingService>().ImplementedBy<DoNothingService>().Named("DoNothingService"));
 			var service = container.Resolve<IDoNothingService>();
-			Assert.IsNotNull(service);
-			Assert.IsInstanceOf(typeof(DoNothingServiceDecorator), service);
-			Assert.IsInstanceOf(typeof(DoNothingService), ((DoNothingServiceDecorator)service).Inner);
+
+			Assert.IsInstanceOf<DoNothingServiceDecorator>(service);
+			Assert.IsInstanceOf<DoNothingService>(((DoNothingServiceDecorator)service).Inner);
 		}
 
 		[Test]
@@ -103,10 +103,10 @@ namespace Castle.Windsor.Tests
 			var child = new WindsorContainer();
 			grandParent.AddChildContainer(parent);
 			parent.AddChildContainer(child);
-			((IWindsorContainer)grandParent).Register(
+			grandParent.Register(
 				Component.For(typeof(IDoNothingService)).ImplementedBy(typeof(DoNothingServiceDecorator)).Named(
 					"DoNothingServiceDecorator"));
-			((IWindsorContainer)grandParent).Register(
+			grandParent.Register(
 				Component.For(typeof(IDoNothingService)).ImplementedBy(typeof(DoNothingService)).Named("DoNothingService"));
 			var service = child.Resolve<IDoNothingService>();
 			Assert.IsNotNull(service);
@@ -119,12 +119,12 @@ namespace Castle.Windsor.Tests
 			var parent = new WindsorContainer();
 			var child = new WindsorContainer();
 			parent.AddChildContainer(child);
-			((IWindsorContainer)parent).Register(
+			parent.Register(
 				Component.For(typeof(IDoNothingService)).ImplementedBy(typeof(DoNothingServiceDecorator)).Named(
 					"DoNothingServiceDecorator"));
-			((IWindsorContainer)parent).Register(
+			parent.Register(
 				Component.For(typeof(IDoNothingService)).ImplementedBy(typeof(DoNothingService)).Named("DoNothingService"));
-			((IWindsorContainer)child).Register(
+			child.Register(
 				Component.For(typeof(IDoSomethingService)).ImplementedBy(typeof(DoSomethingService)).Named("DoSometingService"));
 			var service = child.Resolve<IDoNothingService>();
 			Assert.IsNotNull(service);
