@@ -119,10 +119,9 @@ namespace Castle.MicroKernel.Tests.Configuration
 
 			kernel.ConfigurationStore.AddComponentConfiguration("key", confignode);
 
-			kernel.Register(Component.For(typeof(ClassWithArrayConstructor)).Named("key"));
-
-			kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(CommonImpl1)).Named("commonservice1"));
-			kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(CommonImpl2)).Named("commonservice2"));
+			kernel.Register(Component.For<ClassWithArrayConstructor>().Named("key"),
+			                Component.For<ICommon>().ImplementedBy<CommonImpl1>().Named("commonservice1"),
+			                Component.For<ICommon>().ImplementedBy<CommonImpl2>().Named("commonservice2"));
 
 			var instance = kernel.Resolve<ClassWithArrayConstructor>("key");
 			Assert.IsNotNull(instance.Services);

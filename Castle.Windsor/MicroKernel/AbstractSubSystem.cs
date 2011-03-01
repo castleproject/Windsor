@@ -17,14 +17,14 @@ namespace Castle.MicroKernel
 	using System;
 	using System.Security;
 
+	[Serializable]
 #if (SILVERLIGHT)
 	public abstract class AbstractSubSystem : ISubSystem
 #else
-	[Serializable]
 	public abstract class AbstractSubSystem : MarshalByRefObject, ISubSystem
 #endif
 	{
-		private IKernel kernel;
+		private IKernelInternal kernel;
 
 #if (!SILVERLIGHT)
 #if DOTNET40
@@ -36,7 +36,7 @@ namespace Castle.MicroKernel
 		}
 #endif
 
-		public virtual void Init(IKernel kernel)
+		public virtual void Init(IKernelInternal kernel)
 		{
 			this.kernel = kernel;
 		}
@@ -45,7 +45,7 @@ namespace Castle.MicroKernel
 		{
 		}
 
-		protected IKernel Kernel
+		protected IKernelInternal Kernel
 		{
 			get { return kernel; }
 		}

@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,29 +17,23 @@ namespace Castle.MicroKernel.Util
 	using System;
 
 	/// <summary>
-	/// Summary description for ReferenceExpressionUtil.
+	///   Summary description for ReferenceExpressionUtil.
 	/// </summary>
 	public abstract class ReferenceExpressionUtil
 	{
-		public static bool IsReference(String value)
-		{
-			if (value == null || value.Length <= 3 || 
-				!value.StartsWith("${") || !value.EndsWith("}"))
-			{
-				return false;
-			}
-
-			return true;
-		}
-
 		public static String ExtractComponentKey(String value)
 		{
 			if (IsReference(value))
 			{
-				return value.Substring( 2, value.Length - 3 );
+				return value.Substring(2, value.Length - 3);
 			}
 
 			return null;
+		}
+
+		public static bool IsReference(String value)
+		{
+			return value != null && value.Length > 3 && value.StartsWith("${") && value.EndsWith("}");
 		}
 	}
 }

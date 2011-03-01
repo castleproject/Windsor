@@ -17,7 +17,6 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 	using System;
 	using System.Collections.Generic;
 
-	using Castle.MicroKernel;
 	using Castle.MicroKernel.Registration;
 
 	public class ScopeSubsystem : AbstractSubSystem, IScopeManager
@@ -48,7 +47,7 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 			}
 		}
 
-		public override void Init(IKernel kernel)
+		public override void Init(IKernelInternal kernel)
 		{
 			base.Init(kernel);
 

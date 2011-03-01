@@ -39,7 +39,6 @@ namespace Castle.MicroKernel
 	using Castle.MicroKernel.SubSystems.Resource;
 #if !SILVERLIGHT
 	using Castle.Windsor.Experimental.Diagnostics;
-
 #endif
 
 	/// <summary>

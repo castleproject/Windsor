@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,15 +19,14 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 
 	public interface ITypeConverterContext
 	{
-		IKernel Kernel { get; }
-
 		ITypeConverter Composition { get; }
 
-		void Push(ComponentModel model, CreationContext context);
+		CreationContext CurrentCreationContext { get; }
+		ComponentModel CurrentModel { get; }
+		IKernelInternal Kernel { get; }
 
 		void Pop();
 
-		ComponentModel CurrentModel { get; }
-		CreationContext CurrentCreationContext { get; }
+		void Push(ComponentModel model, CreationContext context);
 	}
 }

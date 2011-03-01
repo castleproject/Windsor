@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,11 +15,11 @@
 namespace Castle.MicroKernel.SubSystems.Conversion
 {
 	using System;
+	using System.Diagnostics;
+
 	using Castle.Core.Configuration;
 
-#if (!SILVERLIGHT)
 	[Serializable]
-#endif
 	public class ArrayConverter : AbstractTypeConverter
 	{
 		public override bool CanHandleType(Type type)
@@ -34,18 +34,16 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 
 		public override object PerformConversion(IConfiguration configuration, Type targetType)
 		{
-#if DEBUG
-			System.Diagnostics.Debug.Assert(targetType.IsArray);
-#endif
-			int count = configuration.Children.Count;
-			Type itemType = targetType.GetElementType();
+			Debug.Assert(targetType.IsArray);
+			var count = configuration.Children.Count;
+			var itemType = targetType.GetElementType();
 
-			Array array = Array.CreateInstance(itemType, count);
+			var array = Array.CreateInstance(itemType, count);
 
-			int index = 0;
-			foreach(IConfiguration itemConfig in configuration.Children)
+			var index = 0;
+			foreach (var itemConfig in configuration.Children)
 			{
-				object value = Context.Composition.PerformConversion(itemConfig, itemType);
+				var value = Context.Composition.PerformConversion(itemConfig, itemType);
 				array.SetValue(value, index++);
 			}
 

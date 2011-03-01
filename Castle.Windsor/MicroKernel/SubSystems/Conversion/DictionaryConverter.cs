@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
 namespace Castle.MicroKernel.SubSystems.Conversion
 {
 	using System;
@@ -22,17 +21,15 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 
 	using Castle.Core.Configuration;
 
-#if (!SILVERLIGHT)
 	[Serializable]
-#endif
 	public class DictionaryConverter : AbstractTypeConverter
 	{
 		public override bool CanHandleType(Type type)
-        {
+		{
 #if (SILVERLIGHT)
 			return (type == typeof(IDictionary));
 #else
-            return (type == typeof(IDictionary) || type == typeof(Hashtable));
+			return (type == typeof(IDictionary) || type == typeof(Hashtable));
 #endif
 		}
 
@@ -47,44 +44,44 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 
 			var dict = new Dictionary<object, object>();
 
-			String keyTypeName = configuration.Attributes["keyType"];
-			Type defaultKeyType = typeof(String);
-			
-			String valueTypeName = configuration.Attributes["valueType"];
-			Type defaultValueType = typeof(String);
+			var keyTypeName = configuration.Attributes["keyType"];
+			var defaultKeyType = typeof(String);
+
+			var valueTypeName = configuration.Attributes["valueType"];
+			var defaultValueType = typeof(String);
 
 			if (keyTypeName != null)
 			{
-				defaultKeyType = Context.Composition.PerformConversion<Type>( keyTypeName);
+				defaultKeyType = Context.Composition.PerformConversion<Type>(keyTypeName);
 			}
 			if (valueTypeName != null)
 			{
 				defaultValueType = Context.Composition.PerformConversion<Type>(valueTypeName);
 			}
 
-			foreach(IConfiguration itemConfig in configuration.Children)
+			foreach (var itemConfig in configuration.Children)
 			{
 				// Preparing the key
 
-				String keyValue = itemConfig.Attributes["key"];
+				var keyValue = itemConfig.Attributes["key"];
 
 				if (keyValue == null)
 				{
 					throw new ConverterException("You must provide a key for the dictionary entry");
 				}
 
-				Type convertKeyTo = defaultKeyType;
+				var convertKeyTo = defaultKeyType;
 
 				if (itemConfig.Attributes["keyType"] != null)
 				{
 					convertKeyTo = Context.Composition.PerformConversion<Type>(itemConfig.Attributes["keyType"]);
 				}
 
-				object key = Context.Composition.PerformConversion(keyValue, convertKeyTo);
+				var key = Context.Composition.PerformConversion(keyValue, convertKeyTo);
 
 				// Preparing the value
 
-				Type convertValueTo = defaultValueType;
+				var convertValueTo = defaultValueType;
 
 				if (itemConfig.Attributes["valueType"] != null)
 				{
@@ -104,7 +101,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 						itemConfig.Children[0], convertValueTo);
 				}
 
-				dict.Add( key, value );
+				dict.Add(key, value);
 			}
 
 			return dict;

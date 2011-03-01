@@ -317,7 +317,7 @@ namespace Castle.Windsor
 
 		private void Install(IWindsorInstaller[] installers, DefaultComponentInstaller scope)
 		{
-			using (var store = new PartialConfigurationStore(kernel))
+			using (var store = new PartialConfigurationStore((IKernelInternal)kernel))
 			{
 				foreach (var windsorInstaller in installers)
 				{
@@ -531,7 +531,6 @@ namespace Castle.Windsor
 			kernel.AddFacility(idInConfiguration, facility);
 			return this;
 		}
-
 
 		/// <summary>
 		///   Registers a facility within the container.

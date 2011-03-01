@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,28 +16,22 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 {
 	using System;
 	using System.Collections.Generic;
+	using System.Diagnostics;
 
-	using Castle.Core;
 	using Castle.Core.Configuration;
 	using Castle.Core.Internal;
 
-#if (!SILVERLIGHT)
 	[Serializable]
-#endif
 	public class GenericDictionaryConverter : AbstractTypeConverter
 	{
-		/// <summary>
-		/// Initializes a new instance of the <see cref="GenericDictionaryConverter"/> class.
-		/// </summary>
-		public GenericDictionaryConverter()
-		{
-		}
-
 		public override bool CanHandleType(Type type)
 		{
-			if (!type.IsGenericType) return false;
+			if (!type.IsGenericType)
+			{
+				return false;
+			}
 
-			Type genericDef = type.GetGenericTypeDefinition();
+			var genericDef = type.GetGenericTypeDefinition();
 
 			return (genericDef == typeof(IDictionary<,>) || genericDef == typeof(Dictionary<,>));
 		}
@@ -49,27 +43,26 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 
 		public override object PerformConversion(IConfiguration configuration, Type targetType)
 		{
-#if DEBUG
-			System.Diagnostics.Debug.Assert(CanHandleType(targetType), "Got a type we can't handle!");
-#endif
-			Type[] argTypes = targetType.GetGenericArguments();
+			Debug.Assert(CanHandleType(targetType), "Got a type we can't handle!");
+
+			var argTypes = targetType.GetGenericArguments();
 
 			if (argTypes.Length != 2)
 			{
 				throw new ConverterException("Expected type with two generic arguments.");
 			}
 
-			String keyTypeName = configuration.Attributes["keyType"];
-			Type defaultKeyType = argTypes[0];
+			var keyTypeName = configuration.Attributes["keyType"];
+			var defaultKeyType = argTypes[0];
 
-			String valueTypeName = configuration.Attributes["valueType"];
-			Type defaultValueType = argTypes[1];
+			var valueTypeName = configuration.Attributes["valueType"];
+			var defaultValueType = argTypes[1];
 
 			if (keyTypeName != null)
 			{
 				defaultKeyType = Context.Composition.PerformConversion<Type>(keyTypeName);
 			}
-			
+
 			if (valueTypeName != null)
 			{
 				defaultValueType = Context.Composition.PerformConversion<Type>(valueTypeName);
@@ -77,7 +70,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 
 			var helperType = typeof(DictionaryHelper<,>).MakeGenericType(defaultKeyType, defaultValueType);
 			var collectionConverterHelper = helperType.CreateInstance<IGenericCollectionConverterHelper>(this);
-			
+
 			return collectionConverterHelper.ConvertConfigurationToCollection(configuration);
 		}
 
@@ -93,18 +86,18 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 			public object ConvertConfigurationToCollection(IConfiguration configuration)
 			{
 				var dict = new Dictionary<TKey, TValue>();
-				foreach(IConfiguration itemConfig in configuration.Children)
+				foreach (var itemConfig in configuration.Children)
 				{
 					// Preparing the key
 
-					String keyValue = itemConfig.Attributes["key"];
+					var keyValue = itemConfig.Attributes["key"];
 
 					if (keyValue == null)
 					{
 						throw new ConverterException("You must provide a key for the dictionary entry");
 					}
 
-					Type convertKeyTo = typeof(TKey);
+					var convertKeyTo = typeof(TKey);
 
 					if (itemConfig.Attributes["keyType"] != null)
 					{
@@ -118,11 +111,11 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 							              typeof(TValue), convertKeyTo));
 					}
 
-					TKey key = (TKey) parent.Context.Composition.PerformConversion(keyValue, convertKeyTo);
+					var key = (TKey)parent.Context.Composition.PerformConversion(keyValue, convertKeyTo);
 
 					// Preparing the value
 
-					Type convertValueTo = typeof(TValue);
+					var convertValueTo = typeof(TValue);
 
 					if (itemConfig.Attributes["valueType"] != null)
 					{
@@ -135,7 +128,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 							string.Format("Could not create dictionary<{0},{1}> because {2} is not assignable to value type {1}",
 							              typeof(TKey), typeof(TValue), convertValueTo));
 					}
-					var value = (TValue) parent.Context.Composition.PerformConversion(itemConfig.Value, convertValueTo);
+					var value = (TValue)parent.Context.Composition.PerformConversion(itemConfig.Value, convertValueTo);
 
 					dict.Add(key, value);
 				}

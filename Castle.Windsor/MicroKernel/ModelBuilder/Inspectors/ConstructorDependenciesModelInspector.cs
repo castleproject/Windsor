@@ -62,35 +62,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 			for (var i = 0; i < parameters.Length; i++)
 			{
 				var parameter = parameters[i];
-				var paramType = parameter.ParameterType;
-				var defaultValue = parameter.DefaultValue;
-				var hasDefaultValue = parameter.HasDefaultValue();
-
-				// This approach is somewhat problematic. We should use
-				// another strategy to differentiate types and classify dependencies
-				if (converter.IsSupportedAndPrimitiveType(paramType))
-				{
-					dependencies[i] = new DependencyModel(parameter.Name, paramType, false, hasDefaultValue, defaultValue);
-				}
-				else if (String.IsNullOrEmpty(parameter.Name) == false)
-				{
-					var modelParameter = model.Parameters[parameter.Name];
-
-					if (modelParameter != null && ReferenceExpressionUtil.IsReference(modelParameter.Value))
-					{
-						var key = ReferenceExpressionUtil.ExtractComponentKey(modelParameter.Value);
-
-						dependencies[i] = new DependencyModel(key, paramType, false, hasDefaultValue, defaultValue);
-					}
-					else
-					{
-						dependencies[i] = new DependencyModel(parameter.Name, paramType, false, hasDefaultValue, defaultValue);
-					}
-				}
-				else
-				{
-					dependencies[i] = new DependencyModel(null, paramType, false, hasDefaultValue, defaultValue);
-				}
+				dependencies[i] = new DependencyModel(parameter.Name, parameter.ParameterType, false, parameter.HasDefaultValue(), parameter.DefaultValue);
 			}
 
 			return new ConstructorCandidate(constructor, dependencies);

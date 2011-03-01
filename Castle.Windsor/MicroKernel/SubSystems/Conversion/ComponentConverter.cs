@@ -16,7 +16,6 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 {
 	using System;
 
-	using Castle.Core;
 	using Castle.Core.Configuration;
 	using Castle.MicroKernel.Context;
 	using Castle.MicroKernel.Util;
@@ -28,7 +27,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 		{
 			if (configuration.Value != null)
 			{
-				return ReferenceExpressionUtil.IsReference(configuration.Value.Trim());
+				return ReferenceExpressionUtil.IsReference(configuration.Value);
 			}
 			return CanHandleType(type);
 		}
@@ -45,18 +44,20 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 
 		public override object PerformConversion(String value, Type targetType)
 		{
-			if (!ReferenceExpressionUtil.IsReference(value))
+			var key = ReferenceExpressionUtil.ExtractComponentKey(value);
+			if (key == null)
 			{
-				var message = String.Format("Could not convert expression {0} to type {1}. Expecting a reference override like ${{some key}}", value, targetType.FullName);
-				throw new ConverterException(message);
+				throw new ConverterException(string.Format("Could not convert expression '{0}' to type '{1}'. Expecting a reference override like ${{some key}}", value,
+				                                           targetType.FullName));
 			}
 
-			var key = ReferenceExpressionUtil.ExtractComponentKey(value);
+			var handler = Context.Kernel.LoadHandlerByKey(key, targetType, null);
+			if (handler == null)
+			{
+				throw new ConverterException(string.Format("Component '{0}' was not found in the container.", key));
+			}
 
-			var dependency = new DependencyModel(key, targetType, false);
-
-			return Context.Kernel.Resolver.Resolve(Context.CurrentCreationContext ?? CreationContext.CreateEmpty(), null,
-			                                       Context.CurrentModel, dependency);
+			return handler.Resolve(Context.CurrentCreationContext ?? CreationContext.CreateEmpty());
 		}
 
 		public override object PerformConversion(IConfiguration configuration, Type targetType)

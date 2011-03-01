@@ -16,9 +16,7 @@ namespace Castle.MicroKernel.ComponentActivator
 {
 	using System;
 	using System.Collections.Generic;
-#if SILVERLIGHT || DOTNET35
-	using System.Linq;
-#endif
+	using System.Runtime.Serialization;
 	using System.Security;
 	using System.Security.Permissions;
 
@@ -26,6 +24,9 @@ namespace Castle.MicroKernel.ComponentActivator
 	using Castle.Core.Internal;
 	using Castle.MicroKernel.Context;
 	using Castle.MicroKernel.Proxy;
+#if SILVERLIGHT || DOTNET35
+	using System.Linq;
+#endif
 
 	/// <summary>
 	///   Standard implementation of <see cref = "IComponentActivator" />.
@@ -177,7 +178,7 @@ namespace Castle.MicroKernel.ComponentActivator
 						"Could not find a public constructor for type {0}. Windsor can not instantiate types that don't expose public constructors. To expose the type as a service add public constructor, or use custom component activator.",
 						implType));
 			}
-			var instance = System.Runtime.Serialization.FormatterServices.GetUninitializedObject(implType);
+			var instance = FormatterServices.GetUninitializedObject(implType);
 
 			constructor.Constructor.Invoke(instance, arguments);
 			return instance;
