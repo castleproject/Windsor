@@ -35,5 +35,14 @@ namespace Castle.MicroKernel.Util
 		{
 			return value != null && value.Length > 3 && value.StartsWith("${") && value.EndsWith("}");
 		}
+
+		public static string BuildReference(string value)
+		{
+			if (IsReference(value))
+			{
+				return value;
+			}
+			return String.Format("${{{0}}}", value);
+		}
 	}
 }

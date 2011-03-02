@@ -18,6 +18,7 @@ namespace Castle.MicroKernel
 
 	using Castle.Core;
 	using Castle.MicroKernel.Context;
+	using Castle.MicroKernel.Util;
 
 	/// <summary>
 	///   Reference to component obtained from a container.
@@ -38,7 +39,7 @@ namespace Castle.MicroKernel
 
 			this.componentKey = componentKey;
 
-			dependency = new DependencyModel(componentKey, null, false);
+			dependency = new DependencyModel(componentKey, typeof(T), false);
 		}
 
 		public ComponentReference(Type actualComponentType)
@@ -60,6 +61,8 @@ namespace Castle.MicroKernel
 		public void Attach(ComponentModel component)
 		{
 			component.Dependencies.Add(dependency);
+			var value = componentKey ?? actualComponentType.FullName;
+			component.Parameters.Add(typeof(T).AssemblyQualifiedName, ReferenceExpressionUtil.BuildReference(value));
 		}
 
 		public void Detach(ComponentModel component)
