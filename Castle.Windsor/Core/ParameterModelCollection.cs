@@ -44,12 +44,12 @@ namespace Castle.Core
 		///   Gets the <see cref = "ParameterModel" /> with the specified key.
 		/// </summary>
 		/// <value></value>
-		public ParameterModel this[object key]
+		public ParameterModel this[string key]
 		{
 			get
 			{
 				ParameterModel result;
-				dictionary.TryGetValue((string)key, out result);
+				dictionary.TryGetValue(key, out result);
 				return result;
 			}
 		}

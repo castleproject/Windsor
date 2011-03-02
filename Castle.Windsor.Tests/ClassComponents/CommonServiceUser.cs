@@ -19,16 +19,16 @@ namespace Castle.MicroKernel.Tests.ClassComponents
 	/// </summary>
 	public class CommonServiceUser
 	{
-		private ICommon _common;
+		private readonly ICommon common;
 
 		public CommonServiceUser(ICommon common)
 		{
-			_common = common;
+			this.common = common;
 		}
 
 		public ICommon CommonService
 		{
-			get { return _common; }
+			get { return common; }
 		}
 	}
 

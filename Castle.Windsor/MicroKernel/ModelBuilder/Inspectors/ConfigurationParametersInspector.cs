@@ -102,12 +102,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 				{
 					continue;
 				}
-
-				var newKey = ReferenceExpressionUtil.ExtractComponentKey(parameter.Value);
-
-				// Update dependencies to ServiceOverride
-
-				model.Dependencies.Add(new DependencyModel(newKey, null, false));
+				model.Dependencies.Add(new DependencyModel(parameter.Name, null, false));
 			}
 		}
 

@@ -51,17 +51,19 @@ namespace Castle.MicroKernel.Handlers
 			message.AppendLine();
 			foreach (var dependency in missingDependencies)
 			{
-				if (string.IsNullOrEmpty(dependency.DependencyKey))
+				var @override = FindServiceOverride(dependency, handler);
+				if (@override != null)
 				{
-					InspectServiceDependency(handler, dependency, kernel);
+					InspectServiceOverrideDependency(kernel, @override);
 				}
-				else if (ReferenceExpressionUtil.IsReference(dependency.DependencyKey))
+				else if (dependency.IsValueType || dependency.TargetItemType == typeof(string) || dependency.TargetItemType == null)
 				{
-					InspectServiceOverrideDependency(dependency, kernel);
+					//hardcoding string as it's a most common type that is not value type but you wouldn't want to kave that as a service.
+					InspectParameterDependency(dependency);
 				}
 				else
 				{
-					InspectParameterDependency(dependency);
+					InspectServiceDependency(handler, dependency, kernel);
 				}
 			}
 		}
@@ -124,9 +126,9 @@ namespace Castle.MicroKernel.Handlers
 			}
 		}
 
-		private void InspectServiceOverrideDependency(DependencyModel dependency, IKernel kernel)
+		private void InspectServiceOverrideDependency(IKernel kernel, ParameterModel @override)
 		{
-			var key = dependency.DependencyKey;
+			var key = ReferenceExpressionUtil.ExtractComponentKey(@override.Value);
 			var handler = kernel.GetHandler(key);
 
 			//TODO: what about self dependency?
@@ -146,6 +148,16 @@ namespace Castle.MicroKernel.Handlers
 					info.ObtainDependencyDetails(this);
 				}
 			}
+		}
+
+		private static ParameterModel FindServiceOverride(DependencyModel dependency, IHandler handler)
+		{
+			var parameterModel = dependency.FindMatchingParameter(handler.ComponentModel);
+			if (parameterModel == null || ReferenceExpressionUtil.IsReference(parameterModel.Value) == false)
+			{
+				return null;
+			}
+			return parameterModel;
 		}
 	}
 }

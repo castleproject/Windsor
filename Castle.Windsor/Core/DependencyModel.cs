@@ -23,6 +23,7 @@ namespace Castle.Core
 	[Serializable]
 	public class DependencyModel
 	{
+		private readonly bool isValueType;
 		private readonly Type targetItemType;
 		private readonly Type targetType;
 
@@ -32,14 +33,13 @@ namespace Castle.Core
 		/// <param name = "dependencyKey">The dependency key.</param>
 		/// <param name = "targetType">Type of the target.</param>
 		/// <param name = "isOptional">if set to <c>true</c> [is optional].</param>
-		public DependencyModel(String dependencyKey,
-		                       Type targetType, bool isOptional)
+		public DependencyModel(String dependencyKey, Type targetType, bool isOptional)
 			: this(dependencyKey, targetType, isOptional, false, null)
 		{
 		}
 
-		public DependencyModel(string dependencyKey, Type targetType, bool isOptional,
-		                       bool hasDefaultValue, object defaultValue)
+		// TODO: add configuration so that information about override is attached to the dependency
+		public DependencyModel(string dependencyKey, Type targetType, bool isOptional, bool hasDefaultValue, object defaultValue)
 		{
 			this.targetType = targetType;
 			if (targetType != null && targetType.IsByRef)
@@ -49,6 +49,10 @@ namespace Castle.Core
 			else
 			{
 				targetItemType = targetType;
+			}
+			if (targetItemType != null)
+			{
+				isValueType = targetItemType.IsValueType;
 			}
 			DependencyKey = dependencyKey;
 			IsOptional = isOptional;
@@ -73,6 +77,11 @@ namespace Castle.Core
 		///   <c>true</c> if this dependency is optional; otherwise, <c>false</c>.
 		/// </value>
 		public bool IsOptional { get; set; }
+
+		public bool IsValueType
+		{
+			get { return isValueType; }
+		}
 
 		/// <summary>
 		///   Gets the service type of the dependency.
@@ -113,6 +122,15 @@ namespace Castle.Core
 			       Equals(other.DependencyKey, DependencyKey);
 		}
 
+		public ParameterModel FindMatchingParameter(ComponentModel model)
+		{
+			if (model.HasParameters == false)
+			{
+				return null;
+			}
+			return ObtainParameterModelByKey(model) ?? ObtainParameterModelByType(model);
+		}
+
 		public override int GetHashCode()
 		{
 			unchecked
@@ -132,6 +150,49 @@ namespace Castle.Core
 		public override string ToString()
 		{
 			return string.Format("Dependency '{0}' type '{1}'", DependencyKey, TargetType);
+		}
+
+		private ParameterModel GetParameterModelByType(Type type, ComponentModel model)
+		{
+			if (type == null)
+			{
+				return null;
+			}
+
+			var key = type.AssemblyQualifiedName;
+			if (key == null)
+			{
+				return null;
+			}
+
+			return model.Parameters[key];
+		}
+
+		private ParameterModel ObtainParameterModelByKey(ComponentModel model)
+		{
+			var key = DependencyKey;
+			if (key == null)
+			{
+				return null;
+			}
+
+			return model.Parameters[key];
+		}
+
+		private ParameterModel ObtainParameterModelByType(ComponentModel model)
+		{
+			var type = targetItemType;
+			if (type == null)
+			{
+				// for example it's an interceptor
+				return null;
+			}
+			var parameter = GetParameterModelByType(type, model);
+			if (parameter == null && type.IsGenericType)
+			{
+				parameter = GetParameterModelByType(type.GetGenericTypeDefinition(), model);
+			}
+			return parameter;
 		}
 	}
 }
