@@ -76,7 +76,7 @@ namespace Castle.MicroKernel.ModelBuilder.Descriptors
 
 			foreach (var item in items)
 			{
-				var reference = FormattedReferenceExpression(item);
+				var reference = ReferenceExpressionUtil.BuildReference(item);
 				list.Children.Add(new MutableConfiguration("item", reference));
 			}
 
@@ -85,7 +85,7 @@ namespace Castle.MicroKernel.ModelBuilder.Descriptors
 
 		private void ApplySimpleReference(ComponentModel model, object dependencyKey, String componentKey)
 		{
-			var reference = FormattedReferenceExpression(componentKey);
+			var reference = ReferenceExpressionUtil.BuildReference(componentKey);
 			AddParameter(model, GetKeyString(dependencyKey), reference);
 		}
 
@@ -97,15 +97,6 @@ namespace Castle.MicroKernel.ModelBuilder.Descriptors
 			}
 
 			return key.ToString();
-		}
-
-		private static String FormattedReferenceExpression(String value)
-		{
-			if (ReferenceExpressionUtil.IsReference(value))
-			{
-				return value;
-			}
-			return String.Format("${{{0}}}", value);
 		}
 	}
 }
