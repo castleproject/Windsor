@@ -17,6 +17,7 @@ namespace Castle.Core
 	using System;
 	using System.Collections;
 	using System.Collections.Generic;
+	using System.Diagnostics;
 
 	/// <summary>
 	///   Collection of <see cref = "ConstructorCandidate" />
@@ -71,11 +72,13 @@ namespace Castle.Core
 			ctors.Add(item);
 		}
 
+		[DebuggerStepThrough]
 		public IEnumerator<ConstructorCandidate> GetEnumerator()
 		{
 			return ctors.GetEnumerator();
 		}
 
+		[DebuggerStepThrough]
 		IEnumerator IEnumerable.GetEnumerator()
 		{
 			return GetEnumerator();

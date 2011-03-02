@@ -187,16 +187,12 @@ namespace Castle.MicroKernel.Resolvers
 
 		protected virtual bool CanResolveCore(CreationContext context, ComponentModel model, DependencyModel dependency)
 		{
-			return CanResolveServiceDependencyMandatory(dependency, model, context) || dependency.HasDefaultValue;
+			return CanResolveServiceDependencyMandatory(dependency, model, context);
 		}
 
 		protected virtual ParameterModel ObtainParameterModelMatchingDependency(DependencyModel dependency, ComponentModel model)
 		{
-			if (model.HasParameters == false)
-			{
-				return null;
-			}
-			return ObtainParameterModelByKey(dependency, model) ?? ObtainParameterModelByType(dependency, model);
+			return dependency.FindMatchingParameter(model);
 		}
 
 		/// <summary>
@@ -328,22 +324,6 @@ namespace Castle.MicroKernel.Resolvers
 			return HasComponentInValidState(dependency.DependencyKey, dependency.TargetItemType, context);
 		}
 
-		private ParameterModel GetParameterModelByType(Type type, ComponentModel model)
-		{
-			if (type == null)
-			{
-				return null;
-			}
-
-			var key = type.AssemblyQualifiedName;
-			if (key == null)
-			{
-				return null;
-			}
-
-			return model.Parameters[key];
-		}
-
 		private bool HasAnyComponentInValidState(CreationContext context, Type service, string name, IDictionary arguments)
 		{
 			var firstHandler = kernel.LoadHandlerByType(name, service, arguments);
@@ -377,32 +357,6 @@ namespace Castle.MicroKernel.Resolvers
 			return IsHandlerInValidState(handler) && handler.IsBeingResolvedInContext(context) == false;
 		}
 
-		private ParameterModel ObtainParameterModelByKey(DependencyModel dependency, ComponentModel model)
-		{
-			var key = dependency.DependencyKey;
-			if (key == null)
-			{
-				return null;
-			}
-
-			return model.Parameters[key];
-		}
-
-		private ParameterModel ObtainParameterModelByType(DependencyModel dependency, ComponentModel model)
-		{
-			var type = dependency.TargetItemType;
-			if (type == null)
-			{
-				// for example it's an interceptor
-				return null;
-			}
-			var parameter = GetParameterModelByType(type, model);
-			if (parameter == null && type.IsGenericType)
-			{
-				parameter = GetParameterModelByType(type.GetGenericTypeDefinition(), model);
-			}
-			return parameter;
-		}
 
 		private void RaiseDependencyResolving(ComponentModel model, DependencyModel dependency, object value)
 		{

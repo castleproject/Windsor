@@ -124,7 +124,6 @@ namespace Castle.Facilities.Synchronize
 		private static IReference<IProxyGenerationHook> ObtainProxyHook(IKernel kernel, IConfiguration config)
 		{
 			IProxyGenerationHook hook = null;
-
 			if (config != null)
 			{
 				var hookAttrib = config.Attributes[Constants.ControlProxyHookAttrib];
@@ -149,7 +148,7 @@ namespace Castle.Facilities.Synchronize
 						throw new ConfigurationErrorsException(message);
 					}
 
-					hook = (IProxyGenerationHook)Activator.CreateInstance(hookType);
+					hook = hookType.CreateInstance<IProxyGenerationHook>();
 				}
 			}
 
