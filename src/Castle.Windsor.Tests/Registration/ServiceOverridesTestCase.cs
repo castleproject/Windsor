@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,44 +18,14 @@ namespace Castle.MicroKernel.Tests.Registration
 
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Tests.ClassComponents;
+	using Castle.Windsor.Tests;
 	using Castle.Windsor.Tests.Components;
 
 	using NUnit.Framework;
 
 	[TestFixture]
-	public class ServiceOverridesTestCase : RegistrationTestCaseBase
+	public class ServiceOverridesTestCase : AbstractContainerTestCase
 	{
-		[Test]
-		public void AddComponent_ServiceOverrides_WorksFine()
-		{
-			Kernel.Register(
-				Component.For<ICustomer>()
-					.Named("customer1")
-					.ImplementedBy<CustomerImpl>()
-					.DependsOn(
-						Property.ForKey("Name").Eq("Caption Hook"),
-						Property.ForKey("Address").Eq("Fairyland"),
-						Property.ForKey("Age").Eq(45)
-					),
-				Component.For<CustomerChain1>()
-					.Named("customer2")
-					.DependsOn(
-						Property.ForKey("Name").Eq("Bigfoot"),
-						Property.ForKey("Address").Eq("Forest"),
-						Property.ForKey("Age").Eq(100)
-					)
-					.ServiceOverrides(
-						ServiceOverride.ForKey("customer").Eq("customer1")
-					)
-				);
-
-			var customer = Kernel.Resolve<CustomerChain1>("customer2");
-			Assert.IsNotNull(customer.CustomerBase);
-			Assert.AreEqual(customer.CustomerBase.Name, "Caption Hook");
-			Assert.AreEqual(customer.CustomerBase.Address, "Fairyland");
-			Assert.AreEqual(customer.CustomerBase.Age, 45);
-		}
-
 		[Test]
 		public void AddComponent_ArrayServiceOverrides_WorksFine()
 		{
@@ -107,36 +77,6 @@ namespace Castle.MicroKernel.Tests.Registration
 		}
 
 		[Test]
-		public void AddComponent_ServiceOverrides_UsingAnonymousType()
-		{
-			Kernel.Register(
-				Component.For<ICustomer>()
-					.Named("customer1")
-					.ImplementedBy<CustomerImpl>()
-					.DependsOn(
-						Property.ForKey("Name").Eq("Caption Hook"),
-						Property.ForKey("Address").Eq("Fairyland"),
-						Property.ForKey("Age").Eq(45)
-					),
-				Component.For<CustomerChain1>()
-					.Named("customer2")
-					.DependsOn(
-						Property.ForKey("Name").Eq("Bigfoot"),
-						Property.ForKey("Address").Eq("Forest"),
-						Property.ForKey("Age").Eq(100)
-					)
-					.ServiceOverrides(
-						ServiceOverride.ForKey("customer").Eq("customer1"))
-				);
-
-			var customer = Kernel.Resolve<CustomerChain1>("customer2");
-			Assert.IsNotNull(customer.CustomerBase);
-			Assert.AreEqual(customer.CustomerBase.Name, "Caption Hook");
-			Assert.AreEqual(customer.CustomerBase.Address, "Fairyland");
-			Assert.AreEqual(customer.CustomerBase.Age, 45);
-		}
-
-		[Test]
 		public void AddComponent_ServiceOverridesDictionary_WorksFine()
 		{
 			var serviceOverrides = new Dictionary<string, string> { { "customer", "customer1" } };
@@ -168,21 +108,64 @@ namespace Castle.MicroKernel.Tests.Registration
 		}
 
 		[Test]
-		public void ServiceOverrides_work_via_DependsOn_typed_key()
+		public void AddComponent_ServiceOverrides_UsingAnonymousType()
 		{
 			Kernel.Register(
-				Component.For<IEmptyService>()
+				Component.For<ICustomer>()
 					.Named("customer1")
-					.ImplementedBy<EmptyServiceA>(),
-				Component.For<IEmptyService>()
+					.ImplementedBy<CustomerImpl>()
+					.DependsOn(
+						Property.ForKey("Name").Eq("Caption Hook"),
+						Property.ForKey("Address").Eq("Fairyland"),
+						Property.ForKey("Age").Eq(45)
+					),
+				Component.For<CustomerChain1>()
 					.Named("customer2")
-					.ImplementedBy<EmptyServiceB>(),
-				Component.For<UsesIEmptyService>()
-					.DependsOn(Property.ForKey<IEmptyService>().Is("customer2"))
+					.DependsOn(
+						Property.ForKey("Name").Eq("Bigfoot"),
+						Property.ForKey("Address").Eq("Forest"),
+						Property.ForKey("Age").Eq(100)
+					)
+					.ServiceOverrides(
+						ServiceOverride.ForKey("customer").Eq("customer1"))
 				);
 
-			var service = Kernel.Resolve<UsesIEmptyService>();
-			Assert.IsInstanceOf<EmptyServiceB>(service.EmptyService);
+			var customer = Kernel.Resolve<CustomerChain1>("customer2");
+			Assert.IsNotNull(customer.CustomerBase);
+			Assert.AreEqual(customer.CustomerBase.Name, "Caption Hook");
+			Assert.AreEqual(customer.CustomerBase.Address, "Fairyland");
+			Assert.AreEqual(customer.CustomerBase.Age, 45);
+		}
+
+		[Test]
+		public void AddComponent_ServiceOverrides_WorksFine()
+		{
+			Kernel.Register(
+				Component.For<ICustomer>()
+					.Named("customer1")
+					.ImplementedBy<CustomerImpl>()
+					.DependsOn(
+						Property.ForKey("Name").Eq("Caption Hook"),
+						Property.ForKey("Address").Eq("Fairyland"),
+						Property.ForKey("Age").Eq(45)
+					),
+				Component.For<CustomerChain1>()
+					.Named("customer2")
+					.DependsOn(
+						Property.ForKey("Name").Eq("Bigfoot"),
+						Property.ForKey("Address").Eq("Forest"),
+						Property.ForKey("Age").Eq(100)
+					)
+					.ServiceOverrides(
+						ServiceOverride.ForKey("customer").Eq("customer1")
+					)
+				);
+
+			var customer = Kernel.Resolve<CustomerChain1>("customer2");
+			Assert.IsNotNull(customer.CustomerBase);
+			Assert.AreEqual(customer.CustomerBase.Name, "Caption Hook");
+			Assert.AreEqual(customer.CustomerBase.Address, "Fairyland");
+			Assert.AreEqual(customer.CustomerBase.Age, 45);
 		}
 
 		[Test]
@@ -229,6 +212,24 @@ namespace Castle.MicroKernel.Tests.Registration
 					.ImplementedBy<EmptyServiceB>(),
 				Component.For<UsesIEmptyService>()
 					.DependsOn(Property.ForKey("emptyService").Is(typeof(EmptyServiceB)))
+				);
+
+			var service = Kernel.Resolve<UsesIEmptyService>();
+			Assert.IsInstanceOf<EmptyServiceB>(service.EmptyService);
+		}
+
+		[Test]
+		public void ServiceOverrides_work_via_DependsOn_typed_key()
+		{
+			Kernel.Register(
+				Component.For<IEmptyService>()
+					.Named("customer1")
+					.ImplementedBy<EmptyServiceA>(),
+				Component.For<IEmptyService>()
+					.Named("customer2")
+					.ImplementedBy<EmptyServiceB>(),
+				Component.For<UsesIEmptyService>()
+					.DependsOn(Property.ForKey<IEmptyService>().Is("customer2"))
 				);
 
 			var service = Kernel.Resolve<UsesIEmptyService>();

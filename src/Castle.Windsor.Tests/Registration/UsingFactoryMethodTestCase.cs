@@ -26,7 +26,7 @@ namespace Castle.MicroKernel.Tests.Registration
 	using NUnit.Framework;
 
 	[TestFixture]
-	public class UsingFactoryMethodTestCase : RegistrationTestCaseBase
+	public class UsingFactoryMethodTestCase : AbstractContainerTestCase
 	{
 		[Test]
 		public void Can_dispose_component_on_release_disposable_service()

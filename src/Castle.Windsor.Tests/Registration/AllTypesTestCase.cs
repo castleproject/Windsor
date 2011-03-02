@@ -15,18 +15,18 @@
 namespace Castle.MicroKernel.Tests.Registration
 {
 	using System;
+	using System.Linq;
 	using System.Reflection;
 
 	using Castle.Core;
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Tests.ClassComponents;
+	using Castle.Windsor.Tests;
 
 	using NUnit.Framework;
 
-	using System.Linq;
-
 	[TestFixture]
-	public class AllTypesTestCase : RegistrationTestCaseBase
+	public class AllTypesTestCase : AbstractContainerTestCase
 	{
 		[Test]
 		public void RegisterAssemblyTypes_BasedOn_RegisteredInContainer()
@@ -199,7 +199,7 @@ namespace Castle.MicroKernel.Tests.Registration
 			                	.WithService.FirstInterface()
 				);
 
-			var repository = Kernel.Resolve<IRepository<CustomerImpl>>();
+			var repository = Kernel.Resolve<ClassComponents.IRepository<CustomerImpl>>();
 			Assert.IsNotNull(repository);
 		}
 
@@ -463,7 +463,7 @@ namespace Castle.MicroKernel.Tests.Registration
 			                	.WithService.FirstInterface()
 				);
 
-			var repository = Kernel.Resolve<IRepository<ICustomer>>();
+			var repository = Kernel.Resolve<ClassComponents.IRepository<ICustomer>>();
 			Assert.IsNotNull(repository);
 		}
 

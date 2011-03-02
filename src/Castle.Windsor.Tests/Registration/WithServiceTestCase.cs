@@ -24,7 +24,7 @@ namespace Castle.MicroKernel.Tests.Registration
 	using NUnit.Framework;
 
 	[TestFixture]
-	public class WithServiceTestCase : RegistrationTestCaseBase
+	public class WithServiceTestCase : AbstractContainerTestCase
 	{
 		[Test]
 		public void AllInterfaces_uses_all_implemented_interfaces()

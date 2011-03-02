@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,28 +18,55 @@ namespace Castle.MicroKernel.Tests.Registration.Interceptors
 	using Castle.MicroKernel.Tests.ClassComponents;
 	using Castle.MicroKernel.Tests.Registration.Interceptors.Multiple;
 	using Castle.MicroKernel.Tests.Registration.Interceptors.Single;
+	using Castle.Windsor.Tests;
 
 	using NUnit.Framework;
 
 	[TestFixture]
-	public sealed class InterceptorsTestCase : RegistrationTestCaseBase
+	public sealed class InterceptorsTestCase : AbstractContainerTestCase
 	{
+		private void ExecuteScenario<TScenario>() where TScenario : InterceptorsTestCaseHelper, new()
+		{
+			var scenario = new TScenario();
+			var registration = Component.For<ICustomer>();
+
+			scenario.RegisterInterceptors(registration);
+
+			Kernel.Register(registration);
+
+			var handler = Kernel.GetHandler(typeof(ICustomer));
+
+			AssertInterceptorReferencesAreEqual(handler, scenario);
+		}
+
+		private void AssertInterceptorReferencesAreEqual(IHandler handler, InterceptorsTestCaseHelper helper)
+		{
+			CollectionAssert.AreEqual(helper.GetExpectedInterceptorsInCorrectOrder(),
+			                          handler.ComponentModel.Interceptors);
+		}
+
+		[Test]
+		public void GenericInterceptor()
+		{
+			ExecuteScenario<SingleGenericInterceptor>();
+		}
+
 		[Test]
 		public void GenericInterceptorsInSingleCall()
 		{
 			ExecuteScenario<GenericInterceptorsInSingleCall>();
-		}
-		
-		[Test]
-		public void InterceptorKeyInSingleCall()
-		{
-			ExecuteScenario<InterceptorKeyInSingleCall>();
 		}
 
 		[Test]
 		public void GenericInterceptorsMultipleCall()
 		{
 			ExecuteScenario<GenericInterceptorsMultipleCall>();
+		}
+
+		[Test]
+		public void InterceptorKeyInSingleCall()
+		{
+			ExecuteScenario<InterceptorKeyInSingleCall>();
 		}
 
 		[Test]
@@ -52,6 +79,24 @@ namespace Castle.MicroKernel.Tests.Registration.Interceptors
 		public void InterceptorReferenceAnywhereMultipleCall()
 		{
 			ExecuteScenario<InterceptorReferenceAnywhereMultipleCall>();
+		}
+
+		[Test]
+		public void InterceptorReferenceWithPositionMultipleCall1()
+		{
+			ExecuteScenario<InterceptorReferenceWithPositionMultipleCall1>();
+		}
+
+		[Test]
+		public void InterceptorReferenceWithPositionMultipleCall2()
+		{
+			ExecuteScenario<InterceptorReferenceWithPositionMultipleCall2>();
+		}
+
+		[Test]
+		public void InterceptorReferenceWithPositionMultipleCall3()
+		{
+			ExecuteScenario<InterceptorReferenceWithPositionMultipleCall3>();
 		}
 
 		[Test]
@@ -79,39 +124,15 @@ namespace Castle.MicroKernel.Tests.Registration.Interceptors
 		}
 
 		[Test]
-		public void InterceptorReferenceWithPositionMultipleCall1()
-		{
-			ExecuteScenario<InterceptorReferenceWithPositionMultipleCall1>();
-		}
-
-		[Test]
-		public void InterceptorReferenceWithPositionMultipleCall2()
-		{
-			ExecuteScenario<InterceptorReferenceWithPositionMultipleCall2>();
-		}
-
-		[Test]
-		public void InterceptorReferenceWithPositionMultipleCall3()
-		{
-			ExecuteScenario<InterceptorReferenceWithPositionMultipleCall3>();
-		}
-
-		[Test]
 		public void InterceptorTypeMultipleCall()
 		{
 			ExecuteScenario<InterceptorTypeMultipleCall>();
 		}
 
 		[Test]
-		public void GenericInterceptor()
+		public void InterceptorTypesInSingleCall()
 		{
-			ExecuteScenario<SingleGenericInterceptor>();
-		}
-
-		[Test]
-		public void SingleInterceptorReference()
-		{
-			ExecuteScenario<SingleInterceptorReference>();
+			ExecuteScenario<InterceptorTypesInSingleCall>();
 		}
 
 		[Test]
@@ -121,36 +142,15 @@ namespace Castle.MicroKernel.Tests.Registration.Interceptors
 		}
 
 		[Test]
-		public void SingleInterceptorType()
+		public void SingleInterceptorReference()
 		{
-			ExecuteScenario<SingleInterceptorType>();
+			ExecuteScenario<SingleInterceptorReference>();
 		}
 
 		[Test]
-		public void InterceptorTypesInSingleCall()
+		public void SingleInterceptorType()
 		{
-			ExecuteScenario<InterceptorTypesInSingleCall>();
-		}
-
-		
-		private void ExecuteScenario<TScenario>() where TScenario : InterceptorsTestCaseHelper, new()
-		{
-			var scenario = new TScenario();
-			var registration = Component.For<ICustomer>();
-
-			scenario.RegisterInterceptors(registration);
-
-			Kernel.Register(registration);
-
-			var handler = Kernel.GetHandler(typeof(ICustomer));
-
-			AssertInterceptorReferencesAreEqual(handler, scenario);
-		}
-
-		private void AssertInterceptorReferencesAreEqual(IHandler handler, InterceptorsTestCaseHelper helper)
-		{
-			CollectionAssert.AreEqual(helper.GetExpectedInterceptorsInCorrectOrder(),
-			                          handler.ComponentModel.Interceptors);
+			ExecuteScenario<SingleInterceptorType>();
 		}
 	}
 }

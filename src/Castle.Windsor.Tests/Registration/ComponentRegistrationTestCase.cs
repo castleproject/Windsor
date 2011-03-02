@@ -27,12 +27,15 @@ namespace Castle.MicroKernel.Tests.Registration
 	using Castle.MicroKernel.Tests.ClassComponents;
 	using Castle.MicroKernel.Tests.Configuration.Components;
 	using Castle.MicroKernel.Tests.Lifestyle.Components;
+	using Castle.Windsor.Tests;
 	using Castle.Windsor.Tests.Facilities.Startable.Components;
 	using Castle.Windsor.Tests.Interceptors;
 
 	using NUnit.Framework;
 
-	public class ComponentRegistrationTestCase : RegistrationTestCaseBase
+	using Child = Castle.MicroKernel.Registration.Child;
+
+	public class ComponentRegistrationTestCase : AbstractContainerTestCase
 	{
 		[Test]
 		[ExpectedException(typeof(ArgumentNullException))]
