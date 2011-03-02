@@ -26,20 +26,19 @@ namespace Castle.MicroKernel.Proxy
 	/// </summary>
 	public class ProxyOptions
 	{
-		private readonly DependencyModelCollection dependencies;
 		private IReference<IProxyGenerationHook> hook;
 		private List<Type> interfaceList;
 		private List<IReference<object>> mixInList;
 
 		private IReference<IInterceptorSelector> selector;
+		private readonly ComponentModel component;
 
 		/// <summary>
 		///   Initializes a new instance of the <see cref = "ProxyOptions" /> class.
 		/// </summary>
-		/// <param name = "dependencies"></param>
-		public ProxyOptions(DependencyModelCollection dependencies)
+		public ProxyOptions(ComponentModel component)
 		{
-			this.dependencies = dependencies;
+			this.component = component;
 			OmitTarget = false;
 		}
 
@@ -151,7 +150,7 @@ namespace Castle.MicroKernel.Proxy
 			{
 				var reference = new InstanceReference<object>(mixIn);
 				mixInList.Add(reference);
-				reference.Attach(dependencies);
+				reference.Attach(component);
 			}
 		}
 
@@ -171,7 +170,7 @@ namespace Castle.MicroKernel.Proxy
 				mixInList = new List<IReference<object>>();
 			}
 			mixInList.Add(mixIn);
-			mixIn.Attach(dependencies);
+			mixIn.Attach(component);
 		}
 
 		/// <summary>
@@ -294,11 +293,11 @@ namespace Castle.MicroKernel.Proxy
 		{
 			if (reference != null)
 			{
-				reference.Detach(dependencies);
+				reference.Detach(component);
 			}
 			if (value != null)
 			{
-				value.Attach(dependencies);
+				value.Attach(component);
 			}
 			reference = value;
 		}

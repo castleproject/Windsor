@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,48 +16,28 @@ namespace Castle.MicroKernel.Proxy
 {
 	using System;
 	using System.Runtime.Remoting;
+
 	using Castle.Core;
 	using Castle.DynamicProxy;
 
 	/// <summary>
-	/// Helper support for proxy configuration.
+	///   Helper support for proxy configuration.
 	/// </summary>
 	public abstract class ProxyUtil
 	{
-		/// <summary>
-		/// Obtains the <see cref="ProxyOptions"/> associated with the <see cref="ComponentModel"/>.
-		/// </summary>
-		/// <param name="model">The component model.</param>
-		/// <param name="createOnDemand">true if the options should be created if not present.</param>
-		/// <returns>The associated proxy options for the component model.</returns>
-		public static ProxyOptions ObtainProxyOptions(ComponentModel model, bool createOnDemand)
-		{
-			var options = model.ExtendedProperties[ProxyConstants.ProxyOptionsKey] as ProxyOptions;
-
-			if (options == null && createOnDemand)
-			{
-				options = new ProxyOptions(model.Dependencies);
-				model.ExtendedProperties[ProxyConstants.ProxyOptionsKey] = options;
-			}
-
-			return options;
-		}
-
 		public static object GetUnproxiedInstance(object instance)
 		{
 #if (!SILVERLIGHT)
 			if (!RemotingServices.IsTransparentProxy(instance))
-			{
 #endif
+			{
 				var accessor = instance as IProxyTargetAccessor;
 
 				if (accessor != null)
 				{
 					instance = accessor.DynProxyGetTarget();
 				}
-#if (!SILVERLIGHT)
 			}
-#endif
 
 			return instance;
 		}
@@ -66,13 +46,13 @@ namespace Castle.MicroKernel.Proxy
 		{
 #if (!SILVERLIGHT)
 			if (!RemotingServices.IsTransparentProxy(instance))
-			{
 #endif
+			{
 				var accessor = instance as IProxyTargetAccessor;
 
 				if (accessor != null)
 				{
-					object target = accessor.DynProxyGetTarget();
+					var target = accessor.DynProxyGetTarget();
 
 					if (target != null)
 					{
@@ -84,11 +64,28 @@ namespace Castle.MicroKernel.Proxy
 						instance = target;
 					}
 				}
-#if (!SILVERLIGHT)
 			}
-#endif
 
 			return instance.GetType();
+		}
+
+		/// <summary>
+		///   Obtains the <see cref = "ProxyOptions" /> associated with the <see cref = "ComponentModel" />.
+		/// </summary>
+		/// <param name = "model">The component model.</param>
+		/// <param name = "createOnDemand">true if the options should be created if not present.</param>
+		/// <returns>The associated proxy options for the component model.</returns>
+		public static ProxyOptions ObtainProxyOptions(ComponentModel model, bool createOnDemand)
+		{
+			var options = model.ExtendedProperties[ProxyConstants.ProxyOptionsKey] as ProxyOptions;
+
+			if (options == null && createOnDemand)
+			{
+				options = new ProxyOptions(model);
+				model.ExtendedProperties[ProxyConstants.ProxyOptionsKey] = options;
+			}
+
+			return options;
 		}
 	}
 }

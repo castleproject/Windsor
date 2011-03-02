@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -27,12 +27,12 @@ namespace Castle.Core
 	[Serializable]
 	public class InterceptorReferenceCollection : IEnumerable<InterceptorReference>
 	{
-		private readonly DependencyModelCollection dependencies;
+		private readonly ComponentModel component;
 		private readonly List<InterceptorReference> list = new List<InterceptorReference>();
 
-		public InterceptorReferenceCollection(DependencyModelCollection dependencies)
+		public InterceptorReferenceCollection(ComponentModel component)
 		{
-			this.dependencies = dependencies;
+			this.component = component;
 		}
 
 		/// <summary>
@@ -116,7 +116,7 @@ namespace Castle.Core
 
 		private void Attach(IReference<IInterceptor> interceptor)
 		{
-			interceptor.Attach(dependencies);
+			interceptor.Attach(component);
 		}
 
 		IEnumerator<InterceptorReference> IEnumerable<InterceptorReference>.GetEnumerator()
