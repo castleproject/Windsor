@@ -813,7 +813,6 @@
     <Compile Include="Registration\Interceptors\Single\InterceptorKeyTestCase.cs" />
     <Compile Include="Registration\Interceptors\Single\InterceptorReference.cs" />
     <Compile Include="Registration\Interceptors\Single\InterceptorTypeTestCase.cs" />
-    <Compile Include="Registration\RegistrationTestCaseBase.cs" />
     <Compile Include="Registration\UsingFactoryMethodTestCase.cs" />
     <Compile Include="RuntimeParametersTestCase.cs" />
     <Compile Include="RuntimeParameters\ComponentWithParameters.cs" />
