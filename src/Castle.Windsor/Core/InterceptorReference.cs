@@ -147,14 +147,14 @@ namespace Castle.Core
 			return new CreationContext(handlerType, current, true);
 		}
 
-		void IReference<IInterceptor>.Attach(DependencyModelCollection dependencies)
+		void IReference<IInterceptor>.Attach(ComponentModel component)
 		{
-			dependencies.Add(dependencyModel);
+			component.Dependencies.Add(dependencyModel);
 		}
 
-		void IReference<IInterceptor>.Detach(DependencyModelCollection dependencies)
+		void IReference<IInterceptor>.Detach(ComponentModel component)
 		{
-			dependencies.Remove(dependencyModel);
+			component.Dependencies.Remove(dependencyModel);
 		}
 
 		IInterceptor IReference<IInterceptor>.Resolve(IKernel kernel, CreationContext context)

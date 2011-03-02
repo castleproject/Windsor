@@ -35,12 +35,12 @@ namespace Castle.MicroKernel
 			return instance;
 		}
 
-		public void Attach(DependencyModelCollection dependencies)
+		public void Attach(ComponentModel component)
 		{
 			// we might provide the instance as dependency's default value...
 		}
 
-		public void Detach(DependencyModelCollection dependencies)
+		public void Detach(ComponentModel component)
 		{
 		}
 	}

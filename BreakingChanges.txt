@@ -1,4 +1,16 @@
 ================================================================================================
+change - IReference<out T>.Attach and .Detach method have now ComponentModel as their parameter.
+
+impact - low
+fixability - easy
+
+description - To accomodate changes in DependencyModel and ParameterModel it was required to
+	have access to both of them hence ComponentModel is being passed as a more generic object
+	exposing access to all required elements.
+
+fix - Pass in full ComponentModel, not just it's .Dependencies property. In the reference
+	use component's properties to do all you require
+================================================================================================
 change - IDependencyAwareActivator has new method: bool IsManagedExternally(ComponentModel);
 
 impact - low

@@ -57,14 +57,14 @@ namespace Castle.MicroKernel
 			// so that we don't have to specify the key
 		}
 
-		public void Attach(DependencyModelCollection dependencies)
+		public void Attach(ComponentModel component)
 		{
-			dependencies.Add(dependency);
+			component.Dependencies.Add(dependency);
 		}
 
-		public void Detach(DependencyModelCollection dependencies)
+		public void Detach(ComponentModel component)
 		{
-			dependencies.Remove(dependency);
+			component.Dependencies.Remove(dependency);
 		}
 
 		public T Resolve(IKernel kernel, CreationContext context)

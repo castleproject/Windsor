@@ -255,7 +255,7 @@ namespace Castle.Core
 				{
 					return value;
 				}
-				value = new InterceptorReferenceCollection(Dependencies);
+				value = new InterceptorReferenceCollection(this);
 				var originalValue = Interlocked.CompareExchange(ref interceptors, value, null);
 				return originalValue ?? value;
 			}

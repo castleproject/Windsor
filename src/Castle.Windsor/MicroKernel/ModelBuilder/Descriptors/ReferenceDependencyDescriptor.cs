@@ -28,7 +28,7 @@ namespace Castle.MicroKernel.ModelBuilder.Descriptors
 
 		public void BuildComponentModel(IKernel kernel, ComponentModel model)
 		{
-			dependency.Attach(model.Dependencies);
+			dependency.Attach(model);
 		}
 
 		public void ConfigureComponentModel(IKernel kernel, ComponentModel model)
