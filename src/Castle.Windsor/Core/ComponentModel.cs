@@ -265,9 +265,7 @@ namespace Castle.Core
 		///   Gets the lifecycle steps.
 		/// </summary>
 		/// <value>The lifecycle steps.</value>
-		[DebuggerDisplay(
-			"Count = {lifecycle.commission != null ? lifecycle.commission.Count : 0} commission, {lifecycle.decommission != null ? lifecycle.decommission.Count : 0} decommission concerns"
-			)]
+		[DebuggerDisplay("Count = {lifecycle.commission != null ? lifecycle.commission.Count : 0 + lifecycle.decommission != null ? lifecycle.decommission.Count : 0}")]
 		public LifecycleConcernsCollection Lifecycle
 		{
 			get { return lifecycle; }
