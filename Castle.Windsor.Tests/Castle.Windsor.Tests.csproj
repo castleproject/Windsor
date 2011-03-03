@@ -12,7 +12,7 @@
     <ProjectGuid>{CB3A30A6-56D4-4F4F-9AEF-DA55E1FF6D74}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Castle</RootNamespace>
+    <RootNamespace>CastleTests</RootNamespace>
     <AssemblyName>Castle.Windsor.Tests</AssemblyName>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\buildscripts\CastleKey.snk</AssemblyOriginatorKeyFile>
@@ -597,38 +597,38 @@
     <Compile Include="SpecializedResolvers\CollectionResolverTestCase.cs" />
     <Compile Include="SpecializedResolvers\CollectionServiceOverridesInstaller.cs" />
     <Compile Include="StubGenericImplementationMatchingStrategy.cs" />
-    <Compile Include="SynchronizeFacility\Components\AsynchronousContext.cs" />
-    <Compile Include="SynchronizeFacility\Components\AsynchronousWorker.cs" />
-    <Compile Include="SynchronizeFacility\Components\ClassInContextWithMissingDependency.cs" />
-    <Compile Include="SynchronizeFacility\Components\ClassInContextWithoutVirtualMethod.cs" />
-    <Compile Include="SynchronizeFacility\Components\ClassUsingContext.cs" />
-    <Compile Include="SynchronizeFacility\Components\ClassUsingForm.cs" />
-    <Compile Include="SynchronizeFacility\Components\ClassUsingFormInAmbientContext.cs" />
-    <Compile Include="SynchronizeFacility\Components\ClassUsingFormInWindowsContext.cs" />
-    <Compile Include="SynchronizeFacility\Components\ClassInDepdnencyContextWithMissingDependency.cs" />
-    <Compile Include="SynchronizeFacility\Components\ClassInDispatcherContextWithoutVirtualMethod.cs" />
-    <Compile Include="SynchronizeFacility\Components\ClassUsingDispatcherContext.cs" />
-    <Compile Include="SynchronizeFacility\Components\ClassUsingWindow.cs" />
-    <Compile Include="SynchronizeFacility\Components\ClassUsingWindowInAmbientContext.cs" />
-    <Compile Include="SynchronizeFacility\Components\ClassUsingWindowInWindowsContext.cs" />
-    <Compile Include="SynchronizeFacility\Components\DummyWindow.cs" />
-    <Compile Include="SynchronizeFacility\Components\IClassUsingDepedenecyContext.cs" />
-    <Compile Include="SynchronizeFacility\Components\IDummyWindow.cs" />
-    <Compile Include="SynchronizeFacility\DispatcherObjectTestFixture.cs" />
-    <Compile Include="SynchronizeFacility\Components\DummyForm.cs">
+    <Compile Include="Facilities\Synchronize\Components\AsynchronousContext.cs" />
+    <Compile Include="Facilities\Synchronize\Components\AsynchronousWorker.cs" />
+    <Compile Include="Facilities\Synchronize\Components\ClassInContextWithMissingDependency.cs" />
+    <Compile Include="Facilities\Synchronize\Components\ClassInContextWithoutVirtualMethod.cs" />
+    <Compile Include="Facilities\Synchronize\Components\ClassUsingContext.cs" />
+    <Compile Include="Facilities\Synchronize\Components\ClassUsingForm.cs" />
+    <Compile Include="Facilities\Synchronize\Components\ClassUsingFormInAmbientContext.cs" />
+    <Compile Include="Facilities\Synchronize\Components\ClassUsingFormInWindowsContext.cs" />
+    <Compile Include="Facilities\Synchronize\Components\ClassInDepdnencyContextWithMissingDependency.cs" />
+    <Compile Include="Facilities\Synchronize\Components\ClassInDispatcherContextWithoutVirtualMethod.cs" />
+    <Compile Include="Facilities\Synchronize\Components\ClassUsingDispatcherContext.cs" />
+    <Compile Include="Facilities\Synchronize\Components\ClassUsingWindow.cs" />
+    <Compile Include="Facilities\Synchronize\Components\ClassUsingWindowInAmbientContext.cs" />
+    <Compile Include="Facilities\Synchronize\Components\ClassUsingWindowInWindowsContext.cs" />
+    <Compile Include="Facilities\Synchronize\Components\DummyWindow.cs" />
+    <Compile Include="Facilities\Synchronize\Components\IClassUsingDepedenecyContext.cs" />
+    <Compile Include="Facilities\Synchronize\Components\IDummyWindow.cs" />
+    <Compile Include="Facilities\Synchronize\DispatcherObjectTestCase.cs" />
+    <Compile Include="Facilities\Synchronize\Components\DummyForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="SynchronizeFacility\Components\DummyFormActivator.cs" />
-    <Compile Include="SynchronizeFacility\Components\DummyProxyHook.cs" />
-    <Compile Include="SynchronizeFacility\Components\IClassUsingContext.cs" />
-    <Compile Include="SynchronizeFacility\Components\IDummyForm.cs" />
-    <Compile Include="SynchronizeFacility\Components\IWorker.cs" />
-    <Compile Include="SynchronizeFacility\Components\IWorkerWithOuts.cs" />
-    <Compile Include="SynchronizeFacility\Components\ManualWorker.cs" />
-    <Compile Include="SynchronizeFacility\Components\SimpleWorker.cs" />
-    <Compile Include="SynchronizeFacility\Components\SyncClassOverrideContext.cs" />
-    <Compile Include="SynchronizeFacility\Components\SyncClassWithoutContext.cs" />
-    <Compile Include="SynchronizeFacility\SynchronizeFacilityTestFixture.cs" />
+    <Compile Include="Facilities\Synchronize\Components\DummyFormActivator.cs" />
+    <Compile Include="Facilities\Synchronize\Components\DummyProxyHook.cs" />
+    <Compile Include="Facilities\Synchronize\Components\IClassUsingContext.cs" />
+    <Compile Include="Facilities\Synchronize\Components\IDummyForm.cs" />
+    <Compile Include="Facilities\Synchronize\Components\IWorker.cs" />
+    <Compile Include="Facilities\Synchronize\Components\IWorkerWithOuts.cs" />
+    <Compile Include="Facilities\Synchronize\Components\ManualWorker.cs" />
+    <Compile Include="Facilities\Synchronize\Components\SimpleWorker.cs" />
+    <Compile Include="Facilities\Synchronize\Components\SyncClassOverrideContext.cs" />
+    <Compile Include="Facilities\Synchronize\Components\SyncClassWithoutContext.cs" />
+    <Compile Include="Facilities\Synchronize\SynchronizeFacilityTestCase.cs" />
     <Compile Include="TypeComparerTestCase.cs" />
     <Compile Include="TypedDependenciesTestCase.cs" />
     <Compile Include="MicroKernel\ArgumentsTestCase.cs" />
