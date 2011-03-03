@@ -390,6 +390,8 @@
     <Compile Include="Experimental\MyCustomReleasePolicy.cs" />
     <Compile Include="Experimental\ProblematicDependenciesTestCase.cs" />
     <Compile Include="Facilities\Startable\StartableAndDecoratorsTestCase.cs" />
+    <Compile Include="Facilities\Synchronize\Components\ClassUsingWindowNoSynchronizataion.cs" />
+    <Compile Include="Facilities\Synchronize\SynchronizeViaAttributeTestCase.cs" />
     <Compile Include="Facilities\TypedFactory\Components\DummyComponent.cs" />
     <Compile Include="Facilities\TypedFactory\Components\IDummyComponent.generic.cs" />
     <Compile Include="Facilities\TypedFactory\Components\ServiceWithMultipleCtors.cs" />

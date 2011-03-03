@@ -21,6 +21,20 @@ namespace Castle.Windsor.Tests
 	[TestFixture]
 	public abstract class AbstractContainerTestCase
 	{
+		[TearDown]
+		public void CleanUp()
+		{
+			container.Dispose();
+		}
+
+		[SetUp]
+		public void Init()
+		{
+			container = BuildContainer();
+			kernel = container.Kernel;
+			AfterContainerCreated();
+		}
+
 		private WindsorContainer container;
 		private IKernel kernel;
 
@@ -34,17 +48,8 @@ namespace Castle.Windsor.Tests
 			get { return kernel; }
 		}
 
-		[TearDown]
-		public void CleanUp()
+		protected virtual void AfterContainerCreated()
 		{
-			container.Dispose();
-		}
-
-		[SetUp]
-		public void Init()
-		{
-			container = BuildContainer();
-			kernel = container.Kernel;
 		}
 
 		protected virtual WindsorContainer BuildContainer()
