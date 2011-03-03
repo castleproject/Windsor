@@ -49,7 +49,7 @@ namespace Castle.Windsor.Tests
 
 		[Test,
 		 ExpectedException(typeof(KernelException),
-			ExpectedMessage = "Error on properties inspection. Could not convert the inspectionBehavior attribute value into an expected enum value. Value found is 'Invalid' while possible values are 'Undefined,None,All,DeclaredOnly'"
+			ExpectedMessage = "Error on properties inspection. Could not convert the inspectionBehavior attribute value into an expected enum value. Value found is 'Invalid' while possible values are 'Undefined, None, All, DeclaredOnly'"
 		 	)]
 		public void InvalidOption()
 		{

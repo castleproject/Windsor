@@ -15,7 +15,6 @@
 namespace Castle.MicroKernel.ModelBuilder.Inspectors
 {
 	using System;
-	using System.Linq;
 	using System.Reflection;
 
 	using Castle.Core;
@@ -97,29 +96,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 					continue;
 				}
 
-				DependencyModel dependency;
-
-				var propertyType = property.PropertyType;
-
-				// All these dependencies are simple guesses
-				// So we make them optional (the 'true' parameter below)
-
-				if (converter.IsSupportedAndPrimitiveType(propertyType))
-				{
-					dependency = new DependencyModel(property.Name, propertyType, isOptional: true);
-				}
-				else if (propertyType.IsInterface || propertyType.IsClass)
-				{
-					dependency = new DependencyModel(property.Name, propertyType, isOptional: true);
-				}
-				else
-				{
-					// What is it?!
-					// Awkward type, probably.
-
-					continue;
-				}
-
+				var dependency = new DependencyModel(property.Name, property.PropertyType, isOptional: true);
 				model.Properties.Add(new PropertySet(property, dependency));
 			}
 		}
@@ -136,17 +113,14 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 
 			try
 			{
-				return (PropertiesInspectionBehavior)
-				       Enum.Parse(typeof(PropertiesInspectionBehavior), enumStringVal, true);
+				return converter.PerformConversion<PropertiesInspectionBehavior>(enumStringVal);
 			}
 			catch (Exception)
 			{
-				var enumType = typeof(PropertiesInspectionBehavior);
-				var infos = enumType.GetFields(BindingFlags.Public | BindingFlags.Static);
-				var enumNames = infos.Select(x => x.Name);
 				var message = String.Format("Error on properties inspection. Could not convert the inspectionBehavior attribute value into an expected enum value. " +
 				                            "Value found is '{0}' while possible values are '{1}'",
-				                            enumStringVal, String.Join(",", enumNames.ToArray()));
+				                            enumStringVal,
+				                            String.Join(", ", Enum.GetNames(typeof(PropertiesInspectionBehavior))));
 
 				throw new KernelException(message);
 			}
