@@ -29,7 +29,7 @@ namespace Castle.Windsor.Tests.Config
 
 			service.Operation();
 
-			Assert.AreEqual(1, interceptor.Intercepted);
+			Assert.AreEqual(1, interceptor.InterceptedCallsCount);
 		}
 	}
 #endif

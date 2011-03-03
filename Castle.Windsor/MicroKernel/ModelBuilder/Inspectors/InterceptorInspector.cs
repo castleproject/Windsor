@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -24,8 +24,8 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 	using Castle.MicroKernel.Util;
 
 	/// <summary>
-	/// Inspect the component for <c>InterceptorAttribute</c> and
-	/// the configuration for the interceptors node
+	///   Inspect the component for <c>InterceptorAttribute</c> and
+	///   the configuration for the interceptors node
 	/// </summary>
 	[Serializable]
 	public class InterceptorInspector : IContributeComponentModelConstruction
@@ -34,6 +34,20 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 		{
 			CollectFromAttributes(model);
 			CollectFromConfiguration(model);
+		}
+
+		protected virtual void AddInterceptor(InterceptorReference interceptorRef, InterceptorReferenceCollection interceptors)
+		{
+			interceptors.Add(interceptorRef);
+		}
+
+		protected virtual void CollectFromAttributes(ComponentModel model)
+		{
+			var attributes = model.Implementation.GetAttributes<InterceptorAttribute>();
+			foreach (var attribute in attributes)
+			{
+				AddInterceptor(attribute.Interceptor, model.Interceptors);
+			}
 		}
 
 		protected virtual void CollectFromConfiguration(ComponentModel model)
@@ -55,23 +69,6 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 			CollectHook(interceptors, options);
 		}
 
-		private void CollectInterceptors(ComponentModel model, IConfiguration interceptors)
-		{
-			foreach (var interceptor in interceptors.Children)
-			{
-				var value = interceptor.Value;
-				if (!ReferenceExpressionUtil.IsReference(value))
-				{
-					throw new Exception(
-						String.Format("The value for the interceptor must be a reference to a component (Currently {0})", value));
-				}
-
-				var reference = new InterceptorReference(ReferenceExpressionUtil.ExtractComponentKey(value));
-
-				model.Interceptors.Add(reference);
-			}
-		}
-
 		protected virtual void CollectHook(IConfiguration interceptors, ProxyOptions options)
 		{
 			var hook = interceptors.Attributes["hook"];
@@ -87,7 +84,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 			}
 
 			var componentKey = ReferenceExpressionUtil.ExtractComponentKey(hook);
-			options.Hook = new ComponentReference<IProxyGenerationHook>(componentKey);
+			options.Hook = new ComponentReference<IProxyGenerationHook>("proxy-generation-hook", componentKey);
 		}
 
 		protected virtual void CollectSelector(IConfiguration interceptors, ProxyOptions options)
@@ -98,28 +95,31 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 				return;
 			}
 
-			if (!ReferenceExpressionUtil.IsReference(selector))
+			var name = ReferenceExpressionUtil.ExtractComponentKey(selector);
+			if (name == null)
 			{
 				throw new Exception(
 					String.Format("The value for the selector must be a reference to a component (Currently {0})", selector));
 			}
 
-			var componentKey = ReferenceExpressionUtil.ExtractComponentKey(selector);
-			options.Selector = new ComponentReference<IInterceptorSelector>(componentKey);
+			options.Selector = new ComponentReference<IInterceptorSelector>("interceptor-selector", name);
 		}
 
-		protected virtual void CollectFromAttributes(ComponentModel model)
+		private void CollectInterceptors(ComponentModel model, IConfiguration interceptors)
 		{
-			var attributes = model.Implementation.GetAttributes<InterceptorAttribute>();
-			foreach (var attribute in attributes)
+			foreach (var interceptor in interceptors.Children)
 			{
-				AddInterceptor(attribute.Interceptor, model.Interceptors);
-			}
-		}
+				var value = interceptor.Value;
+				if (!ReferenceExpressionUtil.IsReference(value))
+				{
+					throw new Exception(
+						String.Format("The value for the interceptor must be a reference to a component (Currently {0})", value));
+				}
 
-		protected virtual void AddInterceptor(InterceptorReference interceptorRef, InterceptorReferenceCollection interceptors)
-		{
-			interceptors.Add(interceptorRef);
+				var reference = new InterceptorReference(ReferenceExpressionUtil.ExtractComponentKey(value));
+
+				model.Interceptors.Add(reference);
+			}
 		}
 	}
 }

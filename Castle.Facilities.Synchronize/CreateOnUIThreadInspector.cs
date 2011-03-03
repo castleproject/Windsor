@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ namespace Castle.Facilities.Synchronize
 	using System.Runtime.Remoting;
 	using System.Windows;
 	using System.Windows.Forms;
+
 	using Castle.Core;
 	using Castle.Core.Configuration;
 	using Castle.Core.Internal;
@@ -30,19 +31,21 @@ namespace Castle.Facilities.Synchronize
 	using Castle.MicroKernel.SubSystems.Conversion;
 	using Castle.MicroKernel.Util;
 
+	using Application = System.Windows.Application;
+
 	/// <summary>
-	/// Ensure that synchronized controls are always created on the main Ui thread.
+	///   Ensure that synchronized controls are always created on the main Ui thread.
 	/// </summary>
 	internal class CreateOnUIThreadInspector : IContributeComponentModelConstruction, IDisposable
 	{
-		private readonly MarshalingControl marshalingControl;
 		private readonly IReference<IProxyGenerationHook> controlProxyHook;
+		private readonly MarshalingControl marshalingControl;
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="CreateOnUIThreadInspector"/> class.
+		///   Initializes a new instance of the <see cref = "CreateOnUIThreadInspector" /> class.
 		/// </summary>
-		/// <param name="kernel">The kernel.</param>
-		/// <param name="config">The config.</param>
+		/// <param name = "kernel">The kernel.</param>
+		/// <param name = "config">The config.</param>
 		public CreateOnUIThreadInspector(IKernel kernel, IConfiguration config)
 		{
 			marshalingControl = new MarshalingControl();
@@ -50,10 +53,10 @@ namespace Castle.Facilities.Synchronize
 		}
 
 		/// <summary>
-		/// Processes <see cref="Control"/> implementations.
+		///   Processes <see cref = "Control" /> implementations.
 		/// </summary>
-		/// <param name="kernel">The kernel.</param>
-		/// <param name="model">The model.</param>
+		/// <param name = "kernel">The kernel.</param>
+		/// <param name = "model">The model.</param>
 		public void ProcessModel(IKernel kernel, ComponentModel model)
 		{
 			CreateOnUIThreadDelegate createOnUIThread = null;
@@ -83,6 +86,16 @@ namespace Castle.Facilities.Synchronize
 			}
 		}
 
+		private void ConfigureProxyOptions(ComponentModel model)
+		{
+			if (controlProxyHook == null)
+			{
+				return;
+			}
+			var proxyOptions = ProxyUtil.ObtainProxyOptions(model, true);
+			proxyOptions.Hook = controlProxyHook;
+		}
+
 		private object CreateOnWinformsUIThread(CreationContextDelegate performCreation, CreationContext context)
 		{
 			if (marshalingControl.InvokeRequired)
@@ -99,9 +112,20 @@ namespace Castle.Facilities.Synchronize
 			return component;
 		}
 
+		/// <summary>
+		///   Releases the marshalling control.
+		/// </summary>
+		void IDisposable.Dispose()
+		{
+			if (marshalingControl != null)
+			{
+				marshalingControl.Dispose();
+			}
+		}
+
 		private static object CreateOnDispatcherUIThread(CreationContextDelegate performCreation, CreationContext context)
 		{
-			var application = System.Windows.Application.Current;
+			var application = Application.Current;
 
 			if (application != null && application.CheckAccess() == false)
 			{
@@ -111,14 +135,18 @@ namespace Castle.Facilities.Synchronize
 			return performCreation(context);
 		}
 
-		private void ConfigureProxyOptions(ComponentModel model)
+		private static object GetUnproxiedInstance(object instance)
 		{
-			if (controlProxyHook == null)
+			if (!RemotingServices.IsTransparentProxy(instance))
 			{
-				return;
+				var accessor = instance as IProxyTargetAccessor;
+
+				if (accessor != null)
+				{
+					instance = accessor.DynProxyGetTarget();
+				}
 			}
-			var proxyOptions = ProxyUtil.ObtainProxyOptions(model, true);
-			proxyOptions.Hook = controlProxyHook;
+			return instance;
 		}
 
 		private static IReference<IProxyGenerationHook> ObtainProxyHook(IKernel kernel, IConfiguration config)
@@ -133,7 +161,7 @@ namespace Castle.Facilities.Synchronize
 					if (ReferenceExpressionUtil.IsReference(hookAttrib))
 					{
 						var hookKey = ReferenceExpressionUtil.ExtractComponentKey(hookAttrib);
-						return new ComponentReference<IProxyGenerationHook>(hookKey);
+						return new ComponentReference<IProxyGenerationHook>("synchronize-proxy-generation-hook", hookKey);
 					}
 
 					var converter = kernel.GetConversionManager();
@@ -160,33 +188,6 @@ namespace Castle.Facilities.Synchronize
 			return new InstanceReference<IProxyGenerationHook>(hook);
 		}
 
-		private static object GetUnproxiedInstance(object instance)
-		{
-			if (!RemotingServices.IsTransparentProxy(instance))
-			{
-				var accessor = instance as IProxyTargetAccessor;
-
-				if (accessor != null)
-				{
-					instance = accessor.DynProxyGetTarget();
-				}
-			}
-			return instance;
-		}
-
-		/// <summary>
-		/// Releases the marshalling control.
-		/// </summary>
-		void IDisposable.Dispose()
-		{
-			if (marshalingControl != null)
-			{
-				marshalingControl.Dispose();
-			}
-		}
-
-		#region MarshalingControl
-
 		private class MarshalingControl : Control
 		{
 			internal MarshalingControl()
@@ -205,7 +206,5 @@ namespace Castle.Facilities.Synchronize
 			{
 			}
 		}
-
-		#endregion
 	}
 }

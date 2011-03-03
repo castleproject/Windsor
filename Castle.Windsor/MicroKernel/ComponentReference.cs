@@ -27,22 +27,26 @@ namespace Castle.MicroKernel
 	public class ComponentReference<T> : IReference<T>
 	{
 		private readonly Type actualComponentType;
-		private readonly string componentKey;
 		private readonly DependencyModel dependency;
+		private readonly string serviceOverrideComponentKey;
 
-		public ComponentReference(string componentKey)
+		public ComponentReference(string dependencyName, string componentKey)
 		{
+			if (dependencyName == null)
+			{
+				throw new ArgumentNullException("dependencyName");
+			}
 			if (componentKey == null)
 			{
 				throw new ArgumentNullException("componentKey");
 			}
 
-			this.componentKey = componentKey;
+			serviceOverrideComponentKey = componentKey;
 
-			dependency = new DependencyModel(componentKey, typeof(T), false);
+			dependency = new DependencyModel(dependencyName, typeof(T), false);
 		}
 
-		public ComponentReference(Type actualComponentType)
+		public ComponentReference(string dependencyName, Type actualComponentType)
 		{
 			if (actualComponentType == null)
 			{
@@ -50,10 +54,11 @@ namespace Castle.MicroKernel
 			}
 			this.actualComponentType = actualComponentType;
 
-			dependency = new DependencyModel(null, actualComponentType, false);
+			dependency = new DependencyModel(dependencyName, actualComponentType, false);
 		}
 
-		public ComponentReference() : this(typeof(T))
+		public ComponentReference(string dependencyName)
+			: this(dependencyName, typeof(T))
 		{
 			// so that we don't have to specify the key
 		}
@@ -61,8 +66,8 @@ namespace Castle.MicroKernel
 		public void Attach(ComponentModel component)
 		{
 			component.Dependencies.Add(dependency);
-			var value = componentKey ?? actualComponentType.FullName;
-			component.Parameters.Add(typeof(T).AssemblyQualifiedName, ReferenceExpressionUtil.BuildReference(value));
+			var reference = ReferenceExpressionUtil.BuildReference(serviceOverrideComponentKey ?? actualComponentType.FullName);
+			component.Parameters.Add(dependency.DependencyKey, reference);
 		}
 
 		public void Detach(ComponentModel component)
@@ -78,7 +83,7 @@ namespace Castle.MicroKernel
 				throw new Exception(
 					string.Format(
 						"Component {0} could not be resolved. Make sure you didn't misspell the name, and that component is registered.",
-						componentKey ?? actualComponentType.ToString()));
+						serviceOverrideComponentKey ?? actualComponentType.ToString()));
 			}
 
 			try
@@ -87,15 +92,15 @@ namespace Castle.MicroKernel
 			}
 			catch (InvalidCastException e)
 			{
-				throw new Exception(string.Format("Component {0} is not compatible with type {1}.", componentKey, typeof(T)), e);
+				throw new Exception(string.Format("Component {0} is not compatible with type {1}.", serviceOverrideComponentKey, typeof(T)), e);
 			}
 		}
 
 		private IHandler GetHandler(IKernel kernel)
 		{
-			if (componentKey != null)
+			if (serviceOverrideComponentKey != null)
 			{
-				return kernel.GetHandler(componentKey);
+				return kernel.GetHandler(serviceOverrideComponentKey);
 			}
 
 			return kernel.GetHandler(actualComponentType);

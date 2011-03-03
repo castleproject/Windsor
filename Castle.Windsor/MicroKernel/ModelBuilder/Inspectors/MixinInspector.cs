@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -42,16 +42,16 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 			{
 				var value = mixin.Value;
 
-				if (!ReferenceExpressionUtil.IsReference(value))
+				var name = ReferenceExpressionUtil.ExtractComponentKey(value);
+				if (name == null)
 				{
 					throw new Exception(
 						String.Format("The value for the mixin must be a reference to a component (Currently {0})", value));
 				}
 
-				var componentKey = ReferenceExpressionUtil.ExtractComponentKey(value);
-				mixinReferences.Add(new ComponentReference<object>(componentKey));
+				mixinReferences.Add(new ComponentReference<object>("mixin-" + name, name));
 			}
-			if(mixinReferences.Count == 0)
+			if (mixinReferences.Count == 0)
 			{
 				return;
 			}

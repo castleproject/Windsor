@@ -652,7 +652,7 @@ namespace Castle.MicroKernel.Registration
 		/// <returns></returns>
 		public ComponentRegistration<TService> SelectInterceptorsWith(Action<ItemRegistration<IInterceptorSelector>> selector)
 		{
-			var registration = new ItemRegistration<IInterceptorSelector>();
+			var registration = new ItemRegistration<IInterceptorSelector>("interceptor-selector");
 			selector.Invoke(registration);
 			return AddDescriptor(new InterceptorSelectorDescriptor(registration.Item));
 		}

@@ -45,7 +45,7 @@ namespace Castle.MicroKernel.Tests
 				Assert.Throws(typeof(HandlerException), () => Kernel.Resolve<CommonServiceUser3>("key"));
 			var expectedMessage =
 				string.Format(
-					"Can't create component 'key' as it has dependencies to be satisfied.{0}{0}'key' is waiting for the following dependencies:{0}- Service 'common2' (via override) which was not registered. Did you misspell the name?{0}",
+					"Can't create component 'key' as it has dependencies to be satisfied.{0}{0}'key' is waiting for the following dependencies:{0}- Component 'common2' which was not registered. Did you misspell the name?{0}",
 					Environment.NewLine);
 			Assert.AreEqual(expectedMessage, exception.Message);
 		}
@@ -153,7 +153,7 @@ namespace Castle.MicroKernel.Tests
 				Assert.Throws(typeof(HandlerException), () => Kernel.Resolve<CommonServiceUser>("key"));
 			var expectedMessage =
 				string.Format(
-					"Can't create component 'key' as it has dependencies to be satisfied.{0}{0}'key' is waiting for the following dependencies:{0}- Service 'common2' (via override) which was not registered. Did you misspell the name?{0}",
+					"Can't create component 'key' as it has dependencies to be satisfied.{0}{0}'key' is waiting for the following dependencies:{0}- Component 'common2' which was not registered. Did you misspell the name?{0}",
 					Environment.NewLine);
 			Assert.AreEqual(expectedMessage, exception.Message);
 		}

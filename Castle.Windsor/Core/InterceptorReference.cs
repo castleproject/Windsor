@@ -24,6 +24,7 @@ namespace Castle.Core
 	using Castle.MicroKernel.Context;
 	using Castle.MicroKernel.Proxy;
 	using Castle.MicroKernel.Resolvers;
+	using Castle.MicroKernel.Util;
 
 	/// <summary>
 	///   Represents an reference to a Interceptor component.
@@ -32,10 +33,10 @@ namespace Castle.Core
 	public class InterceptorReference : IReference<IInterceptor>, IEquatable<InterceptorReference>
 	{
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
-		private readonly string componentKey;
+		private readonly DependencyModel dependencyModel;
 
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
-		private readonly DependencyModel dependencyModel;
+		private readonly string serviceOverrideComponent;
 
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 		private readonly Type serviceType;
@@ -50,8 +51,8 @@ namespace Castle.Core
 			{
 				throw new ArgumentNullException("componentKey");
 			}
-			this.componentKey = componentKey;
-			dependencyModel = new DependencyModel(componentKey, serviceType, false);
+			serviceOverrideComponent = componentKey;
+			dependencyModel = new DependencyModel(BuildDependencyName(), typeof(IInterceptor), false);
 		}
 
 		/// <summary>
@@ -65,7 +66,7 @@ namespace Castle.Core
 				throw new ArgumentNullException("serviceType");
 			}
 			this.serviceType = serviceType;
-			dependencyModel = new DependencyModel(componentKey, serviceType, false);
+			dependencyModel = new DependencyModel(BuildDependencyName(), serviceType, false);
 		}
 
 		public override bool Equals(object obj)
@@ -81,7 +82,7 @@ namespace Castle.Core
 		{
 			var result = 0;
 			result = 29*result + (serviceType != null ? serviceType.GetHashCode() : 0);
-			result = 29*result + (componentKey != null ? componentKey.GetHashCode() : 0);
+			result = 29*result + (serviceOverrideComponent != null ? serviceOverrideComponent.GetHashCode() : 0);
 			return result;
 		}
 
@@ -89,7 +90,7 @@ namespace Castle.Core
 		{
 			if (serviceType == null)
 			{
-				return componentKey;
+				return serviceOverrideComponent;
 			}
 			return serviceType.Name ?? string.Empty;
 		}
@@ -104,7 +105,7 @@ namespace Castle.Core
 			{
 				return false;
 			}
-			if (!Equals(componentKey, other.componentKey))
+			if (!Equals(serviceOverrideComponent, other.serviceOverrideComponent))
 			{
 				return false;
 			}
@@ -134,7 +135,7 @@ namespace Castle.Core
 			{
 				return kernel.GetHandler(serviceType);
 			}
-			return kernel.GetHandler(componentKey);
+			return kernel.GetHandler(serviceOverrideComponent);
 		}
 
 		private CreationContext RebuildContext(Type handlerType, CreationContext current)
@@ -150,11 +151,13 @@ namespace Castle.Core
 		void IReference<IInterceptor>.Attach(ComponentModel component)
 		{
 			component.Dependencies.Add(dependencyModel);
+			var reference = ReferenceExpressionUtil.BuildReference(serviceOverrideComponent ?? serviceType.FullName);
+			component.Parameters.Add(dependencyModel.DependencyKey, reference);
 		}
 
 		void IReference<IInterceptor>.Detach(ComponentModel component)
 		{
-			component.Dependencies.Remove(dependencyModel);
+			throw new NotSupportedException();
 		}
 
 		IInterceptor IReference<IInterceptor>.Resolve(IKernel kernel, CreationContext context)
@@ -205,6 +208,11 @@ namespace Castle.Core
 		public static InterceptorReference ForType<T>()
 		{
 			return new InterceptorReference(typeof(T));
+		}
+
+		private static string BuildDependencyName()
+		{
+			return "interceptor-" + Guid.NewGuid().ToString("N");
 		}
 	}
 }
