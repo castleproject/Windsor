@@ -31,6 +31,12 @@ namespace Castle.MicroKernel.Tests.SpecializedResolvers
 				Component.For<ArrayDepAsConstructor>().Named("InjectFooOnly")
 					.ServiceOverrides(ServiceOverride.ForKey("services").Eq(new[] { "foo" })),
 				Component.For<ArrayDepAsConstructor>().Named("InjectFooAndBarOnly")
+					.ServiceOverrides(ServiceOverride.ForKey("services").Eq(new[] { "foo", "bar" })),
+
+					Component.For<ListDepAsConstructor>().Named("InjectAllList"),
+				Component.For<ListDepAsConstructor>().Named("InjectFooOnlyList")
+					.ServiceOverrides(ServiceOverride.ForKey("services").Eq(new[] { "foo" })),
+				Component.For<ListDepAsConstructor>().Named("InjectFooAndBarOnlyList")
 					.ServiceOverrides(ServiceOverride.ForKey("services").Eq(new[] { "foo", "bar" })));
 		}
 	}

@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,6 +14,7 @@
 
 namespace Castle.MicroKernel.Resolvers.SpecializedResolvers
 {
+	using System;
 	using System.Collections.Generic;
 	using System.Linq;
 
@@ -22,79 +23,70 @@ namespace Castle.MicroKernel.Resolvers.SpecializedResolvers
 	using Castle.MicroKernel.Context;
 
 	/// <summary>
-	/// Handle dependencies of services in the format of generic IList.
+	///   Handle dependencies of services in the format of generic IList.
 	/// </summary>
 	/// <remarks>
-	/// This is a complimentary <see cref="ISubDependencyResolver"/> implementation 
-	/// that is capable of satisfying dependencies of services generic IList.
-	/// <para>
-	/// Note that it will take precedence over service override for lists defined 
-	/// on the configuration.
-	/// </para>
+	///   This is a complimentary <see cref = "ISubDependencyResolver" /> implementation 
+	///   that is capable of satisfying dependencies of services generic IList.
+	///   <para>
+	///     Note that it will take precedence over service override for lists defined 
+	///     on the configuration.
+	///   </para>
 	/// </remarks>
 	/// <example>
-	/// In order to install the resolver:
-	/// <code>
-	/// var kernel = new DefaultKernel();
-	/// kernel.Resolver.AddSubResolver(new ListResolver(kernel));
-	/// </code>
+	///   In order to install the resolver:
+	///   <code>
+	///     var kernel = new DefaultKernel();
+	///     kernel.Resolver.AddSubResolver(new ListResolver(kernel));
+	///   </code>
 	/// 
-	/// <para>
-	/// To use it, assuming that IService is on the container:
-	/// </para>
+	///   <para>
+	///     To use it, assuming that IService is on the container:
+	///   </para>
 	/// 
-	/// <code>
-	/// public class Component
-	/// {
+	///   <code>
+	///     public class Component
+	///     {
 	///     public Component(IList&lt;IService&gt; services)
 	///     {
 	///     }
-	/// }
-	/// </code>
+	///     }
+	///   </code>
 	/// </example>
-	public class ListResolver : ISubDependencyResolver
+	public class ListResolver : CollectionResolver
 	{
-		private readonly IKernel kernel;
-		private readonly bool allowEmptyList;
-
 		public ListResolver(IKernel kernel)
-			: this(kernel, false)
+			: base(kernel, false)
 		{
 		}
 
 		public ListResolver(IKernel kernel, bool allowEmptyList)
+			: base(kernel, allowEmptyList)
 		{
-			this.kernel = kernel;
-			this.allowEmptyList = allowEmptyList;
 		}
 
-		public object Resolve(CreationContext context, ISubDependencyResolver contextHandlerResolver,
-							  ComponentModel model,
-							  DependencyModel dependency)
+		public override object Resolve(CreationContext context, ISubDependencyResolver contextHandlerResolver,
+		                               ComponentModel model,
+		                               DependencyModel dependency)
 		{
-			var targetType = dependency.TargetItemType;
-			var elementType = targetType.GetGenericArguments().Single();
-
-			var items = kernel.ResolveAll(elementType, null);
-
-			var listType = typeof(List<>).MakeGenericType(elementType);
-			var list = listType.CreateInstance<object>(items);
-
-			return list;
+			var items = base.Resolve(context, contextHandlerResolver, model, dependency);
+			var listType = BuildListType(dependency);
+			return listType.CreateInstance<object>(items);
 		}
 
-		public bool CanResolve(CreationContext context, ISubDependencyResolver contextHandlerResolver,
-							   ComponentModel model,
-							   DependencyModel dependency)
+		private Type BuildListType(DependencyModel dependency)
 		{
-			var targetType = dependency.TargetItemType;
-			if (targetType == null || !targetType.IsGenericType || targetType.GetGenericTypeDefinition() != typeof(IList<>))
+			return typeof(List<>).MakeGenericType(GetItemType(dependency.TargetItemType));
+		}
+
+		protected override Type GetItemType(Type targetItemType)
+		{
+			if (targetItemType.IsGenericType == false ||
+			    targetItemType.GetGenericTypeDefinition() != typeof(IList<>))
 			{
-				return false;
+				return null;
 			}
-
-			var elementType = targetType.GetGenericArguments().Single();
-			return allowEmptyList || kernel.HasComponent(elementType);
+			return targetItemType.GetGenericArguments().Single();
 		}
 	}
 }
