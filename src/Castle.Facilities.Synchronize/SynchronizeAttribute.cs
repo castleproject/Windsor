@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,49 +18,49 @@ namespace Castle.Facilities.Synchronize
 	using System.Threading;
 
 	/// <summary>
-	/// Used to declare that a component wants synchronization.
+	///   Used to declare that a component wants synchronization.
 	/// </summary>
-	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple=false)]
+	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false)]
 	public class SynchronizeAttribute : Attribute
 	{
 		private readonly SynchronizeContextReference interceptorReference;
 
 		/// <summary>
-		/// Constructs an empty SynchronizeAttribute.
+		///   Constructs an empty SynchronizeAttribute.
 		/// </summary>
 		public SynchronizeAttribute()
 		{
 		}
 
 		/// <summary>
-		/// Constructs the SynchronizeAttribute pointing to a key.
+		///   Constructs the SynchronizeAttribute pointing to a key.
 		/// </summary>
-		/// <param name="componentKey">The component key.</param>
+		/// <param name = "componentKey">The component key.</param>
 		public SynchronizeAttribute(String componentKey)
 		{
 			interceptorReference = new SynchronizeContextReference(componentKey);
 		}
 
 		/// <summary>
-		/// Constructs the SynchronizeAttribute pointing to a service.
+		///   Constructs the SynchronizeAttribute pointing to a service.
 		/// </summary>
-		/// <param name="interceptorType">The service type.</param>
+		/// <param name = "interceptorType">The service type.</param>
 		public SynchronizeAttribute(Type interceptorType)
 		{
 			interceptorReference = new SynchronizeContextReference(interceptorType);
 		}
 
 		/// <summary>
-		/// Determines if ambient <see cref="SynchronizationContext"/> is used.
-		/// </summary>
-		public bool UseAmbientContext { get; set; }
-
-		/// <summary>
-		/// Gets the synchronization context reference.
+		///   Gets the synchronization context reference.
 		/// </summary>
 		public SynchronizeContextReference SynchronizeContext
 		{
 			get { return interceptorReference; }
 		}
+
+		/// <summary>
+		///   Determines if ambient <see cref = "SynchronizationContext" /> is used.
+		/// </summary>
+		public bool UseAmbientContext { get; set; }
 	}
 }
