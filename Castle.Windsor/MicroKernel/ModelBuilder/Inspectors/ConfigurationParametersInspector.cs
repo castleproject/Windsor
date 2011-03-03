@@ -76,12 +76,11 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 					AddAnyServiceOverrides(model, item);
 				}
 
-				if (item.Value == null || !ReferenceExpressionUtil.IsReference(item.Value))
+				var newKey = ReferenceExpressionUtil.ExtractComponentKey(item.Value);
+				if (newKey == null)
 				{
 					continue;
 				}
-
-				var newKey = ReferenceExpressionUtil.ExtractComponentKey(item.Value);
 				model.Dependencies.Add(new DependencyModel(newKey, null, false));
 			}
 		}
