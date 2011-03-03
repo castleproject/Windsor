@@ -20,17 +20,17 @@ namespace Castle.Windsor.Tests.Interceptors
 	[Singleton]
 	public class CountingInterceptor : IInterceptor
 	{
-		private int intercepted;
+		private int interceptedCallsCount;
 
 		public void Intercept(IInvocation invocation)
 		{
-			intercepted++;
+			interceptedCallsCount++;
 			invocation.Proceed();
 		}
 
-		public int Intercepted
+		public int InterceptedCallsCount
 		{
-			get { return intercepted; }
+			get { return interceptedCallsCount; }
 		}
 	}
 }

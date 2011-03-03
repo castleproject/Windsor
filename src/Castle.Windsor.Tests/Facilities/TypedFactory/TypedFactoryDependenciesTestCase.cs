@@ -16,11 +16,11 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 {
 	using System;
 	using System.Linq;
-	using System.Text;
 
 	using Castle.Facilities.TypedFactory;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Registration;
+	using Castle.MicroKernel.Util;
 	using Castle.Windsor.Tests.Facilities.TypedFactory.Factories;
 
 	using NUnit.Framework;
@@ -31,18 +31,13 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 		private void AssertHasDependency<TComponnet>(string key)
 		{
 			var handler = GetHandler<TComponnet>();
-			Assert.IsTrue(handler.ComponentModel.Dependencies.Any(d => d.DependencyKey == key), "Dependencies found: {0}",
-			              BuildDependencyByKeyList(handler));
-		}
+			var reference = ReferenceExpressionUtil.BuildReference(key);
+			var parameter = handler.ComponentModel.Parameters.FirstOrDefault(p => p.Value == reference);
 
-		private string BuildDependencyByKeyList(IHandler handler)
-		{
-			var message = new StringBuilder();
-			foreach (var dependency in handler.ComponentModel.Dependencies)
-			{
-				message.AppendLine(dependency.DependencyKey);
-			}
-			return message.ToString();
+			Assert.IsNotNull(parameter, "Parameter for dependency '{0}' should exist", key);
+
+			var dependency = handler.ComponentModel.Dependencies.SingleOrDefault(d => d.DependencyKey == parameter.Name);
+			Assert.IsNotNull(dependency, "Parameter named '{1}' for dependency on '{0}' should exist.", key, parameter.Name);
 		}
 
 		private IHandler GetHandler<T>()

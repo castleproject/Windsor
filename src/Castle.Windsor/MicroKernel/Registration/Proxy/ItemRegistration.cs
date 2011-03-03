@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,7 +18,14 @@ namespace Castle.MicroKernel.Registration.Proxy
 
 	public class ItemRegistration<TItem>
 	{
+		private readonly string itemName;
+
 		private IReference<TItem> item;
+
+		public ItemRegistration(string itemName)
+		{
+			this.itemName = itemName;
+		}
 
 		internal IReference<TItem> Item
 		{
@@ -38,13 +45,13 @@ namespace Castle.MicroKernel.Registration.Proxy
 
 		public ItemRegistration<TItem> Service(Type serviceType)
 		{
-			item = new ComponentReference<TItem>(serviceType);
+			item = new ComponentReference<TItem>(itemName, serviceType);
 			return this;
 		}
 
 		public ItemRegistration<TItem> Service(string name)
 		{
-			item = new ComponentReference<TItem>(name);
+			item = new ComponentReference<TItem>(itemName, name);
 			return this;
 		}
 	}

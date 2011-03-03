@@ -33,19 +33,26 @@ namespace Castle.MicroKernel.Registration.Proxy
 
 		public MixinRegistration Service<TService>()
 		{
-			items.Add(new ComponentReference<object>(typeof(TService)));
-			return this;
+			return Service(typeof(TService));
 		}
 
 		public MixinRegistration Service(Type serviceType)
 		{
-			items.Add(new ComponentReference<object>(serviceType));
+			if (serviceType == null)
+			{
+				throw new ArgumentNullException("serviceType");
+			}
+			items.Add(new ComponentReference<object>("mixin-" + serviceType.Name, serviceType));
 			return this;
 		}
 
 		public MixinRegistration Service(string name)
 		{
-			items.Add(new ComponentReference<object>(name));
+			if (name == null)
+			{
+				throw new ArgumentNullException("name");
+			}
+			items.Add(new ComponentReference<object>("mixin-" + name, name));
 			return this;
 		}
 

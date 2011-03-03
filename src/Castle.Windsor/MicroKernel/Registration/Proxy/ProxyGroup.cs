@@ -53,7 +53,7 @@ namespace Castle.MicroKernel.Registration.Proxy
 
 		public ComponentRegistration<S> Hook(Action<ItemRegistration<IProxyGenerationHook>> hookRegistration)
 		{
-			var hook = new ItemRegistration<IProxyGenerationHook>();
+			var hook = new ItemRegistration<IProxyGenerationHook>("proxy-generation-hook");
 			hookRegistration.Invoke(hook);
 
 			AddDescriptor(new ProxyHookDescriptor(hook.Item));

@@ -71,7 +71,7 @@ namespace Castle.Windsor.Tests.Facilities.EventWiring
 			publisher.Trigger();
 
 			var interceptor = container.Resolve<CountingInterceptor>();
-			Assert.AreEqual(1, interceptor.Intercepted);
+			Assert.AreEqual(1, interceptor.InterceptedCallsCount);
 
 			// Assert that event was caught
 			var listener = container.Resolve<SimpleListener>();

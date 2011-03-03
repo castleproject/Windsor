@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -43,12 +43,12 @@ namespace Castle.Facilities.TypedFactory
 
 		public void SelectedWith(string selectorComponentName)
 		{
-			selectorReference = new ComponentReference<ITypedFactoryComponentSelector>(selectorComponentName);
+			selectorReference = new ComponentReference<ITypedFactoryComponentSelector>("typed-factory-component-selector", selectorComponentName);
 		}
 
 		public void SelectedWith<TSelectorComponent>() where TSelectorComponent : ITypedFactoryComponentSelector
 		{
-			selectorReference = (IReference<ITypedFactoryComponentSelector>)new ComponentReference<TSelectorComponent>();
+			selectorReference = (IReference<ITypedFactoryComponentSelector>)new ComponentReference<TSelectorComponent>("typed-factory-component-selector");
 		}
 
 		public void SelectedWith(ITypedFactoryComponentSelector selector)

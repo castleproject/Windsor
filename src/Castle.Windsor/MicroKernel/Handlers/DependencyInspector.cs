@@ -134,12 +134,12 @@ namespace Castle.MicroKernel.Handlers
 			//TODO: what about self dependency?
 			if (handler == null)
 			{
-				message.AppendFormat("- Service '{0}' (via override) which was not registered. Did you misspell the name?", key);
+				message.AppendFormat("- Component '{0}' which was not registered. Did you misspell the name?", key);
 				message.AppendLine();
 			}
 			else
 			{
-				message.AppendFormat("- Service '{0}' (via override) which was registered but is also waiting for dependencies.", key);
+				message.AppendFormat("- Component '{0}' (via override) which was registered but is also waiting for dependencies.", key);
 				message.AppendLine();
 
 				var info = handler as IExposeDependencyInfo;
