@@ -19,8 +19,6 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 
 	using Castle.Core;
 	using Castle.Core.Internal;
-	using Castle.MicroKernel.SubSystems.Conversion;
-	using Castle.MicroKernel.Util;
 
 	/// <summary>
 	///   This implementation of <see cref = "IContributeComponentModelConstruction" />
@@ -31,14 +29,6 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 	[Serializable]
 	public class ConstructorDependenciesModelInspector : IContributeComponentModelConstruction
 	{
-		[NonSerialized]
-		private readonly IConversionManager converter;
-
-		public ConstructorDependenciesModelInspector(IConversionManager converter)
-		{
-			this.converter = converter;
-		}
-
 		public virtual void ProcessModel(IKernel kernel, ComponentModel model)
 		{
 			var targetType = model.Implementation;
@@ -56,16 +46,17 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 		protected virtual ConstructorCandidate CreateConstructorCandidate(ComponentModel model, ConstructorInfo constructor)
 		{
 			var parameters = constructor.GetParameters();
-
-			var dependencies = new DependencyModel[parameters.Length];
-
-			for (var i = 0; i < parameters.Length; i++)
-			{
-				var parameter = parameters[i];
-				dependencies[i] = new DependencyModel(parameter.Name, parameter.ParameterType, false, parameter.HasDefaultValue(), parameter.DefaultValue);
-			}
-
+			var dependencies = Array.ConvertAll(parameters, BuildParameterDependency);
 			return new ConstructorCandidate(constructor, dependencies);
+		}
+
+		private static DependencyModel BuildParameterDependency(ParameterInfo parameter)
+		{
+			return new DependencyModel(parameter.Name,
+			                           parameter.ParameterType,
+			                           false,
+			                           parameter.HasDefaultValue(),
+			                           parameter.DefaultValue);
 		}
 	}
 }
