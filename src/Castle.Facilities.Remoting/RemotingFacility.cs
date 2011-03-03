@@ -103,14 +103,13 @@ namespace Castle.Facilities.Remoting
 			SetUpRemotingConfiguration();
 
 			baseUri = FacilityConfig.Attributes["baseUri"];
-
-			if (converter.PerformConversion<bool?>(FacilityConfig.Attributes["isServer"]) == true)
+			if (string.Equals("true", FacilityConfig.Attributes["isServer"], StringComparison.OrdinalIgnoreCase))
 			{
 				isServer = true;
 				ConfigureServerFacility();
 			}
 
-			if (converter.PerformConversion<bool?>(FacilityConfig.Attributes["isClient"]) == true)
+			if (string.Equals("true", FacilityConfig.Attributes["isClient"], StringComparison.OrdinalIgnoreCase))
 			{
 				isClient = true;
 				ConfigureClientFacility();

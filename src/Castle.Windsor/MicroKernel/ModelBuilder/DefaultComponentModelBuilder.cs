@@ -108,7 +108,7 @@ namespace Castle.MicroKernel.ModelBuilder
 			AddContributor(new ConfigurationModelInspector());
 			AddContributor(new ConfigurationParametersInspector());
 			AddContributor(new LifestyleModelInspector(conversionManager));
-			AddContributor(new ConstructorDependenciesModelInspector(conversionManager));
+			AddContributor(new ConstructorDependenciesModelInspector());
 			AddContributor(new PropertiesDependenciesModelInspector(conversionManager));
 			AddContributor(new LifecycleModelInspector());
 			AddContributor(new InterceptorInspector());
