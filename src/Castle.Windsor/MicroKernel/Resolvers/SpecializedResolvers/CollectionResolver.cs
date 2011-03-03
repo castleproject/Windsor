@@ -39,9 +39,9 @@ namespace Castle.MicroKernel.Resolvers.SpecializedResolvers
 			this.allowEmptyCollections = allowEmptyCollections;
 		}
 
-		public bool CanResolve(CreationContext context, ISubDependencyResolver contextHandlerResolver,
-		                       ComponentModel model,
-		                       DependencyModel dependency)
+		public virtual bool CanResolve(CreationContext context, ISubDependencyResolver contextHandlerResolver,
+		                               ComponentModel model,
+		                               DependencyModel dependency)
 		{
 			if (dependency.TargetItemType == null)
 			{
@@ -54,13 +54,13 @@ namespace Castle.MicroKernel.Resolvers.SpecializedResolvers
 			       CanSatisfy(itemType);
 		}
 
-		public object Resolve(CreationContext context, ISubDependencyResolver contextHandlerResolver, ComponentModel model,
-		                      DependencyModel dependency)
+		public virtual object Resolve(CreationContext context, ISubDependencyResolver contextHandlerResolver, ComponentModel model,
+		                              DependencyModel dependency)
 		{
 			return kernel.ResolveAll(GetItemType(dependency.TargetItemType), null);
 		}
 
-		protected bool CanSatisfy(Type itemType)
+		protected virtual bool CanSatisfy(Type itemType)
 		{
 			return allowEmptyCollections || kernel.HasComponent(itemType);
 		}
@@ -70,7 +70,7 @@ namespace Castle.MicroKernel.Resolvers.SpecializedResolvers
 			return targetItemType.GetCompatibleArrayItemType();
 		}
 
-		protected bool HasParameter(ComponentModel model, DependencyModel dependency)
+		protected virtual bool HasParameter(ComponentModel model, DependencyModel dependency)
 		{
 			return model.HasParameters && model.Parameters.HasMatch(dependency);
 		}

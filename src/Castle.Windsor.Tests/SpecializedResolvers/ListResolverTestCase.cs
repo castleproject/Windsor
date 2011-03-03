@@ -112,5 +112,61 @@ namespace Castle.MicroKernel.Tests.SpecializedResolvers
 			var proxy2 = Kernel.Resolve<ListDepAsProperty>();
 			Assert.IsNotNull(proxy2.Services);
 		}
+
+		[Test(Description = "IOC-240")]
+		public void Honors_collection_override_all_components_in()
+		{
+			Container.Install(new CollectionServiceOverridesInstaller());
+			var fooItemTest = Container.Resolve<ListDepAsConstructor>("InjectAllList");
+			var dependencies = fooItemTest.Services.Select(d => d.GetType()).ToList();
+			Assert.That(dependencies, Has.Count.EqualTo(3));
+			Assert.That(dependencies, Has.Member(typeof(EmptyServiceA)));
+			Assert.That(dependencies, Has.Member(typeof(EmptyServiceB)));
+			Assert.That(dependencies, Has.Member(typeof(EmptyServiceDecoratorViaProperty)));
+		}
+
+		[Test(Description = "IOC-240")]
+		public void Honors_collection_override_one_components_in()
+		{
+			Container.Install(new CollectionServiceOverridesInstaller());
+			var fooItemTest = Container.Resolve<ListDepAsConstructor>("InjectFooOnlyList");
+			var dependencies = fooItemTest.Services.Select(d => d.GetType()).ToList();
+			Assert.That(dependencies, Has.Count.EqualTo(1));
+			Assert.That(dependencies, Has.Member(typeof(EmptyServiceA)));
+		}
+
+		[Test(Description = "IOC-240")]
+		public void Honors_collection_override_one_components_in_no_resolver()
+		{
+			var container = new WindsorContainer();
+			container.Install(new CollectionServiceOverridesInstaller());
+			var fooItemTest = container.Resolve<ListDepAsConstructor>("InjectFooOnlyList");
+			var dependencies = fooItemTest.Services.Select(d => d.GetType()).ToList();
+			Assert.That(dependencies, Has.Count.EqualTo(1));
+			Assert.That(dependencies, Has.Member(typeof(EmptyServiceA)));
+		}
+
+		[Test(Description = "IOC-240")]
+		public void Honors_collection_override_some_components_in()
+		{
+			Container.Install(new CollectionServiceOverridesInstaller());
+			var fooItemTest = Container.Resolve<ListDepAsConstructor>("InjectFooAndBarOnlyList");
+			var dependencies = fooItemTest.Services.Select(d => d.GetType()).ToList();
+			Assert.That(dependencies, Has.Count.EqualTo(2));
+			Assert.That(dependencies, Has.Member(typeof(EmptyServiceA)));
+			Assert.That(dependencies, Has.Member(typeof(EmptyServiceB)));
+		}
+
+		[Test(Description = "IOC-240")]
+		public void Honors_collection_override_some_components_in_no_resolver()
+		{
+			var container = new WindsorContainer();
+			container.Install(new CollectionServiceOverridesInstaller());
+			var fooItemTest = container.Resolve<ListDepAsConstructor>("InjectFooAndBarOnlyList");
+			var dependencies = fooItemTest.Services.Select(d => d.GetType()).ToList();
+			Assert.That(dependencies, Has.Count.EqualTo(2));
+			Assert.That(dependencies, Has.Member(typeof(EmptyServiceA)));
+			Assert.That(dependencies, Has.Member(typeof(EmptyServiceB)));
+		}
 	}
 }
