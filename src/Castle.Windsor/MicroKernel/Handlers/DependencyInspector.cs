@@ -152,7 +152,11 @@ namespace Castle.MicroKernel.Handlers
 
 		private static ParameterModel FindServiceOverride(DependencyModel dependency, IHandler handler)
 		{
-			var parameterModel = dependency.FindMatchingParameter(handler.ComponentModel);
+			if(handler.ComponentModel.HasParameters == false)
+			{
+				return null;
+			}
+			var parameterModel = handler.ComponentModel.Parameters.GetMatch(dependency);
 			if (parameterModel == null || ReferenceExpressionUtil.IsReference(parameterModel.Value) == false)
 			{
 				return null;

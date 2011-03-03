@@ -18,8 +18,6 @@ namespace Castle.MicroKernel.Tests.SpecializedResolvers
 
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Resolvers.SpecializedResolvers;
-	using Castle.MicroKernel.SubSystems.Configuration;
-	using Castle.Windsor;
 	using Castle.Windsor.Tests;
 	using Castle.Windsor.Tests.Components;
 
@@ -28,21 +26,6 @@ namespace Castle.MicroKernel.Tests.SpecializedResolvers
 	[TestFixture]
 	public class ArrayResolverTestCase : AbstractContainerTestCase
 	{
-		private class TestInstaller : IWindsorInstaller
-		{
-			public void Install(IWindsorContainer container, IConfigurationStore store)
-			{
-				container.Register(
-					Component.For<IEmptyService>().ImplementedBy<EmptyServiceA>().Named("foo"),
-					Component.For<IEmptyService>().ImplementedBy<EmptyServiceB>().Named("bar"),
-					Component.For<IEmptyService>().ImplementedBy<EmptyServiceDecoratorViaProperty>().Named("baz"),
-					Component.For<ArrayDepAsConstructor>().Named("InjectAll"),
-					Component.For<ArrayDepAsConstructor>().Named("InjectFooOnly")
-						.ServiceOverrides(ServiceOverride.ForKey("services").Eq(new[] { "foo" })),
-					Component.For<ArrayDepAsConstructor>().Named("InjectFooAndBarOnly")
-						.ServiceOverrides(ServiceOverride.ForKey("services").Eq(new[] { "foo", "bar" })));
-			}
-		}
 
 		[Test(Description = "IOC-239")]
 		public void ArrayResolution_UnresolvableDependencyCausesResolutionFailure()
@@ -181,11 +164,10 @@ namespace Castle.MicroKernel.Tests.SpecializedResolvers
 		}
 
 		[Test(Description = "IOC-240")]
-		[Ignore("Not implemented yet.")]
 		public void InjectAll()
 		{
 			Container.Kernel.Resolver.AddSubResolver(new ArrayResolver(Container.Kernel, true));
-			Container.Install(new TestInstaller());
+			Container.Install(new CollectionServiceOverridesInstaller());
 			var fooItemTest = Container.Resolve<ArrayDepAsConstructor>("InjectAll");
 			var dependencies = fooItemTest.Services.Select(d => d.GetType()).ToList();
 			Assert.That(dependencies, Has.Count.EqualTo(3));
@@ -195,11 +177,10 @@ namespace Castle.MicroKernel.Tests.SpecializedResolvers
 		}
 
 		[Test(Description = "IOC-240")]
-		[Ignore("Not implemented yet.")]
 		public void InjectFooAndBarOnly_WithArrayResolver()
 		{
-			//Container.Kernel.Resolver.AddSubResolver(new ArrayResolver(Container.Kernel, true));
-			Container.Install(new TestInstaller());
+			Container.Kernel.Resolver.AddSubResolver(new ArrayResolver(Container.Kernel, true));
+			Container.Install(new CollectionServiceOverridesInstaller());
 			var fooItemTest = Container.Resolve<ArrayDepAsConstructor>("InjectFooAndBarOnly");
 			var dependencies = fooItemTest.Services.Select(d => d.GetType()).ToList();
 			Assert.That(dependencies, Has.Count.EqualTo(2));
@@ -208,10 +189,9 @@ namespace Castle.MicroKernel.Tests.SpecializedResolvers
 		}
 
 		[Test(Description = "IOC-240")]
-		[Ignore("Not implemented yet.")]
 		public void InjectFooAndBarOnly_WithoutArrayResolver()
 		{
-			Container.Install(new TestInstaller());
+			Container.Install(new CollectionServiceOverridesInstaller());
 			var fooItemTest = Container.Resolve<ArrayDepAsConstructor>("InjectFooAndBarOnly");
 			var dependencies = fooItemTest.Services.Select(d => d.GetType()).ToList();
 			Assert.That(dependencies, Has.Count.EqualTo(2));
@@ -220,11 +200,10 @@ namespace Castle.MicroKernel.Tests.SpecializedResolvers
 		}
 
 		[Test(Description = "IOC-240")]
-		[Ignore("Not implemented yet.")]
 		public void InjectFooOnly_WithArrayResolver()
 		{
 			Container.Kernel.Resolver.AddSubResolver(new ArrayResolver(Container.Kernel, true));
-			Container.Install(new TestInstaller());
+			Container.Install(new CollectionServiceOverridesInstaller());
 			var fooItemTest = Container.Resolve<ArrayDepAsConstructor>("InjectFooOnly");
 			var dependencies = fooItemTest.Services.Select(d => d.GetType()).ToList();
 			Assert.That(dependencies, Has.Count.EqualTo(1));
@@ -232,10 +211,9 @@ namespace Castle.MicroKernel.Tests.SpecializedResolvers
 		}
 
 		[Test(Description = "IOC-240")]
-		[Ignore("Not implemented yet.")]
 		public void InjectFooOnly_WithoutArrayResolver()
 		{
-			Container.Install(new TestInstaller());
+			Container.Install(new CollectionServiceOverridesInstaller());
 			var fooItemTest = Container.Resolve<ArrayDepAsConstructor>("InjectFooOnly");
 			var dependencies = fooItemTest.Services.Select(d => d.GetType()).ToList();
 			Assert.That(dependencies, Has.Count.EqualTo(1));
