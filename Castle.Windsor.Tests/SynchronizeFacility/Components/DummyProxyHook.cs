@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,19 +12,27 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Facilities.Synchronize.Tests.Components
+namespace Castle.Facilities.Synchronize.Tests
 {
 #if !SILVERLIGHT
-	using System.Windows.Controls;
-	using System.Windows.Threading;
+	using System;
+	using System.Reflection;
 
-	[Synchronize(typeof(DispatcherSynchronizationContext))]
-	public class ClassInDispatcherContextWithoutVirtualMethod
+	using Castle.DynamicProxy;
+
+	public class DummyProxyHook : IProxyGenerationHook
 	{
-		[Synchronize]
-		public void DoWork(Panel panel)
+		public void MethodsInspected()
 		{
-			panel.Children.Add(new Button());
+		}
+
+		public void NonProxyableMemberNotification(Type type, MemberInfo memberInfo)
+		{
+		}
+
+		public bool ShouldInterceptMethod(Type type, MethodInfo methodInfo)
+		{
+			return false;
 		}
 	}
 #endif

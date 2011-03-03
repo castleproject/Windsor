@@ -597,6 +597,14 @@
     <Compile Include="SpecializedResolvers\CollectionResolverTestCase.cs" />
     <Compile Include="SpecializedResolvers\CollectionServiceOverridesInstaller.cs" />
     <Compile Include="StubGenericImplementationMatchingStrategy.cs" />
+    <Compile Include="SynchronizeFacility\Components\AsynchronousContext.cs" />
+    <Compile Include="SynchronizeFacility\Components\AsynchronousWorker.cs" />
+    <Compile Include="SynchronizeFacility\Components\ClassInContextWithMissingDependency.cs" />
+    <Compile Include="SynchronizeFacility\Components\ClassInContextWithoutVirtualMethod.cs" />
+    <Compile Include="SynchronizeFacility\Components\ClassUsingContext.cs" />
+    <Compile Include="SynchronizeFacility\Components\ClassUsingForm.cs" />
+    <Compile Include="SynchronizeFacility\Components\ClassUsingFormInAmbientContext.cs" />
+    <Compile Include="SynchronizeFacility\Components\ClassUsingFormInWindowsContext.cs" />
     <Compile Include="SynchronizeFacility\Components\ClassInDepdnencyContextWithMissingDependency.cs" />
     <Compile Include="SynchronizeFacility\Components\ClassInDispatcherContextWithoutVirtualMethod.cs" />
     <Compile Include="SynchronizeFacility\Components\ClassUsingDispatcherContext.cs" />
@@ -607,9 +615,19 @@
     <Compile Include="SynchronizeFacility\Components\IClassUsingDepedenecyContext.cs" />
     <Compile Include="SynchronizeFacility\Components\IDummyWindow.cs" />
     <Compile Include="SynchronizeFacility\DispatcherObjectTestFixture.cs" />
-    <Compile Include="SynchronizeFacility\DummyClasses.cs">
+    <Compile Include="SynchronizeFacility\Components\DummyForm.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="SynchronizeFacility\Components\DummyFormActivator.cs" />
+    <Compile Include="SynchronizeFacility\Components\DummyProxyHook.cs" />
+    <Compile Include="SynchronizeFacility\Components\IClassUsingContext.cs" />
+    <Compile Include="SynchronizeFacility\Components\IDummyForm.cs" />
+    <Compile Include="SynchronizeFacility\Components\IWorker.cs" />
+    <Compile Include="SynchronizeFacility\Components\IWorkerWithOuts.cs" />
+    <Compile Include="SynchronizeFacility\Components\ManualWorker.cs" />
+    <Compile Include="SynchronizeFacility\Components\SimpleWorker.cs" />
+    <Compile Include="SynchronizeFacility\Components\SyncClassOverrideContext.cs" />
+    <Compile Include="SynchronizeFacility\Components\SyncClassWithoutContext.cs" />
     <Compile Include="SynchronizeFacility\SynchronizeFacilityTestFixture.cs" />
     <Compile Include="TypeComparerTestCase.cs" />
     <Compile Include="TypedDependenciesTestCase.cs" />

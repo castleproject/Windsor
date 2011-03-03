@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,20 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Facilities.Synchronize.Tests.Components
+namespace Castle.Facilities.Synchronize.Tests
 {
 #if !SILVERLIGHT
-	using System.Windows.Controls;
-	using System.Windows.Threading;
+	using System.Windows.Forms;
 
-	[Synchronize(typeof(DispatcherSynchronizationContext))]
-	public class ClassInDispatcherContextWithoutVirtualMethod
+	public interface IClassUsingContext<T> where T : Control
 	{
-		[Synchronize]
-		public void DoWork(Panel panel)
-		{
-			panel.Children.Add(new Button());
-		}
+		T DoWork(T work);
 	}
 #endif
 }
