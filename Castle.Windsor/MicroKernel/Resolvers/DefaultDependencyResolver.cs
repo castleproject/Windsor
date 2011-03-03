@@ -192,7 +192,11 @@ namespace Castle.MicroKernel.Resolvers
 
 		protected virtual ParameterModel ObtainParameterModelMatchingDependency(DependencyModel dependency, ComponentModel model)
 		{
-			return dependency.FindMatchingParameter(model);
+			if(model.HasParameters == false)
+			{
+				return null;
+			}
+			return model.Parameters.GetMatch(dependency);
 		}
 
 		/// <summary>

@@ -595,6 +595,7 @@
     <Compile Include="Registration\WithServiceTestCase.cs" />
     <Compile Include="ServiceOverridesStackOverflowTestCase.cs" />
     <Compile Include="SpecializedResolvers\CollectionResolverTestCase.cs" />
+    <Compile Include="SpecializedResolvers\CollectionServiceOverridesInstaller.cs" />
     <Compile Include="StubGenericImplementationMatchingStrategy.cs" />
     <Compile Include="SynchronizeFacility\Components\ClassInDepdnencyContextWithMissingDependency.cs" />
     <Compile Include="SynchronizeFacility\Components\ClassInDispatcherContextWithoutVirtualMethod.cs" />

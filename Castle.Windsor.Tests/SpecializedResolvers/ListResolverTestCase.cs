@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,71 +17,28 @@ namespace Castle.MicroKernel.Tests.SpecializedResolvers
 	using System.Linq;
 
 	using Castle.DynamicProxy;
-	using Castle.Windsor.Proxy;
+	using Castle.MicroKernel.Registration;
+	using Castle.MicroKernel.Resolvers.SpecializedResolvers;
+	using Castle.Windsor;
+	using Castle.Windsor.Tests;
 	using Castle.Windsor.Tests.Components;
 
-	using MicroKernel.Registration;
 	using NUnit.Framework;
-	using Resolvers.SpecializedResolvers;
 
 	[TestFixture]
-	public class ListResolverTestCase
+	public class ListResolverTestCase : AbstractContainerTestCase
 	{
-		private IKernel kernel;
-
-		[SetUp]
-		public void Init()
+		protected override WindsorContainer BuildContainer()
 		{
-			kernel = new DefaultKernel(new DefaultProxyFactory());
-			kernel.Resolver.AddSubResolver(new ListResolver(kernel));
-		}
-
-		[TearDown]
-		public void Dispose()
-		{
-			kernel.Dispose();
-		}
-
-		[Test]
-		public void DependencyOnListOfServices_OnProperty()
-		{
-			kernel.Register(Component.For<IEmptyService>().ImplementedBy<EmptyServiceA>(),
-							Component.For<IEmptyService>().ImplementedBy<EmptyServiceB>(),
-							Component.For<ListDepAsProperty>());
-
-			var comp = kernel.Resolve<ListDepAsProperty>();
-
-			Assert.IsNotNull(comp);
-			Assert.IsNotNull(comp.Services);
-			Assert.AreEqual(2, comp.Services.Count);
-			foreach (var service in comp.Services.AsEnumerable())
-			{
-				Assert.IsNotNull(service);
-			}
-		}
-
-		[Test]
-		public void DependencyOnListOfServices_OnConstructor()
-		{
-			kernel.Register(Component.For<IEmptyService>().ImplementedBy<EmptyServiceA>(),
-							Component.For<IEmptyService>().ImplementedBy<EmptyServiceB>(),
-							Component.For<ListDepAsConstructor>());
-
-			var comp = kernel.Resolve<ListDepAsConstructor>();
-
-			Assert.IsNotNull(comp);
-			Assert.IsNotNull(comp.Services);
-			Assert.AreEqual(2, comp.Services.Count);
-			foreach (var service in comp.Services.AsEnumerable())
-			{
-				Assert.IsNotNull(service);
-			}
+			var container = new WindsorContainer();
+			container.Kernel.Resolver.AddSubResolver(new ListResolver(container.Kernel));
+			return container;
 		}
 
 		[Test]
 		public void DependencyOnListOfInterceptedServices()
 		{
-			kernel.Register(
+			Kernel.Register(
 				Component.For<StandardInterceptor>().Named("a"),
 				Component.For<StandardInterceptor>().Named("b"),
 				Component.For<IEmptyService>().ImplementedBy<EmptyServiceA>().Interceptors("a"),
@@ -89,34 +46,70 @@ namespace Castle.MicroKernel.Tests.SpecializedResolvers
 				Component.For<ListDepAsConstructor>(),
 				Component.For<ListDepAsProperty>());
 
-			var proxy = kernel.Resolve<ListDepAsConstructor>().Services[0] as IProxyTargetAccessor;
+			var proxy = Kernel.Resolve<ListDepAsConstructor>().Services[0] as IProxyTargetAccessor;
 			Assert.IsNotNull(proxy);
-			Assert.AreSame(proxy.GetInterceptors()[0], kernel.Resolve<StandardInterceptor>("a"));
+			Assert.AreSame(proxy.GetInterceptors()[0], Kernel.Resolve<StandardInterceptor>("a"));
 
-			proxy = kernel.Resolve<ListDepAsConstructor>().Services[1] as IProxyTargetAccessor;
+			proxy = Kernel.Resolve<ListDepAsConstructor>().Services[1] as IProxyTargetAccessor;
 			Assert.IsNotNull(proxy);
-			Assert.AreSame(proxy.GetInterceptors()[0], kernel.Resolve<StandardInterceptor>("b"));
+			Assert.AreSame(proxy.GetInterceptors()[0], Kernel.Resolve<StandardInterceptor>("b"));
 
-			proxy = kernel.Resolve<ListDepAsProperty>().Services[0] as IProxyTargetAccessor;
+			proxy = Kernel.Resolve<ListDepAsProperty>().Services[0] as IProxyTargetAccessor;
 			Assert.IsNotNull(proxy);
-			Assert.AreSame(proxy.GetInterceptors()[0], kernel.Resolve<StandardInterceptor>("a"));
+			Assert.AreSame(proxy.GetInterceptors()[0], Kernel.Resolve<StandardInterceptor>("a"));
 
-			proxy = kernel.Resolve<ListDepAsProperty>().Services[1] as IProxyTargetAccessor;
+			proxy = Kernel.Resolve<ListDepAsProperty>().Services[1] as IProxyTargetAccessor;
 			Assert.IsNotNull(proxy);
-			Assert.AreSame(proxy.GetInterceptors()[0], kernel.Resolve<StandardInterceptor>("b"));
+			Assert.AreSame(proxy.GetInterceptors()[0], Kernel.Resolve<StandardInterceptor>("b"));
+		}
+
+		[Test]
+		public void DependencyOnListOfServices_OnConstructor()
+		{
+			Kernel.Register(Component.For<IEmptyService>().ImplementedBy<EmptyServiceA>(),
+			                Component.For<IEmptyService>().ImplementedBy<EmptyServiceB>(),
+			                Component.For<ListDepAsConstructor>());
+
+			var comp = Kernel.Resolve<ListDepAsConstructor>();
+
+			Assert.IsNotNull(comp);
+			Assert.IsNotNull(comp.Services);
+			Assert.AreEqual(2, comp.Services.Count);
+			foreach (var service in comp.Services.AsEnumerable())
+			{
+				Assert.IsNotNull(service);
+			}
+		}
+
+		[Test]
+		public void DependencyOnListOfServices_OnProperty()
+		{
+			Kernel.Register(Component.For<IEmptyService>().ImplementedBy<EmptyServiceA>(),
+			                Component.For<IEmptyService>().ImplementedBy<EmptyServiceB>(),
+			                Component.For<ListDepAsProperty>());
+
+			var comp = Kernel.Resolve<ListDepAsProperty>();
+
+			Assert.IsNotNull(comp);
+			Assert.IsNotNull(comp.Services);
+			Assert.AreEqual(2, comp.Services.Count);
+			foreach (var service in comp.Services.AsEnumerable())
+			{
+				Assert.IsNotNull(service);
+			}
 		}
 
 		[Test]
 		public void DependencyOnListWhenEmpty()
 		{
-			kernel.Resolver.AddSubResolver(new ListResolver(kernel, true));
-			kernel.Register(Component.For<ListDepAsConstructor>(),
+			Kernel.Resolver.AddSubResolver(new ListResolver(Kernel, true));
+			Kernel.Register(Component.For<ListDepAsConstructor>(),
 			                Component.For<ListDepAsProperty>());
 
-			var proxy = kernel.Resolve<ListDepAsConstructor>();
+			var proxy = Kernel.Resolve<ListDepAsConstructor>();
 			Assert.IsNotNull(proxy.Services);
 
-			var proxy2 = kernel.Resolve<ListDepAsProperty>();
+			var proxy2 = Kernel.Resolve<ListDepAsProperty>();
 			Assert.IsNotNull(proxy2.Services);
 		}
 	}

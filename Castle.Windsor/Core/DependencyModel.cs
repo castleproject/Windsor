@@ -122,15 +122,6 @@ namespace Castle.Core
 			       Equals(other.DependencyKey, DependencyKey);
 		}
 
-		public ParameterModel FindMatchingParameter(ComponentModel model)
-		{
-			if (model.HasParameters == false)
-			{
-				return null;
-			}
-			return ObtainParameterModelByKey(model) ?? ObtainParameterModelByType(model);
-		}
-
 		public override int GetHashCode()
 		{
 			unchecked
@@ -152,47 +143,5 @@ namespace Castle.Core
 			return string.Format("Dependency '{0}' type '{1}'", DependencyKey, TargetType);
 		}
 
-		private ParameterModel GetParameterModelByType(Type type, ComponentModel model)
-		{
-			if (type == null)
-			{
-				return null;
-			}
-
-			var key = type.AssemblyQualifiedName;
-			if (key == null)
-			{
-				return null;
-			}
-
-			return model.Parameters[key];
-		}
-
-		private ParameterModel ObtainParameterModelByKey(ComponentModel model)
-		{
-			var key = DependencyKey;
-			if (key == null)
-			{
-				return null;
-			}
-
-			return model.Parameters[key];
-		}
-
-		private ParameterModel ObtainParameterModelByType(ComponentModel model)
-		{
-			var type = targetItemType;
-			if (type == null)
-			{
-				// for example it's an interceptor
-				return null;
-			}
-			var parameter = GetParameterModelByType(type, model);
-			if (parameter == null && type.IsGenericType)
-			{
-				parameter = GetParameterModelByType(type.GetGenericTypeDefinition(), model);
-			}
-			return parameter;
-		}
 	}
 }

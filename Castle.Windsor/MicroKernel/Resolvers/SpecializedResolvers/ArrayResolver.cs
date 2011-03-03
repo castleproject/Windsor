@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,8 +14,7 @@
 
 namespace Castle.MicroKernel.Resolvers.SpecializedResolvers
 {
-	using Castle.Core;
-	using Castle.MicroKernel.Context;
+	using System;
 
 	/// <summary>
 	///   Handle dependencies of services in the format of typed arrays.
@@ -48,36 +47,25 @@ namespace Castle.MicroKernel.Resolvers.SpecializedResolvers
 	///     }
 	///   </code>
 	/// </example>
-	public class ArrayResolver : ISubDependencyResolver
+	public class ArrayResolver : CollectionResolver
 	{
-		private readonly bool allowEmptyArray;
-		private readonly IKernel kernel;
-
-		public ArrayResolver(IKernel kernel) : this(kernel, false)
+		public ArrayResolver(IKernel kernel)
+			: base(kernel, false)
 		{
 		}
 
 		public ArrayResolver(IKernel kernel, bool allowEmptyArray)
+			: base(kernel, allowEmptyArray)
 		{
-			this.kernel = kernel;
-			this.allowEmptyArray = allowEmptyArray;
 		}
 
-		public bool CanResolve(CreationContext context, ISubDependencyResolver contextHandlerResolver,
-		                       ComponentModel model,
-		                       DependencyModel dependency)
+		protected override Type GetItemType(Type targetItemType)
 		{
-			var targetType = dependency.TargetItemType;
-			return targetType != null &&
-			       targetType.IsArray &&
-			       (allowEmptyArray || kernel.HasComponent(targetType.GetElementType()));
-		}
-
-		public object Resolve(CreationContext context, ISubDependencyResolver contextHandlerResolver,
-		                      ComponentModel model,
-		                      DependencyModel dependency)
-		{
-			return kernel.ResolveAll(dependency.TargetItemType.GetElementType(), null);
+			if (targetItemType.IsArray)
+			{
+				return targetItemType.GetElementType();
+			}
+			return null;
 		}
 	}
 }
