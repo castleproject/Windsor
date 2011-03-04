@@ -26,8 +26,6 @@ namespace Castle.Facilities.FactorySupport
 	using Castle.MicroKernel.Proxy;
 	using Castle.MicroKernel.SubSystems.Conversion;
 
-	/// <summary>
-	/// </summary>
 	public class FactoryActivator : DefaultComponentActivator
 	{
 		public FactoryActivator(ComponentModel model, IKernel kernel, ComponentInstanceDelegate onCreation, ComponentInstanceDelegate onDestruction)
@@ -96,10 +94,6 @@ namespace Castle.Facilities.FactorySupport
 		{
 			object instance;
 			var methodArgs = new List<object>();
-
-			var converter = (IConversionManager)
-			                Kernel.GetSubSystem(SubSystemConstants.ConversionManagerKey);
-
 			try
 			{
 				var parameters = instanceCreateMethod.GetParameters();
@@ -119,18 +113,8 @@ namespace Castle.Facilities.FactorySupport
 						continue;
 					}
 
-					DependencyModel depModel;
-
-					if (converter.IsSupportedAndPrimitiveType(paramType))
-					{
-						depModel = new DependencyModel(parameter.Name, paramType, false);
-					}
-					else
-					{
-						depModel = new DependencyModel(parameter.Name, paramType, false);
-					}
-
-					if (!Kernel.Resolver.CanResolve(context, null, Model, depModel))
+					var dependency = new DependencyModel(parameter.Name, paramType, false);
+					if (!Kernel.Resolver.CanResolve(context, null, Model, dependency))
 					{
 						var message = String.Format(
 							"Factory Method {0}.{1} requires an argument '{2}' that could not be resolved",
@@ -138,7 +122,7 @@ namespace Castle.Facilities.FactorySupport
 						throw new FacilityException(message);
 					}
 
-					var arg = Kernel.Resolver.Resolve(context, null, Model, depModel);
+					var arg = Kernel.Resolver.Resolve(context, null, Model, dependency);
 
 					methodArgs.Add(arg);
 				}
