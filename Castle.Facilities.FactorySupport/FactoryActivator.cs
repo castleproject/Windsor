@@ -26,7 +26,7 @@ namespace Castle.Facilities.FactorySupport
 	using Castle.MicroKernel.Proxy;
 	using Castle.MicroKernel.SubSystems.Conversion;
 
-	public class FactoryActivator : DefaultComponentActivator
+	public class FactoryActivator : DefaultComponentActivator,IDependencyAwareActivator
 	{
 		public FactoryActivator(ComponentModel model, IKernel kernel, ComponentInstanceDelegate onCreation, ComponentInstanceDelegate onDestruction)
 			: base(model, kernel, onCreation, onDestruction)
@@ -153,6 +153,16 @@ namespace Castle.Facilities.FactorySupport
 			}
 
 			return instance;
+		}
+
+		public bool CanProvideRequiredDependencies(ComponentModel component)
+		{
+			return true;
+		}
+
+		public bool IsManagedExternally(ComponentModel component)
+		{
+			return false;
 		}
 	}
 }

@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -23,34 +23,43 @@ namespace Castle.Facilities.FactorySupport
 	using Castle.MicroKernel.Context;
 	using Castle.MicroKernel.Facilities;
 
-
-	public class AccessorActivator : DefaultComponentActivator
+	public class AccessorActivator : DefaultComponentActivator, IDependencyAwareActivator
 	{
 		public AccessorActivator(ComponentModel model, IKernel kernel, ComponentInstanceDelegate onCreation, ComponentInstanceDelegate onDestruction)
 			: base(model, kernel, onCreation, onDestruction)
 		{
 		}
 
+		public bool CanProvideRequiredDependencies(ComponentModel component)
+		{
+			return true;
+		}
+
+		public bool IsManagedExternally(ComponentModel component)
+		{
+			return false;
+		}
+
 		protected override object Instantiate(CreationContext context)
 		{
-			String accessor = (String)Model.ExtendedProperties["instance.accessor"];
+			var accessor = (String)Model.ExtendedProperties["instance.accessor"];
 
-			PropertyInfo pi = Model.Implementation.GetProperty(
+			var pi = Model.Implementation.GetProperty(
 				accessor, BindingFlags.Public | BindingFlags.Static);
 
 			if (pi == null)
 			{
-				String message = String.Format("You have specified an instance accessor " +
-					"for the component '{0}' {1} which could not be found (no public " +
-					"static property has this name)", Model.Name, Model.Implementation.FullName);
+				var message = String.Format("You have specified an instance accessor " +
+				                            "for the component '{0}' {1} which could not be found (no public " +
+				                            "static property has this name)", Model.Name, Model.Implementation.FullName);
 				throw new FacilityException(message);
 			}
 
 			if (!pi.CanRead)
 			{
-				String message = String.Format("You have specified an instance accessor " +
-					"for the component '{0}' {1} which is write-only",
-					Model.Name, Model.Implementation.FullName);
+				var message = String.Format("You have specified an instance accessor " +
+				                            "for the component '{0}' {1} which is write-only",
+				                            Model.Name, Model.Implementation.FullName);
 				throw new FacilityException(message);
 			}
 
@@ -60,9 +69,9 @@ namespace Castle.Facilities.FactorySupport
 			}
 			catch (Exception ex)
 			{
-				String message = String.Format("The instance accessor " +
-					"invocation failed for '{0}' {1}",
-					Model.Name, Model.Implementation.FullName);
+				var message = String.Format("The instance accessor " +
+				                            "invocation failed for '{0}' {1}",
+				                            Model.Name, Model.Implementation.FullName);
 				throw new FacilityException(message, ex);
 			}
 		}
