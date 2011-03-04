@@ -222,11 +222,7 @@ namespace Castle.MicroKernel.Context
 
 		public virtual bool CanResolve(CreationContext context, ISubDependencyResolver contextHandlerResolver, ComponentModel model, DependencyModel dependency)
 		{
-			if (additionalArguments == null || additionalArguments.Count == 0)
-			{
-				return false;
-			}
-			return CanResolveByKey(dependency) || CanResolveByType(dependency);
+			return HasAdditionalArguments && (CanResolveByKey(dependency) || CanResolveByType(dependency));
 		}
 
 		public virtual object Resolve(CreationContext context, ISubDependencyResolver contextHandlerResolver, ComponentModel model, DependencyModel dependency)
