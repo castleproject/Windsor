@@ -20,13 +20,48 @@ namespace CastleTests.Facilities.FactorySupport
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Registration;
 
+	using CastleTests.Components;
+
 	using NUnit.Framework;
 
 	[TestFixture]
 	public class FactorySupportProgrammaticTestCase
 	{
+		[SetUp]
+		public void Init()
+		{
+			facility = new FactorySupportFacility();
+			kernel = new DefaultKernel();
+			kernel.AddFacility(facility);
+		}
+
 		private FactorySupportFacility facility;
 		private IKernel kernel;
+
+		private class Settings
+		{
+			private readonly int something = 1;
+
+			public int Something
+			{
+				get { return something; }
+			}
+		}
+
+		private class SettingsConsumer
+		{
+			private readonly int something;
+
+			public SettingsConsumer(int something)
+			{
+				this.something = something;
+			}
+
+			public int Something
+			{
+				get { return something; }
+			}
+		}
 
 		[Test]
 		public void FactoryResolveWithProposedFacilityPatch()
@@ -57,72 +92,9 @@ namespace CastleTests.Facilities.FactorySupport
 
 			var consumer = kernel.Resolve<SettingsConsumer>();
 		}
-
-		[SetUp]
-		public void Init()
-		{
-			facility = new FactorySupportFacility();
-			kernel = new DefaultKernel();
-			kernel.AddFacility(facility);
-		}
-
-		private class Settings
-		{
-			private readonly int something = 1;
-
-			public int Something
-			{
-				get { return something; }
-			}
-		}
-
-		private class SettingsConsumer
-		{
-			private readonly int something;
-
-			public SettingsConsumer(int something)
-			{
-				this.something = something;
-			}
-
-			public int Something
-			{
-				get { return something; }
-			}
-		}
 	}
 
 	#region Exampleclasses
-
-	public interface ISomeService
-	{
-		void SomeOperation();
-	}
-
-	public class ServiceImplementation : ISomeService
-	{
-		public ServiceImplementation(int someValue)
-		{
-			SomeValue = someValue;
-		}
-
-		public int SomeValue { get; set; }
-
-		public void SomeOperation()
-		{
-		}
-	}
-
-	public class ServiceFactory
-	{
-		public static bool CreateWasCalled;
-
-		public ServiceImplementation Create()
-		{
-			CreateWasCalled = true;
-			return new ServiceImplementation(12);
-		}
-	}
 
 	#endregion
 }

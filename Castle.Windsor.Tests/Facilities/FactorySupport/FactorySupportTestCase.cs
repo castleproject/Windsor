@@ -25,7 +25,10 @@ namespace CastleTests.Facilities.FactorySupport
 	using Castle.MicroKernel.Tests.ClassComponents;
 	using Castle.MicroKernel.Tests.Lifestyle.Components;
 	using Castle.Windsor;
+	using Castle.Windsor.Installer;
 	using Castle.Windsor.Tests;
+
+	using CastleTests.Components;
 
 	using NUnit.Framework;
 
@@ -70,9 +73,8 @@ namespace CastleTests.Facilities.FactorySupport
 		public void Can_instantiate_abstract_service_via_factory()
 		{
 			container.AddFacility<FactorySupportFacility>();
-			container.Install(Castle.Windsor.Installer.
-			                  	Configuration.FromXmlFile(
-			                  		ConfigHelper.ResolveConfigPath("Configuration2/abstract_component_factory.xml")));
+			container.Install(Configuration.FromXmlFile(
+				ConfigHelper.ResolveConfigPath("Configuration2/abstract_component_factory.xml")));
 
 			container.Resolve<IComponent>("abstract");
 		}
@@ -167,14 +169,6 @@ namespace CastleTests.Facilities.FactorySupport
 			public HashTableDependentComponent(Dictionary<object, object> d)
 			{
 			}
-		}
-	}
-
-	public class DisposableComponentFactory
-	{
-		public IComponent Create()
-		{
-			return new ComponentWithDispose();
 		}
 	}
 }

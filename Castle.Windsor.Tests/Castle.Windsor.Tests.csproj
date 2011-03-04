@@ -397,6 +397,16 @@
     <Compile Include="Experimental\MyCustomReleasePolicy.cs" />
     <Compile Include="Experimental\ProblematicDependenciesTestCase.cs" />
     <Compile Include="Facilities\EventWiring\SomethingWentWrongTestCase.cs" />
+    <Compile Include="Components\AbstractCarProviderFactory.cs" />
+    <Compile Include="Components\DisposableComponentFactory.cs" />
+    <Compile Include="Components\FerrariProvider.cs" />
+    <Compile Include="Components\FiscalStability.cs" />
+    <Compile Include="Components\HondaProvider.cs" />
+    <Compile Include="Components\ICarProvider.cs" />
+    <Compile Include="Components\ISomeService.cs" />
+    <Compile Include="Components\ServiceFactory.cs" />
+    <Compile Include="Components\ServiceImplementation.cs" />
+    <Compile Include="Components\User.cs" />
     <Compile Include="Facilities\Startable\StartableAndDecoratorsTestCase.cs" />
     <Compile Include="Facilities\Synchronize\Components\ClassUsingWindowNoSynchronizataion.cs" />
     <Compile Include="Facilities\Synchronize\SynchronizeViaAttributeTestCase.cs" />
