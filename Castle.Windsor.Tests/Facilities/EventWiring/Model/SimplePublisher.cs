@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Windsor.Tests.Facilities.EventWiring.Model
+namespace CastleTests.Facilities.EventWiring.Model
 {
 	using System;
 
@@ -20,35 +20,32 @@ namespace Castle.Windsor.Tests.Facilities.EventWiring.Model
 
 	public class SimplePublisher : IStartable
 	{
-		public event PublishEventHandler Event;
-
-		public static event PublishEventHandler StaticEvent;
+		public virtual void StaticTrigger()
+		{
+			if (StaticEvent != null)
+			{
+				StaticEvent(this, new EventArgs());
+			}
+		}
 
 		public virtual void Trigger()
 		{
 			if (Event != null)
 			{
-				Event(this, new EventArgs()); 
+				Event(this, new EventArgs());
 			}
 		}
-
-		public virtual void StaticTrigger()
-		{
-			if (StaticEvent != null)
-			{
-				StaticEvent(this, new EventArgs()); 
-			}
-		}
-
 
 		public virtual void Start()
 		{
-			
 		}
 
 		public virtual void Stop()
 		{
-			
 		}
+
+		public event PublishEventHandler Event;
+
+		public static event PublishEventHandler StaticEvent;
 	}
 }

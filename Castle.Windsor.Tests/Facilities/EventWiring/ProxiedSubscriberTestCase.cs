@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Windsor.Tests.Facilities.EventWiring
+namespace CastleTests.Facilities.EventWiring
 {
 	using Castle.Core;
 	using Castle.Core.Configuration;
@@ -21,17 +21,15 @@ namespace Castle.Windsor.Tests.Facilities.EventWiring
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.SubSystems.Configuration;
 	using Castle.Windsor;
-	using Castle.Windsor.Tests.Facilities.EventWiring.Model;
 	using Castle.Windsor.Tests.Interceptors;
+
+	using CastleTests.Facilities.EventWiring.Model;
 
 	using NUnit.Framework;
 
 	[TestFixture]
 	public class ProxiedSubscriberTestCase
 	{
-		protected WindsorContainer container;
-		private IConfigurationStore store;
-
 		[SetUp]
 		public void Init()
 		{
@@ -40,6 +38,9 @@ namespace Castle.Windsor.Tests.Facilities.EventWiring
 			store = (IConfigurationStore)
 			        container.Kernel.GetSubSystem(SubSystemConstants.ConfigurationStoreKey);
 		}
+
+		protected WindsorContainer container;
+		private IConfigurationStore store;
 
 		[Test]
 		public void Wiring_WhenPublisherHasAProxy_ListenerShouldStillGetTheEvents()

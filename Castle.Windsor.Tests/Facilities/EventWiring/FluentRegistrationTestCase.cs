@@ -12,12 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Windsor.Tests.Facilities.EventWiring
+namespace CastleTests.Facilities.EventWiring
 {
 	using Castle.Facilities.EventWiring;
 	using Castle.MicroKernel.Registration;
 	using Castle.Windsor;
-	using Castle.Windsor.Tests.Facilities.EventWiring.Model;
+
+	using CastleTests.Facilities.EventWiring.Model;
 
 	using NUnit.Framework;
 

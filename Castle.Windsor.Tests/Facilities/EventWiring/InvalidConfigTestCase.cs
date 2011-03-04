@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,31 +12,33 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+
 #if (!SILVERLIGHT)
-namespace Castle.Windsor.Tests.Facilities.EventWiring
+
+namespace CastleTests.Facilities.EventWiring
 {
 	using Castle.Facilities.EventWiring;
-	using Castle.Windsor;
+	using Castle.Windsor.Installer;
 	using Castle.Windsor.Tests;
+	using Castle.XmlFiles;
 
 	using NUnit.Framework;
 
 	[TestFixture]
-	public class InvalidConfigTestCase
+	public class InvalidConfigTestCase : AbstractContainerTestCase
 	{
-		private WindsorContainer container;
-
-		[SetUp]
-		public void Init()
+		protected override void AfterContainerCreated()
 		{
-			container = new WindsorContainer(ConfigHelper.ResolveConfigPath("Facilities/EventWiring/Config/invalid.config"));
+			Container.Install(Configuration.FromXml(Xml.Embedded("EventWiringFacility/invalid.config")));
 		}
-		
-		[Test, ExpectedException(typeof(EventWiringException))]
+
+		[Test]
+		[ExpectedException(typeof(EventWiringException))]
 		public void InvalidConfigured()
 		{
-			container.Resolve<object>("SimplePublisher");
+			Container.Resolve<object>("SimplePublisher");
 		}
 	}
 }
+
 #endif

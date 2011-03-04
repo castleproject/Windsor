@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,45 +12,37 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#if (!SILVERLIGHT)
-namespace Castle.Windsor.Tests.Facilities.EventWiring
-{
-	using System;
 
+#if (!SILVERLIGHT)
+
+namespace CastleTests.Facilities.EventWiring
+{
+	using Castle.Windsor.Installer;
 	using Castle.Windsor.Tests;
+	using Castle.XmlFiles;
 
 	using NUnit.Framework;
 
-	using Castle.Windsor;
-
 	[TestFixture]
-	public class SubscriberWithDependenciesTestCase
+	public class SubscriberWithDependenciesTestCase : AbstractContainerTestCase
 	{
-		private WindsorContainer container;
-
-		[SetUp]
-		public void Setup()
+		protected override void AfterContainerCreated()
 		{
-			container = new WindsorContainer(ConfigHelper.ResolveConfigPath("Facilities/EventWiring/" + GetConfigFile()));
-		}
-
-		protected string GetConfigFile()
-		{
-			return "Config/dependencies.config";
+			Container.Install(Configuration.FromXml(Xml.Embedded("EventWiringFacility/dependencies.config")));
 		}
 
 		[Test]
 		public void CanCreateComponent_WithSubscriber_WithDependency()
 		{
-			Assert.IsNotNull(container.Resolve<object>("HasSubscriberWithDependency"));
+			Assert.IsNotNull(Container.Resolve<object>("HasSubscriberWithDependency"));
 		}
 
-		//See also FACILITIES-97
-		[Test]
+		[Test(Description = "FACILITIES-97")]
 		public void CanCreateComponent_WithSubscriber_WithGenericDependency()
 		{
-			Assert.IsNotNull(container.Resolve<object>("HasSubscriberWithGenericDependency"));
+			Assert.IsNotNull(Container.Resolve<object>("HasSubscriberWithGenericDependency"));
 		}
 	}
 }
+
 #endif
