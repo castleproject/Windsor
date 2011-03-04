@@ -23,11 +23,9 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 	using Castle.MicroKernel.Context;
 
 	/// <summary>
-	/// Composition of all available conversion managers
+	///   Composition of all available conversion managers
 	/// </summary>
 	[Serializable]
-#if (!SILVERLIGHT)
-#endif
 	public class DefaultConversionManager : AbstractSubSystem, IConversionManager, ITypeConverterContext
 	{
 #if (!SILVERLIGHT)
@@ -63,8 +61,6 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 			Add(new ComponentModelConverter());
 		}
 
-		#region IConversionManager Members
-
 		public void Add(ITypeConverter converter)
 		{
 			converter.Context = this;
@@ -76,23 +72,6 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 				standAloneConverters.Add(converter);
 			}
 		}
-
-		public bool IsSupportedAndPrimitiveType(Type type)
-		{
-			foreach (var converter in standAloneConverters)
-			{
-				if (converter.CanHandleType(type))
-				{
-					return true;
-				}
-			}
-
-			return false;
-		}
-
-		#endregion
-
-		#region ITypeConverter Members
 
 		public ITypeConverterContext Context
 		{
@@ -168,10 +147,6 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 			return (TTarget)PerformConversion(configuration, typeof(TTarget));
 		}
 
-		#endregion
-
-		#region ITypeConverterContext Members
-
 		IKernelInternal ITypeConverterContext.Kernel
 		{
 			get { return Kernel; }
@@ -217,8 +192,6 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 		{
 			get { return this; }
 		}
-
-		#endregion
 
 		private Stack<Pair<ComponentModel, CreationContext>> CurrentStack
 		{

@@ -14,8 +14,6 @@
 
 namespace Castle.MicroKernel.SubSystems.Conversion
 {
-	using System;
-
 	/// <summary>
 	/// Establish a composition interface and a subsystem.
 	/// Implementors should delegate the conversion to 
@@ -28,7 +26,5 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 		/// </summary>
 		/// <param name="converter"></param>
 		void Add( ITypeConverter converter );
-
-		bool IsSupportedAndPrimitiveType(Type type);
 	}
 }
