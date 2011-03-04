@@ -16,11 +16,9 @@ namespace Castle.Facilities.EventWiring
 {
 	using System;
 	using System.Collections;
-	using System.Collections.Generic;
 	using System.Reflection;
 
 	using Castle.Core;
-	using Castle.Core.Configuration;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Facilities;
 
@@ -106,7 +104,7 @@ namespace Castle.Facilities.EventWiring
 	///</example>
 	public class EventWiringFacility : AbstractFacility
 	{
-		private const string SubscriberList = "evts.subscriber.list";
+		internal const string SubscriberList = "evts.subscriber.list";
 
 		/// <summary>
 		///   Overridden. Initializes the facility, subscribing to the <see cref = "IKernelEvents.ComponentModelCreated" />,
@@ -114,78 +112,9 @@ namespace Castle.Facilities.EventWiring
 		/// </summary>
 		protected override void Init()
 		{
-			Kernel.ComponentModelCreated += OnComponentModelCreated;
+			Kernel.ComponentModelFactory.AddContributor(new EventWiringInspector());
 			Kernel.ComponentCreated += OnComponentCreated;
 			Kernel.ComponentDestroyed += OnComponentDestroyed;
-		}
-
-		private void AddSubscriberDependecyToModel(string subscriberKey, ComponentModel model)
-		{
-			var dependencyModel = new DependencyModel(subscriberKey, null, false);
-			model.Dependencies.Add(dependencyModel);
-		}
-
-		private void ExtractAndAddEventInfo(IDictionary<string, List<WireInfo>> subscribers2Evts, string subscriberKey, IConfiguration subscriber, ComponentModel model)
-		{
-			List<WireInfo> wireInfoList;
-			if (subscribers2Evts.TryGetValue(subscriberKey, out wireInfoList) == false)
-			{
-				wireInfoList = new List<WireInfo>();
-				subscribers2Evts[subscriberKey] = wireInfoList;
-			}
-
-			var eventName = subscriber.Attributes["event"];
-			if (string.IsNullOrEmpty(eventName))
-			{
-				throw new EventWiringException("You must supply an 'event' " +
-				                               "attribute which is the event name on the publisher you want to subscribe." +
-				                               " Check node 'subscriber' for component " + model.Name + "and id = " + subscriberKey);
-			}
-
-			var handlerMethodName = subscriber.Attributes["handler"];
-			if (string.IsNullOrEmpty(handlerMethodName))
-			{
-				throw new EventWiringException("You must supply an 'handler' attribute " +
-				                               "which is the method on the subscriber that will handle the event." +
-				                               " Check node 'subscriber' for component " + model.Name + "and id = " + subscriberKey);
-			}
-
-			wireInfoList.Add(new WireInfo(eventName, handlerMethodName));
-		}
-
-		private void ExtractAndRegisterEventInformation(ComponentModel model)
-		{
-			if (IsNotPublishingEvents(model))
-			{
-				return;
-			}
-
-			var subscribersNode = model.Configuration.Children["subscribers"];
-
-			if (subscribersNode.Children.Count < 1)
-			{
-				throw new EventWiringException(
-					"The subscribers node must have at least an one subsciber child. Check node subscribers of the "
-					+ model.Name + " component");
-			}
-
-			var subscribers2Evts = new Dictionary<string, List<WireInfo>>();
-
-			foreach (var subscriber in subscribersNode.Children)
-			{
-				var subscriberKey = GetSubscriberKey(subscriber);
-
-				AddSubscriberDependecyToModel(subscriberKey, model);
-
-				ExtractAndAddEventInfo(subscribers2Evts, subscriberKey, subscriber, model);
-			}
-
-			model.ExtendedProperties[SubscriberList] = subscribers2Evts;
-		}
-
-		private bool IsNotPublishingEvents(ComponentModel model)
-		{
-			return (model.Configuration == null) || (model.Configuration.Children["subscribers"] == null);
 		}
 
 		private bool IsPublisher(ComponentModel model)
@@ -216,17 +145,6 @@ namespace Castle.Facilities.EventWiring
 		private void OnComponentDestroyed(ComponentModel model, object instance)
 		{
 			// TODO: Remove Listener
-		}
-
-		/// <summary>
-		///   Checks if the component we're dealing is a publisher. If it is, 
-		///   parses the configuration (the subscribers node) getting the event wiring info.
-		/// </summary>
-		/// <param name = "model">The component model.</param>
-		/// <exception cref = "EventWiringException">Invalid and/or a error in the configuration</exception>
-		private void OnComponentModelCreated(ComponentModel model)
-		{
-			ExtractAndRegisterEventInformation(model);
 		}
 
 		private void StartAndWirePublisherSubscribers(ComponentModel model, object publisher)
@@ -309,18 +227,6 @@ namespace Castle.Facilities.EventWiring
 			{
 				throw new EventWiringException("Publisher tried to start subscriber " + subscriberKey + " that is waiting for a dependency");
 			}
-		}
-
-		private static string GetSubscriberKey(IConfiguration subscriber)
-		{
-			var subscriberKey = subscriber.Attributes["id"];
-
-			if (string.IsNullOrEmpty(subscriberKey))
-			{
-				throw new EventWiringException("The subscriber node must have a valid Id assigned");
-			}
-
-			return subscriberKey;
 		}
 	}
 
