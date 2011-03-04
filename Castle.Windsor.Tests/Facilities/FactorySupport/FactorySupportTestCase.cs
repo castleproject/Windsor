@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Windsor.Tests.Facilities.FactorySupport
+namespace CastleTests.Facilities.FactorySupport
 {
 	using System;
 	using System.Collections.Generic;
@@ -24,6 +24,8 @@ namespace Castle.Windsor.Tests.Facilities.FactorySupport
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Tests.ClassComponents;
 	using Castle.MicroKernel.Tests.Lifestyle.Components;
+	using Castle.Windsor;
+	using Castle.Windsor.Tests;
 
 	using NUnit.Framework;
 
