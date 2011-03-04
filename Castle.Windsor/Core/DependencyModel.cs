@@ -23,7 +23,6 @@ namespace Castle.Core
 	[Serializable]
 	public class DependencyModel
 	{
-		private readonly bool isValueType;
 		private readonly Type targetItemType;
 		private readonly Type targetType;
 
@@ -49,10 +48,6 @@ namespace Castle.Core
 			else
 			{
 				targetItemType = targetType;
-			}
-			if (targetItemType != null)
-			{
-				isValueType = targetItemType.IsValueType;
 			}
 			DependencyKey = dependencyKey;
 			IsOptional = isOptional;
@@ -80,7 +75,7 @@ namespace Castle.Core
 
 		public bool IsValueType
 		{
-			get { return isValueType; }
+			get { return targetItemType != null && targetItemType.IsValueType; }
 		}
 
 		/// <summary>
