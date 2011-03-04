@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,26 +12,32 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+
 #if (!SILVERLIGHT)
-namespace Castle.Windsor.Tests.Facilities.EventWiring
+
+namespace CastleTests.Facilities.EventWiring
 {
-	using Castle.Windsor.Tests.Facilities.EventWiring.Model;
+	using Castle.Windsor.Installer;
+	using Castle.Windsor.Tests;
+	using Castle.XmlFiles;
+
+	using CastleTests.Facilities.EventWiring.Model;
 
 	using NUnit.Framework;
 
 	[TestFixture]
-	public class SingletonComponentsTestCase : WiringTestBase
+	public class SingletonComponentsTestCase : AbstractContainerTestCase
 	{
-		protected override string GetConfigFile()
+		protected override void AfterContainerCreated()
 		{
-			return "Config/singleton.config";
+			Container.Install(Configuration.FromXml(Xml.Embedded("EventWiringFacility/singleton.config")));
 		}
 
 		[Test]
 		public void MultiEvents()
 		{
-			var listener = container.Resolve<MultiListener>("MultiListener");
-			var publisherThatListens = container.Resolve<PublisherListener>("PublisherListener");
+			var listener = Container.Resolve<MultiListener>("MultiListener");
+			var publisherThatListens = Container.Resolve<PublisherListener>("PublisherListener");
 
 			publisherThatListens.Trigger1();
 			Assert.IsTrue(listener.Listened);
@@ -41,9 +47,8 @@ namespace Castle.Windsor.Tests.Facilities.EventWiring
 			Assert.IsFalse(publisherThatListens.Listened);
 			Assert.IsNull(publisherThatListens.Sender);
 
+			var anotherPublisher = Container.Resolve<SimplePublisher>("SimplePublisher");
 
-			var anotherPublisher = container.Resolve<SimplePublisher>("SimplePublisher");
-			
 			anotherPublisher.Trigger();
 			Assert.IsTrue(publisherThatListens.Listened);
 			Assert.AreSame(anotherPublisher, publisherThatListens.Sender);
@@ -52,8 +57,7 @@ namespace Castle.Windsor.Tests.Facilities.EventWiring
 			Assert.IsFalse(listener.Listened);
 			Assert.IsNull(listener.Sender);
 
-			
-			var publisher = container.Resolve<MultiPublisher>("MultiPublisher");
+			var publisher = Container.Resolve<MultiPublisher>("MultiPublisher");
 			publisher.Trigger1();
 			Assert.IsTrue(listener.Listened);
 			Assert.AreSame(publisher, listener.Sender);
@@ -68,16 +72,47 @@ namespace Castle.Windsor.Tests.Facilities.EventWiring
 		}
 
 		[Test]
-		public void TriggerThenResolve()
+		public void TriggerSimple()
 		{
-			var publisher = container.Resolve<SimplePublisher>("SimplePublisher");
-			
+			var publisher = Container.Resolve<SimplePublisher>("SimplePublisher");
+			var listener = Container.Resolve<SimpleListener>("SimpleListener");
+
+			Assert.IsFalse(listener.Listened);
+			Assert.IsNull(listener.Sender);
+
 			publisher.Trigger();
 
-			var listener = container.Resolve<SimpleListener>("SimpleListener");
+			Assert.IsTrue(listener.Listened);
+			Assert.AreSame(publisher, listener.Sender);
+		}
+
+		[Test]
+		public void TriggerStaticEvent()
+		{
+			var publisher = Container.Resolve<SimplePublisher>("SimplePublisher");
+			var listener = Container.Resolve<SimpleListener>("SimpleListener2");
+
+			Assert.IsFalse(listener.Listened);
+			Assert.IsNull(listener.Sender);
+
+			publisher.StaticTrigger();
+
+			Assert.IsTrue(listener.Listened);
+			Assert.AreSame(publisher, listener.Sender);
+		}
+
+		[Test]
+		public void TriggerThenResolve()
+		{
+			var publisher = Container.Resolve<SimplePublisher>("SimplePublisher");
+
+			publisher.Trigger();
+
+			var listener = Container.Resolve<SimpleListener>("SimpleListener");
 			Assert.IsTrue(listener.Listened);
 			Assert.AreSame(publisher, listener.Sender);
 		}
 	}
 }
+
 #endif

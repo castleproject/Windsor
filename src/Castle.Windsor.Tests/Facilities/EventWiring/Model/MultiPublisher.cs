@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,24 +12,30 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Windsor.Tests.Facilities.EventWiring.Model
+namespace CastleTests.Facilities.EventWiring.Model
 {
 	using System;
 
 	public class MultiPublisher
 	{
-		public event PublishOneEventHandler Event1;
-
-		public event PublishTwoEventHandler Event2;
-
 		public void Trigger1()
 		{
-			if (Event1 != null) Event1(this, new EventArgs());
+			if (Event1 != null)
+			{
+				Event1(this, new EventArgs());
+			}
 		}
 
 		public void Trigger2()
 		{
-			if (Event2 != null) Event2(this, new CustomEventArgs());
+			if (Event2 != null)
+			{
+				Event2(this, new CustomEventArgs());
+			}
 		}
+
+		public event PublishOneEventHandler Event1;
+
+		public event PublishTwoEventHandler Event2;
 	}
 }

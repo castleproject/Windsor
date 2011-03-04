@@ -958,7 +958,6 @@
     <Compile Include="Facilities\EventWiring\SingletonComponentsTestCase.cs" />
     <Compile Include="Facilities\EventWiring\SingletonStartableTestCase.cs" />
     <Compile Include="Facilities\EventWiring\SubscriberWithDependenciesTestCase.cs" />
-    <Compile Include="Facilities\EventWiring\WiringTestBase.cs" />
     <Compile Include="Facilities\Remoting\AbstractRemoteTestCase.cs" />
     <Compile Include="Facilities\Remoting\AppDomainFactory.cs" />
     <Compile Include="Facilities\Remoting\CalcServiceImpl.cs" />
@@ -1331,19 +1330,12 @@
     <Content Include="RemotingTcpConfig.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <EmbeddedResource Include="Facilities\EventWiring\Config\dependencies.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    <EmbeddedResource Include="XmlFiles\EventWiringFacility\dependencies.config">
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Facilities\EventWiring\Config\invalid.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Facilities\EventWiring\Config\singleton.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Facilities\EventWiring\Config\startable.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
+    <EmbeddedResource Include="XmlFiles\EventWiringFacility\invalid.config" />
+    <EmbeddedResource Include="XmlFiles\EventWiringFacility\singleton.config" />
+    <EmbeddedResource Include="XmlFiles\EventWiringFacility\startable.config" />
     <EmbeddedResource Include="Configuration2\env_config.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
