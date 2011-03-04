@@ -387,6 +387,7 @@
     <Compile Include="Components\UnresolvalbeDependency.cs" />
     <Compile Include="Components\UnresolvalbeDependencyWithAdditionalServiceConstructor.cs" />
     <Compile Include="Components\UnresolvalbeDependencyWithPrimitiveConstructor.cs" />
+    <Compile Include="Components\UsesUri.cs" />
     <Compile Include="CompositePatternTestCase.cs" />
     <Compile Include="ContainerAndGenericsInConfigTestCase.cs" />
     <Compile Include="Core.Tests\InterceptorAttributeTestCase.cs" />
