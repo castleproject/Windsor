@@ -258,6 +258,7 @@
     <Compile Include="EventWiringDescriptor.cs" />
     <Compile Include="EventWiringException.cs" />
     <Compile Include="EventWiringFacility.cs" />
+    <Compile Include="EventWiringInspector.cs" />
     <Compile Include="EventWiringRegistrationExtensions.cs" />
     <Compile Include="NaiveMethodNameExtractor.cs" />
     <Compile Include="OpCodeValues.cs" />

@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,15 +18,23 @@ namespace Castle.Windsor.Tests.Facilities.EventWiring.Model
 
 	public class PublisherListener
 	{
-		private object _sender;
-		private bool _listened;
+		private bool listened;
+		private object sender;
 
-		public event PublishOneEventHandler Event1;
+		public bool Listened
+		{
+			get { return listened; }
+		}
+
+		public object Sender
+		{
+			get { return sender; }
+		}
 
 		public void OnPublish(object sender, EventArgs e)
 		{
-			_sender = sender;
-			_listened = true;
+			this.sender = sender;
+			listened = true;
 		}
 
 		public void Trigger1()
@@ -34,20 +42,6 @@ namespace Castle.Windsor.Tests.Facilities.EventWiring.Model
 			Event1(this, new EventArgs());
 		}
 
-		public bool Listened
-		{
-			get
-			{
-				return _listened;
-			}
-		}
-
-		public object Sender
-		{
-			get
-			{
-				return _sender;
-			}
-		}
+		public event PublishOneEventHandler Event1;
 	}
 }

@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,41 +18,35 @@ namespace Castle.Windsor.Tests.Facilities.EventWiring.Model
 
 	public class MultiListener
 	{
-		private object _sender;
-		private bool _listened;
-
-		public void OnPublish(object sender, EventArgs e)
-		{
-			_listened = true;
-			_sender = sender;
-		}
-
-		public void OnPublish2(object sender, CustomEventArgs e)
-		{
-			_listened = true;
-			_sender = sender;
-		}
-
-		public void Reset()
-		{
-			_listened = false;
-			_sender = null;
-		}
+		private bool listened;
+		private object sender;
 
 		public bool Listened
 		{
-			get
-			{
-				return _listened;
-			}
+			get { return listened; }
 		}
 
 		public object Sender
 		{
-			get
-			{
-				return _sender;
-			}
+			get { return sender; }
+		}
+
+		public void OnPublish(object sender, EventArgs e)
+		{
+			listened = true;
+			this.sender = sender;
+		}
+
+		public void OnPublish2(object sender, CustomEventArgs e)
+		{
+			listened = true;
+			this.sender = sender;
+		}
+
+		public void Reset()
+		{
+			listened = false;
+			sender = null;
 		}
 	}
 }
