@@ -316,6 +316,7 @@
     <Compile Include="ClassInheritanceTestCase.cs" />
     <Compile Include="ComponentsParametersDivisionTestsCase.cs" />
     <Compile Include="Components\AlarmGenerator.cs" />
+    <Compile Include="Components\AlarmGeneratorWithDependency.cs" />
     <Compile Include="Components\ArrayRefDepAsConstructor.cs" />
     <Compile Include="Components\CalculatorServiceWithStandartInterceptorTyped.cs" />
     <Compile Include="Components\CalculatorServiceWithFooInterceptorNamed.cs" />
@@ -337,6 +338,7 @@
     <Compile Include="Components\DisposableGeneric.cs" />
     <Compile Include="Components\DisposableGenericA.cs" />
     <Compile Include="Components\EmailSender.cs" />
+    <Compile Include="Components\EmailSenderWithDependency.cs" />
     <Compile Include="Components\EmptyService2Impl1.cs" />
     <Compile Include="Components\EmptyService2Impl2.cs" />
     <Compile Include="Components\EmptyService2Impl3.cs" />
