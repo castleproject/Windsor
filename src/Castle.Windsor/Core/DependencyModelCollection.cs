@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -26,11 +26,6 @@ namespace Castle.Core
 	{
 		private readonly List<DependencyModel> dependencies = new List<DependencyModel>();
 
-		public bool HasDependencies
-		{
-			get { return dependencies.Count > 0; }
-		}
-
 		public void Add(DependencyModel dependencyModel)
 		{
 			if (dependencyModel == null)
@@ -40,23 +35,9 @@ namespace Castle.Core
 			dependencies.Add(dependencyModel);
 		}
 
-		public void AddRange(DependencyModelCollection other)
-		{
-			if (other == null || other.dependencies.Count == 0)
-			{
-				return;
-			}
-			dependencies.AddRange(other.dependencies);
-		}
-
 		public void Clear()
 		{
 			dependencies.Clear();
-		}
-
-		public bool Contains(DependencyModel dependencyModel)
-		{
-			return dependencies.Contains(dependencyModel);
 		}
 
 		public bool Remove(DependencyModel dependencyModel)
