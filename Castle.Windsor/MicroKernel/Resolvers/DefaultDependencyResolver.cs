@@ -192,7 +192,7 @@ namespace Castle.MicroKernel.Resolvers
 
 		protected virtual ParameterModel ObtainParameterModelMatchingDependency(DependencyModel dependency, ComponentModel model)
 		{
-			if(model.HasParameters == false)
+			if (model.HasParameters == false)
 			{
 				return null;
 			}
@@ -233,6 +233,10 @@ namespace Castle.MicroKernel.Resolvers
 						{
 							return converter.PerformConversion(parameter.ConfigValue, dependency.TargetItemType);
 						}
+					}
+					catch (ConverterException e)
+					{
+						throw new DependencyResolverException(string.Format("Could not convert parameter '{0}' to type '{1}'.", parameter.Name, dependency.TargetItemType.Name), e);
 					}
 					finally
 					{
@@ -353,7 +357,6 @@ namespace Castle.MicroKernel.Resolvers
 			var handler = kernel.LoadHandlerByKey(key, type, GetAdditionalArguments(context));
 			return IsHandlerInValidState(handler) && handler.IsBeingResolvedInContext(context) == false;
 		}
-
 
 		private void RaiseDependencyResolving(ComponentModel model, DependencyModel dependency, object value)
 		{
