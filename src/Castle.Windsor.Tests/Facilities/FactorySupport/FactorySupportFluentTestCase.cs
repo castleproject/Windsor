@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,45 +18,9 @@ namespace CastleTests.Facilities.FactorySupport
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Registration;
 
+	using CastleTests.Components;
+
 	using NUnit.Framework;
-
-	public class User
-	{
-		public FiscalStability FiscalStability { get; set; }
-	}
-
-	public enum FiscalStability
-	{
-		DirtFarmer,
-		MrMoneyBags
-	} ;
-
-	public interface ICarProvider
-	{
-	}
-
-	public class FerrariProvider : ICarProvider
-	{
-	}
-
-	public class HondaProvider : ICarProvider
-	{
-	}
-
-	public class AbstractCarProviderFactory
-	{
-		public ICarProvider Create(User currentUser)
-		{
-			if (currentUser.FiscalStability == FiscalStability.MrMoneyBags)
-			{
-				return new FerrariProvider();
-			}
-			else
-			{
-				return new HondaProvider();
-			}
-		}
-	}
 
 	[TestFixture]
 	public class FactorySupportFluentTestCase
