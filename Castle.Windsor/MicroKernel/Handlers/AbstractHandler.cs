@@ -28,6 +28,7 @@ namespace Castle.MicroKernel.Handlers
 	using Castle.MicroKernel.Lifestyle;
 	using Castle.MicroKernel.ModelBuilder.Inspectors;
 	using Castle.MicroKernel.Resolvers;
+	using Castle.MicroKernel.Util;
 
 	/// <summary>
 	///   Implements the basis of
@@ -283,12 +284,12 @@ namespace Castle.MicroKernel.Handlers
 		protected void AddDependency(DependencyModel dependency)
 		{
 			var type = dependency.TargetItemType;
-			var key = dependency.DependencyKey;
 			if (HasValidComponentFromResolver(dependency))
 			{
-				if (string.IsNullOrEmpty(key) == false)
+				var reference = GetServiceOverrideReference(dependency);
+				if (reference != null)
 				{
-					var handler = Kernel.GetHandler(key);
+					var handler = Kernel.GetHandler(reference);
 					if (handler != null)
 					{
 						AddGraphDependency(handler);
@@ -322,6 +323,20 @@ namespace Castle.MicroKernel.Handlers
 				// state can be changed by AddCustomDependencyValue and RemoveCustomDependencyValue
 				OnHandlerStateChanged += HandlerStateChanged;
 			}
+		}
+
+		private string GetServiceOverrideReference(DependencyModel dependency)
+		{
+			if (!model.HasParameters)
+			{
+				return null;
+			}
+			var parameter = model.Parameters.GetMatch(dependency);
+			if (parameter == null)
+			{
+				return null;
+			}
+			return ReferenceExpressionUtil.ExtractComponentKey(parameter.Value);
 		}
 
 		protected bool CanSatisfyConstructor(ConstructorCandidate constructor)

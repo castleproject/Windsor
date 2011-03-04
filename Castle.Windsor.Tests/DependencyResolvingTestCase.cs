@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.MicroKernel.Tests
+namespace CastleTests
 {
 	using Castle.MicroKernel.Registration;
 	using Castle.Windsor.Tests;
@@ -24,7 +24,7 @@ namespace Castle.MicroKernel.Tests
 	public class DependencyResolvingTestCase : AbstractContainerTestCase
 	{
 		[Test]
-		public void ContainerShouldUseFirstRegisteredDependencyOfTypeByDefault_EmailRegisteredFirst()
+		public void First_by_registration_order_available_component_is_used_to_satisfy_dependency()
 		{
 			Kernel.Register(Component.For<IAlarmSender>().ImplementedBy<EmailSender>(),
 			                Component.For<IAlarmSender>().ImplementedBy<SmsSender>(),
@@ -36,11 +36,35 @@ namespace Castle.MicroKernel.Tests
 		}
 
 		[Test]
-		public void ContainerShouldUseFirstRegisteredDependencyOfTypeByDefault_SmsRegisteredFirst()
+		public void First_by_registration_order_available_component_is_used_to_satisfy_dependency_flipped_order()
 		{
 			Kernel.Register(Component.For<IAlarmSender>().ImplementedBy<SmsSender>(),
 			                Component.For<IAlarmSender>().ImplementedBy<EmailSender>(),
 			                Component.For<AlarmGenerator>());
+
+			var gen = Kernel.Resolve<AlarmGenerator>();
+
+			Assert.IsInstanceOf<SmsSender>(gen.Sender);
+		}
+
+		[Test]
+		public void First_by_registration_order_available_component_is_used_to_satisfy_dependency_regardless_of_dependency_name_if_no_override()
+		{
+			Kernel.Register(Component.For<IAlarmSender>().ImplementedBy<SmsSender>(),
+							Component.For<IAlarmSender>().ImplementedBy<EmailSender>().Named("Sender"),
+							Component.For<AlarmGenerator>());
+
+			var gen = Kernel.Resolve<AlarmGenerator>();
+
+			Assert.IsInstanceOf<SmsSender>(gen.Sender);
+		}
+
+		[Test]
+		public void First_by_registration_order_available_component_is_used_to_satisfy_dependency_regardless_of_dependency_name_if_no_override_missing_sub_dependency()
+		{
+			Kernel.Register(Component.For<IAlarmSender>().ImplementedBy<SmsSender>(),
+							Component.For<IAlarmSender>().ImplementedBy<EmailSenderWithDependency>().Named("Sender"),
+							Component.For<AlarmGenerator>());
 
 			var gen = Kernel.Resolve<AlarmGenerator>();
 
