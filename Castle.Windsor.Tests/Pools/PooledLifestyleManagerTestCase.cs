@@ -19,6 +19,8 @@ namespace Castle.MicroKernel.Tests.Pools
 	using Castle.MicroKernel.Registration;
 	using Castle.Windsor.Tests;
 
+	using CastleTests;
+
 	using NUnit.Framework;
 
 	[TestFixture]

@@ -27,6 +27,8 @@ namespace Castle.Windsor.Tests
 	using Castle.Windsor.Installer;
 	using Castle.XmlFiles;
 
+	using CastleTests;
+
 	using NUnit.Framework;
 
 	[TestFixture]

@@ -12,9 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Windsor.Tests
+namespace CastleTests
 {
 	using Castle.MicroKernel;
+	using Castle.Windsor;
 
 	using NUnit.Framework;
 
@@ -31,12 +32,10 @@ namespace Castle.Windsor.Tests
 		public void Init()
 		{
 			container = BuildContainer();
-			kernel = container.Kernel;
 			AfterContainerCreated();
 		}
 
 		private WindsorContainer container;
-		private IKernel kernel;
 
 		protected IWindsorContainer Container
 		{
@@ -45,7 +44,7 @@ namespace Castle.Windsor.Tests
 
 		protected IKernel Kernel
 		{
-			get { return kernel; }
+			get { return container.Kernel; }
 		}
 
 		protected virtual void AfterContainerCreated()
@@ -57,7 +56,7 @@ namespace Castle.Windsor.Tests
 			return new WindsorContainer();
 		}
 
-		protected virtual void ResetContainer()
+		protected void ResetContainer()
 		{
 			CleanUp();
 			Init();

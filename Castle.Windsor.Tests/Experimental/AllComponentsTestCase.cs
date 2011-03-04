@@ -24,6 +24,8 @@ namespace Castle.Windsor.Tests.Experimental
 	using Castle.Windsor.Experimental.Diagnostics.Extensions;
 	using Castle.Windsor.Tests.Components;
 
+	using CastleTests;
+
 	using NUnit.Framework;
 
 	public class AllComponentsTestCase : AbstractContainerTestCase

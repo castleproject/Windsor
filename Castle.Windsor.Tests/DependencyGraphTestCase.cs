@@ -22,6 +22,8 @@ namespace Castle.MicroKernel.Tests
 	using Castle.Windsor.Tests.ClassComponents;
 	using Castle.Windsor.Tests.Interceptors;
 
+	using CastleTests;
+
 	using NUnit.Framework;
 
 	[TestFixture]

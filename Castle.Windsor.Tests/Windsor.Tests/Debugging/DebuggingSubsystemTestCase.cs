@@ -23,6 +23,8 @@ namespace Castle.Windsor.Tests.Windsor.Tests.Debugging
 	using Castle.Windsor.Experimental.Diagnostics.Extensions;
 	using Castle.Windsor.Tests.Components;
 
+	using CastleTests;
+
 	using NUnit.Framework;
 
 	[TestFixture]
