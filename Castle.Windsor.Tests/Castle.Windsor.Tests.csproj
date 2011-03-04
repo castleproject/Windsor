@@ -315,6 +315,7 @@
     <Compile Include="ClassComponents\Repository3.cs" />
     <Compile Include="ClassInheritanceTestCase.cs" />
     <Compile Include="ComponentsParametersDivisionTestsCase.cs" />
+    <Compile Include="Components\AlarmGenerator.cs" />
     <Compile Include="Components\ArrayRefDepAsConstructor.cs" />
     <Compile Include="Components\CalculatorServiceWithStandartInterceptorTyped.cs" />
     <Compile Include="Components\CalculatorServiceWithFooInterceptorNamed.cs" />
@@ -335,6 +336,7 @@
     <Compile Include="Components\DictionaryCache.cs" />
     <Compile Include="Components\DisposableGeneric.cs" />
     <Compile Include="Components\DisposableGenericA.cs" />
+    <Compile Include="Components\EmailSender.cs" />
     <Compile Include="Components\EmptyService2Impl1.cs" />
     <Compile Include="Components\EmptyService2Impl2.cs" />
     <Compile Include="Components\EmptyService2Impl3.cs" />
@@ -345,6 +347,7 @@
     <Compile Include="Components\EmptyServiceDecoratorViaProperty.cs" />
     <Compile Include="Components\HasNullDefaultForServiceDependency.cs" />
     <Compile Include="Components\HumanArm.cs" />
+    <Compile Include="Components\IAlarmSender.cs" />
     <Compile Include="Components\IAmContravariant.cs" />
     <Compile Include="Components\IArm.cs" />
     <Compile Include="Components\ICache.cs" />
@@ -375,6 +378,7 @@
     <Compile Include="Components\ReviewerRepository.cs" />
     <Compile Include="Components\SimpleServiceInitializable.cs" />
     <Compile Include="Components\SimpleServiceSupportInitialize.cs" />
+    <Compile Include="Components\SmsSender.cs" />
     <Compile Include="Components\StandardInterceptorAttribute.cs" />
     <Compile Include="Components\SupportInitializeComponent.cs" />
     <Compile Include="Components\TransientRepository.cs" />
