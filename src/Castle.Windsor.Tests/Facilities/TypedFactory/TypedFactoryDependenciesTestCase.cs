@@ -23,6 +23,8 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 	using Castle.MicroKernel.Util;
 	using Castle.Windsor.Tests.Facilities.TypedFactory.Factories;
 
+	using CastleTests;
+
 	using NUnit.Framework;
 
 	[TestFixture]

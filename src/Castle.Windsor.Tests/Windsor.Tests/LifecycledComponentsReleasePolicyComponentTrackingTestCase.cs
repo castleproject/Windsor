@@ -18,6 +18,8 @@ namespace Castle.Windsor.Tests
 	using Castle.Windsor.Tests.ClassComponents;
 	using Castle.Windsor.Tests.Components;
 
+	using CastleTests;
+
 	using NUnit.Framework;
 
 	public class LifecycledComponentsReleasePolicyComponentTrackingTestCase : AbstractContainerTestCase

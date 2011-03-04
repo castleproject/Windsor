@@ -29,6 +29,7 @@ namespace Castle.Proxies
 #if !SILVERLIGHT
 	using Castle.XmlFiles;
 #endif
+	using CastleTests;
 
 	using NUnit.Framework;
 

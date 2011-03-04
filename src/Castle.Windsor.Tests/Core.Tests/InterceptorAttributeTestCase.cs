@@ -19,6 +19,8 @@ namespace Castle.Core.Tests
 	using Castle.Windsor.Tests;
 	using Castle.Windsor.Tests.Components;
 
+	using CastleTests;
+
 	using NUnit.Framework;
 
 	public class InterceptorAttributeTestCase : AbstractContainerTestCase

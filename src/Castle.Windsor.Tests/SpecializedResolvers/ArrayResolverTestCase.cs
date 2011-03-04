@@ -21,6 +21,8 @@ namespace Castle.MicroKernel.Tests.SpecializedResolvers
 	using Castle.Windsor.Tests;
 	using Castle.Windsor.Tests.Components;
 
+	using CastleTests;
+
 	using NUnit.Framework;
 
 	[TestFixture]

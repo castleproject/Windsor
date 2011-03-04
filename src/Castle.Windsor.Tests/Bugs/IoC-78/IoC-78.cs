@@ -17,6 +17,8 @@ namespace Castle.Windsor.Tests.Bugs.IoC_78
 	using Castle.MicroKernel.Handlers;
 	using Castle.MicroKernel.Registration;
 
+	using CastleTests;
+
 	using NUnit.Framework;
 
 	[TestFixture]

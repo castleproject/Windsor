@@ -19,6 +19,8 @@ namespace Castle.Windsor.Tests
 	using Castle.Windsor.Installer;
 	using Castle.Windsor.Tests.Components;
 
+	using CastleTests;
+
 	using NUnit.Framework;
 
 	public class ContainerAndGenericsInConfigTestCase : AbstractContainerTestCase

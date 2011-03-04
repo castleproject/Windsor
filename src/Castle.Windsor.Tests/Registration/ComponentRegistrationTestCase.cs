@@ -31,6 +31,8 @@ namespace Castle.MicroKernel.Tests.Registration
 	using Castle.Windsor.Tests.Facilities.Startable.Components;
 	using Castle.Windsor.Tests.Interceptors;
 
+	using CastleTests;
+
 	using NUnit.Framework;
 
 	using Child = Castle.MicroKernel.Registration.Child;

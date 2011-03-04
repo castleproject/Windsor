@@ -27,6 +27,8 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 	using Castle.Windsor.Tests.Facilities.TypedFactory.Factories;
 	using Castle.Windsor.Tests.Facilities.TypedFactory.Selectors;
 
+	using CastleTests;
+
 	using NUnit.Framework;
 
 	using HasTwoConstructors = Castle.Windsor.Tests.Facilities.TypedFactory.Delegates.HasTwoConstructors;

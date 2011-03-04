@@ -24,6 +24,7 @@ namespace Castle.Windsor.Tests
 #if !SILVERLIGHT
 	using Castle.XmlFiles;
 #endif
+	using CastleTests;
 
 	using NUnit.Framework;
 

@@ -24,6 +24,8 @@ namespace Castle.Proxies
 	using Castle.Windsor.Tests.Components;
 	using Castle.Windsor.Tests.Interceptors;
 
+	using CastleTests;
+
 	using NUnit.Framework;
 
 	[TestFixture]
