@@ -17,7 +17,6 @@ namespace CastleTests.Facilities.FactorySupport
 	using System;
 
 	using Castle.Facilities.FactorySupport;
-	using Castle.MicroKernel;
 	using Castle.MicroKernel.Registration;
 
 	using CastleTests.Components;
@@ -25,28 +24,15 @@ namespace CastleTests.Facilities.FactorySupport
 	using NUnit.Framework;
 
 	[TestFixture]
-	public class FactorySupportProgrammaticTestCase
+	public class FactorySupportProgrammaticTestCase : AbstractContainerTestCase
 	{
-		[SetUp]
-		public void Init()
+		protected override void AfterContainerCreated()
 		{
 			facility = new FactorySupportFacility();
-			kernel = new DefaultKernel();
-			kernel.AddFacility(facility);
+			Kernel.AddFacility(facility);
 		}
 
 		private FactorySupportFacility facility;
-		private IKernel kernel;
-
-		private class Settings
-		{
-			private readonly int something = 1;
-
-			public int Something
-			{
-				get { return something; }
-			}
-		}
 
 		private class SettingsConsumer
 		{
@@ -71,7 +57,7 @@ namespace CastleTests.Facilities.FactorySupport
 			facility.AddFactory<ISomeService, ServiceFactory>(serviceKey, "Create");
 #pragma warning restore
 
-			var service = kernel.Resolve(serviceKey,
+			var service = Kernel.Resolve(serviceKey,
 			                             typeof(ISomeService)) as ISomeService;
 
 			Assert.IsTrue(ServiceFactory.CreateWasCalled);
@@ -87,14 +73,10 @@ namespace CastleTests.Facilities.FactorySupport
 			facility.AddFactory<TimeSpan, ServiceFactory>(serviceKey, "get_Something");
 #pragma warning restore
 
-			kernel.Register(Component.For<SettingsConsumer>().
+			Kernel.Register(Component.For<SettingsConsumer>().
 			                	Parameters(Parameter.ForKey("something").Eq("${serviceKey}")));
 
-			var consumer = kernel.Resolve<SettingsConsumer>();
+			var consumer = Kernel.Resolve<SettingsConsumer>();
 		}
 	}
-
-	#region Exampleclasses
-
-	#endregion
 }
