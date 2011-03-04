@@ -189,8 +189,8 @@ namespace Castle.Facilities.EventWiring
 
 					if (eventInfo == null)
 					{
-						throw new EventWiringException("Could not find event on publisher. Event " +
-						                               eventName + " Publisher " + publisherType.FullName);
+						throw new EventWiringException(
+							string.Format("Could not find event '{0}' on component '{1}'. Make sure you didn't misspell the name.", eventName, model.Name));
 					}
 
 					var handlerMethod = subscriberInstance.GetType().GetMethod(wireInfo.Handler,
@@ -198,13 +198,16 @@ namespace Castle.Facilities.EventWiring
 
 					if (handlerMethod == null)
 					{
-						throw new EventWiringException("Could not find the method '" + wireInfo.Handler +
-						                               "' to handle the event " + eventName + ". Subscriber "
-						                               + subscriberInstance.GetType().FullName);
+						throw new EventWiringException(
+							string.Format(
+								"Could not find method '{0}' on component '{1}' to handle event '{2}' published by component '{3}'. Make sure you didn't misspell the name.",
+								wireInfo.Handler,
+								subscriberKey,
+								eventName,
+								model.Name));
 					}
 
-					var delegateHandler = Delegate.CreateDelegate(eventInfo.EventHandlerType,
-					                                              subscriberInstance, wireInfo.Handler);
+					var delegateHandler = Delegate.CreateDelegate(eventInfo.EventHandlerType, subscriberInstance, wireInfo.Handler);
 
 					eventInfo.AddEventHandler(publisher, delegateHandler);
 				}
