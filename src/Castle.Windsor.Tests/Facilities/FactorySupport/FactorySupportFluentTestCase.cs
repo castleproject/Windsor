@@ -15,7 +15,6 @@
 namespace CastleTests.Facilities.FactorySupport
 {
 	using Castle.Facilities.FactorySupport;
-	using Castle.MicroKernel;
 	using Castle.MicroKernel.Registration;
 
 	using CastleTests.Components;
@@ -23,20 +22,16 @@ namespace CastleTests.Facilities.FactorySupport
 	using NUnit.Framework;
 
 	[TestFixture]
-	public class FactorySupportFluentTestCase
+	public class FactorySupportFluentTestCase : AbstractContainerTestCase
 	{
-		[SetUp]
-		public void SetUp()
+		protected override void AfterContainerCreated()
 		{
-			kernel = new DefaultKernel();
-			kernel.AddFacility<FactorySupportFacility>();
+			Kernel.AddFacility<FactorySupportFacility>();
 		}
-
-		private IKernel kernel;
 
 		private void RegisterComponentsImplemtedByFerrari(User user)
 		{
-			kernel.Register(
+			Kernel.Register(
 				Component.For<User>().Named("currentUser").Instance(user),
 				Component.For<AbstractCarProviderFactory>().Named("AbstractCarProviderFactory"),
 				Component.For<ICarProvider>()
@@ -47,31 +42,31 @@ namespace CastleTests.Facilities.FactorySupport
 		}
 
 		[Test]
-		public void can_register_without_providing_an_implementation()
+		public void Can_register_without_providing_an_implementation()
 		{
 			var user = new User { FiscalStability = FiscalStability.DirtFarmer };
-			kernel.Register(
+			Kernel.Register(
 				Component.For<User>().Named("currentUser").Instance(user),
 				Component.For<AbstractCarProviderFactory>().Named("AbstractCarProviderFactory"),
 				Component.For<ICarProvider>()
 					.Attribute("factoryId").Eq("AbstractCarProviderFactory")
 					.Attribute("factoryCreate").Eq("Create")
 				);
-			Assert.IsInstanceOf(typeof(HondaProvider), kernel.Resolve<ICarProvider>());
+			Assert.IsInstanceOf(typeof(HondaProvider), Kernel.Resolve<ICarProvider>());
 		}
 
 		[Test]
 		public void register_ferrari_implementation_get_ferrari_instance()
 		{
 			RegisterComponentsImplemtedByFerrari(new User { FiscalStability = FiscalStability.MrMoneyBags });
-			Assert.IsInstanceOf(typeof(FerrariProvider), kernel.Resolve<ICarProvider>());
+			Assert.IsInstanceOf(typeof(FerrariProvider), Kernel.Resolve<ICarProvider>());
 		}
 
 		[Test]
 		public void register_ferrari_implementation_get_honda_instance()
 		{
 			RegisterComponentsImplemtedByFerrari(new User { FiscalStability = FiscalStability.DirtFarmer });
-			Assert.IsInstanceOf(typeof(HondaProvider), kernel.Resolve<ICarProvider>());
+			Assert.IsInstanceOf(typeof(HondaProvider), Kernel.Resolve<ICarProvider>());
 		}
 	}
 }

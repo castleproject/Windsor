@@ -20,11 +20,9 @@ namespace CastleTests.Facilities.FactorySupport
 	using Castle.Core;
 	using Castle.Core.Configuration;
 	using Castle.Facilities.FactorySupport;
-	using Castle.MicroKernel;
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Tests.ClassComponents;
 	using Castle.MicroKernel.Tests.Lifestyle.Components;
-	using Castle.Windsor;
 	using Castle.Windsor.Installer;
 	using Castle.Windsor.Tests;
 
@@ -33,38 +31,32 @@ namespace CastleTests.Facilities.FactorySupport
 	using NUnit.Framework;
 
 	[TestFixture]
-	public class FactorySupportTestCase
+	public class FactorySupportTestCase : AbstractContainerTestCase
 	{
-		private IKernel kernel;
-		private IWindsorContainer container;
 
-		[SetUp]
-		public void SetUp()
+		protected override void AfterContainerCreated()
 		{
-			container = new WindsorContainer();
-			kernel = container.Kernel;
+			Kernel.AddFacility<FactorySupportFacility>();
 		}
 
 		[Test]
 		public void NullModelConfigurationBug()
 		{
-			kernel.AddFacility<FactorySupportFacility>();
-			kernel.Register(Component.For<ICustomer>().Named("a").Instance(new CustomerImpl()));
+			Kernel.Register(Component.For<ICustomer>().Named("a").Instance(new CustomerImpl()));
 		}
 
 		[Test]
 		public void DependencyIgnored()
 		{
-			kernel.AddFacility<FactorySupportFacility>();
-			kernel.Register(Component.For(typeof(Factory)).Named("a"));
+			Kernel.Register(Component.For(typeof(Factory)).Named("a"));
 
 			AddComponent("stringdictComponent", typeof(StringDictionaryDependentComponent), "CreateWithStringDictionary");
 			AddComponent("hashtableComponent", typeof(HashTableDependentComponent), "CreateWithHashtable");
 			AddComponent("serviceComponent", typeof(ServiceDependentComponent), "CreateWithService");
 
-			kernel.Resolve("hashtableComponent", typeof(HashTableDependentComponent));
-			kernel.Resolve("serviceComponent", typeof(ServiceDependentComponent));
-			kernel.Resolve("stringdictComponent", typeof(StringDictionaryDependentComponent));
+			Kernel.Resolve("hashtableComponent", typeof(HashTableDependentComponent));
+			Kernel.Resolve("serviceComponent", typeof(ServiceDependentComponent));
+			Kernel.Resolve("stringdictComponent", typeof(StringDictionaryDependentComponent));
 		}
 
 #if !SILVERLIGHT
@@ -72,11 +64,10 @@ namespace CastleTests.Facilities.FactorySupport
 		[Ignore("BUG: not working")]
 		public void Can_instantiate_abstract_service_via_factory()
 		{
-			container.AddFacility<FactorySupportFacility>();
-			container.Install(Configuration.FromXmlFile(
+			Container.Install(Configuration.FromXmlFile(
 				ConfigHelper.ResolveConfigPath("Configuration2/abstract_component_factory.xml")));
 
-			container.Resolve<IComponent>("abstract");
+			Container.Resolve<IComponent>("abstract");
 		}
 #endif
 
@@ -84,14 +75,13 @@ namespace CastleTests.Facilities.FactorySupport
 		[Ignore("Bug confirmed, but cant fix it without undesired side effects")]
 		public void KernelDoesNotTryToWireComponentsPropertiesWithFactoryConfiguration()
 		{
-			kernel.AddFacility<FactorySupportFacility>();
-			kernel.Register(Component.For(typeof(Factory)).Named("a"));
+			Kernel.Register(Component.For(typeof(Factory)).Named("a"));
 
 			var model = AddComponent("cool.service", typeof(MyCoolServiceWithProperties), "CreateCoolService");
 
 			model.Parameters.Add("someProperty", "Abc");
 
-			var service = kernel.Resolve<MyCoolServiceWithProperties>("cool.service");
+			var service = Kernel.Resolve<MyCoolServiceWithProperties>("cool.service");
 
 			Assert.IsNotNull(service);
 			Assert.IsNull(service.SomeProperty);
@@ -101,14 +91,14 @@ namespace CastleTests.Facilities.FactorySupport
 		[Ignore("Since the facility is mostly for legacy stuff, I don't think it's crucial to support this.")]
 		public void Late_bound_factory_properly_applies_lifetime_concerns()
 		{
-			kernel.AddFacility<FactorySupportFacility>();
-			kernel.Register(Component.For(typeof(DisposableComponentFactory)).Named("a"));
+			Kernel.AddFacility<FactorySupportFacility>();
+			Kernel.Register(Component.For(typeof(DisposableComponentFactory)).Named("a"));
 			var componentModel = AddComponent("foo", typeof(IComponent), "Create");
 			componentModel.LifestyleType = LifestyleType.Transient;
-			var component = kernel.Resolve<IComponent>("foo") as ComponentWithDispose;
+			var component = Kernel.Resolve<IComponent>("foo") as ComponentWithDispose;
 			Assert.IsNotNull(component);
 			Assert.IsFalse(component.Disposed);
-			kernel.ReleaseComponent(component);
+			Kernel.ReleaseComponent(component);
 			Assert.IsTrue(component.Disposed);
 		}
 
@@ -117,9 +107,9 @@ namespace CastleTests.Facilities.FactorySupport
 			var config = new MutableConfiguration(key);
 			config.Attributes["factoryId"] = "a";
 			config.Attributes["factoryCreate"] = factoryMethod;
-			kernel.ConfigurationStore.AddComponentConfiguration(key, config);
-			kernel.Register(Component.For(type).Named(key));
-			return kernel.GetHandler(key).ComponentModel;
+			Kernel.ConfigurationStore.AddComponentConfiguration(key, config);
+			Kernel.Register(Component.For(type).Named(key));
+			return Kernel.GetHandler(key).ComponentModel;
 		}
 
 		public class Factory
