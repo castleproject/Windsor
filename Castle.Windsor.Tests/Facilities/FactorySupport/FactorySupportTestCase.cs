@@ -33,7 +33,6 @@ namespace CastleTests.Facilities.FactorySupport
 	[TestFixture]
 	public class FactorySupportTestCase : AbstractContainerTestCase
 	{
-
 		protected override void AfterContainerCreated()
 		{
 			Kernel.AddFacility<FactorySupportFacility>();
@@ -46,9 +45,9 @@ namespace CastleTests.Facilities.FactorySupport
 		}
 
 		[Test]
-		public void DependencyIgnored()
+		public void Missing_dependencies_are_ignored()
 		{
-			Kernel.Register(Component.For(typeof(Factory)).Named("a"));
+			Kernel.Register(Component.For<Factory>().Named("a"));
 
 			AddComponent("stringdictComponent", typeof(StringDictionaryDependentComponent), "CreateWithStringDictionary");
 			AddComponent("hashtableComponent", typeof(HashTableDependentComponent), "CreateWithHashtable");
