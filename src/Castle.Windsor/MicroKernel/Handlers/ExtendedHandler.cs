@@ -39,7 +39,7 @@ namespace Castle.MicroKernel.Handlers
 			}
 		}
 
-		public override void Init(IKernel kernel)
+		public override void Init(IKernelInternal kernel)
 		{
 			base.Init(kernel);
 
