@@ -17,13 +17,16 @@ namespace Castle.Core
 	using System;
 	using System.Collections;
 	using System.Collections.Generic;
+	using System.Diagnostics;
 
 	/// <summary>
 	///   Collection of <see cref = "DependencyModel" />.
 	/// </summary>
 	[Serializable]
+	[DebuggerDisplay("Count = {dependencies.Count}")]
 	public class DependencyModelCollection : IEnumerable<DependencyModel>
 	{
+		[DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
 		private readonly List<DependencyModel> dependencies = new List<DependencyModel>();
 
 		public void Add(DependencyModel dependencyModel)
@@ -35,21 +38,18 @@ namespace Castle.Core
 			dependencies.Add(dependencyModel);
 		}
 
-		public void Clear()
-		{
-			dependencies.Clear();
-		}
-
 		public bool Remove(DependencyModel dependencyModel)
 		{
 			return dependencies.Remove(dependencyModel);
 		}
 
+		[DebuggerStepThrough]
 		public IEnumerator<DependencyModel> GetEnumerator()
 		{
 			return dependencies.GetEnumerator();
 		}
 
+		[DebuggerStepThrough]
 		IEnumerator IEnumerable.GetEnumerator()
 		{
 			return GetEnumerator();
