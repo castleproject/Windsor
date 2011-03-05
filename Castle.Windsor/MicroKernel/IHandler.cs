@@ -64,7 +64,7 @@ namespace Castle.MicroKernel
 		///   kernel.
 		/// </summary>
 		/// <param name = "kernel"></param>
-		void Init(IKernel kernel);
+		void Init(IKernelInternal kernel);
 
 		/// <summary>
 		///   Tests whether the handler is already being resolved in given context.

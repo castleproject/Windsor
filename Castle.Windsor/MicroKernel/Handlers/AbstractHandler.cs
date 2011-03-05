@@ -159,19 +159,13 @@ namespace Castle.MicroKernel.Handlers
 		///   the handler state.
 		/// </summary>
 		/// <param name = "kernel"></param>
-		public virtual void Init(IKernel kernel)
+		public virtual void Init(IKernelInternal kernel)
 		{
 			if (kernel == null)
 			{
 				throw new ArgumentNullException("kernel");
 			}
-			this.kernel = kernel as IKernelInternal;
-			if (this.kernel == null)
-			{
-				throw new HandlerException(
-					string.Format("The kernel does not implement {0}. It must also provide contract for internal usage.",
-					              typeof(IKernelInternal).FullName));
-			}
+			this.kernel = kernel;
 			this.kernel.AddedAsChildKernel += OnAddedAsChildKernel;
 
 			var activator = this.kernel.CreateComponentActivator(ComponentModel);

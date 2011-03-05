@@ -80,7 +80,7 @@ namespace Castle.MicroKernel.Handlers
 			return parentHandler.HasCustomParameter(key);
 		}
 
-		public virtual void Init(IKernel kernel)
+		public virtual void Init(IKernelInternal kernel)
 		{
 		}
 

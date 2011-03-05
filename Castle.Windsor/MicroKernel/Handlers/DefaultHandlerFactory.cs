@@ -24,9 +24,9 @@ namespace Castle.MicroKernel.Handlers
 	[Serializable]
 	public class DefaultHandlerFactory : IHandlerFactory
 	{
-		private readonly IKernel kernel;
+		private readonly IKernelInternal kernel;
 
-		public DefaultHandlerFactory(IKernel kernel)
+		public DefaultHandlerFactory(IKernelInternal kernel)
 		{
 			this.kernel = kernel;
 		}
