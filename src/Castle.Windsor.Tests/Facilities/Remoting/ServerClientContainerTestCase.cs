@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,15 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+
 #if (!SILVERLIGHT)
 
-namespace Castle.Windsor.Tests.Facilities.Remoting
+namespace CastleTests.Facilities.Remoting
 {
 	using System;
 	using System.Runtime.Remoting;
 
 	using Castle.Windsor;
-	using Castle.Windsor.Tests;
+	using Castle.Windsor.Tests.Components;
+
+	using CastleTests.Components;
 
 	using NUnit.Framework;
 
@@ -33,9 +36,7 @@ namespace Castle.Windsor.Tests.Facilities.Remoting
 			base.Init();
 
 			serverClient = AppDomainFactory.Create("serverClient");
-			serverClientContainer = GetRemoteContainer(serverClient,
-			                                           ConfigHelper.ResolveConfigPath(
-			                                           	"Facilities/Remoting/Configs/server_client_kernelcomponent.xml"));
+			serverClientContainer = GetRemoteContainer(serverClient, "server_client_kernelcomponent.xml");
 		}
 
 		public override void Terminate()
@@ -52,30 +53,15 @@ namespace Castle.Windsor.Tests.Facilities.Remoting
 
 		protected override String GetServerConfigFile()
 		{
-			return ConfigHelper.ResolveConfigPath("Facilities/Remoting/Configs/server_kernelcomponent.xml");
+			return "server_kernelcomponent.xml";
 		}
 
 		public void ClientContainerConsumingRemoteComponentCallback()
 		{
 			var clientContainer = CreateRemoteContainer(clientDomain,
-			                                            ConfigHelper.ResolveConfigPath(
-			                                            	"Facilities/Remoting/Configs/client_12134_kernelcomponent.xml"));
+			                                            "client_12134_kernelcomponent.xml");
 
 			var service = clientContainer.Resolve<ICalcService>("calc.service.c1");
-
-			Assert.IsTrue(RemotingServices.IsTransparentProxy(service));
-			Assert.IsTrue(RemotingServices.IsObjectOutOfAppDomain(service));
-
-			Assert.AreEqual(10, service.Sum(7, 3));
-		}
-
-		public void ServerClientContainerConsumingRemoteComponentCallback()
-		{
-			var serverAsClient = GetRemoteContainer(serverClient,
-			                                        ConfigHelper.ResolveConfigPath(
-			                                        	"Facilities/Remoting/Configs/server_client_kernelcomponent.xml"));
-
-			var service = serverAsClient.Resolve<ICalcService>();
 
 			Assert.IsTrue(RemotingServices.IsTransparentProxy(service));
 			Assert.IsTrue(RemotingServices.IsObjectOutOfAppDomain(service));
@@ -92,14 +78,28 @@ namespace Castle.Windsor.Tests.Facilities.Remoting
 		[Test]
 		public void ServerClientContainerConsumingRemoteComponent()
 		{
-			IWindsorContainer serverAsClient = GetRemoteContainer(serverClient, ConfigHelper.ResolveConfigPath("Facilities/Remoting/Configs/server_client_kernelcomponent.xml"));
-			
-			ICalcService service = serverAsClient.Resolve<ICalcService>();
+			var serverAsClient = GetRemoteContainer(serverClient, "server_client_kernelcomponent.xml");
 
-			Assert.IsTrue( RemotingServices.IsTransparentProxy(service) );
-			Assert.IsTrue( RemotingServices.IsObjectOutOfAppDomain(service) );
+			var service = serverAsClient.Resolve<ICalcService>();
 
-			Assert.AreEqual(10, service.Sum(7,3));
+			Assert.IsTrue(RemotingServices.IsTransparentProxy(service));
+			Assert.IsTrue(RemotingServices.IsObjectOutOfAppDomain(service));
+
+			Assert.AreEqual(10, service.Sum(7, 3));
+		}
+
+		[Test]
+		public void ServerClientContainerConsumingRemoteComponentCallback()
+		{
+			var serverAsClient = GetRemoteContainer(serverClient,
+			                                        "server_client_kernelcomponent.xml");
+
+			var service = serverAsClient.Resolve<ICalcService>();
+
+			Assert.IsTrue(RemotingServices.IsTransparentProxy(service));
+			Assert.IsTrue(RemotingServices.IsObjectOutOfAppDomain(service));
+
+			Assert.AreEqual(10, service.Sum(7, 3));
 		}
 	}
 }

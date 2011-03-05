@@ -977,16 +977,15 @@
     <Compile Include="Facilities\EventWiring\SingletonStartableTestCase.cs" />
     <Compile Include="Facilities\EventWiring\SubscriberWithDependenciesTestCase.cs" />
     <Compile Include="Facilities\Remoting\AbstractRemoteTestCase.cs" />
-    <Compile Include="Facilities\Remoting\AppDomainFactory.cs" />
-    <Compile Include="Facilities\Remoting\CalcServiceImpl.cs" />
-    <Compile Include="Facilities\Remoting\ConfigurableRegistrationTestCase.cs" />
-    <Compile Include="Facilities\Remoting\ConsumerComp.cs" />
-    <Compile Include="Facilities\Remoting\CustomToStringService.cs" />
+    <Compile Include="Components\AppDomainFactory.cs" />
+    <Compile Include="Components\CalcServiceRemotingImpl.cs" />
+    <Compile Include="Components\ConfigurableRegistrationTestCase.cs" />
+    <Compile Include="Components\ConsumerComp.cs" />
+    <Compile Include="Components\CustomToStringService.cs" />
     <Compile Include="Facilities\Remoting\FacilityLifeCycleTestCase.cs" />
-    <Compile Include="Facilities\Remoting\GenericToStringServiceImpl.cs" />
-    <Compile Include="Facilities\Remoting\ICalcService.cs" />
-    <Compile Include="Facilities\Remoting\IGenericHashService.cs" />
-    <Compile Include="Facilities\Remoting\InterceptableCalcService.cs" />
+    <Compile Include="Components\GenericToStringServiceImpl.cs" />
+    <Compile Include="Components\IGenericToStringService.cs" />
+    <Compile Include="Components\InterceptableCalcServiceRemoting.cs" />
     <Compile Include="Facilities\Remoting\RemoteClientActivatedTestCase.cs" />
     <Compile Include="Facilities\Remoting\RemoteComponentTestCase.cs" />
     <Compile Include="Facilities\Remoting\RemoteComponentWithInterceptorTestCase.cs" />
@@ -1364,50 +1363,21 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <EmbeddedResource Include="XmlFiles\sample_config_with_spaces.xml" />
-    <EmbeddedResource Include="Facilities\Remoting\Configs\client_12134_kernelcomponent.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Facilities\Remoting\Configs\client_clientactivated.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Facilities\Remoting\Configs\client_confreg_clientactivated.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Facilities\Remoting\Configs\client_kernelcomponent.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Facilities\Remoting\Configs\client_kernelcomponent_recover.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Facilities\Remoting\Configs\client_kernelgenericcomponent.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Facilities\Remoting\Configs\client_simple_scenario.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Facilities\Remoting\Configs\server_clientactivated.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Facilities\Remoting\Configs\server_client_kernelcomponent.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Facilities\Remoting\Configs\server_confreg_clientactivated.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Facilities\Remoting\Configs\server_kernelcomponent.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Facilities\Remoting\Configs\server_kernelcomponent_inter1.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Facilities\Remoting\Configs\server_kernelcomponent_recover.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Facilities\Remoting\Configs\server_kernelgenericcomponent.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Facilities\Remoting\Configs\server_simple_scenario.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    <EmbeddedResource Include="XmlFiles\RemotingFacility\client_12134_kernelcomponent.xml" />
+    <EmbeddedResource Include="XmlFiles\RemotingFacility\client_clientactivated.xml" />
+    <EmbeddedResource Include="XmlFiles\RemotingFacility\client_confreg_clientactivated.xml" />
+    <EmbeddedResource Include="XmlFiles\RemotingFacility\client_kernelcomponent.xml" />
+    <EmbeddedResource Include="XmlFiles\RemotingFacility\client_kernelcomponent_recover.xml" />
+    <EmbeddedResource Include="XmlFiles\RemotingFacility\client_kernelgenericcomponent.xml" />
+    <EmbeddedResource Include="XmlFiles\RemotingFacility\client_simple_scenario.xml" />
+    <EmbeddedResource Include="XmlFiles\RemotingFacility\server_clientactivated.xml" />
+    <EmbeddedResource Include="XmlFiles\RemotingFacility\server_client_kernelcomponent.xml" />
+    <EmbeddedResource Include="XmlFiles\RemotingFacility\server_confreg_clientactivated.xml" />
+    <EmbeddedResource Include="XmlFiles\RemotingFacility\server_kernelcomponent.xml" />
+    <EmbeddedResource Include="XmlFiles\RemotingFacility\server_kernelcomponent_inter1.xml" />
+    <EmbeddedResource Include="XmlFiles\RemotingFacility\server_kernelcomponent_recover.xml" />
+    <EmbeddedResource Include="XmlFiles\RemotingFacility\server_kernelgenericcomponent.xml" />
+    <EmbeddedResource Include="XmlFiles\RemotingFacility\server_simple_scenario.xml">
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Facilities\TypedFactory\typedFactory_castle_config.xml">

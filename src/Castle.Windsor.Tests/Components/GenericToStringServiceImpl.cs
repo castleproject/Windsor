@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,21 +12,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
-namespace Castle.Windsor.Tests.Facilities.Remoting
+namespace CastleTests.Components
 {
-	using System.Linq;
+#if !SILVERLIGHT
 	using System;
+	using System.Text;
 
-#if (SILVERLIGHT)
-	public class CalcServiceImpl : ICalcService
-#else
-	public class CalcServiceImpl : MarshalByRefObject, ICalcService
-#endif
+	public class GenericToStringServiceImpl<T> : MarshalByRefObject, IGenericToStringService<T> where T : class
 	{
-		public int Sum(params int[] args)
+		public string ToString(params T[] instances)
 		{
-			return args.Sum();
+			var result = new StringBuilder();
+			foreach (var instance in instances)
+			{
+				result.Append(instance.ToString());
+			}
+			return result.ToString();
 		}
 	}
+#endif
 }
