@@ -172,8 +172,6 @@ namespace Castle.Facilities.Remoting
 				return;
 			}
 
-			ResetDependencies(model);
-
 			var uri = ConstructClientURI(client, model);
 
 			var skipRemotingRegistration = Convert.ToBoolean(model.Configuration.Attributes["skipRemotingRegistration"]);
@@ -368,17 +366,6 @@ namespace Castle.Facilities.Remoting
 
 				throw new FacilityException(message);
 			}
-		}
-
-		/// <summary>
-		///   Client components are not created by the container
-		///   so there's no point collecting constructor dependencies
-		/// </summary>
-		/// <param name = "model"></param>
-		private void ResetDependencies(ComponentModel model)
-		{
-			model.Dependencies.Clear();
-			model.Constructors.Clear();
 		}
 
 		private static string SetUriExtensionIfNeeded(string uri)

@@ -26,7 +26,7 @@ namespace Castle.Facilities.Remoting.CustomActivators
 	/// <summary>
 	///   Activates a client connecting to the remote server, enforcing the uri and the server activation.
 	/// </summary>
-	public class RemoteActivatorThroughConnector : DefaultComponentActivator
+	public class RemoteActivatorThroughConnector : DefaultComponentActivator, IDependencyAwareActivator
 	{
 		/// <summary>
 		///   Initializes a new instance of the <see cref = "RemoteActivatorThroughConnector" /> class.
@@ -66,6 +66,16 @@ namespace Castle.Facilities.Remoting.CustomActivators
 			registry.Publish(Model.Name);
 
 			return RemotingServices.Connect(service, uri);
+		}
+
+		public bool CanProvideRequiredDependencies(ComponentModel component)
+		{
+			return true;
+		}
+
+		public bool IsManagedExternally(ComponentModel component)
+		{
+			return false;
 		}
 	}
 }

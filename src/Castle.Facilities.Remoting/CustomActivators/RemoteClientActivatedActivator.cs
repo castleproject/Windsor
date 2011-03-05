@@ -26,7 +26,7 @@ namespace Castle.Facilities.Remoting.CustomActivators
 	/// <summary>
 	///   Activates a client activated object.
 	/// </summary>
-	public class RemoteClientActivatedActivator : DefaultComponentActivator
+	public class RemoteClientActivatedActivator : DefaultComponentActivator, IDependencyAwareActivator
 	{
 		/// <summary>
 		///   Initializes a new instance of the <see cref = "RemoteClientActivatedActivator" /> class.
@@ -56,6 +56,16 @@ namespace Castle.Facilities.Remoting.CustomActivators
 			var url = (String)Model.ExtendedProperties["remoting.appuri"];
 
 			return Activator.CreateInstance(Model.Implementation, null, new object[] { new UrlAttribute(url) });
+		}
+
+		public bool CanProvideRequiredDependencies(ComponentModel component)
+		{
+			return true;
+		}
+
+		public bool IsManagedExternally(ComponentModel component)
+		{
+			return false;
 		}
 	}
 }

@@ -26,7 +26,7 @@ namespace Castle.Facilities.Remoting.CustomActivators
 	/// <summary>
 	///   Activates and publishes a server object.
 	/// </summary>
-	public class RemoteMarshallerActivator : DefaultComponentActivator
+	public class RemoteMarshallerActivator : DefaultComponentActivator, IDependencyAwareActivator
 	{
 		/// <summary>
 		///   Initializes a new instance of the <see cref = "RemoteMarshallerActivator" /> class.
@@ -38,6 +38,16 @@ namespace Castle.Facilities.Remoting.CustomActivators
 		public RemoteMarshallerActivator(ComponentModel model, IKernel kernel, ComponentInstanceDelegate onCreation, ComponentInstanceDelegate onDestruction)
 			: base(model, kernel, onCreation, onDestruction)
 		{
+		}
+
+		public bool CanProvideRequiredDependencies(ComponentModel component)
+		{
+			return true;
+		}
+
+		public bool IsManagedExternally(ComponentModel component)
+		{
+			return false;
 		}
 
 		protected override object Instantiate(CreationContext context)
