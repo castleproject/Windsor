@@ -16,6 +16,9 @@ namespace Castle.Core
 {
 	using System;
 
+	using Castle.MicroKernel;
+	using Castle.MicroKernel.Util;
+
 	/// <summary>
 	///   Represents a dependency (other component or a 
 	///   fixed value available through external configuration).
@@ -25,6 +28,8 @@ namespace Castle.Core
 	{
 		private readonly Type targetItemType;
 		private readonly Type targetType;
+		private ParameterModel parameter;
+		private string reference;
 
 		/// <summary>
 		///   Initializes a new instance of the <see cref = "DependencyModel" /> class.
@@ -117,6 +122,24 @@ namespace Castle.Core
 			       Equals(other.DependencyKey, DependencyKey);
 		}
 
+		/// <summary>
+		///   Gets handler for the dependency, or null if dependency is not satisfied by a component from a container or a handler was not found
+		/// </summary>
+		/// <param name = "kernel"></param>
+		/// <returns></returns>
+		public IHandler GetHandler(IKernel kernel)
+		{
+			if (reference != null)
+			{
+				return kernel.GetHandler(reference);
+			}
+			if (targetItemType != null)
+			{
+				return kernel.GetHandler(targetItemType);
+			}
+			return null;
+		}
+
 		public override int GetHashCode()
 		{
 			unchecked
@@ -124,6 +147,15 @@ namespace Castle.Core
 				var result = (targetType != null ? targetType.GetHashCode() : 0);
 				result = (result*397) ^ (DependencyKey != null ? DependencyKey.GetHashCode() : 0);
 				return result;
+			}
+		}
+
+		public void Init(ParameterModelCollection parameters)
+		{
+			parameter = ObtainParameterModelByName(parameters) ?? ObtainParameterModelByType(parameters);
+			if (parameter != null)
+			{
+				reference = ReferenceExpressionUtil.ExtractComponentKey(parameter.Value);
 			}
 		}
 
@@ -138,5 +170,41 @@ namespace Castle.Core
 			return string.Format("Dependency '{0}' type '{1}'", DependencyKey, TargetType);
 		}
 
+		private ParameterModel GetParameterModelByType(Type type, ParameterModelCollection parameters)
+		{
+			var assemblyQualifiedName = type.AssemblyQualifiedName;
+			if (assemblyQualifiedName == null)
+			{
+				return null;
+			}
+
+			return parameters[assemblyQualifiedName];
+		}
+
+		private ParameterModel ObtainParameterModelByName(ParameterModelCollection parameters)
+		{
+			if (DependencyKey == null)
+			{
+				return null;
+			}
+
+			return parameters[DependencyKey];
+		}
+
+		private ParameterModel ObtainParameterModelByType(ParameterModelCollection parameters)
+		{
+			var type = TargetItemType;
+			if (type == null)
+			{
+				// for example it's an interceptor
+				return null;
+			}
+			var found = GetParameterModelByType(type, parameters);
+			if (found == null && type.IsGenericType)
+			{
+				found = GetParameterModelByType(type.GetGenericTypeDefinition(), parameters);
+			}
+			return found;
+		}
 	}
 }
