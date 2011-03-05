@@ -126,10 +126,7 @@ namespace Castle.Windsor
 				throw new ArgumentNullException("configurationUri");
 			}
 
-			var resources = (IResourceSubSystem)Kernel.GetSubSystem(SubSystemConstants.ResourceKey);
-			var resource = resources.CreateResource(configurationUri);
-			var interpreter = new XmlInterpreter(resource);
-
+			var interpreter = GetInterpreter(configurationUri);
 			interpreter.ProcessResource(interpreter.Source, kernel.ConfigurationStore, kernel);
 
 			RunInstaller();
@@ -907,5 +904,22 @@ namespace Castle.Windsor
 		{
 			return ResolveAll<T>(new ReflectionBasedDictionaryAdapter(argumentsAsAnonymousType));
 		}
+
+#if !SILVERLIGHT
+		private XmlInterpreter GetInterpreter(string configurationUri)
+		{
+			try
+			{
+				var resources = (IResourceSubSystem)Kernel.GetSubSystem(SubSystemConstants.ResourceKey);
+				var resource = resources.CreateResource(configurationUri);
+				return new XmlInterpreter(resource);
+			}
+			catch (Exception)
+			{
+				//we fallbacl to the old behavior
+				return new XmlInterpreter(configurationUri);
+			}
+		}
+#endif
 	}
 }

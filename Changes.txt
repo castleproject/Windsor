@@ -1,4 +1,4 @@
-- fixed IOC-240 - Castle Windsor ArrayResolver ServiceOverrides Not Respected
+- implemented IOC-279 - WindsorContainer constructor taking string should accept not only file path but also other supported locations, like UNC, config section and embedded resource
 - fixed IOC-278 - Optional Dependencies should also be satisfied from ILazyComponentLoaders if possible
 - implemented IOC-277 - Add ability for components activated in a custom way to opt out of container lifetime management
 - implemented IOC-275 - Exception message thrown when dependencies are missing is not always very clear and should be improved
@@ -26,6 +26,7 @@
 - implemented IOC-246 - Remove alternative naming subsystems
 - fixed IOC-245 - Proxies (for interface services) should not implicitly proxy all interfaces that the service implementation type happens to implement
 - implemented IOC-243 - Remove obsolete UseSingleInterfaceProxy option
+- fixed IOC-240 - Castle Windsor ArrayResolver ServiceOverrides Not Respected
 
 2.5.3 (2011-02-02)
 ==================

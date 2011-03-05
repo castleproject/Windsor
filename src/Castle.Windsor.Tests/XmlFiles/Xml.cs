@@ -41,10 +41,15 @@ namespace Castle.XmlFiles
 
 		public static IResource File(string name)
 		{
-			var fullPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "XmlFiles/" + name);
-			var uri = new CustomUri(fullPath);
+			var uri = new CustomUri(FilePath(name));
 			var resource = new FileResource(uri);
 			return resource;
+		}
+
+		public static string FilePath(string name)
+		{
+			var fullPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "XmlFiles/" + name);
+			return fullPath;
 		}
 	}
 }
