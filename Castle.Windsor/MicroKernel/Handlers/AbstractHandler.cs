@@ -28,7 +28,6 @@ namespace Castle.MicroKernel.Handlers
 	using Castle.MicroKernel.Lifestyle;
 	using Castle.MicroKernel.ModelBuilder.Inspectors;
 	using Castle.MicroKernel.Resolvers;
-	using Castle.MicroKernel.Util;
 
 	/// <summary>
 	///   Implements the basis of
@@ -277,25 +276,17 @@ namespace Castle.MicroKernel.Handlers
 		/// <param name = "dependency"></param>
 		protected void AddDependency(DependencyModel dependency)
 		{
-			var type = dependency.TargetItemType;
 			if (HasValidComponentFromResolver(dependency))
 			{
-				var reference = GetServiceOverrideReference(dependency);
-				if (reference != null)
+				if (model.HasParameters)
 				{
-					var handler = Kernel.GetHandler(reference);
-					if (handler != null)
-					{
-						AddGraphDependency(handler);
-					}
+					// TODO: this should go to be the first thing in this method, so that we can depend on the dependency being initialized in CanResolve call in resolver
+					dependency.Init(model.Parameters);
 				}
-				else if (type != null)
+				var handler = dependency.GetHandler(Kernel);
+				if (handler != null)
 				{
-					var handler = Kernel.GetHandler(type);
-					if (handler != null)
-					{
-						AddGraphDependency(handler);
-					}
+					AddGraphDependency(handler);
 				}
 				return;
 			}
@@ -317,20 +308,6 @@ namespace Castle.MicroKernel.Handlers
 				// state can be changed by AddCustomDependencyValue and RemoveCustomDependencyValue
 				OnHandlerStateChanged += HandlerStateChanged;
 			}
-		}
-
-		private string GetServiceOverrideReference(DependencyModel dependency)
-		{
-			if (!model.HasParameters)
-			{
-				return null;
-			}
-			var parameter = model.Parameters.GetMatch(dependency);
-			if (parameter == null)
-			{
-				return null;
-			}
-			return ReferenceExpressionUtil.ExtractComponentKey(parameter.Value);
 		}
 
 		protected bool CanSatisfyConstructor(ConstructorCandidate constructor)
