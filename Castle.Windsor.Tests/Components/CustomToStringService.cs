@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,23 +12,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Windsor.Tests.Facilities.Remoting
+namespace CastleTests.Components
 {
 	using System;
 	using System.Text;
 
 #if (SILVERLIGHT)
-	public class GenericToStringServiceImpl<T> : IGenericToStringService<T> where T : class
+	public class CustomToStringService : IGenericToStringService<StringBuilder>
 #else
-	public class GenericToStringServiceImpl<T> : MarshalByRefObject, IGenericToStringService<T> where T : class
+	public class CustomToStringService : MarshalByRefObject, IGenericToStringService<StringBuilder>
 #endif
 	{
-		public string ToString(params T[] instances)
+		public string ToString(params StringBuilder[] instances)
 		{
-			StringBuilder result = new StringBuilder();
-			foreach(T instance in instances)
+			var result = new StringBuilder();
+			foreach (var instance in instances)
 			{
-				result.Append(instance.ToString());
+				result.Append(instance.Length.ToString());
 			}
 			return result.ToString();
 		}

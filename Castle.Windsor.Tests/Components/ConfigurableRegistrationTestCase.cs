@@ -15,27 +15,36 @@
 
 #if (!SILVERLIGHT)
 
-namespace CastleTests.Facilities.Remoting
+namespace CastleTests.Components
 {
 	using System;
+
+	using Castle.Windsor.Tests.Components;
+
+	using CastleTests.Facilities.Remoting;
 
 	using NUnit.Framework;
 
 	[TestFixture]
 	[Serializable]
-	public class FacilityLifeCycleTestCase : AbstractRemoteTestCase
+	public class ConfigurableRegistrationTestCase : AbstractRemoteTestCase
 	{
-		protected override String GetServerConfigFile()
+		protected override string GetServerConfigFile()
 		{
-			return "server_kernelcomponent.xml";
+			return "server_confreg_clientactivated.xml";
+		}
+
+		public void ClientContainerConsumingRemoteComponentsCallback()
+		{
+			var clientContainer = CreateRemoteContainer(clientDomain, "client_confreg_clientactivated.xml");
+
+			Assert.IsNotNull(clientContainer.Kernel.ResolveAll<ICalcService>());
 		}
 
 		[Test]
-		public void ClientDisposal()
+		public void ClientContainerConsumingRemoteComponents()
 		{
-			var clientContainer = CreateRemoteContainer(clientDomain, "client_kernelcomponent.xml");
-
-			clientContainer.Dispose();
+			clientDomain.DoCallBack(ClientContainerConsumingRemoteComponentsCallback);
 		}
 	}
 }

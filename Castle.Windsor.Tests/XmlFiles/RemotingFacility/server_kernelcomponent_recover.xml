@@ -3,6 +3,8 @@
 
   <facilities>
 
+    <facility id="startable" type="Castle.Facilities.Startable.StartableFacility, Castle.Windsor" />
+
     <facility
 		id="remote.facility"
 		type="Castle.Facilities.Remoting.RemotingFacility, Castle.Facilities.Remoting"
@@ -16,10 +18,13 @@
 
     <component
 		id="calc.service"
-		service="Castle.Windsor.Tests.Facilities.Remoting.ICalcService, Castle.Windsor.Tests"
-		type="Castle.Windsor.Tests.Facilities.Remoting.CalcServiceImpl, Castle.Windsor.Tests"
-		remoteserver="component" />
-
+		startable="true"
+		service="ICalcService"
+		type="CalcServiceRemotingImpl"
+		remoteserver="recoverableComponent" />
+    <!-- If uri is specified here, client uri should be a full uri (baseUri + uri) 
+			server:  uri="test" 
+			client:  uri="#{baseuri}/test"-->
   </components>
 
 </configuration>

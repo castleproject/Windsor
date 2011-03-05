@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,9 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+
 #if (!SILVERLIGHT)
 
-namespace Castle.Windsor.Tests.Facilities.Remoting
+namespace CastleTests.Components
 {
 	using System;
 	using System.Security.Policy;
@@ -23,20 +24,21 @@ namespace Castle.Windsor.Tests.Facilities.Remoting
 	{
 		public static AppDomain Create(String name)
 		{
-			AppDomain currentDomain = AppDomain.CurrentDomain;
+			var currentDomain = AppDomain.CurrentDomain;
 
-			AppDomainSetup setup = new AppDomainSetup();
+			var setup = new AppDomainSetup();
 
 			setup.ApplicationName = name;
 			setup.ApplicationBase = currentDomain.SetupInformation.ApplicationBase;
 			setup.PrivateBinPath = currentDomain.SetupInformation.PrivateBinPath;
 			setup.ConfigurationFile = currentDomain.SetupInformation.ConfigurationFile;
 
-			Evidence baseEvidence = currentDomain.Evidence;
-			Evidence evidence = new Evidence(baseEvidence);
+			var baseEvidence = currentDomain.Evidence;
+			var evidence = new Evidence(baseEvidence);
 
 			return AppDomain.CreateDomain(name, evidence, setup);
 		}
 	}
 }
+
 #endif

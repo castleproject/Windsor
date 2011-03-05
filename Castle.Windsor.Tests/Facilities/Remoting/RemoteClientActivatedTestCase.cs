@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,42 +12,53 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+
 #if (!SILVERLIGHT)
-namespace Castle.Windsor.Tests.Facilities.Remoting
+
+namespace CastleTests.Facilities.Remoting
 {
 	using System;
 	using System.Runtime.Remoting;
 	using System.Runtime.Remoting.Activation;
 
-	using Castle.Windsor.Tests;
+	using Castle.Windsor.Tests.Components;
+
+	using CastleTests.Components;
 
 	using NUnit.Framework;
 
-	[TestFixture, Serializable]
+	[TestFixture]
+	[Serializable]
 	public class RemoteClientActivatedTestCase : AbstractRemoteTestCase
 	{
 		protected override String GetServerConfigFile()
 		{
-			return ConfigHelper.ResolveConfigPath("Facilities/Remoting/Configs/server_clientactivated.xml");
-		}
-
-		[Test]
-		public void CommonAppConsumingRemoteComponents()
-		{
-			clientDomain.DoCallBack(new CrossAppDomainDelegate(CommonAppConsumingRemoteComponentsCallback));
+			return "server_clientactivated.xml";
 		}
 
 		public void CommonAppConsumingRemoteComponentsCallback()
 		{
-			var service = (ICalcService) 
-				Activator.CreateInstance( 
-					typeof(CalcServiceImpl), null, 
-					new object[] { new UrlAttribute("tcp://localhost:2133/") } );
+			var service = (ICalcService)
+			              Activator.CreateInstance(
+			              	typeof(CalcServiceRemotingImpl), null,
+			              	new object[] { new UrlAttribute("tcp://localhost:2133/") });
 
-			Assert.IsTrue( RemotingServices.IsTransparentProxy(service) );
-			Assert.IsTrue( RemotingServices.IsObjectOutOfAppDomain(service) );
+			Assert.IsTrue(RemotingServices.IsTransparentProxy(service));
+			Assert.IsTrue(RemotingServices.IsObjectOutOfAppDomain(service));
 
-			Assert.AreEqual(10, service.Sum(7,3));
+			Assert.AreEqual(10, service.Sum(7, 3));
+		}
+
+		public void ClientContainerConsumingRemoteComponentCallback()
+		{
+			var clientContainer = CreateRemoteContainer(clientDomain, "client_clientactivated.xml");
+
+			var service = clientContainer.Resolve<ICalcService>();
+
+			Assert.IsTrue(RemotingServices.IsTransparentProxy(service));
+			Assert.IsTrue(RemotingServices.IsObjectOutOfAppDomain(service));
+
+			Assert.AreEqual(10, service.Sum(7, 3));
 		}
 
 		[Test]
@@ -56,17 +67,12 @@ namespace Castle.Windsor.Tests.Facilities.Remoting
 			clientDomain.DoCallBack(ClientContainerConsumingRemoteComponentCallback);
 		}
 
-		public void ClientContainerConsumingRemoteComponentCallback()
+		[Test]
+		public void CommonAppConsumingRemoteComponents()
 		{
-			var clientContainer = CreateRemoteContainer(clientDomain, ConfigHelper.ResolveConfigPath("Facilities/Remoting/Configs/client_clientactivated.xml"));
-
-			var service = clientContainer.Resolve<ICalcService>();
-
-			Assert.IsTrue( RemotingServices.IsTransparentProxy(service) );
-			Assert.IsTrue( RemotingServices.IsObjectOutOfAppDomain(service) );
-
-			Assert.AreEqual(10, service.Sum(7,3));
+			clientDomain.DoCallBack(CommonAppConsumingRemoteComponentsCallback);
 		}
 	}
 }
+
 #endif

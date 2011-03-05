@@ -16,13 +16,13 @@
 
     <component
 		id="myinterceptor"
-		type="Castle.Windsor.Tests.Interceptors.ChangeResultInterceptor, Castle.Windsor.Tests"
+		type="ChangeResultInterceptor"
 		/>
 
     <component
 		id="calc.service"
-		service="Castle.Windsor.Tests.Facilities.Remoting.ICalcService, Castle.Windsor.Tests"
-		type="Castle.Windsor.Tests.Facilities.Remoting.InterceptableCalcService, Castle.Windsor.Tests"
+		service="ICalcService"
+		type="InterceptableCalcServiceRemoting"
 		remoteserver="component" />
 
   </components>

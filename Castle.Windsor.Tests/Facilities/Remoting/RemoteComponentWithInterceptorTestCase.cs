@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,40 +12,43 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+
 #if (!SILVERLIGHT)
-namespace Castle.Windsor.Tests.Facilities.Remoting
+
+namespace CastleTests.Facilities.Remoting
 {
 	using System;
 
-	using Castle.Windsor;
-	using Castle.Windsor.Tests;
+	using Castle.Windsor.Tests.Components;
 
 	using NUnit.Framework;
 
-	[TestFixture, Serializable]
+	[TestFixture]
+	[Serializable]
 	public class RemoteComponentWithInterceptorTestCase : AbstractRemoteTestCase
 	{
 		protected override String GetServerConfigFile()
 		{
-			return ConfigHelper.ResolveConfigPath("Facilities/Remoting/Configs/server_kernelcomponent_inter1.xml");
+			return "server_kernelcomponent_inter1.xml";
+		}
+
+		public void ClientContainerConsumingRemoteComponentCallback()
+		{
+			var clientContainer = CreateRemoteContainer(clientDomain, "client_kernelcomponent.xml");
+
+			var service = clientContainer.Resolve<ICalcService>();
+
+			// The result is being intercepted, that's why we 
+			// assert for 20 instead of 10
+			Assert.AreEqual(20, service.Sum(7, 3));
 		}
 
 		[Test]
 		public void ClientContainerConsumingRemoteComponent()
 		{
-			clientDomain.DoCallBack(new CrossAppDomainDelegate(ClientContainerConsumingRemoteComponentCallback));
-		}
-
-		public void ClientContainerConsumingRemoteComponentCallback()
-		{
-			IWindsorContainer clientContainer = CreateRemoteContainer(clientDomain, ConfigHelper.ResolveConfigPath("Facilities/Remoting/Configs/client_kernelcomponent.xml"));
-
-			ICalcService service = clientContainer.Resolve<ICalcService>();
-
-			// The result is being intercepted, that's why we 
-			// assert for 20 instead of 10
-			Assert.AreEqual(20, service.Sum(7,3));
+			clientDomain.DoCallBack(ClientContainerConsumingRemoteComponentCallback);
 		}
 	}
 }
+
 #endif

@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,41 +12,33 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+
 #if (!SILVERLIGHT)
-namespace Castle.Windsor.Tests.Facilities.Remoting
+
+namespace CastleTests.Facilities.Remoting
 {
 	using System;
 	using System.Runtime.Remoting;
 
-	using Castle.Windsor;
-	using Castle.Windsor.Tests;
+	using Castle.Windsor.Tests.Components;
+
+	using CastleTests.Components;
 
 	using NUnit.Framework;
 
-	[TestFixture, Serializable]
+	[TestFixture]
+	[Serializable]
 	public class RemoteRecoverableCpntTestCase : AbstractRemoteTestCase
 	{
 		protected override String GetServerConfigFile()
 		{
-			return ConfigHelper.ResolveConfigPath("Facilities/Remoting/Configs/server_kernelcomponent_recover.xml");
-		}
-		
-		[Test]
-		public void ServerRestarted()
-		{
-			clientDomain.DoCallBack(new CrossAppDomainDelegate(ClientContainerInvokingRemoteComponent));
-
-			ShutdownSever();
-
-			StartServer();
-
-			clientDomain.DoCallBack(new CrossAppDomainDelegate(ClientContainerInvokingRemoteComponent));
+			return "server_kernelcomponent_recover.xml";
 		}
 
 		private void StartServer()
 		{
 			serverDomain = AppDomainFactory.Create("server");
-			serverContainer = CreateRemoteContainer(serverDomain, GetServerConfigFile() );
+			serverContainer = CreateRemoteContainer(serverDomain, GetServerConfigFile());
 		}
 
 		private void ShutdownSever()
@@ -57,14 +49,26 @@ namespace Castle.Windsor.Tests.Facilities.Remoting
 
 		public void ClientContainerInvokingRemoteComponent()
 		{
-			IWindsorContainer clientContainer = GetRemoteContainer(clientDomain, ConfigHelper.ResolveConfigPath("Facilities/Remoting/Configs/client_kernelcomponent_recover.xml"));
+			var clientContainer = GetRemoteContainer(clientDomain, "client_kernelcomponent_recover.xml");
 
-			ICalcService service = clientContainer.Resolve<ICalcService>();
+			var service = clientContainer.Resolve<ICalcService>();
 
-			Assert.IsTrue( RemotingServices.IsTransparentProxy(service) );
-			Assert.IsTrue( RemotingServices.IsObjectOutOfAppDomain(service) );
+			Assert.IsTrue(RemotingServices.IsTransparentProxy(service));
+			Assert.IsTrue(RemotingServices.IsObjectOutOfAppDomain(service));
 
-			Assert.AreEqual(10, service.Sum(7,3));
+			Assert.AreEqual(10, service.Sum(7, 3));
+		}
+
+		[Test]
+		public void ServerRestarted()
+		{
+			clientDomain.DoCallBack(ClientContainerInvokingRemoteComponent);
+
+			ShutdownSever();
+
+			StartServer();
+
+			clientDomain.DoCallBack(ClientContainerInvokingRemoteComponent);
 		}
 	}
 }
