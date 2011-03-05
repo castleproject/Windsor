@@ -24,6 +24,7 @@ namespace Castle.Windsor
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.SubSystems.Configuration;
+	using Castle.MicroKernel.SubSystems.Resource;
 	using Castle.Windsor.Configuration;
 	using Castle.Windsor.Configuration.Interpreters;
 	using Castle.Windsor.Experimental.Diagnostics;
@@ -112,14 +113,26 @@ namespace Castle.Windsor
 #if !SILVERLIGHT
 		/// <summary>
 		///   Initializes a new instance of the <see cref = "WindsorContainer" /> class using a
-		///   xml file to configure it.
+		///   resource pointed to by the parameter. That may be a file, an assembly embedded resource, a UNC path or a config file section.
 		///   <para>
-		///     Equivalent to the use of <c>new WindsorContainer(new XmlInterpreter(xmlFile))</c>
+		///     Equivalent to the use of <c>new WindsorContainer(new XmlInterpreter(configurationUri))</c>
 		///   </para>
 		/// </summary>
-		/// <param name = "xmlFile">The XML file.</param>
-		public WindsorContainer(String xmlFile) : this(new XmlInterpreter(xmlFile))
+		/// <param name = "configurationUri">The XML file.</param>
+		public WindsorContainer(String configurationUri) : this()
 		{
+			if (configurationUri == null)
+			{
+				throw new ArgumentNullException("configurationUri");
+			}
+
+			var resources = (IResourceSubSystem)Kernel.GetSubSystem(SubSystemConstants.ResourceKey);
+			var resource = resources.CreateResource(configurationUri);
+			var interpreter = new XmlInterpreter(resource);
+
+			interpreter.ProcessResource(interpreter.Source, kernel.ConfigurationStore, kernel);
+
+			RunInstaller();
 		}
 #endif
 
