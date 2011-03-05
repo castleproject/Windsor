@@ -25,7 +25,7 @@ namespace Castle.Facilities.Remoting.CustomActivators
 	/// <summary>
 	///   Activates a client connecting to the remote server through the <see cref = "RemotingRegistry" />.
 	/// </summary>
-	public class RemoteActivatorThroughRegistry : DefaultComponentActivator
+	public class RemoteActivatorThroughRegistry : DefaultComponentActivator, IDependencyAwareActivator
 	{
 		/// <summary>
 		///   Initializes a new instance of the <see cref = "RemoteActivatorThroughRegistry" /> class.
@@ -37,6 +37,16 @@ namespace Castle.Facilities.Remoting.CustomActivators
 		public RemoteActivatorThroughRegistry(ComponentModel model, IKernel kernel, ComponentInstanceDelegate onCreation, ComponentInstanceDelegate onDestruction)
 			: base(model, kernel, onCreation, onDestruction)
 		{
+		}
+
+		public bool CanProvideRequiredDependencies(ComponentModel component)
+		{
+			return true;
+		}
+
+		public bool IsManagedExternally(ComponentModel component)
+		{
+			return false;
 		}
 
 		protected override object Instantiate(CreationContext context)
