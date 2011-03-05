@@ -28,6 +28,7 @@ namespace Castle.Core
 	[DebuggerDisplay("Count = {dictionary.Count}")]
 	public class ParameterModelCollection : IEnumerable<ParameterModel>
 	{
+		[DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
 		private readonly IDictionary<string, ParameterModel> dictionary =
 			new Dictionary<string, ParameterModel>(StringComparer.OrdinalIgnoreCase);
 
@@ -35,6 +36,7 @@ namespace Castle.Core
 		///   Gets the count.
 		/// </summary>
 		/// <value>The count.</value>
+		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 		public int Count
 		{
 			get { return dictionary.Count; }
@@ -75,24 +77,13 @@ namespace Castle.Core
 		}
 
 		/// <summary>
-		///   Determines whether this collection contains the specified key.
-		/// </summary>
-		/// <param name = "key">The key.</param>
-		/// <returns>
-		///   <c>true</c> if yes; otherwise, <c>false</c>.
-		/// </returns>
-		public bool Contains(string key)
-		{
-			return dictionary.ContainsKey(key);
-		}
-
-		/// <summary>
 		///   Returns an enumerator that can iterate through a collection.
 		/// </summary>
 		/// <returns>
 		///   An <see cref = "T:System.Collections.IEnumerator" />
 		///   that can be used to iterate through the collection.
 		/// </returns>
+		[DebuggerStepThrough]
 		public IEnumerator GetEnumerator()
 		{
 			return dictionary.Values.GetEnumerator();
@@ -118,6 +109,7 @@ namespace Castle.Core
 			}
 		}
 
+		[DebuggerStepThrough]
 		IEnumerator<ParameterModel> IEnumerable<ParameterModel>.GetEnumerator()
 		{
 			return dictionary.Values.GetEnumerator();
