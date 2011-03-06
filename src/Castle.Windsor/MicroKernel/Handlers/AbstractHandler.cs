@@ -174,9 +174,11 @@ namespace Castle.MicroKernel.Handlers
 			lifestyleManager = CreateLifestyleManager(activator);
 			EnsureDependenciesCanBeSatisfied(activator as IDependencyAwareActivator);
 
-			if (state == HandlerState.Valid)
+			if (AllRequiredDependenciesResolvable())
 			{
+				SetNewState(HandlerState.Valid);
 				DisconnectEvents();
+				missingDependencies = null;
 			}
 		}
 
@@ -279,30 +281,35 @@ namespace Castle.MicroKernel.Handlers
 		/// <param name = "dependency"></param>
 		protected void AddDependency(DependencyModel dependency)
 		{
-			if (CanBeSatisfied(dependency))
+			dependency.Init(model.ParametersInternal);
+			if (dependency.IsOptional || dependency.HasDefaultValue)
+			{
+				return;
+			}
+			if (AddResolvableDependency(dependency))
 			{
 				return;
 			}
 			AddMissingDependency(dependency);
 		}
 
-		protected bool CanBeSatisfied(DependencyModel dependency)
+		private bool AddResolvableDependency(DependencyModel dependency)
 		{
-			dependency.Init(model.ParametersInternal);
-			if (dependency.IsOptional || dependency.HasDefaultValue)
+			if (HasValidComponentFromResolver(dependency))
 			{
+				AddGraphDependency(dependency);
 				return true;
 			}
-			if (HasValidComponentFromResolver(dependency) == false)
-			{
-				return false;
-			}
+			return false;
+		}
+
+		private void AddGraphDependency(DependencyModel dependency)
+		{
 			var handler = dependency.GetHandler(Kernel);
 			if (handler != null)
 			{
-				AddGraphDependency(handler);
+				ComponentModel.AddDependent(handler.ComponentModel);
 			}
-			return true;
 		}
 
 		protected void AddMissingDependency(DependencyModel dependency)
@@ -403,15 +410,11 @@ namespace Castle.MicroKernel.Handlers
 		/// <param name = "stateChanged"></param>
 		protected void DependencySatisfied(ref bool stateChanged)
 		{
-			// Check within the handler
-			if (customParameters != null && customParameters.Count != 0)
+			foreach (var dependency in MissingDependencies.ToArray())
 			{
-				foreach (var dependency in MissingDependencies.ToArray())
+				if (HasCustomParameter(dependency.DependencyKey))
 				{
-					if (HasCustomParameter(dependency.DependencyKey))
-					{
-						MissingDependencies.Remove(dependency);
-					}
+					MissingDependencies.Remove(dependency);
 				}
 			}
 
@@ -443,7 +446,7 @@ namespace Castle.MicroKernel.Handlers
 				}
 			}
 
-			if (MissingDependenciesSatisfiable())
+			if (AllRequiredDependenciesResolvable())
 			{
 				SetNewState(HandlerState.Valid);
 				stateChanged = true;
@@ -451,12 +454,11 @@ namespace Castle.MicroKernel.Handlers
 				DisconnectEvents();
 
 				// We don't need these anymore
-
 				missingDependencies = null;
 			}
 		}
 
-		private bool MissingDependenciesSatisfiable()
+		private bool AllRequiredDependenciesResolvable()
 		{
 			if (MissingDependencies.Count == 0)
 			{
@@ -509,20 +511,11 @@ namespace Castle.MicroKernel.Handlers
 			{
 				return;
 			}
-			var unsatisfiedConstructors = new List<DependencyModel[]>(constructorsCount);
 			foreach (var constructor in ComponentModel.Constructors)
 			{
-				var missingCtorDependencies = constructor.Dependencies.Where(d => CanBeSatisfied(d) == false).ToArray();
-				if (missingCtorDependencies.Length > 0)
+				foreach (var dependency in constructor.Dependencies)
 				{
-					unsatisfiedConstructors.Add(missingCtorDependencies);
-				}
-			}
-			if (unsatisfiedConstructors.Count == constructorsCount)
-			{
-				foreach (var dependency in unsatisfiedConstructors.SelectMany(d => d))
-				{
-					AddMissingDependency(dependency);
+					AddDependency(dependency);
 				}
 			}
 		}
