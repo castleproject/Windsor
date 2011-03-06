@@ -442,17 +442,13 @@ namespace Castle.MicroKernel.Handlers
 		/// <param name = "stateChanged"></param>
 		protected void DependencySatisfied(ref bool stateChanged)
 		{
+			// Check within the Kernel
 			foreach (var dependency in MissingDependencies.ToArray())
 			{
 				if (HasCustomParameter(dependency.DependencyKey))
 				{
 					MissingDependencies.Remove(dependency);
 				}
-			}
-
-			// Check within the Kernel
-			foreach (var dependency in MissingDependencies.ToArray())
-			{
 				var service = dependency.TargetItemType;
 				if (service != null && HasValidComponent(service, dependency))
 				{
