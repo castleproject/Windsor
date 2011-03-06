@@ -71,7 +71,7 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.SessionCreation
 			dao.PerformStatelessComplexOperation2();
 		}
 
-		[Test, Ignore]
+		[Test]
 		public void StatelessSessionClosingAndDisposing()
 		{
 			MyDao dao = container.Resolve<MyDao>();

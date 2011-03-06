@@ -262,10 +262,8 @@ namespace Castle.Facilities.NHibernateIntegration
 				{
 					transaction.Context["nh.statelessSession.enlisted"] = list;
 
-					// TODO: NHibernate doesn't support IStatelessSession.BeginTransaction(IsolationLevel) yet.
-					////IsolationLevel level = TranslateIsolationLevel(transaction.IsolationMode);
-					////transaction.Enlist(new ResourceAdapter(session.BeginTransaction(level), transaction.IsAmbient));
-					transaction.Enlist(new ResourceAdapter(session.BeginTransaction(), transaction.IsAmbient));
+					IsolationLevel level = TranslateIsolationLevel(transaction.IsolationMode);
+					transaction.Enlist(new ResourceAdapter(session.BeginTransaction(level), transaction.IsAmbient));
 
 					list.Add(session);
 				}

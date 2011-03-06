@@ -132,6 +132,39 @@ namespace Castle.Facilities.NHibernateIntegration
 		}
 
 		/// <summary>
+		/// The read-only status for entities (and proxies) loaded into this Session.
+		/// </summary>
+		/// <remarks>
+		/// <para>
+		/// When a proxy is initialized, the loaded entity will have the same read-only setting
+		///             as the uninitialized proxy, regardless of the session's current setting.
+		/// </para>
+		/// <para>
+		/// To change the read-only setting for a particular entity or proxy that is already in 
+		///             this session, see <see cref="M:NHibernate.ISession.SetReadOnly(System.Object,System.Boolean)"/>.
+		/// </para>
+		/// <para>
+		/// To override this session's read-only setting for entities and proxies loaded by a query,
+		///             see <see cref="M:NHibernate.IQuery.SetReadOnly(System.Boolean)"/>.
+		/// </para>
+		/// <para>
+		/// This method is a facade for <see cref="P:NHibernate.Engine.IPersistenceContext.DefaultReadOnly"/>.
+		/// </para>
+		/// </remarks>
+		/// <seealso cref="M:NHibernate.ISession.IsReadOnly(System.Object)"/><seealso cref="M:NHibernate.ISession.SetReadOnly(System.Object,System.Boolean)"/>
+		public bool DefaultReadOnly
+		{
+			get
+			{
+				return this.inner.DefaultReadOnly;
+			}
+			set
+			{
+				this.inner.DefaultReadOnly = value;
+			}
+		}
+
+		/// <summary>
 		/// Get the current Unit of Work and return the associated <c>ITransaction</c> object.
 		/// </summary>
 		/// <value></value>
@@ -163,6 +196,46 @@ namespace Castle.Facilities.NHibernateIntegration
 			return inner.IsDirty();
 		}
 
+		/// <summary>
+		/// Is the specified entity (or proxy) read-only?
+		/// </summary>
+		/// <remarks>
+		/// Facade for <see cref="M:NHibernate.Engine.IPersistenceContext.IsReadOnly(System.Object)"/>.
+		/// </remarks>
+		/// <param name="entityOrProxy">An entity (or <see cref="T:NHibernate.Proxy.INHibernateProxy"/>)</param>
+		/// <returns>
+		/// <c>true</c> if the entity (or proxy) is read-only, otherwise <c>false</c>.
+		/// </returns>
+		/// <seealso cref="P:NHibernate.ISession.DefaultReadOnly"/><seealso cref="M:NHibernate.ISession.SetReadOnly(System.Object,System.Boolean)"/>
+		public bool IsReadOnly(object entityOrProxy)
+		{
+			return this.inner.IsReadOnly(entityOrProxy);
+		}
+
+		/// <summary>
+		/// Change the read-only status of an entity (or proxy).
+		/// </summary>
+		/// <remarks>
+		/// <para>
+		/// Read-only entities can be modified, but changes are not persisted. They are not dirty-checked 
+		///             and snapshots of persistent state are not maintained. 
+		/// </para>
+		/// <para>
+		/// Immutable entities cannot be made read-only.
+		/// </para>
+		/// <para>
+		/// To set the <em>default</em> read-only setting for entities and proxies that are loaded 
+		///             into the session, see <see cref="P:NHibernate.ISession.DefaultReadOnly"/>.
+		/// </para>
+		/// <para>
+		/// This method a facade for <see cref="M:NHibernate.Engine.IPersistenceContext.SetReadOnly(System.Object,System.Boolean)"/>.
+		/// </para>
+		/// </remarks>
+		/// <param name="entityOrProxy">An entity (or <see cref="T:NHibernate.Proxy.INHibernateProxy"/>).</param><param name="readOnly">If <c>true</c>, the entity or proxy is made read-only; if <c>false</c>, it is made modifiable.</param><seealso cref="P:NHibernate.ISession.DefaultReadOnly"/><seealso cref="M:NHibernate.ISession.IsReadOnly(System.Object)"/>
+		public void SetReadOnly(object entityOrProxy, bool readOnly)
+		{
+			this.inner.SetReadOnly(entityOrProxy, readOnly);
+		}
 
 		/// <summary>
 		/// Force the <c>ISession</c> to flush.
@@ -696,7 +769,7 @@ namespace Castle.Facilities.NHibernateIntegration
 		/// <returns>an updated persistent instance</returns>
 		public object SaveOrUpdateCopy(object obj)
 		{
-			return inner.SaveOrUpdateCopy(obj);
+			throw new NotImplementedException();
 		}
 
 		/// <summary>
@@ -712,7 +785,7 @@ namespace Castle.Facilities.NHibernateIntegration
 		/// <returns>an updated persistent instance</returns>
 		public object SaveOrUpdateCopy(object obj, object id)
 		{
-			return inner.SaveOrUpdateCopy(obj, id);
+			throw new NotImplementedException();
 		}
 
 		/// <summary>
@@ -1156,16 +1229,6 @@ namespace Castle.Facilities.NHibernateIntegration
 		public IQuery CreateQuery(string queryString)
 		{
 			return inner.CreateQuery(queryString);
-		}
-
-		/// <summary>
-		/// Create a new instance of <c>Query</c> for the given query expression
-		/// </summary>
-		/// <param name="queryExpression">A hibernate query expression</param>
-		/// <returns>The query</returns>
-		public IQuery CreateQuery(IQueryExpression queryExpression)
-		{
-			return inner.CreateQuery(queryExpression);
 		}
 
 		/// <summary>

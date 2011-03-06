@@ -108,7 +108,7 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Transactions
 			Assert.AreEqual(0, orders.Length);
 		}
 
-		[Test, Ignore]
+		[Test]
 		// TODO: System.Data.SqlClient.SqlException : New request is not allowed to start because it should come with valid transaction descriptor.
 		// TODO: NHibernate doesn't support IStatelessSession.BeginTransaction(IsolationLevel) yet.
 		public void SuccessfulSituationWithTwoDatabasesStateless()
@@ -141,7 +141,6 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Transactions
 
 		[Test, Ignore]
 		// TODO: System.Data.SqlClient.SqlException : New request is not allowed to start because it should come with valid transaction descriptor.
-		// TODO: NHibernate doesn't support IStatelessSession.BeginTransaction(IsolationLevel) yet.
 		public void ExceptionOnEndWithTwoDatabasesStateless()
 		{
 			RootService2 service = container.Resolve<RootService2>();

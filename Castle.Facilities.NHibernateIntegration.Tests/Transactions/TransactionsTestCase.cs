@@ -54,7 +54,6 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Transactions
 		}
 
 		[Test]
-		// TODO: RootService.FindBlogStatelessUsingDetachedCriteria() works, but with a hack on obtaining IStatelessSession
 		public void TestTransactionStatelessUsingDetachedCriteria()
 		{
 			RootService service = container.Resolve<RootService>();

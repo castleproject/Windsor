@@ -117,10 +117,8 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Issues.Facilities103
 				Expect.Call(factoryResolver.GetSessionFactory(Alias)).Return(sessionFactory);
 				Expect.Call(sessionFactory.OpenStatelessSession()).Return(statelessSession);
 				Expect.Call(transaction.Context).Return(contextDictionary).Repeat.Any();
-				// TODO: NHibernate doesn't support IStatelessSession.BeginTransaction(IsolationLevel) yet.
-				////Expect.Call(transaction.IsolationMode).Return(DefaultIsolationMode).Repeat.Any();
-				////Expect.Call(statelessSession.BeginTransaction(DefaultIsolationLevel)).Throw(new Exception());
-				Expect.Call(statelessSession.BeginTransaction()).Throw(new Exception());
+				Expect.Call(transaction.IsolationMode).Return(DefaultIsolationMode).Repeat.Any();
+				Expect.Call(statelessSession.BeginTransaction(DefaultIsolationLevel)).Throw(new Exception());
 			}
 
 			using (mockRepository.Playback())

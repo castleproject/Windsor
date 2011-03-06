@@ -441,8 +441,7 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Internals
 
 			// TODO: Assert transaction was committed
 			// Assert.IsTrue(session1.Transaction.WasCommitted);
-			// TODO: StatelessSessionImpl supports both IsConnected and IsOpen, but not IStatelessSession (see NH-2445)
-			////Assert.IsTrue(session1.IsConnected);
+			Assert.IsTrue(session1.IsConnected);
 
 			session1.Dispose();
 

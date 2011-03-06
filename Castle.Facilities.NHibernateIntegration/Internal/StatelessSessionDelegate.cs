@@ -2,7 +2,10 @@
 {
 	using System;
 	using System.Data;
+	using System.Linq.Expressions;
+
 	using NHibernate;
+	using NHibernate.Engine;
 
 	/// <summary>
 	/// Proxies an IStatelessSession so the user cannot close a stateless session
@@ -69,6 +72,28 @@
 		}
 
 		/// <summary>
+		/// Is the <c>IStatelessSession</c> currently connected?
+		/// </summary>
+		public bool IsConnected
+		{
+			get
+			{
+				return this._innerSession.IsConnected;
+			}
+		}
+
+		/// <summary>
+		/// Is the <c>IStatelessSession</c> still open?
+		/// </summary>
+		public bool IsOpen
+		{
+			get
+			{
+				return this._innerSession.IsOpen;
+			}
+		}
+
+		/// <summary>
 		/// Get the current Hibernate transaction.
 		/// </summary>
 		public ITransaction Transaction
@@ -82,6 +107,18 @@
 		public ITransaction BeginTransaction()
 		{
 			return this._innerSession.BeginTransaction();
+		}
+
+		/// <summary>
+		/// Begin a NHibernate transaction with the specified isolation level
+		/// </summary>
+		/// <param name="isolationLevel">The isolation level</param>
+		/// <returns>
+		/// A NHibernate transaction
+		/// </returns>
+		public ITransaction BeginTransaction(IsolationLevel isolationLevel)
+		{
+			return this._innerSession.BeginTransaction(isolationLevel);
 		}
 
 		/// <summary>
@@ -291,6 +328,21 @@
 		}
 
 		/// <summary>
+		/// Gets the stateless session implementation.
+		/// </summary>
+		/// <remarks>
+		/// This method is provided in order to get the <b>NHibernate</b> implementation of the session from wrapper implementations.
+		///             Implementors of the <seealso cref="T:NHibernate.IStatelessSession"/> interface should return the NHibernate implementation of this method.
+		/// </remarks>
+		/// <returns>
+		/// An NHibernate implementation of the <see cref="T:NHibernate.Engine.ISessionImplementor"/> interface
+		/// </returns>
+		public ISessionImplementor GetSessionImplementation()
+		{
+			return this._innerSession.GetSessionImplementation();
+		}
+
+		/// <summary>
 		/// Insert a entity.
 		/// </summary>
 		/// <param name="entity">A new transient instance </param>
@@ -313,6 +365,30 @@
 		public object Insert(string entityName, object entity)
 		{
 			return this._innerSession.Insert(entityName, entity);
+		}
+
+		/// <summary>
+		/// Creates a new <c>IQueryOver&lt;T&gt;</c> for the entity class.
+		/// </summary>
+		/// <typeparam name="T">The entity class</typeparam>
+		/// <returns>
+		/// An ICriteria&lt;T&gt; object
+		/// </returns>
+		public IQueryOver<T, T> QueryOver<T>() where T : class
+		{
+			return this._innerSession.QueryOver<T>();
+		}
+
+		/// <summary>
+		/// Creates a new <c>IQueryOver&lt;T&gt;</c> for the entity class.
+		/// </summary>
+		/// <typeparam name="T">The entity class</typeparam>
+		/// <returns>
+		/// An ICriteria&lt;T&gt; object
+		/// </returns>
+		public IQueryOver<T, T> QueryOver<T>(Expression<Func<T>> alias) where T : class
+		{
+			return this._innerSession.QueryOver(alias);
 		}
 
 		/// <summary>
@@ -353,6 +429,18 @@
 		public void Refresh(string entityName, object entity, LockMode lockMode)
 		{
 			this._innerSession.Refresh(entityName, entity, lockMode);
+		}
+
+		/// <summary>
+		/// Sets the batch size of the session
+		/// </summary>
+		/// <param name="batchSize">The batch size.</param>
+		/// <returns>
+		/// The same instance of the session for methods chain.
+		/// </returns>
+		public IStatelessSession SetBatchSize(int batchSize)
+		{
+			return this._innerSession.SetBatchSize(batchSize);
 		}
 
 		/// <summary>
