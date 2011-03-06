@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,41 +20,50 @@ namespace Castle.MicroKernel.Tests.ClassComponents
 
 	public class ServiceUser
 	{
-		private A _a;
-		private B _b;
-		private C _c;
+		private readonly A a;
+		private readonly B b;
+		private readonly C c;
 
 		public ServiceUser(A a)
 		{
-			if (a == null) throw new ArgumentNullException();
-			_a = a;
+			if (a == null)
+			{
+				throw new ArgumentNullException();
+			}
+			this.a = a;
 		}
 
 		public ServiceUser(A a, B b) : this(a)
 		{
-			if (b == null) throw new ArgumentNullException();
-			_b = b;
+			if (b == null)
+			{
+				throw new ArgumentNullException();
+			}
+			this.b = b;
 		}
 
 		public ServiceUser(A a, B b, C c) : this(a, b)
 		{
-			if (c == null) throw new ArgumentNullException();
-			_c = c;
+			if (c == null)
+			{
+				throw new ArgumentNullException();
+			}
+			this.c = c;
 		}
 
 		public A AComponent
 		{
-			get { return _a; }
+			get { return a; }
 		}
 
 		public B BComponent
 		{
-			get { return _b; }
+			get { return b; }
 		}
 
 		public C CComponent
 		{
-			get { return _c; }
+			get { return c; }
 		}
 	}
 }

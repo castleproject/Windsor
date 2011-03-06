@@ -50,13 +50,10 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 			return new ConstructorCandidate(constructor, dependencies);
 		}
 
-		private static DependencyModel BuildParameterDependency(ParameterInfo parameter)
+		private static ConstructorDependencyModel BuildParameterDependency(ParameterInfo parameter)
 		{
-			return new DependencyModel(parameter.Name,
-			                           parameter.ParameterType,
-			                           false,
-			                           parameter.HasDefaultValue(),
-			                           parameter.DefaultValue);
+			return new ConstructorDependencyModel(parameter);
 		}
 	}
+
 }

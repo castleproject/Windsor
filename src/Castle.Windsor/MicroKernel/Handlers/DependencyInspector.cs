@@ -51,10 +51,9 @@ namespace Castle.MicroKernel.Handlers
 			message.AppendLine();
 			foreach (var dependency in missingDependencies)
 			{
-				var @override = FindServiceOverride(dependency, handler);
-				if (@override != null)
+				if (dependency.Reference != null)
 				{
-					InspectServiceOverrideDependency(kernel, @override);
+					InspectServiceOverrideDependency(dependency.Reference, dependency.GetHandler(kernel));
 				}
 				else if (dependency.IsValueType || dependency.TargetItemType == typeof(string) || dependency.TargetItemType == null)
 				{
@@ -126,20 +125,17 @@ namespace Castle.MicroKernel.Handlers
 			}
 		}
 
-		private void InspectServiceOverrideDependency(IKernel kernel, ParameterModel @override)
+		private void InspectServiceOverrideDependency(string referenceName, IHandler handler)
 		{
-			var key = ReferenceExpressionUtil.ExtractComponentKey(@override.Value);
-			var handler = kernel.GetHandler(key);
-
 			//TODO: what about self dependency?
 			if (handler == null)
 			{
-				message.AppendFormat("- Component '{0}' which was not registered. Did you misspell the name?", key);
+				message.AppendFormat("- Component '{0}' which was not registered. Did you misspell the name?", referenceName);
 				message.AppendLine();
 			}
 			else
 			{
-				message.AppendFormat("- Component '{0}' (via override) which was registered but is also waiting for dependencies.", key);
+				message.AppendFormat("- Component '{0}' (via override) which was registered but is also waiting for dependencies.", referenceName);
 				message.AppendLine();
 
 				var info = handler as IExposeDependencyInfo;
@@ -150,13 +146,9 @@ namespace Castle.MicroKernel.Handlers
 			}
 		}
 
-		private static ParameterModel FindServiceOverride(DependencyModel dependency, IHandler handler)
+		private static ParameterModel FindServiceOverride(DependencyModel dependency)
 		{
-			if(handler.ComponentModel.HasParameters == false)
-			{
-				return null;
-			}
-			var parameterModel = handler.ComponentModel.Parameters.GetMatch(dependency);
+			var parameterModel = dependency.Parameter;
 			if (parameterModel == null || ReferenceExpressionUtil.IsReference(parameterModel.Value) == false)
 			{
 				return null;

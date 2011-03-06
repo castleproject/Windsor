@@ -16,6 +16,7 @@ namespace Castle.MicroKernel.ComponentActivator
 {
 	using System;
 	using System.Collections.Generic;
+	using System.Linq;
 	using System.Runtime.Serialization;
 	using System.Security;
 	using System.Security.Permissions;
@@ -233,7 +234,7 @@ namespace Castle.MicroKernel.ComponentActivator
 
 			if (Model.Constructors.Count == 1)
 			{
-				return Model.Constructors.FewerArgumentsCandidate;
+				return Model.Constructors.Single();
 			}
 
 			ConstructorCandidate winnerCandidate = null;

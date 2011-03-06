@@ -12,36 +12,31 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.MicroKernel.Tests.Configuration.Components
+namespace Castle.Core
 {
 	using System;
+	using System.Reflection;
 
-	/// <summary>
-	///   Summary description for ClassWithConstructors.
-	/// </summary>
-	public class ClassWithConstructors
+	using Castle.Core.Internal;
+
+	[Serializable]
+	public class ConstructorDependencyModel : DependencyModel
 	{
-		private readonly String host;
-		private readonly String[] hosts;
+		private ConstructorCandidate constructor;
 
-		public ClassWithConstructors(String host)
+		public ConstructorDependencyModel(ParameterInfo parameter)
+			: base(parameter.Name, parameter.ParameterType, false, parameter.HasDefaultValue(), parameter.DefaultValue)
 		{
-			this.host = host;
 		}
 
-		public ClassWithConstructors(String[] hosts)
+		public ConstructorCandidate Constructor
 		{
-			this.hosts = hosts;
+			get { return constructor; }
 		}
 
-		public String Host
+		internal void SetParentConstructor(ConstructorCandidate ctor)
 		{
-			get { return host; }
-		}
-
-		public String[] Hosts
-		{
-			get { return hosts; }
+			constructor = ctor;
 		}
 	}
 }
