@@ -282,7 +282,7 @@ namespace Castle.MicroKernel.Handlers
 		protected void AddDependency(DependencyModel dependency)
 		{
 			dependency.Init(model.ParametersInternal);
-			if (dependency.IsOptional || dependency.HasDefaultValue)
+			if (AddOptionalDependency(dependency))
 			{
 				return;
 			}
@@ -291,6 +291,16 @@ namespace Castle.MicroKernel.Handlers
 				return;
 			}
 			AddMissingDependency(dependency);
+		}
+
+		private bool AddOptionalDependency(DependencyModel dependency)
+		{
+			if (dependency.IsOptional || dependency.HasDefaultValue)
+			{
+				AddGraphDependency(dependency);
+				return true;
+			}
+			return false;
 		}
 
 		private bool AddResolvableDependency(DependencyModel dependency)
