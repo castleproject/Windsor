@@ -3,7 +3,7 @@
 <castle>
 	<facilities>
 
-		<facility id="nhibernatefacility">
+		<facility id="nhibernatefacility" isWeb="false">
 
 			<factory id="sessionFactory1">
 				<settings>

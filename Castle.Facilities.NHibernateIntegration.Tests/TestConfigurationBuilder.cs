@@ -28,7 +28,7 @@ namespace Castle.Facilities.NHibernateIntegration.Tests
 	{
 		private readonly IConfigurationBuilder defaultConfigurationBuilder;
 
-		public TestConfigurationBuilder()
+	    public TestConfigurationBuilder()
 		{
 			defaultConfigurationBuilder = new DefaultConfigurationBuilder();
 		}
