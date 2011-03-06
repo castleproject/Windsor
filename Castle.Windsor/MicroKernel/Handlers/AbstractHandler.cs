@@ -35,7 +35,7 @@ namespace Castle.MicroKernel.Handlers
 	[Serializable]
 	public abstract class AbstractHandler :
 #if !SILVERLIGHT
-		MarshalByRefObject, 
+		MarshalByRefObject,
 #endif
 		IHandler, IExposeDependencyInfo, IDisposable
 	{
@@ -51,13 +51,13 @@ namespace Castle.MicroKernel.Handlers
 		/// </summary>
 		private IDictionary customParameters;
 
+		private IKernelInternal kernel;
+
 		/// <summary>
 		///   Dictionary of key (string) to
 		///   <see cref = "DependencyModel" />
 		/// </summary>
 		private HashSet<DependencyModel> missingDependencies;
-
-		private IKernelInternal kernel;
 
 		private HandlerState state = HandlerState.Valid;
 
@@ -95,6 +95,11 @@ namespace Castle.MicroKernel.Handlers
 			get { return ComponentModel.Services; }
 		}
 
+		protected IKernelInternal Kernel
+		{
+			get { return kernel; }
+		}
+
 		private ICollection<DependencyModel> MissingDependencies
 		{
 			get
@@ -107,11 +112,6 @@ namespace Castle.MicroKernel.Handlers
 			}
 		}
 
-		protected IKernelInternal Kernel
-		{
-			get { return kernel; }
-		}
-
 		/// <summary>
 		///   Should be implemented by derived classes: 
 		///   disposes the component instance (or recycle it)
@@ -120,9 +120,32 @@ namespace Castle.MicroKernel.Handlers
 		/// <returns>true if destroyed.</returns>
 		public abstract bool ReleaseCore(Burden burden);
 
+		/// <summary>
+		///   Returns an instance of the component this handler
+		///   is responsible for
+		/// </summary>
+		/// <param name = "context"></param>
+		/// <param name = "instanceRequired">when <c>false</c>, handler can not create valid instance and return <c>null</c> instead </param>
+		/// <returns></returns>
+		protected abstract object Resolve(CreationContext context, bool instanceRequired);
+
+		public override string ToString()
+		{
+			return string.Format("Model: {0}", model);
+		}
+
 		public virtual void Dispose()
 		{
 			lifestyleManager.Dispose();
+		}
+
+		public void ObtainDependencyDetails(IDependencyInspector inspector)
+		{
+			if (CurrentState == HandlerState.Valid)
+			{
+				return;
+			}
+			inspector.Inspect(this, MissingDependencies.ToArray(), Kernel);
 		}
 
 		public void AddCustomDependencyValue(object key, object value)
@@ -291,35 +314,6 @@ namespace Castle.MicroKernel.Handlers
 			AddMissingDependency(dependency);
 		}
 
-		private bool AddOptionalDependency(DependencyModel dependency)
-		{
-			if (dependency.IsOptional || dependency.HasDefaultValue)
-			{
-				AddGraphDependency(dependency);
-				return true;
-			}
-			return false;
-		}
-
-		private bool AddResolvableDependency(DependencyModel dependency)
-		{
-			if (HasValidComponentFromResolver(dependency))
-			{
-				AddGraphDependency(dependency);
-				return true;
-			}
-			return false;
-		}
-
-		private void AddGraphDependency(DependencyModel dependency)
-		{
-			var handler = dependency.GetHandler(Kernel);
-			if (handler != null)
-			{
-				ComponentModel.AddDependent(handler.ComponentModel);
-			}
-		}
-
 		protected void AddMissingDependency(DependencyModel dependency)
 		{
 			MissingDependencies.Add(dependency);
@@ -338,6 +332,36 @@ namespace Castle.MicroKernel.Handlers
 				// state can be changed by AddCustomDependencyValue and RemoveCustomDependencyValue
 				OnHandlerStateChanged += HandlerStateChanged;
 			}
+		}
+
+		protected bool CanResolvePendingDependencies(CreationContext context)
+		{
+			if (CurrentState == HandlerState.Valid)
+			{
+				return true;
+			}
+			// detect circular dependencies
+			if (IsBeingResolvedInContext(context))
+			{
+				return context.HasAdditionalArguments;
+			}
+			var canResolveAll = true;
+			foreach (var dependency in MissingDependencies.ToArray())
+			{
+				if (dependency.TargetItemType == null)
+				{
+					canResolveAll = false;
+					break;
+				}
+				// a self-dependency is not allowed
+				var handler = Kernel.LoadHandlerByType(dependency.DependencyKey, dependency.TargetItemType, context.AdditionalArguments);
+				if (handler == this || handler == null)
+				{
+					canResolveAll = false;
+					break;
+				}
+			}
+			return canResolveAll || context.HasAdditionalArguments;
 		}
 
 		/// <summary>
@@ -466,23 +490,6 @@ namespace Castle.MicroKernel.Handlers
 			}
 		}
 
-		private bool AllRequiredDependenciesResolvable()
-		{
-			if (MissingDependencies.Count == 0)
-			{
-				return true;
-			}
-			var constructorDependencies = MissingDependencies.Where(d => d is ConstructorDependencyModel)
-				.Cast<ConstructorDependencyModel>().ToList();
-			if (MissingDependencies.Count != constructorDependencies.Count)
-			{
-				return false;
-			}
-
-			var ctorDependenciesByCtor = constructorDependencies.ToLookup(d => d.Constructor);
-			return model.Constructors.Count > ctorDependenciesByCtor.Count;
-		}
-
 		/// <summary>
 		///   Checks if the handler is able to, at very least, satisfy
 		///   the dependencies for the constructor with less parameters
@@ -538,23 +545,60 @@ namespace Castle.MicroKernel.Handlers
 			DependencySatisfied(ref stateChanged);
 		}
 
-		/// <summary>
-		///   Returns an instance of the component this handler
-		///   is responsible for
-		/// </summary>
-		/// <param name = "context"></param>
-		/// <param name = "instanceRequired">when <c>false</c>, handler can not create valid instance and return <c>null</c> instead </param>
-		/// <returns></returns>
-		protected abstract object Resolve(CreationContext context, bool instanceRequired);
-
 		protected void SetNewState(HandlerState newState)
 		{
 			state = newState;
 		}
 
+		private void AddGraphDependency(DependencyModel dependency)
+		{
+			var handler = dependency.GetHandler(Kernel);
+			if (handler != null)
+			{
+				ComponentModel.AddDependent(handler.ComponentModel);
+			}
+		}
+
 		private void AddGraphDependency(IHandler handler)
 		{
 			ComponentModel.AddDependent(handler.ComponentModel);
+		}
+
+		private bool AddOptionalDependency(DependencyModel dependency)
+		{
+			if (dependency.IsOptional || dependency.HasDefaultValue)
+			{
+				AddGraphDependency(dependency);
+				return true;
+			}
+			return false;
+		}
+
+		private bool AddResolvableDependency(DependencyModel dependency)
+		{
+			if (HasValidComponentFromResolver(dependency))
+			{
+				AddGraphDependency(dependency);
+				return true;
+			}
+			return false;
+		}
+
+		private bool AllRequiredDependenciesResolvable()
+		{
+			if (MissingDependencies.Count == 0)
+			{
+				return true;
+			}
+			var constructorDependencies = MissingDependencies.Where(d => d is ConstructorDependencyModel)
+				.Cast<ConstructorDependencyModel>().ToList();
+			if (MissingDependencies.Count != constructorDependencies.Count)
+			{
+				return false;
+			}
+
+			var ctorDependenciesByCtor = constructorDependencies.ToLookup(d => d.Constructor);
+			return model.Constructors.Count > ctorDependenciesByCtor.Count;
 		}
 
 		private void DisconnectEvents()
@@ -629,49 +673,5 @@ namespace Castle.MicroKernel.Handlers
 		}
 
 		public event HandlerStateDelegate OnHandlerStateChanged;
-
-		public override string ToString()
-		{
-			return string.Format("Model: {0}", model);
-		}
-
-		public void ObtainDependencyDetails(IDependencyInspector inspector)
-		{
-			if (CurrentState == HandlerState.Valid)
-			{
-				return;
-			}
-			inspector.Inspect(this, MissingDependencies.ToArray(), Kernel);
-		}
-
-		protected bool CanResolvePendingDependencies(CreationContext context)
-		{
-			if (CurrentState == HandlerState.Valid)
-			{
-				return true;
-			}
-			// detect circular dependencies
-			if (IsBeingResolvedInContext(context))
-			{
-				return context.HasAdditionalArguments;
-			}
-			var canResolveAll = true;
-			foreach (var dependency in MissingDependencies.ToArray())
-			{
-				if (dependency.TargetItemType == null)
-				{
-					canResolveAll = false;
-					break;
-				}
-				// a self-dependency is not allowed
-				var handler = Kernel.LoadHandlerByType(dependency.DependencyKey, dependency.TargetItemType, context.AdditionalArguments);
-				if (handler == this || handler == null)
-				{
-					canResolveAll = false;
-					break;
-				}
-			}
-			return canResolveAll || context.HasAdditionalArguments;
-		}
 	}
 }
