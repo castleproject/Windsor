@@ -597,8 +597,8 @@ namespace Castle.MicroKernel.Handlers
 				return false;
 			}
 
-			var ctorDependenciesByCtor = constructorDependencies.ToLookup(d => d.Constructor);
-			return model.Constructors.Count > ctorDependenciesByCtor.Count;
+			var ctorsWithMissingDependenciesCount = constructorDependencies.Select(d => d.Constructor).Distinct().Count();
+			return model.Constructors.Count > ctorsWithMissingDependenciesCount;
 		}
 
 		private void DisconnectEvents()
