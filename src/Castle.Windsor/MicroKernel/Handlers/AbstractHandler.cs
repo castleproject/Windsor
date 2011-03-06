@@ -55,7 +55,7 @@ namespace Castle.MicroKernel.Handlers
 		///   Dictionary of key (string) to
 		///   <see cref = "DependencyModel" />
 		/// </summary>
-		private HashSet<DependencyModel> dependencies;
+		private HashSet<DependencyModel> missingDependencies;
 
 		private IKernelInternal kernel;
 
@@ -69,7 +69,11 @@ namespace Castle.MicroKernel.Handlers
 		{
 			this.model = model;
 			state = HandlerState.Valid;
-			InitializeCustomDependencies();
+			if (this.model.HasCustomDependencies == false)
+			{
+				return;
+			}
+			customParameters = new Arguments(this.model.CustomDependencies);
 		}
 
 		/// <summary>
@@ -93,15 +97,15 @@ namespace Castle.MicroKernel.Handlers
 			get { return ComponentModel.Services; }
 		}
 
-		private ICollection<DependencyModel> Dependencies
+		private ICollection<DependencyModel> MissingDependencies
 		{
 			get
 			{
-				if (dependencies == null)
+				if (missingDependencies == null)
 				{
-					dependencies = new HashSet<DependencyModel>();
+					missingDependencies = new HashSet<DependencyModel>();
 				}
-				return dependencies;
+				return missingDependencies;
 			}
 		}
 
@@ -303,7 +307,7 @@ namespace Castle.MicroKernel.Handlers
 
 		protected void AddMissingDependency(DependencyModel dependency)
 		{
-			Dependencies.Add(dependency);
+			MissingDependencies.Add(dependency);
 			if (state != HandlerState.WaitingDependency)
 			{
 				// This handler is considered invalid
@@ -402,22 +406,22 @@ namespace Castle.MicroKernel.Handlers
 			// Check within the handler
 			if (customParameters != null && customParameters.Count != 0)
 			{
-				foreach (var dependency in Dependencies.ToArray())
+				foreach (var dependency in MissingDependencies.ToArray())
 				{
 					if (HasCustomParameter(dependency.DependencyKey))
 					{
-						Dependencies.Remove(dependency);
+						MissingDependencies.Remove(dependency);
 					}
 				}
 			}
 
 			// Check within the Kernel
-			foreach (var dependency in Dependencies.ToArray())
+			foreach (var dependency in MissingDependencies.ToArray())
 			{
 				var service = dependency.TargetItemType;
 				if (service != null && HasValidComponent(service, dependency))
 				{
-					Dependencies.Remove(dependency);
+					MissingDependencies.Remove(dependency);
 					var dependingHandler = kernel.GetHandler(service);
 					if (dependingHandler != null) //may not be real handler, if comes from resolver
 					{
@@ -429,7 +433,7 @@ namespace Castle.MicroKernel.Handlers
 					var name = dependency.DependencyKey;
 					if (name != null && (HasValidComponent(name, dependency) || HasCustomParameter(name)))
 					{
-						Dependencies.Remove(dependency);
+						MissingDependencies.Remove(dependency);
 						var dependingHandler = kernel.GetHandler(name);
 						if (dependingHandler != null) //may not be real handler, if we are using sub resolver
 						{
@@ -448,19 +452,19 @@ namespace Castle.MicroKernel.Handlers
 
 				// We don't need these anymore
 
-				dependencies = null;
+				missingDependencies = null;
 			}
 		}
 
 		private bool MissingDependenciesSatisfiable()
 		{
-			if (Dependencies.Count == 0)
+			if (MissingDependencies.Count == 0)
 			{
 				return true;
 			}
-			var constructorDependencies = dependencies.Where(d => d is ConstructorDependencyModel)
+			var constructorDependencies = MissingDependencies.Where(d => d is ConstructorDependencyModel)
 				.Cast<ConstructorDependencyModel>().ToList();
-			if (Dependencies.Count != constructorDependencies.Count)
+			if (MissingDependencies.Count != constructorDependencies.Count)
 			{
 				return false;
 			}
@@ -534,12 +538,12 @@ namespace Castle.MicroKernel.Handlers
 		/// <param name = "e"></param>
 		protected void OnAddedAsChildKernel(object sender, EventArgs e)
 		{
-			if (Dependencies.Count == 0)
+			if (MissingDependencies.Count == 0)
 			{
 				return;
 			}
 			var stateChanged = false;
-			if (Dependencies.Any(d => d.GetHandler(Kernel.Parent) != null))
+			if (MissingDependencies.Any(d => d.GetHandler(Kernel.Parent) != null))
 			{
 				DependencySatisfied(ref stateChanged);
 			}
@@ -666,7 +670,7 @@ namespace Castle.MicroKernel.Handlers
 			{
 				return;
 			}
-			inspector.Inspect(this, Dependencies.ToArray(), Kernel);
+			inspector.Inspect(this, MissingDependencies.ToArray(), Kernel);
 		}
 
 		protected bool CanResolvePendingDependencies(CreationContext context)
@@ -681,7 +685,7 @@ namespace Castle.MicroKernel.Handlers
 				return context.HasAdditionalArguments;
 			}
 			var canResolveAll = true;
-			foreach (var dependency in Dependencies.ToArray())
+			foreach (var dependency in MissingDependencies.ToArray())
 			{
 				if (dependency.TargetItemType == null)
 				{
