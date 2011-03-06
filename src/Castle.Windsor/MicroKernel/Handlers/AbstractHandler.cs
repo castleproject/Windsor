@@ -445,9 +445,10 @@ namespace Castle.MicroKernel.Handlers
 			// Check within the Kernel
 			foreach (var dependency in MissingDependencies.ToArray())
 			{
-				if (HasCustomParameter(dependency.DependencyKey))
+				if (CanResolve(null, this, model, dependency))
 				{
 					MissingDependencies.Remove(dependency);
+					continue;
 				}
 				var service = dependency.TargetItemType;
 				if (service != null && HasValidComponent(service, dependency))
@@ -462,7 +463,7 @@ namespace Castle.MicroKernel.Handlers
 				else
 				{
 					var name = dependency.DependencyKey;
-					if (name != null && (HasValidComponent(name, dependency) || HasCustomParameter(name)))
+					if (name != null && HasValidComponent(name, dependency))
 					{
 						MissingDependencies.Remove(dependency);
 						var dependingHandler = kernel.GetHandler(name);
