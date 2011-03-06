@@ -33,11 +33,11 @@ namespace Castle.MicroKernel.Handlers
 	///   <see cref = "IHandler" />
 	/// </summary>
 	[Serializable]
-#if SILVERLIGHT
-	public abstract class AbstractHandler : IHandler, IExposeDependencyInfo, IDisposable
-#else
-	public abstract class AbstractHandler : MarshalByRefObject, IHandler, IExposeDependencyInfo, IDisposable
+	public abstract class AbstractHandler :
+#if !SILVERLIGHT
+		MarshalByRefObject, 
 #endif
+		IHandler, IExposeDependencyInfo, IDisposable
 	{
 		/// <summary>
 		///   Lifestyle manager instance
@@ -59,7 +59,7 @@ namespace Castle.MicroKernel.Handlers
 
 		private IKernelInternal kernel;
 
-		private HandlerState state;
+		private HandlerState state = HandlerState.Valid;
 
 		/// <summary>
 		///   Constructs and initializes the handler
@@ -68,12 +68,10 @@ namespace Castle.MicroKernel.Handlers
 		protected AbstractHandler(ComponentModel model)
 		{
 			this.model = model;
-			state = HandlerState.Valid;
-			if (this.model.HasCustomDependencies == false)
+			if (this.model.HasCustomDependencies)
 			{
-				return;
+				customParameters = new Arguments(this.model.CustomDependencies);
 			}
-			customParameters = new Arguments(this.model.CustomDependencies);
 		}
 
 		/// <summary>
@@ -500,24 +498,19 @@ namespace Castle.MicroKernel.Handlers
 				return;
 			}
 
-			// Property dependencies may not be optional
-
 			foreach (var property in ComponentModel.Properties)
 			{
-				var dependency = property.Dependency;
-
-				AddDependency(dependency);
+				AddDependency(property.Dependency);
 			}
 
 			// The following dependencies were added by - for example - 
 			// facilities, for some reason, and we need to satisfy the non-optional
-
 			foreach (var dependency in ComponentModel.Dependencies)
 			{
 				AddDependency(dependency);
 			}
-			var constructorsCount = ComponentModel.Constructors.Count;
-			if (constructorsCount == 0)
+
+			if (ComponentModel.Constructors.Count == 0)
 			{
 				return;
 			}
@@ -541,15 +534,8 @@ namespace Castle.MicroKernel.Handlers
 		/// <param name = "e"></param>
 		protected void OnAddedAsChildKernel(object sender, EventArgs e)
 		{
-			if (MissingDependencies.Count == 0)
-			{
-				return;
-			}
 			var stateChanged = false;
-			if (MissingDependencies.Any(d => d.GetHandler(Kernel.Parent) != null))
-			{
-				DependencySatisfied(ref stateChanged);
-			}
+			DependencySatisfied(ref stateChanged);
 		}
 
 		/// <summary>
@@ -629,27 +615,9 @@ namespace Castle.MicroKernel.Handlers
 			return Kernel.Resolver.CanResolve(null, this, model, dependency);
 		}
 
-		private void InitializeCustomDependencies()
-		{
-			if (model.HasCustomDependencies == false)
-			{
-				return;
-			}
-			customParameters = new Arguments();
-			foreach (DictionaryEntry customParameter in model.CustomDependencies)
-			{
-				customParameters.Add(customParameter.Key, customParameter.Value);
-			}
-		}
-
 		private bool IsValidHandlerState(IHandler handler)
 		{
-			if (handler == null)
-			{
-				return false;
-			}
-
-			return handler.CurrentState == HandlerState.Valid;
+			return handler != null && handler.CurrentState == HandlerState.Valid;
 		}
 
 		private void RaiseHandlerStateChanged()
