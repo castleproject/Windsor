@@ -94,35 +94,5 @@ namespace Castle.MicroKernel.Handlers
 				return instance;
 			}
 		}
-
-		private bool CanResolvePendingDependencies(CreationContext context)
-		{
-			if (CurrentState == HandlerState.Valid)
-			{
-				return true;
-			}
-			// detect circular dependencies
-			if (IsBeingResolvedInContext(context))
-			{
-				return context.HasAdditionalArguments;
-			}
-			var canResolveAll = true;
-			foreach (var dependency in Dependencies.ToArray())
-			{
-				if (dependency.TargetItemType == null)
-				{
-					canResolveAll = false;
-					break;
-				}
-				// a self-dependency is not allowed
-				var handler = Kernel.LoadHandlerByType(dependency.DependencyKey, dependency.TargetItemType, context.AdditionalArguments);
-				if (handler == this || handler == null)
-				{
-					canResolveAll = false;
-					break;
-				}
-			}
-			return canResolveAll || context.HasAdditionalArguments;
-		}
 	}
 }

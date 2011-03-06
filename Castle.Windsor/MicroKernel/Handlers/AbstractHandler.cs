@@ -19,7 +19,6 @@ namespace Castle.MicroKernel.Handlers
 	using System.Collections.Generic;
 	using System.Diagnostics;
 	using System.Linq;
-	using System.Reflection;
 
 	using Castle.Core;
 	using Castle.Core.Internal;
@@ -94,7 +93,7 @@ namespace Castle.MicroKernel.Handlers
 			get { return ComponentModel.Services; }
 		}
 
-		protected ICollection<DependencyModel> Dependencies
+		private ICollection<DependencyModel> Dependencies
 		{
 			get
 			{
@@ -276,23 +275,35 @@ namespace Castle.MicroKernel.Handlers
 		/// <param name = "dependency"></param>
 		protected void AddDependency(DependencyModel dependency)
 		{
-			if (HasValidComponentFromResolver(dependency))
+			if (CanBeSatisfied(dependency))
 			{
-				if (model.HasParameters)
-				{
-					// TODO: this should go to be the first thing in this method, so that we can depend on the dependency being initialized in CanResolve call in resolver
-					dependency.Init(model.Parameters);
-				}
-				var handler = dependency.GetHandler(Kernel);
-				if (handler != null)
-				{
-					AddGraphDependency(handler);
-				}
 				return;
 			}
+			AddMissingDependency(dependency);
+		}
 
+		protected bool CanBeSatisfied(DependencyModel dependency)
+		{
+			dependency.Init(model.ParametersInternal);
+			if (dependency.IsOptional || dependency.HasDefaultValue)
+			{
+				return true;
+			}
+			if (HasValidComponentFromResolver(dependency) == false)
+			{
+				return false;
+			}
+			var handler = dependency.GetHandler(Kernel);
+			if (handler != null)
+			{
+				AddGraphDependency(handler);
+			}
+			return true;
+		}
+
+		protected void AddMissingDependency(DependencyModel dependency)
+		{
 			Dependencies.Add(dependency);
-
 			if (state != HandlerState.WaitingDependency)
 			{
 				// This handler is considered invalid
@@ -308,23 +319,6 @@ namespace Castle.MicroKernel.Handlers
 				// state can be changed by AddCustomDependencyValue and RemoveCustomDependencyValue
 				OnHandlerStateChanged += HandlerStateChanged;
 			}
-		}
-
-		protected bool CanSatisfyConstructor(ConstructorCandidate constructor)
-		{
-			return constructor.Dependencies.All(CanSatisfyDependency);
-		}
-
-		protected bool CanSatisfyDependency(DependencyModel dependency)
-		{
-			if (HasValidComponentFromResolver(dependency))
-			{
-				return true;
-			}
-
-			return dependency.HasDefaultValue ||
-			       dependency.TargetItemType != null &&
-			       Dependencies.Any(d => d.TargetItemType == dependency.TargetItemType);
 		}
 
 		/// <summary>
@@ -410,12 +404,10 @@ namespace Castle.MicroKernel.Handlers
 			{
 				foreach (var dependency in Dependencies.ToArray())
 				{
-					if (!HasCustomParameter(dependency.DependencyKey))
+					if (HasCustomParameter(dependency.DependencyKey))
 					{
-						continue;
+						Dependencies.Remove(dependency);
 					}
-
-					Dependencies.Remove(dependency);
 				}
 			}
 
@@ -447,7 +439,7 @@ namespace Castle.MicroKernel.Handlers
 				}
 			}
 
-			if (Dependencies.Count == 0)
+			if (MissingDependenciesSatisfiable())
 			{
 				SetNewState(HandlerState.Valid);
 				stateChanged = true;
@@ -458,6 +450,23 @@ namespace Castle.MicroKernel.Handlers
 
 				dependencies = null;
 			}
+		}
+
+		private bool MissingDependenciesSatisfiable()
+		{
+			if (Dependencies.Count == 0)
+			{
+				return true;
+			}
+			var constructorDependencies = dependencies.Where(d => d is ConstructorDependencyModel)
+				.Cast<ConstructorDependencyModel>().ToList();
+			if (Dependencies.Count != constructorDependencies.Count)
+			{
+				return false;
+			}
+
+			var ctorDependenciesByCtor = constructorDependencies.ToLookup(d => d.Constructor);
+			return model.Constructors.Count > ctorDependenciesByCtor.Count;
 		}
 
 		/// <summary>
@@ -481,10 +490,7 @@ namespace Castle.MicroKernel.Handlers
 			{
 				var dependency = property.Dependency;
 
-				if (dependency.IsOptional == false)
-				{
-					AddDependency(dependency);
-				}
+				AddDependency(dependency);
 			}
 
 			// The following dependencies were added by - for example - 
@@ -492,20 +498,28 @@ namespace Castle.MicroKernel.Handlers
 
 			foreach (var dependency in ComponentModel.Dependencies)
 			{
-				if (dependency.IsOptional == false)
+				AddDependency(dependency);
+			}
+			var constructorsCount = ComponentModel.Constructors.Count;
+			if (constructorsCount == 0)
+			{
+				return;
+			}
+			var unsatisfiedConstructors = new List<DependencyModel[]>(constructorsCount);
+			foreach (var constructor in ComponentModel.Constructors)
+			{
+				var missingCtorDependencies = constructor.Dependencies.Where(d => CanBeSatisfied(d) == false).ToArray();
+				if (missingCtorDependencies.Length > 0)
 				{
-					AddDependency(dependency);
+					unsatisfiedConstructors.Add(missingCtorDependencies);
 				}
 			}
-
-			foreach (var dependency in GetSecuredDependencies())
+			if (unsatisfiedConstructors.Count == constructorsCount)
 			{
-				if (dependency.HasDefaultValue)
+				foreach (var dependency in unsatisfiedConstructors.SelectMany(d => d))
 				{
-					continue;
+					AddMissingDependency(dependency);
 				}
-
-				AddDependency(dependency);
 			}
 		}
 
@@ -525,8 +539,7 @@ namespace Castle.MicroKernel.Handlers
 				return;
 			}
 			var stateChanged = false;
-			if (Dependencies.Any(d => Kernel.Parent.HasComponent(d.DependencyKey)) ||
-			    Dependencies.Any(d => Kernel.Parent.HasComponent(d.TargetItemType)))
+			if (Dependencies.Any(d => d.GetHandler(Kernel.Parent) != null))
 			{
 				DependencySatisfied(ref stateChanged);
 			}
@@ -556,77 +569,6 @@ namespace Castle.MicroKernel.Handlers
 			Kernel.HandlersChanged -= DependencySatisfied;
 			Kernel.AddedAsChildKernel -= OnAddedAsChildKernel;
 			OnHandlerStateChanged -= HandlerStateChanged;
-		}
-
-		private List<ConstructorCandidate> GetBestCandidatesByDependencyType(IEnumerable<ConstructorCandidate> candidates)
-		{
-			var parametersCount = 0;
-			var bestCandidates = new List<ConstructorCandidate>();
-			foreach (var candidate in candidates)
-			{
-				var count = candidate.Dependencies.Length;
-				if (count < parametersCount)
-				{
-					continue;
-				}
-
-				if (count == parametersCount)
-				{
-					bestCandidates.Add(candidate);
-					continue;
-				}
-
-				bestCandidates.Clear();
-				bestCandidates.Add(candidate);
-				parametersCount = count;
-			}
-
-			return bestCandidates;
-		}
-
-		private IEnumerable<ConstructorCandidate> GetCandidateConstructors()
-		{
-			if (ComponentModel.Constructors.Count == 0)
-			{
-				return ComponentModel.Constructors;
-			}
-
-			if (ComponentModel.Constructors.HasAmbiguousFewerArgumentsCandidate == false &&
-			    CanSatisfyConstructor(ComponentModel.Constructors.FewerArgumentsCandidate))
-			{
-				return new[] { ComponentModel.Constructors.FewerArgumentsCandidate };
-			}
-
-			var candidates = ComponentModel.Constructors
-				.Where(CanSatisfyConstructor)
-				.GroupBy(c => c.Constructor.GetParameters().Length)
-				.ToList();
-			if (candidates.Count == 0)
-			{
-				return ComponentModel.Constructors;
-			}
-
-			if (candidates[0].Count() == 1)
-			{
-				return candidates[0];
-			}
-
-			return new[] { SelectMostValuableCandidate(candidates[0]) };
-		}
-
-		private IEnumerable<DependencyModel> GetSecuredDependencies()
-		{
-			var candidateConstructors = GetCandidateConstructors();
-
-			// if there is more than one possible constructors, we need to verify
-			// its dependencies at resolve time
-
-			if (candidateConstructors.Count() != 1)
-			{
-				return new DependencyModel[0];
-			}
-
-			return candidateConstructors.Single().Dependencies;
 		}
 
 		/// <summary>
@@ -711,50 +653,6 @@ namespace Castle.MicroKernel.Handlers
 			}
 		}
 
-		private ConstructorCandidate SelectMostValuableCandidate(IEnumerable<ConstructorCandidate> candidates)
-		{
-			// let's try to get one with the most parameter dependencies:
-			var bestCandidates = GetBestCandidatesByDependencyType(candidates);
-			if (bestCandidates.Count == 1)
-			{
-				return bestCandidates[0];
-			}
-			return SelectMostValuableCandidateByName(bestCandidates);
-		}
-
-		private ConstructorCandidate SelectMostValuableCandidateByName(IEnumerable<ConstructorCandidate> candidates)
-		{
-			IEnumerable<KeyValuePair<ConstructorCandidate, ParameterInfo[]>> parametersByConstructor =
-				candidates.ToDictionary(c => c,
-				                        c => c.Constructor.GetParameters());
-			var parametersCount = parametersByConstructor.First().Value.Length;
-			for (var i = 0; i < parametersCount; i++)
-			{
-				var index = i;
-				var first = parametersByConstructor.GroupBy(p => p.Value[index].Name).OrderBy(g => g.Key).First();
-				if (first.Count() == 1)
-				{
-					return first.Single().Key;
-				}
-
-				parametersByConstructor = first;
-			}
-
-			// we have more than one constructor with all parameters with identical names...
-			// highly unlikely but...
-			// in this case let's just toss a coin
-			return parametersByConstructor.First().Key;
-		}
-
-		private DependencyModel[] Union(ICollection<DependencyModel> firstset, ICollection<DependencyModel> secondset)
-		{
-			var result = new DependencyModel[firstset.Count + secondset.Count];
-			firstset.CopyTo(result, 0);
-			secondset.CopyTo(result, firstset.Count);
-
-			return result;
-		}
-
 		public event HandlerStateDelegate OnHandlerStateChanged;
 
 		public override string ToString()
@@ -769,6 +667,36 @@ namespace Castle.MicroKernel.Handlers
 				return;
 			}
 			inspector.Inspect(this, Dependencies.ToArray(), Kernel);
+		}
+
+		protected bool CanResolvePendingDependencies(CreationContext context)
+		{
+			if (CurrentState == HandlerState.Valid)
+			{
+				return true;
+			}
+			// detect circular dependencies
+			if (IsBeingResolvedInContext(context))
+			{
+				return context.HasAdditionalArguments;
+			}
+			var canResolveAll = true;
+			foreach (var dependency in Dependencies.ToArray())
+			{
+				if (dependency.TargetItemType == null)
+				{
+					canResolveAll = false;
+					break;
+				}
+				// a self-dependency is not allowed
+				var handler = Kernel.LoadHandlerByType(dependency.DependencyKey, dependency.TargetItemType, context.AdditionalArguments);
+				if (handler == this || handler == null)
+				{
+					canResolveAll = false;
+					break;
+				}
+			}
+			return canResolveAll || context.HasAdditionalArguments;
 		}
 	}
 }

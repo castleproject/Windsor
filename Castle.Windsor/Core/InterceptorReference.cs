@@ -150,9 +150,9 @@ namespace Castle.Core
 
 		void IReference<IInterceptor>.Attach(ComponentModel component)
 		{
-			component.Dependencies.Add(dependencyModel);
 			var reference = ReferenceExpressionUtil.BuildReference(serviceOverrideComponent ?? serviceType.FullName);
 			component.Parameters.Add(dependencyModel.DependencyKey, reference);
+			component.Dependencies.Add(dependencyModel);
 		}
 
 		void IReference<IInterceptor>.Detach(ComponentModel component)

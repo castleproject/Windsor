@@ -31,6 +31,10 @@ namespace Castle.Core
 		private ParameterModel parameter;
 		private string reference;
 
+#if DEBUG
+		private bool initialized;
+#endif
+
 		/// <summary>
 		///   Initializes a new instance of the <see cref = "DependencyModel" /> class.
 		/// </summary>
@@ -83,6 +87,34 @@ namespace Castle.Core
 			get { return targetItemType != null && targetItemType.IsValueType; }
 		}
 
+		public ParameterModel Parameter
+		{
+			get
+			{
+#if DEBUG
+				if (!initialized)
+				{
+					throw new InvalidOperationException("Not initialized!");
+				}
+#endif
+				return parameter;
+			}
+		}
+
+		public string Reference
+		{
+			get
+			{
+#if DEBUG
+				if (!initialized)
+				{
+					throw new InvalidOperationException("Not initialized!");
+				}
+#endif
+				return reference;
+			}
+		}
+
 		/// <summary>
 		///   Gets the service type of the dependency.
 		///   This is the same type as <see cref = "TargetType" /> or if <see cref = "TargetType" /> is by ref,
@@ -129,6 +161,12 @@ namespace Castle.Core
 		/// <returns></returns>
 		public IHandler GetHandler(IKernel kernel)
 		{
+#if DEBUG
+			if (!initialized)
+			{
+				throw new InvalidOperationException("Not initialized!");
+			}
+#endif
 			if (reference != null)
 			{
 				return kernel.GetHandler(reference);
@@ -152,6 +190,13 @@ namespace Castle.Core
 
 		public void Init(ParameterModelCollection parameters)
 		{
+#if DEBUG
+			initialized = true;
+#endif
+			if (parameters == null)
+			{
+				return;
+			}
 			parameter = ObtainParameterModelByName(parameters) ?? ObtainParameterModelByType(parameters);
 			if (parameter != null)
 			{

@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,31 +16,17 @@ namespace Castle.MicroKernel.Tests.Configuration
 {
 	using Castle.Core;
 	using Castle.Core.Configuration;
-	using Castle.MicroKernel.ComponentActivator;
 	using Castle.MicroKernel.Registration;
-	using Castle.MicroKernel.Resolvers;
 	using Castle.MicroKernel.Tests.ClassComponents;
 	using Castle.MicroKernel.Tests.Configuration.Components;
+
+	using CastleTests;
 
 	using NUnit.Framework;
 
 	[TestFixture]
-	public class ConfigurationTestCase
+	public class ConfigurationTestCase : AbstractContainerTestCase
 	{
-		[SetUp]
-		public void Init()
-		{
-			kernel = new DefaultKernel();
-		}
-
-		[TearDown]
-		public void Dispose()
-		{
-			kernel.Dispose();
-		}
-
-		private IKernel kernel;
-
 		[Test]
 		public void ComplexConfigurationParameter()
 		{
@@ -62,10 +48,10 @@ namespace Castle.MicroKernel.Tests.Configuration
 			complexNode.Children.Add(new MutableConfiguration("mandatoryvalue", value1));
 			complexNode.Children.Add(new MutableConfiguration("optionalvalue", value2));
 
-			kernel.ConfigurationStore.AddComponentConfiguration(key, confignode);
-			kernel.Register(Component.For(typeof(ClassWithComplexParameter)).Named(key));
+			Kernel.ConfigurationStore.AddComponentConfiguration(key, confignode);
+			Kernel.Register(Component.For(typeof(ClassWithComplexParameter)).Named(key));
 
-			var instance = kernel.Resolve<ClassWithComplexParameter>(key);
+			var instance = Kernel.Resolve<ClassWithComplexParameter>(key);
 
 			Assert.IsNotNull(instance);
 			Assert.IsNotNull(instance.ComplexParam);
@@ -89,11 +75,11 @@ namespace Castle.MicroKernel.Tests.Configuration
 			array.Children.Add(new MutableConfiguration("item", "uol"));
 			array.Children.Add(new MutableConfiguration("item", "folha"));
 
-			kernel.ConfigurationStore.AddComponentConfiguration("key", confignode);
+			Kernel.ConfigurationStore.AddComponentConfiguration("key", confignode);
 
-			kernel.Register(Component.For(typeof(ClassWithConstructors)).Named("key"));
+			Kernel.Register(Component.For(typeof(ClassWithConstructors)).Named("key"));
 
-			var instance = kernel.Resolve<ClassWithConstructors>("key");
+			var instance = Kernel.Resolve<ClassWithConstructors>("key");
 			Assert.IsNotNull(instance);
 			Assert.IsNull(instance.Host);
 			Assert.AreEqual("castle", instance.Hosts[0]);
@@ -117,13 +103,13 @@ namespace Castle.MicroKernel.Tests.Configuration
 			array.Children.Add(new MutableConfiguration("item", "${commonservice1}"));
 			array.Children.Add(new MutableConfiguration("item", "${commonservice2}"));
 
-			kernel.ConfigurationStore.AddComponentConfiguration("key", confignode);
+			Kernel.ConfigurationStore.AddComponentConfiguration("key", confignode);
 
-			kernel.Register(Component.For<ClassWithArrayConstructor>().Named("key"),
+			Kernel.Register(Component.For<ClassWithArrayConstructor>().Named("key"),
 			                Component.For<ICommon>().ImplementedBy<CommonImpl1>().Named("commonservice1"),
 			                Component.For<ICommon>().ImplementedBy<CommonImpl2>().Named("commonservice2"));
 
-			var instance = kernel.Resolve<ClassWithArrayConstructor>("key");
+			var instance = Kernel.Resolve<ClassWithArrayConstructor>("key");
 			Assert.IsNotNull(instance.Services);
 			Assert.AreEqual(2, instance.Services.Length);
 			Assert.AreEqual("CommonImpl1", instance.Services[0].GetType().Name);
@@ -133,6 +119,7 @@ namespace Castle.MicroKernel.Tests.Configuration
 #if SILVERLIGHT
 		[Ignore("Type conversion does not work in tests under Silverlight because the assembly is not in the starting manifest (of Statlight)")]
 #endif
+
 		[Test]
 		public void ConstructorWithListParameterAndCustomType()
 		{
@@ -150,13 +137,13 @@ namespace Castle.MicroKernel.Tests.Configuration
 			list.Children.Add(new MutableConfiguration("item", "${commonservice1}"));
 			list.Children.Add(new MutableConfiguration("item", "${commonservice2}"));
 
-			kernel.ConfigurationStore.AddComponentConfiguration("key", confignode);
-			kernel.Register(Component.For(typeof(ClassWithListConstructor)).Named("key"));
+			Kernel.ConfigurationStore.AddComponentConfiguration("key", confignode);
+			Kernel.Register(Component.For(typeof(ClassWithListConstructor)).Named("key"));
 
-			kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(CommonImpl1)).Named("commonservice1"));
-			kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(CommonImpl2)).Named("commonservice2"));
+			Kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(CommonImpl1)).Named("commonservice1"));
+			Kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(CommonImpl2)).Named("commonservice2"));
 
-			var instance = kernel.Resolve<ClassWithListConstructor>("key");
+			var instance = Kernel.Resolve<ClassWithListConstructor>("key");
 			Assert.IsNotNull(instance.Services);
 			Assert.AreEqual(2, instance.Services.Count);
 			Assert.AreEqual("CommonImpl1", instance.Services[0].GetType().Name);
@@ -173,28 +160,20 @@ namespace Castle.MicroKernel.Tests.Configuration
 
 			parameters.Children.Add(new MutableConfiguration("host", "castleproject.org"));
 
-			kernel.ConfigurationStore.AddComponentConfiguration("key", confignode);
+			Kernel.ConfigurationStore.AddComponentConfiguration("key", confignode);
 
-			kernel.Register(Component.For<ClassWithConstructors>().Named("key"));
+			Kernel.Register(Component.For<ClassWithConstructors>().Named("key"));
 
-			var instance = kernel.Resolve<ClassWithConstructors>("key");
+			var instance = Kernel.Resolve<ClassWithConstructors>("key");
 			Assert.IsNotNull(instance);
 			Assert.IsNotNull(instance.Host);
 			Assert.AreEqual("castleproject.org", instance.Host);
 		}
 
-		[Test]
-		[ExpectedException(typeof(NoResolvableConstructorFoundException))]
-		public void ConstructorWithUnsatisfiedParameters()
-		{
-			kernel.Register(Component.For<ClassWithConstructors>().Named("key"));
-			
-			kernel.Resolve<ClassWithConstructors>("key");
-		}
-
 #if SILVERLIGHT
 		[Ignore("Type conversion does not work in tests under Silverlight because the assembly is not in the starting manifest (of Statlight)")]
 #endif
+
 		[Test]
 		public void CustomLifestyleManager()
 		{
@@ -205,11 +184,11 @@ namespace Castle.MicroKernel.Tests.Configuration
 
 			confignode.Attributes.Add("customLifestyleType", "CustomLifestyleManager");
 
-			kernel.ConfigurationStore.AddComponentConfiguration(key, confignode);
-			kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(CommonImpl1)).Named(key));
+			Kernel.ConfigurationStore.AddComponentConfiguration(key, confignode);
+			Kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(CommonImpl1)).Named(key));
 
-			var instance = kernel.Resolve<ICommon>(key);
-			var handler = kernel.GetHandler(key);
+			var instance = Kernel.Resolve<ICommon>(key);
+			var handler = Kernel.GetHandler(key);
 
 			Assert.IsNotNull(instance);
 			Assert.AreEqual(LifestyleType.Custom, handler.ComponentModel.LifestyleType);
@@ -226,13 +205,13 @@ namespace Castle.MicroKernel.Tests.Configuration
 
 			parameters.Children.Add(new MutableConfiguration("common", "${commonservice2}"));
 
-			kernel.ConfigurationStore.AddComponentConfiguration("commonserviceuser", confignode);
+			Kernel.ConfigurationStore.AddComponentConfiguration("commonserviceuser", confignode);
 
-			kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(CommonImpl1)).Named("commonservice1"));
-			kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(CommonImpl2)).Named("commonservice2"));
-			kernel.Register(Component.For(typeof(CommonServiceUser)).Named("commonserviceuser"));
+			Kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(CommonImpl1)).Named("commonservice1"));
+			Kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(CommonImpl2)).Named("commonservice2"));
+			Kernel.Register(Component.For(typeof(CommonServiceUser)).Named("commonserviceuser"));
 
-			var instance = kernel.Resolve<CommonServiceUser>("commonserviceuser");
+			var instance = Kernel.Resolve<CommonServiceUser>("commonserviceuser");
 
 			Assert.IsNotNull(instance);
 			Assert.AreEqual(typeof(CommonImpl2), instance.CommonService.GetType());
@@ -248,14 +227,14 @@ namespace Castle.MicroKernel.Tests.Configuration
 
 			parameters.Children.Add(new MutableConfiguration("CommonService", "${commonservice2}"));
 
-			kernel.ConfigurationStore.AddComponentConfiguration("commonserviceuser", confignode);
+			Kernel.ConfigurationStore.AddComponentConfiguration("commonserviceuser", confignode);
 
-			kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(CommonImpl1)).Named("commonservice1"));
-			kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(CommonImpl2)).Named("commonservice2"));
+			Kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(CommonImpl1)).Named("commonservice1"));
+			Kernel.Register(Component.For(typeof(ICommon)).ImplementedBy(typeof(CommonImpl2)).Named("commonservice2"));
 
-			kernel.Register(Component.For(typeof(CommonServiceUser2)).Named("commonserviceuser"));
+			Kernel.Register(Component.For(typeof(CommonServiceUser2)).Named("commonserviceuser"));
 
-			var instance = kernel.Resolve<CommonServiceUser2>("commonserviceuser");
+			var instance = Kernel.Resolve<CommonServiceUser2>("commonserviceuser");
 
 			Assert.IsNotNull(instance);
 			Assert.AreEqual(typeof(CommonImpl2), instance.CommonService.GetType());

@@ -50,7 +50,7 @@ namespace Castle.MicroKernel.Resolvers.SpecializedResolvers
 
 			var itemType = GetItemType(dependency.TargetItemType);
 			return itemType != null &&
-			       HasParameter(model, dependency) == false &&
+			       HasParameter(dependency) == false &&
 			       CanSatisfy(itemType);
 		}
 
@@ -70,9 +70,9 @@ namespace Castle.MicroKernel.Resolvers.SpecializedResolvers
 			return targetItemType.GetCompatibleArrayItemType();
 		}
 
-		protected virtual bool HasParameter(ComponentModel model, DependencyModel dependency)
+		protected virtual bool HasParameter(DependencyModel dependency)
 		{
-			return model.HasParameters && model.Parameters.HasMatch(dependency);
+			return dependency.Parameter != null;
 		}
 	}
 }

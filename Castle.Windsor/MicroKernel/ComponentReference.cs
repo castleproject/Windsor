@@ -65,9 +65,9 @@ namespace Castle.MicroKernel
 
 		public void Attach(ComponentModel component)
 		{
-			component.Dependencies.Add(dependency);
 			var reference = ReferenceExpressionUtil.BuildReference(serviceOverrideComponentKey ?? actualComponentType.FullName);
 			component.Parameters.Add(dependency.DependencyKey, reference);
+			component.Dependencies.Add(dependency);
 		}
 
 		public void Detach(ComponentModel component)

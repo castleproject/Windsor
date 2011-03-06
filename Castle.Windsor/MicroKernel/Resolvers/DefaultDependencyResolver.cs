@@ -187,16 +187,12 @@ namespace Castle.MicroKernel.Resolvers
 
 		protected virtual bool CanResolveCore(CreationContext context, ComponentModel model, DependencyModel dependency)
 		{
-			return CanResolveServiceDependencyMandatory(dependency, model, context);
+			return CanResolveServiceDependencyMandatory(dependency, context);
 		}
 
-		protected virtual ParameterModel ObtainParameterModelMatchingDependency(DependencyModel dependency, ComponentModel model)
+		protected virtual ParameterModel ObtainParameterModelMatchingDependency(DependencyModel dependency)
 		{
-			if (model.HasParameters == false)
-			{
-				return null;
-			}
-			return model.Parameters.GetMatch(dependency);
+			return dependency.Parameter;
 		}
 
 		/// <summary>
@@ -216,7 +212,7 @@ namespace Castle.MicroKernel.Resolvers
 		protected virtual object ResolveCore(CreationContext context, ComponentModel model, DependencyModel dependency)
 		{
 			var serviceOverrideComponent = default(string);
-			var parameter = ObtainParameterModelMatchingDependency(dependency, model);
+			var parameter = ObtainParameterModelMatchingDependency(dependency);
 			if (parameter != null)
 			{
 				if ((serviceOverrideComponent = ReferenceExpressionUtil.ExtractComponentKey(parameter.Value)) == null)
@@ -299,18 +295,17 @@ namespace Castle.MicroKernel.Resolvers
 			return handler.Resolve(context);
 		}
 
-		private bool CanResolveServiceDependencyMandatory(DependencyModel dependency, ComponentModel model, CreationContext context)
+		private bool CanResolveServiceDependencyMandatory(DependencyModel dependency, CreationContext context)
 		{
-			var parameter = ObtainParameterModelMatchingDependency(dependency, model);
+			var parameter = ObtainParameterModelMatchingDependency(dependency);
 			if (parameter != null)
 			{
-				if (ReferenceExpressionUtil.IsReference(parameter.Value))
+				if (dependency.Reference != null)
 				{
 					// User wants to override
-					var value = ReferenceExpressionUtil.ExtractComponentKey(parameter.Value);
-					return HasComponentInValidState(value, dependency.TargetItemType, context);
+					return HasComponentInValidState(dependency.Reference, dependency.TargetItemType, context);
 				}
-				return ObtainParameterModelMatchingDependency(dependency, model) != null;
+				return true;
 			}
 			if (typeof(IKernel).IsAssignableFrom(dependency.TargetItemType))
 			{

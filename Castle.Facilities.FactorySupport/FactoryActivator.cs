@@ -114,6 +114,7 @@ namespace Castle.Facilities.FactorySupport
 					}
 
 					var dependency = new DependencyModel(parameter.Name, paramType, false);
+					dependency.Init(Model.HasParameters ? Model.Parameters : null);
 					if (!Kernel.Resolver.CanResolve(context, null, Model, dependency))
 					{
 						var message = String.Format(

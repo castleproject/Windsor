@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,9 +16,9 @@ namespace Castle.MicroKernel.Tests.Lifestyle
 {
 	using System;
 
+	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Tests.ClassComponents;
 	using Castle.MicroKernel.Tests.Pools;
-	using Castle.MicroKernel.Registration;
 
 	using NUnit.Framework;
 
@@ -41,7 +41,7 @@ namespace Castle.MicroKernel.Tests.Lifestyle
 
 		public class Indirection
 		{
-			private NonDisposableRoot fakeRoot;
+			private readonly NonDisposableRoot fakeRoot;
 
 			public Indirection(NonDisposableRoot fakeRoot)
 			{
@@ -56,8 +56,8 @@ namespace Castle.MicroKernel.Tests.Lifestyle
 
 		public class NonDisposableRoot
 		{
-			private A a;
-			private B b;
+			private readonly A a;
+			private readonly B b;
 
 			public NonDisposableRoot(A a, B b)
 			{
@@ -141,9 +141,8 @@ namespace Castle.MicroKernel.Tests.Lifestyle
 		public void ComponentsAreOnlyDisposedOnce()
 		{
 			kernel.Register(
-				Component.For(typeof(DisposableSpamService)).Named("spamservice").LifeStyle.Transient);
-			kernel.Register(
-				Component.For(typeof(DisposableTemplateEngine)).Named("templateengine").LifeStyle.Transient);
+				Component.For<DisposableSpamService>().Named("spamservice").LifeStyle.Transient,
+				Component.For<DisposableTemplateEngine>().Named("templateengine").LifeStyle.Transient);
 
 			var instance1 = kernel.Resolve<DisposableSpamService>("spamservice");
 			Assert.IsFalse(instance1.IsDisposed);
@@ -158,9 +157,9 @@ namespace Castle.MicroKernel.Tests.Lifestyle
 		public void DisposingSubLevelBurdenWontDisposeComponentAsTheyAreDisposedAlready()
 		{
 			kernel.Register(
-				Component.For(typeof(DisposableSpamService)).Named("spamservice").LifeStyle.Transient);
+				Component.For<DisposableSpamService>().Named("spamservice").LifeStyle.Transient);
 			kernel.Register(
-				Component.For(typeof(DisposableTemplateEngine)).Named("templateengine").LifeStyle.Transient);
+				Component.For<DisposableTemplateEngine>().Named("templateengine").LifeStyle.Transient);
 
 			var instance1 = kernel.Resolve<DisposableSpamService>("spamservice");
 			Assert.IsFalse(instance1.IsDisposed);

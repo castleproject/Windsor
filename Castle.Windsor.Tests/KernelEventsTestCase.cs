@@ -15,6 +15,7 @@
 namespace Castle.Windsor.Tests
 {
 	using System.Collections.Generic;
+	using System.Linq;
 
 	using Castle.Core;
 	using Castle.Core.Configuration;
@@ -64,7 +65,7 @@ namespace Castle.Windsor.Tests
 			expectedClient = Kernel.GetHandler("spamservice").ComponentModel;
 			expectedModels =
 				new List<DependencyModel>(
-					Kernel.GetHandler("spamservice").ComponentModel.Constructors.FewerArgumentsCandidate.Dependencies);
+					Kernel.GetHandler("spamservice").ComponentModel.Constructors.Single().Dependencies);
 
 			var spamservice =
 				Kernel.Resolve<DefaultSpamServiceWithConstructor>("spamservice");
