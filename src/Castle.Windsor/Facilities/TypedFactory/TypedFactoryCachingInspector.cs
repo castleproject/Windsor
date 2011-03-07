@@ -47,7 +47,7 @@ namespace Castle.Facilities.TypedFactory
 
 			if (service.Equals(typeof(IDisposable)))
 			{
-				var method = service.GetMethods().Single();
+				var method = service.GetMethods()[0];
 				map[method] = FactoryMethod.Dispose;
 				return;
 			}

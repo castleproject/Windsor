@@ -24,6 +24,7 @@ namespace Castle.Facilities.TypedFactory
 	using Castle.MicroKernel.Facilities;
 	using Castle.MicroKernel.Proxy;
 	using Castle.MicroKernel.Registration;
+	using Castle.MicroKernel.Resolvers;
 	using Castle.MicroKernel.SubSystems.Conversion;
 	using Castle.MicroKernel.Util;
 
@@ -118,7 +119,8 @@ namespace Castle.Facilities.TypedFactory
 		{
 			Kernel.Register(Component.For<TypedFactoryInterceptor>()
 			                	.NamedAutomatically(InterceptorKey),
-			                Component.For<DelegateFactory>()
+			                Component.For<ILazyComponentLoader>()
+			                	.ImplementedBy<DelegateFactory>()
 			                	.NamedAutomatically(DelegateFactoryKey),
 			                Component.For<IProxyFactoryExtension>()
 			                	.ImplementedBy<DelegateProxyFactory>()

@@ -16,7 +16,9 @@ namespace Castle.MicroKernel.ComponentActivator
 {
 	using System;
 	using System.Collections.Generic;
+#if DOTNET35 || SILVERLIGHT
 	using System.Linq;
+#endif
 	using System.Runtime.Serialization;
 	using System.Security;
 	using System.Security.Permissions;
@@ -231,11 +233,9 @@ namespace Castle.MicroKernel.ComponentActivator
 
 			if (Model.Constructors.Count == 1)
 			{
-				return Model.Constructors.Single();
+				return Model.Constructors[0];
 			}
-
 			ConstructorCandidate winnerCandidate = null;
-
 			var winnerPoints = 0;
 			foreach (var candidate in Model.Constructors)
 			{
@@ -244,9 +244,13 @@ namespace Castle.MicroKernel.ComponentActivator
 				{
 					continue;
 				}
-
 				if (winnerCandidate == null || winnerPoints < candidatePoints)
 				{
+					if (BestPossibleScore(candidate, candidatePoints))
+					{
+						//since the constructors are sorted greedier first, we know there's no way any other .ctor is going to beat us here
+						return candidate;
+					}
 					winnerCandidate = candidate;
 					winnerPoints = candidatePoints;
 				}
@@ -258,6 +262,11 @@ namespace Castle.MicroKernel.ComponentActivator
 			}
 
 			return winnerCandidate;
+		}
+
+		private bool BestPossibleScore(ConstructorCandidate candidate, int candidatePoints)
+		{
+			return candidatePoints == candidate.Dependencies.Length*100;
 		}
 
 		private bool CheckCtorCandidate(ConstructorCandidate candidate, CreationContext context, out int candidatePoints)

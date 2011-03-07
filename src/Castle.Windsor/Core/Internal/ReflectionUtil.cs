@@ -137,7 +137,7 @@ namespace Castle.Core.Internal
 				openGeneric == typeof(ICollection<>) ||
 				openGeneric == typeof(IEnumerable<>))
 			{
-				return type.GetGenericArguments().Single();
+				return type.GetGenericArguments()[0];
 			}
 			return null;
 		}

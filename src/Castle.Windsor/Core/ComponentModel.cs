@@ -387,7 +387,7 @@ namespace Castle.Core
 		public override string ToString()
 		{
 			var services = Services.ToArray();
-			if (services.Length == 1 && services.Single() == Implementation)
+			if (services.Length == 1 && services[0] == Implementation)
 			{
 				return Implementation.ToCSharpString();
 			}

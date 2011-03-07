@@ -12,29 +12,36 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace System.Collections.Generic
+namespace Castle.Core.Internal
 {
-#if DOTNET35 || SILVERLIGHT
-	public class SortedSet<T> : ICollection<T>
+	using System.Collections;
+	using System.Collections.Generic;
+
+	public class SimpleSortedSet<T> : ICollection<T>
 	{
 		private readonly IComparer<T> comparer;
 		private readonly List<T> items = new List<T>();
 
-		public SortedSet() : this(Comparer<T>.Default)
+		public SimpleSortedSet() : this(Comparer<T>.Default)
 		{
 		}
 
-		public SortedSet(IComparer<T> comparer)
+		public SimpleSortedSet(IComparer<T> comparer)
 		{
 			this.comparer = comparer;
 		}
 
-		public SortedSet(IEnumerable<T> other, IComparer<T> comparer) : this(comparer)
+		public SimpleSortedSet(IEnumerable<T> other, IComparer<T> comparer) : this(comparer)
 		{
 			foreach (var item in other)
 			{
 				Add(item);
 			}
+		}
+
+		public T this[int index]
+		{
+			get { return items[index]; }
 		}
 
 		public int Count
@@ -96,5 +103,4 @@ namespace System.Collections.Generic
 			return GetEnumerator();
 		}
 	}
-#endif
 }
