@@ -14,6 +14,7 @@
 
 namespace Castle.MicroKernel.Handlers
 {
+	using System;
 	using System.Collections.Generic;
 	using System.Diagnostics;
 	using System.Linq;
@@ -45,7 +46,7 @@ namespace Castle.MicroKernel.Handlers
 				return;
 			}
 			Debug.Assert(missingDependencies.Length > 0, "missingDependencies.Length > 0");
-
+			var uniqueOverrides = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 			message.AppendLine();
 			message.AppendFormat("'{0}' is waiting for the following dependencies:", handler.ComponentModel.Name);
 			message.AppendLine();
@@ -53,7 +54,11 @@ namespace Castle.MicroKernel.Handlers
 			{
 				if (dependency.Reference != null)
 				{
-					InspectServiceOverrideDependency(dependency.Reference, dependency.GetHandler(kernel));
+					// NOTE: that's a workaround for us having dependency twice potentially, once from configuration and once from actual type scan
+					if (uniqueOverrides.Add(dependency.Reference))
+					{
+						InspectServiceOverrideDependency(dependency.Reference, dependency.GetHandler(kernel));
+					}
 				}
 				else if (dependency.IsValueType || dependency.TargetItemType == typeof(string) || dependency.TargetItemType == null)
 				{
