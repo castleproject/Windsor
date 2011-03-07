@@ -445,33 +445,9 @@ namespace Castle.MicroKernel.Handlers
 			// Check within the Kernel
 			foreach (var dependency in MissingDependencies.ToArray())
 			{
-				if (CanResolve(null, this, model, dependency))
+				if(AddResolvableDependency(dependency))
 				{
 					MissingDependencies.Remove(dependency);
-					continue;
-				}
-				var service = dependency.TargetItemType;
-				if (service != null && HasValidComponent(service, dependency))
-				{
-					MissingDependencies.Remove(dependency);
-					var dependingHandler = kernel.GetHandler(service);
-					if (dependingHandler != null) //may not be real handler, if comes from resolver
-					{
-						AddGraphDependency(dependingHandler);
-					}
-				}
-				else
-				{
-					var name = dependency.DependencyKey;
-					if (name != null && HasValidComponent(name, dependency))
-					{
-						MissingDependencies.Remove(dependency);
-						var dependingHandler = kernel.GetHandler(name);
-						if (dependingHandler != null) //may not be real handler, if we are using sub resolver
-						{
-							AddGraphDependency(dependingHandler);
-						}
-					}
 				}
 			}
 
@@ -556,11 +532,6 @@ namespace Castle.MicroKernel.Handlers
 			}
 		}
 
-		private void AddGraphDependency(IHandler handler)
-		{
-			ComponentModel.AddDependent(handler.ComponentModel);
-		}
-
 		private bool AddOptionalDependency(DependencyModel dependency)
 		{
 			if (dependency.IsOptional || dependency.HasDefaultValue)
@@ -617,48 +588,13 @@ namespace Castle.MicroKernel.Handlers
 			Kernel.RaiseHandlersChanged();
 		}
 
-		private bool HasValidComponent(Type service, DependencyModel dependency)
-		{
-			var handlr = kernel.GetHandler(service);
-			if (handlr == null)
-			{
-				return false;
-			}
-			if (IsValidHandlerState(handlr))
-			{
-				return true;
-			}
-
-			foreach (var handler in kernel.GetHandlers(service))
-			{
-				if (IsValidHandlerState(handler))
-				{
-					return true;
-				}
-			}
-
-			// could not find in kernel directly, check using resolvers
-			return HasValidComponentFromResolver(dependency);
-		}
-
-		private bool HasValidComponent(String key, DependencyModel dependency)
-		{
-			if (IsValidHandlerState(kernel.GetHandler(key)))
-			{
-				return true;
-			}
-			// could not find in kernel directly, check using resolvers
-			return HasValidComponentFromResolver(dependency);
-		}
-
 		private bool HasValidComponentFromResolver(DependencyModel dependency)
 		{
-			return Kernel.Resolver.CanResolve(null, this, model, dependency);
-		}
-
-		private bool IsValidHandlerState(IHandler handler)
-		{
-			return handler != null && handler.CurrentState == HandlerState.Valid;
+			var context = CreationContext.CreateEmpty();
+			using (context.EnterResolutionContext(this, false))
+			{
+				return Kernel.Resolver.CanResolve(context, this, model, dependency);
+			}
 		}
 
 		private void RaiseHandlerStateChanged()
