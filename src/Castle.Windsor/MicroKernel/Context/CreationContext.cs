@@ -31,15 +31,13 @@ namespace Castle.MicroKernel.Context
 	///   to provide arguments to components.
 	/// </summary>
 	[Serializable]
+	public class CreationContext :
 #if (!SILVERLIGHT)
-	public class CreationContext : MarshalByRefObject, ISubDependencyResolver
-#else
-	public class CreationContext : ISubDependencyResolver
+ MarshalByRefObject,
 #endif
+		ISubDependencyResolver
 	{
 		private readonly ITypeConverter converter;
-
-		private Type[] genericArguments;
 
 		private readonly IHandler handler;
 
@@ -52,11 +50,12 @@ namespace Castle.MicroKernel.Context
 		private readonly Stack<IHandler> handlerStack;
 
 		private readonly IReleasePolicy releasePolicy;
+		private readonly Type requestedType;
 
 		private readonly Stack<ResolutionContext> resolutionStack;
 		private IDictionary additionalArguments;
 		private IDictionary extendedProperties;
-		private readonly Type requestedType;
+		private Type[] genericArguments;
 
 		/// <summary>
 		///   Initializes a new instance of the <see cref = "CreationContext" /> class.
@@ -122,11 +121,6 @@ namespace Castle.MicroKernel.Context
 			resolutionStack = new Stack<ResolutionContext>(4);
 		}
 
-		public Type RequestedType
-		{
-			get { return requestedType; }
-		}
-
 		public IDictionary AdditionalArguments
 		{
 			get
@@ -166,17 +160,48 @@ namespace Castle.MicroKernel.Context
 			get { return releasePolicy; }
 		}
 
-		public void SetContextualProperty(object key, object value)
+		public Type RequestedType
 		{
-			if (key == null)
+			get { return requestedType; }
+		}
+
+		public Burden ActivateNewInstance(IComponentActivator componentActivator, bool trackedExternally)
+		{
+			ResolutionContext resolutionContext;
+			try
 			{
-				throw new ArgumentNullException("key");
+				resolutionContext = resolutionStack.Peek();
 			}
-			if (extendedProperties == null)
+			catch (InvalidOperationException)
 			{
-				extendedProperties = new Arguments();
+				throw new ComponentActivatorException(
+					"Not in a resolution context. 'ActivateNewInstance' method can only be called withing a resoltion scope. (after 'EnterResolutionContext' was called within a handler)");
 			}
-			extendedProperties[key] = value;
+
+			var activator = componentActivator as IDependencyAwareActivator;
+			if (activator != null)
+			{
+				trackedExternally |= activator.IsManagedExternally(resolutionContext.Handler.ComponentModel);
+			}
+
+			var burden = resolutionContext.CreateBurden(trackedExternally);
+			burden.SetRootInstance(componentActivator.Create(this));
+			return burden;
+		}
+
+		public void AttachExistingBurden(Burden burden)
+		{
+			ResolutionContext resolutionContext;
+			try
+			{
+				resolutionContext = resolutionStack.Peek();
+			}
+			catch (InvalidOperationException)
+			{
+				throw new ComponentActivatorException(
+					"Not in a resolution context. 'ActivateNewInstance' method can only be called withing a resoltion scope. (after 'EnterResolutionContext' was called within a handler)");
+			}
+			resolutionContext.AttachBurden(burden);
 		}
 
 		public ResolutionContext EnterResolutionContext(IHandler handlerBeingResolved, bool requiresDecommission)
@@ -220,6 +245,19 @@ namespace Castle.MicroKernel.Context
 			return handlerStack.Contains(handler);
 		}
 
+		public void SetContextualProperty(object key, object value)
+		{
+			if (key == null)
+			{
+				throw new ArgumentNullException("key");
+			}
+			if (extendedProperties == null)
+			{
+				extendedProperties = new Arguments();
+			}
+			extendedProperties[key] = value;
+		}
+
 		public virtual bool CanResolve(CreationContext context, ISubDependencyResolver contextHandlerResolver, ComponentModel model, DependencyModel dependency)
 		{
 			return HasAdditionalArguments && (CanResolveByKey(dependency) || CanResolveByType(dependency));
@@ -236,21 +274,9 @@ namespace Castle.MicroKernel.Context
 			return result ?? Resolve(dependency, additionalArguments[dependency.TargetType]);
 		}
 
-		private object Resolve(DependencyModel dependency, object inlineArgument)
+		private bool CanConvertParameter(Type type)
 		{
-			var targetType = dependency.TargetItemType;
-			if (inlineArgument != null)
-			{
-				if (targetType.IsInstanceOfType(inlineArgument))
-				{
-					return inlineArgument;
-				}
-				if (CanConvertParameter(targetType))
-				{
-					return converter.PerformConversion(inlineArgument.ToString(), targetType);
-				}
-			}
-			return null;
+			return converter != null && converter.CanHandleType(type);
 		}
 
 		private bool CanResolve(DependencyModel dependency, object inlineArgument)
@@ -261,11 +287,6 @@ namespace Castle.MicroKernel.Context
 				return false;
 			}
 			return type.IsInstanceOfType(inlineArgument) || CanConvertParameter(type);
-		}
-
-		private bool CanConvertParameter(Type type)
-		{
-			return converter != null && converter.CanHandleType(type);
 		}
 
 		private bool CanResolveByKey(DependencyModel dependency)
@@ -335,6 +356,23 @@ namespace Castle.MicroKernel.Context
 			}
 		}
 
+		private object Resolve(DependencyModel dependency, object inlineArgument)
+		{
+			var targetType = dependency.TargetItemType;
+			if (inlineArgument != null)
+			{
+				if (targetType.IsInstanceOfType(inlineArgument))
+				{
+					return inlineArgument;
+				}
+				if (CanConvertParameter(targetType))
+				{
+					return converter.PerformConversion(inlineArgument.ToString(), targetType);
+				}
+			}
+			return null;
+		}
+
 		/// <summary>
 		///   Creates a new, empty <see cref = "CreationContext" /> instance.
 		/// </summary>
@@ -353,45 +391,6 @@ namespace Castle.MicroKernel.Context
 				return typeToExtractGenericArguments.GetGenericArguments();
 			}
 			return Type.EmptyTypes;
-		}
-
-		public Burden ActivateNewInstance(IComponentActivator componentActivator, bool trackedExternally)
-		{
-			ResolutionContext resolutionContext;
-			try
-			{
-				resolutionContext = resolutionStack.Peek();
-			}
-			catch (InvalidOperationException)
-			{
-				throw new ComponentActivatorException(
-					"Not in a resolution context. 'ActivateNewInstance' method can only be called withing a resoltion scope. (after 'EnterResolutionContext' was called within a handler)");
-			}
-
-			var activator = componentActivator as IDependencyAwareActivator;
-			if (activator != null)
-			{
-				trackedExternally |= activator.IsManagedExternally(resolutionContext.Handler.ComponentModel);
-			}
-
-			var burden = resolutionContext.CreateBurden(trackedExternally);
-			burden.SetRootInstance(componentActivator.Create(this));
-			return burden;
-		}
-
-		public void AttachExistingBurden(Burden burden)
-		{
-			ResolutionContext resolutionContext;
-			try
-			{
-				resolutionContext = resolutionStack.Peek();
-			}
-			catch (InvalidOperationException)
-			{
-				throw new ComponentActivatorException(
-					"Not in a resolution context. 'ActivateNewInstance' method can only be called withing a resoltion scope. (after 'EnterResolutionContext' was called within a handler)");
-			}
-			resolutionContext.AttachBurden(burden);
 		}
 
 		public class ResolutionContext : IDisposable
