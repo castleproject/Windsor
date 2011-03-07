@@ -25,7 +25,7 @@ namespace Castle.Core
 	[Serializable]
 	public class ConstructorCandidateCollection : IEnumerable<ConstructorCandidate>
 	{
-		private readonly SortedList<ConstructorCandidate, ConstructorCandidate> ctors = new SortedList<ConstructorCandidate, ConstructorCandidate>(4);
+		private readonly SortedSet<ConstructorCandidate> ctors = new SortedSet<ConstructorCandidate>();
 
 		public int Count
 		{
@@ -34,13 +34,13 @@ namespace Castle.Core
 
 		public void Add(ConstructorCandidate item)
 		{
-			ctors.Add(item, item);
+			ctors.Add(item);
 		}
 
 		[DebuggerStepThrough]
 		public IEnumerator<ConstructorCandidate> GetEnumerator()
 		{
-			return ctors.Values.GetEnumerator();
+			return ctors.GetEnumerator();
 		}
 
 		[DebuggerStepThrough]

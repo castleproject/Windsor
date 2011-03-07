@@ -15,10 +15,14 @@
 namespace System.Collections.Generic
 {
 #if DOTNET35 || SILVERLIGHT
-	public class SortedSet<T> : ICollection<T>
+	internal class SortedSet<T> : ICollection<T>
 	{
 		private readonly IComparer<T> comparer;
 		private readonly List<T> items = new List<T>();
+
+		public SortedSet() : this(Comparer<T>.Default)
+		{
+		}
 
 		public SortedSet(IComparer<T> comparer)
 		{
