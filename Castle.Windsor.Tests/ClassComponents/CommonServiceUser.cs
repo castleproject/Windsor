@@ -34,7 +34,7 @@ namespace Castle.MicroKernel.Tests.ClassComponents
 
 	public class CommonServiceUser3
 	{
-		private ICommon _common;
+		private readonly ICommon common;
 
 		public CommonServiceUser3()
 		{
@@ -42,12 +42,12 @@ namespace Castle.MicroKernel.Tests.ClassComponents
 
 		public CommonServiceUser3(ICommon common)
 		{
-			_common = common;
+			this.common = common;
 		}
 
 		public ICommon CommonService
 		{
-			get { return _common; }
+			get { return common; }
 		}
 	}
 }

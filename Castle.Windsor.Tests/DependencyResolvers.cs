@@ -41,8 +41,45 @@ namespace Castle.MicroKernel.Tests
 
 		private IKernel kernel;
 
+
 		[Test]
-		public void DependencyChain()
+		public void DependencyChain_registered_all_at_once()
+		{
+			kernel.Register(Component.For(typeof(ICustomer)).ImplementedBy(typeof(CustomerChain9)).Named("Customer9"),
+			                Component.For(typeof(ICustomer)).ImplementedBy(typeof(CustomerChain8)).Named("Customer8"),
+			                Component.For(typeof(ICustomer)).ImplementedBy(typeof(CustomerChain7)).Named("Customer7"),
+			                Component.For(typeof(ICustomer)).ImplementedBy(typeof(CustomerChain6)).Named("Customer6"),
+			                Component.For(typeof(ICustomer)).ImplementedBy(typeof(CustomerChain5)).Named("Customer5"),
+			                Component.For(typeof(ICustomer)).ImplementedBy(typeof(CustomerChain4)).Named("Customer4"),
+			                Component.For(typeof(ICustomer)).ImplementedBy(typeof(CustomerChain3)).Named("Customer3"),
+			                Component.For(typeof(ICustomer)).ImplementedBy(typeof(CustomerChain2)).Named("Customer2"),
+			                Component.For(typeof(ICustomer)).ImplementedBy(typeof(CustomerChain1)).Named("Customer1"),
+			                Component.For(typeof(ICustomer)).ImplementedBy(typeof(CustomerImpl)).Named("Customer"));
+
+			var customer = (CustomerChain1)kernel.Resolve<ICustomer>();
+			Assert.IsInstanceOf(typeof(CustomerChain9), customer);
+			customer = (CustomerChain1)customer.CustomerBase;
+			Assert.IsInstanceOf(typeof(CustomerChain8), customer);
+			customer = (CustomerChain1)customer.CustomerBase;
+			Assert.IsInstanceOf(typeof(CustomerChain7), customer);
+			customer = (CustomerChain1)customer.CustomerBase;
+			Assert.IsInstanceOf(typeof(CustomerChain6), customer);
+			customer = (CustomerChain1)customer.CustomerBase;
+			Assert.IsInstanceOf(typeof(CustomerChain5), customer);
+			customer = (CustomerChain1)customer.CustomerBase;
+			Assert.IsInstanceOf(typeof(CustomerChain4), customer);
+			customer = (CustomerChain1)customer.CustomerBase;
+			Assert.IsInstanceOf(typeof(CustomerChain3), customer);
+			customer = (CustomerChain1)customer.CustomerBase;
+			Assert.IsInstanceOf(typeof(CustomerChain2), customer);
+			customer = (CustomerChain1)customer.CustomerBase;
+			Assert.IsInstanceOf(typeof(CustomerChain1), customer);
+			var lastCustomer = customer.CustomerBase;
+			Assert.IsInstanceOf(typeof(CustomerImpl), lastCustomer);
+		}
+
+		[Test]
+		public void DependencyChain_each_registered_separately()
 		{
 			kernel.Register(Component.For(typeof(ICustomer)).ImplementedBy(typeof(CustomerChain9)).Named("Customer9"));
 			kernel.Register(Component.For(typeof(ICustomer)).ImplementedBy(typeof(CustomerChain8)).Named("Customer8"));
