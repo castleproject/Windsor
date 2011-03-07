@@ -33,7 +33,7 @@ namespace Castle.MicroKernel.Context
 	[Serializable]
 	public class CreationContext :
 #if (!SILVERLIGHT)
- MarshalByRefObject,
+		MarshalByRefObject,
 #endif
 		ISubDependencyResolver
 	{
@@ -56,6 +56,7 @@ namespace Castle.MicroKernel.Context
 		private IDictionary additionalArguments;
 		private IDictionary extendedProperties;
 		private Type[] genericArguments;
+		private bool isResolving = true;
 
 		/// <summary>
 		///   Initializes a new instance of the <see cref = "CreationContext" /> class.
@@ -153,6 +154,11 @@ namespace Castle.MicroKernel.Context
 		public bool HasAdditionalArguments
 		{
 			get { return additionalArguments != null && additionalArguments.Count != 0; }
+		}
+
+		public virtual bool IsResolving
+		{
+			get { return isResolving; }
 		}
 
 		public IReleasePolicy ReleasePolicy
@@ -382,6 +388,14 @@ namespace Castle.MicroKernel.Context
 		public static CreationContext CreateEmpty()
 		{
 			return new CreationContext();
+		}
+
+		public static CreationContext ForDependencyInspection(IHandler handler)
+		{
+			var context = CreateEmpty();
+			context.isResolving = false;
+			context.EnterResolutionContext(handler, false);
+			return context;
 		}
 
 		private static Type[] ExtractGenericArguments(Type typeToExtractGenericArguments)

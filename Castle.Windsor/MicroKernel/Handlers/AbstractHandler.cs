@@ -343,22 +343,27 @@ namespace Castle.MicroKernel.Handlers
 			// detect circular dependencies
 			if (IsBeingResolvedInContext(context))
 			{
-				return context.HasAdditionalArguments;
+				return CanProvideDependenciesDynamically(context);
 			}
 			foreach (var dependency in MissingDependencies.ToArray())
 			{
 				if (dependency.TargetItemType == null)
 				{
-					return context.HasAdditionalArguments;
+					return CanProvideDependenciesDynamically(context);
 				}
 				// a self-dependency is not allowed
-				var handler = Kernel.LoadHandlerByType(dependency.DependencyKey, dependency.TargetItemType, context.AdditionalArguments);
+				var handler = Kernel.GetHandler(dependency.TargetItemType);
 				if (handler == this || handler == null)
 				{
-					return context.HasAdditionalArguments;
+					return CanProvideDependenciesDynamically(context);
 				}
 			}
 			return true;
+		}
+
+		private bool CanProvideDependenciesDynamically(CreationContext context)
+		{
+			return context.HasAdditionalArguments || kernel.HasComponent(typeof(ILazyComponentLoader));
 		}
 
 		/// <summary>
@@ -442,7 +447,7 @@ namespace Castle.MicroKernel.Handlers
 			// Check within the Kernel
 			foreach (var dependency in MissingDependencies.ToArray())
 			{
-				if(AddResolvableDependency(dependency))
+				if (AddResolvableDependency(dependency))
 				{
 					MissingDependencies.Remove(dependency);
 				}
@@ -587,11 +592,7 @@ namespace Castle.MicroKernel.Handlers
 
 		private bool HasValidComponentFromResolver(DependencyModel dependency)
 		{
-			var context = CreationContext.CreateEmpty();
-			using (context.EnterResolutionContext(this, false))
-			{
-				return Kernel.Resolver.CanResolve(context, this, model, dependency);
-			}
+			return Kernel.Resolver.CanResolve(CreationContext.ForDependencyInspection(this), this, model, dependency);
 		}
 
 		private void RaiseHandlerStateChanged()

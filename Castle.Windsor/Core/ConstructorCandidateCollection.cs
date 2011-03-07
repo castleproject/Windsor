@@ -19,17 +19,24 @@ namespace Castle.Core
 	using System.Collections.Generic;
 	using System.Diagnostics;
 
+	using Castle.Core.Internal;
+
 	/// <summary>
 	///   Collection of <see cref = "ConstructorCandidate" />
 	/// </summary>
 	[Serializable]
 	public class ConstructorCandidateCollection : IEnumerable<ConstructorCandidate>
 	{
-		private readonly SortedSet<ConstructorCandidate> ctors = new SortedSet<ConstructorCandidate>();
+		private readonly SimpleSortedSet<ConstructorCandidate> ctors = new SimpleSortedSet<ConstructorCandidate>();
 
 		public int Count
 		{
 			get { return ctors.Count; }
+		}
+
+		public ConstructorCandidate this[int index]
+		{
+			get { return ctors[index]; }
 		}
 
 		public void Add(ConstructorCandidate item)

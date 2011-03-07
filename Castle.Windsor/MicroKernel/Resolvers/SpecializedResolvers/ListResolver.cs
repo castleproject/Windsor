@@ -86,7 +86,7 @@ namespace Castle.MicroKernel.Resolvers.SpecializedResolvers
 			{
 				return null;
 			}
-			return targetItemType.GetGenericArguments().Single();
+			return targetItemType.GetGenericArguments()[0];
 		}
 	}
 }

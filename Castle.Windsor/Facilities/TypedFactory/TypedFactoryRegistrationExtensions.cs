@@ -72,12 +72,12 @@ namespace Castle.Facilities.TypedFactory
 				Debug.Assert(registration.Services.Count() > 0, "registration.Services.Count > 0");
 				return RegisterInterfaceBasedFactory(registration, configuration);
 			}
-			if (classServices.Count() != 1)
+			if (classServices.Length != 1)
 			{
 				throw new ComponentRegistrationException(
 					"This component can not be used as typed factory because it exposes more than one class service. Only component exposing single depegate, or interfaces can be used as typed factories.");
 			}
-			var classService = classServices.Single();
+			var classService = classServices[0];
 			if (classService.BaseType == typeof(MulticastDelegate))
 			{
 				if (registration.ServicesCount == 1) // the delegate is the only service we expose
