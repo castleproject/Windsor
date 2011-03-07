@@ -44,17 +44,17 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 
 		public override object PerformConversion(String value, Type targetType)
 		{
-			var key = ReferenceExpressionUtil.ExtractComponentKey(value);
-			if (key == null)
+			var componentName = ReferenceExpressionUtil.ExtractComponentKey(value);
+			if (componentName == null)
 			{
 				throw new ConverterException(string.Format("Could not convert expression '{0}' to type '{1}'. Expecting a reference override like ${{some key}}", value,
 				                                           targetType.FullName));
 			}
 
-			var handler = Context.Kernel.LoadHandlerByKey(key, targetType, null);
+			var handler = Context.Kernel.LoadHandlerByKey(componentName, targetType, null);
 			if (handler == null)
 			{
-				throw new ConverterException(string.Format("Component '{0}' was not found in the container.", key));
+				throw new ConverterException(string.Format("Component '{0}' was not found in the container.", componentName));
 			}
 
 			return handler.Resolve(Context.CurrentCreationContext ?? CreationContext.CreateEmpty());

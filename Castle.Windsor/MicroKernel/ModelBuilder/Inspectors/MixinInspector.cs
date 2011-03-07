@@ -42,14 +42,14 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 			{
 				var value = mixin.Value;
 
-				var name = ReferenceExpressionUtil.ExtractComponentKey(value);
-				if (name == null)
+				var mixinComponent = ReferenceExpressionUtil.ExtractComponentKey(value);
+				if (mixinComponent == null)
 				{
 					throw new Exception(
 						String.Format("The value for the mixin must be a reference to a component (Currently {0})", value));
 				}
 
-				mixinReferences.Add(new ComponentReference<object>("mixin-" + name, name));
+				mixinReferences.Add(new ComponentReference<object>("mixin-" + mixinComponent, mixinComponent));
 			}
 			if (mixinReferences.Count == 0)
 			{

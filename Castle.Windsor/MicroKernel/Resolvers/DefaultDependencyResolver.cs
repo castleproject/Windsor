@@ -211,11 +211,10 @@ namespace Castle.MicroKernel.Resolvers
 
 		protected virtual object ResolveCore(CreationContext context, ComponentModel model, DependencyModel dependency)
 		{
-			var serviceOverrideComponent = default(string);
 			var parameter = ObtainParameterModelMatchingDependency(dependency);
 			if (parameter != null)
 			{
-				if ((serviceOverrideComponent = ReferenceExpressionUtil.ExtractComponentKey(parameter.Value)) == null)
+				if (dependency.Reference == null)
 				{
 					converter.Context.Push(model, context);
 
@@ -246,9 +245,9 @@ namespace Castle.MicroKernel.Resolvers
 				return kernel;
 			}
 			IHandler handler;
-			if (serviceOverrideComponent != null)
+			if (dependency.Reference != null)
 			{
-				handler = kernel.GetHandler(serviceOverrideComponent);
+				handler = kernel.GetHandler(dependency.Reference);
 			}
 			else
 			{
