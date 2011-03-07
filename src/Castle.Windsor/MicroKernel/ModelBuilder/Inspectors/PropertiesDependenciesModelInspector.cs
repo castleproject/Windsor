@@ -120,7 +120,19 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 				var message = String.Format("Error on properties inspection. Could not convert the inspectionBehavior attribute value into an expected enum value. " +
 				                            "Value found is '{0}' while possible values are '{1}'",
 				                            enumStringVal,
-				                            String.Join(", ", Enum.GetNames(typeof(PropertiesInspectionBehavior))));
+				                            String.Join(", ",
+#if SILVERLIGHT
+				                                        new[]
+				                                        {
+				                                        	"Undefined",
+				                                        	"None",
+				                                        	"All",
+				                                        	"DeclaredOnly"
+				                                        }
+#else
+				                                        Enum.GetNames(typeof(PropertiesInspectionBehavior))
+#endif
+				                            	));
 
 				throw new KernelException(message);
 			}
