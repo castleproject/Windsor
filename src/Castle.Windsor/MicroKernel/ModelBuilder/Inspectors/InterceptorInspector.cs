@@ -77,14 +77,14 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 				return;
 			}
 
-			if (!ReferenceExpressionUtil.IsReference(hook))
+			var hookComponent = ReferenceExpressionUtil.ExtractComponentKey(hook);
+			if (hookComponent == null)
 			{
 				throw new Exception(
 					String.Format("The value for the hook must be a reference to a component (Currently {0})", hook));
 			}
 
-			var componentKey = ReferenceExpressionUtil.ExtractComponentKey(hook);
-			options.Hook = new ComponentReference<IProxyGenerationHook>("proxy-generation-hook", componentKey);
+			options.Hook = new ComponentReference<IProxyGenerationHook>("proxy-generation-hook", hookComponent);
 		}
 
 		protected virtual void CollectSelector(IConfiguration interceptors, ProxyOptions options)
@@ -95,28 +95,28 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 				return;
 			}
 
-			var name = ReferenceExpressionUtil.ExtractComponentKey(selector);
-			if (name == null)
+			var selectorComponent = ReferenceExpressionUtil.ExtractComponentKey(selector);
+			if (selectorComponent == null)
 			{
 				throw new Exception(
 					String.Format("The value for the selector must be a reference to a component (Currently {0})", selector));
 			}
 
-			options.Selector = new ComponentReference<IInterceptorSelector>("interceptor-selector", name);
+			options.Selector = new ComponentReference<IInterceptorSelector>("interceptor-selector", selectorComponent);
 		}
 
 		private void CollectInterceptors(ComponentModel model, IConfiguration interceptors)
 		{
 			foreach (var interceptor in interceptors.Children)
 			{
-				var value = interceptor.Value;
-				if (!ReferenceExpressionUtil.IsReference(value))
+				var interceptorComponent = ReferenceExpressionUtil.ExtractComponentKey(interceptor.Value);
+				if (interceptorComponent == null)
 				{
 					throw new Exception(
-						String.Format("The value for the interceptor must be a reference to a component (Currently {0})", value));
+						String.Format("The value for the interceptor must be a reference to a component (Currently {0})", interceptor.Value));
 				}
 
-				var reference = new InterceptorReference(ReferenceExpressionUtil.ExtractComponentKey(value));
+				var reference = new InterceptorReference(interceptorComponent);
 
 				model.Interceptors.Add(reference);
 			}

@@ -21,7 +21,6 @@ namespace Castle.MicroKernel.Handlers
 	using System.Text;
 
 	using Castle.Core;
-	using Castle.MicroKernel.Util;
 
 	public class DependencyInspector : IDependencyInspector
 	{
@@ -149,16 +148,6 @@ namespace Castle.MicroKernel.Handlers
 					info.ObtainDependencyDetails(this);
 				}
 			}
-		}
-
-		private static ParameterModel FindServiceOverride(DependencyModel dependency)
-		{
-			var parameterModel = dependency.Parameter;
-			if (parameterModel == null || ReferenceExpressionUtil.IsReference(parameterModel.Value) == false)
-			{
-				return null;
-			}
-			return parameterModel;
 		}
 	}
 }
