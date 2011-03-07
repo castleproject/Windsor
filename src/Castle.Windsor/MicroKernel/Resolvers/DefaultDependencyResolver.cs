@@ -336,15 +336,8 @@ namespace Castle.MicroKernel.Resolvers
 			}
 
 			var handlers = kernel.GetHandlers(service);
-			foreach (var handler in handlers)
-			{
-				if (context == null || handler.IsBeingResolvedInContext(context) == false)
-				{
-					return IsHandlerInValidState(handler);
-				}
-			}
-
-			return false;
+			return handlers.Where(handler => handler.IsBeingResolvedInContext(context) == false)
+				.Any(IsHandlerInValidState);
 		}
 
 		private bool HasComponentInValidState(string key, Type type, CreationContext context)
