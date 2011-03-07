@@ -345,23 +345,20 @@ namespace Castle.MicroKernel.Handlers
 			{
 				return context.HasAdditionalArguments;
 			}
-			var canResolveAll = true;
 			foreach (var dependency in MissingDependencies.ToArray())
 			{
 				if (dependency.TargetItemType == null)
 				{
-					canResolveAll = false;
-					break;
+					return context.HasAdditionalArguments;
 				}
 				// a self-dependency is not allowed
 				var handler = Kernel.LoadHandlerByType(dependency.DependencyKey, dependency.TargetItemType, context.AdditionalArguments);
 				if (handler == this || handler == null)
 				{
-					canResolveAll = false;
-					break;
+					return context.HasAdditionalArguments;
 				}
 			}
-			return canResolveAll || context.HasAdditionalArguments;
+			return true;
 		}
 
 		/// <summary>
