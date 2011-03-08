@@ -16,6 +16,7 @@ namespace Castle.Core
 {
 	using System;
 	using System.Collections.Generic;
+	using System.Diagnostics;
 
 	/// <summary>
 	///   Represents a collection of ordered lifecycle concerns.
@@ -23,7 +24,9 @@ namespace Castle.Core
 	[Serializable]
 	public class LifecycleConcernsCollection
 	{
+		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 		private List<ICommissionConcern> commission;
+		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 		private List<IDecommissionConcern> decommission;
 
 		/// <summary>
@@ -64,6 +67,7 @@ namespace Castle.Core
 		/// <value>
 		///   <c>true</c> if this instance has commission steps; otherwise, <c>false</c>.
 		/// </value>
+		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 		public bool HasCommissionConcerns
 		{
 			get { return commission != null && commission.Count != 0; }
@@ -75,11 +79,13 @@ namespace Castle.Core
 		/// <value>
 		///   <c>true</c> if this instance has decommission steps; otherwise, <c>false</c>.
 		/// </value>
+		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 		public bool HasDecommissionConcerns
 		{
 			get { return decommission != null && decommission.Count != 0; }
 		}
 
+		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 		private List<ICommissionConcern> Commission
 		{
 			get
@@ -92,6 +98,7 @@ namespace Castle.Core
 			}
 		}
 
+		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 		private List<IDecommissionConcern> Decommission
 		{
 			get
