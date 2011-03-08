@@ -14,6 +14,7 @@
 
 namespace CastleTests
 {
+#if !SILVERLIGHT
 	using System;
 
 	using Castle.Core.Resource;
@@ -82,4 +83,5 @@ namespace CastleTests
 		{
 		}
 	}
+#endif
 }
