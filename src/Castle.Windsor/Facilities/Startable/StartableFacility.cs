@@ -94,7 +94,6 @@ namespace Castle.Facilities.Startable
 		private void AddHandlerToWaitingList(IHandler handler)
 		{
 			waitList.Add(handler);
-			handler.OnHandlerStateChanged += OnHandlerStateChanged;
 		}
 
 		private void CacheForStart(string key, IHandler handler)
@@ -120,7 +119,6 @@ namespace Castle.Facilities.Startable
 					if (TryStart(handler))
 					{
 						waitList.Remove(handler);
-						handler.OnHandlerStateChanged -= OnHandlerStateChanged;
 					}
 				}
 			}

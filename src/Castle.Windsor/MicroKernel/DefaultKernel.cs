@@ -594,64 +594,6 @@ namespace Castle.MicroKernel
 		}
 
 		/// <summary>
-		///   Associates objects with a component handler,
-		///   allowing it to use the specified dictionary
-		///   when resolving dependencies
-		/// </summary>
-		/// <param name = "service"></param>
-		/// <param name = "dependencies"></param>
-		void IKernelInternal.RegisterCustomDependencies(Type service, IDictionary dependencies)
-		{
-			var handler = GetHandler(service);
-
-			foreach (DictionaryEntry entry in dependencies)
-			{
-				handler.AddCustomDependencyValue(entry.Key.ToString(), entry.Value);
-			}
-		}
-
-		/// <summary>
-		///   Associates objects with a component handler,
-		///   allowing it to use the specified dictionary
-		///   when resolving dependencies
-		/// </summary>
-		/// <param name = "service"></param>
-		/// <param name = "dependenciesAsAnonymousType"></param>
-		void IKernelInternal.RegisterCustomDependencies(Type service, object dependenciesAsAnonymousType)
-		{
-			(this as IKernelInternal).RegisterCustomDependencies(service, new ReflectionBasedDictionaryAdapter(dependenciesAsAnonymousType));
-		}
-
-		/// <summary>
-		///   Associates objects with a component handler,
-		///   allowing it to use the specified dictionary
-		///   when resolving dependencies
-		/// </summary>
-		/// <param name = "key"></param>
-		/// <param name = "dependencies"></param>
-		void IKernelInternal.RegisterCustomDependencies(String key, IDictionary dependencies)
-		{
-			var handler = GetHandler(key);
-
-			foreach (DictionaryEntry entry in dependencies)
-			{
-				handler.AddCustomDependencyValue(entry.Key.ToString(), entry.Value);
-			}
-		}
-
-		/// <summary>
-		///   Associates objects with a component handler,
-		///   allowing it to use the specified dictionary
-		///   when resolving dependencies
-		/// </summary>
-		/// <param name = "key"></param>
-		/// <param name = "dependenciesAsAnonymousType"></param>
-		void IKernelInternal.RegisterCustomDependencies(String key, object dependenciesAsAnonymousType)
-		{
-			(this as IKernelInternal).RegisterCustomDependencies(key, new ReflectionBasedDictionaryAdapter(dependenciesAsAnonymousType));
-		}
-
-		/// <summary>
 		///   Releases a component instance. This allows
 		///   the kernel to execute the proper decommission
 		///   lifecycles on the component instance.

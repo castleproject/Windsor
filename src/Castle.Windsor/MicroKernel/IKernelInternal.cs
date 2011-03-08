@@ -45,52 +45,6 @@ namespace Castle.MicroKernel
 
 		IDisposable OptimizeDependencyResolution();
 
-		/// <summary>
-		///   Raise the handler registered event, required so
-		///   dependant handlers will be notified about their dependant moving
-		///   to valid state.
-		/// </summary>
-		/// <param name = "handler"></param>
-		void RaiseHandlerRegistered(IHandler handler);
-
-		void RaiseHandlersChanged();
-
-		/// <summary>
-		///   Associates objects with a component handler,
-		///   allowing it to use the specified dictionary
-		///   when resolving dependencies
-		/// </summary>
-		/// <param name = "service"></param>
-		/// <param name = "dependencies"></param>
-		void RegisterCustomDependencies(Type service, IDictionary dependencies);
-
-		/// <summary>
-		///   Associates objects with a component handler,
-		///   allowing it to use the specified dictionary
-		///   when resolving dependencies
-		/// </summary>
-		/// <param name = "service"></param>
-		/// <param name = "dependenciesAsAnonymousType"></param>
-		void RegisterCustomDependencies(Type service, object dependenciesAsAnonymousType);
-
-		/// <summary>
-		///   Associates objects with a component handler,
-		///   allowing it to use the specified dictionary
-		///   when resolving dependencies
-		/// </summary>
-		/// <param name = "key"></param>
-		/// <param name = "dependencies"></param>
-		void RegisterCustomDependencies(String key, IDictionary dependencies);
-
-		/// <summary>
-		///   Associates objects with a component handler,
-		///   allowing it to use the specified dictionary
-		///   when resolving dependencies
-		/// </summary>
-		/// <param name = "key"></param>
-		/// <param name = "dependenciesAsAnonymousType"></param>
-		void RegisterCustomDependencies(String key, object dependenciesAsAnonymousType);
-
 		object Resolve(Type service, IDictionary arguments, IReleasePolicy policy);
 
 		/// <summary>

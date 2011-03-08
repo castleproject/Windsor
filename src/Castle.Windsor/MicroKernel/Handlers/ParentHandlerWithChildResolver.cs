@@ -46,7 +46,6 @@ namespace Castle.MicroKernel.Handlers
 			}
 
 			this.parentHandler = parentHandler;
-			parentHandler.OnHandlerStateChanged += RaiseHandlerStateChanged;
 			this.childResolver = childResolver;
 		}
 
@@ -70,16 +69,6 @@ namespace Castle.MicroKernel.Handlers
 			Dispose(true);
 		}
 
-		public virtual void AddCustomDependencyValue(object key, object value)
-		{
-			parentHandler.AddCustomDependencyValue(key, value);
-		}
-
-		public virtual bool HasCustomParameter(object key)
-		{
-			return parentHandler.HasCustomParameter(key);
-		}
-
 		public virtual void Init(IKernelInternal kernel)
 		{
 		}
@@ -92,11 +81,6 @@ namespace Castle.MicroKernel.Handlers
 		public virtual bool Release(Burden burden)
 		{
 			return parentHandler.Release(burden);
-		}
-
-		public virtual void RemoveCustomDependencyValue(object key)
-		{
-			parentHandler.RemoveCustomDependencyValue(key);
 		}
 
 		public virtual object Resolve(CreationContext context)
@@ -146,19 +130,8 @@ namespace Castle.MicroKernel.Handlers
 			{
 				if (parentHandler != null)
 				{
-					parentHandler.OnHandlerStateChanged -= RaiseHandlerStateChanged;
 				}
 			}
 		}
-
-		protected virtual void RaiseHandlerStateChanged(object s, EventArgs e)
-		{
-			if (OnHandlerStateChanged != null)
-			{
-				OnHandlerStateChanged(s, e);
-			}
-		}
-
-		public event HandlerStateDelegate OnHandlerStateChanged;
 	}
 }

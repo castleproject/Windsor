@@ -15,6 +15,7 @@
 namespace Castle.MicroKernel.Handlers
 {
 	using System;
+	using System.Collections;
 	using System.Collections.Generic;
 	using System.Diagnostics;
 
@@ -143,6 +144,15 @@ namespace Castle.MicroKernel.Handlers
 				// we need to check that we are not adding the inteceptor again, if it was added
 				// by a facility already
 				newModel.Interceptors.AddIfNotInCollection(interceptor);
+			}
+
+			if(ComponentModel.HasCustomDependencies)
+			{
+				var dependencies = newModel.CustomDependencies;
+				foreach (DictionaryEntry dependency in ComponentModel.CustomDependencies)
+				{
+					dependencies.Add(dependency.Key, dependency.Value);
+				}
 			}
 		}
 

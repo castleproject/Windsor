@@ -250,12 +250,11 @@ namespace Castle.Windsor.Tests.Facilities.Startable
 			kernel.AddFacility<StartableFacility>();
 
 			var dependencies = new Dictionary<string, object> { { "config", 1 } };
-			kernel.Register(Component.For(typeof(StartableComponentCustomDependencies)).Named("a"));
-			((IKernelInternal)kernel).RegisterCustomDependencies(typeof(StartableComponentCustomDependencies), dependencies);
+			kernel.Register(Component.For<StartableComponentCustomDependencies>().DependsOn(dependencies));;
 
 			Assert.IsTrue(startableCreatedBeforeResolved, "Component was not properly started");
 
-			var component = kernel.Resolve<StartableComponentCustomDependencies>("a");
+			var component = kernel.Resolve<StartableComponentCustomDependencies>();
 
 			Assert.IsNotNull(component);
 			Assert.IsTrue(component.Started);

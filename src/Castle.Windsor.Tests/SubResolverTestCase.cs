@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,12 +14,11 @@
 
 namespace Castle.MicroKernel.Tests
 {
-    using System;
+	using Castle.Core;
+	using Castle.MicroKernel.Context;
+	using Castle.MicroKernel.Registration;
+	using Castle.Windsor.Tests;
 
-    using Castle.MicroKernel.Context;
-    using Castle.MicroKernel.Registration;
-
-    using Core;
 	using NUnit.Framework;
 
 	[TestFixture]
@@ -28,20 +27,19 @@ namespace Castle.MicroKernel.Tests
 		[Test]
 		public void WillAskResolverWhenTryingToResolveDependencyAfterAnotherHandlerWasRegistered()
 		{
-			FooBarResolver resolver = new FooBarResolver();
+			var resolver = new FooBarResolver();
 
 			IKernel kernel = new DefaultKernel();
 			kernel.Resolver.AddSubResolver(resolver);
 
-			kernel.Register(Component.For(typeof(Foo)).Named("foo"));
-			IHandler handler = kernel.GetHandler("foo");
+			kernel.Register(Component.For<Foo>());
+			var handler = kernel.GetHandler(typeof(Foo));
+
 			Assert.AreEqual(HandlerState.WaitingDependency, handler.CurrentState);
 
 			resolver.Result = 15;
 
-			//should force reevaluation of state
-			((IKernelInternal)kernel).RaiseHandlerRegistered(null);
-			((IKernelInternal)kernel).RaiseHandlersChanged();
+			kernel.Register(Component.For<A>());
 
 			Assert.AreEqual(HandlerState.Valid, handler.CurrentState);
 		}
@@ -61,14 +59,14 @@ namespace Castle.MicroKernel.Tests
 	{
 		public int? Result;
 
-		public object Resolve(CreationContext context, ISubDependencyResolver contextHandlerResolver, ComponentModel model, DependencyModel dependency)
-		{
-			return Result.Value;
-		}
-
 		public bool CanResolve(CreationContext context, ISubDependencyResolver contextHandlerResolver, ComponentModel model, DependencyModel dependency)
 		{
 			return Result != null;
+		}
+
+		public object Resolve(CreationContext context, ISubDependencyResolver contextHandlerResolver, ComponentModel model, DependencyModel dependency)
+		{
+			return Result.Value;
 		}
 	}
 }

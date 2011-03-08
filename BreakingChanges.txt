@@ -1,4 +1,23 @@
 ================================================================================================
+change - The following methods were removed:
+	IHandler.AddCustomDependencyValue
+	IHandler.HasCustomParameter
+	IHandler.RemoveCustomDependencyValue
+	IHandler.OnHandlerStateChanged event
+	IKernelInternal.RaiseHandlerRegistered
+	IKernelInternal.RaiseHandlersChanged
+	IKernelInternal.RegisterCustomDependencies (all 4 overloads)
+
+impact - low
+fixability - easy
+
+description - Those members were remainings from the old era and there's no longer any point in
+	having them.
+
+fix - Pass the dependencies directly to the ComponentModel using DependsOn method on the fluent
+	registration API. The OnHandlerStateChanged event would no longer be raised so there was no
+	point in keeping it around either. Use HandlersChanged event on kernel instead.
+================================================================================================
 change - IReference<out T>.Attach and .Detach method have now ComponentModel as their parameter.
 
 impact - low

@@ -41,25 +41,6 @@ namespace Castle.MicroKernel
 		IEnumerable<Type> Services { get; }
 
 		/// <summary>
-		///   Dictionary of String/object used to 
-		///   associate data with a component dependency.
-		///   For example, if you component SmtpServer depends on 
-		///   host and port, you can add those to this
-		///   dictionary and the handler will be able to use them.
-		/// </summary>
-		/// <remarks>
-		///   TODO: Document this
-		/// </remarks>
-		void AddCustomDependencyValue(object key, object value);
-
-		/// <summary>
-		///   TODO: Document this
-		/// </summary>
-		/// <param name = "key"></param>
-		/// <returns></returns>
-		bool HasCustomParameter(object key);
-
-		/// <summary>
 		///   Initializes the handler with a reference to the
 		///   kernel.
 		/// </summary>
@@ -79,12 +60,6 @@ namespace Castle.MicroKernel
 		bool Release(Burden burden);
 
 		/// <summary>
-		///   TODO: Document this
-		/// </summary>
-		/// <param name = "key"></param>
-		void RemoveCustomDependencyValue(object key);
-
-		/// <summary>
 		///   Implementors should return a valid instance 
 		///   for the component the handler is responsible.
 		///   It should throw an exception in the case the component
@@ -101,12 +76,5 @@ namespace Castle.MicroKernel
 		/// </summary>
 		/// <returns></returns>
 		object TryResolve(CreationContext context);
-
-		/// <summary>
-		///   Allow to track state changes of a handler that is modified directly.
-		///   This can happen if the client calls AddCustomDependencyValue or 
-		///   RemoveCustomDependencyValue
-		/// </summary>
-		event HandlerStateDelegate OnHandlerStateChanged;
 	}
 }
