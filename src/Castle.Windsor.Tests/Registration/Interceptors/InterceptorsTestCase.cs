@@ -18,7 +18,6 @@ namespace Castle.MicroKernel.Tests.Registration.Interceptors
 	using Castle.MicroKernel.Tests.ClassComponents;
 	using Castle.MicroKernel.Tests.Registration.Interceptors.Multiple;
 	using Castle.MicroKernel.Tests.Registration.Interceptors.Single;
-	using Castle.Windsor.Tests;
 
 	using CastleTests;
 

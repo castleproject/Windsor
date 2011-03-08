@@ -15,7 +15,6 @@
 namespace Castle.MicroKernel.Handlers
 {
 	using System;
-	using System.Linq;
 	using System.Text;
 
 	using Castle.Core;

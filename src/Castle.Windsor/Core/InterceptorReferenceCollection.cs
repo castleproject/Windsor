@@ -17,6 +17,7 @@ namespace Castle.Core
 	using System;
 	using System.Collections;
 	using System.Collections.Generic;
+	using System.Diagnostics;
 
 	using Castle.DynamicProxy;
 	using Castle.MicroKernel;
@@ -27,7 +28,11 @@ namespace Castle.Core
 	[Serializable]
 	public class InterceptorReferenceCollection : IEnumerable<InterceptorReference>
 	{
+		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 		private readonly ComponentModel component;
+
+		[DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
+		[DebuggerDisplay("Count = {list.Count}",Name = "")]
 		private readonly List<InterceptorReference> list = new List<InterceptorReference>();
 
 		public InterceptorReferenceCollection(ComponentModel component)
@@ -41,6 +46,7 @@ namespace Castle.Core
 		/// <value>
 		///   <c>true</c> if this instance has interceptors; otherwise, <c>false</c>.
 		/// </value>
+		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 		public bool HasInterceptors
 		{
 			get { return list.Count != 0; }
