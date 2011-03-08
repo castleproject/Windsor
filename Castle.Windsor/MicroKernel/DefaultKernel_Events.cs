@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -52,32 +52,6 @@ namespace Castle.MicroKernel
 			return new OptimizeDependencyResolutionDisposable(this);
 		}
 
-		public virtual void RaiseHandlerRegistered(IHandler handler)
-		{
-			var stateChanged = true;
-
-			while (stateChanged)
-			{
-				stateChanged = false;
-				HandlerRegistered(handler, ref stateChanged);
-			}
-		}
-
-		public virtual void RaiseHandlersChanged()
-		{
-			if (handlersChangedDeferred)
-			{
-				lock (handlersChangedLock)
-				{
-					handlersChanged = true;
-				}
-
-				return;
-			}
-
-			DoActualRaisingOfHandlersChanged();
-		}
-
 		protected virtual void RaiseAddedAsChildKernel()
 		{
 			AddedAsChildKernel(this, EventArgs.Empty);
@@ -106,6 +80,31 @@ namespace Castle.MicroKernel
 		protected virtual void RaiseDependencyResolving(ComponentModel client, DependencyModel model, Object dependency)
 		{
 			DependencyResolving(client, model, dependency);
+		}
+
+		protected virtual void RaiseHandlerRegistered(IHandler handler)
+		{
+			var stateChanged = true;
+			while (stateChanged)
+			{
+				stateChanged = false;
+				HandlerRegistered(handler, ref stateChanged);
+			}
+		}
+
+		protected virtual void RaiseHandlersChanged()
+		{
+			if (handlersChangedDeferred)
+			{
+				lock (handlersChangedLock)
+				{
+					handlersChanged = true;
+				}
+
+				return;
+			}
+
+			DoActualRaisingOfHandlersChanged();
 		}
 
 		protected virtual void RaiseRegistrationCompleted()

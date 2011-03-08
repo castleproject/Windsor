@@ -15,7 +15,6 @@
 namespace Castle.MicroKernel.Handlers
 {
 	using System;
-	using System.Collections;
 	using System.Collections.Generic;
 	using System.Diagnostics;
 	using System.Linq;
@@ -46,11 +45,6 @@ namespace Castle.MicroKernel.Handlers
 
 		private readonly ComponentModel model;
 
-		/// <summary>
-		///   Custom dependencies values associated with the handler
-		/// </summary>
-		private IDictionary customParameters;
-
 		private IKernelInternal kernel;
 
 		/// <summary>
@@ -68,10 +62,6 @@ namespace Castle.MicroKernel.Handlers
 		protected AbstractHandler(ComponentModel model)
 		{
 			this.model = model;
-			if (this.model.HasCustomDependencies)
-			{
-				customParameters = new Arguments(this.model.CustomDependencies);
-			}
 		}
 
 		/// <summary>
@@ -148,30 +138,14 @@ namespace Castle.MicroKernel.Handlers
 			inspector.Inspect(this, MissingDependencies.ToArray(), Kernel);
 		}
 
-		public void AddCustomDependencyValue(object key, object value)
-		{
-			if (customParameters == null)
-			{
-				customParameters = new Arguments();
-			}
-
-			customParameters[key] = value;
-			RaiseHandlerStateChanged();
-		}
-
-		public bool HasCustomParameter(object key)
+		private bool HasCustomParameter(object key)
 		{
 			if (key == null)
 			{
 				return false;
 			}
 
-			if (customParameters == null)
-			{
-				return false;
-			}
-
-			return customParameters.Contains(key);
+			return model.CustomDependencies.Contains(key);
 		}
 
 		/// <summary>
@@ -218,15 +192,6 @@ namespace Castle.MicroKernel.Handlers
 			return ReleaseCore(burden);
 		}
 
-		public void RemoveCustomDependencyValue(object key)
-		{
-			if (customParameters != null)
-			{
-				customParameters.Remove(key);
-				RaiseHandlerStateChanged();
-			}
-		}
-
 		/// <summary>
 		///   Returns an instance of the component this handler
 		///   is responsible for
@@ -270,7 +235,7 @@ namespace Castle.MicroKernel.Handlers
 
 		public virtual bool CanResolve(CreationContext context, ISubDependencyResolver contextHandlerResolver, ComponentModel model, DependencyModel dependency)
 		{
-			if (customParameters == null || customParameters.Count == 0)
+			if (this.model.HasCustomDependencies == false)
 			{
 				return false;
 			}
@@ -282,10 +247,10 @@ namespace Castle.MicroKernel.Handlers
 			Debug.Assert(CanResolve(context, contextHandlerResolver, model, dependency), "CanResolve(context, contextHandlerResolver, model, dependency)");
 			if (HasCustomParameter(dependency.DependencyKey))
 			{
-				return customParameters[dependency.DependencyKey];
+				return model.CustomDependencies[dependency.DependencyKey];
 			}
 
-			return customParameters[dependency.TargetItemType];
+			return model.CustomDependencies[dependency.TargetItemType];
 		}
 
 		/// <summary>
@@ -330,7 +295,6 @@ namespace Castle.MicroKernel.Handlers
 				// We also gonna pay attention for state
 				// changed within this very handler. The 
 				// state can be changed by AddCustomDependencyValue and RemoveCustomDependencyValue
-				OnHandlerStateChanged += HandlerStateChanged;
 			}
 		}
 
@@ -575,34 +539,11 @@ namespace Castle.MicroKernel.Handlers
 		{
 			Kernel.HandlersChanged -= DependencySatisfied;
 			Kernel.AddedAsChildKernel -= OnAddedAsChildKernel;
-			OnHandlerStateChanged -= HandlerStateChanged;
-		}
-
-		/// <summary>
-		///   Handler for the event
-		///   <see cref = "OnHandlerStateChanged" />
-		/// </summary>
-		/// <param name = "source"></param>
-		/// <param name = "args"></param>
-		private void HandlerStateChanged(object source, EventArgs args)
-		{
-			Kernel.RaiseHandlerRegistered(this);
-			Kernel.RaiseHandlersChanged();
 		}
 
 		private bool HasValidComponentFromResolver(DependencyModel dependency)
 		{
 			return Kernel.Resolver.CanResolve(CreationContext.ForDependencyInspection(this), this, model, dependency);
 		}
-
-		private void RaiseHandlerStateChanged()
-		{
-			if (OnHandlerStateChanged != null)
-			{
-				OnHandlerStateChanged(this, EventArgs.Empty);
-			}
-		}
-
-		public event HandlerStateDelegate OnHandlerStateChanged;
 	}
 }
