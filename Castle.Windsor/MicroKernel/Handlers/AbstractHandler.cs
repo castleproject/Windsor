@@ -43,16 +43,20 @@ namespace Castle.MicroKernel.Handlers
 		/// </summary>
 		protected ILifestyleManager lifestyleManager;
 
+		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 		private readonly ComponentModel model;
 
+		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 		private IKernelInternal kernel;
 
 		/// <summary>
 		///   Dictionary of key (string) to
 		///   <see cref = "DependencyModel" />
 		/// </summary>
+		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 		private HashSet<DependencyModel> missingDependencies;
 
+		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 		private HandlerState state = HandlerState.Valid;
 
 		/// <summary>
@@ -67,6 +71,7 @@ namespace Castle.MicroKernel.Handlers
 		/// <summary>
 		///   Gets the component model.
 		/// </summary>
+		[DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
 		public ComponentModel ComponentModel
 		{
 			get { return model; }
@@ -80,11 +85,13 @@ namespace Castle.MicroKernel.Handlers
 			get { return state; }
 		}
 
+		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 		public IEnumerable<Type> Services
 		{
 			get { return ComponentModel.Services; }
 		}
 
+		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 		protected IKernelInternal Kernel
 		{
 			get { return kernel; }
