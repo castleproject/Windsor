@@ -14,6 +14,7 @@
 
 namespace CastleTests.Components
 {
+#if !SILVERLIGHT
 	using Castle.Core;
 	using Castle.Windsor.Tests.Interceptors;
 
@@ -21,4 +22,5 @@ namespace CastleTests.Components
 	public class InterceptableCalcServiceRemoting : CalcServiceRemotingImpl
 	{
 	}
+#endif
 }
