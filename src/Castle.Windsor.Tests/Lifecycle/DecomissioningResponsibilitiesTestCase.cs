@@ -16,7 +16,6 @@ namespace CastleTests.Lifecycle
 {
 	using System;
 
-	using Castle.MicroKernel;
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Tests.ClassComponents;
 	using Castle.MicroKernel.Tests.Lifestyle;
@@ -25,22 +24,8 @@ namespace CastleTests.Lifecycle
 	using NUnit.Framework;
 
 	[TestFixture]
-	public class DecomissioningResponsibilitiesTestCase
+	public class DecomissioningResponsibilitiesTestCase : AbstractContainerTestCase
 	{
-		[SetUp]
-		public void Setup()
-		{
-			kernel = new DefaultKernel();
-		}
-
-		[TearDown]
-		public void TearDown()
-		{
-			kernel.Dispose();
-		}
-
-		private IKernel kernel;
-
 		public class Indirection
 		{
 			private readonly NonDisposableRoot fakeRoot;
@@ -142,46 +127,46 @@ namespace CastleTests.Lifecycle
 		[Test]
 		public void ComponentsAreOnlyDisposedOnce()
 		{
-			kernel.Register(
+			Kernel.Register(
 				Component.For<DisposableSpamService>().Named("spamservice").LifeStyle.Transient,
 				Component.For<DisposableTemplateEngine>().Named("templateengine").LifeStyle.Transient);
 
-			var instance1 = kernel.Resolve<DisposableSpamService>("spamservice");
+			var instance1 = Kernel.Resolve<DisposableSpamService>("spamservice");
 			Assert.IsFalse(instance1.IsDisposed);
 			Assert.IsFalse(instance1.TemplateEngine.IsDisposed);
 
-			kernel.ReleaseComponent(instance1);
-			kernel.ReleaseComponent(instance1);
-			kernel.ReleaseComponent(instance1);
+			Kernel.ReleaseComponent(instance1);
+			Kernel.ReleaseComponent(instance1);
+			Kernel.ReleaseComponent(instance1);
 		}
 
 		[Test]
 		public void DisposingSubLevelBurdenWontDisposeComponentAsTheyAreDisposedAlready()
 		{
-			kernel.Register(
+			Kernel.Register(
 				Component.For<DisposableSpamService>().Named("spamservice").LifeStyle.Transient);
-			kernel.Register(
+			Kernel.Register(
 				Component.For<DisposableTemplateEngine>().Named("templateengine").LifeStyle.Transient);
 
-			var instance1 = kernel.Resolve<DisposableSpamService>("spamservice");
+			var instance1 = Kernel.Resolve<DisposableSpamService>("spamservice");
 			Assert.IsFalse(instance1.IsDisposed);
 			Assert.IsFalse(instance1.TemplateEngine.IsDisposed);
 
-			kernel.ReleaseComponent(instance1);
-			kernel.ReleaseComponent(instance1.TemplateEngine);
+			Kernel.ReleaseComponent(instance1);
+			Kernel.ReleaseComponent(instance1.TemplateEngine);
 		}
 
 		[Test]
 		public void GenericTransientComponentsAreReleasedInChain()
 		{
-			kernel.Register(Component.For(typeof(GenA<>)).LifeStyle.Transient);
-			kernel.Register(Component.For(typeof(GenB<>)).LifeStyle.Transient);
+			Kernel.Register(Component.For(typeof(GenA<>)).LifeStyle.Transient);
+			Kernel.Register(Component.For(typeof(GenB<>)).LifeStyle.Transient);
 
-			var instance1 = kernel.Resolve<GenA<string>>();
+			var instance1 = Kernel.Resolve<GenA<string>>();
 			Assert.IsFalse(instance1.IsDisposed);
 			Assert.IsFalse(instance1.GenBField.IsDisposed);
 
-			kernel.ReleaseComponent(instance1);
+			Kernel.ReleaseComponent(instance1);
 
 			Assert.IsTrue(instance1.IsDisposed);
 			Assert.IsTrue(instance1.GenBField.IsDisposed);
@@ -190,18 +175,18 @@ namespace CastleTests.Lifecycle
 		[Test]
 		public void SingletonReferencedComponentIsNotDisposed()
 		{
-			kernel.Register(
+			Kernel.Register(
 				Component.For(typeof(DisposableSpamService)).Named("spamservice").LifeStyle.Transient);
-			kernel.Register(
+			Kernel.Register(
 				Component.For(typeof(DefaultMailSenderService)).Named("mailsender").LifeStyle.Singleton);
-			kernel.Register(
+			Kernel.Register(
 				Component.For(typeof(DisposableTemplateEngine)).Named("templateengine").LifeStyle.Transient);
 
-			var instance1 = kernel.Resolve<DisposableSpamService>("spamservice");
+			var instance1 = Kernel.Resolve<DisposableSpamService>("spamservice");
 			Assert.IsFalse(instance1.IsDisposed);
 			Assert.IsFalse(instance1.TemplateEngine.IsDisposed);
 
-			kernel.ReleaseComponent(instance1);
+			Kernel.ReleaseComponent(instance1);
 
 			Assert.IsTrue(instance1.IsDisposed);
 			Assert.IsTrue(instance1.TemplateEngine.IsDisposed);
@@ -211,16 +196,16 @@ namespace CastleTests.Lifecycle
 		[Test]
 		public void TransientReferencedComponentsAreReleasedInChain()
 		{
-			kernel.Register(
+			Kernel.Register(
 				Component.For<DisposableSpamService>().LifeStyle.Transient,
 				Component.For<DisposableTemplateEngine>().LifeStyle.Transient
 				);
 
-			var service = kernel.Resolve<DisposableSpamService>();
+			var service = Kernel.Resolve<DisposableSpamService>();
 			Assert.IsFalse(service.IsDisposed);
 			Assert.IsFalse(service.TemplateEngine.IsDisposed);
 
-			kernel.ReleaseComponent(service);
+			Kernel.ReleaseComponent(service);
 
 			Assert.IsTrue(service.IsDisposed);
 			Assert.IsTrue(service.TemplateEngine.IsDisposed);
@@ -229,8 +214,8 @@ namespace CastleTests.Lifecycle
 		[Test]
 		public void TransientReferencesAreNotHeldByContainer()
 		{
-			kernel.Register(Component.For<EmptyClass>().LifeStyle.Transient);
-			var emptyClassWeakReference = new WeakReference(kernel.Resolve<EmptyClass>());
+			Kernel.Register(Component.For<EmptyClass>().LifeStyle.Transient);
+			var emptyClassWeakReference = new WeakReference(Kernel.Resolve<EmptyClass>());
 
 			GC.Collect();
 			GC.WaitForPendingFinalizers();
@@ -241,15 +226,15 @@ namespace CastleTests.Lifecycle
 		[Test]
 		public void WhenRootComponentIsNotDisposableButDependenciesAre_DependenciesShouldBeDisposed()
 		{
-			kernel.Register(Component.For(typeof(NonDisposableRoot)).Named("root").LifeStyle.Transient);
-			kernel.Register(Component.For(typeof(A)).Named("a").LifeStyle.Transient);
-			kernel.Register(Component.For(typeof(B)).Named("b").LifeStyle.Transient);
+			Kernel.Register(Component.For(typeof(NonDisposableRoot)).Named("root").LifeStyle.Transient);
+			Kernel.Register(Component.For(typeof(A)).Named("a").LifeStyle.Transient);
+			Kernel.Register(Component.For(typeof(B)).Named("b").LifeStyle.Transient);
 
-			var instance1 = kernel.Resolve<NonDisposableRoot>();
+			var instance1 = Kernel.Resolve<NonDisposableRoot>();
 			Assert.IsFalse(instance1.A.IsDisposed);
 			Assert.IsFalse(instance1.B.IsDisposed);
 
-			kernel.ReleaseComponent(instance1);
+			Kernel.ReleaseComponent(instance1);
 
 			Assert.IsTrue(instance1.A.IsDisposed);
 			Assert.IsTrue(instance1.B.IsDisposed);
@@ -258,16 +243,16 @@ namespace CastleTests.Lifecycle
 		[Test]
 		public void WhenRootComponentIsNotDisposableButThirdLevelDependenciesAre_DependenciesShouldBeDisposed()
 		{
-			kernel.Register(Component.For(typeof(Indirection)).Named("root").LifeStyle.Transient);
-			kernel.Register(Component.For(typeof(NonDisposableRoot)).Named("secroot").LifeStyle.Transient);
-			kernel.Register(Component.For(typeof(A)).Named("a").LifeStyle.Transient);
-			kernel.Register(Component.For(typeof(B)).Named("b").LifeStyle.Transient);
+			Kernel.Register(Component.For(typeof(Indirection)).Named("root").LifeStyle.Transient);
+			Kernel.Register(Component.For(typeof(NonDisposableRoot)).Named("secroot").LifeStyle.Transient);
+			Kernel.Register(Component.For(typeof(A)).Named("a").LifeStyle.Transient);
+			Kernel.Register(Component.For(typeof(B)).Named("b").LifeStyle.Transient);
 
-			var instance1 = kernel.Resolve<Indirection>();
+			var instance1 = Kernel.Resolve<Indirection>();
 			Assert.IsFalse(instance1.FakeRoot.A.IsDisposed);
 			Assert.IsFalse(instance1.FakeRoot.B.IsDisposed);
 
-			kernel.ReleaseComponent(instance1);
+			Kernel.ReleaseComponent(instance1);
 
 			Assert.IsTrue(instance1.FakeRoot.A.IsDisposed);
 			Assert.IsTrue(instance1.FakeRoot.B.IsDisposed);
