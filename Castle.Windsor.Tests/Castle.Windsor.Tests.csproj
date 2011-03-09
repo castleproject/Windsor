@@ -484,6 +484,7 @@
     <Compile Include="Lifecycle\DisposeTestCase.cs" />
     <Compile Include="Lifecycle\LifecycleActionTestCase.cs" />
     <Compile Include="Lifecycle\SupportsInitializeTestCase.cs" />
+    <Compile Include="Lifestyle\Components\ScopedComponent.cs" />
     <Compile Include="Lifestyle\Components\SealedComponent.cs" />
     <Compile Include="Lifestyle\Components\SealedComponentDisposable.cs" />
     <Compile Include="Lifestyle\Components\SealedComponentWithDependency.cs" />
@@ -795,7 +796,7 @@
     <Compile Include="LazyLoadingTestCase.cs" />
     <Compile Include="Lifestyle\Components\DisposableBase.cs" />
     <Compile Include="Lifestyle\Components\MyCustomerActivator.cs" />
-    <Compile Include="Lifestyle\DecomissioningResponsibilitiesTestCase.cs" />
+    <Compile Include="Lifecycle\DecomissioningResponsibilitiesTestCase.cs" />
     <Compile Include="Lifecycle\InitializableTestCase.cs">
       <SubType>Code</SubType>
     </Compile>

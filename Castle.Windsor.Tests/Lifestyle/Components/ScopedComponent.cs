@@ -16,11 +16,8 @@ namespace Castle.MicroKernel.Tests.Lifestyle.Components
 {
 	using Castle.Core;
 
-	/// <summary>
-	///   Summary description for PerThreadComponent.
-	/// </summary>
-	[PerThread]
-	public class PerThreadComponent : IComponent
+	[Scoped]
+	public class ScopedComponent : IComponent
 	{
 		public int ID
 		{

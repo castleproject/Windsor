@@ -12,12 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.MicroKernel.Tests.Lifestyle
+namespace CastleTests.Lifecycle
 {
 	using System;
 
+	using Castle.MicroKernel;
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Tests.ClassComponents;
+	using Castle.MicroKernel.Tests.Lifestyle;
 	using Castle.MicroKernel.Tests.Pools;
 
 	using NUnit.Framework;
