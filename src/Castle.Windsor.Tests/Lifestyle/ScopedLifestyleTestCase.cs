@@ -12,18 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Lifestyle
+namespace CastleTests.Lifestyle
 {
 	using System;
 
+	using Castle.Core;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Lifestyle.Scoped;
 	using Castle.MicroKernel.Registration;
+	using Castle.MicroKernel.Tests.Lifestyle.Components;
 	using Castle.Windsor;
 	using Castle.Windsor.Tests;
 	using Castle.Windsor.Tests.ClassComponents;
-
-	using CastleTests;
 
 	using NUnit.Framework;
 
@@ -34,6 +34,15 @@ namespace Castle.Lifestyle
 			var container = new WindsorContainer();
 			container.Kernel.AddSubSystem("scope", new ScopeSubsystem(new ThreadScopeAccessor()));
 			return container;
+		}
+
+		[Test]
+		public void Can_apply_scoped_lifestyle_via_attribute()
+		{
+			Container.Register(Component.For<ScopedComponent>());
+
+			var handler = Kernel.GetHandler(typeof(ScopedComponent));
+			Assert.AreEqual(LifestyleType.Scoped, handler.ComponentModel.LifestyleType);
 		}
 
 		[Test]
@@ -58,6 +67,16 @@ namespace Castle.Lifestyle
 			using (Container.BeginScope())
 			{
 				Container.Resolve<A>();
+			}
+		}
+
+		[Test]
+		public void Resolve_scoped_component_within_a_scope_successful_registered_via_attribute()
+		{
+			Container.Register(Component.For<ScopedComponent>());
+			using (Container.BeginScope())
+			{
+				Container.Resolve<ScopedComponent>();
 			}
 		}
 
