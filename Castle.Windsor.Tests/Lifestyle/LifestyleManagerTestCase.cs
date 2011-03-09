@@ -22,7 +22,6 @@ namespace Castle.MicroKernel.Tests.Lifestyle
 	using Castle.MicroKernel.Context;
 	using Castle.MicroKernel.Handlers;
 	using Castle.MicroKernel.Registration;
-	using Castle.MicroKernel.Tests.Lifestyle.Components;
 	using Castle.Windsor.Tests.ClassComponents;
 
 	using CastleTests.Components;

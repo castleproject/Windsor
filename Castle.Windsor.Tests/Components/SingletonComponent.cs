@@ -12,15 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.MicroKernel.Tests.Lifestyle.Components
+namespace CastleTests.Components
 {
 	using Castle.Core;
 
-	using CastleTests.Components;
-
-	/// <summary>
-	///   Summary description for SingletonComponent.
-	/// </summary>
 	[Singleton]
 	public class SingletonComponent : IComponent
 	{

@@ -17,7 +17,6 @@ namespace Castle.MicroKernel.Tests.Registration
 	using System;
 
 	using Castle.MicroKernel.Registration;
-	using Castle.MicroKernel.Tests.Lifestyle.Components;
 	using Castle.Windsor.Tests;
 	using Castle.Windsor.Tests.ClassComponents;
 
