@@ -259,7 +259,7 @@ namespace Castle.MicroKernel.Tests.Lifestyle
 			kernel.Register(
 				Component.For<Root>().ExtendedProperties(ScopeRoot()),
 				Component.For<Branch>(),
-				Component.For<Leaf>().LifeStyle.Custom<ScopedLifestyle>()
+				Component.For<Leaf>().LifeStyle.Custom<CustomLifestyle_Scoped>()
 				);
 			var root = kernel.Resolve<Root>();
 			Assert.AreSame(root.Leaf, root.Branch.Leaf);
@@ -268,7 +268,7 @@ namespace Castle.MicroKernel.Tests.Lifestyle
 
 		private Property ScopeRoot()
 		{
-			return Property.ForKey(HandlerExtensionsUtil.ResolveExtensionsKey).Eq(new IResolveExtension[] { new Scope() });
+			return Property.ForKey(HandlerExtensionsUtil.ResolveExtensionsKey).Eq(new IResolveExtension[] { new CustomLifestyle_Scope() });
 		}
 
 		[Test]
