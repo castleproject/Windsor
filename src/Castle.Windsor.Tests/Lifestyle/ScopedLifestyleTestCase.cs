@@ -20,7 +20,6 @@ namespace CastleTests.Lifestyle
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Lifestyle.Scoped;
 	using Castle.MicroKernel.Registration;
-	using Castle.Windsor;
 	using Castle.Windsor.Tests;
 	using Castle.Windsor.Tests.ClassComponents;
 
@@ -30,11 +29,9 @@ namespace CastleTests.Lifestyle
 
 	public class ScopedLifestyleTestCase : AbstractContainerTestCase
 	{
-		protected override WindsorContainer BuildContainer()
+		protected override void AfterContainerCreated()
 		{
-			var container = new WindsorContainer();
-			container.Kernel.AddSubSystem("scope", new ScopeSubsystem(new ThreadScopeAccessor()));
-			return container;
+			Kernel.AddSubSystem("scope", new ScopeSubsystem(new ThreadScopeAccessor()));
 		}
 
 		[Test]
