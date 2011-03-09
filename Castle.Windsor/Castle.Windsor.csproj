@@ -316,6 +316,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AutoregisterPerWebRequestLifestyleModule.cs" />
+    <Compile Include="Core\CustomLifestyleAttribute.cs" />
     <Compile Include="Core\Internal\SimpleSortedSet.cs" />
     <Compile Include="Core\CastleComponentAttribute.cs" />
     <Compile Include="Core\ComponentActivatorAttribute.cs" />
@@ -336,9 +337,15 @@
     <Compile Include="Core\Internal\ThreadSafeInit.cs" />
     <Compile Include="Core\Internal\TypeByInheritanceDepthMostSpecificFirstComparer.cs" />
     <Compile Include="Core\Internal\TypeUtil.cs" />
-    <Compile Include="Core\LifestyleAttributes.cs" />
+    <Compile Include="Core\LifestyleAttribute.cs" />
     <Compile Include="Core\LifestyleType.cs" />
+    <Compile Include="Core\PerThreadAttribute.cs" />
+    <Compile Include="Core\PerWebRequestAttribute.cs" />
+    <Compile Include="Core\PooledAttribute.cs" />
     <Compile Include="Core\PropertiesInspectionBehavior.cs" />
+    <Compile Include="Core\ScopedAttribute.cs" />
+    <Compile Include="Core\SingletonAttribute.cs" />
+    <Compile Include="Core\TransientAttribute.cs" />
     <Compile Include="Facilities\Startable\StartableContributor.cs" />
     <Compile Include="Facilities\TypedFactory\DefaultDelegateComponentSelector.cs" />
     <Compile Include="Facilities\TypedFactory\Internal\DelegateFactory.cs" />

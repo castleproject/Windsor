@@ -43,11 +43,6 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 			return RequireScope(container.Kernel);
 		}
 
-		public static ComponentRegistration<T> Scoped<T>(this LifestyleGroup<T> @group) where T : class
-		{
-			return group.Custom<ScopedLifestyleManager>();
-		}
-
 		private static IScopeManager GetScopeSubSystem(IKernel kernel)
 		{
 			var scopes = (IScopeManager)kernel.GetSubSystem("scope");

@@ -24,6 +24,7 @@ namespace Castle.MicroKernel.Handlers
 	using Castle.MicroKernel.ComponentActivator;
 	using Castle.MicroKernel.Context;
 	using Castle.MicroKernel.Lifestyle;
+	using Castle.MicroKernel.Lifestyle.Scoped;
 	using Castle.MicroKernel.ModelBuilder.Inspectors;
 	using Castle.MicroKernel.Resolvers;
 
@@ -356,6 +357,14 @@ namespace Castle.MicroKernel.Handlers
 
 			switch (type)
 			{
+				case LifestyleType.Scoped:
+					var scopeManager = kernel.GetSubSystem("scope") as IScopeManager;
+					if (scopeManager == null)
+					{
+						throw new InvalidOperationException("Scope Subsystem not found.  Did you forget to add it?");
+					}
+					manager = new ScopedLifestyleManager(scopeManager);
+					break;
 				case LifestyleType.Thread:
 #if SILVERLIGHT
 					manager = new PerThreadThreadStaticLifestyleManager();

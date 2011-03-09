@@ -14,14 +14,16 @@
 
 namespace Castle.MicroKernel.Lifestyle.Scoped
 {
-	using System;
-
-	using Castle.Core;
 	using Castle.MicroKernel.Context;
 
 	public class ScopedLifestyleManager : AbstractLifestyleManager
 	{
-		private IScopeManager manager;
+		private readonly IScopeManager manager;
+
+		public ScopedLifestyleManager(IScopeManager manager)
+		{
+			this.manager = manager;
+		}
 
 		public override void Dispose()
 		{
@@ -37,17 +39,6 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 				return;
 			}
 			instance.Release();
-		}
-
-		public override void Init(IComponentActivator componentActivator, IKernel kernel, ComponentModel model)
-		{
-			base.Init(componentActivator, kernel, model);
-
-			manager = kernel.GetSubSystem("scope") as IScopeManager;
-			if (manager == null)
-			{
-				throw new InvalidOperationException("Scope Subsystem not found.  Did you forget to add it?");
-			}
 		}
 
 		public override object Resolve(CreationContext context, IReleasePolicy releasePolicy)

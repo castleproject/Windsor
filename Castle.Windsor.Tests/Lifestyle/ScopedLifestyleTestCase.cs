@@ -41,7 +41,7 @@ namespace Castle.Lifestyle
 		{
 			DisposableFoo.DisposedCount = 0;
 
-			Container.Register(Component.For<DisposableFoo>().LifeStyle.Scoped());
+			Container.Register(Component.For<DisposableFoo>().LifeStyle.Scoped);
 
 			using (Container.BeginScope())
 			{
@@ -54,7 +54,7 @@ namespace Castle.Lifestyle
 		[Test]
 		public void Resolve_scoped_component_within_a_scope_successful()
 		{
-			Container.Register(Component.For<A>().LifeStyle.Scoped());
+			Container.Register(Component.For<A>().LifeStyle.Scoped);
 			using (Container.BeginScope())
 			{
 				Container.Resolve<A>();
@@ -64,7 +64,7 @@ namespace Castle.Lifestyle
 		[Test]
 		public void Resolve_scoped_component_without_a_scope_throws_helpful_exception()
 		{
-			Container.Register(Component.For<A>().LifeStyle.Scoped());
+			Container.Register(Component.For<A>().LifeStyle.Scoped);
 
 			var exception = Assert.Throws<ComponentResolutionException>(() =>
 			                                                            Container.Resolve<A>());
@@ -78,7 +78,7 @@ namespace Castle.Lifestyle
 		[Ignore("This fails... not sure what the behavior should be... that has to be discussed based on some real life usages")]
 		public void Scoped_component_instance_from_outer_scope_is_reused_within_nested_scope()
 		{
-			Container.Register(Component.For<A>().LifeStyle.Scoped());
+			Container.Register(Component.For<A>().LifeStyle.Scoped);
 
 			using (Container.BeginScope())
 			{
@@ -94,7 +94,7 @@ namespace Castle.Lifestyle
 		[Test]
 		public void Scoped_component_instance_is_reused_within_the_scope()
 		{
-			Container.Register(Component.For<A>().LifeStyle.Scoped());
+			Container.Register(Component.For<A>().LifeStyle.Scoped);
 
 			using (Container.BeginScope())
 			{
@@ -109,7 +109,7 @@ namespace Castle.Lifestyle
 		{
 			DisposableFoo.DisposedCount = 0;
 
-			Container.Register(Component.For<DisposableFoo>().LifeStyle.Scoped());
+			Container.Register(Component.For<DisposableFoo>().LifeStyle.Scoped);
 
 			using (Container.BeginScope())
 			{
@@ -129,7 +129,7 @@ namespace Castle.Lifestyle
 			DisposableFoo foo;
 			DisposableFoo.DisposedCount = 0;
 
-			Container.Register(Component.For<DisposableFoo>().LifeStyle.Scoped());
+			Container.Register(Component.For<DisposableFoo>().LifeStyle.Scoped);
 
 			using (Container.BeginScope())
 			{
@@ -145,7 +145,7 @@ namespace Castle.Lifestyle
 			DisposableFoo foo;
 			DisposableFoo.DisposedCount = 0;
 
-			Container.Register(Component.For<DisposableFoo>().LifeStyle.Scoped());
+			Container.Register(Component.For<DisposableFoo>().LifeStyle.Scoped);
 
 			using (Container.BeginScope())
 			{
@@ -157,7 +157,7 @@ namespace Castle.Lifestyle
 		[Test]
 		public void Transient_depending_on_scoped_component_is_not_tracked_by_the_container()
 		{
-			Container.Register(Component.For<DisposableFoo>().LifeStyle.Scoped(),
+			Container.Register(Component.For<DisposableFoo>().LifeStyle.Scoped,
 			                   Component.For<UsesDisposableFoo>().LifeStyle.Transient);
 
 			using (Container.BeginScope())
@@ -173,7 +173,7 @@ namespace Castle.Lifestyle
 		[Test]
 		public void Transient_depending_on_scoped_component_is_not_tracked_by_the_release_policy()
 		{
-			Container.Register(Component.For<DisposableFoo>().LifeStyle.Scoped(),
+			Container.Register(Component.For<DisposableFoo>().LifeStyle.Scoped,
 			                   Component.For<UsesDisposableFoo>().LifeStyle.Transient);
 
 			using (Container.BeginScope())
