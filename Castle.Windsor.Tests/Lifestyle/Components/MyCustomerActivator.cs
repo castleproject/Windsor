@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,22 +20,22 @@ namespace Castle.MicroKernel.Tests.Lifestyle.Components
 	using Castle.MicroKernel.Tests.ClassComponents;
 
 	/// <summary>
-	/// Summary description for MyCustomerActivator.
+	///   Summary description for MyCustomerActivator.
 	/// </summary>
 	public class MyCustomerActivator : AbstractComponentActivator
 	{
-		public MyCustomerActivator(ComponentModel model, IKernel kernel, 
-			ComponentInstanceDelegate onCreation, 
-			ComponentInstanceDelegate onDestruction)
+		public MyCustomerActivator(ComponentModel model, IKernel kernel,
+		                           ComponentInstanceDelegate onCreation,
+		                           ComponentInstanceDelegate onDestruction)
 			: base(model, kernel, onCreation, onDestruction)
 		{
 		}
 
 		protected override object InternalCreate(CreationContext context)
 		{
-			CustomerImpl customer = new CustomerImpl();
+			var customer = new CustomerImpl();
 			customer.Name = "James Bond";
-			return customer;			
+			return customer;
 		}
 
 		protected override void InternalDestroy(object instance)
