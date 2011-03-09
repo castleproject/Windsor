@@ -390,6 +390,7 @@
     <Compile Include="Components\UsesUri.cs" />
     <Compile Include="CompositePatternTestCase.cs" />
     <Compile Include="ContainerAndGenericsInConfigTestCase.cs" />
+    <Compile Include="ConventionVerification.cs" />
     <Compile Include="Core.Tests\InterceptorAttributeTestCase.cs" />
     <Compile Include="CreatingContainerTestCase.cs" />
     <Compile Include="DuplicateGenerics.cs" />
