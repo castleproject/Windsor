@@ -28,49 +28,11 @@ namespace Castle.MicroKernel.Registration.Lifestyle
 		{
 		}
 
-		/// <summary>
-		///   Sets the lifestyle to the specified <paramref name = "type" />.
-		/// </summary>
-		/// <param name = "type">The type.</param>
-		/// <returns></returns>
-		public ComponentRegistration<S> Is(LifestyleType type)
-		{
-			if (Enum.IsDefined(typeof(LifestyleType), type) == false)
-			{
-				throw InvalidValue(type, "Not a valid lifestyle");
-			}
-			if (type == LifestyleType.Undefined)
-			{
-				throw InvalidValue(type, string.Format("{0} is not a valid lifestyle type.", LifestyleType.Undefined));
-			}
-
-			return AddDescriptor(new LifestyleDescriptor<S>(type));
-		}
-
-		private ArgumentOutOfRangeException InvalidValue(LifestyleType type, string message)
-		{
-#if SILVERLIGHT
-			return new ArgumentOutOfRangeException("type", message);
-#else
-			return new ArgumentOutOfRangeException("type", type, message);
-#endif
-		}
-
-		public ComponentRegistration<S> Transient
-		{
-			get { return AddDescriptor(new LifestyleDescriptor<S>(LifestyleType.Transient)); }
-		}
-
-		public ComponentRegistration<S> Singleton
-		{
-			get { return AddDescriptor(new LifestyleDescriptor<S>(LifestyleType.Singleton)); }
-		}
-
 		public ComponentRegistration<S> PerThread
 		{
 			get { return AddDescriptor(new LifestyleDescriptor<S>(LifestyleType.Thread)); }
 		}
-
+		
 #if (!SILVERLIGHT)
 		public ComponentRegistration<S> PerWebRequest
 		{
@@ -83,18 +45,19 @@ namespace Castle.MicroKernel.Registration.Lifestyle
 			get { return AddDescriptor(new LifestyleDescriptor<S>(LifestyleType.Pooled)); }
 		}
 
-		public ComponentRegistration<S> PooledWithSize(int? initialSize, int? maxSize)
+		public ComponentRegistration<S> Scoped
 		{
-			var pooledWithSize = Pooled;
-			if (initialSize.HasValue)
-			{
-				pooledWithSize = pooledWithSize.Attribute("initialPoolSize").Eq(initialSize);
-			}
-			if (maxSize.HasValue)
-			{
-				pooledWithSize = pooledWithSize.Attribute("maxPoolSize").Eq(maxSize);
-			}
-			return pooledWithSize;
+			get { return AddDescriptor(new LifestyleDescriptor<S>(LifestyleType.Scoped)); }
+		}
+
+		public ComponentRegistration<S> Singleton
+		{
+			get { return AddDescriptor(new LifestyleDescriptor<S>(LifestyleType.Singleton)); }
+		}
+
+		public ComponentRegistration<S> Transient
+		{
+			get { return AddDescriptor(new LifestyleDescriptor<S>(LifestyleType.Transient)); }
 		}
 
 		/// <summary>
@@ -124,6 +87,48 @@ namespace Castle.MicroKernel.Registration.Lifestyle
 			where L : ILifestyleManager, new()
 		{
 			return Custom(typeof(L));
+		}
+
+		/// <summary>
+		///   Sets the lifestyle to the specified <paramref name = "type" />.
+		/// </summary>
+		/// <param name = "type">The type.</param>
+		/// <returns></returns>
+		public ComponentRegistration<S> Is(LifestyleType type)
+		{
+			if (Enum.IsDefined(typeof(LifestyleType), type) == false)
+			{
+				throw InvalidValue(type, "Not a valid lifestyle");
+			}
+			if (type == LifestyleType.Undefined)
+			{
+				throw InvalidValue(type, string.Format("{0} is not a valid lifestyle type.", LifestyleType.Undefined));
+			}
+
+			return AddDescriptor(new LifestyleDescriptor<S>(type));
+		}
+
+		public ComponentRegistration<S> PooledWithSize(int? initialSize, int? maxSize)
+		{
+			var pooledWithSize = Pooled;
+			if (initialSize.HasValue)
+			{
+				pooledWithSize = pooledWithSize.Attribute("initialPoolSize").Eq(initialSize);
+			}
+			if (maxSize.HasValue)
+			{
+				pooledWithSize = pooledWithSize.Attribute("maxPoolSize").Eq(maxSize);
+			}
+			return pooledWithSize;
+		}
+
+		private ArgumentOutOfRangeException InvalidValue(LifestyleType type, string message)
+		{
+#if SILVERLIGHT
+			            return new ArgumentOutOfRangeException("type", message);
+#else
+			return new ArgumentOutOfRangeException("type", type, message);
+#endif
 		}
 	}
 }
