@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,22 +18,14 @@ namespace Castle.MicroKernel.Tests.Lifestyle.Components
 	using Castle.MicroKernel.Tests.ClassComponents;
 
 	/// <summary>
-	/// Summary description for CustomComponent.
+	///   Summary description for CustomComponent.
 	/// </summary>
 	[CustomLifestyle(typeof(CustomLifestyleManager))]
 	public class CustomComponent : IComponent
 	{
-		public CustomComponent()
-		{
-		}
-
-		#region IComponent Members
-
 		public int ID
 		{
 			get { return GetHashCode(); }
 		}
-
-		#endregion
 	}
 }
