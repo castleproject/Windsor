@@ -1,4 +1,4 @@
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,15 +12,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.MicroKernel.Tests.Lifestyle.Components
+namespace Castle.MicroKernel.Tests.Lifestyle
 {
-	public class TrivialComponent : IComponent
+	using Castle.MicroKernel.Handlers;
+
+	public class CustomLifestyle_Scope : IResolveExtension
 	{
-		public int ID
+		public void Init(IKernel kernel, IHandler handler)
 		{
-			get
+		}
+
+		public void Intercept(ResolveInvocation invocation)
+		{
+			using (new CustomLifestyle_InstanceScope())
 			{
-				return 0;
+				invocation.Proceed();
 			}
 		}
 	}

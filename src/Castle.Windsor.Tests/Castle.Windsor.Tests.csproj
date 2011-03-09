@@ -490,6 +490,8 @@
     <Compile Include="Lifestyle\Components\SealedComponentWithDependency.cs" />
     <Compile Include="Lifestyle\Components\TrivialComponentWithDependency.cs" />
     <Compile Include="Lifestyle\Components\UsesComponentWithDispose.cs" />
+    <Compile Include="Lifestyle\CustomLifestyle_InstanceScope.cs" />
+    <Compile Include="Lifestyle\CustomLifestyle_Scoped.cs" />
     <Compile Include="Lifestyle\ScopedLifestyleTestCase.cs" />
     <Compile Include="LoggingFacility\BaseTest.cs" />
     <Compile Include="LoggingFacility\Classes\ComplexLoggingComponent.cs" />
@@ -611,7 +613,7 @@
     <Compile Include="Interceptors\TestInterceptor3.cs" />
     <Compile Include="Interceptors\WatcherInterceptorSelector.cs" />
     <Compile Include="Lifestyle\Components\ComponentWithDispose.cs" />
-    <Compile Include="Lifestyle\Scope.cs" />
+    <Compile Include="Lifestyle\CustomLifestyle_Scope.cs" />
     <Compile Include="Proxies\ComponentProxyRegistrationTestCase.cs" />
     <Compile Include="ProxyInfrastructure\DisposableHook.cs" />
     <Compile Include="Registration\ComponentRegistrationByNamespaceTestCase.cs" />
@@ -807,7 +809,7 @@
     <Compile Include="Lifestyle\Components\IComponent.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Lifestyle\Components\NoInfoComponent.cs">
+    <Compile Include="Lifestyle\Components\TrivialComponent.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Lifestyle\Components\PerThreadComponent.cs">
