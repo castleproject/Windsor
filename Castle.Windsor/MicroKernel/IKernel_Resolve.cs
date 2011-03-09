@@ -16,24 +16,9 @@ namespace Castle.MicroKernel
 {
 	using System;
 	using System.Collections;
-	using System.ComponentModel;
 
 	public partial interface IKernel : IKernelEvents, IDisposable
 	{
-		/// <summary>
-		///   Returns the component instance by the key
-		/// </summary>
-		[Obsolete("Use Resolve<object>(key) instead")]
-		[EditorBrowsable(EditorBrowsableState.Advanced)]
-		object this[String key] { get; }
-
-		/// <summary>
-		///   Returns the component instance by the service type
-		/// </summary>
-		[Obsolete("Use Resolve(service) or generic strongly typed version instead")]
-		[EditorBrowsable(EditorBrowsableState.Advanced)]
-		object this[Type service] { get; }
-
 		/// <summary>
 		///   Returns the component instance by the service type
 		/// </summary>
@@ -49,17 +34,6 @@ namespace Castle.MicroKernel
 		object Resolve(Type service, IDictionary arguments);
 
 		/// <summary>
-		///   Returns the component instance by the component key
-		///   using dynamic arguments
-		/// </summary>
-		/// <param name = "key"></param>
-		/// <param name = "arguments"></param>
-		/// <returns></returns>
-		[Obsolete("Use Resolve<object>(key, arguments) instead")]
-		[EditorBrowsable(EditorBrowsableState.Advanced)]
-		object Resolve(String key, IDictionary arguments);
-
-		/// <summary>
 		///   Returns the component instance by the service type
 		///   using dynamic arguments
 		/// </summary>
@@ -67,17 +41,6 @@ namespace Castle.MicroKernel
 		/// <param name = "argumentsAsAnonymousType">Arguments to resolve the services</param>
 		/// <returns></returns>
 		object Resolve(Type service, object argumentsAsAnonymousType);
-
-		/// <summary>
-		///   Returns the component instance by the component key
-		///   using dynamic arguments
-		/// </summary>
-		/// <param name = "key">Key to resolve</param>
-		/// <param name = "argumentsAsAnonymousType">Arguments to resolve the services</param>
-		/// <returns></returns>
-		[Obsolete("Use Resolve<object>(key, argumentsAsAnonymousType) instead")]
-		[EditorBrowsable(EditorBrowsableState.Advanced)]
-		object Resolve(String key, object argumentsAsAnonymousType);
 
 		/// <summary>
 		///   Returns a component instance by the key
