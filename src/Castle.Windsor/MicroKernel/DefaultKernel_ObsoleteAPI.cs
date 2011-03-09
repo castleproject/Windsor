@@ -283,5 +283,55 @@ namespace Castle.MicroKernel
 			var handler = HandlerFactory.Create(model);
 			RegisterHandler(key, handler);
 		}
+
+		[Obsolete("Use AddFacility(IFacility) instead.")]
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public virtual IKernel AddFacility(String key, IFacility facility)
+		{
+			return AddFacility(facility);
+		}
+
+		[Obsolete("Use AddFacility<TFacility>() instead.")]
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public IKernel AddFacility<T>(String key) where T : IFacility, new()
+		{
+			return AddFacility(new T());
+		}
+
+		[Obsolete("Use AddFacility<TFacility>(Action<TFacility>) instead.")]
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public IKernel AddFacility<T>(String key, Action<T> onCreate)
+			where T : IFacility, new()
+		{
+			return AddFacility(onCreate);
+		}
+
+		/// <summary>
+		///   Returns the component instance by the component key
+		///   using dynamic arguments
+		/// </summary>
+		/// <param name = "key"></param>
+		/// <param name = "arguments"></param>
+		/// <returns></returns>
+		[Obsolete("Use Resolve<object>(key, arguments) instead")]
+		[EditorBrowsable(EditorBrowsableState.Advanced)]
+		public object Resolve(string key, IDictionary arguments)
+		{
+			return (this as IKernelInternal).Resolve(key, service: null, arguments: arguments, policy: releasePolicy);
+		}
+
+		/// <summary>
+		///   Returns the component instance by the component key
+		///   using dynamic arguments
+		/// </summary>
+		/// <param name = "key"></param>
+		/// <param name = "argumentsAsAnonymousType"></param>
+		/// <returns></returns>
+		[Obsolete("Use Resolve<object>(key, argumentsAsAnonymousType) instead")]
+		[EditorBrowsable(EditorBrowsableState.Advanced)]
+		public object Resolve(string key, object argumentsAsAnonymousType)
+		{
+			return (this as IKernelInternal).Resolve(key, null, new ReflectionBasedDictionaryAdapter(argumentsAsAnonymousType), releasePolicy);
+		}
 	}
 }
