@@ -815,7 +815,7 @@
     <Compile Include="Components\PerThreadComponent.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Lifestyle\SingletonComponent.cs">
+    <Compile Include="Components\SingletonComponent.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Components\TransientComponent.cs">
@@ -1428,9 +1428,7 @@
   <ItemGroup>
     <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Lifestyle\Components\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" Condition="($(MSBuildTargets) == '') Or ($(MSBuildTargets) == 'CSharp')" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight\v4.0\Microsoft.Silverlight.CSharp.targets" Condition="$(MSBuildTargets) == 'Silverlight 4.0'" />
   <Import Project="$(RootPath)\Settings.proj" />

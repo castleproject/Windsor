@@ -26,7 +26,6 @@ namespace Castle.MicroKernel.Tests.Registration
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Tests.ClassComponents;
 	using Castle.MicroKernel.Tests.Configuration.Components;
-	using Castle.MicroKernel.Tests.Lifestyle.Components;
 	using Castle.Windsor.Tests;
 	using Castle.Windsor.Tests.Facilities.Startable.Components;
 	using Castle.Windsor.Tests.Interceptors;

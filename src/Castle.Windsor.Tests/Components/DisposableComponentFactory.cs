@@ -14,8 +14,6 @@
 
 namespace CastleTests.Components
 {
-	using Castle.MicroKernel.Tests.Lifestyle.Components;
-
 	public class DisposableComponentFactory
 	{
 		public IComponent Create()

@@ -22,7 +22,6 @@ namespace CastleTests.Facilities.FactorySupport
 	using Castle.Facilities.FactorySupport;
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Tests.ClassComponents;
-	using Castle.MicroKernel.Tests.Lifestyle.Components;
 	using Castle.Windsor.Installer;
 	using Castle.Windsor.Tests;
 

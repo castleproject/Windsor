@@ -20,7 +20,6 @@ namespace CastleTests.Lifestyle
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Lifestyle.Scoped;
 	using Castle.MicroKernel.Registration;
-	using Castle.MicroKernel.Tests.Lifestyle.Components;
 	using Castle.Windsor;
 	using Castle.Windsor.Tests;
 	using Castle.Windsor.Tests.ClassComponents;
