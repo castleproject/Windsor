@@ -16,6 +16,8 @@ namespace Castle.MicroKernel.Tests.Lifestyle.Components
 {
 	using Castle.Core;
 
+	using CastleTests.Components;
+
 	/// <summary>
 	///   Summary description for SingletonComponent.
 	/// </summary>

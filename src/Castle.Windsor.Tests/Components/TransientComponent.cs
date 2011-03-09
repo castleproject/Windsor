@@ -12,12 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.MicroKernel.Tests.Lifestyle.Components
+namespace CastleTests.Components
 {
 	using Castle.Core;
 
-	[Scoped]
-	public class ScopedComponent : IComponent
+	/// <summary>
+	///   Summary description for TransientComponent.
+	/// </summary>
+	[Transient]
+	public class TransientComponent : IComponent
 	{
 		public int ID
 		{

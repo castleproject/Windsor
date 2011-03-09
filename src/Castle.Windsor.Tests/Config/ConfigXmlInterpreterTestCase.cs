@@ -29,7 +29,7 @@ namespace Castle.Windsor.Tests
 	using Castle.Windsor.Configuration.Interpreters.XmlProcessor;
 	using Castle.XmlFiles;
 
-	using Components;
+	using CastleTests.Components;
 
 	using NUnit.Framework;
 

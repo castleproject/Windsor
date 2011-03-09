@@ -17,9 +17,9 @@ namespace Castle.Windsor.Tests
 #if !SILVERLIGHT
 	using Castle.MicroKernel.Registration;
 	using Castle.Windsor.Installer;
-	using Castle.Windsor.Tests.Components;
 
 	using CastleTests;
+	using CastleTests.Components;
 
 	using NUnit.Framework;
 

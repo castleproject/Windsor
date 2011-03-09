@@ -20,8 +20,9 @@ namespace Castle.Windsor.Tests
 	using Castle.Core;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Registration;
-	using Castle.Windsor.Tests.Components;
 	using Castle.Windsor.Tests.ComponentsWithAttribute;
+
+	using CastleTests.Components;
 
 	using NUnit.Framework;
 

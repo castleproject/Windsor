@@ -12,22 +12,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.MicroKernel.Tests.Lifestyle.Components
+namespace CastleTests.Components
 {
-	using Castle.Windsor.Tests.Components;
+	using System;
 
-	public sealed class SealedComponentWithDependency : IComponent
+	public class ComponentWithDispose : IComponent, IDisposable
 	{
-		public SealedComponentWithDependency(ISimpleService dependency)
-		{
-			Dependency = dependency;
-		}
-
-		public ISimpleService Dependency { get; private set; }
+		public bool Disposed { get; private set; }
 
 		public int ID
 		{
-			get { return 0; }
+			get { return 42; }
+		}
+
+		public void Dispose()
+		{
+			Disposed = true;
 		}
 	}
 }

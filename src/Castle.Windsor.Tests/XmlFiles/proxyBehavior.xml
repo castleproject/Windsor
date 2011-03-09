@@ -7,18 +7,18 @@
     </component>
     
     <component id="default" 
-      type="Castle.Windsor.Tests.Components.CalculatorServiceWithMultipleInterfaces, Castle.Windsor.Tests"
-      service="Castle.Windsor.Tests.Components.ICalcService, Castle.Windsor.Tests">
+      type="CalculatorServiceWithMultipleInterfaces"
+      service="ICalcService">
     </component>
     
     <component id="noSingle" 
-      type="Castle.Windsor.Tests.Components.CalculatorServiceWithMultipleInterfaces, Castle.Windsor.Tests"
-      service="Castle.Windsor.Tests.Components.ICalcService, Castle.Windsor.Tests">
+      type="CalculatorServiceWithMultipleInterfaces"
+      service="ICalcService">
     </component>
 
     <component id="hasInternalInterface"
-        type="Castle.Windsor.Tests.Components.CalculatorServiceWithInternalInterface, Castle.Windsor.Tests"
-        service="Castle.Windsor.Tests.Components.ICalcService, Castle.Windsor.Tests">
+        type="CalculatorServiceWithInternalInterface"
+        service="ICalcService">
     </component>
 
   </components>

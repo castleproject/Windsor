@@ -16,7 +16,7 @@ namespace CastleTests.Facilities.EventWiring.Model
 {
 	using System;
 
-	using Castle.Windsor.Tests.Components;
+	using CastleTests.Components;
 
 	public class SubscriberWithDependency
 	{

@@ -19,7 +19,8 @@ namespace Castle.Windsor.Tests.Facilities.Startable
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.SubSystems.Configuration;
 	using Castle.Windsor;
-	using Castle.Windsor.Tests.Components;
+
+	using CastleTests.Components;
 
 	using NUnit.Framework;
 

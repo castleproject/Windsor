@@ -3,9 +3,9 @@
 	<components>
 		<component
 			id="ValidComponent"
-			type="Castle.Windsor.Tests.Components.CalculatorService, Castle.Windsor.Tests">
+			type="CalculatorService">
 			<additionalInterfaces>
-				<add interface="Castle.Windsor.Tests.Components.ISimpleMixIn, Castle.Windsor.Tests" />
+				<add interface="ISimpleMixIn" />
 			</additionalInterfaces>
 		</component>
 	</components>

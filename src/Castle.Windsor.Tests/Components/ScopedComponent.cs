@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,22 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.MicroKernel.Tests.Lifestyle.Components
+namespace CastleTests.Components
 {
-	using System;
+	using Castle.Core;
 
-	public sealed class SealedComponentDisposable : IComponent, IDisposable
+	[Scoped]
+	public class ScopedComponent : IComponent
 	{
-		public bool Disposed { get; private set; }
-
 		public int ID
 		{
-			get { return 0; }
-		}
-
-		public void Dispose()
-		{
-			Disposed = true;
+			get { return GetHashCode(); }
 		}
 	}
 }

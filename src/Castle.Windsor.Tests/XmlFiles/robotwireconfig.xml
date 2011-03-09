@@ -3,15 +3,15 @@
 	<components>
 
 		<component id="left" 
-			service="Castle.Windsor.Tests.Components.IArm, Castle.Windsor.Tests" 
-			type="Castle.Windsor.Tests.Components.PlasmaGunArm, Castle.Windsor.Tests" />
+			service="IArm" 
+			type="PlasmaGunArm" />
 
 		<component id="right" 
-			service="Castle.Windsor.Tests.Components.IArm, Castle.Windsor.Tests" 
-			type="Castle.Windsor.Tests.Components.HumanArm, Castle.Windsor.Tests" />
+			service="IArm" 
+			type="HumanArm" />
 
 		<component id="robot" 
-			type="Castle.Windsor.Tests.Components.Robot, Castle.Windsor.Tests">
+			type="Robot">
 			<parameters>
 				<left>${left}</left>
 				<right>${right}</right>

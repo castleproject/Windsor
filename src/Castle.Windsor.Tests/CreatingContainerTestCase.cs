@@ -20,8 +20,9 @@ namespace CastleTests
 	using Castle.Core.Resource;
 	using Castle.Windsor;
 	using Castle.Windsor.Tests;
-	using Castle.Windsor.Tests.Components;
 	using Castle.XmlFiles;
+
+	using CastleTests.Components;
 
 	using NUnit.Framework;
 

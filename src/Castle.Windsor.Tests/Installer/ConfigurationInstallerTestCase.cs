@@ -21,8 +21,9 @@ namespace Castle.Windsor.Tests.Installer
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.SubSystems.Configuration;
 	using Castle.Windsor.Installer;
-	using Castle.Windsor.Tests.Components;
 	using Castle.XmlFiles;
+
+	using CastleTests.Components;
 
 	using NUnit.Framework;
 

@@ -32,6 +32,7 @@ namespace Castle.MicroKernel.Tests.Registration
 	using Castle.Windsor.Tests.Interceptors;
 
 	using CastleTests;
+	using CastleTests.Components;
 
 	using NUnit.Framework;
 

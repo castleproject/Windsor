@@ -16,13 +16,12 @@ namespace Castle.Windsor.Tests.Lifecycle
 {
 	using System;
 
-	using Castle.Components;
 	using Castle.MicroKernel.Registration;
 	using Castle.Windsor.Tests.ClassComponents;
-	using Castle.Windsor.Tests.Components;
 	using Castle.Windsor.Tests.Facilities.TypedFactory.Components;
 
 	using CastleTests;
+	using CastleTests.Components;
 
 	using NUnit.Framework;
 

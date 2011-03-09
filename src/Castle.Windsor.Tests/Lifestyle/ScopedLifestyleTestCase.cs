@@ -25,6 +25,8 @@ namespace CastleTests.Lifestyle
 	using Castle.Windsor.Tests;
 	using Castle.Windsor.Tests.ClassComponents;
 
+	using CastleTests.Components;
+
 	using NUnit.Framework;
 
 	public class ScopedLifestyleTestCase : AbstractContainerTestCase

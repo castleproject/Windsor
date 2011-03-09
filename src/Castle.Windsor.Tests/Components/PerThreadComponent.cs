@@ -12,13 +12,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.MicroKernel.Tests.Lifestyle.Components
+namespace CastleTests.Components
 {
-	public class TrivialComponent : IComponent
+	using Castle.Core;
+
+	/// <summary>
+	///   Summary description for PerThreadComponent.
+	/// </summary>
+	[PerThread]
+	public class PerThreadComponent : IComponent
 	{
 		public int ID
 		{
-			get { return 0; }
+			get { return GetHashCode(); }
 		}
 	}
 }

@@ -484,12 +484,12 @@
     <Compile Include="Lifecycle\DisposeTestCase.cs" />
     <Compile Include="Lifecycle\LifecycleActionTestCase.cs" />
     <Compile Include="Lifecycle\SupportsInitializeTestCase.cs" />
-    <Compile Include="Lifestyle\Components\ScopedComponent.cs" />
-    <Compile Include="Lifestyle\Components\SealedComponent.cs" />
-    <Compile Include="Lifestyle\Components\SealedComponentDisposable.cs" />
-    <Compile Include="Lifestyle\Components\SealedComponentWithDependency.cs" />
-    <Compile Include="Lifestyle\Components\TrivialComponentWithDependency.cs" />
-    <Compile Include="Lifestyle\Components\UsesComponentWithDispose.cs" />
+    <Compile Include="Components\ScopedComponent.cs" />
+    <Compile Include="Components\SealedComponent.cs" />
+    <Compile Include="Components\SealedComponentDisposable.cs" />
+    <Compile Include="Components\SealedComponentWithDependency.cs" />
+    <Compile Include="Components\TrivialComponentWithDependency.cs" />
+    <Compile Include="Components\UsesComponentWithDispose.cs" />
     <Compile Include="Lifestyle\CustomLifestyle_InstanceScope.cs" />
     <Compile Include="Lifestyle\CustomLifestyle_Scoped.cs" />
     <Compile Include="Lifestyle\ScopedLifestyleTestCase.cs" />
@@ -612,7 +612,7 @@
     <Compile Include="Interceptors\TestInterceptor2.cs" />
     <Compile Include="Interceptors\TestInterceptor3.cs" />
     <Compile Include="Interceptors\WatcherInterceptorSelector.cs" />
-    <Compile Include="Lifestyle\Components\ComponentWithDispose.cs" />
+    <Compile Include="Components\ComponentWithDispose.cs" />
     <Compile Include="Lifestyle\CustomLifestyle_Scope.cs" />
     <Compile Include="Proxies\ComponentProxyRegistrationTestCase.cs" />
     <Compile Include="ProxyInfrastructure\DisposableHook.cs" />
@@ -796,29 +796,29 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="LazyLoadingTestCase.cs" />
-    <Compile Include="Lifestyle\Components\DisposableBase.cs" />
-    <Compile Include="Lifestyle\Components\MyCustomerActivator.cs" />
+    <Compile Include="Components\DisposableBase.cs" />
+    <Compile Include="Components\MyCustomerActivator.cs" />
     <Compile Include="Lifecycle\DecomissioningResponsibilitiesTestCase.cs" />
     <Compile Include="Lifecycle\InitializableTestCase.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Lifestyle\Components\PerWebRequestComponent.cs" />
-    <Compile Include="Lifestyle\Components\CustomComponent.cs">
+    <Compile Include="Components\PerWebRequestComponent.cs" />
+    <Compile Include="Components\CustomComponent.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Lifestyle\Components\IComponent.cs">
+    <Compile Include="Components\IComponent.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Lifestyle\Components\TrivialComponent.cs">
+    <Compile Include="Components\TrivialComponent.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Lifestyle\Components\PerThreadComponent.cs">
+    <Compile Include="Components\PerThreadComponent.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Lifestyle\SingletonComponent.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Lifestyle\Components\TransientComponent.cs">
+    <Compile Include="Components\TransientComponent.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Lifestyle\LifestyleManagerTestCase.cs">
@@ -1428,7 +1428,9 @@
   <ItemGroup>
     <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Lifestyle\Components\" />
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" Condition="($(MSBuildTargets) == '') Or ($(MSBuildTargets) == 'CSharp')" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight\v4.0\Microsoft.Silverlight.CSharp.targets" Condition="$(MSBuildTargets) == 'Silverlight 4.0'" />
   <Import Project="$(RootPath)\Settings.proj" />

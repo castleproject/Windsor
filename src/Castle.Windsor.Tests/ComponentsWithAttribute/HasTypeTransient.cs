@@ -15,7 +15,8 @@
 namespace Castle.Windsor.Tests.ComponentsWithAttribute
 {
 	using Castle.Core;
-	using Castle.Windsor.Tests.Components;
+
+	using CastleTests.Components;
 
 	[CastleComponent(typeof(ISimpleService), Lifestyle = LifestyleType.Transient)]
 	public class HasTypeTransient : ISimpleService

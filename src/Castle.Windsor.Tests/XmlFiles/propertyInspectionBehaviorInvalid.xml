@@ -3,7 +3,7 @@
 	<components>
 
 		<component id="comp1" 
-			type="Castle.Windsor.Tests.Components.ExtendedComponentWithProperties, Castle.Windsor.Tests"
+			type="ExtendedComponentWithProperties"
 			inspectionBehavior="Invalid">
 		</component>
 

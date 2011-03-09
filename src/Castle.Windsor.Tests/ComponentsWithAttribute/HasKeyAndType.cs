@@ -15,7 +15,8 @@
 namespace Castle.Windsor.Tests.ComponentsWithAttribute
 {
 	using Castle.Core;
-	using Castle.Windsor.Tests.Components;
+
+	using CastleTests.Components;
 
 	[CastleComponent("keyAndType", typeof(ISimpleService))]
 	public class HasKeyAndType : ISimpleService

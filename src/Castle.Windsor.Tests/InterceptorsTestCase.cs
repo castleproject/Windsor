@@ -27,11 +27,12 @@ namespace Castle.Windsor.Tests
 	using Castle.MicroKernel.Registration;
 	using Castle.ProxyInfrastructure;
 	using Castle.Windsor.Installer;
-	using Castle.Windsor.Tests.Components;
 	using Castle.Windsor.Tests.Interceptors;
 #if !SILVERLIGHT
 	using Castle.XmlFiles;
 #endif
+	using CastleTests.Components;
+
 	using NUnit.Framework;
 
 	[TestFixture]

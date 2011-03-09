@@ -3,10 +3,10 @@
 	<components>
 		<component
 			id="myOtherService"
-			type="Castle.Windsor.Tests.Components.SimpleMixIn, Castle.Windsor.Tests" />
+			type="SimpleMixIn" />
 		<component
 			id="ValidComponent"
-			type="Castle.Windsor.Tests.Components.CalculatorService, Castle.Windsor.Tests">
+			type="CalculatorService">
 			<mixins>
 				<mixin>${myOtherService}</mixin>
 			</mixins>

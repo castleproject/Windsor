@@ -14,7 +14,7 @@
 
 namespace Castle.MicroKernel.Tests.ClassComponents
 {
-	using Castle.Windsor.Tests.Components;
+	using CastleTests.Components;
 
 	public class GenericImpl3<T> : IGeneric<T>
 	{

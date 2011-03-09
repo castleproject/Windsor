@@ -1,8 +1,9 @@
 namespace Castle.Windsor.Tests.Config
 {
 #if !SILVERLIGHT
-	using Castle.Windsor.Tests.Components;
 	using Castle.Windsor.Tests.Interceptors;
+
+	using CastleTests.Components;
 
 	using NUnit.Framework;
 	using Config = Castle.Windsor.Installer.Configuration;

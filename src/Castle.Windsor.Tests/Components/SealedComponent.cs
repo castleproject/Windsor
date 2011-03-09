@@ -12,20 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.MicroKernel.Tests.Lifestyle.Components
+namespace CastleTests.Components
 {
-	public class UsesComponentWithDispose
+	public sealed class SealedComponent : IComponent
 	{
-		private readonly ComponentWithDispose cwd;
-
-		public UsesComponentWithDispose(ComponentWithDispose cwd)
+		public int ID
 		{
-			this.cwd = cwd;
-		}
-
-		public ComponentWithDispose Disposable
-		{
-			get { return cwd; }
+			get { return 0; }
 		}
 	}
 }

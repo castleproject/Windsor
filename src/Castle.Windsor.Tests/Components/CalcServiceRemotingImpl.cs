@@ -18,8 +18,6 @@ namespace CastleTests.Components
 	using System;
 	using System.Linq;
 
-	using Castle.Windsor.Tests.Components;
-
 	public class CalcServiceRemotingImpl : MarshalByRefObject, ICalcService
 	{
 		public bool Disposed

@@ -14,7 +14,7 @@
 
 namespace Castle.Windsor.Tests.ClassComponents
 {
-	using Castle.Windsor.Tests.Components;
+	using CastleTests.Components;
 
 	public class HasCtorDependency
 	{

@@ -2,8 +2,8 @@
 <configuration>
 <components>
   <component id='int.repos'
-    service='Castle.Windsor.Tests.IRepository`1'
-    type='Castle.Windsor.Tests.LoggingRepositoryDecorator`1'>
+    service='CastleTests.Components.IRepository`1'
+    type='LoggingRepositoryDecorator`1'>
   </component>
 </components>
 </configuration>

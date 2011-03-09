@@ -2,16 +2,16 @@
   <components>
 
     <component id='calc'
-         service='Castle.Windsor.Tests.Components.ICalcService, Castle.Windsor.Tests' 
-         type='Castle.Windsor.Tests.Components.CalculatorService, Castle.Windsor.Tests' />
+         service='ICalcService' 
+         type='CalculatorService' />
 
     <component id='int.repos.generic' 
-       service='Castle.Windsor.Tests.IRepository`1[[System.Int32]], Castle.Windsor.Tests' 
-       type='Castle.Windsor.Tests.DemoRepository`1[[System.Int32]], Castle.Windsor.Tests' />
+       service='CastleTests.Components.IRepository`1[[System.Int32, mscorlib]]' 
+       type='DemoRepository`1[[System.Int32, mscorlib]]' />
 
     <component id='int.repos' 
-           service='Castle.Windsor.Tests.IRepository`1[[System.Int32]], Castle.Windsor.Tests' 
-           type='Castle.Windsor.Tests.LoggingRepositoryDecorator`1[[System.Int32]], Castle.Windsor.Tests'>
+           service='CastleTests.Components.IRepository`1[[System.Int32, mscorlib]]' 
+           type='LoggingRepositoryDecorator`1[[System.Int32, mscorlib]]'>
       <parameters>
         <inner>${int.repos.generic}</inner>
       </parameters>
