@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,14 +15,27 @@
 namespace Castle.MicroKernel
 {
 	using System;
+	using System.Collections;
 	using System.ComponentModel;
 
 	using Castle.Core;
 
-	using System.Collections;
-
 	public partial interface IKernel : IKernelEvents, IDisposable
 	{
+		/// <summary>
+		///   Returns the component instance by the key
+		/// </summary>
+		[Obsolete("Use Resolve<object>(key) instead")]
+		[EditorBrowsable(EditorBrowsableState.Advanced)]
+		object this[String key] { get; }
+
+		/// <summary>
+		///   Returns the component instance by the service type
+		/// </summary>
+		[Obsolete("Use Resolve(service) or generic strongly typed version instead")]
+		[EditorBrowsable(EditorBrowsableState.Advanced)]
+		object this[Type service] { get; }
+
 		[Obsolete("Use Register(Component.For(classType).Named(key)) or generic version instead.")]
 		[EditorBrowsable(EditorBrowsableState.Advanced)]
 		void AddComponent(String key, Type classType);
@@ -112,5 +125,57 @@ namespace Castle.MicroKernel
 			)]
 		[EditorBrowsable(EditorBrowsableState.Advanced)]
 		void AddComponentWithExtendedProperties(String key, Type serviceType, Type classType, IDictionary extendedProperties);
+
+		/// <summary>
+		///   Adds a <see cref = "IFacility" /> to the kernel.
+		/// </summary>
+		/// <param name = "key"></param>
+		/// <param name = "facility"></param>
+		/// <returns></returns>
+		[Obsolete("Use AddFacility(IFacility) instead.")]
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		IKernel AddFacility(String key, IFacility facility);
+
+		/// <summary>
+		///   Creates and adds an <see cref = "IFacility" /> facility to the kernel.
+		/// </summary>
+		/// <typeparam name = "T">The facility type.</typeparam>
+		/// <param name = "key"></param>
+		[Obsolete("Use AddFacility<TFacility>() instead.")]
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		IKernel AddFacility<T>(String key) where T : IFacility, new();
+
+		/// <summary>
+		///   Creates and adds an <see cref = "IFacility" /> facility to the kernel.
+		/// </summary>
+		/// <typeparam name = "T">The facility type.</typeparam>
+		/// <param name = "key"></param>
+		/// <param name = "onCreate">The callback for creation.</param>
+		[Obsolete("Use AddFacility<TFacility>(Action<TFacility>) instead.")]
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		IKernel AddFacility<T>(String key, Action<T> onCreate)
+			where T : IFacility, new();
+
+		/// <summary>
+		///   Returns the component instance by the component key
+		///   using dynamic arguments
+		/// </summary>
+		/// <param name = "key"></param>
+		/// <param name = "arguments"></param>
+		/// <returns></returns>
+		[Obsolete("Use Resolve<object>(key, arguments) instead")]
+		[EditorBrowsable(EditorBrowsableState.Advanced)]
+		object Resolve(String key, IDictionary arguments);
+
+		/// <summary>
+		///   Returns the component instance by the component key
+		///   using dynamic arguments
+		/// </summary>
+		/// <param name = "key">Key to resolve</param>
+		/// <param name = "argumentsAsAnonymousType">Arguments to resolve the services</param>
+		/// <returns></returns>
+		[Obsolete("Use Resolve<object>(key, argumentsAsAnonymousType) instead")]
+		[EditorBrowsable(EditorBrowsableState.Advanced)]
+		object Resolve(String key, object argumentsAsAnonymousType);
 	}
 }
