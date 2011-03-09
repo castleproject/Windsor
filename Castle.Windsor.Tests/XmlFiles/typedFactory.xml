@@ -17,7 +17,7 @@
     <component id="standard.interceptor" type="Castle.DynamicProxy.StandardInterceptor, Castle.Core">
     </component>
     
-    <component id="default" type="CalculatorServiceWithMultipleInterfaces" service="Castle.Windsor.Tests.Components.ICalcService">
+    <component id="default" type="CalculatorServiceWithMultipleInterfaces" service="ICalcService">
     </component>
   </components>
 

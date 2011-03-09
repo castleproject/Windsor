@@ -14,8 +14,6 @@
 
 namespace CastleTests.Components
 {
-	using Castle.Windsor.Tests.Components;
-
 	public class ConsumerComp
 	{
 		private readonly ICalcService calcservice;

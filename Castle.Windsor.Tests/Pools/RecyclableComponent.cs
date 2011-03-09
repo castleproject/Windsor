@@ -15,7 +15,8 @@
 namespace Castle.MicroKernel.Tests.Pools
 {
 	using Castle.Core;
-	using Castle.Windsor.Tests.Components;
+
+	using CastleTests.Components;
 
 	public class RecyclableComponent : IRecyclable
 	{

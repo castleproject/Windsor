@@ -19,8 +19,6 @@ namespace CastleTests.Components
 {
 	using System;
 
-	using Castle.Windsor.Tests.Components;
-
 	using CastleTests.Facilities.Remoting;
 
 	using NUnit.Framework;

@@ -12,15 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.MicroKernel.Tests.Lifestyle.Components
+
+#if (!SILVERLIGHT)
+
+namespace CastleTests.Components
 {
 	using Castle.Core;
 
 	/// <summary>
 	///   Summary description for TransientComponent.
 	/// </summary>
-	[Transient]
-	public class TransientComponent : IComponent
+	[PerWebRequest]
+	public class PerWebRequestComponent : IComponent
 	{
 		public int ID
 		{
@@ -28,3 +31,5 @@ namespace Castle.MicroKernel.Tests.Lifestyle.Components
 		}
 	}
 }
+
+#endif

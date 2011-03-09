@@ -18,6 +18,8 @@ namespace Castle.Windsor.Tests
 	using Castle.MicroKernel.Registration;
 	using Castle.Windsor.Tests.Lifecycle;
 
+	using CastleTests.Components;
+
 	using NUnit.Framework;
 
 	[TestFixture]

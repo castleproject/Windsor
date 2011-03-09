@@ -18,8 +18,9 @@ namespace Castle.Windsor.Tests
 
 	using Castle.MicroKernel.SubSystems.Conversion;
 	using Castle.MicroKernel.Tests.ClassComponents;
-	using Castle.Windsor.Tests.Components;
 	using Castle.Windsor.Tests.Lifecycle;
+
+	using CastleTests.Components;
 
 	using NUnit.Framework;
 

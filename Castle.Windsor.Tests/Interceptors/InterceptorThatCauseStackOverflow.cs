@@ -15,7 +15,8 @@
 namespace Castle.Windsor.Tests.Interceptors
 {
 	using Castle.DynamicProxy;
-	using Castle.Windsor.Tests.Components;
+
+	using CastleTests.Components;
 
 	public class InterceptorThatCauseStackOverflow : IInterceptor
 	{

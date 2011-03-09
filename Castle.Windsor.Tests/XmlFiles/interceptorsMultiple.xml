@@ -1,19 +1,19 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <configuration>
   <components>
-    <component id="returns5" type="Castle.Windsor.Tests.Interceptors.ResultModifierInterceptor, Castle.Windsor.Tests">
+    <component id="returns5" type="ResultModifierInterceptor">
       <parameters>
         <returnValue>5</returnValue>
       </parameters>
     </component>
-        <component id="returns10" type="Castle.Windsor.Tests.Interceptors.ResultModifierInterceptor, Castle.Windsor.Tests">
+        <component id="returns10" type="ResultModifierInterceptor">
       <parameters>
         <returnValue>10</returnValue>
       </parameters>
     </component>
     <component
         id="component"
-        type="Castle.Windsor.Tests.Components.CalculatorService, Castle.Windsor.Tests">
+        type="CalculatorService">
       <interceptors>
         <interceptor>${returns10}</interceptor>
       </interceptors>

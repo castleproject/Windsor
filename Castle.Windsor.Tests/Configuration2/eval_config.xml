@@ -2,7 +2,7 @@
 	<components>
 		<component 
 			id="component" 
-			type="Castle.Windsor.Tests.Components.ComponentWithStringProperty, Castle.Windsor.Tests">
+			type="ComponentWithStringProperty">
 			<parameters>
 				<name><?eval $BaseDirectory?></name>
 			</parameters>

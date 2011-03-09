@@ -1,4 +1,4 @@
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,24 +12,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
-#if (!SILVERLIGHT)
-
-namespace Castle.MicroKernel.Tests.Lifestyle.Components
+namespace CastleTests.Components
 {
-	using Castle.Core;
-
-	/// <summary>
-	///   Summary description for TransientComponent.
-	/// </summary>
-	[PerWebRequest]
-	public class PerWebRequestComponent : IComponent
+	public class UsesComponentWithDispose
 	{
-		public int ID
+		private readonly ComponentWithDispose cwd;
+
+		public UsesComponentWithDispose(ComponentWithDispose cwd)
 		{
-			get { return GetHashCode(); }
+			this.cwd = cwd;
+		}
+
+		public ComponentWithDispose Disposable
+		{
+			get { return cwd; }
 		}
 	}
 }
-
-#endif

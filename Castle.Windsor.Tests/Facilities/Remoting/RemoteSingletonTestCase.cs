@@ -21,7 +21,6 @@ namespace CastleTests.Facilities.Remoting
 	using System.Runtime.Remoting;
 
 	using Castle.MicroKernel.Registration;
-	using Castle.Windsor.Tests.Components;
 
 	using CastleTests.Components;
 

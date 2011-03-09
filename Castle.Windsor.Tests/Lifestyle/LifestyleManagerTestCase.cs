@@ -25,6 +25,8 @@ namespace Castle.MicroKernel.Tests.Lifestyle
 	using Castle.MicroKernel.Tests.Lifestyle.Components;
 	using Castle.Windsor.Tests.ClassComponents;
 
+	using CastleTests.Components;
+
 	using NUnit.Framework;
 
 	/// <summary>

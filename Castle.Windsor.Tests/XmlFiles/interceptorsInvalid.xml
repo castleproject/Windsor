@@ -3,7 +3,7 @@
   <components>
     <component
       id="ComponentWithInvalidInterceptor"
-      type="Castle.Windsor.Tests.Components.CalculatorService, Castle.Windsor.Tests">
+      type="CalculatorService">
       <interceptors>
         <interceptor>InvalidInterceptor</interceptor>
       </interceptors>

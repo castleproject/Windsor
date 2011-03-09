@@ -17,9 +17,9 @@ namespace Castle
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Resolvers.SpecializedResolvers;
 	using Castle.Windsor.Tests;
-	using Castle.Windsor.Tests.Components;
 
 	using CastleTests;
+	using CastleTests.Components;
 
 	using NUnit.Framework;
 

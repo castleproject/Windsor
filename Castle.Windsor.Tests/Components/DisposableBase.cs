@@ -1,4 +1,4 @@
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,19 +12,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.MicroKernel.Tests.Lifestyle.Components
+namespace CastleTests.Components
 {
-	using Castle.Core;
+	using System;
 
-	/// <summary>
-	///   Summary description for PerThreadComponent.
-	/// </summary>
-	[PerThread]
-	public class PerThreadComponent : IComponent
+	public abstract class DisposableBase : IDisposable
 	{
-		public int ID
+		public bool IsDisposed { get; private set; }
+
+		public void Dispose()
 		{
-			get { return GetHashCode(); }
+			if (IsDisposed)
+			{
+				throw new Exception("Already disposed");
+			}
+			IsDisposed = true;
 		}
 	}
 }

@@ -21,8 +21,6 @@ namespace CastleTests.Facilities.Remoting
 	using System.Runtime.Remoting;
 	using System.Runtime.Remoting.Activation;
 
-	using Castle.Windsor.Tests.Components;
-
 	using CastleTests.Components;
 
 	using NUnit.Framework;

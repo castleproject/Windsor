@@ -1,17 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <configuration>
   <components>
-    <component id="myInterceptor" type="Castle.Windsor.Tests.Interceptors.ResultModifierInterceptor, Castle.Windsor.Tests"/>
+    <component id="myInterceptor" type="ResultModifierInterceptor"/>
     <component
         id="ValidComponent"
-        type="Castle.Windsor.Tests.Components.CalculatorService, Castle.Windsor.Tests">
+        type="CalculatorService">
       <interceptors>
         <interceptor>${myInterceptor}</interceptor>
       </interceptors>
     </component>
     <component
         id="ComponentWithNonExistingInterceptor"
-        type="Castle.Windsor.Tests.Components.CalculatorService, Castle.Windsor.Tests">
+        type="CalculatorService">
       <interceptors>
         <interceptor>${NonExistingInterceptor}</interceptor>
       </interceptors>

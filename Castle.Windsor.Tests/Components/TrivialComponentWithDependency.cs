@@ -12,21 +12,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.MicroKernel.Tests.Lifestyle
+namespace CastleTests.Components
 {
-	using System;
-
-	public abstract class DisposableBase : IDisposable
+	public class TrivialComponentWithDependency : IComponent
 	{
-		public bool IsDisposed { get; private set; }
-
-		public void Dispose()
+		public TrivialComponentWithDependency(ISimpleService dependency)
 		{
-			if (IsDisposed)
-			{
-				throw new Exception("Already disposed");
-			}
-			IsDisposed = true;
+			Dependency = dependency;
+		}
+
+		public ISimpleService Dependency { get; private set; }
+
+		public int ID
+		{
+			get { return 0; }
 		}
 	}
 }

@@ -20,11 +20,11 @@ namespace Castle.Windsor.Tests
 	using Castle.MicroKernel.Handlers;
 	using Castle.MicroKernel.Registration;
 	using Castle.Windsor.Configuration.Interpreters;
-	using Castle.Windsor.Tests.Components;
 #if !SILVERLIGHT
 	using Castle.XmlFiles;
 #endif
 	using CastleTests;
+	using CastleTests.Components;
 
 	using NUnit.Framework;
 

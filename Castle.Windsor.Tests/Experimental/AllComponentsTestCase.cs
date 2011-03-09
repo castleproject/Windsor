@@ -22,9 +22,9 @@ namespace Castle.Windsor.Tests.Experimental
 	using Castle.Windsor.Experimental.Diagnostics;
 	using Castle.Windsor.Experimental.Diagnostics.DebuggerViews;
 	using Castle.Windsor.Experimental.Diagnostics.Extensions;
-	using Castle.Windsor.Tests.Components;
 
 	using CastleTests;
+	using CastleTests.Components;
 
 	using NUnit.Framework;
 

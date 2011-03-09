@@ -16,10 +16,10 @@ namespace Castle.Windsor.Tests
 {
 	using Castle.DynamicProxy;
 	using Castle.MicroKernel.Registration;
-	using Castle.Windsor.Tests.Components;
 	using Castle.Windsor.Tests.Interceptors;
 
 	using CastleTests;
+	using CastleTests.Components;
 
 	using NUnit.Framework;
 

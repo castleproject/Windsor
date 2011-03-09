@@ -19,7 +19,9 @@ namespace Castle.Windsor.Tests.Configuration2
 	using System;
 
 	using Castle.Windsor.Configuration.Interpreters;
-	using Castle.Windsor.Tests.Components;
+
+	using CastleTests.Components;
+
 	using NUnit.Framework;
 
 	[TestFixture]

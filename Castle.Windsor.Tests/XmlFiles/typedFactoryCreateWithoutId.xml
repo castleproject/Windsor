@@ -20,7 +20,7 @@
     
     <component id="default" 
       type="CalculatorServiceWithMultipleInterfaces"
-      service="Castle.Windsor.Tests.Components.ICalcService">
+      service="ICalcService">
     </component>
   </components>
 

@@ -21,10 +21,10 @@ namespace Castle.Proxies
 	using Castle.MicroKernel.Registration;
 	using Castle.ProxyInfrastructure;
 	using Castle.Windsor.Tests;
-	using Castle.Windsor.Tests.Components;
 	using Castle.Windsor.Tests.Interceptors;
 
 	using CastleTests;
+	using CastleTests.Components;
 
 	using NUnit.Framework;
 
@@ -104,8 +104,9 @@ namespace Castle.Proxies
 				                                Container.Resolve<ICalcService>());
 			Assert.AreEqual(
 				string.Format(
-					"Can't create component 'Castle.Windsor.Tests.Components.CalculatorService' as it has dependencies to be satisfied.{0}{0}'Castle.Windsor.Tests.Components.CalculatorService' is waiting for the following dependencies:{0}- Component 'Castle.ProxyInfrastructure.ProxyNothingHook' which was not registered. Did you misspell the name?{0}",
-					Environment.NewLine),
+					"Can't create component '{1}' as it has dependencies to be satisfied.{0}{0}'{1}' is waiting for the following dependencies:{0}- Component 'Castle.ProxyInfrastructure.ProxyNothingHook' which was not registered. Did you misspell the name?{0}",
+					Environment.NewLine,
+					typeof(CalculatorService).FullName),
 				exception.Message);
 		}
 
@@ -123,8 +124,9 @@ namespace Castle.Proxies
 				Assert.Throws<HandlerException>(() =>
 				                                Container.Resolve<ICalcService>());
 			var message = string.Format(
-				"Can't create component 'Castle.Windsor.Tests.Components.CalculatorService' as it has dependencies to be satisfied.{0}{0}'Castle.Windsor.Tests.Components.CalculatorService' is waiting for the following dependencies:{0}- Component 'Castle.Windsor.Tests.A' which was not registered. Did you misspell the name?{0}",
-				Environment.NewLine);
+				"Can't create component '{1}' as it has dependencies to be satisfied.{0}{0}'{1}' is waiting for the following dependencies:{0}- Component 'Castle.Windsor.Tests.A' which was not registered. Did you misspell the name?{0}",
+				Environment.NewLine,
+					typeof(CalculatorService).FullName);
 			Assert.AreEqual(message,exception.Message);
 		}
 
@@ -142,8 +144,9 @@ namespace Castle.Proxies
 				Assert.Throws<HandlerException>(() =>
 				                                Container.Resolve<ICalcService>());
 			var message = string.Format(
-				"Can't create component 'Castle.Windsor.Tests.Components.CalculatorService' as it has dependencies to be satisfied.{0}{0}'Castle.Windsor.Tests.Components.CalculatorService' is waiting for the following dependencies:{0}- Component 'Castle.Windsor.Tests.Interceptors.DummyInterceptorSelector' which was not registered. Did you misspell the name?{0}",
-				Environment.NewLine);
+				"Can't create component '{1}' as it has dependencies to be satisfied.{0}{0}'{1}' is waiting for the following dependencies:{0}- Component 'Castle.Windsor.Tests.Interceptors.DummyInterceptorSelector' which was not registered. Did you misspell the name?{0}",
+				Environment.NewLine,
+					typeof(CalculatorService).FullName);
 
 			Assert.AreEqual(message, exception.Message);
 		}

@@ -17,7 +17,8 @@ namespace Castle.Windsor.Tests.ComponentsWithAttribute
 	using System;
 
 	using Castle.Core;
-	using Castle.Windsor.Tests.Components;
+
+	using CastleTests.Components;
 
 	[CastleComponent(typeof(ISimpleService))]
 	public class HasType : ISimpleService,IMarkerInterface

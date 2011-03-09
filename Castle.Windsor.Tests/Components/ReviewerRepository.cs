@@ -12,10 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Windsor.Tests
+namespace CastleTests.Components
 {
-	using Castle.Windsor.Tests.Components;
-
 	public class ReviewerRepository : DemoRepository<IReviewer>
 	{
 		public new ICache<IReviewer> Cache { get; set; }

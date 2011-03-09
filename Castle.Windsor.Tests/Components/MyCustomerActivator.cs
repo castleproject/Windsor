@@ -12,20 +12,35 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.MicroKernel.Tests.Lifestyle.Components
+namespace CastleTests.Components
 {
 	using Castle.Core;
+	using Castle.MicroKernel;
+	using Castle.MicroKernel.ComponentActivator;
+	using Castle.MicroKernel.Context;
 	using Castle.MicroKernel.Tests.ClassComponents;
 
 	/// <summary>
-	///   Summary description for CustomComponent.
+	///   Summary description for MyCustomerActivator.
 	/// </summary>
-	[CustomLifestyle(typeof(CustomLifestyleManager))]
-	public class CustomComponent : IComponent
+	public class MyCustomerActivator : AbstractComponentActivator
 	{
-		public int ID
+		public MyCustomerActivator(ComponentModel model, IKernel kernel,
+		                           ComponentInstanceDelegate onCreation,
+		                           ComponentInstanceDelegate onDestruction)
+			: base(model, kernel, onCreation, onDestruction)
 		{
-			get { return GetHashCode(); }
+		}
+
+		protected override object InternalCreate(CreationContext context)
+		{
+			var customer = new CustomerImpl();
+			customer.Name = "James Bond";
+			return customer;
+		}
+
+		protected override void InternalDestroy(object instance)
+		{
 		}
 	}
 }

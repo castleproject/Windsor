@@ -21,6 +21,8 @@ namespace CastleTests.Lifecycle
 	using Castle.MicroKernel.Tests.Lifestyle;
 	using Castle.MicroKernel.Tests.Pools;
 
+	using CastleTests.Components;
+
 	using NUnit.Framework;
 
 	[TestFixture]
