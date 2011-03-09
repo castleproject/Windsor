@@ -27,6 +27,7 @@ namespace Castle.Core
 		/// Singleton components are instantiated once, and shared
 		/// between all clients.
 		/// </summary>
+		/// 
 		Singleton,
 		/// <summary>
 		/// Thread components have a unique instance per thread.
@@ -50,6 +51,11 @@ namespace Castle.Core
 		/// <summary>
 		/// Any other logic to create/release components.
 		/// </summary>
-		Custom
+		Custom,
+
+		/// <summary>
+		/// Instances are reused within the scope provided.
+		/// </summary>
+		Scoped
 	}
 }
