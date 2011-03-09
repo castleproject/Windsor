@@ -18,7 +18,7 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 
 	public interface IScopeManager
 	{
-		LifestyleScope CurrentScope { get; }
+		ScopeStash CurrentScopeStash { get; }
 
 		IDisposable BeginScope();
 

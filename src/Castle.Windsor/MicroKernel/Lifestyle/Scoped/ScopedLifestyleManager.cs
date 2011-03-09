@@ -18,16 +18,16 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 
 	public class ScopedLifestyleManager : AbstractLifestyleManager
 	{
-		private readonly IScopeManager manager;
+		private readonly ICurrentScopeAccessor accessor;
 
-		public ScopedLifestyleManager(IScopeManager manager)
+		public ScopedLifestyleManager(ICurrentScopeAccessor accessor)
 		{
-			this.manager = manager;
+			this.accessor = accessor;
 		}
 
 		public override void Dispose()
 		{
-			var current = GetCurrentScope(throwIfNotFound: false);
+			var current = accessor.GetScope(false);
 			if (current == null)
 			{
 				return;
@@ -43,7 +43,7 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 
 		public override object Resolve(CreationContext context, IReleasePolicy releasePolicy)
 		{
-			var scope = GetCurrentScope();
+			var scope = accessor.GetScope();
 			var burden = scope.GetComponentBurden(this);
 			if (burden != null)
 			{
@@ -53,19 +53,6 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 			scope.AddComponent(this, burden);
 			Track(burden, releasePolicy);
 			return burden.Instance;
-		}
-
-		private LifestyleScope GetCurrentScope(bool throwIfNotFound = true)
-		{
-			var scope = manager.CurrentScope;
-			if (scope == null && throwIfNotFound)
-			{
-				throw new ComponentResolutionException(
-					string.Format(
-						"Component '{0}' has scoped lifestyle, and it could not be resolved because no scope is accessible.  Did you forget to call container.BeginScope()?",
-						Model.Name), Model);
-			}
-			return scope;
 		}
 	}
 }
