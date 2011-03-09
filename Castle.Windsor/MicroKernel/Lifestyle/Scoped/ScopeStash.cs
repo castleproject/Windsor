@@ -15,43 +15,34 @@
 namespace Castle.MicroKernel.Lifestyle.Scoped
 {
 	using System;
-	using System.Linq;
 	using System.Collections.Generic;
+	using System.Linq;
 
-	public class LifestyleScope : IDisposable
+	public class ScopeStash : IDisposable
 	{
 		// NOTE: does that need to be thread safe?
-		private readonly IDictionary<ScopedLifestyleManager, Burden> cache;
+		private readonly IDictionary<object, Burden> cache = new Dictionary<object, Burden>();
 
-		public LifestyleScope()
-		{
-			cache = new Dictionary<ScopedLifestyleManager, Burden>();
-		}
-
-		public void AddComponent(ScopedLifestyleManager id, Burden componentBurden)
+		public void AddComponent(object id, Burden componentBurden)
 		{
 			cache.Add(id, componentBurden);
 		}
 
-		public Burden GetComponentBurden(ScopedLifestyleManager id)
+		public Burden GetComponentBurden(object id)
 		{
 			Burden burden;
 			cache.TryGetValue(id, out burden);
 			return burden;
 		}
 
-		public bool HasComponent(ScopedLifestyleManager id)
-		{
-			return cache.ContainsKey(id);
-		}
-
 		public void Dispose()
 		{
-			foreach (var cacheEntry in cache.Reverse().ToArray())
-			{
-				cacheEntry.Value.Release();
-			}
+			var burdens = cache.Values.Reverse().ToArray();
 			cache.Clear();
+			foreach (var burden in burdens)
+			{
+				burden.Release();
+			}
 		}
 	}
 }

@@ -18,6 +18,6 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 
 	public interface IScopeAccessor
 	{
-		Stack<LifestyleScope> CurrentStack { get; }
+		Stack<ScopeStash> CurrentStack { get; }
 	}
 }

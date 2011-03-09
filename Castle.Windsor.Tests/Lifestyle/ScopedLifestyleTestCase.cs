@@ -83,11 +83,11 @@ namespace CastleTests.Lifestyle
 		{
 			Container.Register(Component.For<A>().LifeStyle.Scoped);
 
-			var exception = Assert.Throws<ComponentResolutionException>(() =>
+			var exception = Assert.Throws<InvalidOperationException>(() =>
 			                                                            Container.Resolve<A>());
 
 			Assert.AreEqual(
-				"Component 'Castle.Windsor.Tests.A' has scoped lifestyle, and it could not be resolved because no scope is accessible.  Did you forget to call container.BeginScope()?",
+				"Scope was not available. Did you forget to call container.BeginScope()?",
 				exception.Message);
 		}
 

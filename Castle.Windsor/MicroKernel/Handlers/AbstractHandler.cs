@@ -363,7 +363,7 @@ namespace Castle.MicroKernel.Handlers
 					{
 						throw new InvalidOperationException("Scope Subsystem not found.  Did you forget to add it?");
 					}
-					manager = new ScopedLifestyleManager(scopeManager);
+					manager = new ScopedLifestyleManager(new CurrentScopeAccessor(scopeManager));
 					break;
 				case LifestyleType.Thread:
 #if SILVERLIGHT

@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,25 +15,24 @@
 namespace Castle.MicroKernel.Lifestyle.Scoped
 {
 	using System;
-	using System.Collections.Generic;
 
-	public class ThreadScopeAccessor : IScopeAccessor
+	public class CurrentScopeAccessor : ICurrentScopeAccessor
 	{
-		[ThreadStatic]
-		private static Stack<ScopeStash> scopes;
+		private readonly IScopeManager scopeManager;
 
-		public Stack<ScopeStash> CurrentStack
+		public CurrentScopeAccessor(IScopeManager scopeManager)
 		{
-			get
+			this.scopeManager = scopeManager;
+		}
+
+		public ScopeStash GetScope(bool required = true)
+		{
+			var scope = scopeManager.CurrentScopeStash;
+			if (scope == null && required)
 			{
-				var stack = scopes;
-				if (stack == null)
-				{
-					stack = new Stack<ScopeStash>();
-					scopes = stack;
-				}
-				return stack;
+				throw new InvalidOperationException("Scope was not available. Did you forget to call container.BeginScope()?");
 			}
+			return scope;
 		}
 	}
 }
