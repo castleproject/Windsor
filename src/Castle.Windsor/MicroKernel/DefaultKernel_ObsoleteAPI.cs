@@ -138,7 +138,8 @@ namespace Castle.MicroKernel
 			AddComponent(classType.FullName, serviceType, classType);
 		}
 
-		[Obsolete("Use Register(Component.For(serviceType).ImplementedBy<T>()) or generic version instead.")]
+		[Obsolete(
+			"Use Register(Component.For(serviceType).ImplementedBy<T>().Lifestyle.Is(lifestyle)) or generic version instead.")]
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public void AddComponent<T>(Type serviceType, LifestyleType lifestyle)
 		{
@@ -226,7 +227,8 @@ namespace Castle.MicroKernel
 			AddComponentInstance(serviceType.FullName, serviceType, instance);
 		}
 
-		[Obsolete("Use Register(Component.For<T>().Instance(instance)) instead.")]
+		[Obsolete("Use Register(Component.For(serviceType).ImplementedBy<T>().Instance(instance)) or generic version instead."
+			)]
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public void AddComponentInstance<T>(Type serviceType, object instance)
 		{
@@ -314,7 +316,7 @@ namespace Castle.MicroKernel
 		/// <param name = "arguments"></param>
 		/// <returns></returns>
 		[Obsolete("Use Resolve<object>(key, arguments) instead")]
-		[EditorBrowsable(EditorBrowsableState.Advanced)]
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public object Resolve(string key, IDictionary arguments)
 		{
 			return (this as IKernelInternal).Resolve(key, service: null, arguments: arguments, policy: releasePolicy);
@@ -328,7 +330,7 @@ namespace Castle.MicroKernel
 		/// <param name = "argumentsAsAnonymousType"></param>
 		/// <returns></returns>
 		[Obsolete("Use Resolve<object>(key, argumentsAsAnonymousType) instead")]
-		[EditorBrowsable(EditorBrowsableState.Advanced)]
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public object Resolve(string key, object argumentsAsAnonymousType)
 		{
 			return (this as IKernelInternal).Resolve(key, null, new ReflectionBasedDictionaryAdapter(argumentsAsAnonymousType), releasePolicy);
