@@ -492,6 +492,7 @@
     <Compile Include="Components\UsesComponentWithDispose.cs" />
     <Compile Include="Lifestyle\CustomLifestyle_InstanceScope.cs" />
     <Compile Include="Lifestyle\CustomLifestyle_Scoped.cs" />
+    <Compile Include="Lifestyle\ScopedLifestyleImplicitGraphScopingTestCase.cs" />
     <Compile Include="Lifestyle\ScopedLifestyleTestCase.cs" />
     <Compile Include="LoggingFacility\BaseTest.cs" />
     <Compile Include="LoggingFacility\Classes\ComplexLoggingComponent.cs" />

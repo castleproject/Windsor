@@ -18,9 +18,11 @@ namespace Castle.MicroKernel.Context
 	using System.Collections;
 	using System.Collections.Generic;
 	using System.Diagnostics;
+	using System.Linq;
 
 	using Castle.Core;
 	using Castle.MicroKernel.ComponentActivator;
+	using Castle.MicroKernel.Lifestyle.Scoped;
 	using Castle.MicroKernel.Releasers;
 	using Castle.MicroKernel.SubSystems.Conversion;
 
@@ -410,6 +412,12 @@ namespace Castle.MicroKernel.Context
 		public class ResolutionContext : IDisposable
 		{
 			private readonly CreationContext context;
+
+			public CreationContext Context
+			{
+				get { return context; }
+			}
+
 			private readonly IHandler handler;
 			private readonly bool requiresDecommission;
 			private readonly bool trackContext;
@@ -450,6 +458,21 @@ namespace Castle.MicroKernel.Context
 			{
 				context.ExitResolutionContext(burden, trackContext);
 			}
+		}
+
+		public ResolutionContext SelectScopeRoot(IScopeRootSelector scopeRootSelector)
+		{
+			var scopes = resolutionStack.Select(c => c.Handler).ToArray();
+			var selected = scopeRootSelector.Select(scopes);
+			if (selected != null)
+			{
+				var resolutionContext = resolutionStack.SingleOrDefault(s => s.Handler == selected);
+				if (resolutionContext != null)
+				{
+					return resolutionContext;
+				}
+			}
+			return null;
 		}
 	}
 }

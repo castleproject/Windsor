@@ -50,6 +50,11 @@ namespace Castle.MicroKernel.Registration.Lifestyle
 			get { return AddDescriptor(new LifestyleDescriptor<S>(LifestyleType.Scoped)); }
 		}
 
+		public ComponentRegistration<S> ScopedPer<TBaseForRoot>() where TBaseForRoot:class
+		{
+			return Scoped.ExtendedProperties(Property.ForKey("castle-scope-root").Eq(typeof(TBaseForRoot)));
+		}
+
 		public ComponentRegistration<S> Singleton
 		{
 			get { return AddDescriptor(new LifestyleDescriptor<S>(LifestyleType.Singleton)); }

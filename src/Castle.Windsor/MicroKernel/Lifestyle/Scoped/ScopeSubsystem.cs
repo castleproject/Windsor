@@ -93,18 +93,18 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 
 		private class EndScope : IDisposable
 		{
-			private readonly ScopeSubsystem _manager;
+			private readonly ScopeSubsystem manager;
 			private readonly ScopeStash scopeStash;
 
 			public EndScope(ScopeSubsystem manager, ScopeStash scopeStash)
 			{
-				_manager = manager;
+				this.manager = manager;
 				this.scopeStash = scopeStash;
 			}
 
 			public void Dispose()
 			{
-				_manager.EndCurrentScope(scopeStash);
+				manager.EndCurrentScope(scopeStash);
 			}
 		}
 	}

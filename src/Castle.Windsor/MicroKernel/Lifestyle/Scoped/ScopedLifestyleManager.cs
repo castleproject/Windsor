@@ -27,23 +27,11 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 
 		public override void Dispose()
 		{
-			var current = accessor.GetScope(false);
-			if (current == null)
-			{
-				return;
-			}
-
-			var instance = current.GetComponentBurden(this);
-			if (instance == null)
-			{
-				return;
-			}
-			instance.Release();
 		}
 
 		public override object Resolve(CreationContext context, IReleasePolicy releasePolicy)
 		{
-			var scope = accessor.GetScope();
+			var scope = accessor.GetScope(context);
 			var burden = scope.GetComponentBurden(this);
 			if (burden != null)
 			{
