@@ -17,10 +17,8 @@ namespace CastleTests.Lifestyle
 	using System;
 
 	using Castle.Core;
-	using Castle.MicroKernel;
 	using Castle.MicroKernel.Lifestyle.Scoped;
 	using Castle.MicroKernel.Registration;
-	using Castle.Windsor.Tests;
 	using Castle.Windsor.Tests.ClassComponents;
 
 	using CastleTests.Components;
@@ -84,7 +82,7 @@ namespace CastleTests.Lifestyle
 			Container.Register(Component.For<A>().LifeStyle.Scoped);
 
 			var exception = Assert.Throws<InvalidOperationException>(() =>
-			                                                            Container.Resolve<A>());
+			                                                         Container.Resolve<A>());
 
 			Assert.AreEqual(
 				"Scope was not available. Did you forget to call container.BeginScope()?",

@@ -16,9 +16,6 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 {
 	using System;
 
-	using Castle.MicroKernel;
-	using Castle.MicroKernel.Registration;
-	using Castle.MicroKernel.Registration.Lifestyle;
 	using Castle.Windsor;
 
 	public static class LifestyleExtensions

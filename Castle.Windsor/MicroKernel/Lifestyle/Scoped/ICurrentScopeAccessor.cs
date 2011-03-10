@@ -14,8 +14,10 @@
 
 namespace Castle.MicroKernel.Lifestyle.Scoped
 {
+	using Castle.MicroKernel.Context;
+
 	public interface ICurrentScopeAccessor
 	{
-		ScopeStash GetScope(bool required = true);
+		ScopeStash GetScope(CreationContext context, bool required = true);
 	}
 }
