@@ -27,7 +27,7 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 			scopes = new List<IScopeAccessor>();
 		}
 
-		public Stack<ScopeStash> CurrentStack
+		public Stack<ScopeCache> CurrentStack
 		{
 			get
 			{

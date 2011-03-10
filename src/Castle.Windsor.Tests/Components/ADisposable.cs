@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,28 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.MicroKernel.Lifestyle.Scoped
+namespace CastleTests.Components
 {
 	using System;
-	using System.Collections.Generic;
 
-	public class ThreadScopeAccessor : IScopeAccessor
+	public class ADisposable : A, IDisposable
 	{
-		[ThreadStatic]
-		private static Stack<ScopeCache> scopes;
+		public bool Disposed { get; set; }
 
-		public Stack<ScopeCache> CurrentStack
+		public void Dispose()
 		{
-			get
-			{
-				var stack = scopes;
-				if (stack == null)
-				{
-					stack = new Stack<ScopeCache>();
-					scopes = stack;
-				}
-				return stack;
-			}
+			Disposed = true;
 		}
 	}
 }

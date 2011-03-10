@@ -29,7 +29,111 @@ namespace CastleTests.Lifestyle
 		}
 
 		[Test]
-		public void Implicitly_graph_scoped_component_instances_are_reused()
+		public void Scoped_component_disposable_not_tracked()
+		{
+			Container.Register(
+				Component.For<A>().ImplementedBy<ADisposable>().LifeStyle.ScopedPer<CBA>(),
+				Component.For<B>().LifeStyle.Transient,
+				Component.For<CBA>().LifeStyle.Transient);
+
+			var cba = Container.Resolve<CBA>();
+
+			Assert.False(Kernel.ReleasePolicy.HasTrack(cba.A));
+		}
+
+		[Test]
+		public void Scoped_component_disposable_root_tracked()
+		{
+			Container.Register(
+				Component.For<A>().ImplementedBy<ADisposable>().LifeStyle.ScopedPer<CBA>(),
+				Component.For<B>().LifeStyle.Transient,
+				Component.For<CBA>().LifeStyle.Transient);
+
+			var cba = Container.Resolve<CBA>();
+
+			Assert.True(Kernel.ReleasePolicy.HasTrack(cba));
+		}
+
+		[Test]
+		public void Scoped_component_doesnt_unnecessarily_force_root_to_be_tracked()
+		{
+			Container.Register(
+				Component.For<A>().LifeStyle.ScopedPer<CBA>(),
+				Component.For<B>().LifeStyle.Transient,
+				Component.For<CBA>().LifeStyle.Transient);
+
+			var cba = Container.Resolve<CBA>();
+
+			Assert.False(Kernel.ReleasePolicy.HasTrack(cba));
+			Assert.False(Kernel.ReleasePolicy.HasTrack(cba.B));
+		}
+
+		[Test]
+		public void Scoped_component_doesnt_unnecessarily_get_tracked()
+		{
+			Container.Register(
+				Component.For<A>().LifeStyle.ScopedPer<CBA>(),
+				Component.For<B>().LifeStyle.Transient,
+				Component.For<CBA>().LifeStyle.Transient);
+
+			var cba = Container.Resolve<CBA>();
+
+			Assert.False(Kernel.ReleasePolicy.HasTrack(cba.A));
+		}
+
+		[Test]
+		public void Scoped_component_not_released_prematurely()
+		{
+			Container.Register(
+				Component.For<A>().ImplementedBy<ADisposable>().LifeStyle.ScopedPer<CBA>(),
+				Component.For<B>().ImplementedBy<BDisposable>().LifeStyle.Transient,
+				Component.For<CBA>().LifeStyle.Transient);
+
+			var cba = Container.Resolve<CBA>();
+
+			var b = (BDisposable)cba.B;
+			var wasADisposedAtTheTimeWhenDisposingB = false;
+			b.OnDisposing = () => wasADisposedAtTheTimeWhenDisposingB = ((ADisposable)b.A).Disposed;
+
+			Container.Release(cba);
+			Assert.True(b.Disposed);
+			Assert.False(wasADisposedAtTheTimeWhenDisposingB);
+		}
+
+		[Test]
+		public void Scoped_component_not_reused_across_resolves()
+		{
+			Container.Register(
+				Component.For<A>().LifeStyle.ScopedPer<CBA>(),
+				Component.For<B>().LifeStyle.Transient,
+				Component.For<CBA>().LifeStyle.Transient);
+
+			var one = Container.Resolve<CBA>();
+			var two = Container.Resolve<CBA>();
+
+			Assert.AreNotSame(one.A, two.A);
+			Assert.AreNotSame(one.B.A, two.B.A);
+			Assert.AreNotSame(one.B.A, two.A);
+		}
+
+		[Test]
+		public void Scoped_component_released_when_releasing_root_disposable()
+		{
+			Container.Register(
+				Component.For<A>().ImplementedBy<ADisposable>().LifeStyle.ScopedPer<CBA>(),
+				Component.For<B>().LifeStyle.Transient,
+				Component.For<CBA>().LifeStyle.Transient);
+
+			var cba = Container.Resolve<CBA>();
+			var a = (ADisposable)cba.A;
+
+			Container.Release(cba);
+
+			Assert.True(a.Disposed);
+		}
+
+		[Test]
+		public void Scoped_component_reused()
 		{
 			Container.Register(
 				Component.For<A>().LifeStyle.ScopedPer<CBA>(),
