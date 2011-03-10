@@ -23,6 +23,7 @@ namespace Castle.Windsor.Tests
 	using Castle.Windsor.Tests.ClassComponents;
 
 	using CastleTests;
+	using CastleTests.Components;
 
 	using NUnit.Framework;
 

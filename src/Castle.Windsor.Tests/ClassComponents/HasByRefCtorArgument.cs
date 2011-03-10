@@ -14,6 +14,8 @@
 
 namespace Castle.Windsor.Tests.ClassComponents
 {
+	using CastleTests.Components;
+
 	public class HasByRefCtorArgument
 	{
 		public HasByRefCtorArgument(ref A a)

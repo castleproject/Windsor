@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,22 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Windsor.Tests.ClassComponents
+namespace CastleTests.Components
 {
-	public class APropCtor
+	public class CycleA
 	{
-		private readonly A2 a;
-
-		public APropCtor(A2 a)
+		public CycleA(CycleB b)
 		{
-			this.a = a;
 		}
-
-		public A2 A
-		{
-			get { return a; }
-		}
-
-		public A Prop { get; set; }
 	}
 }

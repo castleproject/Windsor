@@ -26,6 +26,8 @@ namespace CastleTests.Activators
 	using Castle.MicroKernel.Tests.Configuration.Components;
 	using Castle.Windsor.Tests;
 
+	using CastleTests.Components;
+
 	using NUnit.Framework;
 
 	[TestFixture]

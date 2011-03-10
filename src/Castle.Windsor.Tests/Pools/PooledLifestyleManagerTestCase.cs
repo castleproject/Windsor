@@ -20,6 +20,7 @@ namespace Castle.MicroKernel.Tests.Pools
 	using Castle.Windsor.Tests;
 
 	using CastleTests;
+	using CastleTests.Components;
 
 	using NUnit.Framework;
 

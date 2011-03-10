@@ -27,6 +27,7 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 	using Castle.Windsor.Tests.Facilities.TypedFactory.Selectors;
 
 	using CastleTests;
+	using CastleTests.Components;
 
 	using NUnit.Framework;
 

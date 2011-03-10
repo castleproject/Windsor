@@ -18,6 +18,8 @@ namespace Castle.MicroKernel.Tests.ClassComponents
 
 	using Castle.Windsor.Tests;
 
+	using CastleTests.Components;
+
 	public class ServiceUser
 	{
 		private readonly A a;
