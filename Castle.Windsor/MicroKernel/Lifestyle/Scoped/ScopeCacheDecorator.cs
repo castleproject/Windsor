@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,24 +15,28 @@
 namespace Castle.MicroKernel.Lifestyle.Scoped
 {
 	using System;
-	using System.Collections.Generic;
 
-	public class ThreadScopeAccessor : IScopeAccessor
+	public class ScopeCacheDecorator : IScopeCache
 	{
-		[ThreadStatic]
-		private static Stack<ScopeCache> scopes;
+		public Action<object, Burden> OnInserted;
 
-		public Stack<ScopeCache> CurrentStack
+		private readonly ScopeCache inner;
+
+		public ScopeCacheDecorator(ScopeCache inner)
 		{
-			get
+			this.inner = inner;
+		}
+
+		public Burden this[object id]
+		{
+			get { return inner[id]; }
+			set
 			{
-				var stack = scopes;
-				if (stack == null)
+				inner[id] = value;
+				if (OnInserted != null)
 				{
-					stack = new Stack<ScopeCache>();
-					scopes = stack;
+					OnInserted(id, value);
 				}
-				return stack;
 			}
 		}
 	}

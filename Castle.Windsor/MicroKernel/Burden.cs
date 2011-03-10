@@ -127,6 +127,11 @@ namespace Castle.MicroKernel
 			{
 				dependencies.ForEach(c => c.Release());
 			}
+			var graphReleased = GraphReleased;
+			if (graphReleased != null)
+			{
+				graphReleased(this);
+			}
 			return true;
 		}
 
@@ -139,7 +144,7 @@ namespace Castle.MicroKernel
 			Instance = instance;
 			if (decommission == Decommission.LateBound)
 			{
-				// NOTE: this may need to be extended if we lazily provide any other decimmission concerns
+				// TODO: this may need to be extended if we lazily provide any other decimmission concerns
 				RequiresDecommission = instance is IDisposable;
 			}
 		}
@@ -151,6 +156,7 @@ namespace Castle.MicroKernel
 
 		public event BurdenReleaseDelegate Released;
 		public event BurdenReleaseDelegate Releasing;
+		public event BurdenReleaseDelegate GraphReleased;
 
 		private enum Decommission
 		{

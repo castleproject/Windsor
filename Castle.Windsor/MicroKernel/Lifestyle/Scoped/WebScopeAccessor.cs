@@ -22,7 +22,7 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 	{
 		private const string Scopes = "ioc.scope.currentstack";
 
-		public Stack<ScopeStash> CurrentStack
+		public Stack<ScopeCache> CurrentStack
 		{
 			get
 			{
@@ -32,11 +32,11 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 					return null;
 				}
 
-				var stack = (Stack<ScopeStash>)current.Items[Scopes];
+				var stack = (Stack<ScopeCache>)current.Items[Scopes];
 
 				if (stack == null)
 				{
-					stack = new Stack<ScopeStash>();
+					stack = new Stack<ScopeCache>();
 					current.Items[Scopes] = stack;
 				}
 

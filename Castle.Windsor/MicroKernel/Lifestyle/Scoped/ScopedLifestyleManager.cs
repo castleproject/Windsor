@@ -31,14 +31,14 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 
 		public override object Resolve(CreationContext context, IReleasePolicy releasePolicy)
 		{
-			var scope = accessor.GetScope(context);
-			var burden = scope.GetComponentBurden(this);
+			var scope = accessor.GetScopeCache(context);
+			var burden = scope[this];
 			if (burden != null)
 			{
 				return burden.Instance;
 			}
 			burden = base.CreateInstance(context, trackedExternally: true);
-			scope.AddComponent(this, burden);
+			scope[this] = burden;
 			Track(burden, releasePolicy);
 			return burden.Instance;
 		}

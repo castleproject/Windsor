@@ -535,9 +535,12 @@
     <Compile Include="MicroKernel\Lifestyle\Scoped\CurrentScopeAccessor.cs" />
     <Compile Include="MicroKernel\Lifestyle\Scoped\ICurrentScopeAccessor.cs" />
     <Compile Include="MicroKernel\Lifestyle\Scoped\IScopeAccessor.cs" />
+    <Compile Include="MicroKernel\Lifestyle\Scoped\IScopeCache.cs" />
     <Compile Include="MicroKernel\Lifestyle\Scoped\IScopeManager.cs" />
+    <Compile Include="MicroKernel\Lifestyle\Scoped\IScopeRootSelector.cs" />
     <Compile Include="MicroKernel\Lifestyle\Scoped\LifestyleExtensions.cs" />
-    <Compile Include="MicroKernel\Lifestyle\Scoped\ScopeStash.cs" />
+    <Compile Include="MicroKernel\Lifestyle\Scoped\ScopeCache.cs" />
+    <Compile Include="MicroKernel\Lifestyle\Scoped\ScopeCacheDecorator.cs" />
     <Compile Include="MicroKernel\Lifestyle\Scoped\ScopedLifestyleManager.cs" />
     <Compile Include="MicroKernel\Lifestyle\Scoped\ScopeSelector.cs" />
     <Compile Include="MicroKernel\Lifestyle\Scoped\ScopeSubsystem.cs" />

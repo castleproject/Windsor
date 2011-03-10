@@ -296,6 +296,8 @@
     <Compile Include="AbstractContainerTestCase.cs" />
     <Compile Include="Bugs\IoC-267.cs" />
     <Compile Include="ByRefDependenciesTestCase.cs" />
+    <Compile Include="Components\ADisposable.cs" />
+    <Compile Include="Components\BDisposable.cs" />
     <Compile Include="Components\CBA.cs" />
     <Compile Include="ClassComponents\CustomerRepository.cs" />
     <Compile Include="ClassComponents\DecoratedRepository.cs" />

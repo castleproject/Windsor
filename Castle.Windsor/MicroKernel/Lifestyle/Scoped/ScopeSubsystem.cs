@@ -38,7 +38,7 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 			this.scopes = scopes;
 		}
 
-		public ScopeStash CurrentScopeStash
+		public ScopeCache CurrentScopeCache
 		{
 			get
 			{
@@ -56,31 +56,31 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 
 		public IDisposable BeginScope()
 		{
-			var scope = new ScopeStash();
+			var scope = new ScopeCache();
 			GetCurrentScopes().Push(scope);
 			return new EndScope(this, scope);
 		}
 
 		public IDisposable RequireScope()
 		{
-			return (CurrentScopeStash == null) ? BeginScope() : null;
+			return (CurrentScopeCache == null) ? BeginScope() : null;
 		}
 
-		private void EndCurrentScope(ScopeStash scopeStash)
+		private void EndCurrentScope(ScopeCache scopeCache)
 		{
 			var scopes = GetCurrentScopes();
 
-			if (scopes.Peek() != scopeStash)
+			if (scopes.Peek() != scopeCache)
 			{
 				throw new InvalidOperationException(
 					"The scope is not current.  Did you forget to end a child scope?");
 			}
 
-			scopeStash.Dispose();
+			scopeCache.Dispose();
 			scopes.Pop();
 		}
 
-		private Stack<ScopeStash> GetCurrentScopes()
+		private Stack<ScopeCache> GetCurrentScopes()
 		{
 			var scopes = this.scopes.CurrentStack;
 			if (scopes == null)
@@ -94,17 +94,17 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 		private class EndScope : IDisposable
 		{
 			private readonly ScopeSubsystem manager;
-			private readonly ScopeStash scopeStash;
+			private readonly ScopeCache scopeCache;
 
-			public EndScope(ScopeSubsystem manager, ScopeStash scopeStash)
+			public EndScope(ScopeSubsystem manager, ScopeCache scopeCache)
 			{
 				this.manager = manager;
-				this.scopeStash = scopeStash;
+				this.scopeCache = scopeCache;
 			}
 
 			public void Dispose()
 			{
-				manager.EndCurrentScope(scopeStash);
+				manager.EndCurrentScope(scopeCache);
 			}
 		}
 	}
