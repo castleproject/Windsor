@@ -21,6 +21,7 @@ namespace Castle.Windsor.Tests.Handlers
 	using Castle.Windsor.Tests.ClassComponents;
 
 	using CastleTests;
+	using CastleTests.Components;
 
 	using NUnit.Framework;
 

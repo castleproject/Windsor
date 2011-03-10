@@ -16,6 +16,8 @@ namespace Castle.Generics
 {
 	using Castle.Windsor.Tests;
 
+	using CastleTests.Components;
+
 	public interface IARepository : IRepository<A>
 	{
 	}

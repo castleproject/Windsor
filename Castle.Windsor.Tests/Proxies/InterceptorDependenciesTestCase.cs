@@ -54,8 +54,9 @@ namespace CastleTests.Proxies
 				                                Container.Resolve<A>());
 			var message =
 				string.Format(
-					"Can't create component 'Castle.Windsor.Tests.A' as it has dependencies to be satisfied.{0}{0}'Castle.Windsor.Tests.A' is waiting for the following dependencies:{0}- Component 'fooInterceptor' which was not registered. Did you misspell the name?{0}",
-					Environment.NewLine);
+					"Can't create component '{1}' as it has dependencies to be satisfied.{0}{0}'{1}' is waiting for the following dependencies:{0}- Component 'fooInterceptor' which was not registered. Did you misspell the name?{0}",
+					Environment.NewLine,
+					typeof(A).FullName);
 
 			Assert.AreEqual(message, exception.Message);
 		}
@@ -69,8 +70,10 @@ namespace CastleTests.Proxies
 				                                Container.Resolve<A>());
 			var message =
 				string.Format(
-					"Can't create component 'Castle.Windsor.Tests.A' as it has dependencies to be satisfied.{0}{0}'Castle.Windsor.Tests.A' is waiting for the following dependencies:{0}- Component 'Castle.Windsor.Tests.Interceptors.ReturnDefaultInterceptor' which was not registered. Did you misspell the name?{0}",
-					Environment.NewLine);
+					"Can't create component '{1}' as it has dependencies to be satisfied.{0}{0}'{1}' is waiting for the following dependencies:{0}- Component '{2}' which was not registered. Did you misspell the name?{0}",
+					Environment.NewLine,
+					typeof(A).FullName,
+					typeof(ReturnDefaultInterceptor).FullName);
 
 			Assert.AreEqual(message, exception.Message);
 		}

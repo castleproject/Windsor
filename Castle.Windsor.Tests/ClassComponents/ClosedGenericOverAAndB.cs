@@ -16,6 +16,8 @@ namespace Castle.Windsor.Tests.ClassComponents
 {
 	using Castle.Windsor.Tests;
 
+	using CastleTests.Components;
+
 	public class ClosedSimpleGenericOverAAndB : ISimpleGeneric<A>, ISimpleGeneric<B>
 	{
 		A ISimpleGeneric<A>.Operation()

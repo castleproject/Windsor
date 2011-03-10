@@ -62,7 +62,7 @@ namespace Castle
 			                                                Container.Resolve<Generics.IRepository<A>>());
 
 			var message =
-				@"Requested type Castle.Generics.IRepository`1[Castle.Windsor.Tests.A] has 1 generic parameter(s), whereas component implementation type Castle.Generics.DoubleGenericRepository`2[T1,T2] requires 2. This means that Windsor does not have enough information to properly create that component for you. This is most likely a bug in your registration code.";
+				@"Requested type Castle.Generics.IRepository`1[CastleTests.Components.A] has 1 generic parameter(s), whereas component implementation type Castle.Generics.DoubleGenericRepository`2[T1,T2] requires 2. This means that Windsor does not have enough information to properly create that component for you. This is most likely a bug in your registration code.";
 			Assert.AreEqual(message, exception.Message);
 		}
 
