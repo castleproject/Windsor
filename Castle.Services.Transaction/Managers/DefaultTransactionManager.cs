@@ -73,10 +73,10 @@ namespace Castle.Services.Transaction
 		/// </summary>
 		public ITransaction CreateTransaction(TransactionMode txMode, IsolationMode isolationMode)
 		{
-			return CreateTransaction(txMode, isolationMode, false);
+			return CreateTransaction(txMode, isolationMode, false, false);
 		}
 
-		public ITransaction CreateTransaction(TransactionMode txMode, IsolationMode iMode, bool isAmbient)
+        public ITransaction CreateTransaction(TransactionMode txMode, IsolationMode iMode, bool isAmbient, bool isReadOnly)
 		{
 			txMode = ObtainDefaultTransactionMode(txMode);
 
@@ -103,7 +103,7 @@ namespace Castle.Services.Transaction
 
 			if (transaction == null)
 			{
-				transaction = InstantiateTransaction(txMode, iMode, isAmbient);
+				transaction = InstantiateTransaction(txMode, iMode, isAmbient, isReadOnly);
 
 				if (isAmbient)
 				{
@@ -127,9 +127,9 @@ namespace Castle.Services.Transaction
 			return transaction;
 		}
 
-		private TransactionBase InstantiateTransaction(TransactionMode mode, IsolationMode isolationMode, bool ambient)
+        private TransactionBase InstantiateTransaction(TransactionMode mode, IsolationMode isolationMode, bool ambient, bool readOnly)
 		{
-			var t = new TalkativeTransaction(mode, isolationMode, ambient);
+			var t = new TalkativeTransaction(mode, isolationMode, ambient, readOnly);
 
 			t.TransactionCompleted += CompletedHandler;
 			t.TransactionRolledBack += RolledBackHandler;

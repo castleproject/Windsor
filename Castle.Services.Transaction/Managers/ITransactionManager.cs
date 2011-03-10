@@ -40,7 +40,7 @@ namespace Castle.Services.Transaction
 		event EventHandler<TransactionEventArgs> TransactionDisposed;
 		
 		/// <summary>
-		/// <see cref="CreateTransaction(Castle.Services.Transaction.TransactionMode,Castle.Services.Transaction.IsolationMode,bool)"/>.
+		/// <see cref="CreateTransaction(Castle.Services.Transaction.TransactionMode,Castle.Services.Transaction.IsolationMode,bool,bool)"/>.
 		/// </summary>
 		ITransaction CreateTransaction(TransactionMode transactionMode, IsolationMode isolationMode);
 
@@ -50,6 +50,7 @@ namespace Castle.Services.Transaction
 		/// <param name="transactionMode">The transaction mode.</param>
 		/// <param name="isolationMode">The isolation mode.</param>
 		/// <param name="isAmbient">if set to <c>true</c>, the TM will create a distributed transaction.</param>
+        /// <param name="isReadOnly">if set to <c>true</c>, the TM will create a read only transaction.</param>
 		/// <returns>
 		/// null &lt;- If transactions are just supported, but there is no ambient transaction
 		/// null &lt;- If transactions are not supported and there indeed is no ambient transaction (if there is, see exception docs)
@@ -60,7 +61,7 @@ namespace Castle.Services.Transaction
 		/// and yet there is an ambient transaction in the transaction manager
 		/// which is active.
 		/// </exception>
-		ITransaction CreateTransaction(TransactionMode transactionMode, IsolationMode isolationMode, bool isAmbient);
+		ITransaction CreateTransaction(TransactionMode transactionMode, IsolationMode isolationMode, bool isAmbient, bool isReadOnly);
 
 		/// <summary>
 		/// Returns the current <see cref="ITransaction"/>. 

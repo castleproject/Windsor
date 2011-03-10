@@ -24,15 +24,17 @@ namespace Castle.Services.Transaction
 	{
 		private static readonly ILog _Logger = LogManager.GetLogger(typeof (TalkativeTransaction));
 		private bool _IsAmbient;
+        private bool _IsReadOnly;
 
 		public event EventHandler<TransactionEventArgs> TransactionCompleted;
 		public event EventHandler<TransactionFailedEventArgs> TransactionFailed;
 		public event EventHandler<TransactionEventArgs> TransactionRolledBack;
 
-		public TalkativeTransaction(TransactionMode transactionMode, IsolationMode isolationMode, bool isAmbient) : 
+		public TalkativeTransaction(TransactionMode transactionMode, IsolationMode isolationMode, bool isAmbient, bool isReadOnly) : 
 			base(null, transactionMode, isolationMode)
 		{
 			_IsAmbient = isAmbient;
+            _IsReadOnly = isReadOnly;
 		}
 
 		public override bool IsAmbient
@@ -40,6 +42,12 @@ namespace Castle.Services.Transaction
 			get { return _IsAmbient; }
 			protected set { _IsAmbient = value; }
 		}
+
+        public override bool IsReadOnly
+        {
+            get { return _IsReadOnly; }
+            protected set { _IsReadOnly = value; }
+        }
 
 		public override void Begin()
 		{

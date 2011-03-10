@@ -136,5 +136,10 @@ namespace Castle.Services.Transaction
 		/// </summary>
 		/// <returns></returns>
 		IEnumerable<IResource> Resources();
+
+        /// <summary>
+        /// Returns true for a read only transaction, false otherwise.
+        /// </summary>
+        bool IsReadOnly { get; }
 	}
 }

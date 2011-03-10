@@ -72,6 +72,18 @@ namespace Castle.Services.Transaction
 		/// </summary>
 		public override bool IsAmbient { get; protected set; }
 
+        public override bool IsReadOnly
+        {
+            get
+            {
+                return false;
+            }
+            protected set
+            {
+                throw new NotImplementedException();
+            }
+        }
+
 		///<summary>
 		/// Gets the name of the transaction.
 		///</summary>

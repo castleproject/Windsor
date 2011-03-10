@@ -79,6 +79,11 @@ namespace Castle.Services.Transaction
 		/// </summary>
 		public abstract bool IsAmbient { get; protected set; }
 
+        /// <summary>
+        /// <see cref="ITransaction.IsReadOnly"/>.
+        /// </summary>
+        public abstract bool IsReadOnly { get; protected set; }
+
 		/// <summary>
 		/// Gets whether rollback only is set.
 		/// </summary>

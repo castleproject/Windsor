@@ -393,5 +393,6 @@ namespace Castle.Services.Transaction.Tests
 			Assert.That(c.IsChildTransaction);
 			Assert.That(c.IsAmbient);
 		}
+
 	}
 }
