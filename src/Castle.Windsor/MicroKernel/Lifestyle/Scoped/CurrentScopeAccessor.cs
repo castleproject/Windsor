@@ -44,7 +44,7 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 
 		public IHandler Select(IHandler[] resolutionStack)
 		{
-			return resolutionStack.FirstOrDefault(h => h.ComponentModel.Implementation == scopeRoot);
+			return resolutionStack.Reverse().FirstOrDefault(h => scopeRoot.IsAssignableFrom(h.ComponentModel.Implementation));
 		}
 
 		private IScopeCache GetCache(CreationContext.ResolutionContext selected)

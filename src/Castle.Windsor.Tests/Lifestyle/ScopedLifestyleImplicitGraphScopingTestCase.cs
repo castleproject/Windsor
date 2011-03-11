@@ -29,6 +29,20 @@ namespace CastleTests.Lifestyle
 		}
 
 		[Test]
+		public void Scoped_component_created_for_outermost_sub_graph()
+		{
+			Container.Register(
+				Component.For<A>().LifeStyle.ScopedPer<CBA>(),
+				Component.For<B>().LifeStyle.Transient,
+				Component.For<CBA>().ImplementedBy<CBADecorator>().LifeStyle.Transient,
+				Component.For<CBA>().LifeStyle.Transient);
+
+			var cba = Container.Resolve<CBA>();
+			var inner = ((CBADecorator)cba).Inner;
+			Assert.AreSame(cba.A, inner.A);
+		}
+
+		[Test]
 		public void Scoped_component_disposable_not_tracked()
 		{
 			Container.Register(
