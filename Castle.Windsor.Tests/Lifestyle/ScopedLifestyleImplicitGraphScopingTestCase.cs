@@ -101,6 +101,25 @@ namespace CastleTests.Lifestyle
 		}
 
 		[Test]
+		public void Scoped_component_not_released_prematurely_interdependencies()
+		{
+			Container.Register(
+				Component.For<A>().ImplementedBy<ADisposable>().LifeStyle.ScopedPer<CBA>(),
+				Component.For<B>().ImplementedBy<BDisposable>().LifeStyle.ScopedPer<CBA>(),
+				Component.For<CBA>().LifeStyle.Transient);
+
+			var cba = Container.Resolve<CBA>();
+
+			var b = (BDisposable)cba.B;
+			var wasADisposedAtTheTimeWhenDisposingB = false;
+			b.OnDisposing = () => wasADisposedAtTheTimeWhenDisposingB = ((ADisposable)b.A).Disposed;
+
+			Container.Release(cba);
+			Assert.True(b.Disposed);
+			Assert.False(wasADisposedAtTheTimeWhenDisposingB);
+		}
+
+		[Test]
 		public void Scoped_component_not_reused_across_resolves()
 		{
 			Container.Register(
