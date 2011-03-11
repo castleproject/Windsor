@@ -14,8 +14,11 @@
 
 namespace CastleTests.Lifestyle
 {
+	using System.Linq;
+
 	using Castle.MicroKernel.Lifestyle.Scoped;
 	using Castle.MicroKernel.Registration;
+	using Castle.MicroKernel.Resolvers.SpecializedResolvers;
 
 	using CastleTests.Components;
 
@@ -147,6 +150,48 @@ namespace CastleTests.Lifestyle
 			Assert.AreNotSame(one.A, two.A);
 			Assert.AreNotSame(one.B.A, two.B.A);
 			Assert.AreNotSame(one.B.A, two.A);
+		}
+
+		[Test]
+		public void Scoped_component_properly_release_when_roots_collection_is_involved()
+		{
+			Kernel.Resolver.AddSubResolver(new CollectionResolver(Kernel));
+			Container.Register(
+				Component.For<A>().ImplementedBy<ADisposable>().LifeStyle.ScopedPer<AppScreenCBA>(),
+				Component.For<B>().LifeStyle.Transient,
+				Component.For<CBA>().LifeStyle.Transient,
+				Component.For<IAppScreen>().ImplementedBy<AppScreenCBA>().LifeStyle.Transient.Named("1"),
+				Component.For<IAppScreen>().ImplementedBy<AppScreenCBA>().LifeStyle.Transient.Named("2"),
+				Component.For<IAppScreen>().ImplementedBy<AppScreenCBA>().LifeStyle.Transient.Named("3"),
+				Component.For<AppHost>().LifeStyle.Transient);
+
+			var host = Container.Resolve<AppHost>();
+
+			var a = host.Screens.Cast<AppScreenCBA>().Select(s => s.Dependency.A as ADisposable).ToArray();
+
+			Container.Dispose();
+
+			Assert.True(a.All(x => x.Disposed));
+		}
+
+		[Test]
+		public void Scoped_component_properly_scoped_when_roots_collection_is_involved()
+		{
+			Kernel.Resolver.AddSubResolver(new CollectionResolver(Kernel));
+			Container.Register(
+				Component.For<A>().LifeStyle.ScopedPer<AppScreenCBA>(),
+				Component.For<B>().LifeStyle.Transient,
+				Component.For<CBA>().LifeStyle.Transient,
+				Component.For<IAppScreen>().ImplementedBy<AppScreenCBA>().LifeStyle.Transient.Named("1"),
+				Component.For<IAppScreen>().ImplementedBy<AppScreenCBA>().LifeStyle.Transient.Named("2"),
+				Component.For<IAppScreen>().ImplementedBy<AppScreenCBA>().LifeStyle.Transient.Named("3"),
+				Component.For<AppHost>().LifeStyle.Transient);
+
+			var host = Container.Resolve<AppHost>();
+
+			var a = host.Screens.Cast<AppScreenCBA>().Select(s => s.Dependency.A).Distinct().ToArray();
+
+			Assert.AreEqual(3, a.Length);
 		}
 
 		[Test]

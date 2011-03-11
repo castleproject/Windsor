@@ -297,6 +297,8 @@
     <Compile Include="Bugs\IoC-267.cs" />
     <Compile Include="ByRefDependenciesTestCase.cs" />
     <Compile Include="Components\ADisposable.cs" />
+    <Compile Include="Components\AppHost.cs" />
+    <Compile Include="Components\AppScreenCBA.cs" />
     <Compile Include="Components\BDisposable.cs" />
     <Compile Include="Components\CBA.cs" />
     <Compile Include="ClassComponents\CustomerRepository.cs" />
@@ -354,6 +356,7 @@
     <Compile Include="Components\HumanArm.cs" />
     <Compile Include="Components\IAlarmSender.cs" />
     <Compile Include="Components\IAmContravariant.cs" />
+    <Compile Include="Components\IAppScreen.cs" />
     <Compile Include="Components\IArm.cs" />
     <Compile Include="Components\ICache.cs" />
     <Compile Include="Components\ICamera.cs" />
