@@ -326,6 +326,7 @@
     <Compile Include="Components\CalculatorServiceWithStandardInterceptor.cs" />
     <Compile Include="Components\CalulcatorFactory.cs" />
     <Compile Include="Components\CameraService.cs" />
+    <Compile Include="Components\CBADecorator.cs" />
     <Compile Include="Components\CompA.cs" />
     <Compile Include="Components\CompB.cs" />
     <Compile Include="Components\CompC.cs" />
