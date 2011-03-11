@@ -27,6 +27,11 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory.Delegates
 			counter = 0;
 		}
 
+		public Func<int, Foo> Factory
+		{
+			get { return myFooFactory; }
+		}
+
 		public Foo GetFoo()
 		{
 			return myFooFactory(++counter);
