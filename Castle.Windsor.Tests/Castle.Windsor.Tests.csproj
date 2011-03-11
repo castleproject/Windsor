@@ -427,6 +427,7 @@
     <Compile Include="Facilities\TypedFactory\Delegates\UsesBarDelegateProperty.cs" />
     <Compile Include="Facilities\TypedFactory\Delegates\UsesBarDelegateTwoConstructors.cs" />
     <Compile Include="Facilities\TypedFactory\Delegates\UsesFooAndDelegate.cs" />
+    <Compile Include="Facilities\TypedFactory\Delegates\UsesTwoFooDelegates.cs" />
     <Compile Include="Facilities\TypedFactory\Factories\IComponentFactory2.cs" />
     <Compile Include="Facilities\TypedFactory\Factories\IFactoryWithParametersExtended.cs" />
     <Compile Include="Facilities\TypedFactory\Factories\IFactoryWithParametersTwoBases.cs" />

@@ -22,7 +22,8 @@ namespace CastleTests.Lifestyle
 
 	using NUnit.Framework;
 
-	[TestFixture][IgnoreAttribute("Not implemented yet!")]
+	[TestFixture]
+	[Ignore("Not implemented yet!")]
 	public class ScopedLifestyleAndTypedFactoriesTestCase : AbstractContainerTestCase
 	{
 		protected override void AfterContainerCreated()
@@ -67,6 +68,22 @@ namespace CastleTests.Lifestyle
 
 			var one = instance.GetFoo();
 			var two = instance.GetFoo();
+
+			Assert.AreSame(one, two);
+		}
+
+		[Test]
+		public void Scoped_component_via_factory_reused_properly_across_factories()
+		{
+			Container.Register(Component.For<UsesTwoFooDelegates>().LifeStyle.Transient,
+			                   Component.For<Foo>().LifeStyle.ScopedPer<UsesTwoFooDelegates>());
+
+			var instance = Container.Resolve<UsesTwoFooDelegates>();
+
+			Assert.AreNotSame(instance.One, instance.Two);
+
+			var one = instance.GetFooOne();
+			var two = instance.GetFooTwo();
 
 			Assert.AreSame(one, two);
 		}
