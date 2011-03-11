@@ -14,6 +14,8 @@
 
 namespace CastleTests.Lifestyle
 {
+	using System;
+
 	using Castle.Facilities.TypedFactory;
 	using Castle.MicroKernel.Lifestyle.Scoped;
 	using Castle.MicroKernel.Registration;
@@ -23,7 +25,7 @@ namespace CastleTests.Lifestyle
 	using NUnit.Framework;
 
 	[TestFixture]
-	[Ignore("Not implemented yet!")]
+	[Ignore("This althouth initially looked as a good idea quickly gets out of hand and we can't really support it.")]
 	public class ScopedLifestyleAndTypedFactoriesTestCase : AbstractContainerTestCase
 	{
 		protected override void AfterContainerCreated()
@@ -86,6 +88,41 @@ namespace CastleTests.Lifestyle
 			var two = instance.GetFooTwo();
 
 			Assert.AreSame(one, two);
+		}
+
+		[Test]
+		public void Scoped_component_via_factory_two_roots_but_factory_invoked_by_yet_another_object()
+		{
+			Container.Register(Component.For<UsesFooDelegate>().LifeStyle.Transient,
+			                   Component.For<Foo>().LifeStyle.ScopedPer<UsesFooDelegate>(),
+			                   Component.For<Func<Foo>>().LifeStyle.Singleton);
+
+			var rootOne = Container.Resolve<UsesFooDelegate>();
+
+			var rootTwo = Container.Resolve<UsesFooDelegate>();
+
+			var fooOne = rootOne.GetFoo();
+			var fooTwo = rootTwo.GetFoo();
+
+			var oneFactory = rootOne.Factory;
+			var anotherFoo = oneFactory(4);
+
+			Assert.Inconclusive("Not even sure what to assert here... What a sane person might expect other than this not being supported");
+		}
+
+		[Test]
+		public void Scoped_component_via_factory_two_roots_each_gets_its_own_instance()
+		{
+			Container.Register(Component.For<UsesFooDelegate>().LifeStyle.Transient,
+			                   Component.For<Foo>().LifeStyle.ScopedPer<UsesFooDelegate>(),
+			                   Component.For<Func<Foo>>().LifeStyle.Singleton);
+
+			var rootOne = Container.Resolve<UsesFooDelegate>();
+
+			var rootTwo = Container.Resolve<UsesFooDelegate>();
+
+			Assert.AreSame(rootOne.GetFoo(), rootOne.GetFoo());
+			Assert.AreNotSame(rootOne.GetFoo(), rootTwo.GetFoo());
 		}
 	}
 }
