@@ -17,14 +17,12 @@
 
 #endregion
 
-using System.Collections.Generic;
-using System.Dynamic;
-using System.Linq;
-
 namespace Castle.Facilities.NHibernateIntegration
 {
 	using System;
+	using System.Collections.Generic;
 	using System.Configuration;
+	using System.Linq;
 	using Builders;
 	using Core.Configuration;
 	using Core.Logging;
@@ -605,8 +603,8 @@ namespace Castle.Facilities.NHibernateIntegration
 
     ///<summary>
     ///</summary>
-    public class NHibernateFactoryConfiguration : DynamicObject
-    {
+	public class NHibernateFactoryConfiguration
+	{
         private IConfiguration config;
 
         ///<summary>
