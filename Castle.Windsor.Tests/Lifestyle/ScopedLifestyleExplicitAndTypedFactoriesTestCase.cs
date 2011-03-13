@@ -14,8 +14,6 @@
 
 namespace CastleTests.Lifestyle
 {
-	using System;
-
 	using Castle.Facilities.TypedFactory;
 	using Castle.MicroKernel.Lifestyle.Scoped;
 	using Castle.MicroKernel.Registration;
@@ -92,21 +90,6 @@ namespace CastleTests.Lifestyle
 
 				Assert.AreSame(one, two);
 			}
-		}
-
-		[Test]
-		public void Scoped_component_via_factory_two_roots_each_gets_its_own_instance()
-		{
-			Container.Register(Component.For<UsesFooDelegate>().LifeStyle.Transient,
-			                   Component.For<Foo>().LifeStyle.ScopedPer<UsesFooDelegate>(),
-			                   Component.For<Func<Foo>>().LifeStyle.Singleton);
-
-			var rootOne = Container.Resolve<UsesFooDelegate>();
-
-			var rootTwo = Container.Resolve<UsesFooDelegate>();
-
-			Assert.AreSame(rootOne.GetFoo(), rootOne.GetFoo());
-			Assert.AreNotSame(rootOne.GetFoo(), rootTwo.GetFoo());
 		}
 	}
 }
