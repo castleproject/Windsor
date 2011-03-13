@@ -15,36 +15,34 @@
 namespace Castle.MicroKernel.Lifestyle.Scoped
 {
 	using System;
-	using System.Linq;
 
 	using Castle.Core;
 	using Castle.MicroKernel.Context;
 
-	public class CurrentScopeAccessor : ICurrentScopeAccessor, IScopeRootSelector
+	public class CurrentScopeAccessor : ICurrentScopeAccessor
 	{
 		private readonly ComponentModel componentModel;
 		private readonly IScopeManager scopeManager;
-		private readonly Type scopeRoot;
+		private readonly IScopeRootSelector selector;
 
 		public CurrentScopeAccessor(IScopeManager scopeManager, ComponentModel componentModel)
 		{
 			this.scopeManager = scopeManager;
 			this.componentModel = componentModel;
-			scopeRoot = (Type)componentModel.ExtendedProperties["castle-scope-root"];
+			var baseType = (Type)componentModel.ExtendedProperties["castle-scope-root"];
+			if (baseType != null)
+			{
+				selector = new BasedOnTypeScopeRootSelector(baseType);
+			}
 		}
 
 		public IScopeCache GetScopeCache(CreationContext context, bool required = true)
 		{
-			if (scopeRoot == null)
+			if (selector == null)
 			{
 				return GetScopeExplicit(required);
 			}
 			return GetScopeImplicit(required, context);
-		}
-
-		public IHandler Select(IHandler[] resolutionStack)
-		{
-			return resolutionStack.Reverse().FirstOrDefault(h => scopeRoot.IsAssignableFrom(h.ComponentModel.Implementation));
 		}
 
 		private IScopeCache GetCache(CreationContext.ResolutionContext selected)
@@ -80,7 +78,7 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 
 		private IScopeCache GetScopeImplicit(bool required, CreationContext context)
 		{
-			var selected = context.SelectScopeRoot(this);
+			var selected = context.SelectScopeRoot(selector);
 			if (selected == null && required)
 			{
 				throw new InvalidOperationException(string.Format("Scope was not available for '{0}'. Did you forget to call container.BeginScope()?", componentModel.Name));
