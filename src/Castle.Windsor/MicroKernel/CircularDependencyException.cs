@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,43 +18,37 @@ namespace Castle.MicroKernel
 	using System.Runtime.Serialization;
 
 	/// <summary>
-	/// Exception throw when a circular dependency is detected
+	///   Exception throw when a circular dependency is detected
 	/// </summary>
 	[Serializable]
-	public class CircularDependencyException : Exception
+	public class CircularDependencyException : ComponentResolutionException
 	{
 		/// <summary>
-		/// Initializes a new instance of the <see cref="CircularDependencyException"/> class.
+		///   Initializes a new instance of the <see cref = "CircularDependencyException" /> class.
 		/// </summary>
-		public CircularDependencyException() : base()
-		{
-		}
-
-		/// <summary>
-		/// Initializes a new instance of the <see cref="CircularDependencyException"/> class.
-		/// </summary>
-		/// <param name="message">The message.</param>
+		/// <param name = "message">The message.</param>
 		public CircularDependencyException(string message) : base(message)
 		{
 		}
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="CircularDependencyException"/> class.
+		///   Initializes a new instance of the <see cref = "CircularDependencyException" /> class.
 		/// </summary>
-		/// <param name="message">The message.</param>
-		/// <param name="innerException">The inner exception.</param>
+		/// <param name = "message">The message.</param>
+		/// <param name = "innerException">The inner exception.</param>
 		public CircularDependencyException(string message, Exception innerException) : base(message, innerException)
 		{
 		}
-		
+
 #if (!SILVERLIGHT)
 		/// <summary>
-		/// Initializes a new instance of the <see cref="CircularDependencyException"/> class.
+		///   Initializes a new instance of the <see cref = "CircularDependencyException" /> class.
 		/// </summary>
-		/// <param name="info">The <see cref="T:System.Runtime.Serialization.SerializationInfo"/> that holds the serialized object data about the exception being thrown.</param>
-		/// <param name="context">The <see cref="T:System.Runtime.Serialization.StreamingContext"/> that contains contextual information about the source or destination.</param>
-		/// <exception cref="T:System.ArgumentNullException">The <paramref name="info"/> parameter is <see langword="null"/>.</exception>
-		/// <exception cref="T:System.Runtime.Serialization.SerializationException">The class name is <see langword="null"/> or <see cref="P:System.Exception.HResult"/> is zero (0).</exception>
+		/// <param name = "info">The <see cref = "T:System.Runtime.Serialization.SerializationInfo" /> that holds the serialized object data about the exception being thrown.</param>
+		/// <param name = "context">The <see cref = "T:System.Runtime.Serialization.StreamingContext" /> that contains contextual information about the source or destination.</param>
+		/// <exception cref = "T:System.ArgumentNullException">The <paramref name = "info" /> parameter is <see langword = "null" />.</exception>
+		/// <exception cref = "T:System.Runtime.Serialization.SerializationException">The class name is <see langword = "null" /> or <see
+		///    cref = "P:System.Exception.HResult" /> is zero (0).</exception>
 		protected CircularDependencyException(SerializationInfo info, StreamingContext context) : base(info, context)
 		{
 		}
