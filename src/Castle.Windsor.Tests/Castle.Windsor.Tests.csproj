@@ -630,6 +630,7 @@
     <Compile Include="Registration\ComponentRegistrationByNamespaceTestCase.cs" />
     <Compile Include="Registration\ServiceOverridesTestCase.cs" />
     <Compile Include="Registration\WithServiceTestCase.cs" />
+    <Compile Include="ResolveScopesTestCase.cs" />
     <Compile Include="ServiceOverridesStackOverflowTestCase.cs" />
     <Compile Include="SpecializedResolvers\CollectionResolverTestCase.cs" />
     <Compile Include="SpecializedResolvers\CollectionServiceOverridesInstaller.cs" />

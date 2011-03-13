@@ -7,3 +7,8 @@
 - better unify exceptions thrown and start taking advantage of what the exception facilities in Visual Studio and .NET provide.
 
 - make specifying depenencies with service override easier (currently both a parameter and a dependency has to be added and they have to match... and it's even more complex when we have a collection of service overrides we want to add)
+
+- scoping per tag:
+
+- container.BeginScope(IDictionary inlineArguments)
+	those arguments would be available in each and every resolve (and their subdependencies...?)
