@@ -532,6 +532,7 @@
     <Compile Include="MicroKernel\Lifestyle\Pool\PoolException.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="MicroKernel\Lifestyle\Scoped\BasedOnTypeScopeRootSelector.cs" />
     <Compile Include="MicroKernel\Lifestyle\Scoped\CurrentScopeAccessor.cs" />
     <Compile Include="MicroKernel\Lifestyle\Scoped\ICurrentScopeAccessor.cs" />
     <Compile Include="MicroKernel\Lifestyle\Scoped\IScopeAccessor.cs" />
