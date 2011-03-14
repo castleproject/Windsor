@@ -16,6 +16,7 @@ namespace Castle.MicroKernel.Handlers
 {
 	using System;
 	using System.Collections.Generic;
+	using System.Linq;
 	using System.Runtime.Serialization;
 
 	using Castle.Core;
@@ -45,7 +46,7 @@ namespace Castle.MicroKernel.Handlers
 		}
 
 		public GenericHandlerTypeMismatchException(IEnumerable<Type> argumentsUsed, ComponentModel componentModel, DefaultGenericHandler handler)
-			: base(BuildMessage(argumentsUsed, componentModel, handler))
+			: base(BuildMessage(argumentsUsed.ToArray(), componentModel, handler))
 		{
 		}
 
@@ -61,7 +62,7 @@ namespace Castle.MicroKernel.Handlers
 		}
 #endif
 
-		private static string BuildMessage(IEnumerable<Type> argumentsUsed, ComponentModel componentModel, DefaultGenericHandler handler)
+		private static string BuildMessage(object[] argumentsUsed, ComponentModel componentModel, DefaultGenericHandler handler)
 		{
 			var message = string.Format(
 				"Types {0} don't satisfy generic constraints of implementation type {1} of component '{2}'.",
