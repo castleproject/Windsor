@@ -208,8 +208,7 @@ namespace Castle.MicroKernel.Handlers
 				}
 
 				// 2.
-				//object so that .NET 3.5 build doesn't whinge below that the overload of string.Join we're using is not there
-				object[] invalidArguments = genericArguments.Where(a => a.IsPointer || a.IsByRef || a == typeof(void)).ToArray();
+				var invalidArguments = genericArguments.Where(a => a.IsPointer || a.IsByRef || a == typeof(void)).Select(t => t.FullName).ToArray();
 				if (invalidArguments.Length > 0)
 				{
 					message = string.Format("The following types provided as generic parameters are not legal: {0}. This is most likely a bug in your code.",
