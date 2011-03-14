@@ -19,6 +19,7 @@ namespace Castle.MicroKernel
 	using System.Collections.Generic;
 
 	using Castle.Core;
+	using Castle.MicroKernel.Handlers;
 
 	public partial class DefaultKernel
 	{
@@ -193,17 +194,22 @@ namespace Castle.MicroKernel
 		Array IKernelInternal.ResolveAll(Type service, IDictionary arguments, IReleasePolicy policy)
 		{
 			var resolved = new List<object>();
-			foreach (var handler in GetAssignableHandlers(service))
+			foreach (var handler in GetHandlers(service))
 			{
 				if (handler.IsBeingResolvedInContext(currentCreationContext))
 				{
 					continue;
 				}
 
-				var component = TryResolveComponent(handler, service, arguments, policy);
-				if (component != null)
+				try
 				{
+					var component = ResolveComponent(handler, service, arguments, policy);
 					resolved.Add(component);
+				}
+				catch (GenericHandlerTypeMismatchException)
+				{
+					// that's the only case where we ignore the component and allow it to not be resolved.
+					// only because we have no way to actually test if generic constraints can be satisfied.
 				}
 			}
 

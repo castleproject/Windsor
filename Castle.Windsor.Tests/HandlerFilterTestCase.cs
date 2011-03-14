@@ -27,7 +27,7 @@ namespace Castle.Windsor.Tests
 	[TestFixture]
 	public class HandlerFilterTestCase : AbstractContainerTestCase
 	{
-		private class FailIfCalled : IHandlerFilter
+		private class FailIfCalled : IHandlersFilter
 		{
 			public bool HasOpinionAbout(Type service)
 			{
@@ -41,7 +41,20 @@ namespace Castle.Windsor.Tests
 			}
 		}
 
-		private class FilterThatRemovedFourthTaskAndOrdersTheRest : IHandlerFilter
+		private class ReturnAllHandlersFilter : IHandlersFilter
+		{
+			public bool HasOpinionAbout(Type service)
+			{
+				return true;
+			}
+
+			public IHandler[] SelectHandlers(Type service, IHandler[] handlers)
+			{
+				return handlers;
+			}
+		}
+
+		private class FilterThatRemovedFourthTaskAndOrdersTheRest : IHandlersFilter
 		{
 			public bool HasOpinionAbout(Type service)
 			{
@@ -97,7 +110,7 @@ namespace Castle.Windsor.Tests
 		{
 		}
 
-		private class TestHandlerFilter : IHandlerFilter
+		private class TestHandlersFilter : IHandlersFilter
 		{
 			public bool OpinionWasChecked { get; set; }
 
@@ -128,16 +141,32 @@ namespace Castle.Windsor.Tests
 		}
 
 		[Test]
+		public void Filter_gets_all_assignable_handlers_not_exiplicitly_registered_for_given_service()
+		{
+			Container.Register(Component.For<Task5>(),
+			                   Component.For<Task3>(),
+			                   Component.For<Task2>(),
+			                   Component.For<Task4>(),
+			                   Component.For<Task1>());
+
+			Container.Kernel.AddHandlersFilter(new ReturnAllHandlersFilter());
+
+			var instances = Container.ResolveAll<ISomeTask>();
+
+			Assert.AreEqual(5, instances.Length);
+		}
+
+		[Test]
 		public void HandlerFilterGetsCalledLikeExpected()
 		{
 			Container.Register(Component.For<ISomeService>().ImplementedBy<FirstImplementation>(),
 			                   Component.For<ISomeService>().ImplementedBy<SecondImplementation>(),
 			                   Component.For<ISomeService>().ImplementedBy<ThirdImplementation>());
 
-			var filter = new TestHandlerFilter();
-			Container.Kernel.AddHandlerFilter(filter);
+			var filter = new TestHandlersFilter();
+			Container.Kernel.AddHandlersFilter(filter);
 
-			var services = Container.ResolveAll(typeof(ISomeService));
+			Container.ResolveAll<ISomeService>();
 
 			Assert.IsTrue(filter.OpinionWasChecked, "Filter's opinion should have been checked once for each handler");
 		}
@@ -151,7 +180,7 @@ namespace Castle.Windsor.Tests
 			                   Component.For<ISomeTask>().ImplementedBy<Task4>(),
 			                   Component.For<ISomeTask>().ImplementedBy<Task1>());
 
-			Container.Kernel.AddHandlerFilter(new FilterThatRemovedFourthTaskAndOrdersTheRest());
+			Container.Kernel.AddHandlersFilter(new FilterThatRemovedFourthTaskAndOrdersTheRest());
 
 			var instances = Container.ResolveAll(typeof(ISomeTask));
 
@@ -163,7 +192,7 @@ namespace Castle.Windsor.Tests
 		{
 			Container.Register(Component.For<IUnimportantService>().ImplementedBy<UnimportantImpl>());
 
-			Container.Kernel.AddHandlerFilter(new FailIfCalled());
+			Container.Kernel.AddHandlersFilter(new FailIfCalled());
 
 			Container.ResolveAll(typeof(IUnimportantService));
 		}

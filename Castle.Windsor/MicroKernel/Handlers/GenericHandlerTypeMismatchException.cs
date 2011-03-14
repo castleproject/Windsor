@@ -15,19 +15,22 @@
 namespace Castle.MicroKernel.Handlers
 {
 	using System;
+	using System.Collections.Generic;
 	using System.Runtime.Serialization;
 
+	using Castle.Core;
+
 	/// <summary>
-	/// Summary description for HandlerException.
+	///   Thrown when <see cref = "DefaultGenericHandler" /> can't create proper closed version of itself due to violation of generic constraints.
 	/// </summary>
 	[Serializable]
-	public class HandlerException : Exception
+	public class GenericHandlerTypeMismatchException : HandlerException
 	{
 		/// <summary>
 		///   Initializes a new instance of the <see cref = "HandlerException" /> class.
 		/// </summary>
 		/// <param name = "message">The message.</param>
-		public HandlerException(string message) : base(message)
+		public GenericHandlerTypeMismatchException(string message) : base(message)
 		{
 		}
 
@@ -36,8 +39,13 @@ namespace Castle.MicroKernel.Handlers
 		/// </summary>
 		/// <param name = "message">The message.</param>
 		/// <param name = "innerException"></param>
-		public HandlerException(string message, Exception innerException)
+		public GenericHandlerTypeMismatchException(string message, Exception innerException)
 			: base(message, innerException)
+		{
+		}
+
+		public GenericHandlerTypeMismatchException(IEnumerable<Type> argumentsUsed, ComponentModel componentModel, DefaultGenericHandler handler)
+			: base(BuildMessage(argumentsUsed, componentModel, handler))
 		{
 		}
 
@@ -47,9 +55,23 @@ namespace Castle.MicroKernel.Handlers
 		/// </summary>
 		/// <param name = "info">The object that holds the serialized object data.</param>
 		/// <param name = "context">The contextual information about the source or destination.</param>
-		public HandlerException(SerializationInfo info, StreamingContext context) : base(info, context)
+		public GenericHandlerTypeMismatchException(SerializationInfo info, StreamingContext context)
+			: base(info, context)
 		{
 		}
 #endif
+
+		private static string BuildMessage(IEnumerable<Type> argumentsUsed, ComponentModel componentModel, DefaultGenericHandler handler)
+		{
+			var message = string.Format(
+				"Types {0} don't satisfy generic constraints of implementation type {1} of component '{2}'.",
+				string.Join(", ", argumentsUsed), componentModel.Implementation.FullName, handler.ComponentModel.Name);
+			if (handler.ImplementationMatchingStrategy == null)
+			{
+				return message + " This is most likely a bug in your code.";
+			}
+			return message + string.Format("this is likely a bug in the {0} used ({1})", typeof(IGenericImplementationMatchingStrategy).Name,
+			                     handler.ImplementationMatchingStrategy);
+		}
 	}
 }

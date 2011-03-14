@@ -376,9 +376,9 @@ namespace Castle.MicroKernel
 			NamingSubSystem.AddHandlerSelector(selector);
 		}
 
-		public void AddHandlerFilter(IHandlerFilter filter)
+		public void AddHandlersFilter(IHandlersFilter filter)
 		{
-			NamingSubSystem.AddHandlerFilter(filter);
+			NamingSubSystem.AddHandlersFilter(filter);
 		}
 
 		public virtual void AddSubSystem(String key, ISubSystem subsystem)

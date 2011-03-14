@@ -18,6 +18,7 @@ namespace Castle.MicroKernel.Handlers
 	using System.Collections;
 	using System.Collections.Generic;
 	using System.Diagnostics;
+	using System.Linq;
 
 	using Castle.Core;
 	using Castle.MicroKernel.Context;
@@ -33,6 +34,7 @@ namespace Castle.MicroKernel.Handlers
 	public class DefaultGenericHandler : AbstractHandler
 	{
 		private readonly IGenericImplementationMatchingStrategy implementationMatchingStrategy;
+
 		private readonly IDictionary<Type, IHandler> type2SubHandler = new Dictionary<Type, IHandler>();
 
 		/// <summary>
@@ -43,6 +45,11 @@ namespace Castle.MicroKernel.Handlers
 		public DefaultGenericHandler(ComponentModel model, IGenericImplementationMatchingStrategy implementationMatchingStrategy) : base(model)
 		{
 			this.implementationMatchingStrategy = implementationMatchingStrategy;
+		}
+
+		public IGenericImplementationMatchingStrategy ImplementationMatchingStrategy
+		{
+			get { return implementationMatchingStrategy; }
 		}
 
 		public override void Dispose()
@@ -146,7 +153,7 @@ namespace Castle.MicroKernel.Handlers
 				newModel.Interceptors.AddIfNotInCollection(interceptor);
 			}
 
-			if(ComponentModel.HasCustomDependencies)
+			if (ComponentModel.HasCustomDependencies)
 			{
 				var dependencies = newModel.CustomDependencies;
 				foreach (DictionaryEntry dependency in ComponentModel.CustomDependencies)
@@ -159,11 +166,9 @@ namespace Castle.MicroKernel.Handlers
 		private Type GetClosedImplementationType(CreationContext context, bool instanceRequired)
 		{
 			var genericArguments = GetGenericArguments(context);
-
 			try
 			{
 				// TODO: what if ComponentModel.Implementation is a LateBoundComponent?
-
 				return ComponentModel.Implementation.MakeGenericType(genericArguments);
 			}
 			catch (ArgumentNullException)
@@ -186,8 +191,11 @@ namespace Castle.MicroKernel.Handlers
 				}
 
 				// ok, let's do some investigation now what might have been the cause of the error
+				// there can be 3 reasons according to MSDN: http://msdn.microsoft.com/en-us/library/system.type.makegenerictype.aspx
+
 				var arguments = ComponentModel.Implementation.GetGenericArguments();
 				string message;
+				// 1.
 				if (arguments.Length > genericArguments.Length)
 				{
 					message = string.Format(
@@ -198,17 +206,17 @@ namespace Castle.MicroKernel.Handlers
 						arguments.Length);
 					throw new HandlerException(message, e);
 				}
-				// we have correct number of generic arguments, that means probably some generic constraing was violated.
-				// the CLR exception wrapped in little context should suffice
-				if (implementationMatchingStrategy == null)
+
+				// 2.
+				var invalidArguments = genericArguments.Where(a => a.IsPointer || a.IsByRef || a == typeof(void));
+				if (invalidArguments.Any())
 				{
-					// NOTE: if we're here something is badly screwed...
-					throw;
+					message = string.Format("The following types provided as generic parameters are not legal: {0}. This is most likely a bug in your code.",
+					                        string.Join(", ", invalidArguments));
+					throw new HandlerException(message, e);
 				}
-				message = string.Format(
-					"Types selected by {0} couldn't be used for generic arguments of implementation type for component {1}. See inner exception for more details.",
-					implementationMatchingStrategy, ComponentModel.Name);
-				throw new HandlerException(message, e);
+				// 3. at this point we should be 99% sure we have arguments that don't satisfy generic constraints of out service.
+				throw new GenericHandlerTypeMismatchException(genericArguments, ComponentModel, this);
 			}
 		}
 
@@ -218,7 +226,7 @@ namespace Castle.MicroKernel.Handlers
 			{
 				return context.GenericArguments;
 			}
-			return implementationMatchingStrategy.GetGenericArguments(ComponentModel, context);
+			return implementationMatchingStrategy.GetGenericArguments(ComponentModel, context) ?? context.GenericArguments;
 		}
 	}
 }

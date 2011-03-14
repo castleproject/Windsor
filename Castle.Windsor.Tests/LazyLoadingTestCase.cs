@@ -33,7 +33,7 @@ namespace Castle.MicroKernel.Tests
 		[Test]
 		public void Can_Lazily_resolve_component()
 		{
-			Container.Register(Component.For<LoaderForDefaultImplementations>());
+			Container.Register(Component.For<ILazyComponentLoader>().ImplementedBy<LoaderForDefaultImplementations>());
 			var service = Container.Resolve("foo", typeof(IHasDefaultImplementation));
 			Assert.IsNotNull(service);
 			Assert.IsInstanceOf<Implementation>(service);
@@ -51,7 +51,7 @@ namespace Castle.MicroKernel.Tests
 		[Test]
 		public void Can_lazily_resolve_explicit_dependency()
 		{
-			Container.Register(Component.For<LoaderUsingDependency>());
+			Container.Register(Component.For<ILazyComponentLoader>().ImplementedBy<LoaderUsingDependency>());
 			var component = Container.Resolve<UsingString>(new Arguments().Insert("parameter", "Hello"));
 			Assert.AreEqual("Hello", component.Parameter);
 		}
@@ -67,7 +67,7 @@ namespace Castle.MicroKernel.Tests
 		[Timeout(2000)]
 		public void Loaders_are_thread_safe()
 		{
-			Container.Register(Component.For<SlowLoader>());
+			Container.Register(Component.For<ILazyComponentLoader>().ImplementedBy<SlowLoader>());
 			var @event = new ManualResetEvent(false);
 			int[] count = { 10 };
 			Exception exception = null;

@@ -49,7 +49,7 @@ namespace Castle.MicroKernel.SubSystems.Naming
 		/// </summary>
 		protected readonly Dictionary<Type, IHandler> service2Handler = new Dictionary<Type, IHandler>(SimpleTypeEqualityComparer.Instance);
 
-		protected IList<IHandlerFilter> filters;
+		protected IList<IHandlersFilter> filters;
 		protected IList<IHandlerSelector> selectors;
 
 		private readonly IDictionary<Type, IHandler[]> assignableHandlerListsByTypeCache = new Dictionary<Type, IHandler[]>(SimpleTypeEqualityComparer.Instance);
@@ -98,11 +98,11 @@ namespace Castle.MicroKernel.SubSystems.Naming
 			}
 		}
 
-		public void AddHandlerFilter(IHandlerFilter filter)
+		public void AddHandlersFilter(IHandlersFilter filter)
 		{
 			if (filters == null)
 			{
-				filters = new List<IHandlerFilter>();
+				filters = new List<IHandlersFilter>();
 			}
 			filters.Add(filter);
 		}
@@ -139,14 +139,6 @@ namespace Castle.MicroKernel.SubSystems.Naming
 			if (service == null)
 			{
 				throw new ArgumentNullException("service");
-			}
-			if (filters != null)
-			{
-				var filtersOpinion = GetFiltersOpinion(service);
-				if (filtersOpinion != null)
-				{
-					return filtersOpinion;
-				}
 			}
 			if (service == typeof(object))
 			{
@@ -200,6 +192,14 @@ namespace Castle.MicroKernel.SubSystems.Naming
 			if (service == null)
 			{
 				throw new ArgumentNullException("service");
+			}
+			if (filters != null)
+			{
+				var filtersOpinion = GetFiltersOpinion(service);
+				if (filtersOpinion != null)
+				{
+					return filtersOpinion;
+				}
 			}
 
 			IHandler[] result;
