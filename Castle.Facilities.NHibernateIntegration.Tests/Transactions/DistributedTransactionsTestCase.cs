@@ -25,7 +25,7 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Transactions
 	using NUnit.Framework;
 	using Services.Transaction;
 
-	[TestFixture]
+	[TestFixture, Explicit("Build server Dtc's issues.")]
 	public class DistributedTransactionsTestCase : AbstractNHibernateTestCase
 	{
 		protected override string ConfigurationFile
