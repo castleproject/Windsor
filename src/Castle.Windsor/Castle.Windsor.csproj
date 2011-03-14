@@ -372,6 +372,7 @@
     <Compile Include="MicroKernel\Handlers\ComponentResolvingDelegate.cs" />
     <Compile Include="MicroKernel\Handlers\DependencyInspector.cs" />
     <Compile Include="MicroKernel\Handlers\ExtendedHandler.cs" />
+    <Compile Include="MicroKernel\Handlers\GenericHandlerTypeMismatchException.cs" />
     <Compile Include="MicroKernel\Handlers\HandlerExtensionsUtil.cs" />
     <Compile Include="MicroKernel\Handlers\IDependencyInspector.cs" />
     <Compile Include="MicroKernel\Handlers\IGenericImplementationMatchingStrategy.cs" />
@@ -397,7 +398,7 @@
     <Compile Include="MicroKernel\ComponentRegistrationException.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="MicroKernel\IHandlerFilter.cs" />
+    <Compile Include="MicroKernel\IHandlersFilter.cs" />
     <Compile Include="MicroKernel\IKernelEventsInternal.cs" />
     <Compile Include="MicroKernel\IKernelInternal.cs" />
     <Compile Include="MicroKernel\IProxyFactoryExtension.cs" />

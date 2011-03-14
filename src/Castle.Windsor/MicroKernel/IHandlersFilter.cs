@@ -22,7 +22,7 @@ namespace Castle.MicroKernel
 	///   hook to allow for business logic to prioritize, filter, and sort
 	///   handlers when resolving multiple handlers.
 	/// </summary>
-	public interface IHandlerFilter
+	public interface IHandlersFilter
 	{
 		/// <summary>
 		///   Whatever the selector has an opinion about resolving a component with the 
