@@ -72,7 +72,7 @@ namespace Castle.Facilities.WcfIntegration
 		{
 			if (model != null)
 			{
-				return kernel.Resolve(model.Name, WcfUtils.EmptyArguments);
+				return kernel.Resolve<object>(model.Name, WcfUtils.EmptyArguments);
 			}
 			else if (kernel.HasComponent(serviceType))
 			{

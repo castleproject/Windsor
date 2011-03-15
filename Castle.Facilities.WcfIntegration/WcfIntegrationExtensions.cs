@@ -32,6 +32,7 @@ namespace Castle.Facilities.WcfIntegration
 		}
 #endif
 
+#pragma warning disable 612,618
 		public static ComponentRegistration<T> AsWcfClient<T>(this ComponentRegistration<T> registration)
 		{
 			return registration.ActAs(new DefaultClientModel());
@@ -58,5 +59,6 @@ namespace Castle.Facilities.WcfIntegration
 		{
 			return registration.ActAs(serviceModels);
 		}
+#pragma warning restore 612,618
 	}
 }

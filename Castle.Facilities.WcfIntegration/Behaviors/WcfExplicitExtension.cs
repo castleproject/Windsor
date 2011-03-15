@@ -177,7 +177,7 @@ namespace Castle.Facilities.WcfIntegration
 
 		protected override object ResolveExtension(IKernel kernel)
 		{
-			return kernel.Resolve(Key, WcfUtils.EmptyArguments);
+			return kernel.Resolve<object>(Key, WcfUtils.EmptyArguments);
 		}
 
 		public override void AddDependencies(IKernel kernel, ComponentModel model)
