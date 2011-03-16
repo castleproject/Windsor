@@ -39,11 +39,11 @@ namespace Castle.Facilities.WcfIntegration
 		private IKernel kernel;
 		private readonly ProxyGenerator proxyGenerator = new ProxyGenerator();
 
-		private static readonly IWcfPolicy[] ReconnectChannelPolicy =  new[] { new ReconnectChannelPolicy() };
+		private static readonly IWcfPolicy[] RepairChannelPolicy =  new[] { new RepairChannelPolicy() };
 
 		public WcfClientExtension()
 		{
-			DefaultChannelPolicy = ReconnectChannelPolicy;
+			DefaultChannelPolicy = RepairChannelPolicy;
 		}
 
 		public TimeSpan? CloseTimeout

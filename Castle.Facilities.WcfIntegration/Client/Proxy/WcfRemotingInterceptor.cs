@@ -69,11 +69,11 @@ namespace Castle.Facilities.WcfIntegration.Proxy
 		protected void PerformInvocation(IInvocation invocation, IWcfChannelHolder channelHolder, Action<WcfInvocation> action)
 		{
 			var wcfInvocation = new WcfInvocation(channelHolder, invocation);
-			InvokeChannelPipeline(0, wcfInvocation, action);
+			ApplyChannelPipeline(0, wcfInvocation, action);
 			invocation.ReturnValue = wcfInvocation.ReturnValue;
 		}
 
-		private void InvokeChannelPipeline(int policyIndex, WcfInvocation wcfInvocation, Action<WcfInvocation> action)
+		private void ApplyChannelPipeline(int policyIndex, WcfInvocation wcfInvocation, Action<WcfInvocation> action)
 		{
 			if (policyIndex >= pipeline.Length)
 			{
@@ -81,7 +81,7 @@ namespace Castle.Facilities.WcfIntegration.Proxy
 				return;
 			}
 			var nextIndex = policyIndex + 1;
-			wcfInvocation.SetProceedDelegate(() => InvokeChannelPipeline(nextIndex, wcfInvocation, action));
+			wcfInvocation.SetProceedDelegate(() => ApplyChannelPipeline(nextIndex, wcfInvocation, action));
 			pipeline[policyIndex].Apply(wcfInvocation);
 		}
 

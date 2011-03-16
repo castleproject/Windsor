@@ -85,6 +85,8 @@
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="Behaviors\AbstractExtensibleObject.cs" />
     <Compile Include="Behaviors\AbstractExtension.cs" />
+    <Compile Include="Behaviors\WcfClientQuotasBehavior.cs" />
+    <Compile Include="Behaviors\WcfServiceQuotasBehavior.cs" />
     <Compile Include="Behaviors\IWcfMetadataProvider.cs" />
     <Compile Include="Behaviors\PreserveObjectReferenceBehavior.cs" />
     <Compile Include="Behaviors\Security\CertificateCredentials.cs" />
@@ -93,6 +95,7 @@
     <Compile Include="Behaviors\Security\CustomPrincipalAuthorization.cs" />
     <Compile Include="Behaviors\Security\FetchCertificateBySubject.cs" />
     <Compile Include="Behaviors\Security\UserNameCredentials.cs" />
+    <Compile Include="Internal\WcfBindingUtils.cs" />
     <Compile Include="Internal\WcfBurdenExtension.cs" />
     <Compile Include="IWcfChannelExtension.cs" />
     <Compile Include="IWcfEndpointExtension.cs" />
@@ -135,7 +138,7 @@
     <Compile Include="Client\Discovery\DiscoveredEndpointMetadata.cs" />
     <Compile Include="Client\IWcfClientFactory.cs" />
     <Compile Include="WcfInvocation.cs" />
-    <Compile Include="Client\Policies\ReconnectChannelPolicy.cs" />
+    <Compile Include="Client\Policies\RepairChannelPolicy.cs" />
     <Compile Include="Client\Policies\RefreshChannelPolicy.cs" />
     <Compile Include="Client\Proxy\IWcfChannelHolder.cs" />
     <Compile Include="Client\Proxy\WcfProxyFactory.cs" />

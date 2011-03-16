@@ -20,16 +20,15 @@ namespace Castle.Facilities.WcfIntegration
 
     /// <summary>
     /// Policy to recover from a <see cref="T:System.ServiceModel.CommunicationException" />
-    /// by refreshing the channel and trying again.  This policy will
-    /// handle situations in which a connection has been reset on the
-    /// server which invalidates the the client channel.
+    /// by repairing the channel and trying again.  This policy will handle situations in which a
+	/// connection has been reset on the server which invalidates the the client channel.
     /// </summary>
-    public class ReconnectChannelPolicy : AbstractWcfPolicy, IWcfPolicy
+    public class RepairChannelPolicy : AbstractWcfPolicy, IWcfPolicy
     {
         /// <inheritdoc />
         public override void Apply(WcfInvocation wcfInvocation)
         {
-            var reconnect = false;
+            var refresh = false;
 
             try
             {
@@ -37,19 +36,19 @@ namespace Castle.Facilities.WcfIntegration
             }
             catch (ChannelTerminatedException)
             {
-                reconnect = true;
+                refresh = true;
             }
             catch (CommunicationObjectFaultedException)
             {
-                reconnect = true;
+                refresh = true;
             }
             catch (CommunicationObjectAbortedException)
             {
-                reconnect = true;
+                refresh = true;
             }
             catch (MessageSecurityException)
             {
-                reconnect = true;
+                refresh = true;
             }
             catch (CommunicationException exception)
             {
@@ -57,10 +56,10 @@ namespace Castle.Facilities.WcfIntegration
                 {
                     throw;
                 }
-                reconnect = true;
+                refresh = true;
             }
 
-            if (reconnect)
+            if (refresh)
             {
                 wcfInvocation.Refresh().Proceed();
             }

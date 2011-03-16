@@ -799,7 +799,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 				})
 				.Register(
 					Component.For<RefreshChannelPolicy>()
-						.DependsOn(new { Reconnect = false }),
+						.DependsOn(new { Refresh = false }),
 					Component.For<IOperationsEx>()
 						.Named("operations")
 						.AsWcfClient(new DefaultClientModel()
@@ -843,7 +843,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 					);
 
 			windsorContainer.Register(
-				Component.For<ReconnectChannelPolicy>(),
+				Component.For<RepairChannelPolicy>(),
 				Component.For<IOperationsEx>()
 					.Named("operations")
 					.AsWcfClient(new DefaultClientModel()
@@ -894,7 +894,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 					.AsWcfClient(WcfEndpoint
 					             	.BoundTo(new NetTcpBinding { PortSharingEnabled = true })
 					             	.At("net.tcp://localhost/Operations1/Ex")
-					             	.AddExtensions(new ReconnectChannelPolicy())));
+					             	.AddExtensions(new RepairChannelPolicy())));
 
 			IOperationsEx client;
 
