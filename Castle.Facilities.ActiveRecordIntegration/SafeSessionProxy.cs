@@ -104,6 +104,12 @@ namespace Castle.Facilities.ActiveRecordIntegration
 			get { return innerSession.IsConnected; }
 		}
 
+		public bool DefaultReadOnly
+		{
+			get { return innerSession.DefaultReadOnly; }
+			set { innerSession.DefaultReadOnly = value; }
+		}
+
 		/// <summary>
 		/// Get the current Unit of Work and return the associated <c>ITransaction</c> object.
 		/// </summary>
@@ -208,6 +214,16 @@ namespace Castle.Facilities.ActiveRecordIntegration
 		public bool IsDirty()
 		{
 			return innerSession.IsDirty();
+		}
+
+		public bool IsReadOnly(object entityOrProxy)
+		{
+			return innerSession.IsReadOnly(entityOrProxy);
+		}
+
+		public void SetReadOnly(object entityOrProxy, bool readOnly)
+		{
+			innerSession.SetReadOnly(entityOrProxy, readOnly);
 		}
 
 		/// <summary>
@@ -663,7 +679,7 @@ namespace Castle.Facilities.ActiveRecordIntegration
 		/// <returns>an updated persistent instance</returns>
 		public object SaveOrUpdateCopy(object obj)
 		{
-			return innerSession.SaveOrUpdateCopy(obj);
+			return innerSession.Merge(obj);
 		}
 
 		/// <summary>
@@ -679,7 +695,9 @@ namespace Castle.Facilities.ActiveRecordIntegration
 		/// <returns>an updated persistent instance</returns>
 		public object SaveOrUpdateCopy(object obj, object id)
 		{
+#pragma warning disable 612,618
 			return innerSession.SaveOrUpdateCopy(obj, id);
+#pragma warning restore 612,618
 		}
 
 		/// <summary>
@@ -1004,16 +1022,6 @@ namespace Castle.Facilities.ActiveRecordIntegration
 		public IQuery CreateQuery(String queryString)
 		{
 			return innerSession.CreateQuery(queryString);
-		}
-
-		/// <summary>
-		/// Create a new instance of <c>Query</c> for the given query expression
-		/// </summary>
-		/// <param name="queryExpression">A hibernate query expression</param>
-		/// <returns>The query</returns>
-		public IQuery CreateQuery(IQueryExpression queryExpression)
-		{
-			return innerSession.CreateQuery(queryExpression);
 		}
 
 		/// <summary>
