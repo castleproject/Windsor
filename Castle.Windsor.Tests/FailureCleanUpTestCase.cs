@@ -22,6 +22,8 @@ namespace Castle.Windsor.Tests
 	using Castle.Windsor.Tests.Components;
 	using Castle.Windsor.Tests.Interceptors;
 
+	using CastleTests.Components;
+
 	using NUnit.Framework;
 
 	[TestFixture]
@@ -65,7 +67,7 @@ namespace Castle.Windsor.Tests
 		[Test]
 		public void When_interceptor_throws_previous_dependencies_get_released()
 		{
-			DisposableFoo.DisposedCount = 0;
+			DisposableFoo.ResetDisposedCount();
 			container.Register(
 				Component.For<ThrowInCtorInterceptor>().LifeStyle.Transient,
 				Component.For<DisposableFoo>().LifeStyle.Transient,
