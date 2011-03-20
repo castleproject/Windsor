@@ -31,7 +31,7 @@ namespace Castle.MicroKernel
 		/// <returns></returns>
 		public virtual object Resolve(String key, Type service)
 		{
-			return (this as IKernelInternal).Resolve(key, service, null, releasePolicy);
+			return (this as IKernelInternal).Resolve(key, service, null, ReleasePolicy);
 		}
 
 		/// <summary>
@@ -101,7 +101,7 @@ namespace Castle.MicroKernel
 		/// </returns>
 		public T Resolve<T>(String key)
 		{
-			return (T)(this as IKernelInternal).Resolve(key, typeof(T), arguments: null, policy: releasePolicy);
+			return (T)(this as IKernelInternal).Resolve(key, typeof(T), arguments: null, policy: ReleasePolicy);
 		}
 
 		/// <summary>
@@ -115,7 +115,7 @@ namespace Castle.MicroKernel
 		/// </returns>
 		public T Resolve<T>(String key, IDictionary arguments)
 		{
-			return (T)(this as IKernelInternal).Resolve(key, typeof(T), arguments, releasePolicy);
+			return (T)(this as IKernelInternal).Resolve(key, typeof(T), arguments, ReleasePolicy);
 		}
 
 		/// <summary>
@@ -123,7 +123,7 @@ namespace Castle.MicroKernel
 		/// </summary>
 		public object Resolve(Type service)
 		{
-			return (this as IKernelInternal).Resolve(service, null, releasePolicy);
+			return (this as IKernelInternal).Resolve(service, null, ReleasePolicy);
 		}
 
 		/// <summary>
@@ -135,7 +135,7 @@ namespace Castle.MicroKernel
 		/// <returns></returns>
 		public object Resolve(Type service, IDictionary arguments)
 		{
-			return (this as IKernelInternal).Resolve(service, arguments, releasePolicy);
+			return (this as IKernelInternal).Resolve(service, arguments, ReleasePolicy);
 
 		}
 
@@ -166,7 +166,7 @@ namespace Castle.MicroKernel
 		/// <returns></returns>
 		public object Resolve(string key, IDictionary arguments)
 		{
-			return (this as IKernelInternal).Resolve(key, service: null, arguments: arguments, policy: releasePolicy);
+			return (this as IKernelInternal).Resolve(key, service: null, arguments: arguments, policy: ReleasePolicy);
 		}
 
 		/// <summary>
@@ -178,7 +178,7 @@ namespace Castle.MicroKernel
 		/// <returns></returns>
 		public object Resolve(string key, object argumentsAsAnonymousType)
 		{
-			return (this as IKernelInternal).Resolve(key, null, new ReflectionBasedDictionaryAdapter(argumentsAsAnonymousType), releasePolicy);
+			return (this as IKernelInternal).Resolve(key, null, new ReflectionBasedDictionaryAdapter(argumentsAsAnonymousType), ReleasePolicy);
 		}
 
 		/// <summary>
@@ -188,7 +188,7 @@ namespace Castle.MicroKernel
 		/// <param name="service">The service type</param>
 		public Array ResolveAll(Type service)
 		{
-			return (this as IKernelInternal).ResolveAll(service, null, releasePolicy);
+			return (this as IKernelInternal).ResolveAll(service, null, ReleasePolicy);
 		}
 
 		Array IKernelInternal.ResolveAll(Type service, IDictionary arguments, IReleasePolicy policy)
@@ -253,7 +253,7 @@ namespace Castle.MicroKernel
 		/// <returns></returns>
 		public TService[] ResolveAll<TService>(object argumentsAsAnonymousType)
 		{
-			return (TService[])(this as IKernelInternal).ResolveAll(typeof(TService), new ReflectionBasedDictionaryAdapter(argumentsAsAnonymousType), releasePolicy);
+			return (TService[])(this as IKernelInternal).ResolveAll(typeof(TService), new ReflectionBasedDictionaryAdapter(argumentsAsAnonymousType), ReleasePolicy);
 		}
 
 		/// <summary>
@@ -264,7 +264,7 @@ namespace Castle.MicroKernel
 		/// <returns></returns>
 		public TService[] ResolveAll<TService>(IDictionary arguments)
 		{
-			return (TService[])(this as IKernelInternal).ResolveAll(typeof(TService), arguments, releasePolicy);
+			return (TService[])(this as IKernelInternal).ResolveAll(typeof(TService), arguments, ReleasePolicy);
 		}
 
 		/// <summary>
@@ -274,7 +274,7 @@ namespace Castle.MicroKernel
 		/// <returns></returns>
 		public TService[] ResolveAll<TService>()
 		{
-			return (TService[])(this as IKernelInternal).ResolveAll(typeof(TService), null, releasePolicy);
+			return (TService[])(this as IKernelInternal).ResolveAll(typeof(TService), null, ReleasePolicy);
 		}
 	}
 }
