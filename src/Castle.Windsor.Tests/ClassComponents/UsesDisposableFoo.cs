@@ -14,6 +14,8 @@
 
 namespace Castle.Windsor.Tests.ClassComponents
 {
+	using CastleTests.Components;
+
 	public class UsesDisposableFoo
 	{
 		private DisposableFoo foo;

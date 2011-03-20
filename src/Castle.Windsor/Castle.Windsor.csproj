@@ -680,6 +680,7 @@
     <Compile Include="MicroKernel\ISubDependencyResolver.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="MicroKernel\Resolvers\LazyOfTComponentLoader.cs" />
     <Compile Include="MicroKernel\Resolvers\SpecializedResolvers\ArrayResolver.cs" />
     <Compile Include="MicroKernel\Resolvers\SpecializedResolvers\CollectionResolver.cs" />
     <Compile Include="MicroKernel\Resolvers\SpecializedResolvers\ListResolver.cs" />

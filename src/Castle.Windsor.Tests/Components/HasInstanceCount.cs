@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,15 +12,26 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Windsor.Tests
+namespace CastleTests.Components
 {
-	public class B
+	public class HasInstanceCount
 	{
-		public B(A a)
+		private static int instancesCreated;
+
+		public HasInstanceCount()
 		{
-			A = a;
+			// doesn't need to be thread safe
+			instancesCreated++;
 		}
 
-		public A A { get; private set; }
+		public static int InstancesCreated
+		{
+			get { return instancesCreated; }
+		}
+
+		public static void ResetInstancesCreated()
+		{
+			instancesCreated = 0;
+		}
 	}
 }

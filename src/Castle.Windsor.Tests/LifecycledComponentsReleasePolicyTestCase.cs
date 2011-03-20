@@ -21,6 +21,8 @@ namespace Castle.Windsor.Tests
 	using Castle.MicroKernel.Releasers;
 	using Castle.Windsor.Tests.ClassComponents;
 
+	using CastleTests.Components;
+
 	using NUnit.Framework;
 
 	[TestFixture]
@@ -90,7 +92,7 @@ namespace Castle.Windsor.Tests
 		[Test]
 		public void Release_doesnt_stop_tracking_component_singleton_until_container_is_disposed()
 		{
-			DisposableFoo.DisposedCount = 0;
+			DisposableFoo.ResetDisposedCount();
 			container.Register(Singleton<DisposableFoo>());
 			var foo = container.Resolve<DisposableFoo>();
 			var fooWeak = new WeakReference(foo);

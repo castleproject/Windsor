@@ -347,6 +347,7 @@
     <Compile Include="Components\EmptyServiceComposite.cs" />
     <Compile Include="Components\EmptyServiceDecorator.cs" />
     <Compile Include="Components\EmptyServiceDecoratorViaProperty.cs" />
+    <Compile Include="Components\HasInstanceCount.cs" />
     <Compile Include="Components\HasNullDefaultForServiceDependency.cs" />
     <Compile Include="Components\HumanArm.cs" />
     <Compile Include="Components\IAlarmSender.cs" />
@@ -387,6 +388,7 @@
     <Compile Include="Components\UnresolvalbeDependency.cs" />
     <Compile Include="Components\UnresolvalbeDependencyWithAdditionalServiceConstructor.cs" />
     <Compile Include="Components\UnresolvalbeDependencyWithPrimitiveConstructor.cs" />
+    <Compile Include="Components\UsesLazy.cs" />
     <Compile Include="Components\UsesUri.cs" />
     <Compile Include="CompositePatternTestCase.cs" />
     <Compile Include="ContainerAndGenericsInConfigTestCase.cs" />
@@ -440,8 +442,9 @@
     <Compile Include="HandlerFilterTestCase.cs" />
     <Compile Include="Handlers\EmptyConstructorTestCase.cs" />
     <Compile Include="InternalsVisibleTo.cs" />
+    <Compile Include="LazyComponentsTestCase.cs" />
     <Compile Include="LifecycledComponentsReleasePolicyTestCase.cs" />
-    <Compile Include="ClassComponents\DisposableFoo.cs" />
+    <Compile Include="Components\DisposableFoo.cs" />
     <Compile Include="ClassComponents\HasTwoConstructors4.cs" />
     <Compile Include="ClassComponents\UsesDisposableFoo.cs" />
     <Compile Include="Configuration2\PrivateSettersTestCase.cs" />

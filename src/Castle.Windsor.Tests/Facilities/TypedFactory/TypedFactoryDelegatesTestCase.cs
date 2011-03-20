@@ -21,13 +21,13 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Releasers;
 	using Castle.MicroKernel.Tests.ClassComponents;
-	using Castle.Windsor.Tests.ClassComponents;
 	using Castle.Windsor.Tests.Facilities.TypedFactory.Components;
 	using Castle.Windsor.Tests.Facilities.TypedFactory.Delegates;
 	using Castle.Windsor.Tests.Facilities.TypedFactory.Factories;
 	using Castle.Windsor.Tests.Facilities.TypedFactory.Selectors;
 
 	using CastleTests;
+	using CastleTests.Components;
 
 	using NUnit.Framework;
 
@@ -203,7 +203,7 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 		[Test]
 		public void Factory_does_not_referece_components_after_theyve_been_released()
 		{
-			DisposableFoo.DisposedCount = 0;
+			DisposableFoo.ResetDisposedCount();
 
 			Container.Register(Component.For<DisposableFoo>().LifeStyle.Transient,
 			                   Component.For<UsesDisposableFooDelegate>().LifeStyle.Transient);
@@ -358,7 +358,7 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 		[Test]
 		public void Releasing_component_depending_on_a_factory_releases_what_was_pulled_from_it()
 		{
-			DisposableFoo.DisposedCount = 0;
+			DisposableFoo.ResetDisposedCount();
 
 			Container.Register(Component.For<DisposableFoo>().LifeStyle.Transient,
 			                   Component.For<UsesDisposableFooDelegate>().LifeStyle.Transient);

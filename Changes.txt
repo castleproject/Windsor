@@ -1,3 +1,4 @@
+- implemented IOC-281 - Provide out of the box support for Lazy<T>
 - fixed IOC-280 - ResolveAll should respect services and fail hard when a component can't be resolved
 - implemented IOC-279 - WindsorContainer constructor taking string should accept not only file path but also other supported locations, like UNC, config section and embedded resource
 - fixed IOC-278 - Optional Dependencies should also be satisfied from ILazyComponentLoaders if possible

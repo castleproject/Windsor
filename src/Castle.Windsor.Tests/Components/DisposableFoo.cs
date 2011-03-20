@@ -12,15 +12,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Windsor.Tests
+namespace CastleTests.Components
 {
-	public class B
+	using System;
+
+	public class DisposableFoo : IDisposable
 	{
-		public B(A a)
+		public static int DisposedCount { get; private set; }
+
+		public void Dispose()
 		{
-			A = a;
+			DisposedCount++;
 		}
 
-		public A A { get; private set; }
+		public static void ResetDisposedCount()
+		{
+			DisposedCount = 0;
+		}
 	}
 }
