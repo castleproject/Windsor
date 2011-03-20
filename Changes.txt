@@ -1,34 +1,36 @@
 - implemented IOC-281 - Provide out of the box support for Lazy<T>
-- fixed IOC-280 - ResolveAll should respect services and fail hard when a component can't be resolved
 - implemented IOC-279 - WindsorContainer constructor taking string should accept not only file path but also other supported locations, like UNC, config section and embedded resource
-- fixed IOC-278 - Optional Dependencies should also be satisfied from ILazyComponentLoaders if possible
 - implemented IOC-277 - Add ability for components activated in a custom way to opt out of container lifetime management
 - implemented IOC-275 - Exception message thrown when dependencies are missing is not always very clear and should be improved
-- fixed IOC-273 - Auto register PerWebRequestLifestyleModule using PreApplicationStartMethodAttribute at runtime
-- EventWiringFacility, FactorySupportFacility and RemotingFacility are extracted to their own assemblies
 - implemented IOC-271 - Support open generic components where implementing class has more generic parameters than the service but the missing ones can be somehow inferred
 - implemented IOC-270 - Add OnDestroy method, symertical to OnCreate 
 - implemented IOC-268 - Hook that allows for filtering handlers during ResolveAll 
-- fixed IOC-267 - Register() on a System.ValueType (like an Int32 or an Enum) instance should throw an exception
-- fixed IOC-265 - In certain cases of cyclic dependencies debugger view times out because of stack overflow in MismatchedLifestyleDependencyViewBuilder 
 - implemented IOC-263 - Add new debugger diagnostics - tracked objects
-- fixed IOC-262 objects created via UsingFactoryMethod are always tracked, even if they could safely not be
-- fixed 	IOC-260 - Generic Typed Factories no longer working in trunk
 - implemented IOC-257 - Same as in code, specifying type for facility in XML should be enough - Id should be optional
 - implemented IOC-256 - Same as in code, specifying type for component in XML should be enough - Id should be optional
 - implemented IOC-255 - Specifying custom lifestyle type in XML should be enough, for it to be picked up
+- implemented IOC-249 - Remove aility to remove components from the Container
+- implemented IOC-246 - Remove alternative naming subsystems
+- implemented IOC-243 - Remove obsolete UseSingleInterfaceProxy option
+
+- fixed IOC-280 - ResolveAll should respect services and fail hard when a component can't be resolved
+- fixed IOC-278 - Optional Dependencies should also be satisfied from ILazyComponentLoaders if possible
+- fixed IOC-273 - Auto register PerWebRequestLifestyleModule using PreApplicationStartMethodAttribute at runtime
+- fixed IOC-267 - Register() on a System.ValueType (like an Int32 or an Enum) instance should throw an exception
+- fixed IOC-265 - In certain cases of cyclic dependencies debugger view times out because of stack overflow in MismatchedLifestyleDependencyViewBuilder 
+- fixed IOC-262 - objects created via UsingFactoryMethod are always tracked, even if they could safely not be
+- fixed 	IOC-260 - Generic Typed Factories no longer working in trunk
 - fixed IOC-254 - Optional non-primitive .ctor parameters don't work
-- fixed bug with NullReferenceException when TypedFactoryFacility is used and disposed
 - fixed IOC-250 - Dispose not being called on open generic registrations
-- IServiceProviderEx was removed as base interface for IWindsorContainer and IKernel
-- completed IOC-249 - Remove aility to remove components from the Container
-- Removed the following types: ContainerAdapter, ContainerWrapper, IContainerAdapter, IContainerAdapterSite types
 - fixed IOC-248 - Open generic components with multiple services, some of which are generic fail to properly instantiate in certain cases
 - fixed IOC-247 - Make ComponentModel/IHandler expose all services for given component, instead of piggybacking them via ForwardedHandlers
-- implemented IOC-246 - Remove alternative naming subsystems
 - fixed IOC-245 - Proxies (for interface services) should not implicitly proxy all interfaces that the service implementation type happens to implement
-- implemented IOC-243 - Remove obsolete UseSingleInterfaceProxy option
 - fixed IOC-240 - Castle Windsor ArrayResolver ServiceOverrides Not Respected
+
+- EventWiringFacility, FactorySupportFacility and RemotingFacility are extracted to their own assemblies
+- fixed bug with NullReferenceException when TypedFactoryFacility is used and disposed
+- IServiceProviderEx was removed as base interface for IWindsorContainer and IKernel
+- Removed the following types: ContainerAdapter, ContainerWrapper, IContainerAdapter, IContainerAdapterSite types
 
 2.5.3 (2011-02-02)
 ==================
