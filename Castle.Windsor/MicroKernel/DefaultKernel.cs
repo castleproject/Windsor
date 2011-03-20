@@ -17,7 +17,6 @@ namespace Castle.MicroKernel
 	using System;
 	using System.Collections;
 	using System.Collections.Generic;
-	using System.ComponentModel;
 	using System.Diagnostics;
 	using System.Linq;
 	using System.Runtime.Serialization;
@@ -85,24 +84,12 @@ namespace Castle.MicroKernel
 		/// <summary>
 		///   Map of subsystems registered.
 		/// </summary>
-		private readonly Dictionary<string, ISubSystem> subsystems =
-			new Dictionary<string, ISubSystem>(StringComparer.OrdinalIgnoreCase);
+		private readonly Dictionary<string, ISubSystem> subsystems = new Dictionary<string, ISubSystem>(StringComparer.OrdinalIgnoreCase);
 
 		/// <summary>
 		///   The parent kernel, if exists.
 		/// </summary>
 		private IKernel parentKernel;
-
-		/// <summary>
-		///   Holds the implementation of <see cref = "IProxyFactory" />
-		/// </summary>
-		private IProxyFactory proxyFactory;
-
-		/// <summary>
-		///   Implements a policy to control component's
-		///   disposal that the user forgot.
-		/// </summary>
-		private IReleasePolicy releasePolicy;
 
 		private readonly object lazyLoadingLock = new object();
 
@@ -124,10 +111,10 @@ namespace Castle.MicroKernel
 		{
 			RegisterSubSystems();
 
-			releasePolicy = new LifecycledComponentsReleasePolicy();
+			ReleasePolicy = new LifecycledComponentsReleasePolicy();
 			handlerFactory = new DefaultHandlerFactory(this);
 			ComponentModelFactory = new DefaultComponentModelFactory(this);
-			this.proxyFactory = proxyFactory;
+			ProxyFactory = proxyFactory;
 			this.resolver = resolver;
 			resolver.Initialize(this, RaiseDependencyResolving);
 		}
@@ -220,17 +207,9 @@ namespace Castle.MicroKernel
 			}
 		}
 
-		public IProxyFactory ProxyFactory
-		{
-			get { return proxyFactory; }
-			set { proxyFactory = value; }
-		}
+		public IProxyFactory ProxyFactory { get; set; }
 
-		public virtual IReleasePolicy ReleasePolicy
-		{
-			get { return releasePolicy; }
-			set { releasePolicy = value; }
-		}
+		public IReleasePolicy ReleasePolicy { get; set; }
 
 		public IDependencyResolver Resolver
 		{
@@ -314,13 +293,6 @@ namespace Castle.MicroKernel
 			}
 		}
 
-		[Obsolete("Use AddFacility(IFacility) instead.")]
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		public virtual IKernel AddFacility(String key, IFacility facility)
-		{
-			return AddFacility(facility);
-		}
-
 		public virtual IKernel AddFacility(IFacility facility)
 		{
 			if (facility == null)
@@ -338,21 +310,6 @@ namespace Castle.MicroKernel
 			facility.Init(this, ConfigurationStore.GetFacilityConfiguration(facilityType.FullName));
 
 			return this;
-		}
-
-		[Obsolete("Use AddFacility<TFacility>() instead.")]
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		public IKernel AddFacility<T>(String key) where T : IFacility, new()
-		{
-			return AddFacility(new T());
-		}
-
-		[Obsolete("Use AddFacility<TFacility>(Action<TFacility>) instead.")]
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		public IKernel AddFacility<T>(String key, Action<T> onCreate)
-			where T : IFacility, new()
-		{
-			return AddFacility(onCreate);
 		}
 
 		public IKernel AddFacility<T>() where T : IFacility, new()
@@ -743,26 +700,6 @@ namespace Castle.MicroKernel
 					throw new CircularDependencyException(message);
 				}
 				return handler.Resolve(context);
-			}
-			finally
-			{
-				currentCreationContext = parent;
-			}
-		}
-
-		protected object TryResolveComponent(IHandler handler, Type service, IDictionary additionalArguments, IReleasePolicy policy)
-		{
-			var parent = currentCreationContext;
-			var context = CreateCreationContext(handler, service, additionalArguments, parent, policy);
-			currentCreationContext = context;
-
-			try
-			{
-				if (handler.IsBeingResolvedInContext(context))
-				{
-					return null;
-				}
-				return handler.TryResolve(context);
 			}
 			finally
 			{

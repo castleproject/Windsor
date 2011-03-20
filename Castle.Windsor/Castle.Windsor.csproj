@@ -471,7 +471,7 @@
     <Compile Include="MicroKernel\IKernelEvents.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="MicroKernel\IKernel_AddComponent.cs" />
+    <Compile Include="MicroKernel\IKernel_ObsoleteAPI.cs" />
     <Compile Include="MicroKernel\IKernel_Resolve.cs" />
     <Compile Include="Core\Interceptor\IOnBehalfAware.cs" />
     <Compile Include="Core\Internal\GraphNode.cs" />
