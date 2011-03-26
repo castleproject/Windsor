@@ -48,7 +48,8 @@ namespace Castle.Windsor.Tests.MicroKernel
 
 			Assert.AreEqual(value, arguments["boo!"]);
 		}
-
+		
+#if !SILVERLIGHT
 		[Test]
 		public void Custom_stores_get_picked_over_default_ones_in_clone()
 		{
@@ -62,6 +63,7 @@ namespace Castle.Windsor.Tests.MicroKernel
 
 			Assert.AreEqual(value, clone["boo!"]);
 		}
+#endif
 
 		[Test]
 		public void Handles_Type_as_key()
