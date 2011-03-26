@@ -11,7 +11,6 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
 namespace Castle.MicroKernel.Handlers
 {
 	using System;
@@ -90,8 +89,17 @@ namespace Castle.MicroKernel.Handlers
 				}
 				// TODO: we should probably match the requested type to existing services and close them over its generic arguments
 				var service = context.RequestedType;
+				var extendedProperties = ComponentModel.ExtendedProperties;
+				if (extendedProperties != null && extendedProperties.Count > 0)
+				{
+					if (extendedProperties is ICloneable)
+					{
+						extendedProperties = (IDictionary)((ICloneable)extendedProperties).Clone();
+					}
+					extendedProperties = new Arguments(extendedProperties);
+				}
 				var newModel = Kernel.ComponentModelFactory.BuildModel(
-					ComponentModel.ComponentName, new[] { service }, genericType, ComponentModel.ExtendedProperties);
+					ComponentModel.ComponentName, new[] { service }, genericType, extendedProperties);
 
 				newModel.ExtendedProperties[ComponentModel.SkipRegistration] = true;
 				CloneParentProperties(newModel);
