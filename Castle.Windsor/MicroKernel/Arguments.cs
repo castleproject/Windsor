@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ namespace Castle.MicroKernel
 	/// <summary>
 	///   Represents collection of arguments used when resolving a component.
 	/// </summary>
-	public class Arguments : IDictionary
+	public class Arguments : IDictionary, ICloneable
 	{
 		protected IDictionary arguments;
 
@@ -135,6 +135,26 @@ namespace Castle.MicroKernel
 			arguments.Remove(key);
 		}
 
+		protected virtual Arguments CreateDeepCopy()
+		{
+			var dictionary = arguments as Dictionary<object, object>;
+			if (dictionary != null)
+			{
+				var comparerExtended = dictionary.Comparer as ArgumentsComparerExtended;
+				if (comparerExtended != null)
+				{
+					return new Arguments(arguments, comparerExtended.CustomComparers);
+				}
+			}
+
+			return new Arguments(arguments);
+		}
+
+		object ICloneable.Clone()
+		{
+			return CreateDeepCopy();
+		}
+
 		void ICollection.CopyTo(Array array, int index)
 		{
 			arguments.CopyTo(array, index);
@@ -170,16 +190,21 @@ namespace Castle.MicroKernel
 
 		private class ArgumentsComparerExtended : ArgumentsComparer
 		{
-			private readonly IList<IArgumentsComparer> stores = new List<IArgumentsComparer>();
+			private readonly List<IArgumentsComparer> nestedComparers = new List<IArgumentsComparer>();
 
 			public ArgumentsComparerExtended(IEnumerable<IArgumentsComparer> customStores)
 			{
-				stores = new List<IArgumentsComparer>(customStores);
+				nestedComparers = new List<IArgumentsComparer>(customStores);
+			}
+
+			public IArgumentsComparer[] CustomComparers
+			{
+				get { return nestedComparers.ToArray(); }
 			}
 
 			public override bool Equals(object x, object y)
 			{
-				foreach (var store in stores)
+				foreach (var store in nestedComparers)
 				{
 					bool areEqual;
 					if (store.RunEqualityComparison(x, y, out areEqual))
@@ -192,7 +217,7 @@ namespace Castle.MicroKernel
 
 			public override int GetHashCode(object obj)
 			{
-				foreach (var store in stores)
+				foreach (var store in nestedComparers)
 				{
 					int hashCode;
 					if (store.RunHasCodeCalculation(obj, out hashCode))
