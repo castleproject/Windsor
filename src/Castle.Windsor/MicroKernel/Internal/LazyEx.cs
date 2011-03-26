@@ -29,6 +29,18 @@ namespace Castle.MicroKernel.Internal
 			this.kernel = kernel;
 		}
 
+		public LazyEx(IKernel kernel, string overrideComponentName)
+			: base(() => kernel.Resolve<T>(overrideComponentName))
+		{
+			this.kernel = kernel;
+		}
+
+		public LazyEx(IKernel kernel, string overrideComponentName, IDictionary arguments)
+			: base(() => kernel.Resolve<T>(overrideComponentName, arguments))
+		{
+			this.kernel = kernel;
+		}
+
 		public LazyEx(IKernel kernel)
 			: base(kernel.Resolve<T>)
 		{
