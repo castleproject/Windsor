@@ -11,7 +11,6 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
 namespace CastleTests
 {
 	using System;
@@ -178,6 +177,18 @@ namespace CastleTests
 
 			Assert.IsNotNull(hasArguments.Value);
 			Assert.AreSame(a, hasArguments.Value.A);
+		}
+
+		[Test]
+		public void Can_resolve_lazy_component_with_override()
+		{
+			Container.Register(Component.For<A>().Named("1"),
+			                   Component.For<A>().Named("2"));
+
+			var lazyA = Container.Resolve<Lazy<A>>(new { overrideComponentName = "2" });
+
+			var a2 = Container.Resolve<A>("2");
+			Assert.AreSame(a2, lazyA.Value);
 		}
 
 		[Test]
