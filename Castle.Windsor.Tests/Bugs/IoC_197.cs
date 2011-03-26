@@ -32,7 +32,6 @@ namespace Castle.Windsor.Tests.Bugs
 	public class IoC_197
 	{
 		[Test]
-		[Ignore("This is not supported. Perhaps it should.")]
 		public void DictionaryAsParameterInXml()
 		{
 			var container =

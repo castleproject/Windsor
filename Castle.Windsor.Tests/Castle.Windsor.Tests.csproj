@@ -983,7 +983,7 @@
     <Compile Include="Facilities\Remoting\AbstractRemoteTestCase.cs" />
     <Compile Include="Components\AppDomainFactory.cs" />
     <Compile Include="Components\CalcServiceRemotingImpl.cs" />
-    <Compile Include="Components\ConfigurableRegistrationTestCase.cs" />
+    <Compile Include="Facilities\Remoting\ConfigurableRegistrationTestCase.cs" />
     <Compile Include="Components\ConsumerComp.cs" />
     <Compile Include="Components\CustomToStringService.cs" />
     <Compile Include="Facilities\Remoting\FacilityLifeCycleTestCase.cs" />

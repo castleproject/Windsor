@@ -12,22 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.MicroKernel.Tests
+namespace CastleTests
 {
 	using System.Collections.Generic;
 	using System.Linq;
 
 	using Castle.Facilities.FactorySupport;
 	using Castle.MicroKernel.Registration;
-	using Castle.Windsor.Tests;
 	using Castle.Windsor.Tests.Components;
-
-	using CastleTests;
 
 	using NUnit.Framework;
 
 	[TestFixture]
-	[Ignore("This is broken. Arbitrary division into Service/ServiceOverride/Parameter dependencies has to be removed or adjusted first.")]
 	public class ComponentsParametersDivisionTestsCase : AbstractContainerTestCase
 	{
 		[Test]
@@ -77,11 +73,11 @@ namespace Castle.MicroKernel.Tests
 			                   		new EmptyServiceA(),
 			                   		new EmptyServiceA(),
 			                   		new EmptyServiceA()
-			                   	}),
+			                   	}).Named("array"),
 			                   Component.For<EnumerableDepAsConstructor>()
 			                   	.ServiceOverrides(ServiceOverride
 			                   	                  	.ForKey<IEnumerable<IEmptyService>>()
-			                   	                  	.Eq<IEnumerable<IEmptyService>>()));
+			                   	                  	.Eq("array")));
 
 			var collection = Container.Resolve<IEnumerable<IEmptyService>>();
 			Assert.AreEqual(10, collection.Count());
