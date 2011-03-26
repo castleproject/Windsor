@@ -17,9 +17,9 @@ namespace Castle.MicroKernel.Resolvers
 #if !DOTNET35
 	using System;
 	using System.Collections;
-	using System.Reflection;
 
 	using Castle.Core;
+	using Castle.MicroKernel.Internal;
 	using Castle.MicroKernel.Registration;
 
 	/// <summary>
@@ -28,16 +28,6 @@ namespace Castle.MicroKernel.Resolvers
 	[Singleton]
 	public class LazyOfTComponentLoader : ILazyComponentLoader
 	{
-		private static readonly MethodInfo getRegistration = typeof(LazyOfTComponentLoader)
-			.GetMethod("GetRegistration", BindingFlags.NonPublic | BindingFlags.Instance);
-
-		private readonly IKernel kernel;
-
-		public LazyOfTComponentLoader(IKernel kernel)
-		{
-			this.kernel = kernel;
-		}
-
 		public IRegistration Load(string key, Type service, IDictionary arguments)
 		{
 			if (service == null)
@@ -52,35 +42,10 @@ namespace Castle.MicroKernel.Resolvers
 			{
 				return null;
 			}
-			return (IRegistration)getRegistration
-			                      	.MakeGenericMethod(service.GetGenericArguments())
-			                      	.Invoke(this, new object[] { arguments });
-		}
-
-		private IRegistration GetRegistration<TService>(IDictionary arguments)
-		{
-			return Component.For<Lazy<TService>>()
+			return Component.For(typeof(Lazy<>))
+				.ImplementedBy(typeof(LazyEx<>))
 				.LifeStyle.Transient
-				.NamedAutomatically(GetName(typeof(TService)))
-				.DependsOn(Property.ForKey("value").Is(typeof(TService)),
-				           Property.ForKey<Func<TService>>().Eq(new Func<TService>(kernel.Resolve<TService>)))
-				.DependsOn(arguments)
-				.OnDestroy((k, l) =>
-				{
-					if (l.IsValueCreated)
-					{
-						k.ReleaseComponent(l.Value);
-					}
-				});
-		}
-
-		private string GetName(Type service)
-		{
-			if (string.IsNullOrEmpty(service.FullName))
-			{
-				return "auto-lazy: " + Guid.NewGuid();
-			}
-			return "auto-lazy: " + service.FullName;
+				.NamedAutomatically("castle-auto-lazy");
 		}
 	}
 #endif

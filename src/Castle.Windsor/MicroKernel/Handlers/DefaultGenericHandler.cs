@@ -89,20 +89,11 @@ namespace Castle.MicroKernel.Handlers
 					return handler;
 				}
 				// TODO: we should probably match the requested type to existing services and close them over its generic arguments
-				var service = context.RequestedType;
-				var extendedProperties = ComponentModel.ExtendedProperties;
-				if (extendedProperties != null && extendedProperties.Count > 0)
-				{
-#if !SILVERLIGHT
-					if (extendedProperties is ICloneable)
-					{
-						extendedProperties = (IDictionary)((ICloneable)extendedProperties).Clone();
-					}
-#endif
-					extendedProperties = new Arguments(extendedProperties);
-				}
 				var newModel = Kernel.ComponentModelFactory.BuildModel(
-					ComponentModel.ComponentName, new[] { service }, genericType, extendedProperties);
+					ComponentModel.ComponentName,
+					new[] { context.RequestedType },
+					genericType,
+					GetExtendedProperties());
 
 				newModel.ExtendedProperties[ComponentModel.SkipRegistration] = true;
 				CloneParentProperties(newModel);
@@ -117,6 +108,22 @@ namespace Castle.MicroKernel.Handlers
 
 				return handler;
 			}
+		}
+
+		private IDictionary GetExtendedProperties()
+		{
+			var extendedProperties = ComponentModel.ExtendedProperties;
+			if (extendedProperties != null && extendedProperties.Count > 0)
+			{
+#if !SILVERLIGHT
+				if (extendedProperties is ICloneable)
+				{
+					extendedProperties = (IDictionary)((ICloneable)extendedProperties).Clone();
+				}
+#endif
+				extendedProperties = new Arguments(extendedProperties);
+			}
+			return extendedProperties;
 		}
 
 		protected override object Resolve(CreationContext context, bool instanceRequired)

@@ -401,6 +401,7 @@
     <Compile Include="MicroKernel\IHandlersFilter.cs" />
     <Compile Include="MicroKernel\IKernelEventsInternal.cs" />
     <Compile Include="MicroKernel\IKernelInternal.cs" />
+    <Compile Include="MicroKernel\Internal\LazyEx.cs" />
     <Compile Include="MicroKernel\IProxyFactoryExtension.cs" />
     <Compile Include="MicroKernel\KernelException.cs">
       <SubType>Code</SubType>
