@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 namespace CastleTests.Facilities.TypedFactory
 {
 	using System;
@@ -58,8 +59,8 @@ namespace CastleTests.Facilities.TypedFactory
 
 			var allhandlers = Kernel.GetAssignableHandlers(typeof(object));
 
-			Assert.IsFalse(Array.Exists(allhandlers, h => h.Services.Any(s => s == typeof(Func<Foo>))));
-			Assert.IsFalse(Array.Exists(allhandlers, h => h.Services.Any(s => s == typeof(Func<Bar>))));
+			Assert.IsFalse(allhandlers.SelectMany(h => h.Services).Any(s => s == typeof(Func<Foo>)));
+			Assert.IsFalse(allhandlers.SelectMany(h => h.Services).Any(s => s == typeof(Func<Bar>)));
 		}
 
 		[Test]
@@ -80,8 +81,8 @@ namespace CastleTests.Facilities.TypedFactory
 
 			var allhandlers = Kernel.GetAssignableHandlers(typeof(object));
 
-			Assert.IsFalse(Array.Exists(allhandlers, h => h.Services.Any(s => s == typeof(Func<Foo>))));
-			Assert.IsFalse(Array.Exists(allhandlers, h => h.Services.Any(s => s == typeof(Func<Bar>))));
+			Assert.IsFalse(allhandlers.SelectMany(h => h.Services).Any(s => s == typeof(Func<Foo>)));
+			Assert.IsFalse(allhandlers.SelectMany(h => h.Services).Any(s => s == typeof(Func<Bar>)));
 		}
 
 		[Test]
