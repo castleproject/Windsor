@@ -122,6 +122,7 @@ namespace CastleTests
 
 			Assert.True(Kernel.ReleasePolicy.HasTrack(lazy));
 		}
+
 #if !SILVERLIGHT
 		[Test]
 		public void Implicit_lazy_is_initialized_once()
@@ -147,6 +148,48 @@ namespace CastleTests
 
 			var handler = Kernel.GetHandler(typeof(Lazy<A>));
 			Assert.AreEqual(LifestyleType.Transient, handler.ComponentModel.LifestyleType);
+		}
+
+		[Test]
+		public void Can_resolve_same_component_via_two_lazy()
+		{
+			Container.Register(Component.For<A>(),
+			                   Component.For<B>());
+
+			var lazy1 = Container.Resolve<Lazy<A>>();
+			var lazy2 = Container.Resolve<Lazy<B>>();
+
+			Assert.IsNotNull(lazy1.Value);
+			Assert.IsNotNull(lazy2.Value);
+		}
+
+		[Test]
+		public void Can_resolve_lazy_component_requiring_arguments_inline()
+		{
+			Container.Register(Component.For<B>());
+
+			var a = new A();
+			var arguments = new Arguments(new object[] { a });
+			var missingArguments = Container.Resolve<Lazy<B>>();
+			var hasArguments = Container.Resolve<Lazy<B>>(new { arguments });
+
+			B ignore;
+			Assert.Throws<DependencyResolverException>(() => ignore = missingArguments.Value);
+
+			Assert.IsNotNull(hasArguments.Value);
+			Assert.AreSame(a, hasArguments.Value.A);
+		}
+
+		[Test]
+		public void Can_resolve_various_components_via_lazy()
+		{
+			Container.Register(Component.For<A>());
+
+			var lazy1 = Container.Resolve<Lazy<A>>();
+			var lazy2 = Container.Resolve<Lazy<A>>();
+
+			Assert.AreNotSame(lazy1, lazy2);
+			Assert.AreSame(lazy1.Value, lazy2.Value);
 		}
 
 		[Test]
