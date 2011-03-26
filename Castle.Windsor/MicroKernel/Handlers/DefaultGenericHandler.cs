@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 namespace Castle.MicroKernel.Handlers
 {
 	using System;
@@ -92,10 +93,12 @@ namespace Castle.MicroKernel.Handlers
 				var extendedProperties = ComponentModel.ExtendedProperties;
 				if (extendedProperties != null && extendedProperties.Count > 0)
 				{
+#if !SILVERLIGHT
 					if (extendedProperties is ICloneable)
 					{
 						extendedProperties = (IDictionary)((ICloneable)extendedProperties).Clone();
 					}
+#endif
 					extendedProperties = new Arguments(extendedProperties);
 				}
 				var newModel = Kernel.ComponentModelFactory.BuildModel(
