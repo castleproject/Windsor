@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,6 +14,9 @@
 
 namespace Castle.Windsor.Tests.MicroKernel
 {
+	using System;
+	using System.Collections;
+
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Context;
 
@@ -22,6 +25,44 @@ namespace Castle.Windsor.Tests.MicroKernel
 	[TestFixture]
 	public class ArgumentsTestCase
 	{
+		[Test]
+		public void By_default_any_type_as_key_is_supported()
+		{
+			var arguments = new Arguments(new CustomStringComparer());
+			var key = new object();
+			var value = "foo";
+
+			arguments.Add(key, value);
+
+			Assert.AreEqual("foo", arguments[key]);
+		}
+
+		[Test]
+		public void Custom_stores_get_picked_over_default_ones()
+		{
+			var arguments = new Arguments(new CustomStringComparer());
+			var key = "foo";
+			var value = new object();
+
+			arguments.Add(key, value);
+
+			Assert.AreEqual(value, arguments["boo!"]);
+		}
+
+		[Test]
+		public void Custom_stores_get_picked_over_default_ones_in_clone()
+		{
+			var arguments = new Arguments(new CustomStringComparer());
+			var key = "foo";
+			var value = new object();
+
+			arguments.Add(key, value);
+
+			var clone = (IDictionary)((ICloneable)arguments).Clone();
+
+			Assert.AreEqual(value, clone["boo!"]);
+		}
+
 		[Test]
 		public void Handles_Type_as_key()
 		{
@@ -62,30 +103,6 @@ namespace Castle.Windsor.Tests.MicroKernel
 			Assert.IsTrue(arguments.Contains(key.ToLower()));
 			Assert.IsTrue(arguments.Contains(key.ToUpper()));
 		}
-
-		[Test]
-		public void Custom_stores_get_picked_over_default_ones()
-		{
-			var arguments = new Arguments(new CustomStringComparer());
-			var key = "foo";
-			var value = new object();
-
-			arguments.Add(key, value);
-
-			Assert.AreEqual(value, arguments["boo!"]);
-		}
-
-		[Test]
-		public void By_default_any_type_as_key_is_supported()
-		{
-			var arguments = new Arguments(new CustomStringComparer());
-			var key = new object();
-			var value = "foo";
-
-			arguments.Add(key, value);
-
-			Assert.AreEqual("foo", arguments[key]);
-		}
 	}
 
 	public class CustomStringComparer : IArgumentsComparer
@@ -103,14 +120,13 @@ namespace Castle.Windsor.Tests.MicroKernel
 
 		public bool RunHasCodeCalculation(object o, out int hashCode)
 		{
-			if(o is string )
+			if (o is string)
 			{
 				hashCode = "boo!".GetHashCode();
 				return true;
 			}
 			hashCode = 0;
 			return false;
-
 		}
 	}
 }
