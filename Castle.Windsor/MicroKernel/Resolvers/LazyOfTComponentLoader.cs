@@ -22,8 +22,6 @@ namespace Castle.MicroKernel.Resolvers
 	using Castle.Core;
 	using Castle.MicroKernel.Registration;
 
-
-
 	/// <summary>
 	///   Lazily adds component for <see cref = "Lazy{T}" />.
 	/// </summary>
