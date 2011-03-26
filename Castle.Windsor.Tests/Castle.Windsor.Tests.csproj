@@ -433,6 +433,7 @@
     <Compile Include="Facilities\TypedFactory\Factories\IGenericFactoryWithGenericMethod.cs" />
     <Compile Include="Facilities\TypedFactory\Factories\IObjectFactory.cs" />
     <Compile Include="Facilities\TypedFactory\TypedFactoryDependenciesTestCase.cs" />
+    <Compile Include="Facilities\TypedFactory\TypedFactoryOpenGenericFactoriesTestCase.cs" />
     <Compile Include="GenericImplementationWithGreaterArityThanServiceTestCase.cs" />
     <Compile Include="Generics\ARepository.cs" />
     <Compile Include="Generics\ARepository.T.cs" />

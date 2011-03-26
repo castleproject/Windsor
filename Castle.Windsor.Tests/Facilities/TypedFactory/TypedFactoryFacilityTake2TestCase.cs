@@ -236,17 +236,6 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 		}
 
 		[Test]
-		public void Can_resolve_via_generic_factory()
-		{
-			Container.Register(Component.For(typeof(IGenericFactory<>)).AsFactory());
-
-			var factory = Container.Resolve<IGenericFactory<IDummyComponent>>();
-
-			var component = factory.Create();
-			Assert.IsNotNull(component);
-		}
-
-		[Test]
 		public void Can_resolve_via_generic_factory_closed()
 		{
 			Container.Register(Component.For<IGenericFactoryClosed>().AsFactory());
