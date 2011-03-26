@@ -165,7 +165,7 @@ namespace Castle.Facilities.TypedFactory
 			{
 				var delegateProxyFactory = k.Resolve<IProxyFactoryExtension>(TypedFactoryFacility.DelegateProxyFactoryKey,
 				                                                             new Arguments()
-				                                                             	.Insert("targetDelegateType", delegateType));
+				                                                             	.Insert("targetDelegateType", c.RequestedType));
 				var @delegate = k.ProxyFactory.Create(delegateProxyFactory, k, m, c);
 				k.ReleaseComponent(delegateProxyFactory);
 				return (TDelegate)@delegate;
