@@ -11,16 +11,18 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-namespace Castle.Windsor.Tests.Facilities.TypedFactory
+namespace CastleTests.Facilities.TypedFactory
 {
 	using System;
+	using System.Linq;
 
 	using Castle.Facilities.TypedFactory;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Releasers;
 	using Castle.MicroKernel.Tests.ClassComponents;
+	using Castle.Windsor.Tests;
+	using Castle.Windsor.Tests.Facilities.TypedFactory;
 	using Castle.Windsor.Tests.Facilities.TypedFactory.Components;
 	using Castle.Windsor.Tests.Facilities.TypedFactory.Delegates;
 	using Castle.Windsor.Tests.Facilities.TypedFactory.Factories;
@@ -28,19 +30,58 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 
 	using CastleTests;
 	using CastleTests.Components;
+	using CastleTests.Facilities.TypedFactory.Delegates;
 
 	using NUnit.Framework;
 
 	using HasTwoConstructors = Castle.Windsor.Tests.Facilities.TypedFactory.Delegates.HasTwoConstructors;
+	using ServiceFactory = Castle.Windsor.Tests.Facilities.TypedFactory.ServiceFactory;
 
 	[TestFixture]
 	public class TypedFactoryDelegatesTestCase : AbstractContainerTestCase
 	{
-		protected override WindsorContainer BuildContainer()
+		[Test]
+		public void Can_register_generic_delegate_factory_explicitly_as_open_generic_optional_dependency()
 		{
-			var windsor = new WindsorContainer();
-			windsor.AddFacility<TypedFactoryFacility>();
-			return windsor;
+			Container.Register(Component.For<Foo>().LifeStyle.Transient,
+			                   Component.For<Bar>().LifeStyle.Transient,
+			                   Component.For<UsesFooAndBarDelegateProperties>(),
+			                   Component.For(typeof(Func<>)).AsFactory());
+
+			var instance = Container.Resolve<UsesFooAndBarDelegateProperties>();
+
+			Assert.IsNotNull(instance.FooFactory);
+			Assert.IsNotNull(instance.BarFactory);
+
+			var factoryHandler = Kernel.GetHandler(typeof(Func<>));
+			Assert.IsNotNull(factoryHandler);
+
+			var allhandlers = Kernel.GetAssignableHandlers(typeof(object));
+
+			Assert.IsFalse(Array.Exists(allhandlers, h => h.Services.Any(s => s == typeof(Func<Foo>))));
+			Assert.IsFalse(Array.Exists(allhandlers, h => h.Services.Any(s => s == typeof(Func<Bar>))));
+		}
+
+		[Test]
+		public void Can_register_generic_delegate_factory_explicitly_as_open_generic_required_dependency()
+		{
+			Container.Register(Component.For<Foo>().LifeStyle.Transient,
+			                   Component.For<Bar>().LifeStyle.Transient,
+			                   Component.For<UsesFooAndBarDelegateCtor>(),
+			                   Component.For(typeof(Func<>)).AsFactory());
+
+			var instance = Container.Resolve<UsesFooAndBarDelegateCtor>();
+
+			Assert.IsNotNull(instance.FooFactory);
+			Assert.IsNotNull(instance.BarFactory);
+
+			var factoryHandler = Kernel.GetHandler(typeof(Func<>));
+			Assert.IsNotNull(factoryHandler);
+
+			var allhandlers = Kernel.GetAssignableHandlers(typeof(object));
+
+			Assert.IsFalse(Array.Exists(allhandlers, h => h.Services.Any(s => s == typeof(Func<Foo>))));
+			Assert.IsFalse(Array.Exists(allhandlers, h => h.Services.Any(s => s == typeof(Func<Bar>))));
 		}
 
 		[Test]
@@ -356,6 +397,38 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 		}
 
 		[Test]
+		public void Registers_generic_delegate_factories_as_open_generics_optional_dependency()
+		{
+			Container.Register(Component.For<Foo>().LifeStyle.Transient,
+			                   Component.For<Bar>().LifeStyle.Transient,
+			                   Component.For<UsesFooAndBarDelegateProperties>());
+
+			var instance = Container.Resolve<UsesFooAndBarDelegateProperties>();
+
+			Assert.IsNotNull(instance.FooFactory);
+			Assert.IsNotNull(instance.BarFactory);
+
+			var factoryHandler = Kernel.GetHandler(typeof(Func<>));
+			Assert.IsNotNull(factoryHandler);
+		}
+
+		[Test]
+		public void Registers_generic_delegate_factories_as_open_generics_required_dependency()
+		{
+			Container.Register(Component.For<Foo>().LifeStyle.Transient,
+			                   Component.For<Bar>().LifeStyle.Transient,
+			                   Component.For<UsesFooAndBarDelegateCtor>());
+
+			var instance = Container.Resolve<UsesFooAndBarDelegateCtor>();
+
+			Assert.IsNotNull(instance.FooFactory);
+			Assert.IsNotNull(instance.BarFactory);
+
+			var factoryHandler = Kernel.GetHandler(typeof(Func<>));
+			Assert.IsNotNull(factoryHandler);
+		}
+
+		[Test]
 		public void Releasing_component_depending_on_a_factory_releases_what_was_pulled_from_it()
 		{
 			DisposableFoo.ResetDisposedCount();
@@ -416,6 +489,11 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 			var component = factory.Invoke();
 
 			Assert.IsInstanceOf<Component2>(component);
+		}
+
+		protected override void AfterContainerCreated()
+		{
+			Container.AddFacility<TypedFactoryFacility>();
 		}
 	}
 }

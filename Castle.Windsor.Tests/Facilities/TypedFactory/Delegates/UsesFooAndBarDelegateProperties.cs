@@ -12,19 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Windsor.Tests.Facilities.TypedFactory
+namespace CastleTests.Facilities.TypedFactory.Delegates
 {
 	using System;
 
-	using Castle.MicroKernel.Tests.ClassComponents;
+	using Castle.Windsor.Tests.Facilities.TypedFactory.Delegates;
 
-	public class ServiceFactory
+	public class UsesFooAndBarDelegateProperties
 	{
-		public ServiceFactory(Func<ServiceRedirect> factory, Func<SimpleComponent1> factory2)
-		{
-			Factory = factory;
-		}
+		public Func<Bar> BarFactory { get; set; }
 
-		public Func<ServiceRedirect> Factory { get; set; }
+		public Func<Foo> FooFactory { get; set; }
+
 	}
 }
