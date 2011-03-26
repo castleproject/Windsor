@@ -12,16 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
 #if (!SILVERLIGHT)
 
-namespace CastleTests.Components
+namespace CastleTests.Facilities.Remoting
 {
 	using System;
 
 	using Castle.Windsor.Tests.Components;
-
-	using CastleTests.Facilities.Remoting;
 
 	using NUnit.Framework;
 
