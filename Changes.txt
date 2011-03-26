@@ -13,6 +13,7 @@
 - implemented IOC-246 - Remove alternative naming subsystems
 - implemented IOC-243 - Remove obsolete UseSingleInterfaceProxy option
 
+- fixed IOC-282 - Windsor should be able to register generic typed factories as open generics
 - fixed IOC-280 - ResolveAll should respect services and fail hard when a component can't be resolved
 - fixed IOC-278 - Optional Dependencies should also be satisfied from ILazyComponentLoaders if possible
 - fixed IOC-273 - Auto register PerWebRequestLifestyleModule using PreApplicationStartMethodAttribute at runtime
