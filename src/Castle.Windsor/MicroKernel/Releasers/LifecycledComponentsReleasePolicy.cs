@@ -53,7 +53,7 @@ namespace Castle.MicroKernel.Releasers
 			countOfTrackedInstances = parent.countOfTrackedInstances;
 		}
 
-		internal LifecycledComponentsReleasePolicy[] SubScopes
+		private LifecycledComponentsReleasePolicy[] SubScopes
 		{
 			get
 			{
@@ -75,7 +75,7 @@ namespace Castle.MicroKernel.Releasers
 			}
 		}
 
-		internal Burden[] TrackedObjects
+		private Burden[] TrackedObjects
 		{
 			get
 			{
