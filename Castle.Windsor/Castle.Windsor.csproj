@@ -873,6 +873,11 @@
     <Compile Include="Windsor\Experimental\Diagnostics\IComponentDebuggerExtension.cs" />
     <Compile Include="Windsor\Experimental\Diagnostics\IContainerDebuggerExtension.cs" />
     <Compile Include="Windsor\Experimental\Diagnostics\IContainerDebuggerExtensionHost.cs" />
+    <Compile Include="Windsor\Experimental\Diagnostics\IDiagnosticsInspector.cs" />
+    <Compile Include="Windsor\Experimental\Diagnostics\IDiagnosticsSource.cs" />
+    <Compile Include="Windsor\Experimental\Diagnostics\IExposeDiagnostics.cs" />
+    <Compile Include="Windsor\Experimental\Diagnostics\Inspectors\TrackedObjects.cs" />
+    <Compile Include="Windsor\Experimental\Diagnostics\Inspectors\TrackedObjectsInspector.cs" />
     <Compile Include="Windsor\Experimental\Diagnostics\IPerformanceCounter.cs" />
     <Compile Include="Windsor\Experimental\Diagnostics\IPerformanceMetricsFactory.cs" />
     <Compile Include="Windsor\Experimental\Diagnostics\KernelDebuggerProxy.cs" />
