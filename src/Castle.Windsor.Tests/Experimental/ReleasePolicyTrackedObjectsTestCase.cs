@@ -82,14 +82,14 @@ namespace Castle.Windsor.Tests.Experimental
 		}
 
 		[Test]
-		public void NoTrackingReleasePolicy_has_special_message()
+		public void NoTrackingReleasePolicy_does_not_appear()
 		{
 			Kernel.ReleasePolicy = new NoTrackingReleasePolicy();
 			Register<DisposableFoo>();
-			var foo1 = Container.Resolve<DisposableFoo>();
+
+			Container.Resolve<DisposableFoo>();
 			var objects = GetTrackedObjects();
-			Assert.AreEqual("No objects are ever tracked", objects.Description);
-			Assert.IsNull(objects.Value);
+			Assert.IsNull(objects);
 		}
 
 		[Test]
@@ -107,14 +107,13 @@ namespace Castle.Windsor.Tests.Experimental
 		}
 
 		[Test]
-		public void custom_ReleasePolicy_has_special_message()
+		public void custom_ReleasePolicy_is_not_shown_if_not_implement_the_interface()
 		{
 			Kernel.ReleasePolicy = new MyCustomReleasePolicy();
 			Register<DisposableFoo>();
 			var foo1 = Container.Resolve<DisposableFoo>();
 			var objects = GetTrackedObjects();
-			Assert.AreEqual("Not supported with MyCustomReleasePolicy", objects.Description);
-			Assert.IsNull(objects.Value);
+			Assert.IsNull(objects);
 		}
 
 		private DebuggerViewItem GetTrackedObjects()

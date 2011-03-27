@@ -21,12 +21,13 @@ namespace Castle.MicroKernel.Releasers
 	using Castle.Core;
 	using Castle.Core.Internal;
 	using Castle.Windsor.Experimental.Diagnostics;
+	using Castle.Windsor.Experimental.Diagnostics.Inspectors;
 
 	/// <summary>
 	///   Tracks all components requiring decomission (<see cref = "Burden.RequiresPolicyRelease" />)
 	/// </summary>
 	[Serializable]
-	public class LifecycledComponentsReleasePolicy : IReleasePolicy
+	public class LifecycledComponentsReleasePolicy : IReleasePolicy, IExposeDiagnostics<TrackedObjects>
 	{
 		private readonly IPerformanceCounter countOfTrackedInstances;
 
@@ -189,6 +190,17 @@ namespace Castle.MicroKernel.Releasers
 				burden.Released -= OnInstanceReleased;
 			}
 			countOfTrackedInstances.Decrement();
+		}
+
+		void IExposeDiagnostics<TrackedObjects>.Visit<TContext>(IDiagnosticsInspector<TrackedObjects, TContext> inspector, TContext context)
+		{
+			var trackedObjects = TrackedObjects;
+			var subScopes = SubScopes;
+			if (trackedObjects.Length == 0 && subScopes.Length == 0)
+			{
+				return;
+			}
+			inspector.Inspect(new TrackedObjects(trackedObjects, subScopes), context);
 		}
 	}
 }

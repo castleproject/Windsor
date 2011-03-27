@@ -16,12 +16,11 @@ namespace Castle.Windsor.Experimental.Diagnostics.Extensions
 {
 #if !SILVERLIGHT
 	using System.Collections.Generic;
-	using System.Linq;
 
 	using Castle.MicroKernel;
-	using Castle.MicroKernel.Releasers;
 	using Castle.Windsor.Experimental.Diagnostics.DebuggerViews;
 	using Castle.Windsor.Experimental.Diagnostics.Helpers;
+	using Castle.Windsor.Experimental.Diagnostics.Inspectors;
 
 	public class ReleasePolicyTrackedObjects : AbstractContainerDebuggerExtension
 	{
@@ -30,25 +29,18 @@ namespace Castle.Windsor.Experimental.Diagnostics.Extensions
 
 		public override IEnumerable<DebuggerViewItem> Attach()
 		{
-			var policy = kernel.ReleasePolicy;
-			if (policy == null)
+			var inspector = new TrackedObjectsInspector();
+			var result = inspector.Inspect(kernel);
+			if(result==null)
 			{
 				return new DebuggerViewItem[0];
 			}
-			if (policy is LifecycledComponentsReleasePolicy)
+			var item = BuildItem(result);
+			if (item != null)
 			{
-				var localPolicy = policy as LifecycledComponentsReleasePolicy;
-				var items = new List<Burden>(localPolicy.TrackedObjects);
-				AddFromSubScopes(items, localPolicy.SubScopes);
-				var burdens = items.ToArray();
-				var result = burdens.ToLookup(b => b.Handler).Select(OnSelector).ToArray();
-				return new[] { new DebuggerViewItem(name, "Count = " + items.Count, result) };
+				return new[] { item };
 			}
-			if (policy is NoTrackingReleasePolicy)
-			{
-				return new[] { new DebuggerViewItem(name, "No objects are ever tracked", null) };
-			}
-			return new[] { new DebuggerViewItem(name, "Not supported with " + policy.GetType().Name, null) };
+			return new DebuggerViewItem[0];
 		}
 
 		public override void Init(IKernel kernel)
@@ -56,23 +48,22 @@ namespace Castle.Windsor.Experimental.Diagnostics.Extensions
 			this.kernel = kernel;
 		}
 
-		private void AddFromSubScopes(List<Burden> items, LifecycledComponentsReleasePolicy[] subScopes)
+		private DebuggerViewItem BuildItem(IEnumerable<KeyValuePair<IHandler, object[]>> results)
 		{
-			foreach (var scope in subScopes)
+			var totalCount = 0;
+			var items = new List<DebuggerViewItem>();
+			foreach (var result in results)
 			{
-				items.AddRange(scope.TrackedObjects);
-				AddFromSubScopes(items, scope.SubScopes);
+				var handler = result.Key;
+				var objects = result.Value;
+				totalCount += objects.Length;
+				var view = ComponentDebuggerView.BuildFor(handler);
+				var item = new DebuggerViewItem(handler.GetComponentName(),
+				                                "Count = " + objects.Length,
+				                                new ReleasePolicyTrackedObjectsDebuggerViewItem(view, objects));
+				items.Add(item);
 			}
-		}
-
-		private DebuggerViewItem OnSelector(IGrouping<IHandler, Burden> lookup)
-		{
-			var handler = lookup.Key;
-			var objects = lookup.Select(g => g.Instance).ToArray();
-			var view = ComponentDebuggerView.BuildFor(handler);
-			return new DebuggerViewItem(handler.GetComponentName(),
-			                            "Count = " + objects.Length,
-			                            new ReleasePolicyTrackedObjectsDebuggerViewItem(view, objects));
+			return new DebuggerViewItem(name, "Count = " + totalCount, items.ToArray());
 		}
 
 		public static string Name
