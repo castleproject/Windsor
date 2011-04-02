@@ -857,6 +857,7 @@
     <Compile Include="Windsor\Configuration\Interpreters\XmlProcessor\XmlProcessorException.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Windsor\Experimental\Diagnostics\AllComponentsDiagnostic.cs" />
     <Compile Include="Windsor\Experimental\Diagnostics\DebuggerViews\ReleasePolicyTrackedObjectsDebuggerViewItem.cs" />
     <Compile Include="Windsor\Experimental\Diagnostics\Helpers\DescriptionUtil.cs" />
     <Compile Include="Windsor\Experimental\Diagnostics\Extensions\ReleasePolicyTrackedObjects.cs" />
@@ -870,6 +871,7 @@
     <Compile Include="Windsor\Experimental\Diagnostics\Helpers\MismatchedLifestyleDependencyViewBuilder.cs" />
     <Compile Include="Windsor\Experimental\Diagnostics\Extensions\PotentialLifestyleMismatches.cs" />
     <Compile Include="Windsor\Experimental\Diagnostics\DebuggerViews\ComponentDebuggerView.cs" />
+    <Compile Include="Windsor\Experimental\Diagnostics\IAllComponentsDiagnostic.cs" />
     <Compile Include="Windsor\Experimental\Diagnostics\IComponentDebuggerExtension.cs" />
     <Compile Include="Windsor\Experimental\Diagnostics\IContainerDebuggerExtension.cs" />
     <Compile Include="Windsor\Experimental\Diagnostics\IContainerDebuggerExtensionHost.cs" />

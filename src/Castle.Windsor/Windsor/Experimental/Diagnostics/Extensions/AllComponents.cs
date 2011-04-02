@@ -18,7 +18,6 @@ namespace Castle.Windsor.Experimental.Diagnostics.Extensions
 	using System.Collections.Generic;
 
 	using Castle.MicroKernel;
-	using Castle.MicroKernel.SubSystems.Naming;
 	using Castle.Windsor.Experimental.Diagnostics.DebuggerViews;
 
 #if !SILVERLIGHT
@@ -26,11 +25,12 @@ namespace Castle.Windsor.Experimental.Diagnostics.Extensions
 	{
 		private const string name = "All Components";
 
-		private INamingSubSystem naming;
+		private IAllComponentsDiagnostic diagnostic;
 
 		public override IEnumerable<DebuggerViewItem> Attach()
 		{
-			var items = Array.ConvertAll(naming.GetAllHandlers(), DefaultComponentView);
+			var handlers = diagnostic.Inspect();
+			var items = Array.ConvertAll(handlers, DefaultComponentView);
 			return new[]
 			{
 				new DebuggerViewItem(name, "Count = " + items.Length, items)
@@ -39,7 +39,8 @@ namespace Castle.Windsor.Experimental.Diagnostics.Extensions
 
 		public override void Init(IKernel kernel, IDiagnosticsHost diagnosticsHost)
 		{
-			naming = kernel.GetSubSystem(SubSystemConstants.NamingKey) as INamingSubSystem;
+			diagnostic = new AllComponentsDiagnostic(kernel);
+			diagnosticsHost.AddDiagnostic(diagnostic);
 		}
 
 		public static string Name
