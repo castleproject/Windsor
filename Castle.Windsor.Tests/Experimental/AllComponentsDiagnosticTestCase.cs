@@ -14,23 +14,26 @@
 
 namespace CastleTests.Experimental
 {
+	using System.Linq;
+
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Tests.ClassComponents;
 	using Castle.Windsor;
 	using Castle.Windsor.Experimental.Diagnostics;
 	using Castle.Windsor.Tests;
+	using Castle.Windsor.Tests.Components;
 
 	using NUnit.Framework;
 
 	public class AllComponentsDiagnosticTestCase : AbstractContainerTestCase
 	{
-		private IAllComponentsDiagnostic allComponentsDiagnostic;
+		private IAllComponentsDiagnostic diagnostic;
 
 		protected override void AfterContainerCreated()
 		{
 			var host = Kernel.GetSubSystem(SubSystemConstants.DiagnosticsKey) as IDiagnosticsHost;
-			allComponentsDiagnostic = host.GetDiagnostic<IAllComponentsDiagnostic>();
+			diagnostic = host.GetDiagnostic<IAllComponentsDiagnostic>();
 		}
 
 		[Test]
@@ -40,7 +43,7 @@ namespace CastleTests.Experimental
 			Container.Resolve<GenericImpl1<A>>();
 			Container.Resolve<GenericImpl1<B>>();
 
-			var handlers = allComponentsDiagnostic.Inspect();
+			var handlers = diagnostic.Inspect();
 
 			Assert.AreEqual(1, handlers.Length);
 		}
@@ -56,7 +59,7 @@ namespace CastleTests.Experimental
 
 			parent.AddChildContainer(Container);
 
-			var handlers = allComponentsDiagnostic.Inspect();
+			var handlers = diagnostic.Inspect();
 
 			Assert.AreEqual(4, handlers.Length);
 		}
@@ -64,7 +67,7 @@ namespace CastleTests.Experimental
 		[Test]
 		public void Works_with_empty_container()
 		{
-			var handlers = allComponentsDiagnostic.Inspect();
+			var handlers = diagnostic.Inspect();
 
 			Assert.IsEmpty(handlers);
 		}
@@ -74,9 +77,21 @@ namespace CastleTests.Experimental
 		{
 			Container.Register(Component.For(typeof(GenericImpl1<>)));
 
-			var handlers = allComponentsDiagnostic.Inspect();
+			var handlers = diagnostic.Inspect();
 
 			Assert.AreEqual(1, handlers.Length);
+		}
+
+		[Test]
+		public void Works_with_multi_service_components()
+		{
+			Container.Register(Component.For<IEmptyService, EmptyServiceA>()
+			                   	.ImplementedBy<EmptyServiceA>());
+
+			var handlers = diagnostic.Inspect();
+
+			Assert.AreEqual(1, handlers.Length);
+			Assert.AreEqual(2, handlers[0].Services.Count());
 		}
 
 		[Test]
@@ -85,7 +100,7 @@ namespace CastleTests.Experimental
 			Container.Register(Component.For(typeof(IGeneric<>)).ImplementedBy(typeof(GenericImpl1<>)),
 			                   Component.For(typeof(IGeneric<>)).ImplementedBy(typeof(GenericImpl2<>)));
 
-			var handlers = allComponentsDiagnostic.Inspect();
+			var handlers = diagnostic.Inspect();
 
 			Assert.AreEqual(2, handlers.Length);
 		}

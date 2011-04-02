@@ -19,34 +19,33 @@ namespace Castle.Windsor.Experimental.Diagnostics.Extensions
 	using System.Linq;
 
 	using Castle.MicroKernel;
-	using Castle.MicroKernel.SubSystems.Naming;
 	using Castle.Windsor.Experimental.Diagnostics.DebuggerViews;
 
 #if !SILVERLIGHT
 	public class PotentiallyMisconfiguredComponents : AbstractContainerDebuggerExtension
 	{
 		private const string name = "Potentially Misconfigured Components";
-		private INamingSubSystem naming;
+		private IPotentiallyMisconfiguredComponentsDiagnostic diagnostic;
 
 		public override IEnumerable<DebuggerViewItem> Attach()
 		{
-			var waiting = Array.FindAll(naming.GetAllHandlers(), h => h.CurrentState == HandlerState.WaitingDependency);
-			if (waiting.Length == 0)
+			var handlers = diagnostic.Inspect();
+			if (handlers.Length == 0)
 			{
 				return Enumerable.Empty<DebuggerViewItem>();
 			}
-			var components = Array.ConvertAll(waiting, DefaultComponentView);
+
+			var items = Array.ConvertAll(handlers, DefaultComponentView);
 			return new[]
 			{
-				new DebuggerViewItem(name,
-				                     "Count = " + components.Length,
-				                     components)
+				new DebuggerViewItem(name, "Count = " + items.Length, items)
 			};
 		}
 
 		public override void Init(IKernel kernel, IDiagnosticsHost diagnosticsHost)
 		{
-			naming = kernel.GetSubSystem(SubSystemConstants.NamingKey) as INamingSubSystem;
+			diagnostic = new PotentiallyMisconfiguredComponentsDiagnostic(kernel);
+			diagnosticsHost.AddDiagnostic(diagnostic);
 		}
 
 		public static string Name

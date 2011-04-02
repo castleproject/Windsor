@@ -884,6 +884,7 @@
     <Compile Include="Windsor\Experimental\Diagnostics\Inspectors\TrackedObjects.cs" />
     <Compile Include="Windsor\Experimental\Diagnostics\IPerformanceCounter.cs" />
     <Compile Include="Windsor\Experimental\Diagnostics\IPerformanceMetricsFactory.cs" />
+    <Compile Include="Windsor\Experimental\Diagnostics\IPotentiallyMisconfiguredComponentsDiagnostic.cs" />
     <Compile Include="Windsor\Experimental\Diagnostics\ITrackedComponentsDiagnostic.cs" />
     <Compile Include="Windsor\Experimental\Diagnostics\KernelDebuggerProxy.cs" />
     <Compile Include="Windsor\Experimental\Diagnostics\Extensions\PotentiallyMisconfiguredComponents.cs" />
@@ -891,6 +892,7 @@
     <Compile Include="Windsor\Experimental\Diagnostics\NullPerformanceCounter.cs" />
     <Compile Include="Windsor\Experimental\Diagnostics\PerformanceCounterWrapper.cs" />
     <Compile Include="Windsor\Experimental\Diagnostics\PerformanceMetricsFactory.cs" />
+    <Compile Include="Windsor\Experimental\Diagnostics\PotentiallyMisconfiguredComponentsDiagnostic.cs" />
     <Compile Include="Windsor\Experimental\Diagnostics\TrackedComponentsDiagnostic.cs" />
     <Compile Include="Windsor\Experimental\Diagnostics\TrackedInstancesEventArgs.cs" />
     <Compile Include="Windsor\IEnvironmentInfo.cs" />

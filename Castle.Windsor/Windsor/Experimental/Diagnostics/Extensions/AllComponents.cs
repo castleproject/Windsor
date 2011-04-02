@@ -30,6 +30,7 @@ namespace Castle.Windsor.Experimental.Diagnostics.Extensions
 		public override IEnumerable<DebuggerViewItem> Attach()
 		{
 			var handlers = diagnostic.Inspect();
+
 			var items = Array.ConvertAll(handlers, DefaultComponentView);
 			return new[]
 			{
