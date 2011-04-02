@@ -396,7 +396,7 @@
     <Compile Include="CreatingContainerTestCase.cs" />
     <Compile Include="DuplicateGenerics.cs" />
     <Compile Include="Experimental\AllComponentsDiagnosticTestCase.cs" />
-    <Compile Include="Experimental\AllComponentsTestCase.cs" />
+    <Compile Include="Experimental\PotentiallyMisconfiguredComponentsDiagnosticTestCase.cs" />
     <Compile Include="Experimental\ReleasePolicyTrackedObjectsTestCase.cs" />
     <Compile Include="Experimental\MyCustomReleasePolicy.cs" />
     <Compile Include="Experimental\ProblematicDependenciesTestCase.cs" />
