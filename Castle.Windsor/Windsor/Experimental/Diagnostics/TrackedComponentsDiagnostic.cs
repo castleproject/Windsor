@@ -1,4 +1,4 @@
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,24 +12,28 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Windsor.Experimental.Diagnostics.Extensions
+namespace Castle.Windsor.Experimental.Diagnostics
 {
-	using System.Collections.Generic;
+	using System;
+	using System.Linq;
 
 	using Castle.MicroKernel;
-	using Castle.Windsor.Experimental.Diagnostics.DebuggerViews;
 
-#if !SILVERLIGHT
-	public abstract class AbstractContainerDebuggerExtension : IContainerDebuggerExtension
+	public class TrackedComponentsDiagnostic : ITrackedComponentsDiagnostic
 	{
-		public abstract IEnumerable<DebuggerViewItem> Attach();
-
-		public abstract void Init(IKernel kernel, IDiagnosticsHost diagnosticsHost);
-
-		protected ComponentDebuggerView DefaultComponentView(IHandler handler)
+		public ILookup<IHandler, object> Inspect()
 		{
-			return ComponentDebuggerView.BuildFor(handler);
+			var @event = TrackedInstancesRequested;
+			if (@event == null)
+			{
+				return null;
+			}
+			var args = new TrackedInstancesEventArgs();
+			@event(this, args);
+
+			return args.Items.ToLookup(k => k.Handler,b=>b.Instance);
 		}
+
+		public event EventHandler<TrackedInstancesEventArgs> TrackedInstancesRequested;
 	}
-#endif
 }

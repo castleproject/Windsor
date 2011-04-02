@@ -14,17 +14,13 @@
 
 namespace Castle.Windsor.Experimental.Diagnostics
 {
-	using System.Collections.Generic;
+	using System;
+	using System.Linq;
 
 	using Castle.MicroKernel;
-	using Castle.Windsor.Experimental.Diagnostics.DebuggerViews;
 
-#if !SILVERLIGHT
-	public interface IContainerDebuggerExtension
+	public interface ITrackedComponentsDiagnostic : IDiagnostic<ILookup<IHandler, object>>
 	{
-		IEnumerable<DebuggerViewItem> Attach();
-
-		void Init(IKernel kernel, IDiagnosticsHost diagnosticsHost);
+		event EventHandler<TrackedInstancesEventArgs> TrackedInstancesRequested;
 	}
-#endif
 }

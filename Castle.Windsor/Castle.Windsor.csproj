@@ -864,7 +864,7 @@
     <Compile Include="Windsor\Experimental\Diagnostics\Helpers\DefaultComponentViewBuilder.cs" />
     <Compile Include="Windsor\Experimental\Diagnostics\Extensions\AbstractContainerDebuggerExtension.cs" />
     <Compile Include="Windsor\Experimental\Diagnostics\Extensions\AllComponents.cs" />
-    <Compile Include="Windsor\Experimental\Diagnostics\DefaultDebuggingSubSystem.cs" />
+    <Compile Include="Windsor\Experimental\Diagnostics\DefaultDiagnosticsSubSystem.cs" />
     <Compile Include="Windsor\Experimental\Diagnostics\DebuggerViews\DebuggerViewItem.cs" />
     <Compile Include="Windsor\Experimental\Diagnostics\Extensions\Facilities.cs" />
     <Compile Include="Windsor\Experimental\Diagnostics\Helpers\MismatchedLifestyleDependencyViewBuilder.cs" />
@@ -873,19 +873,24 @@
     <Compile Include="Windsor\Experimental\Diagnostics\IComponentDebuggerExtension.cs" />
     <Compile Include="Windsor\Experimental\Diagnostics\IContainerDebuggerExtension.cs" />
     <Compile Include="Windsor\Experimental\Diagnostics\IContainerDebuggerExtensionHost.cs" />
+    <Compile Include="Windsor\Experimental\Diagnostics\IDiagnostic.cs" />
+    <Compile Include="Windsor\Experimental\Diagnostics\IDiagnosticsHost.cs" />
     <Compile Include="Windsor\Experimental\Diagnostics\IDiagnosticsInspector.cs" />
     <Compile Include="Windsor\Experimental\Diagnostics\IDiagnosticsSource.cs" />
     <Compile Include="Windsor\Experimental\Diagnostics\IExposeDiagnostics.cs" />
+    <Compile Include="Windsor\Experimental\Diagnostics\Inspectors\ITrackedObjectsInspector.cs" />
     <Compile Include="Windsor\Experimental\Diagnostics\Inspectors\TrackedObjects.cs" />
-    <Compile Include="Windsor\Experimental\Diagnostics\Inspectors\TrackedObjectsInspector.cs" />
     <Compile Include="Windsor\Experimental\Diagnostics\IPerformanceCounter.cs" />
     <Compile Include="Windsor\Experimental\Diagnostics\IPerformanceMetricsFactory.cs" />
+    <Compile Include="Windsor\Experimental\Diagnostics\ITrackedComponentsDiagnostic.cs" />
     <Compile Include="Windsor\Experimental\Diagnostics\KernelDebuggerProxy.cs" />
     <Compile Include="Windsor\Experimental\Diagnostics\Extensions\PotentiallyMisconfiguredComponents.cs" />
     <Compile Include="Windsor\Experimental\Diagnostics\DebuggerViews\MismatchedDependencyDebuggerViewItem.cs" />
     <Compile Include="Windsor\Experimental\Diagnostics\NullPerformanceCounter.cs" />
     <Compile Include="Windsor\Experimental\Diagnostics\PerformanceCounterWrapper.cs" />
     <Compile Include="Windsor\Experimental\Diagnostics\PerformanceMetricsFactory.cs" />
+    <Compile Include="Windsor\Experimental\Diagnostics\TrackedComponentsDiagnostic.cs" />
+    <Compile Include="Windsor\Experimental\Diagnostics\TrackedInstancesEventArgs.cs" />
     <Compile Include="Windsor\IEnvironmentInfo.cs" />
     <Compile Include="Windsor\InitializationException.cs">
       <SubType>Code</SubType>

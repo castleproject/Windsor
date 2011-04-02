@@ -15,21 +15,36 @@
 namespace Castle.Windsor.Experimental.Diagnostics
 {
 #if !SILVERLIGHT
+	using System;
 	using System.Collections;
 	using System.Collections.Generic;
 
 	using Castle.MicroKernel;
 	using Castle.Windsor.Experimental.Diagnostics.Extensions;
 
-	public class DefaultDebuggingSubSystem : IContainerDebuggerExtensionHost, ISubSystem
+	public class DefaultDiagnosticsSubSystem : IContainerDebuggerExtensionHost, ISubSystem, IDiagnosticsHost
 	{
+		private readonly IDictionary<Type, IDiagnostic<object>> diagnostics = new Dictionary<Type, IDiagnostic<object>>();
 		private readonly IList<IContainerDebuggerExtension> extensions = new List<IContainerDebuggerExtension>();
+
 		private IKernel kernel;
 
 		public void Add(IContainerDebuggerExtension item)
 		{
-			item.Init(kernel);
+			item.Init(kernel, this);
 			extensions.Add(item);
+		}
+
+		public void AddDiagnostic<TDiagnostic>(TDiagnostic diagnostic) where TDiagnostic : IDiagnostic<object>
+		{
+			diagnostics.Add(typeof(TDiagnostic), diagnostic);
+		}
+
+		public TDiagnostic GetDiagnostic<TDiagnostic>() where TDiagnostic : IDiagnostic<object>
+		{
+			IDiagnostic<object> value;
+			diagnostics.TryGetValue(typeof(TDiagnostic), out value);
+			return (TDiagnostic)value;
 		}
 
 		public IEnumerator<IContainerDebuggerExtension> GetEnumerator()
@@ -61,5 +76,6 @@ namespace Castle.Windsor.Experimental.Diagnostics
 			return GetEnumerator();
 		}
 	}
+
 #endif
 }

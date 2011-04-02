@@ -14,17 +14,8 @@
 
 namespace Castle.Windsor.Experimental.Diagnostics
 {
-	using System.Collections.Generic;
-
-	using Castle.MicroKernel;
-	using Castle.Windsor.Experimental.Diagnostics.DebuggerViews;
-
-#if !SILVERLIGHT
-	public interface IContainerDebuggerExtension
+	public interface IDiagnostic<out T>
 	{
-		IEnumerable<DebuggerViewItem> Attach();
-
-		void Init(IKernel kernel, IDiagnosticsHost diagnosticsHost);
+		T Inspect();
 	}
-#endif
 }

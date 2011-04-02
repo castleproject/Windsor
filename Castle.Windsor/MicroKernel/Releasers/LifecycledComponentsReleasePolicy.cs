@@ -21,13 +21,12 @@ namespace Castle.MicroKernel.Releasers
 	using Castle.Core;
 	using Castle.Core.Internal;
 	using Castle.Windsor.Experimental.Diagnostics;
-	using Castle.Windsor.Experimental.Diagnostics.Inspectors;
 
 	/// <summary>
 	///   Tracks all components requiring decomission (<see cref = "Burden.RequiresPolicyRelease" />)
 	/// </summary>
 	[Serializable]
-	public class LifecycledComponentsReleasePolicy : IReleasePolicy, IExposeDiagnostics<TrackedObjects>
+	public class LifecycledComponentsReleasePolicy : IReleasePolicy
 	{
 		private readonly IPerformanceCounter countOfTrackedInstances;
 
@@ -35,44 +34,34 @@ namespace Castle.MicroKernel.Releasers
 			new Dictionary<object, Burden>(ReferenceEqualityComparer<object>.Instance);
 
 		private readonly Lock @lock = Lock.Create();
-		private readonly LifecycledComponentsReleasePolicy parent;
-		private List<LifecycledComponentsReleasePolicy> subscopes;
+		private ITrackedComponentsDiagnostic trackedComponentsDiagnostic;
 
-		public LifecycledComponentsReleasePolicy() : this(NullPerformanceCounter.Instance)
+		public LifecycledComponentsReleasePolicy() : this(null, NullPerformanceCounter.Instance)
 		{
 		}
 
-		public LifecycledComponentsReleasePolicy(IPerformanceCounter countOfTrackedInstances)
+		public LifecycledComponentsReleasePolicy(IKernel kernel) : this(GetTrackedComponentsDiagnostic(kernel))
 		{
+		}
+
+		public LifecycledComponentsReleasePolicy(ITrackedComponentsDiagnostic trackedComponentsDiagnostic, IPerformanceCounter countOfTrackedInstances)
+		{
+			this.trackedComponentsDiagnostic = trackedComponentsDiagnostic;
 			this.countOfTrackedInstances = countOfTrackedInstances;
-		}
 
-		private LifecycledComponentsReleasePolicy(LifecycledComponentsReleasePolicy parent)
-		{
-			this.parent = parent;
-			countOfTrackedInstances = parent.countOfTrackedInstances;
-		}
-
-		private LifecycledComponentsReleasePolicy[] SubScopes
-		{
-			get
+			if (trackedComponentsDiagnostic != null)
 			{
-				using (var holder = @lock.ForReading(false))
-				{
-					if (holder.LockAcquired == false)
-					{
-						// TODO: that's sad... perhaps we should have waited...? But what do we do now? We're in the debugger. If some thread is keeping the lock
-						// we could wait indefinatelly. I guess the best way to proceed is to add a 200ms timepout to accquire the lock, and if not succeeded
-						// assume that the other thread just waits and is not going anywhere and go ahead and read this anyway...
-					}
-					if (subscopes == null)
-					{
-						return new LifecycledComponentsReleasePolicy[0];
-					}
-					var array = subscopes.ToArray();
-					return array;
-				}
+				trackedComponentsDiagnostic.TrackedInstancesRequested += trackedComponentsDiagnostic_TrackedInstancesRequested;
 			}
+		}
+
+		public LifecycledComponentsReleasePolicy(ITrackedComponentsDiagnostic trackedComponentsDiagnostic)
+			: this(trackedComponentsDiagnostic, NullPerformanceCounter.Instance)
+		{
+		}
+
+		private LifecycledComponentsReleasePolicy(LifecycledComponentsReleasePolicy parent) : this(parent.trackedComponentsDiagnostic, parent.countOfTrackedInstances)
+		{
 		}
 
 		private Burden[] TrackedObjects
@@ -97,6 +86,11 @@ namespace Castle.MicroKernel.Releasers
 		{
 			using (@lock.ForWriting())
 			{
+				if (trackedComponentsDiagnostic != null)
+				{
+					trackedComponentsDiagnostic.TrackedInstancesRequested -= trackedComponentsDiagnostic_TrackedInstancesRequested;
+					trackedComponentsDiagnostic = null;
+				}
 				var burdens = instance2Burden.ToArray();
 				instance2Burden.Clear();
 				// NOTE: This is relying on a undocumented behavior that order of items when enumerating Dictionary<> will be oldest --> latest
@@ -105,27 +99,11 @@ namespace Castle.MicroKernel.Releasers
 					burden.Value.Release();
 				}
 			}
-			var parent = this.parent;
-			if (parent != null)
-			{
-				using (parent.@lock.ForWriting())
-				{
-					parent.subscopes.Remove(this);
-				}
-			}
 		}
 
 		public IReleasePolicy CreateSubPolicy()
 		{
 			var policy = new LifecycledComponentsReleasePolicy(this);
-			using (@lock.ForWriting())
-			{
-				if (subscopes == null)
-				{
-					subscopes = new List<LifecycledComponentsReleasePolicy>();
-				}
-				subscopes.Add(policy);
-			}
 			return policy;
 		}
 
@@ -192,15 +170,15 @@ namespace Castle.MicroKernel.Releasers
 			countOfTrackedInstances.Decrement();
 		}
 
-		void IExposeDiagnostics<TrackedObjects>.Visit<TContext>(IDiagnosticsInspector<TrackedObjects, TContext> inspector, TContext context)
+		private void trackedComponentsDiagnostic_TrackedInstancesRequested(object sender, TrackedInstancesEventArgs e)
 		{
-			var trackedObjects = TrackedObjects;
-			var subScopes = SubScopes;
-			if (trackedObjects.Length == 0 && subScopes.Length == 0)
-			{
-				return;
-			}
-			inspector.Inspect(new TrackedObjects(trackedObjects, subScopes), context);
+			e.AddRange(TrackedObjects);
+		}
+
+		private static ITrackedComponentsDiagnostic GetTrackedComponentsDiagnostic(IKernel kernel)
+		{
+			var diagnosticsHost = (IDiagnosticsHost)kernel.GetSubSystem(SubSystemConstants.DiagnosticsKey);
+			return diagnosticsHost.GetDiagnostic<ITrackedComponentsDiagnostic>();
 		}
 	}
 }

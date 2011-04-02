@@ -34,7 +34,7 @@ namespace Castle.Windsor.Experimental.Diagnostics.Extensions
 			yield return new DebuggerViewItem("Facilities", "Count = " + facilities.Length, facilities);
 		}
 
-		public void Init(IKernel kernel)
+		public void Init(IKernel kernel, IDiagnosticsHost diagnosticsHost)
 		{
 			this.kernel = kernel;
 		}

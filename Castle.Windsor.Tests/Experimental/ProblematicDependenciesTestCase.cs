@@ -36,11 +36,11 @@ namespace Castle.Windsor.Tests.Experimental
 		[SetUp]
 		public void SetSubSystem()
 		{
-			subSystem = new DefaultDebuggingSubSystem();
-			Kernel.AddSubSystem(SubSystemConstants.DebuggingKey, subSystem);
+			subSystem = new DefaultDiagnosticsSubSystem();
+			Kernel.AddSubSystem(SubSystemConstants.DiagnosticsKey, subSystem);
 		}
 
-		private DefaultDebuggingSubSystem subSystem;
+		private DefaultDiagnosticsSubSystem subSystem;
 
 		private MismatchedDependencyDebuggerViewItem[] GetMismatches(bool expectNoMismatches = false)
 		{

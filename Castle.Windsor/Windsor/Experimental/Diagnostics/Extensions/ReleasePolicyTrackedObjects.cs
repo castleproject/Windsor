@@ -16,22 +16,21 @@ namespace Castle.Windsor.Experimental.Diagnostics.Extensions
 {
 #if !SILVERLIGHT
 	using System.Collections.Generic;
+	using System.Linq;
 
 	using Castle.MicroKernel;
 	using Castle.Windsor.Experimental.Diagnostics.DebuggerViews;
 	using Castle.Windsor.Experimental.Diagnostics.Helpers;
-	using Castle.Windsor.Experimental.Diagnostics.Inspectors;
 
 	public class ReleasePolicyTrackedObjects : AbstractContainerDebuggerExtension
 	{
 		private const string name = "Objects tracked by release policy";
-		private IKernel kernel;
+		private TrackedComponentsDiagnostic diagnostic;
 
 		public override IEnumerable<DebuggerViewItem> Attach()
 		{
-			var inspector = new TrackedObjectsInspector();
-			var result = inspector.Inspect(kernel);
-			if(result==null)
+			var result = diagnostic.Inspect();
+			if (result == null)
 			{
 				return new DebuggerViewItem[0];
 			}
@@ -43,19 +42,20 @@ namespace Castle.Windsor.Experimental.Diagnostics.Extensions
 			return new DebuggerViewItem[0];
 		}
 
-		public override void Init(IKernel kernel)
+		public override void Init(IKernel kernel, IDiagnosticsHost diagnosticsHost)
 		{
-			this.kernel = kernel;
+			diagnostic = new TrackedComponentsDiagnostic();
+			diagnosticsHost.AddDiagnostic<ITrackedComponentsDiagnostic>(diagnostic);
 		}
 
-		private DebuggerViewItem BuildItem(IEnumerable<KeyValuePair<IHandler, object[]>> results)
+		private DebuggerViewItem BuildItem(ILookup<IHandler, object> results)
 		{
 			var totalCount = 0;
 			var items = new List<DebuggerViewItem>();
 			foreach (var result in results)
 			{
 				var handler = result.Key;
-				var objects = result.Value;
+				var objects = result.ToArray();
 				totalCount += objects.Length;
 				var view = ComponentDebuggerView.BuildFor(handler);
 				var item = new DebuggerViewItem(handler.GetComponentName(),

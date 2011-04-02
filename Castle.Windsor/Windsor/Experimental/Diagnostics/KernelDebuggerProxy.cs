@@ -38,7 +38,7 @@ namespace Castle.Windsor.Experimental.Diagnostics
 			{
 				throw new ArgumentNullException("kernel");
 			}
-			extensions = (IEnumerable<IContainerDebuggerExtension>)(kernel.GetSubSystem(SubSystemConstants.DebuggingKey) as IContainerDebuggerExtensionHost) ??
+			extensions = (IEnumerable<IContainerDebuggerExtension>)(kernel.GetSubSystem(SubSystemConstants.DiagnosticsKey) as IContainerDebuggerExtensionHost) ??
 			             new IContainerDebuggerExtension[0];
 		}
 
