@@ -16,6 +16,7 @@ namespace Castle.Windsor.Tests.Experimental
 {
 #if !SILVERLIGHT
 	using System;
+	using System.Collections;
 	using System.Linq;
 
 	using Castle.Facilities.TypedFactory;
@@ -34,7 +35,17 @@ namespace Castle.Windsor.Tests.Experimental
 	[TestFixture]
 	public class ReleasePolicyTrackedObjectsTestCase : AbstractContainerTestCase
 	{
-		private DefaultDebuggingSubSystem subSystem;
+		private DebuggerViewItem GetTrackedObjects()
+		{
+			var subSystem = Kernel.GetSubSystem(SubSystemConstants.DiagnosticsKey) as IContainerDebuggerExtensionHost;
+			return subSystem.SelectMany(e => e.Attach()).SingleOrDefault(i => i.Name == ReleasePolicyTrackedObjects.Name);
+		}
+
+		private void Register<T>()
+			where T : class
+		{
+			Container.Register(Component.For<T>().LifeStyle.Transient);
+		}
 
 		[Test]
 		public void List_tracked_alive_instances()
@@ -89,7 +100,7 @@ namespace Castle.Windsor.Tests.Experimental
 
 			Container.Resolve<DisposableFoo>();
 			var objects = GetTrackedObjects();
-			Assert.IsNull(objects);
+			Assert.IsEmpty((ICollection)objects.Value);
 		}
 
 		[Test]
@@ -99,13 +110,6 @@ namespace Castle.Windsor.Tests.Experimental
 			Assert.IsNotNull(objects);
 		}
 
-		[SetUp]
-		public void SetSubSystem()
-		{
-			subSystem = new DefaultDebuggingSubSystem();
-			Kernel.AddSubSystem(SubSystemConstants.DebuggingKey, subSystem);
-		}
-
 		[Test]
 		public void custom_ReleasePolicy_is_not_shown_if_not_implement_the_interface()
 		{
@@ -113,18 +117,7 @@ namespace Castle.Windsor.Tests.Experimental
 			Register<DisposableFoo>();
 			var foo1 = Container.Resolve<DisposableFoo>();
 			var objects = GetTrackedObjects();
-			Assert.IsNull(objects);
-		}
-
-		private DebuggerViewItem GetTrackedObjects()
-		{
-			return subSystem.SelectMany(e => e.Attach()).SingleOrDefault(i => i.Name == ReleasePolicyTrackedObjects.Name);
-		}
-
-		private void Register<T>()
-			where T : class
-		{
-			Container.Register(Component.For<T>().LifeStyle.Transient);
+			Assert.IsEmpty((ICollection)objects.Value);
 		}
 	}
 

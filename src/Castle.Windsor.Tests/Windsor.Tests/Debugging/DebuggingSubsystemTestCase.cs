@@ -34,11 +34,11 @@ namespace Castle.Windsor.Tests.Windsor.Tests.Debugging
 		public void InitSubSystem()
 		{
 			Init();
-			subSystem = new DefaultDebuggingSubSystem();
-			Kernel.AddSubSystem(SubSystemConstants.DebuggingKey, subSystem);
+			subSystem = new DefaultDiagnosticsSubSystem();
+			Kernel.AddSubSystem(SubSystemConstants.DiagnosticsKey, subSystem);
 		}
 
-		private DefaultDebuggingSubSystem subSystem;
+		private DefaultDiagnosticsSubSystem subSystem;
 
 		[Test(Description = "When failing this test causes stack overflow")]
 		public void PotentialLifestyleMismatches_can_handle_dependency_cycles()

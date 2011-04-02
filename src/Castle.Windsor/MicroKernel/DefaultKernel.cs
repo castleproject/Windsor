@@ -110,8 +110,7 @@ namespace Castle.MicroKernel
 		public DefaultKernel(IDependencyResolver resolver, IProxyFactory proxyFactory)
 		{
 			RegisterSubSystems();
-
-			ReleasePolicy = new LifecycledComponentsReleasePolicy();
+			ReleasePolicy = new LifecycledComponentsReleasePolicy(this);
 			handlerFactory = new DefaultHandlerFactory(this);
 			ComponentModelFactory = new DefaultComponentModelFactory(this);
 			ProxyFactory = proxyFactory;
@@ -674,11 +673,8 @@ namespace Castle.MicroKernel
 			AddSubSystem(SubSystemConstants.ResourceKey,
 			             new DefaultResourceSubSystem());
 #if !SILVERLIGHT
-			if (Debugger.IsAttached)
-			{
-				AddSubSystem(SubSystemConstants.DebuggingKey,
-				             new DefaultDebuggingSubSystem());
-			}
+			AddSubSystem(SubSystemConstants.DiagnosticsKey,
+			             new DefaultDiagnosticsSubSystem());
 #endif
 		}
 

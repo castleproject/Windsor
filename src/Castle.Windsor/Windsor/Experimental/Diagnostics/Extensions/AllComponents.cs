@@ -37,7 +37,7 @@ namespace Castle.Windsor.Experimental.Diagnostics.Extensions
 			};
 		}
 
-		public override void Init(IKernel kernel)
+		public override void Init(IKernel kernel, IDiagnosticsHost diagnosticsHost)
 		{
 			naming = kernel.GetSubSystem(SubSystemConstants.NamingKey) as INamingSubSystem;
 		}

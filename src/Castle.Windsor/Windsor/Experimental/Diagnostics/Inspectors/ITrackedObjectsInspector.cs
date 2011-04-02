@@ -1,4 +1,4 @@
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,24 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Windsor.Experimental.Diagnostics.Extensions
+namespace Castle.Windsor.Experimental.Diagnostics.Inspectors
 {
 	using System.Collections.Generic;
 
 	using Castle.MicroKernel;
-	using Castle.Windsor.Experimental.Diagnostics.DebuggerViews;
 
-#if !SILVERLIGHT
-	public abstract class AbstractContainerDebuggerExtension : IContainerDebuggerExtension
+	public interface ITrackedObjectsInspector : IDiagnosticsSource<IEnumerable<KeyValuePair<IHandler, object[]>>>
 	{
-		public abstract IEnumerable<DebuggerViewItem> Attach();
-
-		public abstract void Init(IKernel kernel, IDiagnosticsHost diagnosticsHost);
-
-		protected ComponentDebuggerView DefaultComponentView(IHandler handler)
-		{
-			return ComponentDebuggerView.BuildFor(handler);
-		}
 	}
-#endif
 }
