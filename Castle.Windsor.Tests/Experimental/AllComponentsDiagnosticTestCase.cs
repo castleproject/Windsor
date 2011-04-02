@@ -17,6 +17,7 @@ namespace CastleTests.Experimental
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Tests.ClassComponents;
+	using Castle.Windsor;
 	using Castle.Windsor.Experimental.Diagnostics;
 	using Castle.Windsor.Tests;
 
@@ -42,6 +43,22 @@ namespace CastleTests.Experimental
 			var handlers = allComponentsDiagnostic.Inspect();
 
 			Assert.AreEqual(1, handlers.Length);
+		}
+
+		[Test]
+		public void Shows_also_components_from_parent_container()
+		{
+			var parent = new WindsorContainer();
+			parent.Register(Component.For<A>(),
+			                Component.For<B>());
+			Container.Register(Component.For(typeof(IGeneric<>)).ImplementedBy(typeof(GenericImpl1<>)),
+			                   Component.For(typeof(IGeneric<>)).ImplementedBy(typeof(GenericImpl2<>)));
+
+			parent.AddChildContainer(Container);
+
+			var handlers = allComponentsDiagnostic.Inspect();
+
+			Assert.AreEqual(4, handlers.Length);
 		}
 
 		[Test]
