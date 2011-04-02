@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,16 +14,20 @@
 
 namespace Castle.Windsor.Experimental.Diagnostics
 {
-	/// <summary>
-	/// Base inteface for exposing diagnostic information about container, its components and extensions
-	/// </summary>
-	/// <typeparam name="T"></typeparam>
-	public interface IDiagnostic<out T>
+	using Castle.MicroKernel;
+
+	public class AllComponentsDiagnostic : IAllComponentsDiagnostic
 	{
-		/// <summary>
-		/// Collects specified diagnostic information.
-		/// </summary>
-		/// <returns></returns>
-		T Inspect();
+		private readonly IKernel kernel;
+
+		public AllComponentsDiagnostic(IKernel kernel)
+		{
+			this.kernel = kernel;
+		}
+
+		public IHandler[] Inspect()
+		{
+			return kernel.GetAssignableHandlers(typeof(object));
+		}
 	}
 }
