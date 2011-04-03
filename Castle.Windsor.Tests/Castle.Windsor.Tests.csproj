@@ -318,6 +318,7 @@
     <Compile Include="Components\AlarmGenerator.cs" />
     <Compile Include="Components\AlarmGeneratorWithDependency.cs" />
     <Compile Include="Components\ArrayRefDepAsConstructor.cs" />
+    <Compile Include="Components\BookStore.cs" />
     <Compile Include="Components\CalculatorServiceWithStandartInterceptorTyped.cs" />
     <Compile Include="Components\CalculatorServiceWithFooInterceptorNamed.cs" />
     <Compile Include="Components\CalculatorServiceWithMultipleInterfaces.cs" />
@@ -353,6 +354,7 @@
     <Compile Include="Components\IAlarmSender.cs" />
     <Compile Include="Components\IAmContravariant.cs" />
     <Compile Include="Components\IArm.cs" />
+    <Compile Include="Components\IBookStore.cs" />
     <Compile Include="Components\ICache.cs" />
     <Compile Include="Components\ICamera.cs" />
     <Compile Include="Components\ICameraService.cs" />
@@ -362,12 +364,14 @@
     <Compile Include="Components\IDependOnArray.cs" />
     <Compile Include="Components\IEmptyService2.cs" />
     <Compile Include="Components\IInternal.cs" />
+    <Compile Include="Components\IItemService.cs" />
     <Compile Include="Components\InitializableComponent.cs" />
     <Compile Include="Components\InitializableDisposableComponent.cs" />
     <Compile Include="Components\IRepository.cs" />
     <Compile Include="Components\IService.cs" />
     <Compile Include="Components\IService2.cs" />
     <Compile Include="Components\ISimpleMixIn.cs" />
+    <Compile Include="Components\ItemService.cs" />
     <Compile Include="Components\IView.cs" />
     <Compile Include="Components\JohnChild.cs" />
     <Compile Include="Components\JohnGrandparent.cs" />
@@ -392,6 +396,8 @@
     <Compile Include="Components\UsesUri.cs" />
     <Compile Include="CompositePatternTestCase.cs" />
     <Compile Include="ContainerAndGenericsInConfigTestCase.cs" />
+    <Compile Include="ContainerExtensions\BadDependencyResolver.cs" />
+    <Compile Include="ContainerExtensions\GoodDependencyResolver.cs" />
     <Compile Include="Core.Tests\InterceptorAttributeTestCase.cs" />
     <Compile Include="CreatingContainerTestCase.cs" />
     <Compile Include="DuplicateGenerics.cs" />
@@ -1026,7 +1032,7 @@
     <Compile Include="ProxyInfrastructure\ProxyAllHook.cs" />
     <Compile Include="RegisteringTwoServicesForSameType.cs" />
     <Compile Include="SelectAllSelector.cs" />
-    <Compile Include="SubResolversShouldNotBeTrustedToBeCorrect.cs" />
+    <Compile Include="CustomSubDependencyResolversTestCase.cs" />
     <Compile Include="ModelInterceptorsSelectorTestCase.cs" />
     <Compile Include="DependencyProblem.cs">
       <SubType>Code</SubType>
