@@ -36,6 +36,7 @@ namespace CastleTests.Experimental
 			var host = Kernel.GetSubSystem(SubSystemConstants.DiagnosticsKey) as IDiagnosticsHost;
 			diagnostic = host.GetDiagnostic<IPotentialLifestyleMismatchesDiagnostic>();
 		}
+
 		[Test(Description = "When failing this test causes stack overflow")]
 		public void Can_handle_dependency_cycles()
 		{
@@ -54,6 +55,7 @@ namespace CastleTests.Experimental
 			var mismatches = diagnostic.Inspect();
 			Assert.AreEqual(1, mismatches.Length);
 		}
+
 		[Test]
 		public void Can_detect_singleton_depending_on_transient_directly_and_indirectly()
 		{

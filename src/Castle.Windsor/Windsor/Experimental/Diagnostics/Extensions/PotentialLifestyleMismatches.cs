@@ -84,7 +84,7 @@ namespace Castle.Windsor.Experimental.Diagnostics.Extensions
 
 		private string GetName(IHandler[] handlers, IHandler root)
 		{
-			var indirect = (handlers.Length > 2) ? string.Empty : "indirectly ";
+			var indirect = (handlers.Length > 2) ? "indirectly " : string.Empty;
 			return string.Format("\"{0}\" »{1}« {2}depends on", GetNameDescription(root.ComponentModel), root.ComponentModel.GetLifestyleDescription(), indirect);
 		}
 
@@ -99,10 +99,9 @@ namespace Castle.Windsor.Experimental.Diagnostics.Extensions
 
 		private DebuggerViewItem MismatchedComponentView(IHandler[] handlers)
 		{
-			var root = handlers[0];
 			var item = GetItem(handlers);
-			var key = GetKey(root);
-			var name = GetName(handlers, root);
+			var key = GetKey(handlers.Last());
+			var name = GetName(handlers, handlers.First());
 			return new DebuggerViewItem(name, key, item);
 		}
 
