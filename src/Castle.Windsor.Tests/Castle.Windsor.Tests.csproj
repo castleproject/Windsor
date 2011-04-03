@@ -405,7 +405,7 @@
     <Compile Include="Diagnostics\PotentialLifestyleMismatchesDiagnosticTestCase.cs" />
     <Compile Include="Diagnostics\PotentiallyMisconfiguredComponentsDiagnosticTestCase.cs" />
     <Compile Include="Diagnostics\ReleasePolicyTrackedObjectsTestCase.cs" />
-    <Compile Include="Diagnostics\MyCustomReleasePolicy.cs" />
+    <Compile Include="ContainerExtensions\MyCustomReleasePolicy.cs" />
     <Compile Include="Facilities\EventWiring\SomethingWentWrongTestCase.cs" />
     <Compile Include="Components\AbstractCarProviderFactory.cs" />
     <Compile Include="Components\DisposableComponentFactory.cs" />

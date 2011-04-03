@@ -28,6 +28,7 @@ namespace CastleTests.Diagnostics
 	using Castle.Windsor.Experimental.Diagnostics.Extensions;
 
 	using CastleTests.Components;
+	using CastleTests.ContainerExtensions;
 
 	using NUnit.Framework;
 
