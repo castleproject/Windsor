@@ -19,6 +19,10 @@ namespace Castle.Windsor.Tests.MicroKernel
 
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Context;
+	using Castle.MicroKernel.Registration;
+	using Castle.Windsor.Tests.Components;
+
+	using CastleTests;
 
 	using NUnit.Framework;
 
@@ -38,6 +42,19 @@ namespace Castle.Windsor.Tests.MicroKernel
 		}
 
 		[Test]
+		[Bug("IOC-92")]
+		public void Can_mix_hashtable_parameters_and_configuration_parameters()
+		{
+			var container = new WindsorContainer();
+			container.Register(
+				Component.For<HasStringAndIntDependency>()
+					.Parameters(Parameter.ForKey("x").Eq("abc"))
+				);
+
+			container.Resolve<HasStringAndIntDependency>(new Arguments().Insert("y", 1));
+		}
+
+		[Test]
 		public void Custom_stores_get_picked_over_default_ones()
 		{
 			var arguments = new Arguments(new CustomStringComparer());
@@ -48,7 +65,7 @@ namespace Castle.Windsor.Tests.MicroKernel
 
 			Assert.AreEqual(value, arguments["boo!"]);
 		}
-		
+
 #if !SILVERLIGHT
 		[Test]
 		public void Custom_stores_get_picked_over_default_ones_in_clone()
