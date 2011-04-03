@@ -658,6 +658,7 @@
     <Compile Include="Facilities\Synchronize\Components\SyncClassOverrideContext.cs" />
     <Compile Include="Facilities\Synchronize\Components\SyncClassWithoutContext.cs" />
     <Compile Include="Facilities\Synchronize\SynchronizeFacilityTestCase.cs" />
+    <Compile Include="TestConventionsValidationTestCase.cs" />
     <Compile Include="TypeComparerTestCase.cs" />
     <Compile Include="TypedDependenciesTestCase.cs" />
     <Compile Include="MicroKernel\ArgumentsTestCase.cs" />
