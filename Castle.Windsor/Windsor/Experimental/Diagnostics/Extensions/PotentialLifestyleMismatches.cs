@@ -15,89 +15,95 @@
 namespace Castle.Windsor.Experimental.Diagnostics.Extensions
 {
 #if !SILVERLIGHT
+	using System;
 	using System.Collections.Generic;
+	using System.Diagnostics;
 	using System.Linq;
+	using System.Text;
 
 	using Castle.Core;
 	using Castle.MicroKernel;
-	using Castle.MicroKernel.SubSystems.Naming;
 	using Castle.Windsor.Experimental.Diagnostics.DebuggerViews;
 	using Castle.Windsor.Experimental.Diagnostics.Helpers;
 
 	public class PotentialLifestyleMismatches : AbstractContainerDebuggerExtension
 	{
 		private const string name = "Potential Lifestyle Mismatches";
-		private INamingSubSystem naming;
+		private IPotentialLifestyleMismatchesDiagnostic diagnostic;
 
 		public override IEnumerable<DebuggerViewItem> Attach()
 		{
-			var model2Handler = naming.GetAllHandlers().ToDictionary(p => p.ComponentModel);
-
-			var mismatches = new List<DebuggerViewItem>();
-			foreach (var handler in model2Handler.Values)
-			{
-				mismatches.AddRange(GetMismatches(model2Handler, handler));
-			}
-			if (mismatches.Count == 0)
+			var mismatches = diagnostic.Inspect();
+			if (mismatches.Length == 0)
 			{
 				yield break;
 			}
-			yield return new DebuggerViewItem(name,
-			                                  "Count = " + mismatches.Count,
-			                                  mismatches.ToArray());
+
+			var items = Array.ConvertAll(mismatches, MismatchedComponentView);
+			yield return new DebuggerViewItem(name, "Count = " + mismatches.Length, items);
 		}
 
 		public override void Init(IKernel kernel, IDiagnosticsHost diagnosticsHost)
 		{
-			naming = kernel.GetSubSystem(SubSystemConstants.NamingKey) as INamingSubSystem;
+			diagnostic = new PotentialLifestyleMismatchesDiagnostic(kernel);
+			diagnosticsHost.AddDiagnostic(diagnostic);
 		}
 
-		private IEnumerable<MismatchedLifestyleDependencyViewBuilder> GetMismatch(MismatchedLifestyleDependencyViewBuilder parent, ComponentModel component,
-		                                                     Dictionary<ComponentModel, IHandler> model2Handler)
+		private MismatchedDependencyDebuggerViewItem GetItem(IHandler[] handlers)
 		{
-			if (parent.Checked(component))
-			{
-				yield break;
-			}
-
-			var handler = model2Handler[component];
-			var item = new MismatchedLifestyleDependencyViewBuilder(handler, parent);
-			if (item.Mismatched())
-			{
-				yield return item;
-			}
-			else
-			{
-				foreach (ComponentModel dependent in handler.ComponentModel.Dependents)
-				{
-					foreach (var mismatch in GetMismatch(item, dependent, model2Handler))
-					{
-						yield return mismatch;
-					}
-				}
-			}
+			var message = GetMismatchMessage(handlers);
+			return new MismatchedDependencyDebuggerViewItem(message, handlers);
 		}
 
-		private IEnumerable<DebuggerViewItem> GetMismatches(Dictionary<ComponentModel, IHandler> model2Handler, IHandler handler)
+		private string GetKey(IHandler root)
 		{
-			if (IsSingleton(handler) == false)
-			{
-				yield break;
-			}
-			var root = new MismatchedLifestyleDependencyViewBuilder(handler);
-			foreach (ComponentModel dependent in handler.ComponentModel.Dependents)
-			{
-				foreach (var mismatch in GetMismatch(root, dependent, model2Handler))
-				{
-					yield return mismatch.ViewItem;
-				}
-			}
+			return string.Format("\"{0}\" »{1}«", GetNameDescription(root.ComponentModel), root.ComponentModel.GetLifestyleDescription());
 		}
 
-		private bool IsSingleton(IHandler component)
+		private string GetMismatchMessage(IHandler[] handlers)
 		{
-			var lifestyle = component.ComponentModel.LifestyleType;
-			return lifestyle == LifestyleType.Undefined || lifestyle == LifestyleType.Singleton;
+			var message = new StringBuilder();
+			Debug.Assert(handlers.Length > 1, "handlers.Length > 1");
+			var root = handlers.First();
+			var last = handlers.Last();
+			message.AppendFormat("Component '{0}' with lifestyle {1} ", GetNameDescription(root.ComponentModel), root.ComponentModel.GetLifestyleDescription());
+			message.AppendFormat("depends on '{0}' with lifestyle {1}", GetNameDescription(last.ComponentModel), last.ComponentModel.GetLifestyleDescription());
+
+			for (var i = 1; i < handlers.Length - 1; i++)
+			{
+				var via = handlers[i];
+				message.AppendLine();
+				message.AppendFormat("\tvia '{0}' with lifestyle {1}", GetNameDescription(via.ComponentModel), via.ComponentModel.GetLifestyleDescription());
+			}
+
+			message.AppendLine();
+			message.AppendFormat(
+				"This kind of dependency is usually not desired and may lead to various kinds of bugs.");
+			return message.ToString();
+		}
+
+		private string GetName(IHandler[] handlers, IHandler root)
+		{
+			var indirect = (handlers.Length > 2) ? string.Empty : "indirectly ";
+			return string.Format("\"{0}\" »{1}« {2}depends on", GetNameDescription(root.ComponentModel), root.ComponentModel.GetLifestyleDescription(), indirect);
+		}
+
+		private string GetNameDescription(ComponentModel componentModel)
+		{
+			if (componentModel.ComponentName.SetByUser)
+			{
+				return componentModel.ComponentName.Name;
+			}
+			return componentModel.ToString();
+		}
+
+		private DebuggerViewItem MismatchedComponentView(IHandler[] handlers)
+		{
+			var root = handlers[0];
+			var item = GetItem(handlers);
+			var key = GetKey(root);
+			var name = GetName(handlers, root);
+			return new DebuggerViewItem(name, key, item);
 		}
 
 		public static string Name
