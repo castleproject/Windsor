@@ -27,7 +27,7 @@ namespace Castle.Windsor.Tests.MicroKernel
 	using NUnit.Framework;
 
 	[TestFixture]
-	public class ArgumentsTestCase
+	public class ArgumentsTestCase : AbstractContainerTestCase
 	{
 		[Test]
 		public void By_default_any_type_as_key_is_supported()
@@ -42,16 +42,37 @@ namespace Castle.Windsor.Tests.MicroKernel
 		}
 
 		[Test]
+		[Bug("IOC-142")]
+		public void Can_satisfy_nullable_property_dependency()
+		{
+			Container.Register(Component.For<HasNullableIntProperty>());
+
+			var arguments = new Arguments().Insert("SomeVal", 5);
+			var s = Container.Resolve<HasNullableIntProperty>(arguments);
+
+			Assert.IsNotNull(s.SomeVal);
+		}
+
+		[Test]
+		[Bug("IOC-142")]
+		public void Can_satisfy_nullable_ctor_dependency()
+		{
+			Container.Register(Component.For<HasNullableDoubleConstructor>());
+
+			var s = Container.Resolve<HasNullableDoubleConstructor>(new Arguments().Insert("foo", 5d));
+			Assert.IsNotNull(s);
+		}
+
+		[Test]
 		[Bug("IOC-92")]
 		public void Can_mix_hashtable_parameters_and_configuration_parameters()
 		{
-			var container = new WindsorContainer();
-			container.Register(
+			Container.Register(
 				Component.For<HasStringAndIntDependency>()
 					.Parameters(Parameter.ForKey("x").Eq("abc"))
 				);
 
-			container.Resolve<HasStringAndIntDependency>(new Arguments().Insert("y", 1));
+			Container.Resolve<HasStringAndIntDependency>(new Arguments().Insert("y", 1));
 		}
 
 		[Test]

@@ -350,6 +350,8 @@
     <Compile Include="Components\EmptyServiceDecorator.cs" />
     <Compile Include="Components\EmptyServiceDecoratorViaProperty.cs" />
     <Compile Include="Components\HasInstanceCount.cs" />
+    <Compile Include="Components\HasNullableDoubleConstructor.cs" />
+    <Compile Include="Components\HasNullableIntProperty.cs" />
     <Compile Include="Components\HasNullDefaultForServiceDependency.cs" />
     <Compile Include="Components\HasStringAndIntDependency.cs" />
     <Compile Include="Components\HumanArm.cs" />
@@ -896,15 +898,9 @@
     <Compile Include="Bugs\IoC-115.cs" />
     <Compile Include="Bugs\IoC-127.cs" />
     <Compile Include="Bugs\IoC-138.cs" />
-    <Compile Include="Bugs\IoC-73\ClassUser.cs" />
-    <Compile Include="Bugs\IoC-73\IMyClass.cs" />
-    <Compile Include="Bugs\IoC-73\MyClass.cs" />
-    <Compile Include="Bugs\IoC-73\IoC73.cs" />
-    <Compile Include="Bugs\IoC-73\Proxy.cs" />
     <Compile Include="Bugs\IoC-78\IoC-78.cs" />
     <Compile Include="Bugs\IoC_103\IoC_103.cs" />
     <Compile Include="Bugs\IoC_120.cs" />
-    <Compile Include="Bugs\IoC_142.cs" />
     <Compile Include="Bugs\IoC_147.cs" />
     <Compile Include="Bugs\IoC_155.cs" />
     <Compile Include="Bugs\IoC_169\IoC_169.cs" />
