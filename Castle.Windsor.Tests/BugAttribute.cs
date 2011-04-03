@@ -18,9 +18,11 @@ namespace CastleTests
 
 	public class BugAttribute : Attribute
 	{
-		public BugAttribute(string bugId, string message = null)
+		public string BugId { get; set; }
 
+		public BugAttribute(string bugId)
 		{
+			BugId = bugId;
 		}
 	}
 }

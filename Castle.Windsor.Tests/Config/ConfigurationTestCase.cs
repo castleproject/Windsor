@@ -16,9 +16,13 @@ namespace Castle.MicroKernel.Tests.Configuration
 {
 	using Castle.Core;
 	using Castle.Core.Configuration;
+	using Castle.Core.Resource;
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Tests.ClassComponents;
 	using Castle.MicroKernel.Tests.Configuration.Components;
+	using Castle.Windsor;
+	using Castle.Windsor.Installer;
+	using Castle.Windsor.Tests.Components;
 
 	using CastleTests;
 
@@ -27,6 +31,65 @@ namespace Castle.MicroKernel.Tests.Configuration
 	[TestFixture]
 	public class ConfigurationTestCase : AbstractContainerTestCase
 	{
+		[Test]
+		[Bug("IOC-73")]
+		public void ShouldNotThrowCircularDependencyException()
+		{
+			var config =
+				@"
+<configuration>
+    <facilities>
+    </facilities>
+    <components>
+        <component id='MyClass'
+            service='IEmptyService'
+            type='EmptyServiceA'/>
+        <component id='Proxy'
+            service='IEmptyService'
+            type='EmptyServiceDecorator'>
+            <parameters>
+                <other>${MyClass}</other>
+            </parameters>
+        </component>
+        <component id='ClassUser'
+            type='UsesIEmptyService'>
+            <parameters>
+                <emptyService>${Proxy}</emptyService>
+            </parameters>
+        </component>
+    </components>
+</configuration>";
+
+			Container.Install(Configuration.FromXml(new StaticContentResource(config)));
+			var user = Container.Resolve<UsesIEmptyService>();
+			Assert.NotNull(user.EmptyService);
+		}
+
+		[Test]
+		[Bug("IOC-142")]
+		public void Can_satisfy_nullable_ctor_dependency()
+		{
+			var container = new WindsorContainer();
+			var configuration = new MutableConfiguration("parameters");
+			configuration.CreateChild("foo", "5");
+			container.Register(Component.For<HasNullableDoubleConstructor>().Configuration(configuration));
+
+			container.Resolve<HasNullableDoubleConstructor>();
+		}
+
+		[Test]
+		[Bug("IOC-142")]
+		public void Can_satisfy_nullable_property_dependency()
+		{
+			var container = new WindsorContainer();
+			var configuration = new MutableConfiguration("parameters");
+			configuration.CreateChild("SomeVal", "5");
+			container.Register(Component.For<HasNullableIntProperty>().Configuration(configuration));
+
+			var s = container.Resolve<HasNullableIntProperty>();
+			Assert.IsNotNull(s.SomeVal);
+		}
+
 		[Test]
 		public void ComplexConfigurationParameter()
 		{
