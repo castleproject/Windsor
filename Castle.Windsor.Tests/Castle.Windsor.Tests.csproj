@@ -395,11 +395,11 @@
     <Compile Include="Core.Tests\InterceptorAttributeTestCase.cs" />
     <Compile Include="CreatingContainerTestCase.cs" />
     <Compile Include="DuplicateGenerics.cs" />
-    <Compile Include="Experimental\AllComponentsDiagnosticTestCase.cs" />
-    <Compile Include="Experimental\PotentialLifestyleMismatchesDiagnosticTestCase.cs" />
-    <Compile Include="Experimental\PotentiallyMisconfiguredComponentsDiagnosticTestCase.cs" />
-    <Compile Include="Experimental\ReleasePolicyTrackedObjectsTestCase.cs" />
-    <Compile Include="Experimental\MyCustomReleasePolicy.cs" />
+    <Compile Include="Diagnostics\AllComponentsDiagnosticTestCase.cs" />
+    <Compile Include="Diagnostics\PotentialLifestyleMismatchesDiagnosticTestCase.cs" />
+    <Compile Include="Diagnostics\PotentiallyMisconfiguredComponentsDiagnosticTestCase.cs" />
+    <Compile Include="Diagnostics\ReleasePolicyTrackedObjectsTestCase.cs" />
+    <Compile Include="Diagnostics\MyCustomReleasePolicy.cs" />
     <Compile Include="Facilities\EventWiring\SomethingWentWrongTestCase.cs" />
     <Compile Include="Components\AbstractCarProviderFactory.cs" />
     <Compile Include="Components\DisposableComponentFactory.cs" />

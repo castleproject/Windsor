@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Windsor.Tests.Experimental
+namespace CastleTests.Diagnostics
 {
 #if !SILVERLIGHT
 	using System;
@@ -27,7 +27,6 @@ namespace Castle.Windsor.Tests.Experimental
 	using Castle.Windsor.Experimental.Diagnostics.DebuggerViews;
 	using Castle.Windsor.Experimental.Diagnostics.Extensions;
 
-	using CastleTests;
 	using CastleTests.Components;
 
 	using NUnit.Framework;
