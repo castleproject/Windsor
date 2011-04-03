@@ -396,10 +396,10 @@
     <Compile Include="CreatingContainerTestCase.cs" />
     <Compile Include="DuplicateGenerics.cs" />
     <Compile Include="Experimental\AllComponentsDiagnosticTestCase.cs" />
+    <Compile Include="Experimental\PotentialLifestyleMismatchesDiagnosticTestCase.cs" />
     <Compile Include="Experimental\PotentiallyMisconfiguredComponentsDiagnosticTestCase.cs" />
     <Compile Include="Experimental\ReleasePolicyTrackedObjectsTestCase.cs" />
     <Compile Include="Experimental\MyCustomReleasePolicy.cs" />
-    <Compile Include="Experimental\ProblematicDependenciesTestCase.cs" />
     <Compile Include="Facilities\EventWiring\SomethingWentWrongTestCase.cs" />
     <Compile Include="Components\AbstractCarProviderFactory.cs" />
     <Compile Include="Components\DisposableComponentFactory.cs" />
@@ -1097,7 +1097,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ContainerAndGenericsInCodeTestCase.cs" />
-    <Compile Include="Windsor.Tests\Debugging\DebuggingSubsystemTestCase.cs" />
     <Compile Include="Windsor.Tests\MultiServiceGenericComponentsTestCase.cs" />
     <Compile Include="XmlProcessor\XmlProcessorTestCase.cs">
       <SubType>Code</SubType>

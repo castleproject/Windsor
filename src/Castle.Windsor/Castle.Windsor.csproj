@@ -868,7 +868,6 @@
     <Compile Include="Windsor\Experimental\Diagnostics\DefaultDiagnosticsSubSystem.cs" />
     <Compile Include="Windsor\Experimental\Diagnostics\DebuggerViews\DebuggerViewItem.cs" />
     <Compile Include="Windsor\Experimental\Diagnostics\Extensions\Facilities.cs" />
-    <Compile Include="Windsor\Experimental\Diagnostics\Helpers\MismatchedLifestyleDependencyViewBuilder.cs" />
     <Compile Include="Windsor\Experimental\Diagnostics\Extensions\PotentialLifestyleMismatches.cs" />
     <Compile Include="Windsor\Experimental\Diagnostics\DebuggerViews\ComponentDebuggerView.cs" />
     <Compile Include="Windsor\Experimental\Diagnostics\IAllComponentsDiagnostic.cs" />
@@ -884,6 +883,7 @@
     <Compile Include="Windsor\Experimental\Diagnostics\Inspectors\TrackedObjects.cs" />
     <Compile Include="Windsor\Experimental\Diagnostics\IPerformanceCounter.cs" />
     <Compile Include="Windsor\Experimental\Diagnostics\IPerformanceMetricsFactory.cs" />
+    <Compile Include="Windsor\Experimental\Diagnostics\IPotentialLifestyleMismatchesDiagnostic.cs" />
     <Compile Include="Windsor\Experimental\Diagnostics\IPotentiallyMisconfiguredComponentsDiagnostic.cs" />
     <Compile Include="Windsor\Experimental\Diagnostics\ITrackedComponentsDiagnostic.cs" />
     <Compile Include="Windsor\Experimental\Diagnostics\KernelDebuggerProxy.cs" />
@@ -892,6 +892,7 @@
     <Compile Include="Windsor\Experimental\Diagnostics\NullPerformanceCounter.cs" />
     <Compile Include="Windsor\Experimental\Diagnostics\PerformanceCounterWrapper.cs" />
     <Compile Include="Windsor\Experimental\Diagnostics\PerformanceMetricsFactory.cs" />
+    <Compile Include="Windsor\Experimental\Diagnostics\PotentialLifestyleMismatchesDiagnostic.cs" />
     <Compile Include="Windsor\Experimental\Diagnostics\PotentiallyMisconfiguredComponentsDiagnostic.cs" />
     <Compile Include="Windsor\Experimental\Diagnostics\TrackedComponentsDiagnostic.cs" />
     <Compile Include="Windsor\Experimental\Diagnostics\TrackedInstancesEventArgs.cs" />
