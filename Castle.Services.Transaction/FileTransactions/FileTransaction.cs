@@ -1,18 +1,35 @@
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Security.Permissions;
-using System.Text;
-using System.Transactions;
-using Castle.Services.Transaction.IO;
-using Microsoft.Win32.SafeHandles;
-using Path=Castle.Services.Transaction.IO.Path;
+#region License
+//  Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+//  
+//  Licensed under the Apache License, Version 2.0 (the "License");
+//  you may not use this file except in compliance with the License.
+//  You may obtain a copy of the License at
+//  
+//      http://www.apache.org/licenses/LICENSE-2.0
+//  
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+// 
+#endregion
 
 namespace Castle.Services.Transaction
 {
+	using System;
+	using System.Collections.Generic;
+	using System.ComponentModel;
+	using System.IO;
+	using System.Linq;
+	using System.Runtime.InteropServices;
+	using System.Security.Permissions;
+	using System.Text;
+	using System.Transactions;
+	using IO;
+	using Microsoft.Win32.SafeHandles;
+	using Path = IO.Path;
+
 	///<summary>
 	/// Represents a transaction on transactional kernels
 	/// like the Vista kernel or Server 2008 kernel and newer.
@@ -55,12 +72,24 @@ namespace Castle.Services.Transaction
 		/// </summary>
 		public override bool IsAmbient { get; protected set; }
 
+        public override bool IsReadOnly
+        {
+            get
+            {
+                return false;
+            }
+            protected set
+            {
+                throw new NotImplementedException();
+            }
+        }
+
 		///<summary>
 		/// Gets the name of the transaction.
 		///</summary>
 		public override string Name
 		{
-			get { return _TheName ?? string.Format("FtX #{0}", GetHashCode()); }
+			get { return theName ?? string.Format("FtX #{0}", GetHashCode()); }
 		}
 
 		protected override void InnerBegin()
@@ -85,7 +114,7 @@ namespace Castle.Services.Transaction
 				_TransactionHandle = handle; // see the link in the remarks to the class for more details about async exceptions
 				IsAmbient = true;
 			}
-			else _TransactionHandle = createTransaction(string.Format("{0} Transaction", _TheName));
+			else _TransactionHandle = createTransaction(string.Format("{0} Transaction", theName));
 			if (!_TransactionHandle.IsInvalid) return;
 
 			throw new TransactionException(

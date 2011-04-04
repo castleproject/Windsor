@@ -1,21 +1,22 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+#region License
+//  Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+//  
+//  Licensed under the Apache License, Version 2.0 (the "License");
+//  you may not use this file except in compliance with the License.
+//  You may obtain a copy of the License at
+//  
+//      http://www.apache.org/licenses/LICENSE-2.0
+//  
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
 // 
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-// 
-//     http://www.apache.org/licenses/LICENSE-2.0
-// 
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
+#endregion
 namespace Castle.Services.Transaction.Tests
 {
 	using System;
-
 	using NUnit.Framework;
 
 	[TestFixture]
@@ -184,6 +185,60 @@ namespace Castle.Services.Transaction.Tests
 			Assert.That(first.Committed);
 			Assert.That(rfail.Committed, Is.False);
 			Assert.That(rsucc.Committed, Is.False);
+		}
+
+		[Test]
+		public void SynchronizationsAndCommit_NestedTransaction()
+		{
+			ITransaction root =
+				tm.CreateTransaction(TransactionMode.Requires, IsolationMode.Unspecified);
+			Assert.IsTrue(root is TalkativeTransaction);
+			root.Begin();
+
+			ITransaction child1 = tm.CreateTransaction(TransactionMode.Requires, IsolationMode.Unspecified);
+			Assert.IsTrue(child1 is ChildTransaction);
+			Assert.IsTrue(child1.IsChildTransaction);
+			child1.Begin();
+
+			SynchronizationImpl sync = new SynchronizationImpl();
+
+			child1.RegisterSynchronization(sync);
+
+			Assert.AreEqual(DateTime.MinValue, sync.Before);
+			Assert.AreEqual(DateTime.MinValue, sync.After);
+
+			child1.Commit();
+			root.Commit();
+
+			Assert.IsTrue(sync.Before > DateTime.MinValue);
+			Assert.IsTrue(sync.After > DateTime.MinValue);
+		}
+
+		[Test]
+		public void SynchronizationsAndRollback_NestedTransaction()
+		{
+			ITransaction root =
+				tm.CreateTransaction(TransactionMode.Requires, IsolationMode.Unspecified);
+			Assert.IsTrue(root is TalkativeTransaction);
+			root.Begin();
+
+			ITransaction child1 = tm.CreateTransaction(TransactionMode.Requires, IsolationMode.Unspecified);
+			Assert.IsTrue(child1 is ChildTransaction);
+			Assert.IsTrue(child1.IsChildTransaction);
+			child1.Begin();
+
+			SynchronizationImpl sync = new SynchronizationImpl();
+
+			child1.RegisterSynchronization(sync);
+
+			Assert.AreEqual(DateTime.MinValue, sync.Before);
+			Assert.AreEqual(DateTime.MinValue, sync.After);
+
+			child1.Rollback();
+			root.Rollback();
+
+			Assert.IsTrue(sync.Before > DateTime.MinValue);
+			Assert.IsTrue(sync.After > DateTime.MinValue);
 		}
 	}
 }

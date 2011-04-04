@@ -1,14 +1,33 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Threading;
-using System.Transactions;
-using Castle.Services.Transaction.IO;
-using NUnit.Framework;
-using Path=Castle.Services.Transaction.IO.Path;
+#region License
+//  Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+//  
+//  Licensed under the Apache License, Version 2.0 (the "License");
+//  you may not use this file except in compliance with the License.
+//  You may obtain a copy of the License at
+//  
+//      http://www.apache.org/licenses/LICENSE-2.0
+//  
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+// 
+#endregion
 
 namespace Castle.Services.Transaction.Tests
 {
+	using System;
+	using System.Collections.Generic;
+	using System.IO;
+	using System.Threading;
+	using System.Transactions;
+	using IO;
+	using NUnit.Framework;
+	using Path = IO.Path;
+	using TransactionException = Transaction.TransactionException;
+	using TransactionStatus = Transaction.TransactionStatus;
+
 	[TestFixture]
 	public class FileTransactionTests
 	{
@@ -71,6 +90,12 @@ namespace Castle.Services.Transaction.Tests
 		[Test]
 		public void CannotCommitAfterSettingRollbackOnly()
 		{
+            if (Environment.OSVersion.Version.Major < 6)
+            {
+                Assert.Ignore("TxF not supported");
+                return;
+            }
+
 			using (var tx = new FileTransaction())
 			{
 				tx.Begin();
@@ -83,6 +108,12 @@ namespace Castle.Services.Transaction.Tests
 		[Test]
 		public void FailingResource_TxStillRolledBack()
 		{
+            if (Environment.OSVersion.Version.Major < 6)
+            {
+                Assert.Ignore("TxF not supported");
+                return;
+            }
+
 			using (var tx = new FileTransaction())
 			{
 				tx.Enlist(new R());
@@ -103,7 +134,7 @@ namespace Castle.Services.Transaction.Tests
 				catch (RollbackResourceException rex)
 				{
 					// good.
-					Assert.That(rex.FailedResource[0].First, Is.InstanceOf(typeof (R)));
+					Assert.That(rex.FailedResources[0].First, Is.InstanceOf(typeof (R)));
 				}
 			}
 		}
@@ -130,8 +161,14 @@ namespace Castle.Services.Transaction.Tests
 
 		[Test]
 		public void Using_TransactionScope_IsDistributed_AlsoTestingStatusWhenRolledBack()
-		{
-			using (new TransactionScope())
+        {
+            if (Environment.OSVersion.Version.Major < 6)
+            {
+                Assert.Ignore("TxF not supported");
+                return;
+            }
+
+            using (new TransactionScope())
 			{
 				using (var tx = new FileTransaction())
 				{
@@ -149,6 +186,12 @@ namespace Castle.Services.Transaction.Tests
 		[Test]
 		public void Using_NormalStates()
 		{
+            if (Environment.OSVersion.Version.Major < 6)
+            {
+                Assert.Ignore("TxF not supported");
+                return;
+            }
+
 			using (var tx = new FileTransaction())
 			{
 				Assert.That(tx.Status, Is.EqualTo(TransactionStatus.NoTransaction));

@@ -1,13 +1,29 @@
-using System;
-using log4net;
-
+#region License
+//  Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+//  
+//  Licensed under the Apache License, Version 2.0 (the "License");
+//  you may not use this file except in compliance with the License.
+//  You may obtain a copy of the License at
+//  
+//      http://www.apache.org/licenses/LICENSE-2.0
+//  
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+// 
+#endregion
 namespace Castle.Services.Transaction
 {
+	using System;
+	using log4net;
+
 	public class DefaultTransactionManager : MarshalByRefObject, ITransactionManager
 	{
-		private static readonly ILog _Logger = LogManager.GetLogger(typeof (DefaultTransactionManager));
+		private static readonly ILog logger = LogManager.GetLogger(typeof (DefaultTransactionManager));
 	
-		private IActivityManager _ActivityManager;
+		private IActivityManager activityManager;
 
 		public event EventHandler<TransactionEventArgs> TransactionCreated;
 		public event EventHandler<TransactionEventArgs> TransactionRolledBack;
@@ -32,9 +48,9 @@ namespace Castle.Services.Transaction
 		{
 			if (activityManager == null) throw new ArgumentNullException("activityManager");
 
-			_ActivityManager = activityManager;
+			this.activityManager = activityManager;
 			
-			if (_Logger.IsDebugEnabled) _Logger.Debug("DefaultTransactionManager created.");
+			if (logger.IsDebugEnabled) logger.Debug("DefaultTransactionManager created.");
 		}
 
 		/// <summary>
@@ -44,11 +60,11 @@ namespace Castle.Services.Transaction
 		/// <value>The activity manager.</value>
 		public IActivityManager ActivityManager
 		{
-			get { return _ActivityManager; }
+			get { return activityManager; }
 			set
 			{
 				if (value == null) throw new ArgumentNullException("value");
-				_ActivityManager = value;
+				activityManager = value;
 			}
 		}
 
@@ -57,10 +73,10 @@ namespace Castle.Services.Transaction
 		/// </summary>
 		public ITransaction CreateTransaction(TransactionMode txMode, IsolationMode isolationMode)
 		{
-			return CreateTransaction(txMode, isolationMode, false);
+			return CreateTransaction(txMode, isolationMode, false, false);
 		}
 
-		public ITransaction CreateTransaction(TransactionMode txMode, IsolationMode iMode, bool isAmbient)
+        public ITransaction CreateTransaction(TransactionMode txMode, IsolationMode iMode, bool isAmbient, bool isReadOnly)
 		{
 			txMode = ObtainDefaultTransactionMode(txMode);
 
@@ -81,27 +97,27 @@ namespace Castle.Services.Transaction
 				{
 					transaction = ((TransactionBase)CurrentTransaction).CreateChildTransaction();
 
-					_Logger.DebugFormat("Child transaction \"{0}\" created", transaction.Name);
+					logger.DebugFormat("Child transaction \"{0}\" created with mode '{1}'.", transaction.Name, txMode);
 				}
 			}
 
 			if (transaction == null)
 			{
-				transaction = InstantiateTransaction(txMode, iMode, isAmbient);
+				transaction = InstantiateTransaction(txMode, iMode, isAmbient, isReadOnly);
 
 				if (isAmbient)
 				{
 #if MONO
 					throw new NotSupportedException("Distributed transactions are not supported on Mono");
 #else
-					transaction.Enlist(new TransactionScopeResourceAdapter(txMode, iMode));
+					transaction.CreateAmbientTransaction();
 #endif
 				}
 
-				_Logger.DebugFormat("Transaction \"{0}\" created", transaction.Name);
+				logger.DebugFormat("Transaction \"{0}\" created. ", transaction.Name);
 			}
 
-			_ActivityManager.CurrentActivity.Push(transaction);
+			activityManager.CurrentActivity.Push(transaction);
 
 			if (transaction.IsChildTransaction)
 				ChildTransactionCreated.Fire(this, new TransactionEventArgs(transaction));
@@ -111,9 +127,9 @@ namespace Castle.Services.Transaction
 			return transaction;
 		}
 
-		private TransactionBase InstantiateTransaction(TransactionMode mode, IsolationMode isolationMode, bool ambient)
+        private TransactionBase InstantiateTransaction(TransactionMode mode, IsolationMode isolationMode, bool ambient, bool readOnly)
 		{
-			var t = new TalkativeTransaction(mode, isolationMode, ambient);
+			var t = new TalkativeTransaction(mode, isolationMode, ambient, readOnly);
 
 			t.TransactionCompleted += CompletedHandler;
 			t.TransactionRolledBack += RolledBackHandler;
@@ -148,7 +164,7 @@ namespace Castle.Services.Transaction
 				var message = "There is a transaction active and the transaction mode " +
 				              "explicit says that no transaction is supported for this context";
 
-				_Logger.Error(message);
+				logger.Error(message);
 
 				throw new TransactionModeUnsupportedException(message);
 			}
@@ -174,7 +190,7 @@ namespace Castle.Services.Transaction
 		/// <remarks>Thread-safety of this method depends on that of the <see cref="IActivityManager.CurrentActivity"/>.</remarks>
 		public ITransaction CurrentTransaction
 		{
-			get { return _ActivityManager.CurrentActivity.CurrentTransaction; }
+			get { return activityManager.CurrentActivity.CurrentTransaction; }
 		}
 
 		/// <summary>
@@ -185,13 +201,15 @@ namespace Castle.Services.Transaction
 		{
 			if (transaction == null) throw new ArgumentNullException("transaction", "Tried to dispose a null transaction");
 
+			logger.DebugFormat("Trying to dispose transaction {0}.", transaction.Name);
+
 			if (CurrentTransaction != transaction)
 			{
 				throw new ArgumentException("Tried to dispose a transaction that is not on the current active transaction",
 				                            "transaction");
 			}
 
-			_ActivityManager.CurrentActivity.Pop();
+			activityManager.CurrentActivity.Pop();
 
 			if (transaction is IDisposable)
 			{
@@ -207,7 +225,7 @@ namespace Castle.Services.Transaction
 
 			TransactionDisposed.Fire(this, new TransactionEventArgs(transaction));
 
-			_Logger.DebugFormat("Transaction {0} disposed successfully", transaction.Name);
+			logger.DebugFormat("Transaction {0} disposed successfully", transaction.Name);
 		}
 
 		/// <summary>
