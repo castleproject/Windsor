@@ -26,6 +26,7 @@ using NUnit.Framework;
 
 namespace Castle.Facilities.AutoTx.Tests
 {
+	[TestFixture]
 	public class AutoTxFacilityTests
 	{
 		[Test]

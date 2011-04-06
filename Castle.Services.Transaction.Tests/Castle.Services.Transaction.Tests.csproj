@@ -152,6 +152,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DirectoryAdapterTests.cs" />
+    <Compile Include="FileAdapterTests.cs" />
     <Compile Include="FileTransactions_Directory_Tests.cs" />
     <Compile Include="FileTransactions_File_Tests.cs" />
     <Compile Include="TestClasses\Exts.cs" />
