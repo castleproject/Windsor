@@ -108,17 +108,17 @@ namespace Castle.Services.Transaction
 		/// Given a logger and action, performs the action and catches + logs exceptions.
 		/// </summary>
 		/// <returns>Whether the lambda was a success or not.</returns>
-		public static Result TryLogFail(this ILog logger, Action a)
+		public static Error TryLogFail(this ILog logger, Action a)
 		{
 			try
 			{
 				a();
-				return Result.OK;
+				return Error.OK;
 			}
 			catch (Exception e)
 			{
 				logger.Error(e);
-				return new Result(false, e);
+				return new Error(false, e);
 			}
 		}
 
@@ -128,14 +128,17 @@ namespace Castle.Services.Transaction
 		}
 	}
 
-	internal struct Result
+	/// <summary>
+	/// Error monad
+	/// </summary>
+	internal struct Error
 	{
-		public static Result OK = new Result(true, null);
+		public static Error OK = new Error(true, null);
 
 		private readonly Exception _Ex;
 		private readonly bool _Success;
 
-		public Result(bool success, Exception ex)
+		public Error(bool success, Exception ex)
 		{
 			_Success = success;
 			_Ex = success ? null : ex;
@@ -147,26 +150,30 @@ namespace Castle.Services.Transaction
 		/// </summary>
 		/// <param name="a"></param>
 		/// <returns></returns>
-		public Result Exception(Action<Exception> a)
+		public Error Exception(Action<Exception> a)
 		{
 			if (!_Success) a(_Ex);
 			return this;
 		}
 
-		public Result Success(Action a)
+		public Error Success(Action a)
 		{
 			if (_Success) a();
 			return this;
 		}
 	}
 
-	internal struct Result<T>
+	/// <summary>
+	/// Error monad
+	/// </summary>
+	/// <typeparam name="T">Encapsulated success-action parameter type</typeparam>
+	internal struct Error<T>
 	{
 		private readonly Exception _Ex;
 		private readonly bool _Success;
 		private readonly T _Param;
 
-		public Result(bool success, Exception ex, T param)
+		public Error(bool success, Exception ex, T param)
 		{
 			_Success = success;
 			_Param = param;
@@ -179,13 +186,13 @@ namespace Castle.Services.Transaction
 		/// </summary>
 		/// <param name="a"></param>
 		/// <returns></returns>
-		public Result<T> Exception(Action<Exception> a)
+		public Error<T> Exception(Action<Exception> a)
 		{
 			if (!_Success) a(_Ex);
 			return this;
 		}
 
-		public Result<T> Success(Action<T> a)
+		public Error<T> Success(Action<T> a)
 		{
 			if (_Success) a(_Param);
 			return this;

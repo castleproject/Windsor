@@ -1,4 +1,5 @@
 #region License
+
 //  Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 //  
 //  Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,39 +14,37 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 // 
+
 #endregion
+
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Transactions;
+using Castle.Core;
+using log4net;
+
 namespace Castle.Services.Transaction
 {
-	using System;
-	using System.Collections;
-	using System.Collections.Generic;
-	using System.Linq;
-	using System.Threading;
-	using System.Transactions;
-	using Core;
-	using log4net;
-
 	public abstract class TransactionBase : MarshalByRefObject, ITransaction, IDisposable
 	{
-		private static readonly ILog logger = LogManager.GetLogger(typeof (TransactionBase));
+		private static readonly ILog _Logger = LogManager.GetLogger(typeof (TransactionBase));
+		private readonly IsolationMode _IsolationMode;
 
-		private readonly ReaderWriterLockSlim sem = new ReaderWriterLockSlim();
-		private readonly IList<IResource> resources = new List<IResource>();
-		private readonly IList<ISynchronization> syncInfo = new List<ISynchronization>();
+		private readonly IList<IResource> _Resources = new List<IResource>();
+		private readonly IList<ISynchronization> _SyncInfo = new List<ISynchronization>();
 
-		private volatile bool canCommit;
-
-		private readonly TransactionMode transactionMode;
-		private readonly IsolationMode isolationMode;
-
-		internal readonly string theName;
-		private TransactionScope ambientTransaction;
+		protected readonly string theName;
+		private readonly TransactionMode _TransactionMode;
+		private TransactionScope _AmbientTransaction;
+		private volatile bool _CanCommit;
 
 		protected TransactionBase(string name, TransactionMode mode, IsolationMode isolationMode)
 		{
 			theName = name ?? string.Empty;
-			transactionMode = mode;
-			this.isolationMode = isolationMode;
+			_TransactionMode = mode;
+			_IsolationMode = isolationMode;
 			Status = TransactionStatus.NoTransaction;
 			Context = new Hashtable();
 		}
@@ -65,7 +64,57 @@ namespace Castle.Services.Transaction
 		///<summary>
 		/// Gets whether the transaction is a child transaction or not.
 		///</summary>
-		public virtual bool IsChildTransaction { get { return false; } }
+		public virtual bool IsChildTransaction
+		{
+			get { return false; }
+		}
+
+		/// <summary>
+		/// <see cref="ITransaction.IsAmbient"/>.
+		/// </summary>
+		public abstract bool IsAmbient { get; protected set; }
+
+		/// <summary>
+		/// <see cref="ITransaction.IsReadOnly"/>.
+		/// </summary>
+		public abstract bool IsReadOnly { get; protected set; }
+
+		/// <summary>
+		/// Gets whether rollback only is set.
+		/// </summary>
+		public virtual bool IsRollbackOnlySet
+		{
+			get { return !_CanCommit; }
+		}
+
+		///<summary>
+		/// Gets the transaction mode of the transaction.
+		///</summary>
+		public TransactionMode TransactionMode
+		{
+			get { return _TransactionMode; }
+		}
+
+		///<summary>
+		/// Gets the isolation mode of the transaction.
+		///</summary>
+		public IsolationMode IsolationMode
+		{
+			get { return _IsolationMode; }
+		}
+
+		///<summary>
+		/// Gets the name of the transaction.
+		///</summary>
+		public virtual string Name
+		{
+			get
+			{
+				return string.IsNullOrEmpty(theName)
+				       	? string.Format("Tx #{0}", GetHashCode())
+				       	: theName;
+			}
+		}
 
 		public ChildTransaction CreateChildTransaction()
 		{
@@ -74,86 +123,58 @@ namespace Castle.Services.Transaction
 			return new ChildTransaction(this);
 		}
 
-		/// <summary>
-		/// <see cref="ITransaction.IsAmbient"/>.
-		/// </summary>
-		public abstract bool IsAmbient { get; protected set; }
+		#endregion
 
-        /// <summary>
-        /// <see cref="ITransaction.IsReadOnly"/>.
-        /// </summary>
-        public abstract bool IsReadOnly { get; protected set; }
+		#region IDisposable Members
 
-		/// <summary>
-		/// Gets whether rollback only is set.
-		/// </summary>
-		public virtual bool IsRollbackOnlySet
+		public virtual void Dispose()
 		{
-			get { return !canCommit; }
-		}
+			_Resources.Select(r => r as IDisposable)
+				.Where(r => r != null)
+				.ForEach(r => r.Dispose());
 
-		///<summary>
-		/// Gets the transaction mode of the transaction.
-		///</summary>
-		public TransactionMode TransactionMode
-		{
-			get { return transactionMode; }
-		}
+			_Resources.Clear();
+			_SyncInfo.Clear();
 
-		///<summary>
-		/// Gets the isolation mode of the transaction.
-		///</summary>
-		public IsolationMode IsolationMode
-		{
-			get { return isolationMode; }
-		}
-
-		///<summary>
-		/// Gets the name of the transaction.
-		///</summary>
-		public virtual string Name 
-		{ 
-			get { return string.IsNullOrEmpty(theName) ? 
-			                                         	string.Format("Tx #{0}", GetHashCode()) : theName; }
+			if (_AmbientTransaction != null)
+			{
+				DisposeAmbientTx();
+			}
 		}
 
 		#endregion
+
+		#region ITransaction Members
 
 		/// <summary>
 		/// <see cref="ITransaction.Begin"/>.
 		/// </summary>
 		public virtual void Begin()
 		{
-			sem.AtomWrite(() =>
-			{
-				AssertState(TransactionStatus.NoTransaction);
-				Status = TransactionStatus.Active;
-			});
+			AssertState(TransactionStatus.NoTransaction);
+			Status = TransactionStatus.Active;
 
-			logger.TryLogFail(InnerBegin)
-				.Exception(e => { canCommit = false; throw new TransactionException("Could not begin transaction.", e); })
-				.Success(() => 
-					canCommit = true);
+			_Logger.TryLogFail(InnerBegin)
+				.Exception(e => { 
+					_CanCommit = false;
+					throw new TransactionException("Could not begin transaction.", e);
+				})
+				.Success(() => _CanCommit = true);
 
-			sem.AtomRead(() =>
+			foreach (var r in _Resources)
 			{
-				foreach (var r in resources)
+				try
 				{
-					try { r.Start(); }
-					catch (Exception e)
-					{
-						SetRollbackOnly();
-						throw new CommitResourceException("Transaction could not commit because of a failed resource.",
-							e, r);
-					}
+					r.Start();
 				}
-			});
+				catch (Exception e)
+				{
+					SetRollbackOnly();
+					throw new CommitResourceException("Transaction could not commit because of a failed resource.",
+					                                  e, r);
+				}
+			}
 		}
-
-		/// <summary>
-		/// Implementors set <see cref="Status"/>.
-		/// </summary>
-		protected abstract void InnerBegin();
 
 		/// <summary>
 		/// Succeed the transaction, persisting the
@@ -161,131 +182,106 @@ namespace Castle.Services.Transaction
 		/// </summary>
 		public virtual void Commit()
 		{
-			if (!canCommit) throw new TransactionException("Rollback only was set.");
+			if (!_CanCommit) throw new TransactionException("Rollback only was set.");
 
-			sem.AtomWrite(() =>
-			{
-				AssertState(TransactionStatus.Active);
-				Status = TransactionStatus.Committed;
-			});
+			AssertState(TransactionStatus.Active);
+			Status = TransactionStatus.Committed;
 
-			var commitFailed = false;
-			
+			bool commitFailed = false;
+
 			try
 			{
-				sem.AtomRead(() => 
+				_SyncInfo.ForEach(s => _Logger.TryLogFail(s.BeforeCompletion));
+
+				foreach (var r in _Resources)
 				{
-					syncInfo.ForEach(s => logger.TryLogFail(s.BeforeCompletion));
-
-					foreach (var r in resources)
+					try
 					{
-						try
-						{
-							logger.DebugFormat("Resource: " + r);
+						_Logger.DebugFormat("Resource: " + r);
 
-							r.Commit();
-						} 
-						catch (Exception e)
-						{
-							SetRollbackOnly();
-							commitFailed = true;
-
-							logger.ErrorFormat("Resource state: " + r);
-
-							throw new CommitResourceException("Transaction could not commit because of a failed resource.", e, r);
-						}
+						r.Commit();
 					}
-				});
+					catch (Exception e)
+					{
+						SetRollbackOnly();
+						commitFailed = true;
 
-			
-				logger
+						_Logger.ErrorFormat("Resource state: " + r);
+
+						throw new CommitResourceException("Transaction could not commit because of a failed resource.", e, r);
+					}
+				}
+
+				_Logger
 					.TryLogFail(InnerCommit)
-					.Exception(e =>
-					           	{
-									commitFailed = true;
-
-					           		throw new TransactionException("Could not commit", e);
-					           	});
+					.Exception(e => {
+						commitFailed = true;
+						throw new TransactionException("Could not commit", e);
+					});
 			}
 			finally
 			{
 				if (!commitFailed)
 				{
-					if (ambientTransaction != null)
+					if (_AmbientTransaction != null)
 					{
-						logger.DebugFormat("Commiting TransactionScope (Ambient Transaction) for '{0}'. ", Name);
+						_Logger.DebugFormat("Commiting TransactionScope (Ambient Transaction) for '{0}'. ", Name);
 
-						ambientTransaction.Complete();
+						_AmbientTransaction.Complete();
 						DisposeAmbientTx();
 					}
 
-					sem.AtomRead(() => syncInfo.ForEach(s => logger.TryLogFail(s.AfterCompletion)));
+					_SyncInfo.ForEach(s => _Logger.TryLogFail(s.AfterCompletion));
 				}
 			}
 		}
-
-		/// <summary>
-		/// Implementors should NOT change the base class.
-		/// </summary>
-		protected abstract void InnerCommit();
 
 		/// <summary>
 		/// See <see cref="ITransaction.Rollback"/>.
 		/// </summary>
 		public virtual void Rollback()
 		{
-			sem.AtomWrite(() =>
-			{
-				AssertState(TransactionStatus.Active);
-				Status = TransactionStatus.RolledBack;
-				canCommit = false;
-			});
+			AssertState(TransactionStatus.Active);
+			Status = TransactionStatus.RolledBack;
+			_CanCommit = false;
 
 			var failures = new List<Pair<IResource, Exception>>();
 
 			Exception toThrow = null;
 
-			syncInfo.ForEach(s => logger.TryLogFail(s.BeforeCompletion));
+			_SyncInfo.ForEach(s => _Logger.TryLogFail(s.BeforeCompletion));
 
-			logger
+			_Logger
 				.TryLogFail(InnerRollback)
 				.Exception(e => toThrow = e);
 
 			try
 			{
-				sem.AtomRead(() =>
-				{
-					resources.ForEach(r =>
-						logger.TryLogFail(r.Rollback)
-							.Exception(e => failures.Add(r.And(e))));
+				_Resources.ForEach(r =>
+				                  _Logger.TryLogFail(r.Rollback)
+				                  	.Exception(e => failures.Add(r.And(e))));
 
-					if (failures.Count == 0) return;
+				if (failures.Count == 0) return;
 
-					if (toThrow == null)
-						throw new RollbackResourceException(
-							"Failed to properly roll back all resources. See the inner exception or the failed resources list for details",
-							failures);
-					
-					throw toThrow;
-				});
+				if (toThrow == null)
+					throw new RollbackResourceException(
+						"Failed to properly roll back all resources. See the inner exception or the failed resources list for details",
+						failures);
+
+				throw toThrow;
 			}
 			finally
 			{
-				if (ambientTransaction != null)
+				if (_AmbientTransaction != null)
 				{
-					logger.DebugFormat("Rolling back TransactionScope (Ambient Transaction) for '{0}'. ", Name);
+					_Logger.DebugFormat("Rolling back TransactionScope (Ambient Transaction) for '{0}'. ", Name);
 
 					DisposeAmbientTx();
 				}
 
-				sem.AtomRead(() => syncInfo.ForEach(s => logger.TryLogFail(s.AfterCompletion)));
+				_SyncInfo.ForEach(s => _Logger.TryLogFail(s.AfterCompletion));
 			}
 		}
-
-		/// <summary>
-		/// Implementors should NOT change the base class.
-		/// </summary>
-		protected abstract void InnerRollback();
 
 		/// <summary>
 		/// Signals that this transaction can only be rolledback. 
@@ -294,8 +290,10 @@ namespace Castle.Services.Transaction
 		/// </summary>
 		public virtual void SetRollbackOnly()
 		{
-			canCommit = false;
+			_CanCommit = false;
 		}
+
+		#endregion
 
 		#region Resources
 
@@ -306,12 +304,10 @@ namespace Castle.Services.Transaction
 		public virtual void Enlist(IResource resource)
 		{
 			if (resource == null) throw new ArgumentNullException("resource");
-			sem.AtomWrite(() => {
-			                    	if (resources.Contains(resource)) return;
-			                    	if (Status == TransactionStatus.Active)
-			                    		logger.TryLogFail(resource.Start).Exception(_ => SetRollbackOnly());
-			                    	resources.Add(resource);
-			});
+			if (_Resources.Contains(resource)) return;
+			if (Status == TransactionStatus.Active)
+				_Logger.TryLogFail(resource.Start).Exception(_ => SetRollbackOnly());
+			_Resources.Add(resource);
 		}
 
 		/// <summary>
@@ -324,16 +320,13 @@ namespace Castle.Services.Transaction
 		{
 			if (s == null) throw new ArgumentNullException("s");
 
-			sem.AtomWrite(() =>
-			              	{
-			              		if (syncInfo.Contains(s)) return;
-			              		syncInfo.Add(s);
-			              	});
+			if (_SyncInfo.Contains(s)) return;
+			_SyncInfo.Add(s);
 		}
 
 		public IEnumerable<IResource> Resources()
 		{
-			foreach (var resource in resources.ToList())
+			foreach (IResource resource in _Resources.ToList())
 				yield return resource;
 		}
 
@@ -360,35 +353,32 @@ namespace Castle.Services.Transaction
 
 		#endregion
 
-		public virtual void Dispose()
-		{
-			sem.AtomWrite(() =>
-			              	{
-			              		resources.Select(r => r as IDisposable)
-			              			.Where(r => r != null)
-			              			.ForEach(r => r.Dispose());
+		/// <summary>
+		/// Implementors set <see cref="Status"/>.
+		/// </summary>
+		protected abstract void InnerBegin();
 
-			              		resources.Clear();
-			              		syncInfo.Clear();
-			              	});
+		/// <summary>
+		/// Implementors should NOT change the base class.
+		/// </summary>
+		protected abstract void InnerCommit();
 
-			if (ambientTransaction != null)
-			{
-				DisposeAmbientTx();
-			}
-		}
+		/// <summary>
+		/// Implementors should NOT change the base class.
+		/// </summary>
+		protected abstract void InnerRollback();
 
 		private void DisposeAmbientTx()
 		{
-			ambientTransaction.Dispose();
-			ambientTransaction = null;
+			_AmbientTransaction.Dispose();
+			_AmbientTransaction = null;
 		}
 
 		public void CreateAmbientTransaction()
 		{
-			ambientTransaction = new TransactionScope();
+			_AmbientTransaction = new TransactionScope();
 
-			logger.DebugFormat("Created a TransactionScope (Ambient Transaction) for '{0}'. ", Name);
+			_Logger.DebugFormat("Created a TransactionScope (Ambient Transaction) for '{0}'. ", Name);
 		}
 	}
 }
