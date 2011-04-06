@@ -342,47 +342,47 @@ namespace Castle.MicroKernel.Registration
 		/// <summary>
 		///   Registers the service types on behalf of this component.
 		/// </summary>
-		/// <typeparam name = "TSecondService">The forwarded type.</typeparam>
+		/// <typeparam name = "TService2">The forwarded type.</typeparam>
 		/// <returns>The component registration.</returns>
-		public ComponentRegistration<TService> Forward<TSecondService>()
+		public ComponentRegistration<TService> Forward<TService2>()
 		{
-			return Forward(new[] { typeof(TSecondService) });
+			return Forward(new[] { typeof(TService2) });
 		}
 
 		/// <summary>
 		///   Registers the service types on behalf of this component.
 		/// </summary>
-		/// <typeparam name = "TSecondService">The first forwarded type.</typeparam>
-		/// <typeparam name = "TThirdService">The second forwarded type.</typeparam>
+		/// <typeparam name = "TService2">The first forwarded type.</typeparam>
+		/// <typeparam name = "TService3">The second forwarded type.</typeparam>
 		/// <returns>The component registration.</returns>
-		public ComponentRegistration<TService> Forward<TSecondService, TThirdService>()
+		public ComponentRegistration<TService> Forward<TService2, TService3>()
 		{
-			return Forward(new[] { typeof(TSecondService), typeof(TThirdService) });
+			return Forward(new[] { typeof(TService2), typeof(TService3) });
 		}
 
 		/// <summary>
 		///   Registers the service types on behalf of this component.
 		/// </summary>
-		/// <typeparam name = "TSecondService">The first forwarded type.</typeparam>
-		/// <typeparam name = "TThirdService">The second forwarded type.</typeparam>
-		/// <typeparam name = "TFourthService">The third forwarded type.</typeparam>
+		/// <typeparam name = "TService2">The first forwarded type.</typeparam>
+		/// <typeparam name = "TService3">The second forwarded type.</typeparam>
+		/// <typeparam name = "TService4">The third forwarded type.</typeparam>
 		/// <returns>The component registration.</returns>
-		public ComponentRegistration<TService> Forward<TSecondService, TThirdService, TFourthService>()
+		public ComponentRegistration<TService> Forward<TService2, TService3, TService4>()
 		{
-			return Forward(new[] { typeof(TSecondService), typeof(TThirdService), typeof(TFourthService) });
+			return Forward(new[] { typeof(TService2), typeof(TService3), typeof(TService4) });
 		}
 
 		/// <summary>
 		///   Registers the service types on behalf of this component.
 		/// </summary>
-		/// <typeparam name = "TSecondService">The first forwarded type.</typeparam>
-		/// <typeparam name = "TThirdService">The second forwarded type.</typeparam>
-		/// <typeparam name = "TFourthService">The third forwarded type.</typeparam>
-		/// <typeparam name = "TFifthService">The fourth forwarded type.</typeparam>
+		/// <typeparam name = "TService2">The first forwarded type.</typeparam>
+		/// <typeparam name = "TService3">The second forwarded type.</typeparam>
+		/// <typeparam name = "TService4">The third forwarded type.</typeparam>
+		/// <typeparam name = "TService5">The fourth forwarded type.</typeparam>
 		/// <returns>The component registration.</returns>
-		public ComponentRegistration<TService> Forward<TSecondService, TThirdService, TFourthService, TFifthService>()
+		public ComponentRegistration<TService> Forward<TService2, TService3, TService4, TService5>()
 		{
-			return Forward(new[] { typeof(TSecondService), typeof(TThirdService), typeof(TFourthService), typeof(TFifthService) });
+			return Forward(new[] { typeof(TService2), typeof(TService3), typeof(TService4), typeof(TService5) });
 		}
 
 		/// <summary>
