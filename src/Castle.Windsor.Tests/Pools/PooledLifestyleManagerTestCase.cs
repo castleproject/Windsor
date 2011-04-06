@@ -87,7 +87,7 @@ namespace Castle.MicroKernel.Tests.Pools
 		[Test]
 		public void Recyclable_component_can_be_reused()
 		{
-			Kernel.Register(Component.For<RecyclableComponent>().LifeStyle.PooledWithSize(1, null));
+			Kernel.Register(Component.For<RecyclableComponent>().LifestylePooled(1));
 			var component = Kernel.Resolve<RecyclableComponent>();
 			Container.Release(component);
 			var componentAgain = Kernel.Resolve<RecyclableComponent>();

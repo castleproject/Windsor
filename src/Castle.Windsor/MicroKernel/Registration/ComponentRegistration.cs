@@ -84,6 +84,7 @@ namespace Castle.MicroKernel.Registration
 		///   For example singleton and transient (also known as 'factory').
 		/// </summary>
 		/// <value>The with lifestyle.</value>
+		[EditorBrowsable(EditorBrowsableState.Advanced)]
 		public LifestyleGroup<TService> LifeStyle
 		{
 			get { return new LifestyleGroup<TService>(this); }
@@ -521,6 +522,71 @@ namespace Castle.MicroKernel.Registration
 			var interceptors = Array.ConvertAll(keys, InterceptorReference.ForKey);
 #endif
 			return AddDescriptor(new InterceptorDescriptor(interceptors));
+		}
+
+		/// <summary>
+		///   Sets component lifestyle to specified one.
+		/// </summary>
+		/// <returns></returns>
+		public ComponentRegistration<TService> LifestyleCustom(Type customLifestyleType)
+		{
+			return LifeStyle.Custom(customLifestyleType);
+		}
+
+		/// <summary>
+		///   Sets component lifestyle to specified one.
+		/// </summary>
+		/// <returns></returns>
+		public ComponentRegistration<TService> LifestyleCustom<TLifestyleManager>() where TLifestyleManager : ILifestyleManager, new()
+		{
+			return LifeStyle.Custom<TLifestyleManager>();
+		}
+
+		/// <summary>
+		///   Sets component lifestyle to per thread.
+		/// </summary>
+		/// <returns></returns>
+		public ComponentRegistration<TService> LifestylePerThread()
+		{
+			return LifeStyle.PerThread;
+		}
+
+#if (!SILVERLIGHT)
+		/// <summary>
+		///   Sets component lifestyle to instance per web request.
+		/// </summary>
+		/// <returns></returns>
+		public ComponentRegistration<TService> LifestylePerWebRequest()
+		{
+			return LifeStyle.PerWebRequest;
+		}
+#endif
+
+		/// <summary>
+		///   Sets component lifestyle to pooled. If <paramref name = "initialSize" /> or <paramref name = "maxSize" /> are not set default values will be used.
+		/// </summary>
+		/// <returns></returns>
+		public ComponentRegistration<TService> LifestylePooled(int? initialSize = null, int? maxSize = null)
+		{
+			return LifeStyle.PooledWithSize(initialSize, maxSize);
+		}
+
+		/// <summary>
+		///   Sets component lifestyle to singleton.
+		/// </summary>
+		/// <returns></returns>
+		public ComponentRegistration<TService> LifestyleSingleton()
+		{
+			return LifeStyle.Singleton;
+		}
+
+		/// <summary>
+		///   Sets component lifestyle to transient.
+		/// </summary>
+		/// <returns></returns>
+		public ComponentRegistration<TService> LifestyleTransient()
+		{
+			return LifeStyle.Transient;
 		}
 
 		/// <summary>
