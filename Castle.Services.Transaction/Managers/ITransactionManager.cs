@@ -50,7 +50,7 @@ namespace Castle.Services.Transaction
 		/// <param name="transactionMode">The transaction mode.</param>
 		/// <param name="isolationMode">The isolation mode.</param>
 		/// <param name="isAmbient">if set to <c>true</c>, the TM will create a distributed transaction.</param>
-        /// <param name="isReadOnly">if set to <c>true</c>, the TM will create a read only transaction.</param>
+		/// <param name="isReadOnly">if set to <c>true</c>, the TM will create a read only transaction.</param>
 		/// <returns>
 		/// null &lt;- If transactions are just supported, but there is no ambient transaction
 		/// null &lt;- If transactions are not supported and there indeed is no ambient transaction (if there is, see exception docs)

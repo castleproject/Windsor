@@ -48,5 +48,11 @@ namespace Castle.Facilities.AutoTx.Tests
 			get { throw new NotImplementedException(); }
 			protected set { throw new NotImplementedException(); }
 		}
+
+		public override bool IsReadOnly
+		{
+			get { throw new NotImplementedException(); }
+			protected set { throw new NotImplementedException(); }
+		}
 	}
 }
