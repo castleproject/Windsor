@@ -36,8 +36,6 @@ namespace Castle.Windsor.Installer
 	{
 		private string assemblyName;
 
-		#region IComponentsInstaller Members
-
 		/// <summary>
 		///   Perform installation.
 		/// </summary>
@@ -53,8 +51,6 @@ namespace Castle.Windsor.Installer
 			SetUpChildContainers(store.GetConfigurationForChildContainers(), container);
 #endif
 		}
-
-		#endregion
 
 		protected virtual void SetUpInstallers(IConfiguration[] installers, IWindsorContainer container,
 		                                       IConversionManager converter)
@@ -210,9 +206,11 @@ namespace Castle.Windsor.Installer
 			}
 			if (!service.IsAssignableFrom(type))
 			{
-				var message = string.Format("Could not set up component '{0}'. Type '{1}' does not implement service '{2}'", id,
-				                            type.AssemblyQualifiedName, service.AssemblyQualifiedName);
-				throw new Exception(message);
+				var message = string.Format("Could not set up component '{0}'. Type '{1}' does not implement service '{2}'",
+				                            id,
+				                            type.AssemblyQualifiedName,
+				                            service.AssemblyQualifiedName);
+				throw new ComponentRegistrationException(message);
 			}
 		}
 
@@ -239,7 +237,7 @@ namespace Castle.Windsor.Installer
 				}
 				catch (Exception e)
 				{
-					throw new Exception(
+					throw new ComponentRegistrationException(
 						string.Format("Component {0}-{1} defines invalid forwarded type.", id ?? string.Empty, typeName), e);
 				}
 			}

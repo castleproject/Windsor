@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,28 +18,31 @@ namespace Castle.MicroKernel
 	using System.Runtime.Serialization;
 
 	/// <summary>
-	/// Exception threw when there is a problem
-	/// registering a component
+	///   Exception threw when there is a problem
+	///   registering a component
 	/// </summary>
-#if (!SILVERLIGHT)
 	[Serializable]
-#endif
 	public class ComponentRegistrationException : Exception
 	{
 		/// <summary>
-		/// Initializes a new instance of the <see cref="ComponentRegistrationException"/> class.
+		///   Initializes a new instance of the <see cref = "ComponentRegistrationException" /> class.
 		/// </summary>
-		/// <param name="message">The message.</param>
+		/// <param name = "message">The message.</param>
 		public ComponentRegistrationException(string message) : base(message)
 		{
 		}
-		
+
+		public ComponentRegistrationException(string message, Exception innerException)
+			: base(message, innerException)
+		{
+		}
+
 #if (!SILVERLIGHT)
 		/// <summary>
-		/// Initializes a new instance of the <see cref="ComponentRegistrationException"/> class.
+		///   Initializes a new instance of the <see cref = "ComponentRegistrationException" /> class.
 		/// </summary>
-		/// <param name="info">The object that holds the serialized object data.</param>
-		/// <param name="context">The contextual information about the source or destination.</param>
+		/// <param name = "info">The object that holds the serialized object data.</param>
+		/// <param name = "context">The contextual information about the source or destination.</param>
 		public ComponentRegistrationException(SerializationInfo info, StreamingContext context) : base(info, context)
 		{
 		}
