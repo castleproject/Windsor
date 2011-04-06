@@ -53,12 +53,15 @@ namespace Castle.MicroKernel.Registration
 		private bool registerNewServicesOnly;
 		private bool registered;
 
+		/// <summary>
+		///   Initializes a new instance of the <see cref = "ComponentRegistration{TService}" /> class.
+		/// </summary>
 		public ComponentRegistration() : this(typeof(TService))
 		{
 		}
 
 		/// <summary>
-		///   Initializes a new instance of the <see cref = "ComponentRegistration{S}" /> class.
+		///   Initializes a new instance of the <see cref = "ComponentRegistration{TService}" /> class.
 		/// </summary>
 		public ComponentRegistration(params Type[] services)
 		{
@@ -136,7 +139,7 @@ namespace Castle.MicroKernel.Registration
 		/// </summary>
 		/// <param name = "actors">The component actors.</param>
 		/// <returns></returns>
-		[EditorBrowsable(EditorBrowsableState.Advanced)]
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		[Obsolete("If you're using WCF Facility use AsWcfClient/AsWcfService extension methods instead.")]
 		public ComponentRegistration<TService> ActAs(params object[] actors)
 		{
@@ -154,9 +157,9 @@ namespace Castle.MicroKernel.Registration
 		///   Set a custom <see cref = "IComponentActivator" /> which creates and destroys the component.
 		/// </summary>
 		/// <returns></returns>
-		public ComponentRegistration<TService> Activator<A>() where A : IComponentActivator
+		public ComponentRegistration<TService> Activator<TActivator>() where TActivator : IComponentActivator
 		{
-			return AddAttributeDescriptor("componentActivatorType", typeof(A).AssemblyQualifiedName);
+			return AddAttributeDescriptor("componentActivatorType", typeof(TActivator).AssemblyQualifiedName);
 		}
 
 		/// <summary>
@@ -420,6 +423,14 @@ namespace Castle.MicroKernel.Registration
 			return ImplementedBy(type, null);
 		}
 
+		/// <summary>
+		///   Sets the concrete type that implements the service to <paramref name = "type" />.
+		///   <para />
+		///   If not set, the class service type or first registered interface will be used as the implementation for this component.
+		/// </summary>
+		/// <param name = "type">The type that is the implementation for the service.</param>
+		/// <param name = "genericImplementationMatchingStrategy">Provides ability to close open generic service. Ignored when registering closed or non-generic component.</param>
+		/// <returns></returns>
 		public ComponentRegistration<TService> ImplementedBy(Type type, IGenericImplementationMatchingStrategy genericImplementationMatchingStrategy)
 		{
 			if (implementation != null && implementation != typeof(LateBoundComponent))
@@ -706,13 +717,13 @@ namespace Castle.MicroKernel.Registration
 		/// <summary>
 		///   Uses a factory to instantiate the component
 		/// </summary>
-		/// <typeparam name = "U">Factory type. This factory has to be registered in the kernel.</typeparam>
-		/// <typeparam name = "V">Implementation type.</typeparam>
+		/// <typeparam name = "TFactory">Factory type. This factory has to be registered in the kernel.</typeparam>
+		/// <typeparam name = "TServiceImpl">Implementation type.</typeparam>
 		/// <param name = "factory">Factory invocation</param>
 		/// <returns></returns>
-		public ComponentRegistration<TService> UsingFactory<U, V>(Converter<U, V> factory) where V : TService
+		public ComponentRegistration<TService> UsingFactory<TFactory, TServiceImpl>(Converter<TFactory, TServiceImpl> factory) where TServiceImpl : TService
 		{
-			return UsingFactoryMethod(kernel => factory.Invoke(kernel.Resolve<U>()));
+			return UsingFactoryMethod(kernel => factory.Invoke(kernel.Resolve<TFactory>()));
 		}
 
 		/// <summary>
