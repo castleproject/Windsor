@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@ namespace Castle.MicroKernel.Tests.Lifestyle
 {
 	using System;
 	using System.Threading;
+
 	using Castle.Core;
 	using Castle.Core.Configuration;
 	using Castle.MicroKernel.Context;
@@ -27,15 +28,11 @@ namespace Castle.MicroKernel.Tests.Lifestyle
 	using NUnit.Framework;
 
 	/// <summary>
-	/// Summary description for LifestyleManagerTestCase.
+	///   Summary description for LifestyleManagerTestCase.
 	/// </summary>
 	[TestFixture]
 	public class LifestyleManagerTestCase
 	{
-		private IKernel kernel;
-
-		private IComponent instance3;
-
 		[SetUp]
 		public void CreateContainer()
 		{
@@ -48,34 +45,74 @@ namespace Castle.MicroKernel.Tests.Lifestyle
 			kernel.Dispose();
 		}
 
+		private IKernel kernel;
 
-		[Test]
-		public void TestTransient()
+		private IComponent instance3;
+
+		private void TestLifestyleAndSameness(Type componentType, LifestyleType lifestyle, bool overwrite, bool areSame)
 		{
-			kernel.Register(Component.For(typeof(IComponent)).ImplementedBy(typeof(TransientComponent)).Named("a"));
+			string key = TestHandlersLifestyle(componentType, lifestyle, overwrite);
+			TestSameness(key, areSame);
+		}
 
+		private void TestLifestyleWithServiceAndSameness(Type componentType, LifestyleType lifestyle, bool overwrite,
+		                                                 bool areSame)
+		{
+			string key = TestHandlersLifestyleWithService(componentType, lifestyle, overwrite);
+			TestSameness(key, areSame);
+		}
+
+		private void TestSameness(string key, bool areSame)
+		{
+			var one = kernel.Resolve<IComponent>(key);
+			var two = kernel.Resolve<IComponent>(key);
+			if (areSame)
+			{
+				Assert.AreSame(one, two);
+			}
+			else
+			{
+				Assert.AreNotSame(one, two);
+			}
+		}
+
+		private string TestHandlersLifestyle(Type componentType, LifestyleType lifestyle, bool overwrite)
+		{
+			string key = Guid.NewGuid().ToString();
+			kernel.Register(Component.For(componentType).Named(key).LifeStyle.Is(lifestyle));
+			IHandler handler = kernel.GetHandler(key);
+			Assert.AreEqual(lifestyle, handler.ComponentModel.LifestyleType);
+			return key;
+		}
+
+		private string TestHandlersLifestyleWithService(Type componentType, LifestyleType lifestyle, bool overwrite)
+		{
+			string key = Guid.NewGuid().ToString();
+			kernel.Register(Component.For<IComponent>().ImplementedBy(componentType).Named(key).LifeStyle.Is(lifestyle));
+			IHandler handler = kernel.GetHandler(key);
+			Assert.AreEqual(lifestyle, handler.ComponentModel.LifestyleType);
+			return key;
+		}
+
+		private Property ScopeRoot()
+		{
+			return Property.ForKey(HandlerExtensionsUtil.ResolveExtensionsKey).Eq(new IResolveExtension[] { new Scope() });
+		}
+
+		private void OtherThread()
+		{
 			IHandler handler = kernel.GetHandler("a");
-
-			IComponent instance1 = handler.Resolve(CreationContext.CreateEmpty()) as IComponent;
-			IComponent instance2 = handler.Resolve(CreationContext.CreateEmpty()) as IComponent;
-
-			Assert.IsNotNull(instance1);
-			Assert.IsNotNull(instance2);
-
-			Assert.IsTrue(!instance1.Equals(instance2));
-			Assert.IsTrue(instance1.ID != instance2.ID);
+			instance3 = handler.Resolve(CreationContext.CreateEmpty()) as IComponent;
 		}
 
 		[Test]
 		public void BadLifestyleSetProgromatically()
 		{
-			Assert.Throws<ArgumentOutOfRangeException>(()=>
-
-			kernel.Register(Component.For(typeof(IComponent))
-				.ImplementedBy(typeof(TrivialComponent))
-				.Named("a")
-				.LifeStyle.Is(LifestyleType.Undefined)));
-
+			Assert.Throws<ArgumentOutOfRangeException>(() =>
+			                                           kernel.Register(Component.For(typeof(IComponent))
+			                                                           	.ImplementedBy(typeof(TrivialComponent))
+			                                                           	.Named("a")
+			                                                           	.LifeStyle.Is(LifestyleType.Undefined)));
 		}
 
 		[Test]
@@ -104,51 +141,6 @@ namespace Castle.MicroKernel.Tests.Lifestyle
 			TestLifestyleWithServiceAndSameness(typeof(PerThreadComponent), LifestyleType.Transient, true, false);
 			TestLifestyleWithServiceAndSameness(typeof(SingletonComponent), LifestyleType.Transient, true, false);
 			TestLifestyleWithServiceAndSameness(typeof(TransientComponent), LifestyleType.Singleton, true, true);
-		}
-
-		private void TestLifestyleAndSameness(Type componentType, LifestyleType lifestyle, bool overwrite, bool areSame)
-		{
-			string key = TestHandlersLifestyle(componentType, lifestyle, overwrite);
-			TestSameness(key, areSame);
-		}
-
-		private void TestLifestyleWithServiceAndSameness(Type componentType, LifestyleType lifestyle, bool overwrite,
-		                                                 bool areSame)
-		{
-			string key = TestHandlersLifestyleWithService(componentType, lifestyle, overwrite);
-			TestSameness(key, areSame);
-		}
-
-		private void TestSameness(string key, bool areSame)
-		{
-			IComponent one = kernel.Resolve<IComponent>(key);
-			IComponent two = kernel.Resolve<IComponent>(key);
-			if (areSame)
-			{
-				Assert.AreSame(one, two);
-			}
-			else
-			{
-				Assert.AreNotSame(one, two);
-			}
-		}
-
-		private string TestHandlersLifestyle(Type componentType, LifestyleType lifestyle, bool overwrite)
-		{
-			string key = Guid.NewGuid().ToString();
-			kernel.Register(Component.For(componentType).Named(key).LifeStyle.Is(lifestyle));
-			IHandler handler = kernel.GetHandler(key);
-			Assert.AreEqual(lifestyle, handler.ComponentModel.LifestyleType);
-			return key;
-		}
-
-		private string TestHandlersLifestyleWithService(Type componentType, LifestyleType lifestyle, bool overwrite)
-		{
-			string key = Guid.NewGuid().ToString();
-			kernel.Register(Component.For<IComponent>().ImplementedBy(componentType).Named(key).LifeStyle.Is(lifestyle));
-			IHandler handler = kernel.GetHandler(key);
-			Assert.AreEqual(lifestyle, handler.ComponentModel.LifestyleType);
-			return key;
 		}
 
 		[Test]
@@ -224,21 +216,16 @@ namespace Castle.MicroKernel.Tests.Lifestyle
 			Assert.AreEqual(LifestyleType.Transient, handler.ComponentModel.LifestyleType);
 		}
 
-		[Test]
-		public void TestSingleton()
+		[Test(Description = "Prototype spike of the idea of providing scoped lifestyle - scoped per root component.")]
+		public void Per_dependency_tree()
 		{
-			kernel.Register(Component.For(typeof(IComponent)).ImplementedBy(typeof(SingletonComponent)).Named("a"));
-
-			IHandler handler = kernel.GetHandler("a");
-
-			IComponent instance1 = handler.Resolve(CreationContext.CreateEmpty()) as IComponent;
-			IComponent instance2 = handler.Resolve(CreationContext.CreateEmpty()) as IComponent;
-
-			Assert.IsNotNull(instance1);
-			Assert.IsNotNull(instance2);
-
-			Assert.IsTrue(instance1.Equals(instance2));
-			Assert.IsTrue(instance1.ID == instance2.ID);
+			kernel.Register(
+				Component.For<Root>().ExtendedProperties(ScopeRoot()),
+				Component.For<Branch>(),
+				Component.For<Leaf>().LifestyleCustom<ScopedLifestyle>()
+				);
+			var root = kernel.Resolve<Root>();
+			Assert.AreSame(root.Leaf, root.Branch.Leaf);
 		}
 
 		[Test]
@@ -248,27 +235,9 @@ namespace Castle.MicroKernel.Tests.Lifestyle
 
 			IHandler handler = kernel.GetHandler("a");
 
-			IComponent instance1 = handler.Resolve(CreationContext.CreateEmpty()) as IComponent;
+			var instance1 = handler.Resolve(CreationContext.CreateEmpty()) as IComponent;
 
 			Assert.IsNotNull(instance1);
-		}
-
-		[Test(Description = "Prototype spike of the idea of providing scoped lifestyle - scoped per root component.")]
-		public void Per_dependency_tree()
-		{
-			kernel.Register(
-				Component.For<Root>().ExtendedProperties(ScopeRoot()),
-				Component.For<Branch>(),
-				Component.For<Leaf>().LifeStyle.Custom<ScopedLifestyle>()
-				);
-			var root = kernel.Resolve<Root>();
-			Assert.AreSame(root.Leaf, root.Branch.Leaf);
-			
-		}
-
-		private Property ScopeRoot()
-		{
-			return Property.ForKey(HandlerExtensionsUtil.ResolveExtensionsKey).Eq(new IResolveExtension[] { new Scope() });
 		}
 
 		[Test]
@@ -278,8 +247,8 @@ namespace Castle.MicroKernel.Tests.Lifestyle
 
 			IHandler handler = kernel.GetHandler("a");
 
-			IComponent instance1 = handler.Resolve(CreationContext.CreateEmpty()) as IComponent;
-			IComponent instance2 = handler.Resolve(CreationContext.CreateEmpty()) as IComponent;
+			var instance1 = handler.Resolve(CreationContext.CreateEmpty()) as IComponent;
+			var instance2 = handler.Resolve(CreationContext.CreateEmpty()) as IComponent;
 
 			Assert.IsNotNull(instance1);
 			Assert.IsNotNull(instance2);
@@ -287,7 +256,7 @@ namespace Castle.MicroKernel.Tests.Lifestyle
 			Assert.IsTrue(instance1.Equals(instance2));
 			Assert.IsTrue(instance1.ID == instance2.ID);
 
-			Thread thread = new Thread(new ThreadStart(OtherThread));
+			var thread = new Thread(OtherThread);
 			thread.Start();
 			thread.Join();
 
@@ -296,10 +265,38 @@ namespace Castle.MicroKernel.Tests.Lifestyle
 			Assert.IsTrue(instance1.ID != instance3.ID);
 		}
 
-		private void OtherThread()
+		[Test]
+		public void TestSingleton()
 		{
+			kernel.Register(Component.For(typeof(IComponent)).ImplementedBy(typeof(SingletonComponent)).Named("a"));
+
 			IHandler handler = kernel.GetHandler("a");
-			instance3 = handler.Resolve(CreationContext.CreateEmpty()) as IComponent;
+
+			var instance1 = handler.Resolve(CreationContext.CreateEmpty()) as IComponent;
+			var instance2 = handler.Resolve(CreationContext.CreateEmpty()) as IComponent;
+
+			Assert.IsNotNull(instance1);
+			Assert.IsNotNull(instance2);
+
+			Assert.IsTrue(instance1.Equals(instance2));
+			Assert.IsTrue(instance1.ID == instance2.ID);
+		}
+
+		[Test]
+		public void TestTransient()
+		{
+			kernel.Register(Component.For(typeof(IComponent)).ImplementedBy(typeof(TransientComponent)).Named("a"));
+
+			IHandler handler = kernel.GetHandler("a");
+
+			var instance1 = handler.Resolve(CreationContext.CreateEmpty()) as IComponent;
+			var instance2 = handler.Resolve(CreationContext.CreateEmpty()) as IComponent;
+
+			Assert.IsNotNull(instance1);
+			Assert.IsNotNull(instance2);
+
+			Assert.IsTrue(!instance1.Equals(instance2));
+			Assert.IsTrue(instance1.ID != instance2.ID);
 		}
 	}
 }
