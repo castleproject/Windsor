@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,23 +12,46 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.MicroKernel.Tests.Bugs
+namespace CastleTests.Activators
 {
 	using System;
 
+	using Castle.MicroKernel;
 	using Castle.MicroKernel.ComponentActivator;
 	using Castle.MicroKernel.Registration;
 	using Castle.Windsor.Tests.Components;
 
 	using NUnit.Framework;
 
-	/// <summary>
-	/// For IoC-120 also
-	/// </summary>
 	[TestFixture]
-	public class IoC_83
+	public class ConstructorTestCase : AbstractContainerTestCase
 	{
 		[Test]
+		[Bug("IOC-120")]
+		public void Can_resolve_component_with_internal_ctor()
+		{
+			Container.Register(Component.For<EmptyClass>(),
+			                   Component.For<HasInternalConstructor>());
+
+			var exception = Assert.Throws<ComponentActivatorException>(() =>
+			                                                           Container.Resolve<HasInternalConstructor>());
+			var expected =
+#if SILVERLIGHT
+				string.Format("Type {0} does not have a public default constructor and could not be instantiated.",
+				              typeof(HasInternalConstructor).FullName);
+#else
+				string.Format(
+					"Could not find a public constructor for type {0}. Windsor can not instantiate types that don't expose public constructors. To expose the type as a service add public constructor, or use custom component activator.",
+					typeof(HasInternalConstructor).FullName);
+#endif
+
+			Assert.AreEqual(expected,
+			                exception.InnerException.Message);
+		}
+
+		[Test]
+		[Bug("IOC-83")]
+		[Bug("IOC-120")]
 		public void When_attemting_to_resolve_component_with_nonpublic_ctor_should_throw_meaningfull_exception()
 		{
 			var kernel = new DefaultKernel();
@@ -36,7 +59,7 @@ namespace Castle.MicroKernel.Tests.Bugs
 			kernel.Register(Component.For<HasProtectedConstructor>());
 
 			Exception exception =
-				Assert.Throws<ComponentActivatorException>(() => 
+				Assert.Throws<ComponentActivatorException>(() =>
 					kernel.Resolve<HasProtectedConstructor>());
 
 			exception = exception.InnerException;
