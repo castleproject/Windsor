@@ -116,10 +116,29 @@ namespace Castle.Facilities.AutoTx
 							 .ImplementedBy<DefaultTransactionManager>());
 			
 			fileAdapter.TxManager = directoryAdapter.TxManager = Kernel.Resolve<ITransactionManager>();
+
+			Kernel.ComponentRegistered += Kernel_ComponentRegistered;
+		}
+
+		void Kernel_ComponentRegistered(string key, MicroKernel.IHandler handler)
+		{
+			if (handler.ComponentModel.Service.IsAssignableFrom(typeof(ITransactionManager)))
+			{
+				_Logger.InfoFormat("replacing existing transaction manager with registered manager {0}, keyed: {1}", 
+					handler.ComponentModel.Implementation,
+					key);
+
+				var transactionManager = Kernel.Resolve<ITransactionManager>(key);
+
+				((DirectoryAdapter)Kernel.Resolve<IDirectoryAdapter>()).TxManager = transactionManager;
+				((FileAdapter)Kernel.Resolve<IFileAdapter>()).TxManager = transactionManager;
+			}
 		}
 
 		private void AssertHasDirectories()
 		{
+			_Logger.DebugFormat("asserting that there's no root folder specified in the init method");
+
 			if (!_AllowAccessOutsideRootFolder && _RootFolder == null)
 				throw new FacilityException("You have to specify a root directory.");
 		}
