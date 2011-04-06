@@ -33,7 +33,8 @@ namespace Castle.Services.Transaction
 		public event EventHandler<TransactionEventArgs> TransactionDisposed;
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="DefaultTransactionManager"/> class.
+		/// Initializes a new instance of the <see cref="DefaultTransactionManager"/> class
+		/// with the default call context activity manager.
 		/// </summary>
 		public DefaultTransactionManager() : this(new CallContextActivityManager())
 		{

@@ -15,6 +15,9 @@
 // 
 #endregion
 
+using Castle.Core.Logging;
+using log4net;
+
 namespace Castle.Facilities.AutoTx
 {
 	using MicroKernel.Facilities;
@@ -27,6 +30,8 @@ namespace Castle.Facilities.AutoTx
 	/// </summary>
 	public class TransactionFacility : AbstractFacility
 	{
+		private static readonly ILog _Logger = LogManager.GetLogger(typeof (TransactionFacility));
+
 		private bool _AllowAccessOutsideRootFolder = true;
 		private string _RootFolder;
 
@@ -89,43 +94,28 @@ namespace Castle.Facilities.AutoTx
 
 		private void RegisterAdapters()
 		{
-			var directoryAdapter = new DirectoryAdapter(
-				Kernel.Resolve<IMapPath>(),
+			_Logger.DebugFormat("registering adapters, chrooted: {0}{1}, ",
 				!_AllowAccessOutsideRootFolder,
+				string.IsNullOrEmpty(RootFolder) 
+				? "[no chroot folder specified, use facility c'tor]" 
+				: string.Format("folder: {0}", RootFolder));
+
+			var directoryAdapter = new DirectoryAdapter(Kernel.Resolve<IMapPath>(), !_AllowAccessOutsideRootFolder,
 				RootFolder);
 
 			Kernel.Register(Component.For<IDirectoryAdapter>().Named("directory.adapter").Instance(directoryAdapter));
 
-			var fileAdapter = new FileAdapter(
-				!_AllowAccessOutsideRootFolder,
-				RootFolder);
+			var fileAdapter = new FileAdapter(!_AllowAccessOutsideRootFolder, RootFolder);
+			
 			Kernel.Register(Component.For<IFileAdapter>().Named("file.adapter").Instance(fileAdapter));
 
-			if (Kernel.HasComponent(typeof(ITransactionManager)))
-				fileAdapter.TxManager = directoryAdapter.TxManager = Kernel.Resolve<ITransactionManager>();
-			else
-				Kernel.ComponentRegistered += Kernel_ComponentRegistered;
-				
-		}
-
-		void Kernel_ComponentRegistered(string key, Castle.MicroKernel.IHandler handler)
-		{
-			if (handler.ComponentModel.Service.IsAssignableFrom(typeof(ITransactionManager)))
-			{
-				var transactionManager = Kernel.Resolve<ITransactionManager>();
-
-				((DirectoryAdapter)Kernel.Resolve<IDirectoryAdapter>()).TxManager = transactionManager;
-				((FileAdapter)Kernel.Resolve<IFileAdapter>()).TxManager = transactionManager;
-			}
-		}
-
-		/// <summary>
-		/// Disposes the facilitiy.
-		/// </summary>
-		public override void Dispose()
-		{
-			Kernel.ComponentRegistered -= Kernel_ComponentRegistered;
-			base.Dispose();
+			if (!Kernel.HasComponent(typeof (ITransactionManager)))
+				Kernel.Register(
+					Component.For<ITransactionManager>()
+							 .Named("default.tx.manager")
+							 .ImplementedBy<DefaultTransactionManager>());
+			
+			fileAdapter.TxManager = directoryAdapter.TxManager = Kernel.Resolve<ITransactionManager>();
 		}
 
 		private void AssertHasDirectories()

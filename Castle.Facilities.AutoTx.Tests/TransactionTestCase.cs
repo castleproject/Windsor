@@ -197,19 +197,23 @@ namespace Castle.Facilities.AutoTx.Tests
 		[Test]
 		public void RollBackExplicitOnClass()
 		{
-			WindsorContainer container = new WindsorContainer();
+			var container = new WindsorContainer();
+
+			container.Register(Component
+				.For<ITransactionManager>()
+				.ImplementedBy<MockTransactionManager>()
+				.Named("transactionmanager")
+				.Forward(typeof(MockTransactionManager)));
 
 			container.AddFacility("transactionmanagement", new TransactionFacility());
 
-			container.Register(Component.For<ITransactionManager>().ImplementedBy<MockTransactionManager>().Named("transactionmanager"));
-
 			container.Register(Component.For<CustomerService>().Named("mycomp"));
 			
-			CustomerService serv = container.Resolve<CustomerService>("mycomp");
+			var serv = container.Resolve<CustomerService>("mycomp");
 
 			serv.Update(1);
 
-			MockTransactionManager transactionManager = container.Resolve<MockTransactionManager>("transactionmanager");
+			var transactionManager = container.Resolve<MockTransactionManager>("transactionmanager");
 
 			Assert.AreEqual(1, transactionManager.TransactionCount);
 			Assert.AreEqual(1, transactionManager.RolledBackCount);

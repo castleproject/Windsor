@@ -17,6 +17,7 @@
 
 #endregion
 
+using System;
 using Castle.MicroKernel.Registration;
 using Castle.MicroKernel.SubSystems.Configuration;
 using Castle.Services.Transaction;
@@ -32,10 +33,8 @@ namespace Castle.Facilities.AutoTx.Tests
 		[Test]
 		public void Container_InjectsTransactions_IfTransactionInjectAttribute_is_set()
 		{
-			var c = new WindsorContainer(new DefaultConfigurationStore());
-
-			c.AddFacility("transactionmanagement", new TransactionFacility());
-			c.Register(Component.For<ITransactionManager>().ImplementedBy<MockTransactionManager>().Named("transactionmanager"));
+			var c = GetContainer();
+			
 			c.Register(Component.For<ISomething>().ImplementedBy<AClass>().Named("AClass"));
 
 			var something = c.Resolve<ISomething>();
@@ -51,11 +50,11 @@ namespace Castle.Facilities.AutoTx.Tests
 		[Test]
 		public void TestChildTransactions()
 		{
-			var container = new WindsorContainer();
+			CreateContainer = () => new WindsorContainer()
+				.Register(Component.For<ITransactionManager>().ImplementedBy<MockTransactionManager>()
+				.Forward(typeof(MockTransactionManager)));
 
-			container.AddFacility("transactionmanagement", new TransactionFacility());
-			container.Register(
-				Component.For<ITransactionManager>().ImplementedBy<MockTransactionManager>().Named("transactionmanager"));
+			var container = GetContainer();
 
 			container.Register(Component.For<CustomerService>().Named("mycomp"));
 			container.Register(Component.For<ProxyService>().Named("delegatecomp"));
@@ -64,22 +63,27 @@ namespace Castle.Facilities.AutoTx.Tests
 
 			serv.DelegateInsert("John", "Home Address");
 
-			var transactionManager = container.Resolve<MockTransactionManager>("transactionmanager");
+			var transactionManager = container.Resolve<MockTransactionManager>();
 
 			Assert.AreEqual(2, transactionManager.TransactionCount);
 			Assert.AreEqual(0, transactionManager.RolledBackCount);
 		}
 
+		private Func<IWindsorContainer> CreateContainer = () => new WindsorContainer();
+
+		private IWindsorContainer GetContainer()
+		{
+			var container = CreateContainer();
+			container.AddFacility("transactionmanagement", new TransactionFacility());
+			return container;
+		}
+
 		[Test]
 		public void TestReadonlyTransactions()
-
 		{
-			IWindsorContainer container = new WindsorContainer();
-			container.AddFacility("transactionmanagement", new TransactionFacility());
-			container.Register(
-				Component.For<ITransactionManager>().ImplementedBy<MockTransactionManager>().Named("transactionmanager"));
+			var container = GetContainer();
 			container.Register(Component.For<CustomerService>().Named("mycomp"));
-
+			
 			var service = container.Resolve<CustomerService>();
 			service.DoSomethingNotMarkedAsReadOnly();
 			service.DoSomethingReadOnly();
@@ -88,11 +92,7 @@ namespace Castle.Facilities.AutoTx.Tests
 		[Test]
 		public void FileAndDirectoryAdapterResolveManager()
 		{
-			var container = new WindsorContainer();
-
-			container.AddFacility("transactionmanagement", new TransactionFacility());
-			container.Register(
-				Component.For<ITransactionManager>().ImplementedBy<MockTransactionManager>().Named("transactionmanager"));
+			var container = GetContainer();
 
 			container.Register(Component.For<CustomerService>().Named("mycomp"));
 			container.Register(Component.For<ProxyService>().Named("delegatecomp"));
@@ -109,9 +109,8 @@ namespace Castle.Facilities.AutoTx.Tests
 		{
 			var container = new WindsorContainer();
 
-			// these lines have been permuted
-			container.Register(
-				Component.For<ITransactionManager>().ImplementedBy<MockTransactionManager>().Named("transactionmanager"));
+			// when we register the mock transaction manager
+			container.Register(Component.For<ITransactionManager>().ImplementedBy<MockTransactionManager>().Named("transactionmanager"));
 			container.AddFacility("transactionmanagement", new TransactionFacility());
 
 			container.Register(Component.For<CustomerService>().Named("mycomp"));
@@ -122,24 +121,6 @@ namespace Castle.Facilities.AutoTx.Tests
 
 			var da = (DirectoryAdapter) container.Resolve<IDirectoryAdapter>();
 			Assert.That(da.TxManager, Is.Not.Null);
-		}
-	}
-
-	[Transactional]
-	public class ProxyService
-	{
-		private readonly CustomerService customerService;
-
-		public ProxyService(CustomerService customerService)
-		{
-			this.customerService = customerService;
-		}
-
-		[Transaction(TransactionMode.Requires)]
-		public virtual void DelegateInsert(string name, string
-		                                                	address)
-		{
-			customerService.Insert(name, address);
 		}
 	}
 }

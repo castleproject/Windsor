@@ -129,6 +129,7 @@
   <ItemGroup>
     <Compile Include="AutoTxFacilityTests.cs" />
     <Compile Include="ConfiguredComponentsTests.cs" />
+    <Compile Include="TestClasses\ProxyService.cs" />
     <Compile Include="TestClasses\AClass.cs" />
     <Compile Include="TestClasses\AnotherCustomerService.cs" />
     <Compile Include="TestClasses\BaseTransactionalComp.cs" />
