@@ -91,83 +91,78 @@ namespace Castle.Facilities.AutoTx
 				invocation.Proceed();
 				return;
 			}
-			else
+
+			var attr = metaInfo.GetTransactionAttributeFor(methodInfo);
+			var manager = kernel.Resolve<ITransactionManager>();
+			var transaction = manager.CreateTransaction(attr.TransactionMode, attr.IsolationMode, attr.Distributed, attr.ReadOnly);
+
+			if (transaction == null)
 			{
-				TransactionAttribute transactionAtt = metaInfo.GetTransactionAttributeFor(methodInfo);
+				invocation.Proceed();
+				return;
+			}
 
-				ITransactionManager manager = kernel.Resolve<ITransactionManager>();
+			transaction.Begin();
 
-				ITransaction transaction = manager.CreateTransaction(
-					transactionAtt.TransactionMode, transactionAtt.IsolationMode, transactionAtt.Distributed, false);
+			bool rolledback = false;
 
-				if (transaction == null)
+			try
+			{
+				if (metaInfo.ShouldInject(methodInfo))
 				{
-					invocation.Proceed();
-					return;
-				}
+					var parameters = methodInfo.GetParameters();
 
-				transaction.Begin();
-
-				bool rolledback = false;
-
-				try
-				{
-					if (metaInfo.ShouldInject(methodInfo))
+					for (int i = 0; i < parameters.Length; i++)
 					{
-						var parameters = methodInfo.GetParameters();
-
-						for (int i = 0; i < parameters.Length; i++)
+						if (parameters[i].ParameterType == typeof(ITransaction))
 						{
-							if (parameters[i].ParameterType == typeof(ITransaction))
-							{
-								invocation.SetArgumentValue(i, transaction);
-							}
+							invocation.SetArgumentValue(i, transaction);
 						}
 					}
-					invocation.Proceed();
-
-					if (transaction.IsRollbackOnlySet)
-					{
-						logger.DebugFormat("Rolling back transaction {0}", transaction.GetHashCode());
-
-						rolledback = true;
-						transaction.Rollback();
-					}
-					else
-					{
-						logger.DebugFormat("Committing transaction {0}", transaction.GetHashCode());
-
-						transaction.Commit();
-					}
 				}
-				catch(TransactionException ex)
+				invocation.Proceed();
+
+				if (transaction.IsRollbackOnlySet)
 				{
-					// Whoops. Special case, let's throw without 
-					// attempt to rollback anything
+					logger.DebugFormat("Rolling back transaction {0}", transaction.GetHashCode());
 
-					if (logger.IsFatalEnabled)
-					{
-						logger.Fatal("Fatal error during transaction processing", ex);
-					}
-
-					throw;
+					rolledback = true;
+					transaction.Rollback();
 				}
-				catch(Exception)
+				else
 				{
-					if (!rolledback)
-					{
-						if (logger.IsDebugEnabled)
-							logger.DebugFormat("Rolling back transaction {0} due to exception on method {2}.{1}", transaction.GetHashCode(), methodInfo.Name, methodInfo.DeclaringType.Name);
+					logger.DebugFormat("Committing transaction {0}", transaction.GetHashCode());
 
-						transaction.Rollback();
-					}
-
-					throw;
+					transaction.Commit();
 				}
-				finally
+			}
+			catch(TransactionException ex)
+			{
+				// Whoops. Special case, let's throw without 
+				// attempt to rollback anything
+
+				if (logger.IsFatalEnabled)
 				{
-					manager.Dispose(transaction); 
+					logger.Fatal("Fatal error during transaction processing", ex);
 				}
+
+				throw;
+			}
+			catch(Exception)
+			{
+				if (!rolledback)
+				{
+					if (logger.IsDebugEnabled)
+						logger.DebugFormat("Rolling back transaction {0} due to exception on method {2}.{1}", transaction.GetHashCode(), methodInfo.Name, methodInfo.DeclaringType.Name);
+
+					transaction.Rollback();
+				}
+
+				throw;
+			}
+			finally
+			{
+				manager.Dispose(transaction); 
 			}
 		}
 	}
