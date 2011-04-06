@@ -29,7 +29,6 @@
     <OutputType>Library</OutputType>
     <RootNamespace>Castle.Services.Transaction</RootNamespace>
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
-	<BuildConfigKey Condition=" '$(BuildConfigKey)' == '' ">net40</BuildConfigKey>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'NET40-Debug|AnyCPU' ">
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
@@ -147,11 +146,13 @@
   <ItemGroup>
     <Reference Include="Castle.Core">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\net40\Castle.Core.dll</HintPath>
+      <HintPath Condition=" '$(BuildConfigKey)' == '' ">..\..\lib\net40\Castle.Core.dll</HintPath>
+      <HintPath Condition=" '$(BuildConfigKey)' != '' ">..\..\lib\$(BuildConfigKey)\Castle.Core.dll</HintPath>
     </Reference>
     <Reference Include="log4net">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\net40\log4net.dll</HintPath>
+      <HintPath Condition=" '$(BuildConfigKey)' == '' ">..\..\lib\net40\log4net.dll</HintPath>
+      <HintPath Condition=" '$(BuildConfigKey)' != '' ">..\..\lib\$(BuildConfigKey)\log4net.dll</HintPath>
     </Reference>
     <Reference Include="System">
       <Name>System</Name>

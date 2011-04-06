@@ -139,17 +139,19 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Castle.Core, Version=2.5.1.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\net40\Castle.Core.dll</HintPath>
+    <Reference Include="Castle.Windsor">
+      <HintPath Condition=" '$(BuildConfigKey)' == '' ">..\..\lib\net40\Castle.Windsor.dll</HintPath>
+      <HintPath Condition=" '$(BuildConfigKey)' != '' ">..\..\lib\$(BuildConfigKey)\Castle.Windsor.dll</HintPath>
     </Reference>
-    <Reference Include="Castle.Windsor, Version=2.5.1.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+    <Reference Include="Castle.Core">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\net40\Castle.Windsor.dll</HintPath>
+      <HintPath Condition=" '$(BuildConfigKey)' == '' ">..\..\lib\net40\Castle.Core.dll</HintPath>
+      <HintPath Condition=" '$(BuildConfigKey)' != '' ">..\..\lib\$(BuildConfigKey)\Castle.Core.dll</HintPath>
     </Reference>
-    <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
+    <Reference Include="log4net">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\net40\log4net.dll</HintPath>
+      <HintPath Condition=" '$(BuildConfigKey)' == '' ">..\..\lib\net40\log4net.dll</HintPath>
+      <HintPath Condition=" '$(BuildConfigKey)' != '' ">..\..\lib\$(BuildConfigKey)\log4net.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
