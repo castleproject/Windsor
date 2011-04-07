@@ -15,13 +15,12 @@
 namespace Castle.MicroKernel.Registration
 {
 	using System;
-	using System.Collections;
 	using System.ComponentModel;
 
 	/// <summary>
 	///   Represents a key/value pair.
 	/// </summary>
-	public class Property
+	public class Property : Dependency
 	{
 		private readonly object key;
 		private readonly object value;
@@ -79,132 +78,6 @@ namespace Castle.MicroKernel.Registration
 		public static PropertyKey ForKey<TKey>()
 		{
 			return new PropertyKey(typeof(TKey));
-		}
-
-		/// <summary>
-		///   Specifies that component registered with <paramref name = "componentName" /> should be used to satisfy dependencies matched by <paramref
-		///    name = "dependencyName" />
-		/// </summary>
-		public static ServiceOverride WithComponent(string dependencyName, string componentName)
-		{
-			return ForKey(dependencyName).Is(componentName);
-		}
-
-		/// <summary>
-		///   Specifies that component registered with <paramref name = "componentName" /> should be used to satisfy dependencies matched by <paramref
-		///    name = "dependencyType" />
-		/// </summary>
-		public static ServiceOverride WithComponent(Type dependencyType, string componentName)
-		{
-			return ForKey(dependencyType).Is(componentName);
-		}
-
-		/// <summary>
-		///   Specifies that component registered with <paramref name = "componentType" /> should be used to satisfy dependencies matched by <paramref
-		///    name = "dependencyName" />
-		/// </summary>
-		public static ServiceOverride WithComponent(string dependencyName, Type componentType)
-		{
-			return ForKey(dependencyName).Is(componentType);
-		}
-
-		/// <summary>
-		///   Specifies that component registered with <paramref name = "componentType" /> should be used to satisfy dependencies matched by <paramref
-		///    name = "dependencyType" />
-		/// </summary>
-		public static ServiceOverride WithComponent(Type dependencyType, Type componentType)
-		{
-			return ForKey(dependencyType).Is(componentType);
-		}
-
-		/// <summary>
-		///   Specifies that component registered with <typeparamref name = "TComponentType" /> should be used to satisfy dependencies matched by <typeparamref
-		///    name = "TDependencyType" />
-		/// </summary>
-		public static ServiceOverride WithComponent<TDependencyType, TComponentType>()
-		{
-			return ForKey<TDependencyType>().Is<TComponentType>();
-		}
-
-		/// <summary>
-		///   Specifies that components registered with <paramref name = "componentNames" /> should be used to satisfy collection dependencies matched by <paramref
-		///    name = "collectionDependencyName" />
-		/// </summary>
-		public static ServiceOverride WithComponents(string collectionDependencyName, params string[] componentNames)
-		{
-			return ServiceOverride.ForKey(collectionDependencyName).Eq(componentNames);
-		}
-
-		/// <summary>
-		///   Specifies that components registered with <paramref name = "componentNames" /> should be used to satisfy collection dependencies matched by <paramref
-		///    name = "collectionDependencyType" />
-		/// </summary>
-		public static ServiceOverride WithComponents(Type collectionDependencyType, params string[] componentNames)
-		{
-			return ServiceOverride.ForKey(collectionDependencyType).Eq(componentNames);
-		}
-
-		/// <summary>
-		///   Specifies that components registered with <paramref name = "componentNames" /> should be used to satisfy collection dependencies matched by <typeparamref
-		///    name = "TCollectionDependencyType" />
-		/// </summary>
-		public static ServiceOverride WithComponents<TCollectionDependencyType>(params string[] componentNames) where TCollectionDependencyType : IEnumerable
-		{
-			return ServiceOverride.ForKey(typeof(TCollectionDependencyType)).Eq(componentNames);
-		}
-
-		/// <summary>
-		///   Specifies that components registered with <paramref name = "componentTypes" /> should be used to satisfy collection dependencies matched by <paramref
-		///    name = "collectionDependencyName" />
-		/// </summary>
-		public static ServiceOverride WithComponents(string collectionDependencyName, params Type[] componentTypes)
-		{
-			return ServiceOverride.ForKey(collectionDependencyName).Eq(componentTypes);
-		}
-
-		/// <summary>
-		///   Specifies that components registered with <paramref name = "componentTypes" /> should be used to satisfy collection dependencies matched by <paramref
-		///    name = "collectionDependencyType" />
-		/// </summary>
-		public static ServiceOverride WithComponents(Type collectionDependencyType, params Type[] componentTypes)
-		{
-			return ServiceOverride.ForKey(collectionDependencyType).Eq(componentTypes);
-		}
-
-		/// <summary>
-		///   Specifies that components registered with <paramref name = "componentTypes" /> should be used to satisfy collection dependencies matched by <typeparamref
-		///    name = "TCollectionDependencyType" />
-		/// </summary>
-		public static ServiceOverride WithComponents<TCollectionDependencyType>(params Type[] componentTypes) where TCollectionDependencyType : IEnumerable
-		{
-			return ServiceOverride.ForKey(typeof(TCollectionDependencyType)).Eq(componentTypes);
-		}
-
-		/// <summary>
-		///   Specifies that value <paramref name = "value" /> should be used to satisfy dependencies matched by <paramref
-		///    name = "dependencyName" />
-		/// </summary>
-		public static Property WithValue(string dependencyName, object value)
-		{
-			return ForKey(dependencyName).Eq(value);
-		}
-
-		/// <summary>
-		///   Specifies that value <paramref name = "value" /> should be used to satisfy dependencies matched by <paramref
-		///    name = "dependencyType" />
-		/// </summary>
-		public static Property WithValue(Type dependencyType, object value)
-		{
-			return ForKey(dependencyType).Eq(value);
-		}
-
-		/// <summary>
-		///   Specifies that value <paramref name = "value" /> should be used to satisfy dependencies matched by <typeparamref
-		///    name = "TDependencyType" />
-		/// </summary>
-		public static Property WithValue<TDependencyType>(object value)
-		{
-			return ForKey<TDependencyType>().Eq(value);
 		}
 	}
 

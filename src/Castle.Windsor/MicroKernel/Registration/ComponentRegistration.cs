@@ -230,7 +230,7 @@ namespace Castle.MicroKernel.Registration
 		/// </summary>
 		/// <param name = "dependencies">The dependencies.</param>
 		/// <returns></returns>
-		public ComponentRegistration<TService> DependsOn(params Property[] dependencies)
+		public ComponentRegistration<TService> DependsOn(params Dependency[] dependencies)
 		{
 			if (dependencies == null || dependencies.Length == 0)
 			{
@@ -243,14 +243,23 @@ namespace Castle.MicroKernel.Registration
 				AddDescriptor(new ServiceOverrideDescriptor(serviceOverrides));
 				dependencies = dependencies.Except(serviceOverrides).ToArray();
 			}
-			return AddDescriptor(new CustomDependencyDescriptor(dependencies));
+			var properties = dependencies.OfType<Property>().ToArray();
+			if (properties.Length > 0)
+			{
+				AddDescriptor(new CustomDependencyDescriptor(properties));
+				dependencies = dependencies.Except(properties).ToArray();
+			}
+			if (dependencies.Length > 0)
+			{
+				throw new ComponentRegistrationException(string.Format("Unrecognized dependencies: {0} only properties and service overrides are currently supported.",
+				                                                       dependencies));
+			}
+			return this;
 		}
 
 		/// <summary>
 		///   Uses a dictionary of key/value pairs, to specify custom dependencies.
 		///   <para />
-		///   Use <see cref = "ServiceOverrides(IDictionary)" /> to specify the components
-		///   this component should be resolved with.
 		/// </summary>
 		/// <param name = "dependencies">The dependencies.</param>
 		/// <returns></returns>
@@ -262,8 +271,6 @@ namespace Castle.MicroKernel.Registration
 		/// <summary>
 		///   Uses an (anonymous) object as a dictionary, to specify custom dependencies.
 		///   <para />
-		///   Use <see cref = "ServiceOverrides(object)" /> to specify the components
-		///   this component should be resolved with.
 		/// </summary>
 		/// <param name = "anonymous">The dependencies.</param>
 		/// <returns></returns>
@@ -331,7 +338,7 @@ namespace Castle.MicroKernel.Registration
 		}
 
 		/// <summary>
-		///   Adds <paramref name="types"/> as additional services to be exposed by this component.
+		///   Adds <paramref name = "types" /> as additional services to be exposed by this component.
 		/// </summary>
 		/// <param name = "types">The types to forward.</param>
 		/// <returns></returns>
@@ -341,7 +348,7 @@ namespace Castle.MicroKernel.Registration
 		}
 
 		/// <summary>
-		///   Adds <typeparamref name="TService2"/> as additional service to be exposed by this component.
+		///   Adds <typeparamref name = "TService2" /> as additional service to be exposed by this component.
 		/// </summary>
 		/// <typeparam name = "TService2">The forwarded type.</typeparam>
 		/// <returns>The component registration.</returns>
@@ -351,7 +358,7 @@ namespace Castle.MicroKernel.Registration
 		}
 
 		/// <summary>
-		///   Adds <typeparamref name="TService2"/> and <typeparamref name="TService3"/> as additional services to be exposed by this component.
+		///   Adds <typeparamref name = "TService2" /> and <typeparamref name = "TService3" /> as additional services to be exposed by this component.
 		/// </summary>
 		/// <typeparam name = "TService2">The first forwarded type.</typeparam>
 		/// <typeparam name = "TService3">The second forwarded type.</typeparam>
@@ -362,7 +369,7 @@ namespace Castle.MicroKernel.Registration
 		}
 
 		/// <summary>
-		///   Adds <typeparamref name="TService2"/>, <typeparamref name="TService3"/> and  <typeparamref name="TService4"/> as additional services to be exposed by this component.
+		///   Adds <typeparamref name = "TService2" />, <typeparamref name = "TService3" /> and  <typeparamref name = "TService4" /> as additional services to be exposed by this component.
 		/// </summary>
 		/// <typeparam name = "TService2">The first forwarded type.</typeparam>
 		/// <typeparam name = "TService3">The second forwarded type.</typeparam>
@@ -374,7 +381,8 @@ namespace Castle.MicroKernel.Registration
 		}
 
 		/// <summary>
-		///   Adds <typeparamref name="TService2"/>, <typeparamref name="TService3"/>,<typeparamref name="TService4"/> and  <typeparamref name="TService5"/> as additional services to be exposed by this component.
+		///   Adds <typeparamref name = "TService2" />, <typeparamref name = "TService3" />,<typeparamref name = "TService4" /> and  <typeparamref
+		///     name = "TService5" /> as additional services to be exposed by this component.
 		/// </summary>
 		/// <typeparam name = "TService2">The first forwarded type.</typeparam>
 		/// <typeparam name = "TService3">The second forwarded type.</typeparam>
@@ -387,7 +395,7 @@ namespace Castle.MicroKernel.Registration
 		}
 
 		/// <summary>
-		///   Adds <paramref name="types"/> as additional services to be exposed by this component.
+		///   Adds <paramref name = "types" /> as additional services to be exposed by this component.
 		/// </summary>
 		/// <param name = "types">The types to forward.</param>
 		/// <returns></returns>
@@ -742,12 +750,12 @@ namespace Castle.MicroKernel.Registration
 		///   Each key represents the service dependency of this component, for example the name of a constructor argument or a property.
 		///   The corresponding value is the key of an other component registered to the kernel, and is used to resolve the dependency.
 		///   <para />
-		///   To specify dependencies which are not services, use <see cref = "DependsOn(Property[])" />
+		///   To specify dependencies which are not services, use <see cref = "DependsOn(Dependency[])" />
 		/// </summary>
 		/// <param name = "overrides">The service overrides.</param>
 		/// <returns></returns>
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		[Obsolete("Use DependsOn(Property.WithComponent()) instead")]
+		[Obsolete("Use DependsOn(Dependency.OnComponent()) instead")]
 		public ComponentRegistration<TService> ServiceOverrides(params ServiceOverride[] overrides)
 		{
 			return AddDescriptor(new ServiceOverrideDescriptor(overrides));
@@ -764,7 +772,7 @@ namespace Castle.MicroKernel.Registration
 		/// <param name = "overrides">The service overrides.</param>
 		/// <returns></returns>
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		[Obsolete("Use DependsOn(Property.WithComponent()) instead")]
+		[Obsolete("Use DependsOn(Dependency.OnComponent()) instead")]
 		public ComponentRegistration<TService> ServiceOverrides(IDictionary overrides)
 		{
 			return AddDescriptor(new ServiceOverrideDescriptor(overrides));
@@ -781,7 +789,7 @@ namespace Castle.MicroKernel.Registration
 		/// <param name = "anonymous">The service overrides.</param>
 		/// <returns></returns>
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		[Obsolete("Use DependsOn(Property.WithComponent()) instead")]
+		[Obsolete("Use DependsOn(Dependency.OnComponent()) instead")]
 		public ComponentRegistration<TService> ServiceOverrides(object anonymous)
 		{
 			return AddDescriptor(new ServiceOverrideDescriptor(new ReflectionBasedDictionaryAdapter(anonymous)));
