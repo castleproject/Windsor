@@ -12,16 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.MicroKernel.Tests.Registration
+namespace CastleTests.Registration
 {
 	using System.Collections.Generic;
 
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Tests.ClassComponents;
-	using Castle.Windsor.Tests;
-	using Castle.Windsor.Tests.Components;
 
-	using CastleTests;
 	using CastleTests.Components;
 
 	using NUnit.Framework;
@@ -40,7 +37,7 @@ namespace Castle.MicroKernel.Tests.Registration
 					.Named("common2")
 					.ImplementedBy<CommonImpl2>(),
 				Component.For<ClassWithArrayConstructor>()
-					.ServiceOverrides(
+					.DependsOn(
 						ServiceOverride.ForKey("first").Eq("common2"),
 						ServiceOverride.ForKey("services").Eq("common1", "common2")
 					)
@@ -66,7 +63,7 @@ namespace Castle.MicroKernel.Tests.Registration
 					.Named("common2")
 					.ImplementedBy<CommonImpl2>(),
 				Component.For<ClassWithListConstructor>()
-					.ServiceOverrides(
+					.DependsOn(
 						ServiceOverride.ForKey("services").Eq<ICommon>("common1", "common2")
 					)
 				);
@@ -84,6 +81,7 @@ namespace Castle.MicroKernel.Tests.Registration
 		{
 			var serviceOverrides = new Dictionary<string, string> { { "customer", "customer1" } };
 
+#pragma warning disable 0618 //call to obsolete method
 			Kernel.Register(
 				Component.For<ICustomer>()
 					.Named("customer1")
@@ -102,7 +100,7 @@ namespace Castle.MicroKernel.Tests.Registration
 					)
 					.ServiceOverrides(serviceOverrides)
 				);
-
+#pragma warning restore
 			var customer = Kernel.Resolve<CustomerChain1>("customer2");
 			Assert.IsNotNull(customer.CustomerBase);
 			Assert.AreEqual(customer.CustomerBase.Name, "Caption Hook");
@@ -129,7 +127,7 @@ namespace Castle.MicroKernel.Tests.Registration
 						Property.ForKey("Address").Eq("Forest"),
 						Property.ForKey("Age").Eq(100)
 					)
-					.ServiceOverrides(
+					.DependsOn(
 						ServiceOverride.ForKey("customer").Eq("customer1"))
 				);
 
@@ -159,7 +157,7 @@ namespace Castle.MicroKernel.Tests.Registration
 						Property.ForKey("Address").Eq("Forest"),
 						Property.ForKey("Age").Eq(100)
 					)
-					.ServiceOverrides(
+					.DependsOn(
 						ServiceOverride.ForKey("customer").Eq("customer1")
 					)
 				);

@@ -77,9 +77,9 @@ namespace CastleTests
 			                   		new EmptyServiceA()
 			                   	}).Named("array"),
 			                   Component.For<EnumerableDepAsConstructor>()
-			                   	.ServiceOverrides(ServiceOverride
-			                   	                  	.ForKey<IEnumerable<IEmptyService>>()
-			                   	                  	.Eq("array")));
+			                   	.DependsOn(ServiceOverride
+			                   	           	.ForKey<IEnumerable<IEmptyService>>()
+			                   	           	.Eq("array")));
 
 			var collection = Container.Resolve<IEnumerable<IEmptyService>>();
 			Assert.AreEqual(10, collection.Count());
@@ -109,9 +109,9 @@ namespace CastleTests
 			                   		new EmptyServiceA()
 			                   	}),
 			                   Component.For<EnumerableDepAsConstructor>()
-			                   	.ServiceOverrides(ServiceOverride
-			                   	                  	.ForKey<IEnumerable<IEmptyService>>()
-			                   	                  	.Eq("foo")));
+			                   	.DependsOn(ServiceOverride
+			                   	           	.ForKey<IEnumerable<IEmptyService>>()
+			                   	           	.Eq("foo")));
 
 			var collection = Container.Resolve<IEnumerable<IEmptyService>>();
 			Assert.AreEqual(10, collection.Count());

@@ -331,7 +331,7 @@ namespace Castle.MicroKernel.Registration
 		}
 
 		/// <summary>
-		///   Registers the service types on behalf of this component.
+		///   Adds <paramref name="types"/> as additional services to be exposed by this component.
 		/// </summary>
 		/// <param name = "types">The types to forward.</param>
 		/// <returns></returns>
@@ -341,7 +341,7 @@ namespace Castle.MicroKernel.Registration
 		}
 
 		/// <summary>
-		///   Registers the service types on behalf of this component.
+		///   Adds <typeparamref name="TService2"/> as additional service to be exposed by this component.
 		/// </summary>
 		/// <typeparam name = "TService2">The forwarded type.</typeparam>
 		/// <returns>The component registration.</returns>
@@ -351,7 +351,7 @@ namespace Castle.MicroKernel.Registration
 		}
 
 		/// <summary>
-		///   Registers the service types on behalf of this component.
+		///   Adds <typeparamref name="TService2"/> and <typeparamref name="TService3"/> as additional services to be exposed by this component.
 		/// </summary>
 		/// <typeparam name = "TService2">The first forwarded type.</typeparam>
 		/// <typeparam name = "TService3">The second forwarded type.</typeparam>
@@ -362,7 +362,7 @@ namespace Castle.MicroKernel.Registration
 		}
 
 		/// <summary>
-		///   Registers the service types on behalf of this component.
+		///   Adds <typeparamref name="TService2"/>, <typeparamref name="TService3"/> and  <typeparamref name="TService4"/> as additional services to be exposed by this component.
 		/// </summary>
 		/// <typeparam name = "TService2">The first forwarded type.</typeparam>
 		/// <typeparam name = "TService3">The second forwarded type.</typeparam>
@@ -374,7 +374,7 @@ namespace Castle.MicroKernel.Registration
 		}
 
 		/// <summary>
-		///   Registers the service types on behalf of this component.
+		///   Adds <typeparamref name="TService2"/>, <typeparamref name="TService3"/>,<typeparamref name="TService4"/> and  <typeparamref name="TService5"/> as additional services to be exposed by this component.
 		/// </summary>
 		/// <typeparam name = "TService2">The first forwarded type.</typeparam>
 		/// <typeparam name = "TService3">The second forwarded type.</typeparam>
@@ -387,7 +387,7 @@ namespace Castle.MicroKernel.Registration
 		}
 
 		/// <summary>
-		///   Registers the service types on behalf of this component.
+		///   Adds <paramref name="types"/> as additional services to be exposed by this component.
 		/// </summary>
 		/// <param name = "types">The types to forward.</param>
 		/// <returns></returns>
@@ -696,6 +696,7 @@ namespace Castle.MicroKernel.Registration
 		///   With the overwrite.
 		/// </summary>
 		/// <returns></returns>
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public ComponentRegistration<TService> OverWrite()
 		{
 			overwrite = true;
@@ -745,6 +746,8 @@ namespace Castle.MicroKernel.Registration
 		/// </summary>
 		/// <param name = "overrides">The service overrides.</param>
 		/// <returns></returns>
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		[Obsolete("Use DependsOn(Property.WithComponent()) instead")]
 		public ComponentRegistration<TService> ServiceOverrides(params ServiceOverride[] overrides)
 		{
 			return AddDescriptor(new ServiceOverrideDescriptor(overrides));
@@ -760,6 +763,8 @@ namespace Castle.MicroKernel.Registration
 		/// </summary>
 		/// <param name = "overrides">The service overrides.</param>
 		/// <returns></returns>
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		[Obsolete("Use DependsOn(Property.WithComponent()) instead")]
 		public ComponentRegistration<TService> ServiceOverrides(IDictionary overrides)
 		{
 			return AddDescriptor(new ServiceOverrideDescriptor(overrides));
@@ -775,6 +780,8 @@ namespace Castle.MicroKernel.Registration
 		/// </summary>
 		/// <param name = "anonymous">The service overrides.</param>
 		/// <returns></returns>
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		[Obsolete("Use DependsOn(Property.WithComponent()) instead")]
 		public ComponentRegistration<TService> ServiceOverrides(object anonymous)
 		{
 			return AddDescriptor(new ServiceOverrideDescriptor(new ReflectionBasedDictionaryAdapter(anonymous)));
