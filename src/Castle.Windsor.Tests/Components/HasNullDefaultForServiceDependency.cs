@@ -16,6 +16,8 @@ namespace Castle.Components
 {
 	using Castle.Windsor.Tests.Components;
 
+	using CastleTests.Components;
+
 	public class HasNullDefaultForServiceDependency
 	{
 		public HasNullDefaultForServiceDependency(IEmptyService empty = null)

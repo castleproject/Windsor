@@ -25,6 +25,8 @@ namespace CastleTests.Diagnostics
 	using Castle.Windsor.Tests.Components;
 	using Castle.Windsor.Tests.Interceptors;
 
+	using CastleTests.Components;
+
 	using NUnit.Framework;
 
 	public class PotentialLifestyleMismatchesDiagnosticTestCase : AbstractContainerTestCase

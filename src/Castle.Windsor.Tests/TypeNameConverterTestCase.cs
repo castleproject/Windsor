@@ -21,6 +21,8 @@ namespace Castle.Windsor.Tests
 	using Castle.Windsor.Tests.Components;
 	using Castle.Windsor.Tests.Lifecycle;
 
+	using CastleTests.Components;
+
 	using NUnit.Framework;
 
 	[TestFixture]
