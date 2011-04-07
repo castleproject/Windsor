@@ -25,6 +25,7 @@ namespace Castle.MicroKernel.Tests.SpecializedResolvers
 
 	using CastleTests;
 	using CastleTests.Components;
+	using CastleTests.SpecializedResolvers;
 
 	using NUnit.Framework;
 
