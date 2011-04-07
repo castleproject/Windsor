@@ -14,6 +14,8 @@
 
 namespace Castle.Windsor.Tests.Components
 {
+	using CastleTests.Components;
+
 	public class ArrayDepAsProperty
 	{
 		public IEmptyService[] Services { get; set; }

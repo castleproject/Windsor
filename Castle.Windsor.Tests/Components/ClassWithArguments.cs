@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,12 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.MicroKernel.Tests.ClassComponents
+namespace CastleTests.Components
 {
 	public class ClassWithArguments
 	{
 		private readonly string arg1;
 		private readonly int arg2;
+
+		public ClassWithArguments(string arg1, int arg2)
+		{
+			this.arg1 = arg1;
+			this.arg2 = arg2;
+		}
 
 		public string Arg1
 		{
@@ -27,12 +33,6 @@ namespace Castle.MicroKernel.Tests.ClassComponents
 		public int Arg2
 		{
 			get { return arg2; }
-		}
-
-		public ClassWithArguments(string arg1, int arg2)
-		{
-			this.arg1 = arg1;
-			this.arg2 = arg2;
 		}
 	}
 }

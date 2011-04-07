@@ -19,6 +19,8 @@ namespace Castle.MicroKernel.Tests.SpecializedResolvers
 	using Castle.Windsor;
 	using Castle.Windsor.Tests.Components;
 
+	using CastleTests.Components;
+
 	internal class CollectionServiceOverridesInstaller : IWindsorInstaller
 	{
 		public void Install(IWindsorContainer container, IConfigurationStore store)

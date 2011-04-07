@@ -22,6 +22,8 @@ namespace Castle.MicroKernel.Tests.SubContainers
 	using Castle.MicroKernel.Tests.ClassComponents;
 	using Castle.Windsor.Tests.Components;
 
+	using CastleTests.Components;
+
 	using NUnit.Framework;
 
 	/// <summary>

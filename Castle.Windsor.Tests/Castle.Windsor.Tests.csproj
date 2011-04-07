@@ -631,6 +631,7 @@
     <Compile Include="Proxies\ComponentProxyRegistrationTestCase.cs" />
     <Compile Include="ProxyInfrastructure\DisposableHook.cs" />
     <Compile Include="Registration\ComponentRegistrationByNamespaceTestCase.cs" />
+    <Compile Include="Registration\DependsOnTestCase.cs" />
     <Compile Include="Registration\ServiceOverridesTestCase.cs" />
     <Compile Include="Registration\WithServiceTestCase.cs" />
     <Compile Include="ServiceOverridesStackOverflowTestCase.cs" />
@@ -685,7 +686,7 @@
     <Compile Include="Bugs\Ioc113\StartableDisposableAndInitializableComponent.cs" />
     <Compile Include="Bugs\IoC_141.cs" />
     <Compile Include="ClassComponents\BaseComponent.cs" />
-    <Compile Include="ClassComponents\ClassWithArguments.cs" />
+    <Compile Include="Components\ClassWithArguments.cs" />
     <Compile Include="ClassComponents\ClassWithArrayConstructor.cs" />
     <Compile Include="ClassComponents\ClassWithListConstructor.cs">
       <SubType>Code</SubType>

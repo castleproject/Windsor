@@ -17,6 +17,7 @@ namespace Castle.MicroKernel.ModelBuilder.Descriptors
 	using System;
 	using System.Collections;
 	using System.Collections.Generic;
+	using System.Linq;
 
 	using Castle.Core;
 	using Castle.Core.Configuration;
@@ -25,21 +26,21 @@ namespace Castle.MicroKernel.ModelBuilder.Descriptors
 
 	public class ServiceOverrideDescriptor : AbstractPropertyDescriptor
 	{
-		private readonly IDictionary dictionary;
-		private readonly ServiceOverride[] overrides;
+		private readonly object value;
 
 		public ServiceOverrideDescriptor(params ServiceOverride[] overrides)
 		{
-			this.overrides = overrides;
+			value = overrides;
 		}
 
 		public ServiceOverrideDescriptor(IDictionary dictionary)
 		{
-			this.dictionary = dictionary;
+			value = dictionary;
 		}
 
 		public override void BuildComponentModel(IKernel kernel, ComponentModel model)
 		{
+			var dictionary = value as IDictionary;
 			if (dictionary != null)
 			{
 				foreach (DictionaryEntry property in dictionary)
@@ -47,6 +48,7 @@ namespace Castle.MicroKernel.ModelBuilder.Descriptors
 					Apply(model, property.Key, property.Value, null);
 				}
 			}
+			var overrides = value as ServiceOverride[];
 			if (overrides != null)
 			{
 				Array.ForEach(overrides, o => Apply(model, o.Key, o.Value, o));
@@ -62,6 +64,14 @@ namespace Castle.MicroKernel.ModelBuilder.Descriptors
 			else if (value is IEnumerable<String>)
 			{
 				ApplyReferenceList(model, key, (IEnumerable<String>)value, @override);
+			}
+			if (value is Type)
+			{
+				ApplySimpleReference(model, key, ((Type)value).FullName);
+			}
+			else if (value is IEnumerable<Type>)
+			{
+				ApplyReferenceList(model, key, ((IEnumerable<Type>)value).Select(t => t.FullName), @override);
 			}
 		}
 
