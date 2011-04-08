@@ -21,11 +21,10 @@ namespace Castle.MicroKernel.Registration
 	/// <summary>
 	///   Represents a configuration parameter.
 	/// </summary>
-	public class Parameter
+	public class Parameter : Dependency
 	{
-		private readonly IConfiguration configNode;
 		private readonly String key;
-		private readonly String value;
+		private readonly object value;
 
 		internal Parameter(String key, String value)
 		{
@@ -36,7 +35,7 @@ namespace Castle.MicroKernel.Registration
 		internal Parameter(String key, IConfiguration configNode)
 		{
 			this.key = key;
-			this.configNode = configNode;
+			value = configNode;
 		}
 
 		/// <summary>
@@ -44,7 +43,7 @@ namespace Castle.MicroKernel.Registration
 		/// </summary>
 		public IConfiguration ConfigNode
 		{
-			get { return configNode; }
+			get { return value as IConfiguration; }
 		}
 
 		/// <summary>
@@ -60,7 +59,7 @@ namespace Castle.MicroKernel.Registration
 		/// </summary>
 		public String Value
 		{
-			get { return value; }
+			get { return value as string; }
 		}
 
 		/// <summary>

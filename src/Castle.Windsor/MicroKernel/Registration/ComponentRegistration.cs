@@ -249,6 +249,14 @@ namespace Castle.MicroKernel.Registration
 				AddDescriptor(new CustomDependencyDescriptor(properties));
 				dependencies = dependencies.Except(properties).ToArray();
 			}
+
+			var parameters = dependencies.OfType<Parameter>().ToArray();
+			if (parameters.Length > 0)
+			{
+				AddDescriptor(new ParametersDescriptor(parameters));
+				dependencies = dependencies.Except(parameters).ToArray();
+			}
+
 			if (dependencies.Length > 0)
 			{
 				throw new ComponentRegistrationException(string.Format("Unrecognized dependencies: {0} only properties and service overrides are currently supported.",
@@ -716,6 +724,8 @@ namespace Castle.MicroKernel.Registration
 		/// </summary>
 		/// <param name = "parameters">The parameters.</param>
 		/// <returns></returns>
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		[Obsolete("Use DependsOn(Dependency.OnConfigValue()) or Dependency.OnValue() instead")]
 		public ComponentRegistration<TService> Parameters(params Parameter[] parameters)
 		{
 			return AddDescriptor(new ParametersDescriptor(parameters));
