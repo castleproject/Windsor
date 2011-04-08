@@ -26,12 +26,40 @@ namespace CastleTests.Registration
 	public class DependsOnTestCase : AbstractContainerTestCase
 	{
 		[Test]
+		public void Can_register_configuration_parameters_from_appSettings_inline()
+		{
+			Container.Register(Component.For<ClassWithArguments>()
+			                   	.DependsOn(
+			                   		Dependency.OnAppSettingsValue("arg1"),
+			                   		Dependency.OnAppSettingsValue("arg2", "number")));
+
+			var obj = Container.Resolve<ClassWithArguments>();
+
+			Assert.AreEqual("a string", obj.Arg1);
+			Assert.AreEqual(42, obj.Arg2);
+		}
+
+		[Test]
+		public void Can_register_configuration_parameters_inline()
+		{
+			Container.Register(Component.For<ClassWithArguments>()
+			                   	.DependsOn(
+			                   		Dependency.OnConfigValue("arg1", "a string"),
+			                   		Dependency.OnConfigValue("arg2", "42")));
+
+			var obj = Container.Resolve<ClassWithArguments>();
+
+			Assert.AreEqual("a string", obj.Arg1);
+			Assert.AreEqual(42, obj.Arg2);
+		}
+
+		[Test]
 		public void Can_register_named_inline_dependency()
 		{
 			Container.Register(Component.For<ClassWithArguments>()
 			                   	.DependsOn(
-			                   		Property.OnValue("arg1", "a string"),
-			                   		Property.OnValue("arg2", 42)));
+			                   		Dependency.OnValue("arg1", "a string"),
+			                   		Dependency.OnValue("arg2", 42)));
 
 			var obj = Container.Resolve<ClassWithArguments>();
 
@@ -47,7 +75,7 @@ namespace CastleTests.Registration
 				Component.For<IEmptyService>().ImplementedBy<EmptyServiceDecoratorViaProperty>().Named("c"),
 				Component.For<IEmptyService>().ImplementedBy<EmptyServiceB>().Named("b"),
 				Component.For<CollectionDepAsConstructor>()
-					.DependsOn(Property.OnComponentCollection("services", "b", "a")));
+					.DependsOn(Dependency.OnComponentCollection("services", "b", "a")));
 
 			var obj = Container.Resolve<CollectionDepAsConstructor>();
 			Assert.AreEqual(2, obj.Services.Count);
@@ -63,7 +91,7 @@ namespace CastleTests.Registration
 				Component.For<IEmptyService>().ImplementedBy<EmptyServiceDecoratorViaProperty>(),
 				Component.For<IEmptyService>().ImplementedBy<EmptyServiceB>(),
 				Component.For<CollectionDepAsConstructor>()
-					.DependsOn(Property.OnComponentCollection("services", typeof(EmptyServiceB), typeof(EmptyServiceA))));
+					.DependsOn(Dependency.OnComponentCollection("services", typeof(EmptyServiceB), typeof(EmptyServiceA))));
 
 			var obj = Container.Resolve<CollectionDepAsConstructor>();
 			Assert.AreEqual(2, obj.Services.Count);
@@ -79,7 +107,7 @@ namespace CastleTests.Registration
 				Component.For<IEmptyService>().ImplementedBy<EmptyServiceDecoratorViaProperty>().Named("c"),
 				Component.For<IEmptyService>().ImplementedBy<EmptyServiceB>().Named("b"),
 				Component.For<CollectionDepAsConstructor>()
-					.DependsOn(Property.OnComponentCollection(typeof(ICollection<IEmptyService>), "b", "a")));
+					.DependsOn(Dependency.OnComponentCollection(typeof(ICollection<IEmptyService>), "b", "a")));
 
 			var obj = Container.Resolve<CollectionDepAsConstructor>();
 			Assert.AreEqual(2, obj.Services.Count);
@@ -95,7 +123,7 @@ namespace CastleTests.Registration
 				Component.For<IEmptyService>().ImplementedBy<EmptyServiceDecoratorViaProperty>().Named("c"),
 				Component.For<IEmptyService>().ImplementedBy<EmptyServiceB>().Named("b"),
 				Component.For<CollectionDepAsConstructor>()
-					.DependsOn(Property.OnComponentCollection<ICollection<IEmptyService>>("b", "a")));
+					.DependsOn(Dependency.OnComponentCollection<ICollection<IEmptyService>>("b", "a")));
 
 			var obj = Container.Resolve<CollectionDepAsConstructor>();
 			Assert.AreEqual(2, obj.Services.Count);
@@ -111,7 +139,7 @@ namespace CastleTests.Registration
 				Component.For<IEmptyService>().ImplementedBy<EmptyServiceDecoratorViaProperty>(),
 				Component.For<IEmptyService>().ImplementedBy<EmptyServiceB>(),
 				Component.For<CollectionDepAsConstructor>()
-					.DependsOn(Property.OnComponentCollection(typeof(ICollection<IEmptyService>), typeof(EmptyServiceB), typeof(EmptyServiceA))));
+					.DependsOn(Dependency.OnComponentCollection(typeof(ICollection<IEmptyService>), typeof(EmptyServiceB), typeof(EmptyServiceA))));
 
 			var obj = Container.Resolve<CollectionDepAsConstructor>();
 			Assert.AreEqual(2, obj.Services.Count);
@@ -170,7 +198,7 @@ namespace CastleTests.Registration
 				Component.For<IEmptyService>().ImplementedBy<EmptyServiceA>().Named("a"),
 				Component.For<IEmptyService>().ImplementedBy<EmptyServiceB>().Named("b"),
 				Component.For<UsesIEmptyService>()
-					.DependsOn(Property.OnComponent(typeof(IEmptyService), "b")));
+					.DependsOn(Dependency.OnComponent(typeof(IEmptyService), "b")));
 
 			var obj = Container.Resolve<UsesIEmptyService>();
 
@@ -184,7 +212,7 @@ namespace CastleTests.Registration
 				Component.For<IEmptyService>().ImplementedBy<EmptyServiceA>(),
 				Component.For<IEmptyService>().ImplementedBy<EmptyServiceB>(),
 				Component.For<UsesIEmptyService>()
-					.DependsOn(Property.OnComponent(typeof(IEmptyService), typeof(EmptyServiceB))));
+					.DependsOn(Dependency.OnComponent(typeof(IEmptyService), typeof(EmptyServiceB))));
 
 			var obj = Container.Resolve<UsesIEmptyService>();
 
@@ -198,7 +226,7 @@ namespace CastleTests.Registration
 				Component.For<IEmptyService>().ImplementedBy<EmptyServiceA>(),
 				Component.For<IEmptyService>().ImplementedBy<EmptyServiceB>(),
 				Component.For<UsesIEmptyService>()
-					.DependsOn(Property.OnComponent<IEmptyService, EmptyServiceB>()));
+					.DependsOn(Dependency.OnComponent<IEmptyService, EmptyServiceB>()));
 
 			var obj = Container.Resolve<UsesIEmptyService>();
 
@@ -210,8 +238,8 @@ namespace CastleTests.Registration
 		{
 			Container.Register(Component.For<ClassWithArguments>()
 			                   	.DependsOn(
-			                   		Property.OnValue(typeof(string), "a string"),
-			                   		Property.OnValue(typeof(int), 42)));
+			                   		Dependency.OnValue(typeof(string), "a string"),
+			                   		Dependency.OnValue(typeof(int), 42)));
 
 			var obj = Container.Resolve<ClassWithArguments>();
 

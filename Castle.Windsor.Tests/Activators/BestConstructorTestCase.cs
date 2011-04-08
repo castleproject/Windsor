@@ -224,7 +224,7 @@ namespace CastleTests.Activators
 		{
 			Container.Register(Component.For<ICommon>().ImplementedBy<CommonImpl1>(),
 			                   Component.For<HasTwoConstructors2>()
-			                   	.Parameters(Parameter.ForKey("param").Eq("foo")));
+			                   	.DependsOn(Parameter.ForKey("param").Eq("foo")));
 
 			var component = Container.Resolve<HasTwoConstructors2>();
 

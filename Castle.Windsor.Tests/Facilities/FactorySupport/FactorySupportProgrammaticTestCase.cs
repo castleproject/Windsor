@@ -74,7 +74,7 @@ namespace CastleTests.Facilities.FactorySupport
 #pragma warning restore
 
 			Kernel.Register(Component.For<SettingsConsumer>().
-			                	Parameters(Parameter.ForKey("something").Eq("${serviceKey}")));
+			                	DependsOn(Parameter.ForKey("something").Eq("${serviceKey}")));
 
 			var consumer = Kernel.Resolve<SettingsConsumer>();
 		}

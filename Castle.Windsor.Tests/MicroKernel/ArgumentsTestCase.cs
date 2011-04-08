@@ -69,7 +69,7 @@ namespace Castle.Windsor.Tests.MicroKernel
 		{
 			Container.Register(
 				Component.For<HasStringAndIntDependency>()
-					.Parameters(Parameter.ForKey("x").Eq("abc"))
+					.DependsOn(Parameter.ForKey("x").Eq("abc"))
 				);
 
 			Container.Resolve<HasStringAndIntDependency>(new Arguments().Insert("y", 1));

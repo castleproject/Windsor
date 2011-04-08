@@ -18,7 +18,6 @@ namespace CastleTests
 
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Resolvers;
-	using Castle.Windsor.Tests;
 	using Castle.Windsor.Tests.Components;
 
 	using NUnit.Framework;
@@ -78,7 +77,7 @@ namespace CastleTests
 		public void Parameter_wins_over_service()
 		{
 			Kernel.Register(Component.For<Uri>().Instance(new Uri("http://component.com")),
-			                Component.For<UsesUri>().Parameters(Parameter.ForKey("uri").Eq("http://parameter.com")));
+			                Component.For<UsesUri>().DependsOn(Parameter.ForKey("uri").Eq("http://parameter.com")));
 		}
 
 		[Test]
@@ -86,7 +85,7 @@ namespace CastleTests
 		{
 			var exception =
 				Assert.Throws<ArgumentException>(() =>
-				                                 Kernel.Register(Component.For<UsesUri>().Parameters(Parameter.ForKey("uri").Eq("http://parameter.com"))
+				                                 Kernel.Register(Component.For<UsesUri>().DependsOn(Parameter.ForKey("uri").Eq("http://parameter.com"))
 				                                                 	.DependsOn(Property.ForKey("uri").Is("uriComponent")),
 				                                                 Component.For<Uri>().Named("uriComponent").Instance(new Uri("http://component.com"))));
 
@@ -96,7 +95,7 @@ namespace CastleTests
 		[Test]
 		public void Service_override_and_parameter_for_the_same_dependency_not_legal_via_type()
 		{
-			Kernel.Register(Component.For<UsesUri>().Parameters(Parameter.ForKey("uri").Eq("http://parameter.com"))
+			Kernel.Register(Component.For<UsesUri>().DependsOn(Parameter.ForKey("uri").Eq("http://parameter.com"))
 			                	.DependsOn(Property.ForKey<Uri>().Is("uriComponent")),
 			                Component.For<Uri>().Named("uriComponent").Instance(new Uri("http://component.com")));
 
@@ -146,7 +145,7 @@ namespace CastleTests
 		public void Uri_class_can_be_a_parameter()
 		{
 			var uriString = "http://castleproject.org";
-			Kernel.Register(Component.For<UsesUri>().Parameters(Parameter.ForKey("uri").Eq(uriString)));
+			Kernel.Register(Component.For<UsesUri>().DependsOn(Parameter.ForKey("uri").Eq(uriString)));
 
 			var instance = Kernel.Resolve<UsesUri>();
 
