@@ -24,7 +24,6 @@ namespace Castle.Services.Transaction
 		NoTransaction,
 		Active,
 		Committed,
-		RolledBack,
-		Invalid
+		RolledBack
 	}
 }

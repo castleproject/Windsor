@@ -68,23 +68,23 @@ namespace Castle.Services.Transaction.IO
 			                   RegexOptions.Multiline);
 		}
 
-		private string _Root,
-		               _UNCPrefix,
-		               _UNCLiteral,
-		               _Options,
-		               _Drive,
-		               _DriveLetter,
-		               _Server,
-		               _IPv4,
-		               _IPv6,
-		               _ServerName,
-		               _Device,
-		               _DevicePrefix,
-		               _DeviceName,
-		               _DeviceGuid,
-		               _NonRootPath,
-		               _RelDrive,
-		               _FolderAndFiles;
+		private readonly string _Root,
+								_UNCPrefix,
+								_UNCLiteral,
+								_Options,
+								_Drive,
+								_DriveLetter,
+								_Server,
+								_IPv4,
+								_IPv6,
+								_ServerName,
+								_Device,
+								_DevicePrefix,
+								_DeviceName,
+								_DeviceGuid,
+								_NonRootPath,
+								_RelDrive,
+								_FolderAndFiles;
 
 		public static PathInfo Parse(string path)
 		{

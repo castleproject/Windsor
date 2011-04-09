@@ -98,8 +98,7 @@ namespace Castle.Services.Transaction
 			// we have a ongoing current transaction, join it!
 			if (System.Transactions.Transaction.Current != null)
 			{
-				var ktx = (IKernelTransaction) TransactionInterop
-				                               	.GetDtcTransaction(System.Transactions.Transaction.Current);
+				var ktx = (IKernelTransaction) TransactionInterop.GetDtcTransaction(System.Transactions.Transaction.Current);
 
 				SafeTxHandle handle;
 				ktx.GetHandle(out handle);
