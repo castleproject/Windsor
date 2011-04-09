@@ -162,7 +162,7 @@ namespace Castle.Facilities.AutoTx
 			}
 			finally
 			{
-				manager.Dispose(transaction); 
+				manager.Dispose(transaction);
 			}
 		}
 	}

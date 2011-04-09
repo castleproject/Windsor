@@ -36,6 +36,9 @@ namespace Castle.Services.vNextTransaction
 		public static Maybe<TSome> Some<TSome>(TSome item)
 		{
 			Contract.Ensures(Contract.Result<Maybe<TSome>>() != null);
+			Contract.EndContractBlock();
+			if (!(typeof(TSome).IsValueType || item != null))
+				throw new ArgumentException("item must be either a value type or non-null");
 			return new Maybe<TSome>(item);
 		}
 
@@ -200,7 +203,9 @@ namespace Castle.Services.vNextTransaction
 			                 "The implicit conversion means that whatever is being implicitly convered, is wrapped in a maybe, no matter what its nullability or defaultness.");
 
 			if (typeof (T).IsValueType)
+			{
 				return Maybe.Some(item);
+			}
 
 // ReSharper disable CompareNonConstrainedGenericWithNull
 			return item == null ? Maybe.None<T>() : Maybe.Some(item);

@@ -5,7 +5,7 @@ namespace Castle.Services.Transaction.Tests.vNext
 	public interface IMyService
 	{
 		[Transaction]
-		void VerifyInAmbient();
+		vNextTransaction.ITransaction VerifyInAmbient();
 
 		[Transaction]
 		void VerifyInAmbient(Action a);

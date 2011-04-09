@@ -17,22 +17,33 @@
 #endregion
 
 using System;
+using System.Diagnostics.Contracts;
 using System.Transactions;
 
 namespace Castle.Services.vNextTransaction
 {
-	internal class Transaction : ITransaction
+	public sealed class Transaction : ITransaction
 	{
 		private readonly CommittableTransaction _Inner;
 
-		public Transaction(TransactionOptions options)
+		public Transaction(CommittableTransaction inner)
 		{
-			_Inner = new CommittableTransaction(options);
+			Contract.Requires(inner != null);
+			Contract.Ensures(_Inner != null);
+			_Inner = inner;
 		}
 
-		void IDisposable.Dispose()
+		[ContractInvariantMethod]
+		private void Invariant()
 		{
-			throw new NotImplementedException();
+			Contract.Invariant(_Inner != null, "the inner transaction mustn't be null");
+		}
+
+		internal bool HasRolledBack { get; private set; }
+
+		public static ITransaction Current
+		{
+			get { throw new NotImplementedException(); }
 		}
 
 		TransactionInformation ITransaction.TransactionInformation
@@ -43,6 +54,21 @@ namespace Castle.Services.vNextTransaction
 		Maybe<IRetryPolicy> ITransaction.FailedPolicy
 		{
 			get { throw new NotImplementedException(); }
+		}
+
+		void ITransaction.Rollback()
+		{
+			HasRolledBack = true;
+		}
+
+		void ITransaction.Complete()
+		{
+			_Inner.Commit();
+		}
+
+		void IDisposable.Dispose()
+		{
+			_Inner.Dispose();
 		}
 	}
 }

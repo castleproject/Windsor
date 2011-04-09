@@ -17,12 +17,13 @@
 #endregion
 
 using System;
+using System.Data;
 using System.Diagnostics.Contracts;
 
 namespace Castle.Services.vNextTransaction
 {
 	[ContractClass(typeof (TxManagerContract))]
-	public interface ITxManager
+	public interface ITxManager : IDisposable
 	{
 		/// <summary>
 		/// 	Gets the current transaction. 
@@ -43,6 +44,13 @@ namespace Castle.Services.vNextTransaction
 		/// <param name = "policyKey"></param>
 		/// <param name = "retryPolicy"></param>
 		void AddRetryPolicy(string policyKey, IRetryPolicy retryPolicy);
+
+		/// <summary>
+		/// Create a new transaction, given the transaction options.
+		/// </summary>
+		/// <param name="transactionOption">Options to use for creating the new transaction.</param>
+		/// <returns>Maybe a transaction, if the options specified it.</returns>
+		Maybe<ITransaction> CreateTransaction(ITransactionOption transactionOption);
 	}
 
 	[ContractClassFor(typeof (ITxManager))]
@@ -68,6 +76,18 @@ namespace Castle.Services.vNextTransaction
 		{
 			Contract.Requires(policyKey != null);
 			Contract.Requires(retryPolicy != null);
+		}
+
+		public Maybe<ITransaction> CreateTransaction(ITransactionOption transactionOption)
+		{
+			Contract.Requires(transactionOption != null);
+			var result = Contract.Result<Maybe<ITransaction>>();
+			Contract.Ensures(result != null);
+			return result;
+		}
+
+		public void Dispose()
+		{
 		}
 	}
 }

@@ -84,9 +84,12 @@
   <ItemGroup>
     <Compile Include="AnonymousRetryPolicy.cs" />
     <Compile Include="AutoTxFacility.cs" />
+    <Compile Include="Exceptions\TransactionException.cs" />
     <Compile Include="IRetryPolicy.cs" />
     <Compile Include="ITransaction.cs" />
+    <Compile Include="ITransactionOption.cs" />
     <Compile Include="ITxManager.cs" />
+    <Compile Include="ITxManagerInternal.cs" />
     <Compile Include="ITxMetaInfoStore.cs" />
     <Compile Include="Monads\Maybe.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

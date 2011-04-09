@@ -17,10 +17,11 @@
 #endregion
 
 using System;
+using System.Transactions;
 
 namespace Castle.Services.vNextTransaction
 {
-	internal class TxManager : ITxManager
+	internal class TxManager : ITxManager, ITxManagerInternal
 	{
 		Maybe<ITransaction> ITxManager.CurrentTransaction
 		{
@@ -33,6 +34,25 @@ namespace Castle.Services.vNextTransaction
 		}
 
 		void ITxManager.AddRetryPolicy(string policyKey, IRetryPolicy retryPolicy)
+		{
+			throw new NotImplementedException();
+		}
+
+		public Maybe<ITransaction> CreateTransaction(ITransactionOption transactionOption)
+		{
+			if (transactionOption.TransactionMode == TransactionScopeOption.Suppress)
+				return Maybe.None<ITransaction>();
+
+			var inner = new CommittableTransaction(new TransactionOptions
+			{
+			    IsolationLevel = transactionOption.IsolationLevel,
+			    Timeout = TimeSpan.MaxValue
+			});
+
+			return new Transaction(inner);
+		}
+
+		void IDisposable.Dispose()
 		{
 			throw new NotImplementedException();
 		}

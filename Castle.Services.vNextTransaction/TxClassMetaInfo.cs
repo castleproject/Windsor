@@ -45,11 +45,28 @@ namespace Castle.Services.vNextTransaction
 
 		public IEnumerable<MethodInfo> TransactionalMethods
 		{
+			[Pure]
 			get
 			{
 				Contract.Ensures(Contract.Result<IEnumerable<MethodInfo>>() != null);
 				return _TxMethods.Keys;
 			}
+		}
+
+		/// <summary>
+		/// Gets the maybe transaction options for the method info, target. If the target
+		/// has not been associated with a tranaction, the maybe is none.
+		/// </summary>
+		/// <param name="target">Method to find the options for.</param>
+		/// <returns>A non-null maybe <see cref="ITransactionOption"/>.</returns>
+		[Pure]
+		public Maybe<ITransactionOption> AsTransactional(MethodInfo target)
+		{
+			Contract.Requires(target != null);
+			Contract.Ensures(Contract.Result<Maybe<TransactionAttribute>>() != null);
+			return _TxMethods.ContainsKey(target)
+				? Maybe.Some<ITransactionOption>(_TxMethods[target]) 
+				: Maybe.None<ITransactionOption>();
 		}
 	}
 }

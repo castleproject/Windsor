@@ -22,8 +22,7 @@ namespace Castle.Services.Transaction.Tests.vNext
 		public void Automatically_Starts_CommitableTransaction()
 		{
 			// act & assert
-			_Container.Resolve<IMyService>()
-				.VerifyInAmbient();
+			_Container.Resolve<IMyService>().VerifyInAmbient();
 		}
 
 		[Test]

@@ -34,7 +34,7 @@ namespace Castle.Services.vNextTransaction
 			_GetMetaFromType = Fun.Memoize<Type, Maybe<TxClassMetaInfo>>(GetMetaFromTypeInner);
 		}
 
-		private static Maybe<TxClassMetaInfo> GetMetaFromTypeInner(Type implementation)
+		internal static Maybe<TxClassMetaInfo> GetMetaFromTypeInner(Type implementation)
 		{
 			Contract.Ensures(Contract.Result<Maybe<TxClassMetaInfo>>() != null);
 

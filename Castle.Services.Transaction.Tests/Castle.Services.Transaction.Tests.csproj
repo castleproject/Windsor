@@ -154,6 +154,7 @@
     <Compile Include="File and Directory related tests\FileAdapterTests.cs" />
     <Compile Include="File and Directory related tests\FileTransactions_Directory_Tests.cs" />
     <Compile Include="File and Directory related tests\FileTransactions_File_Tests.cs" />
+    <Compile Include="Framework\MaybeEx.cs" />
     <Compile Include="TestClasses\Exts.cs" />
     <Compile Include="File and Directory related tests\FileTransactionTests.cs" />
     <Compile Include="File and Directory related tests\FileTransaction_WithManager_Tests.cs" />
@@ -173,6 +174,7 @@
     </Compile>
     <Compile Include="TestClasses\TransientActivityManager.cs" />
     <Compile Include="vNext\IMyService.cs" />
+    <Compile Include="vNext\InfrastructureTests.cs" />
     <Compile Include="vNext\MyService.cs" />
     <Compile Include="vNext\RetryPolicies_Transactions.cs" />
     <Compile Include="vNext\SingleThread_Ambient.cs" />
@@ -181,6 +183,9 @@
     <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\buildscripts\CastleKey.snk">
+      <Link>CastleKey.snk</Link>
+    </None>
     <None Include="App.config" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

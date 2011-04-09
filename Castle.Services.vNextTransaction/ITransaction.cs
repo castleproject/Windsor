@@ -34,6 +34,19 @@ namespace Castle.Services.vNextTransaction
 		/// 	Gets the failed policy, or null otherwise.
 		/// </summary>
 		Maybe<IRetryPolicy> FailedPolicy { get; }
+
+		/// <summary>
+		/// Rolls the transaction back.
+		/// This method is automatically called on managed dispose.
+		/// This method is idempotent.
+		/// </summary>
+		void Rollback();
+
+		/// <summary>
+		/// Completes the transaction. This method call is a nop if Rollback
+		/// has already been called and is idempotent.
+		/// </summary>
+		void Complete();
 	}
 
 	[ContractClassFor(typeof (ITransaction))]
@@ -61,6 +74,16 @@ namespace Castle.Services.vNextTransaction
 				Contract.Ensures(result != null);
 				return result;
 			}
+		}
+
+		void ITransaction.Rollback()
+		{
+			throw new NotImplementedException();
+		}
+
+		void ITransaction.Complete()
+		{
+			throw new NotImplementedException();
 		}
 	}
 }
