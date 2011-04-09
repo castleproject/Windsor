@@ -292,6 +292,44 @@ namespace Castle.MicroKernel.Registration
 		/// </summary>
 		/// <param name = "resolve">The delegate used for providing dynamic parameters.</param>
 		/// <returns></returns>
+		public ComponentRegistration<TService> DependsOn(DynamicParametersDelegate resolve)
+		{
+			return DynamicParameters((k, c, d) =>
+			{
+				resolve(k, d);
+				return null;
+			});
+		}
+
+		/// <summary>
+		///   Allows custom dependencies to by defined dynamically with releasing capability.
+		/// </summary>
+		/// <param name = "resolve">The delegate used for providing dynamic parameters.</param>
+		/// <returns></returns>
+		public ComponentRegistration<TService> DependsOn(DynamicParametersResolveDelegate resolve)
+		{
+			return DynamicParameters((k, c, d) => resolve(k, d));
+		}
+
+		/// <summary>
+		///   Allows custom dependencies to by defined dynamically with releasing capability.
+		/// </summary>
+		/// <param name = "resolve">The delegate used for providing dynamic parameters.</param>
+		/// <returns></returns>
+		/// <remarks>
+		///   Use <see cref = "CreationContext" /> when resolving components from <see cref = "IKernel" /> in order to detect cycles.
+		/// </remarks>
+		public ComponentRegistration<TService> DependsOn(DynamicParametersWithContextResolveDelegate resolve)
+		{
+			AddDescriptor(new DynamicParametersDescriptor(resolve));
+			return this;
+		}
+
+		/// <summary>
+		///   Allows custom dependencies to by defined dyncamically.
+		/// </summary>
+		/// <param name = "resolve">The delegate used for providing dynamic parameters.</param>
+		/// <returns></returns>
 		public ComponentRegistration<TService> DynamicParameters(DynamicParametersDelegate resolve)
 		{
 			return DynamicParameters((k, c, d) =>
