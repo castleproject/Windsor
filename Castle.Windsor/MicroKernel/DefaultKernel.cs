@@ -36,9 +36,7 @@ namespace Castle.MicroKernel
 	using Castle.MicroKernel.SubSystems.Conversion;
 	using Castle.MicroKernel.SubSystems.Naming;
 	using Castle.MicroKernel.SubSystems.Resource;
-#if !SILVERLIGHT
 	using Castle.Windsor.Experimental.Diagnostics;
-#endif
 
 	/// <summary>
 	///   Default implementation of <see cref = "IKernel" />. 
@@ -672,10 +670,8 @@ namespace Castle.MicroKernel
 
 			AddSubSystem(SubSystemConstants.ResourceKey,
 			             new DefaultResourceSubSystem());
-#if !SILVERLIGHT
 			AddSubSystem(SubSystemConstants.DiagnosticsKey,
 			             new DefaultDiagnosticsSubSystem());
-#endif
 		}
 
 		protected object ResolveComponent(IHandler handler, Type service, IDictionary additionalArguments, IReleasePolicy policy)

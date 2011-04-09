@@ -32,12 +32,12 @@ namespace Castle.MicroKernel.Tests.Configuration
 	[TestFixture]
 	public class ConfigurationTestCase : AbstractContainerTestCase
 	{
+#if !SILVERLIGHT
 		[Test]
 		[Bug("IOC-155")]
 		public void Type_not_implementing_service_should_throw()
 		{
 			var exception = Assert.Throws<ComponentRegistrationException>(() =>
-
 			                                                              Container.Install(Configuration.FromXml(
 			                                                              	new StaticContentResource(
 			                                                              		@"<castle>
@@ -61,9 +61,9 @@ namespace Castle.MicroKernel.Tests.Configuration
 		public void DictionaryAsParameterInXml()
 		{
 			Container.Install(Configuration.FromXml(
-						new StaticContentResource(
-							string.Format(
-								@"<castle>
+				new StaticContentResource(
+					string.Format(
+						@"<castle>
 <components>
 	<component lifestyle=""singleton""
 		id=""Id.MyClass""
@@ -88,11 +88,12 @@ namespace Castle.MicroKernel.Tests.Configuration
 	</component>
 </components>
 </castle>",
-								typeof(HasDictionaryDependency).AssemblyQualifiedName))));
+						typeof(HasDictionaryDependency).AssemblyQualifiedName))));
 
 			var myInstance = Container.Resolve<HasDictionaryDependency>();
 			Assert.AreEqual(2, myInstance.DictionaryProperty.Count);
 		}
+
 		[Test]
 		[Bug("IOC-73")]
 		public void ShouldNotThrowCircularDependencyException()
@@ -126,6 +127,7 @@ namespace Castle.MicroKernel.Tests.Configuration
 			var user = Container.Resolve<UsesIEmptyService>();
 			Assert.NotNull(user.EmptyService);
 		}
+#endif
 
 		[Test]
 		[Bug("IOC-142")]
