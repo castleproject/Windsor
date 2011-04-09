@@ -40,6 +40,18 @@ namespace CastleTests.Registration
 		}
 
 		[Test]
+		public void Can_register_configuration_parameters_from_dynamic_parameters_inline()
+		{
+			Container.Register(Component.For<ClassWithArguments>()
+			                   	.DependsOn((k, d) => d.Insert((object)new { arg1 = "a string", arg2 = 42 })));
+
+			var obj = Container.Resolve<ClassWithArguments>();
+
+			Assert.AreEqual("a string", obj.Arg1);
+			Assert.AreEqual(42, obj.Arg2);
+		}
+
+		[Test]
 		public void Can_register_configuration_parameters_inline()
 		{
 			Container.Register(Component.For<ClassWithArguments>()
