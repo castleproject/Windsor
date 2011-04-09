@@ -22,11 +22,12 @@ namespace CastleTests.Diagnostics
 	using Castle.Windsor;
 	using Castle.Windsor.Experimental.Diagnostics;
 	using Castle.Windsor.Tests;
-	using Castle.Windsor.Tests.Components;
 
 	using CastleTests.Components;
 
 	using NUnit.Framework;
+	
+#if !SILVERLIGHT // althought diagnostics are available in Silverlight they are not installed by default.
 
 	public class AllComponentsDiagnosticTestCase : AbstractContainerTestCase
 	{
@@ -34,7 +35,7 @@ namespace CastleTests.Diagnostics
 
 		protected override void AfterContainerCreated()
 		{
-			var host = Kernel.GetSubSystem(SubSystemConstants.DiagnosticsKey) as IDiagnosticsHost;
+			var host = (IDiagnosticsHost)Kernel.GetSubSystem(SubSystemConstants.DiagnosticsKey);
 			diagnostic = host.GetDiagnostic<IAllComponentsDiagnostic>();
 		}
 
@@ -107,4 +108,5 @@ namespace CastleTests.Diagnostics
 			Assert.AreEqual(2, handlers.Length);
 		}
 	}
+#endif
 }

@@ -14,7 +14,11 @@
 
 namespace Castle.Windsor.Experimental.Diagnostics
 {
+#if SILVERLIGHT
+	using System.Linq;
+#else
 	using System;
+#endif
 
 	using Castle.MicroKernel;
 
@@ -30,8 +34,12 @@ namespace Castle.Windsor.Experimental.Diagnostics
 		public IHandler[] Inspect()
 		{
 			var allHandlers = kernel.GetAssignableHandlers(typeof(object));
+#if SILVERLIGHT
+			return allHandlers.Where(IsWaitingForDependencies).ToArray();
+#else
 			var waitingHandlers = Array.FindAll(allHandlers, IsWaitingForDependencies);
 			return waitingHandlers;
+#endif
 		}
 
 		private bool IsWaitingForDependencies(IHandler handler)

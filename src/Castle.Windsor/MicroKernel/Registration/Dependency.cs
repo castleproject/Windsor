@@ -45,7 +45,8 @@ namespace Castle.MicroKernel.Registration
 		{
 			return Parameter.ForKey(dependencyName).Eq(value);
 		}
-
+		
+#if !SILVERLIGHT
 		/// <summary>
 		///   Specifies that value from application configuration file's appSettings section named <paramref name = "settingName" /> should be used to satisfy dependencies matched by <paramref name="dependencyName"/>. The value is provided as a string and will be converted to appropriate type when resolving.
 		/// 
@@ -69,6 +70,7 @@ namespace Castle.MicroKernel.Registration
 		{
 			return OnAppSettingsValue(name, name);
 		}
+#endif
 
 		/// <summary>
 		///   Specifies that component registered with <paramref name = "componentName" /> should be used to satisfy dependencies matched by <paramref

@@ -25,6 +25,7 @@ namespace CastleTests.Registration
 
 	public class DependsOnTestCase : AbstractContainerTestCase
 	{
+#if !SILVERLIGHT
 		[Test]
 		public void Can_register_configuration_parameters_from_appSettings_inline()
 		{
@@ -38,6 +39,7 @@ namespace CastleTests.Registration
 			Assert.AreEqual("a string", obj.Arg1);
 			Assert.AreEqual(42, obj.Arg2);
 		}
+#endif
 
 		[Test]
 		public void Can_register_configuration_parameters_from_dynamic_parameters_inline()

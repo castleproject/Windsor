@@ -14,27 +14,35 @@
 
 namespace Castle.Windsor.Experimental.Diagnostics
 {
-#if !SILVERLIGHT
 	using System;
 	using System.Collections;
 	using System.Collections.Generic;
 
 	using Castle.MicroKernel;
+#if !SILVERLIGHT
 	using Castle.Windsor.Experimental.Diagnostics.Extensions;
+#endif
 
-	public class DefaultDiagnosticsSubSystem : IContainerDebuggerExtensionHost, ISubSystem, IDiagnosticsHost
+	public class DefaultDiagnosticsSubSystem :
+		ISubSystem, IDiagnosticsHost
+#if !SILVERLIGHT
+		, IContainerDebuggerExtensionHost
+#endif
 	{
 		private readonly IDictionary<Type, IDiagnostic<object>> diagnostics = new Dictionary<Type, IDiagnostic<object>>();
+
+#if !SILVERLIGHT
 		private readonly IList<IContainerDebuggerExtension> extensions = new List<IContainerDebuggerExtension>();
-
+#endif
 		private IKernel kernel;
-
+		
+#if !SILVERLIGHT
 		public void Add(IContainerDebuggerExtension item)
 		{
 			item.Init(kernel, this);
 			extensions.Add(item);
 		}
-
+#endif
 		public void AddDiagnostic<TDiagnostic>(TDiagnostic diagnostic) where TDiagnostic : IDiagnostic<object>
 		{
 			diagnostics.Add(typeof(TDiagnostic), diagnostic);
@@ -46,22 +54,27 @@ namespace Castle.Windsor.Experimental.Diagnostics
 			diagnostics.TryGetValue(typeof(TDiagnostic), out value);
 			return (TDiagnostic)value;
 		}
-
+		
+#if !SILVERLIGHT
 		public IEnumerator<IContainerDebuggerExtension> GetEnumerator()
 		{
 			return extensions.GetEnumerator();
 		}
+#endif
 
 		public void Init(IKernelInternal kernel)
 		{
 			this.kernel = kernel;
+#if !SILVERLIGHT
 			InitStandardExtensions();
+#endif
 		}
 
 		public void Terminate()
 		{
 		}
-
+		
+#if !SILVERLIGHT
 		protected virtual void InitStandardExtensions()
 		{
 			Add(new AllComponents());
@@ -75,7 +88,6 @@ namespace Castle.Windsor.Experimental.Diagnostics
 		{
 			return GetEnumerator();
 		}
-	}
-
 #endif
+	}
 }
