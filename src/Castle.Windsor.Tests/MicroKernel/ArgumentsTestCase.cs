@@ -16,6 +16,7 @@ namespace Castle.Windsor.Tests.MicroKernel
 {
 	using System;
 	using System.Collections;
+	using System.Collections.Generic;
 
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Context;
@@ -23,6 +24,7 @@ namespace Castle.Windsor.Tests.MicroKernel
 	using Castle.Windsor.Tests.Components;
 
 	using CastleTests;
+	using CastleTests.Components;
 
 	using NUnit.Framework;
 
@@ -39,6 +41,19 @@ namespace Castle.Windsor.Tests.MicroKernel
 			arguments.Add(key, value);
 
 			Assert.AreEqual("foo", arguments[key]);
+		}
+
+		[Test]
+		[Bug("IOC-147")]
+		public void Can_have_dictionary_as_inline_dependency()
+		{
+			var container = new WindsorContainer();
+			container.Register(Component.For<HasDictionaryDependency>());
+
+			var dictionaryProperty = new Dictionary<string, string>();
+
+			var obj = container.Resolve<HasDictionaryDependency>(new { dictionaryProperty });
+			Assert.AreSame(dictionaryProperty, obj.DictionaryProperty);
 		}
 
 		[Test]
