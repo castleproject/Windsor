@@ -303,6 +303,7 @@
     <Compile Include="ClassComponents\DecoratedRepository2.cs" />
     <Compile Include="ClassComponents\DefaultRepository.cs" />
     <Compile Include="ClassComponents\DoubleRepository.cs" />
+    <Compile Include="ClassComponents\D_DB.cs" />
     <Compile Include="ClassComponents\GenericHasNested.cs" />
     <Compile Include="ClassComponents\GenericImpl3.cs" />
     <Compile Include="ClassComponents\HasByRefCtorArgument.cs" />
@@ -1029,7 +1030,7 @@
     <Compile Include="SelectAllSelector.cs" />
     <Compile Include="CustomSubDependencyResolversTestCase.cs" />
     <Compile Include="ModelInterceptorsSelectorTestCase.cs" />
-    <Compile Include="DependencyProblem.cs">
+    <Compile Include="RegistrationOrderingTestsCase.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Windsor.Tests\XmlConfigStructureTestCase.cs" />
