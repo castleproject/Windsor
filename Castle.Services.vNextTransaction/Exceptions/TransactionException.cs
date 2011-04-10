@@ -14,12 +14,20 @@ namespace Castle.Services.vNextTransaction
 		{
 		}
 
-		public TransactionException(string message, Exception innerException) : base(message, innerException)
+		public TransactionException(string message, Exception innerException, Uri helpLink) : base(message, innerException)
 		{
 		}
 
 		protected TransactionException(SerializationInfo info, StreamingContext context) : base(info, context)
 		{
+		}
+
+		public override string HelpLink
+		{
+			get
+			{
+				return base.HelpLink;
+			}
 		}
 	}
 }

@@ -1,18 +1,18 @@
 #region license
 
-// // Copyright 2009-2011 Henrik Feldt - http://logibit.se /
-// // 
-// // Licensed under the Apache License, Version 2.0 (the "License");
-// // you may not use this file except in compliance with the License.
-// // You may obtain a copy of the License at
-// // 
-// //     http://www.apache.org/licenses/LICENSE-2.0
-// // 
-// // Unless required by applicable law or agreed to in writing, software
-// // distributed under the License is distributed on an "AS IS" BASIS,
-// // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// // See the License for the specific language governing permissions and
-// // limitations under the License.
+// Copyright 2009-2011 Henrik Feldt - http://logibit.se/
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// 
+//      http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 #endregion
 
@@ -39,7 +39,7 @@ namespace Castle.Services.vNextTransaction
 
 		public TransactionAttribute(
 			TimeSpan timeout,
-			IsolationLevel isolationLevel = IsolationLevel.ReadCommitted, 
+			IsolationLevel isolationLevel = IsolationLevel.ReadCommitted,
 			TransactionScopeOption transactionMode = TransactionScopeOption.Required,
 			bool readOnly = false)
 		{
@@ -74,26 +74,30 @@ namespace Castle.Services.vNextTransaction
 		}
 
 		/// <summary>
-		/// Indicates whether the current object is equal to another object of the same type.
+		/// 	Indicates whether the current object is equal to another object of the same type.
 		/// </summary>
 		/// <returns>
-		/// true if the current object is equal to the <paramref name="other"/> parameter; otherwise, false.
+		/// 	true if the current object is equal to the <paramref name = "other" /> parameter; otherwise, false.
 		/// </returns>
-		/// <param name="other">An object to compare with this object.</param>
+		/// <param name = "other">An object to compare with this object.</param>
+		[Pure]
 		public bool Equals(ITransactionOption other)
 		{
 			if (ReferenceEquals(null, other)) return false;
 			if (ReferenceEquals(this, other)) return true;
-			return base.Equals(other) && other.Timeout.Equals(_Timeout) && Equals(other.IsolationLevel, _IsolationLevel) && Equals(other.TransactionMode, _TransactionMode) && other.ReadOnly.Equals(_ReadOnly);
+			return base.Equals(other) && other.Timeout.Equals(_Timeout) && Equals(other.IsolationLevel, _IsolationLevel) &&
+			       Equals(other.TransactionMode, _TransactionMode) && other.ReadOnly.Equals(_ReadOnly);
 		}
 
 		/// <summary>
-		/// Returns a value that indicates whether this instance is equal to a specified object.
+		/// 	Returns a value that indicates whether this instance is equal to a specified object.
 		/// </summary>
 		/// <returns>
-		/// true if <paramref name="obj"/> equals the type and value of this instance; otherwise, false.
+		/// 	true if <paramref name = "obj" /> equals the type and value of this instance; otherwise, false.
 		/// </returns>
-		/// <param name="obj">An <see cref="T:System.Object"/> to compare with this instance or null. </param><filterpriority>2</filterpriority>
+		/// <param name = "obj">An <see cref = "T:System.Object" /> to compare with this instance or null. </param>
+		/// <filterpriority>2</filterpriority>
+		[Pure]
 		public override bool Equals(object obj)
 		{
 			if (ReferenceEquals(null, obj)) return false;
@@ -102,17 +106,18 @@ namespace Castle.Services.vNextTransaction
 		}
 
 		/// <summary>
-		/// Returns the hash code for this instance.
+		/// 	Returns the hash code for this instance.
 		/// </summary>
 		/// <returns>
-		/// A 32-bit signed integer hash code.
+		/// 	A 32-bit signed integer hash code.
 		/// </returns>
 		/// <filterpriority>2</filterpriority>
+		[Pure]
 		public override int GetHashCode()
 		{
 			unchecked
 			{
-				int result = base.GetHashCode();
+				var result = base.GetHashCode();
 				result = (result*397) ^ _Timeout.GetHashCode();
 				result = (result*397) ^ _IsolationLevel.GetHashCode();
 				result = (result*397) ^ _TransactionMode.GetHashCode();

@@ -84,6 +84,7 @@
   <ItemGroup>
     <Compile Include="AnonymousRetryPolicy.cs" />
     <Compile Include="AutoTxFacility.cs" />
+    <Compile Include="ContractExtensions.cs" />
     <Compile Include="Exceptions\TransactionException.cs" />
     <Compile Include="IRetryPolicy.cs" />
     <Compile Include="ITransaction.cs" />

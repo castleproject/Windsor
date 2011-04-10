@@ -1,18 +1,18 @@
 #region license
 
-// // Copyright 2009-2011 Henrik Feldt - http://logibit.se /
-// // 
-// // Licensed under the Apache License, Version 2.0 (the "License");
-// // you may not use this file except in compliance with the License.
-// // You may obtain a copy of the License at
-// // 
-// //     http://www.apache.org/licenses/LICENSE-2.0
-// // 
-// // Unless required by applicable law or agreed to in writing, software
-// // distributed under the License is distributed on an "AS IS" BASIS,
-// // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// // See the License for the specific language governing permissions and
-// // limitations under the License.
+// Copyright 2009-2011 Henrik Feldt - http://logibit.se/
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// 
+//      http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 #endregion
 
@@ -54,19 +54,19 @@ namespace Castle.Services.vNextTransaction
 		}
 
 		/// <summary>
-		/// Gets the maybe transaction options for the method info, target. If the target
-		/// has not been associated with a tranaction, the maybe is none.
+		/// 	Gets the maybe transaction options for the method info, target. If the target
+		/// 	has not been associated with a tranaction, the maybe is none.
 		/// </summary>
-		/// <param name="target">Method to find the options for.</param>
-		/// <returns>A non-null maybe <see cref="ITransactionOption"/>.</returns>
+		/// <param name = "target">Method to find the options for.</param>
+		/// <returns>A non-null maybe <see cref = "ITransactionOption" />.</returns>
 		[Pure]
 		public Maybe<ITransactionOption> AsTransactional(MethodInfo target)
 		{
 			Contract.Requires(target != null);
 			Contract.Ensures(Contract.Result<Maybe<TransactionAttribute>>() != null);
 			return _TxMethods.ContainsKey(target)
-				? Maybe.Some<ITransactionOption>(_TxMethods[target]) 
-				: Maybe.None<ITransactionOption>();
+			       	? Maybe.Some<ITransactionOption>(_TxMethods[target])
+			       	: Maybe.None<ITransactionOption>();
 		}
 	}
 }

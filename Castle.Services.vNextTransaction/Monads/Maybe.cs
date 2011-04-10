@@ -36,9 +36,12 @@ namespace Castle.Services.vNextTransaction
 		public static Maybe<TSome> Some<TSome>(TSome item)
 		{
 			Contract.Ensures(Contract.Result<Maybe<TSome>>() != null);
+			Contract.Ensures(Contract.Result<Maybe<TSome>>().HasValue);
+			Contract.Ensures(Contract.Result<Maybe<TSome>>().Value.Equals(item));
 			Contract.EndContractBlock();
 			if (!(typeof(TSome).IsValueType || item != null))
 				throw new ArgumentException("item must be either a value type or non-null");
+
 			return new Maybe<TSome>(item);
 		}
 
@@ -46,6 +49,7 @@ namespace Castle.Services.vNextTransaction
 		public static Maybe<TNone> None<TNone>()
 		{
 			Contract.Ensures(Contract.Result<Maybe<TNone>>() != null);
+			Contract.Ensures(!Contract.Result<Maybe<TNone>>().HasValue);
 			return new Maybe<TNone>();
 		}
 
@@ -62,6 +66,7 @@ namespace Castle.Services.vNextTransaction
 			Contract.Requires(maybe != null);
 			Contract.Requires(f != null);
 			Contract.Requires(!maybe.HasValue);
+			Contract.Ensures(maybe.HasValue || !Contract.Result<Maybe<TSome>>().HasValue);
 			return maybe.HasValue ? f(maybe.Value) : maybe;
 		}
 
@@ -162,12 +167,15 @@ namespace Castle.Services.vNextTransaction
 
 		internal Maybe()
 		{
+			Contract.Ensures(!HasValue);
 			_Value = default(T);
 			_HasValue = false;
 		}
 
 		internal Maybe(T value)
 		{
+			Contract.Ensures(HasValue);
+			Contract.Ensures(Value.Equals(value));
 			_Value = value;
 			_HasValue = true;
 		}
@@ -178,7 +186,11 @@ namespace Castle.Services.vNextTransaction
 		[Pure]
 		public bool HasValue
 		{
-			get { return _HasValue; }
+			get
+			{
+				Contract.Ensures(Contract.Result<bool>() == _HasValue);
+				return _HasValue;
+			}
 		}
 
 		/// <summary>
@@ -189,6 +201,9 @@ namespace Castle.Services.vNextTransaction
 		{
 			get
 			{
+				Contract.EnsuresOnThrow<InvalidOperationException>(!HasValue);
+				Contract.Ensures(Contract.Result<T>().Equals(_Value));
+
 				if (!HasValue)
 					throw new InvalidOperationException("The maybe has no value.");
 
