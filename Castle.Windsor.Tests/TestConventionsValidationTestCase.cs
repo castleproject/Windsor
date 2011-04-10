@@ -19,7 +19,7 @@ namespace CastleTests
 
 	using NUnit.Framework;
 	
-#if !SILVERLIGHT
+#if !(SILVERLIGHT || DOTNET35)
 	[Explicit]
 	public class TestConventionsValidationTestCase : AbstractContainerTestCase
 	{
