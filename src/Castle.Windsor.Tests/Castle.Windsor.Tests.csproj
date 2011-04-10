@@ -315,7 +315,7 @@
     <Compile Include="ClassComponents\Repository2.cs" />
     <Compile Include="ClassComponents\Repository3.cs" />
     <Compile Include="ClassInheritanceTestCase.cs" />
-    <Compile Include="ComponentsParametersDivisionTestsCase.cs" />
+    <Compile Include="ComponentsParametersDivisionTestCase.cs" />
     <Compile Include="Components\AlarmGenerator.cs" />
     <Compile Include="Components\AlarmGeneratorWithDependency.cs" />
     <Compile Include="Components\ArrayRefDepAsConstructor.cs" />
@@ -512,8 +512,8 @@
     <Compile Include="LoggingFacility\Classes\ISmtpServer.cs" />
     <Compile Include="LoggingFacility\Classes\SimpleLoggingComponent.cs" />
     <Compile Include="LoggingFacility\Classes\SmtpServer.cs" />
-    <Compile Include="LoggingFacility\ConsoleFacitlyTest.cs" />
-    <Compile Include="LoggingFacility\ExtendedLog4NetFacilityTests.cs" />
+    <Compile Include="LoggingFacility\ConsoleFacitlyTestCase.cs" />
+    <Compile Include="LoggingFacility\ExtendedLog4NetFacilityTestCase.cs" />
     <Compile Include="LoggingFacility\ExtendedNLogFacilityTests.cs" />
     <Compile Include="LoggingFacility\Facilities77.cs" />
     <Compile Include="LoggingFacility\Log4NetFacilityTests.cs" />
@@ -791,7 +791,7 @@
     <Compile Include="DependencyGraphTestCase.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DependencyResolvers.cs">
+    <Compile Include="DefaultDependnecyResolverTestCase.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Facilities\Startable\Components\NoInterfaceStartableComponent.cs">
@@ -896,7 +896,6 @@
     <Compile Include="Bugs\FACILITIES-ISSUE-111\FACILITIES_ISSUE_111.cs" />
     <Compile Include="Bugs\IoC-102.cs" />
     <Compile Include="Bugs\IoC-115.cs" />
-    <Compile Include="Bugs\IoC-127.cs" />
     <Compile Include="Bugs\IoC-138.cs" />
     <Compile Include="Bugs\IoC-78\IoC-78.cs" />
     <Compile Include="Bugs\IoC_103\IoC_103.cs" />
