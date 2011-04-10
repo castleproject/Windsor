@@ -30,7 +30,7 @@ namespace Castle.Facilities.Logging.Tests
 	/// Summary description for ExtendedLog4NetFacilityTests.
 	/// </summary>
 	[TestFixture]
-	public class ExtendedLog4NetFacilityTests : BaseTest
+	public class ExtendedLog4NetFacilityTestCase : BaseTest
 	{
 		private IWindsorContainer container;
 

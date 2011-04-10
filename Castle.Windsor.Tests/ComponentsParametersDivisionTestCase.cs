@@ -26,7 +26,7 @@ namespace CastleTests
 	using NUnit.Framework;
 
 	[TestFixture]
-	public class ComponentsParametersDivisionTestsCase : AbstractContainerTestCase
+	public class ComponentsParametersDivisionTestCase : AbstractContainerTestCase
 	{
 		[Test]
 		public void Collection_should_be_resolvable_normally_named()
