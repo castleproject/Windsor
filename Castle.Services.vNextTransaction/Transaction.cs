@@ -102,7 +102,12 @@ namespace Castle.Services.vNextTransaction
 
 		TransactionInformation ITransaction.TransactionInformation
 		{
-			get { return _Inner.TransactionInformation; }
+			get
+			{
+				var res = _Inner.TransactionInformation;
+				Contract.Assume(res != null);
+				return res;
+			}
 		}
 
 		Maybe<IRetryPolicy> ITransaction.FailedPolicy

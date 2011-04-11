@@ -80,10 +80,12 @@ namespace Castle.Services.vNextTransaction
 		public Maybe<ITransaction> CreateTransaction(ITransactionOption transactionOption)
 		{
 			Contract.Requires(transactionOption != null);
-			var result = Contract.Result<Maybe<ITransaction>>();
-			Contract.Ensures(result != null);
-			Contract.Ensures(!result.HasValue || result.Value.State == TransactionState.Constructed);
-			return result;
+
+			Contract.Ensures(Contract.Result<Maybe<ITransaction>>() != null
+							 && (!Contract.Result<Maybe<ITransaction>>().HasValue 
+								 || Contract.Result<Maybe<ITransaction>>().Value.State == TransactionState.Constructed));
+			
+			throw new NotImplementedException();
 		}
 
 		public void Dispose()

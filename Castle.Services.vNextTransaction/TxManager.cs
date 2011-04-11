@@ -52,8 +52,8 @@ namespace Castle.Services.vNextTransaction
 
 
 			ITransaction tx = new Transaction(inner);
-			Contract.Assert(tx.State == TransactionState.Constructed);
 			var maybe = Maybe.Some(tx);
+			Contract.Assume(maybe.HasValue && maybe.Value.State == TransactionState.Constructed);
 			return maybe;
 		}
 
