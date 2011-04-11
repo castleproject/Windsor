@@ -58,11 +58,6 @@ namespace Castle.Services.vNextTransaction
 		void Rollback();
 
 		/// <summary>
-		/// Begins the transaction.
-		/// </summary>
-		void Begin();
-
-		/// <summary>
 		/// Completes the transaction. This method can only be called if the 
 		/// transaction is in the active state, i.e. begin has been called.
 		/// </summary>
@@ -94,12 +89,6 @@ namespace Castle.Services.vNextTransaction
 		{
 		}
 
-		void ITransaction.Begin()
-		{
-			Contract.Requires(State == TransactionState.Constructed);
-			Contract.Ensures(State == TransactionState.Active);
-		}
-
 		void ITransaction.Complete()
 		{
 			Contract.Requires(State == TransactionState.Active);
@@ -114,7 +103,7 @@ namespace Castle.Services.vNextTransaction
 
 		void ITransaction.Dispose()
 		{
-			Contract.Requires(State == TransactionState.Constructed
+			Contract.Requires(State == TransactionState.Active
 				|| State == TransactionState.Active
 				|| State == TransactionState.Aborted
 				|| State == TransactionState.InDoubt);

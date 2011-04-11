@@ -28,9 +28,6 @@ namespace Castle.Services.vNextTransaction
 		/// <summary>Initial state before c'tor run</summary>
 		Default,
 
-		/// <summary>When the transaction constructor has run.</summary>
-		Constructed,
-
 		/// <summary>When begin has been called and has returned.</summary>
 		Active,
 
@@ -56,10 +53,10 @@ namespace Castle.Services.vNextTransaction
 		{
 			Contract.Requires(inner != null);
 			Contract.Ensures(_Inner != null);
-			Contract.Ensures(_State == TransactionState.Constructed);
-			Contract.Ensures(((ITransaction)this).State == TransactionState.Constructed);
+			Contract.Ensures(_State == TransactionState.Active);
+			Contract.Ensures(((ITransaction)this).State == TransactionState.Active);
 			_Inner = inner;
-			_State = TransactionState.Constructed;
+			_State = TransactionState.Active;
 		}
 
 		/**
@@ -102,7 +99,12 @@ namespace Castle.Services.vNextTransaction
 
 		TransactionInformation ITransaction.TransactionInformation
 		{
-			get { return _Inner.TransactionInformation; }
+			get
+			{
+				var res = _Inner.TransactionInformation;
+				Contract.Assume(res != null);
+				return res;
+			}
 		}
 
 		Maybe<IRetryPolicy> ITransaction.FailedPolicy
@@ -127,11 +129,6 @@ namespace Castle.Services.vNextTransaction
 			{
 				_State = TransactionState.Aborted;
 			}
-		}
-
-		void ITransaction.Begin()
-		{
-			throw new NotImplementedException();
 		}
 
 		void ITransaction.Complete()

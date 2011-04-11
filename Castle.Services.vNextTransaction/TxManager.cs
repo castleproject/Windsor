@@ -17,6 +17,7 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Transactions;
 
@@ -24,6 +25,15 @@ namespace Castle.Services.vNextTransaction
 {
 	internal class TxManager : ITxManager, ITxManagerInternal
 	{
+		private readonly IActivityManager _ActivityManager;
+
+		public TxManager(IActivityManager activityManager)
+		{
+			Contract.Requires(activityManager != null);
+			Contract.Ensures(_ActivityManager != null);
+			_ActivityManager = activityManager;
+		}
+
 		Maybe<ITransaction> ITxManager.CurrentTransaction
 		{
 			get { throw new NotImplementedException(); }
@@ -52,14 +62,73 @@ namespace Castle.Services.vNextTransaction
 
 
 			ITransaction tx = new Transaction(inner);
-			Contract.Assert(tx.State == TransactionState.Constructed);
 			var maybe = Maybe.Some(tx);
+			Contract.Assume(maybe.HasValue && maybe.Value.State == TransactionState.Active);
 			return maybe;
 		}
 
 		void IDisposable.Dispose()
 		{
 			throw new NotImplementedException();
+		}
+	}
+
+	/// <summary>
+	/// Abstracts approaches to keep transaction activities
+	/// that may differ based on the environments.
+	/// </summary>
+	public interface IActivityManager
+	{
+		/// <summary>
+		/// Gets the current activity.
+		/// </summary>
+		/// <value>The current activity.</value>
+		Activity GetCurrentActivity();
+	}
+
+	/// <summary>
+	/// Value-object that encapsulates a transaction and is serializable across
+	/// app-domains.
+	/// </summary>
+	[Serializable]
+	public sealed class Activity : MarshalByRefObject, IEquatable<Activity>
+	{
+		private readonly Guid _ActivityId = Guid.NewGuid();
+		private readonly Stack<ITransaction> _Txs = new Stack<ITransaction>();
+
+		public Maybe<ITransaction> CurrentTransaction
+		{
+			get { return _Txs.Count == 0 ? Maybe.None<ITransaction>() : Maybe.Some(_Txs.Peek()); }
+		}
+
+		public bool Equals(Activity other)
+		{
+			if (ReferenceEquals(null, other)) return false;
+			if (ReferenceEquals(this, other)) return true;
+			return other._ActivityId.Equals(_ActivityId);
+		}
+
+		public override bool Equals(object obj)
+		{
+			if (ReferenceEquals(null, obj)) return false;
+			if (ReferenceEquals(this, obj)) return true;
+			if (obj.GetType() != typeof (Activity)) return false;
+			return Equals((Activity) obj);
+		}
+
+		public override int GetHashCode()
+		{
+			return _ActivityId.GetHashCode();
+		}
+
+		public static bool operator ==(Activity left, Activity right)
+		{
+			return Equals(left, right);
+		}
+
+		public static bool operator !=(Activity left, Activity right)
+		{
+			return !Equals(left, right);
 		}
 	}
 }

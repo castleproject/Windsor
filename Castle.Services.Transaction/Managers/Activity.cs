@@ -27,10 +27,7 @@ namespace Castle.Services.Transaction
 
 		public ITransaction CurrentTransaction
 		{
-			get
-			{
-				return _TransactionStack.Count == 0 ? null : _TransactionStack.Peek();
-			}
+			get { return _TransactionStack.Count == 0 ? null : _TransactionStack.Peek(); }
 		}
 
 		public void Push(ITransaction transaction)

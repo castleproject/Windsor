@@ -37,8 +37,8 @@ namespace Castle.Services.vNextTransaction
 		{
 			Contract.Ensures(Contract.Result<Maybe<TSome>>() != null);
 			Contract.Ensures(Contract.Result<Maybe<TSome>>().HasValue);
-			Contract.Ensures(Contract.Result<Maybe<TSome>>().Value.Equals(item));
-			Contract.EndContractBlock();
+			//Contract.Ensures(Contract.Result<Maybe<TSome>>().Value.Equals(item)); // this line is also required to crash CCChecker
+
 			if (!(typeof(TSome).IsValueType || item != null))
 				throw new ArgumentException("item must be either a value type or non-null");
 
@@ -65,7 +65,6 @@ namespace Castle.Services.vNextTransaction
 		{
 			Contract.Requires(maybe != null);
 			Contract.Requires(f != null);
-			Contract.Requires(!maybe.HasValue);
 			Contract.Ensures(maybe.HasValue || !Contract.Result<Maybe<TSome>>().HasValue);
 			return maybe.HasValue ? f(maybe.Value) : maybe;
 		}
@@ -162,6 +161,7 @@ namespace Castle.Services.vNextTransaction
 	/// <typeparam name = "T"></typeparam>
 	public sealed class Maybe<T>
 	{
+		[ContractPublicPropertyName("Value")]
 		private readonly T _Value;
 		private readonly bool _HasValue;
 
@@ -175,9 +175,9 @@ namespace Castle.Services.vNextTransaction
 		internal Maybe(T value)
 		{
 			Contract.Ensures(HasValue);
-			Contract.Ensures(Value.Equals(value));
 			_Value = value;
 			_HasValue = true;
+			Contract.Assume(_Value.Equals(value));
 		}
 
 		/// <summary>
@@ -202,7 +202,7 @@ namespace Castle.Services.vNextTransaction
 			get
 			{
 				Contract.EnsuresOnThrow<InvalidOperationException>(!HasValue);
-				Contract.Ensures(Contract.Result<T>().Equals(_Value));
+				//Contract.Ensures(Contract.Result<T>().Equals(_Value)); //CCChecker's StackOverflowException here
 
 				if (!HasValue)
 					throw new InvalidOperationException("The maybe has no value.");

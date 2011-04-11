@@ -80,12 +80,10 @@ namespace Castle.Services.vNextTransaction
 			}
 
 			_Logger.DebugFormat("proceeding with transaction");
-			Contract.Assert(tx.HasValue);
+			Contract.Assume(tx.HasValue && tx.Value.State == TransactionState.Active, "from post-condition of ITxManager CreateTransaction");
 
 			using (var transaction = tx.Value)
 			{
-				transaction.Begin();
-
 				try
 				{
 					invocation.Proceed();
