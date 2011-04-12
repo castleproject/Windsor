@@ -989,5 +989,21 @@ namespace Castle.MicroKernel.Registration
 			}
 			internalKernel.AddCustomComponent(componentModel);
 		}
+
+		/// <summary>
+		///   Overrides default behavior by making the current component the default for every service it exposes. Optional <paramref
+		///    name = "serviceFilter" /> allows user to narrow down the number of services which should be make defaults.
+		/// </summary>
+		/// <param name = "serviceFilter">Invoked for each service exposed by given component if returns <c>true</c> this component will be the default for that service. If not specified it is assumed current component should become the default for all of its services.</param>
+		/// <returns></returns>
+		/// <remarks>
+		///   When specified for multiple components for any given service the one registered after will override the one selected before.
+		///   This does not affect order of resolution via <see cref = "IKernel.ResolveAll{TService}()" /> methods.
+		/// </remarks>
+		public ComponentRegistration<TService> IsDefault(Predicate<Type> serviceFilter = null)
+		{
+			var properties = new Property(Constants.DefaultComponentForServiceFilter, serviceFilter ?? (t => true));
+			return ExtendedProperties(properties);
+		}
 	}
 }

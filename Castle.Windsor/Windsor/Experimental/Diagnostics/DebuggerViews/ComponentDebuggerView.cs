@@ -70,9 +70,9 @@ namespace Castle.Windsor.Experimental.Diagnostics.DebuggerViews
 			       Enumerable.Empty<IComponentDebuggerExtension>();
 		}
 
-		public static ComponentDebuggerView BuildFor(IHandler handler)
+		public static ComponentDebuggerView BuildFor(IHandler handler, string description = null)
 		{
-			return new ComponentDebuggerView(handler, handler.ComponentModel.GetLifestyleDescription(), new DefaultComponentViewBuilder(handler));
+			return new ComponentDebuggerView(handler, description ?? handler.ComponentModel.GetLifestyleDescription(), new DefaultComponentViewBuilder(handler));
 		}
 	}
 #endif
