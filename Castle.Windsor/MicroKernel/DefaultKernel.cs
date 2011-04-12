@@ -36,7 +36,7 @@ namespace Castle.MicroKernel
 	using Castle.MicroKernel.SubSystems.Conversion;
 	using Castle.MicroKernel.SubSystems.Naming;
 	using Castle.MicroKernel.SubSystems.Resource;
-	using Castle.Windsor.Experimental.Diagnostics;
+	using Castle.Windsor.Diagnostics;
 
 	/// <summary>
 	///   Default implementation of <see cref = "IKernel" />. 
