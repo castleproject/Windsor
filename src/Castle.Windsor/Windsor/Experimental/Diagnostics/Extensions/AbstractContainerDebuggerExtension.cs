@@ -28,7 +28,12 @@ namespace Castle.Windsor.Experimental.Diagnostics.Extensions
 
 		protected ComponentDebuggerView DefaultComponentView(IHandler handler)
 		{
-			return ComponentDebuggerView.BuildFor(handler);
+			return DefaultComponentView(handler, null);
+		}
+
+		protected ComponentDebuggerView DefaultComponentView(IHandler handler, string description = null)
+		{
+			return ComponentDebuggerView.BuildFor(handler, description);
 		}
 	}
 #endif

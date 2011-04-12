@@ -521,6 +521,7 @@
     <Compile Include="LoggingFacility\NLogFacilityTests.cs" />
     <Compile Include="LoggingFacility\NullFacitlyTest.cs" />
     <Compile Include="LoggingFacility\TraceFacilityTest.cs" />
+    <Compile Include="IsDefaultTestCase.cs" />
     <Compile Include="MicroKernel\NotImplementedDependencyResolver.cs" />
     <Compile Include="Pools\RecyclableComponent.cs" />
     <Compile Include="Pools\UseRecyclableComponent.cs" />

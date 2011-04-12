@@ -28,7 +28,7 @@ namespace Castle.MicroKernel.SubSystems.Naming
 	///   Does not support a query string.
 	/// </summary>
 	[Serializable]
-	public class DefaultNamingSubSystem : AbstractSubSystem, INamingSubSystem
+	public class DefaultNamingSubSystem : AbstractSubSystem, INamingSubSystem, IExposeDefaultComponentsForServices
 	{
 		/// <summary>
 		///   Map(String, IHandler) to map component keys
@@ -98,15 +98,6 @@ namespace Castle.MicroKernel.SubSystems.Naming
 			}
 		}
 
-		public void AddHandlersFilter(IHandlersFilter filter)
-		{
-			if (filters == null)
-			{
-				filters = new List<IHandlersFilter>();
-			}
-			filters.Add(filter);
-		}
-
 		public void AddHandlerSelector(IHandlerSelector selector)
 		{
 			if (selectors == null)
@@ -114,6 +105,15 @@ namespace Castle.MicroKernel.SubSystems.Naming
 				selectors = new List<IHandlerSelector>();
 			}
 			selectors.Add(selector);
+		}
+
+		public void AddHandlersFilter(IHandlersFilter filter)
+		{
+			if (filters == null)
+			{
+				filters = new List<IHandlersFilter>();
+			}
+			filters.Add(filter);
 		}
 
 		public virtual bool Contains(String key)
@@ -235,13 +235,13 @@ namespace Castle.MicroKernel.SubSystems.Naming
 					throw new ComponentRegistrationException(
 						String.Format("There is a component already registered for the given name {0}", key));
 				}
-
 				key2Handler.Add(key, handler);
+				var serviceSelector = GetServiceSelector(handler);
 				foreach (var service in handler.Services)
 				{
-					if (service2Handler.ContainsKey(service) == false)
+					if (serviceSelector(service))
 					{
-						service2Handler.Add(service, handler);
+						service2Handler[service] = handler;
 					}
 				}
 				InvalidateCache();
@@ -346,6 +346,21 @@ namespace Castle.MicroKernel.SubSystems.Naming
 		{
 			return thisOne.IsAssignableFrom(fromThisOne) ||
 			       (thisOne.IsGenericType && thisOne.GetGenericTypeDefinition().IsAssignableFrom(fromThisOne));
+		}
+
+		private Predicate<Type> GetServiceSelector(IHandler handler)
+		{
+			var customFilter = (Predicate<Type>)handler.ComponentModel.ExtendedProperties[Constants.DefaultComponentForServiceFilter];
+			if (customFilter == null)
+			{
+				return service => service2Handler.ContainsKey(service) == false;
+			}
+			return service => service2Handler.ContainsKey(service) == false || customFilter(service);
+		}
+
+		IEnumerable<KeyValuePair<Type, IHandler>> IExposeDefaultComponentsForServices.GetDefaultComponentsForServices()
+		{
+			return HandlerByServiceCache;
 		}
 	}
 }

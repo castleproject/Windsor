@@ -19,8 +19,9 @@ namespace Castle.Windsor.Experimental.Diagnostics
 	using System.Collections.Generic;
 
 	using Castle.MicroKernel;
-#if !SILVERLIGHT
 	using Castle.Windsor.Experimental.Diagnostics.Extensions;
+#if !SILVERLIGHT
+
 #endif
 
 	public class DefaultDiagnosticsSubSystem :
@@ -35,7 +36,7 @@ namespace Castle.Windsor.Experimental.Diagnostics
 		private readonly IList<IContainerDebuggerExtension> extensions = new List<IContainerDebuggerExtension>();
 #endif
 		private IKernel kernel;
-		
+
 #if !SILVERLIGHT
 		public void Add(IContainerDebuggerExtension item)
 		{
@@ -43,6 +44,7 @@ namespace Castle.Windsor.Experimental.Diagnostics
 			extensions.Add(item);
 		}
 #endif
+
 		public void AddDiagnostic<TDiagnostic>(TDiagnostic diagnostic) where TDiagnostic : IDiagnostic<object>
 		{
 			diagnostics.Add(typeof(TDiagnostic), diagnostic);
@@ -54,7 +56,7 @@ namespace Castle.Windsor.Experimental.Diagnostics
 			diagnostics.TryGetValue(typeof(TDiagnostic), out value);
 			return (TDiagnostic)value;
 		}
-		
+
 #if !SILVERLIGHT
 		public IEnumerator<IContainerDebuggerExtension> GetEnumerator()
 		{
@@ -73,11 +75,12 @@ namespace Castle.Windsor.Experimental.Diagnostics
 		public void Terminate()
 		{
 		}
-		
+
 #if !SILVERLIGHT
 		protected virtual void InitStandardExtensions()
 		{
 			Add(new AllComponents());
+			Add(new DefaultComponentPerService());
 			Add(new PotentiallyMisconfiguredComponents());
 			Add(new PotentialLifestyleMismatches());
 			Add(new ReleasePolicyTrackedObjects());

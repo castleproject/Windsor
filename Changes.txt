@@ -1,3 +1,4 @@
+- implemented IOC-285 - Add abilitty to make a component the default for a service without ensuring it's the first component exposed that service registered
 - implemented IOC-281 - Provide out of the box support for Lazy<T>
 - implemented IOC-279 - WindsorContainer constructor taking string should accept not only file path but also other supported locations, like UNC, config section and embedded resource
 - implemented IOC-277 - Add ability for components activated in a custom way to opt out of container lifetime management
@@ -20,7 +21,7 @@
 - fixed IOC-267 - Register() on a System.ValueType (like an Int32 or an Enum) instance should throw an exception
 - fixed IOC-265 - In certain cases of cyclic dependencies debugger view times out because of stack overflow in MismatchedLifestyleDependencyViewBuilder 
 - fixed IOC-262 - objects created via UsingFactoryMethod are always tracked, even if they could safely not be
-- fixed 	IOC-260 - Generic Typed Factories no longer working in trunk
+- fixed IOC-260 - Generic Typed Factories no longer working in trunk
 - fixed IOC-254 - Optional non-primitive .ctor parameters don't work
 - fixed IOC-250 - Dispose not being called on open generic registrations
 - fixed IOC-248 - Open generic components with multiple services, some of which are generic fail to properly instantiate in certain cases
@@ -31,7 +32,7 @@
 - EventWiringFacility, FactorySupportFacility and RemotingFacility are extracted to their own assemblies
 - fixed bug with NullReferenceException when TypedFactoryFacility is used and disposed
 - IServiceProviderEx was removed as base interface for IWindsorContainer and IKernel
-- Removed the following types: ContainerAdapter, ContainerWrapper, IContainerAdapter, IContainerAdapterSite types
+- Removed the following types: ContainerAdapter, ContainerWrapper, IContainerAdapter, IContainerAdapterSite
 
 2.5.3 (2011-02-02)
 ==================
