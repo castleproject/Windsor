@@ -23,9 +23,9 @@ namespace CastleTests.Diagnostics
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Releasers;
-	using Castle.Windsor.Experimental.Diagnostics;
-	using Castle.Windsor.Experimental.Diagnostics.DebuggerViews;
-	using Castle.Windsor.Experimental.Diagnostics.Extensions;
+	using Castle.Windsor.Diagnostics;
+	using Castle.Windsor.Diagnostics.DebuggerViews;
+	using Castle.Windsor.Diagnostics.Extensions;
 
 	using CastleTests.Components;
 	using CastleTests.ContainerExtensions;

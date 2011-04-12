@@ -20,7 +20,7 @@ namespace Castle.MicroKernel.Releasers
 
 	using Castle.Core;
 	using Castle.Core.Internal;
-	using Castle.Windsor.Experimental.Diagnostics;
+	using Castle.Windsor.Diagnostics;
 
 	/// <summary>
 	///   Tracks all components requiring decomission (<see cref = "Burden.RequiresPolicyRelease" />)
