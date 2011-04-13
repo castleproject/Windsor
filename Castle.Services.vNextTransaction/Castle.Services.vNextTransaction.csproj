@@ -82,11 +82,13 @@
     <Reference Include="System.Transactions" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Activity.cs" />
     <Compile Include="AnonymousRetryPolicy.cs" />
     <Compile Include="AutoTxFacility.cs" />
     <Compile Include="CallContextActivityManager.cs" />
     <Compile Include="ContractExtensions.cs" />
     <Compile Include="Exceptions\TransactionException.cs" />
+    <Compile Include="IActivityManager.cs" />
     <Compile Include="IRetryPolicy.cs" />
     <Compile Include="ITransaction.cs" />
     <Compile Include="ITransactionOption.cs" />
@@ -102,6 +104,7 @@
     <Compile Include="TxManager.cs" />
     <Compile Include="TxClassMetaInfo.cs" />
     <Compile Include="TxClassMetaInfoStore.cs" />
+    <Compile Include="TxScope.cs" />
     <Compile Include="Utils\Fun.cs" />
   </ItemGroup>
   <ItemGroup>

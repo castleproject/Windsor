@@ -39,8 +39,8 @@ namespace Castle.Services.Transaction.Tests.vNext
 			Assert.That(System.Transactions.Transaction.Current != null,
 			            "The current transaction mustn't be null.");
 
-			Assert.That(vNextTransaction.Transaction.Current != null,
-			            "The current castle transaction mustn't be null.");
+			Assert.That(_Manager.CurrentTransaction != null,
+				"The current transaction in the transaction manager mustn't be null.");
 
 			return _Manager.CurrentTransaction.Value;
 		}
@@ -50,9 +50,6 @@ namespace Castle.Services.Transaction.Tests.vNext
 		{
 			Assert.That(System.Transactions.Transaction.Current != null,
 			            "The current transaction mustn't be null.");
-
-			Assert.That(vNextTransaction.Transaction.Current != null,
-			            "The current castle transaction mustn't be null.");
 
 			a();
 		}

@@ -48,6 +48,8 @@ namespace Castle.Services.vNextTransaction
 			Contract.Requires(store != null, "store must be non null");
 			Contract.Ensures(_State == InterceptorState.Constructed);
 
+			_Logger.DebugFormat("created transaction interceptor");
+
 			_Kernel = kernel;
 			_Store = store;
 			_State = InterceptorState.Constructed;
@@ -83,6 +85,7 @@ namespace Castle.Services.vNextTransaction
 			Contract.Assume(tx.HasValue && tx.Value.State == TransactionState.Active, "from post-condition of ITxManager CreateTransaction");
 
 			using (var transaction = tx.Value)
+			using (new TxScope(transaction.Inner))
 			{
 				try
 				{

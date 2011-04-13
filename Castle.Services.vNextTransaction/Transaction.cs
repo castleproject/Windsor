@@ -35,9 +35,10 @@ namespace Castle.Services.vNextTransaction
 		InDoubt,
 
 		/// <summary>When commit has been called and has returned successfully.</summary>
-		Committed,
+		CommittedOrCompleted,
 
-		/// <summary>When first begin and then rollback has been called.</summary>
+		/// <summary>When first begin and then rollback has been called, or
+		/// a resource failed.</summary>
 		Aborted,
 
 		/// <summary>When the dispose method has run.</summary>
@@ -48,14 +49,28 @@ namespace Castle.Services.vNextTransaction
 		private TransactionState _State = TransactionState.Default;
 
 		private readonly CommittableTransaction _Inner;
+		private readonly DependentTransaction _Inner2;
+		private readonly Action _OnDispose;
 
-		public Transaction(CommittableTransaction inner)
+		public Transaction(CommittableTransaction inner, Action onDispose)
 		{
 			Contract.Requires(inner != null);
 			Contract.Ensures(_Inner != null);
 			Contract.Ensures(_State == TransactionState.Active);
 			Contract.Ensures(((ITransaction)this).State == TransactionState.Active);
 			_Inner = inner;
+			_OnDispose = onDispose;
+			_State = TransactionState.Active;
+		}
+
+		public Transaction(DependentTransaction inner, Action onDispose)
+		{
+			Contract.Requires(inner != null);
+			Contract.Ensures(_Inner2 != null);
+			Contract.Ensures(_State == TransactionState.Active);
+			Contract.Ensures(((ITransaction)this).State == TransactionState.Active);
+			_Inner2 = inner;
+			_OnDispose = onDispose;
 			_State = TransactionState.Active;
 		}
 
@@ -65,22 +80,18 @@ namespace Castle.Services.vNextTransaction
 		 * Default -> Constructed
 		 * Constructed -> Disposed
 		 * Constructed -> Active
-		 * Active -> Committed
+		 * Active -> CommittedOrCompleted (depends on whether we are committable or not)
 		 * Active -> InDoubt
 		 * Active -> Aborted
 		 * Aborted -> Disposed	# an active transaction may be disposed and then dispose must take take of aborting
 		 */
-
-		public static ITransaction Current
-		{
-			get { throw new NotImplementedException(); }
-		}
 
 		void ITransaction.Dispose()
 		{
 			try
 			{
 				((IDisposable) this).Dispose();
+				if (_OnDispose != null) _OnDispose();
 			}
 			finally
 			{
@@ -97,11 +108,25 @@ namespace Castle.Services.vNextTransaction
 			}
 		}
 
+		System.Transactions.Transaction ITransaction.Inner
+		{
+			get
+			{
+				Contract.Assume(_Inner != null || _Inner2 != null);
+				return _Inner ?? (System.Transactions.Transaction) _Inner2;
+			}
+		}
+
+		private System.Transactions.Transaction Inner
+		{
+			get { return _Inner ?? (System.Transactions.Transaction) _Inner2; }
+		}
+
 		TransactionInformation ITransaction.TransactionInformation
 		{
 			get
 			{
-				var res = _Inner.TransactionInformation;
+				var res = Inner.TransactionInformation;
 				Contract.Assume(res != null);
 				return res;
 			}
@@ -123,7 +148,7 @@ namespace Castle.Services.vNextTransaction
 
 			try
 			{
-				_Inner.Rollback();
+				Inner.Rollback();
 			}
 			finally
 			{
@@ -133,12 +158,12 @@ namespace Castle.Services.vNextTransaction
 
 		void ITransaction.Complete()
 		{
-			// TODO: Policy for handling in doubt transactions
-
 			try
 			{
-				_Inner.Commit();
-				_State = TransactionState.Committed;
+				if (_Inner != null) _Inner.Commit();
+				if (_Inner2 != null) _Inner2.Complete();
+
+				_State = TransactionState.CommittedOrCompleted;
 			}
 			catch (TransactionInDoubtException e)
 			{
@@ -166,7 +191,7 @@ namespace Castle.Services.vNextTransaction
 		{
 			try
 			{
-				_Inner.Dispose();
+				Inner.Dispose();
 			}
 			finally
 			{

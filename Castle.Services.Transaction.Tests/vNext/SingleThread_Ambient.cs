@@ -1,4 +1,5 @@
 using System;
+using System.Transactions;
 using Castle.MicroKernel.Registration;
 using Castle.Services.vNextTransaction;
 using Castle.Windsor;
@@ -26,7 +27,7 @@ namespace Castle.Services.Transaction.Tests.vNext
 		}
 
 		[Test]
-		public void RollsBack_OnException()
+		public void IsDisposed_OnException_And_ActiveDuring_MethodCall()
 		{
 			var s = _Container.Resolve<IMyService>();
 			var txM = _Container.Resolve<ITxManager>();
@@ -40,13 +41,30 @@ namespace Castle.Services.Transaction.Tests.vNext
 				{
 				    ambient = System.Transactions.Transaction.Current;
 				    ourTx = txM.CurrentTransaction.Value;
+					Assert.That(ourTx.State, Is.EqualTo(TransactionState.Active));
 				    throw new ApplicationException("should trigger rollback");
 				});
 			}
 			catch (ApplicationException) { }
 
-			Assert.That(ourTx.TransactionInformation.Status,
-				Is.EqualTo(System.Transactions.TransactionStatus.Aborted));
+			Assert.That(ourTx.State, Is.EqualTo(TransactionState.Diposed));
+		}
+
+		[Test]
+		public void RecursiveTransactions_Inner_Should_Be_DependentTransaction()
+		{
+			var s = _Container.Resolve<IMyService>();
+			var txM = _Container.Resolve<ITxManager>();
+
+			s.VerifyInAmbient(() =>
+			{
+			    Assert.That(txM.CurrentTransaction.Value.TransactionInformation.Status ==
+			                System.Transactions.TransactionStatus.Active);
+
+			    Assert.That(txM.CurrentTransaction.Value.Inner, Is.InstanceOf<CommittableTransaction>());
+
+			    s.VerifyInAmbient(() => Assert.That(txM.CurrentTransaction.Value.Inner, Is.InstanceOf<DependentTransaction>()));
+			});
 		}
 	}
 }

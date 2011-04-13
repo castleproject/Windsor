@@ -17,7 +17,6 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Transactions;
 
@@ -36,7 +35,7 @@ namespace Castle.Services.vNextTransaction
 
 		Maybe<ITransaction> ITxManager.CurrentTransaction
 		{
-			get { throw new NotImplementedException(); }
+			get { return _ActivityManager.GetCurrentActivity().CurrentTransaction; }
 		}
 
 		void ITxManager.AddRetryPolicy(string policyKey, Func<Exception, bool> retryPolicy)
@@ -54,81 +53,40 @@ namespace Castle.Services.vNextTransaction
 			if (transactionOption.TransactionMode == TransactionScopeOption.Suppress)
 				return Maybe.None<ITransaction>();
 
-			var inner = new CommittableTransaction(new TransactionOptions
-			                                       	{
-			                                       		IsolationLevel = transactionOption.IsolationLevel,
-			                                       		Timeout = TimeSpan.MaxValue
-			                                       	});
+			var activity = _ActivityManager.GetCurrentActivity();
 
+			ITransaction tx;
+			if (activity.Count == 0)
+				tx = new Transaction(new CommittableTransaction(new TransactionOptions
+				{
+					IsolationLevel = transactionOption.IsolationLevel,
+					Timeout = transactionOption.Timeout
+				}), () => activity.Pop());
+			else
+			{
+				var clone = activity
+					.CurrentTransaction.Value
+					.Inner
+					.DependentClone(DependentCloneOption.BlockCommitUntilComplete);
+				
+				// assume because I can't open up .Net and add the contract myself
+				Contract.Assume(clone != null);
+				tx = new Transaction(clone, () => activity.Pop());
+			}
 
-			ITransaction tx = new Transaction(inner);
-			var maybe = Maybe.Some(tx);
-			Contract.Assume(maybe.HasValue && maybe.Value.State == TransactionState.Active);
-			return maybe;
+			activity.Push(tx);
+			var m = Maybe.Some(tx);
+
+			// assume because I can't make value types and reference types equal enough
+			// and boxing doesn't do it for me.
+			Contract.Assume(m.HasValue && m.Value.State == TransactionState.Active);
+
+			return m;
 		}
 
 		void IDisposable.Dispose()
 		{
 			throw new NotImplementedException();
-		}
-	}
-
-	/// <summary>
-	/// Abstracts approaches to keep transaction activities
-	/// that may differ based on the environments.
-	/// </summary>
-	public interface IActivityManager
-	{
-		/// <summary>
-		/// Gets the current activity.
-		/// </summary>
-		/// <value>The current activity.</value>
-		Activity GetCurrentActivity();
-	}
-
-	/// <summary>
-	/// Value-object that encapsulates a transaction and is serializable across
-	/// app-domains.
-	/// </summary>
-	[Serializable]
-	public sealed class Activity : MarshalByRefObject, IEquatable<Activity>
-	{
-		private readonly Guid _ActivityId = Guid.NewGuid();
-		private readonly Stack<ITransaction> _Txs = new Stack<ITransaction>();
-
-		public Maybe<ITransaction> CurrentTransaction
-		{
-			get { return _Txs.Count == 0 ? Maybe.None<ITransaction>() : Maybe.Some(_Txs.Peek()); }
-		}
-
-		public bool Equals(Activity other)
-		{
-			if (ReferenceEquals(null, other)) return false;
-			if (ReferenceEquals(this, other)) return true;
-			return other._ActivityId.Equals(_ActivityId);
-		}
-
-		public override bool Equals(object obj)
-		{
-			if (ReferenceEquals(null, obj)) return false;
-			if (ReferenceEquals(this, obj)) return true;
-			if (obj.GetType() != typeof (Activity)) return false;
-			return Equals((Activity) obj);
-		}
-
-		public override int GetHashCode()
-		{
-			return _ActivityId.GetHashCode();
-		}
-
-		public static bool operator ==(Activity left, Activity right)
-		{
-			return Equals(left, right);
-		}
-
-		public static bool operator !=(Activity left, Activity right)
-		{
-			return !Equals(left, right);
 		}
 	}
 }

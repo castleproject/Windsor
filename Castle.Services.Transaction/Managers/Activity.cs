@@ -14,6 +14,9 @@
 //  limitations under the License.
 // 
 #endregion
+
+using System.Diagnostics.Contracts;
+
 namespace Castle.Services.Transaction
 {
 	using System;
@@ -25,18 +28,44 @@ namespace Castle.Services.Transaction
 		private Guid id = Guid.NewGuid();
 		private readonly Stack<ITransaction> _TransactionStack = new Stack<ITransaction>(2);
 
+		/// <summary>
+		/// Gets the current transaction, i.e. the topmost one.
+		/// </summary>
+		[Pure]
 		public ITransaction CurrentTransaction
 		{
 			get { return _TransactionStack.Count == 0 ? null : _TransactionStack.Peek(); }
 		}
 
+		[ContractInvariantMethod]
+		private void Invariant()
+		{
+			Contract.Invariant(_TransactionStack != null);
+		}
+
+		/// <summary>
+		/// Push a transaction onto the stack of transactions.
+		/// </summary>
+		/// <param name="transaction"></param>
 		public void Push(ITransaction transaction)
 		{
+			Contract.Requires(transaction != null);
+			Contract.Ensures(Contract.Exists(_TransactionStack, x=>
+				object.ReferenceEquals(x, transaction)));
+			Contract.Ensures(object.ReferenceEquals(CurrentTransaction, transaction));
+
 			_TransactionStack.Push(transaction);
 		}
 
+		/// <summary>
+		/// Return the top-most transaction from the stack of transactions.
+		/// </summary>
+		/// <returns></returns>
 		public ITransaction Pop()
 		{
+			Contract.Ensures(Contract.ForAll(_TransactionStack,
+				x => !object.ReferenceEquals(x, Contract.Result<ITransaction>())));
+
 			return _TransactionStack.Pop();
 		}
 

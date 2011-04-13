@@ -23,27 +23,52 @@ using System.Transactions;
 namespace Castle.Services.vNextTransaction
 {
 	/// <summary>
+	/// <para>
 	/// Denotes a castle transaction. This is the main point of interaction between your code and
 	/// the transactional behaviour of it. Use the transaction manager <see cref = "ITxManager" /> to
 	/// rollback from within a transactional method.
-	/// 
+	/// </para><para>
 	/// Implementors of this class should do their best to provide a stable implementation
 	/// where Dispose, Rollback and Complete can be called idempotently. The get-property accessors must
-	/// not change state when gotten.
+	/// not change state when gotten.</para>
 	/// </summary>
 	[ContractClass(typeof (TransactionContract))]
 	public interface ITransaction : IDisposable
 	{
+		/// <summary>
+		/// Dispose the resource/the transaction. It's important that you call this method
+		/// when you are using the transaction together with the transaction manager, but 
+		/// otherwise as well if you want deterministic disposal.
+		/// </summary>
 		new void Dispose();
 
+		/// <summary>
+		/// Gets the tranaction state. Castle.Service.Transaction contains a number
+		/// of states which will allow you to reasin about the state.
+		/// </summary>
 		TransactionState State { get; }
+
+		/// <summary>
+		/// Gets the inner <see cref="System.Transactions.Transaction"/>,
+		/// which is the foundation upon which Castle.Transactions builds.
+		/// It can be either a <see cref="CommittableTransaction"/> or a 
+		/// <see cref="DependentTransaction"/> or a 
+		/// <see cref="SubordinateTransaction"/>. A dependent transaction
+		/// can be used to handle concurrency in a nice way.
+		/// </summary>
+		System.Transactions.Transaction Inner { get; }
 
 		/// <summary>
 		/// Gets information about the current underlying transaction
 		/// such as those found in System.Transaction on top of which
 		/// this framework is built.
 		/// </summary>
+		/// <exception cref="ObjectDisposedException">
+		/// If the transaction is disposed you cannot access its information.
+		/// </exception>
 		TransactionInformation TransactionInformation { get; }
+
+		// TODO: Policy for handling in doubt transactions
 
 		/// <summary>
 		/// Maybe contains a failed policy for this transaction.
@@ -51,9 +76,7 @@ namespace Castle.Services.vNextTransaction
 		Maybe<IRetryPolicy> FailedPolicy { get; }
 
 		/// <summary>
-		/// Rolls the transaction back.
-		/// This method is automatically called on managed dispose.
-		/// This method is idempotent.
+		/// Rolls the transaction back. This method is automatically called on (managed) dispose.
 		/// </summary>
 		void Rollback();
 
@@ -93,7 +116,7 @@ namespace Castle.Services.vNextTransaction
 		{
 			Contract.Requires(State == TransactionState.Active);
 			// ->
-			Contract.Ensures(State == TransactionState.Committed
+			Contract.Ensures(State == TransactionState.CommittedOrCompleted
 				|| State == TransactionState.Aborted
 				|| State == TransactionState.InDoubt);
 
@@ -116,14 +139,22 @@ namespace Castle.Services.vNextTransaction
 			get { return Contract.Result<TransactionState>(); }
 		}
 
+		public System.Transactions.Transaction Inner
+		{
+			get
+			{
+				Contract.Ensures(Contract.Result<System.Transactions.Transaction>() != null);
+				throw new NotImplementedException();
+			}
+		}
+
 		[Pure]
 		TransactionInformation ITransaction.TransactionInformation
 		{
 			get
 			{
-				var res = Contract.Result<TransactionInformation>();
 				Contract.Ensures(Contract.Result<TransactionInformation>() != null);
-				return res;
+				return Contract.Result<TransactionInformation>();
 			}
 		}
 

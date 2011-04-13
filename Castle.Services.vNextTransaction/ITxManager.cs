@@ -47,6 +47,19 @@ namespace Castle.Services.vNextTransaction
 		/// <summary>
 		/// 	Create a new transaction, given the transaction options.
 		/// </summary>
+		/// <remarks>
+		/// <para>
+		/// <see cref="IDisposable.Dispose"/> the transaction, or transactions further ahead in time will not
+		/// work properly.
+		/// </para><para>
+		/// Also, beware that if you call this method on your own, you are responsible for setting
+		/// <see cref="System.Transactions.Transaction.Current"/> to the result's Inner property
+		/// and restoring the previous Current property at the end of that transaction.
+		/// </para><para>
+		/// The transaction interceptor (in AutoTx) takes care of this for you. The two projects
+		/// work very well together.
+		/// </para>
+		/// </remarks>
 		/// <param name = "transactionOption">Options to use for creating the new transaction.</param>
 		/// <returns>Maybe a transaction, if the options specified it.</returns>
 		Maybe<ITransaction> CreateTransaction(ITransactionOption transactionOption);

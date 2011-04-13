@@ -177,7 +177,9 @@
     <Compile Include="vNext\InfrastructureTests.cs" />
     <Compile Include="vNext\MyService.cs" />
     <Compile Include="vNext\RetryPolicies_Transactions.cs" />
+    <Compile Include="vNext\ScratchBoard_LTM.cs" />
     <Compile Include="vNext\SingleThread_Ambient.cs" />
+    <Compile Include="vNext\TxTraceListener.cs" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />

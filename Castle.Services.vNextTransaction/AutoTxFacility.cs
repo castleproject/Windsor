@@ -39,7 +39,9 @@ namespace Castle.Services.vNextTransaction
 				Component.For<ITxManager>()
 					.ImplementedBy<TxManager>()
 					.Named("transaction.manager")
-					.LifeStyle.Singleton
+					.LifeStyle.Singleton,
+				Component.For<IActivityManager>()
+					.ImplementedBy<CallContextActivityManager>()
 				);
 
 			Kernel.ComponentModelBuilder.AddContributor(new TxComponentInspector());
