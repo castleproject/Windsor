@@ -106,7 +106,7 @@ namespace Castle.Services.Transaction.Tests.vNext
 					cmd.ExecuteNonQuery();
 
 					Console.WriteLine("T2: Enlisting volatile");
-					t2.EnlistVolatile(new VolatileResource(true), EnlistmentOptions.None);
+					t2.EnlistVolatile(new VolatileResource(false), EnlistmentOptions.None);
 
 					Console.WriteLine("T2: COMPLETE-CALL");
 					t2.Complete();

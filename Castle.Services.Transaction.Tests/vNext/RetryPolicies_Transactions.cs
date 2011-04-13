@@ -21,7 +21,7 @@ namespace Castle.Services.Transaction.Tests.vNext
 		// something like: 
 		// http://philbolduc.blogspot.com/2010/03/retryable-actions-in-c.html
 
-		[Test]
+		[Test, Ignore("TODO")]
 		public void retrying_twice_on_timeout()
 		{
 			// on app-start
