@@ -160,22 +160,22 @@ namespace Castle.MicroKernel
 		///   Returns the component instance by the component key
 		///   using dynamic arguments
 		/// </summary>
-		/// <param name = "key"></param>
-		/// <param name = "arguments"></param>
-		/// <returns></returns>
-		[Obsolete("Use Resolve<object>(key, arguments) instead")]
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		object Resolve(String key, IDictionary arguments);
-
-		/// <summary>
-		///   Returns the component instance by the component key
-		///   using dynamic arguments
-		/// </summary>
 		/// <param name = "key">Key to resolve</param>
 		/// <param name = "argumentsAsAnonymousType">Arguments to resolve the services</param>
 		/// <returns></returns>
 		[Obsolete("Use Resolve<object>(key, argumentsAsAnonymousType) instead")]
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		object Resolve(String key, object argumentsAsAnonymousType);
+
+		/// <summary>
+		///   Returns the component instance by the component key
+		///   using dynamic arguments
+		/// </summary>
+		/// <param name = "key"></param>
+		/// <param name = "arguments"></param>
+		/// <returns></returns>
+		[Obsolete("Use Resolve<object>(key, arguments) instead")]
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		object Resolve(String key, IDictionary arguments);
 	}
 }

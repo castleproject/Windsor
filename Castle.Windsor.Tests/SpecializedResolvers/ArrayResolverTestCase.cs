@@ -14,21 +14,23 @@
 
 namespace Castle.MicroKernel.Tests.SpecializedResolvers
 {
+	using System;
 	using System.Linq;
 
+	using Castle.MicroKernel.Handlers;
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Resolvers.SpecializedResolvers;
 	using Castle.Windsor.Tests;
 
 	using CastleTests;
 	using CastleTests.Components;
+	using CastleTests.SpecializedResolvers;
 
 	using NUnit.Framework;
 
 	[TestFixture]
 	public class ArrayResolverTestCase : AbstractContainerTestCase
 	{
-
 		[Test(Description = "IOC-239")]
 		public void ArrayResolution_UnresolvableDependencyCausesResolutionFailure()
 		{
@@ -38,7 +40,19 @@ namespace Castle.MicroKernel.Tests.SpecializedResolvers
 				Component.For<IDependency>().ImplementedBy<UnresolvalbeDependencyWithPrimitiveConstructor>(),
 				Component.For<IDependOnArray>().ImplementedBy<DependsOnArray>()
 				);
-			Container.Resolve<IDependOnArray>();
+
+			var exception = 
+
+			Assert.Throws<HandlerException>(() => Container.Resolve<IDependOnArray>());
+
+			var message =
+				string.Format(
+					"Can't create component '{1}' as it has dependencies to be satisfied.{0}{0}'{1}' is waiting for the following dependencies:{0}- Service '{2}' which was not registered.{0}- Parameter 'str' which was not provided. Did you forget to set the dependency?{0}",
+					Environment.NewLine,
+					typeof(UnresolvalbeDependencyWithPrimitiveConstructor).FullName,
+					typeof(A).FullName);
+
+			Assert.AreEqual(message, exception.Message);
 		}
 
 		[Test(Description = "IOC-239")]
@@ -50,7 +64,20 @@ namespace Castle.MicroKernel.Tests.SpecializedResolvers
 				Component.For<IDependency>().ImplementedBy<UnresolvalbeDependencyWithAdditionalServiceConstructor>(),
 				Component.For<IDependOnArray>().ImplementedBy<DependsOnArray>()
 				);
-			Container.Resolve<IDependOnArray>();
+
+			var exception =
+
+			Assert.Throws<HandlerException>(() => Container.Resolve<IDependOnArray>());
+
+			var message =
+				string.Format(
+					"Can't create component '{1}' as it has dependencies to be satisfied.{0}{0}'{1}' is waiting for the following dependencies:{0}- Service '{2}' which was not registered.{0}- Service '{3}' which was not registered.{0}",
+					Environment.NewLine,
+					typeof(UnresolvalbeDependencyWithAdditionalServiceConstructor).FullName,
+					typeof(A).FullName,
+					typeof(IEmptyService).FullName);
+
+			Assert.AreEqual(message, exception.Message);
 		}
 
 		[Test(Description = "IOC-239")]
@@ -62,7 +89,19 @@ namespace Castle.MicroKernel.Tests.SpecializedResolvers
 				Component.For<IDependency>().ImplementedBy<UnresolvalbeDependency>(),
 				Component.For<IDependOnArray>().ImplementedBy<DependsOnArray>()
 				);
-			Container.Resolve<IDependOnArray>();
+
+			var exception =
+
+			Assert.Throws<HandlerException>(() => Container.Resolve<IDependOnArray>());
+
+			var message =
+				string.Format(
+					"Can't create component '{1}' as it has dependencies to be satisfied.{0}{0}'{1}' is waiting for the following dependencies:{0}- Service '{2}' which was not registered.{0}",
+					Environment.NewLine,
+					typeof(UnresolvalbeDependency).FullName,
+					typeof(A).FullName);
+
+			Assert.AreEqual(message, exception.Message);
 		}
 
 		[Test]

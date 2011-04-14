@@ -319,7 +319,7 @@ namespace Castle.MicroKernel
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public object Resolve(string key, IDictionary arguments)
 		{
-			return (this as IKernelInternal).Resolve(key, service: null, arguments: arguments, policy: releasePolicy);
+			return (this as IKernelInternal).Resolve(key, service: null, arguments: arguments, policy: ReleasePolicy);
 		}
 
 		/// <summary>
@@ -333,7 +333,7 @@ namespace Castle.MicroKernel
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public object Resolve(string key, object argumentsAsAnonymousType)
 		{
-			return (this as IKernelInternal).Resolve(key, null, new ReflectionBasedDictionaryAdapter(argumentsAsAnonymousType), releasePolicy);
+			return (this as IKernelInternal).Resolve(key, null, new ReflectionBasedDictionaryAdapter(argumentsAsAnonymousType), ReleasePolicy);
 		}
 	}
 }

@@ -20,9 +20,9 @@ namespace Castle.MicroKernel.Tests.Registration
 
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Tests.ClassComponents;
-	using Castle.Windsor.Tests;
 
 	using CastleTests;
+	using CastleTests.Components;
 
 	using NUnit.Framework;
 
@@ -53,7 +53,7 @@ namespace Castle.MicroKernel.Tests.Registration
 					.Named("defaultCustomer"),
 				Component.For<ICustomer>().ImplementedBy<CustomerImpl2>()
 					.Named("otherCustomer")
-					.Parameters(
+					.DependsOn(
 						Parameter.ForKey("name").Eq("foo"), // static parameters, resolved at registration time
 						Parameter.ForKey("address").Eq("bar st 13"),
 						Parameter.ForKey("age").Eq("5")),

@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,14 +14,110 @@
 
 namespace Castle.Windsor.Tests.MicroKernel
 {
+	using System;
+	using System.Collections;
+	using System.Collections.Generic;
+
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Context;
+	using Castle.MicroKernel.Registration;
+	using Castle.Windsor.Tests.Components;
+
+	using CastleTests;
+	using CastleTests.Components;
 
 	using NUnit.Framework;
 
 	[TestFixture]
-	public class ArgumentsTestCase
+	public class ArgumentsTestCase : AbstractContainerTestCase
 	{
+		[Test]
+		public void By_default_any_type_as_key_is_supported()
+		{
+			var arguments = new Arguments(new CustomStringComparer());
+			var key = new object();
+			var value = "foo";
+
+			arguments.Add(key, value);
+
+			Assert.AreEqual("foo", arguments[key]);
+		}
+
+		[Test]
+		[Bug("IOC-147")]
+		public void Can_have_dictionary_as_inline_dependency()
+		{
+			var container = new WindsorContainer();
+			container.Register(Component.For<HasDictionaryDependency>());
+
+			var dictionaryProperty = new Dictionary<string, string>();
+
+			var obj = container.Resolve<HasDictionaryDependency>(new { dictionaryProperty });
+			Assert.AreSame(dictionaryProperty, obj.DictionaryProperty);
+		}
+
+		[Test]
+		[Bug("IOC-142")]
+		public void Can_satisfy_nullable_property_dependency()
+		{
+			Container.Register(Component.For<HasNullableIntProperty>());
+
+			var arguments = new Arguments().Insert("SomeVal", 5);
+			var s = Container.Resolve<HasNullableIntProperty>(arguments);
+
+			Assert.IsNotNull(s.SomeVal);
+		}
+
+		[Test]
+		[Bug("IOC-142")]
+		public void Can_satisfy_nullable_ctor_dependency()
+		{
+			Container.Register(Component.For<HasNullableDoubleConstructor>());
+
+			var s = Container.Resolve<HasNullableDoubleConstructor>(new Arguments().Insert("foo", 5d));
+			Assert.IsNotNull(s);
+		}
+
+		[Test]
+		[Bug("IOC-92")]
+		public void Can_mix_hashtable_parameters_and_configuration_parameters()
+		{
+			Container.Register(
+				Component.For<HasStringAndIntDependency>()
+					.DependsOn(Parameter.ForKey("x").Eq("abc"))
+				);
+
+			Container.Resolve<HasStringAndIntDependency>(new Arguments().Insert("y", 1));
+		}
+
+		[Test]
+		public void Custom_stores_get_picked_over_default_ones()
+		{
+			var arguments = new Arguments(new CustomStringComparer());
+			var key = "foo";
+			var value = new object();
+
+			arguments.Add(key, value);
+
+			Assert.AreEqual(value, arguments["boo!"]);
+		}
+
+#if !SILVERLIGHT
+		[Test]
+		public void Custom_stores_get_picked_over_default_ones_in_clone()
+		{
+			var arguments = new Arguments(new CustomStringComparer());
+			var key = "foo";
+			var value = new object();
+
+			arguments.Add(key, value);
+
+			var clone = (IDictionary)((ICloneable)arguments).Clone();
+
+			Assert.AreEqual(value, clone["boo!"]);
+		}
+#endif
+
 		[Test]
 		public void Handles_Type_as_key()
 		{
@@ -62,30 +158,6 @@ namespace Castle.Windsor.Tests.MicroKernel
 			Assert.IsTrue(arguments.Contains(key.ToLower()));
 			Assert.IsTrue(arguments.Contains(key.ToUpper()));
 		}
-
-		[Test]
-		public void Custom_stores_get_picked_over_default_ones()
-		{
-			var arguments = new Arguments(new CustomStringComparer());
-			var key = "foo";
-			var value = new object();
-
-			arguments.Add(key, value);
-
-			Assert.AreEqual(value, arguments["boo!"]);
-		}
-
-		[Test]
-		public void By_default_any_type_as_key_is_supported()
-		{
-			var arguments = new Arguments(new CustomStringComparer());
-			var key = new object();
-			var value = "foo";
-
-			arguments.Add(key, value);
-
-			Assert.AreEqual("foo", arguments[key]);
-		}
 	}
 
 	public class CustomStringComparer : IArgumentsComparer
@@ -103,14 +175,13 @@ namespace Castle.Windsor.Tests.MicroKernel
 
 		public bool RunHasCodeCalculation(object o, out int hashCode)
 		{
-			if(o is string )
+			if (o is string)
 			{
 				hashCode = "boo!".GetHashCode();
 				return true;
 			}
 			hashCode = 0;
 			return false;
-
 		}
 	}
 }

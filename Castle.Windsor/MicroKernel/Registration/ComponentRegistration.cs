@@ -53,12 +53,15 @@ namespace Castle.MicroKernel.Registration
 		private bool registerNewServicesOnly;
 		private bool registered;
 
+		/// <summary>
+		///   Initializes a new instance of the <see cref = "ComponentRegistration{TService}" /> class.
+		/// </summary>
 		public ComponentRegistration() : this(typeof(TService))
 		{
 		}
 
 		/// <summary>
-		///   Initializes a new instance of the <see cref = "ComponentRegistration{S}" /> class.
+		///   Initializes a new instance of the <see cref = "ComponentRegistration{TService}" /> class.
 		/// </summary>
 		public ComponentRegistration(params Type[] services)
 		{
@@ -81,6 +84,7 @@ namespace Castle.MicroKernel.Registration
 		///   For example singleton and transient (also known as 'factory').
 		/// </summary>
 		/// <value>The with lifestyle.</value>
+		[EditorBrowsable(EditorBrowsableState.Advanced)]
 		public LifestyleGroup<TService> LifeStyle
 		{
 			get { return new LifestyleGroup<TService>(this); }
@@ -136,7 +140,7 @@ namespace Castle.MicroKernel.Registration
 		/// </summary>
 		/// <param name = "actors">The component actors.</param>
 		/// <returns></returns>
-		[EditorBrowsable(EditorBrowsableState.Advanced)]
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		[Obsolete("If you're using WCF Facility use AsWcfClient/AsWcfService extension methods instead.")]
 		public ComponentRegistration<TService> ActAs(params object[] actors)
 		{
@@ -154,9 +158,9 @@ namespace Castle.MicroKernel.Registration
 		///   Set a custom <see cref = "IComponentActivator" /> which creates and destroys the component.
 		/// </summary>
 		/// <returns></returns>
-		public ComponentRegistration<TService> Activator<A>() where A : IComponentActivator
+		public ComponentRegistration<TService> Activator<TActivator>() where TActivator : IComponentActivator
 		{
-			return AddAttributeDescriptor("componentActivatorType", typeof(A).AssemblyQualifiedName);
+			return AddAttributeDescriptor("componentActivatorType", typeof(TActivator).AssemblyQualifiedName);
 		}
 
 		/// <summary>
@@ -226,7 +230,7 @@ namespace Castle.MicroKernel.Registration
 		/// </summary>
 		/// <param name = "dependencies">The dependencies.</param>
 		/// <returns></returns>
-		public ComponentRegistration<TService> DependsOn(params Property[] dependencies)
+		public ComponentRegistration<TService> DependsOn(params Dependency[] dependencies)
 		{
 			if (dependencies == null || dependencies.Length == 0)
 			{
@@ -239,14 +243,31 @@ namespace Castle.MicroKernel.Registration
 				AddDescriptor(new ServiceOverrideDescriptor(serviceOverrides));
 				dependencies = dependencies.Except(serviceOverrides).ToArray();
 			}
-			return AddDescriptor(new CustomDependencyDescriptor(dependencies));
+			var properties = dependencies.OfType<Property>().ToArray();
+			if (properties.Length > 0)
+			{
+				AddDescriptor(new CustomDependencyDescriptor(properties));
+				dependencies = dependencies.Except(properties).ToArray();
+			}
+
+			var parameters = dependencies.OfType<Parameter>().ToArray();
+			if (parameters.Length > 0)
+			{
+				AddDescriptor(new ParametersDescriptor(parameters));
+				dependencies = dependencies.Except(parameters).ToArray();
+			}
+
+			if (dependencies.Length > 0)
+			{
+				throw new ComponentRegistrationException(string.Format("Unrecognized dependencies: {0} only properties and service overrides are currently supported.",
+				                                                       dependencies));
+			}
+			return this;
 		}
 
 		/// <summary>
 		///   Uses a dictionary of key/value pairs, to specify custom dependencies.
 		///   <para />
-		///   Use <see cref = "ServiceOverrides(IDictionary)" /> to specify the components
-		///   this component should be resolved with.
 		/// </summary>
 		/// <param name = "dependencies">The dependencies.</param>
 		/// <returns></returns>
@@ -258,14 +279,50 @@ namespace Castle.MicroKernel.Registration
 		/// <summary>
 		///   Uses an (anonymous) object as a dictionary, to specify custom dependencies.
 		///   <para />
-		///   Use <see cref = "ServiceOverrides(object)" /> to specify the components
-		///   this component should be resolved with.
 		/// </summary>
 		/// <param name = "anonymous">The dependencies.</param>
 		/// <returns></returns>
 		public ComponentRegistration<TService> DependsOn(object anonymous)
 		{
 			return AddDescriptor(new CustomDependencyDescriptor(new ReflectionBasedDictionaryAdapter(anonymous)));
+		}
+
+		/// <summary>
+		///   Allows custom dependencies to by defined dyncamically.
+		/// </summary>
+		/// <param name = "resolve">The delegate used for providing dynamic parameters.</param>
+		/// <returns></returns>
+		public ComponentRegistration<TService> DependsOn(DynamicParametersDelegate resolve)
+		{
+			return DynamicParameters((k, c, d) =>
+			{
+				resolve(k, d);
+				return null;
+			});
+		}
+
+		/// <summary>
+		///   Allows custom dependencies to by defined dynamically with releasing capability.
+		/// </summary>
+		/// <param name = "resolve">The delegate used for providing dynamic parameters.</param>
+		/// <returns></returns>
+		public ComponentRegistration<TService> DependsOn(DynamicParametersResolveDelegate resolve)
+		{
+			return DynamicParameters((k, c, d) => resolve(k, d));
+		}
+
+		/// <summary>
+		///   Allows custom dependencies to by defined dynamically with releasing capability.
+		/// </summary>
+		/// <param name = "resolve">The delegate used for providing dynamic parameters.</param>
+		/// <returns></returns>
+		/// <remarks>
+		///   Use <see cref = "CreationContext" /> when resolving components from <see cref = "IKernel" /> in order to detect cycles.
+		/// </remarks>
+		public ComponentRegistration<TService> DependsOn(DynamicParametersWithContextResolveDelegate resolve)
+		{
+			AddDescriptor(new DynamicParametersDescriptor(resolve));
+			return this;
 		}
 
 		/// <summary>
@@ -327,7 +384,7 @@ namespace Castle.MicroKernel.Registration
 		}
 
 		/// <summary>
-		///   Registers the service types on behalf of this component.
+		///   Adds <paramref name = "types" /> as additional services to be exposed by this component.
 		/// </summary>
 		/// <param name = "types">The types to forward.</param>
 		/// <returns></returns>
@@ -337,53 +394,54 @@ namespace Castle.MicroKernel.Registration
 		}
 
 		/// <summary>
-		///   Registers the service types on behalf of this component.
+		///   Adds <typeparamref name = "TService2" /> as additional service to be exposed by this component.
 		/// </summary>
-		/// <typeparam name = "TSecondService">The forwarded type.</typeparam>
+		/// <typeparam name = "TService2">The forwarded type.</typeparam>
 		/// <returns>The component registration.</returns>
-		public ComponentRegistration<TService> Forward<TSecondService>()
+		public ComponentRegistration<TService> Forward<TService2>()
 		{
-			return Forward(new[] { typeof(TSecondService) });
+			return Forward(new[] { typeof(TService2) });
 		}
 
 		/// <summary>
-		///   Registers the service types on behalf of this component.
+		///   Adds <typeparamref name = "TService2" /> and <typeparamref name = "TService3" /> as additional services to be exposed by this component.
 		/// </summary>
-		/// <typeparam name = "TSecondService">The first forwarded type.</typeparam>
-		/// <typeparam name = "TThirdService">The second forwarded type.</typeparam>
+		/// <typeparam name = "TService2">The first forwarded type.</typeparam>
+		/// <typeparam name = "TService3">The second forwarded type.</typeparam>
 		/// <returns>The component registration.</returns>
-		public ComponentRegistration<TService> Forward<TSecondService, TThirdService>()
+		public ComponentRegistration<TService> Forward<TService2, TService3>()
 		{
-			return Forward(new[] { typeof(TSecondService), typeof(TThirdService) });
+			return Forward(new[] { typeof(TService2), typeof(TService3) });
 		}
 
 		/// <summary>
-		///   Registers the service types on behalf of this component.
+		///   Adds <typeparamref name = "TService2" />, <typeparamref name = "TService3" /> and  <typeparamref name = "TService4" /> as additional services to be exposed by this component.
 		/// </summary>
-		/// <typeparam name = "TSecondService">The first forwarded type.</typeparam>
-		/// <typeparam name = "TThirdService">The second forwarded type.</typeparam>
-		/// <typeparam name = "TFourthService">The third forwarded type.</typeparam>
+		/// <typeparam name = "TService2">The first forwarded type.</typeparam>
+		/// <typeparam name = "TService3">The second forwarded type.</typeparam>
+		/// <typeparam name = "TService4">The third forwarded type.</typeparam>
 		/// <returns>The component registration.</returns>
-		public ComponentRegistration<TService> Forward<TSecondService, TThirdService, TFourthService>()
+		public ComponentRegistration<TService> Forward<TService2, TService3, TService4>()
 		{
-			return Forward(new[] { typeof(TSecondService), typeof(TThirdService), typeof(TFourthService) });
+			return Forward(new[] { typeof(TService2), typeof(TService3), typeof(TService4) });
 		}
 
 		/// <summary>
-		///   Registers the service types on behalf of this component.
+		///   Adds <typeparamref name = "TService2" />, <typeparamref name = "TService3" />,<typeparamref name = "TService4" /> and  <typeparamref
+		///     name = "TService5" /> as additional services to be exposed by this component.
 		/// </summary>
-		/// <typeparam name = "TSecondService">The first forwarded type.</typeparam>
-		/// <typeparam name = "TThirdService">The second forwarded type.</typeparam>
-		/// <typeparam name = "TFourthService">The third forwarded type.</typeparam>
-		/// <typeparam name = "TFifthService">The fourth forwarded type.</typeparam>
+		/// <typeparam name = "TService2">The first forwarded type.</typeparam>
+		/// <typeparam name = "TService3">The second forwarded type.</typeparam>
+		/// <typeparam name = "TService4">The third forwarded type.</typeparam>
+		/// <typeparam name = "TService5">The fourth forwarded type.</typeparam>
 		/// <returns>The component registration.</returns>
-		public ComponentRegistration<TService> Forward<TSecondService, TThirdService, TFourthService, TFifthService>()
+		public ComponentRegistration<TService> Forward<TService2, TService3, TService4, TService5>()
 		{
-			return Forward(new[] { typeof(TSecondService), typeof(TThirdService), typeof(TFourthService), typeof(TFifthService) });
+			return Forward(new[] { typeof(TService2), typeof(TService3), typeof(TService4), typeof(TService5) });
 		}
 
 		/// <summary>
-		///   Registers the service types on behalf of this component.
+		///   Adds <paramref name = "types" /> as additional services to be exposed by this component.
 		/// </summary>
 		/// <param name = "types">The types to forward.</param>
 		/// <returns></returns>
@@ -420,6 +478,14 @@ namespace Castle.MicroKernel.Registration
 			return ImplementedBy(type, null);
 		}
 
+		/// <summary>
+		///   Sets the concrete type that implements the service to <paramref name = "type" />.
+		///   <para />
+		///   If not set, the class service type or first registered interface will be used as the implementation for this component.
+		/// </summary>
+		/// <param name = "type">The type that is the implementation for the service.</param>
+		/// <param name = "genericImplementationMatchingStrategy">Provides ability to close open generic service. Ignored when registering closed or non-generic component.</param>
+		/// <returns></returns>
 		public ComponentRegistration<TService> ImplementedBy(Type type, IGenericImplementationMatchingStrategy genericImplementationMatchingStrategy)
 		{
 			if (implementation != null && implementation != typeof(LateBoundComponent))
@@ -510,6 +576,71 @@ namespace Castle.MicroKernel.Registration
 			var interceptors = Array.ConvertAll(keys, InterceptorReference.ForKey);
 #endif
 			return AddDescriptor(new InterceptorDescriptor(interceptors));
+		}
+
+		/// <summary>
+		///   Sets component lifestyle to specified one.
+		/// </summary>
+		/// <returns></returns>
+		public ComponentRegistration<TService> LifestyleCustom(Type customLifestyleType)
+		{
+			return LifeStyle.Custom(customLifestyleType);
+		}
+
+		/// <summary>
+		///   Sets component lifestyle to specified one.
+		/// </summary>
+		/// <returns></returns>
+		public ComponentRegistration<TService> LifestyleCustom<TLifestyleManager>() where TLifestyleManager : ILifestyleManager, new()
+		{
+			return LifeStyle.Custom<TLifestyleManager>();
+		}
+
+		/// <summary>
+		///   Sets component lifestyle to per thread.
+		/// </summary>
+		/// <returns></returns>
+		public ComponentRegistration<TService> LifestylePerThread()
+		{
+			return LifeStyle.PerThread;
+		}
+
+#if (!SILVERLIGHT)
+		/// <summary>
+		///   Sets component lifestyle to instance per web request.
+		/// </summary>
+		/// <returns></returns>
+		public ComponentRegistration<TService> LifestylePerWebRequest()
+		{
+			return LifeStyle.PerWebRequest;
+		}
+#endif
+
+		/// <summary>
+		///   Sets component lifestyle to pooled. If <paramref name = "initialSize" /> or <paramref name = "maxSize" /> are not set default values will be used.
+		/// </summary>
+		/// <returns></returns>
+		public ComponentRegistration<TService> LifestylePooled(int? initialSize = null, int? maxSize = null)
+		{
+			return LifeStyle.PooledWithSize(initialSize, maxSize);
+		}
+
+		/// <summary>
+		///   Sets component lifestyle to singleton.
+		/// </summary>
+		/// <returns></returns>
+		public ComponentRegistration<TService> LifestyleSingleton()
+		{
+			return LifeStyle.Singleton;
+		}
+
+		/// <summary>
+		///   Sets component lifestyle to transient.
+		/// </summary>
+		/// <returns></returns>
+		public ComponentRegistration<TService> LifestyleTransient()
+		{
+			return LifeStyle.Transient;
 		}
 
 		/// <summary>
@@ -619,6 +750,7 @@ namespace Castle.MicroKernel.Registration
 		///   With the overwrite.
 		/// </summary>
 		/// <returns></returns>
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public ComponentRegistration<TService> OverWrite()
 		{
 			overwrite = true;
@@ -630,6 +762,8 @@ namespace Castle.MicroKernel.Registration
 		/// </summary>
 		/// <param name = "parameters">The parameters.</param>
 		/// <returns></returns>
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		[Obsolete("Use DependsOn(Dependency.OnConfigValue()) or Dependency.OnValue() instead")]
 		public ComponentRegistration<TService> Parameters(params Parameter[] parameters)
 		{
 			return AddDescriptor(new ParametersDescriptor(parameters));
@@ -664,10 +798,12 @@ namespace Castle.MicroKernel.Registration
 		///   Each key represents the service dependency of this component, for example the name of a constructor argument or a property.
 		///   The corresponding value is the key of an other component registered to the kernel, and is used to resolve the dependency.
 		///   <para />
-		///   To specify dependencies which are not services, use <see cref = "DependsOn(Property[])" />
+		///   To specify dependencies which are not services, use <see cref = "DependsOn(Dependency[])" />
 		/// </summary>
 		/// <param name = "overrides">The service overrides.</param>
 		/// <returns></returns>
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		[Obsolete("Use DependsOn(Dependency.OnComponent()) instead")]
 		public ComponentRegistration<TService> ServiceOverrides(params ServiceOverride[] overrides)
 		{
 			return AddDescriptor(new ServiceOverrideDescriptor(overrides));
@@ -683,6 +819,8 @@ namespace Castle.MicroKernel.Registration
 		/// </summary>
 		/// <param name = "overrides">The service overrides.</param>
 		/// <returns></returns>
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		[Obsolete("Use DependsOn(Dependency.OnComponent()) instead")]
 		public ComponentRegistration<TService> ServiceOverrides(IDictionary overrides)
 		{
 			return AddDescriptor(new ServiceOverrideDescriptor(overrides));
@@ -698,6 +836,8 @@ namespace Castle.MicroKernel.Registration
 		/// </summary>
 		/// <param name = "anonymous">The service overrides.</param>
 		/// <returns></returns>
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		[Obsolete("Use DependsOn(Dependency.OnComponent()) instead")]
 		public ComponentRegistration<TService> ServiceOverrides(object anonymous)
 		{
 			return AddDescriptor(new ServiceOverrideDescriptor(new ReflectionBasedDictionaryAdapter(anonymous)));
@@ -706,13 +846,13 @@ namespace Castle.MicroKernel.Registration
 		/// <summary>
 		///   Uses a factory to instantiate the component
 		/// </summary>
-		/// <typeparam name = "U">Factory type. This factory has to be registered in the kernel.</typeparam>
-		/// <typeparam name = "V">Implementation type.</typeparam>
+		/// <typeparam name = "TFactory">Factory type. This factory has to be registered in the kernel.</typeparam>
+		/// <typeparam name = "TServiceImpl">Implementation type.</typeparam>
 		/// <param name = "factory">Factory invocation</param>
 		/// <returns></returns>
-		public ComponentRegistration<TService> UsingFactory<U, V>(Converter<U, V> factory) where V : TService
+		public ComponentRegistration<TService> UsingFactory<TFactory, TServiceImpl>(Converter<TFactory, TServiceImpl> factory) where TServiceImpl : TService
 		{
-			return UsingFactoryMethod(kernel => factory.Invoke(kernel.Resolve<U>()));
+			return UsingFactoryMethod(kernel => factory.Invoke(kernel.Resolve<TFactory>()));
 		}
 
 		/// <summary>
@@ -848,6 +988,22 @@ namespace Castle.MicroKernel.Registration
 				return;
 			}
 			internalKernel.AddCustomComponent(componentModel);
+		}
+
+		/// <summary>
+		///   Overrides default behavior by making the current component the default for every service it exposes. Optional <paramref
+		///    name = "serviceFilter" /> allows user to narrow down the number of services which should be make defaults.
+		/// </summary>
+		/// <param name = "serviceFilter">Invoked for each service exposed by given component if returns <c>true</c> this component will be the default for that service. If not specified it is assumed current component should become the default for all of its services.</param>
+		/// <returns></returns>
+		/// <remarks>
+		///   When specified for multiple components for any given service the one registered after will override the one selected before.
+		///   This does not affect order of resolution via <see cref = "IKernel.ResolveAll{TService}()" /> methods.
+		/// </remarks>
+		public ComponentRegistration<TService> IsDefault(Predicate<Type> serviceFilter = null)
+		{
+			var properties = new Property(Constants.DefaultComponentForServiceFilter, serviceFilter ?? (t => true));
+			return ExtendedProperties(properties);
 		}
 	}
 }

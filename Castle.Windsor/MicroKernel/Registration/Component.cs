@@ -89,73 +89,95 @@ namespace Castle.MicroKernel.Registration
 		/// <summary>
 		///   Creates a component registration for the service type.
 		/// </summary>
-		/// <typeparam name = "S">The service type.</typeparam>
+		/// <typeparam name = "TService">The service type.</typeparam>
 		/// <returns>The component registration.</returns>
-		public static ComponentRegistration<S> For<S>()
-			where S : class
+		public static ComponentRegistration<TService> For<TService>()
+			where TService : class
 		{
-			return new ComponentRegistration<S>();
+			return new ComponentRegistration<TService>();
 		}
 
 		/// <summary>
 		///   Creates a component registration for the service types.
 		/// </summary>
-		/// <typeparam name = "S">The primary service type.</typeparam>
-		/// <typeparam name = "F">The forwarded type.</typeparam>
+		/// <typeparam name = "TService1">The primary service type.</typeparam>
+		/// <typeparam name = "TService2">The forwarded type.</typeparam>
 		/// <returns>The component registration.</returns>
-		public static ComponentRegistration<S> For<S, F>()
-			where S : class
+		public static ComponentRegistration<TService1> For<TService1, TService2>()
+			where TService1 : class
 		{
-			return new ComponentRegistration<S>().Forward<F>();
+			return new ComponentRegistration<TService1>().Forward<TService2>();
 		}
 
 		/// <summary>
 		///   Creates a component registration for the service types.
 		/// </summary>
-		/// <typeparam name = "S">The primary service type.</typeparam>
-		/// <typeparam name = "F1">The first forwarded type.</typeparam>
-		/// <typeparam name = "F2">The second forwarded type.</typeparam>
+		/// <typeparam name = "TService1">The primary service type.</typeparam>
+		/// <typeparam name = "TService2">The first forwarded type.</typeparam>
+		/// <typeparam name = "TService3">The second forwarded type.</typeparam>
 		/// <returns>The component registration.</returns>
-		public static ComponentRegistration<S> For<S, F1, F2>()
-			where S : class
+		public static ComponentRegistration<TService1> For<TService1, TService2, TService3>()
+			where TService1 : class
 		{
-			return new ComponentRegistration<S>().Forward<F1, F2>();
+			return new ComponentRegistration<TService1>().Forward<TService2, TService3>();
 		}
 
 		/// <summary>
 		///   Creates a component registration for the service types.
 		/// </summary>
-		/// <typeparam name = "S">The primary service type.</typeparam>
-		/// <typeparam name = "F1">The first forwarded type.</typeparam>
-		/// <typeparam name = "F2">The second forwarded type.</typeparam>
-		/// <typeparam name = "F3">The third forwarded type.</typeparam>
+		/// <typeparam name = "TService1">The primary service type.</typeparam>
+		/// <typeparam name = "TService2">The first forwarded type.</typeparam>
+		/// <typeparam name = "TService3">The second forwarded type.</typeparam>
+		/// <typeparam name = "TService4">The third forwarded type.</typeparam>
 		/// <returns>The component registration.</returns>
-		public static ComponentRegistration<S> For<S, F1, F2, F3>()
-			where S : class
+		public static ComponentRegistration<TService1> For<TService1, TService2, TService3, TService4>()
+			where TService1 : class
 		{
-			return new ComponentRegistration<S>().Forward<F1, F2, F3>();
+			return new ComponentRegistration<TService1>().Forward<TService2, TService3, TService4>();
 		}
 
 		/// <summary>
 		///   Creates a component registration for the service types.
 		/// </summary>
-		/// <typeparam name = "S">The primary service type.</typeparam>
-		/// <typeparam name = "F1">The first forwarded type.</typeparam>
-		/// <typeparam name = "F2">The second forwarded type.</typeparam>
-		/// <typeparam name = "F3">The third forwarded type.</typeparam>
-		/// <typeparam name = "F4">The fourth forwarded type.</typeparam>
+		/// <typeparam name = "TService1">The primary service type.</typeparam>
+		/// <typeparam name = "TService2">The first forwarded type.</typeparam>
+		/// <typeparam name = "TService3">The second forwarded type.</typeparam>
+		/// <typeparam name = "TService4">The third forwarded type.</typeparam>
+		/// <typeparam name = "TService5">The fourth forwarded type.</typeparam>
 		/// <returns>The component registration.</returns>
-		public static ComponentRegistration<S> For<S, F1, F2, F3, F4>()
-			where S : class
+		public static ComponentRegistration<TService1> For<TService1, TService2, TService3, TService4, TService5>()
+			where TService1 : class
 		{
-			return new ComponentRegistration<S>().Forward<F1, F2, F3, F4>();
+			return new ComponentRegistration<TService1>().Forward<TService2, TService3, TService4, TService5>();
 		}
 
+		/// <summary>
+		///   Helper method for filtering components based on presence of an Attribute.
+		/// </summary>
+		/// <typeparam name = "TAttribute"></typeparam>
+		/// <param name = "type"></param>
+		/// <returns></returns>
+		/// <example>
+		///   container.Register(
+		///   AllTypes.FromThisAssembly()
+		///   .Where(Component.HasAttribute&lt;UserAttribute&gt;) );
+		/// </example>
 		public static bool HasAttribute<TAttribute>(Type type) where TAttribute : Attribute
 		{
 			return Attribute.IsDefined(type, typeof(TAttribute));
 		}
 
+		/// <summary>
+		///   Helper method for filtering components based on presence of an Attribute and value of predicate on that attribute.
+		/// </summary>
+		/// <typeparam name = "TAttribute"></typeparam>
+		/// <param name = "filter"></param>
+		/// <returns></returns>
+		/// <example>
+		///   container.Register(
+		///   AllTypes.FromThisAssembly()
+		///   .Where(Component.HasAttribute&lt;UserAttribute&gt;(u => u.SomeFlag)) );
+		/// </example>
 		public static Predicate<Type> HasAttribute<TAttribute>(Predicate<TAttribute> filter) where TAttribute : Attribute
 		{
 			return type => HasAttribute<TAttribute>(type) &&

@@ -16,6 +16,8 @@ namespace CastleTests.Components
 {
 	using System.Collections.Generic;
 
+	using CastleTests.Components;
+
 	public class ListDepAsConstructor
 	{
 		private readonly IList<IEmptyService> services;

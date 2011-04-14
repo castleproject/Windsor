@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.MicroKernel.Tests.SpecializedResolvers
+namespace CastleTests.SpecializedResolvers
 {
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.SubSystems.Configuration;
@@ -30,15 +30,14 @@ namespace Castle.MicroKernel.Tests.SpecializedResolvers
 				Component.For<IEmptyService>().ImplementedBy<EmptyServiceDecoratorViaProperty>().Named("baz"),
 				Component.For<ArrayDepAsConstructor>().Named("InjectAll"),
 				Component.For<ArrayDepAsConstructor>().Named("InjectFooOnly")
-					.ServiceOverrides(ServiceOverride.ForKey("services").Eq(new[] { "foo" })),
+					.DependsOn(ServiceOverride.ForKey("services").Eq(new[] { "foo" })),
 				Component.For<ArrayDepAsConstructor>().Named("InjectFooAndBarOnly")
-					.ServiceOverrides(ServiceOverride.ForKey("services").Eq(new[] { "foo", "bar" })),
-
-					Component.For<ListDepAsConstructor>().Named("InjectAllList"),
+					.DependsOn(ServiceOverride.ForKey("services").Eq(new[] { "foo", "bar" })),
+				Component.For<ListDepAsConstructor>().Named("InjectAllList"),
 				Component.For<ListDepAsConstructor>().Named("InjectFooOnlyList")
-					.ServiceOverrides(ServiceOverride.ForKey("services").Eq(new[] { "foo" })),
+					.DependsOn(ServiceOverride.ForKey("services").Eq(new[] { "foo" })),
 				Component.For<ListDepAsConstructor>().Named("InjectFooAndBarOnlyList")
-					.ServiceOverrides(ServiceOverride.ForKey("services").Eq(new[] { "foo", "bar" })));
+					.DependsOn(ServiceOverride.ForKey("services").Eq(new[] { "foo", "bar" })));
 		}
 	}
 }

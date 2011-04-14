@@ -14,6 +14,8 @@
 
 namespace CastleTests.Components
 {
+	using CastleTests.Components;
+
 	public class ArrayRefDepAsConstructor
 	{
 		private readonly IEmptyService[] services;

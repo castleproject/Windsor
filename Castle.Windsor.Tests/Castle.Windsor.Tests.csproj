@@ -294,6 +294,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AbstractContainerTestCase.cs" />
+    <Compile Include="BugAttribute.cs" />
     <Compile Include="Bugs\IoC-267.cs" />
     <Compile Include="ByRefDependenciesTestCase.cs" />
     <Compile Include="Components\ADisposable.cs" />
@@ -306,6 +307,7 @@
     <Compile Include="ClassComponents\DecoratedRepository2.cs" />
     <Compile Include="ClassComponents\DefaultRepository.cs" />
     <Compile Include="ClassComponents\DoubleRepository.cs" />
+    <Compile Include="Components\D_DB.cs" />
     <Compile Include="ClassComponents\GenericHasNested.cs" />
     <Compile Include="ClassComponents\GenericImpl3.cs" />
     <Compile Include="ClassComponents\HasByRefCtorArgument.cs" />
@@ -318,10 +320,11 @@
     <Compile Include="ClassComponents\Repository2.cs" />
     <Compile Include="ClassComponents\Repository3.cs" />
     <Compile Include="ClassInheritanceTestCase.cs" />
-    <Compile Include="ComponentsParametersDivisionTestsCase.cs" />
+    <Compile Include="ComponentsParametersDivisionTestCase.cs" />
     <Compile Include="Components\AlarmGenerator.cs" />
     <Compile Include="Components\AlarmGeneratorWithDependency.cs" />
     <Compile Include="Components\ArrayRefDepAsConstructor.cs" />
+    <Compile Include="Components\BookStore.cs" />
     <Compile Include="Components\CalculatorServiceWithStandartInterceptorTyped.cs" />
     <Compile Include="Components\CalculatorServiceWithFooInterceptorNamed.cs" />
     <Compile Include="Components\CalculatorServiceWithMultipleInterfaces.cs" />
@@ -352,12 +355,18 @@
     <Compile Include="Components\EmptyServiceComposite.cs" />
     <Compile Include="Components\EmptyServiceDecorator.cs" />
     <Compile Include="Components\EmptyServiceDecoratorViaProperty.cs" />
+    <Compile Include="Components\HasDictionaryDependency.cs" />
+    <Compile Include="Components\HasInstanceCount.cs" />
+    <Compile Include="Components\HasNullableDoubleConstructor.cs" />
+    <Compile Include="Components\HasNullableIntProperty.cs" />
     <Compile Include="Components\HasNullDefaultForServiceDependency.cs" />
+    <Compile Include="Components\HasStringAndIntDependency.cs" />
     <Compile Include="Components\HumanArm.cs" />
     <Compile Include="Components\IAlarmSender.cs" />
     <Compile Include="Components\IAmContravariant.cs" />
     <Compile Include="Components\IAppScreen.cs" />
     <Compile Include="Components\IArm.cs" />
+    <Compile Include="Components\IBookStore.cs" />
     <Compile Include="Components\ICache.cs" />
     <Compile Include="Components\ICamera.cs" />
     <Compile Include="Components\ICameraService.cs" />
@@ -367,12 +376,14 @@
     <Compile Include="Components\IDependOnArray.cs" />
     <Compile Include="Components\IEmptyService2.cs" />
     <Compile Include="Components\IInternal.cs" />
+    <Compile Include="Components\IItemService.cs" />
     <Compile Include="Components\InitializableComponent.cs" />
     <Compile Include="Components\InitializableDisposableComponent.cs" />
     <Compile Include="Components\IRepository.cs" />
     <Compile Include="Components\IService.cs" />
     <Compile Include="Components\IService2.cs" />
     <Compile Include="Components\ISimpleMixIn.cs" />
+    <Compile Include="Components\ItemService.cs" />
     <Compile Include="Components\IView.cs" />
     <Compile Include="Components\JohnChild.cs" />
     <Compile Include="Components\JohnGrandparent.cs" />
@@ -393,17 +404,21 @@
     <Compile Include="Components\UnresolvalbeDependency.cs" />
     <Compile Include="Components\UnresolvalbeDependencyWithAdditionalServiceConstructor.cs" />
     <Compile Include="Components\UnresolvalbeDependencyWithPrimitiveConstructor.cs" />
+    <Compile Include="Components\UsesLazy.cs" />
     <Compile Include="Components\UsesUri.cs" />
     <Compile Include="CompositePatternTestCase.cs" />
     <Compile Include="ContainerAndGenericsInConfigTestCase.cs" />
     <Compile Include="ConventionVerification.cs" />
+    <Compile Include="ContainerExtensions\BadDependencyResolver.cs" />
+    <Compile Include="ContainerExtensions\GoodDependencyResolver.cs" />
     <Compile Include="Core.Tests\InterceptorAttributeTestCase.cs" />
     <Compile Include="CreatingContainerTestCase.cs" />
     <Compile Include="DuplicateGenerics.cs" />
-    <Compile Include="Experimental\AllComponentsTestCase.cs" />
-    <Compile Include="Experimental\ReleasePolicyTrackedObjectsTestCase.cs" />
-    <Compile Include="Experimental\MyCustomReleasePolicy.cs" />
-    <Compile Include="Experimental\ProblematicDependenciesTestCase.cs" />
+    <Compile Include="Diagnostics\AllComponentsDiagnosticTestCase.cs" />
+    <Compile Include="Diagnostics\PotentialLifestyleMismatchesDiagnosticTestCase.cs" />
+    <Compile Include="Diagnostics\PotentiallyMisconfiguredComponentsDiagnosticTestCase.cs" />
+    <Compile Include="Diagnostics\ReleasePolicyTrackedObjectsTestCase.cs" />
+    <Compile Include="ContainerExtensions\MyCustomReleasePolicy.cs" />
     <Compile Include="Facilities\EventWiring\SomethingWentWrongTestCase.cs" />
     <Compile Include="Components\AbstractCarProviderFactory.cs" />
     <Compile Include="Components\DisposableComponentFactory.cs" />
@@ -428,6 +443,8 @@
     <Compile Include="Facilities\TypedFactory\Delegates\UsesBarDelegateTwoConstructors.cs" />
     <Compile Include="Facilities\TypedFactory\Delegates\UsesFooAndDelegate.cs" />
     <Compile Include="Facilities\TypedFactory\Delegates\UsesTwoFooDelegates.cs" />
+    <Compile Include="Facilities\TypedFactory\Delegates\UsesFooAndBarDelegateCtor.cs" />
+    <Compile Include="Facilities\TypedFactory\Delegates\UsesFooAndBarDelegateProperties.cs" />
     <Compile Include="Facilities\TypedFactory\Factories\IComponentFactory2.cs" />
     <Compile Include="Facilities\TypedFactory\Factories\IFactoryWithParametersExtended.cs" />
     <Compile Include="Facilities\TypedFactory\Factories\IFactoryWithParametersTwoBases.cs" />
@@ -438,6 +455,7 @@
     <Compile Include="Facilities\TypedFactory\Factories\IGenericFactoryWithGenericMethod.cs" />
     <Compile Include="Facilities\TypedFactory\Factories\IObjectFactory.cs" />
     <Compile Include="Facilities\TypedFactory\TypedFactoryDependenciesTestCase.cs" />
+    <Compile Include="Facilities\TypedFactory\TypedFactoryOpenGenericFactoriesTestCase.cs" />
     <Compile Include="GenericImplementationWithGreaterArityThanServiceTestCase.cs" />
     <Compile Include="Generics\ARepository.cs" />
     <Compile Include="Generics\ARepository.T.cs" />
@@ -449,8 +467,9 @@
     <Compile Include="HandlerFilterTestCase.cs" />
     <Compile Include="Handlers\EmptyConstructorTestCase.cs" />
     <Compile Include="InternalsVisibleTo.cs" />
+    <Compile Include="LazyComponentsTestCase.cs" />
     <Compile Include="LifecycledComponentsReleasePolicyTestCase.cs" />
-    <Compile Include="ClassComponents\DisposableFoo.cs" />
+    <Compile Include="Components\DisposableFoo.cs" />
     <Compile Include="ClassComponents\HasTwoConstructors4.cs" />
     <Compile Include="ClassComponents\UsesDisposableFoo.cs" />
     <Compile Include="Configuration2\PrivateSettersTestCase.cs" />
@@ -509,14 +528,15 @@
     <Compile Include="LoggingFacility\Classes\ISmtpServer.cs" />
     <Compile Include="LoggingFacility\Classes\SimpleLoggingComponent.cs" />
     <Compile Include="LoggingFacility\Classes\SmtpServer.cs" />
-    <Compile Include="LoggingFacility\ConsoleFacitlyTest.cs" />
-    <Compile Include="LoggingFacility\ExtendedLog4NetFacilityTests.cs" />
+    <Compile Include="LoggingFacility\ConsoleFacitlyTestCase.cs" />
+    <Compile Include="LoggingFacility\ExtendedLog4NetFacilityTestCase.cs" />
     <Compile Include="LoggingFacility\ExtendedNLogFacilityTests.cs" />
     <Compile Include="LoggingFacility\Facilities77.cs" />
     <Compile Include="LoggingFacility\Log4NetFacilityTests.cs" />
     <Compile Include="LoggingFacility\NLogFacilityTests.cs" />
     <Compile Include="LoggingFacility\NullFacitlyTest.cs" />
     <Compile Include="LoggingFacility\TraceFacilityTest.cs" />
+    <Compile Include="IsDefaultTestCase.cs" />
     <Compile Include="MicroKernel\NotImplementedDependencyResolver.cs" />
     <Compile Include="Pools\RecyclableComponent.cs" />
     <Compile Include="Pools\UseRecyclableComponent.cs" />
@@ -628,6 +648,7 @@
     <Compile Include="Proxies\ComponentProxyRegistrationTestCase.cs" />
     <Compile Include="ProxyInfrastructure\DisposableHook.cs" />
     <Compile Include="Registration\ComponentRegistrationByNamespaceTestCase.cs" />
+    <Compile Include="Registration\DependsOnTestCase.cs" />
     <Compile Include="Registration\ServiceOverridesTestCase.cs" />
     <Compile Include="Registration\WithServiceTestCase.cs" />
     <Compile Include="ResolveScopesTestCase.cs" />
@@ -667,6 +688,7 @@
     <Compile Include="Facilities\Synchronize\Components\SyncClassOverrideContext.cs" />
     <Compile Include="Facilities\Synchronize\Components\SyncClassWithoutContext.cs" />
     <Compile Include="Facilities\Synchronize\SynchronizeFacilityTestCase.cs" />
+    <Compile Include="TestConventionsValidationTestCase.cs" />
     <Compile Include="TypeComparerTestCase.cs" />
     <Compile Include="TypedDependenciesTestCase.cs" />
     <Compile Include="MicroKernel\ArgumentsTestCase.cs" />
@@ -676,15 +698,13 @@
     <Compile Include="Bugs\IoC-108.cs" />
     <Compile Include="Bugs\IoC-114.cs" />
     <Compile Include="Bugs\IoC-117.cs" />
-    <Compile Include="Bugs\IoC-83.cs" />
     <Compile Include="Bugs\IoC-95.cs" />
     <Compile Include="Bugs\Ioc113\IoC_113.cs" />
     <Compile Include="Bugs\Ioc113\SdiComponentMethods.cs" />
     <Compile Include="Bugs\Ioc113\StartableDisposableAndInitializableComponent.cs" />
     <Compile Include="Bugs\IoC_141.cs" />
-    <Compile Include="Bugs\IoC_197.cs" />
     <Compile Include="ClassComponents\BaseComponent.cs" />
-    <Compile Include="ClassComponents\ClassWithArguments.cs" />
+    <Compile Include="Components\ClassWithArguments.cs" />
     <Compile Include="ClassComponents\ClassWithArrayConstructor.cs" />
     <Compile Include="ClassComponents\ClassWithListConstructor.cs">
       <SubType>Code</SubType>
@@ -789,7 +809,7 @@
     <Compile Include="DependencyGraphTestCase.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DependencyResolvers.cs">
+    <Compile Include="DefaultDependnecyResolverTestCase.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Facilities\Startable\Components\NoInterfaceStartableComponent.cs">
@@ -894,21 +914,11 @@
     <Compile Include="Bugs\FACILITIES-ISSUE-111\FACILITIES_ISSUE_111.cs" />
     <Compile Include="Bugs\IoC-102.cs" />
     <Compile Include="Bugs\IoC-115.cs" />
-    <Compile Include="Bugs\IoC-127.cs" />
     <Compile Include="Bugs\IoC-138.cs" />
-    <Compile Include="Bugs\IoC-73\ClassUser.cs" />
-    <Compile Include="Bugs\IoC-73\IMyClass.cs" />
-    <Compile Include="Bugs\IoC-73\MyClass.cs" />
-    <Compile Include="Bugs\IoC-73\IoC73.cs" />
-    <Compile Include="Bugs\IoC-73\Proxy.cs" />
     <Compile Include="Bugs\IoC-78\IoC-78.cs" />
     <Compile Include="Bugs\IoC_103\IoC_103.cs" />
-    <Compile Include="Bugs\IoC_120.cs" />
-    <Compile Include="Bugs\IoC_142.cs" />
-    <Compile Include="Bugs\IoC_147.cs" />
-    <Compile Include="Bugs\IoC_155.cs" />
+    <Compile Include="Activators\ConstructorTestCase.cs" />
     <Compile Include="Bugs\IoC_169\IoC_169.cs" />
-    <Compile Include="Bugs\IoC_92.cs" />
     <Compile Include="ChildContainerSupportTestCase.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -996,7 +1006,7 @@
     <Compile Include="Facilities\Remoting\AbstractRemoteTestCase.cs" />
     <Compile Include="Components\AppDomainFactory.cs" />
     <Compile Include="Components\CalcServiceRemotingImpl.cs" />
-    <Compile Include="Components\ConfigurableRegistrationTestCase.cs" />
+    <Compile Include="Facilities\Remoting\ConfigurableRegistrationTestCase.cs" />
     <Compile Include="Components\ConsumerComp.cs" />
     <Compile Include="Components\CustomToStringService.cs" />
     <Compile Include="Facilities\Remoting\FacilityLifeCycleTestCase.cs" />
@@ -1034,9 +1044,9 @@
     <Compile Include="ProxyInfrastructure\ProxyAllHook.cs" />
     <Compile Include="RegisteringTwoServicesForSameType.cs" />
     <Compile Include="SelectAllSelector.cs" />
-    <Compile Include="SubResolversShouldNotBeTrustedToBeCorrect.cs" />
+    <Compile Include="CustomSubDependencyResolversTestCase.cs" />
     <Compile Include="ModelInterceptorsSelectorTestCase.cs" />
-    <Compile Include="DependencyProblem.cs">
+    <Compile Include="RegistrationOrderingTestsCase.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Windsor.Tests\XmlConfigStructureTestCase.cs" />
@@ -1106,7 +1116,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ContainerAndGenericsInCodeTestCase.cs" />
-    <Compile Include="Windsor.Tests\Debugging\DebuggingSubsystemTestCase.cs" />
     <Compile Include="Windsor.Tests\MultiServiceGenericComponentsTestCase.cs" />
     <Compile Include="XmlProcessor\XmlProcessorTestCase.cs">
       <SubType>Code</SubType>
@@ -1326,7 +1335,9 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
     <EmbeddedResource Include="XmlFiles\interceptorsWithHookAndSelector.xml" />
     <EmbeddedResource Include="XmlFiles\mixins.xml" />
     <EmbeddedResource Include="XmlFiles\additionalInterfaces.xml" />

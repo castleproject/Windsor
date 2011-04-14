@@ -18,9 +18,6 @@ namespace Castle.MicroKernel.Handlers
 
 	using Castle.Core;
 
-	/// <summary>
-	///   Summary description for DefaultHandlerFactory.
-	/// </summary>
 	[Serializable]
 	public class DefaultHandlerFactory : IHandlerFactory
 	{
@@ -44,7 +41,7 @@ namespace Castle.MicroKernel.Handlers
 		{
 			if (model.RequiresGenericArguments)
 			{
-				var matchingStrategy = (IGenericImplementationMatchingStrategy)model.ExtendedProperties[ComponentModel.GenericImplementationMatchingStrategy];
+				var matchingStrategy = GenericImplementationMatchingStrategy(model);
 				return new DefaultGenericHandler(model, matchingStrategy);
 			}
 			var resolveExtensions = model.ResolveExtensions(false);
@@ -54,6 +51,11 @@ namespace Castle.MicroKernel.Handlers
 				return new DefaultHandler(model);
 			}
 			return new ExtendedHandler(model, resolveExtensions, releaseExtensions);
+		}
+
+		private IGenericImplementationMatchingStrategy GenericImplementationMatchingStrategy(ComponentModel model)
+		{
+			return (IGenericImplementationMatchingStrategy)model.ExtendedProperties[ComponentModel.GenericImplementationMatchingStrategy];
 		}
 	}
 }

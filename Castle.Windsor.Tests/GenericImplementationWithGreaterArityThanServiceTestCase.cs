@@ -76,7 +76,7 @@ namespace Castle
 			                                                Container.Resolve<Generics.IRepository<A>>());
 
 			var message =
-				@"Custom IGenericImplementationMatchingStrategy (Castle.StubGenericImplementationMatchingStrategy) didn't select any generic parameters for implementation type of component 'Castle.Generics.DoubleGenericRepository`2'. This usually signifies bug in the IGenericImplementationMatchingStrategy.";
+				@"Requested type Castle.Generics.IRepository`1[CastleTests.Components.A] has 1 generic parameter(s), whereas component implementation type Castle.Generics.DoubleGenericRepository`2[T1,T2] requires 2. This means that Windsor does not have enough information to properly create that component for you. This is most likely a bug in your registration code.";
 			Assert.AreEqual(message, exception.Message);
 		}
 
@@ -100,11 +100,11 @@ namespace Castle
 			Container.Register(Component.For(typeof(MicroKernel.Tests.ClassComponents.IRepository<>))
 			                   	.ImplementedBy(typeof(DoubleRepository<,>), new StubGenericImplementationMatchingStrategy(typeof(string), typeof(IEmployee))));
 
-			var exception = Assert.Throws<HandlerException>(() =>
+			var exception = Assert.Throws<GenericHandlerTypeMismatchException>(() =>
 			                                                Container.Resolve<MicroKernel.Tests.ClassComponents.IRepository<string>>());
 
 			var message =
-				@"Types selected by Castle.StubGenericImplementationMatchingStrategy couldn't be used for generic arguments of implementation type for component Castle.MicroKernel.Tests.ClassComponents.DoubleRepository`2. See inner exception for more details.";
+				@"Types System.String, CastleTests.Components.IEmployee don't satisfy generic constraints of implementation type Castle.MicroKernel.Tests.ClassComponents.DoubleRepository`2 of component 'Castle.MicroKernel.Tests.ClassComponents.DoubleRepository`2'.this is likely a bug in the IGenericImplementationMatchingStrategy used (Castle.StubGenericImplementationMatchingStrategy)";
 			Assert.AreEqual(message, exception.Message);
 		}
 	}

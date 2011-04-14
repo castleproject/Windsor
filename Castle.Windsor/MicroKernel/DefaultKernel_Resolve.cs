@@ -19,6 +19,7 @@ namespace Castle.MicroKernel
 	using System.Collections.Generic;
 
 	using Castle.Core;
+	using Castle.MicroKernel.Handlers;
 
 	public partial class DefaultKernel
 	{
@@ -30,7 +31,7 @@ namespace Castle.MicroKernel
 		/// <returns></returns>
 		public virtual object Resolve(String key, Type service)
 		{
-			return (this as IKernelInternal).Resolve(key, service, null, releasePolicy);
+			return (this as IKernelInternal).Resolve(key, service, null, ReleasePolicy);
 		}
 
 		/// <summary>
@@ -86,7 +87,7 @@ namespace Castle.MicroKernel
 		/// </returns>
 		public T Resolve<T>(String key)
 		{
-			return (T)(this as IKernelInternal).Resolve(key, typeof(T), arguments: null, policy: releasePolicy);
+			return (T)(this as IKernelInternal).Resolve(key, typeof(T), arguments: null, policy: ReleasePolicy);
 		}
 
 		/// <summary>
@@ -100,7 +101,7 @@ namespace Castle.MicroKernel
 		/// </returns>
 		public T Resolve<T>(String key, IDictionary arguments)
 		{
-			return (T)(this as IKernelInternal).Resolve(key, typeof(T), arguments, releasePolicy);
+			return (T)(this as IKernelInternal).Resolve(key, typeof(T), arguments, ReleasePolicy);
 		}
 
 		/// <summary>
@@ -108,7 +109,7 @@ namespace Castle.MicroKernel
 		/// </summary>
 		public object Resolve(Type service)
 		{
-			return (this as IKernelInternal).Resolve(service, null, releasePolicy);
+			return (this as IKernelInternal).Resolve(service, null, ReleasePolicy);
 		}
 
 		/// <summary>
@@ -120,7 +121,7 @@ namespace Castle.MicroKernel
 		/// <returns></returns>
 		public object Resolve(Type service, IDictionary arguments)
 		{
-			return (this as IKernelInternal).Resolve(service, arguments, releasePolicy);
+			return (this as IKernelInternal).Resolve(service, arguments, ReleasePolicy);
 		}
 
 		/// <summary>
@@ -142,7 +143,7 @@ namespace Castle.MicroKernel
 		/// <param name = "service">The service type</param>
 		public Array ResolveAll(Type service)
 		{
-			return (this as IKernelInternal).ResolveAll(service, null, releasePolicy);
+			return (this as IKernelInternal).ResolveAll(service, null, ReleasePolicy);
 		}
 
 		/// <summary>
@@ -179,7 +180,7 @@ namespace Castle.MicroKernel
 		/// <returns></returns>
 		public TService[] ResolveAll<TService>(object argumentsAsAnonymousType)
 		{
-			return (TService[])(this as IKernelInternal).ResolveAll(typeof(TService), new ReflectionBasedDictionaryAdapter(argumentsAsAnonymousType), releasePolicy);
+			return (TService[])(this as IKernelInternal).ResolveAll(typeof(TService), new ReflectionBasedDictionaryAdapter(argumentsAsAnonymousType), ReleasePolicy);
 		}
 
 		/// <summary>
@@ -190,7 +191,7 @@ namespace Castle.MicroKernel
 		/// <returns></returns>
 		public TService[] ResolveAll<TService>(IDictionary arguments)
 		{
-			return (TService[])(this as IKernelInternal).ResolveAll(typeof(TService), arguments, releasePolicy);
+			return (TService[])(this as IKernelInternal).ResolveAll(typeof(TService), arguments, ReleasePolicy);
 		}
 
 		/// <summary>
@@ -200,7 +201,7 @@ namespace Castle.MicroKernel
 		/// <returns></returns>
 		public TService[] ResolveAll<TService>()
 		{
-			return (TService[])(this as IKernelInternal).ResolveAll(typeof(TService), null, releasePolicy);
+			return (TService[])(this as IKernelInternal).ResolveAll(typeof(TService), null, ReleasePolicy);
 		}
 
 		/// <summary>
@@ -226,17 +227,22 @@ namespace Castle.MicroKernel
 		Array IKernelInternal.ResolveAll(Type service, IDictionary arguments, IReleasePolicy policy)
 		{
 			var resolved = new List<object>();
-			foreach (var handler in GetAssignableHandlers(service))
+			foreach (var handler in GetHandlers(service))
 			{
 				if (handler.IsBeingResolvedInContext(currentCreationContext))
 				{
 					continue;
 				}
 
-				var component = TryResolveComponent(handler, service, arguments, policy);
-				if (component != null)
+				try
 				{
+					var component = ResolveComponent(handler, service, arguments, policy);
 					resolved.Add(component);
+				}
+				catch (GenericHandlerTypeMismatchException)
+				{
+					// that's the only case where we ignore the component and allow it to not be resolved.
+					// only because we have no way to actually test if generic constraints can be satisfied.
 				}
 			}
 

@@ -40,7 +40,10 @@ namespace Castle.Facilities.TypedFactory.Internal
 			{
 				return null;
 			}
-
+			if(service.IsGenericType)
+			{
+				service = service.GetGenericTypeDefinition();
+			}
 			return Component.For(service)
 				.NamedAutomatically(GetName(service))
 				.LifeStyle.Transient
@@ -48,7 +51,7 @@ namespace Castle.Facilities.TypedFactory.Internal
 				.UsingFactoryMethod((k, m, c) =>
 				{
 					var delegateProxyFactory = k.Resolve<IProxyFactoryExtension>(TypedFactoryFacility.DelegateProxyFactoryKey,
-					                                                             new Arguments { { "targetDelegateType", service } });
+					                                                             new Arguments { { "targetDelegateType", c.RequestedType } });
 					var @delegate = k.ProxyFactory.Create(delegateProxyFactory, k, m, c);
 
 					k.ReleaseComponent(delegateProxyFactory);
