@@ -115,10 +115,17 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Castle.Services.vNextTransaction.NHibernate\Castle.Services.vNextTransaction.NHibernate.csproj">
+      <Project>{12598D2B-B68E-4EA7-A7DD-0CC2398CE8B6}</Project>
+      <Name>Castle.Services.vNextTransaction.NHibernate</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Castle.Services.vNextTransaction\Castle.Services.vNextTransaction.csproj">
       <Project>{76DF5D09-FC04-411F-B123-01A6B9432796}</Project>
       <Name>Castle.Services.vNextTransaction</Name>
     </ProjectReference>
+    <Reference Include="Antlr3.Runtime">
+      <HintPath>..\..\lib\Antlr3.Runtime.dll</HintPath>
+    </Reference>
     <Reference Include="Castle.Core">
       <SpecificVersion>False</SpecificVersion>
       <HintPath Condition=" '$(BuildConfigKey)' == '' ">..\..\lib\net40\Castle.Core.dll</HintPath>
@@ -127,18 +134,34 @@
     <Reference Include="Castle.Windsor">
       <HintPath>..\..\lib\NET40\Castle.Windsor.dll</HintPath>
     </Reference>
+    <Reference Include="FluentNHibernate">
+      <HintPath>..\..\lib\FluentNHibernate.dll</HintPath>
+    </Reference>
+    <Reference Include="Iesi.Collections">
+      <HintPath>..\..\lib\NHibernate-3.1.0\Required_Bins\Iesi.Collections.dll</HintPath>
+    </Reference>
     <Reference Include="log4net">
       <SpecificVersion>False</SpecificVersion>
       <HintPath Condition=" '$(BuildConfigKey)' == '' ">..\..\lib\net40\log4net.dll</HintPath>
       <HintPath Condition=" '$(BuildConfigKey)' != '' ">..\..\lib\$(BuildConfigKey)\log4net.dll</HintPath>
     </Reference>
+    <Reference Include="NHibernate">
+      <HintPath>..\..\lib\NHibernate-3.1.0\Required_Bins\NHibernate.dll</HintPath>
+    </Reference>
+    <Reference Include="NHibernate.ByteCode.Castle">
+      <HintPath>..\..\lib\NHibernate-3.1.0\Required_For_LazyLoading\Castle\NHibernate.ByteCode.Castle.dll</HintPath>
+    </Reference>
     <Reference Include="nunit.framework">
       <Name>nunit.framework</Name>
       <HintPath>..\..\lib\nunit.framework.dll</HintPath>
     </Reference>
+    <Reference Include="Remotion.Data.Linq">
+      <HintPath>..\..\lib\Remotion.Data.Linq.dll</HintPath>
+    </Reference>
     <Reference Include="System">
       <Name>System</Name>
     </Reference>
+    <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
     <Reference Include="System.Transactions" />
@@ -173,13 +196,15 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="TestClasses\TransientActivityManager.cs" />
-    <Compile Include="vNext\IMyService.cs" />
-    <Compile Include="vNext\InfrastructureTests.cs" />
-    <Compile Include="vNext\MyService.cs" />
+    <Compile Include="vNext\NHFacilityInitTests.cs" />
+    <Compile Include="vNext\SimpleNHibernateIntegration.cs" />
+    <Compile Include="vNext\TestClasses\IMyService.cs" />
+    <Compile Include="vNext\TxClassMetaInfoStoreTests.cs" />
+    <Compile Include="vNext\TestClasses\MyService.cs" />
     <Compile Include="vNext\RetryPolicies_Transactions.cs" />
     <Compile Include="vNext\ScratchBoard_LTM.cs" />
     <Compile Include="vNext\SingleThread_Ambient.cs" />
-    <Compile Include="vNext\TxTraceListener.cs" />
+    <Compile Include="TxTraceListener.cs" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />

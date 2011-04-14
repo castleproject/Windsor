@@ -1,4 +1,5 @@
 using System;
+using System.Configuration;
 using System.Data.SqlClient;
 using System.Transactions;
 using Castle.Services.vNextTransaction;
@@ -6,6 +7,7 @@ using NUnit.Framework;
 
 namespace Castle.Services.Transaction.Tests.vNext
 {
+	[Explicit]
 	public class ScratchBoard_LTM
 	{
 		private static readonly Random r = new Random((int)DateTime.Now.Ticks);
@@ -131,7 +133,7 @@ namespace Castle.Services.Transaction.Tests.vNext
 		private SqlConnection GetConnection()
 		{
 			Console.WriteLine("CREATE CONNECTION");
-			var connection = new SqlConnection("Data Source=.;Initial Catalog=TxTests;Integrated Security=SSPI");
+			var connection = new SqlConnection(ConfigurationManager.ConnectionStrings["test"].ConnectionString);
 			Console.WriteLine("OPEN CONNECTION");
 			connection.Open();
 			return connection;

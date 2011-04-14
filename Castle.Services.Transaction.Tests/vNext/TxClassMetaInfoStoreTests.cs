@@ -5,7 +5,7 @@ using Castle.Services.Transaction.Tests.Framework;
 
 namespace Castle.Services.Transaction.Tests.vNext
 {
-	public class InfrastructureTests
+	public class TxClassMetaInfoStoreTests
 	{
 		[Test]
 		public void CanGetTxClassMetaInfo()

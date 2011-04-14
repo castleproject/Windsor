@@ -6,6 +6,7 @@ using NUnit.Framework;
 
 namespace Castle.Services.Transaction.Tests.vNext
 {
+	[Ignore("Retry policies are nicer to test with e.g. NHibernate integration parts.")]
 	public class RetryPolicies_Transactions
 	{
 		private WindsorContainer _Container;
@@ -21,7 +22,7 @@ namespace Castle.Services.Transaction.Tests.vNext
 		// something like: 
 		// http://philbolduc.blogspot.com/2010/03/retryable-actions-in-c.html
 
-		[Test, Ignore("TODO")]
+		[Test]
 		public void retrying_twice_on_timeout()
 		{
 			// on app-start

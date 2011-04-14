@@ -25,8 +25,25 @@ namespace Castle.Services.vNextTransaction
 	public interface ITxManager : IDisposable
 	{
 		/// <summary>
-		/// 	Gets the current transaction. 
-		/// 	The value is null if no transaction is on the current call context.
+		/// <para>Gets the current transaction. If the program has a call context
+		/// located any methods further down the call-stack with methods with TransactionAttribute,
+		/// this property gets the top most transaction which is the parent of the CurrentTransaction.
+		/// </para>
+		/// <para>
+		/// Be aware that, when you call this property, only reads on pure properties on the transaction are thread-safe
+		/// and no methods that are not static are thread-safe. This property can be used with good results to get 
+		/// a transaction which you can use to register top-most resources in, such as rollback-aware NHibernate-session
+		/// managers which can refresh the session if there's a fault.
+		/// </para>
+		/// <para>
+		/// The value is Maybe.None() if there's no current transaction.
+		/// </para>
+		/// </summary>
+		Maybe<ITransaction> CurrentTopTransaction { get; }
+
+		/// <summary>
+		/// Gets the current transaction.
+		/// The value is Maybe.None() if no transaction is on the current call context.
 		/// </summary>
 		Maybe<ITransaction> CurrentTransaction { get; }
 
