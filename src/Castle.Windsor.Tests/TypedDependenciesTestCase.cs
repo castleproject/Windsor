@@ -12,17 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.MicroKernel.Tests
+namespace CastleTests
 {
 	using System;
 	using System.Collections.Generic;
 
+	using Castle.MicroKernel;
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.SubSystems.Conversion;
 	using Castle.MicroKernel.Tests.ClassComponents;
-	using Castle.Windsor.Tests;
 
-	using CastleTests;
+	using CastleTests.Components;
 
 	using NUnit.Framework;
 
@@ -134,7 +134,7 @@ namespace Castle.MicroKernel.Tests
 			Kernel.Register(Component.For<ICommon>().ImplementedBy<CommonImpl1>().Named("default"));
 			Kernel.Register(Component.For<ICommon>().ImplementedBy<CommonImpl2>().Named("non-default"));
 			Kernel.Register(
-				Component.For<CommonServiceUser>().ServiceOverrides(ServiceOverride.ForKey<ICommon>().Eq("non-default")));
+				Component.For<CommonServiceUser>().DependsOn(ServiceOverride.ForKey<ICommon>().Eq("non-default")));
 
 			var item = Kernel.Resolve<CommonServiceUser>();
 
@@ -146,7 +146,7 @@ namespace Castle.MicroKernel.Tests
 		{
 			Kernel.Register(Component.For<IGeneric<string>>().ImplementedBy<GenericImpl1<string>>().Named("default"),
 			                Component.For<IGeneric<string>>().ImplementedBy<GenericImpl2<string>>().Named("non-default"),
-			                Component.For<UsesIGeneric<string>>().ServiceOverrides(ServiceOverride.ForKey<IGeneric<string>>().Eq("non-default")));
+			                Component.For<UsesIGeneric<string>>().DependsOn(ServiceOverride.ForKey<IGeneric<string>>().Eq("non-default")));
 
 			var item = Kernel.Resolve<UsesIGeneric<string>>();
 
@@ -159,7 +159,7 @@ namespace Castle.MicroKernel.Tests
 			Kernel.Register(Component.For(typeof(IGeneric<>)).ImplementedBy(typeof(GenericImpl1<>)).Named("default"));
 			Kernel.Register(Component.For(typeof(IGeneric<>)).ImplementedBy(typeof(GenericImpl2<>)).Named("non-default"));
 			Kernel.Register(Component.For(typeof(UsesIGeneric<>))
-			                	.ServiceOverrides(ServiceOverride.ForKey(typeof(IGeneric<string>)).Eq("non-default")));
+			                	.DependsOn(ServiceOverride.ForKey(typeof(IGeneric<string>)).Eq("non-default")));
 
 			var item = Kernel.Resolve<UsesIGeneric<string>>();
 
@@ -176,8 +176,8 @@ namespace Castle.MicroKernel.Tests
 				Component.For(typeof(IGeneric<>)).ImplementedBy(typeof(GenericImpl2<>)).Named("non-default-int")
 					.DependsOn(Property.ForKey("value").Eq(2)),
 				Component.For(typeof(UsesIGeneric<>))
-					.ServiceOverrides(ServiceOverride.ForKey(typeof(IGeneric<>)).Eq("non-default-open"),
-					                  ServiceOverride.ForKey(typeof(IGeneric<int>)).Eq("non-default-int"))
+					.DependsOn(ServiceOverride.ForKey(typeof(IGeneric<>)).Eq("non-default-open"),
+					           ServiceOverride.ForKey(typeof(IGeneric<int>)).Eq("non-default-int"))
 				);
 
 			var withString = Kernel.Resolve<UsesIGeneric<string>>();
@@ -195,7 +195,7 @@ namespace Castle.MicroKernel.Tests
 			Kernel.Register(Component.For(typeof(IGeneric<>)).ImplementedBy(typeof(GenericImpl1<>)).Named("default"));
 			Kernel.Register(Component.For(typeof(IGeneric<>)).ImplementedBy(typeof(GenericImpl2<>)).Named("non-default"));
 			Kernel.Register(Component.For(typeof(UsesIGeneric<>))
-			                	.ServiceOverrides(ServiceOverride.ForKey(typeof(IGeneric<>)).Eq("non-default")));
+			                	.DependsOn(ServiceOverride.ForKey(typeof(IGeneric<>)).Eq("non-default")));
 
 			var item = Kernel.Resolve<UsesIGeneric<string>>();
 

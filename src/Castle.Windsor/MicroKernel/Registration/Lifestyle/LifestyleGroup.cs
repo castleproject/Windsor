@@ -20,78 +20,12 @@ namespace Castle.MicroKernel.Registration.Lifestyle
 	using Castle.Core.Internal;
 	using Castle.MicroKernel.ModelBuilder.Descriptors;
 
-	public class LifestyleGroup<S> : RegistrationGroup<S>
-		where S : class
+	public class LifestyleGroup<TService> : RegistrationGroup<TService>
+		where TService : class
 	{
-		public LifestyleGroup(ComponentRegistration<S> registration)
+		public LifestyleGroup(ComponentRegistration<TService> registration)
 			: base(registration)
 		{
-		}
-
-		public ComponentRegistration<S> PerThread
-		{
-			get { return AddDescriptor(new LifestyleDescriptor<S>(LifestyleType.Thread)); }
-		}
-		
-#if (!SILVERLIGHT)
-		public ComponentRegistration<S> PerWebRequest
-		{
-			get { return AddDescriptor(new LifestyleDescriptor<S>(LifestyleType.PerWebRequest)); }
-		}
-#endif
-
-		public ComponentRegistration<S> Pooled
-		{
-			get { return AddDescriptor(new LifestyleDescriptor<S>(LifestyleType.Pooled)); }
-		}
-
-		public ComponentRegistration<S> Scoped
-		{
-			get { return AddDescriptor(new LifestyleDescriptor<S>(LifestyleType.Scoped)); }
-		}
-
-		public ComponentRegistration<S> ScopedPer<TBaseForRoot>() where TBaseForRoot:class
-		{
-			return Scoped.ExtendedProperties(Property.ForKey("castle-scope-root").Eq(typeof(TBaseForRoot)));
-		}
-
-		public ComponentRegistration<S> Singleton
-		{
-			get { return AddDescriptor(new LifestyleDescriptor<S>(LifestyleType.Singleton)); }
-		}
-
-		public ComponentRegistration<S> Transient
-		{
-			get { return AddDescriptor(new LifestyleDescriptor<S>(LifestyleType.Transient)); }
-		}
-
-		/// <summary>
-		///   Assign a custom lifestyle type, that implements <see cref = "ILifestyleManager" />.
-		/// </summary>
-		/// <param name = "customLifestyleType">Type of the custom lifestyle.</param>
-		/// <returns></returns>
-		public ComponentRegistration<S> Custom(Type customLifestyleType)
-		{
-			if (customLifestyleType.Is<ILifestyleManager>() == false)
-			{
-				throw new ComponentRegistrationException(String.Format(
-					"The type {0} must implement {1} to " +
-					"be used as a custom lifestyle", customLifestyleType.FullName, typeof(ILifestyleManager).Name));
-			}
-
-			return AddDescriptor(new LifestyleDescriptor<S>(LifestyleType.Custom))
-				.Attribute("customLifestyleType").Eq(customLifestyleType.AssemblyQualifiedName);
-		}
-
-		/// <summary>
-		///   Assign a custom lifestyle type, that implements <see cref = "ILifestyleManager" />.
-		/// </summary>
-		/// <typeparam name = "L">The type of the custom lifestyle</typeparam>
-		/// <returns></returns>
-		public ComponentRegistration<S> Custom<L>()
-			where L : ILifestyleManager, new()
-		{
-			return Custom(typeof(L));
 		}
 
 		/// <summary>
@@ -99,7 +33,7 @@ namespace Castle.MicroKernel.Registration.Lifestyle
 		/// </summary>
 		/// <param name = "type">The type.</param>
 		/// <returns></returns>
-		public ComponentRegistration<S> Is(LifestyleType type)
+		public ComponentRegistration<TService> Is(LifestyleType type)
 		{
 			if (Enum.IsDefined(typeof(LifestyleType), type) == false)
 			{
@@ -110,10 +44,46 @@ namespace Castle.MicroKernel.Registration.Lifestyle
 				throw InvalidValue(type, string.Format("{0} is not a valid lifestyle type.", LifestyleType.Undefined));
 			}
 
-			return AddDescriptor(new LifestyleDescriptor<S>(type));
+			return AddDescriptor(new LifestyleDescriptor<TService>(type));
 		}
 
-		public ComponentRegistration<S> PooledWithSize(int? initialSize, int? maxSize)
+		private ArgumentOutOfRangeException InvalidValue(LifestyleType type, string message)
+		{
+#if SILVERLIGHT
+			return new ArgumentOutOfRangeException("type", message);
+#else
+			return new ArgumentOutOfRangeException("type", type, message);
+#endif
+		}
+
+		public ComponentRegistration<TService> Transient
+		{
+			get { return AddDescriptor(new LifestyleDescriptor<TService>(LifestyleType.Transient)); }
+		}
+
+		public ComponentRegistration<TService> Singleton
+		{
+			get { return AddDescriptor(new LifestyleDescriptor<TService>(LifestyleType.Singleton)); }
+		}
+
+		public ComponentRegistration<TService> PerThread
+		{
+			get { return AddDescriptor(new LifestyleDescriptor<TService>(LifestyleType.Thread)); }
+		}
+
+#if (!SILVERLIGHT)
+		public ComponentRegistration<TService> PerWebRequest
+		{
+			get { return AddDescriptor(new LifestyleDescriptor<TService>(LifestyleType.PerWebRequest)); }
+		}
+#endif
+
+		public ComponentRegistration<TService> Pooled
+		{
+			get { return AddDescriptor(new LifestyleDescriptor<TService>(LifestyleType.Pooled)); }
+		}
+
+		public ComponentRegistration<TService> PooledWithSize(int? initialSize, int? maxSize)
 		{
 			var pooledWithSize = Pooled;
 			if (initialSize.HasValue)
@@ -127,13 +97,43 @@ namespace Castle.MicroKernel.Registration.Lifestyle
 			return pooledWithSize;
 		}
 
-		private ArgumentOutOfRangeException InvalidValue(LifestyleType type, string message)
+		public ComponentRegistration<TService> Scoped
 		{
-#if SILVERLIGHT
-			            return new ArgumentOutOfRangeException("type", message);
-#else
-			return new ArgumentOutOfRangeException("type", type, message);
-#endif
+			get { return AddDescriptor(new LifestyleDescriptor<TService>(LifestyleType.Scoped)); }
+		}
+
+		public ComponentRegistration<TService> ScopedPer<TBaseForRoot>() where TBaseForRoot : class
+		{
+			return Scoped.ExtendedProperties(Property.ForKey("castle-scope-root").Eq(typeof(TBaseForRoot)));
+		}
+
+		/// <summary>
+		///   Assign a custom lifestyle type, that implements <see cref = "ILifestyleManager" />.
+		/// </summary>
+		/// <param name = "customLifestyleType">Type of the custom lifestyle.</param>
+		/// <returns></returns>
+		public ComponentRegistration<TService> Custom(Type customLifestyleType)
+		{
+			if (customLifestyleType.Is<ILifestyleManager>() == false)
+			{
+				throw new ComponentRegistrationException(String.Format(
+					"The type {0} must implement {1} to " +
+					"be used as a custom lifestyle", customLifestyleType.FullName, typeof(ILifestyleManager).Name));
+			}
+
+			return AddDescriptor(new LifestyleDescriptor<TService>(LifestyleType.Custom))
+				.Attribute("customLifestyleType").Eq(customLifestyleType.AssemblyQualifiedName);
+		}
+
+		/// <summary>
+		///   Assign a custom lifestyle type, that implements <see cref = "ILifestyleManager" />.
+		/// </summary>
+		/// <typeparam name = "TLifestyleManager">The type of the custom lifestyle</typeparam>
+		/// <returns></returns>
+		public ComponentRegistration<TService> Custom<TLifestyleManager>()
+			where TLifestyleManager : ILifestyleManager, new()
+		{
+			return Custom(typeof(TLifestyleManager));
 		}
 	}
 }

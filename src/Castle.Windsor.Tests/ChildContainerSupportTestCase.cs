@@ -12,45 +12,64 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Windsor.Tests
+namespace CastleTests
 {
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Registration;
+	using Castle.Windsor;
 	using Castle.Windsor.Configuration.Interpreters;
+	using Castle.Windsor.Tests;
+
+	using CastleTests.Components;
 
 	using NUnit.Framework;
 
 	[TestFixture]
-	public class ChildContainerSupportTestCase
+	public class ChildContainerSupportTestCase : AbstractContainerTestCase
 	{
-		private IWindsorContainer container;
+		[Test]
+		[Bug("IOC-127")]
+		public void AddComponentInstanceAndChildContainers()
+		{
+			var child = new WindsorContainer();
+			Container.AddChildContainer(child);
+
+			var clock1 = new EmptyServiceA();
+			var clock2 = new EmptyServiceB();
+
+			Container.Register(Component.For<IEmptyService>().Instance(clock2));
+			child.Register(Component.For<IEmptyService>().Instance(clock1));
+
+			Assert.AreSame(clock2, Container.Resolve<IEmptyService>());
+			Assert.AreSame(clock1, child.Resolve<IEmptyService>());
+		}
 
 		[Test]
 		public void AddAndRemoveChildContainer()
 		{
 			IWindsorContainer childcontainer = new WindsorContainer();
-			container.AddChildContainer(childcontainer);
-			Assert.AreEqual(container, childcontainer.Parent);
+			Container.AddChildContainer(childcontainer);
+			Assert.AreEqual(Container, childcontainer.Parent);
 
-			container.RemoveChildContainer(childcontainer);
+			Container.RemoveChildContainer(childcontainer);
 			Assert.IsNull(childcontainer.Parent);
 
-			container.AddChildContainer(childcontainer);
-			Assert.AreEqual(container, childcontainer.Parent);
+			Container.AddChildContainer(childcontainer);
+			Assert.AreEqual(Container, childcontainer.Parent);
 		}
 
 		[Test]
 		public void AddAndRemoveChildContainerWithProperty()
 		{
 			IWindsorContainer childcontainer = new WindsorContainer();
-			childcontainer.Parent = container;
-			Assert.AreEqual(container, childcontainer.Parent);
+			childcontainer.Parent = Container;
+			Assert.AreEqual(Container, childcontainer.Parent);
 
 			childcontainer.Parent = null;
 			Assert.IsNull(childcontainer.Parent);
 
-			childcontainer.Parent = container;
-			Assert.AreEqual(container, childcontainer.Parent);
+			childcontainer.Parent = Container;
+			Assert.AreEqual(Container, childcontainer.Parent);
 		}
 
 		[Test]
@@ -59,7 +78,7 @@ namespace Castle.Windsor.Tests
 		{
 			IWindsorContainer container3 = new WindsorContainer();
 			IWindsorContainer childcontainer = new WindsorContainer();
-			container.AddChildContainer(childcontainer);
+			Container.AddChildContainer(childcontainer);
 			container3.AddChildContainer(childcontainer);
 		}
 
@@ -69,24 +88,22 @@ namespace Castle.Windsor.Tests
 		{
 			IWindsorContainer container3 = new WindsorContainer();
 			IWindsorContainer childcontainer = new WindsorContainer();
-			childcontainer.Parent = container;
+			childcontainer.Parent = Container;
 			childcontainer.Parent = container3;
 		}
 
-		[SetUp]
-		public void Init()
+		protected override void AfterContainerCreated()
 		{
-			container = new WindsorContainer();
-			container.Register(Component.For(typeof(A)).Named("A"));
+			Container.Register(Component.For(typeof(A)).Named("A"));
 		}
 
 		[Test]
 		public void ResolveAgainstParentContainer()
 		{
 			IWindsorContainer childcontainer = new WindsorContainer();
-			container.AddChildContainer(childcontainer);
+			Container.AddChildContainer(childcontainer);
 
-			Assert.AreEqual(container, childcontainer.Parent);
+			Assert.AreEqual(Container, childcontainer.Parent);
 
 			childcontainer.Register(Component.For(typeof(B)).Named("B"));
 			var b = childcontainer.Resolve<B>("B");
@@ -96,9 +113,9 @@ namespace Castle.Windsor.Tests
 		[Test]
 		public void ResolveAgainstParentContainerWithProperty()
 		{
-			IWindsorContainer childcontainer = new WindsorContainer { Parent = container };
+			IWindsorContainer childcontainer = new WindsorContainer { Parent = Container };
 
-			Assert.AreEqual(container, childcontainer.Parent);
+			Assert.AreEqual(Container, childcontainer.Parent);
 
 			childcontainer.Register(Component.For(typeof(B)).Named("B"));
 			var b = childcontainer.Resolve<B>("B");
@@ -110,9 +127,9 @@ namespace Castle.Windsor.Tests
 		[Test]
 		public void StartWithParentContainer()
 		{
-			IWindsorContainer childcontainer = new WindsorContainer(container, new XmlInterpreter());
+			IWindsorContainer childcontainer = new WindsorContainer(Container, new XmlInterpreter());
 
-			Assert.AreEqual(container, childcontainer.Parent);
+			Assert.AreEqual(Container, childcontainer.Parent);
 
 			childcontainer.Register(Component.For(typeof(B)).Named("B"));
 			var b = childcontainer.Resolve<B>("B");
@@ -120,16 +137,5 @@ namespace Castle.Windsor.Tests
 			Assert.IsNotNull(b);
 		}
 #endif
-
-		public class A
-		{
-		}
-
-		public class B
-		{
-			public B(A a)
-			{
-			}
-		}
 	}
 }

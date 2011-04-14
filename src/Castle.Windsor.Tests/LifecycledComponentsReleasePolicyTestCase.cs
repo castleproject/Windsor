@@ -92,7 +92,7 @@ namespace Castle.Windsor.Tests
 		[Test]
 		public void Release_doesnt_stop_tracking_component_singleton_until_container_is_disposed()
 		{
-			DisposableFoo.DisposedCount = 0;
+			DisposableFoo.ResetDisposedCount();
 			container.Register(Singleton<DisposableFoo>());
 			var foo = container.Resolve<DisposableFoo>();
 			var fooWeak = new WeakReference(foo);

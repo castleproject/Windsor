@@ -20,9 +20,7 @@ namespace Castle.MicroKernel.Handlers
 	/// <summary>
 	/// Summary description for HandlerException.
 	/// </summary>
-#if (!SILVERLIGHT)
 	[Serializable]
-#endif
 	public class HandlerException : Exception
 	{
 		/// <summary>

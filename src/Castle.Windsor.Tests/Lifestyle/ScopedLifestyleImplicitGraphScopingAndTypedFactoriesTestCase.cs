@@ -19,8 +19,9 @@ namespace CastleTests.Lifestyle
 	using Castle.Facilities.TypedFactory;
 	using Castle.MicroKernel.Lifestyle.Scoped;
 	using Castle.MicroKernel.Registration;
-	using Castle.Windsor.Tests.ClassComponents;
 	using Castle.Windsor.Tests.Facilities.TypedFactory.Delegates;
+
+	using CastleTests.Components;
 
 	using NUnit.Framework;
 
@@ -50,7 +51,7 @@ namespace CastleTests.Lifestyle
 		{
 			Container.Register(Component.For<UsesFooAndDelegate>().LifeStyle.Transient,
 			                   Component.For<Foo>().LifeStyle.ScopedPer<UsesFooAndDelegate>()
-			                   	.Parameters(Parameter.ForKey("number").Eq("1")));
+			                   	.DependsOn(Parameter.ForKey("number").Eq("1")));
 
 			var instance = Container.Resolve<UsesFooAndDelegate>();
 

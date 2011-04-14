@@ -36,9 +36,7 @@ namespace Castle.MicroKernel
 	using Castle.MicroKernel.SubSystems.Conversion;
 	using Castle.MicroKernel.SubSystems.Naming;
 	using Castle.MicroKernel.SubSystems.Resource;
-#if !SILVERLIGHT
-	using Castle.Windsor.Experimental.Diagnostics;
-#endif
+	using Castle.Windsor.Diagnostics;
 
 	/// <summary>
 	///   Default implementation of <see cref = "IKernel" />. 
@@ -84,24 +82,12 @@ namespace Castle.MicroKernel
 		/// <summary>
 		///   Map of subsystems registered.
 		/// </summary>
-		private readonly Dictionary<string, ISubSystem> subsystems =
-			new Dictionary<string, ISubSystem>(StringComparer.OrdinalIgnoreCase);
+		private readonly Dictionary<string, ISubSystem> subsystems = new Dictionary<string, ISubSystem>(StringComparer.OrdinalIgnoreCase);
 
 		/// <summary>
 		///   The parent kernel, if exists.
 		/// </summary>
 		private IKernel parentKernel;
-
-		/// <summary>
-		///   Holds the implementation of <see cref = "IProxyFactory" />
-		/// </summary>
-		private IProxyFactory proxyFactory;
-
-		/// <summary>
-		///   Implements a policy to control component's
-		///   disposal that the user forgot.
-		/// </summary>
-		private IReleasePolicy releasePolicy;
 
 		private readonly object lazyLoadingLock = new object();
 
@@ -122,11 +108,10 @@ namespace Castle.MicroKernel
 		public DefaultKernel(IDependencyResolver resolver, IProxyFactory proxyFactory)
 		{
 			RegisterSubSystems();
-
-			releasePolicy = new LifecycledComponentsReleasePolicy();
+			ReleasePolicy = new LifecycledComponentsReleasePolicy(this);
 			handlerFactory = new DefaultHandlerFactory(this);
 			ComponentModelFactory = new DefaultComponentModelFactory(this);
-			this.proxyFactory = proxyFactory;
+			ProxyFactory = proxyFactory;
 			this.resolver = resolver;
 			resolver.Initialize(this, RaiseDependencyResolving);
 		}
@@ -219,17 +204,9 @@ namespace Castle.MicroKernel
 			}
 		}
 
-		public IProxyFactory ProxyFactory
-		{
-			get { return proxyFactory; }
-			set { proxyFactory = value; }
-		}
+		public IProxyFactory ProxyFactory { get; set; }
 
-		public virtual IReleasePolicy ReleasePolicy
-		{
-			get { return releasePolicy; }
-			set { releasePolicy = value; }
-		}
+		public IReleasePolicy ReleasePolicy { get; set; }
 
 		public IDependencyResolver Resolver
 		{
@@ -353,9 +330,9 @@ namespace Castle.MicroKernel
 			NamingSubSystem.AddHandlerSelector(selector);
 		}
 
-		public void AddHandlerFilter(IHandlerFilter filter)
+		public void AddHandlersFilter(IHandlersFilter filter)
 		{
-			NamingSubSystem.AddHandlerFilter(filter);
+			NamingSubSystem.AddHandlersFilter(filter);
 		}
 
 		public virtual void AddSubSystem(String key, ISubSystem subsystem)
@@ -693,13 +670,8 @@ namespace Castle.MicroKernel
 
 			AddSubSystem(SubSystemConstants.ResourceKey,
 			             new DefaultResourceSubSystem());
-#if !SILVERLIGHT
-			if (Debugger.IsAttached)
-			{
-				AddSubSystem(SubSystemConstants.DebuggingKey,
-				             new DefaultDebuggingSubSystem());
-			}
-#endif
+			AddSubSystem(SubSystemConstants.DiagnosticsKey,
+			             new DefaultDiagnosticsSubSystem());
 		}
 
 		protected object ResolveComponent(IHandler handler, Type service, IDictionary additionalArguments, IReleasePolicy policy)
@@ -720,26 +692,6 @@ namespace Castle.MicroKernel
 					throw new CircularDependencyException(message);
 				}
 				return handler.Resolve(context);
-			}
-			finally
-			{
-				currentCreationContext = parent;
-			}
-		}
-
-		protected object TryResolveComponent(IHandler handler, Type service, IDictionary additionalArguments, IReleasePolicy policy)
-		{
-			var parent = currentCreationContext;
-			var context = CreateCreationContext(handler, service, additionalArguments, parent, policy);
-			currentCreationContext = context;
-
-			try
-			{
-				if (handler.IsBeingResolvedInContext(context))
-				{
-					return null;
-				}
-				return handler.TryResolve(context);
 			}
 			finally
 			{

@@ -142,5 +142,15 @@ namespace Castle.MicroKernel.Registration
 		{
 			return new ServiceOverride(key, value, typeof(V));
 		}
+
+		public ServiceOverride Eq(params Type[] componentTypes)
+		{
+			return new ServiceOverride(key, componentTypes);
+		}
+
+		public ServiceOverride Eq<V>(params Type[] componentTypes)
+		{
+			return new ServiceOverride(key, componentTypes, typeof(V));
+		}
 	}
 }

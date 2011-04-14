@@ -18,7 +18,9 @@ namespace Castle.MicroKernel.Tests
 	using System.Collections.Generic;
 
 	using Castle.Core;
+	using Castle.MicroKernel.Handlers;
 	using Castle.MicroKernel.Registration;
+	using Castle.MicroKernel.Resolvers;
 	using Castle.MicroKernel.Tests.ClassComponents;
 	using Castle.Windsor.Proxy;
 	using Castle.Windsor.Tests;
@@ -183,20 +185,21 @@ namespace Castle.MicroKernel.Tests
 		}
 
 		[Test]
-		public void ResolveAllAccountsForAssignableServices()
+		public void ResolveAll_does_NOT_account_for_assignable_services()
 		{
 			Kernel.Register(Component.For<ICommon>().ImplementedBy<CommonImpl2>().Named("test"));
 			Kernel.Register(Component.For<ICommonSub1>().ImplementedBy<CommonSub1Impl>().Named("test2"));
 			var services = Kernel.ResolveAll<ICommon>();
-			Assert.AreEqual(2, services.Length);
+			Assert.AreEqual(1, services.Length);
 		}
 
 		[Test]
-		public void ResolveAllWaitingOnDependencies()
+		public void ResolveAll_does_handle_multi_service_components()
 		{
-			Kernel.Register(Component.For<ICommon>().ImplementedBy<CommonImplWithDependency>().Named("test"));
+			Kernel.Register(Component.For<ICommon>().ImplementedBy<CommonImpl2>().Named("test"));
+			Kernel.Register(Component.For<ICommonSub1, ICommon>().ImplementedBy<CommonSub1Impl>().Named("test2"));
 			var services = Kernel.ResolveAll<ICommon>();
-			Assert.AreEqual(0, services.Length);
+			Assert.AreEqual(2, services.Length);
 		}
 
 		[Test]
@@ -259,30 +262,24 @@ namespace Castle.MicroKernel.Tests
 		}
 
 		[Test]
-		public void Resolve_all_when_dependency_is_missing_should_not_throw()
+		public void Resolve_all_when_dependency_is_missing_throws_DependencyResolverException()
 		{
 			Kernel.Register(
 				Component.For<C>());
 			// the dependency goes C --> B --> A
 
-			C[] cs = null;
-			Assert.DoesNotThrow(() =>
-			                    cs = Kernel.ResolveAll<C>(new Arguments().Insert("fakeDependency", "Stefan!")));
-			Assert.IsEmpty(cs);
+			Assert.Throws<DependencyResolverException>(() => Kernel.ResolveAll<C>(new Arguments { { "fakeDependency", "Stefan!" } }));
 		}
 
 		[Test]
-		public void Resolve_all_when_dependency_is_unresolvable_should_not_throw()
+		public void Resolve_all_when_dependency_is_unresolvable_throws_HandlerException()
 		{
 			Kernel.Register(
 				Component.For<B>(),
 				Component.For<C>());
 			// the dependency goes C --> B --> A
 
-			C[] cs = null;
-			Assert.DoesNotThrow(() =>
-			                    cs = Kernel.ResolveAll<C>());
-			Assert.IsEmpty(cs);
+			Assert.Throws<HandlerException>(() => Kernel.ResolveAll<C>());
 		}
 
 		[Test]

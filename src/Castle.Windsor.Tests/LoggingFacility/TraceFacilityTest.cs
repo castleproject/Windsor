@@ -26,9 +26,6 @@ namespace Castle.Facilities.Logging.Tests
 
 	using NUnit.Framework;
 
-	/// <summary>
-	/// Summary description for TraceFacilityTest
-	/// </summary>
 	[TestFixture]
 	public class TraceFacilityTest : BaseTest
 	{

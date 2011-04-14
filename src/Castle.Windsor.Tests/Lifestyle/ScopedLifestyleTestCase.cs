@@ -44,7 +44,7 @@ namespace CastleTests.Lifestyle
 		[Test]
 		public void Ending_scope_releases_component()
 		{
-			DisposableFoo.DisposedCount = 0;
+			DisposableFoo.ResetDisposedCount();
 
 			Container.Register(Component.For<DisposableFoo>().LifeStyle.Scoped);
 
@@ -122,7 +122,7 @@ namespace CastleTests.Lifestyle
 		[Test]
 		public void Scoped_component_is_bound_to_the_innermost_scope()
 		{
-			DisposableFoo.DisposedCount = 0;
+			DisposableFoo.ResetDisposedCount();
 
 			Container.Register(Component.For<DisposableFoo>().LifeStyle.Scoped);
 
@@ -142,7 +142,7 @@ namespace CastleTests.Lifestyle
 		public void Scoped_component_is_not_released_by_call_to_container_Release()
 		{
 			DisposableFoo foo;
-			DisposableFoo.DisposedCount = 0;
+			DisposableFoo.ResetDisposedCount();
 
 			Container.Register(Component.For<DisposableFoo>().LifeStyle.Scoped);
 
@@ -158,7 +158,7 @@ namespace CastleTests.Lifestyle
 		public void Scoped_component_is_not_tracked_by_the_release_policy()
 		{
 			DisposableFoo foo;
-			DisposableFoo.DisposedCount = 0;
+			DisposableFoo.ResetDisposedCount();
 
 			Container.Register(Component.For<DisposableFoo>().LifeStyle.Scoped);
 

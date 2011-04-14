@@ -153,6 +153,25 @@ namespace Castle.Facilities.Logging
 		}
 
 #if !SILVERLIGHT
+#if !CLIENTPROFILE
+		public LoggingFacility UseLog4Net()
+		{
+			return LogUsing(LoggerImplementation.Log4net);
+		}
+
+		public LoggingFacility UseLog4Net(string configFile)
+		{
+			return UseLog4Net().WithConfig(configFile);
+		}
+#endif
+
+		public LoggingFacility UseNLog()
+		{
+			return LogUsing(LoggerImplementation.NLog);
+		}
+#endif
+
+#if !SILVERLIGHT
 		/// <summary>
 		///   loads configuration from current AppDomain's config file (aka web.config/app.config)
 		/// </summary>

@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,16 +15,16 @@
 namespace Castle.MicroKernel.Registration
 {
 	using System;
+
 	using Castle.Core.Configuration;
 
 	/// <summary>
-	/// Represents a configuration parameter.
+	///   Represents a configuration parameter.
 	/// </summary>
-	public class Parameter
+	public class Parameter : Dependency
 	{
 		private readonly String key;
-		private readonly String value;
-		private readonly IConfiguration configNode;
+		private readonly object value;
 
 		internal Parameter(String key, String value)
 		{
@@ -35,11 +35,19 @@ namespace Castle.MicroKernel.Registration
 		internal Parameter(String key, IConfiguration configNode)
 		{
 			this.key = key;
-			this.configNode = configNode;
+			value = configNode;
 		}
 
 		/// <summary>
-		/// Gets the parameter key.
+		///   Gets the parameter configuration.
+		/// </summary>
+		public IConfiguration ConfigNode
+		{
+			get { return value as IConfiguration; }
+		}
+
+		/// <summary>
+		///   Gets the parameter key.
 		/// </summary>
 		public string Key
 		{
@@ -47,36 +55,26 @@ namespace Castle.MicroKernel.Registration
 		}
 
 		/// <summary>
-		/// Gets the parameter value.
+		///   Gets the parameter value.
 		/// </summary>
 		public String Value
 		{
-			get { return value; }
+			get { return value as string; }
 		}
 
 		/// <summary>
-		/// Gets the parameter configuration.
+		///   Create a <see cref = "ParameterKey" /> with key.
 		/// </summary>
-		public IConfiguration ConfigNode
-		{
-			get { return configNode; }
-		}
-
-		/// <summary>
-		/// Create a <see cref="ParameterKey"/> with key.
-		/// </summary>
-		/// <param name="key">The parameter key.</param>
-		/// <returns>The new <see cref="ParameterKey"/></returns>
+		/// <param name = "key">The parameter key.</param>
+		/// <returns>The new <see cref = "ParameterKey" /></returns>
 		public static ParameterKey ForKey(String key)
 		{
 			return new ParameterKey(key);
 		}
 	}
 
-	#region ParameterKey
-	
 	/// <summary>
-	/// Represents a parameter key.
+	///   Represents a parameter key.
 	/// </summary>
 	public class ParameterKey
 	{
@@ -88,7 +86,7 @@ namespace Castle.MicroKernel.Registration
 		}
 
 		/// <summary>
-		/// The parameter key name.
+		///   The parameter key name.
 		/// </summary>
 		public string Name
 		{
@@ -96,25 +94,23 @@ namespace Castle.MicroKernel.Registration
 		}
 
 		/// <summary>
-		/// Builds the <see cref="Parameter"/> with key/value.
+		///   Builds the <see cref = "Parameter" /> with key/value.
 		/// </summary>
-		/// <param name="value">The parameter value.</param>
-		/// <returns>The new <see cref="Parameter"/></returns>
+		/// <param name = "value">The parameter value.</param>
+		/// <returns>The new <see cref = "Parameter" /></returns>
 		public Parameter Eq(String value)
 		{
 			return new Parameter(name, value);
 		}
 
 		/// <summary>
-		/// Builds the <see cref="Parameter"/> with key/config.
+		///   Builds the <see cref = "Parameter" /> with key/config.
 		/// </summary>
-		/// <param name="configNode">The parameter configuration.</param>
-		/// <returns>The new <see cref="Parameter"/></returns>
+		/// <param name = "configNode">The parameter configuration.</param>
+		/// <returns>The new <see cref = "Parameter" /></returns>
 		public Parameter Eq(IConfiguration configNode)
 		{
 			return new Parameter(name, configNode);
 		}
-		
-		#endregion
 	}
 }

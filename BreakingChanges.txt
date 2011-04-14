@@ -1,4 +1,24 @@
 ================================================================================================
+change - ResolveAll methods have now different bahaviour.
+
+impact - high
+fixability - medium
+
+description - Previously Windsor when ResolveAll was called would try to resolve all components
+	with implementation type assignable to the type requirested and silently ignore those it
+	could not resolve. This behavior was introduced before Windsor had ability to support multi
+	service components and at the time it was the only way to support certain scenarios.
+	Currently this behavior is no longer required and is indeed leading to issues when dealing
+	with code that doesn't strictly follow good OOP principles. Also by silently ignoring 
+	unresolvable components it may mask registration issues, that's why it was changed.
+
+fix - Now ResolveAll<Foo>() will only resolve components that explicitly expose Foo as their
+	service. If you were depending on the implicit behavior previously, make sure you add all
+	types you resolve via this method as service to the desired components.
+	Also Windsor now will throw exception if any of the components can't be resolved. If you
+	have a legitimate reason to have unresolvable component use IHandlersFilter to filter that
+	components out.
+================================================================================================
 change - The following methods were removed:
 	IHandler.AddCustomDependencyValue
 	IHandler.HasCustomParameter

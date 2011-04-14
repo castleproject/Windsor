@@ -14,6 +14,8 @@
 
 namespace CastleTests.Components
 {
+	using CastleTests.Components;
+
 	public class EmptyServiceComposite : IEmptyService
 	{
 		public EmptyServiceComposite(IEmptyService[] inner)

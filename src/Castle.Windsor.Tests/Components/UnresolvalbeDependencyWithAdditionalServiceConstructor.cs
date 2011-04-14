@@ -14,7 +14,7 @@
 
 namespace CastleTests.Components
 {
-	using Castle.Windsor.Tests;
+	using CastleTests.Components;
 
 	public class UnresolvalbeDependencyWithAdditionalServiceConstructor : IDependency
 	{

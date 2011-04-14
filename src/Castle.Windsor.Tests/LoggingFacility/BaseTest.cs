@@ -34,8 +34,6 @@ namespace Castle.Facilities.Logging.Tests
 			IWindsorContainer container = new WindsorContainer(new DefaultConfigurationStore());
 			var configFile = GetConfigFile(loggerApi);
 
-			//LoggingFacility facility = new LoggingFacility(loggerApi, custom, configFile);
-
 			container.AddFacility<LoggingFacility>(f => f.LogUsing(loggerApi).WithConfig(configFile));
 
 			return container;

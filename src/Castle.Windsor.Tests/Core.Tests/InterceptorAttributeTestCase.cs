@@ -16,7 +16,6 @@ namespace Castle.Core.Tests
 {
 	using Castle.DynamicProxy;
 	using Castle.MicroKernel.Registration;
-	using Castle.Windsor.Tests;
 
 	using CastleTests;
 	using CastleTests.Components;
@@ -55,8 +54,8 @@ namespace Castle.Core.Tests
 		{
 			Container.Register(
 				Component.For<StandardInterceptor>(),
-				Component.For<ICalcService>().ImplementedBy<CalculatorServiceWithInternalInterface>());
-			var calcService = Container.Resolve<ICalcService>();
+				Component.For<CalculatorServiceWithStandardInterceptor>());
+			var calcService = Container.Resolve<CalculatorServiceWithStandardInterceptor>();
 			Assert.IsTrue(IsProxy(calcService));
 		}
 	}
