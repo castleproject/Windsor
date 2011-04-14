@@ -36,7 +36,7 @@
     <DefineConstants>TRACE;DEBUG;DOTNET DOTNET40</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <DocumentationFile>
     </DocumentationFile>
     <NoWarn>1591</NoWarn>
@@ -196,14 +196,25 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="TestClasses\TransientActivityManager.cs" />
-    <Compile Include="vNext\NHFacilityInitTests.cs" />
-    <Compile Include="vNext\SimpleNHibernateIntegration.cs" />
+    <Compile Include="vNext\AutoTxInitTests.cs" />
+    <Compile Include="vNext\LFF\Bar.cs" />
+    <Compile Include="vNext\LFF\Baz.cs" />
+    <Compile Include="vNext\LFF\Foo.cs" />
+    <Compile Include="vNext\LFF\HasOnlyOneArgMatchingDelegatesParameter.cs" />
+    <Compile Include="vNext\LFF\HasTwoConstructors.cs" />
+    <Compile Include="vNext\LFF\LightweightFactoryTests.cs" />
+    <Compile Include="vNext\LFF\UsesBarDelegate.cs" />
+    <Compile Include="vNext\LFF\UsesFooDelegate.cs" />
+    <Compile Include="vNext\NHFacility_Init.cs" />
+    <Compile Include="vNext\NHFacility_SimpleUseCase_SingleSave.cs" />
+    <Compile Include="vNext\SingleThread_Ambient_OnConcreteType.cs" />
+    <Compile Include="vNext\TestClasses\ConcreteService.cs" />
     <Compile Include="vNext\TestClasses\IMyService.cs" />
     <Compile Include="vNext\TxClassMetaInfoStoreTests.cs" />
     <Compile Include="vNext\TestClasses\MyService.cs" />
     <Compile Include="vNext\RetryPolicies_Transactions.cs" />
     <Compile Include="vNext\ScratchBoard_LTM.cs" />
-    <Compile Include="vNext\SingleThread_Ambient.cs" />
+    <Compile Include="vNext\SingleThread_Ambient_OnInterface.cs" />
     <Compile Include="TxTraceListener.cs" />
   </ItemGroup>
   <ItemGroup>

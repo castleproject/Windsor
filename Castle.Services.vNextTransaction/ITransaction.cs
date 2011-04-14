@@ -110,6 +110,7 @@ namespace Castle.Services.vNextTransaction
 	{
 		void ITransaction.Rollback()
 		{
+			Contract.Ensures(State == TransactionState.Aborted);
 		}
 
 		void ITransaction.Complete()
@@ -129,7 +130,8 @@ namespace Castle.Services.vNextTransaction
 			Contract.Requires(State == TransactionState.Active
 				|| State == TransactionState.Active
 				|| State == TransactionState.Aborted
-				|| State == TransactionState.InDoubt);
+				|| State == TransactionState.InDoubt
+				|| State == TransactionState.CommittedOrCompleted);
 
 			Contract.Ensures(State == TransactionState.Diposed);
 		}

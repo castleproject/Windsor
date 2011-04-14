@@ -16,6 +16,21 @@ namespace Castle.Services.vNextTransaction
 
 		private readonly Guid _ActivityId = Guid.NewGuid();
 		private readonly Stack<ITransaction> _Txs = new Stack<ITransaction>();
+		private ITransaction _TopMost;
+
+		public Activity()
+		{
+			Contract.Ensures(Count == 0);
+		}
+
+		public Maybe<ITransaction> TopTransaction
+		{
+			get
+			{
+				Contract.Ensures(Contract.Result<Maybe<ITransaction>>() != null);
+				return _TopMost != null ? Maybe.Some(_TopMost) : Maybe.None<ITransaction>();
+			}
+		}
 
 		public Maybe<ITransaction> CurrentTransaction
 		{
@@ -31,6 +46,10 @@ namespace Castle.Services.vNextTransaction
 		private void Invariant()
 		{
 			Contract.Invariant(_Txs != null);
+			Contract.Invariant(_Txs.Count >= 0);
+			Contract.Invariant(Count >= 0);
+			Contract.Invariant(Count != 0 || _TopMost == null);
+			Contract.Invariant(Count == 0 || _TopMost != null);
 		}
 
 		/// <summary>
@@ -41,6 +60,8 @@ namespace Castle.Services.vNextTransaction
 		{
 			Contract.Requires(transaction != null);
 			Contract.Ensures(Contract.OldValue(Count) + 1 == Count);
+			Contract.Ensures(_TopMost != null);
+			Contract.Ensures(Contract.OldValue(Count) != 0 || _TopMost == transaction);
 			
 			// I can't prove this because Push doesn't have those contracts
 			//Contract.Ensures(Contract.Exists(_Txs, x => object.ReferenceEquals(x, transaction)));
@@ -49,6 +70,9 @@ namespace Castle.Services.vNextTransaction
 			//Contract.Ensures(object.ReferenceEquals(CurrentTransaction.Value, transaction));
 			
 			_Logger.DebugFormat("pushing tx#{0}", transaction.TransactionInformation.LocalIdentifier);
+
+			if (Count == 0)
+				_TopMost = transaction;
 
 			_Txs.Push(transaction);
 		}
@@ -63,9 +87,13 @@ namespace Castle.Services.vNextTransaction
 			// I can't prove this because Push doesn't have those contracts
 			// Contract.Ensures(Contract.ForAll(_Txs, x => !object.ReferenceEquals(x, Contract.Result<ITransaction>())));
 			Contract.Ensures(Contract.OldValue(Count) - 1 == Count);
+
 			var ret = _Txs.Pop();
 
 			_Logger.DebugFormat("popping tx#{0}", ret.TransactionInformation.LocalIdentifier);
+
+			if (Count == 0)
+				_TopMost = null;
 
 			return ret;
 		}

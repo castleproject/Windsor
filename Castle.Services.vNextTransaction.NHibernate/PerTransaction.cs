@@ -1,19 +1,22 @@
 ﻿using System;
 using System.Diagnostics.Contracts;
-using System.Web;
 using Castle.MicroKernel.Context;
 using Castle.MicroKernel.Lifestyle;
+using log4net;
 
 namespace Castle.Services.vNextTransaction.NHibernate
 {
 	[Serializable]
 	public class PerTransaction : AbstractLifestyleManager
 	{
+		private static readonly ILog _Logger = LogManager.GetLogger(typeof (PerTransaction));
+
 		private readonly ITxManager _Manager;
 
 		public PerTransaction(ITxManager manager)
 		{
 			Contract.Requires(manager != null);
+
 			_Manager = manager;
 		}
 
@@ -22,40 +25,23 @@ namespace Castle.Services.vNextTransaction.NHibernate
 		{
 		}
 
-		internal void Evict(object instance)
-		{
-			using (new EvictionScope(this))
-				Kernel.ReleaseComponent(instance);
-		}
-
 		public override bool Release(object instance)
 		{
-			return evicting && base.Release(instance);
+			return base.Release(instance);
 		}
 
 		public override object Resolve(CreationContext context)
 		{
-			if ()
+			Contract.Ensures(Contract.Result<object>() != null);
 
-		}
+			_Logger.DebugFormat("resolving context '{0}' using PerTransaction lifestyle", context);
 
-		// Nested Types
-		private class EvictionScope : IDisposable
-		{
-			// Fields
-			private readonly PerTransaction owner;
+			if (!_Manager.CurrentTopTransaction.HasValue)
+				throw new MissingTransactionException();
 
-			// Methods
-			public EvictionScope(PerTransaction owner)
-			{
-				this.owner = owner;
-				this.owner.evicting = true;
-			}
-
-			public void Dispose()
-			{
-				owner.evicting = false;
-			}
+			var instance = base.Resolve(context);
+			_Manager.CurrentTopTransaction.Value.Inner.TransactionCompleted += (sender, args) => Release(instance);
+			return instance;
 		}
 	}
 }

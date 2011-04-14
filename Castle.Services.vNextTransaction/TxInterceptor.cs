@@ -84,13 +84,12 @@ namespace Castle.Services.vNextTransaction
 			_Logger.DebugFormat("proceeding with transaction");
 			Contract.Assume(tx.HasValue && tx.Value.State == TransactionState.Active, "from post-condition of ITxManager CreateTransaction");
 
-			using (var transaction = tx.Value)
-			using (new TxScope(transaction.Inner))
+			using (new TxScope(tx.Value.Inner))
 			{
 				try
 				{
 					invocation.Proceed();
-					transaction.Complete();
+					tx.Value.Complete();
 				}
 				catch (TransactionException ex)
 				{
@@ -99,8 +98,12 @@ namespace Castle.Services.vNextTransaction
 				}
 				catch (Exception)
 				{
-					transaction.Rollback();
+					tx.Value.Rollback();
 					throw;
+				}
+				finally
+				{
+					tx.Value.Dispose();
 				}
 			}
 		}

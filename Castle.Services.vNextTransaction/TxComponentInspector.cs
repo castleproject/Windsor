@@ -40,6 +40,7 @@ namespace Castle.Services.vNextTransaction
 				_MetaStore = kernel.Resolve<ITxMetaInfoStore>();
 
 			Contract.Assume(model.Implementation != null);
+
 			Validate(model);
 			AddInterceptor(model);
 		}

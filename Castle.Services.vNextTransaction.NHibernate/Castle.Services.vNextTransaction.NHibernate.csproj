@@ -62,6 +62,7 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Interactive, Version=1.0.2856.104, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Reactive, Version=1.0.2856.104, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="System.Transactions" />
     <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -71,14 +72,23 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="HybridLifestyleManager.cs" />
-    <Compile Include="HybridPerWebRequestLifestyleManager.cs" />
-    <Compile Include="HybridPerWebRequestTransientLifestyleManager.cs" />
+    <Compile Include="HybridPerTransactionTransientLifestyleManager.cs" />
     <Compile Include="INHibernateInstaller.cs" />
     <Compile Include="INHibernateInstallerContract.cs" />
     <Compile Include="LifestyleRegistrationExtensions.cs" />
+    <Compile Include="LFF\ExpressionTreeBasedDelegateBuilder.cs" />
+    <Compile Include="LFF\FactoryArguments.cs" />
+    <Compile Include="LFF\FactoryParameter.cs" />
+    <Compile Include="LFF\FactoryParametersStore.cs" />
+    <Compile Include="LFF\IDelegateBuilder.cs" />
+    <Compile Include="LFF\LightweightFactory.cs" />
+    <Compile Include="LFF\LightweightFactoryFacility.cs" />
+    <Compile Include="LFF\NoUniqueComponentException.cs" />
+    <Compile Include="LFF\ParametersBinder.cs" />
+    <Compile Include="LFF\Tokens.cs" />
+    <Compile Include="MissingTransactionException.cs" />
     <Compile Include="NHFacility.cs" />
     <Compile Include="PerTransaction.cs" />
-    <Compile Include="PerWebRequestLifestyleModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

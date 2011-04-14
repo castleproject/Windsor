@@ -33,6 +33,11 @@ namespace Castle.Services.vNextTransaction
 			_ActivityManager = activityManager;
 		}
 
+		Maybe<ITransaction> ITxManager.CurrentTopTransaction
+		{
+			get { return _ActivityManager.GetCurrentActivity().TopTransaction; }
+		}
+
 		Maybe<ITransaction> ITxManager.CurrentTransaction
 		{
 			get { return _ActivityManager.GetCurrentActivity().CurrentTransaction; }
@@ -86,7 +91,6 @@ namespace Castle.Services.vNextTransaction
 
 		void IDisposable.Dispose()
 		{
-			throw new NotImplementedException();
 		}
 	}
 }

@@ -16,11 +16,10 @@
 
 #endregion
 
-using System;
 using System.Linq;
-using Castle.Facilities.FactorySupport;
 using Castle.MicroKernel.Facilities;
 using Castle.MicroKernel.Registration;
+using Castle.Services.vNextTransaction.NHibernate.LFF;
 using NHibernate;
 using NHibernate.Cfg;
 
@@ -42,9 +41,8 @@ namespace Castle.Services.vNextTransaction.NHibernate
 			if (!installer.All(x => !string.IsNullOrEmpty(x.SessionFactoryKey)))
 				throw new FacilityException("all session factory keys must be non null and non empty strings");
 
-			if (!Kernel.HasComponent(typeof(FactorySupportFacility)))
-				throw new FacilityException("you need factory support facility to run NHFacility");
-				
+			Kernel.AddFacility<LightweightFactoryFacility>();
+
 			var installed = installer
 				.Select(x => new {
 					Config = x.BuildFluent().BuildConfiguration(),
@@ -62,23 +60,19 @@ namespace Castle.Services.vNextTransaction.NHibernate
 						.LifeStyle.Singleton
 						.Named(x.Instance.SessionFactoryKey),
 					Component.For<ISession>()
-						.LifeStyle.HybridPerWebRequestTransient()
+						.LifeStyle.HybridPerTransactionTransient()
 						.Named(x.Instance.SessionFactoryKey + "-session")
-						.UsingFactoryMethod((k, cc) =>
-							{
-								var s = k.Resolve<ISessionFactory>(x.Instance.SessionFactoryKey)
-									.OpenSession();
-								s.FlushMode = FlushMode.Commit;
-								return s;
-							}),
+						.UsingFactoryMethod(k => {
+							var s = k.Resolve<ISessionFactory>(x.Instance.SessionFactoryKey).OpenSession();
+							s.FlushMode = FlushMode.Commit;
+							return s;
+						}),
 					Component.For<IStatelessSession>()
-						.LifeStyle.HybridPerWebRequestTransient()
+						.LifeStyle.HybridPerTransactionTransient()
 						.Named(x.Instance.SessionFactoryKey + "-s-session")
-						.UsingFactoryMethod(k => k.Resolve<ISessionFactory>(x.Instance.SessionFactoryKey)
-						                         	.OpenStatelessSession())
-						
-						
-						))
+						.UsingFactoryMethod(k => 
+							k.Resolve<ISessionFactory>(x.Instance.SessionFactoryKey).OpenStatelessSession())
+					))
 				.ToList();
 
 			// notify the installers

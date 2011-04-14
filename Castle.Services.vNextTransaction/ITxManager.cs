@@ -85,13 +85,21 @@ namespace Castle.Services.vNextTransaction
 	[ContractClassFor(typeof (ITxManager))]
 	internal abstract class TxManagerContract : ITxManager
 	{
+		public Maybe<ITransaction> CurrentTopTransaction
+		{
+			get
+			{
+				Contract.Ensures(Contract.Result<Maybe<ITransaction>>() != null);
+				throw new NotImplementedException();
+			}
+		}
+
 		public Maybe<ITransaction> CurrentTransaction
 		{
 			get
 			{
-				var result = Contract.Result<Maybe<ITransaction>>();
-				Contract.Ensures(result != null);
-				return result;
+				Contract.Ensures(Contract.Result<Maybe<ITransaction>>() != null);
+				throw new NotImplementedException();
 			}
 		}
 

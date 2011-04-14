@@ -23,9 +23,9 @@ namespace Castle.Services.vNextTransaction.NHibernate
 {
 	public static class LifestyleRegistrationExtensions
 	{
-		public static ComponentRegistration<S> HybridPerWebRequestTransient<S>(this LifestyleGroup<S> @group)
+		public static ComponentRegistration<S> HybridPerTransactionTransient<S>(this LifestyleGroup<S> @group)
 		{
-			return @group.Custom<HybridPerWebRequestTransientLifestyleManager>();
+			return @group.Custom<HybridPerTransactionTransientLifestyleManager>();
 		}
 	}
 }

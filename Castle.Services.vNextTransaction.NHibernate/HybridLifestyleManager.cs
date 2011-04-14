@@ -64,6 +64,8 @@ namespace Castle.Services.vNextTransaction.NHibernate
 
 			lifestyle1.Init(componentActivator, kernel, model);
 			lifestyle2.Init(componentActivator, kernel, model);
+
+			base.Init(componentActivator, kernel, model);
 		}
 
 		public override bool Release(object instance)
