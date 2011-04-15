@@ -513,13 +513,13 @@
     <Compile Include="LoggingFacility\Classes\ISmtpServer.cs" />
     <Compile Include="LoggingFacility\Classes\SimpleLoggingComponent.cs" />
     <Compile Include="LoggingFacility\Classes\SmtpServer.cs" />
-    <Compile Include="LoggingFacility\ConsoleFacitlyTestCase.cs" />
+    <Compile Include="LoggingFacility\ConsoleFacilityTestCase.cs" />
     <Compile Include="LoggingFacility\ExtendedLog4NetFacilityTestCase.cs" />
     <Compile Include="LoggingFacility\ExtendedNLogFacilityTests.cs" />
     <Compile Include="LoggingFacility\Facilities77.cs" />
     <Compile Include="LoggingFacility\Log4NetFacilityTests.cs" />
     <Compile Include="LoggingFacility\NLogFacilityTests.cs" />
-    <Compile Include="LoggingFacility\NullFacitlyTest.cs" />
+    <Compile Include="LoggingFacility\NullFacilityTest.cs" />
     <Compile Include="LoggingFacility\TraceFacilityTest.cs" />
     <Compile Include="IsDefaultTestCase.cs" />
     <Compile Include="MicroKernel\NotImplementedDependencyResolver.cs" />
