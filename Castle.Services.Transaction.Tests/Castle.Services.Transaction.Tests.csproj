@@ -180,8 +180,9 @@
     <Compile Include="File and Directory related tests\FileTransactions_File_Tests.cs" />
     <Compile Include="Framework\MaybeEx.cs" />
     <Compile Include="File and Directory related tests\STATestRuntime.cs" />
-    <Compile Include="vNext\AutoTxFacility_Multiple_Threads_JoinDependentTransactionWithParent.cs" />
+    <Compile Include="vNext\NHibernateFacility_Multiple_Threads_JoinDependentTransactionWithParent.cs" />
     <Compile Include="vNext\AutoTxFacility_SingleThread_SupressInAmbient.cs" />
+    <Compile Include="vNext\PerTransactionLifestyleTests.cs" />
     <Compile Include="vNext\TestClasses\ResolveScope.cs" />
     <Compile Include="TestClasses\Exts.cs" />
     <Compile Include="File and Directory related tests\FileTransactionTests.cs" />

@@ -39,6 +39,11 @@ namespace Castle.Services.vNextTransaction
 		bool ReadOnly { get; }
 
 		/// <summary>
+		/// Gets whether the current transaction's method should forked off.
+		/// </summary>
+		bool Fork { get; }
+
+		/// <summary>
 		/// 	Gets the Timeout for this managed transaction. Beware that the timeout 
 		/// 	for the transaction option is not the same as your database has specified.
 		/// 	Often it's a good idea to let your database handle the transactions

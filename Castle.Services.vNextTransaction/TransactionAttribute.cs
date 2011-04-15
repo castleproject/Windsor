@@ -66,6 +66,23 @@ namespace Castle.Services.vNextTransaction
 		public TimeSpan Timeout { [Pure] get; set; }
 
 		/// <summary>
+		/// Gets or sets whether the current transaction should be forked off as a unit of work to the thread pool.
+		/// </summary>
+		public bool Fork { [Pure] get; set; }
+
+		/// <summary>
+		/// Gets or sets whether the <see cref="Fork"/> operation should wait for all to complete, or
+		/// simply return and let the topmost transaction wait instead.
+		/// </summary>
+		public bool WaitAll { [Pure] get; set; }
+
+		/// <summary>
+		/// Gets or sets whether the commit should be done asynchronously. Default is false. If you have done a lot of work
+		/// in the transaction, an asynchronous commit might be preferrable.
+		/// </summary>
+		public bool AsyncCommit { [Pure] get; set; }
+
+		/// <summary>
 		/// 	Indicates whether the current object is equal to another object of the same type.
 		/// </summary>
 		/// <returns>
