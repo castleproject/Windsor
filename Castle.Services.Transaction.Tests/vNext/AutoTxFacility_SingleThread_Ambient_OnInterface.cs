@@ -102,5 +102,21 @@ namespace Castle.Services.Transaction.Tests.vNext
 				scope.Service.VerifyInAmbient(() => txM.Service.CurrentTransaction.Value.Rollback());
 			}
 		}
+
+		[Test]
+		public void Inline_Rollback_ResourceGetsRolledBack()
+		{
+			using (var txM = new ResolveScope<ITxManager>(_Container))
+			using (var scope = new ResolveScope<IMyService>(_Container))
+			{
+				var resource = new ThrowingResource(false);
+				scope.Service.VerifyInAmbient(() =>
+				{
+					txM.Service.CurrentTransaction.Value.Inner.EnlistVolatile(resource, EnlistmentOptions.EnlistDuringPrepareRequired);
+					txM.Service.CurrentTransaction.Value.Rollback();
+				});
+				Assert.That(resource.WasRolledBack);
+			}
+		}
 	}
 }
