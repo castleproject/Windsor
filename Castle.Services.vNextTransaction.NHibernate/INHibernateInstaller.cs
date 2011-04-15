@@ -16,14 +16,17 @@
 
 #endregion
 
+using System.Diagnostics.Contracts;
+using Castle.Services.vNextTransaction;
 using FluentNHibernate.Cfg;
 using NHibernate;
 
-namespace Castle.Services.vNextTransaction.NHibernate
+namespace Castle.Facilities.NHibernate
 {
 	/// <summary>
 	/// 	Register a bunch of these; one for each database.
 	/// </summary>
+	[ContractClass(typeof(INHibernateInstallerContract))]
 	public interface INHibernateInstaller
 	{
 		/// <summary>

@@ -28,25 +28,18 @@ namespace Castle.Services.vNextTransaction
 	[AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
 	public sealed class TransactionAttribute : Attribute, ITransactionOption
 	{
-		private readonly TimeSpan _Timeout;
-		private readonly IsolationLevel _IsolationLevel;
+		private readonly IsolationLevel _IsolationLevel = IsolationLevel.ReadCommitted;
 		private readonly TransactionScopeOption _TransactionMode;
-		private readonly bool _ReadOnly;
 
-		public TransactionAttribute() : this(TimeSpan.MaxValue)
+		public TransactionAttribute() : this(TransactionScopeOption.Required)
 		{
 		}
 
-		public TransactionAttribute(
-			TimeSpan timeout,
-			IsolationLevel isolationLevel = IsolationLevel.ReadCommitted,
-			TransactionScopeOption transactionMode = TransactionScopeOption.Required,
-			bool readOnly = false)
+		public TransactionAttribute(TransactionScopeOption transactionMode, IsolationLevel isolationLevel = IsolationLevel.ReadCommitted)
 		{
-			_Timeout = timeout;
-			_IsolationLevel = isolationLevel;
+			Timeout = TimeSpan.MaxValue;
 			_TransactionMode = transactionMode;
-			_ReadOnly = readOnly;
+			_IsolationLevel = isolationLevel;
 		}
 
 		[Pure]
@@ -61,17 +54,16 @@ namespace Castle.Services.vNextTransaction
 			get { return _TransactionMode; }
 		}
 
-		[Pure]
-		bool ITransactionOption.ReadOnly
-		{
-			get { return _ReadOnly; }
-		}
+		/// <summary>
+		/// Read-only transactions cannot modify data.
+		/// </summary>
+		public bool ReadOnly { [Pure] get; set; }
 
-		[Pure]
-		public TimeSpan Timeout
-		{
-			get { return _Timeout; }
-		}
+		/// <summary>
+		/// Gets or sets the transaction timeout. The timeout is often better
+		/// implemented in the database, so this value is by default <see cref="TimeSpan.MaxValue"/>.
+		/// </summary>
+		public TimeSpan Timeout { [Pure] get; set; }
 
 		/// <summary>
 		/// 	Indicates whether the current object is equal to another object of the same type.
@@ -85,8 +77,8 @@ namespace Castle.Services.vNextTransaction
 		{
 			if (ReferenceEquals(null, other)) return false;
 			if (ReferenceEquals(this, other)) return true;
-			return base.Equals(other) && other.Timeout.Equals(_Timeout) && Equals(other.IsolationLevel, _IsolationLevel) &&
-			       Equals(other.TransactionMode, _TransactionMode) && other.ReadOnly.Equals(_ReadOnly);
+			return base.Equals(other) && other.Timeout.Equals(Timeout) && Equals(other.IsolationLevel, _IsolationLevel) &&
+			       Equals(other.TransactionMode, _TransactionMode) && other.ReadOnly.Equals(ReadOnly);
 		}
 
 		/// <summary>
@@ -118,10 +110,10 @@ namespace Castle.Services.vNextTransaction
 			unchecked
 			{
 				var result = base.GetHashCode();
-				result = (result*397) ^ _Timeout.GetHashCode();
+				result = (result*397) ^ Timeout.GetHashCode();
 				result = (result*397) ^ _IsolationLevel.GetHashCode();
 				result = (result*397) ^ _TransactionMode.GetHashCode();
-				result = (result*397) ^ _ReadOnly.GetHashCode();
+				result = (result*397) ^ ReadOnly.GetHashCode();
 				return result;
 			}
 		}

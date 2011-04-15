@@ -19,11 +19,11 @@
 using Castle.MicroKernel.Registration;
 using Castle.MicroKernel.Registration.Lifestyle;
 
-namespace Castle.Services.vNextTransaction.NHibernate
+namespace Castle.Facilities.NHibernate
 {
 	public static class LifestyleRegistrationExtensions
 	{
-		public static ComponentRegistration<S> HybridPerTransactionTransient<S>(this LifestyleGroup<S> @group)
+		public static ComponentRegistration<TService> HybridPerTransactionTransient<TService>(this LifestyleGroup<TService> @group)
 		{
 			return @group.Custom<HybridPerTransactionTransientLifestyleManager>();
 		}

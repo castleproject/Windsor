@@ -14,6 +14,7 @@
 //  limitations under the License.
 // 
 #endregion
+
 namespace Castle.Services.Transaction.Tests
 {
 	public class TransientActivityManager : IActivityManager

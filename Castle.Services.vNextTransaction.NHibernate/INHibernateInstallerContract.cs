@@ -18,13 +18,14 @@
 
 using System;
 using System.Diagnostics.Contracts;
+using Castle.Services.vNextTransaction;
 using FluentNHibernate.Cfg;
 using NHibernate;
 
-namespace Castle.Services.vNextTransaction.NHibernate
+namespace Castle.Facilities.NHibernate
 {
 	[ContractClassFor(typeof (INHibernateInstaller))]
-	internal class INHibernateInstallerContract : INHibernateInstaller
+	internal abstract class INHibernateInstallerContract : INHibernateInstaller
 	{
 		public bool IsDefault
 		{
@@ -44,7 +45,7 @@ namespace Castle.Services.vNextTransaction.NHibernate
 		{
 			get
 			{
-				Contract.Ensures(Contract.Result<IInterceptor>() != null);
+				Contract.Ensures(Contract.Result<Maybe<IInterceptor>>() != null);
 				throw new NotImplementedException();
 			}
 		}

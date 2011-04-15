@@ -252,9 +252,9 @@ namespace Castle.Services.Transaction.Tests
 			Directory.CreateDirectory(pr.Combine("three"));
 
 			// 2. Write contents
-			File.WriteAllLines(Exts.Combine(pr, "one").Combine("fileone"), new[] { "Hello world", "second line" });
-			File.WriteAllLines(Exts.Combine(pr, "one").Combine("filetwo"), new[] { "two", "second line" });
-			File.WriteAllLines(Exts.Combine(pr, "two").Combine("filethree"), new[] { "three", "second line" });
+			File.WriteAllLines(pr.Combine("one", "fileone"), new[] { "Hello world", "second line" });
+			File.WriteAllLines(pr.Combine("one", "filetwo"), new[] { "two", "second line" });
+			File.WriteAllLines(pr.Combine("two", "filethree"), new[] { "three", "second line" });
 
 			// 3. test
 			using (var t = new FileTransaction())

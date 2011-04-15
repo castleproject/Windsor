@@ -1,44 +1,42 @@
+#region license
+
+// Copyright 2009-2011 Henrik Feldt - http://logibit.se/
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// 
+//      http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+#endregion
+
 using System;
 using System.Configuration;
 using System.Data.SqlClient;
-using System.Linq;
 using System.Transactions;
-using Castle.Facilities.FactorySupport;
-using Castle.Facilities.TypedFactory;
 using Castle.Services.vNextTransaction;
-using Castle.Windsor;
 using NUnit.Framework;
 
 namespace Castle.Services.Transaction.Tests.vNext
 {
-	internal class Scratch
-	{
-		[Test]
-		public void GetFacilities()
-		{
-			var c = new WindsorContainer();
-			c.AddFacility<FactorySupportFacility>().AddFacility<TypedFactoryFacility>();
-			c.Kernel.GetFacilities().Do(Console.WriteLine).Run();
-		}
-	}
-
 	[Explicit]
 	public class ScratchBoard_LTM
 	{
-		private static readonly Random r = new Random((int)DateTime.Now.Ticks);
-	
-	/*
-CREATE TABLE [dbo].[Thing](
+		private static readonly Random r = new Random((int) DateTime.Now.Ticks);
+
+		/*
+CREATE TABLE [dbo].[Thing] (
 	[Id] [uniqueidentifier] ROWGUIDCOL  NOT NULL,
 	[Val] [float] NOT NULL,
- CONSTRAINT [PK_Thing] PRIMARY KEY CLUSTERED (
-	[Id] ASC
-) WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
-) ON [PRIMARY]
-GO
-
-ALTER TABLE [dbo].[Thing] ADD CONSTRAINT [DF_Thing_Id]  DEFAULT (newid()) FOR [Id]
-GO	 */
+	CONSTRAINT [PK_Thing] PRIMARY KEY CLUSTERED ( [Id] ASC ) 
+) ON [PRIMARY] 
+		 */
 
 		[SetUp]
 		public void SetUp()
@@ -99,7 +97,7 @@ GO	 */
 				using (var cmd = c.CreateCommand())
 				{
 					cmd.CommandText = "SELECT TOP 1 Val FROM Thing";
-					var scalar = (double)cmd.ExecuteScalar();
+					var scalar = (double) cmd.ExecuteScalar();
 					Console.WriteLine("got val {0}", scalar);
 				}
 				Console.WriteLine("COMMITTING");
@@ -120,7 +118,7 @@ GO	 */
 				using (var cmd = c.CreateCommand())
 				{
 					cmd.CommandText = "SELECT TOP 1 Val FROM Thing";
-					var scalar = (double)cmd.ExecuteScalar();
+					var scalar = (double) cmd.ExecuteScalar();
 					Console.WriteLine("T1 STATUS: {0}", t.TransactionInformation.Status);
 					Console.WriteLine("got val {0}, disposing command and connection", scalar);
 				}
@@ -130,7 +128,9 @@ GO	 */
 				using (var c = GetConnection())
 				using (var cmd = c.CreateCommand())
 				{
-					t2.TransactionCompleted += (s, ea) => Console.WriteLine("::: T2 TransactionCompleted: {0}", ea.Transaction.TransactionInformation.LocalIdentifier);
+					t2.TransactionCompleted +=
+						(s, ea) =>
+						Console.WriteLine("::: T2 TransactionCompleted: {0}", ea.Transaction.TransactionInformation.LocalIdentifier);
 					cmd.CommandText = "DELETE FROM Thing";
 					Console.WriteLine("T2: EXECUTING NON QUERY");
 					cmd.ExecuteNonQuery();
@@ -204,9 +204,9 @@ GO	 */
 		}
 
 		/// <summary>
-		/// Represents the resource manager's implementation of the callback for the single phase commit optimization.  
+		/// 	Represents the resource manager's implementation of the callback for the single phase commit optimization.
 		/// </summary>
-		/// <param name="singlePhaseEnlistment">A <see cref="T:System.Transactions.SinglePhaseEnlistment"/>  used to send a response to the transaction manager.</param>
+		/// <param name = "singlePhaseEnlistment">A <see cref = "T:System.Transactions.SinglePhaseEnlistment" />  used to send a response to the transaction manager.</param>
 		public void SinglePhaseCommit(SinglePhaseEnlistment singlePhaseEnlistment)
 		{
 			Console.WriteLine("SinglePhaseCommit");

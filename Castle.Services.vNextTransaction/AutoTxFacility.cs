@@ -50,10 +50,12 @@ namespace Castle.Services.vNextTransaction
 					.Named("transaction.manager")
 					.LifeStyle.Singleton,
 
-				// the activity manager should have the same lifestyle as the tx interceptor
+				// the activity manager shouldn't have the same lifestyle as TxInterceptor, as it
+				// calls a static .Net/Mono framework method, and it's the responsibility of
+				// that framework method to keep track of the call context.
 				Component.For<IActivityManager>()
 					.ImplementedBy<CallContextActivityManager>()
-					.LifeStyle.Transient
+					.LifeStyle.Singleton
 				);
 
 			Kernel.ComponentModelBuilder.AddContributor(new TxComponentInspector());

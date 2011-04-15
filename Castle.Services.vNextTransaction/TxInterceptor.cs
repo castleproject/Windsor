@@ -18,6 +18,7 @@
 
 using System;
 using System.Diagnostics.Contracts;
+using System.Transactions;
 using Castle.Core;
 using Castle.Core.Interceptor;
 using Castle.DynamicProxy;
@@ -67,29 +68,33 @@ namespace Castle.Services.vNextTransaction
 			Contract.Assume(_State == InterceptorState.Active || _State == InterceptorState.Initialized);
 			Contract.Assume(invocation != null);
 
-			var tx = _MetaInfo
-				.Do(x => x.AsTransactional(invocation.Method.DeclaringType.IsInterface
-				                           	? invocation.MethodInvocationTarget
-				                           	: invocation.Method))
-				.Do(x => _Kernel.Resolve<ITxManager>().CreateTransaction(x));
+			var txMethod = _MetaInfo.Do(x => x.AsTransactional(invocation.Method.DeclaringType.IsInterface
+			                                                	? invocation.MethodInvocationTarget
+			                                                	: invocation.Method));
 
+			var tx = txMethod.Do(x => _Kernel.Resolve<ITxManager>().CreateTransaction(x));
+			
 			_State = InterceptorState.Active;
 
 			if (!tx.HasValue)
 			{
-				invocation.Proceed();
+				if (txMethod.HasValue && txMethod.Value.TransactionMode == TransactionScopeOption.Suppress)
+					using (new TxScope(null))
+						invocation.Proceed();
+
+				else invocation.Proceed();
 				return;
 			}
 
 			_Logger.DebugFormat("proceeding with transaction");
-			Contract.Assume(tx.HasValue && tx.Value.State == TransactionState.Active, "from post-condition of ITxManager CreateTransaction");
+			Contract.Assume(!tx.HasValue || tx.Value.State == TransactionState.Active, "from post-condition of ITxManager CreateTransaction in the (HasValue -> ...)-case");
 
-			using (new TxScope(tx.Value.Inner))
+			using (new TxScope(tx.HasValue ? tx.Value.Inner : null))
 			{
 				try
 				{
 					invocation.Proceed();
-					tx.Value.Complete();
+					if (tx.HasValue) tx.Value.Complete();
 				}
 				catch (TransactionException ex)
 				{
@@ -98,12 +103,12 @@ namespace Castle.Services.vNextTransaction
 				}
 				catch (Exception)
 				{
-					tx.Value.Rollback();
+					if (tx.HasValue) tx.Value.Rollback();
 					throw;
 				}
 				finally
 				{
-					tx.Value.Dispose();
+					if (tx.HasValue) tx.Value.Dispose();
 				}
 			}
 		}

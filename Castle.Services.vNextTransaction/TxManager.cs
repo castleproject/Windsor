@@ -55,10 +55,12 @@ namespace Castle.Services.vNextTransaction
 
 		public Maybe<ITransaction> CreateTransaction(ITransactionOption transactionOption)
 		{
-			if (transactionOption.TransactionMode == TransactionScopeOption.Suppress)
-				return Maybe.None<ITransaction>();
-
 			var activity = _ActivityManager.GetCurrentActivity();
+			if (transactionOption.TransactionMode == TransactionScopeOption.Suppress)
+			{
+				return Maybe.None<ITransaction>();
+			}
+
 
 			ITransaction tx;
 			if (activity.Count == 0)

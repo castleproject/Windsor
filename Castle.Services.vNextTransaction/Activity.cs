@@ -41,7 +41,6 @@ namespace Castle.Services.vNextTransaction
 			}
 		}
 
-
 		[ContractInvariantMethod]
 		private void Invariant()
 		{
@@ -87,6 +86,7 @@ namespace Castle.Services.vNextTransaction
 			// I can't prove this because Push doesn't have those contracts
 			// Contract.Ensures(Contract.ForAll(_Txs, x => !object.ReferenceEquals(x, Contract.Result<ITransaction>())));
 			Contract.Ensures(Contract.OldValue(Count) - 1 == Count);
+			Contract.Ensures(Contract.Result<ITransaction>() != null);
 
 			var ret = _Txs.Pop();
 

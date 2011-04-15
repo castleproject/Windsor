@@ -22,7 +22,7 @@ using Castle.MicroKernel;
 using Castle.MicroKernel.Context;
 using Castle.MicroKernel.Lifestyle;
 
-namespace Castle.Services.vNextTransaction.NHibernate
+namespace Castle.Facilities.NHibernate
 {
 	/// <summary>
 	/// Abstract hybrid lifestyle manager, with two underlying lifestyles
@@ -37,10 +37,18 @@ namespace Castle.Services.vNextTransaction.NHibernate
 		protected M1 lifestyle1;
 		protected readonly M2 lifestyle2 = new M2();
 
-		public override void Dispose()
+		[ContractPublicPropertyName("Initialized")]
+		private bool _Initialized;
+
+		public bool Initialized
 		{
-			if (lifestyle1 != null) lifestyle1.Dispose();
-			lifestyle2.Dispose();
+			get { return _Initialized; }
+		}
+
+		[ContractInvariantMethod]
+		private void Invariant()
+		{
+			Contract.Invariant(!Initialized || lifestyle1 != null);
 		}
 
 		public override void Init(IComponentActivator componentActivator, IKernel kernel, ComponentModel model)
@@ -66,6 +74,11 @@ namespace Castle.Services.vNextTransaction.NHibernate
 			lifestyle2.Init(componentActivator, kernel, model);
 
 			base.Init(componentActivator, kernel, model);
+
+			Contract.Assume(lifestyle1 != null,
+				"lifestyle1 can't be null because the Resolve<T> call will throw an exception if a matching service wasn't found");
+
+			_Initialized = true;
 		}
 
 		public override bool Release(object instance)
@@ -73,6 +86,12 @@ namespace Castle.Services.vNextTransaction.NHibernate
 			bool r1 = lifestyle1 != null ? lifestyle1.Release(instance) : false;
 			bool r2 = lifestyle2.Release(instance);
 			return r1 || r2;
+		}
+
+		public override void Dispose()
+		{
+			if (lifestyle1 != null) lifestyle1.Dispose();
+			lifestyle2.Dispose();
 		}
 
 		public abstract override object Resolve(CreationContext context);

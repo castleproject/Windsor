@@ -18,6 +18,7 @@
 
 using System;
 using System.Diagnostics.Contracts;
+using System.Transactions;
 
 namespace Castle.Services.vNextTransaction
 {
@@ -42,8 +43,11 @@ namespace Castle.Services.vNextTransaction
 		Maybe<ITransaction> CurrentTopTransaction { get; }
 
 		/// <summary>
-		/// Gets the current transaction.
-		/// The value is Maybe.None() if no transaction is on the current call context.
+		/// <para>Gets the current transaction.
+		/// The value is Maybe.None() if no transaction is on the current call context.</para>
+		/// <para>
+		/// If the current method has TransactionScopeOption.Supress specified but is inside a current transaction, then
+		/// <see cref="System.Transactions.Transaction.Current"/> is null, but this property has the actual value of the transaction.</para>
 		/// </summary>
 		Maybe<ITransaction> CurrentTransaction { get; }
 
@@ -122,7 +126,10 @@ namespace Castle.Services.vNextTransaction
 			Contract.Ensures(Contract.Result<Maybe<ITransaction>>() != null
 				&& (!Contract.Result<Maybe<ITransaction>>().HasValue
 					|| Contract.Result<Maybe<ITransaction>>().Value.State == TransactionState.Active));
-			
+
+			Contract.Ensures(Contract.Result<Maybe<ITransaction>>().HasValue 
+				|| transactionOption.TransactionMode == TransactionScopeOption.Suppress);
+
 			throw new NotImplementedException();
 		}
 
