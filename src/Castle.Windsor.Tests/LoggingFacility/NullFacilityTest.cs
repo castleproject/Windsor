@@ -25,7 +25,7 @@ namespace Castle.Facilities.Logging.Tests
 	/// Summary description for ConsoleFacitlyTest.
 	/// </summary>
 	[TestFixture]
-	public class NullFacitlyTest : BaseTest
+	public class NullFacilityTest : BaseTest
 	{
 		private IWindsorContainer container;
 
