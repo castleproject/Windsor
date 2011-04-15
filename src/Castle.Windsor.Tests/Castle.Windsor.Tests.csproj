@@ -510,10 +510,12 @@
     <Compile Include="Lifestyle\ScopedLifestyleTestCase.cs" />
     <Compile Include="LoggingFacility\BaseTest.cs" />
     <Compile Include="LoggingFacility\Classes\ComplexLoggingComponent.cs" />
+    <Compile Include="LoggingFacility\Classes\CustomLog4NetFactory.cs" />
     <Compile Include="LoggingFacility\Classes\ISmtpServer.cs" />
     <Compile Include="LoggingFacility\Classes\SimpleLoggingComponent.cs" />
     <Compile Include="LoggingFacility\Classes\SmtpServer.cs" />
     <Compile Include="LoggingFacility\ConsoleFacilityTestCase.cs" />
+    <Compile Include="LoggingFacility\CustomFacilityTests.cs" />
     <Compile Include="LoggingFacility\ExtendedLog4NetFacilityTestCase.cs" />
     <Compile Include="LoggingFacility\ExtendedNLogFacilityTests.cs" />
     <Compile Include="LoggingFacility\Facilities77.cs" />
