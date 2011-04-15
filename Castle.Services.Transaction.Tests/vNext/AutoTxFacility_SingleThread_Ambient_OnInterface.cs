@@ -21,6 +21,7 @@ using System.Transactions;
 using Castle.MicroKernel.Registration;
 using Castle.Services.vNextTransaction;
 using Castle.Windsor;
+using log4net.Config;
 using NUnit.Framework;
 
 namespace Castle.Services.Transaction.Tests.vNext
@@ -32,6 +33,7 @@ namespace Castle.Services.Transaction.Tests.vNext
 		[SetUp]
 		public void SetUp()
 		{
+			XmlConfigurator.Configure();
 			_Container = new WindsorContainer();
 			_Container.AddFacility("autotx", new AutoTxFacility());
 			_Container.Register(Component.For<IMyService>().ImplementedBy<MyService>());
@@ -89,6 +91,16 @@ namespace Castle.Services.Transaction.Tests.vNext
 
 					scope.Service.VerifyInAmbient(() => Assert.That(txM.Service.CurrentTransaction.Value.Inner, Is.InstanceOf<DependentTransaction>()));
 				});
+		}
+
+		[Test]
+		public void Method_Can_RollbackItself()
+		{
+			using (var txM = new ResolveScope<ITxManager>(_Container))
+			using (var scope = new ResolveScope<IMyService>(_Container))
+			{
+				scope.Service.VerifyInAmbient(() => txM.Service.CurrentTransaction.Value.Rollback());
+			}
 		}
 	}
 }

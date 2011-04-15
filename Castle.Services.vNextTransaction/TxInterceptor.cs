@@ -96,6 +96,11 @@ namespace Castle.Services.vNextTransaction
 					invocation.Proceed();
 					if (tx.HasValue) tx.Value.Complete();
 				}
+				catch (TransactionAbortedException ex)
+				{
+					// if we have aborted the transaction, then that's fine and we ignore it, but warn about it
+					_Logger.Warn("transaction aborted", ex);
+				}
 				catch (TransactionException ex)
 				{
 					_Logger.Fatal("internal error in transaction system", ex);
