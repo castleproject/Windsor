@@ -40,7 +40,16 @@ namespace Castle.Services.vNextTransaction.NHibernate
 				throw new MissingTransactionException();
 
 			var instance = base.Resolve(context);
-			_Manager.CurrentTopTransaction.Value.Inner.TransactionCompleted += (sender, args) => Release(instance);
+
+			_Manager.CurrentTopTransaction.Value.Inner.TransactionCompleted += (sender, args) =>
+			{
+				if (_Logger.IsDebugEnabled)
+					_Logger.DebugFormat("transaction#{0} completed, disposing object '{1}'",
+						args.Transaction.TransactionInformation.LocalIdentifier,
+						instance);
+				Release(instance);
+			};
+
 			return instance;
 		}
 	}

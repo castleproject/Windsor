@@ -22,26 +22,38 @@ using log4net;
 
 namespace Castle.Services.vNextTransaction
 {
+	/// <summary>
+	/// A facility for automatically handling transactions using the lightweight
+	/// transaction manager.
+	/// </summary>
 	public class AutoTxFacility : AbstractFacility
 	{
 		private static readonly ILog _Logger = LogManager.GetLogger(typeof (AutoTxFacility));
 
 		protected override void Init()
 		{
+			_Logger.Debug("initializing AutoTxFacility");
+
 			Kernel.Register(
+				// the interceptor needs to be created for every method call
 				Component.For<TxInterceptor>()
 					.Named("transaction.interceptor")
 					.LifeStyle.Transient,
+
 				Component.For<ITxMetaInfoStore>()
 					.ImplementedBy<TxClassMetaInfoStore>()
 					.Named("transaction.metaInfoStore")
 					.LifeStyle.Singleton,
+
 				Component.For<ITxManager>()
 					.ImplementedBy<TxManager>()
 					.Named("transaction.manager")
 					.LifeStyle.Singleton,
+
+				// the activity manager should have the same lifestyle as the tx interceptor
 				Component.For<IActivityManager>()
 					.ImplementedBy<CallContextActivityManager>()
+					.LifeStyle.Transient
 				);
 
 			Kernel.ComponentModelBuilder.AddContributor(new TxComponentInspector());

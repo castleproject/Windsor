@@ -36,6 +36,11 @@ namespace Castle.Services.vNextTransaction.NHibernate
 		string SessionFactoryKey { get; }
 
 		/// <summary>
+		/// An interceptor to assign to the ISession being resolved through this session factory.
+		/// </summary>
+		Maybe<IInterceptor> Interceptor { get; }
+
+		/// <summary>
 		/// Build a fluent configuration.
 		/// </summary>
 		/// <returns>A non null fluent configuration instance that can

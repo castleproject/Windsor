@@ -75,11 +75,14 @@
     <Compile Include="HybridPerTransactionTransientLifestyleManager.cs" />
     <Compile Include="INHibernateInstaller.cs" />
     <Compile Include="INHibernateInstallerContract.cs" />
+    <Compile Include="ISessionManager.cs" />
+    <Compile Include="ISessionManagerContract.cs" />
     <Compile Include="LifestyleRegistrationExtensions.cs" />
     <Compile Include="MissingTransactionException.cs" />
     <Compile Include="NHFacility.cs" />
     <Compile Include="PerTransaction.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SessionManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Castle.Services.vNextTransaction\Castle.Services.vNextTransaction.csproj">

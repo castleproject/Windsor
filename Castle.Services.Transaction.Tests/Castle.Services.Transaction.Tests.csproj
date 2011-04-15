@@ -164,6 +164,7 @@
     <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Interactive, Version=1.0.2856.104, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Transactions" />
     <Reference Include="System.Xml" />
     <ProjectReference Include="..\Castle.Services.Transaction\Castle.Services.Transaction.csproj">
@@ -178,6 +179,7 @@
     <Compile Include="File and Directory related tests\FileTransactions_Directory_Tests.cs" />
     <Compile Include="File and Directory related tests\FileTransactions_File_Tests.cs" />
     <Compile Include="Framework\MaybeEx.cs" />
+    <Compile Include="ResolveScope.cs" />
     <Compile Include="TestClasses\Exts.cs" />
     <Compile Include="File and Directory related tests\FileTransactionTests.cs" />
     <Compile Include="File and Directory related tests\FileTransaction_WithManager_Tests.cs" />
@@ -199,9 +201,12 @@
     <Compile Include="vNext\AutoTxInitTests.cs" />
     <Compile Include="vNext\NHFacility_Init.cs" />
     <Compile Include="vNext\NHFacility_SimpleUseCase_SingleSave.cs" />
+    <Compile Include="vNext\NHFacility_ValidationError_OnSave.cs" />
     <Compile Include="vNext\SingleThread_Ambient_OnConcreteType.cs" />
     <Compile Include="vNext\TestClasses\ConcreteService.cs" />
     <Compile Include="vNext\TestClasses\IMyService.cs" />
+    <Compile Include="vNext\Thing.cs" />
+    <Compile Include="vNext\ThingMap.cs" />
     <Compile Include="vNext\TxClassMetaInfoStoreTests.cs" />
     <Compile Include="vNext\TestClasses\MyService.cs" />
     <Compile Include="vNext\RetryPolicies_Transactions.cs" />

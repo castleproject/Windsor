@@ -1,17 +1,45 @@
 using System;
 using System.Configuration;
 using System.Data.SqlClient;
+using System.Linq;
 using System.Transactions;
+using Castle.Facilities.FactorySupport;
+using Castle.Facilities.TypedFactory;
 using Castle.Services.vNextTransaction;
+using Castle.Windsor;
 using NUnit.Framework;
 
 namespace Castle.Services.Transaction.Tests.vNext
 {
+	internal class Scratch
+	{
+		[Test]
+		public void GetFacilities()
+		{
+			var c = new WindsorContainer();
+			c.AddFacility<FactorySupportFacility>().AddFacility<TypedFactoryFacility>();
+			c.Kernel.GetFacilities().Do(Console.WriteLine).Run();
+		}
+	}
+
 	[Explicit]
 	public class ScratchBoard_LTM
 	{
 		private static readonly Random r = new Random((int)DateTime.Now.Ticks);
-		
+	
+	/*
+CREATE TABLE [dbo].[Thing](
+	[Id] [uniqueidentifier] ROWGUIDCOL  NOT NULL,
+	[Val] [float] NOT NULL,
+ CONSTRAINT [PK_Thing] PRIMARY KEY CLUSTERED (
+	[Id] ASC
+) WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[Thing] ADD CONSTRAINT [DF_Thing_Id]  DEFAULT (newid()) FOR [Id]
+GO	 */
+
 		[SetUp]
 		public void SetUp()
 		{

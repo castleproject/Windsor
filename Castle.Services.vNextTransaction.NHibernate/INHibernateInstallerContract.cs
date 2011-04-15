@@ -40,6 +40,15 @@ namespace Castle.Services.vNextTransaction.NHibernate
 			}
 		}
 
+		public Maybe<IInterceptor> Interceptor
+		{
+			get
+			{
+				Contract.Ensures(Contract.Result<IInterceptor>() != null);
+				throw new NotImplementedException();
+			}
+		}
+
 		public FluentConfiguration BuildFluent()
 		{
 			Contract.Ensures(Contract.Result<FluentConfiguration>() != null);
