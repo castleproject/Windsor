@@ -197,14 +197,6 @@
     </Compile>
     <Compile Include="TestClasses\TransientActivityManager.cs" />
     <Compile Include="vNext\AutoTxInitTests.cs" />
-    <Compile Include="vNext\LFF\Bar.cs" />
-    <Compile Include="vNext\LFF\Baz.cs" />
-    <Compile Include="vNext\LFF\Foo.cs" />
-    <Compile Include="vNext\LFF\HasOnlyOneArgMatchingDelegatesParameter.cs" />
-    <Compile Include="vNext\LFF\HasTwoConstructors.cs" />
-    <Compile Include="vNext\LFF\LightweightFactoryTests.cs" />
-    <Compile Include="vNext\LFF\UsesBarDelegate.cs" />
-    <Compile Include="vNext\LFF\UsesFooDelegate.cs" />
     <Compile Include="vNext\NHFacility_Init.cs" />
     <Compile Include="vNext\NHFacility_SimpleUseCase_SingleSave.cs" />
     <Compile Include="vNext\SingleThread_Ambient_OnConcreteType.cs" />

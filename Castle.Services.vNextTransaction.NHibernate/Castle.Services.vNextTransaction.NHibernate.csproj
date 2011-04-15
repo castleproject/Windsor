@@ -76,16 +76,6 @@
     <Compile Include="INHibernateInstaller.cs" />
     <Compile Include="INHibernateInstallerContract.cs" />
     <Compile Include="LifestyleRegistrationExtensions.cs" />
-    <Compile Include="LFF\ExpressionTreeBasedDelegateBuilder.cs" />
-    <Compile Include="LFF\FactoryArguments.cs" />
-    <Compile Include="LFF\FactoryParameter.cs" />
-    <Compile Include="LFF\FactoryParametersStore.cs" />
-    <Compile Include="LFF\IDelegateBuilder.cs" />
-    <Compile Include="LFF\LightweightFactory.cs" />
-    <Compile Include="LFF\LightweightFactoryFacility.cs" />
-    <Compile Include="LFF\NoUniqueComponentException.cs" />
-    <Compile Include="LFF\ParametersBinder.cs" />
-    <Compile Include="LFF\Tokens.cs" />
     <Compile Include="MissingTransactionException.cs" />
     <Compile Include="NHFacility.cs" />
     <Compile Include="PerTransaction.cs" />

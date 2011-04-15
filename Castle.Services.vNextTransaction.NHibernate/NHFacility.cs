@@ -17,9 +17,9 @@
 #endregion
 
 using System.Linq;
+using Castle.Facilities.TypedFactory;
 using Castle.MicroKernel.Facilities;
 using Castle.MicroKernel.Registration;
-using Castle.Services.vNextTransaction.NHibernate.LFF;
 using NHibernate;
 using NHibernate.Cfg;
 
@@ -41,7 +41,7 @@ namespace Castle.Services.vNextTransaction.NHibernate
 			if (!installer.All(x => !string.IsNullOrEmpty(x.SessionFactoryKey)))
 				throw new FacilityException("all session factory keys must be non null and non empty strings");
 
-			Kernel.AddFacility<LightweightFactoryFacility>();
+			Kernel.AddFacility<TypedFactoryFacility>();
 
 			var installed = installer
 				.Select(x => new {
