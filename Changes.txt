@@ -5,7 +5,7 @@
 - implemented IOC-275 - Exception message thrown when dependencies are missing is not always very clear and should be improved
 - implemented IOC-271 - Support open generic components where implementing class has more generic parameters than the service but the missing ones can be somehow inferred
 - implemented IOC-270 - Add OnDestroy method, symertical to OnCreate 
-- implemented IOC-268 - Hook that allows for filtering handlers during ResolveAll 
+- implemented IOC-268 - Hook that allows for filtering handlers during ResolveAll
 - implemented IOC-263 - Add new debugger diagnostics - tracked objects
 - implemented IOC-257 - Same as in code, specifying type for facility in XML should be enough - Id should be optional
 - implemented IOC-256 - Same as in code, specifying type for component in XML should be enough - Id should be optional
@@ -14,12 +14,13 @@
 - implemented IOC-246 - Remove alternative naming subsystems
 - implemented IOC-243 - Remove obsolete UseSingleInterfaceProxy option
 
+- fixed IOC-286 - Custom logger config in XML is broken
 - fixed IOC-282 - Windsor should be able to register generic typed factories as open generics
 - fixed IOC-280 - ResolveAll should respect services and fail hard when a component can't be resolved
 - fixed IOC-278 - Optional Dependencies should also be satisfied from ILazyComponentLoaders if possible
 - fixed IOC-273 - Auto register PerWebRequestLifestyleModule using PreApplicationStartMethodAttribute at runtime
 - fixed IOC-267 - Register() on a System.ValueType (like an Int32 or an Enum) instance should throw an exception
-- fixed IOC-265 - In certain cases of cyclic dependencies debugger view times out because of stack overflow in MismatchedLifestyleDependencyViewBuilder 
+- fixed IOC-265 - In certain cases of cyclic dependencies debugger view times out because of stack overflow in MismatchedLifestyleDependencyViewBuilder
 - fixed IOC-262 - objects created via UsingFactoryMethod are always tracked, even if they could safely not be
 - fixed IOC-260 - Generic Typed Factories no longer working in trunk
 - fixed IOC-254 - Optional non-primitive .ctor parameters don't work
