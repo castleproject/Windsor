@@ -16,7 +16,7 @@
 
 #endregion
 
-using System;
+using System.Transactions;
 using Castle.MicroKernel.Registration;
 using Castle.Services.vNextTransaction;
 using Castle.Windsor;
@@ -24,8 +24,7 @@ using NUnit.Framework;
 
 namespace Castle.Services.Transaction.Tests.vNext
 {
-	[Ignore("Implement retry policies are nicer to test with e.g. NHibernate integration parts.")]
-	public class RetryPolicies_Transactions
+	public class AutoTxFacility_SingleThread_Ambient_OnConcreteType
 	{
 		private WindsorContainer _Container;
 
@@ -34,7 +33,7 @@ namespace Castle.Services.Transaction.Tests.vNext
 		{
 			_Container = new WindsorContainer();
 			_Container.AddFacility("autotx", new AutoTxFacility());
-			_Container.Register(Component.For<IMyService>().ImplementedBy<MyService>());
+			_Container.Register(Component.For<ConcreteService>());
 		}
 
 		[TearDown]
@@ -43,29 +42,22 @@ namespace Castle.Services.Transaction.Tests.vNext
 			_Container.Dispose();
 		}
 
-		// something like: 
-		// http://philbolduc.blogspot.com/2010/03/retryable-actions-in-c.html
+		[Test]
+		public void NonRecursive()
+		{
+			using (var scope = new ResolveScope<ConcreteService>(_Container))
+				scope.Service.VerifyInAmbient();
+		}
 
 		[Test]
-		public void retrying_twice_on_timeout()
+		public void Recursive()
 		{
-			// on app-start
-			var txManager = _Container.Resolve<ITxManager>();
-			var counter = 0;
-			txManager.AddRetryPolicy("timeouts", e => e is TimeoutException && ++counter <= 2);
-
-			// in controller's c'tor
-			using (var s = new ResolveScope<IMyService>(_Container))
+			using (var scope = new ResolveScope<ConcreteService>(_Container))
 			{
-				// in action
-				s.Service.VerifyInAmbient(() =>
-				{
-				    if (txManager.CurrentTransaction
-				        .Do(x => x.FailedPolicy)
-				        .Do(x => x.Failures < 2)
-				        .OrThrow(() => new Exception("Test failure; maybe doesn't have value!")))
-				        throw new TimeoutException("database not responding in a timely manner");
-				});
+				scope.Service.VerifyInAmbient(() =>
+					scope.Service.VerifyInAmbient(() => Assert.That(System.Transactions.Transaction.Current != null 
+																	&& System.Transactions.Transaction.Current is DependentTransaction)
+				));
 			}
 		}
 	}

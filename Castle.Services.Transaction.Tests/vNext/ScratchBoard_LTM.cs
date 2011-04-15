@@ -158,6 +158,35 @@ CREATE TABLE [dbo].[Thing] (
 			}
 		}
 
+		[Test, Explicit("This test will fail because of how System.Transactions work. I can't roll back a transaction if a resource failed.")]
+		public void RetryOnFailure()
+		{
+			using (var t = new CommittableTransaction())
+			using (new TxScope(t))
+			{
+				t.EnlistVolatile(new ThrowingResource(true), EnlistmentOptions.EnlistDuringPrepareRequired);
+
+				using (var c = GetConnection())
+				using (var cmd = c.CreateCommand())
+				{
+					cmd.CommandText = "SELECT TOP 1 Val FROM Thing";
+					var scalar = (double)cmd.ExecuteScalar();
+					Console.WriteLine("got val {0}", scalar);
+				}
+
+				try
+				{
+					t.Commit();
+					Assert.Fail("first commit should fail");
+				}
+				catch (ApplicationException)
+				{
+					Assert.That(t.TransactionInformation.Status, Is.EqualTo(System.Transactions.TransactionStatus.Committed));
+				}
+			}
+			
+		}
+
 		private SqlConnection GetConnection()
 		{
 			Console.WriteLine("CREATE CONNECTION");
@@ -168,9 +197,56 @@ CREATE TABLE [dbo].[Thing] (
 		}
 	}
 
+	internal class ThrowingResource : ISinglePhaseNotification
+	{
+		private readonly bool _ThrowIt;
+		private int _ErrorCount;
+
+		public ThrowingResource(bool throwIt)
+		{
+			_ThrowIt = throwIt;
+		}
+
+		public bool WasRolledBack { get; private set; }
+
+		#region Implementation of IEnlistmentNotification
+
+		void IEnlistmentNotification.Prepare(PreparingEnlistment preparingEnlistment)
+		{
+			preparingEnlistment.Prepared();
+		}
+
+		void IEnlistmentNotification.Commit(Enlistment enlistment)
+		{
+			if (_ThrowIt && ++_ErrorCount < 2) 
+				throw new ApplicationException("simulating resource failure");
+
+			enlistment.Done();
+		}
+
+		void IEnlistmentNotification.Rollback(Enlistment enlistment)
+		{
+			WasRolledBack = true;
+
+			enlistment.Done();
+		}
+
+		void IEnlistmentNotification.InDoubt(Enlistment enlistment)
+		{
+			enlistment.Done();
+		}
+
+		void ISinglePhaseNotification.SinglePhaseCommit(SinglePhaseEnlistment singlePhaseEnlistment)
+		{
+		}
+
+		#endregion
+	}
+
 	public class VolatileResource : ISinglePhaseNotification
 	{
 		private readonly bool _ThrowIt;
+		private int _ErrorCount = 0;
 
 		public VolatileResource(bool throwIt)
 		{
@@ -180,7 +256,7 @@ CREATE TABLE [dbo].[Thing] (
 		public void Prepare(PreparingEnlistment preparingEnlistment)
 		{
 			Console.WriteLine("PREPARE - VolatileResource");
-			if (_ThrowIt) throw new ApplicationException("simulating resource failure");
+			if (_ThrowIt && ++_ErrorCount <2) throw new ApplicationException("simulating resource failure");
 
 			preparingEnlistment.ForceRollback();
 		}

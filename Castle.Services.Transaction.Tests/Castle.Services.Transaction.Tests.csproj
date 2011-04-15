@@ -180,7 +180,8 @@
     <Compile Include="File and Directory related tests\FileTransactions_File_Tests.cs" />
     <Compile Include="Framework\MaybeEx.cs" />
     <Compile Include="File and Directory related tests\STATestRuntime.cs" />
-    <Compile Include="SingleThread_SupressInAmbient.cs" />
+    <Compile Include="vNext\AutoTxFacility_Multiple_Threads_JoinDependentTransactionWithParent.cs" />
+    <Compile Include="vNext\AutoTxFacility_SingleThread_SupressInAmbient.cs" />
     <Compile Include="vNext\TestClasses\ResolveScope.cs" />
     <Compile Include="TestClasses\Exts.cs" />
     <Compile Include="File and Directory related tests\FileTransactionTests.cs" />
@@ -197,10 +198,10 @@
     <Compile Include="vNext\AutoTxFacility_InitTests.cs" />
     <Compile Include="vNext\Scratch.cs" />
     <Compile Include="vNext\TestClasses\ExampleInstaller.cs" />
-    <Compile Include="vNext\NHFacility_Init.cs" />
-    <Compile Include="vNext\NHFacility_SimpleUseCase_SingleSave.cs" />
-    <Compile Include="vNext\NHFacility_ValidationError_OnSave.cs" />
-    <Compile Include="vNext\SingleThread_Ambient_OnConcreteType.cs" />
+    <Compile Include="vNext\NHibernateFacility_Init.cs" />
+    <Compile Include="vNext\NHibernateFacility_SimpleUseCase_SingleSave.cs" />
+    <Compile Include="vNext\NHibernateFacility_ValidationError_OnSave.cs" />
+    <Compile Include="vNext\AutoTxFacility_SingleThread_Ambient_OnConcreteType.cs" />
     <Compile Include="vNext\TestClasses\ConcreteService.cs" />
     <Compile Include="vNext\TestClasses\IMyService.cs" />
     <Compile Include="vNext\TestClasses\Thing.cs" />
@@ -209,7 +210,7 @@
     <Compile Include="vNext\TestClasses\MyService.cs" />
     <Compile Include="vNext\RetryPolicies_Transactions.cs" />
     <Compile Include="vNext\ScratchBoard_LTM.cs" />
-    <Compile Include="vNext\SingleThread_Ambient_OnInterface.cs" />
+    <Compile Include="vNext\AutoTxFacility_SingleThread_Ambient_OnInterface.cs" />
     <Compile Include="TestClasses\TxTraceListener.cs" />
   </ItemGroup>
   <ItemGroup>

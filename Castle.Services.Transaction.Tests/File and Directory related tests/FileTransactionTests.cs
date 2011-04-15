@@ -236,7 +236,7 @@ namespace Castle.Services.Transaction.Tests
 		}
 
 		// http://msdn.microsoft.com/en-us/library/aa365536%28VS.85%29.aspx
-		[Test, Ignore("MSDN is wrong in saying: \"If a non-transacted thread modifies the file before the transacted thread does, "
+		[Test, Explicit("MSDN is wrong in saying: \"If a non-transacted thread modifies the file before the transacted thread does, "
 					  + "and the file is still open when the transaction attempts to open it, "
 					  + "the transaction receives the error ERROR_TRANSACTIONAL_CONFLICT.\"... "
 					  + "This test proves the error in this statement. Actually, from testing the rest of the code, it's clear that "
