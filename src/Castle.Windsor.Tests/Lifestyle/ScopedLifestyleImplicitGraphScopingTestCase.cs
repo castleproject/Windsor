@@ -49,7 +49,7 @@ namespace CastleTests.Lifestyle
 		public void Scoped_component_disposable_not_tracked()
 		{
 			Container.Register(
-				Component.For<A>().ImplementedBy<ADisposable>().LifeStyle.ScopedPer<CBA>(),
+				Component.For<A>().ImplementedBy<ADisposable>().LifestyleScopedPer<CBA>(),
 				Component.For<B>().LifeStyle.Transient,
 				Component.For<CBA>().LifeStyle.Transient);
 
