@@ -18,6 +18,7 @@
 
 using Castle.MicroKernel.Registration;
 using Castle.MicroKernel.Registration.Lifestyle;
+using Castle.Services.vNextTransaction.Lifestyles;
 
 namespace Castle.Facilities.NHibernate
 {

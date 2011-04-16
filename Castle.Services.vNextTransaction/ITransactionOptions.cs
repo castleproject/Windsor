@@ -17,11 +17,12 @@
 #endregion
 
 using System;
+using System.Runtime.Serialization;
 using System.Transactions;
 
 namespace Castle.Services.vNextTransaction
 {
-	public interface ITransactionOption : IEquatable<ITransactionOption>
+	public interface ITransactionOptions : IEquatable<ITransactionOptions>
 	{
 		/// <summary>
 		/// 	Gets the transaction isolation level.
@@ -31,12 +32,17 @@ namespace Castle.Services.vNextTransaction
 		/// <summary>
 		/// 	Gets the transaction mode.
 		/// </summary>
-		TransactionScopeOption TransactionMode { get; }
+		TransactionScopeOption Mode { get; }
 
 		/// <summary>
 		/// 	Gets whether the transaction is read only.
 		/// </summary>
 		bool ReadOnly { get; }
+
+		/// <summary>
+		/// Gets whether the current transaction's method should forked off.
+		/// </summary>
+		bool Fork { get; }
 
 		/// <summary>
 		/// 	Gets the Timeout for this managed transaction. Beware that the timeout 

@@ -58,15 +58,15 @@ namespace Castle.Services.vNextTransaction
 		/// 	has not been associated with a tranaction, the maybe is none.
 		/// </summary>
 		/// <param name = "target">Method to find the options for.</param>
-		/// <returns>A non-null maybe <see cref = "ITransactionOption" />.</returns>
+		/// <returns>A non-null maybe <see cref = "ITransactionOptions" />.</returns>
 		[Pure]
-		public Maybe<ITransactionOption> AsTransactional(MethodInfo target)
+		public Maybe<ITransactionOptions> AsTransactional(MethodInfo target)
 		{
 			Contract.Requires(target != null);
 			Contract.Ensures(Contract.Result<Maybe<TransactionAttribute>>() != null);
 			return _TxMethods.ContainsKey(target)
-			       	? Maybe.Some<ITransactionOption>(_TxMethods[target])
-			       	: Maybe.None<ITransactionOption>();
+			       	? Maybe.Some<ITransactionOptions>(_TxMethods[target])
+			       	: Maybe.None<ITransactionOptions>();
 		}
 	}
 }

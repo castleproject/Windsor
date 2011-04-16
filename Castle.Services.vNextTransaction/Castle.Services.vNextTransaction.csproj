@@ -33,7 +33,7 @@
     <CodeContractsArithmeticObligations>False</CodeContractsArithmeticObligations>
     <CodeContractsEnumObligations>False</CodeContractsEnumObligations>
     <CodeContractsRedundantAssumptions>False</CodeContractsRedundantAssumptions>
-    <CodeContractsRunInBackground>False</CodeContractsRunInBackground>
+    <CodeContractsRunInBackground>True</CodeContractsRunInBackground>
     <CodeContractsShowSquigglies>True</CodeContractsShowSquigglies>
     <CodeContractsUseBaseLine>False</CodeContractsUseBaseLine>
     <CodeContractsEmitXMLDocs>True</CodeContractsEmitXMLDocs>
@@ -91,10 +91,15 @@
     <Compile Include="IActivityManager.cs" />
     <Compile Include="IRetryPolicy.cs" />
     <Compile Include="ITransaction.cs" />
-    <Compile Include="ITransactionOption.cs" />
+    <Compile Include="ITransactionContract.cs" />
+    <Compile Include="ITransactionOptions.cs" />
     <Compile Include="ITxManager.cs" />
     <Compile Include="ITxManagerInternal.cs" />
     <Compile Include="ITxMetaInfoStore.cs" />
+    <Compile Include="Lifestyles\HybridLifestyleManager.cs" />
+    <Compile Include="Lifestyles\HybridPerTransactionTransientLifestyleManager.cs" />
+    <Compile Include="Lifestyles\MissingTransactionException.cs" />
+    <Compile Include="Lifestyles\PerTransactionLifestyleManagerBase.cs" />
     <Compile Include="Monads\Maybe.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Transaction.cs" />

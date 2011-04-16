@@ -18,7 +18,7 @@
 
 using System;
 
-namespace Castle.Facilities.NHibernate
+namespace Castle.Services.vNextTransaction.Lifestyles
 {
 	/// <summary>
 	/// 	Exception thrown when there's no transaction available when the component is resolved and the component

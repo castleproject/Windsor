@@ -16,12 +16,12 @@
 
 #endregion
 
+using System;
 using Castle.MicroKernel.Context;
 using Castle.MicroKernel.Lifestyle;
-using Castle.Services.vNextTransaction;
 using log4net;
 
-namespace Castle.Facilities.NHibernate
+namespace Castle.Services.vNextTransaction.Lifestyles
 {
 	/// <summary>
 	/// 	Hybrid lifestyle manager, 
@@ -35,13 +35,34 @@ namespace Castle.Facilities.NHibernate
 
 		public override object Resolve(CreationContext context)
 		{
-			var activeTransaction = Kernel.Resolve<ITxManager>().CurrentTopTransaction.HasValue;
+			var activeTransaction = _Lifestyle1.GetSemanticTransactionForLifetime().HasValue;
 
-			_Logger.DebugFormat("resolving through hybrid adapter, active transaction: {0}", activeTransaction);
+			_Logger.DebugFormat("resolving through hybrid per-tx/transient adapter, active transaction: {0}", activeTransaction);
 
 			return activeTransaction
-				? lifestyle1.Resolve(context) 
-				: lifestyle2.Resolve(context);
+				? _Lifestyle1.Resolve(context) 
+				: _Lifestyle2.Resolve(context);
 		}
+	}
+
+	public class HybridPerTopTransactionTransientLifestyleManager :
+		HybridLifestyleManager<PerTopTransactionLifestyleManager, TransientLifestyleManager>
+	{
+		private static readonly ILog _Logger = LogManager.GetLogger(typeof (HybridPerTopTransactionTransientLifestyleManager));
+
+		#region Overrides of HybridLifestyleManager<PerTopTransactionLifestyleManager,TransientLifestyleManager>
+
+		public override object Resolve(CreationContext context)
+		{
+			var activeTransaction = _Lifestyle1.GetSemanticTransactionForLifetime().HasValue;
+
+			_Logger.DebugFormat("resolving through hybrid per-top-tx/transient adapter, active top transaction: {0}", activeTransaction);
+
+			return activeTransaction
+				? _Lifestyle1.Resolve(context)
+				: _Lifestyle2.Resolve(context);
+		}
+
+		#endregion
 	}
 }

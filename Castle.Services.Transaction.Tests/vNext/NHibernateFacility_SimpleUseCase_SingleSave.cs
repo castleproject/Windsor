@@ -146,7 +146,7 @@ namespace Castle.Services.Transaction.Tests.vNext
 		/// 		2163 [TestRunnerThread] DEBUG NHibernate.Impl.SessionImpl (null) - [session-id=c2f5673f-f93f-43c9-ad27-c7df8f33edc7] executing real Dispose(True)
 		/// 		2164 [TestRunnerThread] DEBUG NHibernate.Impl.SessionImpl (null) - closing session
 		/// 		2164 [TestRunnerThread] DEBUG NHibernate.AdoNet.AbstractBatcher (null) - running BatcherImpl.Dispose(true)
-		/// 		2168 [TestRunnerThread] DEBUG Castle.Services.vNextTransaction.NHibernate.PerTransactionLifestyleManager (null) - transaction#f5568393-d069-4e2d-b85c-5f928f4e64c7:1 completed, disposing object 'NHibernate.Impl.SessionImpl'
+		/// 		2168 [TestRunnerThread] DEBUG Castle.Services.vNextTransaction.NHibernate.PerTransactionLifestyleManagerBase (null) - transaction#f5568393-d069-4e2d-b85c-5f928f4e64c7:1 completed, disposing object 'NHibernate.Impl.SessionImpl'
 		/// 		2168 [TestRunnerThread] DEBUG NHibernate.Impl.SessionImpl (null) - [session-id=c2f5673f-f93f-43c9-ad27-c7df8f33edc7] running ISession.Dispose()
 		/// 	</para>
 		/// 	<para>

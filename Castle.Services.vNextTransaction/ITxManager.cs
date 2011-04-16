@@ -52,6 +52,12 @@ namespace Castle.Services.vNextTransaction
 		Maybe<ITransaction> CurrentTransaction { get; }
 
 		/// <summary>
+		/// Gets the number of transactions on the current context (in which calls to this
+		/// interface is relevant).
+		/// </summary>
+		uint Count { get; }
+
+		/// <summary>
 		/// 	Add a new retry policy given a key and a function to execute.
 		/// </summary>
 		/// <param name = "policyKey"></param>
@@ -81,9 +87,9 @@ namespace Castle.Services.vNextTransaction
 		/// work very well together.
 		/// </para>
 		/// </remarks>
-		/// <param name = "transactionOption">Options to use for creating the new transaction.</param>
+		/// <param name = "transactionOptions">Options to use for creating the new transaction.</param>
 		/// <returns>Maybe a transaction, if the options specified it.</returns>
-		Maybe<ITransaction> CreateTransaction(ITransactionOption transactionOption);
+		Maybe<ITransaction> CreateTransaction(ITransactionOptions transactionOptions);
 	}
 
 	[ContractClassFor(typeof (ITxManager))]
@@ -98,6 +104,7 @@ namespace Castle.Services.vNextTransaction
 			}
 		}
 
+		
 		public Maybe<ITransaction> CurrentTransaction
 		{
 			get
@@ -105,6 +112,11 @@ namespace Castle.Services.vNextTransaction
 				Contract.Ensures(Contract.Result<Maybe<ITransaction>>() != null);
 				throw new NotImplementedException();
 			}
+		}
+
+		public uint Count
+		{
+			get { throw new NotImplementedException(); }
 		}
 
 		public void AddRetryPolicy(string policyKey, Func<Exception, bool> retryPolicy)
@@ -119,16 +131,16 @@ namespace Castle.Services.vNextTransaction
 			Contract.Requires(retryPolicy != null);
 		}
 
-		public Maybe<ITransaction> CreateTransaction(ITransactionOption transactionOption)
+		public Maybe<ITransaction> CreateTransaction(ITransactionOptions transactionOptions)
 		{
-			Contract.Requires(transactionOption != null);
+			Contract.Requires(transactionOptions != null);
 
 			Contract.Ensures(Contract.Result<Maybe<ITransaction>>() != null
 				&& (!Contract.Result<Maybe<ITransaction>>().HasValue
 					|| Contract.Result<Maybe<ITransaction>>().Value.State == TransactionState.Active));
 
 			Contract.Ensures(Contract.Result<Maybe<ITransaction>>().HasValue 
-				|| transactionOption.TransactionMode == TransactionScopeOption.Suppress);
+				|| transactionOptions.Mode == TransactionScopeOption.Suppress);
 
 			throw new NotImplementedException();
 		}

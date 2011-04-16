@@ -84,7 +84,7 @@ namespace Castle.Services.Transaction.Tests.vNext
 			using (var scope = new ResolveScope<IMyService>(_Container))
 				scope.Service.VerifyInAmbient(() =>
 				{
-					Assert.That(txM.Service.CurrentTransaction.Value.TransactionInformation.Status ==
+					Assert.That(txM.Service.CurrentTransaction.Value.Inner.TransactionInformation.Status ==
 								System.Transactions.TransactionStatus.Active);
 
 					Assert.That(txM.Service.CurrentTransaction.Value.Inner, Is.InstanceOf<CommittableTransaction>());

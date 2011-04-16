@@ -97,16 +97,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="HybridLifestyleManager.cs" />
-    <Compile Include="HybridPerTransactionTransientLifestyleManager.cs" />
     <Compile Include="INHibernateInstaller.cs" />
     <Compile Include="INHibernateInstallerContract.cs" />
     <Compile Include="ISessionManager.cs" />
     <Compile Include="ISessionManagerContract.cs" />
     <Compile Include="LifestyleRegistrationExtensions.cs" />
-    <Compile Include="MissingTransactionException.cs" />
     <Compile Include="NHibernateFacility.cs" />
-    <Compile Include="PerTransactionLifestyleManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SessionManager.cs" />
   </ItemGroup>

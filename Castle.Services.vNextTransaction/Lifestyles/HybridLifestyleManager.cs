@@ -16,13 +16,16 @@
 
 #endregion
 
+using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using Castle.Core;
 using Castle.MicroKernel;
 using Castle.MicroKernel.Context;
 using Castle.MicroKernel.Lifestyle;
+using Castle.MicroKernel.Registration;
+using log4net;
 
-namespace Castle.Facilities.NHibernate
+namespace Castle.Services.vNextTransaction.Lifestyles
 {
 	/// <summary>
 	/// Abstract hybrid lifestyle manager, with two underlying lifestyles
@@ -34,8 +37,12 @@ namespace Castle.Facilities.NHibernate
 		where M1 : class, ILifestyleManager
 		where M2 : ILifestyleManager, new()
 	{
-		protected M1 lifestyle1;
-		protected readonly M2 lifestyle2 = new M2();
+		private static readonly ILog _Logger = LogManager.GetLogger(typeof (HybridLifestyleManager<M1, M2>));
+
+		private readonly IKernel _LifestyleKernel = new DefaultKernel();
+		protected M1 _Lifestyle1;
+		protected readonly M2 _Lifestyle2 = new M2();
+		private bool _Disposed;
 
 		[ContractPublicPropertyName("Initialized")]
 		private bool _Initialized;
@@ -48,50 +55,60 @@ namespace Castle.Facilities.NHibernate
 		[ContractInvariantMethod]
 		private void Invariant()
 		{
-			Contract.Invariant(!Initialized || lifestyle1 != null);
+			Contract.Invariant(!Initialized || _Lifestyle1 != null);
 		}
 
 		public override void Init(IComponentActivator componentActivator, IKernel kernel, ComponentModel model)
 		{
-			Contract.Ensures(lifestyle1 != null);
+			Contract.Ensures(_Lifestyle1 != null);
+			Contract.Ensures(Initialized);
 
-			using (var k = new DefaultKernel())
-			{
-				k.AddComponent("M1.lifestyle", typeof(M1), LifestyleType.Transient);
-				kernel.AddChildKernel(k);
+			_Logger.Debug("initializing");
 
-				try
-				{
-					lifestyle1 = k.Resolve<M1>();
-				}
-				finally
-				{
-					kernel.RemoveChildKernel(k);
-				}
-			}
+			_LifestyleKernel.Register(Component.For<M1>().LifeStyle.Transient.Named("M1.lifestyle"));
+			kernel.AddChildKernel(_LifestyleKernel);
 
-			lifestyle1.Init(componentActivator, kernel, model);
-			lifestyle2.Init(componentActivator, kernel, model);
+			try { _Lifestyle1 = _LifestyleKernel.Resolve<M1>(); }
+			finally { kernel.RemoveChildKernel(_LifestyleKernel); }
+
+			_Lifestyle1.Init(componentActivator, kernel, model);
+			_Lifestyle2.Init(componentActivator, kernel, model);
 
 			base.Init(componentActivator, kernel, model);
 
-			Contract.Assume(lifestyle1 != null,
+			Contract.Assume(_Lifestyle1 != null,
 				"lifestyle1 can't be null because the Resolve<T> call will throw an exception if a matching service wasn't found");
+
+			_Logger.Debug("initialized");
 
 			_Initialized = true;
 		}
 
 		public override bool Release(object instance)
 		{
-			bool r1 = lifestyle1 != null ? lifestyle1.Release(instance) : false;
-			bool r2 = lifestyle2.Release(instance);
+			bool r1 = _Lifestyle1 != null ? _Lifestyle1.Release(instance) : false;
+			bool r2 = _Lifestyle2.Release(instance);
 			return r1 || r2;
 		}
 
 		public override void Dispose()
 		{
-			if (lifestyle1 != null) lifestyle1.Dispose();
-			lifestyle2.Dispose();
+			if (_Disposed)
+			{
+				_Logger.Info("repeated call to Dispose. will show stack-trace in debug mode next. this method call is idempotent");
+
+				if (_Logger.IsDebugEnabled)
+					_Logger.Debug(new StackTrace().ToString());
+			}
+
+			if (_Lifestyle1 != null)
+				_LifestyleKernel.ReleaseComponent(_Lifestyle1);
+
+			_LifestyleKernel.Dispose();
+
+			_Lifestyle2.Dispose();
+
+			_Disposed = true;
 		}
 
 		public abstract override object Resolve(CreationContext context);

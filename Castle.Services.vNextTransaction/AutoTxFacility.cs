@@ -60,7 +60,7 @@ namespace Castle.Services.vNextTransaction
 
 			Kernel.ComponentModelBuilder.AddContributor(new TxComponentInspector());
 
-			_Logger.Debug("initialized auto tx facility");
+			_Logger.Debug("initialized AutoTxFacility");
 		}
 	}
 }

@@ -68,7 +68,7 @@ namespace Castle.Services.vNextTransaction
 			// I can't prove this because I can't reason about value/reference equality using reflection in Maybe
 			//Contract.Ensures(object.ReferenceEquals(CurrentTransaction.Value, transaction));
 			
-			_Logger.DebugFormat("pushing tx#{0}", transaction.TransactionInformation.LocalIdentifier);
+			_Logger.DebugFormat("pushing tx#{0}", transaction.LocalIdentifier);
 
 			if (Count == 0)
 				_TopMost = transaction;
@@ -90,7 +90,7 @@ namespace Castle.Services.vNextTransaction
 
 			var ret = _Txs.Pop();
 
-			_Logger.DebugFormat("popping tx#{0}", ret.TransactionInformation.LocalIdentifier);
+			_Logger.DebugFormat("popping tx#{0}", ret.LocalIdentifier);
 
 			if (Count == 0)
 				_TopMost = null;
@@ -98,7 +98,7 @@ namespace Castle.Services.vNextTransaction
 			return ret;
 		}
 
-		public int Count { get { return _Txs.Count; } }
+		public uint Count { get { return (uint)_Txs.Count; } }
 
 		[Pure]
 		public bool Equals(Activity other)

@@ -44,32 +44,39 @@ namespace Castle.Services.vNextTransaction
 		/// <summary>When the dispose method has run.</summary>
 		Diposed
 	}
+
+	[Serializable]
 	public sealed class Transaction : ITransaction
 	{
 		private TransactionState _State = TransactionState.Default;
 
+		private uint _StackDepth;
 		private readonly CommittableTransaction _Inner;
 		private readonly DependentTransaction _Inner2;
+		
+		[NonSerialized]
 		private readonly Action _OnDispose;
 
-		public Transaction(CommittableTransaction inner, Action onDispose)
+		public Transaction(CommittableTransaction inner, uint stackDepth, Action onDispose)
 		{
 			Contract.Requires(inner != null);
 			Contract.Ensures(_Inner != null);
 			Contract.Ensures(_State == TransactionState.Active);
 			Contract.Ensures(((ITransaction)this).State == TransactionState.Active);
 			_Inner = inner;
+			_StackDepth = stackDepth;
 			_OnDispose = onDispose;
 			_State = TransactionState.Active;
 		}
 
-		public Transaction(DependentTransaction inner, Action onDispose)
+		public Transaction(DependentTransaction inner, uint stackDepth, Action onDispose)
 		{
 			Contract.Requires(inner != null);
 			Contract.Ensures(_Inner2 != null);
 			Contract.Ensures(_State == TransactionState.Active);
 			Contract.Ensures(((ITransaction)this).State == TransactionState.Active);
 			_Inner2 = inner;
+			_StackDepth = stackDepth;
 			_OnDispose = onDispose;
 			_State = TransactionState.Active;
 		}
@@ -108,6 +115,11 @@ namespace Castle.Services.vNextTransaction
 			}
 		}
 
+		public ITransactionOptions CreationOptions
+		{
+			get { throw new NotImplementedException(); }
+		}
+
 		System.Transactions.Transaction ITransaction.Inner
 		{
 			get
@@ -122,19 +134,19 @@ namespace Castle.Services.vNextTransaction
 			get { return _Inner ?? (System.Transactions.Transaction) _Inner2; }
 		}
 
-		TransactionInformation ITransaction.TransactionInformation
-		{
-			get
-			{
-				var res = Inner.TransactionInformation;
-				Contract.Assume(res != null);
-				return res;
-			}
-		}
-
 		Maybe<IRetryPolicy> ITransaction.FailedPolicy
 		{
 			get { throw new NotImplementedException(); }
+		}
+
+		string ITransaction.LocalIdentifier
+		{
+			get
+			{
+				var s = Inner.TransactionInformation.LocalIdentifier + ":" + _StackDepth;
+				Contract.Assume(!string.IsNullOrEmpty(s), "because string concatenation doesn't return null or empty if one part is a constant non-empty string");
+				return s;
+			}
 		}
 
 		void ITransaction.Rollback()

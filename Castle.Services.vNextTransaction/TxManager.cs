@@ -43,6 +43,11 @@ namespace Castle.Services.vNextTransaction
 			get { return _ActivityManager.GetCurrentActivity().CurrentTransaction; }
 		}
 
+		uint ITxManager.Count
+		{
+			get { return _ActivityManager.GetCurrentActivity().Count; }
+		}
+
 		void ITxManager.AddRetryPolicy(string policyKey, Func<Exception, bool> retryPolicy)
 		{
 			throw new NotImplementedException();
@@ -53,22 +58,24 @@ namespace Castle.Services.vNextTransaction
 			throw new NotImplementedException();
 		}
 
-		public Maybe<ITransaction> CreateTransaction(ITransactionOption transactionOption)
+		Maybe<ITransaction> ITxManager.CreateTransaction(ITransactionOptions transactionOptions)
 		{
 			var activity = _ActivityManager.GetCurrentActivity();
-			if (transactionOption.TransactionMode == TransactionScopeOption.Suppress)
-			{
+			
+			if (transactionOptions.Mode == TransactionScopeOption.Suppress)
 				return Maybe.None<ITransaction>();
-			}
 
+			var nextStackDepth = activity.Count + 1;
 
 			ITransaction tx;
 			if (activity.Count == 0)
+			{
 				tx = new Transaction(new CommittableTransaction(new TransactionOptions
 				{
-					IsolationLevel = transactionOption.IsolationLevel,
-					Timeout = transactionOption.Timeout
-				}), () => activity.Pop());
+					IsolationLevel = transactionOptions.IsolationLevel,
+					Timeout = transactionOptions.Timeout
+				}), nextStackDepth, () => activity.Pop());
+			}
 			else
 			{
 				var clone = activity
@@ -78,7 +85,7 @@ namespace Castle.Services.vNextTransaction
 				
 				// assume because I can't open up .Net and add the contract myself
 				Contract.Assume(clone != null);
-				tx = new Transaction(clone, () => activity.Pop());
+				tx = new Transaction(clone, nextStackDepth, () => activity.Pop());
 			}
 
 			activity.Push(tx);

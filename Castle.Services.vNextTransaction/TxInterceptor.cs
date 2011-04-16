@@ -78,23 +78,24 @@ namespace Castle.Services.vNextTransaction
 
 			if (!tx.HasValue)
 			{
-				if (txMethod.HasValue && txMethod.Value.TransactionMode == TransactionScopeOption.Suppress)
+				if (txMethod.HasValue && txMethod.Value.Mode == TransactionScopeOption.Suppress)
 					using (new TxScope(null))
 						invocation.Proceed();
 
 				else invocation.Proceed();
+
 				return;
 			}
 
 			_Logger.DebugFormat("proceeding with transaction");
-			Contract.Assume(!tx.HasValue || tx.Value.State == TransactionState.Active, "from post-condition of ITxManager CreateTransaction in the (HasValue -> ...)-case");
+			Contract.Assume(tx.Value.State == TransactionState.Active, "from post-condition of ITxManager CreateTransaction in the (HasValue -> ...)-case");
 
-			using (new TxScope(tx.HasValue ? tx.Value.Inner : null))
+			using (new TxScope(tx.Value.Inner))
 			{
 				try
 				{
 					invocation.Proceed();
-					if (tx.HasValue) tx.Value.Complete();
+					tx.Value.Complete();
 				}
 				catch (TransactionAbortedException ex)
 				{
@@ -108,12 +109,12 @@ namespace Castle.Services.vNextTransaction
 				}
 				catch (Exception)
 				{
-					if (tx.HasValue) tx.Value.Rollback();
+					tx.Value.Rollback();
 					throw;
 				}
 				finally
 				{
-					if (tx.HasValue) tx.Value.Dispose();
+					tx.Value.Dispose();
 				}
 			}
 		}

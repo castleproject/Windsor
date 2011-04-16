@@ -26,32 +26,32 @@ namespace Castle.Services.vNextTransaction
 	/// 	Specifies a method as transactional.
 	/// </summary>
 	[AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
-	public sealed class TransactionAttribute : Attribute, ITransactionOption
+	public sealed class TransactionAttribute : Attribute, ITransactionOptions
 	{
 		private readonly IsolationLevel _IsolationLevel = IsolationLevel.ReadCommitted;
-		private readonly TransactionScopeOption _TransactionMode;
+		private readonly TransactionScopeOption _Mode;
 
 		public TransactionAttribute() : this(TransactionScopeOption.Required)
 		{
 		}
 
-		public TransactionAttribute(TransactionScopeOption transactionMode, IsolationLevel isolationLevel = IsolationLevel.ReadCommitted)
+		public TransactionAttribute(TransactionScopeOption mode, IsolationLevel isolationLevel = IsolationLevel.ReadCommitted)
 		{
 			Timeout = TimeSpan.MaxValue;
-			_TransactionMode = transactionMode;
+			_Mode = mode;
 			_IsolationLevel = isolationLevel;
 		}
 
 		[Pure]
-		IsolationLevel ITransactionOption.IsolationLevel
+		IsolationLevel ITransactionOptions.IsolationLevel
 		{
 			get { return _IsolationLevel; }
 		}
 
 		[Pure]
-		TransactionScopeOption ITransactionOption.TransactionMode
+		TransactionScopeOption ITransactionOptions.Mode
 		{
-			get { return _TransactionMode; }
+			get { return _Mode; }
 		}
 
 		/// <summary>
@@ -66,6 +66,23 @@ namespace Castle.Services.vNextTransaction
 		public TimeSpan Timeout { [Pure] get; set; }
 
 		/// <summary>
+		/// Gets or sets whether the current transaction should be forked off as a unit of work to the thread pool.
+		/// </summary>
+		public bool Fork { [Pure] get; set; }
+
+		/// <summary>
+		/// Gets or sets whether the <see cref="Fork"/> operation should wait for all to complete, or
+		/// simply return and let the topmost transaction wait instead.
+		/// </summary>
+		public bool WaitAll { [Pure] get; set; }
+
+		/// <summary>
+		/// Gets or sets whether the commit should be done asynchronously. Default is false. If you have done a lot of work
+		/// in the transaction, an asynchronous commit might be preferrable.
+		/// </summary>
+		public bool AsyncCommit { [Pure] get; set; }
+
+		/// <summary>
 		/// 	Indicates whether the current object is equal to another object of the same type.
 		/// </summary>
 		/// <returns>
@@ -73,12 +90,12 @@ namespace Castle.Services.vNextTransaction
 		/// </returns>
 		/// <param name = "other">An object to compare with this object.</param>
 		[Pure]
-		public bool Equals(ITransactionOption other)
+		public bool Equals(ITransactionOptions other)
 		{
 			if (ReferenceEquals(null, other)) return false;
 			if (ReferenceEquals(this, other)) return true;
 			return base.Equals(other) && other.Timeout.Equals(Timeout) && Equals(other.IsolationLevel, _IsolationLevel) &&
-			       Equals(other.TransactionMode, _TransactionMode) && other.ReadOnly.Equals(ReadOnly);
+			       Equals(other.Mode, _Mode) && other.ReadOnly.Equals(ReadOnly);
 		}
 
 		/// <summary>
@@ -94,7 +111,7 @@ namespace Castle.Services.vNextTransaction
 		{
 			if (ReferenceEquals(null, obj)) return false;
 			if (ReferenceEquals(this, obj)) return true;
-			return Equals(obj as ITransactionOption);
+			return Equals(obj as ITransactionOptions);
 		}
 
 		/// <summary>
@@ -112,7 +129,7 @@ namespace Castle.Services.vNextTransaction
 				var result = base.GetHashCode();
 				result = (result*397) ^ Timeout.GetHashCode();
 				result = (result*397) ^ _IsolationLevel.GetHashCode();
-				result = (result*397) ^ _TransactionMode.GetHashCode();
+				result = (result*397) ^ _Mode.GetHashCode();
 				result = (result*397) ^ ReadOnly.GetHashCode();
 				return result;
 			}

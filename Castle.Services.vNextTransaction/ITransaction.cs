@@ -32,7 +32,7 @@ namespace Castle.Services.vNextTransaction
 	/// where Dispose, Rollback and Complete can be called idempotently. The get-property accessors must
 	/// not change state when gotten.</para>
 	/// </summary>
-	[ContractClass(typeof (TransactionContract))]
+	[ContractClass(typeof (ITransactionContract))]
 	public interface ITransaction : IDisposable
 	{
 		/// <summary>
@@ -49,6 +49,11 @@ namespace Castle.Services.vNextTransaction
 		TransactionState State { get; }
 
 		/// <summary>
+		/// Gets the options used to create this transaction.
+		/// </summary>
+		ITransactionOptions CreationOptions { get; }
+
+		/// <summary>
 		/// Gets the inner <see cref="System.Transactions.Transaction"/>,
 		/// which is the foundation upon which Castle.Transactions builds.
 		/// It can be either a <see cref="CommittableTransaction"/> or a 
@@ -58,22 +63,22 @@ namespace Castle.Services.vNextTransaction
 		/// </summary>
 		System.Transactions.Transaction Inner { get; }
 
-		/// <summary>
-		/// Gets information about the current underlying transaction
-		/// such as those found in System.Transaction on top of which
-		/// this framework is built.
-		/// </summary>
-		/// <exception cref="ObjectDisposedException">
-		/// If the transaction is disposed you cannot access its information.
-		/// </exception>
-		TransactionInformation TransactionInformation { get; }
-
 		// TODO: Policy for handling in doubt transactions
 
 		/// <summary>
 		/// Maybe contains a failed policy for this transaction.
 		/// </summary>
 		Maybe<IRetryPolicy> FailedPolicy { get; }
+
+		/// <summary>
+		/// Gets a local identifier unique to the underlying transaction. Contrary to the 
+		/// underlying System.Transactions.Transaction.TransactionInformation.LocalIdentifier
+		/// property, this identifier is unique also across committable/dependent transactions
+		/// whereas the former isn't. Hence, this identifier is well suited to implement
+		/// per-transaction resolve semantics where even a dependent transaction requires a new 'context'
+		/// of resolve.
+		/// </summary>
+		string LocalIdentifier { get; }
 
 		/// <summary>
 		/// Rolls the transaction back. This method is automatically called on (managed) dispose.
@@ -103,76 +108,5 @@ namespace Castle.Services.vNextTransaction
 		/// unless you run distributed transactions.
 		/// </remarks>
 		void Complete();
-	}
-
-	[ContractClassFor(typeof (ITransaction))]
-	internal abstract class TransactionContract : ITransaction
-	{
-		void ITransaction.Rollback()
-		{
-			Contract.Ensures(State == TransactionState.Aborted);
-		}
-
-		void ITransaction.Complete()
-		{
-			Contract.Requires(State == TransactionState.Active);
-			// ->
-			Contract.Ensures(State == TransactionState.CommittedOrCompleted
-				|| State == TransactionState.Aborted
-				|| State == TransactionState.InDoubt);
-
-			Contract.EnsuresOnThrow<TransactionException>(
-				State == TransactionState.Aborted);
-		}
-
-		void ITransaction.Dispose()
-		{
-			Contract.Requires(State == TransactionState.Active
-				|| State == TransactionState.Active
-				|| State == TransactionState.Aborted
-				|| State == TransactionState.InDoubt
-				|| State == TransactionState.CommittedOrCompleted);
-
-			Contract.Ensures(State == TransactionState.Diposed);
-		}
-
-		public TransactionState State
-		{
-			get { return Contract.Result<TransactionState>(); }
-		}
-
-		public System.Transactions.Transaction Inner
-		{
-			get
-			{
-				Contract.Ensures(Contract.Result<System.Transactions.Transaction>() != null);
-				throw new NotImplementedException();
-			}
-		}
-
-		[Pure]
-		TransactionInformation ITransaction.TransactionInformation
-		{
-			get
-			{
-				Contract.Ensures(Contract.Result<TransactionInformation>() != null);
-				return Contract.Result<TransactionInformation>();
-			}
-		}
-
-		[Pure]
-		Maybe<IRetryPolicy> ITransaction.FailedPolicy
-		{
-			get
-			{
-				var result = Contract.Result<Maybe<IRetryPolicy>>();
-				Contract.Ensures(result != null);
-				return result;
-			}
-		}
-
-		void IDisposable.Dispose()
-		{
-		}
 	}
 }
