@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -27,13 +27,13 @@ namespace Castle.Core
 	public class PropertySetCollection : Collection<PropertySet>
 	{
 		/// <summary>
-		/// Finds a PropertySet the by PropertyInfo.
+		///   Finds a PropertySet the by PropertyInfo.
 		/// </summary>
-		/// <param name="info">The info.</param>
+		/// <param name = "info">The info.</param>
 		/// <returns></returns>
 		public PropertySet FindByPropertyInfo(PropertyInfo info)
 		{
-			foreach(PropertySet prop in this)
+			foreach (var prop in this)
 			{
 				if (info == prop.Property)
 				{

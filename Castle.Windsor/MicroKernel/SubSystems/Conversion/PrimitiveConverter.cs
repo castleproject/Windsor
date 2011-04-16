@@ -20,7 +20,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 	using Castle.Core.Configuration;
 
 	/// <summary>
-	/// Implements all standard conversions.
+	///   Implements all standard conversions.
 	/// </summary>
 	[Serializable]
 	public class PrimitiveConverter : AbstractTypeConverter

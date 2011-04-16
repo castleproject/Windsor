@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@ namespace Castle.Core
 	using System;
 
 	/// <summary>
-	/// Associates a custom component with a component
+	///   Associates a custom component with a component
 	/// </summary>
 	[AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
 	public sealed class ComponentActivatorAttribute : Attribute
@@ -25,16 +25,16 @@ namespace Castle.Core
 		private readonly Type componentActivatorType;
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="ComponentActivatorAttribute"/> class.
+		///   Initializes a new instance of the <see cref = "ComponentActivatorAttribute" /> class.
 		/// </summary>
-		/// <param name="componentActivatorType">Type of the component activator.</param>
+		/// <param name = "componentActivatorType">Type of the component activator.</param>
 		public ComponentActivatorAttribute(Type componentActivatorType)
 		{
 			this.componentActivatorType = componentActivatorType;
 		}
 
 		/// <summary>
-		/// Gets the type of the component activator.
+		///   Gets the type of the component activator.
 		/// </summary>
 		/// <value>The type of the component activator.</value>
 		public Type ComponentActivatorType

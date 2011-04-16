@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,9 +18,9 @@ namespace Castle.MicroKernel
 	using Castle.MicroKernel.Context;
 
 	/// <summary>
-	/// Represents a reference to an existing object.
+	///   Represents a reference to an existing object.
 	/// </summary>
-	/// <typeparam name="T"></typeparam>
+	/// <typeparam name = "T"></typeparam>
 	public class InstanceReference<T> : IReference<T>
 	{
 		private readonly T instance;
@@ -30,11 +30,6 @@ namespace Castle.MicroKernel
 			this.instance = instance;
 		}
 
-		public T Resolve(IKernel kernel, CreationContext context)
-		{
-			return instance;
-		}
-
 		public void Attach(ComponentModel component)
 		{
 			// we might provide the instance as dependency's default value...
@@ -42,6 +37,11 @@ namespace Castle.MicroKernel
 
 		public void Detach(ComponentModel component)
 		{
+		}
+
+		public T Resolve(IKernel kernel, CreationContext context)
+		{
+			return instance;
 		}
 	}
 }

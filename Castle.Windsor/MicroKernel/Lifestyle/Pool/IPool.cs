@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,15 +19,15 @@ namespace Castle.MicroKernel.Lifestyle.Pool
 	using Castle.MicroKernel.Context;
 
 	/// <summary>
-	/// Pool implementation contract.
+	///   Pool implementation contract.
 	/// </summary>
 	public interface IPool : IDisposable
 	{
 		/// <summary>
-		/// Implementors should release the instance or put it
-		/// on the pool
+		///   Implementors should release the instance or put it
+		///   on the pool
 		/// </summary>
-		/// <param name="instance"></param>
+		/// <param name = "instance"></param>
 		bool Release(object instance);
 
 		object Request(CreationContext context, Func<CreationContext, Burden> creationCallback);

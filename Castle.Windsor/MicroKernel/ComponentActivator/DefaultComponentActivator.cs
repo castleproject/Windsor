@@ -16,9 +16,6 @@ namespace Castle.MicroKernel.ComponentActivator
 {
 	using System;
 	using System.Collections.Generic;
-#if DOTNET35 || SILVERLIGHT
-	using System.Linq;
-#endif
 	using System.Runtime.Serialization;
 	using System.Security;
 	using System.Security.Permissions;
@@ -27,6 +24,9 @@ namespace Castle.MicroKernel.ComponentActivator
 	using Castle.Core.Internal;
 	using Castle.MicroKernel.Context;
 	using Castle.MicroKernel.Proxy;
+#if DOTNET35 || SILVERLIGHT
+	using System.Linq;
+#endif
 
 	/// <summary>
 	///   Standard implementation of <see cref = "IComponentActivator" />.

@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,7 +20,8 @@ namespace Castle.Windsor
 	using Castle.MicroKernel;
 
 	/// <summary>
-	///   Implementation of <see cref = "IServiceProvider" /> and <see cref = "IServiceProviderEx" /> that uses a <see cref = "IWindsorContainer" /> or <see cref = "IKernel" /> as its component's source.
+	///   Implementation of <see cref = "IServiceProvider" /> and <see cref = "IServiceProviderEx" /> that uses a <see
+	///    cref = "IWindsorContainer" /> or <see cref = "IKernel" /> as its component's source.
 	/// </summary>
 	public class WindsorServiceProvider : IServiceProviderEx
 	{
@@ -29,7 +30,7 @@ namespace Castle.Windsor
 		public WindsorServiceProvider(IWindsorContainer container)
 		{
 			kernel = container.Kernel as IKernelInternal;
-			if(kernel == null)
+			if (kernel == null)
 			{
 				throw new ArgumentException(string.Format("The kernel must implement {0}", typeof(IKernelInternal)));
 			}

@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,7 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+
 #if(!SILVERLIGHT)
+
 namespace Castle.Windsor.Configuration.Interpreters.XmlProcessor.ElementProcessors
 {
 	using System;
@@ -23,25 +25,21 @@ namespace Castle.Windsor.Configuration.Interpreters.XmlProcessor.ElementProcesso
 		private static readonly String DefinedAttrName = "defined";
 		private static readonly String NotDefinedAttrName = "not-defined";
 
-		public AbstractStatementElementProcessor()
-		{
-		}
-
 		protected bool ProcessStatement(XmlElement element, IXmlProcessorEngine engine)
 		{
 			if (!element.HasAttribute(DefinedAttrName) &&
-				!element.HasAttribute(NotDefinedAttrName))
+			    !element.HasAttribute(NotDefinedAttrName))
 			{
 				throw new XmlProcessorException("'if' elements expects a non empty defined or not-defined attribute");
 			}
 
 			if (element.HasAttribute(DefinedAttrName) &&
-				element.HasAttribute(NotDefinedAttrName))
+			    element.HasAttribute(NotDefinedAttrName))
 			{
 				throw new XmlProcessorException("'if' elements expects a non empty defined or not-defined attribute");
 			}
 
-			bool processContents = false;
+			var processContents = false;
 
 			if (element.HasAttribute(DefinedAttrName))
 			{

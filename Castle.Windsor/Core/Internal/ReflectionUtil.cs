@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -37,6 +37,7 @@ namespace Castle.Core.Internal
 
 		private static readonly Lock @lock = Lock.Create();
 #endif
+
 		public static TBase CreateInstance<TBase>(this Type subtypeofTBase, params object[] ctorArgs)
 		{
 			EnsureIsAssignable<TBase>(subtypeofTBase);
@@ -117,10 +118,10 @@ namespace Castle.Core.Internal
 		}
 
 		/// <summary>
-		/// If the extended type is a Foo[] or IEnumerable{Foo} which is assignable from Foo[] this method will return typeof(Foo)
-		/// otherwise <c>null</c>.
+		///   If the extended type is a Foo[] or IEnumerable{Foo} which is assignable from Foo[] this method will return typeof(Foo)
+		///   otherwise <c>null</c>.
 		/// </summary>
-		/// <param name="type"></param>
+		/// <param name = "type"></param>
 		/// <returns></returns>
 		public static Type GetCompatibleArrayItemType(this Type type)
 		{
@@ -134,8 +135,8 @@ namespace Castle.Core.Internal
 			}
 			var openGeneric = type.GetGenericTypeDefinition();
 			if (openGeneric == typeof(IList<>) ||
-				openGeneric == typeof(ICollection<>) ||
-				openGeneric == typeof(IEnumerable<>))
+			    openGeneric == typeof(ICollection<>) ||
+			    openGeneric == typeof(IEnumerable<>))
 			{
 				return type.GetGenericArguments()[0];
 			}

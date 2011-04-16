@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,7 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+
 #if(!SILVERLIGHT)
+
 namespace Castle.Windsor.Configuration.Interpreters.XmlProcessor.ElementProcessors
 {
 	using System;
@@ -25,34 +27,36 @@ namespace Castle.Windsor.Configuration.Interpreters.XmlProcessor.ElementProcesso
 			get { return "attributes"; }
 		}
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="nodeList"></param>
-		/// <param name="engine"></param>
-		/// <example>
-		/// <code>
-		/// 	<properties>
-		///			<attributes>
-		///				<myAttribute>attributeValue</myAttribute>
-		///			</attributes>
-		///			<myProperty>propertyValue</myProperty>
-		///		</properties>
-		/// </code>
-		/// </example>
+		///<summary>
+		///</summary>
+		///<param name = "nodeList"></param>
+		///<param name = "engine"></param>
+		///<example>
+		///  <code>
+		///    <properties>
+		///      <attributes>
+		///        <myAttribute>attributeValue</myAttribute>
+		///      </attributes>
+		///      <myProperty>propertyValue</myProperty>
+		///    </properties>
+		///  </code>
+		///</example>
 		public override void Process(IXmlProcessorNodeList nodeList, IXmlProcessorEngine engine)
 		{
-			XmlElement element = nodeList.Current as XmlElement;
+			var element = nodeList.Current as XmlElement;
 
-			DefaultXmlProcessorNodeList childNodes = new DefaultXmlProcessorNodeList(element.ChildNodes);
+			var childNodes = new DefaultXmlProcessorNodeList(element.ChildNodes);
 
-			while(childNodes.MoveNext())
+			while (childNodes.MoveNext())
 			{
 				engine.DispatchProcessCurrent(childNodes);
 
-				if (IgnoreNode(childNodes.Current)) continue;
+				if (IgnoreNode(childNodes.Current))
+				{
+					continue;
+				}
 
-				XmlElement elem = GetNodeAsElement(element, childNodes.Current);
+				var elem = GetNodeAsElement(element, childNodes.Current);
 
 				AppendElementAsAttribute(element.ParentNode, childNodes.Current as XmlElement);
 			}
@@ -62,7 +66,7 @@ namespace Castle.Windsor.Configuration.Interpreters.XmlProcessor.ElementProcesso
 
 		protected void AppendElementAsAttribute(XmlNode parentElement, XmlElement element)
 		{
-			XmlAttribute attribute = parentElement.OwnerDocument.CreateAttribute(element.Name);
+			var attribute = parentElement.OwnerDocument.CreateAttribute(element.Name);
 
 			attribute.Value = element.InnerText;
 

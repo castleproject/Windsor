@@ -26,6 +26,7 @@ namespace Castle.Core
 	{
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 		private List<ICommissionConcern> commission;
+
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 		private List<IDecommissionConcern> decommission;
 

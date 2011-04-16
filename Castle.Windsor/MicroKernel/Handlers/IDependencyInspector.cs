@@ -17,9 +17,9 @@ namespace Castle.MicroKernel.Handlers
 	using Castle.Core;
 
 	/// <summary>
-	/// Inspects missings dependencies in the container. Default implementation is used to
-	/// construct helpful message for exceptions and debugger views, but other implementations
-	/// are also possible if needed.
+	///   Inspects missings dependencies in the container. Default implementation is used to
+	///   construct helpful message for exceptions and debugger views, but other implementations
+	///   are also possible if needed.
 	/// </summary>
 	public interface IDependencyInspector
 	{

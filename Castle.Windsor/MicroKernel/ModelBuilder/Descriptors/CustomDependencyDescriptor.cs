@@ -18,7 +18,6 @@ namespace Castle.MicroKernel.ModelBuilder.Descriptors
 	using System.Collections;
 
 	using Castle.Core;
-	using Castle.MicroKernel.ModelBuilder;
 	using Castle.MicroKernel.Registration;
 
 	public class CustomDependencyDescriptor : IComponentModelDescriptor

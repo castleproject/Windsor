@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,13 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+
 #if(!SILVERLIGHT)
+
 namespace Castle.Windsor.Configuration.Interpreters.XmlProcessor.ElementProcessors
 {
 	using System;
 	using System.Xml;
-
-	using Castle.Core.Resource;
 
 	public class IncludeElementProcessor : AbstractXmlNodeProcessor
 	{
@@ -28,14 +28,14 @@ namespace Castle.Windsor.Configuration.Interpreters.XmlProcessor.ElementProcesso
 		}
 
 		/// <summary>
-		/// Accepts the specified node.
-		/// Check if node has the same name as the processor and the node.NodeType
-		/// is in the AcceptNodeTypes List
-		/// NOTE: since the BatchRegistrationFacility already uses an include
-		/// element we will distinguish between both by looking for the presence of an uri attribute
-		/// we should revisit this later by using xml-namespaces
+		///   Accepts the specified node.
+		///   Check if node has the same name as the processor and the node.NodeType
+		///   is in the AcceptNodeTypes List
+		///   NOTE: since the BatchRegistrationFacility already uses an include
+		///   element we will distinguish between both by looking for the presence of an uri attribute
+		///   we should revisit this later by using xml-namespaces
 		/// </summary>
-		/// <param name="node">The node.</param>
+		/// <param name = "node">The node.</param>
 		/// <returns></returns>
 		public override bool Accept(XmlNode node)
 		{
@@ -44,9 +44,9 @@ namespace Castle.Windsor.Configuration.Interpreters.XmlProcessor.ElementProcesso
 
 		public override void Process(IXmlProcessorNodeList nodeList, IXmlProcessorEngine engine)
 		{
-			XmlElement element = nodeList.Current as XmlElement;
+			var element = nodeList.Current as XmlElement;
 
-			XmlNode result = ProcessInclude(element, element.GetAttribute("uri"), engine);
+			var result = ProcessInclude(element, element.GetAttribute("uri"), engine);
 
 			ReplaceItself(result, element);
 		}
@@ -61,14 +61,14 @@ namespace Castle.Windsor.Configuration.Interpreters.XmlProcessor.ElementProcesso
 					String.Format("Found an include node without an 'uri' attribute: {0}", element.BaseURI));
 			}
 
-			String[] uriList = includeUri.Split(',');
+			var uriList = includeUri.Split(',');
 			frag = CreateFragment(element);
 
-			foreach(String uri in uriList)
+			foreach (var uri in uriList)
 			{
-				using(IResource resource = engine.GetResource(uri))
+				using (var resource = engine.GetResource(uri))
 				{
-					XmlDocument doc = new XmlDocument();
+					var doc = new XmlDocument();
 
 					try
 					{
@@ -77,7 +77,7 @@ namespace Castle.Windsor.Configuration.Interpreters.XmlProcessor.ElementProcesso
 							doc.Load(stream);
 						}
 					}
-					catch(Exception ex)
+					catch (Exception ex)
 					{
 						throw new ConfigurationProcessingException(
 							String.Format("Error processing include node: {0}", includeUri), ex);

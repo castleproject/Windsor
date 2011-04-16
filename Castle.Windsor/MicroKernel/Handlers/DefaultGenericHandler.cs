@@ -110,22 +110,6 @@ namespace Castle.MicroKernel.Handlers
 			}
 		}
 
-		private IDictionary GetExtendedProperties()
-		{
-			var extendedProperties = ComponentModel.ExtendedProperties;
-			if (extendedProperties != null && extendedProperties.Count > 0)
-			{
-#if !SILVERLIGHT
-				if (extendedProperties is ICloneable)
-				{
-					extendedProperties = (IDictionary)((ICloneable)extendedProperties).Clone();
-				}
-#endif
-				extendedProperties = new Arguments(extendedProperties);
-			}
-			return extendedProperties;
-		}
-
 		protected override object Resolve(CreationContext context, bool instanceRequired)
 		{
 			var implType = GetClosedImplementationType(context, instanceRequired);
@@ -236,6 +220,22 @@ namespace Castle.MicroKernel.Handlers
 				// 3. at this point we should be 99% sure we have arguments that don't satisfy generic constraints of out service.
 				throw new GenericHandlerTypeMismatchException(genericArguments, ComponentModel, this);
 			}
+		}
+
+		private IDictionary GetExtendedProperties()
+		{
+			var extendedProperties = ComponentModel.ExtendedProperties;
+			if (extendedProperties != null && extendedProperties.Count > 0)
+			{
+#if !SILVERLIGHT
+				if (extendedProperties is ICloneable)
+				{
+					extendedProperties = (IDictionary)((ICloneable)extendedProperties).Clone();
+				}
+#endif
+				extendedProperties = new Arguments(extendedProperties);
+			}
+			return extendedProperties;
 		}
 
 		private Type[] GetGenericArguments(CreationContext context)

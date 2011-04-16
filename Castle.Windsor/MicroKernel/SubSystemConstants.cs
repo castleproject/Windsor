@@ -33,7 +33,7 @@ namespace Castle.MicroKernel
 		public static readonly String ConversionManagerKey = "conversion.mng";
 
 		/// <summary>
-		/// Key used for the diagnostics subsystem
+		///   Key used for the diagnostics subsystem
 		/// </summary>
 		public static readonly String DiagnosticsKey = "Castle.DiagnosticsSubSystem";
 

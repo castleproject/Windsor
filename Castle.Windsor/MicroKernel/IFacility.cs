@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,21 +17,19 @@ namespace Castle.MicroKernel
 	using Castle.Core.Configuration;
 
 	/// <summary>
-	/// Unit of extension. A facility should use 
-	/// the extension points offered by the kernel
-	/// to augment its functionality.
+	///   Unit of extension. A facility should use 
+	///   the extension points offered by the kernel
+	///   to augment its functionality.
 	/// </summary>
 	public interface IFacility
 	{
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <param name="kernel"></param>
-		/// <param name="facilityConfig"></param>
+		/// <param name = "kernel"></param>
+		/// <param name = "facilityConfig"></param>
 		void Init(IKernel kernel, IConfiguration facilityConfig);
 
 		/// <summary>
-		/// 
 		/// </summary>
 		void Terminate();
 	}

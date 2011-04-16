@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -22,22 +22,17 @@ namespace Castle.Facilities.TypedFactory.Internal
 	using Castle.MicroKernel;
 
 	/// <summary>
-	/// Legacy interceptor for old impl. of the facility.
+	///   Legacy interceptor for old impl. of the facility.
 	/// </summary>
 	[Transient]
 	public class FactoryInterceptor : IInterceptor, IOnBehalfAware
 	{
-		private FactoryEntry entry;
 		private readonly IKernel kernel;
+		private FactoryEntry entry;
 
 		public FactoryInterceptor(IKernel kernel)
 		{
 			this.kernel = kernel;
-		}
-
-		public void SetInterceptedComponentModel(ComponentModel target)
-		{
-			entry = (FactoryEntry) target.ExtendedProperties["typed.fac.entry"];
 		}
 
 		public void Intercept(IInvocation invocation)
@@ -60,13 +55,18 @@ namespace Castle.Facilities.TypedFactory.Internal
 			{
 				if (args.Length == 1)
 				{
-					kernel.ReleaseComponent( args[0] );
+					kernel.ReleaseComponent(args[0]);
 					invocation.ReturnValue = null;
 					return;
 				}
 			}
 
 			invocation.Proceed();
+		}
+
+		public void SetInterceptedComponentModel(ComponentModel target)
+		{
+			entry = (FactoryEntry)target.ExtendedProperties["typed.fac.entry"];
 		}
 	}
 }

@@ -15,12 +15,12 @@
 namespace Castle.MicroKernel.ModelBuilder.Inspectors
 {
 	using System;
-#if SILVERLIGHT
-	using System.Linq;
-#endif
 	using System.Reflection;
 
 	using Castle.Core;
+#if SILVERLIGHT
+	using System.Linq;
+#endif
 
 	/// <summary>
 	///   This implementation of <see cref = "IContributeComponentModelConstruction" />

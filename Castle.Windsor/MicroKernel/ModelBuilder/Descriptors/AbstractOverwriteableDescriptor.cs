@@ -16,7 +16,6 @@ namespace Castle.MicroKernel.ModelBuilder.Descriptors
 {
 	using Castle.Core;
 	using Castle.Core.Configuration;
-	using Castle.MicroKernel.ModelBuilder;
 	using Castle.MicroKernel.Registration;
 
 	public abstract class AbstractOverwriteableDescriptor<TService> : IComponentModelDescriptor

@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,7 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+
 #if(!SILVERLIGHT)
+
 namespace Castle.Windsor.Configuration.Interpreters.XmlProcessor.ElementProcessors
 {
 	using System;
@@ -22,10 +24,6 @@ namespace Castle.Windsor.Configuration.Interpreters.XmlProcessor.ElementProcesso
 	{
 		private static readonly String FlagAttrName = "flag";
 
-		public DefineElementProcessor()
-		{
-		}
-
 		public override String Name
 		{
 			get { return "define"; }
@@ -33,9 +31,9 @@ namespace Castle.Windsor.Configuration.Interpreters.XmlProcessor.ElementProcesso
 
 		public override void Process(IXmlProcessorNodeList nodeList, IXmlProcessorEngine engine)
 		{
-			XmlElement element = nodeList.Current as XmlElement;
+			var element = nodeList.Current as XmlElement;
 
-			String flag = GetRequiredAttribute(element, FlagAttrName);
+			var flag = GetRequiredAttribute(element, FlagAttrName);
 
 			Process(flag, engine);
 			RemoveItSelf(element);

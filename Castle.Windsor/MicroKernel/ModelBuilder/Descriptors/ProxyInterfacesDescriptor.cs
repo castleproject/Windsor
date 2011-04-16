@@ -17,7 +17,6 @@ namespace Castle.MicroKernel.ModelBuilder.Descriptors
 	using System;
 
 	using Castle.Core;
-	using Castle.MicroKernel.ModelBuilder;
 	using Castle.MicroKernel.Proxy;
 
 	public class ProxyInterfacesDescriptor : IComponentModelDescriptor

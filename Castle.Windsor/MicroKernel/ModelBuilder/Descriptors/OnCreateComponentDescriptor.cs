@@ -16,7 +16,6 @@ namespace Castle.MicroKernel.ModelBuilder.Descriptors
 {
 	using Castle.Core;
 	using Castle.MicroKernel.LifecycleConcerns;
-	using Castle.MicroKernel.ModelBuilder;
 
 	/// <summary>
 	///   Adds the actions to ExtendedProperties.

@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,14 +15,14 @@
 namespace Castle.Windsor
 {
 	/// <summary>
-	/// This interface should be implemented by classes
-	/// that are available in a bigger context, exposing
-	/// the container to different areas in the same application.
-	/// <para>
-	/// For example, in Web application, the (global) HttpApplication
-	/// subclasses should implement this interface to expose 
-	/// the configured container
-	/// </para>
+	///   This interface should be implemented by classes
+	///   that are available in a bigger context, exposing
+	///   the container to different areas in the same application.
+	///   <para>
+	///     For example, in Web application, the (global) HttpApplication
+	///     subclasses should implement this interface to expose 
+	///     the configured container
+	///   </para>
 	/// </summary>
 	public interface IContainerAccessor
 	{

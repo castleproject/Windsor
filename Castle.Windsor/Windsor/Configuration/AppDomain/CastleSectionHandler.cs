@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+
 #if(!SILVERLIGHT)
 
 namespace Castle.Windsor.Configuration.AppDomain
@@ -20,19 +21,16 @@ namespace Castle.Windsor.Configuration.AppDomain
 	using System.Xml;
 
 	/// <summary>
-	/// Implementation of <see cref="IConfigurationSectionHandler"/>.
-	/// Do not support configuration inheritance.
+	///   Implementation of <see cref = "IConfigurationSectionHandler" />.
+	///   Do not support configuration inheritance.
 	/// </summary>
 	public class CastleSectionHandler : IConfigurationSectionHandler
 	{
-		public CastleSectionHandler()
-		{
-		}
-
 		public object Create(object parent, object configContext, XmlNode section)
 		{
 			return section;
 		}
 	}
 }
+
 #endif

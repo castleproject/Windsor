@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -21,18 +21,18 @@ namespace Castle.Windsor.Installer
 	using Castle.Windsor.Configuration;
 
 	/// <summary>
-	/// Delegate to provide environment name.
+	///   Delegate to provide environment name.
 	/// </summary>
 	/// <returns>The environment name.</returns>
 	public delegate String EnvironmentDelegate();
-	
+
 	public class ConfigurationInstaller : IWindsorInstaller
 	{
 		private readonly IConfigurationInterpreter interpreter;
 		private EnvironmentDelegate environment;
-		
+
 		/// <summary>
-		/// Initializes a new instance of the ConfigurationInstaller class.
+		///   Initializes a new instance of the ConfigurationInstaller class.
 		/// </summary>
 		public ConfigurationInstaller(IConfigurationInterpreter interpreter)
 		{
@@ -42,21 +42,21 @@ namespace Castle.Windsor.Installer
 			}
 			this.interpreter = interpreter;
 		}
-		
+
 		/// <summary>
-		/// Sets the configuration environment name.
+		///   Sets the configuration environment name.
 		/// </summary>
-		/// <param name="environmentName">The environment name.</param>
+		/// <param name = "environmentName">The environment name.</param>
 		/// <returns></returns>
 		public ConfigurationInstaller Environment(String environmentName)
 		{
 			return Environment(() => environmentName);
 		}
-		
+
 		/// <summary>
-		/// Set the configuration environment strategy.
+		///   Set the configuration environment strategy.
 		/// </summary>
-		/// <param name="environment">The environment strategy.</param>
+		/// <param name = "environment">The environment strategy.</param>
 		/// <returns></returns>
 		public ConfigurationInstaller Environment(EnvironmentDelegate environment)
 		{

@@ -17,20 +17,20 @@ namespace Castle.Windsor.Diagnostics
 	using System;
 
 	/// <summary>
-	/// Hosts different diagnostics available in the container.
+	///   Hosts different diagnostics available in the container.
 	/// </summary>
 	public interface IDiagnosticsHost
 	{
 		/// <summary>
-		/// Adds <paramref name="diagnostic"/> and makes it available as <typeparamref name="TDiagnostic"/>.
+		///   Adds <paramref name = "diagnostic" /> and makes it available as <typeparamref name = "TDiagnostic" />.
 		/// </summary>
-		/// <exception cref="ArgumentException">Thrown when a diagnostic for <typeparamref name="TDiagnostic"/>has already been added.</exception>
+		/// <exception cref = "ArgumentException">Thrown when a diagnostic for <typeparamref name = "TDiagnostic" />has already been added.</exception>
 		void AddDiagnostic<TDiagnostic>(TDiagnostic diagnostic) where TDiagnostic : IDiagnostic<object>;
 
 		/// <summary>
-		/// Returns diagnostic registered with <typeparamref name="TDiagnostic"/> or <c>null</c> if not present.
+		///   Returns diagnostic registered with <typeparamref name = "TDiagnostic" /> or <c>null</c> if not present.
 		/// </summary>
-		/// <typeparam name="TDiagnostic"></typeparam>
+		/// <typeparam name = "TDiagnostic"></typeparam>
 		/// <returns></returns>
 		TDiagnostic GetDiagnostic<TDiagnostic>() where TDiagnostic : IDiagnostic<object>;
 	}

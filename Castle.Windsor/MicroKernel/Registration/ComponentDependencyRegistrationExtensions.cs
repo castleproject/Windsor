@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ namespace Castle.MicroKernel.Registration
 	public static class ComponentDependencyRegistrationExtensions
 	{
 		/// <summary>
-		/// Inserts a new named argument with given key. If an argument for this name already exists, it will be overwritten.
+		///   Inserts a new named argument with given key. If an argument for this name already exists, it will be overwritten.
 		/// </summary>
 		public static IDictionary Insert(this IDictionary arguments, string key, object value)
 		{
@@ -31,7 +31,7 @@ namespace Castle.MicroKernel.Registration
 		}
 
 		/// <summary>
-		/// Inserts a new typed argument with given type. If an argument for this type already exists, it will be overwritten.
+		///   Inserts a new typed argument with given type. If an argument for this type already exists, it will be overwritten.
 		/// </summary>
 		public static IDictionary Insert(this IDictionary arguments, Type key, object value)
 		{
@@ -40,7 +40,7 @@ namespace Castle.MicroKernel.Registration
 		}
 
 		/// <summary>
-		/// Inserts a new typed argument with given type. If an argument for this type already exists, it will be overwritten.
+		///   Inserts a new typed argument with given type. If an argument for this type already exists, it will be overwritten.
 		/// </summary>
 		public static IDictionary Insert<TKeyType>(this IDictionary arguments, TKeyType value)
 		{
@@ -49,7 +49,7 @@ namespace Castle.MicroKernel.Registration
 		}
 
 		/// <summary>
-		/// Inserts a set of typed arguments. Property names of the anonymous type will be used as key.
+		///   Inserts a set of typed arguments. Property names of the anonymous type will be used as key.
 		/// </summary>
 		public static IDictionary Insert(this IDictionary arguments, object namedArgumentsAsAnonymousType)
 		{
@@ -62,7 +62,7 @@ namespace Castle.MicroKernel.Registration
 		}
 
 		/// <summary>
-		/// Inserts a set of typed arguments. Actual type of the arguments will be used as key.
+		///   Inserts a set of typed arguments. Actual type of the arguments will be used as key.
 		/// </summary>
 		public static IDictionary Insert(this IDictionary arguments, object[] typedArgumentsArray)
 		{

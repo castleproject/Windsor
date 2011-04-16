@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,37 +18,39 @@ namespace Castle.Facilities.TypedFactory
 	using System.ComponentModel;
 
 	/// <summary>
-	/// Legacy class from old impl. of the facility. Do not use it.
+	///   Legacy class from old impl. of the facility. Do not use it.
 	/// </summary>
 	[EditorBrowsable(EditorBrowsableState.Never)]
 	public class FactoryEntry
 	{
-		private readonly String id;
 		private readonly String creationMethod;
 		private readonly String destructionMethod;
 		private readonly Type factoryInterface;
+		private readonly String id;
 
 		public FactoryEntry(String id, Type factoryInterface, String creationMethod, String destructionMethod)
 		{
-			if (string.IsNullOrEmpty(id)) throw new ArgumentNullException("id");
-			if (factoryInterface == null) throw new ArgumentNullException("factoryInterface");
-			if (!factoryInterface.IsInterface) throw new ArgumentException("factoryInterface must be an interface");
-			if (string.IsNullOrEmpty(creationMethod)) throw new ArgumentNullException("creationMethod");
+			if (string.IsNullOrEmpty(id))
+			{
+				throw new ArgumentNullException("id");
+			}
+			if (factoryInterface == null)
+			{
+				throw new ArgumentNullException("factoryInterface");
+			}
+			if (!factoryInterface.IsInterface)
+			{
+				throw new ArgumentException("factoryInterface must be an interface");
+			}
+			if (string.IsNullOrEmpty(creationMethod))
+			{
+				throw new ArgumentNullException("creationMethod");
+			}
 
 			this.id = id;
 			this.factoryInterface = factoryInterface;
 			this.creationMethod = creationMethod;
 			this.destructionMethod = destructionMethod;
-		}
-
-		public String Id
-		{
-			get { return id; }
-		}
-
-		public Type FactoryInterface
-		{
-			get { return factoryInterface; }
 		}
 
 		public String CreationMethod
@@ -59,6 +61,16 @@ namespace Castle.Facilities.TypedFactory
 		public String DestructionMethod
 		{
 			get { return destructionMethod; }
+		}
+
+		public Type FactoryInterface
+		{
+			get { return factoryInterface; }
+		}
+
+		public String Id
+		{
+			get { return id; }
 		}
 	}
 }

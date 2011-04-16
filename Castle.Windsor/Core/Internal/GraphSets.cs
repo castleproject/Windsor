@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,24 +19,27 @@ namespace Castle.Core.Internal
 	internal enum VertexColor
 	{
 		NotInThisSet,
+
 		/// <summary>
-		/// The node has not been visited yet
+		///   The node has not been visited yet
 		/// </summary>
 		White,
+
 		/// <summary>
-		/// This node is in the process of being visited
+		///   This node is in the process of being visited
 		/// </summary>
 		Gray,
+
 		/// <summary>
-		/// This now was visited
+		///   This now was visited
 		/// </summary>
 		Black
 	}
 
 	/// <summary>
-	/// Represents a collection of objects
-	/// which are guaranteed to be unique 
-	/// and holds a color for them
+	///   Represents a collection of objects
+	///   which are guaranteed to be unique 
+	///   and holds a color for them
 	/// </summary>
 	internal class ColorsSet
 	{
@@ -44,27 +47,30 @@ namespace Castle.Core.Internal
 
 		public ColorsSet(IVertex[] items)
 		{
-			foreach(IVertex item in items)
+			foreach (var item in items)
 			{
 				Set(item, VertexColor.White);
 			}
+		}
+
+		public VertexColor ColorOf(IVertex item)
+		{
+			if (!items.ContainsKey(item))
+			{
+				return VertexColor.NotInThisSet;
+			}
+			return items[item];
 		}
 
 		public void Set(IVertex item, VertexColor color)
 		{
 			items[item] = color;
 		}
-
-		public VertexColor ColorOf(IVertex item)
-		{
-			if (!items.ContainsKey(item)) return VertexColor.NotInThisSet;
-			return items[item];
-		}
 	}
 
 	/// <summary>
-	/// Holds a timestamp (integer) 
-	/// for a given item
+	///   Holds a timestamp (integer) 
+	///   for a given item
 	/// </summary>
 	internal class TimestampSet
 	{

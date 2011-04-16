@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,7 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+
 #if(!SILVERLIGHT)
+
 namespace Castle.Windsor.Configuration.Interpreters.XmlProcessor.ElementProcessors
 {
 	using System;
@@ -21,17 +23,18 @@ namespace Castle.Windsor.Configuration.Interpreters.XmlProcessor.ElementProcesso
 
 	public class DefaultTextNodeProcessor : AbstractXmlNodeProcessor
 	{
-		private static readonly XmlNodeType[] acceptNodes = new[] {XmlNodeType.CDATA, XmlNodeType.Text};
-
 		/// <summary>
-		/// Properties names can contain a-zA-Z0-9_. 
-		/// i.e. #!{ my_node_name } || #{ my.node.name }
-		/// spaces are trimmed
+		///   Properties names can contain a-zA-Z0-9_. 
+		///   i.e. #!{ my_node_name } || #{ my.node.name }
+		///   spaces are trimmed
 		/// </summary>
 		private static readonly Regex PropertyValidationRegExp = new Regex(@"(\#!?\{\s*((?:\w|\.)+)\s*\})", RegexOptions.Compiled);
 
-		public DefaultTextNodeProcessor()
+		private static readonly XmlNodeType[] acceptNodes = new[] { XmlNodeType.CDATA, XmlNodeType.Text };
+
+		public override XmlNodeType[] AcceptNodeTypes
 		{
+			get { return acceptNodes; }
 		}
 
 		public override String Name
@@ -39,39 +42,34 @@ namespace Castle.Windsor.Configuration.Interpreters.XmlProcessor.ElementProcesso
 			get { return "#text"; }
 		}
 
-		public override XmlNodeType[] AcceptNodeTypes
-		{
-			get { return acceptNodes; }
-		}
-
 		public override void Process(IXmlProcessorNodeList nodeList, IXmlProcessorEngine engine)
 		{
-			XmlCharacterData node = nodeList.Current as XmlCharacterData;
+			var node = nodeList.Current as XmlCharacterData;
 
 			ProcessString(node, node.Value, engine);
 		}
 
 		/// <summary>
-		/// Processes the string.
+		///   Processes the string.
 		/// </summary>
-		/// <param name="node">The node.</param>
-		/// <param name="value">The value.</param>
-		/// <param name="engine">The context.</param>
+		/// <param name = "node">The node.</param>
+		/// <param name = "value">The value.</param>
+		/// <param name = "engine">The context.</param>
 		public void ProcessString(XmlNode node, string value, IXmlProcessorEngine engine)
 		{
-			XmlDocumentFragment fragment = CreateFragment(node);
+			var fragment = CreateFragment(node);
 
 			Match match;
-			int pos = 0;
-			while((match = PropertyValidationRegExp.Match(value, pos)).Success)
+			var pos = 0;
+			while ((match = PropertyValidationRegExp.Match(value, pos)).Success)
 			{
 				if (pos < match.Index)
 				{
 					AppendChild(fragment, value.Substring(pos, match.Index - pos));
 				}
 
-				string propRef = match.Groups[1].Value; // #!{ propKey }
-				string propKey = match.Groups[2].Value; // propKey
+				var propRef = match.Groups[1].Value; // #!{ propKey }
+				var propKey = match.Groups[2].Value; // propKey
 
 				XmlNode prop = engine.GetProperty(propKey);
 
@@ -124,9 +122,9 @@ namespace Castle.Windsor.Configuration.Interpreters.XmlProcessor.ElementProcesso
 
 		private void MoveAttributes(XmlElement targetElement, XmlElement srcElement)
 		{
-			for(int i = srcElement.Attributes.Count - 1; i > -1; i--)
+			for (var i = srcElement.Attributes.Count - 1; i > -1; i--)
 			{
-				XmlAttribute importedAttr = ImportNode(targetElement, srcElement.Attributes[i]) as XmlAttribute;
+				var importedAttr = ImportNode(targetElement, srcElement.Attributes[i]) as XmlAttribute;
 				targetElement.Attributes.Append(importedAttr);
 			}
 		}

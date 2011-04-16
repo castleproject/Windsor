@@ -18,7 +18,7 @@ namespace Castle.MicroKernel.Handlers
 	using System.Runtime.Serialization;
 
 	/// <summary>
-	/// Summary description for HandlerException.
+	///   Summary description for HandlerException.
 	/// </summary>
 	[Serializable]
 	public class HandlerException : Exception

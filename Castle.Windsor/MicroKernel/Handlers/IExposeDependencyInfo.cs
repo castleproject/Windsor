@@ -22,11 +22,11 @@ namespace Castle.MicroKernel.Handlers
 	public interface IExposeDependencyInfo
 	{
 		/// <summary>
-		/// Informs the <paramref name="inspector" /> about missing dependencies.
-		/// Implementers should ignore the call if no dependencies are missing and 
-		/// call back the inspector with the information required otherwise
+		///   Informs the <paramref name = "inspector" /> about missing dependencies.
+		///   Implementers should ignore the call if no dependencies are missing and 
+		///   call back the inspector with the information required otherwise
 		/// </summary>
-		/// <param name="inspector"></param>
+		/// <param name = "inspector"></param>
 		void ObtainDependencyDetails(IDependencyInspector inspector);
 	}
 }

@@ -12,7 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+
 #if !(SILVERLIGHT || CLIENTPROFILE || DOTNET35)
+
 namespace Castle.MicroKernel.Lifestyle
 {
 	using System;
@@ -44,4 +46,5 @@ namespace Castle.MicroKernel.Lifestyle
 		}
 	}
 }
+
 #endif

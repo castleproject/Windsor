@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@ namespace Castle.Core
 	using System;
 
 	/// <summary>
-	/// Specifies the proxying behavior for a component.
+	///   Specifies the proxying behavior for a component.
 	/// </summary>
 	[AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
 	public sealed class ComponentProxyBehaviorAttribute : Attribute
@@ -26,15 +26,15 @@ namespace Castle.Core
 
 #if !(SILVERLIGHT)
 		/// <summary>
-		/// Gets or sets a value indicating whether the generated 
-		/// interface proxy should inherit from <see cref="MarshalByRefObject"/>.
+		///   Gets or sets a value indicating whether the generated 
+		///   interface proxy should inherit from <see cref = "MarshalByRefObject" />.
 		/// </summary>
 		public bool UseMarshalByRefProxy { get; set; }
 
 #endif
 
 		/// <summary>
-		///  Gets or sets the additional interfaces used during proxy generation.
+		///   Gets or sets the additional interfaces used during proxy generation.
 		/// </summary>
 		public Type[] AdditionalInterfaces
 		{

@@ -26,7 +26,7 @@ namespace Castle.MicroKernel
 	/// </summary>
 	public class Arguments : IDictionary
 #if !SILVERLIGHT
-		, ICloneable
+	                         , ICloneable
 #endif
 	{
 		protected IDictionary arguments;
@@ -153,7 +153,7 @@ namespace Castle.MicroKernel
 
 			return new Arguments(arguments);
 		}
-		
+
 		object ICloneable.Clone()
 		{
 			return CreateDeepCopy();

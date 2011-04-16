@@ -16,7 +16,6 @@ namespace Castle.MicroKernel.Resolvers.SpecializedResolvers
 {
 	using System;
 	using System.Collections.Generic;
-	using System.Linq;
 
 	using Castle.Core;
 	using Castle.Core.Internal;
@@ -74,11 +73,6 @@ namespace Castle.MicroKernel.Resolvers.SpecializedResolvers
 			return listType.CreateInstance<object>(items);
 		}
 
-		private Type BuildListType(DependencyModel dependency)
-		{
-			return typeof(List<>).MakeGenericType(GetItemType(dependency.TargetItemType));
-		}
-
 		protected override Type GetItemType(Type targetItemType)
 		{
 			if (targetItemType.IsGenericType == false ||
@@ -87,6 +81,11 @@ namespace Castle.MicroKernel.Resolvers.SpecializedResolvers
 				return null;
 			}
 			return targetItemType.GetGenericArguments()[0];
+		}
+
+		private Type BuildListType(DependencyModel dependency)
+		{
+			return typeof(List<>).MakeGenericType(GetItemType(dependency.TargetItemType));
 		}
 	}
 }

@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,7 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+
 #if(!SILVERLIGHT)
+
 namespace Castle.Windsor.Configuration.Interpreters.XmlProcessor.ElementProcessors
 {
 	using System;
@@ -21,8 +23,8 @@ namespace Castle.Windsor.Configuration.Interpreters.XmlProcessor.ElementProcesso
 	public class DefaultElementProcessor : AbstractXmlNodeProcessor
 	{
 		private const string IncludeAttrName = "includeUri";
-		private static readonly DefaultTextNodeProcessor textProcessor = new DefaultTextNodeProcessor();
 		private static readonly IncludeElementProcessor includeProcessor = new IncludeElementProcessor();
+		private static readonly DefaultTextNodeProcessor textProcessor = new DefaultTextNodeProcessor();
 
 		public override String Name
 		{
@@ -30,13 +32,13 @@ namespace Castle.Windsor.Configuration.Interpreters.XmlProcessor.ElementProcesso
 		}
 
 		/// <summary>
-		/// Processes the specified node list.
+		///   Processes the specified node list.
 		/// </summary>
-		/// <param name="nodeList">The node list.</param>
-		/// <param name="engine">The engine.</param>
+		/// <param name = "nodeList">The node list.</param>
+		/// <param name = "engine">The engine.</param>
 		public override void Process(IXmlProcessorNodeList nodeList, IXmlProcessorEngine engine)
 		{
-			XmlElement element = (XmlElement)nodeList.Current;
+			var element = (XmlElement)nodeList.Current;
 
 			ProcessAttributes(element, engine);
 
@@ -44,19 +46,19 @@ namespace Castle.Windsor.Configuration.Interpreters.XmlProcessor.ElementProcesso
 		}
 
 		/// <summary>
-		/// Processes element attributes.
-		/// if the attribute is include will append to the element
-		/// all contents from the file.
-		/// if the attribute has a property reference the reference will be
-		/// expanded
+		///   Processes element attributes.
+		///   if the attribute is include will append to the element
+		///   all contents from the file.
+		///   if the attribute has a property reference the reference will be
+		///   expanded
 		/// </summary>
-		/// <param name="element">The element.</param>
-		/// <param name="engine"></param>
+		/// <param name = "element">The element.</param>
+		/// <param name = "engine"></param>
 		private static void ProcessAttributes(XmlElement element, IXmlProcessorEngine engine)
 		{
 			ProcessIncludeAttribute(element, engine);
 
-			foreach(XmlAttribute att in element.Attributes)
+			foreach (XmlAttribute att in element.Attributes)
 			{
 				textProcessor.ProcessString(att, att.Value, engine);
 			}
@@ -64,13 +66,16 @@ namespace Castle.Windsor.Configuration.Interpreters.XmlProcessor.ElementProcesso
 
 		private static void ProcessIncludeAttribute(XmlElement element, IXmlProcessorEngine engine)
 		{
-			XmlAttribute include = element.Attributes[IncludeAttrName];
+			var include = element.Attributes[IncludeAttrName];
 
-			if (include == null) return;
+			if (include == null)
+			{
+				return;
+			}
 			// removing the include attribute from the element
 			element.Attributes.RemoveNamedItem(IncludeAttrName);
 
-			XmlNode includeContent = includeProcessor.ProcessInclude(element, include.Value, engine);
+			var includeContent = includeProcessor.ProcessInclude(element, include.Value, engine);
 
 			if (includeContent != null)
 			{

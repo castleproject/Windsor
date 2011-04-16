@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 {
 	using System;
 	using System.ComponentModel;
+
 	using Castle.Core.Configuration;
 
 	/// <summary>
@@ -30,23 +31,25 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 		{
 			// Mono 1.9+ thinks it can convert strings to interface
 			if (type.IsInterface)
+			{
 				return false;
+			}
 
-			TypeConverter converter = TypeDescriptor.GetConverter(type);
+			var converter = TypeDescriptor.GetConverter(type);
 			return (converter != null && converter.CanConvertFrom(typeof(String)));
 		}
 
 		public override object PerformConversion(String value, Type targetType)
 		{
-			TypeConverter converter = TypeDescriptor.GetConverter(targetType);
+			var converter = TypeDescriptor.GetConverter(targetType);
 
 			try
 			{
 				return converter.ConvertFrom(value);
 			}
-			catch(Exception ex)
+			catch (Exception ex)
 			{
-				String message = String.Format(
+				var message = String.Format(
 					"Could not convert from '{0}' to {1}",
 					value, targetType.FullName);
 

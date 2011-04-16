@@ -16,7 +16,6 @@ namespace Castle.MicroKernel.ModelBuilder.Descriptors
 {
 	using Castle.Core;
 	using Castle.DynamicProxy;
-	using Castle.MicroKernel.ModelBuilder;
 	using Castle.MicroKernel.Proxy;
 
 	public class InterceptorSelectorDescriptor : IComponentModelDescriptor

@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,7 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+
 #if(!SILVERLIGHT)
+
 namespace Castle.Windsor.Configuration.Interpreters.XmlProcessor.ElementProcessors
 {
 	using System;
@@ -20,10 +22,6 @@ namespace Castle.Windsor.Configuration.Interpreters.XmlProcessor.ElementProcesso
 
 	public class IfElementProcessor : AbstractStatementElementProcessor
 	{
-		public IfElementProcessor()
-		{
-		}
-
 		public override String Name
 		{
 			get { return "if"; }
@@ -31,13 +29,13 @@ namespace Castle.Windsor.Configuration.Interpreters.XmlProcessor.ElementProcesso
 
 		public override void Process(IXmlProcessorNodeList nodeList, IXmlProcessorEngine engine)
 		{
-			XmlElement element = nodeList.Current as XmlElement;
+			var element = nodeList.Current as XmlElement;
 
-			bool processContents = ProcessStatement(element, engine);
+			var processContents = ProcessStatement(element, engine);
 
 			if (processContents)
 			{
-				XmlDocumentFragment fragment = CreateFragment(element);
+				var fragment = CreateFragment(element);
 				MoveChildNodes(fragment, element);
 				engine.DispatchProcessAll(new DefaultXmlProcessorNodeList(fragment.ChildNodes));
 				ReplaceItself(fragment, element);

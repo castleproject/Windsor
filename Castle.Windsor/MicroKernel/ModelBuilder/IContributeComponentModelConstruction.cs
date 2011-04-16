@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,18 +17,18 @@ namespace Castle.MicroKernel.ModelBuilder
 	using Castle.Core;
 
 	/// <summary>
-	/// Implementors must inspect the component for 
-	/// a given information or parameter.
+	///   Implementors must inspect the component for 
+	///   a given information or parameter.
 	/// </summary>
 	public interface IContributeComponentModelConstruction
 	{
 		/// <summary>
-		/// Usually the implementation will look in the configuration property 
-		/// of the model or the service interface, or the implementation looking for
-		/// something.
+		///   Usually the implementation will look in the configuration property 
+		///   of the model or the service interface, or the implementation looking for
+		///   something.
 		/// </summary>
-		/// <param name="kernel">The kernel instance</param>
-		/// <param name="model">The component model</param>
+		/// <param name = "kernel">The kernel instance</param>
+		/// <param name = "model">The component model</param>
 		void ProcessModel(IKernel kernel, ComponentModel model);
 	}
 }
