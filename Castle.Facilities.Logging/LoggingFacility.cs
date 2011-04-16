@@ -307,7 +307,7 @@ namespace Castle.Facilities.Logging
 				var customLoggerType = FacilityConfig.Attributes["customLoggerFactory"];
 				if (string.IsNullOrEmpty(customLoggerType) == false)
 				{
-					converter.PerformConversion<Type>(customLoggerType);
+					return converter.PerformConversion<Type>(customLoggerType);
 				}
 			}
 			if (customLoggerFactoryTypeName != null)

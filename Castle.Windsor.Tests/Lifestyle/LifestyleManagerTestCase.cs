@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.MicroKernel.Tests.Lifestyle
+namespace CastleTests.Lifestyle
 {
 	using System;
 	using System.Threading;
@@ -22,32 +22,16 @@ namespace Castle.MicroKernel.Tests.Lifestyle
 	using Castle.MicroKernel.Context;
 	using Castle.MicroKernel.Handlers;
 	using Castle.MicroKernel.Registration;
+	using Castle.MicroKernel.Tests.Lifestyle;
 	using Castle.Windsor.Tests.ClassComponents;
 
 	using CastleTests.Components;
 
 	using NUnit.Framework;
 
-	/// <summary>
-	///   Summary description for LifestyleManagerTestCase.
-	/// </summary>
 	[TestFixture]
-	public class LifestyleManagerTestCase
+	public class LifestyleManagerTestCase : AbstractContainerTestCase
 	{
-		[SetUp]
-		public void CreateContainer()
-		{
-			kernel = new DefaultKernel();
-		}
-
-		[TearDown]
-		public void DisposeContainer()
-		{
-			kernel.Dispose();
-		}
-
-		private IKernel kernel;
-
 		private IComponent instance3;
 
 		private void TestLifestyleAndSameness(Type componentType, LifestyleType lifestyle, bool overwrite, bool areSame)
@@ -65,8 +49,8 @@ namespace Castle.MicroKernel.Tests.Lifestyle
 
 		private void TestSameness(string key, bool areSame)
 		{
-			var one = kernel.Resolve<IComponent>(key);
-			var two = kernel.Resolve<IComponent>(key);
+			var one = Kernel.Resolve<IComponent>(key);
+			var two = Kernel.Resolve<IComponent>(key);
 			if (areSame)
 			{
 				Assert.AreSame(one, two);
@@ -80,8 +64,8 @@ namespace Castle.MicroKernel.Tests.Lifestyle
 		private string TestHandlersLifestyle(Type componentType, LifestyleType lifestyle, bool overwrite)
 		{
 			var key = Guid.NewGuid().ToString();
-			kernel.Register(Component.For(componentType).Named(key).LifeStyle.Is(lifestyle));
-			var handler = kernel.GetHandler(key);
+			Kernel.Register(Component.For(componentType).Named(key).LifeStyle.Is(lifestyle));
+			var handler = Kernel.GetHandler(key);
 			Assert.AreEqual(lifestyle, handler.ComponentModel.LifestyleType);
 			return key;
 		}
@@ -89,8 +73,8 @@ namespace Castle.MicroKernel.Tests.Lifestyle
 		private string TestHandlersLifestyleWithService(Type componentType, LifestyleType lifestyle, bool overwrite)
 		{
 			var key = Guid.NewGuid().ToString();
-			kernel.Register(Component.For<IComponent>().ImplementedBy(componentType).Named(key).LifeStyle.Is(lifestyle));
-			var handler = kernel.GetHandler(key);
+			Kernel.Register(Component.For<IComponent>().ImplementedBy(componentType).Named(key).LifeStyle.Is(lifestyle));
+			var handler = Kernel.GetHandler(key);
 			Assert.AreEqual(lifestyle, handler.ComponentModel.LifestyleType);
 			return key;
 		}
@@ -102,7 +86,7 @@ namespace Castle.MicroKernel.Tests.Lifestyle
 
 		private void OtherThread()
 		{
-			var handler = kernel.GetHandler("a");
+			var handler = Kernel.GetHandler("a");
 			instance3 = handler.Resolve(CreationContext.CreateEmpty()) as IComponent;
 		}
 
@@ -110,7 +94,7 @@ namespace Castle.MicroKernel.Tests.Lifestyle
 		public void BadLifestyleSetProgromatically()
 		{
 			Assert.Throws<ArgumentOutOfRangeException>(() =>
-			                                           kernel.Register(Component.For(typeof(IComponent))
+			                                           Kernel.Register(Component.For(typeof(IComponent))
 			                                                           	.ImplementedBy(typeof(TrivialComponent))
 			                                                           	.Named("a")
 			                                                           	.LifeStyle.Is(LifestyleType.Undefined)));
@@ -147,20 +131,20 @@ namespace Castle.MicroKernel.Tests.Lifestyle
 		[Test]
 		public void LifestyleSetThroughAttribute()
 		{
-			kernel.Register(Component.For(typeof(TransientComponent)).Named("a"));
-			var handler = kernel.GetHandler("a");
+			Kernel.Register(Component.For(typeof(TransientComponent)).Named("a"));
+			var handler = Kernel.GetHandler("a");
 			Assert.AreEqual(LifestyleType.Transient, handler.ComponentModel.LifestyleType);
 
-			kernel.Register(Component.For(typeof(SingletonComponent)).Named("b"));
-			handler = kernel.GetHandler("b");
+			Kernel.Register(Component.For(typeof(SingletonComponent)).Named("b"));
+			handler = Kernel.GetHandler("b");
 			Assert.AreEqual(LifestyleType.Singleton, handler.ComponentModel.LifestyleType);
 
-			kernel.Register(Component.For(typeof(CustomComponent)).Named("c"));
-			handler = kernel.GetHandler("c");
+			Kernel.Register(Component.For(typeof(CustomComponent)).Named("c"));
+			handler = Kernel.GetHandler("c");
 			Assert.AreEqual(LifestyleType.Custom, handler.ComponentModel.LifestyleType);
 #if (!SILVERLIGHT)
-			kernel.Register(Component.For(typeof(PerWebRequestComponent)).Named("d"));
-			handler = kernel.GetHandler("d");
+			Kernel.Register(Component.For(typeof(PerWebRequestComponent)).Named("d"));
+			handler = Kernel.GetHandler("d");
 			Assert.AreEqual(LifestyleType.PerWebRequest, handler.ComponentModel.LifestyleType);
 #endif
 		}
@@ -170,30 +154,30 @@ namespace Castle.MicroKernel.Tests.Lifestyle
 		{
 			IConfiguration confignode = new MutableConfiguration("component");
 			confignode.Attributes.Add("lifestyle", "transient");
-			kernel.ConfigurationStore.AddComponentConfiguration("a", confignode);
-			kernel.Register(Component.For(typeof(TrivialComponent)).Named("a"));
-			var handler = kernel.GetHandler("a");
+			Kernel.ConfigurationStore.AddComponentConfiguration("a", confignode);
+			Kernel.Register(Component.For(typeof(TrivialComponent)).Named("a"));
+			var handler = Kernel.GetHandler("a");
 			Assert.AreEqual(LifestyleType.Transient, handler.ComponentModel.LifestyleType);
 
 			confignode = new MutableConfiguration("component");
 			confignode.Attributes.Add("lifestyle", "singleton");
-			kernel.ConfigurationStore.AddComponentConfiguration("b", confignode);
-			kernel.Register(Component.For(typeof(TrivialComponent)).Named("b"));
-			handler = kernel.GetHandler("b");
+			Kernel.ConfigurationStore.AddComponentConfiguration("b", confignode);
+			Kernel.Register(Component.For(typeof(TrivialComponent)).Named("b"));
+			handler = Kernel.GetHandler("b");
 			Assert.AreEqual(LifestyleType.Singleton, handler.ComponentModel.LifestyleType);
 
 			confignode = new MutableConfiguration("component");
 			confignode.Attributes.Add("lifestyle", "thread");
-			kernel.ConfigurationStore.AddComponentConfiguration("c", confignode);
-			kernel.Register(Component.For(typeof(TrivialComponent)).Named("c"));
-			handler = kernel.GetHandler("c");
+			Kernel.ConfigurationStore.AddComponentConfiguration("c", confignode);
+			Kernel.Register(Component.For(typeof(TrivialComponent)).Named("c"));
+			handler = Kernel.GetHandler("c");
 			Assert.AreEqual(LifestyleType.Thread, handler.ComponentModel.LifestyleType);
 #if (!SILVERLIGHT)
 			confignode = new MutableConfiguration("component");
 			confignode.Attributes.Add("lifestyle", "perWebRequest");
-			kernel.ConfigurationStore.AddComponentConfiguration("d", confignode);
-			kernel.Register(Component.For(typeof(TrivialComponent)).Named("d"));
-			handler = kernel.GetHandler("d");
+			Kernel.ConfigurationStore.AddComponentConfiguration("d", confignode);
+			Kernel.Register(Component.For(typeof(TrivialComponent)).Named("d"));
+			handler = Kernel.GetHandler("d");
 			Assert.AreEqual(LifestyleType.PerWebRequest, handler.ComponentModel.LifestyleType);
 #endif
 		}
@@ -203,38 +187,38 @@ namespace Castle.MicroKernel.Tests.Lifestyle
 		{
 			var confignode = new MutableConfiguration("component");
 			confignode.Attributes.Add("lifestyle", "transient");
-			kernel.ConfigurationStore.AddComponentConfiguration("a", confignode);
-			kernel.Register(Component.For(typeof(SingletonComponent)).Named("a"));
-			var handler = kernel.GetHandler("a");
+			Kernel.ConfigurationStore.AddComponentConfiguration("a", confignode);
+			Kernel.Register(Component.For(typeof(SingletonComponent)).Named("a"));
+			var handler = Kernel.GetHandler("a");
 			Assert.AreEqual(LifestyleType.Transient, handler.ComponentModel.LifestyleType);
 		}
 
 		[Test]
 		public void Lifestyle_from_fluent_registration_overwrites_attribute()
 		{
-			kernel.Register(Component.For<SingletonComponent>().Named("a").LifeStyle.Transient);
-			var handler = kernel.GetHandler("a");
+			Kernel.Register(Component.For<SingletonComponent>().Named("a").LifeStyle.Transient);
+			var handler = Kernel.GetHandler("a");
 			Assert.AreEqual(LifestyleType.Transient, handler.ComponentModel.LifestyleType);
 		}
 
 		[Test(Description = "Prototype spike of the idea of providing scoped lifestyle - scoped per root component.")]
 		public void Per_dependency_tree()
 		{
-			kernel.Register(
+			Kernel.Register(
 				Component.For<Root>().ExtendedProperties(ScopeRoot()),
 				Component.For<Branch>(),
-				Component.For<Leaf>().LifeStyle.Custom<CustomLifestyle_Scoped>()
+				Component.For<Leaf>().LifestyleCustom<CustomLifestyle_Scoped>()
 				);
-			var root = kernel.Resolve<Root>();
+			var root = Kernel.Resolve<Root>();
 			Assert.AreSame(root.Leaf, root.Branch.Leaf);
 		}
 
 		[Test]
 		public void TestCustom()
 		{
-			kernel.Register(Component.For(typeof(IComponent)).ImplementedBy(typeof(CustomComponent)).Named("a"));
+			Kernel.Register(Component.For(typeof(IComponent)).ImplementedBy(typeof(CustomComponent)).Named("a"));
 
-			var handler = kernel.GetHandler("a");
+			var handler = Kernel.GetHandler("a");
 
 			var instance1 = handler.Resolve(CreationContext.CreateEmpty()) as IComponent;
 
@@ -244,9 +228,9 @@ namespace Castle.MicroKernel.Tests.Lifestyle
 		[Test]
 		public void TestPerThread()
 		{
-			kernel.Register(Component.For(typeof(IComponent)).ImplementedBy(typeof(PerThreadComponent)).Named("a"));
+			Kernel.Register(Component.For(typeof(IComponent)).ImplementedBy(typeof(PerThreadComponent)).Named("a"));
 
-			var handler = kernel.GetHandler("a");
+			var handler = Kernel.GetHandler("a");
 
 			var instance1 = handler.Resolve(CreationContext.CreateEmpty()) as IComponent;
 			var instance2 = handler.Resolve(CreationContext.CreateEmpty()) as IComponent;
@@ -269,9 +253,9 @@ namespace Castle.MicroKernel.Tests.Lifestyle
 		[Test]
 		public void TestSingleton()
 		{
-			kernel.Register(Component.For(typeof(IComponent)).ImplementedBy(typeof(SingletonComponent)).Named("a"));
+			Kernel.Register(Component.For(typeof(IComponent)).ImplementedBy(typeof(SingletonComponent)).Named("a"));
 
-			var handler = kernel.GetHandler("a");
+			var handler = Kernel.GetHandler("a");
 
 			var instance1 = handler.Resolve(CreationContext.CreateEmpty()) as IComponent;
 			var instance2 = handler.Resolve(CreationContext.CreateEmpty()) as IComponent;
@@ -286,9 +270,9 @@ namespace Castle.MicroKernel.Tests.Lifestyle
 		[Test]
 		public void TestTransient()
 		{
-			kernel.Register(Component.For(typeof(IComponent)).ImplementedBy(typeof(TransientComponent)).Named("a"));
+			Kernel.Register(Component.For(typeof(IComponent)).ImplementedBy(typeof(TransientComponent)).Named("a"));
 
-			var handler = kernel.GetHandler("a");
+			var handler = Kernel.GetHandler("a");
 
 			var instance1 = handler.Resolve(CreationContext.CreateEmpty()) as IComponent;
 			var instance2 = handler.Resolve(CreationContext.CreateEmpty()) as IComponent;
