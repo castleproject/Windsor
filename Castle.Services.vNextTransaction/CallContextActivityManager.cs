@@ -21,7 +21,12 @@ using System.Runtime.Remoting.Messaging;
 
 namespace Castle.Services.vNextTransaction
 {
-	internal class CallContextActivityManager : IActivityManager
+	/// <summary>
+	/// The call-context activity manager saves the stack of transactions
+	/// on the call-stack-context. This is the recommended manager and the default,
+	/// also.
+	/// </summary>
+	public class CallContextActivityManager : IActivityManager
 	{
 		private const string Key = "Castle.Services.Transaction.Activity";
 

@@ -97,10 +97,10 @@
     <Compile Include="ITransactionContract.cs" />
     <Compile Include="ITransactionOptions.cs" />
     <Compile Include="ITxManager.cs" />
-    <Compile Include="ITxManagerInternal.cs" />
     <Compile Include="ITxMetaInfoStore.cs" />
     <Compile Include="Lifestyles\HybridLifestyleManager.cs" />
     <Compile Include="Lifestyles\HybridPerTransactionTransientLifestyleManager.cs" />
+    <Compile Include="Lifestyles\LifestyleRegistrationExtensions.cs" />
     <Compile Include="Lifestyles\MissingTransactionException.cs" />
     <Compile Include="Lifestyles\PerTransactionLifestyleManagerBase.cs" />
     <Compile Include="Monads\Maybe.cs" />

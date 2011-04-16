@@ -22,6 +22,11 @@ using System.Transactions;
 
 namespace Castle.Services.vNextTransaction
 {
+	/// <summary>
+	/// The transaction manager takes care of the nitty-gritty details of managing the store for transactions and their data.
+	/// Its main use-case is creating the actual transactions, given the options for the transaction and the 
+	/// be the place-to-go-to for knowing what transactions are currently ambient on the current call context.
+	/// </summary>
 	[ContractClass(typeof (TxManagerContract))]
 	public interface ITxManager : IDisposable
 	{

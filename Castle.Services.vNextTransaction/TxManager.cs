@@ -23,7 +23,7 @@ using log4net;
 
 namespace Castle.Services.vNextTransaction
 {
-	internal class TxManager : ITxManager, ITxManagerInternal
+	public class TxManager : ITxManager
 	{
 		private static readonly ILog _Logger = LogManager.GetLogger(typeof (TxManager));
 		private readonly IActivityManager _ActivityManager;

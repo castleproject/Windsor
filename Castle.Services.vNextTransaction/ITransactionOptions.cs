@@ -17,11 +17,120 @@
 #endregion
 
 using System;
-using System.Runtime.Serialization;
 using System.Transactions;
 
 namespace Castle.Services.vNextTransaction
 {
+	public class DefaultTransactionOptions : ITransactionOptions, IEquatable<DefaultTransactionOptions>
+	{
+		public DefaultTransactionOptions()
+			: this(System.Transactions.IsolationLevel.ReadCommitted,
+			TransactionScopeOption.Required,
+			false,
+			false,
+			TimeSpan.MaxValue)
+		{
+		}
+
+		public DefaultTransactionOptions(IsolationLevel isolationLevel,
+			TransactionScopeOption mode,
+			bool readOnly, 
+			bool fork, 
+			TimeSpan timeout)
+		{
+			IsolationLevel = isolationLevel;
+			Mode = mode;
+			ReadOnly = readOnly;
+			Fork = fork;
+			Timeout = timeout;
+		}
+
+		#region Implementation of ITransactionOptions
+
+		public IsolationLevel IsolationLevel { get; private set; }
+
+		public TransactionScopeOption Mode { get; private set; }
+
+		public bool ReadOnly { get; private set; }
+
+		public bool Fork { get; private set; }
+
+		public TimeSpan Timeout { get; private set; }
+
+		#endregion
+
+		/// <summary>
+		/// Indicates whether the current object is equal to another object of the same type.
+		/// </summary>
+		/// <returns>
+		/// true if the current object is equal to the <paramref name="other"/> parameter; otherwise, false.
+		/// </returns>
+		/// <param name="other">An object to compare with this object.</param>
+		public bool Equals(DefaultTransactionOptions other)
+		{
+			return Equals((ITransactionOptions) other);
+		}
+
+		/// <summary>
+		/// Indicates whether the current object is equal to another object of the same type.
+		/// </summary>
+		/// <returns>
+		/// true if the current object is equal to the <paramref name="other"/> parameter; otherwise, false.
+		/// </returns>
+		/// <param name="other">An object to compare with this object.</param>
+		public bool Equals(ITransactionOptions other)
+		{
+			if (ReferenceEquals(null, other)) return false;
+			if (ReferenceEquals(this, other)) return true;
+			return Equals(other.IsolationLevel, IsolationLevel) && Equals(other.Mode, Mode) && other.ReadOnly.Equals(ReadOnly) && other.Fork.Equals(Fork) && other.Timeout.Equals(Timeout);
+		}
+
+		/// <summary>
+		/// Determines whether the specified <see cref="T:System.Object"/> is equal to the current <see cref="T:System.Object"/>.
+		/// </summary>
+		/// <returns>
+		/// true if the specified <see cref="T:System.Object"/> is equal to the current <see cref="T:System.Object"/>; otherwise, false.
+		/// </returns>
+		/// <param name="obj">The <see cref="T:System.Object"/> to compare with the current <see cref="T:System.Object"/>. </param><filterpriority>2</filterpriority>
+		public override bool Equals(object obj)
+		{
+			if (ReferenceEquals(null, obj)) return false;
+			if (ReferenceEquals(this, obj)) return true;
+			if (!(obj is ITransactionOptions)) return false;
+			return Equals((ITransactionOptions) obj);
+		}
+
+		/// <summary>
+		/// Serves as a hash function for a particular type. 
+		/// </summary>
+		/// <returns>
+		/// A hash code for the current <see cref="T:System.Object"/>.
+		/// </returns>
+		/// <filterpriority>2</filterpriority>
+		public override int GetHashCode()
+		{
+			unchecked
+			{
+				int result = IsolationLevel.GetHashCode();
+				result = (result*397) ^ Mode.GetHashCode();
+				result = (result*397) ^ ReadOnly.GetHashCode();
+				result = (result*397) ^ Fork.GetHashCode();
+				result = (result*397) ^ Timeout.GetHashCode();
+				return result;
+			}
+		}
+
+		public static bool operator ==(DefaultTransactionOptions left, DefaultTransactionOptions right)
+		{
+			return Equals(left, right);
+		}
+
+		public static bool operator !=(DefaultTransactionOptions left, DefaultTransactionOptions right)
+		{
+			return !Equals(left, right);
+		}
+	}
+
 	public interface ITransactionOptions : IEquatable<ITransactionOptions>
 	{
 		/// <summary>

@@ -101,7 +101,6 @@
     <Compile Include="INHibernateInstallerContract.cs" />
     <Compile Include="ISessionManager.cs" />
     <Compile Include="ISessionManagerContract.cs" />
-    <Compile Include="LifestyleRegistrationExtensions.cs" />
     <Compile Include="NHibernateFacility.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SessionManager.cs" />

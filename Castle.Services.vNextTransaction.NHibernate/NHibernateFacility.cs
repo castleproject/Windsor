@@ -25,6 +25,7 @@ using Castle.MicroKernel;
 using Castle.MicroKernel.Facilities;
 using Castle.MicroKernel.Registration;
 using Castle.Services.vNextTransaction;
+using Castle.Services.vNextTransaction.Lifestyles;
 using log4net;
 using NHibernate;
 using NHibernate.Cfg;
