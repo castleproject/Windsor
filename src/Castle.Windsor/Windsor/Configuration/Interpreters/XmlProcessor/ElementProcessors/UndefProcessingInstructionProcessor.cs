@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,7 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+
 #if(!SILVERLIGHT)
+
 namespace Castle.Windsor.Configuration.Interpreters.XmlProcessor.ElementProcessors
 {
 	using System;
@@ -20,8 +22,9 @@ namespace Castle.Windsor.Configuration.Interpreters.XmlProcessor.ElementProcesso
 
 	public class UndefProcessingInstructionProcessor : AbstractStatementElementProcessor
 	{
-		public UndefProcessingInstructionProcessor()
+		public override XmlNodeType[] AcceptNodeTypes
 		{
+			get { return new[] { XmlNodeType.ProcessingInstruction }; }
 		}
 
 		public override String Name
@@ -29,14 +32,9 @@ namespace Castle.Windsor.Configuration.Interpreters.XmlProcessor.ElementProcesso
 			get { return "undef"; }
 		}
 
-		public override XmlNodeType[] AcceptNodeTypes
-		{
-			get { return new XmlNodeType[] {XmlNodeType.ProcessingInstruction}; }
-		}
-
 		public override void Process(IXmlProcessorNodeList nodeList, IXmlProcessorEngine engine)
 		{
-			XmlProcessingInstruction node = nodeList.Current as XmlProcessingInstruction;
+			var node = nodeList.Current as XmlProcessingInstruction;
 
 			engine.RemoveFlag(node.Data);
 

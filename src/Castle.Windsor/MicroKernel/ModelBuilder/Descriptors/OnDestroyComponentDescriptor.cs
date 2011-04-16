@@ -16,7 +16,6 @@ namespace Castle.MicroKernel.ModelBuilder.Descriptors
 {
 	using Castle.Core;
 	using Castle.MicroKernel.LifecycleConcerns;
-	using Castle.MicroKernel.ModelBuilder;
 
 	public class OnDestroyComponentDescriptor<S> : IComponentModelDescriptor
 		where S : class

@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -45,7 +45,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 					name = name.Substring(0, start);
 				}
 			}
-			if(isPotentiallyFullyQualifiedName)
+			if (isPotentiallyFullyQualifiedName)
 			{
 				//well at this point it either is a fully qualified name, or invalid string
 				return new TypeName(name);
@@ -72,36 +72,12 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 			return new TypeName(@namespace, typeName, genericTypes);
 		}
 
-		private TypeName[] ParseNames(string substring, int count)
-		{
-			if (count == 1)
-			{
-				var name = Parse(substring);
-				if (name == null)
-				{
-					return new TypeName[0];
-				}
-				return new[] { name };
-			}
-			var names = new TypeName[count];
-
-			var location = 0;
-			for (var i = 0; i < count; i++)
-			{
-				var newLocation = MoveToEnd(location,substring);
-				names[i] = Parse(substring.Substring(location, newLocation - location));
-				location = MoveToBeginning(newLocation, substring) + 1;
-			}
-			return names;
-		}
-
 		private int MoveToBeginning(int location, string text)
 		{
-			
 			var currentLocation = location;
 			while (currentLocation < text.Length)
 			{
-				if(text[currentLocation]=='[')
+				if (text[currentLocation] == '[')
 				{
 					return currentLocation;
 				}
@@ -132,6 +108,29 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 				currentLocation++;
 			}
 			return currentLocation;
+		}
+
+		private TypeName[] ParseNames(string substring, int count)
+		{
+			if (count == 1)
+			{
+				var name = Parse(substring);
+				if (name == null)
+				{
+					return new TypeName[0];
+				}
+				return new[] { name };
+			}
+			var names = new TypeName[count];
+
+			var location = 0;
+			for (var i = 0; i < count; i++)
+			{
+				var newLocation = MoveToEnd(location, substring);
+				names[i] = Parse(substring.Substring(location, newLocation - location));
+				location = MoveToBeginning(newLocation, substring) + 1;
+			}
+			return names;
 		}
 	}
 }

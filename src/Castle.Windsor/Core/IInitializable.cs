@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,14 +15,14 @@
 namespace Castle.Core
 {
 	/// <summary>
-	/// Lifecycle interface. If implemented by a component,
-	/// the method Initialized will be invoked by the container
-	/// before making the component available to the external world.
+	///   Lifecycle interface. If implemented by a component,
+	///   the method Initialized will be invoked by the container
+	///   before making the component available to the external world.
 	/// </summary>
 	public interface IInitializable
 	{
 		/// <summary>
-		/// Implementors should perform any initialization logic.
+		///   Implementors should perform any initialization logic.
 		/// </summary>
 		void Initialize();
 	}

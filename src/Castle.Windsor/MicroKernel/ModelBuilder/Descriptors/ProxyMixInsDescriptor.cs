@@ -18,7 +18,6 @@ namespace Castle.MicroKernel.ModelBuilder.Descriptors
 	using System.Linq;
 
 	using Castle.Core;
-	using Castle.MicroKernel.ModelBuilder;
 	using Castle.MicroKernel.Proxy;
 
 	public class ProxyMixInsDescriptor : IComponentModelDescriptor

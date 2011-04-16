@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,7 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+
 #if(!SILVERLIGHT)
+
 namespace Castle.Windsor.Configuration.Interpreters.XmlProcessor.ElementProcessors
 {
 	using System;
@@ -20,25 +22,25 @@ namespace Castle.Windsor.Configuration.Interpreters.XmlProcessor.ElementProcesso
 
 	public class EvalProcessingInstructionProcessor : AbstractXmlNodeProcessor
 	{
-		private static readonly XmlNodeType[] acceptNodes = new XmlNodeType[] { XmlNodeType.ProcessingInstruction };
-
-		public override string Name
-		{
-			get { return "eval"; }
-		}
+		private static readonly XmlNodeType[] acceptNodes = new[] { XmlNodeType.ProcessingInstruction };
 
 		public override XmlNodeType[] AcceptNodeTypes
 		{
 			get { return acceptNodes; }
 		}
 
+		public override string Name
+		{
+			get { return "eval"; }
+		}
+
 		public override void Process(IXmlProcessorNodeList nodeList, IXmlProcessorEngine engine)
 		{
-			XmlProcessingInstruction node = nodeList.Current as XmlProcessingInstruction;
+			var node = nodeList.Current as XmlProcessingInstruction;
 
-			XmlDocumentFragment fragment = CreateFragment(node);
+			var fragment = CreateFragment(node);
 
-			string expression = node.Data;
+			var expression = node.Data;
 
 			// We don't have an expression evaluator right now, so expression will 
 			// be just pre-defined literals that we know how to evaluate

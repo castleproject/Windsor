@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,31 +19,31 @@ namespace Castle.Windsor.Configuration
 	using Castle.MicroKernel.SubSystems.Configuration;
 
 	/// <summary>
-	/// Interpreter of a specific language to describe 
-	/// configuration nodes in a hierarchical manner.
+	///   Interpreter of a specific language to describe 
+	///   configuration nodes in a hierarchical manner.
 	/// </summary>
 	public interface IConfigurationInterpreter
 	{
 		/// <summary>
-		/// Gets or sets the name of the environment.
+		///   Gets or sets the name of the environment.
 		/// </summary>
 		/// <value>The name of the environment.</value>
 		string EnvironmentName { get; set; }
 
 		/// <summary>
-		/// Exposes the reference to <see cref="IResource"/>
-		/// which the interpreter is likely to hold
+		///   Exposes the reference to <see cref = "IResource" />
+		///   which the interpreter is likely to hold
 		/// </summary>
 		IResource Source { get; }
 
 		/// <summary>
-		/// Should obtain the contents from the resource,
-		/// interpret it and populate the <see cref="IConfigurationStore"/>
-		/// accordingly.
+		///   Should obtain the contents from the resource,
+		///   interpret it and populate the <see cref = "IConfigurationStore" />
+		///   accordingly.
 		/// </summary>
-		/// <param name="resource"></param>
-		/// <param name="store"></param>
-		/// <param name="kernel"></param>
+		/// <param name = "resource"></param>
+		/// <param name = "store"></param>
+		/// <param name = "kernel"></param>
 		void ProcessResource(IResource resource, IConfigurationStore store, IKernel kernel);
 	}
 }

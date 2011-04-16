@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -30,15 +30,17 @@ namespace Castle.Core
 		private IDictionary methodInfo2Model;
 
 		/// <summary>
-		/// Gets the method info2 model.
+		///   Gets the method info2 model.
 		/// </summary>
 		/// <value>The method info2 model.</value>
 		public IDictionary MethodInfo2Model
 		{
 			get
 			{
-				if (methodInfo2Model == null) 
+				if (methodInfo2Model == null)
+				{
 					methodInfo2Model = new Dictionary<object, object>();
+				}
 
 				return methodInfo2Model;
 			}

@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,23 +16,25 @@ namespace Castle.MicroKernel.Registration
 {
 	using System;
 	using System.Collections.Generic;
-	
+
 	/// <summary>
-	/// Describes the source of types to register.
+	///   Describes the source of types to register.
 	/// </summary>
 	public abstract class FromDescriptor : IRegistration
 	{
-		private bool allowMultipleMatches;
 		private readonly IList<BasedOnDescriptor> criterias;
-		
+		private bool allowMultipleMatches;
+
 		internal FromDescriptor()
 		{
 			allowMultipleMatches = false;
 			criterias = new List<BasedOnDescriptor>();
 		}
 
+		protected abstract IEnumerable<Type> SelectedTypes(IKernel kernel);
+
 		/// <summary>
-		/// Allows a type to be registered multiple times.
+		///   Allows a type to be registered multiple times.
 		/// </summary>
 		public FromDescriptor AllowMultipleMatches()
 		{
@@ -41,9 +43,9 @@ namespace Castle.MicroKernel.Registration
 		}
 
 		/// <summary>
-		/// Returns the descriptor for accepting a type.
+		///   Returns the descriptor for accepting a type.
 		/// </summary>
-		/// <typeparam name="T">The base type.</typeparam>
+		/// <typeparam name = "T">The base type.</typeparam>
 		/// <returns>The descriptor for the type.</returns>
 		public BasedOnDescriptor BasedOn<T>()
 		{
@@ -51,9 +53,9 @@ namespace Castle.MicroKernel.Registration
 		}
 
 		/// <summary>
-		/// Returns the descriptor for accepting a type.
+		///   Returns the descriptor for accepting a type.
 		/// </summary>
-		/// <param name="basedOn">The base type.</param>
+		/// <param name = "basedOn">The base type.</param>
 		/// <returns>The descriptor for the type.</returns>
 		public BasedOnDescriptor BasedOn(Type basedOn)
 		{
@@ -63,7 +65,7 @@ namespace Castle.MicroKernel.Registration
 		}
 
 		/// <summary>
-		/// Returns the descriptor for accepting any type from given solutions.
+		///   Returns the descriptor for accepting any type from given solutions.
 		/// </summary>
 		/// <returns></returns>
 		public BasedOnDescriptor Pick()
@@ -72,9 +74,9 @@ namespace Castle.MicroKernel.Registration
 		}
 
 		/// <summary>
-		/// Returns the descriptor for accepting a type based on a condition.
+		///   Returns the descriptor for accepting a type based on a condition.
 		/// </summary>
-		/// <param name="accepted">The accepting condition.</param>
+		/// <param name = "accepted">The accepting condition.</param>
 		/// <returns>The descriptor for the type.</returns>
 		public BasedOnDescriptor Where(Predicate<Type> accepted)
 		{
@@ -83,11 +85,12 @@ namespace Castle.MicroKernel.Registration
 			return descriptor;
 		}
 
-		#region IRegistration Members
-
 		void IRegistration.Register(IKernel kernel)
 		{
-			if (criterias.Count == 0) return;
+			if (criterias.Count == 0)
+			{
+				return;
+			}
 
 			foreach (var type in SelectedTypes(kernel))
 			{
@@ -100,9 +103,5 @@ namespace Castle.MicroKernel.Registration
 				}
 			}
 		}
-
-		#endregion
-
-		protected abstract IEnumerable<Type> SelectedTypes(IKernel kernel);
 	}
 }

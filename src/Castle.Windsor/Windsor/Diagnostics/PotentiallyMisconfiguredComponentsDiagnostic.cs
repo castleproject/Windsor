@@ -20,6 +20,7 @@ namespace Castle.Windsor.Diagnostics
 	using System;
 
 	using Castle.MicroKernel;
+
 #endif
 
 	public class PotentiallyMisconfiguredComponentsDiagnostic : IPotentiallyMisconfiguredComponentsDiagnostic

@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,7 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+
 #if(!SILVERLIGHT)
+
 namespace Castle.Windsor.Configuration.Interpreters.XmlProcessor
 {
 	using System.Collections.Generic;
@@ -20,7 +22,7 @@ namespace Castle.Windsor.Configuration.Interpreters.XmlProcessor
 
 	public class DefaultXmlProcessorNodeList : IXmlProcessorNodeList
 	{
-		private IList<XmlNode> nodes;
+		private readonly IList<XmlNode> nodes;
 		private int index = -1;
 
 		public DefaultXmlProcessorNodeList(XmlNode node)
@@ -39,26 +41,20 @@ namespace Castle.Windsor.Configuration.Interpreters.XmlProcessor
 			this.nodes = CloneNodeList(nodes);
 		}
 
-		/// <summary>
-		/// Make a shallow copy of the nodeList.
-		/// </summary>
-		/// <param name="nodeList">The nodeList to be copied.</param>
-		/// <returns></returns>
-		protected IList<XmlNode> CloneNodeList(XmlNodeList nodeList)
+		public int Count
 		{
-			IList<XmlNode> nodes = new List<XmlNode>(nodeList.Count);
-
-			foreach (XmlNode node in nodeList)
-			{
-				nodes.Add(node);
-			}
-
-			return nodes;
+			get { return nodes.Count; }
 		}
 
 		public XmlNode Current
 		{
 			get { return nodes[index]; }
+		}
+
+		public int CurrentPosition
+		{
+			get { return index; }
+			set { index = value; }
 		}
 
 		public bool HasCurrent
@@ -71,15 +67,21 @@ namespace Castle.Windsor.Configuration.Interpreters.XmlProcessor
 			return ++index < nodes.Count;
 		}
 
-		public int CurrentPosition
+		/// <summary>
+		///   Make a shallow copy of the nodeList.
+		/// </summary>
+		/// <param name = "nodeList">The nodeList to be copied.</param>
+		/// <returns></returns>
+		protected IList<XmlNode> CloneNodeList(XmlNodeList nodeList)
 		{
-			get { return index; }
-			set { index = value; }
-		}
+			IList<XmlNode> nodes = new List<XmlNode>(nodeList.Count);
 
-		public int Count
-		{
-			get { return nodes.Count; }
+			foreach (XmlNode node in nodeList)
+			{
+				nodes.Add(node);
+			}
+
+			return nodes;
 		}
 	}
 }

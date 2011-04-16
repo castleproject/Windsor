@@ -18,7 +18,6 @@ namespace Castle.MicroKernel.ModelBuilder.Descriptors
 
 	using Castle.Core;
 	using Castle.Core.Configuration;
-	using Castle.MicroKernel.ModelBuilder;
 
 	public abstract class AbstractPropertyDescriptor : IComponentModelDescriptor
 	{

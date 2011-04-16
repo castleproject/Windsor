@@ -17,19 +17,19 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 	using Castle.MicroKernel.Context;
 
 	/// <summary>
-	/// Provides access to <see cref="IScopeCache" /> held in whatever is appropriate for given scope.
+	///   Provides access to <see cref = "IScopeCache" /> held in whatever is appropriate for given scope.
 	/// </summary>
 	/// <remarks>
-	/// Implementors should also ensure proper initialization of <see cref="IScopeCache" /> when accessed for the first time and ensure a thread safe implementation is used when scope or cache access can cause threading issues if non thread safe cache is used.
+	///   Implementors should also ensure proper initialization of <see cref = "IScopeCache" /> when accessed for the first time and ensure a thread safe implementation is used when scope or cache access can cause threading issues if non thread safe cache is used.
 	/// </remarks>
 	public interface ICurrentScopeAccessor
 	{
 		/// <summary>
-		/// Provides access to <see cref="IScopeCache" /> for currently resolved component.
+		///   Provides access to <see cref = "IScopeCache" /> for currently resolved component.
 		/// </summary>
-		/// <param name="context">Current creation context</param>
-		/// <param name="required"><c>true</c> if cache is required in order to proceed. <c>false</c> if execution can be continued with cache not being accessible.</param>
-		/// <exception cref="T:System.InvalidOperationException"> Thrown when <paramref name="required" /> is <c>true</c> and cache could not be accessed.</exception>
+		/// <param name = "context">Current creation context</param>
+		/// <param name = "required"><c>true</c> if cache is required in order to proceed. <c>false</c> if execution can be continued with cache not being accessible.</param>
+		/// <exception cref = "T:System.InvalidOperationException"> Thrown when <paramref name = "required" /> is <c>true</c> and cache could not be accessed.</exception>
 		IScopeCache GetScopeCache(CreationContext context, bool required = true);
 	}
 }

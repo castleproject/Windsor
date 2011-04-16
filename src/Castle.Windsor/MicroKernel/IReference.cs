@@ -26,7 +26,7 @@ namespace Castle.MicroKernel
 		/// <summary>
 		///   If the reference introduces dependency on a component, should return <see cref = "DependencyModel" /> for that dependency, otherwise <c>null</c>.
 		/// </summary>
-		/// <param name="component"></param>
+		/// <param name = "component"></param>
 		/// <returns></returns>
 		void Attach(ComponentModel component);
 

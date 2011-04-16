@@ -32,7 +32,7 @@ namespace Castle.Core
 		private readonly ComponentModel component;
 
 		[DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
-		[DebuggerDisplay("Count = {list.Count}",Name = "")]
+		[DebuggerDisplay("Count = {list.Count}", Name = "")]
 		private readonly List<InterceptorReference> list = new List<InterceptorReference>();
 
 		public InterceptorReferenceCollection(ComponentModel component)

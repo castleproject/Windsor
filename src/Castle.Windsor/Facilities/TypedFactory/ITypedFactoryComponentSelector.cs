@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,16 +20,16 @@ namespace Castle.Facilities.TypedFactory
 	public interface ITypedFactoryComponentSelector
 	{
 		/// <summary>
-		/// Selects one or both of component name and type, for given method 
-		/// called on given typed factory type.
-		/// When component should be requested by type only,
-		/// componentName should be null.
-		/// When component should be requested by name only,
-		/// componentType should be null.
+		///   Selects one or both of component name and type, for given method 
+		///   called on given typed factory type.
+		///   When component should be requested by type only,
+		///   componentName should be null.
+		///   When component should be requested by name only,
+		///   componentType should be null.
 		/// </summary>
-		/// <param name="method"></param>
-		/// <param name="type"></param>
-		/// <param name="arguments"></param>
+		/// <param name = "method"></param>
+		/// <param name = "type"></param>
+		/// <param name = "arguments"></param>
 		/// <returns></returns>
 		ITypedFactoryComponentResolver SelectComponent(MethodInfo method, Type type, object[] arguments);
 	}

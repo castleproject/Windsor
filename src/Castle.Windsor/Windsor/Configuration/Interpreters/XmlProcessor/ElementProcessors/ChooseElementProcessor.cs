@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,7 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+
 #if(!SILVERLIGHT)
+
 namespace Castle.Windsor.Configuration.Interpreters.XmlProcessor.ElementProcessors
 {
 	using System;
@@ -20,12 +22,8 @@ namespace Castle.Windsor.Configuration.Interpreters.XmlProcessor.ElementProcesso
 
 	public class ChooseElementProcessor : AbstractStatementElementProcessor
 	{
-		private static readonly String WhenElemName = "when";
 		private static readonly String OtherwiseElemName = "otherwise";
-
-		public ChooseElementProcessor()
-		{
-		}
+		private static readonly String WhenElemName = "when";
 
 		public override String Name
 		{
@@ -34,17 +32,20 @@ namespace Castle.Windsor.Configuration.Interpreters.XmlProcessor.ElementProcesso
 
 		public override void Process(IXmlProcessorNodeList nodeList, IXmlProcessorEngine engine)
 		{
-			XmlElement element = nodeList.Current as XmlElement;
+			var element = nodeList.Current as XmlElement;
 
-			XmlDocumentFragment fragment = CreateFragment(element);
+			var fragment = CreateFragment(element);
 
-			foreach(XmlNode child in element.ChildNodes)
+			foreach (XmlNode child in element.ChildNodes)
 			{
-				if (IgnoreNode(child)) continue;
+				if (IgnoreNode(child))
+				{
+					continue;
+				}
 
-				XmlElement elem = GetNodeAsElement(element, child);
+				var elem = GetNodeAsElement(element, child);
 
-				bool found = false;
+				var found = false;
 
 				if (elem.Name == WhenElemName)
 				{

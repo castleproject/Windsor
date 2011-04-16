@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,14 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+
 #if(!SILVERLIGHT)
+
 namespace Castle.Windsor.Configuration.Interpreters.XmlProcessor.ElementProcessors
 {
 	using System;
 	using System.Collections.Generic;
 	using System.Xml;
 
-	enum StatementState
+	internal enum StatementState
 	{
 		Init,
 		Collect,
@@ -28,15 +30,15 @@ namespace Castle.Windsor.Configuration.Interpreters.XmlProcessor.ElementProcesso
 
 	public class IfProcessingInstructionProcessor : AbstractXmlNodeProcessor
 	{
-		private static readonly XmlNodeType[] acceptNodes = new XmlNodeType[] {XmlNodeType.ProcessingInstruction};
-
-		private static readonly String IfPiName = "if";
-		private static readonly String EndPiName = "end";
 		private static readonly String ElsePiName = "else";
 		private static readonly String ElsifPiName = "elsif";
+		private static readonly String EndPiName = "end";
+		private static readonly String IfPiName = "if";
+		private static readonly XmlNodeType[] acceptNodes = new[] { XmlNodeType.ProcessingInstruction };
 
-		public IfProcessingInstructionProcessor()
+		public override XmlNodeType[] AcceptNodeTypes
 		{
+			get { return acceptNodes; }
 		}
 
 		public override String Name
@@ -44,29 +46,24 @@ namespace Castle.Windsor.Configuration.Interpreters.XmlProcessor.ElementProcesso
 			get { return IfPiName; }
 		}
 
-		public override XmlNodeType[] AcceptNodeTypes
-		{
-			get { return acceptNodes; }
-		}
-
 		public override void Process(IXmlProcessorNodeList nodeList, IXmlProcessorEngine engine)
 		{
-			XmlProcessingInstruction node = nodeList.Current as XmlProcessingInstruction;
+			var node = nodeList.Current as XmlProcessingInstruction;
 
 			AssertData(node, true);
 
-			StatementState state = engine.HasFlag(node.Data) ? StatementState.Collect : StatementState.Init;
+			var state = engine.HasFlag(node.Data) ? StatementState.Collect : StatementState.Init;
 
-            List<XmlNode> nodesToProcess = new List<XmlNode>();
-			int nestedLevels = 0;
+			var nodesToProcess = new List<XmlNode>();
+			var nestedLevels = 0;
 
 			RemoveItSelf(nodeList.Current);
 
-			while(nodeList.MoveNext())
+			while (nodeList.MoveNext())
 			{
 				if (nodeList.Current.NodeType == XmlNodeType.ProcessingInstruction)
 				{
-					XmlProcessingInstruction pi = nodeList.Current as XmlProcessingInstruction;
+					var pi = nodeList.Current as XmlProcessingInstruction;
 
 					if (pi.Name == EndPiName)
 					{
@@ -113,6 +110,23 @@ namespace Castle.Windsor.Configuration.Interpreters.XmlProcessor.ElementProcesso
 			}
 		}
 
+		private void AssertData(XmlProcessingInstruction pi, bool requireData)
+		{
+			var data = pi.Data.Trim();
+
+			if (data == "" && requireData)
+			{
+				throw new XmlProcessorException("Element '{0}' must have a flag attribute", pi.Name);
+			}
+			else if (data != "")
+			{
+				if (!requireData)
+				{
+					throw new XmlProcessorException("Element '{0}' cannot have any attributes", pi.Name);
+				}
+			}
+		}
+
 		private void ProcessElseElement(XmlProcessingInstruction pi, IXmlProcessorEngine engine, ref StatementState state)
 		{
 			AssertData(pi, pi.Name == ElsifPiName);
@@ -131,23 +145,6 @@ namespace Castle.Windsor.Configuration.Interpreters.XmlProcessor.ElementProcesso
 
 			RemoveItSelf(pi);
 			return;
-		}
-
-		private void AssertData(XmlProcessingInstruction pi, bool requireData)
-		{
-			String data = pi.Data.Trim();
-
-			if (data == "" && requireData)
-			{
-				throw new XmlProcessorException("Element '{0}' must have a flag attribute", pi.Name);
-			}
-			else if (data != "")
-			{
-				if (!requireData)
-				{
-					throw new XmlProcessorException("Element '{0}' cannot have any attributes", pi.Name);
-				}
-			}
 		}
 	}
 }

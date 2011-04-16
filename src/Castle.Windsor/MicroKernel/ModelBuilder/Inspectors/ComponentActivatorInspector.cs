@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -21,14 +21,14 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 	using Castle.MicroKernel.SubSystems.Conversion;
 
 	/// <summary>
-	/// Inspects the component configuration and the type looking for a
-	/// definition of component activator type. The configuration preceeds whatever
-	/// is defined in the component.
+	///   Inspects the component configuration and the type looking for a
+	///   definition of component activator type. The configuration preceeds whatever
+	///   is defined in the component.
 	/// </summary>
 	/// <remarks>
-	/// This inspector is not guarantee to always set up an component activator type. 
-	/// If nothing could be found it wont touch the model. In this case is up to
-	/// the kernel to establish a default component activator for components.
+	///   This inspector is not guarantee to always set up an component activator type. 
+	///   If nothing could be found it wont touch the model. In this case is up to
+	///   the kernel to establish a default component activator for components.
 	/// </remarks>
 	[Serializable]
 	public class ComponentActivatorInspector : IContributeComponentModelConstruction

@@ -413,11 +413,6 @@ namespace Castle.MicroKernel.Context
 		{
 			private readonly CreationContext context;
 
-			public CreationContext Context
-			{
-				get { return context; }
-			}
-
 			private readonly IHandler handler;
 			private readonly bool requiresDecommission;
 			private readonly bool trackContext;
@@ -434,6 +429,11 @@ namespace Castle.MicroKernel.Context
 			public Burden Burden
 			{
 				get { return burden; }
+			}
+
+			public CreationContext Context
+			{
+				get { return context; }
 			}
 
 			public IHandler Handler

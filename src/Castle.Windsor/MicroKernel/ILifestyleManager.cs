@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -51,8 +51,10 @@ namespace Castle.MicroKernel
 
 		/// <summary>
 		///   Implementors should return the component instance based on the lifestyle semantic.
-		///   Also the instance should be set to <see cref = "Burden.SetRootInstance" />, <see cref = "Burden.RequiresPolicyRelease" /> should be also set if needed
-		///   and if a new instance was created it should be passed on to <see cref = "IReleasePolicy.Track" /> of <paramref name = "releasePolicy" />.
+		///   Also the instance should be set to <see cref = "Burden.SetRootInstance" />, <see
+		///    cref = "Burden.RequiresPolicyRelease" /> should be also set if needed
+		///   and if a new instance was created it should be passed on to <see cref = "IReleasePolicy.Track" /> of <paramref
+		///    name = "releasePolicy" />.
 		/// </summary>
 		/// <param name = "context" />
 		/// <param name = "releasePolicy" />

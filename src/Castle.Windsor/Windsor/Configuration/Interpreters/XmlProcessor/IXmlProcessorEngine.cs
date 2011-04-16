@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,7 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+
 #if(!SILVERLIGHT)
+
 namespace Castle.Windsor.Configuration.Interpreters.XmlProcessor
 {
 	using System;
@@ -22,31 +24,31 @@ namespace Castle.Windsor.Configuration.Interpreters.XmlProcessor
 
 	public interface IXmlProcessorEngine
 	{
+		void AddFlag(String flag);
+
 		void AddNodeProcessor(Type type);
+
+		void AddProperty(XmlElement element);
 
 		void DispatchProcessAll(IXmlProcessorNodeList nodeList);
 
 		void DispatchProcessCurrent(IXmlProcessorNodeList nodeList);
 
-		void AddProperty(XmlElement element);
-		
-		bool HasProperty(String name);
-		
 		XmlElement GetProperty(String name);
+
+		IResource GetResource(string uri);
 
 		bool HasFlag(String flag);
 
-		void AddFlag(String flag);
-		
-		void RemoveFlag(String flag);
+		bool HasProperty(String name);
 
-		void PushResource(IResource resource);
-		
-		IResource GetResource(string uri);
-		
+		bool HasSpecialProcessor(XmlNode node);
+
 		void PopResource();
 
-		bool HasSpecialProcessor( XmlNode node );
+		void PushResource(IResource resource);
+
+		void RemoveFlag(String flag);
 	}
 }
 

@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,12 +17,12 @@ namespace Castle.MicroKernel.Proxy
 	using System;
 
 	/// <summary>
-	/// Holds the keys used by the proxy factories.
+	///   Holds the keys used by the proxy factories.
 	/// </summary>
 	public abstract class ProxyConstants
 	{
 		/// <summary>
-		/// Key used to supply custom proxy options.
+		///   Key used to supply custom proxy options.
 		/// </summary>
 		public static readonly String ProxyOptionsKey = "proxy.options";
 	}

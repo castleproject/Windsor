@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,7 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+
 #if(!SILVERLIGHT)
+
 namespace Castle.Windsor.Configuration.Interpreters.XmlProcessor.ElementProcessors
 {
 	using System;
@@ -25,28 +27,27 @@ namespace Castle.Windsor.Configuration.Interpreters.XmlProcessor.ElementProcesso
 			get { return "properties"; }
 		}
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="nodeList"></param>
-		/// <param name="engine"></param>
-		/// <example>
-		/// <code>
-		/// 	<properties>
-		///			<attributes>
-		///				<myAttribute>attributeValue</myAttribute>
-		///			</attributes>
-		///			<myProperty>propertyValue</myProperty>
-		///		</properties>
-		/// </code>
-		/// </example>
+		///<summary>
+		///</summary>
+		///<param name = "nodeList"></param>
+		///<param name = "engine"></param>
+		///<example>
+		///  <code>
+		///    <properties>
+		///      <attributes>
+		///        <myAttribute>attributeValue</myAttribute>
+		///      </attributes>
+		///      <myProperty>propertyValue</myProperty>
+		///    </properties>
+		///  </code>
+		///</example>
 		public override void Process(IXmlProcessorNodeList nodeList, IXmlProcessorEngine engine)
 		{
-			XmlElement element = nodeList.Current as XmlElement;
+			var element = nodeList.Current as XmlElement;
 
 			IXmlProcessorNodeList childNodes = new DefaultXmlProcessorNodeList(element.ChildNodes);
-			
-			while(childNodes.MoveNext())
+
+			while (childNodes.MoveNext())
 			{
 				// Properties processing its a little more complicated than usual
 				// since we need to support all special tags (if,else,define...)
@@ -56,12 +57,12 @@ namespace Castle.Windsor.Configuration.Interpreters.XmlProcessor.ElementProcesso
 				if (engine.HasSpecialProcessor(childNodes.Current))
 				{
 					// Current node its a special element so we bookmark it before processing it...
-					XmlNode current = childNodes.Current;
+					var current = childNodes.Current;
 
-					int pos = childNodes.CurrentPosition;
+					var pos = childNodes.CurrentPosition;
 
 					engine.DispatchProcessCurrent(childNodes);
-				
+
 					// ...after processing we need to refresh childNodes
 					// to account for any special element that affects the node tree (if,choose...)
 					childNodes = new DefaultXmlProcessorNodeList(element.ChildNodes);
@@ -82,19 +83,22 @@ namespace Castle.Windsor.Configuration.Interpreters.XmlProcessor.ElementProcesso
 					}
 					else
 					{
-						break;						
-					}					
+						break;
+					}
 				}
 				else
 				{
-					engine.DispatchProcessCurrent(childNodes);	
+					engine.DispatchProcessCurrent(childNodes);
 				}
-				
-				if (IgnoreNode(childNodes.Current)) continue;
 
-				XmlElement elem = GetNodeAsElement(element, childNodes.Current);
+				if (IgnoreNode(childNodes.Current))
+				{
+					continue;
+				}
 
-				engine.AddProperty(elem);					
+				var elem = GetNodeAsElement(element, childNodes.Current);
+
+				engine.AddProperty(elem);
 			}
 
 			RemoveItSelf(element);

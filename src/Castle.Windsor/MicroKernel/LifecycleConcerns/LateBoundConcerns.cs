@@ -15,11 +15,11 @@
 namespace Castle.MicroKernel.LifecycleConcerns
 {
 	using System;
+	using System.Collections.Concurrent;
 	using System.Collections.Generic;
 
 	using Castle.Core;
 #if DOTNET40
-	using System.Collections.Concurrent;
 
 #else
 	using Castle.Core.Internal;

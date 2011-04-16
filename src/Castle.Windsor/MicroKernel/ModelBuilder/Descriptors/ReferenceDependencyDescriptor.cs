@@ -15,7 +15,6 @@
 namespace Castle.MicroKernel.ModelBuilder.Descriptors
 {
 	using Castle.Core;
-	using Castle.MicroKernel.ModelBuilder;
 
 	public class ReferenceDependencyDescriptor : IComponentModelDescriptor
 	{

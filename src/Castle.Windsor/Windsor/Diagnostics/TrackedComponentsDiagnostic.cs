@@ -31,7 +31,7 @@ namespace Castle.Windsor.Diagnostics
 			var args = new TrackedInstancesEventArgs();
 			@event(this, args);
 
-			return args.Items.ToLookup(k => k.Handler,b=>b.Instance);
+			return args.Items.ToLookup(k => k.Handler, b => b.Instance);
 		}
 
 		public event EventHandler<TrackedInstancesEventArgs> TrackedInstancesRequested;

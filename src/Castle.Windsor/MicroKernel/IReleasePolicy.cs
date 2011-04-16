@@ -32,7 +32,8 @@ namespace Castle.MicroKernel
 		/// </summary>
 		/// <param name = "instance"></param>
 		/// <param name = "burden"></param>
-		/// <exception cref = "ArgumentException">Thrown when <paramref name = "burden" /> does NOT have its <see cref = "Burden.RequiresPolicyRelease" /> flag set.</exception>
+		/// <exception cref = "ArgumentException">Thrown when <paramref name = "burden" /> does NOT have its <see
+		///    cref = "Burden.RequiresPolicyRelease" /> flag set.</exception>
 		void Track(object instance, Burden burden);
 	}
 }

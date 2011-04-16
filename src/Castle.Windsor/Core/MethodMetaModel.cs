@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
 namespace Castle.Core
 {
 	using System;
+
 	using Castle.Core.Configuration;
 
 	/// <summary>
@@ -29,16 +30,16 @@ namespace Castle.Core
 		private readonly IConfiguration configNode;
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="MethodMetaModel"/> class.
+		///   Initializes a new instance of the <see cref = "MethodMetaModel" /> class.
 		/// </summary>
-		/// <param name="configNode">The config node.</param>
+		/// <param name = "configNode">The config node.</param>
 		public MethodMetaModel(IConfiguration configNode)
 		{
 			this.configNode = configNode;
 		}
 
 		/// <summary>
-		/// Gets the config node.
+		///   Gets the config node.
 		/// </summary>
 		/// <value>The config node.</value>
 		public IConfiguration ConfigNode

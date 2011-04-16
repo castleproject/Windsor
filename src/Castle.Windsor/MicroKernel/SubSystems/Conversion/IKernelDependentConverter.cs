@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,9 +15,9 @@
 namespace Castle.MicroKernel.SubSystems.Conversion
 {
 	/// <summary>
-	/// Marker interface that signals that a converter
-	/// depends on IKernel to be able to perform 
-	/// the conversion.
+	///   Marker interface that signals that a converter
+	///   depends on IKernel to be able to perform 
+	///   the conversion.
 	/// </summary>
 	public interface IKernelDependentConverter
 	{
