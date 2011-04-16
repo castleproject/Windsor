@@ -35,6 +35,8 @@ namespace Castle.Facilities.NHibernate
 		bool IsDefault { get; }
 
 		/// <summary>
+		/// Gets a session factory key. This key must be unique for the registered
+		/// NHibernate installers.
 		/// </summary>
 		string SessionFactoryKey { get; }
 

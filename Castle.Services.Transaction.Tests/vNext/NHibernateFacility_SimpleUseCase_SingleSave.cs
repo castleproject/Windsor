@@ -20,7 +20,6 @@ using System;
 using System.Diagnostics.Contracts;
 using Castle.Facilities.NHibernate;
 using Castle.MicroKernel.Registration;
-using Castle.Services.vNextTransaction;
 using Castle.Services.vNextTransaction.Lifestyles;
 using Castle.Windsor;
 using log4net;

@@ -148,7 +148,7 @@ namespace Castle.Services.Transaction.Tests.vNext
 			var s = _GetSession();
 
 			Assert.That(s.GetSessionImplementation().SessionId, Is.Not.EqualTo(firstSessionId), 
-			            "because ISession is not thread safe and we want per-transaction semantics when Fork=true");
+						"because ISession is not thread safe and we want per-transaction semantics when Fork=true");
 
 			lock(_CalculationsIds)
 				_CalculationsIds.Add((Guid) s.Save(new Thing(2*CalculatePiInner(1))));
