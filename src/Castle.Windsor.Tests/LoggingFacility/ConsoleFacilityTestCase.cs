@@ -26,7 +26,7 @@ namespace Castle.Facilities.Logging.Tests
 	/// Summary description for ConsoleFacitlyTest.
 	/// </summary>
 	[TestFixture]
-	public class ConsoleFacitlyTestCase : BaseTest
+	public class ConsoleFacilityTestCase : BaseTest
 	{
 		private IWindsorContainer container;
 		private StringWriter outWriter = new StringWriter();
