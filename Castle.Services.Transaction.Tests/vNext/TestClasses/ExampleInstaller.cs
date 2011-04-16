@@ -40,7 +40,7 @@ namespace Castle.Services.Transaction.Tests.vNext
 		{
 			return Fluently.Configure()
 				.Database(MsSqlConfiguration.MsSql2008.DefaultSchema("dbo")
-				          	.ConnectionString(ConfigurationManager.ConnectionStrings["test"].ConnectionString))
+							.ConnectionString(ConfigurationManager.ConnectionStrings["test"].ConnectionString))
 				.Mappings(m => m.FluentMappings.AddFromAssemblyOf<ThingMap>());
 		}
 

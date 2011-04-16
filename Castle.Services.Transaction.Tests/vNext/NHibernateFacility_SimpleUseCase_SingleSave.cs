@@ -87,8 +87,6 @@ namespace Castle.Services.Transaction.Tests.vNext
 		{
 			var c = new WindsorContainer();
 			c.Register(Component.For<INHibernateInstaller>().ImplementedBy<ExampleInstaller>());
-
-			c.AddFacility<AutoTxFacility>();
 			c.AddFacility<NHibernateFacility>();
 			return c;
 		}
