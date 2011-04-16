@@ -605,6 +605,24 @@ namespace Castle.MicroKernel.Registration
 			return LifeStyle.PerThread;
 		}
 
+		/// <summary>
+		///   Sets component lifestyle to scoped per explicit scope.
+		/// </summary>
+		/// <returns></returns>
+		public ComponentRegistration<TService> LifestyleScoped()
+		{
+			return LifeStyle.Scoped;
+		}
+
+		/// <summary>
+		///   Sets component lifestyle to scoped per component <typeparamref name="TBaseForRoot"/>.
+		/// </summary>
+		/// <returns></returns>
+		public ComponentRegistration<TService> LifestyleScopedPer<TBaseForRoot>() where TBaseForRoot : class
+		{
+			return LifeStyle.ScopedPer<TBaseForRoot>();
+		}
+
 #if (!SILVERLIGHT)
 		/// <summary>
 		///   Sets component lifestyle to instance per web request.

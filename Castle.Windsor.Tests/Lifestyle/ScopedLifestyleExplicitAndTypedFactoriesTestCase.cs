@@ -81,7 +81,7 @@ namespace CastleTests.Lifestyle
 		public void Scoped_component_via_factory_reused_properly_across_factories()
 		{
 			Container.Register(Component.For<UsesTwoFooDelegates>().LifeStyle.Transient,
-			                   Component.For<Foo>().LifeStyle.Scoped);
+			                   Component.For<Foo>().LifestyleScoped());
 
 			var instance = Container.Resolve<UsesTwoFooDelegates>();
 			using (Container.BeginScope())
