@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Contracts;
 using Castle.MicroKernel.Context;
 using Castle.MicroKernel.Lifestyle;
@@ -40,7 +39,7 @@ namespace Castle.Services.vNextTransaction.Lifestyles
 
 			if (_Disposed)
 			{
-				_Logger.Info("repeated call to Dispose. will show stack-trace in debug mode next. this method call is idempotent");
+				_Logger.Info("repeated call to Dispose. will show stack-trace if log4net is in debug mode as the next log line. this method call is idempotent");
 
 				if (_Logger.IsDebugEnabled)
 					_Logger.Debug(new StackTrace().ToString());
@@ -129,6 +128,8 @@ namespace Castle.Services.vNextTransaction.Lifestyles
 									// not synchronously.
 									if (!_Disposed)
 									{
+										Contract.Assume(_Storage.Count > 0);
+
 										_Storage.Remove(key);
 										Release(counter.Item2);
 									}

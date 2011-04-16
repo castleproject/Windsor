@@ -18,6 +18,7 @@
 
 using System;
 using System.Diagnostics.Contracts;
+using System.Threading.Tasks;
 using System.Transactions;
 using Castle.Core;
 using Castle.Core.Interceptor;
@@ -68,11 +69,13 @@ namespace Castle.Services.vNextTransaction
 			Contract.Assume(_State == InterceptorState.Active || _State == InterceptorState.Initialized);
 			Contract.Assume(invocation != null);
 
+			var txManager = _Kernel.Resolve<ITxManager>();
+
 			var txMethod = _MetaInfo.Do(x => x.AsTransactional(invocation.Method.DeclaringType.IsInterface
 			                                                	? invocation.MethodInvocationTarget
 			                                                	: invocation.Method));
 
-			var tx = txMethod.Do(x => _Kernel.Resolve<ITxManager>().CreateTransaction(x));
+			var tx = txMethod.Do(x => txManager.CreateTransaction(x));
 			
 			_State = InterceptorState.Active;
 
@@ -88,14 +91,38 @@ namespace Castle.Services.vNextTransaction
 			}
 
 			_Logger.DebugFormat("proceeding with transaction");
-			Contract.Assume(tx.Value.State == TransactionState.Active, "from post-condition of ITxManager CreateTransaction in the (HasValue -> ...)-case");
+			Contract.Assume(tx.Value.State == TransactionState.Active, 
+				"from post-condition of ITxManager CreateTransaction in the (HasValue -> ...)-case");
 
-			using (new TxScope(tx.Value.Inner))
+			var transaction = tx.Value;
+			var isDependent = txManager.CurrentTopTransaction.Value.LocalIdentifier != transaction.LocalIdentifier;
+			var forkSetting = transaction.CreationOptions.Fork;
+
+			Contract.Assume(!isDependent || transaction.Inner is DependentTransaction);
+
+			// we should only fork if we have a different current top transaction than the current
+			var fork = forkSetting && isDependent;
+
+			// warn about top-most transactions and the Fork keyword
+			if (forkSetting && !isDependent)
+				_Logger.WarnFormat("transaction {0} created with Fork=true option, but was top-most "
+					+ "transaction in invocation chain. running transaction sequentially",
+					transaction.LocalIdentifier);
+
+			if (fork)
+				ForkCase(invocation, transaction);
+			else
+				SynchronizedCase(invocation, transaction);
+		}
+
+		private void SynchronizedCase(IInvocation invocation, ITransaction transaction)
+		{
+			using (new TxScope(transaction.Inner))
 			{
 				try
 				{
 					invocation.Proceed();
-					tx.Value.Complete();
+					transaction.Complete();
 				}
 				catch (TransactionAbortedException ex)
 				{
@@ -109,14 +136,50 @@ namespace Castle.Services.vNextTransaction
 				}
 				catch (Exception)
 				{
-					tx.Value.Rollback();
+					transaction.Rollback();
 					throw;
 				}
 				finally
 				{
-					tx.Value.Dispose();
+					transaction.Dispose();
 				}
 			}
+		}
+
+		private void ForkCase(IInvocation invocation, ITransaction tx)
+		{
+			Contract.Assume(tx.Inner is DependentTransaction);
+			
+			var transaction = tx.Inner as DependentTransaction;
+
+			Task.Factory.StartNew(t =>
+			{
+			    var tuple = (Tuple<IInvocation, DependentTransaction>) t;
+
+			    try
+			    {
+			        if (_Logger.IsDebugEnabled)
+			            _Logger.Debug("calling proceed");
+
+					using (var ts = new TransactionScope(tuple.Item2))
+					{
+						tuple.Item1.Proceed();
+
+						if (_Logger.IsDebugEnabled)
+							_Logger.Debug("calling complete");
+
+						ts.Complete();
+					}
+			    }
+			    finally
+			    {
+			        if (_Logger.IsDebugEnabled)
+			            _Logger.Debug("calling dispose");
+
+					tuple.Item2.Complete();
+					tuple.Item2.Dispose();
+			    }
+			}, Tuple.Create(invocation, transaction));
 		}
 
 		void IOnBehalfAware.SetInterceptedComponentModel(ComponentModel target)

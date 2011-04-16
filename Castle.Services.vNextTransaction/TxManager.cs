@@ -74,7 +74,7 @@ namespace Castle.Services.vNextTransaction
 				{
 					IsolationLevel = transactionOptions.IsolationLevel,
 					Timeout = transactionOptions.Timeout
-				}), nextStackDepth, () => activity.Pop());
+				}), nextStackDepth, transactionOptions, () => activity.Pop());
 			}
 			else
 			{
@@ -85,7 +85,7 @@ namespace Castle.Services.vNextTransaction
 				
 				// assume because I can't open up .Net and add the contract myself
 				Contract.Assume(clone != null);
-				tx = new Transaction(clone, nextStackDepth, () => activity.Pop());
+				tx = new Transaction(clone, nextStackDepth, transactionOptions, () => activity.Pop());
 			}
 
 			activity.Push(tx);

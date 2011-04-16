@@ -51,7 +51,12 @@ namespace Castle.Services.Transaction.Tests.vNext
 		public void WeCanFork_NewTransaction_Means_AnotherISessionReference()
 		{
 			using (var threaded = new ResolveScope<ThreadedService>(_Container))
+			{
 				threaded.Service.MainThreadedEntry();
+
+				lock (threaded.Service.CalculationsIds)
+					Assert.That(threaded.Service.CalculationsIds.Count, Is.EqualTo(Environment.ProcessorCount));
+			}
 		}
 	}
 
@@ -72,6 +77,11 @@ namespace Castle.Services.Transaction.Tests.vNext
 
 			_GetSession = getSession;
 			_Manager = manager;
+		}
+
+		public List<Guid> CalculationsIds
+		{
+			get { return _CalculationsIds; }
 		}
 
 		#region Same instance tests
@@ -124,18 +134,13 @@ namespace Castle.Services.Transaction.Tests.vNext
 
 			_Logger.DebugFormat("put some cores ({0}) to work!", Environment.ProcessorCount);
 
-			for (int i = 0; i < Environment.ProcessorCount * 10; i++)
+			for (int i = 0; i < Environment.ProcessorCount; i++)
 				CalculatePi(s.GetSessionImplementation().SessionId);
-
-			lock (_CalculationsIds)
-				Assert.That(_CalculationsIds.Count, Is.EqualTo(Environment.ProcessorCount * 10));
 		}
 
 		[vNextTransaction.Transaction(Fork = true)]
 		protected virtual void CalculatePi(Guid firstSessionId)
 		{
-			_Logger.DebugFormat("current no of transactions in context {0}", _Manager.Count);
-
 			var s = _GetSession();
 
 			Assert.That(s.GetSessionImplementation().SessionId, Is.Not.EqualTo(firstSessionId), 

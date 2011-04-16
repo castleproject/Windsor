@@ -51,32 +51,37 @@ namespace Castle.Services.vNextTransaction
 		private TransactionState _State = TransactionState.Default;
 
 		private uint _StackDepth;
+		private readonly ITransactionOptions _CreationOptions;
 		private readonly CommittableTransaction _Inner;
 		private readonly DependentTransaction _Inner2;
 		
 		[NonSerialized]
 		private readonly Action _OnDispose;
 
-		public Transaction(CommittableTransaction inner, uint stackDepth, Action onDispose)
+		public Transaction(CommittableTransaction inner, uint stackDepth, ITransactionOptions creationOptions, Action onDispose)
 		{
+			Contract.Requires(creationOptions != null);
 			Contract.Requires(inner != null);
 			Contract.Ensures(_Inner != null);
 			Contract.Ensures(_State == TransactionState.Active);
 			Contract.Ensures(((ITransaction)this).State == TransactionState.Active);
 			_Inner = inner;
 			_StackDepth = stackDepth;
+			_CreationOptions = creationOptions;
 			_OnDispose = onDispose;
 			_State = TransactionState.Active;
 		}
 
-		public Transaction(DependentTransaction inner, uint stackDepth, Action onDispose)
+		public Transaction(DependentTransaction inner, uint stackDepth, ITransactionOptions creationOptions, Action onDispose)
 		{
+			Contract.Requires(creationOptions != null);
 			Contract.Requires(inner != null);
 			Contract.Ensures(_Inner2 != null);
 			Contract.Ensures(_State == TransactionState.Active);
 			Contract.Ensures(((ITransaction)this).State == TransactionState.Active);
 			_Inner2 = inner;
 			_StackDepth = stackDepth;
+			_CreationOptions = creationOptions;
 			_OnDispose = onDispose;
 			_State = TransactionState.Active;
 		}
@@ -117,7 +122,7 @@ namespace Castle.Services.vNextTransaction
 
 		public ITransactionOptions CreationOptions
 		{
-			get { throw new NotImplementedException(); }
+			get { return _CreationOptions; }
 		}
 
 		System.Transactions.Transaction ITransaction.Inner
