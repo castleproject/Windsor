@@ -28,26 +28,22 @@ namespace Castle.Services.vNextTransaction
 		/// <summary>
 		/// 	Gets the transaction isolation level.
 		/// </summary>
-		IsolationLevel IsolationLevel { [Pure]
-		get; }
+		IsolationLevel IsolationLevel { [Pure] get; }
 
 		/// <summary>
 		/// 	Gets the transaction mode.
 		/// </summary>
-		TransactionScopeOption Mode { [Pure]
-		get; }
+		TransactionScopeOption Mode { [Pure] get; }
 
 		/// <summary>
 		/// 	Gets whether the transaction is read only.
 		/// </summary>
-		bool ReadOnly { [Pure]
-		get; }
+		bool ReadOnly { [Pure] get; }
 
 		/// <summary>
 		/// 	Gets whether the current transaction's method should forked off.
 		/// </summary>
-		bool Fork { [Pure]
-		get; }
+		bool Fork { [Pure] get; }
 
 		/// <summary>
 		/// 	Gets the Timeout for this managed transaction. Beware that the timeout 
@@ -55,21 +51,18 @@ namespace Castle.Services.vNextTransaction
 		/// 	Often it's a good idea to let your database handle the transactions
 		/// 	timing out and leaving this option to its max value. Your mileage may vary though.
 		/// </summary>
-		TimeSpan Timeout { [Pure]
-		get; }
+		TimeSpan Timeout { [Pure] get; }
 
 		/// <summary>
 		/// 	Gets or sets whether the <see cref = "Fork" /> operation should wait for all to complete, or
 		/// 	simply return and let the topmost transaction wait instead.
 		/// </summary>
-		bool WaitAll { [Pure]
-		get; }
+		bool WaitAll { [Pure] get; }
 
 		/// <summary>
 		/// 	Gets or sets whether the commit should be done asynchronously. Default is false. If you have done a lot of work
 		/// 	in the transaction, an asynchronous commit might be preferrable.
 		/// </summary>
-		bool AsyncCommit { [Pure]
-		get; }
+		bool AsyncCommit { [Pure] get; }
 	}
 }
