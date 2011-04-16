@@ -17,6 +17,7 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 	using System;
 
 	using Castle.Core;
+	using Castle.Core.Internal;
 	using Castle.MicroKernel.Context;
 
 	public class CurrentScopeAccessor : ICurrentScopeAccessor
@@ -29,7 +30,7 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 		{
 			this.scopeManager = scopeManager;
 			this.componentModel = componentModel;
-			var baseType = (Type)componentModel.ExtendedProperties["castle-scope-root"];
+			var baseType = (Type)componentModel.ExtendedProperties[Constants.ScopeRoot];
 			if (baseType != null)
 			{
 				selector = new BasedOnTypeScopeRootSelector(baseType);
