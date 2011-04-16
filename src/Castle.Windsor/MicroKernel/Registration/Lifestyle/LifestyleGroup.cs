@@ -104,7 +104,7 @@ namespace Castle.MicroKernel.Registration.Lifestyle
 
 		public ComponentRegistration<TService> ScopedPer<TBaseForRoot>() where TBaseForRoot : class
 		{
-			return Scoped.ExtendedProperties(Property.ForKey("castle-scope-root").Eq(typeof(TBaseForRoot)));
+			return Scoped.ExtendedProperties(new Property(Constants.ScopeRoot, typeof(TBaseForRoot)));
 		}
 
 		/// <summary>
