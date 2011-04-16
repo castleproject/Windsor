@@ -96,25 +96,40 @@ namespace Castle.Services.Transaction.Tests.vNext
 		[Test]
 		public void Method_Can_RollbackItself()
 		{
-			using (var txM = new ResolveScope<ITxManager>(_Container))
-			using (var scope = new ResolveScope<IMyService>(_Container))
+			try
 			{
-				scope.Service.VerifyInAmbient(() => txM.Service.CurrentTransaction.Value.Rollback());
+				using (var txM = new ResolveScope<ITxManager>(_Container))
+				using (var scope = new ResolveScope<IMyService>(_Container))
+				{
+					scope.Service.VerifyInAmbient(() => txM.Service.CurrentTransaction.Value.Rollback());
+				}
+				Assert.Fail("not rolled back");
+			}
+			catch (TransactionAbortedException)
+			{
 			}
 		}
 
 		[Test]
 		public void Inline_Rollback_ResourceGetsRolledBack()
 		{
-			using (var txM = new ResolveScope<ITxManager>(_Container))
-			using (var scope = new ResolveScope<IMyService>(_Container))
+			var resource = new ThrowingResource(false);
+
+			try
 			{
-				var resource = new ThrowingResource(false);
-				scope.Service.VerifyInAmbient(() =>
+				using (var txM = new ResolveScope<ITxManager>(_Container))
+				using (var scope = new ResolveScope<IMyService>(_Container))
 				{
-					txM.Service.CurrentTransaction.Value.Inner.EnlistVolatile(resource, EnlistmentOptions.EnlistDuringPrepareRequired);
-					txM.Service.CurrentTransaction.Value.Rollback();
-				});
+					scope.Service.VerifyInAmbient(() =>
+					{
+					    txM.Service.CurrentTransaction.Value.Inner.EnlistVolatile(resource, EnlistmentOptions.EnlistDuringPrepareRequired);
+					    txM.Service.CurrentTransaction.Value.Rollback();
+					});
+				}
+				Assert.Fail("the transaction threw, so it should have been aborted");
+			}
+			catch (TransactionAbortedException)
+			{
 				Assert.That(resource.WasRolledBack);
 			}
 		}

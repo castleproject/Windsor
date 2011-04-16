@@ -87,8 +87,11 @@
     <Compile Include="AutoTxFacility.cs" />
     <Compile Include="CallContextActivityManager.cs" />
     <Compile Include="ContractExtensions.cs" />
+    <Compile Include="CreatedTransaction.cs" />
     <Compile Include="Exceptions\TransactionException.cs" />
     <Compile Include="IActivityManager.cs" />
+    <Compile Include="ICreatedTransaction.cs" />
+    <Compile Include="ICreatedTransactionContract.cs" />
     <Compile Include="IRetryPolicy.cs" />
     <Compile Include="ITransaction.cs" />
     <Compile Include="ITransactionContract.cs" />

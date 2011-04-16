@@ -19,11 +19,13 @@
 using System;
 using System.Diagnostics.Contracts;
 using System.Transactions;
+using log4net;
 
 namespace Castle.Services.vNextTransaction
 {
 	internal class TxManager : ITxManager, ITxManagerInternal
 	{
+		private static readonly ILog _Logger = LogManager.GetLogger(typeof (TxManager));
 		private readonly IActivityManager _ActivityManager;
 
 		public TxManager(IActivityManager activityManager)
@@ -58,12 +60,12 @@ namespace Castle.Services.vNextTransaction
 			throw new NotImplementedException();
 		}
 
-		Maybe<ITransaction> ITxManager.CreateTransaction(ITransactionOptions transactionOptions)
+		Maybe<ICreatedTransaction> ITxManager.CreateTransaction(ITransactionOptions transactionOptions)
 		{
 			var activity = _ActivityManager.GetCurrentActivity();
 			
 			if (transactionOptions.Mode == TransactionScopeOption.Suppress)
-				return Maybe.None<ITransaction>();
+				return Maybe.None<ICreatedTransaction>();
 
 			var nextStackDepth = activity.Count + 1;
 
@@ -89,13 +91,45 @@ namespace Castle.Services.vNextTransaction
 			}
 
 			activity.Push(tx);
-			var m = Maybe.Some(tx);
+
+			var m = Maybe.Some((ICreatedTransaction) new CreatedTransaction(tx,
+				// we should only fork if we have a different current top transaction than the current
+				transactionOptions.Fork && nextStackDepth > 1, () => {
+					_ActivityManager.GetCurrentActivity().Push(tx);
+					return new DisposableScope(_ActivityManager.GetCurrentActivity().Pop);
+				}));
+
+			// warn if fork and the top transaction was just created
+			if (transactionOptions.Fork && nextStackDepth == 1)
+				_Logger.WarnFormat("transaction {0} created with Fork=true option, but was top-most "
+						+ "transaction in invocation chain. running transaction sequentially",
+						tx.LocalIdentifier);
 
 			// assume because I can't make value types and reference types equal enough
 			// and boxing doesn't do it for me.
-			Contract.Assume(m.HasValue && m.Value.State == TransactionState.Active);
+			Contract.Assume(m.HasValue && m.Value.Transaction.State == TransactionState.Active);
 
 			return m;
+		}
+
+		private class DisposableScope : IDisposable
+		{
+			private readonly Func<ITransaction> _OnDispose;
+
+			public DisposableScope(Func<ITransaction> onDispose)
+			{
+				Contract.Requires(onDispose != null);
+				_OnDispose = onDispose;
+			}
+
+			#region Implementation of IDisposable
+
+			public void Dispose()
+			{
+				_OnDispose();
+			}
+
+			#endregion
 		}
 
 		void IDisposable.Dispose()

@@ -89,7 +89,7 @@ namespace Castle.Services.vNextTransaction
 		/// </remarks>
 		/// <param name = "transactionOptions">Options to use for creating the new transaction.</param>
 		/// <returns>Maybe a transaction, if the options specified it.</returns>
-		Maybe<ITransaction> CreateTransaction(ITransactionOptions transactionOptions);
+		Maybe<ICreatedTransaction> CreateTransaction(ITransactionOptions transactionOptions);
 	}
 
 	[ContractClassFor(typeof (ITxManager))]
@@ -131,15 +131,15 @@ namespace Castle.Services.vNextTransaction
 			Contract.Requires(retryPolicy != null);
 		}
 
-		public Maybe<ITransaction> CreateTransaction(ITransactionOptions transactionOptions)
+		public Maybe<ICreatedTransaction> CreateTransaction(ITransactionOptions transactionOptions)
 		{
 			Contract.Requires(transactionOptions != null);
 
-			Contract.Ensures(Contract.Result<Maybe<ITransaction>>() != null
-				&& (!Contract.Result<Maybe<ITransaction>>().HasValue
-					|| Contract.Result<Maybe<ITransaction>>().Value.State == TransactionState.Active));
+			Contract.Ensures(Contract.Result<Maybe<ICreatedTransaction>>() != null
+				&& (!Contract.Result<Maybe<ICreatedTransaction>>().HasValue
+					|| Contract.Result<Maybe<ICreatedTransaction>>().Value.Transaction.State == TransactionState.Active));
 
-			Contract.Ensures(Contract.Result<Maybe<ITransaction>>().HasValue 
+			Contract.Ensures(Contract.Result<Maybe<ICreatedTransaction>>().HasValue 
 				|| transactionOptions.Mode == TransactionScopeOption.Suppress);
 
 			throw new NotImplementedException();

@@ -65,23 +65,22 @@ namespace Castle.Services.vNextTransaction
 
 		void IInterceptor.Intercept(IInvocation invocation)
 		{
-			Contract.Ensures(_State == InterceptorState.Active);
 			Contract.Assume(_State == InterceptorState.Active || _State == InterceptorState.Initialized);
 			Contract.Assume(invocation != null);
 
 			var txManager = _Kernel.Resolve<ITxManager>();
 
-			var txMethod = _MetaInfo.Do(x => x.AsTransactional(invocation.Method.DeclaringType.IsInterface
+			var mTxMethod = _MetaInfo.Do(x => x.AsTransactional(invocation.Method.DeclaringType.IsInterface
 			                                                	? invocation.MethodInvocationTarget
 			                                                	: invocation.Method));
 
-			var tx = txMethod.Do(x => txManager.CreateTransaction(x));
-			
-			_State = InterceptorState.Active;
+			var mTxData = mTxMethod.Do(x => txManager.CreateTransaction(x));
 
-			if (!tx.HasValue)
+			_State = InterceptorState.Active;
+			
+			if (!mTxData.HasValue)
 			{
-				if (txMethod.HasValue && txMethod.Value.Mode == TransactionScopeOption.Suppress)
+				if (mTxMethod.HasValue && mTxMethod.Value.Mode == TransactionScopeOption.Suppress)
 					using (new TxScope(null))
 						invocation.Proceed();
 
@@ -90,33 +89,71 @@ namespace Castle.Services.vNextTransaction
 				return;
 			}
 
-			_Logger.DebugFormat("proceeding with transaction");
-			Contract.Assume(tx.Value.State == TransactionState.Active, 
+			var transaction = mTxData.Value.Transaction;
+
+			Contract.Assume(transaction.State == TransactionState.Active, 
 				"from post-condition of ITxManager CreateTransaction in the (HasValue -> ...)-case");
 
-			var transaction = tx.Value;
-			var isDependent = txManager.CurrentTopTransaction.Value.LocalIdentifier != transaction.LocalIdentifier;
-			var forkSetting = transaction.CreationOptions.Fork;
-
-			Contract.Assume(!isDependent || transaction.Inner is DependentTransaction);
-
-			// we should only fork if we have a different current top transaction than the current
-			var fork = forkSetting && isDependent;
-
-			// warn about top-most transactions and the Fork keyword
-			if (forkSetting && !isDependent)
-				_Logger.WarnFormat("transaction {0} created with Fork=true option, but was top-most "
-					+ "transaction in invocation chain. running transaction sequentially",
-					transaction.LocalIdentifier);
-
-			if (fork)
-				ForkCase(invocation, transaction);
+			if (mTxData.Value.ShouldFork)
+				ForkCase(invocation, mTxData.Value);
 			else
 				SynchronizedCase(invocation, transaction);
 		}
 
-		private void SynchronizedCase(IInvocation invocation, ITransaction transaction)
+		// TODO: implement WaitAll-semantics with returned task
+		private static Task ForkCase(IInvocation invocation, ICreatedTransaction txData)
 		{
+			Contract.Assume(txData.Transaction.Inner is DependentTransaction);
+			
+			_Logger.DebugFormat("fork case");
+
+			return Task.Factory.StartNew(t =>
+			{
+				var tuple = (Tuple<IInvocation, ICreatedTransaction, string>)t;
+				var dependent = tuple.Item2.Transaction.Inner as DependentTransaction;
+				using (tuple.Item2.GetForkScope())
+				{
+					try
+					{
+						if (_Logger.IsDebugEnabled)
+							_Logger.DebugFormat("calling proceed on tx#{0}", tuple.Item3);
+
+						using (var ts = new TransactionScope(dependent))
+						{
+							tuple.Item1.Proceed();
+
+							if (_Logger.IsDebugEnabled)
+								_Logger.DebugFormat("calling complete on TransactionScope for tx#{0}", tuple.Item3);
+
+							ts.Complete();
+						}
+					}
+					catch (TransactionAbortedException ex)
+					{
+						// if we have aborted the transaction, we both warn and re-throw the exception
+						_Logger.Warn("transaction aborted", ex);
+						throw new TransactionAbortedException("Parallel/forked transaction aborted! See inner exception for details.", ex);
+					}
+					finally
+					{
+						if (_Logger.IsDebugEnabled)
+							_Logger.Debug("in finally-clause");
+
+						dependent.Complete();
+					
+						// MSDN-article is wrong; transaction is disposed twice in their code:
+						// http://msdn.microsoft.com/en-us/library/ms229976%28v=vs.90%29.aspx#Y17
+						//tuple.Item2.Dispose(); 
+					}
+				}
+			}, Tuple.Create(invocation, txData, txData.Transaction.LocalIdentifier));
+		}
+
+		private static void SynchronizedCase(IInvocation invocation, ITransaction transaction)
+		{
+			Contract.Requires(transaction.State == TransactionState.Active);
+			_Logger.DebugFormat("synchronized case");
+
 			using (new TxScope(transaction.Inner))
 			{
 				try
@@ -124,10 +161,11 @@ namespace Castle.Services.vNextTransaction
 					invocation.Proceed();
 					transaction.Complete();
 				}
-				catch (TransactionAbortedException ex)
+				catch (TransactionAbortedException)
 				{
-					// if we have aborted the transaction, then that's fine and we ignore it, but warn about it
-					_Logger.Warn("transaction aborted", ex);
+					// if we have aborted the transaction, we both warn and re-throw the exception
+					_Logger.Warn("transaction aborted");
+					throw;
 				}
 				catch (TransactionException ex)
 				{
@@ -144,42 +182,6 @@ namespace Castle.Services.vNextTransaction
 					transaction.Dispose();
 				}
 			}
-		}
-
-		private void ForkCase(IInvocation invocation, ITransaction tx)
-		{
-			Contract.Assume(tx.Inner is DependentTransaction);
-			
-			var transaction = tx.Inner as DependentTransaction;
-
-			Task.Factory.StartNew(t =>
-			{
-			    var tuple = (Tuple<IInvocation, DependentTransaction>) t;
-
-			    try
-			    {
-			        if (_Logger.IsDebugEnabled)
-			            _Logger.Debug("calling proceed");
-
-					using (var ts = new TransactionScope(tuple.Item2))
-					{
-						tuple.Item1.Proceed();
-
-						if (_Logger.IsDebugEnabled)
-							_Logger.Debug("calling complete");
-
-						ts.Complete();
-					}
-			    }
-			    finally
-			    {
-			        if (_Logger.IsDebugEnabled)
-			            _Logger.Debug("calling dispose");
-
-					tuple.Item2.Complete();
-					tuple.Item2.Dispose();
-			    }
-			}, Tuple.Create(invocation, transaction));
 		}
 
 		void IOnBehalfAware.SetInterceptedComponentModel(ComponentModel target)

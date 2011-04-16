@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
-using System.Transactions;
 using Castle.Facilities.NHibernate;
 using Castle.MicroKernel.Registration;
 using Castle.Services.vNextTransaction;
@@ -13,7 +12,7 @@ using NUnit.Framework;
 
 namespace Castle.Services.Transaction.Tests.vNext
 {
-	public class NHibernateFacility_Multiple_Threads_JoinDependentTransactionWithParent
+	public class NHibernateFacility_Multiple_Threads_DependentTransactionWithParent
 	{
 		private WindsorContainer _Container;
 
@@ -48,15 +47,20 @@ namespace Castle.Services.Transaction.Tests.vNext
 		}
 
 		[Test]
-		public void WeCanFork_NewTransaction_Means_AnotherISessionReference()
+		public void Forking_NewTransaction_Means_AnotherISessionReference()
 		{
 			using (var threaded = new ResolveScope<ThreadedService>(_Container))
 			{
 				threaded.Service.MainThreadedEntry();
-
-				lock (threaded.Service.CalculationsIds)
-					Assert.That(threaded.Service.CalculationsIds.Count, Is.EqualTo(Environment.ProcessorCount));
+				Assert.That(threaded.Service.CalculationsIds.Count, Is.EqualTo(Environment.ProcessorCount));
 			}
+		}
+
+		[Test]
+		public void Forking_InDependentTransaction_Means_PerTransactionLifeStyle_SoSameInstances()
+		{
+			using (var threaded = new ResolveScope<ThreadedService>(_Container))
+				threaded.Service.VerifySameSessionInFork();
 		}
 	}
 
@@ -123,7 +127,7 @@ namespace Castle.Services.Transaction.Tests.vNext
 
 		#endregion
 
-		#region Forked transaction tests
+		#region Forking - Succeeding transactions
 
 		[vNextTransaction.Transaction]
 		public virtual void MainThreadedEntry()
@@ -156,6 +160,39 @@ namespace Castle.Services.Transaction.Tests.vNext
 				return 1;
 
 			return 1 + i / (2.0 * i + 1) * CalculatePiInner(i + 1);
+		}
+
+		#endregion
+
+		#region Forking: (PerTransaction = same sessions per tx)
+
+		[vNextTransaction.Transaction]
+		public virtual void VerifySameSessionInFork()
+		{
+			_Logger.Info("asserting for main thread");
+
+			AssertSameSessionId();
+
+			_Logger.Info("forking");
+			VerifySameSessionInForkInner();
+		}
+
+		[vNextTransaction.Transaction(Fork = true)]
+		protected virtual void VerifySameSessionInForkInner()
+		{
+			_Logger.Info("asserting for task-thread");
+			AssertSameSessionId();
+		}
+
+		private void AssertSameSessionId()
+		{
+			var s1 = _GetSession().GetSessionImplementation().SessionId;
+			var s2 = _GetSession().GetSessionImplementation().SessionId;
+
+			if (!s1.Equals(s2))
+				_Logger.Error("s1 != s2 in forked method");
+
+			Assert.That(s1, Is.EqualTo(s2));
 		}
 
 		#endregion

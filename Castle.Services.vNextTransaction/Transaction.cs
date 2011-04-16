@@ -102,8 +102,15 @@ namespace Castle.Services.vNextTransaction
 		{
 			try
 			{
-				if (_OnDispose != null) _OnDispose();
-				((IDisposable) this).Dispose();
+				try
+				{
+					if (_State == TransactionState.Active)
+						InnerRollback();
+				}
+				finally {
+					if (_OnDispose != null) _OnDispose();
+					((IDisposable) this).Dispose();
+				}
 			}
 			finally
 			{
