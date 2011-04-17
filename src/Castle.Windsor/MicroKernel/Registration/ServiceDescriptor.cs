@@ -56,7 +56,7 @@ namespace Castle.MicroKernel.Registration
 		///   Matches Foo to IFoo, SuperFooExtended to IFoo and IFooExtended etc
 		/// </summary>
 		/// <returns></returns>
-		public BasedOnDescriptor DefaultInterface()
+		public BasedOnDescriptor DefaultInterfaces()
 		{
 			return Select((type, @base) =>
 			              type.GetAllInterfaces()

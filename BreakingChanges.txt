@@ -1,4 +1,7 @@
 ================================================================================================
+rename -  WithService.DefaultInterface() -> WithService.DefaultInterfaces()
+description - changed to plural to emphasize more than one interface may be matched.
+================================================================================================
 change - ResolveAll methods have now different bahaviour.
 
 impact - high
