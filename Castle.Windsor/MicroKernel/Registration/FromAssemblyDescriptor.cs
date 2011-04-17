@@ -37,6 +37,12 @@ namespace Castle.MicroKernel.Registration
 			this.assemblies = assemblies;
 		}
 
+		/// <summary>
+		///   When called also non-public types will be scanned.
+		/// </summary>
+		/// <remarks>
+		///   Usually it is not recommended to register non-public types in the container so think twice before using this option.
+		/// </remarks>
 		public FromAssemblyDescriptor IncludeNonPublicTypes()
 		{
 			nonPublicTypes = true;
@@ -47,16 +53,10 @@ namespace Castle.MicroKernel.Registration
 		{
 			if (nonPublicTypes)
 			{
-				foreach (var type in assemblies.SelectMany(assembly => assembly.GetTypes()))
-				{
-					yield return type;
-				}
+				return assemblies.SelectMany(assembly => assembly.GetTypes());
 			}
 
-			foreach (var type in assemblies.SelectMany(assembly => assembly.GetExportedTypes()))
-			{
-				yield return type;
-			}
+			return assemblies.SelectMany(assembly => assembly.GetExportedTypes());
 		}
 	}
 }
