@@ -119,7 +119,7 @@ namespace Castle.MicroKernel.Tests.Registration
 		[Test]
 		public void DefaultInterface_can_match_multiple_types()
 		{
-			Kernel.Register(AllTypes.FromThisAssembly().Where(t => t == typeof(CommonSub1Impl)).WithService.DefaultInterface());
+			Kernel.Register(AllTypes.FromThisAssembly().Where(t => t == typeof(CommonSub1Impl)).WithService.DefaultInterfaces());
 			var one = Kernel.Resolve<ICommon>();
 			var two = Kernel.Resolve<ICommonSub1>();
 			Assert.AreSame(one, two);
@@ -128,7 +128,7 @@ namespace Castle.MicroKernel.Tests.Registration
 		[Test]
 		public void DefaultInterface_ignores_not_matched_interfaces()
 		{
-			Kernel.Register(AllTypes.FromThisAssembly().Where(t => t == typeof(CommonSub2Impl)).WithService.DefaultInterface());
+			Kernel.Register(AllTypes.FromThisAssembly().Where(t => t == typeof(CommonSub2Impl)).WithService.DefaultInterfaces());
 
 			var one = Kernel.Resolve<ICommon>();
 			var two = Kernel.Resolve<ICommonSub2>();
@@ -140,7 +140,7 @@ namespace Castle.MicroKernel.Tests.Registration
 		[Test]
 		public void DefaultInterface_ignores_on_no_interface_matched()
 		{
-			Kernel.Register(AllTypes.FromThisAssembly().Where(t => t == typeof(TwoInterfacesImpl)).WithService.DefaultInterface());
+			Kernel.Register(AllTypes.FromThisAssembly().Where(t => t == typeof(TwoInterfacesImpl)).WithService.DefaultInterfaces());
 			var handler = Kernel.GetAssignableHandlers(typeof(object)).Single();
 			Assert.AreEqual(typeof(TwoInterfacesImpl), handler.Services.Single());
 		}
@@ -148,7 +148,7 @@ namespace Castle.MicroKernel.Tests.Registration
 		[Test]
 		public void DefaultInterface_matches_by_type_name()
 		{
-			Kernel.Register(AllTypes.FromThisAssembly().Where(t => t == typeof(CommonImpl1)).WithService.DefaultInterface());
+			Kernel.Register(AllTypes.FromThisAssembly().Where(t => t == typeof(CommonImpl1)).WithService.DefaultInterfaces());
 			var handler = Kernel.GetAssignableHandlers(typeof(object)).Single();
 			Assert.AreEqual(typeof(ICommon), handler.Services.Single());
 		}
