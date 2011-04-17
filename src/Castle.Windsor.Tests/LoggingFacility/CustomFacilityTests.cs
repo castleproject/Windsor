@@ -14,25 +14,31 @@
 
 namespace CastleTests.LoggingFacility
 {
-#if !SILVERLIGHT
-    using System;
-    using NUnit.Framework;
-    using Castle.Windsor;
-    using CastleTests.LoggingFacility.Tests.Classes;
-    using Castle.Core.Logging;
-    using Castle.Services.Logging.Log4netIntegration;
-    using Castle.Windsor.Installer;
-    using Castle.Core.Resource;
+#if !(SILVERLIGHT || CLIENTPROFILE)
+	using Castle.Core.Logging;
+	using Castle.Core.Resource;
+	using Castle.Facilities.Logging;
+	using Castle.Services.Logging.Log4netIntegration;
+	using Castle.Windsor;
+	using Castle.Windsor.Installer;
 
-    [TestFixture]
-    public class CustomFacilityTests
-    {
-        [Test]
-        public void ReadCustomFacilityConfigFromXML()
-        {
-            using (var container = new WindsorContainer())
-            {
-                container.Install(Configuration.FromXml(new StaticContentResource(string.Format(@"<castle>
+	using CastleTests.LoggingFacility.Tests.Classes;
+
+	using NUnit.Framework;
+
+	[TestFixture]
+	public class CustomFacilityTests
+	{
+		[Test]
+		public void ReadCustomFacilityConfigFromXML()
+		{
+			using (var container = new WindsorContainer())
+			{
+				container.Install(
+					Configuration.FromXml(
+						new StaticContentResource(
+							string.Format(
+								@"<castle>
 <facilities>
 <facility 
   id='loggingfacility'
@@ -40,13 +46,13 @@ namespace CastleTests.LoggingFacility
   customLoggerFactory='{0}'
   type='{1}'/>
 </facilities>
-</castle>", 
-          typeof(CustomLog4NetFactory).AssemblyQualifiedName,
-          typeof(Castle.Facilities.Logging.LoggingFacility).AssemblyQualifiedName))));
-                var logger = container.Resolve<ILogger>();
-                Assert.IsInstanceOf<Log4netLogger>(logger);
-            }
-        }
-    }
+</castle>",
+								typeof(CustomLog4NetFactory).AssemblyQualifiedName,
+								typeof(LoggingFacility).AssemblyQualifiedName))));
+				var logger = container.Resolve<ILogger>();
+				Assert.IsInstanceOf<Log4netLogger>(logger);
+			}
+		}
+	}
 #endif
 }
