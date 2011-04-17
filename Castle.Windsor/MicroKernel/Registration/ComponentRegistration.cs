@@ -615,7 +615,7 @@ namespace Castle.MicroKernel.Registration
 		}
 
 		/// <summary>
-		///   Sets component lifestyle to scoped per component <typeparamref name="TBaseForRoot"/>.
+		///   Sets component lifestyle to scoped per component <typeparamref name = "TBaseForRoot" />.
 		/// </summary>
 		/// <returns></returns>
 		public ComponentRegistration<TService> LifestyleScopedPer<TBaseForRoot>() where TBaseForRoot : class

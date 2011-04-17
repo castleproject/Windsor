@@ -21,25 +21,23 @@ namespace CastleTests.Facilities.TypedFactory
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Releasers;
-	using Castle.Windsor;
 	using Castle.Windsor.Tests.ClassComponents;
 	using Castle.Windsor.Tests.Facilities.TypedFactory.Components;
 	using Castle.Windsor.Tests.Facilities.TypedFactory.Factories;
 	using Castle.Windsor.Tests.Facilities.TypedFactory.Selectors;
 
 	using CastleTests.Components;
+	using CastleTests.Interceptors;
 
 	using NUnit.Framework;
 
 	[TestFixture]
 	public class TypedFactoryFacilityTake2TestCase : AbstractContainerTestCase
 	{
-		protected override WindsorContainer BuildContainer()
+		protected override void AfterContainerCreated()
 		{
-			var windsorContainer = new WindsorContainer();
-			windsorContainer.AddFacility<TypedFactoryFacility>();
-			windsorContainer.Register(Component.For<IDummyComponent>().ImplementedBy<Component1>().LifestyleTransient());
-			return windsorContainer;
+			Container.AddFacility<TypedFactoryFacility>();
+			Container.Register(Component.For<IDummyComponent>().ImplementedBy<Component1>().LifestyleTransient());
 		}
 
 		[Test]
@@ -279,6 +277,23 @@ namespace CastleTests.Facilities.TypedFactory
 
 			var factory = Container.Resolve<IGenericFactoryWithGenericMethod<A>>();
 			factory.Create<IDummyComponent<A>>();
+		}
+
+		[Test]
+		public void Can_use_additional_interceptors_on_interface_based_factory()
+		{
+			Container.Register(
+				Component.For<CollectInvocationsInterceptor>(),
+				Component.For<DummyComponentFactory>().Interceptors<CollectInvocationsInterceptor>().AsFactory());
+			var factory = Container.Resolve<DummyComponentFactory>();
+
+			var component = factory.CreateDummyComponent();
+			Assert.IsNotNull(component);
+
+			var interceptor = Container.Resolve<CollectInvocationsInterceptor>();
+
+			Assert.AreEqual(1, interceptor.Invocations.Count);
+			Assert.AreSame(component, interceptor.Invocations[0].ReturnValue);
 		}
 
 		[Test]

@@ -22,16 +22,15 @@ namespace CastleTests.Facilities.TypedFactory
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Releasers;
 	using Castle.MicroKernel.Tests.ClassComponents;
-	using Castle.Windsor.Tests;
 	using Castle.Windsor.Tests.Facilities.TypedFactory;
 	using Castle.Windsor.Tests.Facilities.TypedFactory.Components;
 	using Castle.Windsor.Tests.Facilities.TypedFactory.Delegates;
 	using Castle.Windsor.Tests.Facilities.TypedFactory.Factories;
 	using Castle.Windsor.Tests.Facilities.TypedFactory.Selectors;
 
-	using CastleTests;
 	using CastleTests.Components;
 	using CastleTests.Facilities.TypedFactory.Delegates;
+	using CastleTests.Interceptors;
 
 	using NUnit.Framework;
 
@@ -41,6 +40,11 @@ namespace CastleTests.Facilities.TypedFactory
 	[TestFixture]
 	public class TypedFactoryDelegatesTestCase : AbstractContainerTestCase
 	{
+		protected override void AfterContainerCreated()
+		{
+			Container.AddFacility<TypedFactoryFacility>();
+		}
+
 		[Test]
 		public void Can_register_generic_delegate_factory_explicitly_as_open_generic_optional_dependency()
 		{
@@ -167,6 +171,24 @@ namespace CastleTests.Facilities.TypedFactory
 
 			one.GetFoo();
 			two.GetFoo();
+		}
+
+		[Test]
+		public void Can_use_additional_interceptors_on_delegate_based_factory()
+		{
+			Container.Register(
+				Component.For<CollectInvocationsInterceptor>(),
+				Component.For<IDummyComponent>().ImplementedBy<Component1>(),
+				Component.For<Func<IDummyComponent>>().Interceptors<CollectInvocationsInterceptor>().AsFactory());
+			var factory = Container.Resolve<Func<IDummyComponent>>();
+
+			var component = factory();
+			Assert.IsNotNull(component);
+
+			var interceptor = Container.Resolve<CollectInvocationsInterceptor>();
+
+			Assert.AreEqual(1, interceptor.Invocations.Count);
+			Assert.AreSame(component, interceptor.Invocations[0].ReturnValue);
 		}
 
 		[Test]
@@ -490,11 +512,6 @@ namespace CastleTests.Facilities.TypedFactory
 			var component = factory.Invoke();
 
 			Assert.IsInstanceOf<Component2>(component);
-		}
-
-		protected override void AfterContainerCreated()
-		{
-			Container.AddFacility<TypedFactoryFacility>();
 		}
 	}
 }
