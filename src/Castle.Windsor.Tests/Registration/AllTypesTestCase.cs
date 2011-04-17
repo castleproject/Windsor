@@ -353,8 +353,9 @@ namespace Castle.MicroKernel.Tests.Registration
 		[Test]
 		public void RegisterMultipleAssemblyTypes_BasedOn_RegisteredInContainer()
 		{
+#pragma warning disable 0618 //call to obsolete method
 			Kernel.Register(
-				AllTypes.FromAssembly(Assembly.GetExecutingAssembly())
+				AllTypes.FromThisAssembly()
 					.BasedOn<ICommon>()
 					.BasedOn<ICustomer>()
 					.If(t => t.FullName.Contains("Chain"))
@@ -362,6 +363,7 @@ namespace Castle.MicroKernel.Tests.Registration
 					.BasedOn<DefaultMailSenderService>()
 					.BasedOn<DefaultSpamServiceWithConstructor>()
 				);
+#pragma warning restore
 
 			var handlers = Kernel.GetHandlers(typeof(ICommon));
 			Assert.AreEqual(0, handlers.Length);

@@ -16,6 +16,7 @@ namespace Castle.MicroKernel.Registration
 {
 	using System;
 	using System.Collections.Generic;
+	using System.ComponentModel;
 
 	using Castle.Core;
 
@@ -63,6 +64,8 @@ namespace Castle.MicroKernel.Registration
 		/// </summary>
 		/// <typeparam name = "T">The base type.</typeparam>
 		/// <returns>The descriptor for the type.</returns>
+		[Obsolete("Calling this method resets registration. If that's what you want, start anew, with AllTypes...")]
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public BasedOnDescriptor BasedOn<T>()
 		{
 			return from.BasedOn<T>();
@@ -73,6 +76,8 @@ namespace Castle.MicroKernel.Registration
 		/// </summary>
 		/// <param name = "basedOn">The base type.</param>
 		/// <returns>The descriptor for the type.</returns>
+		[Obsolete("Calling this method resets registration. If that's what you want, start anew, with AllTypes...")]
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public BasedOnDescriptor BasedOn(Type basedOn)
 		{
 			return from.BasedOn(basedOn);
@@ -157,6 +162,8 @@ namespace Castle.MicroKernel.Registration
 		/// </summary>
 		/// <param name = "accepted">The accepting condition.</param>
 		/// <returns>The descriptor for the type.</returns>
+		[Obsolete("Calling this method resets registration. If that's what you want, start anew, with AllTypes...")]
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public BasedOnDescriptor Where(Predicate<Type> accepted)
 		{
 			return from.Where(accepted);
