@@ -169,6 +169,106 @@ namespace Castle.MicroKernel.Registration
 			return from.Where(accepted);
 		}
 
+		/// <summary>
+		///   Uses all interfaces implemented by the type (or its base types) as well as their base interfaces.
+		/// </summary>
+		/// <returns></returns>
+		public BasedOnDescriptor WithServiceAllInterfaces()
+		{
+			return WithService.AllInterfaces();
+		}
+
+		/// <summary>
+		///   Uses the base type matched on.
+		/// </summary>
+		/// <returns></returns>
+		public BasedOnDescriptor WithServiceBase()
+		{
+			return WithService.Base();
+		}
+
+		/// <summary>
+		///   Uses all interfaces that have names matched by implementation type name.
+		///   Matches Foo to IFoo, SuperFooExtended to IFoo and IFooExtended etc
+		/// </summary>
+		/// <returns></returns>
+		public BasedOnDescriptor WithServiceDefaultInterfaces()
+		{
+			return WithService.DefaultInterfaces();
+		}
+
+		/// <summary>
+		///   Uses the first interface of a type. This method has non-deterministic behavior when type implements more than one interface!
+		/// </summary>
+		/// <returns></returns>
+		public BasedOnDescriptor WithServiceFirstInterface()
+		{
+			return WithService.FirstInterface();
+		}
+
+		/// <summary>
+		///   Uses <paramref name = "implements" /> to lookup the sub interface.
+		///   For example: if you have IService and 
+		///   IProductService : ISomeInterface, IService, ISomeOtherInterface.
+		///   When you call FromInterface(typeof(IService)) then IProductService
+		///   will be used. Useful when you want to register _all_ your services
+		///   and but not want to specify all of them.
+		/// </summary>
+		/// <param name = "implements"></param>
+		/// <returns></returns>
+		public BasedOnDescriptor WithServiceFromInterface(Type implements)
+		{
+			return WithService.FromInterface(implements);
+		}
+
+		/// <summary>
+		///   Uses base type to lookup the sub interface.
+		/// </summary>
+		/// <returns></returns>
+		public BasedOnDescriptor WithServiceFromInterface()
+		{
+			return WithService.FromInterface();
+		}
+
+		/// <summary>
+		///   Assigns a custom service selection strategy.
+		/// </summary>
+		/// <param name = "selector"></param>
+		/// <returns></returns>
+		public BasedOnDescriptor WithServiceSelect(ServiceDescriptor.ServiceSelector selector)
+		{
+			return WithService.Select(selector);
+		}
+
+		/// <summary>
+		///   Uses the type itself.
+		/// </summary>
+		/// <returns></returns>
+		public BasedOnDescriptor WithServiceSelf()
+		{
+			return WithService.Self();
+		}
+
+		/// <summary>
+		///   Assigns the supplied service types.
+		/// </summary>
+		/// <param name = "types"></param>
+		/// <returns></returns>
+		public BasedOnDescriptor WithServices(IEnumerable<Type> types)
+		{
+			return WithService.Select(types);
+		}
+
+		/// <summary>
+		///   Assigns the supplied service types.
+		/// </summary>
+		/// <param name = "types"></param>
+		/// <returns></returns>
+		public BasedOnDescriptor WithServices(params Type[] types)
+		{
+			return WithService.Select(types);
+		}
+
 		internal bool TryRegister(Type type, IKernel kernel)
 		{
 			Type[] baseTypes;
