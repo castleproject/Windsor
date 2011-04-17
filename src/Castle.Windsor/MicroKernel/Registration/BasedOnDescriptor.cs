@@ -269,6 +269,68 @@ namespace Castle.MicroKernel.Registration
 			return WithService.Select(types);
 		}
 
+		protected virtual bool Accepts(Type type, out Type[] baseTypes)
+		{
+			baseTypes = null;
+			return type.IsClass && !type.IsAbstract
+			       && IsBasedOn(type, out baseTypes)
+			       && ExecuteIfCondition(type)
+			       && !ExecuteUnlessCondition(type);
+		}
+
+		protected bool ExecuteIfCondition(Type type)
+		{
+			if (ifFilter == null)
+			{
+				return true;
+			}
+
+			foreach (Predicate<Type> filter in ifFilter.GetInvocationList())
+			{
+				if (filter(type) == false)
+				{
+					return false;
+				}
+			}
+
+			return true;
+		}
+
+		protected bool ExecuteUnlessCondition(Type type)
+		{
+			if (unlessFilter == null)
+			{
+				return false;
+			}
+			foreach (Predicate<Type> filter in unlessFilter.GetInvocationList())
+			{
+				if (filter(type))
+				{
+					return true;
+				}
+			}
+			return false;
+		}
+
+		protected bool IsBasedOn(Type type, out Type[] baseTypes)
+		{
+			if (basedOn.IsAssignableFrom(type))
+			{
+				baseTypes = new[] { basedOn };
+				return true;
+			}
+			if (basedOn.IsGenericTypeDefinition)
+			{
+				if (basedOn.IsInterface)
+				{
+					return IsBasedOnGenericInterface(type, out baseTypes);
+				}
+				return IsBasedOnGenericClass(type, out baseTypes);
+			}
+			baseTypes = new[] { basedOn };
+			return false;
+		}
+
 		internal bool TryRegister(Type type, IKernel kernel)
 		{
 			Type[] baseTypes;
@@ -300,68 +362,6 @@ namespace Castle.MicroKernel.Registration
 			}
 			kernel.Register(registration);
 			return true;
-		}
-
-		private bool Accepts(Type type, out Type[] baseTypes)
-		{
-			baseTypes = null;
-			return type.IsClass && !type.IsAbstract
-			       && IsBasedOn(type, out baseTypes)
-			       && ExecuteIfCondition(type)
-			       && !ExecuteUnlessCondition(type);
-		}
-
-		private bool ExecuteIfCondition(Type type)
-		{
-			if (ifFilter == null)
-			{
-				return true;
-			}
-
-			foreach (Predicate<Type> filter in ifFilter.GetInvocationList())
-			{
-				if (filter(type) == false)
-				{
-					return false;
-				}
-			}
-
-			return true;
-		}
-
-		private bool ExecuteUnlessCondition(Type type)
-		{
-			if (unlessFilter == null)
-			{
-				return false;
-			}
-			foreach (Predicate<Type> filter in unlessFilter.GetInvocationList())
-			{
-				if (filter(type))
-				{
-					return true;
-				}
-			}
-			return false;
-		}
-
-		private bool IsBasedOn(Type type, out Type[] baseTypes)
-		{
-			if (basedOn.IsAssignableFrom(type))
-			{
-				baseTypes = new[] { basedOn };
-				return true;
-			}
-			if (basedOn.IsGenericTypeDefinition)
-			{
-				if (basedOn.IsInterface)
-				{
-					return IsBasedOnGenericInterface(type, out baseTypes);
-				}
-				return IsBasedOnGenericClass(type, out baseTypes);
-			}
-			baseTypes = new[] { basedOn };
-			return false;
 		}
 
 		private bool IsBasedOnGenericClass(Type type, out Type[] baseTypes)
