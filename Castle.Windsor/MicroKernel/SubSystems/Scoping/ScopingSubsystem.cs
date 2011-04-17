@@ -12,23 +12,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.MicroKernel.Lifestyle.Scoped
+namespace Castle.MicroKernel.SubSystems.Scoping
 {
 	using System;
 	using System.Collections.Generic;
 
+	using Castle.MicroKernel.Lifestyle.Scoped;
 	using Castle.MicroKernel.Registration;
 
-	public class ScopeSubsystem : AbstractSubSystem, IScopeManager
+	public class ScopingSubsystem : AbstractSubSystem, IScopeManager
 	{
 		private readonly IScopeAccessor scopes;
 
-		public ScopeSubsystem()
+		public ScopingSubsystem()
 			: this(new ThreadScopeAccessor())
 		{
 		}
 
-		public ScopeSubsystem(IScopeAccessor scopes)
+		public ScopingSubsystem(IScopeAccessor scopes)
 		{
 			if (scopes == null)
 			{
@@ -93,10 +94,10 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 
 		private class EndScope : IDisposable
 		{
-			private readonly ScopeSubsystem manager;
+			private readonly ScopingSubsystem manager;
 			private readonly ScopeCache scopeCache;
 
-			public EndScope(ScopeSubsystem manager, ScopeCache scopeCache)
+			public EndScope(ScopingSubsystem manager, ScopeCache scopeCache)
 			{
 				this.manager = manager;
 				this.scopeCache = scopeCache;

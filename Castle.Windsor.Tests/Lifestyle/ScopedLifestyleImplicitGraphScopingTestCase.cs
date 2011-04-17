@@ -19,6 +19,7 @@ namespace CastleTests.Lifestyle
 	using Castle.MicroKernel.Lifestyle.Scoped;
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Resolvers.SpecializedResolvers;
+	using Castle.MicroKernel.SubSystems.Scoping;
 
 	using CastleTests.Components;
 
@@ -28,7 +29,7 @@ namespace CastleTests.Lifestyle
 	{
 		protected override void AfterContainerCreated()
 		{
-			Kernel.AddSubSystem("scope", new ScopeSubsystem(new ThreadScopeAccessor()));
+			Kernel.AddSubSystem("scope", new ScopingSubsystem(new ThreadScopeAccessor()));
 		}
 
 		[Test]
