@@ -125,7 +125,7 @@ namespace Castle.MicroKernel.Registration
 		/// <param name = "basedOn">The base type.</param>
 		/// <returns></returns>
 		[Obsolete("Use AllTypes.FromAssembly...BasedOn(basedOn) instead.")]
-		[EditorBrowsable(EditorBrowsableState.Advanced)]
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static AllTypesOf Of(Type basedOn)
 		{
 			return new AllTypesOf(basedOn);
@@ -137,7 +137,7 @@ namespace Castle.MicroKernel.Registration
 		/// <typeparam name = "T">The base type.</typeparam>
 		/// <returns></returns>
 		[Obsolete("Use AllTypes.FromAssembly...BasedOn<T>() instead.")]
-		[EditorBrowsable(EditorBrowsableState.Advanced)]
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static AllTypesOf Of<T>()
 		{
 			return new AllTypesOf(typeof(T));
@@ -148,7 +148,7 @@ namespace Castle.MicroKernel.Registration
 		/// </summary>
 		/// <returns></returns>
 		[Obsolete("Use AllTypes.FromAssembly...Pick() instead.")]
-		[EditorBrowsable(EditorBrowsableState.Advanced)]
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static AllTypesOf Pick()
 		{
 			return Of<object>();
@@ -160,7 +160,7 @@ namespace Castle.MicroKernel.Registration
 		/// <param name = "types">The list of types.</param>
 		/// <returns>The corresponding <see cref = "FromDescriptor" /></returns>
 		[Obsolete("Use From(types) instead.")]
-		[EditorBrowsable(EditorBrowsableState.Advanced)]
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static FromTypesDescriptor Pick(IEnumerable<Type> types)
 		{
 			return new FromTypesDescriptor(types);
