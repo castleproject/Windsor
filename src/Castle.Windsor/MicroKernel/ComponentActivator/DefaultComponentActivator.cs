@@ -24,6 +24,7 @@ namespace Castle.MicroKernel.ComponentActivator
 	using Castle.Core.Internal;
 	using Castle.MicroKernel.Context;
 	using Castle.MicroKernel.Proxy;
+
 #if DOTNET35 || SILVERLIGHT
 	using System.Linq;
 #endif

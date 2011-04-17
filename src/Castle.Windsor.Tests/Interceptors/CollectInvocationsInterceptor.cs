@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,21 +12,25 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Windsor.Tests.Interceptors
+namespace CastleTests.Interceptors
 {
+	using System.Collections.Generic;
+
 	using Castle.DynamicProxy;
 
-	public class CollectInterceptedIdInterceptor : IInterceptor
+	public class CollectInvocationsInterceptor : IInterceptor
 	{
-		public static int InterceptedId;
+		private readonly IList<IInvocation> invocations = new List<IInvocation>();
+
+		public IList<IInvocation> Invocations
+		{
+			get { return invocations; }
+		}
 
 		public void Intercept(IInvocation invocation)
 		{
+			invocations.Add(invocation);
 			invocation.Proceed();
-			if (invocation.Arguments.Length > 0)
-			{
-				InterceptedId = (int)invocation.Arguments[0];
-			}
 		}
 	}
 }

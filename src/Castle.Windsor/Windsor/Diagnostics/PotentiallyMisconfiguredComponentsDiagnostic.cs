@@ -18,10 +18,10 @@ namespace Castle.Windsor.Diagnostics
 	using System.Linq;
 #else
 	using System;
+#endif
 
 	using Castle.MicroKernel;
 
-#endif
 
 	public class PotentiallyMisconfiguredComponentsDiagnostic : IPotentiallyMisconfiguredComponentsDiagnostic
 	{

@@ -23,6 +23,7 @@ namespace Castle.Facilities.TypedFactory.Internal
 	using Castle.DynamicProxy;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Facilities;
+
 #if SILVERLIGHT
 	using System.Linq;
 #endif

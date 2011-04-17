@@ -37,13 +37,13 @@ namespace Castle.Windsor
 	[Serializable]
 	[DebuggerDisplay("{name,nq}")]
 #if (SILVERLIGHT)
-	public class WindsorContainer : IWindsorContainer
+	public partial class WindsorContainer : IWindsorContainer
 #else
 	[DebuggerTypeProxy(typeof(KernelDebuggerProxy))]
 	public partial class WindsorContainer : MarshalByRefObject, IWindsorContainer
 #endif
 	{
-		private readonly Dictionary<string, IWindsorContainer> childContainers = new Dictionary<string, IWindsorContainer>();
+		private readonly Dictionary<string, IWindsorContainer> childContainers = new Dictionary<string, IWindsorContainer>(StringComparer.OrdinalIgnoreCase);
 		private readonly object childContainersLocker = new object();
 		private readonly IComponentsInstaller installer;
 

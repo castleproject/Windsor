@@ -18,6 +18,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 	using System.Reflection;
 
 	using Castle.Core;
+
 #if SILVERLIGHT
 	using System.Linq;
 #endif
