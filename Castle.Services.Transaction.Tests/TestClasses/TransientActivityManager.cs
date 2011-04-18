@@ -15,6 +15,8 @@
 // 
 #endregion
 
+using Castle.Services.vNextTransaction;
+
 namespace Castle.Services.Transaction.Tests
 {
 	public class TransientActivityManager : IActivityManager
@@ -30,9 +32,9 @@ namespace Castle.Services.Transaction.Tests
 		/// Gets the current activity.
 		/// </summary>
 		/// <value>The current activity.</value>
-		public Activity CurrentActivity
+		Activity IActivityManager.GetCurrentActivity()
 		{
-			get { return activity; }
+			return activity;
 		}
 	}
 }

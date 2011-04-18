@@ -15,11 +15,13 @@
 // 
 #endregion
 
+using System.IO;
+using Castle.Services.vNextTransaction;
+
 namespace Castle.Services.Transaction.Tests
 {
 	using System;
 	using System.Collections.Generic;
-	using System.IO;
 	using System.Text;
 	using System.Threading;
 	using IO;
@@ -97,9 +99,8 @@ namespace Castle.Services.Transaction.Tests
 			infosCreated.Add(toFolder.Combine("file"));
 			infosCreated.Add(toFolder);
 
-			using (var t = new FileTransaction("moving file"))
+			using (ITransaction t = new FileTransaction("moving file"))
 			{
-				t.Begin();
 				Assert.That(File.Exists(toFolder.Combine("file")), Is.False, "Should not exist before move");
 				Assert.That(File.Exists(toFolder.Combine("file2")), Is.False, "Should not exist before move");
 
@@ -109,7 +110,7 @@ namespace Castle.Services.Transaction.Tests
 				Assert.That(File.Exists(toFolder.Combine("file")), Is.False, "Should not be visible to the outside");
 				Assert.That(File.Exists(toFolder.Combine("file2")), Is.False, "Should not be visible to the outside");
 
-				t.Commit();
+				t.Complete();
 
 				Assert.That(File.Exists(toFolder.Combine("file")), Is.True,
 							"Should be visible to the outside now and since we tried to move it to an existing folder, it should put itself in that folder with its current name.");
@@ -136,10 +137,8 @@ namespace Castle.Services.Transaction.Tests
 			using (StreamWriter wr = File.CreateText(filePath))
 				wr.WriteLine("Hello");
 
-			using (var tx = new FileTransaction())
+			using (ITransaction tx = new FileTransaction())
 			{
-				tx.Begin();
-
 				using (FileStream fs = (tx as IFileAdapter).Create(filePath))
 				{
 					byte[] str = new UTF8Encoding().GetBytes("Goodbye");
@@ -147,7 +146,7 @@ namespace Castle.Services.Transaction.Tests
 					fs.Flush();
 				}
 
-				tx.Commit();
+				tx.Complete();
 			}
 
 			Assert.That(File.ReadAllLines(filePath)[0], Is.EqualTo("Goodbye"));
@@ -169,11 +168,10 @@ namespace Castle.Services.Transaction.Tests
 			using (StreamWriter wr = File.CreateText(filePath))
 				wr.WriteLine("Hello");
 
-			using (var tx = new FileTransaction("Rollback tx"))
+			using (ITransaction tx = new FileTransaction("Rollback tx"))
 			{
-				tx.Begin();
-
-				using (FileStream fs = tx.Open(filePath, FileMode.Truncate))
+				IFileAdapter fa = (IFileAdapter)tx;
+				using (FileStream fs = fa.Open(filePath, FileMode.Truncate))
 				{
 					byte[] str = new UTF8Encoding().GetBytes("Goodbye");
 					fs.Write(str, 0, str.Length);
@@ -202,13 +200,14 @@ namespace Castle.Services.Transaction.Tests
 
 			infosCreated.Add(filepath);
 
-			using (var tx = new FileTransaction("Commit TX"))
+			using (ITransaction tx = new FileTransaction("Commit TX"))
 			{
-				tx.Begin();
-				tx.WriteAllText(filepath, "Transactioned file.");
-				tx.Commit();
+				IFileAdapter fa = (IFileAdapter)tx;
+				Assert.Fail("TODO");
+				//tx.WriteAllText(filepath, "Transactioned file.");
+				//tx.Commit();
 
-				Assert.That(tx.Status == TransactionStatus.Committed);
+				//Assert.That(tx.Status == TransactionStatus.Committed);
 			}
 
 			Assert.That(File.Exists(filepath), "The file should exists after the transaction.");

@@ -14,39 +14,40 @@
 //  limitations under the License.
 // 
 #endregion
+
+using System.Transactions;
+
 namespace Castle.Services.Transaction.Tests
 {
 	using System;
 
-	public class ThrowsExceptionResourceImpl : ResourceImpl
+	public class ThrowsExceptionResourceImpl : ResourceImpl, ISinglePhaseNotification
 	{
-		private bool throwOnCommit = false;
-		private bool throwOnRollback = false;
+		private readonly bool _ThrowOnCommit;
+		private readonly bool _ThrowOnRollback;
 
 		public ThrowsExceptionResourceImpl(bool throwOnCommit, bool throwOnRollback)
 		{
-			this.throwOnCommit = throwOnCommit;
-			this.throwOnRollback = throwOnRollback;
+			this._ThrowOnCommit = throwOnCommit;
+			this._ThrowOnRollback = throwOnRollback;
 		}
 
-		public override void Rollback()
+		public override void Rollback(Enlistment enlistment)
 		{
-			if (throwOnRollback)
-			{
+			if (_ThrowOnRollback)
 				throw new Exception("Simulated rollback error");
-			}
 
-			base.Rollback();
+			base.Rollback(enlistment);
 		}
 
-		public override void Commit()
+		public override void Commit(Enlistment enlistment)
 		{
-			if (throwOnCommit)
+			if (_ThrowOnCommit)
 			{
 				throw new Exception("Simulated commit error");
 			}
 
-			base.Commit();
+			base.Commit(enlistment);
 		}
 	}
 }

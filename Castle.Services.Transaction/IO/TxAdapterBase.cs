@@ -15,18 +15,23 @@
 // 
 #endregion
 
+using Castle.Services.vNextTransaction;
+
 namespace Castle.Services.Transaction.IO
 {
 	using System;
 
+	// http://social.msdn.microsoft.com/Forums/en-CA/windowstransactionsprogramming/thread/ab4946d9-b634-4156-9296-78554d41d84a
+	// http://www.pluralsight-training.net/community/blogs/jimjohn/archive/2006/09/01/36863.aspx
+
 	///<summary>
 	/// Adapter base class for the file and directory adapters.
 	///</summary>
-	public abstract class TxAdapterBase
+	internal abstract class TxAdapterBase
 	{
 		private readonly bool _AllowOutsideSpecifiedFolder;
 		private readonly string _SpecifiedFolder;
-		private ITransactionManager _TxManager;
+		private ITxManager _TxManager;
 		private bool _UseTransactions = true;
 		private bool _OnlyJoinExisting;
 
@@ -44,7 +49,7 @@ namespace Castle.Services.Transaction.IO
 		/// <summary>
 		/// Gets the transaction manager, if there is one, or sets it.
 		/// </summary>
-		public ITransactionManager TxManager
+		public ITxManager TxManager
 		{
 			get { return _TxManager; }
 			set { _TxManager = value; }
@@ -65,31 +70,32 @@ namespace Castle.Services.Transaction.IO
 			set { _OnlyJoinExisting = value; }
 		}
 
-		protected bool HasTransaction(out IFileTransaction transaction)
+		protected bool HasTransaction(out ITransaction transaction)
 		{
 			transaction = null;
 
 			if (!_UseTransactions) return false;
+			return _TxManager != null && _TxManager.CurrentTransaction.HasValue;
+			//if (_TxManager != null && _TxManager.CurrentTransaction.HasValue)
+			//{
+			//    foreach (var resource in _TxManager.CurrentTransaction.Resources())
+			//    {
+			//        if (!(resource is FileResourceAdapter)) continue;
 
-			if (_TxManager != null && _TxManager.CurrentTransaction != null)
-			{
-				foreach (var resource in _TxManager.CurrentTransaction.Resources())
-				{
-					if (!(resource is FileResourceAdapter)) continue;
+			//        transaction = (resource as FileResourceAdapter).Transaction;
+			//        return true;
+			//    }
 
-					transaction = (resource as FileResourceAdapter).Transaction;
-					return true;
-				}
-
-				if (!_OnlyJoinExisting)
-				{
-					transaction = new FileTransaction("Autocreated File Transaction");
-					_TxManager.CurrentTransaction.Enlist(new FileResourceAdapter(transaction));
-					return true;
-				}
-			}
+			//    if (!_OnlyJoinExisting)
+			//    {
+			//        throw new NotImplementedException();
+			//        transaction = new FileTransaction("Autocreated File Transaction");
+			//        _TxManager.CurrentTransaction.Enlist(new FileResourceAdapter(transaction));
+			//        return true;
+			//    }
+			//}
 			
-			return false;
+			//return false;
 		}
 
 		protected internal bool IsInAllowedDir(string path)

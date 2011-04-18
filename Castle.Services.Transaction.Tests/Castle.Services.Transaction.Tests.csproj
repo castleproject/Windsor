@@ -115,14 +115,6 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Castle.Services.vNextTransaction.NHibernate\Castle.Facilities.NHibernate.csproj">
-      <Project>{12598D2B-B68E-4EA7-A7DD-0CC2398CE8B6}</Project>
-      <Name>Castle.Facilities.NHibernate</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Castle.Services.vNextTransaction\Castle.Services.vNextTransaction.csproj">
-      <Project>{76DF5D09-FC04-411F-B123-01A6B9432796}</Project>
-      <Name>Castle.Services.vNextTransaction</Name>
-    </ProjectReference>
     <Reference Include="Antlr3.Runtime">
       <HintPath>..\..\lib\Antlr3.Runtime.dll</HintPath>
     </Reference>
@@ -167,51 +159,30 @@
     <Reference Include="System.Interactive, Version=1.0.2856.104, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Transactions" />
     <Reference Include="System.Xml" />
-    <ProjectReference Include="..\Castle.Services.Transaction\Castle.Services.Transaction.csproj">
-      <Name>Castle.Services.Transaction</Name>
-      <Project>{0F611C1B-EDFD-46E6-9C3A-95420946E9CC}</Project>
-      <Package>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</Package>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="File and Directory related tests\DirectoryAdapterTests.cs" />
-    <Compile Include="File and Directory related tests\FileAdapterTests.cs" />
-    <Compile Include="File and Directory related tests\FileTransactions_Directory_Tests.cs" />
-    <Compile Include="File and Directory related tests\FileTransactions_File_Tests.cs" />
-    <Compile Include="Framework\MaybeEx.cs" />
-    <Compile Include="File and Directory related tests\STATestRuntime.cs" />
-    <Compile Include="vNext\NHibernateFacility_Multiple_Threads_DependentTransactionWithParent.cs" />
-    <Compile Include="vNext\AutoTxFacility_SingleThread_SupressInAmbient.cs" />
-    <Compile Include="vNext\PerTransactionLifestyleTests.cs" />
-    <Compile Include="vNext\TestClasses\ResolveScope.cs" />
-    <Compile Include="TestClasses\Exts.cs" />
-    <Compile Include="File and Directory related tests\FileTransactionTests.cs" />
-    <Compile Include="File and Directory related tests\FileTransaction_WithManager_Tests.cs" />
-    <Compile Include="TestClasses\ResourceImpl.cs">
+    <Compile Include="File and Directory related tests\FileAdapterTests.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="TestClasses\SynchronizationImpl.cs">
+    <Compile Include="File and Directory related tests\FileTransactions_Directory_Tests.cs" />
+    <Compile Include="File and Directory related tests\FileTransactions_File_Tests.cs" />
+    <Compile Include="Framework\STATestRuntime.cs" />
+    <Compile Include="PerTransactionLifestyleTests.cs" />
+    <Compile Include="TestClasses\Exts.cs" />
+    <Compile Include="File and Directory related tests\FileTransaction_WithManager_Tests.cs" />
+    <Compile Include="TestClasses\IMyService.cs" />
+    <Compile Include="TestClasses\MyService.cs" />
+    <Compile Include="TestClasses\ResourceImpl.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="TestClasses\TestResource.cs" />
     <Compile Include="TestClasses\ThrowsExceptionResource.cs" />
     <Compile Include="TestClasses\TransientActivityManager.cs" />
-    <Compile Include="vNext\AutoTxFacility_InitTests.cs" />
-    <Compile Include="vNext\Scratch.cs" />
-    <Compile Include="vNext\TestClasses\ExampleInstaller.cs" />
-    <Compile Include="vNext\NHibernateFacility_Init.cs" />
-    <Compile Include="vNext\NHibernateFacility_SimpleUseCase_SingleSave.cs" />
-    <Compile Include="vNext\NHibernateFacility_ValidationError_OnSave.cs" />
-    <Compile Include="vNext\AutoTxFacility_SingleThread_Ambient_OnConcreteType.cs" />
-    <Compile Include="vNext\TestClasses\ConcreteService.cs" />
-    <Compile Include="vNext\TestClasses\IMyService.cs" />
-    <Compile Include="vNext\TestClasses\Thing.cs" />
-    <Compile Include="vNext\TestClasses\ThingMap.cs" />
-    <Compile Include="vNext\TxClassMetaInfoStore_MetaData.cs" />
-    <Compile Include="vNext\TestClasses\MyService.cs" />
-    <Compile Include="vNext\RetryPolicies_Transactions.cs" />
-    <Compile Include="vNext\ScratchBoard_LTM.cs" />
-    <Compile Include="vNext\AutoTxFacility_SingleThread_Ambient_OnInterface.cs" />
+    <Compile Include="Scratch.cs" />
+    <Compile Include="TestClasses\ThrowingResource.cs" />
+    <Compile Include="RetryPolicies_Transactions.cs" />
+    <Compile Include="ScratchBoard_LTM.cs" />
     <Compile Include="TestClasses\TxTraceListener.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -222,6 +193,12 @@
       <Link>CastleKey.snk</Link>
     </None>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Castle.Services.Transaction\Castle.Services.Transaction.csproj">
+      <Project>{76DF5D09-FC04-411F-B123-01A6B9432796}</Project>
+      <Name>Castle.Services.Transaction</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(RootPath)\Settings.proj" />

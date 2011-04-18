@@ -15,6 +15,9 @@
 // 
 #endregion
 
+using System.Transactions;
+using Castle.Services.vNextTransaction;
+
 namespace Castle.Services.Transaction.Tests
 {
 	using System;
@@ -30,12 +33,12 @@ namespace Castle.Services.Transaction.Tests
 		private bool _DeleteAtEnd;
 		private string _FilePath;
 
-		private DefaultTransactionManager tm;
+		private ITxManager tm;
 
 		[SetUp]
 		public void Setup()
 		{
-			tm = new DefaultTransactionManager(new TransientActivityManager());
+			tm = new TxManager(new TransientActivityManager());
 
 			_DirPath = "../../Transactions/".CombineAssert("tmp");
 			_FilePath = _DirPath.Combine("test.txt");
@@ -56,74 +59,54 @@ namespace Castle.Services.Transaction.Tests
 		[Test]
 		public void TransactionResources_AreDisposed()
 		{
-			var t = tm.CreateTransaction(TransactionMode.Requires, IsolationMode.Unspecified);
 			var resource = new ResourceImpl();
-			t.Enlist(resource);
-			t.Begin();
-			// lalala
-			t.Rollback();
-			tm.Dispose(t);
+			using (var tx = tm.CreateTransaction(new DefaultTransactionOptions()).Value.Transaction)
+			{
+				tx.Inner.EnlistVolatile(resource, EnlistmentOptions.EnlistDuringPrepareRequired);
+				tx.Rollback();
+			}
 
-			Assert.That(resource.wasDisposed);
+			Assert.That(resource.WasDisposed);
+			Assert.That(resource.RolledBack);
 		}
 
 		[Test]
 		public void NestedFileTransaction_CanBeCommitted()
 		{
-            if (Environment.OSVersion.Version.Major < 6)
-            {
-                Assert.Ignore("TxF not supported");
-                return;
-            }
+			if (Environment.OSVersion.Version.Major < 6)
+			{
+				Assert.Ignore("TxF not supported");
+				return;
+			}
 
-			Assert.That(tm.CurrentTransaction, Is.Null);
+			// verify process state
+			Assert.That(tm.CurrentTransaction.HasValue, Is.False);
+			Assert.That(System.Transactions.Transaction.Current, Is.Null);
 
-			var stdTx = tm.CreateTransaction(TransactionMode.Requires, IsolationMode.Unspecified);
-			stdTx.Begin();
+			// actual test code);
+			using (var stdTx = tm.CreateTransaction(new DefaultTransactionOptions()).Value.Transaction)
+			{
+				Assert.That(tm.CurrentTransaction.HasValue, Is.True);
+				Assert.That(tm.CurrentTransaction.Value, Is.EqualTo(stdTx));
 
-			Assert.That(tm.CurrentTransaction, Is.Not.Null);
-			Assert.That(tm.CurrentTransaction, Is.EqualTo(stdTx));
+				using (var innerTransaction = tm.CreateTransaction(new DefaultTransactionOptions()).Value.Transaction)
+				{
+					Assert.That(tm.CurrentTransaction.Value, Is.EqualTo(innerTransaction),
+								"Now that we have created a dependent transaction, it's the current tx in the resource manager.");
 
-			// invocation.Proceed() in interceptor
+					var fileTransaction = new FileTransaction();
+					fileTransaction.WriteAllText(_FilePath, "Hello world");
 
-			var childTx = tm.CreateTransaction(TransactionMode.Requires, IsolationMode.Unspecified);
-			Assert.That(childTx, Is.InstanceOf(typeof(ChildTransaction)));
-			Assert.That(tm.CurrentTransaction, Is.EqualTo(childTx), 
-			            "Now that we have created a child, it's the current tx.");
+					innerTransaction.Complete();
+					//Assert.That(fileTransaction.Status, Is.EqualTo(TransactionStatus.Committed));
+					Assert.That(fileTransaction.IsDisposed);
 
-			var txF = new FileTransaction();
-			childTx.Enlist(new FileResourceAdapter(txF));
-			childTx.Begin();
-
-			txF.WriteAllText(_FilePath, "Hello world");
-
-			childTx.Commit();
-			stdTx.Commit();
+				}
+				// now we can dispose the main transaction.
+			}
 
 			Assert.That(File.Exists(_FilePath));
 			Assert.That(File.ReadAllLines(_FilePath)[0], Is.EqualTo("Hello world"));
-
-			// first we need to dispose the child transaction.
-			tm.Dispose(childTx);
-
-			// now we can dispose the main transaction.
-			tm.Dispose(stdTx);
-
-			Assert.That(txF.Status, Is.EqualTo(TransactionStatus.Committed));
-			Assert.That(txF.IsDisposed);
-		}
-
-		[Test]
-		public void UsingNestedTransaction_FileTransactionOnlyVotesToCommit()
-		{
-			// TODO Implement proper exception handling when file transaction is voted to commit
-		}
-
-		[Test]
-		public void BugWhenResourceFailsAndTransactionCommits()
-		{
-			var tx = tm.CreateTransaction(TransactionMode.Requires, IsolationMode.Unspecified);
-
 		}
 	}
 }

@@ -21,40 +21,49 @@ namespace Castle.Services.Transaction.Tests
 	using IO;
 	using NUnit.Framework;
 
-
-	[TestFixture]
-	public class DirectoryAdapterTests
+	internal class DirectoryAdapter_ChJail
 	{
-		private string curr_dir;
+		private string _CurrDir;
 
-		[TestFixtureSetUp]
+		[SetUp]
 		public void SetUp()
 		{
-			curr_dir = Path.GetPathWithoutLastBit(Path.GetFullPath(typeof (DirectoryAdapterTests).Assembly.CodeBase));
+			_CurrDir = Path.GetPathWithoutLastBit(Path.GetFullPath(typeof(DirectoryAdapterTests).Assembly.CodeBase));
+		}
+	}
+
+
+	public class DirectoryAdapterTests
+	{
+		private string _CurrDir;
+
+		[SetUp]
+		public void SetUp()
+		{
+			_CurrDir = Path.GetPathWithoutLastBit(Path.GetFullPath(typeof (DirectoryAdapterTests).Assembly.CodeBase));
 		}
 
 		[Test]
-		public void CtorWorksIfNullAndNotConstaint()
+		public void DefaultSettings_Ctor()
 		{
 			var adapter = new DirectoryAdapter(new MapPathImpl(), false, null);
 			Assert.That(adapter.UseTransactions);
 		}
 
-//		[Test]
-//		public void IsInAllowedDir_ReturnsFalseIfConstaint_AndOutside()
-//		{
-//			var d = new DirectoryAdapter(new MapPathImpl(), true, curr_dir);
-//
-//			Assert.IsFalse(d.IsInAllowedDir("\\"));
-//			Assert.IsFalse(d.IsInAllowedDir("\\\\?\\C:\\"));
-//			Assert.IsFalse(d.IsInAllowedDir(@"\\.\dev0"));
-//			Assert.IsFalse(d.IsInAllowedDir(@"\\?\UNC\/"));
-//		}
+		[Test]
+		public void IsInAllowedDir_ReturnsFalseIfConstaint_AndOutside()
+		{
+			var d = new DirectoryAdapter(new MapPathImpl(), true, _CurrDir);
+
+			Assert.IsFalse(d.IsInAllowedDir("\\"));
+			Assert.IsFalse(d.IsInAllowedDir("\\\\?\\C:\\"));
+			Assert.IsFalse(d.IsInAllowedDir(@"\\.\dev0"));
+			Assert.IsFalse(d.IsInAllowedDir(@"\\?\UNC\/"));
+		}
 
 		[Test]
 		public void CanGetLocalFile()
 		{
-			// "C:\Users\xyz\Documents\dev\logibit_cms\scm\trunk\Tests\Henrik.Cms.Tests\TestGlobals.cs";
 			var d = new DirectoryAdapter(new MapPathImpl(), false, null);
 			string path = Path.GetPathWithoutLastBit(d.MapPath("~/../../TestGlobals.cs")); // get directory instead
 			Console.WriteLine(path);
@@ -62,24 +71,24 @@ namespace Castle.Services.Transaction.Tests
 		}
 
 
-//		[Test]
-//		public void IsInAllowedDir_ReturnsTrueForInside()
-//		{
-//			var d = new DirectoryAdapter(new MapPathImpl(), true, curr_dir);
-//			Assert.IsTrue(d.IsInAllowedDir(curr_dir));
-//			Assert.IsTrue(d.IsInAllowedDir(curr_dir.Combine("hej/something/test")));
-//			Assert.IsTrue(d.IsInAllowedDir(curr_dir.Combine("hej")));
-//			Assert.IsTrue(d.IsInAllowedDir(curr_dir.Combine("hej.txt")));
-//
-//			Assert.IsTrue(d.IsInAllowedDir("hej"), "It should return true for relative paths.");
-//			Assert.IsTrue(d.IsInAllowedDir("hej.txt"), "It should return true for relative paths");
-//		}
-//
-//		[Test]
-//		public void IsInAllowedDirReturnsTrueIfNoConstraint()
-//		{
-//			var ad = new DirectoryAdapter(new MapPathImpl(), false, null);
-//			Assert.IsTrue(ad.IsInAllowedDir("\\"));
-//		}
+		[Test]
+		public void IsInAllowedDir_ReturnsTrueForInside()
+		{
+			var d = new DirectoryAdapter(new MapPathImpl(), true, _CurrDir);
+			Assert.IsTrue(d.IsInAllowedDir(_CurrDir));
+			Assert.IsTrue(d.IsInAllowedDir(_CurrDir.Combine("hej/something/test")));
+			Assert.IsTrue(d.IsInAllowedDir(_CurrDir.Combine("hej")));
+			Assert.IsTrue(d.IsInAllowedDir(_CurrDir.Combine("hej.txt")));
+
+			Assert.IsTrue(d.IsInAllowedDir("hej"), "It should return true for relative paths.");
+			Assert.IsTrue(d.IsInAllowedDir("hej.txt"), "It should return true for relative paths");
+		}
+
+		[Test]
+		public void IsInAllowedDirReturnsTrueIfNoConstraint()
+		{
+			var ad = new DirectoryAdapter(new MapPathImpl(), false, null);
+			Assert.IsTrue(ad.IsInAllowedDir("\\"));
+		}
 	}
 }

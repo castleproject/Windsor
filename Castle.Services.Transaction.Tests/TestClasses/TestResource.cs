@@ -21,33 +21,25 @@ namespace Castle.Services.Transaction.Tests
 
 	internal class TestResource : ResourceImpl
 	{
-		private readonly Action _S;
 		private readonly Action _C;
 		private readonly Action _R;
 
-		public TestResource(Action s, Action c, Action r)
+		public TestResource(Action c, Action r)
 		{
-			_S = s;
 			_C = c;
 			_R = r;
 		}
 
-		public override void Start()
+		public override void Rollback(System.Transactions.Enlistment enlistment)
 		{
-			base.Start();
-			_S();
-		}
-
-		public override void Commit()
-		{
-			base.Commit();
-			_C();
-		}
-
-		public override void Rollback()
-		{
-			base.Rollback();
+			base.Rollback(enlistment);
 			_R();
+		}
+
+		public override void Commit(System.Transactions.Enlistment enlistment)
+		{
+			base.Commit(enlistment);
+			_C();
 		}
 	}
 }

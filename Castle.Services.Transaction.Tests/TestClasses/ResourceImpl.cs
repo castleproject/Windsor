@@ -14,60 +14,89 @@
 //  limitations under the License.
 // 
 #endregion
+
+using System.Transactions;
+
 namespace Castle.Services.Transaction.Tests
 {
 	using System;
 
-	public class ResourceImpl : IResource, IDisposable
+	public class ResourceImpl : ISinglePhaseNotification, IDisposable
 	{
-		private bool _started;
-		private bool _rolledback;
-		private bool _committed;
-		public bool wasDisposed;
+		private bool _Prepared;
+		private bool _RolledBack;
+		private bool _Committed;
+		public bool _WasDisposed;
+		private bool _InDoubt;
+		private bool _SinglePhaseCommitCalled;
 
-		public bool Started
+		#region Props
+
+		public bool Prepared
 		{
-			get { return _started; }
+			get { return _Prepared; }
 		}
 
-		public bool Rolledback
+		public bool RolledBack
 		{
-			get { return _rolledback; }
+			get { return _RolledBack; }
 		}
 
 		public bool Committed
 		{
-			get { return _committed; }
+			get { return _Committed; }
 		}
 
-		#region IResource Members
-
-		public virtual void Start()
+		public bool SinglePhaseCommitCalled
 		{
-			if (_started) throw new ApplicationException("Start called before");
-
-			_started = true;
+			get { return _SinglePhaseCommitCalled; }
 		}
 
-		public virtual void Rollback()
+		public bool WasDisposed
 		{
-			if (_rolledback) throw new ApplicationException("Rollback called before");
-
-			_rolledback = true;
-		}
-
-		public virtual void Commit()
-		{
-			if (_committed) throw new ApplicationException("Commit called before");
-
-			_committed = true;
+			get { return _WasDisposed; }
 		}
 
 		#endregion
 
 		public void Dispose()
 		{
-			wasDisposed = true;
+			_WasDisposed = true;
+		}
+
+		public virtual void Prepare(PreparingEnlistment preparingEnlistment)
+		{
+			if (_Prepared) throw new ApplicationException("prepare called before");
+			_Prepared = true;
+			preparingEnlistment.Prepared();
+		}
+
+		public virtual void Commit(Enlistment enlistment)
+		{
+			if (_Committed) throw new ApplicationException("commit called previously");
+			_Committed = true;
+			enlistment.Done();
+		}
+
+		public virtual void Rollback(Enlistment enlistment)
+		{
+			if (_RolledBack) throw new ApplicationException("Rollback called before");
+			_RolledBack = true;
+			enlistment.Done();
+		}
+
+		public virtual void InDoubt(Enlistment enlistment)
+		{
+			if (_InDoubt) throw new ApplicationException("in doubt method called twice");
+			_InDoubt = true;
+			enlistment.Done();
+		}
+
+		public virtual void SinglePhaseCommit(SinglePhaseEnlistment singlePhaseEnlistment)
+		{
+			if (_SinglePhaseCommitCalled) throw new ApplicationException("single phase commit called before");
+			_SinglePhaseCommitCalled = true;
+			singlePhaseEnlistment.Committed();
 		}
 	}
 }

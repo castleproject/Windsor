@@ -1,145 +1,119 @@
-#region License
-//  Copyright 2004-2010 Castle Project - http://www.castleproject.org/
-//  
-//  Licensed under the Apache License, Version 2.0 (the "License");
-//  you may not use this file except in compliance with the License.
-//  You may obtain a copy of the License at
-//  
-//      http://www.apache.org/licenses/LICENSE-2.0
-//  
-//  Unless required by applicable law or agreed to in writing, software
-//  distributed under the License is distributed on an "AS IS" BASIS,
-//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//  See the License for the specific language governing permissions and
-//  limitations under the License.
+﻿#region license
+
+// Copyright 2009-2011 Henrik Feldt - http://logibit.se/
 // 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// 
+//      http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 #endregion
 
-namespace Castle.Services.Transaction
-{
-	using System;
-	using System.Collections;
-	using System.Collections.Generic;
+using System;
+using System.Diagnostics.Contracts;
+using System.Transactions;
+using Castle.Services.Transaction;
 
+namespace Castle.Services.vNextTransaction
+{
 	/// <summary>
-	/// Represents the contract for a transaction.
+	/// <para>
+	/// Denotes a castle transaction. This is the main point of interaction between your code and
+	/// the transactional behaviour of it. Use the transaction manager <see cref = "ITxManager" /> to
+	/// rollback from within a transactional method.
+	/// </para><para>
+	/// Implementors of this class should do their best to provide a stable implementation
+	/// where Dispose, Rollback and Complete can be called idempotently. The get-property accessors must
+	/// not change state when gotten.</para>
 	/// </summary>
-	public interface ITransaction
+	[ContractClass(typeof (ITransactionContract))]
+	public interface ITransaction : IDisposable
 	{
 		/// <summary>
-		/// Starts the transaction. Implementors
-		/// should activate the apropriate resources
-		/// in order to start the underlying transaction
+		/// Dispose the resource/the transaction. It's important that you call this method
+		/// when you are using the transaction together with the transaction manager, but 
+		/// otherwise as well if you want deterministic disposal.
 		/// </summary>
-		void Begin();
+		new void Dispose();
 
 		/// <summary>
-		/// Succeed the transaction, persisting the
-		/// modifications
+		/// Gets the tranaction state. Castle.Service.Transaction contains a number
+		/// of states which will allow you to reasin about the state.
 		/// </summary>
-		void Commit();
+		TransactionState State { get; }
 
 		/// <summary>
-		/// <list>
-		/// <item>
-		/// Pre:	TransactionStatus = Active
-		/// </item>
-		/// <item>
-		/// Mid:	Supply a logger and any exceptions from rollbacks will be logged as they happen.
-		/// </item>
-		/// <item>
-		/// Post:
-		///	<list><item>InnerRollback will be called for inheritors, then</item>
-		/// <item>All resources will have Rollback called, then</item>
-		/// <item>All sync infos will have AfterCompletion called.</item>
-		/// </list>
-		/// </item>
-		/// </list>
+		/// Gets the options used to create this transaction.
 		/// </summary>
-		/// <remarks>
-		/// If you are interfacing the transaction through an inversion of control engine
-		/// and in particylar AutoTx, calling this method is not recommended. Instead use
-		/// <see cref="SetRollbackOnly"/>.
-		/// </remarks>
-		/// <exception cref="RollbackResourceException">If any resource(s) failed.</exception>
-		/// <exception cref="TransactionException">If the transaction status was not active.</exception>
+		ITransactionOptions CreationOptions { get; }
+
+		/// <summary>
+		/// Gets the inner <see cref="System.Transactions.Transaction"/>,
+		/// which is the foundation upon which Castle.Transactions builds.
+		/// It can be either a <see cref="CommittableTransaction"/> or a 
+		/// <see cref="DependentTransaction"/> or a 
+		/// <see cref="SubordinateTransaction"/>. A dependent transaction
+		/// can be used to handle concurrency in a nice way.
+		/// </summary>
+		System.Transactions.Transaction Inner { get; }
+
+		/// <summary>
+		/// If the created transaction is a file transaction, there should be a
+		/// transacted-file-transaction handle available.
+		/// </summary>
+		Maybe<SafeKernelTxHandle> TxFHandle { get; }
+
+		// TODO: Policy for handling in doubt transactions
+
+		/// <summary>
+		/// Maybe contains a failed policy for this transaction.
+		/// </summary>
+		Maybe<IRetryPolicy> FailedPolicy { get; }
+
+		/// <summary>
+		/// Gets a local identifier unique to the underlying transaction. Contrary to the 
+		/// underlying System.Transactions.Transaction.TransactionInformation.LocalIdentifier
+		/// property, this identifier is unique also across committable/dependent transactions
+		/// whereas the former isn't. Hence, this identifier is well suited to implement
+		/// per-transaction resolve semantics where even a dependent transaction requires a new 'context'
+		/// of resolve.
+		/// </summary>
+		string LocalIdentifier { get; }
+
+		/// <summary>
+		/// Rolls the transaction back. This method is automatically called on (managed) dispose.
+		/// </summary>
 		void Rollback();
 
 		/// <summary>
-		/// Signals that this transaction can only be rolledback. 
-		/// This is used when the transaction is not being managed by
-		/// the callee.
+		/// Completes the transaction. This method can only be called if the 
+		/// transaction is in the active state, i.e. begin has been called.
 		/// </summary>
-		void SetRollbackOnly();
-
-		/// <summary>
-		/// Returns the current transaction status.
-		/// </summary>
-		TransactionStatus Status { get; }
-		
-		/// <summary>
-		/// Register a participant on the transaction.
-		/// </summary>
-		/// <param name="resource"></param>
-		void Enlist(IResource resource);
-
-		/// <summary>
-		/// Registers a synchronization object that will be 
-		/// invoked prior and after the transaction completion
-		/// (commit or rollback)
-		/// </summary>
-		/// <param name="synchronization"></param>
-		/// <exception cref="ArgumentNullException">If the parameter is null.</exception>
-		void RegisterSynchronization(ISynchronization synchronization);
-
-		/// <summary>
-		/// Transaction context. Can be used by applications.
-		/// </summary>
-		IDictionary Context { get; }
-
-		/// <summary>
-		/// Gets whether the transaction is running inside another of castle's transactions.
-		/// </summary>
-		bool IsChildTransaction { get; }
-
-		/// <summary>
-		/// Gets whether rollback only is set.
-		/// </summary>
-		bool IsRollbackOnlySet { get; }
-
-		/// <summary>
-		/// Gets the transaction mode of the transaction.
-		/// </summary>
-		TransactionMode TransactionMode { get; }
-
-		/// <summary>
-		/// Gets the isolation mode in use for the transaction.
-		/// </summary>
-		IsolationMode IsolationMode { get; }
-
-		/// <summary>
-		/// Gets whether the transaction "found an" ambient transaction to run in.
-		/// This is true if the tx is running in the DTC or a TransactionScope, but 
-		/// doesn't imply a distributed transaction (as TransactionScopes automatically choose the least
-		/// performance invasive option)
-		/// </summary>
-		bool IsAmbient { get; }
-
-		/// <summary>
-		/// Gets the friendly name (if set) or an unfriendly integer hash name (if not set).
-		/// Never returns null.
-		/// </summary>
-		string Name { get; }
-
-		/// <summary>
-		/// Gets an enumerable of the resources present.
-		/// </summary>
-		/// <returns></returns>
-		IEnumerable<IResource> Resources();
-
-        /// <summary>
-        /// Returns true for a read only transaction, false otherwise.
-        /// </summary>
-        bool IsReadOnly { get; }
+		/// <exception cref="TransactionInDoubtException">
+		/// The exception that is thrown when an operation 
+		/// is attempted on a transaction that is in doubt, 
+		/// or an attempt is made to commit the transaction 
+		/// and the transaction becomes InDoubt. 
+		/// </exception>
+		/// <exception cref="TransactionAbortedException">
+		/// The exception that is thrown when an operation is attempted on a transaction 
+		/// that has already been rolled back, or an attempt is made to commit 
+		/// the transaction and the transaction aborts.
+		/// </exception>
+		/// <exception cref="TransactionException">An unknown problem occurred. 
+		/// For example the connection to the database was lost.</exception>
+		/// <remarks>
+		/// It's up for grabs (i.e. github pull request) to correctly handle state on the two exceptions that may be thrown
+		/// and to implement sane retry logic for them. All I can guess is that this shouldn't happen
+		/// unless you run distributed transactions.
+		/// </remarks>
+		void Complete();
 	}
 }

@@ -15,6 +15,9 @@
 // 
 #endregion
 
+using System.Collections.Generic;
+using Castle.Services.vNextTransaction;
+
 namespace Castle.Services.Transaction.IO
 {
 	using System;
@@ -29,7 +32,7 @@ namespace Castle.Services.Transaction.IO
 	/// This adapter chooses intelligently whether there's an ambient
 	/// transaction, and if there is, joins it.
 	/// </summary>
-	public sealed class FileAdapter : TxAdapterBase, IFileAdapter
+	internal sealed class FileAdapter : TxAdapterBase, IFileAdapter
 	{
 		private static readonly ILog _Logger = LogManager.GetLogger(typeof(FileAdapter));
 
@@ -63,11 +66,12 @@ namespace Castle.Services.Transaction.IO
 		{
 			AssertAllowed(path);
 #if !MONO
-			IFileTransaction tx;
+			ITransaction tx;
 			if (HasTransaction(out tx))
 				return (tx as IFileAdapter).Create(path);
 #endif
-			return File.Create(path);
+			// TODO: implement using p/invoke
+			return System.IO.File.Create(path);
 		}
 
 		///<summary>
@@ -79,26 +83,48 @@ namespace Castle.Services.Transaction.IO
 		{
 			AssertAllowed(filePath);
 #if !MONO
-			IFileTransaction tx;
+			ITransaction tx;
 			if (HasTransaction(out tx))
 				return (tx as IFileAdapter).Exists(filePath);
 #endif
-			return File.Exists(filePath);
+			// TODO: implement using p/invoke
+			return System.IO.File.Exists(filePath);
 		}
 
 		public string ReadAllText(string path, Encoding encoding)
 		{
 			AssertAllowed(path);
 #if !MONO
-			IFileTransaction tx;
+			ITransaction tx;
 			if (HasTransaction(out tx))
-				return tx.ReadAllText(path, encoding);
+				return ((IFileAdapter)tx).ReadAllText(path, encoding);
 #endif
-			return File.ReadAllText(path, encoding);
+			// TODO: implement using p/invoke
+			return System.IO.File.ReadAllText(path, encoding);
 			
 		}
 
 		public void Move(string originalFilePath, string newFilePath)
+		{
+			AssertAllowed(originalFilePath);
+			AssertAllowed(newFilePath);
+#if !MONO
+			ITransaction tx;
+			if (HasTransaction(out tx))
+			{
+				((IFileAdapter)tx).Move(originalFilePath, newFilePath);
+				return;
+			}
+#endif
+			throw new NotImplementedException();
+		}
+
+		public IList<string> ReadAllLines(string filePath)
+		{
+			throw new NotImplementedException();
+		}
+
+		public StreamWriter CreateText(string filePath)
 		{
 			throw new NotImplementedException();
 		}
@@ -112,10 +138,10 @@ namespace Castle.Services.Transaction.IO
 		{
 			AssertAllowed(path);
 #if !MONO
-			IFileTransaction tx;
+			ITransaction tx;
 			if (HasTransaction(out tx))
 			{
-				tx.WriteAllText(path, contents);
+				((IFileAdapter)tx).WriteAllText(path, contents);
 				return;
 			}
 #endif
@@ -126,7 +152,7 @@ namespace Castle.Services.Transaction.IO
 		{
 			AssertAllowed(filePath);
 #if !MONO
-			IFileTransaction tx;
+			ITransaction tx;
 			if (HasTransaction(out tx))
 			{
 				(tx as IFileAdapter).Delete(filePath);
@@ -140,9 +166,9 @@ namespace Castle.Services.Transaction.IO
 		{
 			AssertAllowed(filePath);
 #if !MONO
-			IFileTransaction tx;
+			ITransaction tx;
 			if (HasTransaction(out tx))
-				return tx.Open(filePath, mode);
+				return ((IFileAdapter)tx).Open(filePath, mode);
 #endif
 			return File.Open(filePath, mode);
 		}

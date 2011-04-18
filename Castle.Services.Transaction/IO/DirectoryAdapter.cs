@@ -15,6 +15,9 @@
 // 
 #endregion
 
+using System.Diagnostics.Contracts;
+using Castle.Services.vNextTransaction;
+
 namespace Castle.Services.Transaction.IO
 {
 	using System;
@@ -25,7 +28,7 @@ namespace Castle.Services.Transaction.IO
 	/// Adapter which wraps the functionality in <see cref="File"/>
 	/// together with native kernel transactions.
 	/// </summary>
-	public sealed class DirectoryAdapter : TxAdapterBase, IDirectoryAdapter
+	internal sealed class DirectoryAdapter : TxAdapterBase, IDirectoryAdapter
 	{
 		private readonly IMapPath _PathFinder;
 		private readonly ILog _Logger = LogManager.GetLogger(typeof (DirectoryAdapter));
@@ -39,8 +42,8 @@ namespace Castle.Services.Transaction.IO
 		public DirectoryAdapter(IMapPath pathFinder, bool constrainToSpecifiedDir, string specifiedDir)
 			: base(constrainToSpecifiedDir, specifiedDir)
 		{
-			if (pathFinder == null) 
-				throw new ArgumentNullException("pathFinder");
+			Contract.Requires(pathFinder != null);
+			Contract.Requires(specifiedDir == null || specifiedDir != string.Empty);
 
 			_Logger.Debug("DirectoryAdapter created.");
 
@@ -60,7 +63,7 @@ namespace Castle.Services.Transaction.IO
 			AssertAllowed(path);
 
 #if !MONO
-			IFileTransaction tx;
+			ITransaction tx;
 			if (HasTransaction(out tx))
 			{
 				return ((IDirectoryAdapter)tx).Create(path);
@@ -70,7 +73,9 @@ namespace Castle.Services.Transaction.IO
 			{
 				return true;
 			}
-			Directory.CreateDirectory(path);
+			
+			throw new NotImplementedException();
+
 			return false;
 		}
 
@@ -83,7 +88,7 @@ namespace Castle.Services.Transaction.IO
 		{
 			AssertAllowed(path);
 #if !MONO
-			IFileTransaction tx;
+			ITransaction tx;
 			if (HasTransaction(out tx))
 				return ((IDirectoryAdapter) tx).Exists(path);
 #endif
@@ -99,7 +104,7 @@ namespace Castle.Services.Transaction.IO
 		{
 			AssertAllowed(path);
 #if !MONO
-			IFileTransaction tx;
+			ITransaction tx;
 			if (HasTransaction(out tx))
 			{
 				((IDirectoryAdapter) tx).Delete(path);
@@ -122,10 +127,10 @@ namespace Castle.Services.Transaction.IO
 		{
 			AssertAllowed(path);
 #if !MONO
-			IFileTransaction tx;
+			ITransaction tx;
 			if (HasTransaction(out tx))
 			{
-				return tx.Delete(path, recursively);
+				return ((IDirectoryAdapter)tx).Delete(path, recursively);
 			}
 #endif
 			Directory.Delete(path, recursively);
@@ -141,9 +146,9 @@ namespace Castle.Services.Transaction.IO
 		{
 			AssertAllowed(path);
 #if !MONO
-			IFileTransaction tx;
+			ITransaction tx;
 			if (HasTransaction(out tx))
-				return (tx).GetFullPath(path);
+				return ((IDirectoryAdapter)tx).GetFullPath(path);
 #endif
 			return Path.GetFullPath(path);
 		}
@@ -171,19 +176,16 @@ namespace Castle.Services.Transaction.IO
 			AssertAllowed(originalPath);
 			AssertAllowed(newPath);
 
-			throw new NotImplementedException("This hasn't been completely implemented with the >255 character paths. Please help out and send a patch.");
+#if !MONO
+			ITransaction tx;
+			if (HasTransaction(out tx))
+			{
+				(tx as IDirectoryAdapter).Move(originalPath, newPath);
+				return;
+			}
+#endif
 
-//#if !MONO
-//			IFileTransaction tx;
-//			if (HasTransaction(out tx))
-//			{
-//				(tx as IDirectoryAdapter).Move(originalPath, newPath);
-//				return;
-//			}
-//#endif
-			
-
-			//Directory.Move(originalPath, newPath);
+			throw new NotImplementedException();
 		}
 	}
 }
