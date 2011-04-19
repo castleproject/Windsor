@@ -14,11 +14,16 @@
 //  limitations under the License.
 // 
 #endregion
+
+using System;
+using System.Diagnostics.Contracts;
+
 namespace Castle.Services.Transaction
 {
 	///<summary>
 	/// Small interface for the map path functionality.
 	///</summary>
+	[ContractClass(typeof(IMapPathContract))]
 	public interface IMapPath
 	{
 		///<summary>

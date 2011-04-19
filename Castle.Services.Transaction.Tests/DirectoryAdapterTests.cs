@@ -34,7 +34,7 @@ namespace Castle.Services.Transaction.Tests
 		[Test]
 		public void CanGetLocalFile()
 		{
-			var d = new DirectoryAdapter(new MapPathImpl(), false, null);
+			IDirectoryAdapter d = new DirectoryAdapter(new MapPathImpl(), false, null);
 			string path = Path.GetPathWithoutLastBit(d.MapPath("~/../../TestGlobals.cs")); // get directory instead
 			Console.WriteLine(path);
 			Assert.That(d.Exists(path));

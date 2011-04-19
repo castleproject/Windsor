@@ -25,7 +25,6 @@ using Castle.Core.Interceptor;
 using Castle.DynamicProxy;
 using Castle.MicroKernel;
 using Castle.Services.Transaction;
-using Castle.Services.Transaction.Monads;
 using log4net;
 using TransactionException = Castle.Services.Transaction.Exceptions.TransactionException;
 

@@ -1,6 +1,6 @@
+using Castle.Facilities.AutoTx.Testing;
 using Castle.Facilities.AutoTx.Tests.TestClasses;
 using Castle.MicroKernel.Registration;
-using Castle.Services.Transaction.Testing;
 using Castle.Windsor;
 using NUnit.Framework;
 

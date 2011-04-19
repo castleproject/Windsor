@@ -41,6 +41,7 @@ namespace Castle.Services.Transaction.Tests
 
 			_DirPath = "../../Transactions/".CombineAssert("tmp");
 			_FilePath = _DirPath.Combine("test.txt");
+			Assert.That(_FilePath != null);
 			
 			if (File.Exists(_FilePath))
 				File.Delete(_FilePath);
@@ -53,20 +54,6 @@ namespace Castle.Services.Transaction.Tests
 		{
 			if (_DeleteAtEnd && Directory.Exists(_DirPath))
 				Directory.Delete(_DirPath, true);
-		}
-
-		[Test]
-		public void TransactionResources_AreDisposed()
-		{
-			var resource = new ResourceImpl();
-			using (var tx = tm.CreateTransaction(new DefaultTransactionOptions()).Value.Transaction)
-			{
-				tx.Inner.EnlistVolatile(resource, EnlistmentOptions.EnlistDuringPrepareRequired);
-				tx.Rollback();
-			}
-
-			Assert.That(resource.WasDisposed);
-			Assert.That(resource.RolledBack);
 		}
 
 		[Test]
@@ -88,20 +75,17 @@ namespace Castle.Services.Transaction.Tests
 				Assert.That(tm.CurrentTransaction.HasValue, Is.True);
 				Assert.That(tm.CurrentTransaction.Value, Is.EqualTo(stdTx));
 
-				using (var innerTransaction = tm.CreateTransaction(new DefaultTransactionOptions()).Value.Transaction)
+				using (var innerTransaction = tm.CreateFileTransaction(new DefaultTransactionOptions()).Value.Transaction)
 				{
 					Assert.That(tm.CurrentTransaction.Value, Is.EqualTo(innerTransaction),
 								"Now that we have created a dependent transaction, it's the current tx in the resource manager.");
 
-					var fileTransaction = new FileTransaction();
-					fileTransaction.WriteAllText(_FilePath, "Hello world");
+					// this is supposed to be registered in an IoC container
+					var fa = (IFileAdapter)innerTransaction;
+					fa.WriteAllText(_FilePath, "Hello world");
 
 					innerTransaction.Complete();
-					//Assert.That(fileTransaction.Status, Is.EqualTo(TransactionStatus.Committed));
-					Assert.That(fileTransaction.IsDisposed);
-
 				}
-				// now we can dispose the main transaction.
 			}
 
 			Assert.That(File.Exists(_FilePath));

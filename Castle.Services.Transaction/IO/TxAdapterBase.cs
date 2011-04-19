@@ -15,6 +15,8 @@
 // 
 #endregion
 
+using System.Diagnostics.Contracts;
+
 namespace Castle.Services.Transaction.IO
 {
 	using System;
@@ -25,7 +27,7 @@ namespace Castle.Services.Transaction.IO
 	///<summary>
 	/// Adapter base class for the file and directory adapters.
 	///</summary>
-	internal abstract class TxAdapterBase
+	public abstract class TxAdapterBase
 	{
 		private readonly bool _AllowOutsideSpecifiedFolder;
 		private readonly string _SpecifiedFolder;
@@ -36,10 +38,7 @@ namespace Castle.Services.Transaction.IO
 		protected TxAdapterBase(bool constrainToSpecifiedDir,
 		                        string specifiedDir)
 		{
-			if (constrainToSpecifiedDir && specifiedDir == null) throw new ArgumentNullException("specifiedDir");
-			if (constrainToSpecifiedDir && specifiedDir == string.Empty)
-				throw new ArgumentException("The specifified directory was empty.");
-
+			Contract.Requires(!constrainToSpecifiedDir || !string.IsNullOrEmpty(specifiedDir));
 			_AllowOutsideSpecifiedFolder = !constrainToSpecifiedDir;
 			_SpecifiedFolder = specifiedDir;
 		}
@@ -98,6 +97,8 @@ namespace Castle.Services.Transaction.IO
 
 		protected internal bool IsInAllowedDir(string path)
 		{
+			Contract.Requires(!string.IsNullOrEmpty(path));
+
 			if (_AllowOutsideSpecifiedFolder) return true;
 
 			var tentativePath = PathInfo.Parse(path);
@@ -118,6 +119,8 @@ namespace Castle.Services.Transaction.IO
 
 		protected void AssertAllowed(string path)
 		{
+			Contract.Requires(!string.IsNullOrEmpty(path));
+
 			if (_AllowOutsideSpecifiedFolder) return;
 
 			var fullPath = Path.GetFullPath(path);

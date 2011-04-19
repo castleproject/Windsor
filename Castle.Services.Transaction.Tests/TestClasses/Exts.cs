@@ -17,7 +17,6 @@
 #endregion
 
 using System.IO;
-using System.Linq;
 
 namespace Castle.Services.Transaction.Tests
 {
@@ -29,7 +28,7 @@ namespace Castle.Services.Transaction.Tests
 		/// </summary>
 		public static string Combine(this string input, params string[] paths)
 		{
-			return paths.Aggregate(input, Path.Combine);
+			return Path.Combine(input, paths);
 		}
 
 		/// <summary>

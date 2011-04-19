@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics.Contracts;
-using Castle.MicroKernel.Facilities;
 
 namespace Castle.Services.Transaction.Internal
 {
@@ -38,7 +37,7 @@ namespace Castle.Services.Transaction.Internal
 			var disposable = _ForkScopeFactory();
 
 			if (disposable == null)
-				throw new FacilityException("fork scope factory returned null!");
+				throw new InvalidOperationException("fork scope factory returned null!");
 
 			return disposable;
 		}

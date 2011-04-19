@@ -20,7 +20,7 @@ using Castle.MicroKernel.Context;
 using Castle.MicroKernel.Lifestyle;
 using log4net;
 
-namespace Castle.Services.Transaction.Lifestyles
+namespace Castle.Facilities.AutoTx.Lifestyles
 {
 	/// <summary>
 	/// 	Hybrid lifestyle manager, 

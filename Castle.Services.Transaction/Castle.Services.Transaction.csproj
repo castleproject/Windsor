@@ -47,6 +47,8 @@
     <CodeContractsRuntimeCheckingLevel>Full</CodeContractsRuntimeCheckingLevel>
     <CodeContractsReferenceAssembly>Build</CodeContractsReferenceAssembly>
     <CodeContractsAnalysisWarningLevel>2</CodeContractsAnalysisWarningLevel>
+    <CodeAnalysisRuleSet>..\..\Correctness-Rules.ruleset</CodeAnalysisRuleSet>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -66,9 +68,6 @@
     <Reference Include="Castle.Core">
       <HintPath>..\..\lib\NET40\Castle.Core.dll</HintPath>
     </Reference>
-    <Reference Include="Castle.Windsor">
-      <HintPath>..\..\lib\NET40\Castle.Windsor.dll</HintPath>
-    </Reference>
     <Reference Include="log4net">
       <HintPath>..\..\lib\NET40\log4net.dll</HintPath>
     </Reference>
@@ -83,6 +82,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Activity.cs" />
+    <Compile Include="IDirectoryAdapterContract.cs" />
+    <Compile Include="IFileAdapterContract.cs" />
+    <Compile Include="IMapPathContract.cs" />
     <Compile Include="Internal\AnonymousRetryPolicy.cs" />
     <Compile Include="CallContextActivityManager.cs" />
     <Compile Include="Internal\ContractExtensions.cs" />
@@ -95,7 +97,9 @@
     <Compile Include="ICreatedTransaction.cs" />
     <Compile Include="ICreatedTransactionContract.cs" />
     <Compile Include="Internal\IKernelTransaction.cs" />
+    <Compile Include="Internal\KTMCodes.cs" />
     <Compile Include="Internal\SafeNativeMethods.cs" />
+    <Compile Include="Internal\TxFCodes.cs" />
     <Compile Include="Internal\UnsafeNativeMethods.cs" />
     <Compile Include="IO\Directory.cs" />
     <Compile Include="IO\DirectoryAdapter.cs" />
@@ -118,17 +122,11 @@
     <Compile Include="ITransactionOptionsContract.cs" />
     <Compile Include="ITxManager.cs" />
     <Compile Include="ITxManagerContract.cs" />
-    <Compile Include="Lifestyles\HybridLifestyleManager.cs" />
-    <Compile Include="Lifestyles\HybridPerTransactionTransientLifestyleManager.cs" />
-    <Compile Include="Lifestyles\LifestyleRegistrationExtensions.cs" />
-    <Compile Include="Lifestyles\MissingTransactionException.cs" />
-    <Compile Include="Lifestyles\PerTransactionLifestyleManagerBase.cs" />
     <Compile Include="Monads\Maybe.cs" />
     <Compile Include="Internal\NativeMethods.cs" />
     <Compile Include="Properties\CustomAssemblyInfo.cs" />
     <Compile Include="SafeFindHandle.cs" />
     <Compile Include="SafeKernelTxHandle.cs" />
-    <Compile Include="Testing\ResolveScope.cs" />
     <Compile Include="Transaction.cs" />
     <Compile Include="TransactionAttribute.cs" />
     <Compile Include="TxManager.cs" />

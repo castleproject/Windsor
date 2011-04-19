@@ -56,7 +56,15 @@
   <ItemGroup>
     <Compile Include="AutoTxFacility.cs" />
     <Compile Include="ITxMetaInfoStore.cs" />
+    <Compile Include="Lifestyles\HybridLifestyleManager.cs" />
+    <Compile Include="Lifestyles\HybridPerTransactionTransientLifestyleManager.cs" />
+    <Compile Include="Lifestyles\LifestyleRegistrationExtensions.cs" />
+    <Compile Include="Lifestyles\MissingTransactionException.cs" />
+    <Compile Include="Lifestyles\PerTransactionLifestyleManagerBase.cs" />
     <Compile Include="Properties\CustomAssemblyInfo.cs" />
+    <Compile Include="Testing\IOResolveScope.cs" />
+    <Compile Include="Testing\ResolveEx.cs" />
+    <Compile Include="Testing\ResolveScope.cs" />
     <Compile Include="TxClassMetaInfo.cs" />
     <Compile Include="TxClassMetaInfoStore.cs" />
     <Compile Include="TxComponentInspector.cs" />

@@ -15,6 +15,8 @@
 // 
 #endregion
 
+using Castle.Services.Transaction.Internal;
+
 namespace Castle.Services.Transaction
 {
 	using System;
@@ -53,18 +55,9 @@ namespace Castle.Services.Transaction
 		{
 			if (!(IsInvalid || IsClosed))
 			{
-				return CloseHandle(handle);
+				return NativeMethods.CloseHandle(handle);
 			}
 			return (IsInvalid || IsClosed);
 		}
-
-		/* BOOL WINAPI CloseHandle(
-		 *		__in  HANDLE hObject
-		 * );
-		 */
-		[DllImport("kernel32.dll")]
-		//[ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
-		//[SuppressUnmanagedCodeSecurity]
-		private static extern bool CloseHandle(IntPtr handle);
 	}
 }

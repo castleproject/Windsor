@@ -16,6 +16,7 @@
 #endregion
 
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.IO;
 using System.Text;
 
@@ -24,6 +25,7 @@ namespace Castle.Services.Transaction
 	///<summary>
 	/// File helper wrapper interface.
 	///</summary>
+	[ContractClass(typeof(IFileAdapterContract))]
 	public interface IFileAdapter
 	{
 		///<summary>
@@ -48,10 +50,12 @@ namespace Castle.Services.Transaction
 		string ReadAllText(string path);
 
 		/// <summary>
-		/// Writes text to a file as part of a transaction
+		/// Writes text to a file as part of a transaction.
+		/// If the file already contains data, first truncates the file
+		/// and then writes all contents in the string to the file.
 		/// </summary>
-		/// <param name="path"></param>
-		/// <param name="contents"></param>
+		/// <param name="path">Path to write to</param>
+		/// <param name="contents">Contents of the file after writing to it.</param>
 		void WriteAllText(string path, string contents);
 
 		/// <summary>

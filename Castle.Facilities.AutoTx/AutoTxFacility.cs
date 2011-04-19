@@ -19,7 +19,9 @@
 using Castle.MicroKernel.Facilities;
 using Castle.MicroKernel.Registration;
 using Castle.Services.Transaction;
+using Castle.Services.Transaction.IO;
 using log4net;
+using Castle.Facilities.AutoTx.Lifestyles;
 
 namespace Castle.Facilities.AutoTx
 {
@@ -56,7 +58,19 @@ namespace Castle.Facilities.AutoTx
 				// that framework method to keep track of the call context.
 				Component.For<IActivityManager>()
 					.ImplementedBy<CallContextActivityManager>()
-					.LifeStyle.Singleton
+					.LifeStyle.Singleton,
+
+				Component.For<IDirectoryAdapter>()
+					.ImplementedBy<DirectoryAdapter>()
+					.LifeStyle.HybridPerTransactionTransient(),
+
+				Component.For<IFileAdapter>()
+					.ImplementedBy<FileAdapter>()
+					.LifeStyle.HybridPerTransactionTransient(),
+
+				Component.For<IMapPath>()
+					.ImplementedBy<MapPathImpl>()
+					.LifeStyle.Transient
 				);
 
 			Kernel.ComponentModelBuilder.AddContributor(new TxComponentInspector());

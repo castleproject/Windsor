@@ -18,7 +18,6 @@
 
 using System;
 using System.Diagnostics.Contracts;
-using Castle.Services.Transaction.Monads;
 
 namespace Castle.Services.Transaction
 {

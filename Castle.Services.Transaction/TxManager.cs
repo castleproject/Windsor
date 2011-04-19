@@ -20,7 +20,6 @@ using System;
 using System.Diagnostics.Contracts;
 using System.Transactions;
 using Castle.Services.Transaction.Internal;
-using Castle.Services.Transaction.Monads;
 using log4net;
 
 namespace Castle.Services.Transaction
@@ -141,6 +140,14 @@ namespace Castle.Services.Transaction
 
 		void IDisposable.Dispose()
 		{
+			Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+
+		private void Dispose(bool isManaged)
+		{
+			if (!isManaged)
+				return;
 		}
 	}
 }

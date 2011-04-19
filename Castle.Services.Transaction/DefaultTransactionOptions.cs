@@ -18,6 +18,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Transactions;
 using System.Linq;
 
@@ -61,6 +62,8 @@ namespace Castle.Services.Transaction
 		public DefaultTransactionOptions(IsolationLevel isolationLevel, TransactionScopeOption mode, bool fork, TimeSpan timeout, 
 			IEnumerable<KeyValuePair<string, object>> customContext, bool asyncRollback, bool asyncCommit)
 		{
+			Contract.Requires(customContext != null);
+
 			IsolationLevel = isolationLevel;
 			Mode = mode;
 			Fork = fork;
@@ -70,6 +73,11 @@ namespace Castle.Services.Transaction
 			AsyncCommit = asyncCommit;
 		}
 
+		[ContractInvariantMethod]
+		private void Invariant()
+		{
+			Contract.Invariant(_CustomContext != null);
+		}
 
 		/// <summary>
 		/// 	Indicates whether the current object is equal to another object of the same type.

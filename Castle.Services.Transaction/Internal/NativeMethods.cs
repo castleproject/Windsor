@@ -10,8 +10,20 @@ namespace Castle.Services.Transaction.Internal
 	{
 		#region Kernel transaction manager
 
-		internal const int ERROR_TRANSACTIONAL_CONFLICT = 6800;
+		// ReSharper disable InconsistentNaming
+		// ReSharper disable UnusedMember.Local
 
+		// overview here: http://msdn.microsoft.com/en-us/library/aa964885(VS.85).aspx
+		// helper: http://www.improve.dk/blog/2009/02/14/utilizing-transactional-ntfs-through-dotnet
+
+
+		/* BOOL WINAPI CloseHandle(
+		 *		__in  HANDLE hObject
+		 * );
+		 */
+		[DllImport("kernel32.dll")]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		internal static extern bool CloseHandle(IntPtr handle);
 
 		/// <summary>
 		/// Creates a new transaction object. Passing too long a description will cause problems. This behaviour is indeterminate right now.
@@ -184,6 +196,7 @@ namespace Castle.Services.Transaction.Internal
 		/// <returns>If the function succeeds, the return value is nonzero and the lpFindFileData parameter contains information about the next file or directory found.
 		/// If the function fails, the return value is zero and the contents of lpFindFileData are indeterminate. To get extended error information, call the GetLastError function.
 		/// If the function fails because no more matching files can be found, the GetLastError function returns ERROR_NO_MORE_FILES.</returns>
+		[return: MarshalAs(UnmanagedType.Bool)]
 		[DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Auto)]
 		internal static extern bool FindNextFile([In] SafeFindHandle hFindFile,
 												[Out] out WIN32_FIND_DATA lpFindFileData);
@@ -196,9 +209,9 @@ namespace Castle.Services.Transaction.Internal
 			WIN32_FIND_DATA data;
 
 #if MONO
-			uint caseSensitive = 0x1;
+			const uint caseSensitive = 0x1;
 #else
-			uint caseSensitive = 0;
+			const uint caseSensitive = 0;
 #endif
 
 			return FindFirstFileTransactedW(filePath,
@@ -240,6 +253,7 @@ namespace Castle.Services.Transaction.Internal
 		/// <param name="lpSecurityAttributes">A pointer to a SECURITY_ATTRIBUTES structure. The lpSecurityDescriptor member of the structure specifies a security descriptor for the new directory.</param>
 		/// <param name="hTransaction">A handle to the transaction. This handle is returned by the CreateTransaction function.</param>
 		/// <returns>True if the call succeeds, otherwise do a GetLastError.</returns>
+		[return: MarshalAs(UnmanagedType.Bool)]
 		[DllImport("kernel32.dll", SetLastError = true)]
 		internal static extern bool CreateDirectoryTransactedW(
 			[MarshalAs(UnmanagedType.LPWStr)] string lpTemplateDirectory,
@@ -258,10 +272,21 @@ namespace Castle.Services.Transaction.Internal
 		/// </param>
 		/// <param name="hTransaction">A handle to the transaction. This handle is returned by the CreateTransaction function.</param>
 		/// <returns>True if the call succeeds, otherwise do a GetLastError.</returns>
+		[return: MarshalAs(UnmanagedType.Bool)]
 		[DllImport("kernel32.dll", SetLastError = true)]
 		internal static extern bool RemoveDirectoryTransactedW(
 			[MarshalAs(UnmanagedType.LPWStr)] string lpPathName,
 			SafeKernelTxHandle hTransaction);
+
+		/*
+		 * Might need to use:
+		 * DWORD WINAPI GetLongPathNameTransacted(
+		 *	  __in   LPCTSTR lpszShortPath,
+		 *	  __out  LPTSTR lpszLongPath,
+		 *	  __in   DWORD cchBuffer,
+		 *	  __in   HANDLE hTransaction
+		 *	);
+		 */
 
 		/// <summary>
 		/// http://msdn.microsoft.com/en-us/library/aa364966(VS.85).aspx

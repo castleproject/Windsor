@@ -62,7 +62,7 @@ namespace Castle.Services.Transaction
 		{
 			Contract.Requires(path != null);
 			if (path == string.Empty) return false;
-			return PathInfo.Parse(path).Root != string.Empty;
+			return !string.IsNullOrEmpty(PathInfo.Parse(path).Root);
 		}
 
 		/// <summary>
@@ -99,6 +99,7 @@ namespace Castle.Services.Transaction
 		{
 			Contract.Requires(path != null);
 			if (path.Length == 0) return string.Empty;
+
 			return path.Substring(GetPathRoot(path).Length);
 		}
 
@@ -131,7 +132,6 @@ namespace Castle.Services.Transaction
 		public static PathInfo GetPathInfo(string path)
 		{
 			Contract.Requires(path != null);
-
 			return PathInfo.Parse(path);
 		}
 
@@ -162,10 +162,14 @@ namespace Castle.Services.Transaction
 		/// <returns></returns>
 		public static string GetPathWithoutLastBit(string path)
 		{
-			Contract.Requires(path != null);
+			Contract.Requires(!string.IsNullOrEmpty(path));
+			Contract.Requires(path.Length >= 2);
 
-			var chars = new List<char>(new[] {DirectorySeparatorChar, AltDirectorySeparatorChar});
-			Contract.Ensures(chars.Count == 2);
+			var chars = new List<char>
+			{
+			    DirectorySeparatorChar, 
+				AltDirectorySeparatorChar
+			};
 
 			bool endsWithSlash = false;
 			int secondLast = -1;
@@ -187,7 +191,6 @@ namespace Castle.Services.Transaction
 			if (last == -1)
 				throw new ArgumentException(string.Format("Could not find a path separator character in the path \"{0}\"", path));
 
-			Contract.Assume(path.Length >= 0);
 			var res = path.Substring(0, endsWithSlash ? secondLast : last);
 			return res == string.Empty ? new string(lastType, 1) : res;
 		}
@@ -227,7 +230,7 @@ namespace Castle.Services.Transaction
 
 		public static string GetFileNameWithoutExtension(string path)
 		{
-			Contract.Requires(path != null);
+			Contract.Requires(!string.IsNullOrEmpty(path));
 
 			var filename = GetFileName(path);
 			var lastPeriod = filename.LastIndexOf('.');
@@ -265,18 +268,26 @@ namespace Castle.Services.Transaction
 			return new[] { DirectorySeparatorChar, AltDirectorySeparatorChar};
 		}
 
-		public static string Combine(string arg1, string arg2)
+		public static string Combine(string firstPath, string secondPath)
 		{
-			Contract.Requires(arg2 != null);
-			Contract.Requires(arg1 != null);
-			return System.IO.Path.Combine(arg1, arg2);
+			Contract.Requires(secondPath != null);
+			Contract.Requires(firstPath != null);
+
+			return System.IO.Path.Combine(firstPath, secondPath);
 		}
 
-		public static string Combine(this string arg1, params string[] otherPaths)
+		public static string Combine(this string firstPath, params string[] otherPaths)
 		{
 			Contract.Requires(otherPaths != null);
-			Contract.Requires(arg1 != null);
-			return otherPaths.Aggregate(arg1, Combine);
+			Contract.Requires(firstPath != null);
+			Contract.Requires(firstPath.Length >= 0);
+			Contract.Requires(Contract.ForAll(otherPaths, p => p.Length > 0));
+			Contract.Ensures(Contract.Result<string>() != null);
+			Contract.Ensures(Contract.Result<string>().Length == firstPath.Length 
+				+ otherPaths.Select(x => x.Length).Sum()
+				+ (otherPaths.Length-1) /* no of separator chars */);
+
+			return otherPaths.Aggregate(firstPath, Combine);
 		}
 	}
 }

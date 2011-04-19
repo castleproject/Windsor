@@ -59,16 +59,11 @@ namespace Castle.Services.Transaction.IO
  (?<rel_drive>\w{1,3}:)?
  (?<folders_files>.+))?";
 
-		private static Regex _Regex;
-
-		static PathInfo()
-		{
-			_Regex = new Regex(_StrRegex,
+		private static Regex _Regex = new Regex(_StrRegex,
 			                   RegexOptions.Compiled |
 			                   RegexOptions.IgnorePatternWhitespace |
 			                   RegexOptions.IgnoreCase |
 			                   RegexOptions.Multiline);
-		}
 
 		private readonly string _Root,
 								_UNCPrefix,
@@ -311,15 +306,15 @@ namespace Castle.Services.Transaction.IO
 		{
 			get
 			{
-				if (Device != string.Empty)
+				if (!string.IsNullOrEmpty(Device))
 					return PathType.Device;
-				if (ServerName != string.Empty)
+				if (!string.IsNullOrEmpty(ServerName))
 					return PathType.Server;
-				if (IPv4 != string.Empty)
+				if (!string.IsNullOrEmpty(IPv4))
 					return PathType.IPv4;
-				if (IPv6 != string.Empty)
+				if (!string.IsNullOrEmpty(IPv6))
 					return PathType.IPv6;
-				if (Drive != string.Empty)
+				if (!string.IsNullOrEmpty(Drive))
 					return PathType.Drive;
 				return PathType.Relative;
 			}
@@ -330,7 +325,7 @@ namespace Castle.Services.Transaction.IO
 		/// </summary>
 		public bool IsRooted
 		{
-			get { return _Root != string.Empty; }
+			get { return !string.IsNullOrEmpty(_Root); }
 		}
 
 		/// <summary>

@@ -23,6 +23,18 @@ namespace Castle.Services.Transaction.Exceptions
 	[Serializable]
 	public sealed class TransactionalConflictException : TransactionException
 	{
+		public TransactionalConflictException()
+		{
+		}
+
+		public TransactionalConflictException(string message) : base(message)
+		{
+		}
+
+		public TransactionalConflictException(string message, Exception innerException) : base(message, innerException)
+		{
+		}
+
 		public TransactionalConflictException(string message, Uri helperLink) : base(message, helperLink)
 		{
 		}
@@ -31,7 +43,7 @@ namespace Castle.Services.Transaction.Exceptions
 		{
 		}
 
-		public TransactionalConflictException(SerializationInfo info, StreamingContext context) : base(info, context)
+		private TransactionalConflictException(SerializationInfo info, StreamingContext context) : base(info, context)
 		{
 		}
 	}

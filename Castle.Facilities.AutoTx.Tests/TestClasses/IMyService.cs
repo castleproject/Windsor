@@ -8,5 +8,7 @@ namespace Castle.Facilities.AutoTx.Tests.TestClasses
 		ITransaction VerifyInAmbient();
 		void VerifyInAmbient(Action a);
 		void VerifySupressed();
+
+		void VerifyBookKeepingInFork(Action a);
 	}
 }

@@ -21,7 +21,6 @@ using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Reflection;
 using Castle.Services.Transaction;
-using Castle.Services.Transaction.Monads;
 using Castle.Services.Transaction.Utils;
 
 namespace Castle.Facilities.AutoTx

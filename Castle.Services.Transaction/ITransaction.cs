@@ -19,7 +19,6 @@
 using System;
 using System.Diagnostics.Contracts;
 using System.Transactions;
-using Castle.Services.Transaction.Monads;
 
 namespace Castle.Services.Transaction
 {
@@ -55,13 +54,21 @@ namespace Castle.Services.Transaction
 		ITransactionOptions CreationOptions { get; }
 
 		/// <summary>
-		/// Gets the inner <see cref="System.Transactions.Transaction"/>,
+		/// <para>Gets the inner <see cref="System.Transactions.Transaction"/>,
 		/// which is the foundation upon which Castle.Transactions builds.
 		/// It can be either a <see cref="CommittableTransaction"/> or a 
 		/// <see cref="DependentTransaction"/> or a 
 		/// <see cref="SubordinateTransaction"/>. A dependent transaction
-		/// can be used to handle concurrency in a nice way.
+		/// can be used to handle concurrency in a nice way.</para>
+		/// 
+		/// <para>This property is null if the transaction's supervising coordinator (i.e.
+		/// either MS DTC [multiple resources/2PC] or KTM [kernel/2PC] or LTM on Windows)
+		/// is not based on LTM -- this is true (and hence the property null) for Kernel Transactions, i.e. registry
+		/// and file transactions that were started before other DTC/LTM-transacted resources.</para>
 		/// </summary>
+		/// <remarks>
+		/// TODO: Change this property after construction if a new LTM/DTC transaction is created from the same transaction manager.
+		/// </remarks>
 		System.Transactions.Transaction Inner { get; }
 
 		/// <summary>

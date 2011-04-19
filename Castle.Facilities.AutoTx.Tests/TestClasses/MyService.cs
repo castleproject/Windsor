@@ -60,5 +60,11 @@ namespace Castle.Facilities.AutoTx.Tests.TestClasses
 		{
 			Assert.That(System.Transactions.Transaction.Current, Is.Null);
 		}
+
+		[Transaction(Fork = true)]
+		public void VerifyBookKeepingInFork(Action a)
+		{
+			a();
+		}
 	}
 }

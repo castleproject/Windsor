@@ -123,9 +123,6 @@
       <HintPath Condition=" '$(BuildConfigKey)' == '' ">..\..\lib\net40\Castle.Core.dll</HintPath>
       <HintPath Condition=" '$(BuildConfigKey)' != '' ">..\..\lib\$(BuildConfigKey)\Castle.Core.dll</HintPath>
     </Reference>
-    <Reference Include="Castle.Windsor">
-      <HintPath>..\..\lib\NET40\Castle.Windsor.dll</HintPath>
-    </Reference>
     <Reference Include="FluentNHibernate">
       <HintPath>..\..\lib\FluentNHibernate.dll</HintPath>
     </Reference>
@@ -180,11 +177,11 @@
     <Compile Include="TestClasses\TestResource.cs" />
     <Compile Include="TestClasses\ThrowsExceptionResource.cs" />
     <Compile Include="TestClasses\TransientActivityManager.cs" />
-    <Compile Include="Scratch.cs" />
     <Compile Include="TestClasses\ThrowingResource.cs" />
-    <Compile Include="RetryPolicies_Transactions.cs" />
     <Compile Include="ScratchBoard_LTM.cs" />
     <Compile Include="TestClasses\TxTraceListener.cs" />
+    <Compile Include="TransactionManager_EnlistedResources.cs" />
+    <Compile Include="TransactionManager_TransactionDependentAndStackState.cs" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />

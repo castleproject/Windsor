@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
-using Castle.Services.Transaction.Monads;
 using log4net;
 
 namespace Castle.Services.Transaction

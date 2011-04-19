@@ -26,7 +26,7 @@ namespace Castle.Services.Transaction.Tests
 		private bool _Prepared;
 		private bool _RolledBack;
 		private bool _Committed;
-		public bool _WasDisposed;
+		private bool _WasDisposed;
 		private bool _InDoubt;
 		private bool _SinglePhaseCommitCalled;
 

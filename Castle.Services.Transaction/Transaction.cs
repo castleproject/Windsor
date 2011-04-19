@@ -19,7 +19,6 @@
 using System;
 using System.Diagnostics.Contracts;
 using System.Transactions;
-using Castle.Services.Transaction.Monads;
 using TransactionException = Castle.Services.Transaction.Exceptions.TransactionException;
 
 namespace Castle.Services.Transaction
@@ -129,7 +128,7 @@ namespace Castle.Services.Transaction
 			}
 		}
 
-		public ITransactionOptions CreationOptions
+		ITransactionOptions ITransaction.CreationOptions
 		{
 			get { return _CreationOptions; }
 		}
@@ -220,6 +219,15 @@ namespace Castle.Services.Transaction
 
 		void IDisposable.Dispose()
 		{
+			Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+
+		private void Dispose(bool isManaged)
+		{
+			if (!isManaged)
+				return;
+
 			try
 			{
 				Inner.Dispose();

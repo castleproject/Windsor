@@ -14,12 +14,16 @@
 //  limitations under the License.
 // 
 #endregion
+
+using System.Diagnostics.Contracts;
+
 namespace Castle.Services.Transaction
 {
 	///<summary>
 	/// Directory helper. Use this instead of Directory in order to gain
 	/// transparent interop with transactions (when you want them, as marked by the [Transaction] attribute).
 	///</summary>
+	[ContractClass(typeof(IDirectoryAdapterContract))]
 	public interface IDirectoryAdapter
 	{
 		/// <summary>Creates a directory at the path given.
@@ -62,9 +66,9 @@ namespace Castle.Services.Transaction
 		/// <summary>
 		/// Gets the full path of the specified directory.
 		/// </summary>
-		/// <param name="dir">The relative path.</param>
+		/// <param name="relativePath">The relative path.</param>
 		/// <returns>A string with the full path.</returns>
-		string GetFullPath(string dir);
+		string GetFullPath(string relativePath);
 
 		///<summary>
 		/// Gets the MapPath of the path. 

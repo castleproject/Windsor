@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics.Contracts;
-using Castle.Services.Transaction.Monads;
 using TransactionException = Castle.Services.Transaction.Exceptions.TransactionException;
 
 namespace Castle.Services.Transaction
@@ -58,11 +57,7 @@ namespace Castle.Services.Transaction
 
 		public System.Transactions.Transaction Inner
 		{
-			get
-			{
-				Contract.Ensures(Contract.Result<System.Transactions.Transaction>() != null);
-				throw new NotImplementedException();
-			}
+			get { throw new NotImplementedException(); }
 		}
 
 		Maybe<SafeKernelTxHandle> ITransaction.TxFHandle

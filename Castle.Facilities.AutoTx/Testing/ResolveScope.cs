@@ -3,19 +3,20 @@ using System.Diagnostics.Contracts;
 using Castle.Windsor;
 using log4net;
 
-namespace Castle.Services.Transaction.Testing
+namespace Castle.Facilities.AutoTx.Testing
 {
 	public class ResolveScope<T> : IDisposable
+		where T : class
 	{
 		private static readonly ILog _Logger = LogManager.GetLogger(typeof (ResolveScope<T>));
-
-		private readonly IWindsorContainer _Container;
-
 		private readonly T _Service;
+		private bool _Disposed;
+		protected readonly IWindsorContainer _Container;
 
 		public ResolveScope(IWindsorContainer container)
 		{
 			Contract.Requires(container != null);
+			Contract.Ensures(_Service != null, "or resolve throws");
 
 			_Logger.Debug("creating");
 
@@ -23,7 +24,13 @@ namespace Castle.Services.Transaction.Testing
 			_Service = _Container.Resolve<T>();
 		}
 
-		public T Service
+		[ContractInvariantMethod]
+		private void Invariant()
+		{
+			Contract.Invariant(_Service != null);
+		}
+
+		public virtual T Service
 		{
 			get
 			{
@@ -32,10 +39,21 @@ namespace Castle.Services.Transaction.Testing
 			}
 		}
 
-		public void Dispose()
+		public virtual void Dispose()
 		{
-			_Logger.Debug("disposing");
-			_Container.Release(_Service);
+			if (_Disposed) return;
+
+			_Logger.Debug("disposing resolve scope");
+
+			try
+			{
+				_Container.Release(_Service);
+				_Container.Dispose();
+			}
+			finally
+			{
+				_Disposed = true;
+			}
 		}
 	}
 }

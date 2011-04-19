@@ -15,14 +15,15 @@
 // 
 #endregion
 
+using System.Security;
+
 namespace Castle.Services.Transaction
 {
 	using System;
 	using System.Runtime.InteropServices;
-	using System.Security.Permissions;
 	using Microsoft.Win32.SafeHandles;
 
-	[SecurityPermission(SecurityAction.LinkDemand, UnmanagedCode = true)]
+	[SecurityCritical]
 	internal sealed class SafeFindHandle : SafeHandleZeroOrMinusOneIsInvalid
 	{
 		internal SafeFindHandle()

@@ -8,6 +8,14 @@ namespace Castle.Services.Transaction.Exceptions
 	{
 		private readonly Uri _HelpLink;
 
+		public TransactionException()
+		{
+		}
+
+		public TransactionException(string message) : base(message)
+		{
+		}
+
 		public TransactionException(string message, Uri helpLink) : base(message)
 		{
 			_HelpLink = helpLink;

@@ -23,7 +23,7 @@ using Castle.Core;
 using Castle.MicroKernel;
 using Castle.MicroKernel.Facilities;
 using Castle.MicroKernel.ModelBuilder.Inspectors;
-using Castle.Services.Transaction.Monads;
+using Castle.Services.Transaction;
 
 namespace Castle.Facilities.AutoTx
 {
