@@ -40,6 +40,8 @@ namespace Castle.Services.Transaction
 		/// when you are using the transaction together with the transaction manager, but 
 		/// otherwise as well if you want deterministic disposal.
 		/// </summary>
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1063:ImplementIDisposableCorrectly",
+			Justification = "I want to prove invariants about the disposed state, so I re-implement this method.")]
 		new void Dispose();
 
 		/// <summary>

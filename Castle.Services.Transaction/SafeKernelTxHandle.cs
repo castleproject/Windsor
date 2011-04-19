@@ -15,22 +15,20 @@
 // 
 #endregion
 
+using System.Security;
 using Castle.Services.Transaction.Internal;
 
 namespace Castle.Services.Transaction
 {
 	using System;
 	using System.Runtime.ConstrainedExecution;
-	using System.Runtime.InteropServices;
-	using System.Security.Permissions;
 	using Microsoft.Win32.SafeHandles;
 
 	///<summary>
 	/// A safe file handle on the transaction resource.
 	///</summary>    
 	
-	[SecurityPermission(SecurityAction.InheritanceDemand, UnmanagedCode = true)]
-	[SecurityPermission(SecurityAction.Demand, UnmanagedCode = true)]
+	[SecurityCritical]
 	public sealed class SafeKernelTxHandle : SafeHandleZeroOrMinusOneIsInvalid
 	{
 		/// <summary>

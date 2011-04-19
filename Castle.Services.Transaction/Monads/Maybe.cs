@@ -211,7 +211,9 @@ namespace Castle.Services.Transaction
 			}
 		}
 
-		[Pure]
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2225:OperatorOverloadsHaveNamedAlternates",
+			Justification = "The FromXXX and ToXXX methods are on the static Maybe class."), 
+		 Pure]
 		public static implicit operator Maybe<T>(T item)
 		{
 			Contract.Ensures(Contract.Result<Maybe<T>>() != null,

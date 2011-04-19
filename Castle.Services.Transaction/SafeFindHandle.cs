@@ -16,11 +16,11 @@
 #endregion
 
 using System.Security;
+using Castle.Services.Transaction.Internal;
 
 namespace Castle.Services.Transaction
 {
 	using System;
-	using System.Runtime.InteropServices;
 	using Microsoft.Win32.SafeHandles;
 
 	[SecurityCritical]
@@ -41,7 +41,7 @@ namespace Castle.Services.Transaction
 		{
 			if (!(IsInvalid || IsClosed))
 			{
-				return FindClose(this);
+				return NativeMethods.FindClose(this);
 			}
 			return (IsInvalid || IsClosed);
 		}
@@ -50,12 +50,9 @@ namespace Castle.Services.Transaction
 		{
 			if (!(IsInvalid || IsClosed))
 			{
-				FindClose(this);
+				NativeMethods.FindClose(this);
 			}
 			base.Dispose(disposing);
 		}
-
-		[DllImport("kernel32.dll", SetLastError = true)]
-		static extern bool FindClose(SafeHandle hFindFile);
 	}
 }

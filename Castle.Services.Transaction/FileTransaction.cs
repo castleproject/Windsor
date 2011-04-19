@@ -19,18 +19,14 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Security.Permissions;
 using System.Text;
 using System.Transactions;
 using Castle.Services.Transaction.Exceptions;
 using Castle.Services.Transaction.Internal;
-using Castle.Services.Transaction.IO;
 using Microsoft.Win32.SafeHandles;
 using TransactionException = Castle.Services.Transaction.Exceptions.TransactionException;
 
@@ -72,6 +68,7 @@ namespace Castle.Services.Transaction
 
 		public FileTransaction(string name, CommittableTransaction inner, uint stackDepth, ITransactionOptions creationOptions, Action onDispose)
 		{
+			Contract.Requires(inner != null);
 			Contract.Requires(creationOptions != null);
 			Contract.Requires(!string.IsNullOrEmpty(name));
 			Contract.Ensures(_Name != null);
@@ -84,6 +81,7 @@ namespace Castle.Services.Transaction
 
 		public FileTransaction(string name, DependentTransaction inner, uint stackDepth, ITransactionOptions creationOptions, Action onDispose)
 		{
+			Contract.Requires(inner != null);
 			Contract.Requires(creationOptions != null);
 			Contract.Requires(!string.IsNullOrEmpty(name));
 			Contract.Ensures(_Name != null);
@@ -122,7 +120,11 @@ namespace Castle.Services.Transaction
 				//IsAmbient = true; // TODO: Perhaps we created this item and we need to notify the transaction manager...
 			}
 			else _TransactionHandle = NativeMethods.createTransaction(string.Format("{0} Transaction", _Name));
-			if (!_TransactionHandle.IsInvalid) return;
+			if (!_TransactionHandle.IsInvalid)
+			{
+				_State = TransactionState.Active;
+				return;
+			}
 
 			throw new TransactionException(
 				"Cannot begin file transaction. CreateTransaction failed and there's no ambient transaction.",
@@ -494,6 +496,8 @@ namespace Castle.Services.Transaction
 		/// <param name="access">The access rights this handle has.</param>
 		/// <param name="share">What other handles may be opened; sharing settings.</param>
 		/// <returns>A safe file handle. Not null, but may be invalid.</returns>
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope",
+			Justification = "This method's aim IS to provide a disposable resource.")]
 		private FileStream Open(string path, FileMode mode, FileAccess access, FileShare share)
 		{
 			// Future: Support System.IO.FileOptions which is the dwFlagsAndAttribute parameter.
@@ -606,10 +610,12 @@ namespace Castle.Services.Transaction
 			using (var findHandle = NativeMethods.FindFirstFileTransactedW(path, _TransactionHandle, out findData))
 			{
 				if (findHandle.IsInvalid) return false;
-				Contract.Assume(!string.IsNullOrEmpty(findData.cFileName) && findData.cFileName.Length > 0);
 
 				do
 				{
+					Contract.Assume(!string.IsNullOrEmpty(findData.cFileName) && findData.cFileName.Length > 0,
+						"or otherwise FindNextFile should have returned false");
+
 					string subPath = pathWithoutSufflix.Combine(findData.cFileName);
 
 					if ((findData.dwFileAttributes & (uint) FileAttributes.Directory) != 0)

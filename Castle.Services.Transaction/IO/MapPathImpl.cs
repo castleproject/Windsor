@@ -15,6 +15,8 @@
 // 
 #endregion
 
+using System.Diagnostics.Contracts;
+
 namespace Castle.Services.Transaction.IO
 {
 	using System;
@@ -52,23 +54,30 @@ namespace Castle.Services.Transaction.IO
 		///</summary>
 		///<param name="path"></param>
 		///<returns></returns>
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1820:TestForEmptyStringsUsingStringLength",
+			Justification = "I don't care that much about performance")]
 		public string MapPath(string path)
 		{
 			if (Path.IsRooted(path))
 				return Path.GetFullPath(path);
 
 			if (_Function != null)
-				return _Function(path);
+			{
+				var mapPath = _Function(path);
+				Contract.Assume(!string.IsNullOrEmpty(mapPath), 
+					"This is a user-provided function, and code-contracts don't allow me to reason with the typed for Func in a Requires in c'tor.");
+				return mapPath;
+			}
 
 			path = Path.NormDirSepChars(path);
 
-			if (path == string.Empty)
+			if (string.IsNullOrEmpty(path))
 				return AppDomain.CurrentDomain.BaseDirectory;
 
 			if (path[0] == '~')
 				path = path.Substring(1);
 
-			if (path == string.Empty)
+			if (path.Length == 0)
 				return AppDomain.CurrentDomain.BaseDirectory;
 
 			if (Path.DirectorySeparatorChar == path[0])

@@ -43,14 +43,9 @@ namespace Castle.Services.Transaction
 		// TODO: 2001:0db8::1428:57ab and 2001:0db8:0:0::1428:57ab are not matched!
 		// ip6: thanks to http://blogs.msdn.com/mpoulson/archive/2005/01/10/350037.aspx
 
-		private static readonly List<char> _InvalidChars;
-
-		static Path()
-		{
-//			_Reserved = new List<string>("CON|PRN|AUX|NUL|COM1|COM2|COM3|COM4|COM5|COM6|COM7|COM8|COM9|LPT1|LPT2|LPT3|LPT4|LPT5|LPT6|LPT7|LPT8|LPT9"
-//				.Split('|'));
-			_InvalidChars = new List<char>(GetInvalidPathChars());
-		}
+		private static readonly List<char> _InvalidChars = new List<char>(GetInvalidPathChars());
+		//			_Reserved = new List<string>("CON|PRN|AUX|NUL|COM1|COM2|COM3|COM4|COM5|COM6|COM7|COM8|COM9|LPT1|LPT2|LPT3|LPT4|LPT5|LPT6|LPT7|LPT8|LPT9"
+		//				.Split('|'));
 
 		///<summary>
 		/// Returns whether the path is rooted. An empty string isn't.
@@ -58,10 +53,11 @@ namespace Castle.Services.Transaction
 		///<param name="path">Gets whether the path is rooted or relative.</param>
 		///<returns>Whether the path is rooted or not.</returns>
 		///<exception cref="ArgumentNullException">If the passed argument is null.</exception>
+		[Pure]
 		public static bool IsRooted(string path)
 		{
 			Contract.Requires(path != null);
-			if (path == string.Empty) return false;
+			if (string.IsNullOrEmpty(path)) return false;
 			return !string.IsNullOrEmpty(PathInfo.Parse(path).Root);
 		}
 
@@ -70,6 +66,7 @@ namespace Castle.Services.Transaction
 		/// </summary>
 		/// <param name="path">The path to get the root for.</param>
 		/// <returns>The string denoting the root.</returns>
+		[Pure]
 		public static string GetPathRoot(string path)
 		{
 			Contract.Requires(!string.IsNullOrEmpty(path));
@@ -77,6 +74,7 @@ namespace Castle.Services.Transaction
 			return PathInfo.Parse(path).Root;
 		}
 
+		[Pure]
 		private static bool ContainsInvalidChars(string path)
 		{
 			int c = _InvalidChars.Count;
@@ -95,6 +93,7 @@ namespace Castle.Services.Transaction
 		///<param name="path"></param>
 		///<returns></returns>
 		///<exception cref="ArgumentNullException"></exception>
+		[Pure]
 		public static string GetPathWithoutRoot(string path)
 		{
 			Contract.Requires(path != null);
@@ -110,16 +109,20 @@ namespace Castle.Services.Transaction
 		///<param name="pathWithAlternatingChars"></param>
 		///<returns>The directory string path with all occurrances of the alternating chars
 		/// replaced for that specified in <see cref="System.IO.Path.DirectorySeparatorChar"/></returns>
+		[Pure]
 		public static string NormDirSepChars(string pathWithAlternatingChars)
 		{
-			Contract.Requires(pathWithAlternatingChars != null);
+			Contract.Requires(!string.IsNullOrEmpty(pathWithAlternatingChars));
+			Contract.Ensures(!string.IsNullOrEmpty(Contract.Result<string>()));
 
 			var sb = new StringBuilder();
+
 			for (int i = 0; i < pathWithAlternatingChars.Length; i++)
 				if ((pathWithAlternatingChars[i] == '\\') || (pathWithAlternatingChars[i] == '/'))
 					sb.Append(DirectorySeparatorChar);
 				else
 					sb.Append(pathWithAlternatingChars[i]);
+
 			return sb.ToString().Trim(new[] { ' ' });
 		}
 
@@ -129,6 +132,7 @@ namespace Castle.Services.Transaction
 		///<param name="path">The path to get the info from.</param>
 		///<returns></returns>
 		///<exception cref="ArgumentNullException"></exception>
+		[Pure]
 		public static PathInfo GetPathInfo(string path)
 		{
 			Contract.Requires(path != null);
@@ -141,9 +145,11 @@ namespace Castle.Services.Transaction
 		///<param name="path"></param>
 		///<returns>The full path string</returns>
 		///<exception cref="ArgumentNullException">if path is null</exception>
+		[Pure]
 		public static string GetFullPath(string path)
 		{
 			Contract.Requires(!string.IsNullOrEmpty(path));
+			Contract.Ensures(!string.IsNullOrEmpty(Contract.Result<string>()));
 
 			if (path.StartsWith("\\\\?\\") || path.StartsWith("\\\\.\\")) return System.IO.Path.GetFullPath(path.Substring(4));
 			if (path.StartsWith("\\\\?\\UNC\\")) return System.IO.Path.GetFullPath(path.Substring(8));
@@ -160,6 +166,9 @@ namespace Castle.Services.Transaction
 		/// </summary>
 		/// <param name="path">The path string to modify</param>
 		/// <returns></returns>
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1820:TestForEmptyStringsUsingStringLength",
+			Justification = "It would change the semantics.")]
+		[Pure]
 		public static string GetPathWithoutLastBit(string path)
 		{
 			Contract.Requires(!string.IsNullOrEmpty(path));
@@ -181,25 +190,29 @@ namespace Castle.Services.Transaction
 				if (i == path.Length - 1 && chars.Contains(path[i]))
 					endsWithSlash = true;
 
-				if (!chars.Contains(path[i])) continue;
+				if (!chars.Contains(path[i])) 
+					continue;
 
 				secondLast = last;
 				last = i;
 				lastType = path[i];
 			}
 
-			if (last == -1)
+			if (last < 0)
 				throw new ArgumentException(string.Format("Could not find a path separator character in the path \"{0}\"", path));
 
-			var res = path.Substring(0, endsWithSlash ? secondLast : last);
+			var length = endsWithSlash ? (secondLast == -1 ? 0 : secondLast) : last;
+			var res = path.Substring(0, length);
 			return res == string.Empty ? new string(lastType, 1) : res;
 		}
 
+		[Pure]
 		public static string GetFileName(string path)
 		{
 			Contract.Requires(!string.IsNullOrEmpty(path), "path musn't be null");
 
-			if (path.EndsWith("/") || path.EndsWith("\\")) return string.Empty;
+			if (path.EndsWith("/") || path.EndsWith("\\")) 
+				return string.Empty;
 
 			var nonRoot = PathInfo.Parse(path).FolderAndFiles;
 
@@ -209,9 +222,11 @@ namespace Castle.Services.Transaction
 			if ((strIndex = nonRoot.LastIndexOfAny(new[] {
 			                                             	DirectorySeparatorChar, AltDirectorySeparatorChar })) != -1)
 				return nonRoot.Substring(strIndex+1);
+
 			return nonRoot;
 		}
 
+		[Pure]
 		public static bool HasExtension(string path)
 		{
 			Contract.Requires(!string.IsNullOrEmpty(path));
@@ -219,6 +234,7 @@ namespace Castle.Services.Transaction
 			return GetFileName(path).Length != GetFileNameWithoutExtension(path).Length;
 		}
 
+		[Pure]
 		public static string GetExtension(string path)
 		{
 			Contract.Requires(!string.IsNullOrEmpty(path));
@@ -228,6 +244,7 @@ namespace Castle.Services.Transaction
 			return lastPeriod == -1 ? string.Empty : fn.Substring(lastPeriod + 1);
 		}
 
+		[Pure]
 		public static string GetFileNameWithoutExtension(string path)
 		{
 			Contract.Requires(!string.IsNullOrEmpty(path));
@@ -238,44 +255,53 @@ namespace Castle.Services.Transaction
 			return lastPeriod == -1 ? filename : filename.Substring(0, lastPeriod);
 		}
 
+		[Pure]
 		public static string GetRandomFileName()
 		{
 			return System.IO.Path.GetRandomFileName();
 		}
 
+		[Pure]
 		public static char[] GetInvalidPathChars()
 		{
 			return System.IO.Path.GetInvalidPathChars();
 		}
 
+		[Pure]
 		public static char[] GetInvalidFileNameChars()
 		{
 			return System.IO.Path.GetInvalidFileNameChars();
 		}
 
+		[Pure]
 		public static char DirectorySeparatorChar
 		{
 			get { return System.IO.Path.DirectorySeparatorChar; }
 		}
 
+		[Pure]
 		public static char AltDirectorySeparatorChar
 		{
 			get { return System.IO.Path.AltDirectorySeparatorChar; }
 		}
 
+		[Pure]
 		public static char[] GetDirectorySeparatorChars()
 		{
 			return new[] { DirectorySeparatorChar, AltDirectorySeparatorChar};
 		}
 
+		[Pure]
 		public static string Combine(string firstPath, string secondPath)
 		{
 			Contract.Requires(secondPath != null);
 			Contract.Requires(firstPath != null);
+			Contract.Ensures(Contract.Result<string>() != null);
 
 			return System.IO.Path.Combine(firstPath, secondPath);
 		}
 
+		[Pure]
 		public static string Combine(this string firstPath, params string[] otherPaths)
 		{
 			Contract.Requires(otherPaths != null);

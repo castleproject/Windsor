@@ -61,10 +61,12 @@ namespace Castle.Services.Transaction
 			throw new NotImplementedException();
 		}
 
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000",
+			Justification = "CommittableTransaction is disposed by Transaction")]
 		Maybe<ICreatedTransaction> ITxManager.CreateTransaction(ITransactionOptions transactionOptions)
 		{
 			var activity = _ActivityManager.GetCurrentActivity();
-			
+
 			if (transactionOptions.Mode == TransactionScopeOption.Suppress)
 				return Maybe.None<ICreatedTransaction>();
 
@@ -138,13 +140,13 @@ namespace Castle.Services.Transaction
 			#endregion
 		}
 
-		void IDisposable.Dispose()
+		public void Dispose()
 		{
 			Dispose(true);
 			GC.SuppressFinalize(this);
 		}
 
-		private void Dispose(bool isManaged)
+		protected virtual void Dispose(bool isManaged)
 		{
 			if (!isManaged)
 				return;

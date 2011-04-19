@@ -335,6 +335,8 @@ namespace Castle.Services.Transaction.IO
 		/// <param name="child">The path info to verify</param>
 		/// <returns>Whether it is true that the current path info is a parent of child.</returns>
 		/// <exception cref="NotSupportedException">If this instance of path info and child aren't rooted.</exception>
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1820:TestForEmptyStringsUsingStringLength",
+			Justification = "Would change semantics")]
 		public bool IsParentOf(PathInfo child)
 		{
 			if (Root == string.Empty || child.Root == string.Empty)

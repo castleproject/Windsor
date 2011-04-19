@@ -25,6 +25,10 @@ namespace Castle.Services.Transaction.Internal
 		[return: MarshalAs(UnmanagedType.Bool)]
 		internal static extern bool CloseHandle(IntPtr handle);
 
+		[DllImport("kernel32.dll", SetLastError = true)]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		internal static extern bool FindClose(SafeHandle hFindFile);
+
 		/// <summary>
 		/// Creates a new transaction object. Passing too long a description will cause problems. This behaviour is indeterminate right now.
 		/// </summary>
