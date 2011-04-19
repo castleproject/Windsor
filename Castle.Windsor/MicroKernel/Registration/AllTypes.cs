@@ -22,7 +22,7 @@ namespace Castle.MicroKernel.Registration
 	using Castle.Core.Internal;
 
 	/// <summary>
-	///   Describes a set of components to register in the kernel.
+	///   Describes a set of components to register in the kernel. Use static methods on the class to fluently build registration.
 	/// </summary>
 	public static class AllTypes
 	{

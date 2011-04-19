@@ -19,6 +19,7 @@ namespace Castle.Windsor
 
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Registration;
+	using Castle.Windsor.Installer;
 
 	/// <summary>
 	///   The <c>IWindsorContainer</c> interface exposes all the 
@@ -83,25 +84,44 @@ namespace Castle.Windsor
 		IWindsorContainer GetChildContainer(string name);
 
 		/// <summary>
-		///   Installs the components provided by the <see cref = "IWindsorInstaller" />s
-		///   with the <see cref = "IWindsorContainer" />.
-		///   <param name = "installers">The component installers.</param>
-		///   <returns>The container.</returns>
+		///   Runs the <paramref name = "installers" /> so that they can register components in the container. For details see the documentation at http://j.mp/WindsorInstall
 		/// </summary>
+		/// <remarks>
+		///   In addition to instantiating and passing every installer inline you can use helper methods on <see
+		///    cref = "FromAssembly" /> class to automatically instantiate and run your installers.
+		///   You can also use <see cref = "Configuration" /> class to install components and/or run aditional installers specofied in a configuration file.
+		/// </remarks>
+		/// <returns>The container.</returns>
+		/// <example>
+		///   <code>
+		///     container.Install(new YourInstaller1(), new YourInstaller2(), new YourInstaller3());
+		///   </code>
+		/// </example>
+		/// <example>
+		///   <code>
+		///     container.Install(FromAssembly.This(), Configuration.FromAppConfig(), new SomeOtherInstaller());
+		///   </code>
+		/// </example>
 		IWindsorContainer Install(params IWindsorInstaller[] installers);
 
 		/// <summary>
-		///   Registers the components provided by the <see cref = "IRegistration" />s
-		///   with the <see cref = "IWindsorContainer" />.
-		///   <para />
-		///   Create a new registration using <see cref = "MicroKernel.Registration.Component" />.For() or <see cref = "AllTypes" />.
+		///   Registers the components with the <see cref = "IWindsorContainer" />. The instances of <see cref = "IRegistration" /> are produced by fluent registration API.
+		///   Most common entry points are <see cref = "Component.For{TService}" /> method to register a single type or (recommended in most cases) 
+		///   <see cref = "AllTypes.FromThisAssembly" />.
+		///   Let the Intellisense drive you through the fluent API past those entry points. For details see the documentation at http://j.mp/WindsorApi
 		/// </summary>
 		/// <example>
 		///   <code>
-		///     container.Register(Component.For&lt;IService&gt;().ImplementedBy&lt;DefaultService&gt;());
+		///     container.Register(Component.For&lt;IService&gt;().ImplementedBy&lt;DefaultService&gt;().LifestyleTransient());
 		///   </code>
 		/// </example>
-		/// <param name = "registrations">The component registrations.</param>
+		/// <example>
+		///   <code>
+		///     container.Register(AllTypes.FromThisAssembly().BasedOn&lt;IService&gt;().WithServiceDefaultInterfaces().Configure(c => c.LifestyleTransient()));
+		///   </code>
+		/// </example>
+		/// <param name = "registrations">The component registrations created by <see cref = "Component.For{TService}" />, <see
+		///    cref = "AllTypes.FromThisAssembly" /> or different entry method to the fluent API.</param>
 		/// <returns>The container.</returns>
 		IWindsorContainer Register(params IRegistration[] registrations);
 
