@@ -187,17 +187,23 @@ namespace Castle.MicroKernel
 		bool HasComponent(Type service);
 
 		/// <summary>
-		///   Registers the components provided by the <see cref = "IRegistration" />s
-		///   with the <see cref = "IKernel" />.
-		///   <para />
-		///   Create a new registration using <see cref = "Registration.Component" />.For() or <see cref = "AllTypes" />.
+		///   Registers the components with the <see cref = "IKernel" />. The instances of <see cref = "IRegistration" /> are produced by fluent registration API.
+		///   Most common entry points are <see cref = "Component.For{TService}" /> method to register a single type or (recommended in most cases) 
+		/// <see cref = "AllTypes.FromThisAssembly" />.
+		///   Let the Intellisense drive you through the fluent API past those entry points. For details see the documentation at http://j.mp/WindsorApi
 		/// </summary>
 		/// <example>
 		///   <code>
-		///     kernel.Register(Component.For&lt;IService&gt;().ImplementedBy&lt;DefaultService&gt;());
+		///     kernel.Register(Component.For&lt;IService&gt;().ImplementedBy&lt;DefaultService&gt;().LifestyleTransient());
 		///   </code>
 		/// </example>
-		/// <param name = "registrations">The component registrations.</param>
+		/// <example>
+		///   <code>
+		///     kernel.Register(AllTypes.FromThisAssembly().BasedOn&lt;IService&gt;().WithServiceDefaultInterfaces().Configure(c => c.LifestyleTransient()));
+		///   </code>
+		/// </example>
+		/// <param name = "registrations">The component registrations created by <see cref = "Component.For{TService}" />, <see
+		///    cref = "AllTypes.FromThisAssembly" /> or different entry method to the fluent API.</param>
 		/// <returns>The kernel.</returns>
 		IKernel Register(params IRegistration[] registrations);
 

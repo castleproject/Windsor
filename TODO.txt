@@ -2,8 +2,6 @@
 
 - change now interaction with Burden in the creation pipeline happen. Especially try to eliminate the ugly context.AttachExistingBurden(burden); call
 
-- add "default components" as replacement for removing components. Those would be used by Windsor as a fallback, but if something else is registered (no matter before or after) the other thing would be used.
-
 - better unify exceptions thrown and start taking advantage of what the exception facilities in Visual Studio and .NET provide.
 
 - make specifying depenencies with service override easier (currently both a parameter and a dependency has to be added and they have to match... and it's even more complex when we have a collection of service overrides we want to add)

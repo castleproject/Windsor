@@ -20,7 +20,7 @@ namespace Castle.MicroKernel.Registration
 	using Castle.Core;
 
 	/// <summary>
-	///   Factory for creating <see cref = "ComponentRegistration" /> objects.
+	///   Factory for creating <see cref = "ComponentRegistration" /> objects. Use static methods on the class to fluently build registration.
 	/// </summary>
 	public static class Component
 	{
@@ -61,7 +61,6 @@ namespace Castle.MicroKernel.Registration
 		/// </summary>
 		/// <param name = "serviceTypes">Types of the service.</param>
 		/// <returns>The component registration.</returns>
-		/// B
 		public static ComponentRegistration For(IEnumerable<Type> serviceTypes)
 		{
 			ComponentRegistration registration = null;

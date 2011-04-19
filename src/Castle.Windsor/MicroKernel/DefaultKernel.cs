@@ -524,11 +524,24 @@ namespace Castle.MicroKernel
 		}
 
 		/// <summary>
-		///   Registers the components described by the <see cref = "ComponentRegistration{S}" />s
-		///   with the <see cref = "IKernel" />.
-		///   <param name = "registrations">The component registrations.</param>
-		///   <returns>The kernel.</returns>
+		///   Registers the components with the <see cref = "IKernel" />. The instances of <see cref = "IRegistration" /> are produced by fluent registration API.
+		///   Most common entry points are <see cref = "Component.For{TService}" /> method to register a single type or (recommended in most cases) 
+		///   <see cref = "AllTypes.FromThisAssembly" />.
+		///   Let the Intellisense drive you through the fluent API past those entry points. For details see the documentation at http://j.mp/WindsorApi
 		/// </summary>
+		/// <example>
+		///   <code>
+		///     kernel.Register(Component.For&lt;IService&gt;().ImplementedBy&lt;DefaultService&gt;().LifestyleTransient());
+		///   </code>
+		/// </example>
+		/// <example>
+		///   <code>
+		///     kernel.Register(AllTypes.FromThisAssembly().BasedOn&lt;IService&gt;().WithServiceDefaultInterfaces().Configure(c => c.LifestyleTransient()));
+		///   </code>
+		/// </example>
+		/// <param name = "registrations">The component registrations created by <see cref = "Component.For{TService}" />, <see
+		///    cref = "AllTypes.FromThisAssembly" /> or different entry method to the fluent API.</param>
+		/// <returns>The kernel.</returns>
 		public IKernel Register(params IRegistration[] registrations)
 		{
 			if (registrations == null)
