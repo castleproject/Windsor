@@ -536,11 +536,7 @@ namespace Castle.MicroKernel.Registration
 		/// <returns></returns>
 		public ComponentRegistration<TService> Interceptors(params Type[] interceptors)
 		{
-#if SILVERLIGHT
-			var references = interceptors.Select(t => new InterceptorReference(t)).ToArray();
-#else
-			var references = Array.ConvertAll(interceptors, t => new InterceptorReference(t));
-#endif
+			var references = interceptors.ConvertAll(t => new InterceptorReference(t));
 			return AddDescriptor(new InterceptorDescriptor(references));
 		}
 
@@ -570,11 +566,7 @@ namespace Castle.MicroKernel.Registration
 		/// <returns></returns>
 		public ComponentRegistration<TService> Interceptors(params string[] keys)
 		{
-#if SILVERLIGHT
-			var interceptors = keys.Select(InterceptorReference.ForKey).ToArray();
-#else
-			var interceptors = Array.ConvertAll(keys, InterceptorReference.ForKey);
-#endif
+			var interceptors = keys.ConvertAll(InterceptorReference.ForKey);
 			return AddDescriptor(new InterceptorDescriptor(interceptors));
 		}
 
@@ -713,6 +705,20 @@ namespace Castle.MicroKernel.Registration
 		///   is created and before it's returned from the container.
 		/// </summary>
 		/// <param name = "actions">A set of actions to be executed right after the component is created and before it's returned from the container.</param>
+		public ComponentRegistration<TService> OnCreate(params Action<TService>[] actions)
+		{
+			if (actions.IsNullOrEmpty())
+			{
+				return this;
+			}
+			return OnCreate(actions.ConvertAll(a => new LifecycleActionDelegate<TService>((_, o) => a(o))));
+		}
+
+		/// <summary>
+		///   Stores a set of <see cref = "LifecycleActionDelegate{T}" /> which will be invoked when the component
+		///   is created and before it's returned from the container.
+		/// </summary>
+		/// <param name = "actions">A set of actions to be executed right after the component is created and before it's returned from the container.</param>
 		public ComponentRegistration<TService> OnCreate(params LifecycleActionDelegate<TService>[] actions)
 		{
 			if (actions != null && actions.Length != 0)
@@ -729,6 +735,20 @@ namespace Castle.MicroKernel.Registration
 				AddDescriptor(new OnCreateComponentDescriptor<TService>(action));
 			}
 			return this;
+		}
+
+		/// <summary>
+		///   Stores a set of <see cref = "LifecycleActionDelegate{T}" /> which will be invoked when the component
+		///   is created and before it's returned from the container.
+		/// </summary>
+		/// <param name = "actions">A set of actions to be executed right after the component is created and before it's returned from the container.</param>
+		public ComponentRegistration<TService> OnDestroy(params Action<TService>[] actions)
+		{
+			if (actions.IsNullOrEmpty())
+			{
+				return this;
+			}
+			return OnDestroy(actions.ConvertAll(a => new LifecycleActionDelegate<TService>((_, o) => a(o))));
 		}
 
 		/// <summary>
