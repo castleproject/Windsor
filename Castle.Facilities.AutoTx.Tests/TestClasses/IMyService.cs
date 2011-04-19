@@ -1,11 +1,11 @@
 ﻿using System;
-using System.Transactions;
+using Castle.Services.Transaction;
 
-namespace Castle.Services.Transaction.Tests.vNext
+namespace Castle.Facilities.AutoTx.Tests.TestClasses
 {
 	public interface IMyService
 	{
-		vNextTransaction.ITransaction VerifyInAmbient();
+		ITransaction VerifyInAmbient();
 		void VerifyInAmbient(Action a);
 		void VerifySupressed();
 	}

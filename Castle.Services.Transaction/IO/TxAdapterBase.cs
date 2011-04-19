@@ -15,8 +15,6 @@
 // 
 #endregion
 
-using Castle.Services.vNextTransaction;
-
 namespace Castle.Services.Transaction.IO
 {
 	using System;

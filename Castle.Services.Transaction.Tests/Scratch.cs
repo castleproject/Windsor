@@ -23,7 +23,7 @@ using Castle.Facilities.TypedFactory;
 using Castle.Windsor;
 using NUnit.Framework;
 
-namespace Castle.Services.Transaction.Tests.vNext
+namespace Castle.Services.Transaction.Tests
 {
 	[Explicit("to try things out")]
 	internal class Scratch

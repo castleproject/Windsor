@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Diagnostics.Contracts;
 using System.Transactions;
+using Castle.Services.Transaction.Monads;
 
-namespace Castle.Services.vNextTransaction
+namespace Castle.Services.Transaction
 {
 	[ContractClassFor(typeof (ITxManager))]
 	internal abstract class ITxManagerContract : ITxManager

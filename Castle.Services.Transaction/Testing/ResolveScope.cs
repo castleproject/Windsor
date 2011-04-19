@@ -3,7 +3,7 @@ using System.Diagnostics.Contracts;
 using Castle.Windsor;
 using log4net;
 
-namespace Castle.Services.Transaction.Tests.vNext
+namespace Castle.Services.Transaction.Testing
 {
 	public class ResolveScope<T> : IDisposable
 	{

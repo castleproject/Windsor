@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
+using Castle.Services.Transaction.Monads;
 using log4net;
 
-namespace Castle.Services.vNextTransaction
+namespace Castle.Services.Transaction
 {
 	/// <summary>
 	/// Value-object that encapsulates a transaction and is serializable across

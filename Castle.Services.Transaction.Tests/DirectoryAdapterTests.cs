@@ -18,28 +18,26 @@
 namespace Castle.Services.Transaction.Tests
 {
 	using System;
+	using IO;
+	using NUnit.Framework;
 
-	internal class TestResource : ResourceImpl
+	public class DirectoryAdapterTests
 	{
-		private readonly Action _C;
-		private readonly Action _R;
-
-		public TestResource(Action c, Action r)
+		[Test]
+		public void DefaultSettings()
 		{
-			_C = c;
-			_R = r;
+			var adapter = new DirectoryAdapter(new MapPathImpl(), false, null);
+			Assert.That(adapter.UseTransactions);
+			Assert.That(adapter.OnlyJoinExisting, Is.True);
 		}
 
-		public override void Rollback(System.Transactions.Enlistment enlistment)
+		[Test]
+		public void CanGetLocalFile()
 		{
-			base.Rollback(enlistment);
-			_R();
-		}
-
-		public override void Commit(System.Transactions.Enlistment enlistment)
-		{
-			base.Commit(enlistment);
-			_C();
+			var d = new DirectoryAdapter(new MapPathImpl(), false, null);
+			string path = Path.GetPathWithoutLastBit(d.MapPath("~/../../TestGlobals.cs")); // get directory instead
+			Console.WriteLine(path);
+			Assert.That(d.Exists(path));
 		}
 	}
 }

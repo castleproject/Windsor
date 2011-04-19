@@ -15,6 +15,8 @@
 // 
 #endregion
 
+using System.Diagnostics.Contracts;
+
 namespace Castle.Services.Transaction.IO
 {
 	using System;
@@ -88,7 +90,7 @@ namespace Castle.Services.Transaction.IO
 
 		public static PathInfo Parse(string path)
 		{
-			if (path == null) throw new ArgumentNullException("path");
+			Contract.Requires(path != null);
 
 			var matches = _Regex.Matches(path);
 

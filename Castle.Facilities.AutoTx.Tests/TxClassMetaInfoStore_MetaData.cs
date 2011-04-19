@@ -17,20 +17,20 @@
 #endregion
 
 using System.Linq;
-using Castle.Services.Transaction.Tests.Framework;
-using Castle.Services.vNextTransaction;
+using Castle.Facilities.AutoTx.Tests.Framework;
+using Castle.Facilities.AutoTx.Tests.TestClasses;
 using NUnit.Framework;
 
-namespace Castle.Services.Transaction.Tests.vNext
+namespace Castle.Facilities.AutoTx.Tests
 {
 	public class TxClassMetaInfoStore_MetaData
 	{
-	//    [Test]
-	//    public void CanGetTxClassMetaInfo()
-	//    {
-	//        var meta = TxClassMetaInfoStore.GetMetaFromTypeInner(typeof (MyService));
-	//        meta.ShouldPass("MyService has Transaction attributes")
-	//            .ShouldBe(m => m.TransactionalMethods.Count() == 3, "there are two methods");
-	//    }
+	    [Test]
+		public void CanGetTxClassMetaInfo()
+		{
+			//var meta = TxClassMetaInfoStore.GetMetaFromTypeInner(typeof(MyService));
+			//meta.ShouldPass("MyService has Transaction attributes")
+			//    .ShouldBe(m => m.TransactionalMethods.Count() == 3, "there are two methods");
+		}
 	}
 }

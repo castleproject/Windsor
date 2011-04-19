@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Diagnostics.Contracts;
-using Castle.Services.vNextTransaction;
+using Castle.Services.Transaction;
 using NUnit.Framework;
 
-namespace Castle.Services.Transaction.Tests.vNext
+namespace Castle.Facilities.AutoTx.Tests.TestClasses
 {
 	public class ConcreteService
 	{
@@ -15,8 +15,8 @@ namespace Castle.Services.Transaction.Tests.vNext
 			_Manager = manager;
 		}
 
-		[vNextTransaction.Transaction]
-		public virtual vNextTransaction.ITransaction VerifyInAmbient()
+		[Transaction]
+		public virtual ITransaction VerifyInAmbient()
 		{
 			Assert.That(System.Transactions.Transaction.Current != null,
 			            "The current transaction mustn't be null.");
@@ -27,7 +27,7 @@ namespace Castle.Services.Transaction.Tests.vNext
 			return _Manager.CurrentTransaction.Value;
 		}
 
-		[vNextTransaction.Transaction]
+		[Transaction]
 		public virtual void VerifyInAmbient(Action a)
 		{
 			Assert.That(System.Transactions.Transaction.Current != null,

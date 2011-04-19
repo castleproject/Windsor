@@ -20,7 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 
-namespace Castle.Services.vNextTransaction.Utils
+namespace Castle.Services.Transaction.Utils
 {
 	/// <summary>
 	/// 	A functional-programming class which can help in memoizing function calls,

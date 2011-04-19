@@ -18,8 +18,9 @@
 
 using System;
 using System.Diagnostics.Contracts;
+using Castle.Services.Transaction.Monads;
 
-namespace Castle.Services.vNextTransaction
+namespace Castle.Services.Transaction
 {
 	/// <summary>
 	/// The transaction manager takes care of the nitty-gritty details of managing the store for transactions and their data.

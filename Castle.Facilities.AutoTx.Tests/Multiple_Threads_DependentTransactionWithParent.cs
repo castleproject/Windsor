@@ -1,10 +1,10 @@
+using Castle.Facilities.AutoTx.Tests.TestClasses;
 using Castle.MicroKernel.Registration;
-using Castle.Services.vNextTransaction;
 using Castle.Windsor;
 using log4net.Config;
 using NUnit.Framework;
 
-namespace Castle.Services.Transaction.Tests.vNext
+namespace Castle.Facilities.AutoTx.Tests
 {
 	public class Multiple_Threads_DependentTransactionWithParent
 	{

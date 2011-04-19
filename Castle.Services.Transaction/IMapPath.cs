@@ -14,7 +14,7 @@
 //  limitations under the License.
 // 
 #endregion
-namespace Castle.Services.Transaction.IO
+namespace Castle.Services.Transaction
 {
 	///<summary>
 	/// Small interface for the map path functionality.

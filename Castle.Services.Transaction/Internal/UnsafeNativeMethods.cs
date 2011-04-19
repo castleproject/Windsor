@@ -1,4 +1,4 @@
-﻿namespace Castle.Services.Transaction
+﻿namespace Castle.Services.Transaction.Internal
 {
 	internal static class UnsafeNativeMethods
 	{

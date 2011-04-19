@@ -1,6 +1,6 @@
 using NUnit.Framework;
 
-namespace Castle.Services.Transaction.Tests.vNext
+namespace Castle.Services.Transaction.Tests
 {
 	public class PerTransactionLifestyleTests
 	{

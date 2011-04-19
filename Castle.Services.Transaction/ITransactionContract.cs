@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Diagnostics.Contracts;
-using System.Transactions;
-using Castle.Services.Transaction;
+using Castle.Services.Transaction.Monads;
+using TransactionException = Castle.Services.Transaction.Exceptions.TransactionException;
 
-namespace Castle.Services.vNextTransaction
+namespace Castle.Services.Transaction
 {
 	[ContractClassFor(typeof (ITransaction))]
 	internal abstract class ITransactionContract : ITransaction

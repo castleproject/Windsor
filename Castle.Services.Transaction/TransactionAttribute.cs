@@ -22,7 +22,7 @@ using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Transactions;
 
-namespace Castle.Services.vNextTransaction
+namespace Castle.Services.Transaction
 {
 	/// <summary>
 	/// 	Specifies a method as transactional.

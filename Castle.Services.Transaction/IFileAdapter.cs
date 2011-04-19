@@ -16,12 +16,11 @@
 #endregion
 
 using System.Collections.Generic;
+using System.IO;
+using System.Text;
 
-namespace Castle.Services.Transaction.IO
+namespace Castle.Services.Transaction
 {
-	using System.IO;
-	using System.Text;
-
 	///<summary>
 	/// File helper wrapper interface.
 	///</summary>

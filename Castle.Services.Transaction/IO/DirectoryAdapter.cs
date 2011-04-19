@@ -16,12 +16,10 @@
 #endregion
 
 using System.Diagnostics.Contracts;
-using Castle.Services.vNextTransaction;
 
 namespace Castle.Services.Transaction.IO
 {
 	using System;
-	using System.IO;
 	using log4net;
 
 	/// <summary>
@@ -69,14 +67,12 @@ namespace Castle.Services.Transaction.IO
 				return ((IDirectoryAdapter)tx).Create(path);
 			}
 #endif
-			if (Directory.Exists(path))
+			if (Exists(path))
 			{
 				return true;
 			}
 			
 			throw new NotImplementedException();
-
-			return false;
 		}
 
 		/// <summary>
@@ -93,7 +89,7 @@ namespace Castle.Services.Transaction.IO
 				return ((IDirectoryAdapter) tx).Exists(path);
 #endif
 
-			return Directory.Exists(path);
+			throw new NotImplementedException();
 		}
 
 		/// <summary>
@@ -111,7 +107,7 @@ namespace Castle.Services.Transaction.IO
 				return;
 			}
 #endif
-			Directory.Delete(path);
+			throw new NotImplementedException();
 		}
 
 		/// <summary>
@@ -133,8 +129,7 @@ namespace Castle.Services.Transaction.IO
 				return ((IDirectoryAdapter)tx).Delete(path, recursively);
 			}
 #endif
-			Directory.Delete(path, recursively);
-			return true;
+			throw new NotImplementedException();
 		}
 
 		/// <summary>

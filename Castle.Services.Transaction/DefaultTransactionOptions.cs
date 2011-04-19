@@ -21,7 +21,7 @@ using System.Collections.Generic;
 using System.Transactions;
 using System.Linq;
 
-namespace Castle.Services.vNextTransaction
+namespace Castle.Services.Transaction
 {
 	/// <summary>
 	/// Sample implementation of ITransactionOptions. Use this if you are using <see cref="ITxManager"/> directly.

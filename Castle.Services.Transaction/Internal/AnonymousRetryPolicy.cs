@@ -19,7 +19,7 @@
 using System;
 using System.Diagnostics.Contracts;
 
-namespace Castle.Services.vNextTransaction
+namespace Castle.Services.Transaction.Internal
 {
 	internal class AnonymousRetryPolicy : IRetryPolicy
 	{

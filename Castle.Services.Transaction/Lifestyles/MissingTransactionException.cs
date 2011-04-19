@@ -18,7 +18,7 @@
 
 using System;
 
-namespace Castle.Services.vNextTransaction.Lifestyles
+namespace Castle.Services.Transaction.Lifestyles
 {
 	/// <summary>
 	/// 	Exception thrown when there's no transaction available when the component is resolved and the component

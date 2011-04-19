@@ -16,12 +16,11 @@
 
 #endregion
 
-using System;
 using Castle.MicroKernel.Context;
 using Castle.MicroKernel.Lifestyle;
 using log4net;
 
-namespace Castle.Services.vNextTransaction.Lifestyles
+namespace Castle.Services.Transaction.Lifestyles
 {
 	/// <summary>
 	/// 	Hybrid lifestyle manager, 

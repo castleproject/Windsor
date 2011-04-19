@@ -16,7 +16,6 @@
 #endregion
 
 using System.IO;
-using Castle.Services.vNextTransaction;
 
 namespace Castle.Services.Transaction.Tests
 {

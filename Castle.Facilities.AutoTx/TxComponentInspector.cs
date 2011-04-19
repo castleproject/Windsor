@@ -23,8 +23,9 @@ using Castle.Core;
 using Castle.MicroKernel;
 using Castle.MicroKernel.Facilities;
 using Castle.MicroKernel.ModelBuilder.Inspectors;
+using Castle.Services.Transaction.Monads;
 
-namespace Castle.Services.vNextTransaction
+namespace Castle.Facilities.AutoTx
 {
 	/// <summary>
 	/// 	Transaction component inspector that selects the methods

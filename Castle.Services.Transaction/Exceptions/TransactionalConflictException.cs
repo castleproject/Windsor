@@ -15,13 +15,11 @@
 // 
 #endregion
 
-using Castle.Services.vNextTransaction;
+using System;
+using System.Runtime.Serialization;
 
-namespace Castle.Services.Transaction
+namespace Castle.Services.Transaction.Exceptions
 {
-	using System;
-	using System.Runtime.Serialization;
-
 	[Serializable]
 	public sealed class TransactionalConflictException : TransactionException
 	{

@@ -1,7 +1,7 @@
 using System;
 using System.Runtime.Serialization;
 
-namespace Castle.Services.vNextTransaction
+namespace Castle.Services.Transaction.Exceptions
 {
 	[Serializable]
 	public class TransactionException : Exception

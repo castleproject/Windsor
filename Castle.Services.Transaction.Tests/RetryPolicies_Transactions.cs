@@ -18,11 +18,12 @@
 
 using System;
 using Castle.MicroKernel.Registration;
-using Castle.Services.vNextTransaction;
+using Castle.Services.Transaction.Monads;
+using Castle.Services.Transaction.Testing;
 using Castle.Windsor;
 using NUnit.Framework;
 
-namespace Castle.Services.Transaction.Tests.vNext
+namespace Castle.Services.Transaction.Tests
 {
 	[Ignore("Implement retry policies are nicer to test with e.g. NHibernate integration parts.")]
 	public class RetryPolicies_Transactions

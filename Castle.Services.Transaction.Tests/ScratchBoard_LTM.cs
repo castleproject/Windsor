@@ -20,10 +20,9 @@ using System;
 using System.Configuration;
 using System.Data.SqlClient;
 using System.Transactions;
-using Castle.Services.vNextTransaction;
 using NUnit.Framework;
 
-namespace Castle.Services.Transaction.Tests.vNext
+namespace Castle.Services.Transaction.Tests
 {
 	[Explicit]
 	public class ScratchBoard_LTM

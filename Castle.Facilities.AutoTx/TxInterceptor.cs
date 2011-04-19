@@ -24,9 +24,12 @@ using Castle.Core;
 using Castle.Core.Interceptor;
 using Castle.DynamicProxy;
 using Castle.MicroKernel;
+using Castle.Services.Transaction;
+using Castle.Services.Transaction.Monads;
 using log4net;
+using TransactionException = Castle.Services.Transaction.Exceptions.TransactionException;
 
-namespace Castle.Services.vNextTransaction
+namespace Castle.Facilities.AutoTx
 {
 	internal class TxInterceptor : IInterceptor, IOnBehalfAware
 	{

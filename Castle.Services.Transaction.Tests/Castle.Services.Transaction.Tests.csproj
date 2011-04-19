@@ -161,16 +161,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="File and Directory related tests\DirectoryAdapterTests.cs" />
-    <Compile Include="File and Directory related tests\FileAdapterTests.cs">
+    <Compile Include="DirectoryAdapterTests.cs" />
+    <Compile Include="DirectoryAdapter_ChJail.cs" />
+    <Compile Include="FileAdapterTests.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="File and Directory related tests\FileTransactions_Directory_Tests.cs" />
-    <Compile Include="File and Directory related tests\FileTransactions_File_Tests.cs" />
+    <Compile Include="FileTransactions_Directory_Tests.cs" />
+    <Compile Include="FileTransactions_File_Tests.cs" />
     <Compile Include="Framework\STATestRuntime.cs" />
     <Compile Include="PerTransactionLifestyleTests.cs" />
     <Compile Include="TestClasses\Exts.cs" />
-    <Compile Include="File and Directory related tests\FileTransaction_WithManager_Tests.cs" />
+    <Compile Include="FileTransaction_WithManager_Tests.cs" />
     <Compile Include="TestClasses\IMyService.cs" />
     <Compile Include="TestClasses\MyService.cs" />
     <Compile Include="TestClasses\ResourceImpl.cs">

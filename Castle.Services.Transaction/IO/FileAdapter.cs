@@ -16,7 +16,6 @@
 #endregion
 
 using System.Collections.Generic;
-using Castle.Services.vNextTransaction;
 
 namespace Castle.Services.Transaction.IO
 {

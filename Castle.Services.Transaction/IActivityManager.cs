@@ -1,4 +1,4 @@
-﻿namespace Castle.Services.vNextTransaction
+﻿namespace Castle.Services.Transaction
 {
 	/// <summary>
 	/// Abstracts approaches to keep transaction activities

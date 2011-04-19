@@ -19,9 +19,11 @@
 using System;
 using System.Diagnostics.Contracts;
 using System.Transactions;
+using Castle.Services.Transaction.Internal;
+using Castle.Services.Transaction.Monads;
 using log4net;
 
-namespace Castle.Services.vNextTransaction
+namespace Castle.Services.Transaction
 {
 	public class TxManager : ITxManager
 	{

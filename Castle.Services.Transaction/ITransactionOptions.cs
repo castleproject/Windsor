@@ -21,7 +21,7 @@ using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Transactions;
 
-namespace Castle.Services.vNextTransaction
+namespace Castle.Services.Transaction
 {
 	[ContractClass(typeof (ITransactionOptionsContract))]
 	public interface ITransactionOptions : IEquatable<ITransactionOptions>

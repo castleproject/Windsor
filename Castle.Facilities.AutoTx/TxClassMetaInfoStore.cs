@@ -20,9 +20,11 @@ using System;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Reflection;
-using Castle.Services.vNextTransaction.Utils;
+using Castle.Services.Transaction;
+using Castle.Services.Transaction.Monads;
+using Castle.Services.Transaction.Utils;
 
-namespace Castle.Services.vNextTransaction
+namespace Castle.Facilities.AutoTx
 {
 	internal sealed class TxClassMetaInfoStore : ITxMetaInfoStore
 	{

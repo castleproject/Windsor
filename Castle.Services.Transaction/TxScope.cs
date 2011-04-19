@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Castle.Services.vNextTransaction
+namespace Castle.Services.Transaction
 {
 	public class TxScope : IDisposable
 	{

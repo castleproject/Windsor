@@ -18,9 +18,10 @@
 
 using Castle.MicroKernel.Facilities;
 using Castle.MicroKernel.Registration;
+using Castle.Services.Transaction;
 using log4net;
 
-namespace Castle.Services.vNextTransaction
+namespace Castle.Facilities.AutoTx
 {
 	/// <summary>
 	/// A facility for automatically handling transactions using the lightweight

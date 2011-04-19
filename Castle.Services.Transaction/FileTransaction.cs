@@ -27,10 +27,12 @@ using System.Runtime.InteropServices;
 using System.Security.Permissions;
 using System.Text;
 using System.Transactions;
+using Castle.Services.Transaction.Exceptions;
+using Castle.Services.Transaction.Internal;
 using Castle.Services.Transaction.IO;
-using Castle.Services.vNextTransaction;
+using Castle.Services.Transaction.Monads;
 using Microsoft.Win32.SafeHandles;
-using Path = Castle.Services.Transaction.IO.Path;
+using Path = Castle.Services.Transaction.Path;
 using TransactionException = System.Transactions.TransactionException;
 
 namespace Castle.Services.Transaction

@@ -1,8 +1,8 @@
 using System;
-using Castle.Services.vNextTransaction;
+using Castle.Services.Transaction.Monads;
 using NUnit.Framework;
 
-namespace Castle.Services.Transaction.Tests.Framework
+namespace Castle.Facilities.AutoTx.Tests.Framework
 {
 	public static class MaybeEx
 	{

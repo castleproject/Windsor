@@ -16,9 +16,11 @@
 
 #endregion
 
+using System;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 
-namespace System.Diagnostics.Contracts
+namespace Castle.Services.Transaction.Internal
 {
 	/// <summary>
 	/// 	Enables factoring legacy if-then-throw into separate methods for reuse and full control over

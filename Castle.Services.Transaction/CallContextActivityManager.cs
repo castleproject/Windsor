@@ -18,7 +18,7 @@
 
 using System.Runtime.Remoting.Messaging;
 
-namespace Castle.Services.vNextTransaction
+namespace Castle.Services.Transaction
 {
 	/// <summary>
 	/// The call-context activity manager saves the stack of transactions

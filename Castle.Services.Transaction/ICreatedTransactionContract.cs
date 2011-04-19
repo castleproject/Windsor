@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics.Contracts;
 
-namespace Castle.Services.vNextTransaction
+namespace Castle.Services.Transaction
 {
 	[ContractClassFor(typeof (ICreatedTransaction))]
 	internal abstract class ICreatedTransactionContract : ICreatedTransaction

@@ -1,7 +1,7 @@
 using System.Threading;
 using NUnit.Framework;
 
-namespace Castle.Services.Transaction.Tests
+namespace Castle.Services.Transaction.Tests.Framework
 {
 	public class STATestRuntime
 	{

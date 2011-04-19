@@ -19,10 +19,10 @@
 using System;
 using System.Diagnostics.Contracts;
 using System.Transactions;
-using Castle.Services.vNextTransaction;
+using Castle.Services.Transaction;
 using NUnit.Framework;
 
-namespace Castle.Services.Transaction.Tests.vNext
+namespace Castle.Facilities.AutoTx.Tests.TestClasses
 {
 	public class MyService : IMyService
 	{
@@ -34,8 +34,8 @@ namespace Castle.Services.Transaction.Tests.vNext
 			_Manager = manager;
 		}
 
-		[vNextTransaction.Transaction]
-		vNextTransaction.ITransaction IMyService.VerifyInAmbient()
+		[Transaction]
+		ITransaction IMyService.VerifyInAmbient()
 		{
 			Assert.That(System.Transactions.Transaction.Current != null,
 			            "The current transaction mustn't be null.");
@@ -46,7 +46,7 @@ namespace Castle.Services.Transaction.Tests.vNext
 			return _Manager.CurrentTransaction.Value;
 		}
 
-		[vNextTransaction.Transaction]
+		[Transaction]
 		void IMyService.VerifyInAmbient(Action a)
 		{
 			Assert.That(System.Transactions.Transaction.Current != null,
@@ -55,7 +55,7 @@ namespace Castle.Services.Transaction.Tests.vNext
 			a();
 		}
 
-		[vNextTransaction.Transaction(TransactionScopeOption.Suppress)]
+		[Transaction(TransactionScopeOption.Suppress)]
 		public void VerifySupressed()
 		{
 			Assert.That(System.Transactions.Transaction.Current, Is.Null);

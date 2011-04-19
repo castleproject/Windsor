@@ -18,13 +18,15 @@
 
 using System;
 using System.Transactions;
+using Castle.Facilities.AutoTx.Tests.TestClasses;
 using Castle.MicroKernel.Registration;
-using Castle.Services.vNextTransaction;
+using Castle.Services.Transaction;
+using Castle.Services.Transaction.Testing;
 using Castle.Windsor;
 using log4net.Config;
 using NUnit.Framework;
 
-namespace Castle.Services.Transaction.Tests.vNext
+namespace Castle.Facilities.AutoTx.Tests
 {
 	public class SingleThread_Ambient_OnInterface
 	{
@@ -58,7 +60,7 @@ namespace Castle.Services.Transaction.Tests.vNext
 			using (var txM = new ResolveScope<ITxManager>(_Container))
 			{
 				System.Transactions.Transaction ambient = null;
-				vNextTransaction.ITransaction ourTx = null;
+				ITransaction ourTx = null;
 
 				try
 				{

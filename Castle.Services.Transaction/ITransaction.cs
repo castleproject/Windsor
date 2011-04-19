@@ -19,9 +19,9 @@
 using System;
 using System.Diagnostics.Contracts;
 using System.Transactions;
-using Castle.Services.Transaction;
+using Castle.Services.Transaction.Monads;
 
-namespace Castle.Services.vNextTransaction
+namespace Castle.Services.Transaction
 {
 	/// <summary>
 	/// <para>
@@ -107,7 +107,7 @@ namespace Castle.Services.vNextTransaction
 		/// that has already been rolled back, or an attempt is made to commit 
 		/// the transaction and the transaction aborts.
 		/// </exception>
-		/// <exception cref="TransactionException">An unknown problem occurred. 
+		/// <exception cref="Exceptions.TransactionException">An unknown problem occurred. 
 		/// For example the connection to the database was lost.</exception>
 		/// <remarks>
 		/// It's up for grabs (i.e. github pull request) to correctly handle state on the two exceptions that may be thrown

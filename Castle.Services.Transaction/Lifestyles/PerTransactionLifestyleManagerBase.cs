@@ -22,10 +22,11 @@ using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using Castle.MicroKernel.Context;
 using Castle.MicroKernel.Lifestyle;
+using Castle.Services.Transaction.Monads;
 using log4net;
 using System.Linq;
 
-namespace Castle.Services.vNextTransaction.Lifestyles
+namespace Castle.Services.Transaction.Lifestyles
 {
 	/// <summary>
 	/// This lifestyle manager is responsible for disposing components

@@ -18,11 +18,11 @@
 
 using Castle.MicroKernel.Facilities;
 using Castle.MicroKernel.Registration;
-using Castle.Services.vNextTransaction;
+using Castle.Services.Transaction;
 using Castle.Windsor;
 using NUnit.Framework;
 
-namespace Castle.Services.Transaction.Tests.vNext
+namespace Castle.Facilities.AutoTx.Tests
 {
 	public class InitTests
 	{

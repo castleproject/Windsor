@@ -1,9 +1,10 @@
+using Castle.Facilities.AutoTx.Tests.TestClasses;
 using Castle.MicroKernel.Registration;
-using Castle.Services.vNextTransaction;
+using Castle.Services.Transaction.Testing;
 using Castle.Windsor;
 using NUnit.Framework;
 
-namespace Castle.Services.Transaction.Tests.vNext
+namespace Castle.Facilities.AutoTx.Tests
 {
 	public class SingleThread_SupressInAmbient
 	{

@@ -2,7 +2,7 @@
 using System.Diagnostics.Contracts;
 using Castle.MicroKernel.Facilities;
 
-namespace Castle.Services.vNextTransaction
+namespace Castle.Services.Transaction.Internal
 {
 	internal sealed class CreatedTransaction : ICreatedTransaction
 	{

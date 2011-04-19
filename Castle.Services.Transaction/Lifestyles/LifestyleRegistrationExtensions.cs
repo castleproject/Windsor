@@ -20,7 +20,7 @@ using System.Diagnostics.Contracts;
 using Castle.MicroKernel.Registration;
 using Castle.MicroKernel.Registration.Lifestyle;
 
-namespace Castle.Services.vNextTransaction.Lifestyles
+namespace Castle.Services.Transaction.Lifestyles
 {
 	public static class LifestyleRegistrationExtensions
 	{
