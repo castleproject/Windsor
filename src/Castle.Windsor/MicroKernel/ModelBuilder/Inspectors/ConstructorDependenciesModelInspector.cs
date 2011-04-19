@@ -18,6 +18,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 	using System.Reflection;
 
 	using Castle.Core;
+	using Castle.Core.Internal;
 
 #if SILVERLIGHT
 	using System.Linq;
@@ -49,11 +50,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 		protected virtual ConstructorCandidate CreateConstructorCandidate(ComponentModel model, ConstructorInfo constructor)
 		{
 			var parameters = constructor.GetParameters();
-#if SILVERLIGHT
-			var dependencies = parameters.Select(BuildParameterDependency).ToArray();
-#else
-			var dependencies = Array.ConvertAll(parameters, BuildParameterDependency);
-#endif
+			var dependencies = parameters.ConvertAll(BuildParameterDependency);
 			return new ConstructorCandidate(constructor, dependencies);
 		}
 
