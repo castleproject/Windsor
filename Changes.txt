@@ -1,4 +1,4 @@
-- implemented IOC-287 - Add overloads to OnCreate and OnDestroy that only take the instance and leave the container out as it is often superfulous
+- implemented IOC-287 - Add overloads to OnCreate and OnDestroy that only take the instance and leave the container out as it is often superfluous
 - implemented IOC-285 - Add abilitty to make a component the default for a service without ensuring it's the first component exposed that service registered
 - implemented IOC-281 - Provide out of the box support for Lazy<T>
 - implemented IOC-279 - WindsorContainer constructor taking string should accept not only file path but also other supported locations, like UNC, config section and embedded resource
