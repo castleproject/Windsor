@@ -104,7 +104,7 @@ namespace Castle.Services.Transaction
 
 		private void InnerBegin()
 		{
-			Contract.Ensures(this.Status == TransactionStatus.Active);
+			Contract.Ensures(_State == TransactionState.Active);
 			// we have a ongoing current transaction, join it!
 			if (System.Transactions.Transaction.Current != null)
 			{
@@ -120,6 +120,7 @@ namespace Castle.Services.Transaction
 				//IsAmbient = true; // TODO: Perhaps we created this item and we need to notify the transaction manager...
 			}
 			else _TransactionHandle = NativeMethods.createTransaction(string.Format("{0} Transaction", _Name));
+
 			if (!_TransactionHandle.IsInvalid)
 			{
 				_State = TransactionState.Active;
@@ -173,52 +174,53 @@ namespace Castle.Services.Transaction
 		{
 			try
 			{
-				if (_Inner != null) 
+				if (!NativeMethods.RollbackTransaction(_TransactionHandle))
+					throw new TransactionException("Rollback failed.", LastEx());
+
+				if (_Inner != null)
 					_Inner.Rollback();
 			}
 			finally
 			{
-				InnerRollback();
+				_State = TransactionState.Aborted;
 			}
-
-		}
-
-		private void InnerRollback()
-		{
-			if (!NativeMethods.RollbackTransaction(_TransactionHandle))
-				throw new TransactionException("Rollback failed.", LastEx());
 		}
 
 		void ITransaction.Complete()
 		{
-			if (_Inner != null)
-				_Inner.Complete();
+			try
+			{
+				if (!NativeMethods.CommitTransaction(_TransactionHandle))
+					throw new TransactionException("Commit failed.", LastEx());
 
-			if (!NativeMethods.CommitTransaction(_TransactionHandle))
-				throw new TransactionException("Commit failed.", LastEx());
+				if (_Inner != null)
+					_Inner.Complete();
+
+				_State = TransactionState.CommittedOrCompleted;
+			}
+			finally
+			{
+				if (_State != TransactionState.CommittedOrCompleted)
+					_State = TransactionState.Aborted;
+			}
 		}
 
 		#region State - defensive programming 
 		
-		/// <summary>
-		/// Returns the current transaction status.
-		/// </summary>
-		public TransactionStatus Status { get; private set; }
-
-		private void AssertState(TransactionStatus status)
+		private void AssertState(TransactionState state)
 		{
-			AssertState(status, null);
+			AssertState(state, null);
 		}
 
-		private void AssertState(TransactionStatus status, string msg)
+		private void AssertState(TransactionState status, string msg)
 		{
-			if (status != Status)
+			if (status != _State)
 			{
 				if (!string.IsNullOrEmpty(msg))
 					throw new TransactionException(msg);
 
 				throw new TransactionException(string.Format("State failure; should have been {0} but was {1}",
-															 status, Status));
+															 status, _State));
 			}
 		}
 		#endregion
@@ -227,14 +229,14 @@ namespace Castle.Services.Transaction
 
 		FileStream IFileAdapter.Create(string path)
 		{
-			AssertState(TransactionStatus.Active);
+			AssertState(TransactionState.Active);
 
 			return Open(path, FileMode.Create, FileAccess.ReadWrite, FileShare.None);
 		}
 
 		void IFileAdapter.Delete(string filePath)
 		{
-			AssertState(TransactionStatus.Active);
+			AssertState(TransactionState.Active);
 
 			if (!NativeMethods.DeleteFileTransactedW(filePath, _TransactionHandle))
 			{
@@ -254,7 +256,7 @@ namespace Castle.Services.Transaction
 
 		string IFileAdapter.ReadAllText(string path, Encoding encoding)
 		{
-			AssertState(TransactionStatus.Active);
+			AssertState(TransactionState.Active);
 
 			using (var reader = new StreamReader(Open(path, FileMode.Open, FileAccess.Read, FileShare.Read), encoding))
 			{
@@ -280,7 +282,7 @@ namespace Castle.Services.Transaction
 
 		bool IFileAdapter.Exists(string filePath)
 		{
-			AssertState(TransactionStatus.Active);
+			AssertState(TransactionState.Active);
 
 			using (var handle = NativeMethods.FindFirstFileTransacted(filePath, false, _TransactionHandle))
 				return !handle.IsInvalid;
@@ -288,7 +290,7 @@ namespace Castle.Services.Transaction
 
 		string IFileAdapter.ReadAllText(string path)
 		{
-			AssertState(TransactionStatus.Active);
+			AssertState(TransactionState.Active);
 
 			using (var reader = new StreamReader(Open(path, FileMode.Open, FileAccess.Read, FileShare.Read)))
 			{
@@ -298,7 +300,7 @@ namespace Castle.Services.Transaction
 
 		void IFileAdapter.WriteAllText(string path, string contents)
 		{
-			AssertState(TransactionStatus.Active);
+			AssertState(TransactionState.Active);
 
 			bool exists = ((IFileAdapter) this).Exists(path);
 			using (
@@ -328,7 +330,7 @@ namespace Castle.Services.Transaction
 		///<param name="path">The path to create the directory at.</param>
 		bool IDirectoryAdapter.Create(string path)
 		{
-			AssertState(TransactionStatus.Active);
+			AssertState(TransactionState.Active);
 
 			path = Path.NormDirSepChars(CleanPathEnd(path));
 
@@ -369,7 +371,7 @@ namespace Castle.Services.Transaction
 		/// <param name="path">The directory path to start deleting at!</param>
 		void IDirectoryAdapter.Delete(string path)
 		{
-			AssertState(TransactionStatus.Active);
+			AssertState(TransactionState.Active);
 
 			if (!NativeMethods.RemoveDirectoryTransactedW(path, _TransactionHandle))
 				throw new TransactionException("Unable to delete folder. See inner exception for details.",
@@ -383,7 +385,7 @@ namespace Castle.Services.Transaction
 		/// <returns>True if it exists, false otherwise.</returns>
 		bool IDirectoryAdapter.Exists(string path)
 		{
-			AssertState(TransactionStatus.Active);
+			AssertState(TransactionState.Active);
 
 			path = CleanPathEnd(path);
 
@@ -393,7 +395,7 @@ namespace Castle.Services.Transaction
 
 		string IDirectoryAdapter.GetFullPath(string relativePath)
 		{
-			AssertState(TransactionStatus.Active);
+			AssertState(TransactionState.Active);
 			return GetFullPathNameTransacted(relativePath);
 		}
 
@@ -433,7 +435,7 @@ namespace Castle.Services.Transaction
 		/// </param>
 		bool IDirectoryAdapter.Delete(string path, bool recursively)
 		{
-			AssertState(TransactionStatus.Active);
+			AssertState(TransactionState.Active);
 			return recursively
 			       	? DeleteRecursive(path)
 			       	: NativeMethods.RemoveDirectoryTransactedW(path, _TransactionHandle);
@@ -472,10 +474,10 @@ namespace Castle.Services.Transaction
 			// called via the Dispose() method on IDisposable, 
 			// can use private object references.
 
-			if (Status == TransactionStatus.Active)
-				InnerRollback();
+			if (_State == TransactionState.Active)
+				((ITransaction)this).Rollback();
 
-			if (_TransactionHandle != null && !_TransactionHandle.IsInvalid)
+			if (_TransactionHandle != null)
 				_TransactionHandle.Dispose();
 
 			if (_Inner != null)

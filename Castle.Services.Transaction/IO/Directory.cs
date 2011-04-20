@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.Contracts;
+﻿using System;
+using System.Diagnostics.Contracts;
 
 namespace Castle.Services.Transaction.IO
 {
@@ -50,6 +51,11 @@ namespace Castle.Services.Transaction.IO
 			Contract.Requires(!string.IsNullOrEmpty(originalPath));
 			Contract.Requires(!string.IsNullOrEmpty(newPath));
 			GetAdapter().Move(originalPath, newPath);
+		}
+
+		public static bool CreateDirectory(string directoryPath)
+		{
+			return Create(directoryPath);
 		}
 	}
 }

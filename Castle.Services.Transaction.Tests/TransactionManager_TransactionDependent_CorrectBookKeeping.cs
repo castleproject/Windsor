@@ -2,7 +2,7 @@
 
 namespace Castle.Services.Transaction.Tests
 {
-	internal class TransactionManager_TransactionDependentAndStackState
+	public class TransactionManager_TransactionDependent_CorrectBookKeeping
 	{
 		private ITxManager _Tm;
 

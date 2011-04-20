@@ -15,16 +15,15 @@
 // 
 #endregion
 
-using System.Transactions;
+using Castle.Services.Transaction.Tests.Framework;
 
 namespace Castle.Services.Transaction.Tests
 {
-	using System;
 	using System.IO;
 	using NUnit.Framework;
 
-	[TestFixture]
-	public class FileTransaction_WithManager_Tests
+	[TestFixture, Ignore("Wait for RC")]
+	public class FileTransaction_AsDependentTransaction : TxFTestFixtureBase
 	{
 		private string _DirPath;
 
@@ -32,52 +31,39 @@ namespace Castle.Services.Transaction.Tests
 		private bool _DeleteAtEnd;
 		private string _FilePath;
 
-		private ITxManager tm;
+		private ITxManager _Tm;
 
 		[SetUp]
 		public void Setup()
 		{
-			tm = new TxManager(new TransientActivityManager());
+			_Tm = new TxManager(new TransientActivityManager());
 
-			_DirPath = "../../Transactions/".CombineAssert("tmp");
+			_DirPath = ".";
 			_FilePath = _DirPath.Combine("test.txt");
-			Assert.That(_FilePath != null);
-			
-			if (File.Exists(_FilePath))
-				File.Delete(_FilePath);
-
-			_DeleteAtEnd = true;
 		}
 
 		[TearDown]
 		public void TearDown()
 		{
-			if (_DeleteAtEnd && Directory.Exists(_DirPath))
-				Directory.Delete(_DirPath, true);
+			Directory.Delete(_DirPath, true);
 		}
 
 		[Test]
 		public void NestedFileTransaction_CanBeCommitted()
 		{
-			if (Environment.OSVersion.Version.Major < 6)
-			{
-				Assert.Ignore("TxF not supported");
-				return;
-			}
-
 			// verify process state
-			Assert.That(tm.CurrentTransaction.HasValue, Is.False);
+			Assert.That(_Tm.CurrentTransaction.HasValue, Is.False);
 			Assert.That(System.Transactions.Transaction.Current, Is.Null);
 
 			// actual test code);
-			using (var stdTx = tm.CreateTransaction(new DefaultTransactionOptions()).Value.Transaction)
+			using (var stdTx = _Tm.CreateTransaction(new DefaultTransactionOptions()).Value.Transaction)
 			{
-				Assert.That(tm.CurrentTransaction.HasValue, Is.True);
-				Assert.That(tm.CurrentTransaction.Value, Is.EqualTo(stdTx));
+				Assert.That(_Tm.CurrentTransaction.HasValue, Is.True);
+				Assert.That(_Tm.CurrentTransaction.Value, Is.EqualTo(stdTx));
 
-				using (var innerTransaction = tm.CreateFileTransaction(new DefaultTransactionOptions()).Value.Transaction)
+				using (var innerTransaction = _Tm.CreateFileTransaction(new DefaultTransactionOptions()).Value.Transaction)
 				{
-					Assert.That(tm.CurrentTransaction.Value, Is.EqualTo(innerTransaction),
+					Assert.That(_Tm.CurrentTransaction.Value, Is.EqualTo(innerTransaction),
 								"Now that we have created a dependent transaction, it's the current tx in the resource manager.");
 
 					// this is supposed to be registered in an IoC container

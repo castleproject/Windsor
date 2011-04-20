@@ -15,6 +15,8 @@
 // 
 #endregion
 
+using Castle.Services.Transaction.Tests.Framework;
+
 namespace Castle.Services.Transaction.Tests
 {
 	using System;
@@ -23,8 +25,8 @@ namespace Castle.Services.Transaction.Tests
 	using IO;
 	using NUnit.Framework;
 
-	[TestFixture]
-	public class FileTransactions_Directory_Tests
+	[TestFixture, Ignore("Wait for RC")]
+	public class FileTransactions_Directory_Tests : TxFTestFixtureBase
 	{
 		#region Setup/Teardown
 
@@ -44,14 +46,14 @@ namespace Castle.Services.Transaction.Tests
 		{
 			foreach (string filePath in infosCreated)
 			{
-				if (IO.File.Exists(filePath))
-					IO.File.Delete(filePath);
-				else if (IO.Directory.Exists(filePath))
-					IO.Directory.Delete(filePath);
+				if (File.Exists(filePath))
+					File.Delete(filePath);
+				else if (Directory.Exists(filePath))
+					Directory.Delete(filePath);
 			}
 
-			if (IO.Directory.Exists("testing"))
-				IO.Directory.Delete("testing", true);
+			if (Directory.Exists("testing"))
+				Directory.Delete("testing", true);
 
 			Monitor.Exit(serializer);
 		}

@@ -30,7 +30,7 @@ namespace Castle.Facilities.AutoTx.Tests
 		{
 			var meta = TxClassMetaInfoStore.GetMetaFromTypeInner(typeof(MyService));
 			meta.ShouldPass("MyService has Transaction attributes")
-				.ShouldBe(m => m.TransactionalMethods.Count() >= 4, "there are two methods");
+				.ShouldBe(m => m.TransactionalMethods.Count() >= 4, "there are four or more methods");
 		}
 	}
 }

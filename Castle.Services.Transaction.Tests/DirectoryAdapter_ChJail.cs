@@ -1,16 +1,17 @@
 ﻿using Castle.Services.Transaction.IO;
+using Castle.Services.Transaction.Tests.Framework;
 using NUnit.Framework;
 
 namespace Castle.Services.Transaction.Tests
 {
-	public class DirectoryAdapter_ChJail
+	public class DirectoryAdapter_ChJail : TxFTestFixtureBase
 	{
 		private string _CurrDir;
 
 		[SetUp]
 		public void SetUp()
 		{
-			_CurrDir = Path.GetPathWithoutLastBit(Path.GetFullPath(typeof(DirectoryAdapterTests).Assembly.CodeBase));
+			_CurrDir = Path.GetPathWithoutLastBit(Path.GetFullPath(typeof(DirectoryAdapter_InitializationSettings).Assembly.CodeBase));
 		}
 
 		[Test]

@@ -32,7 +32,6 @@ namespace Castle.Facilities.AutoTx.Lifestyles
 	/// </summary>
 	/// <typeparam name="T">Primary lifestyle manager which has its constructor resolved through
 	/// the main kernel.</typeparam>
-	/// <typeparam name="M2">Secondary lifestyle manager</typeparam>
 	public class WrapperResolveLifestyleManager<T> : AbstractLifestyleManager
 		where T : class, ILifestyleManager
 	{

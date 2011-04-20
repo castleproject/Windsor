@@ -13,7 +13,7 @@ namespace Castle.Services.Transaction.Tests
 			_Tm = new TxManager(new TransientActivityManager());
 		}
 
-		[Test]
+		[Test, Ignore("Wait for RC")]
 		public void TransactionResources_ForFileTransaction_AreDisposed()
 		{
 			var resource = new ResourceImpl();

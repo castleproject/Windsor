@@ -16,6 +16,7 @@
 #endregion
 
 using System.IO;
+using Castle.Services.Transaction.Tests.Framework;
 
 namespace Castle.Services.Transaction.Tests
 {
@@ -26,8 +27,8 @@ namespace Castle.Services.Transaction.Tests
 	using IO;
 	using NUnit.Framework;
 
-	[Ignore("Fix file transactions")]
-	public class FileTransactions_File_Tests
+	[Ignore("Wait for RC")]
+	public class FileTransactions_File_Tests : TxFTestFixtureBase
 	{
 		#region Setup/Teardown
 

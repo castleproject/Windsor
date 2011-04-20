@@ -15,29 +15,21 @@
 // 
 #endregion
 
+using Castle.Services.Transaction.Tests.Framework;
+
 namespace Castle.Services.Transaction.Tests
 {
-	using System;
 	using IO;
 	using NUnit.Framework;
 
-	public class DirectoryAdapterTests
+	public class DirectoryAdapter_InitializationSettings : TxFTestFixtureBase
 	{
 		[Test]
 		public void DefaultSettings()
 		{
 			var adapter = new DirectoryAdapter(new MapPathImpl(), false, null);
 			Assert.That(adapter.UseTransactions);
-			Assert.That(adapter.OnlyJoinExisting, Is.True);
-		}
-
-		[Test]
-		public void CanGetLocalFile()
-		{
-			IDirectoryAdapter d = new DirectoryAdapter(new MapPathImpl(), false, null);
-			string path = Path.GetPathWithoutLastBit(d.MapPath("~/../../TestGlobals.cs")); // get directory instead
-			Console.WriteLine(path);
-			Assert.That(d.Exists(path));
-		}
+			Assert.That(adapter.OnlyJoinExisting, Is.False);
+		}	
 	}
 }

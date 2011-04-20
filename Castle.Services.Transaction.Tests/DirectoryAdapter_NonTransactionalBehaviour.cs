@@ -1,4 +1,4 @@
-﻿#region license
+#region license
 
 // Copyright 2009-2011 Henrik Feldt - http://logibit.se/
 // 
@@ -22,13 +22,16 @@ using NUnit.Framework;
 
 namespace Castle.Services.Transaction.Tests
 {
-	[TestFixture]
-	public class FileAdapter_InitializationSettings : TxFTestFixtureBase
+	[Ignore("Wait for RC")]
+	public class DirectoryAdapter_NonTransactionalBehaviour : TxFTestFixtureBase
 	{
 		[Test]
-		public void CtorUseTransactions()
+		public void Exists()
 		{
-			Assert.That(new FileAdapter().UseTransactions);
+			IDirectoryAdapter d = new DirectoryAdapter(new MapPathImpl(), false, null);
+			var path = Path.GetPathWithoutLastBit(d.MapPath("~/../../DirectoryAdapter_NonTransactionalBehaviour.cs"));
+				// get directory instead
+			Assert.That(d.Exists(path));
 		}
 	}
 }
