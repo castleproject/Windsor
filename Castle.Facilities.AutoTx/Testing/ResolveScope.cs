@@ -8,7 +8,9 @@ namespace Castle.Facilities.AutoTx.Testing
 	public class ResolveScope<T> : IDisposable
 		where T : class
 	{
-		private static readonly ILog _Logger = LogManager.GetLogger(typeof (ResolveScope<T>));
+		private static readonly ILog _Logger = LogManager.GetLogger(
+			string.Format("Castle.Facilities.AutoTx.Testing.ResolveScope<{0}>", typeof(T).Name));
+
 		private readonly T _Service;
 		private bool _Disposed;
 		protected readonly IWindsorContainer _Container;
@@ -48,7 +50,6 @@ namespace Castle.Facilities.AutoTx.Testing
 			try
 			{
 				_Container.Release(_Service);
-				_Container.Dispose();
 			}
 			finally
 			{

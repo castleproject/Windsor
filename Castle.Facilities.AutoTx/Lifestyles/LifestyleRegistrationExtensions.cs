@@ -24,18 +24,18 @@ namespace Castle.Facilities.AutoTx.Lifestyles
 {
 	public static class LifestyleRegistrationExtensions
 	{
-		public static ComponentRegistration<TService> HybridPerTransactionTransient<TService>(
+		public static ComponentRegistration<TService> PerTransaction<TService>(
 			this LifestyleGroup<TService> @group)
 		{
 			Contract.Requires(group != null);
-			return @group.Custom<HybridPerTransactionTransientLifestyleManager>();
+			return @group.Custom<WrapperResolveLifestyleManager<PerTransactionLifestyleManager>>();
 		}
 
-		public static ComponentRegistration<TService> HybridPerTopTransactionTransient<TService>(
+		public static ComponentRegistration<TService> PerTopTransaction<TService>(
 			this LifestyleGroup<TService> @group)
 		{
 			Contract.Requires(group != null);
-			return @group.Custom<HybridPerTopTransactionTransientLifestyleManager>();
+			return @group.Custom<WrapperResolveLifestyleManager<PerTopTransactionLifestyleManager>>();
 		}
 	}
 }

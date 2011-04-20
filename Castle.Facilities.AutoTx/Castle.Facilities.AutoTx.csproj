@@ -56,10 +56,11 @@
   <ItemGroup>
     <Compile Include="AutoTxFacility.cs" />
     <Compile Include="ITxMetaInfoStore.cs" />
-    <Compile Include="Lifestyles\HybridLifestyleManager.cs" />
-    <Compile Include="Lifestyles\HybridPerTransactionTransientLifestyleManager.cs" />
+    <Compile Include="Lifestyles\WrapperResolveLifestyleManager.cs" />
     <Compile Include="Lifestyles\LifestyleRegistrationExtensions.cs" />
     <Compile Include="Lifestyles\MissingTransactionException.cs" />
+    <Compile Include="Lifestyles\PerTopTransactionLifestyleManager.cs" />
+    <Compile Include="Lifestyles\PerTransactionLifestyleManager.cs" />
     <Compile Include="Lifestyles\PerTransactionLifestyleManagerBase.cs" />
     <Compile Include="Properties\CustomAssemblyInfo.cs" />
     <Compile Include="Testing\IOResolveScope.cs" />
@@ -69,6 +70,7 @@
     <Compile Include="TxClassMetaInfoStore.cs" />
     <Compile Include="TxComponentInspector.cs" />
     <Compile Include="TxInterceptor.cs" />
+    <Compile Include="TxManagerCurrentTransactionSelector.cs" />
     <Compile Include="TxMetaInfoStoreContract.cs" />
   </ItemGroup>
   <ItemGroup>

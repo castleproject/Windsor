@@ -20,10 +20,11 @@ using System;
 using Castle.Facilities.AutoTx.Testing;
 using Castle.Facilities.AutoTx.Tests.TestClasses;
 using Castle.MicroKernel.Registration;
+using Castle.Services.Transaction;
 using Castle.Windsor;
 using NUnit.Framework;
 
-namespace Castle.Services.Transaction.Tests
+namespace Castle.Facilities.AutoTx.Tests
 {
 	[Ignore("Implement retry policies are nicer to test with e.g. NHibernate integration parts.")]
 	public class RetryPolicies_Transactions

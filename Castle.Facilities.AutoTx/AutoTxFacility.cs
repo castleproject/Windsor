@@ -62,11 +62,11 @@ namespace Castle.Facilities.AutoTx
 
 				Component.For<IDirectoryAdapter>()
 					.ImplementedBy<DirectoryAdapter>()
-					.LifeStyle.HybridPerTransactionTransient(),
+					.LifeStyle.PerTransaction(),
 
 				Component.For<IFileAdapter>()
 					.ImplementedBy<FileAdapter>()
-					.LifeStyle.HybridPerTransactionTransient(),
+					.LifeStyle.PerTransaction(),
 
 				Component.For<IMapPath>()
 					.ImplementedBy<MapPathImpl>()

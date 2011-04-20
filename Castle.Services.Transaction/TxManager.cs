@@ -71,6 +71,7 @@ namespace Castle.Services.Transaction
 				return Maybe.None<ICreatedTransaction>();
 
 			var nextStackDepth = activity.Count + 1;
+			var shouldFork = transactionOptions.Fork && nextStackDepth > 1;
 
 			ITransaction tx;
 			if (activity.Count == 0)
@@ -90,14 +91,16 @@ namespace Castle.Services.Transaction
 				
 				// assume because I can't open up .Net and add the contract myself
 				Contract.Assume(clone != null);
-				tx = new Transaction(clone, nextStackDepth, transactionOptions, () => activity.Pop());
+				Action onDispose = () => activity.Pop();
+				tx = new Transaction(clone, nextStackDepth, transactionOptions, shouldFork ? null : onDispose);
 			}
 
-			activity.Push(tx);
+			if (!shouldFork)
+				activity.Push(tx);
 
 			var m = Maybe.Some((ICreatedTransaction) new CreatedTransaction(tx,
 				// we should only fork if we have a different current top transaction than the current
-				transactionOptions.Fork && nextStackDepth > 1, () => {
+				shouldFork, () => {
 					_ActivityManager.GetCurrentActivity().Push(tx);
 					return new DisposableScope(_ActivityManager.GetCurrentActivity().Pop);
 				}));
@@ -117,7 +120,7 @@ namespace Castle.Services.Transaction
 
 		public Maybe<ICreatedTransaction> CreateFileTransaction(ITransactionOptions transactionOptions)
 		{
-			throw new NotImplementedException();
+			throw new NotImplementedException("Implement file transactions in the transaction manager!");
 		}
 
 		private class DisposableScope : IDisposable

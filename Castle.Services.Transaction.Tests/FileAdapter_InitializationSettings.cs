@@ -4,7 +4,7 @@ using NUnit.Framework;
 namespace Castle.Services.Transaction.Tests
 {
 	[TestFixture]
-	public class FileAdapterTests
+	public class FileAdapter_InitializationSettings
 	{
 		[Test]
 		public void CtorUseTransactions()

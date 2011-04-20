@@ -17,12 +17,13 @@ namespace Castle.Services.Transaction.Tests
 		public void TransactionResources_ForFileTransaction_AreDisposed()
 		{
 			var resource = new ResourceImpl();
+
 			using (var tx = _Tm.CreateFileTransaction(new DefaultTransactionOptions()).Value.Transaction)
 			{
 				tx.Inner.EnlistVolatile(resource, EnlistmentOptions.EnlistDuringPrepareRequired);
 				tx.Rollback();
 			}
-			Assert.That(resource.WasDisposed);
+
 			Assert.That(resource.RolledBack);
 		}
 
@@ -30,12 +31,13 @@ namespace Castle.Services.Transaction.Tests
 		public void TransactionResources_AreDisposed()
 		{
 			var resource = new ResourceImpl();
+
 			using (var tx = _Tm.CreateTransaction(new DefaultTransactionOptions()).Value.Transaction)
 			{
 				tx.Inner.EnlistVolatile(resource, EnlistmentOptions.EnlistDuringPrepareRequired);
 				tx.Rollback();
 			}
-			Assert.That(resource.WasDisposed);
+
 			Assert.That(resource.RolledBack);
 		}
 	}

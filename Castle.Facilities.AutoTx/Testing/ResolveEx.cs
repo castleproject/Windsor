@@ -14,7 +14,19 @@ namespace Castle.Facilities.AutoTx.Testing
 		/// <typeparam name="T">The service to resolve.</typeparam>
 		/// <param name="container">The container to resolve from.</param>
 		/// <returns>The IOResolveScope</returns>
-		public static IOResolveScope<T> ResolveScope<T>(this IWindsorContainer container)
+		public static ResolveScope<T> ResolveScope<T>(this IWindsorContainer container)
+			where T : class
+		{
+			return new ResolveScope<T>(container);
+		}
+		
+		/// <summary>
+		/// Resolve the service denoted by T.
+		/// </summary>
+		/// <typeparam name="T">The service to resolve.</typeparam>
+		/// <param name="container">The container to resolve from.</param>
+		/// <returns>The IOResolveScope</returns>
+		public static ResolveScope<T> ResolveIOScope<T>(this IWindsorContainer container)
 			where T : class
 		{
 			return new IOResolveScope<T>(container);

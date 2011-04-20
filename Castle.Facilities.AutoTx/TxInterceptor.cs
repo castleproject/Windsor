@@ -96,7 +96,9 @@ namespace Castle.Facilities.AutoTx
 			Contract.Assume(transaction.State == TransactionState.Active, 
 				"from post-condition of ITxManager CreateTransaction in the (HasValue -> ...)-case");
 
+			Task forkCase;
 			if (mTxData.Value.ShouldFork)
+				// TODO: Handle case where child transaction aborts and task is never waited upon!
 				ForkCase(invocation, mTxData.Value);
 			else
 				SynchronizedCase(invocation, transaction);
@@ -111,6 +113,7 @@ namespace Castle.Facilities.AutoTx
 
 			return Task.Factory.StartNew(t =>
 			{
+				bool hasException = false;
 				var tuple = (Tuple<IInvocation, ICreatedTransaction, string>)t;
 				var dependent = tuple.Item2.Transaction.Inner as DependentTransaction;
 				using (tuple.Item2.GetForkScope())
@@ -133,19 +136,24 @@ namespace Castle.Facilities.AutoTx
 					catch (TransactionAbortedException ex)
 					{
 						// if we have aborted the transaction, we both warn and re-throw the exception
+						hasException = true;
 						_Logger.Warn("transaction aborted", ex);
 						throw new TransactionAbortedException("Parallel/forked transaction aborted! See inner exception for details.", ex);
+					}
+					catch (Exception)
+					{
+						hasException = true;
+						throw;
 					}
 					finally
 					{
 						if (_Logger.IsDebugEnabled)
 							_Logger.Debug("in finally-clause");
 
-						dependent.Complete();
-					
-						// MSDN-article is wrong; transaction is disposed twice in their code:
-						// http://msdn.microsoft.com/en-us/library/ms229976%28v=vs.90%29.aspx#Y17
-						//tuple.Item2.Dispose(); 
+						if (!hasException)
+							dependent.Complete();
+
+						// See footnote at end of file
 					}
 				}
 			}, Tuple.Create(invocation, txData, txData.Transaction.LocalIdentifier));
@@ -166,21 +174,29 @@ namespace Castle.Facilities.AutoTx
 				catch (TransactionAbortedException)
 				{
 					// if we have aborted the transaction, we both warn and re-throw the exception
-					_Logger.Warn("transaction aborted");
+					_Logger.Warn("transaction aborted - synchronized case");
 					throw;
 				}
 				catch (TransactionException ex)
 				{
-					_Logger.Fatal("internal error in transaction system", ex);
+					if (_Logger.IsFatalEnabled)
+						_Logger.Fatal("internal error in transaction system - synchronized case", ex);
+
 					throw;
 				}
 				catch (Exception)
 				{
+					if (_Logger.IsErrorEnabled)
+						_Logger.ErrorFormat("caught exception, rolling back transaction - synchronized case - tx#{0}", transaction.LocalIdentifier);
+
 					transaction.Rollback();
 					throw;
 				}
 				finally
 				{
+					if (_Logger.IsDebugEnabled)
+						_Logger.DebugFormat("dispoing transaction - synchronized case - tx#{0}", transaction.LocalIdentifier);
+
 					transaction.Dispose();
 				}
 			}
@@ -194,4 +210,29 @@ namespace Castle.Facilities.AutoTx
 			_State = InterceptorState.Initialized;
 		}
 	}
+
+	// * In their code: http://msdn.microsoft.com/en-us/library/ms229976%28v=vs.90%29.aspx#Y17
+	//
+	// MSDN article is wrong; transaction is committed twice now:
+	//                      System.InvalidOperationException was unhandled by user code
+	//Message=The operation is not valid for the current state of the enlistment.
+	//Source=System.Transactions
+	//StackTrace:
+	//     at System.Transactions.EnlistmentState.ForceRollback(InternalEnlistment enlistment, Exception e)
+	//     at System.Transactions.PreparingEnlistment.ForceRollback(Exception e)
+	//     at NHibernate.Transaction.AdoNetWithDistributedTransactionFactory.DistributedTransactionContext.System.Transactions.IEnlistmentNotification.Prepare(PreparingEnlistment preparingEnlistment) in d:\CSharp\NH\NH\nhibernate\src\NHibernate\Transaction\AdoNetWithDistributedTransactionFactory.cs:line 129
+	//     at System.Transactions.VolatileEnlistmentPreparing.EnterState(InternalEnlistment enlistment)
+	//     at System.Transactions.VolatileEnlistmentActive.ChangeStatePreparing(InternalEnlistment enlistment)
+	//     at System.Transactions.TransactionStatePhase0.Phase0VolatilePrepareDone(InternalTransaction tx)
+	//     at System.Transactions.EnlistableStates.CompleteBlockingClone(InternalTransaction tx)
+	//     at System.Transactions.DependentTransaction.Complete()
+	//     at Castle.Facilities.AutoTx.TxInterceptor.<ForkCase>b__4(Object t) in f:\code\castle\Castle.Services.Transaction\src\Castle.Facilities.AutoTx\TxInterceptor.cs:line 144
+	//     at System.Threading.Tasks.Task.InnerInvoke()
+	//     at System.Threading.Tasks.Task.Execute()
+	//InnerException: 
+	//dependent.Complete();
+
+	// Second wrong; calling dispose on it
+	// MSDN-article is wrong; transaction is disposed twice in their code:
+	// tuple.Item2.Dispose(); 
 }

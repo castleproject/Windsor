@@ -30,18 +30,17 @@ namespace Castle.Facilities.AutoTx.Lifestyles
 	/// <summary>
 	/// Abstract hybrid lifestyle manager, with two underlying lifestyles
 	/// </summary>
-	/// <typeparam name="M1">Primary lifestyle manager which has its constructor resolved through
+	/// <typeparam name="T">Primary lifestyle manager which has its constructor resolved through
 	/// the main kernel.</typeparam>
 	/// <typeparam name="M2">Secondary lifestyle manager</typeparam>
-	public abstract class HybridLifestyleManager<M1, M2> : AbstractLifestyleManager
-		where M1 : class, ILifestyleManager
-		where M2 : ILifestyleManager, new()
+	public class WrapperResolveLifestyleManager<T> : AbstractLifestyleManager
+		where T : class, ILifestyleManager
 	{
-		private static readonly ILog _Logger = LogManager.GetLogger(typeof (HybridLifestyleManager<M1, M2>));
+		private static readonly ILog _Logger = LogManager.GetLogger(
+			string.Format("Castle.Facilities.AutoTx.Lifestyles.WrapperResolveLifestyleManager<{0}>", typeof(T).Name));
 
 		private readonly IKernel _LifestyleKernel = new DefaultKernel();
-		protected M1 _Lifestyle1;
-		protected readonly M2 _Lifestyle2 = new M2();
+		protected T _Lifestyle1;
 		private bool _Disposed;
 
 		[ContractPublicPropertyName("Initialized")]
@@ -63,16 +62,16 @@ namespace Castle.Facilities.AutoTx.Lifestyles
 			Contract.Ensures(_Lifestyle1 != null);
 			Contract.Ensures(Initialized);
 
-			_Logger.Debug("initializing");
+			if (_Logger.IsDebugEnabled)
+				_Logger.DebugFormat("initializing (for component: {0})", model.Service);
 
-			_LifestyleKernel.Register(Component.For<M1>().LifeStyle.Transient.Named("M1.lifestyle"));
+			_LifestyleKernel.Register(Component.For<T>().LifeStyle.Transient.Named("T.lifestyle"));
 			kernel.AddChildKernel(_LifestyleKernel);
 
-			try { _Lifestyle1 = _LifestyleKernel.Resolve<M1>(); }
+			try { _Lifestyle1 = _LifestyleKernel.Resolve<T>(); }
 			finally { kernel.RemoveChildKernel(_LifestyleKernel); }
 
 			_Lifestyle1.Init(componentActivator, kernel, model);
-			_Lifestyle2.Init(componentActivator, kernel, model);
 
 			base.Init(componentActivator, kernel, model);
 
@@ -86,13 +85,14 @@ namespace Castle.Facilities.AutoTx.Lifestyles
 
 		public override bool Release(object instance)
 		{
-			bool r1 = _Lifestyle1 != null ? _Lifestyle1.Release(instance) : false;
-			bool r2 = _Lifestyle2.Release(instance);
-			return r1 || r2;
+			Contract.Requires(Initialized);
+			return _Lifestyle1.Release(instance);
 		}
 
 		public override void Dispose()
 		{
+			Contract.Ensures(!Initialized);
+
 			if (_Disposed)
 			{
 				_Logger.Info("repeated call to Dispose. will show stack-trace in debug mode next. this method call is idempotent");
@@ -101,16 +101,19 @@ namespace Castle.Facilities.AutoTx.Lifestyles
 					_Logger.Debug(new StackTrace().ToString());
 			}
 
-			if (_Lifestyle1 != null)
-				_LifestyleKernel.ReleaseComponent(_Lifestyle1);
-
+			_LifestyleKernel.ReleaseComponent(_Lifestyle1);
 			_LifestyleKernel.Dispose();
-
-			_Lifestyle2.Dispose();
+			_Lifestyle1 = null;
 
 			_Disposed = true;
+			_Initialized = false;
 		}
 
-		public abstract override object Resolve(CreationContext context);
+		public override object Resolve(CreationContext context)
+		{
+			Contract.Requires(Initialized);
+			Contract.Ensures(Contract.Result<object>() != null);
+			return _Lifestyle1.Resolve(context);
+		}
 	}
 }

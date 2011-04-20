@@ -132,7 +132,7 @@ namespace Castle.Facilities.AutoTx.Lifestyles
 						{
 							var id = localIdentifier;
 							if (_Logger.IsDebugEnabled)
-								_Logger.DebugFormat("transaction#{0} completed, disposing object '{1}'", id, instance);
+								_Logger.DebugFormat("transaction#{0} completed, maybe releasing object '{1}'", id, instance);
 
 							lock (ComponentActivator)
 							{
@@ -176,61 +176,5 @@ namespace Castle.Facilities.AutoTx.Lifestyles
 		/// </summary>
 		/// <returns>Maybe a current transaction as can be found in the transaction manager.</returns>
 		protected internal abstract Maybe<ITransaction> GetSemanticTransactionForLifetime();
-	}
-
-	/// <summary>
-	/// A lifestyle manager that resolves a fresh instance for every transaction. In my opinion, this 
-	/// is the most semantically correct option of the two per-transaction lifestyle managers: it's possible
-	/// to audit your code to verify that sub-sequent calls to services don't start new transactions on their own.
-	/// With this lifestyle, code executing in other threads work as expected, as no instances are shared accross these
-	/// threads (this refers to the Fork=true option on the TransactionAttribute).
-	/// </summary>
-	public class PerTransactionLifestyleManager : PerTransactionLifestyleManagerBase
-	{
-		public PerTransactionLifestyleManager(ITxManager manager) 
-			: base(manager)
-		{
-			Contract.Requires(manager != null);
-		}
-
-		#region Overrides of PerTransactionLifestyleManagerBase
-
-		protected internal override Maybe<ITransaction> GetSemanticTransactionForLifetime()
-		{
-			if (_Disposed)
-				throw new ObjectDisposedException("PerTransactionLifestyleManager", "The lifestyle manager is disposed and cannot be used.");
-
-			return _Manager.CurrentTransaction;
-		}
-
-		#endregion
-	}
-
-	/// <summary>
-	/// A lifestyle manager for every top transaction in the current call context. This lifestyle is great
-	/// for components that are thread-safe and need to monitor/handle items in both the current thread
-	/// and any forked method invocations. It's also favoring memory if your application is single threaded,
-	/// as there's no need to create a new component every sub-transaction. (this refers to the Fork=true option
-	/// on the TransactionAttribute).
-	/// </summary>
-	public class PerTopTransactionLifestyleManager : PerTransactionLifestyleManagerBase
-	{
-		public PerTopTransactionLifestyleManager(ITxManager manager)
-			: base(manager)
-		{
-			Contract.Requires(manager != null);
-		}
-
-		#region Overrides of PerTransactionLifestyleManagerBase
-
-		protected internal override Maybe<ITransaction> GetSemanticTransactionForLifetime()
-		{
-			if (_Disposed)
-				throw new ObjectDisposedException("PerTopTransactionLifestyleManager", "The lifestyle manager is disposed and cannot be used.");
-
-			return _Manager.CurrentTopTransaction;
-		}
-
-		#endregion
 	}
 }

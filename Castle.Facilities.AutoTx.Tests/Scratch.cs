@@ -18,12 +18,15 @@
 
 using System;
 using System.Linq;
+using Castle.Facilities.AutoTx.Lifestyles;
 using Castle.Facilities.FactorySupport;
 using Castle.Facilities.TypedFactory;
+using Castle.MicroKernel.Registration;
+using Castle.Services.Transaction;
 using Castle.Windsor;
 using NUnit.Framework;
 
-namespace Castle.Services.Transaction.Tests
+namespace Castle.Facilities.AutoTx.Tests
 {
 	[Explicit("to try things out")]
 	internal class Scratch
@@ -35,5 +38,59 @@ namespace Castle.Services.Transaction.Tests
 			c.AddFacility<FactorySupportFacility>().AddFacility<TypedFactoryFacility>();
 			c.Kernel.GetFacilities().Do(Console.WriteLine).Run();
 		}
+
+		// v3.1:
+		[Test]
+		public void HandlerSelector_ReturnsTransientComponent_IsNoAmbientTransaction()
+		{
+			// given
+			var c = new WindsorContainer();
+
+			c.Kernel.AddHandlerSelector(new TxManagerCurrentTransactionSelector());
+
+			c.AddFacility<AutoTxFacility>();
+
+			c.Register(
+				Component.For<ITransactionalComponent>()
+					.ImplementedBy<ExampleTransactionalComponent>()
+					.LifeStyle.PerTransaction(),
+				Component.For<DependencyA1>(),
+				Component.For<DependencyA2>()
+				);
+
+			// then
+			var component = c.Resolve<ExampleTransactionalComponent>();
+
+			
+		}
+	}
+
+	internal class DependencyA1
+	{
+	}
+
+	internal class DependencyA2
+	{
+	}
+
+	internal class ExampleTransactionalComponent : ITransactionalComponent
+	{
+		private readonly DependencyA1 _A1;
+		private readonly Func<DependencyA2> _A2;
+
+		public ExampleTransactionalComponent(DependencyA1 a1, Func<DependencyA2> a2)
+		{
+			_A1 = a1;
+			_A2 = a2;
+		}
+
+		[Transaction]
+		public virtual void TransactionalOperation()
+		{
+		}
+	}
+
+	internal interface ITransactionalComponent
+	{
 	}
 }

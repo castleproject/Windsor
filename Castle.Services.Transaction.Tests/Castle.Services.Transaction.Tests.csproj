@@ -160,13 +160,12 @@
   <ItemGroup>
     <Compile Include="DirectoryAdapterTests.cs" />
     <Compile Include="DirectoryAdapter_ChJail.cs" />
-    <Compile Include="FileAdapterTests.cs">
+    <Compile Include="FileAdapter_InitializationSettings.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="FileTransactions_Directory_Tests.cs" />
     <Compile Include="FileTransactions_File_Tests.cs" />
     <Compile Include="Framework\STATestRuntime.cs" />
-    <Compile Include="PerTransactionLifestyleTests.cs" />
     <Compile Include="TestClasses\Exts.cs" />
     <Compile Include="FileTransaction_WithManager_Tests.cs" />
     <Compile Include="TestClasses\IMyService.cs" />
@@ -177,8 +176,6 @@
     <Compile Include="TestClasses\TestResource.cs" />
     <Compile Include="TestClasses\ThrowsExceptionResource.cs" />
     <Compile Include="TestClasses\TransientActivityManager.cs" />
-    <Compile Include="TestClasses\ThrowingResource.cs" />
-    <Compile Include="ScratchBoard_LTM.cs" />
     <Compile Include="TestClasses\TxTraceListener.cs" />
     <Compile Include="TransactionManager_EnlistedResources.cs" />
     <Compile Include="TransactionManager_TransactionDependentAndStackState.cs" />

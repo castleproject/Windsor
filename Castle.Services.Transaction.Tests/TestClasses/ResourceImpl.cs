@@ -21,7 +21,7 @@ using System.Transactions;
 
 namespace Castle.Services.Transaction.Tests
 {
-	public class ResourceImpl : ISinglePhaseNotification, IDisposable
+	public class ResourceImpl : ISinglePhaseNotification
 	{
 		private bool _Prepared;
 		private bool _RolledBack;
