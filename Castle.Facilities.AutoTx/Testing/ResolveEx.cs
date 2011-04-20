@@ -21,7 +21,9 @@ namespace Castle.Facilities.AutoTx.Testing
 		}
 		
 		/// <summary>
-		/// Resolve the service denoted by T.
+		/// Resolve the service denoted by T. Beware that some of the components in the IO scope,
+		/// namely the file and directory implementations are per-transaction and as such shouldn't be
+		/// resolved unless there is an ambient transaction.
 		/// </summary>
 		/// <typeparam name="T">The service to resolve.</typeparam>
 		/// <param name="container">The container to resolve from.</param>

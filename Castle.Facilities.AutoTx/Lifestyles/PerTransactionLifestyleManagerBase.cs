@@ -51,6 +51,11 @@ namespace Castle.Facilities.AutoTx.Lifestyles
 			_Manager = manager;
 		}
 
+		public override void Init(MicroKernel.IComponentActivator componentActivator, MicroKernel.IKernel kernel, Core.ComponentModel model)
+		{
+			base.Init(componentActivator, kernel, model);
+		}
+
 		// this method is not thread-safe
 		public override void Dispose()
 		{
@@ -108,7 +113,8 @@ namespace Castle.Facilities.AutoTx.Lifestyles
 				throw new ObjectDisposedException("PerTransactionLifestyleManagerBase", "You cannot resolve with a disposed lifestyle.");
 
 			if (!GetSemanticTransactionForLifetime().HasValue)
-				throw new MissingTransactionException();
+				throw new MissingTransactionException(
+					string.Format("No transaction in context when trying to resolve type '{0}'.", context.Handler.Service));
 
 			var transaction = GetSemanticTransactionForLifetime().Value;
 
