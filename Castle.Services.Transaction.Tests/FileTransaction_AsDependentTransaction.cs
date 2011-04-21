@@ -26,9 +26,6 @@ namespace Castle.Services.Transaction.Tests
 	public class FileTransaction_AsDependentTransaction : TxFTestFixtureBase
 	{
 		private string _DirPath;
-
-		// just if I'm curious and want to see that the file exists with my own eyes :p
-		private bool _DeleteAtEnd;
 		private string _FilePath;
 
 		private ITxManager _Tm;

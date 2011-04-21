@@ -96,7 +96,10 @@ namespace Castle.Facilities.AutoTx
 			Contract.Assume(transaction.State == TransactionState.Active, 
 				"from post-condition of ITxManager CreateTransaction in the (HasValue -> ...)-case");
 
+			// TODO 3.0: implement functionality for getting tasks and awating them
+#pragma warning disable 168
 			Task forkCase;
+#pragma warning restore 168
 			if (mTxData.Value.ShouldFork)
 				// TODO: Handle case where child transaction aborts and task is never waited upon!
 				ForkCase(invocation, mTxData.Value);
