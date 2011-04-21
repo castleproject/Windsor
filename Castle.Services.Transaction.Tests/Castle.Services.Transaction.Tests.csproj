@@ -84,20 +84,6 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'MONO26-Debug|AnyCPU'">
-    <DefineConstants>TRACE;DEBUG;MONO MONO26</DefineConstants>
-    <Optimize>false</Optimize>
-    <DebugType>full</DebugType>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <OutputPath>bin\MONO26-Debug\</OutputPath>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'MONO26-Release|AnyCPU'">
-    <DefineConstants>TRACE;MONO MONO26</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <OutputPath>bin\MONO26-Release\</OutputPath>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'MONO28-Release|AnyCPU'">
     <OutputPath>bin\MONO28-Release\</OutputPath>
     <DefineConstants>TRACE;MONO MONO28</DefineConstants>
@@ -158,6 +144,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\TxAssemblyInfo.cs">
+      <Link>TxAssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="DirectoryAdapter_InitializationSettings.cs" />
     <Compile Include="DirectoryAdapter_ChJail.cs" />
     <Compile Include="DirectoryAdapter_NonTransactionalBehaviour.cs" />
