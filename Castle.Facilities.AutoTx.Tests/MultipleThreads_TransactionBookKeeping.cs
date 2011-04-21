@@ -1,6 +1,5 @@
 using System;
 using System.Threading;
-using System.Transactions;
 using Castle.Facilities.AutoTx.Testing;
 using Castle.Facilities.AutoTx.Tests.TestClasses;
 using Castle.MicroKernel.Registration;
@@ -89,8 +88,8 @@ namespace Castle.Facilities.AutoTx.Tests
 					});
 					childHasStarted.WaitOne();
 				});
-				
 			}
+		}
 
 			/* ------ Test started: Assembly: Castle.Facilities.AutoTx.Tests.dll ------
 
@@ -152,6 +151,5 @@ System.AggregateException: A Task's exception(s) were not observed either by Wai
 
 
 0 passed, 1 failed, 0 skipped, took 2,50 seconds (NUnit 2.5.5).*/
-		}
 	}
 }
