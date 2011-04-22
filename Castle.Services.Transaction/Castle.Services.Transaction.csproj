@@ -81,6 +81,9 @@
     <Reference Include="System.Transactions" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\TxAssemblyInfo.cs">
+      <Link>Properties\TxAssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="Activity.cs" />
     <Compile Include="IDirectoryAdapterContract.cs" />
     <Compile Include="IFileAdapterContract.cs" />

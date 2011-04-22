@@ -55,7 +55,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\AutoTxAssemblyInfo.cs">
-      <Link>AutoTxAssemblyInfo.cs</Link>
+      <Link>Properties\AutoTxAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Framework\MaybeEx.cs" />
     <Compile Include="InitTests.cs" />
@@ -90,9 +90,7 @@
     </None>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Properties\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
