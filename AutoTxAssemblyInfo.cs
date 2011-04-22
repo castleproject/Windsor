@@ -11,6 +11,6 @@ using System.Security;
 
 [assembly: AssemblyInformationalVersion("2.5.4.11206")]
 [assembly: CLSCompliantAttribute(false)]
-[assembly: AssemblyConfiguration("Debug")]
+[assembly: AssemblyConfiguration("Release")]
 [assembly: Guid("e011635d-200a-4f51-a68c-ef4d3fe5363b")]
 
