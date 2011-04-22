@@ -7,9 +7,9 @@ using System.Security;
 [assembly: AssemblyProduct("Castle AutoTx Facility")]
 [assembly: AssemblyCopyright("\u00A9Henrik Feldt 2011, The Castle Project 2011")]
 [assembly: AssemblyVersion("2.5.4.0")]
-[assembly: AssemblyFileVersion("2.5.4.11205")]
+[assembly: AssemblyFileVersion("2.5.4.11206")]
 
-[assembly: AssemblyInformationalVersion("2.5.4.11205")]
+[assembly: AssemblyInformationalVersion("2.5.4.11206")]
 [assembly: CLSCompliantAttribute(false)]
 [assembly: AssemblyConfiguration("Debug")]
 [assembly: Guid("e011635d-200a-4f51-a68c-ef4d3fe5363b")]

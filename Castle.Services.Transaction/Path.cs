@@ -309,9 +309,10 @@ namespace Castle.Services.Transaction
 			Contract.Requires(firstPath.Length >= 0);
 			Contract.Requires(Contract.ForAll(otherPaths, p => p.Length > 0));
 			Contract.Ensures(Contract.Result<string>() != null);
-			Contract.Ensures(Contract.Result<string>().Length == firstPath.Length 
-				+ otherPaths.Select(x => x.Length).Sum()
-				+ (otherPaths.Length-1) /* no of separator chars */);
+			// I have to think about this one:
+			//Contract.Ensures(Contract.Result<string>().Length == firstPath.Length 
+			//    + otherPaths.Select(x => x.Length).Sum()
+			//    + (otherPaths.Length-1) /* no of separator chars */);
 
 			return otherPaths.Aggregate(firstPath, Combine);
 		}

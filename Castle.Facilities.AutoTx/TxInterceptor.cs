@@ -172,7 +172,11 @@ namespace Castle.Facilities.AutoTx
 				try
 				{
 					invocation.Proceed();
-					transaction.Complete();
+
+					if (transaction.State == TransactionState.Active)
+						transaction.Complete();
+
+					else _Logger.WarnFormat("transaction was in state {0}, so it cannot be completed. the 'consumer' method, so to speak, might have rolled it back.", transaction.State);
 				}
 				catch (TransactionAbortedException)
 				{
