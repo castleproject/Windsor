@@ -17,6 +17,7 @@
 #endregion
 
 using System;
+using System.Runtime.Serialization;
 
 namespace Castle.Facilities.AutoTx.Lifestyles
 {
@@ -52,6 +53,10 @@ namespace Castle.Facilities.AutoTx.Lifestyles
 		/// <param name = "message">The message.</param>
 		/// <param name = "innerException">The inner exception.</param>
 		public MissingTransactionException(string message, Exception innerException) : base(message, innerException)
+		{
+		}
+
+		protected MissingTransactionException(SerializationInfo info, StreamingContext context) : base(info, context)
 		{
 		}
 	}

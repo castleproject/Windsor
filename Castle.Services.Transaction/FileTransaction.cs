@@ -190,11 +190,11 @@ namespace Castle.Services.Transaction
 		{
 			try
 			{
+				if (_Inner != null && _Inner.State == TransactionState.Active)
+					_Inner.Complete();
+
 				if (!NativeMethods.CommitTransaction(_TransactionHandle))
 					throw new TransactionException("Commit failed.", LastEx());
-
-				if (_Inner != null)
-					_Inner.Complete();
 
 				_State = TransactionState.CommittedOrCompleted;
 			}

@@ -99,6 +99,7 @@ namespace Castle.Facilities.AutoTx.Lifestyles
 			finally
 			{
 				_Disposed = true;
+				GC.SuppressFinalize(this);
 			}
 		}
 
