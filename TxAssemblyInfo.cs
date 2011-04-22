@@ -8,9 +8,9 @@ using System.Security;
 [assembly: AssemblyCopyright("\u00A9Henrik Feldt 2011, The Castle Project 2004-2011")]
 [assembly: ComVisible(false)]
 [assembly: AssemblyVersion("2.5.4.0")]
-[assembly: AssemblyFileVersion("2.5.4.11200")]
+[assembly: AssemblyFileVersion("2.5.4.11204")]
 
-[assembly: AssemblyInformationalVersion("2.5.4.11200")]
+[assembly: AssemblyInformationalVersion("2.5.4.11204")]
 [assembly: CLSCompliantAttribute(false)]
 [assembly: AssemblyConfiguration("Release")]
 [assembly: Guid("83064f6b-fa2c-4630-a087-abd28f77af28")]
