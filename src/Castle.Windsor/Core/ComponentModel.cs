@@ -347,6 +347,30 @@ namespace Castle.Core
 			get { return parameters; }
 		}
 
+		/// <summary>
+		///   Adds constructor dependency to this <see cref = "ComponentModel" />
+		/// </summary>
+		/// <param name = "constructor"></param>
+		public void AddConstructor(ConstructorCandidate constructor)
+		{
+			Constructors.Add(constructor);
+			constructor.Dependencies.ForEach(Dependencies.Add);
+		}
+
+		/// <summary>
+		///   Adds property dependency to this <see cref = "ComponentModel" />
+		/// </summary>
+		/// <param name = "property"></param>
+		public void AddProperty(PropertySet property)
+		{
+			Properties.Add(property);
+			Dependencies.Add(property.Dependency);
+		}
+
+		/// <summary>
+		///   Add service to be exposed by this <see cref = "ComponentModel" />
+		/// </summary>
+		/// <param name = "type"></param>
 		public void AddService(Type type)
 		{
 			if (type == null)
@@ -365,13 +389,9 @@ namespace Castle.Core
 		{
 			foreach (var property in Properties)
 			{
-				foreach (var select in selectors)
+				if (selectors.Any(s => s(property)))
 				{
-					if (select(property))
-					{
-						property.Dependency.IsOptional = false;
-						break;
-					}
+					property.Dependency.IsOptional = false;
 				}
 			}
 		}

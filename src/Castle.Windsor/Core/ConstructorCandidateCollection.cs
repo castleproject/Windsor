@@ -39,7 +39,7 @@ namespace Castle.Core
 			get { return ctors[index]; }
 		}
 
-		public void Add(ConstructorCandidate item)
+		internal void Add(ConstructorCandidate item)
 		{
 			ctors.Add(item);
 		}

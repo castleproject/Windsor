@@ -1,4 +1,16 @@
 ================================================================================================
+change - Add() methods on PropertySetCollection and ConstructorCandidateCollection are no longer
+	publicly accessible
+
+impact - low
+fixability - easy
+
+description - This change was made to ensure and encapsulate the fact that as constructor or
+	property dependency is added the dependency is also added to Dependencies collection on
+	ComponentModel.
+
+fix - Use new AddProperty or AddConstructor methods respectively.
+================================================================================================
 rename -  WithService.DefaultInterface() -> WithService.DefaultInterfaces()
 description - changed to plural to emphasize more than one interface may be matched.
 ================================================================================================
