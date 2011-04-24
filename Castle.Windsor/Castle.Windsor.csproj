@@ -876,7 +876,9 @@
     </Compile>
     <Compile Include="Windsor\Diagnostics\AllComponentsDiagnostic.cs" />
     <Compile Include="Windsor\Diagnostics\DebuggerViews\ReleasePolicyTrackedObjectsDebuggerViewItem.cs" />
+    <Compile Include="Windsor\Diagnostics\Extensions\UsingContainerAsServiceLocator.cs" />
     <Compile Include="Windsor\Diagnostics\Extensions\DefaultComponentPerService.cs" />
+    <Compile Include="Windsor\Diagnostics\UsingContainerAsServiceLocatorDiagnostic.cs" />
     <Compile Include="Windsor\Diagnostics\Helpers\DescriptionUtil.cs" />
     <Compile Include="Windsor\Diagnostics\Extensions\ReleasePolicyTrackedObjects.cs" />
     <Compile Include="Windsor\Diagnostics\DebuggerViews\ComponentStatusDebuggerViewItem.cs" />
@@ -904,6 +906,7 @@
     <Compile Include="Windsor\Diagnostics\IPotentialLifestyleMismatchesDiagnostic.cs" />
     <Compile Include="Windsor\Diagnostics\IPotentiallyMisconfiguredComponentsDiagnostic.cs" />
     <Compile Include="Windsor\Diagnostics\ITrackedComponentsDiagnostic.cs" />
+    <Compile Include="Windsor\Diagnostics\IUsingContainerAsServiceLocatorDiagnostic.cs" />
     <Compile Include="Windsor\Diagnostics\KernelDebuggerProxy.cs" />
     <Compile Include="Windsor\Diagnostics\Extensions\PotentiallyMisconfiguredComponents.cs" />
     <Compile Include="Windsor\Diagnostics\DebuggerViews\MismatchedDependencyDebuggerViewItem.cs" />

@@ -14,28 +14,16 @@
 
 namespace Castle.Windsor.Diagnostics
 {
-	using Castle.Core.Internal;
+	using System.Linq;
+
+	using Castle.Core;
 	using Castle.MicroKernel;
 
-	public class PotentiallyMisconfiguredComponentsDiagnostic : IPotentiallyMisconfiguredComponentsDiagnostic
+	/// <summary>
+	///   Detects components that are not extending Windsor's infrastructure yet depend on the container which usually means they use the container as service locator
+	///   which is a bad practice and should be avoided. Consult the documentation for more details: http://j.mp/WindsorSL
+	/// </summary>
+	public interface IUsingContainerAsServiceLocatorDiagnostic : IDiagnostic<IHandler[]>
 	{
-		private readonly IKernel kernel;
-
-		public PotentiallyMisconfiguredComponentsDiagnostic(IKernel kernel)
-		{
-			this.kernel = kernel;
-		}
-
-		public IHandler[] Inspect()
-		{
-			var allHandlers = kernel.GetAssignableHandlers(typeof(object));
-			var waitingHandlers = allHandlers.FindAll(IsWaitingForDependencies);
-			return waitingHandlers;
-		}
-
-		private bool IsWaitingForDependencies(IHandler handler)
-		{
-			return handler.CurrentState == HandlerState.WaitingDependency;
-		}
 	}
 }

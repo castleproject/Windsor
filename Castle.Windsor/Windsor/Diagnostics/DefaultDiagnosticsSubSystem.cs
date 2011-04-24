@@ -21,10 +21,6 @@ namespace Castle.Windsor.Diagnostics
 	using Castle.MicroKernel;
 	using Castle.Windsor.Diagnostics.Extensions;
 
-#if !SILVERLIGHT
-
-#endif
-
 	public class DefaultDiagnosticsSubSystem :
 		ISubSystem, IDiagnosticsHost
 #if !SILVERLIGHT
@@ -84,6 +80,7 @@ namespace Castle.Windsor.Diagnostics
 			Add(new DefaultComponentPerService());
 			Add(new PotentiallyMisconfiguredComponents());
 			Add(new PotentialLifestyleMismatches());
+			Add(new UsingContainerAsServiceLocator());
 			Add(new ReleasePolicyTrackedObjects());
 			Add(new Facilities());
 		}

@@ -355,6 +355,8 @@
     <Compile Include="Components\EmptyServiceComposite.cs" />
     <Compile Include="Components\EmptyServiceDecorator.cs" />
     <Compile Include="Components\EmptyServiceDecoratorViaProperty.cs" />
+    <Compile Include="Components\GenericWithCtor.cs" />
+    <Compile Include="Components\GenericWithProperty.cs" />
     <Compile Include="Components\HasDictionaryDependency.cs" />
     <Compile Include="Components\HasInstanceCount.cs" />
     <Compile Include="Components\HasNullableDoubleConstructor.cs" />
@@ -413,6 +415,7 @@
     <Compile Include="ContainerExtensions\GoodDependencyResolver.cs" />
     <Compile Include="Core.Tests\InterceptorAttributeTestCase.cs" />
     <Compile Include="CreatingContainerTestCase.cs" />
+    <Compile Include="Diagnostics\UsingContainerAsServiceLocatorDiagnosticTestCase.cs" />
     <Compile Include="DuplicateGenerics.cs" />
     <Compile Include="Diagnostics\AllComponentsDiagnosticTestCase.cs" />
     <Compile Include="Diagnostics\PotentialLifestyleMismatchesDiagnosticTestCase.cs" />
@@ -467,6 +470,8 @@
     <Compile Include="HandlerFilterTestCase.cs" />
     <Compile Include="Handlers\EmptyConstructorTestCase.cs" />
     <Compile Include="Interceptors\CollectInvocationsInterceptor.cs" />
+    <Compile Include="Interceptors\DependsOnTViaCtorInterceptor.cs" />
+    <Compile Include="Interceptors\DependsOnTViaPropertyInterceptor.cs" />
     <Compile Include="InternalsVisibleTo.cs" />
     <Compile Include="LazyComponentsTestCase.cs" />
     <Compile Include="LifecycledComponentsReleasePolicyTestCase.cs" />

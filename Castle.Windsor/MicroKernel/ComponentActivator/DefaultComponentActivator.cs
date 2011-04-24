@@ -333,9 +333,8 @@ namespace Castle.MicroKernel.ComponentActivator
 		{
 			instance = ProxyUtil.GetUnproxiedInstance(instance);
 			var resolver = Kernel.Resolver;
-			for (var i = 0; i < Model.Properties.Count; i++)
+			foreach (var property in Model.Properties)
 			{
-				var property = Model.Properties[i];
 				var value = ObtainPropertyValue(context, property, resolver);
 				if (value == null)
 				{

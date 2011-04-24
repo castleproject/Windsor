@@ -20,6 +20,7 @@ namespace Castle.Facilities.Synchronize
 
 	using Castle.MicroKernel.Facilities;
 	using Castle.MicroKernel.Registration;
+	using Castle.MicroKernel.SubSystems.Conversion;
 
 	/// <summary>
 	///   Augments the kernel to handle synchronized components.
@@ -31,13 +32,15 @@ namespace Castle.Facilities.Synchronize
 		/// </summary>
 		protected override void Init()
 		{
+			var conversionManager = Kernel.GetConversionManager();
+			var infoStore = new SynchronizeMetaInfoStore(conversionManager);
 			Kernel.Register(
 				Component.For<SynchronizeInterceptor>(),
-				Component.For<SynchronizeMetaInfoStore>()
+				Component.For<SynchronizeMetaInfoStore>().Instance(infoStore)
 				);
 
-			Kernel.ComponentModelFactory.AddContributor(new SynchronizeComponentInspector(Kernel));
-			Kernel.ComponentModelFactory.AddContributor(new CreateOnUIThreadInspector(Kernel, FacilityConfig));
+			Kernel.ComponentModelFactory.AddContributor(new SynchronizeComponentInspector(infoStore));
+			Kernel.ComponentModelFactory.AddContributor(new CreateOnUIThreadInspector(FacilityConfig, conversionManager));
 			RegisterAmbientSynchronizationContext<WindowsFormsSynchronizationContext>();
 			RegisterAmbientSynchronizationContext<DispatcherSynchronizationContext>();
 		}

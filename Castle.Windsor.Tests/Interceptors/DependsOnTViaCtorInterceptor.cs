@@ -12,30 +12,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Windsor.Diagnostics
+namespace CastleTests.Interceptors
 {
-	using Castle.Core.Internal;
-	using Castle.MicroKernel;
+	using Castle.DynamicProxy;
 
-	public class PotentiallyMisconfiguredComponentsDiagnostic : IPotentiallyMisconfiguredComponentsDiagnostic
+	public class DependsOnTViaCtorInterceptor<T> : StandardInterceptor
 	{
-		private readonly IKernel kernel;
+		private readonly T tee;
 
-		public PotentiallyMisconfiguredComponentsDiagnostic(IKernel kernel)
+		public DependsOnTViaCtorInterceptor(T tee)
 		{
-			this.kernel = kernel;
+			this.tee = tee;
 		}
 
-		public IHandler[] Inspect()
+		public T Tee
 		{
-			var allHandlers = kernel.GetAssignableHandlers(typeof(object));
-			var waitingHandlers = allHandlers.FindAll(IsWaitingForDependencies);
-			return waitingHandlers;
-		}
-
-		private bool IsWaitingForDependencies(IHandler handler)
-		{
-			return handler.CurrentState == HandlerState.WaitingDependency;
+			get { return tee; }
 		}
 	}
 }
