@@ -460,28 +460,9 @@ namespace Castle.MicroKernel.Handlers
 				return;
 			}
 
-			foreach (var property in ComponentModel.Properties)
-			{
-				AddDependency(property.Dependency);
-			}
-
-			// The following dependencies were added by - for example - 
-			// facilities, for some reason, and we need to satisfy the non-optional
 			foreach (var dependency in ComponentModel.Dependencies)
 			{
 				AddDependency(dependency);
-			}
-
-			if (ComponentModel.Constructors.Count == 0)
-			{
-				return;
-			}
-			foreach (var constructor in ComponentModel.Constructors)
-			{
-				foreach (var dependency in constructor.Dependencies)
-				{
-					AddDependency(dependency);
-				}
 			}
 		}
 
