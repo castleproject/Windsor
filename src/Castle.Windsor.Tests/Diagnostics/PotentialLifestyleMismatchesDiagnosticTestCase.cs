@@ -20,8 +20,6 @@ namespace CastleTests.Diagnostics
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Tests.ClassComponents;
 	using Castle.Windsor.Diagnostics;
-	using Castle.Windsor.Tests;
-	using Castle.Windsor.Tests.ClassComponents;
 	using Castle.Windsor.Tests.Interceptors;
 
 	using CastleTests.Components;

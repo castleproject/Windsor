@@ -34,6 +34,15 @@ namespace Castle.Core.Internal
 #endif
 		}
 
+		public static T[] FindAll<T>(this T[] items, Predicate<T> predicate)
+		{
+#if SILVERLIGHT
+			return items.Where(predicate.Invoke).ToArray();
+#else
+			return Array.FindAll(items, predicate);
+#endif
+		}
+
 		/// <summary>
 		///   Checks whether or not collection is null or empty. Assumes colleciton can be safely enumerated multiple times.
 		/// </summary>

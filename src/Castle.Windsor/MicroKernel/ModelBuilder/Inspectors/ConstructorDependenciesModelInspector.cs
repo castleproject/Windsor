@@ -20,10 +20,6 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 	using Castle.Core;
 	using Castle.Core.Internal;
 
-#if SILVERLIGHT
-	using System.Linq;
-#endif
-
 	/// <summary>
 	///   This implementation of <see cref = "IContributeComponentModelConstruction" />
 	///   collects all available constructors and populates them in the model
@@ -43,7 +39,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 				// We register each public constructor
 				// and let the ComponentFactory select an 
 				// eligible amongst the candidates later
-				model.Constructors.Add(CreateConstructorCandidate(model, constructor));
+				model.AddConstructor(CreateConstructorCandidate(model, constructor));
 			}
 		}
 

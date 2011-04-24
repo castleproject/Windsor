@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,41 +18,39 @@ namespace Castle.Facilities.Synchronize
 	using System.Collections.Generic;
 	using System.Reflection;
 
-	using Castle.Core;
 	using Castle.Core.Configuration;
 	using Castle.Core.Internal;
-	using Castle.MicroKernel;
 	using Castle.MicroKernel.SubSystems.Conversion;
 
 	/// <summary>
-	/// Maintains the synchronization meta-info for all components.
+	///   Maintains the synchronization meta-info for all components.
 	/// </summary>
 	public class SynchronizeMetaInfoStore
 	{
-		private readonly IConversionManager converter;
-
-		private readonly IDictionary<Type, SynchronizeMetaInfo> type2MetaInfo =
-			new Dictionary<Type, SynchronizeMetaInfo>();
-
 		private static readonly BindingFlags MethodBindingFlags
 			= BindingFlags.Instance
 			  | BindingFlags.Public
 			  | BindingFlags.NonPublic
 			  | BindingFlags.DeclaredOnly;
 
+		private readonly IConversionManager converter;
+
+		private readonly IDictionary<Type, SynchronizeMetaInfo> type2MetaInfo =
+			new Dictionary<Type, SynchronizeMetaInfo>();
+
 		/// <summary>
-		/// Initializes a new instance of the <see cref="SynchronizeMetaInfoStore"/> class.
+		///   Initializes a new instance of the <see cref = "SynchronizeMetaInfoStore" /> class.
 		/// </summary>
-		/// <param name="kernel">The kernel.</param>
-		public SynchronizeMetaInfoStore(IKernel kernel)
+		/// <param name="conversionManager"></param>
+		public SynchronizeMetaInfoStore(IConversionManager conversionManager)
 		{
-			converter = ObtainConversionManager(kernel);
+			converter = conversionManager;
 		}
 
 		/// <summary>
-		/// Creates the meta-info from the specified type.
+		///   Creates the meta-info from the specified type.
 		/// </summary>
-		/// <param name="implementation">The implementation type.</param>
+		/// <param name = "implementation">The implementation type.</param>
 		/// <returns>The corresponding meta-info.</returns>
 		public SynchronizeMetaInfo CreateMetaFromType(Type implementation)
 		{
@@ -67,38 +65,10 @@ namespace Castle.Facilities.Synchronize
 		}
 
 		/// <summary>
-		/// Populates the meta-info from the attributes.
+		///   Creates the meta-info from the configuration.
 		/// </summary>
-		/// <param name="metaInfo">The meta info.</param>
-		/// <param name="implementation">The implementation type.</param>
-		private static void PopulateMetaInfoFromType(SynchronizeMetaInfo metaInfo,
-		                                             Type implementation)
-		{
-			if (implementation == typeof(object) || implementation == typeof(MarshalByRefObject))
-			{
-				return;
-			}
-
-			var methods = implementation.GetMethods(MethodBindingFlags);
-
-			foreach (var method in methods)
-			{
-				var atts = method.GetAttributes<SynchronizeAttribute>();
-
-				if (atts.Length != 0)
-				{
-					metaInfo.Add(method, atts[0]);
-				}
-			}
-
-			PopulateMetaInfoFromType(metaInfo, implementation.BaseType);
-		}
-
-		/// <summary>
-		/// Creates the meta-info from the configuration.
-		/// </summary>
-		/// <param name="implementation">The implementation type.</param>
-		/// <param name="config">The configuration.</param>
+		/// <param name = "implementation">The implementation type.</param>
+		/// <param name = "config">The configuration.</param>
 		/// <returns>The corresponding meta-info.</returns>
 		public SynchronizeMetaInfo CreateMetaInfoFromConfig(Type implementation, IConfiguration config)
 		{
@@ -111,11 +81,23 @@ namespace Castle.Facilities.Synchronize
 		}
 
 		/// <summary>
-		/// Populates the meta-info from the configuration.
+		///   Gets the meta-info for the specified implementation type.
 		/// </summary>
-		/// <param name="implementation">The implementation.</param>
-		/// <param name="methods">The methods.</param>
-		/// <param name="config">The config.</param>
+		/// <param name = "implementation">The implementation type.</param>
+		/// <returns>The corresponding meta-info.</returns>
+		public SynchronizeMetaInfo GetMetaFor(Type implementation)
+		{
+			SynchronizeMetaInfo metaInfo;
+			type2MetaInfo.TryGetValue(implementation, out metaInfo);
+			return metaInfo;
+		}
+
+		/// <summary>
+		///   Populates the meta-info from the configuration.
+		/// </summary>
+		/// <param name = "implementation">The implementation.</param>
+		/// <param name = "methods">The methods.</param>
+		/// <param name = "config">The config.</param>
 		public void PopulateMetaFromConfig(Type implementation, IList<MethodInfo> methods, IConfiguration config)
 		{
 			var metaInfo = GetMetaFor(implementation);
@@ -131,31 +113,9 @@ namespace Castle.Facilities.Synchronize
 		}
 
 		/// <summary>
-		/// Gets the meta-info for the specified implementation type.
+		///   Creates the synchronization attribute from configuration.
 		/// </summary>
-		/// <param name="implementation">The implementation type.</param>
-		/// <returns>The corresponding meta-info.</returns>
-		public SynchronizeMetaInfo GetMetaFor(Type implementation)
-		{
-			SynchronizeMetaInfo metaInfo;
-			type2MetaInfo.TryGetValue(implementation, out metaInfo);
-			return metaInfo;
-		}
-
-		/// <summary>
-		/// Registers the meta-info for the specified implementation type.
-		/// </summary>
-		/// <param name="implementation">The implementation type.</param>
-		/// <param name="metaInfo">The meta-info.</param>
-		private void Register(Type implementation, SynchronizeMetaInfo metaInfo)
-		{
-			type2MetaInfo[implementation] = metaInfo;
-		}
-
-		/// <summary>
-		/// Creates the synchronization attribute from configuration.
-		/// </summary>
-		/// <param name="config">The configuration.</param>
+		/// <param name = "config">The configuration.</param>
 		/// <returns>The corresponding synchronization attribute.</returns>
 		private SynchronizeAttribute CreateAttributeFromConfig(IConfiguration config)
 		{
@@ -193,13 +153,41 @@ namespace Castle.Facilities.Synchronize
 		}
 
 		/// <summary>
-		/// Obtains the <see cref="IConversionManager"/>.
+		///   Registers the meta-info for the specified implementation type.
 		/// </summary>
-		/// <param name="kernel">The kernel.</param>
-		/// <returns>The <see cref="IConversionManager"/>.</returns>
-		private static IConversionManager ObtainConversionManager(IKernel kernel)
+		/// <param name = "implementation">The implementation type.</param>
+		/// <param name = "metaInfo">The meta-info.</param>
+		private void Register(Type implementation, SynchronizeMetaInfo metaInfo)
 		{
-			return (IConversionManager) kernel.GetSubSystem(SubSystemConstants.ConversionManagerKey);
+			type2MetaInfo[implementation] = metaInfo;
+		}
+
+		/// <summary>
+		///   Populates the meta-info from the attributes.
+		/// </summary>
+		/// <param name = "metaInfo">The meta info.</param>
+		/// <param name = "implementation">The implementation type.</param>
+		private static void PopulateMetaInfoFromType(SynchronizeMetaInfo metaInfo,
+		                                             Type implementation)
+		{
+			if (implementation == typeof(object) || implementation == typeof(MarshalByRefObject))
+			{
+				return;
+			}
+
+			var methods = implementation.GetMethods(MethodBindingFlags);
+
+			foreach (var method in methods)
+			{
+				var atts = method.GetAttributes<SynchronizeAttribute>();
+
+				if (atts.Length != 0)
+				{
+					metaInfo.Add(method, atts[0]);
+				}
+			}
+
+			PopulateMetaInfoFromType(metaInfo, implementation.BaseType);
 		}
 	}
 }

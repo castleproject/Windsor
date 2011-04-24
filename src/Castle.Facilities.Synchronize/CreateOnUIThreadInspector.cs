@@ -44,12 +44,12 @@ namespace Castle.Facilities.Synchronize
 		/// <summary>
 		///   Initializes a new instance of the <see cref = "CreateOnUIThreadInspector" /> class.
 		/// </summary>
-		/// <param name = "kernel">The kernel.</param>
 		/// <param name = "config">The config.</param>
-		public CreateOnUIThreadInspector(IKernel kernel, IConfiguration config)
+		/// <param name="converter"></param>
+		public CreateOnUIThreadInspector(IConfiguration config, IConversionManager converter)
 		{
 			marshalingControl = new MarshalingControl();
-			controlProxyHook = ObtainProxyHook(kernel, config);
+			controlProxyHook = ObtainProxyHook(config, converter);
 		}
 
 		/// <summary>
@@ -149,7 +149,7 @@ namespace Castle.Facilities.Synchronize
 			return instance;
 		}
 
-		private static IReference<IProxyGenerationHook> ObtainProxyHook(IKernel kernel, IConfiguration config)
+		private static IReference<IProxyGenerationHook> ObtainProxyHook(IConfiguration config, IConversionManager converter)
 		{
 			IProxyGenerationHook hook = null;
 			if (config != null)
@@ -164,7 +164,6 @@ namespace Castle.Facilities.Synchronize
 						return new ComponentReference<IProxyGenerationHook>("synchronize-proxy-generation-hook", hookComponent);
 					}
 
-					var converter = kernel.GetConversionManager();
 					var hookType = converter.PerformConversion<Type>(hookAttrib);
 
 					if (hookType.Is<IProxyGenerationHook>() == false)

@@ -51,10 +51,10 @@ namespace Castle.Facilities.Synchronize
 		/// <summary>
 		///   Initializes a new instance of the <see cref = "SynchronizeComponentInspector" /> class.
 		/// </summary>
-		/// <param name = "kernel">The kernel.</param>
-		public SynchronizeComponentInspector(IKernel kernel)
+		/// <param name="metaStore"></param>
+		public SynchronizeComponentInspector(SynchronizeMetaInfoStore metaStore)
 		{
-			metaStore = kernel.Resolve<SynchronizeMetaInfoStore>();
+			this.metaStore = metaStore;
 		}
 
 		/// <summary>
