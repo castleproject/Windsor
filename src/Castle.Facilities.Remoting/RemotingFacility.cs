@@ -115,7 +115,7 @@ namespace Castle.Facilities.Remoting
 				ConfigureClientFacility();
 			}
 
-			Kernel.ComponentModelFactory.AddContributor(
+			Kernel.ComponentModelBuilder.AddContributor(
 				new RemotingInspector(converter, isServer, isClient, baseUri, remoteRegistry, localRegistry));
 		}
 

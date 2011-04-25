@@ -112,7 +112,7 @@ namespace Castle.Facilities.EventWiring
 		/// </summary>
 		protected override void Init()
 		{
-			Kernel.ComponentModelFactory.AddContributor(new EventWiringInspector());
+			Kernel.ComponentModelBuilder.AddContributor(new EventWiringInspector());
 			Kernel.ComponentCreated += OnComponentCreated;
 			Kernel.ComponentDestroyed += OnComponentDestroyed;
 		}

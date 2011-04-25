@@ -1020,7 +1020,7 @@ namespace Castle.MicroKernel.Registration
 			}
 
 			var internalKernel = GetInternalKernel(kernel);
-			var componentModel = kernel.ComponentModelFactory.BuildModel(GetContributors(services));
+			var componentModel = kernel.ComponentModelBuilder.BuildModel(GetContributors(services));
 			if (SkipRegistration(internalKernel, componentModel))
 			{
 				return;
