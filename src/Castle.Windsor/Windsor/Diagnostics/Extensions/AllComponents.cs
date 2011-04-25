@@ -31,6 +31,7 @@ namespace Castle.Windsor.Diagnostics.Extensions
 		{
 			var handlers = diagnostic.Inspect();
 
+			Array.Sort(handlers, (f, s) => f.ComponentModel.Name.CompareTo(s.ComponentModel.Name));
 			var items = Array.ConvertAll(handlers, DefaultComponentView);
 			return new[]
 			{

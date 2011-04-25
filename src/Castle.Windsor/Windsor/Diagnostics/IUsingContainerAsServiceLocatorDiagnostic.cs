@@ -14,9 +14,6 @@
 
 namespace Castle.Windsor.Diagnostics
 {
-	using System.Linq;
-
-	using Castle.Core;
 	using Castle.MicroKernel;
 
 	/// <summary>

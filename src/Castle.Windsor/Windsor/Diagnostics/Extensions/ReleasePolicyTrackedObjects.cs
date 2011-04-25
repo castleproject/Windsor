@@ -52,7 +52,7 @@ namespace Castle.Windsor.Diagnostics.Extensions
 		{
 			var totalCount = 0;
 			var items = new List<DebuggerViewItem>();
-			foreach (var result in results)
+			foreach (var result in results.OrderBy(l => l.Key.ComponentModel.Name))
 			{
 				var handler = result.Key;
 				var objects = result.ToArray();
@@ -63,6 +63,7 @@ namespace Castle.Windsor.Diagnostics.Extensions
 				                                new ReleasePolicyTrackedObjectsDebuggerViewItem(view, objects));
 				items.Add(item);
 			}
+			items.Sort((f, s) => f.Name.CompareTo(s.Name));
 			return new DebuggerViewItem(name, "Count = " + totalCount, items.ToArray());
 		}
 
