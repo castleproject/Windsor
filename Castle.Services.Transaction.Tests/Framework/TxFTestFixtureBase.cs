@@ -15,7 +15,7 @@ namespace Castle.Services.Transaction.Tests.Framework
 		private static bool VerifySupported()
 		{
 			if (Environment.OSVersion.Version.Major < 6)
-				Assert.Fail("OSVersion.Version.Major < 6 don't support transactional NTFS");
+				Assert.Ignore("OSVersion.Version.Major < 6 don't support transactional NTFS");
 
 			return true;
 		}
