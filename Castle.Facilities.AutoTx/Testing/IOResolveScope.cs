@@ -19,6 +19,8 @@ namespace Castle.Facilities.AutoTx.Testing
 
 		public IOResolveScope(IWindsorContainer container) : base(container)
 		{
+			Contract.Requires(container != null, "container mustn't be null");
+
 			_Dir = _Container.Resolve<IDirectoryAdapter>();
 			Contract.Assume(_Dir != null, "resolve throws otherwise");
 
@@ -55,7 +57,7 @@ namespace Castle.Facilities.AutoTx.Testing
 			get { return base.Service; }
 		}
 
-		public override void Dispose()
+		protected override void Dispose(bool managed)
 		{
 			if (_Disposed) return;
 
@@ -67,7 +69,7 @@ namespace Castle.Facilities.AutoTx.Testing
 			finally
 			{
 				_Disposed = true;
-				base.Dispose();
+				base.Dispose(true);
 			}
 		}
 	}

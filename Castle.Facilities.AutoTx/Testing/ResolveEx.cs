@@ -1,4 +1,5 @@
-﻿using Castle.Windsor;
+﻿using System.Diagnostics.Contracts;
+using Castle.Windsor;
 
 namespace Castle.Facilities.AutoTx.Testing
 {
@@ -17,6 +18,7 @@ namespace Castle.Facilities.AutoTx.Testing
 		public static ResolveScope<T> ResolveScope<T>(this IWindsorContainer container)
 			where T : class
 		{
+			Contract.Requires(container != null);
 			return new ResolveScope<T>(container);
 		}
 		
@@ -31,6 +33,7 @@ namespace Castle.Facilities.AutoTx.Testing
 		public static ResolveScope<T> ResolveIOScope<T>(this IWindsorContainer container)
 			where T : class
 		{
+			Contract.Requires(container != null);
 			return new IOResolveScope<T>(container);
 		}
 	}

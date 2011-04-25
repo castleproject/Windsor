@@ -202,6 +202,7 @@ namespace Castle.Services.Transaction
 			{
 				if (_State != TransactionState.CommittedOrCompleted)
 					_State = TransactionState.Aborted;
+				else _State = TransactionState.CommittedOrCompleted;
 			}
 		}
 

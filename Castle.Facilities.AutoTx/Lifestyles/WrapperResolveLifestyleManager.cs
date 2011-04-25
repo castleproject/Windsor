@@ -16,6 +16,7 @@
 
 #endregion
 
+using System;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using Castle.Core;
@@ -88,9 +89,22 @@ namespace Castle.Facilities.AutoTx.Lifestyles
 			return _Lifestyle1.Release(instance);
 		}
 
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1063:ImplementIDisposableCorrectly",
+			Justification = "I can't make it public and 'sealed'/non inheritable, as I'm overriding it")]
 		public override void Dispose()
 		{
 			Contract.Ensures(!Initialized);
+
+			Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+
+		private void Dispose(bool managed)
+		{
+			Contract.Ensures(!managed || !Initialized);
+
+			if (!managed)
+				return;
 
 			if (_Disposed)
 			{
@@ -98,21 +112,29 @@ namespace Castle.Facilities.AutoTx.Lifestyles
 
 				if (_Logger.IsDebugEnabled)
 					_Logger.Debug(new StackTrace().ToString());
+
+				_Initialized = false;
+				return;
 			}
 
-			_LifestyleKernel.ReleaseComponent(_Lifestyle1);
-			_LifestyleKernel.Dispose();
-			_Lifestyle1 = null;
-
-			_Disposed = true;
-			_Initialized = false;
+			try
+			{
+				_LifestyleKernel.ReleaseComponent(_Lifestyle1);
+				_LifestyleKernel.Dispose();
+				_Lifestyle1 = null;
+			}
+			finally
+			{
+				_Disposed = true;
+				_Initialized = false;
+			}
 		}
 
 		public override object Resolve(CreationContext context)
 		{
 			Contract.Requires(Initialized);
 			Contract.Ensures(Contract.Result<object>() != null);
-			return _Lifestyle1.Resolve(context);
+			return _Lifestyle1.Resolve(context); // TODO: specify ensure on lifestyle
 		}
 	}
 }

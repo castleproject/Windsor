@@ -57,9 +57,20 @@ namespace Castle.Facilities.AutoTx.Lifestyles
 		}
 
 		// this method is not thread-safe
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1063:ImplementIDisposableCorrectly",
+			Justification = "Can't 'seal' a member I'm overriding")]
 		public override void Dispose()
 		{
-			Contract.Ensures(_Disposed);
+			Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+
+		private void Dispose(bool managed)
+		{
+			Contract.Ensures(!managed || _Disposed);
+
+			if (!managed)
+				return;
 
 			if (_Disposed)
 			{
@@ -99,7 +110,6 @@ namespace Castle.Facilities.AutoTx.Lifestyles
 			finally
 			{
 				_Disposed = true;
-				GC.SuppressFinalize(this);
 			}
 		}
 

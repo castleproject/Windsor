@@ -24,6 +24,7 @@ namespace Castle.Facilities.AutoTx.Testing
 
 			_Container = container;
 			_Service = _Container.Resolve<T>();
+			Contract.Assume(_Service != null, "by resolve<T>");
 		}
 
 		[ContractInvariantMethod]
@@ -41,7 +42,13 @@ namespace Castle.Facilities.AutoTx.Testing
 			}
 		}
 
-		public virtual void Dispose()
+		public void Dispose()
+		{
+			Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+
+		protected virtual void Dispose(bool managed)
 		{
 			if (_Disposed) return;
 

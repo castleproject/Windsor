@@ -59,6 +59,8 @@ namespace Castle.Services.Transaction
 		{
 		}
 
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors",
+			Justification = "Due to code-contracts' rewrite in debug mode")]
 		public DefaultTransactionOptions(IsolationLevel isolationLevel, TransactionScopeOption mode, bool fork, TimeSpan timeout, 
 			IEnumerable<KeyValuePair<string, object>> customContext, bool asyncRollback, bool asyncCommit)
 		{

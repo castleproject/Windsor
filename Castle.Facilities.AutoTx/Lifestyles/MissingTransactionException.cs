@@ -56,7 +56,7 @@ namespace Castle.Facilities.AutoTx.Lifestyles
 		{
 		}
 
-		protected MissingTransactionException(SerializationInfo info, StreamingContext context) : base(info, context)
+		private MissingTransactionException(SerializationInfo info, StreamingContext context) : base(info, context)
 		{
 		}
 	}
