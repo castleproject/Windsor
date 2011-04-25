@@ -36,11 +36,15 @@ namespace Castle.Windsor.Diagnostics.Extensions
 			var mismatches = diagnostic.Inspect();
 			if (mismatches.Length == 0)
 			{
-				yield break;
+				return Enumerable.Empty<DebuggerViewItem>();
 			}
 
+			Array.Sort(mismatches, (f, s) => f[0].ComponentModel.Name.CompareTo(s[0].ComponentModel.Name));
 			var items = Array.ConvertAll(mismatches, MismatchedComponentView);
-			yield return new DebuggerViewItem(name, "Count = " + mismatches.Length, items);
+			return new[]
+			{
+				new DebuggerViewItem(name, "Count = " + mismatches.Length, items)
+			};
 		}
 
 		public override void Init(IKernel kernel, IDiagnosticsHost diagnosticsHost)
