@@ -36,9 +36,9 @@ namespace Castle.MicroKernel
 	public partial interface IKernel : IKernelEvents, IDisposable
 	{
 		/// <summary>
-		///   Returns the implementation of <see cref = "IComponentModelFactory" />
+		///   Returns the implementation of <see cref = "IComponentModelBuilder" />
 		/// </summary>
-		IComponentModelFactory ComponentModelFactory { get; }
+		IComponentModelBuilder ComponentModelBuilder { get; }
 
 		/// <summary>
 		///   Gets or sets the implementation of <see cref = "IConfigurationStore" />
@@ -189,7 +189,7 @@ namespace Castle.MicroKernel
 		/// <summary>
 		///   Registers the components with the <see cref = "IKernel" />. The instances of <see cref = "IRegistration" /> are produced by fluent registration API.
 		///   Most common entry points are <see cref = "Component.For{TService}" /> method to register a single type or (recommended in most cases) 
-		/// <see cref = "AllTypes.FromThisAssembly" />.
+		///   <see cref = "AllTypes.FromThisAssembly" />.
 		///   Let the Intellisense drive you through the fluent API past those entry points. For details see the documentation at http://j.mp/WindsorApi
 		/// </summary>
 		/// <example>

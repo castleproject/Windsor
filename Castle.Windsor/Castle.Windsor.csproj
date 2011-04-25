@@ -560,7 +560,7 @@
     <Compile Include="MicroKernel\ModelBuilder\DefaultComponentModelBuilder.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="MicroKernel\IComponentModelFactory.cs">
+    <Compile Include="MicroKernel\IComponentModelBuilder.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="MicroKernel\ModelBuilder\Descriptors\DynamicParametersDescriptor.cs" />

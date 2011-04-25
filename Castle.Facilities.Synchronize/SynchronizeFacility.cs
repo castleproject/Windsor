@@ -39,8 +39,8 @@ namespace Castle.Facilities.Synchronize
 				Component.For<SynchronizeMetaInfoStore>().Instance(infoStore)
 				);
 
-			Kernel.ComponentModelFactory.AddContributor(new SynchronizeComponentInspector(infoStore));
-			Kernel.ComponentModelFactory.AddContributor(new CreateOnUIThreadInspector(FacilityConfig, conversionManager));
+			Kernel.ComponentModelBuilder.AddContributor(new SynchronizeComponentInspector(infoStore));
+			Kernel.ComponentModelBuilder.AddContributor(new CreateOnUIThreadInspector(FacilityConfig, conversionManager));
 			RegisterAmbientSynchronizationContext<WindowsFormsSynchronizationContext>();
 			RegisterAmbientSynchronizationContext<DispatcherSynchronizationContext>();
 		}

@@ -26,16 +26,16 @@ namespace Castle.MicroKernel.ModelBuilder
 	///   Summary description for DefaultComponentModelBuilder.
 	/// </summary>
 	[Serializable]
-	public class DefaultComponentModelFactory : IComponentModelFactory
+	public class DefaultComponentModelBuilder : IComponentModelBuilder
 	{
 		private readonly List<IContributeComponentModelConstruction> contributors = new List<IContributeComponentModelConstruction>();
 		private readonly IKernel kernel;
 
 		/// <summary>
-		///   Initializes a new instance of the <see cref = "DefaultComponentModelFactory" /> class.
+		///   Initializes a new instance of the <see cref = "DefaultComponentModelBuilder" /> class.
 		/// </summary>
 		/// <param name = "kernel">The kernel.</param>
-		public DefaultComponentModelFactory(IKernel kernel)
+		public DefaultComponentModelBuilder(IKernel kernel)
 		{
 			this.kernel = kernel;
 			InitializeContributors();

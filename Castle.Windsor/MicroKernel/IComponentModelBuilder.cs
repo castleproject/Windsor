@@ -25,7 +25,7 @@ namespace Castle.MicroKernel
 	///   instance of ComponentModel by inspecting the component
 	///   and|or the configuration.
 	/// </summary>
-	public interface IComponentModelFactory
+	public interface IComponentModelBuilder
 	{
 		IContributeComponentModelConstruction[] Contributors { get; }
 
