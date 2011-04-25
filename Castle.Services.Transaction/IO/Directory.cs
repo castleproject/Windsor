@@ -3,6 +3,9 @@ using System.Diagnostics.Contracts;
 
 namespace Castle.Services.Transaction.IO
 {
+	/// <summary>
+	/// Utility class for directories.
+	/// </summary>
 	public static class Directory
 	{
 		private static IDirectoryAdapter GetAdapter()

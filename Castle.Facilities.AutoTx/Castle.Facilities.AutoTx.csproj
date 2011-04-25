@@ -57,6 +57,9 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>..\..\Correctness-Rules.ruleset</CodeAnalysisRuleSet>
+    <DocumentationFile>bin\Release\Castle.Facilities.AutoTx.xml</DocumentationFile>
+    <NoWarn>1591</NoWarn>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>true</SignAssembly>

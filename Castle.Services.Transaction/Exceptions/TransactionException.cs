@@ -3,19 +3,34 @@ using System.Runtime.Serialization;
 
 namespace Castle.Services.Transaction.Exceptions
 {
+	/// <summary>
+	/// Exception thrown when the transaction services code has problems.
+	/// </summary>
 	[Serializable]
 	public class TransactionException : Exception
 	{
 		private readonly Uri _HelpLink;
 
+		///<summary>
+		/// base c'tor
+		///</summary>
 		public TransactionException()
 		{
 		}
 
+		/// <summary>
+		/// c'tor with message
+		/// </summary>
+		/// <param name="message"></param>
 		public TransactionException(string message) : base(message)
 		{
 		}
 
+		///<summary>
+		/// c'tor with message and a uri (new Uri(...)).
+		///</summary>
+		///<param name="message"></param>
+		///<param name="helpLink">A link relating to the exception/offering guidance.</param>
 		public TransactionException(string message, Uri helpLink) : base(message)
 		{
 			_HelpLink = helpLink;

@@ -1,11 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.IO;
 using System.Text;
 
 namespace Castle.Services.Transaction.IO
 {
+	/// <summary>
+	/// Utility class for file operations.
+	/// </summary>
 	public static class File
 	{
 		private static IFileAdapter GetAdapter()

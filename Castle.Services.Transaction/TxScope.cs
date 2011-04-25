@@ -3,6 +3,9 @@ using log4net;
 
 namespace Castle.Services.Transaction
 {
+	/// <summary>
+	/// A TxScope sets the ambient transaction for the duration of its lifetime and then re-assigns the previous value.
+	/// </summary>
 	public sealed class TxScope : IDisposable
 	{
 		private static readonly ILog _Logger = LogManager.GetLogger(typeof (TxScope));

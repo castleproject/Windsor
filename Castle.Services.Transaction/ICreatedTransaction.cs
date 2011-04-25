@@ -3,6 +3,10 @@ using System.Diagnostics.Contracts;
 
 namespace Castle.Services.Transaction
 {
+	///<summary>
+	/// An interface denoting the data structure which
+	/// carries data about a created transaction.
+	///</summary>
 	[ContractClass(typeof(ICreatedTransactionContract))]
 	public interface ICreatedTransaction
 	{
