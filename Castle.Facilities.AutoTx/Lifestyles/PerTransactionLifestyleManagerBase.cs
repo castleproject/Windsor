@@ -1,12 +1,12 @@
 ﻿#region license
 
-// Copyright 2009-2011 Henrik Feldt - http://logibit.se/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 // 
-//      http://www.apache.org/licenses/LICENSE-2.0
+//     http://www.apache.org/licenses/LICENSE-2.0
 // 
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -19,19 +19,22 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Contracts;
+using System.Linq;
+using Castle.Core;
+using Castle.MicroKernel;
 using Castle.MicroKernel.Context;
 using Castle.MicroKernel.Lifestyle;
 using Castle.Services.Transaction;
 using log4net;
-using System.Linq;
 
 namespace Castle.Facilities.AutoTx.Lifestyles
 {
 	/// <summary>
-	/// This lifestyle manager is responsible for disposing components
-	/// at the same time as the transaction is completed, i.e. the transction
-	/// either Aborts, becomes InDoubt or Commits.
+	/// 	This lifestyle manager is responsible for disposing components
+	/// 	at the same time as the transaction is completed, i.e. the transction
+	/// 	either Aborts, becomes InDoubt or Commits.
 	/// </summary>
 	[Serializable]
 	public abstract class PerTransactionLifestyleManagerBase : AbstractLifestyleManager
@@ -52,13 +55,13 @@ namespace Castle.Facilities.AutoTx.Lifestyles
 			_Manager = manager;
 		}
 
-		public override void Init(MicroKernel.IComponentActivator componentActivator, MicroKernel.IKernel kernel, Core.ComponentModel model)
+		public override void Init(IComponentActivator componentActivator, IKernel kernel, ComponentModel model)
 		{
 			base.Init(componentActivator, kernel, model);
 		}
 
 		// this method is not thread-safe
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1063:ImplementIDisposableCorrectly",
+		[SuppressMessage("Microsoft.Design", "CA1063:ImplementIDisposableCorrectly",
 			Justification = "Can't 'seal' a member I'm overriding")]
 		public override void Dispose()
 		{
@@ -75,7 +78,8 @@ namespace Castle.Facilities.AutoTx.Lifestyles
 
 			if (_Disposed)
 			{
-				_Logger.Info("repeated call to Dispose. will show stack-trace if log4net is in debug mode as the next log line. this method call is idempotent");
+				_Logger.Info(
+					"repeated call to Dispose. will show stack-trace if log4net is in debug mode as the next log line. this method call is idempotent");
 
 				if (_Logger.IsDebugEnabled)
 					_Logger.Debug(new StackTrace().ToString());
@@ -106,7 +110,6 @@ namespace Castle.Facilities.AutoTx.Lifestyles
 
 					_Storage.Clear();
 				}
-
 			}
 			finally
 			{
@@ -136,7 +139,8 @@ namespace Castle.Facilities.AutoTx.Lifestyles
 				_Logger.DebugFormat("resolving service '{0}' using PerTransaction lifestyle", context.Handler.Service);
 
 			if (_Disposed)
-				throw new ObjectDisposedException("PerTransactionLifestyleManagerBase", "You cannot resolve with a disposed lifestyle.");
+				throw new ObjectDisposedException("PerTransactionLifestyleManagerBase",
+				                                  "You cannot resolve with a disposed lifestyle.");
 
 			if (!GetSemanticTransactionForLifetime().HasValue)
 				throw new MissingTransactionException(
@@ -144,8 +148,8 @@ namespace Castle.Facilities.AutoTx.Lifestyles
 
 			var transaction = GetSemanticTransactionForLifetime().Value;
 
-			Contract.Assume(transaction.State != TransactionState.Disposed, 
-				"because then it would not be active but would have been popped");
+			Contract.Assume(transaction.State != TransactionState.Disposed,
+			                "because then it would not be active but would have been popped");
 
 			Tuple<uint, object> instance;
 			// unique key per service and per top transaction identifier
@@ -164,43 +168,47 @@ namespace Castle.Facilities.AutoTx.Lifestyles
 						instance = _Storage[key] = Tuple.Create(1u, base.Resolve(context));
 
 						transaction.Inner.TransactionCompleted += (sender, args) =>
-						{
-							var id = localIdentifier;
-							if (_Logger.IsDebugEnabled)
-								_Logger.DebugFormat("transaction#{0} completed, maybe releasing object '{1}'", id, instance);
+						                                          	{
+						                                          		var id = localIdentifier;
+						                                          		if (_Logger.IsDebugEnabled)
+						                                          			_Logger.DebugFormat(
+						                                          				"transaction#{0} completed, maybe releasing object '{1}'", id,
+						                                          				instance);
 
-							lock (ComponentActivator)
-							{
-								Tuple<uint, object> counter = _Storage[key];
+						                                          		lock (ComponentActivator)
+						                                          		{
+						                                          			var counter = _Storage[key];
 
-								if (counter.Item1 == 1)
-								{
-									if (_Logger.IsDebugEnabled)
-										_Logger.DebugFormat("last item of '{0}' per-tx; releasing it", counter.Item2);
+						                                          			if (counter.Item1 == 1)
+						                                          			{
+						                                          				if (_Logger.IsDebugEnabled)
+						                                          					_Logger.DebugFormat("last item of '{0}' per-tx; releasing it",
+						                                          					                    counter.Item2);
 
-									// this might happen if the transaction outlives the service; the transaction might also notify transaction fron a timer, i.e.
-									// not synchronously.
-									if (!_Disposed)
-									{
-										Contract.Assume(_Storage.Count > 0);
+						                                          				// this might happen if the transaction outlives the service; the transaction might also notify transaction fron a timer, i.e.
+						                                          				// not synchronously.
+						                                          				if (!_Disposed)
+						                                          				{
+						                                          					Contract.Assume(_Storage.Count > 0);
 
-										_Storage.Remove(key);
-										Evict(counter.Item2);
-									}
-								}
-								else
-								{
-									if (_Logger.IsDebugEnabled)
-										_Logger.DebugFormat("{0} item(s) of '{1}' left in per-tx storage", counter.Item1 - 1, counter.Item2);
+						                                          					_Storage.Remove(key);
+						                                          					Evict(counter.Item2);
+						                                          				}
+						                                          			}
+						                                          			else
+						                                          			{
+						                                          				if (_Logger.IsDebugEnabled)
+						                                          					_Logger.DebugFormat("{0} item(s) of '{1}' left in per-tx storage",
+						                                          					                    counter.Item1 - 1, counter.Item2);
 
-									_Storage[key] = Tuple.Create(counter.Item1 - 1, counter.Item2);
-								}
-							}
-						};
+						                                          				_Storage[key] = Tuple.Create(counter.Item1 - 1, counter.Item2);
+						                                          			}
+						                                          		}
+						                                          	};
 					}
 				}
 			}
-				
+
 			Contract.Assume(instance.Item2 != null, "resolve throws otherwise");
 
 			return instance.Item2;
@@ -223,7 +231,7 @@ namespace Castle.Facilities.AutoTx.Lifestyles
 		}
 
 		/// <summary>
-		/// Gets the 'current' transaction; a semantic defined by the inheritors of this class.
+		/// 	Gets the 'current' transaction; a semantic defined by the inheritors of this class.
 		/// </summary>
 		/// <returns>Maybe a current transaction as can be found in the transaction manager.</returns>
 		protected internal abstract Maybe<ITransaction> GetSemanticTransactionForLifetime();

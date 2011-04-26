@@ -1,31 +1,14 @@
-﻿#region license
-
-// Copyright 2009-2011 Henrik Feldt - http://logibit.se/
-// 
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-// 
-//      http://www.apache.org/licenses/LICENSE-2.0
-// 
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
-#endregion
-
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Contracts;
-using System.Transactions;
 using System.Linq;
+using System.Transactions;
 
 namespace Castle.Services.Transaction
 {
 	/// <summary>
-	/// Sample implementation of ITransactionOptions. Use this if you are using <see cref="ITxManager"/> directly.
+	/// 	Sample implementation of ITransactionOptions. Use this if you are using <see cref = "ITxManager" /> directly.
 	/// </summary>
 	public class DefaultTransactionOptions : ITransactionOptions, IEquatable<DefaultTransactionOptions>
 	{
@@ -41,8 +24,11 @@ namespace Castle.Services.Transaction
 
 		public TimeSpan Timeout { get; set; }
 
-		public IEnumerable<KeyValuePair<string, object>> CustomContext { get { return _CustomContext; } }
-		
+		public IEnumerable<KeyValuePair<string, object>> CustomContext
+		{
+			get { return _CustomContext; }
+		}
+
 		public bool AsyncRollback { get; set; }
 
 		public bool AsyncCommit { get; set; }
@@ -54,15 +40,18 @@ namespace Castle.Services.Transaction
 		{
 		}
 
-		public DefaultTransactionOptions(IsolationLevel isolationLevel, TransactionScopeOption mode, bool fork, TimeSpan timeout, bool asyncRollback, bool asyncCommit)
-			: this(isolationLevel, mode, fork, timeout, new Dictionary<string,object>(), asyncRollback, asyncCommit)
+		public DefaultTransactionOptions(IsolationLevel isolationLevel, TransactionScopeOption mode, bool fork,
+		                                 TimeSpan timeout, bool asyncRollback, bool asyncCommit)
+			: this(isolationLevel, mode, fork, timeout, new Dictionary<string, object>(), asyncRollback, asyncCommit)
 		{
 		}
 
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors",
+		[SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors",
 			Justification = "Due to code-contracts' rewrite in debug mode")]
-		public DefaultTransactionOptions(IsolationLevel isolationLevel, TransactionScopeOption mode, bool fork, TimeSpan timeout, 
-			IEnumerable<KeyValuePair<string, object>> customContext, bool asyncRollback, bool asyncCommit)
+		public DefaultTransactionOptions(IsolationLevel isolationLevel, TransactionScopeOption mode, bool fork,
+		                                 TimeSpan timeout,
+		                                 IEnumerable<KeyValuePair<string, object>> customContext, bool asyncRollback,
+		                                 bool asyncCommit)
 		{
 			Contract.Requires(customContext != null);
 
@@ -93,13 +82,13 @@ namespace Castle.Services.Transaction
 			if (ReferenceEquals(null, other)) return false;
 			if (ReferenceEquals(this, other)) return true;
 
-			return Equals(other.IsolationLevel, IsolationLevel) 
-				&& Equals(other.Mode, Mode) 
-				&& other.Fork.Equals(Fork) 
-				&& other.Timeout.Equals(Timeout)
-				&& other.CustomContext.All(x => _CustomContext.ContainsKey(x.Key) && _CustomContext[x.Key].Equals(x.Value))
-				&& other.AsyncRollback.Equals(AsyncRollback) 
-				&& other.AsyncCommit.Equals(AsyncCommit);
+			return Equals(other.IsolationLevel, IsolationLevel)
+			       && Equals(other.Mode, Mode)
+			       && other.Fork.Equals(Fork)
+			       && other.Timeout.Equals(Timeout)
+			       && other.CustomContext.All(x => _CustomContext.ContainsKey(x.Key) && _CustomContext[x.Key].Equals(x.Value))
+			       && other.AsyncRollback.Equals(AsyncRollback)
+			       && other.AsyncCommit.Equals(AsyncCommit);
 		}
 
 		/// <summary>
@@ -115,12 +104,13 @@ namespace Castle.Services.Transaction
 		}
 
 		/// <summary>
-		/// Determines whether the specified <see cref="T:System.Object"/> is equal to the current <see cref="T:System.Object"/>.
+		/// 	Determines whether the specified <see cref = "T:System.Object" /> is equal to the current <see cref = "T:System.Object" />.
 		/// </summary>
 		/// <returns>
-		/// true if the specified <see cref="T:System.Object"/> is equal to the current <see cref="T:System.Object"/>; otherwise, false.
+		/// 	true if the specified <see cref = "T:System.Object" /> is equal to the current <see cref = "T:System.Object" />; otherwise, false.
 		/// </returns>
-		/// <param name="obj">The <see cref="T:System.Object"/> to compare with the current <see cref="T:System.Object"/>. </param><filterpriority>2</filterpriority>
+		/// <param name = "obj">The <see cref = "T:System.Object" /> to compare with the current <see cref = "T:System.Object" />. </param>
+		/// <filterpriority>2</filterpriority>
 		public override bool Equals(object obj)
 		{
 			if (ReferenceEquals(null, obj)) return false;
@@ -130,17 +120,17 @@ namespace Castle.Services.Transaction
 		}
 
 		/// <summary>
-		/// Serves as a hash function for a particular type. 
+		/// 	Serves as a hash function for a particular type.
 		/// </summary>
 		/// <returns>
-		/// A hash code for the current <see cref="T:System.Object"/>.
+		/// 	A hash code for the current <see cref = "T:System.Object" />.
 		/// </returns>
 		/// <filterpriority>2</filterpriority>
 		public override int GetHashCode()
 		{
 			unchecked
 			{
-				int result = IsolationLevel.GetHashCode();
+				var result = IsolationLevel.GetHashCode();
 				result = (result*397) ^ Mode.GetHashCode();
 				result = (result*397) ^ Fork.GetHashCode();
 				result = (result*397) ^ Timeout.GetHashCode();

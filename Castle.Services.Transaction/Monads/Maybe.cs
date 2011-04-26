@@ -1,22 +1,23 @@
 #region license
 
-// // Copyright 2009-2011 Henrik Feldt - http://logibit.se /
-// // 
-// // Licensed under the Apache License, Version 2.0 (the "License");
-// // you may not use this file except in compliance with the License.
-// // You may obtain a copy of the License at
-// // 
-// //     http://www.apache.org/licenses/LICENSE-2.0
-// // 
-// // Unless required by applicable law or agreed to in writing, software
-// // distributed under the License is distributed on an "AS IS" BASIS,
-// // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// // See the License for the specific language governing permissions and
-// // limitations under the License.
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// 
+//     http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 #endregion
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Contracts;
 
 namespace Castle.Services.Transaction
@@ -39,7 +40,7 @@ namespace Castle.Services.Transaction
 			Contract.Ensures(Contract.Result<Maybe<TSome>>().HasValue);
 			//Contract.Ensures(Contract.Result<Maybe<TSome>>().Value.Equals(item)); // this line is also required to crash CCChecker
 
-			if (!(typeof(TSome).IsValueType || item != null))
+			if (!(typeof (TSome).IsValueType || item != null))
 				throw new ArgumentException("item must be either a value type or non-null");
 
 			return new Maybe<TSome>(item);
@@ -161,8 +162,7 @@ namespace Castle.Services.Transaction
 	/// <typeparam name = "T"></typeparam>
 	public sealed class Maybe<T>
 	{
-		[ContractPublicPropertyName("Value")]
-		private readonly T _Value;
+		[ContractPublicPropertyName("Value")] private readonly T _Value;
 		private readonly bool _HasValue;
 
 		internal Maybe()
@@ -211,8 +211,8 @@ namespace Castle.Services.Transaction
 			}
 		}
 
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2225:OperatorOverloadsHaveNamedAlternates",
-			Justification = "The FromXXX and ToXXX methods are on the static Maybe class."), 
+		[SuppressMessage("Microsoft.Usage", "CA2225:OperatorOverloadsHaveNamedAlternates",
+			Justification = "The FromXXX and ToXXX methods are on the static Maybe class."),
 		 Pure]
 		public static implicit operator Maybe<T>(T item)
 		{

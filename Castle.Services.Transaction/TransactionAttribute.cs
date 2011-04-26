@@ -1,12 +1,12 @@
 #region license
 
-// Copyright 2009-2011 Henrik Feldt - http://logibit.se/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 // 
-//      http://www.apache.org/licenses/LICENSE-2.0
+//     http://www.apache.org/licenses/LICENSE-2.0
 // 
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -50,31 +50,37 @@ namespace Castle.Services.Transaction
 			Contract.Invariant(_CustomContext != null);
 		}
 
-		public IsolationLevel IsolationLevel { [Pure] get; set; }
+		public IsolationLevel IsolationLevel { [Pure]
+		get; set; }
 
-		public TransactionScopeOption Mode { [Pure] get; set; }
+		public TransactionScopeOption Mode { [Pure]
+		get; set; }
 
 		/// <summary>
 		/// 	Gets or sets the transaction timeout. The timeout is often better
 		/// 	implemented in the database, so this value is by default <see cref = "TimeSpan.MaxValue" />.
 		/// </summary>
-		public TimeSpan Timeout { [Pure] get; set; }
+		public TimeSpan Timeout { [Pure]
+		get; set; }
 
 		/// <summary>
 		/// 	Gets or sets whether the current transaction should be forked off as a unit of work to the thread pool.
 		/// </summary>
-		public bool Fork { [Pure] get; set; }
+		public bool Fork { [Pure]
+		get; set; }
 
 		/// <summary>
 		/// 	Gets or sets whether the commit should be done asynchronously. Default is false. If you have done a lot of work
 		/// 	in the transaction, an asynchronous commit might be preferrable.
 		/// </summary>
-		public bool AsyncCommit { [Pure] get; set; }
+		public bool AsyncCommit { [Pure]
+		get; set; }
 
 		/// <summary>
 		/// 	Whether to perform the rollback asynchronously. This means that a failed transaction cleans up asynchronously.
 		/// </summary>
-		public bool AsyncRollback { [Pure] get; set; }
+		public bool AsyncRollback { [Pure]
+		get; set; }
 
 		/// <summary>
 		/// 	Hint: <see cref = "Dictionary{TKey,TValue}" /> implements the return type.

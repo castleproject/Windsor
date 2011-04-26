@@ -1,31 +1,31 @@
-#region License
-//  Copyright 2004-2010 Castle Project - http://www.castleproject.org/
-//  
-//  Licensed under the Apache License, Version 2.0 (the "License");
-//  you may not use this file except in compliance with the License.
-//  You may obtain a copy of the License at
-//  
-//      http://www.apache.org/licenses/LICENSE-2.0
-//  
-//  Unless required by applicable law or agreed to in writing, software
-//  distributed under the License is distributed on an "AS IS" BASIS,
-//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//  See the License for the specific language governing permissions and
-//  limitations under the License.
+#region license
+
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// 
+//     http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 #endregion
 
+using System;
 using System.Diagnostics.Contracts;
 
 namespace Castle.Services.Transaction.IO
 {
-	using System;
-
 	// http://social.msdn.microsoft.com/Forums/en-CA/windowstransactionsprogramming/thread/ab4946d9-b634-4156-9296-78554d41d84a
 	// http://www.pluralsight-training.net/community/blogs/jimjohn/archive/2006/09/01/36863.aspx
 
 	///<summary>
-	/// Adapter base class for the file and directory adapters.
+	///	Adapter base class for the file and directory adapters.
 	///</summary>
 	public abstract class TxAdapterBase
 	{
@@ -51,7 +51,7 @@ namespace Castle.Services.Transaction.IO
 		}
 
 		/// <summary>
-		/// Gets the transaction manager, if there is one, or sets it.
+		/// 	Gets the transaction manager, if there is one, or sets it.
 		/// </summary>
 		public ITxManager TxManager
 		{
@@ -60,7 +60,7 @@ namespace Castle.Services.Transaction.IO
 		}
 
 		///<summary>
-		/// Gets/sets whether to use transactions.
+		///	Gets/sets whether to use transactions.
 		///</summary>
 		public bool UseTransactions
 		{
@@ -98,7 +98,7 @@ namespace Castle.Services.Transaction.IO
 			//        return true;
 			//    }
 			//}
-			
+
 			//return false;
 		}
 

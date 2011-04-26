@@ -1,12 +1,12 @@
 #region license
 
-// Copyright 2009-2011 Henrik Feldt - http://logibit.se/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 // 
-//      http://www.apache.org/licenses/LICENSE-2.0
+//     http://www.apache.org/licenses/LICENSE-2.0
 // 
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,18 +16,18 @@
 
 #endregion
 
+using Castle.Facilities.AutoTx.Lifestyles;
 using Castle.MicroKernel.Facilities;
 using Castle.MicroKernel.Registration;
 using Castle.Services.Transaction;
 using Castle.Services.Transaction.IO;
 using log4net;
-using Castle.Facilities.AutoTx.Lifestyles;
 
 namespace Castle.Facilities.AutoTx
 {
 	/// <summary>
-	/// A facility for automatically handling transactions using the lightweight
-	/// transaction manager.
+	/// 	A facility for automatically handling transactions using the lightweight
+	/// 	transaction manager.
 	/// </summary>
 	public class AutoTxFacility : AbstractFacility
 	{
@@ -42,32 +42,26 @@ namespace Castle.Facilities.AutoTx
 				Component.For<TxInterceptor>()
 					.Named("transaction.interceptor")
 					.LifeStyle.Transient,
-
 				Component.For<ITxMetaInfoStore>()
 					.ImplementedBy<TxClassMetaInfoStore>()
 					.Named("transaction.metaInfoStore")
 					.LifeStyle.Singleton,
-
 				Component.For<ITxManager>()
 					.ImplementedBy<TxManager>()
 					.Named("transaction.manager")
 					.LifeStyle.Singleton,
-
 				// the activity manager shouldn't have the same lifestyle as TxInterceptor, as it
 				// calls a static .Net/Mono framework method, and it's the responsibility of
 				// that framework method to keep track of the call context.
 				Component.For<IActivityManager>()
 					.ImplementedBy<CallContextActivityManager>()
 					.LifeStyle.Singleton,
-
 				Component.For<IDirectoryAdapter>()
 					.ImplementedBy<DirectoryAdapter>()
 					.LifeStyle.PerTransaction(),
-
 				Component.For<IFileAdapter>()
 					.ImplementedBy<FileAdapter>()
 					.LifeStyle.PerTransaction(),
-
 				Component.For<IMapPath>()
 					.ImplementedBy<MapPathImpl>()
 					.LifeStyle.Transient

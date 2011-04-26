@@ -1,12 +1,12 @@
 ﻿#region license
 
-// Copyright 2009-2011 Henrik Feldt - http://logibit.se/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 // 
-//      http://www.apache.org/licenses/LICENSE-2.0
+//     http://www.apache.org/licenses/LICENSE-2.0
 // 
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -17,6 +17,7 @@
 #endregion
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Contracts;
 using System.Transactions;
 using Castle.Services.Transaction.Internal;
@@ -61,14 +62,14 @@ namespace Castle.Services.Transaction
 			throw new NotImplementedException();
 		}
 
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000",
+		[SuppressMessage("Microsoft.Reliability", "CA2000",
 			Justification = "CommittableTransaction is disposed by Transaction")]
 		Maybe<ICreatedTransaction> ITxManager.CreateTransaction()
 		{
 			return ((ITxManager) this).CreateTransaction(new DefaultTransactionOptions());
 		}
 
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000",
+		[SuppressMessage("Microsoft.Reliability", "CA2000",
 			Justification = "CommittableTransaction is disposed by Transaction")]
 		Maybe<ICreatedTransaction> ITxManager.CreateTransaction(ITransactionOptions transactionOptions)
 		{
@@ -84,10 +85,10 @@ namespace Castle.Services.Transaction
 			if (activity.Count == 0)
 			{
 				tx = new Transaction(new CommittableTransaction(new TransactionOptions
-				{
-					IsolationLevel = transactionOptions.IsolationLevel,
-					Timeout = transactionOptions.Timeout
-				}), nextStackDepth, transactionOptions, () => activity.Pop());
+				                                                	{
+				                                                		IsolationLevel = transactionOptions.IsolationLevel,
+				                                                		Timeout = transactionOptions.Timeout
+				                                                	}), nextStackDepth, transactionOptions, () => activity.Pop());
 			}
 			else
 			{
@@ -95,7 +96,7 @@ namespace Castle.Services.Transaction
 					.CurrentTransaction.Value
 					.Inner
 					.DependentClone(DependentCloneOption.BlockCommitUntilComplete);
-				
+
 				// assume because I can't open up .Net and add the contract myself
 				Contract.Assume(clone != null);
 				Action onDispose = () => activity.Pop();
@@ -108,17 +109,20 @@ namespace Castle.Services.Transaction
 			Contract.Assume(tx.State == TransactionState.Active, "by c'tor post condition for both cases of the if statement");
 
 			var m = Maybe.Some(new CreatedTransaction(tx,
-				// we should only fork if we have a different current top transaction than the current
-				shouldFork, () => {
-					_ActivityManager.GetCurrentActivity().Push(tx);
-					return new DisposableScope(_ActivityManager.GetCurrentActivity().Pop);
-				}) as ICreatedTransaction);
+			                                          // we should only fork if we have a different current top transaction than the current
+			                                          shouldFork, () =>
+			                                                      	{
+			                                                      		_ActivityManager.GetCurrentActivity().Push(tx);
+			                                                      		return
+			                                                      			new DisposableScope(
+			                                                      				_ActivityManager.GetCurrentActivity().Pop);
+			                                                      	}) as ICreatedTransaction);
 
 			// warn if fork and the top transaction was just created
 			if (transactionOptions.Fork && nextStackDepth == 1)
 				_Logger.WarnFormat("transaction {0} created with Fork=true option, but was top-most "
-						+ "transaction in invocation chain. running transaction sequentially",
-						tx.LocalIdentifier);
+				                   + "transaction in invocation chain. running transaction sequentially",
+				                   tx.LocalIdentifier);
 
 			// assume because I can't make value types and reference types equal enough
 			// and boxing doesn't do it for me.

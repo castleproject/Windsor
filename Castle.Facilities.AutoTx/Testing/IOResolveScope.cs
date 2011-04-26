@@ -1,4 +1,21 @@
-﻿using System;
+﻿#region license
+
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// 
+//     http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+#endregion
+
 using System.Diagnostics.Contracts;
 using Castle.Services.Transaction;
 using Castle.Windsor;
@@ -6,9 +23,9 @@ using Castle.Windsor;
 namespace Castle.Facilities.AutoTx.Testing
 {
 	/// <summary>
-	/// A resolve scope where T is the service you wish to get from the container.
+	/// 	A resolve scope where T is the service you wish to get from the container.
 	/// </summary>
-	/// <typeparam name="T">The service to resolve.</typeparam>
+	/// <typeparam name = "T">The service to resolve.</typeparam>
 	public class IOResolveScope<T> : ResolveScope<T>
 		where T : class
 	{
@@ -32,7 +49,7 @@ namespace Castle.Facilities.AutoTx.Testing
 		}
 
 		/// <summary>
-		/// Gets the directory adapter.
+		/// 	Gets the directory adapter.
 		/// </summary>
 		public IDirectoryAdapter Directory
 		{
@@ -40,7 +57,7 @@ namespace Castle.Facilities.AutoTx.Testing
 		}
 
 		/// <summary>
-		/// Gets the file adapter.
+		/// 	Gets the file adapter.
 		/// </summary>
 		public IFileAdapter File
 		{

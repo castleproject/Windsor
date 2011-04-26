@@ -1,31 +1,31 @@
-#region License
-//  Copyright 2004-2010 Castle Project - http://www.castleproject.org/
-//  
-//  Licensed under the Apache License, Version 2.0 (the "License");
-//  you may not use this file except in compliance with the License.
-//  You may obtain a copy of the License at
-//  
-//      http://www.apache.org/licenses/LICENSE-2.0
-//  
-//  Unless required by applicable law or agreed to in writing, software
-//  distributed under the License is distributed on an "AS IS" BASIS,
-//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//  See the License for the specific language governing permissions and
-//  limitations under the License.
+#region license
+
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// 
+//     http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 #endregion
 
+using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Contracts;
+using log4net;
 
 namespace Castle.Services.Transaction.IO
 {
-	using System;
-	using log4net;
-
 	/// <summary>
-	/// Adapter which wraps the functionality in <see cref="File"/>
-	/// together with native kernel transactions.
+	/// 	Adapter which wraps the functionality in <see cref = "File" />
+	/// 	together with native kernel transactions.
 	/// </summary>
 	public class DirectoryAdapter : TxAdapterBase, IDirectoryAdapter
 	{
@@ -33,12 +33,12 @@ namespace Castle.Services.Transaction.IO
 		private readonly ILog _Logger = LogManager.GetLogger(typeof (DirectoryAdapter));
 
 		/// <summary>
-		/// Create a new DirectoryAdapter instance. C'tor.
+		/// 	Create a new DirectoryAdapter instance. C'tor.
 		/// </summary>
-		/// <param name="pathFinder">The MapPath implementation.</param>
-		/// <param name="constrainToSpecifiedDir">Whether to ChJail the DirectoryAdapter.</param>
-		/// <param name="specifiedDir">The directory to constrain the adapter to.</param>
-		[SuppressMessage("Microsoft.Contracts", "CC1055", Justification ="Validation performed in base method")]
+		/// <param name = "pathFinder">The MapPath implementation.</param>
+		/// <param name = "constrainToSpecifiedDir">Whether to ChJail the DirectoryAdapter.</param>
+		/// <param name = "specifiedDir">The directory to constrain the adapter to.</param>
+		[SuppressMessage("Microsoft.Contracts", "CC1055", Justification = "Validation performed in base method")]
 		public DirectoryAdapter(IMapPath pathFinder, bool constrainToSpecifiedDir, string specifiedDir)
 			: base(constrainToSpecifiedDir, specifiedDir)
 		{
@@ -57,14 +57,14 @@ namespace Castle.Services.Transaction.IO
 			ITransaction tx;
 			if (HasTransaction(out tx))
 			{
-				return ((IDirectoryAdapter)tx).Create(path);
+				return ((IDirectoryAdapter) tx).Create(path);
 			}
 #endif
 			if (((IDirectoryAdapter) this).Exists(path))
 			{
 				return true;
 			}
-			
+
 			throw new NotImplementedException();
 		}
 
@@ -101,7 +101,7 @@ namespace Castle.Services.Transaction.IO
 			ITransaction tx;
 			if (HasTransaction(out tx))
 			{
-				return ((IDirectoryAdapter)tx).Delete(path, recursively);
+				return ((IDirectoryAdapter) tx).Delete(path, recursively);
 			}
 #endif
 			throw new NotImplementedException();
@@ -113,7 +113,7 @@ namespace Castle.Services.Transaction.IO
 #if !MONO
 			ITransaction tx;
 			if (HasTransaction(out tx))
-				return ((IDirectoryAdapter)tx).GetFullPath(path);
+				return ((IDirectoryAdapter) tx).GetFullPath(path);
 #endif
 			return Path.GetFullPath(path);
 		}
@@ -132,7 +132,7 @@ namespace Castle.Services.Transaction.IO
 			ITransaction tx;
 			if (HasTransaction(out tx))
 			{
-				((IDirectoryAdapter)this).Move(originalPath, newPath);
+				((IDirectoryAdapter) this).Move(originalPath, newPath);
 				return;
 			}
 #endif

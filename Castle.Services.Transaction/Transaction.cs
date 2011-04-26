@@ -1,12 +1,12 @@
 ﻿#region license
 
-// Copyright 2009-2011 Henrik Feldt - http://logibit.se/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 // 
-//      http://www.apache.org/licenses/LICENSE-2.0
+//     http://www.apache.org/licenses/LICENSE-2.0
 // 
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -23,26 +23,37 @@ using TransactionException = Castle.Services.Transaction.Exceptions.TransactionE
 
 namespace Castle.Services.Transaction
 {
-
 	public enum TransactionState
 	{
-		/// <summary>Initial state before c'tor run</summary>
+		/// <summary>
+		/// 	Initial state before c'tor run
+		/// </summary>
 		Default,
 
-		/// <summary>When begin has been called and has returned.</summary>
+		/// <summary>
+		/// 	When begin has been called and has returned.
+		/// </summary>
 		Active,
 
-		/// <summary>When the transaction is in doubt.</summary>
+		/// <summary>
+		/// 	When the transaction is in doubt.
+		/// </summary>
 		InDoubt,
 
-		/// <summary>When commit has been called and has returned successfully.</summary>
+		/// <summary>
+		/// 	When commit has been called and has returned successfully.
+		/// </summary>
 		CommittedOrCompleted,
 
-		/// <summary>When first begin and then rollback has been called, or
-		/// a resource failed.</summary>
+		/// <summary>
+		/// 	When first begin and then rollback has been called, or
+		/// 	a resource failed.
+		/// </summary>
 		Aborted,
 
-		/// <summary>When the dispose method has run.</summary>
+		/// <summary>
+		/// 	When the dispose method has run.
+		/// </summary>
 		Disposed
 	}
 
@@ -55,17 +66,17 @@ namespace Castle.Services.Transaction
 		private readonly ITransactionOptions _CreationOptions;
 		private readonly CommittableTransaction _Inner;
 		private readonly DependentTransaction _Inner2;
-		
-		[NonSerialized]
-		private readonly Action _OnDispose;
 
-		public Transaction(CommittableTransaction inner, uint stackDepth, ITransactionOptions creationOptions, Action onDispose)
+		[NonSerialized] private readonly Action _OnDispose;
+
+		public Transaction(CommittableTransaction inner, uint stackDepth, ITransactionOptions creationOptions,
+		                   Action onDispose)
 		{
 			Contract.Requires(creationOptions != null);
 			Contract.Requires(inner != null);
 			Contract.Ensures(_Inner != null);
 			Contract.Ensures(_State == TransactionState.Active);
-			Contract.Ensures(((ITransaction)this).State == TransactionState.Active);
+			Contract.Ensures(((ITransaction) this).State == TransactionState.Active);
 			_Inner = inner;
 			_StackDepth = stackDepth;
 			_CreationOptions = creationOptions;
@@ -79,7 +90,7 @@ namespace Castle.Services.Transaction
 			Contract.Requires(inner != null);
 			Contract.Ensures(_Inner2 != null);
 			Contract.Ensures(_State == TransactionState.Active);
-			Contract.Ensures(((ITransaction)this).State == TransactionState.Active);
+			Contract.Ensures(((ITransaction) this).State == TransactionState.Active);
 			_Inner2 = inner;
 			_StackDepth = stackDepth;
 			_CreationOptions = creationOptions;
@@ -108,7 +119,8 @@ namespace Castle.Services.Transaction
 					if (_State == TransactionState.Active)
 						InnerRollback();
 				}
-				finally {
+				finally
+				{
 					if (_OnDispose != null) _OnDispose();
 					((IDisposable) this).Dispose();
 				}
@@ -162,7 +174,8 @@ namespace Castle.Services.Transaction
 			get
 			{
 				var s = Inner.TransactionInformation.LocalIdentifier + ":" + _StackDepth;
-				Contract.Assume(!string.IsNullOrEmpty(s), "because string concatenation doesn't return null or empty if one part is a constant non-empty string");
+				Contract.Assume(!string.IsNullOrEmpty(s),
+				                "because string concatenation doesn't return null or empty if one part is a constant non-empty string");
 				return s;
 			}
 		}
@@ -199,15 +212,15 @@ namespace Castle.Services.Transaction
 			{
 				_State = TransactionState.InDoubt;
 				throw new TransactionException("Transaction in doubt. See inner exception and help link for details",
-											   e,
-											   new Uri("http://support.microsoft.com/kb/899115/EN-US/"));
+				                               e,
+				                               new Uri("http://support.microsoft.com/kb/899115/EN-US/"));
 			}
 			catch (TransactionAbortedException)
 			{
 				_State = TransactionState.Aborted;
 				throw;
 			}
-			catch(Exception e)
+			catch (Exception e)
 			{
 				InnerRollback();
 				// we might have lost connection to the database

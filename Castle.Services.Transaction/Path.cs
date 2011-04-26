@@ -1,40 +1,42 @@
-#region License
-//  Copyright 2004-2010 Castle Project - http://www.castleproject.org/
-//  
-//  Licensed under the Apache License, Version 2.0 (the "License");
-//  you may not use this file except in compliance with the License.
-//  You may obtain a copy of the License at
-//  
-//      http://www.apache.org/licenses/LICENSE-2.0
-//  
-//  Unless required by applicable law or agreed to in writing, software
-//  distributed under the License is distributed on an "AS IS" BASIS,
-//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//  See the License for the specific language governing permissions and
-//  limitations under the License.
+#region license
+
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// 
+//     http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 #endregion
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Contracts;
+using System.Linq;
 using System.Text;
 using Castle.Services.Transaction.IO;
-using System.Linq;
 
 namespace Castle.Services.Transaction
 {
 	///<summary>
-	/// Utility class meant to replace the <see cref="System.IO.Path"/> class completely. This class handles these types of paths:
-	/// <list>
-	/// <item>UNC network paths: \\server\folder</item>
-	/// <item>UNC-specified network paths: \\?\UNC\server\folder</item>
-	/// <item>IPv4 network paths: \\192.168.3.22\folder</item>
-	/// <item>Rooted paths: /dev/cdrom0</item>
-	/// <item>Rooted paths: C:\folder</item>
-	/// <item>UNC-rooted paths: \\?\C:\folder\file</item>
-	/// <item>Fully expanded IPv6 paths</item>
-	/// </list>
+	///	Utility class meant to replace the <see cref = "System.IO.Path" /> class completely. This class handles these types of paths:
+	///	<list>
+	///		<item>UNC network paths: \\server\folder</item>
+	///		<item>UNC-specified network paths: \\?\UNC\server\folder</item>
+	///		<item>IPv4 network paths: \\192.168.3.22\folder</item>
+	///		<item>Rooted paths: /dev/cdrom0</item>
+	///		<item>Rooted paths: C:\folder</item>
+	///		<item>UNC-rooted paths: \\?\C:\folder\file</item>
+	///		<item>Fully expanded IPv6 paths</item>
+	///	</list>
 	///</summary>
 	public static class Path
 	{
@@ -48,11 +50,11 @@ namespace Castle.Services.Transaction
 		//				.Split('|'));
 
 		///<summary>
-		/// Returns whether the path is rooted. An empty string isn't.
+		///	Returns whether the path is rooted. An empty string isn't.
 		///</summary>
-		///<param name="path">Gets whether the path is rooted or relative.</param>
+		///<param name = "path">Gets whether the path is rooted or relative.</param>
 		///<returns>Whether the path is rooted or not.</returns>
-		///<exception cref="ArgumentNullException">If the passed argument is null.</exception>
+		///<exception cref = "ArgumentNullException">If the passed argument is null.</exception>
 		[Pure]
 		public static bool IsRooted(string path)
 		{
@@ -62,9 +64,9 @@ namespace Castle.Services.Transaction
 		}
 
 		/// <summary>
-		/// Gets the path root, i.e. e.g. \\?\C:\ if the passed argument is \\?\C:\a\b\c.abc.
+		/// 	Gets the path root, i.e. e.g. \\?\C:\ if the passed argument is \\?\C:\a\b\c.abc.
 		/// </summary>
-		/// <param name="path">The path to get the root for.</param>
+		/// <param name = "path">The path to get the root for.</param>
 		/// <returns>The string denoting the root.</returns>
 		[Pure]
 		public static string GetPathRoot(string path)
@@ -77,27 +79,27 @@ namespace Castle.Services.Transaction
 		[Pure]
 		private static bool ContainsInvalidChars(string path)
 		{
-			int c = _InvalidChars.Count;
-			int l = path.Length;
+			var c = _InvalidChars.Count;
+			var l = path.Length;
 
-			for (int i = 0; i < l; i++)
-				for (int j = 0; j < c; j++)
+			for (var i = 0; i < l; i++)
+				for (var j = 0; j < c; j++)
 					if (path[i] == _InvalidChars[j])
 						return true;
 			return false;
 		}
 
 		///<summary>
-		/// Gets a path without root.
+		///	Gets a path without root.
 		///</summary>
-		///<param name="path"></param>
+		///<param name = "path"></param>
 		///<returns></returns>
-		///<exception cref="ArgumentNullException"></exception>
+		///<exception cref = "ArgumentNullException"></exception>
 		[Pure]
 		public static string GetPathWithoutRoot(string path)
 		{
-			Contract.Requires(path != null); 
-			
+			Contract.Requires(path != null);
+
 			if (path.Length == 0) return string.Empty;
 			var startIndex = GetPathRoot(path).Length;
 			if (path.Length < startIndex) return string.Empty;
@@ -105,12 +107,12 @@ namespace Castle.Services.Transaction
 		}
 
 		///<summary>
-		/// Normalize all the directory separation chars.
-		/// Also removes empty space in beginning and end of string.
+		///	Normalize all the directory separation chars.
+		///	Also removes empty space in beginning and end of string.
 		///</summary>
-		///<param name="pathWithAlternatingChars"></param>
+		///<param name = "pathWithAlternatingChars"></param>
 		///<returns>The directory string path with all occurrances of the alternating chars
-		/// replaced for that specified in <see cref="System.IO.Path.DirectorySeparatorChar"/></returns>
+		///	replaced for that specified in <see cref = "System.IO.Path.DirectorySeparatorChar" /></returns>
 		[Pure]
 		public static string NormDirSepChars(string pathWithAlternatingChars)
 		{
@@ -119,7 +121,7 @@ namespace Castle.Services.Transaction
 
 			var sb = new StringBuilder();
 
-			for (int i = 0; i < pathWithAlternatingChars.Length; i++)
+			for (var i = 0; i < pathWithAlternatingChars.Length; i++)
 				if (pathWithAlternatingChars[i] == '\\' || pathWithAlternatingChars[i] == '/')
 					sb.Append(DirectorySeparatorChar);
 				else
@@ -127,19 +129,19 @@ namespace Castle.Services.Transaction
 
 			var ret = sb.ToString().Trim(' ');
 
-			Contract.Assume(!string.IsNullOrEmpty(ret), 
-				"because input was non-empty string and for every item in the string " 
-				+ "we append to the string builder a non-whitespace char, so it can't be empty");
+			Contract.Assume(!string.IsNullOrEmpty(ret),
+			                "because input was non-empty string and for every item in the string "
+			                + "we append to the string builder a non-whitespace char, so it can't be empty");
 
 			return ret;
 		}
 
 		///<summary>
-		/// Gets path info (drive and non root path)
+		///	Gets path info (drive and non root path)
 		///</summary>
-		///<param name="path">The path to get the info from.</param>
+		///<param name = "path">The path to get the info from.</param>
 		///<returns></returns>
-		///<exception cref="ArgumentNullException"></exception>
+		///<exception cref = "ArgumentNullException"></exception>
 		[Pure]
 		public static PathInfo GetPathInfo(string path)
 		{
@@ -148,11 +150,11 @@ namespace Castle.Services.Transaction
 		}
 
 		///<summary>
-		/// Gets the full path for a given path.
+		///	Gets the full path for a given path.
 		///</summary>
-		///<param name="path"></param>
+		///<param name = "path"></param>
 		///<returns>The full path string</returns>
-		///<exception cref="ArgumentNullException">if path is null</exception>
+		///<exception cref = "ArgumentNullException">if path is null</exception>
 		[Pure]
 		public static string GetFullPath(string path)
 		{
@@ -167,14 +169,14 @@ namespace Castle.Services.Transaction
 		}
 
 		/// <summary>
-		/// Removes the last directory/file off the path.
+		/// 	Removes the last directory/file off the path.
 		/// 
-		/// For a path "/a/b/c" would return "/a/b"
-		/// or for "\\?\C:\folderA\folder\B\C\d.txt" would return "\\?\C:\folderA\folder\B\C"
+		/// 	For a path "/a/b/c" would return "/a/b"
+		/// 	or for "\\?\C:\folderA\folder\B\C\d.txt" would return "\\?\C:\folderA\folder\B\C"
 		/// </summary>
-		/// <param name="path">The path string to modify</param>
+		/// <param name = "path">The path string to modify</param>
 		/// <returns></returns>
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1820:TestForEmptyStringsUsingStringLength",
+		[SuppressMessage("Microsoft.Performance", "CA1820:TestForEmptyStringsUsingStringLength",
 			Justification = "It would change the semantics.")]
 		[Pure]
 		public static string GetPathWithoutLastBit(string path)
@@ -183,22 +185,22 @@ namespace Castle.Services.Transaction
 			Contract.Requires(path.Length >= 2);
 
 			var chars = new List<char>
-			{
-			    DirectorySeparatorChar, 
-				AltDirectorySeparatorChar
-			};
+			            	{
+			            		DirectorySeparatorChar,
+			            		AltDirectorySeparatorChar
+			            	};
 
-			bool endsWithSlash = false;
-			int secondLast = -1;
-			int last = -1;
-			char lastType = chars[0];
+			var endsWithSlash = false;
+			var secondLast = -1;
+			var last = -1;
+			var lastType = chars[0];
 
-			for (int i = 0; i < path.Length; i++)
+			for (var i = 0; i < path.Length; i++)
 			{
 				if (i == path.Length - 1 && chars.Contains(path[i]))
 					endsWithSlash = true;
 
-				if (!chars.Contains(path[i])) 
+				if (!chars.Contains(path[i]))
 					continue;
 
 				secondLast = last;
@@ -219,16 +221,16 @@ namespace Castle.Services.Transaction
 		{
 			Contract.Requires(!string.IsNullOrEmpty(path), "path musn't be null");
 
-			if (path.EndsWith("/") || path.EndsWith("\\")) 
+			if (path.EndsWith("/") || path.EndsWith("\\"))
 				return string.Empty;
 
 			var nonRoot = PathInfo.Parse(path).FolderAndFiles;
 
 			int strIndex;
-			
+
 			// resharper is wrong that you can transform this to a ternary operator.
-			if ((strIndex = nonRoot.LastIndexOfAny(new[] { DirectorySeparatorChar, AltDirectorySeparatorChar })) != -1)
-				return nonRoot.Substring(strIndex+1);
+			if ((strIndex = nonRoot.LastIndexOfAny(new[] {DirectorySeparatorChar, AltDirectorySeparatorChar})) != -1)
+				return nonRoot.Substring(strIndex + 1);
 
 			return nonRoot;
 		}
@@ -295,7 +297,7 @@ namespace Castle.Services.Transaction
 		[Pure]
 		public static char[] GetDirectorySeparatorChars()
 		{
-			return new[] { DirectorySeparatorChar, AltDirectorySeparatorChar};
+			return new[] {DirectorySeparatorChar, AltDirectorySeparatorChar};
 		}
 
 		[Pure]

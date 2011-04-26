@@ -1,12 +1,12 @@
 ﻿#region license
 
-// Copyright 2009-2011 Henrik Feldt - http://logibit.se/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 // 
-//      http://www.apache.org/licenses/LICENSE-2.0
+//     http://www.apache.org/licenses/LICENSE-2.0
 // 
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -73,13 +73,13 @@ namespace Castle.Facilities.AutoTx
 			var txManager = _Kernel.Resolve<ITxManager>();
 
 			var mTxMethod = _MetaInfo.Do(x => x.AsTransactional(invocation.Method.DeclaringType.IsInterface
-			                                                	? invocation.MethodInvocationTarget
-			                                                	: invocation.Method));
+			                                                    	? invocation.MethodInvocationTarget
+			                                                    	: invocation.Method));
 
 			var mTxData = mTxMethod.Do(x => txManager.CreateTransaction(x));
 
 			_State = InterceptorState.Active;
-			
+
 			if (!mTxData.HasValue)
 			{
 				if (mTxMethod.HasValue && mTxMethod.Value.Mode == TransactionScopeOption.Suppress)
@@ -93,8 +93,8 @@ namespace Castle.Facilities.AutoTx
 
 			var transaction = mTxData.Value.Transaction;
 
-			Contract.Assume(transaction.State == TransactionState.Active, 
-				"from post-condition of ITxManager CreateTransaction in the (HasValue -> ...)-case");
+			Contract.Assume(transaction.State == TransactionState.Active,
+			                "from post-condition of ITxManager CreateTransaction in the (HasValue -> ...)-case");
 
 			// TODO 3.0GA: implement functionality for getting tasks and awating them
 #pragma warning disable 168
@@ -112,55 +112,56 @@ namespace Castle.Facilities.AutoTx
 		{
 			Contract.Requires(txData.Transaction.State == TransactionState.Active);
 			Contract.Assume(txData.Transaction.Inner is DependentTransaction);
-			
+
 			_Logger.DebugFormat("fork case");
 
 			return Task.Factory.StartNew(t =>
-			{
-				bool hasException = false;
-				var tuple = (Tuple<IInvocation, ICreatedTransaction, string>)t;
-				var dependent = tuple.Item2.Transaction.Inner as DependentTransaction;
-				using (tuple.Item2.GetForkScope())
-				{
-					try
-					{
-						if (_Logger.IsDebugEnabled)
-							_Logger.DebugFormat("calling proceed on tx#{0}", tuple.Item3);
+			                             	{
+			                             		var hasException = false;
+			                             		var tuple = (Tuple<IInvocation, ICreatedTransaction, string>) t;
+			                             		var dependent = tuple.Item2.Transaction.Inner as DependentTransaction;
+			                             		using (tuple.Item2.GetForkScope())
+			                             		{
+			                             			try
+			                             			{
+			                             				if (_Logger.IsDebugEnabled)
+			                             					_Logger.DebugFormat("calling proceed on tx#{0}", tuple.Item3);
 
-						using (var ts = new TransactionScope(dependent))
-						{
-							tuple.Item1.Proceed();
+			                             				using (var ts = new TransactionScope(dependent))
+			                             				{
+			                             					tuple.Item1.Proceed();
 
-							if (_Logger.IsDebugEnabled)
-								_Logger.DebugFormat("calling complete on TransactionScope for tx#{0}", tuple.Item3);
+			                             					if (_Logger.IsDebugEnabled)
+			                             						_Logger.DebugFormat("calling complete on TransactionScope for tx#{0}", tuple.Item3);
 
-							ts.Complete();
-						}
-					}
-					catch (TransactionAbortedException ex)
-					{
-						// if we have aborted the transaction, we both warn and re-throw the exception
-						hasException = true;
-						_Logger.Warn("transaction aborted", ex);
-						throw new TransactionAbortedException("Parallel/forked transaction aborted! See inner exception for details.", ex);
-					}
-					catch (Exception)
-					{
-						hasException = true;
-						throw;
-					}
-					finally
-					{
-						if (_Logger.IsDebugEnabled)
-							_Logger.Debug("in finally-clause");
+			                             					ts.Complete();
+			                             				}
+			                             			}
+			                             			catch (TransactionAbortedException ex)
+			                             			{
+			                             				// if we have aborted the transaction, we both warn and re-throw the exception
+			                             				hasException = true;
+			                             				_Logger.Warn("transaction aborted", ex);
+			                             				throw new TransactionAbortedException(
+			                             					"Parallel/forked transaction aborted! See inner exception for details.", ex);
+			                             			}
+			                             			catch (Exception)
+			                             			{
+			                             				hasException = true;
+			                             				throw;
+			                             			}
+			                             			finally
+			                             			{
+			                             				if (_Logger.IsDebugEnabled)
+			                             					_Logger.Debug("in finally-clause");
 
-						if (!hasException)
-							dependent.Complete();
+			                             				if (!hasException)
+			                             					dependent.Complete();
 
-						// See footnote at end of file
-					}
-				}
-			}, Tuple.Create(invocation, txData, txData.Transaction.LocalIdentifier));
+			                             				// See footnote at end of file
+			                             			}
+			                             		}
+			                             	}, Tuple.Create(invocation, txData, txData.Transaction.LocalIdentifier));
 		}
 
 		private static void SynchronizedCase(IInvocation invocation, ITransaction transaction)
@@ -177,7 +178,10 @@ namespace Castle.Facilities.AutoTx
 					if (transaction.State == TransactionState.Active)
 						transaction.Complete();
 
-					else _Logger.WarnFormat("transaction was in state {0}, so it cannot be completed. the 'consumer' method, so to speak, might have rolled it back.", transaction.State);
+					else
+						_Logger.WarnFormat(
+							"transaction was in state {0}, so it cannot be completed. the 'consumer' method, so to speak, might have rolled it back.",
+							transaction.State);
 				}
 				catch (TransactionAbortedException)
 				{
@@ -195,7 +199,8 @@ namespace Castle.Facilities.AutoTx
 				catch (Exception)
 				{
 					if (_Logger.IsErrorEnabled)
-						_Logger.ErrorFormat("caught exception, rolling back transaction - synchronized case - tx#{0}", transaction.LocalIdentifier);
+						_Logger.ErrorFormat("caught exception, rolling back transaction - synchronized case - tx#{0}",
+						                    transaction.LocalIdentifier);
 
 					transaction.Rollback();
 					throw;
