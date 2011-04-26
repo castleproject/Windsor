@@ -43,6 +43,15 @@ namespace Castle.Services.Transaction
 			Contract.Requires(retryPolicy != null);
 		}
 
+		public Maybe<ICreatedTransaction> CreateTransaction()
+		{
+			Contract.Ensures(Contract.Result<Maybe<ICreatedTransaction>>() != null
+							 && (!Contract.Result<Maybe<ICreatedTransaction>>().HasValue
+								 || Contract.Result<Maybe<ICreatedTransaction>>().Value.Transaction.State == TransactionState.Active));
+
+			throw new NotImplementedException();
+		}
+
 		public Maybe<ICreatedTransaction> CreateTransaction(ITransactionOptions transactionOptions)
 		{
 			Contract.Requires(transactionOptions != null);

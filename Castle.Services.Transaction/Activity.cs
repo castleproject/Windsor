@@ -15,7 +15,7 @@ namespace Castle.Services.Transaction
 		private static readonly ILog _Logger = LogManager.GetLogger(typeof (Activity));
 
 		private readonly Guid _ActivityId = Guid.NewGuid();
-		private readonly Stack<ITransaction> _Txs = new Stack<ITransaction>();
+		private readonly Stack<Tuple<ITransaction,string>> _Txs = new Stack<Tuple<ITransaction,string>>();
 		private ITransaction _TopMost;
 
 		public Activity()
@@ -37,7 +37,7 @@ namespace Castle.Services.Transaction
 			get
 			{
 				Contract.Ensures(Contract.Result<Maybe<ITransaction>>() != null);
-				return _Txs.Count == 0 ? Maybe.None<ITransaction>() : Maybe.Some(_Txs.Peek());
+				return _Txs.Count == 0 ? Maybe.None<ITransaction>() : Maybe.Some(_Txs.Peek().Item1);
 			}
 		}
 
@@ -58,6 +58,7 @@ namespace Castle.Services.Transaction
 		public void Push(ITransaction transaction)
 		{
 			Contract.Requires(transaction != null);
+			Contract.Requires(transaction.State != TransactionState.Disposed);
 			Contract.Ensures(Contract.OldValue(Count) + 1 == Count);
 			Contract.Ensures(_TopMost != null);
 			Contract.Ensures(Contract.OldValue(Count) != 0 || _TopMost == transaction);
@@ -73,7 +74,7 @@ namespace Castle.Services.Transaction
 			if (Count == 0)
 				_TopMost = transaction;
 
-			_Txs.Push(transaction);
+			_Txs.Push(Tuple.Create(transaction, transaction.LocalIdentifier));
 		}
 
 		/// <summary>
@@ -90,12 +91,12 @@ namespace Castle.Services.Transaction
 
 			var ret = _Txs.Pop();
 
-			_Logger.DebugFormat("popping tx#{0}", ret.LocalIdentifier);
+			_Logger.DebugFormat("popping tx#{0}", ret.Item2);
 
 			if (Count == 0)
 				_TopMost = null;
 
-			return ret;
+			return ret.Item1;
 		}
 
 		public uint Count { get { return (uint)_Txs.Count; } }

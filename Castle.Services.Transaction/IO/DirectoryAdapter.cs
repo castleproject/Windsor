@@ -37,11 +37,10 @@ namespace Castle.Services.Transaction.IO
 		/// <param name="pathFinder">The MapPath implementation.</param>
 		/// <param name="constrainToSpecifiedDir">Whether to ChJail the DirectoryAdapter.</param>
 		/// <param name="specifiedDir">The directory to constrain the adapter to.</param>
-		public DirectoryAdapter(IMapPath pathFinder, bool constrainToSpecifiedDir = false, string specifiedDir = null)
+		public DirectoryAdapter(IMapPath pathFinder, bool constrainToSpecifiedDir, string specifiedDir)
 			: base(constrainToSpecifiedDir, specifiedDir)
 		{
 			Contract.Requires(pathFinder != null);
-			Contract.Requires(specifiedDir == null || specifiedDir != string.Empty);
 
 			_Logger.Debug("DirectoryAdapter created.");
 

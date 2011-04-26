@@ -76,6 +76,12 @@ namespace Castle.Services.Transaction
 		void AddRetryPolicy(string policyKey, IRetryPolicy retryPolicy);
 
 		/// <summary>
+		/// Create a new transaction with the default options <see cref="DefaultTransactionOptions"/>.
+		/// </summary>
+		/// <returns>Maybe a created transaction. If the default options is to supress transactions, the maybe has no value.</returns>
+		Maybe<ICreatedTransaction> CreateTransaction();
+
+		/// <summary>
 		/// 	Create a new transaction, given the transaction options.
 		/// </summary>
 		/// <remarks>
@@ -92,14 +98,14 @@ namespace Castle.Services.Transaction
 		/// </para>
 		/// </remarks>
 		/// <param name = "transactionOptions">Options to use for creating the new transaction.</param>
-		/// <returns>Maybe a transaction, if the options specified it.</returns>
+		/// <returns>Maybe a transaction, if the options specified it. If the default options is to supress transactions, the maybe has no value.</returns>
 		Maybe<ICreatedTransaction> CreateTransaction(ITransactionOptions transactionOptions);
 
 		/// <summary>
-		/// 
+		/// Create a new transaction, given the transaction options.
 		/// </summary>
-		/// <param name="transactionOptions"></param>
-		/// <returns></returns>
+		/// <param name="transactionOptions">options to use for creating the transaction</param>
+		/// <returns>If the default options is to supress transactions, the maybe has no value.</returns>
 		Maybe<ICreatedTransaction> CreateFileTransaction(ITransactionOptions transactionOptions);
 	}
 }

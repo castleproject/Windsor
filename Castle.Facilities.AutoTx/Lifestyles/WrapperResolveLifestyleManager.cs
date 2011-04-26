@@ -134,7 +134,9 @@ namespace Castle.Facilities.AutoTx.Lifestyles
 		{
 			Contract.Requires(Initialized);
 			Contract.Ensures(Contract.Result<object>() != null);
-			return _Lifestyle1.Resolve(context); // TODO: specify ensure on lifestyle
+			var resolve = _Lifestyle1.Resolve(context);
+			Contract.Assume(resolve != null, "the resolved instance shouldn't be null");
+			return resolve;
 		}
 	}
 }

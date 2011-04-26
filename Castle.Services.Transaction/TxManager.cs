@@ -63,6 +63,13 @@ namespace Castle.Services.Transaction
 
 		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000",
 			Justification = "CommittableTransaction is disposed by Transaction")]
+		Maybe<ICreatedTransaction> ITxManager.CreateTransaction()
+		{
+			return ((ITxManager) this).CreateTransaction(new DefaultTransactionOptions());
+		}
+
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000",
+			Justification = "CommittableTransaction is disposed by Transaction")]
 		Maybe<ICreatedTransaction> ITxManager.CreateTransaction(ITransactionOptions transactionOptions)
 		{
 			var activity = _ActivityManager.GetCurrentActivity();
@@ -98,12 +105,14 @@ namespace Castle.Services.Transaction
 			if (!shouldFork)
 				activity.Push(tx);
 
-			var m = Maybe.Some((ICreatedTransaction) new CreatedTransaction(tx,
+			Contract.Assume(tx.State == TransactionState.Active, "by c'tor post condition for both cases of the if statement");
+
+			var m = Maybe.Some(new CreatedTransaction(tx,
 				// we should only fork if we have a different current top transaction than the current
 				shouldFork, () => {
 					_ActivityManager.GetCurrentActivity().Push(tx);
 					return new DisposableScope(_ActivityManager.GetCurrentActivity().Pop);
-				}));
+				}) as ICreatedTransaction);
 
 			// warn if fork and the top transaction was just created
 			if (transactionOptions.Fork && nextStackDepth == 1)

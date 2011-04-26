@@ -43,7 +43,7 @@ namespace Castle.Services.Transaction
 		Aborted,
 
 		/// <summary>When the dispose method has run.</summary>
-		Diposed
+		Disposed
 	}
 
 	[Serializable]
@@ -51,7 +51,7 @@ namespace Castle.Services.Transaction
 	{
 		private TransactionState _State = TransactionState.Default;
 
-		private uint _StackDepth;
+		private readonly uint _StackDepth;
 		private readonly ITransactionOptions _CreationOptions;
 		private readonly CommittableTransaction _Inner;
 		private readonly DependentTransaction _Inner2;
@@ -115,7 +115,7 @@ namespace Castle.Services.Transaction
 			}
 			finally
 			{
-				_State = TransactionState.Diposed;
+				_State = TransactionState.Disposed;
 			}
 		}
 
@@ -234,7 +234,7 @@ namespace Castle.Services.Transaction
 			}
 			finally
 			{
-				_State = TransactionState.Diposed;
+				_State = TransactionState.Disposed;
 			}
 		}
 	}

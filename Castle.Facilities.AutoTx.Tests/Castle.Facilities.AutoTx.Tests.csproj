@@ -47,8 +47,8 @@
       <HintPath>..\..\lib\net40\log4net.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework">
-	  <HintPath>..\..\lib\nunit.framework.dll</HintPath>
-	</Reference>
+      <HintPath>..\..\lib\nunit.framework.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="Microsoft.CSharp" />
@@ -70,6 +70,7 @@
     <Compile Include="Framework\MaybeEx.cs" />
     <Compile Include="InitTests.cs" />
     <Compile Include="MultipleThreads_TransactionBookKeeping.cs" />
+    <Compile Include="PerTransactionLifestyle_Releasing.cs" />
     <Compile Include="RetryPolicies_Transactions.cs" />
     <Compile Include="Scratch.cs" />
     <Compile Include="SingleThread_Ambient_OnConcreteType.cs" />

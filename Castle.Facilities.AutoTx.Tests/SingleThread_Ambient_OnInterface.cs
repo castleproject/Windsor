@@ -75,7 +75,7 @@ namespace Castle.Facilities.AutoTx.Tests
 				}
 				catch (ApplicationException) { }
 
-				Assert.That(ourTx.State, Is.EqualTo(TransactionState.Diposed));
+				Assert.That(ourTx.State, Is.EqualTo(TransactionState.Disposed));
 			}
 		}
 

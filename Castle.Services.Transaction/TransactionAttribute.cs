@@ -44,6 +44,11 @@ namespace Castle.Services.Transaction
 			_CustomContext = new Dictionary<string, object>();
 		}
 
+		[ContractInvariantMethod]
+		private void Invariant()
+		{
+			Contract.Invariant(_CustomContext != null);
+		}
 
 		public IsolationLevel IsolationLevel { [Pure] get; set; }
 
@@ -77,7 +82,11 @@ namespace Castle.Services.Transaction
 		public IEnumerable<KeyValuePair<string, object>> CustomContext
 		{
 			get { return _CustomContext; }
-			set { _CustomContext = value.ToDictionary(x => x.Key, x => x.Value); }
+			set
+			{
+				Contract.Requires(value != null, "don't set the custom context to null, it's empty by default");
+				_CustomContext = value.ToDictionary(x => x.Key, x => x.Value);
+			}
 		}
 
 		/// <summary>

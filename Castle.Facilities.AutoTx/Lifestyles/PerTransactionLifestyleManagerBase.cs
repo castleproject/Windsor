@@ -42,6 +42,7 @@ namespace Castle.Facilities.AutoTx.Lifestyles
 
 		protected readonly ITxManager _Manager;
 		protected bool _Disposed;
+		private bool evicting;
 
 		public PerTransactionLifestyleManagerBase(ITxManager manager)
 		{
@@ -101,7 +102,7 @@ namespace Castle.Facilities.AutoTx.Lifestyles
 
 					// release all items
 					foreach (var tuple in _Storage)
-						base.Release(tuple.Value.Item2);
+						Evict(tuple.Value.Item2);
 
 					_Storage.Clear();
 				}
@@ -111,6 +112,20 @@ namespace Castle.Facilities.AutoTx.Lifestyles
 			{
 				_Disposed = true;
 			}
+		}
+
+		public override bool Release(object instance)
+		{
+			if (!evicting)
+				return false;
+
+			return base.Release(instance);
+		}
+
+		private void Evict(object instance)
+		{
+			using (new EvictionScope(this))
+				Kernel.ReleaseComponent(instance);
 		}
 
 		public override object Resolve(CreationContext context)
@@ -167,7 +182,7 @@ namespace Castle.Facilities.AutoTx.Lifestyles
 										Contract.Assume(_Storage.Count > 0);
 
 										_Storage.Remove(key);
-										Release(counter.Item2);
+										Evict(counter.Item2);
 									}
 								}
 								else
@@ -186,6 +201,22 @@ namespace Castle.Facilities.AutoTx.Lifestyles
 			Contract.Assume(instance.Item2 != null, "resolve throws otherwise");
 
 			return instance.Item2;
+		}
+
+		private class EvictionScope : IDisposable
+		{
+			private readonly PerTransactionLifestyleManagerBase owner;
+
+			public EvictionScope(PerTransactionLifestyleManagerBase owner)
+			{
+				this.owner = owner;
+				this.owner.evicting = true;
+			}
+
+			public void Dispose()
+			{
+				owner.evicting = false;
+			}
 		}
 
 		/// <summary>

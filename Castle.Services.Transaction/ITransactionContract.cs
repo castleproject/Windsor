@@ -12,6 +12,8 @@ namespace Castle.Services.Transaction
 			[Pure]
 			get
 			{
+
+				Contract.Requires(State != TransactionState.Disposed);
 				Contract.Ensures(!string.IsNullOrEmpty(Contract.Result<string>()));
 				throw new NotImplementedException();
 			}
@@ -42,7 +44,7 @@ namespace Castle.Services.Transaction
 			                  || State == TransactionState.InDoubt
 			                  || State == TransactionState.CommittedOrCompleted);
 
-			Contract.Ensures(State == TransactionState.Diposed);
+			Contract.Ensures(State == TransactionState.Disposed);
 		}
 
 		public TransactionState State
