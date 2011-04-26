@@ -92,6 +92,12 @@ namespace Castle.Services.Transaction
 			InnerBegin();
 		}
 
+		[ContractInvariantMethod]
+		private void Invariant()
+		{
+			Contract.Invariant(_Inner == null || _State == _Inner.State);
+		}
+
 		#endregion
 
 		///<summary>
@@ -200,9 +206,7 @@ namespace Castle.Services.Transaction
 			}
 			finally
 			{
-				if (_State != TransactionState.CommittedOrCompleted)
-					_State = TransactionState.Aborted;
-				else _State = TransactionState.CommittedOrCompleted;
+				_State = _State != TransactionState.CommittedOrCompleted ? TransactionState.Aborted : TransactionState.CommittedOrCompleted;
 			}
 		}
 
@@ -270,7 +274,9 @@ namespace Castle.Services.Transaction
 			// case 1, the new file path is a folder
 			if (((IDirectoryAdapter) this).Exists(newFilePath))
 			{
-				NativeMethods.MoveFileTransacted(originalFilePath, newFilePath.Combine(Path.GetFileName(originalFilePath)), IntPtr.Zero,
+				var fileName = Path.GetFileName(originalFilePath);
+				Contract.Assume(fileName.Length > 0, "by pre-condition of IFileAdapterContract.Move");
+				NativeMethods.MoveFileTransacted(originalFilePath, newFilePath.Combine(fileName), IntPtr.Zero,
 				                                 IntPtr.Zero, NativeMethods.MoveFileFlags.CopyAllowed,
 				                                 _TransactionHandle);
 				return;

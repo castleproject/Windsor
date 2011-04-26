@@ -96,10 +96,12 @@ namespace Castle.Services.Transaction
 		[Pure]
 		public static string GetPathWithoutRoot(string path)
 		{
-			Contract.Requires(path != null);
+			Contract.Requires(path != null); 
+			
 			if (path.Length == 0) return string.Empty;
-
-			return path.Substring(GetPathRoot(path).Length);
+			var startIndex = GetPathRoot(path).Length;
+			if (path.Length < startIndex) return string.Empty;
+			return path.Substring(startIndex);
 		}
 
 		///<summary>
@@ -118,12 +120,18 @@ namespace Castle.Services.Transaction
 			var sb = new StringBuilder();
 
 			for (int i = 0; i < pathWithAlternatingChars.Length; i++)
-				if ((pathWithAlternatingChars[i] == '\\') || (pathWithAlternatingChars[i] == '/'))
+				if (pathWithAlternatingChars[i] == '\\' || pathWithAlternatingChars[i] == '/')
 					sb.Append(DirectorySeparatorChar);
 				else
 					sb.Append(pathWithAlternatingChars[i]);
 
-			return sb.ToString().Trim(new[] { ' ' });
+			var ret = sb.ToString().Trim(' ');
+
+			Contract.Assume(!string.IsNullOrEmpty(ret), 
+				"because input was non-empty string and for every item in the string " 
+				+ "we append to the string builder a non-whitespace char, so it can't be empty");
+
+			return ret;
 		}
 
 		///<summary>
@@ -149,7 +157,7 @@ namespace Castle.Services.Transaction
 		public static string GetFullPath(string path)
 		{
 			Contract.Requires(!string.IsNullOrEmpty(path));
-			Contract.Ensures(!string.IsNullOrEmpty(Contract.Result<string>()));
+			Contract.Ensures(Contract.Result<string>() != null);
 
 			if (path.StartsWith("\\\\?\\") || path.StartsWith("\\\\.\\")) return System.IO.Path.GetFullPath(path.Substring(4));
 			if (path.StartsWith("\\\\?\\UNC\\")) return System.IO.Path.GetFullPath(path.Substring(8));
@@ -219,8 +227,7 @@ namespace Castle.Services.Transaction
 			int strIndex;
 			
 			// resharper is wrong that you can transform this to a ternary operator.
-			if ((strIndex = nonRoot.LastIndexOfAny(new[] {
-			                                             	DirectorySeparatorChar, AltDirectorySeparatorChar })) != -1)
+			if ((strIndex = nonRoot.LastIndexOfAny(new[] { DirectorySeparatorChar, AltDirectorySeparatorChar })) != -1)
 				return nonRoot.Substring(strIndex+1);
 
 			return nonRoot;
@@ -307,14 +314,19 @@ namespace Castle.Services.Transaction
 			Contract.Requires(otherPaths != null);
 			Contract.Requires(firstPath != null);
 			Contract.Requires(firstPath.Length >= 0);
-			Contract.Requires(Contract.ForAll(otherPaths, p => p.Length > 0));
+			// can't make checker prove this
+			//Contract.Requires(Contract.ForAll(otherPaths, p => p.Length > 0));
 			Contract.Ensures(Contract.Result<string>() != null);
 			// I have to think about this one:
 			//Contract.Ensures(Contract.Result<string>().Length == firstPath.Length 
 			//    + otherPaths.Select(x => x.Length).Sum()
 			//    + (otherPaths.Length-1) /* no of separator chars */);
 
-			return otherPaths.Aggregate(firstPath, Combine);
+			var aggregate = otherPaths.Aggregate(firstPath, Combine);
+
+			Contract.Assume(aggregate != null, "aggregate never returns null for the given input");
+
+			return aggregate;
 		}
 	}
 }

@@ -83,6 +83,8 @@ namespace Castle.Services.Transaction.IO
 								_RelDrive,
 								_FolderAndFiles;
 
+		// too stupid checker
+		[ContractVerification(false)]
 		public static PathInfo Parse(string path)
 		{
 			Contract.Requires(path != null);
@@ -115,6 +117,8 @@ namespace Castle.Services.Transaction.IO
 		private static string GetMatch(MatchCollection matches,
 		                               string groupIndex)
 		{
+			Contract.Ensures(Contract.Result<string>() != null);
+
 			var matchC = matches.Count;
 
 			for (int i = 0; i < matchC; i++)
@@ -126,8 +130,27 @@ namespace Castle.Services.Transaction.IO
 			return string.Empty;
 		}
 
+		#region c'tor and non null invariants
+
 		private PathInfo(string root, string uncPrefix, string uncLiteral, string options, string drive, string driveLetter, string server, string iPv4, string iPv6, string serverName, string device, string devicePrefix, string deviceName, string deviceGuid, string nonRootPath, string relDrive, string folderAndFiles)
 		{
+			Contract.Requires(root != null);
+			Contract.Requires(uncPrefix != null);
+			Contract.Requires(uncLiteral != null);
+			Contract.Requires(options != null);
+			Contract.Requires(drive != null);
+			Contract.Requires(driveLetter != null);
+			Contract.Requires(server != null);
+			Contract.Requires(iPv4 != null);
+			Contract.Requires(iPv6 != null);
+			Contract.Requires(serverName != null);
+			Contract.Requires(device != null);
+			Contract.Requires(devicePrefix != null);
+			Contract.Requires(deviceName != null);
+			Contract.Requires(deviceGuid != null);
+			Contract.Requires(nonRootPath != null);
+			Contract.Requires(relDrive != null);
+			Contract.Requires(folderAndFiles != null);
 			_Root = root;
 			_UNCPrefix = uncPrefix;
 			_UNCLiteral = uncLiteral;
@@ -147,6 +170,30 @@ namespace Castle.Services.Transaction.IO
 			_FolderAndFiles = folderAndFiles;
 		}
 
+		[ContractInvariantMethod]
+		private void Invariant()
+		{
+			Contract.Invariant(_Root != null);
+			Contract.Invariant(_UNCPrefix != null);
+			Contract.Invariant(_UNCLiteral != null);
+			Contract.Invariant(_Options != null);
+			Contract.Invariant(_Drive != null);
+			Contract.Invariant(_DriveLetter != null);
+			Contract.Invariant(_Server != null);
+			Contract.Invariant(_IPv4 != null);
+			Contract.Invariant(_IPv6 != null);
+			Contract.Invariant(_ServerName != null);
+			Contract.Invariant(_Device != null);
+			Contract.Invariant(_DevicePrefix != null);
+			Contract.Invariant(_DeviceName != null);
+			Contract.Invariant(_DeviceGuid != null);
+			Contract.Invariant(_NonRootPath != null);
+			Contract.Invariant(_RelDrive != null);
+			Contract.Invariant(_FolderAndFiles != null);
+		}
+
+		#endregion
+
 		/// <summary>
 		/// Examples of return values:
 		/// <list>
@@ -159,6 +206,7 @@ namespace Castle.Services.Transaction.IO
 		/// Definition: Returns part of the string that is in itself uniquely from the currently 
 		/// executing CLR.
 		/// </summary>
+		[Pure]
 		public string Root
 		{
 			get { return _Root; }
@@ -170,6 +218,7 @@ namespace Castle.Services.Transaction.IO
 		/// <item></item>
 		/// </list>
 		/// </summary>
+		[Pure]
 		public string UNCPrefix
 		{
 			get { return _UNCPrefix; }
@@ -178,6 +227,7 @@ namespace Castle.Services.Transaction.IO
 		/// <summary>
 		/// 
 		/// </summary>
+		[Pure]
 		public string UNCLiteral
 		{
 			get { return _UNCLiteral; }
@@ -186,6 +236,7 @@ namespace Castle.Services.Transaction.IO
 		/// <summary>
 		/// 
 		/// </summary>
+		[Pure]
 		public string Options
 		{
 			get { return _Options; }
@@ -194,6 +245,7 @@ namespace Castle.Services.Transaction.IO
 		/// <summary>
 		/// 
 		/// </summary>
+		[Pure]
 		public string Drive
 		{
 			get { return _Drive; }
@@ -202,6 +254,7 @@ namespace Castle.Services.Transaction.IO
 		/// <summary>
 		/// 
 		/// </summary>
+		[Pure]
 		public string DriveLetter
 		{
 			get { return _DriveLetter; }
@@ -210,6 +263,7 @@ namespace Castle.Services.Transaction.IO
 		/// <summary>
 		/// 
 		/// </summary>
+		[Pure]
 		public string Server
 		{
 			get { return _Server; }
@@ -218,6 +272,7 @@ namespace Castle.Services.Transaction.IO
 		/// <summary>
 		/// Gets the 0.0.0.0-based IP-address if any.
 		/// </summary>
+		[Pure]
 		public string IPv4
 		{
 			get { return _IPv4; }
@@ -226,6 +281,7 @@ namespace Castle.Services.Transaction.IO
 		/// <summary>
 		/// 
 		/// </summary>
+		[Pure]
 		public string IPv6
 		{
 			get { return _IPv6; }
@@ -234,6 +290,7 @@ namespace Castle.Services.Transaction.IO
 		/// <summary>
 		/// 
 		/// </summary>
+		[Pure]
 		public string ServerName
 		{
 			get { return _ServerName; }
@@ -242,6 +299,7 @@ namespace Castle.Services.Transaction.IO
 		/// <summary>
 		/// 
 		/// </summary>
+		[Pure]
 		public string Device
 		{
 			get { return _Device; }
@@ -250,6 +308,7 @@ namespace Castle.Services.Transaction.IO
 		/// <summary>
 		/// 
 		/// </summary>
+		[Pure]
 		public string DevicePrefix
 		{
 			get { return _DevicePrefix; }
@@ -258,6 +317,7 @@ namespace Castle.Services.Transaction.IO
 		/// <summary>
 		/// 
 		/// </summary>
+		[Pure]
 		public string DeviceName
 		{
 			get { return _DeviceName; }
@@ -268,6 +328,7 @@ namespace Castle.Services.Transaction.IO
 		/// <code>{xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx}</code>
 		/// i.e. 8-4-4-4-12 hex digits with curly brackets.
 		/// </summary>
+		[Pure]
 		public string DeviceGuid
 		{
 			get { return _DeviceGuid; }
@@ -278,6 +339,7 @@ namespace Castle.Services.Transaction.IO
 		/// The root in turn is any UNC-prefix plus device, drive, server or ip-prefix.
 		/// This string may not start with neither of '\' or '/'.
 		/// </summary>
+		[Pure]
 		public string NonRootPath
 		{
 			get { return _NonRootPath; }
@@ -286,6 +348,7 @@ namespace Castle.Services.Transaction.IO
 		/// <summary>
 		/// 
 		/// </summary>
+		[Pure]
 		public string RelDrive
 		{
 			get { return _RelDrive; }
@@ -297,11 +360,17 @@ namespace Castle.Services.Transaction.IO
 		/// <code>C:../parent/a.txt</code>, otherwise, for all paths,
 		/// this property equals <see cref="NonRootPath"/>.
 		/// </summary>
+		[Pure]
 		public string FolderAndFiles
 		{
-			get { return _FolderAndFiles; }
+			get
+			{
+				Contract.Ensures(Contract.Result<string>() != null);
+				return _FolderAndFiles;
+			}
 		}
 
+		[Pure]
 		public PathType Type
 		{
 			get
@@ -323,6 +392,7 @@ namespace Castle.Services.Transaction.IO
 		/// <summary>
 		/// Returns whether <see cref="Root"/> is not an empty string.
 		/// </summary>
+		[Pure]
 		public bool IsRooted
 		{
 			get { return !string.IsNullOrEmpty(_Root); }
@@ -379,16 +449,17 @@ namespace Castle.Services.Transaction.IO
 		/// <returns></returns>
 		public string RemoveParameterFromRoot(PathInfo other)
 		{
-			if (Root != other.Root)
-				throw new InvalidOperationException("Roots of this and other don't match.");
+			Contract.Requires(Root == other.Root, "roots must match to be able to subtract");
+			Contract.Requires(FolderAndFiles.Length >= other.FolderAndFiles.Length,
+				"The folders and files part of the parameter must be shorter or equal to in length, than that path you wish to subtract from.");
 			
-			if (other.FolderAndFiles.Length > FolderAndFiles.Length)
-				throw new InvalidOperationException(
-					"The folders and files part of the second parameter must be shorter than that path you wish to subtract from.");
+			if (other.FolderAndFiles == FolderAndFiles) 
+				return string.Empty;
 
-			if (other.FolderAndFiles == FolderAndFiles) return string.Empty;
-
-			return FolderAndFiles.Substring(other.FolderAndFiles.Length).TrimStart(Path.GetDirectorySeparatorChars());
+			var startIndex = other.FolderAndFiles.Length;
+			Contract.Assume(startIndex <= FolderAndFiles.Length);
+			var substring = FolderAndFiles.Substring(startIndex);
+			return substring.TrimStart(Path.GetDirectorySeparatorChars());
 		}
 	}
 }

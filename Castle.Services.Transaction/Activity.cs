@@ -96,6 +96,8 @@ namespace Castle.Services.Transaction
 			if (Count == 0)
 				_TopMost = null;
 
+			Contract.Assume(ret.Item1 != null, "tuples are immutable");
+
 			return ret.Item1;
 		}
 

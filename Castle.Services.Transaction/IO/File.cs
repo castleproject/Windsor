@@ -37,11 +37,13 @@ namespace Castle.Services.Transaction.IO
 		public static void WriteAllText(string path, string contents)
 		{
 			Contract.Requires(!string.IsNullOrEmpty(path));
+			Contract.Requires(contents != null);
 			GetAdapter().WriteAllText(path, contents);
 		}
 
 		public static void Delete(string filePath)
 		{
+			Contract.Requires(!string.IsNullOrEmpty(filePath));
 			GetAdapter().Delete(filePath);
 		}
 
@@ -66,6 +68,7 @@ namespace Castle.Services.Transaction.IO
 		public static void Move(string originalFilePath, string newFilePath)
 		{
 			Contract.Requires(!string.IsNullOrEmpty(originalFilePath));
+			Contract.Requires(!string.IsNullOrEmpty(newFilePath));
 			GetAdapter().Move(originalFilePath, newFilePath);
 		}
 

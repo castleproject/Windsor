@@ -58,6 +58,7 @@ namespace Castle.Services.Transaction.IO
 
 		public static bool CreateDirectory(string directoryPath)
 		{
+			Contract.Requires(!string.IsNullOrEmpty(directoryPath));
 			return Create(directoryPath);
 		}
 	}

@@ -62,7 +62,7 @@ namespace Castle.Services.Transaction
 		{
 			Contract.Requires(!string.IsNullOrEmpty(originalFilePath));
 			Contract.Requires(!string.IsNullOrEmpty(newFilePath));
-			Contract.Requires(Path.GetFileName(originalFilePath) != string.Empty);
+			Contract.Requires(Path.GetFileName(originalFilePath).Length > 0);
 			throw new NotImplementedException();
 		}
 

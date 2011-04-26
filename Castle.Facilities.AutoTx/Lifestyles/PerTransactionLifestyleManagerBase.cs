@@ -144,6 +144,9 @@ namespace Castle.Facilities.AutoTx.Lifestyles
 
 			var transaction = GetSemanticTransactionForLifetime().Value;
 
+			Contract.Assume(transaction.State != TransactionState.Disposed, 
+				"because then it would not be active but would have been popped");
+
 			Tuple<uint, object> instance;
 			// unique key per service and per top transaction identifier
 			var localIdentifier = transaction.LocalIdentifier;

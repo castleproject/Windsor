@@ -43,6 +43,13 @@ namespace Castle.Services.Transaction.IO
 			_SpecifiedFolder = specifiedDir;
 		}
 
+		[ContractInvariantMethod]
+		private void Invariant()
+		{
+			Contract.Invariant(_AllowOutsideSpecifiedFolder || _SpecifiedFolder != null);
+			Contract.Invariant(!_AllowOutsideSpecifiedFolder || _SpecifiedFolder == null);
+		}
+
 		/// <summary>
 		/// Gets the transaction manager, if there is one, or sets it.
 		/// </summary>

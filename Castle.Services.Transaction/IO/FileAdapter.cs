@@ -61,6 +61,8 @@ namespace Castle.Services.Transaction.IO
 		///</summary>
 		///<param name="path">Path to create file at.</param>
 		///<returns>A filestream for the path.</returns>
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope",
+			Justification = "This is the aim; this is a factory method")]
 		public FileStream Create(string path)
 		{
 			AssertAllowed(path);
@@ -161,6 +163,8 @@ namespace Castle.Services.Transaction.IO
 			File.Delete(filePath);
 		}
 
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope",
+			Justification = "This is the intention; it's a factory method")]
 		public FileStream Open(string filePath, FileMode mode)
 		{
 			AssertAllowed(filePath);
