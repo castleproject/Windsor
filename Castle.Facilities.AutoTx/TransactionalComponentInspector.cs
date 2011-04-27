@@ -31,14 +31,14 @@ namespace Castle.Facilities.AutoTx
 	/// 	Transaction component inspector that selects the methods
 	/// 	available to get intercepted with transactions.
 	/// </summary>
-	internal class TxComponentInspector : MethodMetaInspector
+	internal class TransactionalComponentInspector : MethodMetaInspector
 	{
-		private ITxMetaInfoStore _MetaStore;
+		private ITransactionMetaInfoStore _MetaStore;
 
 		public override void ProcessModel(IKernel kernel, ComponentModel model)
 		{
 			if (_MetaStore == null)
-				_MetaStore = kernel.Resolve<ITxMetaInfoStore>();
+				_MetaStore = kernel.Resolve<ITransactionMetaInfoStore>();
 
 			Contract.Assume(model.Implementation != null);
 
@@ -51,7 +51,7 @@ namespace Castle.Facilities.AutoTx
 			Contract.Requires(model.Implementation != null);
 			Contract.Ensures(model.Implementation != null);
 
-			Maybe<TxClassMetaInfo> meta;
+			Maybe<TransactionalClassMetaInfo> meta;
 			List<string> problematicMethods;
 			if (model.Service == null
 			    || model.Service.IsInterface
@@ -75,8 +75,8 @@ namespace Castle.Facilities.AutoTx
 			if (!meta.HasValue)
 				return;
 
-			model.Dependencies.Add(new DependencyModel(DependencyType.Service, null, typeof (TxInterceptor), false));
-			model.Interceptors.AddFirst(new InterceptorReference(typeof (TxInterceptor)));
+			model.Dependencies.Add(new DependencyModel(DependencyType.Service, null, typeof (TransactionInterceptor), false));
+			model.Interceptors.AddFirst(new InterceptorReference(typeof (TransactionInterceptor)));
 		}
 
 		[Pure]

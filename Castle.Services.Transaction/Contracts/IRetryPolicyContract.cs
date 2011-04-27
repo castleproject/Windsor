@@ -18,20 +18,22 @@
 
 using System;
 using System.Diagnostics.Contracts;
-using Castle.Services.Transaction;
 
-namespace Castle.Facilities.AutoTx
+namespace Castle.Services.Transaction.Contracts
 {
-	[ContractClassFor(typeof (ITxMetaInfoStore))]
-	internal abstract class TxMetaInfoStoreContract : ITxMetaInfoStore
+	[ContractClassFor(typeof (IRetryPolicy))]
+	internal abstract class IRetryPolicyContract : IRetryPolicy
 	{
-		Maybe<TxClassMetaInfo> ITxMetaInfoStore.GetMetaFromType(Type implementation)
+		bool IRetryPolicy.Retry(Exception thrownException)
 		{
-			Contract.Requires(implementation != null);
-			var metaFromType = Contract.Result<Maybe<TxClassMetaInfo>>();
-			Contract.Ensures(metaFromType != null,
-			                 "the meta-info contract must return a non-null maybe (the maybe wraps null, also, so this should be an easy check)");
-			return metaFromType;
+			Contract.Requires(thrownException != null);
+			return Contract.Result<bool>();
+		}
+
+		[Pure]
+		ulong IRetryPolicy.Failures
+		{
+			get { return Contract.Result<ulong>(); }
 		}
 	}
 }

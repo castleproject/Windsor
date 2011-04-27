@@ -27,15 +27,15 @@ namespace Castle.Services.Transaction.IO
 	///<summary>
 	///	Adapter base class for the file and directory adapters.
 	///</summary>
-	public abstract class TxAdapterBase
+	public abstract class TransactionAdapterBase
 	{
 		private readonly bool _AllowOutsideSpecifiedFolder;
 		private readonly string _SpecifiedFolder;
-		private ITxManager _TxManager;
+		private ITransactionManager _TransactionManager;
 		private bool _UseTransactions = true;
 		private bool _OnlyJoinExisting;
 
-		protected TxAdapterBase(bool constrainToSpecifiedDir,
+		protected TransactionAdapterBase(bool constrainToSpecifiedDir,
 		                        string specifiedDir)
 		{
 			Contract.Requires(!constrainToSpecifiedDir || !string.IsNullOrEmpty(specifiedDir));
@@ -53,10 +53,10 @@ namespace Castle.Services.Transaction.IO
 		/// <summary>
 		/// 	Gets the transaction manager, if there is one, or sets it.
 		/// </summary>
-		public ITxManager TxManager
+		public ITransactionManager TransactionManager
 		{
-			get { return _TxManager; }
-			set { _TxManager = value; }
+			get { return _TransactionManager; }
+			set { _TransactionManager = value; }
 		}
 
 		///<summary>
@@ -79,10 +79,10 @@ namespace Castle.Services.Transaction.IO
 			transaction = null;
 
 			if (!_UseTransactions) return false;
-			return _TxManager != null && _TxManager.CurrentTransaction.HasValue;
-			//if (_TxManager != null && _TxManager.CurrentTransaction.HasValue)
+			return _TransactionManager != null && _TransactionManager.CurrentTransaction.HasValue;
+			//if (_TransactionManager != null && _TransactionManager.CurrentTransaction.HasValue)
 			//{
-			//    foreach (var resource in _TxManager.CurrentTransaction.Resources())
+			//    foreach (var resource in _TransactionManager.CurrentTransaction.Resources())
 			//    {
 			//        if (!(resource is FileResourceAdapter)) continue;
 
@@ -94,7 +94,7 @@ namespace Castle.Services.Transaction.IO
 			//    {
 			//        throw new NotImplementedException();
 			//        transaction = new FileTransaction("Autocreated File Transaction");
-			//        _TxManager.CurrentTransaction.Enlist(new FileResourceAdapter(transaction));
+			//        _TransactionManager.CurrentTransaction.Enlist(new FileResourceAdapter(transaction));
 			//        return true;
 			//    }
 			//}

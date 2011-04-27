@@ -32,12 +32,12 @@ namespace Castle.Services.Transaction.Tests
 		private string _DirPath;
 		private string _FilePath;
 
-		private ITxManager _Tm;
+		private ITransactionManager _Tm;
 
 		[SetUp]
 		public void Setup()
 		{
-			_Tm = new TxManager(new TransientActivityManager());
+			_Tm = new Services.Transaction.TransactionManager(new TransientActivityManager());
 
 			_DirPath = ".";
 			_FilePath = _DirPath.Combine("test.txt");

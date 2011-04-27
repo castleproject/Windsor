@@ -22,18 +22,18 @@ using System.Security;
 using Castle.Services.Transaction.Internal;
 using Microsoft.Win32.SafeHandles;
 
-namespace Castle.Services.Transaction
+namespace Castle.Services.Transaction.IO
 {
 	///<summary>
 	///	A safe file handle on the transaction resource.
 	///</summary>
 	[SecurityCritical]
-	public sealed class SafeKernelTxHandle : SafeHandleZeroOrMinusOneIsInvalid
+	public sealed class SafeKernelTransactionHandle : SafeHandleZeroOrMinusOneIsInvalid
 	{
 		/// <summary>
 		/// 	Default c'tor
 		/// </summary>
-		public SafeKernelTxHandle() : base(true)
+		public SafeKernelTransactionHandle() : base(true)
 		{
 		}
 
@@ -42,7 +42,7 @@ namespace Castle.Services.Transaction
 		///</summary>
 		///<param name = "handle">The transactional handle.</param>
 		[ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
-		public SafeKernelTxHandle(IntPtr handle)
+		public SafeKernelTransactionHandle(IntPtr handle)
 			: base(true)
 		{
 			base.handle = handle;

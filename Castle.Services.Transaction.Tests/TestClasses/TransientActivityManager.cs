@@ -16,6 +16,8 @@
 
 #endregion
 
+using Castle.Services.Transaction.Activities;
+
 namespace Castle.Services.Transaction.Tests
 {
 	public class TransientActivityManager : IActivityManager

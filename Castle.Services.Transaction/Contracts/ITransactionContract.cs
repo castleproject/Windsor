@@ -18,9 +18,9 @@
 
 using System;
 using System.Diagnostics.Contracts;
-using Castle.Services.Transaction.Exceptions;
+using Castle.Services.Transaction.IO;
 
-namespace Castle.Services.Transaction
+namespace Castle.Services.Transaction.Contracts
 {
 	[ContractClassFor(typeof (ITransaction))]
 	internal abstract class ITransactionContract : ITransaction
@@ -79,11 +79,11 @@ namespace Castle.Services.Transaction
 			get { throw new NotImplementedException(); }
 		}
 
-		Maybe<SafeKernelTxHandle> ITransaction.TxFHandle
+		Maybe<SafeKernelTransactionHandle> ITransaction.KernelTransactionHandle
 		{
 			get
 			{
-				Contract.Ensures(Contract.Result<Maybe<SafeKernelTxHandle>>() != null);
+				Contract.Ensures(Contract.Result<Maybe<SafeKernelTransactionHandle>>() != null);
 				throw new NotImplementedException();
 			}
 		}

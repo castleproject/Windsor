@@ -27,7 +27,7 @@ namespace Castle.Services.Transaction.IO
 	/// 	Adapter which wraps the functionality in <see cref = "File" />
 	/// 	together with native kernel transactions.
 	/// </summary>
-	public class DirectoryAdapter : TxAdapterBase, IDirectoryAdapter
+	public class DirectoryAdapter : TransactionAdapterBase, IDirectoryAdapter
 	{
 		private readonly IMapPath _PathFinder;
 		private readonly ILog _Logger = LogManager.GetLogger(typeof (DirectoryAdapter));

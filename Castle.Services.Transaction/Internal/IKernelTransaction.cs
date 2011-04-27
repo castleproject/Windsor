@@ -17,6 +17,7 @@
 #endregion
 
 using System.Runtime.InteropServices;
+using Castle.Services.Transaction.IO;
 
 namespace Castle.Services.Transaction.Internal
 {
@@ -30,6 +31,6 @@ namespace Castle.Services.Transaction.Internal
 		/// 	might not release the transaction handle properly.
 		/// </summary>
 		/// <param name = "handle"></param>
-		void GetHandle([Out] out SafeKernelTxHandle handle);
+		void GetHandle([Out] out SafeKernelTransactionHandle handle);
 	}
 }

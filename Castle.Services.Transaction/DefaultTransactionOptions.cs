@@ -8,7 +8,7 @@ using System.Transactions;
 namespace Castle.Services.Transaction
 {
 	/// <summary>
-	/// 	Sample implementation of ITransactionOptions. Use this if you are using <see cref = "ITxManager" /> directly.
+	/// 	Sample implementation of ITransactionOptions. Use this if you are using <see cref = "ITransactionManager" /> directly.
 	/// </summary>
 	public class DefaultTransactionOptions : ITransactionOptions, IEquatable<DefaultTransactionOptions>
 	{

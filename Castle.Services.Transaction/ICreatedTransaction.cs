@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics.Contracts;
+using Castle.Services.Transaction.Contracts;
 
 namespace Castle.Services.Transaction
 {

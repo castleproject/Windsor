@@ -21,7 +21,7 @@ using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Transactions;
 
-namespace Castle.Services.Transaction
+namespace Castle.Services.Transaction.Contracts
 {
 	[ContractClassFor(typeof (ITransactionOptions))]
 	internal abstract class ITransactionOptionsContract : ITransactionOptions

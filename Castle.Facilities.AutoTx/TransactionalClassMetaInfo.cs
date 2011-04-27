@@ -25,12 +25,12 @@ using Castle.Services.Transaction;
 
 namespace Castle.Facilities.AutoTx
 {
-	internal sealed class TxClassMetaInfo
+	internal sealed class TransactionalClassMetaInfo
 	{
 		private readonly Dictionary<MethodInfo, TransactionAttribute> _TxMethods;
 		private readonly HashSet<MethodInfo> _NormalMethods;
 
-		public TxClassMetaInfo(IEnumerable<Tuple<MethodInfo, TransactionAttribute>> methods)
+		public TransactionalClassMetaInfo(IEnumerable<Tuple<MethodInfo, TransactionAttribute>> methods)
 		{
 			Contract.Requires(methods != null);
 			Contract.Ensures(_TxMethods != null);

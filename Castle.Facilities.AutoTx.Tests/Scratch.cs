@@ -46,7 +46,7 @@ namespace Castle.Facilities.AutoTx.Tests
 			// given
 			var c = new WindsorContainer();
 
-			c.Kernel.AddHandlerSelector(new TxManagerCurrentTransactionSelector());
+			c.Kernel.AddHandlerSelector(new TransactionManagerCurrentTransactionSelector());
 
 			c.AddFacility<AutoTxFacility>();
 

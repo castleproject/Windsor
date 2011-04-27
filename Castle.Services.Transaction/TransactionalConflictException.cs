@@ -19,7 +19,7 @@
 using System;
 using System.Runtime.Serialization;
 
-namespace Castle.Services.Transaction.Exceptions
+namespace Castle.Services.Transaction
 {
 	[Serializable]
 	public sealed class TransactionalConflictException : TransactionException

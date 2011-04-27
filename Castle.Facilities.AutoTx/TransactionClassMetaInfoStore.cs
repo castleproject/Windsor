@@ -25,19 +25,19 @@ using Castle.Services.Transaction.Utils;
 
 namespace Castle.Facilities.AutoTx
 {
-	internal sealed class TxClassMetaInfoStore : ITxMetaInfoStore
+	internal sealed class TransactionClassMetaInfoStore : ITransactionMetaInfoStore
 	{
-		private readonly Func<Type, Maybe<TxClassMetaInfo>> _GetMetaFromType;
+		private readonly Func<Type, Maybe<TransactionalClassMetaInfo>> _GetMetaFromType;
 
-		public TxClassMetaInfoStore()
+		public TransactionClassMetaInfoStore()
 		{
 			Contract.Ensures(_GetMetaFromType != null);
-			_GetMetaFromType = Fun.Memoize<Type, Maybe<TxClassMetaInfo>>(GetMetaFromTypeInner);
+			_GetMetaFromType = Fun.Memoize<Type, Maybe<TransactionalClassMetaInfo>>(GetMetaFromTypeInner);
 		}
 
-		internal static Maybe<TxClassMetaInfo> GetMetaFromTypeInner(Type implementation)
+		internal static Maybe<TransactionalClassMetaInfo> GetMetaFromTypeInner(Type implementation)
 		{
-			Contract.Ensures(Contract.Result<Maybe<TxClassMetaInfo>>() != null);
+			Contract.Ensures(Contract.Result<Maybe<TransactionalClassMetaInfo>>() != null);
 
 			var allMethods =
 				(from m in implementation.GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic |
@@ -47,12 +47,12 @@ namespace Castle.Facilities.AutoTx
 				 select Tuple.Create(m, attribs.Length > 0 ? attribs[0] : null)).ToList();
 
 			if (allMethods.Count > 0)
-				return Maybe.Some(new TxClassMetaInfo(allMethods));
+				return Maybe.Some(new TransactionalClassMetaInfo(allMethods));
 
-			return Maybe.None<TxClassMetaInfo>();
+			return Maybe.None<TransactionalClassMetaInfo>();
 		}
 
-		Maybe<TxClassMetaInfo> ITxMetaInfoStore.GetMetaFromType(Type implementation)
+		Maybe<TransactionalClassMetaInfo> ITransactionMetaInfoStore.GetMetaFromType(Type implementation)
 		{
 			var maybe = _GetMetaFromType(implementation);
 			Contract.Assume(maybe != null);

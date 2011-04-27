@@ -24,12 +24,12 @@ namespace Castle.Services.Transaction.Tests
 
 	public class TransactionManager_EnlistedResources
 	{
-		private ITxManager _Tm;
+		private ITransactionManager _Tm;
 
 		[SetUp]
 		public void SetUp()
 		{
-			_Tm = new TxManager(new TransientActivityManager());
+			_Tm = new Services.Transaction.TransactionManager(new TransientActivityManager());
 		}
 
 		[Test]

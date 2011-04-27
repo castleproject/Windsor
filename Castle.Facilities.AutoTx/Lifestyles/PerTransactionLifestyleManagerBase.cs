@@ -43,11 +43,11 @@ namespace Castle.Facilities.AutoTx.Lifestyles
 
 		private readonly Dictionary<string, Tuple<uint, object>> _Storage = new Dictionary<string, Tuple<uint, object>>();
 
-		protected readonly ITxManager _Manager;
+		protected readonly ITransactionManager _Manager;
 		protected bool _Disposed;
 		private bool evicting;
 
-		public PerTransactionLifestyleManagerBase(ITxManager manager)
+		public PerTransactionLifestyleManagerBase(ITransactionManager manager)
 		{
 			Contract.Requires(manager != null);
 			Contract.Ensures(_Manager != null);

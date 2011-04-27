@@ -1,6 +1,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Text;
+using Castle.Services.Transaction.IO;
 using Microsoft.Win32.SafeHandles;
 using FILETIME = System.Runtime.InteropServices.ComTypes.FILETIME;
 
@@ -73,9 +74,9 @@ namespace Castle.Services.Transaction.Internal
 			uint timeout,
 			string description);
 
-		internal static SafeKernelTxHandle createTransaction(string description)
+		internal static SafeKernelTransactionHandle createTransaction(string description)
 		{
-			return new SafeKernelTxHandle(CreateTransaction(IntPtr.Zero, IntPtr.Zero, 0, 0, 0, 0, description));
+			return new SafeKernelTransactionHandle(CreateTransaction(IntPtr.Zero, IntPtr.Zero, 0, 0, 0, 0, description));
 		}
 
 		/// <summary>
@@ -92,7 +93,7 @@ namespace Castle.Services.Transaction.Internal
 		/// <returns></returns>
 		[return: MarshalAs(UnmanagedType.Bool)]
 		[DllImport("ktmw32.dll", SetLastError = true)]
-		internal static extern bool CommitTransaction(SafeKernelTxHandle transaction);
+		internal static extern bool CommitTransaction(SafeKernelTransactionHandle transaction);
 
 		/// <summary>
 		/// Requests that the specified transaction be rolled back. This function is synchronous.
@@ -101,7 +102,7 @@ namespace Castle.Services.Transaction.Internal
 		/// <returns>If the function succeeds, the return value is nonzero.</returns>
 		[return: MarshalAs(UnmanagedType.Bool)]
 		[DllImport("ktmw32.dll", SetLastError = true)]
-		internal static extern bool RollbackTransaction(SafeKernelTxHandle transaction);
+		internal static extern bool RollbackTransaction(SafeKernelTransactionHandle transaction);
 
 		#endregion
 		#region *FileTransacted[W]
@@ -119,7 +120,7 @@ namespace Castle.Services.Transaction.Internal
 		internal static extern bool CreateHardLinkTransacted([In] string lpFileName,
 															[In] string lpExistingFileName,
 															[In] IntPtr lpSecurityAttributes,
-															[In] SafeKernelTxHandle hTransaction);
+															[In] SafeKernelTransactionHandle hTransaction);
 
 		[return: MarshalAs(UnmanagedType.Bool)]
 		[DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
@@ -127,7 +128,7 @@ namespace Castle.Services.Transaction.Internal
 													  [In] string lpNewFileName, [In] IntPtr lpProgressRoutine,
 													  [In] IntPtr lpData,
 													  [In] MoveFileFlags dwFlags,
-													  [In] SafeKernelTxHandle hTransaction);
+													  [In] SafeKernelTransactionHandle hTransaction);
 
 		[DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
 		internal static extern SafeFileHandle CreateFileTransactedW(
@@ -138,7 +139,7 @@ namespace Castle.Services.Transaction.Internal
 			[In] NativeFileMode dwCreationDisposition,
 			[In] uint dwFlagsAndAttributes,
 			[In] IntPtr hTemplateFile,
-			[In] SafeKernelTxHandle hTransaction,
+			[In] SafeKernelTransactionHandle hTransaction,
 			[In] IntPtr pusMiniVersion,
 			[In] IntPtr pExtendedParameter);
 
@@ -149,7 +150,7 @@ namespace Castle.Services.Transaction.Internal
 		[DllImport("kernel32.dll", SetLastError = true)]
 		internal static extern bool DeleteFileTransactedW(
 			[MarshalAs(UnmanagedType.LPWStr)] string file,
-			SafeKernelTxHandle transaction);
+			SafeKernelTransactionHandle transaction);
 
 		/*
 		 * HANDLE WINAPI FindFirstFileTransacted(
@@ -186,7 +187,7 @@ namespace Castle.Services.Transaction.Internal
 			[In] FINDEX_SEARCH_OPS fSearchOp,
 			IntPtr lpSearchFilter,
 			[In] uint dwAdditionalFlags,
-			[In] SafeKernelTxHandle hTransaction);
+			[In] SafeKernelTransactionHandle hTransaction);
 
 		/// <summary>
 		/// Continues a file search from a previous call to the FindFirstFile or FindFirstFileEx function.
@@ -208,7 +209,7 @@ namespace Castle.Services.Transaction.Internal
 		/// <summary>
 		/// Not extern
 		/// </summary>
-		internal static SafeFindHandle FindFirstFileTransacted(string filePath, bool directory, SafeKernelTxHandle kernelTxHandle)
+		internal static SafeFindHandle FindFirstFileTransacted(string filePath, bool directory, SafeKernelTransactionHandle kernelTxHandle)
 		{
 			WIN32_FIND_DATA data;
 
@@ -230,7 +231,7 @@ namespace Castle.Services.Transaction.Internal
 		/// Not extern
 		/// </summary>
 		internal static SafeFindHandle FindFirstFileTransactedW(string lpFileName,
-			SafeKernelTxHandle kernelTxHandle, out WIN32_FIND_DATA lpFindFileData)
+			SafeKernelTransactionHandle kernelTxHandle, out WIN32_FIND_DATA lpFindFileData)
 		{
 			return FindFirstFileTransactedW(lpFileName, FINDEX_INFO_LEVELS.FindExInfoStandard,
 											out lpFindFileData,
@@ -263,7 +264,7 @@ namespace Castle.Services.Transaction.Internal
 			[MarshalAs(UnmanagedType.LPWStr)] string lpTemplateDirectory,
 			[MarshalAs(UnmanagedType.LPWStr)] string lpNewDirectory,
 			IntPtr lpSecurityAttributes,
-			SafeKernelTxHandle hTransaction);
+			SafeKernelTransactionHandle hTransaction);
 
 		/// <summary>
 		/// http://msdn.microsoft.com/en-us/library/aa365490(VS.85).aspx
@@ -280,7 +281,7 @@ namespace Castle.Services.Transaction.Internal
 		[DllImport("kernel32.dll", SetLastError = true)]
 		internal static extern bool RemoveDirectoryTransactedW(
 			[MarshalAs(UnmanagedType.LPWStr)] string lpPathName,
-			SafeKernelTxHandle hTransaction);
+			SafeKernelTransactionHandle hTransaction);
 
 		/*
 		 * Might need to use:
@@ -320,7 +321,7 @@ namespace Castle.Services.Transaction.Internal
 			[In] int nBufferLength,
 			[Out] StringBuilder lpBuffer,
 			[In, Out] ref IntPtr lpFilePart,
-			[In] SafeKernelTxHandle hTransaction);
+			[In] SafeKernelTransactionHandle hTransaction);
 
 		#endregion
 		#region Native structures, callbacks and enums

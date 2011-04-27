@@ -22,15 +22,15 @@ using log4net;
 namespace Castle.Services.Transaction
 {
 	/// <summary>
-	/// 	A TxScope sets the ambient transaction for the duration of its lifetime and then re-assigns the previous value.
+	/// 	A TransactionScope sets the ambient transaction for the duration of its lifetime and then re-assigns the previous value.
 	/// </summary>
-	public sealed class TxScope : IDisposable
+	public sealed class TransactionScope : IDisposable
 	{
-		private static readonly ILog _Logger = LogManager.GetLogger(typeof (TxScope));
+		private static readonly ILog _Logger = LogManager.GetLogger(typeof (TransactionScope));
 
 		private readonly System.Transactions.Transaction prev;
 
-		public TxScope(System.Transactions.Transaction curr)
+		public TransactionScope(System.Transactions.Transaction curr)
 		{
 			prev = System.Transactions.Transaction.Current;
 			System.Transactions.Transaction.Current = curr;
@@ -46,9 +46,8 @@ namespace Castle.Services.Transaction
 		{
 			if (!isManaged)
 			{
-				_Logger.Warn("TxScope Dispose wasn't called from managed context! You need to make sure that you dispose the scope, "
-				             +
-				             "or you will break the Transaction.Current invariant of the framework and your own code by extension.");
+				_Logger.Warn("TransactionScope Dispose wasn't called from managed context! You need to make sure that you dispose the scope, "
+				             + "or you will break the Transaction.Current invariant of the framework and your own code by extension.");
 
 				return;
 			}

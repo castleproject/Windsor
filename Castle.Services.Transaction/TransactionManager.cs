@@ -25,53 +25,53 @@ using log4net;
 
 namespace Castle.Services.Transaction
 {
-	public class TxManager : ITxManager
+	public class TransactionManager : ITransactionManager
 	{
-		private static readonly ILog _Logger = LogManager.GetLogger(typeof (TxManager));
+		private static readonly ILog _Logger = LogManager.GetLogger(typeof (TransactionManager));
 		private readonly IActivityManager _ActivityManager;
 
-		public TxManager(IActivityManager activityManager)
+		public TransactionManager(IActivityManager activityManager)
 		{
 			Contract.Requires(activityManager != null);
 			Contract.Ensures(_ActivityManager != null);
 			_ActivityManager = activityManager;
 		}
 
-		Maybe<ITransaction> ITxManager.CurrentTopTransaction
+		Maybe<ITransaction> ITransactionManager.CurrentTopTransaction
 		{
 			get { return _ActivityManager.GetCurrentActivity().TopTransaction; }
 		}
 
-		Maybe<ITransaction> ITxManager.CurrentTransaction
+		Maybe<ITransaction> ITransactionManager.CurrentTransaction
 		{
 			get { return _ActivityManager.GetCurrentActivity().CurrentTransaction; }
 		}
 
-		uint ITxManager.Count
+		uint ITransactionManager.Count
 		{
 			get { return _ActivityManager.GetCurrentActivity().Count; }
 		}
 
-		void ITxManager.AddRetryPolicy(string policyKey, Func<Exception, bool> retryPolicy)
+		void ITransactionManager.AddRetryPolicy(string policyKey, Func<Exception, bool> retryPolicy)
 		{
 			throw new NotImplementedException();
 		}
 
-		void ITxManager.AddRetryPolicy(string policyKey, IRetryPolicy retryPolicy)
+		void ITransactionManager.AddRetryPolicy(string policyKey, IRetryPolicy retryPolicy)
 		{
 			throw new NotImplementedException();
 		}
 
 		[SuppressMessage("Microsoft.Reliability", "CA2000",
 			Justification = "CommittableTransaction is disposed by Transaction")]
-		Maybe<ICreatedTransaction> ITxManager.CreateTransaction()
+		Maybe<ICreatedTransaction> ITransactionManager.CreateTransaction()
 		{
-			return ((ITxManager) this).CreateTransaction(new DefaultTransactionOptions());
+			return ((ITransactionManager) this).CreateTransaction(new DefaultTransactionOptions());
 		}
 
 		[SuppressMessage("Microsoft.Reliability", "CA2000",
 			Justification = "CommittableTransaction is disposed by Transaction")]
-		Maybe<ICreatedTransaction> ITxManager.CreateTransaction(ITransactionOptions transactionOptions)
+		Maybe<ICreatedTransaction> ITransactionManager.CreateTransaction(ITransactionOptions transactionOptions)
 		{
 			var activity = _ActivityManager.GetCurrentActivity();
 
@@ -146,14 +146,10 @@ namespace Castle.Services.Transaction
 				_OnDispose = onDispose;
 			}
 
-			#region Implementation of IDisposable
-
 			public void Dispose()
 			{
 				_OnDispose();
 			}
-
-			#endregion
 		}
 
 		public void Dispose()

@@ -22,7 +22,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <CodeContractsEnableRuntimeChecking>True</CodeContractsEnableRuntimeChecking>
+    <CodeContractsEnableRuntimeChecking>False</CodeContractsEnableRuntimeChecking>
     <CodeContractsRuntimeOnlyPublicSurface>False</CodeContractsRuntimeOnlyPublicSurface>
     <CodeContractsRuntimeThrowOnFailure>False</CodeContractsRuntimeThrowOnFailure>
     <CodeContractsRuntimeCallSiteRequires>False</CodeContractsRuntimeCallSiteRequires>
@@ -91,21 +91,21 @@
     <Compile Include="..\TxAssemblyInfo.cs">
       <Link>Properties\TxAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="Activity.cs" />
-    <Compile Include="IDirectoryAdapterContract.cs" />
-    <Compile Include="IFileAdapterContract.cs" />
-    <Compile Include="IMapPathContract.cs" />
+    <Compile Include="Activities\Activity.cs" />
+    <Compile Include="Contracts\IDirectoryAdapterContract.cs" />
+    <Compile Include="Contracts\IFileAdapterContract.cs" />
+    <Compile Include="Contracts\IMapPathContract.cs" />
     <Compile Include="Internal\AnonymousRetryPolicy.cs" />
-    <Compile Include="CallContextActivityManager.cs" />
+    <Compile Include="Activities\CallContextActivityManager.cs" />
     <Compile Include="Internal\ContractExtensions.cs" />
     <Compile Include="Internal\CreatedTransaction.cs" />
     <Compile Include="DefaultTransactionOptions.cs" />
-    <Compile Include="Exceptions\TransactionalConflictException.cs" />
-    <Compile Include="Exceptions\TransactionException.cs" />
+    <Compile Include="TransactionalConflictException.cs" />
+    <Compile Include="TransactionException.cs" />
     <Compile Include="FileTransaction.cs" />
     <Compile Include="IActivityManager.cs" />
     <Compile Include="ICreatedTransaction.cs" />
-    <Compile Include="ICreatedTransactionContract.cs" />
+    <Compile Include="Contracts\ICreatedTransactionContract.cs" />
     <Compile Include="Internal\IKernelTransaction.cs" />
     <Compile Include="Internal\KTMCodes.cs" />
     <Compile Include="Internal\SafeNativeMethods.cs" />
@@ -119,28 +119,28 @@
     <Compile Include="IFileAdapter.cs" />
     <Compile Include="IMapPath.cs" />
     <Compile Include="IO\MapPathImpl.cs" />
-    <Compile Include="Path.cs" />
+    <Compile Include="IO\Path.cs" />
     <Compile Include="IO\PathEx.cs" />
     <Compile Include="IO\PathInfo.cs" />
     <Compile Include="IO\PathType.cs" />
-    <Compile Include="IO\TxAdapterBase.cs" />
+    <Compile Include="IO\TransactionAdapterBase.cs" />
     <Compile Include="IRetryPolicy.cs" />
-    <Compile Include="IRetryPolicyContract.cs" />
+    <Compile Include="Contracts\IRetryPolicyContract.cs" />
     <Compile Include="ITransaction.cs" />
-    <Compile Include="ITransactionContract.cs" />
+    <Compile Include="Contracts\ITransactionContract.cs" />
     <Compile Include="ITransactionOptions.cs" />
-    <Compile Include="ITransactionOptionsContract.cs" />
-    <Compile Include="ITxManager.cs" />
-    <Compile Include="ITxManagerContract.cs" />
-    <Compile Include="Monads\Maybe.cs" />
+    <Compile Include="Contracts\ITransactionOptionsContract.cs" />
+    <Compile Include="ITransactionManager.cs" />
+    <Compile Include="Contracts\TransactionManagerContract.cs" />
+    <Compile Include="Maybe.cs" />
     <Compile Include="Internal\NativeMethods.cs" />
     <Compile Include="Properties\CustomAssemblyInfo.cs" />
-    <Compile Include="SafeFindHandle.cs" />
-    <Compile Include="SafeKernelTxHandle.cs" />
+    <Compile Include="IO\SafeFindHandle.cs" />
+    <Compile Include="IO\SafeKernelTransactionHandle.cs" />
     <Compile Include="Transaction.cs" />
     <Compile Include="TransactionAttribute.cs" />
-    <Compile Include="TxManager.cs" />
-    <Compile Include="TxScope.cs" />
+    <Compile Include="TransactionManager.cs" />
+    <Compile Include="TransactionScope.cs" />
     <Compile Include="Utils\Fun.cs" />
   </ItemGroup>
   <ItemGroup>

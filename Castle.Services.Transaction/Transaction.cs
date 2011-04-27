@@ -19,7 +19,8 @@
 using System;
 using System.Diagnostics.Contracts;
 using System.Transactions;
-using TransactionException = Castle.Services.Transaction.Exceptions.TransactionException;
+using Castle.Services.Transaction.IO;
+using TransactionException = Castle.Services.Transaction.TransactionException;
 
 namespace Castle.Services.Transaction
 {
@@ -154,9 +155,9 @@ namespace Castle.Services.Transaction
 			}
 		}
 
-		Maybe<SafeKernelTxHandle> ITransaction.TxFHandle
+		Maybe<SafeKernelTransactionHandle> ITransaction.KernelTransactionHandle
 		{
-			get { return Maybe.None<SafeKernelTxHandle>(); }
+			get { return Maybe.None<SafeKernelTransactionHandle>(); }
 		}
 
 		private System.Transactions.Transaction Inner

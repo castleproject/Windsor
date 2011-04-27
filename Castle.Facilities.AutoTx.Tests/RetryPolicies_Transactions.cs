@@ -21,6 +21,7 @@ using Castle.Facilities.AutoTx.Testing;
 using Castle.Facilities.AutoTx.Tests.TestClasses;
 using Castle.MicroKernel.Registration;
 using Castle.Services.Transaction;
+using Castle.Services.Transaction.Activities;
 using Castle.Windsor;
 using NUnit.Framework;
 
@@ -30,7 +31,7 @@ namespace Castle.Facilities.AutoTx.Tests
 	public class RetryPolicies_Transactions
 	{
 		private IWindsorContainer _Container;
-		private ITxManager _TxManager;
+		private ITransactionManager _TransactionManager;
 
 		[SetUp]
 		public void SetUp()
@@ -39,12 +40,12 @@ namespace Castle.Facilities.AutoTx.Tests
 
 				Component.For<IMyService>().ImplementedBy<MyService>(),
 
-				Component.For<ITxManager>()
-					.ImplementedBy<TxManager>()
+				Component.For<ITransactionManager>()
+					.ImplementedBy<TransactionManager>()
 					.Named("transaction.manager")
 					.LifeStyle.Singleton,
 
-				// the activity manager shouldn't have the same lifestyle as TxInterceptor, as it
+				// the activity manager shouldn't have the same lifestyle as TransactionInterceptor, as it
 				// calls a static .Net/Mono framework method, and it's the responsibility of
 				// that framework method to keep track of the call context.
 				Component.For<IActivityManager>()
@@ -53,13 +54,13 @@ namespace Castle.Facilities.AutoTx.Tests
 
 			_Container.Register();
 
-			_TxManager = _Container.Resolve<ITxManager>();
+			_TransactionManager = _Container.Resolve<ITransactionManager>();
 		}
 
 		[TearDown]
 		public void TearDown()
 		{
-			_Container.Release(_TxManager);
+			_Container.Release(_TransactionManager);
 			_Container.Dispose();
 		}
 
@@ -71,15 +72,15 @@ namespace Castle.Facilities.AutoTx.Tests
 		{
 			// on app-start
 			var counter = 0;
-			_TxManager.AddRetryPolicy("timeouts", e => e is TimeoutException && ++counter <= 2);
+			_TransactionManager.AddRetryPolicy("timeouts", e => e is TimeoutException && ++counter <= 2);
 
-			using (var tx = _TxManager.CreateTransaction(new DefaultTransactionOptions()).Value.Transaction)
+			using (var tx = _TransactionManager.CreateTransaction(new DefaultTransactionOptions()).Value.Transaction)
 			using (var s = new ResolveScope<IMyService>(_Container))
 			{
 				// in action
 				s.Service.VerifyInAmbient(() =>
 				{
-				    if (_TxManager.CurrentTransaction
+				    if (_TransactionManager.CurrentTransaction
 				        .Do(x => x.FailedPolicy)
 				        .Do(x => x.Failures < 2)
 				        .OrThrow(() => new Exception("Test failure; maybe doesn't have value!")))

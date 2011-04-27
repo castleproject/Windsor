@@ -1,4 +1,6 @@
-﻿namespace Castle.Services.Transaction
+﻿using Castle.Services.Transaction.Activities;
+
+namespace Castle.Services.Transaction
 {
 	/// <summary>
 	/// 	Abstracts approaches to keep transaction activities

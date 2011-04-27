@@ -20,13 +20,16 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Contracts;
 using System.Transactions;
+using Castle.Services.Transaction.Contracts;
+using Castle.Services.Transaction.Internal;
+using Castle.Services.Transaction.IO;
 
 namespace Castle.Services.Transaction
 {
 	/// <summary>
 	/// 	<para>
 	/// 		Denotes a castle transaction. This is the main point of interaction between your code and
-	/// 		the transactional behaviour of it. Use the transaction manager <see cref = "ITxManager" /> to
+	/// 		the transactional behaviour of it. Use the transaction manager <see cref = "ITransactionManager" /> to
 	/// 		rollback from within a transactional method.
 	/// 	</para><para>
 	/// 	       	Implementors of this class should do their best to provide a stable implementation
@@ -78,7 +81,7 @@ namespace Castle.Services.Transaction
 		/// 	If the created transaction is a file transaction, there should be a
 		/// 	transacted-file-transaction handle available.
 		/// </summary>
-		Maybe<SafeKernelTxHandle> TxFHandle { get; }
+		Maybe<SafeKernelTransactionHandle> KernelTransactionHandle { get; }
 
 		// TODO: Policy for handling in doubt transactions
 
@@ -117,7 +120,7 @@ namespace Castle.Services.Transaction
 		/// 	that has already been rolled back, or an attempt is made to commit 
 		/// 	the transaction and the transaction aborts.
 		/// </exception>
-		/// <exception cref = "Exceptions.TransactionException">An unknown problem occurred. 
+		/// <exception cref = "TransactionException">An unknown problem occurred. 
 		/// 	For example the connection to the database was lost.</exception>
 		/// <remarks>
 		/// 	It's up for grabs (i.e. github pull request) to correctly handle state on the two exceptions that may be thrown

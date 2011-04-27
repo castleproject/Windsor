@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.IO;
 using System.Text;
+using Path = Castle.Services.Transaction.IO.Path;
 
-namespace Castle.Services.Transaction
+namespace Castle.Services.Transaction.Contracts
 {
 	[ContractClassFor(typeof (IFileAdapter))]
 	internal abstract class IFileAdapterContract : IFileAdapter

@@ -26,9 +26,9 @@ namespace Castle.Facilities.AutoTx.Tests.TestClasses
 {
 	public class MyService : IMyService
 	{
-		private readonly ITxManager _Manager;
+		private readonly ITransactionManager _Manager;
 
-		public MyService(ITxManager manager)
+		public MyService(ITransactionManager manager)
 		{
 			Contract.Ensures(_Manager != null);
 			_Manager = manager;

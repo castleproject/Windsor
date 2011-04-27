@@ -1,4 +1,4 @@
-#region license
+﻿#region license
 
 // Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
@@ -16,25 +16,22 @@
 
 #endregion
 
+using System;
 using System.Diagnostics.Contracts;
-using Castle.Services.Transaction.Contracts;
+using Castle.Services.Transaction;
 
-namespace Castle.Services.Transaction
+namespace Castle.Facilities.AutoTx
 {
-	///<summary>
-	///	Small interface for the map path functionality.
-	///</summary>
-	[ContractClass(typeof (IMapPathContract))]
-	public interface IMapPath
+	[ContractClassFor(typeof (ITransactionMetaInfoStore))]
+	internal abstract class TransactionMetaInfoStoreContract : ITransactionMetaInfoStore
 	{
-		///<summary>
-		///	Gets the absolute path given a string formatted
-		///	as a map path, for example:
-		///	"~/plugins" or "plugins/integrated" or "C:\a\b\c.txt" or "\\?\C:\a\b"
-		///	would all be valid map paths.
-		///</summary>
-		///<param name = "path"></param>
-		///<returns></returns>
-		string MapPath(string path);
+		Maybe<TransactionalClassMetaInfo> ITransactionMetaInfoStore.GetMetaFromType(Type implementation)
+		{
+			Contract.Requires(implementation != null);
+			var metaFromType = Contract.Result<Maybe<TransactionalClassMetaInfo>>();
+			Contract.Ensures(metaFromType != null,
+			                 "the meta-info contract must return a non-null maybe (the maybe wraps null, also, so this should be an easy check)");
+			return metaFromType;
+		}
 	}
 }

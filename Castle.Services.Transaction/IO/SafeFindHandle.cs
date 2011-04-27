@@ -21,10 +21,10 @@ using System.Security;
 using Castle.Services.Transaction.Internal;
 using Microsoft.Win32.SafeHandles;
 
-namespace Castle.Services.Transaction
+namespace Castle.Services.Transaction.IO
 {
 	[SecurityCritical]
-	internal sealed class SafeFindHandle : SafeHandleZeroOrMinusOneIsInvalid
+	public sealed class SafeFindHandle : SafeHandleZeroOrMinusOneIsInvalid
 	{
 		internal SafeFindHandle()
 			: base(true)

@@ -19,21 +19,16 @@
 using System;
 using System.Diagnostics.Contracts;
 
-namespace Castle.Services.Transaction
+namespace Castle.Services.Transaction.Contracts
 {
-	[ContractClassFor(typeof (IRetryPolicy))]
-	internal abstract class IRetryPolicyContract : IRetryPolicy
+	[ContractClassFor(typeof (IMapPath))]
+	internal abstract class IMapPathContract : IMapPath
 	{
-		bool IRetryPolicy.Retry(Exception thrownException)
+		public string MapPath(string path)
 		{
-			Contract.Requires(thrownException != null);
-			return Contract.Result<bool>();
-		}
-
-		[Pure]
-		ulong IRetryPolicy.Failures
-		{
-			get { return Contract.Result<ulong>(); }
+			Contract.Requires(!string.IsNullOrEmpty(path), "path must be non null and not empty");
+			Contract.Ensures(!string.IsNullOrEmpty(Contract.Result<string>()));
+			throw new NotImplementedException();
 		}
 	}
 }

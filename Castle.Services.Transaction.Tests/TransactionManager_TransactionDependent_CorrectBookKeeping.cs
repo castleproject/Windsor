@@ -22,12 +22,12 @@ namespace Castle.Services.Transaction.Tests
 
 	public class TransactionManager_TransactionDependent_CorrectBookKeeping
 	{
-		private ITxManager _Tm;
+		private ITransactionManager _Tm;
 
 		[SetUp]
 		public void SetUp()
 		{
-			_Tm = new TxManager(new TransientActivityManager());
+			_Tm = new TransactionManager(new TransientActivityManager());
 		}
 
 		[Test]

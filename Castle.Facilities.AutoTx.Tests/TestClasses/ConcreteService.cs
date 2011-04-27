@@ -7,9 +7,9 @@ namespace Castle.Facilities.AutoTx.Tests.TestClasses
 {
 	public class ConcreteService
 	{
-		private readonly ITxManager _Manager;
+		private readonly ITransactionManager _Manager;
 
-		public ConcreteService(ITxManager manager)
+		public ConcreteService(ITransactionManager manager)
 		{
 			Contract.Ensures(_Manager != null);
 			_Manager = manager;

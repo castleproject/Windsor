@@ -19,7 +19,7 @@
 using System;
 using System.Runtime.Serialization;
 
-namespace Castle.Services.Transaction.Exceptions
+namespace Castle.Services.Transaction
 {
 	/// <summary>
 	/// 	Exception thrown when the transaction services code has problems.

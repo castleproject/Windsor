@@ -1,13 +1,31 @@
-﻿using System;
+﻿#region license
+
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// 
+//     http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+#endregion
+
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using log4net;
 
-namespace Castle.Services.Transaction
+namespace Castle.Services.Transaction.Activities
 {
 	/// <summary>
-	/// Value-object that encapsulates a transaction and is serializable across
-	/// app-domains.
+	/// 	Value-object that encapsulates a transaction and is serializable across
+	/// 	app-domains.
 	/// </summary>
 	[Serializable]
 	public sealed class Activity : MarshalByRefObject, IEquatable<Activity>
@@ -15,7 +33,7 @@ namespace Castle.Services.Transaction
 		private static readonly ILog _Logger = LogManager.GetLogger(typeof (Activity));
 
 		private readonly Guid _ActivityId = Guid.NewGuid();
-		private readonly Stack<Tuple<ITransaction,string>> _Txs = new Stack<Tuple<ITransaction,string>>();
+		private readonly Stack<Tuple<ITransaction, string>> _Txs = new Stack<Tuple<ITransaction, string>>();
 		private ITransaction _TopMost;
 
 		public Activity()
@@ -52,9 +70,9 @@ namespace Castle.Services.Transaction
 		}
 
 		/// <summary>
-		/// Push a transaction onto the stack of transactions.
+		/// 	Push a transaction onto the stack of transactions.
 		/// </summary>
-		/// <param name="transaction"></param>
+		/// <param name = "transaction"></param>
 		public void Push(ITransaction transaction)
 		{
 			Contract.Requires(transaction != null);
@@ -62,13 +80,13 @@ namespace Castle.Services.Transaction
 			Contract.Ensures(Contract.OldValue(Count) + 1 == Count);
 			Contract.Ensures(_TopMost != null);
 			Contract.Ensures(Contract.OldValue(Count) != 0 || _TopMost == transaction);
-			
+
 			// I can't prove this because Push doesn't have those contracts
 			//Contract.Ensures(Contract.Exists(_Txs, x => object.ReferenceEquals(x, transaction)));
-			
+
 			// I can't prove this because I can't reason about value/reference equality using reflection in Maybe
 			//Contract.Ensures(object.ReferenceEquals(CurrentTransaction.Value, transaction));
-			
+
 			_Logger.DebugFormat("pushing tx#{0}", transaction.LocalIdentifier);
 
 			if (Count == 0)
@@ -78,7 +96,7 @@ namespace Castle.Services.Transaction
 		}
 
 		/// <summary>
-		/// Return the top-most transaction from the stack of transactions.
+		/// 	Return the top-most transaction from the stack of transactions.
 		/// </summary>
 		/// <returns></returns>
 		public ITransaction Pop()
@@ -101,7 +119,10 @@ namespace Castle.Services.Transaction
 			return ret.Item1;
 		}
 
-		public uint Count { get { return (uint)_Txs.Count; } }
+		public uint Count
+		{
+			get { return (uint) _Txs.Count; }
+		}
 
 		[Pure]
 		public bool Equals(Activity other)

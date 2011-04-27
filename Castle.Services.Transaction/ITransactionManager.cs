@@ -18,6 +18,7 @@
 
 using System;
 using System.Diagnostics.Contracts;
+using Castle.Services.Transaction.Contracts;
 
 namespace Castle.Services.Transaction
 {
@@ -26,8 +27,8 @@ namespace Castle.Services.Transaction
 	/// 	Its main use-case is creating the actual transactions, given the options for the transaction and the 
 	/// 	be the place-to-go-to for knowing what transactions are currently ambient on the current call context.
 	/// </summary>
-	[ContractClass(typeof (ITxManagerContract))]
-	public interface ITxManager : IDisposable
+	[ContractClass(typeof (TransactionManagerContract))]
+	public interface ITransactionManager : IDisposable
 	{
 		/// <summary>
 		/// 	<para>Gets the current transaction. If the program has a call context

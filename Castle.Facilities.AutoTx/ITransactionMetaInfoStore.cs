@@ -18,17 +18,13 @@
 
 using System;
 using System.Diagnostics.Contracts;
+using Castle.Services.Transaction;
 
-namespace Castle.Services.Transaction
+namespace Castle.Facilities.AutoTx
 {
-	[ContractClassFor(typeof (IMapPath))]
-	internal abstract class IMapPathContract : IMapPath
+	[ContractClass(typeof (TransactionMetaInfoStoreContract))]
+	internal interface ITransactionMetaInfoStore
 	{
-		public string MapPath(string path)
-		{
-			Contract.Requires(!string.IsNullOrEmpty(path), "path must be non null and not empty");
-			Contract.Ensures(!string.IsNullOrEmpty(Contract.Result<string>()));
-			throw new NotImplementedException();
-		}
+		Maybe<TransactionalClassMetaInfo> GetMetaFromType(Type implementation);
 	}
 }

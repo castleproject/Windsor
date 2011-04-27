@@ -24,7 +24,7 @@
     <WarningLevel>4</WarningLevel>
     <RunCodeAnalysis>true</RunCodeAnalysis>
     <CodeAnalysisRuleSet>..\..\buildscripts\Correctness-Rules.ruleset</CodeAnalysisRuleSet>
-    <CodeContractsEnableRuntimeChecking>True</CodeContractsEnableRuntimeChecking>
+    <CodeContractsEnableRuntimeChecking>False</CodeContractsEnableRuntimeChecking>
     <CodeContractsRuntimeOnlyPublicSurface>False</CodeContractsRuntimeOnlyPublicSurface>
     <CodeContractsRuntimeThrowOnFailure>False</CodeContractsRuntimeThrowOnFailure>
     <CodeContractsRuntimeCallSiteRequires>False</CodeContractsRuntimeCallSiteRequires>
@@ -96,7 +96,7 @@
       <Link>Properties\TxAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="AutoTxFacility.cs" />
-    <Compile Include="ITxMetaInfoStore.cs" />
+    <Compile Include="ITransactionMetaInfoStore.cs" />
     <Compile Include="Lifestyles\WrapperResolveLifestyleManager.cs" />
     <Compile Include="Lifestyles\LifestyleRegistrationExtensions.cs" />
     <Compile Include="Lifestyles\MissingTransactionException.cs" />
@@ -107,12 +107,12 @@
     <Compile Include="Testing\IOResolveScope.cs" />
     <Compile Include="Testing\ResolveEx.cs" />
     <Compile Include="Testing\ResolveScope.cs" />
-    <Compile Include="TxClassMetaInfo.cs" />
-    <Compile Include="TxClassMetaInfoStore.cs" />
-    <Compile Include="TxComponentInspector.cs" />
-    <Compile Include="TxInterceptor.cs" />
-    <Compile Include="TxManagerCurrentTransactionSelector.cs" />
-    <Compile Include="TxMetaInfoStoreContract.cs" />
+    <Compile Include="TransactionalClassMetaInfo.cs" />
+    <Compile Include="TransactionClassMetaInfoStore.cs" />
+    <Compile Include="TransactionalComponentInspector.cs" />
+    <Compile Include="TransactionInterceptor.cs" />
+    <Compile Include="TransactionManagerCurrentTransactionSelector.cs" />
+    <Compile Include="TransactionMetaInfoStoreContract.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Castle.Services.Transaction\Castle.Services.Transaction.csproj">

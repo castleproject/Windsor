@@ -20,10 +20,10 @@ using System;
 using System.Diagnostics.Contracts;
 using System.Transactions;
 
-namespace Castle.Services.Transaction
+namespace Castle.Services.Transaction.Contracts
 {
-	[ContractClassFor(typeof (ITxManager))]
-	internal abstract class ITxManagerContract : ITxManager
+	[ContractClassFor(typeof (ITransactionManager))]
+	internal abstract class TransactionManagerContract : ITransactionManager
 	{
 		public Maybe<ITransaction> CurrentTopTransaction
 		{

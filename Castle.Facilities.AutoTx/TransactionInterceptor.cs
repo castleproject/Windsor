@@ -26,13 +26,14 @@ using Castle.DynamicProxy;
 using Castle.MicroKernel;
 using Castle.Services.Transaction;
 using log4net;
-using TransactionException = Castle.Services.Transaction.Exceptions.TransactionException;
+using TransactionException = Castle.Services.Transaction.TransactionException;
+using TransactionScope = Castle.Services.Transaction.TransactionScope;
 
 namespace Castle.Facilities.AutoTx
 {
-	internal class TxInterceptor : IInterceptor, IOnBehalfAware
+	internal class TransactionInterceptor : IInterceptor, IOnBehalfAware
 	{
-		private static readonly ILog _Logger = LogManager.GetLogger(typeof (TxInterceptor));
+		private static readonly ILog _Logger = LogManager.GetLogger(typeof (TransactionInterceptor));
 
 		private enum InterceptorState
 		{
@@ -43,10 +44,10 @@ namespace Castle.Facilities.AutoTx
 
 		private InterceptorState _State;
 		private readonly IKernel _Kernel;
-		private readonly ITxMetaInfoStore _Store;
-		private Maybe<TxClassMetaInfo> _MetaInfo;
+		private readonly ITransactionMetaInfoStore _Store;
+		private Maybe<TransactionalClassMetaInfo> _MetaInfo;
 
-		public TxInterceptor(IKernel kernel, ITxMetaInfoStore store)
+		public TransactionInterceptor(IKernel kernel, ITransactionMetaInfoStore store)
 		{
 			Contract.Requires(kernel != null, "kernel must be non null");
 			Contract.Requires(store != null, "store must be non null");
@@ -70,7 +71,7 @@ namespace Castle.Facilities.AutoTx
 			Contract.Assume(_State == InterceptorState.Active || _State == InterceptorState.Initialized);
 			Contract.Assume(invocation != null);
 
-			var txManager = _Kernel.Resolve<ITxManager>();
+			var txManager = _Kernel.Resolve<ITransactionManager>();
 
 			var mTxMethod = _MetaInfo.Do(x => x.AsTransactional(invocation.Method.DeclaringType.IsInterface
 			                                                    	? invocation.MethodInvocationTarget
@@ -83,7 +84,7 @@ namespace Castle.Facilities.AutoTx
 			if (!mTxData.HasValue)
 			{
 				if (mTxMethod.HasValue && mTxMethod.Value.Mode == TransactionScopeOption.Suppress)
-					using (new TxScope(null))
+					using (new TransactionScope(null))
 						invocation.Proceed();
 
 				else invocation.Proceed();
@@ -94,7 +95,7 @@ namespace Castle.Facilities.AutoTx
 			var transaction = mTxData.Value.Transaction;
 
 			Contract.Assume(transaction.State == TransactionState.Active,
-			                "from post-condition of ITxManager CreateTransaction in the (HasValue -> ...)-case");
+			                "from post-condition of ITransactionManager CreateTransaction in the (HasValue -> ...)-case");
 
 			// TODO 3.0GA: implement functionality for getting tasks and awating them
 #pragma warning disable 168
@@ -127,7 +128,7 @@ namespace Castle.Facilities.AutoTx
 			                             				if (_Logger.IsDebugEnabled)
 			                             					_Logger.DebugFormat("calling proceed on tx#{0}", tuple.Item3);
 
-			                             				using (var ts = new TransactionScope(dependent))
+			                             				using (var ts = new System.Transactions.TransactionScope(dependent))
 			                             				{
 			                             					tuple.Item1.Proceed();
 
@@ -169,7 +170,7 @@ namespace Castle.Facilities.AutoTx
 			Contract.Requires(transaction.State == TransactionState.Active);
 			_Logger.DebugFormat("synchronized case");
 
-			using (new TxScope(transaction.Inner))
+			using (new TransactionScope(transaction.Inner))
 			{
 				try
 				{
@@ -239,7 +240,7 @@ namespace Castle.Facilities.AutoTx
 	//     at System.Transactions.TransactionStatePhase0.Phase0VolatilePrepareDone(InternalTransaction tx)
 	//     at System.Transactions.EnlistableStates.CompleteBlockingClone(InternalTransaction tx)
 	//     at System.Transactions.DependentTransaction.Complete()
-	//     at Castle.Facilities.AutoTx.TxInterceptor.<ForkCase>b__4(Object t) in f:\code\castle\Castle.Services.Transaction\src\Castle.Facilities.AutoTx\TxInterceptor.cs:line 144
+	//     at Castle.Facilities.AutoTx.TransactionInterceptor.<ForkCase>b__4(Object t) in f:\code\castle\Castle.Services.Transaction\src\Castle.Facilities.AutoTx\TransactionInterceptor.cs:line 144
 	//     at System.Threading.Tasks.Task.InnerInvoke()
 	//     at System.Threading.Tasks.Task.Execute()
 	//InnerException: 

@@ -57,7 +57,7 @@ namespace Castle.Facilities.AutoTx.Tests
 		[Test]
 		public void IsDisposed_OnException_And_ActiveDuring_MethodCall()
 		{
-			using (var txM = new ResolveScope<ITxManager>(_Container))
+			using (var txM = new ResolveScope<ITransactionManager>(_Container))
 			{
 				System.Transactions.Transaction ambient = null;
 				ITransaction ourTx = null;
@@ -82,7 +82,7 @@ namespace Castle.Facilities.AutoTx.Tests
 		[Test]
 		public void RecursiveTransactions_Inner_Should_Be_DependentTransaction()
 		{
-			using (var txM = new ResolveScope<ITxManager>(_Container))
+			using (var txM = new ResolveScope<ITransactionManager>(_Container))
 			using (var scope = new ResolveScope<IMyService>(_Container))
 				scope.Service.VerifyInAmbient(() =>
 				{
@@ -99,7 +99,7 @@ namespace Castle.Facilities.AutoTx.Tests
 		public void Method_Can_RollbackItself()
 		{
 			TransactionState state = TransactionState.Default;
-			using (var txM = new ResolveScope<ITxManager>(_Container))
+			using (var txM = new ResolveScope<ITransactionManager>(_Container))
 			using (var scope = new ResolveScope<IMyService>(_Container))
 			{
 				scope.Service.VerifyInAmbient(() =>
@@ -116,7 +116,7 @@ namespace Castle.Facilities.AutoTx.Tests
 		{
 			var resource = new ThrowingResource(false);
 
-			using (var txM = new ResolveScope<ITxManager>(_Container))
+			using (var txM = new ResolveScope<ITransactionManager>(_Container))
 			using (var scope = new ResolveScope<IMyService>(_Container))
 			{
 				scope.Service.VerifyInAmbient(() =>

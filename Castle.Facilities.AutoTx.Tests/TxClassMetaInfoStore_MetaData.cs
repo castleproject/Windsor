@@ -28,7 +28,7 @@ namespace Castle.Facilities.AutoTx.Tests
 	    [Test]
 		public void CanGetTxClassMetaInfo()
 		{
-			var meta = TxClassMetaInfoStore.GetMetaFromTypeInner(typeof(MyService));
+			var meta = TransactionClassMetaInfoStore.GetMetaFromTypeInner(typeof(MyService));
 			meta.ShouldPass("MyService has Transaction attributes")
 				.ShouldBe(m => m.TransactionalMethods.Count() >= 4, "there are four or more methods");
 		}

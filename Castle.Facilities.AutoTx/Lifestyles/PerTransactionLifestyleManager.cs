@@ -31,7 +31,7 @@ namespace Castle.Facilities.AutoTx.Lifestyles
 	/// </summary>
 	public class PerTransactionLifestyleManager : PerTransactionLifestyleManagerBase
 	{
-		public PerTransactionLifestyleManager(ITxManager manager)
+		public PerTransactionLifestyleManager(ITransactionManager manager)
 			: base(manager)
 		{
 			Contract.Requires(manager != null);

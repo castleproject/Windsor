@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Transactions;
+using Castle.Services.Transaction.Contracts;
 
 namespace Castle.Services.Transaction
 {

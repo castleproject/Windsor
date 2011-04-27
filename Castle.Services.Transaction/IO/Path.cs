@@ -22,9 +22,8 @@ using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
-using Castle.Services.Transaction.IO;
 
-namespace Castle.Services.Transaction
+namespace Castle.Services.Transaction.IO
 {
 	///<summary>
 	///	Utility class meant to replace the <see cref = "System.IO.Path" /> class completely. This class handles these types of paths:
@@ -301,16 +300,6 @@ namespace Castle.Services.Transaction
 		}
 
 		[Pure]
-		public static string Combine(string firstPath, string secondPath)
-		{
-			Contract.Requires(secondPath != null);
-			Contract.Requires(firstPath != null);
-			Contract.Ensures(Contract.Result<string>() != null);
-
-			return System.IO.Path.Combine(firstPath, secondPath);
-		}
-
-		[Pure]
 		public static string Combine(this string firstPath, params string[] otherPaths)
 		{
 			Contract.Requires(otherPaths != null);
@@ -324,7 +313,7 @@ namespace Castle.Services.Transaction
 			//    + otherPaths.Select(x => x.Length).Sum()
 			//    + (otherPaths.Length-1) /* no of separator chars */);
 
-			var aggregate = otherPaths.Aggregate(firstPath, Combine);
+			var aggregate = otherPaths.Aggregate(firstPath, System.IO.Path.Combine);
 
 			Contract.Assume(aggregate != null, "aggregate never returns null for the given input");
 

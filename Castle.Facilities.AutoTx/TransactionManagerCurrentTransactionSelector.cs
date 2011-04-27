@@ -25,7 +25,7 @@ namespace Castle.Facilities.AutoTx
 	/// 	v3.1: This selector will allow you to select the transient component if
 	/// 	there is a component which is the same service and that is per-transaction.
 	/// </summary>
-	internal class TxManagerCurrentTransactionSelector : IHandlerSelector
+	internal class TransactionManagerCurrentTransactionSelector : IHandlerSelector
 	{
 		public bool HasOpinionAbout(string key, Type service)
 		{

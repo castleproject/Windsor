@@ -36,7 +36,7 @@ namespace Castle.Facilities.AutoTx.Tests
 			var parentHasAsserted = new ManualResetEvent(false);
 			var childHasStarted = new ManualResetEvent(false);
 
-			using (var manager = _Container.ResolveScope<ITxManager>())
+			using (var manager = _Container.ResolveScope<ITransactionManager>())
 			using (var scope = _Container.ResolveScope<IMyService>())
 			{
 				Assert.That(manager.Service.Count, Is.EqualTo(0));
@@ -66,10 +66,10 @@ namespace Castle.Facilities.AutoTx.Tests
 			}
 		}
 
-		[Test, Ignore("Fork's exception handling needs work; exceptions are thrown on finalizer thread right now, todo in TxInterceptor code")]
+		[Test, Ignore("Fork's exception handling needs work; exceptions are thrown on finalizer thread right now, todo in TransactionInterceptor code")]
 		public void InterleavingWhereChildCommit_IsOutstanding_OverParent()
 		{
-			using (var manager = _Container.ResolveScope<ITxManager>())
+			using (var manager = _Container.ResolveScope<ITransactionManager>())
 			using (var scope = _Container.ResolveScope<IMyService>())
 			{
 				var childHasStarted = new ManualResetEvent(false);
@@ -101,29 +101,29 @@ Castle.Facilities.AutoTx.Lifestyles.WrapperResolveLifestyleManager<PerTransactio
 Castle.Facilities.AutoTx.Lifestyles.PerTransactionLifestyleManagerBase: 2011-04-20 10:13:45,744 [TestRunnerThread] DEBUG - created
 Castle.Facilities.AutoTx.Lifestyles.WrapperResolveLifestyleManager<PerTransactionLifestyleManager>: 2011-04-20 10:13:45,744 [TestRunnerThread] DEBUG - initialized
 Castle.Facilities.AutoTx.AutoTxFacility: 2011-04-20 10:13:45,760 [TestRunnerThread] DEBUG - initialized AutoTxFacility
-Castle.Facilities.AutoTx.Testing.RsolveScope<ITxManager>: 2011-04-20 10:13:45,803 [TestRunnerThread] DEBUG - creating
+Castle.Facilities.AutoTx.Testing.RsolveScope<ITransactionManager>: 2011-04-20 10:13:45,803 [TestRunnerThread] DEBUG - creating
 Castle.Facilities.AutoTx.Testing.RsolveScope<IMyService>: 2011-04-20 10:13:45,804 [TestRunnerThread] DEBUG - creating
-Castle.Facilities.AutoTx.TxInterceptor: 2011-04-20 10:13:45,808 [TestRunnerThread] DEBUG - created transaction interceptor
+Castle.Facilities.AutoTx.TransactionInterceptor: 2011-04-20 10:13:45,808 [TestRunnerThread] DEBUG - created transaction interceptor
 Castle.Services.Transaction.Activity: 2011-04-20 10:13:45,954 [TestRunnerThread] DEBUG - pushing tx#9b8a7f45-59e7-4904-81b9-8ad5d76fad27:1:1
-Castle.Facilities.AutoTx.TxInterceptor: 2011-04-20 10:13:45,955 [TestRunnerThread] DEBUG - synchronized case
+Castle.Facilities.AutoTx.TransactionInterceptor: 2011-04-20 10:13:45,955 [TestRunnerThread] DEBUG - synchronized case
 Castle.Services.Transaction.Activity: 2011-04-20 10:13:45,976 [TestRunnerThread] DEBUG - pushing tx#9b8a7f45-59e7-4904-81b9-8ad5d76fad27:1:2
-Castle.Facilities.AutoTx.TxInterceptor: 2011-04-20 10:13:45,977 [TestRunnerThread] DEBUG - fork case
+Castle.Facilities.AutoTx.TransactionInterceptor: 2011-04-20 10:13:45,977 [TestRunnerThread] DEBUG - fork case
 Castle.Services.Transaction.Activity: 2011-04-20 10:13:45,978 [10] DEBUG - pushing tx#9b8a7f45-59e7-4904-81b9-8ad5d76fad27:1:2
-Castle.Facilities.AutoTx.TxInterceptor: 2011-04-20 10:13:45,979 [10] DEBUG - calling proceed on tx#9b8a7f45-59e7-4904-81b9-8ad5d76fad27:1:2
-Castle.Facilities.AutoTx.TxInterceptor: 2011-04-20 10:13:45,985 [10] DEBUG - in finally-clause
+Castle.Facilities.AutoTx.TransactionInterceptor: 2011-04-20 10:13:45,979 [10] DEBUG - calling proceed on tx#9b8a7f45-59e7-4904-81b9-8ad5d76fad27:1:2
+Castle.Facilities.AutoTx.TransactionInterceptor: 2011-04-20 10:13:45,985 [10] DEBUG - in finally-clause
 Castle.Services.Transaction.Activity: 2011-04-20 10:13:45,986 [10] DEBUG - popping tx#9b8a7f45-59e7-4904-81b9-8ad5d76fad27:1:2
-Castle.Facilities.AutoTx.TxInterceptor: 2011-04-20 10:13:45,987 [TestRunnerThread] WARN  - transaction aborted - synchronized case
-Castle.Facilities.AutoTx.TxInterceptor: 2011-04-20 10:13:45,988 [TestRunnerThread] DEBUG - dispoing transaction - synchronized case - tx#9b8a7f45-59e7-4904-81b9-8ad5d76fad27:1:1
+Castle.Facilities.AutoTx.TransactionInterceptor: 2011-04-20 10:13:45,987 [TestRunnerThread] WARN  - transaction aborted - synchronized case
+Castle.Facilities.AutoTx.TransactionInterceptor: 2011-04-20 10:13:45,988 [TestRunnerThread] DEBUG - dispoing transaction - synchronized case - tx#9b8a7f45-59e7-4904-81b9-8ad5d76fad27:1:1
 Castle.Services.Transaction.Activity: 2011-04-20 10:13:45,988 [TestRunnerThread] DEBUG - popping tx#9b8a7f45-59e7-4904-81b9-8ad5d76fad27:1:2
 Castle.Facilities.AutoTx.Testing.RsolveScope<IMyService>: 2011-04-20 10:13:45,989 [TestRunnerThread] DEBUG - disposing resolve scope
-Castle.Facilities.AutoTx.Testing.RsolveScope<ITxManager>: 2011-04-20 10:13:45,990 [TestRunnerThread] DEBUG - disposing resolve scope
+Castle.Facilities.AutoTx.Testing.RsolveScope<ITransactionManager>: 2011-04-20 10:13:45,990 [TestRunnerThread] DEBUG - disposing resolve scope
 Test 'Castle.Facilities.AutoTx.Tests.MultipleThreads_TransactionBookKeeping.InterleavingWhereChildCommit_IsOutstanding_OverParent' failed:
 	System.Transactions.TransactionAbortedException : The transaction has aborted.
 	at System.Transactions.TransactionStateAborted.EndCommit(InternalTransaction tx)
 	at System.Transactions.CommittableTransaction.Commit()
 	Transaction.cs(208,0): at Castle.Services.Transaction.Transaction.Castle.Services.Transaction.ITransaction.Complete()
-	TxInterceptor.cs(167,0): at Castle.Facilities.AutoTx.TxInterceptor.SynchronizedCase(IInvocation invocation, ITransaction transaction)
-	TxInterceptor.cs(103,0): at Castle.Facilities.AutoTx.TxInterceptor.Castle.DynamicProxy.IInterceptor.Intercept(IInvocation invocation)
+	TransactionInterceptor.cs(167,0): at Castle.Facilities.AutoTx.TransactionInterceptor.SynchronizedCase(IInvocation invocation, ITransaction transaction)
+	TransactionInterceptor.cs(103,0): at Castle.Facilities.AutoTx.TransactionInterceptor.Castle.DynamicProxy.IInterceptor.Intercept(IInvocation invocation)
 	at Castle.DynamicProxy.AbstractInvocation.Proceed()
 	at Castle.Proxies.IMyServiceProxy.VerifyInAmbient(Action a)
 	MultipleThreads_TransactionBookKeeping.cs(65,0): at Castle.Facilities.AutoTx.Tests.MultipleThreads_TransactionBookKeeping.InterleavingWhereChildCommit_IsOutstanding_OverParent()
@@ -135,7 +135,7 @@ System.AggregateException: A Task's exception(s) were not observed either by Wai
    at Castle.Facilities.AutoTx.Tests.TestClasses.MyService.VerifyBookKeepingInFork(Action a) in F:\code\castle\Castle.Services.Transaction\src\Castle.Facilities.AutoTx.Tests\TestClasses\MyService.cs:line 67
    at Castle.Proxies.Invocations.IMyService_VerifyBookKeepingInFork.InvokeMethodOnTarget()
    at Castle.DynamicProxy.AbstractInvocation.Proceed() in e:\OSS.Code\Castle.Core\src\Castle.Core\DynamicProxy\AbstractInvocation.cs:line 144
-   at Castle.Facilities.AutoTx.TxInterceptor.<ForkCase>b__4(Object t) in F:\code\castle\Castle.Services.Transaction\src\Castle.Facilities.AutoTx\TxInterceptor.cs:line 126
+   at Castle.Facilities.AutoTx.TransactionInterceptor.<ForkCase>b__4(Object t) in F:\code\castle\Castle.Services.Transaction\src\Castle.Facilities.AutoTx\TransactionInterceptor.cs:line 126
    at System.Threading.Tasks.Task.InnerInvoke()
    at System.Threading.Tasks.Task.Execute()
    --- End of inner exception stack trace ---
@@ -145,7 +145,7 @@ System.AggregateException: A Task's exception(s) were not observed either by Wai
    at Castle.Facilities.AutoTx.Tests.TestClasses.MyService.VerifyBookKeepingInFork(Action a) in F:\code\castle\Castle.Services.Transaction\src\Castle.Facilities.AutoTx.Tests\TestClasses\MyService.cs:line 67
    at Castle.Proxies.Invocations.IMyService_VerifyBookKeepingInFork.InvokeMethodOnTarget()
    at Castle.DynamicProxy.AbstractInvocation.Proceed() in e:\OSS.Code\Castle.Core\src\Castle.Core\DynamicProxy\AbstractInvocation.cs:line 144
-   at Castle.Facilities.AutoTx.TxInterceptor.<ForkCase>b__4(Object t) in F:\code\castle\Castle.Services.Transaction\src\Castle.Facilities.AutoTx\TxInterceptor.cs:line 126
+   at Castle.Facilities.AutoTx.TransactionInterceptor.<ForkCase>b__4(Object t) in F:\code\castle\Castle.Services.Transaction\src\Castle.Facilities.AutoTx\TransactionInterceptor.cs:line 126
    at System.Threading.Tasks.Task.InnerInvoke()
    at System.Threading.Tasks.Task.Execute()<---
 

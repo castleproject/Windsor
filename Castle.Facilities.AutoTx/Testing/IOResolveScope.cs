@@ -31,7 +31,7 @@ namespace Castle.Facilities.AutoTx.Testing
 	{
 		private readonly IDirectoryAdapter _Dir;
 		private readonly IFileAdapter _File;
-		private readonly ITxManager _Manager;
+		private readonly ITransactionManager _Manager;
 		private bool _Disposed;
 
 		public IOResolveScope(IWindsorContainer container) : base(container)
@@ -44,7 +44,7 @@ namespace Castle.Facilities.AutoTx.Testing
 			_File = _Container.Resolve<IFileAdapter>();
 			Contract.Assume(_File != null, "resolve throws otherwise");
 
-			_Manager = _Container.Resolve<ITxManager>();
+			_Manager = _Container.Resolve<ITransactionManager>();
 			Contract.Assume(_Manager != null);
 		}
 
@@ -64,7 +64,7 @@ namespace Castle.Facilities.AutoTx.Testing
 			get { return _File; }
 		}
 
-		public ITxManager Manager
+		public ITransactionManager Manager
 		{
 			get { return _Manager; }
 		}

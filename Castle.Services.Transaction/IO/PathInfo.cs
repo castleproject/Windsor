@@ -30,7 +30,7 @@ namespace Castle.Services.Transaction.IO
 	/// </summary>
 	public struct PathInfo
 	{
-		private const string _StrRegex =
+		private const string StrRegex =
 			@"(?<root>
  (?<UNC_prefix> \\\\\?\\ (?<UNC_literal>UNC\\)?  )?
  (?<options>
@@ -60,7 +60,7 @@ namespace Castle.Services.Transaction.IO
  (?<rel_drive>\w{1,3}:)?
  (?<folders_files>.+))?";
 
-		private static readonly Regex _Regex = new Regex(_StrRegex,
+		private static readonly Regex _Regex = new Regex(StrRegex,
 		                                                 RegexOptions.Compiled |
 		                                                 RegexOptions.IgnorePatternWhitespace |
 		                                                 RegexOptions.IgnoreCase |

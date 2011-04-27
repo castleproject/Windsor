@@ -18,13 +18,34 @@
 
 using System;
 using System.Diagnostics.Contracts;
-using Castle.Services.Transaction;
 
-namespace Castle.Facilities.AutoTx
+namespace Castle.Services.Transaction.Contracts
 {
-	[ContractClass(typeof (TxMetaInfoStoreContract))]
-	internal interface ITxMetaInfoStore
+	[ContractClassFor(typeof (ICreatedTransaction))]
+	internal abstract class ICreatedTransactionContract : ICreatedTransaction
 	{
-		Maybe<TxClassMetaInfo> GetMetaFromType(Type implementation);
+		#region Implementation of ICreatedTransaction
+
+		ITransaction ICreatedTransaction.Transaction
+		{
+			get
+			{
+				Contract.Ensures(Contract.Result<ITransaction>() != null);
+				throw new NotImplementedException();
+			}
+		}
+
+		bool ICreatedTransaction.ShouldFork
+		{
+			get { throw new NotImplementedException(); }
+		}
+
+		public IDisposable GetForkScope()
+		{
+			Contract.Ensures(Contract.Result<IDisposable>() != null);
+			throw new NotImplementedException();
+		}
+
+		#endregion
 	}
 }

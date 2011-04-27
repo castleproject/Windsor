@@ -7,9 +7,10 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Transactions;
-using Castle.Services.Transaction.Exceptions;
 using Castle.Services.Transaction.Internal;
-using TransactionException = Castle.Services.Transaction.Exceptions.TransactionException;
+using Castle.Services.Transaction.IO;
+using Path = Castle.Services.Transaction.IO.Path;
+using TransactionException = Castle.Services.Transaction.TransactionException;
 
 namespace Castle.Services.Transaction
 {
@@ -25,7 +26,7 @@ namespace Castle.Services.Transaction
 	{
 		private readonly ITransaction _Inner;
 		private readonly string _Name;
-		private SafeKernelTxHandle _TransactionHandle;
+		private SafeKernelTransactionHandle _TransactionHandle;
 		private bool _Disposed;
 		private TransactionState _State;
 
@@ -99,7 +100,7 @@ namespace Castle.Services.Transaction
 			{
 				var ktx = (IKernelTransaction) TransactionInterop.GetDtcTransaction(System.Transactions.Transaction.Current);
 
-				SafeKernelTxHandle handle;
+				SafeKernelTransactionHandle handle;
 				ktx.GetHandle(out handle);
 
 				// even though _TransactionHandle can already contain a handle if this thread 
@@ -136,13 +137,13 @@ namespace Castle.Services.Transaction
 			get { return _Inner != null ? _Inner.Inner : null; }
 		}
 
-		Maybe<SafeKernelTxHandle> ITransaction.TxFHandle
+		Maybe<SafeKernelTransactionHandle> ITransaction.KernelTransactionHandle
 		{
 			get
 			{
 				return _TransactionHandle != null && !_TransactionHandle.IsInvalid
 				       	? Maybe.Some(_TransactionHandle)
-				       	: Maybe.None<SafeKernelTxHandle>();
+				       	: Maybe.None<SafeKernelTransactionHandle>();
 			}
 		}
 
@@ -259,7 +260,7 @@ namespace Castle.Services.Transaction
 			{
 				var fileName = Path.GetFileName(originalFilePath);
 				Contract.Assume(fileName.Length > 0, "by pre-condition of IFileAdapterContract.Move");
-				NativeMethods.MoveFileTransacted(originalFilePath, newFilePath.Combine(fileName), IntPtr.Zero,
+				NativeMethods.MoveFileTransacted(originalFilePath, Path.Combine(newFilePath, fileName), IntPtr.Zero,
 				                                 IntPtr.Zero, NativeMethods.MoveFileFlags.CopyAllowed,
 				                                 _TransactionHandle);
 				return;
@@ -611,7 +612,7 @@ namespace Castle.Services.Transaction
 					Contract.Assume(!string.IsNullOrEmpty(findData.cFileName) && findData.cFileName.Length > 0,
 					                "or otherwise FindNextFile should have returned false");
 
-					var subPath = pathWithoutSufflix.Combine(findData.cFileName);
+					var subPath = Path.Combine(pathWithoutSufflix, findData.cFileName);
 
 					if ((findData.dwFileAttributes & (uint) FileAttributes.Directory) != 0)
 					{
