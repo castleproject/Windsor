@@ -153,6 +153,22 @@ namespace Castle.Services.Transaction
 			if (!maybe.HasValue) throw ex();
 			return maybe.Value;
 		}
+
+
+		/// <summary>
+		/// 	Type-system hack, in leiu of covariant bind (or rather Do in this monad),
+		///		changes type of the monad from TImpl to TAssignable, where TImpl : TAssignable.
+		///		The coercion is still statically typed and correct.
+		/// </summary>
+		/// <typeparam name = "TImpl">The type to convert FROM</typeparam>
+		/// <typeparam name = "TAssignable">The type to convert TO</typeparam>
+		/// <param name = "maybe">The object invoked upon</param>
+		/// <returns>A new type of the same kind of monad.</returns>
+		public static Maybe<TAssignable> Coerce<TImpl, TAssignable>(this Maybe<TImpl> maybe)
+			where TImpl : TAssignable
+		{
+			return maybe.HasValue ? new Maybe<TAssignable>(maybe.Value) : None<TAssignable>();
+		}
 	}
 
 
