@@ -28,7 +28,8 @@ namespace Castle.Facilities.AutoTx
 {
 	/// <summary>
 	/// 	A facility for automatically handling transactions using the lightweight
-	/// 	transaction manager.
+	/// 	transaction manager. This facility does not depend on
+	///		any other facilities.
 	/// </summary>
 	public class AutoTxFacility : AbstractFacility
 	{
