@@ -101,6 +101,7 @@
     <Compile Include="FileTransaction_Initialization_And_State.cs" />
     <Compile Include="Framework\STATestRuntime.cs" />
     <Compile Include="Framework\TxFTestFixtureBase.cs" />
+    <Compile Include="MaybeMonad.cs" />
     <Compile Include="MSDN_Is_Wrong.cs" />
     <Compile Include="TestClasses\Exts.cs" />
     <Compile Include="FileTransaction_AsDependentTransaction.cs" />
