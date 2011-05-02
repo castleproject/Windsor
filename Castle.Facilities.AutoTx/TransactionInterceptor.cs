@@ -25,9 +25,9 @@ using Castle.Core.Interceptor;
 using Castle.DynamicProxy;
 using Castle.MicroKernel;
 using Castle.Services.Transaction;
+using Castle.Services.Transaction.Internal;
 using log4net;
 using TransactionException = Castle.Services.Transaction.TransactionException;
-using TransactionScope = Castle.Services.Transaction.TransactionScope;
 
 namespace Castle.Facilities.AutoTx
 {
@@ -84,7 +84,7 @@ namespace Castle.Facilities.AutoTx
 			if (!mTxData.HasValue)
 			{
 				if (mTxMethod.HasValue && mTxMethod.Value.Mode == TransactionScopeOption.Suppress)
-					using (new TransactionScope(null))
+					using (new TxScope(null))
 						invocation.Proceed();
 
 				else invocation.Proceed();
@@ -170,7 +170,7 @@ namespace Castle.Facilities.AutoTx
 			Contract.Requires(transaction.State == TransactionState.Active);
 			_Logger.DebugFormat("synchronized case");
 
-			using (new TransactionScope(transaction.Inner))
+			using (new TxScope(transaction.Inner))
 			{
 				try
 				{
