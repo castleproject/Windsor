@@ -72,7 +72,8 @@
       <HintPath>..\..\packages\Castle.Core.2.5.2\lib\NET35\Castle.Core.dll</HintPath>
     </Reference>
     <Reference Include="Castle.Windsor, Version=2.5.1.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Castle.Windsor.2.5.2\lib\NET40\Castle.Windsor.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\net40\Castle.Windsor.dll</HintPath>
     </Reference>
     <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
       <HintPath>..\..\packages\log4net.1.2.10\lib\2.0\log4net.dll</HintPath>
@@ -112,7 +113,7 @@
     <Compile Include="TransactionalComponentInspector.cs" />
     <Compile Include="TransactionInterceptor.cs" />
     <Compile Include="TransactionManagerCurrentTransactionSelector.cs" />
-    <Compile Include="TransactionMetaInfoStoreContract.cs" />
+    <Compile Include="Contracts\TransactionMetaInfoStoreContract.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Castle.Services.Transaction\Castle.Services.Transaction.csproj">

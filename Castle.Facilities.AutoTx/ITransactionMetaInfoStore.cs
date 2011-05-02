@@ -18,6 +18,7 @@
 
 using System;
 using System.Diagnostics.Contracts;
+using Castle.Facilities.AutoTx.Contracts;
 using Castle.Services.Transaction;
 
 namespace Castle.Facilities.AutoTx

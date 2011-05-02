@@ -45,7 +45,7 @@ namespace Castle.Facilities.AutoTx.Testing
 			Contract.Assume(_File != null, "resolve throws otherwise");
 
 			_Manager = _Container.Resolve<ITransactionManager>();
-			Contract.Assume(_Manager != null);
+			Contract.Assume(_Manager != null, "resolve throws otherwise");
 		}
 
 		/// <summary>
