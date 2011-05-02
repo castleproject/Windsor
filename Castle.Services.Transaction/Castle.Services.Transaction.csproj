@@ -103,7 +103,7 @@
     <Compile Include="Internal\ContractExtensions.cs" />
     <Compile Include="Internal\CreatedTransaction.cs" />
     <Compile Include="DefaultTransactionOptions.cs" />
-    <Compile Include="TransactionalAttribute.cs" />
+    <Compile Include="Obsolete_Classes.cs" />
     <Compile Include="TransactionalConflictException.cs" />
     <Compile Include="TransactionException.cs" />
     <Compile Include="FileTransaction.cs" />

@@ -38,7 +38,6 @@ namespace Castle.Services.Transaction.IO
 		/// <param name = "pathFinder">The MapPath implementation.</param>
 		/// <param name = "constrainToSpecifiedDir">Whether to ChJail the DirectoryAdapter.</param>
 		/// <param name = "specifiedDir">The directory to constrain the adapter to.</param>
-		[SuppressMessage("Microsoft.Contracts", "CC1055", Justification = "Validation performed in base method")]
 		public DirectoryAdapter(IMapPath pathFinder, bool constrainToSpecifiedDir, string specifiedDir)
 			: base(constrainToSpecifiedDir, specifiedDir)
 		{

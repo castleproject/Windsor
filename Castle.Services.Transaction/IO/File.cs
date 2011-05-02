@@ -87,6 +87,7 @@ namespace Castle.Services.Transaction.IO
 		{
 			Contract.Requires(!string.IsNullOrEmpty(originalFilePath));
 			Contract.Requires(!string.IsNullOrEmpty(newFilePath));
+			Contract.Requires(Castle.Services.Transaction.IO.Path.GetFileName(originalFilePath).Length > 0);
 			GetAdapter().Move(originalFilePath, newFilePath);
 		}
 
