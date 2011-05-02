@@ -36,6 +36,11 @@ namespace Castle.Services.Transaction
 		{
 		}
 
+		[Obsolete("Deprecated; use [Transaction], [Transaction(TransactionScopeOption.Required)] or [Transaction(TransactionScopeOption.Supress)] instead.")]
+		public TransactionAttribute(TransactionMode transactionMode) : this(TransactionScopeOption.Required)
+		{
+		}
+
 		public TransactionAttribute(TransactionScopeOption mode, IsolationLevel isolationLevel = IsolationLevel.ReadCommitted)
 		{
 			Timeout = TimeSpan.MaxValue;
