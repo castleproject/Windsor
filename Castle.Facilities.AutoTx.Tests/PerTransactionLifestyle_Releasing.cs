@@ -140,7 +140,8 @@ namespace Castle.Facilities.AutoTx.Tests
 							tx2.Complete();
 						}
 
-						Assert.That(perTxService.Disposed, Is.False, "becuase dependent transaction hasn't fired its parent TransactionCompleted event");
+						// perTxService.Disposed is either true or false at this point depending on the interleaving
+						//Assert.That(perTxService.Disposed, Is.???, "becuase dependent transaction hasn't fired its parent TransactionCompleted event, or it HAS done so and it IS disposed");
 					}
 					catch (Exception ex)
 					{
