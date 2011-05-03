@@ -41,8 +41,26 @@ namespace Castle.Facilities.AutoTx.Tests
 			// when
 			using (var scope = container.ResolveScope<Service>())
 			{
-				Assert.Throws<MissingTransactionException>(() => scope.Service.DoWork());
+				var ex = Assert.Throws<MissingTransactionException>(() => scope.Service.DoWork());
+				Assert.That(ex.Message, Is.StringContaining("Castle.Facilities.AutoTx.Tests.IPerTxService"),
+					"The message from the exception needs to contain the component which IS A per-transaction component.");
 			}
+		}
+
+		[Test]
+		public void ThrowsMissingTransactionException_NoAmbientTransaction_DirectDependency()
+		{
+			// given
+			WindsorContainer container = GetContainer();
+
+			// when
+			var ex = Assert.Throws<MissingTransactionException>(() =>
+			{
+				using (var scope = container.ResolveScope<ServiceWithDirectDep>())
+					scope.Service.DoWork();
+			});
+			Assert.That(ex.Message, Is.StringContaining("Castle.Facilities.AutoTx.Tests.IPerTxService"),
+				"The message from the exception needs to contain the component which IS A per-transaction component.");
 		}
 
 		[Test]
@@ -225,9 +243,27 @@ Test 'Castle.Facilities.AutoTx.Tests.PerTransactionLifestyle_Releasing.Concurren
 					    var s = factory.CreateService();
 					    return s;
 					}),
-				Component.For<Service>());
+				Component.For<Service>(),
+				Component.For<ServiceWithDirectDep>());
 
 			return container;
+		}
+	}
+
+	public class ServiceWithDirectDep
+	{
+		private readonly IPerTxService _Service;
+
+		public ServiceWithDirectDep(IPerTxService service)
+		{
+			if (service == null) throw new ArgumentNullException("service");
+			_Service = service;
+		}
+
+		[Transaction]
+		public virtual void DoWork()
+		{
+			Assert.Fail("IPerTxService is resolved in the c'tor but is per-tx, so DoWork should never be called as lifestyle throws exception");
 		}
 	}
 
