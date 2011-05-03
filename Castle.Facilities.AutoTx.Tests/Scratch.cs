@@ -60,8 +60,6 @@ namespace Castle.Facilities.AutoTx.Tests
 
 			// then
 			var component = c.Resolve<ExampleTransactionalComponent>();
-
-			
 		}
 	}
 
