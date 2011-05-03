@@ -75,6 +75,7 @@
       <Link>Properties\AutoTxAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Framework\MaybeEx.cs" />
+    <Compile Include="HandlerSelector_ForDifferentLifestyles.cs" />
     <Compile Include="InitTests.cs" />
     <Compile Include="MultipleThreads_TransactionBookKeeping.cs" />
     <Compile Include="PerTransactionLifestyle_Releasing.cs" />

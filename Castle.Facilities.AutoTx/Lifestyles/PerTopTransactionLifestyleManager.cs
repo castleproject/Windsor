@@ -37,8 +37,6 @@ namespace Castle.Facilities.AutoTx.Lifestyles
 			Contract.Requires(manager != null);
 		}
 
-		#region Overrides of PerTransactionLifestyleManagerBase
-
 		protected internal override Maybe<ITransaction> GetSemanticTransactionForLifetime()
 		{
 			if (_Disposed)
@@ -47,7 +45,5 @@ namespace Castle.Facilities.AutoTx.Lifestyles
 
 			return _Manager.CurrentTopTransaction;
 		}
-
-		#endregion
 	}
 }

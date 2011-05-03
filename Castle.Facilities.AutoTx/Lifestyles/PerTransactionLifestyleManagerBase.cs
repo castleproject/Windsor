@@ -170,43 +170,43 @@ namespace Castle.Facilities.AutoTx.Lifestyles
 						instance = _Storage[key] = Tuple.Create(1u, base.Resolve(context));
 
 						transaction.Inner.TransactionCompleted += (sender, args) =>
-						                                          	{
-						                                          		var id = localIdentifier;
-						                                          		if (_Logger.IsDebugEnabled)
-						                                          			_Logger.DebugFormat(
-						                                          				"transaction#{0} completed, maybe releasing object '{1}'", id,
-						                                          				instance);
+						{
+							var id = localIdentifier;
+							if (_Logger.IsDebugEnabled)
+								_Logger.DebugFormat(
+									"transaction#{0} completed, maybe releasing object '{1}'", id,
+									instance);
 
-						                                          		lock (ComponentActivator)
-						                                          		{
-						                                          			var counter = _Storage[key];
+							lock (ComponentActivator)
+							{
+								var counter = _Storage[key];
 
-						                                          			if (counter.Item1 == 1)
-						                                          			{
-						                                          				if (_Logger.IsDebugEnabled)
-						                                          					_Logger.DebugFormat("last item of '{0}' per-tx; releasing it",
-						                                          					                    counter.Item2);
+								if (counter.Item1 == 1)
+								{
+									if (_Logger.IsDebugEnabled)
+										_Logger.DebugFormat("last item of '{0}' per-tx; releasing it",
+															counter.Item2);
 
-						                                          				// this might happen if the transaction outlives the service; the transaction might also notify transaction fron a timer, i.e.
-						                                          				// not synchronously.
-						                                          				if (!_Disposed)
-						                                          				{
-						                                          					Contract.Assume(_Storage.Count > 0);
+									// this might happen if the transaction outlives the service; the transaction might also notify transaction fron a timer, i.e.
+									// not synchronously.
+									if (!_Disposed)
+									{
+										Contract.Assume(_Storage.Count > 0);
 
-						                                          					_Storage.Remove(key);
-						                                          					Evict(counter.Item2);
-						                                          				}
-						                                          			}
-						                                          			else
-						                                          			{
-						                                          				if (_Logger.IsDebugEnabled)
-						                                          					_Logger.DebugFormat("{0} item(s) of '{1}' left in per-tx storage",
-						                                          					                    counter.Item1 - 1, counter.Item2);
+										_Storage.Remove(key);
+										Evict(counter.Item2);
+									}
+								}
+								else
+								{
+									if (_Logger.IsDebugEnabled)
+										_Logger.DebugFormat("{0} item(s) of '{1}' left in per-tx storage",
+															counter.Item1 - 1, counter.Item2);
 
-						                                          				_Storage[key] = Tuple.Create(counter.Item1 - 1, counter.Item2);
-						                                          			}
-						                                          		}
-						                                          	};
+									_Storage[key] = Tuple.Create(counter.Item1 - 1, counter.Item2);
+								}
+							}
+						};
 					}
 				}
 			}

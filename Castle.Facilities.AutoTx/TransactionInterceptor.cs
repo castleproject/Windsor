@@ -117,52 +117,52 @@ namespace Castle.Facilities.AutoTx
 			_Logger.DebugFormat("fork case");
 
 			return Task.Factory.StartNew(t =>
-			                             	{
-			                             		var hasException = false;
-			                             		var tuple = (Tuple<IInvocation, ICreatedTransaction, string>) t;
-			                             		var dependent = tuple.Item2.Transaction.Inner as DependentTransaction;
-			                             		using (tuple.Item2.GetForkScope())
-			                             		{
-			                             			try
-			                             			{
-			                             				if (_Logger.IsDebugEnabled)
-			                             					_Logger.DebugFormat("calling proceed on tx#{0}", tuple.Item3);
+			{
+				var hasException = false;
+				var tuple = (Tuple<IInvocation, ICreatedTransaction, string>)t;
+				var dependent = tuple.Item2.Transaction.Inner as DependentTransaction;
+				using (tuple.Item2.GetForkScope())
+				{
+					try
+					{
+						if (_Logger.IsDebugEnabled)
+							_Logger.DebugFormat("calling proceed on tx#{0}", tuple.Item3);
 
-			                             				using (var ts = new System.Transactions.TransactionScope(dependent))
-			                             				{
-			                             					tuple.Item1.Proceed();
+						using (var ts = new System.Transactions.TransactionScope(dependent))
+						{
+							tuple.Item1.Proceed();
 
-			                             					if (_Logger.IsDebugEnabled)
-			                             						_Logger.DebugFormat("calling complete on TransactionScope for tx#{0}", tuple.Item3);
+							if (_Logger.IsDebugEnabled)
+								_Logger.DebugFormat("calling complete on TransactionScope for tx#{0}", tuple.Item3);
 
-			                             					ts.Complete();
-			                             				}
-			                             			}
-			                             			catch (TransactionAbortedException ex)
-			                             			{
-			                             				// if we have aborted the transaction, we both warn and re-throw the exception
-			                             				hasException = true;
-			                             				_Logger.Warn("transaction aborted", ex);
-			                             				throw new TransactionAbortedException(
-			                             					"Parallel/forked transaction aborted! See inner exception for details.", ex);
-			                             			}
-			                             			catch (Exception)
-			                             			{
-			                             				hasException = true;
-			                             				throw;
-			                             			}
-			                             			finally
-			                             			{
-			                             				if (_Logger.IsDebugEnabled)
-			                             					_Logger.Debug("in finally-clause");
+							ts.Complete();
+						}
+					}
+					catch (TransactionAbortedException ex)
+					{
+						// if we have aborted the transaction, we both warn and re-throw the exception
+						hasException = true;
+						_Logger.Warn("transaction aborted", ex);
+						throw new TransactionAbortedException(
+							"Parallel/forked transaction aborted! See inner exception for details.", ex);
+					}
+					catch (Exception)
+					{
+						hasException = true;
+						throw;
+					}
+					finally
+					{
+						if (_Logger.IsDebugEnabled)
+							_Logger.Debug("in finally-clause");
 
-			                             				if (!hasException)
-			                             					dependent.Complete();
+						if (!hasException)
+							dependent.Complete();
 
-			                             				// See footnote at end of file
-			                             			}
-			                             		}
-			                             	}, Tuple.Create(invocation, txData, txData.Transaction.LocalIdentifier));
+						// See footnote at end of file
+					}
+				}
+			}, Tuple.Create(invocation, txData, txData.Transaction.LocalIdentifier));
 		}
 
 		private static void SynchronizedCase(IInvocation invocation, ITransaction transaction)
