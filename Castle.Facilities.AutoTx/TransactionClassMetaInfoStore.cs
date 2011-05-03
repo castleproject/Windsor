@@ -40,8 +40,7 @@ namespace Castle.Facilities.AutoTx
 			Contract.Ensures(Contract.Result<Maybe<TransactionalClassMetaInfo>>() != null);
 
 			var allMethods =
-				(from m in implementation.GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic |
-				                                     BindingFlags.DeclaredOnly)
+				(from m in implementation.GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
 				 let attribs = (TransactionAttribute[]) m.GetCustomAttributes(typeof (TransactionAttribute), true)
 				 where attribs.Length > 0
 				 select Tuple.Create(m, attribs.Length > 0 ? attribs[0] : null)).ToList();
