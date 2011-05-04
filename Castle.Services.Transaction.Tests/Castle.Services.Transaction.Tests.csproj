@@ -90,6 +90,7 @@
     <Compile Include="..\TxAssemblyInfo.cs">
       <Link>Properties\TxAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="CorrectDisposalOfITransaction.cs" />
     <Compile Include="DirectoryAdapter_InitializationSettings.cs" />
     <Compile Include="DirectoryAdapter_ChJail.cs" />
     <Compile Include="DirectoryAdapter_NonTransactionalBehaviour.cs" />

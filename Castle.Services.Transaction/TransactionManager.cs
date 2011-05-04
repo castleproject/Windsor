@@ -131,7 +131,7 @@ namespace Castle.Services.Transaction
 			return m;
 		}
 
-		public Maybe<ICreatedTransaction> CreateFileTransaction(ITransactionOptions transactionOptions)
+		Maybe<ICreatedTransaction> ITransactionManager.CreateFileTransaction(ITransactionOptions transactionOptions)
 		{
 			throw new NotImplementedException("Implement file transactions in the transaction manager!");
 		}
