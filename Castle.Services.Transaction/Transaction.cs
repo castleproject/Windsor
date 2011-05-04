@@ -122,7 +122,6 @@ namespace Castle.Services.Transaction
 				}
 				finally
 				{
-					if (_OnDispose != null) _OnDispose();
 					((IDisposable) this).Dispose();
 				}
 			}
@@ -244,6 +243,9 @@ namespace Castle.Services.Transaction
 
 			try
 			{
+				if (_OnDispose != null) 
+					_OnDispose();
+
 				Inner.Dispose();
 			}
 			finally
