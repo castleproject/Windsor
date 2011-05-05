@@ -17,10 +17,11 @@
 #endregion
 
 using System.Diagnostics.Contracts;
+using Castle.Facilities.AutoTx.Lifestyles;
 using Castle.MicroKernel.Registration;
 using Castle.MicroKernel.Registration.Lifestyle;
 
-namespace Castle.Facilities.AutoTx.Lifestyles
+namespace Castle.Facilities.AutoTx.Registration
 {
 	public static class LifestyleRegistrationExtensions
 	{

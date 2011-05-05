@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics.Contracts;
 using Castle.Core;
+using Castle.Facilities.AutoTx.Registration;
 using Castle.MicroKernel;
 using Castle.MicroKernel.Registration;
 using Castle.Services.Transaction;

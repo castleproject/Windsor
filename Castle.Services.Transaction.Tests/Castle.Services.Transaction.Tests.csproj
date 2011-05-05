@@ -115,7 +115,6 @@
     <Compile Include="TestClasses\TestResource.cs" />
     <Compile Include="TestClasses\ThrowsExceptionResource.cs" />
     <Compile Include="TestClasses\TransientActivityManager.cs" />
-    <Compile Include="TestClasses\TxTraceListener.cs" />
     <Compile Include="TransactionManager_EnlistedResources.cs" />
     <Compile Include="TransactionManager_TransactionDependent_CorrectBookKeeping.cs" />
   </ItemGroup>

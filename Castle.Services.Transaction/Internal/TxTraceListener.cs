@@ -16,14 +16,14 @@
 
 #endregion
 
-namespace Castle.Services.Transaction.Tests
-{
-	using System;
-	using System.Diagnostics;
-	using System.IO;
-	using System.Text.RegularExpressions;
-	using System.Xml.Serialization;
+using System;
+using System.Diagnostics;
+using System.IO;
+using System.Text.RegularExpressions;
+using System.Xml.Serialization;
 
+namespace Castle.Services.Transaction.Internal
+{
 	[Serializable]
 	public class TraceRecord
 	{

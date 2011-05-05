@@ -99,7 +99,7 @@
     <Compile Include="AutoTxFacility.cs" />
     <Compile Include="ITransactionMetaInfoStore.cs" />
     <Compile Include="Lifestyles\WrapperResolveLifestyleManager.cs" />
-    <Compile Include="Lifestyles\LifestyleRegistrationExtensions.cs" />
+    <Compile Include="Registration\LifestyleRegistrationExtensions.cs" />
     <Compile Include="Lifestyles\MissingTransactionException.cs" />
     <Compile Include="Lifestyles\PerTopTransactionLifestyleManager.cs" />
     <Compile Include="Lifestyles\PerTransactionLifestyleManager.cs" />

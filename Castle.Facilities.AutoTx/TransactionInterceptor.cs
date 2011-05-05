@@ -121,6 +121,7 @@ namespace Castle.Facilities.AutoTx
 				var hasException = false;
 				var tuple = (Tuple<IInvocation, ICreatedTransaction, string>)t;
 				var dependent = tuple.Item2.Transaction.Inner as DependentTransaction;
+
 				using (tuple.Item2.GetForkScope())
 				{
 					try
@@ -128,7 +129,7 @@ namespace Castle.Facilities.AutoTx
 						if (_Logger.IsDebugEnabled)
 							_Logger.DebugFormat("calling proceed on tx#{0}", tuple.Item3);
 
-						using (var ts = new System.Transactions.TransactionScope(dependent))
+						using (var ts = new TransactionScope(dependent))
 						{
 							tuple.Item1.Proceed();
 
@@ -172,6 +173,8 @@ namespace Castle.Facilities.AutoTx
 
 			using (new TxScope(transaction.Inner))
 			{
+				var localIdentifier = transaction.LocalIdentifier;
+
 				try
 				{
 					invocation.Proceed();
@@ -187,7 +190,7 @@ namespace Castle.Facilities.AutoTx
 				catch (TransactionAbortedException)
 				{
 					// if we have aborted the transaction, we both warn and re-throw the exception
-					_Logger.Warn("transaction aborted - synchronized case");
+					_Logger.WarnFormat("transaction aborted - synchronized case, tx#{0}", localIdentifier);
 					throw;
 				}
 				catch (TransactionException ex)
@@ -201,7 +204,7 @@ namespace Castle.Facilities.AutoTx
 				{
 					if (_Logger.IsErrorEnabled)
 						_Logger.ErrorFormat("caught exception, rolling back transaction - synchronized case - tx#{0}",
-						                    transaction.LocalIdentifier);
+						                    localIdentifier);
 
 					transaction.Rollback();
 					throw;
@@ -209,7 +212,7 @@ namespace Castle.Facilities.AutoTx
 				finally
 				{
 					if (_Logger.IsDebugEnabled)
-						_Logger.DebugFormat("dispoing transaction - synchronized case - tx#{0}", transaction.LocalIdentifier);
+						_Logger.DebugFormat("dispoing transaction - synchronized case - tx#{0}", localIdentifier);
 
 					transaction.Dispose();
 				}

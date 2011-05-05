@@ -89,6 +89,7 @@
       <HintPath>..\..\packages\Rx-Main.1.0.2856.0\lib\Net4\System.Reactive.dll</HintPath>
     </Reference>
     <Reference Include="System.Transactions" />
+    <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\TxAssemblyInfo.cs">
@@ -103,6 +104,7 @@
     <Compile Include="Internal\ContractExtensions.cs" />
     <Compile Include="Internal\CreatedTransaction.cs" />
     <Compile Include="DefaultTransactionOptions.cs" />
+    <Compile Include="Internal\TxTraceListener.cs" />
     <Compile Include="Obsolete_Classes.cs" />
     <Compile Include="TransactionalConflictException.cs" />
     <Compile Include="TransactionException.cs" />
