@@ -18,6 +18,7 @@
 
 using System;
 using System.Diagnostics.Contracts;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Transactions;
 using Castle.Core;
@@ -28,6 +29,7 @@ using Castle.Services.Transaction;
 using Castle.Services.Transaction.Internal;
 using log4net;
 using TransactionException = Castle.Services.Transaction.TransactionException;
+using TransactionManager = Castle.Services.Transaction.TransactionManager;
 
 namespace Castle.Facilities.AutoTx
 {
@@ -71,7 +73,8 @@ namespace Castle.Facilities.AutoTx
 			Contract.Assume(_State == InterceptorState.Active || _State == InterceptorState.Initialized);
 			Contract.Assume(invocation != null);
 
-			var txManager = _Kernel.Resolve<ITransactionManager>();
+			var txManagerC = _Kernel.Resolve<TransactionManager>();
+			ITransactionManager txManager = txManagerC;
 
 			var mTxMethod = _MetaInfo.Do(x => x.AsTransactional(invocation.Method.DeclaringType.IsInterface
 			                                                    	? invocation.MethodInvocationTarget
@@ -81,38 +84,110 @@ namespace Castle.Facilities.AutoTx
 
 			_State = InterceptorState.Active;
 
-			if (!mTxData.HasValue)
+			try
 			{
-				if (mTxMethod.HasValue && mTxMethod.Value.Mode == TransactionScopeOption.Suppress)
-					using (new TxScope(null))
-						invocation.Proceed();
+				if (!mTxData.HasValue)
+				{
+					if (mTxMethod.HasValue && mTxMethod.Value.Mode == TransactionScopeOption.Suppress)
+					{
+						_Logger.Info("supressing ambient transaction");
 
-				else invocation.Proceed();
+						using (new TxScope(null))
+							invocation.Proceed();
+					}
+					else invocation.Proceed();
 
-				return;
+					return;
+				}
+
+				var transaction = mTxData.Value.Transaction;
+				Contract.Assume(transaction.State == TransactionState.Active,
+				                "from post-condition of ITransactionManager CreateTransaction in the (HasValue -> ...)-case");
+
+				if (mTxData.Value.ShouldFork)
+				{
+					var task = ForkCase(invocation, mTxData.Value);
+					txManagerC.EnlistDependentTask(task);
+				}
+				else SynchronizedCase(invocation, transaction);
 			}
-
-			var transaction = mTxData.Value.Transaction;
-
-			Contract.Assume(transaction.State == TransactionState.Active,
-			                "from post-condition of ITransactionManager CreateTransaction in the (HasValue -> ...)-case");
-
-			// TODO 3.0GA: implement functionality for getting tasks and awating them
-#pragma warning disable 168
-			Task forkCase;
-#pragma warning restore 168
-			if (mTxData.Value.ShouldFork)
-				// TODO: Handle case where child transaction aborts and task is never waited upon!
-				ForkCase(invocation, mTxData.Value);
-			else
-				SynchronizedCase(invocation, transaction);
+			finally
+			{
+				_Kernel.ReleaseComponent(txManagerC);
+			}
 		}
 
 		// TODO: implement WaitAll-semantics with returned task
+		private static void SynchronizedCase(IInvocation invocation, ITransaction transaction)
+		{
+			Contract.Requires(transaction.State == TransactionState.Active);
+			_Logger.DebugFormat("synchronized case");
+
+			using (new TxScope(transaction.Inner))
+			{
+				var localIdentifier = transaction.LocalIdentifier;
+
+				try
+				{
+					invocation.Proceed();
+
+					if (transaction.State == TransactionState.Active)
+						transaction.Complete();
+
+					else
+						_Logger.WarnFormat(
+							"transaction was in state {0}, so it cannot be completed. the 'consumer' method, so to speak, might have rolled it back.",
+							transaction.State);
+				}
+				catch (TransactionAbortedException)
+				{
+					// if we have aborted the transaction, we both warn and re-throw the exception
+					_Logger.WarnFormat("transaction aborted - synchronized case, tx#{0}", localIdentifier);
+					throw;
+				}
+				catch (TransactionException ex)
+				{
+					if (_Logger.IsFatalEnabled)
+						_Logger.Fatal("internal error in transaction system - synchronized case", ex);
+
+					throw;
+				}
+				catch (AggregateException ex)
+				{
+					if (_Logger.IsWarnEnabled)
+						_Logger.Warn("one or more dependent transactions failed, re-throwing exceptions!", ex);
+					throw;
+				}
+				catch (Exception)
+				{
+					if (_Logger.IsErrorEnabled)
+						_Logger.ErrorFormat("caught exception, rolling back transaction - synchronized case - tx#{0}",
+						                    localIdentifier);
+
+					// the transaction rolls back itself on exceptions
+					//transaction.Rollback();
+					throw;
+				}
+				finally
+				{
+					if (_Logger.IsDebugEnabled)
+						_Logger.DebugFormat("dispoing transaction - synchronized case - tx#{0}", localIdentifier);
+
+					transaction.Dispose();
+				}
+			}
+		}
+
+		/// <summary>
+		/// For ordering interleaving of threads during testing!
+		/// </summary>
+		internal static ManualResetEvent Finally;
+
 		private static Task ForkCase(IInvocation invocation, ICreatedTransaction txData)
 		{
 			Contract.Requires(txData.Transaction.State == TransactionState.Active);
 			Contract.Assume(txData.Transaction.Inner is DependentTransaction);
+			Contract.Ensures(Contract.Result<Task>() != null);
 
 			_Logger.DebugFormat("fork case");
 
@@ -155,68 +230,18 @@ namespace Castle.Facilities.AutoTx
 					finally
 					{
 						if (_Logger.IsDebugEnabled)
-							_Logger.Debug("in finally-clause");
+							_Logger.Debug("in finally-clause, completing dependent if it didn't throw exception");
 
 						if (!hasException)
 							dependent.Complete();
+
+						if (Finally != null) 
+							Finally.Set();
 
 						// See footnote at end of file
 					}
 				}
 			}, Tuple.Create(invocation, txData, txData.Transaction.LocalIdentifier));
-		}
-
-		private static void SynchronizedCase(IInvocation invocation, ITransaction transaction)
-		{
-			Contract.Requires(transaction.State == TransactionState.Active);
-			_Logger.DebugFormat("synchronized case");
-
-			using (new TxScope(transaction.Inner))
-			{
-				var localIdentifier = transaction.LocalIdentifier;
-
-				try
-				{
-					invocation.Proceed();
-
-					if (transaction.State == TransactionState.Active)
-						transaction.Complete();
-
-					else
-						_Logger.WarnFormat(
-							"transaction was in state {0}, so it cannot be completed. the 'consumer' method, so to speak, might have rolled it back.",
-							transaction.State);
-				}
-				catch (TransactionAbortedException)
-				{
-					// if we have aborted the transaction, we both warn and re-throw the exception
-					_Logger.WarnFormat("transaction aborted - synchronized case, tx#{0}", localIdentifier);
-					throw;
-				}
-				catch (TransactionException ex)
-				{
-					if (_Logger.IsFatalEnabled)
-						_Logger.Fatal("internal error in transaction system - synchronized case", ex);
-
-					throw;
-				}
-				catch (Exception)
-				{
-					if (_Logger.IsErrorEnabled)
-						_Logger.ErrorFormat("caught exception, rolling back transaction - synchronized case - tx#{0}",
-						                    localIdentifier);
-
-					transaction.Rollback();
-					throw;
-				}
-				finally
-				{
-					if (_Logger.IsDebugEnabled)
-						_Logger.DebugFormat("dispoing transaction - synchronized case - tx#{0}", localIdentifier);
-
-					transaction.Dispose();
-				}
-			}
 		}
 
 		void IOnBehalfAware.SetInterceptedComponentModel(ComponentModel target)

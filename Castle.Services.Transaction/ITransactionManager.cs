@@ -1,6 +1,6 @@
 ﻿#region license
 
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -56,30 +56,18 @@ namespace Castle.Services.Transaction
 		/// </summary>
 		Maybe<ITransaction> CurrentTransaction { get; }
 
-		/// <summary>
-		/// 	Gets the number of transactions on the current context (in which calls to this
-		/// 	interface is relevant).
-		/// </summary>
+		///<summary>
+		///	Gets the number of transactions on the current context
+		///	(in which calls to this interface is relevant). The default context
+		///	is the call context, based on the call stack.
+		///</summary>
 		uint Count { get; }
 
-		/// <summary>
-		/// 	Add a new retry policy given a key and a function to execute.
-		/// </summary>
-		/// <param name = "policyKey"></param>
-		/// <param name = "retryPolicy"></param>
-		void AddRetryPolicy(string policyKey, Func<Exception, bool> retryPolicy);
-
-		/// <summary>
-		/// 	Add a new default retry policy based on key. It will be placed at the end of the chain.
-		/// </summary>
-		/// <param name = "policyKey"></param>
-		/// <param name = "retryPolicy"></param>
-		void AddRetryPolicy(string policyKey, IRetryPolicy retryPolicy);
-
-		/// <summary>
-		/// 	Create a new transaction with the default options <see cref = "DefaultTransactionOptions" />.
-		/// </summary>
-		/// <returns>Maybe a created transaction. If the default options is to supress transactions, the maybe has no value.</returns>
+		///<summary>
+		///	Create a new transaction with the default options <see cref = "DefaultTransactionOptions" />. The default options
+		///	will create a new transaction. Only options with Supress = true will NOT create transactions.
+		///</summary>
+		///<returns>Maybe a created transaction. If the default options is to supress transactions, the maybe has no value.</returns>
 		Maybe<ICreatedTransaction> CreateTransaction();
 
 		/// <summary>
@@ -89,14 +77,16 @@ namespace Castle.Services.Transaction
 		/// 	<para>
 		/// 		<see cref = "IDisposable.Dispose" /> the transaction, or transactions further ahead in time will not
 		/// 		work properly.
-		/// 	</para><para>
-		/// 	       	Also, beware that if you call this method on your own, you are responsible for setting
-		/// 	       	<see cref = "System.Transactions.Transaction.Current" /> to the result's Inner property
-		/// 	       	and restoring the previous Current property at the end of that transaction.
-		/// 	       </para><para>
-		/// 	              	The transaction interceptor (in AutoTx) takes care of this for you. The two projects
-		/// 	              	work very well together.
-		/// 	              </para>
+		/// 	</para>
+		/// 	<para>
+		/// 		Also, beware that if you call this method on your own, you are responsible for setting
+		/// 		<see cref = "System.Transactions.Transaction.Current" /> to the result's Inner property
+		/// 		and restoring the previous Current property at the end of that transaction.
+		/// 	</para>
+		/// 	<para>
+		/// 		The transaction interceptor (in AutoTx) takes care of this for you. The two projects
+		/// 		work very well together.
+		/// 	</para>
 		/// </remarks>
 		/// <param name = "transactionOptions">Options to use for creating the new transaction.</param>
 		/// <returns>Maybe a transaction, if the options specified it. If the default options is to supress transactions, the maybe has no value.</returns>
@@ -108,5 +98,20 @@ namespace Castle.Services.Transaction
 		/// <param name = "transactionOptions">options to use for creating the transaction</param>
 		/// <returns>If the default options is to supress transactions, the maybe has no value.</returns>
 		Maybe<ICreatedTransaction> CreateFileTransaction(ITransactionOptions transactionOptions);
+
+		// TODO: v3.1 retry policies
+		///// <summary>
+		///// 	Add a new retry policy given a key and a function to execute.
+		///// </summary>
+		///// <param name = "policyKey"></param>
+		///// <param name = "retryPolicy"></param>
+		//void AddRetryPolicy(string policyKey, Func<Exception, bool> retryPolicy);
+
+		///// <summary>
+		///// 	Add a new default retry policy based on key. It will be placed at the end of the chain.
+		///// </summary>
+		///// <param name = "policyKey"></param>
+		///// <param name = "retryPolicy"></param>
+		//void AddRetryPolicy(string policyKey, IRetryPolicy retryPolicy);
 	}
 }

@@ -145,7 +145,9 @@ namespace Castle.Facilities.AutoTx.Lifestyles
 
 			if (!GetSemanticTransactionForLifetime().HasValue)
 				throw new MissingTransactionException(
-					string.Format("No transaction in context when trying to instantiate model '{0}' for resolve type '{1}'.", 
+					string.Format("No transaction in context when trying to instantiate model '{0}' for resolve type '{1}'. "
+						+ "If you have verified that your call stack contains a method with the [Transaction] attribute, "
+						+ "then also make sure that you have registered the AutoTx Facility.", 
 						Model.Service, context.Handler.Service));
 
 			var transaction = GetSemanticTransactionForLifetime().Value;

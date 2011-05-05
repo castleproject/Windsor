@@ -104,6 +104,9 @@
     <Compile Include="Internal\ContractExtensions.cs" />
     <Compile Include="Internal\CreatedTransaction.cs" />
     <Compile Include="DefaultTransactionOptions.cs" />
+    <Compile Include="Internal\IDependentAware.cs" />
+    <Compile Include="Contracts\IDependentAwareContract.cs" />
+    <Compile Include="Internal\TaskExtensions.cs" />
     <Compile Include="Internal\TxTraceListener.cs" />
     <Compile Include="Obsolete_Classes.cs" />
     <Compile Include="TransactionalConflictException.cs" />
@@ -147,6 +150,7 @@
     <Compile Include="TransactionAttribute.cs" />
     <Compile Include="TransactionManager.cs" />
     <Compile Include="Internal\TxScope.cs" />
+    <Compile Include="TransactionState.cs" />
     <Compile Include="Utils\Fun.cs" />
   </ItemGroup>
   <ItemGroup>

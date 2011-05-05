@@ -19,6 +19,8 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
+using System.Threading.Tasks;
+using Castle.Services.Transaction.Internal;
 using log4net;
 
 namespace Castle.Services.Transaction.Activities
@@ -57,6 +59,27 @@ namespace Castle.Services.Transaction.Activities
 				Contract.Ensures(Contract.Result<Maybe<ITransaction>>() != null);
 				return _Txs.Count == 0 ? Maybe.None<ITransaction>() : Maybe.Some(_Txs.Peek().Item1);
 			}
+		}
+
+		/// <summary>
+		/// Enlist a dependent task in the current activity. These tasks will be awaited
+		/// </summary>
+		/// <param name="task">The task to await from the completion of the top most transaction.</param>
+		/// <exception cref="InvalidOperationException">If there is no current topmost transaction</exception>
+		public void EnlistDependentTask(Task task)
+		{
+			Contract.Requires(task != null, "enlist dependent task requires non-null tasks");
+
+			if (_TopMost == null)
+				throw new InvalidOperationException("No topmost transaction in context. Be sure you have started a transaction before calling EnlistDependentTask.");
+
+			var aware = _TopMost as IDependentAware;
+
+			if (aware != null) 
+				aware.RegisterDependent(task);
+			else _Logger.WarnFormat("The transaction#{0} did not implement Castle.Services.Transaction.Internal.IDependentAware, " 
+				+ "yet a Task to await was registered. If you have created your own custom ITransaction implementation, verify that it implements IDependentAware.",
+				_TopMost.LocalIdentifier);
 		}
 
 		[ContractInvariantMethod]

@@ -83,12 +83,11 @@ namespace Castle.Services.Transaction
 		/// </summary>
 		Maybe<SafeKernelTransactionHandle> KernelTransactionHandle { get; }
 
-		// TODO: Policy for handling in doubt transactions
-
-		/// <summary>
-		/// 	Maybe contains a failed policy for this transaction.
-		/// </summary>
-		Maybe<IRetryPolicy> FailedPolicy { get; }
+		// TODO: v3.1: Policy for handling in doubt transactions and general failures
+		///// <summary>
+		///// 	Maybe contains a failed policy for this transaction.
+		///// </summary>
+		//Maybe<IRetryPolicy> FailedPolicy { get; }
 
 		/// <summary>
 		/// 	Gets a local identifier unique to the underlying transaction. Contrary to the 
@@ -98,6 +97,11 @@ namespace Castle.Services.Transaction
 		/// 	per-transaction resolve semantics where even a dependent transaction requires a new 'context'
 		/// 	of resolve.
 		/// </summary>
+		/// <remarks>
+		/// As opposed to the local identifier on System.Transactions.Transaction.Current.LocalIdentifier
+		/// this getter does not have side-effects and will return a value despite the inner transaction
+		/// being disposed.
+		/// </remarks>
 		string LocalIdentifier { get; }
 
 		/// <summary>
@@ -122,6 +126,9 @@ namespace Castle.Services.Transaction
 		/// </exception>
 		/// <exception cref = "TransactionException">An unknown problem occurred. 
 		/// 	For example the connection to the database was lost.</exception>
+		/// <exception cref="AggregateException">
+		///		One or more dependent transactions failed when using the Fork=true option!
+		/// </exception>
 		/// <remarks>
 		/// 	It's up for grabs (i.e. github pull request) to correctly handle state on the two exceptions that may be thrown
 		/// 	and to implement sane retry logic for them. All I can guess is that this shouldn't happen

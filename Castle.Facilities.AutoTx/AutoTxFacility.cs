@@ -1,6 +1,6 @@
 #region license
 
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 
 #endregion
 
-using Castle.Facilities.AutoTx.Lifestyles;
 using Castle.Facilities.AutoTx.Registration;
 using Castle.MicroKernel.Facilities;
 using Castle.MicroKernel.Registration;
@@ -27,18 +26,17 @@ using log4net;
 
 namespace Castle.Facilities.AutoTx
 {
-	/// <summary>
-	/// 	A facility for automatically handling transactions using the lightweight
-	/// 	transaction manager. This facility does not depend on
-	///		any other facilities.
-	/// </summary>
+	///<summary>
+	///	<para>A facility for automatically handling transactions using the lightweight
+	///		transaction manager. This facility does not depend on
+	///		any other facilities.</para>
+	///	<para>
+	///		Install the facility in your container with <code>c.AddFacility&lt;AutoTxFacility&gt;</code>
+	///	</para>
+	///</summary>
 	public class AutoTxFacility : AbstractFacility
 	{
 		private static readonly ILog _Logger = LogManager.GetLogger(typeof (AutoTxFacility));
-
-		public AutoTxFacility()
-		{
-		}
 
 		protected override void Init()
 		{
@@ -56,7 +54,8 @@ namespace Castle.Facilities.AutoTx
 				Component.For<ITransactionManager>()
 					.ImplementedBy<TransactionManager>()
 					.Named("transaction.manager")
-					.LifeStyle.Singleton,
+					.LifeStyle.Singleton
+					.Forward(typeof (TransactionManager)),
 				// the activity manager shouldn't have the same lifestyle as TransactionInterceptor, as it
 				// calls a static .Net/Mono framework method, and it's the responsibility of
 				// that framework method to keep track of the call context.
@@ -77,7 +76,8 @@ namespace Castle.Facilities.AutoTx
 			// TODO: Inspect already existing components!
 			Kernel.ComponentModelBuilder.AddContributor(new TransactionalComponentInspector());
 
-			_Logger.Debug(@"Initialized AutoTxFacility:
+			_Logger.Debug(
+				@"Initialized AutoTxFacility:
 
 If you are experiencing problems, go to https://github.com/haf/ and file a ticket for the Transactions project.
 You can enable verbose logging for .Net by adding this to you .config file:
@@ -93,7 +93,8 @@ You can enable verbose logging for .Net by adding this to you .config file:
 	</system.diagnostics>
 
 If you wish to e.g. roll back a transaction from within a transactional method you can resolve/use the ITransactionManager's
-CurrentTransaction property and invoke Rollback on it. Be ready to catch TransactionAbortedException from the caller.");
+CurrentTransaction property and invoke Rollback on it. Be ready to catch TransactionAbortedException from the caller.
+");
 		}
 	}
 }

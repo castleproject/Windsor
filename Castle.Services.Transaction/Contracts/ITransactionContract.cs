@@ -88,16 +88,16 @@ namespace Castle.Services.Transaction.Contracts
 			}
 		}
 
-		Maybe<IRetryPolicy> ITransaction.FailedPolicy
-		{
-			[Pure]
-			get
-			{
-				var result = Contract.Result<Maybe<IRetryPolicy>>();
-				Contract.Ensures(result != null);
-				return result;
-			}
-		}
+		//Maybe<IRetryPolicy> ITransaction.FailedPolicy
+		//{
+		//    [Pure]
+		//    get
+		//    {
+		//        var result = Contract.Result<Maybe<IRetryPolicy>>();
+		//        Contract.Ensures(result != null);
+		//        return result;
+		//    }
+		//}
 
 		void IDisposable.Dispose()
 		{

@@ -99,8 +99,9 @@
     <Compile Include="AutoTxFacility.cs" />
     <Compile Include="ITransactionMetaInfoStore.cs" />
     <Compile Include="Lifestyles\WrapperResolveLifestyleManager.cs" />
+    <Compile Include="Obsolete_Classes.cs" />
     <Compile Include="Registration\LifestyleRegistrationExtensions.cs" />
-    <Compile Include="Lifestyles\MissingTransactionException.cs" />
+    <Compile Include="MissingTransactionException.cs" />
     <Compile Include="Lifestyles\PerTopTransactionLifestyleManager.cs" />
     <Compile Include="Lifestyles\PerTransactionLifestyleManager.cs" />
     <Compile Include="Lifestyles\PerTransactionLifestyleManagerBase.cs" />
@@ -129,5 +130,6 @@
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

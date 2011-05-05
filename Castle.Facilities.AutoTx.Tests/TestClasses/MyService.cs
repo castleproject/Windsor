@@ -24,7 +24,7 @@ using NUnit.Framework;
 
 namespace Castle.Facilities.AutoTx.Tests.TestClasses
 {
-	public class MyService : IMyService
+	public class MyService
 	{
 		private readonly ITransactionManager _Manager;
 
@@ -35,7 +35,7 @@ namespace Castle.Facilities.AutoTx.Tests.TestClasses
 		}
 
 		[Transaction]
-		ITransaction IMyService.VerifyInAmbient()
+		public virtual ITransaction VerifyInAmbient()
 		{
 			Assert.That(System.Transactions.Transaction.Current != null,
 			            "The current transaction mustn't be null.");
@@ -47,24 +47,41 @@ namespace Castle.Facilities.AutoTx.Tests.TestClasses
 		}
 
 		[Transaction]
-		void IMyService.VerifyInAmbient(Action a)
+		public virtual void VerifyInAmbient(Action a)
 		{
 			Assert.That(System.Transactions.Transaction.Current != null,
-			            "The current transaction mustn't be null.");
+			            "The current transaction mustn't be null in ambient case.");
 
 			a();
 		}
 
-		[Transaction(TransactionScopeOption.Suppress)]
-		public void VerifySupressed()
+		public void VerifyInAmbient(Action a, Action before, Action after)
 		{
-			Assert.That(System.Transactions.Transaction.Current, Is.Null);
+			if (before != null) before();
+			VerifyInAmbient(a);
+			if (after != null) after();
+		}
+
+		public void VerifyBookKeepingInFork(Action a, Action before, Action after)
+		{
+			if (before != null) before();
+			VerifyBookKeepingInFork(a);
+			if (after != null) after();
 		}
 
 		[Transaction(Fork = true)]
-		public void VerifyBookKeepingInFork(Action a)
+		public virtual void VerifyBookKeepingInFork(Action action)
 		{
-			a();
+			Assert.That(System.Transactions.Transaction.Current != null,
+						"The current transaction mustn't be null in inner fork case.");
+
+			action();
+		}
+
+		[Transaction(TransactionScopeOption.Suppress)]
+		public virtual void VerifySupressed()
+		{
+			Assert.That(System.Transactions.Transaction.Current, Is.Null);
 		}
 	}
 }

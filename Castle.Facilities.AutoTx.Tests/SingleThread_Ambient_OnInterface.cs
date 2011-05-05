@@ -38,7 +38,7 @@ namespace Castle.Facilities.AutoTx.Tests
 			XmlConfigurator.Configure();
 			_Container = new WindsorContainer();
 			_Container.AddFacility("autotx", new AutoTxFacility());
-			_Container.Register(Component.For<IMyService>().ImplementedBy<MyService>());
+			_Container.Register(Component.For<MyService>());
 		}
 
 		[TearDown]
@@ -50,7 +50,7 @@ namespace Castle.Facilities.AutoTx.Tests
 		[Test]
 		public void Automatically_Starts_CommitableTransaction()
 		{
-			using (var scope = new ResolveScope<IMyService>(_Container))
+			using (var scope = new ResolveScope<MyService>(_Container))
 				scope.Service.VerifyInAmbient();
 		}
 
@@ -64,7 +64,7 @@ namespace Castle.Facilities.AutoTx.Tests
 
 				try
 				{
-					using (var scope = new ResolveScope<IMyService>(_Container))
+					using (var scope = new ResolveScope<MyService>(_Container))
 						scope.Service.VerifyInAmbient(() =>
 						{
 							ambient = System.Transactions.Transaction.Current;
@@ -83,7 +83,7 @@ namespace Castle.Facilities.AutoTx.Tests
 		public void RecursiveTransactions_Inner_Should_Be_DependentTransaction()
 		{
 			using (var txM = new ResolveScope<ITransactionManager>(_Container))
-			using (var scope = new ResolveScope<IMyService>(_Container))
+			using (var scope = new ResolveScope<MyService>(_Container))
 				scope.Service.VerifyInAmbient(() =>
 				{
 					Assert.That(txM.Service.CurrentTransaction.Value.Inner.TransactionInformation.Status ==
@@ -100,7 +100,7 @@ namespace Castle.Facilities.AutoTx.Tests
 		{
 			TransactionState state = TransactionState.Default;
 			using (var txM = new ResolveScope<ITransactionManager>(_Container))
-			using (var scope = new ResolveScope<IMyService>(_Container))
+			using (var scope = new ResolveScope<MyService>(_Container))
 			{
 				scope.Service.VerifyInAmbient(() =>
 				{
@@ -117,7 +117,7 @@ namespace Castle.Facilities.AutoTx.Tests
 			var resource = new ThrowingResource(false);
 
 			using (var txM = new ResolveScope<ITransactionManager>(_Container))
-			using (var scope = new ResolveScope<IMyService>(_Container))
+			using (var scope = new ResolveScope<MyService>(_Container))
 			{
 				scope.Service.VerifyInAmbient(() =>
 				{

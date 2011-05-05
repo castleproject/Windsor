@@ -32,6 +32,8 @@ namespace Castle.Services.Transaction
 		public bool AsyncRollback { get; set; }
 
 		public bool AsyncCommit { get; set; }
+		
+		public DependentCloneOption DependentOption { get; set; }
 
 		#endregion
 
@@ -42,7 +44,7 @@ namespace Castle.Services.Transaction
 
 		public DefaultTransactionOptions(IsolationLevel isolationLevel, TransactionScopeOption mode, bool fork,
 		                                 TimeSpan timeout, bool asyncRollback, bool asyncCommit)
-			: this(isolationLevel, mode, fork, timeout, new Dictionary<string, object>(), asyncRollback, asyncCommit)
+			: this(isolationLevel, mode, fork, timeout, new Dictionary<string, object>(), asyncRollback, asyncCommit, DependentCloneOption.BlockCommitUntilComplete)
 		{
 		}
 
@@ -51,7 +53,7 @@ namespace Castle.Services.Transaction
 		public DefaultTransactionOptions(IsolationLevel isolationLevel, TransactionScopeOption mode, bool fork,
 		                                 TimeSpan timeout,
 		                                 IEnumerable<KeyValuePair<string, object>> customContext, bool asyncRollback,
-		                                 bool asyncCommit)
+		                                 bool asyncCommit, DependentCloneOption dependentCloneOption)
 		{
 			Contract.Requires(customContext != null);
 
@@ -62,6 +64,7 @@ namespace Castle.Services.Transaction
 			_CustomContext = customContext.ToDictionary(x => x.Key, x => x.Value);
 			AsyncRollback = asyncRollback;
 			AsyncCommit = asyncCommit;
+			DependentOption = dependentCloneOption;
 		}
 
 		[ContractInvariantMethod]
@@ -88,7 +91,8 @@ namespace Castle.Services.Transaction
 			       && other.Timeout.Equals(Timeout)
 			       && other.CustomContext.All(x => _CustomContext.ContainsKey(x.Key) && _CustomContext[x.Key].Equals(x.Value))
 			       && other.AsyncRollback.Equals(AsyncRollback)
-			       && other.AsyncCommit.Equals(AsyncCommit);
+			       && other.AsyncCommit.Equals(AsyncCommit)
+				   && other.DependentOption.Equals(DependentOption);
 		}
 
 		/// <summary>
@@ -137,6 +141,7 @@ namespace Castle.Services.Transaction
 				result = (result*397) ^ _CustomContext.GetHashCode();
 				result = (result*397) ^ AsyncRollback.GetHashCode();
 				result = (result*397) ^ AsyncCommit.GetHashCode();
+				result = (result*397) ^ DependentOption.GetHashCode();
 				return result;
 			}
 		}

@@ -25,23 +25,30 @@ using System.Transactions;
 namespace Castle.Services.Transaction
 {
 	/// <summary>
-	/// 	Specifies a method as transactional.
+	/// 	Specifies a method as transactional. When adding this interface to a method you can use an inversion of control container
+	///		to intercept method calls to that method and perform the method transactionally. In the 'recommended' implementation,
+	///		you can use Windsor and the AutoTx Facility for this. Just write <code>(:IWindsorContainer).AddFacility&lt;AutoTxFacility&gt;();</code>
+	///		when you are registering your components.
 	/// </summary>
 	[AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
 	public sealed class TransactionAttribute : Attribute, ITransactionOptions
 	{
 		private IDictionary<string, object> _CustomContext;
 
-		public TransactionAttribute() : this(TransactionScopeOption.Required)
+		public TransactionAttribute() : this(TransactionScopeOption.Required, System.Transactions.IsolationLevel.ReadCommitted)
 		{
 		}
 
 		[Obsolete("Deprecated; use [Transaction], [Transaction(TransactionScopeOption.Required)] or [Transaction(TransactionScopeOption.Supress)] instead.")]
-		public TransactionAttribute(TransactionMode transactionMode) : this(TransactionScopeOption.Required)
+		public TransactionAttribute(TransactionMode transactionMode) : this(TransactionScopeOption.Required, System.Transactions.IsolationLevel.ReadCommitted)
 		{
 		}
 
-		public TransactionAttribute(TransactionScopeOption mode, IsolationLevel isolationLevel = IsolationLevel.ReadCommitted)
+		public TransactionAttribute(TransactionScopeOption mode) : this(mode, System.Transactions.IsolationLevel.ReadCommitted)
+		{
+		}
+
+		public TransactionAttribute(TransactionScopeOption mode, IsolationLevel isolationLevel)
 		{
 			Timeout = TimeSpan.MaxValue;
 			Mode = mode;
@@ -58,6 +65,8 @@ namespace Castle.Services.Transaction
 		public IsolationLevel IsolationLevel { [Pure] get; set; }
 
 		public TransactionScopeOption Mode { [Pure] get; set; }
+
+		public DependentCloneOption DependentOption { [Pure] get; set; }
 
 		/// <summary>
 		/// 	Gets or sets the transaction timeout. The timeout is often better

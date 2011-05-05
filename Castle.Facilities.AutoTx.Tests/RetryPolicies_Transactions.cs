@@ -27,7 +27,7 @@ using NUnit.Framework;
 
 namespace Castle.Facilities.AutoTx.Tests
 {
-	[Ignore("Implement retry policies are nicer to test with e.g. NHibernate integration parts.")]
+	[Ignore("For v3.1: Implement retry policies are nicer to test with e.g. NHibernate integration parts.")]
 	public class RetryPolicies_Transactions
 	{
 		private IWindsorContainer _Container;
@@ -38,7 +38,7 @@ namespace Castle.Facilities.AutoTx.Tests
 		{
 			_Container = new WindsorContainer().Register(
 
-				Component.For<IMyService>().ImplementedBy<MyService>(),
+				Component.For<MyService>(),
 
 				Component.For<ITransactionManager>()
 					.ImplementedBy<TransactionManager>()
@@ -64,29 +64,29 @@ namespace Castle.Facilities.AutoTx.Tests
 			_Container.Dispose();
 		}
 
-		// something like: 
-		// http://philbolduc.blogspot.com/2010/03/retryable-actions-in-c.html
+		//// something like: 
+		//// http://philbolduc.blogspot.com/2010/03/retryable-actions-in-c.html
 
-		[Test]
-		public void retrying_twice_on_timeout()
-		{
-			// on app-start
-			var counter = 0;
-			_TransactionManager.AddRetryPolicy("timeouts", e => e is TimeoutException && ++counter <= 2);
+		//[Test]
+		//public void retrying_twice_on_timeout()
+		//{
+		//    // on app-start
+		//    var counter = 0;
+		//    _TransactionManager.AddRetryPolicy("timeouts", e => e is TimeoutException && ++counter <= 2);
 
-			using (var tx = _TransactionManager.CreateTransaction(new DefaultTransactionOptions()).Value.Transaction)
-			using (var s = new ResolveScope<IMyService>(_Container))
-			{
-				// in action
-				s.Service.VerifyInAmbient(() =>
-				{
-				    if (_TransactionManager.CurrentTransaction
-				        .Do(x => x.FailedPolicy)
-				        .Do(x => x.Failures < 2)
-				        .OrThrow(() => new Exception("Test failure; maybe doesn't have value!")))
-				        throw new TimeoutException("database not responding in a timely manner");
-				});
-			}
-		}
+		//    using (var tx = _TransactionManager.CreateTransaction(new DefaultTransactionOptions()).Value.Transaction)
+		//    using (var s = new ResolveScope<IMyService>(_Container))
+		//    {
+		//        // in action
+		//        s.Service.VerifyInAmbient(() =>
+		//        {
+		//            if (_TransactionManager.CurrentTransaction
+		//                .Do(x => x.FailedPolicy)
+		//                .Do(x => x.Failures < 2)
+		//                .OrThrow(() => new Exception("Test failure; maybe doesn't have value!")))
+		//                throw new TimeoutException("database not responding in a timely manner");
+		//        });
+		//    }
+		//}
 	}
 }

@@ -19,7 +19,7 @@
 using System;
 using System.Runtime.Serialization;
 
-namespace Castle.Facilities.AutoTx.Lifestyles
+namespace Castle.Facilities.AutoTx
 {
 	///<summary>
 	///	Exception thrown when there's no transaction available when the component is resolved and the component

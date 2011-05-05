@@ -19,13 +19,14 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Contracts;
+using System.Threading.Tasks;
 using System.Transactions;
 using Castle.Services.Transaction.Internal;
 using log4net;
 
 namespace Castle.Services.Transaction
 {
-	public class TransactionManager : ITransactionManager
+	public sealed class TransactionManager : ITransactionManager
 	{
 		private static readonly ILog _Logger = LogManager.GetLogger(typeof (TransactionManager));
 		private readonly IActivityManager _ActivityManager;
@@ -33,8 +34,13 @@ namespace Castle.Services.Transaction
 		public TransactionManager(IActivityManager activityManager)
 		{
 			Contract.Requires(activityManager != null);
-			Contract.Ensures(_ActivityManager != null);
 			_ActivityManager = activityManager;
+		}
+
+		[ContractInvariantMethod]
+		private void Invariant()
+		{
+			Contract.Invariant(_ActivityManager != null);
 		}
 
 		Maybe<ITransaction> ITransactionManager.CurrentTopTransaction
@@ -52,25 +58,13 @@ namespace Castle.Services.Transaction
 			get { return _ActivityManager.GetCurrentActivity().Count; }
 		}
 
-		void ITransactionManager.AddRetryPolicy(string policyKey, Func<Exception, bool> retryPolicy)
-		{
-			throw new NotImplementedException();
-		}
-
-		void ITransactionManager.AddRetryPolicy(string policyKey, IRetryPolicy retryPolicy)
-		{
-			throw new NotImplementedException();
-		}
-
-		[SuppressMessage("Microsoft.Reliability", "CA2000",
-			Justification = "CommittableTransaction is disposed by Transaction")]
+		[SuppressMessage("Microsoft.Reliability", "CA2000", Justification = "CommittableTransaction is disposed by Transaction")]
 		Maybe<ICreatedTransaction> ITransactionManager.CreateTransaction()
 		{
 			return ((ITransactionManager) this).CreateTransaction(new DefaultTransactionOptions());
 		}
 
-		[SuppressMessage("Microsoft.Reliability", "CA2000",
-			Justification = "CommittableTransaction is disposed by Transaction")]
+		[SuppressMessage("Microsoft.Reliability", "CA2000", Justification = "CommittableTransaction is disposed by Transaction")]
 		Maybe<ICreatedTransaction> ITransactionManager.CreateTransaction(ITransactionOptions transactionOptions)
 		{
 			var activity = _ActivityManager.GetCurrentActivity();
@@ -85,38 +79,34 @@ namespace Castle.Services.Transaction
 			if (activity.Count == 0)
 			{
 				tx = new Transaction(new CommittableTransaction(new TransactionOptions
-				                                                	{
-				                                                		IsolationLevel = transactionOptions.IsolationLevel,
-				                                                		Timeout = transactionOptions.Timeout
-				                                                	}), nextStackDepth, transactionOptions, () => activity.Pop());
+					{
+						IsolationLevel = transactionOptions.IsolationLevel,
+						Timeout = transactionOptions.Timeout
+					}), nextStackDepth, transactionOptions, () => activity.Pop());
 			}
 			else
 			{
 				var clone = activity
 					.CurrentTransaction.Value
 					.Inner
-					.DependentClone(DependentCloneOption.BlockCommitUntilComplete);
-
-				// assume because I can't open up .Net and add the contract myself
+					.DependentClone(transactionOptions.DependentOption);
 				Contract.Assume(clone != null);
+				
 				Action onDispose = () => activity.Pop();
 				tx = new Transaction(clone, nextStackDepth, transactionOptions, shouldFork ? null : onDispose);
 			}
 
-			if (!shouldFork)
+			if (!shouldFork) // forked transactions should not be on the current context's activity stack
 				activity.Push(tx);
 
 			Contract.Assume(tx.State == TransactionState.Active, "by c'tor post condition for both cases of the if statement");
 
-			var m = Maybe.Some(new CreatedTransaction(tx,
-			                                          // we should only fork if we have a different current top transaction than the current
-			                                          shouldFork, () =>
-			                                                      	{
-			                                                      		_ActivityManager.GetCurrentActivity().Push(tx);
-			                                                      		return
-			                                                      			new DisposableScope(
-			                                                      				_ActivityManager.GetCurrentActivity().Pop);
-			                                                      	}) as ICreatedTransaction);
+			var m = Maybe.Some(new CreatedTransaction(tx, 
+			    shouldFork, // we should only fork if we have a different current top transaction than the current
+				() => {
+					_ActivityManager.GetCurrentActivity().Push(tx);
+					return new DisposableScope(_ActivityManager.GetCurrentActivity().Pop);
+				}) as ICreatedTransaction);
 
 			// warn if fork and the top transaction was just created
 			if (transactionOptions.Fork && nextStackDepth == 1)
@@ -124,8 +114,6 @@ namespace Castle.Services.Transaction
 				                   + "transaction in invocation chain. running transaction sequentially",
 				                   tx.LocalIdentifier);
 
-			// assume because I can't make value types and reference types equal enough
-			// and boxing doesn't do it for me.
 			Contract.Assume(m.HasValue && m.Value.Transaction.State == TransactionState.Active);
 
 			return m;
@@ -134,6 +122,19 @@ namespace Castle.Services.Transaction
 		Maybe<ICreatedTransaction> ITransactionManager.CreateFileTransaction(ITransactionOptions transactionOptions)
 		{
 			throw new NotImplementedException("Implement file transactions in the transaction manager!");
+		}
+
+		/// <summary>
+		/// Enlists a dependent task in the current top transaction.
+		/// </summary>
+		/// <param name="task">
+		/// The task to enlist; this task is the action of running
+		/// a dependent transaction on the thread pool.
+		/// </param>
+		public void EnlistDependentTask(Task task)
+		{
+			Contract.Requires(task != null);
+			_ActivityManager.GetCurrentActivity().EnlistDependentTask(task);
 		}
 
 		private class DisposableScope : IDisposable
@@ -158,10 +159,21 @@ namespace Castle.Services.Transaction
 			GC.SuppressFinalize(this);
 		}
 
-		protected virtual void Dispose(bool isManaged)
+		private void Dispose(bool isManaged)
 		{
 			if (!isManaged)
 				return;
 		}
+
+		// for v3.1
+		//void ITransactionManager.AddRetryPolicy(string policyKey, Func<Exception, bool> retryPolicy)
+		//{
+		//    throw new NotImplementedException();
+		//}
+
+		//void ITransactionManager.AddRetryPolicy(string policyKey, IRetryPolicy retryPolicy)
+		//{
+		//    throw new NotImplementedException();
+		//}
 	}
 }

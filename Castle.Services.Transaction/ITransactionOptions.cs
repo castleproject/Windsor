@@ -30,20 +30,34 @@ namespace Castle.Services.Transaction
 		/// <summary>
 		/// 	Gets the transaction isolation level.
 		/// </summary>
-		IsolationLevel IsolationLevel { [Pure]
-		get; }
+		IsolationLevel IsolationLevel { [Pure] get; }
 
 		/// <summary>
 		/// 	Gets the transaction mode.
 		/// </summary>
-		TransactionScopeOption Mode { [Pure]
-		get; }
+		TransactionScopeOption Mode { [Pure] get; }
 
 		/// <summary>
-		/// 	Gets whether the current transaction's method should forked off.
+		///		<para>Gets the dependent clone option, i.e. the option that
+		///		specifies what to do with the child/dependent transaction
+		///		if the parent transaction completes before. The default is
+		///		BlockCommitUntilComplete and unless you know what you are doing, this is
+		///		a recommended setting.</para>
+		///		<para>
+		///		If you are COMPLETELY SURE you want the main, non-forked transaction
+		///		to complete without caring for its forked transactions (i.e. racing to complete
+		///		with them an introducing the random execution patterns this brings), set this
+		///		property to the non-default RollbackIfNotComplete. This will throw
+		///		TransactionAbortedExceptions on all forked transactions, which will be silently dropped. 
+		/// </para>
 		/// </summary>
-		bool Fork { [Pure]
-		get; }
+		DependentCloneOption DependentOption { [Pure] get; }
+
+		/// <summary>
+		/// 	Gets whether the current transaction's method should forked off. You might get deadlocks
+		///		if you have only set one thread on the thread pool.
+		/// </summary>
+		bool Fork { [Pure] get; }
 
 		/// <summary>
 		/// 	Gets the Timeout for this managed transaction. Beware that the timeout 
@@ -51,21 +65,18 @@ namespace Castle.Services.Transaction
 		/// 	Often it's a good idea to let your database handle the transactions
 		/// 	timing out and leaving this option to its max value. Your mileage may vary though.
 		/// </summary>
-		TimeSpan Timeout { [Pure]
-		get; }
+		TimeSpan Timeout { [Pure] get; }
 
 		/// <summary>
 		/// 	Version 3.1: Gets whether the commit should be done asynchronously. Default is false. If you have done a lot of work
 		/// 	in the transaction, an asynchronous commit might be preferrable.
 		/// </summary>
-		bool AsyncCommit { [Pure]
-		get; }
+		bool AsyncCommit { [Pure] get; }
 
 		/// <summary>
 		/// 	Version 3.1: Gets whether a failed transaction should rollback asynchronously after notifying the caller of failure.
 		/// </summary>
-		bool AsyncRollback { [Pure]
-		get; }
+		bool AsyncRollback { [Pure] get; }
 
 		/// <summary>
 		/// 	Gets the custom context dictionary. Implementors of the interface can choose to perform
@@ -73,8 +84,7 @@ namespace Castle.Services.Transaction
 		/// 	is capable of handling Database ReadOnly Transactions, tell the infrastructure
 		/// 	that through this context-property.
 		/// </summary>
-		IEnumerable<KeyValuePair<string, object>> CustomContext { [Pure]
-		get; }
+		IEnumerable<KeyValuePair<string, object>> CustomContext { [Pure] get; }
 	}
 
 

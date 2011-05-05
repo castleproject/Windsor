@@ -7,6 +7,7 @@ using Castle.Services.Transaction;
 using Castle.Windsor;
 using log4net.Config;
 using NUnit.Framework;
+using System.Linq;
 
 namespace Castle.Facilities.AutoTx.Tests
 {
@@ -20,7 +21,7 @@ namespace Castle.Facilities.AutoTx.Tests
 			XmlConfigurator.Configure();
 			_Container = new WindsorContainer();
 			_Container.AddFacility("autotx", new AutoTxFacility());
-			_Container.Register(Component.For<IMyService>().ImplementedBy<MyService>());
+			_Container.Register(Component.For<MyService>());
 			ThreadPool.SetMinThreads(5, 5);
 		}
 
@@ -37,7 +38,7 @@ namespace Castle.Facilities.AutoTx.Tests
 			var childHasStarted = new ManualResetEvent(false);
 
 			using (var manager = _Container.ResolveScope<ITransactionManager>())
-			using (var scope = _Container.ResolveScope<IMyService>())
+			using (var scope = _Container.ResolveScope<MyService>())
 			{
 				Assert.That(manager.Service.Count, Is.EqualTo(0));
 				scope.Service.VerifyInAmbient(() =>
@@ -50,7 +51,7 @@ namespace Castle.Facilities.AutoTx.Tests
 						parentHasAsserted.WaitOne();
 
 						Assert.That(manager.Service.Count, Is.EqualTo(1), "because we're in a different call-context");
-					});
+					}, null, null);
 
 					childHasStarted.WaitOne();
 
@@ -66,29 +67,40 @@ namespace Castle.Facilities.AutoTx.Tests
 			}
 		}
 
-		[Test, Ignore("Fork's exception handling needs work; exceptions are thrown on finalizer thread right now, todo in TransactionInterceptor code")]
+		[Test]
 		public void InterleavingWhereChildCommit_IsOutstanding_OverParent()
 		{
-			using (var manager = _Container.ResolveScope<ITransactionManager>())
-			using (var scope = _Container.ResolveScope<IMyService>())
+			// ReSharper disable ConvertToLambdaExpression)
+			using (var manager = _Container.ResolveScope<TransactionManager>())
+			using (var scope = _Container.ResolveScope<MyService>())
 			{
-				var childHasStarted = new ManualResetEvent(false);
-				scope.Service.VerifyInAmbient(() =>
-				{
-					scope.Service.VerifyBookKeepingInFork(() =>
-					{
-						try
+				var parentCompleted = new ManualResetEvent(false);
+				var childHasCompleted = new ManualResetEvent(false);
+				TransactionInterceptor.Finally = childHasCompleted;
+				const string exMsg = "something went wrong, but parent has completed";
+
+				try {
+					scope.Service.VerifyInAmbient(() => {
+						// hack to fix interleaving
+						var top = (Transaction)((ITransactionManager)manager.Service).CurrentTopTransaction.Value;
+						top.BeforeTopComplete = () => childHasCompleted.WaitOne();
+
+						scope.Service.VerifyBookKeepingInFork(() =>
 						{
-							throw new ApplicationException("something went wrong, but parent has completed");
-						}
-						finally
-						{
-							childHasStarted.Set();
-						}
+							throw new ApplicationException(exMsg);
+						});
+
+						childHasCompleted.WaitOne();
 					});
-					childHasStarted.WaitOne();
-				});
+					Assert.Fail("No exception was thrown!");
+				}
+				catch (AggregateException ex)
+				{
+					Assert.That(ex.InnerExceptions.Any(x => x is ApplicationException && x.Message == exMsg));
+				}
 			}
+			GC.WaitForPendingFinalizers(); // because tasks throw on finalize
+			// ReSharper restore ConvertToLambdaExpression
 		}
 
 			/* ------ Test started: Assembly: Castle.Facilities.AutoTx.Tests.dll ------

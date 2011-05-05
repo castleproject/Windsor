@@ -10,7 +10,6 @@ using System.Transactions;
 using Castle.Services.Transaction.Internal;
 using Castle.Services.Transaction.IO;
 using Path = Castle.Services.Transaction.IO.Path;
-using TransactionException = Castle.Services.Transaction.TransactionException;
 
 namespace Castle.Services.Transaction
 {
@@ -33,14 +32,13 @@ namespace Castle.Services.Transaction
 		#region Constructors
 
 		public FileTransaction()
-			: this("<< manual TxF-tx >>")
+			: this(null)
 		{
 		}
 
 		public FileTransaction(string name)
 		{
 			Contract.Requires(!string.IsNullOrEmpty(name));
-			Contract.Ensures(_Name != null);
 
 			_Name = name;
 			InnerBegin();
@@ -89,7 +87,7 @@ namespace Castle.Services.Transaction
 		///</summary>
 		public string Name
 		{
-			get { return _Name ?? string.Format("TxF #{0}", GetHashCode()); }
+			get { return _Name ?? string.Format("FileTransaction#{0}", GetHashCode()); }
 		}
 
 		private void InnerBegin()
@@ -147,10 +145,10 @@ namespace Castle.Services.Transaction
 			}
 		}
 
-		Maybe<IRetryPolicy> ITransaction.FailedPolicy
-		{
-			get { return _Inner != null ? _Inner.FailedPolicy : Maybe.None<IRetryPolicy>(); }
-		}
+		//Maybe<IRetryPolicy> ITransaction.FailedPolicy
+		//{
+		//    get { return _Inner != null ? _Inner.FailedPolicy : Maybe.None<IRetryPolicy>(); }
+		//}
 
 		string ITransaction.LocalIdentifier
 		{

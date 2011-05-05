@@ -41,6 +41,11 @@ namespace Castle.Services.Transaction.Contracts
 			get { throw new NotImplementedException(); }
 		}
 
+		DependentCloneOption ITransactionOptions.DependentOption
+		{
+			get { throw new NotImplementedException(); }
+		}
+
 		bool ITransactionOptions.Fork
 		{
 			get { throw new NotImplementedException(); }
