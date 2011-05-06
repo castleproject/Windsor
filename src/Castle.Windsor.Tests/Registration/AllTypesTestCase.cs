@@ -21,7 +21,6 @@ namespace Castle.MicroKernel.Tests.Registration
 	using Castle.Core;
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Tests.ClassComponents;
-	using Castle.Windsor.Tests;
 
 	using CastleTests;
 
@@ -201,7 +200,7 @@ namespace Castle.MicroKernel.Tests.Registration
 			                	.WithService.FirstInterface()
 				);
 
-			var repository = Kernel.Resolve<ClassComponents.IRepository<CustomerImpl>>();
+			var repository = Kernel.Resolve<IRepository<CustomerImpl>>();
 			Assert.IsNotNull(repository);
 		}
 
@@ -467,7 +466,7 @@ namespace Castle.MicroKernel.Tests.Registration
 			                	.WithService.FirstInterface()
 				);
 
-			var repository = Kernel.Resolve<ClassComponents.IRepository<ICustomer>>();
+			var repository = Kernel.Resolve<IRepository<ICustomer>>();
 			Assert.IsNotNull(repository);
 		}
 

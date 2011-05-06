@@ -658,6 +658,7 @@
     <Compile Include="Registration\ComponentRegistrationByNamespaceTestCase.cs" />
     <Compile Include="Registration\DependsOnTestCase.cs" />
     <Compile Include="Registration\ServiceOverridesTestCase.cs" />
+    <Compile Include="Registration\TypesTestCase.cs" />
     <Compile Include="Registration\WithServiceTestCase.cs" />
     <Compile Include="ResolveScopesTestCase.cs" />
     <Compile Include="ServiceOverridesStackOverflowTestCase.cs" />

@@ -147,7 +147,7 @@ namespace Castle.MicroKernel.Registration
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static FromTypesDescriptor Pick(IEnumerable<Type> types)
 		{
-			return new FromTypesDescriptor(types);
+			return new FromTypesDescriptor(types, Classes.Filter);
 		}
 	}
 }
