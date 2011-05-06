@@ -104,7 +104,7 @@ namespace Castle.MicroKernel.Tests.Registration
 		[Test]
 		public void RegisterAssemblyTypes_LookupInterfaceService_RegisteredInContainer()
 		{
-			Kernel.Register(AllTypes.FromAssembly(Assembly.GetExecutingAssembly())
+			Kernel.Register(Classes.FromAssembly(Assembly.GetExecutingAssembly())
 			                	.BasedOn<ICommon>()
 			                	.WithService.FromInterface()
 				);
@@ -196,7 +196,7 @@ namespace Castle.MicroKernel.Tests.Registration
 		[Test]
 		public void RegisterGenericTypes_BasedOnGenericDefinition_RegisteredInContainer()
 		{
-			Kernel.Register(AllTypes.From(typeof(DefaultRepository<>))
+			Kernel.Register(Classes.From(typeof(DefaultRepository<>))
 			                	.Pick()
 			                	.WithService.FirstInterface()
 				);
@@ -355,7 +355,7 @@ namespace Castle.MicroKernel.Tests.Registration
 		{
 #pragma warning disable 0618 //call to obsolete method
 			Kernel.Register(
-				AllTypes.FromThisAssembly()
+				Classes.FromThisAssembly()
 					.BasedOn<ICommon>()
 					.BasedOn<ICustomer>()
 					.If(t => t.FullName.Contains("Chain"))
