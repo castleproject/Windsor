@@ -470,7 +470,7 @@ namespace Castle.Windsor
 		/// </example>
 		/// <example>
 		///   <code>
-		///     container.Register(AllTypes.FromThisAssembly().BasedOn&lt;IService&gt;().WithServiceDefaultInterfaces().Configure(c => c.LifestyleTransient()));
+		///     container.Register(Classes.FromThisAssembly().BasedOn&lt;IService&gt;().WithServiceDefaultInterfaces().Configure(c => c.LifestyleTransient()));
 		///   </code>
 		/// </example>
 		/// <param name = "registrations">The component registrations created by <see cref = "Component.For{TService}" />, <see

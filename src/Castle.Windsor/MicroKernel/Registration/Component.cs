@@ -158,7 +158,7 @@ namespace Castle.MicroKernel.Registration
 		/// <returns></returns>
 		/// <example>
 		///   container.Register(
-		///   AllTypes.FromThisAssembly()
+		///   Classes.FromThisAssembly()
 		///   .Where(Component.HasAttribute&lt;UserAttribute&gt;) );
 		/// </example>
 		public static bool HasAttribute<TAttribute>(Type type) where TAttribute : Attribute
@@ -174,7 +174,7 @@ namespace Castle.MicroKernel.Registration
 		/// <returns></returns>
 		/// <example>
 		///   container.Register(
-		///   AllTypes.FromThisAssembly()
+		///   Classes.FromThisAssembly()
 		///   .Where(Component.HasAttribute&lt;UserAttribute&gt;(u => u.SomeFlag)) );
 		/// </example>
 		public static Predicate<Type> HasAttribute<TAttribute>(Predicate<TAttribute> filter) where TAttribute : Attribute

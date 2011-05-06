@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,13 +16,14 @@ namespace Castle.MicroKernel.Registration
 {
 	using System;
 	using System.Collections.Generic;
-	using System.ComponentModel;
 	using System.Reflection;
 
+	using Castle.Core.Internal;
+
 	/// <summary>
-	///   Describes a set of components to register in the kernel. Use static methods on the class to fluently build registration.
+	///   Entry point to fluent way to register, by convention, multiple concrete (non-abstract) classes (that include also delegate types). Use static methods on the class to fluently build registration.
 	/// </summary>
-	public static class AllTypes
+	public static class Classes
 	{
 		/// <summary>
 		///   Prepares to register types from a list of types.
@@ -31,7 +32,7 @@ namespace Castle.MicroKernel.Registration
 		/// <returns>The corresponding <see cref = "FromDescriptor" /></returns>
 		public static FromTypesDescriptor From(IEnumerable<Type> types)
 		{
-			return Classes.From(types);
+			return new FromTypesDescriptor(types);
 		}
 
 		/// <summary>
@@ -41,7 +42,7 @@ namespace Castle.MicroKernel.Registration
 		/// <returns>The corresponding <see cref = "FromDescriptor" /></returns>
 		public static FromTypesDescriptor From(params Type[] types)
 		{
-			return Classes.From(types);
+			return new FromTypesDescriptor(types);
 		}
 
 		/// <summary>
@@ -51,7 +52,11 @@ namespace Castle.MicroKernel.Registration
 		/// <returns>The corresponding <see cref = "FromDescriptor" /></returns>
 		public static FromAssemblyDescriptor FromAssembly(Assembly assembly)
 		{
-			return Classes.FromAssembly(assembly);
+			if (assembly == null)
+			{
+				throw new ArgumentNullException("assembly");
+			}
+			return new FromAssemblyDescriptor(assembly);
 		}
 
 		/// <summary>
@@ -61,7 +66,11 @@ namespace Castle.MicroKernel.Registration
 		/// <returns>The corresponding <see cref = "FromDescriptor" /></returns>
 		public static FromAssemblyDescriptor FromAssemblyContaining(Type type)
 		{
-			return Classes.FromAssemblyContaining(type);
+			if (type == null)
+			{
+				throw new ArgumentNullException("type");
+			}
+			return new FromAssemblyDescriptor(type.Assembly);
 		}
 
 		/// <summary>
@@ -71,7 +80,7 @@ namespace Castle.MicroKernel.Registration
 		/// <returns>The corresponding <see cref = "FromDescriptor" /></returns>
 		public static FromAssemblyDescriptor FromAssemblyContaining<T>()
 		{
-			return Classes.FromAssemblyContaining<T>();
+			return FromAssemblyContaining(typeof(T));
 		}
 
 		/// <summary>
@@ -81,7 +90,12 @@ namespace Castle.MicroKernel.Registration
 		/// <returns></returns>
 		public static FromAssemblyDescriptor FromAssemblyInDirectory(AssemblyFilter filter)
 		{
-			return Classes.FromAssemblyInDirectory(filter);
+			if (filter == null)
+			{
+				throw new ArgumentNullException("filter");
+			}
+			var assemblies = ReflectionUtil.GetAssemblies(filter);
+			return new FromAssemblyDescriptor(assemblies);
 		}
 
 		/// <summary>
@@ -91,7 +105,8 @@ namespace Castle.MicroKernel.Registration
 		/// <returns>The corresponding <see cref = "FromDescriptor" /></returns>
 		public static FromAssemblyDescriptor FromAssemblyNamed(string assemblyName)
 		{
-			return Classes.FromAssemblyNamed(assemblyName);
+			var assembly = ReflectionUtil.GetAssemblyNamed(assemblyName);
+			return FromAssembly(assembly);
 		}
 
 		/// <summary>
@@ -100,54 +115,7 @@ namespace Castle.MicroKernel.Registration
 		/// <returns>The corresponding <see cref = "FromDescriptor" /></returns>
 		public static FromAssemblyDescriptor FromThisAssembly()
 		{
-			return Classes.FromAssembly(Assembly.GetCallingAssembly());
-		}
-
-		/// <summary>
-		///   Describes all the types based on <c>basedOn</c>.
-		/// </summary>
-		/// <param name = "basedOn">The base type.</param>
-		/// <returns></returns>
-		[Obsolete("Use Classes.FromAssembly...BasedOn(basedOn) instead.")]
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		public static AllTypesOf Of(Type basedOn)
-		{
-			return new AllTypesOf(basedOn);
-		}
-
-		/// <summary>
-		///   Describes all the types based on type T.
-		/// </summary>
-		/// <typeparam name = "T">The base type.</typeparam>
-		/// <returns></returns>
-		[Obsolete("Use Classes.FromAssembly...BasedOn<T>() instead.")]
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		public static AllTypesOf Of<T>()
-		{
-			return new AllTypesOf(typeof(T));
-		}
-
-		/// <summary>
-		///   Describes any types that are supplied.
-		/// </summary>
-		/// <returns></returns>
-		[Obsolete("Use Classes.FromAssembly...Pick() instead.")]
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		public static AllTypesOf Pick()
-		{
-			return Of<object>();
-		}
-
-		/// <summary>
-		///   Prepares to register types from a list of types.
-		/// </summary>
-		/// <param name = "types">The list of types.</param>
-		/// <returns>The corresponding <see cref = "FromDescriptor" /></returns>
-		[Obsolete("Use From(types) instead.")]
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		public static FromTypesDescriptor Pick(IEnumerable<Type> types)
-		{
-			return new FromTypesDescriptor(types);
+			return FromAssembly(Assembly.GetCallingAssembly());
 		}
 	}
 }

@@ -1,3 +1,4 @@
+- implemented IOC-291 - Add alias class to AllTypes that is better named, like 'Classes'
 - implemented IOC-287 - Add overloads to OnCreate and OnDestroy that only take the instance and leave the container out as it is often superfluous
 - implemented IOC-285 - Add abilitty to make a component the default for a service without ensuring it's the first component exposed that service registered
 - implemented IOC-281 - Provide out of the box support for Lazy<T>

@@ -199,7 +199,7 @@ namespace Castle.MicroKernel
 		/// </example>
 		/// <example>
 		///   <code>
-		///     kernel.Register(AllTypes.FromThisAssembly().BasedOn&lt;IService&gt;().WithServiceDefaultInterfaces().Configure(c => c.LifestyleTransient()));
+		///     kernel.Register(Classes.FromThisAssembly().BasedOn&lt;IService&gt;().WithServiceDefaultInterfaces().Configure(c => c.LifestyleTransient()));
 		///   </code>
 		/// </example>
 		/// <param name = "registrations">The component registrations created by <see cref = "Component.For{TService}" />, <see

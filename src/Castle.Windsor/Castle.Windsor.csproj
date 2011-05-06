@@ -548,6 +548,7 @@
     <Compile Include="MicroKernel\Lifestyle\Scoped\ScopeCacheDecorator.cs" />
     <Compile Include="MicroKernel\Lifestyle\Scoped\ScopedLifestyleManager.cs" />
     <Compile Include="MicroKernel\Lifestyle\Scoped\ScopeSelector.cs" />
+    <Compile Include="MicroKernel\Registration\Classes.cs" />
     <Compile Include="MicroKernel\SubSystems\Scoping\ScopingSubsystem.cs" />
     <Compile Include="MicroKernel\Lifestyle\Scoped\ThreadScopeAccessor.cs" />
     <Compile Include="MicroKernel\Lifestyle\Scoped\WebScopeAccessor.cs" />
