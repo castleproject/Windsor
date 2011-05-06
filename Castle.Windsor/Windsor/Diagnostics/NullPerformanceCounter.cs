@@ -14,19 +14,19 @@
 
 namespace Castle.Windsor.Diagnostics
 {
-	public class NullPerformanceCounter : IPerformanceCounter
+	public class NullPerformanceCounter : ITrackedComponentsPerformanceCounter
 	{
-		public static readonly IPerformanceCounter Instance = new NullPerformanceCounter();
+		public static readonly ITrackedComponentsPerformanceCounter Instance = new NullPerformanceCounter();
 
 		private NullPerformanceCounter()
 		{
 		}
 
-		public void Decrement()
+		public void DecrementTrackedInstancesCount()
 		{
 		}
 
-		public void Increment()
+		public void IncrementTrackedInstancesCount()
 		{
 		}
 	}

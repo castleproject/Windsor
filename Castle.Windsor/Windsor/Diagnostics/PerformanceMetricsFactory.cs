@@ -15,45 +15,102 @@
 namespace Castle.Windsor.Diagnostics
 {
 #if !SILVERLIGHT
+	using System;
+	using System.ComponentModel;
 	using System.Diagnostics;
+	using System.Linq;
 
 	public class PerformanceMetricsFactory : IPerformanceMetricsFactory
 	{
 		private const string CastleWindsorCategoryName = "Castle Windsor";
 		private const string InstanesTrackedByTheReleasePolicyCounterName = "Instances tracked by the release policy";
+		private Exception exception;
 
 		public PerformanceMetricsFactory()
 		{
-			if (PerformanceCounterCategory.Exists(CastleWindsorCategoryName) == false)
+			Initialize();
+		}
+
+		public bool InitializedSuccessfully
+		{
+			get { return exception != null; }
+		}
+
+		public ITrackedComponentsPerformanceCounter CreateInstancesTrackedByReleasePolicyCounter(string name)
+		{
+			var counter = BuildInstancesTrackedByReleasePolicyCounter(name);
+			if (counter == null)
 			{
-				CreateWindsorCategoryAndCounters();
+				return NullPerformanceCounter.Instance;
 			}
+			return new TrackedComponentsPerformanceCounterWrapper(counter);
 		}
 
-		public IPerformanceCounter CreateInstancesTrackedByReleasePolicyCounter(string name)
+		private PerformanceCounter BuildInstancesTrackedByReleasePolicyCounter(string name)
 		{
-			var counter = new PerformanceCounter(CastleWindsorCategoryName,
-			                                     InstanesTrackedByTheReleasePolicyCounterName,
-			                                     name,
-			                                     readOnly: false) { RawValue = 0L };
-			return new PerformanceCounterWrapper(counter);
+			if (InitializedSuccessfully == false)
+			{
+				return null;
+			}
+			try
+			{
+				return new PerformanceCounter(CastleWindsorCategoryName,
+				                              InstanesTrackedByTheReleasePolicyCounterName,
+				                              name,
+				                              readOnly: false) { RawValue = 0L };
+			}
+				// exception types we should expect according to http://msdn.microsoft.com/en-us/library/356cx381.aspx
+			catch (Win32Exception)
+			{
+			}
+			catch (PlatformNotSupportedException)
+			{
+			}
+			catch (UnauthorizedAccessException)
+			{
+			}
+			return null;
 		}
 
-		private PerformanceCounterCategory CreateWindsorCategoryAndCounters()
+		private void CreateWindsorCategoryAndCounters()
 		{
-			return PerformanceCounterCategory.Create(CastleWindsorCategoryName,
-			                                         "Performance counters published by the Castle Windsor container",
-			                                         PerformanceCounterCategoryType.MultiInstance,
-			                                         new CounterCreationDataCollection
-			                                         {
-			                                         	new CounterCreationData
-			                                         	{
-			                                         		CounterType = PerformanceCounterType.NumberOfItems32,
-			                                         		CounterName = InstanesTrackedByTheReleasePolicyCounterName,
-			                                         		CounterHelp = "List of instances tracked by the release policy in the container. " +
-			                                         		              "Notice that does not include all alive objects tracked by the container, just the ones tracked by the policy."
-			                                         	}
-			                                         });
+			PerformanceCounterCategory.Create(CastleWindsorCategoryName,
+			                                  "Performance counters published by the Castle Windsor container",
+			                                  PerformanceCounterCategoryType.MultiInstance,
+			                                  new CounterCreationDataCollection
+			                                  {
+			                                  	new CounterCreationData
+			                                  	{
+			                                  		CounterType = PerformanceCounterType.NumberOfItems32,
+			                                  		CounterName = InstanesTrackedByTheReleasePolicyCounterName,
+			                                  		CounterHelp = "List of instances tracked by the release policy in the container. " +
+			                                  		              "Notice that does not include all alive objects tracked by the container, just the ones tracked by the policy."
+			                                  	}
+			                                  });
+		}
+
+		private void Initialize()
+		{
+			try
+			{
+				if (PerformanceCounterCategory.Exists(CastleWindsorCategoryName))
+				{
+					PerformanceCounterCategory.GetCategories()
+						.Single(c => c.CategoryName == CastleWindsorCategoryName);
+				}
+				else
+				{
+					CreateWindsorCategoryAndCounters();
+				}
+			}
+			catch (Win32Exception e)
+			{
+				exception = e;
+			}
+			catch (UnauthorizedAccessException e)
+			{
+				exception = e;
+			}
 		}
 	}
 #endif

@@ -14,10 +14,27 @@
 
 namespace Castle.Windsor.Diagnostics
 {
-	public interface IPerformanceCounter
-	{
-		void Decrement();
+#if !SILVERLIGHT
+	using System.Diagnostics;
 
-		void Increment();
+	public class TrackedComponentsPerformanceCounterWrapper : ITrackedComponentsPerformanceCounter
+	{
+		private readonly PerformanceCounter counter;
+
+		public TrackedComponentsPerformanceCounterWrapper(PerformanceCounter counter)
+		{
+			this.counter = counter;
+		}
+
+		public void DecrementTrackedInstancesCount()
+		{
+			counter.Decrement();
+		}
+
+		public void IncrementTrackedInstancesCount()
+		{
+			counter.Increment();
+		}
 	}
+#endif
 }

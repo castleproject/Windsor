@@ -28,19 +28,9 @@ namespace Castle.Core
 	{
 		private readonly HashSet<PropertySet> properties = new HashSet<PropertySet>();
 
-
 		public int Count
 		{
 			get { return properties.Count; }
-		}
-
-		internal void Add(PropertySet property)
-		{
-			if (property == null)
-			{
-				throw new ArgumentNullException("property");
-			}
-			properties.Add(property);
 		}
 
 		/// <summary>
@@ -56,6 +46,15 @@ namespace Castle.Core
 		public IEnumerator<PropertySet> GetEnumerator()
 		{
 			return properties.GetEnumerator();
+		}
+
+		internal void Add(PropertySet property)
+		{
+			if (property == null)
+			{
+				throw new ArgumentNullException("property");
+			}
+			properties.Add(property);
 		}
 
 		IEnumerator IEnumerable.GetEnumerator()

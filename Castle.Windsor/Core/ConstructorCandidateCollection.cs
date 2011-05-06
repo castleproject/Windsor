@@ -39,15 +39,15 @@ namespace Castle.Core
 			get { return ctors[index]; }
 		}
 
-		internal void Add(ConstructorCandidate item)
-		{
-			ctors.Add(item);
-		}
-
 		[DebuggerStepThrough]
 		public IEnumerator<ConstructorCandidate> GetEnumerator()
 		{
 			return ctors.GetEnumerator();
+		}
+
+		internal void Add(ConstructorCandidate item)
+		{
+			ctors.Add(item);
 		}
 
 		[DebuggerStepThrough]
