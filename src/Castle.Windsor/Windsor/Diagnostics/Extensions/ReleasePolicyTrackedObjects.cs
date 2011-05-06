@@ -25,7 +25,13 @@ namespace Castle.Windsor.Diagnostics.Extensions
 	public class ReleasePolicyTrackedObjects : AbstractContainerDebuggerExtension
 	{
 		private const string name = "Objects tracked by release policy";
+		private readonly IPerformanceMetricsFactory perfMetricsFactory;
 		private TrackedComponentsDiagnostic diagnostic;
+
+		public ReleasePolicyTrackedObjects(IPerformanceMetricsFactory perfMetricsFactory)
+		{
+			this.perfMetricsFactory = perfMetricsFactory;
+		}
 
 		public override IEnumerable<DebuggerViewItem> Attach()
 		{
@@ -44,7 +50,7 @@ namespace Castle.Windsor.Diagnostics.Extensions
 
 		public override void Init(IKernel kernel, IDiagnosticsHost diagnosticsHost)
 		{
-			diagnostic = new TrackedComponentsDiagnostic();
+			diagnostic = new TrackedComponentsDiagnostic(perfMetricsFactory.CreateInstancesTrackedByReleasePolicyCounter(name));
 			diagnosticsHost.AddDiagnostic<ITrackedComponentsDiagnostic>(diagnostic);
 		}
 

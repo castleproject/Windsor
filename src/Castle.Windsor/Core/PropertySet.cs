@@ -18,13 +18,13 @@ namespace Castle.Core
 	using System.Reflection;
 
 	/// <summary>
-	/// Represents a property and the respective dependency.
+	///   Represents a property and the respective dependency.
 	/// </summary>
 	[Serializable]
 	public class PropertySet
 	{
-		private readonly PropertyInfo propertyInfo;
 		private readonly DependencyModel dependency;
+		private readonly PropertyInfo propertyInfo;
 
 		/// <summary>
 		///   Initializes a new instance of the <see cref = "PropertySet" /> class.
@@ -38,21 +38,21 @@ namespace Castle.Core
 		}
 
 		/// <summary>
-		///   Gets the property.
-		/// </summary>
-		/// <value>The property.</value>
-		public PropertyInfo Property
-		{
-			get { return propertyInfo; }
-		}
-
-		/// <summary>
 		///   Gets the dependency.
 		/// </summary>
 		/// <value>The dependency.</value>
 		public DependencyModel Dependency
 		{
 			get { return dependency; }
+		}
+
+		/// <summary>
+		///   Gets the property.
+		/// </summary>
+		/// <value>The property.</value>
+		public PropertyInfo Property
+		{
+			get { return propertyInfo; }
 		}
 	}
 }

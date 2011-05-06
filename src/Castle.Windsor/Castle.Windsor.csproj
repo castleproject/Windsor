@@ -878,6 +878,8 @@
     <Compile Include="Windsor\Diagnostics\DebuggerViews\ReleasePolicyTrackedObjectsDebuggerViewItem.cs" />
     <Compile Include="Windsor\Diagnostics\Extensions\UsingContainerAsServiceLocator.cs" />
     <Compile Include="Windsor\Diagnostics\Extensions\DefaultComponentPerService.cs" />
+    <Compile Include="Windsor\Diagnostics\NullPerformanceCounter.cs" />
+    <Compile Include="Windsor\Diagnostics\TrackedComponentsPerformanceCounterWrapper.cs" />
     <Compile Include="Windsor\Diagnostics\UsingContainerAsServiceLocatorDiagnostic.cs" />
     <Compile Include="Windsor\Diagnostics\Helpers\DescriptionUtil.cs" />
     <Compile Include="Windsor\Diagnostics\Extensions\ReleasePolicyTrackedObjects.cs" />
@@ -901,7 +903,7 @@
     <Compile Include="Windsor\Diagnostics\IExposeDiagnostics.cs" />
     <Compile Include="Windsor\Diagnostics\Inspectors\ITrackedObjectsInspector.cs" />
     <Compile Include="Windsor\Diagnostics\Inspectors\TrackedObjects.cs" />
-    <Compile Include="Windsor\Diagnostics\IPerformanceCounter.cs" />
+    <Compile Include="Windsor\Diagnostics\ITrackedComponentsPerformanceCounter.cs" />
     <Compile Include="Windsor\Diagnostics\IPerformanceMetricsFactory.cs" />
     <Compile Include="Windsor\Diagnostics\IPotentialLifestyleMismatchesDiagnostic.cs" />
     <Compile Include="Windsor\Diagnostics\IPotentiallyMisconfiguredComponentsDiagnostic.cs" />
@@ -910,8 +912,6 @@
     <Compile Include="Windsor\Diagnostics\KernelDebuggerProxy.cs" />
     <Compile Include="Windsor\Diagnostics\Extensions\PotentiallyMisconfiguredComponents.cs" />
     <Compile Include="Windsor\Diagnostics\DebuggerViews\MismatchedDependencyDebuggerViewItem.cs" />
-    <Compile Include="Windsor\Diagnostics\NullPerformanceCounter.cs" />
-    <Compile Include="Windsor\Diagnostics\PerformanceCounterWrapper.cs" />
     <Compile Include="Windsor\Diagnostics\PerformanceMetricsFactory.cs" />
     <Compile Include="Windsor\Diagnostics\PotentialLifestyleMismatchesDiagnostic.cs" />
     <Compile Include="Windsor\Diagnostics\PotentiallyMisconfiguredComponentsDiagnostic.cs" />

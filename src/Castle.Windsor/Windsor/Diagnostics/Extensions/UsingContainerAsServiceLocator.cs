@@ -20,7 +20,7 @@ namespace Castle.Windsor.Diagnostics.Extensions
 
 	using Castle.MicroKernel;
 	using Castle.Windsor.Diagnostics.DebuggerViews;
-	
+
 #if !SILVERLIGHT
 	public class UsingContainerAsServiceLocator : AbstractContainerDebuggerExtension
 	{

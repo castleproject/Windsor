@@ -31,6 +31,8 @@ namespace Castle.Windsor.Diagnostics
 
 #if !SILVERLIGHT
 		private readonly IList<IContainerDebuggerExtension> extensions = new List<IContainerDebuggerExtension>();
+
+		private readonly IPerformanceMetricsFactory performanceMetricsFactory = new PerformanceMetricsFactory();
 #endif
 		private IKernel kernel;
 
@@ -81,7 +83,7 @@ namespace Castle.Windsor.Diagnostics
 			Add(new PotentiallyMisconfiguredComponents());
 			Add(new PotentialLifestyleMismatches());
 			Add(new UsingContainerAsServiceLocator());
-			Add(new ReleasePolicyTrackedObjects());
+			Add(new ReleasePolicyTrackedObjects(performanceMetricsFactory));
 			Add(new Facilities());
 		}
 

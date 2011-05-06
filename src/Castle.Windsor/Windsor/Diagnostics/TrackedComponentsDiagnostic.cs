@@ -21,6 +21,15 @@ namespace Castle.Windsor.Diagnostics
 
 	public class TrackedComponentsDiagnostic : ITrackedComponentsDiagnostic
 	{
+#if !SILVERLIGHT
+		private readonly ITrackedComponentsPerformanceCounter counter;
+
+		public TrackedComponentsDiagnostic(ITrackedComponentsPerformanceCounter counter)
+		{
+			this.counter = counter;
+		}
+#endif
+
 		public ILookup<IHandler, object> Inspect()
 		{
 			var @event = TrackedInstancesRequested;
@@ -33,6 +42,18 @@ namespace Castle.Windsor.Diagnostics
 
 			return args.Items.ToLookup(k => k.Handler, b => b.Instance);
 		}
+
+#if !SILVERLIGHT
+		public void DecrementTrackedInstancesCount()
+		{
+			counter.DecrementTrackedInstancesCount();
+		}
+
+		public void IncrementTrackedInstancesCount()
+		{
+			counter.DecrementTrackedInstancesCount();
+		}
+#endif
 
 		public event EventHandler<TrackedInstancesEventArgs> TrackedInstancesRequested;
 	}

@@ -28,15 +28,13 @@ namespace Castle.MicroKernel.Releasers
 	[Serializable]
 	public class LifecycledComponentsReleasePolicy : IReleasePolicy
 	{
-		private readonly IPerformanceCounter countOfTrackedInstances;
-
 		private readonly Dictionary<object, Burden> instance2Burden =
 			new Dictionary<object, Burden>(ReferenceEqualityComparer<object>.Instance);
 
 		private readonly Lock @lock = Lock.Create();
 		private ITrackedComponentsDiagnostic trackedComponentsDiagnostic;
 
-		public LifecycledComponentsReleasePolicy() : this(null, NullPerformanceCounter.Instance)
+		public LifecycledComponentsReleasePolicy() : this((ITrackedComponentsDiagnostic)null)
 		{
 		}
 
@@ -44,10 +42,9 @@ namespace Castle.MicroKernel.Releasers
 		{
 		}
 
-		public LifecycledComponentsReleasePolicy(ITrackedComponentsDiagnostic trackedComponentsDiagnostic, IPerformanceCounter countOfTrackedInstances)
+		public LifecycledComponentsReleasePolicy(ITrackedComponentsDiagnostic trackedComponentsDiagnostic)
 		{
 			this.trackedComponentsDiagnostic = trackedComponentsDiagnostic;
-			this.countOfTrackedInstances = countOfTrackedInstances;
 
 			if (trackedComponentsDiagnostic != null)
 			{
@@ -55,12 +52,7 @@ namespace Castle.MicroKernel.Releasers
 			}
 		}
 
-		public LifecycledComponentsReleasePolicy(ITrackedComponentsDiagnostic trackedComponentsDiagnostic)
-			: this(trackedComponentsDiagnostic, NullPerformanceCounter.Instance)
-		{
-		}
-
-		private LifecycledComponentsReleasePolicy(LifecycledComponentsReleasePolicy parent) : this(parent.trackedComponentsDiagnostic, parent.countOfTrackedInstances)
+		private LifecycledComponentsReleasePolicy(LifecycledComponentsReleasePolicy parent) : this(parent.trackedComponentsDiagnostic)
 		{
 		}
 
@@ -154,7 +146,10 @@ namespace Castle.MicroKernel.Releasers
 				instance2Burden.Add(instance, burden);
 				burden.Released += OnInstanceReleased;
 			}
-			countOfTrackedInstances.Increment();
+
+#if !SILVERLIGHT
+			trackedComponentsDiagnostic.IncrementTrackedInstancesCount();
+#endif
 		}
 
 		private void OnInstanceReleased(Burden burden)
@@ -167,7 +162,9 @@ namespace Castle.MicroKernel.Releasers
 				}
 				burden.Released -= OnInstanceReleased;
 			}
-			countOfTrackedInstances.Decrement();
+#if !SILVERLIGHT
+			trackedComponentsDiagnostic.DecrementTrackedInstancesCount();
+#endif
 		}
 
 		private void trackedComponentsDiagnostic_TrackedInstancesRequested(object sender, TrackedInstancesEventArgs e)

@@ -98,7 +98,6 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 
 				var dependency = new DependencyModel(property.Name, property.PropertyType, isOptional: true);
 				model.AddProperty(new PropertySet(property, dependency));
-
 			}
 		}
 
