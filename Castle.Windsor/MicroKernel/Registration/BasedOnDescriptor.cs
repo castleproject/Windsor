@@ -35,12 +35,13 @@ namespace Castle.MicroKernel.Registration
 		/// <summary>
 		///   Initializes a new instance of the BasedOnDescriptor.
 		/// </summary>
-		internal BasedOnDescriptor(Type basedOn, FromDescriptor from)
+		internal BasedOnDescriptor(Type basedOn, FromDescriptor from, Predicate<Type> additionalFilters)
 		{
 			this.basedOn = basedOn;
 			this.from = from;
 			service = new ServiceDescriptor(this);
 			configurers = new List<ConfigureDescriptor>();
+			If(additionalFilters);
 		}
 
 		/// <summary>
@@ -271,11 +272,9 @@ namespace Castle.MicroKernel.Registration
 
 		protected virtual bool Accepts(Type type, out Type[] baseTypes)
 		{
-			baseTypes = null;
-			return type.IsClass && !type.IsAbstract
-			       && IsBasedOn(type, out baseTypes)
+			return IsBasedOn(type, out baseTypes)
 			       && ExecuteIfCondition(type)
-			       && !ExecuteUnlessCondition(type);
+			       && ExecuteUnlessCondition(type) == false;
 		}
 
 		protected bool ExecuteIfCondition(Type type)

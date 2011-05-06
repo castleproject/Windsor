@@ -24,7 +24,7 @@ namespace Castle.MicroKernel.Registration
 	{
 		private readonly IEnumerable<Type> types;
 
-		internal FromTypesDescriptor(IEnumerable<Type> types)
+		internal FromTypesDescriptor(IEnumerable<Type> types, Predicate<Type> additionalFilters) : base(additionalFilters)
 		{
 			this.types = types;
 		}

@@ -27,12 +27,13 @@ namespace Castle.MicroKernel.Registration
 		private readonly IEnumerable<Assembly> assemblies;
 		private bool nonPublicTypes;
 
-		internal FromAssemblyDescriptor(Assembly assembly)
+		internal FromAssemblyDescriptor(Assembly assembly, Predicate<Type> additionalFilters) : base(additionalFilters)
 		{
 			assemblies = new[] { assembly };
 		}
 
-		internal FromAssemblyDescriptor(IEnumerable<Assembly> assemblies)
+		internal FromAssemblyDescriptor(IEnumerable<Assembly> assemblies, Predicate<Type> additionalFilters)
+			: base(additionalFilters)
 		{
 			this.assemblies = assemblies;
 		}
