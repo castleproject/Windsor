@@ -17,6 +17,8 @@ namespace Castle.Facilities.TypedFactory
 	using System;
 	using System.Reflection;
 
+	using Castle.MicroKernel;
+
 	public interface ITypedFactoryComponentSelector
 	{
 		/// <summary>
@@ -31,6 +33,6 @@ namespace Castle.Facilities.TypedFactory
 		/// <param name = "type"></param>
 		/// <param name = "arguments"></param>
 		/// <returns></returns>
-		ITypedFactoryComponentResolver SelectComponent(MethodInfo method, Type type, object[] arguments);
+		Func<IKernelInternal, IReleasePolicy, object> SelectComponent(MethodInfo method, Type type, object[] arguments);
 	}
 }

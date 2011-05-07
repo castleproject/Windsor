@@ -25,7 +25,9 @@ namespace Castle.Facilities.TypedFactory
 	[Singleton]
 	public class DefaultTypedFactoryComponentSelector : ITypedFactoryComponentSelector
 	{
-		public ITypedFactoryComponentResolver SelectComponent(MethodInfo method, Type type, object[] arguments)
+		protected bool FallbackToResolveByTypeIfNameNotFound { get; set; }
+
+		public Func<IKernelInternal, IReleasePolicy, object> SelectComponent(MethodInfo method, Type type, object[] arguments)
 		{
 			var componentName = GetComponentName(method, arguments);
 			var componentType = GetComponentType(method, arguments);
@@ -37,7 +39,7 @@ namespace Castle.Facilities.TypedFactory
 		/// <summary>
 		///   Builds <see cref = "TypedFactoryComponentResolver" /> for given call.
 		///   By default if <paramref name = "componentType" /> is a collection
-		///   returns <see cref = "TypedFactoryCollectionResolver" /> for the collection's item type,
+		///   returns factory calling <see cref="IKernel.ResolveAll(System.Type)"/> on collection's item type,
 		///   otherwise standard <see cref = "TypedFactoryComponentResolver" />.
 		/// </summary>
 		/// <param name = "method"></param>
@@ -45,15 +47,15 @@ namespace Castle.Facilities.TypedFactory
 		/// <param name = "componentType"></param>
 		/// <param name = "additionalArguments"></param>
 		/// <returns></returns>
-		protected virtual ITypedFactoryComponentResolver BuildFactoryComponent(MethodInfo method, string componentName, Type componentType,
-		                                                                       IDictionary additionalArguments)
+		protected virtual Func<IKernelInternal, IReleasePolicy, object> BuildFactoryComponent(MethodInfo method, string componentName, Type componentType,
+		                                                                                      IDictionary additionalArguments)
 		{
 			var itemType = componentType.GetCompatibleArrayItemType();
 			if (itemType == null)
 			{
-				return new TypedFactoryComponentResolver(componentName, componentType, additionalArguments);
+				return new TypedFactoryComponentResolver(componentName, componentType, additionalArguments, FallbackToResolveByTypeIfNameNotFound).Resolve;
 			}
-			return new TypedFactoryCollectionResolver(itemType, additionalArguments);
+			return (k, s) => k.ResolveAll(itemType, additionalArguments, s);
 		}
 
 		/// <summary>
@@ -66,6 +68,10 @@ namespace Castle.Facilities.TypedFactory
 		/// <returns></returns>
 		protected virtual IDictionary GetArguments(MethodInfo method, object[] arguments)
 		{
+			if (arguments == null)
+			{
+				return null;
+			}
 			var argumentMap = new Arguments();
 			var parameters = method.GetParameters();
 			for (var i = 0; i < parameters.Length; i++)
@@ -88,6 +94,7 @@ namespace Castle.Facilities.TypedFactory
 			if (method.Name.StartsWith("Get", StringComparison.OrdinalIgnoreCase))
 			{
 				componentName = method.Name.Substring("Get".Length);
+				FallbackToResolveByTypeIfNameNotFound = true;
 			}
 			return componentName;
 		}

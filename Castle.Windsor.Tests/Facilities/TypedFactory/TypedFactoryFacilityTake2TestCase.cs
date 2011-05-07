@@ -503,6 +503,18 @@ namespace CastleTests.Facilities.TypedFactory
 		}
 
 		[Test]
+		public void Resolve_should_fail_hard_when_component_with_picked_name_not_present()
+		{
+			Container.Register(
+				Component.For<IDummyComponent>().ImplementedBy<Component2>().LifestyleTransient(),
+				Component.For<DummyComponentFactory>().AsFactory(f => f.SelectedWith<FooSelector>()),
+				Component.For<FooSelector>());
+			var factory = Container.Resolve<DummyComponentFactory>();
+
+			Assert.Throws<ComponentNotFoundException>(() => factory.CreateDummyComponent());
+		}
+
+		[Test]
 		public void Selector_WILL_NOT_be_picked_implicitly()
 		{
 			Container.Register(

@@ -18,12 +18,13 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory.Selectors
 	using System.Reflection;
 
 	using Castle.Facilities.TypedFactory;
+	using Castle.MicroKernel;
 
 	public class MultipleSelector : ITypedFactoryComponentSelector
 	{
-		public ITypedFactoryComponentResolver SelectComponent(MethodInfo method, Type type, object[] arguments)
+		public Func<IKernelInternal, IReleasePolicy, object> SelectComponent(MethodInfo method, Type type, object[] arguments)
 		{
-			return new TypedFactoryCollectionResolver(method.ReturnType, null);
+			return (k, c) => k.ResolveAll(method.ReturnType, null, c);
 		}
 	}
 }
