@@ -21,7 +21,7 @@ namespace Castle.Core
 	///   custom lifestyle.
 	/// </summary>
 	[AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
-	public sealed class CustomLifestyleAttribute : LifestyleAttribute
+	public class CustomLifestyleAttribute : LifestyleAttribute
 	{
 		private readonly Type lifestyleHandlerType;
 

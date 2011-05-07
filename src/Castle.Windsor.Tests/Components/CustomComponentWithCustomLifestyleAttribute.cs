@@ -12,30 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Core
+namespace CastleTests.Components
 {
-	using System;
-
 	/// <summary>
-	///   Base for Attributes that want to express lifestyle
-	///   chosen by the component.
+	///   Summary description for CustomComponent.
 	/// </summary>
-	[AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
-	public abstract class LifestyleAttribute : Attribute
+	[CustomTestLifestyle]
+	public class CustomComponentWithCustomLifestyleAttribute : IComponent
 	{
-		/// <summary>
-		///   Initializes a new instance of the <see cref = "LifestyleAttribute" /> class.
-		/// </summary>
-		/// <param name = "type">The type.</param>
-		protected LifestyleAttribute(LifestyleType type)
+		public int ID
 		{
-			Lifestyle = type;
+			get { return GetHashCode(); }
 		}
-
-		/// <summary>
-		///   Gets or sets the lifestyle.
-		/// </summary>
-		/// <value>The lifestyle.</value>
-		public LifestyleType Lifestyle { get; set; }
 	}
 }
