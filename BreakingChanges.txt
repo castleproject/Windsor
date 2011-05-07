@@ -1,4 +1,17 @@
 ================================================================================================
+change - ITypedFactoryComponentResolver interface was removed and ITypedFactoryComponentSelector
+	now returns Func<IKernelInternal, IReleasePolicy, object> from SelectComponent method
+
+impact - low
+fixability - easy
+
+description - This change was made to simplify coding of advanced custom selectors which means
+	now only one type needs to be created instead of two and change is much more localized.
+
+fix - If you were using DefaultTypedFactoryComponentSelector this change does not affect you.
+	otherwise return delegate pointing to Resolve method of your ITypedFactoryComponentResolver
+	class or inline it altogether.
+================================================================================================
 change - Add() methods on PropertySetCollection and ConstructorCandidateCollection are no longer
 	publicly accessible
 
