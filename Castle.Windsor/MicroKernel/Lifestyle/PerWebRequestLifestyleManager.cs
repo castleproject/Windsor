@@ -29,7 +29,7 @@ namespace Castle.MicroKernel.Lifestyle
 	[Serializable]
 	public class PerWebRequestLifestyleManager : AbstractLifestyleManager
 	{
-		private readonly string perRequestObjectId = "PerRequestLifestyleManager_" + Guid.NewGuid();
+		private readonly string perRequestObjectId = "castle.per-web-request-" + Guid.NewGuid();
 
 		public override void Dispose()
 		{

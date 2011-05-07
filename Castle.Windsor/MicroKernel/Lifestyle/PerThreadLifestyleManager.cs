@@ -54,11 +54,9 @@ namespace Castle.MicroKernel.Lifestyle
 			lock (slot)
 			{
 				var map = (Dictionary<IComponentActivator, Burden>)Thread.GetData(slot);
-
 				if (map == null)
 				{
 					map = new Dictionary<IComponentActivator, Burden>();
-
 					Thread.SetData(slot, map);
 				}
 
