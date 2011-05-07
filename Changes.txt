@@ -8,7 +8,8 @@
 - implemented IOC-277 - Add ability for components activated in a custom way to opt out of container lifetime management
 - implemented IOC-275 - Exception message thrown when dependencies are missing is not always very clear and should be improved
 - implemented IOC-271 - Support open generic components where implementing class has more generic parameters than the service but the missing ones can be somehow inferred
-- implemented IOC-270 - Add OnDestroy method, symertical to OnCreate 
+- implemented IOC-270 - Add OnDestroy method, symertical to OnCreate
+- implemented IOC-269 - Windsor Performance Counters
 - implemented IOC-268 - Hook that allows for filtering handlers during ResolveAll
 - implemented IOC-263 - Add new debugger diagnostics - tracked objects
 - implemented IOC-257 - Same as in code, specifying type for facility in XML should be enough - Id should be optional

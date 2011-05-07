@@ -96,7 +96,7 @@ namespace Castle.MicroKernel.Lifestyle
 				Kernel.Register(
 					Component.For<IPoolFactory>()
 						.ImplementedBy<DefaultPoolFactory>()
-						.NamedAutomatically("castle.internal.poolfactory"));
+						.NamedAutomatically("castle.internal-pool-factory"));
 			}
 
 			var factory = Kernel.Resolve<IPoolFactory>();
