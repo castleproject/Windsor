@@ -22,13 +22,14 @@ namespace Castle.Facilities.TypedFactory
 	/// <summary>
 	///   Represents a single component to be resolved via Typed Factory
 	/// </summary>
-	public class TypedFactoryComponentResolver : ITypedFactoryComponentResolver
+	public class TypedFactoryComponentResolver
 	{
-		private readonly IDictionary additionalArguments;
-		private readonly string componentName;
-		private readonly Type componentType;
+		protected readonly IDictionary additionalArguments;
+		protected readonly string componentName;
+		protected readonly Type componentType;
+		protected readonly bool fallbackToResolveByTypeIfNameNotFound;
 
-		public TypedFactoryComponentResolver(string componentName, Type componentType, IDictionary additionalArguments)
+		public TypedFactoryComponentResolver(string componentName, Type componentType, IDictionary additionalArguments, bool fallbackToResolveByTypeIfNameNotFound)
 		{
 			if (string.IsNullOrEmpty(componentName) && componentType == null)
 			{
@@ -38,22 +39,8 @@ namespace Castle.Facilities.TypedFactory
 
 			this.componentType = componentType;
 			this.componentName = componentName;
-			this.additionalArguments = additionalArguments ?? new Arguments();
-		}
-
-		public IDictionary AdditionalArguments
-		{
-			get { return additionalArguments; }
-		}
-
-		public string ComponentName
-		{
-			get { return componentName; }
-		}
-
-		public Type ComponentType
-		{
-			get { return componentType; }
+			this.additionalArguments = additionalArguments;
+			this.fallbackToResolveByTypeIfNameNotFound = fallbackToResolveByTypeIfNameNotFound;
 		}
 
 		/// <summary>
@@ -64,11 +51,20 @@ namespace Castle.Facilities.TypedFactory
 		/// <returns>Resolved component(s).</returns>
 		public virtual object Resolve(IKernelInternal kernel, IReleasePolicy scope)
 		{
-			if (ComponentName != null && kernel.LoadHandlerByKey(ComponentName, ComponentType, AdditionalArguments) != null)
+			if (LoadByName(kernel))
 			{
-				return kernel.Resolve(ComponentName, ComponentType, AdditionalArguments, scope);
+				return kernel.Resolve(componentName, componentType, additionalArguments, scope);
 			}
-			return kernel.Resolve(ComponentType, AdditionalArguments, scope);
+			return kernel.Resolve(componentType, additionalArguments, scope);
+		}
+
+		private bool LoadByName(IKernelInternal kernel)
+		{
+			if (componentName == null)
+			{
+				return false;
+			}
+			return fallbackToResolveByTypeIfNameNotFound == false || kernel.LoadHandlerByKey(componentName, componentType, additionalArguments) != null;
 		}
 	}
 }

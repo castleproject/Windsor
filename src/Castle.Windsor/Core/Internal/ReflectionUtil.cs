@@ -125,6 +125,10 @@ namespace Castle.Core.Internal
 		/// <returns></returns>
 		public static Type GetCompatibleArrayItemType(this Type type)
 		{
+			if(type == null)
+			{
+				return null;
+			}
 			if (type.IsArray)
 			{
 				return type.GetElementType();

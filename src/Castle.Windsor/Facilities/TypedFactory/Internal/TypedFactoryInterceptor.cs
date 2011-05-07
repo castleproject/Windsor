@@ -109,7 +109,7 @@ namespace Castle.Facilities.TypedFactory.Internal
 						ComponentSelector,
 						invocation.Method));
 			}
-			invocation.ReturnValue = component.Resolve(kernel, scope);
+			invocation.ReturnValue = component(kernel, scope);
 		}
 
 		private bool TryGetMethod(IInvocation invocation, out FactoryMethod method)

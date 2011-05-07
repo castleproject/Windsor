@@ -10,3 +10,5 @@
 
 - container.BeginScope(IDictionary inlineArguments)
 	those arguments would be available in each and every resolve (and their subdependencies...?)
+
+- when IResolve interface is introduced it should be used instead of IKernelInternal and IReleasePolicy in ITypedFactoryComponentSelector
