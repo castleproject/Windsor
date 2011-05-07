@@ -307,6 +307,8 @@
     <Compile Include="ClassComponents\DecoratedRepository2.cs" />
     <Compile Include="ClassComponents\DefaultRepository.cs" />
     <Compile Include="ClassComponents\DoubleRepository.cs" />
+    <Compile Include="Components\CustomComponentWithCustomLifestyleAttribute.cs" />
+    <Compile Include="Components\CustomTestLifestyleAttribute.cs" />
     <Compile Include="Components\D_DB.cs" />
     <Compile Include="ClassComponents\GenericHasNested.cs" />
     <Compile Include="ClassComponents\GenericImpl3.cs" />

@@ -22,6 +22,7 @@ namespace CastleTests.Lifestyle
 	using Castle.MicroKernel.Context;
 	using Castle.MicroKernel.Handlers;
 	using Castle.MicroKernel.Registration;
+	using Castle.MicroKernel.Tests.ClassComponents;
 	using Castle.MicroKernel.Tests.Lifestyle;
 	using Castle.Windsor.Tests.ClassComponents;
 
@@ -98,6 +99,32 @@ namespace CastleTests.Lifestyle
 			                                                           	.ImplementedBy(typeof(TrivialComponent))
 			                                                           	.Named("a")
 			                                                           	.LifeStyle.Is(LifestyleType.Undefined)));
+		}
+
+		[Test]
+		public void Custom_lifestyle_provided_via_attribute()
+		{
+			Kernel.Register(Component.For<IComponent>().ImplementedBy<CustomComponent>());
+
+			var handler = Kernel.GetHandler(typeof(IComponent));
+			Assert.AreEqual(LifestyleType.Custom, handler.ComponentModel.LifestyleType);
+			Assert.AreEqual(typeof(CustomLifestyleManager), handler.ComponentModel.CustomLifestyle);
+
+			var instance = Kernel.Resolve<IComponent>();
+			Assert.IsNotNull(instance);
+		}
+
+		[Test]
+		public void Custom_lifestyle_provided_via_attribute_inherited()
+		{
+			Kernel.Register(Component.For<IComponent>().ImplementedBy<CustomComponentWithCustomLifestyleAttribute>());
+
+			var handler = Kernel.GetHandler(typeof(IComponent));
+			Assert.AreEqual(LifestyleType.Custom, handler.ComponentModel.LifestyleType);
+			Assert.AreEqual(typeof(CustomLifestyleManager), handler.ComponentModel.CustomLifestyle);
+
+			var instance = Kernel.Resolve<IComponent>();
+			Assert.IsNotNull(instance);
 		}
 
 		[Test]
@@ -211,18 +238,6 @@ namespace CastleTests.Lifestyle
 				);
 			var root = Kernel.Resolve<Root>();
 			Assert.AreSame(root.Leaf, root.Branch.Leaf);
-		}
-
-		[Test]
-		public void TestCustom()
-		{
-			Kernel.Register(Component.For(typeof(IComponent)).ImplementedBy(typeof(CustomComponent)).Named("a"));
-
-			var handler = Kernel.GetHandler("a");
-
-			var instance1 = handler.Resolve(CreationContext.CreateEmpty()) as IComponent;
-
-			Assert.IsNotNull(instance1);
 		}
 
 		[Test]
