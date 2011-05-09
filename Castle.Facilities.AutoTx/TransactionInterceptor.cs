@@ -186,8 +186,8 @@ namespace Castle.Facilities.AutoTx
 		private static Task ForkCase(IInvocation invocation, ICreatedTransaction txData)
 		{
 			Contract.Requires(txData.Transaction.State == TransactionState.Active);
-			Contract.Assume(txData.Transaction.Inner is DependentTransaction);
 			Contract.Ensures(Contract.Result<Task>() != null);
+			Contract.Assume(txData.Transaction.Inner is DependentTransaction);
 
 			_Logger.DebugFormat("fork case");
 

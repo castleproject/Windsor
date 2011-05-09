@@ -31,7 +31,7 @@ namespace Castle.Facilities.AutoTx.Testing
 
 		private readonly T _Service;
 		private bool _Disposed;
-		protected readonly IWindsorContainer _Container;
+		protected readonly IWindsorContainer Container;
 
 		public ResolveScope(IWindsorContainer container)
 		{
@@ -40,8 +40,8 @@ namespace Castle.Facilities.AutoTx.Testing
 
 			_Logger.Debug("creating");
 
-			_Container = container;
-			_Service = _Container.Resolve<T>();
+			Container = container;
+			_Service = Container.Resolve<T>();
 			Contract.Assume(_Service != null, "by resolve<T>");
 		}
 
@@ -74,7 +74,7 @@ namespace Castle.Facilities.AutoTx.Testing
 
 			try
 			{
-				_Container.Release(_Service);
+				Container.Release(_Service);
 			}
 			finally
 			{

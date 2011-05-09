@@ -5,7 +5,7 @@ using Castle.Services.Transaction.Internal;
 namespace Castle.Services.Transaction.Contracts
 {
 	[ContractClassFor(typeof(IDependentAware))]
-	public class IDependentAwareContract : IDependentAware
+	internal abstract class IDependentAwareContract : IDependentAware
 	{
 		public void RegisterDependent(Task task)
 		{
