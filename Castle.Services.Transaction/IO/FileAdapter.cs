@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using log4net;
 
@@ -66,9 +67,9 @@ namespace Castle.Services.Transaction.IO
 		{
 			AssertAllowed(path);
 #if !MONO
-			ITransaction tx;
-			if (HasTransaction(out tx))
-				return ((IFileAdapter) tx).Create(path);
+			var mTx = CurrentTransaction();
+			if (mTx.HasValue)
+				return ((IFileAdapter) mTx.Value).Create(path);
 #endif
 
 			return LongPathFile.Open(path, FileMode.Create, FileAccess.ReadWrite);
@@ -83,9 +84,9 @@ namespace Castle.Services.Transaction.IO
 		{
 			AssertAllowed(filePath);
 #if !MONO
-			ITransaction tx;
-			if (HasTransaction(out tx))
-				return ((IFileAdapter) tx).Exists(filePath);
+			var mTx = CurrentTransaction();
+			if (mTx.HasValue)
+				return ((IFileAdapter) mTx.Value).Exists(filePath);
 #endif
 			return LongPathFile.Exists(filePath);
 		}
@@ -94,9 +95,9 @@ namespace Castle.Services.Transaction.IO
 		{
 			AssertAllowed(path);
 #if !MONO
-			ITransaction tx;
-			if (HasTransaction(out tx))
-				return ((IFileAdapter) tx).ReadAllText(path, encoding);
+			var mTx = CurrentTransaction();
+			if (mTx.HasValue)
+				return ((IFileAdapter) mTx.Value).ReadAllText(path, encoding);
 #endif
 
 			using (var rdr = new StreamReader(Open(path, FileMode.Open)))
@@ -108,10 +109,10 @@ namespace Castle.Services.Transaction.IO
 			AssertAllowed(originalFilePath);
 			AssertAllowed(newFilePath);
 #if !MONO
-			ITransaction tx;
-			if (HasTransaction(out tx))
+			var mTx = CurrentTransaction();
+			if (mTx.HasValue)
 			{
-				((IFileAdapter) tx).Move(originalFilePath, newFilePath);
+				((IFileAdapter) mTx.Value).Move(originalFilePath, newFilePath);
 				return;
 			}
 #endif
@@ -121,12 +122,22 @@ namespace Castle.Services.Transaction.IO
 
 		public IList<string> ReadAllLines(string filePath)
 		{
-			throw new NotImplementedException();
+			return ReadAllLinesEnumerable(filePath).ToList();
+		}
+
+		public IEnumerable<string> ReadAllLinesEnumerable(string filePath)
+		{
+			using (var rdr = new StreamReader(Open(filePath, FileMode.Open), true))
+			{
+				var readLine = rdr.ReadLine();
+				while (readLine != null) 
+					yield return readLine;
+			}
 		}
 
 		public StreamWriter CreateText(string filePath)
 		{
-			throw new NotImplementedException();
+			return new StreamWriter(Open(filePath, FileMode.CreateNew));
 		}
 
 		public string ReadAllText(string path)
@@ -138,10 +149,10 @@ namespace Castle.Services.Transaction.IO
 		{
 			AssertAllowed(path);
 #if !MONO
-			ITransaction tx;
-			if (HasTransaction(out tx))
+			var mTx = CurrentTransaction();
+			if (mTx.HasValue)
 			{
-				((IFileAdapter) tx).WriteAllText(path, contents);
+				((IFileAdapter) mTx.Value).WriteAllText(path, contents);
 				return;
 			}
 #endif
@@ -154,10 +165,10 @@ namespace Castle.Services.Transaction.IO
 		{
 			AssertAllowed(filePath);
 #if !MONO
-			ITransaction tx;
-			if (HasTransaction(out tx))
+			var mTx = CurrentTransaction();
+			if (mTx.HasValue)
 			{
-				(tx as IFileAdapter).Delete(filePath);
+				((IFileAdapter)mTx.Value).Delete(filePath);
 				return;
 			}
 #endif
@@ -169,9 +180,9 @@ namespace Castle.Services.Transaction.IO
 		{
 			AssertAllowed(filePath);
 #if !MONO
-			ITransaction tx;
-			if (HasTransaction(out tx))
-				return ((IFileAdapter) tx).Open(filePath, mode);
+			var mTx = CurrentTransaction();
+			if (mTx.HasValue)
+				return ((IFileAdapter)mTx.Value).Open(filePath, mode);
 #endif
 
 			return LongPathFile.Open(filePath, mode, FileAccess.ReadWrite);

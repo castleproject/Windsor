@@ -66,5 +66,12 @@ namespace Castle.Services.Transaction.Contracts
 			Contract.Requires(!string.IsNullOrEmpty(newPath));
 			throw new NotImplementedException();
 		}
+
+		void IDirectoryAdapter.Move(string originalPath, string newPath, bool overwrite)
+		{
+			Contract.Requires(!string.IsNullOrEmpty(originalPath));
+			Contract.Requires(!string.IsNullOrEmpty(newPath));
+			throw new NotImplementedException();
+		}
 	}
 }

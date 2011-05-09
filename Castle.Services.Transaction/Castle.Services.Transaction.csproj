@@ -99,7 +99,7 @@
     <Compile Include="Contracts\IDirectoryAdapterContract.cs" />
     <Compile Include="Contracts\IFileAdapterContract.cs" />
     <Compile Include="Contracts\IMapPathContract.cs" />
-    <Compile Include="Internal\GlobalSuppressions.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Internal\AnonymousRetryPolicy.cs" />
     <Compile Include="Activities\CallContextActivityManager.cs" />
     <Compile Include="Internal\ContractExtensions.cs" />

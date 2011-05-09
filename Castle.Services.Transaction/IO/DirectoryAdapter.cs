@@ -17,9 +17,7 @@
 #endregion
 
 using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Contracts;
-using Castle.Services.Transaction.Internal;
 using log4net;
 
 namespace Castle.Services.Transaction.IO
@@ -54,16 +52,14 @@ namespace Castle.Services.Transaction.IO
 			AssertAllowed(path);
 
 #if !MONO
-			ITransaction tx;
-			if (HasTransaction(out tx))
-			{
-				return ((IDirectoryAdapter) tx).Create(path);
-			}
+			var maybe = CurrentTransaction();
+		
+			if (maybe.HasValue)
+				return ((IDirectoryAdapter) maybe.Value).Create(path);
 #endif
+
 			if (((IDirectoryAdapter) this).Exists(path))
-			{
 				return true;
-			}
 
 			LongPathDirectory.Create(path);
 			return true;
@@ -72,10 +68,11 @@ namespace Castle.Services.Transaction.IO
 		bool IDirectoryAdapter.Exists(string path)
 		{
 			AssertAllowed(path);
+
 #if !MONO
-			ITransaction tx;
-			if (HasTransaction(out tx))
-				return ((IDirectoryAdapter) tx).Exists(path);
+			var mTx = CurrentTransaction();
+			if (mTx.HasValue)
+				return ((IDirectoryAdapter) mTx.Value).Exists(path);
 #endif
 
 			return LongPathDirectory.Exists(path);
@@ -85,10 +82,10 @@ namespace Castle.Services.Transaction.IO
 		{
 			AssertAllowed(path);
 #if !MONO
-			ITransaction tx;
-			if (HasTransaction(out tx))
+			var mTx = CurrentTransaction();
+			if (mTx.HasValue)
 			{
-				((IDirectoryAdapter) tx).Delete(path);
+				((IDirectoryAdapter) mTx.Value).Delete(path);
 				return;
 			}
 #endif
@@ -100,11 +97,9 @@ namespace Castle.Services.Transaction.IO
 		{
 			AssertAllowed(path);
 #if !MONO
-			ITransaction tx;
-			if (HasTransaction(out tx))
-			{
-				return ((IDirectoryAdapter) tx).Delete(path, recursively);
-			}
+			var mTx = CurrentTransaction();
+			if (mTx.HasValue)
+				return ((IDirectoryAdapter) mTx.Value).Delete(path, recursively);
 #endif
 
 			LongPathDirectory.Delete(path);
@@ -115,9 +110,9 @@ namespace Castle.Services.Transaction.IO
 		{
 			AssertAllowed(path);
 #if !MONO
-			ITransaction tx;
-			if (HasTransaction(out tx))
-				return ((IDirectoryAdapter) tx).GetFullPath(path);
+			var mTx = CurrentTransaction();
+			if (mTx.HasValue)
+				return ((IDirectoryAdapter) mTx.Value).GetFullPath(path);
 #endif
 			return LongPathCommon.NormalizeLongPath(path);
 		}
@@ -129,18 +124,24 @@ namespace Castle.Services.Transaction.IO
 
 		void IDirectoryAdapter.Move(string originalPath, string newPath)
 		{
+			((IDirectoryAdapter)this).Move(originalPath, newPath, false);
+		}
+
+		void IDirectoryAdapter.Move(string originalPath, string newPath, bool overwrite)
+		{
 			AssertAllowed(originalPath);
 			AssertAllowed(newPath);
 
 #if !MONO
-			ITransaction tx;
-			if (HasTransaction(out tx))
+			var mTx = CurrentTransaction();
+			if (mTx.HasValue)
 			{
-				((IDirectoryAdapter) this).Move(originalPath, newPath);
+				((IDirectoryAdapter)mTx.Value).Move(originalPath, newPath);
 				return;
 			}
 #endif
 
+			throw new NotImplementedException();
 			LongPathFile.Move(originalPath, newPath);
 		}
 	}

@@ -26,7 +26,6 @@ namespace Castle.Services.Transaction
 		private readonly ITransaction _Inner;
 		private readonly string _Name;
 		private SafeKernelTransactionHandle _TransactionHandle;
-		private bool _Disposed;
 		private TransactionState _State;
 
 		#region Constructors
@@ -50,8 +49,6 @@ namespace Castle.Services.Transaction
 		{
 			Contract.Requires(inner != null);
 			Contract.Requires(creationOptions != null);
-			Contract.Requires(!string.IsNullOrEmpty(name));
-			Contract.Ensures(_Name != null);
 
 			_Inner = new Transaction(inner, stackDepth, creationOptions, onDispose);
 
@@ -64,8 +61,6 @@ namespace Castle.Services.Transaction
 		{
 			Contract.Requires(inner != null);
 			Contract.Requires(creationOptions != null);
-			Contract.Requires(!string.IsNullOrEmpty(name));
-			Contract.Ensures(_Name != null);
 
 			_Inner = new Transaction(inner, stackDepth, creationOptions, onDispose);
 
@@ -96,7 +91,7 @@ namespace Castle.Services.Transaction
 			if (System.Transactions.Transaction.Current != null)
 			{
 				var ktx = (IKernelTransaction) TransactionInterop.GetDtcTransaction(System.Transactions.Transaction.Current);
-
+				
 				SafeKernelTransactionHandle handle;
 				ktx.GetHandle(out handle);
 
@@ -267,6 +262,14 @@ namespace Castle.Services.Transaction
 			                                 _TransactionHandle);
 		}
 
+		public void Move(string originalPath, string newPath, bool overwrite)
+		{
+			var flags = NativeMethods.MoveFileFlags.CopyAllowed;
+			if (overwrite)
+				flags |= NativeMethods.MoveFileFlags.ReplaceExisting;
+			NativeMethods.MoveFileTransacted(originalPath, newPath, IntPtr.Zero, IntPtr.Zero, flags, _TransactionHandle);
+		}
+
 		bool IFileAdapter.Exists(string filePath)
 		{
 			AssertState(TransactionState.Active);
@@ -304,6 +307,11 @@ namespace Castle.Services.Transaction
 		}
 
 		StreamWriter IFileAdapter.CreateText(string filePath)
+		{
+			throw new NotImplementedException();
+		}
+
+		public IEnumerable<string> ReadAllLinesEnumerable(string filePath)
 		{
 			throw new NotImplementedException();
 		}
@@ -435,7 +443,7 @@ namespace Castle.Services.Transaction
 
 		void ITransaction.Dispose()
 		{
-			(this).Dispose();
+			Dispose();
 		}
 
 		/// <summary>
@@ -458,20 +466,25 @@ namespace Castle.Services.Transaction
 			// no unmanaged code here, just return.
 			if (!disposing) return;
 
-			if (_Disposed) return;
+			if (_State == TransactionState.Disposed) return;
 			// called via the Dispose() method on IDisposable, 
 			// can use private object references.
 
-			if (_State == TransactionState.Active)
-				((ITransaction) this).Rollback();
+			try
+			{
+				if (_State == TransactionState.Active)
+					((ITransaction) this).Rollback();
 
-			if (_TransactionHandle != null)
-				_TransactionHandle.Dispose();
+				if (_TransactionHandle != null)
+					_TransactionHandle.Dispose();
 
-			if (_Inner != null)
-				_Inner.Dispose();
-
-			_Disposed = true;
+				if (_Inner != null)
+					_Inner.Dispose();
+			}
+			finally
+			{
+				_State = TransactionState.Disposed;
+			}
 		}
 
 		#endregion

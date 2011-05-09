@@ -16,6 +16,7 @@
 
 #endregion
 
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.IO;
@@ -102,6 +103,11 @@ namespace Castle.Services.Transaction.IO
 		{
 			Contract.Requires(!string.IsNullOrEmpty(filePath));
 			return GetAdapter().CreateText(filePath);
+		}
+
+		public static void WriteAllLines(string path, IEnumerable<string> lines)
+		{
+			throw new NotImplementedException();
 		}
 	}
 }

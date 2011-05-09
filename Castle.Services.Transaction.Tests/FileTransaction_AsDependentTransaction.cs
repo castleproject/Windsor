@@ -16,9 +16,10 @@
 
 #endregion
 
+using Castle.Services.Transaction.IO;
+
 namespace Castle.Services.Transaction.Tests
 {
-	using System.IO;
 	using System.Transactions;
 
 	using Castle.Services.Transaction.Tests.Framework;
@@ -26,7 +27,6 @@ namespace Castle.Services.Transaction.Tests
 	using NUnit.Framework;
 
 	[TestFixture]
-	[Ignore("Wait for RC")]
 	public class FileTransaction_AsDependentTransaction : TxFTestFixtureBase
 	{
 		private string _DirPath;
@@ -41,12 +41,6 @@ namespace Castle.Services.Transaction.Tests
 
 			_DirPath = ".";
 			_FilePath = _DirPath.Combine("test.txt");
-		}
-
-		[TearDown]
-		public void TearDown()
-		{
-			Directory.Delete(_DirPath, true);
 		}
 
 		[Test]
@@ -76,7 +70,7 @@ namespace Castle.Services.Transaction.Tests
 			}
 
 			Assert.That(File.Exists(_FilePath));
-			Assert.That(File.ReadAllLines(_FilePath)[0], Is.EqualTo("Hello world"));
+			Assert.That(File.ReadAllText(_FilePath), Is.EqualTo("Hello world"));
 		}
 	}
 }

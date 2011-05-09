@@ -10,56 +10,56 @@ namespace Castle.Services.Transaction.Contracts
 	[ContractClassFor(typeof (IFileAdapter))]
 	internal abstract class IFileAdapterContract : IFileAdapter
 	{
-		public FileStream Create(string filePath)
+		FileStream IFileAdapter.Create(string filePath)
 		{
 			Contract.Requires(!string.IsNullOrEmpty(filePath));
 			throw new NotImplementedException();
 		}
 
-		public bool Exists(string filePath)
+		bool IFileAdapter.Exists(string filePath)
 		{
 			Contract.Requires(!string.IsNullOrEmpty(filePath));
 			throw new NotImplementedException();
 		}
 
-		public string ReadAllText(string path)
+		string IFileAdapter.ReadAllText(string path)
 		{
 			Contract.Requires(!string.IsNullOrEmpty(path));
 			throw new NotImplementedException();
 		}
 
-		public void WriteAllText(string path, string contents)
+		void IFileAdapter.WriteAllText(string path, string contents)
 		{
 			Contract.Requires(!string.IsNullOrEmpty(path));
 			Contract.Requires(contents != null, "content't mustn't be null, but it may be empty");
 			throw new NotImplementedException();
 		}
 
-		public void Delete(string filePath)
+		void IFileAdapter.Delete(string filePath)
 		{
 			Contract.Requires(!string.IsNullOrEmpty(filePath));
 			throw new NotImplementedException();
 		}
 
-		public FileStream Open(string filePath, FileMode mode)
+		FileStream IFileAdapter.Open(string filePath, FileMode mode)
 		{
 			Contract.Requires(!string.IsNullOrEmpty(filePath));
 			throw new NotImplementedException();
 		}
 
-		public int WriteStream(string toFilePath, Stream fromStream)
+		int IFileAdapter.WriteStream(string toFilePath, Stream fromStream)
 		{
 			Contract.Requires(!string.IsNullOrEmpty(toFilePath));
 			throw new NotImplementedException();
 		}
 
-		public string ReadAllText(string path, Encoding encoding)
+		string IFileAdapter.ReadAllText(string path, Encoding encoding)
 		{
 			Contract.Requires(!string.IsNullOrEmpty(path));
 			throw new NotImplementedException();
 		}
 
-		public void Move(string originalFilePath, string newFilePath)
+		void IFileAdapter.Move(string originalFilePath, string newFilePath)
 		{
 			Contract.Requires(!string.IsNullOrEmpty(originalFilePath));
 			Contract.Requires(!string.IsNullOrEmpty(newFilePath));
@@ -67,13 +67,19 @@ namespace Castle.Services.Transaction.Contracts
 			throw new NotImplementedException();
 		}
 
-		public IList<string> ReadAllLines(string filePath)
+		IList<string> IFileAdapter.ReadAllLines(string filePath)
 		{
 			Contract.Requires(!string.IsNullOrEmpty(filePath));
 			throw new NotImplementedException();
 		}
 
-		public StreamWriter CreateText(string filePath)
+		StreamWriter IFileAdapter.CreateText(string filePath)
+		{
+			Contract.Requires(!string.IsNullOrEmpty(filePath));
+			throw new NotImplementedException();
+		}
+
+		IEnumerable<string> IFileAdapter.ReadAllLinesEnumerable(string filePath)
 		{
 			Contract.Requires(!string.IsNullOrEmpty(filePath));
 			throw new NotImplementedException();

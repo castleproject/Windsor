@@ -18,9 +18,9 @@ namespace Castle.Services.Transaction
 		///	hence be false (i.e. that the directory didn't already exist).
 		///</summary>
 		///<param name = "path">The path to create the directory at.</param>
-		///<remarks>
+		///<return>
 		///	True if the directory already existed, False otherwise.
-		///</remarks>
+		///</return>
 		bool Create(string path);
 
 		/// <summary>
@@ -73,5 +73,10 @@ namespace Castle.Services.Transaction
 		///<param name = "originalPath">Path from</param>
 		///<param name = "newPath">Path to</param>
 		void Move(string originalPath, string newPath);
+
+		/// <summary>
+		/// <see cref="Move(string,string)"/>. overwrite should be true if you wish to overwrite the target if it exists.
+		/// </summary>
+		void Move(string originalPath, string newPath, bool overwrite);
 	}
 }

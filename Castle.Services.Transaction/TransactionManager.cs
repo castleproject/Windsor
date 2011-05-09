@@ -71,7 +71,7 @@ namespace Castle.Services.Transaction
 				return Maybe.None<ICreatedTransaction>();
 
 			var nextStackDepth = activity.Count + 1;
-			var shouldFork = transactionOptions.Fork && nextStackDepth > 1;
+			var shouldFork = ShouldFork(transactionOptions, nextStackDepth);
 
 			ITransaction tx;
 			if (activity.Count == 0)
@@ -101,10 +101,7 @@ namespace Castle.Services.Transaction
 
 			var m = Maybe.Some(new CreatedTransaction(tx, 
 			    shouldFork, // we should only fork if we have a different current top transaction than the current
-				() => {
-					_ActivityManager.GetCurrentActivity().Push(tx);
-					return new DisposableScope(_ActivityManager.GetCurrentActivity().Pop);
-				}) as ICreatedTransaction);
+				ForkScopeFactory(tx)) as ICreatedTransaction);
 
 			// warn if fork and the top transaction was just created
 			if (transactionOptions.Fork && nextStackDepth == 1)
@@ -117,9 +114,28 @@ namespace Castle.Services.Transaction
 			return m;
 		}
 
+		private Func<IDisposable> ForkScopeFactory(ITransaction tx)
+		{
+			return () => {
+				_ActivityManager.GetCurrentActivity().Push(tx);
+				return new DisposableScope(_ActivityManager.GetCurrentActivity().Pop);
+			};
+		}
+
+		private static bool ShouldFork(ITransactionOptions transactionOptions, uint nextStackDepth)
+		{
+			return transactionOptions.Fork && nextStackDepth > 1;
+		}
+
 		Maybe<ICreatedTransaction> ITransactionManager.CreateFileTransaction(ITransactionOptions transactionOptions)
 		{
-			throw new NotImplementedException("Implement file transactions in the transaction manager!");
+			// TODO: we need to decide what transaction manager we want running the show and be smarter about this:
+			var activity = _ActivityManager.GetCurrentActivity();
+			var nextStackDepth = activity.Count + 1;
+			var tx = new FileTransaction();
+			var fork = ShouldFork(transactionOptions, nextStackDepth);
+			if (!fork) activity.Push(tx);
+			return new CreatedTransaction(tx, fork, ForkScopeFactory(tx));
 		}
 
 		/// <summary>

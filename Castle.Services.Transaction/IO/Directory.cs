@@ -16,6 +16,7 @@
 
 #endregion
 
+using System;
 using System.Diagnostics.Contracts;
 
 namespace Castle.Services.Transaction.IO
@@ -71,6 +72,11 @@ namespace Castle.Services.Transaction.IO
 			Contract.Requires(!string.IsNullOrEmpty(originalPath));
 			Contract.Requires(!string.IsNullOrEmpty(newPath));
 			GetAdapter().Move(originalPath, newPath);
+		}
+
+		public static void Move(string originalPath, string newPath, bool overwrite)
+		{
+			GetAdapter().Move(originalPath, newPath, overwrite);
 		}
 
 		public static bool CreateDirectory(string directoryPath)

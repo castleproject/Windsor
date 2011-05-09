@@ -74,32 +74,15 @@ namespace Castle.Services.Transaction.IO
 			set { _OnlyJoinExisting = value; }
 		}
 
-		protected bool HasTransaction(out ITransaction transaction)
+		protected Maybe<ITransaction> CurrentTransaction()
 		{
-			transaction = null;
+			if (!_UseTransactions) return Maybe.None<ITransaction>();
+			if (_TransactionManager == null) return Maybe.None<ITransaction>();
+			var transaction = _TransactionManager.CurrentTransaction;
 
-			if (!_UseTransactions) return false;
-			return _TransactionManager != null && _TransactionManager.CurrentTransaction.HasValue;
-			//if (_TransactionManager != null && _TransactionManager.CurrentTransaction.HasValue)
-			//{
-			//    foreach (var resource in _TransactionManager.CurrentTransaction.Resources())
-			//    {
-			//        if (!(resource is FileResourceAdapter)) continue;
-
-			//        transaction = (resource as FileResourceAdapter).Transaction;
-			//        return true;
-			//    }
-
-			//    if (!_OnlyJoinExisting)
-			//    {
-			//        throw new NotImplementedException();
-			//        transaction = new FileTransaction("Autocreated File Transaction");
-			//        _TransactionManager.CurrentTransaction.Enlist(new FileResourceAdapter(transaction));
-			//        return true;
-			//    }
-			//}
-
-			//return false;
+			return transaction.HasValue && transaction.Value is FileTransaction 
+				? transaction 
+				: Maybe.None<ITransaction>();
 		}
 
 		protected internal bool IsInAllowedDir(string path)

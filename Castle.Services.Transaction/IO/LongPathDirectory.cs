@@ -66,9 +66,7 @@ namespace Castle.Services.Transaction.IO
 				// To mimic Directory.CreateDirectory, we don't throw if the directory (not a file) already exists
 				var errorCode = Marshal.GetLastWin32Error();
 				if (errorCode != NativeMethods.ERROR_ALREADY_EXISTS || !Exists(path))
-				{
 					throw LongPathCommon.GetExceptionFromWin32Error(errorCode);
-				}
 			}
 		}
 
@@ -127,9 +125,7 @@ namespace Castle.Services.Transaction.IO
 			var normalizedPath = LongPathCommon.NormalizeLongPath(path);
 
 			if (!NativeMethods.RemoveDirectory(normalizedPath))
-			{
 				throw LongPathCommon.GetExceptionFromLastWin32Error();
-			}
 		}
 
 		/// <summary>
@@ -153,9 +149,7 @@ namespace Castle.Services.Transaction.IO
 		{
 			bool isDirectory;
 			if (LongPathCommon.Exists(path, out isDirectory))
-			{
 				return isDirectory;
-			}
 
 			return false;
 		}
