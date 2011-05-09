@@ -25,7 +25,7 @@ namespace Castle.Facilities.AutoTx.Tests
 			_Container = new WindsorContainer();
 			_Container.AddFacility<AutoTxFacility>();
 
-			// TODO: move this logic into the facility, so that IHandlerSelectors registered after initialization
+			// Note: depending on what users want; move this logic into the facility, so that IHandlerSelectors registered after initialization
 			// automatically gets attached to the kernel
 			_Container.Kernel.AddHandlerSelector(new DefaultToTransientLifeStyle<IHaveLifestyle>(_Container.Resolve<ITransactionManager>()));
 
@@ -141,6 +141,4 @@ namespace Castle.Facilities.AutoTx.Tests
 			return "from transient";
 		}
 	}
-
-
 }

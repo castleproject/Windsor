@@ -81,7 +81,7 @@ namespace Castle.Facilities.AutoTx.Tests
 
 				try {
 					scope.Service.VerifyInAmbient(() => {
-						// hack to fix interleaving
+						// fixing interleaving
 						var top = (Transaction)((ITransactionManager)manager.Service).CurrentTopTransaction.Value;
 						top.BeforeTopComplete = () => childHasCompleted.WaitOne();
 

@@ -58,13 +58,11 @@ namespace Castle.Services.Transaction
 			get { return _ActivityManager.GetCurrentActivity().Count; }
 		}
 
-		[SuppressMessage("Microsoft.Reliability", "CA2000", Justification = "CommittableTransaction is disposed by Transaction")]
 		Maybe<ICreatedTransaction> ITransactionManager.CreateTransaction()
 		{
 			return ((ITransactionManager) this).CreateTransaction(new DefaultTransactionOptions());
 		}
 
-		[SuppressMessage("Microsoft.Reliability", "CA2000", Justification = "CommittableTransaction is disposed by Transaction")]
 		Maybe<ICreatedTransaction> ITransactionManager.CreateTransaction(ITransactionOptions transactionOptions)
 		{
 			var activity = _ActivityManager.GetCurrentActivity();

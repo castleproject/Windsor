@@ -73,8 +73,10 @@ namespace Castle.Services.Transaction.Internal
 		{
 			if (!message.Contains("<ExtendedData")) return string.Empty;
 			var start = message.IndexOf("<ExtendedData");
+			if (start < 0) return message;
 			var endString = "</ExtendedData>";
 			var end = message.IndexOf(endString);
+			if (end < 0) return message;
 			var removeOuter = new Regex(">(.*)<");
 			return removeOuter.Match(message.Substring(start, (end + endString.Length) - start)).Groups[1].Value;
 		}

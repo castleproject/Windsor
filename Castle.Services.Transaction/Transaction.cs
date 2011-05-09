@@ -77,6 +77,7 @@ namespace Castle.Services.Transaction
 		{
 			Contract.Invariant(_Dependent != null || _Committable != null); // mutual exclusion (A->B) ^ (B->A)
 			Contract.Invariant(_Committable != null || _Dependent != null);
+			Contract.Invariant(_DependentTasks == null || Contract.ForAll(_DependentTasks, t => t!=null));
 			Contract.Invariant(!string.IsNullOrEmpty(_LocalIdentifier));
 		}
 
@@ -237,8 +238,8 @@ namespace Castle.Services.Transaction
 
 		void IDependentAware.RegisterDependent(Task task)
 		{
-			if (_Committable == null)
-				throw new InvalidOperationException("commttable is null");
+			Contract.Ensures(_DependentTasks != null);
+			Contract.Ensures(Contract.ForAll(_DependentTasks, t => t != null));
 
 			if (_DependentTasks == null)
 				// the number of processor cores * 2 is a reasonable assumption if people are using the Fork=true option.

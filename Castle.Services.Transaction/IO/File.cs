@@ -28,10 +28,11 @@ namespace Castle.Services.Transaction.IO
 	/// </summary>
 	public static class File
 	{
+		internal static IFileAdapter _FileAdapter;
+
 		private static IFileAdapter GetAdapter()
 		{
-			// TODO: IoC lookup or Something?
-			return new FileAdapter();
+			return _FileAdapter ;
 		}
 
 		public static FileStream Create(string filePath)

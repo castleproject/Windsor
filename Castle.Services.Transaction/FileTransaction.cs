@@ -38,9 +38,8 @@ namespace Castle.Services.Transaction
 
 		public FileTransaction(string name)
 		{
-			Contract.Requires(!string.IsNullOrEmpty(name));
-
 			_Name = name;
+		
 			InnerBegin();
 
 			_State = TransactionState.Active;

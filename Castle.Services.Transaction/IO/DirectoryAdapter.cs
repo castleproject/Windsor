@@ -19,6 +19,7 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Contracts;
+using Castle.Services.Transaction.Internal;
 using log4net;
 
 namespace Castle.Services.Transaction.IO
@@ -76,7 +77,7 @@ namespace Castle.Services.Transaction.IO
 				return ((IDirectoryAdapter) tx).Exists(path);
 #endif
 
-			throw new NotImplementedException();
+			return false;
 		}
 
 		void IDirectoryAdapter.Delete(string path)

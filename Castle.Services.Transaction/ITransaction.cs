@@ -72,9 +72,6 @@ namespace Castle.Services.Transaction
 		/// 		is not based on LTM -- this is true (and hence the property null) for Kernel Transactions, i.e. registry
 		/// 		and file transactions that were started before other DTC/LTM-transacted resources.</para>
 		/// </summary>
-		/// <remarks>
-		/// 	TODO: Change this property after construction if a new LTM/DTC transaction is created from the same transaction manager.
-		/// </remarks>
 		System.Transactions.Transaction Inner { get; }
 
 		/// <summary>

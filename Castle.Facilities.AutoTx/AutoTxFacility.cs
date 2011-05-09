@@ -17,12 +17,15 @@
 #endregion
 
 using Castle.Facilities.AutoTx.Registration;
+using Castle.MicroKernel;
 using Castle.MicroKernel.Facilities;
 using Castle.MicroKernel.Registration;
+using Castle.MicroKernel.SubSystems.Naming;
 using Castle.Services.Transaction;
 using Castle.Services.Transaction.Activities;
 using Castle.Services.Transaction.IO;
 using log4net;
+using System.Linq;
 
 namespace Castle.Facilities.AutoTx
 {
@@ -73,8 +76,16 @@ namespace Castle.Facilities.AutoTx
 					.LifeStyle.Transient
 				);
 
-			// TODO: Inspect already existing components!
-			Kernel.ComponentModelBuilder.AddContributor(new TransactionalComponentInspector());
+			var componentInspector = new TransactionalComponentInspector();
+			
+			Kernel.ComponentModelBuilder.AddContributor(componentInspector);
+
+			_Logger.Debug("inspecting previously registered components; this might throw if you have configured your components in the wrong way");
+
+			((INamingSubSystem) Kernel.GetSubSystem(SubSystemConstants.NamingKey))
+				.GetHandlers()
+				.Do(x => componentInspector.ProcessModel(Kernel, x.ComponentModel))
+				.Run();
 
 			_Logger.Debug(
 				@"Initialized AutoTxFacility:
@@ -93,7 +104,8 @@ You can enable verbose logging for .Net by adding this to you .config file:
 	</system.diagnostics>
 
 If you wish to e.g. roll back a transaction from within a transactional method you can resolve/use the ITransactionManager's
-CurrentTransaction property and invoke Rollback on it. Be ready to catch TransactionAbortedException from the caller.
+CurrentTransaction property and invoke Rollback on it. Be ready to catch TransactionAbortedException from the caller. You can enable
+debugging through log4net.
 ");
 		}
 	}

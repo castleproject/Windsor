@@ -41,7 +41,7 @@ namespace Castle.Services.Transaction.IO
 	{
 		// can of worms shut!
 
-		// TODO: 2001:0db8::1428:57ab and 2001:0db8:0:0::1428:57ab are not matched!
+		// TODO: v3.2: 2001:0db8::1428:57ab and 2001:0db8:0:0::1428:57ab are not matched!
 		// ip6: thanks to http://blogs.msdn.com/mpoulson/archive/2005/01/10/350037.aspx
 
 		private static readonly List<char> _InvalidChars = new List<char>(GetInvalidPathChars());

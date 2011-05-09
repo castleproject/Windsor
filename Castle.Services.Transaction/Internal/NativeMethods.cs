@@ -105,6 +105,7 @@ namespace Castle.Services.Transaction.Internal
 		internal static extern bool RollbackTransaction(SafeKernelTransactionHandle transaction);
 
 		#endregion
+
 		#region *FileTransacted[W]
 
 		/*BOOL WINAPI CreateHardLinkTransacted(
@@ -164,6 +165,23 @@ namespace Castle.Services.Transaction.Internal
 		);
 		*/
 
+		/// <summary>
+		/// Continues a file search from a previous call to the FindFirstFile or FindFirstFileEx function.
+		/// If there is a transaction bound to the file enumeration handle, then the files that are returned are subject to transaction isolation rules.
+		/// </summary>
+		/// <remarks>http://msdn.microsoft.com/en-us/library/aa364428%28v=VS.85%29.aspx</remarks>
+		/// <param name="hFindFile">The search handle returned by a previous call to the FindFirstFile or FindFirstFileEx function.</param>
+		/// <param name="lpFindFileData">    A pointer to the WIN32_FIND_DATA structure that receives information about the found file or subdirectory.
+		/// The structure can be used in subsequent calls to FindNextFile to indicate from which file to continue the search.
+		/// </param>
+		/// <returns>If the function succeeds, the return value is nonzero and the lpFindFileData parameter contains information about the next file or directory found.
+		/// If the function fails, the return value is zero and the contents of lpFindFileData are indeterminate. To get extended error information, call the GetLastError function.
+		/// If the function fails because no more matching files can be found, the GetLastError function returns ERROR_NO_MORE_FILES.</returns>
+		[return: MarshalAs(UnmanagedType.Bool)]
+		[DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+		internal static extern bool FindNextFile([In] SafeFindHandle hFindFile,
+		                                         [Out] out WIN32_FIND_DATA lpFindFileData);
+
 		/// <param name="lpFileName"></param>
 		/// <param name="fInfoLevelId"></param>
 		/// <param name="lpFindFileData"></param>
@@ -180,7 +198,7 @@ namespace Castle.Services.Transaction.Internal
 		/// <param name="hTransaction"></param>
 		/// <returns></returns>
 		[DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Auto)]
-		internal static extern SafeFindHandle FindFirstFileTransactedW(
+		private static extern SafeFindHandle FindFirstFileTransactedW(
 			[In, MarshalAs(UnmanagedType.LPWStr)] string lpFileName,
 			[In] FINDEX_INFO_LEVELS fInfoLevelId, // TODO: Won't work.
 			[Out] out WIN32_FIND_DATA lpFindFileData,
@@ -189,22 +207,6 @@ namespace Castle.Services.Transaction.Internal
 			[In] uint dwAdditionalFlags,
 			[In] SafeKernelTransactionHandle hTransaction);
 
-		/// <summary>
-		/// Continues a file search from a previous call to the FindFirstFile or FindFirstFileEx function.
-		/// If there is a transaction bound to the file enumeration handle, then the files that are returned are subject to transaction isolation rules.
-		/// </summary>
-		/// <remarks>http://msdn.microsoft.com/en-us/library/aa364428%28v=VS.85%29.aspx</remarks>
-		/// <param name="hFindFile">The search handle returned by a previous call to the FindFirstFile or FindFirstFileEx function.</param>
-		/// <param name="lpFindFileData">    A pointer to the WIN32_FIND_DATA structure that receives information about the found file or subdirectory.
-		/// The structure can be used in subsequent calls to FindNextFile to indicate from which file to continue the search.
-		/// </param>
-		/// <returns>If the function succeeds, the return value is nonzero and the lpFindFileData parameter contains information about the next file or directory found.
-		/// If the function fails, the return value is zero and the contents of lpFindFileData are indeterminate. To get extended error information, call the GetLastError function.
-		/// If the function fails because no more matching files can be found, the GetLastError function returns ERROR_NO_MORE_FILES.</returns>
-		[return: MarshalAs(UnmanagedType.Bool)]
-		[DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Auto)]
-		internal static extern bool FindNextFile([In] SafeFindHandle hFindFile,
-												[Out] out WIN32_FIND_DATA lpFindFileData);
 
 		/// <summary>
 		/// Not extern
@@ -241,6 +243,7 @@ namespace Castle.Services.Transaction.Internal
 		}
 
 		#endregion
+
 		#region *DirectoryTransacted[W]
 
 		/// <summary>

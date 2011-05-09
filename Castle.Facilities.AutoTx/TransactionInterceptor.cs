@@ -117,7 +117,6 @@ namespace Castle.Facilities.AutoTx
 			}
 		}
 
-		// TODO: implement WaitAll-semantics with returned task
 		private static void SynchronizedCase(IInvocation invocation, ITransaction transaction)
 		{
 			Contract.Requires(transaction.State == TransactionState.Active);
