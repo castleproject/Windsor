@@ -106,7 +106,7 @@ namespace Castle.Services.Transaction
 				_TransactionHandle = handle;
 				//IsAmbient = true; // TODO: Perhaps we created this item and we need to notify the transaction manager...
 			}
-			else _TransactionHandle = NativeMethods.createTransaction(string.Format("{0} Transaction", _Name));
+			else _TransactionHandle = NativeMethods.CreateTransaction(string.Format("{0} Transaction", _Name));
 
 			if (!_TransactionHandle.IsInvalid)
 			{
@@ -225,9 +225,7 @@ namespace Castle.Services.Transaction
 			AssertState(TransactionState.Active);
 
 			if (!NativeMethods.DeleteFileTransactedW(filePath, _TransactionHandle))
-			{
 				throw new TransactionException("Unable to perform transacted file delete.", LastEx());
-			}
 		}
 
 		FileStream IFileAdapter.Open(string filePath, FileMode mode)
@@ -611,7 +609,7 @@ namespace Castle.Services.Transaction
 
 					var subPath = Path.Combine(pathWithoutSufflix, findData.cFileName);
 
-					if ((findData.dwFileAttributes & (uint) FileAttributes.Directory) != 0)
+					if ((findData.dwFileAttributes & FileAttributes.Directory) != 0)
 					{
 						if (findData.cFileName != "." && findData.cFileName != "..")
 							ok &= DeleteRecursive(subPath);

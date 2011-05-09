@@ -18,7 +18,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Text;
 using log4net;
@@ -34,6 +33,7 @@ namespace Castle.Services.Transaction.IO
 	/// </summary>
 	public sealed class FileAdapter : TransactionAdapterBase, IFileAdapter
 	{
+		internal const int ChunkSize = 4096;
 		private static readonly ILog _Logger = LogManager.GetLogger(typeof (FileAdapter));
 
 		///<summary>
@@ -62,18 +62,16 @@ namespace Castle.Services.Transaction.IO
 		///</summary>
 		///<param name = "path">Path to create file at.</param>
 		///<returns>A filestream for the path.</returns>
-		[SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope",
-			Justification = "This is the aim; this is a factory method")]
 		public FileStream Create(string path)
 		{
 			AssertAllowed(path);
 #if !MONO
 			ITransaction tx;
 			if (HasTransaction(out tx))
-				return (tx as IFileAdapter).Create(path);
+				return ((IFileAdapter) tx).Create(path);
 #endif
-			// TODO: implement using p/invoke
-			return System.IO.File.Create(path);
+
+			return LongPathFile.Open(path, FileMode.Create, FileAccess.ReadWrite);
 		}
 
 		///<summary>
@@ -87,10 +85,9 @@ namespace Castle.Services.Transaction.IO
 #if !MONO
 			ITransaction tx;
 			if (HasTransaction(out tx))
-				return (tx as IFileAdapter).Exists(filePath);
+				return ((IFileAdapter) tx).Exists(filePath);
 #endif
-			// TODO: implement using p/invoke
-			return System.IO.File.Exists(filePath);
+			return LongPathFile.Exists(filePath);
 		}
 
 		public string ReadAllText(string path, Encoding encoding)
@@ -101,8 +98,9 @@ namespace Castle.Services.Transaction.IO
 			if (HasTransaction(out tx))
 				return ((IFileAdapter) tx).ReadAllText(path, encoding);
 #endif
-			// TODO: implement using p/invoke
-			return System.IO.File.ReadAllText(path, encoding);
+
+			using (var rdr = new StreamReader(Open(path, FileMode.Open)))
+				return rdr.ReadToEnd();
 		}
 
 		public void Move(string originalFilePath, string newFilePath)
@@ -117,7 +115,8 @@ namespace Castle.Services.Transaction.IO
 				return;
 			}
 #endif
-			throw new NotImplementedException();
+
+			LongPathFile.Move(originalFilePath, newFilePath);
 		}
 
 		public IList<string> ReadAllLines(string filePath)
@@ -146,7 +145,9 @@ namespace Castle.Services.Transaction.IO
 				return;
 			}
 #endif
-			File.WriteAllText(path, contents);
+
+			using (var writer = new StreamWriter(Open(path, FileMode.OpenOrCreate), Encoding.UTF8))
+				writer.Write(contents);
 		}
 
 		public void Delete(string filePath)
@@ -160,11 +161,10 @@ namespace Castle.Services.Transaction.IO
 				return;
 			}
 #endif
-			File.Delete(filePath);
+			
+			LongPathFile.Delete(filePath);
 		}
 
-		[SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope",
-			Justification = "This is the intention; it's a factory method")]
 		public FileStream Open(string filePath, FileMode mode)
 		{
 			AssertAllowed(filePath);
@@ -173,7 +173,8 @@ namespace Castle.Services.Transaction.IO
 			if (HasTransaction(out tx))
 				return ((IFileAdapter) tx).Open(filePath, mode);
 #endif
-			return File.Open(filePath, mode);
+
+			return LongPathFile.Open(filePath, mode, FileAccess.ReadWrite);
 		}
 
 		public int WriteStream(string toFilePath, Stream fromStream)
@@ -181,7 +182,7 @@ namespace Castle.Services.Transaction.IO
 			var offset = 0;
 			using (var fs = Create(toFilePath))
 			{
-				var buf = new byte[4096];
+				var buf = new byte[ChunkSize];
 				int read;
 				while ((read = fromStream.Read(buf, 0, buf.Length)) != 0)
 				{

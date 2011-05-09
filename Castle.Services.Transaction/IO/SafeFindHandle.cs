@@ -31,8 +31,7 @@ namespace Castle.Services.Transaction.IO
 		{
 		}
 
-		public SafeFindHandle(IntPtr preExistingHandle, bool ownsHandle)
-			: base(ownsHandle)
+		public SafeFindHandle(IntPtr preExistingHandle, bool ownsHandle) : base(ownsHandle)
 		{
 			SetHandle(preExistingHandle);
 		}
@@ -41,18 +40,9 @@ namespace Castle.Services.Transaction.IO
 		{
 			if (!(IsInvalid || IsClosed))
 			{
-				return NativeMethods.FindClose(this);
+				return NativeMethods.FindClose(handle);
 			}
 			return (IsInvalid || IsClosed);
-		}
-
-		protected override void Dispose(bool disposing)
-		{
-			if (!(IsInvalid || IsClosed))
-			{
-				NativeMethods.FindClose(this);
-			}
-			base.Dispose(disposing);
 		}
 	}
 }

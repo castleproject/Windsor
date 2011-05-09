@@ -48,7 +48,7 @@
     <CodeContractsReferenceAssembly>Build</CodeContractsReferenceAssembly>
     <CodeContractsAnalysisWarningLevel>2</CodeContractsAnalysisWarningLevel>
     <CodeAnalysisRuleSet>..\..\buildscripts\Correctness-Rules.ruleset</CodeAnalysisRuleSet>
-    <RunCodeAnalysis>false</RunCodeAnalysis>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'NET40-Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -109,6 +109,15 @@
     <Compile Include="Contracts\IDependentAwareContract.cs" />
     <Compile Include="Internal\TaskExtensions.cs" />
     <Compile Include="Internal\TxTraceListener.cs" />
+    <Compile Include="IO\LongPathCommon.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="IO\LongPathDirectory.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="IO\LongPathFile.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Obsolete_Classes.cs" />
     <Compile Include="TransactionalConflictException.cs" />
     <Compile Include="TransactionException.cs" />

@@ -32,7 +32,7 @@ namespace Castle.Services.Transaction.IO
 
 		private static IFileAdapter GetAdapter()
 		{
-			return _FileAdapter ;
+			return _FileAdapter = (_FileAdapter ?? new FileAdapter(false, null));
 		}
 
 		public static FileStream Create(string filePath)

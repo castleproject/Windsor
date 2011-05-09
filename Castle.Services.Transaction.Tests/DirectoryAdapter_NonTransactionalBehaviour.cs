@@ -29,5 +29,45 @@ namespace Castle.Services.Transaction.Tests
 		{
 			Assert.That(Directory.Exists("."));
 		}
+
+		[Test]
+		public void Create_Then_Exists()
+		{
+			try
+			{
+				Assert.That(Directory.Create("tmp-xxx"), Is.True);
+				Assert.That(Directory.Exists("tmp-xxx"));
+			}
+			finally
+			{
+				Directory.Delete("tmp-xxx");
+			}
+		}
+
+		[Test]
+		public void Create_Then_Delete()
+		{
+			Directory.Create("tmp-2");
+			
+			Assert.IsTrue(Directory.Exists("tmp-2"));
+			
+			Directory.Delete("tmp-2");
+
+			Assert.IsFalse(Directory.Exists("tmp-2"));
+		}
+
+		[Test]
+		public void Move()
+		{
+			Directory.Create("tmp-3");
+
+			File.WriteAllText("tmp-3".Combine("mytxt.txt"), "My Contents");
+
+			Directory.Move("tmp-3", "tmp-3-moved");
+
+			Assert.That(Directory.Exists("tmp-3-moved"));
+			Assert.That(Directory.Exists("tmp-3"), Is.False);
+			Assert.That(File.ReadAllText("tmp-3-moved".Combine("mytxt.txt")), Is.EqualTo("My Contents"));
+		}
 	}
 }

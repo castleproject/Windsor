@@ -111,6 +111,11 @@ namespace Castle.Services.Transaction
 		/// <param name="filePath"></param>
 		IList<string> ReadAllLines(string filePath);
 
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="filePath"></param>
+		/// <returns></returns>
 		StreamWriter CreateText(string filePath);
 	}
 }

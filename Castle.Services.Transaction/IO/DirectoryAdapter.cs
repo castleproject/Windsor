@@ -65,7 +65,8 @@ namespace Castle.Services.Transaction.IO
 				return true;
 			}
 
-			throw new NotImplementedException();
+			LongPathDirectory.Create(path);
+			return true;
 		}
 
 		bool IDirectoryAdapter.Exists(string path)
@@ -77,7 +78,7 @@ namespace Castle.Services.Transaction.IO
 				return ((IDirectoryAdapter) tx).Exists(path);
 #endif
 
-			return false;
+			return LongPathDirectory.Exists(path);
 		}
 
 		void IDirectoryAdapter.Delete(string path)
@@ -91,7 +92,8 @@ namespace Castle.Services.Transaction.IO
 				return;
 			}
 #endif
-			throw new NotImplementedException();
+
+			LongPathDirectory.Delete(path);
 		}
 
 		bool IDirectoryAdapter.Delete(string path, bool recursively)
@@ -104,7 +106,9 @@ namespace Castle.Services.Transaction.IO
 				return ((IDirectoryAdapter) tx).Delete(path, recursively);
 			}
 #endif
-			throw new NotImplementedException();
+
+			LongPathDirectory.Delete(path);
+			return true;
 		}
 
 		string IDirectoryAdapter.GetFullPath(string path)
@@ -115,7 +119,7 @@ namespace Castle.Services.Transaction.IO
 			if (HasTransaction(out tx))
 				return ((IDirectoryAdapter) tx).GetFullPath(path);
 #endif
-			return Path.GetFullPath(path);
+			return LongPathCommon.NormalizeLongPath(path);
 		}
 
 		string IDirectoryAdapter.MapPath(string path)
@@ -137,7 +141,7 @@ namespace Castle.Services.Transaction.IO
 			}
 #endif
 
-			throw new NotImplementedException();
+			LongPathFile.Move(originalPath, newPath);
 		}
 	}
 }
