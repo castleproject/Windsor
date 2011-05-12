@@ -831,6 +831,34 @@ namespace Castle.Facilities.WcfIntegration.Tests
 			}
 		}
 
+		[Test, Ignore("Does not work with open-generics")]
+		public void CanOpenServiceHostsWithServicesDependingOnOpenGenerics()
+		{
+			using (var container = new WindsorContainer()
+				.AddFacility<WcfFacility>(f =>
+				{
+					//f.Services.OpenServiceHostsEagerly = true;
+					f.DefaultBinding = new NetTcpBinding { PortSharingEnabled = true };
+					f.CloseTimeout = TimeSpan.Zero;
+				})
+				.Register(
+					Component.For(typeof(IDecorator<>)).ImplementedBy(typeof(Decorator<>)),
+					Component.For<IServiceGenericDependency>().ImplementedBy<ServiceGenericDependency>().LifeStyle.Transient
+						.AsWcfService(new DefaultServiceModel().AddEndpoints(
+								WcfEndpoint.BoundTo(new NetTcpBinding())
+									.At("net.tcp://localhost/Operations")
+								)
+						),
+					Component.For<IServiceNoDependencies>().UsingFactoryMethod(() => new ServiceNoDependencies())
+				))
+			{
+				var client = ChannelFactory<IServiceGenericDependency>.CreateChannel(
+					 new NetTcpBinding(), new EndpointAddress("net.tcp://localhost/Operations"));
+
+				client.DoSomething();
+			}
+		}
+
 		protected IWindsorContainer RegisterLoggingFacility(IWindsorContainer container)
 		{
 			var facNode = new MutableConfiguration("facility");
@@ -866,5 +894,46 @@ namespace Castle.Facilities.WcfIntegration.Tests
 		</component>
 	</components>
 </configuration>";
+
+
+		interface IServiceNoDependencies
+		{
+		}
+
+		class ServiceNoDependencies : IServiceNoDependencies
+		{
+		}
+
+		interface IDecorator<T>
+		where T : class
+		{
+		}
+
+		class Decorator<T> : IDecorator<T>
+			where T : class
+		{
+			public Decorator(T arg)
+			{
+			}
+		}
+
+		[ServiceContract]
+		interface IServiceGenericDependency
+		{
+			[OperationContract]
+			void DoSomething();
+		}
+
+		class ServiceGenericDependency : IServiceGenericDependency
+		{
+			public ServiceGenericDependency(IDecorator<IServiceNoDependencies> arg2)
+			{
+			}
+
+			public void DoSomething()
+			{
+
+			}
+		}
 	}
 }
