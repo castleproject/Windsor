@@ -20,6 +20,7 @@ namespace Castle.Windsor.Tests.XmlProcessor
 	using System.Text.RegularExpressions;
 	using System.Xml;
 
+	using Castle.Windsor.Configuration.Interpreters;
 	using Castle.Windsor.Configuration.Interpreters.XmlProcessor;
 
 	using NUnit.Framework;

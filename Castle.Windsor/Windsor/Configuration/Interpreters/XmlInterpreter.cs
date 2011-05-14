@@ -83,11 +83,9 @@ namespace Castle.Windsor.Configuration.Interpreters
 				var converter = kernel.GetConversionManager();
 				Deserialize(element, store, converter);
 			}
-			catch (XmlProcessorException)
+			catch (XmlProcessorException e)
 			{
-				const string message = "Unable to process xml resource ";
-
-				throw new Exception(message);
+				throw new ConfigurationProcessingException("Unable to process xml resource.", e);
 			}
 		}
 
@@ -97,9 +95,7 @@ namespace Castle.Windsor.Configuration.Interpreters
 			{
 				if (XmlConfigurationDeserializer.IsTextNode(node))
 				{
-					var message = String.Format("{0} cannot contain text nodes", node.Name);
-
-					throw new Exception(message);
+					throw new ConfigurationProcessingException(String.Format("{0} cannot contain text nodes", node.Name));
 				}
 				if (node.NodeType == XmlNodeType.Element)
 				{
@@ -118,7 +114,7 @@ namespace Castle.Windsor.Configuration.Interpreters
 			var message = String.Format("Unexpected node under '{0}': Expected '{1}' but found '{2}'", expectedName,
 			                            expectedName, node.Name);
 
-			throw new Exception(message);
+			throw new ConfigurationProcessingException(message);
 		}
 
 		private static void DeserializeComponent(XmlNode node, IConfigurationStore store, IConversionManager converter)
@@ -130,7 +126,7 @@ namespace Castle.Windsor.Configuration.Interpreters
 				var type = converter.PerformConversion<Type>(config.Attributes["type"]);
 				id = type.FullName;
 				config.Attributes["id"] = id;
-				config.Attributes.Add("id-automatic", true.ToString());
+				config.Attributes.Add("id-automatic", bool.TrueString);
 			}
 			AddComponentConfig(id, config, store);
 		}
@@ -207,8 +203,8 @@ namespace Castle.Windsor.Configuration.Interpreters
 					"Configuration parser encountered <{0}>, but it was expecting to find " +
 					"<{1}>, <{2}> or <{3}>. There might be either a typo on <{0}> or " +
 					"you might have forgotten to nest it properly.",
-					node.Name, ContainersNodeName, FacilitiesNodeName, ComponentsNodeName);
-				throw new Exception(message);
+					node.Name, InstallersNodeName, FacilitiesNodeName, ComponentsNodeName);
+				throw new ConfigurationProcessingException(message);
 			}
 		}
 
@@ -255,7 +251,7 @@ namespace Castle.Windsor.Configuration.Interpreters
 			}
 			if (attributesCount != 1)
 			{
-				throw new Exception(
+				throw new ConfigurationProcessingException(
 					"install must have exactly one of the following attributes defined: 'type', 'assembly' or 'directory'.");
 			}
 			AddInstallerConfig(config, store);
@@ -284,7 +280,7 @@ namespace Castle.Windsor.Configuration.Interpreters
 				var message = String.Format("{0} elements expects required non blank attribute {1}",
 				                            configuration.Name, attributeName);
 
-				throw new Exception(message);
+				throw new ConfigurationProcessingException(message);
 			}
 
 			return value;

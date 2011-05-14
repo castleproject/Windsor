@@ -82,7 +82,7 @@ namespace Castle.MicroKernel.Lifestyle
 			message.AppendLine("Alternatively make sure you have " + PerWebRequestLifestyleModuleRegistration.MicrosoftWebInfrastructureDll +
 			                   " assembly in your GAC (it is installed by ASP.NET MVC3 or WebMatrix) and Windsor will be able to register the module automatically without having to add anything to the config file.");
 #endif
-			throw new Exception(message.ToString());
+			throw new ComponentResolutionException(message.ToString());
 		}
 
 		internal static void RegisterForEviction(PerWebRequestLifestyleManager manager, Burden burden)

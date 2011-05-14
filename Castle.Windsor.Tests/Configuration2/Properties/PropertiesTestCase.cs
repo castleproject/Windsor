@@ -19,6 +19,7 @@
 namespace Castle.Windsor.Tests.Configuration2.Properties
 {
 	using Castle.MicroKernel.Tests.ClassComponents;
+	using Castle.Windsor.Configuration.Interpreters;
 	using Castle.Windsor.Configuration.Interpreters.XmlProcessor;
 
 	using NUnit.Framework;

@@ -553,6 +553,7 @@
     <Compile Include="Proxies\InterceptorDependenciesTestCase.cs" />
     <Compile Include="ProxyInfrastructure\OnBehalfAwareInterceptorSelector.cs" />
     <Compile Include="ProxyInfrastructure\OnBehalfAwareProxyGenerationHook.cs" />
+    <Compile Include="RegistrationWithAttributeAndXmlTestCase.cs" />
     <Compile Include="RegistrationWithAttributeTestCase.cs" />
     <Compile Include="Components\A.cs" />
     <Compile Include="ActionBasedInstaller.cs" />
@@ -927,7 +928,6 @@
     <Compile Include="Bugs\IoC-115.cs" />
     <Compile Include="Bugs\IoC-138.cs" />
     <Compile Include="Bugs\IoC-78\IoC-78.cs" />
-    <Compile Include="Bugs\IoC_103\IoC_103.cs" />
     <Compile Include="Activators\ConstructorTestCase.cs" />
     <Compile Include="Bugs\IoC_169\IoC_169.cs" />
     <Compile Include="ChildContainerSupportTestCase.cs">
@@ -1361,9 +1361,7 @@
     <EmbeddedResource Include="XmlFiles\interceptorsMultiple.xml" />
     <EmbeddedResource Include="XmlFiles\interceptorsInvalid.xml" />
     <EmbeddedResource Include="XmlFiles\interceptors.xml" />
-    <Content Include="Bugs\IoC_103\sample1.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <EmbeddedResource Include="XmlFiles\IOC-103.xml" />
     <Content Include="Configuration2\config_with_forwarded_types.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

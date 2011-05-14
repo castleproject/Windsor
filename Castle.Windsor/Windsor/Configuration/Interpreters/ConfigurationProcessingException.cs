@@ -12,29 +12,26 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
-#if(!SILVERLIGHT)
-
-namespace Castle.Windsor.Configuration.Interpreters.XmlProcessor
+namespace Castle.Windsor.Configuration.Interpreters
 {
 	using System;
 	using System.Runtime.Serialization;
 
 	[Serializable]
-	public class XmlProcessorException : Exception
+	public class ConfigurationProcessingException : Exception
 	{
-		public XmlProcessorException(string message, params object[] args) : base(String.Format(message, args))
+		public ConfigurationProcessingException(string message) : base(message)
 		{
 		}
 
-		public XmlProcessorException(string message, Exception innerException) : base(message, innerException)
+		public ConfigurationProcessingException(string message, Exception innerException) : base(message, innerException)
 		{
 		}
 
-		public XmlProcessorException(SerializationInfo info, StreamingContext context) : base(info, context)
+#if (!SILVERLIGHT)
+		public ConfigurationProcessingException(SerializationInfo info, StreamingContext context) : base(info, context)
 		{
 		}
+#endif
 	}
 }
-
-#endif
