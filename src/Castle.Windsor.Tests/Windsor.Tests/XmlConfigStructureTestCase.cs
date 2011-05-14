@@ -24,6 +24,7 @@ namespace Castle.Windsor.Tests
 	using Castle.Facilities.Startable;
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Tests.ClassComponents;
+	using Castle.Windsor.Configuration.Interpreters;
 	using Castle.Windsor.Installer;
 	using Castle.XmlFiles;
 
@@ -66,6 +67,19 @@ namespace Castle.Windsor.Tests
 			var facilities = Kernel.GetFacilities();
 			Assert.IsNotEmpty(facilities);
 			Assert.IsInstanceOf<StartableFacility>(facilities.Single());
+		}
+
+		[Test]
+		[Bug("IoC-103")]
+		public void Invalid_nodes_are_reported_via_exception()
+		{
+			var e =
+				Assert.Throws<ConfigurationProcessingException>(
+					() => Container.Install(FromFile("IOC-103.xml")));
+
+			var expected =
+				@"Configuration parser encountered <aze>, but it was expecting to find <installers>, <facilities> or <components>. There might be either a typo on <aze> or you might have forgotten to nest it properly.";
+			Assert.AreEqual(expected, e.Message);
 		}
 	}
 }

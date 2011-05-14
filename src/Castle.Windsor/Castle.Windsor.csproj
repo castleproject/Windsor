@@ -808,7 +808,7 @@
     <Compile Include="Windsor\Configuration\Interpreters\XmlInterpreter.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Windsor\Configuration\Interpreters\XmlProcessor\ConfigurationProcessingException.cs" />
+    <Compile Include="Windsor\Configuration\Interpreters\ConfigurationProcessingException.cs" />
     <Compile Include="Windsor\Configuration\Interpreters\XmlProcessor\DefaultXmlProcessorEngine.cs">
       <SubType>Code</SubType>
     </Compile>

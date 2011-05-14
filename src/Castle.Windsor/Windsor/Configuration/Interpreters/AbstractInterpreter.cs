@@ -21,6 +21,7 @@ namespace Castle.Windsor.Configuration.Interpreters
 	using Castle.Core.Resource;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.SubSystems.Configuration;
+	using Castle.Windsor.Configuration.Interpreters.XmlProcessor;
 
 	/// <summary>
 	///   Provides common methods for those who wants 
@@ -148,7 +149,7 @@ namespace Castle.Windsor.Configuration.Interpreters
 			if (string.IsNullOrEmpty(id))
 			{
 				const string message = "Component or Facility was declared without a proper 'id' or 'type' attribute.";
-				throw new Exception(message);
+				throw new ConfigurationProcessingException(message);
 			}
 		}
 	}

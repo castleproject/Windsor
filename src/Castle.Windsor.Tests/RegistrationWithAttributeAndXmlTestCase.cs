@@ -12,28 +12,32 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Windsor.Configuration.Interpreters.XmlProcessor
+namespace CastleTests
 {
-	using System;
-	using System.Runtime.Serialization;
+	using Castle.Core.Resource;
+	using Castle.Windsor.Installer;
 
-#if (!SILVERLIGHT)
-	[Serializable]
-#endif
-	public class ConfigurationProcessingException : Exception
+	using CastleTests.Components;
+
+	using NUnit.Framework;
+
+#if !SILVERLIGHT
+	[TestFixture]
+	public class RegistrationWithAttributeAndXmlTestCase : AbstractContainerTestCase
 	{
-		public ConfigurationProcessingException(string message) : base(message)
+		[Test]
+		[Bug("IOC-295")]
+		public void Registration_via_xml_no_service_specified_uses_service_from_attribute()
 		{
-		}
+			var xml = @"<configuration>
+  <components>
+    <component type=""HasType"" />
+  </components>
+</configuration>";
 
-		public ConfigurationProcessingException(string message, Exception innerException) : base(message, innerException)
-		{
+			Container.Install(Configuration.FromXml(new StaticContentResource(xml)));
+			Assert.IsTrue(Kernel.HasComponent(typeof(ISimpleService)));
 		}
-
-#if (!SILVERLIGHT)
-		public ConfigurationProcessingException(SerializationInfo info, StreamingContext context) : base(info, context)
-		{
-		}
-#endif
 	}
+#endif
 }

@@ -80,7 +80,7 @@ namespace Castle.MicroKernel
 			var handler = GetHandler(kernel);
 			if (handler == null)
 			{
-				throw new Exception(
+				throw new ComponentResolutionException(
 					string.Format(
 						"Component {0} could not be resolved. Make sure you didn't misspell the name, and that component is registered.",
 						serviceOverrideComponentKey ?? actualComponentType.ToString()));
@@ -92,7 +92,7 @@ namespace Castle.MicroKernel
 			}
 			catch (InvalidCastException e)
 			{
-				throw new Exception(string.Format("Component {0} is not compatible with type {1}.", serviceOverrideComponentKey, typeof(T)), e);
+				throw new ComponentResolutionException(string.Format("Component {0} is not compatible with type {1}.", serviceOverrideComponentKey, typeof(T)), e);
 			}
 		}
 
