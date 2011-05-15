@@ -43,6 +43,7 @@ namespace Castle.Core
 		{
 			Name = name;
 			Services = services ?? Type.EmptyTypes;
+			ServicesSpecifiedExplicitly = Services.Length > 0;
 		}
 
 		public bool HasName
@@ -53,13 +54,14 @@ namespace Castle.Core
 		public String Name { get; private set; }
 
 		public Type[] Services { get; private set; }
+		public bool ServicesSpecifiedExplicitly { get; private set; }
 
 		public static CastleComponentAttribute GetDefaultsFor(Type type)
 		{
 			var attribute = (CastleComponentAttribute)GetCustomAttribute(type, typeof(CastleComponentAttribute));
 			if (attribute != null)
 			{
-				if (attribute.Services.Length == 0)
+				if (attribute.ServicesSpecifiedExplicitly == false)
 				{
 					attribute.Services = new[] { type };
 				}

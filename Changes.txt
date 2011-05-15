@@ -19,6 +19,7 @@
 - implemented IOC-246 - Remove alternative naming subsystems
 - implemented IOC-243 - Remove obsolete UseSingleInterfaceProxy option
 
+- fixed IOC-295 - registration via XML ignores service specofied in attribute
 - fixed IOC-286 - Custom logger config in XML is broken
 - fixed IOC-282 - Windsor should be able to register generic typed factories as open generics
 - fixed IOC-280 - ResolveAll should respect services and fail hard when a component can't be resolved

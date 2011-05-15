@@ -20,6 +20,7 @@ namespace Castle.Windsor.Installer
 	using System.Linq;
 	using System.Reflection;
 
+	using Castle.Core;
 	using Castle.Core.Configuration;
 	using Castle.Core.Internal;
 	using Castle.Core.Resource;
@@ -157,88 +158,97 @@ namespace Castle.Windsor.Installer
 			}
 		}
 
-		protected virtual void SetUpComponents(IConfiguration[] configurations, IWindsorContainer container, IConversionManager converter)
+		private void AssertImplementsService(IConfiguration id, Type service, Type implementation)
 		{
-			foreach (var component in configurations)
+			if (service == null)
 			{
-				var id = component.Attributes["id"];
-				var typeName = component.Attributes["type"];
-				var serviceTypeName = component.Attributes["service"];
-
-				if (string.IsNullOrEmpty(typeName))
-				{
-					continue;
-				}
-
-				var type = converter.PerformConversion<Type>(typeName);
-				var service = type;
-
-				if (!string.IsNullOrEmpty(serviceTypeName))
-				{
-					service = converter.PerformConversion<Type>(serviceTypeName);
-				}
-
-				AssertImplementsService(id, service, type);
-
-				Debug.Assert(id != null);
-				Debug.Assert(type != null);
-				Debug.Assert(service != null);
-
-				var services = new List<Type> { service };
-				CollectForwardedTypes(container.Kernel as IKernelInternal, component, typeName, id, converter, services);
-				var registration = Component.For(services).ImplementedBy(type);
-				if (component.Attributes["id-automatic"] == true.ToString())
-				{
-					container.Register(registration.NamedAutomatically(id));
-				}
-				else
-				{
-					container.Register(registration.Named(id));
-				}
+				return;
 			}
-		}
-
-		private void AssertImplementsService(string id, Type service, Type type)
-		{
 			if (service.IsGenericTypeDefinition)
 			{
-				type = type.MakeGenericType(service.GetGenericArguments());
+				implementation = implementation.MakeGenericType(service.GetGenericArguments());
 			}
-			if (!service.IsAssignableFrom(type))
+			if (!service.IsAssignableFrom(implementation))
 			{
 				var message = string.Format("Could not set up component '{0}'. Type '{1}' does not implement service '{2}'",
-				                            id,
-				                            type.AssemblyQualifiedName,
+				                            id.Attributes["id"],
+				                            implementation.AssemblyQualifiedName,
 				                            service.AssemblyQualifiedName);
 				throw new ComponentRegistrationException(message);
 			}
 		}
 
-		private void CollectForwardedTypes(IKernelInternal kernel, IConfiguration component, string typeName, string id,
-		                                   IConversionManager converter, List<Type> services)
+		protected virtual void SetUpComponents(IConfiguration[] configurations, IWindsorContainer container, IConversionManager converter)
 		{
-			if (kernel == null)
+			foreach (var component in configurations)
 			{
-				return;
+				var implementation = GetType(converter, component.Attributes["type"]);
+				var firstService = GetType(converter, component.Attributes["service"]);
+				var services = new HashSet<Type>();
+				if (firstService != null)
+				{
+					services.Add(firstService);
+				}
+				CollectAdditionalServices(component, converter, services);
+
+				var name = default(string);
+				if (implementation != null)
+				{
+					AssertImplementsService(component, firstService, implementation);
+					var defaults = CastleComponentAttribute.GetDefaultsFor(implementation);
+					if (defaults.ServicesSpecifiedExplicitly && services.Count == 0)
+					{
+						defaults.Services.ForEach(s => services.Add(s));
+					}
+					name = GetName(defaults, component);
+				}
+
+				if (services.Count == 0 && implementation == null)
+				{
+					continue;
+				}
+
+				container.Register(Component.For(services).ImplementedBy(implementation).Named(name));
 			}
+		}
+
+		private static string GetName(CastleComponentAttribute defaults, IConfiguration component)
+		{
+			if (component.Attributes["id-automatic"] != bool.TrueString)
+			{
+				return component.Attributes["id"];
+			}
+			return defaults.Name;
+		}
+
+		private Type GetType(IConversionManager converter, string typeName)
+		{
+			if (typeName == null)
+			{
+				return null;
+			}
+			return converter.PerformConversion<Type>(typeName);
+		}
+
+		private void CollectAdditionalServices(IConfiguration component, IConversionManager converter, ICollection<Type> services)
+		{
 			var forwardedTypes = component.Children["forwardedTypes"];
 			if (forwardedTypes == null)
 			{
 				return;
 			}
 
-			foreach (var forwardedType in forwardedTypes.Children
-				.Where(c => c.Name.Trim().Equals("add", StringComparison.InvariantCultureIgnoreCase)))
+			foreach (var forwardedType in forwardedTypes.Children)
 			{
 				var forwardedServiceTypeName = forwardedType.Attributes["service"];
 				try
 				{
 					services.Add(converter.PerformConversion<Type>(forwardedServiceTypeName));
 				}
-				catch (Exception e)
+				catch (ConverterException e)
 				{
 					throw new ComponentRegistrationException(
-						string.Format("Component {0}-{1} defines invalid forwarded type.", id ?? string.Empty, typeName), e);
+						string.Format("Component {0} defines invalid forwarded type.", component.Attributes["id"]), e);
 				}
 			}
 		}
