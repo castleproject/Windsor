@@ -671,6 +671,10 @@ namespace Castle.MicroKernel.Registration
 				var message = String.Format("This component has already been assigned name '{0}'", this.name.Name);
 				throw new ComponentRegistrationException(message);
 			}
+			if (name == null)
+			{
+				return this;
+			}
 
 			this.name = new ComponentName(name, true);
 			return this;

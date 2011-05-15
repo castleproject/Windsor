@@ -23,7 +23,6 @@ namespace Castle.Proxies
 	using Castle.MicroKernel.Tests.ClassComponents;
 	using Castle.ProxyInfrastructure;
 	using Castle.Windsor.Installer;
-	using Castle.Windsor.Tests;
 	using Castle.Windsor.Tests.Interceptors;
 #if !SILVERLIGHT
 	using Castle.XmlFiles;
