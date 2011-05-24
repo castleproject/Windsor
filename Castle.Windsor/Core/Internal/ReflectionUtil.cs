@@ -45,6 +45,22 @@ namespace Castle.Core.Internal
 			return Instantiate<TBase>(subtypeofTBase, ctorArgs ?? new object[0]);
 		}
 
+		public static IEnumerable<Assembly> GetApplicationAssemblies(Assembly rootAssembly)
+		{
+			var index = rootAssembly.FullName.IndexOfAny(new[] { '.', ',' });
+			if (index < 0)
+			{
+				throw new ArgumentException(
+					string.Format("Could not determine application name for assembly \"{0}\". Please use a different method for obtaining assemblies.",
+					              rootAssembly.FullName));
+			}
+
+			var applicationName = rootAssembly.FullName.Substring(0, index);
+			var assemblies = new HashSet<Assembly>();
+			AddApplicationAssemblies(rootAssembly, assemblies, applicationName);
+			return assemblies;
+		}
+
 		public static IEnumerable<Assembly> GetAssemblies(IAssemblyProvider assemblyProvider)
 		{
 			return assemblyProvider.GetAssemblies();
@@ -98,7 +114,7 @@ namespace Castle.Core.Internal
 					}
 				}
 			}
-			var assembly = Assembly.Load(assemblyName);
+			var assembly = LoadAssembly(assemblyName);
 			if (assemblyFilter != null)
 			{
 				foreach (Predicate<Assembly> predicate in assemblyFilter.GetInvocationList())
@@ -110,6 +126,11 @@ namespace Castle.Core.Internal
 				}
 			}
 			return assembly;
+		}
+
+		private static Assembly LoadAssembly(AssemblyName assemblyName)
+		{
+			return Assembly.Load(assemblyName);
 		}
 
 		public static TAttribute[] GetAttributes<TAttribute>(this MemberInfo item) where TAttribute : Attribute
@@ -125,7 +146,7 @@ namespace Castle.Core.Internal
 		/// <returns></returns>
 		public static Type GetCompatibleArrayItemType(this Type type)
 		{
-			if(type == null)
+			if (type == null)
 			{
 				return null;
 			}
@@ -302,6 +323,21 @@ namespace Castle.Core.Internal
 		private static bool IsExe(string extension)
 		{
 			return ".exe".Equals(extension, StringComparison.OrdinalIgnoreCase);
+		}
+
+		private static void AddApplicationAssemblies(Assembly assembly, HashSet<Assembly> assemblies, string applicationName)
+		{
+			if (assemblies.Add(assembly) == false)
+			{
+				return;
+			}
+			foreach (var referencedAssembly in assembly.GetReferencedAssemblies())
+			{
+				if (referencedAssembly.FullName.StartsWith(applicationName))
+				{
+					AddApplicationAssemblies(LoadAssembly(referencedAssembly), assemblies, applicationName);
+				}
+			}
 		}
 	}
 }

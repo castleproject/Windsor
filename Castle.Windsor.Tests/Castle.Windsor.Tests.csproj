@@ -471,6 +471,7 @@
     <Compile Include="Generics\Repository.cs" />
     <Compile Include="HandlerFilterTestCase.cs" />
     <Compile Include="Handlers\EmptyConstructorTestCase.cs" />
+    <Compile Include="Installer\FilterAssembliesInstallerFactory.cs" />
     <Compile Include="Interceptors\CollectInvocationsInterceptor.cs" />
     <Compile Include="Interceptors\DependsOnTViaCtorInterceptor.cs" />
     <Compile Include="Interceptors\DependsOnTViaPropertyInterceptor.cs" />
