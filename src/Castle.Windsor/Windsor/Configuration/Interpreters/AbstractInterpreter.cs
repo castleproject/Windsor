@@ -21,7 +21,6 @@ namespace Castle.Windsor.Configuration.Interpreters
 	using Castle.Core.Resource;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.SubSystems.Configuration;
-	using Castle.Windsor.Configuration.Interpreters.XmlProcessor;
 
 	/// <summary>
 	///   Provides common methods for those who wants 
