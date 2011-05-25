@@ -38,7 +38,7 @@ namespace Castle.Facilities.AutoTx.Tests
 		{
 			_Container = new WindsorContainer().Register(
 
-				Component.For<MyService>(),
+				Component.For<MyService2>(),
 
 				Component.For<ITransactionManager>()
 					.ImplementedBy<TransactionManager>()

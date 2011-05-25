@@ -86,7 +86,7 @@
     <Compile Include="SingleThread_Ambient_OnInterface.cs" />
     <Compile Include="SingleThread_SupressInAmbient.cs" />
     <Compile Include="TestClasses\ConcreteService.cs" />
-    <Compile Include="TestClasses\MyService.cs" />
+    <Compile Include="TestClasses\MyService2.cs" />
     <Compile Include="TestClasses\ThrowingResource.cs" />
     <Compile Include="TxClassMetaInfoStore_MetaData.cs" />
   </ItemGroup>

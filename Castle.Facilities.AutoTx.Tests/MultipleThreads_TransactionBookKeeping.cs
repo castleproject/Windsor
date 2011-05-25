@@ -21,7 +21,7 @@ namespace Castle.Facilities.AutoTx.Tests
 			XmlConfigurator.Configure();
 			_Container = new WindsorContainer();
 			_Container.AddFacility("autotx", new AutoTxFacility());
-			_Container.Register(Component.For<MyService>());
+			_Container.Register(Component.For<MyService2>());
 			ThreadPool.SetMinThreads(5, 5);
 		}
 
@@ -38,7 +38,7 @@ namespace Castle.Facilities.AutoTx.Tests
 			var childHasStarted = new ManualResetEvent(false);
 
 			using (var manager = _Container.ResolveScope<ITransactionManager>())
-			using (var scope = _Container.ResolveScope<MyService>())
+			using (var scope = _Container.ResolveScope<MyService2>())
 			{
 				Assert.That(manager.Service.Count, Is.EqualTo(0));
 				scope.Service.VerifyInAmbient(() =>
@@ -72,7 +72,7 @@ namespace Castle.Facilities.AutoTx.Tests
 		{
 			// ReSharper disable ConvertToLambdaExpression)
 			using (var manager = _Container.ResolveScope<TransactionManager>())
-			using (var scope = _Container.ResolveScope<MyService>())
+			using (var scope = _Container.ResolveScope<MyService2>())
 			{
 				var parentCompleted = new ManualResetEvent(false);
 				var childHasCompleted = new ManualResetEvent(false);

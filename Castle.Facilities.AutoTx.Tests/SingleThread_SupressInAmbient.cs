@@ -15,7 +15,7 @@ namespace Castle.Facilities.AutoTx.Tests
 		{
 			_Container = new WindsorContainer();
 			_Container.AddFacility("autotx", new AutoTxFacility());
-			_Container.Register(Component.For<MyService>());
+			_Container.Register(Component.For<MyService2>());
 		}
 
 		[TearDown]
@@ -27,13 +27,13 @@ namespace Castle.Facilities.AutoTx.Tests
 		[Test]
 		public void SupressedTransaction_NoCurrentTransaction()
 		{
-			using (var scope = new ResolveScope<MyService>(_Container))
+			using (var scope = new ResolveScope<MyService2>(_Container))
 				scope.Service.VerifySupressed();
 		}
 		[Test]
 		public void SupressedTransaction_InCurrentTransaction()
 		{
-			using (var scope = new ResolveScope<MyService>(_Container))
+			using (var scope = new ResolveScope<MyService2>(_Container))
 				scope.Service.VerifyInAmbient(() => scope.Service.VerifySupressed());
 		}
 	}
