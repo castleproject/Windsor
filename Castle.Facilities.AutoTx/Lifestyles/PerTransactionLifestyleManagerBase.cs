@@ -27,10 +27,11 @@ using Castle.MicroKernel;
 using Castle.MicroKernel.Context;
 using Castle.MicroKernel.Lifestyle;
 using Castle.Facilities.Transactions;
-using log4net;
 
 namespace Castle.Facilities.Transactions.Lifestyles
 {
+	using Core.Logging;
+
 	/// <summary>
 	/// 	This lifestyle manager is responsible for disposing components
 	/// 	at the same time as the transaction is completed, i.e. the transction
@@ -39,7 +40,7 @@ namespace Castle.Facilities.Transactions.Lifestyles
 	[Serializable]
 	public abstract class PerTransactionLifestyleManagerBase : AbstractLifestyleManager
 	{
-		private static readonly ILog _Logger = LogManager.GetLogger(typeof (PerTransactionLifestyleManagerBase));
+		private ILogger _Logger = NullLogger.Instance;
 
 		private readonly Dictionary<string, Tuple<uint, object>> _Storage = new Dictionary<string, Tuple<uint, object>>();
 
@@ -51,8 +52,14 @@ namespace Castle.Facilities.Transactions.Lifestyles
 		{
 			Contract.Requires(manager != null);
 			Contract.Ensures(_Manager != null);
-			_Logger.DebugFormat("created");
+			
 			_Manager = manager;
+		}
+
+		public ILogger Logger
+		{
+			get { return _Logger; }
+			set { _Logger = value; }
 		}
 
 		public override void Init(IComponentActivator componentActivator, IKernel kernel, ComponentModel model)

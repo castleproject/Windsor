@@ -23,15 +23,16 @@ using System.Threading.Tasks;
 using System.Transactions;
 using Castle.Facilities.Transactions.Internal;
 using Castle.Facilities.Transactions.IO;
-using log4net;
 using System.Linq;
 
 namespace Castle.Facilities.Transactions
 {
+	using Core.Logging;
+
 	[Serializable]
 	public class Transaction : ITransaction, IDependentAware
 	{
-		private static readonly ILog _Logger = LogManager.GetLogger(typeof (Transaction));
+		private ILogger _Logger = NullLogger.Instance;
 
 		private TransactionState _State = TransactionState.Default;
 
@@ -70,6 +71,12 @@ namespace Castle.Facilities.Transactions
 			_OnDispose = onDispose;
 			_State = TransactionState.Active;
 			_LocalIdentifier = dependent.TransactionInformation.LocalIdentifier + ":" + stackDepth;
+		}
+
+		public ILogger Logger
+		{
+			get { return _Logger; }
+			set { _Logger = value; }
 		}
 
 		[ContractInvariantMethod]

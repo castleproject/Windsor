@@ -22,19 +22,27 @@ using System.Diagnostics.Contracts;
 using System.Threading.Tasks;
 using System.Transactions;
 using Castle.Facilities.Transactions.Internal;
-using log4net;
 
 namespace Castle.Facilities.Transactions
 {
+	using Core.Logging;
+
 	public sealed class TransactionManager : ITransactionManager
 	{
-		private static readonly ILog _Logger = LogManager.GetLogger(typeof (TransactionManager));
+		private ILogger _Logger = NullLogger.Instance;
+
 		private readonly IActivityManager _ActivityManager;
 
 		public TransactionManager(IActivityManager activityManager)
 		{
 			Contract.Requires(activityManager != null);
 			_ActivityManager = activityManager;
+		}
+
+		public ILogger Logger
+		{
+			get { return _Logger; }
+			set { _Logger = value; }
 		}
 
 		[ContractInvariantMethod]

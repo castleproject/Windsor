@@ -18,10 +18,11 @@
 
 using System;
 using System.Diagnostics.Contracts;
-using log4net;
 
 namespace Castle.Facilities.Transactions.IO
 {
+	using Core.Logging;
+
 	/// <summary>
 	/// 	Adapter which wraps the functionality in <see cref = "File" />
 	/// 	together with native kernel transactions.
@@ -29,7 +30,8 @@ namespace Castle.Facilities.Transactions.IO
 	public class DirectoryAdapter : TransactionAdapterBase, IDirectoryAdapter
 	{
 		private readonly IMapPath _PathFinder;
-		private readonly ILog _Logger = LogManager.GetLogger(typeof (DirectoryAdapter));
+
+		private ILogger _Logger = NullLogger.Instance;
 
 		/// <summary>
 		/// 	Create a new DirectoryAdapter instance. C'tor.
@@ -42,9 +44,13 @@ namespace Castle.Facilities.Transactions.IO
 		{
 			Contract.Requires(pathFinder != null);
 
-			_Logger.Debug("DirectoryAdapter created.");
-
 			_PathFinder = pathFinder;
+		}
+
+		public ILogger Logger
+		{
+			get { return _Logger; }
+			set { _Logger = value; }
 		}
 
 		bool IDirectoryAdapter.Create(string path)

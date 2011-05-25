@@ -24,11 +24,12 @@ using Castle.MicroKernel.SubSystems.Naming;
 using Castle.Facilities.Transactions;
 using Castle.Facilities.Transactions.Activities;
 using Castle.Facilities.Transactions.IO;
-using log4net;
 using System.Linq;
 
 namespace Castle.Facilities.Transactions
 {
+	using Core.Logging;
+
 	///<summary>
 	///	<para>A facility for automatically handling transactions using the lightweight
 	///		transaction manager. This facility does not depend on
@@ -39,7 +40,13 @@ namespace Castle.Facilities.Transactions
 	///</summary>
 	public class AutoTxFacility : AbstractFacility
 	{
-		private static readonly ILog _Logger = LogManager.GetLogger(typeof (AutoTxFacility));
+		private ILogger _Logger = NullLogger.Instance;
+
+		public ILogger Logger
+		{
+			get { return _Logger; }
+			set { _Logger = value; }
+		}
 
 		protected override void Init()
 		{

@@ -21,10 +21,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using log4net;
 
 namespace Castle.Facilities.Transactions.IO
 {
+	using Core.Logging;
+
 	/// <summary>
 	/// 	Adapter class for the file transactions
 	/// 	which implement the same interface.
@@ -35,13 +36,20 @@ namespace Castle.Facilities.Transactions.IO
 	public sealed class FileAdapter : TransactionAdapterBase, IFileAdapter
 	{
 		internal const int ChunkSize = 4096;
-		private static readonly ILog _Logger = LogManager.GetLogger(typeof (FileAdapter));
+
+		private ILogger _Logger = NullLogger.Instance;
 
 		///<summary>
 		///	c'tor
 		///</summary>
 		public FileAdapter() : this(false, null)
 		{
+		}
+
+		public ILogger Logger
+		{
+			get { return _Logger; }
+			set { _Logger = value; }
 		}
 
 		///<summary>

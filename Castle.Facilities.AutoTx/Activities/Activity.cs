@@ -21,10 +21,11 @@ using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Threading.Tasks;
 using Castle.Facilities.Transactions.Internal;
-using log4net;
 
 namespace Castle.Facilities.Transactions.Activities
 {
+	using Core.Logging;
+
 	/// <summary>
 	/// 	Value-object that encapsulates a transaction and is serializable across
 	/// 	app-domains.
@@ -32,7 +33,7 @@ namespace Castle.Facilities.Transactions.Activities
 	[Serializable]
 	public sealed class Activity : MarshalByRefObject, IEquatable<Activity>
 	{
-		private static readonly ILog _Logger = LogManager.GetLogger(typeof (Activity));
+		private ILogger _Logger = NullLogger.Instance;
 
 		private readonly Guid _ActivityId = Guid.NewGuid();
 		private readonly Stack<Tuple<ITransaction, string>> _Txs = new Stack<Tuple<ITransaction, string>>();
@@ -41,6 +42,12 @@ namespace Castle.Facilities.Transactions.Activities
 		public Activity()
 		{
 			Contract.Ensures(Count == 0);
+		}
+
+		public ILogger Logger
+		{
+			get { return _Logger; }
+			set { _Logger = value; }
 		}
 
 		public Maybe<ITransaction> TopTransaction

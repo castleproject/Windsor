@@ -18,10 +18,11 @@
 
 using System;
 using System.Transactions;
-using log4net;
 
 namespace Castle.Facilities.Transactions.Internal
 {
+	using Core.Logging;
+
 	/// <summary>
 	/// A TxScope sets the ambient transaction for the duration of its lifetime and then re-assigns the previous value.
 	/// This class is NOT for public consumption. Use it if you are dealing
@@ -32,7 +33,7 @@ namespace Castle.Facilities.Transactions.Internal
 	/// </summary>
 	public sealed class TxScope : IDisposable
 	{
-		private static readonly ILog _Logger = LogManager.GetLogger(typeof (TxScope));
+		private ILogger _Logger = NullLogger.Instance;
 
 		private readonly System.Transactions.Transaction prev;
 
@@ -48,6 +49,12 @@ namespace Castle.Facilities.Transactions.Internal
 		{
 			prev = System.Transactions.Transaction.Current;
 			System.Transactions.Transaction.Current = curr;
+		}
+
+		public ILogger Logger
+		{
+			get { return _Logger; }
+			set { _Logger = value; }
 		}
 
 		public void Dispose()

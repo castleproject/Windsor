@@ -27,15 +27,16 @@ using Castle.DynamicProxy;
 using Castle.MicroKernel;
 using Castle.Facilities.Transactions;
 using Castle.Facilities.Transactions.Internal;
-using log4net;
 using TransactionException = Castle.Facilities.Transactions.TransactionException;
 using TransactionManager = Castle.Facilities.Transactions.TransactionManager;
 
 namespace Castle.Facilities.Transactions
 {
+	using Core.Logging;
+
 	internal class TransactionInterceptor : IInterceptor, IOnBehalfAware
 	{
-		private static readonly ILog _Logger = LogManager.GetLogger(typeof (TransactionInterceptor));
+		private ILogger _Logger = NullLogger.Instance;
 
 		private enum InterceptorState
 		{
@@ -60,6 +61,12 @@ namespace Castle.Facilities.Transactions
 			_Kernel = kernel;
 			_Store = store;
 			_State = InterceptorState.Constructed;
+		}
+
+		public ILogger Logger
+		{
+			get { return _Logger; }
+			set { _Logger = value; }
 		}
 
 		[ContractInvariantMethod]
@@ -117,7 +124,7 @@ namespace Castle.Facilities.Transactions
 			}
 		}
 
-		private static void SynchronizedCase(IInvocation invocation, ITransaction transaction)
+		private void SynchronizedCase(IInvocation invocation, ITransaction transaction)
 		{
 			Contract.Requires(transaction.State == TransactionState.Active);
 			_Logger.DebugFormat("synchronized case");
@@ -182,7 +189,7 @@ namespace Castle.Facilities.Transactions
 		/// </summary>
 		internal static ManualResetEvent Finally;
 
-		private static Task ForkCase(IInvocation invocation, ICreatedTransaction txData)
+		private Task ForkCase(IInvocation invocation, ICreatedTransaction txData)
 		{
 			Contract.Requires(txData.Transaction.State == TransactionState.Active);
 			Contract.Ensures(Contract.Result<Task>() != null);
