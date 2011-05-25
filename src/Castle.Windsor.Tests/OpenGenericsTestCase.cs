@@ -12,13 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Windsor.Tests
+namespace CastleTests
 {
 	using System.Collections.ObjectModel;
 
 	using Castle.MicroKernel.Registration;
+	using Castle.MicroKernel.Tests.ClassComponents;
 
-	using CastleTests;
 	using CastleTests.Components;
 
 	using NUnit.Framework;
@@ -36,6 +36,17 @@ namespace Castle.Windsor.Tests
 			var proxy = Container.Resolve<Collection<int>>();
 
 			Assert.IsInstanceOf<ISimpleService>(proxy);
+		}
+
+		[Test]
+		public void Open_generic_handlers_get_included_when_generic_service_requested()
+		{
+			Container.Register(Component.For<IGeneric<A>>().ImplementedBy<GenericImpl1<A>>(),
+			                   Component.For(typeof(IGeneric<>)).ImplementedBy(typeof(GenericImpl2<>)));
+
+			var items = Container.ResolveAll<IGeneric<A>>();
+
+			Assert.AreEqual(2, items.Length);
 		}
 
 		[Test]

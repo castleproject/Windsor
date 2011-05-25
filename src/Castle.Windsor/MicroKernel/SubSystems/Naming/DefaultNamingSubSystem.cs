@@ -216,9 +216,13 @@ namespace Castle.MicroKernel.SubSystems.Naming
 					return result;
 				}
 
-				result = key2Handler.Values
-					.Where(h => h.Services.Any(s => s == service))
-					.ToArray();
+				var tempResult = key2Handler.Values.Where(h => h.Services.Any(s => s == service));
+				if (service.IsGenericType && service.IsGenericTypeDefinition == false)
+				{
+					var openService = service.GetGenericTypeDefinition();
+					tempResult = tempResult.Union(key2Handler.Values.Where(h => h.Services.Any(s => s == openService)));
+				}
+				result = tempResult.ToArray();
 				handlerListsByTypeCache[service] = result;
 			}
 
@@ -344,8 +348,21 @@ namespace Castle.MicroKernel.SubSystems.Naming
 
 		protected bool IsAssignable(Type thisOne, Type fromThisOne)
 		{
-			return thisOne.IsAssignableFrom(fromThisOne) ||
-			       (thisOne.IsGenericType && thisOne.GetGenericTypeDefinition().IsAssignableFrom(fromThisOne));
+			if(thisOne.IsAssignableFrom(fromThisOne))
+			{
+				return true;
+			}
+			if (thisOne.IsGenericType == false || fromThisOne.IsGenericTypeDefinition == false)
+			{
+				return false;
+			}
+			var genericArguments = thisOne.GetGenericArguments();
+			if(fromThisOne.GetGenericArguments().Length!=genericArguments.Length)
+			{
+				return false;
+			}
+			fromThisOne = fromThisOne.MakeGenericType(genericArguments);
+			return thisOne.IsAssignableFrom(fromThisOne);
 		}
 
 		private Predicate<Type> GetServiceSelector(IHandler handler)

@@ -19,8 +19,10 @@ namespace Castle.Windsor.Tests
 
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Registration;
+	using Castle.MicroKernel.Tests.ClassComponents;
 
 	using CastleTests;
+	using CastleTests.Components;
 
 	using NUnit.Framework;
 
@@ -51,6 +53,35 @@ namespace Castle.Windsor.Tests
 			public IHandler[] SelectHandlers(Type service, IHandler[] handlers)
 			{
 				return handlers;
+			}
+		}
+
+		private class DelegatingFilter : IHandlersFilter
+		{
+			private IHandler[] handlersAsked;
+			private readonly Type typeToFilter;
+			private readonly Func<IHandler, bool> filter;
+
+			public DelegatingFilter(Type typeToFilter, Func<IHandler,bool> filter = null)
+			{
+				this.typeToFilter = typeToFilter;
+				this.filter = filter ?? (t => true);
+			}
+
+			public bool HasOpinionAbout(Type service)
+			{
+				return service == typeToFilter;
+			}
+
+			public IHandler[] HandlersAsked
+			{
+				get { return handlersAsked; }
+			}
+
+			public IHandler[] SelectHandlers(Type service, IHandler[] handlers)
+			{
+				handlersAsked = handlers;
+				return handlers.Where(filter).ToArray();
 			}
 		}
 
@@ -195,6 +226,19 @@ namespace Castle.Windsor.Tests
 			Container.Kernel.AddHandlersFilter(new FailIfCalled());
 
 			Container.ResolveAll(typeof(IUnimportantService));
+		}
+
+		[Test]
+		public void Filter_gets_open_generic_handlers_when_generic_service_requested()
+		{
+			Container.Register(Component.For<IGeneric<A>>().ImplementedBy<GenericImpl1<A>>(),
+			                   Component.For(typeof(GenericImpl2<>)));
+			var filter = new DelegatingFilter(typeof(IGeneric<A>));
+			Kernel.AddHandlersFilter(filter);
+
+			Container.ResolveAll<IGeneric<A>>();
+
+			Assert.AreEqual(2, filter.HandlersAsked.Length);
 		}
 	}
 }
