@@ -18,11 +18,10 @@
 
 namespace Castle.Facilities.Transactions.Tests
 {
-	using Castle.Facilities.Transactions.IO;
-	using Castle.Facilities.Transactions.Tests.Framework;
-
+	using Framework;
+	using IO;
 	using NUnit.Framework;
-	using Exts = Facilities.Transactions.Tests.TestClasses.Exts;
+	using TestClasses;
 
 	public class DirectoryAdapter_ChJail : TxFTestFixtureBase
 	{

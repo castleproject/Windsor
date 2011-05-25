@@ -16,14 +16,12 @@
 
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-
 namespace Castle.Facilities.Transactions.IO
 {
+	using System.Collections.Generic;
+	using System.IO;
+	using System.Linq;
+	using System.Text;
 	using Core.Logging;
 
 	/// <summary>

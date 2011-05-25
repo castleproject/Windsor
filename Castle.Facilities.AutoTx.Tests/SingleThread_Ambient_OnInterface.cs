@@ -16,20 +16,16 @@
 
 #endregion
 
-using System;
-using System.Transactions;
-using Castle.Facilities.Transactions.Testing;
-using Castle.Facilities.Transactions.Tests.TestClasses;
-using Castle.MicroKernel.Registration;
-using Castle.Facilities.Transactions;
-using Castle.Windsor;
-using log4net.Config;
-using NUnit.Framework;
-
 namespace Castle.Facilities.Transactions.Tests
 {
+	using System;
+	using System.Transactions;
+	using log4net.Config;
+	using MicroKernel.Registration;
+	using NUnit.Framework;
 	using TestClasses;
 	using Testing;
+	using Windsor;
 
 	public class SingleThread_Ambient_OnInterface
 	{

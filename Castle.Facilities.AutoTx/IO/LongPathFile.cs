@@ -1,13 +1,13 @@
-﻿using System;
-using System.Diagnostics.CodeAnalysis;
-using System.IO;
-using Castle.Facilities.Transactions.Internal;
-using Microsoft.Win32.SafeHandles;
-
-//     Copyright (c) Microsoft Corporation.  All rights reserved.
+﻿//     Copyright (c) Microsoft Corporation.  All rights reserved.
 
 namespace Castle.Facilities.Transactions.IO
 {
+	using System;
+	using System.Diagnostics.CodeAnalysis;
+	using System.IO;
+	using Internal;
+	using Microsoft.Win32.SafeHandles;
+
 	/// <summary>
 	/// 	Provides static methods for creating, copying, deleting, moving, and opening of files
 	/// 	with long paths, that is, paths that exceed 259 characters.

@@ -16,16 +16,13 @@
 
 #endregion
 
-using System;
-using System.Linq;
-using System.Reflection;
-using Castle.Facilities.Transactions.Tests.Framework;
-using Castle.Facilities.Transactions.Tests.TestClasses;
-using Castle.Facilities.Transactions;
-using NUnit.Framework;
-
 namespace Castle.Facilities.Transactions.Tests
 {
+	using System;
+	using System.Linq;
+	using System.Reflection;
+	using Framework;
+	using NUnit.Framework;
 	using TestClasses;
 
 	public class TxClassMetaInfoStore_MetaData

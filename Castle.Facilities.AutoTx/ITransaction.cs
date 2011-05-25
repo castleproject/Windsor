@@ -16,16 +16,15 @@
 
 #endregion
 
-using System;
-using System.Diagnostics.CodeAnalysis;
-using System.Diagnostics.Contracts;
-using System.Transactions;
-using Castle.Facilities.Transactions.Contracts;
-using Castle.Facilities.Transactions.Internal;
-using Castle.Facilities.Transactions.IO;
-
 namespace Castle.Facilities.Transactions
 {
+	using System;
+	using System.Diagnostics.CodeAnalysis;
+	using System.Diagnostics.Contracts;
+	using System.Transactions;
+	using Contracts;
+	using IO;
+
 	/// <summary>
 	/// 	<para>
 	/// 		Denotes a castle transaction. This is the main point of interaction between your code and

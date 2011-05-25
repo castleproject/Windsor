@@ -19,7 +19,6 @@
 namespace Castle.Facilities.Transactions.Tests.Framework
 {
 	using System.Threading;
-
 	using NUnit.Framework;
 
 	public class STATestRuntime

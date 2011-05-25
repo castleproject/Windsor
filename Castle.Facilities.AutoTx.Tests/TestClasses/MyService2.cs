@@ -16,14 +16,13 @@
 
 #endregion
 
-using System;
-using System.Diagnostics.Contracts;
-using System.Transactions;
-using Castle.Facilities.Transactions;
-using NUnit.Framework;
-
 namespace Castle.Facilities.Transactions.Tests.TestClasses
 {
+	using System;
+	using System.Diagnostics.Contracts;
+	using System.Transactions;
+	using NUnit.Framework;
+
 	public class MyService2
 	{
 		private readonly ITransactionManager _Manager;

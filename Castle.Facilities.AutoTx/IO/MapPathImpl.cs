@@ -16,12 +16,12 @@
 
 #endregion
 
-using System;
-using System.Diagnostics.CodeAnalysis;
-using System.Diagnostics.Contracts;
-
 namespace Castle.Facilities.Transactions.IO
 {
+	using System;
+	using System.Diagnostics.CodeAnalysis;
+	using System.Diagnostics.Contracts;
+
 	///<summary>
 	///	An implementation of the MapPath which seems to be working well with
 	///	both testfixtures and online. Consumed by <see cref = "IDirectoryAdapter" />

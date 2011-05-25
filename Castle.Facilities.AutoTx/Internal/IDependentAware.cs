@@ -1,9 +1,9 @@
-using System.Diagnostics.Contracts;
-using System.Threading.Tasks;
-using Castle.Facilities.Transactions.Contracts;
-
 namespace Castle.Facilities.Transactions.Internal
 {
+	using System.Diagnostics.Contracts;
+	using System.Threading.Tasks;
+	using Contracts;
+
 	/// <summary>
 	/// An interface specifying whether the <see cref="ITransaction"/> implementation
 	/// knows about its dependents. If the transaction class does not implement this interface

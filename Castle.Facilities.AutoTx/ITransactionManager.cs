@@ -16,12 +16,12 @@
 
 #endregion
 
-using System;
-using System.Diagnostics.Contracts;
-using Castle.Facilities.Transactions.Contracts;
-
 namespace Castle.Facilities.Transactions
 {
+	using System;
+	using System.Diagnostics.Contracts;
+	using Contracts;
+
 	/// <summary>
 	/// 	The transaction manager takes care of the nitty-gritty details of managing the store for transactions and their data.
 	/// 	Its main use-case is creating the actual transactions, given the options for the transaction and the 

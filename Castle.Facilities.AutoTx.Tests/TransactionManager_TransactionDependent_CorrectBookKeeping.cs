@@ -18,8 +18,8 @@
 
 namespace Castle.Facilities.Transactions.Tests
 {
-	using Facilities.Transactions.Tests.TestClasses;
 	using NUnit.Framework;
+	using TestClasses;
 
 	public class TransactionManager_TransactionDependent_CorrectBookKeeping
 	{

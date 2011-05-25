@@ -18,9 +18,8 @@
 
 namespace Castle.Facilities.Transactions.Tests
 {
-	using Castle.Facilities.Transactions.IO;
-	using Castle.Facilities.Transactions.Tests.Framework;
-
+	using Framework;
+	using IO;
 	using NUnit.Framework;
 
 	[TestFixture]

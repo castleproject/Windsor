@@ -16,11 +16,10 @@
 
 #endregion
 
-using System;
-using System.Transactions;
-
 namespace Castle.Facilities.Transactions.Internal
 {
+	using System;
+	using System.Transactions;
 	using Core.Logging;
 
 	/// <summary>

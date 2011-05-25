@@ -16,19 +16,18 @@
 
 #endregion
 
-using System;
-using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
-using System.Diagnostics.Contracts;
-using Castle.Core;
-using Castle.MicroKernel;
-using Castle.MicroKernel.Context;
-using Castle.MicroKernel.Lifestyle;
-using Castle.MicroKernel.Registration;
-
 namespace Castle.Facilities.Transactions.Lifestyles
 {
+	using System;
+	using System.Diagnostics;
+	using System.Diagnostics.CodeAnalysis;
+	using System.Diagnostics.Contracts;
+	using Core;
 	using Core.Logging;
+	using MicroKernel;
+	using MicroKernel.Context;
+	using MicroKernel.Lifestyle;
+	using MicroKernel.Registration;
 
 	/// <summary>
 	/// 	Abstract hybrid lifestyle manager, with two underlying lifestyles

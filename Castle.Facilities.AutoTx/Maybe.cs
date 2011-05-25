@@ -16,12 +16,12 @@
 
 #endregion
 
-using System;
-using System.Diagnostics.CodeAnalysis;
-using System.Diagnostics.Contracts;
-
 namespace Castle.Facilities.Transactions
 {
+	using System;
+	using System.Diagnostics.CodeAnalysis;
+	using System.Diagnostics.Contracts;
+
 	/// <summary>
 	/// 	Static helper class for creating Maybe monads.
 	/// </summary>

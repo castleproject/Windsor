@@ -16,19 +16,17 @@
 
 #endregion
 
-using Castle.Facilities.Transactions.Registration;
-using Castle.MicroKernel;
-using Castle.MicroKernel.Facilities;
-using Castle.MicroKernel.Registration;
-using Castle.MicroKernel.SubSystems.Naming;
-using Castle.Facilities.Transactions;
-using Castle.Facilities.Transactions.Activities;
-using Castle.Facilities.Transactions.IO;
-using System.Linq;
-
 namespace Castle.Facilities.Transactions
 {
+	using System.Linq;
+	using Activities;
 	using Core.Logging;
+	using IO;
+	using MicroKernel;
+	using MicroKernel.Facilities;
+	using MicroKernel.Registration;
+	using MicroKernel.SubSystems.Naming;
+	using Registration;
 
 	///<summary>
 	///	<para>A facility for automatically handling transactions using the lightweight

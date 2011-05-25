@@ -16,11 +16,11 @@
 
 #endregion
 
-using System.Runtime.InteropServices;
-using Castle.Facilities.Transactions.IO;
-
 namespace Castle.Facilities.Transactions.Internal
 {
+	using System.Runtime.InteropServices;
+	using IO;
+
 	[ComImport]
 	[InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
 	[Guid("79427A2B-F895-40e0-BE79-B57DC82ED231")]

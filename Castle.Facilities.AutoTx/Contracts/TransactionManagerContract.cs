@@ -16,12 +16,12 @@
 
 #endregion
 
-using System;
-using System.Diagnostics.Contracts;
-using System.Transactions;
-
 namespace Castle.Facilities.Transactions.Contracts
 {
+	using System;
+	using System.Diagnostics.Contracts;
+	using System.Transactions;
+
 	[ContractClassFor(typeof (ITransactionManager))]
 	internal abstract class TransactionManagerContract : ITransactionManager
 	{

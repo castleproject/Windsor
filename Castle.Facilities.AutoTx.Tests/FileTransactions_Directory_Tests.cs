@@ -21,12 +21,10 @@ namespace Castle.Facilities.Transactions.Tests
 	using System;
 	using System.Collections.Generic;
 	using System.Threading;
-
-	using Castle.Facilities.Transactions.IO;
-	using Castle.Facilities.Transactions.Tests.Framework;
-	using Facilities.Transactions.Tests.TestClasses;
+	using Framework;
+	using IO;
 	using NUnit.Framework;
-	using Exts = Facilities.Transactions.Tests.TestClasses.Exts;
+	using TestClasses;
 
 	[TestFixture, Ignore("TODO")]
 	public class FileTransactions_Directory_Tests : TxFTestFixtureBase

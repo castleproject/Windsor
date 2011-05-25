@@ -16,18 +16,17 @@
 
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.Contracts;
-using System.Threading.Tasks;
-using System.Transactions;
-using Castle.Facilities.Transactions.Internal;
-using Castle.Facilities.Transactions.IO;
-using System.Linq;
-
 namespace Castle.Facilities.Transactions
 {
+	using System;
+	using System.Collections.Generic;
+	using System.Diagnostics.Contracts;
+	using System.Linq;
+	using System.Threading.Tasks;
+	using System.Transactions;
 	using Core.Logging;
+	using Internal;
+	using IO;
 
 	[Serializable]
 	public class Transaction : ITransaction, IDependentAware

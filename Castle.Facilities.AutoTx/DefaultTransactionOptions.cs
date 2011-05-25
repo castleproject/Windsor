@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Diagnostics.Contracts;
-using System.Linq;
-using System.Transactions;
-
-namespace Castle.Facilities.Transactions
+﻿namespace Castle.Facilities.Transactions
 {
+	using System;
+	using System.Collections.Generic;
+	using System.Diagnostics.CodeAnalysis;
+	using System.Diagnostics.Contracts;
+	using System.Linq;
+	using System.Transactions;
+
 	/// <summary>
 	/// 	Sample implementation of ITransactionOptions. Use this if you are using <see cref = "ITransactionManager" /> directly.
 	/// </summary>

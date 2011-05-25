@@ -1,7 +1,7 @@
-﻿using System.Transactions;
-
-namespace Castle.Facilities.Transactions
+﻿namespace Castle.Facilities.Transactions
 {
+	using System.Transactions;
+
 	/// <summary>
 	/// An enum of the possible states a transaction might take. Due to
 	/// the concurrent nature of a transaction that is talking to a resource manager

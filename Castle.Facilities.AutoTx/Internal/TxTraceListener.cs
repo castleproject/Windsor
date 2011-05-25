@@ -16,14 +16,14 @@
 
 #endregion
 
-using System;
-using System.Diagnostics;
-using System.IO;
-using System.Text.RegularExpressions;
-using System.Xml.Serialization;
-
 namespace Castle.Facilities.Transactions.Internal
 {
+	using System;
+	using System.Diagnostics;
+	using System.IO;
+	using System.Text.RegularExpressions;
+	using System.Xml.Serialization;
+
 	[Serializable]
 	public class TraceRecord
 	{

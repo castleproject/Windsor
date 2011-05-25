@@ -16,11 +16,11 @@
 
 #endregion
 
-using System.Diagnostics.Contracts;
-using Castle.Windsor;
-
 namespace Castle.Facilities.Transactions.Testing
 {
+	using System.Diagnostics.Contracts;
+	using Windsor;
+
 	/// <summary>
 	/// 	Helper class for adding 'nifty' extensions to Windsor which ensures disposal/release of
 	/// 	resources.

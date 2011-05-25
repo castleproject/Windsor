@@ -16,12 +16,12 @@
 
 #endregion
 
-using System;
-using System.Runtime.Serialization;
-using System.Transactions;
-
 namespace Castle.Facilities.Transactions
 {
+	using System;
+	using System.Runtime.Serialization;
+	using System.Transactions;
+
 	[Obsolete("Deprecated; just remove this attribute for the same effect. No other changes are necessary.")]
 	[AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
 	public class TransactionalAttribute : Attribute {}

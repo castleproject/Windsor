@@ -16,14 +16,13 @@
 
 #endregion
 
-using Castle.MicroKernel.Facilities;
-using Castle.MicroKernel.Registration;
-using Castle.Facilities.Transactions;
-using Castle.Windsor;
-using NUnit.Framework;
-
 namespace Castle.Facilities.Transactions.Tests
 {
+	using MicroKernel.Facilities;
+	using MicroKernel.Registration;
+	using NUnit.Framework;
+	using Windsor;
+
 	public class InitTests
 	{
 		[Test]

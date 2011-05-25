@@ -19,8 +19,8 @@
 namespace Castle.Facilities.Transactions.Tests
 {
 	using System.Transactions;
-	using Facilities.Transactions.Tests.TestClasses;
 	using NUnit.Framework;
+	using TestClasses;
 
 	public class TransactionManager_EnlistedResources
 	{

@@ -1,7 +1,7 @@
-using NUnit.Framework;
-
 namespace Castle.Facilities.Transactions.Tests
 {
+	using NUnit.Framework;
+
 	public class TransactionManager_IgnoreDependents
 	{
 		[Test, Ignore("For Beta")]

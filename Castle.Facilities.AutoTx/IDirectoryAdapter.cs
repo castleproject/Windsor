@@ -1,8 +1,8 @@
-using System.Diagnostics.Contracts;
-using Castle.Facilities.Transactions.Contracts;
-
 namespace Castle.Facilities.Transactions
 {
+	using System.Diagnostics.Contracts;
+	using Contracts;
+
 	///<summary>
 	///	Directory helper. Use this instead of Directory in order to gain
 	///	transparent interop with transactions (when you want them, as marked by the [Transaction] attribute).

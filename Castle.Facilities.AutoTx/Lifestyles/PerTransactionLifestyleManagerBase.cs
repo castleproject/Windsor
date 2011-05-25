@@ -16,21 +16,19 @@
 
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
-using System.Diagnostics.Contracts;
-using System.Linq;
-using Castle.Core;
-using Castle.MicroKernel;
-using Castle.MicroKernel.Context;
-using Castle.MicroKernel.Lifestyle;
-using Castle.Facilities.Transactions;
-
 namespace Castle.Facilities.Transactions.Lifestyles
 {
+	using System;
+	using System.Collections.Generic;
+	using System.Diagnostics;
+	using System.Diagnostics.CodeAnalysis;
+	using System.Diagnostics.Contracts;
+	using System.Linq;
+	using Core;
 	using Core.Logging;
+	using MicroKernel;
+	using MicroKernel.Context;
+	using MicroKernel.Lifestyle;
 
 	/// <summary>
 	/// 	This lifestyle manager is responsible for disposing components

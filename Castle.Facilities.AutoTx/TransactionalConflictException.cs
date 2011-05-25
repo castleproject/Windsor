@@ -16,11 +16,11 @@
 
 #endregion
 
-using System;
-using System.Runtime.Serialization;
-
 namespace Castle.Facilities.Transactions
 {
+	using System;
+	using System.Runtime.Serialization;
+
 	/// <summary>
 	/// Thrown if a non-transacted file API and a transacted file API try and operate on the same inode/file.
 	/// </summary>

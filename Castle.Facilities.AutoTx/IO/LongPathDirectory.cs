@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Runtime.InteropServices;
-using Castle.Facilities.Transactions.Internal;
-
-//     Copyright (c) Microsoft Corporation.  All rights reserved.
+﻿//     Copyright (c) Microsoft Corporation.  All rights reserved.
 
 namespace Castle.Facilities.Transactions.IO
 {
+	using System;
+	using System.Collections.Generic;
+	using System.IO;
+	using System.Runtime.InteropServices;
+	using Internal;
+
 	/// <summary>
 	/// 	Provides methods for creating, deleting, moving and enumerating directories and 
 	/// 	subdirectories with long paths, that is, paths that exceed 259 characters.

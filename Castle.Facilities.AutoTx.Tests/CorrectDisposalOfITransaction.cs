@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Transactions;
-using NUnit.Framework;
-
-namespace Castle.Facilities.Transactions.Tests
+﻿namespace Castle.Facilities.Transactions.Tests
 {
-	using Facilities.Transactions.Tests.TestClasses;
+	using System.Transactions;
+	using NUnit.Framework;
+	using TestClasses;
+	using Transaction = Transactions.Transaction;
 
 	public class CorrectDisposalOfITransaction
 	{

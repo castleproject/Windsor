@@ -1,22 +1,17 @@
-using System;
-using System.Threading;
-using System.Transactions;
-using Castle.Facilities.Transactions.Lifestyles;
-using Castle.Facilities.Transactions.Registration;
-using Castle.Facilities.FactorySupport;
-using Castle.Facilities.TypedFactory;
-using Castle.MicroKernel;
-using Castle.MicroKernel.Registration;
-using Castle.Facilities.Transactions;
-using Castle.Windsor;
-using log4net;
-using log4net.Config;
-using NUnit.Framework;
-using Castle.Facilities.Transactions.Testing;
-
 namespace Castle.Facilities.AutoTx.Tests
 {
+	using System;
+	using System.Threading;
+	using FactorySupport;
+	using log4net;
+	using log4net.Config;
+	using MicroKernel.Registration;
+	using NUnit.Framework;
 	using Transactions;
+	using Transactions.Registration;
+	using Transactions.Testing;
+	using TypedFactory;
+	using Windsor;
 
 	public class PerTransactionLifestyle_Releasing
 	{

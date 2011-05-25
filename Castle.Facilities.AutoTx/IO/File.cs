@@ -16,14 +16,14 @@
 
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.Contracts;
-using System.IO;
-using System.Text;
-
 namespace Castle.Facilities.Transactions.IO
 {
+	using System;
+	using System.Collections.Generic;
+	using System.Diagnostics.Contracts;
+	using System.IO;
+	using System.Text;
+
 	/// <summary>
 	/// 	Utility class for file operations.
 	/// </summary>

@@ -16,14 +16,14 @@
 
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.Contracts;
-using System.Linq;
-using System.Transactions;
-
 namespace Castle.Facilities.Transactions
 {
+	using System;
+	using System.Collections.Generic;
+	using System.Diagnostics.Contracts;
+	using System.Linq;
+	using System.Transactions;
+
 	/// <summary>
 	/// 	Specifies a method as transactional. When adding this interface to a method you can use an inversion of control container
 	///		to intercept method calls to that method and perform the method transactionally. In the 'recommended' implementation,

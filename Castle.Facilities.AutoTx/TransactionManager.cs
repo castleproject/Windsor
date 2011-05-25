@@ -16,16 +16,14 @@
 
 #endregion
 
-using System;
-using System.Diagnostics.CodeAnalysis;
-using System.Diagnostics.Contracts;
-using System.Threading.Tasks;
-using System.Transactions;
-using Castle.Facilities.Transactions.Internal;
-
 namespace Castle.Facilities.Transactions
 {
+	using System;
+	using System.Diagnostics.Contracts;
+	using System.Threading.Tasks;
+	using System.Transactions;
 	using Core.Logging;
+	using Internal;
 
 	public sealed class TransactionManager : ITransactionManager
 	{

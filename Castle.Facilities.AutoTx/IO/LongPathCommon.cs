@@ -1,15 +1,15 @@
-﻿using System;
-using System.Diagnostics.Contracts;
-using System.Globalization;
-using System.IO;
-using System.Runtime.InteropServices;
-using System.Text;
-using Castle.Facilities.Transactions.Internal;
-
-//     Copyright (c) Microsoft Corporation.  All rights reserved.
+﻿//     Copyright (c) Microsoft Corporation.  All rights reserved.
 
 namespace Castle.Facilities.Transactions.IO
 {
+	using System;
+	using System.Diagnostics.Contracts;
+	using System.Globalization;
+	using System.IO;
+	using System.Runtime.InteropServices;
+	using System.Text;
+	using Internal;
+
 	internal static class LongPathCommon
 	{
 		internal static string NormalizeSearchPattern(string searchPattern)

@@ -16,13 +16,13 @@
 
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.Contracts;
-using System.Transactions;
-
 namespace Castle.Facilities.Transactions.Contracts
 {
+	using System;
+	using System.Collections.Generic;
+	using System.Diagnostics.Contracts;
+	using System.Transactions;
+
 	[ContractClassFor(typeof (ITransactionOptions))]
 	internal abstract class ITransactionOptionsContract : ITransactionOptions
 	{

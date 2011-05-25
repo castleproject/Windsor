@@ -16,14 +16,14 @@
 
 #endregion
 
-using System;
-using System.Runtime.ConstrainedExecution;
-using System.Security;
-using Castle.Facilities.Transactions.Internal;
-using Microsoft.Win32.SafeHandles;
-
 namespace Castle.Facilities.Transactions.IO
 {
+	using System;
+	using System.Runtime.ConstrainedExecution;
+	using System.Security;
+	using Internal;
+	using Microsoft.Win32.SafeHandles;
+
 	///<summary>
 	///	A safe file handle on the transaction resource.
 	///</summary>

@@ -16,11 +16,11 @@
 
 #endregion
 
-using System;
-using System.Runtime.Serialization;
-
 namespace Castle.Facilities.Transactions
 {
+	using System;
+	using System.Runtime.Serialization;
+
 	/// <summary>
 	/// 	Exception thrown when the transaction services code has problems.
 	/// </summary>

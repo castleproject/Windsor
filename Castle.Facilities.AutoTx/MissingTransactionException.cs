@@ -16,11 +16,11 @@
 
 #endregion
 
-using System;
-using System.Runtime.Serialization;
-
 namespace Castle.Facilities.Transactions
 {
+	using System;
+	using System.Runtime.Serialization;
+
 	///<summary>
 	///	Exception thrown when there's no transaction available when the component is resolved and the component
 	///	requires a per-transaction lifestyle.

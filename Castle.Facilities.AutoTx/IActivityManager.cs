@@ -1,7 +1,7 @@
-﻿using Castle.Facilities.Transactions.Activities;
-
-namespace Castle.Facilities.Transactions
+﻿namespace Castle.Facilities.Transactions
 {
+	using Activities;
+
 	/// <summary>
 	/// 	Abstracts approaches to keep transaction activities
 	/// 	that may differ based on the environments.

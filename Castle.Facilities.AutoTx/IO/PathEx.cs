@@ -16,10 +16,10 @@
 
 #endregion
 
-using System.Diagnostics.Contracts;
-
 namespace Castle.Facilities.Transactions.IO
 {
+	using System.Diagnostics.Contracts;
+
 	public static class PathEx
 	{
 		public static PathInfo ToPathInfo(this string input)

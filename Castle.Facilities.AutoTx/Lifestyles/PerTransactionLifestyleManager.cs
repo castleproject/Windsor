@@ -16,12 +16,11 @@
 
 #endregion
 
-using System;
-using System.Diagnostics.Contracts;
-using Castle.Facilities.Transactions;
-
 namespace Castle.Facilities.Transactions.Lifestyles
 {
+	using System;
+	using System.Diagnostics.Contracts;
+
 	/// <summary>
 	/// 	A lifestyle manager that resolves a fresh instance for every transaction. In my opinion, this 
 	/// 	is the most semantically correct option of the two per-transaction lifestyle managers: it's possible

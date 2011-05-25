@@ -16,14 +16,12 @@
 
 #endregion
 
-using System.Diagnostics.Contracts;
-using Castle.Facilities.Transactions.Lifestyles;
-using Castle.MicroKernel.Registration;
-using Castle.MicroKernel.Registration.Lifestyle;
-
 namespace Castle.Facilities.Transactions.Registration
 {
+	using System.Diagnostics.Contracts;
 	using Lifestyles;
+	using MicroKernel.Registration;
+	using MicroKernel.Registration.Lifestyle;
 
 	public static class LifestyleRegistrationExtensions
 	{

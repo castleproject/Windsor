@@ -16,13 +16,12 @@
 
 #endregion
 
-using System;
-using System.Diagnostics.Contracts;
-using Castle.Windsor;
-
 namespace Castle.Facilities.Transactions.Testing
 {
+	using System;
+	using System.Diagnostics.Contracts;
 	using Core.Logging;
+	using Windsor;
 
 	public class ResolveScope<T> : IDisposable
 		where T : class

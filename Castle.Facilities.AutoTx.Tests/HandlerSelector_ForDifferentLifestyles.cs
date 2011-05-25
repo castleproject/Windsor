@@ -1,20 +1,17 @@
-using System;
-using System.Diagnostics.Contracts;
-using Castle.Core;
-using Castle.Facilities.Transactions.Registration;
-using Castle.MicroKernel;
-using Castle.MicroKernel.Registration;
-using Castle.Facilities.Transactions;
-using Castle.Windsor;
-using log4net.Config;
-using NUnit.Framework;
-using Castle.Facilities.Transactions.Lifestyles;
-using Castle.Facilities.Transactions.Testing;
-using System.Linq;
-
 namespace Castle.Facilities.Transactions.Tests
 {
+	using System;
+	using System.Diagnostics.Contracts;
+	using System.Linq;
+	using Core;
 	using Lifestyles;
+	using log4net.Config;
+	using MicroKernel;
+	using MicroKernel.Registration;
+	using NUnit.Framework;
+	using Registration;
+	using Testing;
+	using Windsor;
 
 	public class HandlerSelector_ForDifferentLifeStyles
 	{

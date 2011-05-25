@@ -16,11 +16,11 @@
 
 #endregion
 
-using System.Diagnostics.Contracts;
-using Castle.Facilities.Transactions.Contracts;
-
 namespace Castle.Facilities.Transactions
 {
+	using System.Diagnostics.Contracts;
+	using Contracts;
+
 	///<summary>
 	///	Small interface for the map path functionality.
 	///</summary>

@@ -1,8 +1,8 @@
-﻿using System;
-using System.Transactions;
-
-namespace Castle.Facilities.Transactions.Tests.TestClasses
+﻿namespace Castle.Facilities.Transactions.Tests.TestClasses
 {
+	using System;
+	using System.Transactions;
+
 	internal class ThrowingResource : ISinglePhaseNotification
 	{
 		private readonly bool _ThrowIt;

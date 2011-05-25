@@ -16,15 +16,14 @@
 
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.Contracts;
-using System.Linq;
-using System.Reflection;
-using Castle.Facilities.Transactions;
-
 namespace Castle.Facilities.Transactions
 {
+	using System;
+	using System.Collections.Generic;
+	using System.Diagnostics.Contracts;
+	using System.Linq;
+	using System.Reflection;
+
 	internal sealed class TransactionalClassMetaInfo
 	{
 		private readonly Dictionary<MethodInfo, TransactionAttribute> _TxMethods;

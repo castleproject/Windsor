@@ -16,14 +16,14 @@
 
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.Contracts;
-using System.Transactions;
-using Castle.Facilities.Transactions.Contracts;
-
 namespace Castle.Facilities.Transactions
 {
+	using System;
+	using System.Collections.Generic;
+	using System.Diagnostics.Contracts;
+	using System.Transactions;
+	using Contracts;
+
 	[ContractClass(typeof (ITransactionOptionsContract))]
 	public interface ITransactionOptions : IEquatable<ITransactionOptions>
 	{

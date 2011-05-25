@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.Contracts;
-using System.IO;
-using System.Text;
-using Path = Castle.Facilities.Transactions.IO.Path;
-
-namespace Castle.Facilities.Transactions.Contracts
+﻿namespace Castle.Facilities.Transactions.Contracts
 {
+	using System;
+	using System.Collections.Generic;
+	using System.Diagnostics.Contracts;
+	using System.IO;
+	using System.Text;
+	using Path = IO.Path;
+
 	[ContractClassFor(typeof (IFileAdapter))]
 	internal abstract class IFileAdapterContract : IFileAdapter
 	{

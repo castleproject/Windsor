@@ -16,19 +16,17 @@
 
 #endregion
 
-using System;
-using System.Linq;
-using Castle.Facilities.Transactions.Lifestyles;
-using Castle.Facilities.Transactions.Registration;
-using Castle.Facilities.FactorySupport;
-using Castle.Facilities.TypedFactory;
-using Castle.MicroKernel.Registration;
-using Castle.Facilities.Transactions;
-using Castle.Windsor;
-using NUnit.Framework;
-
 namespace Castle.Facilities.Transactions.Tests
 {
+	using System;
+	using System.Linq;
+	using FactorySupport;
+	using MicroKernel.Registration;
+	using NUnit.Framework;
+	using Registration;
+	using TypedFactory;
+	using Windsor;
+
 	[Explicit("to try things out")]
 	internal class Scratch
 	{

@@ -16,23 +16,19 @@
 
 #endregion
 
-using System;
-using System.Diagnostics.Contracts;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Transactions;
-using Castle.Core;
-using Castle.Core.Interceptor;
-using Castle.DynamicProxy;
-using Castle.MicroKernel;
-using Castle.Facilities.Transactions;
-using Castle.Facilities.Transactions.Internal;
-using TransactionException = Castle.Facilities.Transactions.TransactionException;
-using TransactionManager = Castle.Facilities.Transactions.TransactionManager;
-
 namespace Castle.Facilities.Transactions
 {
+	using System;
+	using System.Diagnostics.Contracts;
+	using System.Threading;
+	using System.Threading.Tasks;
+	using System.Transactions;
+	using Core;
+	using Core.Interceptor;
 	using Core.Logging;
+	using DynamicProxy;
+	using Internal;
+	using MicroKernel;
 
 	internal class TransactionInterceptor : IInterceptor, IOnBehalfAware
 	{

@@ -16,17 +16,16 @@
 
 #endregion
 
-using System.Collections.Generic;
-using System.Diagnostics.Contracts;
-using System.Linq;
-using Castle.Core;
-using Castle.MicroKernel;
-using Castle.MicroKernel.Facilities;
-using Castle.MicroKernel.ModelBuilder.Inspectors;
-using Castle.Facilities.Transactions;
-
 namespace Castle.Facilities.Transactions
 {
+	using System.Collections.Generic;
+	using System.Diagnostics.Contracts;
+	using System.Linq;
+	using Core;
+	using MicroKernel;
+	using MicroKernel.Facilities;
+	using MicroKernel.ModelBuilder.Inspectors;
+
 	/// <summary>
 	/// 	Transaction component inspector that selects the methods
 	/// 	available to get intercepted with transactions.

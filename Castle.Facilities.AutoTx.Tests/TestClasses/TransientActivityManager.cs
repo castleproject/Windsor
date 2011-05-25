@@ -18,7 +18,7 @@
 
 namespace Castle.Facilities.Transactions.Tests.TestClasses
 {
-	using Castle.Facilities.Transactions.Activities;
+	using Activities;
 
 	public class TransientActivityManager : IActivityManager
 	{

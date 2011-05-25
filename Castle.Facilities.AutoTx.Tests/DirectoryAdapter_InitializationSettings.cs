@@ -16,12 +16,12 @@
 
 #endregion
 
-using Castle.Facilities.Transactions.IO;
-using Castle.Facilities.Transactions.Tests.Framework;
-using NUnit.Framework;
-
 namespace Castle.Facilities.Transactions.Tests
 {
+	using Framework;
+	using IO;
+	using NUnit.Framework;
+
 	public class DirectoryAdapter_InitializationSettings : TxFTestFixtureBase
 	{
 		[Test]

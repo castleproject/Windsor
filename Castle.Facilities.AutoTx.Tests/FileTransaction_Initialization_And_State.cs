@@ -18,8 +18,7 @@
 
 namespace Castle.Facilities.Transactions.Tests
 {
-	using Castle.Facilities.Transactions.Tests.Framework;
-
+	using Framework;
 	using NUnit.Framework;
 
 	public class FileTransaction_Initialization_And_State : TxFTestFixtureBase

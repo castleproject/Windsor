@@ -16,18 +16,13 @@
 
 #endregion
 
-using System;
-using Castle.Facilities.Transactions.Testing;
-using Castle.Facilities.Transactions.Tests.TestClasses;
-using Castle.MicroKernel.Registration;
-using Castle.Facilities.Transactions;
-using Castle.Facilities.Transactions.Activities;
-using Castle.Windsor;
-using NUnit.Framework;
-
 namespace Castle.Facilities.Transactions.Tests
 {
+	using Activities;
+	using MicroKernel.Registration;
+	using NUnit.Framework;
 	using TestClasses;
+	using Windsor;
 
 	[Ignore("For v3.1: Implement retry policies are nicer to test with e.g. NHibernate integration parts.")]
 	public class RetryPolicies_Transactions

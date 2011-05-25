@@ -16,12 +16,11 @@
 
 #endregion
 
-using System.Diagnostics.Contracts;
-using Castle.Facilities.Transactions;
-using Castle.Windsor;
-
 namespace Castle.Facilities.Transactions.Testing
 {
+	using System.Diagnostics.Contracts;
+	using Windsor;
+
 	/// <summary>
 	/// 	A resolve scope where T is the service you wish to get from the container.
 	/// </summary>

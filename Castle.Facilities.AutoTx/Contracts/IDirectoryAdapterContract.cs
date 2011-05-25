@@ -16,11 +16,11 @@
 
 #endregion
 
-using System;
-using System.Diagnostics.Contracts;
-
 namespace Castle.Facilities.Transactions.Contracts
 {
+	using System;
+	using System.Diagnostics.Contracts;
+
 	[ContractClassFor(typeof (IDirectoryAdapter))]
 	internal abstract class IDirectoryAdapterContract : IDirectoryAdapter
 	{

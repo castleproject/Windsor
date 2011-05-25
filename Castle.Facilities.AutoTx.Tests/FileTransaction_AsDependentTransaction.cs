@@ -16,15 +16,13 @@
 
 #endregion
 
-using Castle.Facilities.Transactions.IO;
-
 namespace Castle.Facilities.Transactions.Tests
 {
 	using System.Transactions;
-
-	using Castle.Facilities.Transactions.Tests.Framework;
-	using Facilities.Transactions.Tests.TestClasses;
+	using Framework;
+	using IO;
 	using NUnit.Framework;
+	using TestClasses;
 
 	[TestFixture]
 	public class FileTransaction_AsDependentTransaction : TxFTestFixtureBase
@@ -40,7 +38,7 @@ namespace Castle.Facilities.Transactions.Tests
 			_Tm = new Facilities.Transactions.TransactionManager(new TransientActivityManager());
 
 			_DirPath = ".";
-			_FilePath = _DirPath.Combine("test.txt");
+			_FilePath = Exts.Combine(_DirPath, "test.txt");
 		}
 
 		[Test]

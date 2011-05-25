@@ -1,18 +1,18 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Diagnostics.Contracts;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Transactions;
-using Castle.Facilities.Transactions.Internal;
-using Castle.Facilities.Transactions.IO;
-using Path = Castle.Facilities.Transactions.IO.Path;
-
 namespace Castle.Facilities.Transactions
 {
+	using System;
+	using System.Collections.Generic;
+	using System.Diagnostics.CodeAnalysis;
+	using System.Diagnostics.Contracts;
+	using System.IO;
+	using System.Linq;
+	using System.Runtime.InteropServices;
+	using System.Text;
+	using System.Transactions;
+	using Internal;
+	using IO;
+	using Path = IO.Path;
+
 	///<summary>
 	///	Represents a transaction on transactional kernels
 	///	like the Vista kernel or Server 2008 kernel and newer.

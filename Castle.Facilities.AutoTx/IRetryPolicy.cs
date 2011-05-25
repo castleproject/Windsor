@@ -16,12 +16,12 @@
 
 #endregion
 
-using System;
-using System.Diagnostics.Contracts;
-using Castle.Facilities.Transactions.Contracts;
-
 namespace Castle.Facilities.Transactions
 {
+	using System;
+	using System.Diagnostics.Contracts;
+	using Contracts;
+
 	[ContractClass(typeof (IRetryPolicyContract))]
 	public interface IRetryPolicy
 	{

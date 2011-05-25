@@ -16,12 +16,11 @@
 
 #endregion
 
-using System;
-using System.Diagnostics.Contracts;
-using Castle.Facilities.Transactions;
-
 namespace Castle.Facilities.Transactions.Lifestyles
 {
+	using System;
+	using System.Diagnostics.Contracts;
+
 	/// <summary>
 	/// 	A lifestyle manager for every top transaction in the current call context. This lifestyle is great
 	/// 	for components that are thread-safe and need to monitor/handle items in both the current thread

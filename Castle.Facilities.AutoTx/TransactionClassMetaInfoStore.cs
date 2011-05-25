@@ -16,15 +16,14 @@
 
 #endregion
 
-using System;
-using System.Diagnostics.Contracts;
-using System.Linq;
-using System.Reflection;
-using Castle.Facilities.Transactions;
-using Castle.Facilities.Transactions.Utils;
-
 namespace Castle.Facilities.Transactions
 {
+	using System;
+	using System.Diagnostics.Contracts;
+	using System.Linq;
+	using System.Reflection;
+	using Utils;
+
 	internal sealed class TransactionClassMetaInfoStore : ITransactionMetaInfoStore
 	{
 		private readonly Func<Type, Maybe<TransactionalClassMetaInfo>> _GetMetaFromType;

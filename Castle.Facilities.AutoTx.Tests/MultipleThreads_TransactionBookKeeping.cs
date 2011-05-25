@@ -1,17 +1,14 @@
-using System;
-using System.Threading;
-using Castle.Facilities.Transactions.Testing;
-using Castle.Facilities.Transactions.Tests.TestClasses;
-using Castle.MicroKernel.Registration;
-using Castle.Facilities.Transactions;
-using Castle.Windsor;
-using log4net.Config;
-using NUnit.Framework;
-using System.Linq;
-
 namespace Castle.Facilities.Transactions.Tests
 {
+	using System;
+	using System.Linq;
+	using System.Threading;
+	using log4net.Config;
+	using MicroKernel.Registration;
+	using NUnit.Framework;
 	using TestClasses;
+	using Testing;
+	using Windsor;
 
 	public class MultipleThreads_TransactionBookKeeping
 	{

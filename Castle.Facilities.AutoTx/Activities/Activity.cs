@@ -16,15 +16,14 @@
 
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.Contracts;
-using System.Threading.Tasks;
-using Castle.Facilities.Transactions.Internal;
-
 namespace Castle.Facilities.Transactions.Activities
 {
+	using System;
+	using System.Collections.Generic;
+	using System.Diagnostics.Contracts;
+	using System.Threading.Tasks;
 	using Core.Logging;
+	using Internal;
 
 	/// <summary>
 	/// 	Value-object that encapsulates a transaction and is serializable across

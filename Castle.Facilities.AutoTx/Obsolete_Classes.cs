@@ -16,10 +16,10 @@
 
 #endregion
 
-using System;
-
 namespace Castle.Facilities.Transactions
 {
+	using System;
+
 	[Obsolete(
 		"Change this to \"AutoTxFacility\" in the same namespace. This code doesn't compile, because this marker class doesn't implement IFacility."
 		)]

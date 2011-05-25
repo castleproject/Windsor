@@ -1,9 +1,9 @@
-﻿using System.Diagnostics.Contracts;
-using System.Threading.Tasks;
-using Castle.Facilities.Transactions.Internal;
-
-namespace Castle.Facilities.Transactions.Contracts
+﻿namespace Castle.Facilities.Transactions.Contracts
 {
+	using System.Diagnostics.Contracts;
+	using System.Threading.Tasks;
+	using Internal;
+
 	[ContractClassFor(typeof(IDependentAware))]
 	internal abstract class IDependentAwareContract : IDependentAware
 	{

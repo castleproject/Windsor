@@ -16,13 +16,12 @@
 
 #endregion
 
-using Castle.Facilities.Transactions.IO;
-using Castle.Facilities.Transactions.Tests.Framework;
-using NUnit.Framework;
-
 namespace Castle.Facilities.Transactions.Tests
 {
-	using Facilities.Transactions.Tests.TestClasses;
+	using Framework;
+	using IO;
+	using NUnit.Framework;
+	using Exts = TestClasses.Exts;
 
 	public class DirectoryAdapter_NonTransactionalBehaviour : TxFTestFixtureBase
 	{
@@ -63,13 +62,13 @@ namespace Castle.Facilities.Transactions.Tests
 		{
 			Directory.Create("tmp-3");
 
-			File.WriteAllText("tmp-3".Combine("mytxt.txt"), "My Contents");
+			File.WriteAllText(Exts.Combine("tmp-3", "mytxt.txt"), "My Contents");
 
 			Directory.Move("tmp-3", "tmp-3-moved", true);
 
 			Assert.That(Directory.Exists("tmp-3-moved"));
 			Assert.That(Directory.Exists("tmp-3"), Is.False);
-			Assert.That(File.ReadAllText("tmp-3-moved".Combine("mytxt.txt")), Is.EqualTo("My Contents"));
+			Assert.That(File.ReadAllText(Exts.Combine("tmp-3-moved", "mytxt.txt")), Is.EqualTo("My Contents"));
 		}
 	}
 }

@@ -16,10 +16,10 @@
 
 #endregion
 
-using System.Runtime.Remoting.Messaging;
-
 namespace Castle.Facilities.Transactions.Activities
 {
+	using System.Runtime.Remoting.Messaging;
+
 	/// <summary>
 	/// The call-context activity manager saves the stack of transactions
 	/// on the call-stack-context. This is the recommended manager and the default,

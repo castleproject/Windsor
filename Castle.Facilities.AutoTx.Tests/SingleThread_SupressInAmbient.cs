@@ -1,13 +1,10 @@
-using Castle.Facilities.Transactions.Testing;
-using Castle.Facilities.Transactions.Tests.TestClasses;
-using Castle.MicroKernel.Registration;
-using Castle.Windsor;
-using NUnit.Framework;
-
 namespace Castle.Facilities.Transactions.Tests
 {
+	using MicroKernel.Registration;
+	using NUnit.Framework;
 	using TestClasses;
 	using Testing;
+	using Windsor;
 
 	public class SingleThread_SupressInAmbient
 	{

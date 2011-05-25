@@ -19,7 +19,6 @@
 namespace Castle.Facilities.Transactions.Tests.Framework
 {
 	using System;
-
 	using NUnit.Framework;
 
 	public abstract class TxFTestFixtureBase

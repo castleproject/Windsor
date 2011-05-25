@@ -16,13 +16,13 @@
 
 #endregion
 
-using System;
-using System.Security;
-using Castle.Facilities.Transactions.Internal;
-using Microsoft.Win32.SafeHandles;
-
 namespace Castle.Facilities.Transactions.IO
 {
+	using System;
+	using System.Security;
+	using Internal;
+	using Microsoft.Win32.SafeHandles;
+
 	[SecurityCritical]
 	public sealed class SafeFindHandle : SafeHandleZeroOrMinusOneIsInvalid
 	{

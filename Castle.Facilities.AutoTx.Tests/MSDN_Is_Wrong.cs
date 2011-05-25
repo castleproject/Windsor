@@ -21,9 +21,7 @@ namespace Castle.Facilities.Transactions.Tests
 	using System;
 	using System.IO;
 	using System.Threading;
-
-	using Castle.Facilities.Transactions.Tests.Framework;
-
+	using Framework;
 	using NUnit.Framework;
 
 	public class MSDN_Is_Wrong : TxFTestFixtureBase

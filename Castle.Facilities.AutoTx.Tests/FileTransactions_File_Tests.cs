@@ -23,13 +23,12 @@ namespace Castle.Facilities.Transactions.Tests
 	using System.IO;
 	using System.Text;
 	using System.Threading;
-
-	using Castle.Facilities.Transactions.Tests.Framework;
-	using Facilities.Transactions.Tests.TestClasses;
+	using Framework;
 	using NUnit.Framework;
-
-	using Directory = Castle.Facilities.Transactions.IO.Directory;
-	using File = Castle.Facilities.Transactions.IO.File;
+	using TestClasses;
+	using Directory = IO.Directory;
+	using Exts = TestClasses.Exts;
+	using File = IO.File;
 
 	[Ignore("Wait for RC")]
 	public class FileTransactions_File_Tests : TxFTestFixtureBase
@@ -69,7 +68,7 @@ namespace Castle.Facilities.Transactions.Tests
 		public void Setup()
 		{
 			dllPath = Environment.CurrentDirectory;
-			testFixturePath = dllPath.Combine("..\\..\\Kernel");
+			testFixturePath = Exts.Combine(dllPath, "..\\..\\Kernel");
 		}
 
 		#endregion
@@ -89,9 +88,9 @@ namespace Castle.Facilities.Transactions.Tests
 			Console.WriteLine(string.Format("Directory \"{0}\"", folder));
 			var toFolder = dllPath.CombineAssert("testing2");
 
-			var file = folder.Combine("file");
+			var file = Exts.Combine(folder, "file");
 			Assert.That(File.Exists(file), Is.False);
-			var file2 = folder.Combine("file2");
+			var file2 = Exts.Combine(folder, "file2");
 			Assert.That(File.Exists(file2), Is.False);
 
 			File.WriteAllText(file, "hello world");
@@ -99,29 +98,29 @@ namespace Castle.Facilities.Transactions.Tests
 
 			infosCreated.Add(file);
 			infosCreated.Add(file2);
-			infosCreated.Add(toFolder.Combine("file2"));
-			infosCreated.Add(toFolder.Combine("file"));
+			infosCreated.Add(Exts.Combine(toFolder, "file2"));
+			infosCreated.Add(Exts.Combine(toFolder, "file"));
 			infosCreated.Add(toFolder);
 
 			using (ITransaction t = new FileTransaction("moving file"))
 			{
-				Assert.That(File.Exists(toFolder.Combine("file")), Is.False, "Should not exist before move");
-				Assert.That(File.Exists(toFolder.Combine("file2")), Is.False, "Should not exist before move");
+				Assert.That(File.Exists(Exts.Combine(toFolder, "file")), Is.False, "Should not exist before move");
+				Assert.That(File.Exists(Exts.Combine(toFolder, "file2")), Is.False, "Should not exist before move");
 
 				(t as IFileAdapter).Move(file, toFolder); // moving file to folder
-				(t as IFileAdapter).Move(file2, toFolder.Combine("file2")); // moving file to folder+new file name.
+				(t as IFileAdapter).Move(file2, Exts.Combine(toFolder, "file2")); // moving file to folder+new file name.
 
-				Assert.That(File.Exists(toFolder.Combine("file")), Is.False, "Should not be visible to the outside");
-				Assert.That(File.Exists(toFolder.Combine("file2")), Is.False, "Should not be visible to the outside");
+				Assert.That(File.Exists(Exts.Combine(toFolder, "file")), Is.False, "Should not be visible to the outside");
+				Assert.That(File.Exists(Exts.Combine(toFolder, "file2")), Is.False, "Should not be visible to the outside");
 
 				t.Complete();
 
-				Assert.That(File.Exists(toFolder.Combine("file")), Is.True,
+				Assert.That(File.Exists(Exts.Combine(toFolder, "file")), Is.True,
 				            "Should be visible to the outside now and since we tried to move it to an existing folder, it should put itself in that folder with its current name.");
-				Assert.That(File.Exists(toFolder.Combine("file2")), Is.True, "Should be visible to the outside now.");
+				Assert.That(File.Exists(Exts.Combine(toFolder, "file2")), Is.True, "Should be visible to the outside now.");
 			}
 
-			Assert.That(File.ReadAllText(toFolder.Combine("file2")), Is.EqualTo("hello world 2"),
+			Assert.That(File.ReadAllText(Exts.Combine(toFolder, "file2")), Is.EqualTo("hello world 2"),
 			            "Make sure we moved the contents.");
 		}
 
@@ -134,7 +133,7 @@ namespace Castle.Facilities.Transactions.Tests
 				return;
 			}
 
-			var filePath = testFixturePath.CombineAssert("temp").Combine("temp__");
+			var filePath = Exts.Combine(testFixturePath.CombineAssert("temp"), "temp__");
 			infosCreated.Add(filePath);
 
 			// simply write something to to file.
@@ -167,7 +166,7 @@ namespace Castle.Facilities.Transactions.Tests
 				return;
 			}
 
-			var filePath = testFixturePath.CombineAssert("temp").Combine("temp2");
+			var filePath = Exts.Combine(testFixturePath.CombineAssert("temp"), "temp2");
 			infosCreated.Add(filePath);
 
 			// simply write something to to file.

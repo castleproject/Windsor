@@ -16,12 +16,11 @@
 
 #endregion
 
-using System;
-using System.Diagnostics.Contracts;
-using Castle.Facilities.Transactions;
-
 namespace Castle.Facilities.Transactions.Contracts
 {
+	using System;
+	using System.Diagnostics.Contracts;
+
 	[ContractClassFor(typeof (ITransactionMetaInfoStore))]
 	internal abstract class TransactionMetaInfoStoreContract : ITransactionMetaInfoStore
 	{

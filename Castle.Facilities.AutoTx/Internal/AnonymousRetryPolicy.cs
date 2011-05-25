@@ -16,11 +16,11 @@
 
 #endregion
 
-using System;
-using System.Diagnostics.Contracts;
-
 namespace Castle.Facilities.Transactions.Internal
 {
+	using System;
+	using System.Diagnostics.Contracts;
+
 	internal class AnonymousRetryPolicy : IRetryPolicy
 	{
 		private readonly Func<Exception, bool> _Inner;
