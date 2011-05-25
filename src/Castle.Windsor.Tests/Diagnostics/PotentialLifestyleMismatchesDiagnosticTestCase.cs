@@ -58,7 +58,7 @@ namespace CastleTests.Diagnostics
 
 			var items = diagnostic.Inspect();
 			Assert.AreEqual(3, items.Length);
-			var cbaMismatches = items.Where(i => i.First().Services.Single() == typeof(CBA)).ToArray();
+			var cbaMismatches = items.Where(i => i.First().ComponentModel.Services.Single() == typeof(CBA)).ToArray();
 			Assert.AreEqual(2, cbaMismatches.Length);
 		}
 
@@ -93,7 +93,7 @@ namespace CastleTests.Diagnostics
 
 			var items = diagnostic.Inspect();
 			Assert.AreEqual(2, items.Length);
-			var cbaMismatches = items.Where(i => i.First().Services.Single() == typeof(CBA)).ToArray();
+			var cbaMismatches = items.Where(i => i.First().ComponentModel.Services.Single() == typeof(CBA)).ToArray();
 			Assert.AreEqual(2, cbaMismatches.Length);
 		}
 

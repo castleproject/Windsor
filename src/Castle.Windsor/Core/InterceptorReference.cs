@@ -117,8 +117,8 @@ namespace Castle.Core
 			try
 			{
 				return serviceType ??
-				       handler.Services.SingleOrDefault(s => s == typeof(IInterceptor)) ??
-				       handler.Services.Single(s => s.Is<IInterceptor>());
+					   handler.ComponentModel.Services.SingleOrDefault(s => s == typeof(IInterceptor)) ??
+					   handler.ComponentModel.Services.Single(s => s.Is<IInterceptor>());
 			}
 			catch (InvalidOperationException e)
 			{

@@ -59,7 +59,7 @@ namespace CastleTests
 			var handler = Container.Kernel.GetHandler("key");
 
 			Assert.IsNotNull(handler);
-			Assert.AreEqual(typeof(HasKey), handler.Services.Single());
+			Assert.AreEqual(typeof(HasKey), handler.ComponentModel.Services.Single());
 			Assert.AreEqual(typeof(HasKey), handler.ComponentModel.Implementation);
 			Assert.AreEqual(LifestyleType.Undefined, handler.ComponentModel.LifestyleType);
 		}
@@ -71,7 +71,7 @@ namespace CastleTests
 
 			var handler = Container.Kernel.GetHandler("keyAndType");
 
-			Assert.AreEqual(typeof(ISimpleService), handler.Services.Single());
+			Assert.AreEqual(typeof(ISimpleService), handler.ComponentModel.Services.Single());
 			Assert.AreEqual(typeof(HasKeyAndType), handler.ComponentModel.Implementation);
 			Assert.AreEqual(LifestyleType.Undefined, handler.ComponentModel.LifestyleType);
 		}
@@ -105,7 +105,7 @@ namespace CastleTests
 
 			var handler = Container.Kernel.GetAssignableHandlers(typeof(HasType)).Single();
 
-			Assert.AreEqual(typeof(HasType), handler.Services.Single());
+			Assert.AreEqual(typeof(HasType), handler.ComponentModel.Services.Single());
 		}
 
 		[Test]

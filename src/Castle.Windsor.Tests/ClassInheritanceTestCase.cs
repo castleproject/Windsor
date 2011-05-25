@@ -147,7 +147,7 @@ namespace Castle
 
 			var handler = Kernel.GetHandler(typeof(A));
 
-			Assert.AreEqual(typeof(A), handler.Services.Single());
+			Assert.AreEqual(typeof(A), handler.ComponentModel.Services.Single());
 			Assert.AreEqual(typeof(A2), handler.ComponentModel.Implementation);
 			// sure, why not - let them do uncompatible types. Who knows - perhaps by some miracle
 			Assert.Throws<InvalidCastException>(() => Container.Resolve<A>());
@@ -182,7 +182,7 @@ namespace Castle
 
 			var handler = Kernel.GetHandler(typeof(A));
 
-			Assert.AreEqual(typeof(A), handler.Services.Single());
+			Assert.AreEqual(typeof(A), handler.ComponentModel.Services.Single());
 			Assert.AreEqual(typeof(A), handler.ComponentModel.Implementation);
 		}
 
@@ -193,7 +193,7 @@ namespace Castle
 
 			var handler = Kernel.GetHandler(typeof(A));
 
-			Assert.AreEqual(typeof(A), handler.Services.Single());
+			Assert.AreEqual(typeof(A), handler.ComponentModel.Services.Single());
 			Assert.AreEqual(typeof(A), handler.ComponentModel.Implementation);
 		}
 	}

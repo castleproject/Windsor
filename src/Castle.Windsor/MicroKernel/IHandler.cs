@@ -15,7 +15,6 @@
 namespace Castle.MicroKernel
 {
 	using System;
-	using System.Collections.Generic;
 
 	using Castle.Core;
 	using Castle.MicroKernel.Context;
@@ -37,8 +36,6 @@ namespace Castle.MicroKernel
 		///   Gets the state of the handler
 		/// </summary>
 		HandlerState CurrentState { get; }
-
-		IEnumerable<Type> Services { get; }
 
 		/// <summary>
 		///   Initializes the handler with a reference to the
@@ -67,6 +64,13 @@ namespace Castle.MicroKernel
 		/// </summary>
 		/// <returns></returns>
 		object Resolve(CreationContext context);
+
+		/// <summary>
+		/// Returns true if this handler supports <paramref name="service"/>
+		/// </summary>
+		/// <param name="service"></param>
+		/// <returns></returns>
+		bool Supports(Type service);
 
 		/// <summary>
 		///   Implementors should return a valid instance 
