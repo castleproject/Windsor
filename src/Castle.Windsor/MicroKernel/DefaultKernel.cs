@@ -46,7 +46,7 @@ namespace Castle.MicroKernel
 	[Serializable]
 #if !SILVERLIGHT
 	[DebuggerTypeProxy(typeof(KernelDebuggerProxy))]
-	public partial class DefaultKernel : MarshalByRefObject, IKernel, IKernelEvents, IKernelInternal, IKernelEventsInternal
+	public partial class DefaultKernel : MarshalByRefObject, IKernel, IKernelEvents, IKernelInternal
 #else
 	public partial class DefaultKernel : IKernel, IKernelEvents, IKernelInternal, IKernelEventsInternal
 #endif
