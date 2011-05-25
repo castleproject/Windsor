@@ -20,12 +20,8 @@ namespace Castle.MicroKernel.Handlers
 	using System.Linq;
 
 	using Castle.Core;
-	using Castle.Core.Internal;
 	using Castle.MicroKernel.ComponentActivator;
 	using Castle.MicroKernel.Context;
-	using Castle.MicroKernel.Lifestyle;
-	using Castle.MicroKernel.Lifestyle.Scoped;
-	using Castle.MicroKernel.ModelBuilder.Inspectors;
 	using Castle.MicroKernel.Resolvers;
 
 	/// <summary>
@@ -39,11 +35,6 @@ namespace Castle.MicroKernel.Handlers
 #endif
 		IHandler, IExposeDependencyInfo, IDisposable
 	{
-		/// <summary>
-		///   Lifestyle manager instance
-		/// </summary>
-		protected ILifestyleManager lifestyleManager;
-
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 		private readonly ComponentModel model;
 
@@ -128,7 +119,6 @@ namespace Castle.MicroKernel.Handlers
 
 		public virtual void Dispose()
 		{
-			lifestyleManager.Dispose();
 		}
 
 		public void ObtainDependencyDetails(IDependencyInspector inspector)
@@ -167,15 +157,20 @@ namespace Castle.MicroKernel.Handlers
 			this.kernel = kernel;
 			this.kernel.AddedAsChildKernel += OnAddedAsChildKernel;
 
-			var activator = this.kernel.CreateComponentActivator(ComponentModel);
-			lifestyleManager = CreateLifestyleManager(activator);
-			EnsureDependenciesCanBeSatisfied(activator as IDependencyAwareActivator);
-
+			InitDependencies();
 			if (AllRequiredDependenciesResolvable())
 			{
 				SetNewState(HandlerState.Valid);
 				DisconnectEvents();
 				missingDependencies = null;
+			}
+		}
+
+		protected virtual void InitDependencies()
+		{
+			foreach (var dependency in ComponentModel.Dependencies)
+			{
+				AddDependency(dependency);
 			}
 		}
 
@@ -207,7 +202,7 @@ namespace Castle.MicroKernel.Handlers
 
 		public virtual bool Supports(Type service)
 		{
-			return ComponentModel.Services.Any(s=>s == service);
+			return ComponentModel.Services.Any(s => s == service);
 		}
 
 		public object TryResolve(CreationContext context)
@@ -262,7 +257,7 @@ namespace Castle.MicroKernel.Handlers
 
 		/// <summary>
 		///   Invoked by
-		///   <see cref = "EnsureDependenciesCanBeSatisfied" />
+		///   <see cref = "InitDependencies" />
 		///   in order to check if a dependency can be satisfied.
 		///   If not, the handler is set to a 'waiting dependency' state.
 		/// </summary>
@@ -335,80 +330,6 @@ namespace Castle.MicroKernel.Handlers
 		private bool CanProvideDependenciesDynamically(CreationContext context)
 		{
 			return context.HasAdditionalArguments || kernel.HasComponent(typeof(ILazyComponentLoader));
-		}
-
-		/// <summary>
-		///   Creates an implementation of
-		///   <see cref = "ILifestyleManager" />
-		///   based
-		///   on
-		///   <see cref = "LifestyleType" />
-		///   and invokes
-		///   <see cref = "ILifestyleManager.Init" />
-		///   to initialize the newly created manager.
-		/// </summary>
-		/// <param name = "activator"></param>
-		/// <returns></returns>
-		protected virtual ILifestyleManager CreateLifestyleManager(IComponentActivator activator)
-		{
-			ILifestyleManager manager;
-			var type = ComponentModel.LifestyleType;
-
-			switch (type)
-			{
-				case LifestyleType.Scoped:
-					var scopeManager = kernel.GetSubSystem("scope") as IScopeManager;
-					if (scopeManager == null)
-					{
-						throw new InvalidOperationException("Scope Subsystem not found.  Did you forget to add it?");
-					}
-					manager = new ScopedLifestyleManager(new CurrentScopeAccessor(scopeManager, ComponentModel));
-					break;
-				case LifestyleType.Thread:
-#if SILVERLIGHT
-					manager = new PerThreadThreadStaticLifestyleManager();
-#else
-					manager = new PerThreadLifestyleManager();
-#endif
-					break;
-				case LifestyleType.Transient:
-					manager = new TransientLifestyleManager();
-					break;
-#if (!SILVERLIGHT && !CLIENTPROFILE)
-				case LifestyleType.PerWebRequest:
-					manager = new PerWebRequestLifestyleManager();
-					break;
-#endif
-				case LifestyleType.Custom:
-					manager = ComponentModel.CustomLifestyle.CreateInstance<ILifestyleManager>();
-
-					break;
-				case LifestyleType.Pooled:
-				{
-					var initial = ExtendedPropertiesConstants.Pool_Default_InitialPoolSize;
-					var maxSize = ExtendedPropertiesConstants.Pool_Default_MaxPoolSize;
-
-					if (ComponentModel.ExtendedProperties.Contains(ExtendedPropertiesConstants.Pool_InitialPoolSize))
-					{
-						initial = (int)ComponentModel.ExtendedProperties[ExtendedPropertiesConstants.Pool_InitialPoolSize];
-					}
-					if (ComponentModel.ExtendedProperties.Contains(ExtendedPropertiesConstants.Pool_MaxPoolSize))
-					{
-						maxSize = (int)ComponentModel.ExtendedProperties[ExtendedPropertiesConstants.Pool_MaxPoolSize];
-					}
-
-					manager = new PoolableLifestyleManager(initial, maxSize);
-				}
-					break;
-				default:
-					//this includes LifestyleType.Undefined, LifestyleType.Singleton and invalid values
-					manager = new SingletonLifestyleManager();
-					break;
-			}
-
-			manager.Init(activator, Kernel, model);
-
-			return manager;
 		}
 
 		/// <summary>
@@ -520,8 +441,7 @@ namespace Castle.MicroKernel.Handlers
 			{
 				return true;
 			}
-			var constructorDependencies = MissingDependencies.Where(d => d is ConstructorDependencyModel)
-				.Cast<ConstructorDependencyModel>().ToList();
+			var constructorDependencies = MissingDependencies.OfType<ConstructorDependencyModel>().ToList();
 			if (MissingDependencies.Count != constructorDependencies.Count)
 			{
 				return false;
