@@ -24,8 +24,9 @@ namespace Castle.Services.Transaction.Tests
 
 	using Castle.Services.Transaction.IO;
 	using Castle.Services.Transaction.Tests.Framework;
-
+	using Facilities.Transactions.Tests.TestClasses;
 	using NUnit.Framework;
+	using Exts = Facilities.Transactions.Tests.TestClasses.Exts;
 
 	[TestFixture, Ignore("TODO")]
 	public class FileTransactions_Directory_Tests : TxFTestFixtureBase
@@ -64,7 +65,7 @@ namespace Castle.Services.Transaction.Tests
 		public void Setup()
 		{
 			_DllPath = Environment.CurrentDirectory;
-			_DllPath.Combine("..\\..\\Kernel");
+			Exts.Combine(_DllPath, "..\\..\\Kernel");
 		}
 
 		#endregion
@@ -188,16 +189,16 @@ namespace Castle.Services.Transaction.Tests
 		public void CanDelete_Recursively()
 		{
 			// 1. Create directory
-			string pr = _DllPath.Combine("testing");
+			string pr = Exts.Combine(_DllPath, "testing");
 			Directory.CreateDirectory(pr);
-			Directory.CreateDirectory(pr.Combine("one"));
-			Directory.CreateDirectory(pr.Combine("two"));
-			Directory.CreateDirectory(pr.Combine("three"));
+			Directory.CreateDirectory(Exts.Combine(pr, "one"));
+			Directory.CreateDirectory(Exts.Combine(pr, "two"));
+			Directory.CreateDirectory(Exts.Combine(pr, "three"));
 
 			// 2. Write contents
-			File.WriteAllLines(pr.Combine("one", "fileone"), new[] { "Hello world", "second line" });
-			File.WriteAllLines(pr.Combine("one", "filetwo"), new[] { "two", "second line" });
-			File.WriteAllLines(pr.Combine("two", "filethree"), new[] { "three", "second line" });
+			File.WriteAllLines(Exts.Combine(pr, "one", "fileone"), new[] { "Hello world", "second line" });
+			File.WriteAllLines(Exts.Combine(pr, "one", "filetwo"), new[] { "two", "second line" });
+			File.WriteAllLines(Exts.Combine(pr, "two", "filethree"), new[] { "three", "second line" });
 
 			// 3. test
 			using (ITransaction t = new FileTransaction())
@@ -212,7 +213,7 @@ namespace Castle.Services.Transaction.Tests
 		{
 			// 1. create dir and file
 			string dir = _DllPath.CombineAssert("testing");
-			string file = dir.Combine("file");
+			string file = Exts.Combine(dir, "file");
 			File.WriteAllText(file, "hello");
 
 			// 2. test it

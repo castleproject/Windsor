@@ -18,7 +18,7 @@
 
 using System;
 
-namespace Castle.Facilities.AutoTx
+namespace Castle.Facilities.Transactions
 {
 	[Obsolete(
 		"Change this to \"AutoTxFacility\" in the same namespace. This code doesn't compile, because this marker class doesn't implement IFacility."

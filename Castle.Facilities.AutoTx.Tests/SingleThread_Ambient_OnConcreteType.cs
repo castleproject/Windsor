@@ -17,14 +17,17 @@
 #endregion
 
 using System.Transactions;
-using Castle.Facilities.AutoTx.Testing;
-using Castle.Facilities.AutoTx.Tests.TestClasses;
+using Castle.Facilities.Transactions.Testing;
+using Castle.Facilities.Transactions.Tests.TestClasses;
 using Castle.MicroKernel.Registration;
 using Castle.Windsor;
 using NUnit.Framework;
 
-namespace Castle.Facilities.AutoTx.Tests
+namespace Castle.Facilities.Transactions.Tests
 {
+	using TestClasses;
+	using Testing;
+
 	public class SingleThread_Ambient_OnConcreteType
 	{
 		private WindsorContainer _Container;

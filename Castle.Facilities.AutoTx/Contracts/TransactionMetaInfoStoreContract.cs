@@ -20,7 +20,7 @@ using System;
 using System.Diagnostics.Contracts;
 using Castle.Services.Transaction;
 
-namespace Castle.Facilities.AutoTx.Contracts
+namespace Castle.Facilities.Transactions.Contracts
 {
 	[ContractClassFor(typeof (ITransactionMetaInfoStore))]
 	internal abstract class TransactionMetaInfoStoreContract : ITransactionMetaInfoStore

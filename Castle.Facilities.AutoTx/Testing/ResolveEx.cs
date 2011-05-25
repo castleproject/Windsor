@@ -19,7 +19,7 @@
 using System.Diagnostics.Contracts;
 using Castle.Windsor;
 
-namespace Castle.Facilities.AutoTx.Testing
+namespace Castle.Facilities.Transactions.Testing
 {
 	/// <summary>
 	/// 	Helper class for adding 'nifty' extensions to Windsor which ensures disposal/release of

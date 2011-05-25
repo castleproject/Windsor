@@ -31,7 +31,7 @@ using log4net;
 using TransactionException = Castle.Services.Transaction.TransactionException;
 using TransactionManager = Castle.Services.Transaction.TransactionManager;
 
-namespace Castle.Facilities.AutoTx
+namespace Castle.Facilities.Transactions
 {
 	internal class TransactionInterceptor : IInterceptor, IOnBehalfAware
 	{

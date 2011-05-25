@@ -16,10 +16,11 @@
 
 #endregion
 
-using Castle.Services.Transaction.Activities;
-
-namespace Castle.Services.Transaction.Tests
+namespace Castle.Facilities.Transactions.Tests.TestClasses
 {
+	using Castle.Services.Transaction.Activities;
+	using Services.Transaction;
+
 	public class TransientActivityManager : IActivityManager
 	{
 		private readonly Activity activity;

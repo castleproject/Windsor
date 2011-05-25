@@ -23,7 +23,7 @@ using System.Linq;
 using System.Reflection;
 using Castle.Services.Transaction;
 
-namespace Castle.Facilities.AutoTx
+namespace Castle.Facilities.Transactions
 {
 	internal sealed class TransactionalClassMetaInfo
 	{

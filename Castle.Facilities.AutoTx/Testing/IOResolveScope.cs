@@ -20,7 +20,7 @@ using System.Diagnostics.Contracts;
 using Castle.Services.Transaction;
 using Castle.Windsor;
 
-namespace Castle.Facilities.AutoTx.Testing
+namespace Castle.Facilities.Transactions.Testing
 {
 	/// <summary>
 	/// 	A resolve scope where T is the service you wish to get from the container.

@@ -19,7 +19,7 @@
 using System;
 using Castle.MicroKernel;
 
-namespace Castle.Facilities.AutoTx
+namespace Castle.Facilities.Transactions
 {
 	/// <summary>
 	/// 	v3.1: This selector will allow you to select the transient component if

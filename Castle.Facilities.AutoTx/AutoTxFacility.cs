@@ -16,7 +16,7 @@
 
 #endregion
 
-using Castle.Facilities.AutoTx.Registration;
+using Castle.Facilities.Transactions.Registration;
 using Castle.MicroKernel;
 using Castle.MicroKernel.Facilities;
 using Castle.MicroKernel.Registration;
@@ -27,7 +27,7 @@ using Castle.Services.Transaction.IO;
 using log4net;
 using System.Linq;
 
-namespace Castle.Facilities.AutoTx
+namespace Castle.Facilities.Transactions
 {
 	///<summary>
 	///	<para>A facility for automatically handling transactions using the lightweight

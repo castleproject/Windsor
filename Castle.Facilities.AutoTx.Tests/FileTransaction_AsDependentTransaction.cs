@@ -23,7 +23,7 @@ namespace Castle.Services.Transaction.Tests
 	using System.Transactions;
 
 	using Castle.Services.Transaction.Tests.Framework;
-
+	using Facilities.Transactions.Tests.TestClasses;
 	using NUnit.Framework;
 
 	[TestFixture]

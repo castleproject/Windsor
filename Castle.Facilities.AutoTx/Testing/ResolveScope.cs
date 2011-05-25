@@ -21,7 +21,7 @@ using System.Diagnostics.Contracts;
 using Castle.Windsor;
 using log4net;
 
-namespace Castle.Facilities.AutoTx.Testing
+namespace Castle.Facilities.Transactions.Testing
 {
 	public class ResolveScope<T> : IDisposable
 		where T : class

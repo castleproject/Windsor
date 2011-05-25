@@ -7,6 +7,8 @@ using NUnit.Framework;
 
 namespace Castle.Services.Transaction.Tests
 {
+	using Facilities.Transactions.Tests.TestClasses;
+
 	public class CorrectDisposalOfITransaction
 	{
 		private ITransactionManager _Tm;

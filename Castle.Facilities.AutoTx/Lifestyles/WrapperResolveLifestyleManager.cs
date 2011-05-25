@@ -27,7 +27,7 @@ using Castle.MicroKernel.Lifestyle;
 using Castle.MicroKernel.Registration;
 using log4net;
 
-namespace Castle.Facilities.AutoTx.Lifestyles
+namespace Castle.Facilities.Transactions.Lifestyles
 {
 	/// <summary>
 	/// 	Abstract hybrid lifestyle manager, with two underlying lifestyles

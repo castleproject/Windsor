@@ -22,7 +22,7 @@ using System.Transactions;
 using Castle.Services.Transaction;
 using NUnit.Framework;
 
-namespace Castle.Facilities.AutoTx.Tests.TestClasses
+namespace Castle.Facilities.Transactions.Tests.TestClasses
 {
 	public class MyService2
 	{

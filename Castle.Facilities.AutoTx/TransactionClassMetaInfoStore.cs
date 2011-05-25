@@ -23,7 +23,7 @@ using System.Reflection;
 using Castle.Services.Transaction;
 using Castle.Services.Transaction.Utils;
 
-namespace Castle.Facilities.AutoTx
+namespace Castle.Facilities.Transactions
 {
 	internal sealed class TransactionClassMetaInfoStore : ITransactionMetaInfoStore
 	{

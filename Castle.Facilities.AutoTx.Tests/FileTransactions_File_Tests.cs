@@ -25,7 +25,7 @@ namespace Castle.Services.Transaction.Tests
 	using System.Threading;
 
 	using Castle.Services.Transaction.Tests.Framework;
-
+	using Facilities.Transactions.Tests.TestClasses;
 	using NUnit.Framework;
 
 	using Directory = Castle.Services.Transaction.IO.Directory;

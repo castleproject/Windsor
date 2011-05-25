@@ -2,7 +2,7 @@ using System;
 using Castle.Services.Transaction;
 using NUnit.Framework;
 
-namespace Castle.Facilities.AutoTx.Tests.Framework
+namespace Castle.Facilities.Transactions.Tests.Framework
 {
 	public static class MaybeEx
 	{

@@ -17,16 +17,18 @@
 #endregion
 
 using System;
-using Castle.Facilities.AutoTx.Testing;
-using Castle.Facilities.AutoTx.Tests.TestClasses;
+using Castle.Facilities.Transactions.Testing;
+using Castle.Facilities.Transactions.Tests.TestClasses;
 using Castle.MicroKernel.Registration;
 using Castle.Services.Transaction;
 using Castle.Services.Transaction.Activities;
 using Castle.Windsor;
 using NUnit.Framework;
 
-namespace Castle.Facilities.AutoTx.Tests
+namespace Castle.Facilities.Transactions.Tests
 {
+	using TestClasses;
+
 	[Ignore("For v3.1: Implement retry policies are nicer to test with e.g. NHibernate integration parts.")]
 	public class RetryPolicies_Transactions
 	{

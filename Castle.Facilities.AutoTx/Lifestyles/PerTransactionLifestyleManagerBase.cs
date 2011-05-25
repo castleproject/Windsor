@@ -29,7 +29,7 @@ using Castle.MicroKernel.Lifestyle;
 using Castle.Services.Transaction;
 using log4net;
 
-namespace Castle.Facilities.AutoTx.Lifestyles
+namespace Castle.Facilities.Transactions.Lifestyles
 {
 	/// <summary>
 	/// 	This lifestyle manager is responsible for disposing components

@@ -18,11 +18,13 @@
 
 using System;
 using System.Diagnostics.Contracts;
-using Castle.Facilities.AutoTx.Contracts;
+using Castle.Facilities.Transactions.Contracts;
 using Castle.Services.Transaction;
 
-namespace Castle.Facilities.AutoTx
+namespace Castle.Facilities.Transactions
 {
+	using Contracts;
+
 	[ContractClass(typeof (TransactionMetaInfoStoreContract))]
 	internal interface ITransactionMetaInfoStore
 	{

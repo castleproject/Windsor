@@ -1,8 +1,8 @@
 using System;
 using System.Threading;
 using System.Transactions;
-using Castle.Facilities.AutoTx.Lifestyles;
-using Castle.Facilities.AutoTx.Registration;
+using Castle.Facilities.Transactions.Lifestyles;
+using Castle.Facilities.Transactions.Registration;
 using Castle.Facilities.FactorySupport;
 using Castle.Facilities.TypedFactory;
 using Castle.MicroKernel;
@@ -12,13 +12,15 @@ using Castle.Windsor;
 using log4net;
 using log4net.Config;
 using NUnit.Framework;
-using Castle.Facilities.AutoTx.Testing;
+using Castle.Facilities.Transactions.Testing;
 
 namespace Castle.Facilities.AutoTx.Tests
 {
+	using Transactions;
+
 	public class PerTransactionLifestyle_Releasing
 	{
-		private static readonly ILog _Logger = LogManager.GetLogger(typeof (PerTransactionLifestyle_Releasing));
+		private static readonly ILog _Logger = LogManager.GetLogger(typeof(PerTransactionLifestyle_Releasing));
 
 
 		[SetUp]
@@ -132,7 +134,7 @@ namespace Castle.Facilities.AutoTx.Tests
 				var parentId = resolved.Id;
 
 				// create a child transaction
-				var createdTx2 = manager.Service.CreateTransaction(new DefaultTransactionOptions() {Fork = true}).Value;
+				var createdTx2 = manager.Service.CreateTransaction(new DefaultTransactionOptions() { Fork = true }).Value;
 
 				Assert.That(createdTx2.ShouldFork, Is.True, "because we're in an ambient and have specified the option");
 				Assert.That(manager.Service.Count, Is.EqualTo(1), "transaction count correct");
@@ -194,7 +196,7 @@ namespace Castle.Facilities.AutoTx.Tests
 				Console.WriteLine(possibleException);
 				Assert.Fail();
 			}
-			
+
 			// the component burden in this one should not throw like the log trace below!
 			container.Dispose();
 			/*Castle.Facilities.AutoTx.Tests.PerTransactionLifestyle_Releasing: 2011-04-26 16:23:01,859 [9] DEBUG - child finally
@@ -240,9 +242,9 @@ Test 'Castle.Facilities.AutoTx.Tests.PerTransactionLifestyle_Releasing.Concurren
 					.Named("per-tx-session")
 					.UsingFactoryMethod(k =>
 					{
-					    var factory = k.Resolve<IPerTxServiceFactory>("per-tx-session.factory");
-					    var s = factory.CreateService();
-					    return s;
+						var factory = k.Resolve<IPerTxServiceFactory>("per-tx-session.factory");
+						var s = factory.CreateService();
+						return s;
 					}),
 				Component.For<Service>(),
 				Component.For<ServiceWithDirectDep>());

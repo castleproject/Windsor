@@ -17,12 +17,14 @@
 #endregion
 
 using System.Diagnostics.Contracts;
-using Castle.Facilities.AutoTx.Lifestyles;
+using Castle.Facilities.Transactions.Lifestyles;
 using Castle.MicroKernel.Registration;
 using Castle.MicroKernel.Registration.Lifestyle;
 
-namespace Castle.Facilities.AutoTx.Registration
+namespace Castle.Facilities.Transactions.Registration
 {
+	using Lifestyles;
+
 	public static class LifestyleRegistrationExtensions
 	{
 		public static ComponentRegistration<TService> PerTransaction<TService>(

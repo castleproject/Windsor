@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Transactions;
 
-namespace Castle.Facilities.AutoTx.Tests.TestClasses
+namespace Castle.Facilities.Transactions.Tests.TestClasses
 {
 	internal class ThrowingResource : ISinglePhaseNotification
 	{

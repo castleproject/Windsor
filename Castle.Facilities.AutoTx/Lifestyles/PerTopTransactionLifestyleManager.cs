@@ -20,7 +20,7 @@ using System;
 using System.Diagnostics.Contracts;
 using Castle.Services.Transaction;
 
-namespace Castle.Facilities.AutoTx.Lifestyles
+namespace Castle.Facilities.Transactions.Lifestyles
 {
 	/// <summary>
 	/// 	A lifestyle manager for every top transaction in the current call context. This lifestyle is great

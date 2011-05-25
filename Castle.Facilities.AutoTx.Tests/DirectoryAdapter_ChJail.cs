@@ -22,6 +22,7 @@ namespace Castle.Services.Transaction.Tests
 	using Castle.Services.Transaction.Tests.Framework;
 
 	using NUnit.Framework;
+	using Exts = Facilities.Transactions.Tests.TestClasses.Exts;
 
 	public class DirectoryAdapter_ChJail : TxFTestFixtureBase
 	{
@@ -50,9 +51,9 @@ namespace Castle.Services.Transaction.Tests
 		{
 			var d = new DirectoryAdapter(new MapPathImpl(), true, _CurrDir);
 			Assert.IsTrue(d.IsInAllowedDir(_CurrDir));
-			Assert.IsTrue(d.IsInAllowedDir(_CurrDir.Combine("hej/something/test")));
-			Assert.IsTrue(d.IsInAllowedDir(_CurrDir.Combine("hej")));
-			Assert.IsTrue(d.IsInAllowedDir(_CurrDir.Combine("hej.txt")));
+			Assert.IsTrue(d.IsInAllowedDir(Exts.Combine(_CurrDir, "hej/something/test")));
+			Assert.IsTrue(d.IsInAllowedDir(Exts.Combine(_CurrDir, "hej")));
+			Assert.IsTrue(d.IsInAllowedDir(Exts.Combine(_CurrDir, "hej.txt")));
 
 			Assert.IsTrue(d.IsInAllowedDir("hej"), "It should return true for relative paths.");
 			Assert.IsTrue(d.IsInAllowedDir("hej.txt"), "It should return true for relative paths");

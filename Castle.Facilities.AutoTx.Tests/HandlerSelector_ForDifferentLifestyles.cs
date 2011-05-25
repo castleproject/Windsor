@@ -1,19 +1,21 @@
 using System;
 using System.Diagnostics.Contracts;
 using Castle.Core;
-using Castle.Facilities.AutoTx.Registration;
+using Castle.Facilities.Transactions.Registration;
 using Castle.MicroKernel;
 using Castle.MicroKernel.Registration;
 using Castle.Services.Transaction;
 using Castle.Windsor;
 using log4net.Config;
 using NUnit.Framework;
-using Castle.Facilities.AutoTx.Lifestyles;
-using Castle.Facilities.AutoTx.Testing;
+using Castle.Facilities.Transactions.Lifestyles;
+using Castle.Facilities.Transactions.Testing;
 using System.Linq;
 
-namespace Castle.Facilities.AutoTx.Tests
+namespace Castle.Facilities.Transactions.Tests
 {
+	using Lifestyles;
+
 	public class HandlerSelector_ForDifferentLifeStyles
 	{
 		private IWindsorContainer _Container;
