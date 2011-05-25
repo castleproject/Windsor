@@ -16,11 +16,11 @@ namespace Castle.MicroKernel.Handlers
 {
 	using System;
 	using System.Collections;
-	using System.Collections.Generic;
 	using System.Diagnostics;
 	using System.Linq;
 
 	using Castle.Core;
+	using Castle.Core.Internal;
 	using Castle.MicroKernel.ComponentActivator;
 	using Castle.MicroKernel.Context;
 	using Castle.MicroKernel.Proxy;
@@ -30,7 +30,7 @@ namespace Castle.MicroKernel.Handlers
 	{
 		private readonly IGenericImplementationMatchingStrategy implementationMatchingStrategy;
 
-		private readonly IDictionary<Type, IHandler> type2SubHandler = new Dictionary<Type, IHandler>();
+		private readonly SimpleThreadSafeDictionary<Type, IHandler> type2SubHandler = new SimpleThreadSafeDictionary<Type, IHandler>();
 
 		/// <summary>
 		///   Initializes a new instance of the <see cref = "DefaultGenericHandler" /> class.
@@ -49,7 +49,8 @@ namespace Castle.MicroKernel.Handlers
 
 		public override void Dispose()
 		{
-			foreach (var handler in type2SubHandler.Values)
+			var values = type2SubHandler.YieldAllValues();
+			foreach (var handler in values)
 			{
 				var disposable = handler as IDisposable;
 				if (disposable == null)
@@ -58,7 +59,6 @@ namespace Castle.MicroKernel.Handlers
 				}
 				disposable.Dispose();
 			}
-			type2SubHandler.Clear();
 		}
 
 		public override bool ReleaseCore(Burden burden)
@@ -86,37 +86,28 @@ namespace Castle.MicroKernel.Handlers
 
 		protected IHandler GetSubHandler(CreationContext context, Type genericType)
 		{
-			IHandler handler;
-			if (type2SubHandler.TryGetValue(genericType, out handler))
+			IHandler value;
+			if(type2SubHandler.GetOrAdd(genericType, t => BuildSubHandler(context, t), out value))
 			{
-				return handler;
+				Kernel.AddCustomComponent(value.ComponentModel);
 			}
-			lock (type2SubHandler)
-			{
-				if (type2SubHandler.TryGetValue(genericType, out handler))
-				{
-					return handler;
-				}
-				// TODO: we should probably match the requested type to existing services and close them over its generic arguments
-				var newModel = Kernel.ComponentModelBuilder.BuildModel(
-					ComponentModel.ComponentName,
-					new[] { context.RequestedType },
-					genericType,
-					GetExtendedProperties());
+			return value;
+		}
 
-				newModel.ExtendedProperties[ComponentModel.SkipRegistration] = true;
-				CloneParentProperties(newModel);
-
-				// Create the handler and add to type2SubHandler before we add to the kernel.
-				// Adding to the kernel could satisfy other dependencies and cause this method
-				// to be called again which would result in extra instances being created.
-				handler = Kernel.HandlerFactory.Create(newModel);
-				type2SubHandler[genericType] = handler;
-
-				Kernel.AddCustomComponent(newModel);
-
-				return handler;
-			}
+		protected virtual IHandler BuildSubHandler(CreationContext context, Type requestedType)
+		{
+			// TODO: we should probably match the requested type to existing services and close them over its generic arguments
+			var newModel = Kernel.ComponentModelBuilder.BuildModel(
+				ComponentModel.ComponentName,
+				new[] { context.RequestedType },
+				requestedType,
+				GetExtendedProperties());
+			newModel.ExtendedProperties[ComponentModel.SkipRegistration] = true;
+			CloneParentProperties(newModel);
+			// Create the handler and add to type2SubHandler before we add to the kernel.
+			// Adding to the kernel could satisfy other dependencies and cause this method
+			// to be called again which would result in extra instances being created.
+			return Kernel.HandlerFactory.Create(newModel);
 		}
 
 		protected override void InitDependencies()
