@@ -116,10 +116,6 @@
       <Project>{C19A20DD-8F32-44EF-9B68-43C70677F92D}</Project>
       <Name>Castle.Facilities.AutoTx</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Castle.Services.Transaction\Castle.Services.Transaction.csproj">
-      <Project>{76DF5D09-FC04-411F-B123-01A6B9432796}</Project>
-      <Name>Castle.Services.Transaction</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />

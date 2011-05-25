@@ -175,12 +175,6 @@
     <Compile Include="Utils\Fun.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Castle.Services.Transaction\Castle.Services.Transaction.csproj">
-      <Project>{76DF5D09-FC04-411F-B123-01A6B9432796}</Project>
-      <Name>Castle.Services.Transaction</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="..\..\buildscripts\CastleKey.snk">
       <Link>CastleKey.snk</Link>
     </None>
