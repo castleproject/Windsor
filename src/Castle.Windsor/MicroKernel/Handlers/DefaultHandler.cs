@@ -18,7 +18,12 @@ namespace Castle.MicroKernel.Handlers
 	using System.Text;
 
 	using Castle.Core;
+	using Castle.Core.Internal;
+	using Castle.MicroKernel.ComponentActivator;
 	using Castle.MicroKernel.Context;
+	using Castle.MicroKernel.Lifestyle;
+	using Castle.MicroKernel.Lifestyle.Scoped;
+	using Castle.MicroKernel.ModelBuilder.Inspectors;
 
 	/// <summary>
 	///   Summary description for DefaultHandler.
@@ -27,11 +32,21 @@ namespace Castle.MicroKernel.Handlers
 	public class DefaultHandler : AbstractHandler
 	{
 		/// <summary>
+		///   Lifestyle manager instance
+		/// </summary>
+		protected ILifestyleManager lifestyleManager;
+
+		/// <summary>
 		///   Initializes a new instance of the <see cref = "DefaultHandler" /> class.
 		/// </summary>
 		/// <param name = "model"></param>
 		public DefaultHandler(ComponentModel model) : base(model)
 		{
+		}
+
+		public override void Dispose()
+		{
+			lifestyleManager.Dispose();
 		}
 
 		/// <summary>
@@ -57,6 +72,94 @@ namespace Castle.MicroKernel.Handlers
 
 				throw new HandlerException(inspector.Message);
 			}
+		}
+
+		/// <summary>
+		///   Creates an implementation of
+		///   <see cref = "ILifestyleManager" />
+		///   based
+		///   on
+		///   <see cref = "LifestyleType" />
+		///   and invokes
+		///   <see cref = "ILifestyleManager.Init" />
+		///   to initialize the newly created manager.
+		/// </summary>
+		/// <param name = "activator"></param>
+		/// <returns></returns>
+		protected virtual ILifestyleManager CreateLifestyleManager(IComponentActivator activator)
+		{
+			ILifestyleManager manager;
+			var type = ComponentModel.LifestyleType;
+
+			switch (type)
+			{
+				case LifestyleType.Scoped:
+					var scopeManager = Kernel.GetSubSystem("scope") as IScopeManager;
+					if (scopeManager == null)
+					{
+						throw new InvalidOperationException("Scope Subsystem not found.  Did you forget to add it?");
+					}
+					manager = new ScopedLifestyleManager(new CurrentScopeAccessor(scopeManager, ComponentModel));
+					break;
+				case LifestyleType.Thread:
+#if SILVERLIGHT
+					manager = new PerThreadThreadStaticLifestyleManager();
+#else
+					manager = new PerThreadLifestyleManager();
+#endif
+					break;
+				case LifestyleType.Transient:
+					manager = new TransientLifestyleManager();
+					break;
+#if (!SILVERLIGHT && !CLIENTPROFILE)
+				case LifestyleType.PerWebRequest:
+					manager = new PerWebRequestLifestyleManager();
+					break;
+#endif
+				case LifestyleType.Custom:
+					manager = ComponentModel.CustomLifestyle.CreateInstance<ILifestyleManager>();
+
+					break;
+				case LifestyleType.Pooled:
+				{
+					var initial = ExtendedPropertiesConstants.Pool_Default_InitialPoolSize;
+					var maxSize = ExtendedPropertiesConstants.Pool_Default_MaxPoolSize;
+
+					if (ComponentModel.ExtendedProperties.Contains(ExtendedPropertiesConstants.Pool_InitialPoolSize))
+					{
+						initial = (int)ComponentModel.ExtendedProperties[ExtendedPropertiesConstants.Pool_InitialPoolSize];
+					}
+					if (ComponentModel.ExtendedProperties.Contains(ExtendedPropertiesConstants.Pool_MaxPoolSize))
+					{
+						maxSize = (int)ComponentModel.ExtendedProperties[ExtendedPropertiesConstants.Pool_MaxPoolSize];
+					}
+
+					manager = new PoolableLifestyleManager(initial, maxSize);
+				}
+					break;
+				default:
+					//this includes LifestyleType.Undefined, LifestyleType.Singleton and invalid values
+					manager = new SingletonLifestyleManager();
+					break;
+			}
+
+			manager.Init(activator, Kernel, ComponentModel);
+
+			return manager;
+		}
+
+		protected override void InitDependencies()
+		{
+			var activator = Kernel.CreateComponentActivator(ComponentModel);
+			lifestyleManager = CreateLifestyleManager(activator);
+
+			var awareActivator = activator as IDependencyAwareActivator;
+			if (awareActivator != null && awareActivator.CanProvideRequiredDependencies(ComponentModel))
+			{
+				return;
+			}
+
+			base.InitDependencies();
 		}
 
 		protected override object Resolve(CreationContext context, bool instanceRequired)

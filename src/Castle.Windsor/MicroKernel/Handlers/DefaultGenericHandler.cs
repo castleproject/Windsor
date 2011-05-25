@@ -21,15 +21,10 @@ namespace Castle.MicroKernel.Handlers
 	using System.Linq;
 
 	using Castle.Core;
+	using Castle.MicroKernel.ComponentActivator;
 	using Castle.MicroKernel.Context;
 	using Castle.MicroKernel.Proxy;
 
-	/// <summary>
-	///   Summary description for DefaultGenericHandler.
-	/// </summary>
-	/// <remarks>
-	///   TODO: Consider refactoring AbstractHandler moving lifestylemanager creation to DefaultHandler
-	/// </remarks>
 	[Serializable]
 	public class DefaultGenericHandler : AbstractHandler
 	{
@@ -122,6 +117,18 @@ namespace Castle.MicroKernel.Handlers
 
 				return handler;
 			}
+		}
+
+		protected override void InitDependencies()
+		{
+			// not too convinved we need to support that in here but let's be safe...
+			var activator = Kernel.CreateComponentActivator(ComponentModel) as IDependencyAwareActivator;
+			if (activator != null && activator.CanProvideRequiredDependencies(ComponentModel))
+			{
+				return;
+			}
+
+			base.InitDependencies();
 		}
 
 		protected override object Resolve(CreationContext context, bool instanceRequired)
