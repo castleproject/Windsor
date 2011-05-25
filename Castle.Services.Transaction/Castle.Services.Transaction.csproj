@@ -92,73 +92,7 @@
     <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Activities\Activity.cs" />
-    <Compile Include="Contracts\IDirectoryAdapterContract.cs" />
-    <Compile Include="Contracts\IFileAdapterContract.cs" />
-    <Compile Include="Contracts\IMapPathContract.cs" />
-    <Compile Include="GlobalSuppressions.cs" />
-    <Compile Include="Internal\AnonymousRetryPolicy.cs" />
-    <Compile Include="Activities\CallContextActivityManager.cs" />
-    <Compile Include="Internal\ContractExtensions.cs" />
-    <Compile Include="Internal\CreatedTransaction.cs" />
-    <Compile Include="DefaultTransactionOptions.cs" />
-    <Compile Include="Internal\IDependentAware.cs" />
-    <Compile Include="Contracts\IDependentAwareContract.cs" />
-    <Compile Include="Internal\TaskExtensions.cs" />
-    <Compile Include="Internal\TxTraceListener.cs" />
-    <Compile Include="IO\LongPathCommon.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="IO\LongPathDirectory.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="IO\LongPathFile.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Obsolete_Classes.cs" />
-    <Compile Include="TransactionalConflictException.cs" />
-    <Compile Include="TransactionException.cs" />
-    <Compile Include="FileTransaction.cs" />
-    <Compile Include="IActivityManager.cs" />
-    <Compile Include="ICreatedTransaction.cs" />
-    <Compile Include="Contracts\ICreatedTransactionContract.cs" />
-    <Compile Include="Internal\IKernelTransaction.cs" />
-    <Compile Include="Internal\KTMCodes.cs" />
-    <Compile Include="Internal\SafeNativeMethods.cs" />
-    <Compile Include="Internal\TxFCodes.cs" />
-    <Compile Include="Internal\UnsafeNativeMethods.cs" />
-    <Compile Include="IO\Directory.cs" />
-    <Compile Include="IO\DirectoryAdapter.cs" />
-    <Compile Include="IO\File.cs" />
-    <Compile Include="IO\FileAdapter.cs" />
-    <Compile Include="IDirectoryAdapter.cs" />
-    <Compile Include="IFileAdapter.cs" />
-    <Compile Include="IMapPath.cs" />
-    <Compile Include="IO\MapPathImpl.cs" />
-    <Compile Include="IO\Path.cs" />
-    <Compile Include="IO\PathEx.cs" />
-    <Compile Include="IO\PathInfo.cs" />
-    <Compile Include="IO\PathType.cs" />
-    <Compile Include="IO\TransactionAdapterBase.cs" />
-    <Compile Include="IRetryPolicy.cs" />
-    <Compile Include="Contracts\IRetryPolicyContract.cs" />
-    <Compile Include="ITransaction.cs" />
-    <Compile Include="Contracts\ITransactionContract.cs" />
-    <Compile Include="ITransactionOptions.cs" />
-    <Compile Include="Contracts\ITransactionOptionsContract.cs" />
-    <Compile Include="ITransactionManager.cs" />
-    <Compile Include="Contracts\TransactionManagerContract.cs" />
-    <Compile Include="Maybe.cs" />
-    <Compile Include="Internal\NativeMethods.cs" />
     <Compile Include="Properties\CustomAssemblyInfo.cs" />
-    <Compile Include="IO\SafeFindHandle.cs" />
-    <Compile Include="IO\SafeKernelTransactionHandle.cs" />
-    <Compile Include="Transaction.cs" />
-    <Compile Include="TransactionAttribute.cs" />
-    <Compile Include="TransactionManager.cs" />
-    <Compile Include="Internal\TxScope.cs" />
-    <Compile Include="TransactionState.cs" />
-    <Compile Include="Utils\Fun.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\buildscripts\CastleKey.snk">
