@@ -17,6 +17,7 @@ namespace Castle.MicroKernel
 	using System;
 
 	using Castle.Core;
+	using Castle.Windsor;
 
 	/// <summary>
 	///   Represents a delegate which holds basic information about a component.
@@ -115,5 +116,12 @@ namespace Castle.MicroKernel
 		///   but the client ComponentModel must not be changed.
 		/// </summary>
 		event DependencyDelegate DependencyResolving;
+
+		/// <summary>
+		///   Event fired when registration / installation process is completed.
+		///   That is when container is about to exit<see cref = "IKernel.Register" /> method. This event is raised once regardless of how many components were registered.
+		///   If the <see cref = "IKernel.Register" /> is called by <see cref = "IWindsorContainer.Install" /> the event is raised when that method exits.
+		/// </summary>
+		event EventHandler RegistrationCompleted;
 	}
 }
