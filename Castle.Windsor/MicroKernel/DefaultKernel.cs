@@ -436,24 +436,6 @@ namespace Castle.MicroKernel
 		{
 			var result = NamingSubSystem.GetHandlers(service);
 
-			// a complete generic type, Foo<Bar>, need to check if Foo<T> is registered
-			if (service.IsGenericType && !service.IsGenericTypeDefinition)
-			{
-				var genericResult = NamingSubSystem.GetHandlers(service.GetGenericTypeDefinition());
-
-				if (result.Length > 0)
-				{
-					var mergedResult = new IHandler[result.Length + genericResult.Length];
-					result.CopyTo(mergedResult, 0);
-					genericResult.CopyTo(mergedResult, result.Length);
-					result = mergedResult;
-				}
-				else
-				{
-					result = genericResult;
-				}
-			}
-
 			// If a parent kernel exists, we merge both results
 			if (Parent != null)
 			{
