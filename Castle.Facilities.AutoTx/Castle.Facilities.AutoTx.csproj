@@ -93,9 +93,6 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\TxAssemblyInfo.cs">
-      <Link>Properties\TxAssemblyInfo.cs</Link>
-    </Compile>
     <Compile Include="AutoTxFacility.cs" />
     <Compile Include="ITransactionMetaInfoStore.cs" />
     <Compile Include="Lifestyles\WrapperResolveLifestyleManager.cs" />

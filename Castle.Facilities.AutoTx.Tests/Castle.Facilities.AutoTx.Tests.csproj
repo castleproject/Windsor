@@ -71,13 +71,24 @@
     <Reference Include="System.Transactions" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\AutoTxAssemblyInfo.cs">
-      <Link>Properties\AutoTxAssemblyInfo.cs</Link>
-    </Compile>
+    <Compile Include="CorrectDisposalOfITransaction.cs" />
+    <Compile Include="DirectoryAdapter_ChJail.cs" />
+    <Compile Include="DirectoryAdapter_InitializationSettings.cs" />
+    <Compile Include="DirectoryAdapter_NonTransactionalBehaviour.cs" />
+    <Compile Include="DirectoryAdapter_TransactionalBehavior.cs" />
+    <Compile Include="FileAdapter_InitializationSettings.cs" />
+    <Compile Include="FileTransactions_Directory_Tests.cs" />
+    <Compile Include="FileTransactions_File_Tests.cs" />
+    <Compile Include="FileTransaction_AsDependentTransaction.cs" />
+    <Compile Include="FileTransaction_Initialization_And_State.cs" />
     <Compile Include="Framework\MaybeEx.cs" />
+    <Compile Include="Framework\STATestRuntime.cs" />
+    <Compile Include="Framework\TxFTestFixtureBase.cs" />
     <Compile Include="HandlerSelector_ForDifferentLifestyles.cs" />
     <Compile Include="InitTests.cs" />
     <Compile Include="InspectingExistingComponents_Oninit.cs" />
+    <Compile Include="MaybeMonad.cs" />
+    <Compile Include="MSDN_Is_Wrong.cs" />
     <Compile Include="MultipleThreads_TransactionBookKeeping.cs" />
     <Compile Include="PerTransactionLifestyle_Releasing.cs" />
     <Compile Include="RetryPolicies_Transactions.cs" />
@@ -86,8 +97,18 @@
     <Compile Include="SingleThread_Ambient_OnInterface.cs" />
     <Compile Include="SingleThread_SupressInAmbient.cs" />
     <Compile Include="TestClasses\ConcreteService.cs" />
+    <Compile Include="TestClasses\Exts.cs" />
+    <Compile Include="TestClasses\IMyService.cs" />
+    <Compile Include="TestClasses\MyService.cs" />
     <Compile Include="TestClasses\MyService2.cs" />
+    <Compile Include="TestClasses\ResourceImpl.cs" />
+    <Compile Include="TestClasses\TestResource.cs" />
     <Compile Include="TestClasses\ThrowingResource.cs" />
+    <Compile Include="TestClasses\ThrowsExceptionResource.cs" />
+    <Compile Include="TestClasses\TransientActivityManager.cs" />
+    <Compile Include="TransactionManager_EnlistedResources.cs" />
+    <Compile Include="TransactionManager_IgnoreDependents.cs" />
+    <Compile Include="TransactionManager_TransactionDependent_CorrectBookKeeping.cs" />
     <Compile Include="TxClassMetaInfoStore_MetaData.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -110,7 +131,9 @@
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
