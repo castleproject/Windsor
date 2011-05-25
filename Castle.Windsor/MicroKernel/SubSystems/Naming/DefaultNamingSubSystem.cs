@@ -216,13 +216,7 @@ namespace Castle.MicroKernel.SubSystems.Naming
 					return result;
 				}
 
-				var tempResult = key2Handler.Values.Where(h => h.Services.Any(s => s == service));
-				if (service.IsGenericType && service.IsGenericTypeDefinition == false)
-				{
-					var openService = service.GetGenericTypeDefinition();
-					tempResult = tempResult.Union(key2Handler.Values.Where(h => h.Services.Any(s => s == openService)));
-				}
-				result = tempResult.ToArray();
+				result = key2Handler.Values.Where(h => h.Supports(service)).ToArray();
 				handlerListsByTypeCache[service] = result;
 			}
 
@@ -241,7 +235,7 @@ namespace Castle.MicroKernel.SubSystems.Naming
 				}
 				key2Handler.Add(key, handler);
 				var serviceSelector = GetServiceSelector(handler);
-				foreach (var service in handler.Services)
+				foreach (var service in handler.ComponentModel.Services)
 				{
 					if (serviceSelector(service))
 					{
@@ -272,7 +266,7 @@ namespace Castle.MicroKernel.SubSystems.Naming
 				var services = new List<IHandler>();
 				foreach (var handler in handlers)
 				{
-					if (handler.Services.Any(handlerService => IsAssignable(service, handlerService)))
+					if (handler.ComponentModel.Services.Any(handlerService => IsAssignable(service, handlerService)))
 					{
 						services.Add(handler);
 					}

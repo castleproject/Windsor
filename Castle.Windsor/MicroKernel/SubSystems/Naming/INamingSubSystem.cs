@@ -94,7 +94,7 @@ namespace Castle.MicroKernel.SubSystems.Naming
 		IHandler[] GetHandlers(Type service);
 
 		/// <summary>
-		///   Implementors should register the <see cref = "IHandler" /> with all <see cref = "IHandler.Services" /> it exposes.
+		///   Implementors should register the <see cref = "IHandler" /> with all <see cref = "ComponentModel.Services" /> its <see cref="IHandler.ComponentModel"/> exposes.
 		///   The handler should also be accessible via unique <see cref = "ComponentModel.Name" /> of its <see
 		///    cref = "IHandler.ComponentModel" />.
 		/// </summary>

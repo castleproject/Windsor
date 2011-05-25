@@ -34,7 +34,7 @@ namespace Castle.Windsor.Diagnostics.Helpers
 		public IEnumerable<DebuggerViewItem> Attach()
 		{
 			yield return new DebuggerViewItem("Implementation", GetImplementation());
-			foreach (var service in handler.Services)
+			foreach (var service in handler.ComponentModel.Services)
 			{
 				yield return new DebuggerViewItem("Service", service);
 			}

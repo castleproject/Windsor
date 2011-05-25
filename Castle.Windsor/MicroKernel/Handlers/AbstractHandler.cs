@@ -87,12 +87,6 @@ namespace Castle.MicroKernel.Handlers
 		}
 
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
-		public IEnumerable<Type> Services
-		{
-			get { return ComponentModel.Services; }
-		}
-
-		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 		protected IKernelInternal Kernel
 		{
 			get { return kernel; }
@@ -209,6 +203,11 @@ namespace Castle.MicroKernel.Handlers
 		public object Resolve(CreationContext context)
 		{
 			return Resolve(context, true);
+		}
+
+		public virtual bool Supports(Type service)
+		{
+			return ComponentModel.Services.Any(s=>s == service);
 		}
 
 		public object TryResolve(CreationContext context)

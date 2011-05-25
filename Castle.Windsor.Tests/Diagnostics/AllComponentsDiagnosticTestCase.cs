@@ -94,7 +94,7 @@ namespace CastleTests.Diagnostics
 			var handlers = diagnostic.Inspect();
 
 			Assert.AreEqual(1, handlers.Length);
-			Assert.AreEqual(2, handlers[0].Services.Count());
+			Assert.AreEqual(2, handlers[0].ComponentModel.Services.Count());
 		}
 
 		[Test]

@@ -61,7 +61,7 @@ namespace Castle.MicroKernel.Tests.Registration
 				AllTypes.FromThisAssembly()
 					.Where(Component.IsInNamespace("RootNamespace", includeSubnamespaces: true)));
 
-			Assert.IsFalse(Components().Any(c => c.Services.Any(s => s.Namespace == "RootNamespaceEx")));
+			Assert.IsFalse(Components().Any(c => c.ComponentModel.Services.Any(s => s.Namespace == "RootNamespaceEx")));
 		}
 	}
 }

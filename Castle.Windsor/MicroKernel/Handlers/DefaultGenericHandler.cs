@@ -75,6 +75,20 @@ namespace Castle.MicroKernel.Handlers
 			return handler.Release(burden);
 		}
 
+		public override bool Supports(Type service)
+		{
+			if (base.Supports(service))
+			{
+				return true;
+			}
+			if (service.IsGenericType && service.IsGenericTypeDefinition == false)
+			{
+				var openService = service.GetGenericTypeDefinition();
+				return ComponentModel.Services.Any(s => s == openService);
+			}
+			return false;
+		}
+
 		protected IHandler GetSubHandler(CreationContext context, Type genericType)
 		{
 			IHandler handler;

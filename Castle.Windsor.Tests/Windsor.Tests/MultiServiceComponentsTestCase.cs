@@ -128,7 +128,7 @@ namespace Castle.Windsor.Tests
 
 			var allHandlers = Kernel.GetAssignableHandlers(typeof(object));
 			Assert.AreEqual(1, allHandlers.Length);
-			Assert.AreEqual(1, allHandlers.Single().Services.Count());
+			Assert.AreEqual(1, allHandlers.Single().ComponentModel.Services.Count());
 		}
 
 		[Test]
@@ -142,7 +142,7 @@ namespace Castle.Windsor.Tests
 
 			var allHandlers = Kernel.GetAssignableHandlers(typeof(object));
 			Assert.AreEqual(1, allHandlers.Length);
-			Assert.AreEqual(2, allHandlers.Single().Services.Count());
+			Assert.AreEqual(2, allHandlers.Single().ComponentModel.Services.Count());
 		}
 
 		[Test]

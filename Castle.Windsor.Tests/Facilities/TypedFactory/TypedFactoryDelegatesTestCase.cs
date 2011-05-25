@@ -63,8 +63,8 @@ namespace CastleTests.Facilities.TypedFactory
 
 			var allhandlers = Kernel.GetAssignableHandlers(typeof(object));
 
-			Assert.IsFalse(allhandlers.SelectMany(h => h.Services).Any(s => s == typeof(Func<Foo>)));
-			Assert.IsFalse(allhandlers.SelectMany(h => h.Services).Any(s => s == typeof(Func<Bar>)));
+			Assert.IsFalse(allhandlers.SelectMany(h => h.ComponentModel.Services).Any(s => s == typeof(Func<Foo>)));
+			Assert.IsFalse(allhandlers.SelectMany(h => h.ComponentModel.Services).Any(s => s == typeof(Func<Bar>)));
 		}
 
 		[Test]
@@ -85,8 +85,8 @@ namespace CastleTests.Facilities.TypedFactory
 
 			var allhandlers = Kernel.GetAssignableHandlers(typeof(object));
 
-			Assert.IsFalse(allhandlers.SelectMany(h => h.Services).Any(s => s == typeof(Func<Foo>)));
-			Assert.IsFalse(allhandlers.SelectMany(h => h.Services).Any(s => s == typeof(Func<Bar>)));
+			Assert.IsFalse(allhandlers.SelectMany(h => h.ComponentModel.Services).Any(s => s == typeof(Func<Foo>)));
+			Assert.IsFalse(allhandlers.SelectMany(h => h.ComponentModel.Services).Any(s => s == typeof(Func<Bar>)));
 		}
 
 		[Test]

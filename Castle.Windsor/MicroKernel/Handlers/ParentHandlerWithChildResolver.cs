@@ -15,7 +15,6 @@
 namespace Castle.MicroKernel.Handlers
 {
 	using System;
-	using System.Collections.Generic;
 
 	using Castle.Core;
 	using Castle.MicroKernel.Context;
@@ -59,11 +58,6 @@ namespace Castle.MicroKernel.Handlers
 			get { return parentHandler.CurrentState; }
 		}
 
-		public IEnumerable<Type> Services
-		{
-			get { return ComponentModel.Services; }
-		}
-
 		public void Dispose()
 		{
 			Dispose(true);
@@ -86,6 +80,11 @@ namespace Castle.MicroKernel.Handlers
 		public virtual object Resolve(CreationContext context)
 		{
 			return parentHandler.Resolve(context);
+		}
+
+		public bool Supports(Type service)
+		{
+			return parentHandler.Supports(service);
 		}
 
 		public object TryResolve(CreationContext context)
