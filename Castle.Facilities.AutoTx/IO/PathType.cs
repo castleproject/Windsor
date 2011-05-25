@@ -16,7 +16,7 @@
 
 #endregion
 
-namespace Castle.Services.Transaction.IO
+namespace Castle.Facilities.Transactions.IO
 {
 	public enum PathType
 	{

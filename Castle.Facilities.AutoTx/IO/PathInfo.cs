@@ -22,7 +22,7 @@ using System.Diagnostics.Contracts;
 using System.Net;
 using System.Text.RegularExpressions;
 
-namespace Castle.Services.Transaction.IO
+namespace Castle.Facilities.Transactions.IO
 {
 	/// <summary>
 	/// 	Path data holder.

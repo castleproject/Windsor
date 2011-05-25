@@ -20,7 +20,7 @@ using System;
 using System.Transactions;
 using log4net;
 
-namespace Castle.Services.Transaction.Internal
+namespace Castle.Facilities.Transactions.Internal
 {
 	/// <summary>
 	/// A TxScope sets the ambient transaction for the duration of its lifetime and then re-assigns the previous value.

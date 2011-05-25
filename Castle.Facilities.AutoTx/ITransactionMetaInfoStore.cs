@@ -19,7 +19,7 @@
 using System;
 using System.Diagnostics.Contracts;
 using Castle.Facilities.Transactions.Contracts;
-using Castle.Services.Transaction;
+using Castle.Facilities.Transactions;
 
 namespace Castle.Facilities.Transactions
 {

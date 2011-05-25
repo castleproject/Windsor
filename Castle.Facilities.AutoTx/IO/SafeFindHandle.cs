@@ -18,10 +18,10 @@
 
 using System;
 using System.Security;
-using Castle.Services.Transaction.Internal;
+using Castle.Facilities.Transactions.Internal;
 using Microsoft.Win32.SafeHandles;
 
-namespace Castle.Services.Transaction.IO
+namespace Castle.Facilities.Transactions.IO
 {
 	[SecurityCritical]
 	public sealed class SafeFindHandle : SafeHandleZeroOrMinusOneIsInvalid

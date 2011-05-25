@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
-using Castle.Services.Transaction.Internal;
+using Castle.Facilities.Transactions.Internal;
 
 //     Copyright (c) Microsoft Corporation.  All rights reserved.
 
-namespace Castle.Services.Transaction.IO
+namespace Castle.Facilities.Transactions.IO
 {
 	/// <summary>
 	/// 	Provides methods for creating, deleting, moving and enumerating directories and 

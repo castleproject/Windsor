@@ -18,7 +18,7 @@
 
 using Castle.MicroKernel.Facilities;
 using Castle.MicroKernel.Registration;
-using Castle.Services.Transaction;
+using Castle.Facilities.Transactions;
 using Castle.Windsor;
 using NUnit.Framework;
 

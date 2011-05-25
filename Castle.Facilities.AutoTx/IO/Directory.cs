@@ -19,7 +19,7 @@
 using System;
 using System.Diagnostics.Contracts;
 
-namespace Castle.Services.Transaction.IO
+namespace Castle.Facilities.Transactions.IO
 {
 	/// <summary>
 	/// 	Utility class for directories.

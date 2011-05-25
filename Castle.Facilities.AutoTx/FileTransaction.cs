@@ -7,11 +7,11 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Transactions;
-using Castle.Services.Transaction.Internal;
-using Castle.Services.Transaction.IO;
-using Path = Castle.Services.Transaction.IO.Path;
+using Castle.Facilities.Transactions.Internal;
+using Castle.Facilities.Transactions.IO;
+using Path = Castle.Facilities.Transactions.IO.Path;
 
-namespace Castle.Services.Transaction
+namespace Castle.Facilities.Transactions
 {
 	///<summary>
 	///	Represents a transaction on transactional kernels

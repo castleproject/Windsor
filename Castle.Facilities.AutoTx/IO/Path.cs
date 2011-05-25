@@ -23,7 +23,7 @@ using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
 
-namespace Castle.Services.Transaction.IO
+namespace Castle.Facilities.Transactions.IO
 {
 	///<summary>
 	///	Utility class meant to replace the <see cref = "System.IO.Path" /> class completely. This class handles these types of paths:

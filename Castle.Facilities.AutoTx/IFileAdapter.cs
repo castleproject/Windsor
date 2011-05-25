@@ -19,9 +19,9 @@ using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.IO;
 using System.Text;
-using Castle.Services.Transaction.Contracts;
+using Castle.Facilities.Transactions.Contracts;
 
-namespace Castle.Services.Transaction
+namespace Castle.Facilities.Transactions
 {
 	///<summary>
 	/// File helper wrapper interface.

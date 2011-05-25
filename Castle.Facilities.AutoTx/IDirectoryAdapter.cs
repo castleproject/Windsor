@@ -1,7 +1,7 @@
 using System.Diagnostics.Contracts;
-using Castle.Services.Transaction.Contracts;
+using Castle.Facilities.Transactions.Contracts;
 
-namespace Castle.Services.Transaction
+namespace Castle.Facilities.Transactions
 {
 	///<summary>
 	///	Directory helper. Use this instead of Directory in order to gain

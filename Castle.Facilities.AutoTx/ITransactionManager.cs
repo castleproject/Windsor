@@ -18,9 +18,9 @@
 
 using System;
 using System.Diagnostics.Contracts;
-using Castle.Services.Transaction.Contracts;
+using Castle.Facilities.Transactions.Contracts;
 
-namespace Castle.Services.Transaction
+namespace Castle.Facilities.Transactions
 {
 	/// <summary>
 	/// 	The transaction manager takes care of the nitty-gritty details of managing the store for transactions and their data.

@@ -20,7 +20,7 @@ using System;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 
-namespace Castle.Services.Transaction.Internal
+namespace Castle.Facilities.Transactions.Internal
 {
 	/// <summary>
 	/// 	Enables factoring legacy if-then-throw into separate methods for reuse and full control over

@@ -21,7 +21,6 @@ namespace Castle.Facilities.Transactions.Tests.TestClasses
 	using System;
 	using System.Diagnostics.Contracts;
 	using NUnit.Framework;
-	using Services.Transaction;
 	using Transaction = System.Transactions.Transaction;
 
 	public class MyService : IMyService

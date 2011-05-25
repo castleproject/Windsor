@@ -18,7 +18,7 @@
 
 using System.Diagnostics.Contracts;
 
-namespace Castle.Services.Transaction.IO
+namespace Castle.Facilities.Transactions.IO
 {
 	public static class PathEx
 	{

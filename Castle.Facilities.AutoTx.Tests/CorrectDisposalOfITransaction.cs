@@ -5,7 +5,7 @@ using System.Text;
 using System.Transactions;
 using NUnit.Framework;
 
-namespace Castle.Services.Transaction.Tests
+namespace Castle.Facilities.Transactions.Tests
 {
 	using Facilities.Transactions.Tests.TestClasses;
 
@@ -16,7 +16,7 @@ namespace Castle.Services.Transaction.Tests
 		[SetUp]
 		public void SetUp()
 		{
-			_Tm = new Services.Transaction.TransactionManager(new TransientActivityManager());
+			_Tm = new Facilities.Transactions.TransactionManager(new TransientActivityManager());
 		}
 
 		[Test, Description("This test doesn't explicitly check disposal, but a pass means the bug in previous versions was fixed.")]

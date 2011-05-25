@@ -21,7 +21,7 @@ using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Reflection;
-using Castle.Services.Transaction;
+using Castle.Facilities.Transactions;
 
 namespace Castle.Facilities.Transactions
 {

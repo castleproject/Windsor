@@ -16,13 +16,13 @@
 
 #endregion
 
-namespace Castle.Services.Transaction.Tests
+namespace Castle.Facilities.Transactions.Tests
 {
 	using System;
 	using System.IO;
 	using System.Threading;
 
-	using Castle.Services.Transaction.Tests.Framework;
+	using Castle.Facilities.Transactions.Tests.Framework;
 
 	using NUnit.Framework;
 

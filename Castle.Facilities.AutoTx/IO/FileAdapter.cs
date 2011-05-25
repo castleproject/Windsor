@@ -23,7 +23,7 @@ using System.Linq;
 using System.Text;
 using log4net;
 
-namespace Castle.Services.Transaction.IO
+namespace Castle.Facilities.Transactions.IO
 {
 	/// <summary>
 	/// 	Adapter class for the file transactions

@@ -59,8 +59,8 @@ namespace Castle.Facilities.Transactions.Tests
 			using (var scope = new ResolveScope<ConcreteService>(_Container))
 			{
 				scope.Service.VerifyInAmbient(() =>
-					scope.Service.VerifyInAmbient(() => Assert.That(Transaction.Current != null 
-																	&& Transaction.Current is DependentTransaction)
+					scope.Service.VerifyInAmbient(() => Assert.That(System.Transactions.Transaction.Current != null
+																	&& System.Transactions.Transaction.Current is DependentTransaction)
 				));
 			}
 		}

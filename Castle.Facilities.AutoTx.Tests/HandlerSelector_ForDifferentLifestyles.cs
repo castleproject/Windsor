@@ -4,7 +4,7 @@ using Castle.Core;
 using Castle.Facilities.Transactions.Registration;
 using Castle.MicroKernel;
 using Castle.MicroKernel.Registration;
-using Castle.Services.Transaction;
+using Castle.Facilities.Transactions;
 using Castle.Windsor;
 using log4net.Config;
 using NUnit.Framework;

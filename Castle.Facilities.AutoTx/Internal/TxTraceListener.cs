@@ -22,7 +22,7 @@ using System.IO;
 using System.Text.RegularExpressions;
 using System.Xml.Serialization;
 
-namespace Castle.Services.Transaction.Internal
+namespace Castle.Facilities.Transactions.Internal
 {
 	[Serializable]
 	public class TraceRecord

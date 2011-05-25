@@ -16,13 +16,13 @@
 
 #endregion
 
-using Castle.Services.Transaction.IO;
+using Castle.Facilities.Transactions.IO;
 
-namespace Castle.Services.Transaction.Tests
+namespace Castle.Facilities.Transactions.Tests
 {
 	using System.Transactions;
 
-	using Castle.Services.Transaction.Tests.Framework;
+	using Castle.Facilities.Transactions.Tests.Framework;
 	using Facilities.Transactions.Tests.TestClasses;
 	using NUnit.Framework;
 
@@ -37,7 +37,7 @@ namespace Castle.Services.Transaction.Tests
 		[SetUp]
 		public void Setup()
 		{
-			_Tm = new Services.Transaction.TransactionManager(new TransientActivityManager());
+			_Tm = new Facilities.Transactions.TransactionManager(new TransientActivityManager());
 
 			_DirPath = ".";
 			_FilePath = _DirPath.Combine("test.txt");

@@ -20,7 +20,7 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Contracts;
 
-namespace Castle.Services.Transaction
+namespace Castle.Facilities.Transactions
 {
 	/// <summary>
 	/// 	Static helper class for creating Maybe monads.

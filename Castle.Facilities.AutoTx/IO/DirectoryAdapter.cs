@@ -20,7 +20,7 @@ using System;
 using System.Diagnostics.Contracts;
 using log4net;
 
-namespace Castle.Services.Transaction.IO
+namespace Castle.Facilities.Transactions.IO
 {
 	/// <summary>
 	/// 	Adapter which wraps the functionality in <see cref = "File" />

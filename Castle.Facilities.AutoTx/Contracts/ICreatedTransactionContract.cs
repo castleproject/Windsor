@@ -19,7 +19,7 @@
 using System;
 using System.Diagnostics.Contracts;
 
-namespace Castle.Services.Transaction.Contracts
+namespace Castle.Facilities.Transactions.Contracts
 {
 	[ContractClassFor(typeof (ICreatedTransaction))]
 	internal abstract class ICreatedTransactionContract : ICreatedTransaction

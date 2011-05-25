@@ -20,10 +20,10 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Threading.Tasks;
-using Castle.Services.Transaction.Internal;
+using Castle.Facilities.Transactions.Internal;
 using log4net;
 
-namespace Castle.Services.Transaction.Activities
+namespace Castle.Facilities.Transactions.Activities
 {
 	/// <summary>
 	/// 	Value-object that encapsulates a transaction and is serializable across
@@ -77,7 +77,7 @@ namespace Castle.Services.Transaction.Activities
 
 			if (aware != null) 
 				aware.RegisterDependent(task);
-			else _Logger.WarnFormat("The transaction#{0} did not implement Castle.Services.Transaction.Internal.IDependentAware, " 
+			else _Logger.WarnFormat("The transaction#{0} did not implement Castle.Facilities.Transactions.Internal.IDependentAware, " 
 				+ "yet a Task to await was registered. If you have created your own custom ITransaction implementation, verify that it implements IDependentAware.",
 				_TopMost.LocalIdentifier);
 		}

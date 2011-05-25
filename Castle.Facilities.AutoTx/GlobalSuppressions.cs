@@ -8,6 +8,6 @@
 // "In Project Suppression File".
 // You do not need to add suppressions to this file manually.
 
-[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Scope = "member", Target = "Castle.Services.Transaction.TransactionManager.#Castle.Services.Transaction.ITransactionManager.CreateTransaction(Castle.Services.Transaction.ITransactionOptions)", Justification = "CommittableTransaction is disposed by Transaction")]
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Scope = "member", Target = "Castle.Facilities.Transactions.TransactionManager.#Castle.Facilities.Transactions.ITransactionManager.CreateTransaction(Castle.Facilities.Transactions.ITransactionOptions)", Justification = "CommittableTransaction is disposed by Transaction")]
 
-[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Scope = "member", Target = "Castle.Services.Transaction.TransactionManager.#Castle.Services.Transaction.ITransactionManager.CreateFileTransaction(Castle.Services.Transaction.ITransactionOptions)")]
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Scope = "member", Target = "Castle.Facilities.Transactions.TransactionManager.#Castle.Facilities.Transactions.ITransactionManager.CreateFileTransaction(Castle.Facilities.Transactions.ITransactionOptions)")]

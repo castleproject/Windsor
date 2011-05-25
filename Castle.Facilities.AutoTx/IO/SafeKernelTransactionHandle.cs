@@ -19,10 +19,10 @@
 using System;
 using System.Runtime.ConstrainedExecution;
 using System.Security;
-using Castle.Services.Transaction.Internal;
+using Castle.Facilities.Transactions.Internal;
 using Microsoft.Win32.SafeHandles;
 
-namespace Castle.Services.Transaction.IO
+namespace Castle.Facilities.Transactions.IO
 {
 	///<summary>
 	///	A safe file handle on the transaction resource.

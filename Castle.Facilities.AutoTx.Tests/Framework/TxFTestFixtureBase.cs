@@ -16,7 +16,7 @@
 
 #endregion
 
-namespace Castle.Services.Transaction.Tests.Framework
+namespace Castle.Facilities.Transactions.Tests.Framework
 {
 	using System;
 

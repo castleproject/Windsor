@@ -4,11 +4,11 @@ using System.Globalization;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
-using Castle.Services.Transaction.Internal;
+using Castle.Facilities.Transactions.Internal;
 
 //     Copyright (c) Microsoft Corporation.  All rights reserved.
 
-namespace Castle.Services.Transaction.IO
+namespace Castle.Facilities.Transactions.IO
 {
 	internal static class LongPathCommon
 	{

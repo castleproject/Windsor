@@ -20,11 +20,11 @@ using System;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
-using Castle.Services.Transaction.IO;
+using Castle.Facilities.Transactions.IO;
 using Microsoft.Win32.SafeHandles;
 using FILETIME = System.Runtime.InteropServices.ComTypes.FILETIME;
 
-namespace Castle.Services.Transaction.Internal
+namespace Castle.Facilities.Transactions.Internal
 {
 	internal static class NativeMethods
 	{

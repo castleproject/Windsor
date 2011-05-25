@@ -22,7 +22,7 @@ using System.Diagnostics.Contracts;
 using System.IO;
 using System.Text;
 
-namespace Castle.Services.Transaction.IO
+namespace Castle.Facilities.Transactions.IO
 {
 	/// <summary>
 	/// 	Utility class for file operations.
@@ -89,7 +89,7 @@ namespace Castle.Services.Transaction.IO
 		{
 			Contract.Requires(!string.IsNullOrEmpty(originalFilePath));
 			Contract.Requires(!string.IsNullOrEmpty(newFilePath));
-			Contract.Requires(Castle.Services.Transaction.IO.Path.GetFileName(originalFilePath).Length > 0);
+			Contract.Requires(Castle.Facilities.Transactions.IO.Path.GetFileName(originalFilePath).Length > 0);
 			GetAdapter().Move(originalFilePath, newFilePath);
 		}
 

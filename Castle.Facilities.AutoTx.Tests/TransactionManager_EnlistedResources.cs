@@ -16,7 +16,7 @@
 
 #endregion
 
-namespace Castle.Services.Transaction.Tests
+namespace Castle.Facilities.Transactions.Tests
 {
 	using System.Transactions;
 	using Facilities.Transactions.Tests.TestClasses;
@@ -29,7 +29,7 @@ namespace Castle.Services.Transaction.Tests
 		[SetUp]
 		public void SetUp()
 		{
-			_Tm = new Services.Transaction.TransactionManager(new TransientActivityManager());
+			_Tm = new Facilities.Transactions.TransactionManager(new TransientActivityManager());
 		}
 
 		[Test]

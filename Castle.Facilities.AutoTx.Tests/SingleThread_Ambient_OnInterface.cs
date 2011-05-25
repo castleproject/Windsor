@@ -21,7 +21,7 @@ using System.Transactions;
 using Castle.Facilities.Transactions.Testing;
 using Castle.Facilities.Transactions.Tests.TestClasses;
 using Castle.MicroKernel.Registration;
-using Castle.Services.Transaction;
+using Castle.Facilities.Transactions;
 using Castle.Windsor;
 using log4net.Config;
 using NUnit.Framework;

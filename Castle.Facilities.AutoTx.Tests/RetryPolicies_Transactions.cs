@@ -20,8 +20,8 @@ using System;
 using Castle.Facilities.Transactions.Testing;
 using Castle.Facilities.Transactions.Tests.TestClasses;
 using Castle.MicroKernel.Registration;
-using Castle.Services.Transaction;
-using Castle.Services.Transaction.Activities;
+using Castle.Facilities.Transactions;
+using Castle.Facilities.Transactions.Activities;
 using Castle.Windsor;
 using NUnit.Framework;
 

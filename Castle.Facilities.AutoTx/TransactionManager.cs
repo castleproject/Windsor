@@ -21,10 +21,10 @@ using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Contracts;
 using System.Threading.Tasks;
 using System.Transactions;
-using Castle.Services.Transaction.Internal;
+using Castle.Facilities.Transactions.Internal;
 using log4net;
 
-namespace Castle.Services.Transaction
+namespace Castle.Facilities.Transactions
 {
 	public sealed class TransactionManager : ITransactionManager
 	{

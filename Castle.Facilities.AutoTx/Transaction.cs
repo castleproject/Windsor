@@ -21,12 +21,12 @@ using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Threading.Tasks;
 using System.Transactions;
-using Castle.Services.Transaction.Internal;
-using Castle.Services.Transaction.IO;
+using Castle.Facilities.Transactions.Internal;
+using Castle.Facilities.Transactions.IO;
 using log4net;
 using System.Linq;
 
-namespace Castle.Services.Transaction
+namespace Castle.Facilities.Transactions
 {
 	[Serializable]
 	public class Transaction : ITransaction, IDependentAware

@@ -21,9 +21,9 @@ using Castle.MicroKernel;
 using Castle.MicroKernel.Facilities;
 using Castle.MicroKernel.Registration;
 using Castle.MicroKernel.SubSystems.Naming;
-using Castle.Services.Transaction;
-using Castle.Services.Transaction.Activities;
-using Castle.Services.Transaction.IO;
+using Castle.Facilities.Transactions;
+using Castle.Facilities.Transactions.Activities;
+using Castle.Facilities.Transactions.IO;
 using log4net;
 using System.Linq;
 
@@ -97,7 +97,7 @@ You can enable verbose logging for .Net by adding this to you .config file:
 		<sources>
 			<source name=""System.Transactions"" switchValue=""Information"">
 				<listeners>
-					<add name=""tx"" type=""Castle.Services.Transaction.Internal.TxTraceListener, Castle.Services.Transaction""/>
+					<add name=""tx"" type=""Castle.Facilities.Transactions.Internal.TxTraceListener, Castle.Facilities.Transactions""/>
 				</listeners>
 			</source>
 		</sources>

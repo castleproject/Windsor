@@ -20,7 +20,7 @@ using System;
 using System.Runtime.Serialization;
 using System.Transactions;
 
-namespace Castle.Services.Transaction
+namespace Castle.Facilities.Transactions
 {
 	[Obsolete("Deprecated; just remove this attribute for the same effect. No other changes are necessary.")]
 	[AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]

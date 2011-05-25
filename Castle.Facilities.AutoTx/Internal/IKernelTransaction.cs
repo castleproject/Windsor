@@ -17,9 +17,9 @@
 #endregion
 
 using System.Runtime.InteropServices;
-using Castle.Services.Transaction.IO;
+using Castle.Facilities.Transactions.IO;
 
-namespace Castle.Services.Transaction.Internal
+namespace Castle.Facilities.Transactions.Internal
 {
 	[ComImport]
 	[InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]

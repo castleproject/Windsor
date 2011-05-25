@@ -18,7 +18,7 @@
 
 namespace Castle.Facilities.Transactions.Tests.TestClasses
 {
-	using Castle.Services.Transaction.IO;
+	using Castle.Facilities.Transactions.IO;
 
 	public static class Exts
 	{

@@ -1,5 +1,5 @@
 using System;
-using Castle.Services.Transaction;
+using Castle.Facilities.Transactions;
 using NUnit.Framework;
 
 namespace Castle.Facilities.Transactions.Tests.Framework

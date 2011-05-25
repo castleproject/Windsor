@@ -1,6 +1,6 @@
 ﻿using System.Transactions;
 
-namespace Castle.Services.Transaction
+namespace Castle.Facilities.Transactions
 {
 	/// <summary>
 	/// An enum of the possible states a transaction might take. Due to

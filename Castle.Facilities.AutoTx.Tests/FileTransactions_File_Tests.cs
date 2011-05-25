@@ -16,7 +16,7 @@
 
 #endregion
 
-namespace Castle.Services.Transaction.Tests
+namespace Castle.Facilities.Transactions.Tests
 {
 	using System;
 	using System.Collections.Generic;
@@ -24,12 +24,12 @@ namespace Castle.Services.Transaction.Tests
 	using System.Text;
 	using System.Threading;
 
-	using Castle.Services.Transaction.Tests.Framework;
+	using Castle.Facilities.Transactions.Tests.Framework;
 	using Facilities.Transactions.Tests.TestClasses;
 	using NUnit.Framework;
 
-	using Directory = Castle.Services.Transaction.IO.Directory;
-	using File = Castle.Services.Transaction.IO.File;
+	using Directory = Castle.Facilities.Transactions.IO.Directory;
+	using File = Castle.Facilities.Transactions.IO.File;
 
 	[Ignore("Wait for RC")]
 	public class FileTransactions_File_Tests : TxFTestFixtureBase

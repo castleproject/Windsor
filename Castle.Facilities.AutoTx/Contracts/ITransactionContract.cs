@@ -18,9 +18,9 @@
 
 using System;
 using System.Diagnostics.Contracts;
-using Castle.Services.Transaction.IO;
+using Castle.Facilities.Transactions.IO;
 
-namespace Castle.Services.Transaction.Contracts
+namespace Castle.Facilities.Transactions.Contracts
 {
 	[ContractClassFor(typeof (ITransaction))]
 	internal abstract class ITransactionContract : ITransaction

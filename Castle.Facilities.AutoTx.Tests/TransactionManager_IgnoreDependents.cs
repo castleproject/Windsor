@@ -1,6 +1,6 @@
 using NUnit.Framework;
 
-namespace Castle.Services.Transaction.Tests
+namespace Castle.Facilities.Transactions.Tests
 {
 	public class TransactionManager_IgnoreDependents
 	{

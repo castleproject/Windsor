@@ -18,7 +18,7 @@
 
 using System.Runtime.Remoting.Messaging;
 
-namespace Castle.Services.Transaction.Activities
+namespace Castle.Facilities.Transactions.Activities
 {
 	/// <summary>
 	/// The call-context activity manager saves the stack of transactions
@@ -27,7 +27,7 @@ namespace Castle.Services.Transaction.Activities
 	/// </summary>
 	public class CallContextActivityManager : IActivityManager
 	{
-		private const string Key = "Castle.Services.Transaction.Activity";
+		private const string Key = "Castle.Facilities.Transactions.Activity";
 
 		public CallContextActivityManager()
 		{
