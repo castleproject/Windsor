@@ -29,7 +29,9 @@ namespace Castle.MicroKernel
 		///   Used by facilities.
 		/// </summary>
 		/// <param name = "model"></param>
-		void AddCustomComponent(ComponentModel model);
+		IHandler AddCustomComponent(ComponentModel model);
+
+		IHandler AddCustomComponent(ComponentModel model, bool isMetaHandler);
 
 		/// <summary>
 		///   Constructs an implementation of <see cref = "IComponentActivator" />
@@ -44,6 +46,8 @@ namespace Castle.MicroKernel
 		IHandler LoadHandlerByType(string key, Type service, IDictionary arguments);
 
 		IDisposable OptimizeDependencyResolution();
+
+		void RegisterHandler(String key, IHandler handler, bool skipRegistration);
 
 		object Resolve(Type service, IDictionary arguments, IReleasePolicy policy);
 

@@ -30,22 +30,23 @@ namespace Castle.Core.Internal
 		private readonly Dictionary<TKey, TValue> inner = new Dictionary<TKey, TValue>();
 		private readonly Lock @lock = Lock.Create();
 
-		public bool GetOrAdd(TKey key, Func<TKey, TValue> factory, out TValue value)
+		public TValue GetOrAdd(TKey key, Func<TKey, TValue> factory)
 		{
 			using (var token = @lock.ForReadingUpgradeable())
 			{
+				TValue value;
 				if (inner.TryGetValue(key, out value))
 				{
-					return false;
+					return value;
 				}
 				token.Upgrade();
 				if (inner.TryGetValue(key, out value))
 				{
-					return false;
+					return value;
 				}
 				value = factory(key);
 				inner.Add(key, value);
-				return true;
+				return value;
 			}
 		}
 
