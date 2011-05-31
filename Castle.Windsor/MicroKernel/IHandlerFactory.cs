@@ -23,5 +23,6 @@ namespace Castle.MicroKernel
 	public interface IHandlerFactory
 	{
 		IHandler Create(ComponentModel model);
+		IHandler Create(ComponentModel model, bool isMetaHandler);
 	}
 }

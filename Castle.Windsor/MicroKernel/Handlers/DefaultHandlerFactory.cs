@@ -30,9 +30,15 @@ namespace Castle.MicroKernel.Handlers
 
 		public virtual IHandler Create(ComponentModel model)
 		{
+			return Create(model, false);
+		}
+
+		public IHandler Create(ComponentModel model, bool isMetaHandler)
+		{
 			var handler = CreateHandler(model);
 
 			handler.Init(kernel);
+			kernel.RegisterHandler(model.Name, handler, isMetaHandler);
 
 			return handler;
 		}

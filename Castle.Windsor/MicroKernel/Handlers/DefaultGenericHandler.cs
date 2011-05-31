@@ -84,16 +84,6 @@ namespace Castle.MicroKernel.Handlers
 			return false;
 		}
 
-		protected IHandler GetSubHandler(CreationContext context, Type genericType)
-		{
-			IHandler value;
-			if(type2SubHandler.GetOrAdd(genericType, t => BuildSubHandler(context, t), out value))
-			{
-				Kernel.AddCustomComponent(value.ComponentModel);
-			}
-			return value;
-		}
-
 		protected virtual IHandler BuildSubHandler(CreationContext context, Type requestedType)
 		{
 			// TODO: we should probably match the requested type to existing services and close them over its generic arguments
@@ -102,12 +92,16 @@ namespace Castle.MicroKernel.Handlers
 				new[] { context.RequestedType },
 				requestedType,
 				GetExtendedProperties());
-			newModel.ExtendedProperties[ComponentModel.SkipRegistration] = true;
 			CloneParentProperties(newModel);
 			// Create the handler and add to type2SubHandler before we add to the kernel.
 			// Adding to the kernel could satisfy other dependencies and cause this method
 			// to be called again which would result in extra instances being created.
-			return Kernel.HandlerFactory.Create(newModel);
+			return Kernel.AddCustomComponent(newModel, isMetaHandler: true);
+		}
+
+		protected IHandler GetSubHandler(CreationContext context, Type genericType)
+		{
+			return type2SubHandler.GetOrAdd(genericType, t => BuildSubHandler(context, t));
 		}
 
 		protected override void InitDependencies()

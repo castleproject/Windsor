@@ -267,8 +267,7 @@ namespace Castle.MicroKernel
 			childKernels.Add(childKernel);
 		}
 
-		// NOTE: this is from IKernelInternal
-		public virtual void AddCustomComponent(ComponentModel model)
+		public virtual IHandler AddCustomComponent(ComponentModel model, bool isMetaHandler)
 		{
 			if (model == null)
 			{
@@ -276,18 +275,13 @@ namespace Castle.MicroKernel
 			}
 
 			RaiseComponentModelCreated(model);
-			var handler = HandlerFactory.Create(model);
+			return HandlerFactory.Create(model, isMetaHandler);
+		}
 
-			var skipRegistration = model.ExtendedProperties[ComponentModel.SkipRegistration];
-
-			if (skipRegistration != null)
-			{
-				RegisterHandler(model.Name, handler, (bool)skipRegistration);
-			}
-			else
-			{
-				RegisterHandler(model.Name, handler);
-			}
+		// NOTE: this is from IKernelInternal
+		public IHandler AddCustomComponent(ComponentModel model)
+		{
+			return AddCustomComponent(model, false);
 		}
 
 		public virtual IKernel AddFacility(IFacility facility)
@@ -637,10 +631,10 @@ namespace Castle.MicroKernel
 
 		protected void RegisterHandler(String key, IHandler handler)
 		{
-			RegisterHandler(key, handler, false);
+			(this as IKernelInternal).RegisterHandler(key, handler, false);
 		}
 
-		protected void RegisterHandler(String key, IHandler handler, bool skipRegistration)
+		void IKernelInternal.RegisterHandler(String key, IHandler handler, bool skipRegistration)
 		{
 			if (!skipRegistration)
 			{

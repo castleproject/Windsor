@@ -33,7 +33,6 @@ namespace Castle.Core
 	public sealed class ComponentModel : GraphNode
 	{
 		public const string GenericImplementationMatchingStrategy = "generic.matching";
-		public const string SkipRegistration = "skip.registration";
 
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 		private readonly ConstructorCandidateCollection constructors = new ConstructorCandidateCollection();
