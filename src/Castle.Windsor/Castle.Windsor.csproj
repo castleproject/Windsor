@@ -376,6 +376,8 @@
     </Compile>
     <Compile Include="MicroKernel\HandlerState.cs" />
     <Compile Include="MicroKernel\HandlerStateDelegate.cs" />
+    <Compile Include="MicroKernel\ComponentActivator\CollectionActivator.cs" />
+    <Compile Include="MicroKernel\Handlers\CollectionsMetaHandler.cs" />
     <Compile Include="MicroKernel\Handlers\ComponentLifecycleExtension.cs" />
     <Compile Include="MicroKernel\Handlers\ComponentReleasingDelegate.cs" />
     <Compile Include="MicroKernel\Handlers\ComponentResolvingDelegate.cs" />
@@ -385,6 +387,7 @@
     <Compile Include="MicroKernel\Handlers\HandlerExtensionsUtil.cs" />
     <Compile Include="MicroKernel\Handlers\IDependencyInspector.cs" />
     <Compile Include="MicroKernel\Handlers\IGenericImplementationMatchingStrategy.cs" />
+    <Compile Include="MicroKernel\Handlers\IMetaHandler.cs" />
     <Compile Include="MicroKernel\Handlers\IReleaseExtension.cs" />
     <Compile Include="MicroKernel\Handlers\IResolveExtension.cs" />
     <Compile Include="MicroKernel\Handlers\ReleaseInvocation.cs" />
