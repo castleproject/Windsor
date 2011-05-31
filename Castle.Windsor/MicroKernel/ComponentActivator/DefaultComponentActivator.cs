@@ -95,7 +95,6 @@ namespace Castle.MicroKernel.ComponentActivator
 			var implType = Model.Implementation;
 
 			var createProxy = Kernel.ProxyFactory.ShouldCreateProxy(Model);
-			var createInstance = true;
 
 			if (createProxy == false && Model.Implementation.IsAbstract)
 			{
@@ -107,6 +106,7 @@ namespace Castle.MicroKernel.ComponentActivator
 						Environment.NewLine));
 			}
 
+			var createInstance = true;
 			if (createProxy)
 			{
 				createInstance = Kernel.ProxyFactory.RequiresTargetInstance(Kernel, Model);
@@ -114,34 +114,7 @@ namespace Castle.MicroKernel.ComponentActivator
 
 			if (createInstance)
 			{
-				try
-				{
-#if (SILVERLIGHT)
-					instance = ReflectionUtil.CreateInstance<object>(implType, arguments);
-#else
-					if (useFastCreateInstance)
-					{
-						instance = FastCreateInstance(implType, arguments, constructor);
-					}
-					else
-					{
-						instance = implType.CreateInstance<object>(arguments);
-					}
-#endif
-				}
-				catch (Exception ex)
-				{
-					if (arguments != null)
-					{
-						foreach (var argument in arguments)
-						{
-							Kernel.ReleaseComponent(argument);
-						}
-					}
-
-					throw new ComponentActivatorException(
-						"ComponentActivator: could not instantiate " + Model.Implementation.FullName, ex);
-				}
+				instance = CreateInstanceCore(constructor, arguments, implType);
 			}
 
 			if (createProxy)
@@ -166,6 +139,42 @@ namespace Castle.MicroKernel.ComponentActivator
 			return instance;
 		}
 
+		protected object CreateInstanceCore(ConstructorCandidate constructor, object[] arguments, Type implType)
+		{
+			object instance;
+			try
+			{
+				object instance1;
+#if (SILVERLIGHT)
+					instance = ReflectionUtil.CreateInstance<object>(implType, arguments);
+#else
+				if (useFastCreateInstance)
+				{
+					instance1 = FastCreateInstance(implType, arguments, constructor);
+				}
+				else
+				{
+					instance1 = implType.CreateInstance<object>(arguments);
+				}
+#endif
+				instance = instance1;
+			}
+			catch (Exception ex)
+			{
+				if (arguments != null)
+				{
+					foreach (var argument in arguments)
+					{
+						Kernel.ReleaseComponent(argument);
+					}
+				}
+
+				throw new ComponentActivatorException(
+					"ComponentActivator: could not instantiate " + Model.Implementation.FullName, ex);
+			}
+			return instance;
+		}
+
 #if (!SILVERLIGHT)
 #if DOTNET40
 		[SecuritySafeCritical]
@@ -186,43 +195,6 @@ namespace Castle.MicroKernel.ComponentActivator
 		}
 #endif
 
-		protected virtual void ApplyCommissionConcerns(object instance)
-		{
-			if (Model.Lifecycle.HasCommissionConcerns == false)
-			{
-				return;
-			}
-
-			instance = ProxyUtil.GetUnproxiedInstance(instance);
-			ApplyConcerns(Model.Lifecycle.CommissionConcerns
-#if DOTNET35 || SILVERLIGHT
-				.ToArray()
-#endif
-			              , instance);
-		}
-
-		protected virtual void ApplyDecommissionConcerns(object instance)
-		{
-			if (Model.Lifecycle.HasDecommissionConcerns == false)
-			{
-				return;
-			}
-
-			instance = ProxyUtil.GetUnproxiedInstance(instance);
-			ApplyConcerns(Model.Lifecycle.DecommissionConcerns
-#if DOTNET35 || SILVERLIGHT
-				.ToArray()
-#endif
-			              , instance);
-		}
-
-		protected virtual void ApplyConcerns(IEnumerable<ILifecycleConcern> steps, object instance)
-		{
-			foreach (var concern in steps)
-			{
-				concern.Apply(Model, instance);
-			}
-		}
 
 		protected virtual ConstructorCandidate SelectEligibleConstructor(CreationContext context)
 		{

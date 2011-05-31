@@ -15,9 +15,11 @@
 namespace Castle.MicroKernel.ComponentActivator
 {
 	using System;
+	using System.Collections.Generic;
 
 	using Castle.Core;
 	using Castle.MicroKernel.Context;
+	using Castle.MicroKernel.Proxy;
 
 	/// <summary>
 	///   Abstract implementation of <see cref = "IComponentActivator" />.
@@ -82,6 +84,44 @@ namespace Castle.MicroKernel.ComponentActivator
 			InternalDestroy(instance);
 
 			onDestruction(model, instance);
+		}
+
+		protected virtual void ApplyCommissionConcerns(object instance)
+		{
+			if (Model.Lifecycle.HasCommissionConcerns == false)
+			{
+				return;
+			}
+
+			instance = ProxyUtil.GetUnproxiedInstance(instance);
+			ApplyConcerns(Model.Lifecycle.CommissionConcerns
+#if DOTNET35 || SILVERLIGHT
+				.ToArray()
+#endif
+			              , instance);
+		}
+
+		protected virtual void ApplyConcerns(IEnumerable<ILifecycleConcern> steps, object instance)
+		{
+			foreach (var concern in steps)
+			{
+				concern.Apply(Model, instance);
+			}
+		}
+
+		protected virtual void ApplyDecommissionConcerns(object instance)
+		{
+			if (Model.Lifecycle.HasDecommissionConcerns == false)
+			{
+				return;
+			}
+
+			instance = ProxyUtil.GetUnproxiedInstance(instance);
+			ApplyConcerns(Model.Lifecycle.DecommissionConcerns
+#if DOTNET35 || SILVERLIGHT
+				.ToArray()
+#endif
+			              , instance);
 		}
 	}
 }
