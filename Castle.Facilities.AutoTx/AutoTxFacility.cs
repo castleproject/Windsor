@@ -23,6 +23,7 @@ using Castle.MicroKernel.Registration;
 using Castle.MicroKernel.SubSystems.Naming;
 using Castle.Services.Transaction;
 using Castle.Services.Transaction.Activities;
+using Castle.Services.Transaction.Internal;
 using Castle.Services.Transaction.IO;
 using log4net;
 using System.Linq;

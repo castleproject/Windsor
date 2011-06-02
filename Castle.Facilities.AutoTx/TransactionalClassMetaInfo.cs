@@ -22,6 +22,7 @@ using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Reflection;
 using Castle.Services.Transaction;
+using Castle.Services.Transaction.Internal;
 
 namespace Castle.Facilities.AutoTx
 {

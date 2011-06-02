@@ -24,6 +24,7 @@ using Castle.Facilities.FactorySupport;
 using Castle.Facilities.TypedFactory;
 using Castle.MicroKernel.Registration;
 using Castle.Services.Transaction;
+using Castle.Services.Transaction.Internal;
 using Castle.Windsor;
 using NUnit.Framework;
 

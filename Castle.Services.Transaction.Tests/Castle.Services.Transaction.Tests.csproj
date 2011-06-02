@@ -91,11 +91,11 @@
       <Link>Properties\TxAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="CorrectDisposalOfITransaction.cs" />
-    <Compile Include="DirectoryAdapter_InitializationSettings.cs" />
-    <Compile Include="DirectoryAdapter_ChJail.cs" />
-    <Compile Include="DirectoryAdapter_NonTransactionalBehaviour.cs" />
-    <Compile Include="DirectoryAdapter_TransactionalBehavior.cs" />
-    <Compile Include="FileAdapter_InitializationSettings.cs">
+    <Compile Include="Directories\DirectoryAdapter_InitializationSettings.cs" />
+    <Compile Include="Directories\DirectoryAdapter_ChJail.cs" />
+    <Compile Include="Directories\DirectoryAdapter_NonTransactionalBehaviour.cs" />
+    <Compile Include="Directories\DirectoryAdapter_TransactionalBehavior.cs" />
+    <Compile Include="Files\FileAdapter_InitializationSettings.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="FileTransactions_Directory_Tests.cs" />
@@ -104,7 +104,7 @@
     <Compile Include="Framework\STATestRuntime.cs" />
     <Compile Include="Framework\TxFTestFixtureBase.cs" />
     <Compile Include="MaybeMonad.cs" />
-    <Compile Include="MSDN_Is_Wrong.cs" />
+    <Compile Include="ExternalSources\MSDN_Is_Wrong.cs" />
     <Compile Include="TestClasses\Exts.cs" />
     <Compile Include="FileTransaction_AsDependentTransaction.cs" />
     <Compile Include="TestClasses\IMyService.cs" />
@@ -118,7 +118,7 @@
     <Compile Include="TransactionManager_EnlistedResources.cs" />
     <Compile Include="TransactionManager_IgnoreDependents.cs" />
     <Compile Include="TransactionManager_TransactionDependent_CorrectBookKeeping.cs" />
-    <Compile Include="WhoStoleMyTransaction_TestCase.cs" />
+    <Compile Include="ExternalSources\WhoStoleMyTransaction_TestCase.cs" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />
@@ -136,6 +136,7 @@
       <Name>Castle.Services.Transaction</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!--<Import Project="$(RootPath)\Settings.proj" />
   <Import Project="$(BuildScriptsPath)\Castle.Common.targets" />-->
