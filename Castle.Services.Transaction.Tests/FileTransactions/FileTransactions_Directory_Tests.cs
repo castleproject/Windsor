@@ -16,73 +16,46 @@
 
 #endregion
 
+using System;
+using Castle.Services.Transaction.IO;
+using Castle.Services.Transaction.Tests.Framework;
+using Castle.Services.Transaction.Tests.TestClasses;
+using NUnit.Framework;
+
 namespace Castle.Services.Transaction.Tests
 {
-	using System;
-	using System.Collections.Generic;
-	using System.Threading;
-
-	using Castle.Services.Transaction.IO;
-	using Castle.Services.Transaction.Tests.Framework;
-
-	using NUnit.Framework;
-
 	[TestFixture, Ignore("TODO")]
 	public class FileTransactions_Directory_Tests : TxFTestFixtureBase
 	{
-		#region Setup/Teardown
-
-		private string _DllPath;
-		private readonly List<string> _InfosCreated = new List<string>();
-		private static volatile object _serializer = new object();
+		private string _TfPath;
 
 		[SetUp]
-		public void CleanOutListEtc()
+		public void TFSetup()
 		{
-			Monitor.Enter(_serializer);
-			_InfosCreated.Clear();
+			var dllPath = Environment.CurrentDirectory;
+			_TfPath = dllPath.Combine("File_Tests");
 		}
 
 		[TearDown]
-		public void RemoveAllCreatedFiles()
+		public void TFTearDown()
 		{
-			foreach (var filePath in _InfosCreated)
-			{
-				if (File.Exists(filePath))
-					File.Delete(filePath);
-				else if (Directory.Exists(filePath))
-					Directory.Delete(filePath);
-			}
-
-			if (Directory.Exists("testing"))
-				Directory.Delete("testing", true);
-
-			Monitor.Exit(_serializer);
+			_TfPath.DeleteDirectory(true);
 		}
-
-		[TestFixtureSetUp]
-		public void Setup()
-		{
-			_DllPath = Environment.CurrentDirectory;
-			_DllPath.Combine("..\\..\\Kernel");
-		}
-
-		#endregion
 
 		[Test]
 		public void NoCommit_MeansNoDirectory()
 		{
 			var directoryPath = "testing";
-			Assert.That(Directory.Exists(directoryPath), Is.False);
+			Assert.That(directoryPath.Exists(), Is.False);
 
 			using (ITransaction tx = new FileTransaction())
 			{
-				Directory.Create(directoryPath);
-				Assert.IsTrue(Directory.Exists(directoryPath));
+				directoryPath.Create();
+				Assert.IsTrue(directoryPath.Exists());
 				tx.Dispose();
 			}
 
-			Assert.That(!Directory.Exists(directoryPath));
+			Assert.That(!directoryPath.Exists());
 		}
 
 		[Test]
@@ -97,7 +70,7 @@ namespace Castle.Services.Transaction.Tests
 				Assert.IsTrue(dir.Exists("existing"));
 			}
 			// no commit
-			Assert.IsFalse(Directory.Exists("existing"));
+			Assert.IsFalse("existing".Exists());
 		}
 
 		[Test, Description("We are not in a distributed transaction if there is no transaction scope.")]
@@ -128,18 +101,18 @@ namespace Castle.Services.Transaction.Tests
 		[Test]
 		public void CreatingFolder_InTransaction_AndCommitting_MeansExistsAfter()
 		{
-			string directoryPath = "testing";
-			Assert.That(Directory.Exists(directoryPath), Is.False);
+			var directoryPath = "testing";
+			Assert.That(directoryPath.Exists(), Is.False);
 
 			using (ITransaction tx = new FileTransaction())
 			{
-				Directory.Create(directoryPath);
+				directoryPath.Create();
 				tx.Complete();
 			}
 
-			Assert.That(Directory.Exists(directoryPath));
+			Assert.That(directoryPath.Exists());
 
-			Directory.Delete(directoryPath);
+			directoryPath.DeleteDirectory();
 		}
 
 		[Test]
@@ -158,28 +131,29 @@ namespace Castle.Services.Transaction.Tests
 		[Test]
 		public void CanCreateDirectory_NLengths_DownInNonExistentDirectory()
 		{
-			string directoryPath = "testing/apa/apa2";
-			Assert.That(Directory.Exists(directoryPath), Is.False);
+			var directoryPath = "testing/apa/apa2";
+			Assert.That(directoryPath.Exists(), Is.False);
 
 			using (ITransaction t = new FileTransaction())
 			{
-				Directory.Create(directoryPath);
+				directoryPath.Create();
 				t.Complete();
 			}
 
-			Assert.That(Directory.Exists(directoryPath));
-			Directory.Delete(directoryPath);
+			Assert.That(directoryPath.Exists());
+			directoryPath.DeleteDirectory();
 		}
+
 		[Test]
 		public void CanDelete_NonRecursively_EmptyDir()
 		{
 			// 1. create dir
-			string dir = _DllPath.CombineAssert("testing");
+			var dir = _TfPath.CombineAssert("testing");
 
 			// 2. test it
 			using (ITransaction t = new FileTransaction("Can delete empty directory"))
 			{
-				Assert.That(((IDirectoryAdapter)t).Delete(dir, false), "Successfully deleted.");
+				Assert.That(((IDirectoryAdapter) t).Delete(dir, false), "Successfully deleted.");
 				t.Complete();
 			}
 		}
@@ -188,16 +162,17 @@ namespace Castle.Services.Transaction.Tests
 		public void CanDelete_Recursively()
 		{
 			// 1. Create directory
-			string pr = _DllPath.Combine("testing");
-			Directory.CreateDirectory(pr);
-			Directory.CreateDirectory(pr.Combine("one"));
-			Directory.CreateDirectory(pr.Combine("two"));
-			Directory.CreateDirectory(pr.Combine("three"));
+			var pr = _TfPath.Combine("testing");
+
+			pr.CreateDirectory();
+			pr.Combine("one").CreateDirectory();
+			pr.Combine("two").CreateDirectory();
+			pr.Combine("three").CreateDirectory();
 
 			// 2. Write contents
-			File.WriteAllLines(pr.Combine("one", "fileone"), new[] { "Hello world", "second line" });
-			File.WriteAllLines(pr.Combine("one", "filetwo"), new[] { "two", "second line" });
-			File.WriteAllLines(pr.Combine("two", "filethree"), new[] { "three", "second line" });
+			File.WriteAllLines(pr.Combine("one", "fileone"), new[] {"Hello world", "second line"});
+			File.WriteAllLines(pr.Combine("one", "filetwo"), new[] {"two", "second line"});
+			File.WriteAllLines(pr.Combine("two", "filethree"), new[] {"three", "second line"});
 
 			// 3. test
 			using (ITransaction t = new FileTransaction())
@@ -211,21 +186,21 @@ namespace Castle.Services.Transaction.Tests
 		public void CanNotDelete_NonRecursively_NonEmptyDir()
 		{
 			// 1. create dir and file
-			string dir = _DllPath.CombineAssert("testing");
-			string file = dir.Combine("file");
-			File.WriteAllText(file, "hello");
+			var dir = _TfPath.CombineAssert("testing");
+			var file = dir.Combine("file");
+			file.WriteAllText("hello");
 
 			// 2. test it
 			using (ITransaction t = new FileTransaction("Can not delete non-empty directory"))
 			{
-				Assert.That(Directory.Delete(dir, false),
-							Is.False,
-							"Did not delete non-empty dir.");
-				
+				Assert.That(dir.DeleteDirectory(false),
+				            Is.False,
+				            "Did not delete non-empty dir.");
+
 				File.Delete(file);
 
-				Assert.That(Directory.Delete(dir, false),
-							"After deleting the file in the folder, the folder is also deleted.");
+				Assert.That(dir.DeleteDirectory(false),
+				            "After deleting the file in the folder, the folder is also deleted.");
 
 				t.Complete();
 			}

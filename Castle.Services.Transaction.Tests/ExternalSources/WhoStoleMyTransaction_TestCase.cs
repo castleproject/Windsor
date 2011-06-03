@@ -4,7 +4,7 @@ using System.Transactions;
 using Castle.Services.Transaction.Internal;
 using NUnit.Framework;
 
-namespace Castle.Services.Transaction.Tests
+namespace Castle.Services.Transaction.Tests.ExternalSources
 {
 	[Description("This test fixture passes, rightly so. Durable resource managers that say 'prepared' can't be expected to block on commit, which is why "+
 		"there are non-zero enlistment counts in the printout.")]

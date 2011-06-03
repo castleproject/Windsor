@@ -6,7 +6,7 @@
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 // 
-//     http://www.apache.org/licenses/LICENSE-2.0
+// http://www.apache.org/licenses/LICENSE-2.0
 // 
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,20 +16,26 @@
 
 #endregion
 
+using System;
 using Castle.Services.Transaction.IO;
 using Castle.Services.Transaction.Tests.Framework;
 using NUnit.Framework;
 
 namespace Castle.Services.Transaction.Tests.Directories
 {
-	public class DirectoryAdapter_InitializationSettings : TxFTestFixtureBase
+	public class Directory_Static_InitializeAndReset : TransactionManager_SpecsBase
 	{
 		[Test]
-		public void DefaultSettings()
+		public void CanInitializeTwice()
 		{
-			var adapter = new DirectoryAdapter(new MapPathImpl(), false, null);
-			Assert.That(adapter.UseTransactions);
-			Assert.That(adapter.OnlyJoinExisting, Is.False);
+			// set up already initialized
+			Services.Transaction.TransactionManager.Reset();
+			Services.Transaction.TransactionManager.Initialize((Services.Transaction.TransactionManager) Manager);
+			Services.Transaction.TransactionManager.Reset();
+
+			Assert.Throws<InvalidOperationException>(() => Directory.Exists("."),
+			                                         "because it's been reset")
+				;
 		}
 	}
 }

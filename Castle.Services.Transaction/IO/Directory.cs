@@ -26,60 +26,89 @@ namespace Castle.Services.Transaction.IO
 	/// </summary>
 	public static class Directory
 	{
-		private static IDirectoryAdapter GetAdapter()
+		private static IDirectoryAdapter _DirectoryAdapter;
+
+		public static void InitializeWith(IDirectoryAdapter adapter)
 		{
-			return new DirectoryAdapter(new MapPathImpl(), false, null);
+			Contract.Requires(adapter != null);
+			Contract.Ensures(_DirectoryAdapter != null);
+
+			if (_DirectoryAdapter != null)
+				throw new InvalidOperationException("This method cannot be called twice without resetting the class with Directory.Reset().");
+
+			_DirectoryAdapter = adapter;
 		}
 
-		public static bool Create(string path)
+		public static void Reset()
+		{
+			_DirectoryAdapter = null;
+		}
+
+		private static IDirectoryAdapter GetAdapter()
+		{
+			Contract.Requires(_DirectoryAdapter != null);
+
+			if (_DirectoryAdapter == null)
+				throw new InvalidOperationException(
+					"If you call the Directory API you first need to call Directory.InitializeWith(IDirectoryAdapter)");
+
+			return _DirectoryAdapter;
+		}
+
+		public static bool Create(this string path)
 		{
 			Contract.Requires(!string.IsNullOrEmpty(path));
 			return GetAdapter().Create(path);
 		}
 
-		public static bool Exists(string path)
+		/// <summary>
+		/// Returns whether the given paths exists.
+		/// </summary>
+		/// <param name="path"></param>
+		/// <returns></returns>
+		public static bool Exists(this string path)
 		{
 			Contract.Requires(!string.IsNullOrEmpty(path));
 			return GetAdapter().Exists(path);
 		}
 
-		public static void Delete(string path)
+		public static void DeleteDirectory(this string path)
 		{
 			Contract.Requires(!string.IsNullOrEmpty(path));
 			GetAdapter().Delete(path);
 		}
 
-		public static bool Delete(string path, bool recursively)
+		public static bool DeleteDirectory(this string path, bool recursively)
 		{
 			Contract.Requires(!string.IsNullOrEmpty(path));
 			return GetAdapter().Delete(path, recursively);
 		}
 
-		public static string GetFullPath(string dir)
+		public static string GetFullPath(this string dir)
 		{
 			Contract.Requires(!string.IsNullOrEmpty(dir));
 			return GetAdapter().GetFullPath(dir);
 		}
 
-		public static string MapPath(string path)
+		public static string MapPath(this string path)
 		{
 			Contract.Requires(!string.IsNullOrEmpty(path));
 			return GetAdapter().MapPath(path);
 		}
 
-		public static void Move(string originalPath, string newPath)
+		public static void Move(this string source, string target)
 		{
-			Contract.Requires(!string.IsNullOrEmpty(originalPath));
-			Contract.Requires(!string.IsNullOrEmpty(newPath));
-			GetAdapter().Move(originalPath, newPath);
+			Contract.Requires(!string.IsNullOrEmpty(source));
+			Contract.Requires(!string.IsNullOrEmpty(target));
+			GetAdapter().Move(source, target);
 		}
 
-		public static void Move(string originalPath, string newPath, bool overwrite)
+		public static void Move(this string source, string target, bool overwrite)
 		{
-			GetAdapter().Move(originalPath, newPath, overwrite);
+			GetAdapter().Move(source, target, overwrite);
 		}
 
-		public static bool CreateDirectory(string directoryPath)
+		public static bool CreateDirectory(this string directoryPath)
 		{
 			Contract.Requires(!string.IsNullOrEmpty(directoryPath));
 			return Create(directoryPath);

@@ -16,11 +16,11 @@
 
 #endregion
 
-namespace Castle.Services.Transaction.Tests
-{
-	using System;
-	using System.Transactions;
+using System;
+using System.Transactions;
 
+namespace Castle.Services.Transaction.Tests.TestClasses
+{
 	internal class TestResource : ResourceImpl
 	{
 		private readonly Action _C;

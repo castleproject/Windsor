@@ -19,15 +19,16 @@
 using Castle.Services.Transaction.IO;
 using Castle.Services.Transaction.Tests.Framework;
 using NUnit.Framework;
+using Exts = Castle.Services.Transaction.Tests.TestClasses.Exts;
 
-namespace Castle.Services.Transaction.Tests
+namespace Castle.Services.Transaction.Tests.Directories
 {
 	public class DirectoryAdapter_NonTransactionalBehaviour : TxFTestFixtureBase
 	{
 		[Test]
 		public void Exists()
 		{
-			Assert.That(Directory.Exists("."));
+			Assert.That(".".Exists());
 		}
 
 		[Test]
@@ -40,7 +41,7 @@ namespace Castle.Services.Transaction.Tests
 			}
 			finally
 			{
-				Directory.Delete("tmp-xxx");
+				"tmp-xxx".DeleteDirectory();
 			}
 		}
 
@@ -51,7 +52,7 @@ namespace Castle.Services.Transaction.Tests
 			
 			Assert.IsTrue(Directory.Exists("tmp-2"));
 			
-			Directory.Delete("tmp-2");
+			Directory.DeleteDirectory("tmp-2");
 
 			Assert.IsFalse(Directory.Exists("tmp-2"));
 		}
@@ -59,14 +60,13 @@ namespace Castle.Services.Transaction.Tests
 		[Test, Ignore("fix overwrite flag")]
 		public void Move()
 		{
-			Directory.Create("tmp-3");
-
+			"tmp-3".Create();
 			File.WriteAllText("tmp-3".Combine("mytxt.txt"), "My Contents");
 
 			Directory.Move("tmp-3", "tmp-3-moved", true);
 
-			Assert.That(Directory.Exists("tmp-3-moved"));
-			Assert.That(Directory.Exists("tmp-3"), Is.False);
+			Assert.That("tmp-3-moved".Exists());
+			Assert.That("tmp-3".Exists(), Is.False);
 			Assert.That(File.ReadAllText("tmp-3-moved".Combine("mytxt.txt")), Is.EqualTo("My Contents"));
 		}
 	}

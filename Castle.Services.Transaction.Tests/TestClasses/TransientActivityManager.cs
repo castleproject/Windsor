@@ -18,7 +18,7 @@
 
 using Castle.Services.Transaction.Activities;
 
-namespace Castle.Services.Transaction.Tests
+namespace Castle.Services.Transaction.Tests.TestClasses
 {
 	public class TransientActivityManager : IActivityManager
 	{

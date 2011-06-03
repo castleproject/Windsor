@@ -29,11 +29,30 @@ namespace Castle.Services.Transaction.IO
 	/// </summary>
 	public static class File
 	{
-		internal static IFileAdapter _FileAdapter;
+		private static IFileAdapter _FileAdapter;
+
+		public static void InitializeWith(IFileAdapter adapter)
+		{
+			Contract.Requires(adapter != null);
+			Contract.Ensures(_FileAdapter != null);
+
+			_FileAdapter = adapter;
+		}
+
+		public static void Reset()
+		{
+			_FileAdapter = null;
+		}
 
 		private static IFileAdapter GetAdapter()
 		{
-			return _FileAdapter = (_FileAdapter ?? new FileAdapter(false, null));
+			Contract.Requires(_FileAdapter != null);
+
+			if (_FileAdapter == null)
+				throw new InvalidOperationException(
+					"If you call the Directory API you first need to call Directory.InitializeWith(IDirectoryAdapter)");
+
+			return _FileAdapter;
 		}
 
 		public static FileStream Create(string filePath)
@@ -48,13 +67,13 @@ namespace Castle.Services.Transaction.IO
 			return GetAdapter().Exists(filePath);
 		}
 
-		public static string ReadAllText(string path)
+		public static string ReadAllText(this string path)
 		{
 			Contract.Requires(!string.IsNullOrEmpty(path));
 			return GetAdapter().ReadAllText(path);
 		}
 
-		public static void WriteAllText(string path, string contents)
+		public static void WriteAllText(this string path, string contents)
 		{
 			Contract.Requires(!string.IsNullOrEmpty(path));
 			Contract.Requires(contents != null);

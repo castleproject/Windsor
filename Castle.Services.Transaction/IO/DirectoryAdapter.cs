@@ -31,6 +31,10 @@ namespace Castle.Services.Transaction.IO
 		private readonly IMapPath _PathFinder;
 		private readonly ILog _Logger = LogManager.GetLogger(typeof (DirectoryAdapter));
 
+		public DirectoryAdapter() : this(new MapPathImpl(), false, null)
+		{
+		}
+
 		/// <summary>
 		/// 	Create a new DirectoryAdapter instance. C'tor.
 		/// </summary>

@@ -16,13 +16,13 @@
 
 #endregion
 
-namespace Castle.Services.Transaction.Tests
+using Castle.Services.Transaction.IO;
+using Castle.Services.Transaction.Tests.Framework;
+using Castle.Services.Transaction.Tests.TestClasses;
+using NUnit.Framework;
+
+namespace Castle.Services.Transaction.Tests.Directories
 {
-	using Castle.Services.Transaction.IO;
-	using Castle.Services.Transaction.Tests.Framework;
-
-	using NUnit.Framework;
-
 	public class DirectoryAdapter_ChJail : TxFTestFixtureBase
 	{
 		private string _CurrDir;
@@ -31,7 +31,7 @@ namespace Castle.Services.Transaction.Tests
 		public void SetUp()
 		{
 			_CurrDir =
-				Path.GetPathWithoutLastBit(Path.GetFullPath(typeof(DirectoryAdapter_InitializationSettings).Assembly.CodeBase));
+				Path.GetPathWithoutLastBit(Path.GetFullPath(typeof (DirectoryAdapter_InitializationSettings).Assembly.CodeBase));
 		}
 
 		[Test]

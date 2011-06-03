@@ -16,14 +16,12 @@
 
 #endregion
 
-namespace Castle.Services.Transaction.Tests
+using System;
+using System.Diagnostics.Contracts;
+using NUnit.Framework;
+
+namespace Castle.Services.Transaction.Tests.TestClasses
 {
-	using System;
-	using System.Diagnostics.Contracts;
-	using System.Transactions;
-
-	using NUnit.Framework;
-
 	public class MyService : IMyService
 	{
 		private readonly ITransactionManager _Manager;
@@ -37,7 +35,7 @@ namespace Castle.Services.Transaction.Tests
 		[Transaction]
 		void IMyService.VerifyInAmbient(Action a)
 		{
-			Assert.That(Transaction.Current != null,
+			Assert.That(System.Transactions.Transaction.Current != null,
 			            "The current transaction mustn't be null.");
 
 			a();

@@ -1,4 +1,4 @@
-#region license
+﻿#region license
 
 // Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
@@ -16,27 +16,30 @@
 
 #endregion
 
+using Castle.Services.Transaction.IO;
+using Castle.Services.Transaction.Tests.TestClasses;
+using NUnit.Framework;
+
 namespace Castle.Services.Transaction.Tests.Framework
 {
-	using System;
-
-	using NUnit.Framework;
-
-	public abstract class TxFTestFixtureBase : TransactionManager_SpecsBase
+	public abstract class TransactionManager_SpecsBase
 	{
-		[TestFixtureSetUp]
-		public void EnsureSupported()
+		protected ITransactionManager Manager { get; private set; }
+
+		[SetUp]
+		public void SetUp()
 		{
-			if (!VerifySupported())
-				return;
+			Manager = new Services.Transaction.TransactionManager(new TransientActivityManager(), new FileAdapter(),
+			                                                      new DirectoryAdapter());
+			Services.Transaction.TransactionManager.Initialize((Services.Transaction.TransactionManager) Manager);
 		}
 
-		private static bool VerifySupported()
+		[TearDown]
+		public void TearDown()
 		{
-			if (Environment.OSVersion.Version.Major < 6)
-				Assert.Ignore("OSVersion.Version.Major < 6 don't support transactional NTFS");
-
-			return true;
+			Services.Transaction.TransactionManager.Reset();
+			Manager.Dispose();
+			Manager = null;
 		}
 	}
 }

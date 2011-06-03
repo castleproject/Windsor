@@ -115,7 +115,6 @@
     <Compile Include="ICreatedTransaction.cs" />
     <Compile Include="Contracts\ICreatedTransactionContract.cs" />
     <Compile Include="Internal\IKernelTransaction.cs" />
-    <Compile Include="Internal\KTMCodes.cs" />
     <Compile Include="Internal\SafeNativeMethods.cs" />
     <Compile Include="Internal\TxFCodes.cs" />
     <Compile Include="Internal\UnsafeNativeMethods.cs" />

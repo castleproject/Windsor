@@ -22,7 +22,7 @@ namespace Castle.Services.Transaction.Tests
 
 	using NUnit.Framework;
 
-	public class FileTransaction_Initialization_And_State : TxFTestFixtureBase
+	public class Initialization_And_State : TxFTestFixtureBase
 	{
 		[Test]
 		public void CompletedState()

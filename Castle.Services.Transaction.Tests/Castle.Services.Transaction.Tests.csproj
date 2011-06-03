@@ -68,6 +68,12 @@
     <Reference Include="pnunit.framework">
       <HintPath>..\..\packages\NUnit.2.5.9.10348\lib\pnunit.framework.dll</HintPath>
     </Reference>
+    <Reference Include="SharpTestsEx">
+      <HintPath>..\..\packages\SharpTestsEx.1.1.1\lib\SharpTestsEx.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpTestsEx.Mvc">
+      <HintPath>..\..\packages\SharpTestsEx.1.1.1\lib\SharpTestsEx.Mvc.dll</HintPath>
+    </Reference>
     <Reference Include="System">
       <Name>System</Name>
     </Reference>
@@ -90,23 +96,24 @@
     <Compile Include="..\TxAssemblyInfo.cs">
       <Link>Properties\TxAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="CorrectDisposalOfITransaction.cs" />
+    <Compile Include="CorrectDisposalOfTransaction_Specs.cs" />
     <Compile Include="Directories\DirectoryAdapter_InitializationSettings.cs" />
     <Compile Include="Directories\DirectoryAdapter_ChJail.cs" />
     <Compile Include="Directories\DirectoryAdapter_NonTransactionalBehaviour.cs" />
     <Compile Include="Directories\DirectoryAdapter_TransactionalBehavior.cs" />
+    <Compile Include="Directories\Directory_Static_InitializeAndReset.cs" />
     <Compile Include="Files\FileAdapter_InitializationSettings.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="FileTransactions_Directory_Tests.cs" />
-    <Compile Include="FileTransactions_File_Tests.cs" />
-    <Compile Include="FileTransaction_Initialization_And_State.cs" />
+    <Compile Include="FileTransactions\FileTransactions_Directory_Tests.cs" />
+    <Compile Include="FileTransactions\File_Tests.cs" />
+    <Compile Include="FileTransactions\Initialization_And_State.cs" />
     <Compile Include="Framework\STATestRuntime.cs" />
     <Compile Include="Framework\TxFTestFixtureBase.cs" />
-    <Compile Include="MaybeMonad.cs" />
+    <Compile Include="MaybeMonad_Specs.cs" />
     <Compile Include="ExternalSources\MSDN_Is_Wrong.cs" />
     <Compile Include="TestClasses\Exts.cs" />
-    <Compile Include="FileTransaction_AsDependentTransaction.cs" />
+    <Compile Include="FileTransactions\AsDependentTransaction.cs" />
     <Compile Include="TestClasses\IMyService.cs" />
     <Compile Include="TestClasses\MyService.cs" />
     <Compile Include="TestClasses\ResourceImpl.cs">
@@ -115,10 +122,10 @@
     <Compile Include="TestClasses\TestResource.cs" />
     <Compile Include="TestClasses\ThrowsExceptionResource.cs" />
     <Compile Include="TestClasses\TransientActivityManager.cs" />
-    <Compile Include="TransactionManager_EnlistedResources.cs" />
-    <Compile Include="TransactionManager_IgnoreDependents.cs" />
-    <Compile Include="TransactionManager_TransactionDependent_CorrectBookKeeping.cs" />
+    <Compile Include="TransactionManager\EnlistedResources_Specs.cs" />
+    <Compile Include="TransactionManager\TransactionDependent_CorrectBookKeeping_Specs.cs" />
     <Compile Include="ExternalSources\WhoStoleMyTransaction_TestCase.cs" />
+    <Compile Include="Framework\TransactionManager_SpecsBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />

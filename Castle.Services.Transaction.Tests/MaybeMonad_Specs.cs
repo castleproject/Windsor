@@ -2,10 +2,10 @@ using NUnit.Framework;
 
 namespace Castle.Services.Transaction.Tests
 {
-	public class MaybeMonad
+	public class MaybeMonad_Specs
 	{
 		[Test]
-		public void InterfaceSpec()
+		public void WhenHas_SomeValue()
 		{
 			var m = Maybe.Some(5);
 			Assert.That(m.HasValue);
@@ -21,7 +21,7 @@ namespace Castle.Services.Transaction.Tests
 		}
 
 		[Test]
-		public void Amb()
+		public void Amb_Returns_First_WithValue()
 		{
 			var m = Maybe.None<int>();
 			Assert.That(m.Amb(() => Maybe.Some(4)).HasValue);

@@ -16,53 +16,40 @@
 
 #endregion
 
-namespace Castle.Services.Transaction.Tests
+using Castle.Services.Transaction.Tests.Framework;
+using NUnit.Framework;
+
+namespace Castle.Services.Transaction.Tests.TransactionManager
 {
-	using NUnit.Framework;
-
-	public class TransactionManager_TransactionDependent_CorrectBookKeeping
+	public class TransactionDependent_CorrectBookKeeping_Specs : TransactionManager_SpecsBase
 	{
-		private ITransactionManager _Tm;
-
-		[SetUp]
-		public void SetUp()
-		{
-			_Tm = new TransactionManager(new TransientActivityManager());
-		}
-
-		[Test]
-		public void TearDown()
-		{
-			_Tm.Dispose();
-		}
-
 		[Test]
 		public void CurrentTransaction_Same_As_First_Transaction()
 		{
-			using (var t1 = _Tm.CreateTransaction(new DefaultTransactionOptions()).Value.Transaction)
+			using (var t1 = Manager.CreateTransaction(new DefaultTransactionOptions()).Value.Transaction)
 			{
-				Assert.That(_Tm.CurrentTransaction.Value, Is.SameAs(t1));
+				Assert.That(Manager.CurrentTransaction.Value, Is.SameAs(t1));
 			}
 		}
 
 		[Test]
 		public void CurrentTopTransaction_Same_As_First_Transaction()
 		{
-			using (var t1 = _Tm.CreateTransaction(new DefaultTransactionOptions()).Value.Transaction)
+			using (var t1 = Manager.CreateTransaction(new DefaultTransactionOptions()).Value.Transaction)
 			{
-				Assert.That(_Tm.CurrentTopTransaction.Value, Is.SameAs(t1));
+				Assert.That(Manager.CurrentTopTransaction.Value, Is.SameAs(t1));
 			}
 		}
 
 		[Test]
 		public void TopTransaction_AndTransaction_AreDifferent()
 		{
-			using (var t1 = _Tm.CreateTransaction(new DefaultTransactionOptions()).Value.Transaction)
+			using (var t1 = Manager.CreateTransaction(new DefaultTransactionOptions()).Value.Transaction)
 			{
-				using (var t2 = _Tm.CreateTransaction(new DefaultTransactionOptions()).Value.Transaction)
+				using (var t2 = Manager.CreateTransaction(new DefaultTransactionOptions()).Value.Transaction)
 				{
-					Assert.That(_Tm.CurrentTopTransaction.Value, Is.SameAs(t1));
-					Assert.That(_Tm.CurrentTransaction.Value, Is.SameAs(t2));
+					Assert.That(Manager.CurrentTopTransaction.Value, Is.SameAs(t1));
+					Assert.That(Manager.CurrentTransaction.Value, Is.SameAs(t2));
 					Assert.That(t1, Is.Not.SameAs(t2));
 				}
 			}

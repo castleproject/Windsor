@@ -16,21 +16,12 @@
 
 #endregion
 
-namespace Castle.Services.Transaction.Tests
-{
-	using Castle.Services.Transaction.IO;
+using Castle.Services.Transaction.IO;
 
+namespace Castle.Services.Transaction.Tests.TestClasses
+{
 	public static class Exts
 	{
-		/// <summary>
-		/// 	Combines an input path and a path together
-		/// 	using System.IO.Path.Combine and returns the result.
-		/// </summary>
-		public static string Combine(this string input, params string[] paths)
-		{
-			return Path.Combine(input, paths);
-		}
-
 		/// <summary>
 		/// 	Combines two paths and makes sure the 
 		/// 	DIRECTORY resulting from the combination exists

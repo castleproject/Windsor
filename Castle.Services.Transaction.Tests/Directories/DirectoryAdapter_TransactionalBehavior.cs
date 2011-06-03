@@ -16,12 +16,11 @@
 
 #endregion
 
-namespace Castle.Services.Transaction.Tests
+using Castle.Services.Transaction.Tests.Framework;
+using NUnit.Framework;
+
+namespace Castle.Services.Transaction.Tests.Directories
 {
-	using Castle.Services.Transaction.Tests.Framework;
-
-	using NUnit.Framework;
-
 	[Ignore("Wait for RC")]
 	public class DirectoryAdapter_TransactionalBehavior : TxFTestFixtureBase
 	{

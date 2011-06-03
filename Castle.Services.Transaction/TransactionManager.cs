@@ -17,11 +17,11 @@
 #endregion
 
 using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Contracts;
 using System.Threading.Tasks;
 using System.Transactions;
 using Castle.Services.Transaction.Internal;
+using Castle.Services.Transaction.IO;
 using log4net;
 
 namespace Castle.Services.Transaction
@@ -30,17 +30,40 @@ namespace Castle.Services.Transaction
 	{
 		private static readonly ILog _Logger = LogManager.GetLogger(typeof (TransactionManager));
 		private readonly IActivityManager _ActivityManager;
+		private readonly IFileAdapter _FileAdapter;
+		private readonly IDirectoryAdapter _DirectoryAdapter;
 
-		public TransactionManager(IActivityManager activityManager)
+		public TransactionManager(IActivityManager activityManager, IFileAdapter fileAdapter, IDirectoryAdapter directoryAdapter)
 		{
 			Contract.Requires(activityManager != null);
+			Contract.Requires(fileAdapter != null);
+			Contract.Requires(directoryAdapter != null);
+
 			_ActivityManager = activityManager;
+			_FileAdapter = fileAdapter;
+			_DirectoryAdapter = directoryAdapter;
 		}
 
 		[ContractInvariantMethod]
 		private void Invariant()
 		{
 			Contract.Invariant(_ActivityManager != null);
+		}
+
+		/// <summary>
+		/// Call this method to set <see cref="File"/> and
+		/// <see cref="Directory"/> state.
+		/// </summary>
+		public static void Initialize(TransactionManager myInstance)
+		{
+			File.InitializeWith(myInstance._FileAdapter);
+			Directory.InitializeWith(myInstance._DirectoryAdapter);
+		}
+
+		public static void Reset()
+		{
+			Directory.Reset();
+			File.Reset();
 		}
 
 		Maybe<ITransaction> ITransactionManager.CurrentTopTransaction

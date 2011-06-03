@@ -16,16 +16,14 @@
 
 #endregion
 
-namespace Castle.Services.Transaction.Tests
+using System;
+using System.IO;
+using System.Threading;
+using Castle.Services.Transaction.Tests.Framework;
+using NUnit.Framework;
+
+namespace Castle.Services.Transaction.Tests.ExternalSources
 {
-	using System;
-	using System.IO;
-	using System.Threading;
-
-	using Castle.Services.Transaction.Tests.Framework;
-
-	using NUnit.Framework;
-
 	public class MSDN_Is_Wrong : TxFTestFixtureBase
 	{
 		// http://msdn.microsoft.com/en-us/library/aa365536%28VS.85%29.aspx

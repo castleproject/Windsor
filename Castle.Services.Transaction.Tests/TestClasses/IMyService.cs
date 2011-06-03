@@ -16,10 +16,10 @@
 
 #endregion
 
-namespace Castle.Services.Transaction.Tests
-{
-	using System;
+using System;
 
+namespace Castle.Services.Transaction.Tests.TestClasses
+{
 	public interface IMyService
 	{
 		void VerifyInAmbient(Action a);
