@@ -19,7 +19,6 @@
 using System;
 using System.IO;
 using System.Text;
-using System.Threading;
 using Castle.Services.Transaction.IO;
 using Castle.Services.Transaction.Tests.Framework;
 using Castle.Services.Transaction.Tests.TestClasses;
@@ -27,6 +26,7 @@ using NUnit.Framework;
 using SharpTestsEx;
 using Directory = Castle.Services.Transaction.IO.Directory;
 using File = Castle.Services.Transaction.IO.File;
+using System.Linq;
 
 namespace Castle.Services.Transaction.Tests.FileTransactions
 {
@@ -70,9 +70,9 @@ namespace Castle.Services.Transaction.Tests.FileTransactions
 				.Should("exist after the transaction")
 				.Be.True();
 
-			File.ReadAllLines(filepath)[0]
-				.Should()
-				.Be.EqualTo("Transactioned file.");
+			File.ReadAllLines(filepath)
+				.First().Should()
+				.Be.EqualTo("Transacted file.");
 		}
 
 		[Test]
@@ -179,17 +179,19 @@ namespace Castle.Services.Transaction.Tests.FileTransactions
 				tx.Complete();
 			}
 
-			Assert.That(File.ReadAllLines(filePath)[0], Is.EqualTo("Goodbye"));
+			File.ReadAllLines(filePath)
+				.First().Should()
+				.Be.EqualTo("Goodbye");
 		}
 
 		[Test]
-		public void CreateFileTransactionally_Rollback()
+		public void CreateFileTransactionally_ThenRollback()
 		{
-			var filePath = _TfPath.CombineAssert("temp").Combine("temp2");
+			var filePath = _TfPath.Combine("transacted-file");
 
 			// simply write something to to file.
 			using (var wr = File.CreateText(filePath))
-				wr.WriteLine("Hello");
+				wr.WriteLine("CreateFileTransactionally_ThenRollback");
 
 			using (ITransaction tx = new FileTransaction("rollback tx"))
 			{
@@ -204,7 +206,8 @@ namespace Castle.Services.Transaction.Tests.FileTransactions
 				tx.Rollback();
 			}
 
-			Assert.That(File.ReadAllLines(filePath)[0], Is.EqualTo("Hello"));
+			File.ReadAllLines(filePath)
+				.First().Should().Be.EqualTo("CreateFileTransactionally_ThenRollback");
 		}
 	}
 }

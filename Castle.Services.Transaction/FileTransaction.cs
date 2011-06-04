@@ -283,9 +283,7 @@ namespace Castle.Services.Transaction
 			AssertState(TransactionState.Active);
 
 			using (var reader = new StreamReader(Open(path, FileMode.Open, FileAccess.Read, FileShare.Read)))
-			{
 				return reader.ReadToEnd();
-			}
 		}
 
 		void IFileAdapter.WriteAllText(string path, string contents)
@@ -293,15 +291,13 @@ namespace Castle.Services.Transaction
 			AssertState(TransactionState.Active);
 
 			var exists = ((IFileAdapter) this).Exists(path);
-			using (
-				var writer =
-					new StreamWriter(Open(path, exists ? FileMode.Truncate : FileMode.OpenOrCreate, FileAccess.Write, FileShare.None)))
-			{
+			var fileMode = exists ? FileMode.Truncate : FileMode.OpenOrCreate;
+			
+			using (var writer = new StreamWriter(Open(path, fileMode, FileAccess.Write, FileShare.None)))
 				writer.Write(contents);
-			}
 		}
 
-		IList<string> IFileAdapter.ReadAllLines(string filePath)
+		IEnumerable<string> IFileAdapter.ReadAllLines(string filePath)
 		{
 			throw new NotImplementedException();
 		}

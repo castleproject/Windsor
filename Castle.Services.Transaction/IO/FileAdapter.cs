@@ -120,9 +120,9 @@ namespace Castle.Services.Transaction.IO
 			LongPathFile.Move(originalFilePath, newFilePath);
 		}
 
-		public IList<string> ReadAllLines(string filePath)
+		public IEnumerable<string> ReadAllLines(string filePath)
 		{
-			return ReadAllLinesEnumerable(filePath).ToList();
+			return ReadAllLinesEnumerable(filePath);
 		}
 
 		public IEnumerable<string> ReadAllLinesEnumerable(string filePath)

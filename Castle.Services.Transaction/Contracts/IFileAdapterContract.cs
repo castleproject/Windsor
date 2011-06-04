@@ -67,7 +67,7 @@ namespace Castle.Services.Transaction.Contracts
 			throw new NotImplementedException();
 		}
 
-		IList<string> IFileAdapter.ReadAllLines(string filePath)
+		IEnumerable<string> IFileAdapter.ReadAllLines(string filePath)
 		{
 			Contract.Requires(!string.IsNullOrEmpty(filePath));
 			throw new NotImplementedException();

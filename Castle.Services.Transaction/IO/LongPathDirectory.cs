@@ -134,6 +134,50 @@ namespace Castle.Services.Transaction.IO
 		/// <param name="path">The path to delete files from.</param>
 		/// <param name="recursively">Whether to recurse through the directory and find all child directories and files
 		/// and delete those</param>
+		/// <exception cref = "ArgumentNullException">
+		/// 	<paramref name = "path" /> is <see langword = "null" />.
+		/// </exception>
+		/// <exception cref = "ArgumentException">
+		/// 	<paramref name = "path" /> is an empty string (""), contains only white 
+		/// 	space, or contains one or more invalid characters as defined in 
+		/// 	<see cref = "System.IO.Path.GetInvalidPathChars()" />.
+		/// 	<para>
+		/// 		-or-
+		/// 	</para>
+		/// 	<paramref name = "path" /> contains one or more components that exceed
+		/// 	the drive-defined maximum length. For example, on Windows-based 
+		/// 	platforms, components must not exceed 255 characters.
+		/// </exception>
+		/// <exception cref = "PathTooLongException">
+		/// 	<paramref name = "path" /> exceeds the system-defined maximum length. 
+		/// 	For example, on Windows-based platforms, paths must not exceed 
+		/// 	32,000 characters.
+		/// </exception>
+		/// <exception cref = "DirectoryNotFoundException">
+		/// 	<paramref name = "path" /> could not be found.
+		/// </exception>
+		/// <exception cref = "UnauthorizedAccessException">
+		/// 	The caller does not have the required access permissions.
+		/// 	<para>
+		/// 		-or-
+		/// 	</para>
+		/// 	<paramref name = "path" /> refers to a directory that is read-only.
+		/// </exception>
+		/// <exception cref = "IOException">
+		/// 	<paramref name = "path" /> is a file.
+		/// 	<para>
+		/// 		-or-
+		/// 	</para>
+		/// 	<paramref name = "path" /> refers to a directory that is not empty.
+		/// 	<para>
+		/// 		-or-    
+		/// 	</para>
+		/// 	<paramref name = "path" /> refers to a directory that is in use.
+		/// 	<para>
+		/// 		-or-
+		/// 	</para>
+		/// 	<paramref name = "path" /> specifies a device that is not ready.
+		/// </exception>
 		public static void Delete(string path, bool recursively)
 		{
 			if (recursively)

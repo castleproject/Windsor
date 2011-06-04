@@ -109,7 +109,7 @@ namespace Castle.Services.Transaction
 		/// Read all lines in the given path.
 		/// </summary>
 		/// <param name="filePath"></param>
-		IList<string> ReadAllLines(string filePath);
+		IEnumerable<string> ReadAllLines(string filePath);
 
 		/// <summary>
 		/// 

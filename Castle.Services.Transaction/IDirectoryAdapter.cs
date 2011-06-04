@@ -1,5 +1,7 @@
+using System;
 using System.Diagnostics.Contracts;
 using Castle.Services.Transaction.Contracts;
+using Castle.Services.Transaction.IO;
 
 namespace Castle.Services.Transaction
 {
@@ -48,6 +50,50 @@ namespace Castle.Services.Transaction
 		/// 	be deleted.
 		/// </param>
 		/// <returns>Whether the delete was successful (i.e. the directory existed and was deleted).</returns>
+		/// <exception cref = "ArgumentNullException">
+		/// 	<paramref name = "path" /> is <see langword = "null" />.
+		/// </exception>
+		/// <exception cref = "ArgumentException">
+		/// 	<paramref name = "path" /> is an empty string (""), contains only white 
+		/// 	space, or contains one or more invalid characters as defined in 
+		/// 	<see cref = "Path.GetInvalidPathChars()" />.
+		/// 	<para>
+		/// 		-or-
+		/// 	</para>
+		/// 	<paramref name = "path" /> contains one or more components that exceed
+		/// 	the drive-defined maximum length. For example, on Windows-based 
+		/// 	platforms, components must not exceed 255 characters.
+		/// </exception>
+		/// <exception cref = "System.IO.PathTooLongException">
+		/// 	<paramref name = "path" /> exceeds the system-defined maximum length. 
+		/// 	For example, on Windows-based platforms, paths must not exceed 
+		/// 	32,000 characters.
+		/// </exception>
+		/// <exception cref = "System.IO.DirectoryNotFoundException">
+		/// 	<paramref name = "path" /> could not be found.
+		/// </exception>
+		/// <exception cref = "UnauthorizedAccessException">
+		/// 	The caller does not have the required access permissions.
+		/// 	<para>
+		/// 		-or-
+		/// 	</para>
+		/// 	<paramref name = "path" /> refers to a directory that is read-only.
+		/// </exception>
+		/// <exception cref = "System.IO.IOException">
+		/// 	<paramref name = "path" /> is a file.
+		/// 	<para>
+		/// 		-or-
+		/// 	</para>
+		/// 	<paramref name = "path" /> refers to a directory that is not empty and recursively=true wasn't passed.
+		/// 	<para>
+		/// 		-or-    
+		/// 	</para>
+		/// 	<paramref name = "path" /> refers to a directory that is in use.
+		/// 	<para>
+		/// 		-or-
+		/// 	</para>
+		/// 	<paramref name = "path" /> specifies a device that is not ready.
+		/// </exception>
 		bool Delete(string path, bool recursively);
 
 		/// <summary>

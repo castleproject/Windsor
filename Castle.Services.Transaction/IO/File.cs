@@ -112,7 +112,7 @@ namespace Castle.Services.Transaction.IO
 			GetAdapter().Move(originalFilePath, newFilePath);
 		}
 
-		public static IList<string> ReadAllLines(string filePath)
+		public static IEnumerable<string> ReadAllLines(string filePath)
 		{
 			Contract.Requires(!string.IsNullOrEmpty(filePath));
 			return GetAdapter().ReadAllLines(filePath);

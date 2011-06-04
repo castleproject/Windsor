@@ -16,6 +16,7 @@
 
 #endregion
 
+using System;
 using Castle.Services.Transaction.IO;
 using Castle.Services.Transaction.Tests.TestClasses;
 using NUnit.Framework;
@@ -26,20 +27,22 @@ namespace Castle.Services.Transaction.Tests.Framework
 	{
 		protected ITransactionManager Manager { get; private set; }
 
-		[SetUp]
-		public void SetUp()
+		protected TransactionManager_SpecsBase()
 		{
 			Manager = new Services.Transaction.TransactionManager(new TransientActivityManager(), new FileAdapter(),
 			                                                      new DirectoryAdapter());
 			Services.Transaction.TransactionManager.Initialize((Services.Transaction.TransactionManager) Manager);
+			Console.WriteLine("c'tor");
 		}
 
 		[TearDown]
-		public void TearDown()
+		public void Dispose()
 		{
 			Services.Transaction.TransactionManager.Reset();
 			Manager.Dispose();
 			Manager = null;
+			Console.WriteLine("tear down/dispose");
+
 		}
 	}
 }
