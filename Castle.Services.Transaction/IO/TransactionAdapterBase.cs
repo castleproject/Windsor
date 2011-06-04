@@ -91,7 +91,8 @@ namespace Castle.Services.Transaction.IO
 
 			if (_AllowOutsideSpecifiedFolder) return true;
 
-			var tentativePath = PathInfo.Parse(path);
+			var fullPath = Path.GetFullPath(path);
+			var tentativePath = PathInfo.Parse(fullPath);
 
 			// if the given non-root is empty, we are looking at a relative path
 			if (string.IsNullOrEmpty(tentativePath.Root)) return true;
@@ -113,11 +114,9 @@ namespace Castle.Services.Transaction.IO
 
 			if (_AllowOutsideSpecifiedFolder) return;
 
-			var fullPath = Path.GetFullPath(path);
-
-			if (!IsInAllowedDir(fullPath))
+			if (!IsInAllowedDir(path))
 				throw new UnauthorizedAccessException(
-					string.Format("Authorization required for handling path \"{0}\" (passed as \"{1}\")", fullPath, path));
+					string.Format("Authorization required for handling path \"{0}\".", path));
 		}
 	}
 }

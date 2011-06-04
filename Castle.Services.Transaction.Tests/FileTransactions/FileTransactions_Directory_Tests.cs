@@ -39,23 +39,23 @@ namespace Castle.Services.Transaction.Tests
 		[TearDown]
 		public void TFTearDown()
 		{
-			_TfPath.DeleteDirectory(true);
+			Directory.DeleteDirectory(_TfPath, true);
 		}
 
 		[Test]
 		public void NoCommit_MeansNoDirectory()
 		{
 			var directoryPath = "testing";
-			Assert.That(directoryPath.Exists(), Is.False);
+			Assert.That(Directory.Exists(directoryPath), Is.False);
 
 			using (ITransaction tx = new FileTransaction())
 			{
-				directoryPath.Create();
-				Assert.IsTrue(directoryPath.Exists());
+				Directory.Create(directoryPath);
+				Assert.IsTrue(Directory.Exists(directoryPath));
 				tx.Dispose();
 			}
 
-			Assert.That(!directoryPath.Exists());
+			Assert.That(!Directory.Exists(directoryPath));
 		}
 
 		[Test]
@@ -70,7 +70,7 @@ namespace Castle.Services.Transaction.Tests
 				Assert.IsTrue(dir.Exists("existing"));
 			}
 			// no commit
-			Assert.IsFalse("existing".Exists());
+			Assert.IsFalse(Directory.Exists("existing"));
 		}
 
 		[Test, Description("We are not in a distributed transaction if there is no transaction scope.")]
@@ -102,17 +102,17 @@ namespace Castle.Services.Transaction.Tests
 		public void CreatingFolder_InTransaction_AndCommitting_MeansExistsAfter()
 		{
 			var directoryPath = "testing";
-			Assert.That(directoryPath.Exists(), Is.False);
+			Assert.That(Directory.Exists(directoryPath), Is.False);
 
 			using (ITransaction tx = new FileTransaction())
 			{
-				directoryPath.Create();
+				Directory.Create(directoryPath);
 				tx.Complete();
 			}
 
-			Assert.That(directoryPath.Exists());
+			Assert.That(Directory.Exists(directoryPath));
 
-			directoryPath.DeleteDirectory();
+			Directory.DeleteDirectory(directoryPath);
 		}
 
 		[Test]
@@ -132,16 +132,16 @@ namespace Castle.Services.Transaction.Tests
 		public void CanCreateDirectory_NLengths_DownInNonExistentDirectory()
 		{
 			var directoryPath = "testing/apa/apa2";
-			Assert.That(directoryPath.Exists(), Is.False);
+			Assert.That(Directory.Exists(directoryPath), Is.False);
 
 			using (ITransaction t = new FileTransaction())
 			{
-				directoryPath.Create();
+				Directory.Create(directoryPath);
 				t.Complete();
 			}
 
-			Assert.That(directoryPath.Exists());
-			directoryPath.DeleteDirectory();
+			Assert.That(Directory.Exists(directoryPath));
+			Directory.DeleteDirectory(directoryPath);
 		}
 
 		[Test]
@@ -164,10 +164,10 @@ namespace Castle.Services.Transaction.Tests
 			// 1. Create directory
 			var pr = _TfPath.Combine("testing");
 
-			pr.CreateDirectory();
-			pr.Combine("one").CreateDirectory();
-			pr.Combine("two").CreateDirectory();
-			pr.Combine("three").CreateDirectory();
+			Directory.CreateDirectory(pr);
+			Directory.CreateDirectory(pr.Combine("one"));
+			Directory.CreateDirectory(pr.Combine("two"));
+			Directory.CreateDirectory(pr.Combine("three"));
 
 			// 2. Write contents
 			File.WriteAllLines(pr.Combine("one", "fileone"), new[] {"Hello world", "second line"});
@@ -188,18 +188,18 @@ namespace Castle.Services.Transaction.Tests
 			// 1. create dir and file
 			var dir = _TfPath.CombineAssert("testing");
 			var file = dir.Combine("file");
-			file.WriteAllText("hello");
+			File.WriteAllText(file, "hello");
 
 			// 2. test it
 			using (ITransaction t = new FileTransaction("Can not delete non-empty directory"))
 			{
-				Assert.That(dir.DeleteDirectory(false),
+				Assert.That(Directory.DeleteDirectory(dir, false),
 				            Is.False,
 				            "Did not delete non-empty dir.");
 
 				File.Delete(file);
 
-				Assert.That(dir.DeleteDirectory(false),
+				Assert.That(Directory.DeleteDirectory(dir, false),
 				            "After deleting the file in the folder, the folder is also deleted.");
 
 				t.Complete();

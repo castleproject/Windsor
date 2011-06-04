@@ -16,28 +16,41 @@
 
 #endregion
 
+using System;
 using Castle.Services.Transaction.IO;
 using Castle.Services.Transaction.Tests.Framework;
 using Castle.Services.Transaction.Tests.TestClasses;
 using NUnit.Framework;
+using SharpTestsEx;
 
 namespace Castle.Services.Transaction.Tests.Directories
 {
 	public class DirectoryAdapter_ChJail : TxFTestFixtureBase
 	{
-		private string _CurrDir;
+		private string _TfPath;
 
 		[SetUp]
-		public void SetUp()
+		public void TFSetup()
 		{
-			_CurrDir =
-				Path.GetPathWithoutLastBit(Path.GetFullPath(typeof (DirectoryAdapter_InitializationSettings).Assembly.CodeBase));
+			var dllPath = Environment.CurrentDirectory;
+			_TfPath = dllPath.CombineAssert("DirectoryAdapter_ChJail");
+		}
+
+		[TearDown]
+		public void TFTearDown()
+		{
+			Directory.DeleteDirectory(_TfPath, true);
+		}
+
+		[Test]
+		public void Smoke()
+		{
 		}
 
 		[Test]
 		public void IsInAllowedDir_ReturnsFalseIfConstaint_AndOutside()
 		{
-			var d = new DirectoryAdapter(new MapPathImpl(), true, _CurrDir);
+			var d = GetDirectoryAdapter();
 
 			Assert.IsFalse(d.IsInAllowedDir("\\"));
 			Assert.IsFalse(d.IsInAllowedDir("\\\\?\\C:\\"));
@@ -46,23 +59,47 @@ namespace Castle.Services.Transaction.Tests.Directories
 		}
 
 		[Test]
-		public void IsInAllowedDir_ReturnsTrueForInside()
+		public void IsInAllowedDir_False_ForRelativePaths()
 		{
-			var d = new DirectoryAdapter(new MapPathImpl(), true, _CurrDir);
-			Assert.IsTrue(d.IsInAllowedDir(_CurrDir));
-			Assert.IsTrue(d.IsInAllowedDir(_CurrDir.Combine("hej/something/test")));
-			Assert.IsTrue(d.IsInAllowedDir(_CurrDir.Combine("hej")));
-			Assert.IsTrue(d.IsInAllowedDir(_CurrDir.Combine("hej.txt")));
+			var d = GetDirectoryAdapter();
 
-			Assert.IsTrue(d.IsInAllowedDir("hej"), "It should return true for relative paths.");
-			Assert.IsTrue(d.IsInAllowedDir("hej.txt"), "It should return true for relative paths");
+			d.IsInAllowedDir("../")
+				.Should("because it's the parent dir")
+				.Be.False();
+		}
+
+		[Test]
+		public void True_ForAbsolute()
+		{
+			var d = GetDirectoryAdapter();
+
+			d.IsInAllowedDir(_TfPath).Should().Be.True();
+			d.IsInAllowedDir(_TfPath.Combine("A/B/C")).Should().Be.True();
+			d.IsInAllowedDir(_TfPath.Combine("hej")).Should().Be.True();
+			d.IsInAllowedDir(_TfPath.Combine("hej.txt")).Should().Be.True();
+		}
+
+		[Test]
+		public void True_ForRelative()
+		{
+			var d = GetDirectoryAdapter();
+
+			d.IsInAllowedDir("DirectoryAdapter_ChJail/hej")
+				.Should("It should return true for relative paths.").Be.True();
+			d.IsInAllowedDir("DirectoryAdapter_ChJail/hej.txt")
+				.Should("It should return true for relative paths").Be.True();
+		}
+
+		private DirectoryAdapter GetDirectoryAdapter()
+		{
+			return new DirectoryAdapter(new MapPathImpl(), true, _TfPath);
 		}
 
 		[Test]
 		public void IsInAllowedDirReturnsTrueIfNoConstraint()
 		{
-			var ad = new DirectoryAdapter(new MapPathImpl(), false, null);
-			Assert.IsTrue(ad.IsInAllowedDir("\\"));
+			var d = new DirectoryAdapter(new MapPathImpl(), false, null);
+			Assert.IsTrue(d.IsInAllowedDir("\\"));
 		}
 	}
 }

@@ -86,6 +86,15 @@ namespace Castle.Services.Transaction.Contracts
 			throw new NotImplementedException();
 		}
 
+		public Maybe<ICreatedTransaction> CreateFileTransaction()
+		{
+			Contract.Ensures(Contract.Result<Maybe<ICreatedTransaction>>() != null
+							 && (!Contract.Result<Maybe<ICreatedTransaction>>().HasValue
+								 || Contract.Result<Maybe<ICreatedTransaction>>().Value.Transaction.State == TransactionState.Active));
+
+			throw new NotImplementedException();
+		}
+
 		public Maybe<ICreatedTransaction> CreateFileTransaction(ITransactionOptions transactionOptions)
 		{
 			Contract.Requires(transactionOptions != null);

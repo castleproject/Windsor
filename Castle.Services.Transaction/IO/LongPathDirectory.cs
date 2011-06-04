@@ -129,6 +129,27 @@ namespace Castle.Services.Transaction.IO
 		}
 
 		/// <summary>
+		/// Deletes files from the given path.
+		/// </summary>
+		/// <param name="path">The path to delete files from.</param>
+		/// <param name="recursively">Whether to recurse through the directory and find all child directories and files
+		/// and delete those</param>
+		public static void Delete(string path, bool recursively)
+		{
+			if (recursively)
+			{
+				foreach (var dir in EnumerateDirectories(path))
+					Delete(dir, true);
+
+				foreach (var file in EnumerateFiles(path))
+					LongPathFile.Delete(file);
+
+				Delete(path);
+			}
+			else Delete(path);
+		}
+
+		/// <summary>
 		/// 	Returns a value indicating whether the specified path refers to an existing directory.
 		/// </summary>
 		/// <param name = "path">
@@ -526,6 +547,12 @@ namespace Castle.Services.Transaction.IO
 			}
 
 			return handle;
+		}
+
+		public static void Move(string sourcePath, string targetPath)
+		{
+			if (!NativeMethods.MoveFile(sourcePath, targetPath))
+				throw LongPathCommon.GetExceptionFromLastWin32Error();
 		}
 
 		internal static bool IsDirectory(FileAttributes attributes)

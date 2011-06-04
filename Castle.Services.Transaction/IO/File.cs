@@ -67,13 +67,13 @@ namespace Castle.Services.Transaction.IO
 			return GetAdapter().Exists(filePath);
 		}
 
-		public static string ReadAllText(this string path)
+		public static string ReadAllText(string path)
 		{
 			Contract.Requires(!string.IsNullOrEmpty(path));
 			return GetAdapter().ReadAllText(path);
 		}
 
-		public static void WriteAllText(this string path, string contents)
+		public static void WriteAllText(string path, string contents)
 		{
 			Contract.Requires(!string.IsNullOrEmpty(path));
 			Contract.Requires(contents != null);

@@ -19,16 +19,18 @@
 using System;
 using System.IO;
 using System.Text;
+using System.Threading;
 using Castle.Services.Transaction.IO;
 using Castle.Services.Transaction.Tests.Framework;
 using Castle.Services.Transaction.Tests.TestClasses;
 using NUnit.Framework;
 using SharpTestsEx;
+using Directory = Castle.Services.Transaction.IO.Directory;
 using File = Castle.Services.Transaction.IO.File;
 
 namespace Castle.Services.Transaction.Tests.FileTransactions
 {
-	public class File_Tests : TxFTestFixtureBase
+	public class File_Specs : TxFTestFixtureBase
 	{
 		private string _TfPath;
 
@@ -36,13 +38,14 @@ namespace Castle.Services.Transaction.Tests.FileTransactions
 		public void TFSetup()
 		{
 			var dllPath = Environment.CurrentDirectory;
-			_TfPath = dllPath.Combine("File_Tests");
+			_TfPath = dllPath.CombineAssert("File_Specs");
 		}
 
 		[TearDown]
 		public void TFTearDown()
 		{
-			_TfPath.DeleteDirectory(true);
+			if (_TfPath != null)
+				Directory.DeleteDirectory(_TfPath, true);
 		}
 
 		[Test]
@@ -80,10 +83,10 @@ namespace Castle.Services.Transaction.Tests.FileTransactions
 			const string fileName = "Move_ToDirectory.txt";
 			var file = folder.Combine(fileName);
 
-			toFolder.Exists().Should().Be.False();
+			Directory.Exists(toFolder).Should().Be.False();
 			File.Exists(file).Should().Be.False();
 
-			file.WriteAllText("this string is the contents of the file");
+			File.WriteAllText(file, "this string is the contents of the file");
 
 			using (ITransaction t = new FileTransaction("moving file"))
 			{
@@ -126,7 +129,7 @@ namespace Castle.Services.Transaction.Tests.FileTransactions
 				.Should()
 				.Be.False();
 
-			file.WriteAllText("testing move");
+			File.WriteAllText(file, "testing move");
 
 			// when
 			using (ITransaction t = new FileTransaction())
@@ -150,8 +153,7 @@ namespace Castle.Services.Transaction.Tests.FileTransactions
 				.Should("call through tx and visible in its new location")
 				.Be.True();
 
-			toFolder.Combine(fileName)
-				.ReadAllText()
+			File.ReadAllText(toFolder.Combine(fileName))
 				.Should("have same contents")
 				.Be("testing move");
 		}

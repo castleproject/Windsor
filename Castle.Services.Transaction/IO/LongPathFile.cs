@@ -94,10 +94,9 @@ namespace Castle.Services.Transaction.IO
 		public static void Delete(string path)
 		{
 			var normalizedPath = LongPathCommon.NormalizeLongPath(path);
+
 			if (!NativeMethods.DeleteFile(normalizedPath))
-			{
 				throw LongPathCommon.GetExceptionFromLastWin32Error();
-			}
 		}
 
 		/// <summary>

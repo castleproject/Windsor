@@ -19,16 +19,18 @@
 using Castle.Services.Transaction.IO;
 using Castle.Services.Transaction.Tests.Framework;
 using NUnit.Framework;
-using Exts = Castle.Services.Transaction.Tests.TestClasses.Exts;
+using SharpTestsEx;
 
 namespace Castle.Services.Transaction.Tests.Directories
 {
-	public class DirectoryAdapter_NonTransactionalBehaviour : TxFTestFixtureBase
+	public class DirectoryAdapter_NonTransactionalBehaviour : TransactionManager_SpecsBase
 	{
 		[Test]
-		public void Exists()
+		public void Exists_Relative()
 		{
-			Assert.That(".".Exists());
+			Directory.Exists(".").Should().Be.True();
+			Directory.Exists("..").Should().Be.True();
+			Directory.Exists("../").Should().Be.True();
 		}
 
 		[Test]
@@ -36,38 +38,57 @@ namespace Castle.Services.Transaction.Tests.Directories
 		{
 			try
 			{
-				Assert.That(Directory.Create("tmp-xxx"), Is.True);
-				Assert.That(Directory.Exists("tmp-xxx"));
+				Directory.Create("tmp-Create_Then_Exists")
+					.Should().Be.True();
+				Directory.Exists("tmp-Create_Then_Exists")
+					.Should().Be.True();
 			}
 			finally
 			{
-				"tmp-xxx".DeleteDirectory();
+				Directory.DeleteDirectory("tmp-Create_Then_Exists");
 			}
 		}
 
 		[Test]
 		public void Create_Then_Delete()
 		{
-			Directory.Create("tmp-2");
+			Directory.Create("tmp-Create_Then_Delete");
 			
-			Assert.IsTrue(Directory.Exists("tmp-2"));
-			
-			Directory.DeleteDirectory("tmp-2");
+			Directory.Exists("tmp-Create_Then_Delete")
+				.Should().Be.True();
 
-			Assert.IsFalse(Directory.Exists("tmp-2"));
+			Directory.DeleteDirectory("tmp-Create_Then_Delete");
+			
+			Directory.Exists("tmp-Create_Then_Delete")
+				.Should().Be.False();
 		}
 
-		[Test, Ignore("fix overwrite flag")]
-		public void Move()
+		[Test]
+		public void Move_Recursively()
 		{
-			"tmp-3".Create();
+			// given
+			Directory.Create("tmp-3");
 			File.WriteAllText("tmp-3".Combine("mytxt.txt"), "My Contents");
 
-			Directory.Move("tmp-3", "tmp-3-moved", true);
+			try
+			{
+				// when
+				Directory.Move("tmp-3", "tmp-3-moved", true);
 
-			Assert.That("tmp-3-moved".Exists());
-			Assert.That("tmp-3".Exists(), Is.False);
-			Assert.That(File.ReadAllText("tmp-3-moved".Combine("mytxt.txt")), Is.EqualTo("My Contents"));
+				// then:
+				Directory.Exists("tmp-3-moved")
+					.Should().Be.True();
+
+				Directory.Exists("tmp-3")
+					.Should().Be.False();
+
+				File.ReadAllText("tmp-3-moved".Combine("mytxt.txt"))
+					.Should().Be.EqualTo("My Contents");
+			}
+			finally
+			{
+				Directory.DeleteDirectory("tmp-3-moved", true);
+			}
 		}
 	}
 }

@@ -16,14 +16,83 @@
 
 #endregion
 
+using System;
+using Castle.Services.Transaction.IO;
 using Castle.Services.Transaction.Tests.Framework;
+using Castle.Services.Transaction.Tests.TestClasses;
 using NUnit.Framework;
+using SharpTestsEx;
 
 namespace Castle.Services.Transaction.Tests.Directories
 {
-	[Ignore("Wait for RC")]
 	public class DirectoryAdapter_TransactionalBehavior : TxFTestFixtureBase
 	{
 		// have a look at http://msdn.microsoft.com/en-us/library/aa964931%28v=VS.85%29.aspx and see what can be done
+
+		private string _TfPath;
+
+		[SetUp]
+		public void TFSetup()
+		{
+			var dllPath = Environment.CurrentDirectory;
+			_TfPath = dllPath.CombineAssert("DirectoryAdapter_TransactionalBehavior");
+		}
+
+		[TearDown]
+		public void TFTearDown()
+		{
+			if (_TfPath != null)
+				Directory.DeleteDirectory(_TfPath, true);
+		}
+
+		[Test]
+		public void Smoke()
+		{
+		}
+
+		[Test]
+		public void Transacted_Create()
+		{
+			var dir = _TfPath.Combine("Transacted_Create");
+			try
+			{
+				Create(dir, () => { ; });
+			}
+			finally
+			{
+				Directory.DeleteDirectory(dir);
+			}
+		}
+
+		[Test]
+		public void Transacted_Exists()
+		{
+			var dir = _TfPath.Combine("Transacted_Exists");
+			try
+			{
+				Create(dir, () => Directory.Exists(dir));
+			}
+			finally
+			{
+				Directory.DeleteDirectory(dir);
+			}
+		}
+
+		private void Create(string dir, Action a)
+		{
+			using (var ft = CreateTx())
+			{
+				Directory.Create(dir)
+					.Should()
+					.Be.True();
+				a();
+				ft.Complete();
+			}
+		}
+
+		private ITransaction CreateTx()
+		{
+			return Manager.CreateFileTransaction().Value.Transaction;
+		}
 	}
 }

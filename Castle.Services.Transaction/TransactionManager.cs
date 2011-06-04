@@ -150,6 +150,11 @@ namespace Castle.Services.Transaction
 			return transactionOptions.Fork && nextStackDepth > 1;
 		}
 
+		Maybe<ICreatedTransaction> ITransactionManager.CreateFileTransaction()
+		{
+			return ((ITransactionManager) this).CreateFileTransaction(new DefaultTransactionOptions());
+		}
+
 		Maybe<ICreatedTransaction> ITransactionManager.CreateFileTransaction(ITransactionOptions transactionOptions)
 		{
 			// TODO: we need to decide what transaction manager we want running the show and be smarter about this:

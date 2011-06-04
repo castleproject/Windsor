@@ -54,18 +54,25 @@ namespace Castle.Services.Transaction.IO
 		bool IDirectoryAdapter.Create(string path)
 		{
 			AssertAllowed(path);
-
+			try
+			{
 #if !MONO
-			var maybe = CurrentTransaction();
+				var maybe = CurrentTransaction();
 		
-			if (maybe.HasValue)
-				return ((IDirectoryAdapter) maybe.Value).Create(path);
+				if (maybe.HasValue)
+					return ((IDirectoryAdapter) maybe.Value).Create(path);
 #endif
 
-			if (((IDirectoryAdapter) this).Exists(path))
-				return true;
+				if (((IDirectoryAdapter) this).Exists(path))
+					return true;
 
-			LongPathDirectory.Create(path);
+				LongPathDirectory.Create(path);
+			}
+			catch (UnauthorizedAccessException e)
+			{
+				throw new UnauthorizedAccessException(string.Format("Access is denied for path '{0}', see inner exception for details.", 
+					path), e);
+			}
 			return true;
 		}
 
@@ -106,7 +113,11 @@ namespace Castle.Services.Transaction.IO
 				return ((IDirectoryAdapter) mTx.Value).Delete(path, recursively);
 #endif
 
-			LongPathDirectory.Delete(path);
+			// because of http://stackoverflow.com/questions/3764072/c-win32-how-to-wait-for-a-pending-delete-to-complete
+
+			var target = Path.GetRandomFileName();
+			LongPathDirectory.Move(path, target);
+			LongPathDirectory.Delete(target, recursively);
 			return true;
 		}
 
@@ -145,7 +156,6 @@ namespace Castle.Services.Transaction.IO
 			}
 #endif
 
-			throw new NotImplementedException();
 			LongPathFile.Move(originalPath, newPath);
 		}
 	}

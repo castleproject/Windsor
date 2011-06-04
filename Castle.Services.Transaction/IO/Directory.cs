@@ -55,7 +55,7 @@ namespace Castle.Services.Transaction.IO
 			return _DirectoryAdapter;
 		}
 
-		public static bool Create(this string path)
+		public static bool Create(string path)
 		{
 			Contract.Requires(!string.IsNullOrEmpty(path));
 			return GetAdapter().Create(path);
@@ -66,31 +66,31 @@ namespace Castle.Services.Transaction.IO
 		/// </summary>
 		/// <param name="path"></param>
 		/// <returns></returns>
-		public static bool Exists(this string path)
+		public static bool Exists(string path)
 		{
 			Contract.Requires(!string.IsNullOrEmpty(path));
 			return GetAdapter().Exists(path);
 		}
 
-		public static void DeleteDirectory(this string path)
+		public static void DeleteDirectory(string path)
 		{
 			Contract.Requires(!string.IsNullOrEmpty(path));
 			GetAdapter().Delete(path);
 		}
 
-		public static bool DeleteDirectory(this string path, bool recursively)
+		public static bool DeleteDirectory(string path, bool recursively)
 		{
 			Contract.Requires(!string.IsNullOrEmpty(path));
 			return GetAdapter().Delete(path, recursively);
 		}
 
-		public static string GetFullPath(this string dir)
+		public static string GetFullPath(string dir)
 		{
 			Contract.Requires(!string.IsNullOrEmpty(dir));
 			return GetAdapter().GetFullPath(dir);
 		}
 
-		public static string MapPath(this string path)
+		public static string MapPath(string path)
 		{
 			Contract.Requires(!string.IsNullOrEmpty(path));
 			return GetAdapter().MapPath(path);
@@ -103,12 +103,12 @@ namespace Castle.Services.Transaction.IO
 			GetAdapter().Move(source, target);
 		}
 
-		public static void Move(this string source, string target, bool overwrite)
+		public static void Move(string source, string target, bool overwrite)
 		{
 			GetAdapter().Move(source, target, overwrite);
 		}
 
-		public static bool CreateDirectory(this string directoryPath)
+		public static bool CreateDirectory(string directoryPath)
 		{
 			Contract.Requires(!string.IsNullOrEmpty(directoryPath));
 			return Create(directoryPath);

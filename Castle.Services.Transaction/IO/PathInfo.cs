@@ -28,7 +28,7 @@ namespace Castle.Services.Transaction.IO
 	/// 	Path data holder.
 	/// 	Invariant: no fields nor properties are null after c'tor.
 	/// </summary>
-	public struct PathInfo
+	public sealed class PathInfo
 	{
 		private const string StrRegex =
 			@"(?<root>
