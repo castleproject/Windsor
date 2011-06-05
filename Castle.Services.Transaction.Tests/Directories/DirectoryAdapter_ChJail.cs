@@ -17,9 +17,10 @@
 #endregion
 
 using System;
-using Castle.Services.Transaction.IO;
+using Castle.IO.Internal;
 using Castle.Services.Transaction.Tests.Framework;
 using Castle.Services.Transaction.Tests.TestClasses;
+using Castle.Transactions.IO;
 using NUnit.Framework;
 using SharpTestsEx;
 
@@ -39,7 +40,7 @@ namespace Castle.Services.Transaction.Tests.Directories
 		[TearDown]
 		public void TFTearDown()
 		{
-			Directory.DeleteDirectory(_TfPath, true);
+			Directory.Delete(_TfPath, true);
 		}
 
 		[Test]

@@ -19,12 +19,31 @@
 using System;
 using System.Diagnostics.Contracts;
 using System.Transactions;
+using Castle.IO;
 
-namespace Castle.Services.Transaction.Contracts
+namespace Castle.Transactions.Contracts
 {
 	[ContractClassFor(typeof (ITransactionManager))]
 	internal abstract class TransactionManagerContract : ITransactionManager
 	{
+		IFileAdapter ITransactionManager.File
+		{
+			get
+			{
+				Contract.Ensures(Contract.Result<IFileAdapter>() != null);
+				throw new NotImplementedException();
+			}
+		}
+
+		IDirectoryAdapter ITransactionManager.Directory
+		{
+			get
+			{
+				Contract.Ensures(Contract.Result<IDirectoryAdapter>() != null);
+				throw new NotImplementedException();
+			}
+		}
+
 		public Maybe<ITransaction> CurrentTopTransaction
 		{
 			get

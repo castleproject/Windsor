@@ -19,7 +19,7 @@
 using System;
 using System.Diagnostics.Contracts;
 
-namespace Castle.Services.Transaction.Internal
+namespace Castle.Transactions.Internal
 {
 	internal sealed class CreatedTransaction : ICreatedTransaction
 	{

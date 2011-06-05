@@ -18,9 +18,9 @@
 
 using System;
 using System.Diagnostics.Contracts;
-using Castle.Services.Transaction.Contracts;
+using Castle.Transactions.Contracts;
 
-namespace Castle.Services.Transaction
+namespace Castle.Transactions
 {
 	[ContractClass(typeof (IRetryPolicyContract))]
 	public interface IRetryPolicy

@@ -19,11 +19,12 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
+using Castle.IO;
+using Castle.IO.Internal;
 using log4net;
 
-namespace Castle.Services.Transaction.IO
+namespace Castle.Transactions.IO
 {
 	/// <summary>
 	/// 	Adapter class for the file transactions
@@ -135,6 +136,11 @@ namespace Castle.Services.Transaction.IO
 			}
 		}
 
+		public FileStream OpenWrite(string path)
+		{
+			throw new NotImplementedException();
+		}
+
 		public StreamWriter CreateText(string filePath)
 		{
 			return new StreamWriter(Open(filePath, FileMode.CreateNew));
@@ -145,19 +151,19 @@ namespace Castle.Services.Transaction.IO
 			return ReadAllText(path, Encoding.UTF8);
 		}
 
-		public void WriteAllText(string path, string contents)
+		public void WriteAllText(string targetPath, string contents)
 		{
-			AssertAllowed(path);
+			AssertAllowed(targetPath);
 #if !MONO
 			var mTx = CurrentTransaction();
 			if (mTx.HasValue)
 			{
-				((IFileAdapter) mTx.Value).WriteAllText(path, contents);
+				((IFileAdapter) mTx.Value).WriteAllText(targetPath, contents);
 				return;
 			}
 #endif
 
-			using (var writer = new StreamWriter(Open(path, FileMode.OpenOrCreate), Encoding.UTF8))
+			using (var writer = new StreamWriter(Open(targetPath, FileMode.OpenOrCreate), Encoding.UTF8))
 				writer.Write(contents);
 		}
 
@@ -188,14 +194,14 @@ namespace Castle.Services.Transaction.IO
 			return LongPathFile.Open(filePath, mode, FileAccess.ReadWrite);
 		}
 
-		public int WriteStream(string toFilePath, Stream fromStream)
+		public int WriteStream(string targetPath, Stream sourceStream)
 		{
 			var offset = 0;
-			using (var fs = Create(toFilePath))
+			using (var fs = Create(targetPath))
 			{
 				var buf = new byte[ChunkSize];
 				int read;
-				while ((read = fromStream.Read(buf, 0, buf.Length)) != 0)
+				while ((read = sourceStream.Read(buf, 0, buf.Length)) != 0)
 				{
 					fs.Write(buf, 0, read);
 					offset += read;

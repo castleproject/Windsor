@@ -1,7 +1,7 @@
 using System;
 using System.Threading;
 using System.Transactions;
-using Castle.Services.Transaction.Internal;
+using Castle.Transactions.Internal;
 using NUnit.Framework;
 
 namespace Castle.Services.Transaction.Tests.ExternalSources
@@ -138,7 +138,7 @@ namespace Castle.Services.Transaction.Tests.ExternalSources
 						tx.Commit();
 						Assert.Fail("we have a failing resource");
 					}
-					catch (TransactionAbortedException e)
+					catch (TransactionAbortedException)
 					{
 						Assert.That(second.RolledBack, Is.False);
 

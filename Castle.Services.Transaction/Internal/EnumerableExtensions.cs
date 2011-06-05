@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 
-namespace Castle.Services.Transaction.Internal
+namespace Castle.Transactions.Internal
 {
 	/// <summary>
 	/// Helper class with items originally from reactive extensions.

@@ -18,6 +18,7 @@
 
 using System.Transactions;
 using Castle.Services.Transaction.Tests.Framework;
+using Castle.Transactions;
 using NUnit.Framework;
 
 namespace Castle.Services.Transaction.Tests
@@ -40,7 +41,7 @@ namespace Castle.Services.Transaction.Tests
 			var actionWasCalled = false;
 
 			using (
-				ITransaction tx = new Transaction(new CommittableTransaction(), 1, new DefaultTransactionOptions(),
+				ITransaction tx = new Transactions.Transaction(new CommittableTransaction(), 1, new DefaultTransactionOptions(),
 				                                  () => actionWasCalled = true))
 				tx.Complete();
 

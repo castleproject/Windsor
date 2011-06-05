@@ -20,9 +20,9 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Transactions;
-using Castle.Services.Transaction.Contracts;
+using Castle.Transactions.Contracts;
 
-namespace Castle.Services.Transaction
+namespace Castle.Transactions
 {
 	[ContractClass(typeof (ITransactionOptionsContract))]
 	public interface ITransactionOptions : IEquatable<ITransactionOptions>

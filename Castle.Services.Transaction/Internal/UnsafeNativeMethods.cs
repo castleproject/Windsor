@@ -16,7 +16,7 @@
 
 #endregion
 
-namespace Castle.Services.Transaction.Internal
+namespace Castle.Transactions.Internal
 {
 	internal static class UnsafeNativeMethods
 	{

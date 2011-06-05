@@ -17,6 +17,7 @@
 #endregion
 
 using Castle.Services.Transaction.Tests.Framework;
+using Castle.Transactions;
 using NUnit.Framework;
 
 namespace Castle.Services.Transaction.Tests.TransactionManager

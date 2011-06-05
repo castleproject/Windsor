@@ -16,8 +16,8 @@
 
 #endregion
 
-using Castle.Services.Transaction.IO;
 using Castle.Services.Transaction.Tests.Framework;
+using Castle.Transactions.IO;
 using NUnit.Framework;
 
 namespace Castle.Services.Transaction.Tests.Files

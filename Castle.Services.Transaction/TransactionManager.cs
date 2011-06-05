@@ -20,15 +20,21 @@ using System;
 using System.Diagnostics.Contracts;
 using System.Threading.Tasks;
 using System.Transactions;
-using Castle.Services.Transaction.Internal;
-using Castle.Services.Transaction.IO;
+using Castle.IO;
+using Castle.Transactions.Activities;
+using Castle.Transactions.Internal;
+using Castle.Transactions.IO;
 using log4net;
 
-namespace Castle.Services.Transaction
+namespace Castle.Transactions
 {
 	public sealed class TransactionManager : ITransactionManager
 	{
 		private static readonly ILog _Logger = LogManager.GetLogger(typeof (TransactionManager));
+
+		private static volatile object _SyncRoot = new object();
+		private static volatile ITransactionManager _Instance;
+
 		private readonly IActivityManager _ActivityManager;
 		private readonly IFileAdapter _FileAdapter;
 		private readonly IDirectoryAdapter _DirectoryAdapter;
@@ -50,20 +56,29 @@ namespace Castle.Services.Transaction
 			Contract.Invariant(_ActivityManager != null);
 		}
 
-		/// <summary>
-		/// Call this method to set <see cref="File"/> and
-		/// <see cref="Directory"/> state.
-		/// </summary>
-		public static void Initialize(TransactionManager myInstance)
+		public static ITransactionManager Instance
 		{
-			File.InitializeWith(myInstance._FileAdapter);
-			Directory.InitializeWith(myInstance._DirectoryAdapter);
+			get
+			{
+				if (_Instance != null)
+					return _Instance;
+
+				lock (_SyncRoot)
+					if (_Instance != null)
+						return _Instance;
+					else // TODO: configure this differently!
+						return _Instance = new TransactionManager(new CallContextActivityManager(), new FileAdapter(), new DirectoryAdapter());
+			}
 		}
 
-		public static void Reset()
+		public IFileAdapter File
 		{
-			Directory.Reset();
-			File.Reset();
+			get { return _FileAdapter; }
+		}
+
+		public IDirectoryAdapter Directory
+		{
+			get { return _DirectoryAdapter; }
 		}
 
 		Maybe<ITransaction> ITransactionManager.CurrentTopTransaction

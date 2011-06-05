@@ -16,8 +16,9 @@
 
 #endregion
 
-using Castle.Services.Transaction.IO;
+using Castle.IO.Internal;
 using Castle.Services.Transaction.Tests.Framework;
+using Castle.Transactions.IO;
 using NUnit.Framework;
 using SharpTestsEx;
 
@@ -45,7 +46,7 @@ namespace Castle.Services.Transaction.Tests.Directories
 			}
 			finally
 			{
-				Directory.DeleteDirectory("tmp-Create_Then_Exists");
+				Directory.Delete("tmp-Create_Then_Exists");
 			}
 		}
 
@@ -57,7 +58,7 @@ namespace Castle.Services.Transaction.Tests.Directories
 			Directory.Exists("tmp-Create_Then_Delete")
 				.Should().Be.True();
 
-			Directory.DeleteDirectory("tmp-Create_Then_Delete");
+			Directory.Delete("tmp-Create_Then_Delete");
 			
 			Directory.Exists("tmp-Create_Then_Delete")
 				.Should().Be.False();
@@ -87,7 +88,7 @@ namespace Castle.Services.Transaction.Tests.Directories
 			}
 			finally
 			{
-				Directory.DeleteDirectory("tmp-3-moved", true);
+				Directory.Delete("tmp-3-moved", true);
 			}
 		}
 	}

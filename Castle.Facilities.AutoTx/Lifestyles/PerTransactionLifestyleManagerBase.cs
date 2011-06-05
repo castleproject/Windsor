@@ -26,7 +26,7 @@ using Castle.Core;
 using Castle.MicroKernel;
 using Castle.MicroKernel.Context;
 using Castle.MicroKernel.Lifestyle;
-using Castle.Services.Transaction;
+using Castle.Transactions;
 using log4net;
 
 namespace Castle.Facilities.AutoTx.Lifestyles

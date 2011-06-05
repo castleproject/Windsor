@@ -1,6 +1,7 @@
 using System.Transactions;
 using Castle.Services.Transaction.Tests.Framework;
 using Castle.Services.Transaction.Tests.TestClasses;
+using Castle.Transactions;
 using NUnit.Framework;
 
 namespace Castle.Services.Transaction.Tests.TransactionManager

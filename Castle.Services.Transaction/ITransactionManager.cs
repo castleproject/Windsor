@@ -18,9 +18,10 @@
 
 using System;
 using System.Diagnostics.Contracts;
-using Castle.Services.Transaction.Contracts;
+using Castle.IO;
+using Castle.Transactions.Contracts;
 
-namespace Castle.Services.Transaction
+namespace Castle.Transactions
 {
 	/// <summary>
 	/// 	The transaction manager takes care of the nitty-gritty details of managing the store for transactions and their data.
@@ -30,6 +31,16 @@ namespace Castle.Services.Transaction
 	[ContractClass(typeof (TransactionManagerContract))]
 	public interface ITransactionManager : IDisposable
 	{
+		/// <summary>
+		/// Gets a file adapter.
+		/// </summary>
+		IFileAdapter File { get; }
+
+		/// <summary>
+		/// Gets a directory adapter.
+		/// </summary>
+		IDirectoryAdapter Directory { get; }
+
 		/// <summary>
 		/// 	<para>Gets the current transaction. If the program has a call context
 		/// 		located any methods further down the call-stack with methods with TransactionAttribute,

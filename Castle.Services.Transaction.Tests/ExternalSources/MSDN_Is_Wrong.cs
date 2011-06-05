@@ -17,9 +17,10 @@
 #endregion
 
 using System;
-using System.IO;
 using System.Threading;
+using Castle.IO;
 using Castle.Services.Transaction.Tests.Framework;
+using Castle.Transactions;
 using NUnit.Framework;
 
 namespace Castle.Services.Transaction.Tests.ExternalSources

@@ -17,14 +17,16 @@
 #endregion
 
 using Castle.Facilities.AutoTx.Registration;
+using Castle.IO;
+using Castle.IO.Internal;
 using Castle.MicroKernel;
 using Castle.MicroKernel.Facilities;
 using Castle.MicroKernel.Registration;
 using Castle.MicroKernel.SubSystems.Naming;
-using Castle.Services.Transaction;
-using Castle.Services.Transaction.Activities;
-using Castle.Services.Transaction.Internal;
-using Castle.Services.Transaction.IO;
+using Castle.Transactions;
+using Castle.Transactions.Activities;
+using Castle.Transactions.Internal;
+using Castle.Transactions.IO;
 using log4net;
 using System.Linq;
 

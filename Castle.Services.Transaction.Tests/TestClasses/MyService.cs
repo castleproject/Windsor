@@ -18,6 +18,7 @@
 
 using System;
 using System.Diagnostics.Contracts;
+using Castle.Transactions;
 using NUnit.Framework;
 
 namespace Castle.Services.Transaction.Tests.TestClasses

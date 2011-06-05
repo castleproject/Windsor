@@ -19,7 +19,7 @@
 using System;
 using System.Diagnostics.Contracts;
 
-namespace Castle.Services.Transaction.Contracts
+namespace Castle.Transactions.Contracts
 {
 	[ContractClassFor(typeof (IRetryPolicy))]
 	internal abstract class IRetryPolicyContract : IRetryPolicy

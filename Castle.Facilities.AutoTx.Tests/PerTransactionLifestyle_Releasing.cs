@@ -7,7 +7,7 @@ using Castle.Facilities.FactorySupport;
 using Castle.Facilities.TypedFactory;
 using Castle.MicroKernel;
 using Castle.MicroKernel.Registration;
-using Castle.Services.Transaction;
+using Castle.Transactions;
 using Castle.Windsor;
 using log4net;
 using log4net.Config;

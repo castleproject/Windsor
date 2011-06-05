@@ -19,7 +19,7 @@
 using System;
 using System.Runtime.Serialization;
 
-namespace Castle.Services.Transaction
+namespace Castle.Transactions
 {
 	/// <summary>
 	/// Thrown if a non-transacted file API and a transacted file API try and operate on the same inode/file.

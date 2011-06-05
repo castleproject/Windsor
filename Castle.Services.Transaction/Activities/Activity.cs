@@ -20,10 +20,10 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Threading.Tasks;
-using Castle.Services.Transaction.Internal;
+using Castle.Transactions.Internal;
 using log4net;
 
-namespace Castle.Services.Transaction.Activities
+namespace Castle.Transactions.Activities
 {
 	/// <summary>
 	/// 	Value-object that encapsulates a transaction and is serializable across

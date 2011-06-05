@@ -101,19 +101,18 @@
     <Compile Include="Directories\DirectoryAdapter_ChJail.cs" />
     <Compile Include="Directories\DirectoryAdapter_NonTransactionalBehaviour.cs" />
     <Compile Include="Directories\DirectoryAdapter_TransactionalBehavior.cs" />
-    <Compile Include="Directories\Directory_Static_InitializeAndReset.cs" />
     <Compile Include="Files\FileAdapter_InitializationSettings.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="FileTransactions\FileTransactions_Directory_Tests.cs" />
-    <Compile Include="FileTransactions\File_Specs.cs" />
-    <Compile Include="FileTransactions\Initialization_And_State.cs" />
+    <Compile Include="Files\FileTransactions_Directory_Tests.cs" />
+    <Compile Include="Files\File_Specs.cs" />
+    <Compile Include="Files\Initialization_And_State.cs" />
     <Compile Include="Framework\STATestRuntime.cs" />
     <Compile Include="Framework\TxFTestFixtureBase.cs" />
     <Compile Include="MaybeMonad_Specs.cs" />
     <Compile Include="ExternalSources\MSDN_Is_Wrong.cs" />
     <Compile Include="TestClasses\Exts.cs" />
-    <Compile Include="FileTransactions\AsDependentTransaction.cs" />
+    <Compile Include="Files\AsDependentTransaction.cs" />
     <Compile Include="TestClasses\IMyService.cs" />
     <Compile Include="TestClasses\MyService.cs" />
     <Compile Include="TestClasses\ResourceImpl.cs">
@@ -138,9 +137,13 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Castle.Services.Transaction\Castle.Services.Transaction.csproj">
+    <ProjectReference Include="..\Castle.IO\Castle.IO.csproj">
+      <Project>{59637705-C235-488A-876B-E4B1A39E9BF8}</Project>
+      <Name>Castle.IO</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Castle.Services.Transaction\Castle.Transactions.csproj">
       <Project>{76DF5D09-FC04-411F-B123-01A6B9432796}</Project>
-      <Name>Castle.Services.Transaction</Name>
+      <Name>Castle.Transactions</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

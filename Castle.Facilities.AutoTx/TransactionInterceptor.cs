@@ -25,11 +25,11 @@ using Castle.Core;
 using Castle.Core.Interceptor;
 using Castle.DynamicProxy;
 using Castle.MicroKernel;
-using Castle.Services.Transaction;
-using Castle.Services.Transaction.Internal;
+using Castle.Transactions;
+using Castle.Transactions.Internal;
 using log4net;
-using TransactionException = Castle.Services.Transaction.TransactionException;
-using TransactionManager = Castle.Services.Transaction.TransactionManager;
+using TransactionException = Castle.Transactions.TransactionException;
+using TransactionManager = Castle.Transactions.TransactionManager;
 
 namespace Castle.Facilities.AutoTx
 {

@@ -17,7 +17,8 @@
 #endregion
 
 using System.Diagnostics.Contracts;
-using Castle.Services.Transaction;
+using Castle.IO;
+using Castle.Transactions;
 using Castle.Windsor;
 
 namespace Castle.Facilities.AutoTx.Testing

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Diagnostics.Contracts;
-using Castle.Services.Transaction;
+using Castle.Transactions;
 using NUnit.Framework;
 
 namespace Castle.Facilities.AutoTx.Tests.TestClasses

@@ -7,11 +7,14 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Transactions;
-using Castle.Services.Transaction.Internal;
-using Castle.Services.Transaction.IO;
-using Path = Castle.Services.Transaction.IO.Path;
+using Castle.IO;
+using Castle.IO.FileSystems.Local.Win32.Interop;
+using Castle.Transactions.Internal;
+using Castle.Transactions.IO;
+using NativeMethods = Castle.Transactions.Internal.NativeMethods;
+using Path = Castle.IO.Internal.Path;
 
-namespace Castle.Services.Transaction
+namespace Castle.Transactions
 {
 	///<summary>
 	///	Represents a transaction on transactional kernels
@@ -228,20 +231,25 @@ namespace Castle.Services.Transaction
 			return Open(filePath, mode, FileAccess.ReadWrite, FileShare.None);
 		}
 
-		int IFileAdapter.WriteStream(string toFilePath, Stream fromStream)
+		FileStream IFileAdapter.OpenWrite(string path)
 		{
-			throw new NotSupportedException("Use the file adapter instead!");
+			return Open(path, FileMode.OpenOrCreate, FileAccess.Write, FileShare.Read);
 		}
 
-		string IFileAdapter.ReadAllText(string path, Encoding encoding)
-		{
-			AssertState(TransactionState.Active);
+		//int IFileAdapter.WriteStream(string targetPath, Stream sourceStream)
+		//{
+		//    throw new NotSupportedException("Use the file adapter instead!");
+		//}
 
-			using (var reader = new StreamReader(Open(path, FileMode.Open, FileAccess.Read, FileShare.Read), encoding))
-			{
-				return reader.ReadToEnd();
-			}
-		}
+		//string IFileAdapter.ReadAllText(string path, Encoding encoding)
+		//{
+		//    AssertState(TransactionState.Active);
+
+		//    using (var reader = new StreamReader(Open(path, FileMode.Open, FileAccess.Read, FileShare.Read), encoding))
+		//    {
+		//        return reader.ReadToEnd();
+		//    }
+		//}
 
 		void IFileAdapter.Move(string originalFilePath, string newFilePath)
 		{
@@ -250,23 +258,23 @@ namespace Castle.Services.Transaction
 			{
 				var fileName = Path.GetFileName(originalFilePath);
 				Contract.Assume(fileName.Length > 0, "by pre-condition of IFileAdapterContract.Move");
-				NativeMethods.MoveFileTransacted(originalFilePath, Path.Combine(newFilePath, fileName), IntPtr.Zero,
-				                                 IntPtr.Zero, NativeMethods.MoveFileFlags.CopyAllowed,
+				NativeMethods.MoveFileTransacted(originalFilePath, System.IO.Path.Combine(newFilePath, fileName), IntPtr.Zero,
+				                                 IntPtr.Zero, MoveFileFlags.CopyAllowed,
 				                                 _TransactionHandle);
 				return;
 			}
 
 			// case 2, its not a folder, so assume it's a file.
 			NativeMethods.MoveFileTransacted(originalFilePath, newFilePath, IntPtr.Zero, IntPtr.Zero,
-			                                 NativeMethods.MoveFileFlags.CopyAllowed,
+			                                 MoveFileFlags.CopyAllowed,
 			                                 _TransactionHandle);
 		}
 
 		public void Move(string originalPath, string newPath, bool overwrite)
 		{
-			var flags = NativeMethods.MoveFileFlags.CopyAllowed;
+			var flags = MoveFileFlags.CopyAllowed;
 			if (overwrite)
-				flags |= NativeMethods.MoveFileFlags.ReplaceExisting;
+				flags |= MoveFileFlags.ReplaceExisting;
 			NativeMethods.MoveFileTransacted(originalPath, newPath, IntPtr.Zero, IntPtr.Zero, flags, _TransactionHandle);
 		}
 
@@ -278,36 +286,31 @@ namespace Castle.Services.Transaction
 				return !handle.IsInvalid;
 		}
 
-		string IFileAdapter.ReadAllText(string path)
-		{
-			AssertState(TransactionState.Active);
+		//string IFileAdapter.ReadAllText(string path)
+		//{
+		//    AssertState(TransactionState.Active);
 
-			using (var reader = new StreamReader(Open(path, FileMode.Open, FileAccess.Read, FileShare.Read)))
-				return reader.ReadToEnd();
-		}
+		//    using (var reader = new StreamReader(Open(path, FileMode.Open, FileAccess.Read, FileShare.Read)))
+		//        return reader.ReadToEnd();
+		//}
 
-		void IFileAdapter.WriteAllText(string path, string contents)
-		{
-			AssertState(TransactionState.Active);
+		//void IFileAdapter.WriteAllText(string targetPath, string contents)
+		//{
+		//    AssertState(TransactionState.Active);
 
-			var exists = ((IFileAdapter) this).Exists(path);
-			var fileMode = exists ? FileMode.Truncate : FileMode.OpenOrCreate;
+		//    var exists = ((IFileAdapter) this).Exists(targetPath);
+		//    var fileMode = exists ? FileMode.Truncate : FileMode.OpenOrCreate;
 			
-			using (var writer = new StreamWriter(Open(path, fileMode, FileAccess.Write, FileShare.None)))
-				writer.Write(contents);
-		}
+		//    using (var writer = new StreamWriter(Open(targetPath, fileMode, FileAccess.Write, FileShare.None)))
+		//        writer.Write(contents);
+		//}
 
-		IEnumerable<string> IFileAdapter.ReadAllLines(string filePath)
-		{
-			throw new NotImplementedException();
-		}
+		//IEnumerable<string> IFileAdapter.ReadAllLines(string filePath)
+		//{
+		//    throw new NotImplementedException();
+		//}
 
 		StreamWriter IFileAdapter.CreateText(string filePath)
-		{
-			throw new NotImplementedException();
-		}
-
-		public IEnumerable<string> ReadAllLinesEnumerable(string filePath)
 		{
 			throw new NotImplementedException();
 		}
@@ -409,7 +412,7 @@ namespace Castle.Services.Transaction
 				da.Create(newPath);
 
 			if (!NativeMethods.MoveFileTransacted(originalPath, newPath, IntPtr.Zero, IntPtr.Zero,
-			                                      NativeMethods.MoveFileFlags.ReplaceExisting, _TransactionHandle))
+			                                      MoveFileFlags.ReplaceExisting, _TransactionHandle))
 				throw new TransactionException("Could not move directory", LastEx());
 
 			//RecurseFiles(originalPath, f => { Console.WriteLine("file: {0}", f); return true; }, 
@@ -534,11 +537,11 @@ namespace Castle.Services.Transaction
 		/// </summary>
 		/// <param name = "mode"></param>
 		/// <returns></returns>
-		private static NativeMethods.NativeFileMode TranslateFileMode(FileMode mode)
+		private static NativeFileMode TranslateFileMode(FileMode mode)
 		{
 			if (mode != FileMode.Append)
-				return (NativeMethods.NativeFileMode) (uint) mode;
-			return (NativeMethods.NativeFileMode) (uint) FileMode.OpenOrCreate;
+				return (NativeFileMode) (uint) mode;
+			return (NativeFileMode) (uint) FileMode.OpenOrCreate;
 		}
 
 		/// <summary>
@@ -546,16 +549,16 @@ namespace Castle.Services.Transaction
 		/// </summary>
 		/// <param name = "access"></param>
 		/// <returns></returns>
-		private static NativeMethods.NativeFileAccess TranslateFileAccess(FileAccess access)
+		private static NativeFileAccess TranslateFileAccess(FileAccess access)
 		{
 			switch (access)
 			{
 				case FileAccess.Read:
-					return NativeMethods.NativeFileAccess.GenericRead;
+					return NativeFileAccess.GenericRead;
 				case FileAccess.Write:
-					return NativeMethods.NativeFileAccess.GenericWrite;
+					return NativeFileAccess.GenericWrite;
 				case FileAccess.ReadWrite:
-					return NativeMethods.NativeFileAccess.GenericRead | NativeMethods.NativeFileAccess.GenericWrite;
+					return NativeFileAccess.GenericRead | NativeFileAccess.GenericWrite;
 				default:
 					throw new ArgumentOutOfRangeException("access");
 			}
@@ -566,9 +569,9 @@ namespace Castle.Services.Transaction
 		/// </summary>
 		/// <param name = "share"></param>
 		/// <returns></returns>
-		private static NativeMethods.NativeFileShare TranslateFileShare(FileShare share)
+		private static NativeFileShare TranslateFileShare(FileShare share)
 		{
-			return (NativeMethods.NativeFileShare) (uint) share;
+			return (NativeFileShare) (uint) share;
 		}
 
 		private bool CreateDirectoryTransacted(string templatePath,
@@ -600,7 +603,7 @@ namespace Castle.Services.Transaction
 		{
 			Contract.Requires(!string.IsNullOrEmpty(path));
 
-			NativeMethods.WIN32_FIND_DATA findData;
+			WIN32_FIND_DATA findData;
 			var addPrefix = !path.StartsWith(@"\\?\");
 			var ok = true;
 
@@ -616,7 +619,7 @@ namespace Castle.Services.Transaction
 					Contract.Assume(!string.IsNullOrEmpty(findData.cFileName) && findData.cFileName.Length > 0,
 					                "or otherwise FindNextFile should have returned false");
 
-					var subPath = Path.Combine(pathWithoutSufflix, findData.cFileName);
+					var subPath = System.IO.Path.Combine(pathWithoutSufflix, findData.cFileName);
 
 					if ((findData.dwFileAttributes & FileAttributes.Directory) != 0)
 					{
@@ -625,7 +628,7 @@ namespace Castle.Services.Transaction
 					}
 					else
 						ok = ok && operationOnFiles(subPath);
-				} while (NativeMethods.FindNextFile(findHandle, out findData));
+				} while (Castle.IO.FileSystems.Local.Win32.Interop.NativeMethods.FindNextFile(findHandle, out findData));
 			}
 
 			return ok && operationOnDirectories(pathWithoutSufflix);

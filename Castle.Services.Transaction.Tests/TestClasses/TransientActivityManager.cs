@@ -16,7 +16,8 @@
 
 #endregion
 
-using Castle.Services.Transaction.Activities;
+using Castle.Transactions;
+using Castle.Transactions.Activities;
 
 namespace Castle.Services.Transaction.Tests.TestClasses
 {

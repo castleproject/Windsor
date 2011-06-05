@@ -18,8 +18,9 @@
 
 using System;
 using System.Diagnostics.Contracts;
+using Castle.IO.Internal;
 
-namespace Castle.Services.Transaction.IO
+namespace Castle.Transactions.IO
 {
 	// http://social.msdn.microsoft.com/Forums/en-CA/windowstransactionsprogramming/thread/ab4946d9-b634-4156-9296-78554d41d84a
 	// http://www.pluralsight-training.net/community/blogs/jimjohn/archive/2006/09/01/36863.aspx

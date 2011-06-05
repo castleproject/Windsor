@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Diagnostics.Contracts;
-using Castle.Services.Transaction.Contracts;
+using Castle.Transactions.Contracts;
 
-namespace Castle.Services.Transaction
+namespace Castle.Transactions
 {
 	///<summary>
 	///	An interface denoting the data structure which

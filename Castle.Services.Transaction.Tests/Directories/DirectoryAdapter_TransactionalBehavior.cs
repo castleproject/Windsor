@@ -17,9 +17,10 @@
 #endregion
 
 using System;
-using Castle.Services.Transaction.IO;
+using Castle.IO.Internal;
 using Castle.Services.Transaction.Tests.Framework;
 using Castle.Services.Transaction.Tests.TestClasses;
+using Castle.Transactions;
 using NUnit.Framework;
 using SharpTestsEx;
 
@@ -42,7 +43,7 @@ namespace Castle.Services.Transaction.Tests.Directories
 		public void TFTearDown()
 		{
 			if (_TfPath != null)
-				Directory.DeleteDirectory(_TfPath, true);
+				Directory.Delete(_TfPath, true);
 		}
 
 		[Test]
@@ -60,7 +61,7 @@ namespace Castle.Services.Transaction.Tests.Directories
 			}
 			finally
 			{
-				Directory.DeleteDirectory(dir);
+				Directory.Delete(dir);
 			}
 		}
 
@@ -74,7 +75,7 @@ namespace Castle.Services.Transaction.Tests.Directories
 			}
 			finally
 			{
-				Directory.DeleteDirectory(dir);
+				Directory.Delete(dir);
 			}
 		}
 

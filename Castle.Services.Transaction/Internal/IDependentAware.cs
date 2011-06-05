@@ -1,8 +1,8 @@
 using System.Diagnostics.Contracts;
 using System.Threading.Tasks;
-using Castle.Services.Transaction.Contracts;
+using Castle.Transactions.Contracts;
 
-namespace Castle.Services.Transaction.Internal
+namespace Castle.Transactions.Internal
 {
 	/// <summary>
 	/// An interface specifying whether the <see cref="ITransaction"/> implementation

@@ -22,7 +22,7 @@ using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Transactions;
 
-namespace Castle.Services.Transaction
+namespace Castle.Transactions
 {
 	/// <summary>
 	/// 	Specifies a method as transactional. When adding this interface to a method you can use an inversion of control container

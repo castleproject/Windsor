@@ -3,7 +3,7 @@ using System.Threading;
 using Castle.Facilities.AutoTx.Testing;
 using Castle.Facilities.AutoTx.Tests.TestClasses;
 using Castle.MicroKernel.Registration;
-using Castle.Services.Transaction;
+using Castle.Transactions;
 using Castle.Windsor;
 using log4net.Config;
 using NUnit.Framework;

@@ -20,11 +20,10 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Contracts;
 using System.Transactions;
-using Castle.Services.Transaction.Contracts;
-using Castle.Services.Transaction.Internal;
-using Castle.Services.Transaction.IO;
+using Castle.Transactions.Contracts;
+using Castle.Transactions.IO;
 
-namespace Castle.Services.Transaction
+namespace Castle.Transactions
 {
 	/// <summary>
 	/// 	<para>

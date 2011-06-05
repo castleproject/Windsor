@@ -18,12 +18,15 @@
 
 using System;
 using System.Diagnostics.Contracts;
+using Castle.IO;
+using Castle.IO.Internal;
 using log4net;
+using Path = Castle.IO.Internal.Path;
 
-namespace Castle.Services.Transaction.IO
+namespace Castle.Transactions.IO
 {
 	/// <summary>
-	/// 	Adapter which wraps the functionality in <see cref = "File" />
+	/// 	Adapter which wraps the functionality in <see cref = "IFile" />
 	/// 	together with native kernel transactions.
 	/// </summary>
 	public class DirectoryAdapter : TransactionAdapterBase, IDirectoryAdapter
