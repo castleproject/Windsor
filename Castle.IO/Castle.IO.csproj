@@ -75,6 +75,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CommonExtensions.cs" />
     <Compile Include="Contracts\IDirectoryAdapterContract.cs" />
     <Compile Include="Contracts\IFileAdapterContract.cs" />
     <Compile Include="Contracts\IMapPathContract.cs" />

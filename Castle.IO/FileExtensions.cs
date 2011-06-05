@@ -20,39 +20,12 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.IO;
-using System.Linq;
 using System.Text;
 
 namespace Castle.IO
 {
 	public static class FileExtensions
 	{
-		public static T MustExist<T>(this T directory) where T : IFileSystemItem<T>
-		{
-			if (!directory.Exists)
-				directory.Create();
-			return directory;
-		}
-
-		public static IDirectory FindDirectory(this IDirectory directory, string path)
-		{
-			var child = directory.GetDirectory(path);
-			return child.Exists ? child : null;
-		}
-
-		public static IFile FindFile(this IDirectory directory, string filename)
-		{
-			var child = directory.GetFile(filename);
-			return child.Exists ? child : null;
-		}
-
-		public static IDirectory GetOrCreateDirectory(this IDirectory directory, params string[] childDirectories)
-		{
-			return childDirectories.Aggregate(directory,
-			                                  (current, childDirectoryName) =>
-			                                  MustExist(current.GetDirectory(childDirectoryName)));
-		}
-
 		public static Stream OpenRead(this IFile file)
 		{
 			return file.Open(FileMode.Open, FileAccess.Read, FileShare.Read);
@@ -68,26 +41,28 @@ namespace Castle.IO
 			return file.Open(FileMode.Create, FileAccess.Write, FileShare.Read);
 		}
 
-		public static IEnumerable<IDirectory> AncestorsAndSelf(this IDirectory directory)
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="file">Invokee, the file that is to be fully read.</param>
+		/// <returns>All of the file contents as a string. If the current position is at the end of the stream, returns the empty string("").</returns>
+		/// <exception cref="OutOfMemoryException">There is insufficient memory to allocate a buffer for the returned string.</exception>
+		/// <exception cref="IOException">An IO error occrs</exception>
+		public static string ReadAllText(this IFile file)
 		{
-			do
-			{
-				yield return directory;
-				directory = directory.Parent;
-			} while (directory != null);
+			Contract.Requires(file != null);
+
+			using (var sr = new StreamReader(file.OpenRead()))
+				return sr.ReadToEnd();
 		}
 
-		public static string ReadAllText(string path)
+		public static void WriteAllText(this IFile file, string contents)
 		{
-			Contract.Requires(!string.IsNullOrEmpty(path));
-			throw new NotImplementedException();
-		}
-
-		public static void WriteAllText(string targetPath, string contents)
-		{
-			Contract.Requires(!string.IsNullOrEmpty(targetPath));
+			Contract.Requires(file != null);
 			Contract.Requires(contents != null, "content't mustn't be null, but it may be empty");
-			throw new NotImplementedException();
+
+			using (var sw = new StreamWriter(OpenWrite(file)))
+				sw.Write(contents);
 		}
 
 		public static int WriteStream(string targetPath, Stream sourceStream)

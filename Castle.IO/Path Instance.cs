@@ -116,7 +116,7 @@ namespace Castle.IO
 
 		public override string ToString()
 		{
-			return DriveAndDirectory;
+			return _OriginalPath;
 		}
 
 		public static bool operator ==(Path left, Path right)

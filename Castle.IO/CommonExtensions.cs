@@ -1,4 +1,4 @@
-﻿#region license
+#region license
 
 // Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
@@ -16,22 +16,17 @@
 
 #endregion
 
-using System;
-
 namespace Castle.IO
 {
-	public class ExecuteOnDispose : IDisposable
+	/// <summary>
+	/// 	Common extensions among <see cref = "IFile" /> and <see cref = "IDirectory" />.
+	/// </summary>
+	public static class CommonExtensions
 	{
-		private readonly Action _action;
-
-		public ExecuteOnDispose(Action action)
+		public static T MustExist<T>(this T directory) where T : IFileSystemItem<T>
 		{
-			_action = action;
-		}
-
-		public void Dispose()
-		{
-			_action();
+			if (!directory.Exists) directory.Create();
+			return directory;
 		}
 	}
 }

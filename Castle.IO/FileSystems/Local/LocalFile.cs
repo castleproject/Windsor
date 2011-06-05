@@ -105,12 +105,13 @@ namespace Castle.IO.FileSystems.Local
 				if (fileMode == FileMode.Create || fileMode == FileMode.CreateNew || fileMode == FileMode.OpenOrCreate)
 					Parent.Create();
 			}
-			return File.Open(_filePath, fileMode, fileAccess, fileShare);
+
+			return LongPathFile.Open(_filePath, fileMode, fileAccess, fileShare);
 		}
 
 		public virtual void Delete()
 		{
-			File.Delete(_filePath);
+			LongPathFile.Delete(_filePath);
 		}
 
 		public virtual void CopyTo(IFileSystemItem item)
@@ -129,7 +130,7 @@ namespace Castle.IO.FileSystems.Local
 			}
 
 
-			File.Copy(_filePath, destinationPath);
+			LongPathFile.Copy(_filePath, destinationPath, true);
 		}
 
 		public virtual void MoveTo(IFileSystemItem item)

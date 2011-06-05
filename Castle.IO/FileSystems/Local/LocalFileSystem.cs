@@ -42,10 +42,13 @@ namespace Castle.IO.FileSystems.Local
 		private static LocalFileSystem CreatePlatformSpecificInstance()
 		{
 			var platformId = (int) Environment.OSVersion.Platform;
+			
 			if (platformId == (int) PlatformID.Win32NT)
 				return CreateWin32FileSystem();
-			else if (platformId == 4 || platformId == 128 || platformId == (int) PlatformID.MacOSX)
+			
+			if (platformId == 4 || platformId == 128 || platformId == (int) PlatformID.MacOSX)
 				return UnixFileSystem();
+
 			throw new NotSupportedException("Platform not supported");
 		}
 

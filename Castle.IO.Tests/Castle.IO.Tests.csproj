@@ -69,11 +69,11 @@
     <Compile Include="open_for_write\existing_file.cs" />
     <Compile Include="open_for_write\non_existent_file.cs" />
     <Compile Include="open_for_write\open_behavior_is_same.cs" />
-    <Compile Include="pathinfo_devices_specification.cs" />
-    <Compile Include="pathinfo_drive_specification.cs" />
-    <Compile Include="pathinfo_root_specification.cs" />
+    <Compile Include="paths\pathinfo_devices_specification.cs" />
+    <Compile Include="paths\pathinfo_drive_specification.cs" />
+    <Compile Include="paths\pathinfo_root_specification.cs" />
     <Compile Include="paths\file_names.cs" />
-    <Compile Include="path_specification.cs" />
+    <Compile Include="paths\path_specification.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="renaming_files\locked_file.cs" />
     <Compile Include="SpecExtensions.cs" />
