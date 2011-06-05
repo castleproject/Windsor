@@ -48,6 +48,7 @@ namespace Castle.IO.Tests
 			using (var writer = temporaryFile.OpenWrite())
 				writer.Write(Encoding.UTF8.GetBytes(content));
 		}
+
 		[TestFixtureTearDown]
 		public void delete_temp_dir()
 		{

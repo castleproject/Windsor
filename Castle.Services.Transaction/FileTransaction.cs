@@ -338,8 +338,8 @@ namespace Castle.Transactions
 
 			var curr = path;
 			while (!((IDirectoryAdapter) this).Exists(curr)
-			       && (curr.Contains(System.IO.Path.DirectorySeparatorChar)
-			           || curr.Contains(System.IO.Path.AltDirectorySeparatorChar)))
+			       && (curr.Contains(Path.DirectorySeparatorChar)
+			           || curr.Contains(Path.AltDirectorySeparatorChar)))
 			{
 				curr = Path.GetPathWithoutLastBit(curr);
 

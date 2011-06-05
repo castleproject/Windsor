@@ -21,6 +21,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using NUnit.Framework;
+using SharpTestsEx;
 
 namespace Castle.IO.Tests
 {
@@ -31,14 +32,19 @@ namespace Castle.IO.Tests
 		[Test]
 		public void receives_creation_notification()
 		{
+			var triggered = new ManualResetEventSlim(false);
+
 			using (var tempDir = FileSystem.CreateTempDirectory())
 			{
 				string filePath = null;
-				using (tempDir.FileChanges(created: f => filePath = f.Path.FullPath))
+				using (tempDir.FileChanges(created: f => {
+					filePath = f.Path.FullPath;
+					triggered.Set();
+				}))
 				{
-					tempDir.GetFile("hello.txt").MustExist();
-					Thread.Sleep(TimeSpan.FromSeconds(1));
-					filePath.ShouldBe(tempDir.Path.Combine("hello.txt").FullPath);
+					tempDir.GetFile("receives_creation_notification.txt").MustExist();
+					triggered.Wait();
+					filePath.ShouldBe(tempDir.Path.Combine("receives_creation_notification.txt").FullPath);
 				}
 			}
 		}
@@ -47,14 +53,19 @@ namespace Castle.IO.Tests
 		public void temp_file_exists_after_creation_and_is_deleted_when_used()
 		{
 			string fullPath;
+			
 			using (var tempFile = FileSystem.CreateTempFile())
 			{
-				tempFile.Exists.ShouldBeTrue();
+				tempFile.Exists.Should().Be.True();
+
 				fullPath = tempFile.Path.FullPath;
+				
 				var tempFile2 = FileSystem.GetFile(fullPath);
+
 				tempFile2.Exists.ShouldBeTrue();
 				tempFile2.ShouldBe(tempFile);
 			}
+
 			FileSystem.GetFile(fullPath).Exists.ShouldBeFalse();
 		}
 
@@ -195,7 +206,7 @@ namespace Castle.IO.Tests
 			using (var concreteDir = FileSystem.CreateTempDirectory())
 			{
 				concreteDir.GetFile("test.txt").OpenWrite().Close();
-				var linkedPath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), tempLinkFolder);
+				var linkedPath = System.IO.Path.Combine(Path.GetTempPath(), tempLinkFolder);
 				var linkedDirectory = concreteDir.LinkTo(linkedPath);
 				linkedDirectory.IsHardLink.ShouldBeTrue();
 

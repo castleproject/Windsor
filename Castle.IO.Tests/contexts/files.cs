@@ -8,11 +8,14 @@ namespace Castle.IO.Tests.contexts
         protected IFile write_to_file(byte[] value = null, FileMode mode = FileMode.Create, FileAccess access = FileAccess.ReadWrite, FileShare share = FileShare.None)
         {
             value = value ?? new[] { (byte)0 };
-            var TempFile = TempDir.GetFile(Guid.NewGuid().ToString());
+            
+			var TempFile = TempDir.GetFile(Path.GetRandomFileName());
+
             TempFile.Exists.ShouldBeFalse();
 
-            using (var stream = TempFile.Open(mode, FileAccess.Write, FileShare.None))
+            using (var stream = TempFile.Open(mode, access, share))
                 stream.Write(value);
+
             return TempFile;
         }
     }

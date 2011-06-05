@@ -22,9 +22,9 @@ namespace Castle.IO.FileSystems
 	{
 		protected string NormalizeDirectoryPath(string directoryPath)
 		{
-			if (!directoryPath.EndsWith(System.IO.Path.DirectorySeparatorChar.ToString())
-			    && !directoryPath.EndsWith(System.IO.Path.AltDirectorySeparatorChar.ToString()))
-				return directoryPath + System.IO.Path.DirectorySeparatorChar;
+			if (!directoryPath.EndsWith(Path.DirectorySeparatorChar.ToString())
+			    && !directoryPath.EndsWith(Path.AltDirectorySeparatorChar.ToString()))
+				return directoryPath + Path.DirectorySeparatorChar;
 			return directoryPath;
 		}
 	}

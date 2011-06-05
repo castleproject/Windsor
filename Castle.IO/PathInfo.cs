@@ -21,22 +21,44 @@ using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Contracts;
 using System.Net;
 using System.Text.RegularExpressions;
+using Castle.IO.Internal;
 
-namespace Castle.IO.Internal
+namespace Castle.IO
 {
 	/// <summary>
 	/// 	Path data holder.
 	/// 	Invariant: no fields nor properties are null after c'tor.
 	/// </summary>
-	public sealed class PathInfo
+	public sealed class PathInfo : IEquatable<PathInfo>
 	{
+		internal const string UNCPrefixRegex = @"(?<UNC_prefix> \\\\\? (?<UNC_literal>\\UNC)?  )";
+
+		internal const string DeviceRegex = 
+UNCPrefixRegex + @"?
+(?(UNC_prefix)|\\)
+(?<device>
+ (?<dev_prefix>\\\.\\)
+ (
+  (?<dev_name>[\w\-]+)
+  |(?<dev_guid>\{[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}\})
+ )
+)\\?";
+
+		private const string DriveRegex = 
+UNCPrefixRegex + @"?
+(?(UNC_prefix)\\)? # if we have an UNC prefix, there must be an extra backslash
+(?<drive>
+ (?<drive_letter>[A-Z]{1,3})
+ :		# the :-character after the drive letter
+ (\\|/)? # the trailing slash
+)";
+
 		private const string StrRegex =
-			@"(?<root>
- (?<UNC_prefix> \\\\\?\\ (?<UNC_literal>UNC\\)?  )?
+@"
+(?<root>
  (?<options>
   (?:
-   (?<drive>(?<drive_letter>[A-Z]{1,3}):
-   )\\
+   " +  DriveRegex + @"
   )
   |(?<server>(?(UNC_prefix)|\\\\) #this is optional IIF we have the UNC_prefix, so only match \\ if we did not have it
     (?:
@@ -45,12 +67,7 @@ namespace Castle.IO.Internal
      |(?<server_name>[\w\-]+) #allow dashes in server names
     )\\
   )
-  |(?<device>
-   (?<dev_prefix>\\\\\.\\)
-   ((?<dev_name>[\w\-]+)
-    |(?<dev_guid>\{[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}\})
-    )\\
-  )
+  |" + DeviceRegex + @"
   |/
   |\\ # we can also refer to the current drive alone
  )
@@ -115,7 +132,7 @@ namespace Castle.IO.Internal
 				);
 		}
 
-		private static string GetMatch(MatchCollection matches,
+		internal static string GetMatch(MatchCollection matches,
 		                               string groupIndex)
 		{
 			Contract.Ensures(Contract.Result<string>() != null);
@@ -322,9 +339,9 @@ namespace Castle.IO.Internal
 		/// 	i.e. 8-4-4-4-12 hex digits with curly brackets.
 		/// </summary>
 		[Pure]
-		public string DeviceGuid
+		public Guid DeviceGuid
 		{
-			get { return _DeviceGuid; }
+			get { return _DeviceGuid == string.Empty ? Guid.Empty : Guid.Parse(_DeviceGuid); }
 		}
 
 		/// <summary>
@@ -404,6 +421,8 @@ namespace Castle.IO.Internal
 			if (Root == string.Empty || child.Root == string.Empty)
 				throw new NotSupportedException("Non-rooted paths are not supported.");
 
+			// TODO: Normalize Path
+
 			var OK = child.FolderAndFiles.StartsWith(FolderAndFiles);
 
 			switch (Type)
@@ -451,6 +470,68 @@ namespace Castle.IO.Internal
 			Contract.Assume(startIndex <= FolderAndFiles.Length);
 			var substring = FolderAndFiles.Substring(startIndex);
 			return substring.TrimStart(Path.GetDirectorySeparatorChars());
+		}
+
+		public bool Equals(PathInfo other)
+		{
+			if (ReferenceEquals(null, other)) return false;
+			if (ReferenceEquals(this, other)) return true;
+			return Equals(other._Root, _Root)
+				&& Equals(other._Options, _Options) 
+				&& Equals(other._Drive, _Drive) 
+				&& Equals(other._DriveLetter, _DriveLetter) 
+				&& Equals(other._Server, _Server) 
+				&& Equals(other._IPv4, _IPv4) 
+				&& Equals(other._IPv6, _IPv6) 
+				&& Equals(other._ServerName, _ServerName) 
+				&& Equals(other._Device, _Device) 
+				&& Equals(other._DevicePrefix, _DevicePrefix) 
+				&& Equals(other._DeviceName, _DeviceName) 
+				&& Equals(other._DeviceGuid, _DeviceGuid) 
+				&& Equals(other._NonRootPath, _NonRootPath) 
+				&& Equals(other._RelDrive, _RelDrive) 
+				&& Equals(other._FolderAndFiles, _FolderAndFiles);
+		}
+
+		public override bool Equals(object obj)
+		{
+			if (ReferenceEquals(null, obj)) return false;
+			if (ReferenceEquals(this, obj)) return true;
+			if (obj.GetType() != typeof (PathInfo)) return false;
+			return Equals((PathInfo) obj);
+		}
+
+		public override int GetHashCode()
+		{
+			unchecked
+			{
+				int result = _Root.GetHashCode();
+				result = (result*397) ^ _Options.GetHashCode();
+				result = (result*397) ^ _Drive.GetHashCode();
+				result = (result*397) ^ _DriveLetter.GetHashCode();
+				result = (result*397) ^ _Server.GetHashCode();
+				result = (result*397) ^ _IPv4.GetHashCode();
+				result = (result*397) ^ _IPv6.GetHashCode();
+				result = (result*397) ^ _ServerName.GetHashCode();
+				result = (result*397) ^ _Device.GetHashCode();
+				result = (result*397) ^ _DevicePrefix.GetHashCode();
+				result = (result*397) ^ _DeviceName.GetHashCode();
+				result = (result*397) ^ _DeviceGuid.GetHashCode();
+				result = (result*397) ^ _NonRootPath.GetHashCode();
+				result = (result*397) ^ _RelDrive.GetHashCode();
+				result = (result*397) ^ _FolderAndFiles.GetHashCode();
+				return result;
+			}
+		}
+
+		public static bool operator ==(PathInfo left, PathInfo right)
+		{
+			return Equals(left, right);
+		}
+
+		public static bool operator !=(PathInfo left, PathInfo right)
+		{
+			return !Equals(left, right);
 		}
 	}
 }

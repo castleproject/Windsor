@@ -6,7 +6,7 @@
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 // 
-//     http://www.apache.org/licenses/LICENSE-2.0
+// http://www.apache.org/licenses/LICENSE-2.0
 // 
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -18,10 +18,10 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Contracts;
 using System.Text;
 using Castle.IO.Internal;
+using System.Linq;
 
 namespace Castle.IO
 {
@@ -161,11 +161,8 @@ namespace Castle.IO
 			Contract.Requires(!string.IsNullOrEmpty(path));
 			Contract.Ensures(Contract.Result<string>() != null);
 
-			if (path.StartsWith("\\\\?\\") || path.StartsWith("\\\\.\\")) return System.IO.Path.GetFullPath(path.Substring(4));
-			if (path.StartsWith("\\\\?\\UNC\\")) return System.IO.Path.GetFullPath(path.Substring(8));
 			if (path.StartsWith("file:///")) return new Uri(path).LocalPath;
-			// TODO: Replace with Win32-call
-			return System.IO.Path.GetFullPath(path);
+			return LongPathCommon.NormalizeLongPath(path);
 		}
 
 		/// <summary>
@@ -176,44 +173,20 @@ namespace Castle.IO
 		/// </summary>
 		/// <param name = "path">The path string to modify</param>
 		/// <returns></returns>
-		[SuppressMessage("Microsoft.Performance", "CA1820:TestForEmptyStringsUsingStringLength",
-			Justification = "It would change the semantics.")]
 		[Pure]
-		public static string GetPathWithoutLastBit(string path)
+		public static Path GetPathWithoutLastBit(string path)
 		{
 			Contract.Requires(!string.IsNullOrEmpty(path));
 			Contract.Requires(path.Length >= 2);
-
-			var chars = new List<char>
-			            	{
-			            		DirectorySeparatorChar,
-			            		AltDirectorySeparatorChar
-			            	};
-
-			var endsWithSlash = false;
-			var secondLast = -1;
-			var last = -1;
-			var lastType = chars[0];
-
-			for (var i = 0; i < path.Length; i++)
-			{
-				if (i == path.Length - 1 && chars.Contains(path[i]))
-					endsWithSlash = true;
-
-				if (!chars.Contains(path[i]))
-					continue;
-
-				secondLast = last;
-				last = i;
-				lastType = path[i];
-			}
-
-			if (last < 0)
-				throw new ArgumentException(string.Format("Could not find a path separator character in the path \"{0}\"", path));
-
-			var length = endsWithSlash ? (secondLast == -1 ? 0 : secondLast) : last;
-			var res = path.Substring(0, length);
-			return res == string.Empty ? new string(lastType, 1) : res;
+			return 
+				path
+				.ToPath()
+				.Segments
+				.Reverse()
+				.Skip(1)
+				.Reverse()
+				.Aggregate(System.IO.Path.Combine)
+				.ToPath();
 		}
 
 		[Pure]
@@ -257,7 +230,7 @@ namespace Castle.IO
 
 			var fn = GetFileName(path);
 			var lastPeriod = fn.LastIndexOf('.');
-			return lastPeriod == -1 ? string.Empty : fn.Substring(lastPeriod + 1);
+			return lastPeriod == -1 ? string.Empty : fn.Substring(lastPeriod);
 		}
 
 		[Pure]
@@ -305,6 +278,18 @@ namespace Castle.IO
 		public static char[] GetDirectorySeparatorChars()
 		{
 			return new[] {DirectorySeparatorChar, AltDirectorySeparatorChar};
+		}
+
+		[Pure]
+		public static Path GetTempPath()
+		{
+			return new Path(System.IO.Path.GetTempPath());
+		}
+
+		[Pure]
+		public static string GetTempFileName()
+		{
+			return System.IO.Path.GetTempFileName();
 		}
 	}
 }

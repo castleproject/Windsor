@@ -1,8 +1,8 @@
 ﻿using System;
 using System.IO;
+using Castle.IO.FileSystems.InMemory;
 using Castle.IO.FileSystems.Local;
 using NUnit.Framework;
-using OpenFileSystem.IO.FileSystems.InMemory;
 
 namespace Castle.IO.Tests.open_for_write
 {

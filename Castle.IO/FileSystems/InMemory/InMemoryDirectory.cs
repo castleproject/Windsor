@@ -20,12 +20,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Castle.IO;
-using Castle.IO.FileSystems;
 using Castle.IO.Internal;
-using Path = Castle.IO.Path;
 
-namespace OpenFileSystem.IO.FileSystems.InMemory
+namespace Castle.IO.FileSystems.InMemory
 {
 	public class InMemoryDirectory : AbstractDirectory, IDirectory, IEquatable<IDirectory>
 	{
@@ -150,7 +147,7 @@ namespace OpenFileSystem.IO.FileSystems.InMemory
 
 		public IDirectory GetDirectory(string directoryName)
 		{
-			if (System.IO.Path.IsPathRooted(directoryName))
+			if (Path.IsPathRooted(directoryName))
 				return FileSystem.GetDirectory(directoryName);
 			InMemoryDirectory inMemoryDirectory;
 			lock (ChildDirectories)

@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
+using Castle.IO.Internal;
 
 namespace Castle.IO
 {
@@ -37,35 +38,43 @@ namespace Castle.IO
 	/// </summary>
 	public partial class Path : IEquatable<Path>
 	{
-		private readonly string _NormalizedPath;
+		private readonly string _OriginalPath;
+		private readonly PathInfo _PathInfo;
 
-		public Path(string fullPath)
+		public Path(string path)
 		{
-			Contract.Requires(fullPath != null);
+			Contract.Requires(path != null);
 
-			FullPath = fullPath;
-
-			IsRooted = IsPathRooted(fullPath);
-
-			Segments = GenerateSegments(fullPath);
-			_NormalizedPath = NormalizePath(fullPath);
+			_OriginalPath = path;
+			_PathInfo = PathInfo.Parse(path);
+			Segments = GenerateSegments(path);
 		}
 
-		public string DirectoryName
+		/// <summary>
+		/// Gets the drive + directory path. If the given path ends with a slash,
+		/// the last bit is also included in this property, otherwise, not.
+		/// </summary>
+		public string DriveAndDirectory
 		{
-			get { return IsDirectoryPath ? _NormalizedPath : GetDirectoryName(FullPath); }
+			get
+			{
+				var dir = IsDirectoryPath ? _PathInfo.FolderAndFiles : GetPathWithoutLastBit(FullPath);
+				return _PathInfo.Drive.Combine(dir);
+			}
 		}
 
-		public bool IsRooted { get; private set; }
+		public bool IsRooted { get { return _PathInfo.IsRooted; } }
 
 		private static IEnumerable<string> GenerateSegments(string path)
 		{
-			return path.Split(new[] { DirectorySeparatorChar, AltDirectorySeparatorChar},
-				           StringSplitOptions.RemoveEmptyEntries).ToList().AsReadOnly();
+			return path
+				.Split(new[] { DirectorySeparatorChar, AltDirectorySeparatorChar}, 
+					   StringSplitOptions.RemoveEmptyEntries)
+				.Except(new[]{"?"});
 		}
 
-		public string FullPath { get; private set; }
-
+		public string FullPath { get { return _OriginalPath; } }
+		
 		public IEnumerable<string> Segments { get; private set; }
 
 		public bool IsDirectoryPath
@@ -89,12 +98,7 @@ namespace Castle.IO
 		{
 			if (ReferenceEquals(null, other)) return false;
 			if (ReferenceEquals(this, other)) return true;
-			return NormalizePath(other.FullPath).Equals(_NormalizedPath, StringComparison.OrdinalIgnoreCase);
-		}
-
-		private static string NormalizePath(string fullPath)
-		{
-			return string.Join("" + DirectorySeparatorChar, GenerateSegments(fullPath).ToArray());
+			return other._PathInfo.Equals(_PathInfo);
 		}
 
 		public override bool Equals(object obj)
@@ -107,12 +111,12 @@ namespace Castle.IO
 
 		public override int GetHashCode()
 		{
-			return (_NormalizedPath != null ? _NormalizedPath.GetHashCode() : 0);
+			return _PathInfo.GetHashCode();
 		}
 
 		public override string ToString()
 		{
-			return _NormalizedPath;
+			return DriveAndDirectory;
 		}
 
 		public static bool operator ==(Path left, Path right)
@@ -132,7 +136,13 @@ namespace Castle.IO
 
 		#endregion
 
-		public Path MakeRelative(Path path)
+		/// <summary>
+		/// Yields a new path instance from the current data object
+		/// and the object passed as the parameter 'path'.
+		/// </summary>
+		/// <param name="toBasePath">The path to make the invokee relative to.</param>
+		/// <returns>A new path that is relative to the passed path.</returns>
+		public Path MakeRelative(Path toBasePath)
 		{
 			if (!IsRooted)
 				return this;
@@ -141,7 +151,7 @@ namespace Castle.IO
 			var relativeSegmentCount = 0;
 
 			var thisEnum = Segments.GetEnumerator();
-			var rootEnum = path.Segments.GetEnumerator();
+			var rootEnum = toBasePath.Segments.GetEnumerator();
 
 			bool thisHasValue;
 			bool rootHasValue;

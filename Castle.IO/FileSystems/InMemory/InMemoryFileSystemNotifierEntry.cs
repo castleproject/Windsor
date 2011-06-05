@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Castle.IO;
-using Castle.IO.FileSystems;
 using Castle.IO.Internal;
 
-namespace OpenFileSystem.IO.FileSystems.InMemory
+namespace Castle.IO.FileSystems.InMemory
 {
     public class InMemoryFileSystemNotifierEntry : IFileSytemNotifierEntry
     {

@@ -2,10 +2,8 @@
 using System.IO;
 using System.Linq;
 using System.Threading;
-using Castle.IO;
-using Castle.IO.FileSystems;
 
-namespace OpenFileSystem.IO.FileSystems.InMemory
+namespace Castle.IO.FileSystems.InMemory
 {
     public class InMemoryFileSystemNotifier : FileSystemNotifier
     {

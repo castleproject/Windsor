@@ -17,7 +17,7 @@
 #endregion
 
 using System.Collections.Generic;
-using OpenFileSystem.IO.FileSystems.InMemory;
+using Castle.IO.FileSystems.InMemory;
 
 namespace Castle.IO.Tests.contexts
 {

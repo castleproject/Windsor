@@ -1,5 +1,5 @@
 ﻿using System;
-using OpenFileSystem.IO.FileSystems.InMemory;
+using Castle.IO.FileSystems.InMemory;
 
 namespace Castle.IO.Tests
 {
@@ -7,7 +7,7 @@ namespace Castle.IO.Tests
 	{
 		public TestInMemoryFileSystem()
 		{
-			this.CurrentDirectory = Environment.CurrentDirectory;
+			CurrentDirectory = Environment.CurrentDirectory;
 		}
 	}
 }

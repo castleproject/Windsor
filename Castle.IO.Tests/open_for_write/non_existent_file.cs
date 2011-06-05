@@ -46,7 +46,8 @@ namespace Castle.IO.Tests.open_for_write
 		[TestCase(FileMode.Truncate)]
 		public void error_is_throw_for_mode(FileMode mode)
 		{
-			SpecExtensions.ShouldThrow<FileNotFoundException>(Executing(() => write_to_file(mode: mode)));
+			Executing(() => write_to_file(mode: mode))
+				.ShouldThrow<FileNotFoundException>();
 		}
 	}
 }

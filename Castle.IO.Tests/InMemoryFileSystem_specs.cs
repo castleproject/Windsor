@@ -19,9 +19,9 @@
 using System.IO;
 using System.Linq;
 using System.Text;
+using Castle.IO.FileSystems.InMemory;
 using Castle.IO.Tests.contexts;
 using NUnit.Framework;
-using OpenFileSystem.IO.FileSystems.InMemory;
 
 namespace Castle.IO.Tests
 {

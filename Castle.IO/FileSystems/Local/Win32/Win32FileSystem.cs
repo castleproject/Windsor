@@ -9,7 +9,7 @@
 
         public override IDirectory GetTempDirectory()
         {
-            return new Win32Directory(System.IO.Path.GetTempPath());
+            return new Win32Directory(Path.GetTempPath());
         }
         
     }

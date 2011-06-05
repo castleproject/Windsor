@@ -66,19 +66,20 @@ namespace Castle.IO.FileSystems.Local
 
 		public override ITemporaryDirectory CreateTempDirectory()
 		{
-			return
-				new TemporaryDirectory(
-					CreateDirectory(System.IO.Path.Combine(System.IO.Path.GetTempPath(), System.IO.Path.GetRandomFileName())));
+			var tempPath = Path.GetTempPath();
+			var dirName = Path.GetRandomFileName();
+
+			return new TemporaryDirectory(CreateDirectory(tempPath.Combine(dirName)));
 		}
 
 		public override ITemporaryFile CreateTempFile()
 		{
-			return new TemporaryLocalFile(System.IO.Path.GetTempFileName(), di => CreateDirectory(di.FullName));
+			return new TemporaryLocalFile(Path.GetTempFileName(), di => CreateDirectory(di.FullName));
 		}
 
 		public override IFile GetFile(string filePath)
 		{
-			return new LocalFile(System.IO.Path.GetFullPath(System.IO.Path.Combine(Environment.CurrentDirectory, filePath)),
+			return new LocalFile(Path.GetFullPath(System.IO.Path.Combine(Environment.CurrentDirectory, filePath)),
 			                     di => CreateDirectory(di.FullName));
 		}
 

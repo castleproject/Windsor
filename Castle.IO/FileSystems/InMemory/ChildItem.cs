@@ -1,7 +1,6 @@
 ﻿using System;
-using Castle.IO;
 
-namespace OpenFileSystem.IO.FileSystems.InMemory
+namespace Castle.IO.FileSystems.InMemory
 {
     public class ChildItem
     {

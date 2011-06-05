@@ -40,7 +40,7 @@ namespace Castle.IO.Tests.writing_content
 		[Test]
 		public void file_length_is_updated()
 		{
-			file.Size.ShouldBe(2);
+			file.GetSize().ShouldBe(2);
 		}
 
 		[Test]

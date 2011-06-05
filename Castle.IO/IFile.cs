@@ -38,14 +38,18 @@ namespace Castle.IO
 
 		/// <summary>
 		/// Gets the size of the file.
-		/// TODO: Specify what happens if the file doesn't exist. Size = zero?
 		/// </summary>
-		long Size { get; }
+		/// <exception cref="IOException">A device or hard drive was not ready.</exception>
+		/// <exception cref="FileNotFoundException">The file was not found on the file system.</exception>
+		long GetSize();
 
 		/// <summary>
 		/// Gets the last modified date of the file.
 		/// </summary>
-		DateTimeOffset? LastModifiedTimeUtc { get; set; }
+		/// <exception cref="IOException">
+		/// If the file was not found.
+		/// </exception>
+		DateTimeOffset? GetLastModifiedTimeUtc();
 
 		/// <summary>
 		/// Open a file handle.
