@@ -63,8 +63,8 @@ UNCPrefixRegex + @"?
   |(?<server>(?(UNC_prefix)|\\\\) #this is optional IIF we have the UNC_prefix, so only match \\ if we did not have it
     (?:
      (?<ipv4>(25[0-5]|2[0-4]\d|[0-1]?\d?\d)(\.(25[0-5]|2[0-4]\d|[0-1]?\d?\d)){3})
-     |(?:\[(?<ipv6>[A-Fa-f0-9:]{3,39})\])
-     |(?<server_name>[\w\-]+) #allow dashes in server names
+     |(?:\[(?<ipv6>[A-F0-9:]{3,39})\])
+     |(?<server_name>[\w\-]+) # allow dashes in server names
     )\\
   )
   |" + DeviceRegex + @"

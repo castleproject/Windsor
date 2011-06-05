@@ -1,46 +1,38 @@
 ﻿using System.IO;
-// using Mono.Unix;
+using Mono.Unix;
 
 namespace Castle.IO.FileSystems.Local.Unix
 {
     public class UnixDirectory : LocalDirectory
     {
-    	public UnixDirectory(DirectoryInfo directory) : base(directory)
-    	{
-    	}
+		public UnixDirectory(DirectoryInfo di)
+			: base(di)
+		{
+			GetUnixInfo(di.FullName);
+		}
+
 		public UnixDirectory(string directoryPath)
 			: base(directoryPath)
 		{
+			GetUnixInfo(directoryPath);
 		}
 
-    	//public UnixDirectory(DirectoryInfo di)
-		//        : base(di)
-		//{
-		//    GetUnixInfo(di.FullName);
-		//}
+		public override bool IsHardLink
+		{
+			get { return UnixDirectoryInfo.IsSymbolicLink; }
+		}
 
-		//public UnixDirectory(string directoryPath)
-		//        : base(directoryPath)
-		//{
-		//    GetUnixInfo(directoryPath);
-		//}
+		public override IDirectory Target
+		{
+			get
+			{
+				if (IsHardLink)
+					return new UnixDirectory(((UnixSymbolicLinkInfo)UnixDirectoryInfo).GetContents().FullName);
+				return this;
+			}
+		}
 
-		//public override bool IsHardLink
-		//{
-		//    get { return UnixDirectoryInfo.IsSymbolicLink; }
-		//}
-
-		//public override IDirectory Target
-		//{
-		//    get
-		//    {
-		//        if (IsHardLink)
-		//            return new UnixDirectory(((UnixSymbolicLinkInfo)UnixDirectoryInfo).GetContents().FullName);
-		//        return this;
-		//    }
-		//}
-
-		//protected UnixFileSystemInfo UnixDirectoryInfo { get; set; }
+		protected UnixFileSystemInfo UnixDirectoryInfo { get; set; }
 
 		public override IDirectory LinkTo(string path)
 		{
@@ -58,9 +50,9 @@ namespace Castle.IO.FileSystems.Local.Unix
 			return new UnixDirectory(di);
 		}
 
-		//void GetUnixInfo(string fullName)
-		//{
-		//    this.UnixDirectoryInfo = UnixFileSystemInfo.GetFileSystemEntry(fullName);
-		//}
+		void GetUnixInfo(string fullName)
+		{
+			this.UnixDirectoryInfo = UnixFileSystemInfo.GetFileSystemEntry(fullName);
+		}
     }
 }
