@@ -1,12 +1,9 @@
 ﻿using System;
 using System.IO;
-using Castle.IO;
+using Castle.IO.Tests.contexts;
 using NUnit.Framework;
-using OpenFileSystem.Tests.contexts;
-using OpenWrap.Testing;
-using OpenWrap.Tests.IO;
 
-namespace OpenFileSystem.Tests.copying_files
+namespace Castle.IO.Tests.copying_files
 {
     [TestFixture(typeof(TestInMemoryFileSystem))]
     [TestFixture(typeof(TestLocalFileSystem))]
@@ -20,8 +17,7 @@ namespace OpenFileSystem.Tests.copying_files
             var tempFile = FileSystem.CreateTempFile();
             using(tempFile.Open(FileMode.Append, FileAccess.Write, fileShare))
             {
-                Executing(() => tempFile.CopyTo(tempFile.Parent.GetFile(Guid.NewGuid().ToString())))
-                    .ShouldThrow<IOException>();
+                SpecExtensions.ShouldThrow<IOException>(Executing(() => tempFile.CopyTo(tempFile.Parent.GetFile(Guid.NewGuid().ToString()))));
             }
         }
 }

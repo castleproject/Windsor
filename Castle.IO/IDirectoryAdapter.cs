@@ -55,7 +55,7 @@ namespace Castle.IO
 		/// <exception cref = "ArgumentException">
 		/// 	<paramref name = "path" /> is an empty string (""), contains only white 
 		/// 	space, or contains one or more invalid characters as defined in 
-		/// 	<see cref = "IO.Internal.Path.GetInvalidPathChars" />.
+		/// 	<see cref = "Path.GetInvalidPathChars" />.
 		/// 	<para>
 		/// 		-or-
 		/// 	</para>

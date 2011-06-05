@@ -17,13 +17,10 @@
 #endregion
 
 using System.IO;
-using Castle.IO;
+using Castle.IO.Tests.contexts;
 using NUnit.Framework;
-using OpenFileSystem.Tests.contexts;
-using OpenWrap.Testing;
-using OpenWrap.Tests.IO;
 
-namespace OpenFileSystem.Tests.open_for_write
+namespace Castle.IO.Tests.open_for_write
 {
 	[TestFixture(typeof (TestInMemoryFileSystem))]
 	[TestFixture(typeof (TestLocalFileSystem))]
@@ -49,7 +46,7 @@ namespace OpenFileSystem.Tests.open_for_write
 		[TestCase(FileMode.Truncate)]
 		public void error_is_throw_for_mode(FileMode mode)
 		{
-			Executing(() => write_to_file(mode: mode)).ShouldThrow<FileNotFoundException>();
+			SpecExtensions.ShouldThrow<FileNotFoundException>(Executing(() => write_to_file(mode: mode)));
 		}
 	}
 }

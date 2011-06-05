@@ -1,11 +1,7 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using NUnit.Framework;
-using OpenFileSystem.IO;
-using OpenWrap.Testing;
-using OpenWrap.Tests.IO;
 
-namespace OpenFileSystem.Tests.file_searches
+namespace Castle.IO.Tests.file_searches
 {
     [TestFixture("c:\\path\\file.txt", "c:\\**\\file.txt")]
     [TestFixture("c:\\path\\file.txt", "c:\\path\\**\\file.txt")]

@@ -1,14 +1,12 @@
 ﻿using System;
 using System.IO;
-using Castle.IO;
 using Castle.IO.FileSystems.Local;
 using NUnit.Framework;
 using OpenFileSystem.IO.FileSystems.InMemory;
-using OpenWrap.Testing;
 
-namespace OpenFileSystem.Tests.open_for_write
+namespace Castle.IO.Tests.open_for_write
 {
-    public class open_behavior_is_same : OpenWrap.Testing.context
+    public class open_behavior_is_same : context
     {
         [Test]
         public void existing_file(

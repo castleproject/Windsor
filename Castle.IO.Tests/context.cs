@@ -13,7 +13,7 @@
 using System;
 using NUnit.Framework;
 
-namespace OpenWrap.Testing
+namespace Castle.IO.Tests
 {
     [TestFixture]
     public class context

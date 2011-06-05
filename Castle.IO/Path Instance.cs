@@ -31,6 +31,10 @@ namespace Castle.IO
 	// to rename the static method carrying class
 	// for that matter!
 
+	/// <summary>
+	/// Immutable value object for dealing with paths. A path as an object,
+	/// is the idea.
+	/// </summary>
 	public partial class Path : IEquatable<Path>
 	{
 		private readonly string _NormalizedPath;
@@ -41,7 +45,7 @@ namespace Castle.IO
 
 			FullPath = fullPath;
 
-			IsRooted = System.IO.Path.IsPathRooted(fullPath);
+			IsRooted = IsPathRooted(fullPath);
 
 			Segments = GenerateSegments(fullPath);
 			_NormalizedPath = NormalizePath(fullPath);
@@ -49,15 +53,14 @@ namespace Castle.IO
 
 		public string DirectoryName
 		{
-			get { return IsDirectoryPath ? _NormalizedPath : System.IO.Path.GetDirectoryName(FullPath); }
+			get { return IsDirectoryPath ? _NormalizedPath : GetDirectoryName(FullPath); }
 		}
 
 		public bool IsRooted { get; private set; }
 
 		private static IEnumerable<string> GenerateSegments(string path)
 		{
-			return
-				path.Split(new[] {System.IO.Path.DirectorySeparatorChar, System.IO.Path.AltDirectorySeparatorChar},
+			return path.Split(new[] { DirectorySeparatorChar, AltDirectorySeparatorChar},
 				           StringSplitOptions.RemoveEmptyEntries).ToList().AsReadOnly();
 		}
 
@@ -69,8 +72,8 @@ namespace Castle.IO
 		{
 			get
 			{
-				return FullPath.EndsWith(System.IO.Path.DirectorySeparatorChar + "") ||
-				       FullPath.EndsWith(System.IO.Path.AltDirectorySeparatorChar + "");
+				return FullPath.EndsWith(DirectorySeparatorChar + "") ||
+				       FullPath.EndsWith(AltDirectorySeparatorChar + "");
 			}
 		}
 
@@ -91,7 +94,7 @@ namespace Castle.IO
 
 		private static string NormalizePath(string fullPath)
 		{
-			return string.Join("" + System.IO.Path.DirectorySeparatorChar, GenerateSegments(fullPath).ToArray());
+			return string.Join("" + DirectorySeparatorChar, GenerateSegments(fullPath).ToArray());
 		}
 
 		public override bool Equals(object obj)

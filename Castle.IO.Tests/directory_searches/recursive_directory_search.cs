@@ -1,10 +1,8 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
+using Castle.IO.Tests.contexts;
 using NUnit.Framework;
-using OpenFileSystem.Tests.contexts;
-using OpenWrap.Testing;
 
-namespace OpenFileSystem.Tests.directory_searches
+namespace Castle.IO.Tests.directory_searches
 {
     [TestFixture("c:\\path\\folder\\", "c:\\**\\folder")]
     [TestFixture("c:\\path\\folder\\", "c:\\path\\**\\folder")]
@@ -34,7 +32,9 @@ namespace OpenFileSystem.Tests.directory_searches
         [Test]
         public void file_is_found()
         {
-            Directories.ShouldHaveCountOf(1).First().Path.FullPath.ShouldBe(_existingDirectory);
+            Directories.ShouldHaveCountOf(1)
+				.First().Path.FullPath
+				.ShouldBe(_existingDirectory);
         }
     }
 

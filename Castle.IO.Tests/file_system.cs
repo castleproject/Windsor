@@ -20,12 +20,9 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Threading;
-using Castle.IO;
 using NUnit.Framework;
-using OpenWrap.Testing;
-using Path = Castle.IO.Internal.Path;
 
-namespace OpenWrap.Tests.IO
+namespace Castle.IO.Tests
 {
 	[TestFixture(typeof (TestInMemoryFileSystem))]
 	[TestFixture(typeof (TestLocalFileSystem))]
@@ -292,8 +289,7 @@ namespace OpenWrap.Tests.IO
 		{
 			using (var temporaryFile = FileSystem.CreateTempFile())
 			using (var stream1 = temporaryFile.Open(FileMode.OpenOrCreate, firstAccess, @lock))
-				Executing(() => temporaryFile.Open(FileMode.OpenOrCreate, nextAccess, FileShare.None))
-					.ShouldThrow<IOException>();
+				SpecExtensions.ShouldThrow<IOException>(Executing(() => temporaryFile.Open(FileMode.OpenOrCreate, nextAccess, FileShare.None)));
 		}
 
 		[TestCase(FileAccess.ReadWrite)]
@@ -301,8 +297,7 @@ namespace OpenWrap.Tests.IO
 		public void append_only_in_write_mode(FileAccess access)
 		{
 			using (var tempFile = FileSystem.CreateTempFile())
-				Executing(() => tempFile.Open(FileMode.Append, access, FileShare.None))
-					.ShouldThrow<ArgumentException>();
+				SpecExtensions.ShouldThrow<ArgumentException>(Executing(() => tempFile.Open(FileMode.Append, access, FileShare.None)));
 		}
 
 		[Test]

@@ -18,10 +18,8 @@
 
 using System;
 using System.IO;
-using Castle.IO;
-using OpenWrap.Testing;
 
-namespace OpenFileSystem.Tests
+namespace Castle.IO.Tests
 {
 	public static class StreamExtensions
 	{

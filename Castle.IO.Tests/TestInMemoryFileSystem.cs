@@ -1,7 +1,7 @@
 ﻿using System;
 using OpenFileSystem.IO.FileSystems.InMemory;
 
-namespace OpenWrap.Tests.IO
+namespace Castle.IO.Tests
 {
 	public class TestInMemoryFileSystem : InMemoryFileSystem
 	{

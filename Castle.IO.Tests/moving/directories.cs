@@ -16,12 +16,9 @@
 
 #endregion
 
-using Castle.IO;
 using NUnit.Framework;
-using OpenWrap.Testing;
-using OpenWrap.Tests.IO;
 
-namespace OpenFileSystem.Tests.moving
+namespace Castle.IO.Tests.moving
 {
 	[TestFixture(typeof (TestInMemoryFileSystem))]
 	[TestFixture(typeof (TestLocalFileSystem))]

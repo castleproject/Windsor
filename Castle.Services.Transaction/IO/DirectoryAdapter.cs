@@ -21,7 +21,7 @@ using System.Diagnostics.Contracts;
 using Castle.IO;
 using Castle.IO.Internal;
 using log4net;
-using Path = Castle.IO.Internal.Path;
+using Path = Castle.IO.Path;
 
 namespace Castle.Transactions.IO
 {

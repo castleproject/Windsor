@@ -12,7 +12,7 @@ using Castle.IO.FileSystems.Local.Win32.Interop;
 using Castle.Transactions.Internal;
 using Castle.Transactions.IO;
 using NativeMethods = Castle.Transactions.Internal.NativeMethods;
-using Path = Castle.IO.Internal.Path;
+using Path = Castle.IO.Path;
 
 namespace Castle.Transactions
 {

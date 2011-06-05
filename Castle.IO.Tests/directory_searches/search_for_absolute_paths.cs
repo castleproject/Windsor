@@ -17,13 +17,10 @@
 #endregion
 
 using System.Linq;
-using Castle.IO;
+using Castle.IO.Tests.contexts;
 using NUnit.Framework;
-using OpenFileSystem.Tests.contexts;
-using OpenWrap.Testing;
-using OpenWrap.Tests.IO;
 
-namespace OpenFileSystem.Tests.directory_searches
+namespace Castle.IO.Tests.directory_searches
 {
 	[TestFixture(typeof (TestInMemoryFileSystem))]
 	[TestFixture(typeof (TestLocalFileSystem))]

@@ -16,7 +16,7 @@ using System.IO;
 using System.Linq;
 using NUnit.Framework;
 
-namespace OpenWrap.Testing
+namespace Castle.IO.Tests
 {
     public static class SpecExtensions
     {

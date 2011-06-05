@@ -1,7 +1,6 @@
-﻿using Castle.IO;
-using Castle.IO.FileSystems.Local;
+﻿using Castle.IO.FileSystems.Local;
 
-namespace OpenWrap.Tests.IO
+namespace Castle.IO.Tests
 {
 	public class TestLocalFileSystem : IFileSystem
 	{

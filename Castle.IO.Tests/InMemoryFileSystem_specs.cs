@@ -19,13 +19,11 @@
 using System.IO;
 using System.Linq;
 using System.Text;
-using Castle.IO;
+using Castle.IO.Tests.contexts;
 using NUnit.Framework;
 using OpenFileSystem.IO.FileSystems.InMemory;
-using OpenFileSystem.Tests.context;
-using OpenWrap.Testing;
 
-namespace OpenFileSystem.Tests
+namespace Castle.IO.Tests
 {
 	public class in_mem_specification : in_memory_file_system
 	{
@@ -35,8 +33,7 @@ namespace OpenFileSystem.Tests
 			given_directory(@"C:\test");
 			given_directory(@"C:\TEST\test2");
 
-			FileSystem.GetDirectory(@"C:\TEST")
-				.ShouldBeTheSameInstanceAs(FileSystem.GetDirectory(@"C:\test"));
+			SpecExtensions.ShouldBeTheSameInstanceAs(FileSystem.GetDirectory(@"C:\TEST"), FileSystem.GetDirectory(@"C:\test"));
 		}
 
 		[Test]
@@ -44,7 +41,7 @@ namespace OpenFileSystem.Tests
 		{
 			var path = @"C:\tmp\TestPackage-1.0.0.1234.wrap";
 			var file = FileSystem.GetFile(path);
-			file.ToString().ShouldBe(path);
+			SpecExtensions.ShouldBe<string>(file.ToString(), path);
 		}
 
 		[Test]
@@ -104,9 +101,9 @@ namespace OpenFileSystem.Tests
 		}
 	}
 
-	namespace context
+	namespace contexts
 	{
-		public abstract class in_memory_file_system : OpenWrap.Testing.context
+		public abstract class in_memory_file_system : context
 		{
 			public in_memory_file_system()
 			{

@@ -42,7 +42,7 @@ namespace Castle.IO.Contracts
 		{
 			Contract.Requires(!string.IsNullOrEmpty(originalFilePath));
 			Contract.Requires(!string.IsNullOrEmpty(newFilePath));
-			Contract.Requires(Internal.Path.GetFileName(originalFilePath).Length > 0);
+			Contract.Requires(Path.GetFileName(originalFilePath).Length > 0);
 			throw new NotImplementedException();
 		}
 		StreamWriter IFileAdapter.CreateText(string filePath)

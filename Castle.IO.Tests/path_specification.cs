@@ -1,8 +1,6 @@
-﻿using Castle.IO;
-using NUnit.Framework;
-using OpenWrap.Testing;
+﻿using NUnit.Framework;
 
-namespace OpenWrap.Tests.IO
+namespace Castle.IO.Tests
 {
 	public class path_specification : context
 	{

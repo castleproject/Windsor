@@ -1,10 +1,7 @@
 ﻿using System;
 using System.IO;
-using Castle.IO;
-using OpenWrap.Testing;
-using OpenWrap.Tests.IO;
 
-namespace OpenFileSystem.Tests.contexts
+namespace Castle.IO.Tests.contexts
 {
     public abstract class files<T> : file_system_ctxt<T> where T : IFileSystem, new()
     {

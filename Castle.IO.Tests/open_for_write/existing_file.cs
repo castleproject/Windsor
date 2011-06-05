@@ -1,11 +1,8 @@
 ﻿using System.IO;
-using Castle.IO;
+using Castle.IO.Tests.contexts;
 using NUnit.Framework;
-using OpenFileSystem.Tests.contexts;
-using OpenWrap.Testing;
-using OpenWrap.Tests.IO;
 
-namespace OpenFileSystem.Tests.open_for_write
+namespace Castle.IO.Tests.open_for_write
 {
     [TestFixture(typeof(TestInMemoryFileSystem))]
     [TestFixture(typeof(TestLocalFileSystem))]
@@ -52,8 +49,7 @@ namespace OpenFileSystem.Tests.open_for_write
         {
 
             file = write_to_file();
-            Executing(() => file.Write(1, mode: FileMode.CreateNew))
-                .ShouldThrow<IOException>();
+            SpecExtensions.ShouldThrow<IOException>(Executing(() => file.Write(1, mode: FileMode.CreateNew)));
         }
 
     }

@@ -20,10 +20,10 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Contracts;
-using System.Linq;
 using System.Text;
+using Castle.IO.Internal;
 
-namespace Castle.IO.Internal
+namespace Castle.IO
 {
 	///<summary>
 	///	Utility class meant to replace the <see cref = "System.IO.Path" /> class completely. This class handles these types of paths:
@@ -56,7 +56,7 @@ namespace Castle.IO.Internal
 		///<returns>Whether the path is rooted or not.</returns>
 		///<exception cref = "ArgumentNullException">If the passed argument is null.</exception>
 		[Pure]
-		public static bool IsRooted(string path)
+		public static bool IsPathRooted(string path)
 		{
 			Contract.Requires(path != null);
 			if (string.IsNullOrEmpty(path)) return false;
@@ -233,6 +233,13 @@ namespace Castle.IO.Internal
 				return nonRoot.Substring(strIndex + 1);
 
 			return nonRoot;
+		}
+
+
+		[Pure]
+		public static string GetDirectoryName(string path)
+		{
+			return GetFileName(path);
 		}
 
 		[Pure]

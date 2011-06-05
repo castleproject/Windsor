@@ -59,7 +59,7 @@ namespace Castle.IO.Internal
 			Justification = "I don't care that much about performance")]
 		public string MapPath(string path)
 		{
-			if (Path.IsRooted(path))
+			if (Path.IsPathRooted(path))
 				return Path.GetFullPath(path);
 
 			if (_Function != null)

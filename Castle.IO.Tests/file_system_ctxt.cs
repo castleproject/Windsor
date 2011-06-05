@@ -1,11 +1,9 @@
 ﻿using System;
 using System.IO;
 using System.Text;
-using Castle.IO;
 using NUnit.Framework;
-using OpenWrap.Testing;
 
-namespace OpenWrap.Tests.IO
+namespace Castle.IO.Tests
 {
 	public abstract class file_system_ctxt<T> : context where T : IFileSystem, new()
 	{
