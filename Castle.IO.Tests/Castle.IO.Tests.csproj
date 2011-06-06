@@ -55,7 +55,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="context.cs" />
+    <Compile Include="contexts\context.cs" />
     <Compile Include="contexts\files.cs" />
     <Compile Include="contexts\file_search_context.cs" />
     <Compile Include="copying_files\locked_file.cs" />
@@ -63,7 +63,7 @@
     <Compile Include="directory_searches\search_for_absolute_paths.cs" />
     <Compile Include="file_searches\recursive_search_finds_directory.cs" />
     <Compile Include="file_system.cs" />
-    <Compile Include="file_system_ctxt.cs" />
+    <Compile Include="contexts\file_system_ctxt.cs" />
     <Compile Include="InMemoryFileSystem_specs.cs" />
     <Compile Include="moving\directories.cs" />
     <Compile Include="open_for_write\existing_file.cs" />
@@ -73,13 +73,15 @@
     <Compile Include="paths\pathinfo_drive_specification.cs" />
     <Compile Include="paths\pathinfo_root_specification.cs" />
     <Compile Include="paths\file_names.cs" />
+    <Compile Include="paths\pathinfo_server_specification.cs" />
+    <Compile Include="paths\path_equality_specification.cs" />
     <Compile Include="paths\path_specification.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="renaming_files\locked_file.cs" />
-    <Compile Include="SpecExtensions.cs" />
-    <Compile Include="StreamExtensions.cs" />
-    <Compile Include="TestInMemoryFileSystem.cs" />
-    <Compile Include="TestLocalFileSystem.cs" />
+    <Compile Include="Framework\SpecExtensions.cs" />
+    <Compile Include="Framework\StreamExtensions.cs" />
+    <Compile Include="TestClasses\TestInMemoryFileSystem.cs" />
+    <Compile Include="TestClasses\TestLocalFileSystem.cs" />
     <Compile Include="writing_content\using_append.cs" />
     <Compile Include="writing_content\using_opencreate.cs" />
   </ItemGroup>
@@ -95,6 +97,7 @@
       <Name>Castle.IO</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

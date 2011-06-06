@@ -481,8 +481,7 @@ UNCPrefixRegex + @"?
 		{
 			if (ReferenceEquals(null, other)) return false;
 			if (ReferenceEquals(this, other)) return true;
-			return Equals(other._Root, _Root)
-				&& Equals(other._Drive, _Drive)
+			return Equals(other._Drive, _Drive)
 				&& Equals(other._DriveLetter, _DriveLetter)
 				&& Equals(other._Server, _Server)
 				&& Equals(other._IPv4, _IPv4)
@@ -509,8 +508,7 @@ UNCPrefixRegex + @"?
 		{
 			unchecked
 			{
-				int result = _Root.GetHashCode();
-				result = (result*397) ^ _Drive.GetHashCode();
+				int result = _Drive.GetHashCode();
 				result = (result*397) ^ _DriveLetter.GetHashCode();
 				result = (result*397) ^ _Server.GetHashCode();
 				result = (result*397) ^ _IPv4.GetHashCode();
