@@ -22,13 +22,17 @@ using System.Diagnostics.Contracts;
 using System.Net;
 using System.Text.RegularExpressions;
 using Castle.IO.Internal;
+using System.Diagnostics;
 
 namespace Castle.IO
 {
 	/// <summary>
-	/// 	Path data holder.
+	/// 	Path data holder and value object that overrides Equals,
+	/// 	implements IEquatable and overrides the == and != operators.
+	/// 	
 	/// 	Invariant: no fields nor properties are null after c'tor.
 	/// </summary>
+	[DebuggerDisplay(@"PathInfo: \{ Root: {Root}, Rest: {NonRootPath} \}")]
 	public sealed class PathInfo : IEquatable<PathInfo>
 	{
 		internal const string UNCPrefixRegex = @"(?<UNC_prefix> \\\\\? (?<UNC_literal>\\UNC)?  )";
