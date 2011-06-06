@@ -49,6 +49,13 @@ namespace Castle.IO.Tests.writing_content
 			file.ShouldBe(1, 42);
 		}
 
+		[TestFixtureTearDown]
+		public void DisposeFile()
+		{
+			if (file != null)
+				file.Dispose();
+		}
+
 		private readonly ITemporaryFile file;
 	}
 }

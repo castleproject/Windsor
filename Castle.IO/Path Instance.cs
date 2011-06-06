@@ -60,10 +60,17 @@ namespace Castle.IO
 		{
 			get
 			{
-				var dir = IsDirectoryPath 
-					? _PathInfo.FolderAndFiles 
-					: (_Segments.Count == 1 ? _Segments[0] : _Segments.Skip(1).Aggregate(_Segments[0], System.IO.Path.Combine));
-				return _PathInfo.Drive.Combine(dir);
+				var sep = Path.DirectorySeparatorChar.ToString();
+
+				if (IsDirectoryPath) 
+					return _PathInfo.Drive + _PathInfo.FolderAndFiles;
+
+				if (_Segments.Count == 1)
+					return _Segments[0]; 
+				
+				var middle = _Segments.Skip(1).Take(Math.Max(0, _Segments.Count - 2));
+
+				return string.Join(sep, new[] { _PathInfo.Drive }.Concat(middle).ToArray());
 			}
 		}
 

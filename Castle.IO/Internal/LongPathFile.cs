@@ -399,7 +399,7 @@ namespace Castle.IO.Internal
 		/// </param>
 		/// <param name = "bufferSize">
 		/// 	An <see cref = "Int32" /> containing the number of bytes to buffer for reads and writes
-		/// 	to the file, or 0 to specified the default buffer size, 1024.
+		/// 	to the file, or 0 to specifiy the default buffer size, 1024.
 		/// </param>
 		/// <param name = "options">
 		/// 	One or more of the <see cref = "FileOptions" /> values that describes how to create or 

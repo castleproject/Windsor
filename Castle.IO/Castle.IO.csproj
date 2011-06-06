@@ -146,7 +146,7 @@
     <Compile Include="FileSystems\Local\Win32\Interop\NativeMethods.cs" />
     <Compile Include="Path Statics.cs" />
     <Compile Include="PathInfo.cs" />
-    <Compile Include="Internal\PathType.cs" />
+    <Compile Include="PathType.cs" />
     <Compile Include="ITemporaryDirectory.cs" />
     <Compile Include="ITemporaryFile.cs" />
     <Compile Include="Path Instance.cs" />

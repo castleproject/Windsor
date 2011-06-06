@@ -179,7 +179,7 @@ namespace Castle.IO.Tests
 		public void file_paths_are_normalized()
 		{
 			var file = FileSystem.GetFile(@"C:\\folder\\file");
-			file.Path.FullPath.ShouldBe(@"C:\folder\file");
+			file.Path.ShouldBe(new Path(@"C:\folder\file"));
 		}
 
 		[Test]

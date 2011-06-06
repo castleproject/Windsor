@@ -50,27 +50,29 @@ UNCPrefixRegex + @"?
 (?<drive>
  (?<drive_letter>[A-Z]{1,3})
  :		# the :-character after the drive letter
- (\\|/)? # the trailing slash
+ (\\|/) # the trailing slash
 )";
+
+		internal const string ServerRegex =
+UNCPrefixRegex + @"?
+(?(UNC_prefix)|\\) #this is optional IIF we have the UNC_prefix, so only match \\ if we did not have it
+(?<server>
+ (?<server_prefix>\\)
+ (?:
+  (?<ipv4>(25[0-5]|2[0-4]\d|[0-1]?\d?\d)(\.(25[0-5]|2[0-4]\d|[0-1]?\d?\d)){3})
+  |(?:\[(?<ipv6>[A-F0-9:]{3,39})\])
+  |(?<server_name>(?!UNC)[\w\-]+) # allow dashes in server names, but ignore servers named UNC
+ )
+)\\?";
 
 		private const string StrRegex =
 @"
 (?<root>
- (?<options>
-  (?:
-   " +  DriveRegex + @"
-  )
-  |(?<server>(?(UNC_prefix)|\\\\) #this is optional IIF we have the UNC_prefix, so only match \\ if we did not have it
-    (?:
-     (?<ipv4>(25[0-5]|2[0-4]\d|[0-1]?\d?\d)(\.(25[0-5]|2[0-4]\d|[0-1]?\d?\d)){3})
-     |(?:\[(?<ipv6>[A-F0-9:]{3,39})\])
-     |(?<server_name>[\w\-]+) # allow dashes in server names
-    )\\
-  )
-  |" + DeviceRegex + @"
-  |/
-  |\\ # we can also refer to the current drive alone
- )
+ (" +  DriveRegex + @")
+ |(" + ServerRegex + @")
+ |(" + DeviceRegex + @")
+ |/
+ |\\
 )?
 (?<nonrootpath>
  (?!\\)
@@ -86,7 +88,6 @@ UNCPrefixRegex + @"?
 		private readonly string _Root,
 		                        _UNCPrefix,
 		                        _UNCLiteral,
-		                        _Options,
 		                        _Drive,
 		                        _DriveLetter,
 		                        _Server,
@@ -115,7 +116,6 @@ UNCPrefixRegex + @"?
 				m("root"),
 				m("UNC_prefix"),
 				m("UNC_literal"),
-				m("options"),
 				m("drive"),
 				m("drive_letter"),
 				m("server"),
@@ -150,14 +150,13 @@ UNCPrefixRegex + @"?
 
 		#region c'tor and non null invariants
 
-		private PathInfo(string root, string uncPrefix, string uncLiteral, string options, string drive, string driveLetter,
+		private PathInfo(string root, string uncPrefix, string uncLiteral, string drive, string driveLetter,
 		                 string server, string iPv4, string iPv6, string serverName, string device, string devicePrefix,
 		                 string deviceName, string deviceGuid, string nonRootPath, string relDrive, string folderAndFiles)
 		{
 			Contract.Requires(root != null);
 			Contract.Requires(uncPrefix != null);
 			Contract.Requires(uncLiteral != null);
-			Contract.Requires(options != null);
 			Contract.Requires(drive != null);
 			Contract.Requires(driveLetter != null);
 			Contract.Requires(server != null);
@@ -174,7 +173,6 @@ UNCPrefixRegex + @"?
 			_Root = root;
 			_UNCPrefix = uncPrefix;
 			_UNCLiteral = uncLiteral;
-			_Options = options;
 			_Drive = drive;
 			_DriveLetter = driveLetter;
 			_Server = server;
@@ -196,7 +194,6 @@ UNCPrefixRegex + @"?
 			Contract.Invariant(_Root != null);
 			Contract.Invariant(_UNCPrefix != null);
 			Contract.Invariant(_UNCLiteral != null);
-			Contract.Invariant(_Options != null);
 			Contract.Invariant(_Drive != null);
 			Contract.Invariant(_DriveLetter != null);
 			Contract.Invariant(_Server != null);
@@ -255,14 +252,6 @@ UNCPrefixRegex + @"?
 		/// <summary>
 		/// </summary>
 		[Pure]
-		public string Options
-		{
-			get { return _Options; }
-		}
-
-		/// <summary>
-		/// </summary>
-		[Pure]
 		public string Drive
 		{
 			get { return _Drive; }
@@ -285,20 +274,36 @@ UNCPrefixRegex + @"?
 		}
 
 		/// <summary>
-		/// 	Gets the 0.0.0.0-based IP-address if any.
+		/// 	Gets the IPv4 IP-address if any. <see cref="IPAddress.None"/>
+		/// 	if none was found.
 		/// </summary>
 		[Pure]
-		public string IPv4
+		public IPAddress IPv4
 		{
-			get { return _IPv4; }
+			get
+			{
+				IPAddress addr;
+				return !string.IsNullOrEmpty(_IPv4) && IPAddress.TryParse(_IPv4, out addr)
+					? addr
+					: IPAddress.None;
+			}
 		}
 
 		/// <summary>
+		/// Gets the IPv6 IP-address if any. <see cref="IPAddress.None"/>
+		/// if non was found.
+		/// 
 		/// </summary>
 		[Pure]
-		public string IPv6
+		public IPAddress IPv6
 		{
-			get { return _IPv6; }
+			get
+			{
+				IPAddress addr;
+				return !string.IsNullOrEmpty(_IPv6) && IPAddress.TryParse(_IPv6, out addr)
+					? addr 
+					: IPAddress.IPv6None;
+			}
 		}
 
 		/// <summary>
@@ -388,12 +393,13 @@ UNCPrefixRegex + @"?
 					return PathType.Device;
 				if (!string.IsNullOrEmpty(ServerName))
 					return PathType.Server;
-				if (!string.IsNullOrEmpty(IPv4))
+				if (IPv4 != IPAddress.None)
 					return PathType.IPv4;
-				if (!string.IsNullOrEmpty(IPv6))
+				if (IPv6 != IPAddress.IPv6None)
 					return PathType.IPv6;
 				if (!string.IsNullOrEmpty(Drive))
 					return PathType.Drive;
+
 				return PathType.Relative;
 			}
 		}
@@ -414,8 +420,6 @@ UNCPrefixRegex + @"?
 		/// <param name = "child">The path info to verify</param>
 		/// <returns>Whether it is true that the current path info is a parent of child.</returns>
 		/// <exception cref = "NotSupportedException">If this instance of path info and child aren't rooted.</exception>
-		[SuppressMessage("Microsoft.Performance", "CA1820:TestForEmptyStringsUsingStringLength",
-			Justification = "Would change semantics")]
 		public bool IsParentOf(PathInfo child)
 		{
 			if (Root == string.Empty || child.Root == string.Empty)
@@ -428,19 +432,20 @@ UNCPrefixRegex + @"?
 			switch (Type)
 			{
 				case PathType.Device:
-					OK &= child.DeviceName.ToLowerInvariant() == DeviceName.ToLowerInvariant();
+					OK &= child.DeviceName.Equals(DeviceName, StringComparison.InvariantCultureIgnoreCase);
 					break;
 				case PathType.Server:
-					OK &= child.ServerName.ToLowerInvariant() == ServerName.ToLowerInvariant();
+					OK &= child.ServerName.Equals(ServerName, StringComparison.InvariantCultureIgnoreCase);
 					break;
 				case PathType.IPv4:
-					OK &= IPAddress.Parse(child.IPv4).Equals(IPAddress.Parse(IPv4));
+					OK &= child.IPv4.Equals(IPv4);
 					break;
 				case PathType.IPv6:
-					OK &= (IPAddress.Parse(child.IPv6).Equals(IPAddress.Parse(IPv6)));
+					OK &= child.IPv6.Equals(IPv6);
 					break;
 				case PathType.Relative:
-					throw new InvalidOperationException("Since root isn't empty we should never get relative paths.");
+					throw new NotSupportedException("Since root isn't empty we should never get relative paths.");
+
 				case PathType.Drive:
 					OK &= DriveLetter.ToLowerInvariant() == child.DriveLetter.ToLowerInvariant();
 					break;
@@ -477,12 +482,11 @@ UNCPrefixRegex + @"?
 			if (ReferenceEquals(null, other)) return false;
 			if (ReferenceEquals(this, other)) return true;
 			return Equals(other._Root, _Root)
-				&& Equals(other._Options, _Options) 
-				&& Equals(other._Drive, _Drive) 
-				&& Equals(other._DriveLetter, _DriveLetter) 
-				&& Equals(other._Server, _Server) 
-				&& Equals(other._IPv4, _IPv4) 
-				&& Equals(other._IPv6, _IPv6) 
+				&& Equals(other._Drive, _Drive)
+				&& Equals(other._DriveLetter, _DriveLetter)
+				&& Equals(other._Server, _Server)
+				&& Equals(other._IPv4, _IPv4)
+				&& Equals(other._IPv6, _IPv6)
 				&& Equals(other._ServerName, _ServerName) 
 				&& Equals(other._Device, _Device) 
 				&& Equals(other._DevicePrefix, _DevicePrefix) 
@@ -506,7 +510,6 @@ UNCPrefixRegex + @"?
 			unchecked
 			{
 				int result = _Root.GetHashCode();
-				result = (result*397) ^ _Options.GetHashCode();
 				result = (result*397) ^ _Drive.GetHashCode();
 				result = (result*397) ^ _DriveLetter.GetHashCode();
 				result = (result*397) ^ _Server.GetHashCode();

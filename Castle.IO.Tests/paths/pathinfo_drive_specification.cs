@@ -36,6 +36,7 @@ namespace Castle.IO.Tests
 		[TestCase(@"\\server\resource")]
 		[TestCase(@"\\server\resource\")]
 		[TestCase(@"\\127.0.0.1\resource\")]
+		[TestCase(@"/usr/xyz/Home/haskell")]
 		public void with_no_drive(string path)
 		{
 			PathInfo.Parse(path)
@@ -72,7 +73,7 @@ namespace Castle.IO.Tests
 		{
 			var info = PathInfo.Parse(path);
 
-			info.Drive.Should().Be(@"C:");
+			info.RelDrive.Should().Be(@"C:");
 			info.FolderAndFiles.Should().Be.EqualTo(folderAndFiles);
 		}
 	}

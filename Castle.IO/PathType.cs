@@ -16,7 +16,7 @@
 
 #endregion
 
-namespace Castle.IO.Internal
+namespace Castle.IO
 {
 	public enum PathType
 	{
@@ -25,6 +25,7 @@ namespace Castle.IO.Internal
 		IPv4,
 		IPv6,
 		Drive,
-		Relative
+		Relative,
+		Invalid
 	}
 }
