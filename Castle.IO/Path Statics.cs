@@ -178,14 +178,9 @@ namespace Castle.IO
 		{
 			Contract.Requires(!string.IsNullOrEmpty(path));
 			Contract.Requires(path.Length >= 2);
-			return 
-				path
-				.ToPath()
-				.Segments
-				.Reverse()
-				.Skip(1)
-				.Reverse()
-				.Aggregate(System.IO.Path.Combine)
+			var p = new Path(path);
+			return p.Segments.Skip(1)
+				.Aggregate(p.Segments.First(), System.IO.Path.Combine)
 				.ToPath();
 		}
 

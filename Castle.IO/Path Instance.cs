@@ -40,14 +40,16 @@ namespace Castle.IO
 	{
 		private readonly string _OriginalPath;
 		private readonly PathInfo _PathInfo;
+		private readonly IList<string> _Segments;
 
 		public Path(string path)
 		{
 			Contract.Requires(path != null);
+			Contract.Requires(!string.IsNullOrEmpty(path));
 
 			_OriginalPath = path;
 			_PathInfo = PathInfo.Parse(path);
-			Segments = GenerateSegments(path);
+			_Segments = GenerateSegments(path);
 		}
 
 		/// <summary>
@@ -58,25 +60,32 @@ namespace Castle.IO
 		{
 			get
 			{
-				var dir = IsDirectoryPath ? _PathInfo.FolderAndFiles : GetPathWithoutLastBit(FullPath);
+				var dir = IsDirectoryPath 
+					? _PathInfo.FolderAndFiles 
+					: (_Segments.Count == 1 ? _Segments[0] : _Segments.Skip(1).Aggregate(_Segments[0], System.IO.Path.Combine));
 				return _PathInfo.Drive.Combine(dir);
 			}
 		}
 
 		public bool IsRooted { get { return _PathInfo.IsRooted; } }
 
-		private static IEnumerable<string> GenerateSegments(string path)
+		private static IList<string> GenerateSegments(string path)
 		{
 			return path
 				.Split(new[] { DirectorySeparatorChar, AltDirectorySeparatorChar}, 
 					   StringSplitOptions.RemoveEmptyEntries)
-				.Except(new[]{"?"});
+				.Except(new[]{"?"})
+				.ToList();
 		}
 
 		public string FullPath { get { return _OriginalPath; } }
-		
-		public IEnumerable<string> Segments { get; private set; }
 
+		public IEnumerable<string> Segments { get { return _Segments; } }
+
+		/// <summary>
+		/// Gets whether it's garantueed that the path is a directory (it is of its
+		/// last character is a directory separator character).
+		/// </summary>
 		public bool IsDirectoryPath
 		{
 			get
@@ -90,6 +99,11 @@ namespace Castle.IO
 		{
 			var combinedPath = paths.Aggregate(FullPath, System.IO.Path.Combine);
 			return new Path(combinedPath);
+		}
+
+		public Path Combine(params Path[] paths)
+		{
+			return Combine(paths.Select(p => p.FullPath).ToArray());
 		}
 
 		#region Equality operators
@@ -129,10 +143,10 @@ namespace Castle.IO
 			return !Equals(left, right);
 		}
 
-		public static implicit operator string(Path path)
-		{
-			return path.ToString();
-		}
+		//public static implicit operator string(Path path)
+		//{
+		//    return path.ToString();
+		//}
 
 		#endregion
 

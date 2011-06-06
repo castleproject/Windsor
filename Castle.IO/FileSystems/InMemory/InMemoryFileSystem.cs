@@ -31,7 +31,7 @@ namespace Castle.IO.FileSystems.InMemory
 		public InMemoryFileSystem()
 		{
 			Directories = new Dictionary<string, InMemoryDirectory>(StringComparer.OrdinalIgnoreCase);
-			CurrentDirectory = @"c:\";
+			CurrentDirectory = new Path(@"c:\");
 			Notifier = new InMemoryFileSystemNotifier();
 		}
 
@@ -40,6 +40,7 @@ namespace Castle.IO.FileSystems.InMemory
 		private InMemoryDirectory GetRoot(string path)
 		{
 			InMemoryDirectory directory;
+			
 			lock (Directories)
 			{
 				if (!Directories.TryGetValue(path, out directory))
@@ -47,36 +48,46 @@ namespace Castle.IO.FileSystems.InMemory
 					Directories.Add(path, directory = new InMemoryDirectory(this, path));
 				}
 			}
+
 			return directory;
 		}
 
 		public IDirectory GetDirectory(string directoryPath)
 		{
-			directoryPath = EnsureTerminatedByDirectorySeparator(directoryPath);
-			var resolvedDirectoryPath = Path.GetFullPath(System.IO.Path.Combine(CurrentDirectory, directoryPath));
-			var pathSegments = new Path(resolvedDirectoryPath).Segments;
-			return pathSegments
-				.Skip(1)
-				.Aggregate((IDirectory) GetRoot(pathSegments.First()),
-				           (current, segment) => current.GetDirectory(segment));
+			return GetDirectory(new Path(directoryPath));
 		}
 
-		private static string EnsureTerminatedByDirectorySeparator(string directoryPath)
+		public IDirectory GetDirectory(Path directoryPath)
 		{
-			return directoryPath.EndsWith(Path.DirectorySeparatorChar + string.Empty)
-			       || directoryPath.EndsWith(Path.AltDirectorySeparatorChar + string.Empty)
-			       	? directoryPath
-			       	: directoryPath + Path.DirectorySeparatorChar;
+			directoryPath = EnsureTerminatedByDirectorySeparator(directoryPath);
+
+			var resolvedDirectoryPath = CurrentDirectory.Combine(directoryPath);
+
+			var segments = resolvedDirectoryPath.Segments;
+
+			return segments
+				.Skip(1)
+				.Aggregate((IDirectory)GetRoot(segments.First()),
+						   (current, segment) => current.GetDirectory(segment));
+		}
+
+		private static Path EnsureTerminatedByDirectorySeparator(Path possibleDirectoryPath)
+		{
+			return possibleDirectoryPath.IsDirectoryPath
+			       	? possibleDirectoryPath
+			       	: new Path(possibleDirectoryPath.FullPath + Path.DirectorySeparatorChar);
 		}
 
 		public IFile GetFile(string filePath)
 		{
-			var resolvedFilePath = Path.GetFullPath(System.IO.Path.Combine(CurrentDirectory, filePath));
-			var pathSegments = new Path(resolvedFilePath).Segments;
+			var resolvedFilePath = CurrentDirectory.Combine(filePath);
+			var pathSegments = resolvedFilePath.Segments;
+
 			var ownerFolder = pathSegments
 				.Skip(1).Take(pathSegments.Count() - 2)
 				.Aggregate((IDirectory) GetRoot(pathSegments.First()),
 				           (current, segment) => current.GetDirectory(segment));
+
 			return ownerFolder.GetFile(pathSegments.Last());
 		}
 
@@ -103,6 +114,11 @@ namespace Castle.IO.FileSystems.InMemory
 		}
 
 		public IDirectory CreateDirectory(string path)
+		{
+			return GetDirectory(path).MustExist();
+		}
+
+		public IDirectory CreateDirectory(Path path)
 		{
 			return GetDirectory(path).MustExist();
 		}
@@ -143,6 +159,6 @@ namespace Castle.IO.FileSystems.InMemory
 			return GetDirectory(CurrentDirectory);
 		}
 
-		public string CurrentDirectory { get; set; }
+		public Path CurrentDirectory { get; set; }
 	}
 }

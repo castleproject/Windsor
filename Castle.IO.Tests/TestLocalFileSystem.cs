@@ -1,4 +1,5 @@
-﻿using Castle.IO.FileSystems.Local;
+﻿using System;
+using Castle.IO.FileSystems.Local;
 
 namespace Castle.IO.Tests
 {
@@ -7,6 +8,11 @@ namespace Castle.IO.Tests
 		public IDirectory GetDirectory(string directoryPath)
 		{
 			return _local.GetDirectory(directoryPath);
+		}
+
+		public IDirectory GetDirectory(Path path)
+		{
+			return _local.GetDirectory(path);
 		}
 
 		public Path GetPath(string path)
@@ -20,6 +26,11 @@ namespace Castle.IO.Tests
 		}
 
 		public IDirectory CreateDirectory(string path)
+		{
+			return _local.CreateDirectory(path);
+		}
+
+		public IDirectory CreateDirectory(Path path)
 		{
 			return _local.CreateDirectory(path);
 		}

@@ -44,7 +44,8 @@ namespace Castle.IO.Tests
 				{
 					tempDir.GetFile("receives_creation_notification.txt").MustExist();
 					triggered.Wait();
-					filePath.ShouldBe(tempDir.Path.Combine("receives_creation_notification.txt").FullPath);
+					filePath.ToPath().ShouldBe(
+						tempDir.Path.Combine("receives_creation_notification.txt"));
 				}
 			}
 		}
@@ -206,8 +207,10 @@ namespace Castle.IO.Tests
 			using (var concreteDir = FileSystem.CreateTempDirectory())
 			{
 				concreteDir.GetFile("test.txt").OpenWrite().Close();
-				var linkedPath = System.IO.Path.Combine(Path.GetTempPath(), tempLinkFolder);
-				var linkedDirectory = concreteDir.LinkTo(linkedPath);
+				
+				var linkedPath = Path.GetTempPath().Combine(tempLinkFolder);
+
+				var linkedDirectory = concreteDir.LinkTo(linkedPath.ToString());
 				linkedDirectory.IsHardLink.ShouldBeTrue();
 
 				linkedDirectory.Delete();

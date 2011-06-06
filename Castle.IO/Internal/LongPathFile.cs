@@ -468,37 +468,15 @@ namespace Castle.IO.Internal
 			return new FileStream(handle, access, bufferSize, (options & FileOptions.Asynchronous) == FileOptions.Asynchronous);
 		}
 
-		[SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope",
-			Justification = "False positive")]
 		private static SafeFileHandle GetFileHandle(string normalizedPath, FileMode mode, FileAccess access, FileShare share,
 		                                            FileOptions options)
 		{
-			var underlyingAccess = GetUnderlyingAccess(access);
-
-			var handle = NativeMethods.CreateFile(normalizedPath, underlyingAccess, (uint) share, IntPtr.Zero, (uint) mode,
-			                                      (uint) options, IntPtr.Zero);
+			var handle = NativeMethods.CreateFile(normalizedPath, access.ToNative(), share.ToNative(), IntPtr.Zero, mode.ToNative(),
+			                                      options.ToNative(), IntPtr.Zero);
 			if (handle.IsInvalid)
 				throw LongPathCommon.GetExceptionFromLastWin32Error();
 
 			return handle;
-		}
-
-		private static NativeFileAccess GetUnderlyingAccess(FileAccess access)
-		{
-			switch (access)
-			{
-				case FileAccess.Read:
-					return NativeFileAccess.GenericRead;
-
-				case FileAccess.Write:
-					return NativeFileAccess.GenericWrite;
-
-				case FileAccess.ReadWrite:
-					return NativeFileAccess.GenericRead | NativeFileAccess.GenericWrite;
-
-				default:
-					throw new ArgumentOutOfRangeException("access");
-			}
 		}
 	}
 }

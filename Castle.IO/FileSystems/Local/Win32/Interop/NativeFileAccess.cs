@@ -2,7 +2,7 @@
 
 namespace Castle.IO.FileSystems.Local.Win32.Interop
 {
-	[Flags]
+	[Flags, Serializable]
 	public enum NativeFileAccess : uint
 	{
 		GenericRead = 0x80000000,

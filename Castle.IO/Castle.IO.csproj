@@ -117,12 +117,14 @@
     </Compile>
     <Compile Include="FileSystems\Local\Win32\Interop\CopyProgressCallbackReason.cs" />
     <Compile Include="FileSystems\Local\Win32\Interop\CopyProgressResult.cs" />
+    <Compile Include="FileSystems\Local\Win32\Interop\FileEnumExtensions.cs" />
     <Compile Include="FileSystems\Local\Win32\Interop\FINDEX_INFO_LEVELS.cs" />
     <Compile Include="FileSystems\Local\Win32\Interop\FINDEX_SEARCH_OPS.cs" />
     <Compile Include="FileSystems\Local\Win32\Interop\JunctionPoint.cs" />
     <Compile Include="FileSystems\Local\Win32\Interop\MoveFileFlags.cs" />
     <Compile Include="FileSystems\Local\Win32\Interop\NativeFileAccess.cs" />
     <Compile Include="FileSystems\Local\Win32\Interop\NativeFileMode.cs" />
+    <Compile Include="FileSystems\Local\Win32\Interop\NativeFileOptions.cs" />
     <Compile Include="FileSystems\Local\Win32\Interop\NativeFileShare.cs" />
     <Compile Include="FileSystems\Local\Win32\Interop\SECURITY_ATTRIBUTES.cs" />
     <Compile Include="FileSystems\Local\Win32\Interop\WIN32_FIND_DATA.cs" />

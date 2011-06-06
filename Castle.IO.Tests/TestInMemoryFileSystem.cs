@@ -7,7 +7,7 @@ namespace Castle.IO.Tests
 	{
 		public TestInMemoryFileSystem()
 		{
-			CurrentDirectory = Environment.CurrentDirectory;
+			CurrentDirectory = new Path(Environment.CurrentDirectory);
 		}
 	}
 }

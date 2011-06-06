@@ -111,13 +111,13 @@ namespace Castle.IO.FileSystems.Local.Win32.Interop
 
 		[DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
 		internal static extern SafeFileHandle CreateFile(
-			string lpFileName,
-			NativeFileAccess dwDesiredAccess,
-			uint dwShareMode,
-			IntPtr lpSecurityAttributes,
-			uint dwCreationDisposition,
-			uint dwFlagsAndAttributes,
-			IntPtr hTemplateFile);
+			[In] string lpFileName,
+			[In] NativeFileAccess dwDesiredAccess,
+			[In] NativeFileShare dwShareMode,
+			[In, Optional] IntPtr lpSecurityAttributes,
+			[In] NativeFileMode dwCreationDisposition,
+			[In] NativeFileOptions dwFlagsAndAttributes,
+			[In, Optional] IntPtr hTemplateFile);
 
 		[DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
 		internal static extern FileAttributes GetFileAttributes(string lpFileName);

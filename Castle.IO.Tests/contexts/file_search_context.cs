@@ -54,6 +54,11 @@ namespace Castle.IO.Tests.contexts
 
 		protected void given_currentDirectory(string currentDirectory)
 		{
+			FileSystem.CurrentDirectory = new Path(currentDirectory);
+		}
+
+		protected void given_currentDirectory(Path currentDirectory)
+		{
 			FileSystem.CurrentDirectory = currentDirectory;
 		}
 	}

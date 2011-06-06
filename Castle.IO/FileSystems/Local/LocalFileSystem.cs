@@ -67,6 +67,11 @@ namespace Castle.IO.FileSystems.Local
 			return GetDirectory(path).Create();
 		}
 
+		public override IDirectory CreateDirectory(Path path)
+		{
+			return GetDirectory(path).Create();
+		}
+
 		public override ITemporaryDirectory CreateTempDirectory()
 		{
 			var tempPath = Path.GetTempPath();

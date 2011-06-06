@@ -30,7 +30,10 @@ namespace Castle.IO
 		IEnumerable<IFile> Files(string filter, SearchScope scope);
 		IEnumerable<IDirectory> Directories(string filter, SearchScope scope);
 		bool IsHardLink { get; }
+		
+
 		IDirectory LinkTo(string path);
+
 		IDirectory Target { get; }
 
 		IDisposable FileChanges(string filter = "*", bool includeSubdirectories = false, Action<IFile> created = null,

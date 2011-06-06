@@ -25,9 +25,14 @@ namespace Castle.IO.FileSystems.Local.Win32
 			return new Win32Directory(directoryPath);
 		}
 
+		public override IDirectory GetDirectory(Path directoryPath)
+		{
+			return new Win32Directory(directoryPath.FullPath);
+		}
+
 		public override IDirectory GetTempDirectory()
 		{
-			return new Win32Directory(Path.GetTempPath());
+			return new Win32Directory(Path.GetTempPath().FullPath);
 		}
 	}
 }

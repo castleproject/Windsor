@@ -323,6 +323,7 @@ namespace Castle.Transactions
 		///	Creates a directory at the path given.
 		///</summary>
 		///<param name = "path">The path to create the directory at.</param>
+		// TODO: Move this method to Create() on IDirectory.
 		bool IDirectoryAdapter.Create(string path)
 		{
 			AssertState(TransactionState.Active);
@@ -341,7 +342,7 @@ namespace Castle.Transactions
 			       && (curr.Contains(Path.DirectorySeparatorChar)
 			           || curr.Contains(Path.AltDirectorySeparatorChar)))
 			{
-				curr = Path.GetPathWithoutLastBit(curr);
+				curr = Path.GetPathWithoutLastBit(curr).ToString();
 
 				if (!((IDirectoryAdapter) this).Exists(curr))
 					nonExistent.Push(curr);
@@ -504,12 +505,12 @@ namespace Castle.Transactions
 		{
 			// Future: Support System.IO.FileOptions which is the dwFlagsAndAttribute parameter.
 			var fileHandle = NativeMethods.CreateFileTransactedW(path,
-			                                                     TranslateFileAccess(access),
-			                                                     TranslateFileShare(share),
+			                                                     access.ToNative(),
+			                                                     share.ToNative(),
 			                                                     IntPtr.Zero,
-			                                                     TranslateFileMode(mode),
+			                                                     mode.ToNative(),
 			                                                     0, IntPtr.Zero,
-			                                                     _TransactionHandle,
+			                                                     _TransactionHandle, 
 			                                                     IntPtr.Zero, IntPtr.Zero);
 			var error = Marshal.GetLastWin32Error();
 
@@ -530,48 +531,6 @@ namespace Castle.Transactions
 			}
 
 			return new FileStream(fileHandle, access);
-		}
-
-		/// <summary>
-		/// 	Managed -> Native mapping
-		/// </summary>
-		/// <param name = "mode"></param>
-		/// <returns></returns>
-		private static NativeFileMode TranslateFileMode(FileMode mode)
-		{
-			if (mode != FileMode.Append)
-				return (NativeFileMode) (uint) mode;
-			return (NativeFileMode) (uint) FileMode.OpenOrCreate;
-		}
-
-		/// <summary>
-		/// 	Managed -> Native mapping
-		/// </summary>
-		/// <param name = "access"></param>
-		/// <returns></returns>
-		private static NativeFileAccess TranslateFileAccess(FileAccess access)
-		{
-			switch (access)
-			{
-				case FileAccess.Read:
-					return NativeFileAccess.GenericRead;
-				case FileAccess.Write:
-					return NativeFileAccess.GenericWrite;
-				case FileAccess.ReadWrite:
-					return NativeFileAccess.GenericRead | NativeFileAccess.GenericWrite;
-				default:
-					throw new ArgumentOutOfRangeException("access");
-			}
-		}
-
-		/// <summary>
-		/// 	Direct Managed -> Native mapping
-		/// </summary>
-		/// <param name = "share"></param>
-		/// <returns></returns>
-		private static NativeFileShare TranslateFileShare(FileShare share)
-		{
-			return (NativeFileShare) (uint) share;
 		}
 
 		private bool CreateDirectoryTransacted(string templatePath,

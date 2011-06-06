@@ -73,7 +73,7 @@ namespace Castle.Transactions.Internal
 			[In] NativeFileShare dwShareMode,
 			[In, Optional] IntPtr lpSecurityAttributes,
 			[In] NativeFileMode dwCreationDisposition,
-			[In] uint dwFlagsAndAttributes,
+			[In] NativeFileOptions dwFlagsAndAttributes,
 			[In, Optional] IntPtr hTemplateFile,
 			[In] SafeKernelTransactionHandle hTransaction,
 			[In, Optional] IntPtr pusMiniVersion,
