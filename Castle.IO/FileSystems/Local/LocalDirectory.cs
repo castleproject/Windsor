@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace Castle.IO.FileSystems.Local
 {
@@ -100,15 +101,19 @@ namespace Castle.IO.FileSystems.Local
 		public virtual IEnumerable<IDirectory> Directories(string filter, SearchScope scope)
 		{
 			filter = filter.Trim();
+
 			if (filter.EndsWith(Path.DirectorySeparatorChar + "") || filter.EndsWith(Path.AltDirectorySeparatorChar + ""))
 				filter = filter.Substring(0, filter.Length - 1);
+
 			DirectoryInfo.Refresh();
-			if (Path.IsPathRooted(filter))
+
+			if (Path.IsPathRooted(filter) || Regex.IsMatch(filter, "[A-Z]{1,3}:", RegexOptions.IgnoreCase))
 			{
 				var root = Path.GetPathRoot(filter);
 				filter = filter.Substring(root.Length);
 				return LocalFileSystem.Instance.GetDirectory(root).Directories(filter, scope);
 			}
+
 			return DirectoryInfo.GetDirectories(filter,
 			                                    scope == SearchScope.CurrentOnly
 			                                    	? SearchOption.TopDirectoryOnly

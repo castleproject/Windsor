@@ -24,7 +24,7 @@ using SharpTestsEx;
 
 namespace Castle.IO.Tests.copying_files
 {
-	//[TestFixture(typeof (TestInMemoryFileSystem))]
+	[TestFixture(typeof (TestInMemoryFileSystem))]
 	[TestFixture(typeof (TestLocalFileSystem))]
 	public class locked_file<T> : files<T> where T : IFileSystem, new()
 	{

@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Castle.IO.Internal;
+using System.Text.RegularExpressions;
 
 namespace Castle.IO.FileSystems.InMemory
 {
@@ -102,13 +103,13 @@ namespace Castle.IO.FileSystems.InMemory
 		public IEnumerable<IDirectory> Directories(string filter, SearchScope scope)
 		{
 			var path = new Path(filter);
-			if (path.IsRooted)
+			// if it's a rooted or it's a in the form of e.g. "C:"
+			if (path.IsRooted || Regex.IsMatch(filter, "[A-Z]{1,3}:", RegexOptions.IgnoreCase))
 			{
 				var directory = FileSystem.GetDirectory(path.Segments.First());
 				return path.Segments.Count() == 1
 				       	? new[] {directory}
-				       	: directory
-				       	  	.Directories(string.Join("\\", path.Segments.Skip(1)
+				       	: directory.Directories(string.Join("\\", path.Segments.Skip(1)
 				       	  	                               	.DefaultIfEmpty("*")
 				       	  	                               	.ToArray()));
 			}

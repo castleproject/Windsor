@@ -105,7 +105,9 @@ namespace Castle.IO
 		private static IEnumerable<string> GetFilterPaths(string filter)
 		{
 			var lastWasSubFolder = false;
+			
 			var path = new Path(filter);
+
 			foreach (var segment in path.Segments)
 			{
 				if (segment == SUBFOLDER)
@@ -123,8 +125,10 @@ namespace Castle.IO
 		public static IEnumerable<IDirectory> Directories(this IDirectory directory, string filter)
 		{
 			var pathSegments = GetFilterPaths(filter).ToList();
+
 			if (pathSegments.Count == 1)
 				return directory.Directories(filter, SearchScope.CurrentOnly);
+			
 			return GetDirectorySpecCore(directory, pathSegments, 0);
 		}
 

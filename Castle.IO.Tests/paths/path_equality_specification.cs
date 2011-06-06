@@ -23,7 +23,7 @@ namespace Castle.IO.Tests.paths
 		[TestCase(@"\\?\C:\a\b.txt", @"C:\a\b.txt")]
 		[TestCase(@"\\?\C:\a\b\", @"C:\a\b\")]
 		[TestCase(@"\\?\server\b\", @"\\server\b\")]
-		[TestCase(@"\\?\server-a\", @"\\server-a", 
+		[TestCase(@"\\?\server-a\", @"\\server-a",
 			Description = "In this case they are actual equal, because the second MUST mean the root of the server")]
 		[TestCase(@"\\?\.\COM2\r1\r2", @"\\.\COM2\r1\r2")]
 		public void unc_root_equality(string a_path, string equal_to)
