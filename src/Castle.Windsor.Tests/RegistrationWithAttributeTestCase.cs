@@ -44,7 +44,7 @@ namespace CastleTests
 		{
 			Container.Register(AllTypes.FromThisAssembly()
 			                   	.Where(Component.IsCastleComponent)
-			                   	.Configure(c => c.LifeStyle.Pooled));
+			                   	.LifestylePooled());
 
 			var handler = Container.Kernel.GetHandler("keyTransient");
 

@@ -73,16 +73,6 @@ namespace Castle.MicroKernel.Registration
 		}
 
 		/// <summary>
-		///   Allows customized configurations of each matching type.
-		/// </summary>
-		/// <param name = "configurer">The configuration action.</param>
-		/// <returns></returns>
-		public BasedOnDescriptor Configure(ConfigureDelegate configurer)
-		{
-			return basedOn.Configure(configurer);
-		}
-
-		/// <summary>
 		///   Allows customized configurations of each matching type that is 
 		///   assignable to <typeparamref name = "T" />.
 		/// </summary>
@@ -90,18 +80,6 @@ namespace Castle.MicroKernel.Registration
 		/// <param name = "configurer">The configuration action.</param>
 		/// <returns></returns>
 		public BasedOnDescriptor ConfigureFor<T>(Action<ComponentRegistration> configurer)
-		{
-			return basedOn.ConfigureFor<T>(configurer);
-		}
-
-		/// <summary>
-		///   Allows customized configurations of each matching type that is 
-		///   assignable to <typeparamref name = "T" />.
-		/// </summary>
-		/// <typeparam name = "T">The type assignable from.</typeparam>
-		/// <param name = "configurer">The configuration action.</param>
-		/// <returns></returns>
-		public BasedOnDescriptor ConfigureFor<T>(ConfigureDelegate configurer)
 		{
 			return basedOn.ConfigureFor<T>(configurer);
 		}

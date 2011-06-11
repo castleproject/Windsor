@@ -1,4 +1,20 @@
 ================================================================================================
+change - Removed overloads of Configure and ConfigureFor<> methods of the fluent registration
+	API that had ConfigureDelegate parameter
+
+impact - high
+fixability - easy
+
+description - This change was made to simplify the API and remove ambiguity in cases where a 
+	private method is used to provide the configuration.
+
+fix - This change breaks scenarios where a property was being used as the last element of the
+	chain in the nested deledate, like:
+	Configure(c => c.LifeStyle.Transient)
+	This code will no longer compile. To fix it switch to the new methods exposing lifestyle:
+	Configure(c => c.LifestyleTransient()) or simply::
+	LifestyleTransient()
+================================================================================================
 change - ITypedFactoryComponentResolver interface was removed and ITypedFactoryComponentSelector
 	now returns Func<IKernelInternal, IReleasePolicy, object> from SelectComponent method
 

@@ -340,7 +340,7 @@ namespace Castle.MicroKernel.Tests.Registration
 			Kernel.Register(AllTypes
 			                	.FromAssembly(Assembly.GetExecutingAssembly())
 			                	.BasedOn<ICommon>()
-			                	.Configure(component => component.LifeStyle.Transient)
+			                	.Configure(component => component.LifestyleTransient())
 				);
 
 			foreach (var handler in Kernel.GetAssignableHandlers(typeof(ICommon)))
