@@ -37,7 +37,7 @@ namespace Castle
 				AllTypes.FromThisAssembly()
 					.BasedOn<IEmptyService2>()
 					.WithService.Base()
-					.Configure(c => c.LifeStyle.Transient));
+					.Configure(c => c.LifestyleTransient()));
 
 			var obj = Container.Resolve<IEmptyService2>();
 			Assert.IsInstanceOf<CompositeEmptyService2>(obj);

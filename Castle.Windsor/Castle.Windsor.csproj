@@ -645,7 +645,6 @@
     <Compile Include="MicroKernel\ModelBuilder\Descriptors\ConfigurationDescriptor.cs" />
     <Compile Include="MicroKernel\ModelBuilder\Descriptors\CustomDependencyDescriptor.cs" />
     <Compile Include="MicroKernel\ModelBuilder\Descriptors\ReferenceDependencyDescriptor.cs" />
-    <Compile Include="MicroKernel\Registration\ConfigureDelegate.cs" />
     <Compile Include="MicroKernel\Registration\Dependency.cs" />
     <Compile Include="MicroKernel\Registration\DynamicParametersResolveDelegate.cs" />
     <Compile Include="MicroKernel\Registration\DynamicParametersWithContextResolveDelegate.cs" />

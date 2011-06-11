@@ -97,16 +97,6 @@ namespace Castle.MicroKernel.Registration
 		}
 
 		/// <summary>
-		///   Allows customized configurations of each matching type.
-		/// </summary>
-		/// <param name = "configurer">The configuration action.</param>
-		/// <returns></returns>
-		public BasedOnDescriptor Configure(ConfigureDelegate configurer)
-		{
-			return Configure(delegate(ComponentRegistration registration) { configurer(registration); });
-		}
-
-		/// <summary>
 		///   Allows customized configurations of each matching type that is 
 		///   assignable to
 		///   <typeparamref name = "T" />
@@ -120,20 +110,6 @@ namespace Castle.MicroKernel.Registration
 			var config = new ConfigureDescriptor(this, typeof(T), configurer);
 			configurers.Add(config);
 			return this;
-		}
-
-		/// <summary>
-		///   Allows customized configurations of each matching type that is 
-		///   assignable to
-		///   <typeparamref name = "T" />
-		///   .
-		/// </summary>
-		/// <typeparam name = "T">The type assignable from.</typeparam>
-		/// <param name = "configurer">The configuration action.</param>
-		/// <returns></returns>
-		public BasedOnDescriptor ConfigureFor<T>(ConfigureDelegate configurer)
-		{
-			return ConfigureFor<T>(delegate(ComponentRegistration registration) { configurer(registration); });
 		}
 
 		/// <summary>
@@ -248,6 +224,89 @@ namespace Castle.MicroKernel.Registration
 		public BasedOnDescriptor WithServiceSelf()
 		{
 			return WithService.Self();
+		}
+
+		/// <summary>
+		///   Sets component lifestyle to specified one.
+		/// </summary>
+		/// <returns></returns>
+		public BasedOnDescriptor LifestyleCustom(Type customLifestyleType)
+		{
+			return Configure(c => c.LifestyleCustom(customLifestyleType));
+		}
+
+		/// <summary>
+		///   Sets component lifestyle to specified one.
+		/// </summary>
+		/// <returns></returns>
+		public BasedOnDescriptor LifestyleCustom<TLifestyleManager>() where TLifestyleManager : ILifestyleManager, new()
+		{
+			return Configure(c => c.LifestyleCustom<TLifestyleManager>());
+		}
+
+		/// <summary>
+		///   Sets component lifestyle to per thread.
+		/// </summary>
+		/// <returns></returns>
+		public BasedOnDescriptor LifestylePerThread()
+		{
+			return Configure(c => c.LifestylePerThread());
+		}
+
+		/// <summary>
+		///   Sets component lifestyle to scoped per explicit scope.
+		/// </summary>
+		/// <returns></returns>
+		public BasedOnDescriptor LifestyleScoped()
+		{
+			return Configure(c => c.LifestyleScoped());
+		}
+
+		/// <summary>
+		///   Sets component lifestyle to scoped per component <typeparamref name = "TBaseForRoot" />.
+		/// </summary>
+		/// <returns></returns>
+		public BasedOnDescriptor LifestyleScopedPer<TBaseForRoot>() where TBaseForRoot : class
+		{
+			return Configure(c => c.LifestyleScopedPer<TBaseForRoot>());
+		}
+
+#if (!SILVERLIGHT)
+		/// <summary>
+		///   Sets component lifestyle to instance per web request.
+		/// </summary>
+		/// <returns></returns>
+		public BasedOnDescriptor LifestylePerWebRequest()
+		{
+			return Configure(c => c.LifestylePerWebRequest());
+		}
+#endif
+
+		/// <summary>
+		///   Sets component lifestyle to pooled. If <paramref name = "initialSize" /> or <paramref name = "maxSize" /> are not set default values will be used.
+		/// </summary>
+		/// <returns></returns>
+		public BasedOnDescriptor LifestylePooled(int? initialSize = null, int? maxSize = null)
+		{
+			return Configure(c => c.LifestylePooled(initialSize, maxSize));
+		}
+
+		/// <summary>
+		///   Sets component lifestyle to singleton.
+		/// </summary>
+		/// <returns></returns>
+		public BasedOnDescriptor LifestyleSingleton()
+		{
+			return Configure(c => c.LifestyleSingleton());
+		}
+
+		/// <summary>
+		///   Sets component lifestyle to transient.
+		/// </summary>
+		/// <returns></returns>
+		public BasedOnDescriptor LifestyleTransient()
+		{
+			return Configure(c => c.LifestyleTransient());
 		}
 
 		/// <summary>
