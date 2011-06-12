@@ -12,30 +12,32 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Core
+namespace Castle.Core.Internal
 {
-	using Castle.Core.Internal;
+	using System;
+	using System.Collections;
+	using System.Diagnostics;
 
-	public class ComponentName
+	[DebuggerStepThrough]
+	[DebuggerNonUserCode]
+	public static class Must
 	{
-		public ComponentName(string name, bool setByUser)
+		public static T NotBeEmpty<T>(T arg, string name) where T : class, IEnumerable
 		{
-			Name = Must.NotBeEmpty(name, "name");
-			SetByUser = setByUser;
+			if (NotBeNull(arg, name).GetEnumerator().MoveNext() == false)
+			{
+				throw new ArgumentException(name);
+			}
+			return arg;
 		}
 
-		public string Name { get; private set; }
-		public bool SetByUser { get; private set; }
-
-		public override string ToString()
+		public static T NotBeNull<T>(T arg, string name) where T : class
 		{
-			return Name;
-		}
-
-		internal void SetName(string value)
-		{
-			Name = Must.NotBeEmpty(value, "value");
-			SetByUser = true;
+			if (arg == null)
+			{
+				throw new ArgumentNullException(name);
+			}
+			return arg;
 		}
 	}
 }
