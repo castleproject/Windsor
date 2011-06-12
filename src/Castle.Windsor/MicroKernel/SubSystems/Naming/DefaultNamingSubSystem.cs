@@ -228,12 +228,15 @@ namespace Castle.MicroKernel.SubSystems.Naming
 			var key = handler.ComponentModel.Name;
 			using (@lock.ForWriting())
 			{
-				if (key2Handler.ContainsKey(key))
+				try
+				{
+					key2Handler.Add(key, handler);
+				}
+				catch (ArgumentException)
 				{
 					throw new ComponentRegistrationException(
 						String.Format("There is a component already registered for the given name {0}", key));
 				}
-				key2Handler.Add(key, handler);
 				var serviceSelector = GetServiceSelector(handler);
 				foreach (var service in handler.ComponentModel.Services)
 				{

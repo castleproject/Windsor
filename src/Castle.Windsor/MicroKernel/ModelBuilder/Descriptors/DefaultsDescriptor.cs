@@ -39,24 +39,7 @@ namespace Castle.MicroKernel.ModelBuilder.Descriptors
 				model.Implementation = implementation ?? FirstService(model);
 			}
 
-			if (string.IsNullOrEmpty(model.Name))
-			{
-				if (name != null)
-				{
-					model.ComponentName = name;
-				}
-				else
-				{
-					if (model.Implementation == typeof(LateBoundComponent))
-					{
-						model.ComponentName = new ComponentName("Late bound " + FirstService(model).FullName, false);
-					}
-					else
-					{
-						model.ComponentName = new ComponentName(model.Implementation.FullName, false);
-					}
-				}
-			}
+			EnsureComponentName(model);
 			EnsureComponentConfiguration(kernel, model);
 		}
 
@@ -77,6 +60,25 @@ namespace Castle.MicroKernel.ModelBuilder.Descriptors
 				model.Configuration = configuration;
 			}
 			return;
+		}
+
+		private void EnsureComponentName(ComponentModel model)
+		{
+			if (model.ComponentName != null)
+			{
+				return;
+			}
+			if (name != null)
+			{
+				model.ComponentName = name;
+				return;
+			}
+			if (model.Implementation == typeof(LateBoundComponent))
+			{
+				model.ComponentName = new ComponentName("Late bound " + FirstService(model).FullName, false);
+				return;
+			}
+			model.ComponentName = new ComponentName(model.Implementation.FullName, false);
 		}
 
 		private Type FirstService(ComponentModel model)

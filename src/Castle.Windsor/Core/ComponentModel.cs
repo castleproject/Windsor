@@ -83,9 +83,10 @@ namespace Castle.Core
 		/// </summary>
 		public ComponentModel(ComponentName name, ICollection<Type> services, Type implementation, IDictionary extendedProperties)
 		{
-			componentName = name;
-			Implementation = implementation;
+			componentName = Must.NotBeNull(name, "name");
+			Implementation = Must.NotBeNull(implementation, "implementation");
 			this.extendedProperties = extendedProperties;
+			services = Must.NotBeEmpty(services, "services");
 			foreach (var type in services)
 			{
 				AddService(type);
@@ -99,7 +100,7 @@ namespace Castle.Core
 		public ComponentName ComponentName
 		{
 			get { return componentName; }
-			internal set { componentName = value; }
+			internal set { componentName = Must.NotBeNull(value, "value"); }
 		}
 
 		/// <summary>
@@ -283,7 +284,7 @@ namespace Castle.Core
 		/// </summary>
 		public string Name
 		{
-			get { return componentName != null ? componentName.Name : null; }
+			get { return componentName.Name; }
 			set { componentName.SetName(value); }
 		}
 
