@@ -22,9 +22,7 @@ namespace Castle.Core
 	/// <summary>
 	/// Collection of <see cref="MethodMetaModel"/>
 	/// </summary>
-#if !SILVERLIGHT
 	[Serializable]
-#endif
 	public class MethodMetaModelCollection : Collection<MethodMetaModel>
 	{
 		private IDictionary methodInfo2Model;

@@ -14,6 +14,9 @@
 
 namespace Castle.Core
 {
+	/// <summary>
+	/// Marks a <see cref="ILifecycleConcern"/> which is applied right after component instance is activated.
+	/// </summary>
 	public interface ICommissionConcern : ILifecycleConcern
 	{
 	}
