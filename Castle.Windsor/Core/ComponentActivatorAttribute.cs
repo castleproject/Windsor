@@ -17,7 +17,7 @@ namespace Castle.Core
 	using System;
 
 	/// <summary>
-	///   Associates a custom component with a component
+	///   Associates a custom activator with a component
 	/// </summary>
 	[AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
 	public sealed class ComponentActivatorAttribute : Attribute
