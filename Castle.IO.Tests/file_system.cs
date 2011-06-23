@@ -1,22 +1,4 @@
-﻿#region license
-
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
-// 
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-// 
-// http://www.apache.org/licenses/LICENSE-2.0
-// 
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
-#endregion
-
-using System;
+﻿using System;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -37,10 +19,11 @@ namespace Castle.IO.Tests
 			using (var tempDir = FileSystem.CreateTempDirectory())
 			{
 				string filePath = null;
-				using (tempDir.FileChanges(created: f => {
-					filePath = f.Path.FullPath;
-					triggered.Set();
-				}))
+				using (tempDir.FileChanges(created: f =>
+				                                    	{
+				                                    		filePath = f.Path.FullPath;
+				                                    		triggered.Set();
+				                                    	}))
 				{
 					tempDir.GetFile("receives_creation_notification.txt").MustExist();
 					triggered.Wait();
@@ -54,13 +37,13 @@ namespace Castle.IO.Tests
 		public void temp_file_exists_after_creation_and_is_deleted_when_used()
 		{
 			string fullPath;
-			
+
 			using (var tempFile = FileSystem.CreateTempFile())
 			{
 				tempFile.Exists.Should().Be.True();
 
 				fullPath = tempFile.Path.FullPath;
-				
+
 				var tempFile2 = FileSystem.GetFile(fullPath);
 
 				tempFile2.Exists.ShouldBeTrue();
@@ -207,7 +190,7 @@ namespace Castle.IO.Tests
 			using (var concreteDir = FileSystem.CreateTempDirectory())
 			{
 				concreteDir.GetFile("test.txt").OpenWrite().Close();
-				
+
 				var linkedPath = Path.GetTempPath().Combine(tempLinkFolder);
 
 				var linkedDirectory = concreteDir.LinkTo(linkedPath.ToString());
@@ -303,7 +286,7 @@ namespace Castle.IO.Tests
 		{
 			using (var temporaryFile = FileSystem.CreateTempFile())
 			using (var stream1 = temporaryFile.Open(FileMode.OpenOrCreate, firstAccess, @lock))
-				SpecExtensions.ShouldThrow<IOException>(Executing(() => temporaryFile.Open(FileMode.OpenOrCreate, nextAccess, FileShare.None)));
+				Executing(() => temporaryFile.Open(FileMode.OpenOrCreate, nextAccess, FileShare.None)).ShouldThrow<IOException>();
 		}
 
 		[TestCase(FileAccess.ReadWrite)]
@@ -311,7 +294,7 @@ namespace Castle.IO.Tests
 		public void append_only_in_write_mode(FileAccess access)
 		{
 			using (var tempFile = FileSystem.CreateTempFile())
-				SpecExtensions.ShouldThrow<ArgumentException>(Executing(() => tempFile.Open(FileMode.Append, access, FileShare.None)));
+				Executing(() => tempFile.Open(FileMode.Append, access, FileShare.None)).ShouldThrow<ArgumentException>();
 		}
 
 		[Test]

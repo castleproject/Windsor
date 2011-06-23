@@ -6,6 +6,7 @@ using NUnit.Framework;
 
 namespace Castle.IO.Tests.open_for_write
 {
+	[Ignore("we don't necessarily need to mimick .Net's validation with the new code")]
 	public class open_behavior_is_same : context
 	{
 		[Test]

@@ -168,9 +168,16 @@ namespace Castle.IO.FileSystems.InMemory
 			// !write && truncate
 
 			if ((fileAccess & FileAccess.Write) == 0
-				&& (fileMode == FileMode.Create || fileMode == FileMode.CreateNew || fileMode == FileMode.Truncate))
+				&& (fileMode == FileMode.Append || fileMode == FileMode.Create || fileMode == FileMode.CreateNew || fileMode == FileMode.Truncate))
 				throw new ArgumentException(string.Format(
 					"Can only open files in {0} mode when requesting FileAccess.Write access.", fileMode));
+
+			//if (
+			//    ((fileMode == FileMode.Append) && fileAccess != FileAccess.Write) ||
+			//    ((fileMode == FileMode.CreateNew || fileMode == FileMode.Create || fileMode == FileMode.Truncate)
+			//     && (fileAccess != FileAccess.Write && fileAccess != FileAccess.ReadWrite)) ||
+			//    false //((Exists && fileMode == FileMode.OpenOrCreate && fileAccess == FileAccess.Write))
+			//    )
 		}
 
 		private void VerifyExists()
