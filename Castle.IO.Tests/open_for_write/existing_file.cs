@@ -22,7 +22,7 @@ using NUnit.Framework;
 
 namespace Castle.IO.Tests.open_for_write
 {
-	//[TestFixture(typeof (TestInMemoryFileSystem))]
+	[TestFixture(typeof (TestInMemoryFileSystem))]
 	[TestFixture(typeof (TestLocalFileSystem))]
 	public class existing_file<T> : files<T> where T : IFileSystem, new()
 	{
