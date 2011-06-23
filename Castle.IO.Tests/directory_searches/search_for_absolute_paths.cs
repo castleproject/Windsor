@@ -26,12 +26,12 @@ namespace Castle.IO.Tests.directory_searches
 	[TestFixture(typeof (TestLocalFileSystem))]
 	public class search_for_absolute_paths<T> : files<T> where T : IFileSystem, new()
 	{
-		private const string TEMPFOLDER = "CBB7E871-89FF-4F20-A58E-73EB4D2F1191";
+		private const string Tempfolder = "CBB7E871-89FF-4F20-A58E-73EB4D2F1191";
 
-		[TestCase(@"c:\" + TEMPFOLDER + @"\test\", @"c:\" + TEMPFOLDER + @"\*")]
-		[TestCase(@"c:\" + TEMPFOLDER + @"\test\", @"c:\" + TEMPFOLDER + @"\test\")]
-		[TestCase(@"c:\" + TEMPFOLDER + @"\test\", @"c:\" + TEMPFOLDER + @"\test")]
-		[TestCase(@"c:\" + TEMPFOLDER + "\\", @"c:\" + TEMPFOLDER)]
+		[TestCase(@"c:\" + Tempfolder + @"\test\", @"c:\" + Tempfolder + @"\*")]
+		[TestCase(@"c:\" + Tempfolder + @"\test\", @"c:\" + Tempfolder + @"\test\")]
+		[TestCase(@"c:\" + Tempfolder + @"\test\", @"c:\" + Tempfolder + @"\test")]
+		[TestCase(@"c:\" + Tempfolder + "\\", @"c:\" + Tempfolder)]
 		public void finds_directory(string directoryPath, string searchString)
 		{
 			IDirectory folder = null;
@@ -47,6 +47,14 @@ namespace Castle.IO.Tests.directory_searches
 			{
 				folder.Delete();
 			}
+		}
+
+		[TearDown]
+		public void RemoveTempFolder()
+		{
+			var directory = FileSystem.GetDirectory("C:\\" + Tempfolder);
+			if (directory.Exists)
+				directory.Delete();
 		}
 	}
 }

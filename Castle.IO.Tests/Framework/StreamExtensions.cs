@@ -40,7 +40,11 @@ namespace Castle.IO.Tests
 		public static IFile ShouldBe(this IFile file, params byte[] content)
 		{
 			using (var stream = file.OpenRead())
-				stream.ReadToEnd().ShouldBe(content);
+			{
+				var data = stream.ReadToEnd();
+				data.ShouldBe(content);
+			}
+
 			return file;
 		}
 

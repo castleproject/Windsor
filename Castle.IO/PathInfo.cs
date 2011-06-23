@@ -17,11 +17,9 @@
 #endregion
 
 using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Contracts;
 using System.Net;
 using System.Text.RegularExpressions;
-using Castle.IO.Internal;
 using System.Diagnostics;
 
 namespace Castle.IO

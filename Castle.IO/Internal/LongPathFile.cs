@@ -465,7 +465,12 @@ namespace Castle.IO.Internal
 
 			var handle = GetFileHandle(normalizedPath, mode, access, share, options);
 
-			return new FileStream(handle, access, bufferSize, (options & FileOptions.Asynchronous) == FileOptions.Asynchronous);
+			var fileStream = new FileStream(handle, access, bufferSize, (options & FileOptions.Asynchronous) == FileOptions.Asynchronous);
+			
+			if (mode == FileMode.Append)
+				fileStream.Seek(0L, SeekOrigin.End);
+
+			return fileStream;
 		}
 
 		private static SafeFileHandle GetFileHandle(string normalizedPath, FileMode mode, FileAccess access, FileShare share,
