@@ -94,14 +94,18 @@ namespace Castle.MicroKernel.ComponentActivator
 			}
 
 			instance = ProxyUtil.GetUnproxiedInstance(instance);
-			ApplyConcerns(Model.Lifecycle.CommissionConcerns
-#if DOTNET35 || SILVERLIGHT
-				.ToArray()
-#endif
-			              , instance);
+			ApplyConcerns(Model.Lifecycle.CommissionConcerns, instance);
 		}
 
-		protected virtual void ApplyConcerns(IEnumerable<ILifecycleConcern> steps, object instance)
+		protected virtual void ApplyConcerns(IEnumerable<ICommissionConcern> steps, object instance)
+		{
+			foreach (var concern in steps)
+			{
+				concern.Apply(Model, instance);
+			}
+		}
+
+		protected virtual void ApplyConcerns(IEnumerable<IDecommissionConcern> steps, object instance)
 		{
 			foreach (var concern in steps)
 			{
@@ -117,11 +121,7 @@ namespace Castle.MicroKernel.ComponentActivator
 			}
 
 			instance = ProxyUtil.GetUnproxiedInstance(instance);
-			ApplyConcerns(Model.Lifecycle.DecommissionConcerns
-#if DOTNET35 || SILVERLIGHT
-				.ToArray()
-#endif
-			              , instance);
+			ApplyConcerns(Model.Lifecycle.DecommissionConcerns, instance);
 		}
 	}
 }

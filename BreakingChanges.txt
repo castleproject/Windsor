@@ -1,4 +1,19 @@
 ================================================================================================
+change - Removed interface Castle.Core.ILifecycleConcern
+
+impact - low
+fixability - easy
+
+description - This change was made because with this base interface it was impossible to
+	implement Castle.Core.ICommisssionConcern and Castle.Core.IDecommissionConcers in single class
+	Additionaly ILifecycleConcern had no meaning, only the ICommisssionConcern and
+	IDecommissionConcers have
+
+fix - If you have code using directly ILifecycleConcern (but what for?) you need to
+	migrate to either ICommisssionConcern or IDecommissionConcers. For code that use
+	ICommisssionConcern and IDecommisssionConcern you can recompile it to be extra save, but it
+	is not required.
+================================================================================================
 change - Removed overloads of Configure and ConfigureFor<> methods of the fluent registration
 	API that had ConfigureDelegate parameter
 
