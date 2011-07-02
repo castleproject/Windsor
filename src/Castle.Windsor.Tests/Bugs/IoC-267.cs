@@ -41,7 +41,7 @@ namespace Castle.Bugs
                                 {
                                     public void MethodContainsInvalidCode()
                                     {
-                                        var kernel = new DefaultKernel();
+                                        DefaultKernel kernel = new DefaultKernel();
                                         kernel.Register(Component.For<Int32>().Instance(1));
                                     }
                                 }
