@@ -493,13 +493,12 @@
     <Compile Include="MicroKernel\LifecycleConcerns\DisposalConcern.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Core\ILifecycleConcern.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="MicroKernel\LifecycleConcerns\InitializationConcern.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="MicroKernel\LifecycleConcerns\LateBoundCommissionConcerns.cs" />
     <Compile Include="MicroKernel\LifecycleConcerns\LateBoundConcerns.cs" />
+    <Compile Include="MicroKernel\LifecycleConcerns\LateBoundDecommissionConcerns.cs" />
     <Compile Include="MicroKernel\LifecycleConcerns\LifecycleActionDelegate.cs" />
     <Compile Include="MicroKernel\LifecycleConcerns\OnCreatedConcern.cs" />
     <Compile Include="MicroKernel\LifecycleConcerns\OnDestroyConcern.cs" />
