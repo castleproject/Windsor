@@ -19,6 +19,7 @@ namespace Castle.Windsor.Diagnostics
 	using System.ComponentModel;
 	using System.Diagnostics;
 	using System.Linq;
+	using System.Security;
 
 	public class PerformanceMetricsFactory : IPerformanceMetricsFactory
 	{
@@ -33,7 +34,7 @@ namespace Castle.Windsor.Diagnostics
 
 		public bool InitializedSuccessfully
 		{
-			get { return exception != null; }
+			get { return exception == null; }
 		}
 
 		public ITrackedComponentsPerformanceCounter CreateInstancesTrackedByReleasePolicyCounter(string name)
@@ -108,6 +109,11 @@ namespace Castle.Windsor.Diagnostics
 				exception = e;
 			}
 			catch (UnauthorizedAccessException e)
+			{
+				exception = e;
+			}
+			// it's not in the documentation but PerformanceCounterCategory.Create can also throw SecurityException,
+			catch (SecurityException e)
 			{
 				exception = e;
 			}
