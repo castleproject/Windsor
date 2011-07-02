@@ -15,9 +15,17 @@
 namespace Castle.Core
 {
 	/// <summary>
-	/// Marks a <see cref="ILifecycleConcern"/> which is applied right after component instance is activated.
+	///   Represents a concern that will be applied to a component instance
+	///   during commission phase (right after component instance is activated).
 	/// </summary>
-	public interface ICommissionConcern : ILifecycleConcern
+	public interface ICommissionConcern
 	{
+		/// <summary>
+		///   Implementors should act on the instance in response to 
+		///   a commission phase.
+		/// </summary>
+		/// <param name = "model">The model.</param>
+		/// <param name = "component">The component.</param>
+		void Apply(ComponentModel model, object component);
 	}
 }

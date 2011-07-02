@@ -151,7 +151,7 @@ namespace Castle.MicroKernel
 
 		private bool IsLateBound(IDecommissionConcern arg)
 		{
-			return arg is LateBoundConcerns;
+			return arg is LateBoundConcerns<IDecommissionConcern>;
 		}
 
 		public event BurdenReleaseDelegate Released;

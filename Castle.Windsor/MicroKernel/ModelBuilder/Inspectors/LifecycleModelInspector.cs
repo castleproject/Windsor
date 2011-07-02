@@ -56,7 +56,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 
 		private void ProcessLateBoundModel(ComponentModel model)
 		{
-			var commission = new LateBoundConcerns();
+			var commission = new LateBoundCommissionConcerns();
 			if (model.Services.Any(s => s.Is<IInitializable>()))
 			{
 				model.Lifecycle.Add(InitializationConcern.Instance);
@@ -84,7 +84,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 			}
 			else
 			{
-				var decommission = new LateBoundConcerns();
+				var decommission = new LateBoundDecommissionConcerns();
 				decommission.AddConcern<IDisposable>(DisposalConcern.Instance);
 				model.Lifecycle.Add(decommission as IDecommissionConcern);
 			}

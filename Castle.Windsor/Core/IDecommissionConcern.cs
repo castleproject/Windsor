@@ -14,11 +14,18 @@
 
 namespace Castle.Core
 {
-
 	/// <summary>
-	/// Marks a <see cref="ILifecycleConcern"/> which is applied right before component instance is destroyed.
+	///   Represents a concern that will be applied to a component instance
+	///   during decommission phase (right before component instance is destroyed).
 	/// </summary>
-	public interface IDecommissionConcern : ILifecycleConcern
+	public interface IDecommissionConcern
 	{
+		/// <summary>
+		///   Implementors should act on the instance in response to 
+		///   a decommission phase.
+		/// </summary>
+		/// <param name = "model">The model.</param>
+		/// <param name = "component">The component.</param>
+		void Apply(ComponentModel model, object component);
 	}
 }
