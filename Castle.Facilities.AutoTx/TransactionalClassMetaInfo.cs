@@ -44,7 +44,6 @@ namespace Castle.Facilities.AutoTx
 			methods.Where(x => x.Item2 == null).Run(pair => _NormalMethods.Add(pair.Item1));
 		}
 
-
 		public IEnumerable<MethodInfo> TransactionalMethods
 		{
 			[Pure]
