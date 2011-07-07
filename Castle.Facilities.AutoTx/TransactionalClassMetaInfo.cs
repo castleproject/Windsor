@@ -22,6 +22,7 @@ using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Reflection;
 using Castle.Services.Transaction;
+using Castle.Services.Transaction.Internal;
 
 namespace Castle.Facilities.AutoTx
 {
@@ -42,7 +43,6 @@ namespace Castle.Facilities.AutoTx
 			methods.Where(x => x.Item2 != null).Run(pair => _TxMethods.Add(pair.Item1, pair.Item2));
 			methods.Where(x => x.Item2 == null).Run(pair => _NormalMethods.Add(pair.Item1));
 		}
-
 
 		public IEnumerable<MethodInfo> TransactionalMethods
 		{

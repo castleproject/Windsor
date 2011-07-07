@@ -58,24 +58,23 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\packages\NUnit.2.5.10.11092\lib\pnunit.framework.dll</HintPath>
     </Reference>
+    <Reference Include="SharpTestsEx">
+      <HintPath>..\..\packages\SharpTestsEx.1.1.1\lib\SharpTestsEx.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpTestsEx.Mvc">
+      <HintPath>..\..\packages\SharpTestsEx.1.1.1\lib\SharpTestsEx.Mvc.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.CoreEx">
-      <HintPath>..\..\lib\net40\System.CoreEx.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Interactive">
-      <HintPath>..\..\lib\net40\System.Interactive.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Reactive">
-      <HintPath>..\..\lib\net40\System.Reactive.dll</HintPath>
-    </Reference>
     <Reference Include="System.Transactions" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\AutoTxAssemblyInfo.cs">
       <Link>Properties\AutoTxAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="Properties\InternalsVisibleTo.cs" />
+    <Compile Include="Bugfixes\MissingTransactionException_when_generically_parametized_interface_service_in_error.cs" />
     <Compile Include="Framework\MaybeEx.cs" />
     <Compile Include="HandlerSelector_ForDifferentLifestyles.cs" />
     <Compile Include="InitTests.cs" />
