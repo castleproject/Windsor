@@ -22,30 +22,24 @@ namespace Castle.MicroKernel.Registration
 	public class ConfigureDescriptor
 	{
 		private readonly Type baseType;
-		private readonly BasedOnDescriptor basedOn;
 		private readonly Action<ComponentRegistration> configurer;
 
 		/// <summary>
 		///   Initializes a new instance of the ConfigureDescriptor.
 		/// </summary>
-		/// <param name = "basedOn">The <see cref = "BasedOnDescriptor" /></param>
 		/// <param name = "configurer">The configuration action.</param>
-		public ConfigureDescriptor(BasedOnDescriptor basedOn,
-		                           Action<ComponentRegistration> configurer)
-			: this(basedOn, null, configurer)
+		public ConfigureDescriptor(Action<ComponentRegistration> configurer)
+			: this(null, configurer)
 		{
 		}
 
 		///<summary>
 		///  Initializes a new instance of the ConfigureDescriptor.
 		///</summary>
-		///<param name = "basedOn">The <see cref = "BasedOnDescriptor" /></param>
 		///<param name = "baseType">The base type to match.</param>
 		///<param name = "configurer">The configuration action.</param>
-		public ConfigureDescriptor(BasedOnDescriptor basedOn, Type baseType,
-		                           Action<ComponentRegistration> configurer)
+		public ConfigureDescriptor(Type baseType, Action<ComponentRegistration> configurer)
 		{
-			this.basedOn = basedOn;
 			this.baseType = baseType;
 			this.configurer = configurer;
 		}
@@ -60,28 +54,6 @@ namespace Castle.MicroKernel.Registration
 			{
 				configurer(registration);
 			}
-		}
-
-		/// <summary>
-		///   Allows customized configurations of each matching type.
-		/// </summary>
-		/// <param name = "configurer">The configuration action.</param>
-		/// <returns></returns>
-		public BasedOnDescriptor Configure(Action<ComponentRegistration> configurer)
-		{
-			return basedOn.Configure(configurer);
-		}
-
-		/// <summary>
-		///   Allows customized configurations of each matching type that is 
-		///   assignable to <typeparamref name = "T" />.
-		/// </summary>
-		/// <typeparam name = "T">The type assignable from.</typeparam>
-		/// <param name = "configurer">The configuration action.</param>
-		/// <returns></returns>
-		public BasedOnDescriptor ConfigureFor<T>(Action<ComponentRegistration> configurer)
-		{
-			return basedOn.ConfigureFor<T>(configurer);
 		}
 	}
 }
