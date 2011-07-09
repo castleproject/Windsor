@@ -412,6 +412,7 @@
     <Compile Include="Components\UsesUri.cs" />
     <Compile Include="CompositePatternTestCase.cs" />
     <Compile Include="ContainerAndGenericsInConfigTestCase.cs" />
+    <Compile Include="ConventionRegistrationConfigureTestCase.cs" />
     <Compile Include="ConventionVerification.cs" />
     <Compile Include="ContainerExtensions\BadDependencyResolver.cs" />
     <Compile Include="ContainerExtensions\GoodDependencyResolver.cs" />
