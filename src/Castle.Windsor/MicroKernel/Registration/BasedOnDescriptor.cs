@@ -91,7 +91,7 @@ namespace Castle.MicroKernel.Registration
 		/// <returns></returns>
 		public BasedOnDescriptor Configure(Action<ComponentRegistration> configurer)
 		{
-			var config = new ConfigureDescriptor(this, configurer);
+			var config = new ConfigureDescriptor(configurer);
 			configurers.Add(config);
 			return this;
 		}
@@ -107,7 +107,7 @@ namespace Castle.MicroKernel.Registration
 		/// <returns></returns>
 		public BasedOnDescriptor ConfigureFor<T>(Action<ComponentRegistration> configurer)
 		{
-			var config = new ConfigureDescriptor(this, typeof(T), configurer);
+			var config = new ConfigureDescriptor(typeof(T), configurer);
 			configurers.Add(config);
 			return this;
 		}
