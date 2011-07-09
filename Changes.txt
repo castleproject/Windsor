@@ -1,3 +1,4 @@
+- implemented IOC-301 - Add ConfigureIf method to be used with custom predicate when configuring components registered via convention
 - implemented IOC-298 - add a method to FromAssembly that will scan all assemblies in the application for installers
 - implemented IOC-292 - Add fluent registration entry point that passes through truly "all types" that is interfaces, or abstract classes can be registered too
 - implemented IOC-291 - Add alias class to AllTypes that is better named, like 'Classes'
