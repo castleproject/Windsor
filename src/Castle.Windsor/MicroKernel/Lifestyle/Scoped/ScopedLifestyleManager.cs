@@ -27,19 +27,18 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 
 		public override void Dispose()
 		{
+			accessor.Dispose();
 		}
 
 		public override object Resolve(CreationContext context, IReleasePolicy releasePolicy)
 		{
-			var scope = accessor.GetScopeCache(context);
-			var burden = scope[this];
-			if (burden != null)
+			var scope = accessor.GetScope(context);
+			var burden = scope.GetCachedInstance(Model, () =>
 			{
-				return burden.Instance;
-			}
-			burden = base.CreateInstance(context, trackedExternally: true);
-			scope[this] = burden;
-			Track(burden, releasePolicy);
+				var localBurden = base.CreateInstance(context, trackedExternally: true);
+				Track(localBurden, releasePolicy);
+				return localBurden;
+			});
 			return burden.Instance;
 		}
 	}

@@ -539,13 +539,18 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="MicroKernel\Lifestyle\Scoped\BasedOnTypeScopeRootSelector.cs" />
+    <Compile Include="MicroKernel\Lifestyle\Scoped\CurrentScope.cs" />
     <Compile Include="MicroKernel\Lifestyle\Scoped\CurrentScopeAccessor.cs" />
     <Compile Include="MicroKernel\Lifestyle\Scoped\ICurrentScopeAccessor.cs" />
+    <Compile Include="MicroKernel\Lifestyle\Scoped\IScope2.cs" />
     <Compile Include="MicroKernel\Lifestyle\Scoped\IScopeAccessor.cs" />
     <Compile Include="MicroKernel\Lifestyle\Scoped\IScopeCache.cs" />
     <Compile Include="MicroKernel\Lifestyle\Scoped\IScopeManager.cs" />
     <Compile Include="MicroKernel\Lifestyle\Scoped\IScopeRootSelector.cs" />
     <Compile Include="MicroKernel\Lifestyle\Scoped\LifestyleExtensions.cs" />
+    <Compile Include="MicroKernel\Lifestyle\Scoped\LifetimeScope.cs" />
+    <Compile Include="MicroKernel\Lifestyle\Scoped\LifetimeScopeAccessor.cs" />
+    <Compile Include="MicroKernel\Lifestyle\Scoped\LogicalThreadAffinativeScopeCache.cs" />
     <Compile Include="MicroKernel\Lifestyle\Scoped\ScopeCache.cs" />
     <Compile Include="MicroKernel\Lifestyle\Scoped\ScopeCacheDecorator.cs" />
     <Compile Include="MicroKernel\Lifestyle\Scoped\ScopedLifestyleManager.cs" />
@@ -673,7 +678,6 @@
     <Compile Include="MicroKernel\ModelBuilder\Descriptors\ServiceOverrideDescriptor.cs" />
     <Compile Include="MicroKernel\Registration\AllTypes.cs" />
     <Compile Include="MicroKernel\Registration\AllTypesOf.cs" />
-    <Compile Include="MicroKernel\Registration\ConfigureDescriptor.cs" />
     <Compile Include="MicroKernel\Registration\FromAssemblyDescriptor.cs" />
     <Compile Include="MicroKernel\Registration\FromTypesDescriptor.cs" />
     <Compile Include="MicroKernel\Registration\FromDescriptor.cs" />

@@ -14,6 +14,8 @@
 
 namespace Castle.MicroKernel.Lifestyle.Scoped
 {
+	using System;
+
 	using Castle.MicroKernel.Context;
 
 	/// <summary>
@@ -22,7 +24,7 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 	/// <remarks>
 	///   Implementors should also ensure proper initialization of <see cref = "IScopeCache" /> when accessed for the first time and ensure a thread safe implementation is used when scope or cache access can cause threading issues if non thread safe cache is used.
 	/// </remarks>
-	public interface ICurrentScopeAccessor
+	public interface ICurrentScopeAccessor : IDisposable
 	{
 		/// <summary>
 		///   Provides access to <see cref = "IScopeCache" /> for currently resolved component.
@@ -30,6 +32,6 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 		/// <param name = "context">Current creation context</param>
 		/// <param name = "required"><c>true</c> if cache is required in order to proceed. <c>false</c> if execution can be continued with cache not being accessible.</param>
 		/// <exception cref = "T:System.InvalidOperationException"> Thrown when <paramref name = "required" /> is <c>true</c> and cache could not be accessed.</exception>
-		IScopeCache GetScopeCache(CreationContext context, bool required = true);
+		IScope2 GetScope(CreationContext context, bool required = true);
 	}
 }

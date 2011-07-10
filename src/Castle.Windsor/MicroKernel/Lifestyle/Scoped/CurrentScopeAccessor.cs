@@ -23,12 +23,10 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 	public class CurrentScopeAccessor : ICurrentScopeAccessor
 	{
 		private readonly ComponentModel componentModel;
-		private readonly IScopeManager scopeManager;
 		private readonly IScopeRootSelector selector;
 
-		public CurrentScopeAccessor(IScopeManager scopeManager, ComponentModel componentModel)
+		public CurrentScopeAccessor(ComponentModel componentModel)
 		{
-			this.scopeManager = scopeManager;
 			this.componentModel = componentModel;
 			var baseType = (Type)componentModel.ExtendedProperties[Constants.ScopeRoot];
 			if (baseType != null)
@@ -37,54 +35,30 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 			}
 		}
 
-		public IScopeCache GetScopeCache(CreationContext context, bool required = true)
+		public void Dispose()
 		{
-			if (selector == null)
-			{
-				return GetScopeExplicit(required);
-			}
-			return GetScopeImplicit(required, context);
 		}
 
-		private IScopeCache GetCache(CreationContext.ResolutionContext selected)
+		private CurrentScope GetScope(CreationContext.ResolutionContext selected)
 		{
-			var stash = (IScopeCache)selected.Context.GetContextualProperty("castle-scope-stash");
+			var stash = (CurrentScope)selected.Context.GetContextualProperty("castle-scope-stash");
 			if (stash == null)
 			{
-				var newStash = new ScopeCache();
-				var decorator = new ScopeCacheDecorator(newStash);
-				decorator.OnInserted += (_, b) =>
-				{
-					if (b.RequiresDecommission)
-					{
-						selected.Burden.RequiresDecommission = true;
-						selected.Burden.GraphReleased += burden => newStash.Dispose();
-					}
-				};
+				var newStash = new CurrentScope(new ScopeCache());
 				selected.Context.SetContextualProperty("castle-scope-stash", newStash);
-				stash = decorator;
+				stash = newStash;
 			}
 			return stash;
 		}
 
-		private IScopeCache GetScopeExplicit(bool required)
-		{
-			var scope = scopeManager.CurrentScopeCache;
-			if (scope == null && required)
-			{
-				throw new InvalidOperationException("Scope was not available. Did you forget to call container.BeginScope()?");
-			}
-			return scope;
-		}
-
-		private IScopeCache GetScopeImplicit(bool required, CreationContext context)
+		IScope2 ICurrentScopeAccessor.GetScope(CreationContext context, bool required)
 		{
 			var selected = context.SelectScopeRoot(selector);
 			if (selected == null && required)
 			{
 				throw new InvalidOperationException(string.Format("Scope was not available for '{0}'. Did you forget to call container.BeginScope()?", componentModel.Name));
 			}
-			return GetCache(selected);
+			return GetScope(selected);
 		}
 	}
 }
