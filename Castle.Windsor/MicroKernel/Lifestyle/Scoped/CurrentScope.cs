@@ -14,32 +14,39 @@
 
 namespace Castle.MicroKernel.Lifestyle.Scoped
 {
-	using System;
-
 	using Castle.Core;
 
-	public class CurrentScope : IScope2
+	public class CurrentScope : ILifetimeScope
 	{
-		private readonly IScopeCache scopeCache;
+		private readonly Burden rootBurden;
+		private readonly ScopeCache scopeCache = new ScopeCache();
 
-		public CurrentScope(IScopeCache scopeCache)
+		public CurrentScope(Burden rootBurden)
 		{
-			this.scopeCache = scopeCache;
+			this.rootBurden = rootBurden;
 		}
 
 		public void Dispose()
 		{
 		}
 
-		public Burden GetCachedInstance(ComponentModel instance, Func<Burden> instanceNotFoundCallback)
+		public Burden GetCachedInstance(ComponentModel instance, ScopedInstanceActivationCallback createInstance)
 		{
 			var burden = scopeCache[instance];
 			if (burden == null)
 			{
-				burden = instanceNotFoundCallback();
-				scopeCache[instance] = burden;
+				scopeCache[instance] = burden = createInstance(OnAfterCreated);
 			}
 			return burden;
+		}
+
+		private void OnAfterCreated(Burden burden)
+		{
+			if (burden.RequiresDecommission)
+			{
+				rootBurden.RequiresDecommission = true;
+				rootBurden.GraphReleased += delegate { scopeCache.Dispose(); };
+			}
 		}
 	}
 }

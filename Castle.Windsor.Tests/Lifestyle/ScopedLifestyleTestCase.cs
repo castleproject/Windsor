@@ -19,7 +19,6 @@ namespace CastleTests.Lifestyle
 	using Castle.Core;
 	using Castle.MicroKernel.Lifestyle.Scoped;
 	using Castle.MicroKernel.Registration;
-	using Castle.MicroKernel.SubSystems.Scoping;
 	using Castle.Windsor.Tests.ClassComponents;
 
 	using CastleTests.Components;
@@ -28,11 +27,6 @@ namespace CastleTests.Lifestyle
 
 	public class ScopedLifestyleTestCase : AbstractContainerTestCase
 	{
-		protected override void AfterContainerCreated()
-		{
-			Kernel.AddSubSystem("scope", new ScopingSubsystem(new ThreadScopeAccessor()));
-		}
-
 		[Test]
 		public void Can_apply_scoped_lifestyle_via_attribute()
 		{

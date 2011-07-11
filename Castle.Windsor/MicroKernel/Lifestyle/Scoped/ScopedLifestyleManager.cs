@@ -18,9 +18,9 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 
 	public class ScopedLifestyleManager : AbstractLifestyleManager
 	{
-		private readonly ICurrentScopeAccessor accessor;
+		private readonly IScopeAccessor accessor;
 
-		public ScopedLifestyleManager(ICurrentScopeAccessor accessor)
+		public ScopedLifestyleManager(IScopeAccessor accessor)
 		{
 			this.accessor = accessor;
 		}
@@ -33,9 +33,10 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 		public override object Resolve(CreationContext context, IReleasePolicy releasePolicy)
 		{
 			var scope = accessor.GetScope(context);
-			var burden = scope.GetCachedInstance(Model, () =>
+			var burden = scope.GetCachedInstance(Model, afterCreated =>
 			{
 				var localBurden = base.CreateInstance(context, trackedExternally: true);
+				afterCreated(localBurden);
 				Track(localBurden, releasePolicy);
 				return localBurden;
 			});

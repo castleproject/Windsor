@@ -17,48 +17,38 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 	using System;
 
 	using Castle.Core;
-	using Castle.Core.Internal;
 	using Castle.MicroKernel.Context;
 
-	public class CurrentScopeAccessor : ICurrentScopeAccessor
+	public class CreationContextScopeAccessor : IScopeAccessor
 	{
 		private readonly ComponentModel componentModel;
 		private readonly IScopeRootSelector selector;
 
-		public CurrentScopeAccessor(ComponentModel componentModel)
+		public CreationContextScopeAccessor(ComponentModel componentModel, IScopeRootSelector selector)
 		{
 			this.componentModel = componentModel;
-			var baseType = (Type)componentModel.ExtendedProperties[Constants.ScopeRoot];
-			if (baseType != null)
-			{
-				selector = new BasedOnTypeScopeRootSelector(baseType);
-			}
+			this.selector = selector;
 		}
 
 		public void Dispose()
 		{
 		}
 
-		private CurrentScope GetScope(CreationContext.ResolutionContext selected)
-		{
-			var stash = (CurrentScope)selected.Context.GetContextualProperty("castle-scope-stash");
-			if (stash == null)
-			{
-				var newStash = new CurrentScope(new ScopeCache());
-				selected.Context.SetContextualProperty("castle-scope-stash", newStash);
-				stash = newStash;
-			}
-			return stash;
-		}
-
-		IScope2 ICurrentScopeAccessor.GetScope(CreationContext context, bool required)
+		public ILifetimeScope GetScope(CreationContext context)
 		{
 			var selected = context.SelectScopeRoot(selector);
-			if (selected == null && required)
+			if (selected == null)
 			{
 				throw new InvalidOperationException(string.Format("Scope was not available for '{0}'. Did you forget to call container.BeginScope()?", componentModel.Name));
 			}
-			return GetScope(selected);
+			var stash = (CurrentScope)selected.Context.GetContextualProperty("castle.scope-stash");
+			if (stash == null)
+			{
+				var newStash = new CurrentScope(selected.Burden);
+				selected.Context.SetContextualProperty("castle.scope-stash", newStash);
+				stash = newStash;
+			}
+			return stash;
 		}
 	}
 }
