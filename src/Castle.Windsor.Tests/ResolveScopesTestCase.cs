@@ -16,7 +16,6 @@ namespace CastleTests
 {
 	using Castle.MicroKernel.Lifestyle.Scoped;
 	using Castle.MicroKernel.Registration;
-	using Castle.MicroKernel.SubSystems.Scoping;
 
 	using CastleTests.Components;
 
@@ -25,13 +24,8 @@ namespace CastleTests
 	[TestFixture]
 	public class ResolveScopesTestCase : AbstractContainerTestCase
 	{
-		protected override void AfterContainerCreated()
-		{
-			Kernel.AddSubSystem("scope", new ScopingSubsystem(new ThreadScopeAccessor()));
-		}
-
 		[Test]
-		[Ignore("I don't see any elegant way of supporting this.")]
+		[Ignore("We're not supporting this. Either explicit ReleaseComponent should happen or typed facatory should be used.")]
 		public void Resolve_scope_should_scope_lifetime_of_transient_components()
 		{
 			Container.Register(Component.For<ADisposable>().LifeStyle.Transient);

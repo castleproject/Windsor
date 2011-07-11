@@ -18,25 +18,21 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 
 	using Castle.MicroKernel.Context;
 
-	public class LifetimeScopeAccessor : ICurrentScopeAccessor
+	public class LifetimeScopeAccessor : IScopeAccessor
 	{
-		public IScope2 GetScope(CreationContext context, bool required = true)
+		public ILifetimeScope GetScope(CreationContext context)
 		{
-			var scope = LifetimeScope.ObtainCurrentScope();
+			var scope = CallContextLifetimeScope.ObtainCurrentScope();
 			if (scope == null)
 			{
-				if (required)
-				{
-					throw new InvalidOperationException("Scope not found. Make this exception message better");
-				}
-				return null;
+				throw new InvalidOperationException("Scope was not available. Did you forget to call container.BeginScope()?");
 			}
 			return scope;
 		}
 
 		public void Dispose()
 		{
-			var scope = LifetimeScope.ObtainCurrentScope();
+			var scope = CallContextLifetimeScope.ObtainCurrentScope();
 			if (scope != null)
 			{
 				scope.Dispose();

@@ -18,7 +18,9 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 	using System.Collections.Generic;
 	using System.Linq;
 
-	public class ScopeCache : IDisposable, IScopeCache
+	using Castle.Core;
+
+	public class ScopeCache : IScopeCache, IDisposable
 	{
 		// NOTE: does that need to be thread safe?
 		private readonly IDictionary<object, Burden> cache = new Dictionary<object, Burden>();
@@ -36,12 +38,8 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 
 		public void Dispose()
 		{
-			var burdens = cache.Values.Reverse().ToArray();
+			cache.Values.Reverse().ForEach(b => b.Release());
 			cache.Clear();
-			foreach (var burden in burdens)
-			{
-				burden.Release();
-			}
 		}
 	}
 }

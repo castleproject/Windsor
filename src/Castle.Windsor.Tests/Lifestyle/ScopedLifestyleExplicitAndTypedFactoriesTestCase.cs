@@ -17,7 +17,6 @@ namespace CastleTests.Lifestyle
 	using Castle.Facilities.TypedFactory;
 	using Castle.MicroKernel.Lifestyle.Scoped;
 	using Castle.MicroKernel.Registration;
-	using Castle.MicroKernel.SubSystems.Scoping;
 	using Castle.Windsor.Tests.Facilities.TypedFactory.Delegates;
 
 	using CastleTests.Components;
@@ -29,15 +28,14 @@ namespace CastleTests.Lifestyle
 	{
 		protected override void AfterContainerCreated()
 		{
-			Kernel.AddSubSystem("scope", new ScopingSubsystem(new ThreadScopeAccessor()));
 			Container.AddFacility<TypedFactoryFacility>();
 		}
 
 		[Test]
 		public void Can_obtain_scoped_component_via_factory()
 		{
-			Container.Register(Component.For<UsesDisposableFooDelegate>().LifeStyle.Transient,
-			                   Component.For<DisposableFoo>().LifeStyle.Scoped);
+			Container.Register(Component.For<UsesDisposableFooDelegate>().LifestyleTransient(),
+			                   Component.For<DisposableFoo>().LifestyleScoped());
 
 			var instance = Container.Resolve<UsesDisposableFooDelegate>();
 			using (Container.BeginScope())

@@ -15,40 +15,21 @@
 namespace Castle.MicroKernel.Lifestyle.Scoped
 {
 	using System;
+	using System.ComponentModel;
 
 	using Castle.Windsor;
 
+	[EditorBrowsable(EditorBrowsableState.Never)]
 	public static class LifestyleExtensions
 	{
 		public static IDisposable BeginScope(this IKernel kernel)
 		{
-			return GetScopeSubSystem(kernel).BeginScope();
+			return new CallContextLifetimeScope(kernel);
 		}
 
 		public static IDisposable BeginScope(this IWindsorContainer container)
 		{
-			return BeginScope(container.Kernel);
-		}
-
-		public static IDisposable RequireScope(this IKernel kernel)
-		{
-			return GetScopeSubSystem(kernel).RequireScope();
-		}
-
-		public static IDisposable RequireScope(this IWindsorContainer container)
-		{
-			return RequireScope(container.Kernel);
-		}
-
-		private static IScopeManager GetScopeSubSystem(IKernel kernel)
-		{
-			var scopes = (IScopeManager)kernel.GetSubSystem("scope");
-			if (scopes == null)
-			{
-				throw new InvalidCastException("Unable to obtain the ScopeSubsystem.  " +
-				                               "Did you forget to add it using the key 'scope'?");
-			}
-			return scopes;
+			return new CallContextLifetimeScope(container);
 		}
 	}
 }

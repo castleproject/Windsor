@@ -357,6 +357,7 @@
     <Compile Include="Facilities\TypedFactory\Internal\FactoryMethod.cs" />
     <Compile Include="Facilities\TypedFactory\TypedFactoryConfiguration.cs" />
     <Compile Include="Facilities\TypedFactory\TypedFactoryCachingInspector.cs" />
+    <Compile Include="MicroKernel\BurdenReleaseDelegate.cs" />
     <Compile Include="MicroKernel\ComponentActivator\AbstractComponentActivator.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -540,26 +541,19 @@
     </Compile>
     <Compile Include="MicroKernel\Lifestyle\Scoped\BasedOnTypeScopeRootSelector.cs" />
     <Compile Include="MicroKernel\Lifestyle\Scoped\CurrentScope.cs" />
-    <Compile Include="MicroKernel\Lifestyle\Scoped\CurrentScopeAccessor.cs" />
-    <Compile Include="MicroKernel\Lifestyle\Scoped\ICurrentScopeAccessor.cs" />
-    <Compile Include="MicroKernel\Lifestyle\Scoped\IScope2.cs" />
+    <Compile Include="MicroKernel\Lifestyle\Scoped\CreationContextScopeAccessor.cs" />
     <Compile Include="MicroKernel\Lifestyle\Scoped\IScopeAccessor.cs" />
+    <Compile Include="MicroKernel\Lifestyle\Scoped\ILifetimeScope.cs" />
     <Compile Include="MicroKernel\Lifestyle\Scoped\IScopeCache.cs" />
-    <Compile Include="MicroKernel\Lifestyle\Scoped\IScopeManager.cs" />
     <Compile Include="MicroKernel\Lifestyle\Scoped\IScopeRootSelector.cs" />
     <Compile Include="MicroKernel\Lifestyle\Scoped\LifestyleExtensions.cs" />
-    <Compile Include="MicroKernel\Lifestyle\Scoped\LifetimeScope.cs" />
+    <Compile Include="MicroKernel\Lifestyle\Scoped\CallContextLifetimeScope.cs" />
     <Compile Include="MicroKernel\Lifestyle\Scoped\LifetimeScopeAccessor.cs" />
-    <Compile Include="MicroKernel\Lifestyle\Scoped\LogicalThreadAffinativeScopeCache.cs" />
     <Compile Include="MicroKernel\Lifestyle\Scoped\ScopeCache.cs" />
-    <Compile Include="MicroKernel\Lifestyle\Scoped\ScopeCacheDecorator.cs" />
+    <Compile Include="MicroKernel\Lifestyle\Scoped\ScopedInstanceActivationCallback.cs" />
     <Compile Include="MicroKernel\Lifestyle\Scoped\ScopedLifestyleManager.cs" />
-    <Compile Include="MicroKernel\Lifestyle\Scoped\ScopeSelector.cs" />
     <Compile Include="MicroKernel\Registration\Classes.cs" />
     <Compile Include="MicroKernel\Registration\Types.cs" />
-    <Compile Include="MicroKernel\SubSystems\Scoping\ScopingSubsystem.cs" />
-    <Compile Include="MicroKernel\Lifestyle\Scoped\ThreadScopeAccessor.cs" />
-    <Compile Include="MicroKernel\Lifestyle\Scoped\WebScopeAccessor.cs" />
     <Compile Include="MicroKernel\Lifestyle\SingletonLifestyleManager.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -967,6 +961,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="MicroKernel\SubSystems\Scoping\" />
     <Folder Include="Properties\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" Condition="($(MSBuildTargets) == '') Or ($(MSBuildTargets) == 'CSharp')" />
