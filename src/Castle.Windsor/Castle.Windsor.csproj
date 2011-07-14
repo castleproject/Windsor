@@ -310,9 +310,6 @@
   </ItemGroup>
   <ItemGroup Condition="$(TargetFrameworkProfile)!='Client' and $(MSBuildTargets)!='Silverlight 4.0'">
     <Compile Include="MicroKernel\ComponentActivator\WebUserControlComponentActivator.cs" />
-    <Compile Include="MicroKernel\Lifestyle\WebRequestScope.cs">
-      <SubType>Code</SubType>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AutoregisterPerWebRequestLifestyleModule.cs" />
@@ -540,7 +537,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="MicroKernel\Lifestyle\Scoped\BasedOnTypeScopeRootSelector.cs" />
-    <Compile Include="MicroKernel\Lifestyle\Scoped\CurrentScope.cs" />
+    <Compile Include="MicroKernel\Lifestyle\Scoped\DefaultLifetimeScope.cs" />
     <Compile Include="MicroKernel\Lifestyle\Scoped\CreationContextScopeAccessor.cs" />
     <Compile Include="MicroKernel\Lifestyle\Scoped\IScopeAccessor.cs" />
     <Compile Include="MicroKernel\Lifestyle\Scoped\ILifetimeScope.cs" />

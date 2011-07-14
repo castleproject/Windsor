@@ -41,10 +41,18 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 			{
 				throw new InvalidOperationException(string.Format("Scope was not available for '{0}'. Did you forget to call container.BeginScope()?", componentModel.Name));
 			}
-			var stash = (CurrentScope)selected.Context.GetContextualProperty("castle.scope-stash");
+			var stash = (DefaultLifetimeScope)selected.Context.GetContextualProperty("castle.scope-stash");
 			if (stash == null)
 			{
-				var newStash = new CurrentScope(selected.Burden);
+				DefaultLifetimeScope newStash = null;
+				newStash = new DefaultLifetimeScope(new ScopeCache(), burden =>
+				{
+					if (burden.RequiresDecommission)
+					{
+						selected.Burden.RequiresDecommission = true;
+						selected.Burden.GraphReleased += delegate { newStash.Dispose(); };
+					}
+				});
 				selected.Context.SetContextualProperty("castle.scope-stash", newStash);
 				stash = newStash;
 			}
