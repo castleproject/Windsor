@@ -14,20 +14,28 @@
 
 namespace Castle.MicroKernel.Lifestyle.Scoped
 {
+	using System;
+
 	using Castle.Core;
 
-	public class CurrentScope : ILifetimeScope
+	public class DefaultLifetimeScope : ILifetimeScope
 	{
-		private readonly Burden rootBurden;
-		private readonly ScopeCache scopeCache = new ScopeCache();
+		private readonly IScopeCache scopeCache;
+		private readonly Action<Burden> onAfterCreated;
 
-		public CurrentScope(Burden rootBurden)
+		public DefaultLifetimeScope(IScopeCache scopeCache, Action<Burden> onAfterCreated = null)
 		{
-			this.rootBurden = rootBurden;
+			this.scopeCache = scopeCache;
+			this.onAfterCreated = onAfterCreated ?? delegate { };
 		}
 
 		public void Dispose()
 		{
+			var disposableCache = scopeCache as IDisposable;
+			if (disposableCache != null)
+			{
+				disposableCache.Dispose();
+			}
 		}
 
 		public Burden GetCachedInstance(ComponentModel instance, ScopedInstanceActivationCallback createInstance)
@@ -35,18 +43,9 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 			var burden = scopeCache[instance];
 			if (burden == null)
 			{
-				scopeCache[instance] = burden = createInstance(OnAfterCreated);
+				scopeCache[instance] = burden = createInstance(onAfterCreated);
 			}
 			return burden;
-		}
-
-		private void OnAfterCreated(Burden burden)
-		{
-			if (burden.RequiresDecommission)
-			{
-				rootBurden.RequiresDecommission = true;
-				rootBurden.GraphReleased += delegate { scopeCache.Dispose(); };
-			}
 		}
 	}
 }

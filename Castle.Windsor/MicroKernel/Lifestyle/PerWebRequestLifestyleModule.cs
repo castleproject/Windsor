@@ -48,7 +48,7 @@ namespace Castle.MicroKernel.Lifestyle
 			}
 		}
 
-		internal static WebRequestScope GetScope()
+		internal static ILifetimeScope GetScope()
 		{
 			EnsureInitialized();
 			var context = HttpContext.Current;
@@ -65,7 +65,7 @@ namespace Castle.MicroKernel.Lifestyle
 		///   Does not throw if scope or context not present. To be used for disposing of the context.
 		/// </summary>
 		/// <returns></returns>
-		internal static WebRequestScope YieldScope()
+		internal static ILifetimeScope YieldScope()
 		{
 			var context = HttpContext.Current;
 			if (context == null)
@@ -108,12 +108,12 @@ namespace Castle.MicroKernel.Lifestyle
 			throw new ComponentResolutionException(message.ToString());
 		}
 
-		private static WebRequestScope GetScope(HttpContext context, bool createIfNotPresent)
+		private static ILifetimeScope GetScope(HttpContext context, bool createIfNotPresent)
 		{
-			var candidates = (WebRequestScope)context.Items[key];
+			var candidates = (ILifetimeScope)context.Items[key];
 			if (candidates == null && createIfNotPresent)
 			{
-				candidates = new WebRequestScope(new ScopeCache());
+				candidates = new DefaultLifetimeScope(new ScopeCache());
 				context.Items[key] = candidates;
 			}
 			return candidates;
