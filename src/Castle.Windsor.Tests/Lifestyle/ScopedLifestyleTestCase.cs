@@ -17,6 +17,7 @@ namespace CastleTests.Lifestyle
 	using System;
 
 	using Castle.Core;
+	using Castle.MicroKernel.Lifestyle;
 	using Castle.MicroKernel.Lifestyle.Scoped;
 	using Castle.MicroKernel.Registration;
 	using Castle.Windsor.Tests.ClassComponents;

@@ -12,9 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.MicroKernel.Lifestyle.Scoped
+namespace Castle.MicroKernel.Lifestyle
 {
 	using Castle.MicroKernel.Context;
+	using Castle.MicroKernel.Lifestyle.Scoped;
 
 	public class ScopedLifestyleManager : AbstractLifestyleManager
 	{

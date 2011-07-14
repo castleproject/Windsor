@@ -17,11 +17,12 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 	using System;
 
 	/// <summary>
-	/// Delegate used by <see cref="ILifetimeScope"/> to request a new instance to be created (that would be the first instance in that scope, subsequently reused).
+	///   Delegate used by <see cref = "ILifetimeScope" /> to request a new instance to be created (that would be the first instance in that scope, subsequently reused).
 	/// </summary>
-	/// <param name="afterCreated">Callback which should be invoken by provided delegate right after isntance gets created and before it burden gets tracked.
-	/// The purpose if this callback is to include scope in decisions regarding tracking of the instance by <see cref="IReleasePolicy"/>.
-	/// Depending on the scope implementation it may or may not provide its own end of lifetime detection mechanism.</param>
+	/// <param name = "afterCreated">Callback which should be invoken by provided delegate right after isntance gets created and before it burden gets tracked.
+	///   The purpose if this callback is to include scope in decisions regarding tracking of the instance by <see
+	///    cref = "IReleasePolicy" />.
+	///   Depending on the scope implementation it may or may not provide its own end of lifetime detection mechanism.</param>
 	/// <returns></returns>
 	public delegate Burden ScopedInstanceActivationCallback(Action<Burden> afterCreated);
 }
