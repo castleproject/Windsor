@@ -108,7 +108,7 @@ namespace Castle.MicroKernel.Handlers
 					break;
 #if (!SILVERLIGHT && !CLIENTPROFILE)
 				case LifestyleType.PerWebRequest:
-					manager = new PerWebRequestLifestyleManager();
+					manager = new ScopedLifestyleManager(new WebRequestScopeAccessor());
 					break;
 #endif
 				case LifestyleType.Custom:

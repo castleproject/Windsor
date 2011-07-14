@@ -18,14 +18,14 @@
 namespace Castle.MicroKernel.Lifestyle
 {
 	using System;
-	using System.Collections.Generic;
-	using System.Linq;
 	using System.Text;
 	using System.Web;
 
+	using Castle.MicroKernel.Lifestyle.Scoped;
+
 	public class PerWebRequestLifestyleModule : IHttpModule
 	{
-		private const string PerRequestEvict = "PerRequestLifestyleManager_Evict";
+		private const string key = "castle.per-web-request-lifestyle-cache";
 		private static bool initialized;
 
 		public void Dispose()
@@ -41,23 +41,46 @@ namespace Castle.MicroKernel.Lifestyle
 		protected void Application_EndRequest(Object sender, EventArgs e)
 		{
 			var application = (HttpApplication)sender;
-			var candidates = (IDictionary<PerWebRequestLifestyleManager, Burden>)application.Context.Items[PerRequestEvict];
-
-			if (candidates == null)
+			var scope = GetScope(application.Context, createIfNotPresent: false);
+			if (scope != null)
 			{
-				return;
+				scope.Dispose();
 			}
-
-			// NOTE: This is relying on a undocumented behavior that order of items when enumeratinc Dictionary<> will be oldest --> latest
-			foreach (var candidate in candidates.Reverse())
-			{
-				candidate.Value.Release();
-			}
-
-			application.Context.Items.Remove(PerRequestEvict);
 		}
 
-		public static void EnsureInitialized()
+		internal static WebRequestScope GetScope()
+		{
+			EnsureInitialized();
+			var context = HttpContext.Current;
+			if (context == null)
+			{
+				throw new InvalidOperationException(
+					"HttpContext.Current is null. PerWebRequestLifestyle can only be used in ASP.Net");
+			}
+			return GetScope(context, createIfNotPresent: true);
+		}
+
+		/// <summary>
+		///   Returns current request's scope and detaches it from the request context.
+		///   Does not throw if scope or context not present. To be used for disposing of the context.
+		/// </summary>
+		/// <returns></returns>
+		internal static WebRequestScope YieldScope()
+		{
+			var context = HttpContext.Current;
+			if (context == null)
+			{
+				return null;
+			}
+			var scope = GetScope(context, createIfNotPresent: true);
+			if (scope != null)
+			{
+				context.Items.Remove(key);
+			}
+			return scope;
+		}
+
+		private static void EnsureInitialized()
 		{
 			if (initialized)
 			{
@@ -85,19 +108,15 @@ namespace Castle.MicroKernel.Lifestyle
 			throw new ComponentResolutionException(message.ToString());
 		}
 
-		internal static void RegisterForEviction(PerWebRequestLifestyleManager manager, Burden burden)
+		private static WebRequestScope GetScope(HttpContext context, bool createIfNotPresent)
 		{
-			var context = HttpContext.Current;
-
-			var candidates = (IDictionary<PerWebRequestLifestyleManager, Burden>)context.Items[PerRequestEvict];
-
-			if (candidates == null)
+			var candidates = (WebRequestScope)context.Items[key];
+			if (candidates == null && createIfNotPresent)
 			{
-				candidates = new Dictionary<PerWebRequestLifestyleManager, Burden>();
-				context.Items[PerRequestEvict] = candidates;
+				candidates = new WebRequestScope(new ScopeCache());
+				context.Items[key] = candidates;
 			}
-
-			candidates.Add(manager, burden);
+			return candidates;
 		}
 	}
 }

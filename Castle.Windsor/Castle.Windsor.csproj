@@ -310,7 +310,7 @@
   </ItemGroup>
   <ItemGroup Condition="$(TargetFrameworkProfile)!='Client' and $(MSBuildTargets)!='Silverlight 4.0'">
     <Compile Include="MicroKernel\ComponentActivator\WebUserControlComponentActivator.cs" />
-    <Compile Include="MicroKernel\Lifestyle\PerWebRequestLifestyleManager.cs">
+    <Compile Include="MicroKernel\Lifestyle\WebRequestScope.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
@@ -546,12 +546,13 @@
     <Compile Include="MicroKernel\Lifestyle\Scoped\ILifetimeScope.cs" />
     <Compile Include="MicroKernel\Lifestyle\Scoped\IScopeCache.cs" />
     <Compile Include="MicroKernel\Lifestyle\Scoped\IScopeRootSelector.cs" />
-    <Compile Include="MicroKernel\Lifestyle\Scoped\LifestyleExtensions.cs" />
+    <Compile Include="MicroKernel\Lifestyle\LifestyleExtensions.cs" />
     <Compile Include="MicroKernel\Lifestyle\Scoped\CallContextLifetimeScope.cs" />
-    <Compile Include="MicroKernel\Lifestyle\Scoped\LifetimeScopeAccessor.cs" />
+    <Compile Include="MicroKernel\Lifestyle\LifetimeScopeAccessor.cs" />
     <Compile Include="MicroKernel\Lifestyle\Scoped\ScopeCache.cs" />
     <Compile Include="MicroKernel\Lifestyle\Scoped\ScopedInstanceActivationCallback.cs" />
-    <Compile Include="MicroKernel\Lifestyle\Scoped\ScopedLifestyleManager.cs" />
+    <Compile Include="MicroKernel\Lifestyle\ScopedLifestyleManager.cs" />
+    <Compile Include="MicroKernel\Lifestyle\WebRequestScopeAccessor.cs" />
     <Compile Include="MicroKernel\Registration\Classes.cs" />
     <Compile Include="MicroKernel\Registration\Types.cs" />
     <Compile Include="MicroKernel\Lifestyle\SingletonLifestyleManager.cs">
