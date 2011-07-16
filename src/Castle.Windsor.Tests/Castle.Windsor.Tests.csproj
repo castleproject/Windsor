@@ -530,6 +530,7 @@
     <Compile Include="Lifestyle\CustomLifestyle_InstanceScope.cs" />
     <Compile Include="Lifestyle\CustomLifestyle_Scoped.cs" />
     <Compile Include="Lifestyle\LifestyleApiTestCase.cs" />
+    <Compile Include="Lifestyle\ScopedLifestyleExplicitAndMultipleThreadsTestCase.cs" />
     <Compile Include="Lifestyle\ScopedLifestyleExplicitAndTypedFactoriesTestCase.cs" />
     <Compile Include="Lifestyle\ScopedLifestyleImplicitGraphScopingAndTypedFactoriesTestCase.cs" />
     <Compile Include="Lifestyle\ScopedLifestyleImplicitGraphScopingTestCase.cs" />
