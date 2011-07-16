@@ -16,6 +16,10 @@ namespace Castle.MicroKernel.ComponentActivator
 {
 	using System;
 	using System.Collections.Generic;
+	
+#if DOTNET35 || SILVERLIGHT
+	using System.Linq;
+#endif
 
 	using Castle.Core;
 	using Castle.MicroKernel.Context;

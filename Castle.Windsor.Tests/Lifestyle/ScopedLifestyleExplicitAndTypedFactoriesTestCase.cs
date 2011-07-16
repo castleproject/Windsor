@@ -16,7 +16,6 @@ namespace CastleTests.Lifestyle
 {
 	using Castle.Facilities.TypedFactory;
 	using Castle.MicroKernel.Lifestyle;
-	using Castle.MicroKernel.Lifestyle.Scoped;
 	using Castle.MicroKernel.Registration;
 	using Castle.Windsor.Tests.Facilities.TypedFactory.Delegates;
 
