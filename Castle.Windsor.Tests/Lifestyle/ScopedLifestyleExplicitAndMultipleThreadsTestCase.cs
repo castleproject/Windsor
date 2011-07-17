@@ -16,7 +16,9 @@ namespace CastleTests.Lifestyle
 {
 	using System;
 	using System.Threading;
+#if !(DOTNET35 || SILVERLIGHT)
 	using System.Threading.Tasks;
+#endif
 
 	using Castle.MicroKernel.Lifestyle;
 	using Castle.MicroKernel.Registration;
