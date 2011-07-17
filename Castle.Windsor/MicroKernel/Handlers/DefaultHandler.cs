@@ -192,12 +192,12 @@ namespace Castle.MicroKernel.Handlers
 
 		private IScopeAccessor CreateScopeAccessor()
 		{
-			var scopeRoot = (Type)ComponentModel.ExtendedProperties[Constants.ScopeRoot];
-			if (scopeRoot == null)
+			var selector = (Func<IHandler[], IHandler>)ComponentModel.ExtendedProperties[Constants.ScopeRootSelector];
+			if (selector == null)
 			{
 				return new LifetimeScopeAccessor();
 			}
-			return new CreationContextScopeAccessor(ComponentModel, new BasedOnTypeScopeRootSelector(scopeRoot));
+			return new CreationContextScopeAccessor(ComponentModel, selector);
 		}
 	}
 }

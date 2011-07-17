@@ -536,13 +536,11 @@
     <Compile Include="MicroKernel\Lifestyle\Pool\PoolException.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="MicroKernel\Lifestyle\Scoped\BasedOnTypeScopeRootSelector.cs" />
     <Compile Include="MicroKernel\Lifestyle\Scoped\DefaultLifetimeScope.cs" />
     <Compile Include="MicroKernel\Lifestyle\Scoped\CreationContextScopeAccessor.cs" />
     <Compile Include="MicroKernel\Lifestyle\Scoped\IScopeAccessor.cs" />
     <Compile Include="MicroKernel\Lifestyle\Scoped\ILifetimeScope.cs" />
     <Compile Include="MicroKernel\Lifestyle\Scoped\IScopeCache.cs" />
-    <Compile Include="MicroKernel\Lifestyle\Scoped\IScopeRootSelector.cs" />
     <Compile Include="MicroKernel\Lifestyle\LifestyleExtensions.cs" />
     <Compile Include="MicroKernel\Lifestyle\Scoped\CallContextLifetimeScope.cs" />
     <Compile Include="MicroKernel\Lifestyle\LifetimeScopeAccessor.cs" />
