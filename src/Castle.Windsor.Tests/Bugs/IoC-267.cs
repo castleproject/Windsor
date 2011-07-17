@@ -41,7 +41,7 @@ namespace Castle.Bugs
                                 {
                                     public void MethodContainsInvalidCode()
                                     {
-                                        var kernel = new DefaultKernel();
+                                        DefaultKernel kernel = new DefaultKernel();
                                         kernel.Register(Component.For<Int32>().Instance(1));
                                     }
                                 }
@@ -52,8 +52,8 @@ namespace Castle.Bugs
 			var windsorAssembly = typeof(DefaultKernel).Assembly.Location;
 			var results = compiler.CompileAssemblyFromSource(new CompilerParameters(new[] { coreAssembly, windsorAssembly }), csharpCode);
 			Assert.True(results.Errors.HasErrors);
-			Assert.AreEqual("CS0452", results.Errors[0].ErrorNumber);
-				// The type 'int' must be a reference type in order to use it as parameter 'S' in the generic type or method 'Castle.MicroKernel.Registration.Component.For<S>()'
+			Assert.AreEqual("CS0452", results.Errors[0].ErrorNumber, results.Errors[0].ToString());
+			// The type 'int' must be a reference type in order to use it as parameter 'S' in the generic type or method 'Castle.MicroKernel.Registration.Component.For<S>()'
 		}
 	}
 #endif
