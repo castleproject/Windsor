@@ -15,6 +15,7 @@
 namespace Castle.MicroKernel.Lifestyle.Scoped
 {
 	using System;
+	using System.Linq;
 
 	using Castle.Core;
 	using Castle.MicroKernel.Context;
@@ -22,12 +23,12 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 	public class CreationContextScopeAccessor : IScopeAccessor
 	{
 		private readonly ComponentModel componentModel;
-		private readonly IScopeRootSelector selector;
+		private readonly Func<IHandler[], IHandler> scopeRootSelector;
 
-		public CreationContextScopeAccessor(ComponentModel componentModel, IScopeRootSelector selector)
+		public CreationContextScopeAccessor(ComponentModel componentModel, Func<IHandler[], IHandler> scopeRootSelector)
 		{
 			this.componentModel = componentModel;
-			this.selector = selector;
+			this.scopeRootSelector = scopeRootSelector;
 		}
 
 		public void Dispose()
@@ -36,10 +37,13 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 
 		public ILifetimeScope GetScope(CreationContext context)
 		{
-			var selected = context.SelectScopeRoot(selector);
+			var selected = context.SelectScopeRoot(scopeRootSelector);
 			if (selected == null)
 			{
-				throw new InvalidOperationException(string.Format("Scope was not available for '{0}'. Did you forget to call container.BeginScope()?", componentModel.Name));
+				throw new InvalidOperationException(
+					string.Format(
+						"Scope was not available for '{0}'. No component higher up in the resolution stack met the criteria specified for scoping the component. This usually indicates a bug in custom scope root selector or means that the component is being resolved in a unforseen context (a.k.a - it's probably a bug in how the dependencies in the application are wired).",
+						componentModel.Name));
 			}
 			var stash = (DefaultLifetimeScope)selected.Context.GetContextualProperty("castle.scope-stash");
 			if (stash == null)
@@ -57,6 +61,11 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 				stash = newStash;
 			}
 			return stash;
+		}
+
+		public static IHandler DefaultScopeRootSelector<TBaseForRoot>(IHandler[] resolutionStack)
+		{
+			return resolutionStack.Reverse().FirstOrDefault(h => typeof(TBaseForRoot).IsAssignableFrom(h.ComponentModel.Implementation));
 		}
 	}
 }
