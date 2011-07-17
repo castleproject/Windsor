@@ -22,8 +22,6 @@ namespace Castle.MicroKernel
 	using Castle.Core.Internal;
 	using Castle.MicroKernel.LifecycleConcerns;
 
-	public delegate void BurdenReleaseDelegate(Burden burden);
-
 	public class Burden
 	{
 		private readonly IHandler handler;

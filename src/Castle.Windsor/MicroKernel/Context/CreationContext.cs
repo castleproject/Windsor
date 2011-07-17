@@ -22,7 +22,6 @@ namespace Castle.MicroKernel.Context
 
 	using Castle.Core;
 	using Castle.MicroKernel.ComponentActivator;
-	using Castle.MicroKernel.Lifestyle.Scoped;
 	using Castle.MicroKernel.Releasers;
 	using Castle.MicroKernel.SubSystems.Conversion;
 
@@ -460,10 +459,10 @@ namespace Castle.MicroKernel.Context
 			}
 		}
 
-		public ResolutionContext SelectScopeRoot(IScopeRootSelector scopeRootSelector)
+		public ResolutionContext SelectScopeRoot(Func<IHandler[], IHandler> scopeRootSelector)
 		{
 			var scopes = resolutionStack.Select(c => c.Handler).ToArray();
-			var selected = scopeRootSelector.Select(scopes);
+			var selected = scopeRootSelector(scopes);
 			if (selected != null)
 			{
 				var resolutionContext = resolutionStack.SingleOrDefault(s => s.Handler == selected);

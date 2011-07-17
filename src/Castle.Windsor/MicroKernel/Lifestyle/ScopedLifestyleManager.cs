@@ -12,34 +12,35 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.MicroKernel.Lifestyle.Scoped
+namespace Castle.MicroKernel.Lifestyle
 {
 	using Castle.MicroKernel.Context;
+	using Castle.MicroKernel.Lifestyle.Scoped;
 
 	public class ScopedLifestyleManager : AbstractLifestyleManager
 	{
-		private readonly ICurrentScopeAccessor accessor;
+		private readonly IScopeAccessor accessor;
 
-		public ScopedLifestyleManager(ICurrentScopeAccessor accessor)
+		public ScopedLifestyleManager(IScopeAccessor accessor)
 		{
 			this.accessor = accessor;
 		}
 
 		public override void Dispose()
 		{
+			accessor.Dispose();
 		}
 
 		public override object Resolve(CreationContext context, IReleasePolicy releasePolicy)
 		{
-			var scope = accessor.GetScopeCache(context);
-			var burden = scope[this];
-			if (burden != null)
+			var scope = accessor.GetScope(context);
+			var burden = scope.GetCachedInstance(Model, afterCreated =>
 			{
-				return burden.Instance;
-			}
-			burden = base.CreateInstance(context, trackedExternally: true);
-			scope[this] = burden;
-			Track(burden, releasePolicy);
+				var localBurden = base.CreateInstance(context, trackedExternally: true);
+				afterCreated(localBurden);
+				Track(localBurden, releasePolicy);
+				return localBurden;
+			});
 			return burden.Instance;
 		}
 	}

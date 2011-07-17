@@ -17,16 +17,16 @@ namespace Castle.Core.Internal
 	public abstract class Constants
 	{
 		private const string defaultComponentForServiceFilter = "castle.default-component-for-service-filter";
-		private const string scopeRoot = "castle.scope-root";
+		private const string scopeRootSelector = "castle.scope-root";
 
 		public static object DefaultComponentForServiceFilter
 		{
 			get { return defaultComponentForServiceFilter; }
 		}
 
-		public static object ScopeRoot
+		public static object ScopeRootSelector
 		{
-			get { return scopeRoot; }
+			get { return scopeRootSelector; }
 		}
 	}
 }

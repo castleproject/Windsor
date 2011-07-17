@@ -14,3 +14,5 @@
 - when IResolve interface is introduced it should be used instead of IKernelInternal and IReleasePolicy in ITypedFactoryComponentSelector
 
 - when updated to latest Core use ProxyUtil from DP
+
+- nesting scopes - NOT SUPPORTED

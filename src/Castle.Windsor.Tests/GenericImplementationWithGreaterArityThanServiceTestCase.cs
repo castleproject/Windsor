@@ -104,7 +104,7 @@ namespace Castle
 			                                                Container.Resolve<MicroKernel.Tests.ClassComponents.IRepository<string>>());
 
 			var message =
-				@"Types System.String, CastleTests.Components.IEmployee don't satisfy generic constraints of implementation type Castle.MicroKernel.Tests.ClassComponents.DoubleRepository`2 of component 'Castle.MicroKernel.Tests.ClassComponents.DoubleRepository`2'.this is likely a bug in the IGenericImplementationMatchingStrategy used (Castle.StubGenericImplementationMatchingStrategy)";
+				@"Types System.String, CastleTests.Components.IEmployee don't satisfy generic constraints of implementation type Castle.MicroKernel.Tests.ClassComponents.DoubleRepository`2 of component 'Castle.MicroKernel.Tests.ClassComponents.DoubleRepository`2'.this is likely a bug in the IGenericImplementationMatchingStrategy used (CastleTests.StubGenericImplementationMatchingStrategy)";
 			Assert.AreEqual(message, exception.Message);
 		}
 	}
