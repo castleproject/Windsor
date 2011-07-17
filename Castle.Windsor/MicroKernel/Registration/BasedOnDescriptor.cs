@@ -26,7 +26,7 @@ namespace Castle.MicroKernel.Registration
 	public class BasedOnDescriptor : IRegistration
 	{
 		private readonly Type basedOn;
-		private readonly List<ConfigureDescriptor> configurers;
+		private Action<ComponentRegistration> configuration;
 		private readonly FromDescriptor from;
 		private readonly ServiceDescriptor service;
 		private Predicate<Type> ifFilter;
@@ -40,7 +40,6 @@ namespace Castle.MicroKernel.Registration
 			this.basedOn = basedOn;
 			this.from = from;
 			service = new ServiceDescriptor(this);
-			configurers = new List<ConfigureDescriptor>();
 			If(additionalFilters);
 		}
 
@@ -91,24 +90,66 @@ namespace Castle.MicroKernel.Registration
 		/// <returns></returns>
 		public BasedOnDescriptor Configure(Action<ComponentRegistration> configurer)
 		{
-			var config = new ConfigureDescriptor(this, configurer);
-			configurers.Add(config);
+			configuration += configurer;
 			return this;
 		}
 
 		/// <summary>
-		///   Allows customized configurations of each matching type that is 
+		///   Allows customized configurations of each matching component with implementation type that is 
 		///   assignable to
-		///   <typeparamref name = "T" />
+		///   <typeparamref name = "TComponentImplementationType" />
 		///   .
 		/// </summary>
-		/// <typeparam name = "T">The type assignable from.</typeparam>
+		/// <typeparam name = "TComponentImplementationType">The type assignable from.</typeparam>
 		/// <param name = "configurer">The configuration action.</param>
 		/// <returns></returns>
-		public BasedOnDescriptor ConfigureFor<T>(Action<ComponentRegistration> configurer)
+		public BasedOnDescriptor ConfigureFor<TComponentImplementationType>(Action<ComponentRegistration> configurer)
 		{
-			var config = new ConfigureDescriptor(this, typeof(T), configurer);
-			configurers.Add(config);
+			return ConfigureIf(r => typeof(TComponentImplementationType).IsAssignableFrom(r.Implementation), configurer);
+		}
+
+		/// <summary>
+		///   Allows customized configurations of each matching component that satisfies supplied <paramref name = "condition" />.
+		/// </summary>
+		/// <param name = "condition">Condition to satisfy</param>
+		/// <param name = "configurer">The configuration action, executed only for components for which <paramref
+		///    name = "condition" /> evaluates to <c>true</c>.</param>
+		/// <returns></returns>
+		public BasedOnDescriptor ConfigureIf(Predicate<ComponentRegistration> condition, Action<ComponentRegistration> configurer)
+		{
+			configuration += r =>
+			{
+				if (condition(r))
+				{
+					configurer(r);
+				}
+			};
+			return this;
+		}
+
+		/// <summary>
+		///   Allows customized configurations of each matching component that satisfies supplied <paramref name = "condition" /> and alternative configuration for the rest of components.
+		/// </summary>
+		/// <param name = "condition">Condition to satisfy</param>
+		/// <param name = "configurerWhenTrue">The configuration action, executed only for components for which <paramref
+		///    name = "condition" /> evaluates to <c>true</c>.</param>
+		/// <param name = "configurerWhenFalse">The configuration action, executed only for components for which <paramref
+		///    name = "condition" /> evaluates to <c>false</c>.</param>
+		/// <returns></returns>
+		public BasedOnDescriptor ConfigureIf(Predicate<ComponentRegistration> condition, Action<ComponentRegistration> configurerWhenTrue,
+		                                     Action<ComponentRegistration> configurerWhenFalse)
+		{
+			configuration += r =>
+			{
+				if (condition(r))
+				{
+					configurerWhenTrue(r);
+				}
+				else
+				{
+					configurerWhenFalse(r);
+				}
+			};
 			return this;
 		}
 
@@ -406,9 +447,9 @@ namespace Castle.MicroKernel.Registration
 			var registration = Component.For(serviceTypes);
 			registration.ImplementedBy(type);
 
-			foreach (var configurer in configurers)
+			if (configuration != null)
 			{
-				configurer.Apply(registration);
+				configuration(registration);
 			}
 			if (String.IsNullOrEmpty(registration.Name) && !String.IsNullOrEmpty(defaults.Name))
 			{

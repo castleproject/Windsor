@@ -20,7 +20,7 @@ namespace Castle.Core
 	using System.Collections.ObjectModel;
 
 	/// <summary>
-	/// Collection of <see cref="MethodMetaModel"/>
+	///   Collection of <see cref = "MethodMetaModel" />
 	/// </summary>
 	[Serializable]
 	public class MethodMetaModelCollection : Collection<MethodMetaModel>

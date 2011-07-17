@@ -14,32 +14,15 @@
 
 namespace Castle.MicroKernel.Lifestyle.Scoped
 {
-	using System.Collections.Generic;
-	using System.Linq;
+	using System;
 
-	public class ScopeSelector : IScopeAccessor
+	using Castle.Core;
+
+	/// <summary>
+	///   Temporary interface to introduce new scoping mechanism. It will replace the currently existing one.
+	/// </summary>
+	public interface ILifetimeScope : IDisposable
 	{
-		private readonly IScopeAccessor @default = new ThreadScopeAccessor();
-		private readonly List<IScopeAccessor> scopes;
-
-		public ScopeSelector()
-		{
-			scopes = new List<IScopeAccessor>();
-		}
-
-		public Stack<ScopeCache> CurrentStack
-		{
-			get
-			{
-				return scopes.Select(scope => scope.CurrentStack)
-				       	.FirstOrDefault(stack => stack != null) ?? @default.CurrentStack;
-			}
-		}
-
-		public ScopeSelector Add(IScopeAccessor scope)
-		{
-			scopes.Add(scope);
-			return this;
-		}
+		Burden GetCachedInstance(ComponentModel instance, ScopedInstanceActivationCallback createInstance);
 	}
 }

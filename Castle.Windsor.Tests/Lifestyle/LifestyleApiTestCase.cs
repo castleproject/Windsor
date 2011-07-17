@@ -18,7 +18,6 @@ namespace CastleTests.Lifestyle
 
 	using Castle.Core;
 	using Castle.MicroKernel.Registration;
-	using Castle.MicroKernel.SubSystems.Scoping;
 	using Castle.MicroKernel.Tests.ClassComponents;
 
 	using CastleTests.Components;
@@ -28,11 +27,6 @@ namespace CastleTests.Lifestyle
 	[TestFixture]
 	public class LifestyleApiTestCase : AbstractContainerTestCase
 	{
-		protected override void AfterContainerCreated()
-		{
-			Kernel.AddSubSystem("scope", new ScopingSubsystem());
-		}
-
 		private void LifestyleSingle(Func<ComponentRegistration<A>, IRegistration> assingLifestyle, LifestyleType expectedLifestyle)
 		{
 			var registration = Component.For<A>();

@@ -94,12 +94,7 @@ namespace Castle.MicroKernel.Handlers
 			switch (type)
 			{
 				case LifestyleType.Scoped:
-					var scopeManager = Kernel.GetSubSystem("scope") as IScopeManager;
-					if (scopeManager == null)
-					{
-						throw new InvalidOperationException("Scope Subsystem not found.  Did you forget to add it?");
-					}
-					manager = new ScopedLifestyleManager(new CurrentScopeAccessor(scopeManager, ComponentModel));
+					manager = new ScopedLifestyleManager(CreateScopeAccessor());
 					break;
 				case LifestyleType.Thread:
 #if SILVERLIGHT
@@ -113,7 +108,7 @@ namespace Castle.MicroKernel.Handlers
 					break;
 #if (!SILVERLIGHT && !CLIENTPROFILE)
 				case LifestyleType.PerWebRequest:
-					manager = new PerWebRequestLifestyleManager();
+					manager = new ScopedLifestyleManager(new WebRequestScopeAccessor());
 					break;
 #endif
 				case LifestyleType.Custom:
@@ -121,7 +116,6 @@ namespace Castle.MicroKernel.Handlers
 
 					break;
 				case LifestyleType.Pooled:
-				{
 					var initial = ExtendedPropertiesConstants.Pool_Default_InitialPoolSize;
 					var maxSize = ExtendedPropertiesConstants.Pool_Default_MaxPoolSize;
 
@@ -135,7 +129,6 @@ namespace Castle.MicroKernel.Handlers
 					}
 
 					manager = new PoolableLifestyleManager(initial, maxSize);
-				}
 					break;
 				default:
 					//this includes LifestyleType.Undefined, LifestyleType.Singleton and invalid values
@@ -195,6 +188,16 @@ namespace Castle.MicroKernel.Handlers
 				burden = ctx.Burden;
 				return instance;
 			}
+		}
+
+		private IScopeAccessor CreateScopeAccessor()
+		{
+			var selector = (Func<IHandler[], IHandler>)ComponentModel.ExtendedProperties[Constants.ScopeRootSelector];
+			if (selector == null)
+			{
+				return new LifetimeScopeAccessor();
+			}
+			return new CreationContextScopeAccessor(ComponentModel, selector);
 		}
 	}
 }

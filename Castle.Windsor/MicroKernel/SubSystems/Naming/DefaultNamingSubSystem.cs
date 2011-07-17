@@ -345,7 +345,7 @@ namespace Castle.MicroKernel.SubSystems.Naming
 
 		protected bool IsAssignable(Type thisOne, Type fromThisOne)
 		{
-			if(thisOne.IsAssignableFrom(fromThisOne))
+			if (thisOne.IsAssignableFrom(fromThisOne))
 			{
 				return true;
 			}
@@ -354,7 +354,7 @@ namespace Castle.MicroKernel.SubSystems.Naming
 				return false;
 			}
 			var genericArguments = thisOne.GetGenericArguments();
-			if(fromThisOne.GetGenericArguments().Length!=genericArguments.Length)
+			if (fromThisOne.GetGenericArguments().Length != genericArguments.Length)
 			{
 				return false;
 			}

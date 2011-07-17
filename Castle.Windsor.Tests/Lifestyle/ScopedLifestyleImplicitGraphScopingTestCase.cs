@@ -16,10 +16,8 @@ namespace CastleTests.Lifestyle
 {
 	using System.Linq;
 
-	using Castle.MicroKernel.Lifestyle.Scoped;
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Resolvers.SpecializedResolvers;
-	using Castle.MicroKernel.SubSystems.Scoping;
 
 	using CastleTests.Components;
 
@@ -27,11 +25,6 @@ namespace CastleTests.Lifestyle
 
 	public class ScopedLifestyleImplicitGraphScopingTestCase : AbstractContainerTestCase
 	{
-		protected override void AfterContainerCreated()
-		{
-			Kernel.AddSubSystem("scope", new ScopingSubsystem(new ThreadScopeAccessor()));
-		}
-
 		[Test]
 		public void Scoped_component_created_for_outermost_sub_graph()
 		{

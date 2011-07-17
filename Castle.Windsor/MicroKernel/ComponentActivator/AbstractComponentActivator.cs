@@ -20,6 +20,9 @@ namespace Castle.MicroKernel.ComponentActivator
 	using Castle.Core;
 	using Castle.MicroKernel.Context;
 	using Castle.MicroKernel.Proxy;
+#if DOTNET35 || SILVERLIGHT
+	using System.Linq;
+#endif
 
 	/// <summary>
 	///   Abstract implementation of <see cref = "IComponentActivator" />.

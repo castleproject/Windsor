@@ -66,9 +66,9 @@ namespace Castle.MicroKernel
 		object Resolve(CreationContext context);
 
 		/// <summary>
-		/// Returns true if this handler supports <paramref name="service"/>
+		///   Returns true if this handler supports <paramref name = "service" />
 		/// </summary>
-		/// <param name="service"></param>
+		/// <param name = "service"></param>
 		/// <returns></returns>
 		bool Supports(Type service);
 

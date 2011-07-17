@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,28 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.MicroKernel.Lifestyle.Scoped
+namespace Castle.MicroKernel
 {
-	using System;
-	using System.Collections.Generic;
-
-	public class ThreadScopeAccessor : IScopeAccessor
-	{
-		[ThreadStatic]
-		private static Stack<ScopeCache> scopes;
-
-		public Stack<ScopeCache> CurrentStack
-		{
-			get
-			{
-				var stack = scopes;
-				if (stack == null)
-				{
-					stack = new Stack<ScopeCache>();
-					scopes = stack;
-				}
-				return stack;
-			}
-		}
-	}
+	public delegate void BurdenReleaseDelegate(Burden burden);
 }

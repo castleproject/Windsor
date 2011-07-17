@@ -12,32 +12,30 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.MicroKernel.Lifestyle.Scoped
+
+#if !(SILVERLIGHT || CLIENTPROFILE)
+
+namespace Castle.MicroKernel.Lifestyle
 {
-	using System;
+	using Castle.MicroKernel.Context;
+	using Castle.MicroKernel.Lifestyle.Scoped;
 
-	public class ScopeCacheDecorator : IScopeCache
+	public class WebRequestScopeAccessor : IScopeAccessor
 	{
-		public Action<object, Burden> OnInserted;
-
-		private readonly ScopeCache inner;
-
-		public ScopeCacheDecorator(ScopeCache inner)
+		public void Dispose()
 		{
-			this.inner = inner;
+			var scope = PerWebRequestLifestyleModule.YieldScope();
+			if (scope != null)
+			{
+				scope.Dispose();
+			}
 		}
 
-		public Burden this[object id]
+		public ILifetimeScope GetScope(CreationContext context)
 		{
-			get { return inner[id]; }
-			set
-			{
-				inner[id] = value;
-				if (OnInserted != null)
-				{
-					OnInserted(id, value);
-				}
-			}
+			return PerWebRequestLifestyleModule.GetScope();
 		}
 	}
 }
+
+#endif

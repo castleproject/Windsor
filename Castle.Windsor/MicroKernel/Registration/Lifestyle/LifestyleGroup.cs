@@ -18,6 +18,7 @@ namespace Castle.MicroKernel.Registration.Lifestyle
 
 	using Castle.Core;
 	using Castle.Core.Internal;
+	using Castle.MicroKernel.Lifestyle.Scoped;
 	using Castle.MicroKernel.ModelBuilder.Descriptors;
 
 	public class LifestyleGroup<TService> : RegistrationGroup<TService>
@@ -104,7 +105,12 @@ namespace Castle.MicroKernel.Registration.Lifestyle
 
 		public ComponentRegistration<TService> ScopedPer<TBaseForRoot>() where TBaseForRoot : class
 		{
-			return Scoped.ExtendedProperties(new Property(Constants.ScopeRoot, typeof(TBaseForRoot)));
+			return ScopedPer(CreationContextScopeAccessor.DefaultScopeRootSelector<TBaseForRoot>);
+		}
+
+		public ComponentRegistration<TService> ScopedPer(Func<IHandler[], IHandler> scopeRootSelector)
+		{
+			return Scoped.ExtendedProperties(new Property(Constants.ScopeRootSelector, scopeRootSelector));
 		}
 
 		/// <summary>
