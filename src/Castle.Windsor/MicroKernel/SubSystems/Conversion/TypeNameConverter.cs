@@ -22,6 +22,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 	using System.Text;
 
 	using Castle.Core.Configuration;
+	using Castle.Core.Internal;
 
 #if DOTNET35
 	using System.Reflection.Emit; // needed for .NET 3.5
@@ -134,7 +135,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 			var anyAssemblyAdded = false;
 			if (forceLoad || assemblies.Count == 0)
 			{
-				var loadedAssemblies = GetLoadedAssemblies();
+				var loadedAssemblies = ReflectionUtil.GetLoadedAssemblies();
 				foreach (var assembly in loadedAssemblies)
 				{
 					if (assemblies.Contains(assembly) || ShouldSkipAssembly(assembly))
@@ -147,19 +148,6 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 				}
 			}
 			return anyAssemblyAdded;
-		}
-
-		private Assembly[] GetLoadedAssemblies()
-		{
-#if SILVERLIGHT
-			var list =
-				System.Windows.Deployment.Current.Parts.Select(
-					ap => System.Windows.Application.GetResourceStream(new Uri(ap.Source, UriKind.Relative))).Select(
-						stream => new System.Windows.AssemblyPart().Load(stream.Stream)).ToArray();
-			return list;
-#else
-			return AppDomain.CurrentDomain.GetAssemblies();
-#endif
 		}
 
 		protected virtual bool ShouldSkipAssembly(Assembly assembly)

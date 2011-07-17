@@ -546,6 +546,7 @@
     <Compile Include="MicroKernel\Lifestyle\Scoped\ScopeCache.cs" />
     <Compile Include="MicroKernel\Lifestyle\Scoped\ScopedInstanceActivationCallback.cs" />
     <Compile Include="MicroKernel\Lifestyle\ScopedLifestyleManager.cs" />
+    <Compile Include="MicroKernel\Lifestyle\Scoped\ThreadStaticLifetimeScope.cs" />
     <Compile Include="MicroKernel\Lifestyle\WebRequestScopeAccessor.cs" />
     <Compile Include="MicroKernel\Registration\Classes.cs" />
     <Compile Include="MicroKernel\Registration\Types.cs" />

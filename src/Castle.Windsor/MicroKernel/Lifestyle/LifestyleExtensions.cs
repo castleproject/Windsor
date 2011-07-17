@@ -17,20 +17,24 @@ namespace Castle.MicroKernel.Lifestyle
 	using System;
 	using System.ComponentModel;
 
-	using Castle.MicroKernel.Lifestyle.Scoped;
 	using Castle.Windsor;
+#if SILVERLIGHT
+	using Scope = Castle.MicroKernel.Lifestyle.Scoped.ThreadStaticLifetimeScope;
+#else
+	using Scope = Castle.MicroKernel.Lifestyle.Scoped.CallContextLifetimeScope;
+#endif
 
 	[EditorBrowsable(EditorBrowsableState.Never)]
 	public static class LifestyleExtensions
 	{
 		public static IDisposable BeginScope(this IKernel kernel)
 		{
-			return new CallContextLifetimeScope(kernel);
+			return new Scope(kernel);
 		}
 
 		public static IDisposable BeginScope(this IWindsorContainer container)
 		{
-			return new CallContextLifetimeScope(container);
+			return new Scope(container);
 		}
 	}
 }

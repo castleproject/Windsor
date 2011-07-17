@@ -14,9 +14,11 @@
 
 namespace CastleTests.Lifestyle
 {
+#if !SILVERLIGHT
+	// this is not working in SL at all
 	using System;
 	using System.Threading;
-#if !(DOTNET35 || SILVERLIGHT)
+#if !DOTNET35
 	using System.Threading.Tasks;
 #endif
 
@@ -56,7 +58,7 @@ namespace CastleTests.Lifestyle
 			}
 		}
 
-#if !(DOTNET35 || SILVERLIGHT)
+#if !DOTNET35
 		[Test]
 		public void Context_is_passed_onto_the_next_thread_TPL()
 		{
@@ -120,4 +122,5 @@ namespace CastleTests.Lifestyle
 			}
 		}
 	}
+#endif
 }

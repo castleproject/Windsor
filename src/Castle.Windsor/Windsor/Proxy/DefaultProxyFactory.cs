@@ -26,10 +26,6 @@ namespace Castle.Windsor.Proxy
 	using Castle.MicroKernel.Context;
 	using Castle.MicroKernel.Proxy;
 
-#if (SILVERLIGHT)
-	using Castle.DynamicProxy.SilverlightExtensions;
-#endif
-
 	/// <summary>
 	///   This implementation of <see cref = "IProxyFactory" /> relies 
 	///   on DynamicProxy to expose proxy capabilities.

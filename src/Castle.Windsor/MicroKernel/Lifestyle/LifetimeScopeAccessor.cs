@@ -18,12 +18,17 @@ namespace Castle.MicroKernel.Lifestyle
 
 	using Castle.MicroKernel.Context;
 	using Castle.MicroKernel.Lifestyle.Scoped;
+#if SILVERLIGHT
+	using Scope = Castle.MicroKernel.Lifestyle.Scoped.ThreadStaticLifetimeScope;
+#else
+	using Scope = Castle.MicroKernel.Lifestyle.Scoped.CallContextLifetimeScope;
+#endif
 
 	public class LifetimeScopeAccessor : IScopeAccessor
 	{
 		public void Dispose()
 		{
-			var scope = CallContextLifetimeScope.ObtainCurrentScope();
+			var scope = Scope.ObtainCurrentScope();
 			if (scope != null)
 			{
 				scope.Dispose();
@@ -32,7 +37,7 @@ namespace Castle.MicroKernel.Lifestyle
 
 		public ILifetimeScope GetScope(CreationContext context)
 		{
-			var scope = CallContextLifetimeScope.ObtainCurrentScope();
+			var scope = Scope.ObtainCurrentScope();
 			if (scope == null)
 			{
 				throw new InvalidOperationException("Scope was not available. Did you forget to call container.BeginScope()?");
