@@ -20,8 +20,8 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 
 	public class DefaultLifetimeScope : ILifetimeScope
 	{
-		private readonly IScopeCache scopeCache;
 		private readonly Action<Burden> onAfterCreated;
+		private readonly IScopeCache scopeCache;
 
 		public DefaultLifetimeScope(IScopeCache scopeCache, Action<Burden> onAfterCreated = null)
 		{

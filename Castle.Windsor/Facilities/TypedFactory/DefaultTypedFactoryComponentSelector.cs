@@ -39,7 +39,7 @@ namespace Castle.Facilities.TypedFactory
 		/// <summary>
 		///   Builds <see cref = "TypedFactoryComponentResolver" /> for given call.
 		///   By default if <paramref name = "componentType" /> is a collection
-		///   returns factory calling <see cref="IKernel.ResolveAll(System.Type)"/> on collection's item type,
+		///   returns factory calling <see cref = "IKernel.ResolveAll(System.Type)" /> on collection's item type,
 		///   otherwise standard <see cref = "TypedFactoryComponentResolver" />.
 		/// </summary>
 		/// <param name = "method"></param>
