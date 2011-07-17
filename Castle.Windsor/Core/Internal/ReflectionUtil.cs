@@ -128,6 +128,19 @@ namespace Castle.Core.Internal
 			return assembly;
 		}
 
+		public static Assembly[] GetLoadedAssemblies()
+		{
+#if SILVERLIGHT
+			var list =
+				System.Windows.Deployment.Current.Parts.Select(
+					ap => System.Windows.Application.GetResourceStream(new Uri(ap.Source, UriKind.Relative))).Select(
+						stream => new System.Windows.AssemblyPart().Load(stream.Stream)).ToArray();
+			return list;
+#else
+			return AppDomain.CurrentDomain.GetAssemblies();
+#endif
+		}
+
 		private static Assembly LoadAssembly(AssemblyName assemblyName)
 		{
 			return Assembly.Load(assemblyName);
@@ -327,17 +340,33 @@ namespace Castle.Core.Internal
 
 		private static void AddApplicationAssemblies(Assembly assembly, HashSet<Assembly> assemblies, string applicationName)
 		{
+#if SILVERLIGHT
+			foreach (var referencedAssembly in GetLoadedAssemblies())
+			{
+				if (IsApplicationAssembly(applicationName, referencedAssembly.FullName))
+				{
+					assemblies.Add(referencedAssembly);
+				}
+			}
+#else
 			if (assemblies.Add(assembly) == false)
 			{
 				return;
 			}
 			foreach (var referencedAssembly in assembly.GetReferencedAssemblies())
+
 			{
-				if (referencedAssembly.FullName.StartsWith(applicationName))
+				if (IsApplicationAssembly(applicationName, referencedAssembly.FullName))
 				{
 					AddApplicationAssemblies(LoadAssembly(referencedAssembly), assemblies, applicationName);
 				}
 			}
+#endif
+		}
+
+		private static bool IsApplicationAssembly(string applicationName, string assemblyName)
+		{
+			return assemblyName.StartsWith(applicationName);
 		}
 	}
 }

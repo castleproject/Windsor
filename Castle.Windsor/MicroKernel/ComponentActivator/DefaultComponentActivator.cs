@@ -143,20 +143,18 @@ namespace Castle.MicroKernel.ComponentActivator
 			object instance;
 			try
 			{
-				object instance1;
 #if (SILVERLIGHT)
-					instance = ReflectionUtil.CreateInstance<object>(implType, arguments);
+				instance = implType.CreateInstance<object>(arguments);
 #else
 				if (useFastCreateInstance)
 				{
-					instance1 = FastCreateInstance(implType, arguments, constructor);
+					instance = FastCreateInstance(implType, arguments, constructor);
 				}
 				else
 				{
-					instance1 = implType.CreateInstance<object>(arguments);
+					instance = implType.CreateInstance<object>(arguments);
 				}
 #endif
-				instance = instance1;
 			}
 			catch (Exception ex)
 			{

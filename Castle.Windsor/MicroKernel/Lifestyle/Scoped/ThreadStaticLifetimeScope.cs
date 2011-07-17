@@ -14,30 +14,23 @@
 
 namespace Castle.MicroKernel.Lifestyle.Scoped
 {
-#if !SILVERLIGHT
+#if SILVERLIGHT
 	using System;
-	using System.Runtime.Remoting.Messaging;
 
 	using Castle.Core;
 	using Castle.Core.Internal;
 	using Castle.Windsor;
 
-	/// <summary>
-	///   Provides explicit lifetime scoping within logical path of execution. Used for types with <see
-	///    cref = "LifestyleType.Scoped" />.
-	/// </summary>
-	/// <remarks>
-	///   The scope is passed on to child threads, including ThreadPool threads. The capability is limited to single <see
-	///    cref = "AppDomain" /> and should be used cauciously as call to <see cref = "Dispose" /> may occur while the child thread is still executing, what in turn may lead to subtle threading bugs.
-	/// </remarks>
-	public class CallContextLifetimeScope : ILifetimeScope, ILogicalThreadAffinative
+	public class ThreadStaticLifetimeScope : ILifetimeScope
 	{
-		private static readonly string contextKey = "castle.lifetime-scope-" + AppDomain.CurrentDomain.Id.ToString();
 		private readonly Lock @lock = Lock.Create();
-		private readonly CallContextLifetimeScope parentScope;
+		private readonly ThreadStaticLifetimeScope parentScope;
 		private ScopeCache cache = new ScopeCache();
 
-		public CallContextLifetimeScope(IKernel container)
+		[ThreadStatic]
+		private static ThreadStaticLifetimeScope currentScope;
+
+		public ThreadStaticLifetimeScope(IKernel container)
 		{
 			var parent = ObtainCurrentScope();
 			if (parent != null)
@@ -47,7 +40,7 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 			SetCurrentScope(this);
 		}
 
-		public CallContextLifetimeScope(IWindsorContainer container) : this(container.Kernel)
+		public ThreadStaticLifetimeScope(IWindsorContainer container) : this(container.Kernel)
 		{
 		}
 
@@ -62,15 +55,7 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 				token.Upgrade();
 				cache.Dispose();
 				cache = null;
-
-				if (parentScope != null)
-				{
-					CallContext.SetData(contextKey, parentScope);
-				}
-				else
-				{
-					CallContext.FreeNamedDataSlot(contextKey);
-				}
+				SetCurrentScope(parentScope);
 			}
 		}
 
@@ -90,14 +75,14 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 			}
 		}
 
-		private void SetCurrentScope(CallContextLifetimeScope lifetimeScope)
+		private void SetCurrentScope(ThreadStaticLifetimeScope lifetimeScope)
 		{
-			CallContext.SetData(contextKey, lifetimeScope);
+			currentScope = lifetimeScope;
 		}
 
-		public static CallContextLifetimeScope ObtainCurrentScope()
+		public static ThreadStaticLifetimeScope ObtainCurrentScope()
 		{
-			return (CallContextLifetimeScope)CallContext.GetData(contextKey);
+			return currentScope;
 		}
 	}
 #endif
