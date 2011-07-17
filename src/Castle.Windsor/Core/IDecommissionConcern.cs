@@ -14,9 +14,8 @@
 
 namespace Castle.Core
 {
-
 	/// <summary>
-	/// Marks a <see cref="ILifecycleConcern"/> which is applied right before component instance is destroyed.
+	///   Marks a <see cref = "ILifecycleConcern" /> which is applied right before component instance is destroyed.
 	/// </summary>
 	public interface IDecommissionConcern : ILifecycleConcern
 	{

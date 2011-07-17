@@ -15,7 +15,6 @@
 namespace Castle.MicroKernel.ComponentActivator
 {
 	using System;
-	using System.Collections.Generic;
 	using System.Runtime.Serialization;
 	using System.Security;
 	using System.Security.Permissions;
@@ -194,7 +193,6 @@ namespace Castle.MicroKernel.ComponentActivator
 			return instance;
 		}
 #endif
-
 
 		protected virtual ConstructorCandidate SelectEligibleConstructor(CreationContext context)
 		{

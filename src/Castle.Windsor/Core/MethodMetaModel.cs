@@ -19,8 +19,8 @@ namespace Castle.Core
 	using Castle.Core.Configuration;
 
 	/// <summary>
-	/// Represents meta information associated with a method
-	/// (not yet defined)
+	///   Represents meta information associated with a method
+	///   (not yet defined)
 	/// </summary>
 	[Serializable]
 	public class MethodMetaModel
