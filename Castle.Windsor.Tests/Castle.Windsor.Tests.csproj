@@ -416,7 +416,7 @@
     <Compile Include="ConventionVerification.cs" />
     <Compile Include="ContainerExtensions\BadDependencyResolver.cs" />
     <Compile Include="ContainerExtensions\GoodDependencyResolver.cs" />
-    <Compile Include="Core.Tests\InterceptorAttributeTestCase.cs" />
+    <Compile Include="Interceptors\InterceptorAttributeTestCase.cs" />
     <Compile Include="CreatingContainerTestCase.cs" />
     <Compile Include="Diagnostics\UsingContainerAsServiceLocatorDiagnosticTestCase.cs" />
     <Compile Include="DuplicateGenerics.cs" />
@@ -818,7 +818,7 @@
     <Compile Include="TypeUtilTestCase.cs" />
     <Compile Include="Windsor.Tests\LifecycledComponentsReleasePolicyComponentTrackingTestCase.cs" />
     <Compile Include="Windsor.Tests\GenericVarianceTestCase.cs" />
-    <Compile Include="Windsor.Tests\LitestylePerThreadTestCase.cs" />
+    <Compile Include="Lifestyle\LitestylePerThreadTestCase.cs" />
     <Compile Include="Windsor.Tests\MultiServiceComponentsTestCase.cs" />
     <Compile Include="DefaultConversionManagerTestCase.cs">
       <SubType>Code</SubType>
