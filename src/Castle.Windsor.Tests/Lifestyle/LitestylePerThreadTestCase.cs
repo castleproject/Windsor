@@ -12,12 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Windsor.Tests
+namespace CastleTests.Lifestyle
 {
 	using System;
 	using System.Threading;
 
 	using Castle.MicroKernel.Registration;
+	using Castle.Windsor;
 	using Castle.Windsor.Tests.ClassComponents;
 
 	using CastleTests;
