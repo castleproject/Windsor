@@ -79,7 +79,7 @@ namespace Castle.Windsor.Diagnostics
 		protected virtual void InitStandardExtensions()
 		{
 			Add(new AllComponents());
-			Add(new DefaultComponentPerService());
+			Add(new AllServices());
 			Add(new PotentiallyMisconfiguredComponents());
 			Add(new PotentialLifestyleMismatches());
 			Add(new UsingContainerAsServiceLocator());

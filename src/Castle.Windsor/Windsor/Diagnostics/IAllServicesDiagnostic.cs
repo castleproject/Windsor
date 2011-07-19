@@ -12,13 +12,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.MicroKernel.SubSystems.Naming
+namespace Castle.Windsor.Diagnostics
 {
 	using System;
-	using System.Collections.Generic;
+	using System.Linq;
 
-	public interface IExposeDefaultComponentsForServices
+	using Castle.MicroKernel;
+
+	/// <summary>
+	///   Collects all handlers for components in hosting container grouped by services they expose.
+	///   Within the service group, first one would be the default (the one obtained when callling <see
+	///    cref = "IKernel.Resolve(System.Type)" /> for the service type)
+	/// </summary>
+	public interface IAllServicesDiagnostic : IDiagnostic<ILookup<Type, IHandler>>
 	{
-		IEnumerable<KeyValuePair<Type, IHandler>> GetDefaultComponentsForServices();
 	}
 }
