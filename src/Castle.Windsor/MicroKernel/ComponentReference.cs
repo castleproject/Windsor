@@ -26,9 +26,8 @@ namespace Castle.MicroKernel
 	/// <typeparam name = "T"></typeparam>
 	public class ComponentReference<T> : IReference<T>
 	{
-		private readonly Type actualComponentType;
 		private readonly DependencyModel dependency;
-		private readonly string serviceOverrideComponentKey;
+		private readonly object value;
 
 		public ComponentReference(string dependencyName, string componentKey)
 		{
@@ -41,7 +40,7 @@ namespace Castle.MicroKernel
 				throw new ArgumentNullException("componentKey");
 			}
 
-			serviceOverrideComponentKey = componentKey;
+			value = componentKey;
 
 			dependency = new DependencyModel(dependencyName, typeof(T), false);
 		}
@@ -52,7 +51,7 @@ namespace Castle.MicroKernel
 			{
 				throw new ArgumentNullException("actualComponentType");
 			}
-			this.actualComponentType = actualComponentType;
+			value = actualComponentType;
 
 			dependency = new DependencyModel(dependencyName, actualComponentType, false);
 		}
@@ -63,9 +62,19 @@ namespace Castle.MicroKernel
 			// so that we don't have to specify the key
 		}
 
+		private Type ActualComponentType
+		{
+			get { return value as Type; }
+		}
+
+		private string ServiceOverrideComponentKey
+		{
+			get { return value as string; }
+		}
+
 		public void Attach(ComponentModel component)
 		{
-			var reference = ReferenceExpressionUtil.BuildReference(serviceOverrideComponentKey ?? actualComponentType.FullName);
+			var reference = ReferenceExpressionUtil.BuildReference(ServiceOverrideComponentKey ?? ActualComponentType.FullName);
 			component.Parameters.Add(dependency.DependencyKey, reference);
 			component.Dependencies.Add(dependency);
 		}
@@ -83,7 +92,7 @@ namespace Castle.MicroKernel
 				throw new ComponentResolutionException(
 					string.Format(
 						"Component {0} could not be resolved. Make sure you didn't misspell the name, and that component is registered.",
-						serviceOverrideComponentKey ?? actualComponentType.ToString()));
+						ServiceOverrideComponentKey ?? ActualComponentType.ToString()));
 			}
 
 			try
@@ -92,18 +101,18 @@ namespace Castle.MicroKernel
 			}
 			catch (InvalidCastException e)
 			{
-				throw new ComponentResolutionException(string.Format("Component {0} is not compatible with type {1}.", serviceOverrideComponentKey, typeof(T)), e);
+				throw new ComponentResolutionException(string.Format("Component {0} is not compatible with type {1}.", ServiceOverrideComponentKey, typeof(T)), e);
 			}
 		}
 
 		private IHandler GetHandler(IKernel kernel)
 		{
-			if (serviceOverrideComponentKey != null)
+			if (ServiceOverrideComponentKey != null)
 			{
-				return kernel.GetHandler(serviceOverrideComponentKey);
+				return kernel.GetHandler(ServiceOverrideComponentKey);
 			}
 
-			return kernel.GetHandler(actualComponentType);
+			return kernel.GetHandler(ActualComponentType);
 		}
 	}
 }
