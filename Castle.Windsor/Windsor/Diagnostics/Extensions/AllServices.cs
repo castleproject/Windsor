@@ -14,29 +14,22 @@
 
 namespace Castle.Windsor.Diagnostics.Extensions
 {
-	using System;
 	using System.Collections.Generic;
 	using System.Linq;
 
 	using Castle.MicroKernel;
-	using Castle.MicroKernel.SubSystems.Naming;
 	using Castle.Windsor.Diagnostics.DebuggerViews;
 
 #if !SILVERLIGHT
-	public class DefaultComponentPerService : AbstractContainerDebuggerExtension
+	public class AllServices : AbstractContainerDebuggerExtension
 	{
-		private const string name = "Default component per service";
-		private IKernel kernel;
+		private const string name = "All Services";
+		private IAllServicesDiagnostic diagnostic;
 
 		public override IEnumerable<DebuggerViewItem> Attach()
 		{
-			var map = new Dictionary<Type, IHandler>();
-			BuildMap(map, kernel);
-			if (map.Count == 0)
-			{
-				return Enumerable.Empty<DebuggerViewItem>();
-			}
-			var items = map.OrderBy(p => p.Key.Name).Select(p => DefaultComponentView(p.Value, p.Key.Name)).ToArray();
+			var map = diagnostic.Inspect();
+			var items = map.OrderBy(p => p.Key.Name).Select(p => BuildServiceView(p, p.Key.Name)).ToArray();
 			return new[]
 			{
 				new DebuggerViewItem(name, "Count = " + items.Length, items)
@@ -45,28 +38,14 @@ namespace Castle.Windsor.Diagnostics.Extensions
 
 		public override void Init(IKernel kernel, IDiagnosticsHost diagnosticsHost)
 		{
-			this.kernel = kernel;
+			diagnostic = new AllServicesDiagnostic(kernel);
+			diagnosticsHost.AddDiagnostic(diagnostic);
 		}
 
-		private void BuildMap(Dictionary<Type, IHandler> map, IKernel currentKernel)
+		private DebuggerViewItem BuildServiceView(IEnumerable<IHandler> handlers, string name)
 		{
-			var defaults = currentKernel.GetSubSystem(SubSystemConstants.NamingKey) as IExposeDefaultComponentsForServices;
-			if (defaults != null)
-			{
-				foreach (var @default in defaults.GetDefaultComponentsForServices())
-				{
-					if (map.ContainsKey(@default.Key))
-					{
-						continue;
-					}
-					map.Add(@default.Key, @default.Value);
-				}
-			}
-			var parentKernel = currentKernel.Parent;
-			if (parentKernel != null)
-			{
-				BuildMap(map, parentKernel);
-			}
+			var components = handlers.Select(DefaultComponentView).ToArray();
+			return new DebuggerViewItem(name, "Count = " + components.Length, components);
 		}
 	}
 #endif

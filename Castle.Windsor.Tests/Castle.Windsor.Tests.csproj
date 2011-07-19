@@ -416,6 +416,7 @@
     <Compile Include="ConventionVerification.cs" />
     <Compile Include="ContainerExtensions\BadDependencyResolver.cs" />
     <Compile Include="ContainerExtensions\GoodDependencyResolver.cs" />
+    <Compile Include="Diagnostics\AllServicesDiagnosticTestCase.cs" />
     <Compile Include="Interceptors\InterceptorAttributeTestCase.cs" />
     <Compile Include="CreatingContainerTestCase.cs" />
     <Compile Include="Diagnostics\UsingContainerAsServiceLocatorDiagnosticTestCase.cs" />

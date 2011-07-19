@@ -771,7 +771,6 @@
     </Compile>
     <Compile Include="MicroKernel\IHandlerSelector.cs" />
     <Compile Include="MicroKernel\Resolvers\ILazyComponentLoader.cs" />
-    <Compile Include="MicroKernel\SubSystems\Naming\IExposeDefaultComponentsForServices.cs" />
     <Compile Include="MicroKernel\SubSystems\Naming\INamingSubSystem.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -872,9 +871,11 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Windsor\Diagnostics\AllComponentsDiagnostic.cs" />
+    <Compile Include="Windsor\Diagnostics\AllServicesDiagnostic.cs" />
     <Compile Include="Windsor\Diagnostics\DebuggerViews\ReleasePolicyTrackedObjectsDebuggerViewItem.cs" />
     <Compile Include="Windsor\Diagnostics\Extensions\UsingContainerAsServiceLocator.cs" />
-    <Compile Include="Windsor\Diagnostics\Extensions\DefaultComponentPerService.cs" />
+    <Compile Include="Windsor\Diagnostics\Extensions\AllServices.cs" />
+    <Compile Include="Windsor\Diagnostics\IAllServicesDiagnostic.cs" />
     <Compile Include="Windsor\Diagnostics\NullPerformanceCounter.cs" />
     <Compile Include="Windsor\Diagnostics\TrackedComponentsPerformanceCounterWrapper.cs" />
     <Compile Include="Windsor\Diagnostics\UsingContainerAsServiceLocatorDiagnostic.cs" />

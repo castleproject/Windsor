@@ -28,7 +28,7 @@ namespace Castle.MicroKernel.SubSystems.Naming
 	///   Does not support a query string.
 	/// </summary>
 	[Serializable]
-	public class DefaultNamingSubSystem : AbstractSubSystem, INamingSubSystem, IExposeDefaultComponentsForServices
+	public class DefaultNamingSubSystem : AbstractSubSystem, INamingSubSystem
 	{
 		/// <summary>
 		///   Map(String, IHandler) to map component keys
@@ -372,7 +372,7 @@ namespace Castle.MicroKernel.SubSystems.Naming
 			return service => service2Handler.ContainsKey(service) == false || customFilter(service);
 		}
 
-		IEnumerable<KeyValuePair<Type, IHandler>> IExposeDefaultComponentsForServices.GetDefaultComponentsForServices()
+		public IEnumerable<KeyValuePair<Type, IHandler>> GetDefaultComponentsForServices()
 		{
 			return HandlerByServiceCache;
 		}

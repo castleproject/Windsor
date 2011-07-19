@@ -43,6 +43,7 @@ namespace Castle.MicroKernel.Registration
 	public class ComponentRegistration<TService> : IRegistration
 		where TService : class
 	{
+		private const Predicate<Type> allServices = null;
 		private readonly List<IComponentModelDescriptor> descriptors = new List<IComponentModelDescriptor>();
 		private readonly List<Type> potentialServices = new List<Type>();
 
@@ -1055,7 +1056,7 @@ namespace Castle.MicroKernel.Registration
 		///   When specified for multiple components for any given service the one registered after will override the one selected before.
 		///   This does not affect order of resolution via <see cref = "IKernel.ResolveAll{TService}()" /> methods.
 		/// </remarks>
-		public ComponentRegistration<TService> IsDefault(Predicate<Type> serviceFilter = null)
+		public ComponentRegistration<TService> IsDefault(Predicate<Type> serviceFilter = allServices)
 		{
 			var properties = new Property(Constants.DefaultComponentForServiceFilter, serviceFilter ?? (t => true));
 			return ExtendedProperties(properties);
