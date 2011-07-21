@@ -1004,17 +1004,6 @@ namespace Castle.MicroKernel.Registration
 			return list.ToArray();
 		}
 
-		private IKernelInternal GetInternalKernel(IKernel kernel)
-		{
-			var internalKernel = kernel as IKernelInternal;
-			if (internalKernel == null)
-			{
-				throw new ArgumentException(
-					string.Format("The kernel does not implement {0}.", typeof(IKernelInternal)), "kernel");
-			}
-			return internalKernel;
-		}
-
 		private bool SkipRegistration(IKernelInternal internalKernel, ComponentModel componentModel)
 		{
 			return ifComponentRegisteredIgnore && internalKernel.HasComponent(componentModel.Name);
@@ -1024,7 +1013,7 @@ namespace Castle.MicroKernel.Registration
 		///   Registers this component with the <see cref = "IKernel" />.
 		/// </summary>
 		/// <param name = "kernel">The kernel.</param>
-		void IRegistration.Register(IKernel kernel)
+		void IRegistration.Register(IKernelInternal kernel)
 		{
 			if (registered)
 			{
@@ -1037,13 +1026,12 @@ namespace Castle.MicroKernel.Registration
 				return;
 			}
 
-			var internalKernel = GetInternalKernel(kernel);
 			var componentModel = kernel.ComponentModelBuilder.BuildModel(GetContributors(services));
-			if (SkipRegistration(internalKernel, componentModel))
+			if (SkipRegistration(kernel, componentModel))
 			{
 				return;
 			}
-			internalKernel.AddCustomComponent(componentModel);
+			kernel.AddCustomComponent(componentModel);
 		}
 
 		/// <summary>

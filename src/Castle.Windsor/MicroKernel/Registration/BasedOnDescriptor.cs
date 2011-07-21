@@ -503,7 +503,7 @@ namespace Castle.MicroKernel.Registration
 			return baseTypes.Length > 0;
 		}
 
-		void IRegistration.Register(IKernel kernel)
+		void IRegistration.Register(IKernelInternal kernel)
 		{
 			((IRegistration)from).Register(kernel);
 		}

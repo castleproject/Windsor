@@ -23,6 +23,6 @@ namespace Castle.MicroKernel.Registration
 		///   Performs the registration in the <see cref = "IKernel" />.
 		/// </summary>
 		/// <param name = "kernel">The kernel.</param>
-		void Register(IKernel kernel);
+		void Register(IKernelInternal kernel);
 	}
 }
