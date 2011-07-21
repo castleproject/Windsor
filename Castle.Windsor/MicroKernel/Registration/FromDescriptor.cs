@@ -87,7 +87,7 @@ namespace Castle.MicroKernel.Registration
 			return descriptor;
 		}
 
-		void IRegistration.Register(IKernel kernel)
+		void IRegistration.Register(IKernelInternal kernel)
 		{
 			if (criterias.Count == 0)
 			{
