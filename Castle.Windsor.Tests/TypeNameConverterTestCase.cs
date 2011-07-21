@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,13 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Windsor.Tests
+namespace CastleTests
 {
 	using System;
 
+	using Castle.DynamicProxy;
 	using Castle.MicroKernel.SubSystems.Conversion;
 	using Castle.MicroKernel.Tests.ClassComponents;
-	using Castle.Windsor.Tests.Lifecycle;
 
 	using CastleTests.Components;
 
@@ -38,6 +38,7 @@ namespace Castle.Windsor.Tests
 #if SILVERLIGHT
 		[Ignore("Type conversion does not work in tests under Silverlight because the assembly is not in the starting manifest (of Statlight)")]
 #endif
+
 		[Test]
 		public void Can_handle_generic_of_generics_properly()
 		{
@@ -50,6 +51,7 @@ namespace Castle.Windsor.Tests
 #if SILVERLIGHT
 		[Ignore("Type conversion does not work in tests under Silverlight because the assembly is not in the starting manifest (of Statlight)")]
 #endif
+
 		[Test]
 		public void Can_handle_multi_generic_with_generic_of_generics_properly()
 		{
@@ -65,6 +67,7 @@ namespace Castle.Windsor.Tests
 #if SILVERLIGHT
 		[Ignore("Type conversion does not work in tests under Silverlight because the assembly is not in the starting manifest (of Statlight)")]
 #endif
+
 		[Test]
 		public void Can_handle_multi_generic_with_multi_generic_of_generics_properly_1()
 		{
@@ -76,29 +79,29 @@ namespace Castle.Windsor.Tests
 			           typeof(ICustomer).Name + "],[" +
 			           typeof(IEmptyService).Name
 			           + "]]"
-					   + "],[" +
-			           typeof(ICustomer).Name + 
+			           + "],[" +
+			           typeof(ICustomer).Name +
 			           "]]";
 			var result = converter.PerformConversion(name, typeof(Type));
 			Assert.AreEqual(type, result);
 		}
 
-
 #if SILVERLIGHT
 		[Ignore("Type conversion does not work in tests under Silverlight because the assembly is not in the starting manifest (of Statlight)")]
 #endif
+
 		[Test]
 		public void Can_handle_multi_generic_with_multi_generic_of_generics_properly_2()
 		{
 			var type = typeof(IDoubleGeneric<ICustomer, IDoubleGeneric<ICustomer, IEmptyService>>);
 			var name = typeof(IDoubleGeneric<,>).Name
 			           + "[[" +
-						   typeof(ICustomer).Name + "],[" +
-						   typeof(IDoubleGeneric<,>).Name + 
-						   "[[" +
-							   typeof(ICustomer).Name + "],[" +
-							   typeof(IEmptyService).Name
-						   + "]]"
+			           typeof(ICustomer).Name + "],[" +
+			           typeof(IDoubleGeneric<,>).Name +
+			           "[[" +
+			           typeof(ICustomer).Name + "],[" +
+			           typeof(IEmptyService).Name
+			           + "]]"
 			           + "]]";
 			var result = converter.PerformConversion(name, typeof(Type));
 			Assert.AreEqual(type, result);
@@ -107,6 +110,7 @@ namespace Castle.Windsor.Tests
 #if SILVERLIGHT
 		[Ignore("Type conversion does not work in tests under Silverlight because the assembly is not in the starting manifest (of Statlight)")]
 #endif
+
 		[Test]
 		public void Can_load_closed_generic_type_by_Name_single_generic_parameter()
 		{
@@ -119,6 +123,7 @@ namespace Castle.Windsor.Tests
 #if SILVERLIGHT
 		[Ignore("Type conversion does not work in tests under Silverlight because the assembly is not in the starting manifest (of Statlight)")]
 #endif
+
 		[Test]
 		public void Can_load_closed_generic_type_by_Name_two_generic_parameters()
 		{
@@ -131,6 +136,7 @@ namespace Castle.Windsor.Tests
 #if SILVERLIGHT
 		[Ignore("Type conversion does not work in tests under Silverlight because the assembly is not in the starting manifest (of Statlight)")]
 #endif
+
 		[Test]
 		public void Can_load_open_generic_type_by_name()
 		{
@@ -140,10 +146,10 @@ namespace Castle.Windsor.Tests
 			Assert.AreEqual(type, result);
 		}
 
-
 #if SILVERLIGHT
 		[Ignore("Type conversion does not work in tests under Silverlight because the assembly is not in the starting manifest (of Statlight)")]
 #endif
+
 		[Test]
 		public void Can_load_type_from_loaded_assembly_by_just_name()
 		{
@@ -156,6 +162,7 @@ namespace Castle.Windsor.Tests
 #if SILVERLIGHT
 		[Ignore("Type conversion does not work in tests under Silverlight because the assembly is not in the starting manifest (of Statlight)")]
 #endif
+
 		[Test]
 		public void Can_load_type_from_loaded_assembly_by_name_with_namespace()
 		{
@@ -168,6 +175,7 @@ namespace Castle.Windsor.Tests
 #if SILVERLIGHT
 		[Ignore("Type conversion does not work in tests under Silverlight because the assembly is not in the starting manifest (of Statlight)")]
 #endif
+
 		[Test]
 		public void Throws_when_inner_generic_type_not_unique()
 		{
@@ -184,6 +192,7 @@ namespace Castle.Windsor.Tests
 #if SILVERLIGHT
 		[Ignore("Type conversion does not work in tests under Silverlight because the assembly is not in the starting manifest (of Statlight)")]
 #endif
+
 		[Test]
 		public void Throws_when_type_not_unique()
 		{
@@ -195,6 +204,62 @@ namespace Castle.Windsor.Tests
 			var exception =
 				Assert.Throws(typeof(ConverterException), code);
 			Assert.That(exception.Message.StartsWith("Could not uniquely identify type for 'IService2'."));
+		}
+
+#if SILVERLIGHT
+		[Ignore("Type conversion does not work in tests under Silverlight because the assembly is not in the starting manifest (of Statlight)")]
+#endif
+
+		[Test]
+		public void Throws_helpful_exception_when_assembly_found_but_not_type()
+		{
+			var assemblyName = typeof(IInterceptor).Assembly.FullName;
+			var type = typeof(IService2).FullName + ", " + assemblyName;
+
+			var exception = Assert.Throws<ConverterException>(() => converter.PerformConversion(type, typeof(Type)));
+
+			var message = string.Format(
+				"Could not convert string '{0}' to a type. Assembly {1} was matched, but it doesn't contain the type. Make sure that the type name was not mistyped.",
+				type, assemblyName);
+
+			Assert.AreEqual(message, exception.Message);
+		}
+
+#if SILVERLIGHT
+		[Ignore("Type conversion does not work in tests under Silverlight because the assembly is not in the starting manifest (of Statlight)")]
+#endif
+
+		[Test]
+		public void Throws_helpful_exception_when_assembly_specified_but_not_found()
+		{
+			var assemblyName = typeof(IInterceptor).Assembly.FullName.Replace("Castle.Core", "Castle.Core42");
+			var type = typeof(IService2).FullName + ", " + assemblyName;
+
+			var exception = Assert.Throws<ConverterException>(() => converter.PerformConversion(type, typeof(Type)));
+
+			var message = string.Format(
+				"Could not convert string '{0}' to a type. Assembly was not found. Make sure it was deployedand the name was not mistyped.",
+				type);
+
+			Assert.AreEqual(message, exception.Message);
+		}
+
+#if SILVERLIGHT
+		[Ignore("Type conversion does not work in tests under Silverlight because the assembly is not in the starting manifest (of Statlight)")]
+#endif
+
+		[Test]
+		public void Throws_helpful_exception_when_only_type_specified_but_not_found()
+		{
+			var type = "Some.Assembly.AndThen.Type+NestedEven";
+
+			var exception = Assert.Throws<ConverterException>(() => converter.PerformConversion(type, typeof(Type)));
+
+			var message = string.Format(
+				"Could not convert string '{0}' to a type. Make sure assembly containing the type has been loaded into the process, or consider specifying assembly qualified name of the type.",
+				type);
+
+			Assert.AreEqual(message, exception.Message);
 		}
 	}
 }

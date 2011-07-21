@@ -76,7 +76,7 @@ namespace Castle.Core.Internal
 				if (IsAssemblyFile(assemblyName))
 				{
 #if (SILVERLIGHT)
-				assembly = Assembly.Load(Path.GetFileNameWithoutExtension(assemblyName));
+					assembly = Assembly.Load(Path.GetFileNameWithoutExtension(assemblyName));
 #else
 					if (Path.GetDirectoryName(assemblyName) == AppDomain.CurrentDomain.BaseDirectory)
 					{
@@ -94,8 +94,21 @@ namespace Castle.Core.Internal
 				}
 				return assembly;
 			}
+			catch(FileNotFoundException)
+			{
+				throw;
+			}
+			catch(FileLoadException)
+			{
+				throw;
+			}
+			catch(BadImageFormatException)
+			{
+				throw;
+			}
 			catch (Exception e)
 			{
+				// in theory there should be no other exception kind
 				throw new Exception(string.Format("Could not load assembly {0}", assemblyName), e);
 			}
 		}

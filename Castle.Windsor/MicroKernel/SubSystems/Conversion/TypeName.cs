@@ -15,6 +15,7 @@
 namespace Castle.MicroKernel.SubSystems.Conversion
 {
 	using System;
+	using System.Linq;
 
 	public class TypeName
 	{
@@ -33,6 +34,11 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 		public TypeName(string assemblyQualifiedName)
 		{
 			this.assemblyQualifiedName = assemblyQualifiedName;
+		}
+
+		public bool IsAssemblyQualified
+		{
+			get { return assemblyQualifiedName != null; }
 		}
 
 		private string FullName
@@ -57,14 +63,25 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 			get { return String.IsNullOrEmpty(@namespace) == false; }
 		}
 
-		private bool IsAssemblyQualified
-		{
-			get { return assemblyQualifiedName != null; }
-		}
-
 		private string Name
 		{
 			get { return name; }
+		}
+
+		public string ExtractAssemblyName()
+		{
+			if (IsAssemblyQualified == false)
+			{
+				return null;
+			}
+			var tokens = assemblyQualifiedName.Split(new[] { ',' }, StringSplitOptions.None);
+
+			var indexOfVersion = Array.FindLastIndex(tokens, s => s.TrimStart(' ').StartsWith("Version="));
+			if (indexOfVersion <= 0)
+			{
+				return tokens.Last().Trim();
+			}
+			return tokens[indexOfVersion - 1].Trim();
 		}
 
 		public Type GetType(TypeNameConverter converter)
