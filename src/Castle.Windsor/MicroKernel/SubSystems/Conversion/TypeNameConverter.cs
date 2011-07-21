@@ -71,16 +71,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 		{
 			try
 			{
-				var type = GetType(value);
-				if (type == null)
-				{
-					var message = String.Format(
-						"Could not convert from '{0}' to {1} - Make sure that the type name is correct and that its assembly is deployed.",
-						value, targetType.FullName);
-
-					throw new ConverterException(message);
-				}
-				return type;
+				return GetType(value);
 			}
 			catch (ConverterException)
 			{
@@ -88,11 +79,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 			}
 			catch (Exception ex)
 			{
-				var message = String.Format(
-					"Could not convert from '{0}' to {1}.",
-					value, targetType.FullName);
-
-				throw new ConverterException(message, ex);
+				throw new ConverterException(String.Format("Could not convert string '{0}' to a type.", value), ex);
 			}
 		}
 
@@ -106,28 +93,41 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 			var typeName = ParseName(name);
 			if (typeName == null)
 			{
-				return null;
+				throw new ConverterException(String.Format("Could not convert string '{0}' to a type. It doesn't appear to be a valid type name.", name));
 			}
 
-			var forceLoad = false;
-			InitializeAppDomainAssemblies(forceLoad);
-			type = GetType(typeName);
+			InitializeAppDomainAssemblies(forceLoad: false);
+			type = typeName.GetType(this);
 			if (type != null)
 			{
 				return type;
 			}
-
-			forceLoad = true;
-			if (InitializeAppDomainAssemblies(forceLoad))
+			if(InitializeAppDomainAssemblies(forceLoad: true))
 			{
-				type = GetType(typeName);
+				type = typeName.GetType(this);
 			}
-			return type;
-		}
-
-		private Type GetType(TypeName typeName)
-		{
-			return typeName.GetType(this);
+			if (type != null)
+			{
+				return type;
+			}
+			var assemblyName = typeName.ExtractAssemblyName();
+			if (assemblyName != null)
+			{
+				var namePart = assemblyName + ", Version=";
+				var assembly = assemblies.FirstOrDefault(a => a.FullName.StartsWith(namePart, StringComparison.OrdinalIgnoreCase));
+				if (assembly != null)
+				{
+					throw new ConverterException(String.Format(
+						"Could not convert string '{0}' to a type. Assembly {1} was matched, but it doesn't contain the type. Make sure that the type name was not mistyped.",
+						name, assembly.FullName));
+				}
+				throw new ConverterException(String.Format(
+					"Could not convert string '{0}' to a type. Assembly was not found. Make sure it was deployedand the name was not mistyped.",
+					name));
+			}
+			throw new ConverterException(String.Format(
+				"Could not convert string '{0}' to a type. Make sure assembly containing the type has been loaded into the process, or consider specifying assembly qualified name of the type.",
+				name));
 		}
 
 		private bool InitializeAppDomainAssemblies(bool forceLoad)
