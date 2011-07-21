@@ -62,7 +62,7 @@ namespace Castle.Facilities.TypedFactory.Internal
 			FactoryMethod method;
 			if (TryGetMethod(invocation, out method) == false)
 			{
-				throw new Exception(
+				throw new InvalidOperationException(
 					string.Format("Can't find information about factory method {0}. This is most likely a bug. Please report it.",
 					              invocation.Method));
 			}
