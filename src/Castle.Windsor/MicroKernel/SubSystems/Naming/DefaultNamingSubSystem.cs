@@ -235,7 +235,7 @@ namespace Castle.MicroKernel.SubSystems.Naming
 				catch (ArgumentException)
 				{
 					throw new ComponentRegistrationException(
-						String.Format("There is a component already registered for the given name {0}", key));
+						String.Format("Component {0} could not be registered. There is already a component with that name. Did you want to modify the existing component instead? If not, make sure you specify a unique name.", key));
 				}
 				var serviceSelector = GetServiceSelector(handler);
 				foreach (var service in handler.ComponentModel.Services)
