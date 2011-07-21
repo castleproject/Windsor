@@ -636,7 +636,7 @@ namespace Castle.MicroKernel
 
 		void IKernelInternal.RegisterHandler(String key, IHandler handler, bool skipRegistration)
 		{
-			if (!skipRegistration)
+			if (skipRegistration == false)
 			{
 				NamingSubSystem.Register(handler);
 			}
