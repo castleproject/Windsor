@@ -399,7 +399,7 @@ namespace Castle.MicroKernel.Resolvers
 			var handler = kernel.LoadHandlerByType(dependency.DependencyKey, dependency.TargetItemType, context.AdditionalArguments);
 			if (handler == null)
 			{
-				throw new HandlerException(string.Format("Handler for {0} was not found.", dependency.TargetItemType));
+				throw new HandlerException(string.Format("Handler for {0} was not found.", dependency.TargetItemType), null);
 			}
 			if (handler.IsBeingResolvedInContext(context) == false)
 			{

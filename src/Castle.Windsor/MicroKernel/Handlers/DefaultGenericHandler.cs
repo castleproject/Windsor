@@ -188,7 +188,7 @@ namespace Castle.MicroKernel.Handlers
 				}
 				throw new HandlerException(
 					string.Format("Custom {0} ({1}) didn't select any generic parameters for implementation type of component '{2}'. This usually signifies bug in the {0}.",
-					              typeof(IGenericImplementationMatchingStrategy).Name, implementationMatchingStrategy, ComponentModel.Name));
+					              typeof(IGenericImplementationMatchingStrategy).Name, implementationMatchingStrategy, ComponentModel.Name), ComponentModel.ComponentName);
 			}
 			catch (ArgumentException e)
 			{
@@ -212,7 +212,7 @@ namespace Castle.MicroKernel.Handlers
 						context.GenericArguments.Length,
 						ComponentModel.Implementation,
 						arguments.Length);
-					throw new HandlerException(message, e);
+					throw new HandlerException(message, ComponentModel.ComponentName, e);
 				}
 
 				// 2.
@@ -221,7 +221,7 @@ namespace Castle.MicroKernel.Handlers
 				{
 					message = string.Format("The following types provided as generic parameters are not legal: {0}. This is most likely a bug in your code.",
 					                        string.Join(", ", invalidArguments));
-					throw new HandlerException(message, e);
+					throw new HandlerException(message, ComponentModel.ComponentName, e);
 				}
 				// 3. at this point we should be 99% sure we have arguments that don't satisfy generic constraints of out service.
 				throw new GenericHandlerTypeMismatchException(genericArguments, ComponentModel, this);
