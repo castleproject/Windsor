@@ -31,7 +31,8 @@ namespace Castle.MicroKernel.Handlers
 		///   Initializes a new instance of the <see cref = "HandlerException" /> class.
 		/// </summary>
 		/// <param name = "message">The message.</param>
-		public GenericHandlerTypeMismatchException(string message) : base(message)
+		/// <param name="name"></param>
+		public GenericHandlerTypeMismatchException(string message, ComponentName name) : base(message, name)
 		{
 		}
 
@@ -39,14 +40,15 @@ namespace Castle.MicroKernel.Handlers
 		///   Initializes a new instance of the <see cref = "HandlerException" /> class.
 		/// </summary>
 		/// <param name = "message">The message.</param>
+		/// <param name = "name"></param>
 		/// <param name = "innerException"></param>
-		public GenericHandlerTypeMismatchException(string message, Exception innerException)
-			: base(message, innerException)
+		public GenericHandlerTypeMismatchException(string message, ComponentName name, Exception innerException)
+			: base(message, name, innerException)
 		{
 		}
 
 		public GenericHandlerTypeMismatchException(IEnumerable<Type> argumentsUsed, ComponentModel componentModel, DefaultGenericHandler handler)
-			: base(BuildMessage(argumentsUsed.Select(a => a.FullName).ToArray(), componentModel, handler))
+			: base(BuildMessage(argumentsUsed.Select(a => a.FullName).ToArray(), componentModel, handler), componentModel.ComponentName)
 		{
 		}
 

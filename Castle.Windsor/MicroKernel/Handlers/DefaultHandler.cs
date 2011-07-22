@@ -70,7 +70,7 @@ namespace Castle.MicroKernel.Handlers
 				var inspector = new DependencyInspector(message);
 				ObtainDependencyDetails(inspector);
 
-				throw new HandlerException(inspector.Message);
+				throw new HandlerException(inspector.Message, ComponentModel.ComponentName);
 			}
 		}
 

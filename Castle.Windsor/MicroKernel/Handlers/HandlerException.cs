@@ -17,6 +17,8 @@ namespace Castle.MicroKernel.Handlers
 	using System;
 	using System.Runtime.Serialization;
 
+	using Castle.Core;
+
 	/// <summary>
 	///   Summary description for HandlerException.
 	/// </summary>
@@ -27,18 +29,22 @@ namespace Castle.MicroKernel.Handlers
 		///   Initializes a new instance of the <see cref = "HandlerException" /> class.
 		/// </summary>
 		/// <param name = "message">The message.</param>
-		public HandlerException(string message) : base(message)
+		/// <param name = "name"></param>
+		public HandlerException(string message, ComponentName name) : base(message)
 		{
+			Name = name;
 		}
 
 		/// <summary>
 		///   Initializes a new instance of the <see cref = "HandlerException" /> class.
 		/// </summary>
 		/// <param name = "message">The message.</param>
+		/// <param name = "name"></param>
 		/// <param name = "innerException"></param>
-		public HandlerException(string message, Exception innerException)
+		public HandlerException(string message, ComponentName name, Exception innerException)
 			: base(message, innerException)
 		{
+			Name = name;
 		}
 
 #if (!SILVERLIGHT)
@@ -51,5 +57,7 @@ namespace Castle.MicroKernel.Handlers
 		{
 		}
 #endif
+
+		public ComponentName Name { get; private set; }
 	}
 }
