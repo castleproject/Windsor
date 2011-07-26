@@ -27,7 +27,10 @@ namespace Castle.MicroKernel
 	using Castle.MicroKernel.ComponentActivator;
 	using Castle.MicroKernel.Context;
 	using Castle.MicroKernel.Handlers;
+	using Castle.MicroKernel.Lifestyle;
+	using Castle.MicroKernel.Lifestyle.Scoped;
 	using Castle.MicroKernel.ModelBuilder;
+	using Castle.MicroKernel.ModelBuilder.Inspectors;
 	using Castle.MicroKernel.Proxy;
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Releasers;
@@ -566,6 +569,84 @@ namespace Castle.MicroKernel
 
 			childKernel.Parent = null;
 			childKernels.Remove(childKernel);
+		}
+
+		/// <summary>
+		///   Creates an implementation of
+		///   <see cref = "ILifestyleManager" />
+		///   based
+		///   on
+		///   <see cref = "LifestyleType" />
+		///   and invokes
+		///   <see cref = "ILifestyleManager.Init" />
+		///   to initialize the newly created manager.
+		/// </summary>
+		/// <param name = "model"></param>
+		/// <param name = "activator"></param>
+		/// <returns></returns>
+		public virtual ILifestyleManager CreateLifestyleManager(ComponentModel model, IComponentActivator activator)
+		{
+			ILifestyleManager manager;
+			var type = model.LifestyleType;
+
+			switch (type)
+			{
+				case LifestyleType.Scoped:
+					manager = new ScopedLifestyleManager(CreateScopeAccessor(model));
+					break;
+				case LifestyleType.Thread:
+#if SILVERLIGHT
+					manager = new PerThreadThreadStaticLifestyleManager();
+#else
+					manager = new PerThreadLifestyleManager();
+#endif
+					break;
+				case LifestyleType.Transient:
+					manager = new TransientLifestyleManager();
+					break;
+#if (!SILVERLIGHT && !CLIENTPROFILE)
+				case LifestyleType.PerWebRequest:
+					manager = new ScopedLifestyleManager(new WebRequestScopeAccessor());
+					break;
+#endif
+				case LifestyleType.Custom:
+					manager = model.CustomLifestyle.CreateInstance<ILifestyleManager>();
+
+					break;
+				case LifestyleType.Pooled:
+					var initial = ExtendedPropertiesConstants.Pool_Default_InitialPoolSize;
+					var maxSize = ExtendedPropertiesConstants.Pool_Default_MaxPoolSize;
+
+					if (model.ExtendedProperties.Contains(ExtendedPropertiesConstants.Pool_InitialPoolSize))
+					{
+						initial = (int)model.ExtendedProperties[ExtendedPropertiesConstants.Pool_InitialPoolSize];
+					}
+					if (model.ExtendedProperties.Contains(ExtendedPropertiesConstants.Pool_MaxPoolSize))
+					{
+						maxSize = (int)model.ExtendedProperties[ExtendedPropertiesConstants.Pool_MaxPoolSize];
+					}
+
+					manager = new PoolableLifestyleManager(initial, maxSize);
+					break;
+				default:
+					//this includes LifestyleType.Undefined, LifestyleType.Singleton and invalid values
+					manager = new SingletonLifestyleManager();
+					break;
+			}
+
+			manager.Init(activator, this, model);
+
+			return manager;
+		}
+
+		private IScopeAccessor CreateScopeAccessor(ComponentModel model)
+		{
+			var selector = (Func<IHandler[], IHandler>)model.ExtendedProperties[Constants.ScopeRootSelector];
+			if (selector == null)
+			{
+				return new LifetimeScopeAccessor();
+			}
+			return new CreationContextScopeAccessor(model, selector);
 		}
 
 		public virtual IComponentActivator CreateComponentActivator(ComponentModel model)

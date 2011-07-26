@@ -1,4 +1,14 @@
 ================================================================================================
+change - CreateLifestyleManager method was moved from handlers to IKernelInternal
+
+impact - low
+fixability - easy
+
+description - That behavior belongs in the kernel.
+
+fix - You shouldn't be using this method unless you're implementing custom handlers. If you do
+	call back to the kernel instead of implementing it in yoru handler.
+================================================================================================
 change - Removed interface Castle.Core.ILifecycleConcern
 
 impact - low
