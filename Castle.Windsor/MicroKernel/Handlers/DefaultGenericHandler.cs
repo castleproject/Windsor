@@ -49,16 +49,7 @@ namespace Castle.MicroKernel.Handlers
 
 		public override void Dispose()
 		{
-			var values = type2SubHandler.YieldAllValues();
-			foreach (var handler in values)
-			{
-				var disposable = handler as IDisposable;
-				if (disposable == null)
-				{
-					continue;
-				}
-				disposable.Dispose();
-			}
+			type2SubHandler.Dispose();
 		}
 
 		public override bool ReleaseCore(Burden burden)

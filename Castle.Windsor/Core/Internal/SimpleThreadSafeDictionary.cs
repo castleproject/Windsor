@@ -25,22 +25,23 @@ namespace Castle.Core.Internal
 	/// </summary>
 	/// <typeparam name = "TKey"></typeparam>
 	/// <typeparam name = "TValue"></typeparam>
-	public class SimpleThreadSafeDictionary<TKey, TValue>
+	public class SimpleThreadSafeDictionary<TKey, TValue> : IDisposable
 	{
 		private readonly Dictionary<TKey, TValue> inner = new Dictionary<TKey, TValue>();
 		private readonly Lock @lock = Lock.Create();
+		private bool disposed;
 
 		public TValue GetOrAdd(TKey key, Func<TKey, TValue> factory)
 		{
 			using (var token = @lock.ForReadingUpgradeable())
 			{
 				TValue value;
-				if (inner.TryGetValue(key, out value))
+				if (TryGet(key, out value))
 				{
 					return value;
 				}
 				token.Upgrade();
-				if (inner.TryGetValue(key, out value))
+				if (TryGet(key, out value))
 				{
 					return value;
 				}
@@ -54,14 +55,24 @@ namespace Castle.Core.Internal
 		///   returns all values and clears the dictionary
 		/// </summary>
 		/// <returns></returns>
-		public TValue[] YieldAllValues()
+		public void Dispose()
 		{
 			using (@lock.ForWriting())
 			{
+				disposed = true;
 				var values = inner.Values.ToArray();
 				inner.Clear();
-				return values;
+				values.Reverse().OfType<IDisposable>().ForEach(d => d.Dispose());
 			}
+		}
+
+		private bool TryGet(TKey key, out TValue value)
+		{
+			if (disposed)
+			{
+				throw new ObjectDisposedException("this");
+			}
+			return inner.TryGetValue(key, out value);
 		}
 	}
 }

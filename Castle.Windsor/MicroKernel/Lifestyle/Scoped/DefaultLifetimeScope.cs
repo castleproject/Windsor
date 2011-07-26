@@ -20,13 +20,14 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 
 	public class DefaultLifetimeScope : ILifetimeScope
 	{
+		private static readonly Action<Burden> emptyOnAfterCreated = delegate { };
 		private readonly Action<Burden> onAfterCreated;
 		private readonly IScopeCache scopeCache;
 
-		public DefaultLifetimeScope(IScopeCache scopeCache, Action<Burden> onAfterCreated = null)
+		public DefaultLifetimeScope(IScopeCache scopeCache = null, Action<Burden> onAfterCreated = null)
 		{
-			this.scopeCache = scopeCache;
-			this.onAfterCreated = onAfterCreated ?? delegate { };
+			this.scopeCache = scopeCache ?? new ScopeCache();
+			this.onAfterCreated = onAfterCreated ?? emptyOnAfterCreated;
 		}
 
 		public void Dispose()

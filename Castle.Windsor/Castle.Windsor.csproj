@@ -511,10 +511,9 @@
     <Compile Include="MicroKernel\ILifestyleManager.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="MicroKernel\Lifestyle\PerThreadLifestyleManager.cs">
+    <Compile Include="MicroKernel\Lifestyle\ThreadScopeAccessor.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="MicroKernel\Lifestyle\PerThreadThreadStaticLifestyleManager.cs" />
     <Compile Include="MicroKernel\Lifestyle\PerWebRequestLifestyleModule.cs" />
     <Compile Include="MicroKernel\Lifestyle\PerWebRequestLifestyleModuleRegistration.cs" />
     <Compile Include="MicroKernel\Lifestyle\PoolableLifestyleManager.cs">

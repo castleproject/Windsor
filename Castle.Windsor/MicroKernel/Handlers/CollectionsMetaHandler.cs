@@ -16,7 +16,6 @@ namespace Castle.MicroKernel.Handlers
 {
 	using System;
 	using System.Collections.Generic;
-	using System.Linq;
 	using System.Reflection;
 
 	using Castle.Core;
@@ -33,11 +32,7 @@ namespace Castle.MicroKernel.Handlers
 
 		public void Dispose()
 		{
-			var handlers = innerHandlers.YieldAllValues();
-			foreach (var handler in handlers.OfType<IDisposable>())
-			{
-				handler.Dispose();
-			}
+			innerHandlers.Dispose();
 		}
 
 		public IHandler GetHandler(Type service, IHandler[] existingHandlers)
