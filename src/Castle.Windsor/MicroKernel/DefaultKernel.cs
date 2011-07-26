@@ -595,11 +595,7 @@ namespace Castle.MicroKernel
 					manager = new ScopedLifestyleManager(CreateScopeAccessor(model));
 					break;
 				case LifestyleType.Thread:
-#if SILVERLIGHT
-					manager = new PerThreadThreadStaticLifestyleManager();
-#else
-					manager = new PerThreadLifestyleManager();
-#endif
+					manager = new ScopedLifestyleManager(new ThreadScopeAccessor());
 					break;
 				case LifestyleType.Transient:
 					manager = new TransientLifestyleManager();
