@@ -36,7 +36,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 			this.assemblyQualifiedName = assemblyQualifiedName;
 		}
 
-		public bool IsAssemblyQualified
+		private bool IsAssemblyQualified
 		{
 			get { return assemblyQualifiedName != null; }
 		}
@@ -75,8 +75,19 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 				return null;
 			}
 			var tokens = assemblyQualifiedName.Split(new[] { ',' }, StringSplitOptions.None);
-
-			var indexOfVersion = Array.FindLastIndex(tokens, s => s.TrimStart(' ').StartsWith("Version="));
+#if SILVERLIGHT
+			var indexOfVersion = -1;
+			for (int i = tokens.Length - 1; i >= 0; i--)
+			{
+				if(tokens[i].TrimStart(' ').StartsWith("Version="))
+				{
+					indexOfVersion = i;
+					break;
+				}
+			}
+#else
+			var indexOfVersion =Array.FindLastIndex(tokens, s => s.TrimStart(' ').StartsWith("Version="));
+#endif
 			if (indexOfVersion <= 0)
 			{
 				return tokens.Last().Trim();
