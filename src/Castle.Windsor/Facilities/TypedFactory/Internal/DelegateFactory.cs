@@ -59,7 +59,7 @@ namespace Castle.Facilities.TypedFactory.Internal
 				}).DynamicParameters((k, d) =>
 				{
 					var selector = k.Resolve<ITypedFactoryComponentSelector>(TypedFactoryFacility.DefaultDelegateSelectorKey);
-					d.Insert(selector);
+					d.InsertTyped(selector);
 					return k2 => k2.ReleaseComponent(selector);
 				})
 				.AddAttributeDescriptor(TypedFactoryFacility.IsFactoryKey, "true");

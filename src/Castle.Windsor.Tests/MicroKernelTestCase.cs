@@ -207,7 +207,7 @@ namespace Castle.MicroKernel.Tests
 		{
 			Kernel.Register(Component.For<ICommon>()
 			                	.ImplementedBy<CommonImplWithDependency>()
-			                	.DynamicParameters((k, d) => d.Insert<ICustomer>(new CustomerImpl()))
+			                	.DynamicParameters((k, d) => d.Insert(typeof(ICustomer), new CustomerImpl()))
 				);
 
 			var services = Kernel.ResolveAll<ICommon>();

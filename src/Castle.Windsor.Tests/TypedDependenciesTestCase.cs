@@ -81,7 +81,7 @@ namespace CastleTests
 		[Test]
 		public void Typed_arguments_work_for_DynamicParameters()
 		{
-			Kernel.Register(Component.For<ClassWithArguments>().DynamicParameters((k, d) => d.Insert("typed").Insert(2)));
+			Kernel.Register(Component.For<ClassWithArguments>().DynamicParameters((k, d) => d.InsertTyped("typed").InsertTyped(2)));
 
 			var item = Kernel.Resolve<ClassWithArguments>();
 
@@ -92,7 +92,7 @@ namespace CastleTests
 		[Test]
 		public void Typed_arguments_work_for_DynamicParameters_mixed()
 		{
-			Kernel.Register(Component.For<ClassWithArguments>().DynamicParameters((k, d) => d.Insert("typed")));
+			Kernel.Register(Component.For<ClassWithArguments>().DynamicParameters((k, d) => d.InsertTyped("typed")));
 			var arguments = new Dictionary<object, object>
 			{
 				{ typeof(int), 2 }

@@ -149,7 +149,7 @@ namespace CastleTests.Facilities.TypedFactory
 		{
 			Container.Register(Component.For<Foo>().LifeStyle.Transient,
 			                   Component.For<UsesFooDelegate>(),
-			                   Component.For<UsesFooDelegateAndInt>().DependsOn(new Arguments().Insert(5)));
+			                   Component.For<UsesFooDelegateAndInt>().DependsOn(new Arguments().InsertTyped(5)));
 			var one = Container.Resolve<UsesFooDelegate>();
 			var two = Container.Resolve<UsesFooDelegateAndInt>();
 			one.GetFoo();
@@ -161,7 +161,7 @@ namespace CastleTests.Facilities.TypedFactory
 		{
 			Container.Register(Component.For<Foo>().LifeStyle.Transient,
 			                   Component.For<UsesFooDelegate>(),
-			                   Component.For<UsesFooDelegateAndInt>().DependsOn(new Arguments().Insert(5)),
+			                   Component.For<UsesFooDelegateAndInt>().DependsOn(new Arguments().InsertTyped(5)),
 			                   Component.For<IGenericComponentsFactory>().AsFactory());
 
 			var factory = Container.Resolve<IGenericComponentsFactory>();
