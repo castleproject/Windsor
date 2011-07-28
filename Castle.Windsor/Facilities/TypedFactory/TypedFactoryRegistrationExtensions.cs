@@ -108,7 +108,7 @@ namespace Castle.Facilities.TypedFactory
 				.DynamicParameters((k, c, d) =>
 				{
 					var selector = selectorReference.Resolve(k, c);
-					d.Insert(selector);
+					d.InsertTyped(selector);
 					return k2 => k2.ReleaseComponent(selector);
 				})
 				.AddAttributeDescriptor(TypedFactoryFacility.IsFactoryKey, "true");

@@ -16,9 +16,11 @@ namespace Castle.MicroKernel.Registration
 {
 	using System;
 	using System.Collections;
+	using System.ComponentModel;
 
 	using Castle.Core;
 
+	[EditorBrowsable(EditorBrowsableState.Never)]
 	public static class ComponentDependencyRegistrationExtensions
 	{
 		/// <summary>
@@ -33,25 +35,16 @@ namespace Castle.MicroKernel.Registration
 		/// <summary>
 		///   Inserts a new typed argument with given type. If an argument for this type already exists, it will be overwritten.
 		/// </summary>
-		public static IDictionary Insert(this IDictionary arguments, Type key, object value)
+		public static IDictionary Insert(this IDictionary arguments, Type dependencyType, object value)
 		{
-			arguments[key] = value;
-			return arguments;
-		}
-
-		/// <summary>
-		///   Inserts a new typed argument with given type. If an argument for this type already exists, it will be overwritten.
-		/// </summary>
-		public static IDictionary Insert<TKeyType>(this IDictionary arguments, TKeyType value)
-		{
-			arguments[typeof(TKeyType)] = value;
+			arguments[dependencyType] = value;
 			return arguments;
 		}
 
 		/// <summary>
 		///   Inserts a set of typed arguments. Property names of the anonymous type will be used as key.
 		/// </summary>
-		public static IDictionary Insert(this IDictionary arguments, object namedArgumentsAsAnonymousType)
+		public static IDictionary InsertAnonymous(this IDictionary arguments, object namedArgumentsAsAnonymousType)
 		{
 			foreach (DictionaryEntry item in new ReflectionBasedDictionaryAdapter(namedArgumentsAsAnonymousType))
 			{
@@ -62,9 +55,18 @@ namespace Castle.MicroKernel.Registration
 		}
 
 		/// <summary>
+		///   Inserts a new typed argument with given type. If an argument for this type already exists, it will be overwritten.
+		/// </summary>
+		public static IDictionary InsertTyped<TDependencyType>(this IDictionary arguments, TDependencyType value)
+		{
+			arguments[typeof(TDependencyType)] = value;
+			return arguments;
+		}
+
+		/// <summary>
 		///   Inserts a set of typed arguments. Actual type of the arguments will be used as key.
 		/// </summary>
-		public static IDictionary Insert(this IDictionary arguments, object[] typedArgumentsArray)
+		public static IDictionary InsertTypedCollection(this IDictionary arguments, object[] typedArgumentsArray)
 		{
 			foreach (var item in typedArgumentsArray)
 			{
