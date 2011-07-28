@@ -238,30 +238,28 @@ namespace Castle.MicroKernel.Registration
 				return this;
 			}
 
-			var serviceOverrides = dependencies.OfType<ServiceOverride>().ToArray();
-			if (serviceOverrides.Length > 0)
+			var serviceOverrides = new List<ServiceOverride>(dependencies.Length);
+			var properties = new List<Property>(dependencies.Length);
+			var parameters = new List<Parameter>(dependencies.Length);
+			foreach (var dependency in dependencies)
 			{
-				AddDescriptor(new ServiceOverrideDescriptor(serviceOverrides));
-				dependencies = dependencies.Except(serviceOverrides).ToArray();
-			}
-			var properties = dependencies.OfType<Property>().ToArray();
-			if (properties.Length > 0)
-			{
-				AddDescriptor(new CustomDependencyDescriptor(properties));
-				dependencies = dependencies.Except(properties).ToArray();
+				if (dependency.Accept(properties)) continue;
+				if (dependency.Accept(parameters)) continue;
+				if (dependency.Accept(serviceOverrides)) continue;
 			}
 
-			var parameters = dependencies.OfType<Parameter>().ToArray();
-			if (parameters.Length > 0)
+			if (serviceOverrides.Count > 0)
 			{
-				AddDescriptor(new ParametersDescriptor(parameters));
-				dependencies = dependencies.Except(parameters).ToArray();
+				AddDescriptor(new ServiceOverrideDescriptor(serviceOverrides.ToArray()));
+			}
+			if (properties.Count > 0)
+			{
+				AddDescriptor(new CustomDependencyDescriptor(properties.ToArray()));
 			}
 
-			if (dependencies.Length > 0)
+			if (parameters.Count > 0)
 			{
-				throw new ComponentRegistrationException(string.Format("Unrecognized dependencies: {0} only properties and service overrides are currently supported.",
-				                                                       dependencies));
+				AddDescriptor(new ParametersDescriptor(parameters.ToArray()));
 			}
 			return this;
 		}
@@ -289,7 +287,7 @@ namespace Castle.MicroKernel.Registration
 		}
 
 		/// <summary>
-		///   Allows custom dependencies to by defined dyncamically.
+		///   Allows custom dependencies to by defined dyncamically. Calling this overload is synonymous to using <see cref="DynamicParameters(Castle.MicroKernel.Registration.DynamicParametersDelegate)"/>
 		/// </summary>
 		/// <param name = "resolve">The delegate used for providing dynamic parameters.</param>
 		/// <returns></returns>
@@ -303,7 +301,7 @@ namespace Castle.MicroKernel.Registration
 		}
 
 		/// <summary>
-		///   Allows custom dependencies to by defined dynamically with releasing capability.
+		///   Allows custom dependencies to by defined dynamically with releasing capability. Calling this overload is synonymous to using <see cref="DynamicParameters(Castle.MicroKernel.Registration.DynamicParametersResolveDelegate)"/>
 		/// </summary>
 		/// <param name = "resolve">The delegate used for providing dynamic parameters.</param>
 		/// <returns></returns>
@@ -313,7 +311,7 @@ namespace Castle.MicroKernel.Registration
 		}
 
 		/// <summary>
-		///   Allows custom dependencies to by defined dynamically with releasing capability.
+		///   Allows custom dependencies to by defined dynamically with releasing capability. Calling this overload is synonymous to using <see cref="DynamicParameters(Castle.MicroKernel.Registration.DynamicParametersWithContextResolveDelegate)"/>
 		/// </summary>
 		/// <param name = "resolve">The delegate used for providing dynamic parameters.</param>
 		/// <returns></returns>

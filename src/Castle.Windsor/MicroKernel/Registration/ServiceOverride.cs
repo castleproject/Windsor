@@ -20,35 +20,34 @@ namespace Castle.MicroKernel.Registration
 	/// <summary>
 	///   Represents a service override.
 	/// </summary>
-	public class ServiceOverride : Property
+	public class ServiceOverride
 	{
-		private readonly Type type;
-
-		internal ServiceOverride(object key, object value)
-			: base(key, value)
+		internal ServiceOverride(object dependencyKey, object value) : this(dependencyKey, value, null)
 		{
 		}
 
-		internal ServiceOverride(object key, object value, Type type)
-			: base(key, value)
+		internal ServiceOverride(object dependencyKey, object value, Type type)
 		{
-			this.type = type;
+			DependencyKey = dependencyKey;
+			Value = value;
+			Type = type;
 		}
+
+		public object DependencyKey { get; private set; }
 
 		/// <summary>
 		///   Gets the optional value type specifier.
 		/// </summary>
-		public Type Type
-		{
-			get { return type; }
-		}
+		public Type Type { get; private set; }
+
+		public object Value { get; private set; }
 
 		/// <summary>
 		///   Creates a <see cref = "ServiceOverrideKey" /> with key.
 		/// </summary>
 		/// <param name = "key">The service override key.</param>
 		/// <returns>The new <see cref = "ServiceOverrideKey" /></returns>
-		public static new ServiceOverrideKey ForKey(String key)
+		public static ServiceOverrideKey ForKey(String key)
 		{
 			return new ServiceOverrideKey(key);
 		}
@@ -58,7 +57,7 @@ namespace Castle.MicroKernel.Registration
 		/// </summary>
 		/// <param name = "key">The service override key.</param>
 		/// <returns>The new <see cref = "ServiceOverrideKey" /></returns>
-		public static new ServiceOverrideKey ForKey(Type key)
+		public static ServiceOverrideKey ForKey(Type key)
 		{
 			return new ServiceOverrideKey(key);
 		}
@@ -68,9 +67,14 @@ namespace Castle.MicroKernel.Registration
 		/// </summary>
 		/// <typeparam name = "TKey">The service override key.</typeparam>
 		/// <returns>The new <see cref = "ServiceOverrideKey" /></returns>
-		public static new ServiceOverrideKey ForKey<TKey>()
+		public static ServiceOverrideKey ForKey<TKey>()
 		{
 			return new ServiceOverrideKey(typeof(TKey));
+		}
+
+		public static implicit operator Dependency(ServiceOverride item)
+		{
+			return new Dependency(item);
 		}
 	}
 

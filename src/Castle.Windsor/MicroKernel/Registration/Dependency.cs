@@ -16,12 +16,20 @@ namespace Castle.MicroKernel.Registration
 {
 	using System;
 	using System.Collections;
+	using System.Collections.Generic;
 	using System.Configuration;
 
 	using Castle.Core.Configuration;
 
-	public abstract class Dependency
+	public sealed class Dependency
 	{
+		private readonly object item;
+
+		internal Dependency(object item)
+		{
+			this.item = item;
+		}
+
 		/// <summary>
 		///   Specifies that value <paramref name = "valueAsString" /> should be used to satisfy dependencies matched by <paramref
 		///    name = "dependencyName" />. The value is provided as a string and will be converted to appropriate type when resolving.
@@ -196,6 +204,17 @@ namespace Castle.MicroKernel.Registration
 		public static Property OnValue<TDependencyType>(object value)
 		{
 			return Property.ForKey<TDependencyType>().Eq(value);
+		}
+
+		internal bool Accept<TItem>(ICollection<TItem> items) where TItem : class
+		{
+			var castItem = item as TItem;
+			if (castItem != null)
+			{
+				items.Add(castItem);
+				return true;
+			}
+			return false;
 		}
 	}
 }

@@ -21,7 +21,7 @@ namespace Castle.MicroKernel.Registration
 	/// <summary>
 	///   Represents a configuration parameter.
 	/// </summary>
-	public class Parameter : Dependency
+	public class Parameter
 	{
 		private readonly String key;
 		private readonly object value;
@@ -71,6 +71,12 @@ namespace Castle.MicroKernel.Registration
 		{
 			return new ParameterKey(key);
 		}
+
+		public static implicit operator Dependency(Parameter parameter)
+		{
+			return new Dependency(parameter);
+		}
+
 	}
 
 	/// <summary>

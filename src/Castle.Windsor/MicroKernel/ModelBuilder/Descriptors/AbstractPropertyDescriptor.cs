@@ -27,20 +27,20 @@ namespace Castle.MicroKernel.ModelBuilder.Descriptors
 		{
 		}
 
-		protected void AddParameter(ComponentModel model, String key, IConfiguration value)
+		protected void AddParameter(ComponentModel model, String name, IConfiguration value)
 		{
 			var parameters = EnsureParametersConfiguration(model);
 
-			var parameter = new MutableConfiguration(key);
+			var parameter = new MutableConfiguration(name);
 			parameter.Children.Add(value);
 
 			parameters.Children.Add(parameter);
 		}
 
-		protected void AddParameter(ComponentModel model, String key, String value)
+		protected void AddParameter(ComponentModel model, String name, String value)
 		{
 			var parameters = EnsureParametersConfiguration(model);
-			parameters.Children.Add(new MutableConfiguration(key, value));
+			parameters.Children.Add(new MutableConfiguration(name, value));
 		}
 
 		private IConfiguration EnsureParametersConfiguration(ComponentModel model)
