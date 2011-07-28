@@ -15,12 +15,11 @@
 namespace Castle.MicroKernel.Registration
 {
 	using System;
-	using System.ComponentModel;
 
 	/// <summary>
 	///   Represents a key/value pair.
 	/// </summary>
-	public class Property : Dependency
+	public class Property
 	{
 		private readonly object key;
 		private readonly object value;
@@ -52,7 +51,6 @@ namespace Castle.MicroKernel.Registration
 		/// </summary>
 		/// <param key = "key">The property key.</param>
 		/// <returns>The new <see cref = "PropertyKey" /></returns>
-		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static PropertyKey ForKey(String key)
 		{
 			return new PropertyKey(key);
@@ -63,7 +61,6 @@ namespace Castle.MicroKernel.Registration
 		/// </summary>
 		/// <param key = "key">The property key.</param>
 		/// <returns>The new <see cref = "PropertyKey" /></returns>
-		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static PropertyKey ForKey(Type key)
 		{
 			return new PropertyKey(key);
@@ -74,10 +71,14 @@ namespace Castle.MicroKernel.Registration
 		/// </summary>
 		/// <param key = "key">The property key.</param>
 		/// <returns>The new <see cref = "PropertyKey" /></returns>
-		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static PropertyKey ForKey<TKey>()
 		{
 			return new PropertyKey(typeof(TKey));
+		}
+
+		public static implicit operator Dependency(Property item)
+		{
+			return new Dependency(item);
 		}
 	}
 

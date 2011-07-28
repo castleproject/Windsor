@@ -51,31 +51,31 @@ namespace Castle.MicroKernel.ModelBuilder.Descriptors
 			var overrides = value as ServiceOverride[];
 			if (overrides != null)
 			{
-				Array.ForEach(overrides, o => Apply(model, o.Key, o.Value, o));
+				Array.ForEach(overrides, o => Apply(model, o.DependencyKey, o.Value, o));
 			}
 		}
 
-		private void Apply(ComponentModel model, object key, object value, ServiceOverride @override)
+		private void Apply(ComponentModel model, object dependencyKey, object value, ServiceOverride @override)
 		{
 			if (value is string)
 			{
-				ApplySimpleReference(model, key, (String)value);
+				ApplySimpleReference(model, dependencyKey, (String)value);
 			}
 			else if (value is IEnumerable<String>)
 			{
-				ApplyReferenceList(model, key, (IEnumerable<String>)value, @override);
+				ApplyReferenceList(model, dependencyKey, (IEnumerable<String>)value, @override);
 			}
 			if (value is Type)
 			{
-				ApplySimpleReference(model, key, ((Type)value).FullName);
+				ApplySimpleReference(model, dependencyKey, ((Type)value).FullName);
 			}
 			else if (value is IEnumerable<Type>)
 			{
-				ApplyReferenceList(model, key, ((IEnumerable<Type>)value).Select(t => t.FullName), @override);
+				ApplyReferenceList(model, dependencyKey, ((IEnumerable<Type>)value).Select(t => t.FullName), @override);
 			}
 		}
 
-		private void ApplyReferenceList(ComponentModel model, object key, IEnumerable<String> items, ServiceOverride serviceOverride)
+		private void ApplyReferenceList(ComponentModel model, object name, IEnumerable<String> items, ServiceOverride serviceOverride)
 		{
 			var list = new MutableConfiguration("list");
 
@@ -90,16 +90,16 @@ namespace Castle.MicroKernel.ModelBuilder.Descriptors
 				list.Children.Add(new MutableConfiguration("item", reference));
 			}
 
-			AddParameter(model, GetKeyString(key), list);
+			AddParameter(model, GetNameString(name), list);
 		}
 
-		private void ApplySimpleReference(ComponentModel model, object dependencyKey, String componentKey)
+		private void ApplySimpleReference(ComponentModel model, object dependencyName, String componentKey)
 		{
 			var reference = ReferenceExpressionUtil.BuildReference(componentKey);
-			AddParameter(model, GetKeyString(dependencyKey), reference);
+			AddParameter(model, GetNameString(dependencyName), reference);
 		}
 
-		private string GetKeyString(object key)
+		private string GetNameString(object key)
 		{
 			if (key is Type)
 			{
