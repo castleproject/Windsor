@@ -12,17 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.MicroKernel.Tests.Registration
+namespace CastleTests.Registration
 {
 	using System;
 
+	using Castle.DynamicProxy;
+	using Castle.MicroKernel;
 	using Castle.MicroKernel.Registration;
 	using Castle.Windsor.Tests;
 	using Castle.Windsor.Tests.ClassComponents;
 
-	using CastleTests;
 	using CastleTests.Components;
-	using CastleTests.Facilities.FactorySupport;
 
 	using NUnit.Framework;
 
@@ -170,6 +170,60 @@ namespace Castle.MicroKernel.Tests.Registration
 				);
 			var carProvider = Kernel.Resolve<ICarProvider>(new Arguments().Insert("FiscalStability", FiscalStability.MrMoneyBags));
 			Assert.IsInstanceOf<FerrariProvider>(carProvider);
+		}
+
+		[Test]
+		public void Can_proxy_component_created_via_factory_using_additional_interfaces()
+		{
+			Kernel.Register(Component.For<IComponent>()
+			                	.LifeStyle.Transient
+			                	.UsingFactoryMethod(() => new TrivialComponent())
+			                	.Proxy.AdditionalInterfaces(typeof(IEmptyService)));
+			var component = Kernel.Resolve<IComponent>();
+			Assert.IsInstanceOf<IEmptyService>(component);
+		}
+
+		[Test]
+		public void Can_proxy_component_created_via_factory_using_interceptors()
+		{
+			Kernel.Register(
+				Component.For<StandardInterceptor>(),
+				Component.For<IComponent>()
+					.LifeStyle.Transient
+					.UsingFactoryMethod(() => new TrivialComponent())
+					.Interceptors<StandardInterceptor>());
+			var component = Kernel.Resolve<IComponent>();
+
+			var id = component.ID;
+
+			Assert.IsInstanceOf<IProxyTargetAccessor>(component);
+		}
+
+		[Test]
+		public void Can_proxy_component_created_via_factory_using_interceptors_multiple_services()
+		{
+			Kernel.Register(
+				Component.For<StandardInterceptor>(),
+				Component.For<IComponent, TrivialComponent>()
+					.LifeStyle.Transient
+					.UsingFactoryMethod(() => new TrivialComponent())
+					.Interceptors<StandardInterceptor>());
+			var component = Kernel.Resolve<IComponent>();
+
+			var id = component.ID;
+
+			Assert.IsInstanceOf<IProxyTargetAccessor>(component);
+		}
+
+		[Test]
+		public void Can_proxy_component_created_via_factory_using_mixins()
+		{
+			Kernel.Register(Component.For<IComponent>()
+			                	.LifeStyle.Transient
+			                	.UsingFactoryMethod(() => new TrivialComponent())
+			                	.Proxy.MixIns(new CameraService()));
+			var component = Kernel.Resolve<IComponent>();
+			Assert.IsInstanceOf<ICameraService>(component);
 		}
 
 		[Test(Description = "see issue IOC-ISSUE-207")]

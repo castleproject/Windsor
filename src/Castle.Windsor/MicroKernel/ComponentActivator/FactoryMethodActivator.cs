@@ -69,7 +69,12 @@ namespace Castle.MicroKernel.ComponentActivator
 
 		protected override object Instantiate(CreationContext context)
 		{
-			return creator(Kernel, Model, context);
+			object instance = creator(Kernel, Model, context);
+			if (Kernel.ProxyFactory.ShouldCreateProxy(Model))
+			{
+					instance = Kernel.ProxyFactory.Create(Kernel, instance, Model, context);
+			}
+			return instance;
 		}
 
 		protected override void SetUpProperties(object instance, CreationContext context)
