@@ -33,7 +33,7 @@ namespace Castle.Facilities.NHibernateIntegration.Builders
 	{
 		private const string DEFAULT_EXTENSION = "dat";
 
-		private static readonly ILog log = LogManager.GetLogger(typeof (PersistentConfigurationBuilder));
+		private static readonly ILog log = LogManager.GetLogger(typeof(PersistentConfigurationBuilder));
 
 		private readonly IConfigurationPersister configurationPersister;
 

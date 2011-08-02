@@ -732,6 +732,45 @@ namespace Castle.Facilities.NHibernateIntegration
 			return inner.Merge(entityName, obj);
 		}
 
+		/// <summary>
+		/// Copy the state of the given object onto the persistent object with the same
+		/// identifier. If there is no persistent instance currently associated with
+		/// the session, it will be loaded. Return the persistent instance. If the
+		/// given instance is unsaved, save a copy of and return it as a newly persistent
+		/// instance. The given instance does not become associated with the session.
+		/// This operation cascades to associated instances if the association is mapped
+		/// with <tt>cascade="merge"</tt>.<br/>
+		/// The semantics of this method are defined by JSR-220.
+		/// </summary>
+		/// <param name="entity">a detached instance with state to be copied </param>
+		/// <returns>
+		/// an updated persistent instance 
+		/// </returns>
+		public T Merge<T>(T entity) where T : class
+		{
+			return this.inner.Merge(entity);
+		}
+
+		/// <summary>
+		/// Copy the state of the given object onto the persistent object with the same
+		/// identifier. If there is no persistent instance currently associated with
+		/// the session, it will be loaded. Return the persistent instance. If the
+		/// given instance is unsaved, save a copy of and return it as a newly persistent
+		/// instance. The given instance does not become associated with the session.
+		/// This operation cascades to associated instances if the association is mapped
+		/// with <tt>cascade="merge"</tt>.<br/>
+		/// The semantics of this method are defined by JSR-220.
+		/// <param name="entityName">Name of the entity.</param><param name="entity">a detached instance with state to be copied </param>
+		/// <returns>
+		/// an updated persistent instance 
+		/// </returns>
+		/// </summary>
+		/// <returns/>
+		public T Merge<T>(string entityName, T entity) where T : class
+		{
+			return this.inner.Merge(entityName, entity);
+		}
+
 		/// <summary> 
 		/// Make a transient instance persistent. This operation cascades to associated
 		/// instances if the association is mapped with <tt>cascade="persist"</tt>.<br/>
@@ -824,118 +863,6 @@ namespace Castle.Facilities.NHibernateIntegration
 		public IList Find(string query)
 		{
 			return inner.CreateQuery(query).List();
-		}
-
-		/// <summary>
-		/// Execute a query, binding a value to a "?" parameter in the query string.
-		/// </summary>
-		/// <param name="query">The query string</param>
-		/// <param name="value">A value to be bound to a "?" placeholder</param>
-		/// <param name="type">The Hibernate type of the value</param>
-		/// <returns>A distinct list of instances</returns>
-		/// <remarks>See <see cref="M:NHibernate.IQuery.List"/> for implications of <c>cache</c> usage.</remarks>
-		public IList Find(string query, object value, IType type)
-		{
-			// TODO: This is deprecated. Use ISession.CreateQuery().SetXYZ().List()
-			return inner.CreateQuery(query).SetParameter(0, value, type).List();
-		}
-
-		/// <summary>
-		/// Execute a query, binding an array of values to a "?" parameters in the query string.
-		/// </summary>
-		/// <param name="query">The query string</param>
-		/// <param name="values">An array of values to be bound to the "?" placeholders</param>
-		/// <param name="types">An array of Hibernate types of the values</param>
-		/// <returns>A distinct list of instances</returns>
-		/// <remarks>See <see cref="M:NHibernate.IQuery.List"/> for implications of <c>cache</c> usage.</remarks>
-		public IList Find(string query, object[] values, IType[] types)
-		{
-			IQuery q = inner.CreateQuery(query);
-			// TODO: This is deprecated. Use ISession.CreateQuery().SetXYZ().List()
-			for (int i = 0; i < values.Length; i++)
-			{
-				q.SetParameter(i, values[i], types[i]);
-			}
-			return q.List();
-		}
-
-		/// <summary>
-		/// Execute a query and return the results in an interator.
-		/// </summary>
-		/// <param name="query">The query string</param>
-		/// <returns>An enumerator</returns>
-		/// <remarks>
-		/// 	<para>
-		/// If the query has multiple return values, values will be returned in an array of
-		/// type <c>object[]</c>.
-		/// </para>
-		/// 	<para>
-		/// Entities returned as results are initialized on demand. The first SQL query returns
-		/// identifiers only. So <c>Enumerator()</c> is usually a less efficient way to retrieve
-		/// object than <c>List()</c>.
-		/// </para>
-		/// </remarks>
-		public IEnumerable Enumerable(string query)
-		{
-			// TODO: This is deprecated. Use ISession.CreateQuery().SetXYZ().List()
-			return inner.CreateQuery(query).Enumerable();
-		}
-
-		/// <summary>
-		/// Execute a query and return the results in an interator,
-		/// binding a value to a "?" parameter in the query string.
-		/// </summary>
-		/// <param name="query">The query string</param>
-		/// <param name="value">A value to be written to a "?" placeholder in the query string</param>
-		/// <param name="type">The hibernate type of the value</param>
-		/// <returns>An enumerator</returns>
-		/// <remarks>
-		/// 	<para>
-		/// If the query has multiple return values, values will be returned in an array of
-		/// type <c>object[]</c>.
-		/// </para>
-		/// 	<para>
-		/// Entities returned as results are initialized on demand. The first SQL query returns
-		/// identifiers only. So <c>Enumerator()</c> is usually a less efficient way to retrieve
-		/// object than <c>List()</c>.
-		/// </para>
-		/// </remarks>
-		public IEnumerable Enumerable(string query, object value, IType type)
-		{
-			// TODO: This is deprecated. Use ISession.CreateQuery().SetXYZ().List()
-			return inner.CreateQuery(query)
-				.SetParameter(0, value, type)
-				.Enumerable();
-		}
-
-		/// <summary>
-		/// Execute a query and return the results in an interator,
-		/// binding the values to "?"s parameters in the query string.
-		/// </summary>
-		/// <param name="query">The query string</param>
-		/// <param name="values">A list of values to be written to "?" placeholders in the query</param>
-		/// <param name="types">A list of hibernate types of the values</param>
-		/// <returns>An enumerator</returns>
-		/// <remarks>
-		/// 	<para>
-		/// If the query has multiple return values, values will be returned in an array of
-		/// type <c>object[]</c>.
-		/// </para>
-		/// 	<para>
-		/// Entities returned as results are initialized on demand. The first SQL query returns
-		/// identifiers only. So <c>Enumerator()</c> is usually a less efficient way to retrieve
-		/// object than <c>List()</c>.
-		/// </para>
-		/// </remarks>
-		public IEnumerable Enumerable(string query, object[] values, IType[] types)
-		{
-			IQuery q = inner.CreateQuery(query);
-			for (int i = 0; i < values.Length; i++)
-			{
-				q.SetParameter(i, values[i], types[i]);
-			}
-			// TODO: This is deprecated. Use ISession.CreateQuery().SetXYZ().List()
-			return q.Enumerable();
 		}
 
 		/// <summary>
@@ -1219,6 +1146,30 @@ namespace Castle.Facilities.NHibernateIntegration
 		public IQueryOver<T, T> QueryOver<T>(Expression<Func<T>> alias) where T : class
 		{
 			return inner.QueryOver(alias);
+		}
+
+		/// <summary>
+		/// Creates a new <c>IQueryOver{T};</c> for the entity class.
+		/// </summary>
+		/// <typeparam name="T">The entity class</typeparam><param name="entityName">The name of the entity to Query</param>
+		/// <returns>
+		/// An IQueryOver{T} object
+		/// </returns>
+		public IQueryOver<T, T> QueryOver<T>(string entityName) where T : class
+		{
+			return inner.QueryOver<T>(entityName);
+		}
+
+		/// <summary>
+		/// Creates a new <c>IQueryOver{T}</c> for the entity class.
+		/// </summary>
+		/// <typeparam name="T">The entity class</typeparam><param name="entityName">The name of the entity to Query</param><param name="alias">The alias of the entity</param>
+		/// <returns>
+		/// An IQueryOver{T} object
+		/// </returns>
+		public IQueryOver<T, T> QueryOver<T>(string entityName, Expression<Func<T>> alias) where T : class
+		{
+			return inner.QueryOver(entityName, alias);
 		}
 
 		/// <summary>

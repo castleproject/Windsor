@@ -21,9 +21,6 @@
 					<item key="dialect">
 						NHibernate.Dialect.MsSql2000Dialect
 					</item>
-					<item key="proxyfactory.factory_class">
-						NHibernate.ByteCode.Castle.ProxyFactoryFactory, NHibernate.ByteCode.Castle
-					</item>
 				</settings>
 				<assemblies>
 					<assembly>
