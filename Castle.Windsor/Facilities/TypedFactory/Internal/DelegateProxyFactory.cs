@@ -16,29 +16,25 @@ namespace Castle.Facilities.TypedFactory.Internal
 {
 	using System;
 
+	using Castle.Core;
 	using Castle.Core.Internal;
 	using Castle.DynamicProxy;
 	using Castle.DynamicProxy.Generators;
 	using Castle.MicroKernel;
+	using Castle.MicroKernel.Context;
 
 	public class DelegateProxyFactory : IProxyFactoryExtension
 	{
-		private readonly Type targetDelegateType;
-
-		public DelegateProxyFactory(Type targetDelegateType)
+		public object Generate(IProxyBuilder builder, ProxyGenerationOptions options, IInterceptor[] interceptors, ComponentModel model, CreationContext context)
 		{
-			this.targetDelegateType = targetDelegateType;
-		}
-
-		public object Generate(IProxyBuilder builder, ProxyGenerationOptions options, IInterceptor[] interceptors)
-		{
-			var type = GetProxyType(builder);
+			var targetDelegateType = context.RequestedType;
+			var type = GetProxyType(builder, targetDelegateType);
 			var instance = GetProxyInstance(type, interceptors);
-			var method = GetInvokeDelegate(instance);
+			var method = GetInvokeDelegate(instance, targetDelegateType);
 			return method;
 		}
 
-		private object GetInvokeDelegate(object instance)
+		private object GetInvokeDelegate(object instance, Type targetDelegateType)
 		{
 			return Delegate.CreateDelegate(targetDelegateType, instance, "Invoke");
 		}
@@ -48,7 +44,7 @@ namespace Castle.Facilities.TypedFactory.Internal
 			return type.CreateInstance<object>(null, interceptors);
 		}
 
-		private Type GetProxyType(IProxyBuilder builder)
+		private Type GetProxyType(IProxyBuilder builder, Type targetDelegateType)
 		{
 			var scope = builder.ModuleScope;
 			var logger = builder.Logger;

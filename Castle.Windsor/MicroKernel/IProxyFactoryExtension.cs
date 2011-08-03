@@ -14,10 +14,12 @@
 
 namespace Castle.MicroKernel
 {
+	using Castle.Core;
 	using Castle.DynamicProxy;
+	using Castle.MicroKernel.Context;
 
 	public interface IProxyFactoryExtension
 	{
-		object Generate(IProxyBuilder builder, ProxyGenerationOptions options, IInterceptor[] interceptors);
+		object Generate(IProxyBuilder builder, ProxyGenerationOptions options, IInterceptor[] interceptors, ComponentModel model, CreationContext context);
 	}
 }

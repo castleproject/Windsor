@@ -17,7 +17,6 @@ namespace Castle.MicroKernel.ComponentActivator
 	using System;
 
 	using Castle.Core;
-	using Castle.Core.Internal;
 	using Castle.DynamicProxy;
 	using Castle.MicroKernel.Context;
 
@@ -84,11 +83,6 @@ namespace Castle.MicroKernel.ComponentActivator
 			// we don't
 		}
 
-		private bool IsDelegate(object instance)
-		{
-			return instance is Delegate;
-		}
-
 		private bool ShouldCreateProxy(object instance)
 		{
 			if (instance == null)
@@ -100,10 +94,6 @@ namespace Castle.MicroKernel.ComponentActivator
 				return false;
 			}
 			if (ProxyUtil.IsProxy(instance))
-			{
-				return false;
-			}
-			if (IsDelegate(instance))
 			{
 				return false;
 			}

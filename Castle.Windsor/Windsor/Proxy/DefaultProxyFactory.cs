@@ -37,10 +37,9 @@ namespace Castle.Windsor.Proxy
 	///   the interface and the methods don't need to be virtual,
 	/// </remarks>
 	[Serializable]
-#if (SILVERLIGHT)
 	public class DefaultProxyFactory : AbstractProxyFactory
-#else
-	public class DefaultProxyFactory : AbstractProxyFactory, IDeserializationCallback
+#if (!SILVERLIGHT)
+		, IDeserializationCallback
 #endif
 	{
 		[NonSerialized]
@@ -63,7 +62,7 @@ namespace Castle.Windsor.Proxy
 
 			CustomizeOptions(proxyGenOptions, kernel, model, constructorArguments);
 			var builder = generator.ProxyBuilder;
-			var proxy = customFactory.Generate(builder, proxyGenOptions, interceptors);
+			var proxy = customFactory.Generate(builder, proxyGenOptions, interceptors, model, context);
 
 			CustomizeProxy(proxy, proxyGenOptions, kernel, model);
 			ReleaseHook(proxyGenOptions, kernel);

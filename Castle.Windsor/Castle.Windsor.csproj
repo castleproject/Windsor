@@ -348,6 +348,7 @@
     <Compile Include="Core\TransientAttribute.cs" />
     <Compile Include="Facilities\Startable\StartableContributor.cs" />
     <Compile Include="Facilities\TypedFactory\DefaultDelegateComponentSelector.cs" />
+    <Compile Include="Facilities\TypedFactory\DelegateFactoryActivator.cs" />
     <Compile Include="Facilities\TypedFactory\Internal\DelegateFactory.cs" />
     <Compile Include="Facilities\TypedFactory\Internal\DelegateProxyFactory.cs" />
     <Compile Include="Facilities\TypedFactory\Internal\FactoryMethod.cs" />

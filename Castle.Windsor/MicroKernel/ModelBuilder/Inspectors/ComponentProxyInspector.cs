@@ -27,7 +27,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 	///   Inspects the component configuration and type looking for information
 	///   that can influence the generation of a proxy for that component.
 	///   <para>
-	///     We specifically look for <c>useSingleInterfaceProxy</c> and <c>marshalByRefProxy</c> 
+	///     We specifically look for <c>additionalInterfaces</c> and <c>marshalByRefProxy</c> 
 	///     on the component configuration or the <see cref = "ComponentProxyBehaviorAttribute" /> 
 	///     attribute.
 	///   </para>

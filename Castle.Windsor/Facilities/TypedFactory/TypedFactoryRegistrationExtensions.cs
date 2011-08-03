@@ -15,6 +15,7 @@
 namespace Castle.Facilities.TypedFactory
 {
 	using System;
+	using System.ComponentModel;
 	using System.Diagnostics;
 	using System.Linq;
 
@@ -25,6 +26,7 @@ namespace Castle.Facilities.TypedFactory
 	using Castle.MicroKernel.ModelBuilder.Descriptors;
 	using Castle.MicroKernel.Registration;
 
+	[EditorBrowsable(EditorBrowsableState.Never)]
 	public static class TypedFactoryRegistrationExtensions
 	{
 		/// <summary>
@@ -111,7 +113,7 @@ namespace Castle.Facilities.TypedFactory
 					d.InsertTyped(selector);
 					return k2 => k2.ReleaseComponent(selector);
 				})
-				.AddAttributeDescriptor(TypedFactoryFacility.IsFactoryKey, "true");
+				.AddAttributeDescriptor(TypedFactoryFacility.IsFactoryKey, bool.TrueString);
 		}
 
 		private static ComponentRegistration<TFactory> AttachFactoryInterceptor<TFactory>(ComponentRegistration<TFactory> registration)
@@ -160,16 +162,8 @@ namespace Castle.Facilities.TypedFactory
 				configuration.Invoke(settings);
 			}
 
-			var componentRegistration = AttachFactoryInterceptor(registration);
-			componentRegistration.UsingFactoryMethod((k, m, c) =>
-			{
-				var delegateProxyFactory = k.Resolve<IProxyFactoryExtension>(TypedFactoryFacility.DelegateProxyFactoryKey,
-				                                                             new Arguments()
-				                                                             	.Insert("targetDelegateType", c.RequestedType));
-				var @delegate = k.ProxyFactory.Create(delegateProxyFactory, k, m, c);
-				k.ReleaseComponent(delegateProxyFactory);
-				return (TDelegate)@delegate;
-			});
+			var componentRegistration = AttachFactoryInterceptor(registration)
+				.Activator<DelegateFactoryActivator>();
 			return AttachConfiguration(componentRegistration, configuration, TypedFactoryFacility.DefaultDelegateSelectorKey);
 		}
 
