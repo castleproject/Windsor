@@ -54,7 +54,7 @@ namespace Castle.Windsor.Proxy
 				return true;
 			}
 
-			var options = ProxyUtil.ObtainProxyOptions(model, false);
+			var options = model.ObtainProxyOptions(false);
 			if (options != null && options.RequiresProxy)
 			{
 				return true;

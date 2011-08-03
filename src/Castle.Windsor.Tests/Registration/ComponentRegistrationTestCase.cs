@@ -72,7 +72,7 @@ namespace Castle.MicroKernel.Tests.Registration
 
 			var handler = Kernel.GetHandler(typeof(ICustomer));
 
-			var proxyOptions = ProxyUtil.ObtainProxyOptions(handler.ComponentModel, false);
+			var proxyOptions = handler.ComponentModel.ObtainProxyOptions(false);
 
 			Assert.IsNotNull(proxyOptions);
 			Assert.AreEqual(selector, proxyOptions.Selector.Resolve(null, null));
@@ -86,7 +86,7 @@ namespace Castle.MicroKernel.Tests.Registration
 
 			var handler = Kernel.GetHandler(typeof(ICustomer));
 
-			var proxyOptions = ProxyUtil.ObtainProxyOptions(handler.ComponentModel, false);
+			var proxyOptions = handler.ComponentModel.ObtainProxyOptions(false);
 
 			Assert.IsNotNull(proxyOptions);
 			Assert.IsTrue(proxyOptions.OmitTarget);

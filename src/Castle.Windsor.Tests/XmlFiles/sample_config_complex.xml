@@ -15,15 +15,11 @@
   <facilities>
 
     <facility type="DummyFacility">
-      <item>
-        va<!--test-->lue
-      </item>
+      <item>va<!--test-->lue</item>
     </facility>
 
     <facility type="HiperFacility">
-      <![CDATA[
-        value within CDATA section
-		]]>
+      <![CDATA[value within CDATA section]]>
     </facility>
 
   </facilities>
@@ -31,9 +27,7 @@
   <components>
 
     <component id="testidcomponent1">
-      <item>
-        va<?test?>lue1
-      </item>
+      <item>va<?test?>lue1</item>
     </component>
 
     <component id="testidcomponent2">

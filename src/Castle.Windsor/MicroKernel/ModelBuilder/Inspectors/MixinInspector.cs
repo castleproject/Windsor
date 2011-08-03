@@ -55,7 +55,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 			{
 				return;
 			}
-			var options = ProxyUtil.ObtainProxyOptions(model, true);
+			var options = model.ObtainProxyOptions();
 			mixinReferences.ForEach(options.AddMixinReference);
 		}
 	}

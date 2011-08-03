@@ -1,4 +1,18 @@
 ================================================================================================
+change - ProxyUtil class was split and part moved to Castle.Core.dll and other was renamed
+
+impact - low
+fixability - easy
+
+description - ProxyUtil contained logic useful not just in the context of Windsor. As such
+	it was moved to be part of DynamicProxy and most methods are now part of the other assembly.
+	The only method specific to Windsor: ObtainProxyOptions was left and is now an extension
+	method in class ProxyOptionsUtil.
+
+fix - If you were using ObtainProxyOptions use it either as extension method or update its type
+	name to ProxyOptionsUtil. Remining methods are now part of ProxyUtil class which was moved
+	to Castle.DynamicProxy namespaces and lives in Castle.Core.dll
+================================================================================================
 change - CreateLifestyleManager method was moved from handlers to IKernelInternal
 
 impact - low

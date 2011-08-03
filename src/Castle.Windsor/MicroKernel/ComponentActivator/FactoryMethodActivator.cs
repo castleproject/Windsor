@@ -17,12 +17,14 @@ namespace Castle.MicroKernel.ComponentActivator
 	using System;
 
 	using Castle.Core;
+	using Castle.Core.Internal;
+	using Castle.DynamicProxy;
 	using Castle.MicroKernel.Context;
 
 	public class FactoryMethodActivator<T> : DefaultComponentActivator, IDependencyAwareActivator
 	{
-		private readonly Func<IKernel, ComponentModel, CreationContext, T> creator;
-		private readonly bool managedExternally;
+		protected readonly Func<IKernel, ComponentModel, CreationContext, T> creator;
+		protected readonly bool managedExternally;
 
 		public FactoryMethodActivator(ComponentModel model, IKernel kernel, ComponentInstanceDelegate onCreation, ComponentInstanceDelegate onDestruction)
 			: base(model, kernel, onCreation, onDestruction)
@@ -70,9 +72,9 @@ namespace Castle.MicroKernel.ComponentActivator
 		protected override object Instantiate(CreationContext context)
 		{
 			object instance = creator(Kernel, Model, context);
-			if (Kernel.ProxyFactory.ShouldCreateProxy(Model))
+			if (ShouldCreateProxy(instance))
 			{
-					instance = Kernel.ProxyFactory.Create(Kernel, instance, Model, context);
+				instance = Kernel.ProxyFactory.Create(Kernel, instance, Model, context);
 			}
 			return instance;
 		}
@@ -80,6 +82,32 @@ namespace Castle.MicroKernel.ComponentActivator
 		protected override void SetUpProperties(object instance, CreationContext context)
 		{
 			// we don't
+		}
+
+		private bool IsDelegate(object instance)
+		{
+			return instance is Delegate;
+		}
+
+		private bool ShouldCreateProxy(object instance)
+		{
+			if (instance == null)
+			{
+				return false;
+			}
+			if (Kernel.ProxyFactory.ShouldCreateProxy(Model) == false)
+			{
+				return false;
+			}
+			if (ProxyUtil.IsProxy(instance))
+			{
+				return false;
+			}
+			if (IsDelegate(instance))
+			{
+				return false;
+			}
+			return true;
 		}
 	}
 }

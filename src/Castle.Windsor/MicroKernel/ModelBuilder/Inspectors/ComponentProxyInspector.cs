@@ -114,7 +114,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 
 		private static void ApplyProxyBehavior(ComponentProxyBehaviorAttribute behavior, ComponentModel model)
 		{
-			var options = ProxyUtil.ObtainProxyOptions(model, true);
+			var options = model.ObtainProxyOptions();
 #if !SILVERLIGHT
 			if (behavior.UseMarshalByRefProxy)
 			{

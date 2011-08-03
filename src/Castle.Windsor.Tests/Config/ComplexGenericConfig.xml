@@ -31,9 +31,7 @@
        service='CastleTests.Components.IRepository`1' 
        type='DemoRepository`1' >
       <parameters>
-        <Name>
-          Generic Repostiory
-        </Name>
+        <Name>Generic Repostiory</Name>
       </parameters>
     </component>
 
@@ -49,9 +47,7 @@
         service='DemoRepository`1[[IReviewableEmployee]]'
         type='DemoRepository`1[[IReviewableEmployee]]'   >
       <parameters>
-        <Name>
-          Generic Repostiory With No Cache
-        </Name>
+        <Name>Generic Repostiory With No Cache</Name>
         <Cache>${no-caching}</Cache>
       </parameters>
     </component>

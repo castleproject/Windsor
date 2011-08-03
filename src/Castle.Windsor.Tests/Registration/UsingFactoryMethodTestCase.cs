@@ -19,6 +19,7 @@ namespace CastleTests.Registration
 	using Castle.DynamicProxy;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Registration;
+	using Castle.MicroKernel.Tests.Configuration.Components;
 	using Castle.Windsor.Tests;
 	using Castle.Windsor.Tests.ClassComponents;
 
@@ -410,6 +411,25 @@ namespace CastleTests.Registration
 			GC.Collect();
 
 			Assert.IsFalse(weak.IsAlive);
+		}
+
+		[Test]
+		public void Proxying_type_with_no_default_ctor_throws_helpful_message()
+		{
+			Kernel.Register(
+				Component.For<StandardInterceptor>(),
+				Component.For<ClassWithConstructors>()
+					.LifeStyle.Transient
+					.Interceptors<StandardInterceptor>()
+					.UsingFactoryMethod(() => new ClassWithConstructors("something")));
+
+			var exception = Assert.Throws<InvalidProxyConstructorArgumentsException>(() => Kernel.Resolve<ClassWithConstructors>());
+
+			var expected =
+				@"Can not instantiate proxy of class: Castle.MicroKernel.Tests.Configuration.Components.ClassWithConstructors.
+Could not find a parameterless constructor.";
+
+			Assert.AreEqual(expected, exception.Message);
 		}
 	}
 }

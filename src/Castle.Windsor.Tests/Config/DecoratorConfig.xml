@@ -18,9 +18,7 @@
        service='CastleTests.Components.IRepository`1[[System.Int32, mscorlib]]' 
        type='DemoRepository`1[[System.Int32, mscorlib]]' >
       <parameters>
-        <Name>
-          second
-        </Name>
+        <Name>second</Name>
       </parameters>
     </component>
   </components>

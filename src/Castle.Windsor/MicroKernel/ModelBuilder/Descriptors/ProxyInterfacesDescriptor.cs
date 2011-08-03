@@ -30,7 +30,7 @@ namespace Castle.MicroKernel.ModelBuilder.Descriptors
 
 		public void BuildComponentModel(IKernel kernel, ComponentModel model)
 		{
-			var options = ProxyUtil.ObtainProxyOptions(model, true);
+			var options = model.ObtainProxyOptions();
 			options.AddAdditionalInterfaces(interfaces);
 		}
 

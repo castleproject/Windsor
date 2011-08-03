@@ -60,7 +60,7 @@ namespace Castle.Facilities.TypedFactory
 
 			model.Interceptors.Add(new InterceptorReference(typeof(FactoryInterceptor)));
 
-			var proxyOptions = ProxyUtil.ObtainProxyOptions(model, true);
+			var proxyOptions = model.ObtainProxyOptions();
 			proxyOptions.OmitTarget = true;
 
 			((IKernelInternal)Kernel).AddCustomComponent(model);

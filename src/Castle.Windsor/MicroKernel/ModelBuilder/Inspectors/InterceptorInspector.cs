@@ -64,7 +64,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 			}
 
 			CollectInterceptors(model, interceptors);
-			var options = ProxyUtil.ObtainProxyOptions(model, true);
+			var options = model.ObtainProxyOptions();
 			CollectSelector(interceptors, options);
 			CollectHook(interceptors, options);
 		}

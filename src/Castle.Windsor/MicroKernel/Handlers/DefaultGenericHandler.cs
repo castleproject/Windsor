@@ -21,9 +21,9 @@ namespace Castle.MicroKernel.Handlers
 
 	using Castle.Core;
 	using Castle.Core.Internal;
+	using Castle.DynamicProxy;
 	using Castle.MicroKernel.ComponentActivator;
 	using Castle.MicroKernel.Context;
-	using Castle.MicroKernel.Proxy;
 
 	[Serializable]
 	public class DefaultGenericHandler : AbstractHandler

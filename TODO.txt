@@ -11,8 +11,6 @@
 - container.BeginScope(IDictionary inlineArguments)
 	those arguments would be available in each and every resolve (and their subdependencies...?)
 
-- when IResolve interface is introduced it should be used instead of IKernelInternal and IReleasePolicy in ITypedFactoryComponentSelector
-
-- when updated to latest Core use ProxyUtil from DP
+- Performance counter doesn't (sometimes?) work
 
 - nesting scopes - NOT SUPPORTED

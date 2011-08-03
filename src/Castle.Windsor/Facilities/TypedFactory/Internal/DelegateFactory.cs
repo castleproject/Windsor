@@ -56,13 +56,14 @@ namespace Castle.Facilities.TypedFactory.Internal
 
 					k.ReleaseComponent(delegateProxyFactory);
 					return @delegate;
-				}).DynamicParameters((k, d) =>
+				})
+				.DynamicParameters((k, d) =>
 				{
 					var selector = k.Resolve<ITypedFactoryComponentSelector>(TypedFactoryFacility.DefaultDelegateSelectorKey);
 					d.InsertTyped(selector);
 					return k2 => k2.ReleaseComponent(selector);
 				})
-				.AddAttributeDescriptor(TypedFactoryFacility.IsFactoryKey, "true");
+				.AddAttributeDescriptor(TypedFactoryFacility.IsFactoryKey, bool.TrueString);
 		}
 
 		protected string GetName(Type service)

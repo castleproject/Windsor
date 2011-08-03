@@ -35,7 +35,7 @@ namespace Castle.MicroKernel.ModelBuilder.Descriptors
 			{
 				return;
 			}
-			var options = ProxyUtil.ObtainProxyOptions(model, true);
+			var options = model.ObtainProxyOptions();
 			foreach (var mixIn in mixIns)
 			{
 				options.AddMixinReference(mixIn);
