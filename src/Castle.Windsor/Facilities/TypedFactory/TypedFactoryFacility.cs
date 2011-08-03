@@ -48,8 +48,6 @@ namespace Castle.Facilities.TypedFactory
 		internal static readonly string DefaultInterfaceSelectorKey =
 			"Castle.TypedFactory.DefaultInterfaceFactoryComponentSelector";
 
-		internal static readonly string DelegateProxyFactoryKey = "Castle.TypedFactory.DelegateProxyFactory";
-
 		[Obsolete("This method is obsolete. Use AsFactory() extension method on fluent registration API instead.")]
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public void AddTypedFactoryEntry(FactoryEntry entry)
@@ -122,10 +120,6 @@ namespace Castle.Facilities.TypedFactory
 			                Component.For<ILazyComponentLoader>()
 			                	.ImplementedBy<DelegateFactory>()
 			                	.NamedAutomatically(DelegateFactoryKey),
-			                Component.For<IProxyFactoryExtension>()
-			                	.ImplementedBy<DelegateProxyFactory>()
-			                	.LifeStyle.Transient
-			                	.NamedAutomatically(DelegateProxyFactoryKey),
 			                Component.For<ITypedFactoryComponentSelector>()
 			                	.ImplementedBy<DefaultTypedFactoryComponentSelector>()
 			                	.NamedAutomatically(DefaultInterfaceSelectorKey),

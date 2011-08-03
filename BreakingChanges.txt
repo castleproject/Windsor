@@ -1,4 +1,18 @@
 ================================================================================================
+change - Method	object Generate(IProxyBuilder, ProxyGenerationOptions, IInterceptor[]) on type
+	IProxyFactoryExtension changed signature.
+
+
+impact - low
+fixability - easy
+
+description - To handle new scenarios two additional arguments were introduced:
+	ComponentModel model and CreationContext context.
+
+fix - If you were implementing IProxyFactory and calling down to IProxyFactoryExtension pass your
+	own arguments down to IProxyFactoryExtension. If you're implementing IProxyFactoryExtension
+	adjust your signature and if that makes sense in your context use the arguments.
+================================================================================================
 change - ProxyUtil class was split and part moved to Castle.Core.dll and other was renamed
 
 impact - low

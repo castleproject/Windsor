@@ -48,15 +48,7 @@ namespace Castle.Facilities.TypedFactory.Internal
 				.NamedAutomatically(GetName(service))
 				.LifeStyle.Transient
 				.Interceptors(new InterceptorReference(TypedFactoryFacility.InterceptorKey)).Last
-				.UsingFactoryMethod((k, m, c) =>
-				{
-					var delegateProxyFactory = k.Resolve<IProxyFactoryExtension>(TypedFactoryFacility.DelegateProxyFactoryKey,
-					                                                             new Arguments { { "targetDelegateType", c.RequestedType } });
-					var @delegate = k.ProxyFactory.Create(delegateProxyFactory, k, m, c);
-
-					k.ReleaseComponent(delegateProxyFactory);
-					return @delegate;
-				})
+				.Activator<DelegateFactoryActivator>()
 				.DynamicParameters((k, d) =>
 				{
 					var selector = k.Resolve<ITypedFactoryComponentSelector>(TypedFactoryFacility.DefaultDelegateSelectorKey);
