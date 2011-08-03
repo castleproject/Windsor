@@ -108,7 +108,7 @@ namespace Castle.Facilities.Synchronize
 		/// <param name = "kernel">The kernel.</param>
 		private void ApplySynchronization(ComponentModel model, IKernel kernel)
 		{
-			var options = ProxyUtil.ObtainProxyOptions(model, true);
+			var options = model.ObtainProxyOptions();
 
 			model.Interceptors.Add(new InterceptorReference(typeof(SynchronizeInterceptor)));
 

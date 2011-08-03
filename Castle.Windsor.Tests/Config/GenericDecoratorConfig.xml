@@ -20,9 +20,7 @@
        service='CastleTests.Components.IRepository`1' 
        type='DemoRepository`1' >
       <parameters>
-        <Name>
-          second
-        </Name>
+        <Name>second</Name>
       </parameters>
     </component>
   </components>

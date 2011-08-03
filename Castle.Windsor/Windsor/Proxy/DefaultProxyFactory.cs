@@ -58,7 +58,7 @@ namespace Castle.Windsor.Proxy
 		                              params object[] constructorArguments)
 		{
 			var interceptors = ObtainInterceptors(kernel, model, context);
-			var proxyOptions = ProxyUtil.ObtainProxyOptions(model, true);
+			var proxyOptions = model.ObtainProxyOptions();
 			var proxyGenOptions = CreateProxyGenerationOptionsFrom(proxyOptions, kernel, context, model);
 
 			CustomizeOptions(proxyGenOptions, kernel, model, constructorArguments);
@@ -93,7 +93,7 @@ namespace Castle.Windsor.Proxy
 			object proxy;
 
 			var interceptors = ObtainInterceptors(kernel, model, context);
-			var proxyOptions = ProxyUtil.ObtainProxyOptions(model, true);
+			var proxyOptions = model.ObtainProxyOptions();
 			var proxyGenOptions = CreateProxyGenerationOptionsFrom(proxyOptions, kernel, context, model);
 
 			CustomizeOptions(proxyGenOptions, kernel, model, constructorArguments);
@@ -193,7 +193,7 @@ namespace Castle.Windsor.Proxy
 		/// <returns>true if an instance is required.</returns>
 		public override bool RequiresTargetInstance(IKernel kernel, ComponentModel model)
 		{
-			var proxyOptions = ProxyUtil.ObtainProxyOptions(model, true);
+			var proxyOptions = model.ObtainProxyOptions();
 
 			return model.HasClassServices == false &&
 			       proxyOptions.OmitTarget == false;

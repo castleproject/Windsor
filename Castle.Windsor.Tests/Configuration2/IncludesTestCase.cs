@@ -15,10 +15,12 @@
 #if !SILVERLIGHT
 // we do not support xml config on SL
 
-namespace Castle.Windsor.Tests.Configuration2
+namespace CastleTests.Configuration2
 {
 	using Castle.MicroKernel.Tests.ClassComponents;
+	using Castle.Windsor;
 	using Castle.Windsor.Configuration.Interpreters;
+	using Castle.Windsor.Tests;
 	using Castle.XmlFiles;
 
 	using NUnit.Framework;

@@ -84,15 +84,15 @@ namespace Castle.Facilities.Logging.Tests
 		[Test]
 		public void ContextTest()
 		{
-			container.Register(Component.For(typeof(ComplexLoggingComponent)).Named("component1"));
-			ComplexLoggingComponent complexLoggingComponent = container.Resolve<ComplexLoggingComponent>("component1");
+			container.Register(Component.For<ComplexLoggingComponent>().Named("component1"));
+			var complexLoggingComponent = container.Resolve<ComplexLoggingComponent>("component1");
 
 			complexLoggingComponent.DoSomeContextual();
 
-			String expectedLogOutput = String.Format("[DEBUG] [Castle.Facilities.Logging.Tests.Classes.ComplexLoggingComponent] [Outside Inside0] [bar] [flam] - Bim, bam boom." + Environment.NewLine, typeof(SimpleLoggingComponent).FullName);
-			MemoryAppender memoryAppender = ((Hierarchy)LogManager.GetRepository()).Root.GetAppender("memory") as MemoryAppender;
-			TextWriter actualLogOutput = new StringWriter();
-			PatternLayout patternLayout = new PatternLayout("[%-5level] [%logger] [%properties{NDC}] [%properties{foo}] [%properties{flim}] - %message%newline");
+			var expectedLogOutput = String.Format("[DEBUG] [Castle.Facilities.Logging.Tests.Classes.ComplexLoggingComponent] [Outside Inside0] [bar] [flam] - Bim, bam boom." + Environment.NewLine, typeof(SimpleLoggingComponent).FullName);
+			var memoryAppender = ((Hierarchy)LogManager.GetRepository()).Root.GetAppender("memory") as MemoryAppender;
+			var actualLogOutput = new StringWriter();
+			var patternLayout = new PatternLayout("[%-5level] [%logger] [%properties{NDC}] [%properties{foo}] [%properties{flim}] - %message%newline");
 			patternLayout.Format(actualLogOutput, memoryAppender.GetEvents()[0]);
 
 			Assert.AreEqual(expectedLogOutput, actualLogOutput.ToString());

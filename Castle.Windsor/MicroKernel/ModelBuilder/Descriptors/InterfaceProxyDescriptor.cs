@@ -27,7 +27,7 @@ namespace Castle.MicroKernel.ModelBuilder.Descriptors
 		{
 			if (model.HasInterceptors && model.Implementation.IsInterface)
 			{
-				var options = ProxyUtil.ObtainProxyOptions(model, true);
+				var options = model.ObtainProxyOptions();
 				options.OmitTarget = true;
 			}
 		}

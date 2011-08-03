@@ -314,7 +314,6 @@
   <ItemGroup>
     <Compile Include="AutoregisterPerWebRequestLifestyleModule.cs" />
     <Compile Include="Core\CustomLifestyleAttribute.cs" />
-    <Compile Include="Core\Internal\CollectionExtensions.cs" />
     <Compile Include="Core\Internal\Constants.cs" />
     <Compile Include="Core\Internal\Must.cs" />
     <Compile Include="Core\Internal\SimpleSortedSet.cs" />
@@ -626,7 +625,7 @@
     </Compile>
     <Compile Include="MicroKernel\Proxy\ProxyConstants.cs" />
     <Compile Include="MicroKernel\Proxy\ProxyOptions.cs" />
-    <Compile Include="MicroKernel\Proxy\ProxyUtil.cs" />
+    <Compile Include="MicroKernel\Proxy\ProxyOptionsUtil.cs" />
     <Compile Include="MicroKernel\ModelBuilder\Descriptors\AbstractPropertyDescriptor.cs" />
     <Compile Include="MicroKernel\Registration\AssemblyFilter.cs" />
     <Compile Include="MicroKernel\ModelBuilder\Descriptors\AttributeDescriptor.cs" />

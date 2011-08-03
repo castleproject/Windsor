@@ -7,8 +7,8 @@
 	<components>
 		<if defined="DEBUG">
 			<component id="debug">
-				<item> some value </item>
-				<item2><![CDATA[ some <&> value2 ]]></item2>
+				<item>some value</item>
+				<item2><![CDATA[some <&> value2]]></item2>
 			</component>
 		</if>
 		<if not-defined="DEBUG">

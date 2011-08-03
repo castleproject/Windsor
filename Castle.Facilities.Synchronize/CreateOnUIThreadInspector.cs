@@ -92,7 +92,7 @@ namespace Castle.Facilities.Synchronize
 			{
 				return;
 			}
-			var proxyOptions = ProxyUtil.ObtainProxyOptions(model, true);
+			var proxyOptions = model.ObtainProxyOptions();
 			proxyOptions.Hook = controlProxyHook;
 		}
 

@@ -14,68 +14,20 @@
 
 namespace Castle.MicroKernel.Proxy
 {
-	using System;
-	using System.Runtime.Remoting;
-
 	using Castle.Core;
-	using Castle.DynamicProxy;
 
 	/// <summary>
 	///   Helper support for proxy configuration.
 	/// </summary>
-	public abstract class ProxyUtil
+	public static class ProxyOptionsUtil
 	{
-		public static object GetUnproxiedInstance(object instance)
-		{
-#if (!SILVERLIGHT)
-			if (!RemotingServices.IsTransparentProxy(instance))
-#endif
-			{
-				var accessor = instance as IProxyTargetAccessor;
-
-				if (accessor != null)
-				{
-					instance = accessor.DynProxyGetTarget();
-				}
-			}
-
-			return instance;
-		}
-
-		public static Type GetUnproxiedType(object instance)
-		{
-#if (!SILVERLIGHT)
-			if (!RemotingServices.IsTransparentProxy(instance))
-#endif
-			{
-				var accessor = instance as IProxyTargetAccessor;
-
-				if (accessor != null)
-				{
-					var target = accessor.DynProxyGetTarget();
-
-					if (target != null)
-					{
-						if (ReferenceEquals(target, instance))
-						{
-							return instance.GetType().BaseType;
-						}
-
-						instance = target;
-					}
-				}
-			}
-
-			return instance.GetType();
-		}
-
 		/// <summary>
 		///   Obtains the <see cref = "ProxyOptions" /> associated with the <see cref = "ComponentModel" />.
 		/// </summary>
 		/// <param name = "model">The component model.</param>
 		/// <param name = "createOnDemand">true if the options should be created if not present.</param>
 		/// <returns>The associated proxy options for the component model.</returns>
-		public static ProxyOptions ObtainProxyOptions(ComponentModel model, bool createOnDemand)
+		public static ProxyOptions ObtainProxyOptions(this ComponentModel model, bool createOnDemand = true)
 		{
 			var options = model.ExtendedProperties[ProxyConstants.ProxyOptionsKey] as ProxyOptions;
 

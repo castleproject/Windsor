@@ -19,11 +19,11 @@ namespace Castle.Facilities.FactorySupport
 	using System.Reflection;
 
 	using Castle.Core;
+	using Castle.DynamicProxy;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.ComponentActivator;
 	using Castle.MicroKernel.Context;
 	using Castle.MicroKernel.Facilities;
-	using Castle.MicroKernel.Proxy;
 
 	public class FactoryActivator : DefaultComponentActivator, IDependencyAwareActivator
 	{
