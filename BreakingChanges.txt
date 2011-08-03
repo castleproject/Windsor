@@ -1,5 +1,5 @@
 ================================================================================================
-change - Method	object Generate(IProxyBuilder, ProxyGenerationOptions, IInterceptor[]) on type
+change - Method object Generate(IProxyBuilder, ProxyGenerationOptions, IInterceptor[]) on type
 	IProxyFactoryExtension changed signature.
 
 
