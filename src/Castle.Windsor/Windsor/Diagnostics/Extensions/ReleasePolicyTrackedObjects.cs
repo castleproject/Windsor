@@ -12,6 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Diagnostics;
+using System.Threading;
+
 namespace Castle.Windsor.Diagnostics.Extensions
 {
 #if !SILVERLIGHT
@@ -24,6 +27,7 @@ namespace Castle.Windsor.Diagnostics.Extensions
 
 	public class ReleasePolicyTrackedObjects : AbstractContainerDebuggerExtension
 	{
+		private static int instanceId = 0;
 		private const string name = "Objects tracked by release policy";
 		private readonly IPerformanceMetricsFactory perfMetricsFactory;
 		private TrackedComponentsDiagnostic diagnostic;
@@ -50,6 +54,9 @@ namespace Castle.Windsor.Diagnostics.Extensions
 
 		public override void Init(IKernel kernel, IDiagnosticsHost diagnosticsHost)
 		{
+			var process = Process.GetCurrentProcess();
+			var name = string.Format("Instance {0} | process {1} (id:{2})", Interlocked.Increment(ref instanceId),
+			                         process.ProcessName, process.Id);
 			diagnostic = new TrackedComponentsDiagnostic(perfMetricsFactory.CreateInstancesTrackedByReleasePolicyCounter(name));
 			diagnosticsHost.AddDiagnostic<ITrackedComponentsDiagnostic>(diagnostic);
 		}

@@ -51,7 +51,7 @@ namespace Castle.Windsor.Diagnostics
 
 		public void IncrementTrackedInstancesCount()
 		{
-			counter.DecrementTrackedInstancesCount();
+			counter.IncrementTrackedInstancesCount();
 		}
 #endif
 
