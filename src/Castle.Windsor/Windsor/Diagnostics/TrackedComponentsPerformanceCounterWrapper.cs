@@ -15,15 +15,21 @@
 namespace Castle.Windsor.Diagnostics
 {
 #if !SILVERLIGHT
+	using System;
 	using System.Diagnostics;
 
-	public class TrackedComponentsPerformanceCounterWrapper : ITrackedComponentsPerformanceCounter
+	public class TrackedComponentsPerformanceCounterWrapper : ITrackedComponentsPerformanceCounter, IDisposable
 	{
 		private readonly PerformanceCounter counter;
 
 		public TrackedComponentsPerformanceCounterWrapper(PerformanceCounter counter)
 		{
 			this.counter = counter;
+		}
+
+		public void Dispose()
+		{
+			counter.Dispose();
 		}
 
 		public void DecrementTrackedInstancesCount()
