@@ -96,8 +96,8 @@ namespace Castle.Windsor.Diagnostics
 			{
 				if (PerformanceCounterCategory.Exists(CastleWindsorCategoryName))
 				{
-					PerformanceCounterCategory.GetCategories()
-						.Single(c => c.CategoryName == CastleWindsorCategoryName);
+					var categories = PerformanceCounterCategory.GetCategories();
+					categories.Single(c => c.CategoryName == CastleWindsorCategoryName);
 				}
 				else
 				{
