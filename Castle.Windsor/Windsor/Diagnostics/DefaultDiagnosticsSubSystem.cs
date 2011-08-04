@@ -17,7 +17,9 @@ namespace Castle.Windsor.Diagnostics
 	using System;
 	using System.Collections;
 	using System.Collections.Generic;
+	using System.Linq;
 
+	using Castle.Core;
 	using Castle.MicroKernel;
 	using Castle.Windsor.Diagnostics.Extensions;
 
@@ -73,6 +75,7 @@ namespace Castle.Windsor.Diagnostics
 
 		public void Terminate()
 		{
+			diagnostics.Values.OfType<IDisposable>().ForEach(e => e.Dispose());
 		}
 
 #if !SILVERLIGHT
