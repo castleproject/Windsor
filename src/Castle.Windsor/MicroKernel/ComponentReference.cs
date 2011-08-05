@@ -29,18 +29,18 @@ namespace Castle.MicroKernel
 		private readonly DependencyModel dependency;
 		private readonly object value;
 
-		public ComponentReference(string dependencyName, string componentKey)
+		public ComponentReference(string dependencyName, string componentName)
 		{
 			if (dependencyName == null)
 			{
 				throw new ArgumentNullException("dependencyName");
 			}
-			if (componentKey == null)
+			if (componentName == null)
 			{
-				throw new ArgumentNullException("componentKey");
+				throw new ArgumentNullException("componentName");
 			}
 
-			value = componentKey;
+			value = componentName;
 
 			dependency = new DependencyModel(dependencyName, typeof(T), false);
 		}
@@ -67,14 +67,14 @@ namespace Castle.MicroKernel
 			get { return value as Type; }
 		}
 
-		private string ServiceOverrideComponentKey
+		private string ServiceOverrideComponentName
 		{
 			get { return value as string; }
 		}
 
 		public void Attach(ComponentModel component)
 		{
-			var reference = ReferenceExpressionUtil.BuildReference(ServiceOverrideComponentKey ?? ActualComponentType.FullName);
+			var reference = ReferenceExpressionUtil.BuildReference(ServiceOverrideComponentName ?? ActualComponentType.FullName);
 			component.Parameters.Add(dependency.DependencyKey, reference);
 			component.Dependencies.Add(dependency);
 		}
@@ -92,7 +92,7 @@ namespace Castle.MicroKernel
 				throw new ComponentResolutionException(
 					string.Format(
 						"Component {0} could not be resolved. Make sure you didn't misspell the name, and that component is registered.",
-						ServiceOverrideComponentKey ?? ActualComponentType.ToString()));
+						ServiceOverrideComponentName ?? ActualComponentType.ToString()));
 			}
 
 			try
@@ -101,15 +101,15 @@ namespace Castle.MicroKernel
 			}
 			catch (InvalidCastException e)
 			{
-				throw new ComponentResolutionException(string.Format("Component {0} is not compatible with type {1}.", ServiceOverrideComponentKey, typeof(T)), e);
+				throw new ComponentResolutionException(string.Format("Component {0} is not compatible with type {1}.", ServiceOverrideComponentName, typeof(T)), e);
 			}
 		}
 
 		private IHandler GetHandler(IKernel kernel)
 		{
-			if (ServiceOverrideComponentKey != null)
+			if (ServiceOverrideComponentName != null)
 			{
-				return kernel.GetHandler(ServiceOverrideComponentKey);
+				return kernel.GetHandler(ServiceOverrideComponentName);
 			}
 
 			return kernel.GetHandler(ActualComponentType);
