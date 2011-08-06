@@ -14,6 +14,7 @@
 
 namespace CastleTests.Registration
 {
+	using Castle.Facilities.TypedFactory;
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Tests.ClassComponents;
 	using Castle.Windsor.Tests.Interceptors;

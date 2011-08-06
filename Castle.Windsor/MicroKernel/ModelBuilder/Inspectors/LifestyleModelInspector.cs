@@ -15,6 +15,8 @@
 namespace Castle.MicroKernel.ModelBuilder.Inspectors
 {
 	using System;
+	using System.Linq;
+	using System.Reflection;
 
 	using Castle.Core;
 	using Castle.Core.Internal;
@@ -80,13 +82,14 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 			if (lifestyle == null)
 			{
 				var customType = ExtractCustomType(model);
-				if (customType == null)
+				if (customType != null)
 				{
-					return false;
+					model.LifestyleType = LifestyleType.Custom;
+					model.CustomLifestyle = customType;
+					return true;
 				}
-				model.LifestyleType = LifestyleType.Custom;
-				model.CustomLifestyle = customType;
-				return true;
+				// TODO: handle bound to lifestyle
+				return false;
 			}
 
 			var type = converter.PerformConversion<LifestyleType>(lifestyle);
@@ -130,6 +133,46 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 				model.ExtendedProperties[ExtendedPropertiesConstants.Pool_InitialPoolSize] = pooled.InitialPoolSize;
 				model.ExtendedProperties[ExtendedPropertiesConstants.Pool_MaxPoolSize] = pooled.MaxPoolSize;
 			}
+			else if (model.LifestyleType == LifestyleType.Bound)
+			{
+				var binder = ExtractBinder(((BoundToAttribute)attribute).ScopeRootBinderType, model.Name);
+				model.ExtendedProperties[Constants.ScopeRootSelector] = binder;
+			}
+		}
+
+		private Func<IHandler[], IHandler> ExtractBinder(Type scopeRootBinderType, string name)
+		{
+			var filterMethod =
+				scopeRootBinderType.FindMembers(MemberTypes.Method, BindingFlags.Instance | BindingFlags.Public, IsBindMethod, null)
+					.FirstOrDefault();
+			if(filterMethod == null)
+			{
+				throw new InvalidOperationException(
+					string.Format(
+						"Type {0} which was designated as 'scopeRootBinderType' for component {1} does not have any public instance method matching signature of 'IHandler Method(IHandler[] pickOne)' and can not be used as scope root binder.",
+						scopeRootBinderType.Name, name));
+			}
+			var instance = scopeRootBinderType.CreateInstance<object>();
+			return (Func<IHandler[], IHandler>)Delegate.CreateDelegate(typeof(Func<IHandler[], IHandler>), instance, (MethodInfo)filterMethod);
+		}
+
+		private bool IsBindMethod(MemberInfo methodMember, object _)
+		{
+			var method = (MethodInfo)methodMember;
+			if(method.ReturnType != typeof(IHandler))
+			{
+				return false;
+			}
+			var parameters = method.GetParameters();
+			if(parameters.Length!=1)
+			{
+				return false;
+			}
+			if(parameters[0].ParameterType != typeof(IHandler[]))
+			{
+				return false;
+			}
+			return true;
 		}
 
 		protected virtual void ValidateLifestyleManager(Type customLifestyleManager)
