@@ -307,9 +307,9 @@ namespace Castle.MicroKernel.Registration
 		///   Sets component lifestyle to scoped per component <typeparamref name = "TBaseForRoot" />.
 		/// </summary>
 		/// <returns></returns>
-		public BasedOnDescriptor LifestyleScopedPer<TBaseForRoot>() where TBaseForRoot : class
+		public BasedOnDescriptor LifestyleBoundTo<TBaseForRoot>() where TBaseForRoot : class
 		{
-			return Configure(c => c.LifestyleScopedPer<TBaseForRoot>());
+			return Configure(c => c.LifestyleBoundTo<TBaseForRoot>());
 		}
 
 #if (!SILVERLIGHT)

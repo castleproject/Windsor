@@ -84,7 +84,7 @@ namespace CastleTests.Lifestyle
 		[Test]
 		public void Many_component_scoped_per_object()
 		{
-			LifestyleMany(c => c.LifestyleScopedPer<object>(), LifestyleType.Scoped);
+			LifestyleMany(c => c.LifestyleBoundTo<object>(), LifestyleType.Scoped);
 		}
 
 		[Test]
@@ -140,7 +140,7 @@ namespace CastleTests.Lifestyle
 		[Test]
 		public void Single_component_scoped_per_object()
 		{
-			LifestyleSingle(c => c.LifestyleScopedPer<object>(), LifestyleType.Scoped);
+			LifestyleSingle(c => c.LifestyleBoundTo<object>(), LifestyleType.Scoped);
 		}
 
 		[Test]
