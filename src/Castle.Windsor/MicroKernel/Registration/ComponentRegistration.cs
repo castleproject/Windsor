@@ -615,16 +615,16 @@ namespace Castle.MicroKernel.Registration
 		}
 
 		/// <summary>
-		///   Sets component lifestyle to scoped per scope determined by <paramref name="scopeRootSelector"/>
+		///   Sets component lifestyle to scoped per scope determined by <paramref name="scopeRootBinder"/>
 		/// </summary>
-		/// <param name="scopeRootSelector">Custom algorithm for selection which component higher up the resolution stack should be the root of the lifetime scope for current component's instances.
+		/// <param name="scopeRootBinder">Custom algorithm for selection which component higher up the resolution stack should be the root of the lifetime scope for current component's instances.
 		/// The delegate will be invoked when current component is about to be resolved and will be passed set of handlers to components higher up the resolution stack. It ought to return one which it designages
 		/// as the root which shall scope the lifetime of current component's instance, or <c>null</c>
 		/// </param>
 		/// <returns></returns>
-		public ComponentRegistration<TService> LifestyleBoundTo(Func<IHandler[], IHandler> scopeRootSelector)
+		public ComponentRegistration<TService> LifestyleBoundTo(Func<IHandler[], IHandler> scopeRootBinder)
 		{
-			return LifeStyle.BoundTo(scopeRootSelector);
+			return LifeStyle.BoundTo(scopeRootBinder);
 		}
 
 #if (!SILVERLIGHT)

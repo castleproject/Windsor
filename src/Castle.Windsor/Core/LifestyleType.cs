@@ -14,6 +14,8 @@
 
 namespace Castle.Core
 {
+	using System;
+
 	/// <summary>
 	///   Enumeration used to mark the component's lifestyle.
 	/// </summary>
@@ -60,6 +62,14 @@ namespace Castle.Core
 		/// <summary>
 		///   Instances are reused within the scope provided.
 		/// </summary>
-		Scoped
+		Scoped,
+
+		/// <summary>
+		/// Instance lifetime and reuse scope is bound to another component further up the object graph.
+		/// Good scenario for this would be unit of work bound to a presenter in a two tier MVP application.
+		/// When specified in xml a <c>scopeRootBinderType</c> attribute must be specified pointing to a type
+		/// having default accessible constructor and public method matching signature of <code>Func&lt;IHandler[], IHandler&gt;</code> delegate.
+		/// </summary>
+		Bound
 	}
 }

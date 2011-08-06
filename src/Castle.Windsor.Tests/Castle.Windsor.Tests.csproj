@@ -301,6 +301,7 @@
     <Compile Include="Components\AppHost.cs" />
     <Compile Include="Components\AppScreenCBA.cs" />
     <Compile Include="Components\BDisposable.cs" />
+    <Compile Include="Components\BoundComponent.cs" />
     <Compile Include="Components\CBA.cs" />
     <Compile Include="ClassComponents\CustomerRepository.cs" />
     <Compile Include="ClassComponents\DecoratedRepository.cs" />
@@ -417,6 +418,8 @@
     <Compile Include="ContainerExtensions\BadDependencyResolver.cs" />
     <Compile Include="ContainerExtensions\GoodDependencyResolver.cs" />
     <Compile Include="Diagnostics\AllServicesDiagnosticTestCase.cs" />
+    <Compile Include="Generics\GenericA.cs" />
+    <Compile Include="Generics\GenericB.cs" />
     <Compile Include="Interceptors\InterceptorAttributeTestCase.cs" />
     <Compile Include="CreatingContainerTestCase.cs" />
     <Compile Include="Diagnostics\UsingContainerAsServiceLocatorDiagnosticTestCase.cs" />

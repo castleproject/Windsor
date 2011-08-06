@@ -313,6 +313,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AutoregisterPerWebRequestLifestyleModule.cs" />
+    <Compile Include="Core\BoundToAttribute.cs" />
     <Compile Include="Core\CustomLifestyleAttribute.cs" />
     <Compile Include="Core\Internal\Constants.cs" />
     <Compile Include="Core\Internal\Must.cs" />

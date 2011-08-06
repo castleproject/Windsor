@@ -27,6 +27,7 @@ namespace CastleTests.Lifestyle
 	using Castle.Windsor.Tests.ClassComponents;
 
 	using CastleTests.Components;
+	using CastleTests.Generics;
 
 	using NUnit.Framework;
 
@@ -95,7 +96,7 @@ namespace CastleTests.Lifestyle
 		public void BadLifestyleSetProgromatically()
 		{
 			Assert.Throws<ArgumentOutOfRangeException>(() =>
-			                                           Kernel.Register(Component.For(typeof(IComponent))
+			                                           Kernel.Register(Component.For<IComponent>()
 			                                                           	.ImplementedBy(typeof(TrivialComponent))
 			                                                           	.Named("a")
 			                                                           	.LifeStyle.Is(LifestyleType.Undefined)));
@@ -243,7 +244,7 @@ namespace CastleTests.Lifestyle
 		[Test]
 		public void TestPerThread()
 		{
-			Kernel.Register(Component.For(typeof(IComponent)).ImplementedBy(typeof(PerThreadComponent)).Named("a"));
+			Kernel.Register(Component.For<IComponent>().ImplementedBy(typeof(PerThreadComponent)).Named("a"));
 
 			var handler = Kernel.GetHandler("a");
 
@@ -268,7 +269,7 @@ namespace CastleTests.Lifestyle
 		[Test]
 		public void TestSingleton()
 		{
-			Kernel.Register(Component.For(typeof(IComponent)).ImplementedBy(typeof(SingletonComponent)).Named("a"));
+			Kernel.Register(Component.For<IComponent>().ImplementedBy(typeof(SingletonComponent)).Named("a"));
 
 			var handler = Kernel.GetHandler("a");
 
@@ -283,9 +284,26 @@ namespace CastleTests.Lifestyle
 		}
 
 		[Test]
+		public void BoundTo_via_attribute()
+		{
+			Kernel.Register(
+				Component.For(typeof(GenericA<>)),
+				Component.For(typeof(GenericB<>)),
+				Component.For<IComponent>().ImplementedBy<BoundComponent>());
+
+			var handler = Kernel.GetHandler(typeof(IComponent));
+
+			Assert.AreEqual(LifestyleType.Bound, handler.ComponentModel.LifestyleType);
+
+			var a = Kernel.Resolve<GenericA<IComponent>>();
+
+			Assert.AreSame(a.Item, a.B.Item);
+		}
+
+		[Test]
 		public void TestTransient()
 		{
-			Kernel.Register(Component.For(typeof(IComponent)).ImplementedBy(typeof(TransientComponent)).Named("a"));
+			Kernel.Register(Component.For<IComponent>().ImplementedBy(typeof(TransientComponent)).Named("a"));
 
 			var handler = Kernel.GetHandler("a");
 
