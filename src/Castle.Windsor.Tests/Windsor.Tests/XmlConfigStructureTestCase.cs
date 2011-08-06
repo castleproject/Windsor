@@ -30,6 +30,7 @@ namespace Castle.Windsor.Tests
 
 	using CastleTests;
 	using CastleTests.Components;
+	using CastleTests.Generics;
 
 	using NUnit.Framework;
 
@@ -40,6 +41,19 @@ namespace Castle.Windsor.Tests
 		{
 			var file = Xml.Embedded(fileName);
 			return Configuration.FromXml(file);
+		}
+
+		[Test]
+		public void Bound_lifestyle_can_be_specify_via_type_only()
+		{
+			Container.Install(FromFile("BoundLifestyle.xml"));
+			var handler = Kernel.GetHandler(typeof(A));
+
+			Assert.IsNotNull(handler);
+			Assert.AreEqual(LifestyleType.Bound, handler.ComponentModel.LifestyleType);
+
+			var a = Container.Resolve<GenericA<A>>();
+			Assert.AreSame(a.Item, a.B.Item);
 		}
 
 		[Test]

@@ -1174,6 +1174,7 @@
     <EmbeddedResource Include="XmlFiles\robotwireconfig.xml" />
     <EmbeddedResource Include="XmlFiles\sample_config.xml" />
     <EmbeddedResource Include="XmlFiles\facilityWithoutId.xml" />
+    <EmbeddedResource Include="XmlFiles\BoundLifestyle.xml" />
     <Content Include="XmlProcessor\TestFiles\AssemblyIncludeTestDisabled.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

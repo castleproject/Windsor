@@ -641,6 +641,13 @@ namespace Castle.MicroKernel
 		private IScopeAccessor CreateScopeAccessor(ComponentModel model)
 		{
 			var selector = (Func<IHandler[], IHandler>)model.ExtendedProperties[Constants.ScopeRootSelector];
+			if(selector == null)
+			{
+				throw new ComponentRegistrationException(
+					string.Format("Component {0} has lifestyle {1} but it does not specify mandatory 'scopeRootSelector'.",
+					              model.ComponentName.ToString(), LifestyleType.Bound));
+			}
+
 			return new CreationContextScopeAccessor(model, selector);
 		}
 
