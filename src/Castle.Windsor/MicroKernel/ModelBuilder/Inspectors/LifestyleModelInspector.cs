@@ -96,7 +96,6 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 					model.ExtendedProperties[Constants.ScopeRootSelector] = binder;
 					return true;
 				}
-				// TODO: handle bound to lifestyle
 				return false;
 			}
 
@@ -110,19 +109,6 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 			else if (model.LifestyleType == LifestyleType.Custom)
 			{
 				ExtractCustomConfig(model);
-			}
-			else if (model.LifestyleType == LifestyleType.Bound)
-			{
-				var binderType = ExtractBinderType(model);
-				if (binderType == null)
-				{
-					throw new InvalidOperationException(
-						string.Format(
-							"Component {0} specifies {1} as its lifestyle but is missing mandatory 'scopeRootBinderType' attribute. Please provide a value for the attribute.",
-							model.Name, LifestyleType.Bound));
-				}
-				var binder = ExtractBinder(binderType, model.Name);
-				model.ExtendedProperties[Constants.ScopeRootSelector] = binder;
 			}
 
 			return true;
