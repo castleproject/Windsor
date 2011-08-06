@@ -103,12 +103,12 @@ namespace Castle.MicroKernel.Registration.Lifestyle
 			get { return AddDescriptor(new LifestyleDescriptor<TService>(LifestyleType.Scoped)); }
 		}
 
-		public ComponentRegistration<TService> ScopedPer<TBaseForRoot>() where TBaseForRoot : class
+		public ComponentRegistration<TService> BoundTo<TBaseForRoot>() where TBaseForRoot : class
 		{
-			return ScopedPer(CreationContextScopeAccessor.DefaultScopeRootSelector<TBaseForRoot>);
+			return BoundTo(CreationContextScopeAccessor.DefaultScopeRootSelector<TBaseForRoot>);
 		}
 
-		public ComponentRegistration<TService> ScopedPer(Func<IHandler[], IHandler> scopeRootSelector)
+		public ComponentRegistration<TService> BoundTo(Func<IHandler[], IHandler> scopeRootSelector)
 		{
 			return Scoped.ExtendedProperties(new Property(Constants.ScopeRootSelector, scopeRootSelector));
 		}

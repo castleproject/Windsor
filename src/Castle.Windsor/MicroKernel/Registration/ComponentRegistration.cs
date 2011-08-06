@@ -609,9 +609,9 @@ namespace Castle.MicroKernel.Registration
 		///   Sets component lifestyle to scoped per nearest component on the resolution stack where implementation type is assignable to <typeparamref name = "TBaseForRoot" />.
 		/// </summary>
 		/// <returns></returns>
-		public ComponentRegistration<TService> LifestyleScopedPer<TBaseForRoot>() where TBaseForRoot : class
+		public ComponentRegistration<TService> LifestyleBoundTo<TBaseForRoot>() where TBaseForRoot : class
 		{
-			return LifeStyle.ScopedPer<TBaseForRoot>();
+			return LifeStyle.BoundTo<TBaseForRoot>();
 		}
 
 		/// <summary>
@@ -622,9 +622,9 @@ namespace Castle.MicroKernel.Registration
 		/// as the root which shall scope the lifetime of current component's instance, or <c>null</c>
 		/// </param>
 		/// <returns></returns>
-		public ComponentRegistration<TService> LifestyleScopedPer(Func<IHandler[], IHandler> scopeRootSelector)
+		public ComponentRegistration<TService> LifestyleBoundTo(Func<IHandler[], IHandler> scopeRootSelector)
 		{
-			return LifeStyle.ScopedPer(scopeRootSelector);
+			return LifeStyle.BoundTo(scopeRootSelector);
 		}
 
 #if (!SILVERLIGHT)
@@ -1031,7 +1031,7 @@ namespace Castle.MicroKernel.Registration
 			}
 			kernel.AddCustomComponent(componentModel);
 		}
-
+		
 		/// <summary>
 		///   Overrides default behavior by making the current component the default for every service it exposes. Optional <paramref
 		///    name = "serviceFilter" /> allows user to narrow down the number of services which should be make defaults.

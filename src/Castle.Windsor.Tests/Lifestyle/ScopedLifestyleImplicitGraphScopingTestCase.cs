@@ -29,7 +29,7 @@ namespace CastleTests.Lifestyle
 		public void Scoped_component_created_for_outermost_sub_graph()
 		{
 			Container.Register(
-				Component.For<A>().LifeStyle.ScopedPer<CBA>(),
+				Component.For<A>().LifeStyle.BoundTo<CBA>(),
 				Component.For<B>().LifeStyle.Transient,
 				Component.For<CBA>().ImplementedBy<CBADecorator>().LifeStyle.Transient,
 				Component.For<CBA>().LifeStyle.Transient);
@@ -43,7 +43,7 @@ namespace CastleTests.Lifestyle
 		public void Scoped_component_disposable_not_tracked()
 		{
 			Container.Register(
-				Component.For<A>().ImplementedBy<ADisposable>().LifestyleScopedPer<CBA>(),
+				Component.For<A>().ImplementedBy<ADisposable>().LifestyleBoundTo<CBA>(),
 				Component.For<B>().LifeStyle.Transient,
 				Component.For<CBA>().LifeStyle.Transient);
 
@@ -56,7 +56,7 @@ namespace CastleTests.Lifestyle
 		public void Scoped_component_disposable_root_tracked()
 		{
 			Container.Register(
-				Component.For<A>().ImplementedBy<ADisposable>().LifeStyle.ScopedPer<CBA>(),
+				Component.For<A>().ImplementedBy<ADisposable>().LifeStyle.BoundTo<CBA>(),
 				Component.For<B>().LifeStyle.Transient,
 				Component.For<CBA>().LifeStyle.Transient);
 
@@ -69,7 +69,7 @@ namespace CastleTests.Lifestyle
 		public void Scoped_component_doesnt_unnecessarily_force_root_to_be_tracked()
 		{
 			Container.Register(
-				Component.For<A>().LifeStyle.ScopedPer<CBA>(),
+				Component.For<A>().LifeStyle.BoundTo<CBA>(),
 				Component.For<B>().LifeStyle.Transient,
 				Component.For<CBA>().LifeStyle.Transient);
 
@@ -83,7 +83,7 @@ namespace CastleTests.Lifestyle
 		public void Scoped_component_doesnt_unnecessarily_get_tracked()
 		{
 			Container.Register(
-				Component.For<A>().LifeStyle.ScopedPer<CBA>(),
+				Component.For<A>().LifeStyle.BoundTo<CBA>(),
 				Component.For<B>().LifeStyle.Transient,
 				Component.For<CBA>().LifeStyle.Transient);
 
@@ -96,7 +96,7 @@ namespace CastleTests.Lifestyle
 		public void Scoped_component_not_released_prematurely()
 		{
 			Container.Register(
-				Component.For<A>().ImplementedBy<ADisposable>().LifeStyle.ScopedPer<CBA>(),
+				Component.For<A>().ImplementedBy<ADisposable>().LifeStyle.BoundTo<CBA>(),
 				Component.For<B>().ImplementedBy<BDisposable>().LifeStyle.Transient,
 				Component.For<CBA>().LifeStyle.Transient);
 
@@ -115,8 +115,8 @@ namespace CastleTests.Lifestyle
 		public void Scoped_component_not_released_prematurely_interdependencies()
 		{
 			Container.Register(
-				Component.For<A>().ImplementedBy<ADisposable>().LifeStyle.ScopedPer<CBA>(),
-				Component.For<B>().ImplementedBy<BDisposable>().LifeStyle.ScopedPer<CBA>(),
+				Component.For<A>().ImplementedBy<ADisposable>().LifeStyle.BoundTo<CBA>(),
+				Component.For<B>().ImplementedBy<BDisposable>().LifeStyle.BoundTo<CBA>(),
 				Component.For<CBA>().LifeStyle.Transient);
 
 			var cba = Container.Resolve<CBA>();
@@ -134,7 +134,7 @@ namespace CastleTests.Lifestyle
 		public void Scoped_component_not_reused_across_resolves()
 		{
 			Container.Register(
-				Component.For<A>().LifeStyle.ScopedPer<CBA>(),
+				Component.For<A>().LifeStyle.BoundTo<CBA>(),
 				Component.For<B>().LifeStyle.Transient,
 				Component.For<CBA>().LifeStyle.Transient);
 
@@ -151,7 +151,7 @@ namespace CastleTests.Lifestyle
 		{
 			Kernel.Resolver.AddSubResolver(new CollectionResolver(Kernel));
 			Container.Register(
-				Component.For<A>().ImplementedBy<ADisposable>().LifeStyle.ScopedPer<AppScreenCBA>(),
+				Component.For<A>().ImplementedBy<ADisposable>().LifeStyle.BoundTo<AppScreenCBA>(),
 				Component.For<B>().LifeStyle.Transient,
 				Component.For<CBA>().LifeStyle.Transient,
 				Component.For<IAppScreen>().ImplementedBy<AppScreenCBA>().LifeStyle.Transient.Named("1"),
@@ -173,7 +173,7 @@ namespace CastleTests.Lifestyle
 		{
 			Kernel.Resolver.AddSubResolver(new CollectionResolver(Kernel));
 			Container.Register(
-				Component.For<A>().LifeStyle.ScopedPer<AppScreenCBA>(),
+				Component.For<A>().LifeStyle.BoundTo<AppScreenCBA>(),
 				Component.For<B>().LifeStyle.Transient,
 				Component.For<CBA>().LifeStyle.Transient,
 				Component.For<IAppScreen>().ImplementedBy<AppScreenCBA>().LifeStyle.Transient.Named("1"),
@@ -192,7 +192,7 @@ namespace CastleTests.Lifestyle
 		public void Scoped_component_released_when_releasing_root_disposable()
 		{
 			Container.Register(
-				Component.For<A>().ImplementedBy<ADisposable>().LifeStyle.ScopedPer<CBA>(),
+				Component.For<A>().ImplementedBy<ADisposable>().LifeStyle.BoundTo<CBA>(),
 				Component.For<B>().LifeStyle.Transient,
 				Component.For<CBA>().LifeStyle.Transient);
 
@@ -208,7 +208,7 @@ namespace CastleTests.Lifestyle
 		public void Scoped_component_reused()
 		{
 			Container.Register(
-				Component.For<A>().LifeStyle.ScopedPer<CBA>(),
+				Component.For<A>().LifeStyle.BoundTo<CBA>(),
 				Component.For<B>().LifeStyle.Transient,
 				Component.For<CBA>().LifeStyle.Transient);
 
