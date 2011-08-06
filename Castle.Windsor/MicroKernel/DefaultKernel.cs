@@ -592,6 +592,9 @@ namespace Castle.MicroKernel
 			switch (type)
 			{
 				case LifestyleType.Scoped:
+					manager = new ScopedLifestyleManager(new LifetimeScopeAccessor());
+					break;
+				case LifestyleType.Bound:
 					manager = new ScopedLifestyleManager(CreateScopeAccessor(model));
 					break;
 				case LifestyleType.Thread:
@@ -638,10 +641,6 @@ namespace Castle.MicroKernel
 		private IScopeAccessor CreateScopeAccessor(ComponentModel model)
 		{
 			var selector = (Func<IHandler[], IHandler>)model.ExtendedProperties[Constants.ScopeRootSelector];
-			if (selector == null)
-			{
-				return new LifetimeScopeAccessor();
-			}
 			return new CreationContextScopeAccessor(model, selector);
 		}
 

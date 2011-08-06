@@ -461,7 +461,7 @@ namespace Castle.MicroKernel.Context
 
 		public ResolutionContext SelectScopeRoot(Func<IHandler[], IHandler> scopeRootSelector)
 		{
-			var scopes = resolutionStack.Select(c => c.Handler).ToArray();
+			var scopes = resolutionStack.Select(c => c.Handler).Reverse().ToArray();
 			var selected = scopeRootSelector(scopes);
 			if (selected != null)
 			{
