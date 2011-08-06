@@ -56,14 +56,14 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 
 		protected Type ExtractCustomType(ComponentModel model)
 		{
-			var customLifestyleTypeRaw = model.Configuration.Attributes["customLifestyleType"];
-			if (customLifestyleTypeRaw != null)
+			var typeNameRaw = model.Configuration.Attributes["customLifestyleType"];
+			if (typeNameRaw == null)
 			{
-				var lifestyle = converter.PerformConversion<Type>(customLifestyleTypeRaw);
-				ValidateLifestyleManager(lifestyle);
-				return lifestyle;
+				return null;
 			}
-			return null;
+			var lifestyle = converter.PerformConversion<Type>(typeNameRaw);
+			ValidateLifestyleManager(lifestyle);
+			return lifestyle;
 		}
 
 		/// <summary>
@@ -88,6 +88,14 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 					model.CustomLifestyle = customType;
 					return true;
 				}
+				var binderType = ExtractBinderType(model);
+				if (binderType != null)
+				{
+					var binder = ExtractBinder(binderType, model.Name);
+					model.LifestyleType = LifestyleType.Bound;
+					model.ExtendedProperties[Constants.ScopeRootSelector] = binder;
+					return true;
+				}
 				// TODO: handle bound to lifestyle
 				return false;
 			}
@@ -102,6 +110,19 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 			else if (model.LifestyleType == LifestyleType.Custom)
 			{
 				ExtractCustomConfig(model);
+			}
+			else if (model.LifestyleType == LifestyleType.Bound)
+			{
+				var binderType = ExtractBinderType(model);
+				if (binderType == null)
+				{
+					throw new InvalidOperationException(
+						string.Format(
+							"Component {0} specifies {1} as its lifestyle but is missing mandatory 'scopeRootBinderType' attribute. Please provide a value for the attribute.",
+							model.Name, LifestyleType.Bound));
+				}
+				var binder = ExtractBinder(binderType, model.Name);
+				model.ExtendedProperties[Constants.ScopeRootSelector] = binder;
 			}
 
 			return true;
@@ -140,41 +161,6 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 			}
 		}
 
-		private Func<IHandler[], IHandler> ExtractBinder(Type scopeRootBinderType, string name)
-		{
-			var filterMethod =
-				scopeRootBinderType.FindMembers(MemberTypes.Method, BindingFlags.Instance | BindingFlags.Public, IsBindMethod, null)
-					.FirstOrDefault();
-			if(filterMethod == null)
-			{
-				throw new InvalidOperationException(
-					string.Format(
-						"Type {0} which was designated as 'scopeRootBinderType' for component {1} does not have any public instance method matching signature of 'IHandler Method(IHandler[] pickOne)' and can not be used as scope root binder.",
-						scopeRootBinderType.Name, name));
-			}
-			var instance = scopeRootBinderType.CreateInstance<object>();
-			return (Func<IHandler[], IHandler>)Delegate.CreateDelegate(typeof(Func<IHandler[], IHandler>), instance, (MethodInfo)filterMethod);
-		}
-
-		private bool IsBindMethod(MemberInfo methodMember, object _)
-		{
-			var method = (MethodInfo)methodMember;
-			if(method.ReturnType != typeof(IHandler))
-			{
-				return false;
-			}
-			var parameters = method.GetParameters();
-			if(parameters.Length!=1)
-			{
-				return false;
-			}
-			if(parameters[0].ParameterType != typeof(IHandler[]))
-			{
-				return false;
-			}
-			return true;
-		}
-
 		protected virtual void ValidateLifestyleManager(Type customLifestyleManager)
 		{
 			if (customLifestyleManager.Is<ILifestyleManager>() == false)
@@ -187,6 +173,34 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 			}
 		}
 
+		private Func<IHandler[], IHandler> ExtractBinder(Type scopeRootBinderType, string name)
+		{
+			var filterMethod =
+				scopeRootBinderType.FindMembers(MemberTypes.Method, BindingFlags.Instance | BindingFlags.Public, IsBindMethod, null)
+					.FirstOrDefault();
+			if (filterMethod == null)
+			{
+				throw new InvalidOperationException(
+					string.Format(
+						"Type {0} which was designated as 'scopeRootBinderType' for component {1} does not have any public instance method matching signature of 'IHandler Method(IHandler[] pickOne)' and can not be used as scope root binder.",
+						scopeRootBinderType.Name, name));
+			}
+			var instance = scopeRootBinderType.CreateInstance<object>();
+			return
+				(Func<IHandler[], IHandler>)
+				Delegate.CreateDelegate(typeof(Func<IHandler[], IHandler>), instance, (MethodInfo)filterMethod);
+		}
+
+		private Type ExtractBinderType(ComponentModel model)
+		{
+			var typeNameRaw = model.Configuration.Attributes["scopeRootBinderType"];
+			if (typeNameRaw == null)
+			{
+				return null;
+			}
+			return converter.PerformConversion<Type>(typeNameRaw);
+		}
+
 		private void ExtractCustomConfig(ComponentModel model)
 		{
 			var lifestyle = ExtractCustomType(model);
@@ -196,10 +210,8 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 			}
 			else
 			{
-				const string message =
-					@"The attribute 'customLifestyleType' must be specified in conjunction with the 'lifestyle' attribute set to ""custom"".";
-
-				throw new Exception(message);
+				throw new InvalidOperationException(
+					@"The attribute 'customLifestyleType' must be specified in conjunction with the 'lifestyle' attribute set to ""custom"".");
 			}
 		}
 
@@ -218,6 +230,25 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 				var max = converter.PerformConversion<int>(maxRaw);
 				model.ExtendedProperties[ExtendedPropertiesConstants.Pool_MaxPoolSize] = max;
 			}
+		}
+
+		private bool IsBindMethod(MemberInfo methodMember, object _)
+		{
+			var method = (MethodInfo)methodMember;
+			if (method.ReturnType != typeof(IHandler))
+			{
+				return false;
+			}
+			var parameters = method.GetParameters();
+			if (parameters.Length != 1)
+			{
+				return false;
+			}
+			if (parameters[0].ParameterType != typeof(IHandler[]))
+			{
+				return false;
+			}
+			return true;
 		}
 	}
 }
