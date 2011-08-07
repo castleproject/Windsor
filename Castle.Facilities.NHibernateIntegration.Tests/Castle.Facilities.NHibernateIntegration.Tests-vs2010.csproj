@@ -302,10 +302,14 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Internals\TwoDatabaseConfiguration.xml" />
+    <EmbeddedResource Include="Internals\TwoDatabaseConfiguration.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Transactions\TwoDatabaseConfiguration.xml" />
+    <EmbeddedResource Include="Transactions\TwoDatabaseConfiguration.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="EmptyConfiguration.xml">

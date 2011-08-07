@@ -2,8 +2,11 @@
 
 <castle>
 	<facilities>
-		<facility id="nhibernatefacility" type="Castle.Facilities.NHibernateIntegration.NHibernateFacility, Castle.Facilities.NHibernateIntegration" configurationBuilder="Castle.Facilities.NHibernateIntegration.Internal.PersistentConfigurationBuilder, Castle.Facilities.NHibernateIntegration">
-			<factory id="sessionFactory1" fileName="myconfig.dat">
+		<facility id="nhibernatefacility"
+				  type="Castle.Facilities.NHibernateIntegration.NHibernateFacility, Castle.Facilities.NHibernateIntegration"
+				  configurationBuilder="Castle.Facilities.NHibernateIntegration.Internal.PersistentConfigurationBuilder, Castle.Facilities.NHibernateIntegration">
+			<factory id="sessionFactory1"
+					 fileName="myconfig.dat">
 				<dependsOn>
 					<file>NHibernate.dll</file>
 					<file>SampleDllFile</file>
@@ -13,13 +16,13 @@
 						NHibernate.Connection.DriverConnectionProvider
 					</item>
 					<item key="connection.driver_class">
-						NHibernate.Driver.SqlClientDriver
-					</item>
-					<item key="connection.connection_string">
-						Data Source=.;Initial Catalog=test;Integrated Security=SSPI
+						NHibernate.Driver.Sql2008ClientDriver
 					</item>
 					<item key="dialect">
-						NHibernate.Dialect.MsSql2000Dialect
+						NHibernate.Dialect.MsSql2008Dialect
+					</item>
+					<item key="connection.connection_string">
+						Data Source=.; Initial Catalog=test; Integrated Security=SSPI
 					</item>
 				</settings>
 				<assemblies>

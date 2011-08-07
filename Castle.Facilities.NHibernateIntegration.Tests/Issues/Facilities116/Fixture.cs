@@ -122,8 +122,6 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Issues.Facilities116
 			nhConfig.Properties["connection.provider"] = ConfigurationManager.AppSettings["nhf.connection.provider"];
 			nhConfig.Properties["connection.connection_string"] =
 				ConfigurationManager.AppSettings["nhf.connection.connection_string.1"];
-			nhConfig.Properties["proxyfactory.factory_class"] =
-				ConfigurationManager.AppSettings["nhf.proxyfactory.factory_class"];
 		}
 	}
 }

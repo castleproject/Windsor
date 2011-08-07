@@ -49,7 +49,7 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Issues.Facilities112
 			var instance = instanceField.GetValue(lifeStyleManager);
 			Assert.IsNull(instance);
 
-			var factory = container.Resolve<ISessionFactory>();
+			container.Resolve<ISessionFactory>();
 
 			instance = instanceField.GetValue(lifeStyleManager);
 			Assert.IsNotNull(instance);

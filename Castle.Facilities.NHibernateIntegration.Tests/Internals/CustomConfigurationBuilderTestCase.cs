@@ -56,8 +56,6 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Internals
 				nhConfig.Properties["connection.connection_string"] =
 					ConfigurationManager.AppSettings["nhf.connection.connection_string.2"];
 			}
-			nhConfig.Properties["proxyfactory.factory_class"] =
-				ConfigurationManager.AppSettings["nhf.proxyfactory.factory_class"];
 			return nhConfig;
 		}
 

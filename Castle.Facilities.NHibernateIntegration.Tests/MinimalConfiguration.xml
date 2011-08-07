@@ -3,24 +3,22 @@
 <castle>
 	<facilities>
 
-		<facility id="nhibernatefacility" isWeb="false">
+		<facility id="nhibernatefacility"
+				  isWeb="false">
 
 			<factory id="sessionFactory1">
 				<settings>
+					<item key="connection.connection_string">
+						Data Source=.; Initial Catalog=test; Integrated Security=SSPI
+					</item>
 					<item key="connection.provider">
 						NHibernate.Connection.DriverConnectionProvider
 					</item>
 					<item key="connection.driver_class">
-						NHibernate.Driver.SqlClientDriver
-					</item>
-					<item key="connection.connection_string">
-						Data Source=.;Initial Catalog=test;Integrated Security=SSPI
+						NHibernate.Driver.Sql2008ClientDriver
 					</item>
 					<item key="dialect">
-						NHibernate.Dialect.MsSql2000Dialect
-					</item>
-					<item key="proxyfactory.factory_class">
-						NHibernate.ByteCode.Castle.ProxyFactoryFactory, NHibernate.ByteCode.Castle
+						NHibernate.Dialect.MsSql2008Dialect
 					</item>
 				</settings>
 				<assemblies>
