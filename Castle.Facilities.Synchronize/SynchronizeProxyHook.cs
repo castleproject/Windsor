@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,50 +16,50 @@ namespace Castle.Facilities.Synchronize
 {
 	using System;
 	using System.Reflection;
+
 	using Castle.DynamicProxy;
 
 	/// <summary>
-	/// Proxy generation hook to filter all System methods when proxying a control.
+	///   Proxy generation hook to filter all System methods when proxying a control.
 	/// </summary>
 	public class SynchronizeProxyHook : IProxyGenerationHook
 	{
 		/// <summary>
-		/// Singleton instance.
+		///   Singleton instance.
 		/// </summary>
 		public static readonly SynchronizeProxyHook Instance = new SynchronizeProxyHook();
 
 		/// <summary>
-		/// 
 		/// </summary>
 		protected SynchronizeProxyHook()
-		{	
-		}
-
-		/// <summary>
-		/// Filters System methods.
-		/// </summary>
-		/// <param name="type">The type.</param>
-		/// <param name="methodInfo">The method info.</param>
-		/// <returns>true if not a System namespace, false otherwise.</returns>
-		public bool ShouldInterceptMethod(Type type, MethodInfo methodInfo)
 		{
-			return methodInfo.DeclaringType.Namespace.StartsWith("System.") == false;
 		}
 
 		/// <summary>
-		/// Not used.
+		///   Not used.
 		/// </summary>
-		/// <param name="type"></param>
-		/// <param name="memberInfo"></param>
+		public void MethodsInspected()
+		{
+		}
+
+		/// <summary>
+		///   Not used.
+		/// </summary>
+		/// <param name = "type"></param>
+		/// <param name = "memberInfo"></param>
 		public void NonProxyableMemberNotification(Type type, MemberInfo memberInfo)
 		{
 		}
 
 		/// <summary>
-		/// Not used.
+		///   Filters System methods.
 		/// </summary>
-		public void MethodsInspected()
+		/// <param name = "type">The type.</param>
+		/// <param name = "methodInfo">The method info.</param>
+		/// <returns>true if not a System namespace, false otherwise.</returns>
+		public bool ShouldInterceptMethod(Type type, MethodInfo methodInfo)
 		{
+			return methodInfo.DeclaringType.Namespace.StartsWith("System.") == false;
 		}
 	}
 }

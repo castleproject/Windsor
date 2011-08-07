@@ -21,8 +21,8 @@ namespace Castle.Facilities.Remoting
 	using Castle.Core;
 	using Castle.Facilities.Remoting.CustomActivators;
 	using Castle.MicroKernel;
-	using Castle.MicroKernel.ModelBuilder;
 	using Castle.MicroKernel.Facilities;
+	using Castle.MicroKernel.ModelBuilder;
 	using Castle.MicroKernel.SubSystems.Conversion;
 
 	internal enum RemotingStrategy

@@ -45,7 +45,7 @@ namespace Castle.Facilities.Synchronize
 		///   Initializes a new instance of the <see cref = "CreateOnUIThreadInspector" /> class.
 		/// </summary>
 		/// <param name = "config">The config.</param>
-		/// <param name="converter"></param>
+		/// <param name = "converter"></param>
 		public CreateOnUIThreadInspector(IConfiguration config, IConversionManager converter)
 		{
 			marshalingControl = new MarshalingControl();

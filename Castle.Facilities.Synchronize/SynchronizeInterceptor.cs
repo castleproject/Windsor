@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,20 +18,22 @@ namespace Castle.Facilities.Synchronize
 	using System.ComponentModel;
 	using System.Linq;
 	using System.Runtime.Serialization;
-#if DOTNET40
-	using System.Security;
-#endif
 	using System.Threading;
 	using System.Windows.Threading;
+
 	using Castle.Core;
 	using Castle.Core.Interceptor;
 	using Castle.DynamicProxy;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Context;
 
+#if DOTNET40
+	using System.Security;
+#endif
+
 	/// <summary>
-	/// Intercepts calls to synchronized components and ensures
-	/// that they execute in the proper synchronization context.
+	///   Intercepts calls to synchronized components and ensures
+	///   that they execute in the proper synchronization context.
 	/// </summary>
 	[Transient]
 	internal class SynchronizeInterceptor : IInterceptor, IOnBehalfAware
@@ -40,15 +42,17 @@ namespace Castle.Facilities.Synchronize
 		private SynchronizeMetaInfo metaInfo;
 		private readonly SynchronizeMetaInfoStore metaStore;
 		private readonly InvocationDelegate safeInvoke = InvokeSafely;
-		[ThreadStatic] private static SynchronizationContext activeSyncContext;
+
+		[ThreadStatic]
+		private static SynchronizationContext activeSyncContext;
 
 		private delegate void InvocationDelegate(IInvocation invocation, Result result);
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="SynchronizeInterceptor"/> class.
+		///   Initializes a new instance of the <see cref = "SynchronizeInterceptor" /> class.
 		/// </summary>
-		/// <param name="kernel">The kernel.</param>
-		/// <param name="metaStore">The meta store.</param>
+		/// <param name = "kernel">The kernel.</param>
+		/// <param name = "metaStore">The meta store.</param>
 		public SynchronizeInterceptor(IKernel kernel, SynchronizeMetaInfoStore metaStore)
 		{
 			this.kernel = kernel;
@@ -58,9 +62,9 @@ namespace Castle.Facilities.Synchronize
 		#region IOnBehalfAware
 
 		/// <summary>
-		/// Sets the intercepted ComponentModel.
+		///   Sets the intercepted ComponentModel.
 		/// </summary>
-		/// <param name="target">The targets ComponentModel.</param>
+		/// <param name = "target">The targets ComponentModel.</param>
 		public void SetInterceptedComponentModel(ComponentModel target)
 		{
 			metaInfo = metaStore.GetMetaFor(target.Implementation);
@@ -142,7 +146,7 @@ namespace Castle.Facilities.Synchronize
 					if (syncContext == null)
 					{
 						throw new ApplicationException(string.Format("{0} does not implement {1}",
-							syncContextRef, typeof(SynchronizationContext).FullName));
+						                                             syncContextRef, typeof(SynchronizationContext).FullName));
 					}
 
 					prevSyncContext = SynchronizationContext.Current;
@@ -205,12 +209,15 @@ namespace Castle.Facilities.Synchronize
 #if DOTNET40
 		[SecurityCritical]
 #endif
-		private static bool InvokeWithSynchronizedTarget<T>(IInvocation invocation, 
-			Func<T, bool> canCallOnThread, Action<T, IInvocation, Result> post) where T : class
+		private static bool InvokeWithSynchronizedTarget<T>(IInvocation invocation,
+		                                                    Func<T, bool> canCallOnThread, Action<T, IInvocation, Result> post) where T : class
 		{
 			var syncTarget = invocation.InvocationTarget as T;
 
-			if (syncTarget == null) return false;
+			if (syncTarget == null)
+			{
+				return false;
+			}
 
 			var result = CreateResult(invocation);
 
@@ -245,12 +252,12 @@ namespace Castle.Facilities.Synchronize
 				CompleteResult(result, true, invocation);
 			}
 		}
-		
+
 		/// <summary>
-		/// Used by the safe synchronization delegate.
+		///   Used by the safe synchronization delegate.
 		/// </summary>
-		/// <param name="invocation">The invocation.</param>
-		/// <param name="result">The result holder.</param>
+		/// <param name = "invocation">The invocation.</param>
+		/// <param name = "result">The result holder.</param>
 		private static void InvokeSafely(IInvocation invocation, Result result)
 		{
 			if (result == null)
@@ -283,7 +290,7 @@ namespace Castle.Facilities.Synchronize
 		{
 			Result result = null;
 			var returnType = invocation.Method.ReturnType;
-			
+
 			if (returnType != typeof(void))
 			{
 				if (invocation.ReturnValue == null)
@@ -298,11 +305,11 @@ namespace Castle.Facilities.Synchronize
 		}
 
 		/// <summary>
-		/// Completes the result of the invocation.
+		///   Completes the result of the invocation.
 		/// </summary>
-		/// <param name="result">The result.</param>
-		/// <param name="synchronously">true if completeed synchronously.</param>
-		/// <param name="invocation">The invocation.</param>
+		/// <param name = "result">The result.</param>
+		/// <param name = "synchronously">true if completeed synchronously.</param>
+		/// <param name = "invocation">The invocation.</param>
 		private static void CompleteResult(Result result, bool synchronously, IInvocation invocation)
 		{
 			var parameters = invocation.Method.GetParameters();

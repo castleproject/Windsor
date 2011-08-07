@@ -35,7 +35,8 @@ namespace Castle.Facilities.Remoting.CustomActivators
 		/// <param name = "kernel">The kernel.</param>
 		/// <param name = "onCreation">The oncreation event handler.</param>
 		/// <param name = "onDestruction">The ondestruction event handler.</param>
-		public RemoteActivatorThroughConnector(ComponentModel model, IKernel kernel, ComponentInstanceDelegate onCreation, ComponentInstanceDelegate onDestruction)
+		public RemoteActivatorThroughConnector(ComponentModel model, IKernel kernel, ComponentInstanceDelegate onCreation,
+		                                       ComponentInstanceDelegate onDestruction)
 			: base(model, kernel, onCreation, onDestruction)
 		{
 		}

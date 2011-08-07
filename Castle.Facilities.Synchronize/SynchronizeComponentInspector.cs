@@ -51,7 +51,7 @@ namespace Castle.Facilities.Synchronize
 		/// <summary>
 		///   Initializes a new instance of the <see cref = "SynchronizeComponentInspector" /> class.
 		/// </summary>
-		/// <param name="metaStore"></param>
+		/// <param name = "metaStore"></param>
 		public SynchronizeComponentInspector(SynchronizeMetaInfoStore metaStore)
 		{
 			this.metaStore = metaStore;
