@@ -47,7 +47,7 @@
         <SPACE_BEFORE_TYPEOF_PARENTHESES>False</SPACE_BEFORE_TYPEOF_PARENTHESES>
         <SPACE_WITHIN_SINGLE_LINE_ARRAY_INITIALIZER_BRACES>True</SPACE_WITHIN_SINGLE_LINE_ARRAY_INITIALIZER_BRACES>
         <STICK_COMMENT>False</STICK_COMMENT>
-        <WRAP_LIMIT>160</WRAP_LIMIT>
+        <WRAP_LIMIT>150</WRAP_LIMIT>
       </FormatSettings>
       <UsingsSettings>
         <AddImportsToDeepestScope>True</AddImportsToDeepestScope>
@@ -318,7 +318,7 @@ II.2.12 <HandlesEvent />
     <Xaml>
       <Naming2 />
     </Xaml>
-    <FileHeader><![CDATA[Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+    <FileHeader><![CDATA[Copyright 2004-$CURRENT_YEAR$ Castle Project - http://www.castleproject.org/
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
