@@ -14,28 +14,27 @@
 
 namespace Castle.MicroKernel.LifecycleConcerns
 {
-    using System;
-    using System.Collections.Generic;
+	using System;
 
-    using Castle.Core;
+	using Castle.Core;
 
 #if DOTNET40
-    using System.Collections.Concurrent;
+
 #else
     using Castle.Core.Internal;
 #endif
 
-    /// <summary>
-    ///   Lifetime concern that works for components that don't have their actual type determined upfront
-    /// </summary>
-    [Serializable]
-    public class LateBoundDecommissionConcerns : LateBoundConcerns<IDecommissionConcern>, IDecommissionConcern
-    {
-        public override void Apply(ComponentModel model, object component)
-        {
-            var componentConcerns = GetComponentConcerns(component.GetType());
+	/// <summary>
+	///   Lifetime concern that works for components that don't have their actual type determined upfront
+	/// </summary>
+	[Serializable]
+	public class LateBoundDecommissionConcerns : LateBoundConcerns<IDecommissionConcern>, IDecommissionConcern
+	{
+		public override void Apply(ComponentModel model, object component)
+		{
+			var componentConcerns = GetComponentConcerns(component.GetType());
 
-            componentConcerns.ForEach(c => c.Apply(model, component));
-        }
-    }
+			componentConcerns.ForEach(c => c.Apply(model, component));
+		}
+	}
 }

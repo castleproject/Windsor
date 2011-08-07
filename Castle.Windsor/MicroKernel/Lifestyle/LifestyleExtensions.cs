@@ -18,6 +18,7 @@ namespace Castle.MicroKernel.Lifestyle
 	using System.ComponentModel;
 
 	using Castle.Windsor;
+
 #if SILVERLIGHT
 	using Scope = Castle.MicroKernel.Lifestyle.Scoped.ThreadStaticLifetimeScope;
 #else

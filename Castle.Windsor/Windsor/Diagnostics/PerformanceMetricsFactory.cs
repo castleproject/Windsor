@@ -112,7 +112,7 @@ namespace Castle.Windsor.Diagnostics
 			{
 				exception = e;
 			}
-			// it's not in the documentation but PerformanceCounterCategory.Create can also throw SecurityException,
+				// it's not in the documentation but PerformanceCounterCategory.Create can also throw SecurityException,
 			catch (SecurityException e)
 			{
 				exception = e;

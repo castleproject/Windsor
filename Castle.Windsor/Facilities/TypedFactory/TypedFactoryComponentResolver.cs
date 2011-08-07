@@ -29,7 +29,8 @@ namespace Castle.Facilities.TypedFactory
 		protected readonly Type componentType;
 		protected readonly bool fallbackToResolveByTypeIfNameNotFound;
 
-		public TypedFactoryComponentResolver(string componentName, Type componentType, IDictionary additionalArguments, bool fallbackToResolveByTypeIfNameNotFound)
+		public TypedFactoryComponentResolver(string componentName, Type componentType, IDictionary additionalArguments,
+		                                     bool fallbackToResolveByTypeIfNameNotFound)
 		{
 			if (string.IsNullOrEmpty(componentName) && componentType == null)
 			{

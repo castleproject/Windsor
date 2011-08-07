@@ -15,9 +15,6 @@
 namespace Castle.Core.Internal
 {
 	using System;
-#if DOTNET40
-	using System.Collections.Concurrent;
-#endif
 	using System.Collections.Generic;
 	using System.Diagnostics;
 	using System.IO;
@@ -25,6 +22,9 @@ namespace Castle.Core.Internal
 	using System.Linq.Expressions;
 	using System.Reflection;
 	using System.Text;
+#if DOTNET40
+	using System.Collections.Concurrent;
+#endif
 
 	public static class ReflectionUtil
 	{
@@ -94,15 +94,15 @@ namespace Castle.Core.Internal
 				}
 				return assembly;
 			}
-			catch(FileNotFoundException)
+			catch (FileNotFoundException)
 			{
 				throw;
 			}
-			catch(FileLoadException)
+			catch (FileLoadException)
 			{
 				throw;
 			}
-			catch(BadImageFormatException)
+			catch (BadImageFormatException)
 			{
 				throw;
 			}

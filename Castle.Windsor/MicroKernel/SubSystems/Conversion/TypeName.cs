@@ -36,11 +36,6 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 			this.assemblyQualifiedName = assemblyQualifiedName;
 		}
 
-		private bool IsAssemblyQualified
-		{
-			get { return assemblyQualifiedName != null; }
-		}
-
 		private string FullName
 		{
 			get
@@ -61,6 +56,11 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 		private bool HasNamespace
 		{
 			get { return String.IsNullOrEmpty(@namespace) == false; }
+		}
+
+		private bool IsAssemblyQualified
+		{
+			get { return assemblyQualifiedName != null; }
 		}
 
 		private string Name
@@ -86,7 +86,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 				}
 			}
 #else
-			var indexOfVersion =Array.FindLastIndex(tokens, s => s.TrimStart(' ').StartsWith("Version="));
+			var indexOfVersion = Array.FindLastIndex(tokens, s => s.TrimStart(' ').StartsWith("Version="));
 #endif
 			if (indexOfVersion <= 0)
 			{

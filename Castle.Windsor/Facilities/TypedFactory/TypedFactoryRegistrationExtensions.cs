@@ -140,7 +140,8 @@ namespace Castle.Facilities.TypedFactory
 		}
 
 		private static ComponentRegistration<TDelegate> RegisterDelegateBasedFactory<TDelegate>(ComponentRegistration<TDelegate> registration,
-		                                                                                        Action<TypedFactoryConfiguration> configuration, Type delegateType)
+		                                                                                        Action<TypedFactoryConfiguration> configuration,
+		                                                                                        Type delegateType)
 			where TDelegate : class
 		{
 			if (HasOutArguments(delegateType))

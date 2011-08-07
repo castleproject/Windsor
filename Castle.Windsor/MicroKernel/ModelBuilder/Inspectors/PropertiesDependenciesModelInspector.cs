@@ -117,10 +117,11 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 			}
 			catch (Exception)
 			{
-				var message = String.Format("Error on properties inspection. Could not convert the inspectionBehavior attribute value into an expected enum value. " +
-				                            "Value found is '{0}' while possible values are '{1}'",
-				                            enumStringVal,
-				                            String.Join(", ",
+				var message =
+					String.Format("Error on properties inspection. Could not convert the inspectionBehavior attribute value into an expected enum value. " +
+					              "Value found is '{0}' while possible values are '{1}'",
+					              enumStringVal,
+					              String.Join(", ",
 #if SILVERLIGHT
 				                                        new[]
 				                                        {
@@ -130,9 +131,9 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 				                                        	"DeclaredOnly"
 				                                        }
 #else
-				                                        Enum.GetNames(typeof(PropertiesInspectionBehavior))
+					                          Enum.GetNames(typeof(PropertiesInspectionBehavior))
 #endif
-				                            	));
+					              	));
 
 				throw new KernelException(message);
 			}

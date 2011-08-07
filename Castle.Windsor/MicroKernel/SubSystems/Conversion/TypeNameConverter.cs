@@ -102,7 +102,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 			{
 				return type;
 			}
-			if(InitializeAppDomainAssemblies(forceLoad: true))
+			if (InitializeAppDomainAssemblies(forceLoad: true))
 			{
 				type = typeName.GetType(this);
 			}

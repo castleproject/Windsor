@@ -265,12 +265,14 @@ namespace Castle.MicroKernel.Context
 			extendedProperties[key] = value;
 		}
 
-		public virtual bool CanResolve(CreationContext context, ISubDependencyResolver contextHandlerResolver, ComponentModel model, DependencyModel dependency)
+		public virtual bool CanResolve(CreationContext context, ISubDependencyResolver contextHandlerResolver, ComponentModel model,
+		                               DependencyModel dependency)
 		{
 			return HasAdditionalArguments && (CanResolveByKey(dependency) || CanResolveByType(dependency));
 		}
 
-		public virtual object Resolve(CreationContext context, ISubDependencyResolver contextHandlerResolver, ComponentModel model, DependencyModel dependency)
+		public virtual object Resolve(CreationContext context, ISubDependencyResolver contextHandlerResolver, ComponentModel model,
+		                              DependencyModel dependency)
 		{
 			Debug.Assert(CanResolve(context, contextHandlerResolver, model, dependency), "CanResolve(context, contextHandlerResolver, model, dependency)");
 			object result = null;

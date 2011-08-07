@@ -89,7 +89,8 @@ namespace Castle.Windsor.Diagnostics.Extensions
 		private string GetName(IHandler[] handlers, IHandler root)
 		{
 			var indirect = (handlers.Length > 2) ? "indirectly " : string.Empty;
-			return string.Format("\"{0}\" »{1}« {2}depends on", GetNameDescription(root.ComponentModel), root.ComponentModel.GetLifestyleDescription(), indirect);
+			return string.Format("\"{0}\" »{1}« {2}depends on", GetNameDescription(root.ComponentModel), root.ComponentModel.GetLifestyleDescription(),
+			                     indirect);
 		}
 
 		private string GetNameDescription(ComponentModel componentModel)

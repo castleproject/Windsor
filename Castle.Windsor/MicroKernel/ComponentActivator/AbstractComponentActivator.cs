@@ -42,7 +42,8 @@ namespace Castle.MicroKernel.ComponentActivator
 		/// <summary>
 		///   Constructs an AbstractComponentActivator
 		/// </summary>
-		protected AbstractComponentActivator(ComponentModel model, IKernel kernel, ComponentInstanceDelegate onCreation, ComponentInstanceDelegate onDestruction)
+		protected AbstractComponentActivator(ComponentModel model, IKernel kernel, ComponentInstanceDelegate onCreation,
+		                                     ComponentInstanceDelegate onDestruction)
 		{
 			this.model = model;
 			this.kernel = kernel;

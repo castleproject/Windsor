@@ -31,7 +31,7 @@ namespace Castle.MicroKernel.Handlers
 		///   Initializes a new instance of the <see cref = "HandlerException" /> class.
 		/// </summary>
 		/// <param name = "message">The message.</param>
-		/// <param name="name"></param>
+		/// <param name = "name"></param>
 		public GenericHandlerTypeMismatchException(string message, ComponentName name) : base(message, name)
 		{
 		}

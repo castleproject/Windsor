@@ -147,7 +147,8 @@ namespace Castle.MicroKernel.Registration
 		///   Specifies that components registered with <paramref name = "componentNames" /> should be used to satisfy collection dependencies matched by <typeparamref
 		///    name = "TCollectionDependencyType" />
 		/// </summary>
-		public static ServiceOverride OnComponentCollection<TCollectionDependencyType>(params string[] componentNames) where TCollectionDependencyType : IEnumerable
+		public static ServiceOverride OnComponentCollection<TCollectionDependencyType>(params string[] componentNames)
+			where TCollectionDependencyType : IEnumerable
 		{
 			return ServiceOverride.ForKey(typeof(TCollectionDependencyType)).Eq(componentNames);
 		}
@@ -174,7 +175,8 @@ namespace Castle.MicroKernel.Registration
 		///   Specifies that components registered with <paramref name = "componentTypes" /> should be used to satisfy collection dependencies matched by <typeparamref
 		///    name = "TCollectionDependencyType" />
 		/// </summary>
-		public static ServiceOverride OnComponentCollection<TCollectionDependencyType>(params Type[] componentTypes) where TCollectionDependencyType : IEnumerable
+		public static ServiceOverride OnComponentCollection<TCollectionDependencyType>(params Type[] componentTypes)
+			where TCollectionDependencyType : IEnumerable
 		{
 			return ServiceOverride.ForKey(typeof(TCollectionDependencyType)).Eq(componentTypes);
 		}

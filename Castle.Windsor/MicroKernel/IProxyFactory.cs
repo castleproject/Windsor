@@ -44,7 +44,8 @@ namespace Castle.MicroKernel
 		/// <returns>proxy instance</returns>
 		object Create(IKernel kernel, object instance, ComponentModel model, CreationContext context, params object[] constructorArguments);
 
-		object Create(IProxyFactoryExtension customFactory, IKernel kernel, ComponentModel model, CreationContext context, params object[] constructorArguments);
+		object Create(IProxyFactoryExtension customFactory, IKernel kernel, ComponentModel model, CreationContext context,
+		              params object[] constructorArguments);
 
 		/// <summary>
 		///   Implementor should check the component model

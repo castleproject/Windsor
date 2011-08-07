@@ -178,8 +178,9 @@ namespace Castle.MicroKernel.Handlers
 					throw;
 				}
 				throw new HandlerException(
-					string.Format("Custom {0} ({1}) didn't select any generic parameters for implementation type of component '{2}'. This usually signifies bug in the {0}.",
-					              typeof(IGenericImplementationMatchingStrategy).Name, implementationMatchingStrategy, ComponentModel.Name), ComponentModel.ComponentName);
+					string.Format(
+						"Custom {0} ({1}) didn't select any generic parameters for implementation type of component '{2}'. This usually signifies bug in the {0}.",
+						typeof(IGenericImplementationMatchingStrategy).Name, implementationMatchingStrategy, ComponentModel.Name), ComponentModel.ComponentName);
 			}
 			catch (ArgumentException e)
 			{

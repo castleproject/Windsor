@@ -297,8 +297,9 @@ namespace Castle.MicroKernel
 			if (facilities.Any(f => f.GetType() == facilityType))
 			{
 				throw new ArgumentException(
-					string.Format("Facility of type '{0}' has already been registered with the container. Only one facility of a given type can exist in the container.",
-					              facilityType.Name));
+					string.Format(
+						"Facility of type '{0}' has already been registered with the container. Only one facility of a given type can exist in the container.",
+						facilityType.Name));
 			}
 			facilities.Add(facility);
 			facility.Init(this, ConfigurationStore.GetFacilityConfiguration(facilityType.FullName));
@@ -641,7 +642,7 @@ namespace Castle.MicroKernel
 		private static IScopeAccessor CreateScopeAccessor(ComponentModel model)
 		{
 			var scopeAccessorType = (Type)model.ExtendedProperties[Constants.ScopeAccessorType];
-			if(scopeAccessorType == null)
+			if (scopeAccessorType == null)
 			{
 				return new LifetimeScopeAccessor();
 			}
@@ -651,7 +652,7 @@ namespace Castle.MicroKernel
 		private IScopeAccessor CreateScopeAccessorForBoundLifestyle(ComponentModel model)
 		{
 			var selector = (Func<IHandler[], IHandler>)model.ExtendedProperties[Constants.ScopeRootSelector];
-			if(selector == null)
+			if (selector == null)
 			{
 				throw new ComponentRegistrationException(
 					string.Format("Component {0} has lifestyle {1} but it does not specify mandatory 'scopeRootSelector'.",
