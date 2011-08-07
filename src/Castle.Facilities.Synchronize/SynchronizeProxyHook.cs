@@ -35,6 +35,16 @@ namespace Castle.Facilities.Synchronize
 		{
 		}
 
+		public override bool Equals(object obj)
+		{
+			return obj.GetType() == GetType();
+		}
+
+		public override int GetHashCode()
+		{
+			return GetType().GetHashCode();
+		}
+
 		/// <summary>
 		///   Not used.
 		/// </summary>
