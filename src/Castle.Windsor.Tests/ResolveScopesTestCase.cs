@@ -15,7 +15,6 @@
 namespace CastleTests
 {
 	using Castle.MicroKernel.Lifestyle;
-	using Castle.MicroKernel.Lifestyle.Scoped;
 	using Castle.MicroKernel.Registration;
 
 	using CastleTests.Components;

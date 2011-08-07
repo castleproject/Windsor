@@ -14,8 +14,10 @@
 
 namespace Castle.Core.Internal
 {
+	using System;
 	using System.Threading;
 
+	[Serializable]
 	public struct ThreadSafeFlag
 	{
 		/// <summary>

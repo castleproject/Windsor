@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,9 +20,9 @@ namespace Castle.MicroKernel.Tests
 	using System.Runtime.Serialization.Formatters.Binary;
 	using System.Security.Policy;
 
-	using Castle.Core.Internal;
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Tests.ClassComponents;
+
 	using NUnit.Framework;
 
 	[TestFixture]
@@ -36,14 +36,14 @@ namespace Castle.MicroKernel.Tests
 			kernel.Register(Component.For(typeof(CustomerImpl)).Named("key"));
 			Assert.IsTrue(kernel.HasComponent("key"));
 
-			MemoryStream stream = new MemoryStream();
-			BinaryFormatter formatter = new BinaryFormatter();
+			var stream = new MemoryStream();
+			var formatter = new BinaryFormatter();
 
 			formatter.Serialize(stream, kernel);
 
 			stream.Position = 0;
 
-			IKernel desKernel = (IKernel) formatter.Deserialize(stream);
+			var desKernel = (IKernel)formatter.Deserialize(stream);
 			Assert.IsTrue(desKernel.HasComponent("key"));
 		}
 
@@ -51,21 +51,21 @@ namespace Castle.MicroKernel.Tests
 		[Ignore("To compile on Mono")]
 		public void RemoteAccess()
 		{
-			AppDomain current = AppDomain.CurrentDomain;
+			var current = AppDomain.CurrentDomain;
 
-			AppDomain otherDomain = AppDomain.CreateDomain(
+			var otherDomain = AppDomain.CreateDomain(
 				"other", new Evidence(current.Evidence), current.SetupInformation);
 
 			try
 			{
-				IKernel kernel = (IKernel)
-				                 otherDomain.CreateInstanceAndUnwrap(
-				                 	"Castle.Windsor", "Castle.MicroKernel.DefaultKernel");
+				var kernel = (IKernel)
+				             otherDomain.CreateInstanceAndUnwrap(
+				             	"Castle.Windsor", "Castle.MicroKernel.DefaultKernel");
 
 				kernel.Register(Component.For(typeof(CustomerImpl)).Named("key"));
 				Assert.IsTrue(kernel.HasComponent("key"));
 			}
-			catch(Exception ex)
+			catch (Exception ex)
 			{
 				throw ex;
 			}
@@ -79,26 +79,26 @@ namespace Castle.MicroKernel.Tests
 		[Ignore(@"Registration API is not serializable. Also ther are problems running this on mono2 profile")]
 		public void RemoteAccessToComponentGraph()
 		{
-			AppDomain current = AppDomain.CurrentDomain;
+			var current = AppDomain.CurrentDomain;
 
-			AppDomain otherDomain = AppDomain.CreateDomain(
+			var otherDomain = AppDomain.CreateDomain(
 				"other", new Evidence(current.Evidence), current.SetupInformation);
 
 			try
 			{
-				IKernel kernel = (IKernel)
-				                 otherDomain.CreateInstanceAndUnwrap(
-				                 	"Castle.Windsor", "Castle.MicroKernel.DefaultKernel");
+				var kernel = (IKernel)
+				             otherDomain.CreateInstanceAndUnwrap(
+				             	"Castle.Windsor", "Castle.MicroKernel.DefaultKernel");
 
 				kernel.Register(Component.For(typeof(CustomerImpl)).Named("key"));
 				Assert.IsTrue(kernel.HasComponent("key"));
 
-				GraphNode[] nodes = kernel.GraphNodes;
+				var nodes = kernel.GraphNodes;
 
 				Assert.IsNotNull(nodes);
 				Assert.AreEqual(1, nodes.Length);
 			}
-			catch(Exception ex)
+			catch (Exception ex)
 			{
 				throw ex;
 			}
