@@ -12,27 +12,28 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Core.Internal
+namespace CastleTests.TestInfrastructure
 {
-	public abstract class Constants
+	using Castle.MicroKernel.Context;
+	using Castle.MicroKernel.Lifestyle.Scoped;
+
+	public class StaticScopeAccessor : IScopeAccessor
 	{
-		private const string defaultComponentForServiceFilter = "castle.default-component-for-service-filter";
-		private const string scopeAccessorType = "castle.scope-accessor-type";
-		private const string scopeRootSelector = "castle.scope-root";
+		private static readonly DefaultLifetimeScope scope = new DefaultLifetimeScope();
 
-		public static object DefaultComponentForServiceFilter
+		public void Dispose()
 		{
-			get { return defaultComponentForServiceFilter; }
+			scope.Dispose();
 		}
 
-		public static object ScopeAccessorType
+		public ILifetimeScope GetScope(CreationContext context)
 		{
-			get { return scopeAccessorType; }
+			return scope;
 		}
 
-		public static object ScopeRootSelector
+		public static DefaultLifetimeScope Scope
 		{
-			get { return scopeRootSelector; }
+			get { return scope; }
 		}
 	}
 }
