@@ -28,7 +28,6 @@ namespace CastleTests.Facilities.Synchronize
 	using Castle.MicroKernel.Proxy;
 	using Castle.MicroKernel.Registration;
 	using Castle.Windsor;
-	using Castle.Windsor.Tests;
 
 	using CastleTests.Facilities.Synchronize.Components;
 

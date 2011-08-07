@@ -2,7 +2,7 @@
 	<components>
 		<component
 			id="component"
-			type="Castle.Windsor.Tests.Components.ComponentWithConfigs, Castle.Windsor.Tests">
+			type="CastleTests.Components.ComponentWithConfigs, Castle.Windsor.Tests">
 			<parameters>
 				<name><?eval $BaseDirectory?></name>
 				<port>90</port>
