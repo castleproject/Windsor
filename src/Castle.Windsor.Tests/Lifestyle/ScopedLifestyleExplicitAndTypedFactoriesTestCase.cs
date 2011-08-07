@@ -48,7 +48,7 @@ namespace CastleTests.Lifestyle
 		public void Scoped_component_via_factory_and_outsideinstances_reused_properly()
 		{
 			Container.Register(Component.For<UsesFooAndDelegate>().LifeStyle.Transient,
-			                   Component.For<Foo>().LifeStyle.Scoped
+			                   Component.For<Foo>().LifeStyle.Scoped()
 			                   	.DependsOn(Parameter.ForKey("number").Eq("1")));
 			using (Container.BeginScope())
 			{
@@ -64,7 +64,7 @@ namespace CastleTests.Lifestyle
 		public void Scoped_component_via_factory_instances_reused_properly()
 		{
 			Container.Register(Component.For<UsesDisposableFooDelegate>().LifeStyle.Transient,
-			                   Component.For<DisposableFoo>().LifeStyle.Scoped);
+			                   Component.For<DisposableFoo>().LifestyleScoped());
 			using (Container.BeginScope())
 			{
 				var instance = Container.Resolve<UsesDisposableFooDelegate>();

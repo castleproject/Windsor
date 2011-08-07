@@ -592,10 +592,10 @@ namespace Castle.MicroKernel
 			switch (type)
 			{
 				case LifestyleType.Scoped:
-					manager = new ScopedLifestyleManager(new LifetimeScopeAccessor());
+					manager = new ScopedLifestyleManager(CreateScopeAccessor(model));
 					break;
 				case LifestyleType.Bound:
-					manager = new ScopedLifestyleManager(CreateScopeAccessor(model));
+					manager = new ScopedLifestyleManager(CreateScopeAccessorForBoundLifestyle(model));
 					break;
 				case LifestyleType.Thread:
 					manager = new ScopedLifestyleManager(new ThreadScopeAccessor());
@@ -638,14 +638,24 @@ namespace Castle.MicroKernel
 			return manager;
 		}
 
-		private IScopeAccessor CreateScopeAccessor(ComponentModel model)
+		private static IScopeAccessor CreateScopeAccessor(ComponentModel model)
+		{
+			var scopeAccessorType = (Type)model.ExtendedProperties[Constants.ScopeAccessorType];
+			if(scopeAccessorType == null)
+			{
+				return new LifetimeScopeAccessor();
+			}
+			return scopeAccessorType.CreateInstance<IScopeAccessor>();
+		}
+
+		private IScopeAccessor CreateScopeAccessorForBoundLifestyle(ComponentModel model)
 		{
 			var selector = (Func<IHandler[], IHandler>)model.ExtendedProperties[Constants.ScopeRootSelector];
 			if(selector == null)
 			{
 				throw new ComponentRegistrationException(
 					string.Format("Component {0} has lifestyle {1} but it does not specify mandatory 'scopeRootSelector'.",
-					              model.ComponentName.ToString(), LifestyleType.Bound));
+					              model.Name, LifestyleType.Bound));
 			}
 
 			return new CreationContextScopeAccessor(model, selector);

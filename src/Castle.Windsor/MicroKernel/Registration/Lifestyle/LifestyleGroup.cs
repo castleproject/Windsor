@@ -98,9 +98,29 @@ namespace Castle.MicroKernel.Registration.Lifestyle
 			return pooledWithSize;
 		}
 
-		public ComponentRegistration<TService> Scoped
+		/// <summary>
+		/// Assigns scoped lifestyle with scope accessed via <typeparamref name="TScopeAccessor"/> instances.
+		/// </summary>
+		/// <typeparam name="TScopeAccessor"></typeparam>
+		/// <returns></returns>
+		public ComponentRegistration<TService> Scoped<TScopeAccessor>() where TScopeAccessor : IScopeAccessor, new()
 		{
-			get { return AddDescriptor(new LifestyleDescriptor<TService>(LifestyleType.Scoped)); }
+			return Scoped(typeof(TScopeAccessor));
+		}
+
+		/// <summary>
+		/// Assigns scoped lifestyle with scope accessed via <paramref name="scopeAccessorType"/> instances if provided, or default accessor otherwise.
+		/// </summary>
+		/// <returns></returns>
+		public ComponentRegistration<TService> Scoped(Type scopeAccessorType = null)
+		{
+			var registration = AddDescriptor(new LifestyleDescriptor<TService>(LifestyleType.Scoped));
+			if (scopeAccessorType == null)
+			{
+				return registration;
+			}
+			var scopeAccessor = new ExtendedPropertiesDescriptor(new Property(Constants.ScopeAccessorType, scopeAccessorType));
+			return registration.AddDescriptor(scopeAccessor);
 		}
 
 		public ComponentRegistration<TService> BoundTo<TBaseForRoot>() where TBaseForRoot : class

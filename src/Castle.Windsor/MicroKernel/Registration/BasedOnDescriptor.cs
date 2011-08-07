@@ -19,6 +19,7 @@ namespace Castle.MicroKernel.Registration
 	using System.ComponentModel;
 
 	using Castle.Core;
+	using Castle.MicroKernel.Lifestyle.Scoped;
 
 	/// <summary>
 	///   Describes how to register a group of related types.
@@ -64,7 +65,8 @@ namespace Castle.MicroKernel.Registration
 		/// </summary>
 		/// <typeparam name = "T">The base type.</typeparam>
 		/// <returns>The descriptor for the type.</returns>
-		[Obsolete("Calling this method resets registration. If that's what you want, start anew, with Classes.FromAssembly..")]
+		[Obsolete("Calling this method resets registration. If that's what you want, start anew, with Classes.FromAssembly..")
+		]
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public BasedOnDescriptor BasedOn<T>()
 		{
@@ -76,7 +78,8 @@ namespace Castle.MicroKernel.Registration
 		/// </summary>
 		/// <param name = "basedOn">The base type.</param>
 		/// <returns>The descriptor for the type.</returns>
-		[Obsolete("Calling this method resets registration. If that's what you want, start anew, with Classes.FromAssembly...")]
+		[Obsolete("Calling this method resets registration. If that's what you want, start anew, with Classes.FromAssembly..."
+			)]
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public BasedOnDescriptor BasedOn(Type basedOn)
 		{
@@ -115,7 +118,8 @@ namespace Castle.MicroKernel.Registration
 		/// <param name = "configurer">The configuration action, executed only for components for which <paramref
 		///    name = "condition" /> evaluates to <c>true</c>.</param>
 		/// <returns></returns>
-		public BasedOnDescriptor ConfigureIf(Predicate<ComponentRegistration> condition, Action<ComponentRegistration> configurer)
+		public BasedOnDescriptor ConfigureIf(Predicate<ComponentRegistration> condition,
+		                                     Action<ComponentRegistration> configurer)
 		{
 			configuration += r =>
 			{
@@ -136,7 +140,8 @@ namespace Castle.MicroKernel.Registration
 		/// <param name = "configurerWhenFalse">The configuration action, executed only for components for which <paramref
 		///    name = "condition" /> evaluates to <c>false</c>.</param>
 		/// <returns></returns>
-		public BasedOnDescriptor ConfigureIf(Predicate<ComponentRegistration> condition, Action<ComponentRegistration> configurerWhenTrue,
+		public BasedOnDescriptor ConfigureIf(Predicate<ComponentRegistration> condition,
+		                                     Action<ComponentRegistration> configurerWhenTrue,
 		                                     Action<ComponentRegistration> configurerWhenFalse)
 		{
 			configuration += r =>
@@ -180,7 +185,8 @@ namespace Castle.MicroKernel.Registration
 		/// </summary>
 		/// <param name = "accepted">The accepting condition.</param>
 		/// <returns>The descriptor for the type.</returns>
-		[Obsolete("Calling this method resets registration. If that's what you want, start anew, with Classes.FromAssembly...")]
+		[Obsolete("Calling this method resets registration. If that's what you want, start anew, with Classes.FromAssembly..."
+			)]
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public BasedOnDescriptor Where(Predicate<Type> accepted)
 		{
@@ -301,6 +307,24 @@ namespace Castle.MicroKernel.Registration
 		public BasedOnDescriptor LifestyleScoped()
 		{
 			return Configure(c => c.LifestyleScoped());
+		}
+
+		/// <summary>
+		///   Sets component lifestyle to scoped per explicit scope.
+		/// </summary>
+		/// <returns></returns>
+		public BasedOnDescriptor LifestyleScoped(Type scopeAccessorType)
+		{
+			return Configure(c => c.LifestyleScoped(scopeAccessorType));
+		}
+
+		/// <summary>
+		///   Sets component lifestyle to scoped per explicit scope.
+		/// </summary>
+		/// <returns></returns>
+		public BasedOnDescriptor LifestyleScoped<TScopeAccessor>() where TScopeAccessor : IScopeAccessor, new()
+		{
+			return Configure(c => c.LifestyleScoped<TScopeAccessor>());
 		}
 
 		/// <summary>

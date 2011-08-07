@@ -28,6 +28,7 @@ namespace Castle.MicroKernel.Registration
 	using Castle.MicroKernel.Context;
 	using Castle.MicroKernel.Handlers;
 	using Castle.MicroKernel.LifecycleConcerns;
+	using Castle.MicroKernel.Lifestyle.Scoped;
 	using Castle.MicroKernel.ModelBuilder;
 	using Castle.MicroKernel.ModelBuilder.Descriptors;
 	using Castle.MicroKernel.Registration.Interceptor;
@@ -243,9 +244,18 @@ namespace Castle.MicroKernel.Registration
 			var parameters = new List<Parameter>(dependencies.Length);
 			foreach (var dependency in dependencies)
 			{
-				if (dependency.Accept(properties)) continue;
-				if (dependency.Accept(parameters)) continue;
-				if (dependency.Accept(serviceOverrides)) continue;
+				if (dependency.Accept(properties))
+				{
+					continue;
+				}
+				if (dependency.Accept(parameters))
+				{
+					continue;
+				}
+				if (dependency.Accept(serviceOverrides))
+				{
+					continue;
+				}
 			}
 
 			if (serviceOverrides.Count > 0)
@@ -287,7 +297,8 @@ namespace Castle.MicroKernel.Registration
 		}
 
 		/// <summary>
-		///   Allows custom dependencies to by defined dyncamically. Calling this overload is synonymous to using <see cref="DynamicParameters(Castle.MicroKernel.Registration.DynamicParametersDelegate)"/>
+		///   Allows custom dependencies to by defined dyncamically. Calling this overload is synonymous to using <see
+		///    cref = "DynamicParameters(Castle.MicroKernel.Registration.DynamicParametersDelegate)" />
 		/// </summary>
 		/// <param name = "resolve">The delegate used for providing dynamic parameters.</param>
 		/// <returns></returns>
@@ -301,7 +312,8 @@ namespace Castle.MicroKernel.Registration
 		}
 
 		/// <summary>
-		///   Allows custom dependencies to by defined dynamically with releasing capability. Calling this overload is synonymous to using <see cref="DynamicParameters(Castle.MicroKernel.Registration.DynamicParametersResolveDelegate)"/>
+		///   Allows custom dependencies to by defined dynamically with releasing capability. Calling this overload is synonymous to using <see
+		///    cref = "DynamicParameters(Castle.MicroKernel.Registration.DynamicParametersResolveDelegate)" />
 		/// </summary>
 		/// <param name = "resolve">The delegate used for providing dynamic parameters.</param>
 		/// <returns></returns>
@@ -311,7 +323,8 @@ namespace Castle.MicroKernel.Registration
 		}
 
 		/// <summary>
-		///   Allows custom dependencies to by defined dynamically with releasing capability. Calling this overload is synonymous to using <see cref="DynamicParameters(Castle.MicroKernel.Registration.DynamicParametersWithContextResolveDelegate)"/>
+		///   Allows custom dependencies to by defined dynamically with releasing capability. Calling this overload is synonymous to using <see
+		///    cref = "DynamicParameters(Castle.MicroKernel.Registration.DynamicParametersWithContextResolveDelegate)" />
 		/// </summary>
 		/// <param name = "resolve">The delegate used for providing dynamic parameters.</param>
 		/// <returns></returns>
@@ -485,7 +498,9 @@ namespace Castle.MicroKernel.Registration
 		/// <param name = "type">The type that is the implementation for the service.</param>
 		/// <param name = "genericImplementationMatchingStrategy">Provides ability to close open generic service. Ignored when registering closed or non-generic component.</param>
 		/// <returns></returns>
-		public ComponentRegistration<TService> ImplementedBy(Type type, IGenericImplementationMatchingStrategy genericImplementationMatchingStrategy)
+		public ComponentRegistration<TService> ImplementedBy(Type type,
+		                                                     IGenericImplementationMatchingStrategy
+		                                                     	genericImplementationMatchingStrategy)
 		{
 			if (implementation != null && implementation != typeof(LateBoundComponent))
 			{
@@ -499,7 +514,9 @@ namespace Castle.MicroKernel.Registration
 			{
 				return this;
 			}
-			return ExtendedProperties(Property.ForKey(ComponentModel.GenericImplementationMatchingStrategy).Eq(genericImplementationMatchingStrategy));
+			return
+				ExtendedProperties(
+					Property.ForKey(ComponentModel.GenericImplementationMatchingStrategy).Eq(genericImplementationMatchingStrategy));
 		}
 
 		/// <summary>
@@ -582,7 +599,8 @@ namespace Castle.MicroKernel.Registration
 		///   Sets component lifestyle to specified one.
 		/// </summary>
 		/// <returns></returns>
-		public ComponentRegistration<TService> LifestyleCustom<TLifestyleManager>() where TLifestyleManager : ILifestyleManager, new()
+		public ComponentRegistration<TService> LifestyleCustom<TLifestyleManager>()
+			where TLifestyleManager : ILifestyleManager, new()
 		{
 			return LifeStyle.Custom<TLifestyleManager>();
 		}
@@ -597,16 +615,26 @@ namespace Castle.MicroKernel.Registration
 		}
 
 		/// <summary>
-		///   Sets component lifestyle to scoped per explicit scope.
+		///   Sets component lifestyle to scoped per explicit scope. If <paramref name = "scopeAccessorType" /> is provided, it will be used to access scope for the component. Otherwise the default scope accessor will be used.
 		/// </summary>
 		/// <returns></returns>
-		public ComponentRegistration<TService> LifestyleScoped()
+		public ComponentRegistration<TService> LifestyleScoped(Type scopeAccessorType = null)
 		{
-			return LifeStyle.Scoped;
+			return LifeStyle.Scoped(scopeAccessorType);
 		}
 
 		/// <summary>
-		///   Sets component lifestyle to scoped per nearest component on the resolution stack where implementation type is assignable to <typeparamref name = "TBaseForRoot" />.
+		///   Sets component lifestyle to scoped per explicit scope.
+		/// </summary>
+		/// <returns></returns>
+		public ComponentRegistration<TService> LifestyleScoped<TScopeAccessor>() where TScopeAccessor : IScopeAccessor, new()
+		{
+			return LifestyleScoped(typeof(TScopeAccessor));
+		}
+
+		/// <summary>
+		///   Sets component lifestyle to scoped per nearest component on the resolution stack where implementation type is assignable to <typeparamref
+		///    name = "TBaseForRoot" />.
 		/// </summary>
 		/// <returns></returns>
 		public ComponentRegistration<TService> LifestyleBoundTo<TBaseForRoot>() where TBaseForRoot : class
@@ -615,11 +643,11 @@ namespace Castle.MicroKernel.Registration
 		}
 
 		/// <summary>
-		///   Sets component lifestyle to scoped per scope determined by <paramref name="scopeRootBinder"/>
+		///   Sets component lifestyle to scoped per scope determined by <paramref name = "scopeRootBinder" />
 		/// </summary>
-		/// <param name="scopeRootBinder">Custom algorithm for selection which component higher up the resolution stack should be the root of the lifetime scope for current component's instances.
-		/// The delegate will be invoked when current component is about to be resolved and will be passed set of handlers to components higher up the resolution stack. It ought to return one which it designages
-		/// as the root which shall scope the lifetime of current component's instance, or <c>null</c>
+		/// <param name = "scopeRootBinder">Custom algorithm for selection which component higher up the resolution stack should be the root of the lifetime scope for current component's instances.
+		///   The delegate will be invoked when current component is about to be resolved and will be passed set of handlers to components higher up the resolution stack. It ought to return one which it designages
+		///   as the root which shall scope the lifetime of current component's instance, or <c>null</c>
 		/// </param>
 		/// <returns></returns>
 		public ComponentRegistration<TService> LifestyleBoundTo(Func<IHandler[], IHandler> scopeRootBinder)
@@ -904,7 +932,8 @@ namespace Castle.MicroKernel.Registration
 		/// <typeparam name = "TServiceImpl">Implementation type.</typeparam>
 		/// <param name = "factory">Factory invocation</param>
 		/// <returns></returns>
-		public ComponentRegistration<TService> UsingFactory<TFactory, TServiceImpl>(Converter<TFactory, TServiceImpl> factory) where TServiceImpl : TService
+		public ComponentRegistration<TService> UsingFactory<TFactory, TServiceImpl>(Converter<TFactory, TServiceImpl> factory)
+			where TServiceImpl : TService
 		{
 			return UsingFactoryMethod(kernel => factory.Invoke(kernel.Resolve<TFactory>()));
 		}
@@ -916,7 +945,9 @@ namespace Castle.MicroKernel.Registration
 		/// <param name = "factoryMethod">Factory method</param>
 		/// <param name = "managedExternally">When set to <c>true</c> container will not assume ownership of this component, will not track it not apply and lifecycle concerns to it.</param>
 		/// <returns></returns>
-		public ComponentRegistration<TService> UsingFactoryMethod<TImpl>(Func<TImpl> factoryMethod, bool managedExternally = false) where TImpl : TService
+		public ComponentRegistration<TService> UsingFactoryMethod<TImpl>(Func<TImpl> factoryMethod,
+		                                                                 bool managedExternally = false)
+			where TImpl : TService
 		{
 			return UsingFactoryMethod((k, m, c) => factoryMethod(), managedExternally);
 		}
@@ -928,7 +959,8 @@ namespace Castle.MicroKernel.Registration
 		/// <param name = "factoryMethod">Factory method</param>
 		/// <param name = "managedExternally">When set to <c>true</c> container will not assume ownership of this component, will not track it not apply and lifecycle concerns to it.</param>
 		/// <returns></returns>
-		public ComponentRegistration<TService> UsingFactoryMethod<TImpl>(Converter<IKernel, TImpl> factoryMethod, bool managedExternally = false)
+		public ComponentRegistration<TService> UsingFactoryMethod<TImpl>(Converter<IKernel, TImpl> factoryMethod,
+		                                                                 bool managedExternally = false)
 			where TImpl : TService
 		{
 			return UsingFactoryMethod((k, m, c) => factoryMethod(k), managedExternally);
@@ -941,8 +973,9 @@ namespace Castle.MicroKernel.Registration
 		/// <param name = "factoryMethod">Factory method</param>
 		/// <param name = "managedExternally">When set to <c>true</c> container will not assume ownership of this component, will not track it not apply and lifecycle concerns to it.</param>
 		/// <returns></returns>
-		public ComponentRegistration<TService> UsingFactoryMethod<TImpl>(Func<IKernel, ComponentModel, CreationContext, TImpl> factoryMethod,
-		                                                                 bool managedExternally = false)
+		public ComponentRegistration<TService> UsingFactoryMethod<TImpl>(
+			Func<IKernel, ComponentModel, CreationContext, TImpl> factoryMethod,
+			bool managedExternally = false)
 			where TImpl : TService
 		{
 			Activator<FactoryMethodActivator<TImpl>>()
@@ -953,7 +986,8 @@ namespace Castle.MicroKernel.Registration
 				ExtendedProperties(Property.ForKey("factory.managedExternally").Eq(managedExternally));
 			}
 
-			if (implementation == null && (potentialServices.First().IsClass == false || potentialServices.First().IsSealed == false))
+			if (implementation == null &&
+			    (potentialServices.First().IsClass == false || potentialServices.First().IsSealed == false))
 			{
 				implementation = typeof(LateBoundComponent);
 			}
@@ -966,7 +1000,8 @@ namespace Castle.MicroKernel.Registration
 		/// <typeparam name = "TImpl">Implementation type</typeparam>
 		/// <param name = "factoryMethod">Factory method</param>
 		/// <returns></returns>
-		public ComponentRegistration<TService> UsingFactoryMethod<TImpl>(Func<IKernel, CreationContext, TImpl> factoryMethod) where TImpl : TService
+		public ComponentRegistration<TService> UsingFactoryMethod<TImpl>(Func<IKernel, CreationContext, TImpl> factoryMethod)
+			where TImpl : TService
 		{
 			return UsingFactoryMethod((k, m, c) => factoryMethod(k, c));
 		}
@@ -1031,7 +1066,7 @@ namespace Castle.MicroKernel.Registration
 			}
 			kernel.AddCustomComponent(componentModel);
 		}
-		
+
 		/// <summary>
 		///   Overrides default behavior by making the current component the default for every service it exposes. Optional <paramref
 		///    name = "serviceFilter" /> allows user to narrow down the number of services which should be make defaults.
