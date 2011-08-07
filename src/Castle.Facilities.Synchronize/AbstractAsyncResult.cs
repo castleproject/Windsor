@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,25 +18,25 @@ namespace Castle.Facilities.Synchronize
 	using System.Threading;
 
 	/// <summary>
-	/// Abstract result for asynchronous operations.
+	///   Abstract result for asynchronous operations.
 	/// </summary>
 	public abstract class AbstractAsyncResult : IAsyncResult
 	{
+		private readonly AsyncCallback callback;
 		private int cleanUp;
 		private int completed;
-		private int invokedCallback;
-		private readonly AsyncCallback callback;
 		private bool endCalled;
-		private Timeout timeout;
 		private Exception exception;
+		private int invokedCallback;
 		private object result;
+		private Timeout timeout;
 		private object waitEvent;
 
 		/// <summary>
-		/// Initializes a new <see cref="AbstractAsyncResult"/>
+		///   Initializes a new <see cref = "AbstractAsyncResult" />
 		/// </summary>
-		/// <param name="callback">The async callback.</param>
-		/// <param name="state">The async state</param>
+		/// <param name = "callback">The async callback.</param>
+		/// <param name = "state">The async state</param>
 		protected AbstractAsyncResult(AsyncCallback callback, object state)
 		{
 			AsyncState = state;
@@ -44,39 +44,24 @@ namespace Castle.Facilities.Synchronize
 			invokedCallback = (callback != null) ? 0 : 1;
 		}
 
-		#region IAsyncResult Members
-
 		/// <summary>
-		/// Gets the asynchronous state.
+		///   Gets the asynchronous state.
 		/// </summary>
 		public object AsyncState { get; protected set; }
 
 		/// <summary>
-		/// Determines if the result is available.
-		/// </summary>
-		public bool IsCompleted
-		{
-			get { return (completed != 0); }
-		}
-
-		/// <summary>
-		/// Determines if the result completed synchronously.
-		/// </summary>
-		public bool CompletedSynchronously { get; protected internal set; }
-
-		/// <summary>
-		/// Gets the asynchronous <see cref="WaitHandle"/>.
+		///   Gets the asynchronous <see cref = "WaitHandle" />.
 		/// </summary>
 		public WaitHandle AsyncWaitHandle
 		{
 			get
 			{
-				int isCompleted = completed;
+				var isCompleted = completed;
 
 				if (waitEvent == null)
 				{
 					Interlocked.CompareExchange(ref waitEvent,
-						new ManualResetEvent(isCompleted != 0), (object)null);
+					                            new ManualResetEvent(isCompleted != 0), null);
 				}
 
 				var ev = (ManualResetEvent)waitEvent;
@@ -91,9 +76,22 @@ namespace Castle.Facilities.Synchronize
 		}
 
 		/// <summary>
-		/// Establishes an async timeout for the interval.
+		///   Determines if the result completed synchronously.
 		/// </summary>
-		/// <param name="interval">The timeout interval without units.</param>
+		public bool CompletedSynchronously { get; protected internal set; }
+
+		/// <summary>
+		///   Determines if the result is available.
+		/// </summary>
+		public bool IsCompleted
+		{
+			get { return (completed != 0); }
+		}
+
+		/// <summary>
+		///   Establishes an async timeout for the interval.
+		/// </summary>
+		/// <param name = "interval">The timeout interval without units.</param>
 		/// <returns>The timeout specification.</returns>
 		public Timeout TimeoutAfter(int interval)
 		{
@@ -110,9 +108,77 @@ namespace Castle.Facilities.Synchronize
 		}
 
 		/// <summary>
-		/// Ends the asynchronous request.
+		///   Performs any cleanup.
 		/// </summary>
-		/// <param name="asyncResult">The asynchronous result.</param>
+		protected virtual void Cleanup()
+		{
+		}
+
+		/// <summary>
+		///   Completes the asynchronous request.
+		/// </summary>
+		/// <param name = "synchronously">true if synchronously.</param>
+		protected void Complete(bool synchronously)
+		{
+			CompletedSynchronously = synchronously;
+
+			Interlocked.Increment(ref completed);
+
+			if (waitEvent != null)
+			{
+				((ManualResetEvent)waitEvent).Set();
+			}
+
+			if ((callback != null) && (Interlocked.Increment(ref invokedCallback) == 1))
+			{
+				callback(this);
+			}
+
+			InternalCleanup();
+		}
+
+		/// <summary>
+		///   Completes the asynchronous request.
+		/// </summary>
+		/// <param name = "synchronously">true if synchronously.</param>
+		/// <param name = "result">The result.</param>
+		protected void Complete(bool synchronously, object result)
+		{
+			this.result = result;
+			Complete(synchronously);
+		}
+
+		/// <summary>
+		///   Completes the asynchronous request with exception.
+		/// </summary>
+		/// <param name = "synchronously">true if synchronously.</param>
+		/// <param name = "exception">The exception.</param>
+		protected void Complete(bool synchronously, Exception exception)
+		{
+			this.exception = exception;
+			Complete(synchronously);
+		}
+
+		/// <summary>
+		///   Performs any behavior when a timeout occurs.
+		/// </summary>
+		protected virtual void OnTimeout()
+		{
+			Complete(false, new TimeoutException());
+		}
+
+		private void InternalCleanup()
+		{
+			if (Interlocked.Increment(ref cleanUp) == 1)
+			{
+				Cleanup();
+			}
+		}
+
+		/// <summary>
+		///   Ends the asynchronous request.
+		/// </summary>
+		/// <param name = "asyncResult">The asynchronous result.</param>
 		/// <returns>The result.</returns>
 		public static object End(IAsyncResult asyncResult)
 		{
@@ -149,98 +215,26 @@ namespace Castle.Facilities.Synchronize
 		}
 
 		/// <summary>
-		/// Ends the asynchronous request.
+		///   Ends the asynchronous request.
 		/// </summary>
-		/// <typeparam name="TResult"></typeparam>
-		/// <param name="asyncResult">The asynchronous result.</param>
+		/// <typeparam name = "TResult"></typeparam>
+		/// <param name = "asyncResult">The asynchronous result.</param>
 		/// <returns>The typed result.</returns>
 		public static TResult End<TResult>(IAsyncResult asyncResult)
 		{
 			return (TResult)End(asyncResult);
 		}
 
-		#endregion
-
 		/// <summary>
-		/// Completes the asynchronous request.
-		/// </summary>
-		/// <param name="synchronously">true if synchronously.</param>
-		protected void Complete(bool synchronously)
-		{
-			CompletedSynchronously = synchronously;
-
-			Interlocked.Increment(ref completed);
-
-			if (waitEvent != null)
-			{
-				((ManualResetEvent)waitEvent).Set();
-			}
-
-			if ((callback != null) && (Interlocked.Increment(ref invokedCallback) == 1))
-			{
-				callback(this);
-			}
-
-			InternalCleanup();
-		}
-
-		/// <summary>
-		/// Completes the asynchronous request.
-		/// </summary>
-		/// <param name="synchronously">true if synchronously.</param>
-		/// <param name="result">The result.</param>
-		protected void Complete(bool synchronously, object result)
-		{
-			this.result = result;
-			Complete(synchronously);
-		}
-
-		/// <summary>
-		/// Completes the asynchronous request with exception.
-		/// </summary>
-		/// <param name="synchronously">true if synchronously.</param>
-		/// <param name="exception">The exception.</param>
-		protected void Complete(bool synchronously, Exception exception)
-		{
-			this.exception = exception;
-			Complete(synchronously);
-		}
-
-		/// <summary>
-		/// Performs any behavior when a timeout occurs.
-		/// </summary>
-		protected virtual void OnTimeout()
-		{
-			Complete(false, new TimeoutException());
-		}
-
-		/// <summary>
-		/// Performs any cleanup.
-		/// </summary>
-		protected virtual void Cleanup()
-		{
-		}
-
-		private void InternalCleanup()
-		{
-			if (Interlocked.Increment(ref cleanUp) == 1)
-			{
-				Cleanup();
-			}
-		}
-
-		/// <summary>
-		/// Finalizer to ensure cleanup.
+		///   Finalizer to ensure cleanup.
 		/// </summary>
 		~AbstractAsyncResult()
 		{
 			InternalCleanup();
 		}
 
-		#region Nested Class: Timeout
-
 		/// <summary>
-		/// Represents the timeout description.
+		///   Represents the timeout description.
 		/// </summary>
 		public class Timeout
 		{
@@ -248,10 +242,10 @@ namespace Castle.Facilities.Synchronize
 			private readonly AbstractAsyncResult result;
 
 			/// <summary>
-			/// Constructs a new <see cref="Timeout"/>
+			///   Constructs a new <see cref = "Timeout" />
 			/// </summary>
-			/// <param name="result">The async result.</param>
-			/// <param name="interval">The timeout interval.</param>
+			/// <param name = "result">The async result.</param>
+			/// <param name = "interval">The timeout interval.</param>
 			public Timeout(AbstractAsyncResult result, int interval)
 			{
 				this.result = result;
@@ -259,7 +253,7 @@ namespace Castle.Facilities.Synchronize
 			}
 
 			/// <summary>
-			/// Registers the timeout in milliseconds.
+			///   Registers the timeout in milliseconds.
 			/// </summary>
 			/// <returns></returns>
 			public AbstractAsyncResult MilliSeconds()
@@ -269,30 +263,23 @@ namespace Castle.Facilities.Synchronize
 			}
 
 			/// <summary>
-			/// Registers the timeout in seconds. 
-			/// </summary>
-			/// <returns></returns>
-			public AbstractAsyncResult Seconds()
-			{
-				RegisterTimeout(interval * 1000);
-				return result;
-			}
-
-			/// <summary>
-			/// Registers the timeout in minutes.
+			///   Registers the timeout in minutes.
 			/// </summary>
 			/// <returns></returns>
 			public AbstractAsyncResult Minutes()
 			{
-				RegisterTimeout(interval * 60 * 1000);
+				RegisterTimeout(interval*60*1000);
 				return result;
 			}
 
-			private void RegisterTimeout(int milliInterval)
+			/// <summary>
+			///   Registers the timeout in seconds.
+			/// </summary>
+			/// <returns></returns>
+			public AbstractAsyncResult Seconds()
 			{
-				ThreadPool.RegisterWaitForSingleObject(
-					result.AsyncWaitHandle, OnCompleteOrTimeout, null,
-					milliInterval, true);
+				RegisterTimeout(interval*1000);
+				return result;
 			}
 
 			private void OnCompleteOrTimeout(object state, bool timedOut)
@@ -302,8 +289,13 @@ namespace Castle.Facilities.Synchronize
 					result.OnTimeout();
 				}
 			}
-		}
 
-		#endregion
+			private void RegisterTimeout(int milliInterval)
+			{
+				ThreadPool.RegisterWaitForSingleObject(
+					result.AsyncWaitHandle, OnCompleteOrTimeout, null,
+					milliInterval, true);
+			}
+		}
 	}
 }

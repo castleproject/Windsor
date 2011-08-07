@@ -19,8 +19,8 @@ namespace Castle.Facilities.EventWiring
 
 	public class EventSubscriber
 	{
+		private readonly string subscriberComponentName;
 		private string eventHandler;
-		private string subscriberComponentName;
 
 		private EventSubscriber(string subscriberComponentName)
 		{

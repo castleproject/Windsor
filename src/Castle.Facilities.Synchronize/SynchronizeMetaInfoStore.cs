@@ -41,7 +41,7 @@ namespace Castle.Facilities.Synchronize
 		/// <summary>
 		///   Initializes a new instance of the <see cref = "SynchronizeMetaInfoStore" /> class.
 		/// </summary>
-		/// <param name="conversionManager"></param>
+		/// <param name = "conversionManager"></param>
 		public SynchronizeMetaInfoStore(IConversionManager conversionManager)
 		{
 			converter = conversionManager;

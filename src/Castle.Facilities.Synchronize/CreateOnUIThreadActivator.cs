@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,30 +15,30 @@
 namespace Castle.Facilities.Synchronize
 {
 	using System;
+
 	using Castle.Core;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.ComponentActivator;
 	using Castle.MicroKernel.Context;
-	
+
 	internal delegate object CreationContextDelegate(CreationContext context);
 
 	internal delegate object CreateOnUIThreadDelegate(CreationContextDelegate create, CreationContext context);
 
 	internal class CreateOnUIThreadActivator : DefaultComponentActivator
 	{
+		private static readonly ComponentInstanceDelegate emptyCreation = delegate { };
+		private static readonly ComponentInstanceDelegate emptyDestruction = delegate { };
 		private readonly IComponentActivator customActivator;
 		private readonly CreationContextDelegate performCreation;
 
-		static readonly ComponentInstanceDelegate emptyCreation = delegate { };
-		static readonly ComponentInstanceDelegate emptyDestruction = delegate { };
-
 		/// <summary>
-		/// Initializes a new instance of the <see cref="CreateOnUIThreadActivator"/> class.
+		///   Initializes a new instance of the <see cref = "CreateOnUIThreadActivator" /> class.
 		/// </summary>
-		/// <param name="model">The model.</param>
-		/// <param name="kernel">The kernel.</param>
-		/// <param name="onCreation">Delegate called on construction.</param>
-		/// <param name="onDestruction">Delegate called on destruction.</param>
+		/// <param name = "model">The model.</param>
+		/// <param name = "kernel">The kernel.</param>
+		/// <param name = "onCreation">Delegate called on construction.</param>
+		/// <param name = "onDestruction">Delegate called on destruction.</param>
 		public CreateOnUIThreadActivator(ComponentModel model, IKernel kernel, ComponentInstanceDelegate onCreation,
 		                                 ComponentInstanceDelegate onDestruction)
 			: base(model, kernel, onCreation, onDestruction)
@@ -61,7 +61,7 @@ namespace Castle.Facilities.Synchronize
 
 		private object PerformCreation(CreationContext context)
 		{
-			if (customActivator != null) 
+			if (customActivator != null)
 			{
 				return customActivator.Create(context);
 			}
@@ -77,7 +77,7 @@ namespace Castle.Facilities.Synchronize
 				try
 				{
 					return (IComponentActivator)Activator.CreateInstance(
-						customActivator,model, kernel, emptyCreation, emptyDestruction);
+						customActivator, model, kernel, emptyCreation, emptyDestruction);
 				}
 				catch (Exception e)
 				{

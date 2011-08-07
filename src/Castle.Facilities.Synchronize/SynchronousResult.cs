@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,12 +17,11 @@ namespace Castle.Facilities.Synchronize
 	using System;
 
 	/// <summary>
-	/// Represents a synchronous result.
+	///   Represents a synchronous result.
 	/// </summary>
 	public class SynchronousResult : AbstractAsyncResult
 	{
 		/// <summary>
-		/// 
 		/// </summary>
 		public SynchronousResult()
 			: this(null, null)
@@ -30,28 +29,25 @@ namespace Castle.Facilities.Synchronize
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <param name="result"></param>
+		/// <param name = "result"></param>
 		public SynchronousResult(object result)
 			: this(result, null, null)
 		{
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <param name="exception"></param>
+		/// <param name = "exception"></param>
 		public SynchronousResult(Exception exception)
 			: this(exception, null, null)
 		{
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <param name="callback"></param>
-		/// <param name="state"></param>
+		/// <param name = "callback"></param>
+		/// <param name = "state"></param>
 		public SynchronousResult(AsyncCallback callback, object state)
 			: base(callback, state)
 		{
@@ -59,11 +55,10 @@ namespace Castle.Facilities.Synchronize
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <param name="result"></param>
-		/// <param name="callback"></param>
-		/// <param name="state"></param>
+		/// <param name = "result"></param>
+		/// <param name = "callback"></param>
+		/// <param name = "state"></param>
 		public SynchronousResult(object result, AsyncCallback callback, object state)
 			: base(callback, state)
 		{
@@ -71,11 +66,10 @@ namespace Castle.Facilities.Synchronize
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <param name="exception"></param>
-		/// <param name="callback"></param>
-		/// <param name="state"></param>
+		/// <param name = "exception"></param>
+		/// <param name = "callback"></param>
+		/// <param name = "state"></param>
 		public SynchronousResult(Exception exception, AsyncCallback callback, object state)
 			: base(callback, state)
 		{

@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,37 +17,37 @@ namespace Castle.Facilities.Synchronize
 	using System;
 
 	/// <summary>
-	/// Exposes constants used by the facility and its internal 
-	/// components
+	///   Exposes constants used by the facility and its internal 
+	///   components
 	/// </summary>
 	public class Constants
 	{
 		/// <summary>
-		/// Configuration attribute to enable synchronization.
-		/// </summary>
-		public static readonly String SynchronizedAttrib = "synchronized";
-
-		/// <summary>
-		/// Configuration attribute to specify context key reference.
-		/// </summary>
-		public static readonly String ContextRefAttribute = "contextRef";
-
-		/// <summary>
-		/// Configuration attribute to specify context service reference.
-		/// </summary>
-		public static readonly String ContextTypeAttribute = "contextType";
-
-		/// <summary>
-		/// Configuration attribute to specify ambient synchronization context.
+		///   Configuration attribute to specify ambient synchronization context.
 		/// </summary>
 		public static readonly String AmbientContextAttribute = "useAmbientContext";
 
 		/// <summary>
-		/// Configuration attribute to specify a custom control proxy hook.
+		///   Configuration attribute to specify context key reference.
+		/// </summary>
+		public static readonly String ContextRefAttribute = "contextRef";
+
+		/// <summary>
+		///   Configuration attribute to specify context service reference.
+		/// </summary>
+		public static readonly String ContextTypeAttribute = "contextType";
+
+		/// <summary>
+		///   Configuration attribute to specify a custom control proxy hook.
 		/// </summary>
 		public static readonly String ControlProxyHookAttrib = "controlProxyHook";
 
-		internal static readonly String CustomActivator = "sync.custom.activator";
+		/// <summary>
+		///   Configuration attribute to enable synchronization.
+		/// </summary>
+		public static readonly String SynchronizedAttrib = "synchronized";
+
 		internal static readonly String CreateOnUIThead = "sync.create.uithread";
+		internal static readonly String CustomActivator = "sync.custom.activator";
 	}
 }

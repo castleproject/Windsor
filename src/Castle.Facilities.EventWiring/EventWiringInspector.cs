@@ -34,7 +34,8 @@ namespace Castle.Facilities.EventWiring
 
 			if (subscribersConfiguration.Children.Count < 1)
 			{
-				var message = string.Format("The subscribers node must have at least one subsciber child. Check node subscribers of the '{0}' component", model.Name);
+				var message = string.Format("The subscribers node must have at least one subsciber child. Check node subscribers of the '{0}' component",
+				                            model.Name);
 				throw new EventWiringException(message);
 			}
 
