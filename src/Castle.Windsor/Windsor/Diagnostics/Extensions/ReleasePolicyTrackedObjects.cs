@@ -12,14 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Diagnostics;
-using System.Threading;
-
 namespace Castle.Windsor.Diagnostics.Extensions
 {
 #if !SILVERLIGHT
 	using System.Collections.Generic;
+	using System.Diagnostics;
 	using System.Linq;
+	using System.Threading;
 
 	using Castle.MicroKernel;
 	using Castle.Windsor.Diagnostics.DebuggerViews;
@@ -27,8 +26,8 @@ namespace Castle.Windsor.Diagnostics.Extensions
 
 	public class ReleasePolicyTrackedObjects : AbstractContainerDebuggerExtension
 	{
-		private static int instanceId = 0;
 		private const string name = "Objects tracked by release policy";
+		private static int instanceId;
 		private readonly IPerformanceMetricsFactory perfMetricsFactory;
 		private TrackedComponentsDiagnostic diagnostic;
 

@@ -26,7 +26,8 @@ namespace Castle.MicroKernel.Lifestyle
 	[EditorBrowsable(EditorBrowsableState.Never)]
 	public static class PerWebRequestLifestyleModuleRegistration
 	{
-		internal const string MicrosoftWebInfrastructureDll = "Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35";
+		internal const string MicrosoftWebInfrastructureDll =
+			"Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35";
 
 		[SecuritySafeCritical]
 		public static void Run()

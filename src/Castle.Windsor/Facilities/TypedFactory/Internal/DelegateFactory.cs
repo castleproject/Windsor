@@ -21,7 +21,6 @@ namespace Castle.Facilities.TypedFactory.Internal
 
 	using Castle.Core;
 	using Castle.Core.Internal;
-	using Castle.MicroKernel;
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Resolvers;
 

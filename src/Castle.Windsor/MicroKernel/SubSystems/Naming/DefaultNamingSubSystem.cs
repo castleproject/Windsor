@@ -52,7 +52,9 @@ namespace Castle.MicroKernel.SubSystems.Naming
 		protected IList<IHandlersFilter> filters;
 		protected IList<IHandlerSelector> selectors;
 
-		private readonly IDictionary<Type, IHandler[]> assignableHandlerListsByTypeCache = new Dictionary<Type, IHandler[]>(SimpleTypeEqualityComparer.Instance);
+		private readonly IDictionary<Type, IHandler[]> assignableHandlerListsByTypeCache =
+			new Dictionary<Type, IHandler[]>(SimpleTypeEqualityComparer.Instance);
+
 		private readonly IDictionary<Type, IHandler[]> handlerListsByTypeCache = new Dictionary<Type, IHandler[]>(SimpleTypeEqualityComparer.Instance);
 		private Dictionary<string, IHandler> key2HandlerCache;
 		private Dictionary<Type, IHandler> service2HandlerCache;
@@ -96,6 +98,11 @@ namespace Castle.MicroKernel.SubSystems.Naming
 					return cache;
 				}
 			}
+		}
+
+		public IEnumerable<KeyValuePair<Type, IHandler>> GetDefaultComponentsForServices()
+		{
+			return HandlerByServiceCache;
 		}
 
 		public void AddHandlerSelector(IHandlerSelector selector)
@@ -235,7 +242,9 @@ namespace Castle.MicroKernel.SubSystems.Naming
 				catch (ArgumentException)
 				{
 					throw new ComponentRegistrationException(
-						String.Format("Component {0} could not be registered. There is already a component with that name. Did you want to modify the existing component instead? If not, make sure you specify a unique name.", key));
+						String.Format(
+							"Component {0} could not be registered. There is already a component with that name. Did you want to modify the existing component instead? If not, make sure you specify a unique name.",
+							key));
 				}
 				var serviceSelector = GetServiceSelector(handler);
 				foreach (var service in handler.ComponentModel.Services)
@@ -370,11 +379,6 @@ namespace Castle.MicroKernel.SubSystems.Naming
 				return service => service2Handler.ContainsKey(service) == false;
 			}
 			return service => service2Handler.ContainsKey(service) == false || customFilter(service);
-		}
-
-		public IEnumerable<KeyValuePair<Type, IHandler>> GetDefaultComponentsForServices()
-		{
-			return HandlerByServiceCache;
 		}
 	}
 }

@@ -180,7 +180,8 @@ namespace Castle.MicroKernel
 		/// <returns></returns>
 		public TService[] ResolveAll<TService>(object argumentsAsAnonymousType)
 		{
-			return (TService[])(this as IKernelInternal).ResolveAll(typeof(TService), new ReflectionBasedDictionaryAdapter(argumentsAsAnonymousType), ReleasePolicy);
+			return
+				(TService[])(this as IKernelInternal).ResolveAll(typeof(TService), new ReflectionBasedDictionaryAdapter(argumentsAsAnonymousType), ReleasePolicy);
 		}
 
 		/// <summary>

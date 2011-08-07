@@ -244,7 +244,8 @@ namespace Castle.MicroKernel.Resolvers
 					}
 					catch (ConverterException e)
 					{
-						throw new DependencyResolverException(string.Format("Could not convert parameter '{0}' to type '{1}'.", parameter.Name, dependency.TargetItemType.Name), e);
+						throw new DependencyResolverException(
+							string.Format("Could not convert parameter '{0}' to type '{1}'.", parameter.Name, dependency.TargetItemType.Name), e);
 					}
 					finally
 					{

@@ -75,7 +75,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 			}
 			if (commission.HasConcerns)
 			{
-				model.Lifecycle.Add(commission as ICommissionConcern);
+				model.Lifecycle.Add(commission);
 			}
 
 			if (model.Services.Any(s => s.Is<IDisposable>()))
@@ -86,7 +86,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 			{
 				var decommission = new LateBoundDecommissionConcerns();
 				decommission.AddConcern<IDisposable>(DisposalConcern.Instance);
-				model.Lifecycle.Add(decommission as IDecommissionConcern);
+				model.Lifecycle.Add(decommission);
 			}
 		}
 

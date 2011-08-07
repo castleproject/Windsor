@@ -259,7 +259,8 @@ namespace Castle.MicroKernel
 			RegisterHandler(key, handler);
 		}
 
-		[Obsolete("Use Register(Component.For(serviceType).ImplementedBy(classType).Named(key).ExtendedProperties(extendedProperties)) or generic version instead.")]
+		[Obsolete(
+			"Use Register(Component.For(serviceType).ImplementedBy(classType).Named(key).ExtendedProperties(extendedProperties)) or generic version instead.")]
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public virtual void AddComponentWithExtendedProperties(String key, Type serviceType, Type classType, IDictionary extendedProperties)
 		{

@@ -99,9 +99,9 @@ namespace Castle.MicroKernel.Registration.Lifestyle
 		}
 
 		/// <summary>
-		/// Assigns scoped lifestyle with scope accessed via <typeparamref name="TScopeAccessor"/> instances.
+		///   Assigns scoped lifestyle with scope accessed via <typeparamref name = "TScopeAccessor" /> instances.
 		/// </summary>
-		/// <typeparam name="TScopeAccessor"></typeparam>
+		/// <typeparam name = "TScopeAccessor"></typeparam>
 		/// <returns></returns>
 		public ComponentRegistration<TService> Scoped<TScopeAccessor>() where TScopeAccessor : IScopeAccessor, new()
 		{
@@ -109,7 +109,7 @@ namespace Castle.MicroKernel.Registration.Lifestyle
 		}
 
 		/// <summary>
-		/// Assigns scoped lifestyle with scope accessed via <paramref name="scopeAccessorType"/> instances if provided, or default accessor otherwise.
+		///   Assigns scoped lifestyle with scope accessed via <paramref name = "scopeAccessorType" /> instances if provided, or default accessor otherwise.
 		/// </summary>
 		/// <returns></returns>
 		public ComponentRegistration<TService> Scoped(Type scopeAccessorType = null)

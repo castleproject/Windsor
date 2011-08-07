@@ -39,7 +39,7 @@ namespace Castle.Windsor.Proxy
 	[Serializable]
 	public class DefaultProxyFactory : AbstractProxyFactory
 #if (!SILVERLIGHT)
-		, IDeserializationCallback
+	                                   , IDeserializationCallback
 #endif
 	{
 		[NonSerialized]

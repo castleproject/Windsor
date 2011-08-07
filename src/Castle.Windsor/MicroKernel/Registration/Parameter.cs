@@ -76,7 +76,6 @@ namespace Castle.MicroKernel.Registration
 		{
 			return new Dependency(parameter);
 		}
-
 	}
 
 	/// <summary>

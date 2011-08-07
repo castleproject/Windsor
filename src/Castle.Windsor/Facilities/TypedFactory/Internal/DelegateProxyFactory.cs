@@ -25,7 +25,8 @@ namespace Castle.Facilities.TypedFactory.Internal
 
 	public class DelegateProxyFactory : IProxyFactoryExtension
 	{
-		public object Generate(IProxyBuilder builder, ProxyGenerationOptions options, IInterceptor[] interceptors, ComponentModel model, CreationContext context)
+		public object Generate(IProxyBuilder builder, ProxyGenerationOptions options, IInterceptor[] interceptors, ComponentModel model,
+		                       CreationContext context)
 		{
 			var targetDelegateType = context.RequestedType;
 			var type = GetProxyType(builder, targetDelegateType);

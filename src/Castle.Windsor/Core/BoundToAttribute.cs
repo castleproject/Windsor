@@ -30,7 +30,8 @@ namespace Castle.Core
 		/// <summary>
 		///   Initializes a new instance of the <see cref = "BoundToAttribute" /> class.
 		/// </summary>
-		/// <param name="scopeRootBinderType">type having default accessible constructor and public method matching signature of <code>Func&lt;IHandler[], IHandler&gt;</code> delegate. The method will be used to pick <see cref="IHandler"/> of the component current instance should be bound to.</param>
+		/// <param name = "scopeRootBinderType">type having default accessible constructor and public method matching signature of <code>Func&lt;IHandler[], IHandler&gt;</code> delegate. The method will be used to pick <see
+		///    cref = "IHandler" /> of the component current instance should be bound to.</param>
 		public BoundToAttribute(Type scopeRootBinderType)
 			: base(LifestyleType.Bound)
 		{
@@ -38,7 +39,8 @@ namespace Castle.Core
 		}
 
 		/// <summary>
-		/// type having default accessible constructor and public method matching signature of <code>Func&lt;IHandler[], IHandler&gt;</code> delegate. The method will be used to pick <see cref="IHandler"/> of the component current instance should be bound to.
+		///   type having default accessible constructor and public method matching signature of <code>Func&lt;IHandler[], IHandler&gt;</code> delegate. The method will be used to pick <see
+		///    cref = "IHandler" /> of the component current instance should be bound to.
 		/// </summary>
 		public Type ScopeRootBinderType { get; private set; }
 	}
