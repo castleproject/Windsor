@@ -419,6 +419,7 @@
     <Compile Include="ContainerExtensions\BadDependencyResolver.cs" />
     <Compile Include="ContainerExtensions\GoodDependencyResolver.cs" />
     <Compile Include="Diagnostics\AllServicesDiagnosticTestCase.cs" />
+    <Compile Include="GenericListConvenrterTestCase.cs" />
     <Compile Include="Generics\GenericA.cs" />
     <Compile Include="Generics\GenericB.cs" />
     <Compile Include="Interceptors\InterceptorAttributeTestCase.cs" />
