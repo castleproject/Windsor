@@ -42,6 +42,8 @@
 - fixed IOC-245 - Proxies (for interface services) should not implicitly proxy all interfaces that the service implementation type happens to implement
 - fixed IOC-240 - Castle Windsor ArrayResolver ServiceOverrides Not Respected
 
+- fixed FACILITIES-153 - Issue with setting the inital log level for the ConsoleLogger
+
 - EventWiringFacility, FactorySupportFacility and RemotingFacility are extracted to their own assemblies
 - fixed bug with NullReferenceException when TypedFactoryFacility is used and disposed
 - IServiceProviderEx was removed as base interface for IWindsorContainer and IKernel

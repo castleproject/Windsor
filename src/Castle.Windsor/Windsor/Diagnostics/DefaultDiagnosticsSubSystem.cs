@@ -19,7 +19,7 @@ namespace Castle.Windsor.Diagnostics
 	using System.Collections.Generic;
 	using System.Linq;
 
-	using Castle.Core;
+	using Castle.Core.Internal;
 	using Castle.MicroKernel;
 	using Castle.Windsor.Diagnostics.Extensions;
 

@@ -549,6 +549,7 @@
     <Compile Include="LoggingFacility\Classes\SimpleLoggingComponent.cs" />
     <Compile Include="LoggingFacility\Classes\SmtpServer.cs" />
     <Compile Include="LoggingFacility\ConsoleFacilityTestCase.cs" />
+    <Compile Include="LoggingFacility\ConsoleLoggerTestCase.cs" />
     <Compile Include="LoggingFacility\CustomFacilityTests.cs" />
     <Compile Include="LoggingFacility\ExtendedLog4NetFacilityTestCase.cs" />
     <Compile Include="LoggingFacility\ExtendedNLogFacilityTests.cs" />

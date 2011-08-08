@@ -18,7 +18,7 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 	using System.Collections.Generic;
 	using System.Linq;
 
-	using Castle.Core;
+	using Castle.Core.Internal;
 
 	public class ScopeCache : IScopeCache, IDisposable
 	{

@@ -60,6 +60,7 @@ namespace Castle.Facilities.Logging
 
 		private LoggerImplementation? loggerImplementation;
 		private Type loggingFactoryType;
+		private LoggerLevel? loggerLevel;
 
 		/// <summary>
 		///   Initializes a new instance of the <see cref = "LoggingFacility" /> class.
@@ -152,6 +153,12 @@ namespace Castle.Facilities.Logging
 			return this;
 		}
 
+		public LoggingFacility WithLevel(LoggerLevel level)
+		{
+			loggerLevel = level;
+			return this;
+		}
+
 #if !SILVERLIGHT
 #if !CLIENTPROFILE
 		public LoggingFacility UseLog4Net()
@@ -213,17 +220,16 @@ namespace Castle.Facilities.Logging
 
 		private string GetConfigFile()
 		{
-			string configFile = null;
-			if (FacilityConfig != null)
+			if (configFileName != null)
 			{
-				configFile = FacilityConfig.Attributes["configFile"];
+				return configFileName;
 			}
 
-			if (configFile == null)
+			if (FacilityConfig != null)
 			{
-				configFile = configFileName;
+				return FacilityConfig.Attributes["configFile"];
 			}
-			return configFile;
+			return null;
 		}
 
 		private Type GetCustomLoggerType()
@@ -235,29 +241,49 @@ namespace Castle.Facilities.Logging
 		{
 			const BindingFlags flags = BindingFlags.Instance | BindingFlags.Public;
 
-			object[] args = null;
-			ConstructorInfo ctor = null;
-
+			ConstructorInfo ctor;
 			var configFile = GetConfigFile();
-			if (!string.IsNullOrEmpty(configFile))
+			if (configFile != null)
 			{
 				ctor = loggerFactoryType.GetConstructor(flags, null, new[] { typeof(string) }, null);
-			}
-
-			if (ctor != null)
-			{
-				args = new object[] { configFile };
-			}
-			else
-			{
-				ctor = loggerFactoryType.GetConstructor(flags, null, Type.EmptyTypes, null);
-
-				if (ctor == null)
+				if (ctor != null)
 				{
-					throw new FacilityException("No support constructor found for logging type " + loggerFactoryType);
+					return new object[] { configFile };
 				}
 			}
-			return args;
+
+			var level = GetLoggingLevel();
+			if (level != null)
+			{
+				ctor = loggerFactoryType.GetConstructor(flags, null, new[] { typeof(LoggerLevel) }, null);
+				if (ctor != null)
+				{
+					return new object[] { level.Value };
+				}
+			}
+			ctor = loggerFactoryType.GetConstructor(flags, null, Type.EmptyTypes, null);
+			if (ctor != null)
+			{
+				return new object[0];
+			}
+			throw new FacilityException("No support constructor found for logging type " + loggerFactoryType);
+		}
+
+		private LoggerLevel? GetLoggingLevel()
+		{
+			if (loggerLevel.HasValue)
+			{
+				return loggerLevel;
+			}
+			if (FacilityConfig != null)
+			{
+				var level = FacilityConfig.Attributes["loggerLevel"];
+				if (level != null)
+				{
+					return converter.PerformConversion<LoggerLevel>(level);
+				}
+			}
+			return null;
 		}
 
 		private Type GetLoggingFactoryType(LoggerImplementation loggerApi)
