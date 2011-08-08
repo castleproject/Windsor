@@ -377,6 +377,10 @@ namespace Castle.Core
 			{
 				return;
 			}
+			if (type.IsValueType)
+			{
+				throw new ArgumentException("Type {0} is a value type and can not be used as a service.");
+			}
 
 			ComponentServicesUtil.AddService(services, type);
 		}
