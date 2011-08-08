@@ -27,14 +27,14 @@ namespace Castle.Facilities.FactorySupport
 	public class FactorySupportFacility : AbstractFacility
 	{
 		[Obsolete("Use 'UsingFactoryMethod' method in fluent registration API")]
-		[EditorBrowsable(EditorBrowsableState.Advanced)]
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public void AddAccessor<TService, TFactory>(string serviceKey, string instanceAccessorMethod)
 		{
 			AddAccessor<TService, TFactory>(serviceKey, instanceAccessorMethod, typeof(TFactory).FullName);
 		}
 
 		[Obsolete("Use 'UsingFactoryMethod' method in fluent registration API")]
-		[EditorBrowsable(EditorBrowsableState.Advanced)]
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public void AddAccessor<TService, TFactory>(string serviceKey, string instanceAccessorMethod, string factoryId)
 		{
 			IConfiguration cfg = new MutableConfiguration(serviceKey);
@@ -44,14 +44,14 @@ namespace Castle.Facilities.FactorySupport
 		}
 
 		[Obsolete("Use 'UsingFactoryMethod' method in fluent registration API")]
-		[EditorBrowsable(EditorBrowsableState.Advanced)]
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public void AddFactory<TService, TFactory>(string serviceKey, string factoryCreateMethodName)
 		{
 			AddFactory<TService, TFactory>(serviceKey, factoryCreateMethodName, typeof(TFactory).FullName);
 		}
 
 		[Obsolete("Use 'UsingFactoryMethod' method in fluent registration API")]
-		[EditorBrowsable(EditorBrowsableState.Advanced)]
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public void AddFactory<TService, TFactory>(string serviceKey, string factoryCreateMethodName, string factoryId)
 		{
 			var cfg = new MutableConfiguration(serviceKey);
