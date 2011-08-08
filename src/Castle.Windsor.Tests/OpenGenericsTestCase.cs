@@ -19,6 +19,7 @@ namespace CastleTests
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Tests.ClassComponents;
 
+	using CastleTests.ClassComponents;
 	using CastleTests.Components;
 
 	using NUnit.Framework;
@@ -47,6 +48,17 @@ namespace CastleTests
 			var items = Container.ResolveAll<IGeneric<A>>();
 
 			Assert.AreEqual(2, items.Length);
+		}
+
+		[Test]
+		public void Open_generic_multiple_services_favor_closed_service()
+		{
+			Container.Register(Component.For(typeof(IGeneric<>)).ImplementedBy(typeof(GenericImpl1<>)),
+			                   Component.For<A, IGeneric<A>>().ImplementedBy<GenericImplA>());
+
+			var item = Container.Resolve<IGeneric<A>>();
+
+			Assert.IsInstanceOf<GenericImplA>(item);
 		}
 
 		[Test]
