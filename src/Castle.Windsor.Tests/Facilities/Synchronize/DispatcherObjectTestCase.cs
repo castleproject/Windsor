@@ -50,9 +50,7 @@ namespace CastleTests.Facilities.Synchronize
 			container.AddFacility<SynchronizeFacility>()
 				.Register(Component.For<SynchronizationContext>(),
 						  Component.For<AsynchronousContext>(),
-						  Component.For<DispatcherSynchronizationContext>(),
-						  Component.For<DummyWindow>().Named("Dummy")
-							.Activator<DummyFormActivator>(),
+						  Component.For<DummyWindow>().Named("Dummy").Activator<DummyFormActivator>(),
 						  Component.For<IDummyWindow>().ImplementedBy<DummyWindow>(),
 						  Component.For<ClassUsingWindowInWindowsContext>(),
 						  Component.For<ClassUsingWindowInAmbientContext>(),
@@ -149,7 +147,7 @@ namespace CastleTests.Facilities.Synchronize
 		{
 			var window = new DummyWindow();
 			var client = container.Resolve<IClassUsingDepedenecyContext<Panel>>();
-			ExecuteInThread(() => Assert.AreEqual(window, client.DoWork(window.Panel)));
+			ExecuteInThread(() => Assert.AreEqual(window.Panel, client.DoWork(window.Panel)));
 			Assert.IsNull(uncaughtException, "Expected no exception");
 		}
 
@@ -160,7 +158,7 @@ namespace CastleTests.Facilities.Synchronize
 			var client = container.Resolve<ClassUsingWindowInAmbientContext>();
 			ExecuteInThread(() =>
 			{
-				var dispatcherCtx = new DispatcherSynchronizationContext();
+				var dispatcherCtx = new DispatcherSynchronizationContext(window.Dispatcher);
 				SynchronizationContext.SetSynchronizationContext(dispatcherCtx);
 				client.DoWork(window.Panel);
 			});
