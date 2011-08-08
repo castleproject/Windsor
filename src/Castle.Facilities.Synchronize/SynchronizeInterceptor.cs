@@ -88,7 +88,7 @@ namespace Castle.Facilities.Synchronize
 			}
 
 			if (InvokeWithSynchronizedTarget<ISynchronizeInvoke>(
-				invocation, target => !target.InvokeRequired,
+				invocation, target => target.InvokeRequired == false,
 				(target, call, result) => target.Invoke(safeInvoke, new object[] { call, result })))
 			{
 				return;
@@ -145,8 +145,7 @@ namespace Castle.Facilities.Synchronize
 
 					if (syncContext == null)
 					{
-						throw new ApplicationException(string.Format("{0} does not implement {1}",
-						                                             syncContextRef, typeof(SynchronizationContext).FullName));
+						throw new ApplicationException(string.Format("{0} does not implement {1}", syncContextRef, typeof(SynchronizationContext).FullName));
 					}
 
 					prevSyncContext = SynchronizationContext.Current;
@@ -209,8 +208,7 @@ namespace Castle.Facilities.Synchronize
 #if DOTNET40
 		[SecurityCritical]
 #endif
-		private static bool InvokeWithSynchronizedTarget<T>(IInvocation invocation,
-		                                                    Func<T, bool> canCallOnThread, Action<T, IInvocation, Result> post) where T : class
+		private static bool InvokeWithSynchronizedTarget<T>(IInvocation invocation, Func<T, bool> canCallOnThread, Action<T, IInvocation, Result> post) where T : class
 		{
 			var syncTarget = invocation.InvocationTarget as T;
 
@@ -221,7 +219,7 @@ namespace Castle.Facilities.Synchronize
 
 			var result = CreateResult(invocation);
 
-			if (!canCallOnThread(syncTarget))
+			if (canCallOnThread(syncTarget) == false)
 			{
 				post(syncTarget, invocation, result);
 			}
@@ -313,8 +311,7 @@ namespace Castle.Facilities.Synchronize
 		private static void CompleteResult(Result result, bool synchronously, IInvocation invocation)
 		{
 			var parameters = invocation.Method.GetParameters();
-			var outs = invocation.Arguments.Where(
-				(a, i) => parameters[i].IsOut || parameters[i].ParameterType.IsByRef);
+			var outs = invocation.Arguments.Where((a, i) => parameters[i].IsOut || parameters[i].ParameterType.IsByRef);
 			result.SetValues(synchronously, invocation.ReturnValue, outs.ToArray());
 		}
 
