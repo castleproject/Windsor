@@ -29,7 +29,6 @@ namespace CastleTests.LoggingFacility
 		public void Can_specify_level_at_registration_time()
 		{
 			Container.AddFacility<LoggingFacility>(f => f.LogUsing(LoggerImplementation.Console).WithLevel(LoggerLevel.Fatal));
-
 			Container.Register(Component.For<SimpleLoggingComponent>());
 
 			var item = Container.Resolve<SimpleLoggingComponent>();

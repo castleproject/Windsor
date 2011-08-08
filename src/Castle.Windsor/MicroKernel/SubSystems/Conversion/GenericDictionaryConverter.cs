@@ -128,9 +128,14 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 							string.Format("Could not create dictionary<{0},{1}> because {2} is not assignable to value type {1}",
 							              typeof(TKey), typeof(TValue), convertValueTo));
 					}
-					var value = (TValue)parent.Context.Composition.PerformConversion(itemConfig.Value, convertValueTo);
-
-					dict.Add(key, value);
+					if (itemConfig.Children.Count == 1)
+					{
+						dict.Add(key, (TValue)parent.Context.Composition.PerformConversion(itemConfig.Children[0], convertValueTo));
+					}
+					else
+					{
+						dict.Add(key, (TValue)parent.Context.Composition.PerformConversion(itemConfig.Value, convertValueTo));
+					}
 				}
 				return dict;
 			}
