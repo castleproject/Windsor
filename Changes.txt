@@ -24,6 +24,7 @@
 - implemented IOC-243 - Remove obsolete UseSingleInterfaceProxy option
 
 - fixed IOC-299 - ResolveAll ignores services for open version of generic service requested
+- fixed IOC-297 - Container should throw an exception if a "primitive type" is registered as a service, since it will not be resolved
 - fixed IOC-295 - registration via XML ignores service specofied in attribute
 - fixed IOC-286 - Custom logger config in XML is broken
 - fixed IOC-282 - Windsor should be able to register generic typed factories as open generics
