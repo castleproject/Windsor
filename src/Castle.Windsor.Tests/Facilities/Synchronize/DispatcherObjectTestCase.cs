@@ -32,7 +32,7 @@ namespace CastleTests.Facilities.Synchronize
 
 	using NUnit.Framework;
 
-	[TestFixture/*, Ignore("Need to support multiple Applications")*/]
+	[TestFixture, Ignore("Need to support multiple Applications")]
 	public class DispatcherObjectTestCase
 	{
 		private Application application;
