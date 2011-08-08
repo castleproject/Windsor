@@ -41,18 +41,26 @@ namespace Castle.Facilities.Synchronize
 
 			Kernel.ComponentModelBuilder.AddContributor(new SynchronizeComponentInspector(infoStore));
 			Kernel.ComponentModelBuilder.AddContributor(new CreateOnUIThreadInspector(FacilityConfig, conversionManager));
+
 			RegisterAmbientSynchronizationContext<WindowsFormsSynchronizationContext>();
-			RegisterAmbientSynchronizationContext<DispatcherSynchronizationContext>();
+
+			if (RegisterAmbientSynchronizationContext<DispatcherSynchronizationContext>() == false)
+			{
+				Kernel.Register(Component.For<DispatcherSynchronizationContext>().OnlyNewServices()
+					.DependsOn(new { dispatcher = Dispatcher.CurrentDispatcher }));
+			}
 		}
 
-		private void RegisterAmbientSynchronizationContext<TContext>()
+		private bool RegisterAmbientSynchronizationContext<TContext>()
 			where TContext : SynchronizationContext
 		{
 			var syncContext = SynchronizationContext.Current as TContext;
 			if (syncContext != null)
 			{
-				Kernel.Register(Component.For<TContext>().Instance(syncContext));
+				Kernel.Register(Component.For<TContext>().Instance(syncContext).OnlyNewServices());
+				return true;
 			}
+			return false;
 		}
 	}
 }

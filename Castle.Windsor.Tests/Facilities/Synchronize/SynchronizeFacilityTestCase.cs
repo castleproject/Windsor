@@ -44,8 +44,7 @@ namespace CastleTests.Facilities.Synchronize
 			container.AddFacility<SynchronizeFacility>()
 				.Register(Component.For<SynchronizationContext>(),
 				          Component.For<AsynchronousContext>(),
-				          Component.For<DummyForm>().Named("Dummy")
-				          	.Activator<DummyFormActivator>(),
+				          Component.For<DummyForm>().Named("Dummy").Activator<DummyFormActivator>(),
 				          Component.For<IDummyForm>().ImplementedBy<DummyForm>(),
 				          Component.For<ClassUsingFormInWindowsContext>(),
 				          Component.For<ClassUsingFormInAmbientContext>(),
