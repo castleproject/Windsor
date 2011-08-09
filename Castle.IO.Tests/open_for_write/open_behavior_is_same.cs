@@ -6,15 +6,13 @@ using NUnit.Framework;
 
 namespace Castle.IO.Tests.open_for_write
 {
-	[Ignore("we don't necessarily need to mimick .Net's validation with the new code")]
 	public class open_behavior_is_same : context
 	{
 		[Test]
 		public void existing_file(
-			[Values(FileMode.Append, FileMode.Create, FileMode.CreateNew, FileMode.Open, FileMode.OpenOrCreate, FileMode.Truncate
-				)] FileMode mode,
-			[Values(FileAccess.Read, FileAccess.ReadWrite, FileAccess.Write)] FileAccess access,
-			[Values(FileShare.Delete, FileShare.None, FileShare.Read, FileShare.ReadWrite, FileShare.Write)] FileShare share)
+			[Values(FileMode.Append, FileMode.Create, FileMode.CreateNew, FileMode.Open, FileMode.OpenOrCreate, FileMode.Truncate)] FileMode mode,
+			[Values(FileAccess.Read, FileAccess.ReadWrite, FileAccess.Write)]														FileAccess access,
+			[Values(FileShare.Delete, FileShare.None, FileShare.Read, FileShare.ReadWrite, FileShare.Write)]						FileShare share)
 		{
 			var inMem = new InMemoryFileSystem();
 			using (var memTempDir = inMem.CreateTempDirectory())
@@ -29,8 +27,7 @@ namespace Castle.IO.Tests.open_for_write
 
 		[Test]
 		public void non_existing_file(
-			[Values(FileMode.Append, FileMode.Create, FileMode.CreateNew, FileMode.Open, FileMode.OpenOrCreate, FileMode.Truncate
-				)] FileMode mode,
+			[Values(FileMode.Append, FileMode.Create, FileMode.CreateNew, FileMode.Open, FileMode.OpenOrCreate, FileMode.Truncate)] FileMode mode,
 			[Values(FileAccess.Read, FileAccess.ReadWrite, FileAccess.Write)] FileAccess access,
 			[Values(FileShare.Delete, FileShare.None, FileShare.Read, FileShare.ReadWrite, FileShare.Write)] FileShare share)
 		{
@@ -72,9 +69,12 @@ namespace Castle.IO.Tests.open_for_write
 
 				var anyException = (memException ?? localException).GetType();
 
-				Assert.That(memException, Is.InstanceOf(anyException), "In-Memory has invalid result");
-				Assert.That(localException, Is.InstanceOf(anyException), string.Format("Local file has invalid result, message: {0}, in mem exception: {1}",
-					localException != null ? localException.Message : "NULL", memException));
+				Assert.That(memException, Is.InstanceOf(anyException), string.Format("In-Memory ex was {0}, but file was: {1}", 
+					memException != null ? memException.ToString() : "NULL", 
+					localException.ToString()));
+				
+				Assert.That(localException, Is.InstanceOf(anyException), string.Format("Local file ex was {0}, but in mem was: {1}.",
+					localException != null ? localException.ToString() : "NULL", memException.ToString()));
 
 				if (!(memException.GetType() == anyException && localException.GetType() == anyException))
 					Console.WriteLine("Memory exception: " + (memException != null ? memException.GetType().Name : null) +

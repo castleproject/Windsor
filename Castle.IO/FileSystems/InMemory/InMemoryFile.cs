@@ -148,6 +148,7 @@ namespace Castle.IO.FileSystems.InMemory
 
 		public Stream Open(FileMode fileMode, FileAccess fileAccess, FileShare fileShare)
 		{
+			ValidateFileMode(fileMode);
 			ValidateFileAccess(fileMode, fileAccess);
 
 			var beginPosition = ValidateFileMode(fileMode);
@@ -167,10 +168,13 @@ namespace Castle.IO.FileSystems.InMemory
 			// !write && createNew
 			// !write && truncate
 
-			if ((fileAccess & FileAccess.Write) == 0
-				&& (fileMode == FileMode.Append || fileMode == FileMode.Create || fileMode == FileMode.CreateNew || fileMode == FileMode.Truncate))
+			var noWrite = (fileAccess & FileAccess.Write) == 0;
+			if (noWrite && fileMode == FileMode.CreateNew)
 				throw new ArgumentException(string.Format(
 					"Can only open files in {0} mode when requesting FileAccess.Write access.", fileMode));
+
+			if (noWrite && fileMode == FileMode.Truncate)
+				throw new IOException("Cannot truncate a file if file mode doesn't include WRITE.");
 
 			//if (
 			//    ((fileMode == FileMode.Append) && fileAccess != FileAccess.Write) ||
