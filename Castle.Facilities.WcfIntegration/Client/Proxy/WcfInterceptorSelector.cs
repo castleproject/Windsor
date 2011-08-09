@@ -27,8 +27,6 @@ namespace Castle.Facilities.WcfIntegration.Proxy
 		private readonly Type proxiedType;
 		private readonly IInterceptorSelector userProvidedSelector;
 
-		private static readonly IInterceptor[] EmptyInterceptors = new IInterceptor[0];
-
 		public WcfInterceptorSelector(Type proxiedType, IInterceptorSelector userProvidedSelector)
 		{
 			this.proxiedType = proxiedType;
@@ -63,9 +61,6 @@ namespace Castle.Facilities.WcfIntegration.Proxy
 
 		public IInterceptor[] SelectInterceptors(Type type, MethodInfo method, IInterceptor[] interceptors)
 		{
-			if (This_should_be_in_ProxyGenerationHook_IsProxyWrapperMethod(method))
-				return EmptyInterceptors;
-
 			if (IsProxiedTypeMethod(method))
 				return SelectInterceptorsForProxiedType(method, interceptors, type);
 
@@ -74,11 +69,6 @@ namespace Castle.Facilities.WcfIntegration.Proxy
 
 
 			return interceptors;
-		}
-
-		private static bool This_should_be_in_ProxyGenerationHook_IsProxyWrapperMethod(MethodInfo methodInfo)
-		{
-			return methodInfo.DeclaringType.IsAssignableFrom(typeof(IWcfChannelHolder));
 		}
 
 		private static IInterceptor[] SelectInterceptorsForServiceType(MethodInfo method, IInterceptor[] interceptors)

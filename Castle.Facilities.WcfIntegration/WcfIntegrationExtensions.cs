@@ -33,29 +33,29 @@ namespace Castle.Facilities.WcfIntegration
 #endif
 
 #pragma warning disable 612,618
-		public static ComponentRegistration<T> AsWcfClient<T>(this ComponentRegistration<T> registration)
+		public static ComponentRegistration<T> AsWcfClient<T>(this ComponentRegistration<T> registration) where T : class
 		{
 			return registration.ActAs(new DefaultClientModel());
 		}
 
 		public static ComponentRegistration<T> AsWcfClient<T>(this ComponentRegistration<T> registration,
-															  params IWcfClientModel[] clientModels)
+															  params IWcfClientModel[] clientModels) where T : class
 		{
 			return registration.ActAs(clientModels);
 		}
 
-		public static ComponentRegistration<T> AsWcfClient<T>(this ComponentRegistration<T> registration, IWcfEndpoint endpoint)
+		public static ComponentRegistration<T> AsWcfClient<T>(this ComponentRegistration<T> registration, IWcfEndpoint endpoint) where T : class
 		{
 			return registration.ActAs(new DefaultClientModel(endpoint));
 		}
 
-		public static ComponentRegistration<T> AsWcfService<T>(this ComponentRegistration<T> registration)
+		public static ComponentRegistration<T> AsWcfService<T>(this ComponentRegistration<T> registration) where T : class
 		{
 			return registration.ActAs(new DefaultServiceModel());
 		}
 
 		public static ComponentRegistration<T> AsWcfService<T>(this ComponentRegistration<T> registration,
-															   params IWcfServiceModel[] serviceModels)
+															   params IWcfServiceModel[] serviceModels) where T : class
 		{
 			return registration.ActAs(serviceModels);
 		}

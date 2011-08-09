@@ -16,6 +16,8 @@ namespace Castle.Facilities.WcfIntegration.Proxy
 {
 	using System;
 	using System.Reflection;
+
+	using Castle.Core.Internal;
 	using Castle.DynamicProxy;
 
 	[Serializable]
@@ -32,13 +34,10 @@ namespace Castle.Facilities.WcfIntegration.Proxy
 
 		public bool ShouldInterceptMethod(Type type, MethodInfo methodInfo)
 		{
-			// NOTE: This is fixed now. This code can be uncommented and Selector does not have to have this responsibility anymore
-			// BUG: Due to... illogical behavior of DP this will produce illformed proxy types.
-			// We have to move this piece of logic to InterceptorSelector, and move it back when the bug gets fixed.
-			//if (IsChannelHolderMethod(methodInfo))
-			//{
-			//    return false;
-			//}
+			if (IsChannelHolderMethod(methodInfo))
+			{
+				return false;
+			}
 
 			if (hook != null)
 			{
@@ -50,7 +49,7 @@ namespace Castle.Facilities.WcfIntegration.Proxy
 
 		private bool IsChannelHolderMethod(MethodInfo methodInfo)
 		{
-			return typeof(IWcfChannelHolder).IsAssignableFrom(methodInfo.DeclaringType);
+			return methodInfo.DeclaringType.Is<IWcfChannelHolder>();
 		}
 
 		public void NonProxyableMemberNotification(Type type, MemberInfo memberInfo)

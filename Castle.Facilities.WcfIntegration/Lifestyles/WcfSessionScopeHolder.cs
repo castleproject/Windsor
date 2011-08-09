@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,21 +17,42 @@ namespace Castle.Facilities.WcfIntegration.Lifestyles
 	using System;
 	using System.ServiceModel;
 
-	public class PerOperationCache : AbstractWcfLifestyleCache<OperationContext>
+	using Castle.MicroKernel.Lifestyle.Scoped;
+
+	public class WcfSessionScopeHolder : IExtension<IContextChannel>, IDisposable
 	{
-		protected override void InitContext(OperationContext context)
+		private readonly ILifetimeScope scope;
+
+		public WcfSessionScopeHolder(DefaultLifetimeScope scope)
 		{
-			context.OperationCompleted += Shutdown;
+			this.scope = scope;
 		}
 
-		protected override void ShutdownContext(OperationContext context)
+		public ILifetimeScope Scope
 		{
-			context.OperationCompleted -= Shutdown;
+			get { return scope; }
+		}
+
+		public void Dispose()
+		{
+			scope.Dispose();
 		}
 
 		private void Shutdown(object sender, EventArgs e)
 		{
-			ShutdownCache();
+			Dispose();
+		}
+
+		void IExtension<IContextChannel>.Attach(IContextChannel owner)
+		{
+			owner.Faulted += Shutdown;
+			owner.Closed += Shutdown;
+		}
+
+		void IExtension<IContextChannel>.Detach(IContextChannel owner)
+		{
+			owner.Faulted -= Shutdown;
+			owner.Closed -= Shutdown;
 		}
 	}
 }

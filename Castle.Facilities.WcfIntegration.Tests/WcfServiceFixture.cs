@@ -112,15 +112,9 @@ namespace Castle.Facilities.WcfIntegration.Tests
 			Assert.IsFalse(ServiceHostListener.ClosingCalled);
 			Assert.IsFalse(ServiceHostListener.ClosedCalled);
 
-			windsorContainer.Kernel.RemoveComponent("Operations");
+			windsorContainer.Release(client);
 			Assert.IsTrue(ServiceHostListener.ClosingCalled);
 			Assert.IsTrue(ServiceHostListener.ClosedCalled);
-		}
-
-		[Test]
-		public void WillReleaseAllExtensionsWhenUnregistered()
-		{
-			windsorContainer.Kernel.RemoveComponent("Operations");
 		}
 	}
 

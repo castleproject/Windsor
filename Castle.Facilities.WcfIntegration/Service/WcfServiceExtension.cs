@@ -76,7 +76,6 @@ namespace Castle.Facilities.WcfIntegration
 
 			kernel.ComponentModelCreated += Kernel_ComponentModelCreated;
 			kernel.ComponentRegistered += Kernel_ComponentRegistered;
-			kernel.ComponentUnregistered += Kernel_ComponentUnregistered;
 
 			if (_afterInit != null)
 			{
@@ -131,24 +130,6 @@ namespace Castle.Facilities.WcfIntegration
 				if (serviceModel.IsHosted == false)
 				{
 					CreateServiceHostWhenHandlerIsValid(handler, serviceModel, model);
-				}
-			}
-		}
-
-		private void Kernel_ComponentUnregistered(string key, IHandler handler)
-		{
-			var serviceHosts = handler.ComponentModel
-				.ExtendedProperties[WcfConstants.ServiceHostsKey] as IList<ServiceHost>;
-
-			if (serviceHosts != null)
-			{
-				foreach (var serviceHost in serviceHosts)
-				{
-					foreach (var cleanUp in serviceHost.Extensions.FindAll<IWcfCleanUp>())
-					{
-						cleanUp.CleanUp();
-					}
-					WcfUtils.ReleaseCommunicationObject(serviceHost, CloseTimeout);
 				}
 			}
 		}

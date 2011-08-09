@@ -80,7 +80,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 			client.Operation2("two ");
 			client.Operation2("and two again");
 			client.Terminating();
-			var invocations = windsorContainer.GetService<CollectingInterceptor>()
+			var invocations = windsorContainer.Resolve<CollectingInterceptor>()
 				.AllInvocations
 				.GroupBy(i => i.InvocationTarget)
 				.ToArray();
@@ -101,7 +101,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 			client.Initiating("Client 2");
 			client.Operation1(" welcomes you.");
 			client.Terminating();
-			var interceptor = windsorContainer.GetService<CollectingInterceptor>();
+			var interceptor = windsorContainer.Resolve<CollectingInterceptor>();
 			var invocations = interceptor
 				.AllInvocations
 				.GroupBy(i => i.InvocationTarget)
@@ -125,7 +125,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 			client2.Operation1(" welcomes you.");
 			client.Terminating();
 			client2.Terminating();
-			var interceptor = windsorContainer.GetService<CollectingInterceptor>();
+			var interceptor = windsorContainer.Resolve<CollectingInterceptor>();
 			var invocations = interceptor
 				.AllInvocations
 				.GroupBy(i => i.InvocationTarget)

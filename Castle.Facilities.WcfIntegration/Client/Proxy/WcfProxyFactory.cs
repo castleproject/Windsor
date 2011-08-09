@@ -15,6 +15,7 @@
 namespace Castle.Facilities.WcfIntegration.Proxy
 {
 	using System;
+	using System.Collections.Generic;
 	using System.Linq;
 	using System.Runtime.Remoting;
 	using System.ServiceModel;
@@ -62,11 +63,17 @@ namespace Castle.Facilities.WcfIntegration.Proxy
 			{
 				return channelHolder.Channel;
 			}
+			if(model.Services.Count() > 1)
+			{
+				throw new ArgumentException(
+					string.Format("Component {0}, which was designated as a WCF proxy exposes {1} services. The facility currently only supports single-service components.",
+					              model.Name, model.Services.Count()));
+			}
 
 			var isDuplex = IsDuplex(channelHolder.RealProxy);
-			var proxyOptions = ProxyUtil.ObtainProxyOptions(model, true);
-			var generationOptions = CreateProxyGenerationOptions(model.Service, proxyOptions, kernel, context);
-			var additionalInterfaces = GetInterfaces(model.Service, proxyOptions, isDuplex);
+			var proxyOptions = model.ObtainProxyOptions();
+			var generationOptions = CreateProxyGenerationOptions(model.Services.Single(), proxyOptions, kernel, context);
+			var additionalInterfaces = GetInterfaces(model.Services, proxyOptions, isDuplex);
 			var interceptors = GetInterceptors(kernel, model, channelHolder, context);
 
 			return generator.CreateInterfaceProxyWithTarget(typeof(IWcfChannelHolder),
@@ -84,23 +91,24 @@ namespace Castle.Facilities.WcfIntegration.Proxy
 			return typeInfo.CanCastTo(typeof(IDuplexContextChannel), null);
 		}
 
-		protected virtual Type[] GetInterfaces(Type service, ProxyOptions proxyOptions, bool isDuplex)
+		protected virtual Type[] GetInterfaces(IEnumerable<Type> services, ProxyOptions proxyOptions, bool isDuplex)
 		{
-			// TODO: this should be static and happen in IContributeComponentModelConstruction preferably
-			var additionalInterfaces = proxyOptions.AdditionalInterfaces ?? Type.EmptyTypes;
-			Array.Resize(ref additionalInterfaces, additionalInterfaces.Length + (isDuplex ? 4 : 3));
-			int index = additionalInterfaces.Length;
-			additionalInterfaces[--index] = service;
-			additionalInterfaces[--index] = typeof(IServiceChannel);
-			additionalInterfaces[--index] = typeof(IClientChannel);
+			var interfaces = services.ToList();
+			if(proxyOptions.AdditionalInterfaces != null)
+			{
+				interfaces.AddRange(proxyOptions.AdditionalInterfaces);
+			}
+			interfaces.Add(typeof(IServiceChannel));
+			interfaces.Add(typeof(IClientChannel));
 
 			if (isDuplex)
-				additionalInterfaces[--index] = typeof(IDuplexContextChannel);
-
-			return additionalInterfaces;
+			{
+				interfaces.Add(typeof(IDuplexContextChannel));
+			}
+			return interfaces.ToArray();
 		}
 
-		private IInterceptor[] GetInterceptors(IKernel kernel, ComponentModel model,IWcfChannelHolder channelHolder, CreationContext context)
+		private IInterceptor[] GetInterceptors(IKernel kernel, ComponentModel model, IWcfChannelHolder channelHolder, CreationContext context)
 		{
 			var interceptors = ObtainInterceptors(kernel, model, context);
 
@@ -114,7 +122,7 @@ namespace Castle.Facilities.WcfIntegration.Proxy
 			if (clientModel.WantsAsyncCapability)
 			{
 				var getAsyncType = WcfUtils.SafeInitialize(ref asyncType,
-					() => AsyncType.GetAsyncType(model.Service));
+					() => AsyncType.GetAsyncType(model.Services.Single()));
 				interceptors[--index] = new WcfRemotingAsyncInterceptor(getAsyncType, clients, channelHolder);
 			}
 

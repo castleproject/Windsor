@@ -132,7 +132,7 @@ namespace Castle.Facilities.WcfIntegration
 				Component.For(typeof(IChannelFactoryBuilder<>))
 					.ImplementedBy(typeof(AsynChannelFactoryBuilder<>))
 					.DependsOn(Property.ForKey<ProxyGenerator>().Eq(proxyGenerator))
-					.Unless(Component.ServiceAlreadyRegistered)
+					.OnlyNewServices()
 				);
 
 			if (kernel.GetFacilities().OfType<TypedFactoryFacility>().Any())
@@ -143,7 +143,6 @@ namespace Castle.Facilities.WcfIntegration
 			}
 
 			kernel.ComponentModelCreated += Kernel_ComponentModelCreated;
-			kernel.ComponentUnregistered += Kernel_ComponentUnregistered;
 
 			if (afterInit != null)
 			{
@@ -178,7 +177,7 @@ namespace Castle.Facilities.WcfIntegration
 		{
 			var clientModel = ResolveClientModel(model);
 
-			if (clientModel != null && model.Implementation == model.Service)
+			if (clientModel != null && model.Implementation == model.Services.Single())
 			{
 				model.CustomComponentActivator = typeof(WcfClientActivator);
 				model.ExtendedProperties[WcfConstants.ClientModelKey] = clientModel;
@@ -203,19 +202,9 @@ namespace Castle.Facilities.WcfIntegration
 			}
 		}
 
-		private static void Kernel_ComponentUnregistered(string key, IHandler handler)
-		{
-			var model = handler.ComponentModel;
-			var burden = model.ExtendedProperties[WcfConstants.ClientBurdenKey] as IWcfBurden;
-			if (burden != null)
-			{
-				burden.CleanUp();
-			}
-		}
-
 		private static IWcfClientModel ResolveClientModel(ComponentModel model)
 		{
-			if (model.Service.IsInterface)
+			if (model.Services.Single().IsInterface)
 			{
 				var clientModel = WcfUtils.FindDependencies<IWcfClientModel>(model.CustomDependencies).FirstOrDefault();
 				if (clientModel != null)

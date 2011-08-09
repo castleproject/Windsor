@@ -22,24 +22,9 @@ namespace Castle.Facilities.WcfIntegration
 
 	public class WcfClientFactorySelector : ITypedFactoryComponentSelector
 	{
-		public TypedFactoryComponent SelectComponent(MethodInfo method, Type type, object[] arguments)
+		public Func<IKernelInternal, IReleasePolicy, object> SelectComponent(MethodInfo method, Type type, object[] arguments)
 		{
-			return new ClientComponent(method.ReturnType, arguments);
-		}
-
-		#region Nested Class: ClientComponent
-
-		class ClientComponent : TypedFactoryComponent
-		{
-			private readonly object[] arguments;
-
-			public ClientComponent(Type componentType, object[] arguments)
-				: base(null, componentType, null)
-			{
-				this.arguments = arguments;
-			}
-
-			public override object Resolve(IKernel kernel)
+			return (k, p) =>
 			{
 				string key = null;
 				var argument = arguments[0];
@@ -51,7 +36,7 @@ namespace Castle.Facilities.WcfIntegration
 				}
 				else if (argument is string)
 				{
-					return kernel.Resolve((string)argument, ComponentType);
+					return k.Resolve((string)argument, method.ReturnType, null, p);
 				}
 
 				if (argument is Uri)
@@ -63,13 +48,11 @@ namespace Castle.Facilities.WcfIntegration
 
 				if (key == null)
 				{
-					return kernel.Resolve(ComponentType, args);
+					return k.Resolve(method.ReturnType, args, p);
 				}
 
-				return kernel.Resolve(key, ComponentType, args);
-			}
+				return k.Resolve(key, method.ReturnType, args, p);
+			};
 		}
-
-		#endregion
 	}
 }

@@ -59,10 +59,10 @@ namespace Castle.Facilities.WcfIntegration.Behaviors
 				string correlationId = ObtainCorrelationId(request);
 
 				using (logger.ThreadStacks["NDC"].Push(correlationId))
-                {
-					logger.Info("Sending request to {0}", channel.RemoteAddress);
-					LogMessageContents(ref request);                	
-                }
+				{
+					logger.InfoFormat("Sending request to {0}", channel.RemoteAddress);
+					LogMessageContents(ref request);
+				}
 
 				return correlationId;
 			}
@@ -83,7 +83,7 @@ namespace Castle.Facilities.WcfIntegration.Behaviors
 
 				using (logger.ThreadStacks["NDC"].Push(correlationId.ToString()))
 				{
-					logger.Info("Received response for request {0}", correlationId);
+					logger.InfoFormat("Received response for request {0}", correlationId);
 					LogMessageContents(ref reply);
 				}
 			}
@@ -108,7 +108,7 @@ namespace Castle.Facilities.WcfIntegration.Behaviors
 
 				using (logger.ThreadStacks["NDC"].Push(correlationId))
 				{
-					logger.Info("Received request from {0}", channel.RemoteAddress);
+					logger.InfoFormat("Received request from {0}", channel.RemoteAddress);
 					LogMessageContents(ref request);
 				}
 
@@ -131,7 +131,7 @@ namespace Castle.Facilities.WcfIntegration.Behaviors
 
 				using (logger.ThreadStacks["NDC"].Push(correlationId.ToString()))
 				{
-					logger.Info("Sending response for request {0}", correlationId);
+					logger.InfoFormat("Sending response for request {0}", correlationId);
 					LogMessageContents(ref reply);
 				}
 			}

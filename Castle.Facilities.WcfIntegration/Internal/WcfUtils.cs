@@ -72,7 +72,7 @@ namespace Castle.Facilities.WcfIntegration.Internal
 		{
 			foreach (var handler in FindExtensions<T>(kernel, scope))
 			{
-				T behavior = (T)handler.Resolve(CreationContext.Empty);
+				T behavior = (T)handler.Resolve(CreationContext.CreateEmpty());
 				if (predicate == null || predicate(behavior))
 				{
 					if (behaviors != null) behaviors.Add(behavior);
@@ -119,13 +119,13 @@ namespace Castle.Facilities.WcfIntegration.Internal
 		{
 			foreach (var handler in FindExtensions<T>(kernel, scope))
 			{
-				AddExtensionDependency(null, handler.ComponentModel.Service, model);
+				AddExtensionDependency(null, handler.ComponentModel.Services.Single(), model);
 			}
 		}
 
 		public static void AddExtensionDependency(string dependencyKey, Type serviceType, ComponentModel model)
 		{
-			model.Dependencies.Add(new DependencyModel(DependencyType.Service, dependencyKey, serviceType, false));
+			model.Dependencies.Add(new DependencyModel(dependencyKey, serviceType, false));
 		}
 
 		public static bool IsExtension<T>(object extension)

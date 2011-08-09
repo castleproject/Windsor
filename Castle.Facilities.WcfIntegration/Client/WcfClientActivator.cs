@@ -79,8 +79,8 @@ namespace Castle.Facilities.WcfIntegration
 			}
 			catch (Exception ex)
 			{
-				throw new ComponentActivatorException("WcfClientActivator: could not proxy service " +
-				                                      Model.Service.FullName, ex);
+				throw new ComponentActivatorException("WcfClientActivator: could not proxy component " +
+				                                      Model.Name, ex);
 			}
 		}
 
@@ -172,7 +172,7 @@ namespace Castle.Facilities.WcfIntegration
 			where TModel : IWcfClientModel
 		{
 			var channelBuilder = kernel.Resolve<IChannelBuilder<TModel>>();
-			return channelBuilder.GetChannelCreator((TModel)clientModel, model.Service, out burden);
+			return channelBuilder.GetChannelCreator((TModel)clientModel, model.Services.Single(), out burden);
 		}
 
 		private static void NotifyChannelCreatedOrAvailable(IChannel channel, IWcfBurden burden, bool created)
@@ -203,10 +203,10 @@ namespace Castle.Facilities.WcfIntegration
 
 		private static IWcfClientModel ObtainClientModel(ComponentModel model, CreationContext context)
 		{
-			var clientModel = WcfUtils.FindDependencies<IWcfClientModel>(context.AdditionalParameters)
+			var clientModel = WcfUtils.FindDependencies<IWcfClientModel>(context.AdditionalArguments)
 				.FirstOrDefault();
 
-			var endpoint = WcfUtils.FindDependencies<IWcfEndpoint>(context.AdditionalParameters)
+			var endpoint = WcfUtils.FindDependencies<IWcfEndpoint>(context.AdditionalArguments)
 				.FirstOrDefault();
 
 			if (endpoint != null)
@@ -228,7 +228,7 @@ namespace Castle.Facilities.WcfIntegration
 
 			if (model != null)
 			{
-				contract = model.Service;
+				contract = model.Services.Single();
 			}
 			else if (clientModel.Contract != null)
 			{
@@ -244,11 +244,11 @@ namespace Castle.Facilities.WcfIntegration
 				throw new FacilityException("The client model requires an endpoint.");
 			}
 
-			if ((model != null) && (clientModel.Contract != null) && (clientModel.Contract != model.Service))
+			if ((model != null) && (clientModel.Contract != null) && (clientModel.Contract != model.Services.Single()))
 			{
 				throw new FacilityException(string.Format(
 					"The client endpoint contract {0} conflicts with the expected contract {1}.",
-					clientModel.Contract.FullName, model.Service.FullName));
+					clientModel.Contract.FullName, model.Services.Single().FullName));
 			}
 		}
 

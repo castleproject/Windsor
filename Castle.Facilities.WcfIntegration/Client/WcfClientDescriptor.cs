@@ -46,7 +46,7 @@ namespace Castle.Facilities.WcfIntegration
 
 		#region IRegistration Members
 
-		void IRegistration.Register(IKernel kernel)
+		void IRegistration.Register(IKernelInternal kernel)
 		{
 			foreach (IWcfClientModel channel in channels)
 			{

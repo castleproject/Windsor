@@ -15,70 +15,79 @@
 namespace Castle.Facilities.WcfIntegration
 {
 	using System;
+	using System.Linq;
 	using System.ServiceModel;
+
 	using Castle.Core;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Facilities;
 
-	public abstract class AbstractServiceHostBuilder<M> : AbstractServiceHostBuilder, IServiceHostBuilder<M>
-			where M : IWcfServiceModel
+	public abstract class AbstractServiceHostBuilder<TServiceModel> : AbstractServiceHostBuilder, IServiceHostBuilder<TServiceModel>
+		where TServiceModel : IWcfServiceModel
 	{
 		protected AbstractServiceHostBuilder(IKernel kernel)
 			: base(kernel)
 		{
 		}
 
-		#region IServiceHostBuilder Members
+		protected abstract ServiceHost CreateServiceHost(ComponentModel model, TServiceModel serviceModel, params Uri[] baseAddresses);
 
-		public ServiceHost Build(ComponentModel model, M serviceModel, params Uri[] baseAddresses)
-		{
-			ValidateServiceModelInternal(model, serviceModel);
-			var serviceHost = CreateServiceHost(model, serviceModel, baseAddresses);
-			ConfigureServiceHost(serviceHost, serviceModel, model); 
-			return serviceHost;
-		}
+		protected abstract ServiceHost CreateServiceHost(ComponentModel model, Uri[] baseAddresses);
+
+		protected abstract ServiceHost CreateServiceHost(Type serviceType, Uri[] baseAddresses);
 
 		public ServiceHost Build(ComponentModel model, params Uri[] baseAddresses)
 		{
 			var serviceHost = CreateServiceHost(model, baseAddresses);
-			ConfigureServiceHost(serviceHost, null, model); 
+			ConfigureServiceHost(serviceHost, null, model);
 			return serviceHost;
 		}
 
 		public ServiceHost Build(Type serviceType, params Uri[] baseAddresses)
 		{
 			var serviceHost = CreateServiceHost(serviceType, baseAddresses);
-			ConfigureServiceHost(serviceHost, null, null); 
+			ConfigureServiceHost(serviceHost, null, null);
 			return serviceHost;
 		}
 
-		#endregion
-
-		private void ValidateServiceModelInternal(ComponentModel model, M serviceModel)
+		public ServiceHost Build(ComponentModel model, TServiceModel serviceModel, params Uri[] baseAddresses)
 		{
-			ValidateServiceModel(model, serviceModel);
+			ValidateServiceModelInternal(model, serviceModel);
+			var serviceHost = CreateServiceHost(model, serviceModel, baseAddresses);
+			ConfigureServiceHost(serviceHost, serviceModel, model);
+			return serviceHost;
+		}
 
-			foreach (var endpoint in serviceModel.Endpoints)
+		protected virtual void ValidateComponentModel(ComponentModel model)
+		{
+			if (model == null)
 			{
-				Type contract = endpoint.Contract;
-
-				if (contract == null)
-				{
-					if (model == null)
-					{
-						throw new FacilityException("No service endpoint contract can be implied from the component.");
-					}
-					endpoint.Contract = model.Service;
-				}
+				throw new FacilityException("No service endpoint contract can be implied from the component.");
+			}
+			if (model.Services.Count() != 1)
+			{
+				throw new FacilityException("The component {0} exposes {1} services. Currently only single-service components are supported by the facility.");
 			}
 		}
 
-		protected virtual void ValidateServiceModel(ComponentModel model, M serviceModel)
+		protected virtual void ValidateServiceModel(ComponentModel model, TServiceModel serviceModel)
 		{
 		}
 
-		protected abstract ServiceHost CreateServiceHost(ComponentModel model, M serviceModel, params Uri[] baseAddresses);
-		protected abstract ServiceHost CreateServiceHost(ComponentModel model, Uri[] baseAddresses);
-		protected abstract ServiceHost CreateServiceHost(Type serviceType, Uri[] baseAddresses);
+		private void ValidateServiceModelInternal(ComponentModel model, TServiceModel serviceModel)
+		{
+			ValidateComponentModel(model);
+			ValidateServiceModel(model, serviceModel);
+
+			var service = model.Services.Single();
+			foreach (var endpoint in serviceModel.Endpoints)
+			{
+				var contract = endpoint.Contract;
+				if (contract == null)
+				{
+					endpoint.Contract = service;
+				}
+			}
+		}
 	}
 }

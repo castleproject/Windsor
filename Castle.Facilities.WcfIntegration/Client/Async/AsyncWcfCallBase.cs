@@ -99,7 +99,7 @@ namespace Castle.Facilities.WcfIntegration.Async
 
 		private WcfRemotingAsyncInterceptor GetAsyncInterceptor(TProxy proxy)
 		{
-			var interceptors = Array.FindAll((proxy as IProxyTargetAccessor).GetInterceptors(),
+			var interceptors = Array.FindAll(((IProxyTargetAccessor)proxy).GetInterceptors(),
 											 i => i is WcfRemotingAsyncInterceptor);
 
 			if (interceptors.Length <= 0)

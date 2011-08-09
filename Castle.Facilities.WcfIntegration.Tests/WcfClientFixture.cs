@@ -673,11 +673,14 @@ namespace Castle.Facilities.WcfIntegration.Tests
 			Assert.IsTrue(ChannelFactoryListener.CreatedCalled);
 			Assert.IsTrue(ChannelFactoryListener.OpeningCalled);
 			Assert.IsTrue(ChannelFactoryListener.OpenedCalled);
+
 			client.GetValueFromConstructor();
+
 			Assert.IsFalse(ChannelFactoryListener.ClosingCalled);
 			Assert.IsFalse(ChannelFactoryListener.ClosedCalled);
 
-			windsorContainer.Kernel.RemoveComponent("operations");
+			windsorContainer.Release(client);
+
 			Assert.IsTrue(ChannelFactoryListener.ClosingCalled);
 			Assert.IsTrue(ChannelFactoryListener.ClosedCalled);
 		}
@@ -705,7 +708,8 @@ namespace Castle.Facilities.WcfIntegration.Tests
 			Assert.IsFalse(ChannelFactoryListener.ClosingCalled);
 			Assert.IsFalse(ChannelFactoryListener.ClosedCalled);
 
-			windsorContainer.Kernel.RemoveComponent("operations");
+			windsorContainer.Release(client);
+
 			Assert.IsTrue(ChannelFactoryListener.ClosingCalled);
 			Assert.IsTrue(ChannelFactoryListener.ClosedCalled);
 		}
@@ -1324,7 +1328,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 				})
 			);
 			windsorContainer.Resolve<IOperations>("operations");
-			windsorContainer.Kernel.RemoveComponent("operations");
+
 		}
 
 		[Test]
