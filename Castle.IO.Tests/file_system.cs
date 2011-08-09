@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Threading;
+using Castle.IO.Extensions;
 using NUnit.Framework;
 using SharpTestsEx;
 
@@ -65,17 +66,21 @@ namespace Castle.IO.Tests
 		[Test]
 		public void directories_always_created()
 		{
-			var directory = FileSystem.GetDirectory(@"C:\test\test.html");
-
-			directory.Exists.ShouldBeFalse();
+			using (var tmpDir = FileSystem.CreateTempDirectory())
+			{
+				var directory = FileSystem.GetDirectory(tmpDir.Path.Combine("test.html"));
+				directory.Exists.ShouldBeFalse();
+			}
 		}
 
 		[Test]
 		public void created_directory_exists()
 		{
-			var directory = FileSystem.CreateDirectory(@"C:\test\temp.html");
-
-			directory.Exists.ShouldBeTrue();
+			using (var tmpDir = FileSystem.CreateTempDirectory())
+			{
+				var directory = FileSystem.CreateDirectory(tmpDir.Path.Combine("temp.html"));
+				directory.Exists.ShouldBeTrue();
+			}
 		}
 
 		[Test]

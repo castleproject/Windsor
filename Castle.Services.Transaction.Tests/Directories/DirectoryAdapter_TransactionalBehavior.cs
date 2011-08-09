@@ -18,6 +18,7 @@
 
 using System;
 using Castle.IO;
+using Castle.IO.Extensions;
 using Castle.IO.Internal;
 using Castle.Services.Transaction.Tests.Framework;
 using Castle.Services.Transaction.Tests.TestClasses;

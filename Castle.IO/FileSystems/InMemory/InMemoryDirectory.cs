@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Castle.IO.Extensions;
 using Castle.IO.Internal;
 using System.Text.RegularExpressions;
 

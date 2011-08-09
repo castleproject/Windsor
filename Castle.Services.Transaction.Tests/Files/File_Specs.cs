@@ -21,7 +21,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using Castle.IO;
-using Castle.IO.Internal;
+using Castle.IO.Extensions;
 using Castle.Services.Transaction.Tests.Framework;
 using Castle.Services.Transaction.Tests.TestClasses;
 using Castle.Transactions;

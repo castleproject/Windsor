@@ -154,7 +154,7 @@
     <Compile Include="SafeFindHandle.cs" />
     <Compile Include="SearchScope.cs" />
     <Compile Include="StreamExtensions.cs" />
-    <Compile Include="StringExtensions.cs" />
+    <Compile Include="Extensions\StringExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\buildscripts\CastleKey.snk">

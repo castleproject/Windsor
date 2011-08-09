@@ -16,8 +16,7 @@
 
 #endregion
 
-using Castle.IO;
-using Castle.IO.Internal;
+using Castle.IO.Extensions;
 using Castle.Services.Transaction.Tests.Framework;
 using Castle.Transactions.IO;
 using NUnit.Framework;

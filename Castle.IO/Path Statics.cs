@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Text;
+using Castle.IO.Extensions;
 using Castle.IO.Internal;
 using System.Linq;
 

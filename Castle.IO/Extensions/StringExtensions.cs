@@ -20,7 +20,7 @@ using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace Castle.IO
+namespace Castle.IO.Extensions
 {
 	public static class StringExtensions
 	{

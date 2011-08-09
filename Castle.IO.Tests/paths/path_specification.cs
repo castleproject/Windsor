@@ -1,6 +1,6 @@
-﻿using NUnit.Framework;
+﻿using Castle.IO.Extensions;
+using NUnit.Framework;
 using SharpTestsEx;
-using System.Net;
 
 namespace Castle.IO.Tests
 {

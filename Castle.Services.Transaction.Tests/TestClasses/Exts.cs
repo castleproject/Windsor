@@ -17,6 +17,7 @@
 #endregion
 
 using Castle.IO;
+using Castle.IO.Extensions;
 using Castle.IO.Internal;
 
 namespace Castle.Services.Transaction.Tests.TestClasses

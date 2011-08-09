@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Threading;
+using Castle.IO.Extensions;
 
 namespace Castle.IO.FileSystems.InMemory
 {
