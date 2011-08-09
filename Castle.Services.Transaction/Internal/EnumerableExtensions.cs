@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-using System;
-=======
 ﻿using System;
->>>>>>> hotfix/v3.0.201
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 
@@ -45,11 +41,7 @@ namespace Castle.Services.Transaction.Internal
 		{
 			Contract.Requires(items != null);
 			Contract.Requires(sideEffect != null);
-<<<<<<< HEAD
-			Contract.Ensures(Contract.Result<IEnumerable<T>>() != null	);
-=======
 			Contract.Ensures(Contract.Result<IEnumerable<T>>() != null);
->>>>>>> hotfix/v3.0.201
 
 			foreach (var item in items)
 			{
