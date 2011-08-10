@@ -25,6 +25,7 @@ namespace Castle.MicroKernel.Tests.Configuration
 	using Castle.Windsor.Tests.Components;
 
 	using CastleTests;
+	using CastleTests.ClassComponents;
 	using CastleTests.Components;
 
 	using NUnit.Framework;
