@@ -16,6 +16,7 @@ namespace Castle.Core.Internal
 {
 	public abstract class Constants
 	{
+		private const string propertyFilters = "castle.property-filters";
 		private const string defaultComponentForServiceFilter = "castle.default-component-for-service-filter";
 		private const string scopeAccessorType = "castle.scope-accessor-type";
 		private const string scopeRootSelector = "castle.scope-root";
@@ -33,6 +34,11 @@ namespace Castle.Core.Internal
 		public static object ScopeRootSelector
 		{
 			get { return scopeRootSelector; }
+		}
+
+		public static object PropertyFilters
+		{
+			get { return propertyFilters; }
 		}
 	}
 }
