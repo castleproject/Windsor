@@ -19,6 +19,7 @@ namespace Castle.MicroKernel.Registration
 	using System.Collections.Generic;
 	using System.ComponentModel;
 	using System.Linq;
+	using System.Reflection;
 
 	using Castle.Core;
 	using Castle.Core.Configuration;
@@ -1081,6 +1082,20 @@ namespace Castle.MicroKernel.Registration
 		{
 			var properties = new Property(Constants.DefaultComponentForServiceFilter, serviceFilter ?? (t => true));
 			return ExtendedProperties(properties);
+		}
+
+		public ComponentRegistration<TService> Properties(Predicate<PropertyInfo> filter)
+		{
+			return AddDescriptor(new DelegatingModelDescriptor(builder: (k, c) =>
+			{
+				var filters = (ICollection<Predicate<PropertyInfo>>)c.ExtendedProperties[Constants.PropertyFilters];
+				if (filters == null)
+				{
+					filters = new List<Predicate<PropertyInfo>>(4);
+					c.ExtendedProperties[Constants.PropertyFilters] = filters;
+				}
+				filters.Add(filter);
+			}));
 		}
 	}
 }

@@ -563,6 +563,7 @@
     <Compile Include="MicroKernel\NotImplementedDependencyResolver.cs" />
     <Compile Include="Pools\RecyclableComponent.cs" />
     <Compile Include="Pools\UseRecyclableComponent.cs" />
+    <Compile Include="PropertyDependenciesTestCase.cs" />
     <Compile Include="Proxies\InterceptorDependenciesTestCase.cs" />
     <Compile Include="ProxyInfrastructure\OnBehalfAwareInterceptorSelector.cs" />
     <Compile Include="ProxyInfrastructure\OnBehalfAwareProxyGenerationHook.cs" />

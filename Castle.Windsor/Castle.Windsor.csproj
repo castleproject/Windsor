@@ -548,6 +548,7 @@
     <Compile Include="MicroKernel\Lifestyle\ScopedLifestyleManager.cs" />
     <Compile Include="MicroKernel\Lifestyle\Scoped\ThreadStaticLifetimeScope.cs" />
     <Compile Include="MicroKernel\Lifestyle\WebRequestScopeAccessor.cs" />
+    <Compile Include="MicroKernel\ModelBuilder\Descriptors\DelegatingModelDescriptor.cs" />
     <Compile Include="MicroKernel\Registration\Classes.cs" />
     <Compile Include="MicroKernel\Registration\Types.cs" />
     <Compile Include="MicroKernel\Lifestyle\SingletonLifestyleManager.cs">

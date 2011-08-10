@@ -15,10 +15,13 @@
 namespace Castle.MicroKernel.ModelBuilder.Inspectors
 {
 	using System;
+	using System.Collections.Generic;
+	using System.Linq;
 	using System.Reflection;
 
 	using Castle.Core;
 	using Castle.Core.Configuration;
+	using Castle.Core.Internal;
 	using Castle.MicroKernel.SubSystems.Conversion;
 
 	/// <summary>
@@ -77,6 +80,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 			}
 
 			var properties = targetType.GetProperties(bindingFlags);
+			var filters = GetPropertyFilters(model);
 			foreach (var property in properties)
 			{
 				if (!property.CanWrite || property.GetSetMethod() == null)
@@ -95,7 +99,10 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 				{
 					continue;
 				}
-
+				if (filters != null && filters.Any(f => f(property) == false))
+				{
+					continue;
+				}
 				var dependency = new DependencyModel(property.Name, property.PropertyType, isOptional: true);
 				model.AddProperty(new PropertySet(property, dependency));
 			}
@@ -137,6 +144,11 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 
 				throw new KernelException(message);
 			}
+		}
+
+		private IEnumerable<Predicate<PropertyInfo>> GetPropertyFilters(ComponentModel model)
+		{
+			return (IEnumerable<Predicate<PropertyInfo>>)model.ExtendedProperties[Constants.PropertyFilters];
 		}
 	}
 }
