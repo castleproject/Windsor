@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,13 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Windsor.Tests.Installers
+namespace CastleTests.Installers
 {
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.SubSystems.Configuration;
 	using Castle.MicroKernel.Tests.ClassComponents;
+	using Castle.Windsor;
 
-	public class CustomerInstaller:IWindsorInstaller
+	public class CustomerInstaller : IWindsorInstaller
 	{
 		public void Install(IWindsorContainer container, IConfigurationStore store)
 		{
