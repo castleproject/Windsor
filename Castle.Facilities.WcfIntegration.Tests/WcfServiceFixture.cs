@@ -105,14 +105,26 @@ namespace Castle.Facilities.WcfIntegration.Tests
 		[Test]
 		public void WillApplyServiceAwareExtensions()
 		{
-			Assert.IsTrue(ServiceHostListener.CreatedCalled);
-			Assert.IsTrue(ServiceHostListener.OpeningCalled);
-			Assert.IsTrue(ServiceHostListener.OpenedCalled);
-			client.GetValueFromConstructor();
-			Assert.IsFalse(ServiceHostListener.ClosingCalled);
-			Assert.IsFalse(ServiceHostListener.ClosedCalled);
+			using (new WindsorContainer()
+				.AddFacility<WcfFacility>(f => f.CloseTimeout = TimeSpan.Zero)
+				.Register(
+					Component.For<ServiceHostListener>(),
+					Component.For<IOperations>().ImplementedBy<Operations>()
+						.DependsOn(new { number = 42 })
+						.AsWcfService(new DefaultServiceModel().AddEndpoints(
+							WcfEndpoint.BoundTo(new NetTcpBinding { PortSharingEnabled = true })
+								.At("net.tcp://localhost/Operations2")
+								))
+				))
+			{
+				Assert.IsTrue(ServiceHostListener.CreatedCalled);
+				Assert.IsTrue(ServiceHostListener.OpeningCalled);
+				Assert.IsTrue(ServiceHostListener.OpenedCalled);
+				client.GetValueFromConstructor();
+				Assert.IsFalse(ServiceHostListener.ClosingCalled);
+				Assert.IsFalse(ServiceHostListener.ClosedCalled);
+			}
 
-			windsorContainer.Release(client);
 			Assert.IsTrue(ServiceHostListener.ClosingCalled);
 			Assert.IsTrue(ServiceHostListener.ClosedCalled);
 		}

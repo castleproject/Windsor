@@ -20,7 +20,7 @@ namespace Castle.Facilities.WcfIntegration.Lifestyles
 	using Castle.MicroKernel.Context;
 	using Castle.MicroKernel.Lifestyle.Scoped;
 
-	public class WcfSessionScopeAccessor : IScopeAccessor
+	public class WcfOperationScopeAccessor : IScopeAccessor
 	{
 		private readonly ThreadSafeFlag disposed;
 
@@ -30,13 +30,13 @@ namespace Castle.Facilities.WcfIntegration.Lifestyles
 			{
 				return;
 			}
-			var channel = GetScopeHolder();
-			if (channel == null)
+			var operation = GetScopeHolder();
+			if (operation == null)
 			{
 				return;
 			}
-			var extension = channel.Extensions.Find<WcfSessionScopeHolder>();
-			if (extension != null && channel.Extensions.Remove(extension))
+			var extension = operation.Extensions.Find<WcfOperationScopeHolder>();
+			if (extension != null && operation.Extensions.Remove(extension))
 			{
 				extension.Dispose();
 			}
@@ -48,33 +48,24 @@ namespace Castle.Facilities.WcfIntegration.Lifestyles
 			return GetScope(scopeHolder);
 		}
 
-		private static ILifetimeScope GetScope(IContextChannel scopeHolder)
+		private static ILifetimeScope GetScope(OperationContext scopeHolder)
 		{
 			if (scopeHolder == null)
 			{
 				return null;
 			}
-			var extension = scopeHolder.Extensions.Find<WcfSessionScopeHolder>();
+			var extension = scopeHolder.Extensions.Find<WcfOperationScopeHolder>();
 			if (extension == null)
 			{
-				extension = new WcfSessionScopeHolder(new DefaultLifetimeScope());
+				extension = new WcfOperationScopeHolder(new DefaultLifetimeScope());
 				scopeHolder.Extensions.Add(extension);
 			}
 			return extension.Scope;
 		}
 
-		private static IContextChannel GetScopeHolder()
+		private static OperationContext GetScopeHolder()
 		{
-			var operation = OperationContext.Current;
-			if (operation == null)
-			{
-				return null;
-			}
-			if (string.IsNullOrEmpty(operation.SessionId))
-			{
-				return null;
-			}
-			return operation.Channel;
+			return  OperationContext.Current;
 		}
 	}
 }

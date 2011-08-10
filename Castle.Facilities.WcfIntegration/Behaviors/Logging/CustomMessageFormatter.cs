@@ -44,7 +44,7 @@ namespace Castle.Facilities.WcfIntegration.Behaviors
 			return output.ToString();
 		}
 
-		private bool TestFormat(ref string format, char test)
+		private static bool TestFormat(ref string format, char test)
 		{
 			if (format[0] == test)
 			{
@@ -54,7 +54,7 @@ namespace Castle.Facilities.WcfIntegration.Behaviors
 			return false;
 		}
 
-		private void FormattedHeaders(Message message, StringBuilder output)
+		private static void FormattedHeaders(Message message, StringBuilder output)
 		{
 			foreach (var header in message.Headers)
 			{

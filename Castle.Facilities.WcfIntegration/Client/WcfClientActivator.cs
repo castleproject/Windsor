@@ -34,20 +34,6 @@ namespace Castle.Facilities.WcfIntegration
 
 	public class WcfClientActivator : DefaultComponentActivator
 	{
-		private static readonly ConcurrentDictionary<Type, CreateChannelDelegate>
-			createChannelCache = new ConcurrentDictionary<Type, CreateChannelDelegate>();
-
-		private static readonly MethodInfo createChannelMethod =
-			typeof(WcfClientActivator).GetMethod("CreateChannelCreatorInternal",
-			                                     BindingFlags.NonPublic | BindingFlags.Static, null,
-			                                     new[]
-			                                     {
-			                                     	typeof(IKernel), typeof(IWcfClientModel),
-			                                     	typeof(ComponentModel), typeof(IWcfBurden).MakeByRefType()
-			                                     },
-			                                     null
-				);
-
 		private readonly WcfClientExtension clients;
 		private readonly WcfProxyFactory proxyFactory;
 		private IWcfBurden channelBurden;
@@ -79,8 +65,7 @@ namespace Castle.Facilities.WcfIntegration
 			}
 			catch (Exception ex)
 			{
-				throw new ComponentActivatorException("WcfClientActivator: could not proxy component " +
-				                                      Model.Name, ex);
+				throw new ComponentActivatorException("WcfClientActivator: could not proxy component " + Model.Name, ex);
 			}
 		}
 
@@ -141,14 +126,14 @@ namespace Castle.Facilities.WcfIntegration
 					client.Open();
 					return client;
 				};
-				Model.ExtendedProperties[WcfConstants.ClientBurdenKey] = burden = channelBurden;
+				burden = channelBurden;
+				clients.TrackBurden(burden);
 			}
 
 			return creator;
 		}
 
-		private static ChannelCreator CreateChannelCreator(IKernel kernel, ComponentModel model,
-		                                                   IWcfClientModel clientModel, out IWcfBurden burden)
+		private static ChannelCreator CreateChannelCreator(IKernel kernel, ComponentModel model, IWcfClientModel clientModel, out IWcfBurden burden)
 		{
 			ValidateClientModel(clientModel, model);
 
@@ -203,11 +188,8 @@ namespace Castle.Facilities.WcfIntegration
 
 		private static IWcfClientModel ObtainClientModel(ComponentModel model, CreationContext context)
 		{
-			var clientModel = WcfUtils.FindDependencies<IWcfClientModel>(context.AdditionalArguments)
-				.FirstOrDefault();
-
-			var endpoint = WcfUtils.FindDependencies<IWcfEndpoint>(context.AdditionalArguments)
-				.FirstOrDefault();
+			var clientModel = WcfUtils.FindDependencies<IWcfClientModel>(context.AdditionalArguments).FirstOrDefault();
+			var endpoint = WcfUtils.FindDependencies<IWcfEndpoint>(context.AdditionalArguments).FirstOrDefault();
 
 			if (endpoint != null)
 			{
@@ -255,5 +237,19 @@ namespace Castle.Facilities.WcfIntegration
 		private delegate ChannelCreator CreateChannelDelegate(
 			IKernel kernel, IWcfClientModel clientModel, ComponentModel model,
 			out IWcfBurden burden);
+
+		private static readonly ConcurrentDictionary<Type, CreateChannelDelegate>
+			createChannelCache = new ConcurrentDictionary<Type, CreateChannelDelegate>();
+
+		private static readonly MethodInfo createChannelMethod =
+			typeof(WcfClientActivator).GetMethod("CreateChannelCreatorInternal",
+												 BindingFlags.NonPublic | BindingFlags.Static, null,
+												 new[]
+			                                     {
+			                                     	typeof(IKernel), typeof(IWcfClientModel),
+			                                     	typeof(ComponentModel), typeof(IWcfBurden).MakeByRefType()
+			                                     },
+												 null
+				);
 	}
 }

@@ -28,6 +28,11 @@ namespace Castle.Facilities.WcfIntegration.Lifestyles
 			this.scope = scope;
 		}
 
+		public ILifetimeScope Scope
+		{
+			get { return scope; }
+		}
+
 		public void Dispose()
 		{
 			scope.Dispose();

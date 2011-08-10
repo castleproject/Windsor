@@ -38,6 +38,8 @@ namespace Castle.Facilities.WcfIntegration
 		private WcfFacility facility;
 		private IKernel kernel;
 		private readonly ProxyGenerator proxyGenerator = new ProxyGenerator();
+		private readonly List<IWcfBurden> burdens = new List<IWcfBurden>();
+		private readonly static object sync = new object();
 
 		private static readonly IWcfPolicy[] RepairChannelPolicy =  new[] { new RepairChannelPolicy() };
 
@@ -86,10 +88,6 @@ namespace Castle.Facilities.WcfIntegration
 		public Binding InferBinding(Uri address)
 		{
 			return bindingPolicies.Select(policy => policy(address)).FirstOrDefault(binding => binding != null);
-		}
-
-		public void Dispose()
-		{
 		}
 
 		internal void AddChannelBuilder(Type builder, bool force)
@@ -149,6 +147,19 @@ namespace Castle.Facilities.WcfIntegration
 				afterInit();
 				afterInit = null;
 			}
+		}
+
+		internal void TrackBurden(IWcfBurden burden)
+		{
+			lock(sync)
+			{
+				burdens.Add(burden);
+			}
+		}
+
+		public void Dispose()
+		{
+			burdens.ForEach(burden => burden.CleanUp());
 		}
 
 		private void AddDefaultBindingPolicies()
@@ -218,7 +229,7 @@ namespace Castle.Facilities.WcfIntegration
 				var endpointConfiguration =
 					model.Configuration.Attributes[WcfConstants.EndpointConfiguration];
 
-				if (!string.IsNullOrEmpty(endpointConfiguration))
+				if (string.IsNullOrEmpty(endpointConfiguration) == false)
 				{
 					return new DefaultClientModel(WcfEndpoint.FromConfiguration(endpointConfiguration));
 				}

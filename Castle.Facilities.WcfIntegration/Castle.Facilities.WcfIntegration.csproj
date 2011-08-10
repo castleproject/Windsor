@@ -100,6 +100,7 @@
     <Compile Include="IWcfChannelExtension.cs" />
     <Compile Include="IWcfEndpointExtension.cs" />
     <Compile Include="IWcfServiceExtension.cs" />
+    <Compile Include="Lifestyles\WcfOperationScopeAccessor.cs" />
     <Compile Include="Lifestyles\WcfSessionScopeAccessor.cs" />
     <Compile Include="Lifestyles\WcfSessionScopeHolder.cs" />
     <Compile Include="Service\Discovery\AdHocServiceCatalogDiscovery.cs" />
@@ -179,13 +180,7 @@
     <Compile Include="Internal\SynchronousResult.cs" />
     <Compile Include="IWcfPolicy.cs" />
     <Compile Include="IWcfCleanUp.cs" />
-    <Compile Include="Lifestyles\AbstractWcfLifestyleCache.cs" />
-    <Compile Include="Lifestyles\IWcfLifestyle.cs" />
-    <Compile Include="Lifestyles\IOperationContextProvider.cs" />
-    <Compile Include="Lifestyles\IWcfLifestyleCache.cs" />
     <Compile Include="Lifestyles\LifestyleRegistrationExtensions.cs" />
-    <Compile Include="Lifestyles\OperationContextProvider.cs" />
-    <Compile Include="Lifestyles\PerChannelCache.cs" />
     <Compile Include="Lifestyles\WcfOperationScopeHolder.cs" />
     <Compile Include="Client\WcfClientComponentLoader.cs" />
     <Compile Include="Internal\WcfBehaviorInspector.cs" />

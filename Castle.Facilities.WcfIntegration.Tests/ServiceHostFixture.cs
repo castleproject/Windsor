@@ -718,8 +718,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 					new NetTcpBinding { PortSharingEnabled = true }, new EndpointAddress("net.tcp://localhost/Operations"));
 				Assert.AreEqual(42, client.GetValueFromConstructor());
 
-				AspNetCompatibilityRequirementsAttribute aspNetCompat =
-					captureServiceHost.ServiceHost.Description.Behaviors.Find<AspNetCompatibilityRequirementsAttribute>();
+				var aspNetCompat = captureServiceHost.ServiceHost.Description.Behaviors.Find<AspNetCompatibilityRequirementsAttribute>();
 				Assert.IsNotNull(aspNetCompat);
 				Assert.AreEqual(AspNetCompatibilityRequirementsMode.Allowed, aspNetCompat.RequirementsMode);
 			}
@@ -834,7 +833,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 		[Test, Ignore("Does not work with open-generics")]
 		public void CanOpenServiceHostsWithServicesDependingOnOpenGenerics()
 		{
-			using (var container = new WindsorContainer()
+			using (new WindsorContainer()
 				.AddFacility<WcfFacility>(f =>
 				{
 					//f.Services.OpenServiceHostsEagerly = true;
@@ -861,39 +860,35 @@ namespace Castle.Facilities.WcfIntegration.Tests
 
 		protected IWindsorContainer RegisterLoggingFacility(IWindsorContainer container)
 		{
-			var facNode = new MutableConfiguration("facility");
-			facNode.Attributes["id"] = "logging";
-			facNode.Attributes["loggingApi"] = "ExtendedLog4net";
-			facNode.Attributes["configFile"] = "";
-			container.Kernel.ConfigurationStore.AddFacilityConfiguration("logging", facNode);
-			container.AddFacility("logging", new LoggingFacility());
+			var logging = new LoggingFacility(LoggerImplementation.ExtendedLog4net);
+			container.AddFacility(logging);
 
 			memoryAppender = new MemoryAppender();
 			BasicConfigurator.Configure(memoryAppender);
 			return container;
 		}
 
-		private static string xmlConfiguration = @"<?xml version='1.0' encoding='utf-8' ?>
-<configuration>
-	<facilities>
-		<facility id='wcf' 
-				  type='Castle.Facilities.WcfIntegration.WcfFacility,
-				        Castle.Facilities.WcfIntegration' />
-	</facilities>
-
-	<components>
-		<component id='usingwindsor_svc'
-			       service='Castle.Facilities.WcfIntegration.Demo.IAmUsingWindsor, 
-				            Castle.Facilities.WcfIntegration.Demo'
-			       type='Castle.Facilities.WcfIntegration.Demo.UsingWindsor, 
-				         Castle.Facilities.WcfIntegration.Demo'
-			       wcfServiceHost='true'>
-			<parameters>
-				<number>42</number>
-			</parameters>
-		</component>
-	</components>
-</configuration>";
+		private readonly static string xmlConfiguration = @"<?xml version='1.0' encoding='utf-8' ?>
+        <configuration>
+        	<facilities>
+        		<facility id='wcf' 
+        				  type='Castle.Facilities.WcfIntegration.WcfFacility,
+        				        Castle.Facilities.WcfIntegration' />
+        	</facilities>
+        
+        	<components>
+        		<component id='usingwindsor_svc'
+        			       service='Castle.Facilities.WcfIntegration.Demo.IAmUsingWindsor, 
+        				            Castle.Facilities.WcfIntegration.Demo'
+        			       type='Castle.Facilities.WcfIntegration.Demo.UsingWindsor, 
+        				         Castle.Facilities.WcfIntegration.Demo'
+        			       wcfServiceHost='true'>
+        			<parameters>
+        				<number>42</number>
+        			</parameters>
+        		</component>
+        	</components>
+        </configuration>";
 
 
 		interface IServiceNoDependencies

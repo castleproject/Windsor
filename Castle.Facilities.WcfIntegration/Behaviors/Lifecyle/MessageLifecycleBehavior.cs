@@ -69,7 +69,7 @@ namespace Castle.Facilities.WcfIntegration.Behaviors
 		/// <returns></returns>
 		public virtual object BeforeSendRequest(ref Message request, IClientChannel channel)
 		{
-			Hashtable state = new Hashtable();
+			var state = new Hashtable();
 			ProcessMessage(ref request, MessageLifecycle.OutgoingRequest, state);
 			return state;
 		}
@@ -88,7 +88,7 @@ namespace Castle.Facilities.WcfIntegration.Behaviors
 		public virtual object AfterReceiveRequest(ref Message request, IClientChannel channel,
 												  InstanceContext instanceContext)
 		{
-			Hashtable state = new Hashtable();
+			var state = new Hashtable();
 			ProcessMessage(ref request, MessageLifecycle.IncomingRequest, state);
 			return state;
 		}
@@ -153,29 +153,28 @@ namespace Castle.Facilities.WcfIntegration.Behaviors
 			}
 		}
 
-		private XmlDocument OpenMessage(Message message)
+		private static XmlDocument OpenMessage(Message message)
 		{
-			MemoryStream stream = new MemoryStream();
-			XmlWriter writer = XmlWriter.Create(stream);
+			var stream = new MemoryStream();
+			var writer = XmlWriter.Create(stream);
 			message.WriteMessage(writer);
 			writer.Flush();
 			stream.Position = 0;
 
-			XmlDocument envelope = new XmlDocument();
+			var envelope = new XmlDocument();
 			envelope.Load(stream);
 			return envelope;
 		}
 
-		private Message CloseMessage(Message message, XmlDocument envelope)
+		private static Message CloseMessage(Message message, XmlDocument envelope)
 		{
-			MemoryStream stream = new MemoryStream();
-			XmlWriter writer = XmlDictionaryWriter.CreateBinaryWriter(stream);
+			var stream = new MemoryStream();
+			var writer = XmlDictionaryWriter.CreateBinaryWriter(stream);
 			envelope.WriteTo(writer);
 			writer.Flush();
 			stream.Position = 0;
 
-			XmlReader reader = XmlDictionaryReader.CreateBinaryReader(stream,
-				new XmlDictionaryReaderQuotas());
+			var reader = XmlDictionaryReader.CreateBinaryReader(stream,	new XmlDictionaryReaderQuotas());
 			var newMessage = Message.CreateMessage(reader, int.MaxValue, message.Version);
 			newMessage.Headers.Clear();
 			newMessage.Headers.CopyHeadersFrom(message);

@@ -63,7 +63,7 @@ namespace Castle.Facilities.WcfIntegration.Proxy
 			{
 				return channelHolder.Channel;
 			}
-			if(model.Services.Count() > 1)
+			if (model.Services.Count() > 1)
 			{
 				throw new ArgumentException(
 					string.Format("Component {0}, which was designated as a WCF proxy exposes {1} services. The facility currently only supports single-service components.",
@@ -94,7 +94,7 @@ namespace Castle.Facilities.WcfIntegration.Proxy
 		protected virtual Type[] GetInterfaces(IEnumerable<Type> services, ProxyOptions proxyOptions, bool isDuplex)
 		{
 			var interfaces = services.ToList();
-			if(proxyOptions.AdditionalInterfaces != null)
+			if (proxyOptions.AdditionalInterfaces != null)
 			{
 				interfaces.AddRange(proxyOptions.AdditionalInterfaces);
 			}

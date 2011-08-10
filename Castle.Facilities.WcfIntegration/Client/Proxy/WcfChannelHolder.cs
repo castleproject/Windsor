@@ -99,8 +99,7 @@ namespace Castle.Facilities.WcfIntegration
 
 		private void ObtainChannelFactory()
 		{
-			var channelFactoryHolder = ChannelBurden.Dependencies
-				.OfType<ChannelFactoryHolder>().FirstOrDefault();
+			var channelFactoryHolder = ChannelBurden.Dependencies.OfType<ChannelFactoryHolder>().FirstOrDefault();
 
 			if (channelFactoryHolder != null)
 			{
