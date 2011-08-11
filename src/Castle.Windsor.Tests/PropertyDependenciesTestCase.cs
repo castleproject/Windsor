@@ -39,16 +39,6 @@ namespace CastleTests
 		}
 
 		[Test]
-		public void Can_require_setting_properties()
-		{
-			Container.Register(
-				Component.For<ICommon>().ImplementedBy<CommonImpl1>(),
-				Component.For<CommonServiceUser2>());
-
-			Assert.Throws<ComponentResolutionException>(() => Container.Resolve<CommonServiceUser2>());
-		}
-
-		[Test]
 		public void Can_opt_out_of_setting_properties_open_generic()
 		{
 			Container.Register(Component.For(typeof(GenericImpl2<>))
@@ -60,6 +50,18 @@ namespace CastleTests
 		}
 
 		[Test]
+		[Ignore("This should be probably handled by a component model construction contributor")]
+		public void Can_require_setting_properties()
+		{
+			Container.Register(
+				Component.For<ICommon>().ImplementedBy<CommonImpl1>(),
+				Component.For<CommonServiceUser2>());
+
+			Assert.Throws<ComponentResolutionException>(() => Container.Resolve<CommonServiceUser2>());
+		}
+
+		[Test]
+		[Ignore("This should be probably handled by a component model construction contributor")]
 		public void Can_require_setting_properties_open_generic()
 		{
 			Container.Register(Component.For(typeof(GenericImpl2<>)));

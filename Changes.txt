@@ -1,3 +1,4 @@
+- implemented IOC-306 - Add ability to provide fine-grained filtering of properties
 - implemented IOC-303 - Support proxying for components registered using factory method
 - implemented IOC-302 - Support open generic components where implementation has more generic parameters than service if they can be figured out based on generic constraints
 - implemented IOC-301 - Add ConfigureIf method to be used with custom predicate when configuring components registered via convention

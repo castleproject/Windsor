@@ -672,6 +672,7 @@
     <Compile Include="Lifestyle\CustomLifestyle_Scope.cs" />
     <Compile Include="Proxies\ComponentProxyRegistrationTestCase.cs" />
     <Compile Include="ProxyInfrastructure\DisposableHook.cs" />
+    <Compile Include="Registration\AssignableHandlersTestCase.cs" />
     <Compile Include="Registration\ComponentRegistrationByNamespaceTestCase.cs" />
     <Compile Include="Registration\DependsOnTestCase.cs" />
     <Compile Include="Registration\ServiceOverridesTestCase.cs" />

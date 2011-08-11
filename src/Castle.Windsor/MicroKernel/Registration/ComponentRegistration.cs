@@ -1084,6 +1084,11 @@ namespace Castle.MicroKernel.Registration
 			return ExtendedProperties(properties);
 		}
 
+		/// <summary>
+		/// Filters properties on the implementation that will be considered 'settable' by the container.
+		/// </summary>
+		/// <param name="filter">Predicate deciding whether a property is settable or not. If returns <c>false</c> container will ignore the property, otherwise property will be ignored.</param>
+		/// <returns></returns>
 		public ComponentRegistration<TService> Properties(Predicate<PropertyInfo> filter)
 		{
 			return AddDescriptor(new DelegatingModelDescriptor(builder: (k, c) =>

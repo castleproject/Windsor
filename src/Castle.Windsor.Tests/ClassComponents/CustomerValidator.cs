@@ -14,11 +14,6 @@
 
 namespace Castle.MicroKernel.Tests.ClassComponents
 {
-	using System;
-
-	/// <summary>
-	/// Summary description for IValidator.
-	/// </summary>
 	public class CustomerValidator : IValidator<ICustomer>
 	{
 		/// <summary>
@@ -32,9 +27,6 @@ namespace Castle.MicroKernel.Tests.ClassComponents
 		}
 	}
 
-	/// <summary>
-	/// Summary description for IValidator.
-	/// </summary>
 	public class CustomerChainValidator<T> : IValidator<T>
 		where T : CustomerChain1
 	{

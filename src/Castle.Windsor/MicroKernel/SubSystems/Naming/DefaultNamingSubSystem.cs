@@ -367,7 +367,16 @@ namespace Castle.MicroKernel.SubSystems.Naming
 			{
 				return false;
 			}
-			fromThisOne = fromThisOne.MakeGenericType(genericArguments);
+			try
+			{
+				fromThisOne = fromThisOne.MakeGenericType(genericArguments);
+			}
+			catch (ArgumentException)
+			{
+				// Any element of typeArguments does not satisfy the constraints specified for the corresponding type parameter of the current generic type.
+				// NOTE: We try and catch because there's no API to reliably, and robustly test for that upfront
+				return false;
+			}
 			return thisOne.IsAssignableFrom(fromThisOne);
 		}
 
