@@ -35,21 +35,21 @@ namespace Castle.Facilities.WcfIntegration.Tests
 			windsorContainer = new WindsorContainer()
 				.AddFacility<WcfFacility>(f => f.CloseTimeout = TimeSpan.Zero)
 				.Register(
-				Component.For<ServiceHostListener>(),
-				Component.For<CollectingInterceptor>(),
-				Component.For<UnitOfworkEndPointBehavior>(),
-				Component.For<NetDataContractFormatBehavior>(),
-				Component.For<IOne>().ImplementedBy<One>().LifeStyle.PerWcfSession().Interceptors(
-					InterceptorReference.ForType<CollectingInterceptor>()).Anywhere,
-				Component.For<ITwo>().ImplementedBy<Two>().LifeStyle.PerWcfSession().Interceptors(
-					InterceptorReference.ForType<CollectingInterceptor>()).Anywhere,
-				Component.For<IServiceWithSession>().ImplementedBy<ServiceWithSession>().LifeStyle.Transient
-					.Named("Operations")
-					.AsWcfService(new DefaultServiceModel().AddEndpoints(
-					       	WcfEndpoint.BoundTo(new NetTcpBinding { PortSharingEnabled = true })
-					       		.At("net.tcp://localhost/Operations")
-					       	)
-					)
+					Component.For<ServiceHostListener>(),
+					Component.For<CollectingInterceptor>(),
+					Component.For<UnitOfworkEndPointBehavior>(),
+					Component.For<NetDataContractFormatBehavior>(),
+					Component.For<IOne>().ImplementedBy<One>().LifeStyle.PerWcfSession()
+						.Interceptors(InterceptorReference.ForType<CollectingInterceptor>()).Anywhere,
+					Component.For<ITwo>().ImplementedBy<Two>().LifestylePerWcfSession()
+						.Interceptors(InterceptorReference.ForType<CollectingInterceptor>()).Anywhere,
+					Component.For<IServiceWithSession>().ImplementedBy<ServiceWithSession>().LifeStyle.Transient
+						.Named("Operations")
+						.AsWcfService(new DefaultServiceModel().AddEndpoints(
+							WcfEndpoint.BoundTo(new NetTcpBinding { PortSharingEnabled = true })
+								.At("net.tcp://localhost/Operations")
+						              	)
+						)
 				);
 
 			client = CreateClient();

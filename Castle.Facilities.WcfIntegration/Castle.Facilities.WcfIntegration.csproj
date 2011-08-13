@@ -100,6 +100,7 @@
     <Compile Include="IWcfChannelExtension.cs" />
     <Compile Include="IWcfEndpointExtension.cs" />
     <Compile Include="IWcfServiceExtension.cs" />
+    <Compile Include="Lifestyles\WcfOperationScopeAccessor.cs" />
     <Compile Include="Lifestyles\WcfSessionScopeAccessor.cs" />
     <Compile Include="Lifestyles\WcfSessionScopeHolder.cs" />
     <Compile Include="Service\Discovery\AdHocServiceCatalogDiscovery.cs" />

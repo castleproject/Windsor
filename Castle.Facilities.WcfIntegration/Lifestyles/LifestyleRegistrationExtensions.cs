@@ -23,6 +23,26 @@ namespace Castle.Facilities.WcfIntegration
 	[EditorBrowsable(EditorBrowsableState.Never)]
 	public static class LifestyleRegistrationExtensions
 	{
+		public static BasedOnDescriptor LifestylePerWcfOperation(this BasedOnDescriptor descriptor)
+		{
+			return descriptor.Configure(c => c.LifestylePerWcfOperation());
+		}
+
+		public static ComponentRegistration<TService> LifestylePerWcfOperation<TService>(this ComponentRegistration<TService> registration) where TService : class
+		{
+			return registration.LifeStyle.Scoped<WcfOperationScopeAccessor>();
+		}
+
+		public static BasedOnDescriptor LifestylePerWcfSession(this BasedOnDescriptor descriptor)
+		{
+			return descriptor.Configure(c => c.LifestylePerWcfSession());
+		}
+
+		public static ComponentRegistration<TService> LifestylePerWcfSession<TService>(this ComponentRegistration<TService> registration) where TService : class
+		{
+			return registration.LifeStyle.Scoped<WcfSessionScopeAccessor>();
+		}
+
 		public static ComponentRegistration<TService> PerWcfOperation<TService>(this LifestyleGroup<TService> @group) where TService : class
 		{
 			return group.Scoped<WcfOperationScopeAccessor>();

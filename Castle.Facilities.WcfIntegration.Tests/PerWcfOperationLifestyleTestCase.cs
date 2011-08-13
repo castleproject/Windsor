@@ -37,7 +37,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 				Component.For<UnitOfworkEndPointBehavior>(),
 				Component.For<NetDataContractFormatBehavior>(),
 				Component.For<IOne>().ImplementedBy<One>().LifeStyle.PerWcfOperation(),
-				Component.For<HasOne>().LifeStyle.PerWcfOperation(),
+				Component.For<HasOne>().LifestylePerWcfOperation(),
 				Component.For<IServiceWithDependencies>().ImplementedBy<ServiceWithDependencies>().LifeStyle.Transient
 					.Named("Operations")
 					.AsWcfService(new DefaultServiceModel().AddEndpoints(
