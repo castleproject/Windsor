@@ -131,60 +131,66 @@ namespace Castle.Facilities.WcfIntegration
 
 		private void DiscoverEndpoint(DiscoveryEndpoint discoveryEndpoint, DiscoveredEndpointModel model)
 		{
-			using (var discover = new DiscoveryClient(discoveryEndpoint))
+			FindResponse discovered = null;
+			try
 			{
-				var criteria = CreateSearchCriteria(model);
-
-				var discovered = discover.Find(criteria);
-				if (discovered.Endpoints.Count > 0)
+				using (var discover = new DiscoveryClient(discoveryEndpoint))
 				{
-					var binding = model.Binding;
-					var endpointMetadata = discovered.Endpoints[0];
-					if (discovered.Endpoints.Count > 1 && model.EndpointPreference != null)
-					{
-						endpointMetadata = model.EndpointPreference(discovered.Endpoints);
-						if (endpointMetadata == null)
-						{
-							throw new EndpointNotFoundException(string.Format(
-								"More than one endpoint was discovered for contract {0}.  " +
-								"However, an endpoint could be selected.  This is most likely " +
-								"a bug with the user-defined endpoint prefeence.",
-								contract.FullName));
-						}
-					}
-
-					if (binding == null && model.DeriveBinding == false)
-					{
-						binding = GetBindingFromMetadata(endpointMetadata);
-					}
-					
-					var address = endpointMetadata.Address;
-					if (model.Identity != null)
-					{
-						address = new EndpointAddress(address.Uri, model.Identity, address.Headers);
-					}
-
-					binding = GetEffectiveBinding(binding, address.Uri);
-					var innerCreator = GetChannel(contract, binding, address);
-					channelCreator = () =>
-					{
-						var channel = (IChannel)innerCreator();
-						if (channel is IContextChannel)
-						{
-							var metadata = new DiscoveredEndpointMetadata(endpointMetadata);
-							((IContextChannel)channel).Extensions.Add(metadata);
-						}
-						return channel;
-					};
+					var criteria = CreateSearchCriteria(model);
+					discovered = discover.Find(criteria);
 				}
-				else
+			}
+			catch
+			{
+				// Possible failure when closing DiscoveryClient
+			}
+
+			if (discovered == null || discovered.Endpoints.Count == 0)
+			{
+				throw new EndpointNotFoundException(string.Format(
+					"Unable to discover the endpoint for contract {0}.  " +
+					"Either no service exists or it does not support discovery.",
+					contract.FullName));
+			}
+
+			var binding = model.Binding;
+			var endpointMetadata = discovered.Endpoints[0];
+			if (discovered.Endpoints.Count > 1 && model.EndpointPreference != null)
+			{
+				endpointMetadata = model.EndpointPreference(discovered.Endpoints);
+				if (endpointMetadata == null)
 				{
 					throw new EndpointNotFoundException(string.Format(
-						"Unable to discover the endpoint for contract {0}.  " + 
-						"Either no service exists or it does not support discovery.",
+						"More than one endpoint was discovered for contract {0}.  " +
+						"However, an endpoint could be selected.  This is most likely " +
+						"a bug with the user-defined endpoint preference.",
 						contract.FullName));
 				}
 			}
+
+			if (binding == null && model.DeriveBinding == false)
+			{
+				binding = GetBindingFromMetadata(endpointMetadata);
+			}
+					
+			var address = endpointMetadata.Address;
+			if (model.Identity != null)
+			{
+				address = new EndpointAddress(address.Uri, model.Identity, address.Headers);
+			}
+
+			binding = GetEffectiveBinding(binding, address.Uri);
+			var innerCreator = GetChannel(contract, binding, address);
+			channelCreator = () =>
+			{
+				var channel = (IChannel)innerCreator();
+				if (channel is IContextChannel)
+				{
+					var metadata = new DiscoveredEndpointMetadata(endpointMetadata);
+					((IContextChannel)channel).Extensions.Add(metadata);
+				}
+				return channel;
+			};
 		}
 #endif
 		#endregion

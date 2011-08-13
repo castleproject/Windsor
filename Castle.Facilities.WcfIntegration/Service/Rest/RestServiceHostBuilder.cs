@@ -46,8 +46,7 @@ namespace Castle.Facilities.WcfIntegration.Rest
 			return binding;
 		}
 
-		protected override ServiceHost CreateServiceHost(ComponentModel model, RestServiceModel serviceModel,
-														 params Uri[] baseAddresses)
+		protected override ServiceHost CreateServiceHost(ComponentModel model, RestServiceModel serviceModel, params Uri[] baseAddresses)
 		{
 			return CreateRestServiceHost(model.Implementation, 
 				GetEffectiveBaseAddresses(serviceModel, baseAddresses));

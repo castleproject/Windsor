@@ -463,12 +463,17 @@ namespace Castle.Facilities.WcfIntegration
 		public bool DeriveBinding { get; private set; }
 
 		public DiscoveryEndpoint DiscoveryEndpoint { get; private set; }
+
 		public TimeSpan? Duration { get; private set; }
 
 		public Func<IList<EndpointDiscoveryMetadata>, EndpointDiscoveryMetadata> EndpointPreference { get; private set; }
+
 		public EndpointIdentity Identity { get; private set; }
+
 		public int MaxResults { get; private set; }
+
 		public Uri ScopeMatchBy { get; private set; }
+
 		public Type SearchContract { get; private set; }
 
 		public DiscoveredEndpointModel IdentifiedBy(EndpointIdentity identity)
