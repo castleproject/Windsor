@@ -99,9 +99,9 @@ namespace Castle.Facilities.WcfIntegration
 #if !DOTNET40
 		private Type ObtainDefaultContract()
 		{
-			if (model != null && model.Service.IsInterface)
+			if (model != null && model.Services.Single().IsInterface)
 			{
-				return model.Service;
+				return model.Services.Single();
 			}
 
 			if (ImplementedContracts.Count == 1)
