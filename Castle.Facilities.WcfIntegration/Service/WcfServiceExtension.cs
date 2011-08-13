@@ -22,8 +22,9 @@ namespace Castle.Facilities.WcfIntegration
 		private WcfFacility facility;
 		private Binding defaultBinding;
 		private TimeSpan? closeTimeout;
-		private AspNetCompatibilityRequirementsMode? aspNetCompat;
-		private Action _afterInit;
+		private Action afterInit;
+		private readonly List<ServiceHost> hosts = new List<ServiceHost>();
+		private readonly static object sync = new object();
 
 		internal static IKernel GlobalKernel;
 
@@ -59,29 +60,30 @@ namespace Castle.Facilities.WcfIntegration
 
 		public bool OpenServiceHostsEagerly { get; set; }
 
-		public AspNetCompatibilityRequirementsMode? AspNetCompatibility
-		{
-			get { return aspNetCompat; }
-			set { aspNetCompat = value; }
-		}
+		public AspNetCompatibilityRequirementsMode? AspNetCompatibility { get; set; }
 
 		internal void Init(IKernel kernel, WcfFacility facility)
 		{
 			this.kernel = kernel;
 			this.facility = facility;
+			GlobalKernel = kernel;
 
 			ConfigureAspNetCompatibility();
 			AddDefaultServiceHostBuilders();
-			DefaultServiceHostFactory.RegisterContainer(kernel);
 
 			kernel.ComponentModelCreated += Kernel_ComponentModelCreated;
 			kernel.ComponentRegistered += Kernel_ComponentRegistered;
 
-			if (_afterInit != null)
+			if (afterInit != null)
 			{
-				_afterInit();
-				_afterInit = null;
+				afterInit();
+				afterInit = null;
 			}
+		}
+
+		public void Dispose()
+		{
+			ReleaseServiceHosts();
 		}
 
 		public WcfServiceExtension AddServiceHostBuilder<TBuilder>()
@@ -123,7 +125,7 @@ namespace Castle.Facilities.WcfIntegration
 
 		private void Kernel_ComponentRegistered(string key, IHandler handler)
 		{
-			ComponentModel model = handler.ComponentModel;
+			var model = handler.ComponentModel;
 
 			foreach (var serviceModel in ResolveServiceModels(model))
 			{ 
@@ -136,13 +138,13 @@ namespace Castle.Facilities.WcfIntegration
 
 		private void ConfigureAspNetCompatibility()
 		{
-			if (aspNetCompat.HasValue)
+			if (AspNetCompatibility.HasValue)
 			{
 				kernel.Register(
 					Component.For<AspNetCompatibilityRequirementsAttribute>()
 						.Instance(new AspNetCompatibilityRequirementsAttribute
 						{
-							RequirementsMode = aspNetCompat.Value
+							RequirementsMode = AspNetCompatibility.Value
 						})
 					);
 			}
@@ -174,7 +176,7 @@ namespace Castle.Facilities.WcfIntegration
 
 			if (kernel == null)
 			{
-				_afterInit += () => RegisterServiceHostBuilder(serviceHostBuilder, builder, force);
+				afterInit += () => RegisterServiceHostBuilder(serviceHostBuilder, builder, force);
 			}
 			else
 			{
@@ -202,8 +204,7 @@ namespace Castle.Facilities.WcfIntegration
 					yield return serviceModel;
 				}
 
-				if (!foundOne && model.Configuration != null &&
-					"true" == model.Configuration.Attributes[WcfConstants.ServiceHostEnabled])
+				if (foundOne == false && model.Configuration != null && "true" == model.Configuration.Attributes[WcfConstants.ServiceHostEnabled])
 				{
 					yield return new DefaultServiceModel();
 				}
@@ -212,8 +213,7 @@ namespace Castle.Facilities.WcfIntegration
 
 		#region CreateServiceHost Members
 
-		public static ServiceHost CreateServiceHost(IKernel Kernel, IWcfServiceModel serviceModel,
-													ComponentModel model, params Uri[] baseAddresses)
+		public static ServiceHost CreateServiceHost(IKernel Kernel, IWcfServiceModel serviceModel, ComponentModel model, params Uri[] baseAddresses)
 		{
 			var createServiceHost = createServiceHostCache.GetOrAdd(serviceModel.GetType(), serviceModelType =>
 			{
@@ -224,8 +224,7 @@ namespace Castle.Facilities.WcfIntegration
 			return createServiceHost(Kernel, serviceModel, model, baseAddresses);
 		}
 
-		internal static ServiceHost CreateServiceHostInternal<M>(IKernel kernel, IWcfServiceModel serviceModel, 
-			                                                     ComponentModel model, params Uri[] baseAddresses)
+		internal static ServiceHost CreateServiceHostInternal<M>(IKernel kernel, IWcfServiceModel serviceModel, ComponentModel model, params Uri[] baseAddresses)
 			where M : IWcfServiceModel
 		{
 			var serviceHostBuilder = kernel.Resolve<IServiceHostBuilder<M>>();
@@ -234,18 +233,9 @@ namespace Castle.Facilities.WcfIntegration
 
 		#endregion
 
-		#region IDisposable Members
-
-		public void Dispose()
-		{
-		}
-
-		#endregion
-
 		private void CreateServiceHostWhenHandlerIsValid(IHandler handler, IWcfServiceModel serviceModel, ComponentModel model)
 		{
-			if (serviceModel.ShouldOpenEagerly.GetValueOrDefault(OpenServiceHostsEagerly) ||
-				handler.CurrentState == HandlerState.Valid)
+			if (serviceModel.ShouldOpenEagerly.GetValueOrDefault(OpenServiceHostsEagerly) || handler.CurrentState == HandlerState.Valid)
 			{
 				CreateAndOpenServiceHost(serviceModel, model);
 			}
@@ -268,17 +258,23 @@ namespace Castle.Facilities.WcfIntegration
 		private void CreateAndOpenServiceHost(IWcfServiceModel serviceModel, ComponentModel model)
 		{
 			var serviceHost = CreateServiceHost(kernel, serviceModel, model);
-			var serviceHosts = model.ExtendedProperties[WcfConstants.ServiceHostsKey] as IList<ServiceHost>;
-
-			if (serviceHosts == null)
+			lock (sync)
 			{
-				serviceHosts = new List<ServiceHost>();
-				model.ExtendedProperties[WcfConstants.ServiceHostsKey] = serviceHosts;
+				hosts.Add(serviceHost);
 			}
-
-			serviceHosts.Add(serviceHost);
-
 			serviceHost.Open();
+		}
+
+		private void ReleaseServiceHosts()
+		{
+			foreach (var serviceHost in hosts)
+			{
+				foreach (var cleanUp in serviceHost.Extensions.FindAll<IWcfCleanUp>())
+				{
+					cleanUp.CleanUp();
+				}
+				WcfUtils.ReleaseCommunicationObject(serviceHost, CloseTimeout);
+			}
 		}
 	}
 }

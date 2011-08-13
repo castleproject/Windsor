@@ -32,7 +32,6 @@ namespace Castle.Facilities.WcfIntegration.Behaviors
 		/// <param name="lifecyle">The lifecycle stage.</param>
 		/// <param name="state">Optional state.</param>
 		/// <returns>true if further actions should be performed.</returns>
-		bool Perform(Message message, XmlDocument envelope, MessageLifecycle lifecyle,
-					 IDictionary state);
+		bool Perform(Message message, XmlDocument envelope, MessageLifecycle lifecyle, IDictionary state);
 	}
 }

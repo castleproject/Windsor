@@ -22,7 +22,7 @@ namespace Castle.Facilities.WcfIntegration.Lifestyles
 
 	public class WcfSessionScopeAccessor : IScopeAccessor
 	{
-		private ThreadSafeFlag disposed;
+		private readonly ThreadSafeFlag disposed;
 
 		public void Dispose()
 		{
@@ -57,7 +57,7 @@ namespace Castle.Facilities.WcfIntegration.Lifestyles
 			var extension = scopeHolder.Extensions.Find<WcfSessionScopeHolder>();
 			if (extension == null)
 			{
-				extension = new WcfSessionScopeHolder(new DefaultLifetimeScope(new ScopeCache()));
+				extension = new WcfSessionScopeHolder(new DefaultLifetimeScope());
 				scopeHolder.Extensions.Add(extension);
 			}
 			return extension.Scope;
@@ -70,14 +70,11 @@ namespace Castle.Facilities.WcfIntegration.Lifestyles
 			{
 				return null;
 			}
-
 			if (string.IsNullOrEmpty(operation.SessionId))
 			{
 				return null;
 			}
-
-			var scopeHolder = operation.Channel;
-			return scopeHolder;
+			return operation.Channel;
 		}
 	}
 }

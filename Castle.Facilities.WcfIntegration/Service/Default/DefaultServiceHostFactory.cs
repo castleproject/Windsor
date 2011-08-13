@@ -26,10 +26,5 @@ namespace Castle.Facilities.WcfIntegration
 			: base(kernel)
 		{
 		}
-
-		public static void RegisterContainer(IKernel kernel)
-		{
-			WcfServiceExtension.GlobalKernel = kernel;
-		}
 	}
 }

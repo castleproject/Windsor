@@ -15,11 +15,9 @@
 namespace Castle.Facilities.WcfIntegration.Behaviors
 {
 	using System;
-	using System.IO;
 	using System.ServiceModel;
 	using System.ServiceModel.Channels;
 	using System.ServiceModel.Dispatcher;
-	using System.Xml;
 	using Castle.Core.Logging;
 
 	/// <summary>
@@ -139,7 +137,7 @@ namespace Castle.Facilities.WcfIntegration.Behaviors
 
 		#endregion
 
-		private string ObtainCorrelationId(Message message)
+		private static string ObtainCorrelationId(Message message)
 		{
 			var correlationId = message.Headers.MessageId;
 			return (correlationId != null) ? correlationId.ToString() : Guid.NewGuid().ToString();
@@ -151,7 +149,7 @@ namespace Castle.Facilities.WcfIntegration.Behaviors
 			var forLogging = buffer.CreateMessage();
 			message = buffer.CreateMessage();
 
-			var content = string.Format(formatter, "{0:" + format + "}", forLogging);
+			var content = string.Format(formatter, String.Format("{{0:{0}}}", format), forLogging);
 			logger.Info(content);
 		}
 	}

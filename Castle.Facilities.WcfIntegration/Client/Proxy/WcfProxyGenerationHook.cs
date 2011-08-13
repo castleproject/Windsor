@@ -69,7 +69,7 @@ namespace Castle.Facilities.WcfIntegration.Proxy
 
 		public void MethodsInspected()
 		{
-			if(hook!=null)
+			if (hook!=null)
 			{
 				hook.MethodsInspected();
 			}

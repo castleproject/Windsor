@@ -20,7 +20,6 @@ namespace Castle.Facilities.WcfIntegration.Tests
 	using System.ServiceModel.Channels;
 	using System.ServiceModel.Description;
 	using Castle.Core;
-	using Castle.Core.Configuration;
 	using Castle.Core.Resource;
 	using Castle.DynamicProxy;
 	using Castle.Facilities.Logging;
@@ -516,7 +515,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 		public void CanResolveClientWhenListedInTheFacility()
 		{
 			windsorContainer.Register(Component.For<ClassNeedingService>());
-			ClassNeedingService component = windsorContainer.Resolve<ClassNeedingService>();
+			var component = windsorContainer.Resolve<ClassNeedingService>();
 			Assert.IsNotNull(component.Operations);
 			Assert.AreEqual(42, component.Operations.GetValueFromConstructor());
 		}
@@ -656,30 +655,30 @@ namespace Castle.Facilities.WcfIntegration.Tests
 		[Test]
 		public void WillApplyChannelFactoryAwareExtensions()
 		{
-			windsorContainer.Register(
-				Component.For<ChannelFactoryListener>(),
-				Component.For<IOperations>()
-					.Named("operations")
-					.AsWcfClient(new DefaultClientModel()
-					{
-						Endpoint = WcfEndpoint
-							.BoundTo(new NetTcpBinding { PortSharingEnabled = true })
-							.At("net.tcp://localhost/Operations")
-					})
-				);
+			using (var localContainer = new WindsorContainer()
+				.AddFacility<WcfFacility>(f => f.CloseTimeout = TimeSpan.Zero)
+				.Register(
+					Component.For<ChannelFactoryListener>(),
+					Component.For<IOperations>()
+						.AsWcfClient(new DefaultClientModel()
+						{
+							Endpoint = WcfEndpoint
+								.BoundTo(new NetTcpBinding { PortSharingEnabled = true })
+								.At("net.tcp://localhost/Operations")
+						})
+					))
+			{
+				var client = localContainer.Resolve<IOperations>();
 
-			var client = windsorContainer.Resolve<IOperations>("operations");
+				Assert.IsTrue(ChannelFactoryListener.CreatedCalled);
+				Assert.IsTrue(ChannelFactoryListener.OpeningCalled);
+				Assert.IsTrue(ChannelFactoryListener.OpenedCalled);
 
-			Assert.IsTrue(ChannelFactoryListener.CreatedCalled);
-			Assert.IsTrue(ChannelFactoryListener.OpeningCalled);
-			Assert.IsTrue(ChannelFactoryListener.OpenedCalled);
+				client.GetValueFromConstructor();
 
-			client.GetValueFromConstructor();
-
-			Assert.IsFalse(ChannelFactoryListener.ClosingCalled);
-			Assert.IsFalse(ChannelFactoryListener.ClosedCalled);
-
-			windsorContainer.Release(client);
+				Assert.IsFalse(ChannelFactoryListener.ClosingCalled);
+				Assert.IsFalse(ChannelFactoryListener.ClosedCalled);
+			}
 
 			Assert.IsTrue(ChannelFactoryListener.ClosingCalled);
 			Assert.IsTrue(ChannelFactoryListener.ClosedCalled);
@@ -688,32 +687,31 @@ namespace Castle.Facilities.WcfIntegration.Tests
 		[Test]
 		public void WillApplyChannelFactoryAwareExtensionsOnModel()
 		{
-			windsorContainer.Register(
-				Component.For<IOperations>()
-					.Named("operations")
-					.AsWcfClient(new DefaultClientModel()
-					{
-						Endpoint = WcfEndpoint
-							.BoundTo(new NetTcpBinding { PortSharingEnabled = true })
-							.At("net.tcp://localhost/Operations")
-					}.AddExtensions(new ChannelFactoryListener()))
-				);
+			using (var localContainer = new WindsorContainer()
+				.AddFacility<WcfFacility>(f => f.CloseTimeout = TimeSpan.Zero)
+				.Register(
+					Component.For<IOperations>()
+						.AsWcfClient(new DefaultClientModel()
+						{
+							Endpoint = WcfEndpoint
+								.BoundTo(new NetTcpBinding { PortSharingEnabled = true })
+								.At("net.tcp://localhost/Operations")
+						}.AddExtensions(new ChannelFactoryListener()))
+					))
+			{
+				var client = localContainer.Resolve<IOperations>();
 
-			var client = windsorContainer.Resolve<IOperations>("operations");
-
-			Assert.IsTrue(ChannelFactoryListener.CreatedCalled);
-			Assert.IsTrue(ChannelFactoryListener.OpeningCalled);
-			Assert.IsTrue(ChannelFactoryListener.OpenedCalled);
-			client.GetValueFromConstructor();
-			Assert.IsFalse(ChannelFactoryListener.ClosingCalled);
-			Assert.IsFalse(ChannelFactoryListener.ClosedCalled);
-
-			windsorContainer.Release(client);
+				Assert.IsTrue(ChannelFactoryListener.CreatedCalled);
+				Assert.IsTrue(ChannelFactoryListener.OpeningCalled);
+				Assert.IsTrue(ChannelFactoryListener.OpenedCalled);
+				client.GetValueFromConstructor();
+				Assert.IsFalse(ChannelFactoryListener.ClosingCalled);
+				Assert.IsFalse(ChannelFactoryListener.ClosedCalled);
+			}
 
 			Assert.IsTrue(ChannelFactoryListener.ClosingCalled);
 			Assert.IsTrue(ChannelFactoryListener.ClosedCalled);
 		}
-
 
 		[Test]
 		public void WillApplyChannelFactoryAwareExtensionsWhenChannelCreated()
@@ -1006,7 +1004,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 			var client = windsorContainer.Resolve<IOperations>("operations");
 			using (new OperationContextScope(WcfContextChannel.For(client)))
 			{
-				MessageHeader header = MessageHeader.CreateHeader("MyHeader", "", "MyValue", false);
+				var header = MessageHeader.CreateHeader("MyHeader", "", "MyValue", false);
 				OperationContext.Current.OutgoingMessageHeaders.Add(header);
 				Assert.AreEqual(42, client.GetValueFromConstructor());
 			}
@@ -1034,7 +1032,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 			Assert.AreEqual(42, client.GetValueFromConstructor());
 			Assert.AreEqual(4, memoryAppender.GetEvents().Length);
 
-			foreach (LoggingEvent log in memoryAppender.GetEvents())
+			foreach (var log in memoryAppender.GetEvents())
 			{
 				Assert.AreEqual(typeof(IOperations).FullName, log.LoggerName);
 				Assert.IsTrue(log.Properties.Contains("NDC"));
@@ -1063,7 +1061,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 			Assert.AreEqual(42, client.GetValueFromConstructor());
 			Assert.AreEqual(4, memoryAppender.GetEvents().Length);
 
-			foreach (LoggingEvent log in memoryAppender.GetEvents())
+			foreach (var log in memoryAppender.GetEvents())
 			{
 				Assert.AreEqual(typeof(IOperations).FullName, log.LoggerName);
 				Assert.IsTrue(log.Properties.Contains("NDC"));
@@ -1094,7 +1092,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 			Assert.AreEqual(4, memoryAppender.GetEvents().Length);
 
 			int i = 0;
-			foreach (LoggingEvent log in memoryAppender.GetEvents())
+			foreach (var log in memoryAppender.GetEvents())
 			{
 				Assert.AreEqual(typeof(IOperations).FullName, log.LoggerName);
 				Assert.IsTrue(log.Properties.Contains("NDC"));
@@ -1128,7 +1126,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 			Assert.AreEqual(4, memoryAppender.GetEvents().Length);
 
 			int i = 0;
-			foreach (LoggingEvent log in memoryAppender.GetEvents())
+			foreach (var log in memoryAppender.GetEvents())
 			{
 				Assert.AreEqual(typeof(IOperations).FullName, log.LoggerName);
 				Assert.IsTrue(log.Properties.Contains("NDC"));
@@ -1163,7 +1161,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 			Assert.AreEqual(4, memoryAppender.GetEvents().Length);
 
 			int i = 0;
-			foreach (LoggingEvent log in memoryAppender.GetEvents())
+			foreach (var log in memoryAppender.GetEvents())
 			{
 				Assert.AreEqual(typeof(IOperations).FullName, log.LoggerName);
 				Assert.IsTrue(log.Properties.Contains("NDC"));
@@ -1198,7 +1196,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 			Assert.AreEqual(42, client.GetValueFromConstructor());
 
 			int i = 0;
-			foreach (LoggingEvent log in memoryAppender.GetEvents())
+			foreach (var log in memoryAppender.GetEvents())
 			{
 				if ((++i % 2) == 0)
 				{
@@ -1230,8 +1228,8 @@ namespace Castle.Facilities.WcfIntegration.Tests
 		[Test]
 		public void WillUseSameXmlDocumentForConsecutiveModifications()
 		{
-			StoreMessageBody start = new StoreMessageBody(MessageLifecycle.Requests);
-			StoreMessageBody end = new StoreMessageBody(MessageLifecycle.Requests);
+			var start = new StoreMessageBody(MessageLifecycle.Requests);
+			var end = new StoreMessageBody(MessageLifecycle.Requests);
 
 			windsorContainer.Register(
 				Component.For<MessageLifecycleBehavior>(),
@@ -1275,7 +1273,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 			Assert.AreEqual(100, client.GetValueFromConstructor());
 
 			int i = 0;
-			foreach (LoggingEvent log in memoryAppender.GetEvents())
+			foreach (var log in memoryAppender.GetEvents())
 			{
 				if ((++i % 2) == 0)
 				{
@@ -1287,8 +1285,8 @@ namespace Castle.Facilities.WcfIntegration.Tests
 		[Test]
 		public void WillCreateNewXmlDocumentForNormalActions()
 		{
-			StoreMessageBody start = new StoreMessageBody(MessageLifecycle.Requests);
-			StoreMessageBody end = new StoreMessageBody(MessageLifecycle.Requests);
+			var start = new StoreMessageBody(MessageLifecycle.Requests);
+			var end = new StoreMessageBody(MessageLifecycle.Requests);
 
 			windsorContainer.Register(
 				Component.For<MessageLifecycleBehavior>(),
@@ -1543,8 +1541,8 @@ namespace Castle.Facilities.WcfIntegration.Tests
 		[Test]
 		public void CanCallChannelOperationsAsynchronouslyOnAsyncService()
 		{
-			using (IWindsorContainer localContainer = new WindsorContainer()
-				.AddFacility<WcfFacility>(f => f.CloseTimeout = TimeSpan.Zero)
+			using (var localContainer = new WindsorContainer()
+								.AddFacility<WcfFacility>(f => f.CloseTimeout = TimeSpan.Zero)
 				.Register(
 					Component.For<IAsyncOperations>()
 						.ImplementedBy<AsyncOperations>()
@@ -1950,33 +1948,29 @@ namespace Castle.Facilities.WcfIntegration.Tests
 #endif
 		protected void RegisterLoggingFacility(IWindsorContainer container)
 		{
-			var facNode = new MutableConfiguration("facility");
-			facNode.Attributes["id"] = "logging";
-			facNode.Attributes["loggingApi"] = "ExtendedLog4net";
-			facNode.Attributes["configFile"] = "";
-			container.Kernel.ConfigurationStore.AddFacilityConfiguration("logging", facNode);
-			container.AddFacility("logging", new LoggingFacility());
+			var logging = new LoggingFacility(LoggerImplementation.ExtendedLog4net);
+			container.AddFacility(logging);
 
 			memoryAppender = new MemoryAppender();
 			BasicConfigurator.Configure(memoryAppender);
 		}
 
-		private static string xmlConfiguration = @"<?xml version='1.0' encoding='utf-8' ?>
-<configuration>
-	<facilities>
-		<facility id='wcf' 
-				  type='Castle.Facilities.WcfIntegration.WcfFacility,
-				        Castle.Facilities.WcfIntegration' />
-	</facilities>
-
-	<components>
-		<component id='usingWindsor'
-			       type='Castle.Facilities.WcfIntegration.Demo.IAmUsingWindsor, 
-				         Castle.Facilities.WcfIntegration.Demo'
-			       wcfEndpointConfiguration='WSHttpBinding_IAmUsingWindsor'>
-		</component>
-	</components>
-</configuration>";
+		private readonly static string xmlConfiguration = @"<?xml version='1.0' encoding='utf-8' ?>
+        <configuration>
+        	<facilities>
+        		<facility id='wcf' 
+        				  type='Castle.Facilities.WcfIntegration.WcfFacility,
+        				        Castle.Facilities.WcfIntegration' />
+        	</facilities>
+        
+        	<components>
+        		<component id='usingWindsor'
+        			       type='Castle.Facilities.WcfIntegration.Demo.IAmUsingWindsor, 
+        				         Castle.Facilities.WcfIntegration.Demo'
+        			       wcfEndpointConfiguration='WSHttpBinding_IAmUsingWindsor'>
+        		</component>
+        	</components>
+        </configuration>";
 	}
 
 	public class EmptyInterceptor : MarshalByRefObject, IInterceptor

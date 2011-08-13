@@ -84,7 +84,7 @@ namespace Castle.Facilities.WcfIntegration.Internal
 		public static void ExtendBehavior(IKernel kernel, WcfExtensionScope scope, object behavior, CreationContext context)
 		{
 			var behaviorType = behavior.GetType();
-			if(IsExtensibleOfItself(behaviorType) == false)
+			if (IsExtensibleOfItself(behaviorType) == false)
 			{
 				return;
 			}

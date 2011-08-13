@@ -67,7 +67,7 @@ namespace Castle.Facilities.WcfIntegration
 
         public virtual EndpointDiscoveryMetadata ResolveService(ResolveCriteria resolveCriteria)
         {
-            foreach (EndpointDiscoveryMetadata metadata in services.Values)
+			foreach (var metadata in services.Values)
             {
                 if (resolveCriteria.Address == metadata.Address)
                 {
