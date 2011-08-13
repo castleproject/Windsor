@@ -36,6 +36,21 @@ namespace Castle.Facilities.WcfIntegration.Internal
 			return serviceModel.IsHosted;
 		}
 
+		public static bool IsServiceContract(Type service)
+		{
+			if (service.IsDefined(typeof(ServiceContractAttribute), true))
+			{
+				return true;
+			}
+
+			if (service.IsInterface)
+			{
+				return service.GetInterfaces().Any(parent => IsServiceContract(parent));
+			}
+
+			return false;
+		}
+
 		public static WcfExtensionScope GetScope(ComponentModel model)
 		{
 			if (model.Configuration != null)

@@ -43,8 +43,7 @@ namespace Castle.Facilities.WcfIntegration
 		ICollection<IWcfExtension> Extensions { get; }
 
 		/// <summary>
-		/// Creates a copy of the <see cref="IWcfClientModel"/>
-		/// using the supplied endpoint.
+		/// Creates a copy of the <see cref="IWcfClientModel"/> using the supplied endpoint.
 		/// </summary>
 		/// <returns>The client model copy.</returns>
 		IWcfClientModel ForEndpoint(IWcfEndpoint endpoint);

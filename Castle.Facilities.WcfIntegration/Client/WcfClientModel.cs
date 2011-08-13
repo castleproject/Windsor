@@ -43,7 +43,7 @@ namespace Castle.Facilities.WcfIntegration
 
 		public Type Contract
 		{
-			get { return endpoint.Contract; }
+			get { return endpoint !=  null ? endpoint.Contract : null; }
 		}
 
 		public IWcfEndpoint Endpoint

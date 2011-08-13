@@ -62,6 +62,11 @@ namespace Castle.Facilities.WcfIntegration
 
 		public AspNetCompatibilityRequirementsMode? AspNetCompatibility { get; set; }
 
+		public IEnumerable<ServiceHost> ManagedServiceHosts
+		{
+			get { return hosts; }
+		}
+
 		internal void Init(IKernel kernel, WcfFacility facility)
 		{
 			this.kernel = kernel;

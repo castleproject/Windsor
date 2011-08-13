@@ -17,7 +17,6 @@ namespace Castle.Facilities.WcfIntegration
 	using System;
 	using System.Collections;
 	using System.Linq;
-	using System.ServiceModel;
 	using Castle.Facilities.WcfIntegration.Internal;
 	using Castle.MicroKernel.Facilities;
 	using Castle.MicroKernel.Registration;
@@ -34,7 +33,7 @@ namespace Castle.Facilities.WcfIntegration
 					"Did you forget to register that facility? Also make sure that TypedFactoryFacility was registred before WcfFacility.");
 			}
 
-			if (service == null || IsServiceContract(service) == false)
+			if (service == null || WcfUtils.IsServiceContract(service) == false)
 			{
 				return null;
 			}
@@ -54,21 +53,6 @@ namespace Castle.Facilities.WcfIntegration
 			}
 
 			return Component.For(service).Named(key).LifeStyle.Transient.AsWcfClient(clientModel);
-		}
-
-		private static bool IsServiceContract(Type service)
-		{
-			if (service.IsDefined(typeof(ServiceContractAttribute), true))
-			{
-				return true;
-			}
-
-			if (service.IsInterface)
-			{
-				return service.GetInterfaces().Any(parent => IsServiceContract(parent));
-			}
-
-			return false;
 		}
 	}
 }

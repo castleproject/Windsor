@@ -20,9 +20,12 @@ namespace Castle.Facilities.WcfIntegration
     {
 		public const string ExtensionScopeKey = "scope";
 
+		public const string ClientModelKey = "wcf.clientModel";
+
 		public const string ServiceHostEnabled = "wcfServiceHost";
 
-		public const string ClientModelKey = "wcf.clientModel";
+		public const string ServiceContractKey = "wcf.serviceContract";
+
 		public const string EndpointConfiguration = "wcfEndpointConfiguration";
 
 		public const string Namespace = "urn:www.castleproject.org:wcf";
