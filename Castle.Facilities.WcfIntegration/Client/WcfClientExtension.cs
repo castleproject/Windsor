@@ -188,7 +188,7 @@ namespace Castle.Facilities.WcfIntegration
 		{
 			var clientModel = ResolveClientModel(model);
 
-			if (clientModel != null && model.Implementation == model.Services.Single())
+			if (clientModel != null && model.Implementation == model.GetServiceContract())
 			{
 				model.CustomComponentActivator = typeof(WcfClientActivator);
 				model.ExtendedProperties[WcfConstants.ClientModelKey] = clientModel;
@@ -215,27 +215,31 @@ namespace Castle.Facilities.WcfIntegration
 
 		private static IWcfClientModel ResolveClientModel(ComponentModel model)
 		{
-			if (model.Services.Single().IsInterface)
+			var clientModel = WcfUtils.FindDependencies<IWcfClientModel>(model.CustomDependencies).FirstOrDefault();
+			if (clientModel == null && model.Configuration != null)
 			{
-				var clientModel = WcfUtils.FindDependencies<IWcfClientModel>(model.CustomDependencies).FirstOrDefault();
-				if (clientModel != null)
-				{
-					return clientModel;
-				}
-			}
-
-			if (model.Configuration != null)
-			{
-				var endpointConfiguration =
-					model.Configuration.Attributes[WcfConstants.EndpointConfiguration];
+				var endpointConfiguration = model.Configuration.Attributes[WcfConstants.EndpointConfiguration];
 
 				if (string.IsNullOrEmpty(endpointConfiguration) == false)
 				{
-					return new DefaultClientModel(WcfEndpoint.FromConfiguration(endpointConfiguration));
+					clientModel = new DefaultClientModel(WcfEndpoint.FromConfiguration(endpointConfiguration));
 				}
 			}
 
-			return null;
+			if (clientModel != null)
+			{
+				ObtainServiceContract(model, clientModel);
+			}
+
+			return clientModel;
+		}
+
+		private static void ObtainServiceContract(ComponentModel model, IWcfClientModel clientModel)
+		{
+			var serviceContract = clientModel.Contract ??
+				model.Services.Where(service => WcfUtils.IsServiceContract(service)).Single();
+
+			model.ExtendedProperties[WcfConstants.ServiceContractKey] = serviceContract;
 		}
 	}
 }

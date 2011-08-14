@@ -63,18 +63,20 @@ namespace Castle.Facilities.WcfIntegration.Proxy
 			{
 				return channelHolder.Channel;
 			}
+
 			if (model.Services.Count() > 1)
 			{
-				throw new ArgumentException(
-					string.Format("Component {0}, which was designated as a WCF proxy exposes {1} services. The facility currently only supports single-service components.",
-					              model.Name, model.Services.Count()));
+				throw new ArgumentException(string.Format(
+					"Component {0}, which was designated as a WCF proxy exposes {1} services. The facility currently only supports single-service components.",
+					model.Name, model.Services.Count()));
 			}
 
 			var isDuplex = IsDuplex(channelHolder.RealProxy);
 			var proxyOptions = model.ObtainProxyOptions();
-			var generationOptions = CreateProxyGenerationOptions(model.Services.Single(), proxyOptions, kernel, context);
+			var serviceContract = model.GetServiceContract();
+			var generationOptions = CreateProxyGenerationOptions(serviceContract, proxyOptions, kernel, context);
 			var additionalInterfaces = GetInterfaces(model.Services, proxyOptions, isDuplex);
-			var interceptors = GetInterceptors(kernel, model, channelHolder, context);
+			var interceptors = GetInterceptors(kernel, model, serviceContract, channelHolder, context);
 
 			return generator.CreateInterfaceProxyWithTarget(typeof(IWcfChannelHolder),
 				additionalInterfaces, channelHolder, generationOptions, interceptors);
@@ -108,7 +110,7 @@ namespace Castle.Facilities.WcfIntegration.Proxy
 			return interfaces.ToArray();
 		}
 
-		private IInterceptor[] GetInterceptors(IKernel kernel, ComponentModel model, IWcfChannelHolder channelHolder, CreationContext context)
+		private IInterceptor[] GetInterceptors(IKernel kernel, ComponentModel model, Type serviceContract, IWcfChannelHolder channelHolder, CreationContext context)
 		{
 			var interceptors = ObtainInterceptors(kernel, model, context);
 
@@ -121,8 +123,7 @@ namespace Castle.Facilities.WcfIntegration.Proxy
 
 			if (clientModel.WantsAsyncCapability)
 			{
-				var getAsyncType = WcfUtils.SafeInitialize(ref asyncType,
-					() => AsyncType.GetAsyncType(model.Services.Single()));
+				var getAsyncType = WcfUtils.SafeInitialize(ref asyncType, () => AsyncType.GetAsyncType(serviceContract));
 				interceptors[--index] = new WcfRemotingAsyncInterceptor(getAsyncType, clients, channelHolder);
 			}
 
@@ -133,8 +134,7 @@ namespace Castle.Facilities.WcfIntegration.Proxy
 		{
 			if (proxyOptions.MixIns != null && proxyOptions.MixIns.Count() > 0)
 			{
-				throw new NotImplementedException(
-					"Support for mixins is not yet implemented. How about contributing a patch?");
+				throw new NotImplementedException("Support for mixins is not yet implemented. How about contributing a patch?");
 			}
 
 			var userProvidedSelector = (proxyOptions.Selector != null) ? proxyOptions.Selector.Resolve(kernel, context) : null;

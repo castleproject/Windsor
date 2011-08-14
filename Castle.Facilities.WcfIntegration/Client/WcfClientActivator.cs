@@ -157,7 +157,7 @@ namespace Castle.Facilities.WcfIntegration
 			where TModel : IWcfClientModel
 		{
 			var channelBuilder = kernel.Resolve<IChannelBuilder<TModel>>();
-			return channelBuilder.GetChannelCreator((TModel)clientModel, model.Services.Single(), out burden);
+			return channelBuilder.GetChannelCreator((TModel)clientModel, model.GetServiceContract(), out burden);
 		}
 
 		private static void NotifyChannelCreatedOrAvailable(IChannel channel, IWcfBurden burden, bool created)
@@ -206,37 +206,27 @@ namespace Castle.Facilities.WcfIntegration
 
 		private static void ValidateClientModel(IWcfClientModel clientModel, ComponentModel model)
 		{
-			Type contract;
-
-			if (model != null)
-			{
-				contract = model.Services.Single();
-			}
-			else if (clientModel.Contract != null)
-			{
-				contract = clientModel.Contract;
-			}
-			else
-			{
-				throw new FacilityException("The client endpoint does not specify a contract.");
-			}
-
 			if (clientModel.Endpoint == null)
 			{
 				throw new FacilityException("The client model requires an endpoint.");
 			}
 
-			if ((model != null) && (clientModel.Contract != null) && (clientModel.Contract != model.Services.Single()))
+			var contract = clientModel.Contract ?? model.GetServiceContract();
+
+			if (contract == null)
+			{
+				throw new FacilityException("The service contract for the client endpoint could not be determined.");
+			}
+
+			if (model.Services.Contains(contract) == false)
 			{
 				throw new FacilityException(string.Format(
-					"The client endpoint contract {0} conflicts with the expected contract {1}.",
-					clientModel.Contract.FullName, model.Services.Single().FullName));
+					"The service contract {0} is not supported by the component {0} or any of its services.",
+					clientModel.Contract.FullName, model.Implementation.FullName));
 			}
 		}
 
-		private delegate ChannelCreator CreateChannelDelegate(
-			IKernel kernel, IWcfClientModel clientModel, ComponentModel model,
-			out IWcfBurden burden);
+		private delegate ChannelCreator CreateChannelDelegate(IKernel kernel, IWcfClientModel clientModel, ComponentModel model, out IWcfBurden burden);
 
 		private static readonly ConcurrentDictionary<Type, CreateChannelDelegate>
 			createChannelCache = new ConcurrentDictionary<Type, CreateChannelDelegate>();
