@@ -21,7 +21,7 @@
         </member>
         <member name="T:Castle.Components.DictionaryAdapter.DictionaryBehaviorAttribute">
             <summary>
-            Assignes a specific dictionary key.
+            Assigns a specific dictionary key.
             </summary>
         </member>
         <member name="T:Castle.Components.DictionaryAdapter.IDictionaryBehavior">
@@ -317,7 +317,7 @@
         </member>
         <member name="T:Castle.Components.DictionaryAdapter.FetchAttribute">
             <summary>
-            Identifies an interface or property to be pre-feteched.
+            Identifies an interface or property to be pre-fetched.
             </summary>
         </member>
         <member name="M:Castle.Components.DictionaryAdapter.FetchAttribute.#ctor">
@@ -1639,8 +1639,8 @@
               - Sort them by full name
               - Return them by position
             
-              The idea is to have reproducable behavior for the case that mixins are registered in different orders.
-              This method is here because it is required
+            The idea is to have reproducible behavior for the case that mixins are registered in different orders.
+            This method is here because it is required 
             </summary>
         </member>
         <member name="T:Castle.DynamicProxy.ModuleScope">
@@ -4203,13 +4203,13 @@
         </member>
         <member name="T:Castle.Core.Configuration.AbstractConfiguration">
             <summary>
-            This is an abstract <see cref="T:Castle.Core.Configuration.IConfiguration"/> implementation
-            that deals with methods that can be abstracted away
-            from underlying implementations.
+              This is an abstract <see cref="T:Castle.Core.Configuration.IConfiguration"/> implementation
+              that deals with methods that can be abstracted away
+              from underlying implementations.
             </summary>
             <remarks>
-            <para><b>AbstractConfiguration</b> makes easier to implementers 
-            to create a new version of <see cref="T:Castle.Core.Configuration.IConfiguration"/></para>
+              <para><b>AbstractConfiguration</b> makes easier to implementers 
+                to create a new version of <see cref="T:Castle.Core.Configuration.IConfiguration"/></para>
             </remarks>
         </member>
         <member name="T:Castle.Core.Configuration.IConfiguration">
@@ -4259,43 +4259,43 @@
         </member>
         <member name="M:Castle.Core.Configuration.AbstractConfiguration.GetValue(System.Type,System.Object)">
             <summary>
-            Gets the value of the node and converts it
-            into specified <see cref="T:System.Type"/>.
+              Gets the value of the node and converts it
+              into specified <see cref="T:System.Type"/>.
             </summary>
             <param name="type">The <see cref="T:System.Type"/></param>
             <param name="defaultValue">
-            The Default value returned if the convertion fails.
+              The Default value returned if the conversion fails.
             </param>
             <returns>The Value converted into the specified type.</returns>
         </member>
-        <member name="P:Castle.Core.Configuration.AbstractConfiguration.Name">
+        <member name="P:Castle.Core.Configuration.AbstractConfiguration.Attributes">
             <summary>
-            Gets the name of the <see cref="T:Castle.Core.Configuration.IConfiguration"/>.
+              Gets node attributes.
             </summary>
             <value>
-            The Name of the <see cref="T:Castle.Core.Configuration.IConfiguration"/>.
-            </value>
-        </member>
-        <member name="P:Castle.Core.Configuration.AbstractConfiguration.Value">
-            <summary>
-            Gets the value of <see cref="T:Castle.Core.Configuration.IConfiguration"/>.
-            </summary>
-            <value>
-            The Value of the <see cref="T:Castle.Core.Configuration.IConfiguration"/>.
+              All attributes of the node.
             </value>
         </member>
         <member name="P:Castle.Core.Configuration.AbstractConfiguration.Children">
             <summary>
-            Gets all child nodes.
+              Gets all child nodes.
             </summary>
             <value>The <see cref="T:Castle.Core.Configuration.ConfigurationCollection"/> of child nodes.</value>
         </member>
-        <member name="P:Castle.Core.Configuration.AbstractConfiguration.Attributes">
+        <member name="P:Castle.Core.Configuration.AbstractConfiguration.Name">
             <summary>
-            Gets node attributes.
+              Gets the name of the <see cref="T:Castle.Core.Configuration.IConfiguration"/>.
             </summary>
             <value>
-            All attributes of the node.
+              The Name of the <see cref="T:Castle.Core.Configuration.IConfiguration"/>.
+            </value>
+        </member>
+        <member name="P:Castle.Core.Configuration.AbstractConfiguration.Value">
+            <summary>
+              Gets the value of <see cref="T:Castle.Core.Configuration.IConfiguration"/>.
+            </summary>
+            <value>
+              The Value of the <see cref="T:Castle.Core.Configuration.IConfiguration"/>.
             </value>
         </member>
         <member name="T:Castle.Core.Configuration.ConfigurationCollection">
@@ -4342,7 +4342,7 @@
         <member name="M:Castle.Core.Configuration.Xml.XmlConfigurationDeserializer.GetConfigValue(System.String)">
             <summary>
               If a config value is an empty string we return null, this is to keep
-              backward compability with old code
+              backward compatibility with old code
             </summary>
         </member>
         <member name="T:Castle.Core.Pair`2">
@@ -4376,136 +4376,158 @@
         </member>
         <member name="T:Castle.Core.ReflectionBasedDictionaryAdapter">
             <summary>
-            Pendent
+            Readonly implementation of <see cref="T:System.Collections.IDictionary"/> which uses an anonymous object as its source. Uses names of properties as keys, and property values as... well - values. Keys are not case sensitive.
             </summary>
         </member>
         <member name="M:Castle.Core.ReflectionBasedDictionaryAdapter.#ctor(System.Object)">
             <summary>
-            Initializes a new instance of the <see cref="T:Castle.Core.ReflectionBasedDictionaryAdapter"/> class.
+              Initializes a new instance of the <see cref="T:Castle.Core.ReflectionBasedDictionaryAdapter"/> class.
             </summary>
             <param name="target">The target.</param>
         </member>
-        <member name="M:Castle.Core.ReflectionBasedDictionaryAdapter.Contains(System.Object)">
-            <summary>
-            Determines whether the <see cref="T:System.Collections.IDictionary"/> object contains an element with the specified key.
-            </summary>
-            <param name="key">The key to locate in the <see cref="T:System.Collections.IDictionary"/> object.</param>
-            <returns>
-            true if the <see cref="T:System.Collections.IDictionary"/> contains an element with the key; otherwise, false.
-            </returns>
-            <exception cref="T:System.ArgumentNullException">
-            	<paramref name="key"/> is null. </exception>
-        </member>
         <member name="M:Castle.Core.ReflectionBasedDictionaryAdapter.Add(System.Object,System.Object)">
             <summary>
-            Adds an element with the provided key and value to the <see cref="T:System.Collections.IDictionary"/> object.
+              Adds an element with the provided key and value to the <see cref = "T:System.Collections.IDictionary" /> object.
             </summary>
-            <param name="key">The <see cref="T:System.Object"/> to use as the key of the element to add.</param>
-            <param name="value">The <see cref="T:System.Object"/> to use as the value of the element to add.</param>
-            <exception cref="T:System.ArgumentNullException">
-            	<paramref name="key"/> is null. </exception>
-            <exception cref="T:System.ArgumentException">An element with the same key already exists in the <see cref="T:System.Collections.IDictionary"/> object. </exception>
-            <exception cref="T:System.NotSupportedException">The <see cref="T:System.Collections.IDictionary"/> is read-only.-or- The <see cref="T:System.Collections.IDictionary"/> has a fixed size. </exception>
+            <param name = "key">The <see cref = "T:System.Object" /> to use as the key of the element to add.</param>
+            <param name = "value">The <see cref = "T:System.Object" /> to use as the value of the element to add.</param>
+            <exception cref = "T:System.ArgumentNullException">
+              <paramref name = "key" /> is null. </exception>
+            <exception cref = "T:System.ArgumentException">An element with the same key already exists in the <see
+               cref = "T:System.Collections.IDictionary" /> object. </exception>
+            <exception cref = "T:System.NotSupportedException">The <see cref = "T:System.Collections.IDictionary" /> is read-only.-or- The <see
+               cref = "T:System.Collections.IDictionary" /> has a fixed size. </exception>
         </member>
         <member name="M:Castle.Core.ReflectionBasedDictionaryAdapter.Clear">
             <summary>
-            Removes all elements from the <see cref="T:System.Collections.IDictionary"/> object.
+              Removes all elements from the <see cref = "T:System.Collections.IDictionary" /> object.
             </summary>
-            <exception cref="T:System.NotSupportedException">The <see cref="T:System.Collections.IDictionary"/> object is read-only. </exception>
+            <exception cref = "T:System.NotSupportedException">The <see cref = "T:System.Collections.IDictionary" /> object is read-only. </exception>
         </member>
-        <member name="M:Castle.Core.ReflectionBasedDictionaryAdapter.System#Collections#IDictionary#GetEnumerator">
+        <member name="M:Castle.Core.ReflectionBasedDictionaryAdapter.Contains(System.Object)">
             <summary>
-            Returns an <see cref="T:System.Collections.IDictionaryEnumerator"/> object for the <see cref="T:System.Collections.IDictionary"/> object.
+              Determines whether the <see cref = "T:System.Collections.IDictionary" /> object contains an element with the specified key.
             </summary>
+            <param name = "key">The key to locate in the <see cref = "T:System.Collections.IDictionary" /> object.</param>
             <returns>
-            An <see cref="T:System.Collections.IDictionaryEnumerator"/> object for the <see cref="T:System.Collections.IDictionary"/> object.
+              true if the <see cref = "T:System.Collections.IDictionary" /> contains an element with the key; otherwise, false.
             </returns>
+            <exception cref = "T:System.ArgumentNullException">
+              <paramref name = "key" /> is null. </exception>
         </member>
         <member name="M:Castle.Core.ReflectionBasedDictionaryAdapter.Remove(System.Object)">
             <summary>
-            Removes the element with the specified key from the <see cref="T:System.Collections.IDictionary"/> object.
+              Removes the element with the specified key from the <see cref = "T:System.Collections.IDictionary" /> object.
             </summary>
-            <param name="key">The key of the element to remove.</param>
-            <exception cref="T:System.ArgumentNullException">
-            	<paramref name="key"/> is null. </exception>
-            <exception cref="T:System.NotSupportedException">The <see cref="T:System.Collections.IDictionary"/> object is read-only.-or- The <see cref="T:System.Collections.IDictionary"/> has a fixed size. </exception>
-        </member>
-        <member name="M:Castle.Core.ReflectionBasedDictionaryAdapter.System#Collections#ICollection#CopyTo(System.Array,System.Int32)">
-            <summary>
-            Copies the elements of the <see cref="T:System.Collections.ICollection"/> to an <see cref="T:System.Array"/>, starting at a particular <see cref="T:System.Array"/> index.
-            </summary>
-            <param name="array">The one-dimensional <see cref="T:System.Array"/> that is the destination of the elements copied from <see cref="T:System.Collections.ICollection"/>. The <see cref="T:System.Array"/> must have zero-based indexing.</param>
-            <param name="index">The zero-based index in <paramref name="array"/> at which copying begins.</param>
-            <exception cref="T:System.ArgumentNullException">
-            	<paramref name="array"/> is null. </exception>
-            <exception cref="T:System.ArgumentOutOfRangeException">
-            	<paramref name="index"/> is less than zero. </exception>
-            <exception cref="T:System.ArgumentException">
-            	<paramref name="array"/> is multidimensional.-or- <paramref name="index"/> is equal to or greater than the length of <paramref name="array"/>.-or- The number of elements in the source <see cref="T:System.Collections.ICollection"/> is greater than the available space from <paramref name="index"/> to the end of the destination <paramref name="array"/>. </exception>
-            <exception cref="T:System.ArgumentException">The type of the source <see cref="T:System.Collections.ICollection"/> cannot be cast automatically to the type of the destination <paramref name="array"/>. </exception>
+            <param name = "key">The key of the element to remove.</param>
+            <exception cref = "T:System.ArgumentNullException">
+              <paramref name = "key" /> is null. </exception>
+            <exception cref = "T:System.NotSupportedException">The <see cref = "T:System.Collections.IDictionary" /> object is read-only.-or- The <see
+               cref = "T:System.Collections.IDictionary" /> has a fixed size. </exception>
         </member>
         <member name="M:Castle.Core.ReflectionBasedDictionaryAdapter.GetEnumerator">
             <summary>
-            Returns an enumerator that iterates through a collection.
+              Returns an enumerator that iterates through a collection.
             </summary>
             <returns>
-            An <see cref="T:System.Collections.IEnumerator"/> object that can be used to iterate through the collection.
+              An <see cref = "T:System.Collections.IEnumerator" /> object that can be used to iterate through the collection.
             </returns>
+        </member>
+        <member name="M:Castle.Core.ReflectionBasedDictionaryAdapter.System#Collections#ICollection#CopyTo(System.Array,System.Int32)">
+            <summary>
+              Copies the elements of the <see cref = "T:System.Collections.ICollection" /> to an <see cref = "T:System.Array" />, starting at a particular <see
+               cref = "T:System.Array" /> index.
+            </summary>
+            <param name = "array">The one-dimensional <see cref = "T:System.Array" /> that is the destination of the elements copied from <see
+               cref = "T:System.Collections.ICollection" />. The <see cref = "T:System.Array" /> must have zero-based indexing.</param>
+            <param name = "index">The zero-based index in <paramref name = "array" /> at which copying begins.</param>
+            <exception cref = "T:System.ArgumentNullException">
+              <paramref name = "array" /> is null. </exception>
+            <exception cref = "T:System.ArgumentOutOfRangeException">
+              <paramref name = "index" /> is less than zero. </exception>
+            <exception cref = "T:System.ArgumentException">
+              <paramref name = "array" /> is multidimensional.-or- <paramref name = "index" /> is equal to or greater than the length of <paramref
+               name = "array" />.-or- The number of elements in the source <see cref = "T:System.Collections.ICollection" /> is greater than the available space from <paramref
+               name = "index" /> to the end of the destination <paramref name = "array" />. </exception>
+            <exception cref = "T:System.ArgumentException">The type of the source <see cref = "T:System.Collections.ICollection" /> cannot be cast automatically to the type of the destination <paramref
+               name = "array" />. </exception>
+        </member>
+        <member name="M:Castle.Core.ReflectionBasedDictionaryAdapter.System#Collections#IDictionary#GetEnumerator">
+            <summary>
+              Returns an <see cref = "T:System.Collections.IDictionaryEnumerator" /> object for the <see
+               cref = "T:System.Collections.IDictionary" /> object.
+            </summary>
+            <returns>
+              An <see cref = "T:System.Collections.IDictionaryEnumerator" /> object for the <see
+               cref = "T:System.Collections.IDictionary" /> object.
+            </returns>
+        </member>
+        <member name="M:Castle.Core.ReflectionBasedDictionaryAdapter.Read(System.Collections.IDictionary,System.Object)">
+            <summary>
+              Reads values of properties from <paramref name = "valuesAsAnonymousObject" /> and inserts them into <paramref
+               name = "targetDictionary" /> using property names as keys.
+            </summary>
+            <param name = "targetDictionary"></param>
+            <param name = "valuesAsAnonymousObject"></param>
+        </member>
+        <member name="P:Castle.Core.ReflectionBasedDictionaryAdapter.Count">
+            <summary>
+              Gets the number of elements contained in the <see cref = "T:System.Collections.ICollection" />.
+            </summary>
+            <value></value>
+            <returns>The number of elements contained in the <see cref = "T:System.Collections.ICollection" />.</returns>
+        </member>
+        <member name="P:Castle.Core.ReflectionBasedDictionaryAdapter.IsSynchronized">
+            <summary>
+              Gets a value indicating whether access to the <see cref = "T:System.Collections.ICollection" /> is synchronized (thread safe).
+            </summary>
+            <value></value>
+            <returns>true if access to the <see cref = "T:System.Collections.ICollection" /> is synchronized (thread safe); otherwise, false.</returns>
+        </member>
+        <member name="P:Castle.Core.ReflectionBasedDictionaryAdapter.SyncRoot">
+            <summary>
+              Gets an object that can be used to synchronize access to the <see cref = "T:System.Collections.ICollection" />.
+            </summary>
+            <value></value>
+            <returns>An object that can be used to synchronize access to the <see cref = "T:System.Collections.ICollection" />.</returns>
+        </member>
+        <member name="P:Castle.Core.ReflectionBasedDictionaryAdapter.IsReadOnly">
+            <summary>
+              Gets a value indicating whether the <see cref = "T:System.Collections.IDictionary" /> object is read-only.
+            </summary>
+            <value></value>
+            <returns>true if the <see cref = "T:System.Collections.IDictionary" /> object is read-only; otherwise, false.</returns>
         </member>
         <member name="P:Castle.Core.ReflectionBasedDictionaryAdapter.Item(System.Object)">
             <summary>
-            Gets or sets the <see cref="T:System.Object"/> with the specified key.
+              Gets or sets the <see cref="T:System.Object"/> with the specified key.
             </summary>
             <value></value>
         </member>
         <member name="P:Castle.Core.ReflectionBasedDictionaryAdapter.Keys">
             <summary>
-            Gets an <see cref="T:System.Collections.ICollection"/> object containing the keys of the <see cref="T:System.Collections.IDictionary"/> object.
+              Gets an <see cref = "T:System.Collections.ICollection" /> object containing the keys of the <see
+               cref = "T:System.Collections.IDictionary" /> object.
             </summary>
             <value></value>
-            <returns>An <see cref="T:System.Collections.ICollection"/> object containing the keys of the <see cref="T:System.Collections.IDictionary"/> object.</returns>
+            <returns>An <see cref = "T:System.Collections.ICollection" /> object containing the keys of the <see
+               cref = "T:System.Collections.IDictionary" /> object.</returns>
         </member>
         <member name="P:Castle.Core.ReflectionBasedDictionaryAdapter.Values">
             <summary>
-            Gets an <see cref="T:System.Collections.ICollection"/> object containing the values in the <see cref="T:System.Collections.IDictionary"/> object.
+              Gets an <see cref = "T:System.Collections.ICollection" /> object containing the values in the <see
+               cref = "T:System.Collections.IDictionary" /> object.
             </summary>
             <value></value>
-            <returns>An <see cref="T:System.Collections.ICollection"/> object containing the values in the <see cref="T:System.Collections.IDictionary"/> object.</returns>
-        </member>
-        <member name="P:Castle.Core.ReflectionBasedDictionaryAdapter.IsReadOnly">
-            <summary>
-            Gets a value indicating whether the <see cref="T:System.Collections.IDictionary"/> object is read-only.
-            </summary>
-            <value></value>
-            <returns>true if the <see cref="T:System.Collections.IDictionary"/> object is read-only; otherwise, false.</returns>
+            <returns>An <see cref = "T:System.Collections.ICollection" /> object containing the values in the <see
+               cref = "T:System.Collections.IDictionary" /> object.</returns>
         </member>
         <member name="P:Castle.Core.ReflectionBasedDictionaryAdapter.System#Collections#IDictionary#IsFixedSize">
             <summary>
-            Gets a value indicating whether the <see cref="T:System.Collections.IDictionary"/> object has a fixed size.
+              Gets a value indicating whether the <see cref = "T:System.Collections.IDictionary" /> object has a fixed size.
             </summary>
             <value></value>
-            <returns>true if the <see cref="T:System.Collections.IDictionary"/> object has a fixed size; otherwise, false.</returns>
-        </member>
-        <member name="P:Castle.Core.ReflectionBasedDictionaryAdapter.Count">
-            <summary>
-            Gets the number of elements contained in the <see cref="T:System.Collections.ICollection"/>.
-            </summary>
-            <value></value>
-            <returns>The number of elements contained in the <see cref="T:System.Collections.ICollection"/>.</returns>
-        </member>
-        <member name="P:Castle.Core.ReflectionBasedDictionaryAdapter.SyncRoot">
-            <summary>
-            Gets an object that can be used to synchronize access to the <see cref="T:System.Collections.ICollection"/>.
-            </summary>
-            <value></value>
-            <returns>An object that can be used to synchronize access to the <see cref="T:System.Collections.ICollection"/>.</returns>
-        </member>
-        <member name="P:Castle.Core.ReflectionBasedDictionaryAdapter.IsSynchronized">
-            <summary>
-            Gets a value indicating whether access to the <see cref="T:System.Collections.ICollection"/> is synchronized (thread safe).
-            </summary>
-            <value></value>
-            <returns>true if access to the <see cref="T:System.Collections.ICollection"/> is synchronized (thread safe); otherwise, false.</returns>
+            <returns>true if the <see cref = "T:System.Collections.IDictionary" /> object has a fixed size; otherwise, false.</returns>
         </member>
         <member name="T:Castle.Core.Resource.IResource">
             <summary>
@@ -4558,7 +4580,7 @@
         <member name="F:Castle.Core.Resource.AbstractStreamResource.createStream">
             <summary>
             This returns a new stream instance each time it is called.
-            It is the responsability of the caller to dispose of this stream
+            It is the responsibility of the caller to dispose of this stream
             </summary>
         </member>
         <member name="T:Castle.Core.Resource.IResourceFactory">
@@ -4703,7 +4725,7 @@
         <member name="P:Castle.Core.Smtp.DefaultSmtpSender.AsyncSend">
             <summary>
             Gets or sets a value which is used to 
-            configure if emails are going to be sent asyncrhonously or not.
+            configure if emails are going to be sent asynchronously or not.
             </summary>
         </member>
         <member name="P:Castle.Core.Smtp.DefaultSmtpSender.Timeout">

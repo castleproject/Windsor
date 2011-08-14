@@ -51,8 +51,7 @@ limitations under the License.
 		in addition to automatically detected dependencies.
 		The items are resolved relative to $(OutputPath)
 		-->
-		<PackageFiles Include="$(OutputPath)NHibernate.*" />
-		<PackageFiles Include="$(OutputPath)Iesi.*" />
+		<PackageFiles Include="$(OutputPath)Castle.Core.pdb" />
 	</ItemGroup>
 
 	<Target Name="_InitializeDynamicProperties">
