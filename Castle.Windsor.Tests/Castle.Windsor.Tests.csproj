@@ -541,7 +541,7 @@
     <Compile Include="Lifestyle\ScopedLifestyleExplicitAndNestingTestCase.cs" />
     <Compile Include="Lifestyle\ScopedLifestyleExplicitAndTypedFactoriesTestCase.cs" />
     <Compile Include="Lifestyle\ScopedLifestyleImplicitGraphScopingAndTypedFactoriesTestCase.cs" />
-    <Compile Include="Lifestyle\ScopedLifestyleImplicitGraphScopingTestCase.cs" />
+    <Compile Include="Lifestyle\BoundLifestyleImplicitGraphScopingTestCase.cs" />
     <Compile Include="Lifestyle\ScopedLifestyleTestCase.cs" />
     <Compile Include="Lifestyle\ScopedLifetyleCustomScopesTestCase.cs" />
     <Compile Include="LoggingFacility\BaseTest.cs" />
