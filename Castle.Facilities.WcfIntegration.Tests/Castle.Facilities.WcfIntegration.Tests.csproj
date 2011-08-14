@@ -75,6 +75,7 @@
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Data" />
+    <Reference Include="System.Data.Services" />
     <Reference Include="System.Runtime.Serialization">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
@@ -88,6 +89,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AsyncChannelFactoryFixture.cs" />
+    <Compile Include="DataServiceHostFactoryFixture.cs" />
     <Compile Include="IssuesTestCase.cs" />
     <Compile Include="Behaviors\ExtensibleBehaviorExtension.cs" />
     <Compile Include="Behaviors\CallCountServiceBehavior.cs">

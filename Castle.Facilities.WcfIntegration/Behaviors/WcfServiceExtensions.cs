@@ -69,7 +69,7 @@ namespace Castle.Facilities.WcfIntegration
 
 		private static void BindServiceHostAware(ServiceHost serviceHost, IKernel kernel, IWcfBurden burden)
 		{
-            WcfUtils.AddBehaviors<IServiceHostAware>(kernel, WcfExtensionScope.Services, null, burden, serviceHostAware =>
+			WcfUtils.AddBehaviors<IServiceHostAware>(kernel, WcfExtensionScope.Services, null, burden, serviceHostAware =>
 			{
 				WcfUtils.BindServiceHostAware(serviceHost, serviceHostAware, true);
 				return true;

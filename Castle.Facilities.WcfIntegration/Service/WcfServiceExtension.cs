@@ -11,6 +11,7 @@ namespace Castle.Facilities.WcfIntegration
 	using System.ServiceModel.Activation;
 	using System.ServiceModel.Channels;
 	using Castle.Core;
+	using Castle.Facilities.WcfIntegration.Data;
 	using Castle.Facilities.WcfIntegration.Internal;
 	using Castle.Facilities.WcfIntegration.Rest;
 	using Castle.MicroKernel;
@@ -158,6 +159,7 @@ namespace Castle.Facilities.WcfIntegration
 		private void AddDefaultServiceHostBuilders()
 		{
 			AddServiceHostBuilder(typeof(DefaultServiceHostBuilder), false);
+			AddServiceHostBuilder(typeof(DataServiceHostBuilder), false);
 			AddServiceHostBuilder(typeof(RestServiceHostBuilder), false);
 		}
 
