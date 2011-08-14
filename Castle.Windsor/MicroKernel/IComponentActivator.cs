@@ -47,7 +47,7 @@ namespace Castle.MicroKernel
 		///   Should return a new component instance.
 		/// </summary>
 		/// <returns></returns>
-		object Create(CreationContext context);
+		object Create(CreationContext context, Burden burden);
 
 		/// <summary>
 		///   Should perform all necessary work to dispose the instance

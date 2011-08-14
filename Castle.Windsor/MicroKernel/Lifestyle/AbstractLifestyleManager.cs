@@ -15,6 +15,7 @@
 namespace Castle.MicroKernel.Lifestyle
 {
 	using System;
+	using System.Diagnostics;
 
 	using Castle.Core;
 	using Castle.MicroKernel.Context;
@@ -73,7 +74,11 @@ namespace Castle.MicroKernel.Lifestyle
 
 		protected virtual Burden CreateInstance(CreationContext context, bool trackedExternally)
 		{
-			return context.ActivateNewInstance(ComponentActivator, trackedExternally);
+			var burden = context.CreateBurden(ComponentActivator, trackedExternally);
+
+			var instance = componentActivator.Create(context, burden);
+			Debug.Assert(ReferenceEquals(instance, burden.Instance));
+			return burden;
 		}
 
 		protected virtual void Track(Burden burden, IReleasePolicy releasePolicy)

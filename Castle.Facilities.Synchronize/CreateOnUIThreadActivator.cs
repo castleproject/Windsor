@@ -30,7 +30,7 @@ namespace Castle.Facilities.Synchronize
 		private static readonly ComponentInstanceDelegate emptyCreation = delegate { };
 		private static readonly ComponentInstanceDelegate emptyDestruction = delegate { };
 		private readonly IComponentActivator customActivator;
-		private readonly CreationContextDelegate performCreation;
+		private readonly Func<CreationContext, Burden, object> performCreation;
 
 		/// <summary>
 		///   Initializes a new instance of the <see cref = "CreateOnUIThreadActivator" /> class.
@@ -47,23 +47,33 @@ namespace Castle.Facilities.Synchronize
 			performCreation = PerformCreation;
 		}
 
-		protected override object InternalCreate(CreationContext context)
+		public override object Create(CreationContext context, Burden burden)
+		{
+			var instance = InternalCreate(context, burden);
+			burden.SetRootInstance(instance);
+
+			OnCreation(Model, instance);
+
+			return instance;
+		}
+
+		private object InternalCreate(CreationContext context, Burden burden)
 		{
 			var createOnUIThread = (CreateOnUIThreadDelegate)Model.ExtendedProperties[Constants.CreateOnUIThead];
 
 			if (createOnUIThread != null)
 			{
-				return createOnUIThread(performCreation, context);
+				return createOnUIThread(c => performCreation(c, burden), context);
 			}
 
 			return base.InternalCreate(context);
 		}
 
-		private object PerformCreation(CreationContext context)
+		private object PerformCreation(CreationContext context, Burden burden)
 		{
 			if (customActivator != null)
 			{
-				return customActivator.Create(context);
+				return customActivator.Create(context, burden);
 			}
 
 			return base.InternalCreate(context);

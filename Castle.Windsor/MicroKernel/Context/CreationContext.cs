@@ -172,7 +172,7 @@ namespace Castle.MicroKernel.Context
 			get { return requestedType; }
 		}
 
-		public Burden ActivateNewInstance(IComponentActivator componentActivator, bool trackedExternally)
+		public Burden CreateBurden(IComponentActivator componentActivator, bool trackedExternally)
 		{
 			ResolutionContext resolutionContext;
 			try
@@ -182,7 +182,7 @@ namespace Castle.MicroKernel.Context
 			catch (InvalidOperationException)
 			{
 				throw new ComponentActivatorException(
-					"Not in a resolution context. 'ActivateNewInstance' method can only be called withing a resoltion scope. (after 'EnterResolutionContext' was called within a handler)");
+					"Not in a resolution context. 'CreateBurden' method can only be called withing a resoltion scope. (after 'EnterResolutionContext' was called within a handler)");
 			}
 
 			var activator = componentActivator as IDependencyAwareActivator;
@@ -191,9 +191,7 @@ namespace Castle.MicroKernel.Context
 				trackedExternally |= activator.IsManagedExternally(resolutionContext.Handler.ComponentModel);
 			}
 
-			var burden = resolutionContext.CreateBurden(trackedExternally);
-			burden.SetRootInstance(componentActivator.Create(this));
-			return burden;
+			return resolutionContext.CreateBurden(trackedExternally);
 		}
 
 		public void AttachExistingBurden(Burden burden)
@@ -206,7 +204,7 @@ namespace Castle.MicroKernel.Context
 			catch (InvalidOperationException)
 			{
 				throw new ComponentActivatorException(
-					"Not in a resolution context. 'ActivateNewInstance' method can only be called withing a resoltion scope. (after 'EnterResolutionContext' was called within a handler)");
+					"Not in a resolution context. 'AttachExistingBurden' method can only be called withing a resoltion scope. (after 'EnterResolutionContext' was called within a handler)");
 			}
 			resolutionContext.AttachBurden(burden);
 		}

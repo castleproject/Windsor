@@ -298,6 +298,7 @@
     <Compile Include="Bugs\IoC-267.cs" />
     <Compile Include="ByRefDependenciesTestCase.cs" />
     <Compile Include="ClassComponents\GenericImplA.cs" />
+    <Compile Include="ClassComponents\GenericWithTDependency.cs" />
     <Compile Include="Components\ADisposable.cs" />
     <Compile Include="Components\AppHost.cs" />
     <Compile Include="Components\AppScreenCBA.cs" />
