@@ -23,7 +23,7 @@ namespace CastleTests.Lifestyle
 
 	using NUnit.Framework;
 
-	public class ScopedLifestyleImplicitGraphScopingTestCase : AbstractContainerTestCase
+	public class BoundLifestyleImplicitGraphScopingTestCase : AbstractContainerTestCase
 	{
 		[Test]
 		public void Scoped_component_created_for_outermost_sub_graph()
@@ -208,7 +208,7 @@ namespace CastleTests.Lifestyle
 		public void Scoped_component_reused()
 		{
 			Container.Register(
-				Component.For<A>().LifeStyle.BoundTo<CBA>(),
+				Component.For<A>().LifestyleBoundTo<CBA>(),
 				Component.For<B>().LifeStyle.Transient,
 				Component.For<CBA>().LifeStyle.Transient);
 

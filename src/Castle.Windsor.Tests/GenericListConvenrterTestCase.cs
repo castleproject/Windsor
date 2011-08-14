@@ -14,6 +14,7 @@
 
 namespace CastleTests
 {
+#if !SILVERLIGHT
 	using System.Collections.Generic;
 
 	using Castle.Core.Resource;
@@ -22,12 +23,13 @@ namespace CastleTests
 	using NUnit.Framework;
 
 	[TestFixture]
-	public class GenericListConvenrterTestCase:AbstractContainerTestCase
+	public class GenericListConvenrterTestCase : AbstractContainerTestCase
 	{
 		[Test]
 		public void Can_read_component_with_dictionary_of_lists()
 		{
-			var xml = @"<configuration>
+			var xml =
+				@"<configuration>
 	<components>
 		<component service=""IMyObject"" type=""MyObject"">
 			<parameters>
@@ -52,6 +54,7 @@ namespace CastleTests
 			Assert.AreEqual(1, item.Count);
 		}
 	}
+
 	public interface IMyObject
 	{
 		int Count { get; }
@@ -66,7 +69,10 @@ namespace CastleTests
 			this.stuff = stuff;
 		}
 
-		public virtual int Count { get { return stuff.Count; } }
+		public virtual int Count
+		{
+			get { return stuff.Count; }
+		}
 	}
-
+#endif
 }

@@ -26,7 +26,7 @@ namespace CastleTests.Lifestyle
 
 	[TestFixture]
 	[Ignore("This althouth initially looked as a good idea quickly gets out of hand and we can't really support it.")]
-	public class ScopedLifestyleAndTypedFactoriesTestCase : AbstractContainerTestCase
+	public class BoundLifestyleAndTypedFactoriesTestCase : AbstractContainerTestCase
 	{
 		protected override void AfterContainerCreated()
 		{
