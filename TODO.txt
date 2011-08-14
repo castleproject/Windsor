@@ -11,6 +11,5 @@
 - container.BeginScope(IDictionary inlineArguments)
 	those arguments would be available in each and every resolve (and their subdependencies...?)
 
-- Performance counter doesn't (sometimes?) work
 
 - nesting scopes - NOT SUPPORTED

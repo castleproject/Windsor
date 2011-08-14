@@ -75,9 +75,10 @@ namespace Castle.MicroKernel.ComponentActivator
 
 		protected abstract void InternalDestroy(object instance);
 
-		public virtual object Create(CreationContext context)
+		public virtual object Create(CreationContext context, Burden burden)
 		{
 			var instance = InternalCreate(context);
+			burden.SetRootInstance(instance);
 
 			onCreation(model, instance);
 
