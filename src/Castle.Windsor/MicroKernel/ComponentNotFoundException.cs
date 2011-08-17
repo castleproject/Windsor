@@ -23,20 +23,16 @@ namespace Castle.MicroKernel
 	///   exist in the container
 	/// </summary>
 	[Serializable]
-	public class ComponentNotFoundException : Exception
+	public class ComponentNotFoundException : ComponentResolutionException
 	{
 		public Type Service { get; private set; }
 		public string Name { get; private set; }
 
-		/// <summary>
-		///   Initializes a new instance of the
-		///   <see cref = "ComponentNotFoundException" />
-		///   class.
-		/// </summary>
-		/// <param name = "name">The name.</param>
-		public ComponentNotFoundException(String name) :
-			this(name, String.Format("No component for key {0} was found", name))
+		public ComponentNotFoundException(string name, Type service, int countOfHandlersForTheService)
+			: base(BuildMessage(name, service, countOfHandlersForTheService))
 		{
+			Name = name;
+			Service = service;
 		}
 
 		/// <summary>
@@ -88,5 +84,29 @@ namespace Castle.MicroKernel
 		{
 		}
 #endif
+
+		private static string BuildMessage(string name, Type service, int countOfHandlersForTheService)
+		{
+			var message = string.Format("Requested component named '{0}' was not found in the container. Did you forget to register it?{1}",
+										name, Environment.NewLine);
+			if (countOfHandlersForTheService == 0)
+			{
+				return message +
+					   string.Format("There are no components supporting requested service '{0}'. You need to register components in order to be able to use them.",
+									 service.FullName);
+			}
+			if (countOfHandlersForTheService == 1)
+			{
+				return message + string.Format("There is one other component supporting requested service '{0}'. Is it what you were looking for?",
+											   service.FullName);
+			}
+			if (countOfHandlersForTheService > 1)
+			{
+				return message + string.Format("There are {0} other components supporting requested service '{1}'. Were you looking for any of them?",
+											   countOfHandlersForTheService, service.FullName);
+			}
+			// this should never happen but if someone passes us wrong information we just ignore it
+			return message;
+		}
 	}
 }

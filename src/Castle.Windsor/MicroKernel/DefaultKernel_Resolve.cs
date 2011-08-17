@@ -216,12 +216,21 @@ namespace Castle.MicroKernel
 		object IKernelInternal.Resolve(String key, Type service, IDictionary arguments, IReleasePolicy policy)
 		{
 			var handler = (this as IKernelInternal).LoadHandlerByKey(key, service, arguments);
+			if (handler == null)
+			{
+				var otherHandlers = GetHandlers(service).Length;
+				throw new ComponentNotFoundException(key, service, otherHandlers);
+			}
 			return ResolveComponent(handler, service ?? typeof(object), arguments, policy);
 		}
 
 		object IKernelInternal.Resolve(Type service, IDictionary arguments, IReleasePolicy policy)
 		{
 			var handler = (this as IKernelInternal).LoadHandlerByType(null, service, arguments);
+			if(handler == null)
+			{
+				throw new ComponentNotFoundException(service);
+			}
 			return ResolveComponent(handler, service, arguments, policy);
 		}
 

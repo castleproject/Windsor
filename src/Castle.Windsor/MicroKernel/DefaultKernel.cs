@@ -759,10 +759,7 @@ namespace Castle.MicroKernel
 
 		protected object ResolveComponent(IHandler handler, Type service, IDictionary additionalArguments, IReleasePolicy policy)
 		{
-			if (handler == null)
-			{
-				throw new ComponentNotFoundException(service);
-			}
+			Debug.Assert(handler != null, "handler != null");
 			var parent = currentCreationContext;
 			var context = CreateCreationContext(handler, service, additionalArguments, parent, policy);
 			currentCreationContext = context;
