@@ -12,24 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Windsor.Tests.Facilities.TypedFactory
+namespace CastleTests.Facilities.TypedFactory
 {
 	using Castle.Facilities.TypedFactory;
 	using Castle.MicroKernel.Registration;
-	using Castle.Windsor;
-	using Castle.MicroKernel.SubSystems.Configuration;
 	using Castle.Windsor.Tests.Facilities.TypedFactory.Components;
 	using Castle.Windsor.Tests.Facilities.TypedFactory.Factories;
 
 	using NUnit.Framework;
 
-	/// <summary>
-	///   Summary description for TypedFactoryTestCase.
-	/// </summary>
 	[TestFixture]
-	public class TypedFactoryTestCase
+	public class TypedFactoryObsoleteApiTestCase : AbstractContainerTestCase
 	{
-		private IWindsorContainer container;
 		private TypedFactoryFacility facility;
 
 		[Test]
@@ -40,12 +34,12 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 				new FactoryEntry(
 					"protocolHandlerFactory", typeof(IProtocolHandlerFactory1), "Create", "Release"));
 #pragma warning restore
-			container.Register(
+			Container.Register(
 				Component.For(typeof(IProtocolHandler)).ImplementedBy(typeof(MirandaProtocolHandler)).Named("miranda"));
-			container.Register(
+			Container.Register(
 				Component.For(typeof(IProtocolHandler)).ImplementedBy(typeof(MessengerProtocolHandler)).Named("messenger"));
 
-			var factory = container.Resolve<IProtocolHandlerFactory1>("protocolHandlerFactory");
+			var factory = Container.Resolve<IProtocolHandlerFactory1>("protocolHandlerFactory");
 
 			Assert.IsNotNull(factory);
 
@@ -64,12 +58,12 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 				new FactoryEntry(
 					"protocolHandlerFactory", typeof(IProtocolHandlerFactory2), "Create", "Release"));
 #pragma warning restore
-			container.Register(
+			Container.Register(
 				Component.For(typeof(IProtocolHandler)).ImplementedBy(typeof(MirandaProtocolHandler)).Named("miranda"));
-			container.Register(
+			Container.Register(
 				Component.For(typeof(IProtocolHandler)).ImplementedBy(typeof(MessengerProtocolHandler)).Named("messenger"));
 
-			var factory = container.Resolve<IProtocolHandlerFactory2>("protocolHandlerFactory");
+			var factory = Container.Resolve<IProtocolHandlerFactory2>("protocolHandlerFactory");
 
 			Assert.IsNotNull(factory);
 
@@ -92,10 +86,10 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 				new FactoryEntry(
 					"compFactory", typeof(IComponentFactory1), "Construct", ""));
 #pragma warning restore
-			container.Register(Component.For(typeof(IDummyComponent)).ImplementedBy(typeof(Component1)).Named("comp1"));
-			container.Register(Component.For(typeof(IDummyComponent)).ImplementedBy(typeof(Component2)).Named("comp2"));
+			Container.Register(Component.For(typeof(IDummyComponent)).ImplementedBy(typeof(Component1)).Named("comp1"));
+			Container.Register(Component.For(typeof(IDummyComponent)).ImplementedBy(typeof(Component2)).Named("comp2"));
 
-			var factory = container.Resolve<IComponentFactory1>("compFactory");
+			var factory = Container.Resolve<IComponentFactory1>("compFactory");
 			Assert.IsNotNull(factory);
 
 			var comp1 = factory.Construct();
@@ -114,10 +108,10 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 					"compFactory", typeof(IComponentFactory2), "Construct", ""));
 #pragma warning restore
 
-			container.Register(Component.For(typeof(IDummyComponent)).ImplementedBy(typeof(Component1)).Named("comp1"));
-			container.Register(Component.For(typeof(IDummyComponent)).ImplementedBy(typeof(Component2)).Named("comp2"));
+			Container.Register(Component.For(typeof(IDummyComponent)).ImplementedBy(typeof(Component1)).Named("comp1"));
+			Container.Register(Component.For(typeof(IDummyComponent)).ImplementedBy(typeof(Component2)).Named("comp2"));
 
-			var factory = container.Resolve<IComponentFactory2>("compFactory");
+			var factory = Container.Resolve<IComponentFactory2>("compFactory");
 
 			Assert.IsNotNull(factory);
 
@@ -130,18 +124,10 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 			Assert.IsNotNull(comp2);
 		}
 
-		[TearDown]
-		public void Finish()
+		protected override void AfterContainerCreated()
 		{
-			container.Dispose();
-		}
-
-		[SetUp]
-		public void Init()
-		{
-			container = new WindsorContainer(new DefaultConfigurationStore());
 			facility = new TypedFactoryFacility();
-			container.AddFacility(facility);
+			Container.AddFacility(facility);
 		}
 	}
 }
