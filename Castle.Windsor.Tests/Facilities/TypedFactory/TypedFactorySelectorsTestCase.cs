@@ -44,5 +44,19 @@ namespace CastleTests.Facilities.TypedFactory
 			Assert.Throws<ComponentNotFoundException>(() => factory.Create());
 
 		}
+
+		[Test]
+		public void Implicitly_specified_name_falls_back_if_not_present()
+		{
+
+			Container.Register(Component.For<A>(),
+							   Component.For<A>().Named("name"),
+							   Component.For<IGenericFactory<A>>().AsFactory(x => x.SelectedWith(new WithNameSelector("non existing name"))));
+
+			var factory = Container.Resolve<IGenericFactory<A>>();
+
+			Assert.Throws<ComponentNotFoundException>(() => factory.Create());
+
+		}
 	}
 }
