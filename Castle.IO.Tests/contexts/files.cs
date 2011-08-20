@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using SharpTestsEx;
 
 namespace Castle.IO.Tests
 {
@@ -10,7 +11,7 @@ namespace Castle.IO.Tests
 
 			var TempFile = TempDir.GetFile(Path.GetRandomFileName());
 
-			TempFile.Exists.ShouldBeFalse();
+			TempFile.Exists.Should().Be.False();
 
 			using (var stream = TempFile.Open(mode, access, share))
 				stream.Write(value);

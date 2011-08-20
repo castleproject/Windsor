@@ -150,8 +150,6 @@ namespace Castle.IO.FileSystems.InMemory
 		{
 			Validate.FileAccess(fileMode, fileAccess);
 
-			ValidateFileMode(fileMode);
-
 			var beginPosition = ValidateFileMode(fileMode);
 			ValidateFileLock(fileAccess, fileShare);
 
