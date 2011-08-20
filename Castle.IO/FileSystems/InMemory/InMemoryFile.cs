@@ -176,6 +176,13 @@ namespace Castle.IO.FileSystems.InMemory
 			if (noWrite && fileMode == FileMode.Truncate)
 				throw new IOException("Cannot truncate a file if file mode doesn't include WRITE.");
 
+			// or if:
+			// readwrite && append
+			// read && append
+
+			if ((fileAccess & FileAccess.Read) != 0 && fileMode == FileMode.Append)
+				throw new ArgumentException("Cannot open file in read-mode when having FileMode.Append");
+
 			//if (
 			//    ((fileMode == FileMode.Append) && fileAccess != FileAccess.Write) ||
 			//    ((fileMode == FileMode.CreateNew || fileMode == FileMode.Create || fileMode == FileMode.Truncate)

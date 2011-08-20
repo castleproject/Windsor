@@ -83,7 +83,6 @@ namespace Castle.IO.FileSystems.Local
 			{
 				try
 				{
-					// TODO: implement with long path instead on windows!
 					var directoryInfo = Path.GetPathWithoutLastBit(_filePath);
 					return directoryInfo == null
 					       	? null
@@ -105,6 +104,9 @@ namespace Castle.IO.FileSystems.Local
 				if (fileMode == FileMode.Create || fileMode == FileMode.CreateNew || fileMode == FileMode.OpenOrCreate)
 					Parent.Create();
 			}
+
+			if ((fileAccess & FileAccess.Read) != 0 && fileMode == FileMode.Append)
+				throw new ArgumentException("Cannot open file in read-mode when having FileMode.Append");
 
 			return LongPathFile.Open(_filePath, fileMode, fileAccess, fileShare);
 		}

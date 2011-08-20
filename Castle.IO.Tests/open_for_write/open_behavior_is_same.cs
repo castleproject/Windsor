@@ -71,10 +71,11 @@ namespace Castle.IO.Tests.open_for_write
 
 				Assert.That(memException, Is.InstanceOf(anyException), string.Format("In-Memory ex was {0}, but file was: {1}", 
 					memException != null ? memException.ToString() : "NULL", 
-					localException.ToString()));
+					localException != null ? localException.ToString() : "NULL"));
 				
 				Assert.That(localException, Is.InstanceOf(anyException), string.Format("Local file ex was {0}, but in mem was: {1}.",
-					localException != null ? localException.ToString() : "NULL", memException.ToString()));
+					localException != null ? localException.ToString() : "NULL", 
+					memException != null ? memException.ToString() : "NULL"));
 
 				if (!(memException.GetType() == anyException && localException.GetType() == anyException))
 					Console.WriteLine("Memory exception: " + (memException != null ? memException.GetType().Name : null) +
