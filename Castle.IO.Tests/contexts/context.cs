@@ -15,8 +15,7 @@ using NUnit.Framework;
 
 namespace Castle.IO.Tests
 {
-    [TestFixture]
-    public class context
+    public abstract class context
     {
         [SetUp]
         protected virtual void SetUp()

@@ -87,6 +87,7 @@
     <Compile Include="FileExtensions.cs" />
     <Compile Include="FileSystems\AbstractDirectory.cs" />
     <Compile Include="FileSystems\AbstractFileSystem.cs" />
+    <Compile Include="FileSystems\Validate.cs" />
     <Compile Include="FileSystems\FileStreamDouble.cs" />
     <Compile Include="FileSystems\FileSystemNotificationIdentifier.cs" />
     <Compile Include="FileSystems\FileSystemNotifier.cs" />

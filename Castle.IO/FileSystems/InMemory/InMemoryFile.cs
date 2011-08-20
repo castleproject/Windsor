@@ -148,47 +148,17 @@ namespace Castle.IO.FileSystems.InMemory
 
 		public Stream Open(FileMode fileMode, FileAccess fileAccess, FileShare fileShare)
 		{
+			Validate.FileAccess(fileMode, fileAccess);
+
 			ValidateFileMode(fileMode);
-			ValidateFileAccess(fileMode, fileAccess);
 
 			var beginPosition = ValidateFileMode(fileMode);
 			ValidateFileLock(fileAccess, fileShare);
+
 			return new FileStreamDouble(new InMemFileStream(this, fileAccess)
 				{
 					Position = beginPosition
 				}, FileStreamClosed);
-		}
-
-		private void ValidateFileAccess(FileMode fileMode, FileAccess fileAccess)
-		{
-			// exception if:
-
-			// !write && append
-			// !write && create
-			// !write && createNew
-			// !write && truncate
-
-			var noWrite = (fileAccess & FileAccess.Write) == 0;
-			if (noWrite && fileMode == FileMode.CreateNew)
-				throw new ArgumentException(string.Format(
-					"Can only open files in {0} mode when requesting FileAccess.Write access.", fileMode));
-
-			if (noWrite && fileMode == FileMode.Truncate)
-				throw new IOException("Cannot truncate a file if file mode doesn't include WRITE.");
-
-			// or if:
-			// readwrite && append
-			// read && append
-
-			if ((fileAccess & FileAccess.Read) != 0 && fileMode == FileMode.Append)
-				throw new ArgumentException("Cannot open file in read-mode when having FileMode.Append");
-
-			//if (
-			//    ((fileMode == FileMode.Append) && fileAccess != FileAccess.Write) ||
-			//    ((fileMode == FileMode.CreateNew || fileMode == FileMode.Create || fileMode == FileMode.Truncate)
-			//     && (fileAccess != FileAccess.Write && fileAccess != FileAccess.ReadWrite)) ||
-			//    false //((Exists && fileMode == FileMode.OpenOrCreate && fileAccess == FileAccess.Write))
-			//    )
 		}
 
 		private void VerifyExists()
@@ -204,6 +174,7 @@ namespace Castle.IO.FileSystems.InMemory
 				_lock = fileShare;
 				return;
 			}
+
 			var readAllowed = _lock.Value == FileShare.Read || _lock.Value == FileShare.ReadWrite;
 			var writeAllowed = _lock.Value == FileShare.Write || _lock.Value == FileShare.ReadWrite;
 

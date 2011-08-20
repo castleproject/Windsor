@@ -317,25 +317,12 @@ namespace Castle.IO.Tests
 				Executing(() => temporaryFile.Open(FileMode.OpenOrCreate, nextAccess, FileShare.None)).ShouldThrow<IOException>();
 		}
 
-		[TestCase(FileAccess.ReadWrite)]
-		[TestCase(FileAccess.Read)]
-		public void append_only_in_write_mode(FileAccess access)
+		[Test]
+		public void append_only_in_write_mode()
 		{
-			string path = null;
-			try
-			{
-				using (var tempFile = FileSystem.CreateTempFile())
-				{
-					path = tempFile.Path.FullPath;
-					Executing(() => tempFile.Open(FileMode.Append, access, FileShare.None))
-						.ShouldThrow<ArgumentException>();
-				}
-			}
-			catch (IOException e)
-			{
-				var msg = string.Format("exception for {0}", path);
-				throw new ApplicationException(msg, e);
-			}
+			using (var tempFile = FileSystem.CreateTempFile())
+				Executing(() => tempFile.Open(FileMode.Append, FileAccess.Read, FileShare.None))
+					.ShouldThrow<ArgumentException>();
 		}
 
 		[Test]

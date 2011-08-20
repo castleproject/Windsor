@@ -105,8 +105,7 @@ namespace Castle.IO.FileSystems.Local
 					Parent.Create();
 			}
 
-			if ((fileAccess & FileAccess.Read) != 0 && fileMode == FileMode.Append)
-				throw new ArgumentException("Cannot open file in read-mode when having FileMode.Append");
+			Validate.FileAccess(fileMode, fileAccess);
 
 			return LongPathFile.Open(_filePath, fileMode, fileAccess, fileShare);
 		}
