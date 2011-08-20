@@ -17,10 +17,10 @@
 #endregion
 
 using System;
+using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Net;
 using System.Text.RegularExpressions;
-using System.Diagnostics;
 
 namespace Castle.IO
 {
@@ -35,8 +35,9 @@ namespace Castle.IO
 	{
 		internal const string UNCPrefixRegex = @"(?<UNC_prefix> \\\\\? (?<UNC_literal>\\UNC)?  )";
 
-		internal const string DeviceRegex = 
-UNCPrefixRegex + @"?
+		internal const string DeviceRegex =
+			UNCPrefixRegex +
+			@"?
 (?(UNC_prefix)|\\)
 (?<device>
  (?<dev_prefix>\\\.\\)
@@ -46,8 +47,9 @@ UNCPrefixRegex + @"?
  )
 )\\?";
 
-		private const string DriveRegex = 
-UNCPrefixRegex + @"?
+		private const string DriveRegex =
+			UNCPrefixRegex +
+			@"?
 (?(UNC_prefix)\\)? # if we have an UNC prefix, there must be an extra backslash
 (?<drive>
  (?<drive_letter>[A-Z]{1,3})
@@ -56,7 +58,8 @@ UNCPrefixRegex + @"?
 )";
 
 		internal const string ServerRegex =
-UNCPrefixRegex + @"?
+			UNCPrefixRegex +
+			@"?
 (?(UNC_prefix)|\\) #this is optional IIF we have the UNC_prefix, so only match \\ if we did not have it
 (?<server>
  (?<server_prefix>\\)
@@ -68,11 +71,12 @@ UNCPrefixRegex + @"?
 )\\?";
 
 		private const string StrRegex =
-@"
+			@"
 (?<root>
- (" +  DriveRegex + @")
+ (" + DriveRegex + @")
  |(" + ServerRegex + @")
- |(" + DeviceRegex + @")
+ |(" + DeviceRegex +
+			@")
  |/
  |\\
 )?
@@ -135,7 +139,7 @@ UNCPrefixRegex + @"?
 		}
 
 		internal static string GetMatch(MatchCollection matches,
-		                               string groupIndex)
+		                                string groupIndex)
 		{
 			Contract.Ensures(Contract.Result<string>() != null);
 
@@ -276,7 +280,7 @@ UNCPrefixRegex + @"?
 		}
 
 		/// <summary>
-		/// 	Gets the IPv4 IP-address if any. <see cref="IPAddress.None"/>
+		/// 	Gets the IPv4 IP-address if any. <see cref = "IPAddress.None" />
 		/// 	if none was found.
 		/// </summary>
 		[Pure]
@@ -286,15 +290,14 @@ UNCPrefixRegex + @"?
 			{
 				IPAddress addr;
 				return !string.IsNullOrEmpty(_IPv4) && IPAddress.TryParse(_IPv4, out addr)
-					? addr
-					: IPAddress.None;
+				       	? addr
+				       	: IPAddress.None;
 			}
 		}
 
 		/// <summary>
-		/// Gets the IPv6 IP-address if any. <see cref="IPAddress.None"/>
-		/// if non was found.
-		/// 
+		/// 	Gets the IPv6 IP-address if any. <see cref = "IPAddress.None" />
+		/// 	if non was found.
 		/// </summary>
 		[Pure]
 		public IPAddress IPv6
@@ -303,8 +306,8 @@ UNCPrefixRegex + @"?
 			{
 				IPAddress addr;
 				return !string.IsNullOrEmpty(_IPv6) && IPAddress.TryParse(_IPv6, out addr)
-					? addr 
-					: IPAddress.IPv6None;
+				       	? addr
+				       	: IPAddress.IPv6None;
 			}
 		}
 
@@ -484,18 +487,18 @@ UNCPrefixRegex + @"?
 			if (ReferenceEquals(null, other)) return false;
 			if (ReferenceEquals(this, other)) return true;
 			return Equals(other._Drive, _Drive)
-				&& Equals(other._DriveLetter, _DriveLetter)
-				&& Equals(other._Server, _Server)
-				&& Equals(other._IPv4, _IPv4)
-				&& Equals(other._IPv6, _IPv6)
-				&& Equals(other._ServerName, _ServerName) 
-				&& Equals(other._Device, _Device) 
-				&& Equals(other._DevicePrefix, _DevicePrefix) 
-				&& Equals(other._DeviceName, _DeviceName) 
-				&& Equals(other._DeviceGuid, _DeviceGuid) 
-				&& Equals(other._NonRootPath, _NonRootPath) 
-				&& Equals(other._RelDrive, _RelDrive) 
-				&& Equals(other._FolderAndFiles, _FolderAndFiles);
+			       && Equals(other._DriveLetter, _DriveLetter)
+			       && Equals(other._Server, _Server)
+			       && Equals(other._IPv4, _IPv4)
+			       && Equals(other._IPv6, _IPv6)
+			       && Equals(other._ServerName, _ServerName)
+			       && Equals(other._Device, _Device)
+			       && Equals(other._DevicePrefix, _DevicePrefix)
+			       && Equals(other._DeviceName, _DeviceName)
+			       && Equals(other._DeviceGuid, _DeviceGuid)
+			       && Equals(other._NonRootPath, _NonRootPath)
+			       && Equals(other._RelDrive, _RelDrive)
+			       && Equals(other._FolderAndFiles, _FolderAndFiles);
 		}
 
 		public override bool Equals(object obj)
@@ -510,7 +513,7 @@ UNCPrefixRegex + @"?
 		{
 			unchecked
 			{
-				int result = _Drive.GetHashCode();
+				var result = _Drive.GetHashCode();
 				result = (result*397) ^ _DriveLetter.GetHashCode();
 				result = (result*397) ^ _Server.GetHashCode();
 				result = (result*397) ^ _IPv4.GetHashCode();

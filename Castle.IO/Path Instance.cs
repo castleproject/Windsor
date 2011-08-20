@@ -6,7 +6,7 @@
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 // 
-// http://www.apache.org/licenses/LICENSE-2.0
+//     http://www.apache.org/licenses/LICENSE-2.0
 // 
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -20,7 +20,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
-using Castle.IO.Internal;
 
 namespace Castle.IO
 {
@@ -33,8 +32,8 @@ namespace Castle.IO
 	// for that matter!
 
 	/// <summary>
-	/// Immutable value object for dealing with paths. A path as an object,
-	/// is the idea.
+	/// 	Immutable value object for dealing with paths. A path as an object,
+	/// 	is the idea.
 	/// </summary>
 	public partial class Path : IEquatable<Path>
 	{
@@ -53,45 +52,54 @@ namespace Castle.IO
 		}
 
 		/// <summary>
-		/// Gets the drive + directory path. If the given path ends with a slash,
-		/// the last bit is also included in this property, otherwise, not.
+		/// 	Gets the drive + directory path. If the given path ends with a slash,
+		/// 	the last bit is also included in this property, otherwise, not.
 		/// </summary>
 		public string DriveAndDirectory
 		{
 			get
 			{
-				var sep = Path.DirectorySeparatorChar.ToString();
+				var sep = DirectorySeparatorChar.ToString();
 
-				if (IsDirectoryPath) 
+				if (IsDirectoryPath)
 					return _PathInfo.Drive + _PathInfo.FolderAndFiles;
 
 				if (_Segments.Count == 1)
-					return _Segments[0]; 
-				
+					return _Segments[0];
+
 				var middle = _Segments.Skip(1).Take(Math.Max(0, _Segments.Count - 2));
 
-				return string.Join(sep, new[] { _PathInfo.Drive }.Concat(middle).ToArray());
+				return string.Join(sep, new[] {_PathInfo.Drive}.Concat(middle).ToArray());
 			}
 		}
 
-		public bool IsRooted { get { return _PathInfo.IsRooted; } }
+		public bool IsRooted
+		{
+			get { return _PathInfo.IsRooted; }
+		}
 
 		private static IList<string> GenerateSegments(string path)
 		{
 			return path
-				.Split(new[] { DirectorySeparatorChar, AltDirectorySeparatorChar}, 
-					   StringSplitOptions.RemoveEmptyEntries)
-				.Except(new[]{"?"})
+				.Split(new[] {DirectorySeparatorChar, AltDirectorySeparatorChar},
+				       StringSplitOptions.RemoveEmptyEntries)
+				.Except(new[] {"?"})
 				.ToList();
 		}
 
-		public string FullPath { get { return _OriginalPath; } }
+		public string FullPath
+		{
+			get { return _OriginalPath; }
+		}
 
-		public IEnumerable<string> Segments { get { return _Segments; } }
+		public IEnumerable<string> Segments
+		{
+			get { return _Segments; }
+		}
 
 		/// <summary>
-		/// Gets whether it's garantueed that the path is a directory (it is of its
-		/// last character is a directory separator character).
+		/// 	Gets whether it's garantueed that the path is a directory (it is of its
+		/// 	last character is a directory separator character).
 		/// </summary>
 		public bool IsDirectoryPath
 		{
@@ -158,10 +166,10 @@ namespace Castle.IO
 		#endregion
 
 		/// <summary>
-		/// Yields a new path instance from the current data object
-		/// and the object passed as the parameter 'path'.
+		/// 	Yields a new path instance from the current data object
+		/// 	and the object passed as the parameter 'path'.
 		/// </summary>
-		/// <param name="toBasePath">The path to make the invokee relative to.</param>
+		/// <param name = "toBasePath">The path to make the invokee relative to.</param>
 		/// <returns>A new path that is relative to the passed path.</returns>
 		public Path MakeRelative(Path toBasePath)
 		{

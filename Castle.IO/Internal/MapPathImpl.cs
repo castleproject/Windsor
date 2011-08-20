@@ -76,7 +76,7 @@ namespace Castle.IO.Internal
 			// TODO: consider Environment.CurrentDirectory
 
 			if (string.IsNullOrEmpty(path))
-				return AppDomain.CurrentDomain.BaseDirectory; 
+				return AppDomain.CurrentDomain.BaseDirectory;
 
 			if (path[0] == '~')
 				path = path.Substring(1);

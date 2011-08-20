@@ -56,13 +56,18 @@ namespace Castle.IO.Tests
 
 		[TestCase(@"C:\a", @"C:\")]
 		[TestCase(@"C:\a\b", @"C:\a")]
-		[TestCase(@"C:\a\b\c", @"C:\")]
+		[TestCase(@"C:\a\b\c", @"C:\a\b")]
 		[TestCase(@"C:\a", @"C:\")]
-		[TestCase(@"C:\a", @"C:\")] // TODO
-		public void gettting_without_last_bit_should_act_only_on_folder_and_file_part()
+		[TestCase(@"C:\a", @"C:\")]
+		[TestCase(@"C:\a\b\c.txt", @"C:\a\b")]
+		[TestCase(@"\\?\C:\a\b\c d e.txt", @"C:\a\b")]
+		[TestCase(@"\\?\C:\a\b\c d e.txt", @"C:\a\b")]
+		[TestCase(@"\\?\C:\a\b\", @"C:\a")]
+		public void gettting_without_last_bit_should_act_only_on_folder_and_file_part(
+			string firstPart, string result)
 		{
-			Path.GetPathWithoutLastBit(@"C:\a")
-				.Should().Be(@"C:\");
+			Path.GetPathWithoutLastBit(firstPart)
+				.Should().Be(new Path(result));
 		}
 
 		[TestCase(@"c:\test", @"c:\")]

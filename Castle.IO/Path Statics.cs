@@ -6,7 +6,7 @@
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 // 
-// http://www.apache.org/licenses/LICENSE-2.0
+//     http://www.apache.org/licenses/LICENSE-2.0
 // 
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -19,10 +19,10 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
+using System.Linq;
 using System.Text;
 using Castle.IO.Extensions;
 using Castle.IO.Internal;
-using System.Linq;
 
 namespace Castle.IO
 {
@@ -169,8 +169,11 @@ namespace Castle.IO
 		/// <summary>
 		/// 	Removes the last directory/file off the path.
 		/// 
-		/// 	For a path "/a/b/c" would return "/a/b"
-		/// 	or for "\\?\C:\folderA\folder\B\C\d.txt" would return "\\?\C:\folderA\folder\B\C"
+		/// Example input/output: "/a/b/c" -> "/a/b"; 
+		/// "\\?\C:\folderA\folder\B\C\d.txt" -> "\\?\C:\folderA\folder\B\C"
+		/// "\a\" -> "\";
+		/// "C:\a\b" -> "C:\a";
+		/// "C:\a\b\" -> "C:\a"
 		/// </summary>
 		/// <param name = "path">The path string to modify</param>
 		/// <returns></returns>
@@ -179,10 +182,20 @@ namespace Castle.IO
 		{
 			Contract.Requires(!string.IsNullOrEmpty(path));
 			Contract.Requires(path.Length >= 2);
-			var p = new Path(path);
-			return p.Segments.Skip(1)
-				.Aggregate(p.Segments.First(), System.IO.Path.Combine)
-				.ToPath();
+
+			for (int i = path.Length - 1; i >= 0; i--)
+				if (GetDirectorySeparatorChars().Contains(path[i]))
+					if (path.Length - 1 == i) // last char
+						continue;
+					else // otherwise, return everything before the last \ or |, unless it's the root
+						if (PathInfo.Parse(path.Substring(0, i + 1)).Root == path.Substring(0, i + 1)) return new Path(path.Substring(0, i + 1));
+						else return new Path(path.Substring(0, i));
+			//var p = new Path(path);
+			//var segments = p.Segments.ToList();
+			//return segments.TakeWhile((s,i) => i != segments.Count-1)
+			//    .Aggregate(segments.First(), System.IO.Path.Combine)
+			//    .ToPath();
+			return new Path(path);
 		}
 
 		[Pure]

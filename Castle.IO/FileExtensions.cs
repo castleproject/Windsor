@@ -6,7 +6,7 @@
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 // 
-// http://www.apache.org/licenses/LICENSE-2.0
+//     http://www.apache.org/licenses/LICENSE-2.0
 // 
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -42,12 +42,11 @@ namespace Castle.IO
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <param name="file">Invokee, the file that is to be fully read.</param>
+		/// <param name = "file">Invokee, the file that is to be fully read.</param>
 		/// <returns>All of the file contents as a string. If the current position is at the end of the stream, returns the empty string("").</returns>
-		/// <exception cref="OutOfMemoryException">There is insufficient memory to allocate a buffer for the returned string.</exception>
-		/// <exception cref="IOException">An IO error occrs</exception>
+		/// <exception cref = "OutOfMemoryException">There is insufficient memory to allocate a buffer for the returned string.</exception>
+		/// <exception cref = "IOException">An IO error occrs</exception>
 		public static string ReadAllText(this IFile file)
 		{
 			Contract.Requires(file != null);
@@ -88,6 +87,5 @@ namespace Castle.IO
 			Contract.Requires(!string.IsNullOrEmpty(filePath));
 			throw new NotImplementedException();
 		}
-
 	}
 }

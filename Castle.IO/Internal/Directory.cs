@@ -34,7 +34,8 @@ namespace Castle.IO.Internal
 			Contract.Ensures(_DirectoryAdapter != null);
 
 			if (_DirectoryAdapter != null)
-				throw new InvalidOperationException("This method cannot be called twice without resetting the class with Directory.Reset().");
+				throw new InvalidOperationException(
+					"This method cannot be called twice without resetting the class with Directory.Reset().");
 
 			_DirectoryAdapter = adapter;
 		}
@@ -62,9 +63,9 @@ namespace Castle.IO.Internal
 		}
 
 		/// <summary>
-		/// Returns whether the given paths exists.
+		/// 	Returns whether the given paths exists.
 		/// </summary>
-		/// <param name="path"></param>
+		/// <param name = "path"></param>
 		/// <returns></returns>
 		public static bool Exists(string path)
 		{

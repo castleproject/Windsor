@@ -299,7 +299,8 @@ namespace Castle.IO.Tests
 		public void append_only_in_write_mode(FileAccess access)
 		{
 			using (var tempFile = FileSystem.CreateTempFile())
-				Executing(() => tempFile.Open(FileMode.Append, access, FileShare.None)).ShouldThrow<ArgumentException>();
+				Executing(() => tempFile.Open(FileMode.Append, access, FileShare.None))
+					.ShouldThrow<ArgumentException>();
 		}
 
 		[Test]

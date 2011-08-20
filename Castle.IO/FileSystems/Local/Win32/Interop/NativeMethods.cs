@@ -36,7 +36,7 @@ namespace Castle.IO.FileSystems.Local.Win32.Interop
 		internal const int ERROR_NO_MORE_FILES = 0x12;
 		internal const int ERROR_INVALID_NAME = 0x7B;
 		internal const int ERROR_ALREADY_EXISTS = 0xB7;
-		internal const int ERROR_FILENAME_EXCED_RANGE = 0xCE;  // filename too long.
+		internal const int ERROR_FILENAME_EXCED_RANGE = 0xCE; // filename too long.
 		internal const int ERROR_DIRECTORY = 0x10B;
 		internal const int ERROR_OPERATION_ABORTED = 0x3e3;
 		internal const int INVALID_FILE_ATTRIBUTES = -1;
@@ -55,12 +55,12 @@ namespace Castle.IO.FileSystems.Local.Win32.Interop
 
 		internal static int MakeHRFromErrorCode(int errorCode)
 		{
-			return unchecked((int)0x80070000 | errorCode);
+			return unchecked((int) 0x80070000 | errorCode);
 		}
 
 		[DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
 		[return: MarshalAs(UnmanagedType.Bool)]
-		internal static extern bool CopyFile(string src, string dst, [MarshalAs(UnmanagedType.Bool)]bool failIfExists);
+		internal static extern bool CopyFile(string src, string dst, [MarshalAs(UnmanagedType.Bool)] bool failIfExists);
 
 		[DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
 		internal static extern SafeFindHandle FindFirstFile(string lpFileName, out WIN32_FIND_DATA lpFindFileData);
@@ -85,7 +85,7 @@ namespace Castle.IO.FileSystems.Local.Win32.Interop
 
 		[DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
 		internal static extern uint GetFullPathName(string lpFileName, uint nBufferLength,
-		   StringBuilder lpBuffer, IntPtr mustBeNull);
+		                                            StringBuilder lpBuffer, IntPtr mustBeNull);
 
 
 		[DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
@@ -94,7 +94,7 @@ namespace Castle.IO.FileSystems.Local.Win32.Interop
 
 		[DllImport("kernel32.dll", SetLastError = true)]
 		[return: MarshalAs(UnmanagedType.Bool)]
-		static extern bool DeleteFileW([MarshalAs(UnmanagedType.LPWStr)]string lpFileName);
+		private static extern bool DeleteFileW([MarshalAs(UnmanagedType.LPWStr)] string lpFileName);
 
 		[DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
 		[return: MarshalAs(UnmanagedType.Bool)]
@@ -103,7 +103,7 @@ namespace Castle.IO.FileSystems.Local.Win32.Interop
 		[DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
 		[return: MarshalAs(UnmanagedType.Bool)]
 		internal static extern bool CreateDirectory(string lpPathName,
-		   IntPtr lpSecurityAttributes);
+		                                            IntPtr lpSecurityAttributes);
 
 		[DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
 		[return: MarshalAs(UnmanagedType.Bool)]
@@ -123,7 +123,8 @@ namespace Castle.IO.FileSystems.Local.Win32.Interop
 		internal static extern FileAttributes GetFileAttributes(string lpFileName);
 
 		[DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
-		internal static extern int FormatMessage(int dwFlags, IntPtr lpSource, int dwMessageId, int dwLanguageId, StringBuilder lpBuffer, int nSize, IntPtr va_list_arguments);
+		internal static extern int FormatMessage(int dwFlags, IntPtr lpSource, int dwMessageId, int dwLanguageId,
+		                                         StringBuilder lpBuffer, int nSize, IntPtr va_list_arguments);
 
 		// overview here: http://msdn.microsoft.com/en-us/library/aa964885(VS.85).aspx
 		// helper: http://www.improve.dk/blog/2009/02/14/utilizing-transactional-ntfs-through-dotnet

@@ -6,7 +6,7 @@
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 // 
-// http://www.apache.org/licenses/LICENSE-2.0
+//     http://www.apache.org/licenses/LICENSE-2.0
 // 
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -45,8 +45,8 @@ namespace Castle.IO
 		public static IDirectory GetOrCreateDirectory(this IDirectory directory, params string[] childDirectories)
 		{
 			return childDirectories.Aggregate(directory,
-											  (current, childDirectoryName) =>
-											  current.GetDirectory(childDirectoryName).MustExist());
+			                                  (current, childDirectoryName) =>
+			                                  current.GetDirectory(childDirectoryName).MustExist());
 		}
 
 		public static IEnumerable<IFile> Files(this IFileSystem fileSystem, string filter)
@@ -105,7 +105,7 @@ namespace Castle.IO
 		private static IEnumerable<string> GetFilterPaths(string filter)
 		{
 			var lastWasSubFolder = false;
-			
+
 			var path = new Path(filter);
 
 			foreach (var segment in path.Segments)
@@ -128,7 +128,7 @@ namespace Castle.IO
 
 			if (pathSegments.Count == 1)
 				return directory.Directories(filter, SearchScope.CurrentOnly);
-			
+
 			return GetDirectorySpecCore(directory, pathSegments, 0);
 		}
 

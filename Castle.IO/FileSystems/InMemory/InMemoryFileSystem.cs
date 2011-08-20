@@ -6,7 +6,7 @@
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 // 
-// http://www.apache.org/licenses/LICENSE-2.0
+//     http://www.apache.org/licenses/LICENSE-2.0
 // 
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -40,7 +40,7 @@ namespace Castle.IO.FileSystems.InMemory
 		private InMemoryDirectory GetRoot(string path)
 		{
 			InMemoryDirectory directory;
-			
+
 			lock (Directories)
 			{
 				if (!Directories.TryGetValue(path, out directory))
@@ -67,8 +67,8 @@ namespace Castle.IO.FileSystems.InMemory
 
 			return segments
 				.Skip(1)
-				.Aggregate((IDirectory)GetRoot(segments.First()),
-						   (current, segment) => current.GetDirectory(segment));
+				.Aggregate((IDirectory) GetRoot(segments.First()),
+				           (current, segment) => current.GetDirectory(segment));
 		}
 
 		private static Path EnsureTerminatedByDirectorySeparator(Path possibleDirectoryPath)
@@ -102,10 +102,10 @@ namespace Castle.IO.FileSystems.InMemory
 
 			var tempDirectory = new InMemoryTemporaryDirectory(this,
 			                                                   sysTemp.Path.Combine(Path.GetRandomFileName()).FullPath)
-			                    	{
-			                    		Exists = true,
-			                    		Parent = sysTemp
-			                    	};
+				{
+					Exists = true,
+					Parent = sysTemp
+				};
 			lock (sysTemp.ChildDirectories)
 			{
 				sysTemp.ChildDirectories.Add(tempDirectory);
@@ -127,11 +127,11 @@ namespace Castle.IO.FileSystems.InMemory
 		{
 			var tempDirectory = (InMemoryDirectory) GetTempDirectory();
 			var tempFile = new InMemoryTemporaryFile(tempDirectory.Path.Combine(Path.GetRandomFileName()).ToString())
-			               	{
-			               		Exists = true,
-			               		FileSystem = this,
-			               		Parent = tempDirectory
-			               	};
+				{
+					Exists = true,
+					FileSystem = this,
+					Parent = tempDirectory
+				};
 			tempDirectory.Create();
 			tempDirectory.ChildFiles.Add(tempFile);
 

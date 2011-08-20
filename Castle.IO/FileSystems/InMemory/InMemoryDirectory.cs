@@ -6,7 +6,7 @@
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 // 
-// http://www.apache.org/licenses/LICENSE-2.0
+//     http://www.apache.org/licenses/LICENSE-2.0
 // 
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -20,9 +20,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Castle.IO.Extensions;
 using Castle.IO.Internal;
-using System.Text.RegularExpressions;
 
 namespace Castle.IO.FileSystems.InMemory
 {
@@ -111,8 +111,8 @@ namespace Castle.IO.FileSystems.InMemory
 				return path.Segments.Count() == 1
 				       	? new[] {directory}
 				       	: directory.Directories(string.Join("\\", path.Segments.Skip(1)
-				       	  	                               	.DefaultIfEmpty("*")
-				       	  	                               	.ToArray()));
+				       	                                          	.DefaultIfEmpty("*")
+				       	                                          	.ToArray()));
 			}
 
 			var filterRegex = filter.Wildcard();
@@ -160,9 +160,9 @@ namespace Castle.IO.FileSystems.InMemory
 				if (inMemoryDirectory == null)
 				{
 					inMemoryDirectory = new InMemoryDirectory(_fileSystem, System.IO.Path.Combine(Path.FullPath, directoryName))
-					                    	{
-					                    		Parent = this
-					                    	};
+						{
+							Parent = this
+						};
 					ChildDirectories.Add(inMemoryDirectory);
 				}
 			}
