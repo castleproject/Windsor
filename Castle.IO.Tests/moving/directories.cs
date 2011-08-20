@@ -16,6 +16,7 @@
 
 #endregion
 
+using Castle.IO.Tests.TestClasses;
 using NUnit.Framework;
 
 namespace Castle.IO.Tests.moving

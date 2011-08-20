@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 using NUnit.Framework;
 using SharpTestsEx;
 
-namespace Castle.IO.Tests
+namespace Castle.IO.Tests.paths
 {
 	internal class pathinfo_devices_specification : context
 	{

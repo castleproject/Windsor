@@ -15,7 +15,7 @@ namespace Castle.IO.Tests.file_searches
     [TestFixture("c:\\path\\file.txt", "path\\*.txt")]
     [TestFixture("c:\\path\\file.txt", "c:\\path\\file.txt")]
     [TestFixture("c:\\path\\file.txt", "c:\\path\\file.txt", "c:\\path\\")]
-    public class recursive_file_search : contexts.file_search_context
+    public class recursive_file_search : file_search_context
     {
         readonly string existingFile;
 

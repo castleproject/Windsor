@@ -17,7 +17,7 @@
 #endregion
 
 using System.Linq;
-using Castle.IO.Tests.contexts;
+using Castle.IO.Tests.TestClasses;
 using NUnit.Framework;
 
 namespace Castle.IO.Tests.directory_searches

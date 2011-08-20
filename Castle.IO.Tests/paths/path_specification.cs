@@ -2,7 +2,7 @@
 using NUnit.Framework;
 using SharpTestsEx;
 
-namespace Castle.IO.Tests
+namespace Castle.IO.Tests.paths
 {
 	public class path_specification : context
 	{

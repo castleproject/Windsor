@@ -1,7 +1,6 @@
-﻿using System;
-using Castle.IO.FileSystems.Local;
+﻿using Castle.IO.FileSystems.Local;
 
-namespace Castle.IO.Tests
+namespace Castle.IO.Tests.TestClasses
 {
 	public class TestLocalFileSystem : IFileSystem
 	{

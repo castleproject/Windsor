@@ -18,7 +18,7 @@
 
 using System;
 using System.IO;
-using Castle.IO.Tests.contexts;
+using Castle.IO.Tests.TestClasses;
 using NUnit.Framework;
 using SharpTestsEx;
 

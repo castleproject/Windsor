@@ -1,7 +1,7 @@
 ﻿using NUnit.Framework;
 using SharpTestsEx;
 
-namespace Castle.IO.Tests
+namespace Castle.IO.Tests.paths
 {
 	internal class pathinfo_root_specification : context
 	{

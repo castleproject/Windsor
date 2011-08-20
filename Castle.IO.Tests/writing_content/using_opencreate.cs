@@ -17,6 +17,7 @@
 #endregion
 
 using System.IO;
+using Castle.IO.Tests.TestClasses;
 using NUnit.Framework;
 
 namespace Castle.IO.Tests.writing_content

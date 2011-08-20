@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using Castle.IO.Extensions;
+using Castle.IO.Tests.TestClasses;
 using NUnit.Framework;
 using SharpTestsEx;
 

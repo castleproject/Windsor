@@ -19,7 +19,7 @@
 using System.Collections.Generic;
 using Castle.IO.FileSystems.InMemory;
 
-namespace Castle.IO.Tests.contexts
+namespace Castle.IO.Tests
 {
 	public abstract class file_search_context : context
 	{

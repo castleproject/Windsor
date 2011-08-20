@@ -1,7 +1,6 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 
-namespace Castle.IO.Tests.contexts
+namespace Castle.IO.Tests
 {
 	public abstract class files<T> : file_system_ctxt<T> where T : IFileSystem, new()
 	{

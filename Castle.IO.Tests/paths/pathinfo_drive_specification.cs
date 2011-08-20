@@ -5,7 +5,7 @@ using NUnit.Framework;
 using SharpTestsEx;
 using System.Linq;
 
-namespace Castle.IO.Tests
+namespace Castle.IO.Tests.paths
 {
 	internal class pathinfo_drive_specification : context
 	{
