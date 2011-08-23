@@ -31,7 +31,7 @@ namespace Castle.Transactions
 	///		when you are registering your components.
 	/// </summary>
 	[AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
-	public sealed class TransactionAttribute : Attribute, ITransactionOptions
+	public class TransactionAttribute : Attribute, ITransactionOptions
 	{
 		private IDictionary<string, object> _CustomContext;
 
