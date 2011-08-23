@@ -22,15 +22,15 @@ using System.Threading.Tasks;
 using System.Transactions;
 using Castle.IO;
 using Castle.Transactions.Activities;
-using Castle.Transactions.Internal;
 using Castle.Transactions.IO;
-using log4net;
+using Castle.Transactions.Internal;
+using NLog;
 
 namespace Castle.Transactions
 {
 	public sealed class TransactionManager : ITransactionManager
 	{
-		private static readonly ILog _Logger = LogManager.GetLogger(typeof (TransactionManager));
+		private static readonly Logger _Logger = LogManager.GetCurrentClassLogger();
 
 		private static volatile object _SyncRoot = new object();
 		private static volatile ITransactionManager _Instance;
@@ -39,7 +39,8 @@ namespace Castle.Transactions
 		private readonly IFileAdapter _FileAdapter;
 		private readonly IDirectoryAdapter _DirectoryAdapter;
 
-		public TransactionManager(IActivityManager activityManager, IFileAdapter fileAdapter, IDirectoryAdapter directoryAdapter)
+		public TransactionManager(IActivityManager activityManager, IFileAdapter fileAdapter,
+		                          IDirectoryAdapter directoryAdapter)
 		{
 			Contract.Requires(activityManager != null);
 			Contract.Requires(fileAdapter != null);
@@ -67,7 +68,8 @@ namespace Castle.Transactions
 					if (_Instance != null)
 						return _Instance;
 					else // TODO: configure this differently!
-						return _Instance = new TransactionManager(new CallContextActivityManager(), new FileAdapter(), new DirectoryAdapter());
+						return
+							_Instance = new TransactionManager(new CallContextActivityManager(), new FileAdapter(), new DirectoryAdapter());
 			}
 		}
 
@@ -127,7 +129,7 @@ namespace Castle.Transactions
 					.Inner
 					.DependentClone(transactionOptions.DependentOption);
 				Contract.Assume(clone != null);
-				
+
 				Action onDispose = () => activity.Pop();
 				tx = new Transaction(clone, nextStackDepth, transactionOptions, shouldFork ? null : onDispose);
 			}
@@ -137,15 +139,16 @@ namespace Castle.Transactions
 
 			Contract.Assume(tx.State == TransactionState.Active, "by c'tor post condition for both cases of the if statement");
 
-			var m = Maybe.Some(new CreatedTransaction(tx, 
-			    shouldFork, // we should only fork if we have a different current top transaction than the current
-				ForkScopeFactory(tx)) as ICreatedTransaction);
+			var m = Maybe.Some(new CreatedTransaction(tx,
+			                                          shouldFork,
+			                                          // we should only fork if we have a different current top transaction than the current
+			                                          ForkScopeFactory(tx)) as ICreatedTransaction);
 
 			// warn if fork and the top transaction was just created
 			if (transactionOptions.Fork && nextStackDepth == 1)
-				_Logger.WarnFormat("transaction {0} created with Fork=true option, but was top-most "
-				                   + "transaction in invocation chain. running transaction sequentially",
-				                   tx.LocalIdentifier);
+				_Logger.Warn("transaction {0} created with Fork=true option, but was top-most "
+				             + "transaction in invocation chain. running transaction sequentially",
+				             tx.LocalIdentifier);
 
 			Contract.Assume(m.HasValue && m.Value.Transaction.State == TransactionState.Active);
 
@@ -154,10 +157,11 @@ namespace Castle.Transactions
 
 		private Func<IDisposable> ForkScopeFactory(ITransaction tx)
 		{
-			return () => {
-				_ActivityManager.GetCurrentActivity().Push(tx);
-				return new DisposableScope(_ActivityManager.GetCurrentActivity().Pop);
-			};
+			return () =>
+				{
+					_ActivityManager.GetCurrentActivity().Push(tx);
+					return new DisposableScope(_ActivityManager.GetCurrentActivity().Pop);
+				};
 		}
 
 		private static bool ShouldFork(ITransactionOptions transactionOptions, uint nextStackDepth)
@@ -182,11 +186,11 @@ namespace Castle.Transactions
 		}
 
 		/// <summary>
-		/// Enlists a dependent task in the current top transaction.
+		/// 	Enlists a dependent task in the current top transaction.
 		/// </summary>
-		/// <param name="task">
-		/// The task to enlist; this task is the action of running
-		/// a dependent transaction on the thread pool.
+		/// <param name = "task">
+		/// 	The task to enlist; this task is the action of running
+		/// 	a dependent transaction on the thread pool.
 		/// </param>
 		public void EnlistDependentTask(Task task)
 		{

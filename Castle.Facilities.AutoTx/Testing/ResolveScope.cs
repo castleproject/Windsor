@@ -19,15 +19,17 @@
 using System;
 using System.Diagnostics.Contracts;
 using Castle.Windsor;
-using log4net;
+using NLog;
 
 namespace Castle.Facilities.AutoTx.Testing
 {
 	public class ResolveScope<T> : IDisposable
 		where T : class
 	{
-		private static readonly ILog _Logger = LogManager.GetLogger(
+// ReSharper disable StaticFieldInGenericType
+		private static readonly Logger _Logger = LogManager.GetLogger(
 			string.Format("Castle.Facilities.AutoTx.Testing.ResolveScope<{0}>", typeof (T).Name));
+// ReSharper restore StaticFieldInGenericType
 
 		private readonly T _Service;
 		private bool _Disposed;

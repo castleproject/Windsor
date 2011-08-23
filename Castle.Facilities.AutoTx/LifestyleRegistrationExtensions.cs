@@ -1,4 +1,4 @@
-﻿#region license
+#region license
 
 // Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
@@ -21,7 +21,7 @@ using Castle.Facilities.AutoTx.Lifestyles;
 using Castle.MicroKernel.Registration;
 using Castle.MicroKernel.Registration.Lifestyle;
 
-namespace Castle.Facilities.AutoTx.Registration
+namespace Castle.Facilities.AutoTx
 {
 	public static class LifestyleRegistrationExtensions
 	{

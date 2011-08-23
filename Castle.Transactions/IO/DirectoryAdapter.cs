@@ -20,7 +20,7 @@ using System;
 using System.Diagnostics.Contracts;
 using Castle.IO;
 using Castle.IO.Internal;
-using log4net;
+using NLog;
 using Path = Castle.IO.Path;
 
 namespace Castle.Transactions.IO
@@ -32,7 +32,7 @@ namespace Castle.Transactions.IO
 	public class DirectoryAdapter : TransactionAdapterBase, IDirectoryAdapter
 	{
 		private readonly IMapPath _PathFinder;
-		private readonly ILog _Logger = LogManager.GetLogger(typeof (DirectoryAdapter));
+		private readonly Logger _Logger = LogManager.GetCurrentClassLogger();
 
 		public DirectoryAdapter() : this(new MapPathImpl(), false, null)
 		{

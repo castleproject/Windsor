@@ -23,14 +23,14 @@ using System.Threading.Tasks;
 using System.Transactions;
 using Castle.Transactions.Internal;
 using Castle.Transactions.IO;
-using log4net;
+using NLog;
 
 namespace Castle.Transactions
 {
 	[Serializable]
 	public class Transaction : ITransaction, IDependentAware
 	{
-		private static readonly ILog _Logger = LogManager.GetLogger(typeof (Transaction));
+		private static readonly Logger _Logger = LogManager.GetCurrentClassLogger();
 
 		private TransactionState _State = TransactionState.Default;
 
@@ -167,7 +167,7 @@ namespace Castle.Transactions
 
 			try
 			{
-				_Logger.InfoFormat("rolling back tx#{0}", _LocalIdentifier);
+				_Logger.Info(() => string.Format("rolling back tx#{0}", _LocalIdentifier));
 				Inner.Rollback();
 			}
 			finally
@@ -183,8 +183,7 @@ namespace Castle.Transactions
 			{
 				if (_Committable != null)
 				{
-					if (_Logger.IsDebugEnabled) 
-						_Logger.DebugFormat("committing committable tx#{0}", _LocalIdentifier);
+					_Logger.Debug(() => string.Format("committing committable tx#{0}", _LocalIdentifier));
 
 					if (BeforeTopComplete != null) 
 						BeforeTopComplete();
@@ -198,8 +197,7 @@ namespace Castle.Transactions
 				}
 				else
 				{
-					if (_Logger.IsDebugEnabled)
-						_Logger.DebugFormat("completing dependent tx#{0}", _LocalIdentifier);
+					_Logger.Debug(string.Format("completing dependent tx#{0}", _LocalIdentifier));
 
 					_Dependent.Complete();
 				}
@@ -212,16 +210,21 @@ namespace Castle.Transactions
 				throw new TransactionException("Transaction in doubt. See inner exception and help link for details",
 				                               e, new Uri("http://support.microsoft.com/kb/899115/EN-US/"));
 			}
+			catch (TimeoutException e)
+			{
+				_State = TransactionState.Aborted;
+				_Logger.WarnException("transaction timed out", e);
+			}
 			catch (TransactionAbortedException e)
 			{
 				_State = TransactionState.Aborted;
-				_Logger.Warn("transaction aborted", e);
+				_Logger.WarnException("transaction aborted", e);
 				throw;
 			}
 			catch (AggregateException e)
 			{
 				_State = TransactionState.Aborted;
-				_Logger.Warn("dependent transactions failed, so we are not performing the rollback (as they will have notified their parent!)", e);
+				_Logger.WarnException("dependent transactions failed, so we are not performing the rollback (as they will have notified their parent!)", e);
 				throw;
 			}
 			catch (Exception e)
@@ -258,8 +261,7 @@ namespace Castle.Transactions
 			if (!isManaged)
 				return;
 
-			if (_Logger.IsDebugEnabled)
-				_Logger.Debug("disposing");
+			_Logger.Debug("disposing");
 
 			if (_DependentTasks != null) 
 				_DependentTasks.Clear();

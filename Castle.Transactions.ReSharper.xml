@@ -95,7 +95,7 @@ limitations under the License.]]></FileHeader>
   <Naming2>
     <EventHandlerPatternLong>$object$_On$event$</EventHandlerPatternLong>
     <EventHandlerPatternShort>$event$Handler</EventHandlerPatternShort>
-    <PredefinedRule Inspect="True" Prefix="_" Suffix="" Style="aaBb" ElementKind="PrivateStaticReadonly" />
+    <PredefinedRule Inspect="True" Prefix="_" Suffix="" Style="AaBb" ElementKind="PrivateStaticReadonly" />
     <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AaBb" ElementKind="TypesAndNamespaces" />
     <PredefinedRule Inspect="True" Prefix="I" Suffix="" Style="AaBb" ElementKind="Interfaces" />
     <PredefinedRule Inspect="True" Prefix="T" Suffix="" Style="AaBb" ElementKind="TypeParameters" />
@@ -105,7 +105,7 @@ limitations under the License.]]></FileHeader>
     <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="aaBb" ElementKind="Parameters" />
     <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AaBb" ElementKind="PublicFields" />
     <PredefinedRule Inspect="True" Prefix="_" Suffix="" Style="aaBb" ElementKind="PrivateInstanceFields" />
-    <PredefinedRule Inspect="True" Prefix="_" Suffix="" Style="aaBb" ElementKind="PrivateStaticFields" />
+    <PredefinedRule Inspect="True" Prefix="_" Suffix="" Style="AaBb" ElementKind="PrivateStaticFields" />
     <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AaBb" ElementKind="Constants" />
     <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AaBb" ElementKind="PrivateConstants" />
     <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AaBb" ElementKind="StaticReadonly" />

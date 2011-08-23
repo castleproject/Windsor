@@ -25,7 +25,7 @@ using Castle.MicroKernel;
 using Castle.MicroKernel.Context;
 using Castle.MicroKernel.Lifestyle;
 using Castle.MicroKernel.Registration;
-using log4net;
+using NLog;
 
 namespace Castle.Facilities.AutoTx.Lifestyles
 {
@@ -37,7 +37,7 @@ namespace Castle.Facilities.AutoTx.Lifestyles
 	public class WrapperResolveLifestyleManager<T> : AbstractLifestyleManager
 		where T : class, ILifestyleManager
 	{
-		private static readonly ILog _Logger = LogManager.GetLogger(
+		private static readonly Logger _Logger = LogManager.GetLogger(
 			string.Format("Castle.Facilities.AutoTx.Lifestyles.WrapperResolveLifestyleManager<{0}>", typeof (T).Name));
 
 		private readonly IKernel _LifestyleKernel = new DefaultKernel();
@@ -63,7 +63,7 @@ namespace Castle.Facilities.AutoTx.Lifestyles
 			Contract.Ensures(Initialized);
 
 			if (_Logger.IsDebugEnabled)
-				_Logger.DebugFormat("initializing (for component: {0})", model.Service);
+				_Logger.Debug(() => string.Format("initializing (for component: {0})", model.Service));
 
 			_LifestyleKernel.Register(Component.For<T>().LifeStyle.Transient.Named("T.lifestyle"));
 			kernel.AddChildKernel(_LifestyleKernel);

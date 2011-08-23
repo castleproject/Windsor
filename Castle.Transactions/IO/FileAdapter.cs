@@ -22,7 +22,7 @@ using System.IO;
 using System.Text;
 using Castle.IO;
 using Castle.IO.Internal;
-using log4net;
+using NLog;
 
 namespace Castle.Transactions.IO
 {
@@ -36,7 +36,7 @@ namespace Castle.Transactions.IO
 	public sealed class FileAdapter : TransactionAdapterBase, IFileAdapter
 	{
 		internal const int ChunkSize = 4096;
-		private static readonly ILog _Logger = LogManager.GetLogger(typeof (FileAdapter));
+		private static readonly Logger _Logger = LogManager.GetCurrentClassLogger();
 
 		///<summary>
 		///	c'tor
@@ -53,9 +53,9 @@ namespace Castle.Transactions.IO
 		public FileAdapter(bool constrainToSpecifiedDir, string specifiedDir) : base(constrainToSpecifiedDir, specifiedDir)
 		{
 			if (constrainToSpecifiedDir)
-				_Logger.Debug(string.Format("FileAdapter c'tor, constraining to dir: {0}", specifiedDir));
+				_Logger.Debug(() => string.Format("FileAdapter c'tor, constraining to dir: {0}", specifiedDir));
 			else
-				_Logger.Debug("FileAdapter c'tor, no directory constraint.");
+				_Logger.Debug(() => "FileAdapter c'tor, no directory constraint.");
 		}
 
 		///<summary>

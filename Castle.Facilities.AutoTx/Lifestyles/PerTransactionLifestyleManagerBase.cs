@@ -27,7 +27,7 @@ using Castle.MicroKernel;
 using Castle.MicroKernel.Context;
 using Castle.MicroKernel.Lifestyle;
 using Castle.Transactions;
-using log4net;
+using NLog;
 
 namespace Castle.Facilities.AutoTx.Lifestyles
 {
@@ -39,7 +39,7 @@ namespace Castle.Facilities.AutoTx.Lifestyles
 	[Serializable]
 	public abstract class PerTransactionLifestyleManagerBase : AbstractLifestyleManager
 	{
-		private static readonly ILog _Logger = LogManager.GetLogger(typeof (PerTransactionLifestyleManagerBase));
+		private static readonly Logger _Logger = LogManager.GetCurrentClassLogger();
 
 		private readonly Dictionary<string, Tuple<uint, object>> _Storage = new Dictionary<string, Tuple<uint, object>>();
 
@@ -51,7 +51,7 @@ namespace Castle.Facilities.AutoTx.Lifestyles
 		{
 			Contract.Requires(manager != null);
 			Contract.Ensures(_Manager != null);
-			_Logger.DebugFormat("created");
+			_Logger.Debug("created");
 			_Manager = manager;
 		}
 
@@ -99,7 +99,7 @@ namespace Castle.Facilities.AutoTx.Lifestyles
 								.Select(x => string.Format("(id: {0}, item: {1})", x.Key, x.Value.ToString()))
 								.ToArray());
 
-						_Logger.WarnFormat("Storage contains {0} items! Items: {{ {1} }}",
+						_Logger.Warn("Storage contains {0} items! Items: {{ {1} }}",
 						                   _Storage.Count,
 						                   items);
 					}
@@ -135,9 +135,9 @@ namespace Castle.Facilities.AutoTx.Lifestyles
 		{
 			Contract.Ensures(Contract.Result<object>() != null);
 
-			if (_Logger.IsDebugEnabled)
-				_Logger.DebugFormat("resolving service '{0}', which wants model '{1}' in a PerTransaction lifestyle", 
-					context.Handler.Service, Model.Service);
+			_Logger.Debug(() => 
+				string.Format("resolving service '{0}', which wants model '{1}' in a PerTransaction lifestyle", 
+					context.Handler.Service, Model.Service));
 
 			if (_Disposed)
 				throw new ObjectDisposedException("PerTransactionLifestyleManagerBase",
@@ -164,8 +164,7 @@ namespace Castle.Facilities.AutoTx.Lifestyles
 			{
 				lock (ComponentActivator)
 				{
-					if (_Logger.IsDebugEnabled)
-						_Logger.DebugFormat("component for key '{0}' not found in per-tx storage. creating new instance.", key);
+					_Logger.Debug(() => string.Format("component for key '{0}' not found in per-tx storage. creating new instance.", key));
 
 					if (!_Storage.TryGetValue(key, out instance))
 					{
@@ -174,10 +173,7 @@ namespace Castle.Facilities.AutoTx.Lifestyles
 						transaction.Inner.TransactionCompleted += (sender, args) =>
 						{
 							var id = localIdentifier;
-							if (_Logger.IsDebugEnabled)
-								_Logger.DebugFormat(
-									"transaction#{0} completed, maybe releasing object '{1}'", id,
-									instance);
+							_Logger.Debug(() => string.Format("transaction#{0} completed, maybe releasing object '{1}'", id, instance));
 
 							lock (ComponentActivator)
 							{
@@ -185,9 +181,7 @@ namespace Castle.Facilities.AutoTx.Lifestyles
 
 								if (counter.Item1 == 1)
 								{
-									if (_Logger.IsDebugEnabled)
-										_Logger.DebugFormat("last item of '{0}' per-tx; releasing it",
-															counter.Item2);
+									_Logger.Debug(() => string.Format("last item of '{0}' per-tx; releasing it", counter.Item2));
 
 									// this might happen if the transaction outlives the service; the transaction might also notify transaction fron a timer, i.e.
 									// not synchronously.
@@ -201,10 +195,7 @@ namespace Castle.Facilities.AutoTx.Lifestyles
 								}
 								else
 								{
-									if (_Logger.IsDebugEnabled)
-										_Logger.DebugFormat("{0} item(s) of '{1}' left in per-tx storage",
-															counter.Item1 - 1, counter.Item2);
-
+									_Logger.Debug(() => string.Format("{0} item(s) of '{1}' left in per-tx storage", counter.Item1 - 1, counter.Item2));
 									_Storage[key] = Tuple.Create(counter.Item1 - 1, counter.Item2);
 								}
 							}

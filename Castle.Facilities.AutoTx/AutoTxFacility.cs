@@ -16,7 +16,6 @@
 
 #endregion
 
-using Castle.Facilities.AutoTx.Registration;
 using Castle.IO;
 using Castle.IO.Internal;
 using Castle.MicroKernel;
@@ -27,8 +26,7 @@ using Castle.Transactions;
 using Castle.Transactions.Activities;
 using Castle.Transactions.Internal;
 using Castle.Transactions.IO;
-using log4net;
-using System.Linq;
+using NLog;
 
 namespace Castle.Facilities.AutoTx
 {
@@ -42,7 +40,7 @@ namespace Castle.Facilities.AutoTx
 	///</summary>
 	public class AutoTxFacility : AbstractFacility
 	{
-		private static readonly ILog _Logger = LogManager.GetLogger(typeof (AutoTxFacility));
+		private static readonly Logger _Logger = LogManager.GetCurrentClassLogger();
 
 		protected override void Init()
 		{
@@ -93,7 +91,7 @@ namespace Castle.Facilities.AutoTx
 			_Logger.Debug(
 				@"Initialized AutoTxFacility:
 
-If you are experiencing problems, go to https://github.com/haf/ and file a ticket for the Transactions project.
+If you are experiencing problems, go to https://github.com/castleproject/Castle.Transactions and file a ticket for the Transactions project.
 You can enable verbose logging for .Net by adding this to you .config file:
 
 	<system.diagnostics>
