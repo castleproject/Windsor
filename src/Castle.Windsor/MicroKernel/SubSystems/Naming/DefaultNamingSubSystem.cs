@@ -21,21 +21,15 @@ namespace Castle.MicroKernel.SubSystems.Naming
 	using Castle.Core.Internal;
 	using Castle.MicroKernel.Util;
 
-	/// <summary>
-	///   Default <see cref = "INamingSubSystem" /> implementation.
-	///   Keeps services map as a simple hash table.
-	///   Keeps key map as a list dictionary to maintain order.
-	///   Does not support a query string.
-	/// </summary>
 	[Serializable]
 	public class DefaultNamingSubSystem : AbstractSubSystem, INamingSubSystem
 	{
 		/// <summary>
-		///   Map(String, IHandler) to map component keys
+		///   Map(String, IHandler) to map component names
 		///   to <see cref = "IHandler" />
 		///   Items in this dictionary are sorted in insertion order.
 		/// </summary>
-		protected readonly Dictionary<string, IHandler> key2Handler = new Dictionary<string, IHandler>(StringComparer.OrdinalIgnoreCase);
+		protected readonly Dictionary<string, IHandler> name2Handler = new Dictionary<string, IHandler>(StringComparer.OrdinalIgnoreCase);
 
 		protected readonly Lock @lock = Lock.Create();
 
@@ -53,28 +47,29 @@ namespace Castle.MicroKernel.SubSystems.Naming
 		protected IList<IHandlerSelector> selectors;
 
 		private readonly IDictionary<Type, IHandler[]> assignableHandlerListsByTypeCache = new Dictionary<Type, IHandler[]>(SimpleTypeEqualityComparer.Instance);
+
 		private readonly IDictionary<Type, IHandler[]> handlerListsByTypeCache = new Dictionary<Type, IHandler[]>(SimpleTypeEqualityComparer.Instance);
-		private Dictionary<string, IHandler> key2HandlerCache;
-		private Dictionary<Type, IHandler> service2HandlerCache;
+		private Dictionary<string, IHandler> handlerByNameCache;
+		private Dictionary<Type, IHandler> handlerByServiceCache;
 
 		public virtual int ComponentCount
 		{
-			get { return HandlerByKeyCache.Count; }
+			get { return HandlerByNameCache.Count; }
 		}
 
-		protected IDictionary<string, IHandler> HandlerByKeyCache
+		protected IDictionary<string, IHandler> HandlerByNameCache
 		{
 			get
 			{
-				var cache = key2HandlerCache;
+				var cache = handlerByNameCache;
 				if (cache != null)
 				{
 					return cache;
 				}
 				using (@lock.ForWriting())
 				{
-					cache = new Dictionary<string, IHandler>(key2Handler, key2Handler.Comparer);
-					key2HandlerCache = cache;
+					cache = new Dictionary<string, IHandler>(name2Handler, name2Handler.Comparer);
+					handlerByNameCache = cache;
 					return cache;
 				}
 			}
@@ -84,7 +79,7 @@ namespace Castle.MicroKernel.SubSystems.Naming
 		{
 			get
 			{
-				var cache = service2HandlerCache;
+				var cache = handlerByServiceCache;
 				if (cache != null)
 				{
 					return cache;
@@ -92,7 +87,7 @@ namespace Castle.MicroKernel.SubSystems.Naming
 				using (@lock.ForWriting())
 				{
 					cache = new Dictionary<Type, IHandler>(service2Handler, service2Handler.Comparer);
-					service2HandlerCache = cache;
+					handlerByServiceCache = cache;
 					return cache;
 				}
 			}
@@ -116,9 +111,9 @@ namespace Castle.MicroKernel.SubSystems.Naming
 			filters.Add(filter);
 		}
 
-		public virtual bool Contains(String key)
+		public virtual bool Contains(String name)
 		{
-			return HandlerByKeyCache.ContainsKey(key);
+			return HandlerByNameCache.ContainsKey(name);
 		}
 
 		public virtual bool Contains(Type service)
@@ -128,7 +123,7 @@ namespace Castle.MicroKernel.SubSystems.Naming
 
 		public virtual IHandler[] GetAllHandlers()
 		{
-			var cache = HandlerByKeyCache;
+			var cache = HandlerByNameCache;
 			var list = new IHandler[cache.Values.Count];
 			cache.Values.CopyTo(list, 0);
 			return list;
@@ -147,16 +142,16 @@ namespace Castle.MicroKernel.SubSystems.Naming
 			return GetAssignableHandlersNoFiltering(service);
 		}
 
-		public virtual IHandler GetHandler(String key)
+		public virtual IHandler GetHandler(String name)
 		{
-			if (key == null)
+			if (name == null)
 			{
-				throw new ArgumentNullException("key");
+				throw new ArgumentNullException("name");
 			}
 
 			if (selectors != null)
 			{
-				var selectorsOpinion = GetSelectorsOpinion(key, null);
+				var selectorsOpinion = GetSelectorsOpinion(name, null);
 				if (selectorsOpinion != null)
 				{
 					return selectorsOpinion;
@@ -164,7 +159,7 @@ namespace Castle.MicroKernel.SubSystems.Naming
 			}
 
 			IHandler value;
-			HandlerByKeyCache.TryGetValue(key, out value);
+			HandlerByNameCache.TryGetValue(name, out value);
 			return value;
 		}
 
@@ -216,7 +211,7 @@ namespace Castle.MicroKernel.SubSystems.Naming
 					return result;
 				}
 
-				result = key2Handler.Values.Where(h => h.Supports(service)).ToArray();
+				result = name2Handler.Values.Where(h => h.Supports(service)).ToArray();
 				handlerListsByTypeCache[service] = result;
 			}
 
@@ -225,19 +220,19 @@ namespace Castle.MicroKernel.SubSystems.Naming
 
 		public virtual void Register(IHandler handler)
 		{
-			var key = handler.ComponentModel.Name;
+			var name = handler.ComponentModel.Name;
 			using (@lock.ForWriting())
 			{
 				try
 				{
-					key2Handler.Add(key, handler);
+					name2Handler.Add(name, handler);
 				}
 				catch (ArgumentException)
 				{
 					throw new ComponentRegistrationException(
 						String.Format(
 							"Component {0} could not be registered. There is already a component with that name. Did you want to modify the existing component instead? If not, make sure you specify a unique name.",
-							key));
+							name));
 				}
 				var serviceSelector = GetServiceSelector(handler);
 				foreach (var service in handler.ComponentModel.Services)
@@ -267,7 +262,7 @@ namespace Castle.MicroKernel.SubSystems.Naming
 					return result;
 				}
 
-				var handlers = key2Handler.Values;
+				var handlers = name2Handler.Values;
 				var services = new List<IHandler>();
 				foreach (var handler in handlers)
 				{
@@ -310,7 +305,7 @@ namespace Castle.MicroKernel.SubSystems.Naming
 			return null;
 		}
 
-		protected virtual IHandler GetSelectorsOpinion(string key, Type type)
+		protected virtual IHandler GetSelectorsOpinion(string name, Type type)
 		{
 			if (selectors == null)
 			{
@@ -320,7 +315,7 @@ namespace Castle.MicroKernel.SubSystems.Naming
 			IHandler[] handlers = null; //only init if we have a selector with an opinion about this type
 			foreach (var selector in selectors)
 			{
-				if (selector.HasOpinionAbout(key, type) == false)
+				if (selector.HasOpinionAbout(name, type) == false)
 				{
 					continue;
 				}
@@ -328,7 +323,7 @@ namespace Castle.MicroKernel.SubSystems.Naming
 				{
 					handlers = GetAssignableHandlersNoFiltering(type);
 				}
-				var handler = selector.SelectHandler(key, type, handlers);
+				var handler = selector.SelectHandler(name, type, handlers);
 				if (handler != null)
 				{
 					return handler;
@@ -341,8 +336,8 @@ namespace Castle.MicroKernel.SubSystems.Naming
 		{
 			handlerListsByTypeCache.Clear();
 			assignableHandlerListsByTypeCache.Clear();
-			key2HandlerCache = null;
-			service2HandlerCache = null;
+			handlerByNameCache = null;
+			handlerByServiceCache = null;
 		}
 
 		protected bool IsAssignable(Type thisOne, Type fromThisOne)
