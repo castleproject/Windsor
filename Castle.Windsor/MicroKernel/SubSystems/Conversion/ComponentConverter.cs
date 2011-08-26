@@ -52,7 +52,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 				                                           targetType.FullName));
 			}
 
-			var handler = Context.Kernel.LoadHandlerByKey(componentName, targetType, null);
+			var handler = Context.Kernel.LoadHandlerByName(componentName, targetType, null);
 			if (handler == null)
 			{
 				throw new ConverterException(string.Format("Component '{0}' was not found in the container.", componentName));

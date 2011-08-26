@@ -43,11 +43,11 @@ namespace Castle.MicroKernel.SubSystems.Naming
 
 		/// <summary>
 		///   Returns true if there is a component registered 
-		///   for the specified key
+		///   for the specified name
 		/// </summary>
-		/// <param name = "key"></param>
+		/// <param name = "name"></param>
 		/// <returns></returns>
-		bool Contains(String key);
+		bool Contains(String name);
 
 		/// <summary>
 		///   Returns true if there is a component registered 
@@ -73,11 +73,11 @@ namespace Castle.MicroKernel.SubSystems.Naming
 
 		/// <summary>
 		///   Returns the <see cref = "IHandler" /> associated with
-		///   the specified key.
+		///   the specified name.
 		/// </summary>
-		/// <param name = "key"></param>
+		/// <param name = "name"></param>
 		/// <returns></returns>
-		IHandler GetHandler(String key);
+		IHandler GetHandler(String name);
 
 		/// <summary>
 		///   Returns the <see cref = "IHandler" /> associated with

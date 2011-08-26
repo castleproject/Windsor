@@ -27,7 +27,7 @@ namespace Castle.Facilities.TypedFactory.Internal
 	[Singleton]
 	public class DelegateFactory : ILazyComponentLoader
 	{
-		public IRegistration Load(string key, Type service, IDictionary arguments)
+		public IRegistration Load(string name, Type service, IDictionary arguments)
 		{
 			if (service == null)
 			{

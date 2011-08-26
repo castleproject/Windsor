@@ -26,9 +26,9 @@ namespace Castle.MicroKernel
 	/// </summary>
 	/// <remarks>
 	///   It allows you to register components and
-	///   request them by the key or the service they implemented.
+	///   request them by their name or the services they expose.
 	///   It also allow you to register facilities and subsystem, thus 
-	///   augmenting the functionality exposed by the kernel alone to fits 
+	///   augmenting the functionality exposed by the kernel alone to fit 
 	///   your needs.
 	///   <seealso cref = "IFacility" />
 	///   <seealso cref = "ISubSystem" />
@@ -120,9 +120,9 @@ namespace Castle.MicroKernel
 		/// <summary>
 		///   Adds (or replaces) an <see cref = "ISubSystem" />
 		/// </summary>
-		/// <param name = "key"></param>
+		/// <param name = "name"></param>
 		/// <param name = "subsystem"></param>
-		void AddSubSystem(String key, ISubSystem subsystem);
+		void AddSubSystem(String name, ISubSystem subsystem);
 
 		/// <summary>
 		///   Return handlers for components that 
@@ -141,11 +141,11 @@ namespace Castle.MicroKernel
 
 		/// <summary>
 		///   Returns the <see cref = "IHandler" />
-		///   for the specified component key.
+		///   for the specified component name.
 		/// </summary>
-		/// <param name = "key"></param>
+		/// <param name = "name"></param>
 		/// <returns></returns>
-		IHandler GetHandler(String key);
+		IHandler GetHandler(String name);
 
 		/// <summary>
 		///   Returns the <see cref = "IHandler" />
@@ -165,19 +165,19 @@ namespace Castle.MicroKernel
 
 		/// <summary>
 		///   Returns an implementation of <see cref = "ISubSystem" />
-		///   for the specified key. 
+		///   for the specified name. 
 		///   <seealso cref = "SubSystemConstants" />
 		/// </summary>
-		/// <param name = "key"></param>
+		/// <param name = "name"></param>
 		/// <returns></returns>
-		ISubSystem GetSubSystem(String key);
+		ISubSystem GetSubSystem(String name);
 
 		/// <summary>
-		///   Returns true if the specified key was registered
+		///   Returns <c>true</c> if a component with given <paramref name="name"/> was registered, otherwise <c>false</c>.
 		/// </summary>
-		/// <param name = "key"></param>
+		/// <param name = "name"></param>
 		/// <returns></returns>
-		bool HasComponent(String key);
+		bool HasComponent(String name);
 
 		/// <summary>
 		///   Returns true if the specified service was registered

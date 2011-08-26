@@ -333,11 +333,11 @@ namespace Castle.MicroKernel
 			NamingSubSystem.AddHandlersFilter(filter);
 		}
 
-		public virtual void AddSubSystem(String key, ISubSystem subsystem)
+		public virtual void AddSubSystem(String name, ISubSystem subsystem)
 		{
-			if (key == null)
+			if (name == null)
 			{
-				throw new ArgumentNullException("key");
+				throw new ArgumentNullException("name");
 			}
 			if (subsystem == null)
 			{
@@ -345,7 +345,7 @@ namespace Castle.MicroKernel
 			}
 
 			subsystem.Init(this);
-			subsystems[key] = subsystem;
+			subsystems[name] = subsystem;
 		}
 
 		/// <summary>
@@ -385,18 +385,18 @@ namespace Castle.MicroKernel
 			return facilities.ToArray();
 		}
 
-		public virtual IHandler GetHandler(String key)
+		public virtual IHandler GetHandler(String name)
 		{
-			if (key == null)
+			if (name == null)
 			{
-				throw new ArgumentNullException("key");
+				throw new ArgumentNullException("name");
 			}
 
-			var handler = NamingSubSystem.GetHandler(key);
+			var handler = NamingSubSystem.GetHandler(name);
 
 			if (handler == null && Parent != null)
 			{
-				handler = WrapParentHandler(Parent.GetHandler(key));
+				handler = WrapParentHandler(Parent.GetHandler(name));
 			}
 
 			return handler;
@@ -451,28 +451,28 @@ namespace Castle.MicroKernel
 			return result;
 		}
 
-		public virtual ISubSystem GetSubSystem(String key)
+		public virtual ISubSystem GetSubSystem(String name)
 		{
 			ISubSystem subsystem;
-			subsystems.TryGetValue(key, out subsystem);
+			subsystems.TryGetValue(name, out subsystem);
 			return subsystem;
 		}
 
-		public virtual bool HasComponent(String key)
+		public virtual bool HasComponent(String name)
 		{
-			if (key == null)
+			if (name == null)
 			{
 				return false;
 			}
 
-			if (NamingSubSystem.Contains(key))
+			if (NamingSubSystem.Contains(name))
 			{
 				return true;
 			}
 
 			if (Parent != null)
 			{
-				return Parent.HasComponent(key);
+				return Parent.HasComponent(name);
 			}
 
 			return false;
@@ -724,12 +724,12 @@ namespace Castle.MicroKernel
 			disposable.Dispose();
 		}
 
-		protected void RegisterHandler(String key, IHandler handler)
+		protected void RegisterHandler(String name, IHandler handler)
 		{
-			(this as IKernelInternal).RegisterHandler(key, handler, false);
+			(this as IKernelInternal).RegisterHandler(name, handler, false);
 		}
 
-		void IKernelInternal.RegisterHandler(String key, IHandler handler, bool skipRegistration)
+		void IKernelInternal.RegisterHandler(String name, IHandler handler, bool skipRegistration)
 		{
 			if (skipRegistration == false)
 			{
@@ -738,7 +738,7 @@ namespace Castle.MicroKernel
 
 			RaiseHandlerRegistered(handler);
 			RaiseHandlersChanged();
-			RaiseComponentRegistered(key, handler);
+			RaiseComponentRegistered(name, handler);
 		}
 
 		protected virtual void RegisterSubSystems()
@@ -859,21 +859,21 @@ namespace Castle.MicroKernel
 			parentKernel.ComponentRegistered -= RaiseComponentRegistered;
 		}
 
-		IHandler IKernelInternal.LoadHandlerByKey(string key, Type service, IDictionary arguments)
+		IHandler IKernelInternal.LoadHandlerByName(string name, Type service, IDictionary arguments)
 		{
-			if (key == null)
+			if (name == null)
 			{
-				throw new ArgumentNullException("key");
+				throw new ArgumentNullException("name");
 			}
 
-			var handler = GetHandler(key);
+			var handler = GetHandler(name);
 			if (handler != null)
 			{
 				return handler;
 			}
 			lock (lazyLoadingLock)
 			{
-				handler = GetHandler(key);
+				handler = GetHandler(name);
 				if (handler != null)
 				{
 					return handler;
@@ -889,11 +889,11 @@ namespace Castle.MicroKernel
 				{
 					foreach (var loader in ResolveAll<ILazyComponentLoader>())
 					{
-						var registration = loader.Load(key, service, arguments);
+						var registration = loader.Load(name, service, arguments);
 						if (registration != null)
 						{
 							registration.Register(this);
-							return GetHandler(key);
+							return GetHandler(name);
 						}
 					}
 					return null;
@@ -905,7 +905,7 @@ namespace Castle.MicroKernel
 			}
 		}
 
-		IHandler IKernelInternal.LoadHandlerByType(string key, Type service, IDictionary arguments)
+		IHandler IKernelInternal.LoadHandlerByType(string name, Type service, IDictionary arguments)
 		{
 			if (service == null)
 			{
@@ -936,7 +936,7 @@ namespace Castle.MicroKernel
 				{
 					foreach (var loader in ResolveAll<ILazyComponentLoader>())
 					{
-						var registration = loader.Load(key, service, arguments);
+						var registration = loader.Load(name, service, arguments);
 						if (registration != null)
 						{
 							registration.Register(this);

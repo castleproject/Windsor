@@ -261,7 +261,7 @@ namespace Castle.MicroKernel.Resolvers
 			IHandler handler;
 			if (dependency.Reference != null)
 			{
-				handler = kernel.LoadHandlerByKey(dependency.Reference, dependency.TargetItemType, context.AdditionalArguments);
+				handler = kernel.LoadHandlerByName(dependency.Reference, dependency.TargetItemType, context.AdditionalArguments);
 			}
 			else
 			{
@@ -341,7 +341,7 @@ namespace Castle.MicroKernel.Resolvers
 			IHandler handler;
 			if (context != null && context.IsResolving)
 			{
-				handler = kernel.LoadHandlerByKey(key, dependency.TargetItemType, context.AdditionalArguments);
+				handler = kernel.LoadHandlerByName(key, dependency.TargetItemType, context.AdditionalArguments);
 			}
 			else
 			{

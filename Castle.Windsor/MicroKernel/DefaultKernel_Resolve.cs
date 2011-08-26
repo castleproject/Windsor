@@ -215,7 +215,7 @@ namespace Castle.MicroKernel
 		/// <returns></returns>
 		object IKernelInternal.Resolve(String key, Type service, IDictionary arguments, IReleasePolicy policy)
 		{
-			var handler = (this as IKernelInternal).LoadHandlerByKey(key, service, arguments);
+			var handler = (this as IKernelInternal).LoadHandlerByName(key, service, arguments);
 			if (handler == null)
 			{
 				var otherHandlers = GetHandlers(service).Length;
