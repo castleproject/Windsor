@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,11 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#if !SILVERLIGHT // we do not support xml config on SL
 
-namespace Castle.Windsor.Tests.Installer
+#if !SILVERLIGHT
+// we do not support xml config on SL
+
+namespace CastleTests.Installer
 {
+	using System;
+
+	using Castle.Windsor;
 	using Castle.Windsor.Configuration.Interpreters;
+	using Castle.Windsor.Tests;
 	using Castle.XmlFiles;
 
 	using CastleTests.Components;
@@ -24,8 +30,9 @@ namespace Castle.Windsor.Tests.Installer
 	using NUnit.Framework;
 
 	[TestFixture]
-	public class InstallerTestCase
+	public class InstallerTestCase : AbstractContainerTestCase
 	{
+
 		[Test]
 		public void InstallCalcService()
 		{
