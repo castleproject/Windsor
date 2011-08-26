@@ -52,9 +52,7 @@ namespace Castle.MicroKernel.SubSystems.Naming
 		protected IList<IHandlersFilter> filters;
 		protected IList<IHandlerSelector> selectors;
 
-		private readonly IDictionary<Type, IHandler[]> assignableHandlerListsByTypeCache =
-			new Dictionary<Type, IHandler[]>(SimpleTypeEqualityComparer.Instance);
-
+		private readonly IDictionary<Type, IHandler[]> assignableHandlerListsByTypeCache = new Dictionary<Type, IHandler[]>(SimpleTypeEqualityComparer.Instance);
 		private readonly IDictionary<Type, IHandler[]> handlerListsByTypeCache = new Dictionary<Type, IHandler[]>(SimpleTypeEqualityComparer.Instance);
 		private Dictionary<string, IHandler> key2HandlerCache;
 		private Dictionary<Type, IHandler> service2HandlerCache;
@@ -98,11 +96,6 @@ namespace Castle.MicroKernel.SubSystems.Naming
 					return cache;
 				}
 			}
-		}
-
-		public IEnumerable<KeyValuePair<Type, IHandler>> GetDefaultComponentsForServices()
-		{
-			return HandlerByServiceCache;
 		}
 
 		public void AddHandlerSelector(IHandlerSelector selector)
