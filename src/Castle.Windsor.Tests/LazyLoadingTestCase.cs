@@ -124,7 +124,7 @@ namespace Castle.MicroKernel.Tests
 	{
 		public bool CanLoadNow { get; set; }
 
-		public IRegistration Load(string key, Type service, IDictionary arguments)
+		public IRegistration Load(string name, Type service, IDictionary arguments)
 		{
 			Assert.True(CanLoadNow);
 
@@ -138,7 +138,7 @@ namespace Castle.MicroKernel.Tests
 
 	public class ABLoader : ILazyComponentLoader
 	{
-		public IRegistration Load(string key, Type service, IDictionary arguments)
+		public IRegistration Load(string name, Type service, IDictionary arguments)
 		{
 			if (service == typeof(A) || service == typeof(B))
 			{
@@ -157,7 +157,7 @@ namespace Castle.MicroKernel.Tests
 			this.employee = employee;
 		}
 
-		public IRegistration Load(string key, Type service, IDictionary arguments)
+		public IRegistration Load(string name, Type service, IDictionary arguments)
 		{
 			return null;
 		}
@@ -165,16 +165,16 @@ namespace Castle.MicroKernel.Tests
 
 	public class SlowLoader : ILazyComponentLoader
 	{
-		public IRegistration Load(string key, Type service, IDictionary argume)
+		public IRegistration Load(string name, Type service, IDictionary argume)
 		{
 			Thread.Sleep(200);
-			return Component.For(service).Named(key);
+			return Component.For(service).Named(name);
 		}
 	}
 
 	public class LoaderForDefaultImplementations : ILazyComponentLoader
 	{
-		public IRegistration Load(string key, Type service, IDictionary arguments)
+		public IRegistration Load(string name, Type service, IDictionary arguments)
 		{
 			if (!Attribute.IsDefined(service, typeof(DefaultImplementationAttribute)))
 			{
@@ -183,13 +183,13 @@ namespace Castle.MicroKernel.Tests
 
 			var attributes = service.GetCustomAttributes(typeof(DefaultImplementationAttribute), false);
 			var attribute = attributes[0] as DefaultImplementationAttribute;
-			return Component.For(service).ImplementedBy(attribute.Implementation).Named(key);
+			return Component.For(service).ImplementedBy(attribute.Implementation).Named(name);
 		}
 	}
 
 	public class LoaderUsingDependency : ILazyComponentLoader
 	{
-		public IRegistration Load(string key, Type service, IDictionary arguments)
+		public IRegistration Load(string name, Type service, IDictionary arguments)
 		{
 			return Component.For(service).DependsOn(arguments);
 		}

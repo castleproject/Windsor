@@ -65,7 +65,7 @@ namespace Castle.Facilities.TypedFactory
 			{
 				return false;
 			}
-			return fallbackToResolveByTypeIfNameNotFound == false || kernel.LoadHandlerByKey(componentName, componentType, additionalArguments) != null;
+			return fallbackToResolveByTypeIfNameNotFound == false || kernel.LoadHandlerByName(componentName, componentType, additionalArguments) != null;
 		}
 	}
 }

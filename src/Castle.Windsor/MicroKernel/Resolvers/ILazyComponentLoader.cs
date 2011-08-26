@@ -30,10 +30,10 @@ namespace Castle.MicroKernel.Resolvers
 	public interface ILazyComponentLoader
 	{
 		/// <summary>
-		///   Used by container to allow the loader to register component for given <paramref name = "key" /> and <paramref
+		///   Used by container to allow the loader to register component for given <paramref name = "name" /> and <paramref
 		///    name = "service" /> to the container at the time when it is requested
 		/// </summary>
-		/// <param name = "key">Key of the requested component or null</param>
+		/// <param name = "name">Name of the requested component or null</param>
 		/// <param name = "service">Type of requested service or null</param>
 		/// <param name = "arguments">User supplied arguments or null</param>
 		/// <returns>Registration that registers component for given key and/or service or null.</returns>
@@ -43,6 +43,6 @@ namespace Castle.MicroKernel.Resolvers
 		///   to register component for requested key/service combination (when one of the elements is null, it should be ignored as well).
 		///   When implementer does not want to register the requested component it must return null.
 		/// </remarks>
-		IRegistration Load(string key, Type service, IDictionary arguments);
+		IRegistration Load(string name, Type service, IDictionary arguments);
 	}
 }
