@@ -529,14 +529,15 @@ namespace Castle.MicroKernel
 				throw new ArgumentNullException("registrations");
 			}
 
-			using (OptimizeDependencyResolution())
+			var token = OptimizeDependencyResolution();
+			foreach (var registration in registrations)
 			{
-				foreach (var registration in registrations)
-				{
-					registration.Register(this);
-				}
+				registration.Register(this);
 			}
-
+			if (token != null)
+			{
+				token.Dispose();
+			}
 			return this;
 		}
 

@@ -448,9 +448,11 @@ namespace Castle.Windsor
 			}
 			else
 			{
-				using (internalKernel.OptimizeDependencyResolution())
+				var token = internalKernel.OptimizeDependencyResolution();
+				Install(installers, scope);
+				if (token != null)
 				{
-					Install(installers, scope);
+					token.Dispose();
 				}
 			}
 

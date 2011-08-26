@@ -16,8 +16,13 @@ namespace CastleTests.Components
 {
 	public class UsesIEmptyService
 	{
+		public static int instancesCreated ;
+
+
+
 		public UsesIEmptyService(IEmptyService emptyService)
 		{
+			instancesCreated++;
 			EmptyService = emptyService;
 		}
 

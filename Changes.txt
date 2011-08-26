@@ -1,3 +1,5 @@
+- fixed IOC-311 - OptimizeDependencyResolutionDisposable eats exceptions thrown during installation
+
 3.0.0 beta 1 (2011-08-14)
 ==================
 - implemented IOC-306 - Add ability to provide fine-grained filtering of properties
