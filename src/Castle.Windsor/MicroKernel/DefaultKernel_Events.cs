@@ -147,6 +147,8 @@ namespace Castle.MicroKernel
 
 		public event DependencyDelegate DependencyResolving = delegate { };
 
+		public event ServiceDelegate EmptyCollectionResolving = delegate { };
+
 		private class OptimizeDependencyResolutionDisposable : IDisposable
 		{
 			private readonly DefaultKernel kernel;

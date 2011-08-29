@@ -43,6 +43,11 @@ namespace Castle.MicroKernel
 	public delegate void ComponentModelDelegate(ComponentModel model);
 
 	/// <summary>
+	///   Represents a delegate which holds the information about a service.
+	/// </summary>
+	public delegate void ServiceDelegate(Type service);
+
+	/// <summary>
 	///   Represents a delegate which holds a handler
 	/// </summary>
 	/// <param name = "handler">handler that holds a component and is capable of 
@@ -123,5 +128,11 @@ namespace Castle.MicroKernel
 		///   If the <see cref = "IKernel.Register" /> is called by <see cref = "IWindsorContainer.Install" /> the event is raised when that method exits.
 		/// </summary>
 		event EventHandler RegistrationCompleted;
+
+		/// <summary>
+		///   Event fired when a collection is being resolved (via <see cref="IKernel.ResolveAll(System.Type)"/> or another overload) and the collection is empty.
+		///   Implementors would usually log that fact or potentially throw an exception (especially in development).
+		/// </summary>
+		event ServiceDelegate EmptyCollectionResolving;
 	}
 }

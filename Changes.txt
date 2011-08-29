@@ -1,3 +1,5 @@
+- implemented IOC-313 Add event to be raised by the container whenever empty collection is being resolved
+
 - fixed IOC-311 - OptimizeDependencyResolutionDisposable eats exceptions thrown during installation
 
 3.0.0 beta 1 (2011-08-14)
