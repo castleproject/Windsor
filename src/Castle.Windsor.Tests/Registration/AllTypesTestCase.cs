@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.MicroKernel.Tests.Registration
+namespace CastleTests.Registration
 {
 	using System;
 	using System.Linq;

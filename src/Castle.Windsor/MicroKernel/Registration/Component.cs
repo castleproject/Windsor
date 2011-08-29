@@ -248,7 +248,7 @@ namespace Castle.MicroKernel.Registration
 		/// </summary>
 		/// <typeparam name = "T">The component type to test namespace against.</typeparam>
 		/// <returns>true if the component is in the same namespace.</returns>
-		public static Predicate<Type> IsInSameNamespaceAs<T>() where T : class
+		public static Predicate<Type> IsInSameNamespaceAs<T>()
 		{
 			return IsInSameNamespaceAs(typeof(T));
 		}
@@ -259,7 +259,7 @@ namespace Castle.MicroKernel.Registration
 		/// <typeparam name = "T">The component type to test namespace against.</typeparam>
 		/// <param name = "includeSubnamespaces">If set to true, will also include types from subnamespaces.</param>
 		/// <returns>true if the component is in the same namespace.</returns>
-		public static Predicate<Type> IsInSameNamespaceAs<T>(bool includeSubnamespaces) where T : class
+		public static Predicate<Type> IsInSameNamespaceAs<T>(bool includeSubnamespaces)
 		{
 			return IsInSameNamespaceAs(typeof(T), includeSubnamespaces);
 		}

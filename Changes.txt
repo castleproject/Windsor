@@ -1,4 +1,5 @@
-- implemented IOC-313 Add event to be raised by the container whenever empty collection is being resolved
+- implemented IOC-313 - Add event to be raised by the container whenever empty collection is being resolved
+- implemented IOC-312 - Add shortcut methods to API to register types from given namespace
 
 - fixed IOC-311 - OptimizeDependencyResolutionDisposable eats exceptions thrown during installation
 

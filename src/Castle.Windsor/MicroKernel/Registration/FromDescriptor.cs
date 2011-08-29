@@ -67,6 +67,69 @@ namespace Castle.MicroKernel.Registration
 		}
 
 		/// <summary>
+		///   Creates a predicate to check if a component is in a namespace.
+		/// </summary>
+		/// <param name = "namespace">The namespace.</param>
+		/// <returns>true if the component type is in the namespace.</returns>
+		public BasedOnDescriptor InNamespace(string @namespace)
+		{
+			return Where(Component.IsInNamespace(@namespace, false));
+		}
+
+		/// <summary>
+		///   Creates a predicate to check if a component is in a namespace.
+		/// </summary>
+		/// <param name = "namespace">The namespace.</param>
+		/// <param name = "includeSubnamespaces">If set to true, will also include types from subnamespaces.</param>
+		/// <returns>true if the component type is in the namespace.</returns>
+		public BasedOnDescriptor InNamespace(string @namespace, bool includeSubnamespaces)
+		{
+			return Where(Component.IsInNamespace(@namespace, includeSubnamespaces));
+		}
+
+		/// <summary>
+		///   Creates a predicate to check if a component shares a namespace with another.
+		/// </summary>
+		/// <param name = "type">The component type to test namespace against.</param>
+		/// <returns>true if the component is in the same namespace.</returns>
+		public BasedOnDescriptor InSameNamespaceAs(Type type)
+		{
+			return Where(Component.IsInSameNamespaceAs(type));
+		}
+
+		/// <summary>
+		///   Creates a predicate to check if a component shares a namespace with another.
+		/// </summary>
+		/// <param name = "type">The component type to test namespace against.</param>
+		/// <param name = "includeSubnamespaces">If set to true, will also include types from subnamespaces.</param>
+		/// <returns>true if the component is in the same namespace.</returns>
+		public BasedOnDescriptor InSameNamespaceAs(Type type, bool includeSubnamespaces)
+		{
+			return Where(Component.IsInSameNamespaceAs(type, includeSubnamespaces));
+		}
+
+		/// <summary>
+		///   Creates a predicate to check if a component shares a namespace with another.
+		/// </summary>
+		/// <typeparam name = "T">The component type to test namespace against.</typeparam>
+		/// <returns>true if the component is in the same namespace.</returns>
+		public BasedOnDescriptor InSameNamespaceAs<T>()
+		{
+			return Where(Component.IsInSameNamespaceAs<T>());
+		}
+
+		/// <summary>
+		///   Creates a predicate to check if a component shares a namespace with another.
+		/// </summary>
+		/// <typeparam name = "T">The component type to test namespace against.</typeparam>
+		/// <param name = "includeSubnamespaces">If set to true, will also include types from subnamespaces.</param>
+		/// <returns>true if the component is in the same namespace.</returns>
+		public BasedOnDescriptor InSameNamespaceAs<T>(bool includeSubnamespaces) where T : class
+		{
+			return Where(Component.IsInSameNamespaceAs<T>(includeSubnamespaces));
+		}
+
+		/// <summary>
 		///   Returns the descriptor for accepting any type from given solutions.
 		/// </summary>
 		/// <returns></returns>
