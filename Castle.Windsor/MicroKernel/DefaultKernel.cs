@@ -410,7 +410,6 @@ namespace Castle.MicroKernel
 			}
 
 			var handler = NamingSubSystem.GetHandler(service);
-
 			if (handler == null && service.IsGenericType)
 			{
 				handler = NamingSubSystem.GetHandler(service.GetGenericTypeDefinition());

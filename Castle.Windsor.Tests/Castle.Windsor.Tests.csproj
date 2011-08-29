@@ -488,6 +488,7 @@
     <Compile Include="Interceptors\DependsOnTViaCtorInterceptor.cs" />
     <Compile Include="Interceptors\DependsOnTViaPropertyInterceptor.cs" />
     <Compile Include="InternalsVisibleTo.cs" />
+    <Compile Include="KernelEvents_EmptyCollectionResolving_TestCase.cs" />
     <Compile Include="LazyComponentsTestCase.cs" />
     <Compile Include="LifecycledComponentsReleasePolicyTestCase.cs" />
     <Compile Include="Components\DisposableFoo.cs" />
@@ -820,7 +821,7 @@
     <Compile Include="ClassComponents\UsesIGeneric.cs" />
     <Compile Include="DecoratorsTestCase.cs" />
     <Compile Include="DependencyResolvingTestCase.cs" />
-    <Compile Include="KernelEventsTestCase.cs" />
+    <Compile Include="KernelEvents_DependencyResolving_TestCase.cs" />
     <Compile Include="Facilities\FactorySupport\FactorySupportFluentTestCase.cs" />
     <Compile Include="Facilities\FactorySupport\FactorySupportProgrammaticTestCase.cs" />
     <Compile Include="Facilities\FactorySupport\FactorySupportTestCase.cs" />

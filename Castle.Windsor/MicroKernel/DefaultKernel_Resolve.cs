@@ -256,6 +256,10 @@ namespace Castle.MicroKernel
 				}
 			}
 
+			if (resolved.Count == 0)
+			{
+				EmptyCollectionResolving(service);
+			}
 			var components = Array.CreateInstance(service, resolved.Count);
 			((ICollection)resolved).CopyTo(components, 0);
 			return components;

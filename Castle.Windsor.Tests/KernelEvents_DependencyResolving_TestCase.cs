@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Windsor.Tests
+namespace CastleTests
 {
 	using System.Collections.Generic;
 	using System.Linq;
@@ -22,20 +22,13 @@ namespace Castle.Windsor.Tests
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Tests.ClassComponents;
 
-	using CastleTests;
-
 	using NUnit.Framework;
 
 	[TestFixture]
-	public class KernelEventsTestCase : AbstractContainerTestCase
+	public class KernelEvents_DependencyResolving_TestCase : AbstractContainerTestCase
 	{
-		[SetUp]
-		public void Subscribe()
+		protected override void AfterContainerCreated()
 		{
-#if SILVERLIGHT
-	// Silverlight testing framework can't handle SetUp method on base class so we have to call it explicitly
-			Init();
-#endif
 			Kernel.DependencyResolving += AssertEvent;
 		}
 
@@ -76,9 +69,9 @@ namespace Castle.Windsor.Tests
 		[Test]
 		public void ResolvingConcreteClassThroughProperties()
 		{
-			Kernel.Register(Component.For(typeof(DefaultSpamService)).Named("spamservice"));
-			Kernel.Register(Component.For(typeof(DefaultMailSenderService)).Named("mailsender"));
-			Kernel.Register(Component.For(typeof(DefaultTemplateEngine)).Named("templateengine"));
+			Kernel.Register(Component.For<DefaultSpamService>().Named("spamservice"));
+			Kernel.Register(Component.For<DefaultMailSenderService>().Named("mailsender"));
+			Kernel.Register(Component.For<DefaultTemplateEngine>().Named("templateengine"));
 
 			var mailservice = Kernel.Resolve<DefaultMailSenderService>("mailsender");
 			var templateengine = Kernel.Resolve<DefaultTemplateEngine>("templateengine");
