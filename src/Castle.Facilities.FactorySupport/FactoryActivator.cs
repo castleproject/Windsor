@@ -157,8 +157,8 @@ namespace Castle.Facilities.FactorySupport
 				}
 				catch (Exception ex)
 				{
-					throw new ComponentActivatorException("FactoryActivator: could not proxy " +
-					                                      instance.GetType().FullName, ex);
+					throw new ComponentActivatorException("FactoryActivator: could not proxy " + instance.GetType().FullName, ex, Model);
+
 				}
 			}
 

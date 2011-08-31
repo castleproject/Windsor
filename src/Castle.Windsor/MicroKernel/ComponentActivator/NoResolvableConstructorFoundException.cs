@@ -17,6 +17,8 @@ namespace Castle.MicroKernel.ComponentActivator
 	using System;
 	using System.Runtime.Serialization;
 
+	using Castle.Core;
+
 	/// <summary>
 	///   Exception thrown when component has no resolvable constructor that can be used to create an instance.
 	/// </summary>
@@ -25,16 +27,16 @@ namespace Castle.MicroKernel.ComponentActivator
 	{
 		private readonly Type type;
 
-		public NoResolvableConstructorFoundException(Type type)
+		public NoResolvableConstructorFoundException(Type type, ComponentModel componentModel)
 			: base(
 				string.Format("Could not find resolvable constructor for {0}. Make sure all required dependencies are provided.",
-				              type.FullName))
+				              type.FullName),componentModel)
 		{
 			this.type = type;
 		}
 
-		public NoResolvableConstructorFoundException(string message, Exception innerException)
-			: base(message, innerException)
+		public NoResolvableConstructorFoundException(string message, Exception innerException, ComponentModel componentModel)
+			: base(message, innerException, componentModel)
 		{
 		}
 

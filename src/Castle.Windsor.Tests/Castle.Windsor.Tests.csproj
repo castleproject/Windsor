@@ -299,6 +299,7 @@
     <Compile Include="ByRefDependenciesTestCase.cs" />
     <Compile Include="ClassComponents\GenericImplA.cs" />
     <Compile Include="ClassComponents\GenericWithTDependency.cs" />
+    <Compile Include="ClassComponents\PropertySetterThrows.cs" />
     <Compile Include="Components\ADisposable.cs" />
     <Compile Include="Components\AppHost.cs" />
     <Compile Include="Components\AppScreenCBA.cs" />

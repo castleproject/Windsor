@@ -14,10 +14,15 @@
 
 namespace CastleTests.ClassComponents
 {
+	using System;
+
 	using Castle.MicroKernel.Tests.ClassComponents;
 
-	public class CommonServiceUser2
+	public class PropertySetterThrows
 	{
-		public ICommon CommonService { get; set; }
+		public ICommon CommonService
+		{
+			set { throw new InvalidOperationException("Kaboom!"); }
+		}
 	}
 }

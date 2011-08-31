@@ -131,7 +131,7 @@ namespace Castle.MicroKernel.ComponentActivator
 							Kernel.ReleaseComponent(argument);
 						}
 					}
-					throw new ComponentActivatorException("ComponentActivator: could not proxy " + Model.Implementation.FullName, ex);
+					throw new ComponentActivatorException("ComponentActivator: could not proxy " + Model.Implementation.FullName, ex, Model);
 				}
 			}
 
@@ -167,7 +167,7 @@ namespace Castle.MicroKernel.ComponentActivator
 				}
 
 				throw new ComponentActivatorException(
-					"ComponentActivator: could not instantiate " + Model.Implementation.FullName, ex);
+					"ComponentActivator: could not instantiate " + Model.Implementation.FullName, ex, Model);
 			}
 			return instance;
 		}
@@ -176,14 +176,14 @@ namespace Castle.MicroKernel.ComponentActivator
 #if DOTNET40
 		[SecuritySafeCritical]
 #endif
-		private static object FastCreateInstance(Type implType, object[] arguments, ConstructorCandidate constructor)
+		private object FastCreateInstance(Type implType, object[] arguments, ConstructorCandidate constructor)
 		{
 			if (constructor == null || constructor.Constructor == null)
 			{
 				throw new ComponentActivatorException(
 					string.Format(
 						"Could not find a public constructor for type {0}. Windsor can not instantiate types that don't expose public constructors. To expose the type as a service add public constructor, or use custom component activator.",
-						implType));
+						implType), Model);
 			}
 			var instance = FormatterServices.GetUninitializedObject(implType);
 
@@ -227,7 +227,7 @@ namespace Castle.MicroKernel.ComponentActivator
 
 			if (winnerCandidate == null)
 			{
-				throw new NoResolvableConstructorFoundException(Model.Implementation);
+				throw new NoResolvableConstructorFoundException(Model.Implementation, Model);
 			}
 
 			return winnerCandidate;
@@ -318,9 +318,9 @@ namespace Castle.MicroKernel.ComponentActivator
 				{
 					var message =
 						String.Format(
-							"Error setting property {0} on type {1}, Component id is {2}. See inner exception for more information.",
-							setMethod.Name, instance.GetType().FullName, Model.Name);
-					throw new ComponentActivatorException(message, ex);
+							"Error setting property {1}.{0} in component {2}. See inner exception for more information. If you don't want Windsor to set this property you can do it by either decorating it with {3} or via registration API.",
+							property.Property.Name, instance.GetType().Name, Model.Name, typeof(DoNotWireAttribute).Name);
+					throw new ComponentActivatorException(message, ex, Model);
 				}
 			}
 		}

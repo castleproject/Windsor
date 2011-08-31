@@ -114,7 +114,7 @@ namespace Castle.MicroKernel.ComponentActivator
 				catch (Exception ex)
 				{
 					throw new ComponentActivatorException(
-						"WebUserControlComponentActivator: could not instantiate " + Model.Implementation.FullName, ex);
+						"WebUserControlComponentActivator: could not instantiate " + Model.Implementation.FullName, ex, Model);
 				}
 			}
 
@@ -126,7 +126,7 @@ namespace Castle.MicroKernel.ComponentActivator
 				}
 				catch (Exception ex)
 				{
-					throw new ComponentActivatorException("ComponentActivator: could not proxy " + Model.Implementation.FullName, ex);
+					throw new ComponentActivatorException("ComponentActivator: could not proxy " + Model.Implementation.FullName, ex, Model);
 				}
 			}
 
