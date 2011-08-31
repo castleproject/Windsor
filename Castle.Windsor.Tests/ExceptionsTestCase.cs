@@ -17,8 +17,11 @@ namespace CastleTests
 	using System;
 
 	using Castle.MicroKernel;
+	using Castle.MicroKernel.ComponentActivator;
 	using Castle.MicroKernel.Registration;
+	using Castle.MicroKernel.Tests.ClassComponents;
 
+	using CastleTests.ClassComponents;
 	using CastleTests.Components;
 
 	using NUnit.Framework;
@@ -74,6 +77,20 @@ namespace CastleTests
 					Environment.NewLine, typeof(A).FullName);
 
 			Assert.AreEqual(expected, exception.Message);
+		}
+
+		[Test]
+		public void When_property_setter_throws_at_resolution_time_exception_suggests_disabling_setting_the_property()
+		{
+			Container.Register(
+				Component.For<ICommon>().ImplementedBy<CommonImpl1>(),
+				Component.For<PropertySetterThrows>());
+
+			var exception = Assert.Throws<ComponentActivatorException>(() => Container.Resolve<PropertySetterThrows>());
+
+			var message = @"Error setting property PropertySetterThrows.CommonService in component CastleTests.ClassComponents.PropertySetterThrows. See inner exception for more information. If you don't want Windsor to set this property you can do it by either decorating it with DoNotWireAttribute or via registration API.";
+
+			Assert.AreEqual(message, exception.Message);
 		}
 	}
 }

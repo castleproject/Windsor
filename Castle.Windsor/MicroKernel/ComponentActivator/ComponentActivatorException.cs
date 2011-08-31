@@ -17,18 +17,24 @@ namespace Castle.MicroKernel.ComponentActivator
 	using System;
 	using System.Runtime.Serialization;
 
+	using Castle.Core;
+
 	/// <summary>
 	///   Exception thrown whe a component could not be activated. THis should come from the component activator.
 	/// </summary>
 	[Serializable]
 	public class ComponentActivatorException : ComponentResolutionException
 	{
-		public ComponentActivatorException(string message) : base(message)
+
+		public ComponentActivatorException(string message, ComponentModel componentComponentModel) : base(message)
 		{
+			ComponentModel = componentComponentModel;
 		}
 
-		public ComponentActivatorException(string message, Exception innerException) : base(message, innerException)
+		public ComponentActivatorException(string message, Exception innerException, ComponentModel componentModel)
+			: base(message, innerException)
 		{
+			ComponentModel = componentModel;
 		}
 
 #if (!SILVERLIGHT)
@@ -36,5 +42,6 @@ namespace Castle.MicroKernel.ComponentActivator
 		{
 		}
 #endif
+		public ComponentModel ComponentModel { get; private set; }
 	}
 }

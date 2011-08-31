@@ -182,7 +182,8 @@ namespace Castle.MicroKernel.Context
 			catch (InvalidOperationException)
 			{
 				throw new ComponentActivatorException(
-					"Not in a resolution context. 'CreateBurden' method can only be called withing a resoltion scope. (after 'EnterResolutionContext' was called within a handler)");
+					"Not in a resolution context. 'CreateBurden' method can only be called withing a resoltion scope. (after 'EnterResolutionContext' was called within a handler)",
+					null);
 			}
 
 			var activator = componentActivator as IDependencyAwareActivator;
@@ -204,7 +205,8 @@ namespace Castle.MicroKernel.Context
 			catch (InvalidOperationException)
 			{
 				throw new ComponentActivatorException(
-					"Not in a resolution context. 'AttachExistingBurden' method can only be called withing a resoltion scope. (after 'EnterResolutionContext' was called within a handler)");
+					"Not in a resolution context. 'AttachExistingBurden' method can only be called withing a resoltion scope. (after 'EnterResolutionContext' was called within a handler)",
+					null);
 			}
 			resolutionContext.AttachBurden(burden);
 		}

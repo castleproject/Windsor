@@ -35,7 +35,7 @@ namespace Castle.MicroKernel.ComponentActivator
 				throw new ComponentActivatorException(
 					string.Format(
 						"{0} received misconfigured component model for {1}. Are you sure you registered this component with 'UsingFactoryMethod'?",
-						GetType().Name, Model.Name));
+						GetType().Name, Model.Name), Model);
 			}
 		}
 
