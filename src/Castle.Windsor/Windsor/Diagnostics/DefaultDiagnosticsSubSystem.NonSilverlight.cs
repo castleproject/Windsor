@@ -21,26 +21,25 @@ namespace Castle.Windsor.Diagnostics
 	using Castle.MicroKernel;
 	using Castle.Windsor.Diagnostics.Extensions;
 
-	public partial class DefaultDiagnosticsSubSystem : ISubSystem, IDiagnosticsHost, IContainerDebuggerExtensionHost
+	public partial class DefaultDiagnosticsSubSystem : IDiagnosticsHost, IContainerDebuggerExtensionHost
 	{
 		private readonly IList<IContainerDebuggerExtension> extensions = new List<IContainerDebuggerExtension>();
 
-		public DefaultDiagnosticsSubSystem()
-		{
-			PerformanceMetricsFactory = new PerformanceMetricsFactory();
-		}
-
-		public IPerformanceMetricsFactory PerformanceMetricsFactory { get; set; }
-
 		public void Add(IContainerDebuggerExtension item)
 		{
-			item.Init(kernel, this);
+			item.Init(Kernel, this);
 			extensions.Add(item);
 		}
 
 		public IEnumerator<IContainerDebuggerExtension> GetEnumerator()
 		{
 			return extensions.GetEnumerator();
+		}
+
+		public override void Init(IKernelInternal kernel)
+		{
+			base.Init(kernel);
+			InitStandardExtensions();
 		}
 
 		protected virtual void InitStandardExtensions()
@@ -50,13 +49,8 @@ namespace Castle.Windsor.Diagnostics
 			Add(new PotentiallyMisconfiguredComponents());
 			Add(new PotentialLifestyleMismatches());
 			Add(new UsingContainerAsServiceLocator());
-			Add(new ReleasePolicyTrackedObjects(PerformanceMetricsFactory));
+			Add(new ReleasePolicyTrackedObjects());
 			Add(new Facilities());
-		}
-
-		partial void InitExtensions()
-		{
-			InitStandardExtensions();
 		}
 
 		IEnumerator IEnumerable.GetEnumerator()

@@ -22,11 +22,10 @@ namespace Castle.Windsor.Diagnostics
 	using Castle.MicroKernel;
 
 	public partial class DefaultDiagnosticsSubSystem :
-		ISubSystem, IDiagnosticsHost
+		AbstractSubSystem, IDiagnosticsHost
 	{
 		private readonly IDictionary<Type, IDiagnostic<object>> diagnostics = new Dictionary<Type, IDiagnostic<object>>();
 
-		private IKernel kernel;
 
 		public void AddDiagnostic<TDiagnostic>(TDiagnostic diagnostic) where TDiagnostic : IDiagnostic<object>
 		{
@@ -40,15 +39,7 @@ namespace Castle.Windsor.Diagnostics
 			return (TDiagnostic)value;
 		}
 
-		partial void InitExtensions();
-
-		public void Init(IKernelInternal kernel)
-		{
-			this.kernel = kernel;
-			InitExtensions();
-		}
-
-		public void Terminate()
+		public override void Terminate()
 		{
 			diagnostics.Values.OfType<IDisposable>().ForEach(e => e.Dispose());
 		}

@@ -16,9 +16,7 @@ namespace Castle.Windsor.Diagnostics.Extensions
 {
 #if !SILVERLIGHT
 	using System.Collections.Generic;
-	using System.Diagnostics;
 	using System.Linq;
-	using System.Threading;
 
 	using Castle.MicroKernel;
 	using Castle.Windsor.Diagnostics.DebuggerViews;
@@ -27,14 +25,7 @@ namespace Castle.Windsor.Diagnostics.Extensions
 	public class ReleasePolicyTrackedObjects : AbstractContainerDebuggerExtension
 	{
 		private const string name = "Objects tracked by release policy";
-		private static int instanceId;
-		private readonly IPerformanceMetricsFactory perfMetricsFactory;
 		private TrackedComponentsDiagnostic diagnostic;
-
-		public ReleasePolicyTrackedObjects(IPerformanceMetricsFactory perfMetricsFactory)
-		{
-			this.perfMetricsFactory = perfMetricsFactory;
-		}
 
 		public override IEnumerable<DebuggerViewItem> Attach()
 		{
@@ -53,10 +44,7 @@ namespace Castle.Windsor.Diagnostics.Extensions
 
 		public override void Init(IKernel kernel, IDiagnosticsHost diagnosticsHost)
 		{
-			var process = Process.GetCurrentProcess();
-			var name = string.Format("Instance {0} | process {1} (id:{2})", Interlocked.Increment(ref instanceId),
-			                         process.ProcessName, process.Id);
-			diagnostic = new TrackedComponentsDiagnostic(perfMetricsFactory.CreateInstancesTrackedByReleasePolicyCounter(name));
+			diagnostic = new TrackedComponentsDiagnostic();
 			diagnosticsHost.AddDiagnostic<ITrackedComponentsDiagnostic>(diagnostic);
 		}
 

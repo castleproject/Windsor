@@ -16,7 +16,9 @@ namespace Castle.MicroKernel.Releasers
 {
 	using System;
 	using System.Collections.Generic;
+	using System.Diagnostics;
 	using System.Linq;
+	using System.Threading;
 
 	using Castle.Core;
 	using Castle.Core.Internal;
@@ -28,23 +30,31 @@ namespace Castle.MicroKernel.Releasers
 	[Serializable]
 	public class LifecycledComponentsReleasePolicy : IReleasePolicy
 	{
+#if !SILVERLIGHT
+		private static int instanceId;
+#endif
+
 		private readonly Dictionary<object, Burden> instance2Burden =
 			new Dictionary<object, Burden>(ReferenceEqualityComparer<object>.Instance);
 
 		private readonly Lock @lock = Lock.Create();
+		private readonly ITrackedComponentsPerformanceCounter perfCounter;
 		private ITrackedComponentsDiagnostic trackedComponentsDiagnostic;
 
-		public LifecycledComponentsReleasePolicy() : this((ITrackedComponentsDiagnostic)null)
+		public LifecycledComponentsReleasePolicy() : this(null, null)
 		{
 		}
 
-		public LifecycledComponentsReleasePolicy(IKernel kernel) : this(GetTrackedComponentsDiagnostic(kernel))
+		public LifecycledComponentsReleasePolicy(IKernel kernel)
+			: this(GetTrackedComponentsDiagnostic(kernel), null)
 		{
 		}
 
-		public LifecycledComponentsReleasePolicy(ITrackedComponentsDiagnostic trackedComponentsDiagnostic)
+		public LifecycledComponentsReleasePolicy(ITrackedComponentsDiagnostic trackedComponentsDiagnostic,
+		                                         ITrackedComponentsPerformanceCounter trackedComponentsPerformanceCounter)
 		{
 			this.trackedComponentsDiagnostic = trackedComponentsDiagnostic;
+			perfCounter = trackedComponentsPerformanceCounter ?? NullPerformanceCounter.Instance;
 
 			if (trackedComponentsDiagnostic != null)
 			{
@@ -52,7 +62,7 @@ namespace Castle.MicroKernel.Releasers
 			}
 		}
 
-		private LifecycledComponentsReleasePolicy(LifecycledComponentsReleasePolicy parent) : this(parent.trackedComponentsDiagnostic)
+		private LifecycledComponentsReleasePolicy(LifecycledComponentsReleasePolicy parent) : this(parent.trackedComponentsDiagnostic, parent.perfCounter)
 		{
 		}
 
@@ -146,10 +156,7 @@ namespace Castle.MicroKernel.Releasers
 				instance2Burden.Add(instance, burden);
 				burden.Released += OnInstanceReleased;
 			}
-
-#if !SILVERLIGHT
-			trackedComponentsDiagnostic.IncrementTrackedInstancesCount();
-#endif
+			perfCounter.IncrementTrackedInstancesCount();
 		}
 
 		private void OnInstanceReleased(Burden burden)
@@ -162,9 +169,7 @@ namespace Castle.MicroKernel.Releasers
 				}
 				burden.Released -= OnInstanceReleased;
 			}
-#if !SILVERLIGHT
-			trackedComponentsDiagnostic.DecrementTrackedInstancesCount();
-#endif
+			perfCounter.DecrementTrackedInstancesCount();
 		}
 
 		private void trackedComponentsDiagnostic_TrackedInstancesRequested(object sender, TrackedInstancesEventArgs e)
@@ -172,10 +177,22 @@ namespace Castle.MicroKernel.Releasers
 			e.AddRange(TrackedObjects);
 		}
 
-		private static ITrackedComponentsDiagnostic GetTrackedComponentsDiagnostic(IKernel kernel)
+		public static ITrackedComponentsDiagnostic GetTrackedComponentsDiagnostic(IKernel kernel)
 		{
 			var diagnosticsHost = (IDiagnosticsHost)kernel.GetSubSystem(SubSystemConstants.DiagnosticsKey);
 			return diagnosticsHost.GetDiagnostic<ITrackedComponentsDiagnostic>();
+		}
+
+		public static ITrackedComponentsPerformanceCounter GetTrackedComponentsPerformanceCounter(IPerformanceMetricsFactory perfMetricsFactory)
+		{
+#if !SILVERLIGHT
+			var process = Process.GetCurrentProcess();
+			var name = string.Format("Instance {0} | process {1} (id:{2})", Interlocked.Increment(ref instanceId),
+			                         process.ProcessName, process.Id);
+			return perfMetricsFactory.CreateInstancesTrackedByReleasePolicyCounter(name);
+#else
+			return NullPerformanceCounter.Instance;
+#endif
 		}
 	}
 }

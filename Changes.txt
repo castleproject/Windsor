@@ -2,6 +2,7 @@
 - implemented IOC-312 - Add shortcut methods to API to register types from given namespace
 
 - fixed IOC-311 - OptimizeDependencyResolutionDisposable eats exceptions thrown during installation
+- fixed IOC-310 - Add ability to disable performance counters
 
 3.0.0 beta 1 (2011-08-14)
 ==================
