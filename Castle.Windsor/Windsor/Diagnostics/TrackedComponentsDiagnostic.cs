@@ -20,19 +20,7 @@ namespace Castle.Windsor.Diagnostics
 	using Castle.MicroKernel;
 
 	public class TrackedComponentsDiagnostic : ITrackedComponentsDiagnostic
-#if !SILVERLIGHT
-	                                           , IDisposable
 	{
-		private readonly ITrackedComponentsPerformanceCounter counter;
-
-		public TrackedComponentsDiagnostic(ITrackedComponentsPerformanceCounter counter)
-		{
-			this.counter = counter;
-		}
-#else
-		{
-#endif
-
 		public ILookup<IHandler, object> Inspect()
 		{
 			var @event = TrackedInstancesRequested;
@@ -46,29 +34,6 @@ namespace Castle.Windsor.Diagnostics
 			return args.Items.ToLookup(k => k.Handler, b => b.Instance);
 		}
 
-#if !SILVERLIGHT
-		public void DecrementTrackedInstancesCount()
-		{
-			counter.DecrementTrackedInstancesCount();
-		}
-
-		public void IncrementTrackedInstancesCount()
-		{
-			counter.IncrementTrackedInstancesCount();
-		}
-#endif
-
 		public event EventHandler<TrackedInstancesEventArgs> TrackedInstancesRequested;
-
-#if !SILVERLIGHT
-		public void Dispose()
-		{
-			var disposableCounter = counter as IDisposable;
-			if (disposableCounter != null)
-			{
-				disposableCounter.Dispose();
-			}
-		}
-#endif
 	}
 }

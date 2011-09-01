@@ -20,9 +20,6 @@ namespace Castle.Windsor.Diagnostics
 	using Castle.MicroKernel;
 
 	public interface ITrackedComponentsDiagnostic : IDiagnostic<ILookup<IHandler, object>>
-#if !SILVERLIGHT
-	                                                , ITrackedComponentsPerformanceCounter
-#endif
 	{
 		event EventHandler<TrackedInstancesEventArgs> TrackedInstancesRequested;
 	}
