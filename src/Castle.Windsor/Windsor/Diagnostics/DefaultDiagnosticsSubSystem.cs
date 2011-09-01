@@ -15,36 +15,18 @@
 namespace Castle.Windsor.Diagnostics
 {
 	using System;
-	using System.Collections;
 	using System.Collections.Generic;
 	using System.Linq;
 
 	using Castle.Core.Internal;
 	using Castle.MicroKernel;
-	using Castle.Windsor.Diagnostics.Extensions;
 
-	public class DefaultDiagnosticsSubSystem :
+	public partial class DefaultDiagnosticsSubSystem :
 		ISubSystem, IDiagnosticsHost
-#if !SILVERLIGHT
-		, IContainerDebuggerExtensionHost
-#endif
 	{
 		private readonly IDictionary<Type, IDiagnostic<object>> diagnostics = new Dictionary<Type, IDiagnostic<object>>();
 
-#if !SILVERLIGHT
-		private readonly IList<IContainerDebuggerExtension> extensions = new List<IContainerDebuggerExtension>();
-
-		private readonly IPerformanceMetricsFactory performanceMetricsFactory = new PerformanceMetricsFactory();
-#endif
 		private IKernel kernel;
-
-#if !SILVERLIGHT
-		public void Add(IContainerDebuggerExtension item)
-		{
-			item.Init(kernel, this);
-			extensions.Add(item);
-		}
-#endif
 
 		public void AddDiagnostic<TDiagnostic>(TDiagnostic diagnostic) where TDiagnostic : IDiagnostic<object>
 		{
@@ -58,42 +40,17 @@ namespace Castle.Windsor.Diagnostics
 			return (TDiagnostic)value;
 		}
 
-#if !SILVERLIGHT
-		public IEnumerator<IContainerDebuggerExtension> GetEnumerator()
-		{
-			return extensions.GetEnumerator();
-		}
-#endif
+		partial void InitExtensions();
 
 		public void Init(IKernelInternal kernel)
 		{
 			this.kernel = kernel;
-#if !SILVERLIGHT
-			InitStandardExtensions();
-#endif
+			InitExtensions();
 		}
 
 		public void Terminate()
 		{
 			diagnostics.Values.OfType<IDisposable>().ForEach(e => e.Dispose());
 		}
-
-#if !SILVERLIGHT
-		protected virtual void InitStandardExtensions()
-		{
-			Add(new AllComponents());
-			Add(new AllServices());
-			Add(new PotentiallyMisconfiguredComponents());
-			Add(new PotentialLifestyleMismatches());
-			Add(new UsingContainerAsServiceLocator());
-			Add(new ReleasePolicyTrackedObjects(performanceMetricsFactory));
-			Add(new Facilities());
-		}
-
-		IEnumerator IEnumerable.GetEnumerator()
-		{
-			return GetEnumerator();
-		}
-#endif
 	}
 }
