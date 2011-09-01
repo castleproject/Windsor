@@ -83,7 +83,7 @@ namespace Castle.Facilities.NHibernateIntegration
 	    internal const string ConfigurationBuilderConfigurationKey = "configurationBuilder";
 		private const string SessionFactoryResolverKey = "nhfacility.sessionfactory.resolver";
 		private const string SessionInterceptorKey = "nhibernate.sessionfactory.interceptor";
-		private const string IsWebConfigurationKey = "isWeb";
+		internal const string IsWebConfigurationKey = "isWeb";
 	    internal const string CustomStoreConfigurationKey = "customStore";
 	    internal const string DefaultFlushModeConfigurationKey = "defaultFlushMode";
 		private const string SessionManagerKey = "nhfacility.sessionmanager";
@@ -503,6 +503,8 @@ namespace Castle.Facilities.NHibernateIntegration
             }
 
             FlushMode = facilityConfig.Attributes[NHibernateFacility.DefaultFlushModeConfigurationKey];
+
+            bool.TryParse(facilityConfig.Attributes[NHibernateFacility.IsWebConfigurationKey], out isWeb);
         }
 
         private bool ConfigurationIsValid()
