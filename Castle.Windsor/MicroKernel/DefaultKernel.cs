@@ -73,16 +73,6 @@ namespace Castle.MicroKernel
 		private readonly List<IFacility> facilities = new List<IFacility>();
 
 		/// <summary>
-		///   The implementation of <see cref = "IHandlerFactory" />
-		/// </summary>
-		private readonly IHandlerFactory handlerFactory;
-
-		/// <summary>
-		///   The dependency resolver.
-		/// </summary>
-		private readonly IDependencyResolver resolver;
-
-		/// <summary>
 		///   Map of subsystems registered.
 		/// </summary>
 		private readonly Dictionary<string, ISubSystem> subsystems = new Dictionary<string, ISubSystem>(StringComparer.OrdinalIgnoreCase);
@@ -112,11 +102,11 @@ namespace Castle.MicroKernel
 		{
 			RegisterSubSystems();
 			ReleasePolicy = new LifecycledComponentsReleasePolicy(this);
-			handlerFactory = new DefaultHandlerFactory(this);
+			HandlerFactory = new DefaultHandlerFactory(this);
 			ComponentModelBuilder = new DefaultComponentModelBuilder(this);
 			ProxyFactory = proxyFactory;
-			this.resolver = resolver;
-			resolver.Initialize(this, RaiseDependencyResolving);
+			Resolver = resolver;
+			Resolver.Initialize(this, RaiseDependencyResolving);
 		}
 
 		/// <summary>
@@ -171,10 +161,7 @@ namespace Castle.MicroKernel
 			}
 		}
 
-		public IHandlerFactory HandlerFactory
-		{
-			get { return handlerFactory; }
-		}
+		public IHandlerFactory HandlerFactory { get; private set; }
 
 		public virtual IKernel Parent
 		{
@@ -211,10 +198,7 @@ namespace Castle.MicroKernel
 
 		public IReleasePolicy ReleasePolicy { get; set; }
 
-		public IDependencyResolver Resolver
-		{
-			get { return resolver; }
-		}
+		public IDependencyResolver Resolver { get; private set; }
 
 		protected IConversionManager ConversionSubSystem
 		{
@@ -753,6 +737,7 @@ namespace Castle.MicroKernel
 
 			AddSubSystem(SubSystemConstants.ResourceKey,
 			             new DefaultResourceSubSystem());
+
 			AddSubSystem(SubSystemConstants.DiagnosticsKey,
 			             new DefaultDiagnosticsSubSystem());
 		}
