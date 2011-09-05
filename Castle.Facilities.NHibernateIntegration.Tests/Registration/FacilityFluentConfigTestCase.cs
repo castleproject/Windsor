@@ -47,7 +47,7 @@ namespace Castle.Facilities.NHibernateIntegration.Tests.Registration
 
             var sessionStore = container.Resolve<ISessionStore>();
 
-            Assert.IsInstanceOf(typeof(WebSessionStore), sessionStore);
+            Assert.IsInstanceOf(typeof(CallContextSessionStore), sessionStore);
         }
 
         [Test, ExpectedException(typeof(FacilityException))]
