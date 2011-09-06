@@ -25,17 +25,13 @@ namespace Castle.Windsor.Diagnostics
 	{
 		private const string CastleWindsorCategoryName = "Castle Windsor";
 		private const string InstanesTrackedByTheReleasePolicyCounterName = "Instances tracked by the release policy";
-		private Exception exception;
 
 		public PerformanceMetricsFactory()
 		{
 			Initialize();
 		}
 
-		public bool InitializedSuccessfully
-		{
-			get { return exception == null; }
-		}
+		public bool InitializedSuccessfully { get; private set; }
 
 		public ITrackedComponentsPerformanceCounter CreateInstancesTrackedByReleasePolicyCounter(string name)
 		{
@@ -73,7 +69,7 @@ namespace Castle.Windsor.Diagnostics
 			return null;
 		}
 
-		private void CreateWindsorCategoryAndCounters()
+		private static void CreateWindsorCategoryAndCounters()
 		{
 			PerformanceCounterCategory.Create(CastleWindsorCategoryName,
 			                                  "Performance counters published by the Castle Windsor container",
@@ -97,25 +93,25 @@ namespace Castle.Windsor.Diagnostics
 				if (PerformanceCounterCategory.Exists(CastleWindsorCategoryName))
 				{
 					var categories = PerformanceCounterCategory.GetCategories();
-					categories.Single(c => c.CategoryName == CastleWindsorCategoryName);
+					InitializedSuccessfully = categories.SingleOrDefault(c => c.CategoryName == CastleWindsorCategoryName) != null;
 				}
 				else
 				{
 					CreateWindsorCategoryAndCounters();
 				}
 			}
-			catch (Win32Exception e)
+			catch (Win32Exception)
 			{
-				exception = e;
+				InitializedSuccessfully = false;
 			}
-			catch (UnauthorizedAccessException e)
+			catch (UnauthorizedAccessException)
 			{
-				exception = e;
+				InitializedSuccessfully = false;
 			}
 				// it's not in the documentation but PerformanceCounterCategory.Create can also throw SecurityException,
-			catch (SecurityException e)
+			catch (SecurityException)
 			{
-				exception = e;
+				InitializedSuccessfully = false;
 			}
 		}
 	}
