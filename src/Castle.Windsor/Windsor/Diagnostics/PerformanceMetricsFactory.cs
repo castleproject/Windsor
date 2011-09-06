@@ -60,7 +60,7 @@ namespace Castle.Windsor.Diagnostics
 				                              name,
 				                              readOnly: false) { RawValue = 0L };
 			}
-				// exception types we should expect according to http://msdn.microsoft.com/en-us/library/356cx381.aspx
+			// exception types we should expect according to http://msdn.microsoft.com/en-us/library/356cx381.aspx
 			catch (Win32Exception)
 			{
 			}
@@ -112,9 +112,16 @@ namespace Castle.Windsor.Diagnostics
 			{
 				exception = e;
 			}
-				// it's not in the documentation but PerformanceCounterCategory.Create can also throw SecurityException,
 			catch (SecurityException e)
 			{
+				// it's not in the documentation but PerformanceCounterCategory.Create can also throw SecurityException,
+				exception = e;
+			}
+			catch (InvalidOperationException e)
+			{
+				// it's not in the documentation but PerformanceCounterCategory.Exists can also throw InvalidOperationException
+				// according to this StackOverflow question when PerformanceCounters file is corrupted
+				// http://stackoverflow.com/questions/1540777/performancecounters-on-net-4-0-windows-7
 				exception = e;
 			}
 		}
