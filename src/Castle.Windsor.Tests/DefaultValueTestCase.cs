@@ -1,4 +1,4 @@
-// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,48 +15,38 @@
 namespace CastleTests
 {
 	using Castle.MicroKernel.Registration;
-	using Castle.Windsor;
 
 	using CastleTests.Components;
 
 	using NUnit.Framework;
 
 	[TestFixture]
-	public class DefaultValueTestCase
+	public class DefaultValueTestCase : AbstractContainerTestCase
 	{
-		[SetUp]
-		public void Init()
-		{
-			container = new WindsorContainer();
-		}
-
-		private WindsorContainer container;
-
 		[Test]
 		public void Can_resolve_component_with_default_ctor_value()
 		{
-			container.Register(Component.For<CtorWithDefaultValue>());
+			Container.Register(Component.For<CtorWithDefaultValue>());
 
-			container.Resolve<CtorWithDefaultValue>();
+			Container.Resolve<CtorWithDefaultValue>();
 		}
 
 		[Test]
 		public void Can_resolve_component_with_default_ctor_value_null_for_service_dependency()
 		{
-			container.Register(Component.For<HasNullDefaultForServiceDependency>());
+			Container.Register(Component.For<HasNullDefaultForServiceDependency>());
 
-			var service = container.Resolve<HasNullDefaultForServiceDependency>();
+			var service = Container.Resolve<HasNullDefaultForServiceDependency>();
 
 			Assert.IsNull(service.Dependency);
 		}
 
-
 		[Test]
 		public void Null_is_a_valid_default_value()
 		{
-			container.Register(Component.For<CtorWithNullDefaultValueAndDefault>());
+			Container.Register(Component.For<CtorWithNullDefaultValueAndDefault>());
 
-			var value = container.Resolve<CtorWithNullDefaultValueAndDefault>();
+			var value = Container.Resolve<CtorWithNullDefaultValueAndDefault>();
 
 			Assert.IsNull(value.Name);
 		}
@@ -64,9 +54,9 @@ namespace CastleTests
 		[Test]
 		public void Uses_ctor_with_defaults_when_greediest()
 		{
-			container.Register(Component.For<CtorWithDefaultValueAndDefault>());
+			Container.Register(Component.For<CtorWithDefaultValueAndDefault>());
 
-			var value = container.Resolve<CtorWithDefaultValueAndDefault>();
+			var value = Container.Resolve<CtorWithDefaultValueAndDefault>();
 
 			Assert.IsNotNullOrEmpty(value.Name);
 		}
@@ -74,9 +64,9 @@ namespace CastleTests
 		[Test]
 		public void Uses_ctor_with_explicit_dependency_when_equally_greedy_as_default_1()
 		{
-			container.Register(Component.For<TwoCtorsWithDefaultValue>().DependsOn(Property.ForKey("name").Eq("Adam Mickiewicz")));
+			Container.Register(Component.For<TwoCtorsWithDefaultValue>().DependsOn(Property.ForKey("name").Eq("Adam Mickiewicz")));
 
-			var value = container.Resolve<TwoCtorsWithDefaultValue>();
+			var value = Container.Resolve<TwoCtorsWithDefaultValue>();
 
 			Assert.AreEqual("Adam Mickiewicz", value.Name);
 		}
@@ -84,9 +74,9 @@ namespace CastleTests
 		[Test]
 		public void Uses_ctor_with_explicit_dependency_when_equally_greedy_as_default_2()
 		{
-			container.Register(Component.For<TwoCtorsWithDefaultValue>().DependsOn(Property.ForKey("age").Eq(123)));
+			Container.Register(Component.For<TwoCtorsWithDefaultValue>().DependsOn(Property.ForKey("age").Eq(123)));
 
-			var value = container.Resolve<TwoCtorsWithDefaultValue>();
+			var value = Container.Resolve<TwoCtorsWithDefaultValue>();
 
 			Assert.AreEqual(123, value.Age);
 		}
@@ -94,9 +84,9 @@ namespace CastleTests
 		[Test]
 		public void Uses_explicit_value_over_default()
 		{
-			container.Register(Component.For<CtorWithDefaultValue>().DependsOn(Property.ForKey("name").Eq("Adam Mickiewicz")));
+			Container.Register(Component.For<CtorWithDefaultValue>().DependsOn(Property.ForKey("name").Eq("Adam Mickiewicz")));
 
-			var value = container.Resolve<CtorWithDefaultValue>();
+			var value = Container.Resolve<CtorWithDefaultValue>();
 
 			Assert.AreEqual("Adam Mickiewicz", value.Name);
 		}
