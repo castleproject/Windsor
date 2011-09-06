@@ -120,7 +120,17 @@ namespace Castle.MicroKernel.Handlers
 			// so the generic version wouldn't be considered as well
 			using (context.EnterResolutionContext(this, false, false))
 			{
-				return handler.Resolve(context);
+				try
+				{
+					return handler.Resolve(context);
+				}
+				catch (GenericHandlerTypeMismatchException e)
+				{
+					throw new HandlerException(
+						string.Format(
+							"Generic component {0} has some generic dependencies which were not successfully closed. This often happens when generic implementation has some additional generic constraints. See inner exception for more details.",
+							ComponentModel.Name), ComponentModel.ComponentName, e);
+				}
 			}
 		}
 
