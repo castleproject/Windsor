@@ -14,9 +14,8 @@
 
 namespace CastleTests
 {
+	using Castle.MicroKernel.Handlers;
 	using Castle.MicroKernel.Registration;
-	using Castle.Windsor.Tests;
-	using Castle.Windsor.Tests.Components;
 
 	using CastleTests.Components;
 
@@ -44,6 +43,23 @@ namespace CastleTests
 			var repositories = Container.ResolveAll<IRepository<EmptyServiceA>>();
 
 			Assert.AreEqual(2, repositories.Length);
+		}
+
+		[Test]
+		public void Exception_on_generic_constraint_violation_of_dependency_is_propagated_not_ignored()
+		{
+			Container.Register(
+				Component.For(typeof(ICache<>)).ImplementedBy(typeof(CacheWithClassConstraint<>)),
+				Component.For(typeof(IRepository<>)).ImplementedBy(typeof(CachingRepository<>)));
+
+			var exception = Assert.Throws<HandlerException>(() => Container.ResolveAll<IRepository<int>>());
+
+			var expectedMessage =
+				string.Format(
+					"Generic component {0} has some generic dependencies which were not successfully closed. This often happens when generic implementation has some additional generic constraints. See inner exception for more details.",
+					typeof(CachingRepository<>).FullName);
+
+			Assert.AreEqual(expectedMessage, exception.Message);
 		}
 
 		[Test(Description = "Should we drop this? Does feel fragile and ground for abuse")]

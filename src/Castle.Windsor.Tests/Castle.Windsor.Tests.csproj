@@ -305,6 +305,8 @@
     <Compile Include="Components\AppScreenCBA.cs" />
     <Compile Include="Components\BDisposable.cs" />
     <Compile Include="Components\BoundComponent.cs" />
+    <Compile Include="Components\CacheWithClassConstraint.cs" />
+    <Compile Include="Components\CachingRepository.cs" />
     <Compile Include="Components\CBA.cs" />
     <Compile Include="ClassComponents\CustomerRepository.cs" />
     <Compile Include="ClassComponents\DecoratedRepository.cs" />
