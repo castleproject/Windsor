@@ -192,5 +192,32 @@ namespace CastleTests.Lifestyle
 				Assert.IsFalse(Kernel.ReleasePolicy.HasTrack(udf));
 			}
 		}
+
+		[Test]
+		public void Requiring_scope_without_parent_scope_begins_new_scope()
+		{
+			Container.Register(Component.For<A>().LifeStyle.Scoped());
+			using (var scope = Container.RequireScope())
+			{
+				Container.Resolve<A>();
+				Assert.IsNotNull(scope);
+			}
+		}
+
+		[Test]
+		public void Requiring_scope_within_parent_scope_uses_parent_scope()
+		{
+			Container.Register(Component.For<A>().LifeStyle.Scoped());
+			using (Container.BeginScope())
+			{
+				var a = Container.Resolve<A>();
+				using (var scope = Container.RequireScope())
+				{
+					var aa = Container.Resolve<A>();
+					Assert.AreSame(a, aa);
+					Assert.IsNull(scope);
+				}
+			}
+		}
 	}
 }
