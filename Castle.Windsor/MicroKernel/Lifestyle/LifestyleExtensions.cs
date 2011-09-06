@@ -33,9 +33,29 @@ namespace Castle.MicroKernel.Lifestyle
 			return new Scope(kernel);
 		}
 
+		public static IDisposable RequireScope(this IKernel kernel)
+		{
+			var current = Scope.ObtainCurrentScope();
+			if (current == null)
+			{
+				return kernel.BeginScope();
+			}
+			return null;
+		}
+
 		public static IDisposable BeginScope(this IWindsorContainer container)
 		{
 			return new Scope(container);
+		}
+
+		public static IDisposable RequireScope(this IWindsorContainer container)
+		{
+			var current = Scope.ObtainCurrentScope();
+			if (current == null)
+			{
+				return container.BeginScope();
+			}
+			return null;
 		}
 	}
 }

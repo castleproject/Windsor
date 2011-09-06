@@ -21,6 +21,11 @@ namespace Castle.MicroKernel.Lifestyle
 	{
 		private readonly IScopeAccessor accessor;
 
+		public ScopedLifestyleManager()
+			: this(new LifetimeScopeAccessor())
+		{
+		}
+
 		public ScopedLifestyleManager(IScopeAccessor accessor)
 		{
 			this.accessor = accessor;
