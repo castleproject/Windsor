@@ -12,11 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.MicroKernel.Tests.ClassComponents
+namespace CastleTests.ClassComponents
 {
 	using System;
 
 	using Castle.Core;
+	using Castle.MicroKernel;
 
 	[Singleton]
 	public class ComponentFactory
