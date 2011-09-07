@@ -84,39 +84,31 @@ namespace Castle.MicroKernel.Resolvers
 		public bool CanResolve(CreationContext context, ISubDependencyResolver contextHandlerResolver, ComponentModel model, DependencyModel dependency)
 		{
 			// 1 - check for the dependency on CreationContext, if present
-
-			if (context != null && context.CanResolve(context, contextHandlerResolver, model, dependency))
+			if (CanResolveFromContext(context, contextHandlerResolver, model, dependency))
 			{
 				return true;
 			}
 
 			// 2 - check with the model's handler, if not the same as the parent resolver
-
-			var handler = kernel.GetHandler(model.Name);
-			if (handler != null && handler != contextHandlerResolver && handler.CanResolve(context, contextHandlerResolver, model, dependency))
+			if (CanResolveFromHandler(context, contextHandlerResolver, model, dependency))
 			{
 				return true;
 			}
 
 			// 3 - check within parent resolver, if present
-
-			if (contextHandlerResolver != null && contextHandlerResolver.CanResolve(context, contextHandlerResolver, model, dependency))
+			if (CanResolveFromContextHandlerResolver(context, contextHandlerResolver, model, dependency))
 			{
 				return true;
 			}
 
 			// 4 - check within subresolvers
-
-			if (subResolvers.Count > 0)
+			if (CanResolveFromSubResolvers(context, contextHandlerResolver, model, dependency))
 			{
-				if (subResolvers.Any(s => s.CanResolve(context, contextHandlerResolver, model, dependency)))
-				{
-					return true;
-				}
+				return true;
 			}
 
 			// 5 - normal flow, checking against the kernel
-			return CanResolveCore(context, model, dependency);
+			return CanResolveFromKernel(context, model, dependency);
 		}
 
 		/// <summary>
@@ -164,35 +156,30 @@ namespace Castle.MicroKernel.Resolvers
 				}
 				else if (dependency.IsOptional == false)
 				{
-					var implementation = String.Empty;
-					if (model.Implementation != null)
-					{
-						implementation = model.Implementation.FullName;
-					}
-
 					var message = String.Format(
 						"Could not resolve non-optional dependency for '{0}' ({1}). Parameter '{2}' type '{3}'",
-						model.Name, implementation, dependency.DependencyKey, dependency.TargetType.FullName);
+						model.Name,
+						model.Implementation != null ? model.Implementation.FullName : "-unknown-",
+						dependency.DependencyKey,
+						dependency.TargetType.FullName);
 
 					throw new DependencyResolverException(message);
 				}
 			}
 
-			RaiseDependencyResolving(model, dependency, value);
-
+			dependencyResolvingDelegate(model, dependency, value);
 			return value;
 		}
 
-		protected virtual bool CanResolveCore(CreationContext context, ComponentModel model, DependencyModel dependency)
+		protected virtual bool CanResolveFromKernel(CreationContext context, ComponentModel model, DependencyModel dependency)
 		{
-			var parameter = dependency.Parameter;
-			if (parameter != null)
+			if (dependency.ReferencedComponentName != null)
 			{
-				if (dependency.Reference != null)
-				{
-					// User wants to override
-					return HasComponentInValidState(dependency.Reference, dependency, context);
-				}
+				// User wants to override
+				return HasComponentInValidState(dependency.ReferencedComponentName, dependency, context);
+			}
+			if (dependency.Parameter != null)
+			{
 				return true;
 			}
 			if (typeof(IKernel).IsAssignableFrom(dependency.TargetItemType))
@@ -222,46 +209,41 @@ namespace Castle.MicroKernel.Resolvers
 			return new CreationContext(parameterType, current, false);
 		}
 
-		protected virtual object ResolveCore(CreationContext context, ComponentModel model, DependencyModel dependency)
+		protected virtual object ResolveFromKernel(CreationContext context, ComponentModel model, DependencyModel dependency)
 		{
-			var parameter = dependency.Parameter;
-			if (parameter != null)
+			IHandler handler = null;
+			if (dependency.ReferencedComponentName != null)
 			{
-				if (dependency.Reference == null)
+				handler = kernel.LoadHandlerByName(dependency.ReferencedComponentName, dependency.TargetItemType, context.AdditionalArguments);
+			}
+			else if (dependency.Parameter != null)
+			{
+				converter.Context.Push(model, context);
+				try
 				{
-					converter.Context.Push(model, context);
-
-					try
+					if (dependency.Parameter.Value != null || dependency.Parameter.ConfigValue == null)
 					{
-						if (parameter.Value != null || parameter.ConfigValue == null)
-						{
-							return converter.PerformConversion(parameter.Value, dependency.TargetItemType);
-						}
-						else
-						{
-							return converter.PerformConversion(parameter.ConfigValue, dependency.TargetItemType);
-						}
+						return converter.PerformConversion(dependency.Parameter.Value, dependency.TargetItemType);
 					}
-					catch (ConverterException e)
+					else
 					{
-						throw new DependencyResolverException(
-							string.Format("Could not convert parameter '{0}' to type '{1}'.", parameter.Name, dependency.TargetItemType.Name), e);
+						return converter.PerformConversion(dependency.Parameter.ConfigValue, dependency.TargetItemType);
 					}
-					finally
-					{
-						converter.Context.Pop();
-					}
+				}
+				catch (ConverterException e)
+				{
+					throw new DependencyResolverException(
+						string.Format("Could not convert parameter '{0}' to type '{1}'.", dependency.Parameter.Name, dependency.TargetItemType.Name), e);
+				}
+				finally
+				{
+					converter.Context.Pop();
 				}
 			}
 
 			if (typeof(IKernel).IsAssignableFrom(dependency.TargetItemType))
 			{
 				return kernel;
-			}
-			IHandler handler;
-			if (dependency.Reference != null)
-			{
-				handler = kernel.LoadHandlerByName(dependency.Reference, dependency.TargetItemType, context.AdditionalArguments);
 			}
 			else
 			{
@@ -308,6 +290,32 @@ namespace Castle.MicroKernel.Resolvers
 			return handler.Resolve(context);
 		}
 
+		private bool CanResolveFromContext(CreationContext context, ISubDependencyResolver contextHandlerResolver, ComponentModel model,
+		                                   DependencyModel dependency)
+		{
+			return context != null && context.CanResolve(context, contextHandlerResolver, model, dependency);
+		}
+
+		private bool CanResolveFromContextHandlerResolver(CreationContext context, ISubDependencyResolver contextHandlerResolver,
+		                                                  ComponentModel model, DependencyModel dependency)
+		{
+			return contextHandlerResolver != null && contextHandlerResolver.CanResolve(context, contextHandlerResolver, model, dependency);
+		}
+
+		private bool CanResolveFromHandler(CreationContext context, ISubDependencyResolver contextHandlerResolver, ComponentModel model,
+		                                   DependencyModel dependency)
+		{
+			var handler = kernel.GetHandler(model.Name);
+			var b = handler != null && handler != contextHandlerResolver && handler.CanResolve(context, contextHandlerResolver, model, dependency);
+			return b;
+		}
+
+		private bool CanResolveFromSubResolvers(CreationContext context, ISubDependencyResolver contextHandlerResolver, ComponentModel model,
+		                                        DependencyModel dependency)
+		{
+			return subResolvers.Count > 0 && subResolvers.Any(s => s.CanResolve(context, contextHandlerResolver, model, dependency));
+		}
+
 		private bool HasAnyComponentInValidState(Type service, DependencyModel dependency, CreationContext context)
 		{
 			IHandler firstHandler;
@@ -350,15 +358,10 @@ namespace Castle.MicroKernel.Resolvers
 			return IsHandlerInValidState(handler) && handler.IsBeingResolvedInContext(context) == false;
 		}
 
-		private void RaiseDependencyResolving(ComponentModel model, DependencyModel dependency, object value)
-		{
-			dependencyResolvingDelegate(model, dependency, value);
-		}
-
 		private object ResolveCore(CreationContext context, ISubDependencyResolver contextHandlerResolver, ComponentModel model, DependencyModel dependency)
 		{
 			// 1 - check for the dependency on CreationContext, if present
-			if (context != null && context.CanResolve(context, contextHandlerResolver, model, dependency))
+			if (CanResolveFromContext(context, contextHandlerResolver, model, dependency))
 			{
 				return context.Resolve(context, contextHandlerResolver, model, dependency);
 			}
@@ -371,7 +374,7 @@ namespace Castle.MicroKernel.Resolvers
 			}
 
 			// 3 - check within parent resolver, if present
-			if (contextHandlerResolver != null && contextHandlerResolver.CanResolve(context, contextHandlerResolver, model, dependency))
+			if (CanResolveFromContextHandlerResolver(context, contextHandlerResolver, model, dependency))
 			{
 				return contextHandlerResolver.Resolve(context, contextHandlerResolver, model, dependency);
 			}
@@ -390,7 +393,7 @@ namespace Castle.MicroKernel.Resolvers
 			}
 
 			// 5 - normal flow, checking against the kernel
-			return ResolveCore(context, model, dependency);
+			return ResolveFromKernel(context, model, dependency);
 		}
 
 		private IHandler TryGetHandlerFromKernel(DependencyModel dependency, CreationContext context)
