@@ -101,7 +101,7 @@ namespace Castle.Core
 			}
 		}
 
-		public string Reference
+		public string ReferencedComponentName
 		{
 			get
 			{

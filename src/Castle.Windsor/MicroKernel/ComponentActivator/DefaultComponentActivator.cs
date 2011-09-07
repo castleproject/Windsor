@@ -213,7 +213,7 @@ namespace Castle.MicroKernel.ComponentActivator
 				{
 					continue;
 				}
-				if (winnerCandidate == null || winnerPoints < candidatePoints)
+				if (BestScoreSoFar(candidatePoints, winnerPoints, winnerCandidate))
 				{
 					if (BestPossibleScore(candidate, candidatePoints))
 					{
@@ -233,7 +233,12 @@ namespace Castle.MicroKernel.ComponentActivator
 			return winnerCandidate;
 		}
 
-		private bool BestPossibleScore(ConstructorCandidate candidate, int candidatePoints)
+		private static bool BestScoreSoFar(int candidatePoints, int winnerPoints, ConstructorCandidate winnerCandidate)
+		{
+			return winnerCandidate == null || winnerPoints < candidatePoints;
+		}
+
+		private static bool BestPossibleScore(ConstructorCandidate candidate, int candidatePoints)
 		{
 			return candidatePoints == candidate.Dependencies.Length*100;
 		}
@@ -260,9 +265,9 @@ namespace Castle.MicroKernel.ComponentActivator
 			return true;
 		}
 
-		protected virtual bool CanSatisfyDependency(CreationContext context, DependencyModel dep)
+		protected virtual bool CanSatisfyDependency(CreationContext context, DependencyModel dependency)
 		{
-			return Kernel.Resolver.CanResolve(context, context.Handler, Model, dep);
+			return Kernel.Resolver.CanResolve(context, context.Handler, Model, dependency);
 		}
 
 		protected virtual object[] CreateConstructorArguments(ConstructorCandidate constructor, CreationContext context)

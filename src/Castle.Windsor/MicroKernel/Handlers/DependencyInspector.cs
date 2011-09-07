@@ -51,12 +51,12 @@ namespace Castle.MicroKernel.Handlers
 			message.AppendLine();
 			foreach (var dependency in missingDependencies)
 			{
-				if (dependency.Reference != null)
+				if (dependency.ReferencedComponentName != null)
 				{
 					// NOTE: that's a workaround for us having dependency twice potentially, once from configuration and once from actual type scan
-					if (uniqueOverrides.Add(dependency.Reference))
+					if (uniqueOverrides.Add(dependency.ReferencedComponentName))
 					{
-						InspectServiceOverrideDependency(dependency.Reference, dependency.GetHandler(kernel));
+						InspectServiceOverrideDependency(dependency.ReferencedComponentName, dependency.GetHandler(kernel));
 					}
 				}
 				else if (dependency.IsValueType || dependency.TargetItemType == typeof(string) || dependency.TargetItemType == null)
