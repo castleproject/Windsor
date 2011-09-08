@@ -42,7 +42,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 			{
 				var value = mixin.Value;
 
-				var mixinComponent = ReferenceExpressionUtil.ExtractComponentKey(value);
+				var mixinComponent = ReferenceExpressionUtil.ExtractComponentName(value);
 				if (mixinComponent == null)
 				{
 					throw new Exception(

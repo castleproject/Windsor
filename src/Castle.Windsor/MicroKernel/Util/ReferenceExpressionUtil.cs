@@ -16,9 +16,6 @@ namespace Castle.MicroKernel.Util
 {
 	using System;
 
-	/// <summary>
-	///   Summary description for ReferenceExpressionUtil.
-	/// </summary>
 	public abstract class ReferenceExpressionUtil
 	{
 		public static string BuildReference(string value)
@@ -30,7 +27,7 @@ namespace Castle.MicroKernel.Util
 			return String.Format("${{{0}}}", value);
 		}
 
-		public static String ExtractComponentKey(String value)
+		public static String ExtractComponentName(String value)
 		{
 			if (IsReference(value))
 			{

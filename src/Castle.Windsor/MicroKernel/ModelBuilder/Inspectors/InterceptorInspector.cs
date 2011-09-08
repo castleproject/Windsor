@@ -77,7 +77,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 				return;
 			}
 
-			var hookComponent = ReferenceExpressionUtil.ExtractComponentKey(hook);
+			var hookComponent = ReferenceExpressionUtil.ExtractComponentName(hook);
 			if (hookComponent == null)
 			{
 				throw new Exception(
@@ -95,7 +95,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 				return;
 			}
 
-			var selectorComponent = ReferenceExpressionUtil.ExtractComponentKey(selector);
+			var selectorComponent = ReferenceExpressionUtil.ExtractComponentName(selector);
 			if (selectorComponent == null)
 			{
 				throw new Exception(
@@ -109,7 +109,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 		{
 			foreach (var interceptor in interceptors.Children)
 			{
-				var interceptorComponent = ReferenceExpressionUtil.ExtractComponentKey(interceptor.Value);
+				var interceptorComponent = ReferenceExpressionUtil.ExtractComponentName(interceptor.Value);
 				if (interceptorComponent == null)
 				{
 					throw new Exception(
