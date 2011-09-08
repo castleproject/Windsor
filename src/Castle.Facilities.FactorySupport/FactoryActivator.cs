@@ -116,7 +116,7 @@ namespace Castle.Facilities.FactorySupport
 						methodArgs.Add(Kernel);
 						continue;
 					}
-					else if (paramType == typeof(CreationContext))
+					if (paramType == typeof(CreationContext))
 					{
 						methodArgs.Add(context);
 						continue;

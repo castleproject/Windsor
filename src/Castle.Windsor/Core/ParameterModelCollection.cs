@@ -84,7 +84,7 @@ namespace Castle.Core
 		///   that can be used to iterate through the collection.
 		/// </returns>
 		[DebuggerStepThrough]
-		public IEnumerator GetEnumerator()
+		IEnumerator IEnumerable.GetEnumerator()
 		{
 			return dictionary.Values.GetEnumerator();
 		}
