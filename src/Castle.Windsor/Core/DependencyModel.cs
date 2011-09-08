@@ -28,11 +28,11 @@ namespace Castle.Core
 	{
 		private readonly Type targetItemType;
 		private readonly Type targetType;
-		private ParameterModel parameter;
-		private string reference;
+		protected ParameterModel parameterModel;
+		protected string reference;
 
 #if DEBUG
-		private bool initialized;
+		protected bool initialized;
 #endif
 
 		/// <summary>
@@ -97,7 +97,7 @@ namespace Castle.Core
 					throw new InvalidOperationException("Not initialized!");
 				}
 #endif
-				return parameter;
+				return parameterModel;
 			}
 		}
 
@@ -188,7 +188,7 @@ namespace Castle.Core
 			}
 		}
 
-		public void Init(ParameterModelCollection parameters)
+		public virtual void Init(ParameterModelCollection parameters)
 		{
 #if DEBUG
 			initialized = true;
@@ -197,10 +197,10 @@ namespace Castle.Core
 			{
 				return;
 			}
-			parameter = ObtainParameterModelByName(parameters) ?? ObtainParameterModelByType(parameters);
-			if (parameter != null)
+			parameterModel = ObtainParameterModelByName(parameters) ?? ObtainParameterModelByType(parameters);
+			if (parameterModel != null)
 			{
-				reference = ReferenceExpressionUtil.ExtractComponentKey(parameter.Value);
+				reference = ReferenceExpressionUtil.ExtractComponentName(parameterModel.Value);
 			}
 		}
 

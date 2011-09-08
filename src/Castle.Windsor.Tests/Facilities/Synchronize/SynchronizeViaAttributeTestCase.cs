@@ -23,7 +23,6 @@ namespace CastleTests.Facilities.Synchronize
 	using Castle.Facilities.Synchronize;
 	using Castle.MicroKernel.Handlers;
 	using Castle.MicroKernel.Registration;
-	using Castle.Windsor.Tests;
 
 	using CastleTests.Facilities.Synchronize.Components;
 
@@ -98,7 +97,7 @@ namespace CastleTests.Facilities.Synchronize
 
 			var message =
 				string.Format(
-					"Can't create component 'CastleTests.Facilities.Synchronize.Components.ClassInContextWithMissingDependency' as it has dependencies to be satisfied.{0}{0}'CastleTests.Facilities.Synchronize.Components.ClassInContextWithMissingDependency' is waiting for the following dependencies:{0}- Parameter 'foo' which was not provided. Did you forget to set the dependency?{0}",
+					"Can't create component 'CastleTests.Facilities.Synchronize.Components.ClassInContextWithMissingDependency' as it has dependencies to be satisfied.{0}{0}'CastleTests.Facilities.Synchronize.Components.ClassInContextWithMissingDependency' is waiting for the following dependencies:{0}- Component 'foo' which was not registered. Did you misspell the name?{0}",
 					Environment.NewLine);
 
 			Assert.AreEqual(message, exception.Message);
@@ -122,7 +121,9 @@ namespace CastleTests.Facilities.Synchronize
 		public void Component_depending_on_unregistered_context_via_type_throws_even_if_another_is_available()
 		{
 			Container.Register(Component.For<ClassInContextWithMissingDependency>(),
-			                   Component.For<SynchronizationContext>().Named("foo").UsingFactoryMethod(k => k.Resolve<WindowsFormsSynchronizationContext>()));
+			                   Component.For<SynchronizationContext>()
+			                   	.Named("foo")
+			                   	.UsingFactoryMethod(k => k.Resolve<WindowsFormsSynchronizationContext>()));
 
 			var instance = Container.Resolve<ClassInContextWithMissingDependency>();
 

@@ -54,10 +54,7 @@ namespace Castle.Facilities.EventWiring
 		{
 			foreach (var subscriber in subscribers)
 			{
-				var name = "event-subscription-" + subscriber;
-				var reference = ReferenceExpressionUtil.BuildReference(subscriber);
-				model.Parameters.Add(name, reference);
-				model.Dependencies.Add(new DependencyModel(name, null, false));
+				model.Dependencies.Add(new ComponentDependencyModel(subscriber));
 			}
 		}
 

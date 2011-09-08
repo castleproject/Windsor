@@ -314,6 +314,7 @@
   <ItemGroup>
     <Compile Include="AutoregisterPerWebRequestLifestyleModule.cs" />
     <Compile Include="Core\BoundToAttribute.cs" />
+    <Compile Include="Core\ComponentDependencyModel.cs" />
     <Compile Include="Core\CustomLifestyleAttribute.cs" />
     <Compile Include="Core\Internal\Constants.cs" />
     <Compile Include="Core\Internal\Must.cs" />
@@ -330,6 +331,7 @@
     <Compile Include="Core\InterceptorAttribute.cs" />
     <Compile Include="Core\Internal\ComponentServicesUtil.cs" />
     <Compile Include="Core\Internal\SimpleThreadSafeDictionary.cs" />
+    <Compile Include="Core\Internal\StringExtensions.cs" />
     <Compile Include="Core\Internal\ThreadSafeFlag.cs" />
     <Compile Include="Core\Internal\IAssemblyProvider.cs" />
     <Compile Include="Core\Internal\LateBoundComponent.cs" />
