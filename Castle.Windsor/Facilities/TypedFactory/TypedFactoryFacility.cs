@@ -106,7 +106,7 @@ namespace Castle.Facilities.TypedFactory
 			}
 			else
 			{
-				var selectorKey = ReferenceExpressionUtil.ExtractComponentKey(selector);
+				var selectorKey = ReferenceExpressionUtil.ExtractComponentName(selector);
 				factory.AsFactory(x => x.SelectedWith(selectorKey));
 			}
 

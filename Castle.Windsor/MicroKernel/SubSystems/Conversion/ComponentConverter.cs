@@ -44,7 +44,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 
 		public override object PerformConversion(String value, Type targetType)
 		{
-			var componentName = ReferenceExpressionUtil.ExtractComponentKey(value);
+			var componentName = ReferenceExpressionUtil.ExtractComponentName(value);
 			if (componentName == null)
 			{
 				throw new ConverterException(string.Format("Could not convert expression '{0}' to type '{1}'. Expecting a reference override like ${{some key}}",
