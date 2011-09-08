@@ -27,11 +27,7 @@ namespace Castle.Facilities.Synchronize
 	/// </summary>
 	public class SynchronizeMetaInfoStore
 	{
-		private static readonly BindingFlags MethodBindingFlags
-			= BindingFlags.Instance
-			  | BindingFlags.Public
-			  | BindingFlags.NonPublic
-			  | BindingFlags.DeclaredOnly;
+		private const BindingFlags MethodBindingFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly;
 
 		private readonly IConversionManager converter;
 
@@ -135,7 +131,7 @@ namespace Castle.Facilities.Synchronize
 
 					if (contextType != null)
 					{
-						var type = (Type)converter.PerformConversion(contextType, typeof(Type));
+						var type = converter.PerformConversion<Type>(contextType);
 						syncAttrib = new SynchronizeAttribute(type);
 					}
 				}
@@ -145,7 +141,7 @@ namespace Castle.Facilities.Synchronize
 				if (useAmbientContext != null)
 				{
 					syncAttrib = syncAttrib ?? new SynchronizeAttribute();
-					syncAttrib.UseAmbientContext = (bool)converter.PerformConversion(useAmbientContext, typeof(bool));
+					syncAttrib.UseAmbientContext = converter.PerformConversion<bool>(useAmbientContext);
 				}
 			}
 

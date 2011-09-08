@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.MicroKernel.Tests.SpecializedResolvers
+namespace CastleTests.SpecializedResolvers
 {
 	using System;
 	using System.Linq;
@@ -20,11 +20,9 @@ namespace Castle.MicroKernel.Tests.SpecializedResolvers
 	using Castle.MicroKernel.Handlers;
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Resolvers.SpecializedResolvers;
-	using Castle.Windsor.Tests;
 
 	using CastleTests;
 	using CastleTests.Components;
-	using CastleTests.SpecializedResolvers;
 
 	using NUnit.Framework;
 

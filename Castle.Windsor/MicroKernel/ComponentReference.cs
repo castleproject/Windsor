@@ -21,7 +21,7 @@ namespace Castle.MicroKernel
 	using Castle.MicroKernel.Util;
 
 	/// <summary>
-	///   Reference to component obtained from a container.
+	///   Reference to component obtained from the container.
 	/// </summary>
 	/// <typeparam name = "T"></typeparam>
 	public class ComponentReference<T> : IReference<T>
