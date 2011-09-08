@@ -1,4 +1,16 @@
 ================================================================================================
+change - Generic overloads of .Insert(this IDictionary dictionary, otherarguments) extension
+	method have been removed.
+
+impact - low
+fixability - easy
+
+description - The overload could cause unexpected behavior when the generic parameter was being
+	inferred, and as such it is removed to make the type always explicit. 
+
+fix - Use overload that specifies type explicitly:
+	d.Insert(typeof(IFoo), new MyFoo()) instead of d.Insert<IFoo>(new MyFoo()) 
+================================================================================================
 change - Method object Generate(IProxyBuilder, ProxyGenerationOptions, IInterceptor[]) on type
 	IProxyFactoryExtension changed signature.
 
