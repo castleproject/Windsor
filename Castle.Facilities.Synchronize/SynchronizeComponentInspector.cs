@@ -126,7 +126,7 @@ namespace Castle.Facilities.Synchronize
 
 				foreach (var reference in metaInfo.GetUniqueSynchContextReferences())
 				{
-					model.Dependencies.Add(new DependencyModel(reference.ComponentKey, reference.ServiceType, false));
+					model.Dependencies.Add(new ComponentDependencyModel(reference.ComponentKey, reference.ServiceType));
 				}
 			}
 		}

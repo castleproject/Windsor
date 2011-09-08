@@ -18,6 +18,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 
 	using Castle.Core;
 	using Castle.Core.Configuration;
+	using Castle.Core.Internal;
 	using Castle.MicroKernel.Util;
 
 	/// <summary>
@@ -67,52 +68,51 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 			InspectCollections(model);
 		}
 
-		private void AddAnyServiceOverrides(ComponentModel model, IConfiguration config)
+		private void AddAnyServiceOverrides(ComponentModel model, IConfiguration config, ParameterModel parameter)
 		{
 			foreach (var item in config.Children)
 			{
 				if (item.Children.Count > 0)
 				{
-					AddAnyServiceOverrides(model, item);
+					AddAnyServiceOverrides(model, item, parameter);
 				}
 
-				var newKey = ReferenceExpressionUtil.ExtractComponentKey(item.Value);
-				if (newKey == null)
+				var componentName = ReferenceExpressionUtil.ExtractComponentName(item.Value);
+				if (componentName == null)
 				{
 					continue;
 				}
-				model.Dependencies.Add(new DependencyModel(newKey, null, false));
+				model.Dependencies.Add(new ComponentDependencyModel(componentName));
 			}
 		}
 
 		private void InspectCollections(ComponentModel model)
 		{
-			foreach (ParameterModel parameter in model.Parameters)
+			foreach (var parameter in model.Parameters)
 			{
 				if (parameter.ConfigValue != null)
 				{
 					if (IsArray(parameter) || IsList(parameter))
 					{
-						AddAnyServiceOverrides(model, parameter.ConfigValue);
+						AddAnyServiceOverrides(model, parameter.ConfigValue, parameter);
 					}
 				}
 
-				if (parameter.Value == null || !ReferenceExpressionUtil.IsReference(parameter.Value))
+				if (ReferenceExpressionUtil.IsReference(parameter.Value))
 				{
-					continue;
+					model.Dependencies.Add(new DependencyModel(parameter.Name, null, false));
 				}
-				model.Dependencies.Add(new DependencyModel(parameter.Name, null, false));
 			}
 		}
 
 		private bool IsArray(ParameterModel parameter)
 		{
-			return parameter.ConfigValue.Name == "array";
+			return parameter.ConfigValue.Name.EqualsText("array");
 		}
 
 		private bool IsList(ParameterModel parameter)
 		{
-			return parameter.ConfigValue.Name == "list";
+			return parameter.ConfigValue.Name.EqualsText("list");
 		}
 	}
 }

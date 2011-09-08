@@ -187,12 +187,12 @@ namespace Castle.MicroKernel.Resolvers
 				return true;
 			}
 
-			// Default behaviour
-			if (dependency.TargetItemType != null)
+			if (dependency.TargetItemType == null || dependency.TargetItemType.IsValueType)
 			{
-				return HasAnyComponentInValidState(dependency.TargetItemType, dependency, context);
+				return false;
 			}
-			return HasComponentInValidState(dependency.DependencyKey, dependency, context);
+
+			return HasAnyComponentInValidState(dependency.TargetItemType, dependency, context);
 		}
 
 		/// <summary>
@@ -211,83 +211,25 @@ namespace Castle.MicroKernel.Resolvers
 
 		protected virtual object ResolveFromKernel(CreationContext context, ComponentModel model, DependencyModel dependency)
 		{
-			IHandler handler = null;
 			if (dependency.ReferencedComponentName != null)
 			{
-				handler = kernel.LoadHandlerByName(dependency.ReferencedComponentName, dependency.TargetItemType, context.AdditionalArguments);
+				return ResolveFromKernelByName(context, model, dependency);
 			}
-			else if (dependency.Parameter != null)
+			if (dependency.Parameter != null)
 			{
-				converter.Context.Push(model, context);
-				try
-				{
-					if (dependency.Parameter.Value != null || dependency.Parameter.ConfigValue == null)
-					{
-						return converter.PerformConversion(dependency.Parameter.Value, dependency.TargetItemType);
-					}
-					else
-					{
-						return converter.PerformConversion(dependency.Parameter.ConfigValue, dependency.TargetItemType);
-					}
-				}
-				catch (ConverterException e)
-				{
-					throw new DependencyResolverException(
-						string.Format("Could not convert parameter '{0}' to type '{1}'.", dependency.Parameter.Name, dependency.TargetItemType.Name), e);
-				}
-				finally
-				{
-					converter.Context.Pop();
-				}
+				return ResolveFromParameter(context, model, dependency);
 			}
-
 			if (typeof(IKernel).IsAssignableFrom(dependency.TargetItemType))
 			{
 				return kernel;
 			}
-			else
+			if (dependency.TargetItemType == null || dependency.TargetItemType.IsValueType)
 			{
-				try
-				{
-					handler = TryGetHandlerFromKernel(dependency, context);
-				}
-				catch (HandlerException exception)
-				{
-					if (dependency.HasDefaultValue)
-					{
-						return dependency.DefaultValue;
-					}
-					throw new DependencyResolverException(
-						string.Format(
-							"Missing dependency.{2}Component {0} has a dependency on {1}, which could not be resolved.{2}Make sure the dependency is correctly registered in the container as a service, or provided as inline argument.",
-							model.Name,
-							dependency.TargetItemType,
-							Environment.NewLine),
-						exception);
-				}
-
-				if (handler == null)
-				{
-					if (dependency.HasDefaultValue)
-					{
-						return dependency.DefaultValue;
-					}
-					throw new DependencyResolverException(
-						string.Format(
-							"Cycle detected in configuration.{2}Component {0} has a dependency on {1}, but it doesn't provide an override.{2}You must provide an override if a component has a dependency on a service that it - itself - provides.",
-							model.Name,
-							dependency.TargetItemType,
-							Environment.NewLine));
-				}
-			}
-			if (handler == null)
-			{
+				// we can shortcircuit it here, since we know we won't find any components for value type service as those are not legal.
 				return null;
 			}
 
-			context = RebuildContextForParameter(context, dependency.TargetItemType);
-
-			return handler.Resolve(context);
+			return ResolveFromKernelByType(context, model, dependency);
 		}
 
 		private bool CanResolveFromContext(CreationContext context, ISubDependencyResolver contextHandlerResolver, ComponentModel model,
@@ -358,6 +300,31 @@ namespace Castle.MicroKernel.Resolvers
 			return IsHandlerInValidState(handler) && handler.IsBeingResolvedInContext(context) == false;
 		}
 
+		private object ResolveFromParameter(CreationContext context, ComponentModel model, DependencyModel dependency)
+		{
+			converter.Context.Push(model, context);
+			try
+			{
+				if (dependency.Parameter.Value != null || dependency.Parameter.ConfigValue == null)
+				{
+					return converter.PerformConversion(dependency.Parameter.Value, dependency.TargetItemType);
+				}
+				else
+				{
+					return converter.PerformConversion(dependency.Parameter.ConfigValue, dependency.TargetItemType);
+				}
+			}
+			catch (ConverterException e)
+			{
+				throw new DependencyResolverException(
+					string.Format("Could not convert parameter '{0}' to type '{1}'.", dependency.Parameter.Name, dependency.TargetItemType.Name), e);
+			}
+			finally
+			{
+				converter.Context.Pop();
+			}
+		}
+
 		private object ResolveCore(CreationContext context, ISubDependencyResolver contextHandlerResolver, ComponentModel model, DependencyModel dependency)
 		{
 			// 1 - check for the dependency on CreationContext, if present
@@ -394,6 +361,66 @@ namespace Castle.MicroKernel.Resolvers
 
 			// 5 - normal flow, checking against the kernel
 			return ResolveFromKernel(context, model, dependency);
+		}
+
+		private object ResolveFromKernelByName(CreationContext context, ComponentModel model, DependencyModel dependency)
+		{
+			var handler = kernel.LoadHandlerByName(dependency.ReferencedComponentName, dependency.TargetItemType, context.AdditionalArguments);
+
+			// never (famous last words) this should really happen as we're the good guys and we call CanResolve before trying to resolve but let's be safe.
+			if (handler == null)
+			{
+				throw new DependencyResolverException(
+					string.Format(
+						"Missing dependency.{2}Component {0} has a dependency on component {1}, which was not registered.{2}Make sure the dependency is correctly registered in the container as a service.",
+						model.Name,
+						dependency.ReferencedComponentName,
+						Environment.NewLine));
+			}
+
+			var contextRebuilt = RebuildContextForParameter(context, dependency.TargetItemType);
+
+			return handler.Resolve(contextRebuilt);
+		}
+
+		private object ResolveFromKernelByType(CreationContext context, ComponentModel model, DependencyModel dependency)
+		{
+			IHandler handler;
+			try
+			{
+				handler = TryGetHandlerFromKernel(dependency, context);
+			}
+			catch (HandlerException exception)
+			{
+				if (dependency.HasDefaultValue)
+				{
+					return dependency.DefaultValue;
+				}
+				throw new DependencyResolverException(
+					string.Format(
+						"Missing dependency.{2}Component {0} has a dependency on {1}, which could not be resolved.{2}Make sure the dependency is correctly registered in the container as a service, or provided as inline argument.",
+						model.Name,
+						dependency.TargetItemType,
+						Environment.NewLine),
+					exception);
+			}
+
+			if (handler == null)
+			{
+				if (dependency.HasDefaultValue)
+				{
+					return dependency.DefaultValue;
+				}
+				throw new DependencyResolverException(
+					string.Format(
+						"Cycle detected in configuration.{2}Component {0} has a dependency on {1}, but it doesn't provide an override.{2}You must provide an override if a component has a dependency on a service that it - itself - provides.",
+						model.Name,
+						dependency.TargetItemType,
+						Environment.NewLine));
+			}
+			context = RebuildContextForParameter(context, dependency.TargetItemType);
+
+			return handler.Resolve(context);
 		}
 
 		private IHandler TryGetHandlerFromKernel(DependencyModel dependency, CreationContext context)
