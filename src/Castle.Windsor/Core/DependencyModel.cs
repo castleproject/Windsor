@@ -154,30 +154,6 @@ namespace Castle.Core
 			       Equals(other.DependencyKey, DependencyKey);
 		}
 
-		/// <summary>
-		///   Gets handler for the dependency, or null if dependency is not satisfied by a component from a container or a handler was not found
-		/// </summary>
-		/// <param name = "kernel"></param>
-		/// <returns></returns>
-		public IHandler GetHandler(IKernel kernel)
-		{
-#if DEBUG
-			if (!initialized)
-			{
-				throw new InvalidOperationException("Not initialized!");
-			}
-#endif
-			if (reference != null)
-			{
-				return kernel.GetHandler(reference);
-			}
-			if (targetItemType != null)
-			{
-				return kernel.GetHandler(targetItemType);
-			}
-			return null;
-		}
-
 		public override int GetHashCode()
 		{
 			unchecked

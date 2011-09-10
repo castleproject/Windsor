@@ -410,11 +410,24 @@ namespace Castle.MicroKernel.Handlers
 
 		private void AddGraphDependency(DependencyModel dependency)
 		{
-			var handler = dependency.GetHandler(Kernel);
+			var handler = GetDependencyHandler(dependency);
 			if (handler != null)
 			{
 				ComponentModel.AddDependent(handler.ComponentModel);
 			}
+		}
+
+		private IHandler GetDependencyHandler(DependencyModel dependency)
+		{
+			if (dependency.ReferencedComponentName != null)
+			{
+				return Kernel.GetHandler(dependency.ReferencedComponentName);
+			}
+			if (dependency.TargetItemType != null)
+			{
+				return Kernel.GetHandler(dependency.TargetItemType);
+			}
+			return null;
 		}
 
 		private bool AddOptionalDependency(DependencyModel dependency)
