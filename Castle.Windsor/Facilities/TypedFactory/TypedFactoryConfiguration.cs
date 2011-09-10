@@ -43,12 +43,12 @@ namespace Castle.Facilities.TypedFactory
 
 		public void SelectedWith(string selectorComponentName)
 		{
-			selectorReference = new ComponentReference<ITypedFactoryComponentSelector>("typed-factory-component-selector", selectorComponentName);
+			selectorReference = new ComponentReference<ITypedFactoryComponentSelector>(selectorComponentName);
 		}
 
 		public void SelectedWith<TSelectorComponent>() where TSelectorComponent : ITypedFactoryComponentSelector
 		{
-			selectorReference = (IReference<ITypedFactoryComponentSelector>)new ComponentReference<TSelectorComponent>("typed-factory-component-selector");
+			selectorReference = (IReference<ITypedFactoryComponentSelector>)new ComponentReference<TSelectorComponent>();
 		}
 
 		public void SelectedWith(ITypedFactoryComponentSelector selector)

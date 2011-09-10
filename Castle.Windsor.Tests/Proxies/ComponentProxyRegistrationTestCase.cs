@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Proxies
+namespace CastleTests.Proxies
 {
 	using System;
 
@@ -20,7 +20,6 @@ namespace Castle.Proxies
 	using Castle.MicroKernel.Handlers;
 	using Castle.MicroKernel.Registration;
 	using Castle.ProxyInfrastructure;
-	using Castle.Windsor.Tests;
 	using Castle.Windsor.Tests.Interceptors;
 
 	using CastleTests;
@@ -65,7 +64,7 @@ namespace Castle.Proxies
 		public void AddComponent_With_named_component_MixIn()
 		{
 			Container.Register(
-				Component.For<ICalcService>().ImplementedBy<CalculatorService>().Proxy.MixIns(m => m.Service("other")),
+				Component.For<ICalcService>().ImplementedBy<CalculatorService>().Proxy.MixIns(m => m.Component("other")),
 				Component.For<ISimpleMixIn>().ImplementedBy<SimpleMixIn>().Named("other"));
 
 			var calculator = Container.Resolve<ICalcService>();
@@ -79,7 +78,7 @@ namespace Castle.Proxies
 		public void AddComponent_With_typed_component_MixIn()
 		{
 			Container.Register(
-				Component.For<ICalcService>().ImplementedBy<CalculatorService>().Proxy.MixIns(m => m.Service<ISimpleMixIn>()),
+				Component.For<ICalcService>().ImplementedBy<CalculatorService>().Proxy.MixIns(m => m.Component<SimpleMixIn>()),
 				Component.For<ISimpleMixIn>().ImplementedBy<SimpleMixIn>());
 
 			var calculator = Container.Resolve<ICalcService>();
@@ -115,7 +114,7 @@ namespace Castle.Proxies
 		{
 			Container.Register(Component.For<ICalcService>()
 			                   	.ImplementedBy<CalculatorService>()
-			                   	.Proxy.MixIns(m => m.Service<A>()));
+			                   	.Proxy.MixIns(m => m.Component<A>()));
 
 			var calc = Container.Kernel.GetHandler(typeof(ICalcService));
 			Assert.AreEqual(HandlerState.WaitingDependency, calc.CurrentState);
@@ -128,7 +127,7 @@ namespace Castle.Proxies
 				Environment.NewLine,
 				typeof(CalculatorService).FullName,
 				typeof(A).FullName);
-			Assert.AreEqual(message,exception.Message);
+			Assert.AreEqual(message, exception.Message);
 		}
 
 		[Test]
@@ -147,7 +146,7 @@ namespace Castle.Proxies
 			var message = string.Format(
 				"Can't create component '{1}' as it has dependencies to be satisfied.{0}{0}'{1}' is waiting for the following dependencies:{0}- Component 'Castle.Windsor.Tests.Interceptors.DummyInterceptorSelector' which was not registered. Did you misspell the name?{0}",
 				Environment.NewLine,
-					typeof(CalculatorService).FullName);
+				typeof(CalculatorService).FullName);
 
 			Assert.AreEqual(message, exception.Message);
 		}
@@ -158,7 +157,7 @@ namespace Castle.Proxies
 			SimpleServiceDisposable.DisposedCount = 0;
 			Container.Register(
 				Component.For<ICalcService>()
-					.ImplementedBy<CalculatorService>().Proxy.MixIns(m => m.Service<ISimpleService>())
+					.ImplementedBy<CalculatorService>().Proxy.MixIns(m => m.Component<SimpleServiceDisposable>())
 					.LifeStyle.Transient,
 				Component.For<ISimpleService>().ImplementedBy<SimpleServiceDisposable>()
 					.LifeStyle.Transient);

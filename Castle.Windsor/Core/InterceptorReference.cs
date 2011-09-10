@@ -18,13 +18,11 @@ namespace Castle.Core
 	using System.Diagnostics;
 	using System.Linq;
 
-	using Castle.Core.Internal;
 	using Castle.DynamicProxy;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Context;
 	using Castle.MicroKernel.Proxy;
 	using Castle.MicroKernel.Resolvers;
-	using Castle.MicroKernel.Util;
 
 	/// <summary>
 	///   Represents an reference to a Interceptor component.
@@ -33,47 +31,36 @@ namespace Castle.Core
 	public class InterceptorReference : IReference<IInterceptor>, IEquatable<InterceptorReference>
 	{
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
-		private readonly DependencyModel dependencyModel;
+		private readonly string referencedComponentName;
 
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
-		private readonly object lookupKey;
+		private readonly Type referencedComponentType;
 
 		/// <summary>
 		///   Initializes a new instance of the <see cref = "InterceptorReference" /> class.
 		/// </summary>
-		/// <param name = "componentKey">The component key.</param>
-		public InterceptorReference(String componentKey)
+		/// <param name = "referencedComponentName">The component key.</param>
+		public InterceptorReference(String referencedComponentName)
 		{
-			if (componentKey == null)
+			if (referencedComponentName == null)
 			{
-				throw new ArgumentNullException("componentKey");
+				throw new ArgumentNullException("referencedComponentName");
 			}
-			lookupKey = componentKey;
-			dependencyModel = new DependencyModel(BuildDependencyName(), typeof(IInterceptor), false);
+			this.referencedComponentName = referencedComponentName;
 		}
 
 		/// <summary>
 		///   Initializes a new instance of the <see cref = "InterceptorReference" /> class.
 		/// </summary>
-		/// <param name = "serviceType">Type of the service.</param>
-		public InterceptorReference(Type serviceType)
+		/// <param name = "componentType">Type of the interceptor to use. This will reference the default component (ie. one with no explicitly assigned name) implemented by given type.</param>
+		public InterceptorReference(Type componentType)
 		{
-			if (serviceType == null)
+			if (componentType == null)
 			{
-				throw new ArgumentNullException("serviceType");
+				throw new ArgumentNullException("componentType");
 			}
-			lookupKey = serviceType;
-			dependencyModel = new DependencyModel(BuildDependencyName(), serviceType, false);
-		}
-
-		protected string ServiceOverrideComponent
-		{
-			get { return lookupKey as String; }
-		}
-
-		protected Type ServiceType
-		{
-			get { return lookupKey as Type; }
+			referencedComponentName = ComponentName.DefaultNameFor(componentType);
+			referencedComponentType = componentType;
 		}
 
 		public override bool Equals(object obj)
@@ -87,18 +74,12 @@ namespace Castle.Core
 
 		public override int GetHashCode()
 		{
-			var result = 0;
-			result = 29*result + (lookupKey != null ? lookupKey.GetHashCode() : 0);
-			return result;
+			return referencedComponentName.GetHashCode();
 		}
 
 		public override string ToString()
 		{
-			if (ServiceType == null)
-			{
-				return ServiceOverrideComponent;
-			}
-			return ServiceType.Name ?? string.Empty;
+			return referencedComponentName;
 		}
 
 		public bool Equals(InterceptorReference other)
@@ -107,33 +88,29 @@ namespace Castle.Core
 			{
 				return false;
 			}
-			return Equals(lookupKey, other.lookupKey);
-		}
-
-		private Type GetHandlerType(IHandler handler)
-		{
-			try
-			{
-				return ServiceType ??
-				       handler.ComponentModel.Services.SingleOrDefault(s => s == typeof(IInterceptor)) ??
-				       handler.ComponentModel.Services.Single(s => s.Is<IInterceptor>());
-			}
-			catch (InvalidOperationException e)
-			{
-				throw new DependencyResolverException(
-					string.Format(
-						"Ambiguous service - interceptor {0} has more than one service compabtible with type {1}. Register the interceptor explicitly as {1} or pick single type compabtible with this interface",
-						handler.ComponentModel.Name, typeof(IInterceptor).Name), e);
-			}
+			return Equals(referencedComponentName, other.referencedComponentName);
 		}
 
 		private IHandler GetInterceptorHandler(IKernel kernel)
 		{
-			if (ServiceType != null)
+			var interceptorHandler = kernel.GetHandler(referencedComponentName);
+			if (interceptorHandler == null && referencedComponentType != null)
 			{
-				return kernel.GetHandler(ServiceType);
+				var handlers = kernel.GetAssignableHandlers(referencedComponentType)
+					.Where(h => h.ComponentModel.Implementation == referencedComponentType)
+					.ToArray();
+				if(handlers.Length > 1)
+				{
+					throw new DependencyResolverException(
+						string.Format(
+							"Ambiguous interceptor reference - there are more than one interceptor in the container implemented by the referenced type {0}. The components are:{1}{2}{1}To resolve this issue use named reference instead.",
+							referencedComponentType,
+							Environment.NewLine,
+							String.Join(Environment.NewLine, handlers.Select(h => h.ComponentModel.Name))));
+				}
+				return handlers.SingleOrDefault();
 			}
-			return kernel.GetHandler(ServiceOverrideComponent);
+			return interceptorHandler;
 		}
 
 		private CreationContext RebuildContext(Type handlerType, CreationContext current)
@@ -146,11 +123,14 @@ namespace Castle.Core
 			return new CreationContext(handlerType, current, true);
 		}
 
+		private Type ComponentType()
+		{
+			return referencedComponentType ?? typeof(IInterceptor);
+		}
+
 		void IReference<IInterceptor>.Attach(ComponentModel component)
 		{
-			var reference = ReferenceExpressionUtil.BuildReference(ServiceOverrideComponent ?? ServiceType.FullName);
-			component.Parameters.Add(dependencyModel.DependencyKey, reference);
-			component.Dependencies.Add(dependencyModel);
+			component.Dependencies.Add(new ComponentDependencyModel(referencedComponentName, ComponentType()));
 		}
 
 		void IReference<IInterceptor>.Detach(ComponentModel component)
@@ -174,7 +154,7 @@ namespace Castle.Core
 						handler.ComponentModel.Name, typeof(IModelInterceptorsSelector).Name));
 			}
 
-			var contextForInterceptor = RebuildContext(GetHandlerType(handler), context);
+			var contextForInterceptor = RebuildContext(ComponentType(), context);
 			return (IInterceptor)handler.Resolve(contextForInterceptor);
 		}
 
@@ -206,11 +186,6 @@ namespace Castle.Core
 		public static InterceptorReference ForType<T>()
 		{
 			return new InterceptorReference(typeof(T));
-		}
-
-		private static string BuildDependencyName()
-		{
-			return "interceptor-" + Guid.NewGuid().ToString("N");
 		}
 	}
 }

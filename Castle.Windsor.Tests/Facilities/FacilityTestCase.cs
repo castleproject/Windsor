@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Windsor.Tests.Facilities
+namespace CastleTests.Facilities
 {
 	using System;
 
@@ -38,7 +38,7 @@ namespace Castle.Windsor.Tests.Facilities
 			var exception = Assert.Throws<ArgumentException>(() => kernel.AddFacility<StartableFacility>());
 
 			Assert.AreEqual(
-				"Facility of type 'StartableFacility' has already been registered with the container. Only one facility of a given type can exist in the container.",
+				"Facility of type 'Castle.Facilities.Startable.StartableFacility' has already been registered with the container. Only one facility of a given type can exist in the container.",
 				exception.Message);
 		}
 

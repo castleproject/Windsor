@@ -84,7 +84,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 					String.Format("The value for the hook must be a reference to a component (Currently {0})", hook));
 			}
 
-			options.Hook = new ComponentReference<IProxyGenerationHook>("proxy-generation-hook", hookComponent);
+			options.Hook = new ComponentReference<IProxyGenerationHook>(hookComponent);
 		}
 
 		protected virtual void CollectSelector(IConfiguration interceptors, ProxyOptions options)
@@ -102,7 +102,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 					String.Format("The value for the selector must be a reference to a component (Currently {0})", selector));
 			}
 
-			options.Selector = new ComponentReference<IInterceptorSelector>("interceptor-selector", selectorComponent);
+			options.Selector = new ComponentReference<IInterceptorSelector>(selectorComponent);
 		}
 
 		private void CollectInterceptors(ComponentModel model, IConfiguration interceptors)

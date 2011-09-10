@@ -18,14 +18,7 @@ namespace Castle.MicroKernel.Registration.Proxy
 
 	public class ItemRegistration<TItem>
 	{
-		private readonly string itemName;
-
 		private IReference<TItem> item;
-
-		public ItemRegistration(string itemName)
-		{
-			this.itemName = itemName;
-		}
 
 		internal IReference<TItem> Item
 		{
@@ -45,13 +38,13 @@ namespace Castle.MicroKernel.Registration.Proxy
 
 		public ItemRegistration<TItem> Service(Type serviceType)
 		{
-			item = new ComponentReference<TItem>(itemName, serviceType);
+			item = new ComponentReference<TItem>(serviceType);
 			return this;
 		}
 
 		public ItemRegistration<TItem> Service(string name)
 		{
-			item = new ComponentReference<TItem>(itemName, name);
+			item = new ComponentReference<TItem>(name);
 			return this;
 		}
 	}
