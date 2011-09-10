@@ -76,7 +76,7 @@ namespace Castle.MicroKernel
 		///   Implementors should return a valid instance 
 		///   for the component the handler is responsible.
 		///   It should return null in the case the component
-		///   can't be created for some reason
+		///   can't be created for some reason. No exception should be thrown.
 		/// </summary>
 		/// <returns></returns>
 		object TryResolve(CreationContext context);
