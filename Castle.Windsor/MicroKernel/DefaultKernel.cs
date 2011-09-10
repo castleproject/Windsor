@@ -283,7 +283,7 @@ namespace Castle.MicroKernel
 				throw new ArgumentException(
 					string.Format(
 						"Facility of type '{0}' has already been registered with the container. Only one facility of a given type can exist in the container.",
-						facilityType.Name));
+						facilityType.FullName));
 			}
 			facilities.Add(facility);
 			facility.Init(this, ConfigurationStore.GetFacilityConfiguration(facilityType.FullName));

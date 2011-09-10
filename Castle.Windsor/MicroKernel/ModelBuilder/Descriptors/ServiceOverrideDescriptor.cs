@@ -67,11 +67,11 @@ namespace Castle.MicroKernel.ModelBuilder.Descriptors
 			}
 			if (value is Type)
 			{
-				ApplySimpleReference(model, dependencyKey, ((Type)value).FullName);
+				ApplySimpleReference(model, dependencyKey, ComponentName.DefaultNameFor((Type)value));
 			}
 			else if (value is IEnumerable<Type>)
 			{
-				ApplyReferenceList(model, dependencyKey, ((IEnumerable<Type>)value).Select(t => t.FullName), @override);
+				ApplyReferenceList(model, dependencyKey, ((IEnumerable<Type>)value).Select(ComponentName.DefaultNameFor), @override);
 			}
 		}
 

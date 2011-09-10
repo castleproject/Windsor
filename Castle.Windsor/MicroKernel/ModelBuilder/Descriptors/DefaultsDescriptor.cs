@@ -78,7 +78,7 @@ namespace Castle.MicroKernel.ModelBuilder.Descriptors
 				model.ComponentName = new ComponentName("Late bound " + FirstService(model).FullName, false);
 				return;
 			}
-			model.ComponentName = new ComponentName(model.Implementation.FullName, false);
+			model.ComponentName = ComponentName.DefaultFor(model.Implementation);
 		}
 
 		private Type FirstService(ComponentModel model)

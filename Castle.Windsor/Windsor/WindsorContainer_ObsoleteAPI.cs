@@ -58,7 +58,7 @@ namespace Castle.Windsor
 		public IWindsorContainer AddComponent<T>()
 		{
 			var t = typeof(T);
-			AddComponent(t.FullName, t);
+			AddComponent(ComponentName.DefaultNameFor(t), t);
 			return this;
 		}
 
@@ -83,7 +83,7 @@ namespace Castle.Windsor
 		public IWindsorContainer AddComponent<I, T>() where T : class
 		{
 			var t = typeof(T);
-			AddComponent(t.FullName, typeof(I), t);
+			AddComponent(ComponentName.DefaultNameFor(t), typeof(I), t);
 			return this;
 		}
 
@@ -109,7 +109,7 @@ namespace Castle.Windsor
 		public IWindsorContainer AddComponentLifeStyle<T>(LifestyleType lifestyle)
 		{
 			var t = typeof(T);
-			AddComponentLifeStyle(t.FullName, t, lifestyle);
+			AddComponentLifeStyle(ComponentName.DefaultNameFor(t), t, lifestyle);
 			return this;
 		}
 
@@ -118,7 +118,7 @@ namespace Castle.Windsor
 		public IWindsorContainer AddComponentLifeStyle<I, T>(LifestyleType lifestyle) where T : class
 		{
 			var t = typeof(T);
-			AddComponentLifeStyle(t.FullName, typeof(I), t, lifestyle);
+			AddComponentLifeStyle(ComponentName.DefaultNameFor(t), typeof(I), t, lifestyle);
 			return this;
 		}
 
@@ -143,7 +143,7 @@ namespace Castle.Windsor
 		public IWindsorContainer AddComponentProperties<I, T>(IDictionary extendedProperties) where T : class
 		{
 			var t = typeof(T);
-			AddComponentWithProperties(t.FullName, typeof(I), t, extendedProperties);
+			AddComponentWithProperties(ComponentName.DefaultNameFor(t), typeof(I), t, extendedProperties);
 			return this;
 		}
 
@@ -180,7 +180,7 @@ namespace Castle.Windsor
 		public IWindsorContainer AddComponentWithProperties<T>(IDictionary extendedProperties)
 		{
 			var t = typeof(T);
-			AddComponentWithProperties(t.FullName, t, extendedProperties);
+			AddComponentWithProperties(ComponentName.DefaultNameFor(t), t, extendedProperties);
 			return this;
 		}
 

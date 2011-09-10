@@ -78,7 +78,7 @@ namespace Castle.Windsor.Configuration.Interpreters.XmlProcessor
 			}
 			else
 			{
-				throw new XmlProcessorException("{0} does not implement IElementProcessor interface", type.FullName);
+				throw new XmlProcessorException("{0} does not implement {1} interface", type.FullName, typeof(IXmlNodeProcessor).FullName);
 			}
 		}
 

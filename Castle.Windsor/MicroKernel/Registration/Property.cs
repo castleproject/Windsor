@@ -16,6 +16,8 @@ namespace Castle.MicroKernel.Registration
 {
 	using System;
 
+	using Castle.Core;
+
 	/// <summary>
 	///   Represents a key/value pair.
 	/// </summary>
@@ -134,7 +136,7 @@ namespace Castle.MicroKernel.Registration
 			{
 				throw new ArgumentNullException("componentImplementation");
 			}
-			return GetServiceOverrideKey().Eq(componentImplementation.FullName);
+			return GetServiceOverrideKey().Eq(ComponentName.DefaultNameFor(componentImplementation));
 		}
 
 		/// <summary>

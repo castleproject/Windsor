@@ -18,6 +18,8 @@ namespace Castle.Facilities.EventWiring
 	using System.Collections.Generic;
 	using System.Linq.Expressions;
 
+	using Castle.Core;
+
 	/// <summary>
 	///   Collects information about subscribers for given event
 	/// </summary>
@@ -38,17 +40,17 @@ namespace Castle.Facilities.EventWiring
 
 		public EventSubscribers To<TSubscriber>(Expression<Action<TSubscriber>> methodHandler)
 		{
-			return To(typeof(TSubscriber).FullName, methodHandler);
+			return To(ComponentName.DefaultNameFor(typeof(TSubscriber)), methodHandler);
 		}
 
 		public EventSubscribers To<TSubscriber>(string methodHandler)
 		{
-			return To(typeof(TSubscriber).FullName, methodHandler);
+			return To(ComponentName.DefaultNameFor(typeof(TSubscriber)), methodHandler);
 		}
 
 		public EventSubscribers To<TSubscriber>()
 		{
-			return To(typeof(TSubscriber).FullName);
+			return To(ComponentName.DefaultNameFor(typeof(TSubscriber)));
 		}
 
 		public EventSubscribers To(string subscriberComponentName, string methodHandler)
