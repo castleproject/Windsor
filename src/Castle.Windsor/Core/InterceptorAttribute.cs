@@ -19,6 +19,7 @@ namespace Castle.Core
 	/// <summary>
 	///   Used to declare that a component wants interceptors acting on it.
 	/// </summary>
+	[Serializable]
 	public class InterceptorAttribute : Attribute
 	{
 		private readonly InterceptorReference interceptorRef;
