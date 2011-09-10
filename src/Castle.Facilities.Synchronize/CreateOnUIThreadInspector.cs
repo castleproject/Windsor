@@ -170,7 +170,7 @@ namespace Castle.Facilities.Synchronize
 					{
 						var message = String.Format("The specified controlProxyHook does " +
 						                            "not implement the interface {1}. Type {0}",
-						                            hookType.FullName, typeof(IProxyGenerationHook).Name);
+						                            hookType.FullName, typeof(IProxyGenerationHook).FullName);
 
 						throw new ConfigurationErrorsException(message);
 					}

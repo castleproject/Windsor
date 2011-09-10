@@ -23,7 +23,6 @@ namespace Castle.Facilities.TypedFactory
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Facilities;
 	using Castle.MicroKernel.Proxy;
-	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Resolvers;
 	using Castle.MicroKernel.SubSystems.Conversion;
 	using Castle.MicroKernel.Util;
@@ -52,9 +51,11 @@ namespace Castle.Facilities.TypedFactory
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public void AddTypedFactoryEntry(FactoryEntry entry)
 		{
-			var model = new ComponentModel(new ComponentName(entry.Id, true), new[] { entry.FactoryInterface }, typeof(Empty),
-			                               new Arguments().Insert("typed.fac.entry", entry))
-			{ LifestyleType = LifestyleType.Singleton };
+			var model = new ComponentModel(
+				new ComponentName(entry.Id, true),
+				new[] { entry.FactoryInterface },
+				typeof(Empty),
+				new Arguments { { "typed.fac.entry", entry } }) { LifestyleType = LifestyleType.Singleton };
 
 			model.Interceptors.Add(new InterceptorReference(typeof(FactoryInterceptor)));
 
@@ -148,9 +149,7 @@ namespace Castle.Facilities.TypedFactory
 			}
 			catch (Exception)
 			{
-				var message = "Invalid factory entry in configuration";
-
-				throw new Exception(message);
+				throw new Exception("Invalid factory entry in configuration");
 			}
 		}
 	}

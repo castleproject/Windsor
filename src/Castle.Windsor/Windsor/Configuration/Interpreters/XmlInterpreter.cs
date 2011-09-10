@@ -20,6 +20,7 @@ namespace Castle.Windsor.Configuration.Interpreters
 	using System;
 	using System.Xml;
 
+	using Castle.Core;
 	using Castle.Core.Configuration;
 	using Castle.Core.Configuration.Xml;
 	using Castle.Core.Resource;
@@ -124,7 +125,7 @@ namespace Castle.Windsor.Configuration.Interpreters
 			if (string.IsNullOrEmpty(id))
 			{
 				var type = converter.PerformConversion<Type>(config.Attributes["type"]);
-				id = type.FullName;
+				id = ComponentName.DefaultNameFor(type);
 				config.Attributes["id"] = id;
 				config.Attributes.Add("id-automatic", bool.TrueString);
 			}

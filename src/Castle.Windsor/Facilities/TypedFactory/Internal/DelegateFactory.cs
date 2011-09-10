@@ -59,11 +59,12 @@ namespace Castle.Facilities.TypedFactory.Internal
 
 		protected string GetName(Type service)
 		{
-			if (string.IsNullOrEmpty(service.FullName))
+			var defaultName = ComponentName.DefaultNameFor(service);
+			if (string.IsNullOrEmpty(defaultName))
 			{
 				return "auto-factory: " + Guid.NewGuid();
 			}
-			return "auto-factory: " + service.FullName;
+			return "auto-factory: " + defaultName;
 		}
 
 		public static MethodInfo ExtractInvokeMethod(Type service)

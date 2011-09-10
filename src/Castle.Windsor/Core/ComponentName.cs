@@ -14,6 +14,8 @@
 
 namespace Castle.Core
 {
+	using System;
+
 	using Castle.Core.Internal;
 
 	public class ComponentName
@@ -36,6 +38,26 @@ namespace Castle.Core
 		{
 			Name = Must.NotBeEmpty(value, "value");
 			SetByUser = true;
+		}
+
+		/// <summary>
+		///   Gets the default name for component implemented by <paramref name = "componentType" /> which will be used in case when user does not provide one explicitly.
+		/// </summary>
+		/// <param name = "componentType"></param>
+		/// <returns></returns>
+		public static ComponentName DefaultFor(Type componentType)
+		{
+			return new ComponentName(DefaultNameFor(componentType), false);
+		}
+
+		/// <summary>
+		///   Gets the default name for component implemented by <paramref name = "componentType" /> which will be used in case when user does not provide one explicitly.
+		/// </summary>
+		/// <param name = "componentType"></param>
+		/// <returns></returns>
+		public static string DefaultNameFor(Type componentType)
+		{
+			return componentType.FullName;
 		}
 	}
 }

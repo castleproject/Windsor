@@ -111,7 +111,7 @@ namespace Castle.MicroKernel
 		public void AddComponent<T>()
 		{
 			var classType = typeof(T);
-			AddComponent(classType.FullName, classType);
+			AddComponent(ComponentName.DefaultNameFor(classType), classType);
 		}
 
 		[Obsolete("Use Register(Component.For<T>().Lifestyle.Is(lifestyle)) instead.")]
@@ -119,7 +119,7 @@ namespace Castle.MicroKernel
 		public void AddComponent<T>(LifestyleType lifestyle)
 		{
 			var classType = typeof(T);
-			AddComponent(classType.FullName, classType, lifestyle);
+			AddComponent(ComponentName.DefaultNameFor(classType), classType, lifestyle);
 		}
 
 		[Obsolete("Use Register(Component.For<T>().Lifestyle.Is(lifestyle)) instead.")]
@@ -127,7 +127,7 @@ namespace Castle.MicroKernel
 		public void AddComponent<T>(LifestyleType lifestyle, bool overwriteLifestyle)
 		{
 			var classType = typeof(T);
-			AddComponent(classType.FullName, classType, lifestyle, overwriteLifestyle);
+			AddComponent(ComponentName.DefaultNameFor(classType), classType, lifestyle, overwriteLifestyle);
 		}
 
 		[Obsolete("Use Register(Component.For(serviceType).ImplementedBy<T>()) or generic version instead.")]
@@ -135,7 +135,7 @@ namespace Castle.MicroKernel
 		public void AddComponent<T>(Type serviceType)
 		{
 			var classType = typeof(T);
-			AddComponent(classType.FullName, serviceType, classType);
+			AddComponent(ComponentName.DefaultNameFor(classType), serviceType, classType);
 		}
 
 		[Obsolete(
@@ -144,7 +144,7 @@ namespace Castle.MicroKernel
 		public void AddComponent<T>(Type serviceType, LifestyleType lifestyle)
 		{
 			var classType = typeof(T);
-			AddComponent(classType.FullName, serviceType, classType, lifestyle);
+			AddComponent(ComponentName.DefaultNameFor(classType), serviceType, classType, lifestyle);
 		}
 
 		[Obsolete("Use Register(Component.For(serviceType).ImplementedBy<T>().Lifestyle.Is(lifestyle)) or generic version instead.")]
@@ -152,7 +152,7 @@ namespace Castle.MicroKernel
 		public void AddComponent<T>(Type serviceType, LifestyleType lifestyle, bool overwriteLifestyle)
 		{
 			var classType = typeof(T);
-			AddComponent(classType.FullName, serviceType, classType, lifestyle, overwriteLifestyle);
+			AddComponent(ComponentName.DefaultNameFor(classType), serviceType, classType, lifestyle, overwriteLifestyle);
 		}
 
 		[Obsolete("Use Register(Component.For(instance.GetType()).Named(key).Instance(instance)) or generic version instead.")]
@@ -169,7 +169,7 @@ namespace Castle.MicroKernel
 			}
 
 			var classType = instance.GetType();
-			var model = new ComponentModel(new ComponentName(key, true), new[] { classType }, classType, new Arguments().Insert("instance", instance))
+			var model = new ComponentModel(new ComponentName(key, true), new[] { classType }, classType, new Arguments { { "instance", instance } })
 			{
 				LifestyleType = LifestyleType.Singleton,
 				CustomComponentActivator = typeof(ExternalInstanceActivator)
@@ -208,7 +208,7 @@ namespace Castle.MicroKernel
 				throw new ArgumentNullException("classType");
 			}
 
-			var model = new ComponentModel(new ComponentName(key, true), new[] { serviceType }, classType, new Arguments().Insert("instance", instance))
+			var model = new ComponentModel(new ComponentName(key, true), new[] { serviceType }, classType, new Arguments { { "instance", instance } })
 			{
 				LifestyleType = LifestyleType.Singleton,
 				CustomComponentActivator = typeof(ExternalInstanceActivator)
@@ -223,8 +223,8 @@ namespace Castle.MicroKernel
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public void AddComponentInstance<T>(object instance)
 		{
-			var serviceType = typeof(T);
-			AddComponentInstance(serviceType.FullName, serviceType, instance);
+			var classType = typeof(T);
+			AddComponentInstance(ComponentName.DefaultNameFor(classType), classType, instance);
 		}
 
 		[Obsolete("Use Register(Component.For(serviceType).ImplementedBy<T>().Instance(instance)) or generic version instead."
@@ -233,7 +233,7 @@ namespace Castle.MicroKernel
 		public void AddComponentInstance<T>(Type serviceType, object instance)
 		{
 			var classType = typeof(T);
-			AddComponentInstance(classType.FullName, serviceType, classType, instance);
+			AddComponentInstance(ComponentName.DefaultNameFor(classType), serviceType, classType, instance);
 		}
 
 		[Obsolete("Use Register(Component.For(classType).Named(key).ExtendedProperties(extendedProperties)) or generic version instead.")]

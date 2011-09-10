@@ -145,7 +145,7 @@ namespace Castle.MicroKernel.Registration.Lifestyle
 			{
 				throw new ComponentRegistrationException(String.Format(
 					"The type {0} must implement {1} to " +
-					"be used as a custom lifestyle", customLifestyleType.FullName, typeof(ILifestyleManager).Name));
+					"be used as a custom lifestyle", customLifestyleType.FullName, typeof(ILifestyleManager).FullName));
 			}
 
 			return AddDescriptor(new LifestyleDescriptor<TService>(LifestyleType.Custom))
