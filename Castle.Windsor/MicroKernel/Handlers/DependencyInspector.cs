@@ -56,7 +56,7 @@ namespace Castle.MicroKernel.Handlers
 					// NOTE: that's a workaround for us having dependency twice potentially, once from configuration and once from actual type scan
 					if (uniqueOverrides.Add(dependency.ReferencedComponentName))
 					{
-						InspectServiceOverrideDependency(dependency.ReferencedComponentName, dependency.GetHandler(kernel));
+						InspectServiceOverrideDependency(dependency.ReferencedComponentName, kernel.GetHandler(dependency.ReferencedComponentName));
 					}
 				}
 				else if (dependency.IsValueType || dependency.TargetItemType == typeof(string) || dependency.TargetItemType == null)
