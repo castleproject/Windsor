@@ -20,7 +20,6 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 	using Castle.Facilities.TypedFactory;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Registration;
-	using Castle.MicroKernel.Util;
 	using Castle.Windsor.Tests.Facilities.TypedFactory.Factories;
 
 	using CastleTests;
@@ -34,13 +33,8 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 		private void AssertHasDependency<TComponnet>(string name)
 		{
 			var handler = GetHandler<TComponnet>();
-			var reference = ReferenceExpressionUtil.BuildReference(name);
-			var parameter = handler.ComponentModel.Parameters.FirstOrDefault(p => p.Value == reference);
-
-			Assert.IsNotNull(parameter, "Parameter for dependency '{0}' should exist", name);
-
-			var dependency = handler.ComponentModel.Dependencies.SingleOrDefault(d => d.DependencyKey == parameter.Name);
-			Assert.IsNotNull(dependency, "Parameter named '{1}' for dependency on '{0}' should exist.", name, parameter.Name);
+			var dependency = handler.ComponentModel.Dependencies.SingleOrDefault(d => d.DependencyKey == name);
+			Assert.IsNotNull(dependency, "Dependency on '{0}' should exist.", name);
 		}
 
 		private IHandler GetHandler<T>()

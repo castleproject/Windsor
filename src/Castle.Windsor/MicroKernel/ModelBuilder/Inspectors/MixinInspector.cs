@@ -49,7 +49,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 						String.Format("The value for the mixin must be a reference to a component (Currently {0})", value));
 				}
 
-				mixinReferences.Add(new ComponentReference<object>("mixin-" + mixinComponent, mixinComponent));
+				mixinReferences.Add(new ComponentReference<object>(mixinComponent));
 			}
 			if (mixinReferences.Count == 0)
 			{

@@ -161,7 +161,7 @@ namespace Castle.Facilities.Synchronize
 					var hookComponent = ReferenceExpressionUtil.ExtractComponentName(hookAttrib);
 					if (hookComponent != null)
 					{
-						return new ComponentReference<IProxyGenerationHook>("synchronize-proxy-generation-hook", hookComponent);
+						return new ComponentReference<IProxyGenerationHook>(hookComponent);
 					}
 
 					var hookType = converter.PerformConversion<Type>(hookAttrib);

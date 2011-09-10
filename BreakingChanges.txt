@@ -1,4 +1,21 @@
 ================================================================================================
+change - .Service method on mixing registration has been removed and replaced with.Component.
+
+impact - low
+fixability - easy
+
+description - The method had misleading name and behavior inconsistent with the rest of Windsor.
+	As such it's been replaced with .Component method which is more explicit about what argument
+	passed to it means
+
+fix - Replace with .Component method:
+Container.Register(Component.For<ICalcService>()
+			        .ImplementedBy<CalculatorService>()
+			        .Proxy.MixIns(m => m.Component<A>()));
+	Notice the new method is behaving consistently with how referencing interceptors and service
+	overrides works. So you may need to adjust generic argument to point to other component's
+	implementation type rather than its exposed service.
+================================================================================================
 change - Generic overloads of .Insert(this IDictionary dictionary, otherarguments) extension
 	method have been removed.
 

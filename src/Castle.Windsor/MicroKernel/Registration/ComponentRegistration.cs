@@ -869,7 +869,7 @@ namespace Castle.MicroKernel.Registration
 		/// <returns></returns>
 		public ComponentRegistration<TService> SelectInterceptorsWith(Action<ItemRegistration<IInterceptorSelector>> selector)
 		{
-			var registration = new ItemRegistration<IInterceptorSelector>("interceptor-selector");
+			var registration = new ItemRegistration<IInterceptorSelector>();
 			selector.Invoke(registration);
 			return AddDescriptor(new InterceptorSelectorDescriptor(registration.Item));
 		}
@@ -1085,9 +1085,9 @@ namespace Castle.MicroKernel.Registration
 		}
 
 		/// <summary>
-		/// Filters properties on the implementation that will be considered 'settable' by the container.
+		///   Filters properties on the implementation that will be considered 'settable' by the container.
 		/// </summary>
-		/// <param name="filter">Predicate deciding whether a property is settable or not. If returns <c>false</c> container will ignore the property, otherwise property will be ignored.</param>
+		/// <param name = "filter">Predicate deciding whether a property is settable or not. If returns <c>false</c> container will ignore the property, otherwise property will be ignored.</param>
 		/// <returns></returns>
 		public ComponentRegistration<TService> Properties(Predicate<PropertyInfo> filter)
 		{
