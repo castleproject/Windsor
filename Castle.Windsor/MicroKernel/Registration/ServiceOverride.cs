@@ -72,6 +72,11 @@ namespace Castle.MicroKernel.Registration
 			return new ServiceOverrideKey(typeof(TKey));
 		}
 
+		/// <summary>
+		/// Implicitly converts service override to dependency. This is a API trick to keep the API clean and focused.
+		/// </summary>
+		/// <param name="item"></param>
+		/// <returns></returns>
 		public static implicit operator Dependency(ServiceOverride item)
 		{
 			return new Dependency(item);

@@ -82,7 +82,7 @@ namespace CastleTests.Facilities.Synchronize
 
 			var message =
 				string.Format(
-					"Can't create component 'CastleTests.Facilities.Synchronize.Components.ClassInContextWithMissingDependency' as it has dependencies to be satisfied.{0}{0}'CastleTests.Facilities.Synchronize.Components.ClassInContextWithMissingDependency' is waiting for the following dependencies:{0}- Component 'System.Threading.SynchronizationContext' which was not registered.{0}",
+					"Can't create component 'CastleTests.Facilities.Synchronize.Components.ClassInContextWithMissingDependency' as it has dependencies to be satisfied.{0}{0}'CastleTests.Facilities.Synchronize.Components.ClassInContextWithMissingDependency' is waiting for the following dependencies:{0}- Component 'System.Threading.SynchronizationContext' (via override) which was not found. Did you forget to register it or misspelled the name? If the component is registered and override is via type make sure it doesn't have non-default name assigned explicitly or override the dependency via name.{0}",
 					Environment.NewLine);
 
 			Assert.AreEqual(message, exception.Message);
@@ -97,7 +97,7 @@ namespace CastleTests.Facilities.Synchronize
 
 			var message =
 				string.Format(
-					"Can't create component 'CastleTests.Facilities.Synchronize.Components.ClassInContextWithMissingDependency' as it has dependencies to be satisfied.{0}{0}'CastleTests.Facilities.Synchronize.Components.ClassInContextWithMissingDependency' is waiting for the following dependencies:{0}- Component 'foo' which was not registered. Did you misspell the name?{0}",
+					"Can't create component 'CastleTests.Facilities.Synchronize.Components.ClassInContextWithMissingDependency' as it has dependencies to be satisfied.{0}{0}'CastleTests.Facilities.Synchronize.Components.ClassInContextWithMissingDependency' is waiting for the following dependencies:{0}- Component 'foo' (via override) which was not found. Did you forget to register it or misspelled the name? If the component is registered and override is via type make sure it doesn't have non-default name assigned explicitly or override the dependency via name.{0}",
 					Environment.NewLine);
 
 			Assert.AreEqual(message, exception.Message);
@@ -111,7 +111,7 @@ namespace CastleTests.Facilities.Synchronize
 
 			var messasge =
 				string.Format(
-					"Can't create component 'CastleTests.Facilities.Synchronize.Components.AsynchronousWorker' as it has dependencies to be satisfied.{0}{0}'CastleTests.Facilities.Synchronize.Components.AsynchronousWorker' is waiting for the following dependencies:{0}- Component 'CastleTests.Facilities.Synchronize.Components.AsynchronousContext' which was not registered.{0}",
+					"Can't create component 'CastleTests.Facilities.Synchronize.Components.AsynchronousWorker' as it has dependencies to be satisfied.{0}{0}'CastleTests.Facilities.Synchronize.Components.AsynchronousWorker' is waiting for the following dependencies:{0}- Component 'CastleTests.Facilities.Synchronize.Components.AsynchronousContext' (via override) which was not found. Did you forget to register it or misspelled the name? If the component is registered and override is via type make sure it doesn't have non-default name assigned explicitly or override the dependency via name.{0}",
 					Environment.NewLine);
 
 			Assert.AreEqual(messasge, exception.Message);

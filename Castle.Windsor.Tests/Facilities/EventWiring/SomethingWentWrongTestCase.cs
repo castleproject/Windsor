@@ -19,7 +19,6 @@ namespace CastleTests.Facilities.EventWiring
 	using Castle.Facilities.EventWiring;
 	using Castle.MicroKernel.Handlers;
 	using Castle.MicroKernel.Registration;
-	using Castle.Windsor.Tests;
 
 	using CastleTests.Facilities.EventWiring.Model;
 
@@ -45,7 +44,7 @@ namespace CastleTests.Facilities.EventWiring
 
 			var message =
 				string.Format(
-					"Can't create component 'CastleTests.Facilities.EventWiring.Model.SimplePublisher' as it has dependencies to be satisfied.{0}{0}'CastleTests.Facilities.EventWiring.Model.SimplePublisher' is waiting for the following dependencies:{0}- Component 'CastleTests.Facilities.EventWiring.Model.SimpleListener' which was not registered. Did you misspell the name?{0}- Component 'nonExistingListener' which was not registered. Did you misspell the name?{0}",
+					"Can't create component 'CastleTests.Facilities.EventWiring.Model.SimplePublisher' as it has dependencies to be satisfied.{0}{0}'CastleTests.Facilities.EventWiring.Model.SimplePublisher' is waiting for the following dependencies:{0}- Component 'CastleTests.Facilities.EventWiring.Model.SimpleListener' (via override) which was not found. Did you forget to register it or misspelled the name? If the component is registered and override is via type make sure it doesn't have non-default name assigned explicitly or override the dependency via name.{0}- Component 'nonExistingListener' (via override) which was not found. Did you forget to register it or misspelled the name? If the component is registered and override is via type make sure it doesn't have non-default name assigned explicitly or override the dependency via name.{0}",
 					Environment.NewLine);
 
 			Assert.AreEqual(message, exception.Message);

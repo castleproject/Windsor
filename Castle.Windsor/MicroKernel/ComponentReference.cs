@@ -102,22 +102,6 @@ namespace Castle.MicroKernel
 		private IHandler GetHandler(IKernel kernel)
 		{
 			var handler = kernel.GetHandler(referencedComponentName);
-			if (handler == null && referencedComponentType != null)
-			{
-				var handlers = kernel.GetAssignableHandlers(referencedComponentType)
-					.Where(h => h.ComponentModel.Implementation == referencedComponentType)
-					.ToArray();
-				if (handlers.Length > 1)
-				{
-					throw new DependencyResolverException(
-						string.Format(
-							"Ambiguous component reference - there are more than one component in the container implemented by the referenced type {0}. The components are:{1}{2}{1}To resolve this issue use named reference instead.",
-							referencedComponentType,
-							Environment.NewLine,
-							String.Join(Environment.NewLine, handlers.Select(h => h.ComponentModel.Name))));
-				}
-				return handlers.SingleOrDefault();
-			}
 			return handler;
 		}
 

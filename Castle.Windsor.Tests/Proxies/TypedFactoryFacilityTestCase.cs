@@ -15,7 +15,7 @@
 #if !SILVERLIGHT
 // we do not support xml config on SL
 
-namespace Castle.Proxies
+namespace CastleTests.Proxies
 {
 	using Castle.DynamicProxy;
 	using Castle.TypedFactoryInterfaces;

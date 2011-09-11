@@ -2,8 +2,7 @@
 
 	<components>
 
-    <component id="standard.interceptor" 
-      type="Castle.DynamicProxy.StandardInterceptor, Castle.Core">
+    <component type="Castle.DynamicProxy.StandardInterceptor, Castle.Core">
     </component>
     
     <component id="default" 

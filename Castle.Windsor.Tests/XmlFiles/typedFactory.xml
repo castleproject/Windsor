@@ -14,11 +14,9 @@
   </facilities>
 
   <components>
-    <component id="standard.interceptor" type="Castle.DynamicProxy.StandardInterceptor, Castle.Core">
-    </component>
+    <component type="Castle.DynamicProxy.StandardInterceptor, Castle.Core" />
     
-    <component id="default" type="CalculatorServiceWithMultipleInterfaces" service="ICalcService">
-    </component>
+    <component id="default" type="CalculatorServiceWithMultipleInterfaces" service="ICalcService" />
   </components>
 
 </configuration>

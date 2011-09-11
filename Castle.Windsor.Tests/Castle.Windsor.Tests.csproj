@@ -297,6 +297,7 @@
     <Compile Include="BugAttribute.cs" />
     <Compile Include="Bugs\IoC-267.cs" />
     <Compile Include="ByRefDependenciesTestCase.cs" />
+    <Compile Include="ClassComponents\CommonServiceUser3.cs" />
     <Compile Include="ClassComponents\GenericImplA.cs" />
     <Compile Include="ClassComponents\GenericWithTDependency.cs" />
     <Compile Include="ClassComponents\PropertySetterThrows.cs" />
@@ -727,7 +728,7 @@
     <Compile Include="TestConventionsValidationTestCase.cs" />
     <Compile Include="TestInfrastructure\StaticScopeAccessor.cs" />
     <Compile Include="TypeComparerTestCase.cs" />
-    <Compile Include="TypedDependenciesTestCase.cs" />
+    <Compile Include="TypedParametersTestCase.cs" />
     <Compile Include="MicroKernel\ArgumentsTestCase.cs" />
     <Compile Include="Activators\BestConstructorTestCase.cs">
       <SubType>Code</SubType>
@@ -835,6 +836,7 @@
     <Compile Include="Registration\DynamicParametersTestCase.cs" />
     <Compile Include="TypedFactoryInterfaces\ICalculatorFactoryCreateWithoutId.cs" />
     <Compile Include="TypedFactoryInterfaces\ICalculatorFactory.cs" />
+    <Compile Include="TypedServiceOverridesAndDependenciesTestCase.cs" />
     <Compile Include="TypeUtilTestCase.cs" />
     <Compile Include="Windsor.Tests\LifecycledComponentsReleasePolicyComponentTrackingTestCase.cs" />
     <Compile Include="Windsor.Tests\GenericVarianceTestCase.cs" />

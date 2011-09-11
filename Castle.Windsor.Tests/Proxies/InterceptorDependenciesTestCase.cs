@@ -18,7 +18,6 @@ namespace CastleTests.Proxies
 
 	using Castle.MicroKernel.Handlers;
 	using Castle.MicroKernel.Registration;
-	using Castle.Windsor.Tests;
 	using Castle.Windsor.Tests.Interceptors;
 
 	using CastleTests.Components;
@@ -29,12 +28,28 @@ namespace CastleTests.Proxies
 	public class InterceptorDependenciesTestCase : AbstractContainerTestCase
 	{
 		[Test]
-		public void Can_depend_on_the_same_interceptor_multiple_times()
+		public void Can_depend_on_the_same_interceptor_multiple_times_typed()
+		{
+			Container.Register(
+				Component.For<CountingInterceptor>(),
+				Component.For<CalculatorService>()
+					.Interceptors<CountingInterceptor, CountingInterceptor>()
+					.Interceptors<CountingInterceptor, CountingInterceptor>());
+
+			var calc = Container.Resolve<CalculatorService>();
+			var interceptor = Container.Resolve<CountingInterceptor>();
+
+			calc.Sum(24, 42);
+
+			Assert.AreEqual(4, interceptor.InterceptedCallsCount);
+		}
+		[Test]
+		public void Can_depend_on_the_same_interceptor_multiple_times_named()
 		{
 			Container.Register(
 				Component.For<CountingInterceptor>().Named("counting"),
 				Component.For<CalculatorService>()
-					.Interceptors<CountingInterceptor, CountingInterceptor>()
+					.Interceptors("counting", "counting")
 					.Interceptors("counting", "counting"));
 
 			var calc = Container.Resolve<CalculatorService>();
@@ -54,7 +69,7 @@ namespace CastleTests.Proxies
 				                                Container.Resolve<A>());
 			var message =
 				string.Format(
-					"Can't create component '{1}' as it has dependencies to be satisfied.{0}{0}'{1}' is waiting for the following dependencies:{0}- Component 'fooInterceptor' which was not registered. Did you misspell the name?{0}",
+					"Can't create component '{1}' as it has dependencies to be satisfied.{0}{0}'{1}' is waiting for the following dependencies:{0}- Component 'fooInterceptor' (via override) which was not found. Did you forget to register it or misspelled the name? If the component is registered and override is via type make sure it doesn't have non-default name assigned explicitly or override the dependency via name.{0}",
 					Environment.NewLine,
 					typeof(A).FullName);
 
@@ -70,7 +85,7 @@ namespace CastleTests.Proxies
 				                                Container.Resolve<A>());
 			var message =
 				string.Format(
-					"Can't create component '{1}' as it has dependencies to be satisfied.{0}{0}'{1}' is waiting for the following dependencies:{0}- Component '{2}' which was not registered. Did you misspell the name?{0}",
+					"Can't create component '{1}' as it has dependencies to be satisfied.{0}{0}'{1}' is waiting for the following dependencies:{0}- Component '{2}' (via override) which was not found. Did you forget to register it or misspelled the name? If the component is registered and override is via type make sure it doesn't have non-default name assigned explicitly or override the dependency via name.{0}",
 					Environment.NewLine,
 					typeof(A).FullName,
 					typeof(ReturnDefaultInterceptor).FullName);

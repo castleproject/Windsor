@@ -27,7 +27,7 @@ namespace CastleTests
 	using NUnit.Framework;
 
 	[TestFixture]
-	public class TypedDependenciesTestCase : AbstractContainerTestCase
+	public class TypedParametersTestCase : AbstractContainerTestCase
 	{
 		[Test]
 		public void Can_mix_typed_arguments_with_named()

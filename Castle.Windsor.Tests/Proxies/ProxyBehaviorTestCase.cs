@@ -212,7 +212,7 @@ namespace Castle.Proxies
 		[Test]
 		public void RequestMarshalByRefProxyWithAttribute()
 		{
-			Container.Register(Component.For<StandardInterceptor>().Named("standard.interceptor"),
+			Container.Register(Component.For<StandardInterceptor>(),
 			                   Component.For<ICalcService>().ImplementedBy<CalculatorServiceWithMarshalByRefProxyBehavior>());
 
 			var calcService = Container.Resolve<ICalcService>();

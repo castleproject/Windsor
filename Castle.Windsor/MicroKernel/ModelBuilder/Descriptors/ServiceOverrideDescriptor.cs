@@ -55,23 +55,23 @@ namespace Castle.MicroKernel.ModelBuilder.Descriptors
 			}
 		}
 
-		private void Apply(ComponentModel model, object dependencyKey, object value, ServiceOverride @override)
+		private void Apply(ComponentModel model, Object dependencyKey, Object dependencyValue, ServiceOverride @override)
 		{
-			if (value is string)
+			if (dependencyValue is String)
 			{
-				ApplySimpleReference(model, dependencyKey, (String)value);
+				ApplySimpleReference(model, dependencyKey, (String)dependencyValue);
 			}
-			else if (value is IEnumerable<String>)
+			else if (dependencyValue is IEnumerable<String>)
 			{
-				ApplyReferenceList(model, dependencyKey, (IEnumerable<String>)value, @override);
+				ApplyReferenceList(model, dependencyKey, (IEnumerable<String>)dependencyValue, @override);
 			}
-			if (value is Type)
+			else if (dependencyValue is Type)
 			{
-				ApplySimpleReference(model, dependencyKey, ComponentName.DefaultNameFor((Type)value));
+				ApplySimpleReference(model, dependencyKey, ComponentName.DefaultNameFor((Type)dependencyValue));
 			}
-			else if (value is IEnumerable<Type>)
+			else if (dependencyValue is IEnumerable<Type>)
 			{
-				ApplyReferenceList(model, dependencyKey, ((IEnumerable<Type>)value).Select(ComponentName.DefaultNameFor), @override);
+				ApplyReferenceList(model, dependencyKey, ((IEnumerable<Type>)dependencyValue).Select(ComponentName.DefaultNameFor), @override);
 			}
 		}
 
