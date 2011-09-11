@@ -15,126 +15,50 @@
 namespace Castle.Facilities.Synchronize
 {
 	using System;
+	using System.Threading;
+
+	using Castle.MicroKernel;
 
 	/// <summary>
 	///   Represents a reference to a SynchronizeContext component.
 	/// </summary>
 	[Serializable]
-	public class SynchronizeContextReference
+	public class SynchronizeContextReference : ComponentReference<SynchronizationContext>
 	{
-		private readonly String componentKey;
-		private readonly SynchronizeContextReferenceType refType;
-		private readonly Type serviceType;
-
-		/// <summary>
-		///   Initializes a new instance of the <see cref = "SynchronizeContextReference" /> class.
-		/// </summary>
-		/// <param name = "componentKey">The component key.</param>
-		public SynchronizeContextReference(String componentKey)
+		public SynchronizeContextReference(Type componentType) : base(componentType)
 		{
-			if (componentKey == null)
-			{
-				throw new ArgumentNullException("componentKey");
-			}
-			refType = SynchronizeContextReferenceType.Key;
-			this.componentKey = componentKey;
 		}
 
-		/// <summary>
-		///   Initializes a new instance of the <see cref = "SynchronizeContextReference" /> class.
-		/// </summary>
-		/// <param name = "serviceType">Type of the service.</param>
-		public SynchronizeContextReference(Type serviceType)
+		public SynchronizeContextReference(string referencedComponentName) : base(referencedComponentName)
 		{
-			if (serviceType == null)
-			{
-				throw new ArgumentNullException("serviceType");
-			}
-
-			refType = SynchronizeContextReferenceType.Interface;
-			this.serviceType = serviceType;
 		}
 
-		/// <summary>
-		///   Gets the synchronization context component key.
-		/// </summary>
-		/// <value>The synchronization component key.</value>
-		public String ComponentKey
-		{
-			get { return componentKey; }
-		}
-
-		/// <summary>
-		///   Gets the type of the reference.
-		/// </summary>
-		/// <value>The type of the reference.</value>
-		public SynchronizeContextReferenceType ReferenceType
-		{
-			get { return refType; }
-		}
-
-		/// <summary>
-		///   Gets the type of the synchronization service.
-		/// </summary>
-		/// <value>The type of the synchronization service.</value>
-		public Type ServiceType
-		{
-			get { return serviceType; }
-		}
-
-		/// <summary>
-		///   Determines if the other reference is equal.
-		/// </summary>
-		/// <param name = "obj">The other reference.</param>
-		/// <returns>true if equal, false otherwise.</returns>
 		public override bool Equals(object obj)
 		{
-			if (this == obj)
-			{
-				return true;
-			}
-
-			var other = obj as SynchronizeContextReference;
-			if (other == null)
+			if (ReferenceEquals(null, obj))
 			{
 				return false;
 			}
-
-			return refType == other.refType &&
-			       componentKey == other.componentKey &&
-			       serviceType == other.ServiceType;
+			if (ReferenceEquals(this, obj))
+			{
+				return true;
+			}
+			if (obj.GetType() != typeof(SynchronizeContextReference))
+			{
+				return false;
+			}
+			var other = (SynchronizeContextReference)obj;
+			return Equals(other.referencedComponentName, referencedComponentName);
 		}
 
-		/// <summary>
-		///   Gets the hash code.
-		/// </summary>
-		/// <returns>The hash code.</returns>
 		public override int GetHashCode()
 		{
-			return refType.GetHashCode() ^
-			       (componentKey != null
-			        	? componentKey.GetHashCode()
-			        	: serviceType.GetHashCode());
+			return (referencedComponentName != null ? referencedComponentName.GetHashCode() : 0);
 		}
 
-		/// <summary>
-		///   Gets the string representation of the reference.
-		/// </summary>
-		/// <returns>The string representation of the reference.</returns>
-		public override string ToString()
+		protected override Type ComponentType
 		{
-			var str = "SynchronizationContextReference : ";
-
-			if (refType == SynchronizeContextReferenceType.Key)
-			{
-				str += string.Format("key = {0}", ComponentKey);
-			}
-			else
-			{
-				str += string.Format("service = {0}", ServiceType.FullName);
-			}
-
-			return str;
+			get { return referencedComponentType; }
 		}
 	}
 }

@@ -17,7 +17,9 @@ namespace Castle.Facilities.Synchronize
 	using System;
 	using System.Collections.Generic;
 	using System.Reflection;
+	using System.Threading;
 
+	using Castle.MicroKernel;
 	using Castle.MicroKernel.Facilities;
 
 	/// <summary>
@@ -101,7 +103,7 @@ namespace Castle.Facilities.Synchronize
 		///   Gets the list of unique synchronization context references.
 		/// </summary>
 		/// <returns>The list of unique synchronization context references.</returns>
-		public IList<SynchronizeContextReference> GetUniqueSynchContextReferences()
+		public IEnumerable<IReference<SynchronizationContext>> GetUniqueSynchContextReferences()
 		{
 			var references = new List<SynchronizeContextReference>();
 

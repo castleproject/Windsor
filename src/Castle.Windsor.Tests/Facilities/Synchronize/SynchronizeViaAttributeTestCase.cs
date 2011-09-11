@@ -82,7 +82,7 @@ namespace CastleTests.Facilities.Synchronize
 
 			var message =
 				string.Format(
-					"Can't create component 'CastleTests.Facilities.Synchronize.Components.ClassInContextWithMissingDependency' as it has dependencies to be satisfied.{0}{0}'CastleTests.Facilities.Synchronize.Components.ClassInContextWithMissingDependency' is waiting for the following dependencies:{0}- Service 'System.Threading.SynchronizationContext' which was not registered.{0}",
+					"Can't create component 'CastleTests.Facilities.Synchronize.Components.ClassInContextWithMissingDependency' as it has dependencies to be satisfied.{0}{0}'CastleTests.Facilities.Synchronize.Components.ClassInContextWithMissingDependency' is waiting for the following dependencies:{0}- Component 'System.Threading.SynchronizationContext' which was not registered.{0}",
 					Environment.NewLine);
 
 			Assert.AreEqual(message, exception.Message);
@@ -111,7 +111,7 @@ namespace CastleTests.Facilities.Synchronize
 
 			var messasge =
 				string.Format(
-					"Can't create component 'CastleTests.Facilities.Synchronize.Components.AsynchronousWorker' as it has dependencies to be satisfied.{0}{0}'CastleTests.Facilities.Synchronize.Components.AsynchronousWorker' is waiting for the following dependencies:{0}- Service 'CastleTests.Facilities.Synchronize.Components.AsynchronousContext' which was not registered.{0}",
+					"Can't create component 'CastleTests.Facilities.Synchronize.Components.AsynchronousWorker' as it has dependencies to be satisfied.{0}{0}'CastleTests.Facilities.Synchronize.Components.AsynchronousWorker' is waiting for the following dependencies:{0}- Component 'CastleTests.Facilities.Synchronize.Components.AsynchronousContext' which was not registered.{0}",
 					Environment.NewLine);
 
 			Assert.AreEqual(messasge, exception.Message);

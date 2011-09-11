@@ -57,7 +57,7 @@ namespace Castle.Facilities.TypedFactory
 				typeof(Empty),
 				new Arguments { { "typed.fac.entry", entry } }) { LifestyleType = LifestyleType.Singleton };
 
-			model.Interceptors.Add(new InterceptorReference(typeof(FactoryInterceptor)));
+			model.Interceptors.Add(new InterceptorReference("typed.fac.interceptor"));
 
 			var proxyOptions = model.ObtainProxyOptions();
 			proxyOptions.OmitTarget = true;

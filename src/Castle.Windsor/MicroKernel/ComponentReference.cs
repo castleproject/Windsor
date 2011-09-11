@@ -30,13 +30,14 @@ namespace Castle.MicroKernel
 	public class ComponentReference<T> : IReference<T>
 	{
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
-		private readonly string referencedComponentName;
+		protected readonly string referencedComponentName;
 
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
-		private readonly Type referencedComponentType;
+		protected readonly Type referencedComponentType;
 
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
-		private DependencyModel dependencyModel;
+		protected DependencyModel dependencyModel;
+
 
 		/// <summary>
 		///   Creates a new instance of <see cref = "ComponentReference{T}" /> referencing default component implemented by <paramref
@@ -63,14 +64,6 @@ namespace Castle.MicroKernel
 			this.referencedComponentName = referencedComponentName;
 		}
 
-		/// <summary>
-		///   Creates a new instance of <see cref = "ComponentReference{T}" /> referencing default component implemented by <typeparamref
-		///    name = "T" />
-		/// </summary>
-		public ComponentReference() : this(typeof(T))
-		{
-		}
-
 		public T Resolve(IKernel kernel, CreationContext context)
 		{
 			var handler = GetHandler(kernel);
@@ -89,7 +82,7 @@ namespace Castle.MicroKernel
 						handler.ComponentModel.Name));
 			}
 
-			var contextForInterceptor = RebuildContext(ComponentType(), context);
+			var contextForInterceptor = RebuildContext(handler, context);
 
 			try
 			{
@@ -101,9 +94,9 @@ namespace Castle.MicroKernel
 			}
 		}
 
-		private Type ComponentType()
+		protected virtual Type ComponentType
 		{
-			return referencedComponentType ?? typeof(T);
+			get { return referencedComponentType ?? typeof(T); }
 		}
 
 		private IHandler GetHandler(IKernel kernel)
@@ -128,8 +121,9 @@ namespace Castle.MicroKernel
 			return handler;
 		}
 
-		private CreationContext RebuildContext(Type handlerType, CreationContext current)
+		private CreationContext RebuildContext(IHandler handler, CreationContext current)
 		{
+			var handlerType = ComponentType ?? handler.ComponentModel.Services.First();
 			if (handlerType.ContainsGenericParameters)
 			{
 				return current;
@@ -140,7 +134,7 @@ namespace Castle.MicroKernel
 
 		void IReference<T>.Attach(ComponentModel component)
 		{
-			dependencyModel = new ComponentDependencyModel(referencedComponentName, ComponentType());
+			dependencyModel = new ComponentDependencyModel(referencedComponentName, ComponentType);
 			component.Dependencies.Add(dependencyModel);
 		}
 
