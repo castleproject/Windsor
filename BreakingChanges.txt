@@ -1,4 +1,17 @@
 ================================================================================================
+change - Referencing interceptors by type will not work if the interceptor has custom name.
+
+impact - medium
+fixability - easy
+
+description - We unified how referencing components by type works all across Windsor and that
+	introduced change for some areas like referencing interceptors. Now referencing component
+	by type means "component implemented by given type with default name". This is how it worked
+	for service overrides and is now adapted all across the framework.
+
+fix - Remove Name (id in XML registration) from the referenced components if you're not using it
+	or reference the component by its name.
+================================================================================================
 change - .Service method on mixing registration has been removed and replaced with.Component.
 
 impact - low
@@ -26,7 +39,8 @@ description - The overload could cause unexpected behavior when the generic para
 	inferred, and as such it is removed to make the type always explicit. 
 
 fix - Use overload that specifies type explicitly:
-	d.Insert(typeof(IFoo), new MyFoo()) instead of d.Insert<IFoo>(new MyFoo()) 
+	d.Insert(typeof(IFoo), new MyFoo()) instead of d.Insert<IFoo>(new MyFoo()) or new, explicit
+	d.InsertTyped<IFoo>(new MyFoo())
 ================================================================================================
 change - Method object Generate(IProxyBuilder, ProxyGenerationOptions, IInterceptor[]) on type
 	IProxyFactoryExtension changed signature.

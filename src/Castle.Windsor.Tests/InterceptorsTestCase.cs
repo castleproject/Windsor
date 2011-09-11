@@ -71,13 +71,11 @@ namespace Castle.Windsor.Tests
 		[Test]
 		public void Interface_that_depends_on_service_it_is_intercepting()
 		{
-			container.Register(Component.For(typeof(InterceptorThatCauseStackOverflow)).Named("interceptor"));
-			container.Register(
-				Component.For<ICameraService>().ImplementedBy<CameraService>()
-					.Interceptors(new[] { new InterceptorReference(typeof(InterceptorThatCauseStackOverflow)), }).First,
-				//because it has no interceptors, it is okay to resolve it...
-				Component.For<ICameraService>().ImplementedBy<CameraService>().Named("okay to resolve")
-				);
+			container.Register(Component.For<InterceptorThatCauseStackOverflow>(),
+			                   Component.For<ICameraService>().ImplementedBy<CameraService>().Interceptors<InterceptorThatCauseStackOverflow>(),
+			                   //because it has no interceptors, it is okay to resolve it...
+			                   Component.For<ICameraService>().ImplementedBy<CameraService>().Named("okay to resolve"));
+
 			container.Resolve<ICameraService>();
 		}
 
@@ -222,10 +220,10 @@ namespace Castle.Windsor.Tests
 		{
 			container = new WindsorContainer(); // So we wont use the facilities
 
-			container.Register(Component.For(typeof(ResultModifierInterceptor)).Named("interceptor"));
-			container.Register(Component.For(typeof(CalculatorServiceWithAttributes)).Named("key"));
+			container.Register(Component.For<ResultModifierInterceptor>(),
+			                   Component.For<CalculatorServiceWithAttributes>());
 
-			var service = container.Resolve<CalculatorServiceWithAttributes>("key");
+			var service = container.Resolve<CalculatorServiceWithAttributes>();
 
 			Assert.IsNotNull(service);
 			Assert.AreEqual(5, service.Sum(2, 2));

@@ -1,29 +1,22 @@
-<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8"?>
+
 <configuration>
 
   <facilities>
 
-    <facility
-		id="remote.facility"
-		type="Castle.Facilities.Remoting.RemotingFacility, Castle.Facilities.Remoting"
-		isServer="true"
-		registryUri="kernel.rem"
-		remotingConfigurationFile="RemotingTcpConfig.config" />
+    <facility id="remote.facility"
+              type="Castle.Facilities.Remoting.RemotingFacility, Castle.Facilities.Remoting"
+              isServer="true"
+              registryUri="kernel.rem"
+              remotingConfigurationFile="RemotingTcpConfig.config" />
 
   </facilities>
 
   <components>
 
-    <component
-		id="myinterceptor"
-		type="ChangeResultInterceptor"
-		/>
+    <component type="ChangeResultInterceptor" />
 
-    <component
-		id="calc.service"
-		service="ICalcService"
-		type="InterceptableCalcServiceRemoting"
-		remoteserver="component" />
+    <component id="calc.service" service="ICalcService" type="InterceptableCalcServiceRemoting" remoteserver="component" />
 
   </components>
 

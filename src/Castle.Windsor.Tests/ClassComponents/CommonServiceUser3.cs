@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,13 +12,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Generics
+namespace Castle.MicroKernel.Tests.ClassComponents
 {
-	using Castle.Windsor.Tests;
-
-	using CastleTests.Components;
-
-	public interface IARepository : CastleTests.Generics.IRepository<A>
+	public class CommonServiceUser3
 	{
+		private readonly ICommon common;
+
+		public CommonServiceUser3()
+		{
+		}
+
+		public CommonServiceUser3(ICommon common)
+		{
+			this.common = common;
+		}
+
+		public ICommon CommonService
+		{
+			get { return common; }
+		}
 	}
 }

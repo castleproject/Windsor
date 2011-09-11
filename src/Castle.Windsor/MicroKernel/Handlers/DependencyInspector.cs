@@ -21,6 +21,7 @@ namespace Castle.MicroKernel.Handlers
 	using System.Text;
 
 	using Castle.Core;
+	using Castle.MicroKernel.SubSystems.Conversion;
 
 	public class DependencyInspector : IDependencyInspector
 	{
@@ -56,7 +57,7 @@ namespace Castle.MicroKernel.Handlers
 					// NOTE: that's a workaround for us having dependency twice potentially, once from configuration and once from actual type scan
 					if (uniqueOverrides.Add(dependency.ReferencedComponentName))
 					{
-						InspectServiceOverrideDependency(dependency.ReferencedComponentName, kernel.GetHandler(dependency.ReferencedComponentName));
+						InspectServiceOverrideDependency(dependency, kernel);
 					}
 				}
 				else if (dependency.IsValueType || dependency.TargetItemType == typeof(string) || dependency.TargetItemType == null)
@@ -129,12 +130,16 @@ namespace Castle.MicroKernel.Handlers
 			}
 		}
 
-		private void InspectServiceOverrideDependency(string referenceName, IHandler handler)
+		private void InspectServiceOverrideDependency(DependencyModel dependency, IKernel kernel)
 		{
+			var referenceName = dependency.ReferencedComponentName;
+			var handler = kernel.GetHandler(referenceName);
 			//TODO: what about self dependency?
 			if (handler == null)
 			{
-				message.AppendFormat("- Component '{0}' which was not registered. Did you misspell the name?", referenceName);
+				message.AppendFormat(
+					"- Component '{0}' (via override) which was not found. Did you forget to register it or misspelled the name? If the component is registered and override is via type make sure it doesn't have non-default name assigned explicitly or override the dependency via name.",
+					referenceName);
 				message.AppendLine();
 			}
 			else

@@ -60,7 +60,6 @@ namespace Castle.Facilities.Logging
 		public object Resolve(CreationContext context, ISubDependencyResolver parentResolver, ComponentModel model, DependencyModel dependency)
 		{
 			Debug.Assert(CanResolve(context, parentResolver, model, dependency));
-
 			if (extendedLoggerFactory != null)
 			{
 				return extendedLoggerFactory.Create(model.Implementation);

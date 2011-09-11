@@ -342,7 +342,7 @@ namespace CastleTests.Facilities.Synchronize
 
 			var expected =
 				string.Format(
-					"Can't create component 'CastleTests.Facilities.Synchronize.Components.DummyForm' as it has dependencies to be satisfied.{0}{0}'CastleTests.Facilities.Synchronize.Components.DummyForm' is waiting for the following dependencies:{0}- Component 'missing.component' which was not registered. Did you misspell the name?{0}",
+					"Can't create component 'CastleTests.Facilities.Synchronize.Components.DummyForm' as it has dependencies to be satisfied.{0}{0}'CastleTests.Facilities.Synchronize.Components.DummyForm' is waiting for the following dependencies:{0}- Component 'missing.component' (via override) which was not found. Did you forget to register it or misspelled the name? If the component is registered and override is via type make sure it doesn't have non-default name assigned explicitly or override the dependency via name.{0}",
 					Environment.NewLine);
 			Assert.AreEqual(expected, exception.Message);
 		}

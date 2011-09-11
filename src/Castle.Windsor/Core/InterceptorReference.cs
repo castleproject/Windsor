@@ -16,7 +16,7 @@ namespace Castle.Core
 {
 	using System;
 	using System.Diagnostics;
-	using System.Linq;
+	using System.Text;
 
 	using Castle.DynamicProxy;
 	using Castle.MicroKernel;
@@ -91,26 +91,34 @@ namespace Castle.Core
 			return Equals(referencedComponentName, other.referencedComponentName);
 		}
 
+		private Type ComponentType()
+		{
+			return referencedComponentType ?? typeof(IInterceptor);
+		}
+
+		private StringBuilder GetExceptionMessageOnHandlerNotFound(IKernel kernel)
+		{
+			var message = new StringBuilder(string.Format("The interceptor '{0}' could not be resolved. ", referencedComponentName));
+			// ok so the component is missing. Now - is it missing because it's not been registered or because the reference is by type and interceptor was registered with custom name?
+			if (referencedComponentType != null)
+			{
+				var typedHandler = kernel.GetHandler(referencedComponentType);
+				if (typedHandler != null)
+				{
+					message.AppendFormat(
+						"Component '{0}' matching the type specified was found in the container. Did you mean to use it? If so, please specify the reference via name, or register the interceptor without specifying its name.",
+						typedHandler.ComponentModel.Name);
+					return message;
+				}
+			}
+			message.Append("Did you forget to register it?");
+			return message;
+		}
+
 		private IHandler GetInterceptorHandler(IKernel kernel)
 		{
-			var interceptorHandler = kernel.GetHandler(referencedComponentName);
-			if (interceptorHandler == null && referencedComponentType != null)
-			{
-				var handlers = kernel.GetAssignableHandlers(referencedComponentType)
-					.Where(h => h.ComponentModel.Implementation == referencedComponentType)
-					.ToArray();
-				if(handlers.Length > 1)
-				{
-					throw new DependencyResolverException(
-						string.Format(
-							"Ambiguous interceptor reference - there are more than one interceptor in the container implemented by the referenced type {0}. The components are:{1}{2}{1}To resolve this issue use named reference instead.",
-							referencedComponentType,
-							Environment.NewLine,
-							String.Join(Environment.NewLine, handlers.Select(h => h.ComponentModel.Name))));
-				}
-				return handlers.SingleOrDefault();
-			}
-			return interceptorHandler;
+			var handler = kernel.GetHandler(referencedComponentName);
+			return handler;
 		}
 
 		private CreationContext RebuildContext(Type handlerType, CreationContext current)
@@ -121,11 +129,6 @@ namespace Castle.Core
 			}
 
 			return new CreationContext(handlerType, current, true);
-		}
-
-		private Type ComponentType()
-		{
-			return referencedComponentType ?? typeof(IInterceptor);
 		}
 
 		void IReference<IInterceptor>.Attach(ComponentModel component)
@@ -143,7 +146,8 @@ namespace Castle.Core
 			var handler = GetInterceptorHandler(kernel);
 			if (handler == null)
 			{
-				throw new DependencyResolverException(string.Format("The interceptor {0} could not be resolved", ToString()));
+				var message = GetExceptionMessageOnHandlerNotFound(kernel);
+				throw new DependencyResolverException(message.ToString());
 			}
 
 			if (handler.IsBeingResolvedInContext(context))

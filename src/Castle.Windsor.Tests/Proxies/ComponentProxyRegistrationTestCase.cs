@@ -103,7 +103,7 @@ namespace CastleTests.Proxies
 				                                Container.Resolve<ICalcService>());
 			Assert.AreEqual(
 				string.Format(
-					"Can't create component '{1}' as it has dependencies to be satisfied.{0}{0}'{1}' is waiting for the following dependencies:{0}- Component 'Castle.ProxyInfrastructure.ProxyNothingHook' which was not registered. Did you misspell the name?{0}",
+					"Can't create component '{1}' as it has dependencies to be satisfied.{0}{0}'{1}' is waiting for the following dependencies:{0}- Component 'Castle.ProxyInfrastructure.ProxyNothingHook' (via override) which was not found. Did you forget to register it or misspelled the name? If the component is registered and override is via type make sure it doesn't have non-default name assigned explicitly or override the dependency via name.{0}",
 					Environment.NewLine,
 					typeof(CalculatorService).FullName),
 				exception.Message);
@@ -123,7 +123,7 @@ namespace CastleTests.Proxies
 				Assert.Throws<HandlerException>(() =>
 				                                Container.Resolve<ICalcService>());
 			var message = string.Format(
-				"Can't create component '{1}' as it has dependencies to be satisfied.{0}{0}'{1}' is waiting for the following dependencies:{0}- Component '{2}' which was not registered. Did you misspell the name?{0}",
+				"Can't create component '{1}' as it has dependencies to be satisfied.{0}{0}'{1}' is waiting for the following dependencies:{0}- Component '{2}' (via override) which was not found. Did you forget to register it or misspelled the name? If the component is registered and override is via type make sure it doesn't have non-default name assigned explicitly or override the dependency via name.{0}",
 				Environment.NewLine,
 				typeof(CalculatorService).FullName,
 				typeof(A).FullName);
@@ -144,7 +144,7 @@ namespace CastleTests.Proxies
 				Assert.Throws<HandlerException>(() =>
 				                                Container.Resolve<ICalcService>());
 			var message = string.Format(
-				"Can't create component '{1}' as it has dependencies to be satisfied.{0}{0}'{1}' is waiting for the following dependencies:{0}- Component 'Castle.Windsor.Tests.Interceptors.DummyInterceptorSelector' which was not registered. Did you misspell the name?{0}",
+				"Can't create component '{1}' as it has dependencies to be satisfied.{0}{0}'{1}' is waiting for the following dependencies:{0}- Component 'Castle.Windsor.Tests.Interceptors.DummyInterceptorSelector' (via override) which was not found. Did you forget to register it or misspelled the name? If the component is registered and override is via type make sure it doesn't have non-default name assigned explicitly or override the dependency via name.{0}",
 				Environment.NewLine,
 				typeof(CalculatorService).FullName);
 
