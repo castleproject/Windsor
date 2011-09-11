@@ -12,12 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.MicroKernel.Tests.ClassComponents
+namespace CastleTests.Components
 {
-	/// <summary>
-	///   Summary description for CommonImpl2.
-	/// </summary>
-	public class CommonImpl2 : ICommon
+	public interface ISimpleService2
 	{
+		string Method();
 	}
 }

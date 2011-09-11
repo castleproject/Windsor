@@ -394,6 +394,7 @@
     <Compile Include="Components\IService.cs" />
     <Compile Include="Components\IService2.cs" />
     <Compile Include="Components\ISimpleMixIn.cs" />
+    <Compile Include="Components\ISimpleService2.cs" />
     <Compile Include="Components\ItemService.cs" />
     <Compile Include="Components\IView.cs" />
     <Compile Include="Components\JohnChild.cs" />
@@ -406,6 +407,8 @@
     <Compile Include="Components\PlasmaGunArm.cs" />
     <Compile Include="Components\ResolvableDependency.cs" />
     <Compile Include="Components\ReviewerRepository.cs" />
+    <Compile Include="Components\SimpleService2A.cs" />
+    <Compile Include="Components\SimpleService2B.cs" />
     <Compile Include="Components\SimpleServiceInitializable.cs" />
     <Compile Include="Components\SimpleServiceSupportInitialize.cs" />
     <Compile Include="Components\SmsSender.cs" />
