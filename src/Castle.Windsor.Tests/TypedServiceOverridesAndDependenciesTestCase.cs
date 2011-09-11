@@ -26,6 +26,20 @@ namespace CastleTests
 	public class TypedServiceOverridesAndDependenciesTestCase : AbstractContainerTestCase
 	{
 		[Test]
+		public void Mixin_picks_component_implemented_by_that_type()
+		{
+			Container.Register(Component.For<A>()
+			                   	.Proxy.MixIns(x => x.Component<SimpleService2B>()),
+			                   Component.For<ISimpleService2>().ImplementedBy<SimpleService2A>(),
+			                   Component.For<ISimpleService2>().ImplementedBy<SimpleService2B>());
+
+			var item = Container.Resolve<A>();
+			var two = (ISimpleService2)item;
+
+			Assert.AreEqual("b", two.Method());
+		}
+
+		[Test]
 		public void Picks_component_implemented_by_that_type()
 		{
 			Container.Register(Component.For<CommonServiceUser>()
