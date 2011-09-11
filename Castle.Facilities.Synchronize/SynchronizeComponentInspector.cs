@@ -123,10 +123,9 @@ namespace Castle.Facilities.Synchronize
 				}
 
 				options.Selector = new InstanceReference<IInterceptorSelector>(new SynchronizeInterceptorSelector(metaInfo, userSelector));
-
 				foreach (var reference in metaInfo.GetUniqueSynchContextReferences())
 				{
-					model.Dependencies.Add(new ComponentDependencyModel(reference.ComponentKey, reference.ServiceType));
+					reference.Attach(model);
 				}
 			}
 		}

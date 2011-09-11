@@ -15,8 +15,10 @@
 namespace Castle.Facilities.Synchronize
 {
 	using System;
+	using System.Collections.Generic;
 	using System.ComponentModel;
 	using System.Linq;
+	using System.Reflection;
 	using System.Runtime.Serialization;
 	using System.Threading;
 	using System.Windows.Threading;
@@ -59,8 +61,6 @@ namespace Castle.Facilities.Synchronize
 			this.metaStore = metaStore;
 		}
 
-		#region IOnBehalfAware
-
 		/// <summary>
 		///   Sets the intercepted ComponentModel.
 		/// </summary>
@@ -68,9 +68,8 @@ namespace Castle.Facilities.Synchronize
 		public void SetInterceptedComponentModel(ComponentModel target)
 		{
 			metaInfo = metaStore.GetMetaFor(target.Implementation);
-		}
 
-		#endregion
+		}
 
 		/// <summary>
 		/// Intercepts the invocation and applies any necessary
@@ -117,7 +116,6 @@ namespace Castle.Facilities.Synchronize
 		{
 			if (metaInfo != null)
 			{
-				IHandler handler = null;
 				SynchronizationContext syncContext = null;
 				SynchronizationContext prevSyncContext = null;
 				var methodInfo = invocation.MethodInvocationTarget;
@@ -125,29 +123,7 @@ namespace Castle.Facilities.Synchronize
 
 				if (syncContextRef != null)
 				{
-					switch (syncContextRef.ReferenceType)
-					{
-						case SynchronizeContextReferenceType.Key:
-							handler = kernel.GetHandler(syncContextRef.ComponentKey);
-							break;
-
-						case SynchronizeContextReferenceType.Interface:
-							handler = kernel.GetHandler(syncContextRef.ServiceType);
-							break;
-					}
-
-					if (handler == null)
-					{
-						throw new ApplicationException("The synchronization context could not be resolved.  Did you forget to register it in the container?");
-					}
-
-					syncContext = handler.Resolve(CreationContext.CreateEmpty()) as SynchronizationContext;
-
-					if (syncContext == null)
-					{
-						throw new ApplicationException(string.Format("{0} does not implement {1}", syncContextRef, typeof(SynchronizationContext).FullName));
-					}
-
+					syncContext = syncContextRef.Resolve(kernel, CreationContext.CreateEmpty());
 					prevSyncContext = SynchronizationContext.Current;
 				}
 				else

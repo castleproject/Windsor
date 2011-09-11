@@ -48,7 +48,7 @@ namespace Castle.Facilities.TypedFactory
 
 		public void SelectedWith<TSelectorComponent>() where TSelectorComponent : ITypedFactoryComponentSelector
 		{
-			selectorReference = (IReference<ITypedFactoryComponentSelector>)new ComponentReference<TSelectorComponent>();
+			selectorReference = new ComponentReference<ITypedFactoryComponentSelector>(typeof(TSelectorComponent));
 		}
 
 		public void SelectedWith(ITypedFactoryComponentSelector selector)
