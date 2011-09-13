@@ -15,6 +15,7 @@
 namespace Castle.MicroKernel.SubSystems.Conversion
 {
 	using System;
+	using System.Globalization;
 	using System.Threading;
 
 	using Castle.Core.Configuration;
@@ -58,7 +59,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 
 			try
 			{
-				return Convert.ChangeType(value, targetType, Thread.CurrentThread.CurrentCulture);
+				return Convert.ChangeType(value, targetType, CultureInfo.InvariantCulture);
 			}
 			catch (Exception ex)
 			{

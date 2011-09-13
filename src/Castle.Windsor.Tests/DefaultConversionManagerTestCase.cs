@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,47 +12,64 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.MicroKernel.Tests
+namespace CastleTests
 {
 	using System;
 	using System.Collections;
 	using System.Collections.Generic;
+	using System.Threading;
+
 	using Castle.Core.Configuration;
 	using Castle.MicroKernel.SubSystems.Conversion;
+
 	using NUnit.Framework;
 
 	[TestFixture]
 	public class DefaultConversionManagerTestCase
 	{
-		private DefaultConversionManager conversionMng = new DefaultConversionManager();
+		private readonly DefaultConversionManager converter = new DefaultConversionManager();
+
+		[Test]
+		[SetCulture("pl-PL")]
+		[Bug("IOC-314")]
+		public void Converting_numbers_uses_oridinal_culture()
+		{
+			Assert.AreEqual(",", Thread.CurrentThread.CurrentCulture.NumberFormat.CurrencyDecimalSeparator);
+
+			var result = converter.PerformConversion<Decimal>("123.456");
+
+			Assert.AreEqual(123.456m, result);
+		}
 
 		[Test]
 		public void PerformConversionInt()
 		{
-			Assert.AreEqual(100, conversionMng.PerformConversion("100", typeof(int)));
-			Assert.AreEqual(1234, conversionMng.PerformConversion("1234", typeof(int)));
+			Assert.AreEqual(100, converter.PerformConversion("100", typeof(int)));
+			Assert.AreEqual(1234, converter.PerformConversion("1234", typeof(int)));
 		}
 
 		[Test]
 		public void PerformConversionChar()
 		{
-			Assert.AreEqual('a', conversionMng.PerformConversion("a", typeof(Char)));
+			Assert.AreEqual('a', converter.PerformConversion("a", typeof(Char)));
 		}
 
 		[Test]
 		public void PerformConversionBool()
 		{
-			Assert.AreEqual(true, conversionMng.PerformConversion("true", typeof(bool)));
-			Assert.AreEqual(false, conversionMng.PerformConversion("false", typeof(bool)));
+			Assert.AreEqual(true, converter.PerformConversion("true", typeof(bool)));
+			Assert.AreEqual(false, converter.PerformConversion("false", typeof(bool)));
 		}
+
 #if SILVERLIGHT
 		[Ignore("This does not work in tests under Silverlight")]
 #endif
+
 		[Test]
 		public void PerformConversionType()
 		{
 			Assert.AreEqual(typeof(DefaultConversionManagerTestCase),
-			                conversionMng.PerformConversion(
+			                converter.PerformConversion(
 			                	"Castle.MicroKernel.Tests.DefaultConversionManagerTestCase, Castle.Windsor.Tests",
 			                	typeof(Type)));
 		}
@@ -60,19 +77,19 @@ namespace Castle.MicroKernel.Tests
 		[Test]
 		public void PerformConversionList()
 		{
-			MutableConfiguration config = new MutableConfiguration("list");
+			var config = new MutableConfiguration("list");
 			config.Attributes["type"] = "System.String";
 
 			config.Children.Add(new MutableConfiguration("item", "first"));
 			config.Children.Add(new MutableConfiguration("item", "second"));
 			config.Children.Add(new MutableConfiguration("item", "third"));
 
-			Assert.IsTrue(conversionMng.CanHandleType(typeof(IList)));
+			Assert.IsTrue(converter.CanHandleType(typeof(IList)));
 #if (!SILVERLIGHT)
-			Assert.IsTrue(conversionMng.CanHandleType(typeof(ArrayList)));
+			Assert.IsTrue(converter.CanHandleType(typeof(ArrayList)));
 #endif
 
-			IList list = (IList) conversionMng.PerformConversion(config, typeof(IList));
+			var list = (IList)converter.PerformConversion(config, typeof(IList));
 			Assert.IsNotNull(list);
 			Assert.AreEqual("first", list[0]);
 			Assert.AreEqual("second", list[1]);
@@ -82,41 +99,41 @@ namespace Castle.MicroKernel.Tests
 		[Test]
 		public void Dictionary()
 		{
-			MutableConfiguration config = new MutableConfiguration("dictionary");
+			var config = new MutableConfiguration("dictionary");
 			config.Attributes["keyType"] = "System.String";
 			config.Attributes["valueType"] = "System.String";
 
-			MutableConfiguration firstItem = new MutableConfiguration("item", "first");
+			var firstItem = new MutableConfiguration("item", "first");
 			firstItem.Attributes["key"] = "key1";
 			config.Children.Add(firstItem);
-			MutableConfiguration secondItem = new MutableConfiguration("item", "second");
+			var secondItem = new MutableConfiguration("item", "second");
 			secondItem.Attributes["key"] = "key2";
 			config.Children.Add(secondItem);
-			MutableConfiguration thirdItem = new MutableConfiguration("item", "third");
+			var thirdItem = new MutableConfiguration("item", "third");
 			thirdItem.Attributes["key"] = "key3";
 			config.Children.Add(thirdItem);
 
-			MutableConfiguration intItem = new MutableConfiguration("item", "40");
+			var intItem = new MutableConfiguration("item", "40");
 			intItem.Attributes["key"] = "4";
 			intItem.Attributes["keyType"] = "System.Int32, mscorlib";
 			intItem.Attributes["valueType"] = "System.Int32, mscorlib";
 
 			config.Children.Add(intItem);
 
-			MutableConfiguration dateItem = new MutableConfiguration("item", "2005/12/1");
+			var dateItem = new MutableConfiguration("item", "2005/12/1");
 			dateItem.Attributes["key"] = "2000/1/1";
 			dateItem.Attributes["keyType"] = "System.DateTime, mscorlib";
 			dateItem.Attributes["valueType"] = "System.DateTime, mscorlib";
 
 			config.Children.Add(dateItem);
 
-			Assert.IsTrue(conversionMng.CanHandleType(typeof(IDictionary)));
+			Assert.IsTrue(converter.CanHandleType(typeof(IDictionary)));
 #if (!SILVERLIGHT)
-			Assert.IsTrue(conversionMng.CanHandleType(typeof(Hashtable)));
+			Assert.IsTrue(converter.CanHandleType(typeof(Hashtable)));
 #endif
 
-			IDictionary dict = (IDictionary)
-			                   conversionMng.PerformConversion(config, typeof(IDictionary));
+			var dict = (IDictionary)
+			           converter.PerformConversion(config, typeof(IDictionary));
 
 			Assert.IsNotNull(dict);
 
@@ -130,7 +147,7 @@ namespace Castle.MicroKernel.Tests
 		[Test]
 		public void DictionaryWithDifferentValueTypes()
 		{
-			MutableConfiguration config = new MutableConfiguration("dictionary");
+			var config = new MutableConfiguration("dictionary");
 
 			config.CreateChild("entry")
 				.Attribute("key", "intentry")
@@ -141,16 +158,16 @@ namespace Castle.MicroKernel.Tests
 				.Attribute("key", "values")
 				.Attribute("valueType", "System.Int32[], mscorlib")
 				.CreateChild("array")
-					.Attribute("type", "System.Int32, mscorlib")
-					.CreateChild("item", "400");
+				.Attribute("type", "System.Int32, mscorlib")
+				.CreateChild("item", "400");
 
-			IDictionary dict = 
-				(IDictionary) conversionMng.PerformConversion(config, typeof(IDictionary));
+			var dict =
+				(IDictionary)converter.PerformConversion(config, typeof(IDictionary));
 
 			Assert.IsNotNull(dict);
 
 			Assert.AreEqual(123, dict["intentry"]);
-			int[] values = (int[]) dict["values"];
+			var values = (int[])dict["values"];
 			Assert.IsNotNull(values);
 			Assert.AreEqual(1, values.Length);
 			Assert.AreEqual(400, values[0]);
@@ -159,17 +176,17 @@ namespace Castle.MicroKernel.Tests
 		[Test]
 		public void GenericPerformConversionList()
 		{
-			MutableConfiguration config = new MutableConfiguration("list");
+			var config = new MutableConfiguration("list");
 			config.Attributes["type"] = "System.Int64";
 
 			config.Children.Add(new MutableConfiguration("item", "345"));
 			config.Children.Add(new MutableConfiguration("item", "3147"));
 			config.Children.Add(new MutableConfiguration("item", "997"));
 
-			Assert.IsTrue(conversionMng.CanHandleType(typeof(IList<double>)));
-			Assert.IsTrue(conversionMng.CanHandleType(typeof(List<string>)));
+			Assert.IsTrue(converter.CanHandleType(typeof(IList<double>)));
+			Assert.IsTrue(converter.CanHandleType(typeof(List<string>)));
 
-			IList<long> list = (IList<long>) conversionMng.PerformConversion(config, typeof(IList<long>));
+			var list = (IList<long>)converter.PerformConversion(config, typeof(IList<long>));
 			Assert.IsNotNull(list);
 			Assert.AreEqual(345L, list[0]);
 			Assert.AreEqual(3147L, list[1]);
@@ -179,16 +196,16 @@ namespace Castle.MicroKernel.Tests
 		[Test]
 		public void ListOfLongGuessingType()
 		{
-			MutableConfiguration config = new MutableConfiguration("list");
+			var config = new MutableConfiguration("list");
 
 			config.Children.Add(new MutableConfiguration("item", "345"));
 			config.Children.Add(new MutableConfiguration("item", "3147"));
 			config.Children.Add(new MutableConfiguration("item", "997"));
 
-			Assert.IsTrue(conversionMng.CanHandleType(typeof(IList<double>)));
-			Assert.IsTrue(conversionMng.CanHandleType(typeof(List<string>)));
+			Assert.IsTrue(converter.CanHandleType(typeof(IList<double>)));
+			Assert.IsTrue(converter.CanHandleType(typeof(List<string>)));
 
-			IList<long> list = (IList<long>) conversionMng.PerformConversion(config, typeof(IList<long>));
+			var list = (IList<long>)converter.PerformConversion(config, typeof(IList<long>));
 			Assert.IsNotNull(list);
 			Assert.AreEqual(345L, list[0]);
 			Assert.AreEqual(3147L, list[1]);
@@ -198,25 +215,25 @@ namespace Castle.MicroKernel.Tests
 		[Test]
 		public void GenericDictionary()
 		{
-			MutableConfiguration config = new MutableConfiguration("dictionary");
+			var config = new MutableConfiguration("dictionary");
 			config.Attributes["keyType"] = "System.String";
 			config.Attributes["valueType"] = "System.Int32";
 
-			MutableConfiguration firstItem = new MutableConfiguration("item", "1");
+			var firstItem = new MutableConfiguration("item", "1");
 			firstItem.Attributes["key"] = "key1";
 			config.Children.Add(firstItem);
-			MutableConfiguration secondItem = new MutableConfiguration("item", "2");
+			var secondItem = new MutableConfiguration("item", "2");
 			secondItem.Attributes["key"] = "key2";
 			config.Children.Add(secondItem);
-			MutableConfiguration thirdItem = new MutableConfiguration("item", "3");
+			var thirdItem = new MutableConfiguration("item", "3");
 			thirdItem.Attributes["key"] = "key3";
 			config.Children.Add(thirdItem);
 
-			Assert.IsTrue(conversionMng.CanHandleType(typeof(IDictionary<string, string>)));
-			Assert.IsTrue(conversionMng.CanHandleType(typeof(Dictionary<string, int>)));
+			Assert.IsTrue(converter.CanHandleType(typeof(IDictionary<string, string>)));
+			Assert.IsTrue(converter.CanHandleType(typeof(Dictionary<string, int>)));
 
-			IDictionary<string, int> dict =
-				(IDictionary<string, int>) conversionMng.PerformConversion(config, typeof(IDictionary<string, int>));
+			var dict =
+				(IDictionary<string, int>)converter.PerformConversion(config, typeof(IDictionary<string, int>));
 
 			Assert.IsNotNull(dict);
 
@@ -228,16 +245,16 @@ namespace Castle.MicroKernel.Tests
 		[Test]
 		public void Array()
 		{
-			MutableConfiguration config = new MutableConfiguration("array");
+			var config = new MutableConfiguration("array");
 
 			config.Children.Add(new MutableConfiguration("item", "first"));
 			config.Children.Add(new MutableConfiguration("item", "second"));
 			config.Children.Add(new MutableConfiguration("item", "third"));
 
-			Assert.IsTrue(conversionMng.CanHandleType(typeof(String[])));
+			Assert.IsTrue(converter.CanHandleType(typeof(String[])));
 
-			String[] array = (String[])
-			                 conversionMng.PerformConversion(config, typeof(String[]));
+			var array = (String[])
+			            converter.PerformConversion(config, typeof(String[]));
 
 			Assert.IsNotNull(array);
 
@@ -249,12 +266,12 @@ namespace Castle.MicroKernel.Tests
 		[Test]
 		public void PerformConversionTimeSpan()
 		{
-			Assert.AreEqual(TimeSpan.Zero, conversionMng.PerformConversion("0", typeof(TimeSpan)));
-			Assert.AreEqual(TimeSpan.FromDays(14), conversionMng.PerformConversion("14", typeof(TimeSpan)));
-			Assert.AreEqual(new TimeSpan(0, 1, 2, 3), conversionMng.PerformConversion("1:2:3", typeof(TimeSpan)));
-			Assert.AreEqual(new TimeSpan(0, 0, 0, 0, 250), conversionMng.PerformConversion("0:0:0.250", typeof(TimeSpan)));
+			Assert.AreEqual(TimeSpan.Zero, converter.PerformConversion("0", typeof(TimeSpan)));
+			Assert.AreEqual(TimeSpan.FromDays(14), converter.PerformConversion("14", typeof(TimeSpan)));
+			Assert.AreEqual(new TimeSpan(0, 1, 2, 3), converter.PerformConversion("1:2:3", typeof(TimeSpan)));
+			Assert.AreEqual(new TimeSpan(0, 0, 0, 0, 250), converter.PerformConversion("0:0:0.250", typeof(TimeSpan)));
 			Assert.AreEqual(new TimeSpan(10, 20, 30, 40, 500),
-			                conversionMng.PerformConversion("10.20:30:40.50", typeof(TimeSpan)));
+			                converter.PerformConversion("10.20:30:40.50", typeof(TimeSpan)));
 		}
 	}
 }

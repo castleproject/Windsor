@@ -4,6 +4,7 @@
 - implemented IOC-312 - Add shortcut methods to API to register types from given namespace
 
 - fixed IOC-315 - ResolveAll should not ignore generic constraint violations on dependencies of resolved component
+- fixed IOC-314 - Parsing container configuration uses the current culture
 - fixed IOC-311 - OptimizeDependencyResolutionDisposable eats exceptions thrown during installation
 - fixed IOC-310 - Add ability to disable performance counters
 
