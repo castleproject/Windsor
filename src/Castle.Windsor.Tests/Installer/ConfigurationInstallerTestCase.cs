@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,15 +12,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#if !SILVERLIGHT // we do not support xml config on SL
 
-namespace Castle.Windsor.Tests.Installer
+#if !SILVERLIGHT
+// we do not support xml config on SL
+
+namespace CastleTests.Installer
 {
 	using System;
 
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.SubSystems.Configuration;
+	using Castle.Windsor;
 	using Castle.Windsor.Installer;
+	using Castle.Windsor.Tests;
 	using Castle.XmlFiles;
 
 	using CastleTests.Components;
@@ -28,92 +32,95 @@ namespace Castle.Windsor.Tests.Installer
 	using NUnit.Framework;
 
 	[TestFixture]
-	public class ConfigurationInstallerTestCase
+	public class ConfigurationInstallerTestCase : AbstractContainerTestCase
 	{
-		private IWindsorContainer container;
-
-		[SetUp]
-		public void Init()
+		[Test]
+		public void Can_reference_components_from_app_config_in_component_node()
 		{
-			container = new WindsorContainer();
+			Container.Install(Configuration.FromAppConfig());
+
+			var item = Container.Resolve<ClassWithArguments>();
+			Assert.AreEqual("a string", item.Arg1);
+			Assert.AreEqual(42, item.Arg2);
 		}
 
 		[Test]
 		public void InstallComponents_FromAppConfig_ComponentsInstalled()
 		{
-			container.Install(Configuration.FromAppConfig());
+			Container.Install(Configuration.FromAppConfig());
 
-			Assert.IsTrue(container.Kernel.HasComponent(typeof(ICalcService)));
-			Assert.IsTrue(container.Kernel.HasComponent("calcservice"));
+			Assert.IsTrue(Container.Kernel.HasComponent(typeof(ICalcService)));
+			Assert.IsTrue(Container.Kernel.HasComponent("calcservice"));
+		}
+
+		[Test]
+		public void InstallComponents_FromMultiple_ComponentsInstalled()
+		{
+			Container.Install(
+				Configuration.FromAppConfig(),
+				Configuration.FromXml(Xml.Embedded("ignoreprop.xml")),
+				Configuration.FromXml(Xml.Embedded("robotwireconfig.xml"))
+				);
+
+			Assert.IsTrue(Container.Kernel.HasComponent(typeof(ICalcService)));
+			Assert.IsTrue(Container.Kernel.HasComponent("calcservice"));
+			Assert.IsTrue(Container.Kernel.HasComponent(typeof(ClassWithDoNotWireProperties)));
+			Assert.IsTrue(Container.Kernel.HasComponent("server"));
+			Assert.IsTrue(Container.Kernel.HasComponent(typeof(Robot)));
+			Assert.IsTrue(Container.Kernel.HasComponent("robot"));
+		}
+
+		[Test]
+		public void InstallComponents_FromXmlFileWithEnvironment_ComponentsInstalled()
+		{
+			Container.Install(
+				Configuration.FromXmlFile(
+					ConfigHelper.ResolveConfigPath("Configuration2/env_config.xml"))
+					.Environment("devel")
+				);
+
+			var prop = Container.Resolve<ComponentWithStringProperty>("component");
+
+			Assert.AreEqual("John Doe", prop.Name);
 		}
 
 		[Test]
 		public void InstallComponents_FromXmlFile_ComponentsInstalled()
 		{
-			container.Install(
+			Container.Install(
 				Configuration.FromXml(Xml.Embedded("installerconfig.xml")));
 
-			Assert.IsTrue(container.Kernel.HasComponent(typeof(ICalcService)));
-			Assert.IsTrue(container.Kernel.HasComponent("calcservice"));
+			Assert.IsTrue(Container.Kernel.HasComponent(typeof(ICalcService)));
+			Assert.IsTrue(Container.Kernel.HasComponent("calcservice"));
 		}
 
 		[Test]
 		public void InstallComponents_FromXmlFile_first_and_from_code()
 		{
-			container.Install(
+			Container.Install(
 				Configuration.FromXml(Xml.Embedded("justConfiguration.xml")),
 				new Installer(c => c.Register(Component.For<ICamera>()
 				                              	.ImplementedBy<Camera>()
 				                              	.Named("camera"))));
 
-			var camera = container.Resolve<ICamera>();
+			var camera = Container.Resolve<ICamera>();
 			Assert.AreEqual("from configuration", camera.Name);
 		}
 
-		[Test,Ignore("This does not work. Would be cool if it did, but we need deeper restructuring first.")]
+		[Test]
+		[Ignore("This does not work. Would be cool if it did, but we need deeper restructuring first.")]
 		public void InstallComponents_from_code_first_and_FromXmlFile()
 		{
-			container.Install(
+			Container.Install(
 				new Installer(c => c.Register(Component.For<ICamera>()
 				                              	.ImplementedBy<Camera>()
 				                              	.Named("camera"))),
 				Configuration.FromXml(Xml.Embedded("justConfiguration.xml"))
 				);
 
-			var camera = container.Resolve<ICamera>();
+			var camera = Container.Resolve<ICamera>();
 			Assert.AreEqual("from configuration", camera.Name);
 		}
-
-		[Test]
-		public void InstallComponents_FromMultiple_ComponentsInstalled()
-		{
-			container.Install(
-				Configuration.FromAppConfig(),
-				Configuration.FromXml(Xml.Embedded("ignoreprop.xml")),
-				Configuration.FromXml(Xml.Embedded("robotwireconfig.xml"))
-				);
-
-			Assert.IsTrue(container.Kernel.HasComponent(typeof(ICalcService)));
-			Assert.IsTrue(container.Kernel.HasComponent("calcservice"));
-			Assert.IsTrue(container.Kernel.HasComponent(typeof(ClassWithDoNotWireProperties)));
-			Assert.IsTrue(container.Kernel.HasComponent("server"));
-			Assert.IsTrue(container.Kernel.HasComponent(typeof(Robot)));
-			Assert.IsTrue(container.Kernel.HasComponent("robot"));
-		}
-
-		[Test]
-		public void InstallComponents_FromXmlFileWithEnvironment_ComponentsInstalled()
-		{
-			container.Install(
-				Configuration.FromXmlFile(
-					ConfigHelper.ResolveConfigPath("Configuration2/env_config.xml"))
-					.Environment("devel")
-					);
-
-			var prop = container.Resolve<ComponentWithStringProperty>("component");
-
-			Assert.AreEqual("John Doe", prop.Name);
-		}		
 	}
 
 	internal class Installer : IWindsorInstaller

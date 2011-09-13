@@ -18,6 +18,7 @@
 namespace Castle.Windsor.Configuration.Interpreters.XmlProcessor.ElementProcessors
 {
 	using System;
+	using System.Configuration;
 	using System.Text.RegularExpressions;
 	using System.Xml;
 
@@ -71,7 +72,9 @@ namespace Castle.Windsor.Configuration.Interpreters.XmlProcessor.ElementProcesso
 				var propRef = match.Groups[1].Value; // #!{ propKey }
 				var propKey = match.Groups[2].Value; // propKey
 
-				XmlNode prop = engine.GetProperty(propKey);
+				{
+				}
+				var prop = engine.GetProperty(propKey);
 
 				if (prop != null)
 				{
@@ -79,14 +82,23 @@ namespace Castle.Windsor.Configuration.Interpreters.XmlProcessor.ElementProcesso
 					// we copy any attributes for the property into the parentNode
 					if (node.ParentNode != null)
 					{
-						MoveAttributes(node.ParentNode as XmlElement, prop as XmlElement);
+						MoveAttributes(node.ParentNode as XmlElement, prop);
 					}
 
 					AppendChild(fragment, prop.ChildNodes);
 				}
 				else if (IsRequiredProperty(propRef))
 				{
-					throw new XmlProcessorException(String.Format("Required configuration property {0} not found", propKey));
+					// fallback to reading from appSettings
+					var appSetting = ConfigurationManager.AppSettings[propKey];
+					if (appSetting != null)
+					{
+						AppendChild(fragment, appSetting);
+					}
+					else
+					{
+						throw new XmlProcessorException(String.Format("Required configuration property {0} not found", propKey));
+					}
 				}
 
 				pos = match.Index + match.Length;
