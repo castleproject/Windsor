@@ -12,12 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Windsor.Tests.Facilities.TypedFactory.Components
+namespace CastleTests.Facilities.TypedFactory.Factories
 {
-	using System;
+	using Castle.Facilities.TypedFactory;
+	using Castle.Windsor.Tests.Facilities.TypedFactory.Selectors;
 
-	public interface IDummyComponent
+	[Factory(SelectorType = typeof(Component2Selector))]
+	public interface IDummyComponentFactoryWithAttribute_implementingType : IDummyComponentFactory
 	{
-		String Name { get; set; }
 	}
 }

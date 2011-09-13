@@ -27,6 +27,7 @@ namespace CastleTests.Facilities.TypedFactory
 	using Castle.Windsor.Tests.Facilities.TypedFactory.Selectors;
 
 	using CastleTests.Components;
+	using CastleTests.Facilities.TypedFactory.Factories;
 	using CastleTests.Interceptors;
 
 	using NUnit.Framework;
@@ -182,8 +183,8 @@ namespace CastleTests.Facilities.TypedFactory
 		[Test]
 		public void Can_resolve_component()
 		{
-			Container.Register(Component.For<DummyComponentFactory>().AsFactory());
-			var factory = Container.Resolve<DummyComponentFactory>();
+			Container.Register(Component.For<IDummyComponentFactory>().AsFactory());
+			var factory = Container.Resolve<IDummyComponentFactory>();
 
 			var component = factory.CreateDummyComponent();
 			Assert.IsNotNull(component);
@@ -197,9 +198,9 @@ namespace CastleTests.Facilities.TypedFactory
 					.ImplementedBy<Component2>()
 					.Named("SecondComponent")
 					.LifeStyle.Transient,
-				Component.For<DummyComponentFactory>()
+				Component.For<IDummyComponentFactory>()
 					.AsFactory());
-			var factory = Container.Resolve<DummyComponentFactory>();
+			var factory = Container.Resolve<IDummyComponentFactory>();
 
 			var component = factory.GetSecondComponent();
 			Assert.IsNotNull(component);
@@ -284,8 +285,8 @@ namespace CastleTests.Facilities.TypedFactory
 		{
 			Container.Register(
 				Component.For<CollectInvocationsInterceptor>(),
-				Component.For<DummyComponentFactory>().Interceptors<CollectInvocationsInterceptor>().AsFactory());
-			var factory = Container.Resolve<DummyComponentFactory>();
+				Component.For<IDummyComponentFactory>().Interceptors<CollectInvocationsInterceptor>().AsFactory());
+			var factory = Container.Resolve<IDummyComponentFactory>();
 
 			var component = factory.CreateDummyComponent();
 			Assert.IsNotNull(component);
@@ -304,10 +305,10 @@ namespace CastleTests.Facilities.TypedFactory
 					.ImplementedBy<Component2>()
 					.Named("foo")
 					.LifeStyle.Transient,
-				Component.For<DummyComponentFactory>()
+				Component.For<IDummyComponentFactory>()
 					.AsFactory(f => f.SelectedWith<FooSelector>()),
 				Component.For<FooSelector>());
-			var factory = Container.Resolve<DummyComponentFactory>();
+			var factory = Container.Resolve<IDummyComponentFactory>();
 
 			var component = factory.GetSecondComponent();
 			Assert.IsInstanceOf<Component2>(component);
@@ -435,9 +436,9 @@ namespace CastleTests.Facilities.TypedFactory
 		[Test]
 		public void Factory_is_tracked_by_the_container()
 		{
-			Container.Register(Component.For<DummyComponentFactory>().AsFactory());
+			Container.Register(Component.For<IDummyComponentFactory>().AsFactory());
 
-			var factory = Container.Resolve<DummyComponentFactory>();
+			var factory = Container.Resolve<IDummyComponentFactory>();
 			var weak = new WeakReference(factory);
 			factory = null;
 
@@ -466,9 +467,9 @@ namespace CastleTests.Facilities.TypedFactory
 			DisposableSelector.InstancesCreated = 0;
 			DisposableSelector.InstancesDisposed = 0;
 			Container.Register(
-				Component.For<DummyComponentFactory>().AsFactory(f => f.SelectedWith<DisposableSelector>()).LifestyleTransient(),
+				Component.For<IDummyComponentFactory>().AsFactory(f => f.SelectedWith<DisposableSelector>()).LifestyleTransient(),
 				Component.For<DisposableSelector>().LifeStyle.Transient);
-			var factory = Container.Resolve<DummyComponentFactory>();
+			var factory = Container.Resolve<IDummyComponentFactory>();
 
 			Container.Release(factory);
 
@@ -479,9 +480,9 @@ namespace CastleTests.Facilities.TypedFactory
 		public void Resolve_component_by_name_with_default_selector_falls_back_to_by_type_when_no_name_found()
 		{
 			Container.Register(
-				Component.For<DummyComponentFactory>()
+				Component.For<IDummyComponentFactory>()
 					.AsFactory());
-			var factory = Container.Resolve<DummyComponentFactory>();
+			var factory = Container.Resolve<IDummyComponentFactory>();
 
 			var component = factory.GetSecondComponent();
 			Assert.IsNotNull(component);
@@ -507,9 +508,9 @@ namespace CastleTests.Facilities.TypedFactory
 		{
 			Container.Register(
 				Component.For<IDummyComponent>().ImplementedBy<Component2>().LifestyleTransient(),
-				Component.For<DummyComponentFactory>().AsFactory(f => f.SelectedWith<FooSelector>()),
+				Component.For<IDummyComponentFactory>().AsFactory(f => f.SelectedWith<FooSelector>()),
 				Component.For<FooSelector>());
-			var factory = Container.Resolve<DummyComponentFactory>();
+			var factory = Container.Resolve<IDummyComponentFactory>();
 
 			Assert.Throws<ComponentNotFoundException>(() => factory.CreateDummyComponent());
 		}
@@ -520,11 +521,11 @@ namespace CastleTests.Facilities.TypedFactory
 			Container.Register(
 				Component.For<IDummyComponent>().ImplementedBy<Component1>().Named("one").LifeStyle.Transient,
 				Component.For<IDummyComponent>().ImplementedBy<Component2>().Named("two").LifeStyle.Transient,
-				Component.For<DummyComponentFactory>().AsFactory(),
+				Component.For<IDummyComponentFactory>().AsFactory(),
 				Component.For<ITypedFactoryComponentSelector>().ImplementedBy<Component1Selector>(),
 				Component.For<Component2Selector, ITypedFactoryComponentSelector>());
 
-			var factory = Container.Resolve<DummyComponentFactory>();
+			var factory = Container.Resolve<IDummyComponentFactory>();
 			var component = factory.CreateDummyComponent();
 
 			Assert.IsInstanceOf<Component1>(component);
@@ -536,9 +537,9 @@ namespace CastleTests.Facilities.TypedFactory
 			Container.Register(
 				Component.For<IDummyComponent>().ImplementedBy<Component1>().Named("one").LifeStyle.Transient,
 				Component.For<IDummyComponent>().ImplementedBy<Component2>().Named("two").LifeStyle.Transient,
-				Component.For<DummyComponentFactory>().AsFactory(c => c.SelectedWith(new Component2Selector())));
+				Component.For<IDummyComponentFactory>().AsFactory(c => c.SelectedWith(new Component2Selector())));
 
-			var factory = Container.Resolve<DummyComponentFactory>();
+			var factory = Container.Resolve<IDummyComponentFactory>();
 			var component = factory.CreateDummyComponent();
 
 			Assert.IsInstanceOf<Component2>(component);
@@ -550,11 +551,11 @@ namespace CastleTests.Facilities.TypedFactory
 			Container.Register(
 				Component.For<IDummyComponent>().ImplementedBy<Component1>().Named("one").LifeStyle.Transient,
 				Component.For<IDummyComponent>().ImplementedBy<Component2>().Named("two").LifeStyle.Transient,
-				Component.For<DummyComponentFactory>().AsFactory(c => c.SelectedWith("factoryTwo")),
+				Component.For<IDummyComponentFactory>().AsFactory(c => c.SelectedWith("factoryTwo")),
 				Component.For<ITypedFactoryComponentSelector>().ImplementedBy<Component1Selector>().Named("factoryOne"),
 				Component.For<ITypedFactoryComponentSelector>().ImplementedBy<Component2Selector>().Named("factoryTwo"));
 
-			var factory = Container.Resolve<DummyComponentFactory>();
+			var factory = Container.Resolve<IDummyComponentFactory>();
 			var component = factory.CreateDummyComponent();
 
 			Assert.IsInstanceOf<Component2>(component);
@@ -566,16 +567,16 @@ namespace CastleTests.Facilities.TypedFactory
 			Container.Register(
 				Component.For<IDummyComponent>().ImplementedBy<Component1>().Named("one").LifeStyle.Transient,
 				Component.For<IDummyComponent>().ImplementedBy<Component2>().Named("two").LifeStyle.Transient,
-				Component.For<DummyComponentFactory>().AsFactory(c => c.SelectedWith("factoryTwo")).Named("2"),
-				Component.For<DummyComponentFactory>().AsFactory(c => c.SelectedWith("factoryOne")).Named("1"),
+				Component.For<IDummyComponentFactory>().AsFactory(c => c.SelectedWith("factoryTwo")).Named("2"),
+				Component.For<IDummyComponentFactory>().AsFactory(c => c.SelectedWith("factoryOne")).Named("1"),
 				Component.For<ITypedFactoryComponentSelector>().ImplementedBy<Component1Selector>().Named("factoryOne"),
 				Component.For<ITypedFactoryComponentSelector>().ImplementedBy<Component2Selector>().Named("factoryTwo"));
 
-			var factory2 = Container.Resolve<DummyComponentFactory>("2");
+			var factory2 = Container.Resolve<IDummyComponentFactory>("2");
 			var component2 = factory2.CreateDummyComponent();
 			Assert.IsInstanceOf<Component2>(component2);
 
-			var factory1 = Container.Resolve<DummyComponentFactory>("1");
+			var factory1 = Container.Resolve<IDummyComponentFactory>("1");
 			var component1 = factory1.CreateDummyComponent();
 			Assert.IsInstanceOf<Component1>(component1);
 		}
@@ -586,11 +587,70 @@ namespace CastleTests.Facilities.TypedFactory
 			Container.Register(
 				Component.For<IDummyComponent>().ImplementedBy<Component1>().Named("one").LifeStyle.Transient,
 				Component.For<IDummyComponent>().ImplementedBy<Component2>().Named("two").LifeStyle.Transient,
-				Component.For<DummyComponentFactory>().AsFactory(c => c.SelectedWith<Component2Selector>()),
+				Component.For<IDummyComponentFactory>().AsFactory(c => c.SelectedWith<Component2Selector>()),
 				Component.For<ITypedFactoryComponentSelector>().ImplementedBy<Component1Selector>(),
 				Component.For<Component2Selector, ITypedFactoryComponentSelector>());
 
-			var factory = Container.Resolve<DummyComponentFactory>();
+			var factory = Container.Resolve<IDummyComponentFactory>();
+			var component = factory.CreateDummyComponent();
+
+			Assert.IsInstanceOf<Component2>(component);
+		}
+
+		[Test]
+		public void Selector_via_attribute_has_lower_priority_than_explicit_One()
+		{
+			Container.Register(
+				Component.For<IDummyComponent>().ImplementedBy<Component1>().Named("one").LifeStyle.Transient,
+				Component.For<IDummyComponent>().ImplementedBy<Component2>().Named("two").LifeStyle.Transient,
+				Component.For<IDummyComponentFactoryWithAttribute_implementingType>().AsFactory(c => c.SelectedWith<Component1Selector>()),
+				Component.For<ITypedFactoryComponentSelector>().ImplementedBy<Component1Selector>());
+
+			var factory = Container.Resolve<IDummyComponentFactoryWithAttribute_implementingType>();
+			var component = factory.CreateDummyComponent();
+
+			Assert.IsInstanceOf<Component1>(component);
+		}
+
+		[Test]
+		public void Selector_via_attribute_implementing_type()
+		{
+			Container.Register(
+				Component.For<IDummyComponent>().ImplementedBy<Component1>().Named("one").LifeStyle.Transient,
+				Component.For<IDummyComponent>().ImplementedBy<Component2>().Named("two").LifeStyle.Transient,
+				Component.For<IDummyComponentFactoryWithAttribute_implementingType>().AsFactory());
+
+			var factory = Container.Resolve<IDummyComponentFactoryWithAttribute_implementingType>();
+			var component = factory.CreateDummyComponent();
+
+			Assert.IsInstanceOf<Component2>(component);
+		}
+
+		[Test]
+		public void Selector_via_attribute_service_type()
+		{
+			Container.Register(
+				Component.For<IDummyComponent>().ImplementedBy<Component1>().Named("one").LifeStyle.Transient,
+				Component.For<IDummyComponent>().ImplementedBy<Component2>().Named("two").LifeStyle.Transient,
+				Component.For<ITypedFactoryComponentSelector>().ImplementedBy<Component2Selector>(),
+				Component.For<IDummyComponentFactoryWithAttribute_serviceType>().AsFactory());
+
+			var factory = Container.Resolve<IDummyComponentFactoryWithAttribute_serviceType>();
+			var component = factory.CreateDummyComponent();
+
+			Assert.IsInstanceOf<Component2>(component);
+		}
+
+		[Test]
+		public void Selector_via_attribute_service_name()
+		{
+			Container.Register(
+				Component.For<IDummyComponent>().ImplementedBy<Component1>().Named("one").LifeStyle.Transient,
+				Component.For<IDummyComponent>().ImplementedBy<Component2>().Named("two").LifeStyle.Transient,
+				Component.For<ITypedFactoryComponentSelector>().ImplementedBy<Component2Selector>().Named("selector"),
+				Component.For<IDummyComponentFactoryWithAttribute_serviceName>().AsFactory());
+
+			var factory = Container.Resolve<IDummyComponentFactoryWithAttribute_serviceName>();
 			var component = factory.CreateDummyComponent();
 
 			Assert.IsInstanceOf<Component2>(component);

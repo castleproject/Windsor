@@ -41,7 +41,7 @@ namespace Castle.Windsor.Tests.Config
 			interpreter.ProcessResource(interpreter.Source, store, kernel);
 
 			Assert.AreEqual(2, store.GetFacilities().Length);
-			Assert.AreEqual(3, store.GetComponents().Length);
+			Assert.AreEqual(4, store.GetComponents().Length);
 
 			var config = store.GetFacilityConfiguration(typeof(NoopFacility).FullName);
 			var childItem = config.Children["item"];

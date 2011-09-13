@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Windsor.Tests.Facilities.TypedFactory
+namespace CastleTests.Facilities.TypedFactory
 {
 	using System;
 	using System.Linq;
@@ -20,10 +20,10 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 	using Castle.Facilities.TypedFactory;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Registration;
-	using Castle.Windsor.Tests.Facilities.TypedFactory.Factories;
 
 	using CastleTests;
 	using CastleTests.Components;
+	using CastleTests.Facilities.TypedFactory.Factories;
 
 	using NUnit.Framework;
 
@@ -57,18 +57,18 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 		public void Interface_factory_depends_on_default_interceptor()
 		{
 			Container.AddFacility<TypedFactoryFacility>()
-				.Register(Component.For<DummyComponentFactory>().AsFactory());
+				.Register(Component.For<IDummyComponentFactory>().AsFactory());
 
-			AssertHasDependency<DummyComponentFactory>(TypedFactoryFacility.InterceptorKey);
+			AssertHasDependency<IDummyComponentFactory>(TypedFactoryFacility.InterceptorKey);
 		}
 
 		[Test]
 		public void Interface_factory_depends_on_default_selector_by_default()
 		{
 			Container.AddFacility<TypedFactoryFacility>()
-				.Register(Component.For<DummyComponentFactory>().AsFactory());
+				.Register(Component.For<IDummyComponentFactory>().AsFactory());
 
-			AssertHasDependency<DummyComponentFactory>("Castle.TypedFactory.DefaultInterfaceFactoryComponentSelector");
+			AssertHasDependency<IDummyComponentFactory>("Castle.TypedFactory.DefaultInterfaceFactoryComponentSelector");
 		}
 	}
 }

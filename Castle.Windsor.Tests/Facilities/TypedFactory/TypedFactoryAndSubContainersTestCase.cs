@@ -18,6 +18,8 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory.Components
 	using Castle.MicroKernel.Registration;
 	using Castle.Windsor.Tests.Facilities.TypedFactory.Factories;
 
+	using CastleTests.Facilities.TypedFactory.Factories;
+
 	using NUnit.Framework;
 
 	[TestFixture]
@@ -35,11 +37,11 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory.Components
 			childContainer.AddFacility<TypedFactoryFacility>();
 
 			mainContainer.Register(Component.For<IDummyComponent>().ImplementedBy<Component1>());
-			childContainer.Register(Component.For<DummyComponentFactory>().AsFactory(),
+			childContainer.Register(Component.For<IDummyComponentFactory>().AsFactory(),
 			                        Component.For<IDummyComponent>().ImplementedBy<Component2>());
 
 			var fromParent = mainContainer.Resolve<IDummyComponent>();
-			var fromFactory = childContainer.Resolve<DummyComponentFactory>().CreateDummyComponent();
+			var fromFactory = childContainer.Resolve<IDummyComponentFactory>().CreateDummyComponent();
 			var fromChild = childContainer.Resolve<IDummyComponent>();
 
 			Assert.AreSame(fromFactory, fromChild);

@@ -16,6 +16,7 @@ namespace Castle.Facilities.TypedFactory
 {
 	using System;
 
+	using Castle.Core.Internal;
 	using Castle.MicroKernel;
 
 	public class TypedFactoryConfiguration
@@ -23,9 +24,26 @@ namespace Castle.Facilities.TypedFactory
 		private readonly string defaultComponentSelectorKey;
 		private IReference<ITypedFactoryComponentSelector> selectorReference;
 
-		public TypedFactoryConfiguration(string defaultComponentSelectorKey)
+		public TypedFactoryConfiguration(string defaultComponentSelectorKey, Type factoryType)
 		{
 			this.defaultComponentSelectorKey = defaultComponentSelectorKey;
+			var attributes = factoryType.GetAttributes<FactoryAttribute>();
+			if (attributes.Length > 0)
+			{
+				var defaults = attributes[0];
+				if (defaults.SelectorComponentName != null)
+				{
+					SelectedWith(defaults.SelectorComponentName);
+				}
+				else if (defaults.SelectorComponentType != null)
+				{
+					SelectedWith(defaults.SelectorComponentType);
+				}
+				else if (defaults.SelectorType != null)
+				{
+					SelectedWith(defaults.SelectorType.CreateInstance<ITypedFactoryComponentSelector>());
+				}
+			}
 		}
 
 		internal IReference<ITypedFactoryComponentSelector> Reference
@@ -48,7 +66,12 @@ namespace Castle.Facilities.TypedFactory
 
 		public void SelectedWith<TSelectorComponent>() where TSelectorComponent : ITypedFactoryComponentSelector
 		{
-			selectorReference = new ComponentReference<ITypedFactoryComponentSelector>(typeof(TSelectorComponent));
+			SelectedWith(typeof(TSelectorComponent));
+		}
+
+		public void SelectedWith(Type selectorComponentType)
+		{
+			selectorReference = new ComponentReference<ITypedFactoryComponentSelector>(selectorComponentType);
 		}
 
 		public void SelectedWith(ITypedFactoryComponentSelector selector)

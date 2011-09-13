@@ -103,7 +103,7 @@ namespace Castle.Facilities.TypedFactory
 		                                                                             string defaultComponentSelectorKey)
 			where TFactory : class
 		{
-			var selectorReference = GetSelectorReference(configuration, defaultComponentSelectorKey);
+			var selectorReference = GetSelectorReference(configuration, defaultComponentSelectorKey, typeof(TFactory));
 
 			return componentRegistration
 				.AddDescriptor(new ReferenceDependencyDescriptor(selectorReference))
@@ -123,9 +123,9 @@ namespace Castle.Facilities.TypedFactory
 		}
 
 		private static IReference<ITypedFactoryComponentSelector> GetSelectorReference(Action<TypedFactoryConfiguration> configuration,
-		                                                                               string defaultComponentSelectorKey)
+		                                                                               string defaultComponentSelectorKey, Type factoryType)
 		{
-			var factoryConfiguration = new TypedFactoryConfiguration(defaultComponentSelectorKey);
+			var factoryConfiguration = new TypedFactoryConfiguration(defaultComponentSelectorKey, factoryType);
 
 			if (configuration != null)
 			{
@@ -157,7 +157,7 @@ namespace Castle.Facilities.TypedFactory
 					string.Format("Delegate type {0} can not be used as typed factory because it has void return type.",
 					              delegateType));
 			}
-			var settings = new TypedFactoryConfiguration(TypedFactoryFacility.DefaultDelegateSelectorKey);
+			var settings = new TypedFactoryConfiguration(TypedFactoryFacility.DefaultDelegateSelectorKey, typeof(TDelegate));
 			if (configuration != null)
 			{
 				configuration.Invoke(settings);
