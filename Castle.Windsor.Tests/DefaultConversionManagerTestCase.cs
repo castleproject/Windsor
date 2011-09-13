@@ -34,7 +34,7 @@ namespace CastleTests
 		[Bug("IOC-314")]
 		public void Converting_numbers_uses_oridinal_culture()
 		{
-			Assert.AreEqual(",", Thread.CurrentThread.CurrentCulture.NumberFormat.CurrencyDecimalSeparator);
+			Assert.AreEqual(",", Thread.CurrentThread.CurrentCulture.NumberFormat.NumberDecimalSeparator);
 
 			var result = converter.PerformConversion<Decimal>("123.456");
 
@@ -70,7 +70,7 @@ namespace CastleTests
 		{
 			Assert.AreEqual(typeof(DefaultConversionManagerTestCase),
 			                converter.PerformConversion(
-			                	"Castle.MicroKernel.Tests.DefaultConversionManagerTestCase, Castle.Windsor.Tests",
+			                	"CastleTests.DefaultConversionManagerTestCase, Castle.Windsor.Tests",
 			                	typeof(Type)));
 		}
 
