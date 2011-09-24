@@ -21,9 +21,9 @@ using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Threading.Tasks;
 using System.Transactions;
+using Castle.Core.Logging;
 using Castle.Services.Transaction.Internal;
 using Castle.Services.Transaction.IO;
-using log4net;
 using System.Linq;
 
 namespace Castle.Services.Transaction
@@ -31,43 +31,47 @@ namespace Castle.Services.Transaction
 	[Serializable]
 	public class Transaction : ITransaction, IDependentAware
 	{
-		private static readonly ILog _Logger = LogManager.GetLogger(typeof (Transaction));
-
 		private TransactionState _State = TransactionState.Default;
 
 		private readonly ITransactionOptions _CreationOptions;
 		private readonly CommittableTransaction _Committable;
 		private readonly DependentTransaction _Dependent;
+        private readonly ILogger _Logger;
 		private List<Task> _DependentTasks;
 		private readonly string _LocalIdentifier;
 
 		[NonSerialized] private readonly Action _OnDispose;
 
 		public Transaction(CommittableTransaction committable, uint stackDepth, ITransactionOptions creationOptions,
-		                   Action onDispose)
+		                   Action onDispose, ILogger logger)
 		{
 			Contract.Requires(creationOptions != null);
 			Contract.Requires(committable != null);
+            Contract.Requires(logger != null);
 			Contract.Ensures(_State == TransactionState.Active);
 			Contract.Ensures(((ITransaction)this).State == TransactionState.Active);
 
 			_Committable = committable;
 			_CreationOptions = creationOptions;
 			_OnDispose = onDispose;
+            _Logger = logger;
 			_State = TransactionState.Active;
 			_LocalIdentifier = committable.TransactionInformation.LocalIdentifier + ":" + stackDepth;
 		}
 
-		public Transaction(DependentTransaction dependent, uint stackDepth, ITransactionOptions creationOptions, Action onDispose)
+		public Transaction(DependentTransaction dependent, uint stackDepth, ITransactionOptions creationOptions, Action onDispose,
+                            ILogger logger)
 		{
 			Contract.Requires(creationOptions != null);
 			Contract.Requires(dependent != null);
+            Contract.Requires(logger != null);
 			Contract.Ensures(_State == TransactionState.Active);
 			Contract.Ensures(((ITransaction)this).State == TransactionState.Active);
 
 			_Dependent = dependent;
 			_CreationOptions = creationOptions;
 			_OnDispose = onDispose;
+            _Logger = logger;
 			_State = TransactionState.Active;
 			_LocalIdentifier = dependent.TransactionInformation.LocalIdentifier + ":" + stackDepth;
 		}
@@ -167,7 +171,8 @@ namespace Castle.Services.Transaction
 
 			try
 			{
-				_Logger.InfoFormat("rolling back tx#{0}", _LocalIdentifier);
+                if(_Logger.IsInfoEnabled)
+				    _Logger.InfoFormat("rolling back tx#{0}", _LocalIdentifier);
 				Inner.Rollback();
 			}
 			finally
@@ -215,13 +220,15 @@ namespace Castle.Services.Transaction
 			catch (TransactionAbortedException e)
 			{
 				_State = TransactionState.Aborted;
-				_Logger.Warn("transaction aborted", e);
+                if(_Logger.IsWarnEnabled)
+				    _Logger.Warn("transaction aborted", e);
 				throw;
 			}
 			catch (AggregateException e)
 			{
 				_State = TransactionState.Aborted;
-				_Logger.Warn("dependent transactions failed, so we are not performing the rollback (as they will have notified their parent!)", e);
+                if (_Logger.IsWarnEnabled)
+				    _Logger.Warn("dependent transactions failed, so we are not performing the rollback (as they will have notified their parent!)", e);
 				throw;
 			}
 			catch (Exception e)

@@ -10,6 +10,7 @@ using System.Transactions;
 using Castle.Services.Transaction.Internal;
 using Castle.Services.Transaction.IO;
 using Path = Castle.Services.Transaction.IO.Path;
+using Castle.Core.Logging;
 
 namespace Castle.Services.Transaction
 {
@@ -47,28 +48,30 @@ namespace Castle.Services.Transaction
 		}
 
 		public FileTransaction(string name, CommittableTransaction inner, uint stackDepth, ITransactionOptions creationOptions,
-		                       Action onDispose)
+		                       Action onDispose, ILogger logger)
 		{
 			Contract.Requires(inner != null);
 			Contract.Requires(creationOptions != null);
 			Contract.Requires(!string.IsNullOrEmpty(name));
+            Contract.Requires(logger != null);
 			Contract.Ensures(_Name != null);
 
-			_Inner = new Transaction(inner, stackDepth, creationOptions, onDispose);
+            _Inner = new Transaction(inner, stackDepth, creationOptions, onDispose, logger.CreateChildLogger("Transaction"));
 
 			_Name = name;
 			InnerBegin();
 		}
 
 		public FileTransaction(string name, DependentTransaction inner, uint stackDepth, ITransactionOptions creationOptions,
-		                       Action onDispose)
+                               Action onDispose, ILogger logger)
 		{
 			Contract.Requires(inner != null);
 			Contract.Requires(creationOptions != null);
 			Contract.Requires(!string.IsNullOrEmpty(name));
+            Contract.Requires(logger != null);
 			Contract.Ensures(_Name != null);
 
-			_Inner = new Transaction(inner, stackDepth, creationOptions, onDispose);
+            _Inner = new Transaction(inner, stackDepth, creationOptions, onDispose, logger.CreateChildLogger("Transaction"));
 
 			_Name = name;
 			InnerBegin();

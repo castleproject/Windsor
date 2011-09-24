@@ -19,7 +19,7 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Contracts;
-using log4net;
+using Castle.Core.Logging;
 
 namespace Castle.Services.Transaction.IO
 {
@@ -29,8 +29,7 @@ namespace Castle.Services.Transaction.IO
 	/// </summary>
 	public class DirectoryAdapter : TransactionAdapterBase, IDirectoryAdapter
 	{
-		private readonly IMapPath _PathFinder;
-		private readonly ILog _Logger = LogManager.GetLogger(typeof (DirectoryAdapter));
+		private readonly IMapPath _PathFinder;       
 
 		/// <summary>
 		/// 	Create a new DirectoryAdapter instance. C'tor.
@@ -42,8 +41,6 @@ namespace Castle.Services.Transaction.IO
 			: base(constrainToSpecifiedDir, specifiedDir)
 		{
 			Contract.Requires(pathFinder != null);
-
-			_Logger.Debug("DirectoryAdapter created.");
 
 			_PathFinder = pathFinder;
 		}

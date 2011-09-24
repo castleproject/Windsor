@@ -19,10 +19,10 @@
 using Castle.Facilities.AutoTx.Registration;
 using Castle.MicroKernel.Facilities;
 using Castle.MicroKernel.Registration;
+using Castle.Core.Logging;
 using Castle.Services.Transaction;
 using Castle.Services.Transaction.Activities;
 using Castle.Services.Transaction.IO;
-using log4net;
 
 namespace Castle.Facilities.AutoTx
 {
@@ -36,11 +36,21 @@ namespace Castle.Facilities.AutoTx
 	///</summary>
 	public class AutoTxFacility : AbstractFacility
 	{
-		private static readonly ILog _Logger = LogManager.GetLogger(typeof (AutoTxFacility));
-
 		protected override void Init()
 		{
-			_Logger.Debug("initializing AutoTxFacility");
+            ILogger logger = NullLogger.Instance;
+            
+            // check we have a logger factory
+            if (Kernel.HasComponent(typeof(ILoggerFactory)))
+            {
+                // get logger factory
+                ILoggerFactory loggerFactory = Kernel.Resolve<ILoggerFactory>();
+                // get logger
+                logger = loggerFactory.Create(typeof(AutoTxFacility));
+            }
+
+            if(logger.IsDebugEnabled)
+			    logger.Debug("initializing AutoTxFacility");
 
 			Kernel.Register(
 				// the interceptor needs to be created for every method call
@@ -76,8 +86,9 @@ namespace Castle.Facilities.AutoTx
 			// TODO: Inspect already existing components!
 			Kernel.ComponentModelBuilder.AddContributor(new TransactionalComponentInspector());
 
-			_Logger.Debug(
-				@"Initialized AutoTxFacility:
+            if (logger.IsDebugEnabled)
+			    logger.Debug(
+				    @"Initialized AutoTxFacility:
 
 If you are experiencing problems, go to https://github.com/haf/ and file a ticket for the Transactions project.
 You can enable verbose logging for .Net by adding this to you .config file:

@@ -18,6 +18,7 @@
 
 using System;
 using System.Diagnostics.Contracts;
+using Castle.Core.Logging;
 
 namespace Castle.Services.Transaction.IO
 {
@@ -34,6 +35,13 @@ namespace Castle.Services.Transaction.IO
 		private ITransactionManager _TransactionManager;
 		private bool _UseTransactions = true;
 		private bool _OnlyJoinExisting;
+        private ILogger _Logger = NullLogger.Instance;
+
+        public ILogger Logger
+        {
+            get { return _Logger; }
+            set { _Logger = value; }
+        }
 
 		protected TransactionAdapterBase(bool constrainToSpecifiedDir,
 		                        string specifiedDir)

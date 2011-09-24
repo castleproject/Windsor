@@ -21,15 +21,21 @@ using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Contracts;
 using System.Threading.Tasks;
 using System.Transactions;
+using Castle.Core.Logging;
 using Castle.Services.Transaction.Internal;
-using log4net;
 
 namespace Castle.Services.Transaction
 {
 	public sealed class TransactionManager : ITransactionManager
 	{
-		private static readonly ILog _Logger = LogManager.GetLogger(typeof (TransactionManager));
 		private readonly IActivityManager _ActivityManager;
+        private ILogger _Logger = NullLogger.Instance;
+
+        public ILogger Logger
+        {
+            get { return _Logger; }
+            set { _Logger = value; }
+        }
 
 		public TransactionManager(IActivityManager activityManager)
 		{
@@ -82,7 +88,7 @@ namespace Castle.Services.Transaction
 					{
 						IsolationLevel = transactionOptions.IsolationLevel,
 						Timeout = transactionOptions.Timeout
-					}), nextStackDepth, transactionOptions, () => activity.Pop());
+                    }), nextStackDepth, transactionOptions, () => activity.Pop(), _Logger.CreateChildLogger("Transaction"));
 			}
 			else
 			{
@@ -93,7 +99,8 @@ namespace Castle.Services.Transaction
 				Contract.Assume(clone != null);
 				
 				Action onDispose = () => activity.Pop();
-				tx = new Transaction(clone, nextStackDepth, transactionOptions, shouldFork ? null : onDispose);
+                tx = new Transaction(clone, nextStackDepth, transactionOptions, shouldFork ? null : onDispose, 
+                                        _Logger.CreateChildLogger("Transaction"));
 			}
 
 			if (!shouldFork) // forked transactions should not be on the current context's activity stack
@@ -109,7 +116,7 @@ namespace Castle.Services.Transaction
 				}) as ICreatedTransaction);
 
 			// warn if fork and the top transaction was just created
-			if (transactionOptions.Fork && nextStackDepth == 1)
+			if (transactionOptions.Fork && nextStackDepth == 1 && _Logger.IsWarnEnabled)
 				_Logger.WarnFormat("transaction {0} created with Fork=true option, but was top-most "
 				                   + "transaction in invocation chain. running transaction sequentially",
 				                   tx.LocalIdentifier);

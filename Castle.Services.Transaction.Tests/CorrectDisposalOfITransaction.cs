@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Transactions;
 using NUnit.Framework;
+using Castle.Core.Logging;
 
 namespace Castle.Services.Transaction.Tests
 {
@@ -31,7 +32,7 @@ namespace Castle.Services.Transaction.Tests
 		{
 			var actionWasCalled = false;
 
-			using (ITransaction tx = new Transaction(new CommittableTransaction(), 1, new DefaultTransactionOptions(), () => actionWasCalled = true))
+			using (ITransaction tx = new Transaction(new CommittableTransaction(), 1, new DefaultTransactionOptions(), () => actionWasCalled = true, NullLogger.Instance))
 				tx.Complete();
 
 			Assert.That(actionWasCalled);
