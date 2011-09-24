@@ -33,7 +33,7 @@ namespace Castle.Services.Transaction.Internal
 	public sealed class TxScope : IDisposable
 	{
 		private readonly System.Transactions.Transaction prev;
-        private readonly ILogger _Logger;
+		private readonly ILogger _Logger;
 
 		/// <summary>
 		/// A TxScope sets the ambient transaction for the duration of its lifetime and then re-assigns the previous value.
@@ -47,7 +47,7 @@ namespace Castle.Services.Transaction.Internal
 		{
 			prev = System.Transactions.Transaction.Current;
 			System.Transactions.Transaction.Current = curr;
-            _Logger = logger;
+			_Logger = logger;
 		}
 
 		public void Dispose()
@@ -60,9 +60,9 @@ namespace Castle.Services.Transaction.Internal
 		{
 			if (!isManaged)
 			{
-                if(_Logger.IsWarnEnabled)
-				    _Logger.Warn("TxScope Dispose wasn't called from managed context! You need to make sure that you dispose the scope, "
-				             + "or you will break the Transaction.Current invariant of the framework and your own code by extension.");
+				if(_Logger.IsWarnEnabled)
+					_Logger.Warn("TxScope Dispose wasn't called from managed context! You need to make sure that you dispose the scope, "
+							+ "or you will break the Transaction.Current invariant of the framework and your own code by extension.");
 
 				return;
 			}

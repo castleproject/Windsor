@@ -35,13 +35,13 @@ namespace Castle.Services.Transaction.Activities
 		private readonly Guid _ActivityId = Guid.NewGuid();
 		private readonly Stack<Tuple<ITransaction, string>> _Txs = new Stack<Tuple<ITransaction, string>>();
 		private ITransaction _TopMost;
-        private ILogger _Logger = NullLogger.Instance;
+		private ILogger _Logger = NullLogger.Instance;
 
-        public ILogger Logger
-        {
-            get { return _Logger; }
-            set { _Logger = value; }
-        }
+		public ILogger Logger
+		{
+			get { return _Logger; }
+			set { _Logger = value; }
+		}
 
 		public Activity()
 		{
@@ -83,9 +83,9 @@ namespace Castle.Services.Transaction.Activities
 			if (aware != null) 
 				aware.RegisterDependent(task);
 			else if(_Logger.IsWarnEnabled)
-                _Logger.WarnFormat("The transaction#{0} did not implement Castle.Services.Transaction.Internal.IDependentAware, " 
-				    + "yet a Task to await was registered. If you have created your own custom ITransaction implementation, verify that it implements IDependentAware.",
-				    _TopMost.LocalIdentifier);
+				_Logger.WarnFormat("The transaction#{0} did not implement Castle.Services.Transaction.Internal.IDependentAware, " 
+					+ "yet a Task to await was registered. If you have created your own custom ITransaction implementation, verify that it implements IDependentAware.",
+					_TopMost.LocalIdentifier);
 		}
 
 		[ContractInvariantMethod]
@@ -116,8 +116,8 @@ namespace Castle.Services.Transaction.Activities
 			// I can't prove this because I can't reason about value/reference equality using reflection in Maybe
 			//Contract.Ensures(object.ReferenceEquals(CurrentTransaction.Value, transaction));
 
-            if(_Logger.IsDebugEnabled)
-			    _Logger.DebugFormat("pushing tx#{0}", transaction.LocalIdentifier);
+			if(_Logger.IsDebugEnabled)
+				_Logger.DebugFormat("pushing tx#{0}", transaction.LocalIdentifier);
 
 			if (Count == 0)
 				_TopMost = transaction;
@@ -139,8 +139,8 @@ namespace Castle.Services.Transaction.Activities
 
 			var ret = _Txs.Pop();
 
-            if(_Logger.IsDebugEnabled)
-			    _Logger.DebugFormat("popping tx#{0}", ret.Item2);
+			if(_Logger.IsDebugEnabled)
+				_Logger.DebugFormat("popping tx#{0}", ret.Item2);
 
 			if (Count == 0)
 				_TopMost = null;

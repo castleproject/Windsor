@@ -56,7 +56,7 @@ namespace Castle.Services.Transaction
             Contract.Requires(logger != null);
 			Contract.Ensures(_Name != null);
 
-            _Inner = new Transaction(inner, stackDepth, creationOptions, onDispose, logger.CreateChildLogger("Transaction"));
+			_Inner = new Transaction(inner, stackDepth, creationOptions, onDispose, logger.CreateChildLogger("Transaction"));
 
 			_Name = name;
 			InnerBegin();
@@ -71,7 +71,7 @@ namespace Castle.Services.Transaction
             Contract.Requires(logger != null);
 			Contract.Ensures(_Name != null);
 
-            _Inner = new Transaction(inner, stackDepth, creationOptions, onDispose, logger.CreateChildLogger("Transaction"));
+			_Inner = new Transaction(inner, stackDepth, creationOptions, onDispose, logger.CreateChildLogger("Transaction"));
 
 			_Name = name;
 			InnerBegin();

@@ -43,35 +43,35 @@ namespace Castle.Services.Transaction
 		[NonSerialized] private readonly Action _OnDispose;
 
 		public Transaction(CommittableTransaction committable, uint stackDepth, ITransactionOptions creationOptions,
-		                   Action onDispose, ILogger logger)
+							Action onDispose, ILogger logger)
 		{
 			Contract.Requires(creationOptions != null);
 			Contract.Requires(committable != null);
-            Contract.Requires(logger != null);
+			Contract.Requires(logger != null);
 			Contract.Ensures(_State == TransactionState.Active);
 			Contract.Ensures(((ITransaction)this).State == TransactionState.Active);
 
 			_Committable = committable;
 			_CreationOptions = creationOptions;
 			_OnDispose = onDispose;
-            _Logger = logger;
+			_Logger = logger;
 			_State = TransactionState.Active;
 			_LocalIdentifier = committable.TransactionInformation.LocalIdentifier + ":" + stackDepth;
 		}
 
 		public Transaction(DependentTransaction dependent, uint stackDepth, ITransactionOptions creationOptions, Action onDispose,
-                            ILogger logger)
+							ILogger logger)
 		{
 			Contract.Requires(creationOptions != null);
 			Contract.Requires(dependent != null);
-            Contract.Requires(logger != null);
+			Contract.Requires(logger != null);
 			Contract.Ensures(_State == TransactionState.Active);
 			Contract.Ensures(((ITransaction)this).State == TransactionState.Active);
 
 			_Dependent = dependent;
 			_CreationOptions = creationOptions;
 			_OnDispose = onDispose;
-            _Logger = logger;
+			_Logger = logger;
 			_State = TransactionState.Active;
 			_LocalIdentifier = dependent.TransactionInformation.LocalIdentifier + ":" + stackDepth;
 		}
@@ -220,14 +220,14 @@ namespace Castle.Services.Transaction
 			catch (TransactionAbortedException e)
 			{
 				_State = TransactionState.Aborted;
-                if(_Logger.IsWarnEnabled)
+				if(_Logger.IsWarnEnabled)
 				    _Logger.Warn("transaction aborted", e);
 				throw;
 			}
 			catch (AggregateException e)
 			{
 				_State = TransactionState.Aborted;
-                if (_Logger.IsWarnEnabled)
+				if (_Logger.IsWarnEnabled)
 				    _Logger.Warn("dependent transactions failed, so we are not performing the rollback (as they will have notified their parent!)", e);
 				throw;
 			}

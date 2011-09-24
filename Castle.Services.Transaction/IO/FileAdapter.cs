@@ -48,13 +48,13 @@ namespace Castle.Services.Transaction.IO
 		///<param name = "specifiedDir"></param>
 		public FileAdapter(bool constrainToSpecifiedDir, string specifiedDir) : base(constrainToSpecifiedDir, specifiedDir)
 		{
-            if (Logger.IsDebugEnabled)
-            {
-                if (constrainToSpecifiedDir)
-                    Logger.Debug(string.Format("FileAdapter c'tor, constraining to dir: {0}", specifiedDir));
-                else
-                    Logger.Debug("FileAdapter c'tor, no directory constraint.");
-            }
+			if (Logger.IsDebugEnabled)
+			{
+				if (constrainToSpecifiedDir)
+					Logger.Debug(string.Format("FileAdapter c'tor, constraining to dir: {0}", specifiedDir));
+				else
+					Logger.Debug("FileAdapter c'tor, no directory constraint.");
+			}
 		}
 
 		///<summary>
