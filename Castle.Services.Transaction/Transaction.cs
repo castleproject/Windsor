@@ -36,7 +36,7 @@ namespace Castle.Services.Transaction
 		private readonly ITransactionOptions _CreationOptions;
 		private readonly CommittableTransaction _Committable;
 		private readonly DependentTransaction _Dependent;
-        private readonly ILogger _Logger;
+		private readonly ILogger _Logger;
 		private List<Task> _DependentTasks;
 		private readonly string _LocalIdentifier;
 
@@ -171,8 +171,8 @@ namespace Castle.Services.Transaction
 
 			try
 			{
-                if(_Logger.IsInfoEnabled)
-				    _Logger.InfoFormat("rolling back tx#{0}", _LocalIdentifier);
+				if(_Logger.IsInfoEnabled)
+					_Logger.InfoFormat("rolling back tx#{0}", _LocalIdentifier);
 				Inner.Rollback();
 			}
 			finally

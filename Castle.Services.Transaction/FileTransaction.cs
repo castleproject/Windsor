@@ -48,12 +48,12 @@ namespace Castle.Services.Transaction
 		}
 
 		public FileTransaction(string name, CommittableTransaction inner, uint stackDepth, ITransactionOptions creationOptions,
-		                       Action onDispose, ILogger logger)
+								Action onDispose, ILogger logger)
 		{
 			Contract.Requires(inner != null);
 			Contract.Requires(creationOptions != null);
 			Contract.Requires(!string.IsNullOrEmpty(name));
-            Contract.Requires(logger != null);
+			Contract.Requires(logger != null);
 			Contract.Ensures(_Name != null);
 
 			_Inner = new Transaction(inner, stackDepth, creationOptions, onDispose, logger.CreateChildLogger("Transaction"));
@@ -63,12 +63,12 @@ namespace Castle.Services.Transaction
 		}
 
 		public FileTransaction(string name, DependentTransaction inner, uint stackDepth, ITransactionOptions creationOptions,
-                               Action onDispose, ILogger logger)
+								Action onDispose, ILogger logger)
 		{
 			Contract.Requires(inner != null);
 			Contract.Requires(creationOptions != null);
 			Contract.Requires(!string.IsNullOrEmpty(name));
-            Contract.Requires(logger != null);
+			Contract.Requires(logger != null);
 			Contract.Ensures(_Name != null);
 
 			_Inner = new Transaction(inner, stackDepth, creationOptions, onDispose, logger.CreateChildLogger("Transaction"));

@@ -88,7 +88,7 @@ namespace Castle.Services.Transaction
 					{
 						IsolationLevel = transactionOptions.IsolationLevel,
 						Timeout = transactionOptions.Timeout
-                    }), nextStackDepth, transactionOptions, () => activity.Pop(), _Logger.CreateChildLogger("Transaction"));
+					}), nextStackDepth, transactionOptions, () => activity.Pop(), _Logger.CreateChildLogger("Transaction"));
 			}
 			else
 			{

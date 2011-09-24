@@ -38,7 +38,7 @@ namespace Castle.Facilities.AutoTx
 	{
 		protected override void Init()
 		{
-            ILogger logger = NullLogger.Instance;
+			ILogger logger = NullLogger.Instance;
             
 			// check we have a logger factory
 			if (Kernel.HasComponent(typeof(ILoggerFactory)))

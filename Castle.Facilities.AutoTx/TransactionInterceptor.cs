@@ -30,7 +30,7 @@ using Castle.Services.Transaction;
 using Castle.Services.Transaction.Internal;
 using TransactionException = Castle.Services.Transaction.TransactionException;
 using TransactionManager = Castle.Services.Transaction.TransactionManager;
-	
+
 namespace Castle.Facilities.AutoTx
 {
 	internal class TransactionInterceptor : IInterceptor, IOnBehalfAware
@@ -147,7 +147,7 @@ namespace Castle.Facilities.AutoTx
 				catch (TransactionAbortedException)
 				{
 					// if we have aborted the transaction, we both warn and re-throw the exception
-                    if(_Logger.IsWarnEnabled)
+					if(_Logger.IsWarnEnabled)
 					    _Logger.WarnFormat("transaction aborted - synchronized case, tx#{0}", localIdentifier);
 					throw;
 				}
