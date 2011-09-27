@@ -35,17 +35,14 @@ namespace Castle.Services.Transaction.Activities
 		private readonly Guid _ActivityId = Guid.NewGuid();
 		private readonly Stack<Tuple<ITransaction, string>> _Txs = new Stack<Tuple<ITransaction, string>>();
 		private ITransaction _TopMost;
-		private ILogger _Logger = NullLogger.Instance;
+		private ILogger _Logger;
 
-		public ILogger Logger
+		public Activity(ILogger logger)
 		{
-			get { return _Logger; }
-			set { _Logger = value; }
-		}
-
-		public Activity()
-		{
+			Contract.Requires(logger != null);
 			Contract.Ensures(Count == 0);
+			// store logger
+			_Logger = logger;
 		}
 
 		public Maybe<ITransaction> TopTransaction

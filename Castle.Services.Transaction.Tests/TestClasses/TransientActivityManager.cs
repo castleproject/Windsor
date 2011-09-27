@@ -17,6 +17,7 @@
 #endregion
 
 using Castle.Services.Transaction.Activities;
+using Castle.Core.Logging;
 
 namespace Castle.Services.Transaction.Tests
 {
@@ -26,7 +27,7 @@ namespace Castle.Services.Transaction.Tests
 
 		public TransientActivityManager()
 		{
-			activity = new Activity();
+			activity = new Activity(NullLogger.Instance);
 		}
 
 		/// <summary>

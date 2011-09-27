@@ -17,6 +17,7 @@
 #endregion
 
 using System.Runtime.Remoting.Messaging;
+using Castle.Core.Logging;
 
 namespace Castle.Services.Transaction.Activities
 {
@@ -29,6 +30,11 @@ namespace Castle.Services.Transaction.Activities
 	{
 		private const string Key = "Castle.Services.Transaction.Activity";
 
+		public ILoggerFactory LoggerFactory { 
+			get; 
+			set; 
+		}
+
 		public CallContextActivityManager()
 		{
 			CallContext.SetData(Key, null);
@@ -40,7 +46,17 @@ namespace Castle.Services.Transaction.Activities
 
 			if (activity == null)
 			{
-				activity = new Activity();
+				// activity logger
+				ILogger logger = NullLogger.Instance;
+				// check we have a ILoggerFactory service instance (logging is enabled)
+				if (LoggerFactory != null) {
+					// create logger
+					logger = LoggerFactory.Create(typeof(Activity));
+				}
+				// create activity
+				activity = new Activity(logger);
+				
+				// set activity in call context
 				CallContext.SetData(Key, activity);
 			}
 

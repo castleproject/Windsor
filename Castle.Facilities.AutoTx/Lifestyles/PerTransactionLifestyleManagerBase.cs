@@ -23,11 +23,11 @@ using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using Castle.Core;
+using Castle.Core.Logging;
 using Castle.MicroKernel;
 using Castle.MicroKernel.Context;
 using Castle.MicroKernel.Lifestyle;
 using Castle.Services.Transaction;
-using log4net;
 
 namespace Castle.Facilities.AutoTx.Lifestyles
 {
@@ -39,7 +39,7 @@ namespace Castle.Facilities.AutoTx.Lifestyles
 	[Serializable]
 	public abstract class PerTransactionLifestyleManagerBase : AbstractLifestyleManager
 	{
-		private static readonly ILog _Logger = LogManager.GetLogger(typeof (PerTransactionLifestyleManagerBase));
+		private ILogger _Logger;
 
 		private readonly Dictionary<string, Tuple<uint, object>> _Storage = new Dictionary<string, Tuple<uint, object>>();
 
@@ -51,13 +51,23 @@ namespace Castle.Facilities.AutoTx.Lifestyles
 		{
 			Contract.Requires(manager != null);
 			Contract.Ensures(_Manager != null);
-			_Logger.DebugFormat("created");
 			_Manager = manager;
 		}
 
 		public override void Init(IComponentActivator componentActivator, IKernel kernel, ComponentModel model)
 		{
 			base.Init(componentActivator, kernel, model);
+
+			// check ILoggerFactory is registered (logging is enabled)
+			if (kernel.HasComponent(typeof(ILoggerFactory))) 
+			{
+				// get logger factory instance
+				ILoggerFactory loggerFactory = kernel.Resolve<ILoggerFactory>();
+				// create logger
+				_Logger = loggerFactory.Create(GetType());
+			}
+			else
+				_Logger = NullLogger.Instance;
 		}
 
 		// this method is not thread-safe
@@ -78,11 +88,14 @@ namespace Castle.Facilities.AutoTx.Lifestyles
 
 			if (_Disposed)
 			{
-				_Logger.Info(
-					"repeated call to Dispose. will show stack-trace if log4net is in debug mode as the next log line. this method call is idempotent");
+				if (_Logger.IsInfoEnabled) 
+				{
+					_Logger.Info(
+						"repeated call to Dispose. will show stack-trace if logging is in debug mode as the next log line. this method call is idempotent");
 
-				if (_Logger.IsDebugEnabled)
-					_Logger.Debug(new StackTrace().ToString());
+					if (_Logger.IsDebugEnabled)
+						_Logger.Debug(new StackTrace().ToString());
+				}
 
 				return;
 			}
@@ -91,7 +104,7 @@ namespace Castle.Facilities.AutoTx.Lifestyles
 			{
 				lock (ComponentActivator)
 				{
-					if (_Storage.Count > 0)
+					if (_Logger.IsWarnEnabled && _Storage.Count > 0)
 					{
 						var items = string.Join(
 							string.Format(", {0}", Environment.NewLine),

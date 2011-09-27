@@ -18,16 +18,15 @@
 
 using System;
 using System.Diagnostics.Contracts;
+using Castle.Core.Logging;
 using Castle.Windsor;
-using log4net;
 
 namespace Castle.Facilities.AutoTx.Testing
 {
 	public class ResolveScope<T> : IDisposable
 		where T : class
 	{
-		private static readonly ILog _Logger = LogManager.GetLogger(
-			string.Format("Castle.Facilities.AutoTx.Testing.ResolveScope<{0}>", typeof (T).Name));
+		private readonly ILogger _Logger;
 
 		private readonly T _Service;
 		private bool _Disposed;
@@ -38,7 +37,18 @@ namespace Castle.Facilities.AutoTx.Testing
 			Contract.Requires(container != null);
 			Contract.Ensures(_Service != null, "or resolve throws");
 
-			_Logger.Debug("creating");
+			// check container has a logger factory component
+			ILoggerFactory loggerFactory = container.GetService<ILoggerFactory>();
+			if (loggerFactory != null)
+			{
+				// create logger
+				_Logger = loggerFactory.Create(GetType());
+			}
+			else
+				_Logger = NullLogger.Instance;
+
+			if(_Logger.IsDebugEnabled)
+				_Logger.Debug("creating");
 
 			Container = container;
 			_Service = Container.Resolve<T>();
@@ -70,7 +80,8 @@ namespace Castle.Facilities.AutoTx.Testing
 		{
 			if (_Disposed) return;
 
-			_Logger.Debug("disposing resolve scope");
+			if(_Logger.IsDebugEnabled)
+				_Logger.Debug("disposing resolve scope");
 
 			try
 			{
