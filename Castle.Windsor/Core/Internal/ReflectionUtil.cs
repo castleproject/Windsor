@@ -233,7 +233,7 @@ namespace Castle.Core.Internal
 			{
 				parameterExpressions[i] = Expression.Convert(
 					Expression.ArrayIndex(argument, Expression.Constant(i, typeof(int))),
-					parameterInfos[i].ParameterType);
+					parameterInfos[i].ParameterType.IsByRef ? parameterInfos[i].ParameterType.GetElementType() : parameterInfos[i].ParameterType);
 			}
 			return Expression.Lambda<Func<object[], object>>(
 				Expression.New(ctor, parameterExpressions),
@@ -320,7 +320,7 @@ namespace Castle.Core.Internal
 			}
 		}
 
-		private static object Instantiate(ConstructorInfo ctor, object[] ctorArgs)
+		public static object Instantiate(this ConstructorInfo ctor, object[] ctorArgs)
 		{
 			Func<object[], object> factory;
 #if DOTNET40
