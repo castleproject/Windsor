@@ -83,8 +83,9 @@ namespace Castle.MicroKernel.Handlers
 
 			public void Invoked(Burden burden)
 			{
-				releasers.ForEach(r => r.Invoke(kernel));
 				burden.Releasing -= Invoked;
+
+				releasers.ForEach(r => r.Invoke(kernel));
 			}
 		}
 	}
