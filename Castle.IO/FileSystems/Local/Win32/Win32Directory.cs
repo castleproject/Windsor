@@ -44,11 +44,11 @@ namespace Castle.IO.FileSystems.Local.Win32
 			get { return JunctionPoint.Exists(Path.FullPath); }
 		}
 
-		public override IDirectory LinkTo(string path)
+		public override IDirectory LinkTo(Path path)
 		{
-			path = NormalizeDirectoryPath(path);
-			JunctionPoint.Create(path, Path.FullPath, true);
-			return new Win32Directory(path);
+			//path = NormalizeDirectoryPath(path);
+			JunctionPoint.Create(GetDirectory(path.FullPath), Path.FullPath, true);
+			return new Win32Directory(path.FullPath);
 		}
 
 		protected override LocalDirectory CreateDirectory(DirectoryInfo di)
@@ -56,9 +56,9 @@ namespace Castle.IO.FileSystems.Local.Win32
 			return new Win32Directory(di);
 		}
 
-		protected override LocalDirectory CreateDirectory(string path)
+		protected override LocalDirectory CreateDirectory(Path path)
 		{
-			return new Win32Directory(path);
+			return new Win32Directory(path.FullPath);
 		}
 
 		public override IDirectory Target

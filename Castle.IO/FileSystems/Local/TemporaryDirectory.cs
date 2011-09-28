@@ -72,7 +72,7 @@ namespace Castle.IO.FileSystems.Local
 			get { return UnderlyingDirectory.IsHardLink; }
 		}
 
-		public IDirectory LinkTo(string path)
+		public IDirectory LinkTo(Path path)
 		{
 			return UnderlyingDirectory.LinkTo(path);
 		}

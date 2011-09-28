@@ -186,9 +186,9 @@ namespace Castle.IO.FileSystems.InMemory
 			return file;
 		}
 
-		public IDirectory LinkTo(string path)
+		public IDirectory LinkTo(Path path)
 		{
-			var linkDirectory = (InMemoryDirectory) GetDirectory(path);
+			var linkDirectory = (InMemoryDirectory) GetDirectory(path.FullPath);
 			if (linkDirectory.Exists)
 				throw new IOException(string.Format("Cannot create link at location '{0}', a directory already exists.", path));
 			linkDirectory.ChildDirectories = ChildDirectories;

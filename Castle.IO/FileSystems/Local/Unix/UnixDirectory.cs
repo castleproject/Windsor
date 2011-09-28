@@ -35,6 +35,12 @@ namespace Castle.IO.FileSystems.Local.Unix
 			GetUnixInfo(directoryPath);
 		}
 
+		public UnixDirectory(Path directoryPath)
+			: base(directoryPath.FullPath)
+		{
+			GetUnixInfo(directoryPath.FullPath);
+		}
+
 		public override bool IsHardLink
 		{
 			get { return UnixDirectoryInfo.IsSymbolicLink; }
@@ -52,13 +58,13 @@ namespace Castle.IO.FileSystems.Local.Unix
 
 		protected UnixFileSystemInfo UnixDirectoryInfo { get; set; }
 
-		public override IDirectory LinkTo(string path)
+		public override IDirectory LinkTo(Path path)
 		{
 			//UnixDirectoryInfo.CreateSymbolicLink(path);
 			return CreateDirectory(path);
 		}
 
-		protected override LocalDirectory CreateDirectory(string path)
+		protected override LocalDirectory CreateDirectory(Path path)
 		{
 			return new UnixDirectory(path);
 		}

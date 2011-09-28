@@ -213,24 +213,22 @@ namespace Castle.IO.FileSystems.Local.Win32.Interop
 		/// <param name = "overwrite">If true overwrites an existing reparse point or empty directory</param>
 		/// <exception cref = "IOException">Thrown when the junction point could not be created or when
 		/// 	an existing directory was found and <paramref name = "overwrite" /> if false</exception>
-		public static void Create(string junctionPoint, string targetDir, bool overwrite)
+		public static void Create(IDirectory junctionPoint, string targetDir, bool overwrite)
 		{
-			targetDir = Path.GetFullPath(targetDir);
+			//targetDir = Path.GetFullPath(targetDir);
 
 			if (!Directory.Exists(targetDir))
 				throw new IOException("Target path does not exist or is not a directory.");
 
-			if (Directory.Exists(junctionPoint))
+			if (junctionPoint.Exists)
 			{
 				if (!overwrite)
 					throw new IOException("Directory already exists and overwrite parameter is false.");
 			}
 			else
-			{
-				Directory.CreateDirectory(junctionPoint);
-			}
+				junctionPoint.Create();
 
-			using (var handle = OpenReparsePoint(junctionPoint, EFileAccess.GenericWrite))
+			using (var handle = OpenReparsePoint(junctionPoint.Path.FullPath, EFileAccess.GenericWrite))
 			{
 				var targetDirBytes = Encoding.Unicode.GetBytes(NonInterpretedPathPrefix + Path.GetFullPath(targetDir));
 

@@ -220,8 +220,8 @@ namespace Castle.IO.Tests
 				file.Exists.Should().Be.True();
 
 				var linkedPath = Path.GetTempPath().Combine(tempLinkFolder);
-
-				var linkedDirectory = concreteDir.LinkTo(linkedPath.ToString());
+				
+				var linkedDirectory = concreteDir.LinkTo(linkedPath);
 				linkedDirectory.IsHardLink.ShouldBeTrue();
 
 				linkedDirectory.Delete();
@@ -243,7 +243,7 @@ namespace Castle.IO.Tests
 			using (var tempDir = FileSystem.CreateTempDirectory())
 			{
 				var concreteDir = tempDir.GetDirectory("temp").MustExist();
-				var linkedDir = concreteDir.LinkTo(tempDir.Path.Combine("link").FullPath);
+				var linkedDir = concreteDir.LinkTo(tempDir.Path.Combine("link"));
 				linkedDir.Target.ShouldBe(concreteDir);
 				linkedDir.Delete();
 			}
@@ -275,7 +275,7 @@ namespace Castle.IO.Tests
 			var dir1 = FileSystem.GetTempDirectory().GetDirectory("test").MustExist();
 			var child = dir1.GetDirectory("test").MustExist();
 
-			var link = dir1.LinkTo(FileSystem.GetTempDirectory().Path.Combine("testLink").FullPath);
+			var link = dir1.LinkTo(FileSystem.GetTempDirectory().Path.Combine("testLink"));
 			link.Delete();
 			link.Exists.ShouldBeFalse();
 			dir1.Exists.ShouldBeTrue();

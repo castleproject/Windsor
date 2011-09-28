@@ -32,7 +32,7 @@ namespace Castle.IO
 		bool IsHardLink { get; }
 
 
-		IDirectory LinkTo(string path);
+		IDirectory LinkTo(Path path);
 
 		IDirectory Target { get; }
 

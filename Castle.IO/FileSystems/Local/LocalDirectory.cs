@@ -24,6 +24,8 @@ using System.Text.RegularExpressions;
 
 namespace Castle.IO.FileSystems.Local
 {
+	using Castle.IO.Extensions;
+
 	public abstract class LocalDirectory : AbstractDirectory, IDirectory, IEquatable<IDirectory>
 	{
 		private DirectoryInfo DirectoryInfo { get; set; }
@@ -40,7 +42,7 @@ namespace Castle.IO.FileSystems.Local
 		}
 
 		protected abstract LocalDirectory CreateDirectory(DirectoryInfo di);
-		protected abstract LocalDirectory CreateDirectory(string path);
+		protected abstract LocalDirectory CreateDirectory(Path path);
 
 		public bool Exists
 		{
@@ -83,7 +85,7 @@ namespace Castle.IO.FileSystems.Local
 			get { return false; }
 		}
 
-		public abstract IDirectory LinkTo(string path);
+		public abstract IDirectory LinkTo(Path path);
 
 		public virtual IDirectory Target
 		{
@@ -146,7 +148,7 @@ namespace Castle.IO.FileSystems.Local
 
 		public virtual IDirectory GetDirectory(string directoryName)
 		{
-			return CreateDirectory(System.IO.Path.Combine(DirectoryInfo.FullName, directoryName));
+			return CreateDirectory(new Path(DirectoryInfo.FullName.Combine(directoryName)));
 		}
 
 		public IFile GetFile(string fileName)
