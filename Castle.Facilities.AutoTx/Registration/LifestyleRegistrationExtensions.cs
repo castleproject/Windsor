@@ -29,6 +29,7 @@ namespace Castle.Facilities.AutoTx.Registration
 			this LifestyleGroup<TService> @group)
 		{
 			Contract.Requires(group != null);
+			Contract.Ensures(Contract.Result<ComponentRegistration<TService>>() != null);
 			return @group.Custom<WrapperResolveLifestyleManager<PerTransactionLifestyleManager>>();
 		}
 
@@ -36,6 +37,7 @@ namespace Castle.Facilities.AutoTx.Registration
 			this LifestyleGroup<TService> @group)
 		{
 			Contract.Requires(group != null);
+			Contract.Ensures(Contract.Result<ComponentRegistration<TService>>() != null);
 			return @group.Custom<WrapperResolveLifestyleManager<PerTopTransactionLifestyleManager>>();
 		}
 	}

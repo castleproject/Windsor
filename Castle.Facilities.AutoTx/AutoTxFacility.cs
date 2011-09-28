@@ -39,12 +39,12 @@ namespace Castle.Facilities.AutoTx
 		protected override void Init()
 		{
 			ILogger logger = NullLogger.Instance;
-            
+
 			// check we have a logger factory
 			if (Kernel.HasComponent(typeof(ILoggerFactory)))
 			{
 				// get logger factory
-				ILoggerFactory loggerFactory = Kernel.Resolve<ILoggerFactory>();
+				var loggerFactory = Kernel.Resolve<ILoggerFactory>();
 				// get logger
 				logger = loggerFactory.Create(typeof(AutoTxFacility));
 			}
