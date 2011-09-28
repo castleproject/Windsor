@@ -30,7 +30,6 @@ namespace Castle.MicroKernel.Lifestyle
 	public class PerWebRequestLifestyleManager : AbstractLifestyleManager
 	{
 		private readonly string PerRequestObjectID = "PerRequestLifestyleManager_" + Guid.NewGuid();
-		private bool evicting;
 
 		public override object Resolve(CreationContext context)
 		{
@@ -69,18 +68,14 @@ namespace Castle.MicroKernel.Lifestyle
 			// allow the actual releasing of the component at the end of
 			// the web request.
 
-			if (evicting == false) return false;
+			if (PerWebRequestLifestyleModule.IsRequestInProgress) return false;
 
 			return base.Release(instance);
 		}
 
 		internal void Evict(object instance)
 		{
-			using (new EvictionScope(this))
-			{
-				// that's not really thread safe, should we care about it?
-				Kernel.ReleaseComponent(instance);
-			}
+			Kernel.ReleaseComponent(instance);
 		}
 
 		public override void Dispose()
@@ -99,26 +94,6 @@ namespace Castle.MicroKernel.Lifestyle
 
 			Evict(instance);
 		}
-
-		#region Nested type: EvictionScope
-
-		private class EvictionScope : IDisposable
-		{
-			private readonly PerWebRequestLifestyleManager owner;
-
-			public EvictionScope(PerWebRequestLifestyleManager owner)
-			{
-				this.owner = owner;
-				this.owner.evicting = true;
-			}
-
-			public void Dispose()
-			{
-				owner.evicting = false;
-			}
-		}
-
-		#endregion
 	}
 
 	#region PerWebRequestLifestyleModule
@@ -126,6 +101,7 @@ namespace Castle.MicroKernel.Lifestyle
 	public class PerWebRequestLifestyleModule : IHttpModule
 	{
 		private const string PerRequestEvict = "PerRequestLifestyleManager_Evict";
+		private const string RequestEnded = "PerRequestLifestyleManager_RequestEnded";
 		private static bool initialized;
 
 		internal static bool Initialized
@@ -137,6 +113,19 @@ namespace Castle.MicroKernel.Lifestyle
 		{
 			initialized = true;
 			context.EndRequest += Application_EndRequest;
+		}
+
+		internal static bool IsRequestInProgress
+		{
+			get
+			{
+				var context = HttpContext.Current;
+				if(context== null)
+				{
+					return false;
+				}
+				return context.Items.Contains(RequestEnded) == false;
+			}
 		}
 
 		public void Dispose()
@@ -168,6 +157,8 @@ namespace Castle.MicroKernel.Lifestyle
 				return;
 			}
 
+			// we only check the key so null is fine
+			application.Context.Items[RequestEnded] = null;
 			// NOTE: This is relying on a undocumented behavior that order of items when enumeratinc Dictionary<> will be oldest --> latest
 			foreach (var candidate in candidates.Reverse())
 			{
