@@ -1,5 +1,3 @@
-#region license
-
 // Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,15 +12,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#endregion
-
-using System;
-using System.Diagnostics.Contracts;
-using Castle.Core.Logging;
-using Castle.Windsor;
-
 namespace Castle.Facilities.AutoTx.Testing
 {
+	using System;
+	using System.Diagnostics.Contracts;
+
+	using Castle.Core.Logging;
+	using Castle.Windsor;
+
+	/// <summary>
+	/// 	A scope usable for deterministically releasing (from Windsor) resources resolved. Important when testing logic
+	/// 	that is dependent on the resource being released.
+	/// </summary>
+	/// <typeparam name = "T"></typeparam>
 	public class ResolveScope<T> : IDisposable
 		where T : class
 	{
@@ -38,16 +40,10 @@ namespace Castle.Facilities.AutoTx.Testing
 			Contract.Ensures(_Service != null, "or resolve throws");
 
 			// check container has a logger factory component
-			ILoggerFactory loggerFactory = container.GetService<ILoggerFactory>();
-			if (loggerFactory != null)
-			{
-				// create logger
-				_Logger = loggerFactory.Create(GetType());
-			}
-			else
-				_Logger = NullLogger.Instance;
+			var loggerFactory = container.GetService<ILoggerFactory>();
+			_Logger = loggerFactory != null ? loggerFactory.Create(GetType()) : NullLogger.Instance;
 
-			if(_Logger.IsDebugEnabled)
+			if (_Logger.IsDebugEnabled)
 				_Logger.Debug("creating");
 
 			Container = container;
@@ -80,7 +76,10 @@ namespace Castle.Facilities.AutoTx.Testing
 		{
 			if (_Disposed) return;
 
-			if(_Logger.IsDebugEnabled)
+			if (!managed)
+				return;
+
+			if (_Logger.IsDebugEnabled)
 				_Logger.Debug("disposing resolve scope");
 
 			try

@@ -1,6 +1,4 @@
-﻿#region license
-
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,21 +12,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#endregion
-
-using System;
-using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
-using System.Diagnostics.Contracts;
-using Castle.Core;
-using Castle.Core.Logging;
-using Castle.MicroKernel;
-using Castle.MicroKernel.Context;
-using Castle.MicroKernel.Lifestyle;
-using Castle.MicroKernel.Registration;
-
 namespace Castle.Facilities.AutoTx.Lifestyles
 {
+	using System;
+	using System.Diagnostics;
+	using System.Diagnostics.CodeAnalysis;
+	using System.Diagnostics.Contracts;
+
+	using Castle.Core;
+	using Castle.Core.Logging;
+	using Castle.MicroKernel;
+	using Castle.MicroKernel.Context;
+	using Castle.MicroKernel.Lifestyle;
+	using Castle.MicroKernel.Registration;
+
 	/// <summary>
 	/// 	Abstract hybrid lifestyle manager, with two underlying lifestyles
 	/// </summary>
@@ -43,7 +40,8 @@ namespace Castle.Facilities.AutoTx.Lifestyles
 		protected T _Lifestyle1;
 		private bool _Disposed;
 
-		[ContractPublicPropertyName("Initialized")] private bool _Initialized;
+		[ContractPublicPropertyName("Initialized")]
+		private bool _Initialized;
 
 		public bool Initialized
 		{
@@ -62,10 +60,10 @@ namespace Castle.Facilities.AutoTx.Lifestyles
 			Contract.Ensures(Initialized);
 
 			// check ILoggerFactory is registered
-			if (kernel.HasComponent(typeof(ILoggerFactory))) 
+			if (kernel.HasComponent(typeof(ILoggerFactory)))
 			{
 				// get logger factory instance
-				ILoggerFactory loggerFactory = kernel.Resolve<ILoggerFactory>();
+				var loggerFactory = kernel.Resolve<ILoggerFactory>();
 				// create logger
 				_Logger = loggerFactory.Create(typeof(WrapperResolveLifestyleManager<T>));
 			}
@@ -94,7 +92,7 @@ namespace Castle.Facilities.AutoTx.Lifestyles
 			Contract.Assume(_Lifestyle1 != null,
 			                "lifestyle1 can't be null because the Resolve<T> call will throw an exception if a matching service wasn't found");
 
-			if(_Logger.IsDebugEnabled)
+			if (_Logger.IsDebugEnabled)
 				_Logger.Debug("initialized");
 
 			_Initialized = true;

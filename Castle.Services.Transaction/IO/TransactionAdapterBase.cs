@@ -1,5 +1,3 @@
-#region license
-
 // Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,14 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#endregion
-
-using System;
-using System.Diagnostics.Contracts;
-using Castle.Core.Logging;
-
 namespace Castle.Services.Transaction.IO
 {
+	using System;
+	using System.Diagnostics.Contracts;
+
+	using Castle.Core.Logging;
+
 	// http://social.msdn.microsoft.com/Forums/en-CA/windowstransactionsprogramming/thread/ab4946d9-b634-4156-9296-78554d41d84a
 	// http://www.pluralsight-training.net/community/blogs/jimjohn/archive/2006/09/01/36863.aspx
 
@@ -44,7 +41,7 @@ namespace Castle.Services.Transaction.IO
 		}
 
 		protected TransactionAdapterBase(bool constrainToSpecifiedDir,
-		                        string specifiedDir)
+		                                 string specifiedDir)
 		{
 			Contract.Requires(!constrainToSpecifiedDir || !string.IsNullOrEmpty(specifiedDir));
 			_AllowOutsideSpecifiedFolder = !constrainToSpecifiedDir;

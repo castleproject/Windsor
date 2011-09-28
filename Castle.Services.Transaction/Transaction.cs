@@ -1,6 +1,4 @@
-﻿#region license
-
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,20 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#endregion
-
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.Contracts;
-using System.Threading.Tasks;
-using System.Transactions;
-using Castle.Core.Logging;
-using Castle.Services.Transaction.Internal;
-using Castle.Services.Transaction.IO;
-using System.Linq;
-
 namespace Castle.Services.Transaction
 {
+	using System;
+	using System.Collections.Generic;
+	using System.Diagnostics.Contracts;
+	using System.Threading.Tasks;
+	using System.Transactions;
+
+	using Castle.Core.Logging;
+	using Castle.Services.Transaction.IO;
+	using Castle.Services.Transaction.Internal;
+
 	[Serializable]
 	public class Transaction : ITransaction, IDependentAware
 	{
@@ -40,10 +36,11 @@ namespace Castle.Services.Transaction
 		private List<Task> _DependentTasks;
 		private readonly string _LocalIdentifier;
 
-		[NonSerialized] private readonly Action _OnDispose;
+		[NonSerialized]
+		private readonly Action _OnDispose;
 
 		public Transaction(CommittableTransaction committable, uint stackDepth, ITransactionOptions creationOptions,
-							Action onDispose, ILogger logger)
+		                   Action onDispose, ILogger logger)
 		{
 			Contract.Requires(creationOptions != null);
 			Contract.Requires(committable != null);
@@ -60,7 +57,7 @@ namespace Castle.Services.Transaction
 		}
 
 		public Transaction(DependentTransaction dependent, uint stackDepth, ITransactionOptions creationOptions, Action onDispose,
-							ILogger logger)
+		                   ILogger logger)
 		{
 			Contract.Requires(creationOptions != null);
 			Contract.Requires(dependent != null);
@@ -108,7 +105,7 @@ namespace Castle.Services.Transaction
 				finally
 				{
 					// the question is; does committable transaction object to being disposed on exceptions?
-					((IDisposable) this).Dispose(); 
+					((IDisposable)this).Dispose();
 				}
 			}
 			finally
@@ -136,7 +133,7 @@ namespace Castle.Services.Transaction
 			get
 			{
 				Contract.Assume(_Committable != null || _Dependent != null);
-				return _Committable ?? (System.Transactions.Transaction) _Dependent;
+				return _Committable ?? (System.Transactions.Transaction)_Dependent;
 			}
 		}
 
@@ -147,7 +144,7 @@ namespace Castle.Services.Transaction
 
 		private System.Transactions.Transaction Inner
 		{
-			get { return _Committable ?? (System.Transactions.Transaction) _Dependent; }
+			get { return _Committable ?? (System.Transactions.Transaction)_Dependent; }
 		}
 
 		//Maybe<IRetryPolicy> ITransaction.FailedPolicy
@@ -171,7 +168,7 @@ namespace Castle.Services.Transaction
 
 			try
 			{
-				if(_Logger.IsInfoEnabled)
+				if (_Logger.IsInfoEnabled)
 					_Logger.InfoFormat("rolling back tx#{0}", _LocalIdentifier);
 				Inner.Rollback();
 			}
@@ -182,16 +179,17 @@ namespace Castle.Services.Transaction
 		}
 
 		internal Action BeforeTopComplete;
+
 		void ITransaction.Complete()
 		{
 			try
 			{
 				if (_Committable != null)
 				{
-					if (_Logger.IsDebugEnabled) 
+					if (_Logger.IsDebugEnabled)
 						_Logger.DebugFormat("committing committable tx#{0}", _LocalIdentifier);
 
-					if (BeforeTopComplete != null) 
+					if (BeforeTopComplete != null)
 						BeforeTopComplete();
 
 					if (_DependentTasks != null && _CreationOptions.DependentOption == DependentCloneOption.BlockCommitUntilComplete)
@@ -220,15 +218,15 @@ namespace Castle.Services.Transaction
 			catch (TransactionAbortedException e)
 			{
 				_State = TransactionState.Aborted;
-				if(_Logger.IsWarnEnabled)
-				    _Logger.Warn("transaction aborted", e);
+				if (_Logger.IsWarnEnabled)
+					_Logger.Warn("transaction aborted", e);
 				throw;
 			}
 			catch (AggregateException e)
 			{
 				_State = TransactionState.Aborted;
 				if (_Logger.IsWarnEnabled)
-				    _Logger.Warn("dependent transactions failed, so we are not performing the rollback (as they will have notified their parent!)", e);
+					_Logger.Warn("dependent transactions failed, so we are not performing the rollback (as they will have notified their parent!)", e);
 				throw;
 			}
 			catch (Exception e)
@@ -249,8 +247,8 @@ namespace Castle.Services.Transaction
 
 			if (_DependentTasks == null)
 				// the number of processor cores * 2 is a reasonable assumption if people are using the Fork=true option.
-				_DependentTasks = new List<Task>(Environment.ProcessorCount * 2);
-			
+				_DependentTasks = new List<Task>(Environment.ProcessorCount*2);
+
 			_DependentTasks.Add(task);
 		}
 
@@ -268,12 +266,12 @@ namespace Castle.Services.Transaction
 			if (_Logger.IsDebugEnabled)
 				_Logger.Debug("disposing");
 
-			if (_DependentTasks != null) 
+			if (_DependentTasks != null)
 				_DependentTasks.Clear();
 
 			try
 			{
-				if (_OnDispose != null) 
+				if (_OnDispose != null)
 					_OnDispose();
 
 				Inner.Dispose();

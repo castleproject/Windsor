@@ -1,6 +1,4 @@
-﻿#region license
-
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,25 +12,25 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#endregion
-
-using System;
-using System.Diagnostics.Contracts;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Transactions;
-using Castle.Core;
-using Castle.Core.Interceptor;
-using Castle.Core.Logging;
-using Castle.DynamicProxy;
-using Castle.MicroKernel;
-using Castle.Services.Transaction;
-using Castle.Services.Transaction.Internal;
-using TransactionException = Castle.Services.Transaction.TransactionException;
-using TransactionManager = Castle.Services.Transaction.TransactionManager;
-
 namespace Castle.Facilities.AutoTx
 {
+	using System;
+	using System.Diagnostics.Contracts;
+	using System.Threading;
+	using System.Threading.Tasks;
+	using System.Transactions;
+
+	using Castle.Core;
+	using Castle.Core.Interceptor;
+	using Castle.Core.Logging;
+	using Castle.DynamicProxy;
+	using Castle.MicroKernel;
+	using Castle.Services.Transaction;
+	using Castle.Services.Transaction.Internal;
+
+	using TransactionException = Castle.Services.Transaction.TransactionException;
+	using TransactionManager = Castle.Services.Transaction.TransactionManager;
+
 	internal class TransactionInterceptor : IInterceptor, IOnBehalfAware
 	{
 		private enum InterceptorState
@@ -93,7 +91,7 @@ namespace Castle.Facilities.AutoTx
 				{
 					if (mTxMethod.HasValue && mTxMethod.Value.Mode == TransactionScopeOption.Suppress)
 					{
-						if(_Logger.IsInfoEnabled)
+						if (_Logger.IsInfoEnabled)
 							_Logger.Info("supressing ambient transaction");
 
 						using (new TxScope(null, _Logger.CreateChildLogger("TxScope")))
@@ -126,7 +124,7 @@ namespace Castle.Facilities.AutoTx
 		{
 			Contract.Requires(transaction.State == TransactionState.Active);
 
-			if(_Logger.IsDebugEnabled)
+			if (_Logger.IsDebugEnabled)
 				_Logger.DebugFormat("synchronized case");
 
 			using (new TxScope(transaction.Inner, _Logger.CreateChildLogger("TxScope")))
@@ -139,7 +137,7 @@ namespace Castle.Facilities.AutoTx
 
 					if (transaction.State == TransactionState.Active)
 						transaction.Complete();
-					else if(_Logger.IsWarnEnabled)
+					else if (_Logger.IsWarnEnabled)
 						_Logger.WarnFormat(
 							"transaction was in state {0}, so it cannot be completed. the 'consumer' method, so to speak, might have rolled it back.",
 							transaction.State);
@@ -147,8 +145,9 @@ namespace Castle.Facilities.AutoTx
 				catch (TransactionAbortedException)
 				{
 					// if we have aborted the transaction, we both warn and re-throw the exception
-					if(_Logger.IsWarnEnabled)
-					    _Logger.WarnFormat("transaction aborted - synchronized case, tx#{0}", localIdentifier);
+					if (_Logger.IsWarnEnabled)
+						_Logger.WarnFormat("transaction aborted - synchronized case, tx#{0}", localIdentifier);
+
 					throw;
 				}
 				catch (TransactionException ex)
@@ -185,7 +184,7 @@ namespace Castle.Facilities.AutoTx
 		}
 
 		/// <summary>
-		/// For ordering interleaving of threads during testing!
+		/// 	For ordering interleaving of threads during testing!
 		/// </summary>
 		internal static ManualResetEvent Finally;
 
@@ -195,7 +194,7 @@ namespace Castle.Facilities.AutoTx
 			Contract.Ensures(Contract.Result<Task>() != null);
 			Contract.Assume(txData.Transaction.Inner is DependentTransaction);
 
-			if(_Logger.IsDebugEnabled)
+			if (_Logger.IsDebugEnabled)
 				_Logger.DebugFormat("fork case");
 
 			return Task.Factory.StartNew(t =>
@@ -205,7 +204,6 @@ namespace Castle.Facilities.AutoTx
 				var dependent = tuple.Item2.Transaction.Inner as DependentTransaction;
 
 				using (tuple.Item2.GetForkScope())
-				{
 					try
 					{
 						if (_Logger.IsDebugEnabled)
@@ -226,7 +224,7 @@ namespace Castle.Facilities.AutoTx
 						// if we have aborted the transaction, we both warn and re-throw the exception
 						hasException = true;
 
-						if(_Logger.IsWarnEnabled)
+						if (_Logger.IsWarnEnabled)
 							_Logger.Warn("transaction aborted", ex);
 
 						throw new TransactionAbortedException(
@@ -245,12 +243,11 @@ namespace Castle.Facilities.AutoTx
 						if (!hasException)
 							dependent.Complete();
 
-						if (Finally != null) 
+						if (Finally != null)
 							Finally.Set();
 
 						// See footnote at end of file
 					}
-				}
 			}, Tuple.Create(invocation, txData, txData.Transaction.LocalIdentifier));
 		}
 
