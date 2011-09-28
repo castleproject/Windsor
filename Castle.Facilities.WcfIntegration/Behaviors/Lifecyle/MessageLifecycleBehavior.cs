@@ -174,7 +174,7 @@ namespace Castle.Facilities.WcfIntegration.Behaviors
 			writer.Flush();
 			stream.Position = 0;
 
-			var reader = XmlDictionaryReader.CreateBinaryReader(stream,	new XmlDictionaryReaderQuotas());
+			var reader = XmlDictionaryReader.CreateBinaryReader(stream,	XmlDictionaryReaderQuotas.Max);
 			var newMessage = Message.CreateMessage(reader, int.MaxValue, message.Version);
 			newMessage.Headers.Clear();
 			newMessage.Headers.CopyHeadersFrom(message);
