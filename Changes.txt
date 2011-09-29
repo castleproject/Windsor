@@ -1,5 +1,6 @@
-2.5.4 (2011-09-28)
+2.5.4 (2011-09-29)
 ==================
+- fixed issue causing typed factory to unnecessarily accumulate referenced to tracked singletons resolved via the factory
 - fixed issue causing per web request objects to still be tracked by the container after being relesed in heavy load scenarios
 
 2.5.3 (2011-02-02)

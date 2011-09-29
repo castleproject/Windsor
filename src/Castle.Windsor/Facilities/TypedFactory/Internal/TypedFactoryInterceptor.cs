@@ -24,6 +24,7 @@ namespace Castle.Facilities.TypedFactory.Internal
 	using Castle.DynamicProxy;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Facilities;
+	using Castle.MicroKernel.Util;
 
 	[Transient]
 	public class TypedFactoryInterceptor : IInterceptor, IOnBehalfAware, IDisposable
@@ -31,6 +32,7 @@ namespace Castle.Facilities.TypedFactory.Internal
 		private const int SweepFrequency = 100;
 
 		private readonly IKernel kernel;
+		private readonly object locker = new object();
 
 		private readonly IDictionary<MethodInfo, Action<IInvocation>> methods =
 			new Dictionary<MethodInfo, Action<IInvocation>>();
@@ -52,9 +54,13 @@ namespace Castle.Facilities.TypedFactory.Internal
 
 		public void Dispose()
 		{
-			disposed = true;
-			var components = resolvedTrackedComponents.ToArray();
-			resolvedTrackedComponents.Clear();
+			WeakReference[] components;
+			lock (locker)
+			{
+				disposed = true;
+				components = resolvedTrackedComponents.ToArray();
+				resolvedTrackedComponents.Clear();
+			}
 			foreach (var component in components)
 			{
 				var instance = component.Target;
@@ -128,12 +134,26 @@ namespace Castle.Facilities.TypedFactory.Internal
 			}
 
 			resolveCount = 0;
-			// we go ahead and remove dead references from the list
-#if !SILVERLIGHT
-			resolvedTrackedComponents.RemoveAll(c => c.IsAlive == false);
-#else
-			resolvedTrackedComponents.Where(c => c.IsAlive == false).ToList().ForEach(x => resolvedTrackedComponents.Remove(x));
-#endif
+			var instances = new HashSet<object>(new ReferenceEqualityComparer());
+			var newList = new List<WeakReference>();
+			foreach (var reference in resolvedTrackedComponents)
+			{
+				if (reference.IsAlive == false)
+				{
+					continue;
+				}
+				var instance = reference.Target;
+				if (instance == null)
+				{
+					continue;
+				}
+				if (instances.Add(instance))
+				{
+					newList.Add(reference);
+				}
+			}
+			resolvedTrackedComponents.Clear();
+			resolvedTrackedComponents.AddRange(newList);
 		}
 
 		private void Dispose(IInvocation invocation)
@@ -173,8 +193,11 @@ namespace Castle.Facilities.TypedFactory.Internal
 			var instance = component.Resolve(kernel);
 			if (kernel.ReleasePolicy.HasTrack(instance))
 			{
-				CollectDeadReferences();
-				resolvedTrackedComponents.Add(new WeakReference(instance));
+				lock (locker)
+				{
+					CollectDeadReferences();
+					resolvedTrackedComponents.Add(new WeakReference(instance));
+				}
 			}
 			invocation.ReturnValue = instance;
 		}

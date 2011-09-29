@@ -15,8 +15,11 @@
 namespace Castle.Windsor.Tests.Facilities.TypedFactory
 {
 	using System;
+	using System.Collections.Generic;
 	using System.Linq;
+	using System.Reflection;
 
+	using Castle.DynamicProxy;
 	using Castle.Facilities.TypedFactory;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Registration;
@@ -111,6 +114,31 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory
 			Assert.That(all.Any(c => c is Component1));
 			Assert.That(all.Any(c => c is Component2));
 		}
+
+#if !SILVERLIGHT
+		[Test]
+		public void Resolving_singletons_multiple_times_doesnt_leak_memory()
+		{
+
+			container.Register(
+				Component.For<IDummyComponent>().ImplementedBy<ComponentDisposable>().Named("SecondComponent"),
+				Component.For<DummyComponentFactory>().AsFactory());
+
+			var factory = container.Resolve<DummyComponentFactory>();
+
+			for (var i = 0; i < 1000; i++)
+			{
+				factory.GetSecondComponent();
+			}
+
+			var interceptor = (factory as IProxyTargetAccessor).GetInterceptors()[0];
+			var references = (List<WeakReference>)interceptor.GetType()
+				.GetField("resolvedTrackedComponents", BindingFlags.Instance | BindingFlags.NonPublic)
+				.GetValue(interceptor);
+
+			Assert.LessOrEqual(references.Count,100);
+		}
+#endif
 
 		[Test]
 		public void Can_Resolve_multiple_components_at_once_with_non_default_selector_collection()
