@@ -14,9 +14,10 @@
 
 namespace Castle.MicroKernel.Handlers
 {
-	using Castle.MicroKernel.Context;
-
 	using System.Collections.Generic;
+
+	using Castle.MicroKernel.Context;
+	using Castle.MicroKernel.Util;
 
 	public delegate ComponentReleasingDelegate ComponentResolvingDelegate(IKernel kernel, CreationContext context);
 
@@ -24,30 +25,32 @@ namespace Castle.MicroKernel.Handlers
 
 	public class ComponentLifecycleExtension : IResolveExtension, IReleaseExtension
 	{
+		private readonly object releaseInvocationLocker = new object();
 		private IKernel kernel;
 		private IDictionary<object, IList<ComponentReleasingDelegate>> releasingHandlers;
 		private ComponentResolvingDelegate resolvingHandler;
 
+		public void AddHandler(ComponentResolvingDelegate handler)
+		{
+			resolvingHandler += handler;
+		}
+
 		public void Intercept(ReleaseInvocation invocation)
 		{
-			if (releasingHandlers != null)
+			IList<ComponentReleasingDelegate> releasers = null;
+			lock (releaseInvocationLocker)
 			{
-				IList<ComponentReleasingDelegate> releasers;
-
-				lock (releasingHandlers)
+				if (releasingHandlers != null && releasingHandlers.TryGetValue(invocation.Instance, out releasers))
 				{
-					if (releasingHandlers.TryGetValue(invocation.Instance, out releasers))
-					{
-						releasingHandlers.Remove(invocation.Instance);
-					}
+					releasingHandlers.Remove(invocation.Instance);
 				}
+			}
 
-				if (releasers != null)
+			if (releasers != null)
+			{
+				foreach (var releaser in releasers)
 				{
-					foreach (var releaser in releasers)
-					{
-						releaser(kernel);
-					}
+					releaser(kernel);
 				}
 			}
 			invocation.Proceed();
@@ -85,11 +88,11 @@ namespace Castle.MicroKernel.Handlers
 				return;
 			}
 
-			lock (resolvingHandler)
+			lock (releaseInvocationLocker)
 			{
 				if (releasingHandlers == null)
 				{
-					releasingHandlers = new Dictionary<object, IList<ComponentReleasingDelegate>>();
+					releasingHandlers = new Dictionary<object, IList<ComponentReleasingDelegate>>(new ReferenceEqualityComparer());
 				}
 
 				if (releasingHandlers.ContainsKey(invocation.ReturnValue) == false)
@@ -97,16 +100,6 @@ namespace Castle.MicroKernel.Handlers
 					releasingHandlers.Add(invocation.ReturnValue, releasers);
 				}
 			}
-		}
-
-		public void AddHandler(ComponentResolvingDelegate handler)
-		{
-			if(resolvingHandler==null)
-			{
-				resolvingHandler = handler;
-				return;
-			}
-			resolvingHandler += handler;
 		}
 	}
 }

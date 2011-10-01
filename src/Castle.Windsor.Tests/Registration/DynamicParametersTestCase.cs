@@ -17,9 +17,13 @@ namespace Castle.MicroKernel.Tests.Registration
 	using System;
 	using System.Collections;
 	using System.Collections.Generic;
+	using System.Linq;
+	using System.Threading;
 
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Tests.ClassComponents;
+	using Castle.Windsor.Tests;
+
 	using NUnit.Framework;
 
 	[TestFixture]
@@ -213,6 +217,38 @@ namespace Castle.MicroKernel.Tests.Registration
 
 			Kernel.ReleaseComponent(component);
 			Assert.AreEqual(2, releaseCalled);
+		}
+
+		[Test]
+		public void Properly_releases_tracked_dendendencies_im_multithreaded_scenarios()
+		{
+			var count = 0;
+			Kernel.Register(Component.For<A>().DynamicParameters((k, d) =>
+			{
+				Interlocked.Increment(ref count);
+				return _ => Interlocked.Decrement(ref count);
+			}).LifeStyle.Transient);
+
+			var threads = new Thread[8];
+			for (var i = 0; i < threads.Length; i++)
+			{
+				var thread = new Thread(() =>
+				{
+					for (var j = 0; j < 1000; j++)
+					{
+						var a = Kernel.Resolve<A>();
+						Kernel.ReleaseComponent(a);
+					}
+				});
+				threads[i] = thread;
+				thread.Start();
+			}
+			foreach (var thread in threads)
+			{
+				Assert.True(thread.Join(TimeSpan.FromSeconds(30)));
+			}
+
+			Assert.AreEqual(0, count);
 		}
 	}
 
