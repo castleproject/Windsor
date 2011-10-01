@@ -33,6 +33,7 @@ namespace Castle.MicroKernel.Releasers
 		{
 			using(@lock.ForWriting())
 			{
+				if (instance2Burden.ContainsKey(instance)) return;
 				instance2Burden[instance] = burden;
 			}
 		}
