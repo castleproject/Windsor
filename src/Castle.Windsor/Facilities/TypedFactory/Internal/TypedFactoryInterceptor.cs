@@ -134,7 +134,11 @@ namespace Castle.Facilities.TypedFactory.Internal
 			}
 
 			resolveCount = 0;
+#if SL3
+			var instances = new List<object>();
+#else
 			var instances = new HashSet<object>(new ReferenceEqualityComparer());
+#endif
 			var newList = new List<WeakReference>();
 			foreach (var reference in resolvedTrackedComponents)
 			{
@@ -147,10 +151,18 @@ namespace Castle.Facilities.TypedFactory.Internal
 				{
 					continue;
 				}
+#if SL3
+				if(instances.Any(existing=> ReferenceEquals(existing,instances)) == false)
+				{
+					instances.Add(instance);
+					newList.Add(reference);
+				}
+#else
 				if (instances.Add(instance))
 				{
 					newList.Add(reference);
 				}
+#endif
 			}
 			resolvedTrackedComponents.Clear();
 			resolvedTrackedComponents.AddRange(newList);

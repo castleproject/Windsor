@@ -245,7 +245,7 @@ namespace Castle.MicroKernel.Tests.Registration
 			}
 			foreach (var thread in threads)
 			{
-				Assert.True(thread.Join(TimeSpan.FromSeconds(30)));
+				Assert.True(thread.Join((int)TimeSpan.FromSeconds(30).TotalMilliseconds));
 			}
 
 			Assert.AreEqual(0, count);
