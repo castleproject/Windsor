@@ -41,15 +41,16 @@ namespace Castle.MicroKernel.Releasers
 		private readonly ITrackedComponentsPerformanceCounter perfCounter;
 		private ITrackedComponentsDiagnostic trackedComponentsDiagnostic;
 
-		public LifecycledComponentsReleasePolicy() : this(null, null)
-		{
-		}
-
+		/// <param name="kernel">Used to obtain <see cref="ITrackedComponentsDiagnostic"/> if present.</param>
 		public LifecycledComponentsReleasePolicy(IKernel kernel)
 			: this(GetTrackedComponentsDiagnostic(kernel), null)
 		{
 		}
-
+		/// <summary>
+		/// Creates new policy which publishes its tracking components count to <paramref name="trackedComponentsPerformanceCounter"/> and exposes diagnostics into <paramref name="trackedComponentsDiagnostic"/>.
+		/// </summary>
+		/// <param name="trackedComponentsDiagnostic"></param>
+		/// <param name="trackedComponentsPerformanceCounter"></param>
 		public LifecycledComponentsReleasePolicy(ITrackedComponentsDiagnostic trackedComponentsDiagnostic,
 		                                         ITrackedComponentsPerformanceCounter trackedComponentsPerformanceCounter)
 		{
@@ -149,7 +150,6 @@ namespace Castle.MicroKernel.Releasers
 					string.Format(
 						"Release policy was asked to track object '{0}', but its burden has 'RequiresPolicyRelease' set to false. If object is to be tracked the flag must be true. This is likely a bug in the lifetime manager '{1}'.",
 						instance, lifestyle));
-				;
 			}
 			using (@lock.ForWriting())
 			{
@@ -177,21 +177,35 @@ namespace Castle.MicroKernel.Releasers
 			e.AddRange(TrackedObjects);
 		}
 
+		/// <summary>
+		/// Obtains <see cref="ITrackedComponentsDiagnostic"/> from given <see cref="IKernel"/> if present.
+		/// </summary>
+		/// <param name="kernel"></param>
+		/// <returns></returns>
 		public static ITrackedComponentsDiagnostic GetTrackedComponentsDiagnostic(IKernel kernel)
 		{
 			var diagnosticsHost = (IDiagnosticsHost)kernel.GetSubSystem(SubSystemConstants.DiagnosticsKey);
+			if(diagnosticsHost == null)
+			{
+				return null;
+			}
 			return diagnosticsHost.GetDiagnostic<ITrackedComponentsDiagnostic>();
 		}
 
+		/// <summary>
+		/// Creates new <see cref="ITrackedComponentsPerformanceCounter"/> from given <see cref="IPerformanceMetricsFactory"/>.
+		/// </summary>
+		/// <param name="perfMetricsFactory"></param>
+		/// <returns></returns>
 		public static ITrackedComponentsPerformanceCounter GetTrackedComponentsPerformanceCounter(IPerformanceMetricsFactory perfMetricsFactory)
 		{
-#if !SILVERLIGHT
+#if SILVERLIGHT
+			return NullPerformanceCounter.Instance;
+#else
 			var process = Process.GetCurrentProcess();
 			var name = string.Format("Instance {0} | process {1} (id:{2})", Interlocked.Increment(ref instanceId),
-			                         process.ProcessName, process.Id);
+									 process.ProcessName, process.Id);
 			return perfMetricsFactory.CreateInstancesTrackedByReleasePolicyCounter(name);
-#else
-			return NullPerformanceCounter.Instance;
 #endif
 		}
 	}

@@ -16,15 +16,30 @@ namespace Castle.MicroKernel
 {
 	using System;
 
+	using Castle.Core;
+
 	/// <summary>
 	///   Policy managing lifetime of components, and in particular their release process.
 	/// </summary>
 	public interface IReleasePolicy : IDisposable
 	{
+		/// <summary>
+		/// Creates nested policy for scoped object tracking.
+		/// </summary>
+		/// <returns></returns>
 		IReleasePolicy CreateSubPolicy();
 
+		/// <summary>
+		/// Returns <c>true</c> if <paramref name="instance"/> is being tracked by this release policy, <c>false</c> otherwise.
+		/// </summary>
+		/// <param name="instance"></param>
+		/// <returns></returns>
 		bool HasTrack(object instance);
 
+		/// <summary>
+		/// Releases <paramref name="instance"/> if it's being tracked by this release policy, invoking its <see cref="IDecommissionConcern"/>s and stops tracking it so that it can be claimed by the Garbage Collector.
+		/// </summary>
+		/// <param name="instance"></param>
 		void Release(object instance);
 
 		/// <summary>
