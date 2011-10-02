@@ -21,6 +21,7 @@ namespace Castle.MicroKernel
 	using System.Linq;
 	using System.Runtime.Serialization;
 	using System.Security;
+	using System.Text;
 
 	using Castle.Core;
 	using Castle.Core.Internal;
@@ -753,8 +754,14 @@ namespace Castle.MicroKernel
 			{
 				if (handler.IsBeingResolvedInContext(context))
 				{
-					var message = string.Format("Dependency cycle has been detected when trying to resolve {0} as dependency of {1}", service, context.RequestedType);
-					throw new CircularDependencyException(message);
+					var message = new StringBuilder();
+					message.AppendFormat("Dependency cycle has been detected when trying to resolve component '{0}'.",
+					                     handler.ComponentModel.Name);
+					message.AppendLine();
+					message.AppendLine("The resolution tree that resulted in the cycle is the following:");
+					context.BuildCycleMessageFor(handler, message);
+
+					throw new CircularDependencyException(message.ToString());
 				}
 				return handler.Resolve(context);
 			}
