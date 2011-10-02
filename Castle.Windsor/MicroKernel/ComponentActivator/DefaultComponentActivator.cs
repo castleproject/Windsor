@@ -246,13 +246,13 @@ namespace Castle.MicroKernel.ComponentActivator
 		private bool CheckCtorCandidate(ConstructorCandidate candidate, CreationContext context, out int candidatePoints)
 		{
 			candidatePoints = 0;
-			foreach (var dep in candidate.Dependencies)
+			foreach (var dependency in candidate.Dependencies)
 			{
-				if (CanSatisfyDependency(context, dep))
+				if (CanSatisfyDependency(context, dependency))
 				{
 					candidatePoints += 100;
 				}
-				else if (dep.HasDefaultValue)
+				else if (dependency.HasDefaultValue)
 				{
 					candidatePoints += 1;
 				}
