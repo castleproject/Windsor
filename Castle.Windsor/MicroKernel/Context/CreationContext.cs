@@ -19,6 +19,7 @@ namespace Castle.MicroKernel.Context
 	using System.Collections.Generic;
 	using System.Diagnostics;
 	using System.Linq;
+	using System.Text;
 
 	using Castle.Core;
 	using Castle.MicroKernel.ComponentActivator;
@@ -34,7 +35,7 @@ namespace Castle.MicroKernel.Context
 	[Serializable]
 	public class CreationContext :
 #if (!SILVERLIGHT)
-		MarshalByRefObject,
+ MarshalByRefObject,
 #endif
 		ISubDependencyResolver
 	{
@@ -94,7 +95,8 @@ namespace Castle.MicroKernel.Context
 		/// <param name = "additionalArguments">The additional arguments.</param>
 		/// <param name = "converter">The conversion manager.</param>
 		/// <param name = "parent">Parent context</param>
-		public CreationContext(IHandler handler, IReleasePolicy releasePolicy, Type requestedType, IDictionary additionalArguments, ITypeConverter converter,
+		public CreationContext(IHandler handler, IReleasePolicy releasePolicy, Type requestedType,
+		                       IDictionary additionalArguments, ITypeConverter converter,
 		                       CreationContext parent)
 		{
 			this.requestedType = requestedType;
@@ -172,6 +174,35 @@ namespace Castle.MicroKernel.Context
 			get { return requestedType; }
 		}
 
+		public void AttachExistingBurden(Burden burden)
+		{
+			ResolutionContext resolutionContext;
+			try
+			{
+				resolutionContext = resolutionStack.Peek();
+			}
+			catch (InvalidOperationException)
+			{
+				throw new ComponentActivatorException(
+					"Not in a resolution context. 'AttachExistingBurden' method can only be called withing a resoltion scope. (after 'EnterResolutionContext' was called within a handler)",
+					null);
+			}
+			resolutionContext.AttachBurden(burden);
+		}
+
+		public void BuildCycleMessageFor(IHandler duplicateHandler, StringBuilder message)
+		{
+			message.AppendFormat("Component '{0}'", duplicateHandler.ComponentModel.Name);
+
+			foreach (var handlerOnTheStack in handlerStack)
+			{
+				message.AppendFormat(" resolved as dependency of");
+				message.AppendLine();
+				message.AppendFormat("\tcomponent '{0}'", handlerOnTheStack.ComponentModel.Name);
+			}
+			message.AppendLine(" which is the root component being resolved.");
+		}
+
 		public Burden CreateBurden(IComponentActivator componentActivator, bool trackedExternally)
 		{
 			ResolutionContext resolutionContext;
@@ -195,28 +226,13 @@ namespace Castle.MicroKernel.Context
 			return resolutionContext.CreateBurden(trackedExternally);
 		}
 
-		public void AttachExistingBurden(Burden burden)
-		{
-			ResolutionContext resolutionContext;
-			try
-			{
-				resolutionContext = resolutionStack.Peek();
-			}
-			catch (InvalidOperationException)
-			{
-				throw new ComponentActivatorException(
-					"Not in a resolution context. 'AttachExistingBurden' method can only be called withing a resoltion scope. (after 'EnterResolutionContext' was called within a handler)",
-					null);
-			}
-			resolutionContext.AttachBurden(burden);
-		}
-
 		public ResolutionContext EnterResolutionContext(IHandler handlerBeingResolved, bool requiresDecommission)
 		{
 			return EnterResolutionContext(handlerBeingResolved, true, requiresDecommission);
 		}
 
-		public ResolutionContext EnterResolutionContext(IHandler handlerBeingResolved, bool trackContext, bool requiresDecommission)
+		public ResolutionContext EnterResolutionContext(IHandler handlerBeingResolved, bool trackContext,
+		                                                bool requiresDecommission)
 		{
 			var resolutionContext = new ResolutionContext(this, handlerBeingResolved, requiresDecommission, trackContext);
 			handlerStack.Push(handlerBeingResolved);
@@ -252,6 +268,21 @@ namespace Castle.MicroKernel.Context
 			return handlerStack.Contains(handler);
 		}
 
+		public ResolutionContext SelectScopeRoot(Func<IHandler[], IHandler> scopeRootSelector)
+		{
+			var scopes = resolutionStack.Select(c => c.Handler).Reverse().ToArray();
+			var selected = scopeRootSelector(scopes);
+			if (selected != null)
+			{
+				var resolutionContext = resolutionStack.SingleOrDefault(s => s.Handler == selected);
+				if (resolutionContext != null)
+				{
+					return resolutionContext;
+				}
+			}
+			return null;
+		}
+
 		public void SetContextualProperty(object key, object value)
 		{
 			if (key == null)
@@ -265,16 +296,19 @@ namespace Castle.MicroKernel.Context
 			extendedProperties[key] = value;
 		}
 
-		public virtual bool CanResolve(CreationContext context, ISubDependencyResolver contextHandlerResolver, ComponentModel model,
+		public virtual bool CanResolve(CreationContext context, ISubDependencyResolver contextHandlerResolver,
+		                               ComponentModel model,
 		                               DependencyModel dependency)
 		{
 			return HasAdditionalArguments && (CanResolveByKey(dependency) || CanResolveByType(dependency));
 		}
 
-		public virtual object Resolve(CreationContext context, ISubDependencyResolver contextHandlerResolver, ComponentModel model,
+		public virtual object Resolve(CreationContext context, ISubDependencyResolver contextHandlerResolver,
+		                              ComponentModel model,
 		                              DependencyModel dependency)
 		{
-			Debug.Assert(CanResolve(context, contextHandlerResolver, model, dependency), "CanResolve(context, contextHandlerResolver, model, dependency)");
+			Debug.Assert(CanResolve(context, contextHandlerResolver, model, dependency),
+			             "CanResolve(context, contextHandlerResolver, model, dependency)");
 			object result = null;
 			if (dependency.DependencyKey != null)
 			{
@@ -459,21 +493,6 @@ namespace Castle.MicroKernel.Context
 			{
 				context.ExitResolutionContext(burden, trackContext);
 			}
-		}
-
-		public ResolutionContext SelectScopeRoot(Func<IHandler[], IHandler> scopeRootSelector)
-		{
-			var scopes = resolutionStack.Select(c => c.Handler).Reverse().ToArray();
-			var selected = scopeRootSelector(scopes);
-			if (selected != null)
-			{
-				var resolutionContext = resolutionStack.SingleOrDefault(s => s.Handler == selected);
-				if (resolutionContext != null)
-				{
-					return resolutionContext;
-				}
-			}
-			return null;
 		}
 	}
 }
