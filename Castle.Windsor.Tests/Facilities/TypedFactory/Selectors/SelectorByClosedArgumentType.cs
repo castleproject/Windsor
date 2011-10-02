@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Windsor.Tests.Facilities.TypedFactory.Selectors
+namespace CastleTests.Facilities.TypedFactory.Selectors
 {
 	using System;
 	using System.Collections;
@@ -24,6 +24,11 @@ namespace Castle.Windsor.Tests.Facilities.TypedFactory.Selectors
 
 	public class SelectorByClosedArgumentType : DefaultTypedFactoryComponentSelector
 	{
+		public SelectorByClosedArgumentType()
+		{
+			FallbackToResolveByTypeIfNameNotFound = true;
+		}
+
 		protected override IDictionary GetArguments(MethodInfo method, object[] arguments)
 		{
 			//a condition checking if it's actually a method we want to be in should go here
