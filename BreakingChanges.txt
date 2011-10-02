@@ -1,4 +1,29 @@
 ================================================================================================
+change - Typed factory using DefaultTypedFactoryComponentSelector when resolving component 
+	by name will not fallback to resolving by type if component with that name can not be found
+	and will throw an exception instead.
+
+id - typedFactoryFallbackToResolveByTypeIfNameNotFound
+impact - medium
+fixability - easy
+
+description - Original behavior from v2.5 could lead to bugs in cases when named component was
+	not registered or the name was misspelleed and a wrong component would be picked leading to
+	potentially severe issues in the application. New version adapts fail-fast approach in those
+	cases to give dvelopers immediate feedback the configuration is wrong.
+
+fix - Actual fix depends on which part of the behavior you want:
+	- If you do care about the fallback behavior, that is get the component by name and if
+	not present fallback to resolve by type, you can specify it explicitly when registering your
+	factory:
+	.AsFactory(
+		new DefaultTypedFactoryComponentSelector(fallbackToResolveByTypeIfNameNotFound: true));
+	- if you don't care about the fallback and what you really want is a 'GetSomeFoo' method
+	that resolves by type, either rename the method so that its name doesn't start with 'get'
+	or disable the "'get' methods resolve by name" behavior explicitly when registering your
+	factory:
+	.AsFactory(new DefaultTypedFactoryComponentSelector(getMethodsResolveByName: false))
+================================================================================================
 change - Referencing interceptors by type will not work if the interceptor has custom name.
 
 impact - medium

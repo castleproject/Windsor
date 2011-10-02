@@ -25,7 +25,28 @@ namespace Castle.Facilities.TypedFactory
 	[Singleton]
 	public class DefaultTypedFactoryComponentSelector : ITypedFactoryComponentSelector
 	{
+		/// <param name = "getMethodsResolveByName">If set to <c>true</c>, all methods with names like 'GetSomething' will try to resolve by name component 'something'. Defaults to <c>true</c>.</param>
+		/// <param name = "fallbackToResolveByTypeIfNameNotFound">If set to <c>true</c>, will fallback to resolving by type, if can not find component with specified name. This property is here for backward compatibility. It is recommended not to use it. Defaults to <c>false</c>.</param>
+		public DefaultTypedFactoryComponentSelector(bool getMethodsResolveByName = true,
+		                                            bool fallbackToResolveByTypeIfNameNotFound = false)
+		{
+			FallbackToResolveByTypeIfNameNotFound = fallbackToResolveByTypeIfNameNotFound;
+			GetMethodsResolveByName = getMethodsResolveByName;
+		}
+
+		protected DefaultTypedFactoryComponentSelector() : this(true, false)
+		{
+		}
+
+		/// <summary>
+		///   If set to <c>true</c>, will fallback to resolving by type, if can not find component with specified name. This property is here for backward compatibility. It is recommended not to use it.
+		/// </summary>
 		protected bool FallbackToResolveByTypeIfNameNotFound { get; set; }
+
+		/// <summary>
+		///   If set to <c>true</c>, all methods with names like 'GetSomething' will try to resolve by name component 'something'.
+		/// </summary>
+		protected bool GetMethodsResolveByName { get; set; }
 
 		public Func<IKernelInternal, IReleasePolicy, object> SelectComponent(MethodInfo method, Type type, object[] arguments)
 		{
@@ -47,13 +68,18 @@ namespace Castle.Facilities.TypedFactory
 		/// <param name = "componentType"></param>
 		/// <param name = "additionalArguments"></param>
 		/// <returns></returns>
-		protected virtual Func<IKernelInternal, IReleasePolicy, object> BuildFactoryComponent(MethodInfo method, string componentName, Type componentType,
+		protected virtual Func<IKernelInternal, IReleasePolicy, object> BuildFactoryComponent(MethodInfo method,
+		                                                                                      string componentName,
+		                                                                                      Type componentType,
 		                                                                                      IDictionary additionalArguments)
 		{
 			var itemType = componentType.GetCompatibleArrayItemType();
 			if (itemType == null)
 			{
-				return new TypedFactoryComponentResolver(componentName, componentType, additionalArguments, FallbackToResolveByTypeIfNameNotFound).Resolve;
+				return new TypedFactoryComponentResolver(componentName,
+				                                         componentType,
+				                                         additionalArguments,
+				                                         FallbackToResolveByTypeIfNameNotFound, GetType()).Resolve;
 			}
 			return (k, s) => k.ResolveAll(itemType, additionalArguments, s);
 		}
@@ -91,10 +117,9 @@ namespace Castle.Facilities.TypedFactory
 		protected virtual string GetComponentName(MethodInfo method, object[] arguments)
 		{
 			string componentName = null;
-			if (method.Name.StartsWith("Get", StringComparison.OrdinalIgnoreCase))
+			if (GetMethodsResolveByName && method.Name.StartsWith("Get", StringComparison.OrdinalIgnoreCase))
 			{
 				componentName = method.Name.Substring("Get".Length);
-				FallbackToResolveByTypeIfNameNotFound = true;
 			}
 			return componentName;
 		}

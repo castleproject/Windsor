@@ -36,15 +36,76 @@ namespace Castle.Facilities.TypedFactory
 		/// <param name = "registration"></param>
 		/// <returns></returns>
 		/// <remarks>
-		///   Only interfaces are legal to use as typed factories. Methods with out parameters are not allowed.
+		///   Only interfaces and delegates are legal to use as typed factories. Methods with out parameters are not allowed.
 		///   When registering component as typed factory no implementation should be provided (in case there is any it will be ignored).
 		///   Typed factories rely on <see cref = "IInterceptorSelector" /> set internally, so users should not set interceptor selectors explicitly;
 		///   otherwise the factory will not function correctly.
 		/// </remarks>
-		public static ComponentRegistration<TFactoryInterface> AsFactory<TFactoryInterface>(this ComponentRegistration<TFactoryInterface> registration)
+		public static ComponentRegistration<TFactoryInterface> AsFactory<TFactoryInterface>(
+			this ComponentRegistration<TFactoryInterface> registration)
 			where TFactoryInterface : class
 		{
-			return AsFactory(registration, null);
+			return AsFactory(registration, default(Action<TypedFactoryConfiguration>));
+		}
+
+		/// <summary>
+		///   Marks the component as typed factory.
+		/// </summary>
+		/// <typeparam name = "TFactoryInterface"></typeparam>
+		/// <param name = "registration"></param>
+		/// <param name = "selectorComponentName">Name of the <see cref = "ITypedFactoryComponentSelector" /> component to be used for this factory</param>
+		/// <returns></returns>
+		/// <remarks>
+		///   Only interfaces and delegates are legal to use as typed factories. Methods with out parameters are not allowed.
+		///   When registering component as typed factory no implementation should be provided (in case there is any it will be ignored).
+		///   Typed factories rely on <see cref = "IInterceptorSelector" /> set internally, so users should not set interceptor selectors explicitly;
+		///   otherwise the factory will not function correctly.
+		/// </remarks>
+		public static ComponentRegistration<TFactoryInterface> AsFactory<TFactoryInterface>(
+			this ComponentRegistration<TFactoryInterface> registration, string selectorComponentName)
+			where TFactoryInterface : class
+		{
+			return AsFactory(registration, x => x.SelectedWith(selectorComponentName));
+		}
+
+		/// <summary>
+		///   Marks the component as typed factory.
+		/// </summary>
+		/// <typeparam name = "TFactoryInterface"></typeparam>
+		/// <param name = "registration"></param>
+		/// <param name = "selectorComponentType">Type of the <see cref = "ITypedFactoryComponentSelector" /> component to be used for this factory</param>
+		/// <returns></returns>
+		/// <remarks>
+		///   Only interfaces and delegates are legal to use as typed factories. Methods with out parameters are not allowed.
+		///   When registering component as typed factory no implementation should be provided (in case there is any it will be ignored).
+		///   Typed factories rely on <see cref = "IInterceptorSelector" /> set internally, so users should not set interceptor selectors explicitly;
+		///   otherwise the factory will not function correctly.
+		/// </remarks>
+		public static ComponentRegistration<TFactoryInterface> AsFactory<TFactoryInterface>(
+			this ComponentRegistration<TFactoryInterface> registration, Type selectorComponentType)
+			where TFactoryInterface : class
+		{
+			return AsFactory(registration, x => x.SelectedWith(selectorComponentType));
+		}
+
+		/// <summary>
+		///   Marks the component as typed factory.
+		/// </summary>
+		/// <typeparam name = "TFactoryInterface"></typeparam>
+		/// <param name = "registration"></param>
+		/// <param name = "selector">The <see cref = "ITypedFactoryComponentSelector" /> instance to be used for this factory</param>
+		/// <returns></returns>
+		/// <remarks>
+		///   Only interfaces and delegates are legal to use as typed factories. Methods with out parameters are not allowed.
+		///   When registering component as typed factory no implementation should be provided (in case there is any it will be ignored).
+		///   Typed factories rely on <see cref = "IInterceptorSelector" /> set internally, so users should not set interceptor selectors explicitly;
+		///   otherwise the factory will not function correctly.
+		/// </remarks>
+		public static ComponentRegistration<TFactoryInterface> AsFactory<TFactoryInterface>(
+			this ComponentRegistration<TFactoryInterface> registration, ITypedFactoryComponentSelector selector)
+			where TFactoryInterface : class
+		{
+			return AsFactory(registration, x => x.SelectedWith(selector));
 		}
 
 		/// <summary>
@@ -55,13 +116,14 @@ namespace Castle.Facilities.TypedFactory
 		/// <param name = "configuration"></param>
 		/// <returns></returns>
 		/// <remarks>
-		///   Only interfaces are legal to use as typed factories. Methods with out parameters are not allowed.
+		///   Only interfaces and delegates are legal to use as typed factories. Methods with out parameters are not allowed.
 		///   When registering component as typed factory no implementation should be provided (in case there is any it will be ignored).
 		///   Typed factories rely on <see cref = "IInterceptorSelector" /> set internally, so users should not set interceptor selectors explicitly;
 		///   otherwise the factory will not function correctly.
 		/// </remarks>
-		public static ComponentRegistration<TFactoryInterface> AsFactory<TFactoryInterface>(this ComponentRegistration<TFactoryInterface> registration,
-		                                                                                    Action<TypedFactoryConfiguration> configuration)
+		public static ComponentRegistration<TFactoryInterface> AsFactory<TFactoryInterface>(
+			this ComponentRegistration<TFactoryInterface> registration,
+			Action<TypedFactoryConfiguration> configuration)
 			where TFactoryInterface : class
 		{
 			if (registration == null)
@@ -98,9 +160,10 @@ namespace Castle.Facilities.TypedFactory
 					classService.Name));
 		}
 
-		private static ComponentRegistration<TFactory> AttachConfiguration<TFactory>(ComponentRegistration<TFactory> componentRegistration,
-		                                                                             Action<TypedFactoryConfiguration> configuration,
-		                                                                             string defaultComponentSelectorKey)
+		private static ComponentRegistration<TFactory> AttachConfiguration<TFactory>(
+			ComponentRegistration<TFactory> componentRegistration,
+			Action<TypedFactoryConfiguration> configuration,
+			string defaultComponentSelectorKey)
 			where TFactory : class
 		{
 			var selectorReference = GetSelectorReference(configuration, defaultComponentSelectorKey, typeof(TFactory));
@@ -116,14 +179,16 @@ namespace Castle.Facilities.TypedFactory
 				.AddAttributeDescriptor(TypedFactoryFacility.IsFactoryKey, bool.TrueString);
 		}
 
-		private static ComponentRegistration<TFactory> AttachFactoryInterceptor<TFactory>(ComponentRegistration<TFactory> registration)
+		private static ComponentRegistration<TFactory> AttachFactoryInterceptor<TFactory>(
+			ComponentRegistration<TFactory> registration)
 			where TFactory : class
 		{
 			return registration.Interceptors(new InterceptorReference(TypedFactoryFacility.InterceptorKey)).Last;
 		}
 
-		private static IReference<ITypedFactoryComponentSelector> GetSelectorReference(Action<TypedFactoryConfiguration> configuration,
-		                                                                               string defaultComponentSelectorKey, Type factoryType)
+		private static IReference<ITypedFactoryComponentSelector> GetSelectorReference(
+			Action<TypedFactoryConfiguration> configuration,
+			string defaultComponentSelectorKey, Type factoryType)
 		{
 			var factoryConfiguration = new TypedFactoryConfiguration(defaultComponentSelectorKey, factoryType);
 
@@ -139,9 +204,10 @@ namespace Castle.Facilities.TypedFactory
 			return serviceType.GetMethods().Any(m => m.GetParameters().Any(p => p.IsOut));
 		}
 
-		private static ComponentRegistration<TDelegate> RegisterDelegateBasedFactory<TDelegate>(ComponentRegistration<TDelegate> registration,
-		                                                                                        Action<TypedFactoryConfiguration> configuration,
-		                                                                                        Type delegateType)
+		private static ComponentRegistration<TDelegate> RegisterDelegateBasedFactory<TDelegate>(
+			ComponentRegistration<TDelegate> registration,
+			Action<TypedFactoryConfiguration> configuration,
+			Type delegateType)
 			where TDelegate : class
 		{
 			if (HasOutArguments(delegateType))
@@ -178,7 +244,8 @@ namespace Castle.Facilities.TypedFactory
 				if (HasOutArguments(serviceType))
 				{
 					throw new ComponentRegistrationException(
-						string.Format("Type {0} can not be used as typed factory because it has methods with 'out' arguments.", serviceType));
+						string.Format("Type {0} can not be used as typed factory because it has methods with 'out' arguments.",
+						              serviceType));
 				}
 			}
 			var componentRegistration = AttachFactoryInterceptor(registration);

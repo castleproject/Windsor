@@ -28,9 +28,10 @@ namespace Castle.Facilities.TypedFactory
 		protected readonly string componentName;
 		protected readonly Type componentType;
 		protected readonly bool fallbackToResolveByTypeIfNameNotFound;
+		private readonly Type actualSelectorType;
 
 		public TypedFactoryComponentResolver(string componentName, Type componentType, IDictionary additionalArguments,
-		                                     bool fallbackToResolveByTypeIfNameNotFound)
+		                                     bool fallbackToResolveByTypeIfNameNotFound, Type actualSelectorType)
 		{
 			if (string.IsNullOrEmpty(componentName) && componentType == null)
 			{
@@ -42,6 +43,7 @@ namespace Castle.Facilities.TypedFactory
 			this.componentName = componentName;
 			this.additionalArguments = additionalArguments;
 			this.fallbackToResolveByTypeIfNameNotFound = fallbackToResolveByTypeIfNameNotFound;
+			this.actualSelectorType = actualSelectorType;
 		}
 
 		/// <summary>
@@ -54,7 +56,19 @@ namespace Castle.Facilities.TypedFactory
 		{
 			if (LoadByName(kernel))
 			{
-				return kernel.Resolve(componentName, componentType, additionalArguments, scope);
+				try
+				{
+					return kernel.Resolve(componentName, componentType, additionalArguments, scope);
+				}
+				catch (ComponentNotFoundException e)
+				{
+					if (actualSelectorType == typeof(DefaultDelegateComponentSelector) && fallbackToResolveByTypeIfNameNotFound == false)
+					{
+						e.Data["breakingChangeId"] = "typedFactoryFallbackToResolveByTypeIfNameNotFound";
+						e.Data["breakingChange"] = "This exception may have been caused by a breaking change between Windsor 2.5 and 3.0 See breakingchanges.txt for more details.";
+					}
+					throw;
+				}
 			}
 			return kernel.Resolve(componentType, additionalArguments, scope);
 		}
