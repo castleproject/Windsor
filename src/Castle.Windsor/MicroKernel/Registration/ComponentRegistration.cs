@@ -1110,13 +1110,8 @@ namespace Castle.MicroKernel.Registration
 		{
 			return AddDescriptor(new DelegatingModelDescriptor(builder: (k, c) =>
 			{
-				var filters = (ICollection<Predicate<PropertyInfo>>)c.ExtendedProperties[Constants.PropertyFilters];
-				if (filters == null)
-				{
-					filters = new List<Predicate<PropertyInfo>>(4);
-					c.ExtendedProperties[Constants.PropertyFilters] = filters;
-				}
-				filters.Add(filter);
+				var filters = PropertyFilter.GetPropertyFilters(c, createIfMissing: true);
+				filters.Add(new PropertyFilter(filter, isRequired: false));
 			}));
 		}
 	}

@@ -16,7 +16,6 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 {
 	using System;
 	using System.Collections.Generic;
-	using System.Linq;
 	using System.Reflection;
 
 	using Castle.Core;
@@ -69,42 +68,31 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 				return;
 			}
 
-			BindingFlags bindingFlags;
-			if (model.InspectionBehavior == PropertiesInspectionBehavior.DeclaredOnly)
-			{
-				bindingFlags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly;
-			}
-			else // if (model.InspectionBehavior == PropertiesInspectionBehavior.All) or Undefined
-			{
-				bindingFlags = BindingFlags.Public | BindingFlags.Instance;
-			}
-
-			var properties = targetType.GetProperties(bindingFlags);
-			var filters = GetPropertyFilters(model);
+			var properties = GetProperties(model, targetType);
+			var filters = PropertyFilter.GetPropertyFilters(model, false);
 			foreach (var property in properties)
 			{
-				if (!property.CanWrite || property.GetSetMethod() == null)
+				if (IsSettable(property) == false)
 				{
 					continue;
 				}
-
-				var indexerParams = property.GetIndexParameters();
-
-				if (indexerParams != null && indexerParams.Length != 0)
+				if (HasParameters(property))
 				{
 					continue;
 				}
-
-				if (property.IsDefined(typeof(DoNotWireAttribute), true))
+				if (HasDoNotWireAttribute(property))
 				{
 					continue;
 				}
-				if (filters != null && filters.Any(f => f(property) == false))
+				if (filters != null)
 				{
-					continue;
+					ApplyFilters(model, property, filters);
 				}
-				var dependency = new DependencyModel(property.Name, property.PropertyType, isOptional: true);
-				model.AddProperty(new PropertySet(property, dependency));
+				else
+				{
+					var dependency = new DependencyModel(property.Name, property.PropertyType, isOptional: true);
+					model.AddProperty(new PropertySet(property, dependency));
+				}
 			}
 		}
 
@@ -125,10 +113,11 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 			catch (Exception)
 			{
 				var message =
-					String.Format("Error on properties inspection. Could not convert the inspectionBehavior attribute value into an expected enum value. " +
-					              "Value found is '{0}' while possible values are '{1}'",
-					              enumStringVal,
-					              String.Join(", ",
+					String.Format(
+						"Error on properties inspection. Could not convert the inspectionBehavior attribute value into an expected enum value. " +
+						"Value found is '{0}' while possible values are '{1}'",
+						enumStringVal,
+						String.Join(", ",
 #if SILVERLIGHT
 				                                        new[]
 				                                        {
@@ -138,17 +127,57 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 				                                        	"DeclaredOnly"
 				                                        }
 #else
-					                          Enum.GetNames(typeof(PropertiesInspectionBehavior))
+						            Enum.GetNames(typeof(PropertiesInspectionBehavior))
 #endif
-					              	));
+							));
 
 				throw new KernelException(message);
 			}
 		}
 
-		private IEnumerable<Predicate<PropertyInfo>> GetPropertyFilters(ComponentModel model)
+		private PropertyInfo[] GetProperties(ComponentModel model, Type targetType)
 		{
-			return (IEnumerable<Predicate<PropertyInfo>>)model.ExtendedProperties[Constants.PropertyFilters];
+			BindingFlags bindingFlags;
+			if (model.InspectionBehavior == PropertiesInspectionBehavior.DeclaredOnly)
+			{
+				bindingFlags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly;
+			}
+			else // if (model.InspectionBehavior == PropertiesInspectionBehavior.All) or Undefined
+			{
+				bindingFlags = BindingFlags.Public | BindingFlags.Instance;
+			}
+
+			var properties = targetType.GetProperties(bindingFlags);
+			return properties;
+		}
+
+		private static void ApplyFilters(ComponentModel model, PropertyInfo property, IEnumerable<PropertyFilter> filters)
+		{
+			foreach (var filter in filters)
+			{
+				if (filter.Matches(property))
+				{
+					var dependency = new DependencyModel(property.Name, property.PropertyType, isOptional: filter.IsRequired == false);
+					model.AddProperty(new PropertySet(property, dependency));
+					break;
+				}
+			}
+		}
+
+		private static bool HasDoNotWireAttribute(PropertyInfo property)
+		{
+			return property.HasAttribute<DoNotWireAttribute>();
+		}
+
+		private static bool HasParameters(PropertyInfo property)
+		{
+			var indexerParams = property.GetIndexParameters();
+			return indexerParams != null && indexerParams.Length != 0;
+		}
+
+		private static bool IsSettable(PropertyInfo property)
+		{
+			return property.CanWrite && property.GetSetMethod() != null;
 		}
 	}
 }
