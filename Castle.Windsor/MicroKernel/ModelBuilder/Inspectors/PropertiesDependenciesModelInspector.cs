@@ -69,7 +69,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 			}
 
 			var properties = GetProperties(model, targetType);
-			var filters = PropertyFilter.GetPropertyFilters(model, false);
+			var filters = DynamicPropertyFilter.GetPropertyFilters(model, false);
 			foreach (var property in properties)
 			{
 				if (IsSettable(property) == false)
@@ -151,11 +151,12 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 			return properties;
 		}
 
-		private static void ApplyFilters(ComponentModel model, PropertyInfo property, IEnumerable<PropertyFilter> filters)
+		private static void ApplyFilters(ComponentModel model, PropertyInfo property,
+		                                 IEnumerable<DynamicPropertyFilter> filters)
 		{
 			foreach (var filter in filters)
 			{
-				if (filter.Matches(property))
+				if (filter.Matches(model, property))
 				{
 					var dependency = new DependencyModel(property.Name, property.PropertyType, isOptional: filter.IsRequired == false);
 					model.AddProperty(new PropertySet(property, dependency));

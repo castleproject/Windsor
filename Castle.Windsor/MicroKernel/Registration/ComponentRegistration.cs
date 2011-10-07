@@ -1106,12 +1106,59 @@ namespace Castle.MicroKernel.Registration
 		/// </summary>
 		/// <param name = "filter">Predicate deciding whether a property is settable or not. If returns <c>false</c> container will ignore the property, otherwise property will be ignored.</param>
 		/// <returns></returns>
+		/// <remarks>
+		///   Matched properties will be considered optional, that is component will resolve successfully if they can not be satisfied.
+		/// </remarks>
 		public ComponentRegistration<TService> Properties(Predicate<PropertyInfo> filter)
+		{
+			return Properties(filter, isRequired: false);
+		}
+
+		/// <summary>
+		///   Filters properties on the implementation that will be considered 'settable' by the container and specifies if matched properties are reqired.
+		/// </summary>
+		/// <param name = "filter">Predicate deciding whether a property is settable or not. If returns <c>false</c> container will ignore the property.</param>
+		/// <param name = "isRequired"></param>
+		/// <returns></returns>
+		/// <remarks>
+		///   Matched properties will be considered optional if <paramref name = "isRequired" /> is<c>false</c>, that is component will resolve successfully if they can not be satisfied.
+		///   If the argument is <c>true</c> and the dependencies can not be resolved the component will fail to resolve.
+		/// </remarks>
+		public ComponentRegistration<TService> Properties(Predicate<PropertyInfo> filter, bool isRequired)
+		{
+			return Properties((_, p) => filter(p), isRequired);
+		}
+
+		/// <summary>
+		///   Filters properties on the implementation that will be considered 'settable' by the container and specifies if matched properties are reqired.
+		/// </summary>
+		/// <param name = "filter">Predicate deciding whether a property is settable or not. If returns <c>false</c> container will ignore the property.</param>
+		/// <param name = "isRequired"></param>
+		/// <returns></returns>
+		/// <remarks>
+		///   Matched properties will be considered optional if <paramref name = "isRequired" /> is<c>false</c>, that is component will resolve successfully if they can not be satisfied.
+		///   If the argument is <c>true</c> and the dependencies can not be resolved the component will fail to resolve.
+		/// </remarks>
+		public ComponentRegistration<TService> Properties(Func<ComponentModel, PropertyInfo, bool> filter, bool isRequired)
 		{
 			return AddDescriptor(new DelegatingModelDescriptor(builder: (k, c) =>
 			{
-				var filters = PropertyFilter.GetPropertyFilters(c, createIfMissing: true);
-				filters.Add(new PropertyFilter(filter, isRequired: false));
+				var filters = DynamicPropertyFilter.GetPropertyFilters(c, createIfMissing: true);
+				filters.Add(new DynamicPropertyFilter(filter, isRequired: isRequired));
+			}));
+		}
+
+		/// <summary>
+		///   Filters properties on the implementation that will be considered 'settable' by the container and specifies if matched properties are reqired.
+		/// </summary>
+		/// <param name = "filter">Rules for deciding whether a property is settable or not and if container will ignore the property.</param>
+		/// <returns></returns>
+		public ComponentRegistration<TService> Properties(PropertyFilter filter)
+		{
+			return AddDescriptor(new DelegatingModelDescriptor(builder: (k, c) =>
+			{
+				var filters = DynamicPropertyFilter.GetPropertyFilters(c, createIfMissing: true);
+				filters.Add(DynamicPropertyFilter.Create(filter));
 			}));
 		}
 	}
