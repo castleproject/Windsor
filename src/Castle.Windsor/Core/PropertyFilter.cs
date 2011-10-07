@@ -14,38 +14,32 @@
 
 namespace Castle.Core
 {
-	using System;
-	using System.Collections.Generic;
-	using System.Reflection;
-
-	using Castle.Core.Internal;
-
-	public class PropertyFilter
+	/// <summary>
+	///   Specifies rules for designating settable properties on a component as dependencies, and controlling whether they are requred or not. This is a shortcut for most common scenarios. More advanced/custom scenarios can be defined dynamically in the registration API.
+	/// </summary>
+	public enum PropertyFilter
 	{
-		private readonly Predicate<PropertyInfo> filter;
+		/// <summary>
+		///   Takes no action. By default that means all settable properties will be exposed as optional dependencies.
+		/// </summary>
+		Default,
 
-		public PropertyFilter(Predicate<PropertyInfo> filter, bool isRequired)
-		{
-			this.filter = filter;
-			IsRequired = isRequired;
-		}
+		/// <summary>
+		///   Makes all property dependencies required.
+		/// </summary>
+		RequireAll,
 
-		public bool IsRequired { get; private set; }
+		/// <summary>
+		///   Makes all property dependencies defined at a base class/interfaces level required.
+		/// </summary>
+		RequireBase,
 
-		public bool Matches(PropertyInfo property)
-		{
-			return filter(property);
-		}
-
-		public static ICollection<PropertyFilter> GetPropertyFilters(ComponentModel componentModel, bool createIfMissing)
-		{
-			var filters = (ICollection<PropertyFilter>)componentModel.ExtendedProperties[Constants.PropertyFilters];
-			if (filters == null && createIfMissing)
-			{
-				filters = new List<PropertyFilter>(4);
-				componentModel.ExtendedProperties[Constants.PropertyFilters] = filters;
-			}
-			return filters;
-		}
+		/// <summary>
+		///   Ignores all properties defined at a base class/interface level.
+		/// </summary>
+		/// <remarks>
+		///   This option is particularily useful in scenarios like UI controls which in .NET UI frameworks tend to have byzantine inheritance hierarchies.
+		/// </remarks>
+		IgnoreBase
 	}
 }
