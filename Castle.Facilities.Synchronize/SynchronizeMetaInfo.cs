@@ -121,8 +121,11 @@ namespace Castle.Facilities.Synchronize
 					references.Add(reference);
 				}
 			}
-
+#if DOTNET35
+			return System.Linq.Enumerable.OfType<IReference<SynchronizationContext>>(references);
+#else
 			return references.AsReadOnly();
+#endif
 		}
 
 		private class MatchByMethodHandle : IEqualityComparer<MethodInfo>
