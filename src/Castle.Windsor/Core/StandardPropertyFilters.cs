@@ -16,6 +16,7 @@ namespace Castle.Core
 {
 	using System;
 	using System.Collections.Generic;
+	using System.Linq;
 	using System.Reflection;
 
 	using Castle.Core.Internal;
@@ -47,16 +48,14 @@ namespace Castle.Core
 		public static PropertySet[] Default(ComponentModel model, PropertyInfo[] properties,
 		                                    PropertySetBuilder propertySetBuilder)
 		{
-			return Array.ConvertAll(properties, p => propertySetBuilder(p, true));
+			return properties.Select(p => propertySetBuilder(p, true)).ToArray();
 		}
 
 		public static PropertyDependencyFilter FromFunction(Func<ComponentModel, PropertyInfo, bool> filter, bool isRequired)
 		{
-			return (model, properties, callback) =>
-			{
-				var filteredProperties = Array.FindAll(properties, p => filter(model, p));
-				return Array.ConvertAll(filteredProperties, p => callback(p, isRequired == false));
-			};
+			return (model, properties, callback) => properties.Where(p => filter(model, p))
+			                                        	.Select(p => callback(p, isRequired == false))
+			                                        	.ToArray();
 		}
 
 		public static ICollection<PropertyDependencyFilter> GetPropertyFilters(ComponentModel componentModel,
@@ -80,21 +79,21 @@ namespace Castle.Core
 		public static PropertySet[] IgnoreBase(ComponentModel model, PropertyInfo[] properties,
 		                                       PropertySetBuilder propertySetBuilder)
 		{
-			var nonBaseProperties = Array.FindAll(properties, p => p.DeclaringType == model.Implementation);
-			return Array.ConvertAll(nonBaseProperties, p => propertySetBuilder(p, true));
+			return properties.Where(p => p.DeclaringType == model.Implementation)
+				.Select(p => propertySetBuilder(p, true)).ToArray();
 		}
 
 		public static PropertySet[] RequireAll(ComponentModel model, PropertyInfo[] properties,
 		                                       PropertySetBuilder propertySetBuilder)
 		{
-			return Array.ConvertAll(properties, p => propertySetBuilder(p, false));
+			return properties.Select(p => propertySetBuilder(p, false)).ToArray();
 		}
 
 		public static PropertySet[] RequireBase(ComponentModel model, PropertyInfo[] properties,
 		                                        PropertySetBuilder propertySetBuilder)
 		{
-			var nonBaseProperties = Array.FindAll(properties, p => p.DeclaringType != model.Implementation);
-			return Array.ConvertAll(nonBaseProperties, p => propertySetBuilder(p, false));
+			return properties.Where(p => p.DeclaringType != model.Implementation)
+				.Select(p => propertySetBuilder(p, false)).ToArray();
 		}
 	}
 }
