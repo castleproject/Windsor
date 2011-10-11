@@ -14,15 +14,8 @@
 
 namespace CastleTests.Components
 {
-	public class ReviewableEmployee : Employee, IReviewableEmployee
+	public class AbPropChild : AProp
 	{
-		public IReviewer Reviewer { get; set; }
-
-		public string ReviewerID
-		{
-			get { return Reviewer.EmployeeID; }
-		}
-
-		public int SalaryThird { get; set; }
+		public B PropB { get; set; }
 	}
 }

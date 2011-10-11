@@ -16,80 +16,43 @@ namespace CastleTests.Components
 {
 	using System;
 
-	/// <summary>
-	///   Summary description for Employee.
-	/// </summary>
 	public class Employee : IEmployee
 	{
-		private string _firstName;
-		private string _lastName;
-		private string _middleName;
-		private string _ntLogin;
+		private string ntLogin;
 		public string Email { get; set; }
 
 		public string EmployeeID { get; set; }
 
-		public string FirstName
-		{
-			get { return _firstName; }
-			set { _firstName = value; }
-		}
+		public string FirstName { get; set; }
 
 		public string FullName
 		{
-			get { return String.Format("{0} {1} {2}", _firstName, _middleName, _lastName); }
+			get { return String.Format("{0} {1} {2}", FirstName, MiddleName, LastName); }
 		}
 
 		public bool IsProxy { get; set; }
 
 		public bool IsSupervisor { get; set; }
 
-		public string LastName
-		{
-			get { return _lastName; }
-			set { _lastName = value; }
-		}
+		public string LastName { get; set; }
 
-		public string MiddleName
-		{
-			get { return _middleName; }
-			set { _middleName = value; }
-		}
+		public string MiddleName { get; set; }
 
 		public string NTLogin
 		{
 			get
 			{
-				if (_ntLogin.Length > 0)
+				if (ntLogin.Length > 0)
 				{
-					return _ntLogin;
+					return ntLogin;
 				}
-
-				try
-				{
-					//					if (Config.IsInPortal)
-					//					{
-					//						_ntLogin = User.FindLoginIdFromEmpId(_empID);
-					//					}
-					//					else
-					//					{
-					//						_ntLogin = Config.DebugNtLogin;
-					//					}
-
-					return _ntLogin;
-				}
-				catch (Exception)
-				{
-					//					Logger.Error("NTLogin check failed.", e);
-					//					Logger.SendMail("ERROR", "NTLogin check failed.", e);
-					return null;
-				}
+				return ntLogin;
 			}
 		}
 
 		public void SetNTLogin(string ntLogin)
 		{
-			_ntLogin = ntLogin;
+			this.ntLogin = ntLogin;
 		}
 	}
 }

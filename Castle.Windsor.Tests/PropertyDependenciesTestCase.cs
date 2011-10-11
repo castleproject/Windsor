@@ -14,7 +14,11 @@
 
 namespace CastleTests
 {
-	using Castle.MicroKernel;
+	using System;
+	using System.Linq;
+
+	using Castle.Core;
+	using Castle.MicroKernel.Handlers;
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Tests.ClassComponents;
 
@@ -27,7 +31,67 @@ namespace CastleTests
 	public class PropertyDependenciesTestCase : AbstractContainerTestCase
 	{
 		[Test]
-		public void Can_opt_out_of_setting_properties()
+		public void Can_opt_out_of_setting_properties_open_generic_via_enum()
+		{
+			Container.Register(Component.For(typeof(GenericImpl2<>))
+			                   	.DependsOn(Dependency.OnValue(typeof(int), 5))
+			                   	.Properties(PropertyFilter.IgnoreAll));
+
+			var item = Container.Resolve<GenericImpl2<A>>();
+			Assert.AreEqual(0, item.Value);
+		}
+		[Test]
+		public void Can_opt_out_of_setting_base_properties_via_enum()
+		{
+			Container.Register(
+				Component.For<A>(),
+				Component.For<B>(),
+				Component.For<AbPropChild>().Properties(PropertyFilter.IgnoreBase));
+
+			var item = Container.Resolve<AbPropChild>();
+			Assert.IsNull(item.Prop);
+			Assert.IsNotNull(item.PropB);
+		}
+
+		[Test]
+		public void member_should_action()
+		{
+			var types = GetType().Assembly.GetExportedTypes().Where(t=>t.Name.EndsWith("TestCase") == false)
+				.Where(t=>t.IsClass && t.IsAbstract == false && t.IsGenericTypeDefinition)
+				.Where(t=>t.BaseType !=typeof(object))
+				.Where(t=>t.GetProperties().Any())
+				.Where(t=>t.BaseType.GetProperties().Any());
+			foreach (var type in types)
+			{
+				Console.WriteLine(type);
+			}
+		}
+
+		[Test]
+		public void Can_opt_out_of_setting_properties_open_generic_via_predicate()
+		{
+			Container.Register(Component.For(typeof(GenericImpl2<>))
+			                   	.DependsOn(Dependency.OnValue(typeof(int), 5))
+			                   	.Properties(p => false));
+
+			var item = Container.Resolve<GenericImpl2<A>>();
+			Assert.AreEqual(0, item.Value);
+		}
+
+		[Test]
+		public void Can_opt_out_of_setting_properties_via_enum()
+		{
+			Container.Register(
+				Component.For<ICommon>().ImplementedBy<CommonImpl1>(),
+				Component.For<CommonServiceUser2>()
+					.Properties(PropertyFilter.IgnoreAll));
+
+			var item = Container.Resolve<CommonServiceUser2>();
+			Assert.IsNull(item.CommonService);
+		}
+
+		[Test]
+		public void Can_opt_out_of_setting_properties_via_predicate()
 		{
 			Container.Register(
 				Component.For<ICommon>().ImplementedBy<CommonImpl1>(),
@@ -39,34 +103,35 @@ namespace CastleTests
 		}
 
 		[Test]
-		public void Can_opt_out_of_setting_properties_open_generic()
+		public void Can_require_setting_properties_open_generic_via_enum()
 		{
-			Container.Register(Component.For(typeof(GenericImpl2<>))
-			                   	.DependsOn(Dependency.OnValue(typeof(int), 5))
-			                   	.Properties(p => false));
+			Container.Register(Component.For(typeof(GenericImpl2<>)).Properties(PropertyFilter.RequireAll));
 
-			var item = Container.Resolve<GenericImpl2<A>>();
-			Assert.AreEqual(0, item.Value);
+			Assert.Throws<HandlerException>(() => Container.Resolve<GenericImpl2<A>>());
 		}
 
 		[Test]
-		[Ignore("This should be probably handled by a component model construction contributor")]
-		public void Can_require_setting_properties()
+		public void Can_require_setting_properties_open_generic_via_predicate()
 		{
-			Container.Register(
-				Component.For<ICommon>().ImplementedBy<CommonImpl1>(),
-				Component.For<CommonServiceUser2>());
+			Container.Register(Component.For(typeof(GenericImpl2<>)).Properties(p => true, isRequired: true));
 
-			Assert.Throws<ComponentResolutionException>(() => Container.Resolve<CommonServiceUser2>());
+			Assert.Throws<HandlerException>(() => Container.Resolve<GenericImpl2<A>>());
 		}
 
 		[Test]
-		[Ignore("This should be probably handled by a component model construction contributor")]
-		public void Can_require_setting_properties_open_generic()
+		public void Can_require_setting_properties_via_enum()
 		{
-			Container.Register(Component.For(typeof(GenericImpl2<>)));
+			Container.Register(Component.For<CommonServiceUser2>().Properties(PropertyFilter.RequireAll));
 
-			Assert.Throws<ComponentResolutionException>(() => Container.Resolve<GenericImpl2<A>>());
+			Assert.Throws<HandlerException>(() => Container.Resolve<CommonServiceUser2>());
+		}
+
+		[Test]
+		public void Can_require_setting_properties_via_predicate()
+		{
+			Container.Register(Component.For<CommonServiceUser2>().Properties(p => true, isRequired: true));
+
+			Assert.Throws<HandlerException>(() => Container.Resolve<CommonServiceUser2>());
 		}
 	}
 }

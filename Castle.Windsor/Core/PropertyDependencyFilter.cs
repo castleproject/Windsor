@@ -12,17 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace CastleTests.Components
+namespace Castle.Core
 {
-	public class ReviewableEmployee : Employee, IReviewableEmployee
-	{
-		public IReviewer Reviewer { get; set; }
+	using System;
+	using System.Reflection;
 
-		public string ReviewerID
-		{
-			get { return Reviewer.EmployeeID; }
-		}
+	public delegate PropertySet PropertySetBuilder(PropertyInfo property, bool isOptional);
 
-		public int SalaryThird { get; set; }
-	}
+	public delegate PropertySet[] PropertyDependencyFilter(
+		ComponentModel model, PropertyInfo[] properties, PropertySetBuilder buildDependencyCallback);
 }

@@ -15,7 +15,7 @@
 namespace Castle.MicroKernel.ModelBuilder.Inspectors
 {
 	using System;
-	using System.Collections.Generic;
+	using System.Linq;
 	using System.Reflection;
 
 	using Castle.Core;
@@ -69,31 +69,36 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 			}
 
 			var properties = GetProperties(model, targetType);
-			var filters = DynamicPropertyFilter.GetPropertyFilters(model, false);
-			foreach (var property in properties)
+			if (properties.Length == 0)
 			{
-				if (IsSettable(property) == false)
+				return;
+			}
+			var filters = StandardPropertyFilters.GetPropertyFilters(model, false);
+			if (filters == null)
+			{
+				properties.ForEach(p => model.AddProperty(BuildDependency(p, isOptional: true)));
+			}
+			else
+			{
+				foreach (var filter in filters)
 				{
-					continue;
-				}
-				if (HasParameters(property))
-				{
-					continue;
-				}
-				if (HasDoNotWireAttribute(property))
-				{
-					continue;
-				}
-				if (filters != null)
-				{
-					ApplyFilters(model, property, filters);
-				}
-				else
-				{
-					var dependency = new DependencyModel(property.Name, property.PropertyType, isOptional: true);
-					model.AddProperty(new PropertySet(property, dependency));
+					var dependencies = filter.Invoke(model, properties, BuildDependency);
+					if (dependencies != null)
+					{
+						foreach (var dependency in dependencies)
+						{
+							model.AddProperty(dependency);
+						}
+						break;
+					}
 				}
 			}
+		}
+
+		private PropertySet BuildDependency(PropertyInfo property, bool isOptional)
+		{
+			var dependency = new DependencyModel(property.Name, property.PropertyType, isOptional: isOptional);
+			return new PropertySet(property, dependency);
 		}
 
 		private PropertiesInspectionBehavior GetInspectionBehaviorFromTheConfiguration(IConfiguration config)
@@ -148,21 +153,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 			}
 
 			var properties = targetType.GetProperties(bindingFlags);
-			return properties;
-		}
-
-		private static void ApplyFilters(ComponentModel model, PropertyInfo property,
-		                                 IEnumerable<DynamicPropertyFilter> filters)
-		{
-			foreach (var filter in filters)
-			{
-				if (filter.Matches(model, property))
-				{
-					var dependency = new DependencyModel(property.Name, property.PropertyType, isOptional: filter.IsRequired == false);
-					model.AddProperty(new PropertySet(property, dependency));
-					break;
-				}
-			}
+			return properties.Where(IsValidPropertyDependency).ToArray();
 		}
 
 		private static bool HasDoNotWireAttribute(PropertyInfo property)
@@ -179,6 +170,11 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 		private static bool IsSettable(PropertyInfo property)
 		{
 			return property.CanWrite && property.GetSetMethod() != null;
+		}
+
+		private static bool IsValidPropertyDependency(PropertyInfo property)
+		{
+			return IsSettable(property) && HasParameters(property) == false && HasDoNotWireAttribute(property) == false;
 		}
 	}
 }
