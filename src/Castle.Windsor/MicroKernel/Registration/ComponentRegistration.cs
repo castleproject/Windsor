@@ -1143,8 +1143,8 @@ namespace Castle.MicroKernel.Registration
 		{
 			return AddDescriptor(new DelegatingModelDescriptor(builder: (k, c) =>
 			{
-				var filters = DynamicPropertyFilter.GetPropertyFilters(c, createIfMissing: true);
-				filters.Add(new DynamicPropertyFilter(filter, isRequired: isRequired));
+				var filters = StandardPropertyFilters.GetPropertyFilters(c, createIfMissing: true);
+				filters.Add(StandardPropertyFilters.FromFunction(filter, isRequired: isRequired));
 			}));
 		}
 
@@ -1157,8 +1157,8 @@ namespace Castle.MicroKernel.Registration
 		{
 			return AddDescriptor(new DelegatingModelDescriptor(builder: (k, c) =>
 			{
-				var filters = DynamicPropertyFilter.GetPropertyFilters(c, createIfMissing: true);
-				filters.Add(DynamicPropertyFilter.Create(filter));
+				var filters = StandardPropertyFilters.GetPropertyFilters(c, createIfMissing: true);
+				filters.Add(StandardPropertyFilters.Create(filter));
 			}));
 		}
 	}

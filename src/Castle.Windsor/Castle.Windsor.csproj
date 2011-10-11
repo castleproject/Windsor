@@ -346,7 +346,8 @@
     <Compile Include="Core\PerWebRequestAttribute.cs" />
     <Compile Include="Core\PooledAttribute.cs" />
     <Compile Include="Core\PropertiesInspectionBehavior.cs" />
-    <Compile Include="Core\DynamicPropertyFilter.cs" />
+    <Compile Include="Core\PropertyDependencyFilter.cs" />
+    <Compile Include="Core\StandardPropertyFilters.cs" />
     <Compile Include="Core\PropertyFilter.cs" />
     <Compile Include="Core\ScopedAttribute.cs" />
     <Compile Include="Core\SingletonAttribute.cs" />

@@ -15,7 +15,8 @@
 namespace Castle.Core
 {
 	/// <summary>
-	///   Specifies rules for designating settable properties on a component as dependencies, and controlling whether they are requred or not. This is a shortcut for most common scenarios. More advanced/custom scenarios can be defined dynamically in the registration API.
+	///   Specifies rules for designating settable properties on a component as dependencies, and controlling whether they are requred or not.
+	/// This is a shortcut for most common scenarios. More advanced/custom scenarios can be defined dynamically in the registration API.
 	/// </summary>
 	public enum PropertyFilter
 	{
@@ -35,11 +36,16 @@ namespace Castle.Core
 		RequireBase,
 
 		/// <summary>
+		///   Makes all properties ignored.
+		/// </summary>
+		IgnoreAll,
+
+		/// <summary>
 		///   Ignores all properties defined at a base class/interface level.
 		/// </summary>
 		/// <remarks>
 		///   This option is particularily useful in scenarios like UI controls which in .NET UI frameworks tend to have byzantine inheritance hierarchies.
 		/// </remarks>
-		IgnoreBase
+		IgnoreBase,
 	}
 }
