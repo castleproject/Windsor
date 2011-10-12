@@ -65,7 +65,7 @@ namespace Castle.Facilities.WcfIntegration
 			}
 			catch (Exception ex)
 			{
-				throw new ComponentActivatorException("WcfClientActivator: could not proxy component " + Model.Name, ex);
+				throw new ComponentActivatorException("WcfClientActivator: could not proxy component " + Model.Name, ex, Model);
 			}
 		}
 

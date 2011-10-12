@@ -140,7 +140,7 @@ namespace Castle.Facilities.WcfIntegration.Internal
 
 		public static void AddExtensionDependency(string dependencyKey, Type serviceType, ComponentModel model)
 		{
-			model.Dependencies.Add(new DependencyModel(dependencyKey, serviceType, false));
+			model.Dependencies.Add(new ComponentDependencyModel(dependencyKey, serviceType));
 		}
 
 		public static bool IsExtension<T>(object extension)
