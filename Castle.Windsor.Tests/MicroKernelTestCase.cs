@@ -23,7 +23,6 @@ namespace Castle.MicroKernel.Tests
 	using Castle.MicroKernel.Resolvers;
 	using Castle.MicroKernel.Tests.ClassComponents;
 	using Castle.Windsor.Proxy;
-	using Castle.Windsor.Tests;
 	using Castle.Windsor.Tests.MicroKernel;
 
 	using CastleTests;

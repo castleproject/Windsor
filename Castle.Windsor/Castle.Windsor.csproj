@@ -924,9 +924,6 @@
     <Compile Include="Windsor\Diagnostics\TrackedComponentsDiagnostic.cs" />
     <Compile Include="Windsor\Diagnostics\TrackedInstancesEventArgs.cs" />
     <Compile Include="Windsor\IEnvironmentInfo.cs" />
-    <Compile Include="Windsor\InitializationException.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Windsor\Installer\AssemblyInstaller.cs" />
     <Compile Include="Windsor\Installer\CompositeInstaller.cs" />
     <Compile Include="Windsor\Installer\Configuration.cs" />

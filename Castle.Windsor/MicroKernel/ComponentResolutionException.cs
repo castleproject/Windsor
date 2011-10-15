@@ -18,6 +18,7 @@ namespace Castle.MicroKernel
 	using System.Runtime.Serialization;
 
 	using Castle.Core;
+	using Castle.Core.Internal;
 
 	/// <summary>
 	///   Exception thrown when resolution process for a component was unsuccessful at some point for whatever reason.
@@ -30,27 +31,32 @@ namespace Castle.MicroKernel
 		public ComponentResolutionException(string message)
 			: base(message)
 		{
+			HelpLink = Constants.ExceptionHelpLink;
 		}
 
 		public ComponentResolutionException(string message, Exception innerException)
 			: base(message, innerException)
 		{
+			HelpLink = Constants.ExceptionHelpLink;
 		}
 
 		public ComponentResolutionException(string message, ComponentModel component)
 			: base(message)
 		{
+			HelpLink = Constants.ExceptionHelpLink;
 			Component = component;
 		}
 
 		public ComponentResolutionException(string message, Exception innerException, ComponentModel component)
 			: base(message, innerException)
 		{
+			HelpLink = Constants.ExceptionHelpLink;
 			Component = component;
 		}
 
 		public ComponentResolutionException(ComponentModel component)
 		{
+			HelpLink = Constants.ExceptionHelpLink;
 			Component = component;
 		}
 
@@ -58,6 +64,7 @@ namespace Castle.MicroKernel
 		public ComponentResolutionException(SerializationInfo info, StreamingContext context)
 			: base(info, context)
 		{
+			HelpLink = Constants.ExceptionHelpLink;
 		}
 #endif
 	}

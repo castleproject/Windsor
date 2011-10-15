@@ -136,7 +136,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 #endif
 							));
 
-				throw new KernelException(message);
+				throw new ConverterException(message);
 			}
 		}
 

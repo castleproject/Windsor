@@ -17,25 +17,28 @@ namespace Castle.MicroKernel.Facilities
 	using System;
 	using System.Runtime.Serialization;
 
+	using Castle.Core.Internal;
+
 	/// <summary>
 	/// Base exception to be used by facilities.
 	/// </summary>
-#if (!SILVERLIGHT)
 	[Serializable]
-#endif
 	public class FacilityException : Exception
 	{
 		public FacilityException(string message) : base(message)
 		{
+			HelpLink = Constants.ExceptionHelpLink;
 		}
 
 		public FacilityException(string message, Exception innerException) : base(message, innerException)
 		{
+			HelpLink = Constants.ExceptionHelpLink;
 		}
 
 #if (!SILVERLIGHT)
 		public FacilityException(SerializationInfo info, StreamingContext context) : base(info, context)
 		{
+			HelpLink = Constants.ExceptionHelpLink;
 		}
 #endif
 	}

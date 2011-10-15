@@ -17,12 +17,9 @@ namespace Castle.MicroKernel.Resolvers
 	using System;
 	using System.Runtime.Serialization;
 
-	/// <summary>
-	/// Summary description for DependencyResolverException.
-	/// </summary>
-#if (!SILVERLIGHT)
+	using Castle.Core.Internal;
+
 	[Serializable]
-#endif
 	public class DependencyResolverException : Exception
 	{
 		/// <summary>
@@ -32,6 +29,7 @@ namespace Castle.MicroKernel.Resolvers
 		/// <param name = "innerException">The inner exception.</param>
 		public DependencyResolverException(string message, Exception innerException) : base(message, innerException)
 		{
+			HelpLink = Constants.ExceptionHelpLink;
 		}
 
 		/// <summary>
@@ -40,6 +38,7 @@ namespace Castle.MicroKernel.Resolvers
 		/// <param name = "message">The message.</param>
 		public DependencyResolverException(string message) : base(message)
 		{
+			HelpLink = Constants.ExceptionHelpLink;
 		}
 
 #if (!SILVERLIGHT)
@@ -50,6 +49,7 @@ namespace Castle.MicroKernel.Resolvers
 		/// <param name = "context">The contextual information about the source or destination.</param>
 		public DependencyResolverException(SerializationInfo info, StreamingContext context) : base(info, context)
 		{
+			HelpLink = Constants.ExceptionHelpLink;
 		}
 #endif
 	}

@@ -1,4 +1,4 @@
-// Copyright 2004-2009 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,11 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#if !SILVERLIGHT // we do not support xml config on SL
 
-namespace Castle.Windsor.Tests
+#if !SILVERLIGHT
+// we do not support xml config on SL
+
+namespace CastleTests
 {
-	using Castle.MicroKernel;
+	using Castle.MicroKernel.SubSystems.Conversion;
+	using Castle.Windsor;
 	using Castle.Windsor.Configuration.Interpreters;
 	using Castle.XmlFiles;
 
@@ -27,6 +30,16 @@ namespace Castle.Windsor.Tests
 	[TestFixture]
 	public class PropertiesInspectionBehaviorTestCase
 	{
+		[Test]
+		[ExpectedException(typeof(ConverterException),
+			ExpectedMessage =
+				"Error on properties inspection. Could not convert the inspectionBehavior attribute value into an expected enum value. Value found is 'Invalid' while possible values are 'Undefined, None, All, DeclaredOnly'"
+			)]
+		public void InvalidOption()
+		{
+			new WindsorContainer(new XmlInterpreter(Xml.Embedded("propertyInspectionBehaviorInvalid.xml")));
+		}
+
 		[Test]
 		public void PropertiesInspectionTestCase()
 		{
@@ -46,15 +59,6 @@ namespace Castle.Windsor.Tests
 			Assert.IsNull(comp.Prop1);
 			Assert.AreEqual(0, comp.Prop2);
 			Assert.AreEqual(2, comp.Prop3);
-		}
-
-		[Test,
-		 ExpectedException(typeof(KernelException),
-			ExpectedMessage = "Error on properties inspection. Could not convert the inspectionBehavior attribute value into an expected enum value. Value found is 'Invalid' while possible values are 'Undefined, None, All, DeclaredOnly'"
-		 	)]
-		public void InvalidOption()
-		{
-			new WindsorContainer(new XmlInterpreter(Xml.Embedded("propertyInspectionBehaviorInvalid.xml")));
 		}
 	}
 }
