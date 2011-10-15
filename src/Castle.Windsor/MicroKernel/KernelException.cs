@@ -17,6 +17,8 @@ namespace Castle.MicroKernel
 	using System;
 	using System.Runtime.Serialization;
 
+	using Castle.Core.Internal;
+
 	/// <summary>
 	///   Exception threw by Kernel operations that failed
 	///   for some reason.
@@ -30,6 +32,7 @@ namespace Castle.MicroKernel
 		/// <param name = "message">The message.</param>
 		public KernelException(string message) : base(message)
 		{
+			HelpLink = Constants.ExceptionHelpLink;
 		}
 
 		/// <summary>
@@ -39,6 +42,7 @@ namespace Castle.MicroKernel
 		/// <param name = "innerException">The inner exception.</param>
 		public KernelException(string message, Exception innerException) : base(message, innerException)
 		{
+			HelpLink = Constants.ExceptionHelpLink;
 		}
 
 #if (!SILVERLIGHT)
@@ -49,6 +53,7 @@ namespace Castle.MicroKernel
 		/// <param name = "context">The contextual information about the source or destination.</param>
 		public KernelException(SerializationInfo info, StreamingContext context) : base(info, context)
 		{
+			HelpLink = Constants.ExceptionHelpLink;
 		}
 #endif
 	}

@@ -17,12 +17,9 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 	using System;
 	using System.Runtime.Serialization;
 
-	/// <summary>
-	/// Summary description for ConverterException.
-	/// </summary>
-#if (!SILVERLIGHT)
+	using Castle.Core.Internal;
+
 	[Serializable]
-#endif
 	public class ConverterException : Exception
 	{
 		/// <summary>
@@ -31,6 +28,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 		/// <param name = "message">The message.</param>
 		public ConverterException(string message) : base(message)
 		{
+			HelpLink = Constants.ExceptionHelpLink;
 		}
 
 		/// <summary>
@@ -40,6 +38,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 		/// <param name = "innerException">The inner exception.</param>
 		public ConverterException(string message, Exception innerException) : base(message, innerException)
 		{
+			HelpLink = Constants.ExceptionHelpLink;
 		}
 
 #if (!SILVERLIGHT)
@@ -50,6 +49,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 		/// <param name = "context">The contextual information about the source or destination.</param>
 		public ConverterException(SerializationInfo info, StreamingContext context) : base(info, context)
 		{
+			HelpLink = Constants.ExceptionHelpLink;
 		}
 #endif
 	}

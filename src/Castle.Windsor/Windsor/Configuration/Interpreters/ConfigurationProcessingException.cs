@@ -17,20 +17,25 @@ namespace Castle.Windsor.Configuration.Interpreters
 	using System;
 	using System.Runtime.Serialization;
 
+	using Castle.Core.Internal;
+
 	[Serializable]
 	public class ConfigurationProcessingException : Exception
 	{
 		public ConfigurationProcessingException(string message) : base(message)
 		{
+			HelpLink = Constants.ExceptionHelpLink;
 		}
 
 		public ConfigurationProcessingException(string message, Exception innerException) : base(message, innerException)
 		{
+			HelpLink = Constants.ExceptionHelpLink;
 		}
 
 #if (!SILVERLIGHT)
 		public ConfigurationProcessingException(SerializationInfo info, StreamingContext context) : base(info, context)
 		{
+			HelpLink = Constants.ExceptionHelpLink;
 		}
 #endif
 	}
