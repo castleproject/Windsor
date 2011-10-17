@@ -75,6 +75,11 @@ namespace Castle.MicroKernel.ComponentActivator
 			{
 				instance = Kernel.ProxyFactory.Create(Kernel, instance, Model, context);
 			}
+			if(instance == null)
+			{
+				throw new ComponentActivatorException(
+					string.Format("Factory method creating instances of component '{0}' returned null. This is not allowed and most likely a bug in the factory method.", Model.Name), Model);
+			}
 			return instance;
 		}
 

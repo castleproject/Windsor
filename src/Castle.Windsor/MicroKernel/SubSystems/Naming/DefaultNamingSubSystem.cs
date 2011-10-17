@@ -24,14 +24,15 @@ namespace Castle.MicroKernel.SubSystems.Naming
 	[Serializable]
 	public class DefaultNamingSubSystem : AbstractSubSystem, INamingSubSystem
 	{
+		protected readonly Lock @lock = Lock.Create();
+
 		/// <summary>
 		///   Map(String, IHandler) to map component names
 		///   to <see cref = "IHandler" />
 		///   Items in this dictionary are sorted in insertion order.
 		/// </summary>
-		protected readonly Dictionary<string, IHandler> name2Handler = new Dictionary<string, IHandler>(StringComparer.OrdinalIgnoreCase);
-
-		protected readonly Lock @lock = Lock.Create();
+		protected readonly Dictionary<string, IHandler> name2Handler =
+			new Dictionary<string, IHandler>(StringComparer.OrdinalIgnoreCase);
 
 		/// <summary>
 		///   Map(Type, IHandler) to map a service
@@ -41,14 +42,18 @@ namespace Castle.MicroKernel.SubSystems.Naming
 		///   It serve as a fast lookup for the common case of having a single handler for 
 		///   a type.
 		/// </summary>
-		protected readonly Dictionary<Type, IHandler> service2Handler = new Dictionary<Type, IHandler>(SimpleTypeEqualityComparer.Instance);
+		protected readonly Dictionary<Type, IHandler> service2Handler =
+			new Dictionary<Type, IHandler>(SimpleTypeEqualityComparer.Instance);
 
 		protected IList<IHandlersFilter> filters;
 		protected IList<IHandlerSelector> selectors;
 
-		private readonly IDictionary<Type, IHandler[]> assignableHandlerListsByTypeCache = new Dictionary<Type, IHandler[]>(SimpleTypeEqualityComparer.Instance);
+		private readonly IDictionary<Type, IHandler[]> assignableHandlerListsByTypeCache =
+			new Dictionary<Type, IHandler[]>(SimpleTypeEqualityComparer.Instance);
 
-		private readonly IDictionary<Type, IHandler[]> handlerListsByTypeCache = new Dictionary<Type, IHandler[]>(SimpleTypeEqualityComparer.Instance);
+		private readonly IDictionary<Type, IHandler[]> handlerListsByTypeCache =
+			new Dictionary<Type, IHandler[]>(SimpleTypeEqualityComparer.Instance);
+
 		private Dictionary<string, IHandler> handlerByNameCache;
 		private Dictionary<Type, IHandler> handlerByServiceCache;
 
@@ -370,7 +375,8 @@ namespace Castle.MicroKernel.SubSystems.Naming
 
 		private Predicate<Type> GetServiceSelector(IHandler handler)
 		{
-			var customFilter = (Predicate<Type>)handler.ComponentModel.ExtendedProperties[Constants.DefaultComponentForServiceFilter];
+			var customFilter =
+				(Predicate<Type>)handler.ComponentModel.ExtendedProperties[Constants.DefaultComponentForServiceFilter];
 			if (customFilter == null)
 			{
 				return service => service2Handler.ContainsKey(service) == false;

@@ -16,10 +16,23 @@ namespace Castle.MicroKernel.ComponentActivator
 {
 	using Castle.Core;
 
+	/// <summary>
+	/// Implemented by <see cref="IComponentActivator"/> which don't necessarily need dependencies from the container to activate new instances of the component.
+	/// </summary>
 	public interface IDependencyAwareActivator
 	{
+		/// <summary>
+		/// Should return <c>true</c> if the activator can provide dependencies for the <paramref name="component"/>.
+		/// </summary>
+		/// <param name="component"></param>
+		/// <returns></returns>
 		bool CanProvideRequiredDependencies(ComponentModel component);
 
+		/// <summary>
+		/// Should return <c>true</c> if the activated instances of the <see cref="component"/> are managed externally to the container. That means container will not try to track the objects in <see cref="IReleasePolicy"/>.
+		/// </summary>
+		/// <param name="component"></param>
+		/// <returns></returns>
 		bool IsManagedExternally(ComponentModel component);
 	}
 }

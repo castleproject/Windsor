@@ -25,7 +25,6 @@ namespace Castle.MicroKernel.ComponentActivator
 	[Serializable]
 	public class ComponentActivatorException : ComponentResolutionException
 	{
-
 		public ComponentActivatorException(string message, ComponentModel componentComponentModel) : base(message)
 		{
 			ComponentModel = componentComponentModel;

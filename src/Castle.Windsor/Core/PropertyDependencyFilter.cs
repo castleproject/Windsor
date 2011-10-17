@@ -14,7 +14,6 @@
 
 namespace Castle.Core
 {
-	using System;
 	using System.Reflection;
 
 	public delegate PropertySet PropertySetBuilder(PropertyInfo property, bool isOptional);

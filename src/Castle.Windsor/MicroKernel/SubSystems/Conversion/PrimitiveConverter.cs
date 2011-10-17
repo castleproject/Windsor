@@ -16,7 +16,6 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 {
 	using System;
 	using System.Globalization;
-	using System.Threading;
 
 	using Castle.Core.Configuration;
 

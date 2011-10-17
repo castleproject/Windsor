@@ -173,7 +173,7 @@ namespace Castle.MicroKernel
 		ISubSystem GetSubSystem(String name);
 
 		/// <summary>
-		///   Returns <c>true</c> if a component with given <paramref name="name"/> was registered, otherwise <c>false</c>.
+		///   Returns <c>true</c> if a component with given <paramref name = "name" /> was registered, otherwise <c>false</c>.
 		/// </summary>
 		/// <param name = "name"></param>
 		/// <returns></returns>
