@@ -22,15 +22,6 @@ namespace Castle.MicroKernel.Registration.Proxy
 	{
 		private readonly IList<IReference<object>> items = new List<IReference<object>>();
 
-		public MixinRegistration Objects(params object[] objects)
-		{
-			foreach (var item in objects)
-			{
-				items.Add(new InstanceReference<object>(item));
-			}
-			return this;
-		}
-
 		public MixinRegistration Component<TService>()
 		{
 			return Component(typeof(TService));
@@ -52,7 +43,16 @@ namespace Castle.MicroKernel.Registration.Proxy
 			{
 				throw new ArgumentNullException("name");
 			}
-			items.Add(new ComponentReference<object>( name));
+			items.Add(new ComponentReference<object>(name));
+			return this;
+		}
+
+		public MixinRegistration Objects(params object[] objects)
+		{
+			foreach (var item in objects)
+			{
+				items.Add(new InstanceReference<object>(item));
+			}
 			return this;
 		}
 

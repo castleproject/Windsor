@@ -24,22 +24,23 @@ namespace Castle.MicroKernel
 	public interface IReleasePolicy : IDisposable
 	{
 		/// <summary>
-		/// Creates nested policy for scoped object tracking.
+		///   Creates nested policy for scoped object tracking.
 		/// </summary>
 		/// <returns></returns>
 		IReleasePolicy CreateSubPolicy();
 
 		/// <summary>
-		/// Returns <c>true</c> if <paramref name="instance"/> is being tracked by this release policy, <c>false</c> otherwise.
+		///   Returns <c>true</c> if <paramref name = "instance" /> is being tracked by this release policy, <c>false</c> otherwise.
 		/// </summary>
-		/// <param name="instance"></param>
+		/// <param name = "instance"></param>
 		/// <returns></returns>
 		bool HasTrack(object instance);
 
 		/// <summary>
-		/// Releases <paramref name="instance"/> if it's being tracked by this release policy, invoking its <see cref="IDecommissionConcern"/>s and stops tracking it so that it can be claimed by the Garbage Collector.
+		///   Releases <paramref name = "instance" /> if it's being tracked by this release policy, invoking its <see
+		///    cref = "IDecommissionConcern" />s and stops tracking it so that it can be claimed by the Garbage Collector.
 		/// </summary>
-		/// <param name="instance"></param>
+		/// <param name = "instance"></param>
 		void Release(object instance);
 
 		/// <summary>

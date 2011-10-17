@@ -41,16 +41,19 @@ namespace Castle.MicroKernel.Releasers
 		private readonly ITrackedComponentsPerformanceCounter perfCounter;
 		private ITrackedComponentsDiagnostic trackedComponentsDiagnostic;
 
-		/// <param name="kernel">Used to obtain <see cref="ITrackedComponentsDiagnostic"/> if present.</param>
+		/// <param name = "kernel">Used to obtain <see cref = "ITrackedComponentsDiagnostic" /> if present.</param>
 		public LifecycledComponentsReleasePolicy(IKernel kernel)
 			: this(GetTrackedComponentsDiagnostic(kernel), null)
 		{
 		}
+
 		/// <summary>
-		/// Creates new policy which publishes its tracking components count to <paramref name="trackedComponentsPerformanceCounter"/> and exposes diagnostics into <paramref name="trackedComponentsDiagnostic"/>.
+		///   Creates new policy which publishes its tracking components count to <paramref
+		///    name = "trackedComponentsPerformanceCounter" /> and exposes diagnostics into <paramref
+		///    name = "trackedComponentsDiagnostic" />.
 		/// </summary>
-		/// <param name="trackedComponentsDiagnostic"></param>
-		/// <param name="trackedComponentsPerformanceCounter"></param>
+		/// <param name = "trackedComponentsDiagnostic"></param>
+		/// <param name = "trackedComponentsPerformanceCounter"></param>
 		public LifecycledComponentsReleasePolicy(ITrackedComponentsDiagnostic trackedComponentsDiagnostic,
 		                                         ITrackedComponentsPerformanceCounter trackedComponentsPerformanceCounter)
 		{
@@ -63,7 +66,8 @@ namespace Castle.MicroKernel.Releasers
 			}
 		}
 
-		private LifecycledComponentsReleasePolicy(LifecycledComponentsReleasePolicy parent) : this(parent.trackedComponentsDiagnostic, parent.perfCounter)
+		private LifecycledComponentsReleasePolicy(LifecycledComponentsReleasePolicy parent)
+			: this(parent.trackedComponentsDiagnostic, parent.perfCounter)
 		{
 		}
 
@@ -178,14 +182,14 @@ namespace Castle.MicroKernel.Releasers
 		}
 
 		/// <summary>
-		/// Obtains <see cref="ITrackedComponentsDiagnostic"/> from given <see cref="IKernel"/> if present.
+		///   Obtains <see cref = "ITrackedComponentsDiagnostic" /> from given <see cref = "IKernel" /> if present.
 		/// </summary>
-		/// <param name="kernel"></param>
+		/// <param name = "kernel"></param>
 		/// <returns></returns>
 		public static ITrackedComponentsDiagnostic GetTrackedComponentsDiagnostic(IKernel kernel)
 		{
 			var diagnosticsHost = (IDiagnosticsHost)kernel.GetSubSystem(SubSystemConstants.DiagnosticsKey);
-			if(diagnosticsHost == null)
+			if (diagnosticsHost == null)
 			{
 				return null;
 			}
@@ -193,18 +197,19 @@ namespace Castle.MicroKernel.Releasers
 		}
 
 		/// <summary>
-		/// Creates new <see cref="ITrackedComponentsPerformanceCounter"/> from given <see cref="IPerformanceMetricsFactory"/>.
+		///   Creates new <see cref = "ITrackedComponentsPerformanceCounter" /> from given <see cref = "IPerformanceMetricsFactory" />.
 		/// </summary>
-		/// <param name="perfMetricsFactory"></param>
+		/// <param name = "perfMetricsFactory"></param>
 		/// <returns></returns>
-		public static ITrackedComponentsPerformanceCounter GetTrackedComponentsPerformanceCounter(IPerformanceMetricsFactory perfMetricsFactory)
+		public static ITrackedComponentsPerformanceCounter GetTrackedComponentsPerformanceCounter(
+			IPerformanceMetricsFactory perfMetricsFactory)
 		{
 #if SILVERLIGHT
 			return NullPerformanceCounter.Instance;
 #else
 			var process = Process.GetCurrentProcess();
 			var name = string.Format("Instance {0} | process {1} (id:{2})", Interlocked.Increment(ref instanceId),
-									 process.ProcessName, process.Id);
+			                         process.ProcessName, process.Id);
 			return perfMetricsFactory.CreateInstancesTrackedByReleasePolicyCounter(name);
 #endif
 		}

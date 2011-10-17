@@ -38,7 +38,6 @@ namespace Castle.MicroKernel
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 		protected DependencyModel dependencyModel;
 
-
 		/// <summary>
 		///   Creates a new instance of <see cref = "ComponentReference{T}" /> referencing default component implemented by <paramref
 		///    name = "componentType" />
@@ -64,14 +63,20 @@ namespace Castle.MicroKernel
 			this.referencedComponentName = referencedComponentName;
 		}
 
+		protected virtual Type ComponentType
+		{
+			get { return referencedComponentType ?? typeof(T); }
+		}
+
 		public T Resolve(IKernel kernel, CreationContext context)
 		{
 			var handler = GetHandler(kernel);
 			if (handler == null)
 			{
 				throw new DependencyResolverException(
-					string.Format("The referenced component {0} could not be resolved. Make sure you didn't misspell the name, and that component is registered.",
-					              referencedComponentName));
+					string.Format(
+						"The referenced component {0} could not be resolved. Make sure you didn't misspell the name, and that component is registered.",
+						referencedComponentName));
 			}
 
 			if (handler.IsBeingResolvedInContext(context))
@@ -90,13 +95,9 @@ namespace Castle.MicroKernel
 			}
 			catch (InvalidCastException e)
 			{
-				throw new ComponentResolutionException(string.Format("Component {0} is not compatible with type {1}.", referencedComponentName, typeof(T)), e);
+				throw new ComponentResolutionException(
+					string.Format("Component {0} is not compatible with type {1}.", referencedComponentName, typeof(T)), e);
 			}
-		}
-
-		protected virtual Type ComponentType
-		{
-			get { return referencedComponentType ?? typeof(T); }
 		}
 
 		private IHandler GetHandler(IKernel kernel)

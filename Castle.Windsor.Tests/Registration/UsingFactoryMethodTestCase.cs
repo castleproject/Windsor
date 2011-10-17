@@ -18,6 +18,7 @@ namespace CastleTests.Registration
 
 	using Castle.DynamicProxy;
 	using Castle.MicroKernel;
+	using Castle.MicroKernel.ComponentActivator;
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Tests.Configuration.Components;
 	using Castle.Windsor.Tests;
@@ -105,7 +106,8 @@ namespace CastleTests.Registration
 		{
 			Kernel.Register(
 				Component.For<ICarProvider>()
-					.UsingFactoryMethod(() => new AbstractCarProviderFactory().Create(new User { FiscalStability = FiscalStability.DirtFarmer }))
+					.UsingFactoryMethod(
+						() => new AbstractCarProviderFactory().Create(new User { FiscalStability = FiscalStability.DirtFarmer }))
 				);
 
 			Assert.IsInstanceOf<HondaProvider>(Kernel.Resolve<ICarProvider>());
@@ -239,6 +241,16 @@ namespace CastleTests.Registration
 		}
 
 		[Test]
+		public void Checks_and_throws_an_exception_when_factory_method_returns_null()
+		{
+			Kernel.Register(Component.For<IComponent>()
+			                	.LifeStyle.Transient
+			                	.UsingFactoryMethod(() => default(IComponent)));
+
+			Assert.Throws<ComponentActivatorException>(() => Kernel.Resolve<IComponent>());
+		}
+
+		[Test]
 		public void Does_not_try_to_set_properties_on_component_resolved_via_factory_method()
 		{
 			Kernel.Register(
@@ -360,7 +372,8 @@ namespace CastleTests.Registration
 		}
 
 		[Test]
-		public void Factory_created_sealed_non_disposable_services_with_factory_created_non_disposable_dependency_are_NOT_tracked()
+		public void
+			Factory_created_sealed_non_disposable_services_with_factory_created_non_disposable_dependency_are_NOT_tracked()
 		{
 			Kernel.Register(
 				Component.For<SealedComponentWithDependency>().LifeStyle.Transient
@@ -423,7 +436,8 @@ namespace CastleTests.Registration
 					.Interceptors<StandardInterceptor>()
 					.UsingFactoryMethod(() => new ClassWithConstructors("something")));
 
-			var exception = Assert.Throws<InvalidProxyConstructorArgumentsException>(() => Kernel.Resolve<ClassWithConstructors>());
+			var exception =
+				Assert.Throws<InvalidProxyConstructorArgumentsException>(() => Kernel.Resolve<ClassWithConstructors>());
 
 			var expected =
 				@"Can not instantiate proxy of class: Castle.MicroKernel.Tests.Configuration.Components.ClassWithConstructors.

@@ -16,7 +16,7 @@ namespace Castle.Core
 {
 	/// <summary>
 	///   Specifies rules for designating settable properties on a component as dependencies, and controlling whether they are requred or not.
-	/// This is a shortcut for most common scenarios. More advanced/custom scenarios can be defined dynamically in the registration API.
+	///   This is a shortcut for most common scenarios. More advanced/custom scenarios can be defined dynamically in the registration API.
 	/// </summary>
 	public enum PropertyFilter
 	{

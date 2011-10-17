@@ -23,7 +23,8 @@ namespace Castle.Core
 		{
 		}
 
-		public ComponentDependencyModel(string referencedComponentName, Type serviceType) : base(referencedComponentName, serviceType, false)
+		public ComponentDependencyModel(string referencedComponentName, Type serviceType)
+			: base(referencedComponentName, serviceType, false)
 		{
 		}
 

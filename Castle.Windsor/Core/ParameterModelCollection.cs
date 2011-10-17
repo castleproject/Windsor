@@ -77,19 +77,6 @@ namespace Castle.Core
 		}
 
 		/// <summary>
-		///   Returns an enumerator that can iterate through a collection.
-		/// </summary>
-		/// <returns>
-		///   An <see cref = "T:System.Collections.IEnumerator" />
-		///   that can be used to iterate through the collection.
-		/// </returns>
-		[DebuggerStepThrough]
-		IEnumerator IEnumerable.GetEnumerator()
-		{
-			return dictionary.Values.GetEnumerator();
-		}
-
-		/// <summary>
 		///   Adds the specified key.
 		/// </summary>
 		/// <remarks>
@@ -107,6 +94,19 @@ namespace Castle.Core
 			{
 				throw new ArgumentException(string.Format("Parameter '{0}' already exists.", key), e);
 			}
+		}
+
+		/// <summary>
+		///   Returns an enumerator that can iterate through a collection.
+		/// </summary>
+		/// <returns>
+		///   An <see cref = "T:System.Collections.IEnumerator" />
+		///   that can be used to iterate through the collection.
+		/// </returns>
+		[DebuggerStepThrough]
+		IEnumerator IEnumerable.GetEnumerator()
+		{
+			return dictionary.Values.GetEnumerator();
 		}
 
 		[DebuggerStepThrough]

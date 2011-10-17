@@ -130,7 +130,7 @@ namespace Castle.MicroKernel
 		event EventHandler RegistrationCompleted;
 
 		/// <summary>
-		///   Event fired when a collection is being resolved (via <see cref="IKernel.ResolveAll(System.Type)"/> or another overload) and the collection is empty.
+		///   Event fired when a collection is being resolved (via <see cref = "IKernel.ResolveAll(System.Type)" /> or another overload) and the collection is empty.
 		///   Implementors would usually log that fact or potentially throw an exception (especially in development).
 		/// </summary>
 		event ServiceDelegate EmptyCollectionResolving;

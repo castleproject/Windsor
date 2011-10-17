@@ -26,6 +26,10 @@ namespace Castle.Windsor.Diagnostics
 	{
 		private readonly IDictionary<Type, IDiagnostic<object>> diagnostics = new Dictionary<Type, IDiagnostic<object>>();
 
+		public override void Terminate()
+		{
+			diagnostics.Values.OfType<IDisposable>().ForEach(e => e.Dispose());
+		}
 
 		public void AddDiagnostic<TDiagnostic>(TDiagnostic diagnostic) where TDiagnostic : IDiagnostic<object>
 		{
@@ -37,11 +41,6 @@ namespace Castle.Windsor.Diagnostics
 			IDiagnostic<object> value;
 			diagnostics.TryGetValue(typeof(TDiagnostic), out value);
 			return (TDiagnostic)value;
-		}
-
-		public override void Terminate()
-		{
-			diagnostics.Values.OfType<IDisposable>().ForEach(e => e.Dispose());
 		}
 	}
 }
