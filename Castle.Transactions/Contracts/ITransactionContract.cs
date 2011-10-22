@@ -1,6 +1,4 @@
-﻿#region license
-
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,15 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#endregion
-
-using System;
-using System.Diagnostics.Contracts;
-using Castle.Transactions.IO;
-
 namespace Castle.Transactions.Contracts
 {
-	[ContractClassFor(typeof (ITransaction))]
+	using System;
+	using System.Diagnostics.Contracts;
+	using System.Transactions;
+
+	using TransactionException = Castle.Transactions.TransactionException;
+
+	[ContractClassFor(typeof(ITransaction))]
 	internal abstract class ITransactionContract : ITransaction
 	{
 		string ITransaction.LocalIdentifier
@@ -74,28 +72,17 @@ namespace Castle.Transactions.Contracts
 			get { throw new NotImplementedException(); }
 		}
 
-		public System.Transactions.Transaction Inner
+		public Transaction Inner
 		{
 			get { throw new NotImplementedException(); }
 		}
 
-		Maybe<SafeKernelTransactionHandle> ITransaction.KernelTransactionHandle
-		{
-			get
-			{
-				Contract.Ensures(Contract.Result<Maybe<SafeKernelTransactionHandle>>() != null);
-				throw new NotImplementedException();
-			}
-		}
-
-		//Maybe<IRetryPolicy> ITransaction.FailedPolicy
+		//Maybe<SafeKernelTransactionHandle> ITransaction.KernelTransactionHandle
 		//{
-		//    [Pure]
 		//    get
 		//    {
-		//        var result = Contract.Result<Maybe<IRetryPolicy>>();
-		//        Contract.Ensures(result != null);
-		//        return result;
+		//        Contract.Ensures(Contract.Result<Maybe<SafeKernelTransactionHandle>>() != null);
+		//        throw new NotImplementedException();
 		//    }
 		//}
 

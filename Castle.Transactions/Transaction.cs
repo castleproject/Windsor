@@ -22,11 +22,12 @@ using System.Diagnostics.Contracts;
 using System.Threading.Tasks;
 using System.Transactions;
 using Castle.Transactions.Internal;
-using Castle.Transactions.IO;
 using NLog;
 
 namespace Castle.Transactions
 {
+	using Castle.Transactions.Helpers;
+
 	[Serializable]
 	public class Transaction : ITransaction, IDependentAware
 	{
@@ -136,11 +137,6 @@ namespace Castle.Transactions
 			}
 		}
 
-		Maybe<SafeKernelTransactionHandle> ITransaction.KernelTransactionHandle
-		{
-			get { return Maybe.None<SafeKernelTransactionHandle>(); }
-		}
-
 		private System.Transactions.Transaction Inner
 		{
 			get { return _Committable ?? (System.Transactions.Transaction) _Dependent; }
@@ -176,7 +172,7 @@ namespace Castle.Transactions
 			}
 		}
 
-		internal Action BeforeTopComplete;
+		internal Action beforeTopComplete;
 		void ITransaction.Complete()
 		{
 			try
@@ -185,8 +181,8 @@ namespace Castle.Transactions
 				{
 					_Logger.Debug(() => string.Format("committing committable tx#{0}", _LocalIdentifier));
 
-					if (BeforeTopComplete != null) 
-						BeforeTopComplete();
+					if (beforeTopComplete != null) 
+						beforeTopComplete();
 
 					if (_DependentTasks != null && _CreationOptions.DependentOption == DependentCloneOption.BlockCommitUntilComplete)
 						Task.WaitAll(_DependentTasks.ToArray()); // this might throw, and then we don't set the state to completed

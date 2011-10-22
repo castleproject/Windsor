@@ -31,15 +31,17 @@ namespace Castle.Transactions
 	[ContractClass(typeof (TransactionManagerContract))]
 	public interface ITransactionManager : IDisposable
 	{
-		/// <summary>
-		/// Gets a file adapter.
-		/// </summary>
-		IFileAdapter File { get; }
+		///// <summary>
+		///// Gets a file adapter.
+		///// </summary>
+		//IFileAdapter File { get; }
 
-		/// <summary>
-		/// Gets a directory adapter.
-		/// </summary>
-		IDirectoryAdapter Directory { get; }
+		///// <summary>
+		///// Gets a directory adapter.
+		///// </summary>
+		//IDirectoryAdapter Directory { get; }
+
+		IActivityManager Activities { get; }
 
 		/// <summary>
 		/// 	<para>Gets the current transaction. If the program has a call context
@@ -103,20 +105,20 @@ namespace Castle.Transactions
 		/// <returns>Maybe a transaction, if the options specified it. If the default options is to supress transactions, the maybe has no value.</returns>
 		Maybe<ICreatedTransaction> CreateTransaction(ITransactionOptions transactionOptions);
 
-		/// <summary>
-		/// Creates a new file transactions with the default options.
-		/// </summary>
-		/// <returns>A file transaction with the default options. If file transactions are not supported, the maybe
-		/// has no value.</returns>
-		Maybe<ICreatedTransaction> CreateFileTransaction();
+		///// <summary>
+		///// Creates a new file transactions with the default options.
+		///// </summary>
+		///// <returns>A file transaction with the default options. If file transactions are not supported, the maybe
+		///// has no value.</returns>
+		//Maybe<ICreatedTransaction> CreateFileTransaction();
 
-		/// <summary>
-		/// 	Create a new transaction, given the transaction options.
-		/// </summary>
-		/// <param name = "transactionOptions">options to use for creating the transaction</param>
-		/// <returns>If the default options is to supress transactions, the maybe has no value.
-		/// The maybe also has no value if file transactions are not supported.</returns>
-		Maybe<ICreatedTransaction> CreateFileTransaction(ITransactionOptions transactionOptions);
+		///// <summary>
+		///// 	Create a new transaction, given the transaction options.
+		///// </summary>
+		///// <param name = "transactionOptions">options to use for creating the transaction</param>
+		///// <returns>If the default options is to supress transactions, the maybe has no value.
+		///// The maybe also has no value if file transactions are not supported.</returns>
+		//Maybe<ICreatedTransaction> CreateFileTransaction(ITransactionOptions transactionOptions);
 
 		// TODO: v3.1 retry policies
 		///// <summary>

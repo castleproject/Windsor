@@ -16,9 +16,9 @@
 
 #endregion
 
-namespace Castle.Transactions.Internal
+namespace Castle.Transactions.IO.Interop
 {
-	internal static class SafeNativeMethods
+	internal static class UnsafeNativeMethods
 	{
 	}
 }

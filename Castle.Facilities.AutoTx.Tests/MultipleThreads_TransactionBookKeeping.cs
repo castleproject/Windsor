@@ -81,7 +81,7 @@ namespace Castle.Facilities.AutoTx.Tests
 					scope.Service.VerifyInAmbient(() => {
 						// fixing interleaving
 						var top = (Transaction)((ITransactionManager)manager.Service).CurrentTopTransaction.Value;
-						top.BeforeTopComplete = () => childHasCompleted.WaitOne();
+						top.beforeTopComplete = () => childHasCompleted.WaitOne();
 
 						scope.Service.VerifyBookKeepingInFork(() =>
 						{

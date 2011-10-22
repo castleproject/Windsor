@@ -24,24 +24,15 @@ namespace Castle.Transactions.Tests
 {
 	public class CorrectDisposalOfTransaction_Specs : TransactionManager_SpecsBase
 	{
-		[Test,
-		 Description("This test doesn't explicitly check disposal, but a pass means the bug in previous versions was fixed.")]
-		public void Dispose_ITransaction_using_IDisposable_should_run_dispose()
-		{
-			using (var tx = Manager.CreateTransaction().Value.Transaction)
-				tx.Complete();
-
-			var newTx = Manager.CreateTransaction().Value.Transaction;
-		}
-
 		[Test]
 		public void Dispose_ITransaction_using_IDisposable_should_run_action()
 		{
 			var actionWasCalled = false;
 
-			using (
-				ITransaction tx = new Transactions.Transaction(new CommittableTransaction(), 1, new DefaultTransactionOptions(),
-				                                  () => actionWasCalled = true))
+			var opt = new DefaultTransactionOptions();
+			var cmt = new CommittableTransaction();
+
+			using (ITransaction tx = new Transaction(cmt, 1, opt, () => actionWasCalled = true))
 				tx.Complete();
 
 			Assert.That(actionWasCalled);

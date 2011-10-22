@@ -64,6 +64,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="chjail\can_chjail_absolute_path_spec.cs" />
     <Compile Include="contexts\context.cs" />
     <Compile Include="contexts\files.cs" />
     <Compile Include="contexts\file_search_context.cs" />

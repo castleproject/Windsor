@@ -18,8 +18,6 @@
 
 using System;
 using System.Diagnostics.Contracts;
-using Castle.IO;
-using Castle.IO.Internal;
 
 namespace Castle.Transactions.IO
 {
@@ -87,38 +85,11 @@ namespace Castle.Transactions.IO
 				: Maybe.None<ITransaction>();
 		}
 
-		protected internal bool IsInAllowedDir(string path)
-		{
-			Contract.Requires(!string.IsNullOrEmpty(path));
-
-			if (_AllowOutsideSpecifiedFolder) return true;
-
-			var fullPath = Path.GetFullPath(path);
-			var tentativePath = PathInfo.Parse(fullPath);
-
-			// if the given non-root is empty, we are looking at a relative path
-			if (string.IsNullOrEmpty(tentativePath.Root)) return true;
-
-			var specifiedPath = PathInfo.Parse(_SpecifiedFolder);
-
-			// they must be on the same drive.
-			if (!string.IsNullOrEmpty(tentativePath.DriveLetter)
-			    && specifiedPath.DriveLetter != tentativePath.DriveLetter)
-				return false;
-
-			// we do not allow access to directories outside of the specified directory.
-			return specifiedPath.IsParentOf(tentativePath);
-		}
-
 		protected void AssertAllowed(string path)
 		{
 			Contract.Requires(!string.IsNullOrEmpty(path));
 
 			if (_AllowOutsideSpecifiedFolder) return;
-
-			if (!IsInAllowedDir(path))
-				throw new UnauthorizedAccessException(
-					string.Format("Authorization required for handling path \"{0}\".", path));
 		}
 	}
 }

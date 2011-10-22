@@ -16,12 +16,13 @@
 
 #endregion
 
-using System;
-using NUnit.Framework;
-
-namespace Castle.Transactions.Tests.Framework
+namespace Castle.Transactions.IO.Tests
 {
-	public abstract class TxFTestFixtureBase : TransactionManager_SpecsBase
+	using System;
+
+	using NUnit.Framework;
+
+	public abstract class TxFTestFixtureBase
 	{
 		[TestFixtureSetUp]
 		public void EnsureSupported()

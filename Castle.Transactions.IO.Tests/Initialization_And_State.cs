@@ -6,7 +6,7 @@
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 // 
-//     http://www.apache.org/licenses/LICENSE-2.0
+// http://www.apache.org/licenses/LICENSE-2.0
 // 
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,21 +16,19 @@
 
 #endregion
 
-using System.Runtime.InteropServices;
-using Castle.Transactions.IO;
-
-namespace Castle.Transactions.Internal
+namespace Castle.Transactions.IO.Tests
 {
-	[ComImport]
-	[InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-	[Guid("79427A2B-F895-40e0-BE79-B57DC82ED231")]
-	internal interface IKernelTransaction
+	public class Initialization_And_State : TxFTestFixtureBase
 	{
-		/// <summary>
-		/// 	Gets a safe transaction handle. If we instead use IntPtr we 
-		/// 	might not release the transaction handle properly.
-		/// </summary>
-		/// <param name = "handle"></param>
-		void GetHandle([Out] out SafeKernelTransactionHandle handle);
+		[Test]
+		public void CompletedState()
+		{
+			using (ITransaction tx = new FileTransaction())
+			{
+				Assert.That(tx.State, Is.EqualTo(TransactionState.Active));
+				tx.Complete();
+				Assert.That(tx.State, Is.EqualTo(TransactionState.CommittedOrCompleted));
+			}
+		}
 	}
 }

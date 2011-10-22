@@ -16,9 +16,28 @@
 
 #endregion
 
-namespace Castle.Transactions.Internal
+namespace Castle.Transactions.Pending
 {
-	internal static class UnsafeNativeMethods
+	using System;
+	using System.Diagnostics.Contracts;
+
+	internal class AnonymousRetryPolicy : IRetryPolicy
 	{
+		private readonly Func<Exception, bool> _Inner;
+
+		public AnonymousRetryPolicy(Func<Exception, bool> inner)
+		{
+			Contract.Requires(inner != null);
+			_Inner = inner;
+			Failures = 0;
+		}
+
+		public bool Retry(Exception thrownException)
+		{
+			Failures++;
+			return _Inner(thrownException);
+		}
+
+		public ulong Failures { get; private set; }
 	}
 }

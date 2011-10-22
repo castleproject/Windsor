@@ -1,12 +1,10 @@
-#region license
-
 // Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 // 
-// http://www.apache.org/licenses/LICENSE-2.0
+//     http://www.apache.org/licenses/LICENSE-2.0
 // 
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,16 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#endregion
-
-using System;
-using System.Threading;
-using Castle.IO;
-using Castle.Transactions.Tests.Framework;
-using NUnit.Framework;
-
-namespace Castle.Transactions.Tests.ExternalSources
+namespace Castle.Transactions.IO.Tests
 {
+	using System;
+	using System.Threading;
+
 	public class MSDN_Is_Wrong : TxFTestFixtureBase
 	{
 		// http://msdn.microsoft.com/en-us/library/aa365536%28VS.85%29.aspx
@@ -83,9 +76,7 @@ namespace Castle.Transactions.Tests.ExternalSources
 					Console.WriteLine("t1 started");
 					// the transacted thread should receive ERROR_TRANSACTIONAL_CONFLICT, but it gets permission denied.
 					using (var fs = ((IFileAdapter)t).Create("abb"))
-					{
 						fs.WriteByte(0x2);
-					}
 				}
 				finally
 				{

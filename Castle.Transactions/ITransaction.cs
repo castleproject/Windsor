@@ -21,10 +21,13 @@ using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Contracts;
 using System.Transactions;
 using Castle.Transactions.Contracts;
-using Castle.Transactions.IO;
 
 namespace Castle.Transactions
 {
+	using System.ComponentModel;
+
+	using Castle.Transactions.Internal;
+
 	/// <summary>
 	/// 	<para>
 	/// 		Denotes a castle transaction. This is the main point of interaction between your code and
@@ -45,6 +48,7 @@ namespace Castle.Transactions
 		/// </summary>
 		[SuppressMessage("Microsoft.Design", "CA1063:ImplementIDisposableCorrectly",
 			Justification = "I want to prove invariants about the disposed state, so I re-implement this method.")]
+		[EditorBrowsable(EditorBrowsableState.Advanced)]
 		new void Dispose();
 
 		/// <summary>
@@ -73,17 +77,11 @@ namespace Castle.Transactions
 		/// </summary>
 		System.Transactions.Transaction Inner { get; }
 
-		/// <summary>
-		/// 	If the created transaction is a file transaction, there should be a
-		/// 	transacted-file-transaction handle available.
-		/// </summary>
-		Maybe<SafeKernelTransactionHandle> KernelTransactionHandle { get; }
-
-		// TODO: v3.1: Policy for handling in doubt transactions and general failures
 		///// <summary>
-		///// 	Maybe contains a failed policy for this transaction.
+		///// 	If the created transaction is a file transaction, there should be a
+		///// 	transacted-file-transaction handle available.
 		///// </summary>
-		//Maybe<IRetryPolicy> FailedPolicy { get; }
+		//Maybe<SafeKernelTransactionHandle> KernelTransactionHandle { get; }
 
 		/// <summary>
 		/// 	Gets a local identifier unique to the underlying transaction. Contrary to the 

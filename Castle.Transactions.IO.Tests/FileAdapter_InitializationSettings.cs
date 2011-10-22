@@ -1,4 +1,4 @@
-#region license
+﻿#region license
 
 // Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
@@ -16,22 +16,15 @@
 
 #endregion
 
-using Castle.Transactions.Tests.Framework;
-using NUnit.Framework;
-
-namespace Castle.Transactions.Tests.Files
+namespace Castle.Transactions.IO.Tests
 {
-	public class Initialization_And_State : TxFTestFixtureBase
+	[TestFixture]
+	public class FileAdapter_InitializationSettings : TxFTestFixtureBase
 	{
 		[Test]
-		public void CompletedState()
+		public void CtorUseTransactions()
 		{
-			using (ITransaction tx = new FileTransaction())
-			{
-				Assert.That(tx.State, Is.EqualTo(TransactionState.Active));
-				tx.Complete();
-				Assert.That(tx.State, Is.EqualTo(TransactionState.CommittedOrCompleted));
-			}
+			Assert.That(new FileAdapter().UseTransactions);
 		}
 	}
 }

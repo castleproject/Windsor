@@ -89,7 +89,6 @@ namespace Castle.Transactions
 			       && Equals(other.Mode, Mode)
 			       && other.Fork.Equals(Fork)
 			       && other.Timeout.Equals(Timeout)
-			       && other.CustomContext.All(x => _CustomContext.ContainsKey(x.Key) && _CustomContext[x.Key].Equals(x.Value))
 			       && other.AsyncRollback.Equals(AsyncRollback)
 			       && other.AsyncCommit.Equals(AsyncCommit)
 				   && other.DependentOption.Equals(DependentOption);

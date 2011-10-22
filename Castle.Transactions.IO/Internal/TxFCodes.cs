@@ -1,4 +1,4 @@
-﻿#region license
+#region license
 
 // Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
@@ -16,28 +16,10 @@
 
 #endregion
 
-using System;
-using System.Diagnostics.Contracts;
-
-namespace Castle.Transactions.Internal
+namespace Castle.Transactions.IO.Internal
 {
-	internal class AnonymousRetryPolicy : IRetryPolicy
+	internal static class TxFCodes
 	{
-		private readonly Func<Exception, bool> _Inner;
-
-		public AnonymousRetryPolicy(Func<Exception, bool> inner)
-		{
-			Contract.Requires(inner != null);
-			_Inner = inner;
-			Failures = 0;
-		}
-
-		public bool Retry(Exception thrownException)
-		{
-			Failures++;
-			return _Inner(thrownException);
-		}
-
-		public ulong Failures { get; private set; }
+		public const int ERROR_TRANSACTIONAL_CONFLICT = 6800;
 	}
 }

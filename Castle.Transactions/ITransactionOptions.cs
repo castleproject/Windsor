@@ -77,14 +77,6 @@ namespace Castle.Transactions
 		/// 	Version 3.1: Gets whether a failed transaction should rollback asynchronously after notifying the caller of failure.
 		/// </summary>
 		bool AsyncRollback { [Pure] get; }
-
-		/// <summary>
-		/// 	Gets the custom context dictionary. Implementors of the interface can choose to perform
-		/// 	custom logic based on the items in this dictionary. For example, if your infrastructure
-		/// 	is capable of handling Database ReadOnly Transactions, tell the infrastructure
-		/// 	that through this context-property.
-		/// </summary>
-		IEnumerable<KeyValuePair<string, object>> CustomContext { [Pure] get; }
 	}
 
 

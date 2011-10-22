@@ -1,5 +1,3 @@
-#region license
-
 // Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,23 +12,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#endregion
-
-using Castle.IO.Internal;
-using Castle.Transactions.IO;
-using Castle.Transactions.Tests.Framework;
-using NUnit.Framework;
-
-namespace Castle.Transactions.Tests.Directories
+namespace Castle.Transactions.IO
 {
-	public class DirectoryAdapter_InitializationSettings : TxFTestFixtureBase
+	using System.Runtime.InteropServices;
+
+	[ComImport]
+	[InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+	[Guid("79427A2B-F895-40e0-BE79-B57DC82ED231")]
+	internal interface IKernelTransaction
 	{
-		[Test]
-		public void DefaultSettings()
-		{
-			var adapter = new DirectoryAdapter(new MapPathImpl(), false, null);
-			Assert.That(adapter.UseTransactions);
-			Assert.That(adapter.OnlyJoinExisting, Is.False);
-		}
+		/// <summary>
+		/// 	Gets a safe transaction handle. If we instead use IntPtr we 
+		/// 	might not release the transaction handle properly.
+		/// </summary>
+		/// <param name = "handle"></param>
+		void GetHandle([Out] out SafeKernelTransactionHandle handle);
 	}
 }

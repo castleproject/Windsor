@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.Contracts;
-
-namespace Castle.Transactions.Internal
+﻿namespace Castle.Transactions.Helpers
 {
+	using System;
+	using System.Collections.Generic;
+	using System.Diagnostics.Contracts;
+
 	/// <summary>
 	/// Helper class with items originally from reactive extensions.
 	/// </summary>

@@ -16,20 +16,17 @@
 
 #endregion
 
-using System;
-using System.IO;
-using System.Linq;
-using System.Text;
-using Castle.IO;
-using Castle.IO.Extensions;
-using Castle.Transactions.IO;
-using Castle.Transactions.Tests.Framework;
-using Castle.Transactions.Tests.TestClasses;
-using NUnit.Framework;
-using SharpTestsEx;
-
-namespace Castle.Transactions.Tests.Files
+namespace Castle.Transactions.IO.Tests
 {
+	using System;
+	using System.IO;
+	using System.Linq;
+	using System.Text;
+
+	using NUnit.Framework;
+
+	using SharpTestsEx;
+
 	public class File_Specs : TxFTestFixtureBase
 	{
 		private string _TfPath;

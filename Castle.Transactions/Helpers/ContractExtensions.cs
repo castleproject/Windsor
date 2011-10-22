@@ -16,12 +16,12 @@
 
 #endregion
 
-using System;
-using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
-
-namespace Castle.Transactions.Internal
+namespace Castle.Transactions.Helpers
 {
+	using System;
+	using System.Diagnostics;
+	using System.Diagnostics.CodeAnalysis;
+
 	/// <summary>
 	/// 	Enables factoring legacy if-then-throw into separate methods for reuse and full control over
 	/// 	thrown exception and arguments

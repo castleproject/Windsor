@@ -16,15 +16,10 @@
 
 #endregion
 
-using System;
-using Castle.IO.Extensions;
-using Castle.Transactions.Tests.Framework;
-using Castle.Transactions.Tests.TestClasses;
-using NUnit.Framework;
-using SharpTestsEx;
-
-namespace Castle.Transactions.Tests.Directories
+namespace Castle.Transactions.IO.Tests
 {
+	using System;
+
 	public class DirectoryAdapter_TransactionalBehavior : TxFTestFixtureBase
 	{
 		// have a look at http://msdn.microsoft.com/en-us/library/aa964931%28v=VS.85%29.aspx and see what can be done
@@ -92,7 +87,8 @@ namespace Castle.Transactions.Tests.Directories
 
 		private ITransaction CreateTx()
 		{
-			return Manager.CreateFileTransaction().Value.Transaction;
+			return null;
+			//return Manager.CreateFileTransaction().Value.Transaction;
 		}
 	}
 }

@@ -1,6 +1,4 @@
-﻿#region license
-
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,18 +12,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#endregion
-
-using System;
-using System.Diagnostics.Contracts;
-
 namespace Castle.Transactions.Internal
 {
-	internal sealed class CreatedTransaction : ICreatedTransaction
+	using System;
+	using System.Diagnostics.Contracts;
+
+	/// <summary>
+	/// Class that simply implements the data-bearing interface <see cref="ICreatedTransaction"/>.
+	/// </summary>
+	public sealed class CreatedTransaction : ICreatedTransaction
 	{
-		private readonly ITransaction _Transaction;
-		private readonly bool _ShouldFork;
-		private readonly Func<IDisposable> _ForkScopeFactory;
+		private readonly ITransaction transaction;
+		private readonly bool shouldFork;
+		private readonly Func<IDisposable> forkScopeFactory;
 
 		public CreatedTransaction(ITransaction transaction, bool shouldFork, Func<IDisposable> forkScopeFactory)
 		{
@@ -33,40 +32,36 @@ namespace Castle.Transactions.Internal
 			Contract.Requires(transaction != null);
 			Contract.Requires(transaction.State == TransactionState.Active);
 
-			_Transaction = transaction;
-			_ShouldFork = shouldFork;
-			_ForkScopeFactory = forkScopeFactory;
+			this.transaction = transaction;
+			this.shouldFork = shouldFork;
+			this.forkScopeFactory = forkScopeFactory;
 		}
 
 		[ContractInvariantMethod]
 		private void Invariant()
 		{
-			Contract.Invariant(_Transaction != null);
-			Contract.Invariant(_ForkScopeFactory != null);
+			Contract.Invariant(transaction != null);
+			Contract.Invariant(forkScopeFactory != null);
 		}
-
-		#region Implementation of ICreatedTransaction
 
 		ITransaction ICreatedTransaction.Transaction
 		{
-			get { return _Transaction; }
+			get { return transaction; }
 		}
 
 		bool ICreatedTransaction.ShouldFork
 		{
-			get { return _ShouldFork; }
+			get { return shouldFork; }
 		}
 
 		IDisposable ICreatedTransaction.GetForkScope()
 		{
-			var disposable = _ForkScopeFactory();
+			var disposable = forkScopeFactory();
 
 			if (disposable == null)
 				throw new InvalidOperationException("fork scope factory returned null!");
 
 			return disposable;
 		}
-
-		#endregion
 	}
 }

@@ -1,5 +1,3 @@
-#region license
-
 // Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,18 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#endregion
-
-using System;
-using System.Runtime.InteropServices;
-using System.Text;
-using Castle.IO;
-using Castle.IO.FileSystems.Local.Win32.Interop;
-using Castle.Transactions.IO;
-using Microsoft.Win32.SafeHandles;
-
-namespace Castle.Transactions.Internal
+namespace Castle.Transactions.IO.Interop
 {
+	using System;
+	using System.Runtime.InteropServices;
+	using System.Text;
+
+	using Castle.IO;
+	using Castle.IO.FileSystems.Local.Win32.Interop;
+
+	using Microsoft.Win32.SafeHandles;
+
 	internal static class NativeMethods
 	{
 		/// <summary>

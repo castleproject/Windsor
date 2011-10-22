@@ -1,5 +1,3 @@
-#region license
-
 // Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,29 +12,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#endregion
-
-using System;
-using System.Runtime.ConstrainedExecution;
-using System.Security;
-using Castle.IO.FileSystems.Local.Win32.Interop;
-using Microsoft.Win32.SafeHandles;
-
 namespace Castle.Transactions.IO
 {
+	using System;
+	using System.Runtime.ConstrainedExecution;
+	using System.Security;
+
+	using Microsoft.Win32.SafeHandles;
+
 	///<summary>
 	///	A safe file handle on the transaction resource.
 	///</summary>
 	[SecurityCritical]
 	public sealed class SafeKernelTransactionHandle : SafeHandleZeroOrMinusOneIsInvalid
 	{
-		/// <summary>
-		/// 	Default c'tor
-		/// </summary>
-		public SafeKernelTransactionHandle() : base(true)
-		{
-		}
-
 		///<summary>
 		///	c'tor taking a pointer to a transaction.
 		///</summary>
@@ -51,9 +40,7 @@ namespace Castle.Transactions.IO
 		protected override bool ReleaseHandle()
 		{
 			if (!(IsInvalid || IsClosed))
-			{
-				return NativeMethods.CloseHandle(handle);
-			}
+				return Castle.IO.FileSystems.Local.Win32.Interop.NativeMethods.CloseHandle(handle);
 			return (IsInvalid || IsClosed);
 		}
 	}

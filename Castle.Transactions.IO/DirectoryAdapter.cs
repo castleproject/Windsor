@@ -31,8 +31,8 @@ namespace Castle.Transactions.IO
 	/// </summary>
 	public class DirectoryAdapter : TransactionAdapterBase, IDirectoryAdapter
 	{
-		private readonly IMapPath _PathFinder;
-		private readonly Logger _Logger = LogManager.GetCurrentClassLogger();
+		private readonly IMapPath pathFinder;
+		private readonly Logger logger = LogManager.GetCurrentClassLogger();
 
 		public DirectoryAdapter() : this(new MapPathImpl(), false, null)
 		{
@@ -49,9 +49,9 @@ namespace Castle.Transactions.IO
 		{
 			Contract.Requires(pathFinder != null);
 
-			_Logger.Debug("DirectoryAdapter created.");
+			logger.Debug("DirectoryAdapter created.");
 
-			_PathFinder = pathFinder;
+			this.pathFinder = pathFinder;
 		}
 
 		bool IDirectoryAdapter.Create(string path)
@@ -137,7 +137,7 @@ namespace Castle.Transactions.IO
 
 		string IDirectoryAdapter.MapPath(string path)
 		{
-			return _PathFinder.MapPath(path);
+			return pathFinder.MapPath(path);
 		}
 
 		void IDirectoryAdapter.Move(string originalPath, string newPath)

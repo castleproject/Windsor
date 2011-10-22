@@ -30,6 +30,8 @@ using NLog;
 
 namespace Castle.Facilities.AutoTx
 {
+	using Castle.Transactions.Helpers;
+
 	///<summary>
 	///	<para>A facility for automatically handling transactions using the lightweight
 	///		transaction manager. This facility does not depend on

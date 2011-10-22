@@ -1,6 +1,4 @@
-﻿#region license
-
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,41 +12,32 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#endregion
-
-using System;
-using System.Diagnostics.Contracts;
-using System.Threading.Tasks;
-using System.Transactions;
-using Castle.IO;
-using Castle.Transactions.Activities;
-using Castle.Transactions.IO;
-using Castle.Transactions.Internal;
-using NLog;
-
 namespace Castle.Transactions
 {
+	using System;
+	using System.Diagnostics.Contracts;
+	using System.Threading.Tasks;
+	using System.Transactions;
+
+	using Castle.Transactions.Internal;
+
+	using NLog;
+
+	/// <summary>
+	/// 	The default transaction manager that is capable of handling most combinations
+	/// 	of <see cref = "ITransactionOptions" />.
+	/// </summary>
 	public class TransactionManager : ITransactionManager
 	{
 		private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-		private static readonly object syncRoot = new object();
-		private static volatile ITransactionManager instance;
-
 		private readonly IActivityManager activityManager;
-		private readonly IFileAdapter fileAdapter;
-		private readonly IDirectoryAdapter directoryAdapter;
 
-		public TransactionManager(IActivityManager activityManager, IFileAdapter fileAdapter,
-		                          IDirectoryAdapter directoryAdapter)
+		public TransactionManager(IActivityManager activityManager)
 		{
 			Contract.Requires(activityManager != null);
-			Contract.Requires(fileAdapter != null);
-			Contract.Requires(directoryAdapter != null);
 
 			this.activityManager = activityManager;
-			this.fileAdapter = fileAdapter;
-			this.directoryAdapter = directoryAdapter;
 		}
 
 		[ContractInvariantMethod]
@@ -57,27 +46,9 @@ namespace Castle.Transactions
 			Contract.Invariant(activityManager != null);
 		}
 
-		public static ITransactionManager Instance
+		IActivityManager ITransactionManager.Activities
 		{
-			get
-			{
-				if (instance == null)
-					lock (syncRoot)
-						if (instance == null)
-								instance = new TransactionManager(new CallContextActivityManager(), new FileAdapter(), new DirectoryAdapter());
-
-				return instance;
-			}
-		}
-
-		public IFileAdapter File
-		{
-			get { return fileAdapter; }
-		}
-
-		public IDirectoryAdapter Directory
-		{
-			get { return directoryAdapter; }
+			get { return activityManager; }
 		}
 
 		Maybe<ITransaction> ITransactionManager.CurrentTopTransaction
@@ -97,7 +68,7 @@ namespace Castle.Transactions
 
 		Maybe<ICreatedTransaction> ITransactionManager.CreateTransaction()
 		{
-			return ((ITransactionManager) this).CreateTransaction(new DefaultTransactionOptions());
+			return ((ITransactionManager)this).CreateTransaction(new DefaultTransactionOptions());
 		}
 
 		Maybe<ICreatedTransaction> ITransactionManager.CreateTransaction(ITransactionOptions transactionOptions)
@@ -108,17 +79,15 @@ namespace Castle.Transactions
 				return Maybe.None<ICreatedTransaction>();
 
 			var nextStackDepth = activity.Count + 1;
-			var shouldFork = ShouldFork(transactionOptions, nextStackDepth);
+			var shouldFork = transactionOptions.ShouldFork(nextStackDepth);
 
 			ITransaction tx;
 			if (activity.Count == 0)
-			{
 				tx = new Transaction(new CommittableTransaction(new TransactionOptions
-					{
-						IsolationLevel = transactionOptions.IsolationLevel,
-						Timeout = transactionOptions.Timeout
-					}), nextStackDepth, transactionOptions, () => activity.Pop());
-			}
+				{
+					IsolationLevel = transactionOptions.IsolationLevel,
+					Timeout = transactionOptions.Timeout
+				}), nextStackDepth, transactionOptions, () => activity.Pop());
 			else
 			{
 				var clone = activity
@@ -136,50 +105,18 @@ namespace Castle.Transactions
 
 			Contract.Assume(tx.State == TransactionState.Active, "by c'tor post condition for both cases of the if statement");
 
-			var m = Maybe.Some(new CreatedTransaction(tx,
-			                                          shouldFork,
-			                                          // we should only fork if we have a different current top transaction than the current
-			                                          ForkScopeFactory(tx)) as ICreatedTransaction);
+			// we should only fork if we have a different current top transaction than the current
+			var m = Maybe.Some(new CreatedTransaction(tx, shouldFork, this.ForkScopeFactory(tx)) as ICreatedTransaction);
 
 			// warn if fork and the top transaction was just created
 			if (transactionOptions.Fork && nextStackDepth == 1)
 				logger.Warn("transaction {0} created with Fork=true option, but was top-most "
-				             + "transaction in invocation chain. running transaction sequentially",
-				             tx.LocalIdentifier);
+				            + "transaction in invocation chain. running transaction sequentially",
+				            tx.LocalIdentifier);
 
 			Contract.Assume(m.HasValue && m.Value.Transaction.State == TransactionState.Active);
 
 			return m;
-		}
-
-		private Func<IDisposable> ForkScopeFactory(ITransaction tx)
-		{
-			return () =>
-				{
-					activityManager.GetCurrentActivity().Push(tx);
-					return new DisposableScope(activityManager.GetCurrentActivity().Pop);
-				};
-		}
-
-		private static bool ShouldFork(ITransactionOptions transactionOptions, uint nextStackDepth)
-		{
-			return transactionOptions.Fork && nextStackDepth > 1;
-		}
-
-		Maybe<ICreatedTransaction> ITransactionManager.CreateFileTransaction()
-		{
-			return ((ITransactionManager) this).CreateFileTransaction(new DefaultTransactionOptions());
-		}
-
-		Maybe<ICreatedTransaction> ITransactionManager.CreateFileTransaction(ITransactionOptions transactionOptions)
-		{
-			// TODO: we need to decide what transaction manager we want running the show and be smarter about this:
-			var activity = activityManager.GetCurrentActivity();
-			var nextStackDepth = activity.Count + 1;
-			var tx = new FileTransaction();
-			var fork = ShouldFork(transactionOptions, nextStackDepth);
-			if (!fork) activity.Push(tx);
-			return new CreatedTransaction(tx, fork, ForkScopeFactory(tx));
 		}
 
 		/// <summary>
@@ -195,19 +132,19 @@ namespace Castle.Transactions
 			activityManager.GetCurrentActivity().EnlistDependentTask(task);
 		}
 
-		private class DisposableScope : IDisposable
+		public class DisposableScope : IDisposable
 		{
-			private readonly Func<ITransaction> _OnDispose;
+			private readonly Func<ITransaction> onDispose;
 
 			public DisposableScope(Func<ITransaction> onDispose)
 			{
 				Contract.Requires(onDispose != null);
-				_OnDispose = onDispose;
+				this.onDispose = onDispose;
 			}
 
 			public void Dispose()
 			{
-				_OnDispose();
+				onDispose();
 			}
 		}
 
@@ -222,16 +159,5 @@ namespace Castle.Transactions
 			if (!isManaged)
 				return;
 		}
-
-		// for v3.1
-		//void ITransactionManager.AddRetryPolicy(string policyKey, Func<Exception, bool> retryPolicy)
-		//{
-		//    throw new NotImplementedException();
-		//}
-
-		//void ITransactionManager.AddRetryPolicy(string policyKey, IRetryPolicy retryPolicy)
-		//{
-		//    throw new NotImplementedException();
-		//}
 	}
 }

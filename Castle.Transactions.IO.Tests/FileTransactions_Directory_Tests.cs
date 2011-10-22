@@ -16,16 +16,10 @@
 
 #endregion
 
-using System;
-using Castle.IO;
-using Castle.IO.Extensions;
-using Castle.Transactions.IO;
-using Castle.Transactions.Tests.Framework;
-using Castle.Transactions.Tests.TestClasses;
-using NUnit.Framework;
-
-namespace Castle.Transactions.Tests.Files
+namespace Castle.Transactions.IO.Tests
 {
+	using System;
+
 	[TestFixture, Ignore("TODO")]
 	public class FileTransactions_Directory_Tests : TxFTestFixtureBase
 	{

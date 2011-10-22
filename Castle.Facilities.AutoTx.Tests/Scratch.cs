@@ -29,6 +29,8 @@ using NUnit.Framework;
 
 namespace Castle.Facilities.AutoTx.Tests
 {
+	using Castle.Transactions.Helpers;
+
 	[Explicit("to try things out")]
 	internal class Scratch
 	{

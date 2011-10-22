@@ -26,20 +26,11 @@ namespace Castle.Transactions.Contracts
 	[ContractClassFor(typeof (ITransactionManager))]
 	internal abstract class TransactionManagerContract : ITransactionManager
 	{
-		IFileAdapter ITransactionManager.File
+		public IActivityManager Activities
 		{
 			get
 			{
-				Contract.Ensures(Contract.Result<IFileAdapter>() != null);
-				throw new NotImplementedException();
-			}
-		}
-
-		IDirectoryAdapter ITransactionManager.Directory
-		{
-			get
-			{
-				Contract.Ensures(Contract.Result<IDirectoryAdapter>() != null);
+				Contract.Ensures(Contract.Result<IActivityManager>() != null);
 				throw new NotImplementedException();
 			}
 		}
@@ -52,7 +43,6 @@ namespace Castle.Transactions.Contracts
 				throw new NotImplementedException();
 			}
 		}
-
 
 		public Maybe<ITransaction> CurrentTransaction
 		{
@@ -107,10 +97,6 @@ namespace Castle.Transactions.Contracts
 
 		public Maybe<ICreatedTransaction> CreateFileTransaction()
 		{
-			Contract.Ensures(Contract.Result<Maybe<ICreatedTransaction>>() != null
-							 && (!Contract.Result<Maybe<ICreatedTransaction>>().HasValue
-								 || Contract.Result<Maybe<ICreatedTransaction>>().Value.Transaction.State == TransactionState.Active));
-
 			throw new NotImplementedException();
 		}
 

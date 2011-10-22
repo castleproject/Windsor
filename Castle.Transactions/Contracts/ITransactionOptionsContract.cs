@@ -66,13 +66,13 @@ namespace Castle.Transactions.Contracts
 			get { throw new NotImplementedException(); }
 		}
 
-		IEnumerable<KeyValuePair<string, object>> ITransactionOptions.CustomContext
-		{
-			get
-			{
-				Contract.Ensures(Contract.Result<IEnumerable<KeyValuePair<string, object>>>() != null);
-				throw new NotImplementedException();
-			}
-		}
+		//IEnumerable<KeyValuePair<string, object>> ITransactionOptions.CustomContext
+		//{
+		//    get
+		//    {
+		//        Contract.Ensures(Contract.Result<IEnumerable<KeyValuePair<string, object>>>() != null);
+		//        throw new NotImplementedException();
+		//    }
+		//}
 	}
 }

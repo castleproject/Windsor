@@ -27,6 +27,8 @@ using NUnit.Framework;
 
 namespace Castle.Facilities.AutoTx.Tests
 {
+	using Castle.Transactions.Helpers;
+
 	public class TxClassMetaInfoStore_MetaData
 	{
 		[Test, Explicit("Testing whether we can use GetHashCode to exclude methods from object")]

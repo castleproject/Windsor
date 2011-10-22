@@ -26,6 +26,8 @@ using Castle.Transactions.Internal;
 
 namespace Castle.Facilities.AutoTx
 {
+	using Castle.Transactions.Helpers;
+
 	internal sealed class TransactionalClassMetaInfo
 	{
 		private readonly Dictionary<MethodInfo, TransactionAttribute> _TxMethods;

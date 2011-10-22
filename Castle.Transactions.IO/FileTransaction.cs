@@ -1,21 +1,24 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Diagnostics.Contracts;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Transactions;
-using Castle.IO;
-using Castle.IO.FileSystems.Local.Win32.Interop;
-using Castle.Transactions.Internal;
-using Castle.Transactions.IO;
-using NativeMethods = Castle.Transactions.Internal.NativeMethods;
-using Path = Castle.IO.Path;
-
-namespace Castle.Transactions
+namespace Castle.Transactions.IO
 {
+	using System;
+	using System.Collections.Generic;
+	using System.Diagnostics.CodeAnalysis;
+	using System.Diagnostics.Contracts;
+	using System.IO;
+	using System.Linq;
+	using System.Runtime.InteropServices;
+	using System.Text;
+	using System.Transactions;
+
+	using Castle.IO;
+	using Castle.IO.FileSystems.Local.Win32.Interop;
+	using Castle.Transactions.IO.Internal;
+
+	using NativeMethods = Castle.Transactions.IO.Interop.NativeMethods;
+	using Path = Castle.IO.Path;
+	using Transaction = Castle.Transactions.Transaction;
+	using TransactionException = Castle.Transactions.TransactionException;
+
 	///<summary>
 	///	Represents a transaction on transactional kernels
 	///	like the Vista kernel or Server 2008 kernel and newer.
@@ -24,7 +27,7 @@ namespace Castle.Transactions
 	///	Good information for dealing with the peculiarities of the runtime:
 	///	http://msdn.microsoft.com/en-us/library/system.runtime.interopservices.safehandle.aspx
 	///</remarks>
-	internal sealed class FileTransaction : IFileAdapter, IDirectoryAdapter, ITransaction
+	internal sealed class FileTransaction : IFileAdapter, IDirectoryAdapter, IFileTransaction
 	{
 		private readonly ITransaction _Inner;
 		private readonly string _Name;
@@ -132,15 +135,15 @@ namespace Castle.Transactions
 			get { return _Inner != null ? _Inner.Inner : null; }
 		}
 
-		Maybe<SafeKernelTransactionHandle> ITransaction.KernelTransactionHandle
-		{
-			get
-			{
-				return _TransactionHandle != null && !_TransactionHandle.IsInvalid
-				       	? Maybe.Some(_TransactionHandle)
-				       	: Maybe.None<SafeKernelTransactionHandle>();
-			}
-		}
+		//Maybe<SafeKernelTransactionHandle> ITransaction.KernelTransactionHandle
+		//{
+		//    get
+		//    {
+		//        return _TransactionHandle != null && !_TransactionHandle.IsInvalid
+		//                ? Maybe.Some(_TransactionHandle)
+		//                : Maybe.None<SafeKernelTransactionHandle>();
+		//    }
+		//}
 
 		//Maybe<IRetryPolicy> ITransaction.FailedPolicy
 		//{
@@ -203,6 +206,11 @@ namespace Castle.Transactions
 		}
 
 		#endregion
+
+		Maybe<SafeKernelTransactionHandle> IFileTransaction.Handle
+		{
+			get { return _TransactionHandle; }
+		}
 
 		#region IFileAdapter members
 

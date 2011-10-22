@@ -16,15 +16,17 @@
 
 #endregion
 
-using System.IO;
-using System.Linq;
-using System.Text;
-using Castle.IO.FileSystems.InMemory;
-using Castle.IO.Tests.contexts;
-using NUnit.Framework;
-
 namespace Castle.IO.Tests
 {
+	using System.IO;
+	using System.Linq;
+	using System.Text;
+
+	using Castle.IO.FileSystems.InMemory;
+	using Castle.IO.Tests.contexts;
+
+	using NUnit.Framework;
+
 	public class in_mem_specification : in_memory_file_system
 	{
 		[Test]

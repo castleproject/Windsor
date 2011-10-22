@@ -1,11 +1,7 @@
-using Castle.IO;
-using Castle.IO.Extensions;
-using Castle.Transactions.IO;
-using Castle.Transactions.Tests.Framework;
-using NUnit.Framework;
-
-namespace Castle.Transactions.Tests.Files
+namespace Castle.Transactions.IO.Tests
 {
+	using NUnit.Framework;
+
 	[TestFixture]
 	public class AsDependentTransaction : TxFTestFixtureBase
 	{
