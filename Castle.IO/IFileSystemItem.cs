@@ -18,16 +18,25 @@
 
 namespace Castle.IO
 {
+	using System.Diagnostics.Contracts;
+
+	using Castle.IO.Contracts;
+
+	[ContractClass(typeof(IFileSystemItemTContract<>))]
 	public interface IFileSystemItem<out T> : IFileSystemItem
 		where T : IFileSystemItem
 	{
 		T Create();
 	}
 
+	[ContractClass(typeof(IFileSystemItemContract))]
 	public interface IFileSystemItem
 	{
 		Path Path { get; }
 
+		/// <summary>
+		/// Gets the parent of this item; null if there is no parent.
+		/// </summary>
 		IDirectory Parent { get; }
 
 		IFileSystem FileSystem { get; }

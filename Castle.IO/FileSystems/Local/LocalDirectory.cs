@@ -24,6 +24,8 @@ using System.Text.RegularExpressions;
 
 namespace Castle.IO.FileSystems.Local
 {
+	using System.Diagnostics.Contracts;
+
 	using Castle.IO.Extensions;
 
 	public abstract class LocalDirectory : AbstractDirectory, IDirectory, IEquatable<IDirectory>
@@ -32,6 +34,9 @@ namespace Castle.IO.FileSystems.Local
 
 		protected LocalDirectory(DirectoryInfo directory)
 		{
+			Contract.Requires(directory != null);
+			Contract.Ensures(Path != null);
+
 			DirectoryInfo = directory;
 			Path = new Path(NormalizeDirectoryPath(DirectoryInfo.FullName));
 		}
@@ -39,6 +44,7 @@ namespace Castle.IO.FileSystems.Local
 		protected LocalDirectory(string directoryPath)
 			: this(new DirectoryInfo(directoryPath))
 		{
+			Contract.Requires(directoryPath != null);
 		}
 
 		protected abstract LocalDirectory CreateDirectory(DirectoryInfo di);
@@ -74,11 +80,6 @@ namespace Castle.IO.FileSystems.Local
 		}
 
 		public Path Path { get; private set; }
-
-		public void Add(IFile file)
-		{
-			File.Copy(file.Path.FullPath, System.IO.Path.Combine(DirectoryInfo.FullName, file.Name));
-		}
 
 		public virtual bool IsHardLink
 		{

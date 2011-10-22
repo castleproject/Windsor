@@ -18,17 +18,43 @@
 
 namespace Castle.IO
 {
+	using System.Diagnostics.Contracts;
+
+	/// <summary>
+	/// Interface denoting a file system. This is the core abstraction of Castle IO; providing 
+	/// file systems that work across platforms.
+	/// </summary>
+	[ContractClass(typeof(IFileSystem))]
 	public interface IFileSystem
 	{
+		/// <summary>
+		/// Creates a new dictory pointer given a directory path. This path may be relative, absolute or UNC.
+		/// </summary>
+		/// <param name="directoryPath"></param>
+		/// <returns></returns>
 		IDirectory GetDirectory(string directoryPath);
+		
+		/// <summary>
+		/// Gets 
+		/// </summary>
+		/// <param name="directoryPath"></param>
+		/// <returns></returns>
 		IDirectory GetDirectory(Path directoryPath);
+		
 		Path GetPath(string path);
+		
 		ITemporaryDirectory CreateTempDirectory();
+		
 		IDirectory CreateDirectory(string path);
+		
 		IDirectory CreateDirectory(Path path);
+		
 		IFile GetFile(string itemSpec);
+		
 		ITemporaryFile CreateTempFile();
+		
 		IDirectory GetTempDirectory();
+		
 		IDirectory GetCurrentDirectory();
 	}
 }

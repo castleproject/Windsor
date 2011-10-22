@@ -162,7 +162,9 @@ namespace Castle.IO
 			Contract.Requires(!string.IsNullOrEmpty(path));
 			Contract.Ensures(Contract.Result<string>() != null);
 
-			if (path.StartsWith("file:///")) return new Uri(path).LocalPath;
+			if (path.StartsWith("file:///"))
+				return new Uri(path).LocalPath;
+			
 			return LongPathCommon.NormalizeLongPath(path);
 		}
 

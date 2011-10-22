@@ -23,7 +23,7 @@ namespace Castle.IO
 {
 	public static class DirectoryExtensions
 	{
-		private const string SUBFOLDER = "**";
+		private const string Subfolder = "**";
 
 		public static IEnumerable<IDirectory> Directories(this IFileSystem fileSystem, string filter)
 		{
@@ -67,11 +67,13 @@ namespace Castle.IO
 		private static IEnumerable<IFile> GetFileSpecCore(IDirectory directory, IList<string> segments, int position)
 		{
 			var segment = segments[position];
+
 			if (position == segments.Count - 1)
 			{
 				return directory.Files(segment);
 			}
-			if (segment == SUBFOLDER)
+
+			if (segment == Subfolder)
 			{
 				var isNextToLastSegment = position + 1 == segments.Count - 1;
 
@@ -80,6 +82,7 @@ namespace Castle.IO
 				       	: directory.Directories(segments[position + 1], SearchScope.SubFolders)
 				       	  	.SelectMany(x => GetFileSpecCore(x, segments, position + 2));
 			}
+
 			return directory.Directories(segment, SearchScope.CurrentOnly)
 				.SelectMany(x => GetFileSpecCore(x, segments, position + 1));
 		}
@@ -90,7 +93,7 @@ namespace Castle.IO
 			if (position == segments.Count - 1)
 				return directory.Directories(segment);
 
-			if (segment == SUBFOLDER)
+			if (segment == Subfolder)
 			{
 				var isNextToLastSegment = position + 1 == segments.Count - 1;
 				return isNextToLastSegment
@@ -110,7 +113,7 @@ namespace Castle.IO
 
 			foreach (var segment in path.Segments)
 			{
-				if (segment == SUBFOLDER)
+				if (segment == Subfolder)
 					if (!lastWasSubFolder)
 						lastWasSubFolder = true;
 					else

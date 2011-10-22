@@ -133,10 +133,14 @@
     <Compile Include="FileSystems\Local\Win32\Win32FileSystem.cs" />
     <Compile Include="IDirectory.cs" />
     <Compile Include="IDirectoryAdapter.cs" />
+    <Compile Include="Contracts\IDirectoryContract.cs" />
     <Compile Include="IFile.cs" />
     <Compile Include="IFileAdapter.cs" />
     <Compile Include="IFileSystem.cs" />
+    <Compile Include="Contracts\IFileSystemContract.cs" />
     <Compile Include="IFileSystemItem.cs" />
+    <Compile Include="Contracts\IFileSystemItemTContract.cs" />
+    <Compile Include="Contracts\IFileSystemItemContract.cs" />
     <Compile Include="IMapPath.cs" />
     <Compile Include="Internal\Directory.cs" />
     <Compile Include="Internal\EnumerableExtensions.cs" />

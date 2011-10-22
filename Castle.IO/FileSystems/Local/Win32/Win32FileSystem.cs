@@ -18,15 +18,22 @@
 
 namespace Castle.IO.FileSystems.Local.Win32
 {
+	using System.Diagnostics.Contracts;
+
 	public class Win32FileSystem : LocalFileSystem
 	{
 		public override IDirectory GetDirectory(string directoryPath)
 		{
+			Contract.Requires(directoryPath != null);
+
 			return new Win32Directory(directoryPath);
 		}
 
 		public override IDirectory GetDirectory(Path directoryPath)
 		{
+			Contract.Requires(directoryPath != null);
+			Contract.Ensures(Contract.Result<IDirectory>() != null);
+
 			return new Win32Directory(directoryPath.FullPath);
 		}
 

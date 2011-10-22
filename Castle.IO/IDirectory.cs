@@ -1,6 +1,4 @@
-﻿#region license
-
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,28 +12,83 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#endregion
-
-using System;
-using System.Collections.Generic;
-
 namespace Castle.IO
 {
+	using System;
+	using System.Collections.Generic;
+	using System.Diagnostics.Contracts;
+
+	using Castle.IO.Contracts;
+
+	/// <summary>
+	/// 	A directory pointer. It might point to an existing directory or 
+	/// 	be merely a handle that points to a directory that could be.
+	/// </summary>
+	[ContractClass(typeof(IDirectoryContract))]
 	public interface IDirectory : IFileSystemItem<IDirectory>
 	{
+		/// <summary>
+		/// </summary>
+		/// <param name = "directoryName"></param>
+		/// <returns></returns>
 		IDirectory GetDirectory(string directoryName);
+
+		/// <summary>
+		/// </summary>
+		/// <param name = "fileName"></param>
+		/// <returns></returns>
 		IFile GetFile(string fileName);
+
+		/// <summary>
+		/// </summary>
+		/// <returns></returns>
 		IEnumerable<IFile> Files();
+
+		/// <summary>
+		/// </summary>
+		/// <returns></returns>
 		IEnumerable<IDirectory> Directories();
+
+		/// <summary>
+		/// </summary>
+		/// <param name = "filter"></param>
+		/// <param name = "scope"></param>
+		/// <returns></returns>
 		IEnumerable<IFile> Files(string filter, SearchScope scope);
+
+		/// <summary>
+		/// </summary>
+		/// <param name = "filter"></param>
+		/// <param name = "scope"></param>
+		/// <returns></returns>
 		IEnumerable<IDirectory> Directories(string filter, SearchScope scope);
+
+		/// <summary>
+		/// 	Gets whether this directory pointer is a hard link.
+		/// </summary>
 		bool IsHardLink { get; }
 
-
+		/// <summary>
+		/// 	TODO: Creates a symlink/hardlink/whatever --- specify this further.
+		/// </summary>
+		/// <param name = "path"></param>
+		/// <returns></returns>
 		IDirectory LinkTo(Path path);
 
+		/// <summary>
+		/// </summary>
 		IDirectory Target { get; }
 
+		// TODO: Move to extension method?
+		/// <summary>
+		/// </summary>
+		/// <param name = "filter"></param>
+		/// <param name = "includeSubdirectories"></param>
+		/// <param name = "created"></param>
+		/// <param name = "modified"></param>
+		/// <param name = "deleted"></param>
+		/// <param name = "renamed"></param>
+		/// <returns></returns>
 		IDisposable FileChanges(string filter = "*", bool includeSubdirectories = false, Action<IFile> created = null,
 		                        Action<IFile> modified = null, Action<IFile> deleted = null, Action<IFile> renamed = null);
 	}

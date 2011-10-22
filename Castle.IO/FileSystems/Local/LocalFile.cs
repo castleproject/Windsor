@@ -23,21 +23,27 @@ using Directory = System.IO.Directory;
 
 namespace Castle.IO.FileSystems.Local
 {
+	using System.Diagnostics.Contracts;
+
 	public class LocalFile : IFile, IEquatable<LocalFile>
 	{
-		private readonly string _filePath;
-		private readonly Func<DirectoryInfo, IDirectory> _directoryFactory;
+		private readonly string filePath;
+		private readonly Func<Path, IDirectory> directoryFactory;
 
-		public LocalFile(string filePath, Func<DirectoryInfo, IDirectory> directoryFactory)
+		public LocalFile(string filePath, Func<Path, IDirectory> directoryFactory)
 		{
-			_filePath = filePath;
-			_directoryFactory = directoryFactory;
+			Contract.Requires(filePath != null);
+			Contract.Requires(directoryFactory != null);
+
+			this.filePath = filePath;
+			this.directoryFactory = directoryFactory;
+
 			Path = new Path(filePath);
 		}
 
 		public virtual bool Exists
 		{
-			get { return File.Exists(_filePath); }
+			get { return File.Exists(filePath); }
 		}
 
 		public virtual IFileSystem FileSystem
@@ -47,29 +53,29 @@ namespace Castle.IO.FileSystems.Local
 
 		public virtual string Name
 		{
-			get { return Path.GetFileName(_filePath); }
+			get { return Path.GetFileName(filePath); }
 		}
 
 		public virtual string NameWithoutExtension
 		{
-			get { return Path.GetFileNameWithoutExtension(_filePath); }
+			get { return Path.GetFileNameWithoutExtension(filePath); }
 		}
 
 		public virtual string Extension
 		{
-			get { return Path.GetExtension(_filePath); }
+			get { return Path.GetExtension(filePath); }
 		}
 
 		public virtual long GetSize()
 		{
 			// TODO: use long path instead, to void short path limits
-			return new FileInfo(_filePath).Length;
+			return new FileInfo(filePath).Length;
 		}
 
 		public virtual DateTimeOffset? GetLastModifiedTimeUtc()
 		{
 			// TODO: use long path instead, to void short path limits
-			return Exists ? new DateTimeOffset(new FileInfo(_filePath).LastWriteTimeUtc, TimeSpan.Zero) : (DateTimeOffset?) null;
+			return Exists ? new DateTimeOffset(new FileInfo(filePath).LastWriteTimeUtc, TimeSpan.Zero) : (DateTimeOffset?) null;
 		}
 
 		public override string ToString()
@@ -83,10 +89,10 @@ namespace Castle.IO.FileSystems.Local
 			{
 				try
 				{
-					var directoryInfo = Path.GetPathWithoutLastBit(_filePath);
-					return directoryInfo == null
+					var path = Path.GetPathWithoutLastBit(filePath);
+					return path == null
 					       	? null
-					       	: _directoryFactory(new DirectoryInfo(directoryInfo.FullPath));
+					       	: directoryFactory(path);
 				}
 				catch (DirectoryNotFoundException)
 				{
@@ -107,12 +113,12 @@ namespace Castle.IO.FileSystems.Local
 
 			Validate.FileAccess(fileMode, fileAccess);
 
-			return LongPathFile.Open(_filePath, fileMode, fileAccess, fileShare);
+			return LongPathFile.Open(filePath, fileMode, fileAccess, fileShare);
 		}
 
 		public virtual void Delete()
 		{
-			LongPathFile.Delete(_filePath);
+			LongPathFile.Delete(filePath);
 		}
 
 		public virtual void CopyTo(IFileSystemItem item)
@@ -131,12 +137,12 @@ namespace Castle.IO.FileSystems.Local
 			}
 
 
-			LongPathFile.Copy(_filePath, destinationPath, true);
+			LongPathFile.Copy(filePath, destinationPath, true);
 		}
 
 		public virtual void MoveTo(IFileSystemItem item)
 		{
-			File.Move(_filePath, item.Path.FullPath);
+			File.Move(filePath, item.Path.FullPath);
 		}
 
 		public virtual IFile Create()

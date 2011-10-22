@@ -1,5 +1,3 @@
-#region license
-
 // Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,19 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#endregion
-
-using System;
-using System.Diagnostics.Contracts;
-using Castle.IO.Contracts;
-
 namespace Castle.IO
 {
+	using System;
+	using System.Diagnostics.Contracts;
+
+	using Castle.IO.Contracts;
+
 	///<summary>
 	///	Directory helper. Use this instead of Directory in order to gain
 	///	transparent interop with transactions (when you want them, as marked by the [Transaction] attribute).
 	///</summary>
-	[ContractClass(typeof (IDirectoryAdapterContract))]
+	[ContractClass(typeof(IDirectoryAdapterContract))]
 	public interface IDirectoryAdapter
 	{
 		///<summary>

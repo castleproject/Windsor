@@ -1,6 +1,4 @@
-﻿#region license
-
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,13 +12,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#endregion
-
 namespace Castle.IO
 {
+	/// <summary>
+	/// Specifies under what scope the search/lookup should happen.
+	/// </summary>
 	public enum SearchScope
 	{
+		/// <summary>
+		/// Only search the current folder.
+		/// </summary>
 		CurrentOnly,
+
+		/// <summary>
+		/// Search both the folder and all other folders.
+		/// </summary>
 		SubFolders
 	}
 }

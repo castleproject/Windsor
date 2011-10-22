@@ -21,14 +21,18 @@ using Castle.IO.FileSystems.Local.Win32.Interop;
 
 namespace Castle.IO.FileSystems.Local.Win32
 {
+	using System.Diagnostics.Contracts;
+
 	public class Win32Directory : LocalDirectory
 	{
 		public Win32Directory(DirectoryInfo directory) : base(directory)
 		{
+			Contract.Requires(directory != null);
 		}
 
 		public Win32Directory(string directoryPath) : base(directoryPath)
 		{
+			Contract.Requires(directoryPath != null);
 		}
 
 		public override void Delete()

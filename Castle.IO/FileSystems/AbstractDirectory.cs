@@ -18,13 +18,19 @@
 
 namespace Castle.IO.FileSystems
 {
+	using System.Diagnostics.Contracts;
+
 	public abstract class AbstractDirectory
 	{
 		protected string NormalizeDirectoryPath(string directoryPath)
 		{
+			Contract.Requires(directoryPath != null);
+			Contract.Ensures(Contract.Result<string>() != null);
+
 			if (!directoryPath.EndsWith(Path.DirectorySeparatorChar.ToString())
 			    && !directoryPath.EndsWith(Path.AltDirectorySeparatorChar.ToString()))
 				return directoryPath + Path.DirectorySeparatorChar;
+
 			return directoryPath;
 		}
 	}

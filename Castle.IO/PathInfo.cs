@@ -1,5 +1,3 @@
-#region license
-
 // Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,18 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#endregion
-
-using System;
-using System.Diagnostics;
-using System.Diagnostics.Contracts;
-using System.Net;
-using System.Text.RegularExpressions;
-
 namespace Castle.IO
 {
+	using System;
+	using System.Diagnostics;
+	using System.Diagnostics.Contracts;
+	using System.Net;
+	using System.Text.RegularExpressions;
+
 	/// <summary>
-	/// 	Path data holder and value object that overrides Equals,
+	/// 	Immutable path data holder and value object that overrides Equals,
 	/// 	implements IEquatable and overrides the == and != operators.
 	/// 	
 	/// 	Invariant: no fields nor properties are null after c'tor.
@@ -85,36 +81,37 @@ namespace Castle.IO
  (?<rel_drive>\w{1,3}:)?
  (?<folders_files>.+))?";
 
-		private static readonly Regex _Regex = new Regex(StrRegex,
+		private static readonly Regex regex = new Regex(StrRegex,
 		                                                 RegexOptions.Compiled |
 		                                                 RegexOptions.IgnorePatternWhitespace |
 		                                                 RegexOptions.IgnoreCase |
 		                                                 RegexOptions.Multiline);
 
-		private readonly string _Root,
-		                        _UNCPrefix,
-		                        _UNCLiteral,
-		                        _Drive,
-		                        _DriveLetter,
-		                        _Server,
-		                        _IPv4,
-		                        _IPv6,
-		                        _ServerName,
-		                        _Device,
-		                        _DevicePrefix,
-		                        _DeviceName,
-		                        _DeviceGuid,
-		                        _NonRootPath,
-		                        _RelDrive,
-		                        _FolderAndFiles;
+		private readonly string root,
+		                        uncPrefix,
+		                        uncLiteral,
+		                        drive,
+		                        driveLetter,
+		                        server,
+		                        iPv4,
+		                        iPv6,
+		                        serverName,
+		                        device,
+		                        devicePrefix,
+		                        deviceName,
+		                        deviceGuid,
+		                        nonRootPath,
+		                        relDrive,
+		                        folderAndFiles;
 
 		// too stupid checker
 		[ContractVerification(false)]
 		public static PathInfo Parse(string path)
 		{
 			Contract.Requires(path != null);
+			Contract.Ensures(Contract.Result<PathInfo>() != null);
 
-			var matches = _Regex.Matches(path);
+			var matches = regex.Matches(path);
 
 			Func<string, string> m = s => GetMatch(matches, s);
 			// this might be possible to improve using raw indicies (ints) instead.
@@ -141,15 +138,14 @@ namespace Castle.IO
 		internal static string GetMatch(MatchCollection matches,
 		                                string groupIndex)
 		{
+			Contract.Requires(matches != null);
 			Contract.Ensures(Contract.Result<string>() != null);
 
 			var matchC = matches.Count;
 
 			for (var i = 0; i < matchC; i++)
-			{
 				if (matches[i].Groups[groupIndex].Success)
 					return matches[i].Groups[groupIndex].Value;
-			}
 
 			return string.Empty;
 		}
@@ -176,43 +172,43 @@ namespace Castle.IO
 			Contract.Requires(nonRootPath != null);
 			Contract.Requires(relDrive != null);
 			Contract.Requires(folderAndFiles != null);
-			_Root = root;
-			_UNCPrefix = uncPrefix;
-			_UNCLiteral = uncLiteral;
-			_Drive = drive;
-			_DriveLetter = driveLetter;
-			_Server = server;
-			_IPv4 = iPv4;
-			_IPv6 = iPv6;
-			_ServerName = serverName;
-			_Device = device;
-			_DevicePrefix = devicePrefix;
-			_DeviceName = deviceName;
-			_DeviceGuid = deviceGuid;
-			_NonRootPath = nonRootPath;
-			_RelDrive = relDrive;
-			_FolderAndFiles = folderAndFiles;
+			this.root = root;
+			this.uncPrefix = uncPrefix;
+			this.uncLiteral = uncLiteral;
+			this.drive = drive;
+			this.driveLetter = driveLetter;
+			this.server = server;
+			this.iPv4 = iPv4;
+			this.iPv6 = iPv6;
+			this.serverName = serverName;
+			this.device = device;
+			this.devicePrefix = devicePrefix;
+			this.deviceName = deviceName;
+			this.deviceGuid = deviceGuid;
+			this.nonRootPath = nonRootPath;
+			this.relDrive = relDrive;
+			this.folderAndFiles = folderAndFiles;
 		}
 
 		[ContractInvariantMethod]
 		private void Invariant()
 		{
-			Contract.Invariant(_Root != null);
-			Contract.Invariant(_UNCPrefix != null);
-			Contract.Invariant(_UNCLiteral != null);
-			Contract.Invariant(_Drive != null);
-			Contract.Invariant(_DriveLetter != null);
-			Contract.Invariant(_Server != null);
-			Contract.Invariant(_IPv4 != null);
-			Contract.Invariant(_IPv6 != null);
-			Contract.Invariant(_ServerName != null);
-			Contract.Invariant(_Device != null);
-			Contract.Invariant(_DevicePrefix != null);
-			Contract.Invariant(_DeviceName != null);
-			Contract.Invariant(_DeviceGuid != null);
-			Contract.Invariant(_NonRootPath != null);
-			Contract.Invariant(_RelDrive != null);
-			Contract.Invariant(_FolderAndFiles != null);
+			Contract.Invariant(root != null);
+			Contract.Invariant(uncPrefix != null);
+			Contract.Invariant(uncLiteral != null);
+			Contract.Invariant(drive != null);
+			Contract.Invariant(driveLetter != null);
+			Contract.Invariant(server != null);
+			Contract.Invariant(iPv4 != null);
+			Contract.Invariant(iPv6 != null);
+			Contract.Invariant(serverName != null);
+			Contract.Invariant(device != null);
+			Contract.Invariant(devicePrefix != null);
+			Contract.Invariant(deviceName != null);
+			Contract.Invariant(deviceGuid != null);
+			Contract.Invariant(nonRootPath != null);
+			Contract.Invariant(relDrive != null);
+			Contract.Invariant(folderAndFiles != null);
 		}
 
 		#endregion
@@ -232,7 +228,11 @@ namespace Castle.IO
 		[Pure]
 		public string Root
 		{
-			get { return _Root; }
+			get
+			{
+				Contract.Ensures(Contract.Result<string>() != null);
+				return root;
+			}
 		}
 
 		/// <summary>
@@ -244,7 +244,11 @@ namespace Castle.IO
 		[Pure]
 		public string UNCPrefix
 		{
-			get { return _UNCPrefix; }
+			get
+			{
+				Contract.Ensures(Contract.Result<string>() != null);
+				return uncPrefix;
+			}
 		}
 
 		/// <summary>
@@ -252,7 +256,11 @@ namespace Castle.IO
 		[Pure]
 		public string UNCLiteral
 		{
-			get { return _UNCLiteral; }
+			get
+			{
+				Contract.Ensures(Contract.Result<string>() != null);
+				return uncLiteral;
+			}
 		}
 
 		/// <summary>
@@ -260,7 +268,11 @@ namespace Castle.IO
 		[Pure]
 		public string Drive
 		{
-			get { return _Drive; }
+			get
+			{
+				Contract.Ensures(Contract.Result<string>() != null);
+				return drive;
+			}
 		}
 
 		/// <summary>
@@ -268,7 +280,11 @@ namespace Castle.IO
 		[Pure]
 		public string DriveLetter
 		{
-			get { return _DriveLetter; }
+			get
+			{
+				Contract.Ensures(Contract.Result<string>() != null);
+				return driveLetter;
+			}
 		}
 
 		/// <summary>
@@ -276,7 +292,11 @@ namespace Castle.IO
 		[Pure]
 		public string Server
 		{
-			get { return _Server; }
+			get
+			{
+				Contract.Ensures(Contract.Result<string>() != null);
+				return server;
+			}
 		}
 
 		/// <summary>
@@ -288,8 +308,9 @@ namespace Castle.IO
 		{
 			get
 			{
+				Contract.Ensures(Contract.Result<IPAddress>() != null);
 				IPAddress addr;
-				return !string.IsNullOrEmpty(_IPv4) && IPAddress.TryParse(_IPv4, out addr)
+				return !string.IsNullOrEmpty(iPv4) && IPAddress.TryParse(iPv4, out addr)
 				       	? addr
 				       	: IPAddress.None;
 			}
@@ -304,8 +325,9 @@ namespace Castle.IO
 		{
 			get
 			{
+				Contract.Ensures(Contract.Result<IPAddress>() != null);
 				IPAddress addr;
-				return !string.IsNullOrEmpty(_IPv6) && IPAddress.TryParse(_IPv6, out addr)
+				return !string.IsNullOrEmpty(iPv6) && IPAddress.TryParse(iPv6, out addr)
 				       	? addr
 				       	: IPAddress.IPv6None;
 			}
@@ -316,7 +338,11 @@ namespace Castle.IO
 		[Pure]
 		public string ServerName
 		{
-			get { return _ServerName; }
+			get
+			{
+				Contract.Ensures(Contract.Result<string>() != null);
+				return serverName;
+			}
 		}
 
 		/// <summary>
@@ -324,7 +350,11 @@ namespace Castle.IO
 		[Pure]
 		public string Device
 		{
-			get { return _Device; }
+			get
+			{
+				Contract.Ensures(Contract.Result<string>() != null);
+				return device;
+			}
 		}
 
 		/// <summary>
@@ -332,7 +362,11 @@ namespace Castle.IO
 		[Pure]
 		public string DevicePrefix
 		{
-			get { return _DevicePrefix; }
+			get
+			{
+				Contract.Ensures(Contract.Result<string>() != null);
+				return devicePrefix;
+			}
 		}
 
 		/// <summary>
@@ -340,7 +374,11 @@ namespace Castle.IO
 		[Pure]
 		public string DeviceName
 		{
-			get { return _DeviceName; }
+			get
+			{
+				Contract.Ensures(Contract.Result<string>() != null);
+				return deviceName;
+			}
 		}
 
 		/// <summary>
@@ -351,7 +389,7 @@ namespace Castle.IO
 		[Pure]
 		public Guid DeviceGuid
 		{
-			get { return _DeviceGuid == string.Empty ? Guid.Empty : Guid.Parse(_DeviceGuid); }
+			get { return deviceGuid == string.Empty ? Guid.Empty : Guid.Parse(deviceGuid); }
 		}
 
 		/// <summary>
@@ -362,7 +400,11 @@ namespace Castle.IO
 		[Pure]
 		public string NonRootPath
 		{
-			get { return _NonRootPath; }
+			get
+			{
+				Contract.Ensures(Contract.Result<string>() != null);
+				return nonRootPath;
+			}
 		}
 
 		/// <summary>
@@ -370,7 +412,11 @@ namespace Castle.IO
 		[Pure]
 		public string RelDrive
 		{
-			get { return _RelDrive; }
+			get
+			{
+				Contract.Ensures(Contract.Result<string>() != null);
+				return relDrive;
+			}
 		}
 
 		/// <summary>
@@ -385,7 +431,7 @@ namespace Castle.IO
 			get
 			{
 				Contract.Ensures(Contract.Result<string>() != null);
-				return _FolderAndFiles;
+				return folderAndFiles;
 			}
 		}
 
@@ -415,7 +461,7 @@ namespace Castle.IO
 		[Pure]
 		public bool IsRooted
 		{
-			get { return !string.IsNullOrEmpty(_Root); }
+			get { return !string.IsNullOrEmpty(root); }
 		}
 
 		/// <summary>
@@ -427,6 +473,8 @@ namespace Castle.IO
 		/// <exception cref = "NotSupportedException">If this instance of path info and child aren't rooted.</exception>
 		public bool IsParentOf(PathInfo child)
 		{
+			Contract.Requires(child != null);
+
 			if (Root == string.Empty || child.Root == string.Empty)
 				throw new NotSupportedException("Non-rooted paths are not supported.");
 
@@ -486,46 +534,46 @@ namespace Castle.IO
 		{
 			if (ReferenceEquals(null, other)) return false;
 			if (ReferenceEquals(this, other)) return true;
-			return Equals(other._Drive, _Drive)
-			       && Equals(other._DriveLetter, _DriveLetter)
-			       && Equals(other._Server, _Server)
-			       && Equals(other._IPv4, _IPv4)
-			       && Equals(other._IPv6, _IPv6)
-			       && Equals(other._ServerName, _ServerName)
-			       && Equals(other._Device, _Device)
-			       && Equals(other._DevicePrefix, _DevicePrefix)
-			       && Equals(other._DeviceName, _DeviceName)
-			       && Equals(other._DeviceGuid, _DeviceGuid)
-			       && Equals(other._NonRootPath, _NonRootPath)
-			       && Equals(other._RelDrive, _RelDrive)
-			       && Equals(other._FolderAndFiles, _FolderAndFiles);
+			return Equals(other.drive, drive)
+			       && Equals(other.driveLetter, driveLetter)
+			       && Equals(other.server, server)
+			       && Equals(other.iPv4, iPv4)
+			       && Equals(other.iPv6, iPv6)
+			       && Equals(other.serverName, serverName)
+			       && Equals(other.device, device)
+			       && Equals(other.devicePrefix, devicePrefix)
+			       && Equals(other.deviceName, deviceName)
+			       && Equals(other.deviceGuid, deviceGuid)
+			       && Equals(other.nonRootPath, nonRootPath)
+			       && Equals(other.relDrive, relDrive)
+			       && Equals(other.folderAndFiles, folderAndFiles);
 		}
 
 		public override bool Equals(object obj)
 		{
 			if (ReferenceEquals(null, obj)) return false;
 			if (ReferenceEquals(this, obj)) return true;
-			if (obj.GetType() != typeof (PathInfo)) return false;
-			return Equals((PathInfo) obj);
+			if (obj.GetType() != typeof(PathInfo)) return false;
+			return Equals((PathInfo)obj);
 		}
 
 		public override int GetHashCode()
 		{
 			unchecked
 			{
-				var result = _Drive.GetHashCode();
-				result = (result*397) ^ _DriveLetter.GetHashCode();
-				result = (result*397) ^ _Server.GetHashCode();
-				result = (result*397) ^ _IPv4.GetHashCode();
-				result = (result*397) ^ _IPv6.GetHashCode();
-				result = (result*397) ^ _ServerName.GetHashCode();
-				result = (result*397) ^ _Device.GetHashCode();
-				result = (result*397) ^ _DevicePrefix.GetHashCode();
-				result = (result*397) ^ _DeviceName.GetHashCode();
-				result = (result*397) ^ _DeviceGuid.GetHashCode();
-				result = (result*397) ^ _NonRootPath.GetHashCode();
-				result = (result*397) ^ _RelDrive.GetHashCode();
-				result = (result*397) ^ _FolderAndFiles.GetHashCode();
+				var result = drive.GetHashCode();
+				result = (result*397) ^ driveLetter.GetHashCode();
+				result = (result*397) ^ server.GetHashCode();
+				result = (result*397) ^ iPv4.GetHashCode();
+				result = (result*397) ^ iPv6.GetHashCode();
+				result = (result*397) ^ serverName.GetHashCode();
+				result = (result*397) ^ device.GetHashCode();
+				result = (result*397) ^ devicePrefix.GetHashCode();
+				result = (result*397) ^ deviceName.GetHashCode();
+				result = (result*397) ^ deviceGuid.GetHashCode();
+				result = (result*397) ^ nonRootPath.GetHashCode();
+				result = (result*397) ^ relDrive.GetHashCode();
+				result = (result*397) ^ folderAndFiles.GetHashCode();
 				return result;
 			}
 		}

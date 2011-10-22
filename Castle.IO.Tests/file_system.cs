@@ -128,8 +128,8 @@ namespace Castle.IO.Tests
 		[Test]
 		public void files_are_resolved_relative_to_current_directory()
 		{
-			FileSystem.GetFile("rohan.html").Path.FullPath
-				.ShouldBe(System.IO.Path.Combine(CurrentDirectory, "rohan.html"));
+			FileSystem.GetFile("rohan.html").Path
+				.ShouldBe(new Path(CurrentDirectory).Combine("rohan.html"));
 		}
 
 		[Test]

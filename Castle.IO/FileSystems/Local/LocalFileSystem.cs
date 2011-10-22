@@ -22,25 +22,40 @@ using Castle.IO.FileSystems.Local.Win32;
 
 namespace Castle.IO.FileSystems.Local
 {
+	using System.Diagnostics.Contracts;
+
 	public abstract class LocalFileSystem : AbstractFileSystem
 	{
-		private static LocalFileSystem _instance;
-		private static readonly object _syncRoot = new object();
+		private static volatile LocalFileSystem instance;
+		private static readonly object syncRoot = new object();
 
+		/// <summary>
+		/// Gets an instance of the local file system. This property
+		/// is a singleton.
+		/// </summary>
+		/// <exception cref="PlatformNotSupportedException">
+		/// If your platform isn't supported by this API.
+		/// Currently Windows, OSX and Unix platforms are supported.
+		/// </exception>
 		public static LocalFileSystem Instance
 		{
 			get
 			{
-				if (_instance == null)
-					lock (_syncRoot)
-						if (_instance == null)
-							_instance = CreatePlatformSpecificInstance();
-				return _instance;
+				Contract.Ensures(Contract.Result<LocalFileSystem>() != null);
+
+				if (instance == null)
+					lock (syncRoot)
+						if (instance == null)
+							instance = CreatePlatformSpecificInstance();
+
+				return instance;
 			}
 		}
 
 		private static LocalFileSystem CreatePlatformSpecificInstance()
 		{
+			Contract.Ensures(Contract.Result<LocalFileSystem>() != null);
+
 			var platformId = (int) Environment.OSVersion.Platform;
 
 			if (platformId == (int) PlatformID.Win32NT)
@@ -54,11 +69,15 @@ namespace Castle.IO.FileSystems.Local
 
 		private static LocalFileSystem CreateWin32FileSystem()
 		{
+			Contract.Ensures(Contract.Result<LocalFileSystem>() != null);
+			
 			return new Win32FileSystem();
 		}
 
 		private static LocalFileSystem UnixFileSystem()
 		{
+			Contract.Ensures(Contract.Result<LocalFileSystem>() != null);
+
 			return new UnixFileSystem();
 		}
 
@@ -69,11 +88,15 @@ namespace Castle.IO.FileSystems.Local
 
 		public override IDirectory CreateDirectory(Path path)
 		{
+			Contract.Ensures(Contract.Result<IDirectory>() != null);
+
 			return GetDirectory(path).Create();
 		}
 
 		public override ITemporaryDirectory CreateTempDirectory()
 		{
+			Contract.Ensures(Contract.Result<ITemporaryDirectory>() != null);
+
 			var tempPath = Path.GetTempPath();
 			var dirName = Path.GetRandomFileName();
 
@@ -82,17 +105,23 @@ namespace Castle.IO.FileSystems.Local
 
 		public override ITemporaryFile CreateTempFile()
 		{
-			return new TemporaryLocalFile(Path.GetTempFileName(), di => CreateDirectory(di.FullName));
+			Contract.Ensures(Contract.Result<ITemporaryFile>() != null);
+
+			return new TemporaryLocalFile(Path.GetTempFileName(), CreateDirectory);
 		}
 
 		public override IFile GetFile(string filePath)
 		{
-			return new LocalFile(Path.GetFullPath(System.IO.Path.Combine(Environment.CurrentDirectory, filePath)),
-			                     di => CreateDirectory(di.FullName));
+			Contract.Requires(filePath != null);
+			Contract.Ensures(Contract.Result<IFile>() != null);
+
+			return new LocalFile(Path.GetFullPath(System.IO.Path.Combine(Environment.CurrentDirectory, filePath)), CreateDirectory);
 		}
 
 		public override Path GetPath(string path)
 		{
+			Contract.Requires(path != null);
+
 			return new Path(path);
 		}
 

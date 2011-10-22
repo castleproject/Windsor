@@ -1,5 +1,3 @@
-#region license
-
 // Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,15 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#endregion
-
-using System;
-using System.Security;
-using Castle.IO.FileSystems.Local.Win32.Interop;
-using Microsoft.Win32.SafeHandles;
-
 namespace Castle.IO
 {
+	using System;
+	using System.Security;
+
+	using Castle.IO.FileSystems.Local.Win32.Interop;
+
+	using Microsoft.Win32.SafeHandles;
+
+	/// <summary>
+	/// 	A find handle to use when searching files with the Win32 API.
+	/// </summary>
 	[SecurityCritical]
 	public sealed class SafeFindHandle : SafeHandleZeroOrMinusOneIsInvalid
 	{
@@ -39,9 +40,7 @@ namespace Castle.IO
 		protected override bool ReleaseHandle()
 		{
 			if (!(IsInvalid || IsClosed))
-			{
 				return NativeMethods.FindClose(handle);
-			}
 			return (IsInvalid || IsClosed);
 		}
 	}

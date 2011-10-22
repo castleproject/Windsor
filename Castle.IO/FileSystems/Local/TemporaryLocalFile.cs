@@ -17,13 +17,12 @@
 #endregion
 
 using System;
-using System.IO;
 
 namespace Castle.IO.FileSystems.Local
 {
 	public class TemporaryLocalFile : LocalFile, ITemporaryFile
 	{
-		public TemporaryLocalFile(string filePath, Func<DirectoryInfo, IDirectory> directoryFactory)
+		public TemporaryLocalFile(string filePath, Func<Path, IDirectory> directoryFactory)
 			: base(filePath, directoryFactory)
 		{
 		}
