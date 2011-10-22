@@ -46,8 +46,8 @@ namespace Castle.IO.Internal
 		// Normalizes path (can be longer than MAX_PATH) and adds \\?\ long path prefix
 		internal static string NormalizeLongPath(string path, string parameterName)
 		{
-			if (path == null)
-				throw new ArgumentNullException(parameterName);
+			Contract.Requires(path != null, parameterName);
+			Contract.Ensures(Contract.Result<string>() != null);
 
 			if (path.Length == 0)
 				throw new ArgumentException(
@@ -96,7 +96,7 @@ namespace Castle.IO.Internal
 
 		private static string AddLongPathPrefix(string path)
 		{
-			return NativeMethods.LongPathPrefix + path;
+			return path.StartsWith(NativeMethods.LongPathPrefix) ? path : NativeMethods.LongPathPrefix + path;
 		}
 
 		internal static string RemoveLongPathPrefix(string normalizedPath)

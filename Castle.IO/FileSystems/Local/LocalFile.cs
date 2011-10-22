@@ -1,6 +1,4 @@
-﻿#region license
-
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,16 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#endregion
-
-using System;
-using System.IO;
-using Castle.IO.Internal;
-using Directory = System.IO.Directory;
-
 namespace Castle.IO.FileSystems.Local
 {
+	using System;
 	using System.Diagnostics.Contracts;
+	using System.IO;
+
+	using Castle.IO.Internal;
+
+	using Path = Castle.IO.Path;
 
 	public class LocalFile : IFile, IEquatable<LocalFile>
 	{
@@ -43,7 +40,14 @@ namespace Castle.IO.FileSystems.Local
 
 		public virtual bool Exists
 		{
-			get { return File.Exists(filePath); }
+			get
+			{
+				// TODO: override this for the windows file system to avoid too long path exceptions
+				var i = Path.Info;
+				var p = Path.FullPath;
+				var file = p.StartsWith(i.UNCPrefix) ? p.Substring(i.UNCPrefix.Length).TrimStart('\\') : p;
+				return File.Exists(file);
+			}
 		}
 
 		public virtual IFileSystem FileSystem
@@ -75,7 +79,7 @@ namespace Castle.IO.FileSystems.Local
 		public virtual DateTimeOffset? GetLastModifiedTimeUtc()
 		{
 			// TODO: use long path instead, to void short path limits
-			return Exists ? new DateTimeOffset(new FileInfo(filePath).LastWriteTimeUtc, TimeSpan.Zero) : (DateTimeOffset?) null;
+			return Exists ? new DateTimeOffset(new FileInfo(filePath).LastWriteTimeUtc, TimeSpan.Zero) : (DateTimeOffset?)null;
 		}
 
 		public override string ToString()
@@ -106,10 +110,8 @@ namespace Castle.IO.FileSystems.Local
 		public virtual Stream Open(FileMode fileMode, FileAccess fileAccess, FileShare fileShare)
 		{
 			if (!Exists && !Parent.Exists)
-			{
 				if (fileMode == FileMode.Create || fileMode == FileMode.CreateNew || fileMode == FileMode.OpenOrCreate)
 					Parent.Create();
-			}
 
 			Validate.FileAccess(fileMode, fileAccess);
 
@@ -127,7 +129,7 @@ namespace Castle.IO.FileSystems.Local
 
 			if (item is IDirectory)
 			{
-				((IDirectory) item).MustExist();
+				((IDirectory)item).MustExist();
 				destinationPath = item.Path.Combine(Name).FullPath;
 			}
 			else
@@ -135,7 +137,6 @@ namespace Castle.IO.FileSystems.Local
 				item.Parent.MustExist();
 				destinationPath = (item).Path.FullPath;
 			}
-
 
 			LongPathFile.Copy(filePath, destinationPath, true);
 		}
@@ -168,8 +169,8 @@ namespace Castle.IO.FileSystems.Local
 		{
 			if (ReferenceEquals(null, obj)) return false;
 			if (ReferenceEquals(this, obj)) return true;
-			if (obj.GetType() != typeof (LocalFile)) return false;
-			return Equals((LocalFile) obj);
+			if (obj.GetType() != typeof(LocalFile)) return false;
+			return Equals((LocalFile)obj);
 		}
 
 		public override int GetHashCode()

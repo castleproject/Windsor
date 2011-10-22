@@ -42,7 +42,9 @@ namespace Castle.IO.FileSystems.Local
 		}
 
 		protected LocalDirectory(string directoryPath)
-			: this(new DirectoryInfo(directoryPath))
+			: this(new DirectoryInfo(PathInfo.Parse(directoryPath).UNCPrefix != string.Empty 
+				? directoryPath.Substring(PathInfo.Parse(directoryPath).UNCPrefix.Length + 1)
+				: directoryPath))
 		{
 			Contract.Requires(directoryPath != null);
 		}

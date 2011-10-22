@@ -78,6 +78,7 @@
     <Compile Include="open_for_write\existing_file.cs" />
     <Compile Include="open_for_write\non_existent_file.cs" />
     <Compile Include="open_for_write\open_behavior_is_same.cs" />
+    <Compile Include="paths\directoryinfo_long_path.cs" />
     <Compile Include="paths\pathinfo_devices_specification.cs" />
     <Compile Include="paths\pathinfo_drive_specification.cs" />
     <Compile Include="paths\pathinfo_root_specification.cs" />

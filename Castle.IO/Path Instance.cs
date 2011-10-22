@@ -37,18 +37,18 @@ namespace Castle.IO
 	/// </summary>
 	public partial class Path : IEquatable<Path>
 	{
-		private readonly string _OriginalPath;
-		private readonly PathInfo _PathInfo;
-		private readonly IList<string> _Segments;
+		private readonly string originalPath;
+		private readonly PathInfo pathInfo;
+		private readonly IList<string> segments;
 
 		public Path(string path)
 		{
 			Contract.Requires(path != null);
 			Contract.Requires(!string.IsNullOrEmpty(path));
 
-			_OriginalPath = path;
-			_PathInfo = PathInfo.Parse(path);
-			_Segments = GenerateSegments(path);
+			originalPath = path;
+			pathInfo = PathInfo.Parse(path);
+			segments = GenerateSegments(path);
 		}
 
 		/// <summary>
@@ -62,20 +62,20 @@ namespace Castle.IO
 				var sep = DirectorySeparatorChar.ToString();
 
 				if (IsDirectoryPath)
-					return _PathInfo.Drive + _PathInfo.FolderAndFiles;
+					return pathInfo.Drive + pathInfo.FolderAndFiles;
 
-				if (_Segments.Count == 1)
-					return _Segments[0];
+				if (segments.Count == 1)
+					return segments[0];
 
-				var middle = _Segments.Skip(1).Take(Math.Max(0, _Segments.Count - 2));
+				var middle = segments.Skip(1).Take(Math.Max(0, segments.Count - 2));
 
-				return string.Join(sep, new[] {_PathInfo.Drive}.Concat(middle).ToArray());
+				return string.Join(sep, new[] {pathInfo.Drive}.Concat(middle).ToArray());
 			}
 		}
 
 		public bool IsRooted
 		{
-			get { return _PathInfo.IsRooted; }
+			get { return pathInfo.IsRooted; }
 		}
 
 		private static IList<string> GenerateSegments(string path)
@@ -89,12 +89,12 @@ namespace Castle.IO
 
 		public string FullPath
 		{
-			get { return _OriginalPath; }
+			get { return originalPath; }
 		}
 
 		public IEnumerable<string> Segments
 		{
-			get { return _Segments; }
+			get { return segments; }
 		}
 
 		/// <summary>
@@ -108,6 +108,15 @@ namespace Castle.IO
 				return FullPath.EndsWith(DirectorySeparatorChar + "") ||
 				       FullPath.EndsWith(AltDirectorySeparatorChar + "");
 			}
+		}
+
+		/// <summary>
+		/// Gets the underlying path info structure. With this you can get a lot
+		/// more sematic information about the path.
+		/// </summary>
+		public PathInfo Info
+		{
+			get { return pathInfo; }
 		}
 
 		public Path Combine(params string[] paths)
@@ -127,7 +136,7 @@ namespace Castle.IO
 		{
 			if (ReferenceEquals(null, other)) return false;
 			if (ReferenceEquals(this, other)) return true;
-			return other._PathInfo.Equals(_PathInfo);
+			return other.pathInfo.Equals(pathInfo);
 		}
 
 		public override bool Equals(object obj)
@@ -140,12 +149,12 @@ namespace Castle.IO
 
 		public override int GetHashCode()
 		{
-			return _PathInfo.GetHashCode();
+			return pathInfo.GetHashCode();
 		}
 
 		public override string ToString()
 		{
-			return _OriginalPath;
+			return originalPath;
 		}
 
 		public static bool operator ==(Path left, Path right)

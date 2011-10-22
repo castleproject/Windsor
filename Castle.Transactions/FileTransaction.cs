@@ -190,21 +190,16 @@ namespace Castle.Transactions
 
 		#region State - defensive programming 
 
-		private void AssertState(TransactionState state)
+		private void AssertState(TransactionState status, string msg = null)
 		{
-			AssertState(state, null);
-		}
+			if (status == _State)
+				return;
+			
+			if (!string.IsNullOrEmpty(msg))
+				throw new TransactionException(msg);
 
-		private void AssertState(TransactionState status, string msg)
-		{
-			if (status != _State)
-			{
-				if (!string.IsNullOrEmpty(msg))
-					throw new TransactionException(msg);
-
-				throw new TransactionException(string.Format("State failure; should have been {0} but was {1}",
-				                                             status, _State));
-			}
+			throw new TransactionException(string.Format("State failure; should have been {0} but was {1}",
+			                                             status, _State));
 		}
 
 		#endregion
