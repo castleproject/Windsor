@@ -28,16 +28,16 @@ using NLog;
 
 namespace Castle.Transactions
 {
-	public sealed class TransactionManager : ITransactionManager
+	public class TransactionManager : ITransactionManager
 	{
-		private static readonly Logger _Logger = LogManager.GetCurrentClassLogger();
+		private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-		private static volatile object _SyncRoot = new object();
-		private static volatile ITransactionManager _Instance;
+		private static readonly object syncRoot = new object();
+		private static volatile ITransactionManager instance;
 
-		private readonly IActivityManager _ActivityManager;
-		private readonly IFileAdapter _FileAdapter;
-		private readonly IDirectoryAdapter _DirectoryAdapter;
+		private readonly IActivityManager activityManager;
+		private readonly IFileAdapter fileAdapter;
+		private readonly IDirectoryAdapter directoryAdapter;
 
 		public TransactionManager(IActivityManager activityManager, IFileAdapter fileAdapter,
 		                          IDirectoryAdapter directoryAdapter)
@@ -46,56 +46,53 @@ namespace Castle.Transactions
 			Contract.Requires(fileAdapter != null);
 			Contract.Requires(directoryAdapter != null);
 
-			_ActivityManager = activityManager;
-			_FileAdapter = fileAdapter;
-			_DirectoryAdapter = directoryAdapter;
+			this.activityManager = activityManager;
+			this.fileAdapter = fileAdapter;
+			this.directoryAdapter = directoryAdapter;
 		}
 
 		[ContractInvariantMethod]
 		private void Invariant()
 		{
-			Contract.Invariant(_ActivityManager != null);
+			Contract.Invariant(activityManager != null);
 		}
 
 		public static ITransactionManager Instance
 		{
 			get
 			{
-				if (_Instance != null)
-					return _Instance;
+				if (instance == null)
+					lock (syncRoot)
+						if (instance == null)
+								instance = new TransactionManager(new CallContextActivityManager(), new FileAdapter(), new DirectoryAdapter());
 
-				lock (_SyncRoot)
-					if (_Instance != null)
-						return _Instance;
-					else // TODO: configure this differently!
-						return
-							_Instance = new TransactionManager(new CallContextActivityManager(), new FileAdapter(), new DirectoryAdapter());
+				return instance;
 			}
 		}
 
 		public IFileAdapter File
 		{
-			get { return _FileAdapter; }
+			get { return fileAdapter; }
 		}
 
 		public IDirectoryAdapter Directory
 		{
-			get { return _DirectoryAdapter; }
+			get { return directoryAdapter; }
 		}
 
 		Maybe<ITransaction> ITransactionManager.CurrentTopTransaction
 		{
-			get { return _ActivityManager.GetCurrentActivity().TopTransaction; }
+			get { return activityManager.GetCurrentActivity().TopTransaction; }
 		}
 
 		Maybe<ITransaction> ITransactionManager.CurrentTransaction
 		{
-			get { return _ActivityManager.GetCurrentActivity().CurrentTransaction; }
+			get { return activityManager.GetCurrentActivity().CurrentTransaction; }
 		}
 
 		uint ITransactionManager.Count
 		{
-			get { return _ActivityManager.GetCurrentActivity().Count; }
+			get { return activityManager.GetCurrentActivity().Count; }
 		}
 
 		Maybe<ICreatedTransaction> ITransactionManager.CreateTransaction()
@@ -105,7 +102,7 @@ namespace Castle.Transactions
 
 		Maybe<ICreatedTransaction> ITransactionManager.CreateTransaction(ITransactionOptions transactionOptions)
 		{
-			var activity = _ActivityManager.GetCurrentActivity();
+			var activity = activityManager.GetCurrentActivity();
 
 			if (transactionOptions.Mode == TransactionScopeOption.Suppress)
 				return Maybe.None<ICreatedTransaction>();
@@ -146,7 +143,7 @@ namespace Castle.Transactions
 
 			// warn if fork and the top transaction was just created
 			if (transactionOptions.Fork && nextStackDepth == 1)
-				_Logger.Warn("transaction {0} created with Fork=true option, but was top-most "
+				logger.Warn("transaction {0} created with Fork=true option, but was top-most "
 				             + "transaction in invocation chain. running transaction sequentially",
 				             tx.LocalIdentifier);
 
@@ -159,8 +156,8 @@ namespace Castle.Transactions
 		{
 			return () =>
 				{
-					_ActivityManager.GetCurrentActivity().Push(tx);
-					return new DisposableScope(_ActivityManager.GetCurrentActivity().Pop);
+					activityManager.GetCurrentActivity().Push(tx);
+					return new DisposableScope(activityManager.GetCurrentActivity().Pop);
 				};
 		}
 
@@ -177,7 +174,7 @@ namespace Castle.Transactions
 		Maybe<ICreatedTransaction> ITransactionManager.CreateFileTransaction(ITransactionOptions transactionOptions)
 		{
 			// TODO: we need to decide what transaction manager we want running the show and be smarter about this:
-			var activity = _ActivityManager.GetCurrentActivity();
+			var activity = activityManager.GetCurrentActivity();
 			var nextStackDepth = activity.Count + 1;
 			var tx = new FileTransaction();
 			var fork = ShouldFork(transactionOptions, nextStackDepth);
@@ -195,7 +192,7 @@ namespace Castle.Transactions
 		public void EnlistDependentTask(Task task)
 		{
 			Contract.Requires(task != null);
-			_ActivityManager.GetCurrentActivity().EnlistDependentTask(task);
+			activityManager.GetCurrentActivity().EnlistDependentTask(task);
 		}
 
 		private class DisposableScope : IDisposable

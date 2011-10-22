@@ -91,7 +91,7 @@
     <Compile Include="Internal\IDependentAware.cs" />
     <Compile Include="Contracts\IDependentAwareContract.cs" />
     <Compile Include="Internal\TaskExtensions.cs" />
-    <Compile Include="Internal\TxTraceListener.cs" />
+    <Compile Include="Logging\TraceListener.cs" />
     <Compile Include="IO\DirectoryAdapter.cs" />
     <Compile Include="IO\DirectoryAdapterExtensions.cs" />
     <Compile Include="IO\FileAdapterExtensions.cs" />
