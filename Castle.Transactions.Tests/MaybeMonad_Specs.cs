@@ -30,7 +30,6 @@ namespace Castle.Transactions.Tests
 			var n = Maybe.Some(10);
 			Assert.That(n.Amb(Maybe.None<int>).HasValue);
 
-
 			Maybe<int> amb = n.Amb(() => Maybe.Some(4));
 			Assert.That(amb.HasValue);
 			Assert.That(amb.Value, Is.EqualTo(10));
