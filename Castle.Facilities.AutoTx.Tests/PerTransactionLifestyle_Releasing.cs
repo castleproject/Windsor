@@ -1,5 +1,3 @@
-#region license
-
 // Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,24 +12,27 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#endregion
-
-using System;
-using System.Threading;
-using Castle.Facilities.AutoTx.Testing;
-using Castle.Facilities.FactorySupport;
-using Castle.Facilities.TypedFactory;
-using Castle.MicroKernel.Registration;
-using Castle.Transactions;
-using Castle.Windsor;
-using NLog;
-using NUnit.Framework;
-
 namespace Castle.Facilities.AutoTx.Tests
 {
+	using System;
+	using System.Diagnostics.Contracts;
+	using System.Threading;
+
+	using Castle.Facilities.AutoTx.Testing;
+	using Castle.Facilities.FactorySupport;
+	using Castle.Facilities.TypedFactory;
+	using Castle.MicroKernel.Registration;
+	using Castle.Transactions;
+	using Castle.Windsor;
+
+	using NLog;
+
+	using NUnit.Framework;
+
+// ReSharper disable InconsistentNaming
 	public class PerTransactionLifestyle_Releasing
 	{
-		private static readonly Logger _Logger = LogManager.GetCurrentClassLogger();
+		private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
 		[Test]
 		public void ThrowsMissingTransactionException_NoAmbientTransaction()
@@ -56,10 +57,10 @@ namespace Castle.Facilities.AutoTx.Tests
 
 			// when
 			var ex = Assert.Throws<MissingTransactionException>(() =>
-				{
-					using (var scope = container.ResolveScope<ServiceWithDirectDep>())
-						scope.Service.DoWork();
-				});
+			{
+				using (var scope = container.ResolveScope<ServiceWithDirectDep>())
+					scope.Service.DoWork();
+			});
 			Assert.That(ex.Message, Is.StringContaining("Castle.Facilities.AutoTx.Tests.IPerTxService"),
 			            "The message from the exception needs to contain the component which IS A per-transaction component.");
 		}
@@ -132,47 +133,47 @@ namespace Castle.Facilities.AutoTx.Tests
 				var parentId = resolved.Id;
 
 				// create a child transaction
-				var createdTx2 = manager.Service.CreateTransaction(new DefaultTransactionOptions {Fork = true}).Value;
+				var createdTx2 = manager.Service.CreateTransaction(new DefaultTransactionOptions { Fork = true }).Value;
 
 				Assert.That(createdTx2.ShouldFork, Is.True, "because we're in an ambient and have specified the option");
 				Assert.That(manager.Service.Count, Is.EqualTo(1), "transaction count correct");
 
 				ThreadPool.QueueUserWorkItem(_ =>
+				{
+					IPerTxService perTxService;
+
+					try
 					{
-						IPerTxService perTxService;
-
-						try
+						using (createdTx2.GetForkScope())
+						using (var tx2 = createdTx2.Transaction)
 						{
-							using (createdTx2.GetForkScope())
-							using (var tx2 = createdTx2.Transaction)
-							{
-								perTxService = scope.Service.DoWork();
-								// this time the ids should be different and we should only have one active transaction in this context
-								Assert.That(perTxService.Id, Is.Not.SameAs(parentId));
-								Assert.That(manager.Service.Count, Is.EqualTo(1), "transaction count correct");
+							perTxService = scope.Service.DoWork();
+							// this time the ids should be different and we should only have one active transaction in this context
+							Assert.That(perTxService.Id, Is.Not.SameAs(parentId));
+							Assert.That(manager.Service.Count, Is.EqualTo(1), "transaction count correct");
 
-								// tell parent it can go on and complete
-								childStarted.Set();
+							// tell parent it can go on and complete
+							childStarted.Set();
 
-								Assert.That(perTxService.Disposed, Is.False);
+							Assert.That(perTxService.Disposed, Is.False);
 
-								tx2.Complete();
-							}
-
-							// perTxService.Disposed is either true or false at this point depending on the interleaving
-							//Assert.That(perTxService.Disposed, Is.???, "becuase dependent transaction hasn't fired its parent TransactionCompleted event, or it HAS done so and it IS disposed");
+							tx2.Complete();
 						}
-						catch (Exception ex)
-						{
-							possibleException = ex;
-							_Logger.Debug("child fault", ex);
-						}
-						finally
-						{
-							_Logger.Debug("child finally");
-							childComplete.Set();
-						}
-					});
+
+						// perTxService.Disposed is either true or false at this point depending on the interleaving
+						//Assert.That(perTxService.Disposed, Is.???, "becuase dependent transaction hasn't fired its parent TransactionCompleted event, or it HAS done so and it IS disposed");
+					}
+					catch (Exception ex)
+					{
+						possibleException = ex;
+						logger.Debug("child fault", ex);
+					}
+					finally
+					{
+						logger.Debug("child finally");
+						childComplete.Set();
+					}
+				});
 				childStarted.WaitOne();
 
 				serviceUsed = resolved;
@@ -239,11 +240,11 @@ Test 'Castle.Facilities.AutoTx.Tests.PerTransactionLifestyle_Releasing.Concurren
 					.LifeStyle.PerTransaction()
 					.Named("per-tx-session")
 					.UsingFactoryMethod(k =>
-						{
-							var factory = k.Resolve<IPerTxServiceFactory>("per-tx-session.factory");
-							var s = factory.CreateService();
-							return s;
-						}),
+					{
+						var factory = k.Resolve<IPerTxServiceFactory>("per-tx-session.factory");
+						var s = factory.CreateService();
+						return s;
+					}),
 				Component.For<Service>(),
 				Component.For<ServiceWithDirectDep>());
 
@@ -253,36 +254,36 @@ Test 'Castle.Facilities.AutoTx.Tests.PerTransactionLifestyle_Releasing.Concurren
 
 	public class ServiceWithDirectDep
 	{
-		private readonly IPerTxService _Service;
 
+		// ReSharper disable UnusedParameter.Local
 		public ServiceWithDirectDep(IPerTxService service)
 		{
-			if (service == null) throw new ArgumentNullException("service");
-			_Service = service;
+			Contract.Requires(service != null, "service is null");
 		}
+		// ReSharper restore UnusedParameter.Local
 
 		[Transaction]
 		public virtual void DoWork()
 		{
-			Assert.Fail(
-				"IPerTxService is resolved in the c'tor but is per-tx, so DoWork should never be called as lifestyle throws exception");
+			Assert.Fail("IPerTxService is resolved in the c'tor but is per-tx, so DoWork should never be called as lifestyle throws exception");
 		}
 	}
 
 	public class Service
 	{
-		private readonly Func<IPerTxService> _FactoryMethod;
+		private readonly Func<IPerTxService> factoryMethod;
 
 		public Service(Func<IPerTxService> factoryMethod)
 		{
-			if (factoryMethod == null) throw new ArgumentNullException("factoryMethod");
-			_FactoryMethod = factoryMethod;
+			Contract.Requires(factoryMethod != null);
+
+			this.factoryMethod = factoryMethod;
 		}
 
 		// return the used service so we can assert on it
 		public virtual IPerTxService DoWork()
 		{
-			var perTxService = _FactoryMethod();
+			var perTxService = factoryMethod();
 			Console.WriteLine(perTxService.SayHello());
 			return perTxService;
 		}
@@ -305,28 +306,29 @@ Test 'Castle.Facilities.AutoTx.Tests.PerTransactionLifestyle_Releasing.Concurren
 	public interface IPerTxService
 	{
 		string SayHello();
+
 		bool Disposed { get; }
 		Guid Id { get; }
 	}
 
 	public class DisposeMeOnce : IPerTxService, IDisposable
 	{
-		private readonly Guid _NewGuid;
-		private bool _Disposed;
+		private readonly Guid newGuid;
+		private bool disposed;
 
 		public DisposeMeOnce(Guid newGuid)
 		{
-			_NewGuid = newGuid;
+			this.newGuid = newGuid;
 		}
 
 		public bool Disposed
 		{
-			get { return _Disposed; }
+			get { return disposed; }
 		}
 
 		public Guid Id
 		{
-			get { return _NewGuid; }
+			get { return newGuid; }
 		}
 
 		public string SayHello()
@@ -336,10 +338,11 @@ Test 'Castle.Facilities.AutoTx.Tests.PerTransactionLifestyle_Releasing.Concurren
 
 		public void Dispose()
 		{
-			if (_Disposed)
+			if (disposed)
 				Assert.Fail("disposed DisposeMeOnce twice");
 
-			_Disposed = true;
+			disposed = true;
 		}
 	}
+	// ReSharper restore InconsistentNaming
 }
