@@ -3,9 +3,8 @@ using System.Threading;
 using Castle.Facilities.AutoTx.Testing;
 using Castle.Facilities.AutoTx.Tests.TestClasses;
 using Castle.MicroKernel.Registration;
-using Castle.Services.Transaction;
+using Castle.Transactions;
 using Castle.Windsor;
-using log4net.Config;
 using NUnit.Framework;
 using System.Linq;
 
@@ -18,7 +17,6 @@ namespace Castle.Facilities.AutoTx.Tests
 		[SetUp]
 		public void SetUp()
 		{
-			XmlConfigurator.Configure();
 			_Container = new WindsorContainer();
 			_Container.AddFacility("autotx", new AutoTxFacility());
 			_Container.Register(Component.For<MyService>());

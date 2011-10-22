@@ -20,8 +20,8 @@ using System;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Reflection;
-using Castle.Services.Transaction;
-using Castle.Services.Transaction.Utils;
+using Castle.Transactions;
+using Castle.Transactions.Utils;
 
 namespace Castle.Facilities.AutoTx
 {

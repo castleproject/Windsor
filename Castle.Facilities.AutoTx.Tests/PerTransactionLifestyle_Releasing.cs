@@ -1,50 +1,50 @@
+#region license
+
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// 
+//     http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+#endregion
+
 using System;
 using System.Threading;
-using System.Transactions;
-using Castle.Facilities.AutoTx.Lifestyles;
-using Castle.Facilities.AutoTx.Registration;
+using Castle.Facilities.AutoTx.Testing;
 using Castle.Facilities.FactorySupport;
 using Castle.Facilities.TypedFactory;
-using Castle.MicroKernel;
 using Castle.MicroKernel.Registration;
-using Castle.Services.Transaction;
+using Castle.Transactions;
 using Castle.Windsor;
-using log4net;
-using log4net.Config;
+using NLog;
 using NUnit.Framework;
-using Castle.Facilities.AutoTx.Testing;
 
 namespace Castle.Facilities.AutoTx.Tests
 {
 	public class PerTransactionLifestyle_Releasing
 	{
-		private static readonly ILog _Logger = LogManager.GetLogger(typeof (PerTransactionLifestyle_Releasing));
-
-
-		[SetUp]
-		public void SetUp()
-		{
-			XmlConfigurator.Configure();
-		}
-
-		[TearDown]
-		public void TearDown()
-		{
-			LogManager.Shutdown();
-		}
+		private static readonly Logger _Logger = LogManager.GetCurrentClassLogger();
 
 		[Test]
 		public void ThrowsMissingTransactionException_NoAmbientTransaction()
 		{
 			// given
-			WindsorContainer container = GetContainer();
+			var container = GetContainer();
 
 			// when
 			using (var scope = container.ResolveScope<Service>())
 			{
 				var ex = Assert.Throws<MissingTransactionException>(() => scope.Service.DoWork());
 				Assert.That(ex.Message, Is.StringContaining("Castle.Facilities.AutoTx.Tests.IPerTxService"),
-					"The message from the exception needs to contain the component which IS A per-transaction component.");
+				            "The message from the exception needs to contain the component which IS A per-transaction component.");
 			}
 		}
 
@@ -52,23 +52,23 @@ namespace Castle.Facilities.AutoTx.Tests
 		public void ThrowsMissingTransactionException_NoAmbientTransaction_DirectDependency()
 		{
 			// given
-			WindsorContainer container = GetContainer();
+			var container = GetContainer();
 
 			// when
 			var ex = Assert.Throws<MissingTransactionException>(() =>
-			{
-				using (var scope = container.ResolveScope<ServiceWithDirectDep>())
-					scope.Service.DoWork();
-			});
+				{
+					using (var scope = container.ResolveScope<ServiceWithDirectDep>())
+						scope.Service.DoWork();
+				});
 			Assert.That(ex.Message, Is.StringContaining("Castle.Facilities.AutoTx.Tests.IPerTxService"),
-				"The message from the exception needs to contain the component which IS A per-transaction component.");
+			            "The message from the exception needs to contain the component which IS A per-transaction component.");
 		}
 
 		[Test]
 		public void Same_Instances()
 		{
 			// given
-			WindsorContainer container = GetContainer();
+			var container = GetContainer();
 
 			// when
 			using (var scope = container.ResolveScope<Service>())
@@ -86,7 +86,7 @@ namespace Castle.Facilities.AutoTx.Tests
 		public void Doesnt_Dispose_Twice()
 		{
 			// given
-			WindsorContainer container = GetContainer();
+			var container = GetContainer();
 
 			// exports from actions, to assert end-state
 			IPerTxService serviceUsed;
@@ -115,7 +115,7 @@ namespace Castle.Facilities.AutoTx.Tests
 		public void Concurrent_DependentTransaction_AndDisposing()
 		{
 			// given
-			WindsorContainer container = GetContainer();
+			var container = GetContainer();
 			var childStarted = new ManualResetEvent(false);
 			var childComplete = new ManualResetEvent(false);
 
@@ -132,47 +132,47 @@ namespace Castle.Facilities.AutoTx.Tests
 				var parentId = resolved.Id;
 
 				// create a child transaction
-				var createdTx2 = manager.Service.CreateTransaction(new DefaultTransactionOptions() {Fork = true}).Value;
+				var createdTx2 = manager.Service.CreateTransaction(new DefaultTransactionOptions {Fork = true}).Value;
 
 				Assert.That(createdTx2.ShouldFork, Is.True, "because we're in an ambient and have specified the option");
 				Assert.That(manager.Service.Count, Is.EqualTo(1), "transaction count correct");
 
 				ThreadPool.QueueUserWorkItem(_ =>
-				{
-					IPerTxService perTxService;
-
-					try
 					{
-						using (createdTx2.GetForkScope())
-						using (var tx2 = createdTx2.Transaction)
+						IPerTxService perTxService;
+
+						try
 						{
-							perTxService = scope.Service.DoWork();
-							// this time the ids should be different and we should only have one active transaction in this context
-							Assert.That(perTxService.Id, Is.Not.SameAs(parentId));
-							Assert.That(manager.Service.Count, Is.EqualTo(1), "transaction count correct");
+							using (createdTx2.GetForkScope())
+							using (var tx2 = createdTx2.Transaction)
+							{
+								perTxService = scope.Service.DoWork();
+								// this time the ids should be different and we should only have one active transaction in this context
+								Assert.That(perTxService.Id, Is.Not.SameAs(parentId));
+								Assert.That(manager.Service.Count, Is.EqualTo(1), "transaction count correct");
 
-							// tell parent it can go on and complete
-							childStarted.Set();
+								// tell parent it can go on and complete
+								childStarted.Set();
 
-							Assert.That(perTxService.Disposed, Is.False);
+								Assert.That(perTxService.Disposed, Is.False);
 
-							tx2.Complete();
+								tx2.Complete();
+							}
+
+							// perTxService.Disposed is either true or false at this point depending on the interleaving
+							//Assert.That(perTxService.Disposed, Is.???, "becuase dependent transaction hasn't fired its parent TransactionCompleted event, or it HAS done so and it IS disposed");
 						}
-
-						// perTxService.Disposed is either true or false at this point depending on the interleaving
-						//Assert.That(perTxService.Disposed, Is.???, "becuase dependent transaction hasn't fired its parent TransactionCompleted event, or it HAS done so and it IS disposed");
-					}
-					catch (Exception ex)
-					{
-						possibleException = ex;
-						_Logger.Debug("child fault", ex);
-					}
-					finally
-					{
-						_Logger.Debug("child finally");
-						childComplete.Set();
-					}
-				});
+						catch (Exception ex)
+						{
+							possibleException = ex;
+							_Logger.Debug("child fault", ex);
+						}
+						finally
+						{
+							_Logger.Debug("child finally");
+							childComplete.Set();
+						}
+					});
 				childStarted.WaitOne();
 
 				serviceUsed = resolved;
@@ -194,7 +194,7 @@ namespace Castle.Facilities.AutoTx.Tests
 				Console.WriteLine(possibleException);
 				Assert.Fail();
 			}
-			
+
 			// the component burden in this one should not throw like the log trace below!
 			container.Dispose();
 			/*Castle.Facilities.AutoTx.Tests.PerTransactionLifestyle_Releasing: 2011-04-26 16:23:01,859 [9] DEBUG - child finally
@@ -239,11 +239,11 @@ Test 'Castle.Facilities.AutoTx.Tests.PerTransactionLifestyle_Releasing.Concurren
 					.LifeStyle.PerTransaction()
 					.Named("per-tx-session")
 					.UsingFactoryMethod(k =>
-					{
-					    var factory = k.Resolve<IPerTxServiceFactory>("per-tx-session.factory");
-					    var s = factory.CreateService();
-					    return s;
-					}),
+						{
+							var factory = k.Resolve<IPerTxServiceFactory>("per-tx-session.factory");
+							var s = factory.CreateService();
+							return s;
+						}),
 				Component.For<Service>(),
 				Component.For<ServiceWithDirectDep>());
 
@@ -264,7 +264,8 @@ Test 'Castle.Facilities.AutoTx.Tests.PerTransactionLifestyle_Releasing.Concurren
 		[Transaction]
 		public virtual void DoWork()
 		{
-			Assert.Fail("IPerTxService is resolved in the c'tor but is per-tx, so DoWork should never be called as lifestyle throws exception");
+			Assert.Fail(
+				"IPerTxService is resolved in the c'tor but is per-tx, so DoWork should never be called as lifestyle throws exception");
 		}
 	}
 

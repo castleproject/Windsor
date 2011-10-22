@@ -1,12 +1,10 @@
 using System;
 using System.Diagnostics.Contracts;
 using Castle.Core;
-using Castle.Facilities.AutoTx.Registration;
 using Castle.MicroKernel;
 using Castle.MicroKernel.Registration;
-using Castle.Services.Transaction;
+using Castle.Transactions;
 using Castle.Windsor;
-using log4net.Config;
 using NUnit.Framework;
 using Castle.Facilities.AutoTx.Lifestyles;
 using Castle.Facilities.AutoTx.Testing;
@@ -21,7 +19,6 @@ namespace Castle.Facilities.AutoTx.Tests
 		[SetUp]
 		public void SetUp()
 		{
-			XmlConfigurator.Configure();
 			_Container = new WindsorContainer();
 			_Container.AddFacility<AutoTxFacility>();
 

@@ -25,17 +25,17 @@ using Castle.Core;
 using Castle.Core.Interceptor;
 using Castle.DynamicProxy;
 using Castle.MicroKernel;
-using Castle.Services.Transaction;
-using Castle.Services.Transaction.Internal;
-using log4net;
-using TransactionException = Castle.Services.Transaction.TransactionException;
-using TransactionManager = Castle.Services.Transaction.TransactionManager;
+using Castle.Transactions;
+using Castle.Transactions.Internal;
+using NLog;
+using TransactionException = Castle.Transactions.TransactionException;
+using TransactionManager = Castle.Transactions.TransactionManager;
 
 namespace Castle.Facilities.AutoTx
 {
 	internal class TransactionInterceptor : IInterceptor, IOnBehalfAware
 	{
-		private static readonly ILog _Logger = LogManager.GetLogger(typeof (TransactionInterceptor));
+		private static readonly Logger _Logger = LogManager.GetCurrentClassLogger();
 
 		private enum InterceptorState
 		{
@@ -55,7 +55,7 @@ namespace Castle.Facilities.AutoTx
 			Contract.Requires(store != null, "store must be non null");
 			Contract.Ensures(_State == InterceptorState.Constructed);
 
-			_Logger.DebugFormat("created transaction interceptor");
+			_Logger.Debug("created transaction interceptor");
 
 			_Kernel = kernel;
 			_Store = store;
@@ -120,7 +120,7 @@ namespace Castle.Facilities.AutoTx
 		private static void SynchronizedCase(IInvocation invocation, ITransaction transaction)
 		{
 			Contract.Requires(transaction.State == TransactionState.Active);
-			_Logger.DebugFormat("synchronized case");
+			_Logger.Debug("synchronized case");
 
 			using (new TxScope(transaction.Inner))
 			{
@@ -134,44 +134,42 @@ namespace Castle.Facilities.AutoTx
 						transaction.Complete();
 
 					else
-						_Logger.WarnFormat(
+						_Logger.Warn(
 							"transaction was in state {0}, so it cannot be completed. the 'consumer' method, so to speak, might have rolled it back.",
 							transaction.State);
 				}
 				catch (TransactionAbortedException)
 				{
 					// if we have aborted the transaction, we both warn and re-throw the exception
-					_Logger.WarnFormat("transaction aborted - synchronized case, tx#{0}", localIdentifier);
+					_Logger.Warn("transaction aborted - synchronized case, tx#{0}", localIdentifier);
+
 					throw;
 				}
 				catch (TransactionException ex)
 				{
 					if (_Logger.IsFatalEnabled)
-						_Logger.Fatal("internal error in transaction system - synchronized case", ex);
+						_Logger.FatalException("internal error in transaction system - synchronized case", ex);
 
 					throw;
 				}
 				catch (AggregateException ex)
 				{
 					if (_Logger.IsWarnEnabled)
-						_Logger.Warn("one or more dependent transactions failed, re-throwing exceptions!", ex);
+						_Logger.WarnException("one or more dependent transactions failed, re-throwing exceptions!", ex);
+
 					throw;
 				}
 				catch (Exception)
 				{
-					if (_Logger.IsErrorEnabled)
-						_Logger.ErrorFormat("caught exception, rolling back transaction - synchronized case - tx#{0}",
-						                    localIdentifier);
+					_Logger.Error("caught exception, transaction will roll back - synchronized case - tx#{0}",
+								  localIdentifier);
 
-					// the transaction rolls back itself on exceptions
-					//transaction.Rollback();
+					// the transaction rolls back itself on exceptions, so just throw it
 					throw;
 				}
 				finally
 				{
-					if (_Logger.IsDebugEnabled)
-						_Logger.DebugFormat("dispoing transaction - synchronized case - tx#{0}", localIdentifier);
-
+					_Logger.Debug(() => string.Format("dispoing transaction - synchronized case - tx#{0}", localIdentifier));
 					transaction.Dispose();
 				}
 			}
@@ -188,7 +186,7 @@ namespace Castle.Facilities.AutoTx
 			Contract.Ensures(Contract.Result<Task>() != null);
 			Contract.Assume(txData.Transaction.Inner is DependentTransaction);
 
-			_Logger.DebugFormat("fork case");
+			_Logger.Debug("fork case");
 
 			return Task.Factory.StartNew(t =>
 			{
@@ -200,16 +198,12 @@ namespace Castle.Facilities.AutoTx
 				{
 					try
 					{
-						if (_Logger.IsDebugEnabled)
-							_Logger.DebugFormat("calling proceed on tx#{0}", tuple.Item3);
+						_Logger.Debug(() => string.Format("calling proceed on tx#{0}", tuple.Item3));
 
 						using (var ts = new TransactionScope(dependent))
 						{
 							tuple.Item1.Proceed();
-
-							if (_Logger.IsDebugEnabled)
-								_Logger.DebugFormat("calling complete on TransactionScope for tx#{0}", tuple.Item3);
-
+							_Logger.Debug(() => string.Format("calling complete on TransactionScope for tx#{0}", tuple.Item3));
 							ts.Complete();
 						}
 					}
@@ -217,7 +211,7 @@ namespace Castle.Facilities.AutoTx
 					{
 						// if we have aborted the transaction, we both warn and re-throw the exception
 						hasException = true;
-						_Logger.Warn("transaction aborted", ex);
+						_Logger.WarnException("transaction aborted", ex);
 						throw new TransactionAbortedException(
 							"Parallel/forked transaction aborted! See inner exception for details.", ex);
 					}
@@ -228,8 +222,7 @@ namespace Castle.Facilities.AutoTx
 					}
 					finally
 					{
-						if (_Logger.IsDebugEnabled)
-							_Logger.Debug("in finally-clause, completing dependent if it didn't throw exception");
+						_Logger.Debug("in finally-clause, completing dependent if it didn't throw exception");
 
 						if (!hasException)
 							dependent.Complete();

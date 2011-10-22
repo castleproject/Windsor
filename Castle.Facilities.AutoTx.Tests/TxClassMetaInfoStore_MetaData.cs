@@ -21,8 +21,8 @@ using System.Linq;
 using System.Reflection;
 using Castle.Facilities.AutoTx.Tests.Framework;
 using Castle.Facilities.AutoTx.Tests.TestClasses;
-using Castle.Services.Transaction;
-using Castle.Services.Transaction.Internal;
+using Castle.Transactions;
+using Castle.Transactions.Internal;
 using NUnit.Framework;
 
 namespace Castle.Facilities.AutoTx.Tests

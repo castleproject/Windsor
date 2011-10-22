@@ -74,8 +74,8 @@
     <Reference Include="Castle.Windsor, Version=2.5.1.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Castle.Windsor.2.5.3\lib\NET40\Castle.Windsor.dll</HintPath>
     </Reference>
-    <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\log4net.1.2.10\lib\2.0\log4net.dll</HintPath>
+    <Reference Include="NLog, Version=2.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\NLog.2.0.0.2000\lib\net40\NLog.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -88,9 +88,9 @@
     </Compile>
     <Compile Include="AutoTxFacility.cs" />
     <Compile Include="ITransactionMetaInfoStore.cs" />
+    <Compile Include="LifestyleRegistrationExtensions.cs" />
     <Compile Include="Lifestyles\WrapperResolveLifestyleManager.cs" />
     <Compile Include="Obsolete_Classes.cs" />
-    <Compile Include="Registration\LifestyleRegistrationExtensions.cs" />
     <Compile Include="MissingTransactionException.cs" />
     <Compile Include="Lifestyles\PerTopTransactionLifestyleManager.cs" />
     <Compile Include="Lifestyles\PerTransactionLifestyleManager.cs" />
@@ -107,9 +107,13 @@
     <Compile Include="Contracts\TransactionMetaInfoStoreContract.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Castle.Services.Transaction\Castle.Services.Transaction.csproj">
+    <ProjectReference Include="..\Castle.IO\Castle.IO.csproj">
+      <Project>{59637705-C235-488A-876B-E4B1A39E9BF8}</Project>
+      <Name>Castle.IO</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Castle.Transactions\Castle.Transactions.csproj">
       <Project>{76DF5D09-FC04-411F-B123-01A6B9432796}</Project>
-      <Name>Castle.Services.Transaction</Name>
+      <Name>Castle.Transactions</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
