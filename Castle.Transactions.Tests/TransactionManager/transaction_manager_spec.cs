@@ -12,8 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Transactions.Tests.Transactionmanager
+namespace Castle.Transactions.Tests.TransactionManager
 {
+	using System.IO;
 	using System.Transactions;
 
 	using Castle.Transactions.Activities;
@@ -93,6 +94,5 @@ namespace Castle.Transactions.Tests.Transactionmanager
 
 			var newTx = subject.CreateTransaction().Value.Transaction;
 		}
-
 	}
 }

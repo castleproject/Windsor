@@ -95,25 +95,25 @@ namespace Castle.Transactions.Contracts
 			throw new NotImplementedException();
 		}
 
-		public Maybe<ICreatedTransaction> CreateFileTransaction()
-		{
-			throw new NotImplementedException();
-		}
+		//public Maybe<ICreatedTransaction> CreateFileTransaction()
+		//{
+		//    throw new NotImplementedException();
+		//}
 
-		public Maybe<ICreatedTransaction> CreateFileTransaction(ITransactionOptions transactionOptions)
-		{
-			Contract.Requires(transactionOptions != null);
+		//public Maybe<ICreatedTransaction> CreateFileTransaction(ITransactionOptions transactionOptions)
+		//{
+		//    Contract.Requires(transactionOptions != null);
 
-			Contract.Ensures(Contract.Result<Maybe<ICreatedTransaction>>() != null
-			                 && (!Contract.Result<Maybe<ICreatedTransaction>>().HasValue
-			                     ||
-			                     Contract.Result<Maybe<ICreatedTransaction>>().Value.Transaction.State == TransactionState.Active));
+		//    Contract.Ensures(Contract.Result<Maybe<ICreatedTransaction>>() != null
+		//                     && (!Contract.Result<Maybe<ICreatedTransaction>>().HasValue
+		//                         ||
+		//                         Contract.Result<Maybe<ICreatedTransaction>>().Value.Transaction.State == TransactionState.Active));
 
-			Contract.Ensures(Contract.Result<Maybe<ICreatedTransaction>>().HasValue
-			                 || transactionOptions.Mode == TransactionScopeOption.Suppress);
+		//    Contract.Ensures(Contract.Result<Maybe<ICreatedTransaction>>().HasValue
+		//                     || transactionOptions.Mode == TransactionScopeOption.Suppress);
 
-			throw new NotImplementedException();
-		}
+		//    throw new NotImplementedException();
+		//}
 
 		public void Dispose()
 		{

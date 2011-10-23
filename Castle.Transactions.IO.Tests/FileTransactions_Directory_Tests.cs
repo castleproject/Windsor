@@ -20,6 +20,8 @@ namespace Castle.Transactions.IO.Tests
 {
 	using System;
 
+	using NUnit.Framework;
+
 	[TestFixture, Ignore("TODO")]
 	public class FileTransactions_Directory_Tests : TxFTestFixtureBase
 	{

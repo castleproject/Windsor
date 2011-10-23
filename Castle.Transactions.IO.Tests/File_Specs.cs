@@ -23,6 +23,8 @@ namespace Castle.Transactions.IO.Tests
 	using System.Linq;
 	using System.Text;
 
+	using Castle.IO.Extensions;
+
 	using NUnit.Framework;
 
 	using SharpTestsEx;

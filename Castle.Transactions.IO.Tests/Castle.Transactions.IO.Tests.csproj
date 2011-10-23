@@ -49,6 +49,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Transactions" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -57,10 +58,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AsDependentTransaction.cs" />
-    <Compile Include="DirectoryAdapter_TransactionalBehavior.cs" />
-    <Compile Include="FileAdapter_InitializationSettings.cs" />
-    <Compile Include="FileTransactions_Directory_Tests.cs" />
-    <Compile Include="File_Specs.cs" />
     <Compile Include="Initialization_And_State.cs" />
     <Compile Include="MSDN_Is_Wrong.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -73,6 +70,20 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Castle.IO\Castle.IO.csproj">
+      <Project>{59637705-C235-488A-876B-E4B1A39E9BF8}</Project>
+      <Name>Castle.IO</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Castle.Transactions.IO\Castle.Transactions.IO.csproj">
+      <Project>{CD2EEE95-769C-44A6-98AF-27A03A0F4528}</Project>
+      <Name>Castle.Transactions.IO</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Castle.Transactions\Castle.Transactions.csproj">
+      <Project>{76DF5D09-FC04-411F-B123-01A6B9432796}</Project>
+      <Name>Castle.Transactions</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -18,17 +18,9 @@
 
 namespace Castle.Transactions.IO.Tests
 {
+	using NUnit.Framework;
+
 	public class Initialization_And_State : TxFTestFixtureBase
 	{
-		[Test]
-		public void CompletedState()
-		{
-			using (ITransaction tx = new FileTransaction())
-			{
-				Assert.That(tx.State, Is.EqualTo(TransactionState.Active));
-				tx.Complete();
-				Assert.That(tx.State, Is.EqualTo(TransactionState.CommittedOrCompleted));
-			}
-		}
 	}
 }
