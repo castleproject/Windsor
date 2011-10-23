@@ -19,17 +19,18 @@
 using System;
 using System.Linq;
 using Castle.Facilities.AutoTx.Lifestyles;
-using Castle.Facilities.AutoTx.Registration;
 using Castle.Facilities.FactorySupport;
 using Castle.Facilities.TypedFactory;
 using Castle.MicroKernel.Registration;
-using Castle.Services.Transaction;
-using Castle.Services.Transaction.Internal;
+using Castle.Transactions;
+using Castle.Transactions.Internal;
 using Castle.Windsor;
 using NUnit.Framework;
 
 namespace Castle.Facilities.AutoTx.Tests
 {
+	using Castle.Transactions.Helpers;
+
 	[Explicit("to try things out")]
 	internal class Scratch
 	{

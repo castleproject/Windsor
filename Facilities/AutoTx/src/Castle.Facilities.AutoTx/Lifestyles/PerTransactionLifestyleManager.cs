@@ -1,4 +1,6 @@
-﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+﻿#region license
+
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,13 +14,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#endregion
+
+using System;
+using System.Diagnostics.Contracts;
+using Castle.Transactions;
+
 namespace Castle.Facilities.AutoTx.Lifestyles
 {
-	using System;
-	using System.Diagnostics.Contracts;
-
-	using Castle.Services.Transaction;
-
 	/// <summary>
 	/// 	A lifestyle manager that resolves a fresh instance for every transaction. In my opinion, this 
 	/// 	is the most semantically correct option of the two per-transaction lifestyle managers: it's possible

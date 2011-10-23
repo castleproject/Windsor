@@ -2,14 +2,14 @@
 using Castle.Facilities.TypedFactory;
 using Castle.MicroKernel.Registration;
 using Castle.MicroKernel.SubSystems.Configuration;
-using Castle.Services.Transaction;
 using Castle.Windsor;
 using NUnit.Framework;
 using SharpTestsEx;
-using Castle.Facilities.AutoTx.Registration;
 
 namespace Castle.Facilities.AutoTx.Tests.Bugfixes
 {
+	using Castle.Transactions;
+
 	public class MissingTransactionException_when_generically_parametized_interface_service_in_error
 	{
 		public interface IUnitOfWork : IDisposable

@@ -1,50 +1,51 @@
-using System;
-using System.Threading;
-using System.Transactions;
-using Castle.Facilities.AutoTx.Lifestyles;
-using Castle.Facilities.AutoTx.Registration;
-using Castle.Facilities.FactorySupport;
-using Castle.Facilities.TypedFactory;
-using Castle.MicroKernel;
-using Castle.MicroKernel.Registration;
-using Castle.Services.Transaction;
-using Castle.Windsor;
-using log4net;
-using log4net.Config;
-using NUnit.Framework;
-using Castle.Facilities.AutoTx.Testing;
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// 
+//     http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 namespace Castle.Facilities.AutoTx.Tests
 {
+	using System;
+	using System.Diagnostics.Contracts;
+	using System.Threading;
+
+	using Castle.Facilities.AutoTx.Testing;
+	using Castle.Facilities.FactorySupport;
+	using Castle.Facilities.TypedFactory;
+	using Castle.MicroKernel.Registration;
+	using Castle.Transactions;
+	using Castle.Windsor;
+
+	using NLog;
+
+	using NUnit.Framework;
+
+// ReSharper disable InconsistentNaming
 	public class PerTransactionLifestyle_Releasing
 	{
-		private static readonly ILog _Logger = LogManager.GetLogger(typeof (PerTransactionLifestyle_Releasing));
-
-
-		[SetUp]
-		public void SetUp()
-		{
-			XmlConfigurator.Configure();
-		}
-
-		[TearDown]
-		public void TearDown()
-		{
-			LogManager.Shutdown();
-		}
+		private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
 		[Test]
 		public void ThrowsMissingTransactionException_NoAmbientTransaction()
 		{
 			// given
-			WindsorContainer container = GetContainer();
+			var container = GetContainer();
 
 			// when
 			using (var scope = container.ResolveScope<Service>())
 			{
 				var ex = Assert.Throws<MissingTransactionException>(() => scope.Service.DoWork());
 				Assert.That(ex.Message, Is.StringContaining("Castle.Facilities.AutoTx.Tests.IPerTxService"),
-					"The message from the exception needs to contain the component which IS A per-transaction component.");
+				            "The message from the exception needs to contain the component which IS A per-transaction component.");
 			}
 		}
 
@@ -52,7 +53,7 @@ namespace Castle.Facilities.AutoTx.Tests
 		public void ThrowsMissingTransactionException_NoAmbientTransaction_DirectDependency()
 		{
 			// given
-			WindsorContainer container = GetContainer();
+			var container = GetContainer();
 
 			// when
 			var ex = Assert.Throws<MissingTransactionException>(() =>
@@ -61,14 +62,14 @@ namespace Castle.Facilities.AutoTx.Tests
 					scope.Service.DoWork();
 			});
 			Assert.That(ex.Message, Is.StringContaining("Castle.Facilities.AutoTx.Tests.IPerTxService"),
-				"The message from the exception needs to contain the component which IS A per-transaction component.");
+			            "The message from the exception needs to contain the component which IS A per-transaction component.");
 		}
 
 		[Test]
 		public void Same_Instances()
 		{
 			// given
-			WindsorContainer container = GetContainer();
+			var container = GetContainer();
 
 			// when
 			using (var scope = container.ResolveScope<Service>())
@@ -86,7 +87,7 @@ namespace Castle.Facilities.AutoTx.Tests
 		public void Doesnt_Dispose_Twice()
 		{
 			// given
-			WindsorContainer container = GetContainer();
+			var container = GetContainer();
 
 			// exports from actions, to assert end-state
 			IPerTxService serviceUsed;
@@ -115,7 +116,7 @@ namespace Castle.Facilities.AutoTx.Tests
 		public void Concurrent_DependentTransaction_AndDisposing()
 		{
 			// given
-			WindsorContainer container = GetContainer();
+			var container = GetContainer();
 			var childStarted = new ManualResetEvent(false);
 			var childComplete = new ManualResetEvent(false);
 
@@ -132,7 +133,7 @@ namespace Castle.Facilities.AutoTx.Tests
 				var parentId = resolved.Id;
 
 				// create a child transaction
-				var createdTx2 = manager.Service.CreateTransaction(new DefaultTransactionOptions() {Fork = true}).Value;
+				var createdTx2 = manager.Service.CreateTransaction(new DefaultTransactionOptions { Fork = true }).Value;
 
 				Assert.That(createdTx2.ShouldFork, Is.True, "because we're in an ambient and have specified the option");
 				Assert.That(manager.Service.Count, Is.EqualTo(1), "transaction count correct");
@@ -165,11 +166,11 @@ namespace Castle.Facilities.AutoTx.Tests
 					catch (Exception ex)
 					{
 						possibleException = ex;
-						_Logger.Debug("child fault", ex);
+						logger.Debug("child fault", ex);
 					}
 					finally
 					{
-						_Logger.Debug("child finally");
+						logger.Debug("child finally");
 						childComplete.Set();
 					}
 				});
@@ -194,7 +195,7 @@ namespace Castle.Facilities.AutoTx.Tests
 				Console.WriteLine(possibleException);
 				Assert.Fail();
 			}
-			
+
 			// the component burden in this one should not throw like the log trace below!
 			container.Dispose();
 			/*Castle.Facilities.AutoTx.Tests.PerTransactionLifestyle_Releasing: 2011-04-26 16:23:01,859 [9] DEBUG - child finally
@@ -240,9 +241,9 @@ Test 'Castle.Facilities.AutoTx.Tests.PerTransactionLifestyle_Releasing.Concurren
 					.Named("per-tx-session")
 					.UsingFactoryMethod(k =>
 					{
-					    var factory = k.Resolve<IPerTxServiceFactory>("per-tx-session.factory");
-					    var s = factory.CreateService();
-					    return s;
+						var factory = k.Resolve<IPerTxServiceFactory>("per-tx-session.factory");
+						var s = factory.CreateService();
+						return s;
 					}),
 				Component.For<Service>(),
 				Component.For<ServiceWithDirectDep>());
@@ -253,13 +254,13 @@ Test 'Castle.Facilities.AutoTx.Tests.PerTransactionLifestyle_Releasing.Concurren
 
 	public class ServiceWithDirectDep
 	{
-		private readonly IPerTxService _Service;
 
+		// ReSharper disable UnusedParameter.Local
 		public ServiceWithDirectDep(IPerTxService service)
 		{
-			if (service == null) throw new ArgumentNullException("service");
-			_Service = service;
+			Contract.Requires(service != null, "service is null");
 		}
+		// ReSharper restore UnusedParameter.Local
 
 		[Transaction]
 		public virtual void DoWork()
@@ -270,18 +271,19 @@ Test 'Castle.Facilities.AutoTx.Tests.PerTransactionLifestyle_Releasing.Concurren
 
 	public class Service
 	{
-		private readonly Func<IPerTxService> _FactoryMethod;
+		private readonly Func<IPerTxService> factoryMethod;
 
 		public Service(Func<IPerTxService> factoryMethod)
 		{
-			if (factoryMethod == null) throw new ArgumentNullException("factoryMethod");
-			_FactoryMethod = factoryMethod;
+			Contract.Requires(factoryMethod != null);
+
+			this.factoryMethod = factoryMethod;
 		}
 
 		// return the used service so we can assert on it
 		public virtual IPerTxService DoWork()
 		{
-			var perTxService = _FactoryMethod();
+			var perTxService = factoryMethod();
 			Console.WriteLine(perTxService.SayHello());
 			return perTxService;
 		}
@@ -304,28 +306,29 @@ Test 'Castle.Facilities.AutoTx.Tests.PerTransactionLifestyle_Releasing.Concurren
 	public interface IPerTxService
 	{
 		string SayHello();
+
 		bool Disposed { get; }
 		Guid Id { get; }
 	}
 
 	public class DisposeMeOnce : IPerTxService, IDisposable
 	{
-		private readonly Guid _NewGuid;
-		private bool _Disposed;
+		private readonly Guid newGuid;
+		private bool disposed;
 
 		public DisposeMeOnce(Guid newGuid)
 		{
-			_NewGuid = newGuid;
+			this.newGuid = newGuid;
 		}
 
 		public bool Disposed
 		{
-			get { return _Disposed; }
+			get { return disposed; }
 		}
 
 		public Guid Id
 		{
-			get { return _NewGuid; }
+			get { return newGuid; }
 		}
 
 		public string SayHello()
@@ -335,10 +338,11 @@ Test 'Castle.Facilities.AutoTx.Tests.PerTransactionLifestyle_Releasing.Concurren
 
 		public void Dispose()
 		{
-			if (_Disposed)
+			if (disposed)
 				Assert.Fail("disposed DisposeMeOnce twice");
 
-			_Disposed = true;
+			disposed = true;
 		}
 	}
+	// ReSharper restore InconsistentNaming
 }

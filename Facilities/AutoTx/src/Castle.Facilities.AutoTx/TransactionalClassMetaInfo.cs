@@ -21,11 +21,13 @@ using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Reflection;
-using Castle.Services.Transaction;
-using Castle.Services.Transaction.Internal;
+using Castle.Transactions;
+using Castle.Transactions.Internal;
 
 namespace Castle.Facilities.AutoTx
 {
+	using Castle.Transactions.Helpers;
+
 	internal sealed class TransactionalClassMetaInfo
 	{
 		private readonly Dictionary<MethodInfo, TransactionAttribute> _TxMethods;
