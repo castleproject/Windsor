@@ -238,7 +238,7 @@ namespace CastleTests
 			var exception = Assert.Throws<ConverterException>(() => converter.PerformConversion(type, typeof(Type)));
 
 			var message = string.Format(
-				"Could not convert string '{0}' to a type. Assembly was not found. Make sure it was deployedand the name was not mistyped.",
+				"Could not convert string '{0}' to a type. Assembly was not found. Make sure it was deployed and the name was not mistyped.",
 				type);
 
 			Assert.AreEqual(message, exception.Message);
