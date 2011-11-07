@@ -1,7 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
-<configuration>
-  <components>
-    <component id='a' type='CastleTests.Components.A' customLifestyleType='CustomLifestyleManager'>
-    </component>
-  </components>
-</configuration>

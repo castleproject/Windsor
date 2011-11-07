@@ -1,8 +1,0 @@
-<configuration>
-  <components>
-    <component id='int.repos' 
-      service='CastleTests.Components.IRepository`1[[System.Int32, mscorlib]]' 
-      type='LoggingRepositoryDecorator`1[[System.Int32, mscorlib]]'>
-    </component>
-    </components>
-</configuration>

@@ -14,11 +14,9 @@
 
 namespace Castle.Windsor.Diagnostics.Extensions
 {
-	using System;
 	using System.Collections.Generic;
 	using System.Linq;
 
-	using Castle.Core.Internal;
 	using Castle.MicroKernel;
 	using Castle.Windsor.Diagnostics.DebuggerViews;
 
@@ -31,8 +29,7 @@ namespace Castle.Windsor.Diagnostics.Extensions
 		public override IEnumerable<DebuggerViewItem> Attach()
 		{
 			var map = diagnostic.Inspect();
-			var items = map.Select(p => BuildServiceView(p, p.Key.ToCSharpString())).ToArray();
-			Array.Sort(items, (i1, i2) => i1.Name.CompareTo(i2.Name));
+			var items = map.OrderBy(p => p.Key.Name).Select(p => BuildServiceView(p, p.Key.Name)).ToArray();
 			return new[]
 			{
 				new DebuggerViewItem(name, "Count = " + items.Length, items)

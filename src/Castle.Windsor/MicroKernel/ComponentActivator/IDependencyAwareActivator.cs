@@ -29,7 +29,7 @@ namespace Castle.MicroKernel.ComponentActivator
 		bool CanProvideRequiredDependencies(ComponentModel component);
 
 		/// <summary>
-		/// Should return <c>true</c> if the activated instances of the <see cref="ComponentModel"/> are managed externally to the container. That means container will not try to track the objects in <see cref="IReleasePolicy"/>.
+		/// Should return <c>true</c> if the activated instances of the <see cref="component"/> are managed externally to the container. That means container will not try to track the objects in <see cref="IReleasePolicy"/>.
 		/// </summary>
 		/// <param name="component"></param>
 		/// <returns></returns>

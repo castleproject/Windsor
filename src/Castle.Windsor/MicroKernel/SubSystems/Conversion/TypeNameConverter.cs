@@ -122,7 +122,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 						name, assembly.FullName));
 				}
 				throw new ConverterException(String.Format(
-					"Could not convert string '{0}' to a type. Assembly was not found. Make sure it was deployed and the name was not mistyped.",
+					"Could not convert string '{0}' to a type. Assembly was not found. Make sure it was deployedand the name was not mistyped.",
 					name));
 			}
 			throw new ConverterException(String.Format(
