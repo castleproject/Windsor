@@ -18,3 +18,4 @@ _ReSharper*
 #leftovers from merge
 *.orig
 *.bak
+*.sln.DotSettings.user

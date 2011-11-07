@@ -22,9 +22,6 @@
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile />
   </PropertyGroup>
-  
-  
-  
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'NET40-Release|AnyCPU'">
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>
@@ -74,7 +71,6 @@
     <DebugType>full</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
-  
   <PropertyGroup>
     <DefineConstants>$(DefineConstants);$(BuildConstants)</DefineConstants>
   </PropertyGroup>
@@ -85,18 +81,6 @@
     <Reference Include="Castle.Core">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\$(BuildConfigKey)\Castle.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="Castle.Facilities.Logging">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\$(BuildConfigKey)\Castle.Facilities.Logging.dll</HintPath>
-    </Reference>
-    <Reference Include="Castle.Services.Logging.Log4netIntegration">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\$(BuildConfigKey)\Castle.Services.Logging.Log4netIntegration.dll</HintPath>
-    </Reference>
-    <Reference Include="Castle.Windsor">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\$(BuildConfigKey)\Castle.Windsor.dll</HintPath>
     </Reference>
     <Reference Include="log4net">
       <SpecificVersion>False</SpecificVersion>
@@ -110,7 +94,6 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
-    <Reference Include="System.Data" />
     <Reference Include="System.Data.Services" />
     <Reference Include="System.Runtime.Serialization">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
@@ -213,6 +196,10 @@
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Castle.Facilities.Logging\Castle.Facilities.Logging.csproj">
+      <Project>{32D54D33-206F-44EE-8329-8480ABE049B1}</Project>
+      <Name>Castle.Facilities.Logging</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Castle.Facilities.WcfIntegration.Demo\Castle.Facilities.WcfIntegration.Demo.csproj">
       <Project>{BCDBC6AC-C85A-4564-AB6E-354262BB1A87}</Project>
       <Name>Castle.Facilities.WcfIntegration.Demo</Name>
@@ -220,6 +207,10 @@
     <ProjectReference Include="..\Castle.Facilities.WcfIntegration\Castle.Facilities.WcfIntegration.csproj">
       <Project>{0F1CAD31-322E-4266-B3A0-BB424E1AE0A9}</Project>
       <Name>Castle.Facilities.WcfIntegration</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Castle.Windsor\Castle.Windsor.csproj">
+      <Project>{60EFCB9B-E3FF-46A5-A2D2-D9F0EF75D5FE}</Project>
+      <Name>Castle.Windsor</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

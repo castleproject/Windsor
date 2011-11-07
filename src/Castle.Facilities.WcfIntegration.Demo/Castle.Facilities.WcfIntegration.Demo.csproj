@@ -2,6 +2,7 @@
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
   <PropertyGroup>
     <RootPath Condition=" '$(RootPath)' == '' ">$(MSBuildProjectDirectory)\..\..</RootPath>
+    <UseIISExpress>false</UseIISExpress>
   </PropertyGroup>
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">NET40-Debug</Configuration>
@@ -123,17 +124,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\$(BuildConfigKey)\Castle.Core.dll</HintPath>
     </Reference>
-    <Reference Include="Castle.Facilities.Logging">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\$(BuildConfigKey)\Castle.Facilities.Logging.dll</HintPath>
-    </Reference>
     <Reference Include="Castle.Services.Logging.Log4netIntegration">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\$(BuildConfigKey)\Castle.Services.Logging.Log4netIntegration.dll</HintPath>
-    </Reference>
-    <Reference Include="Castle.Windsor">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\$(BuildConfigKey)\Castle.Windsor.dll</HintPath>
     </Reference>
     <Reference Include="log4net">
       <SpecificVersion>False</SpecificVersion>
@@ -192,9 +185,17 @@
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Castle.Facilities.Logging\Castle.Facilities.Logging.csproj">
+      <Project>{32D54D33-206F-44EE-8329-8480ABE049B1}</Project>
+      <Name>Castle.Facilities.Logging</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Castle.Facilities.WcfIntegration\Castle.Facilities.WcfIntegration.csproj">
       <Project>{0F1CAD31-322E-4266-B3A0-BB424E1AE0A9}</Project>
       <Name>Castle.Facilities.WcfIntegration</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Castle.Windsor\Castle.Windsor.csproj">
+      <Project>{60EFCB9B-E3FF-46A5-A2D2-D9F0EF75D5FE}</Project>
+      <Name>Castle.Windsor</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
