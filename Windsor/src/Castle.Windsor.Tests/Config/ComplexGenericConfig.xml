@@ -1,0 +1,56 @@
+<configuration>
+  <components>
+
+    <component id='logging.repository' 
+      service='CastleTests.Components.IRepository`1' 
+      type='LoggingRepositoryDecorator`1'>
+      <parameters>
+        <inner>${generic.repository}</inner>
+      </parameters>
+    </component>
+
+    <component id='caching' 
+      service='ICache`1' 
+      type='DictionaryCache`1'>
+    </component>
+
+    <component id='no-caching' 
+      service='ICache`1' 
+      type='NullCache`1'>
+    </component>
+
+    <component id='reviewer.repository' 
+       service='CastleTests.Components.IRepository`1[[IReviewer]]' 
+       type='ReviewerRepository' >
+      <parameters>
+        <Name>Reviewer Repository</Name>
+      </parameters>
+    </component>
+
+    <component id='generic.repository' 
+       service='CastleTests.Components.IRepository`1' 
+       type='DemoRepository`1' >
+      <parameters>
+        <Name>Generic Repostiory</Name>
+      </parameters>
+    </component>
+
+    <component id='reviewer.logging.repository' 
+        service='CastleTests.Components.IRepository`1[[IReviewableEmployee]]' 
+        type='LoggingRepositoryDecorator`1[[IReviewableEmployee]]'>
+      <parameters>
+        <inner>${generic.repository.no-cache}</inner>
+      </parameters>
+    </component>
+
+    <component id='generic.repository.no-cache' 
+        service='DemoRepository`1[[IReviewableEmployee]]'
+        type='DemoRepository`1[[IReviewableEmployee]]'   >
+      <parameters>
+        <Name>Generic Repostiory With No Cache</Name>
+        <Cache>${no-caching}</Cache>
+      </parameters>
+    </component>
+
+  </components>
+</configuration>

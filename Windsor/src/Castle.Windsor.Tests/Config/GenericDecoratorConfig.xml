@@ -1,0 +1,27 @@
+<configuration>
+  <components>
+    <component id='int.repos' 
+      service='CastleTests.Components.IRepository`1' 
+      type='LoggingRepositoryDecorator`1'>
+      <parameters>
+        <inner>${int.repos.second}</inner>
+      </parameters>
+    </component>
+
+    <component id='int.repos.first' 
+       service='CastleTests.Components.IRepository`1' 
+       type='DemoRepository`1' >
+      <parameters>
+        <Name>second</Name>
+      </parameters>
+    </component>
+
+    <component id='int.repos.second' 
+       service='CastleTests.Components.IRepository`1' 
+       type='DemoRepository`1' >
+      <parameters>
+        <Name>second</Name>
+      </parameters>
+    </component>
+  </components>
+</configuration>

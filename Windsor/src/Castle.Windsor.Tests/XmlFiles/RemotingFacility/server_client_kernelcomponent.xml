@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+
+  <facilities>
+
+    <facility
+		id="remote.facility"
+		type="Castle.Facilities.Remoting.RemotingFacility, Castle.Facilities.Remoting"
+		isServer="true"
+		registryUri="kernel.rem"
+		remotingConfigurationFile="RemotingTcpConfig2.config"
+		isClient="true"
+		remoteKernelUri="tcp://localhost:2133/kernel.rem"
+		baseUri="tcp://localhost:2133" />
+
+  </facilities>
+
+  <components>
+
+    <component
+		id="calc.service.c1"
+		type="CalcServiceRemotingImpl"
+		remoteserver="component" />
+
+    <component
+     id="calc.service"
+     service="ICalcService"
+     type="CalcServiceRemotingImpl"
+     remoteclient="component" />
+
+  </components>
+
+</configuration>

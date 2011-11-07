@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+
+  <facilities>
+
+    <facility
+		id="remote.facility"
+		type="Castle.Facilities.Remoting.RemotingFacility, Castle.Facilities.Remoting"
+		remotingConfigurationFile="RemotingTcpConfigClient.config"
+		isClient="true"
+		remoteKernelUri="tcp://localhost:2133/kernel.rem"
+		baseUri="tcp://localhost:2133" />
+
+  </facilities>
+
+  <components>
+
+    <component
+		id="calc.service"
+		service="ICalcService"
+		type="CalcServiceRemotingImpl"
+		remoteclient="recoverableComponent" />
+    <!-- If the server specifies a uri, the full uri (baseUri + server uri) must be secified here too 
+			server:  uri="test" 
+			client:  uri="#{baseuri}/test"-->
+  </components>
+
+</configuration>

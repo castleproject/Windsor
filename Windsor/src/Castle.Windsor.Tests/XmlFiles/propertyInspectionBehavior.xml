@@ -1,0 +1,37 @@
+<configuration>
+
+	<components>
+
+		<component id="comp1" 
+			type="ExtendedComponentWithProperties"
+			inspectionBehavior="None">
+			<parameters>
+				<Prop1>Name</Prop1>
+				<Prop2>1</Prop2>
+				<Prop3>2</Prop3>
+			</parameters>
+		</component>
+
+		<component id="comp2" 
+			type="ExtendedComponentWithProperties"
+			inspectionBehavior="All">
+			<parameters>
+				<Prop1>Name</Prop1>
+				<Prop2>1</Prop2>
+				<Prop3>2</Prop3>
+			</parameters>
+		</component>
+
+		<component id="comp3" 
+			type="ExtendedComponentWithProperties"
+			inspectionBehavior="DeclaredOnly">
+			<parameters>
+				<Prop1>Name</Prop1>
+				<Prop2>1</Prop2>
+				<Prop3>2</Prop3>
+			</parameters>
+		</component>
+
+	</components>
+
+</configuration>

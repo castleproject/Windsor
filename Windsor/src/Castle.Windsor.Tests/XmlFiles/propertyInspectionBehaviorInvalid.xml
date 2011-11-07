@@ -1,0 +1,12 @@
+<configuration>
+
+	<components>
+
+		<component id="comp1" 
+			type="ExtendedComponentWithProperties"
+			inspectionBehavior="Invalid">
+		</component>
+
+	</components>
+
+</configuration>

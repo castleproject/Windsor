@@ -1,0 +1,22 @@
+<configuration>
+
+  <facilities>
+    <facility type="Castle.Facilities.TypedFactory.TypedFactoryFacility, Castle.Windsor">
+
+      <factories>
+        <factory id="calculator.factory"
+            interface="ICalculatorFactory"
+            creation="Create" destruction="Release" />
+
+      </factories>
+
+    </facility>
+  </facilities>
+
+  <components>
+    <component type="Castle.DynamicProxy.StandardInterceptor, Castle.Core" />
+    
+    <component id="default" type="CalculatorServiceWithMultipleInterfaces" service="ICalcService" />
+  </components>
+
+</configuration>

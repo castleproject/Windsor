@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+  <components>
+    <component id="returns5" type="ResultModifierInterceptor">
+      <parameters>
+        <returnValue>5</returnValue>
+      </parameters>
+    </component>
+        <component id="returns10" type="ResultModifierInterceptor">
+      <parameters>
+        <returnValue>10</returnValue>
+      </parameters>
+    </component>
+    <component
+        id="component"
+        type="CalculatorService">
+      <interceptors>
+        <interceptor>${returns10}</interceptor>
+      </interceptors>
+    </component>
+  </components>
+</configuration>

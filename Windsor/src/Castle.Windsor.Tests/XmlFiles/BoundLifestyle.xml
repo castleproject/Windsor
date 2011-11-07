@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+  <components>
+    <component type="GenericA`1" />
+    <component type="GenericB`1" />
+    <component type='CastleTests.Components.A' scopeRootBinderType='CastleTests.Components.BoundComponent+Binder' />
+  </components>
+</configuration>

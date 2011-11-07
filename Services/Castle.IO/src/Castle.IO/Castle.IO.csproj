@@ -1,0 +1,179 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{59637705-C235-488A-876B-E4B1A39E9BF8}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Castle.IO</RootNamespace>
+    <AssemblyName>Castle.IO</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <CodeContractsAssemblyMode>0</CodeContractsAssemblyMode>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeContractsEnableRuntimeChecking>False</CodeContractsEnableRuntimeChecking>
+    <CodeContractsRuntimeOnlyPublicSurface>False</CodeContractsRuntimeOnlyPublicSurface>
+    <CodeContractsRuntimeThrowOnFailure>True</CodeContractsRuntimeThrowOnFailure>
+    <CodeContractsRuntimeCallSiteRequires>False</CodeContractsRuntimeCallSiteRequires>
+    <CodeContractsRuntimeSkipQuantifiers>False</CodeContractsRuntimeSkipQuantifiers>
+    <CodeContractsRunCodeAnalysis>False</CodeContractsRunCodeAnalysis>
+    <CodeContractsNonNullObligations>False</CodeContractsNonNullObligations>
+    <CodeContractsBoundsObligations>False</CodeContractsBoundsObligations>
+    <CodeContractsArithmeticObligations>False</CodeContractsArithmeticObligations>
+    <CodeContractsEnumObligations>False</CodeContractsEnumObligations>
+    <CodeContractsRedundantAssumptions>False</CodeContractsRedundantAssumptions>
+    <CodeContractsRunInBackground>True</CodeContractsRunInBackground>
+    <CodeContractsShowSquigglies>False</CodeContractsShowSquigglies>
+    <CodeContractsUseBaseLine>False</CodeContractsUseBaseLine>
+    <CodeContractsEmitXMLDocs>True</CodeContractsEmitXMLDocs>
+    <CodeContractsCustomRewriterAssembly />
+    <CodeContractsCustomRewriterClass />
+    <CodeContractsLibPaths />
+    <CodeContractsExtraRewriteOptions />
+    <CodeContractsExtraAnalysisOptions />
+    <CodeContractsBaseLineFile />
+    <CodeContractsCacheAnalysisResults>False</CodeContractsCacheAnalysisResults>
+    <CodeContractsRuntimeCheckingLevel>Full</CodeContractsRuntimeCheckingLevel>
+    <CodeContractsReferenceAssembly>Build</CodeContractsReferenceAssembly>
+    <CodeContractsAnalysisWarningLevel>0</CodeContractsAnalysisWarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>..\..\buildscripts\CastleKey.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Mono.Posix">
+      <HintPath>..\..\lib\mono26\Mono.Posix.dll</HintPath>
+    </Reference>
+    <Reference Include="NLog, Version=2.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\NLog.2.0.0.2000\lib\net40\NLog.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="CommonExtensions.cs" />
+    <Compile Include="Contracts\IDirectoryAdapterContract.cs" />
+    <Compile Include="Contracts\IFileAdapterContract.cs" />
+    <Compile Include="Contracts\IMapPathContract.cs" />
+    <Compile Include="DirectoryExtensions.cs" />
+    <Compile Include="ExecuteOnDispose.cs" />
+    <Compile Include="FileExtensions.cs" />
+    <Compile Include="FileSystems\AbstractDirectory.cs" />
+    <Compile Include="FileSystems\AbstractFileSystem.cs" />
+    <Compile Include="FileSystems\Validate.cs" />
+    <Compile Include="FileSystems\FileStreamDouble.cs" />
+    <Compile Include="FileSystems\FileSystemNotificationIdentifier.cs" />
+    <Compile Include="FileSystems\FileSystemNotifier.cs" />
+    <Compile Include="FileSystems\IFileSystemNotifier.cs" />
+    <Compile Include="FileSystems\IFileSytemNotifierEntry.cs" />
+    <Compile Include="FileSystems\InMemory\ChildItem.cs" />
+    <Compile Include="FileSystems\InMemory\CreationExtensions.cs" />
+    <Compile Include="FileSystems\InMemory\InMemoryDirectory.cs" />
+    <Compile Include="FileSystems\InMemory\InMemoryFile.cs" />
+    <Compile Include="FileSystems\InMemory\InMemoryFileSystem.cs" />
+    <Compile Include="FileSystems\InMemory\InMemoryFileSystemNotifier.cs" />
+    <Compile Include="FileSystems\InMemory\InMemoryFileSystemNotifierEntry.cs" />
+    <Compile Include="FileSystems\InMemory\InMemoryTemporaryDirectory.cs" />
+    <Compile Include="FileSystems\InMemory\InMemoryTemporaryFile.cs" />
+    <Compile Include="FileSystems\Local\AggregateException.cs" />
+    <Compile Include="FileSystems\Local\LocalDirectory.cs" />
+    <Compile Include="FileSystems\Local\LocalFile.cs" />
+    <Compile Include="FileSystems\Local\LocalFileSystem.cs" />
+    <Compile Include="FileSystems\Local\LocalFileSystemNotifier.cs" />
+    <Compile Include="FileSystems\Local\LocalFileSystemNotifierEntry.cs" />
+    <Compile Include="FileSystems\Local\TemporaryDirectory.cs" />
+    <Compile Include="FileSystems\Local\TemporaryLocalFile.cs" />
+    <Compile Include="FileSystems\Local\Unix\UnixDirectory.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="FileSystems\Local\Unix\UnixFileSystem.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="FileSystems\Local\Win32\Interop\CopyProgressCallbackReason.cs" />
+    <Compile Include="FileSystems\Local\Win32\Interop\CopyProgressResult.cs" />
+    <Compile Include="FileSystems\Local\Win32\Interop\FileEnumExtensions.cs" />
+    <Compile Include="FileSystems\Local\Win32\Interop\FINDEX_INFO_LEVELS.cs" />
+    <Compile Include="FileSystems\Local\Win32\Interop\FINDEX_SEARCH_OPS.cs" />
+    <Compile Include="FileSystems\Local\Win32\Interop\JunctionPoint.cs" />
+    <Compile Include="FileSystems\Local\Win32\Interop\MoveFileFlags.cs" />
+    <Compile Include="FileSystems\Local\Win32\Interop\NativeFileAccess.cs" />
+    <Compile Include="FileSystems\Local\Win32\Interop\NativeFileMode.cs" />
+    <Compile Include="FileSystems\Local\Win32\Interop\NativeFileOptions.cs" />
+    <Compile Include="FileSystems\Local\Win32\Interop\NativeFileShare.cs" />
+    <Compile Include="FileSystems\Local\Win32\Interop\SECURITY_ATTRIBUTES.cs" />
+    <Compile Include="FileSystems\Local\Win32\Interop\WIN32_FIND_DATA.cs" />
+    <Compile Include="FileSystems\Local\Win32\Win32Directory.cs" />
+    <Compile Include="FileSystems\Local\Win32\Win32FileSystem.cs" />
+    <Compile Include="IDirectory.cs" />
+    <Compile Include="IDirectoryAdapter.cs" />
+    <Compile Include="Contracts\IDirectoryContract.cs" />
+    <Compile Include="IFile.cs" />
+    <Compile Include="IFileAdapter.cs" />
+    <Compile Include="IFileSystem.cs" />
+    <Compile Include="Contracts\IFileSystemContract.cs" />
+    <Compile Include="IFileSystemItem.cs" />
+    <Compile Include="Contracts\IFileSystemItemTContract.cs" />
+    <Compile Include="Contracts\IFileSystemItemContract.cs" />
+    <Compile Include="IMapPath.cs" />
+    <Compile Include="Internal\Directory.cs" />
+    <Compile Include="Internal\EnumerableExtensions.cs" />
+    <Compile Include="Internal\LongPathCommon.cs" />
+    <Compile Include="Internal\LongPathDirectory.cs" />
+    <Compile Include="Internal\LongPathFile.cs" />
+    <Compile Include="Internal\MapPathImpl.cs" />
+    <Compile Include="FileSystems\Local\Win32\Interop\NativeMethods.cs" />
+    <Compile Include="Path Statics.cs" />
+    <Compile Include="PathExtensions.cs" />
+    <Compile Include="PathInfo.cs" />
+    <Compile Include="PathType.cs" />
+    <Compile Include="ITemporaryDirectory.cs" />
+    <Compile Include="ITemporaryFile.cs" />
+    <Compile Include="Path Instance.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SafeFindHandle.cs" />
+    <Compile Include="SearchScope.cs" />
+    <Compile Include="StreamExtensions.cs" />
+    <Compile Include="Extensions\StringExtensions.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\buildscripts\CastleKey.snk">
+      <Link>CastleKey.snk</Link>
+    </None>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

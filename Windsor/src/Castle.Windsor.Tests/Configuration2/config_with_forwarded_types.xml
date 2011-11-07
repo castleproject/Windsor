@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+  <components>
+    <component id="hasForwards" type="Castle.MicroKernel.Tests.ClassComponents.TwoInterfacesImpl, Castle.Windsor.Tests" service="Castle.MicroKernel.Tests.ClassComponents.ICommon, Castle.Windsor.Tests">
+      <forwardedTypes>
+        <add service="Castle.MicroKernel.Tests.ClassComponents.ICommon2, Castle.Windsor.Tests" />
+      </forwardedTypes>
+    </component>
+  </components>
+</configuration>

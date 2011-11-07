@@ -1,0 +1,25 @@
+<configuration>
+
+	<components>
+
+    <component type="Castle.DynamicProxy.StandardInterceptor, Castle.Core">
+    </component>
+    
+    <component id="default" 
+      type="CalculatorServiceWithMultipleInterfaces"
+      service="ICalcService">
+    </component>
+    
+    <component id="noSingle" 
+      type="CalculatorServiceWithMultipleInterfaces"
+      service="ICalcService">
+    </component>
+
+    <component id="hasInternalInterface"
+        type="CalculatorServiceWithInternalInterface"
+        service="ICalcService">
+    </component>
+
+  </components>
+
+</configuration>
