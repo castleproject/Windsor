@@ -14,14 +14,6 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Castle.Facilities.WcfIntegration</RootNamespace>
     <AssemblyName>Castle.Facilities.WcfIntegration</AssemblyName>
-    <FileUpgradeFlags>
-    </FileUpgradeFlags>
-    <UpgradeBackupLocation>
-    </UpgradeBackupLocation>
-    <OldToolsVersion>2.0</OldToolsVersion>
-    <IsWebBootstrapper>true</IsWebBootstrapper>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\buildscripts\CastleKey.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'NET40-Release|AnyCPU'">
@@ -35,17 +27,7 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <NoWarn>1591</NoWarn>
     <DebugType>pdbonly</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <CodeAnalysisLogFile>bin\Release\Castle.Facilities.WcfIntegration.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
-    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
-    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
     <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
-    <CodeAnalysisIgnoreBuiltInRuleSets>true</CodeAnalysisIgnoreBuiltInRuleSets>
-    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
-    <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
-    <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'NET40-Debug|AnyCPU'">
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
@@ -303,33 +285,6 @@
     <Compile Include="Service\WindsorInstanceProvider.cs" />
     <Compile Include="Behaviors\WcfServiceExtensions.cs" />
     <Compile Include="WcfIntegrationExtensions.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 2.0 %28x86%29</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Framework.3.0">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.0 %28x86%29</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\buildscripts\CastleKey.snk">

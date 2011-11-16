@@ -5,7 +5,7 @@
 
 	Project Settings file for VS and external build files
 
-Copyright 2004-2010 Castle Project - http://www.castleproject.org/
+Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -66,6 +66,12 @@ limitations under the License.
 		</PropertyGroup>
 	</Target>
 
+	<!-- Import project specific settings for given Visual Studio project -->
+	<Import
+		Project="$(MSBuildProjectDirectory)\Settings.proj"
+		Condition="'$(TargetFrameworkVersion)' != '' and Exists('$(MSBuildProjectDirectory)\Settings.proj')"
+		/>
+
 
 	<!-- Import framework version specific settings, like Settings-v3.5 or Settings-v4.0 -->
 	<Import
@@ -78,4 +84,5 @@ limitations under the License.
 		Project="$(RootPath)\Settings-SL.proj"
 		Condition="'$(TargetFrameworkIdentifier)' == 'Silverlight' and Exists('$(RootPath)\Settings-SL.proj')"
 		/>
+		
 </Project>
