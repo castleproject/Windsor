@@ -18,7 +18,6 @@ namespace CastleTests.Lifecycle
 
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Tests.ClassComponents;
-	using Castle.MicroKernel.Tests.Lifestyle;
 	using Castle.MicroKernel.Tests.Pools;
 
 	using CastleTests.Components;
@@ -119,10 +118,6 @@ namespace CastleTests.Lifecycle
 		}
 
 		public class DisposableTemplateEngine : DisposableBase
-		{
-		}
-
-		public class EmptyClass
 		{
 		}
 
@@ -259,5 +254,22 @@ namespace CastleTests.Lifecycle
 			Assert.IsTrue(instance1.FakeRoot.A.IsDisposed);
 			Assert.IsTrue(instance1.FakeRoot.B.IsDisposed);
 		}
+
+		[Test]
+		[Bug("IOC-320")]
+		public void Expected_exception_during_creation_doesnt_prevent_from_being_released_properly()
+		{
+			Container.Register(Component.For<GenA<int>>().LifestyleTransient(),
+			                   Component.For<B>().UsingFactoryMethod<B>(delegate
+			                   {
+			                   	throw new NotImplementedException("boo hoo!");
+			                   }).LifestyleTransient()
+			                   	.OnDestroy(Assert.IsNotNull));
+
+			var a = Container.Resolve<GenA<int>>();
+
+			Container.Release(a);
+		}
+
 	}
 }

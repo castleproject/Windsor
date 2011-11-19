@@ -384,6 +384,10 @@ namespace Castle.MicroKernel.Context
 			{
 				return;
 			}
+			if (burden.Instance == null)
+			{
+				return;
+			}
 			if (burden.RequiresPolicyRelease == false)
 			{
 				return;
