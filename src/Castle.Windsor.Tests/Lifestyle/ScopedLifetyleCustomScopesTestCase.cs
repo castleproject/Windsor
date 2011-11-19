@@ -28,6 +28,7 @@ namespace CastleTests.Lifestyle
 		[Test]
 		public void Can_use_custom_scope_accessor_with_scoped_lifestyle()
 		{
+			StaticScopeAccessor.ResetScope();
 			Container.Register(Component.For<A>().LifestyleScoped(scopeAccessorType: typeof(StaticScopeAccessor)));
 
 			var a1 = Container.Resolve<A>();
@@ -39,6 +40,7 @@ namespace CastleTests.Lifestyle
 		[Test]
 		public void Can_use_custom_scope_accessor_with_scoped_lifestyle_generic()
 		{
+			StaticScopeAccessor.ResetScope();
 			Container.Register(Component.For<A>().LifestyleScoped<StaticScopeAccessor>());
 
 			var a1 = Container.Resolve<A>();
@@ -50,6 +52,7 @@ namespace CastleTests.Lifestyle
 		[Test]
 		public void Can_use_custom_scope_accessor_with_scoped_lifestyle_multiple()
 		{
+			StaticScopeAccessor.ResetScope();
 			Container.Register(Classes.FromThisAssembly()
 			                   	.Where(c => c.Is<A>())
 			                   	.LifestyleScoped<StaticScopeAccessor>());

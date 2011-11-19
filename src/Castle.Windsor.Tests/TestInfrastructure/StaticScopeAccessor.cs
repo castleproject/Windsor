@@ -19,7 +19,7 @@ namespace CastleTests.TestInfrastructure
 
 	public class StaticScopeAccessor : IScopeAccessor
 	{
-		private static readonly DefaultLifetimeScope scope = new DefaultLifetimeScope();
+		private static DefaultLifetimeScope scope = new DefaultLifetimeScope();
 
 		public void Dispose()
 		{
@@ -34,6 +34,11 @@ namespace CastleTests.TestInfrastructure
 		public static DefaultLifetimeScope Scope
 		{
 			get { return scope; }
+		}
+
+		public static void ResetScope()
+		{
+			scope = new DefaultLifetimeScope();
 		}
 	}
 }

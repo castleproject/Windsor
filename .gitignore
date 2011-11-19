@@ -19,3 +19,4 @@ _ReSharper*
 *.orig
 *.bak
 *.sln.DotSettings.user
+*.DotSettings.user

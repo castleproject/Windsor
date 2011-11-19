@@ -17,8 +17,14 @@ namespace CastleTests.Lifestyle
 	using System;
 
 	using Castle.Core;
+
+	using Castle.MicroKernel;
+
 	using Castle.MicroKernel.Lifestyle;
 	using Castle.MicroKernel.Registration;
+
+	using Castle.Windsor;
+
 	using Castle.Windsor.Tests.ClassComponents;
 
 	using CastleTests.Components;
@@ -218,6 +224,29 @@ namespace CastleTests.Lifestyle
 					Assert.IsNull(scope);
 				}
 			}
+		}
+
+		[Test]
+		[Bug("IOC-319")]
+		public void Nested_container_and_scope_used_together_dont_cause_components_to_be_released_twice()
+		{
+			DisposableFoo.ResetDisposedCount();
+			Container.Register(Component.For<IWindsorContainer>().LifeStyle.Scoped()
+			                   	.UsingFactoryMethod(k =>
+			                   	{
+			                   		var container = new WindsorContainer();
+			                   		container.Register(Component.For<DisposableFoo>().LifestyleScoped());
+
+			                   		k.AddChildKernel(container.Kernel);
+			                   		return container;
+			                   	}));
+			using (Container.BeginScope())
+			{
+				var child = Container.Resolve<IWindsorContainer>();
+				child.Resolve<DisposableFoo>();
+			}
+
+			Assert.AreEqual(1, DisposableFoo.DisposedCount);
 		}
 	}
 }

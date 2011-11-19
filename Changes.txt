@@ -5,6 +5,7 @@
 - implemented IOC-312 - Add shortcut methods to API to register types from given namespace
 
 - fixed IOC-320 - System.ArgumentNullException at Castle.MicroKernel.Burden.Release(IReleasePolicy policy)
+- fixed IOC-319 - Concurrency problem when child container is used 
 - fixed IOC-315 - ResolveAll should not ignore generic constraint violations on dependencies of resolved component
 - fixed IOC-314 - Parsing container configuration uses the current culture
 - fixed IOC-311 - OptimizeDependencyResolutionDisposable eats exceptions thrown during installation
