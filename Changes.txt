@@ -1,3 +1,5 @@
+3.0.0 RC 1 (2011-11-20)
+==================
 - implemented IOC-318 - Provide more high level API for fitering (and ignoring/requiring) properties at registration time
 - implemented IOC-317 - Add ability to reference AppSettings values in XML using #{property} syntax
 - implemented IOC-316 - Add attribute to specify default selector for a typed factory interface/delegate
