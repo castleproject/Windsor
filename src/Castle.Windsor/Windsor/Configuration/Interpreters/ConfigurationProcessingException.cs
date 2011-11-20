@@ -24,18 +24,18 @@ namespace Castle.Windsor.Configuration.Interpreters
 	{
 		public ConfigurationProcessingException(string message) : base(message)
 		{
-			HelpLink = Constants.ExceptionHelpLink;
+			ExceptionHelper.SetUp(this);
 		}
 
 		public ConfigurationProcessingException(string message, Exception innerException) : base(message, innerException)
 		{
-			HelpLink = Constants.ExceptionHelpLink;
+			ExceptionHelper.SetUp(this);
 		}
 
 #if (!SILVERLIGHT)
 		public ConfigurationProcessingException(SerializationInfo info, StreamingContext context) : base(info, context)
 		{
-			HelpLink = Constants.ExceptionHelpLink;
+			ExceptionHelper.SetUp(this);
 		}
 #endif
 	}

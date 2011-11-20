@@ -29,6 +29,8 @@ namespace CastleTests
 	{
 		private readonly DefaultConversionManager converter = new DefaultConversionManager();
 
+#if !SILVERLIGHT
+		// currently not supported by SL
 		[Test]
 		[SetCulture("pl-PL")]
 		[Bug("IOC-314")]
@@ -40,6 +42,7 @@ namespace CastleTests
 
 			Assert.AreEqual(123.456m, result);
 		}
+#endif
 
 		[Test]
 		public void PerformConversionInt()

@@ -33,7 +33,7 @@ namespace Castle.MicroKernel.Handlers
 		/// <param name = "name"></param>
 		public HandlerException(string message, ComponentName name) : base(message)
 		{
-			HelpLink = Constants.ExceptionHelpLink;
+			ExceptionHelper.SetUp(this);
 			Name = name;
 		}
 
@@ -46,7 +46,7 @@ namespace Castle.MicroKernel.Handlers
 		public HandlerException(string message, ComponentName name, Exception innerException)
 			: base(message, innerException)
 		{
-			HelpLink = Constants.ExceptionHelpLink;
+			ExceptionHelper.SetUp(this);
 			Name = name;
 		}
 
@@ -58,7 +58,7 @@ namespace Castle.MicroKernel.Handlers
 		/// <param name = "context">The contextual information about the source or destination.</param>
 		public HandlerException(SerializationInfo info, StreamingContext context) : base(info, context)
 		{
-			HelpLink = Constants.ExceptionHelpLink;
+			ExceptionHelper.SetUp(this);
 		}
 #endif
 

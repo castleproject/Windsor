@@ -27,18 +27,18 @@ namespace Castle.MicroKernel.Facilities
 	{
 		public FacilityException(string message) : base(message)
 		{
-			HelpLink = Constants.ExceptionHelpLink;
+			ExceptionHelper.SetUp(this);
 		}
 
 		public FacilityException(string message, Exception innerException) : base(message, innerException)
 		{
-			HelpLink = Constants.ExceptionHelpLink;
+			ExceptionHelper.SetUp(this);
 		}
 
 #if (!SILVERLIGHT)
 		public FacilityException(SerializationInfo info, StreamingContext context) : base(info, context)
 		{
-			HelpLink = Constants.ExceptionHelpLink;
+			ExceptionHelper.SetUp(this);
 		}
 #endif
 	}

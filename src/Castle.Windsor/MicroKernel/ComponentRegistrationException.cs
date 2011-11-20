@@ -32,13 +32,13 @@ namespace Castle.MicroKernel
 		/// <param name = "message">The message.</param>
 		public ComponentRegistrationException(string message) : base(message)
 		{
-			HelpLink = Constants.ExceptionHelpLink;
+			ExceptionHelper.SetUp(this);
 		}
 
 		public ComponentRegistrationException(string message, Exception innerException)
 			: base(message, innerException)
 		{
-			HelpLink = Constants.ExceptionHelpLink;
+			ExceptionHelper.SetUp(this);
 		}
 
 #if (!SILVERLIGHT)
@@ -49,7 +49,7 @@ namespace Castle.MicroKernel
 		/// <param name = "context">The contextual information about the source or destination.</param>
 		public ComponentRegistrationException(SerializationInfo info, StreamingContext context) : base(info, context)
 		{
-			HelpLink = Constants.ExceptionHelpLink;
+			ExceptionHelper.SetUp(this);
 		}
 #endif
 	}

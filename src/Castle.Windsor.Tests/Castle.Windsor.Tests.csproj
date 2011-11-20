@@ -224,7 +224,7 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\$(BuildConfigKey)\Castle.Core.dll</HintPath>
     </Reference>
-    <Reference Include="Castle.Services.Logging.Log4netIntegration">
+    <Reference Include="Castle.Services.Logging.Log4netIntegration" Condition="$(MSBuildTargets)!='Silverlight 4.0'">
       <HintPath>..\..\lib\$(BuildConfigKey)\Castle.Services.Logging.Log4netIntegration.dll</HintPath>
     </Reference>
     <Reference Include="Castle.Services.Logging.NLogIntegration">
@@ -241,7 +241,7 @@
     <Reference Include="PresentationFramework" Condition="$(MSBuildTargets)!='Silverlight 4.0'" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Windows.Forms" Condition="$(MSBuildTargets)!='Silverlight 4.0'"  />
     <Reference Include="System.Xaml" Condition="$(MSBuildTargets)!='Silverlight 4.0'" />
     <Reference Include="System.Xml" />
     <ProjectReference Include="..\Castle.Facilities.EventWiring\Castle.Facilities.EventWiring.csproj">
@@ -270,7 +270,7 @@
       <Package>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</Package>
       <Private>True</Private>
     </ProjectReference>
-    <Reference Include="WindowsBase" />
+    <Reference Include="WindowsBase" Condition="$(MSBuildTargets)!='Silverlight 4.0'" />
   </ItemGroup>
   <ItemGroup Condition="$(MSBuildTargets)!='Silverlight 4.0'">
     <Reference Include="System.configuration" />
