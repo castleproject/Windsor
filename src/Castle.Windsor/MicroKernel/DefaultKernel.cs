@@ -626,7 +626,7 @@ namespace Castle.MicroKernel
 
 		private static IScopeAccessor CreateScopeAccessor(ComponentModel model)
 		{
-			var scopeAccessorType = (Type)model.ExtendedProperties[Constants.ScopeAccessorType];
+			var scopeAccessorType = model.GetScopeAccessorType();
 			if (scopeAccessorType == null)
 			{
 				return new LifetimeScopeAccessor();
