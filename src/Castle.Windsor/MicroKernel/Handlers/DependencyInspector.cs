@@ -21,7 +21,6 @@ namespace Castle.MicroKernel.Handlers
 	using System.Text;
 
 	using Castle.Core;
-	using Castle.MicroKernel.SubSystems.Conversion;
 
 	public class DependencyInspector : IDependencyInspector
 	{

@@ -226,13 +226,6 @@ namespace Castle.MicroKernel.Handlers
 				// TODO: this should be logged
 				return null;
 			}
-			catch (NoResolvableConstructorFoundException)
-			{
-				// it's pretty obvious when this exception is thrown methinks.
-				// this was added as temporary (how many times have you heard someone say that)
-				// workaround for issue IOC-239
-				return null;
-			}
 		}
 
 		public virtual bool CanResolve(CreationContext context, ISubDependencyResolver contextHandlerResolver, ComponentModel model,

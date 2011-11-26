@@ -33,9 +33,11 @@ namespace Castle.MicroKernel.Handlers
 		private ILifestyleManager lifestyleManager;
 
 		/// <summary>
-		///   Initializes a new instance of the <see cref = "DefaultHandler" /> class.
+		///   Initializes a new instance of the
+		///   <see cref="DefaultHandler" />
+		///   class.
 		/// </summary>
-		/// <param name = "model"></param>
+		/// <param name="model"></param>
 		public DefaultHandler(ComponentModel model) : base(model)
 		{
 		}
@@ -56,7 +58,7 @@ namespace Castle.MicroKernel.Handlers
 		/// <summary>
 		///   disposes the component instance (or recycle it)
 		/// </summary>
-		/// <param name = "burden"></param>
+		/// <param name="burden"></param>
 		/// <returns>true if destroyed</returns>
 		public override bool ReleaseCore(Burden burden)
 		{
@@ -67,14 +69,7 @@ namespace Castle.MicroKernel.Handlers
 		{
 			if (CurrentState == HandlerState.WaitingDependency)
 			{
-				var message = new StringBuilder("Can't create component '");
-				message.Append(ComponentModel.Name);
-				message.AppendLine("' as it has dependencies to be satisfied.");
-
-				var inspector = new DependencyInspector(message);
-				ObtainDependencyDetails(inspector);
-
-				throw new HandlerException(inspector.Message, ComponentModel.ComponentName);
+				throw UnresolvableHandlerException();
 			}
 		}
 
@@ -102,20 +97,20 @@ namespace Castle.MicroKernel.Handlers
 		///   Returns an instance of the component this handler
 		///   is responsible for
 		/// </summary>
-		/// <param name = "context"></param>
-		/// <param name = "requiresDecommission"></param>
-		/// <param name = "instanceRequired"></param>
-		/// <param name = "burden"></param>
+		/// <param name="context"></param>
+		/// <param name="requiresDecommission"></param>
+		/// <param name="instanceRequired"></param>
+		/// <param name="burden"></param>
 		/// <returns></returns>
 		protected object ResolveCore(CreationContext context, bool requiresDecommission, bool instanceRequired, out Burden burden)
 		{
 			if (IsBeingResolvedInContext(context))
 			{
 				var cache = lifestyleManager as IContextLifestyleManager;
-				if(cache != null)
+				if (cache != null)
 				{
 					var instance = cache.GetContextInstance(context);
-					if(instance != null)
+					if (instance != null)
 					{
 						burden = null;
 						return instance;
@@ -129,7 +124,7 @@ namespace Castle.MicroKernel.Handlers
 				}
 				var message = new StringBuilder();
 				message.AppendFormat("Dependency cycle has been detected when trying to resolve component '{0}'.",
-									 ComponentModel.Name);
+				                     ComponentModel.Name);
 				message.AppendLine();
 				message.AppendLine("The resolution tree that resulted in the cycle is the following:");
 				context.BuildCycleMessageFor(this, message);
@@ -146,12 +141,31 @@ namespace Castle.MicroKernel.Handlers
 
 				AssertNotWaitingForDependency();
 			}
-			using (var ctx = context.EnterResolutionContext(this, requiresDecommission))
+			try
 			{
-				var instance = lifestyleManager.Resolve(context, context.ReleasePolicy);
-				burden = ctx.Burden;
-				return instance;
+				using (var ctx = context.EnterResolutionContext(this, requiresDecommission))
+				{
+					var instance = lifestyleManager.Resolve(context, context.ReleasePolicy);
+					burden = ctx.Burden;
+					return instance;
+				}
 			}
+			catch (NoResolvableConstructorFoundException)
+			{
+				throw UnresolvableHandlerException();
+			}
+		}
+
+		private HandlerException UnresolvableHandlerException()
+		{
+			var message = new StringBuilder("Can't create component '");
+			message.Append(ComponentModel.Name);
+			message.AppendLine("' as it has dependencies to be satisfied.");
+
+			var inspector = new DependencyInspector(message);
+			ObtainDependencyDetails(inspector);
+
+			return new HandlerException(inspector.Message, ComponentModel.ComponentName);
 		}
 	}
 }
