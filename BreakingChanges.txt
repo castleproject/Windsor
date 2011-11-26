@@ -37,7 +37,7 @@ description - We unified how referencing components by type works all across Win
 fix - Remove Name (id in XML registration) from the referenced components if you're not using it
 	or reference the component by its name.
 ================================================================================================
-change - .Service method on mixing registration has been removed and replaced with.Component.
+change - .Service method on mixing registration has been removed and replaced with .Component.
 
 impact - low
 fixability - easy
@@ -531,7 +531,7 @@ change - Proxies no longer implicitly implement all interfaces of component impl
 impact - medium
 fixability - medium
 
-description - This original behavior was actually a bug and would produce onpredictible behavior
+description - This original behavior was actually a bug and would produce unpredictible behavior
 	for components exposing several services including their class.
 
 fix - if you were depending on the additional non-service intrfaces being forwarded to the proxy
