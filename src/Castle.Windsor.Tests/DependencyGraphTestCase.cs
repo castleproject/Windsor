@@ -12,23 +12,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.MicroKernel.Tests
+namespace CastleTests
 {
 	using System;
 
-	using Castle.MicroKernel.Handlers;
+	using Castle.MicroKernel;
 	using Castle.MicroKernel.Registration;
-	using Castle.Windsor.Tests;
-	using Castle.Windsor.Tests.ClassComponents;
 	using Castle.Windsor.Tests.Interceptors;
 
-	using CastleTests;
 	using CastleTests.Components;
 
 	using NUnit.Framework;
 
 	[TestFixture]
-	public class DependencyGraphTestCase:AbstractContainerTestCase
+	public class DependencyGraphTestCase : AbstractContainerTestCase
 	{
 		[Test]
 		public void CycleComponentGraphs()
@@ -37,11 +34,11 @@ namespace Castle.MicroKernel.Tests
 			Kernel.Register(Component.For<CycleB>().Named("b"));
 
 			var exception =
-				Assert.Throws<HandlerException>(() =>
-				                                Kernel.Resolve<CycleA>("a"));
+				Assert.Throws<CircularDependencyException>(() =>
+				                                           Kernel.Resolve<CycleA>("a"));
 			var expectedMessage =
 				string.Format(
-					"Can't create component 'a' as it has dependencies to be satisfied.{0}{0}'a' is waiting for the following dependencies:{0}- Service 'b' which was registered but is also waiting for dependencies.{0}'b' is waiting for the following dependencies:{0}- Service 'a' which was registered but is also waiting for dependencies.",
+					"Dependency cycle has been detected when trying to resolve component 'a'.{0}The resolution tree that resulted in the cycle is the following:{0}Component 'a' resolved as dependency of{0}	component 'b' resolved as dependency of{0}	component 'a' which is the root component being resolved.{0}",
 					Environment.NewLine);
 			Assert.AreEqual(expectedMessage, exception.Message);
 		}

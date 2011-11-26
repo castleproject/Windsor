@@ -17,6 +17,9 @@ namespace Castle.Windsor.Tests
 	using System;
 
 	using Castle.Core;
+
+	using Castle.MicroKernel;
+
 	using Castle.MicroKernel.Handlers;
 	using Castle.MicroKernel.Registration;
 	using Castle.Windsor.Configuration.Interpreters;
@@ -86,10 +89,10 @@ namespace Castle.Windsor.Tests
 			                   Component.For<CompD>().Named("compD"));
 
 			var exception =
-				Assert.Throws(typeof(HandlerException), () => Container.Resolve<CompA>("compA"));
+				Assert.Throws<CircularDependencyException>(() => Container.Resolve<CompA>("compA"));
 			var expectedMessage =
 				string.Format(
-					"Can't create component 'compA' as it has dependencies to be satisfied.{0}{0}'compA' is waiting for the following dependencies:{0}- Service 'compB' which was registered but is also waiting for dependencies.{0}'compB' is waiting for the following dependencies:{0}- Service 'compC' which was registered but is also waiting for dependencies.{0}'compC' is waiting for the following dependencies:{0}- Service 'compD' which was registered but is also waiting for dependencies.{0}'compD' is waiting for the following dependencies:{0}- Service 'compA' which was registered but is also waiting for dependencies.",
+					"Dependency cycle has been detected when trying to resolve component 'compA'.{0}The resolution tree that resulted in the cycle is the following:{0}Component 'compA' resolved as dependency of{0}	component 'compD' resolved as dependency of{0}	component 'compC' resolved as dependency of{0}	component 'compB' resolved as dependency of{0}	component 'compA' which is the root component being resolved.{0}",
 					Environment.NewLine);
 			Assert.AreEqual(expectedMessage, exception.Message);
 		}

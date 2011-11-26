@@ -23,7 +23,7 @@ namespace Castle.MicroKernel.Lifestyle
 	///   Only one instance is created first time an instance of the component is requested, and it is then reused for all subseque.
 	/// </summary>
 	[Serializable]
-	public class SingletonLifestyleManager : AbstractLifestyleManager
+	public class SingletonLifestyleManager : AbstractLifestyleManager, IContextLifestyleManager
 	{
 		private readonly ThreadSafeInit init = new ThreadSafeInit();
 		private Burden cachedBurden;
@@ -45,13 +45,6 @@ namespace Castle.MicroKernel.Lifestyle
 			{
 				return cachedBurden.Instance;
 			}
-			var instanceFromContext = context.GetContextualProperty(ComponentActivator);
-			if (instanceFromContext != null)
-			{
-				//we've been called recursively, by some dependency from base.Resolve call
-				return instanceFromContext;
-			}
-
 			var initializing = false;
 			try
 			{
@@ -72,6 +65,11 @@ namespace Castle.MicroKernel.Lifestyle
 					init.EndThreadSafeOnceSection();
 				}
 			}
+		}
+
+		public object GetContextInstance(CreationContext context)
+		{
+			return context.GetContextualProperty(ComponentActivator);
 		}
 	}
 }

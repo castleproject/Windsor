@@ -752,17 +752,6 @@ namespace Castle.MicroKernel
 
 			try
 			{
-				if (handler.IsBeingResolvedInContext(context))
-				{
-					var message = new StringBuilder();
-					message.AppendFormat("Dependency cycle has been detected when trying to resolve component '{0}'.",
-					                     handler.ComponentModel.Name);
-					message.AppendLine();
-					message.AppendLine("The resolution tree that resulted in the cycle is the following:");
-					context.BuildCycleMessageFor(handler, message);
-
-					throw new CircularDependencyException(message.ToString());
-				}
 				return handler.Resolve(context);
 			}
 			finally

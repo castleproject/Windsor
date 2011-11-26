@@ -109,6 +109,33 @@ namespace Castle.MicroKernel.Handlers
 		/// <returns></returns>
 		protected object ResolveCore(CreationContext context, bool requiresDecommission, bool instanceRequired, out Burden burden)
 		{
+			if (IsBeingResolvedInContext(context))
+			{
+				var cache = lifestyleManager as IContextLifestyleManager;
+				if(cache != null)
+				{
+					var instance = cache.GetContextInstance(context);
+					if(instance != null)
+					{
+						burden = null;
+						return instance;
+					}
+				}
+
+				if (instanceRequired == false)
+				{
+					burden = null;
+					return null;
+				}
+				var message = new StringBuilder();
+				message.AppendFormat("Dependency cycle has been detected when trying to resolve component '{0}'.",
+									 ComponentModel.Name);
+				message.AppendLine();
+				message.AppendLine("The resolution tree that resulted in the cycle is the following:");
+				context.BuildCycleMessageFor(this, message);
+
+				throw new CircularDependencyException(message.ToString(), ComponentModel);
+			}
 			if (CanResolvePendingDependencies(context) == false)
 			{
 				if (instanceRequired == false)

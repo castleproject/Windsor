@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,15 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace CastleTests.Components
+namespace Castle.MicroKernel
 {
-	public class EmptyServiceDecorator : IEmptyService
-	{
-		public EmptyServiceDecorator(IEmptyService other)
-		{
-			Other = other;
-		}
+	using Castle.MicroKernel.Context;
 
-		public IEmptyService Other { get; private set; }
+	public interface IContextLifestyleManager
+	{
+		object GetContextInstance(CreationContext context);
 	}
 }

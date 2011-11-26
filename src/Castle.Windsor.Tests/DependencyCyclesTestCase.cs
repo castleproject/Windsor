@@ -18,6 +18,8 @@ namespace CastleTests
 
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Registration;
+	using Castle.MicroKernel.Resolvers;
+	using Castle.MicroKernel.Tests;
 
 	using CastleTests.Components;
 
@@ -42,6 +44,22 @@ namespace CastleTests
 			var message =
 				string.Format(
 					"Dependency cycle has been detected when trying to resolve component 'CastleTests.Components.C'.{0}The resolution tree that resulted in the cycle is the following:{0}Component 'CastleTests.Components.C' resolved as dependency of{0}\tcomponent 'Late bound CastleTests.Components.A' resolved as dependency of{0}\tcomponent 'CastleTests.Components.B' resolved as dependency of{0}\tcomponent 'CastleTests.Components.C' which is the root component being resolved.{0}",
+					Environment.NewLine);
+
+			Assert.AreEqual(message, exception.Message);
+		}
+
+		[Test]
+		public void Can_detect_and_report_cycle_where_container_has_lazy_loaders()
+		{
+			Container.Register(
+				Component.For<ILazyComponentLoader>().ImplementedBy<ABLoader>(),
+				Component.For<IEmptyService>().ImplementedBy<EmptyServiceDecorator>());
+
+			var exception = Assert.Throws<CircularDependencyException>(() => Container.Resolve<IEmptyService>());
+			var message =
+				string.Format(
+					"Dependency cycle has been detected when trying to resolve component 'CastleTests.Components.EmptyServiceDecorator'.{0}The resolution tree that resulted in the cycle is the following:{0}Component 'CastleTests.Components.EmptyServiceDecorator' resolved as dependency of{0}	component 'CastleTests.Components.EmptyServiceDecorator' which is the root component being resolved.{0}",
 					Environment.NewLine);
 
 			Assert.AreEqual(message, exception.Message);

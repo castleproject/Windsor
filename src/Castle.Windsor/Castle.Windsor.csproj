@@ -399,6 +399,7 @@
     <Compile Include="MicroKernel\Handlers\IResolveExtension.cs" />
     <Compile Include="MicroKernel\Handlers\ReleaseInvocation.cs" />
     <Compile Include="MicroKernel\Handlers\ResolveInvocation.cs" />
+    <Compile Include="MicroKernel\IContextLifestyleManager.cs" />
     <Compile Include="MicroKernel\IComponentActivator.cs">
       <SubType>Code</SubType>
     </Compile>

@@ -308,11 +308,6 @@ namespace Castle.MicroKernel.Handlers
 			{
 				return true;
 			}
-			// detect circular dependencies
-			if (IsBeingResolvedInContext(context))
-			{
-				return CanProvideDependenciesDynamically(context);
-			}
 			foreach (var dependency in MissingDependencies.ToArray())
 			{
 				if (dependency.TargetItemType == null)

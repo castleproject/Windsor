@@ -40,7 +40,7 @@ namespace CastleTests
 		}
 
 		[Test]
-		[ExpectedException(typeof(HandlerException))]
+		[ExpectedException(typeof(CircularDependencyException))]
 		public void Can_detect_waiting_dependency_pointed_to_by_sub_resolver()
 		{
 			Kernel.Resolver.AddSubResolver(new GoodDependencyResolver());
