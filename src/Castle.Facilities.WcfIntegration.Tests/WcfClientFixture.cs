@@ -34,7 +34,6 @@ namespace Castle.Facilities.WcfIntegration.Tests
 	using Castle.Windsor.Installer;
 	using log4net.Appender;
 	using log4net.Config;
-	using log4net.Core;
 	using NUnit.Framework;
 
     [TestFixture]
@@ -110,6 +109,28 @@ namespace Castle.Facilities.WcfIntegration.Tests
 
 			var client = windsorContainer.Resolve<IOperations>("operations");
 			Assert.AreEqual(42, client.GetValueFromConstructor());
+		}
+
+		[Test]
+		public void WillCloseChannelWhenTransientClientReleased()
+		{
+			windsorContainer.Register(
+			Component.For<IOperations>()
+				.Named("operations")
+				.AsWcfClient(new DefaultClientModel()
+				{
+					Endpoint = WcfEndpoint
+						.BoundTo(new NetTcpBinding { PortSharingEnabled = true })
+						.At("net.tcp://localhost/Operations")
+				}).LifestyleTransient()
+			);
+
+			var client = windsorContainer.Resolve<IOperations>("operations");
+			Assert.AreEqual(42, client.GetValueFromConstructor());
+
+			windsorContainer.Release(client);
+			var comm = (ICommunicationObject)client;
+			Assert.AreEqual(CommunicationState.Closed, comm.State);
 		}
 
 		[Test]
