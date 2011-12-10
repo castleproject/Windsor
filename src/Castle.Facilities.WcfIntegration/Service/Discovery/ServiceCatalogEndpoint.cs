@@ -65,7 +65,7 @@ namespace Castle.Facilities.WcfIntegration
 
 				if (required)
 				{
-					throw new EndpointNotFoundException("Unable to locate a ServiceCatalog on the network.");
+					throw new EndpointNotFoundException("Unable to discover a ServiceCatalog endpoint on the network.");
 				}
 
 				return null;

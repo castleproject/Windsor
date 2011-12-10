@@ -21,10 +21,12 @@ namespace Castle.Facilities.WcfIntegration
 	using System.Runtime.Remoting.Proxies;
 	using System.ServiceModel;
 	using System.ServiceModel.Channels;
+	using System.Threading;
 	using Castle.Facilities.WcfIntegration.Internal;
 
 	public class WcfChannelHolder : IWcfChannelHolder
 	{
+		private int disposed;
 		private readonly ChannelCreator channelCreator;
 
 		public WcfChannelHolder(ChannelCreator channelCreator, IWcfBurden burden, TimeSpan? closeTimeout)
@@ -54,7 +56,7 @@ namespace Castle.Facilities.WcfIntegration
 		[MethodImpl(MethodImplOptions.Synchronized)]
 		public void RefreshChannel()
 		{
-			if (Channel == null || IsChannelUsable == false)
+			if (disposed == 0 && (Channel == null || IsChannelUsable == false))
 			{
 				if (Channel != null)
 				{
@@ -67,6 +69,9 @@ namespace Castle.Facilities.WcfIntegration
 
 		public void Dispose()
 		{
+			if (Interlocked.CompareExchange(ref disposed, 1, 0) == 1)
+				return;
+
 			var context = Channel as IContextChannel;
 			if (context != null)
 			{

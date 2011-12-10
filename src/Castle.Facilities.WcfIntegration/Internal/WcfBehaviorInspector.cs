@@ -33,7 +33,7 @@ namespace Castle.Facilities.WcfIntegration.Internal
 			}
 		}
 
-		private bool IsBehavior(Type implementation)
+		private static bool IsBehavior(Type implementation)
 		{
 			return typeof(IServiceBehavior).IsAssignableFrom(implementation) ||
 			       typeof(IEndpointBehavior).IsAssignableFrom(implementation) ||
@@ -42,7 +42,7 @@ namespace Castle.Facilities.WcfIntegration.Internal
 			       typeof(IErrorHandler).IsAssignableFrom(implementation);
 		}
 
-		private void UpdateActivator(ComponentModel model)
+		private static void UpdateActivator(ComponentModel model)
 		{
 			if (model.CustomComponentActivator == null)
 			{
@@ -50,12 +50,12 @@ namespace Castle.Facilities.WcfIntegration.Internal
 			}
 		}
 
-		private void UpdateLifestyle(ComponentModel model)
+		private static void UpdateLifestyle(ComponentModel model)
 		{
-			// NOTE: I really don't like that. This goes against Principle of least astonishment
-			// and IMO this behavior should not be like that. I _could_ accept doing it
-			// if (model.LifestyleType == LifestyleType.Undefined)
-			model.LifestyleType = LifestyleType.Transient;
+			if (model.LifestyleType == LifestyleType.Undefined)
+			{
+				model.LifestyleType = LifestyleType.Transient;
+			}
 		}
 	}
 }

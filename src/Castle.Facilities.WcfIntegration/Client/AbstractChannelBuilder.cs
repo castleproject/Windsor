@@ -126,11 +126,7 @@ namespace Castle.Facilities.WcfIntegration
 		void IWcfEndpointVisitor.VisitBindingDiscoveredEndpoint(DiscoveredEndpointModel model)
 		{
 			var discoveryEndpoint = model.DiscoveryEndpoint ?? new UdpDiscoveryEndpoint();
-			DiscoverEndpoint(discoveryEndpoint, model);
-		}
 
-		private void DiscoverEndpoint(DiscoveryEndpoint discoveryEndpoint, DiscoveredEndpointModel model)
-		{
 			FindResponse discovered = null;
 			try
 			{
