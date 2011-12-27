@@ -168,7 +168,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 			}
 			try
 			{
-				var exportedTypes = assembly.GetExportedTypes();
+				var exportedTypes = assembly.GetAvailableTypes();
 				foreach (var type in exportedTypes)
 				{
 					Insert(fullName2Type, type.FullName, type);

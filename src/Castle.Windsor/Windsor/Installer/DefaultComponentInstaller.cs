@@ -117,7 +117,7 @@ namespace Castle.Windsor.Installer
 
 		private void GetAssemblyInstallers(Dictionary<Type, IWindsorInstaller> cache, Assembly assembly)
 		{
-			var types = assembly.GetExportedTypes();
+			var types = assembly.GetAvailableTypes();
 			foreach (var type in InstallerTypes(types))
 			{
 				AddInstaller(cache, type);

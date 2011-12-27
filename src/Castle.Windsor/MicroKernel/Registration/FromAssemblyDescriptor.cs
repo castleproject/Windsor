@@ -18,6 +18,7 @@ namespace Castle.MicroKernel.Registration
 	using System.Collections.Generic;
 	using System.Linq;
 	using System.Reflection;
+	using Castle.Core.Internal;
 
 	/// <summary>
 	///   Selects a set of types from an assembly.
@@ -52,12 +53,7 @@ namespace Castle.MicroKernel.Registration
 
 		protected override IEnumerable<Type> SelectedTypes(IKernel kernel)
 		{
-			if (nonPublicTypes)
-			{
-				return assemblies.SelectMany(assembly => assembly.GetTypes());
-			}
-
-			return assemblies.SelectMany(assembly => assembly.GetExportedTypes());
+			return assemblies.SelectMany(a => a.GetAvailableTypes(nonPublicTypes));
 		}
 	}
 }
