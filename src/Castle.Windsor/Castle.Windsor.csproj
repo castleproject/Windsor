@@ -286,9 +286,6 @@
     <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
     <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
   </PropertyGroup>
-  <ItemGroup Condition="$(TargetFrameworkProfile)!='Client' and $(MSBuildTargets)!='Silverlight 4.0'">
-    <Reference Include="System.Web" />
-  </ItemGroup>
   <ItemGroup Condition="$(MSBuildTargets)!='Silverlight 4.0'">
     <Reference Include="System.configuration" />
     <Reference Include="System.Runtime.Remoting" />
@@ -296,13 +293,9 @@
       <Name>System.Data</Name>
     </Reference>
   </ItemGroup>
-  <ItemGroup Condition="$(MSBuildTargets)=='Silverlight 4.0'">
-    <Reference Include="System.Windows" />
-  </ItemGroup>
   <ItemGroup>
     <Reference Include="Castle.Core">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\$(BuildConfigKey)\Castle.Core.dll</HintPath>
+      <HintPath>..\..\lib\NET40\Castle.Core.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -802,6 +795,7 @@
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="MicroKernel\Util\SimpleMethodEqualityComparer.cs" />
     <Compile Include="MicroKernel\Util\SimpleTypeEqualityComparer.cs" />
+    <Compile Include="SecurityAssemblyInfo.cs" />
     <Compile Include="Windsor\Configuration\AppDomain\CastleSectionHandler.cs">
       <SubType>Code</SubType>
     </Compile>

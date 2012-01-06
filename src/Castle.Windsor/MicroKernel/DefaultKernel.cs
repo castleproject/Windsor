@@ -589,12 +589,12 @@ namespace Castle.MicroKernel
 				case LifestyleType.Transient:
 					manager = new TransientLifestyleManager();
 					break;
-#if (!SILVERLIGHT && !CLIENTPROFILE)
+#if (!SILVERLIGHT && !CLIENTPROFILE) && SYSTEMWEB
 				case LifestyleType.PerWebRequest:
 					manager = new ScopedLifestyleManager(new WebRequestScopeAccessor());
 					break;
 #endif
-				case LifestyleType.Custom:
+                case LifestyleType.Custom:
 					manager = model.CustomLifestyle.CreateInstance<ILifestyleManager>();
 
 					break;
