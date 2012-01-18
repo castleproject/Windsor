@@ -79,7 +79,13 @@ namespace Castle.MicroKernel
 		}
 
 		/// <summary>
-		///   If <c>true</c> requires release by <see cref = "IReleasePolicy" />. If <c>false</c>, the object has a well defined, detectable end of life (web-request end, disposal of the container etc), and will be released externally.
+		///   If
+		///   <c>true</c>
+		///   requires release by
+		///   <see cref="IReleasePolicy" />
+		///   . If
+		///   <c>false</c>
+		///   , the object has a well defined, detectable end of life (web-request end, disposal of the container etc), and will be released externally.
 		/// </summary>
 		public bool RequiresPolicyRelease
 		{
@@ -156,7 +162,7 @@ namespace Castle.MicroKernel
 		public event BurdenReleaseDelegate Releasing;
 		public event BurdenReleaseDelegate GraphReleased;
 
-		private enum Decommission
+		private enum Decommission : byte
 		{
 			No,
 			Yes,

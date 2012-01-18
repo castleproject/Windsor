@@ -29,7 +29,7 @@ namespace Castle.MicroKernel.Resolvers
 		/// <param name = "innerException">The inner exception.</param>
 		public DependencyResolverException(string message, Exception innerException) : base(message, innerException)
 		{
-			HelpLink = Constants.ExceptionHelpLink;
+			ExceptionHelper.SetUp(this);
 		}
 
 		/// <summary>
@@ -38,7 +38,7 @@ namespace Castle.MicroKernel.Resolvers
 		/// <param name = "message">The message.</param>
 		public DependencyResolverException(string message) : base(message)
 		{
-			HelpLink = Constants.ExceptionHelpLink;
+			ExceptionHelper.SetUp(this);
 		}
 
 #if (!SILVERLIGHT)
@@ -49,7 +49,7 @@ namespace Castle.MicroKernel.Resolvers
 		/// <param name = "context">The contextual information about the source or destination.</param>
 		public DependencyResolverException(SerializationInfo info, StreamingContext context) : base(info, context)
 		{
-			HelpLink = Constants.ExceptionHelpLink;
+			ExceptionHelper.SetUp(this);
 		}
 #endif
 	}

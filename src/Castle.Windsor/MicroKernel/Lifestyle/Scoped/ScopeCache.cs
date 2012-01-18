@@ -17,29 +17,52 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 	using System;
 	using System.Collections.Generic;
 	using System.Linq;
+	using System.Threading;
 
 	using Castle.Core.Internal;
 
 	public class ScopeCache : IScopeCache, IDisposable
 	{
 		// NOTE: does that need to be thread safe?
-		private readonly IDictionary<object, Burden> cache = new Dictionary<object, Burden>();
+		private IDictionary<object, Burden> cache = new Dictionary<object, Burden>();
 
 		public Burden this[object id]
 		{
-			set { cache.Add(id, value); }
+			set
+			{
+				try
+				{
+					cache.Add(id, value);
+				}
+				catch (NullReferenceException)
+				{
+					throw new ObjectDisposedException("Scope cache was already disposed. This is most likely a bug in the calling code.");
+				}
+			}
 			get
 			{
-				Burden burden;
-				cache.TryGetValue(id, out burden);
-				return burden;
+				try
+				{
+					Burden burden;
+					cache.TryGetValue(id, out burden);
+					return burden;
+				}
+				catch (NullReferenceException)
+				{
+					throw new ObjectDisposedException("Scope cache was already disposed. This is most likely a bug in the calling code.");
+				}
 			}
 		}
 
 		public void Dispose()
 		{
-			cache.Values.Reverse().ForEach(b => b.Release());
-			cache.Clear();
+			var localCache = Interlocked.Exchange(ref cache, null);
+			if (localCache == null)
+			{
+				// that should never happen but Dispose in general is expected to be safe to call so... let's obey the rules
+				return;
+			}
+			localCache.Values.Reverse().ForEach(b => b.Release());
 		}
 	}
 }

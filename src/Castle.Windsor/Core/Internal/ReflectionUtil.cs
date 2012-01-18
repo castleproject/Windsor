@@ -154,6 +154,23 @@ namespace Castle.Core.Internal
 #endif
 		}
 
+		public static Type[] GetAvailableTypes(this Assembly assembly, bool includeNonExported = false)
+		{
+			try
+			{
+				if(includeNonExported)
+				{
+					return assembly.GetTypes();
+				}
+				return assembly.GetExportedTypes();
+			}
+			catch (ReflectionTypeLoadException e)
+			{
+				return e.Types.FindAll(t => t != null);
+				// NOTE: perhaps we should not ignore the exceptions here, and log them?
+			}
+		}
+
 		private static Assembly LoadAssembly(AssemblyName assemblyName)
 		{
 			return Assembly.Load(assemblyName);

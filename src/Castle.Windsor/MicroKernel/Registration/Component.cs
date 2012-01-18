@@ -216,6 +216,7 @@ namespace Castle.MicroKernel.Registration
 			if (includeSubnamespaces)
 			{
 				return type => type.Namespace == @namespace ||
+				               type.Namespace != null &&
 				               type.Namespace.StartsWith(@namespace + ".");
 			}
 

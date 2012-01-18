@@ -589,12 +589,12 @@ namespace Castle.MicroKernel
 				case LifestyleType.Transient:
 					manager = new TransientLifestyleManager();
 					break;
-#if (!SILVERLIGHT && !CLIENTPROFILE)
+#if (!SILVERLIGHT && !CLIENTPROFILE) && SYSTEMWEB
 				case LifestyleType.PerWebRequest:
 					manager = new ScopedLifestyleManager(new WebRequestScopeAccessor());
 					break;
 #endif
-				case LifestyleType.Custom:
+                case LifestyleType.Custom:
 					manager = model.CustomLifestyle.CreateInstance<ILifestyleManager>();
 
 					break;
@@ -626,7 +626,7 @@ namespace Castle.MicroKernel
 
 		private static IScopeAccessor CreateScopeAccessor(ComponentModel model)
 		{
-			var scopeAccessorType = (Type)model.ExtendedProperties[Constants.ScopeAccessorType];
+			var scopeAccessorType = model.GetScopeAccessorType();
 			if (scopeAccessorType == null)
 			{
 				return new LifetimeScopeAccessor();
@@ -752,17 +752,6 @@ namespace Castle.MicroKernel
 
 			try
 			{
-				if (handler.IsBeingResolvedInContext(context))
-				{
-					var message = new StringBuilder();
-					message.AppendFormat("Dependency cycle has been detected when trying to resolve component '{0}'.",
-					                     handler.ComponentModel.Name);
-					message.AppendLine();
-					message.AppendLine("The resolution tree that resulted in the cycle is the following:");
-					context.BuildCycleMessageFor(handler, message);
-
-					throw new CircularDependencyException(message.ToString());
-				}
 				return handler.Resolve(context);
 			}
 			finally

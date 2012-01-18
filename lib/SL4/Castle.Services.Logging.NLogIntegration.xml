@@ -22,6 +22,12 @@
             </summary>
             <param name="configFile">The config file.</param>
         </member>
+        <member name="M:Castle.Services.Logging.NLogIntegration.ExtendedNLogFactory.#ctor(NLog.Config.LoggingConfiguration)">
+            <summary>
+              Initializes a new instance of the <see cref="T:Castle.Services.Logging.NLogIntegration.NLogFactory"/> class.
+            </summary>
+            <param name="loggingConfiguration">The NLog Configuration</param>
+        </member>
         <member name="M:Castle.Services.Logging.NLogIntegration.ExtendedNLogFactory.Create(System.String)">
             <summary>
               Creates a new extended logger with the specified <paramref name = "name" />.
@@ -442,6 +448,12 @@
               Initializes a new instance of the <see cref="T:Castle.Services.Logging.NLogIntegration.NLogFactory"/> class.
             </summary>
             <param name="configFile">The config file.</param>
+        </member>
+        <member name="M:Castle.Services.Logging.NLogIntegration.NLogFactory.#ctor(NLog.Config.LoggingConfiguration)">
+            <summary>
+              Initializes a new instance of the <see cref="T:Castle.Services.Logging.NLogIntegration.NLogFactory"/> class.
+            </summary>
+            <param name="loggingConfiguration">The NLog Configuration</param>
         </member>
         <member name="M:Castle.Services.Logging.NLogIntegration.NLogFactory.Create(System.String)">
             <summary>

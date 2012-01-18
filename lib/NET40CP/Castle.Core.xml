@@ -4,6 +4,11 @@
         <name>Castle.Core</name>
     </assembly>
     <members>
+        <member name="T:Castle.Components.DictionaryAdapter.ReferenceAttribute">
+            <summary>
+            Specifies assignment by reference rather than by copying.
+            </summary>
+        </member>
         <member name="T:Castle.Components.DictionaryAdapter.IfExistsAttribute">
             <summary>
             Suppresses any on-demand behaviors.
@@ -62,7 +67,7 @@
         </member>
         <member name="T:Castle.Components.DictionaryAdapter.VolatileAttribute">
             <summary>
-            Indicates that underlying values are changeable and should not be cached.s
+            Indicates that underlying values are changeable and should not be cached.
             </summary>
         </member>
         <member name="T:Castle.Components.DictionaryAdapter.IDictionaryInitializer">
@@ -245,6 +250,79 @@
             <value></value>
             <returns>An object that can be used to synchronize access to the <see cref="T:System.Collections.ICollection"></see>.</returns>
         </member>
+        <member name="T:Castle.Components.DictionaryAdapter.BindingList`1">
+            <summary>
+              Provides a generic collection that supports data binding.
+            </summary>
+            <remarks>
+              This class wraps the CLR <see cref="T:System.ComponentModel.BindingList`1"/>
+              in order to implement the Castle-specific <see cref="T:Castle.Components.DictionaryAdapter.IBindingList`1"/>.
+            </remarks>
+            <typeparam name="T">The type of elements in the list.</typeparam>
+        </member>
+        <member name="M:Castle.Components.DictionaryAdapter.BindingList`1.#ctor">
+            <summary>
+              Initializes a new instance of the <see cref="T:Castle.Components.DictionaryAdapter.BindingList`1"/> class
+              using default values.
+            </summary>
+        </member>
+        <member name="M:Castle.Components.DictionaryAdapter.BindingList`1.#ctor(System.Collections.Generic.IList{`0})">
+            <summary>
+              Initializes a new instance of the <see cref="T:Castle.Components.DictionaryAdapter.BindingList`1"/> class
+              with the specified list.
+            </summary>
+            <param name="list">
+              An <see cref="T:System.Collections.Generic.IList`1"/> of items
+              to be contained in the <see cref="T:Castle.Components.DictionaryAdapter.BindingList`1"/>.
+            </param>
+        </member>
+        <member name="M:Castle.Components.DictionaryAdapter.BindingList`1.#ctor(System.ComponentModel.BindingList{`0})">
+            <summary>
+              Initializes a new instance of the <see cref="T:Castle.Components.DictionaryAdapter.BindingList`1"/> class
+              wrapping the specified <see cref="T:System.ComponentModel.BindingList`1"/> instance.
+            </summary>
+            <param name="list">
+              A <see cref="T:System.ComponentModel.BindingList`1"/>
+              to be wrapped by the <see cref="T:Castle.Components.DictionaryAdapter.BindingList`1"/>.
+            </param>
+        </member>
+        <member name="T:Castle.Components.DictionaryAdapter.IDictionaryPropertyGetter">
+            <summary>
+            Defines the contract for retrieving dictionary values.
+            </summary>
+        </member>
+        <member name="M:Castle.Components.DictionaryAdapter.IDictionaryPropertyGetter.GetPropertyValue(Castle.Components.DictionaryAdapter.IDictionaryAdapter,System.String,System.Object,Castle.Components.DictionaryAdapter.PropertyDescriptor,System.Boolean)">
+            <summary>
+            Gets the effective dictionary value.
+            </summary>
+            <param name="dictionaryAdapter">The dictionary adapter.</param>
+            <param name="key">The key.</param>
+            <param name="storedValue">The stored value.</param>
+            <param name="property">The property.</param>
+            <param name="ifExists">true if return only existing.</param>
+            <returns>The effective property value.</returns>
+        </member>
+        <member name="M:Castle.Components.DictionaryAdapter.Xml.XmlAdapter.#ctor(Castle.Components.DictionaryAdapter.Xml.IXmlNode,Castle.Components.DictionaryAdapter.Xml.XmlReferenceManager)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Castle.Components.DictionaryAdapter.Xml.XmlAdapter"/> class
+            that represents a child object in a larger object graph.
+            </summary>
+            <param name="node"></param>
+            <param name="references"></param>
+        </member>
+        <member name="T:Castle.Components.DictionaryAdapter.IDictionaryMetaInitializer">
+            <summary>
+             Contract for dictionary meta-data initialization.
+            </summary>
+        </member>
+        <member name="M:Castle.Components.DictionaryAdapter.IDictionaryMetaInitializer.Initialize(Castle.Components.DictionaryAdapter.IDictionaryAdapterFactory,Castle.Components.DictionaryAdapter.DictionaryAdapterMeta)">
+            <summary>
+            Performs any initialization of the dictionary adapter meta-data.
+            </summary>
+            <param name="factory">The dictionary adapter factory.</param>
+            <param name="dictionaryMeta">The dictionary adapter meta.</param>
+            
+        </member>
         <member name="M:Castle.Core.Internal.CollectionExtensions.IsNullOrEmpty(System.Collections.IEnumerable)">
             <summary>
               Checks whether or not collection is null or empty. Assumes colleciton can be safely enumerated multiple times.
@@ -282,22 +360,6 @@
             <param name="key">The current key.</param>
             <param name="property">The property.</param>
             <returns>The updated key</returns>
-        </member>
-        <member name="T:Castle.Components.DictionaryAdapter.IDictionaryPropertyGetter">
-            <summary>
-            Defines the contract for retrieving dictionary values.
-            </summary>
-        </member>
-        <member name="M:Castle.Components.DictionaryAdapter.IDictionaryPropertyGetter.GetPropertyValue(Castle.Components.DictionaryAdapter.IDictionaryAdapter,System.String,System.Object,Castle.Components.DictionaryAdapter.PropertyDescriptor,System.Boolean)">
-            <summary>
-            Gets the effective dictionary value.
-            </summary>
-            <param name="dictionaryAdapter">The dictionary adapter.</param>
-            <param name="key">The key.</param>
-            <param name="storedValue">The stored value.</param>
-            <param name="property">The property.</param>
-            <param name="ifExists">true if return only existing.</param>
-            <returns>The effective property value.</returns>
         </member>
         <member name="P:Castle.Components.DictionaryAdapter.ComponentAttribute.NoPrefix">
             <summary>
@@ -580,24 +642,24 @@
             The type represented by T must be an interface with properties.
             </remarks>
         </member>
-        <member name="M:Castle.Components.DictionaryAdapter.IDictionaryAdapterFactory.GetAdapter``1(System.Xml.XPath.IXPathNavigable)">
+        <member name="M:Castle.Components.DictionaryAdapter.IDictionaryAdapterFactory.GetAdapter``1(System.Xml.XmlNode)">
             <summary>
-            Gets a typed adapter bound to the <see cref="T:System.Xml.XPath.IXPathNavigable"/>.
+            Gets a typed adapter bound to the <see cref="T:System.Xml.XmlNode"/>.
             </summary>
             <typeparam name="T">The typed interface.</typeparam>
-            <param name="xpathNavigable">The underlying source of properties.</param>
-            <returns>An implementation of the typed interface bound to the xpath navigable.</returns>
+            <param name="xmlNode">The underlying source of properties.</param>
+            <returns>An implementation of the typed interface bound to the <see cref="T:System.Xml.XmlNode"/>.</returns>
             <remarks>
             The type represented by T must be an interface with properties.
             </remarks>
         </member>
-        <member name="M:Castle.Components.DictionaryAdapter.IDictionaryAdapterFactory.GetAdapter(System.Type,System.Xml.XPath.IXPathNavigable)">
+        <member name="M:Castle.Components.DictionaryAdapter.IDictionaryAdapterFactory.GetAdapter(System.Type,System.Xml.XmlNode)">
             <summary>
-            Gets a typed adapter bound to the <see cref="T:System.Xml.XPath.IXPathNavigable"/>.
+            Gets a typed adapter bound to the <see cref="T:System.Xml.XmlNode"/>.
             </summary>
             <param name="type">The typed interface.</param>
-            <param name="xpathNavigable">The underlying source of properties.</param>
-            <returns>An implementation of the typed interface bound to the xpath navigable.</returns>
+            <param name="xmlNode">The underlying source of properties.</param>
+            <returns>An implementation of the typed interface bound to the <see cref="T:System.Xml.XmlNode"/>.</returns>
             <remarks>
             The type represented by T must be an interface with properties.
             </remarks>
@@ -638,10 +700,10 @@
         <member name="M:Castle.Components.DictionaryAdapter.DictionaryAdapterFactory.GetAdapter(System.Type,System.Collections.Specialized.NameValueCollection)">
             <inheritdoc />
         </member>
-        <member name="M:Castle.Components.DictionaryAdapter.DictionaryAdapterFactory.GetAdapter``1(System.Xml.XPath.IXPathNavigable)">
+        <member name="M:Castle.Components.DictionaryAdapter.DictionaryAdapterFactory.GetAdapter``1(System.Xml.XmlNode)">
             <inheritdoc />
         </member>
-        <member name="M:Castle.Components.DictionaryAdapter.DictionaryAdapterFactory.GetAdapter(System.Type,System.Xml.XPath.IXPathNavigable)">
+        <member name="M:Castle.Components.DictionaryAdapter.DictionaryAdapterFactory.GetAdapter(System.Type,System.Xml.XmlNode)">
             <inheritdoc />
         </member>
         <member name="M:Castle.Components.DictionaryAdapter.DictionaryAdapterFactory.GetAdapterMeta(System.Type)">
@@ -929,19 +991,6 @@
             Gets the meta-data initializers.
             </summary>
             <value>The meta-data initializers.</value>
-        </member>
-        <member name="T:Castle.Components.DictionaryAdapter.IDictionaryMetaInitializer">
-            <summary>
-             Contract for dictionary meta-data initialization.
-            </summary>
-        </member>
-        <member name="M:Castle.Components.DictionaryAdapter.IDictionaryMetaInitializer.Initialize(Castle.Components.DictionaryAdapter.IDictionaryAdapterFactory,Castle.Components.DictionaryAdapter.DictionaryAdapterMeta)">
-            <summary>
-            Performs any initialization of the dictionary adapter meta-data.
-            </summary>
-            <param name="factory">The dictionary adapter factory.</param>
-            <param name="dictionaryMeta">The dictionary adapter meta.</param>
-            
         </member>
         <member name="T:Castle.Components.DictionaryAdapter.IDictionaryValidator">
             <summary>

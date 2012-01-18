@@ -31,7 +31,6 @@ namespace Castle.Core.Tests
 			
 			parent.AddDependent(child);
 
-			Assert.AreSame( parent, child.Dependers[0] );
 			Assert.AreSame( child, parent.Dependents[0] );
 		}
 

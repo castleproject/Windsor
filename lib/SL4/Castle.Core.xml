@@ -4,6 +4,11 @@
         <name>Castle.Core</name>
     </assembly>
     <members>
+        <member name="T:Castle.Components.DictionaryAdapter.ReferenceAttribute">
+            <summary>
+            Specifies assignment by reference rather than by copying.
+            </summary>
+        </member>
         <member name="T:Castle.Components.DictionaryAdapter.IfExistsAttribute">
             <summary>
             Suppresses any on-demand behaviors.
@@ -62,7 +67,7 @@
         </member>
         <member name="T:Castle.Components.DictionaryAdapter.VolatileAttribute">
             <summary>
-            Indicates that underlying values are changeable and should not be cached.s
+            Indicates that underlying values are changeable and should not be cached.
             </summary>
         </member>
         <member name="T:Castle.Components.DictionaryAdapter.IDictionaryInitializer">

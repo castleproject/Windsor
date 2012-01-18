@@ -234,13 +234,13 @@ namespace CastleTests.Activators
 		}
 
 		[Test]
-		public void When_no_constructor_is_resolvable_and_inline_arguments_are_used_NoResolvableConstructorFoundException_is_thrown()
+		public void When_no_constructor_is_resolvable_and_inline_arguments_are_used_HandlerException_is_thrown()
 		{
 			Container.Register(Component.For<ClassWithConstructors>());
 
 			var fakeArgument = new Arguments(new[] { new object() });
 
-			Assert.Throws<NoResolvableConstructorFoundException>(() => Container.Resolve<ClassWithConstructors>(fakeArgument));
+			Assert.Throws<HandlerException>(() => Container.Resolve<ClassWithConstructors>(fakeArgument));
 		}
 
 		[Test]

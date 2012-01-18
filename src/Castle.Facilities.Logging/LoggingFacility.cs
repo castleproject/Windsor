@@ -61,6 +61,7 @@ namespace Castle.Facilities.Logging
 		private LoggerImplementation? loggerImplementation;
 		private Type loggingFactoryType;
 		private LoggerLevel? loggerLevel;
+	    private ILoggerFactory loggerFactory;
 
 		/// <summary>
 		///   Initializes a new instance of the <see cref = "LoggingFacility" /> class.
@@ -142,6 +143,14 @@ namespace Castle.Facilities.Logging
 			return this;
 		}
 
+        public LoggingFacility LogUsing<TCustomLoggerFactory>(TCustomLoggerFactory loggerFactory) where TCustomLoggerFactory : ILoggerFactory
+        {
+            loggerImplementation = LoggerImplementation.Custom;
+            loggingFactoryType = typeof(TCustomLoggerFactory);
+            this.loggerFactory = loggerFactory;
+            return this;
+        }
+
 		public LoggingFacility WithConfig(string configFile)
 		{
 			if (configFile == null)
@@ -193,8 +202,11 @@ namespace Castle.Facilities.Logging
 		protected override void Init()
 		{
 			SetUpTypeConverter();
-			var loggerFactory = ReadConfigurationAndCreateLoggerFactory();
-			RegisterLoggerFactory(loggerFactory);
+            if (loggerFactory == null)
+            {
+                loggerFactory = ReadConfigurationAndCreateLoggerFactory();
+            }
+		    RegisterLoggerFactory(loggerFactory);
 			RegisterDefaultILogger(loggerFactory);
 			RegisterSubResolver(loggerFactory);
 		}

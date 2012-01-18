@@ -95,7 +95,7 @@ limitations under the License.
 	<!-- AssemblyInfo Properties -->
 	<PropertyGroup>
 		<AssemblyInfoFile Condition="'$(AssemblyInfoFile)' == ''">AssemblyInfo.cs</AssemblyInfoFile>
-		<AssemblyTitle Condition="'$(AssemblyTitle)' == ''">$(ProjectName) $(Project_Major).$(Project_Minor).$(Project_Build) for $(BuildConfigDescription)</AssemblyTitle>
+		<AssemblyTitle Condition="'$(AssemblyTitle)' == ''">$(ProjectName) $(Project_Major).$(Project_Minor).$(Project_Build)$(BuildName) for $(BuildConfigDescription)</AssemblyTitle>
 		<AssemblyProduct Condition="'$(AssemblyProduct)' == ''">$(ProjectName)</AssemblyProduct>
 		<AssemblyDescription Condition="'$(AssemblyDescription)' != ''">$(AssemblyDescription)</AssemblyDescription>
 		<ComVisible Condition="'$(ComVisible)' == ''">false</ComVisible>
@@ -182,6 +182,7 @@ limitations under the License.
 		<WriteLinesToFile File="$(AssemblyInfoFile)" Lines='[assembly: System.Runtime.InteropServices.ComVisible($(ComVisible))]' />
 		<WriteLinesToFile File="$(AssemblyInfoFile)" Lines='[assembly: System.CLSCompliant($(CLSCompliant))]' />
 		<WriteLinesToFile File="$(AssemblyInfoFile)" Lines='[assembly: System.Reflection.AssemblyTitle("$(AssemblyTitle)")]' />
+		<WriteLinesToFile File="$(AssemblyInfoFile)" Lines='[assembly: System.Reflection.AssemblyDescription("$(AssemblyTitle)")]' />
 		<WriteLinesToFile File="$(AssemblyInfoFile)" Lines='[assembly: System.Reflection.AssemblyProduct("$(AssemblyProduct)")]' />
 		<WriteLinesToFile File="$(AssemblyInfoFile)" Lines='[assembly: System.Reflection.AssemblyVersion("$(AssemblyVersion_Major).$(AssemblyVersion_Minor).$(AssemblyVersion_Build).0")]' />
 		<WriteLinesToFile File="$(AssemblyInfoFile)" Lines='[assembly: System.Reflection.AssemblyFileVersion("$(Project_Major).$(Project_Minor).$(Project_Build).$(Build_Revision)")]' />

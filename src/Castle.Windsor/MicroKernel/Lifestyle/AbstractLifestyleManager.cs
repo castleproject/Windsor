@@ -21,7 +21,7 @@ namespace Castle.MicroKernel.Lifestyle
 	using Castle.MicroKernel.Context;
 
 	/// <summary>
-	///   Summary description for AbstractLifestyleManager.
+	///   Base implementation of <see cref="ILifestyleManager"/>
 	/// </summary>
 	[Serializable]
 	public abstract class AbstractLifestyleManager : ILifestyleManager

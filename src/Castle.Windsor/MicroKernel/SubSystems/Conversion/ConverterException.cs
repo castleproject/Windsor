@@ -28,7 +28,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 		/// <param name = "message">The message.</param>
 		public ConverterException(string message) : base(message)
 		{
-			HelpLink = Constants.ExceptionHelpLink;
+			ExceptionHelper.SetUp(this);
 		}
 
 		/// <summary>
@@ -38,7 +38,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 		/// <param name = "innerException">The inner exception.</param>
 		public ConverterException(string message, Exception innerException) : base(message, innerException)
 		{
-			HelpLink = Constants.ExceptionHelpLink;
+			ExceptionHelper.SetUp(this);
 		}
 
 #if (!SILVERLIGHT)
@@ -49,7 +49,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 		/// <param name = "context">The contextual information about the source or destination.</param>
 		public ConverterException(SerializationInfo info, StreamingContext context) : base(info, context)
 		{
-			HelpLink = Constants.ExceptionHelpLink;
+			ExceptionHelper.SetUp(this);
 		}
 #endif
 	}

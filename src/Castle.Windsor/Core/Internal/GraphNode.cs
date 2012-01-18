@@ -17,73 +17,27 @@ namespace Castle.Core.Internal
 	using System;
 	using System.Collections.Generic;
 
-#if SILVERLIGHT
-	public class GraphNode : IVertex
-#else
 	[Serializable]
-	public class GraphNode : MarshalByRefObject, IVertex
+	public class GraphNode :
+#if !SILVERLIGHT
+		MarshalByRefObject,
 #endif
+		IVertex
 	{
-		private List<GraphNode> incoming;
+
 		private List<GraphNode> outgoing;
-
-		#region IVertex Members
-
-		public IVertex[] Adjacencies
-		{
-			get { return Dependents; }
-		}
-
-		#endregion
 
 		public void AddDependent(GraphNode node)
 		{
-			Outgoing.Add(node);
-			node.Incoming.Add(this);
-		}
-
-		private List<GraphNode> Incoming
-		{
-			get
+			if (outgoing == null)
 			{
-				if (incoming == null)
-				{
-					incoming = new List<GraphNode>();
-				}
-
-				return incoming;
+				outgoing = new List<GraphNode>();
 			}
-		}
-
-		private List<GraphNode> Outgoing
-		{
-			get
-			{
-				if (outgoing == null)
-				{
-					outgoing = new List<GraphNode>();
-				}
-				return outgoing;
-			}
+			outgoing.Add(node);
 		}
 
 		/// <summary>
-		///   The nodes that depends on this node
-		/// </summary>
-		public GraphNode[] Dependers
-		{
-			get
-			{
-				if (incoming == null)
-				{
-					return new GraphNode[0];
-				}
-				return incoming.ToArray();
-			}
-		}
-
-		/// <summary>
-		///   The nodes that this node depends
+		///   The nodes that this node depends on
 		/// </summary>
 		public GraphNode[] Dependents
 		{
@@ -95,6 +49,11 @@ namespace Castle.Core.Internal
 				}
 				return outgoing.ToArray();
 			}
+		}
+
+		IVertex[] IVertex.Adjacencies
+		{
+			get { return Dependents; }
 		}
 	}
 }

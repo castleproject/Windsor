@@ -14,12 +14,15 @@
 
 namespace CastleTests.TestInfrastructure
 {
+	using System.ComponentModel;
+
 	using Castle.MicroKernel.Context;
 	using Castle.MicroKernel.Lifestyle.Scoped;
 
+	[Description("statically")]
 	public class StaticScopeAccessor : IScopeAccessor
 	{
-		private static readonly DefaultLifetimeScope scope = new DefaultLifetimeScope();
+		private static DefaultLifetimeScope scope = new DefaultLifetimeScope();
 
 		public void Dispose()
 		{
@@ -34,6 +37,11 @@ namespace CastleTests.TestInfrastructure
 		public static DefaultLifetimeScope Scope
 		{
 			get { return scope; }
+		}
+
+		public static void ResetScope()
+		{
+			scope = new DefaultLifetimeScope();
 		}
 	}
 }

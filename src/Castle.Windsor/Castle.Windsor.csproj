@@ -286,9 +286,6 @@
     <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
     <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
   </PropertyGroup>
-  <ItemGroup Condition="$(TargetFrameworkProfile)!='Client' and $(MSBuildTargets)!='Silverlight 4.0'">
-    <Reference Include="System.Web" />
-  </ItemGroup>
   <ItemGroup Condition="$(MSBuildTargets)!='Silverlight 4.0'">
     <Reference Include="System.configuration" />
     <Reference Include="System.Runtime.Remoting" />
@@ -296,13 +293,9 @@
       <Name>System.Data</Name>
     </Reference>
   </ItemGroup>
-  <ItemGroup Condition="$(MSBuildTargets)=='Silverlight 4.0'">
-    <Reference Include="System.Windows" />
-  </ItemGroup>
   <ItemGroup>
     <Reference Include="Castle.Core">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\$(BuildConfigKey)\Castle.Core.dll</HintPath>
+      <HintPath>..\..\lib\NET40\Castle.Core.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -317,6 +310,8 @@
     <Compile Include="Core\ComponentDependencyModel.cs" />
     <Compile Include="Core\CustomLifestyleAttribute.cs" />
     <Compile Include="Core\Internal\Constants.cs" />
+    <Compile Include="Core\Internal\ExceptionHelper.cs" />
+    <Compile Include="Core\Internal\LifestyleExtensions.cs" />
     <Compile Include="Core\Internal\Must.cs" />
     <Compile Include="Core\Internal\SimpleSortedSet.cs" />
     <Compile Include="Core\CastleComponentAttribute.cs" />
@@ -398,6 +393,7 @@
     <Compile Include="MicroKernel\Handlers\IResolveExtension.cs" />
     <Compile Include="MicroKernel\Handlers\ReleaseInvocation.cs" />
     <Compile Include="MicroKernel\Handlers\ResolveInvocation.cs" />
+    <Compile Include="MicroKernel\IContextLifestyleManager.cs" />
     <Compile Include="MicroKernel\IComponentActivator.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -799,6 +795,7 @@
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="MicroKernel\Util\SimpleMethodEqualityComparer.cs" />
     <Compile Include="MicroKernel\Util\SimpleTypeEqualityComparer.cs" />
+    <Compile Include="SecurityAssemblyInfo.cs" />
     <Compile Include="Windsor\Configuration\AppDomain\CastleSectionHandler.cs">
       <SubType>Code</SubType>
     </Compile>

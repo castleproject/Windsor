@@ -51,6 +51,7 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 		{
 		}
 
+        [System.Security.SecuritySafeCritical] 
 		public void Dispose()
 		{
 			using (var token = @lock.ForReadingUpgradeable())
@@ -90,11 +91,13 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 			}
 		}
 
+        [System.Security.SecuritySafeCritical]
 		private void SetCurrentScope(CallContextLifetimeScope lifetimeScope)
 		{
 			CallContext.SetData(contextKey, lifetimeScope);
 		}
 
+        [System.Security.SecuritySafeCritical]
 		public static CallContextLifetimeScope ObtainCurrentScope()
 		{
 			return (CallContextLifetimeScope)CallContext.GetData(contextKey);

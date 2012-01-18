@@ -44,7 +44,7 @@ namespace Castle.Windsor.Installer
 
 		public void Install(IWindsorContainer container, IConfigurationStore store)
 		{
-			var installerTypes = factory.Select(FilterInstallerTypes(assembly.GetExportedTypes()));
+			var installerTypes = factory.Select(FilterInstallerTypes(assembly.GetAvailableTypes()));
 			if (installerTypes == null)
 			{
 				return;

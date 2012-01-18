@@ -31,32 +31,32 @@ namespace Castle.MicroKernel
 		public ComponentResolutionException(string message)
 			: base(message)
 		{
-			HelpLink = Constants.ExceptionHelpLink;
+			ExceptionHelper.SetUp(this);
 		}
 
 		public ComponentResolutionException(string message, Exception innerException)
 			: base(message, innerException)
 		{
-			HelpLink = Constants.ExceptionHelpLink;
+			ExceptionHelper.SetUp(this);
 		}
 
 		public ComponentResolutionException(string message, ComponentModel component)
 			: base(message)
 		{
-			HelpLink = Constants.ExceptionHelpLink;
+			ExceptionHelper.SetUp(this);
 			Component = component;
 		}
 
 		public ComponentResolutionException(string message, Exception innerException, ComponentModel component)
 			: base(message, innerException)
 		{
-			HelpLink = Constants.ExceptionHelpLink;
+			ExceptionHelper.SetUp(this);
 			Component = component;
 		}
 
 		public ComponentResolutionException(ComponentModel component)
 		{
-			HelpLink = Constants.ExceptionHelpLink;
+			ExceptionHelper.SetUp(this);
 			Component = component;
 		}
 
@@ -64,7 +64,7 @@ namespace Castle.MicroKernel
 		public ComponentResolutionException(SerializationInfo info, StreamingContext context)
 			: base(info, context)
 		{
-			HelpLink = Constants.ExceptionHelpLink;
+			ExceptionHelper.SetUp(this);
 		}
 #endif
 	}

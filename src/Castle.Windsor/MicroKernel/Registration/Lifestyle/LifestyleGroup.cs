@@ -30,9 +30,11 @@ namespace Castle.MicroKernel.Registration.Lifestyle
 		}
 
 		/// <summary>
-		///   Sets the lifestyle to the specified <paramref name = "type" />.
+		///   Sets the lifestyle to the specified
+		///   <paramref name="type" />
+		///   .
 		/// </summary>
-		/// <param name = "type">The type.</param>
+		/// <param name="type">The type.</param>
 		/// <returns></returns>
 		public ComponentRegistration<TService> Is(LifestyleType type)
 		{
@@ -99,9 +101,11 @@ namespace Castle.MicroKernel.Registration.Lifestyle
 		}
 
 		/// <summary>
-		///   Assigns scoped lifestyle with scope accessed via <typeparamref name = "TScopeAccessor" /> instances.
+		///   Assigns scoped lifestyle with scope accessed via
+		///   <typeparamref name="TScopeAccessor" />
+		///   instances.
 		/// </summary>
-		/// <typeparam name = "TScopeAccessor"></typeparam>
+		/// <typeparam name="TScopeAccessor"></typeparam>
 		/// <returns></returns>
 		public ComponentRegistration<TService> Scoped<TScopeAccessor>() where TScopeAccessor : IScopeAccessor, new()
 		{
@@ -109,10 +113,12 @@ namespace Castle.MicroKernel.Registration.Lifestyle
 		}
 
 		/// <summary>
-		///   Assigns scoped lifestyle with scope accessed via <paramref name = "scopeAccessorType" /> instances if provided, or default accessor otherwise.
+		///   Assigns scoped lifestyle with scope accessed via
+		///   <paramref name="scopeAccessorType" />
+		///   instances if provided, or default accessor otherwise.
 		/// </summary>
 		/// <returns></returns>
-		public ComponentRegistration<TService> Scoped(Type scopeAccessorType = null)
+		public ComponentRegistration<TService> Scoped(Type scopeAccessorType)
 		{
 			var registration = AddDescriptor(new LifestyleDescriptor<TService>(LifestyleType.Scoped));
 			if (scopeAccessorType == null)
@@ -121,6 +127,15 @@ namespace Castle.MicroKernel.Registration.Lifestyle
 			}
 			var scopeAccessor = new ExtendedPropertiesDescriptor(new Property(Constants.ScopeAccessorType, scopeAccessorType));
 			return registration.AddDescriptor(scopeAccessor);
+		}
+
+		/// <summary>
+		///   Assigns scoped lifestyle with scope accessed via default accessor.
+		/// </summary>
+		/// <returns></returns>
+		public ComponentRegistration<TService> Scoped()
+		{
+			return Scoped(null);
 		}
 
 		public ComponentRegistration<TService> BoundTo<TBaseForRoot>() where TBaseForRoot : class
@@ -135,9 +150,11 @@ namespace Castle.MicroKernel.Registration.Lifestyle
 		}
 
 		/// <summary>
-		///   Assign a custom lifestyle type, that implements <see cref = "ILifestyleManager" />.
+		///   Assign a custom lifestyle type, that implements
+		///   <see cref="ILifestyleManager" />
+		///   .
 		/// </summary>
-		/// <param name = "customLifestyleType">Type of the custom lifestyle.</param>
+		/// <param name="customLifestyleType">Type of the custom lifestyle.</param>
 		/// <returns></returns>
 		public ComponentRegistration<TService> Custom(Type customLifestyleType)
 		{
@@ -153,9 +170,11 @@ namespace Castle.MicroKernel.Registration.Lifestyle
 		}
 
 		/// <summary>
-		///   Assign a custom lifestyle type, that implements <see cref = "ILifestyleManager" />.
+		///   Assign a custom lifestyle type, that implements
+		///   <see cref="ILifestyleManager" />
+		///   .
 		/// </summary>
-		/// <typeparam name = "TLifestyleManager">The type of the custom lifestyle</typeparam>
+		/// <typeparam name="TLifestyleManager">The type of the custom lifestyle</typeparam>
 		/// <returns></returns>
 		public ComponentRegistration<TService> Custom<TLifestyleManager>()
 			where TLifestyleManager : ILifestyleManager, new()
