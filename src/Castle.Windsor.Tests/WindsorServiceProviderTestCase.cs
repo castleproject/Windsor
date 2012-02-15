@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2012 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,12 +14,9 @@
 
 namespace CastleTests
 {
-	using Castle.MicroKernel.Handlers;
 	using Castle.MicroKernel.Registration;
 	using Castle.Windsor;
-
 	using CastleTests.Components;
-
 	using NUnit.Framework;
 
 	[TestFixture]
@@ -29,16 +26,17 @@ namespace CastleTests
 		public void Can_windsor_service_provider_resolve_services()
 		{
 			Container.Register(Component.For<IEmptyService>().ImplementedBy<EmptyServiceA>());
-			WindsorServiceProvider provider = new WindsorServiceProvider(Container);
-			IEmptyService service = provider.GetService<IEmptyService>();
+			var provider = new WindsorServiceProvider(Container);
+			var service = provider.GetService<IEmptyService>();
 			Assert.IsNotNull(service);
 		}
 
 		[Test]
+		[Bug("IOC-323")]
 		public void Can_windsor_service_provider_return_null_when_service_not_found()
 		{
-			WindsorServiceProvider provider = new WindsorServiceProvider(Container);
-			IEmptyService service = provider.GetService<IEmptyService>();
+			var provider = new WindsorServiceProvider(Container);
+			var service = provider.GetService<IEmptyService>();
 			Assert.IsNull(service);
 		}
 	}

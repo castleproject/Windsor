@@ -1097,6 +1097,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Windsor.Tests\XmlConfigStructureTestCase.cs" />
+    <Compile Include="WindsorServiceProviderTestCase.cs" />
     <Compile Include="XmlFiles\Xml.cs" />
     <EmbeddedResource Include="XmlFiles\Channel1.xml" />
     <EmbeddedResource Include="Config\OneComponentInTwoPieces.xml">
