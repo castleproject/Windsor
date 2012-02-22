@@ -18,41 +18,43 @@ namespace Castle.Facilities.WcfIntegration.Proxy
 	using System.Linq;
 	using System.Reflection;
 	using System.Runtime.Remoting.Messaging;
+	using System.Runtime.Remoting.Proxies;
 	using Castle.DynamicProxy;
 
 	public class WcfRemotingInterceptor : IWcfInterceptor
 	{
 		private readonly IWcfPolicy[] pipeline;
+		protected readonly IWcfChannelHolder channelHolder;
 
 		public WcfRemotingInterceptor(WcfClientExtension clients, IWcfChannelHolder channelHolder)
 		{
-			pipeline = CreateChannelPipeline(clients, channelHolder);
-		}
-
-		public void Intercept(IInvocation invocation)
-		{
-			var channelHolder = invocation.Proxy as IWcfChannelHolder;
-
 			if (channelHolder == null)
 			{
 				throw new ArgumentException("The given Proxy is not valid WCF dynamic proxy.");
 			}
 
-			PerformInvocation(invocation, channelHolder);
+			this.channelHolder = channelHolder;
+			pipeline = CreateChannelPipeline(clients);
 		}
 
-		protected virtual void PerformInvocation(IInvocation invocation, IWcfChannelHolder channelHolder)
+		public void Intercept(IInvocation invocation)
 		{
-			PerformInvocation(invocation, channelHolder, wcfInvocation =>
+			PerformInvocation(invocation);
+		}
+
+		protected virtual void PerformInvocation(IInvocation invocation)
+		{
+			PerformInvocation(invocation, wcfInvocation =>
 			{
 				var realProxy = channelHolder.RealProxy;
-				var message = new MethodCallMessage(wcfInvocation.Method, wcfInvocation.Arguments);
-				var returnMessage = (IMethodReturnMessage)realProxy.Invoke(message);
-				if (returnMessage.Exception != null)
+				if (realProxy == null)
 				{
-					throw returnMessage.Exception;
+					InvokeChannel(invocation, wcfInvocation);
 				}
-				wcfInvocation.ReturnValue = returnMessage.ReturnValue;
+				else
+				{
+					InvokeRealProxy(realProxy, wcfInvocation);
+				}
 			});
 		}
 
@@ -66,7 +68,24 @@ namespace Castle.Facilities.WcfIntegration.Proxy
 			return true;
 		}
 
-		protected void PerformInvocation(IInvocation invocation, IWcfChannelHolder channelHolder, Action<WcfInvocation> action)
+		private static void InvokeChannel(IInvocation invocation, WcfInvocation wcfInvocation)
+		{
+			invocation.Proceed();
+			wcfInvocation.ReturnValue = invocation.ReturnValue;
+		}
+
+		private static void InvokeRealProxy(RealProxy realProxy, WcfInvocation wcfInvocation)
+		{
+			var message = new MethodCallMessage(wcfInvocation.Method, wcfInvocation.Arguments);
+			var returnMessage = (IMethodReturnMessage)realProxy.Invoke(message);
+			if (returnMessage.Exception != null)
+			{
+				throw returnMessage.Exception;
+			}
+			wcfInvocation.ReturnValue = returnMessage.ReturnValue;
+		}
+
+		protected void PerformInvocation(IInvocation invocation, Action<WcfInvocation> action)
 		{
 			var wcfInvocation = new WcfInvocation(channelHolder, invocation);
 			ApplyChannelPipeline(0, wcfInvocation, action);
@@ -85,14 +104,14 @@ namespace Castle.Facilities.WcfIntegration.Proxy
 			pipeline[policyIndex].Apply(wcfInvocation);
 		}
 
-		private static IWcfPolicy[] CreateChannelPipeline(WcfClientExtension clients, IWcfChannelHolder channelHolder)
+		private IWcfPolicy[] CreateChannelPipeline(WcfClientExtension clients)
 		{
 			var policies = channelHolder.ChannelBurden.Dependencies.OfType<IWcfPolicy>()
 				.OrderBy(policy => policy.ExecutionOrder).ToArray();
 
 			if (policies.Length == 0 && clients.DefaultChannelPolicy != null)
 			{
-				policies = clients.DefaultChannelPolicy.ToArray();
+				policies = clients.DefaultChannelPolicy;
 			}
 
 			return policies;

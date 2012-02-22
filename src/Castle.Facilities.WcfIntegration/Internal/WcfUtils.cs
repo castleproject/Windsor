@@ -328,6 +328,19 @@ namespace Castle.Facilities.WcfIntegration.Internal
 			return collection;
 		}
 
+		public static IWcfBurden Burden<T>(this IExtensibleObject<T> owner)
+			 where T : class, IExtensibleObject<T>
+		{
+			var burden = owner.Extensions.Find<WcfBurdenExtension<T>>();
+			return (burden != null) ? burden.Burden : null;
+		}
+
+		public static IEnumerable<IWcfCleanUp> CleanUp<T>(this IExtensibleObject<T> owner)
+			 where T : IExtensibleObject<T>
+		{
+			return owner.Extensions.FindAll<IWcfCleanUp>();
+		}
+
 		public static Type GetClosedGenericDefinition(Type openGenericDefinition, Type implementation)
 		{
 			var genericArgument =

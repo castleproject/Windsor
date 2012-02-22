@@ -30,6 +30,8 @@ namespace Castle.Facilities.WcfIntegration
 
 		public const string Namespace = "urn:www.castleproject.org:wcf";
 
+		public const string DomainScopeFormat = "urn:www.castleproject.org:domain:{0}";
+
 		public static readonly XName EndpointMetadata = XName.Get("Endpoint", Namespace);
 	}
 }

@@ -16,7 +16,6 @@ namespace Castle.Facilities.WcfIntegration
 {
 #if DOTNET40
 	using System;
-	using System.Linq;
 	using System.ServiceModel.Discovery;
 	using System.ServiceModel.Discovery.Version11;
 	using Castle.Facilities.WcfIntegration.Internal;
@@ -40,7 +39,7 @@ namespace Castle.Facilities.WcfIntegration
 
 		protected override IAsyncResult OnBeginFind(FindRequestContext findRequestContext, AsyncCallback callback, object state)
 		{
-			implementation.FindService(findRequestContext);
+			implementation.FindEndpoint(findRequestContext);
 			return new SynchronousResult(callback, state);
 		}
 
@@ -51,7 +50,7 @@ namespace Castle.Facilities.WcfIntegration
 
 		protected override IAsyncResult OnBeginResolve(ResolveCriteria resolveCriteria, AsyncCallback callback, object state)
 		{
-			return new SynchronousResult(callback, state, implementation.ResolveService(resolveCriteria));
+			return new SynchronousResult(callback, state, implementation.ResolveEndpoint(resolveCriteria));
 		}
 
 		protected override EndpointDiscoveryMetadata OnEndResolve(IAsyncResult result)
@@ -63,7 +62,7 @@ namespace Castle.Facilities.WcfIntegration
 			DiscoveryMessageSequence messageSequence, EndpointDiscoveryMetadata endpointDiscoveryMetadata, 
 			AsyncCallback callback, object state)
 		{
-			implementation.RegisterService(endpointDiscoveryMetadata);
+			implementation.RegisterEndpoint(endpointDiscoveryMetadata);
 			return new SynchronousResult(callback, state);
 		}
 
@@ -76,7 +75,7 @@ namespace Castle.Facilities.WcfIntegration
 			DiscoveryMessageSequence messageSequence, EndpointDiscoveryMetadata endpointDiscoveryMetadata,
 			AsyncCallback callback, object state)
 		{
-			implementation.RemoveService(endpointDiscoveryMetadata);
+			implementation.RemoveEndpoint(endpointDiscoveryMetadata);
 			return new SynchronousResult(callback, state);
 		}
 
@@ -85,34 +84,34 @@ namespace Castle.Facilities.WcfIntegration
 			AsyncResult.End(result);
 		}
 
-		EndpointDiscoveryMetadata11[] IServiceCatalog.ListServices()
+		public EndpointDiscoveryMetadata11[] ListEndpoints()
 		{
-			return null;
+			var endpoints = implementation.ListEndpoints();
+			return Array.ConvertAll(endpoints, EndpointDiscoveryMetadata11.FromEndpointDiscoveryMetadata);
 		}
 
-		IAsyncResult IServiceCatalog.BeginListServices(AsyncCallback callback, object state)
+		public IAsyncResult BeginListEndpoints(AsyncCallback callback, object state)
 		{
-			return new SynchronousResult(callback, state, implementation.ListServices()
-				.Select(service => EndpointDiscoveryMetadata11.FromEndpointDiscoveryMetadata(service)));
+			return new SynchronousResult(callback, state, ListEndpoints());
 		}
 
-		EndpointDiscoveryMetadata11[] IServiceCatalog.EndListServices(IAsyncResult result)
+		public EndpointDiscoveryMetadata11[] EndListEndpoints(IAsyncResult result)
 		{
 			return AsyncResult.End<EndpointDiscoveryMetadata11[]>(result);
 		}
 
-		EndpointDiscoveryMetadata11[] IServiceCatalog.FindServices(FindCriteria11 criteria)
+		public EndpointDiscoveryMetadata11[] FindEndpoints(FindCriteria11 criteria)
 		{
-			return null;
+			var endpoints = implementation.FindEndpoints(criteria.ToFindCriteria());
+			return Array.ConvertAll(endpoints, EndpointDiscoveryMetadata11.FromEndpointDiscoveryMetadata);
 		}
 
-        IAsyncResult IServiceCatalog.BeginFindServices(FindCriteria11 criteria, AsyncCallback callback, object state)
+        public IAsyncResult BeginFindEndpoints(FindCriteria11 criteria, AsyncCallback callback, object state)
         {
-            return new SynchronousResult(callback, state, implementation.FindServices(criteria.ToFindCriteria())
-				.Select(service => EndpointDiscoveryMetadata11.FromEndpointDiscoveryMetadata(service)));
+            return new SynchronousResult(callback, state, FindEndpoints(criteria));
         }
 
-        EndpointDiscoveryMetadata11[] IServiceCatalog.EndFindServices(IAsyncResult result)
+        public EndpointDiscoveryMetadata11[] EndFindEndpoints(IAsyncResult result)
         {
             return AsyncResult.End<EndpointDiscoveryMetadata11[]>(result);
         }

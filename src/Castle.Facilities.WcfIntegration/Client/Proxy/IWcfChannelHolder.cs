@@ -31,6 +31,6 @@ namespace Castle.Facilities.WcfIntegration
 
 		bool IsChannelUsable { get; }
 
-		void RefreshChannel();
+		IChannel RefreshChannel(bool force);
 	}
 }

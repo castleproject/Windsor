@@ -19,7 +19,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 	using System.ServiceModel;
 	using System.ServiceModel.Activation;
 	using System.ServiceModel.Description;
-	using Castle.Core.Configuration;
+	using System.ServiceModel.Discovery;
 	using Castle.Core.Resource;
 	using Castle.Facilities.Logging;
 	using Castle.Facilities.WcfIntegration.Behaviors;
@@ -855,6 +855,80 @@ namespace Castle.Facilities.WcfIntegration.Tests
 					 new NetTcpBinding(), new EndpointAddress("net.tcp://localhost/Operations"));
 
 				client.DoSomething();
+			}
+		}
+
+		[Test]
+		public void WillRegisterServiceWithServiceCatalog()
+		{
+			var netBinding = new NetTcpBinding { PortSharingEnabled = true };
+			var announceAt = new EndpointAddress("net.tcp://localhost/ServiceCatalog/Announce");
+
+			using (var container = new WindsorContainer()
+				.AddFacility<WcfFacility>(f => f.CloseTimeout = TimeSpan.Zero)
+				.Register(
+					Component.For<IServiceCatalogImplementation>().ImplementedBy<InMemoryServiceCatalog>(),
+					Component.For<AdHocServiceCatalogProbe>(),
+					Component.For<IServiceCatalog>().ImplementedBy<ServiceCatalog>()
+						.AsWcfService(new DefaultServiceModel()
+						.AddBaseAddresses(
+							"net.tcp://localhost/ServiceCatalog")
+						.AddEndpoints(
+							WcfEndpoint.FromEndpoint(new AnnouncementEndpoint(netBinding, announceAt)))
+						.AddExtensions(typeof(AdHocServiceCatalogProbe))
+						),
+					Component.For<IOperations>().ImplementedBy<Operations>()
+						.DependsOn(new { number = 42 })
+						.AsWcfService(new DefaultServiceModel().AddEndpoints(
+							WcfEndpoint.BoundTo(netBinding).At("net.tcp://localhost/Operations"))
+							.Discoverable(discovery => discovery.Announce())
+							)
+				))
+			{
+				var serviceCatalog = container.Resolve<IServiceCatalog>();
+				var endpoints = serviceCatalog.ListEndpoints();
+				Assert.AreEqual(1, endpoints.Length);
+				var endpoint = endpoints[0].ToEndpointDiscoveryMetadata();
+				Assert.AreEqual("net.tcp://localhost/Operations", endpoint.Address.Uri.AbsoluteUri);
+			}			
+		}
+
+		[Test]
+		public void WillRegisterServiceWithServiceCatalogInDomain()
+		{
+			var netBinding = new NetTcpBinding { PortSharingEnabled = true };
+			var announceAt = new EndpointAddress("net.tcp://localhost/ServiceCatalog/Announce");
+			var domain = new WcfDiscoveryDomain("Production");
+
+			using (var container = new WindsorContainer()
+				.AddFacility<WcfFacility>(f => f.CloseTimeout = TimeSpan.Zero)
+				.Register(
+					Component.For<IServiceCatalogImplementation>().ImplementedBy<InMemoryServiceCatalog>(),
+					Component.For<AdHocServiceCatalogProbe>(),
+					Component.For<WcfDiscoveryDomain>().Instance(domain),
+					Component.For<IServiceCatalog>().ImplementedBy<ServiceCatalog>()
+						.AsWcfService(new DefaultServiceModel()
+						.AddBaseAddresses(
+							"net.tcp://localhost/ServiceCatalog")
+						.AddEndpoints(
+							WcfEndpoint.FromEndpoint(new AnnouncementEndpoint(netBinding, announceAt)))
+						.AddExtensions(typeof(AdHocServiceCatalogProbe))
+						),
+					Component.For<IOperations>().ImplementedBy<Operations>()
+						.DependsOn(new { number = 42 })
+						.AsWcfService(new DefaultServiceModel().AddEndpoints(
+							WcfEndpoint.BoundTo(netBinding).At("net.tcp://localhost/Operations"))
+							.Discoverable(discovery => discovery.Announce())
+							)
+				))
+			{
+				var serviceCatalog = container.Resolve<IServiceCatalog>();
+				var endpoints = serviceCatalog.ListEndpoints();
+				Assert.AreEqual(1, endpoints.Length);
+				var endpoint = endpoints[0].ToEndpointDiscoveryMetadata();
+				Assert.AreEqual("net.tcp://localhost/Operations", endpoint.Address.Uri.AbsoluteUri);
+				CollectionAssert.IsNotEmpty(endpoint.Scopes);
+				CollectionAssert.AreEqual(domain.Scopes, endpoint.Scopes);
 			}
 		}
 

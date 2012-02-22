@@ -15,30 +15,26 @@
 namespace Castle.Facilities.WcfIntegration
 {
 	using System;
+	using System.ServiceModel;
 	using System.ServiceModel.Channels;
-	using Castle.MicroKernel;
+	using System.ServiceModel.Description;
 
-	public abstract partial class AbstractChannelBuilder
+	public interface IChannelBuilderScope
 	{
-		protected AbstractChannelBuilder(IKernel kernel)
-		{
-			Kernel = kernel;
-		}
+		Type Contract { get; }
 
-		protected IKernel Kernel { get; private set; }
+		IWcfBurden Burden { get; }
 
-		public WcfClientExtension Clients { get; set; }
-	
-		protected internal virtual Binding InferBinding(Uri address)
-		{
-			return Clients != null
-				? Clients.InferBinding(address) ?? Clients.DefaultBinding
-				: null;
-		}
+		ChannelCreator GetChannel(Type contract);
 
-		internal Binding GetEffectiveBinding(Binding binding, Uri address)
-		{
-			return binding ?? InferBinding(address);
-		}
+		ChannelCreator GetChannel(Type contract, ServiceEndpoint endpoint);
+
+		ChannelCreator GetChannel(Type contract, string configurationName);
+
+		ChannelCreator GetChannel(Type contract, Binding binding, string address);
+
+		ChannelCreator GetChannel(Type contract, Binding binding, EndpointAddress address);
+
+		void ConfigureChannelFactory(ChannelFactory channelFactory);
 	}
 }

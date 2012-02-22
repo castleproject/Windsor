@@ -134,26 +134,6 @@ namespace Castle.Facilities.WcfIntegration
 			return AddExtensions(mexExtension);
 		}
 
-		public T ProvideMetadata<TMeta>() where TMeta : IWcfMetadataProvider
-		{
-			return AddExtensions(typeof(TMeta));
-		}
-
-		public T ProvideMetadata(Type metaProvider)
-		{
-			if (typeof(IWcfMetadataProvider).IsAssignableFrom(metaProvider) == false)
-			{
-				throw new ArgumentException(string.Format("The metaProvider {0} does not implement {1}.",
-					metaProvider, typeof(IWcfMetadataProvider)));
-			}
-			return AddExtensions(metaProvider);
-		}
-
-		public T ProviderMetadata(IWcfMetadataProvider provider)
-		{
-			return AddExtensions(provider);
-		}
-
 		#endregion
 
 #if DOTNET40
@@ -169,6 +149,26 @@ namespace Castle.Facilities.WcfIntegration
 			var discoveryExtension = new WcfDiscoveryExtension();
 			if (discover != null) discover(discoveryExtension);
 			return AddExtensions(discoveryExtension);
+		}
+
+		public T WithDiscoveryMetadata<TMeta>() where TMeta : IWcfDiscoveryMetadata
+		{
+			return AddExtensions(typeof(TMeta));
+		}
+
+		public T WithDiscoveryMetadata(Type metadataType)
+		{
+			if (typeof(IWcfDiscoveryMetadata).IsAssignableFrom(metadataType) == false)
+			{
+				throw new ArgumentException(string.Format("The metadataType {0} does not implement {1}.",
+					metadataType, typeof(IWcfDiscoveryMetadata)));
+			}
+			return AddExtensions(metadataType);
+		}
+
+		public T WithDiscoveryMetadata(IWcfDiscoveryMetadata metadata)
+		{
+			return AddExtensions(metadata);
 		}
 
 		#endregion

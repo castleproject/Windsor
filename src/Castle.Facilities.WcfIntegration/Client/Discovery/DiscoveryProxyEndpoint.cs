@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2012 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,31 +14,28 @@
 
 namespace Castle.Facilities.WcfIntegration
 {
+#if DOTNET40
 	using System;
-	using System.ServiceModel.Channels;
-	using Castle.MicroKernel;
+	using System.ServiceModel.Discovery;
 
-	public abstract partial class AbstractChannelBuilder
+	public class DiscoveryProxyEndpoint : DiscoveryEndpointProvider
 	{
-		protected AbstractChannelBuilder(IKernel kernel)
+		private readonly DiscoveryEndpoint endpoint;
+
+		public DiscoveryProxyEndpoint(DiscoveryEndpoint endpoint)
 		{
-			Kernel = kernel;
+			if (endpoint == null)
+			{
+				throw new ArgumentNullException("endpoint");
+			}
+
+			this.endpoint = endpoint;
 		}
 
-		protected IKernel Kernel { get; private set; }
-
-		public WcfClientExtension Clients { get; set; }
-	
-		protected internal virtual Binding InferBinding(Uri address)
+		public override DiscoveryEndpoint GetDiscoveryEndpoint()
 		{
-			return Clients != null
-				? Clients.InferBinding(address) ?? Clients.DefaultBinding
-				: null;
-		}
-
-		internal Binding GetEffectiveBinding(Binding binding, Uri address)
-		{
-			return binding ?? InferBinding(address);
+			return endpoint;
 		}
 	}
+#endif
 }

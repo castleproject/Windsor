@@ -96,6 +96,8 @@ namespace Castle.Facilities.WcfIntegration
 				serviceDiscovery.AnnouncementEndpoints.AddAll(announceEndpoints);
 			}
 
+			var serviceMetadata = serviceHost.Extensions.OfType<IWcfDiscoveryMetadata>().ToArray();
+
 			foreach (var endpoint in serviceHost.Description.NonSystemEndpoints())
 			{
 				var discovery = endpoint.Behaviors.Find<EndpointDiscoveryBehavior>();
@@ -107,7 +109,9 @@ namespace Castle.Facilities.WcfIntegration
 
 				discovery.Scopes.AddAll(scopes);
 				discovery.Extensions.AddAll(metadata);
-				AddAdditionalMetadata(serviceHost, discovery);
+				var discoveryMetaadata = endpoint.Behaviors.OfType<IWcfDiscoveryMetadata>();
+				AddDiscoveryMetadata(discoveryMetaadata, discovery);
+				AddDiscoveryMetadata(serviceMetadata, discovery);
 
 				if (strict == false)
 				{
@@ -123,11 +127,13 @@ namespace Castle.Facilities.WcfIntegration
 			serviceHost.Description.Endpoints.Add(discoveryEndpoint ?? new UdpDiscoveryEndpoint());
 		}
 
-		private static void AddAdditionalMetadata(ServiceHost serviceHost, EndpointDiscoveryBehavior discovery)
+		private static void AddDiscoveryMetadata(IEnumerable<IWcfDiscoveryMetadata> metadata, EndpointDiscoveryBehavior discovery)
 		{
-			var meatadata = serviceHost.Extensions.FindAll<IWcfMetadataProvider>();
-			discovery.Scopes.AddAll(meatadata.SelectMany(meta => meta.Scopes));
-			discovery.Extensions.AddAll(meatadata.SelectMany(meta => meta.Extensions));
+			foreach (var meta in metadata)
+			{
+				discovery.Scopes.AddAll(meta.Scopes);
+				discovery.Extensions.AddAll(meta.Extensions);
+			}
 		}
 
 		private static void ExportMetadata(ServiceEndpoint endpoint, EndpointDiscoveryBehavior discovery)

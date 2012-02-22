@@ -14,14 +14,24 @@
 
 namespace Castle.Facilities.WcfIntegration
 {
-	using System;
-	using System.Collections.Generic;
-	using System.Xml.Linq;
+#if DOTNET40
+    using System;
+    using System.ServiceModel.Discovery;
 
-	public interface IWcfMetadataProvider
-	{
-		ICollection<Uri> Scopes { get; }
+    public interface IServiceCatalogImplementation
+    {
+		EndpointDiscoveryMetadata[] ListEndpoints();
 
-		ICollection<XElement> Extensions { get; }
-	}
+        void FindEndpoint(FindRequestContext findRequestContext);
+
+        EndpointDiscoveryMetadata[] FindEndpoints(FindCriteria criteria);
+
+        void RegisterEndpoint(EndpointDiscoveryMetadata endpointDiscoveryMetadata);
+
+        bool RemoveEndpoint(EndpointDiscoveryMetadata endpointDiscoveryMetadata);
+
+        EndpointDiscoveryMetadata ResolveEndpoint(ResolveCriteria resolveCriteria);
+    }
+#endif
 }
+

@@ -23,18 +23,18 @@ namespace Castle.Facilities.WcfIntegration
     public interface IServiceCatalog
     {
 		[OperationContract]
-		EndpointDiscoveryMetadata11[] FindServices(FindCriteria11 criteria);
+		EndpointDiscoveryMetadata11[] FindEndpoints(FindCriteria11 criteria);
 
         [OperationContract(AsyncPattern = true)]
-        IAsyncResult BeginFindServices(FindCriteria11 criteria, AsyncCallback callback, object state);
-		EndpointDiscoveryMetadata11[] EndFindServices(IAsyncResult result);
+        IAsyncResult BeginFindEndpoints(FindCriteria11 criteria, AsyncCallback callback, object state);
+		EndpointDiscoveryMetadata11[] EndFindEndpoints(IAsyncResult result);
 
 		[OperationContract]
-		EndpointDiscoveryMetadata11[] ListServices();
+		EndpointDiscoveryMetadata11[] ListEndpoints();
 
 		[OperationContract(AsyncPattern = true)]
-        IAsyncResult BeginListServices(AsyncCallback callback, object state);
-        EndpointDiscoveryMetadata11[] EndListServices(IAsyncResult result);
+        IAsyncResult BeginListEndpoints(AsyncCallback callback, object state);
+        EndpointDiscoveryMetadata11[] EndListEndpoints(IAsyncResult result);
     }
 #endif
 }

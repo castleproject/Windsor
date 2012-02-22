@@ -19,6 +19,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 	using System.ServiceModel;
 	using System.ServiceModel.Channels;
 	using System.ServiceModel.Description;
+	using System.ServiceModel.Discovery;
 	using Castle.Core;
 	using Castle.Core.Resource;
 	using Castle.DynamicProxy;
@@ -755,6 +756,41 @@ namespace Castle.Facilities.WcfIntegration.Tests
 
 			Assert.AreEqual(1, ChannelFactoryListener.ChannelsCreated.Count);
 			Assert.AreEqual(1, ChannelFactoryListener.ChannelsAvailable.Count);
+			CollectionAssert.AreEqual(new[] { client }, ChannelFactoryListener.ChannelsAvailable);
+		}
+
+		[Test]
+		public void WillApplyChannelFactoryAwareExtensionsWhenChannelRefreshed()
+		{
+			windsorContainer.Register(
+				Component.For<ChannelFactoryListener>(),
+				Component.For<IOperationsEx>()
+					.Named("operations")
+					.AsWcfClient(new DefaultClientModel()
+					{
+						Endpoint = WcfEndpoint
+							.BoundTo(new NetTcpBinding { PortSharingEnabled = true })
+							.At("net.tcp://localhost/Operations/Ex")
+
+					})
+				);
+
+			CollectionAssert.IsEmpty(ChannelFactoryListener.ChannelsRefreshed);
+
+			var client = windsorContainer.Resolve<IOperationsEx>("operations");
+
+			try
+			{
+				client.ThrowException();
+				Assert.Fail("Should have raised an exception");
+			}
+			catch (Exception)
+			{
+				CollectionAssert.IsEmpty(ChannelFactoryListener.ChannelsRefreshed);
+				client.Backup(new Dictionary<string, object>());
+			}
+
+			Assert.AreEqual(1, ChannelFactoryListener.ChannelsRefreshed.Count);
 			CollectionAssert.AreEqual(new[] { client }, ChannelFactoryListener.ChannelsAvailable);
 		}
 
@@ -1908,25 +1944,25 @@ namespace Castle.Facilities.WcfIntegration.Tests
 		[Test]
 		public void CanAddAdditionalDiscoveryMetadata()
 		{
+			var metadata = new WcfEndpointDiscoveryMetadata();
+			metadata.Scopes.Add(new Uri("urn:castle:wcf"));
+
 			using (var container = new WindsorContainer()
 				.AddFacility<WcfFacility>(f => f.CloseTimeout = TimeSpan.Zero)
-				.Register(Component.For<Operations>()
-					.DependsOn(new { number = 28 })
-					.AsWcfService(new DefaultServiceModel()
-						.AddEndpoints(WcfEndpoint.ForContract<IOperations>()
-							.BoundTo(new NetTcpBinding(SecurityMode.Transport, true)
-							{
-								PortSharingEnabled = true
-							})
-							.At("net.tcp://localhost/Operations2"))
-						.ProvideMetadata<WcfMetadataProvider<ServiceHostBase>>()
-						.Discoverable()
+				.Register(
+					Component.For<WcfEndpointDiscoveryMetadata>().Instance(metadata),
+					Component.For<Operations>()
+						.DependsOn(new { number = 28 })
+						.AsWcfService(new DefaultServiceModel()
+							.AddEndpoints(WcfEndpoint.ForContract<IOperations>()
+								.BoundTo(new NetTcpBinding(SecurityMode.Transport, true)
+								{
+									PortSharingEnabled = true
+								})
+								.At("net.tcp://localhost/Operations2"))
+							.Discoverable()
 				)))
 			{
-				var metadata = new WcfMetadataProvider<ServiceHostBase>();
-				metadata.Scopes.Add(new Uri("urn:castle:wcf"));
-				container.Register(Component.For<WcfMetadataProvider<ServiceHostBase>>().Instance(metadata));
-
 				using (var clientContainer = new WindsorContainer()
 					.AddFacility<WcfFacility>()
 					.Register(Component.For<IOperations>()
@@ -1963,6 +1999,47 @@ namespace Castle.Facilities.WcfIntegration.Tests
 					var metadata = ((IContextChannel)client).Extensions.Find<DiscoveredEndpointMetadata>();
 					Assert.IsNotNull(metadata);
 					Assert.IsNotNull(metadata.Metadata);
+				}
+			}
+		}
+
+		[Test]
+		public void CanDiscoverServiceEndpointInManagedMode()
+		{
+			var netBinding = new NetTcpBinding { PortSharingEnabled = true };
+			var probeAt = new EndpointAddress("net.tcp://localhost/ServiceCatalog/Probe");
+			var discoveryProxy = new DiscoveryEndpoint(netBinding, probeAt) { IsSystemEndpoint = false };
+
+			using (new WindsorContainer()
+				.AddFacility<WcfFacility>(f => f.CloseTimeout = TimeSpan.Zero)
+				.Register(
+					Component.For<IServiceCatalogImplementation>().ImplementedBy<InMemoryServiceCatalog>(),
+					Component.For<AdHocServiceCatalogProbe>(),
+					Component.For<IServiceCatalog>().ImplementedBy<ServiceCatalog>()
+						.AsWcfService(new DefaultServiceModel()
+						.AddBaseAddresses(
+							"net.tcp://localhost/ServiceCatalog")
+						.AddEndpoints(
+							WcfEndpoint.BoundTo(netBinding),
+							WcfEndpoint.FromEndpoint(discoveryProxy))
+						.AddExtensions(typeof(AdHocServiceCatalogProbe))
+						),
+					Component.For<IOperations>().ImplementedBy<Operations>()
+						.DependsOn(new { number = 42 })
+						.AsWcfService(new DefaultServiceModel().AddEndpoints(
+							WcfEndpoint.BoundTo(netBinding).At("net.tcp://localhost/Operations2"))
+							.Discoverable(discovery => discovery.Announce())
+							)
+				))
+			{
+				using (var clientContainer = new WindsorContainer()
+				.AddFacility<WcfFacility>()
+				.Register(Component.For<IOperations>()
+					.AsWcfClient(WcfEndpoint.Discover().ManagedBy(discoveryProxy))
+				))
+				{
+					var client = clientContainer.Resolve<IOperations>();
+					Assert.AreEqual(42, client.GetValueFromConstructor());
 				}
 			}
 		}

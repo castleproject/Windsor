@@ -61,5 +61,10 @@ namespace Castle.Facilities.WcfIntegration
 		public virtual void ChannelAvailable(ChannelFactory channelFactory, IChannel channel)
 		{
 		}
+
+		/// <inheritdoc />
+		public virtual void ChannelRefreshed(ChannelFactory channelFactory, IChannel oldChannel, IChannel newChannel)
+		{
+		}
 	}
 }

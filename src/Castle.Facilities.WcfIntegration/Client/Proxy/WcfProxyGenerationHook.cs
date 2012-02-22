@@ -30,8 +30,6 @@ namespace Castle.Facilities.WcfIntegration.Proxy
 			this.hook = hook;
 		}
 
-
-
 		public bool ShouldInterceptMethod(Type type, MethodInfo methodInfo)
 		{
 			if (IsChannelHolderMethod(methodInfo))
@@ -47,7 +45,7 @@ namespace Castle.Facilities.WcfIntegration.Proxy
 			return true;
 		}
 
-		private bool IsChannelHolderMethod(MethodInfo methodInfo)
+		private static bool IsChannelHolderMethod(MethodInfo methodInfo)
 		{
 			return methodInfo.DeclaringType.Is<IWcfChannelHolder>();
 		}

@@ -15,12 +15,11 @@
 namespace Castle.Facilities.WcfIntegration
 {
 #if DOTNET40
-    using System.Collections;
-    using System.Collections.Generic;
-	using System.ServiceModel.Discovery;
+    using System.Xml;
 
-    public interface IServiceContractGroup : ICollection<EndpointDiscoveryMetadata>
+    public interface ILoadBalancePolicyFactory
     {
+        ILoadBalancePolicy CreatePolicy(XmlQualifiedName contract);
     }
 #endif
 }

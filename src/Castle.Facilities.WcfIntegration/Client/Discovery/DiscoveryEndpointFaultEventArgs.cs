@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2012 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,21 +15,15 @@
 namespace Castle.Facilities.WcfIntegration
 {
 	using System;
-	using System.Collections.Generic;
-	using System.ServiceModel;
-	using System.Xml.Linq;
+	using System.ServiceModel.Discovery;
 
-	public class WcfMetadataProvider<T> : AbstractExtension<T>, IWcfMetadataProvider
-		where T : class, IExtensibleObject<T>
+	public class DiscoveryEndpointFaultEventArgs : EventArgs
 	{
-		public WcfMetadataProvider()
+		public DiscoveryEndpointFaultEventArgs(DiscoveryEndpoint culprit)
 		{
-			Scopes = new List<Uri>();
-			Extensions = new List<XElement>();
+			Culprit = culprit;
 		}
 
-		public ICollection<Uri> Scopes { get; private set; }
-
-		public ICollection<XElement> Extensions { get; private set; }
+		public DiscoveryEndpoint Culprit { get; private set; }
 	}
 }

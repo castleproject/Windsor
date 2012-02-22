@@ -15,12 +15,13 @@
 namespace Castle.Facilities.WcfIntegration
 {
 #if DOTNET40
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.ServiceModel;
-using System.ServiceModel.Description;
-using System.ServiceModel.Discovery;
+	using System;
+	using System.Collections.Generic;
+	using System.Linq;
+	using System.ServiceModel;
+	using System.ServiceModel.Description;
+	using System.ServiceModel.Discovery;
+	using Castle.Facilities.WcfIntegration.Internal;
 
 	public class AdHocServiceCatalogProbe : AbstractServiceHostAware, IDisposable
 	{
@@ -54,7 +55,7 @@ using System.ServiceModel.Discovery;
 		{
 			base.Opening(serviceHost);
 
-			ConfigureDomain(serviceHost);
+			RestrictDomain(serviceHost);
 			MonitorAnnouncements(serviceHost);
 			ProbeInitialServices(serviceHost);
 		}
@@ -63,7 +64,7 @@ using System.ServiceModel.Discovery;
 		{
 			if (FilterService(serviceHost, endpoint) == false)
 			{
-				serviceCatalog.RegisterService(endpoint);
+				serviceCatalog.RegisterEndpoint(endpoint);
 			}
 		}
 
@@ -71,7 +72,7 @@ using System.ServiceModel.Discovery;
 		{
 			if (FilterService(serviceHost, endpoint) == false)
 			{
-				serviceCatalog.RemoveService(endpoint);
+				serviceCatalog.RemoveEndpoint(endpoint);
 			}
 		}
 
@@ -80,10 +81,10 @@ using System.ServiceModel.Discovery;
 			return IsSelfDiscovery(serviceHost, endpoint) || filters.Any(filter => filter(endpoint));
 		}
 
-		private void ConfigureDomain(ServiceHost serviceHost)
+		private void RestrictDomain(ServiceHost serviceHost)
 		{
 			var domainScopes =
-				(from domain in serviceHost.Extensions.OfType<WcfDiscoveryDomain>()
+				(from domain in serviceHost.Burden().Dependencies.OfType<WcfDiscoveryDomain>()
 				 from scope in domain.Scopes
 				 select scope).ToArray();
 
@@ -93,12 +94,12 @@ using System.ServiceModel.Discovery;
 				{
 					foreach (var domainScope in domainScopes)
 					{
-						if (endpoint.Scopes.Contains(domainScope) == false)
+						if (endpoint.Scopes.Contains(domainScope))
 						{
-							return true;
+							return false;
 						}
 					}
-					return false;
+					return true;
 				});
 			}
 		}

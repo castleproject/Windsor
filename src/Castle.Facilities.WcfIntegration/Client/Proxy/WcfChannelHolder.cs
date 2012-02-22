@@ -22,48 +22,97 @@ namespace Castle.Facilities.WcfIntegration
 	using System.ServiceModel;
 	using System.ServiceModel.Channels;
 	using System.Threading;
+	using Castle.Core.Internal;
 	using Castle.Facilities.WcfIntegration.Internal;
 
 	public class WcfChannelHolder : IWcfChannelHolder
 	{
-		private int disposed;
+		private readonly IWcfBurden burden;
+		private readonly TimeSpan? closeTimeout;
+		private readonly ChannelFactory channelFactory;
 		private readonly ChannelCreator channelCreator;
+		private IChannel channel;
+		private RealProxy realProxy;
+		private int disposed;
+		private readonly Lock @lock = Lock.Create();
 
 		public WcfChannelHolder(ChannelCreator channelCreator, IWcfBurden burden, TimeSpan? closeTimeout)
 		{
 			this.channelCreator = channelCreator;
-			ChannelBurden = burden;
-			CloseTimeout = closeTimeout;
-			ObtainChannelFactory();
+			this.burden = burden;
+			this.closeTimeout = closeTimeout;
+			this.channelFactory = ObtainChannelFactory();
 			CreateChannel();
 		}
 
-		public IChannel Channel { get; private set; }
+		public IChannel Channel
+		{
+			get 
+			{
+				using (@lock.ForReading())
+				{
+					return channel;
+				}
+			}
+		}
 
-		public RealProxy RealProxy { get; private set; }
+		public RealProxy RealProxy
+		{
+			get 
+			{
+				using (@lock.ForReading())
+				{
+					return realProxy;
+				}
+			}
+		}
 
-		public ChannelFactory ChannelFactory { get; private set; }
+		public ChannelFactory ChannelFactory
+		{
+			get { return channelFactory; }
+		}
 
-		public IWcfBurden ChannelBurden { get; private set; }
+		public IWcfBurden ChannelBurden
+		{
+			get { return burden; }
+		}
 
-		public TimeSpan? CloseTimeout { get; private set; }
+		public TimeSpan? CloseTimeout
+		{
+			get { return closeTimeout; }
+		}
 
 		public bool IsChannelUsable
 		{
-			get { return WcfUtils.IsCommunicationObjectReady(Channel); }
+			get { return WcfUtils.IsCommunicationObjectReady(channel); }
 		}
 
 		[MethodImpl(MethodImplOptions.Synchronized)]
-		public void RefreshChannel()
+		public IChannel RefreshChannel(bool force)
 		{
-			if (disposed == 0 && (Channel == null || IsChannelUsable == false))
-			{
-				if (Channel != null)
-				{
-					WcfUtils.ReleaseCommunicationObject(Channel, CloseTimeout);
-				}
+			if (disposed != 0)
+				return channel;
 
-				CreateChannel();
+			using (var locker = @lock.ForReadingUpgradeable())
+			{
+				if (force || channel == null || IsChannelUsable == false)
+				{
+					locker.Upgrade();
+
+					if (force || channel == null || IsChannelUsable == false)
+					{
+						var oldChannel = channel;
+						if (oldChannel != null)
+						{
+							WcfUtils.ReleaseCommunicationObject(oldChannel, closeTimeout);
+						}
+
+						CreateChannel();
+
+						NotifyChannelRefreshed(oldChannel, channel);
+					}
+				}
+				return channel;
 			}
 		}
 
@@ -72,16 +121,16 @@ namespace Castle.Facilities.WcfIntegration
 			if (Interlocked.CompareExchange(ref disposed, 1, 0) == 1)
 				return;
 
-			var context = Channel as IContextChannel;
+			var context = channel as IContextChannel;
 			if (context != null)
 			{
-				foreach (var cleanUp in context.Extensions.FindAll<IWcfCleanUp>())
+				foreach (var cleanUp in context.CleanUp())
 				{
 					cleanUp.CleanUp();
 				}
 			}
 
-			var parameters = Channel.GetProperty<ChannelParameterCollection>();
+			var parameters = channel.GetProperty<ChannelParameterCollection>();
 			if (parameters != null)
 			{
 				foreach (var cleanUp in parameters.OfType<IWcfCleanUp>())
@@ -90,25 +139,32 @@ namespace Castle.Facilities.WcfIntegration
 				}
 			}
 
-			if (Channel != null)
+			if (channel != null)
 			{
-				WcfUtils.ReleaseCommunicationObject(Channel, CloseTimeout);
+				WcfUtils.ReleaseCommunicationObject(channel, closeTimeout);
 			}
 		}
 
 		private void CreateChannel()
 		{
-			Channel = (IChannel)channelCreator();
-			RealProxy = RemotingServices.GetRealProxy(Channel);
+			channel = (IChannel)channelCreator();
+			realProxy = RemotingServices.GetRealProxy(channel);
 		}
 
-		private void ObtainChannelFactory()
+		private ChannelFactory ObtainChannelFactory()
 		{
 			var channelFactoryHolder = ChannelBurden.Dependencies.OfType<ChannelFactoryHolder>().FirstOrDefault();
+			return (channelFactoryHolder != null) ? channelFactoryHolder.ChannelFactory : null;
+		}
 
-			if (channelFactoryHolder != null)
+		private void NotifyChannelRefreshed(IChannel oldChannel, IChannel newChannel)
+		{
+			if (channelFactory != null)
 			{
-				ChannelFactory = channelFactoryHolder.ChannelFactory;
+				foreach (var observer in ChannelBurden.Dependencies.OfType<IChannelFactoryAware>())
+				{
+					observer.ChannelRefreshed(channelFactory, oldChannel, newChannel);
+				}
 			}
 		}
 	}

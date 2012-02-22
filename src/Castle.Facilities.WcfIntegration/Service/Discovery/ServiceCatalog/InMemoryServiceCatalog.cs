@@ -22,21 +22,21 @@ namespace Castle.Facilities.WcfIntegration
 
     public class InMemoryServiceCatalog : IServiceCatalogImplementation
     {
-        private readonly ConcurrentDictionary<EndpointAddress, EndpointDiscoveryMetadata> services;
+        private readonly ConcurrentDictionary<EndpointAddress, EndpointDiscoveryMetadata> endpoints;
 		
 		public InMemoryServiceCatalog()
         {
-			services = new ConcurrentDictionary<EndpointAddress, EndpointDiscoveryMetadata>();
+			endpoints = new ConcurrentDictionary<EndpointAddress, EndpointDiscoveryMetadata>();
         }
 
-		public virtual EndpointDiscoveryMetadata[] ListServices()
+		public virtual EndpointDiscoveryMetadata[] ListEndpoints()
 		{
-			return services.Values.ToArray<EndpointDiscoveryMetadata>();
+			return endpoints.Values.ToArray<EndpointDiscoveryMetadata>();
 		}
 
-        public virtual void FindService(FindRequestContext findRequestContext)
+        public virtual void FindEndpoint(FindRequestContext findRequestContext)
         {
-            foreach (var metadata in services.Values)
+            foreach (var metadata in endpoints.Values)
             {
                 if (findRequestContext.Criteria.IsMatch(metadata))
                 {
@@ -45,29 +45,29 @@ namespace Castle.Facilities.WcfIntegration
             }
         }
 
-        public virtual EndpointDiscoveryMetadata[] FindServices(FindCriteria criteria)
+        public virtual EndpointDiscoveryMetadata[] FindEndpoints(FindCriteria criteria)
         {
-			return services.Values.Where(criteria.IsMatch).ToArray();
+			return endpoints.Values.Where(criteria.IsMatch).ToArray();
         }
 
-        public virtual void RegisterService(EndpointDiscoveryMetadata endpointDiscoveryMetadata)
+        public virtual void RegisterEndpoint(EndpointDiscoveryMetadata endpointDiscoveryMetadata)
         {
-            if (AcceptService(endpointDiscoveryMetadata))
+            if (AcceptEndpoint(endpointDiscoveryMetadata))
             {
-				services.AddOrUpdate(endpointDiscoveryMetadata.Address, endpointDiscoveryMetadata,
+				endpoints.AddOrUpdate(endpointDiscoveryMetadata.Address, endpointDiscoveryMetadata,
 					(address, existing) => endpointDiscoveryMetadata);
             }
         }
 
-        public virtual bool RemoveService(EndpointDiscoveryMetadata endpointDiscoveryMetadata)
+        public virtual bool RemoveEndpoint(EndpointDiscoveryMetadata endpointDiscoveryMetadata)
         {
-            EndpointDiscoveryMetadata serviceBehavior;
-            return services.TryRemove(endpointDiscoveryMetadata.Address, out serviceBehavior);
+            EndpointDiscoveryMetadata endpoint;
+            return endpoints.TryRemove(endpointDiscoveryMetadata.Address, out endpoint);
         }
 
-        public virtual EndpointDiscoveryMetadata ResolveService(ResolveCriteria resolveCriteria)
+        public virtual EndpointDiscoveryMetadata ResolveEndpoint(ResolveCriteria resolveCriteria)
         {
-			foreach (var metadata in services.Values)
+			foreach (var metadata in endpoints.Values)
             {
                 if (resolveCriteria.Address == metadata.Address)
                 {
@@ -77,7 +77,7 @@ namespace Castle.Facilities.WcfIntegration
             return null;
         }
 
-		protected virtual bool AcceptService(EndpointDiscoveryMetadata endpointDiscoveryMetadata)
+		protected virtual bool AcceptEndpoint(EndpointDiscoveryMetadata endpointDiscoveryMetadata)
 		{
 			return true;
 		}

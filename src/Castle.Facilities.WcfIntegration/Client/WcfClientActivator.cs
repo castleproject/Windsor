@@ -36,8 +36,9 @@ namespace Castle.Facilities.WcfIntegration
 	{
 		private readonly WcfClientExtension clients;
 		private readonly WcfProxyFactory proxyFactory;
-		private IWcfBurden channelBurden;
+		private WcfChannelHolder channelHolder;
 		private ChannelCreator createChannel;
+		private IWcfBurden channelBurden;
 
 		public WcfClientActivator(ComponentModel model, IKernel kernel,
 		                          ComponentInstanceDelegate onCreation, ComponentInstanceDelegate onDestruction)
@@ -54,7 +55,7 @@ namespace Castle.Facilities.WcfIntegration
 
 			try
 			{
-				var channelHolder = new WcfChannelHolder(channelCreator, burden, clients.CloseTimeout);
+				channelHolder = new WcfChannelHolder(channelCreator, burden, clients.CloseTimeout);
 				var channel = (IChannel)proxyFactory.Create(Kernel, channelHolder, Model, context);
 				NotifyChannelCreatedOrAvailable(channel, burden, false);
 				return channel;
@@ -67,6 +68,12 @@ namespace Castle.Facilities.WcfIntegration
 			{
 				throw new ComponentActivatorException("WcfClientActivator: could not proxy component " + Model.Name, ex, Model);
 			}
+		}
+
+		protected override void InternalDestroy(object instance)
+		{
+			channelHolder.Dispose();
+			base.InternalDestroy(instance);
 		}
 
 		protected override void SetUpProperties(object instance, CreationContext context)
@@ -231,15 +238,14 @@ namespace Castle.Facilities.WcfIntegration
 		private static readonly ConcurrentDictionary<Type, CreateChannelDelegate>
 			createChannelCache = new ConcurrentDictionary<Type, CreateChannelDelegate>();
 
-		private static readonly MethodInfo createChannelMethod =
-			typeof(WcfClientActivator).GetMethod("CreateChannelCreatorInternal",
-												 BindingFlags.NonPublic | BindingFlags.Static, null,
-												 new[]
-			                                     {
-			                                     	typeof(IKernel), typeof(IWcfClientModel),
-			                                     	typeof(ComponentModel), typeof(IWcfBurden).MakeByRefType()
-			                                     },
-												 null
-				);
+		private static readonly MethodInfo createChannelMethod = typeof(WcfClientActivator).GetMethod(
+			"CreateChannelCreatorInternal", BindingFlags.NonPublic | BindingFlags.Static, null,
+			new[]
+			{
+				typeof(IKernel), typeof(IWcfClientModel),
+				typeof(ComponentModel), typeof(IWcfBurden).MakeByRefType()
+			},
+			null
+		);
 	}
 }
