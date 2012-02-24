@@ -93,24 +93,27 @@ namespace Castle.Facilities.WcfIntegration
 			if (disposed != 0)
 				return channel;
 
+			using (@lock.ForReading())
+			{
+				if (force == false && channel != null && IsChannelUsable)
+					return channel;
+			}
+
 			using (var locker = @lock.ForReadingUpgradeable())
 			{
 				if (force || channel == null || IsChannelUsable == false)
 				{
 					locker.Upgrade();
 
-					if (force || channel == null || IsChannelUsable == false)
+					var oldChannel = channel;
+					if (oldChannel != null)
 					{
-						var oldChannel = channel;
-						if (oldChannel != null)
-						{
-							WcfUtils.ReleaseCommunicationObject(oldChannel, closeTimeout);
-						}
-
-						CreateChannel();
-
-						NotifyChannelRefreshed(oldChannel, channel);
+						WcfUtils.ReleaseCommunicationObject(oldChannel, closeTimeout);
 					}
+
+					CreateChannel();
+
+					NotifyChannelRefreshed(oldChannel, channel);
 				}
 				return channel;
 			}

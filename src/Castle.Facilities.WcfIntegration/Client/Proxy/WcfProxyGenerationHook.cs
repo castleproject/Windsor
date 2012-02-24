@@ -47,7 +47,8 @@ namespace Castle.Facilities.WcfIntegration.Proxy
 
 		private static bool IsChannelHolderMethod(MethodInfo methodInfo)
 		{
-			return methodInfo.DeclaringType.Is<IWcfChannelHolder>();
+			return methodInfo.DeclaringType.Is<IWcfChannelHolder>()
+				|| methodInfo.DeclaringType.Is<IDisposable>();
 		}
 
 		public void NonProxyableMemberNotification(Type type, MemberInfo memberInfo)

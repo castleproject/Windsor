@@ -36,7 +36,6 @@ namespace Castle.Facilities.WcfIntegration
 	{
 		private readonly WcfClientExtension clients;
 		private readonly WcfProxyFactory proxyFactory;
-		private WcfChannelHolder channelHolder;
 		private ChannelCreator createChannel;
 		private IWcfBurden channelBurden;
 
@@ -55,7 +54,7 @@ namespace Castle.Facilities.WcfIntegration
 
 			try
 			{
-				channelHolder = new WcfChannelHolder(channelCreator, burden, clients.CloseTimeout);
+				var channelHolder = new WcfChannelHolder(channelCreator, burden, clients.CloseTimeout);
 				var channel = (IChannel)proxyFactory.Create(Kernel, channelHolder, Model, context);
 				NotifyChannelCreatedOrAvailable(channel, burden, false);
 				return channel;
@@ -70,10 +69,12 @@ namespace Castle.Facilities.WcfIntegration
 			}
 		}
 
-		protected override void InternalDestroy(object instance)
+		protected override void ApplyDecommissionConcerns(object instance)
 		{
+			base.ApplyDecommissionConcerns(instance);
+
+			var channelHolder = (IWcfChannelHolder)instance;
 			channelHolder.Dispose();
-			base.InternalDestroy(instance);
 		}
 
 		protected override void SetUpProperties(object instance, CreationContext context)
