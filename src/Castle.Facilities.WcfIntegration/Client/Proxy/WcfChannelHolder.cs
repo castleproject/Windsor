@@ -82,9 +82,15 @@ namespace Castle.Facilities.WcfIntegration
 			get { return closeTimeout; }
 		}
 
-		public bool IsChannelUsable
+		public bool IsChannelReady
 		{
-			get { return WcfUtils.IsCommunicationObjectReady(channel); }
+			get
+			{
+				using (@lock.ForReading())
+				{
+					return IsChannelUsable();
+				}
+			}
 		}
 
 		[MethodImpl(MethodImplOptions.Synchronized)]
@@ -93,15 +99,18 @@ namespace Castle.Facilities.WcfIntegration
 			if (disposed != 0)
 				return channel;
 
-			using (@lock.ForReading())
+			if (force == false)
 			{
-				if (force == false && channel != null && IsChannelUsable)
-					return channel;
+				using (@lock.ForReading())
+				{
+					if (IsChannelUsable())
+						return channel;
+				}
 			}
 
 			using (var locker = @lock.ForReadingUpgradeable())
 			{
-				if (force || channel == null || IsChannelUsable == false)
+				if (force || IsChannelUsable() == false)
 				{
 					locker.Upgrade();
 
@@ -152,6 +161,11 @@ namespace Castle.Facilities.WcfIntegration
 		{
 			channel = (IChannel)channelCreator();
 			realProxy = RemotingServices.GetRealProxy(channel);
+		}
+
+		private bool IsChannelUsable()
+		{
+			return channel != null && WcfUtils.IsCommunicationObjectReady(channel);
 		}
 
 		private ChannelFactory ObtainChannelFactory()

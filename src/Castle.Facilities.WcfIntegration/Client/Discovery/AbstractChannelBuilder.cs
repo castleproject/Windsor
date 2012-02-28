@@ -89,8 +89,9 @@ namespace Castle.Facilities.WcfIntegration
 			for (int i = 0; i < 2; ++i)
 			{
 				var discoveryEndpoint = GetDiscoveryEndpoint(model);
+				WcfBindingUtils.ConfigureQuotas(discoveryEndpoint.Binding, int.MaxValue);
 				var discoveryClient = new DiscoveryClient(discoveryEndpoint);
-				 
+
 				try
 				{
 					return discoveryClient.Find(criteria);
@@ -189,14 +190,8 @@ namespace Castle.Facilities.WcfIntegration
 			{
 				var metadataSet = MetadataSet.ReadFrom(xmlReader);
 				var importer = new WsdlImporter(metadataSet);
-				var endpoints = importer.ImportAllEndpoints();
-				if (endpoints.Count > 0)
-				{
-					return endpoints[0].Binding;
-				}
+				return importer.ImportAllBindings().FirstOrDefault();
 			}
-
-			return null;
 		}
 	}
 }

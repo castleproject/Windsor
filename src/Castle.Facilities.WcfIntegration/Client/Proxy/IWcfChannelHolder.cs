@@ -29,7 +29,7 @@ namespace Castle.Facilities.WcfIntegration
 
 		IWcfBurden ChannelBurden { get; }
 
-		bool IsChannelUsable { get; }
+		bool IsChannelReady { get; }
 
 		IChannel RefreshChannel(bool force);
 	}
