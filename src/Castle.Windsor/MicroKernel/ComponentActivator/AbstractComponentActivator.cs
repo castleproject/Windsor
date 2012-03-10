@@ -100,6 +100,12 @@ namespace Castle.MicroKernel.ComponentActivator
 			}
 
 			instance = ProxyUtil.GetUnproxiedInstance(instance);
+
+		    if (instance == null)
+		    {
+		        throw new NotSupportedException("A proxy without a target is not supported without a custom activator.");
+		    }
+
 			ApplyConcerns(Model.Lifecycle.CommissionConcerns, instance);
 		}
 

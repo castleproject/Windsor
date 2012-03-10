@@ -298,6 +298,7 @@
     <Compile Include="Bugs\IoC-267.cs" />
     <Compile Include="Bugs\IoC_324.cs" />
     <Compile Include="Bugs\IoC_325.cs" />
+    <Compile Include="Bugs\IoC_332.cs" />
     <Compile Include="ByRefDependenciesTestCase.cs" />
     <Compile Include="ClassComponents\CommonServiceUser3.cs" />
     <Compile Include="ClassComponents\GenericImplA.cs" />
