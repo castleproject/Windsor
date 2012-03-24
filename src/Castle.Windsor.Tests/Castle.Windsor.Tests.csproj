@@ -296,6 +296,7 @@
     <Compile Include="AbstractContainerTestCase.cs" />
     <Compile Include="BugAttribute.cs" />
     <Compile Include="Bugs\IoC-267.cs" />
+    <Compile Include="Bugs\IoC-334.cs" />
     <Compile Include="ByRefDependenciesTestCase.cs" />
     <Compile Include="ClassComponents\CommonServiceUser3.cs" />
     <Compile Include="ClassComponents\GenericDummyComponentAImpl.cs" />
