@@ -41,8 +41,10 @@ namespace Castle.Facilities.WcfIntegration
 			this.channelCreator = channelCreator;
 			this.burden = burden;
 			this.closeTimeout = closeTimeout;
-			this.channelFactory = ObtainChannelFactory();
+
 			CreateChannel();
+
+			channelFactory = ObtainChannelFactory();
 		}
 
 		public IChannel Channel

@@ -130,10 +130,12 @@
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="Behaviors\AbstractExtensibleObject.cs" />
     <Compile Include="Behaviors\AbstractExtension.cs" />
-    <Compile Include="Behaviors\Quotas\WcfClientQuotasBehavior.cs" />
-    <Compile Include="Behaviors\Quotas\WcfServiceQuotasBehavior.cs" />
+    <Compile Include="Behaviors\Discovery\UdpDiscoveryNetworkSelector.cs" />
+    <Compile Include="Behaviors\Serialization\DataContractSurrogateBehavior.cs" />
+    <Compile Include="Behaviors\Serialization\WcfClientQuotasBehavior.cs" />
+    <Compile Include="Behaviors\Serialization\WcfServiceQuotasBehavior.cs" />
     <Compile Include="Behaviors\Discovery\IWcfDiscoveryMetadata.cs" />
-    <Compile Include="Behaviors\Quotas\PreserveObjectReferenceBehavior.cs" />
+    <Compile Include="Behaviors\Serialization\PreserveObjectReferenceBehavior.cs" />
     <Compile Include="Behaviors\Security\CertificateCredentials.cs" />
     <Compile Include="Behaviors\Security\AbstractCredentials.cs" />
     <Compile Include="Behaviors\Security\FetchCertificate.cs" />
