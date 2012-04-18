@@ -73,11 +73,15 @@ namespace Castle.Facilities.Logging
 			Debug.Assert(CanResolve(context, parentResolver, model, dependency));
 			if (extendedLoggerFactory != null)
 			{
-				return extendedLoggerFactory.Create(logName ?? model.Implementation.Name);
+				return string.IsNullOrEmpty(logName) 
+					? extendedLoggerFactory.Create(model.Implementation) 
+					: extendedLoggerFactory.Create(logName).CreateChildLogger(model.Implementation.Name);
 			}
 
 			Debug.Assert(loggerFactory != null);
-			return loggerFactory.Create(logName ?? model.Implementation.Name);
+			return string.IsNullOrEmpty(logName) 
+				? loggerFactory.Create(model.Implementation)
+				: loggerFactory.Create(logName).CreateChildLogger(model.Implementation.Name);
 		}
 	}
 }
