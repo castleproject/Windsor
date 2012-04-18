@@ -31,6 +31,7 @@ namespace Castle.Facilities.Logging
 	{
 		private readonly IExtendedLoggerFactory extendedLoggerFactory;
 		private readonly ILoggerFactory loggerFactory;
+		private readonly string logName;
 
 		public LoggerResolver(ILoggerFactory loggerFactory)
 		{
@@ -52,6 +53,16 @@ namespace Castle.Facilities.Logging
 			this.extendedLoggerFactory = extendedLoggerFactory;
 		}
 
+		public LoggerResolver(ILoggerFactory loggerFactory, string name) : this(loggerFactory)
+		{
+			logName = name;
+		}
+
+		public LoggerResolver(IExtendedLoggerFactory extendedLoggerFactory, string name) : this (extendedLoggerFactory)
+		{
+			logName = name;
+		}
+
 		public bool CanResolve(CreationContext context, ISubDependencyResolver parentResolver, ComponentModel model, DependencyModel dependency)
 		{
 			return dependency.TargetType == typeof(ILogger) || dependency.TargetType == typeof(IExtendedLogger);
@@ -62,11 +73,15 @@ namespace Castle.Facilities.Logging
 			Debug.Assert(CanResolve(context, parentResolver, model, dependency));
 			if (extendedLoggerFactory != null)
 			{
-				return extendedLoggerFactory.Create(model.Implementation);
+				return string.IsNullOrEmpty(logName) 
+					? extendedLoggerFactory.Create(model.Implementation) 
+					: extendedLoggerFactory.Create(logName).CreateChildLogger(model.Implementation.Name);
 			}
 
 			Debug.Assert(loggerFactory != null);
-			return loggerFactory.Create(model.Implementation);
+			return string.IsNullOrEmpty(logName) 
+				? loggerFactory.Create(model.Implementation)
+				: loggerFactory.Create(logName).CreateChildLogger(model.Implementation.Name);
 		}
 	}
 }
