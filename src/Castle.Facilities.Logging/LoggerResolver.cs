@@ -75,13 +75,13 @@ namespace Castle.Facilities.Logging
 			{
 				return string.IsNullOrEmpty(logName) 
 					? extendedLoggerFactory.Create(model.Implementation) 
-					: extendedLoggerFactory.Create(logName).CreateChildLogger(model.Implementation.Name);
+					: extendedLoggerFactory.Create(logName).CreateChildLogger(model.Implementation.FullName);
 			}
 
 			Debug.Assert(loggerFactory != null);
 			return string.IsNullOrEmpty(logName) 
 				? loggerFactory.Create(model.Implementation)
-				: loggerFactory.Create(logName).CreateChildLogger(model.Implementation.Name);
+				: loggerFactory.Create(logName).CreateChildLogger(model.Implementation.FullName);
 		}
 	}
 }

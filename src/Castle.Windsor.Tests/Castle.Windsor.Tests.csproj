@@ -574,9 +574,11 @@
     <Compile Include="LoggingFacility\ExtendedLog4NetFacilityTestCase.cs" />
     <Compile Include="LoggingFacility\ExtendedNLogFacilityTests.cs" />
     <Compile Include="LoggingFacility\Facilities77.cs" />
+    <Compile Include="LoggingFacility\Log4NetFacilityLognameOverrideTests.cs" />
     <Compile Include="LoggingFacility\Log4NetFacilityTests.cs" />
     <Compile Include="LoggingFacility\NLogFacilityTests.cs" />
     <Compile Include="LoggingFacility\NullFacilityTest.cs" />
+    <Compile Include="LoggingFacility\OverrideLoggerTest.cs" />
     <Compile Include="LoggingFacility\TraceFacilityTest.cs" />
     <Compile Include="IsDefaultTestCase.cs" />
     <Compile Include="MicroKernel\NotImplementedDependencyResolver.cs" />
