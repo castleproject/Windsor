@@ -1567,7 +1567,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 		[Test]
 		public void WillCallBackResultWhenAsynchronousOperationCompletes()
 		{
-			using (IWindsorContainer localContainer = new WindsorContainer()
+			using (var localContainer = new WindsorContainer()
 				.AddFacility<WcfFacility>(f => f.CloseTimeout = TimeSpan.Zero)
 				.Register(
 					Component.For<IOperations>()

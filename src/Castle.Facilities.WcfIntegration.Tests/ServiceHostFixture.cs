@@ -875,7 +875,6 @@ namespace Castle.Facilities.WcfIntegration.Tests
 							"net.tcp://localhost/ServiceCatalog")
 						.AddEndpoints(
 							WcfEndpoint.FromEndpoint(new AnnouncementEndpoint(netBinding, announceAt)))
-						.AddExtensions(typeof(AdHocServiceCatalogProbe))
 						),
 					Component.For<IOperations>().ImplementedBy<Operations>()
 						.DependsOn(new { number = 42 })
@@ -912,7 +911,6 @@ namespace Castle.Facilities.WcfIntegration.Tests
 							"net.tcp://localhost/ServiceCatalog")
 						.AddEndpoints(
 							WcfEndpoint.FromEndpoint(new AnnouncementEndpoint(netBinding, announceAt)))
-						.AddExtensions(typeof(AdHocServiceCatalogProbe))
 						),
 					Component.For<IOperations>().ImplementedBy<Operations>()
 						.DependsOn(new { number = 42 })

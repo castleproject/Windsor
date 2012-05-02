@@ -130,7 +130,6 @@
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="Behaviors\AbstractExtensibleObject.cs" />
     <Compile Include="Behaviors\AbstractExtension.cs" />
-    <Compile Include="Behaviors\Discovery\UdpDiscoveryNetworkSelector.cs" />
     <Compile Include="Behaviors\Serialization\DataContractSurrogateBehavior.cs" />
     <Compile Include="Behaviors\Serialization\WcfClientQuotasBehavior.cs" />
     <Compile Include="Behaviors\Serialization\WcfServiceQuotasBehavior.cs" />
@@ -171,7 +170,7 @@
     <Compile Include="Service\Discovery\LoadBalance\ILoadBalancePolicyFactory.cs" />
     <Compile Include="Service\Discovery\LoadBalance\RoundRobinPolicy.cs" />
     <Compile Include="Service\Discovery\ServiceCatalog\ServiceCatalog.cs" />
-    <Compile Include="Client\Discovery\DiscoveryProxySearch.cs" />
+    <Compile Include="Client\Discovery\DiscoveryProxyLocator.cs" />
     <Compile Include="Service\Discovery\WcfDiscoveryExtension.cs" />
     <Compile Include="Behaviors\Errors\WcfErrorBehavior.cs" />
     <Compile Include="Behaviors\WcfChannelExtensions.cs" />

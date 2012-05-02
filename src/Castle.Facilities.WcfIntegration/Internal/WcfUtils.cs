@@ -87,7 +87,7 @@ namespace Castle.Facilities.WcfIntegration.Internal
 		{
 			foreach (var handler in FindExtensions<T>(kernel, scope))
 			{
-				T behavior = (T)handler.Resolve(CreationContext.CreateEmpty());
+				var behavior = (T)handler.Resolve(CreationContext.CreateEmpty());
 				if (predicate == null || predicate(behavior))
 				{
 					if (behaviors != null) behaviors.Add(behavior);
@@ -255,7 +255,7 @@ namespace Castle.Facilities.WcfIntegration.Internal
 				{
 					if (dependency is T)
 					{
-						T candidate = (T)dependency;
+						var candidate = (T)dependency;
 
 						if (test == null || test(candidate))
 						{
@@ -264,7 +264,7 @@ namespace Castle.Facilities.WcfIntegration.Internal
 					}
 					else if (dependency is IEnumerable<T>)
 					{
-						foreach (T item in (IEnumerable<T>)dependency)
+						foreach (var item in (IEnumerable<T>)dependency)
 						{
 							yield return item;
 						}
@@ -354,11 +354,11 @@ namespace Castle.Facilities.WcfIntegration.Internal
 
 		public static T SafeInitialize<T>(ref T cache, Func<T> source) where T : class
 		{
-			T getCache = Interlocked.CompareExchange(ref cache, null, null);
+			var getCache = Interlocked.CompareExchange(ref cache, null, null);
 			if (getCache != null) return getCache;
 
 			getCache = source();
-			T updatedCache = Interlocked.CompareExchange(ref cache, getCache, null);
+			var updatedCache = Interlocked.CompareExchange(ref cache, getCache, null);
 			return updatedCache ?? getCache;
 		}
 

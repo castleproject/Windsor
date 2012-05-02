@@ -98,7 +98,7 @@ namespace Castle.Facilities.WcfIntegration.Tests.Rest
 		[Test, Ignore("This test requires the Castle.Facilities.WcfIntegration.Demo running")]
 		public void CanCallRestfulHostedService()
 		{
-			using (WebChannelFactory<IAmUsingWindsor> factory =	new WebChannelFactory<IAmUsingWindsor>(
+			using (var factory = new WebChannelFactory<IAmUsingWindsor>(
 					new Uri("http://localhost:27197/UsingWindsorRest.svc")))
 			{
 				Assert.AreEqual(126, factory.CreateChannel().MultiplyValueFromWindsorConfig(3));

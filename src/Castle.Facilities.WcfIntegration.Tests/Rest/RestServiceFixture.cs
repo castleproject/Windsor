@@ -17,9 +17,6 @@ namespace Castle.Facilities.WcfIntegration.Tests.Rest
 	using System;
 	using System.IO;
 	using System.Net;
-	using System.ServiceModel;
-	using System.ServiceModel.Channels;
-	using System.ServiceModel.Description;
 	using System.ServiceModel.Web;
 	using Castle.Facilities.WcfIntegration.Rest;
 	using Castle.MicroKernel.Registration;
@@ -41,10 +38,9 @@ namespace Castle.Facilities.WcfIntegration.Tests.Rest
 					.AsWcfService(new RestServiceModel("http://localhost:27198"))
 				))
 			{
-				using (WebChannelFactory<ICalculator> factory =
-					new WebChannelFactory<ICalculator>(new Uri("http://localhost:27198")))
+				using (var factory = new WebChannelFactory<ICalculator>(new Uri("http://localhost:27198")))
 				{
-					ICalculator calculator = factory.CreateChannel();
+					var calculator = factory.CreateChannel();
 					Assert.AreEqual(21, calculator.Multiply(3, 7));
 				}
 			}
@@ -61,10 +57,9 @@ namespace Castle.Facilities.WcfIntegration.Tests.Rest
 					.AsWcfService(new RestServiceModel("http://localhost:27198/Calc"))
 				))
 			{
-				using (WebChannelFactory<ICalculator> factory =
-					new WebChannelFactory<ICalculator>(new Uri("http://localhost:27198/Calc")))
+				using (var factory = new WebChannelFactory<ICalculator>(new Uri("http://localhost:27198/Calc")))
 				{
-					ICalculator calculator = factory.CreateChannel();
+					var calculator = factory.CreateChannel();
 					Assert.AreEqual(8, calculator.Divide(56, 7));
 				}
 			}
@@ -80,7 +75,7 @@ namespace Castle.Facilities.WcfIntegration.Tests.Rest
 				)))
 			{
 				var request = WebRequest.Create("http://localhost:8008/Inventory/quantity/1234");
-				WebResponse response = request.GetResponse();
+				var response = request.GetResponse();
 				using (var reader = new BinaryReader(response.GetResponseStream()))
                 {
 					Assert.AreEqual(10, reader.ReadInt32());

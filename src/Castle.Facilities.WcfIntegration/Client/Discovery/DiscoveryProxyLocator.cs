@@ -19,7 +19,7 @@ namespace Castle.Facilities.WcfIntegration
 	using System.ServiceModel.Discovery;
 	using Castle.Facilities.WcfIntegration.Internal;
 
-	public class DiscoveryProxySearch : DiscoveryEndpointProvider
+	public class DiscoveryProxyLocator : DiscoveryEndpointProvider
 	{
 		private static readonly TimeSpan DefaultDuration = new TimeSpan(0, 0, 10);
 
@@ -28,6 +28,8 @@ namespace Castle.Facilities.WcfIntegration
 		public TimeSpan? Duration { get; set; }
 
 		public DiscoveryVersion DiscoveryVersion { get; set; }
+
+		public UdpDiscoveryEndpoint UdpDiscoveryEndpoint { get; set; }
 
 		public override DiscoveryEndpoint GetDiscoveryEndpoint()
 		{
@@ -63,7 +65,7 @@ namespace Castle.Facilities.WcfIntegration
 
 		protected virtual UdpDiscoveryEndpoint GetUdpDiscoveryEndpoint()
 		{
-			return new UdpDiscoveryEndpoint();
+			return UdpDiscoveryEndpoint ?? new UdpDiscoveryEndpoint();
 		}
 
 		private void RestrictDomain(FindCriteria criteria)
