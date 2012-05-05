@@ -1,4 +1,4 @@
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2012 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ namespace Castle.Facilities.WcfIntegration.Async
 	using System.Runtime.Remoting.Messaging;
 	using Castle.DynamicProxy;
 	using Castle.Facilities.WcfIntegration.Async.TypeSystem;
+	using Castle.Facilities.WcfIntegration.Internal;
 	using Castle.Facilities.WcfIntegration.Proxy;
 
 	public class WcfRemotingAsyncInterceptor : WcfRemotingInterceptor
@@ -90,7 +91,8 @@ namespace Castle.Facilities.WcfIntegration.Async
 
 			if (returnMessage.Exception != null)
 			{
-				throw returnMessage.Exception;
+				var exception = ExceptionHelper.PreserveStackTrace(returnMessage.Exception);
+				throw exception;
 			}
 
 			outs = message.OutArgs;

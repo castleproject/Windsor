@@ -1,4 +1,4 @@
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2012 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ namespace Castle.Facilities.WcfIntegration.Proxy
 	using System.Runtime.Remoting.Messaging;
 	using System.Runtime.Remoting.Proxies;
 	using Castle.DynamicProxy;
+	using Castle.Facilities.WcfIntegration.Internal;
 
 	public class WcfRemotingInterceptor : IWcfInterceptor
 	{
@@ -80,7 +81,8 @@ namespace Castle.Facilities.WcfIntegration.Proxy
 			var returnMessage = (IMethodReturnMessage)realProxy.Invoke(message);
 			if (returnMessage.Exception != null)
 			{
-				throw returnMessage.Exception;
+				var exception = ExceptionHelper.PreserveStackTrace(returnMessage.Exception);
+				throw exception;
 			}
 			wcfInvocation.ReturnValue = returnMessage.ReturnValue;
 		}

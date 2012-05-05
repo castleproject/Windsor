@@ -148,6 +148,7 @@
     <Compile Include="Client\IChannelBuilderScope.cs" />
     <Compile Include="Client\Policies\RetryTimeoutPolicy.cs" />
     <Compile Include="ComponentModelExtensions.cs" />
+    <Compile Include="Internal\ExceptionHelper.cs" />
     <Compile Include="Internal\WcfBindingUtils.cs" />
     <Compile Include="Internal\WcfBurdenExtension.cs" />
     <Compile Include="IWcfChannelExtension.cs" />

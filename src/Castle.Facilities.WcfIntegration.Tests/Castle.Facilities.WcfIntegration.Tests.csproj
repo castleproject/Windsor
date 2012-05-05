@@ -113,6 +113,7 @@
   <ItemGroup>
     <Compile Include="AsyncChannelFactoryFixture.cs" />
     <Compile Include="DataServiceHostFactoryFixture.cs" />
+    <Compile Include="ExceptionsTestCase.cs" />
     <Compile Include="IssuesTestCase.cs" />
     <Compile Include="Behaviors\ExtensibleBehaviorExtension.cs" />
     <Compile Include="Behaviors\CallCountServiceBehavior.cs">
