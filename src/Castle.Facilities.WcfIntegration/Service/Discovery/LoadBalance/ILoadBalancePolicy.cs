@@ -18,8 +18,15 @@ namespace Castle.Facilities.WcfIntegration
 	using System.Collections.Generic;
 	using System.ServiceModel.Discovery;
 
-    public interface ILoadBalancePolicy : ICollection<EndpointDiscoveryMetadata>
+    public interface ILoadBalancePolicy
     {
+		EndpointDiscoveryMetadata ChooseTarget(FindCriteria criteria = null);
+
+		bool RegisterTarget(EndpointDiscoveryMetadata target);
+
+		bool RemoveTarget(EndpointDiscoveryMetadata target);
+
+		void CollectTargets(ICollection<EndpointDiscoveryMetadata> collected);
     }
 #endif
 }

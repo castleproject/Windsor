@@ -1,4 +1,4 @@
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2012 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,11 +15,16 @@
 namespace Castle.Facilities.WcfIntegration
 {
 #if DOTNET40
-	using System.ServiceModel.Discovery;
+	using System.ServiceModel;
 
-    public interface ILoadBalancePolicyFactory
-    {
-		ILoadBalancePolicy[] CreatePolicies(EndpointDiscoveryMetadata endpoint);
-    }
+	public class EndpointFailure
+	{
+		public EndpointFailure(EndpointAddress failedAddress)
+		{
+			FailedAddress = failedAddress;
+		}
+
+		public EndpointAddress FailedAddress { get; private set; }
+	}
 #endif
 }

@@ -39,7 +39,7 @@ namespace Castle.Facilities.WcfIntegration
 
 		protected override IAsyncResult OnBeginFind(FindRequestContext findRequestContext, AsyncCallback callback, object state)
 		{
-			implementation.FindEndpoint(findRequestContext);
+			implementation.FindEndpoints(findRequestContext);
 			return new SynchronousResult(callback, state);
 		}
 

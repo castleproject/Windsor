@@ -22,11 +22,11 @@ namespace Castle.Facilities.WcfIntegration
     {
 		EndpointDiscoveryMetadata[] ListEndpoints();
 
-        void FindEndpoint(FindRequestContext findRequestContext);
+        void FindEndpoints(FindRequestContext findRequestContext);
 
         EndpointDiscoveryMetadata[] FindEndpoints(FindCriteria criteria);
 
-        void RegisterEndpoint(EndpointDiscoveryMetadata endpointDiscoveryMetadata);
+        bool RegisterEndpoint(EndpointDiscoveryMetadata endpointDiscoveryMetadata);
 
         bool RemoveEndpoint(EndpointDiscoveryMetadata endpointDiscoveryMetadata);
 
