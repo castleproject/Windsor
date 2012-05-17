@@ -30,6 +30,7 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 	///   The scope is passed on to child threads, including ThreadPool threads. The capability is limited to single <see
 	///    cref = "AppDomain" /> and should be used cauciously as call to <see cref = "Dispose" /> may occur while the child thread is still executing, what in turn may lead to subtle threading bugs.
 	/// </remarks>
+	[Serializable]
 	public class CallContextLifetimeScope : ILifetimeScope, ILogicalThreadAffinative
 	{
 		private static readonly string contextKey = "castle.lifetime-scope-" + AppDomain.CurrentDomain.Id.ToString();
@@ -51,7 +52,7 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 		{
 		}
 
-        [System.Security.SecuritySafeCritical] 
+		[System.Security.SecuritySafeCritical]
 		public void Dispose()
 		{
 			using (var token = @lock.ForReadingUpgradeable())
@@ -91,13 +92,13 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 			}
 		}
 
-        [System.Security.SecuritySafeCritical]
+		[System.Security.SecuritySafeCritical]
 		private void SetCurrentScope(CallContextLifetimeScope lifetimeScope)
 		{
 			CallContext.SetData(contextKey, lifetimeScope);
 		}
 
-        [System.Security.SecuritySafeCritical]
+		[System.Security.SecuritySafeCritical]
 		public static CallContextLifetimeScope ObtainCurrentScope()
 		{
 			return (CallContextLifetimeScope)CallContext.GetData(contextKey);

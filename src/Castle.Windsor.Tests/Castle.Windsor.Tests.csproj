@@ -555,6 +555,7 @@
     <Compile Include="Lifestyle\CustomLifestyle_InstanceScope.cs" />
     <Compile Include="Lifestyle\CustomLifestyle_Scoped.cs" />
     <Compile Include="Lifestyle\LifestyleApiTestCase.cs" />
+    <Compile Include="Lifestyle\ScopedLifestyleExplicitAndMultipleAppDomainsTestCase.cs" />
     <Compile Include="Lifestyle\ScopedLifestyleExplicitAndMultipleThreadsTestCase.cs" />
     <Compile Include="Lifestyle\ScopedLifestyleExplicitAndNestingTestCase.cs" />
     <Compile Include="Lifestyle\ScopedLifestyleExplicitAndTypedFactoriesTestCase.cs" />
