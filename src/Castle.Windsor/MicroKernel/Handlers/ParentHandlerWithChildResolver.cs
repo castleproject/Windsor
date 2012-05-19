@@ -89,7 +89,7 @@ namespace Castle.MicroKernel.Handlers
 
 		public object TryResolve(CreationContext context)
 		{
-			return parentHandler.Resolve(context);
+			return parentHandler.TryResolve(context);
 		}
 
 		public virtual bool CanResolve(CreationContext context, ISubDependencyResolver contextHandlerResolver,
