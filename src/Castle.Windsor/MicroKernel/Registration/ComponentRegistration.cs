@@ -1102,12 +1102,12 @@ namespace Castle.MicroKernel.Registration
 		}
 
 		/// <summary>
-		///   Filters properties on the implementation that will be considered 'settable' by the container.
+		///   Filters (settable) properties of the component's implementation type to expose in the container.
 		/// </summary>
-		/// <param name = "filter">Predicate deciding whether a property is settable or not. If returns <c>false</c> container will ignore the property, otherwise property will be ignored.</param>
+		/// <param name = "filter">Predicate deciding whether a property is settable or not. If it returns <c>false</c> the property will not be added to <see cref="ComponentModel.Properties"/> collection and Windsor will never try to set it.</param>
 		/// <returns></returns>
 		/// <remarks>
-		///   Matched properties will be considered optional, that is component will resolve successfully if they can not be satisfied.
+		///   Matched properties will be considered optional. Windsor will resolve the component even if it cannot provide value for those properties. If you want to make them mandatory use a different overload.
 		/// </remarks>
 		public ComponentRegistration<TService> Properties(Predicate<PropertyInfo> filter)
 		{
@@ -1115,30 +1115,22 @@ namespace Castle.MicroKernel.Registration
 		}
 
 		/// <summary>
-		///   Filters properties on the implementation that will be considered 'settable' by the container and specifies if matched properties are reqired.
+		///   Filters (settable) properties of the component's implementation type to expose in the container and specifies if matched properties are considered mandatory.
 		/// </summary>
-		/// <param name = "filter">Predicate deciding whether a property is settable or not. If returns <c>false</c> container will ignore the property.</param>
-		/// <param name = "isRequired"></param>
+		/// <param name = "filter">Predicate deciding whether a property is settable or not. If it returns <c>false</c> the property will not be added to <see cref="ComponentModel.Properties"/> collection and Windsor will never try to set it.</param>
+		/// <param name = "isRequired">if <c>true</c> the properties matched by <paramref name="filter"/> will be considered mandatory dependencies. Windsor will only successfully resole the component if it can provide value for all of these properties. If <c>false</c> Windsor will still try to provide values for these properties, but if it can't it will not stop the component from being successfully resolved.</param>
 		/// <returns></returns>
-		/// <remarks>
-		///   Matched properties will be considered optional if <paramref name = "isRequired" /> is<c>false</c>, that is component will resolve successfully if they can not be satisfied.
-		///   If the argument is <c>true</c> and the dependencies can not be resolved the component will fail to resolve.
-		/// </remarks>
 		public ComponentRegistration<TService> Properties(Predicate<PropertyInfo> filter, bool isRequired)
 		{
 			return Properties((_, p) => filter(p), isRequired);
 		}
 
 		/// <summary>
-		///   Filters properties on the implementation that will be considered 'settable' by the container and specifies if matched properties are reqired.
+		///   Filters (settable) properties of the component's implementation type to expose in the container and specifies if matched properties are considered mandatory.
 		/// </summary>
-		/// <param name = "filter">Predicate deciding whether a property is settable or not. If returns <c>false</c> container will ignore the property.</param>
-		/// <param name = "isRequired"></param>
+		/// <param name = "filter">Predicate deciding whether a property is settable or not. If it returns <c>false</c> the property will not be added to <see cref="ComponentModel.Properties"/> collection and Windsor will never try to set it.</param>
+		/// <param name = "isRequired">if <c>true</c> the properties matched by <paramref name="filter"/> will be considered mandatory dependencies. Windsor will only successfully resole the component if it can provide value for all of these properties. If <c>false</c> Windsor will still try to provide values for these properties, but if it can't it will not stop the component from being successfully resolved.</param>
 		/// <returns></returns>
-		/// <remarks>
-		///   Matched properties will be considered optional if <paramref name = "isRequired" /> is<c>false</c>, that is component will resolve successfully if they can not be satisfied.
-		///   If the argument is <c>true</c> and the dependencies can not be resolved the component will fail to resolve.
-		/// </remarks>
 		public ComponentRegistration<TService> Properties(Func<ComponentModel, PropertyInfo, bool> filter, bool isRequired)
 		{
 			return AddDescriptor(new DelegatingModelDescriptor(builder: (k, c) =>
@@ -1149,9 +1141,9 @@ namespace Castle.MicroKernel.Registration
 		}
 
 		/// <summary>
-		///   Filters properties on the implementation that will be considered 'settable' by the container and specifies if matched properties are reqired.
+		///   Filters (settable) properties of the component's implementation type to expose in the container and specifies if matched properties are considered mandatory.
 		/// </summary>
-		/// <param name = "filter">Rules for deciding whether a property is settable or not and if container will ignore the property.</param>
+		/// <param name = "filter">Rules for deciding whether given properties are exposed in the container or ignored and if they are mandatory, that is Windsor will only successfully resole the component if it can provide value for all of these properties.</param>
 		/// <returns></returns>
 		public ComponentRegistration<TService> Properties(PropertyFilter filter)
 		{
