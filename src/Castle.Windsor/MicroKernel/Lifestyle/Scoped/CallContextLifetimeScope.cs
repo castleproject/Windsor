@@ -1,4 +1,4 @@
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2012 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,24 +16,30 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 {
 #if !SILVERLIGHT
 	using System;
+	using System.Collections.Concurrent;
 	using System.Runtime.Remoting.Messaging;
-
+	using System.Runtime.Serialization;
+	using System.Security;
 	using Castle.Core;
 	using Castle.Core.Internal;
 	using Castle.Windsor;
 
 	/// <summary>
 	///   Provides explicit lifetime scoping within logical path of execution. Used for types with <see
-	///    cref = "LifestyleType.Scoped" />.
+	///    cref="LifestyleType.Scoped" /> .
 	/// </summary>
 	/// <remarks>
 	///   The scope is passed on to child threads, including ThreadPool threads. The capability is limited to single <see
-	///    cref = "AppDomain" /> and should be used cauciously as call to <see cref = "Dispose" /> may occur while the child thread is still executing, what in turn may lead to subtle threading bugs.
+	///    cref="AppDomain" /> and should be used cauciously as call to <see cref="Dispose" /> may occur while the child thread is still executing, what in turn may lead to subtle threading bugs.
 	/// </remarks>
 	[Serializable]
-	public class CallContextLifetimeScope : ILifetimeScope, ILogicalThreadAffinative
+	public class CallContextLifetimeScope : ILifetimeScope, ISerializable
 	{
+		private static readonly ConcurrentDictionary<Guid, CallContextLifetimeScope> appDomainLocalInstanceCache =
+			new ConcurrentDictionary<Guid, CallContextLifetimeScope>();
+
 		private static readonly string contextKey = "castle.lifetime-scope-" + AppDomain.CurrentDomain.Id.ToString();
+		private readonly Guid instanceId;
 		private readonly Lock @lock = Lock.Create();
 		private readonly CallContextLifetimeScope parentScope;
 		private ScopeCache cache = new ScopeCache();
@@ -46,13 +52,14 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 				parentScope = parent;
 			}
 			SetCurrentScope(this);
+			instanceId = Guid.NewGuid();
 		}
 
 		public CallContextLifetimeScope(IWindsorContainer container) : this(container.Kernel)
 		{
 		}
 
-		[System.Security.SecuritySafeCritical]
+		[SecuritySafeCritical]
 		public void Dispose()
 		{
 			using (var token = @lock.ForReadingUpgradeable())
@@ -67,13 +74,15 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 
 				if (parentScope != null)
 				{
-					CallContext.SetData(contextKey, parentScope);
+					SetCurrentScope(parentScope);
 				}
 				else
 				{
 					CallContext.FreeNamedDataSlot(contextKey);
 				}
 			}
+			CallContextLifetimeScope @this;
+			appDomainLocalInstanceCache.TryRemove(instanceId, out @this);
 		}
 
 		public Burden GetCachedInstance(ComponentModel instance, ScopedInstanceActivationCallback createInstance)
@@ -92,16 +101,79 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 			}
 		}
 
-		[System.Security.SecuritySafeCritical]
+		[SecuritySafeCritical]
 		private void SetCurrentScope(CallContextLifetimeScope lifetimeScope)
 		{
-			CallContext.SetData(contextKey, lifetimeScope);
+			CallContext.LogicalSetData(contextKey, lifetimeScope);
 		}
 
-		[System.Security.SecuritySafeCritical]
+		[SecurityCritical]
+		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
+		{
+			info.SetType(typeof (SerializationReference));
+			info.AddValue("instanceId", instanceId);
+			appDomainLocalInstanceCache.TryAdd(instanceId, this);
+		}
+
+		[SecuritySafeCritical]
 		public static CallContextLifetimeScope ObtainCurrentScope()
 		{
-			return (CallContextLifetimeScope)CallContext.GetData(contextKey);
+			return (CallContextLifetimeScope) CallContext.LogicalGetData(contextKey);
+		}
+
+		[Serializable]
+		private class CrossAppDomainCallContextLifetimeScope : ILifetimeScope, ISerializable
+		{
+			private readonly Guid originalInstanceId;
+
+			public CrossAppDomainCallContextLifetimeScope(Guid originalInstanceId)
+			{
+				this.originalInstanceId = originalInstanceId;
+			}
+
+			[SecurityCritical]
+			public void GetObjectData(SerializationInfo info, StreamingContext context)
+			{
+				info.SetType(typeof (SerializationReference));
+				info.AddValue("instanceId", originalInstanceId);
+			}
+
+			void IDisposable.Dispose()
+			{
+			}
+
+			Burden ILifetimeScope.GetCachedInstance(ComponentModel instance, ScopedInstanceActivationCallback createInstance)
+			{
+				// not sure if we'll be able to hit this code ever. If so we should get a better exception message
+				throw new InvalidOperationException(
+					"This scope comes from a different app domain and cannot be used in this context.");
+			}
+		}
+
+		[Serializable]
+		private class SerializationReference : IObjectReference, ISerializable
+		{
+			private readonly Guid scopeInstanceId;
+
+			[SecurityCritical]
+			protected SerializationReference(SerializationInfo info, StreamingContext context)
+			{
+				scopeInstanceId = (Guid) info.GetValue("instanceId", typeof (Guid));
+			}
+
+
+			[SecurityCritical]
+			object IObjectReference.GetRealObject(StreamingContext context)
+			{
+				CallContextLifetimeScope scope;
+				appDomainLocalInstanceCache.TryGetValue(scopeInstanceId, out scope);
+				return (object) scope ?? new CrossAppDomainCallContextLifetimeScope(scopeInstanceId);
+			}
+
+			[SecurityCritical]
+			void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
+			{
+			}
 		}
 	}
 #endif
