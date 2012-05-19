@@ -1,3 +1,9 @@
+- fixed IOC-338 - SerializationException thrown when using remoting within default lifetime scope (Failed to load expression host assembly. Details: Type '[...]CallContextLifetimeScope[...]' is not marked as serializable.)
+
+3.0.0 (2011-12-13)
+==================
+no major changes
+
 3.0.0 RC 1 (2011-11-20)
 ==================
 - implemented IOC-318 - Provide more high level API for fitering (and ignoring/requiring) properties at registration time
