@@ -431,6 +431,8 @@
     <Compile Include="Diagnostics\AllServicesDiagnosticTestCase.cs" />
     <Compile Include="ExceptionsTestCase.cs" />
     <Compile Include="Facilities\Startable\StartableAndExceptionThrowingInstallersTestCase.cs" />
+    <Compile Include="Facilities\TypedFactory\Delegates\HasFuncProperty.cs" />
+    <Compile Include="Facilities\TypedFactory\TypedFactoryDelegatesInvalidScenariosTestCase.cs" />
     <Compile Include="Facilities\TypedFactory\Factories\DummyComponentFactoryWithAttribute.cs" />
     <Compile Include="Facilities\TypedFactory\Factories\IDummyComponentFactoryWithAttribute_serviceName.cs" />
     <Compile Include="Facilities\TypedFactory\Factories\IDummyComponentFactoryWithAttribute_serviceType.cs" />

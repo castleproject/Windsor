@@ -39,10 +39,16 @@ namespace Castle.Facilities.TypedFactory.Internal
 			{
 				return null;
 			}
+			if(invoke.ReturnType.IsPrimitiveType())
+			{
+				return null;
+			}
+
 			if (service.IsGenericType)
 			{
 				service = service.GetGenericTypeDefinition();
 			}
+
 			return Component.For(service)
 				.NamedAutomatically(GetName(service))
 				.LifeStyle.Transient

@@ -1,4 +1,29 @@
 ================================================================================================
+change - System.String, and some other types can no longer be registered as a service
+	in the container
+
+impact - low
+fixability - easy
+
+description - This is something that probably should never have made it into the codebase. Now
+	if you try to register String, a collection of strings or collection of value types Windsor
+	will throw an ArgumentException and not allow you to do that.
+
+fix - If you did register those types in the container change them from being components
+	to being parameters on the components that were depending on them.
+================================================================================================
+change - DependencyModel.IsValueType is renamed to DependencyModel.IsPrimitiveTypeDependency.
+
+impact - low
+fixability - easy
+
+description - This is part of unification of how types that can not be registered as valid
+	services are found and treated in Windsor.
+	Also the property now returns true if TargetItemType is null. Previously it returned false.
+
+fix - Change usages of IsValueType to IsPrimitiveTypeDependency if you depended on behavior when
+	TargetItemType is null, you might also need to check its value to preserve the old behavior.
+================================================================================================
 change - Typed factory using DefaultTypedFactoryComponentSelector when resolving component 
 	by name will not fallback to resolving by type if component with that name can not be found
 	and will throw an exception instead.
