@@ -1,4 +1,3 @@
-using System.Collections;
 // Copyright 2004-2011 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,61 +11,38 @@ using System.Collections;
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-using System.Collections.Generic;
 
 namespace Castle.Facilities.WcfIntegration
 {
 #if DOTNET40
-	using System;
-	using System.ServiceModel.Discovery;
-
-	public class RoundRobinPolicy : ILoadBalancePolicy
+	public class RoundRobinPolicy : ListBasedLoadBalancePolicy
 	{
-		public int Count
+		public RoundRobinPolicy(PolicyMembership membership)
+			: base(membership)
 		{
-			get { throw new NotImplementedException(); }
 		}
 
-		public bool IsReadOnly
+		protected override void ChooseTarget(ChooseContext choose)
 		{
-			get { return false; }
-		}
-
-		public void Add(EndpointDiscoveryMetadata item)
-		{
-			throw new NotImplementedException();
-		}
-
-		public bool Contains(EndpointDiscoveryMetadata item)
-		{
-			throw new NotImplementedException();
-		}
-
-		public void CopyTo(EndpointDiscoveryMetadata[] array, int arrayIndex)
-		{
-			throw new NotImplementedException();
-		}
-
-		public bool Remove(EndpointDiscoveryMetadata item)
-		{
-			throw new NotImplementedException();
-		}
-
-		public void Clear()
-		{
-			throw new NotImplementedException();
-		}
-
-		public IEnumerator<EndpointDiscoveryMetadata> GetEnumerator()
-		{
-			throw new NotImplementedException();
-		}
-
-		IEnumerator IEnumerable.GetEnumerator()
-		{
-			return GetEnumerator();
+			choose.ModifyList(targets =>
+			{
+				var count = targets.Count;
+				for (int index = 0; index < count; ++index)
+				{
+					var target = targets[index];
+					if (choose.Matches(target))
+					{
+						if (count > 1)
+						{
+							targets.RemoveAt(index);
+							targets.Add(target);
+						}
+						return target;
+					}
+				}
+				return null;
+			});
 		}
 	}
 #endif
 }
-

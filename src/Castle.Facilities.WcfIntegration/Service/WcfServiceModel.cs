@@ -116,7 +116,7 @@ namespace Castle.Facilities.WcfIntegration
 
 		public T AddExtensions(params object[] extensions)
 		{
-			Extensions.AddAll(extensions.Select(extension => WcfExplicitExtension.CreateFrom(extension)));
+			Extensions.AddAll(extensions.Select(WcfExplicitExtension.CreateFrom));
 			return (T)this;
 		}
 

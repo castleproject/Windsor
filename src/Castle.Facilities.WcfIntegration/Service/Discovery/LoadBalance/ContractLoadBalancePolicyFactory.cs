@@ -15,11 +15,19 @@
 namespace Castle.Facilities.WcfIntegration
 {
 #if DOTNET40
+	using System;
+	using System.Linq;
 	using System.ServiceModel.Discovery;
 
-    public interface ILoadBalancePolicyFactory
+	public class ContractLoadBalancePolicyFactory<TPolicy> : AbstractLoadBalancePolicyFactory<TPolicy>
+		where TPolicy : class, ILoadBalancePolicy
     {
-		ILoadBalancePolicy[] CreatePolicies(EndpointDiscoveryMetadata endpoint);
+		protected override ILoadBalancePolicy[] CreatePolicies(EndpointDiscoveryMetadata endpoint, PolicyCreator creator)
+		{
+			return endpoint.ContractTypeNames.Select(contract =>
+				creator(target => target.ContractTypeNames.Contains(contract)))
+				.ToArray();
+		}
     }
 #endif
 }

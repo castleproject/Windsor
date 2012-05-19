@@ -15,11 +15,26 @@
 namespace Castle.Facilities.WcfIntegration
 {
 #if DOTNET40
-	using System.ServiceModel.Discovery;
+	public class FirstAvailablePolicy : ListBasedLoadBalancePolicy
+	{
+		public FirstAvailablePolicy(PolicyMembership membership)
+			: base(membership)
+		{
+		}
 
-    public interface ILoadBalancePolicyFactory
-    {
-		ILoadBalancePolicy[] CreatePolicies(EndpointDiscoveryMetadata endpoint);
-    }
+		protected override void ChooseTarget(ChooseContext choose)
+		{
+			choose.ReadList(targets =>
+			{
+				for (int i = 0; i < targets.Count; ++i)
+				{
+					var target = targets[i];
+					if (choose.Matches(target))
+						return target;
+				}
+				return null;
+			});
+		}
+	}
 #endif
 }

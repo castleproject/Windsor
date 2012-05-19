@@ -161,6 +161,12 @@
     <Compile Include="Service\Data\DataServiceHostBuilder.cs" />
     <Compile Include="Service\Data\DataServiceHostFactory.cs" />
     <Compile Include="Service\Data\DataServiceModel.cs" />
+    <Compile Include="Service\Discovery\LoadBalance\ContractLoadBalancePolicyFactory.cs" />
+    <Compile Include="Service\Discovery\LoadBalance\AbstractLoadBalancePolicyFactory.cs" />
+    <Compile Include="Service\Discovery\LoadBalance\EndpointFailure.cs" />
+    <Compile Include="Service\Discovery\LoadBalance\ScopeLoadBalancePolicyFactory.cs" />
+    <Compile Include="Service\Discovery\LoadBalance\FirstAvailablePolicy.cs" />
+    <Compile Include="Service\Discovery\LoadBalance\ListBasedLoadBalancePolicy.cs" />
     <Compile Include="Service\Discovery\ServiceCatalog\AdHocServiceCatalogProbe.cs" />
     <Compile Include="Client\Discovery\DiscoveryProxyEndpoint.cs" />
     <Compile Include="Service\Discovery\WcfServiceDiscoveryMetadata.cs" />
