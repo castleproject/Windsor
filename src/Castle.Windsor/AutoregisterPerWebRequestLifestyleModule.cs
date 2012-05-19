@@ -1,4 +1,4 @@
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2012 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,5 +18,5 @@ using System.Web;
 
 using Castle.MicroKernel.Lifestyle;
 
-[assembly: PreApplicationStartMethod(typeof(PerWebRequestLifestyleModuleRegistration), "Run")]
+[assembly: PreApplicationStartMethod(typeof (PerWebRequestLifestyleModuleRegistration), "Run")]
 #endif

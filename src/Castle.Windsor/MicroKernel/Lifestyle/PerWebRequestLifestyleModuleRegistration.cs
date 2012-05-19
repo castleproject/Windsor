@@ -29,7 +29,6 @@ namespace Castle.MicroKernel.Lifestyle
 		internal const string MicrosoftWebInfrastructureDll =
 			"Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35";
 
-		[SecuritySafeCritical]
 		public static void Run()
 		{
 			var dynamicModuleUtil = Type.GetType("Microsoft.Web.Infrastructure.DynamicModuleHelper.DynamicModuleUtility, " + MicrosoftWebInfrastructureDll,
