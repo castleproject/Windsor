@@ -1,4 +1,5 @@
 - fixed IOC-338 - SerializationException thrown when using remoting within default lifetime scope (Failed to load expression host assembly. Details: Type '[...]CallContextLifetimeScope[...]' is not marked as serializable.)
+- fixed IOC-336 - Failing resolution of proxied components implementing multiple generic service interfaces
 - fixed IOC-331 - TypedFactoryFacility should ignore Func<string> 
 - fixed IOC-328 - Hard-to-understand comment
 - fixed IOC-325 - ParentHandlerWithChildResolver.TryResolve throws exception

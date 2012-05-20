@@ -41,7 +41,7 @@ namespace CastleTests
 		{
 			Container.Register(
 				Component.For(typeof (IGeneric<>), typeof (IDummyComponent<>))
-					.ImplementedBy(typeof (GenericDummyComponentImpl<>)));
+					.ImplementedBy(typeof (GenericDummyComponentImpl<>)).IsDefault());
 
 			var generic = Container.Resolve<IGeneric<string>>();
 			var dummy = Container.Resolve<IDummyComponent<string>>();
@@ -54,7 +54,7 @@ namespace CastleTests
 		{
 			Container.Register(
 				Component.For(typeof (IGeneric<>), typeof (IDummyComponent<>))
-					.ImplementedBy(typeof (GenericDummyComponentImpl<,>)));
+					.ImplementedBy(typeof (GenericDummyComponentImpl<,>), new DuplicateGenerics()).IsDefault());
 
 			var generic = Container.Resolve<IGeneric<string>>();
 			var dummy = Container.Resolve<IDummyComponent<string>>();
