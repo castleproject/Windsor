@@ -298,9 +298,15 @@
     <Compile Include="Bugs\IoC-267.cs" />
     <Compile Include="ByRefDependenciesTestCase.cs" />
     <Compile Include="ClassComponents\CommonServiceUser3.cs" />
+    <Compile Include="ClassComponents\GenericDummyComponentImpl.cs" />
+    <Compile Include="ClassComponents\GenericDummyComponentImpl2.cs" />
+    <Compile Include="ClassComponents\GenericExtendedImpl.cs" />
     <Compile Include="ClassComponents\GenericImplA.cs" />
     <Compile Include="ClassComponents\GenericWithTDependency.cs" />
+    <Compile Include="ClassComponents\IGenericExtended.cs" />
     <Compile Include="ClassComponents\PropertySetterThrows.cs" />
+    <Compile Include="ClassComponents\UseGenericExtended1.cs" />
+    <Compile Include="ClassComponents\UseGenericExtended2.cs" />
     <Compile Include="Components\AbPropChild.cs" />
     <Compile Include="Components\ADisposable.cs" />
     <Compile Include="Components\AppHost.cs" />
@@ -852,6 +858,7 @@
     <Compile Include="TypedFactoryInterfaces\ICalculatorFactory.cs" />
     <Compile Include="TypedServiceOverridesAndDependenciesTestCase.cs" />
     <Compile Include="TypeUtilTestCase.cs" />
+    <Compile Include="GenericMultipleServicesComponentResolutionTestCase.cs" />
     <Compile Include="Windsor.Tests\LifecycledComponentsReleasePolicyComponentTrackingTestCase.cs" />
     <Compile Include="Windsor.Tests\GenericVarianceTestCase.cs" />
     <Compile Include="Lifestyle\LitestylePerThreadTestCase.cs" />

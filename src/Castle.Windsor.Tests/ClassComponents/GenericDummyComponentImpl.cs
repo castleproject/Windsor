@@ -1,4 +1,4 @@
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2012 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,9 +14,9 @@
 
 namespace CastleTests.ClassComponents
 {
-	using CastleTests.Components;
+	using Castle.Windsor.Tests.Facilities.TypedFactory.Components;
 
-	public class GenericImplA : A, IGeneric<A>
+	public class GenericDummyComponentImpl<T> : IGeneric<T>, IDummyComponent<T>
 	{
 	}
 }

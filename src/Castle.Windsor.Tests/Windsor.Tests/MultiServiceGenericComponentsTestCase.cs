@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Windsor.Tests
+namespace CastleTests.Windsor.Tests
 {
 	using Castle.Generics;
 	using Castle.MicroKernel;
@@ -23,6 +23,7 @@ namespace Castle.Windsor.Tests
 	using CastleTests.Components;
 
 	using NUnit.Framework;
+
 
 	[TestFixture]
 	public class MultiServiceGenericComponentsTestCase : AbstractContainerTestCase

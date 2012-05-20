@@ -1,4 +1,4 @@
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2012 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,9 +14,25 @@
 
 namespace CastleTests.ClassComponents
 {
-	using CastleTests.Components;
-
-	public class GenericImplA : A, IGeneric<A>
+	public class UseGenericExtended2
 	{
+		private readonly IGeneric<string> generic;
+		private readonly IGenericExtended<string> genericExtended;
+
+		public UseGenericExtended2(IGenericExtended<string> genericExtended, IGeneric<string> generic)
+		{
+			this.genericExtended = genericExtended;
+			this.generic = generic;
+		}
+
+		public IGeneric<string> Generic
+		{
+			get { return generic; }
+		}
+
+		public IGenericExtended<string> GenericExtended
+		{
+			get { return genericExtended; }
+		}
 	}
 }
