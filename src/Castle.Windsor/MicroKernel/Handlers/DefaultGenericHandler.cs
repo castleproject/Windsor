@@ -78,74 +78,25 @@ namespace Castle.MicroKernel.Handlers
 
 		protected virtual Type[] AdaptServices(CreationContext context, Type closedImplementationType)
 		{
-			var services = ComponentModel.Services.ToArray();
-			if (services.Length == 1 && services[0] == context.RequestedType.GetGenericTypeDefinition())
+			var openServices = ComponentModel.Services.ToArray();
+			if (openServices.Length == 1 && openServices[0] == context.RequestedType.GetGenericTypeDefinition())
 			{
 				// shortcut for the most common case
 				return new[] {context.RequestedType};
 			}
-			var adaptedServices = new List<Type>(services.Length);
-			var index = 0;
-			// we split the check into two parts: first we inspect class services...
-			var genericDefinitionToClass = default(IDictionary<Type, Type>);
-			while (index < services.Length && services[index].IsClass)
+			var closedServices = new List<Type>(openServices.Length);
+			var index = AdaptClassServices(closedImplementationType, closedServices, openServices);
+			if (index == (openServices.Length - 1))
 			{
-				var service = services[index];
-				if (service.IsGenericTypeDefinition)
-				{
-					EnsureClassMappingInitialized(closedImplementationType, ref genericDefinitionToClass);
-					Type closed;
-					if (genericDefinitionToClass.TryGetValue(service, out closed))
-					{
-						adaptedServices.Add(closed);
-					}
-					else
-					{
-						// NOTE: it's an interface not exposed by the implementation type. Possibly aimed at a proxy... I guess we can ignore it for now. Don't have any better idea.
-						Debug.Fail(string.Format("Could not find mapping for interface {0} on implementation type {1}", service, closedImplementationType));
-					}
-				}
-				else
-				{
-					adaptedServices.Add(service);
-				}
-				index++;
+				return closedServices.ToArray();
 			}
-			if (index == (services.Length - 1))
-			{
-				return adaptedServices.ToArray();
-			}
-			var genericDefinitionToInterface = closedImplementationType.GetInterfaces()
-				.Where(i => i.IsGenericType)
-				.ToDictionary(i => i.GetGenericTypeDefinition());
-			while (index < services.Length)
-			{
-				var service = services[index];
-				if (service.IsGenericTypeDefinition)
-				{
-					Type closed;
-					if (genericDefinitionToInterface.TryGetValue(service, out closed))
-					{
-						adaptedServices.Add(closed);
-					}
-					else
-					{
-						// NOTE: it's an interface not exposed by the implementation type. Possibly aimed at a proxy... I guess we can ignore it for now. Don't have any better idea.
-						Debug.Fail(string.Format("Could not find mapping for interface {0} on implementation type {1}", service, closedImplementationType));
-					}
-				}
-				else
-				{
-					adaptedServices.Add(service);
-				}
-				index++;
-			}
-			if (adaptedServices.Count == 0)
+			AdaptInterfaceServices(closedImplementationType, closedServices, openServices, index);
+			if (closedServices.Count == 0)
 			{
 				// we obviously have either a bug or an uncovered case. I suppose the best we can do at this point is to fallback to the old behaviour
 				return new[] {context.RequestedType};
 			}
-			return adaptedServices.ToArray();
+			return closedServices.ToArray();
 		}
 
 		protected virtual IHandler BuildSubHandler(CreationContext context, Type closedImplementationType)
@@ -331,6 +282,66 @@ namespace Castle.MicroKernel.Handlers
 			return implementationMatchingStrategy.GetGenericArguments(ComponentModel, context) ?? context.GenericArguments;
 		}
 
+		private static int AdaptClassServices(Type closedImplementationType, List<Type> closedServices, Type[] openServices)
+		{
+			var index = 0;
+			// we split the check into two parts: first we inspect class services...
+			var genericDefinitionToClass = default(IDictionary<Type, Type>);
+			while (index < openServices.Length && openServices[index].IsClass)
+			{
+				var service = openServices[index];
+				if (service.IsGenericTypeDefinition)
+				{
+					EnsureClassMappingInitialized(closedImplementationType, ref genericDefinitionToClass);
+					Type closed;
+					if (genericDefinitionToClass.TryGetValue(service, out closed))
+					{
+						closedServices.Add(closed);
+					}
+					else
+					{
+						// NOTE: it's an interface not exposed by the implementation type. Possibly aimed at a proxy... I guess we can ignore it for now. Don't have any better idea.
+						Debug.Fail(string.Format("Could not find mapping for interface {0} on implementation type {1}", service, closedImplementationType));
+					}
+				}
+				else
+				{
+					closedServices.Add(service);
+				}
+				index++;
+			}
+			return index;
+		}
+
+		private static void AdaptInterfaceServices(Type closedImplementationType, List<Type> closedServices, Type[] openServices, int index)
+		{
+			var genericDefinitionToInterface = default(IDictionary<Type, Type>);
+			while (index < openServices.Length)
+			{
+				var service = openServices[index];
+				if (service.IsGenericTypeDefinition)
+				{
+					EnsureInterfaceMappingInitialized(closedImplementationType, ref genericDefinitionToInterface);
+					Type closed;
+
+					if (genericDefinitionToInterface.TryGetValue(service, out closed))
+					{
+						closedServices.Add(closed);
+					}
+					else
+					{
+						// NOTE: it's an interface not exposed by the implementation type. Possibly aimed at a proxy... I guess we can ignore it for now. Don't have any better idea.
+						Debug.Fail(string.Format("Could not find mapping for interface {0} on implementation type {1}", service, closedImplementationType));
+					}
+				}
+				else
+				{
+					closedServices.Add(service);
+				}
+				index++;
+			}
+		}
+
 		private static void EnsureClassMappingInitialized(Type closedImplementationType, ref IDictionary<Type, Type> genericDefinitionToClass)
 		{
 			if (genericDefinitionToClass == null)
@@ -345,6 +356,17 @@ namespace Castle.MicroKernel.Handlers
 					}
 					type = type.BaseType;
 				}
+			}
+		}
+
+		private static void EnsureInterfaceMappingInitialized(Type closedImplementationType, ref IDictionary<Type, Type> genericDefinitionToInterface)
+		{
+			if (genericDefinitionToInterface == null)
+			{
+				genericDefinitionToInterface = closedImplementationType
+					.GetInterfaces()
+					.Where(i => i.IsGenericType)
+					.ToDictionary(i => i.GetGenericTypeDefinition());
 			}
 		}
 	}
