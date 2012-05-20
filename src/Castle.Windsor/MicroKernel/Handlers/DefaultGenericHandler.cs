@@ -82,7 +82,7 @@ namespace Castle.MicroKernel.Handlers
 			if (openServices.Length == 1 && openServices[0] == context.RequestedType.GetGenericTypeDefinition())
 			{
 				// shortcut for the most common case
-				return new[] {context.RequestedType};
+				return new[] { context.RequestedType };
 			}
 			var closedServices = new List<Type>(openServices.Length);
 			var index = AdaptClassServices(closedImplementationType, closedServices, openServices);
@@ -94,7 +94,7 @@ namespace Castle.MicroKernel.Handlers
 			if (closedServices.Count == 0)
 			{
 				// we obviously have either a bug or an uncovered case. I suppose the best we can do at this point is to fallback to the old behaviour
-				return new[] {context.RequestedType};
+				return new[] { context.RequestedType };
 			}
 			return closedServices.ToArray();
 		}
