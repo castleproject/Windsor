@@ -345,6 +345,7 @@ namespace Castle.MicroKernel.SubSystems.Naming
 			handlerByServiceCache = null;
 		}
 
+		[DebuggerHidden] // prevents the debugger from braking in the try catch block when debugger option 'thrown' is set
 		protected bool IsAssignable(Type thisOne, Type fromThisOne)
 		{
 			if (thisOne.IsAssignableFrom(fromThisOne))
