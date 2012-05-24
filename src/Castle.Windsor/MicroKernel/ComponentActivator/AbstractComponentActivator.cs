@@ -100,6 +100,11 @@ namespace Castle.MicroKernel.ComponentActivator
 			}
 
 			instance = ProxyUtil.GetUnproxiedInstance(instance);
+			if(instance == null)
+			{
+				// see http://issues.castleproject.org/issue/IOC-332 for details
+				throw new NotSupportedException(string.Format("Can not apply commission concerns to component {0} because it appears to be a target-less proxy. Currently those are not supported.", Model.Name));
+			}
 			ApplyConcerns(Model.Lifecycle.CommissionConcerns, instance);
 		}
 
