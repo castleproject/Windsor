@@ -19,6 +19,7 @@ namespace CastleTests
 	using Castle.Windsor.Tests.Interceptors;
 
 	using CastleTests.ClassComponents;
+	using CastleTests.Components;
 
 	using NUnit.Framework;
 
@@ -29,19 +30,52 @@ namespace CastleTests
 		{
 			Container.Register(
 				Component.For<CountingInterceptor>().LifeStyle.Transient,
-				Component.For(new[] {typeof (IGeneric<>), typeof (IGenericExtended<>)})
-					.ImplementedBy(typeof (GenericExtendedImpl<>))
+				Component.For(new[] { typeof(IGeneric<>), typeof(IGenericExtended<>) })
+					.ImplementedBy(typeof(GenericExtendedImpl<>))
 					.Interceptors<CountingInterceptor>(),
 				Component.For<UseGenericExtended1>(),
 				Component.For<UseGenericExtended2>());
+		}
+
+
+		[Test]
+		public void Can_resolve_generic_component_exposing_interface_and_class_service()
+		{
+			Container.Register(
+				Component.For(typeof(IGeneric<>), typeof(IDummyComponent<>), typeof(GenericDummyComponentImpl<>))
+					.ImplementedBy(typeof(GenericDummyComponentImplEx<>)).IsDefault());
+
+			var generic = Container.Resolve<IGeneric<string>>();
+			var dummy = Container.Resolve<IDummyComponent<string>>();
+			var @class = Container.Resolve<GenericDummyComponentImpl<string>>();
+
+			Assert.AreSame(generic, dummy);
+			Assert.AreSame(@class, dummy);
+		}
+
+		[Test]
+		public void Can_resolve_generic_component_exposing_interface_and_class_service_with_non_generic_base()
+		{
+			Container.Register(
+				Component.For(typeof(IGeneric<>), typeof(IDummyComponent<>))
+					.Forward<A, IMarkerInterface>()
+					.ImplementedBy(typeof(GenericDummyComponentAImpl<>)).IsDefault());
+
+			var generic = Container.Resolve<IGeneric<string>>();
+			var dummy = Container.Resolve<IDummyComponent<string>>();
+
+			Assert.AreSame(generic, dummy);
+			var handler = Kernel.GetHandler(typeof(IGeneric<string>));
+			Assert.IsTrue(handler.Supports(typeof(A)));
+			Assert.IsTrue(handler.Supports(typeof(IMarkerInterface)));
 		}
 
 		[Test]
 		public void Can_resolve_generic_component_exposing_two_unrelated_implemented_services()
 		{
 			Container.Register(
-				Component.For(typeof (IGeneric<>), typeof (IDummyComponent<>))
-					.ImplementedBy(typeof (GenericDummyComponentImpl<>)).IsDefault());
+				Component.For(typeof(IGeneric<>), typeof(IDummyComponent<>))
+					.ImplementedBy(typeof(GenericDummyComponentImpl<>)).IsDefault());
 
 			var generic = Container.Resolve<IGeneric<string>>();
 			var dummy = Container.Resolve<IDummyComponent<string>>();
@@ -53,8 +87,8 @@ namespace CastleTests
 		public void Can_resolve_generic_component_exposing_two_unrelated_implemented_services_each_closed_over_different_generic_argument()
 		{
 			Container.Register(
-				Component.For(typeof (IGeneric<>), typeof (IDummyComponent<>))
-					.ImplementedBy(typeof (GenericDummyComponentImpl<,>), new DuplicateGenerics()).IsDefault());
+				Component.For(typeof(IGeneric<>), typeof(IDummyComponent<>))
+					.ImplementedBy(typeof(GenericDummyComponentImpl<,>), new DuplicateGenerics()).IsDefault());
 
 			var generic = Container.Resolve<IGeneric<string>>();
 			var dummy = Container.Resolve<IDummyComponent<string>>();

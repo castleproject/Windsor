@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2012 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,16 +14,16 @@
 
 namespace CastleTests.Windsor.Tests
 {
+	using System;
+
 	using Castle.Generics;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Handlers;
 	using Castle.MicroKernel.Registration;
 
-	using CastleTests;
 	using CastleTests.Components;
 
 	using NUnit.Framework;
-
 
 	[TestFixture]
 	public class MultiServiceGenericComponentsTestCase : AbstractContainerTestCase
@@ -32,12 +32,12 @@ namespace CastleTests.Windsor.Tests
 		public void Closed_generic_component_with_generic_and_non_generic_service__generic_first_resolve_by_key()
 		{
 			Container.Register(
-				Component.For<CastleTests.Generics.IRepository<A>, IARepository>()
+				Component.For<Generics.IRepository<A>, IARepository>()
 					.ImplementedBy<ARepository<B>>()
 					.Named("repo")
 				);
 			Assert.AreSame(
-				Container.Resolve<CastleTests.Generics.IRepository<A>>("repo"),
+				Container.Resolve<Generics.IRepository<A>>("repo"),
 				Container.Resolve<IARepository>("repo")
 				);
 		}
@@ -46,11 +46,11 @@ namespace CastleTests.Windsor.Tests
 		public void Closed_generic_component_with_generic_and_non_generic_service__generic_first_resolve_by_type()
 		{
 			Container.Register(
-				Component.For<CastleTests.Generics.IRepository<A>, IARepository>()
+				Component.For<Generics.IRepository<A>, IARepository>()
 					.ImplementedBy<ARepository<B>>()
 				);
 			Assert.AreSame(
-				Container.Resolve<CastleTests.Generics.IRepository<A>>(),
+				Container.Resolve<Generics.IRepository<A>>(),
 				Container.Resolve<IARepository>()
 				);
 		}
@@ -59,12 +59,12 @@ namespace CastleTests.Windsor.Tests
 		public void Closed_generic_component_with_generic_and_non_generic_service__non_generic_first_resolve_by_key()
 		{
 			Container.Register(
-				Component.For<IARepository, CastleTests.Generics.IRepository<A>>()
+				Component.For<IARepository, Generics.IRepository<A>>()
 					.ImplementedBy<ARepository<B>>()
 					.Named("repo")
 				);
 			Assert.AreSame(
-				Container.Resolve<CastleTests.Generics.IRepository<A>>("repo"),
+				Container.Resolve<Generics.IRepository<A>>("repo"),
 				Container.Resolve<IARepository>("repo")
 				);
 		}
@@ -73,11 +73,11 @@ namespace CastleTests.Windsor.Tests
 		public void Closed_generic_component_with_generic_and_non_generic_service__non_generic_first_resolve_by_type()
 		{
 			Container.Register(
-				Component.For<IARepository, CastleTests.Generics.IRepository<A>>()
+				Component.For<IARepository, Generics.IRepository<A>>()
 					.ImplementedBy<ARepository<B>>()
 				);
 			Assert.AreSame(
-				Container.Resolve<CastleTests.Generics.IRepository<A>>(),
+				Container.Resolve<Generics.IRepository<A>>(),
 				Container.Resolve<IARepository>()
 				);
 		}
@@ -86,12 +86,12 @@ namespace CastleTests.Windsor.Tests
 		public void Non_generic_component_with_generic_and_non_generic_service__generic_first_resolve_by_key()
 		{
 			Container.Register(
-				Component.For<CastleTests.Generics.IRepository<A>, IARepository>()
+				Component.For<Generics.IRepository<A>, IARepository>()
 					.ImplementedBy<ARepository>()
 					.Named("repo")
 				);
 			Assert.AreSame(
-				Container.Resolve<CastleTests.Generics.IRepository<A>>("repo"),
+				Container.Resolve<Generics.IRepository<A>>("repo"),
 				Container.Resolve<IARepository>("repo")
 				);
 		}
@@ -100,11 +100,11 @@ namespace CastleTests.Windsor.Tests
 		public void Non_generic_component_with_generic_and_non_generic_service__generic_first_resolve_by_type()
 		{
 			Container.Register(
-				Component.For<CastleTests.Generics.IRepository<A>, IARepository>()
+				Component.For<Generics.IRepository<A>, IARepository>()
 					.ImplementedBy<ARepository>()
 				);
 			Assert.AreSame(
-				Container.Resolve<CastleTests.Generics.IRepository<A>>(),
+				Container.Resolve<Generics.IRepository<A>>(),
 				Container.Resolve<IARepository>()
 				);
 		}
@@ -113,12 +113,12 @@ namespace CastleTests.Windsor.Tests
 		public void Non_generic_component_with_generic_and_non_generic_service__non_generic_first_resolve_by_key()
 		{
 			Container.Register(
-				Component.For<IARepository, CastleTests.Generics.IRepository<A>>()
+				Component.For<IARepository, Generics.IRepository<A>>()
 					.ImplementedBy<ARepository>()
 					.Named("repo")
 				);
 			Assert.AreSame(
-				Container.Resolve<CastleTests.Generics.IRepository<A>>("repo"),
+				Container.Resolve<Generics.IRepository<A>>("repo"),
 				Container.Resolve<IARepository>("repo")
 				);
 		}
@@ -127,11 +127,11 @@ namespace CastleTests.Windsor.Tests
 		public void Non_generic_component_with_generic_and_non_generic_service__non_generic_first_resolve_by_type()
 		{
 			Container.Register(
-				Component.For<IARepository, CastleTests.Generics.IRepository<A>>()
+				Component.For<IARepository, Generics.IRepository<A>>()
 					.ImplementedBy<ARepository>()
 				);
 			Assert.AreSame(
-				Container.Resolve<CastleTests.Generics.IRepository<A>>(),
+				Container.Resolve<Generics.IRepository<A>>(),
 				Container.Resolve<IARepository>()
 				);
 		}
@@ -140,19 +140,19 @@ namespace CastleTests.Windsor.Tests
 		public void Open_generic_component_with_generic_and_non_generic_service__generic_first_resolve_by_key()
 		{
 			Container.Register(
-				Component.For(typeof(CastleTests.Generics.IRepository<>)).Forward<IRepository>()
+				Component.For(typeof(Generics.IRepository<>)).Forward<IRepository>()
 					.ImplementedBy(typeof(Repository<>))
 					.Named("repo")
 				);
 
-			Container.Resolve<CastleTests.Generics.IRepository<A>>("repo");
+			Container.Resolve<Generics.IRepository<A>>("repo");
 		}
 
 		[Test]
 		public void Open_generic_component_with_generic_and_non_generic_service__generic_first_resolve_by_key_Object_throws_friendly_message()
 		{
 			Container.Register(
-				Component.For(typeof(CastleTests.Generics.IRepository<>)).Forward<IRepository>()
+				Component.For(typeof(Generics.IRepository<>)).Forward<IRepository>()
 					.ImplementedBy(typeof(Repository<>))
 					.Named("repo")
 				);
@@ -160,7 +160,9 @@ namespace CastleTests.Windsor.Tests
 			var exception = Assert.Throws<HandlerException>(() => Container.Resolve<object>("repo", new Arguments()));
 
 			Assert.AreEqual(
-				"Requested type System.Object has 0 generic parameter(s), whereas component implementation type Castle.Generics.Repository`1[T] requires 1. This means that Windsor does not have enough information to properly create that component for you. This is most likely a bug in your registration code.",
+				string.Format(
+					"Requested type System.Object has 0 generic parameter(s), whereas component implementation type Castle.Generics.Repository`1[T] requires 1.{0}This means that Windsor does not have enough information to properly create that component for you.{0}You can instruct Windsor which types it should use to close this generic component by supplying an implementation of IGenericImplementationMatchingStrategy.{0}Please consut the documentation for examples of how to do that.",
+					Environment.NewLine),
 				exception.Message);
 		}
 
@@ -168,7 +170,7 @@ namespace CastleTests.Windsor.Tests
 		public void Open_generic_component_with_generic_and_non_generic_service__generic_first_resolve_by_key_non_generic_throws_friendly_message()
 		{
 			Container.Register(
-				Component.For(typeof(CastleTests.Generics.IRepository<>)).Forward<IRepository>()
+				Component.For(typeof(Generics.IRepository<>)).Forward<IRepository>()
 					.ImplementedBy(typeof(Repository<>))
 					.Named("repo")
 				);
@@ -176,7 +178,9 @@ namespace CastleTests.Windsor.Tests
 			var exception = Assert.Throws<HandlerException>(() => Container.Resolve<IRepository>("repo"));
 
 			Assert.AreEqual(
-				"Requested type Castle.Generics.IRepository has 0 generic parameter(s), whereas component implementation type Castle.Generics.Repository`1[T] requires 1. This means that Windsor does not have enough information to properly create that component for you. This is most likely a bug in your registration code.",
+				string.Format(
+					"Requested type Castle.Generics.IRepository has 0 generic parameter(s), whereas component implementation type Castle.Generics.Repository`1[T] requires 1.{0}This means that Windsor does not have enough information to properly create that component for you.{0}You can instruct Windsor which types it should use to close this generic component by supplying an implementation of IGenericImplementationMatchingStrategy.{0}Please consut the documentation for examples of how to do that.",
+					Environment.NewLine),
 				exception.Message);
 		}
 
@@ -184,34 +188,34 @@ namespace CastleTests.Windsor.Tests
 		public void Open_generic_component_with_generic_and_non_generic_service__generic_first_resolve_by_type()
 		{
 			Container.Register(
-				Component.For(typeof(CastleTests.Generics.IRepository<>)).Forward<IRepository>()
+				Component.For(typeof(Generics.IRepository<>)).Forward<IRepository>()
 					.ImplementedBy(typeof(Repository<>))
 				);
 
-			Container.Resolve<CastleTests.Generics.IRepository<A>>();
+			Container.Resolve<Generics.IRepository<A>>();
 		}
 
 		[Test(Description = "IOC-248")]
 		public void Open_generic_component_with_generic_and_non_generic_service__non_generic_first_resolve_by_key()
 		{
 			Container.Register(
-				Component.For<IRepository>().Forward(typeof(CastleTests.Generics.IRepository<>))
+				Component.For<IRepository>().Forward(typeof(Generics.IRepository<>))
 					.ImplementedBy(typeof(Repository<>))
 					.Named("repo")
 				);
 
-			Container.Resolve<CastleTests.Generics.IRepository<A>>("repo");
+			Container.Resolve<Generics.IRepository<A>>("repo");
 		}
 
 		[Test(Description = "IOC-248")]
 		public void Open_generic_component_with_generic_and_non_generic_service__non_generic_first_resolve_by_type()
 		{
 			Container.Register(
-				Component.For<IRepository>().Forward(typeof(CastleTests.Generics.IRepository<>))
+				Component.For<IRepository>().Forward(typeof(Generics.IRepository<>))
 					.ImplementedBy(typeof(Repository<>))
 				);
 
-			Container.Resolve<CastleTests.Generics.IRepository<A>>();
+			Container.Resolve<Generics.IRepository<A>>();
 		}
 	}
 }

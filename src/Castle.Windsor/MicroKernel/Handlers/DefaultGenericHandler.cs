@@ -236,11 +236,30 @@ namespace Castle.MicroKernel.Handlers
 				if (arguments.Length > genericArguments.Length)
 				{
 					message = string.Format(
-						"Requested type {0} has {1} generic parameter(s), whereas component implementation type {2} requires {3}. This means that Windsor does not have enough information to properly create that component for you. This is most likely a bug in your registration code.",
+						"Requested type {0} has {1} generic parameter(s), whereas component implementation type {2} requires {3}.{4}" +
+						"This means that Windsor does not have enough information to properly create that component for you.",
 						context.RequestedType,
 						context.GenericArguments.Length,
 						ComponentModel.Implementation,
-						arguments.Length);
+						arguments.Length,
+						Environment.NewLine);
+
+					if (implementationMatchingStrategy == null)
+					{
+						message += string.Format("{0}You can instruct Windsor which types it should use to close this generic component by supplying an implementation of {1}.{0}" +
+						                         "Please consut the documentation for examples of how to do that.",
+						                         Environment.NewLine,
+						                         typeof(IGenericImplementationMatchingStrategy).Name);
+					}
+					else
+					{
+						message += string.Format("{0}This is most likely a bug in the {1} implementation this component uses ({2}).{0}" +
+						                         "Please consut the documentation for examples of how to implement it properly.",
+						                         Environment.NewLine,
+						                         typeof(IGenericImplementationMatchingStrategy).Name,
+						                         implementationMatchingStrategy);
+					}
+					//"This is most likely a bug in your registration code."
 					throw new HandlerException(message, ComponentModel.ComponentName, e);
 				}
 

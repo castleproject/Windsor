@@ -498,9 +498,7 @@ namespace Castle.MicroKernel.Registration
 		/// <param name = "type">The type that is the implementation for the service.</param>
 		/// <param name = "genericImplementationMatchingStrategy">Provides ability to close open generic service. Ignored when registering closed or non-generic component.</param>
 		/// <returns></returns>
-		public ComponentRegistration<TService> ImplementedBy(Type type,
-		                                                     IGenericImplementationMatchingStrategy
-		                                                     	genericImplementationMatchingStrategy)
+		public ComponentRegistration<TService> ImplementedBy(Type type, IGenericImplementationMatchingStrategy genericImplementationMatchingStrategy)
 		{
 			if (implementation != null && implementation != typeof(LateBoundComponent))
 			{
