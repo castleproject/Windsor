@@ -1,4 +1,4 @@
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2012 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -21,7 +21,6 @@ namespace Castle.MicroKernel.Tests.SpecializedResolvers
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Resolvers.SpecializedResolvers;
 	using Castle.Windsor;
-	using Castle.Windsor.Tests;
 
 	using CastleTests;
 	using CastleTests.Components;
@@ -32,11 +31,9 @@ namespace Castle.MicroKernel.Tests.SpecializedResolvers
 	[TestFixture]
 	public class CollectionResolverTestCase : AbstractContainerTestCase
 	{
-		protected override WindsorContainer BuildContainer()
+		protected override void AfterContainerCreated()
 		{
-			var container = new WindsorContainer();
-			container.Kernel.Resolver.AddSubResolver(new CollectionResolver(container.Kernel));
-			return container;
+			Kernel.Resolver.AddSubResolver(new CollectionResolver(Kernel));
 		}
 
 		[Test]
