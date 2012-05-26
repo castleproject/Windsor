@@ -18,6 +18,7 @@ namespace Castle.Core
 
 	/// <summary>
 	///   Used to declare that a component wants interceptors acting on it.
+	///   Out of the box recognized only if applied on component's implementation class.
 	/// </summary>
 	[Serializable]
 	[AttributeUsage(AttributeTargets.All, AllowMultiple = true)]
