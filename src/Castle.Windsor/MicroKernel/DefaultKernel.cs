@@ -469,11 +469,6 @@ namespace Castle.MicroKernel
 				return true;
 			}
 
-			if (serviceType.IsGenericType && NamingSubSystem.Contains(serviceType.GetGenericTypeDefinition()))
-			{
-				return true;
-			}
-
 			if (Parent != null)
 			{
 				return Parent.HasComponent(serviceType);

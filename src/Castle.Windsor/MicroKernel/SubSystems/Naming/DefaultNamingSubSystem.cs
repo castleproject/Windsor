@@ -124,9 +124,7 @@ namespace Castle.MicroKernel.SubSystems.Naming
 
 		public virtual bool Contains(Type service)
 		{
-			// TODO: use GetHandler(service) != null instead to provide consistency
-			// also update the usage of thais to not try again with open generic if failed.
-			return HandlerByServiceCache.ContainsKey(service);
+			return GetHandler(service) != null;
 		}
 
 		public virtual IHandler[] GetAllHandlers()
