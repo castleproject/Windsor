@@ -30,22 +30,24 @@ namespace Castle.MicroKernel.Handlers
 	public class DefaultGenericHandler : AbstractHandler
 	{
 		private readonly IGenericImplementationMatchingStrategy implementationMatchingStrategy;
+		private readonly IGenericServiceStrategy serviceStrategy;
 
 		private readonly SimpleThreadSafeDictionary<Type, IHandler> type2SubHandler = new SimpleThreadSafeDictionary<Type, IHandler>();
 
-		/// <summary>
-		///   Initializes a new instance of the <see cref="DefaultGenericHandler" /> class.
-		/// </summary>
-		/// <param name="model"> </param>
-		/// <param name="implementationMatchingStrategy"> </param>
-		public DefaultGenericHandler(ComponentModel model, IGenericImplementationMatchingStrategy implementationMatchingStrategy) : base(model)
+		public DefaultGenericHandler(ComponentModel model, IGenericImplementationMatchingStrategy implementationMatchingStrategy, IGenericServiceStrategy serviceStrategy) : base(model)
 		{
 			this.implementationMatchingStrategy = implementationMatchingStrategy;
+			this.serviceStrategy = serviceStrategy;
 		}
 
 		public IGenericImplementationMatchingStrategy ImplementationMatchingStrategy
 		{
 			get { return implementationMatchingStrategy; }
+		}
+
+		public IGenericServiceStrategy ServiceStrategy
+		{
+			get { return serviceStrategy; }
 		}
 
 		public override void Dispose()
@@ -67,6 +69,14 @@ namespace Castle.MicroKernel.Handlers
 			if (base.Supports(service))
 			{
 				return true;
+			}
+			if (type2SubHandler.Contains(service))
+			{
+				return true;
+			}
+			if (serviceStrategy != null)
+			{
+				return serviceStrategy.Supports(service, ComponentModel);
 			}
 			if (service.IsGenericType && service.IsGenericTypeDefinition == false)
 			{
@@ -217,7 +227,7 @@ namespace Castle.MicroKernel.Handlers
 				throw new HandlerException(
 					string.Format(
 						"Custom {0} ({1}) didn't select any generic parameters for implementation type of component '{2}'. This usually signifies bug in the {0}.",
-						typeof (IGenericImplementationMatchingStrategy).Name, implementationMatchingStrategy, ComponentModel.Name), ComponentModel.ComponentName);
+						typeof(IGenericImplementationMatchingStrategy).Name, implementationMatchingStrategy, ComponentModel.Name), ComponentModel.ComponentName);
 			}
 			catch (ArgumentException e)
 			{
@@ -264,7 +274,7 @@ namespace Castle.MicroKernel.Handlers
 				}
 
 				// 2.
-				var invalidArguments = genericArguments.Where(a => a.IsPointer || a.IsByRef || a == typeof (void)).Select(t => t.FullName).ToArray();
+				var invalidArguments = genericArguments.Where(a => a.IsPointer || a.IsByRef || a == typeof(void)).Select(t => t.FullName).ToArray();
 				if (invalidArguments.Length > 0)
 				{
 					message = string.Format("The following types provided as generic parameters are not legal: {0}. This is most likely a bug in your code.",
@@ -367,7 +377,7 @@ namespace Castle.MicroKernel.Handlers
 			{
 				genericDefinitionToClass = new Dictionary<Type, Type>();
 				var type = closedImplementationType;
-				while (type != typeof (object))
+				while (type != typeof(object))
 				{
 					if (type.IsGenericType)
 					{

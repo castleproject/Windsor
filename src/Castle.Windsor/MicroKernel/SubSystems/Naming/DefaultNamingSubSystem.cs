@@ -124,6 +124,8 @@ namespace Castle.MicroKernel.SubSystems.Naming
 
 		public virtual bool Contains(Type service)
 		{
+			// TODO: use GetHandler(service) != null instead to provide consistency
+			// also update the usage of thais to not try again with open generic if failed.
 			return HandlerByServiceCache.ContainsKey(service);
 		}
 
@@ -184,8 +186,21 @@ namespace Castle.MicroKernel.SubSystems.Naming
 				}
 			}
 			IHandler handler;
-			HandlerByServiceCache.TryGetValue(service, out handler);
-			return handler;
+			if(HandlerByServiceCache.TryGetValue(service, out handler))
+			{
+				return handler;
+			}
+
+			if (service.IsGenericType && 
+				HandlerByServiceCache.TryGetValue(service.GetGenericTypeDefinition(), out handler) && 
+				handler.Supports(service))
+			{
+				return handler;
+			}
+			// NOTE: at this point we might want to interrogate other handlers
+			// that support the open version of the service...
+
+			return null;
 		}
 
 		public virtual IHandler[] GetHandlers(Type service)

@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2012 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -21,8 +21,18 @@ namespace Castle.Facilities.TypedFactory.Internal
 
 	using Castle.Core;
 	using Castle.Core.Internal;
+	using Castle.MicroKernel.Handlers;
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Resolvers;
+
+	public class DelegateServiceStrategy : IGenericServiceStrategy
+	{
+		public bool Supports(Type service, ComponentModel component)
+		{
+			var invoke = DelegateFactory.ExtractInvokeMethod(service);
+			return invoke != null && invoke.ReturnType.IsPrimitiveType() == false;
+		}
+	}
 
 	[Singleton]
 	public class DelegateFactory : ILazyComponentLoader
@@ -39,7 +49,7 @@ namespace Castle.Facilities.TypedFactory.Internal
 			{
 				return null;
 			}
-			if(invoke.ReturnType.IsPrimitiveType())
+			if (invoke.ReturnType.IsPrimitiveType())
 			{
 				return null;
 			}
@@ -50,16 +60,17 @@ namespace Castle.Facilities.TypedFactory.Internal
 			}
 
 			return Component.For(service)
+				.ImplementedBy(service, new DelegateServiceStrategy())
 				.NamedAutomatically(GetName(service))
 				.LifeStyle.Transient
 				.Interceptors(new InterceptorReference(TypedFactoryFacility.InterceptorKey)).Last
 				.Activator<DelegateFactoryActivator>()
 				.DynamicParameters((k, d) =>
-				{
-					var selector = k.Resolve<ITypedFactoryComponentSelector>(TypedFactoryFacility.DefaultDelegateSelectorKey);
-					d.InsertTyped(selector);
-					return k2 => k2.ReleaseComponent(selector);
-				})
+				                   	{
+				                   		var selector = k.Resolve<ITypedFactoryComponentSelector>(TypedFactoryFacility.DefaultDelegateSelectorKey);
+				                   		d.InsertTyped(selector);
+				                   		return k2 => k2.ReleaseComponent(selector);
+				                   	})
 				.AddAttributeDescriptor(TypedFactoryFacility.IsFactoryKey, bool.TrueString);
 		}
 

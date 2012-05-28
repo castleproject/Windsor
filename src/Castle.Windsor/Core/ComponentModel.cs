@@ -31,8 +31,6 @@ namespace Castle.Core
 	[Serializable]
 	public sealed class ComponentModel : GraphNode
 	{
-		public const string GenericImplementationMatchingStrategy = "generic.matching";
-
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 		private readonly ConstructorCandidateCollection constructors = new ConstructorCandidateCollection();
 

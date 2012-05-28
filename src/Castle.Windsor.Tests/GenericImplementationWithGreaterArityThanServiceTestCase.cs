@@ -17,6 +17,7 @@ namespace CastleTests
 	using System;
 
 	using Castle.Core;
+	using Castle.Core.Internal;
 	using Castle.Generics;
 	using Castle.MicroKernel.Handlers;
 	using Castle.MicroKernel.Registration;
@@ -38,7 +39,7 @@ namespace CastleTests
 					.WithServiceBase()
 					.Configure(
 						c => c.ExtendedProperties(
-							Property.ForKey(ComponentModel.GenericImplementationMatchingStrategy)
+							Property.ForKey(Constants.GenericImplementationMatchingStrategy)
 								.Eq(new DuplicateGenerics()))));
 
 			var repository = Container.Resolve<Generics.IRepository<A>>();
@@ -50,7 +51,7 @@ namespace CastleTests
 		public void Can_create_component_with_simple_double_generic_impl_for_single_generic_service()
 		{
 			Container.Register(Component.For(typeof(Generics.IRepository<>)).ImplementedBy(typeof(DoubleGenericRepository<,>))
-			                   	.ExtendedProperties(Property.ForKey(ComponentModel.GenericImplementationMatchingStrategy).Eq(new DuplicateGenerics())));
+			                   	.ExtendedProperties(Property.ForKey(Constants.GenericImplementationMatchingStrategy).Eq(new DuplicateGenerics())));
 
 			var repository = Container.Resolve<Generics.IRepository<A>>();
 
@@ -71,7 +72,7 @@ namespace CastleTests
 		public void Null_strategy_is_ignored()
 		{
 			Container.Register(Component.For(typeof(Generics.IRepository<>)).ImplementedBy(typeof(DoubleGenericRepository<,>))
-			                   	.ExtendedProperties(Property.ForKey(ComponentModel.GenericImplementationMatchingStrategy).Eq(null)));
+			                   	.ExtendedProperties(Property.ForKey(Constants.GenericImplementationMatchingStrategy).Eq(null)));
 
 			var exception = Assert.Throws<HandlerException>(() =>
 			                                                Container.Resolve<Generics.IRepository<A>>());

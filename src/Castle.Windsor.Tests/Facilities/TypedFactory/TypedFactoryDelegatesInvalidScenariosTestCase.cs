@@ -14,9 +14,12 @@
 
 namespace CastleTests.Facilities.TypedFactory
 {
+	using System;
+
 	using Castle.Facilities.TypedFactory;
 	using Castle.MicroKernel.Registration;
 	using Castle.Windsor.Tests.Facilities.TypedFactory.Delegates;
+
 	using NUnit.Framework;
 
 	[TestFixture]
@@ -42,6 +45,16 @@ namespace CastleTests.Facilities.TypedFactory
 		{
 			Container.Register(Component.For<HasFuncProperty<string>>());
 
+			var item = Container.Resolve<HasFuncProperty<string>>();
+
+			Assert.IsNull(item.Function);
+		}
+
+		[Test]
+		public void Dependency_on_Func_of_string_is_not_satisfied_after_resolving_valid_func()
+		{
+			Container.Register(Component.For<HasFuncProperty<string>>());
+			Container.Resolve<Func<IMyObject>>();
 			var item = Container.Resolve<HasFuncProperty<string>>();
 
 			Assert.IsNull(item.Function);
