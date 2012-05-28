@@ -395,6 +395,7 @@
     <Compile Include="MicroKernel\Handlers\HandlerExtensionsUtil.cs" />
     <Compile Include="MicroKernel\Handlers\IDependencyInspector.cs" />
     <Compile Include="MicroKernel\Handlers\IGenericImplementationMatchingStrategy.cs" />
+    <Compile Include="MicroKernel\Handlers\IGenericServiceStrategy.cs" />
     <Compile Include="MicroKernel\Handlers\IMetaHandler.cs" />
     <Compile Include="MicroKernel\Handlers\IReleaseExtension.cs" />
     <Compile Include="MicroKernel\Handlers\IResolveExtension.cs" />
