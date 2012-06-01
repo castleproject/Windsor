@@ -1,4 +1,4 @@
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2012 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -28,20 +28,13 @@ namespace Castle.MicroKernel.SubSystems.Naming
 		protected readonly Lock @lock = Lock.Create();
 
 		/// <summary>
-		///   Map(String, IHandler) to map component names
-		///   to <see cref = "IHandler" />
-		///   Items in this dictionary are sorted in insertion order.
+		///   Map(String, IHandler) to map component names to <see cref="IHandler" /> Items in this dictionary are sorted in insertion order.
 		/// </summary>
 		protected readonly Dictionary<string, IHandler> name2Handler =
 			new Dictionary<string, IHandler>(StringComparer.OrdinalIgnoreCase);
 
 		/// <summary>
-		///   Map(Type, IHandler) to map a service
-		///   to <see cref = "IHandler" />.
-		///   If there is more than a single service of the type, only the first
-		///   registered services is stored in this dictionary.
-		///   It serve as a fast lookup for the common case of having a single handler for 
-		///   a type.
+		///   Map(Type, IHandler) to map a service to <see cref="IHandler" /> . If there is more than a single service of the type, only the first registered services is stored in this dictionary. It serve as a fast lookup for the common case of having a single handler for a type.
 		/// </summary>
 		protected readonly Dictionary<Type, IHandler> service2Handler =
 			new Dictionary<Type, IHandler>(SimpleTypeEqualityComparer.Instance);
@@ -184,14 +177,14 @@ namespace Castle.MicroKernel.SubSystems.Naming
 				}
 			}
 			IHandler handler;
-			if(HandlerByServiceCache.TryGetValue(service, out handler))
+			if (HandlerByServiceCache.TryGetValue(service, out handler))
 			{
 				return handler;
 			}
 
-			if (service.IsGenericType && 
-				HandlerByServiceCache.TryGetValue(service.GetGenericTypeDefinition(), out handler) && 
-				handler.Supports(service))
+			if (service.IsGenericType &&
+			    HandlerByServiceCache.TryGetValue(service.GetGenericTypeDefinition(), out handler) &&
+			    handler.Supports(service))
 			{
 				return handler;
 			}
@@ -316,7 +309,7 @@ namespace Castle.MicroKernel.SubSystems.Naming
 					handlers = GetAssignableHandlersNoFiltering(service);
 				}
 				handlers = filter.SelectHandlers(service, handlers);
-				if (handlers != null && handlers.Length > 0)
+				if (handlers != null)
 				{
 					return handlers;
 				}
@@ -391,7 +384,7 @@ namespace Castle.MicroKernel.SubSystems.Naming
 		private Predicate<Type> GetServiceSelector(IHandler handler)
 		{
 			var customFilter =
-				(Predicate<Type>)handler.ComponentModel.ExtendedProperties[Constants.DefaultComponentForServiceFilter];
+				(Predicate<Type>) handler.ComponentModel.ExtendedProperties[Constants.DefaultComponentForServiceFilter];
 			if (customFilter == null)
 			{
 				return service => service2Handler.ContainsKey(service) == false;

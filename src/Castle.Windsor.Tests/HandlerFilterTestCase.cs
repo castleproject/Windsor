@@ -1,4 +1,4 @@
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2012 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Windsor.Tests
+namespace CastleTests
 {
 	using System;
 	using System.Linq;
@@ -21,7 +21,6 @@ namespace Castle.Windsor.Tests
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Tests.ClassComponents;
 
-	using CastleTests;
 	using CastleTests.ClassComponents;
 	using CastleTests.Components;
 
@@ -59,24 +58,24 @@ namespace Castle.Windsor.Tests
 
 		private class DelegatingFilter : IHandlersFilter
 		{
-			private IHandler[] handlersAsked;
-			private readonly Type typeToFilter;
 			private readonly Func<IHandler, bool> filter;
+			private readonly Type typeToFilter;
+			private IHandler[] handlersAsked;
 
-			public DelegatingFilter(Type typeToFilter, Func<IHandler,bool> filter = null)
+			public DelegatingFilter(Type typeToFilter, Func<IHandler, bool> filter = null)
 			{
 				this.typeToFilter = typeToFilter;
 				this.filter = filter ?? (t => true);
 			}
 
-			public bool HasOpinionAbout(Type service)
-			{
-				return service == typeToFilter;
-			}
-
 			public IHandler[] HandlersAsked
 			{
 				get { return handlersAsked; }
+			}
+
+			public bool HasOpinionAbout(Type service)
+			{
+				return service == typeToFilter;
 			}
 
 			public IHandler[] SelectHandlers(Type service, IHandler[] handlers)
@@ -189,6 +188,35 @@ namespace Castle.Windsor.Tests
 		}
 
 		[Test]
+		public void Filter_gets_open_generic_handlers_when_generic_service_requested()
+		{
+			Container.Register(Component.For<IGeneric<A>>().ImplementedBy<GenericImpl1<A>>(),
+			                   Component.For(typeof(GenericImpl2<>)));
+			var filter = new DelegatingFilter(typeof(IGeneric<A>));
+			Kernel.AddHandlersFilter(filter);
+
+			Container.ResolveAll<IGeneric<A>>();
+
+			Assert.AreEqual(2, filter.HandlersAsked.Length);
+		}
+
+		[Test]
+		public void Filter_returning_empty_collection_respected()
+		{
+			Container.Register(Component.For<ISomeTask>().ImplementedBy<Task5>(),
+			                   Component.For<ISomeTask>().ImplementedBy<Task4>(),
+			                   Component.For<ISomeTask>().ImplementedBy<Task3>(),
+			                   Component.For<ISomeTask>().ImplementedBy<Task2>(),
+			                   Component.For<ISomeTask>().ImplementedBy<Task1>());
+
+			Container.Kernel.AddHandlersFilter(new DelegatingFilter(typeof(ISomeTask), h => false));
+
+			var instances = Container.ResolveAll(typeof(ISomeTask));
+
+			Assert.IsEmpty(instances);
+		}
+
+		[Test]
 		public void HandlerFilterGetsCalledLikeExpected()
 		{
 			Container.Register(Component.For<ISomeService>().ImplementedBy<FirstImplementation>(),
@@ -227,19 +255,6 @@ namespace Castle.Windsor.Tests
 			Container.Kernel.AddHandlersFilter(new FailIfCalled());
 
 			Container.ResolveAll(typeof(IUnimportantService));
-		}
-
-		[Test]
-		public void Filter_gets_open_generic_handlers_when_generic_service_requested()
-		{
-			Container.Register(Component.For<IGeneric<A>>().ImplementedBy<GenericImpl1<A>>(),
-			                   Component.For(typeof(GenericImpl2<>)));
-			var filter = new DelegatingFilter(typeof(IGeneric<A>));
-			Kernel.AddHandlersFilter(filter);
-
-			Container.ResolveAll<IGeneric<A>>();
-
-			Assert.AreEqual(2, filter.HandlersAsked.Length);
 		}
 	}
 }
