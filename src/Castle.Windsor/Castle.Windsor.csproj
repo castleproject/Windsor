@@ -359,6 +359,7 @@
     <Compile Include="Facilities\TypedFactory\DelegateFactoryActivator.cs" />
     <Compile Include="Facilities\TypedFactory\Internal\DelegateFactory.cs" />
     <Compile Include="Facilities\TypedFactory\Internal\DelegateProxyFactory.cs" />
+    <Compile Include="Facilities\TypedFactory\Internal\DelegateServiceStrategy.cs" />
     <Compile Include="Facilities\TypedFactory\Internal\FactoryMethod.cs" />
     <Compile Include="Facilities\TypedFactory\FactoryAttribute.cs" />
     <Compile Include="Facilities\TypedFactory\TypedFactoryConfiguration.cs" />

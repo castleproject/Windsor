@@ -21,18 +21,8 @@ namespace Castle.Facilities.TypedFactory.Internal
 
 	using Castle.Core;
 	using Castle.Core.Internal;
-	using Castle.MicroKernel.Handlers;
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Resolvers;
-
-	public class DelegateServiceStrategy : IGenericServiceStrategy
-	{
-		public bool Supports(Type service, ComponentModel component)
-		{
-			var invoke = DelegateFactory.ExtractInvokeMethod(service);
-			return invoke != null && invoke.ReturnType.IsPrimitiveType() == false;
-		}
-	}
 
 	[Singleton]
 	public class DelegateFactory : ILazyComponentLoader
