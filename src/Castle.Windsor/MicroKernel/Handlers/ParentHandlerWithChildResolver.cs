@@ -15,18 +15,23 @@
 namespace Castle.MicroKernel.Handlers
 {
 	using System;
+	using System.Collections.Generic;
+	using System.Collections.ObjectModel;
+	using System.Linq;
 
 	using Castle.Core;
 	using Castle.MicroKernel.Context;
+	using Castle.MicroKernel.Resolvers;
 
-	/// <summary>
+    /// <summary>
 	///   Redirects resolution to the main resolver, and if not found uses
 	///   the parent handler.
 	/// </summary>
 	public class ParentHandlerWithChildResolver : IHandler, IDisposable
 	{
 		private readonly ISubDependencyResolver childResolver;
-		private readonly IHandler parentHandler;
+        private readonly IHandler parentHandler;
+        private IKernelInternal kernel;
 
 		/// <summary>
 		///   Initializes a new instance of the <see cref = "ParentHandlerWithChildResolver" /> class.
@@ -64,7 +69,13 @@ namespace Castle.MicroKernel.Handlers
 		}
 
 		public virtual void Init(IKernelInternal kernel)
-		{
+        {
+            if (kernel == null)
+            {
+                throw new ArgumentNullException("kernel");
+            }
+
+            this.kernel = kernel;
 		}
 
 		public bool IsBeingResolvedInContext(CreationContext context)
@@ -77,10 +88,30 @@ namespace Castle.MicroKernel.Handlers
 			return parentHandler.Release(burden);
 		}
 
-		public virtual object Resolve(CreationContext context)
-		{
-			return parentHandler.Resolve(context);
-		}
+        public virtual object Resolve(CreationContext context)
+        {
+            if (parentHandler.CurrentState == HandlerState.WaitingDependency && parentHandler is IExposeDependencyInfo)
+            {
+                // The parent handler's root `Resolve` method will fail due to the current state of the handler being 
+                // WaitingDependency. Here, we attempt to "pre-load" any outstanding dependencies from the child
+                // resolver to get around this state.
+                var inspector = new GetMissingDependencyInspector();
+                ((IExposeDependencyInfo)parentHandler).ObtainDependencyDetails(inspector);
+                var dependencyResolver = new DefaultDependencyResolver();
+                dependencyResolver.Initialize(kernel, (client, model, dependency) => { });
+
+                var dependencies = from d in inspector.MissingDependencies
+                                   let instance = dependencyResolver.Resolve(context, childResolver, parentHandler.ComponentModel, d)
+                                   select new { Key = d.DependencyKey, Instance = instance };
+
+                foreach (var dependency in dependencies)
+                {
+                    context.AdditionalArguments.Add(dependency.Key, dependency.Instance);
+                }
+            }
+
+            return parentHandler.Resolve(context);
+        }
 
 		public bool Supports(Type service)
 		{
@@ -132,5 +163,15 @@ namespace Castle.MicroKernel.Handlers
 				}
 			}
 		}
+
+        class GetMissingDependencyInspector : IDependencyInspector
+        {
+            public IList<DependencyModel> MissingDependencies { get; private set; }
+
+            void IDependencyInspector.Inspect(IHandler handler, DependencyModel[] missingDependencies, IKernel kernel)
+            {
+                MissingDependencies = new ReadOnlyCollection<DependencyModel>(missingDependencies);
+            }
+        }
 	}
 }
