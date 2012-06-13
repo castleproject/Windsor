@@ -15,7 +15,7 @@
 namespace Castle.Core
 {
 	using System;
-
+	using Castle.Core.Internal;
 	using Castle.MicroKernel.Util;
 
 	/// <summary>
@@ -81,9 +81,9 @@ namespace Castle.Core
 		/// </value>
 		public bool IsOptional { get; set; }
 
-		public bool IsValueType
+		public bool IsPrimitiveTypeDependency
 		{
-			get { return targetItemType != null && targetItemType.IsValueType; }
+			get { return targetItemType.IsPrimitiveType(); }
 		}
 
 		public ParameterModel Parameter

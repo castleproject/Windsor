@@ -276,7 +276,7 @@ namespace Castle.Facilities.WcfIntegration
 		{
 			foreach (var serviceHost in hosts)
 			{
-				foreach (var cleanUp in serviceHost.Extensions.FindAll<IWcfCleanUp>())
+				foreach (var cleanUp in serviceHost.CleanUp())
 				{
 					cleanUp.CleanUp();
 				}

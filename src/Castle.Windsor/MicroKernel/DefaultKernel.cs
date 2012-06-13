@@ -395,11 +395,6 @@ namespace Castle.MicroKernel
 			}
 
 			var handler = NamingSubSystem.GetHandler(service);
-			if (handler == null && service.IsGenericType)
-			{
-				handler = NamingSubSystem.GetHandler(service.GetGenericTypeDefinition());
-			}
-
 			if (handler == null && Parent != null)
 			{
 				handler = WrapParentHandler(Parent.GetHandler(service));
@@ -470,11 +465,6 @@ namespace Castle.MicroKernel
 			}
 
 			if (NamingSubSystem.Contains(serviceType))
-			{
-				return true;
-			}
-
-			if (serviceType.IsGenericType && NamingSubSystem.Contains(serviceType.GetGenericTypeDefinition()))
 			{
 				return true;
 			}
@@ -589,12 +579,12 @@ namespace Castle.MicroKernel
 				case LifestyleType.Transient:
 					manager = new TransientLifestyleManager();
 					break;
-#if (!SILVERLIGHT && !CLIENTPROFILE) && SYSTEMWEB
+#if (!SILVERLIGHT && !CLIENTPROFILE)
 				case LifestyleType.PerWebRequest:
 					manager = new ScopedLifestyleManager(new WebRequestScopeAccessor());
 					break;
 #endif
-                case LifestyleType.Custom:
+				case LifestyleType.Custom:
 					manager = model.CustomLifestyle.CreateInstance<ILifestyleManager>();
 
 					break;

@@ -27,7 +27,7 @@ namespace Castle.Facilities.WcfIntegration
 
 		public override void Apply(WcfInvocation invocation)
 		{
-			invocation.Refresh().Proceed();
+			invocation.Refresh(false).Proceed();
 		}
 	}
 }

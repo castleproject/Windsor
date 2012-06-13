@@ -18,9 +18,9 @@ namespace CastleTests.Diagnostics
 
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Registration;
-	using Castle.MicroKernel.Tests.ClassComponents;
 	using Castle.Windsor.Diagnostics;
 
+	using CastleTests.ClassComponents;
 	using CastleTests.Components;
 
 	using NUnit.Framework;

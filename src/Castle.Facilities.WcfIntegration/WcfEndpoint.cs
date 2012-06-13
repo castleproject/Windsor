@@ -136,41 +136,43 @@ namespace Castle.Facilities.WcfIntegration
 
 #if DOTNET40
 
-		#region Discovery and Metadata
+		#region Discovery
 
 		public T InScope(params Uri[] scopes)
 		{
-			var discovery = GetDiscoveryInstance();
+			var discovery = GetDiscoveryMetadata();
 			discovery.Scopes.AddAll(scopes);
 			return (T)this;
 		}
 
 		public T InScope(params string[] scopes)
 		{
-			return InScope(scopes.Select(scope => new Uri(scope)).ToArray());
+			var discovery = GetDiscoveryMetadata();
+			discovery.Scopes.AddAll(scopes.Select(scope => new Uri(scope)));
+			return (T)this;
 		}
 
 		public T WithMetadata(params XElement[] metadata)
 		{
-			var discovery = GetDiscoveryInstance();
+			var discovery = GetDiscoveryMetadata();
 			discovery.Extensions.AddAll(metadata);
 			return (T)this;
 		}
 
-		private EndpointDiscoveryBehavior GetDiscoveryInstance()
+		private WcfEndpointDiscoveryMetadata GetDiscoveryMetadata()
 		{
-			var discovery = Extensions.OfType<WcfInstanceExtension>()
+			var metadata = Extensions.OfType<WcfInstanceExtension>()
 				.Select(extension => extension.Instance)
-				.OfType<EndpointDiscoveryBehavior>()
+				.OfType<WcfEndpointDiscoveryMetadata>()
 				.FirstOrDefault();
 
-			if (discovery == null)
+			if (metadata == null)
 			{
-				discovery = new EndpointDiscoveryBehavior();
-				AddExtensions(WcfExplicitExtension.CreateFrom(discovery));
+				metadata = new WcfEndpointDiscoveryMetadata();
+				AddExtensions(WcfExplicitExtension.CreateFrom(metadata));
 			}
 
-			return discovery;
+			return metadata;
 		}
 
 		#endregion
@@ -464,6 +466,8 @@ namespace Castle.Facilities.WcfIntegration
 
 		public DiscoveryEndpoint DiscoveryEndpoint { get; private set; }
 
+		public DiscoveryEndpointProvider DiscoveryEndpointProvider { get; private set; }
+
 		public TimeSpan? Duration { get; private set; }
 
 		public Func<IList<EndpointDiscoveryMetadata>, EndpointDiscoveryMetadata> EndpointPreference { get; private set; }
@@ -475,6 +479,14 @@ namespace Castle.Facilities.WcfIntegration
 		public Uri ScopeMatchBy { get; private set; }
 
 		public Type SearchContract { get; private set; }
+
+		public bool SearchAnyContract { get; private set; }
+
+		public DiscoveredEndpointModel AnyContract()
+		{
+			SearchAnyContract = true;
+			return this;
+		}
 
 		public DiscoveredEndpointModel IdentifiedBy(EndpointIdentity identity)
 		{
@@ -491,6 +503,12 @@ namespace Castle.Facilities.WcfIntegration
 		public DiscoveredEndpointModel Limit(int maxResults)
 		{
 			MaxResults = maxResults;
+			return this;
+		}
+
+		public DiscoveredEndpointModel ManagedBy(DiscoveryEndpointProvider provider)
+		{
+			DiscoveryEndpointProvider = provider;
 			return this;
 		}
 

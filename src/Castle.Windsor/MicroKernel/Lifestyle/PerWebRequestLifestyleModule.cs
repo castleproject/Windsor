@@ -13,7 +13,7 @@
 // limitations under the License.
 
 
-#if !(SILVERLIGHT || CLIENTPROFILE) && SYSTEMWEB
+#if !(SILVERLIGHT || CLIENTPROFILE)
 
 namespace Castle.MicroKernel.Lifestyle
 {

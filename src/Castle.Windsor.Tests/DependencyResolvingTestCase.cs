@@ -1,4 +1,4 @@
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2012 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -26,6 +26,13 @@ namespace CastleTests
 	[TestFixture]
 	public class DependencyResolvingTestCase : AbstractContainerTestCase
 	{
+		[Test]
+		public void Array_of_strings_can_NOT_be_a_service()
+		{
+			var uriString = "http://castleproject.org";
+			Assert.Throws<ArgumentException>(() => Kernel.Register(Component.For<string[]>().Instance(new[] {uriString})));
+		}
+
 		[Test]
 		public void First_by_registration_order_available_component_is_used_to_satisfy_dependency()
 		{
@@ -120,14 +127,11 @@ namespace CastleTests
 		}
 
 		[Test]
-		public void String_class_can_be_a_service_although_thats_not_a_good_idea()
+		public void String_class_can_NOT_be_a_service()
 		{
 			var uriString = "http://castleproject.org";
-			Kernel.Register(Component.For<string>().Instance(uriString));
 
-			var instance = Kernel.Resolve<string>();
-
-			Assert.AreSame(uriString, instance);
+			Assert.Throws<ArgumentException>(() => Kernel.Register(Component.For<string>().Instance(uriString)));
 		}
 
 		[Test(Description = "see http://stackoverflow.com/questions/1839199/how-to-register-a-uri-dependency-to-return-httpcontext-current-request-url-using")]
@@ -135,7 +139,7 @@ namespace CastleTests
 		{
 			var uriString = "http://castleproject.org";
 			Kernel.Register(Component.For<UsesUri>(),
-			                Component.For<Uri>().DependsOn(new { uriString }));
+			                Component.For<Uri>().DependsOn(new {uriString}));
 
 			var instance = Kernel.Resolve<UsesUri>();
 
@@ -157,7 +161,7 @@ namespace CastleTests
 		public void Value_types_cannot_be_used_as_components()
 		{
 			var exception = Assert.Throws<ArgumentException>(() =>
-			                                                 Kernel.Register(Component.For(typeof(int))));
+			                                                 Kernel.Register(Component.For(typeof (int))));
 
 			Assert.AreEqual("Type System.Int32 is not a class nor an interface, and those are the only values allowed.", exception.Message);
 		}

@@ -33,7 +33,7 @@ namespace Castle.MicroKernel.ModelBuilder.Descriptors
 
 		public void ConfigureComponentModel(IKernel kernel, ComponentModel model)
 		{
-			model.Lifecycle.Add(new OnDestroyConcern<S>(action, kernel));
+			model.Lifecycle.AddFirst(new OnDestroyConcern<S>(action, kernel));
 		}
 	}
 }

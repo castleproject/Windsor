@@ -27,27 +27,27 @@ namespace Castle.Facilities.WcfIntegration
 		{
 		}
 
-		protected override ChannelCreator CreateChannelCreator(Type contract, DuplexClientModel clientModel,
+		protected override ChannelCreator CreateChannelCreator(Type contract, DuplexClientModel clientModel, IChannelBuilderScope scope,
 		                                                       params object[] channelFactoryArgs)
 		{
 			var type = typeof(DuplexChannelFactory<>).MakeGenericType(new[] { contract });
 			var channelFactory = ChannelFactoryBuilder.CreateChannelFactory(type, clientModel, channelFactoryArgs);
-			ConfigureChannelFactory(channelFactory);
+			scope.ConfigureChannelFactory(channelFactory);
 
-			var methodInfo = type.GetMethod("CreateChannel", new Type[0]);
+			var methodInfo = type.GetMethod("CreateChannel", Type.EmptyTypes);
 			return (ChannelCreator)Delegate.CreateDelegate(typeof(ChannelCreator), channelFactory, methodInfo);
 		}
 
-		protected override ChannelCreator GetChannel(DuplexClientModel clientModel, Type contract, Binding binding,
-		                                             string address)
+		protected override ChannelCreator GetChannel(DuplexClientModel clientModel, Type contract, Binding binding, string address,
+													 IChannelBuilderScope scope)
 		{
-			return CreateChannelCreator(contract, clientModel, clientModel.CallbackContext, binding, address);
+			return CreateChannelCreator(contract, clientModel, scope, clientModel.CallbackContext, binding, address);
 		}
 
-		protected override ChannelCreator GetChannel(DuplexClientModel clientModel, Type contract, Binding binding,
-		                                             EndpointAddress address)
+		protected override ChannelCreator GetChannel(DuplexClientModel clientModel, Type contract, Binding binding, EndpointAddress address,
+													 IChannelBuilderScope scope)
 		{
-			return CreateChannelCreator(contract, clientModel, clientModel.CallbackContext, binding, address);
+			return CreateChannelCreator(contract, clientModel, scope, clientModel.CallbackContext, binding, address);
 		}
 	}
 }

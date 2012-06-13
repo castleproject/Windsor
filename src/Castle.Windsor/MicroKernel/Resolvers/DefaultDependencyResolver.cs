@@ -19,6 +19,7 @@ namespace Castle.MicroKernel.Resolvers
 	using System.Linq;
 
 	using Castle.Core;
+	using Castle.Core.Internal;
 	using Castle.MicroKernel.Context;
 	using Castle.MicroKernel.Handlers;
 	using Castle.MicroKernel.SubSystems.Conversion;
@@ -187,7 +188,7 @@ namespace Castle.MicroKernel.Resolvers
 				return true;
 			}
 
-			if (dependency.TargetItemType == null || dependency.TargetItemType.IsValueType)
+			if (dependency.TargetItemType.IsPrimitiveType())
 			{
 				return false;
 			}
@@ -223,7 +224,7 @@ namespace Castle.MicroKernel.Resolvers
 			{
 				return kernel;
 			}
-			if (dependency.TargetItemType == null || dependency.TargetItemType.IsValueType)
+			if (dependency.TargetItemType.IsPrimitiveType())
 			{
 				// we can shortcircuit it here, since we know we won't find any components for value type service as those are not legal.
 				return null;

@@ -22,7 +22,9 @@ namespace Castle.Facilities.WcfIntegration.Behaviors
 	using System.ServiceModel.Description;
 	using System.ServiceModel.Dispatcher;
 	using System.Xml;
+	using Castle.Core;
 
+	[Singleton]
 	public class MessageLifecycleBehavior<T> : AbstractExtensibleObject<T>,
 		IEndpointBehavior, IClientMessageInspector, IDispatchMessageInspector 
 		where T : MessageLifecycleBehavior<T>
@@ -188,6 +190,7 @@ namespace Castle.Facilities.WcfIntegration.Behaviors
 		}
 	}
 
+	[Singleton]
 	public class MessageLifecycleBehavior : MessageLifecycleBehavior<MessageLifecycleBehavior>
 	{
 	}

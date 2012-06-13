@@ -62,6 +62,7 @@ namespace Castle.Facilities.Logging
 		private Type loggingFactoryType;
 		private LoggerLevel? loggerLevel;
 	    private ILoggerFactory loggerFactory;
+		private string logName;
 
 		/// <summary>
 		///   Initializes a new instance of the <see cref = "LoggingFacility" /> class.
@@ -165,6 +166,12 @@ namespace Castle.Facilities.Logging
 		public LoggingFacility WithLevel(LoggerLevel level)
 		{
 			loggerLevel = level;
+			return this;
+		}
+
+		public LoggingFacility ToLog(string name)
+		{
+			logName = name;
 			return this;
 		}
 
@@ -380,13 +387,13 @@ namespace Castle.Facilities.Logging
 		{
 			if (factory is IExtendedLoggerFactory)
 			{
-				var defaultLogger = ((IExtendedLoggerFactory)factory).Create("Default");
+				var defaultLogger = ((IExtendedLoggerFactory)factory).Create(logName ?? "Default");
 				Kernel.Register(Component.For<IExtendedLogger>().NamedAutomatically("ilogger.default").Instance(defaultLogger),
 				                Component.For<ILogger>().NamedAutomatically("ilogger.default.base").Instance(defaultLogger));
 			}
 			else
 			{
-				Kernel.Register(Component.For<ILogger>().NamedAutomatically("ilogger.default").Instance(factory.Create("Default")));
+				Kernel.Register(Component.For<ILogger>().NamedAutomatically("ilogger.default").Instance(factory.Create(logName ?? "Default")));
 			}
 		}
 
@@ -409,10 +416,10 @@ namespace Castle.Facilities.Logging
 			var extendedLoggerFactory = loggerFactory as IExtendedLoggerFactory;
 			if (extendedLoggerFactory == null)
 			{
-				Kernel.Resolver.AddSubResolver(new LoggerResolver(loggerFactory));
+				Kernel.Resolver.AddSubResolver(new LoggerResolver(loggerFactory, logName));
 				return;
 			}
-			Kernel.Resolver.AddSubResolver(new LoggerResolver(extendedLoggerFactory));
+			Kernel.Resolver.AddSubResolver(new LoggerResolver(extendedLoggerFactory, logName));
 		}
 
 		private void SetUpTypeConverter()

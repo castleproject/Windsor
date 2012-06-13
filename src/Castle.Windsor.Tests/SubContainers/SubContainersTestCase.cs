@@ -1,4 +1,4 @@
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2012 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,15 +12,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.MicroKernel.Tests.SubContainers
+namespace CastleTests.SubContainers
 {
 	using System;
 	using System.Collections.Generic;
 
 	using Castle.Core;
+	using Castle.MicroKernel;
+	using Castle.MicroKernel.Context;
+	using Castle.MicroKernel.Handlers;
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Tests.ClassComponents;
+	using Castle.Windsor.Tests.Components;
 
+	using CastleTests;
 	using CastleTests.Components;
 
 	using NUnit.Framework;
@@ -29,22 +34,8 @@ namespace Castle.MicroKernel.Tests.SubContainers
 	///   Summary description for SubContainersTestCase.
 	/// </summary>
 	[TestFixture]
-	public class SubContainersTestCase
+	public class SubContainersTestCase : AbstractContainerTestCase
 	{
-		[SetUp]
-		public void Init()
-		{
-			kernel = new DefaultKernel();
-		}
-
-		[TearDown]
-		public void Dispose()
-		{
-			kernel.Dispose();
-		}
-
-		private IKernel kernel;
-
 		/// <summary>
 		///   collects events in an array list, used for ensuring we are cleaning up the parent kernel
 		///   event subscriptions correctly.
@@ -92,8 +83,8 @@ namespace Castle.MicroKernel.Tests.SubContainers
 
 			IKernel subkernel = new DefaultKernel();
 
-			kernel.AddChildKernel(subkernel);
-			Assert.AreEqual(kernel, subkernel.Parent);
+			Kernel.AddChildKernel(subkernel);
+			Assert.AreEqual(Kernel, subkernel.Parent);
 
 			kernel2.AddChildKernel(subkernel);
 		}
@@ -110,7 +101,7 @@ namespace Castle.MicroKernel.Tests.SubContainers
 			container.Register(
 				Component.For(typeof(IEmptyService)).ImplementedBy(typeof(EmptyServiceA)).Named("service1"));
 
-			var comp = childContainer.Resolve<UsesIEmptyService>();
+			childContainer.Resolve<UsesIEmptyService>();
 		}
 
 		[Test]
@@ -118,10 +109,10 @@ namespace Castle.MicroKernel.Tests.SubContainers
 		{
 			IKernel subkernel = new DefaultKernel();
 
-			kernel.Register(Component.For(typeof(DefaultTemplateEngine)).Named("templateengine"));
-			kernel.Register(Component.For(typeof(DefaultMailSenderService)).Named("mailsender"));
+			Kernel.Register(Component.For(typeof(DefaultTemplateEngine)).Named("templateengine"));
+			Kernel.Register(Component.For(typeof(DefaultMailSenderService)).Named("mailsender"));
 
-			kernel.AddChildKernel(subkernel);
+			Kernel.AddChildKernel(subkernel);
 			subkernel.Register(Component.For(typeof(DefaultSpamService)).Named("spamservice"));
 
 			var spamservice = subkernel.Resolve<DefaultSpamService>("spamservice");
@@ -136,9 +127,9 @@ namespace Castle.MicroKernel.Tests.SubContainers
 		{
 			IKernel subkernel = new DefaultKernel();
 
-			kernel.Register(Component.For(typeof(DefaultTemplateEngine)).Named("templateengine"));
+			Kernel.Register(Component.For(typeof(DefaultTemplateEngine)).Named("templateengine"));
 
-			kernel.AddChildKernel(subkernel);
+			Kernel.AddChildKernel(subkernel);
 
 			Assert.IsTrue(subkernel.HasComponent(typeof(DefaultTemplateEngine)));
 			Assert.IsNotNull(subkernel.Resolve<DefaultTemplateEngine>());
@@ -156,12 +147,12 @@ namespace Castle.MicroKernel.Tests.SubContainers
 			subkernel.Register(Component.For<DefaultTemplateEngine>().Named("engine").Instance(instance1));
 			Assert.AreEqual(instance1, subkernel.Resolve<DefaultTemplateEngine>("engine"));
 
-			kernel.Register(Component.For<DefaultTemplateEngine>().Named("engine").Instance(instance2));
-			Assert.AreEqual(instance2, kernel.Resolve<DefaultTemplateEngine>("engine"));
+			Kernel.Register(Component.For<DefaultTemplateEngine>().Named("engine").Instance(instance2));
+			Assert.AreEqual(instance2, Kernel.Resolve<DefaultTemplateEngine>("engine"));
 
-			kernel.AddChildKernel(subkernel);
+			Kernel.AddChildKernel(subkernel);
 			Assert.AreEqual(instance1, subkernel.Resolve<DefaultTemplateEngine>("engine"));
-			Assert.AreEqual(instance2, kernel.Resolve<DefaultTemplateEngine>("engine"));
+			Assert.AreEqual(instance2, Kernel.Resolve<DefaultTemplateEngine>("engine"));
 		}
 
 		[Test]
@@ -171,17 +162,17 @@ namespace Castle.MicroKernel.Tests.SubContainers
 			var instance2 = new DefaultTemplateEngine();
 
 			IKernel subkernel = new DefaultKernel();
-			kernel.AddChildKernel(subkernel);
+			Kernel.AddChildKernel(subkernel);
 
 			// subkernel added first, then populated with overloaded components after
 
-			kernel.Register(Component.For<DefaultTemplateEngine>().Named("engine").Instance(instance2));
-			Assert.AreEqual(instance2, kernel.Resolve<DefaultTemplateEngine>("engine"));
+			Kernel.Register(Component.For<DefaultTemplateEngine>().Named("engine").Instance(instance2));
+			Assert.AreEqual(instance2, Kernel.Resolve<DefaultTemplateEngine>("engine"));
 			Assert.AreEqual(instance2, subkernel.Resolve<DefaultTemplateEngine>("engine"));
 
 			subkernel.Register(Component.For<DefaultTemplateEngine>().Named("engine").Instance(instance1));
 			Assert.AreEqual(instance1, subkernel.Resolve<DefaultTemplateEngine>("engine"));
-			Assert.AreEqual(instance2, kernel.Resolve<DefaultTemplateEngine>("engine"));
+			Assert.AreEqual(instance2, Kernel.Resolve<DefaultTemplateEngine>("engine"));
 		}
 
 		[Test]
@@ -189,10 +180,10 @@ namespace Castle.MicroKernel.Tests.SubContainers
 		{
 			IKernel subkernel = new DefaultKernel();
 
-			kernel.Register(Component.For(typeof(DefaultMailSenderService)).Named("mailsender"));
-			kernel.Register(Component.For(typeof(DefaultTemplateEngine)).Named("templateengine"));
+			Kernel.Register(Component.For(typeof(DefaultMailSenderService)).Named("mailsender"));
+			Kernel.Register(Component.For(typeof(DefaultTemplateEngine)).Named("templateengine"));
 
-			kernel.AddChildKernel(subkernel);
+			Kernel.AddChildKernel(subkernel);
 
 			subkernel.Register(Component.For(typeof(DefaultSpamService)).Named("spamservice"));
 
@@ -210,10 +201,10 @@ namespace Castle.MicroKernel.Tests.SubContainers
 
 			subkernel.Register(Component.For(typeof(DefaultSpamServiceWithConstructor)).Named("spamservice"));
 
-			kernel.Register(Component.For(typeof(DefaultMailSenderService)).Named("mailsender"));
-			kernel.Register(Component.For(typeof(DefaultTemplateEngine)).Named("templateengine"));
+			Kernel.Register(Component.For(typeof(DefaultMailSenderService)).Named("mailsender"));
+			Kernel.Register(Component.For(typeof(DefaultTemplateEngine)).Named("templateengine"));
 
-			kernel.AddChildKernel(subkernel);
+			Kernel.AddChildKernel(subkernel);
 
 			var spamservice =
 				subkernel.Resolve<DefaultSpamServiceWithConstructor>("spamservice");
@@ -231,10 +222,11 @@ namespace Castle.MicroKernel.Tests.SubContainers
 
 			subkernel.Register(Component.For(typeof(DefaultTemplateEngine)).Named("templateengine"));
 
-			kernel.AddChildKernel(subkernel);
+			Kernel.AddChildKernel(subkernel);
 
-			Assert.IsFalse(kernel.HasComponent(typeof(DefaultTemplateEngine)));
-			object engine = kernel.Resolve<DefaultTemplateEngine>();
+			Assert.IsFalse(Kernel.HasComponent(typeof(DefaultTemplateEngine)));
+			
+			Kernel.Resolve<DefaultTemplateEngine>();
 		}
 
 		[Test]
@@ -245,12 +237,12 @@ namespace Castle.MicroKernel.Tests.SubContainers
 			subkernel.RemovedAsChildKernel += eventCollector.RemovedAsChildKernel;
 			subkernel.AddedAsChildKernel += eventCollector.AddedAsChildKernel;
 
-			kernel.AddChildKernel(subkernel);
-			Assert.AreEqual(kernel, subkernel.Parent);
+			Kernel.AddChildKernel(subkernel);
+			Assert.AreEqual(Kernel, subkernel.Parent);
 			Assert.AreEqual(1, eventCollector.Events.Count);
 			Assert.AreEqual(EventsCollector.Added, eventCollector.Events[0]);
 
-			kernel.RemoveChildKernel(subkernel);
+			Kernel.RemoveChildKernel(subkernel);
 			Assert.IsNull(subkernel.Parent);
 			Assert.AreEqual(2, eventCollector.Events.Count);
 			Assert.AreEqual(EventsCollector.Removed, eventCollector.Events[1]);
@@ -264,10 +256,10 @@ namespace Castle.MicroKernel.Tests.SubContainers
 			subkernel.RemovedAsChildKernel += eventCollector.RemovedAsChildKernel;
 			subkernel.AddedAsChildKernel += eventCollector.AddedAsChildKernel;
 
-			kernel.AddChildKernel(subkernel);
-			kernel.RemoveChildKernel(subkernel);
-			kernel.AddChildKernel(subkernel);
-			kernel.RemoveChildKernel(subkernel);
+			Kernel.AddChildKernel(subkernel);
+			Kernel.RemoveChildKernel(subkernel);
+			Kernel.AddChildKernel(subkernel);
+			Kernel.RemoveChildKernel(subkernel);
 
 			Assert.AreEqual(4, eventCollector.Events.Count);
 			Assert.AreEqual(EventsCollector.Added, eventCollector.Events[0]);
@@ -283,9 +275,9 @@ namespace Castle.MicroKernel.Tests.SubContainers
 		public void Requesting_parent_component_with_child_dependency_from_child_component()
 		{
 			var subkernel = new DefaultKernel();
-			kernel.AddChildKernel(subkernel);
+			Kernel.AddChildKernel(subkernel);
 
-			kernel.Register(Component.For<UsesSimpleComponent1>());
+			Kernel.Register(Component.For<UsesSimpleComponent1>());
 			subkernel.Register(Component.For<SimpleComponent1>());
 
 			subkernel.Resolve<UsesSimpleComponent1>();
@@ -296,10 +288,10 @@ namespace Castle.MicroKernel.Tests.SubContainers
 		{
 			IKernel child = new DefaultKernel();
 
-			kernel.Register(Component.For(typeof(DefaultTemplateEngine)).Named("templateengine"));
-			kernel.Register(Component.For(typeof(DefaultSpamService)).Named("spamservice"));
+			Kernel.Register(Component.For(typeof(DefaultTemplateEngine)).Named("templateengine"));
+			Kernel.Register(Component.For(typeof(DefaultSpamService)).Named("spamservice"));
 
-			kernel.AddChildKernel(child);
+			Kernel.AddChildKernel(child);
 
 			child.Register(Component.For(typeof(DefaultMailSenderService)).Named("mailsender"));
 
@@ -311,19 +303,19 @@ namespace Castle.MicroKernel.Tests.SubContainers
 		}
 
 		[Test]
-		public void Singleton_WithNonSingletonDependencies_DoesNotReResolveDependencies()
+		public void Singleton_withNonSingletonDependencies_doesNotReResolveDependencies()
 		{
-			kernel.Register(Component.For(typeof(DefaultSpamService)).Named("spamservice"));
-			kernel.Register(Component.For(typeof(DefaultMailSenderService)).Named("mailsender"));
+			Kernel.Register(Component.For(typeof(DefaultSpamService)).Named("spamservice"));
+			Kernel.Register(Component.For(typeof(DefaultMailSenderService)).Named("mailsender"));
 
 			IKernel subkernel1 = new DefaultKernel();
 			subkernel1.Register(Component.For(typeof(DefaultTemplateEngine)).Named("templateengine"));
-			kernel.AddChildKernel(subkernel1);
+			Kernel.AddChildKernel(subkernel1);
 
 			IKernel subkernel2 = new DefaultKernel();
 			subkernel2.Register(
 				Component.For(typeof(DefaultTemplateEngine)).Named("templateengine").LifeStyle.Is(LifestyleType.Transient));
-			kernel.AddChildKernel(subkernel2);
+			Kernel.AddChildKernel(subkernel2);
 
 			var templateengine1 = subkernel1.Resolve<DefaultTemplateEngine>("templateengine");
 			var spamservice1 = subkernel1.Resolve<DefaultSpamService>("spamservice");
@@ -347,11 +339,11 @@ namespace Castle.MicroKernel.Tests.SubContainers
 		{
 			var subKernel = new DefaultKernel();
 			var subSubKernel = new DefaultKernel();
-			kernel.AddChildKernel(subKernel);
+			Kernel.AddChildKernel(subKernel);
 			subKernel.AddChildKernel(subSubKernel);
 			var containers = new[]
 			{
-				kernel,
+				Kernel,
 				subKernel,
 				subSubKernel
 			};
@@ -367,23 +359,40 @@ namespace Castle.MicroKernel.Tests.SubContainers
 		{
 			IKernel subkernel = new DefaultKernel();
 
-			kernel.Register(Component.For(typeof(DefaultSpamService)).Named("spamservice").LifeStyle.Is(LifestyleType.Transient));
-			kernel.Register(Component.For(typeof(DefaultMailSenderService)).Named("mailsender"));
-			kernel.Register(Component.For(typeof(DefaultTemplateEngine)).Named("templateengine"));
+			Kernel.Register(Component.For(typeof(DefaultSpamService)).Named("spamservice").LifeStyle.Is(LifestyleType.Transient));
+			Kernel.Register(Component.For(typeof(DefaultMailSenderService)).Named("mailsender"));
+			Kernel.Register(Component.For(typeof(DefaultTemplateEngine)).Named("templateengine"));
 
-			kernel.AddChildKernel(subkernel);
+			Kernel.AddChildKernel(subkernel);
 			subkernel.Register(Component.For(typeof(DefaultTemplateEngine)).Named("templateengine"));
 
-			var templateengine = kernel.Resolve<DefaultTemplateEngine>("templateengine");
+			var templateengine = Kernel.Resolve<DefaultTemplateEngine>("templateengine");
 			var sub_templateengine = subkernel.Resolve<DefaultTemplateEngine>("templateengine");
 
 			var spamservice = subkernel.Resolve<DefaultSpamService>("spamservice");
 			Assert.AreNotEqual(spamservice.TemplateEngine, templateengine);
 			Assert.AreEqual(spamservice.TemplateEngine, sub_templateengine);
 
-			spamservice = kernel.Resolve<DefaultSpamService>("spamservice");
+			spamservice = Kernel.Resolve<DefaultSpamService>("spamservice");
 			Assert.AreNotEqual(spamservice.TemplateEngine, sub_templateengine);
 			Assert.AreEqual(spamservice.TemplateEngine, templateengine);
+		}
+
+		[Test]
+		[Bug("IOC-325")]
+		public void TryResolvingViaChildKernelShouldNotThrowException()
+		{
+			using (var childKernel = new DefaultKernel())
+			{
+				Kernel.Register(Component.For<BookStore>());
+				Kernel.AddChildKernel(childKernel);
+				var handler = childKernel.GetHandler(typeof(BookStore));
+
+				// Assert setup invariant
+				Assert.IsInstanceOf<ParentHandlerWithChildResolver>(handler);
+
+				Assert.DoesNotThrow(() => handler.TryResolve(CreationContext.CreateEmpty()));
+			}
 		}
 	}
 }

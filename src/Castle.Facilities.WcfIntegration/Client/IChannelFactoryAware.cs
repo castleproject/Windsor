@@ -71,5 +71,13 @@ namespace Castle.Facilities.WcfIntegration
 		/// <param name="channelFactory"></param>
 		/// <param name="channel"></param>
 		void ChannelAvailable(ChannelFactory channelFactory, IChannel channel);
+
+		/// <summary>
+		///  Called when a <see cref="IChannel"/> is refreshed.
+		/// </summary>
+		/// <param name="channelFactory"></param>
+		/// <param name="oldChannel"></param>
+		/// <param name="newChannel"></param>
+		void ChannelRefreshed(ChannelFactory channelFactory, IChannel oldChannel, IChannel newChannel);
 	}
 }

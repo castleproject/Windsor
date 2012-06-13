@@ -28,7 +28,7 @@ namespace Castle.Facilities.WcfIntegration
 		{
 		}
 
-		protected override Binding InferBinding(Uri address)
+		protected internal override Binding InferBinding(Uri address)
 		{
 			return (Clients != null) ? Clients.InferBinding(address) : null;
 		}

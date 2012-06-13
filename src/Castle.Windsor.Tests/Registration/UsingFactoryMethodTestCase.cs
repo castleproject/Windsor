@@ -1,4 +1,4 @@
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2012 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -259,6 +259,19 @@ namespace CastleTests.Registration
 
 			var aProp = Kernel.Resolve<AProp>();
 			Assert.IsNull(aProp.Prop);
+		}
+
+		[Test]
+		[Bug("IOC-332")]
+		public void Factories_returning_proxies_with_no_target_are_not_supported()
+		{
+			var generator = new ProxyGenerator();
+			Container.Register(Component.For<ICameraService>().UsingFactoryMethod(() => generator.CreateInterfaceProxyWithoutTarget<ICameraService>()));
+
+			var exception = Assert.Throws<NotSupportedException>(() => Container.Resolve<ICameraService>());
+
+			Assert.AreEqual(@"Can not apply commission concerns to component Late bound CastleTests.Components.ICameraService because it appears to be a target-less proxy. Currently those are not supported.",
+			                exception.Message);
 		}
 
 		[Test]

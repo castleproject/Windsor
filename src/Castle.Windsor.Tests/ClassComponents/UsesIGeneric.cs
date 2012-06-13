@@ -14,6 +14,8 @@
 
 namespace Castle.MicroKernel.Tests.ClassComponents
 {
+	using CastleTests.ClassComponents;
+
 	public class UsesIGeneric<T>
 	{
 		private readonly IGeneric<T> dependency;

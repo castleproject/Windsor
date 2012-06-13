@@ -14,6 +14,8 @@
 
 namespace Castle.MicroKernel.Tests.ClassComponents
 {
+	using CastleTests.ClassComponents;
+
 	public class GenericImpl2<T> : IGeneric<T>
 	{
 		public int Value { get; set; }

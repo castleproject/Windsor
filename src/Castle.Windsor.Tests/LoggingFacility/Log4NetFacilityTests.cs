@@ -63,5 +63,6 @@ namespace Castle.Facilities.Logging.Tests
 			Assert.AreEqual(expectedLogOutput, actualLogOutput.ToString());
 		}
 	}
+
 #endif
 }

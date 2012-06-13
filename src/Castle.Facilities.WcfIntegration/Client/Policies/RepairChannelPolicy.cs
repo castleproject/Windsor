@@ -14,16 +14,15 @@
 
 namespace Castle.Facilities.WcfIntegration
 {
-    using System;
-    using System.ServiceModel;
-    using System.ServiceModel.Security;
+	using System.ServiceModel;
+	using System.ServiceModel.Security;
 
     /// <summary>
     /// Policy to recover from a <see cref="T:System.ServiceModel.CommunicationException" />
     /// by repairing the channel and trying again.  This policy will handle situations in which a
-	/// connection has been reset on the server which invalidates the the client channel.
+	/// connection has been reset on the server which invalidates the client channel.
     /// </summary>
-    public class RepairChannelPolicy : AbstractWcfPolicy, IWcfPolicy
+    public class RepairChannelPolicy : AbstractWcfPolicy
     {
         /// <inheritdoc />
         public override void Apply(WcfInvocation wcfInvocation)
@@ -32,7 +31,7 @@ namespace Castle.Facilities.WcfIntegration
 
             try
             {
-                wcfInvocation.Refresh().Proceed();
+                wcfInvocation.Refresh(false).Proceed();
             }
             catch (ChannelTerminatedException)
             {
@@ -50,6 +49,10 @@ namespace Castle.Facilities.WcfIntegration
             {
                 refresh = true;
             }
+			catch (EndpointNotFoundException)  // Could happen with discovery
+			{
+				refresh = true;
+			}
             catch (CommunicationException exception)
             {
                 if (exception.GetType() != typeof(CommunicationException))
@@ -61,7 +64,7 @@ namespace Castle.Facilities.WcfIntegration
 
             if (refresh)
             {
-                wcfInvocation.Refresh().Proceed();
+                wcfInvocation.Refresh(true).Proceed();
             }
         }
     }

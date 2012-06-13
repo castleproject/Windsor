@@ -12,31 +12,29 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.MicroKernel.Tests
+namespace CastleTests
 {
 	using System;
 	using System.Collections.Generic;
-
 	using Castle.Core;
+	using Castle.MicroKernel;
 	using Castle.MicroKernel.Handlers;
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Resolvers;
 	using Castle.MicroKernel.Tests.ClassComponents;
 	using Castle.Windsor.Proxy;
 	using Castle.Windsor.Tests.MicroKernel;
-
-	using CastleTests;
 	using CastleTests.Components;
-
 	using NUnit.Framework;
 
 	[TestFixture]
 	public class MicroKernelTestCase : AbstractContainerTestCase
 	{
-		[TearDown]
-		public void Dispose()
+		[Test]
+		[Bug("IOC-327")]
+		public void ReleaseComponent_null_silently_ignored_doesnt_throw()
 		{
-			Kernel.Dispose();
+			Assert.DoesNotThrow(() => Kernel.ReleaseComponent(null));
 		}
 
 		[Test]

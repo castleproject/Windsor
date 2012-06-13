@@ -22,6 +22,7 @@ namespace CastleTests
 	using Castle.MicroKernel.SubSystems.Conversion;
 	using Castle.MicroKernel.Tests.ClassComponents;
 
+	using CastleTests.ClassComponents;
 	using CastleTests.Components;
 
 	using NUnit.Framework;

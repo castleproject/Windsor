@@ -13,3 +13,5 @@
 - nesting scopes - NOT SUPPORTED
 
 - change the exception thrown when creating typed factory to point out that the facility should be added to the container first, before adding the factory.
+
+- property filters can add dependency for a single property multiple times

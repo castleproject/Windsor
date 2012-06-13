@@ -1,4 +1,4 @@
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2012 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@ namespace CastleTests.Interceptors
 	using Castle.DynamicProxy;
 	using Castle.MicroKernel.Registration;
 
-	using CastleTests;
 	using CastleTests.Components;
 
 	using NUnit.Framework;
@@ -27,6 +26,23 @@ namespace CastleTests.Interceptors
 		private bool IsProxy(object instance)
 		{
 			return instance is IProxyTargetAccessor;
+		}
+
+		private IInterceptor[] GetInterceptors(object proxy)
+		{
+			return ((IProxyTargetAccessor) proxy).GetInterceptors();
+		}
+
+		[Test]
+		public void Can_set_interceptor_via_attribute_many()
+		{
+			Container.Register(
+				Component.For<StandardInterceptor>(),
+				Component.For<StandardInterceptor>().Named("FooInterceptor"),
+				Component.For<ICalcService>().ImplementedBy<CalculatorServiceWithStandartInterceptorTwo>());
+			var calcService = Container.Resolve<ICalcService>();
+			Assert.IsTrue(IsProxy(calcService));
+			Assert.AreEqual(2, GetInterceptors(calcService).Length);
 		}
 
 		[Test]

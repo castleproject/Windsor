@@ -202,7 +202,7 @@ namespace Castle.MicroKernel.Handlers
 
 		public virtual bool Supports(Type service)
 		{
-			return ComponentModel.Services.Any(s => s == service);
+			return ComponentModel.Services.Contains(service);
 		}
 
 		public object TryResolve(CreationContext context)

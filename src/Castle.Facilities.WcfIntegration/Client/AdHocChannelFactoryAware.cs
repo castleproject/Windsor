@@ -28,6 +28,7 @@ namespace Castle.Facilities.WcfIntegration
 		private Action<ChannelFactory> onFaulted;
 		private Action<ChannelFactory, IChannel> onChannelCreated;
 		private Action<ChannelFactory, IChannel> onChannelAvailable;
+        private Action<ChannelFactory, IChannel, IChannel> onChannelRefreshed;
 
 		public override void Created(ChannelFactory channelFactory)
 		{
@@ -114,6 +115,20 @@ namespace Castle.Facilities.WcfIntegration
 		public AdHocChannelFactoryAware OnChannelAvailable(Action<ChannelFactory, IChannel> action)
 		{
 			onChannelAvailable += action;
+			return this;
+		}
+
+		public override void ChannelRefreshed(ChannelFactory channelFactory, IChannel oldChannel, IChannel newChannel)
+		{
+			if (onChannelRefreshed != null)
+			{
+				onChannelRefreshed(channelFactory, oldChannel, newChannel);
+			}
+		}
+
+		public AdHocChannelFactoryAware OnChannelRefreshed(Action<ChannelFactory, IChannel, IChannel> action)
+		{
+			onChannelRefreshed += action;
 			return this;
 		}
 

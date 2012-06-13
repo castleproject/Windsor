@@ -252,7 +252,7 @@ namespace CastleTests.Activators
 
 			var message =
 				string.Format(
-					"Can't create component 'Castle.MicroKernel.Tests.Configuration.Components.ClassWithConstructors' as it has dependencies to be satisfied.{0}{0}'Castle.MicroKernel.Tests.Configuration.Components.ClassWithConstructors' is waiting for the following dependencies:{0}- Parameter 'host' which was not provided. Did you forget to set the dependency?{0}- Service 'System.String[]' which was not registered.{0}",
+					"Can't create component 'Castle.MicroKernel.Tests.Configuration.Components.ClassWithConstructors' as it has dependencies to be satisfied.{0}{0}'Castle.MicroKernel.Tests.Configuration.Components.ClassWithConstructors' is waiting for the following dependencies:{0}- Parameter 'host' which was not provided. Did you forget to set the dependency?{0}- Parameter 'hosts' which was not provided. Did you forget to set the dependency?{0}",
 					Environment.NewLine);
 			Assert.AreEqual(message, exception.Message);
 		}

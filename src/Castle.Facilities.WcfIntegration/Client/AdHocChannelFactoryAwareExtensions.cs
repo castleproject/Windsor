@@ -60,6 +60,11 @@ namespace Castle.Facilities.WcfIntegration
 			return Subscribe<T>(clientModel, adHoc => adHoc.OnChannelAvailable(action));
 		}
 
+		public static T OnChannelRefreshed<T>(this WcfClientModel<T> clientModel, Action<ChannelFactory, IChannel, IChannel> action) where T : WcfClientModel<T>
+		{
+			return Subscribe<T>(clientModel, adHoc => adHoc.OnChannelRefreshed(action));
+		}
+
 		private static T Subscribe<T>(WcfClientModel<T> clientModel, Action<AdHocChannelFactoryAware> subscribe) where T : WcfClientModel<T>
 		{
 			var adHoc = new AdHocChannelFactoryAware();
