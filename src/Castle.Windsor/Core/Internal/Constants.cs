@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2012 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,6 +17,8 @@ namespace Castle.Core.Internal
 	public abstract class Constants
 	{
 		private const string defaultComponentForServiceFilter = "castle.default-component-for-service-filter";
+		private const string genericImplementationMatchingStrategy = "castle.generic-matching-strategy";
+		private const string genericServiceStrategy = "castle.generic-service-strategy";
 		private const string helpLink = @"groups.google.com/group/castle-project-users";
 
 		private const string propertyFilters = "castle.property-filters";
@@ -31,6 +33,17 @@ namespace Castle.Core.Internal
 		public static string ExceptionHelpLink
 		{
 			get { return helpLink; }
+		}
+
+
+		public static string GenericImplementationMatchingStrategy
+		{
+			get { return genericImplementationMatchingStrategy; }
+		}
+
+		public static string GenericServiceStrategy
+		{
+			get { return genericServiceStrategy; }
 		}
 
 		public static object PropertyFilters

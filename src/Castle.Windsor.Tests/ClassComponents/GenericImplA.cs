@@ -14,8 +14,6 @@
 
 namespace CastleTests.ClassComponents
 {
-	using Castle.MicroKernel.Tests.ClassComponents;
-
 	using CastleTests.Components;
 
 	public class GenericImplA : A, IGeneric<A>

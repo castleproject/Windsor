@@ -22,7 +22,7 @@ namespace Castle.Facilities.WcfIntegration.Tests.Behaviors
 		{
 			if (Refresh)
 			{
-				invocation.Refresh();
+				invocation.Refresh(false);
 			}
 
 			invocation.Proceed();

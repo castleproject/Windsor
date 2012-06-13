@@ -1,4 +1,4 @@
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2012 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,6 +19,23 @@ namespace Castle.Core.Internal
 
 	public static class TypeUtil
 	{
+		/// <summary>
+		///   Checkis if given <paramref name="type" /> is a primitive type. Value types, <see cref="string" /> or collections of thereof are considered primitive and can not be registered as components in Windsor
+		/// </summary>
+		/// <param name="type"> </param>
+		/// <returns> </returns>
+		public static bool IsPrimitiveType(this Type type)
+		{
+			if (type == null || type.IsValueType || type == typeof (string))
+			{
+				return true;
+			}
+
+			var itemType = type.GetCompatibleArrayItemType();
+			return itemType != null && itemType.IsPrimitiveType();
+		}
+
+
 		public static string ToCSharpString(this Type type)
 		{
 			try

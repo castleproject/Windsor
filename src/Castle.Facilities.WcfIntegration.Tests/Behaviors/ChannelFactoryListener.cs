@@ -11,18 +11,19 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-using System.ServiceModel.Channels;
 
 namespace Castle.Facilities.WcfIntegration.Tests.Behaviors
 {
 	using System.Collections.Generic;
 	using System.ServiceModel;
+	using System.ServiceModel.Channels;
 
 	public class ChannelFactoryListener : AbstractChannelFactoryAware
 	{
 		private static bool created, opening, opened, closing, closed, faulted;
-		private static List<IChannel> channelsCreated = new List<IChannel>();
-		private static List<IChannel> channelsAvailable = new List<IChannel>();
+		private readonly static List<IChannel> channelsCreated = new List<IChannel>();
+		private readonly static List<IChannel> channelsAvailable = new List<IChannel>();
+		private readonly static List<IChannel> channelsRefreshed = new List<IChannel>();
 
 		public static bool CreatedCalled
 		{
@@ -64,11 +65,17 @@ namespace Castle.Facilities.WcfIntegration.Tests.Behaviors
 			get { return channelsAvailable; }
 		}
 
+		public static List<IChannel> ChannelsRefreshed
+		{
+			get { return channelsRefreshed; }
+		}
+
 		public static void Reset()
 		{
 			created = opening = opened = closing = closed = faulted = false;
 			channelsCreated.Clear();
 			channelsAvailable.Clear();
+			channelsRefreshed.Clear();
 		}
 
 		public override void Created(ChannelFactory serviceHost)
@@ -109,6 +116,11 @@ namespace Castle.Facilities.WcfIntegration.Tests.Behaviors
 		public override void ChannelAvailable(ChannelFactory channelFactory, IChannel channel)
 		{
 			channelsAvailable.Add(channel);
+		}
+
+		public override void ChannelRefreshed(ChannelFactory channelFactory, IChannel oldChannel, IChannel newChannel)
+		{
+			channelsRefreshed.Add(oldChannel);
 		}
 	}
 }

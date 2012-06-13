@@ -58,6 +58,35 @@ namespace CastleTests.Lifestyle
 			}
 		}
 
+		[Test]
+		public void Context_is_NOT_visible_in_unrelated_thread_Begin_End_Invoke()
+		{
+			var startLock = new ManualResetEvent(false);
+			var resolvedLock = new ManualResetEvent(false);
+			var instanceFromOtherThread = default(A);
+			var initialThreadId = Thread.CurrentThread.ManagedThreadId;
+			Action action = () =>
+			{
+				using (Container.BeginScope())
+				{
+					startLock.WaitOne();
+					Assert.AreNotEqual(Thread.CurrentThread.ManagedThreadId, initialThreadId);
+					instanceFromOtherThread = Container.Resolve<A>();
+					resolvedLock.Set();
+				}
+			};
+			var result = action.BeginInvoke(null, null);
+			using (Container.BeginScope())
+			{
+				startLock.Set();
+				var instance = Container.Resolve<A>();
+				resolvedLock.WaitOne();
+
+				result.AsyncWaitHandle.WaitOne();
+				Assert.AreNotSame(instance, instanceFromOtherThread);
+			}
+		}
+
 #if !DOTNET35
 		[Test]
 		public void Context_is_passed_onto_the_next_thread_TPL()

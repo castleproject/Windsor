@@ -20,8 +20,6 @@ namespace Castle.MicroKernel.Tests
 
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Resolvers;
-	using Castle.Windsor.Tests;
-
 	using CastleTests;
 	using CastleTests.Components;
 

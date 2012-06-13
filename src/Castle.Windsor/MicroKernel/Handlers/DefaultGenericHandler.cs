@@ -1,4 +1,4 @@
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2012 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@ namespace Castle.MicroKernel.Handlers
 {
 	using System;
 	using System.Collections;
+	using System.Collections.Generic;
 	using System.Diagnostics;
 	using System.Linq;
 
@@ -29,22 +30,24 @@ namespace Castle.MicroKernel.Handlers
 	public class DefaultGenericHandler : AbstractHandler
 	{
 		private readonly IGenericImplementationMatchingStrategy implementationMatchingStrategy;
+		private readonly IGenericServiceStrategy serviceStrategy;
 
 		private readonly SimpleThreadSafeDictionary<Type, IHandler> type2SubHandler = new SimpleThreadSafeDictionary<Type, IHandler>();
 
-		/// <summary>
-		///   Initializes a new instance of the <see cref = "DefaultGenericHandler" /> class.
-		/// </summary>
-		/// <param name = "model"></param>
-		/// <param name = "implementationMatchingStrategy"></param>
-		public DefaultGenericHandler(ComponentModel model, IGenericImplementationMatchingStrategy implementationMatchingStrategy) : base(model)
+		public DefaultGenericHandler(ComponentModel model, IGenericImplementationMatchingStrategy implementationMatchingStrategy, IGenericServiceStrategy serviceStrategy) : base(model)
 		{
 			this.implementationMatchingStrategy = implementationMatchingStrategy;
+			this.serviceStrategy = serviceStrategy;
 		}
 
 		public IGenericImplementationMatchingStrategy ImplementationMatchingStrategy
 		{
 			get { return implementationMatchingStrategy; }
+		}
+
+		public IGenericServiceStrategy ServiceStrategy
+		{
+			get { return serviceStrategy; }
 		}
 
 		public override void Dispose()
@@ -67,21 +70,52 @@ namespace Castle.MicroKernel.Handlers
 			{
 				return true;
 			}
+			if (type2SubHandler.Contains(service))
+			{
+				return true;
+			}
+			if (serviceStrategy != null)
+			{
+				return serviceStrategy.Supports(service, ComponentModel);
+			}
 			if (service.IsGenericType && service.IsGenericTypeDefinition == false)
 			{
 				var openService = service.GetGenericTypeDefinition();
-				return ComponentModel.Services.Any(s => s == openService);
+				return base.Supports(openService);
 			}
 			return false;
 		}
 
-		protected virtual IHandler BuildSubHandler(CreationContext context, Type requestedType)
+		protected virtual Type[] AdaptServices(CreationContext context, Type closedImplementationType)
+		{
+			var openServices = ComponentModel.Services.ToArray();
+			if (openServices.Length == 1 && openServices[0] == context.RequestedType.GetGenericTypeDefinition())
+			{
+				// shortcut for the most common case
+				return new[] { context.RequestedType };
+			}
+			var closedServices = new List<Type>(openServices.Length);
+			var index = AdaptClassServices(closedImplementationType, closedServices, openServices);
+			if (index == (openServices.Length - 1))
+			{
+				return closedServices.ToArray();
+			}
+			AdaptInterfaceServices(closedImplementationType, closedServices, openServices, index);
+			if (closedServices.Count == 0)
+			{
+				// we obviously have either a bug or an uncovered case. I suppose the best we can do at this point is to fallback to the old behaviour
+				return new[] { context.RequestedType };
+			}
+			return closedServices.ToArray();
+		}
+
+		protected virtual IHandler BuildSubHandler(CreationContext context, Type closedImplementationType)
 		{
 			// TODO: we should probably match the requested type to existing services and close them over its generic arguments
 			var newModel = Kernel.ComponentModelBuilder.BuildModel(
 				ComponentModel.ComponentName,
-				new[] { context.RequestedType },
-				requestedType,
+				AdaptServices(context, closedImplementationType),
+				closedImplementationType,
 				GetExtendedProperties());
 			CloneParentProperties(newModel);
 			// Create the handler and add to type2SubHandler before we add to the kernel.
@@ -138,17 +172,20 @@ namespace Castle.MicroKernel.Handlers
 		///  Clone some of the parent componentmodel properties to the generic subhandler.
 		///</summary>
 		///<remarks>
-		///  The following properties are copied:
-		///  <list type = "bullet">
-		///    <item>
-		///      <description>The <see cref = "LifestyleType" /></description>
-		///    </item>
-		///    <item>
-		///      <description>The <see cref = "ComponentModel.Interceptors" /></description>
-		///    </item>
-		///  </list>
+		///  The following properties are copied: <list type="bullet">
+		///                                         <item>
+		///                                           <description>The
+		///                                             <see cref="LifestyleType" />
+		///                                           </description>
+		///                                         </item>
+		///                                         <item>
+		///                                           <description>The
+		///                                             <see cref="ComponentModel.Interceptors" />
+		///                                           </description>
+		///                                         </item>
+		///                                       </list>
 		///</remarks>
-		///<param name = "newModel">the subhandler</param>
+		///<param name="newModel"> the subhandler </param>
 		private void CloneParentProperties(ComponentModel newModel)
 		{
 			// Inherits from LifeStyle's context.
@@ -209,11 +246,30 @@ namespace Castle.MicroKernel.Handlers
 				if (arguments.Length > genericArguments.Length)
 				{
 					message = string.Format(
-						"Requested type {0} has {1} generic parameter(s), whereas component implementation type {2} requires {3}. This means that Windsor does not have enough information to properly create that component for you. This is most likely a bug in your registration code.",
+						"Requested type {0} has {1} generic parameter(s), whereas component implementation type {2} requires {3}.{4}" +
+						"This means that Windsor does not have enough information to properly create that component for you.",
 						context.RequestedType,
 						context.GenericArguments.Length,
 						ComponentModel.Implementation,
-						arguments.Length);
+						arguments.Length,
+						Environment.NewLine);
+
+					if (implementationMatchingStrategy == null)
+					{
+						message += string.Format("{0}You can instruct Windsor which types it should use to close this generic component by supplying an implementation of {1}.{0}" +
+						                         "Please consut the documentation for examples of how to do that.",
+						                         Environment.NewLine,
+						                         typeof(IGenericImplementationMatchingStrategy).Name);
+					}
+					else
+					{
+						message += string.Format("{0}This is most likely a bug in the {1} implementation this component uses ({2}).{0}" +
+						                         "Please consut the documentation for examples of how to implement it properly.",
+						                         Environment.NewLine,
+						                         typeof(IGenericImplementationMatchingStrategy).Name,
+						                         implementationMatchingStrategy);
+					}
+					//"This is most likely a bug in your registration code."
 					throw new HandlerException(message, ComponentModel.ComponentName, e);
 				}
 
@@ -238,7 +294,7 @@ namespace Castle.MicroKernel.Handlers
 #if !SILVERLIGHT
 				if (extendedProperties is ICloneable)
 				{
-					extendedProperties = (IDictionary)((ICloneable)extendedProperties).Clone();
+					extendedProperties = (IDictionary) ((ICloneable) extendedProperties).Clone();
 				}
 #endif
 				extendedProperties = new Arguments(extendedProperties);
@@ -253,6 +309,94 @@ namespace Castle.MicroKernel.Handlers
 				return context.GenericArguments;
 			}
 			return implementationMatchingStrategy.GetGenericArguments(ComponentModel, context) ?? context.GenericArguments;
+		}
+
+		private static int AdaptClassServices(Type closedImplementationType, List<Type> closedServices, Type[] openServices)
+		{
+			var index = 0;
+			// we split the check into two parts: first we inspect class services...
+			var genericDefinitionToClass = default(IDictionary<Type, Type>);
+			while (index < openServices.Length && openServices[index].IsClass)
+			{
+				var service = openServices[index];
+				if (service.IsGenericTypeDefinition)
+				{
+					EnsureClassMappingInitialized(closedImplementationType, ref genericDefinitionToClass);
+					Type closed;
+					if (genericDefinitionToClass.TryGetValue(service, out closed))
+					{
+						closedServices.Add(closed);
+					}
+					else
+					{
+						// NOTE: it's an interface not exposed by the implementation type. Possibly aimed at a proxy... I guess we can ignore it for now. Don't have any better idea.
+						Debug.Fail(string.Format("Could not find mapping for interface {0} on implementation type {1}", service, closedImplementationType));
+					}
+				}
+				else
+				{
+					closedServices.Add(service);
+				}
+				index++;
+			}
+			return index;
+		}
+
+		private static void AdaptInterfaceServices(Type closedImplementationType, List<Type> closedServices, Type[] openServices, int index)
+		{
+			var genericDefinitionToInterface = default(IDictionary<Type, Type>);
+			while (index < openServices.Length)
+			{
+				var service = openServices[index];
+				if (service.IsGenericTypeDefinition)
+				{
+					EnsureInterfaceMappingInitialized(closedImplementationType, ref genericDefinitionToInterface);
+					Type closed;
+
+					if (genericDefinitionToInterface.TryGetValue(service, out closed))
+					{
+						closedServices.Add(closed);
+					}
+					else
+					{
+						// NOTE: it's an interface not exposed by the implementation type. Possibly aimed at a proxy... I guess we can ignore it for now. Don't have any better idea.
+						Debug.Fail(string.Format("Could not find mapping for interface {0} on implementation type {1}", service, closedImplementationType));
+					}
+				}
+				else
+				{
+					closedServices.Add(service);
+				}
+				index++;
+			}
+		}
+
+		private static void EnsureClassMappingInitialized(Type closedImplementationType, ref IDictionary<Type, Type> genericDefinitionToClass)
+		{
+			if (genericDefinitionToClass == null)
+			{
+				genericDefinitionToClass = new Dictionary<Type, Type>();
+				var type = closedImplementationType;
+				while (type != typeof(object))
+				{
+					if (type.IsGenericType)
+					{
+						genericDefinitionToClass.Add(type.GetGenericTypeDefinition(), type);
+					}
+					type = type.BaseType;
+				}
+			}
+		}
+
+		private static void EnsureInterfaceMappingInitialized(Type closedImplementationType, ref IDictionary<Type, Type> genericDefinitionToInterface)
+		{
+			if (genericDefinitionToInterface == null)
+			{
+				genericDefinitionToInterface = closedImplementationType
+					.GetInterfaces()
+					.Where(i => i.IsGenericType)
+					.ToDictionary(i => i.GetGenericTypeDefinition());
+			}
 		}
 	}
 }

@@ -301,9 +301,17 @@
     <Compile Include="Bugs\IoC_332.cs" />
     <Compile Include="ByRefDependenciesTestCase.cs" />
     <Compile Include="ClassComponents\CommonServiceUser3.cs" />
+    <Compile Include="ClassComponents\GenericDummyComponentAImpl.cs" />
+    <Compile Include="ClassComponents\GenericDummyComponentImpl.cs" />
+    <Compile Include="ClassComponents\GenericDummyComponentImpl2.cs" />
+    <Compile Include="ClassComponents\GenericDummyComponentImplEx.cs" />
+    <Compile Include="ClassComponents\GenericExtendedImpl.cs" />
     <Compile Include="ClassComponents\GenericImplA.cs" />
     <Compile Include="ClassComponents\GenericWithTDependency.cs" />
+    <Compile Include="ClassComponents\IGenericExtended.cs" />
     <Compile Include="ClassComponents\PropertySetterThrows.cs" />
+    <Compile Include="ClassComponents\UseGenericExtended1.cs" />
+    <Compile Include="ClassComponents\UseGenericExtended2.cs" />
     <Compile Include="Components\AbPropChild.cs" />
     <Compile Include="Components\ADisposable.cs" />
     <Compile Include="Components\AppHost.cs" />
@@ -312,6 +320,7 @@
     <Compile Include="Components\BoundComponent.cs" />
     <Compile Include="Components\CacheWithClassConstraint.cs" />
     <Compile Include="Components\CachingRepository.cs" />
+    <Compile Include="Components\CalculatorServiceWithStandartInterceptorTwo.cs" />
     <Compile Include="Components\CBA.cs" />
     <Compile Include="ClassComponents\CustomerRepository.cs" />
     <Compile Include="ClassComponents\DecoratedRepository.cs" />
@@ -434,6 +443,8 @@
     <Compile Include="Diagnostics\AllServicesDiagnosticTestCase.cs" />
     <Compile Include="ExceptionsTestCase.cs" />
     <Compile Include="Facilities\Startable\StartableAndExceptionThrowingInstallersTestCase.cs" />
+    <Compile Include="Facilities\TypedFactory\Delegates\HasFuncProperty.cs" />
+    <Compile Include="Facilities\TypedFactory\TypedFactoryDelegatesInvalidScenariosTestCase.cs" />
     <Compile Include="Facilities\TypedFactory\Factories\DummyComponentFactoryWithAttribute.cs" />
     <Compile Include="Facilities\TypedFactory\Factories\IDummyComponentFactoryWithAttribute_serviceName.cs" />
     <Compile Include="Facilities\TypedFactory\Factories\IDummyComponentFactoryWithAttribute_serviceType.cs" />
@@ -503,6 +514,7 @@
     <Compile Include="Interceptors\DependsOnTViaCtorInterceptor.cs" />
     <Compile Include="Interceptors\DependsOnTViaPropertyInterceptor.cs" />
     <Compile Include="InternalsVisibleTo.cs" />
+    <Compile Include="KernelEvents_ComponentCreated_TestCase.cs" />
     <Compile Include="KernelEvents_EmptyCollectionResolving_TestCase.cs" />
     <Compile Include="LazyComponentsTestCase.cs" />
     <Compile Include="LifecycledComponentsReleasePolicyTestCase.cs" />
@@ -557,6 +569,7 @@
     <Compile Include="Lifestyle\CustomLifestyle_InstanceScope.cs" />
     <Compile Include="Lifestyle\CustomLifestyle_Scoped.cs" />
     <Compile Include="Lifestyle\LifestyleApiTestCase.cs" />
+    <Compile Include="Lifestyle\ScopedLifestyleExplicitAndMultipleAppDomainsTestCase.cs" />
     <Compile Include="Lifestyle\ScopedLifestyleExplicitAndMultipleThreadsTestCase.cs" />
     <Compile Include="Lifestyle\ScopedLifestyleExplicitAndNestingTestCase.cs" />
     <Compile Include="Lifestyle\ScopedLifestyleExplicitAndTypedFactoriesTestCase.cs" />
@@ -576,9 +589,11 @@
     <Compile Include="LoggingFacility\ExtendedLog4NetFacilityTestCase.cs" />
     <Compile Include="LoggingFacility\ExtendedNLogFacilityTests.cs" />
     <Compile Include="LoggingFacility\Facilities77.cs" />
+    <Compile Include="LoggingFacility\Log4NetFacilityLognameOverrideTests.cs" />
     <Compile Include="LoggingFacility\Log4NetFacilityTests.cs" />
     <Compile Include="LoggingFacility\NLogFacilityTests.cs" />
     <Compile Include="LoggingFacility\NullFacilityTest.cs" />
+    <Compile Include="LoggingFacility\OverrideLoggerTest.cs" />
     <Compile Include="LoggingFacility\TraceFacilityTest.cs" />
     <Compile Include="IsDefaultTestCase.cs" />
     <Compile Include="MicroKernel\NotImplementedDependencyResolver.cs" />
@@ -849,6 +864,7 @@
     <Compile Include="TypedFactoryInterfaces\ICalculatorFactory.cs" />
     <Compile Include="TypedServiceOverridesAndDependenciesTestCase.cs" />
     <Compile Include="TypeUtilTestCase.cs" />
+    <Compile Include="GenericMultipleServicesComponentResolutionTestCase.cs" />
     <Compile Include="Windsor.Tests\LifecycledComponentsReleasePolicyComponentTrackingTestCase.cs" />
     <Compile Include="Windsor.Tests\GenericVarianceTestCase.cs" />
     <Compile Include="Lifestyle\LitestylePerThreadTestCase.cs" />

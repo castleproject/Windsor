@@ -36,8 +36,8 @@ namespace Castle.Facilities.WcfIntegration
 	{
 		private readonly WcfClientExtension clients;
 		private readonly WcfProxyFactory proxyFactory;
-		private IWcfBurden channelBurden;
 		private ChannelCreator createChannel;
+		private IWcfBurden channelBurden;
 
 		public WcfClientActivator(ComponentModel model, IKernel kernel,
 		                          ComponentInstanceDelegate onCreation, ComponentInstanceDelegate onDestruction)
@@ -67,6 +67,14 @@ namespace Castle.Facilities.WcfIntegration
 			{
 				throw new ComponentActivatorException("WcfClientActivator: could not proxy component " + Model.Name, ex, Model);
 			}
+		}
+
+		protected override void ApplyDecommissionConcerns(object instance)
+		{
+			base.ApplyDecommissionConcerns(instance);
+
+			var channelHolder = (IWcfChannelHolder)instance;
+			channelHolder.Dispose();
 		}
 
 		protected override void SetUpProperties(object instance, CreationContext context)
@@ -231,15 +239,14 @@ namespace Castle.Facilities.WcfIntegration
 		private static readonly ConcurrentDictionary<Type, CreateChannelDelegate>
 			createChannelCache = new ConcurrentDictionary<Type, CreateChannelDelegate>();
 
-		private static readonly MethodInfo createChannelMethod =
-			typeof(WcfClientActivator).GetMethod("CreateChannelCreatorInternal",
-												 BindingFlags.NonPublic | BindingFlags.Static, null,
-												 new[]
-			                                     {
-			                                     	typeof(IKernel), typeof(IWcfClientModel),
-			                                     	typeof(ComponentModel), typeof(IWcfBurden).MakeByRefType()
-			                                     },
-												 null
-				);
+		private static readonly MethodInfo createChannelMethod = typeof(WcfClientActivator).GetMethod(
+			"CreateChannelCreatorInternal", BindingFlags.NonPublic | BindingFlags.Static, null,
+			new[]
+			{
+				typeof(IKernel), typeof(IWcfClientModel),
+				typeof(ComponentModel), typeof(IWcfBurden).MakeByRefType()
+			},
+			null
+		);
 	}
 }

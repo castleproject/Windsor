@@ -16,24 +16,35 @@ namespace Castle.Facilities.WcfIntegration
 {
 	using System;
 	using System.Reflection;
-
 	using Castle.DynamicProxy;
 
 	public class WcfInvocation
 	{
 		private Action proceed;
+		private readonly IWcfChannelHolder channelHolder;
+		private readonly IInvocation invocation;
 
 		public WcfInvocation(IWcfChannelHolder channelHolder, IInvocation invocation)
 		{
-			ChannelHolder = channelHolder;
-			Arguments = invocation.Arguments;
-			Method = invocation.Method;
+			this.channelHolder = channelHolder;
+			this.invocation = invocation;
 		}
 
-		public object[] Arguments { get; private set; }
+		public IWcfChannelHolder ChannelHolder
+		{
+			get { return channelHolder; }
+		}
 
-		public IWcfChannelHolder ChannelHolder { get; private set; }
-		public MethodInfo Method { get; private set; }
+		public object[] Arguments
+		{
+			get { return invocation.Arguments; }
+		}
+
+		public MethodInfo Method
+		{
+			get { return invocation.Method; }
+		}
+
 		public object ReturnValue { get; set; }
 
 		public void Proceed()
@@ -49,9 +60,16 @@ namespace Castle.Facilities.WcfIntegration
 			}
 		}
 
-		public WcfInvocation Refresh()
+		public WcfInvocation Refresh(bool force)
 		{
-			ChannelHolder.RefreshChannel();
+			var oldChannel = channelHolder.Channel;
+			var channel = channelHolder.RefreshChannel(force);
+			if ((channel != oldChannel) && (invocation is IChangeProxyTarget))
+			{
+				var changeTarget = (IChangeProxyTarget)invocation;
+				changeTarget.ChangeInvocationTarget(channel);
+				changeTarget.ChangeProxyTarget(channel);
+			}
 			return this;
 		}
 

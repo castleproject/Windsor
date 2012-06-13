@@ -1,4 +1,4 @@
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2012 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@ namespace Castle.MicroKernel.Handlers
 	using System;
 
 	using Castle.Core;
+	using Castle.Core.Internal;
 
 	[Serializable]
 	public class DefaultHandlerFactory : IHandlerFactory
@@ -48,7 +49,8 @@ namespace Castle.MicroKernel.Handlers
 			if (model.RequiresGenericArguments)
 			{
 				var matchingStrategy = GenericImplementationMatchingStrategy(model);
-				return new DefaultGenericHandler(model, matchingStrategy);
+				var serviceStrategy = GenericServiceStrategy(model);
+				return new DefaultGenericHandler(model, matchingStrategy, serviceStrategy);
 			}
 			var resolveExtensions = model.ResolveExtensions(false);
 			var releaseExtensions = model.ReleaseExtensions(false);
@@ -61,7 +63,12 @@ namespace Castle.MicroKernel.Handlers
 
 		private IGenericImplementationMatchingStrategy GenericImplementationMatchingStrategy(ComponentModel model)
 		{
-			return (IGenericImplementationMatchingStrategy)model.ExtendedProperties[ComponentModel.GenericImplementationMatchingStrategy];
+			return (IGenericImplementationMatchingStrategy) model.ExtendedProperties[Constants.GenericImplementationMatchingStrategy];
+		}
+
+		private IGenericServiceStrategy GenericServiceStrategy(ComponentModel model)
+		{
+			return (IGenericServiceStrategy) model.ExtendedProperties[Constants.GenericServiceStrategy];
 		}
 	}
 }

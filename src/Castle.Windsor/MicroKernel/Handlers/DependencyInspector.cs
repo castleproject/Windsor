@@ -59,7 +59,7 @@ namespace Castle.MicroKernel.Handlers
 						InspectServiceOverrideDependency(dependency, kernel);
 					}
 				}
-				else if (dependency.IsValueType || dependency.TargetItemType == typeof(string) || dependency.TargetItemType == null)
+				else if (dependency.IsPrimitiveTypeDependency)
 				{
 					//hardcoding string as it's a most common type that is not value type but you wouldn't want to kave that as a service.
 					InspectParameterDependency(dependency);

@@ -27,38 +27,38 @@ namespace Castle.Facilities.WcfIntegration
 		{
 		}
 
-		protected override Binding InferBinding(Uri address)
+		protected internal override Binding InferBinding(Uri address)
 		{
 			return null;
 		}
 
-		protected override ChannelCreator GetChannel(RestClientModel clientModel, Type contract,
-												     Binding binding, string address)
+		protected override ChannelCreator GetChannel(RestClientModel clientModel, Type contract, Binding binding, string address,
+			                                         IChannelBuilderScope scope)
 		{
 			var remoteAddress = new Uri(address, UriKind.Absolute);
 
 			if (binding == null)
 			{
-				return CreateChannelCreator(contract, clientModel, remoteAddress);
+				return CreateChannelCreator(contract, clientModel, scope, remoteAddress);
 			}
 
-			return CreateChannelCreator(contract, clientModel, binding, remoteAddress);
+			return CreateChannelCreator(contract, clientModel, scope, binding, remoteAddress);
 		}
 
-		protected override ChannelCreator GetChannel(RestClientModel clientModel, Type contract, 
-			                                         Binding binding, EndpointAddress address)
+		protected override ChannelCreator GetChannel(RestClientModel clientModel, Type contract, Binding binding, EndpointAddress address,
+			                                         IChannelBuilderScope scope)
 		{
-			return GetChannel(clientModel, contract, binding, address.Uri.AbsoluteUri);
+			return GetChannel(clientModel, contract, binding, address.Uri.AbsoluteUri, scope);
 		}
 
-		protected override ChannelCreator CreateChannelCreator(Type contract, RestClientModel clientModel,
+		protected override ChannelCreator CreateChannelCreator(Type contract, RestClientModel clientModel, IChannelBuilderScope scope,
 			                                                   params object[] channelFactoryArgs)
 		{
 			var type = typeof(WebChannelFactory<>).MakeGenericType(new[] { contract });
 			var channelFactory = ChannelFactoryBuilder.CreateChannelFactory(type, clientModel, channelFactoryArgs);
-			ConfigureChannelFactory(channelFactory);
+			scope.ConfigureChannelFactory(channelFactory);
 
-			var methodInfo = type.GetMethod("CreateChannel", new Type[0]);
+			var methodInfo = type.GetMethod("CreateChannel", Type.EmptyTypes);
 			return (ChannelCreator)Delegate.CreateDelegate(typeof(ChannelCreator), channelFactory, methodInfo);
 		}
 	}

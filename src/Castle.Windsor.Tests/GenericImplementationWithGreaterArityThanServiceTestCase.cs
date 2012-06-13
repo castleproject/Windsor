@@ -17,6 +17,7 @@ namespace CastleTests
 	using System;
 
 	using Castle.Core;
+	using Castle.Core.Internal;
 	using Castle.Generics;
 	using Castle.MicroKernel.Handlers;
 	using Castle.MicroKernel.Registration;
@@ -38,7 +39,7 @@ namespace CastleTests
 					.WithServiceBase()
 					.Configure(
 						c => c.ExtendedProperties(
-							Property.ForKey(ComponentModel.GenericImplementationMatchingStrategy)
+							Property.ForKey(Constants.GenericImplementationMatchingStrategy)
 								.Eq(new DuplicateGenerics()))));
 
 			var repository = Container.Resolve<Generics.IRepository<A>>();
@@ -50,7 +51,7 @@ namespace CastleTests
 		public void Can_create_component_with_simple_double_generic_impl_for_single_generic_service()
 		{
 			Container.Register(Component.For(typeof(Generics.IRepository<>)).ImplementedBy(typeof(DoubleGenericRepository<,>))
-			                   	.ExtendedProperties(Property.ForKey(ComponentModel.GenericImplementationMatchingStrategy).Eq(new DuplicateGenerics())));
+			                   	.ExtendedProperties(Property.ForKey(Constants.GenericImplementationMatchingStrategy).Eq(new DuplicateGenerics())));
 
 			var repository = Container.Resolve<Generics.IRepository<A>>();
 
@@ -71,13 +72,15 @@ namespace CastleTests
 		public void Null_strategy_is_ignored()
 		{
 			Container.Register(Component.For(typeof(Generics.IRepository<>)).ImplementedBy(typeof(DoubleGenericRepository<,>))
-			                   	.ExtendedProperties(Property.ForKey(ComponentModel.GenericImplementationMatchingStrategy).Eq(null)));
+			                   	.ExtendedProperties(Property.ForKey(Constants.GenericImplementationMatchingStrategy).Eq(null)));
 
 			var exception = Assert.Throws<HandlerException>(() =>
 			                                                Container.Resolve<Generics.IRepository<A>>());
 
 			var message =
-				@"Requested type CastleTests.Generics.IRepository`1[CastleTests.Components.A] has 1 generic parameter(s), whereas component implementation type Castle.Generics.DoubleGenericRepository`2[T1,T2] requires 2. This means that Windsor does not have enough information to properly create that component for you. This is most likely a bug in your registration code.";
+				string.Format(
+					"Requested type CastleTests.Generics.IRepository`1[CastleTests.Components.A] has 1 generic parameter(s), whereas component implementation type Castle.Generics.DoubleGenericRepository`2[T1,T2] requires 2.{0}This means that Windsor does not have enough information to properly create that component for you.{0}You can instruct Windsor which types it should use to close this generic component by supplying an implementation of IGenericImplementationMatchingStrategy.{0}Please consut the documentation for examples of how to do that.",
+					Environment.NewLine);
 			Assert.AreEqual(message, exception.Message);
 		}
 
@@ -91,7 +94,9 @@ namespace CastleTests
 			                                                Container.Resolve<Generics.IRepository<A>>());
 
 			var message =
-				@"Requested type CastleTests.Generics.IRepository`1[CastleTests.Components.A] has 1 generic parameter(s), whereas component implementation type Castle.Generics.DoubleGenericRepository`2[T1,T2] requires 2. This means that Windsor does not have enough information to properly create that component for you. This is most likely a bug in your registration code.";
+				string.Format(
+					"Requested type CastleTests.Generics.IRepository`1[CastleTests.Components.A] has 1 generic parameter(s), whereas component implementation type Castle.Generics.DoubleGenericRepository`2[T1,T2] requires 2.{0}This means that Windsor does not have enough information to properly create that component for you.{0}This is most likely a bug in the IGenericImplementationMatchingStrategy implementation this component uses (CastleTests.StubGenericImplementationMatchingStrategy).{0}Please consut the documentation for examples of how to implement it properly.",
+					Environment.NewLine);
 			Assert.AreEqual(message, exception.Message);
 		}
 
@@ -105,7 +110,9 @@ namespace CastleTests
 			                                                Container.Resolve<Castle.MicroKernel.Tests.ClassComponents.IRepository<string>>());
 
 			var message =
-				@"Requested type Castle.MicroKernel.Tests.ClassComponents.IRepository`1[System.String] has 1 generic parameter(s), whereas component implementation type Castle.MicroKernel.Tests.ClassComponents.DoubleRepository`2[T,T2] requires 2. This means that Windsor does not have enough information to properly create that component for you. This is most likely a bug in your registration code.";
+				string.Format(
+					"Requested type Castle.MicroKernel.Tests.ClassComponents.IRepository`1[System.String] has 1 generic parameter(s), whereas component implementation type Castle.MicroKernel.Tests.ClassComponents.DoubleRepository`2[T,T2] requires 2.{0}This means that Windsor does not have enough information to properly create that component for you.{0}This is most likely a bug in the IGenericImplementationMatchingStrategy implementation this component uses (CastleTests.StubGenericImplementationMatchingStrategy).{0}Please consut the documentation for examples of how to implement it properly.",
+					Environment.NewLine);
 			Assert.AreEqual(message, exception.Message);
 		}
 

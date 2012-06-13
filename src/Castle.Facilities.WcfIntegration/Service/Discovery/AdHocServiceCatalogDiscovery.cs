@@ -15,20 +15,23 @@
 namespace Castle.Facilities.WcfIntegration
 {
 #if DOTNET40
-	using System;
-	using System.Linq;
-	using System.ServiceModel;
-	using System.ServiceModel.Description;
-	using System.ServiceModel.Discovery;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.ServiceModel;
+using System.ServiceModel.Description;
+using System.ServiceModel.Discovery;
 
-	public class AdHocServiceCatalogDiscovery : AbstractServiceHostAware, IDisposable
+	public class AdHocServiceCatalogProbe : AbstractServiceHostAware, IDisposable
 	{
 		private ServiceHost announcementHost;
 		private readonly IServiceCatalogImplementation serviceCatalog;
+		private readonly List<Func<EndpointDiscoveryMetadata, bool>> filters;
 
-		public AdHocServiceCatalogDiscovery(IServiceCatalogImplementation serviceCatalog)
+		public AdHocServiceCatalogProbe(IServiceCatalogImplementation serviceCatalog)
 		{
 			this.serviceCatalog = serviceCatalog;
+			filters = new List<Func<EndpointDiscoveryMetadata, bool>>();
 		}
 
 		public FindCriteria ProbeCriteria { get; set; }
@@ -37,16 +40,28 @@ namespace Castle.Facilities.WcfIntegration
 
 		public UdpAnnouncementEndpoint UdpAnnouncementEndpoint { get; set; }
 
+		public AdHocServiceCatalogProbe AddFilter(Func<EndpointDiscoveryMetadata, bool> filter)
+		{
+			if (filter == null)
+			{
+				throw new ArgumentNullException("filter");
+			}
+			filters.Add(filter);
+			return this;
+		}
+
 		protected override void Opening(ServiceHost serviceHost)
 		{
 			base.Opening(serviceHost);
+
+			ConfigureDomain(serviceHost);
 			MonitorAnnouncements(serviceHost);
 			ProbeInitialServices(serviceHost);
 		}
 
 		private void RegisterService(ServiceHost serviceHost, EndpointDiscoveryMetadata endpoint)
 		{
-			if (IsSelfDiscovery(serviceHost, endpoint) == false)
+			if (FilterService(serviceHost, endpoint) == false)
 			{
 				serviceCatalog.RegisterService(endpoint);
 			}
@@ -54,9 +69,37 @@ namespace Castle.Facilities.WcfIntegration
 
 		private void RemoveService(ServiceHost serviceHost, EndpointDiscoveryMetadata endpoint)
 		{
-			if (IsSelfDiscovery(serviceHost, endpoint) == false)
+			if (FilterService(serviceHost, endpoint) == false)
 			{
 				serviceCatalog.RemoveService(endpoint);
+			}
+		}
+
+		private bool FilterService(ServiceHost serviceHost, EndpointDiscoveryMetadata endpoint)
+		{
+			return IsSelfDiscovery(serviceHost, endpoint) || filters.Any(filter => filter(endpoint));
+		}
+
+		private void ConfigureDomain(ServiceHost serviceHost)
+		{
+			var domainScopes =
+				(from domain in serviceHost.Extensions.OfType<WcfDiscoveryDomain>()
+				 from scope in domain.Scopes
+				 select scope).ToArray();
+
+			if (domainScopes.Length > 0)
+			{
+				AddFilter(endpoint =>
+				{
+					foreach (var domainScope in domainScopes)
+					{
+						if (endpoint.Scopes.Contains(domainScope) == false)
+						{
+							return true;
+						}
+					}
+					return false;
+				});
 			}
 		}
 
@@ -94,4 +137,3 @@ namespace Castle.Facilities.WcfIntegration
 	}
 #endif
 }
-

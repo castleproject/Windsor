@@ -22,6 +22,7 @@ namespace CastleTests.Diagnostics
 	using Castle.Windsor;
 	using Castle.Windsor.Diagnostics;
 
+	using CastleTests.ClassComponents;
 	using CastleTests.Components;
 
 	using NUnit.Framework;

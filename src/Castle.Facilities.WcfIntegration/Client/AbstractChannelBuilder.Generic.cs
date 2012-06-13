@@ -21,12 +21,9 @@ namespace Castle.Facilities.WcfIntegration
 	using Castle.Facilities.WcfIntegration.Internal;
 	using Castle.MicroKernel;
 
-	public abstract class AbstractChannelBuilder<M> : AbstractChannelBuilder, IChannelBuilder<M>
+	public abstract partial class AbstractChannelBuilder<M> : AbstractChannelBuilder, IChannelBuilder<M>
 			where M : IWcfClientModel
 	{
-		[ThreadStatic] private static M ClientModel;
-		[ThreadStatic] private static IWcfBurden Burden;
-
 		protected AbstractChannelBuilder(IKernel kernel, IChannelFactoryBuilder<M> channelFactoryBuilder)
 			: base(kernel)
 		{
@@ -43,9 +40,9 @@ namespace Castle.Facilities.WcfIntegration
 		/// <returns>The <see cref="ChannelCreator"/></returns>
 		public ChannelCreator GetChannelCreator(M clientModel, out IWcfBurden burden)
 		{
-			ClientModel = clientModel;
-			burden = Burden = new WcfBurden(Kernel);
-			return GetEndpointChannelCreator(clientModel.Endpoint);
+			burden = new WcfBurden(Kernel);
+			var scope = new Scope(null, clientModel, this, burden);
+			return scope.BuildChannelCreator();
 		}
 
 		/// <summary>
@@ -57,81 +54,61 @@ namespace Castle.Facilities.WcfIntegration
 		/// <returns>The <see cref="ChannelCreator"/></returns>
 		public ChannelCreator GetChannelCreator(M clientModel, Type contract, out IWcfBurden burden)
 		{
-			ClientModel = clientModel;
-			burden = Burden = new WcfBurden(Kernel);
-			return GetEndpointChannelCreator(clientModel.Endpoint, contract);
+			burden = new WcfBurden(Kernel);
+			var scope = new Scope(contract, clientModel, this, burden);
+			return scope.BuildChannelCreator();
 		}
 
-		protected void ConfigureChannelFactory(ChannelFactory channelFactory)
+		protected virtual ChannelCreator GetChannel(M clientModel, Type contract, IChannelBuilderScope scope)
 		{
-			ConfigureChannelFactory(channelFactory, ClientModel, Burden);
+			return CreateChannelCreator(contract, clientModel, scope, contract);
 		}
 
-		#region AbstractChannelBuilder Members
-
-		protected override ChannelCreator GetChannel(Type contract)
+		protected virtual ChannelCreator GetChannel(M clientModel, Type contract, ServiceEndpoint endpoint, IChannelBuilderScope scope)
 		{
-			return GetChannel(ClientModel, contract);
+			return CreateChannelCreator(contract, clientModel, scope, endpoint);
 		}
 
-		protected override ChannelCreator GetChannel(Type contract, ServiceEndpoint endpoint)
+		protected virtual ChannelCreator GetChannel(M clientModel, Type contract, string configurationName, IChannelBuilderScope scope)
 		{
-			return GetChannel(ClientModel, contract, endpoint);
+			return CreateChannelCreator(contract, clientModel, scope, configurationName);
 		}
 
-		protected override ChannelCreator GetChannel(Type contract, string configurationName)
+		protected virtual ChannelCreator GetChannel(M clientModel, Type contract, Binding binding, string address, IChannelBuilderScope scope)
 		{
-			return GetChannel(ClientModel, contract, configurationName);
+			return CreateChannelCreator(contract, clientModel, scope, binding, address);
 		}
 
-		protected override ChannelCreator GetChannel(Type contract, Binding binding, string address)
+		protected virtual ChannelCreator GetChannel(M clientModel, Type contract, Binding binding, EndpointAddress address, IChannelBuilderScope scope)
 		{
-			return GetChannel(ClientModel, contract, binding, address);
+			return CreateChannelCreator(contract, clientModel, scope, binding, address);
 		}
 
-		protected override ChannelCreator GetChannel(Type contract, Binding binding, EndpointAddress address)
+		protected virtual void ConfigureChannelFactory(ChannelFactory channelFactory, M clientModel, IWcfBurden burden)
 		{
-			return GetChannel(ClientModel, contract, binding, address);
+			var extensions = new ChannelFactoryExtensions(channelFactory, Kernel)
+				.Install(burden, new WcfChannelExtensions());
+
+			var endpointExtensions = new ServiceEndpointExtensions(channelFactory.Endpoint, true, Kernel)
+				.Install(burden, new WcfEndpointExtensions(WcfExtensionScope.Clients));
+
+			if (clientModel != null)
+			{
+				extensions.Install(clientModel.Extensions, burden);
+				endpointExtensions.Install(clientModel.Extensions, burden);
+				endpointExtensions.Install(clientModel.Endpoint.Extensions, burden);
+			}
+
+			burden.Add(new ChannelFactoryHolder(channelFactory));
 		}
 
-		#endregion
-
-		#region GetChannel Members
-
-		protected virtual ChannelCreator GetChannel(M clientModel, Type contract)
+		protected virtual ChannelCreator CreateChannelCreator(Type contract, M clientModel, IChannelBuilderScope scope, params object[] channelFactoryArgs)
 		{
-			return CreateChannelCreator(contract, clientModel, contract);
-		}
-
-		protected virtual ChannelCreator GetChannel(M clientModel, Type contract, ServiceEndpoint endpoint)
-		{
-			return CreateChannelCreator(contract, clientModel, endpoint);
-		}
-
-		protected virtual ChannelCreator GetChannel(M clientModel, Type contract, string configurationName)
-		{
-			return CreateChannelCreator(contract, clientModel, configurationName);
-		}
-
-		protected virtual ChannelCreator GetChannel(M clientModel, Type contract, Binding binding, string address)
-		{
-			return CreateChannelCreator(contract, clientModel, binding, address);
-		}
-
-		protected virtual ChannelCreator GetChannel(M clientModel, Type contract, Binding binding, EndpointAddress address)
-		{
-			return CreateChannelCreator(contract, clientModel, binding, address);
-		}
-
-		#endregion
-
-		protected virtual ChannelCreator CreateChannelCreator(Type contract, M clientModel, params object[] channelFactoryArgs)
-		{
-			var type = typeof(ChannelFactory<>).MakeGenericType(new Type[] { contract });
+			var type = typeof(ChannelFactory<>).MakeGenericType(new[] { contract });
 			var channelFactory = ChannelFactoryBuilder.CreateChannelFactory(type, clientModel, channelFactoryArgs);
-			ConfigureChannelFactory(channelFactory);
+			scope.ConfigureChannelFactory(channelFactory);
 
-			var methodInfo = type.GetMethod("CreateChannel", new Type[0]);
+			var methodInfo = type.GetMethod("CreateChannel", Type.EmptyTypes);
 			return (ChannelCreator)Delegate.CreateDelegate(typeof(ChannelCreator), channelFactory, methodInfo);
 		}
 	}

@@ -30,13 +30,11 @@ namespace Castle.Facilities.WcfIntegration.Async
 		private MethodInfo beginMethod;
 		private object[] syncArguments;
 
-		public AsyncWcfCallContext(AsyncCallback callback, object state,  AsyncType asyncType,
-								   IWcfChannelHolder channelHolder, object defaultReturn)
+		public AsyncWcfCallContext(AsyncCallback callback, object state,  AsyncType asyncType, object defaultReturn)
 		{
 			this.callback = callback;
 			this.state = state;
 			this.asyncType = asyncType;
-			ChannelHolder = channelHolder;
 			this.defaultReturn = defaultReturn;
 		}
 
@@ -45,8 +43,6 @@ namespace Castle.Facilities.WcfIntegration.Async
 			get { return result; }
 			set { result = value; }
 		}
-
-		public IWcfChannelHolder ChannelHolder { get; private set; }
 
 		public MethodInfo EndMethod { get; private set; }
 

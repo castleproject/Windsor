@@ -1,4 +1,4 @@
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2012 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,13 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Windsor.Tests.Lifecycle
+namespace CastleTests.Lifecycle
 {
 	using Castle.MicroKernel.Registration;
-
 	using CastleTests;
 	using CastleTests.Components;
-
 	using NUnit.Framework;
 
 	[TestFixture]
@@ -94,7 +92,7 @@ namespace Castle.Windsor.Tests.Lifecycle
 			Assert.AreEqual(string.Empty, service.Name);
 
 			Container.Release(service);
-			Assert.AreEqual("ab", service.Name);
+			Assert.AreEqual("ba", service.Name);
 		}
 
 		[Test]
@@ -110,6 +108,25 @@ namespace Castle.Windsor.Tests.Lifecycle
 			Container.Release(a);
 
 			Assert.IsTrue(called);
+		}
+
+		[Test]
+		[Bug("IOC-326")]
+		public void OnDestroy_called_before_disposal()
+		{
+			var wasDisposed = false;
+			Container.Register(Component.For<ADisposable>()
+			                   	.LifeStyle.Transient
+			                   	.OnDestroy((k, i) =>
+			                   	           	{
+			                   	           		wasDisposed = i.Disposed;
+			                   	           	}));
+
+			var a = Container.Resolve<ADisposable>();
+			Container.Release(a);
+
+			Assert.IsFalse(wasDisposed);
+			Assert.IsTrue(a.Disposed);
 		}
 
 		[Test]

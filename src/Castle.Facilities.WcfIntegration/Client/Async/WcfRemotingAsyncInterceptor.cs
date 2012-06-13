@@ -1,4 +1,4 @@
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2012 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ namespace Castle.Facilities.WcfIntegration.Async
 	using System.Runtime.Remoting.Messaging;
 	using Castle.DynamicProxy;
 	using Castle.Facilities.WcfIntegration.Async.TypeSystem;
+	using Castle.Facilities.WcfIntegration.Internal;
 	using Castle.Facilities.WcfIntegration.Proxy;
 
 	public class WcfRemotingAsyncInterceptor : WcfRemotingInterceptor
@@ -36,16 +37,7 @@ namespace Castle.Facilities.WcfIntegration.Async
 
 		internal AsyncWcfCallContext PrepareCall(AsyncCallback callback, object state, object proxy, object result)
 		{
-			var channelHolder = proxy as IWcfChannelHolder;
-
-			if (channelHolder == null)
-			{
-				throw new ArgumentException(
-					"The given proxy is not supported.  Did you create it using the WcfFacility? " +
-					"If the answer is yes, this is probably a bug so please report it.");
-			}
-
-			var context = new AsyncWcfCallContext(callback, state, asyncType, channelHolder, result);
+			var context = new AsyncWcfCallContext(callback, state, asyncType, result);
 			callContext = context;
 			return context;
 		}
@@ -55,27 +47,27 @@ namespace Castle.Facilities.WcfIntegration.Async
 			return method.DeclaringType.IsAssignableFrom(asyncType.SyncType);
 		}
 
-		protected override void PerformInvocation(IInvocation invocation, IWcfChannelHolder channelHolder)
+		protected override void PerformInvocation(IInvocation invocation)
 		{
 			if (callContext == null)
 			{
-				base.PerformInvocation(invocation, channelHolder);
+				base.PerformInvocation(invocation);
 				return;
 			}
 
 			var context = callContext;
 			callContext = null;
 
-			CallBeginMethod(invocation, context, channelHolder);
+			CallBeginMethod(invocation, context);
 		}
 
-		private void CallBeginMethod(IInvocation invocation, AsyncWcfCallContext context, IWcfChannelHolder channelHolder)
+		private void CallBeginMethod(IInvocation invocation, AsyncWcfCallContext context)
 		{
 			context.Init(invocation.Method, invocation.Arguments);
-			PerformInvocation(invocation, channelHolder, wcfInvocation =>
+			PerformInvocation(invocation, wcfInvocation =>
 			{
 				var message = context.CreateBeginMessage();
-				var returnMessage = context.ChannelHolder.RealProxy.Invoke(message) as IMethodReturnMessage;
+				var returnMessage = channelHolder.RealProxy.Invoke(message) as IMethodReturnMessage;
 				wcfInvocation.ReturnValue = context.PostProcess(returnMessage);
 			});
 		}
@@ -91,15 +83,16 @@ namespace Castle.Facilities.WcfIntegration.Async
 			return (TResult) returnMessage.ReturnValue;
 		}
 
-		private static IMethodReturnMessage CallEndMethod(AsyncWcfCallContext context, out object[] outs)
+		private IMethodReturnMessage CallEndMethod(AsyncWcfCallContext context, out object[] outs)
 		{
 			outs = new object[0];
 			var message = context.CreateEndMessage();
-			var returnMessage = context.ChannelHolder.RealProxy.Invoke(message) as IMethodReturnMessage;
+			var returnMessage = channelHolder.RealProxy.Invoke(message) as IMethodReturnMessage;
 
 			if (returnMessage.Exception != null)
 			{
-				throw returnMessage.Exception;
+				var exception = ExceptionHelper.PreserveStackTrace(returnMessage.Exception);
+				throw exception;
 			}
 
 			outs = message.OutArgs;

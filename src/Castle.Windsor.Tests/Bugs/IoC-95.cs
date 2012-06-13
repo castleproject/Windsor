@@ -1,4 +1,4 @@
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2012 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,15 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-
-using Castle.Facilities.Startable;
-
-using NUnit.Framework;
-
 namespace Castle.MicroKernel.Tests.Bugs
 {
+	using Castle.Facilities.Startable;
 	using Castle.MicroKernel.Registration;
+
+	using CastleTests.Components;
+
+	using NUnit.Framework;
 
 	[TestFixture]
 	public class IoC_95
@@ -32,7 +31,7 @@ namespace Castle.MicroKernel.Tests.Bugs
 			IKernel childKernel = new DefaultKernel();
 			kernel.AddChildKernel(childKernel);
 			childKernel.AddFacility(new StartableFacility());
-			kernel.Register(Component.For(typeof(String)).Named("string")); // exception here
+			kernel.Register(Component.For(typeof (A)).Named("string")); // exception here
 		}
 	}
 }
