@@ -86,6 +86,27 @@ namespace Castle.MicroKernel.Handlers
 			return false;
 		}
 
+		public override bool SupportsAssignable(Type service)
+		{
+			if (base.SupportsAssignable(service))
+			{
+				return true;
+			}
+			if (service.IsGenericType == false || service.IsGenericTypeDefinition)
+			{
+				return false;
+			}
+			var serviceArguments = service.GetGenericArguments();
+			foreach (var modelService in ComponentModel.Services)
+			{
+				if (SupportsAssignable(service, modelService, serviceArguments))
+				{
+					return true;
+				}
+			}
+			return false;
+		}
+
 		protected virtual Type[] AdaptServices(CreationContext context, Type closedImplementationType)
 		{
 			var openServices = ComponentModel.Services.ToArray();
@@ -166,6 +187,28 @@ namespace Castle.MicroKernel.Handlers
 							ComponentModel.Name), ComponentModel.ComponentName, e);
 				}
 			}
+		}
+
+		protected bool SupportsAssignable(Type service, Type modelService, Type[] serviceArguments)
+		{
+			if (modelService.IsGenericTypeDefinition == false || modelService.GetGenericArguments().Length != serviceArguments.Length)
+			{
+				return false;
+			}
+			var modelServiceClosed = modelService.TryMakeGenericType(serviceArguments);
+			if (modelServiceClosed == null)
+			{
+				return false;
+			}
+			if (service.IsAssignableFrom(modelServiceClosed) == false)
+			{
+				return false;
+			}
+			if (ServiceStrategy != null && ServiceStrategy.Supports(modelServiceClosed, ComponentModel) == false)
+			{
+				return false;
+			}
+			return true;
 		}
 
 		///<summary>

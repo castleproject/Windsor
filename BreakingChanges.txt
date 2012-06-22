@@ -1,4 +1,17 @@
 ================================================================================================
+change - IHandler.SupportsAssignable(Type) method has been added
+
+impact - low
+fixability - easy
+
+description - This was added to better support IGenericServiceStrategy on generic handlers when
+	calling IKernel.GetAssignableHandlers(Type). Now the handler can decide whether it wants to
+	consider itself assigmable to given service.
+
+fix - This change affects you only if you're implementing custom IHandler. Implementation is
+	dependent on your usage and semantics you want to support for this scenario. When in doubt
+	ask on castle-users-group on Google Groups.
+================================================================================================
 change - System.String, and some other types can no longer be registered as a service
 	in the container
 

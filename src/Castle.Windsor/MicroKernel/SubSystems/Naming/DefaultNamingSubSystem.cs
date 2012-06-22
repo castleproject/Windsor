@@ -273,17 +273,7 @@ namespace Castle.MicroKernel.SubSystems.Naming
 				{
 					return result;
 				}
-
-				var handlers = name2Handler.Values;
-				var services = new List<IHandler>();
-				foreach (var handler in handlers)
-				{
-					if (handler.ComponentModel.Services.Any(handlerService => IsAssignable(service, handlerService)))
-					{
-						services.Add(handler);
-					}
-				}
-				result = services.ToArray();
+				result = name2Handler.Values.Where(h => h.SupportsAssignable(service)).ToArray();
 				assignableHandlerListsByTypeCache[service] = result;
 			}
 
@@ -350,35 +340,6 @@ namespace Castle.MicroKernel.SubSystems.Naming
 			assignableHandlerListsByTypeCache.Clear();
 			handlerByNameCache = null;
 			handlerByServiceCache = null;
-		}
-
-		[DebuggerHidden] // prevents the debugger from braking in the try catch block when debugger option 'thrown' is set
-		protected bool IsAssignable(Type thisOne, Type fromThisOne)
-		{
-			if (thisOne.IsAssignableFrom(fromThisOne))
-			{
-				return true;
-			}
-			if (thisOne.IsGenericType == false || fromThisOne.IsGenericTypeDefinition == false)
-			{
-				return false;
-			}
-			var genericArguments = thisOne.GetGenericArguments();
-			if (fromThisOne.GetGenericArguments().Length != genericArguments.Length)
-			{
-				return false;
-			}
-			try
-			{
-				fromThisOne = fromThisOne.MakeGenericType(genericArguments);
-			}
-			catch (ArgumentException)
-			{
-				// Any element of typeArguments does not satisfy the constraints specified for the corresponding type parameter of the current generic type.
-				// NOTE: We try and catch because there's no API to reliably, and robustly test for that upfront
-				return false;
-			}
-			return thisOne.IsAssignableFrom(fromThisOne);
 		}
 
 		private Predicate<Type> GetServiceSelector(IHandler handler)

@@ -15,6 +15,7 @@
 namespace Castle.Core.Internal
 {
 	using System;
+	using System.Diagnostics;
 	using System.Text;
 
 	public static class TypeUtil
@@ -26,7 +27,7 @@ namespace Castle.Core.Internal
 		/// <returns> </returns>
 		public static bool IsPrimitiveType(this Type type)
 		{
-			if (type == null || type.IsValueType || type == typeof (string))
+			if (type == null || type.IsValueType || type == typeof(string))
 			{
 				return true;
 			}
@@ -34,7 +35,6 @@ namespace Castle.Core.Internal
 			var itemType = type.GetCompatibleArrayItemType();
 			return itemType != null && itemType.IsPrimitiveType();
 		}
-
 
 		public static string ToCSharpString(this Type type)
 		{
@@ -48,6 +48,29 @@ namespace Castle.Core.Internal
 			{
 				// in case we messed up something...
 				return type.Name;
+			}
+		}
+
+		/// <summary>
+		///   Calls <see cref="Type.MakeGenericType" /> and if a generic constraint is violated returns <c>null</c> instead of throwing <see
+		///    cref="ArgumentException" />.
+		/// </summary>
+		/// <param name="openGeneric"> </param>
+		/// <param name="arguments"> </param>
+		/// <returns> </returns>
+		[DebuggerHidden]
+		public static Type TryMakeGenericType(this Type openGeneric, Type[] arguments)
+		{
+			try
+			{
+				return openGeneric.MakeGenericType(arguments);
+			}
+			catch (ArgumentException)
+			{
+				// Any element of typeArguments does not satisfy the constraints specified for the corresponding type parameter of the current generic type.
+				// NOTE: We try and catch because there's no public API to reliably, and robustly test for that upfront
+				// there's RuntimeTypeHandle.SatisfiesConstraints method but it's internal. 
+				return null;
 			}
 		}
 

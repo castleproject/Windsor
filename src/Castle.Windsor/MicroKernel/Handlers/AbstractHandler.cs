@@ -1,4 +1,4 @@
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2012 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ namespace Castle.MicroKernel.Handlers
 
 	/// <summary>
 	///   Implements the basis of
-	///   <see cref = "IHandler" />
+	///   <see cref="IHandler" />
 	/// </summary>
 	[Serializable]
 	public abstract class AbstractHandler :
@@ -43,7 +43,7 @@ namespace Castle.MicroKernel.Handlers
 
 		/// <summary>
 		///   Dictionary of key (string) to
-		///   <see cref = "DependencyModel" />
+		///   <see cref="DependencyModel" />
 		/// </summary>
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 		private HashSet<DependencyModel> missingDependencies;
@@ -54,7 +54,7 @@ namespace Castle.MicroKernel.Handlers
 		/// <summary>
 		///   Constructs and initializes the handler
 		/// </summary>
-		/// <param name = "model"></param>
+		/// <param name="model"> </param>
 		protected AbstractHandler(ComponentModel model)
 		{
 			this.model = model;
@@ -99,17 +99,17 @@ namespace Castle.MicroKernel.Handlers
 		///   Should be implemented by derived classes: 
 		///   disposes the component instance (or recycle it)
 		/// </summary>
-		/// <param name = "burden"></param>
-		/// <returns>true if destroyed.</returns>
+		/// <param name="burden"> </param>
+		/// <returns> true if destroyed. </returns>
 		public abstract bool ReleaseCore(Burden burden);
 
 		/// <summary>
 		///   Returns an instance of the component this handler
 		///   is responsible for
 		/// </summary>
-		/// <param name = "context"></param>
-		/// <param name = "instanceRequired">when <c>false</c>, handler can not create valid instance and return <c>null</c> instead </param>
-		/// <returns></returns>
+		/// <param name="context"> </param>
+		/// <param name="instanceRequired"> when <c>false</c> , handler can not create valid instance and return <c>null</c> instead </param>
+		/// <returns> </returns>
 		protected abstract object Resolve(CreationContext context, bool instanceRequired);
 
 		public override string ToString()
@@ -142,12 +142,12 @@ namespace Castle.MicroKernel.Handlers
 
 		/// <summary>
 		///   Saves the kernel instance, subscribes to
-		///   <see cref = "IKernelEvents.AddedAsChildKernel" />
+		///   <see cref="IKernelEvents.AddedAsChildKernel" />
 		///   event,
 		///   creates the lifestyle manager instance and computes
 		///   the handler state.
 		/// </summary>
-		/// <param name = "kernel"></param>
+		/// <param name="kernel"> </param>
 		public virtual void Init(IKernelInternal kernel)
 		{
 			if (kernel == null)
@@ -182,8 +182,8 @@ namespace Castle.MicroKernel.Handlers
 		/// <summary>
 		///   disposes the component instance (or recycle it).
 		/// </summary>
-		/// <param name = "burden"></param>
-		/// <returns></returns>
+		/// <param name="burden"> </param>
+		/// <returns> </returns>
 		public virtual bool Release(Burden burden)
 		{
 			return ReleaseCore(burden);
@@ -193,8 +193,8 @@ namespace Castle.MicroKernel.Handlers
 		///   Returns an instance of the component this handler
 		///   is responsible for
 		/// </summary>
-		/// <param name = "context"></param>
-		/// <returns></returns>
+		/// <param name="context"> </param>
+		/// <returns> </returns>
 		public object Resolve(CreationContext context)
 		{
 			return Resolve(context, true);
@@ -203,6 +203,11 @@ namespace Castle.MicroKernel.Handlers
 		public virtual bool Supports(Type service)
 		{
 			return ComponentModel.Services.Contains(service);
+		}
+
+		public virtual bool SupportsAssignable(Type service)
+		{
+			return ComponentModel.Services.Any(service.IsAssignableFrom);
 		}
 
 		public object TryResolve(CreationContext context)
@@ -252,16 +257,16 @@ namespace Castle.MicroKernel.Handlers
 
 		/// <summary>
 		///   Invoked by
-		///   <see cref = "InitDependencies" />
+		///   <see cref="InitDependencies" />
 		///   in order to check if a dependency can be satisfied.
 		///   If not, the handler is set to a 'waiting dependency' state.
 		/// </summary>
 		/// <remarks>
 		///   This method registers the dependencies within the correct collection 
 		///   or dictionary and changes the handler state to
-		///   <see cref = "HandlerState.WaitingDependency" />
+		///   <see cref="HandlerState.WaitingDependency" />
 		/// </remarks>
-		/// <param name = "dependency"></param>
+		/// <param name="dependency"> </param>
 		protected void AddDependency(DependencyModel dependency)
 		{
 			dependency.Init(model.ParametersInternal);
@@ -329,9 +334,9 @@ namespace Castle.MicroKernel.Handlers
 		/// </summary>
 		/// <remarks>
 		///   Handler for the event
-		///   <see cref = "IKernelEvents.HandlerRegistered" />
+		///   <see cref="IKernelEvents.HandlerRegistered" />
 		/// </remarks>
-		/// <param name = "stateChanged"></param>
+		/// <param name="stateChanged"> </param>
 		protected void DependencySatisfied(ref bool stateChanged)
 		{
 			// Check within the Kernel
@@ -361,7 +366,7 @@ namespace Castle.MicroKernel.Handlers
 		/// </summary>
 		/// <remarks>
 		///   For each non*optional dependency, the implementation will invoke
-		///   <see cref = "AddDependency" />
+		///   <see cref="AddDependency" />
 		/// </remarks>
 		protected virtual void EnsureDependenciesCanBeSatisfied(IDependencyAwareActivator activator)
 		{
@@ -383,8 +388,8 @@ namespace Castle.MicroKernel.Handlers
 		///   This method implementation checks whether the parent container
 		///   is able to supply the dependencies for this handler.
 		/// </remarks>
-		/// <param name = "sender"></param>
-		/// <param name = "e"></param>
+		/// <param name="sender"> </param>
+		/// <param name="e"> </param>
 		protected void OnAddedAsChildKernel(object sender, EventArgs e)
 		{
 			var stateChanged = false;

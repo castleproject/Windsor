@@ -1,4 +1,4 @@
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2012 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@ namespace CastleTests
 {
 	using System;
 
-	using Castle.Core;
 	using Castle.Core.Internal;
 	using Castle.Generics;
 	using Castle.MicroKernel.Handlers;

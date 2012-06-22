@@ -72,6 +72,8 @@ namespace Castle.MicroKernel
 		/// <returns></returns>
 		bool Supports(Type service);
 
+		bool SupportsAssignable(Type service);
+
 		/// <summary>
 		///   Implementors should return a valid instance 
 		///   for the component the handler is responsible.

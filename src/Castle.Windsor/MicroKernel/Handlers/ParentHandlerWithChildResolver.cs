@@ -87,6 +87,11 @@ namespace Castle.MicroKernel.Handlers
 			return parentHandler.Supports(service);
 		}
 
+		public bool SupportsAssignable(Type service)
+		{
+			return parentHandler.SupportsAssignable(service);
+		}
+
 		public object TryResolve(CreationContext context)
 		{
 			return parentHandler.TryResolve(context);

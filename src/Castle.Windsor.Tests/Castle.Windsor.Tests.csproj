@@ -448,6 +448,7 @@
     <Compile Include="Facilities\TypedFactory\Selectors\WithNameSelector.cs" />
     <Compile Include="Facilities\TypedFactory\TypedFactorySelectorsTestCase.cs" />
     <Compile Include="GenericListConvenrterTestCase.cs" />
+    <Compile Include="GenericServiceStrategyTestCase.cs" />
     <Compile Include="Generics\GenericA.cs" />
     <Compile Include="Generics\GenericB.cs" />
     <Compile Include="Interceptors\InterceptorAttributeTestCase.cs" />
