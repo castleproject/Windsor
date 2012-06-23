@@ -105,14 +105,7 @@ namespace Castle.MicroKernel.Handlers
 				return false;
 			}
 			var serviceArguments = service.GetGenericArguments();
-			foreach (var modelService in ComponentModel.Services)
-			{
-				if (SupportsAssignable(service, modelService, serviceArguments))
-				{
-					return true;
-				}
-			}
-			return false;
+			return ComponentModel.Services.Any(s => SupportsAssignable(service, s, serviceArguments));
 		}
 
 		protected virtual Type[] AdaptServices(CreationContext context, Type closedImplementationType)
