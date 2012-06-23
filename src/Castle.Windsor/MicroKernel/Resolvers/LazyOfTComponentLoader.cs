@@ -43,7 +43,7 @@ namespace Castle.MicroKernel.Resolvers
 				return null;
 			}
 			return Component.For(typeof(Lazy<>))
-				.ImplementedBy(typeof(LazyEx<>))
+				.ImplementedBy(typeof(LazyEx<>), LazyServiceStrategy.Instance)
 				.LifeStyle.Transient
 				.NamedAutomatically("castle-auto-lazy");
 		}

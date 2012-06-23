@@ -1,4 +1,4 @@
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2012 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 namespace CastleTests
 {
 	using System;
@@ -21,8 +22,6 @@ namespace CastleTests
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Resolvers;
-	using Castle.Windsor.Tests;
-	using Castle.Windsor.Tests.Components;
 
 	using CastleTests.Components;
 
@@ -230,7 +229,16 @@ namespace CastleTests
 		{
 			var lazy = Container.Resolve<Lazy<A>>();
 
-			Assert.Throws<ComponentNotFoundException>(() => { var ignoreMe = lazy.Value; });
+			Assert.Throws<ComponentNotFoundException>(() =>
+				{
+					var ignoreMe = lazy.Value;
+				});
+		}
+
+		[Test]
+		public void Lazy_of_string_is_not_resolvable()
+		{
+			Assert.Throws<ComponentNotFoundException>(() => Container.Resolve<Lazy<string>>());
 		}
 
 		[Test]
@@ -274,7 +282,7 @@ namespace CastleTests
 
 		private LazyThreadSafetyMode GetMode(Lazy<A> lazy)
 		{
-			return (LazyThreadSafetyMode)lazy.GetType().GetProperty("Mode", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(lazy, null);
+			return (LazyThreadSafetyMode) lazy.GetType().GetProperty("Mode", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(lazy, null);
 		}
 	}
 #endif
