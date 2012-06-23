@@ -50,7 +50,7 @@ namespace Castle.Facilities.TypedFactory.Internal
 			}
 
 			return Component.For(service)
-				.ImplementedBy(service, new DelegateServiceStrategy())
+				.ImplementedBy(service, DelegateServiceStrategy.Instance)
 				.NamedAutomatically(GetName(service))
 				.LifeStyle.Transient
 				.Interceptors(new InterceptorReference(TypedFactoryFacility.InterceptorKey)).Last

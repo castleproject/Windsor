@@ -22,6 +22,12 @@ namespace Castle.Facilities.TypedFactory.Internal
 
 	public class DelegateServiceStrategy : IGenericServiceStrategy
 	{
+		public static readonly DelegateServiceStrategy Instance = new DelegateServiceStrategy();
+
+		private DelegateServiceStrategy()
+		{
+		}
+
 		public bool Supports(Type service, ComponentModel component)
 		{
 			var invoke = DelegateFactory.ExtractInvokeMethod(service);
