@@ -74,14 +74,14 @@ namespace Castle.MicroKernel.Handlers
 			{
 				return true;
 			}
-			if (serviceStrategy != null)
-			{
-				return serviceStrategy.Supports(service, ComponentModel);
-			}
 			if (service.IsGenericType && service.IsGenericTypeDefinition == false)
 			{
 				var openService = service.GetGenericTypeDefinition();
-				return base.Supports(openService);
+				if (base.Supports(openService) == false)
+				{
+					return false;
+				}
+				return serviceStrategy == null || serviceStrategy.Supports(service, ComponentModel);
 			}
 			return false;
 		}
