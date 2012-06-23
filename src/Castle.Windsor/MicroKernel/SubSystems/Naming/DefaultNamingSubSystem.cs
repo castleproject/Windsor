@@ -16,7 +16,6 @@ namespace Castle.MicroKernel.SubSystems.Naming
 {
 	using System;
 	using System.Collections.Generic;
-	using System.Diagnostics;
 	using System.Linq;
 
 	using Castle.Core.Internal;
@@ -182,14 +181,23 @@ namespace Castle.MicroKernel.SubSystems.Naming
 				return handler;
 			}
 
-			if (service.IsGenericType &&
-			    HandlerByServiceCache.TryGetValue(service.GetGenericTypeDefinition(), out handler) &&
-			    handler.Supports(service))
+			if (service.IsGenericType && service.IsGenericTypeDefinition == false)
 			{
-				return handler;
+				var openService = service.GetGenericTypeDefinition();
+				if (HandlerByServiceCache.TryGetValue(openService, out handler) && handler.Supports(service))
+				{
+					return handler;
+				}
+
+				var handlerCandidates = GetHandlers(openService);
+				foreach (var handlerCandidate in handlerCandidates)
+				{
+					if(handlerCandidate.Supports(service))
+					{
+						return handlerCandidate;
+					}
+				}
 			}
-			// NOTE: at this point we might want to interrogate other handlers
-			// that support the open version of the service...
 
 			return null;
 		}
