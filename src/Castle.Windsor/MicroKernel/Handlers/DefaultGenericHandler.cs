@@ -52,7 +52,15 @@ namespace Castle.MicroKernel.Handlers
 
 		public override void Dispose()
 		{
-			type2SubHandler.Dispose();
+			var innerHandlers = type2SubHandler.EjectAllValues();
+			foreach (var handler in innerHandlers)
+			{
+				var disposable = handler as IDisposable;
+				if (disposable != null)
+				{
+					disposable.Dispose();
+				}
+			}
 		}
 
 		public override bool ReleaseCore(Burden burden)

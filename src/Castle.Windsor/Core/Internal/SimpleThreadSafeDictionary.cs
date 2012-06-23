@@ -23,11 +23,10 @@ namespace Castle.Core.Internal
 	/// </summary>
 	/// <typeparam name="TKey"> </typeparam>
 	/// <typeparam name="TValue"> </typeparam>
-	public class SimpleThreadSafeDictionary<TKey, TValue> : IDisposable
+	public class SimpleThreadSafeDictionary<TKey, TValue>
 	{
 		private readonly Dictionary<TKey, TValue> inner = new Dictionary<TKey, TValue>();
 		private readonly Lock @lock = Lock.Create();
-		private bool disposed;
 
 		public bool Contains(TKey key)
 		{
@@ -58,26 +57,21 @@ namespace Castle.Core.Internal
 		}
 
 		/// <summary>
-		///   returns all values and clears the dictionary
+		///   Returns all values and clears the dictionary
 		/// </summary>
 		/// <returns> </returns>
-		public void Dispose()
+		public TValue[] EjectAllValues()
 		{
 			using (@lock.ForWriting())
 			{
-				disposed = true;
 				var values = inner.Values.ToArray();
 				inner.Clear();
-				values.Reverse().OfType<IDisposable>().ForEach(d => d.Dispose());
+				return values;
 			}
 		}
 
 		private bool TryGet(TKey key, out TValue value)
 		{
-			if (disposed)
-			{
-				throw new ObjectDisposedException("this");
-			}
 			return inner.TryGetValue(key, out value);
 		}
 	}
