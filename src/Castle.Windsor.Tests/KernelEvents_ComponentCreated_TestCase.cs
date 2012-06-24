@@ -14,7 +14,6 @@
 
 namespace CastleTests
 {
-	using System;
 	using System.Collections.Generic;
 	using Castle.Core;
 	using Castle.DynamicProxy;
@@ -25,7 +24,7 @@ namespace CastleTests
 	[TestFixture]
 	public class KernelEvents_ComponentCreated_TestCase : AbstractContainerTestCase
 	{
-		readonly List<Tuple<ComponentModel, object>> list = new List<Tuple<ComponentModel, object>>();
+		readonly List<KeyValuePair<ComponentModel, object>> list = new List<KeyValuePair<ComponentModel, object>>();
 
 		protected override void AfterContainerCreated()
 		{
@@ -35,7 +34,7 @@ namespace CastleTests
 
 		void Kernel_ComponentCreated(ComponentModel model, object instance)
 		{
-			list.Add(Tuple.Create(model, instance));
+			list.Add(new KeyValuePair<ComponentModel, object>(model, instance));
 		}
 
 
@@ -50,7 +49,7 @@ namespace CastleTests
 
 			var service = Container.Resolve<IService>();
 			Assert.IsNotEmpty(list);
-			Assert.IsTrue(list.Exists(t => t.Item2 == service));
+			Assert.IsTrue(list.Exists(t => t.Value == service));
 		}
 	}
 }

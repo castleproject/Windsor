@@ -14,6 +14,7 @@
 
 namespace Castle.Facilities.WcfIntegration
 {
+#if DOTNET40
 	using System;
 	using System.ServiceModel.Discovery;
 
@@ -26,4 +27,5 @@ namespace Castle.Facilities.WcfIntegration
 
 		public DiscoveryEndpoint Culprit { get; private set; }
 	}
+#endif
 }

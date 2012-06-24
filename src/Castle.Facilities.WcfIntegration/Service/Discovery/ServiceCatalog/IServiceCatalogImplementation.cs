@@ -1,4 +1,4 @@
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2012 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,23 +15,20 @@
 namespace Castle.Facilities.WcfIntegration
 {
 #if DOTNET40
-    using System;
-    using System.ServiceModel.Discovery;
+	using System.ServiceModel.Discovery;
 
-    public interface IServiceCatalogImplementation
-    {
+	public interface IServiceCatalogImplementation
+	{
+		void FindEndpoints(FindRequestContext findRequestContext);
+
+		EndpointDiscoveryMetadata[] FindEndpoints(FindCriteria criteria);
 		EndpointDiscoveryMetadata[] ListEndpoints();
 
-        void FindEndpoints(FindRequestContext findRequestContext);
+		bool RegisterEndpoint(EndpointDiscoveryMetadata endpointDiscoveryMetadata);
 
-        EndpointDiscoveryMetadata[] FindEndpoints(FindCriteria criteria);
+		bool RemoveEndpoint(EndpointDiscoveryMetadata endpointDiscoveryMetadata);
 
-        bool RegisterEndpoint(EndpointDiscoveryMetadata endpointDiscoveryMetadata);
-
-        bool RemoveEndpoint(EndpointDiscoveryMetadata endpointDiscoveryMetadata);
-
-        EndpointDiscoveryMetadata ResolveEndpoint(ResolveCriteria resolveCriteria);
-    }
+		EndpointDiscoveryMetadata ResolveEndpoint(ResolveCriteria resolveCriteria);
+	}
 #endif
 }
-

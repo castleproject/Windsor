@@ -19,7 +19,10 @@ namespace Castle.Facilities.WcfIntegration.Tests
 	using System.ServiceModel;
 	using System.ServiceModel.Channels;
 	using System.ServiceModel.Description;
+#if !(SILVERLIGHT || DOTNET35)
 	using System.ServiceModel.Discovery;
+#endif
+
 	using Castle.Core;
 	using Castle.Core.Resource;
 	using Castle.DynamicProxy;
@@ -37,7 +40,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 	using log4net.Config;
 	using NUnit.Framework;
 
-    [TestFixture]
+	[TestFixture]
 	public class WcfClientFixture
 	{
 		private MemoryAppender memoryAppender;

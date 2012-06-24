@@ -19,7 +19,9 @@ namespace Castle.Facilities.WcfIntegration.Tests
 	using System.ServiceModel;
 	using System.ServiceModel.Activation;
 	using System.ServiceModel.Description;
+#if !(SILVERLIGHT || DOTNET35)
 	using System.ServiceModel.Discovery;
+#endif
 	using Castle.Core.Resource;
 	using Castle.Facilities.Logging;
 	using Castle.Facilities.WcfIntegration.Behaviors;
@@ -857,7 +859,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 				client.DoSomething();
 			}
 		}
-
+#if !(SILVERLIGHT || DOTNET35)
 		[Test]
 		public void WillRegisterServiceWithServiceCatalog()
 		{
@@ -929,7 +931,7 @@ namespace Castle.Facilities.WcfIntegration.Tests
 				CollectionAssert.AreEqual(domain.Scopes, endpoint.Scopes);
 			}
 		}
-
+#endif
 		protected IWindsorContainer RegisterLoggingFacility(IWindsorContainer container)
 		{
 			var logging = new LoggingFacility(LoggerImplementation.ExtendedLog4net);

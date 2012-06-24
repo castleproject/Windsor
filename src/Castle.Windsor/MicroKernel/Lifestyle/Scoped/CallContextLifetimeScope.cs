@@ -16,7 +16,11 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 {
 #if !SILVERLIGHT
 	using System;
+#if DOTNET35
+	using System.Collections.Generic;
+#else
 	using System.Collections.Concurrent;
+#endif
 	using System.Runtime.Remoting.Messaging;
 	using System.Runtime.Serialization;
 	using System.Security;
@@ -35,8 +39,14 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 	[Serializable]
 	public class CallContextLifetimeScope : ILifetimeScope, ISerializable
 	{
+#if DOTNET35
+		private static readonly object locker = new object();
+		private static readonly Dictionary<Guid, CallContextLifetimeScope> appDomainLocalInstanceCache =
+			new Dictionary<Guid, CallContextLifetimeScope>();
+#else
 		private static readonly ConcurrentDictionary<Guid, CallContextLifetimeScope> appDomainLocalInstanceCache =
 			new ConcurrentDictionary<Guid, CallContextLifetimeScope>();
+#endif
 
 		private static readonly string contextKey = "castle.lifetime-scope-" + AppDomain.CurrentDomain.Id.ToString();
 		private readonly Guid instanceId;
@@ -81,8 +91,16 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 					CallContext.FreeNamedDataSlot(contextKey);
 				}
 			}
+#if DOTNET35
+			lock (locker)
+			{
+				appDomainLocalInstanceCache.Remove(instanceId);
+			}
+#else
 			CallContextLifetimeScope @this;
 			appDomainLocalInstanceCache.TryRemove(instanceId, out @this);
+#endif
+
 		}
 
 		public Burden GetCachedInstance(ComponentModel instance, ScopedInstanceActivationCallback createInstance)
@@ -112,7 +130,17 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 		{
 			info.SetType(typeof (SerializationReference));
 			info.AddValue("instanceId", instanceId);
+#if DOTNET35
+			lock (locker)
+			{
+				if(appDomainLocalInstanceCache.ContainsKey(instanceId) == false)
+				{
+					appDomainLocalInstanceCache.Add(instanceId, this);
+				}
+			}
+#else
 			appDomainLocalInstanceCache.TryAdd(instanceId, this);
+#endif
 		}
 
 		[SecuritySafeCritical]
@@ -166,6 +194,14 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 			object IObjectReference.GetRealObject(StreamingContext context)
 			{
 				CallContextLifetimeScope scope;
+#if DOTNET35
+				lock (locker)
+				{
+					appDomainLocalInstanceCache.TryGetValue(scopeInstanceId, out scope);
+				}
+#else
+				appDomainLocalInstanceCache.TryGetValue(scopeInstanceId, out scope);
+#endif
 				appDomainLocalInstanceCache.TryGetValue(scopeInstanceId, out scope);
 				return (object) scope ?? new CrossAppDomainCallContextLifetimeScope(scopeInstanceId);
 			}
