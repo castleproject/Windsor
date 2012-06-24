@@ -512,6 +512,7 @@
     <Compile Include="Interceptors\DependsOnTViaCtorInterceptor.cs" />
     <Compile Include="Interceptors\DependsOnTViaPropertyInterceptor.cs" />
     <Compile Include="InternalsVisibleTo.cs" />
+    <Compile Include="IsFallbackTestCase.cs" />
     <Compile Include="KernelEvents_ComponentCreated_TestCase.cs" />
     <Compile Include="KernelEvents_EmptyCollectionResolving_TestCase.cs" />
     <Compile Include="LazyComponentsTestCase.cs" />

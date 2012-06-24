@@ -1,3 +1,5 @@
+- implemented IOC-343 - Add ability to specify fallback components that should never take precedence over non-fallback ones
+
 - fixed IOC-341 - IHandlerFilter returning empty array ignored
 - fixed IOC-339 - Add extension point to decide whether open generic component wants to support particular closed version
 - fixed IOC-338 - SerializationException thrown when using remoting within default lifetime scope (Failed to load expression host assembly. Details: Type '[...]CallContextLifetimeScope[...]' is not marked as serializable.)
