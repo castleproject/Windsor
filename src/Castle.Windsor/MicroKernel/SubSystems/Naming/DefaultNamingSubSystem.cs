@@ -35,8 +35,8 @@ namespace Castle.MicroKernel.SubSystems.Naming
 		/// <summary>
 		///   Map(Type, IHandler) to map a service to <see cref="IHandler" /> . If there is more than a single service of the type, only the first registered services is stored in this dictionary. It serve as a fast lookup for the common case of having a single handler for a type.
 		/// </summary>
-		protected readonly Dictionary<Type, IHandler> service2Handler =
-			new Dictionary<Type, IHandler>(SimpleTypeEqualityComparer.Instance);
+		protected readonly Dictionary<Type, HandlerWithPriority> service2Handler =
+			new Dictionary<Type, HandlerWithPriority>(SimpleTypeEqualityComparer.Instance);
 
 		protected IList<IHandlersFilter> filters;
 		protected IList<IHandlerSelector> selectors;
@@ -84,7 +84,11 @@ namespace Castle.MicroKernel.SubSystems.Naming
 				}
 				using (@lock.ForWriting())
 				{
-					cache = new Dictionary<Type, IHandler>(service2Handler, service2Handler.Comparer);
+					cache = new Dictionary<Type, IHandler>(service2Handler.Count, service2Handler.Comparer);
+					foreach (var item in service2Handler)
+					{
+						cache.Add(item.Key, item.Value.Handler);
+					}
 					handlerByServiceCache = cache;
 					return cache;
 				}
@@ -192,7 +196,7 @@ namespace Castle.MicroKernel.SubSystems.Naming
 				var handlerCandidates = GetHandlers(openService);
 				foreach (var handlerCandidate in handlerCandidates)
 				{
-					if(handlerCandidate.Supports(service))
+					if (handlerCandidate.Supports(service))
 					{
 						return handlerCandidate;
 					}
@@ -231,12 +235,13 @@ namespace Castle.MicroKernel.SubSystems.Naming
 					return result;
 				}
 
-				result = name2Handler.Values.Where(h => h.Supports(service)).ToArray();
+				result = GetHandlersNoLock(service);
 				handlerListsByTypeCache[service] = result;
 			}
 
 			return result;
 		}
+
 
 		public virtual void Register(IHandler handler)
 		{
@@ -257,9 +262,10 @@ namespace Castle.MicroKernel.SubSystems.Naming
 				var serviceSelector = GetServiceSelector(handler);
 				foreach (var service in handler.ComponentModel.Services)
 				{
-					if (serviceSelector(service))
+					var handlerForService = serviceSelector(service);
+					if (service2Handler.ContainsKey(service) == false || handlerForService.Priority > service2Handler[service].Priority)
 					{
-						service2Handler[service] = handler;
+						service2Handler[service] = handlerForService;
 					}
 				}
 				InvalidateCache();
@@ -350,15 +356,93 @@ namespace Castle.MicroKernel.SubSystems.Naming
 			handlerByServiceCache = null;
 		}
 
-		private Predicate<Type> GetServiceSelector(IHandler handler)
+		private IHandler[] GetHandlersNoLock(Type service)
 		{
-			var customFilter =
-				(Predicate<Type>) handler.ComponentModel.ExtendedProperties[Constants.DefaultComponentForServiceFilter];
-			if (customFilter == null)
+			//we have 3 segments
+			const int defaults = 0;
+			const int regulars = 1;
+			const int fallbacks = 2;
+			var handlers = new SegmentedList<IHandler>(3);
+			foreach (var handler in name2Handler.Values)
 			{
-				return service => service2Handler.ContainsKey(service) == false;
+				if (handler.Supports(service) == false)
+				{
+					continue;
+				}
+				if (IsDefault(handler, service))
+				{
+					handlers.AddFirst(defaults, handler);
+					continue;
+				}
+				if (IsFallback(handler, service))
+				{
+					handlers.AddLast(fallbacks, handler);
+					continue;
+				}
+				handlers.AddLast(regulars, handler);
 			}
-			return service => service2Handler.ContainsKey(service) == false || customFilter(service);
+			return handlers.ToArray();
+		}
+
+		private Func<Type, HandlerWithPriority> GetServiceSelector(IHandler handler)
+		{
+			var defaultsFilter = handler.ComponentModel.GetDefaultComponentForServiceFilter();
+			var fallbackFilter = handler.ComponentModel.GetFallbackComponentForServiceFilter();
+			if (defaultsFilter == null)
+			{
+				if (fallbackFilter == null)
+				{
+					return service => new HandlerWithPriority(0, handler);
+				}
+				return service => new HandlerWithPriority(fallbackFilter(service) ? -1 : 0, handler);
+			}
+			if (fallbackFilter == null)
+			{
+				return service => new HandlerWithPriority(defaultsFilter(service) ? 1 : 0, handler);
+			}
+			return service => new HandlerWithPriority(defaultsFilter(service) ? 1 : (fallbackFilter(service) ? -1 : 0), handler);
+		}
+
+		private bool IsDefault(IHandler handler, Type service)
+		{
+			var filter = handler.ComponentModel.GetDefaultComponentForServiceFilter();
+			if (filter == null)
+			{
+				return false;
+			}
+			return filter(service);
+		}
+
+		private bool IsFallback(IHandler handler, Type service)
+		{
+			var filter = handler.ComponentModel.GetFallbackComponentForServiceFilter();
+			if (filter == null)
+			{
+				return false;
+			}
+			return filter(service);
+		}
+
+		protected struct HandlerWithPriority
+		{
+			private readonly IHandler handler;
+			private readonly int priority;
+
+			public HandlerWithPriority(int priority, IHandler handler)
+			{
+				this.priority = priority;
+				this.handler = handler;
+			}
+
+			public IHandler Handler
+			{
+				get { return handler; }
+			}
+
+			public int Priority
+			{
+				get { return priority; }
+			}
 		}
 	}
 }

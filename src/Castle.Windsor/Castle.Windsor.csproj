@@ -316,10 +316,12 @@
     <Compile Include="Core\BoundToAttribute.cs" />
     <Compile Include="Core\ComponentDependencyModel.cs" />
     <Compile Include="Core\CustomLifestyleAttribute.cs" />
+    <Compile Include="Core\Internal\ComponentModelExtensions.cs" />
     <Compile Include="Core\Internal\Constants.cs" />
     <Compile Include="Core\Internal\ExceptionHelper.cs" />
     <Compile Include="Core\Internal\LifestyleExtensions.cs" />
     <Compile Include="Core\Internal\Must.cs" />
+    <Compile Include="Core\Internal\SegmentedList.cs" />
     <Compile Include="Core\Internal\SimpleSortedSet.cs" />
     <Compile Include="Core\CastleComponentAttribute.cs" />
     <Compile Include="Core\ComponentActivatorAttribute.cs" />

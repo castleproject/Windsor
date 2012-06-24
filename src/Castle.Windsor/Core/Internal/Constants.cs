@@ -17,6 +17,7 @@ namespace Castle.Core.Internal
 	public abstract class Constants
 	{
 		private const string defaultComponentForServiceFilter = "castle.default-component-for-service-filter";
+		private const string fallbackComponentForServiceFilter = "castle.fallback-component-for-service-filter";
 		private const string genericImplementationMatchingStrategy = "castle.generic-matching-strategy";
 		private const string genericServiceStrategy = "castle.generic-service-strategy";
 		private const string helpLink = @"groups.google.com/group/castle-project-users";
@@ -33,6 +34,11 @@ namespace Castle.Core.Internal
 		public static string ExceptionHelpLink
 		{
 			get { return helpLink; }
+		}
+
+		public static object FallbackComponentForServiceFilter
+		{
+			get { return fallbackComponentForServiceFilter; }
 		}
 
 

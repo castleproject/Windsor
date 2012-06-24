@@ -74,15 +74,15 @@ namespace CastleTests
 		}
 
 		[Test]
-		public void Does_not_affect_order_when_using_ResolveAll()
+		public void Does_affect_order_when_using_ResolveAll()
 		{
 			Container.Register(Component.For<IEmptyService>().ImplementedBy<EmptyServiceA>(),
 			                   Component.For<IEmptyService>().ImplementedBy<EmptyServiceB>().IsDefault(t => t.IsInterface));
 
 			var obj = Container.ResolveAll<IEmptyService>();
 
-			Assert.IsInstanceOf<EmptyServiceA>(obj[0]);
-			Assert.IsInstanceOf<EmptyServiceB>(obj[1]);
+			Assert.IsInstanceOf<EmptyServiceB>(obj[0]);
+			Assert.IsInstanceOf<EmptyServiceA>(obj[1]);
 		}
 	}
 }
