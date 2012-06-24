@@ -263,7 +263,7 @@ namespace Castle.MicroKernel.SubSystems.Naming
 				foreach (var service in handler.ComponentModel.Services)
 				{
 					var handlerForService = serviceSelector(service);
-					if (service2Handler.ContainsKey(service) == false || handlerForService.Priority > service2Handler[service].Priority)
+					if (service2Handler.ContainsKey(service) == false || handlerForService.Triumphs(service2Handler[service]))
 					{
 						service2Handler[service] = handlerForService;
 					}
@@ -439,9 +439,17 @@ namespace Castle.MicroKernel.SubSystems.Naming
 				get { return handler; }
 			}
 
-			public int Priority
+			public bool Triumphs(HandlerWithPriority other)
 			{
-				get { return priority; }
+				if (priority > other.priority)
+				{
+					return true;
+				}
+				if (priority == other.priority && priority > 0)
+				{
+					return true;
+				}
+				return false;
 			}
 		}
 	}

@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2012 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -83,6 +83,17 @@ namespace CastleTests
 
 			Assert.IsInstanceOf<EmptyServiceB>(obj[0]);
 			Assert.IsInstanceOf<EmptyServiceA>(obj[1]);
+		}
+
+		[Test]
+		public void Later_default_overrides_earlier_one()
+		{
+			Container.Register(Component.For<IEmptyService>().ImplementedBy<EmptyServiceA>().IsDefault(t => t.IsInterface),
+			                   Component.For<IEmptyService>().ImplementedBy<EmptyServiceB>().IsDefault(t => t.IsInterface));
+
+			var obj = Container.Resolve<IEmptyService>();
+
+			Assert.IsInstanceOf<EmptyServiceB>(obj);
 		}
 	}
 }

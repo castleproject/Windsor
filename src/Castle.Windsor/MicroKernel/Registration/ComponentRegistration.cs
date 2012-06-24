@@ -301,10 +301,10 @@ namespace Castle.MicroKernel.Registration
 		public ComponentRegistration<TService> DependsOn(DynamicParametersDelegate resolve)
 		{
 			return DynamicParameters((k, c, d) =>
-			                         	{
-			                         		resolve(k, d);
-			                         		return null;
-			                         	});
+				{
+					resolve(k, d);
+					return null;
+				});
 		}
 
 		/// <summary>
@@ -341,10 +341,10 @@ namespace Castle.MicroKernel.Registration
 		public ComponentRegistration<TService> DynamicParameters(DynamicParametersDelegate resolve)
 		{
 			return DynamicParameters((k, c, d) =>
-			                         	{
-			                         		resolve(k, d);
-			                         		return null;
-			                         	});
+				{
+					resolve(k, d);
+					return null;
+				});
 		}
 
 		/// <summary>
@@ -1047,10 +1047,10 @@ namespace Castle.MicroKernel.Registration
 		private IComponentModelDescriptor[] GetContributors(Type[] services)
 		{
 			var list = new List<IComponentModelDescriptor>
-			           	{
-			           		new ServicesDescriptor(services),
-			           		new DefaultsDescriptor(name, implementation),
-			           	};
+				{
+					new ServicesDescriptor(services),
+					new DefaultsDescriptor(name, implementation),
+				};
 			list.AddRange(descriptors);
 			list.Add(new InterfaceProxyDescriptor());
 			return list.ToArray();
@@ -1087,14 +1087,13 @@ namespace Castle.MicroKernel.Registration
 		}
 
 		/// <summary>
-		///   Overrides default behavior by making the current component the default for every service it exposes. Optional <paramref
+		///   Overrides default behavior by making the current component the default for every service it exposes. The <paramref
 		///    name="serviceFilter" /> allows user to narrow down the number of services which should be make defaults.
 		/// </summary>
-		/// <param name="serviceFilter"> Invoked for each service exposed by given component if returns <c>true</c> this component will be the default for that service. If not specified it is assumed current component should become the default for all of its services. </param>
+		/// <param name="serviceFilter"> Invoked for each service exposed by given component if returns <c>true</c> this component will be the default for that service. </param>
 		/// <returns> </returns>
 		/// <remarks>
-		///   When specified for multiple components for any given service the one registered after will override the one selected before. This does not affect order of resolution via <see
-		///    cref="IKernel.ResolveAll{TService}()" /> methods.
+		///   When specified for multiple components for any given service the one registered after will override the one selected before.
 		/// </remarks>
 		public ComponentRegistration<TService> IsDefault(Predicate<Type> serviceFilter)
 		{
@@ -1111,14 +1110,40 @@ namespace Castle.MicroKernel.Registration
 		/// </summary>
 		/// <returns> </returns>
 		/// <remarks>
-		///   When specified for multiple components for any given service the one registered after will override the one selected before. This does not affect order of resolution via <see
-		///    cref="IKernel.ResolveAll{TService}()" /> methods.
+		///   When specified for multiple components for any given service the one registered after will override the one selected before.
 		/// </remarks>
 		public ComponentRegistration<TService> IsDefault()
 		{
-			var properties = new Property(Constants.DefaultComponentForServiceFilter, new Predicate<Type>(t => true));
+			return IsDefault(_ => true);
+		}
+
+
+		/// <summary>
+		///   Overrides default behavior by making the current component the fallback for every service it exposes that <paramref
+		///    name="serviceFilter" /> returns <c>true</c> for. That is if another, non-fallback, component will be registered exposing any of these same services as this component,
+		///   that other component will take precedence over this one, regardless of order in which they are registered.
+		/// </summary>
+		/// <param name="serviceFilter"> Invoked for each service exposed by given component if returns <c>true</c> this component will be the fallback for that service. </param>
+		public ComponentRegistration<TService> IsFallback(Predicate<Type> serviceFilter)
+		{
+			if (serviceFilter == null)
+			{
+				throw new ArgumentNullException("serviceFilter");
+			}
+			var properties = new Property(Constants.FallbackComponentForServiceFilter, serviceFilter);
 			return ExtendedProperties(properties);
 		}
+
+		/// <summary>
+		///   Overrides default behavior by making the current component the fallback for every service it exposes. That is if another, non-fallback, component will be registered exposing any of the same services as this component,
+		///   that other component will take precedence over this one, regardless of order in which they are registered
+		/// </summary>
+		/// <returns> </returns>
+		public ComponentRegistration<TService> IsFallback()
+		{
+			return IsFallback(_ => true);
+		}
+
 
 		/// <summary>
 		///   Filters (settable) properties of the component's implementation type to expose in the container.
@@ -1156,10 +1181,10 @@ namespace Castle.MicroKernel.Registration
 		public ComponentRegistration<TService> Properties(Func<ComponentModel, PropertyInfo, bool> filter, bool isRequired)
 		{
 			return AddDescriptor(new DelegatingModelDescriptor(builder: (k, c) =>
-			                                                            	{
-			                                                            		var filters = StandardPropertyFilters.GetPropertyFilters(c, createIfMissing: true);
-			                                                            		filters.Add(StandardPropertyFilters.FromFunction(filter, isRequired: isRequired));
-			                                                            	}));
+				{
+					var filters = StandardPropertyFilters.GetPropertyFilters(c, createIfMissing: true);
+					filters.Add(StandardPropertyFilters.FromFunction(filter, isRequired: isRequired));
+				}));
 		}
 
 		/// <summary>
@@ -1170,10 +1195,10 @@ namespace Castle.MicroKernel.Registration
 		public ComponentRegistration<TService> Properties(PropertyFilter filter)
 		{
 			return AddDescriptor(new DelegatingModelDescriptor(builder: (k, c) =>
-			                                                            	{
-			                                                            		var filters = StandardPropertyFilters.GetPropertyFilters(c, createIfMissing: true);
-			                                                            		filters.Add(StandardPropertyFilters.Create(filter));
-			                                                            	}));
+				{
+					var filters = StandardPropertyFilters.GetPropertyFilters(c, createIfMissing: true);
+					filters.Add(StandardPropertyFilters.Create(filter));
+				}));
 		}
 	}
 }
