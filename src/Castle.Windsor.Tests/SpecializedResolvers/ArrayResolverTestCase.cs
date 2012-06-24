@@ -112,7 +112,7 @@ namespace CastleTests.SpecializedResolvers
 			                   	.ConfigureFor<EmptyServiceComposite>(r => r.Forward<EmptyServiceComposite>()));
 
 			var composite = Container.Resolve<EmptyServiceComposite>();
-			Assert.AreEqual(4, composite.Inner.Length);
+			Assert.AreEqual(5, composite.Inner.Length);
 		}
 
 		[Test(Description = "IOC-238")]

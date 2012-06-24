@@ -1,4 +1,4 @@
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2012 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -62,7 +62,33 @@ namespace CastleTests
 			Assert.AreEqual(expectedMessage, exception.Message);
 		}
 
-		[Test(Description = "Should we drop this? Does feel fragile and ground for abuse")]
+		[Test]
+		public void ResolveAll_honors_order_and_kinf_of_registration()
+		{
+			Container.Register(Component.For<IEmptyService>().ImplementedBy<EmptyServiceA>(),
+			                   Component.For<IEmptyService>().ImplementedBy<EmptyServiceB>().IsFallback(),
+			                   Component.For<IEmptyService>().ImplementedBy<EmptyServiceC>().IsDefault());
+
+			var clocks = Container.ResolveAll<IEmptyService>();
+
+			Assert.IsInstanceOf<EmptyServiceC>(clocks[0]);
+			Assert.IsInstanceOf<EmptyServiceA>(clocks[1]);
+			Assert.IsInstanceOf<EmptyServiceB>(clocks[2]);
+
+			//reversing order
+			ResetContainer();
+			Container.Register(Component.For<IEmptyService>().ImplementedBy<EmptyServiceA>().IsFallback(),
+			                   Component.For<IEmptyService>().ImplementedBy<EmptyServiceB>().IsDefault(),
+			                   Component.For<IEmptyService>().ImplementedBy<EmptyServiceC>().IsDefault());
+
+			clocks = Container.ResolveAll<IEmptyService>();
+
+			Assert.IsInstanceOf<EmptyServiceC>(clocks[0]);
+			Assert.IsInstanceOf<EmptyServiceB>(clocks[1]);
+			Assert.IsInstanceOf<EmptyServiceA>(clocks[2]);
+		}
+
+		[Test]
 		public void ResolveAll_honors_order_of_registration()
 		{
 			Container.Register(Component.For<IEmptyService>().ImplementedBy<EmptyServiceA>(),

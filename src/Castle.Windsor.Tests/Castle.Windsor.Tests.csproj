@@ -371,6 +371,7 @@
     <Compile Include="Components\EmptyService2Impl3.cs" />
     <Compile Include="Components\EmptyService2Impl4.cs" />
     <Compile Include="Components\EmptyService2Impl5.cs" />
+    <Compile Include="Components\EmptyServiceC.cs" />
     <Compile Include="Components\EmptyServiceComposite.cs" />
     <Compile Include="Components\EmptyServiceDecorator.cs" />
     <Compile Include="Components\EmptyServiceDecoratorViaProperty.cs" />
