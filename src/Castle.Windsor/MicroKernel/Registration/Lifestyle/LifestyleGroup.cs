@@ -74,7 +74,7 @@ namespace Castle.MicroKernel.Registration.Lifestyle
 			get { return AddDescriptor(new LifestyleDescriptor<TService>(LifestyleType.Thread)); }
 		}
 
-#if (!SILVERLIGHT)
+#if !(SILVERLIGHT || CLIENTPROFILE)
 		public ComponentRegistration<TService> PerWebRequest
 		{
 			get { return AddDescriptor(new LifestyleDescriptor<TService>(LifestyleType.PerWebRequest)); }

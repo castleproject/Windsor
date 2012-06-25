@@ -1,7 +1,8 @@
 - implemented IOC-343 - Add ability to specify fallback components that should never take precedence over non-fallback ones
+- implemented IOC-339 - Add extension point to decide whether open generic component wants to support particular closed version
 
+- fixed IOC-342 - Should error when trying to use PerWebRequest lifestyle when linked against the client profile
 - fixed IOC-341 - IHandlerFilter returning empty array ignored
-- fixed IOC-339 - Add extension point to decide whether open generic component wants to support particular closed version
 - fixed IOC-338 - SerializationException thrown when using remoting within default lifetime scope (Failed to load expression host assembly. Details: Type '[...]CallContextLifetimeScope[...]' is not marked as serializable.)
 - fixed IOC-336 - Failing resolution of proxied components implementing multiple generic service interfaces
 - fixed IOC-332 - UsingFactoryMethod resolving a proxy without a target throws NullReferenceException instead of a better exception

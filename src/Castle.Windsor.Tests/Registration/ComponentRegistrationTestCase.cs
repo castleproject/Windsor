@@ -274,7 +274,7 @@ namespace Castle.MicroKernel.Tests.Registration
 			Assert.AreEqual(LifestyleType.Thread, handler.ComponentModel.LifestyleType);
 		}
 
-#if (!SILVERLIGHT)
+#if !(SILVERLIGHT || CLIENTPROFILE)
 		[Test]
 		public void AddComponent_WithPerWebRequestLifestyle_WorksFine()
 		{
