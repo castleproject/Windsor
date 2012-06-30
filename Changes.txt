@@ -1,3 +1,11 @@
+- Refined WCF Discovery Load Balancing approach
+- Added WCF behavior to specify an IDataContractSurrogate
+- Import Bindings instead of endpoints for WCF Discovery
+- Improved concurrency during WCF channel failover
+- Refactored WCF proxying to support all channels (not just ones based on RealProxy)
+- Added additional WCF Discovery support for managed Discovery Proxies
+- Exposes notifications when channels are refreshed
+- Added exponential backoff client policy for WCF Facility
 - implemented IOC-343 - Add ability to specify fallback components that should never take precedence over non-fallback ones
 - implemented IOC-339 - Add extension point to decide whether open generic component wants to support particular closed version
 
