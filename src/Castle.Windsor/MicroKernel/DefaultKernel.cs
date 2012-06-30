@@ -21,7 +21,6 @@ namespace Castle.MicroKernel
 	using System.Linq;
 	using System.Runtime.Serialization;
 	using System.Security;
-	using System.Text;
 
 	using Castle.Core;
 	using Castle.Core.Internal;
