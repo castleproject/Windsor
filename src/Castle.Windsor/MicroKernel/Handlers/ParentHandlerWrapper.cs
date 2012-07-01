@@ -19,10 +19,6 @@ namespace Castle.MicroKernel.Handlers
 	using Castle.Core;
 	using Castle.MicroKernel.Context;
 
-	/// <summary>
-	///   Redirects resolution to the main resolver, and if not found uses
-	///   the parent handler.
-	/// </summary>
 	public class ParentHandlerWrapper : IHandler, IDisposable
 	{
 		private readonly ISubDependencyResolver childResolver;

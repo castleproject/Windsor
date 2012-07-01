@@ -1,3 +1,24 @@
+=== version 3.1
+================================================================================================
+change - Windsor will no longer allow components from parent container to have dependencies from
+	child container when resolving via child container.
+	Class ParentHandlerWithChildResolver was renamed to ParentHandlerWrapper
+
+impact - low
+fixability - medium
+
+description - Previously in some cases, when resolving from child container Windsor would allow
+	component from the parent container to depend on components from a child container.
+	This would lead to all sorts of problems (child coomponents leaking to parent scope, parent
+	components being released prematurely when disposing of the child container etc.
+	Overall this behavior was a mess, and was removed.
+	See http://issues.castleproject.org/issue/IOC-345 for more details
+
+fix - If you were depending on the old behavior it is best to restructure your dependencies so
+	you don't have to have those inverted dependencies.
+	Since each scenario is different it's best to discuss any questions you may have on the user
+	group.
+
 ================================================================================================
 change - IHandler.SupportsAssignable(Type) method has been added
 
@@ -11,6 +32,7 @@ description - This was added to better support IGenericServiceStrategy on generi
 fix - This change affects you only if you're implementing custom IHandler. Implementation is
 	dependent on your usage and semantics you want to support for this scenario. When in doubt
 	ask on castle-users-group on Google Groups.
+
 ================================================================================================
 change - System.String, and some other types can no longer be registered as a service
 	in the container
@@ -24,6 +46,7 @@ description - This is something that probably should never have made it into the
 
 fix - If you did register those types in the container change them from being components
 	to being parameters on the components that were depending on them.
+
 ================================================================================================
 change - DependencyModel.IsValueType is renamed to DependencyModel.IsPrimitiveTypeDependency.
 
@@ -36,6 +59,9 @@ description - This is part of unification of how types that can not be registere
 
 fix - Change usages of IsValueType to IsPrimitiveTypeDependency if you depended on behavior when
 	TargetItemType is null, you might also need to check its value to preserve the old behavior.
+
+
+=== version 3.0
 ================================================================================================
 change - Typed factory using DefaultTypedFactoryComponentSelector when resolving component 
 	by name will not fallback to resolving by type if component with that name can not be found

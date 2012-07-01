@@ -1,3 +1,4 @@
+
 - Refined WCF Discovery Load Balancing approach
 - Added WCF behavior to specify an IDataContractSurrogate
 - Import Bindings instead of endpoints for WCF Discovery
@@ -6,10 +7,11 @@
 - Added additional WCF Discovery support for managed Discovery Proxies
 - Exposes notifications when channels are refreshed
 - Added exponential backoff client policy for WCF Facility
+
 - implemented IOC-343 - Add ability to specify fallback components that should never take precedence over non-fallback ones
 - implemented IOC-339 - Add extension point to decide whether open generic component wants to support particular closed version
 
-- fixed FACILITIES-155 - PerWcfSession throws NullReferenceException when not in a session
+- fixed IOC-345 - When using child containers, parent components are released with child container in certain cases
 - fixed IOC-342 - Should error when trying to use PerWebRequest lifestyle when linked against the client profile
 - fixed IOC-341 - IHandlerFilter returning empty array ignored
 - fixed IOC-338 - SerializationException thrown when using remoting within default lifetime scope (Failed to load expression host assembly. Details: Type '[...]CallContextLifetimeScope[...]' is not marked as serializable.)
@@ -19,6 +21,7 @@
 - fixed IOC-328 - Hard-to-understand comment
 - fixed IOC-325 - ParentHandlerWithChildResolver.TryResolve throws exception
 - fixed IOC-241 - .NET 4 security transparency and APTCA
+- fixed FACILITIES-155 - PerWcfSession throws NullReferenceException when not in a session
 
 3.0.0 (2011-12-13)
 ==================
