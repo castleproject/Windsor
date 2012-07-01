@@ -389,7 +389,7 @@ namespace CastleTests.SubContainers
 				var handler = childKernel.GetHandler(typeof(BookStore));
 
 				// Assert setup invariant
-				Assert.IsInstanceOf<ParentHandlerWithChildResolver>(handler);
+				Assert.IsInstanceOf<ParentHandlerWrapper>(handler);
 
 				Assert.DoesNotThrow(() => handler.TryResolve(CreationContext.CreateEmpty()));
 			}

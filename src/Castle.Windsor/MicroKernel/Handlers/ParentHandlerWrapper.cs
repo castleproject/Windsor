@@ -23,19 +23,19 @@ namespace Castle.MicroKernel.Handlers
 	///   Redirects resolution to the main resolver, and if not found uses
 	///   the parent handler.
 	/// </summary>
-	public class ParentHandlerWithChildResolver : IHandler, IDisposable
+	public class ParentHandlerWrapper : IHandler, IDisposable
 	{
 		private readonly ISubDependencyResolver childResolver;
 		private readonly IReleasePolicy parentReleasePolicy;
 		private readonly IHandler parentHandler;
 
 		/// <summary>
-		///   Initializes a new instance of the <see cref = "ParentHandlerWithChildResolver" /> class.
+		///   Initializes a new instance of the <see cref = "ParentHandlerWrapper" /> class.
 		/// </summary>
 		/// <param name = "parentHandler">The parent handler.</param>
 		/// <param name = "childResolver">The child resolver.</param>
 		/// <param name="parentReleasePolicy">Release policy of the parent container.</param>
-		public ParentHandlerWithChildResolver(IHandler parentHandler, ISubDependencyResolver childResolver, IReleasePolicy parentReleasePolicy)
+		public ParentHandlerWrapper(IHandler parentHandler, ISubDependencyResolver childResolver, IReleasePolicy parentReleasePolicy)
 		{
 			if (parentHandler == null)
 			{

@@ -468,7 +468,7 @@
     <Compile Include="MicroKernel\Handlers\AbstractHandler.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="MicroKernel\Handlers\ParentHandlerWithChildResolver.cs" />
+    <Compile Include="MicroKernel\Handlers\ParentHandlerWrapper.cs" />
     <Compile Include="MicroKernel\Handlers\DefaultGenericHandler.cs" />
     <Compile Include="MicroKernel\Handlers\DefaultHandler.cs">
       <SubType>Code</SubType>
