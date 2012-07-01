@@ -14,10 +14,12 @@
 
 namespace CastleTests
 {
+	using Castle.Facilities.TypedFactory;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Registration;
 	using Castle.Windsor;
 	using Castle.Windsor.Configuration.Interpreters;
+	using Castle.Windsor.Tests.Facilities.TypedFactory.Factories;
 
 	using CastleTests.Components;
 

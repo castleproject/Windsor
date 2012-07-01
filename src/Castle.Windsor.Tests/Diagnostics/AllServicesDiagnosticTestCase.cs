@@ -39,7 +39,7 @@ namespace CastleTests.Diagnostics
 		}
 
 		[Test]
-		[Ignore("No nice and robust way of supporting that.")]
+		[Ignore("We order them alphabetically now.")]
 		public void Default_component_for_given_service_comes_first()
 		{
 			Container.Register(Component.For<IEmptyService, EmptyServiceA>().ImplementedBy<EmptyServiceA>(),
