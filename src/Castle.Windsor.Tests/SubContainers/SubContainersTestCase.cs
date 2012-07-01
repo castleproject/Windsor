@@ -286,20 +286,19 @@ namespace CastleTests.SubContainers
 		[Test]
 		public void SameLevelDependenciesSatisfied()
 		{
-			IKernel child = new DefaultKernel();
+			Kernel.Register(Component.For<DefaultTemplateEngine>(),
+			                Component.For<DefaultSpamService>());
 
-			Kernel.Register(Component.For(typeof(DefaultTemplateEngine)).Named("templateengine"));
-			Kernel.Register(Component.For(typeof(DefaultSpamService)).Named("spamservice"));
-
+			var child = new DefaultKernel();
 			Kernel.AddChildKernel(child);
 
-			child.Register(Component.For(typeof(DefaultMailSenderService)).Named("mailsender"));
+			child.Register(Component.For<DefaultMailSenderService>());
 
-			var spamservice = child.Resolve<DefaultSpamService>("spamservice");
+			var spamservice = child.Resolve<DefaultSpamService>();
 
 			Assert.IsNotNull(spamservice);
-			Assert.IsNotNull(spamservice.MailSender);
 			Assert.IsNotNull(spamservice.TemplateEngine);
+			Assert.IsNotNull(spamservice.MailSender);
 		}
 
 		[Test]
