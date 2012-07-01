@@ -371,11 +371,13 @@ namespace Castle.MicroKernel.Handlers
 					{
 						closedServices.Add(closed);
 					}
+#if !SILVERLIGHT
 					else
 					{
 						// NOTE: it's an interface not exposed by the implementation type. Possibly aimed at a proxy... I guess we can ignore it for now. Don't have any better idea.
 						Debug.Fail(string.Format("Could not find mapping for interface {0} on implementation type {1}", service, closedImplementationType));
 					}
+#endif
 				}
 				else
 				{
@@ -401,11 +403,13 @@ namespace Castle.MicroKernel.Handlers
 					{
 						closedServices.Add(closed);
 					}
+#if !SILVERLIGHT
 					else
 					{
 						// NOTE: it's an interface not exposed by the implementation type. Possibly aimed at a proxy... I guess we can ignore it for now. Don't have any better idea.
 						Debug.Fail(string.Format("Could not find mapping for interface {0} on implementation type {1}", service, closedImplementationType));
 					}
+#endif
 				}
 				else
 				{
