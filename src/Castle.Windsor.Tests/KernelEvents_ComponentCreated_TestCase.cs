@@ -20,11 +20,12 @@ namespace CastleTests
 	using Castle.MicroKernel.Registration;
 	using CastleTests.Components;
 	using NUnit.Framework;
+	using System.Linq;
 
 	[TestFixture]
 	public class KernelEvents_ComponentCreated_TestCase : AbstractContainerTestCase
 	{
-		readonly List<KeyValuePair<ComponentModel, object>> list = new List<KeyValuePair<ComponentModel, object>>();
+		readonly IList<KeyValuePair<ComponentModel, object>> list = new List<KeyValuePair<ComponentModel, object>>();
 
 		protected override void AfterContainerCreated()
 		{
@@ -48,8 +49,8 @@ namespace CastleTests
 				Component.For<IService>().ImplementedBy<MyService>().Interceptors<StandardInterceptor>().LifestyleTransient());
 
 			var service = Container.Resolve<IService>();
-			Assert.IsNotEmpty(list);
-			Assert.IsTrue(list.Exists(t => t.Value == service));
+			CollectionAssert.IsNotEmpty(list);
+			Assert.IsTrue(list.Any(t => t.Value == service));
 		}
 	}
 }

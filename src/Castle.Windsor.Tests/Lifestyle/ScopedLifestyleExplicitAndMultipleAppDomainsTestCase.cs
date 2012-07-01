@@ -14,6 +14,7 @@
 
 namespace CastleTests.Lifestyle
 {
+#if !SILVERLIGHT
 	using System;
 	using Castle.MicroKernel.Lifestyle;
 	using Castle.MicroKernel.Registration;
@@ -47,4 +48,5 @@ namespace CastleTests.Lifestyle
 			}
 		}
 	}
+#endif
 }
