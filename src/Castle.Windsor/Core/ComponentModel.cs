@@ -344,7 +344,10 @@ namespace Castle.Core
 		public void AddConstructor(ConstructorCandidate constructor)
 		{
 			Constructors.Add(constructor);
-			constructor.Dependencies.ForEach(Dependencies.Add);
+			foreach (var ctorDependency in constructor.Dependencies)
+			{
+				Dependencies.Add(ctorDependency);
+			}
 		}
 
 		/// <summary>
