@@ -1,4 +1,4 @@
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2012 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ namespace Castle.Windsor.Proxy
 	using Castle.MicroKernel.Proxy;
 
 	/// <summary>
-	///   This implementation of <see cref = "IProxyFactory" /> relies 
+	///   This implementation of <see cref="IProxyFactory" /> relies 
 	///   on DynamicProxy to expose proxy capabilities.
 	/// </summary>
 	/// <remarks>
@@ -48,9 +48,18 @@ namespace Castle.Windsor.Proxy
 		/// <summary>
 		///   Constructs a DefaultProxyFactory
 		/// </summary>
-		public DefaultProxyFactory()
+		public DefaultProxyFactory() : this(new ProxyGenerator())
 		{
-			Init();
+		}
+
+		public DefaultProxyFactory(bool disableSignedModule)
+			: this(new ProxyGenerator(disableSignedModule))
+		{
+		}
+
+		public DefaultProxyFactory(ProxyGenerator generator)
+		{
+			this.generator = generator;
 		}
 
 		public override object Create(IProxyFactoryExtension customFactory, IKernel kernel, ComponentModel model, CreationContext context,
@@ -81,12 +90,12 @@ namespace Castle.Windsor.Proxy
 		/// <summary>
 		///   Creates the proxy for the supplied component.
 		/// </summary>
-		/// <param name = "kernel">The kernel.</param>
-		/// <param name = "target">The target.</param>
-		/// <param name = "model">The model.</param>
-		/// <param name = "constructorArguments">The constructor arguments.</param>
-		/// <param name = "context">The creation context</param>
-		/// <returns>The component proxy.</returns>
+		/// <param name="kernel"> The kernel. </param>
+		/// <param name="target"> The target. </param>
+		/// <param name="model"> The model. </param>
+		/// <param name="constructorArguments"> The constructor arguments. </param>
+		/// <param name="context"> The creation context </param>
+		/// <returns> The component proxy. </returns>
 		public override object Create(IKernel kernel, object target, ComponentModel model, CreationContext context, params object[] constructorArguments)
 		{
 			object proxy;
@@ -138,8 +147,7 @@ namespace Castle.Windsor.Proxy
 			return proxy;
 		}
 
-		protected static ProxyGenerationOptions CreateProxyGenerationOptionsFrom(ProxyOptions proxyOptions, IKernel kernel, CreationContext context,
-		                                                                         ComponentModel model)
+		protected static ProxyGenerationOptions CreateProxyGenerationOptionsFrom(ProxyOptions proxyOptions, IKernel kernel, CreationContext context, ComponentModel model)
 		{
 			var proxyGenOptions = new ProxyGenerationOptions();
 			if (proxyOptions.Hook != null)
@@ -147,7 +155,7 @@ namespace Castle.Windsor.Proxy
 				var hook = proxyOptions.Hook.Resolve(kernel, context);
 				if (hook != null && hook is IOnBehalfAware)
 				{
-					((IOnBehalfAware)hook).SetInterceptedComponentModel(model);
+					((IOnBehalfAware) hook).SetInterceptedComponentModel(model);
 				}
 				proxyGenOptions.Hook = hook;
 			}
@@ -157,7 +165,7 @@ namespace Castle.Windsor.Proxy
 				var selector = proxyOptions.Selector.Resolve(kernel, context);
 				if (selector != null && selector is IOnBehalfAware)
 				{
-					((IOnBehalfAware)selector).SetInterceptedComponentModel(model);
+					((IOnBehalfAware) selector).SetInterceptedComponentModel(model);
 				}
 				proxyGenOptions.Selector = selector;
 			}
@@ -187,9 +195,9 @@ namespace Castle.Windsor.Proxy
 		/// <summary>
 		///   Determines if the component requires a target instance for proxying.
 		/// </summary>
-		/// <param name = "kernel">The kernel.</param>
-		/// <param name = "model">The model.</param>
-		/// <returns>true if an instance is required.</returns>
+		/// <param name="kernel"> The kernel. </param>
+		/// <param name="model"> The model. </param>
+		/// <returns> true if an instance is required. </returns>
 		public override bool RequiresTargetInstance(IKernel kernel, ComponentModel model)
 		{
 			var proxyOptions = model.ObtainProxyOptions();
@@ -201,13 +209,8 @@ namespace Castle.Windsor.Proxy
 #if !SILVERLIGHT
 		public void OnDeserialization(object sender)
 		{
-			Init();
-		}
-#endif
-
-		private void Init()
-		{
 			generator = new ProxyGenerator();
 		}
+#endif
 	}
 }
