@@ -224,7 +224,7 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\$(BuildConfigKey)\Castle.Core.dll</HintPath>
     </Reference>
-    <Reference Include="Castle.Services.Logging.Log4netIntegration" Condition="$(MSBuildTargets)!='Silverlight 4.0'">
+    <Reference Include="Castle.Services.Logging.Log4netIntegration" Condition="$(TargetFrameworkProfile)!='Client' and $(MSBuildTargets)!='Silverlight 4.0'">
       <HintPath>..\..\lib\$(BuildConfigKey)\Castle.Services.Logging.Log4netIntegration.dll</HintPath>
     </Reference>
     <Reference Include="Castle.Services.Logging.NLogIntegration">
