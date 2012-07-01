@@ -118,8 +118,10 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 				return burden;
 			}
 		}
-
+		
+#if !CLIENTPROFILE
 		[SecuritySafeCritical]
+#endif
 		private void SetCurrentScope(CallContextLifetimeScope lifetimeScope)
 		{
 			CallContext.LogicalSetData(contextKey, lifetimeScope);
@@ -143,7 +145,9 @@ namespace Castle.MicroKernel.Lifestyle.Scoped
 #endif
 		}
 
+#if !CLIENTPROFILE
 		[SecuritySafeCritical]
+#endif
 		public static CallContextLifetimeScope ObtainCurrentScope()
 		{
 			return (CallContextLifetimeScope) CallContext.LogicalGetData(contextKey);

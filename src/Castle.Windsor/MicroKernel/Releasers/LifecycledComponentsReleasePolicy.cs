@@ -201,7 +201,7 @@ namespace Castle.MicroKernel.Releasers
 		/// </summary>
 		/// <param name = "perfMetricsFactory"></param>
 		/// <returns></returns>
-#if !(SILVERLIGHT || DOTNET35)
+#if !(SILVERLIGHT || DOTNET35 || CLIENTPROFILE)
 		[System.Security.SecuritySafeCritical]
 #endif
 		public static ITrackedComponentsPerformanceCounter GetTrackedComponentsPerformanceCounter(
