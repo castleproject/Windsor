@@ -51,7 +51,6 @@ namespace Castle.MicroKernel.Context
 		/// </summary>
 		private readonly Stack<IHandler> handlerStack;
 
-		private readonly IReleasePolicy releasePolicy;
 		private readonly Type requestedType;
 
 		private readonly Stack<ResolutionContext> resolutionStack;
@@ -101,7 +100,7 @@ namespace Castle.MicroKernel.Context
 		{
 			this.requestedType = requestedType;
 			this.handler = handler;
-			this.releasePolicy = releasePolicy;
+			this.ReleasePolicy = releasePolicy;
 			this.additionalArguments = EnsureAdditionalArgumentsWriteable(additionalArguments);
 			this.converter = converter;
 
@@ -120,7 +119,7 @@ namespace Castle.MicroKernel.Context
 		/// </summary>
 		private CreationContext()
 		{
-			releasePolicy = new NoTrackingReleasePolicy();
+			ReleasePolicy = new NoTrackingReleasePolicy();
 			handlerStack = new Stack<IHandler>(4);
 			resolutionStack = new Stack<ResolutionContext>(4);
 		}
@@ -164,10 +163,7 @@ namespace Castle.MicroKernel.Context
 			get { return isResolving; }
 		}
 
-		public IReleasePolicy ReleasePolicy
-		{
-			get { return releasePolicy; }
-		}
+		public IReleasePolicy ReleasePolicy { get; set; }
 
 		public Type RequestedType
 		{

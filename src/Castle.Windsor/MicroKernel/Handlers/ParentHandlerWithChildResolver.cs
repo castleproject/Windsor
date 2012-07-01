@@ -26,6 +26,7 @@ namespace Castle.MicroKernel.Handlers
 	public class ParentHandlerWithChildResolver : IHandler, IDisposable
 	{
 		private readonly ISubDependencyResolver childResolver;
+		private readonly IReleasePolicy parentReleasePolicy;
 		private readonly IHandler parentHandler;
 
 		/// <summary>
@@ -33,7 +34,8 @@ namespace Castle.MicroKernel.Handlers
 		/// </summary>
 		/// <param name = "parentHandler">The parent handler.</param>
 		/// <param name = "childResolver">The child resolver.</param>
-		public ParentHandlerWithChildResolver(IHandler parentHandler, ISubDependencyResolver childResolver)
+		/// <param name="parentReleasePolicy">Release policy of the parent container.</param>
+		public ParentHandlerWithChildResolver(IHandler parentHandler, ISubDependencyResolver childResolver, IReleasePolicy parentReleasePolicy)
 		{
 			if (parentHandler == null)
 			{
@@ -46,6 +48,7 @@ namespace Castle.MicroKernel.Handlers
 
 			this.parentHandler = parentHandler;
 			this.childResolver = childResolver;
+			this.parentReleasePolicy = parentReleasePolicy;
 		}
 
 		public virtual ComponentModel ComponentModel
@@ -79,7 +82,17 @@ namespace Castle.MicroKernel.Handlers
 
 		public virtual object Resolve(CreationContext context)
 		{
-			return parentHandler.Resolve(context);
+			var releasePolicy = default(IReleasePolicy);
+			try
+			{
+				releasePolicy = context.ReleasePolicy;
+				context.ReleasePolicy = parentReleasePolicy;
+				return parentHandler.Resolve(context);
+			}
+			finally
+			{
+				context.ReleasePolicy = releasePolicy;
+			}
 		}
 
 		public bool Supports(Type service)
@@ -94,7 +107,17 @@ namespace Castle.MicroKernel.Handlers
 
 		public object TryResolve(CreationContext context)
 		{
-			return parentHandler.TryResolve(context);
+			var releasePolicy = default(IReleasePolicy);
+			try
+			{
+				releasePolicy = context.ReleasePolicy;
+				context.ReleasePolicy = parentReleasePolicy;
+				return parentHandler.TryResolve(context);
+			}
+			finally
+			{
+				context.ReleasePolicy = releasePolicy;
+			}
 		}
 
 		public virtual bool CanResolve(CreationContext context, ISubDependencyResolver contextHandlerResolver,

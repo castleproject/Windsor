@@ -756,7 +756,7 @@ namespace Castle.MicroKernel
 				return null;
 			}
 
-			var handler = new ParentHandlerWithChildResolver(parentHandler, Resolver);
+			var handler = new ParentHandlerWithChildResolver(parentHandler, Resolver, Parent.ReleasePolicy);
 			handler.Init(this);
 			return handler;
 		}
