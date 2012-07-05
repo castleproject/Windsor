@@ -72,6 +72,34 @@ namespace Castle.Core.Internal
 				// there's RuntimeTypeHandle.SatisfiesConstraints method but it's internal. 
 				return null;
 			}
+			catch (TypeLoadException e)
+			{
+				//Yeah, this exception is undocumented, yet it does get thrown in some cases (I was unable to reproduce it reliably)
+				var message = new StringBuilder();
+				var hasAssembliesFromGac = openGeneric.Assembly.GlobalAssemblyCache;
+
+				message.AppendLine("This was unexpected! Looks like you hit a really weird bug in .NET (yes, it's not really Windsor's bug).");
+				message.AppendLine("We were just about to make a generic version of " + openGeneric.AssemblyQualifiedName + " with the following generic arguments:");
+				foreach (var argument in arguments)
+				{
+					message.AppendLine("\t" + argument.AssemblyQualifiedName);
+					if (hasAssembliesFromGac == false)
+					{
+						hasAssembliesFromGac = argument.Assembly.GlobalAssemblyCache;
+					}
+				}
+				if (Debugger.IsAttached)
+				{
+					message.AppendLine("It look like your debugger is attached. Try running the code without the debugger. It's likely it will work correctly.");
+				}
+				message.AppendLine("If you're running the code inside your IDE try rebuilding your code (Clean, then Build) and make sure you don't have conflicting versions of referenced assemblies.");
+				if (hasAssembliesFromGac)
+				{
+					message.AppendLine("Notice that some assemblies involved were coming from GAC.");
+				}
+				message.AppendLine("If you tried all of the above and the issue still persists try asking on StackOverflow or castle users group.");
+				throw new ArgumentException(message.ToString(), e);
+			}
 		}
 
 		private static void AppendGenericParameters(StringBuilder name, Type[] genericArguments)
