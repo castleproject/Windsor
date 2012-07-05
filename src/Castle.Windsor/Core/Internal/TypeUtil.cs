@@ -78,7 +78,7 @@ namespace Castle.Core.Internal
 				var message = new StringBuilder();
 				var hasAssembliesFromGac = openGeneric.Assembly.GlobalAssemblyCache;
 
-				message.AppendLine("This was unexpected! Looks like you hit a really weird bug in .NET (yes, it's not really Windsor's bug).");
+				message.AppendLine("This was unexpected! Looks like you hit a really weird bug in .NET (yes, it's really not Windsor's fault).");
 				message.AppendLine("We were just about to make a generic version of " + openGeneric.AssemblyQualifiedName + " with the following generic arguments:");
 				foreach (var argument in arguments)
 				{
