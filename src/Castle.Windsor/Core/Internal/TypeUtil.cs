@@ -76,27 +76,32 @@ namespace Castle.Core.Internal
 			{
 				//Yeah, this exception is undocumented, yet it does get thrown in some cases (I was unable to reproduce it reliably)
 				var message = new StringBuilder();
+#if !SILVERLIGHT
 				var hasAssembliesFromGac = openGeneric.Assembly.GlobalAssemblyCache;
-
+#endif
 				message.AppendLine("This was unexpected! Looks like you hit a really weird bug in .NET (yes, it's really not Windsor's fault).");
 				message.AppendLine("We were just about to make a generic version of " + openGeneric.AssemblyQualifiedName + " with the following generic arguments:");
 				foreach (var argument in arguments)
 				{
 					message.AppendLine("\t" + argument.AssemblyQualifiedName);
+#if !SILVERLIGHT
 					if (hasAssembliesFromGac == false)
 					{
 						hasAssembliesFromGac = argument.Assembly.GlobalAssemblyCache;
 					}
+#endif
 				}
 				if (Debugger.IsAttached)
 				{
 					message.AppendLine("It look like your debugger is attached. Try running the code without the debugger. It's likely it will work correctly.");
 				}
 				message.AppendLine("If you're running the code inside your IDE try rebuilding your code (Clean, then Build) and make sure you don't have conflicting versions of referenced assemblies.");
+#if !SILVERLIGHT
 				if (hasAssembliesFromGac)
 				{
 					message.AppendLine("Notice that some assemblies involved were coming from GAC.");
 				}
+#endif
 				message.AppendLine("If you tried all of the above and the issue still persists try asking on StackOverflow or castle users group.");
 				throw new ArgumentException(message.ToString(), e);
 			}
