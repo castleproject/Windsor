@@ -1,4 +1,5 @@
-
+3.1.0 RC (2012-07-08)
+==================
 - Refined WCF Discovery Load Balancing approach
 - Added WCF behavior to specify an IDataContractSurrogate
 - Import Bindings instead of endpoints for WCF Discovery
@@ -20,6 +21,7 @@
 - fixed IOC-332 - UsingFactoryMethod resolving a proxy without a target throws NullReferenceException instead of a better exception
 - fixed IOC-331 - TypedFactoryFacility should ignore Func<string>
 - fixed IOC-328 - Hard-to-understand comment
+- fixed IOC-326 - Component is Disposed before the OnDestroy delegate is invoked
 - fixed IOC-325 - ParentHandlerWithChildResolver.TryResolve throws exception
 - fixed IOC-241 - .NET 4 security transparency and APTCA
 - fixed FACILITIES-155 - PerWcfSession throws NullReferenceException when not in a session
