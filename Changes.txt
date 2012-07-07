@@ -10,6 +10,7 @@
 
 - implemented IOC-343 - Add ability to specify fallback components that should never take precedence over non-fallback ones
 - implemented IOC-339 - Add extension point to decide whether open generic component wants to support particular closed version
+- implemented FACILITIES-159 - Add option to skip configuring log4net/nlog in LoggingFacility
 
 - fixed IOC-345 - When using child containers, parent components are released with child container in certain cases
 - fixed IOC-342 - Should error when trying to use PerWebRequest lifestyle when linked against the client profile

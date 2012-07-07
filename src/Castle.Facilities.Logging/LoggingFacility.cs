@@ -63,6 +63,7 @@ namespace Castle.Facilities.Logging
 		private LoggerLevel? loggerLevel;
 		private ILoggerFactory loggerFactory;
 		private string logName;
+		private bool configuredExternally;
 
 		/// <summary>
 		///   Initializes a new instance of the <see cref="LoggingFacility" /> class.
@@ -136,6 +137,12 @@ namespace Castle.Facilities.Logging
 			return this;
 		}
 
+		public LoggingFacility ConfiguredExternally()
+		{
+			configuredExternally = true;
+			return this;
+		}
+
 		public LoggingFacility WithConfig(string configFile)
 		{
 			if (configFile == null)
@@ -175,6 +182,11 @@ namespace Castle.Facilities.Logging
 		public LoggingFacility UseNLog()
 		{
 			return LogUsing(LoggerImplementation.NLog);
+		}
+
+		public LoggingFacility UseNLog(string configFile)
+		{
+			return LogUsing(LoggerImplementation.NLog).WithConfig(configFile);
 		}
 #endif
 
@@ -245,6 +257,14 @@ namespace Castle.Facilities.Logging
 			const BindingFlags flags = BindingFlags.Instance | BindingFlags.Public;
 
 			ConstructorInfo ctor;
+			if (IsConfiguredExternally())
+			{
+				ctor = loggerFactoryType.GetConstructor(flags, null, new[] { typeof(bool) }, null);
+				if (ctor != null)
+				{
+					return new object[] { true };
+				}
+			}
 			var configFile = GetConfigFile();
 			if (configFile != null)
 			{
@@ -270,6 +290,23 @@ namespace Castle.Facilities.Logging
 				return new object[0];
 			}
 			throw new FacilityException("No support constructor found for logging type " + loggerFactoryType);
+		}
+
+		private bool IsConfiguredExternally()
+		{
+			if (configuredExternally)
+			{
+				return true;
+			}
+			if (FacilityConfig != null)
+			{
+				var value = FacilityConfig.Attributes["configuredExternally"];
+				if (value != null)
+				{
+					return converter.PerformConversion<bool>(value);
+				}
+			}
+			return false;
 		}
 
 		private LoggerLevel? GetLoggingLevel()
