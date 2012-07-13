@@ -21,19 +21,29 @@ namespace Castle.Core.Internal
 	public static class TypeUtil
 	{
 		/// <summary>
-		///   Checkis if given <paramref name="type" /> is a primitive type. Value types, <see cref="string" /> or collections of thereof are considered primitive and can not be registered as components in Windsor
+		///   Checkis if given <paramref name="type" /> is a primitive type or collection of primitive types. Value types, <see cref="string" /> are considered primitive and can not be registered as components in Windsor
 		/// </summary>
 		/// <param name="type"> </param>
 		/// <returns> </returns>
-		public static bool IsPrimitiveType(this Type type)
+		public static bool IsPrimitiveTypeOrCollection(this Type type)
 		{
-			if (type == null || type.IsValueType || type == typeof(string))
+			if (type.IsPrimitiveType())
 			{
 				return true;
 			}
 
 			var itemType = type.GetCompatibleArrayItemType();
-			return itemType != null && itemType.IsPrimitiveType();
+			return itemType != null && itemType.IsPrimitiveTypeOrCollection();
+		}
+
+		/// <summary>
+		///   Checkis if given <paramref name="type" /> is a primitive type. Value types and <see cref="string" /> are considered primitive and can not be registered as components in Windsor
+		/// </summary>
+		/// <param name="type"> </param>
+		/// <returns> </returns>
+		public static bool IsPrimitiveType(this Type type)
+		{
+			return type == null || type.IsValueType || type == typeof(string);
 		}
 
 		public static string ToCSharpString(this Type type)

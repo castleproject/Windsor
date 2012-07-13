@@ -15,6 +15,8 @@
 namespace CastleTests
 {
 	using System;
+	using System.Collections.Generic;
+	using System.Linq;
 
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Resolvers;
@@ -26,12 +28,6 @@ namespace CastleTests
 	[TestFixture]
 	public class DependencyResolvingTestCase : AbstractContainerTestCase
 	{
-		[Test]
-		public void Array_of_strings_can_NOT_be_a_service()
-		{
-			var uriString = "http://castleproject.org";
-			Assert.Throws<ArgumentException>(() => Kernel.Register(Component.For<string[]>().Instance(new[] {uriString})));
-		}
 
 		[Test]
 		public void First_by_registration_order_available_component_is_used_to_satisfy_dependency()
@@ -94,7 +90,7 @@ namespace CastleTests
 			var exception =
 				Assert.Throws<ArgumentException>(() =>
 				                                 Kernel.Register(Component.For<UsesUri>().DependsOn(Parameter.ForKey("uri").Eq("http://parameter.com"))
-				                                                 	.DependsOn(Property.ForKey("uri").Is("uriComponent")),
+					                                                 .DependsOn(Property.ForKey("uri").Is("uriComponent")),
 				                                                 Component.For<Uri>().Named("uriComponent").Instance(new Uri("http://component.com"))));
 
 			Assert.AreEqual("Parameter 'uri' already exists.", exception.Message);
@@ -104,7 +100,7 @@ namespace CastleTests
 		public void Service_override_and_parameter_for_the_same_dependency_not_legal_via_type()
 		{
 			Kernel.Register(Component.For<UsesUri>().DependsOn(Parameter.ForKey("uri").Eq("http://parameter.com"))
-			                	.DependsOn(Property.ForKey<Uri>().Is("uriComponent")),
+				                .DependsOn(Property.ForKey<Uri>().Is("uriComponent")),
 			                Component.For<Uri>().Named("uriComponent").Instance(new Uri("http://component.com")));
 
 			var exception =
@@ -139,7 +135,7 @@ namespace CastleTests
 		{
 			var uriString = "http://castleproject.org";
 			Kernel.Register(Component.For<UsesUri>(),
-			                Component.For<Uri>().DependsOn(new {uriString}));
+			                Component.For<Uri>().DependsOn(new { uriString }));
 
 			var instance = Kernel.Resolve<UsesUri>();
 
@@ -157,11 +153,39 @@ namespace CastleTests
 			Assert.AreEqual(uriString, instance.Uri.OriginalString);
 		}
 
+		[Test(Description = "It's not a good idea but we're leaving it in for backward compatibity and convenience")]
+		public void ValueType_array_can_be_a_service()
+		{
+			var instance = new[] { DateTime.Now };
+
+			Kernel.Register(Component.For<DateTime[]>().Instance(instance));
+			var resolved = Kernel.Resolve<DateTime[]>();
+
+			Assert.AreSame(instance, resolved);
+		}
+
+		[Test]
+		public void ValueType_can_NOT_be_a_service()
+		{
+			Assert.Throws<ArgumentException>(() => Kernel.Register(Component.For(typeof(DateTime)).Instance(DateTime.Now)));
+		}
+
+		[Test(Description = "It's not a good idea but we're leaving it in for backward compatibity and convenience")]
+		public void ValueType_collection_can_be_a_service()
+		{
+			var instance = new[] { DateTime.Now }.AsEnumerable();
+
+			Kernel.Register(Component.For<IEnumerable<DateTime>>().Instance(instance));
+			var resolved = Kernel.Resolve<IEnumerable<DateTime>>();
+
+			Assert.AreSame(instance, resolved);
+		}
+
 		[Test]
 		public void Value_types_cannot_be_used_as_components()
 		{
 			var exception = Assert.Throws<ArgumentException>(() =>
-			                                                 Kernel.Register(Component.For(typeof (int))));
+			                                                 Kernel.Register(Component.For(typeof(int))));
 
 			Assert.AreEqual("Type System.Int32 is not a class nor an interface, and those are the only values allowed.", exception.Message);
 		}

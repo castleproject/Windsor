@@ -39,7 +39,7 @@ namespace Castle.Facilities.TypedFactory.Internal
 			{
 				return null;
 			}
-			if (invoke.ReturnType.IsPrimitiveType())
+			if (invoke.ReturnType.IsPrimitiveTypeOrCollection())
 			{
 				return null;
 			}
