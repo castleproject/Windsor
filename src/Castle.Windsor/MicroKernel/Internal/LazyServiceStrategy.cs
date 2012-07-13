@@ -35,7 +35,7 @@ namespace Castle.MicroKernel.Internal
 		{
 			Debug.Assert(service.GetGenericTypeDefinition() == typeof(Lazy<>));
 			var argument = service.GetGenericArguments().Single();
-			return argument.IsPrimitiveType() == false;
+			return argument.IsPrimitiveTypeOrCollection() == false;
 		}
 	}
 #endif

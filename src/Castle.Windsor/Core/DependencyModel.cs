@@ -83,7 +83,7 @@ namespace Castle.Core
 
 		public bool IsPrimitiveTypeDependency
 		{
-			get { return targetItemType.IsPrimitiveType(); }
+			get { return targetItemType.IsPrimitiveTypeOrCollection(); }
 		}
 
 		public ParameterModel Parameter

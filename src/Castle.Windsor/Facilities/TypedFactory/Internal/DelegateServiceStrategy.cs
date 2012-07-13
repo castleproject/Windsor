@@ -31,7 +31,7 @@ namespace Castle.Facilities.TypedFactory.Internal
 		public bool Supports(Type service, ComponentModel component)
 		{
 			var invoke = DelegateFactory.ExtractInvokeMethod(service);
-			return invoke != null && invoke.ReturnType.IsPrimitiveType() == false;
+			return invoke != null && invoke.ReturnType.IsPrimitiveTypeOrCollection() == false;
 		}
 	}
 }
