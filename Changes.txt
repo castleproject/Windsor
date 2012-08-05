@@ -1,3 +1,5 @@
+- fixed IOC-347 - WithServiceAllInterfaces throws exception
+
 3.1.0 RC (2012-07-08)
 ==================
 - Refined WCF Discovery Load Balancing approach

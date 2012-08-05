@@ -1,4 +1,4 @@
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2012 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -42,7 +42,7 @@ namespace Castle.MicroKernel
 	using Castle.Windsor.Diagnostics;
 
 	/// <summary>
-	///   Default implementation of <see cref = "IKernel" />. 
+	///   Default implementation of <see cref="IKernel" />. 
 	///   This implementation is complete and also support a kernel 
 	///   hierarchy (sub containers).
 	/// </summary>
@@ -68,7 +68,7 @@ namespace Castle.MicroKernel
 		private readonly List<IKernel> childKernels = new List<IKernel>();
 
 		/// <summary>
-		///   List of <see cref = "IFacility" /> registered.
+		///   List of <see cref="IFacility" /> registered.
 		/// </summary>
 		private readonly List<IFacility> facilities = new List<IFacility>();
 
@@ -94,10 +94,10 @@ namespace Castle.MicroKernel
 
 		/// <summary>
 		///   Constructs a DefaultKernel with the specified
-		///   implementation of <see cref = "IProxyFactory" /> and <see cref = "IDependencyResolver" />
+		///   implementation of <see cref="IProxyFactory" /> and <see cref="IDependencyResolver" />
 		/// </summary>
-		/// <param name = "resolver"></param>
-		/// <param name = "proxyFactory"></param>
+		/// <param name="resolver"> </param>
+		/// <param name="proxyFactory"> </param>
 		public DefaultKernel(IDependencyResolver resolver, IProxyFactory proxyFactory)
 		{
 			RegisterSubSystems();
@@ -111,7 +111,7 @@ namespace Castle.MicroKernel
 
 		/// <summary>
 		///   Constructs a DefaultKernel with the specified
-		///   implementation of <see cref = "IProxyFactory" />
+		///   implementation of <see cref="IProxyFactory" />
 		/// </summary>
 		public DefaultKernel(IProxyFactory proxyFactory)
 			: this(new DefaultDependencyResolver(), proxyFactory)
@@ -200,15 +200,9 @@ namespace Castle.MicroKernel
 
 		public IDependencyResolver Resolver { get; private set; }
 
-		protected IConversionManager ConversionSubSystem
-		{
-			get { return GetSubSystem(SubSystemConstants.ConversionManagerKey) as IConversionManager; }
-		}
+		protected IConversionManager ConversionSubSystem { get; private set; }
 
-		protected INamingSubSystem NamingSubSystem
-		{
-			get { return GetSubSystem(SubSystemConstants.NamingKey) as INamingSubSystem; }
-		}
+		protected INamingSubSystem NamingSubSystem { get; private set; }
 
 #if !SILVERLIGHT
 #if DOTNET40
@@ -330,6 +324,14 @@ namespace Castle.MicroKernel
 
 			subsystem.Init(this);
 			subsystems[name] = subsystem;
+			if (name == SubSystemConstants.ConversionManagerKey)
+			{
+				ConversionSubSystem = (IConversionManager)subsystem;
+			}
+			else if (name == SubSystemConstants.NamingKey)
+			{
+				NamingSubSystem = (INamingSubSystem)subsystem;
+			}
 		}
 
 		/// <summary>
@@ -337,8 +339,8 @@ namespace Castle.MicroKernel
 		///   implements the specified service. 
 		///   The check is made using IsAssignableFrom
 		/// </summary>
-		/// <param name = "service"></param>
-		/// <returns></returns>
+		/// <param name="service"> </param>
+		/// <returns> </returns>
 		public virtual IHandler[] GetAssignableHandlers(Type service)
 		{
 			var result = NamingSubSystem.GetAssignableHandlers(service);
@@ -363,7 +365,7 @@ namespace Castle.MicroKernel
 		/// <summary>
 		///   Returns the facilities registered on the kernel.
 		/// </summary>
-		/// <returns></returns>
+		/// <returns> </returns>
 		public virtual IFacility[] GetFacilities()
 		{
 			return facilities.ToArray();
@@ -406,8 +408,8 @@ namespace Castle.MicroKernel
 		///   Return handlers for components that 
 		///   implements the specified service.
 		/// </summary>
-		/// <param name = "service"></param>
-		/// <returns></returns>
+		/// <param name="service"> </param>
+		/// <returns> </returns>
 		public virtual IHandler[] GetHandlers(Type service)
 		{
 			var result = NamingSubSystem.GetHandlers(service);
@@ -477,24 +479,20 @@ namespace Castle.MicroKernel
 		}
 
 		/// <summary>
-		///   Registers the components with the <see cref = "IKernel" />. The instances of <see cref = "IRegistration" /> are produced by fluent registration API.
-		///   Most common entry points are <see cref = "Component.For{TService}" /> method to register a single type or (recommended in most cases) 
-		///   <see cref = "AllTypes.FromThisAssembly" />.
+		///   Registers the components with the <see cref="IKernel" />. The instances of <see cref="IRegistration" /> are produced by fluent registration API.
+		///   Most common entry points are <see cref="Component.For{TService}" /> method to register a single type or (recommended in most cases) 
+		///   <see cref="AllTypes.FromThisAssembly" />.
 		///   Let the Intellisense drive you through the fluent API past those entry points. For details see the documentation at http://j.mp/WindsorApi
 		/// </summary>
 		/// <example>
-		///   <code>
-		///     kernel.Register(Component.For&lt;IService&gt;().ImplementedBy&lt;DefaultService&gt;().LifestyleTransient());
-		///   </code>
+		///   <code>kernel.Register(Component.For&lt;IService&gt;().ImplementedBy&lt;DefaultService&gt;().LifestyleTransient());</code>
 		/// </example>
 		/// <example>
-		///   <code>
-		///     kernel.Register(Classes.FromThisAssembly().BasedOn&lt;IService&gt;().WithServiceDefaultInterfaces().Configure(c => c.LifestyleTransient()));
-		///   </code>
+		///   <code>kernel.Register(Classes.FromThisAssembly().BasedOn&lt;IService&gt;().WithServiceDefaultInterfaces().Configure(c => c.LifestyleTransient()));</code>
 		/// </example>
-		/// <param name = "registrations">The component registrations created by <see cref = "Component.For{TService}" />, <see
-		///    cref = "AllTypes.FromThisAssembly" /> or different entry method to the fluent API.</param>
-		/// <returns>The kernel.</returns>
+		/// <param name="registrations"> The component registrations created by <see cref="Component.For{TService}" /> , <see
+		///    cref="AllTypes.FromThisAssembly" /> or different entry method to the fluent API. </param>
+		/// <returns> The kernel. </returns>
 		public IKernel Register(params IRegistration[] registrations)
 		{
 			if (registrations == null)
@@ -519,7 +517,7 @@ namespace Castle.MicroKernel
 		///   the kernel to execute the proper decommission
 		///   lifecycles on the component instance.
 		/// </summary>
-		/// <param name = "instance"></param>
+		/// <param name="instance"> </param>
 		public virtual void ReleaseComponent(object instance)
 		{
 			if (ReleasePolicy.HasTrack(instance))
@@ -548,17 +546,17 @@ namespace Castle.MicroKernel
 
 		/// <summary>
 		///   Creates an implementation of
-		///   <see cref = "ILifestyleManager" />
+		///   <see cref="ILifestyleManager" />
 		///   based
 		///   on
-		///   <see cref = "LifestyleType" />
+		///   <see cref="LifestyleType" />
 		///   and invokes
-		///   <see cref = "ILifestyleManager.Init" />
+		///   <see cref="ILifestyleManager.Init" />
 		///   to initialize the newly created manager.
 		/// </summary>
-		/// <param name = "model"></param>
-		/// <param name = "activator"></param>
-		/// <returns></returns>
+		/// <param name="model"> </param>
+		/// <param name="activator"> </param>
+		/// <returns> </returns>
 		public virtual ILifestyleManager CreateLifestyleManager(ComponentModel model, IComponentActivator activator)
 		{
 			ILifestyleManager manager;
