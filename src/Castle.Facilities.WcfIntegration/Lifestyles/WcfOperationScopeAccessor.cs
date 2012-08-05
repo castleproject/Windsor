@@ -1,4 +1,4 @@
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2012 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,12 +14,14 @@
 
 namespace Castle.Facilities.WcfIntegration.Lifestyles
 {
+	using System.ComponentModel;
 	using System.ServiceModel;
 
 	using Castle.Core.Internal;
 	using Castle.MicroKernel.Context;
 	using Castle.MicroKernel.Lifestyle.Scoped;
 
+	[Description("per WCF operation")]
 	public class WcfOperationScopeAccessor : IScopeAccessor
 	{
 		private ThreadSafeFlag disposed;
