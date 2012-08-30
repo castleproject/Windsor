@@ -1,3 +1,5 @@
+- fixed IOC-354 - Deadlock in pooled lifestyle under heavy load
+
 3.1.0 (2012-08-05)
 ==================
 - fixed IOC-347 - WithServiceAllInterfaces throws exception (regression)
