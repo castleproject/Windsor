@@ -71,14 +71,15 @@ namespace Castle.MicroKernel.Lifestyle.Pool
 					available.Push(burden);
 					return false;
 				}
-				// Pool is full
-				componentActivator.Destroy(instance);
-				return true;
 			}
+			// Pool is full
+			componentActivator.Destroy(instance);
+			return true;
 		}
 
 		public virtual object Request(CreationContext context, Func<CreationContext, Burden> creationCallback)
 		{
+			Burden burden;
 			using (rwlock.ForWriting())
 			{
 				if (!initialized)
@@ -86,7 +87,6 @@ namespace Castle.MicroKernel.Lifestyle.Pool
 					Intitialize(creationCallback, context);
 				}
 
-				Burden burden;
 				if (available.Count != 0)
 				{
 					burden = available.Pop();
@@ -108,8 +108,8 @@ namespace Castle.MicroKernel.Lifestyle.Pool
 				{
 					throw new PoolException("burden returned by creationCallback does not have root instance associated with it (its Instance property is null).");
 				}
-				return burden.Instance;
 			}
+			return burden.Instance;
 		}
 
 		protected virtual void Intitialize(Func<CreationContext, Burden> createCallback, CreationContext c)
