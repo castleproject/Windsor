@@ -30,8 +30,8 @@ namespace Castle.MicroKernel.Resolvers.SpecializedResolvers
 	/// </remarks>
 	public class CollectionResolver : ISubDependencyResolver
 	{
-		private readonly bool allowEmptyCollections;
-		private readonly IKernel kernel;
+		protected readonly bool allowEmptyCollections;
+		protected readonly IKernel kernel;
 
 		public CollectionResolver(IKernel kernel, bool allowEmptyCollections = false)
 		{
