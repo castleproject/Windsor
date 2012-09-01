@@ -91,6 +91,7 @@ namespace Castle.MicroKernel.Releasers
 
 		public void Dispose()
 		{
+			KeyValuePair<object, Burden>[] burdens;
 			using (@lock.ForWriting())
 			{
 				if (trackedComponentsDiagnostic != null)
@@ -98,13 +99,13 @@ namespace Castle.MicroKernel.Releasers
 					trackedComponentsDiagnostic.TrackedInstancesRequested -= trackedComponentsDiagnostic_TrackedInstancesRequested;
 					trackedComponentsDiagnostic = null;
 				}
-				var burdens = instance2Burden.ToArray();
+				burdens = instance2Burden.ToArray();
 				instance2Burden.Clear();
-				// NOTE: This is relying on a undocumented behavior that order of items when enumerating Dictionary<> will be oldest --> latest
-				foreach (var burden in burdens.Reverse())
-				{
-					burden.Value.Release();
-				}
+			}
+			// NOTE: This is relying on a undocumented behavior that order of items when enumerating Dictionary<> will be oldest --> latest
+			foreach (var burden in burdens.Reverse())
+			{
+				burden.Value.Release();
 			}
 		}
 
@@ -134,15 +135,17 @@ namespace Castle.MicroKernel.Releasers
 				return;
 			}
 
+			Burden burden;
 			using (@lock.ForWriting())
 			{
-				Burden burden;
-				if (!instance2Burden.TryGetValue(instance, out burden))
+				// NOTE: we don't physically remove the instance from the instance2Burden collection here.
+				// we do it in OnInstanceReleased event handler
+				if (instance2Burden.TryGetValue(instance, out burden) == false)
 				{
 					return;
 				}
-				burden.Release();
 			}
+			burden.Release();
 		}
 
 		public virtual void Track(object instance, Burden burden)
@@ -158,8 +161,8 @@ namespace Castle.MicroKernel.Releasers
 			using (@lock.ForWriting())
 			{
 				instance2Burden.Add(instance, burden);
-				burden.Released += OnInstanceReleased;
 			}
+			burden.Released += OnInstanceReleased;
 			perfCounter.IncrementTrackedInstancesCount();
 		}
 
@@ -171,8 +174,8 @@ namespace Castle.MicroKernel.Releasers
 				{
 					return;
 				}
-				burden.Released -= OnInstanceReleased;
 			}
+			burden.Released -= OnInstanceReleased;
 			perfCounter.DecrementTrackedInstancesCount();
 		}
 
