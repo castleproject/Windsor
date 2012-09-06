@@ -25,6 +25,7 @@ namespace Castle.MicroKernel.Handlers
 	using Castle.DynamicProxy;
 	using Castle.MicroKernel.ComponentActivator;
 	using Castle.MicroKernel.Context;
+	using Castle.MicroKernel.ModelBuilder;
 
 	[Serializable]
 	public class DefaultGenericHandler : AbstractHandler
@@ -213,21 +214,21 @@ namespace Castle.MicroKernel.Handlers
 		}
 
 		///<summary>
-		///  Clone some of the parent componentmodel properties to the generic subhandler.
+		///	Clone some of the parent componentmodel properties to the generic subhandler.
 		///</summary>
 		///<remarks>
-		///  The following properties are copied: <list type="bullet">
-		///                                         <item>
-		///                                           <description>The
-		///                                             <see cref="LifestyleType" />
-		///                                           </description>
-		///                                         </item>
-		///                                         <item>
-		///                                           <description>The
-		///                                             <see cref="ComponentModel.Interceptors" />
-		///                                           </description>
-		///                                         </item>
-		///                                       </list>
+		///	The following properties are copied: <list type="bullet">
+		///		                                     <item>
+		///			                                     <description>The
+		///				                                     <see cref="LifestyleType" />
+		///			                                     </description>
+		///		                                     </item>
+		///		                                     <item>
+		///			                                     <description>The
+		///				                                     <see cref="ComponentModel.Interceptors" />
+		///			                                     </description>
+		///		                                     </item>
+		///	                                     </list>
 		///</remarks>
 		///<param name="newModel"> the subhandler </param>
 		private void CloneParentProperties(ComponentModel newModel)
@@ -249,6 +250,14 @@ namespace Castle.MicroKernel.Handlers
 				foreach (DictionaryEntry dependency in ComponentModel.CustomDependencies)
 				{
 					dependencies.Add(dependency.Key, dependency.Value);
+				}
+			}
+			var metaDescriptors = ComponentModel.GetMetaDescriptors(ensureExists: false);
+			if (metaDescriptors != null)
+			{
+				foreach (var descriptor in metaDescriptors)
+				{
+					descriptor.ConfigureComponentModel(Kernel, newModel);
 				}
 			}
 		}
@@ -338,7 +347,7 @@ namespace Castle.MicroKernel.Handlers
 #if !SILVERLIGHT
 				if (extendedProperties is ICloneable)
 				{
-					extendedProperties = (IDictionary) ((ICloneable) extendedProperties).Clone();
+					extendedProperties = (IDictionary)((ICloneable)extendedProperties).Clone();
 				}
 #endif
 				extendedProperties = new Arguments(extendedProperties);

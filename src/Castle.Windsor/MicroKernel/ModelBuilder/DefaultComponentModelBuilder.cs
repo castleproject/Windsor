@@ -84,8 +84,23 @@ namespace Castle.MicroKernel.ModelBuilder
 		{
 			var model = new ComponentModel();
 			Array.ForEach(customContributors, c => c.BuildComponentModel(kernel, model));
+
 			contributors.ForEach(c => c.ProcessModel(kernel, model));
-			Array.ForEach(customContributors, c => c.ConfigureComponentModel(kernel, model));
+
+			var metaDescriptors = default(ICollection<IMetaComponentModelDescriptor>);
+			Array.ForEach(customContributors, c =>
+			{
+				c.ConfigureComponentModel(kernel, model);
+				var meta = c as IMetaComponentModelDescriptor;
+				if (meta != null)
+				{
+					if (metaDescriptors == null)
+					{
+						metaDescriptors = model.GetMetaDescriptors(true);
+					}
+					metaDescriptors.Add(meta);
+				}
+			});
 			return model;
 		}
 

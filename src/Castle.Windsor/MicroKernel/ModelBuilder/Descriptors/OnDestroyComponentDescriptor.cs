@@ -1,4 +1,4 @@
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2012 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@ namespace Castle.MicroKernel.ModelBuilder.Descriptors
 	using Castle.Core;
 	using Castle.MicroKernel.LifecycleConcerns;
 
-	public class OnDestroyComponentDescriptor<S> : IComponentModelDescriptor
+	public class OnDestroyComponentDescriptor<S> : IComponentModelDescriptor, IMetaComponentModelDescriptor
 		where S : class
 	{
 		private readonly LifecycleActionDelegate<S> action;

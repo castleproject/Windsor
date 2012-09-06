@@ -16,15 +16,8 @@ namespace Castle.MicroKernel.ModelBuilder
 {
 	using Castle.Core;
 
-	public interface IComponentModelDescriptor
+	public interface IMetaComponentModelDescriptor
 	{
-		/// <summary>
-		/// 	Contribute to component model before standard <see cref="IContributeComponentModelConstruction" /> run.
-		/// </summary>
-		/// <param name="kernel"> </param>
-		/// <param name="model"> </param>
-		void BuildComponentModel(IKernel kernel, ComponentModel model);
-
 		/// <summary>
 		/// 	Contribute to component model after standard <see cref="IContributeComponentModelConstruction" /> run.
 		/// </summary>
