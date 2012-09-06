@@ -311,6 +311,7 @@
     <Compile Include="ClassComponents\PropertySetterThrows.cs" />
     <Compile Include="ClassComponents\UseGenericExtended1.cs" />
     <Compile Include="ClassComponents\UseGenericExtended2.cs" />
+    <Compile Include="ClassComponents\UsesArrayOfGeneric.cs" />
     <Compile Include="Components\AbPropChild.cs" />
     <Compile Include="Components\ADisposable.cs" />
     <Compile Include="Components\AppHost.cs" />
