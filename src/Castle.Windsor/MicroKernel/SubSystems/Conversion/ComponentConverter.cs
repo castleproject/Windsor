@@ -49,7 +49,7 @@ namespace Castle.MicroKernel.SubSystems.Conversion
 		{
 			if (!ReferenceExpressionUtil.IsReference(value))
 			{
-				String message = String.Format("Could not convert expression {0} to type {1}. Expecting a reference override like ${some key}", value, targetType.FullName);
+				String message = String.Format("Could not convert expression {0} to type {1}. Expecting a reference override like ${{some key}}", value, targetType.FullName);
 				throw new ConverterException(message);
 			}
 
