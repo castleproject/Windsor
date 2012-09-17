@@ -123,7 +123,7 @@ namespace Castle.Windsor
 		/// <typeparam name = "TFacility">The facility type.</typeparam>
 		/// <param name = "idInConfiguration"></param>
 		/// <returns></returns>
-		[Obsolete("Use AddFacility<TFacility>() instead.")]
+		[Obsolete("Use AddFacility<TFacility>(Action<TFacility> onCreate) instead.")]
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		IWindsorContainer AddFacility<TFacility>(String idInConfiguration) where TFacility : IFacility, new();
 
