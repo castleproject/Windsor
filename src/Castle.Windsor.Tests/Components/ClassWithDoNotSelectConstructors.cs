@@ -16,12 +16,16 @@ namespace CastleTests.Components
 {
     using Castle.Core;
 
-	public class ClassWithDoNotWireProperties
-	{
-		[DoNotWire]
-		public string Host { get; set; }
+    public class ClassWithDoNotSelectConstructors
+    {
+        public ClassWithDoNotSelectConstructors() { }
+        
+        [DoNotSelect]
+        public ClassWithDoNotSelectConstructors(string dependency)
+        {
+            Dependency = dependency;
+        }
 
-		[DoNotWire]
-		public int Port { get; set; }
-	}
+        public string Dependency { get; private set; }
+    }
 }

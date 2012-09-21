@@ -1,0 +1,14 @@
+<configuration>
+
+	<components>
+
+		<component id="server" 
+			type="ClassWithDoNotSelectConstructors">
+			<parameters>
+				<dependency>"abcde"</dependency>
+			</parameters>
+		</component>
+
+	</components>
+
+</configuration>
