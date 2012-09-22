@@ -466,7 +466,7 @@ namespace Castle.MicroKernel.Registration
 						actuallyBasedOn.AddRange(baseTypes);
 				}
 			}
-			baseTypes = actuallyBasedOn.ToArray();
+			baseTypes = actuallyBasedOn.Distinct().ToArray();
 			return baseTypes.Length > 0;
 		}
 
