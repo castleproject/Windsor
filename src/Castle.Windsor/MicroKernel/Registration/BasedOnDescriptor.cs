@@ -17,6 +17,7 @@ namespace Castle.MicroKernel.Registration
 	using System;
 	using System.Collections.Generic;
 	using System.ComponentModel;
+	using System.Linq;
 
 	using Castle.Core;
 	using Castle.MicroKernel.Lifestyle.Scoped;
@@ -26,7 +27,7 @@ namespace Castle.MicroKernel.Registration
 	/// </summary>
 	public class BasedOnDescriptor : IRegistration
 	{
-		private readonly Type basedOn;
+		private readonly List<Type> bases;
 		private Action<ComponentRegistration> configuration;
 		private readonly FromDescriptor from;
 		private readonly ServiceDescriptor service;
@@ -38,7 +39,7 @@ namespace Castle.MicroKernel.Registration
 		/// </summary>
 		internal BasedOnDescriptor(Type basedOn, FromDescriptor from, Predicate<Type> additionalFilters)
 		{
-			this.basedOn = basedOn;
+			this.bases = new List<Type> { basedOn };
 			this.from = from;
 			service = new ServiceDescriptor(this);
 			If(additionalFilters);
@@ -85,6 +86,17 @@ namespace Castle.MicroKernel.Registration
 		}
 
 		/// <summary>
+		///   Returns the descriptor for accepting a new type.
+		/// </summary>
+		/// <param name = "basedOn">The base type.</param>
+		/// <returns>The descriptor for the type.</returns>
+		public BasedOnDescriptor OrBasedOn(Type basedOn)
+		{
+			this.bases.Add(basedOn);
+			return this;
+		}
+
+		/// <summary>
 		///   Allows customized configurations of each matching type.
 		/// </summary>
 		/// <param name = "configurer">The configuration action.</param>
@@ -117,7 +129,7 @@ namespace Castle.MicroKernel.Registration
 		///    name = "condition" /> evaluates to <c>true</c>.</param>
 		/// <returns></returns>
 		public BasedOnDescriptor ConfigureIf(Predicate<ComponentRegistration> condition,
-		                                     Action<ComponentRegistration> configurer)
+											 Action<ComponentRegistration> configurer)
 		{
 			configuration += r =>
 			{
@@ -139,8 +151,8 @@ namespace Castle.MicroKernel.Registration
 		///    name = "condition" /> evaluates to <c>false</c>.</param>
 		/// <returns></returns>
 		public BasedOnDescriptor ConfigureIf(Predicate<ComponentRegistration> condition,
-		                                     Action<ComponentRegistration> configurerWhenTrue,
-		                                     Action<ComponentRegistration> configurerWhenFalse)
+											 Action<ComponentRegistration> configurerWhenTrue,
+											 Action<ComponentRegistration> configurerWhenFalse)
 		{
 			configuration += r =>
 			{
@@ -395,8 +407,8 @@ namespace Castle.MicroKernel.Registration
 		protected virtual bool Accepts(Type type, out Type[] baseTypes)
 		{
 			return IsBasedOn(type, out baseTypes)
-			       && ExecuteIfCondition(type)
-			       && ExecuteUnlessCondition(type) == false;
+				   && ExecuteIfCondition(type)
+				   && ExecuteUnlessCondition(type) == false;
 		}
 
 		protected bool ExecuteIfCondition(Type type)
@@ -435,21 +447,27 @@ namespace Castle.MicroKernel.Registration
 
 		protected bool IsBasedOn(Type type, out Type[] baseTypes)
 		{
-			if (basedOn.IsAssignableFrom(type))
+			var actuallyBasedOn = new List<Type>();
+			foreach (var basedOn in bases)
 			{
-				baseTypes = new[] { basedOn };
-				return true;
-			}
-			if (basedOn.IsGenericTypeDefinition)
-			{
-				if (basedOn.IsInterface)
+				if (basedOn.IsAssignableFrom(type))
 				{
-					return IsBasedOnGenericInterface(type, out baseTypes);
+					actuallyBasedOn.Add(basedOn);
 				}
-				return IsBasedOnGenericClass(type, out baseTypes);
+				else if (basedOn.IsGenericTypeDefinition)
+				{
+					if (basedOn.IsInterface)
+					{
+						if (IsBasedOnGenericInterface(type, basedOn, out baseTypes))
+							actuallyBasedOn.AddRange(baseTypes);
+					}
+					
+					if (IsBasedOnGenericClass(type, basedOn, out baseTypes))
+						actuallyBasedOn.AddRange(baseTypes);
+				}
 			}
-			baseTypes = new[] { basedOn };
-			return false;
+			baseTypes = actuallyBasedOn.ToArray();
+			return baseTypes.Length > 0;
 		}
 
 		internal bool TryRegister(Type type, IKernel kernel)
@@ -485,12 +503,12 @@ namespace Castle.MicroKernel.Registration
 			return true;
 		}
 
-		private bool IsBasedOnGenericClass(Type type, out Type[] baseTypes)
+		private static bool IsBasedOnGenericClass(Type type, Type based, out Type[] baseTypes)
 		{
 			while (type != null)
 			{
 				if (type.IsGenericType &&
-				    type.GetGenericTypeDefinition() == basedOn)
+					type.GetGenericTypeDefinition() == based)
 				{
 					baseTypes = new[] { type };
 					return true;
@@ -502,16 +520,16 @@ namespace Castle.MicroKernel.Registration
 			return false;
 		}
 
-		private bool IsBasedOnGenericInterface(Type type, out Type[] baseTypes)
+		private static bool IsBasedOnGenericInterface(Type type, Type based, out Type[] baseTypes)
 		{
 			var types = new List<Type>(4);
 			foreach (var @interface in type.GetInterfaces())
 			{
 				if (@interface.IsGenericType &&
-				    @interface.GetGenericTypeDefinition() == basedOn)
+					@interface.GetGenericTypeDefinition() == based)
 				{
 					if (@interface.ReflectedType == null &&
-					    @interface.ContainsGenericParameters)
+						@interface.ContainsGenericParameters)
 					{
 						types.Add(@interface.GetGenericTypeDefinition());
 					}
