@@ -66,7 +66,7 @@ namespace Castle.Facilities.WcfIntegration
 			}
 			if (model.Services.Count() != 1)
 			{
-				throw new FacilityException("The component {0} exposes {1} services. Currently only single-service components are supported by the facility.");
+				throw new FacilityException(string.Format("The component {0} exposes {1} services. Currently only single-service components are supported by the facility.", model.Name, model.Services.Count()));
 			}
 		}
 
