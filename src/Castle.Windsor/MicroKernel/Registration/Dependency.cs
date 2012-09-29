@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2012 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,6 +18,8 @@ namespace Castle.MicroKernel.Registration
 	using System.Collections;
 	using System.Collections.Generic;
 	using System.Configuration;
+	using System.Reflection;
+	using System.Resources;
 
 	using Castle.Core.Configuration;
 
@@ -31,24 +33,24 @@ namespace Castle.MicroKernel.Registration
 		}
 
 		/// <summary>
-		///   Specifies that value <paramref name = "valueAsString" /> should be used to satisfy dependencies matched by <paramref
-		///    name = "dependencyName" />. The value is provided as a string and will be converted to appropriate type when resolving.
+		/// Specifies that value <paramref name = "valueAsString" /> should be used to satisfy dependencies matched by <paramref name = "dependencyName" />. The value is provided as a string and will be
+		/// converted to appropriate type when resolving.
 		/// </summary>
-		/// <param name = "dependencyName"></param>
-		/// <param name = "valueAsString"></param>
-		/// <returns></returns>
+		/// <param name = "dependencyName"> </param>
+		/// <param name = "valueAsString"> </param>
+		/// <returns> </returns>
 		public static Parameter OnConfigValue(string dependencyName, string valueAsString)
 		{
 			return Parameter.ForKey(dependencyName).Eq(valueAsString);
 		}
 
 		/// <summary>
-		///   Specifies that value <paramref name = "value" /> should be used to satisfy dependencies matched by <paramref
-		///    name = "dependencyName" />. The value is provided as a string and will be converted to appropriate type when resolving.
+		/// Specifies that value <paramref name = "value" /> should be used to satisfy dependencies matched by <paramref name = "dependencyName" />. The value is provided as a string and will be converted to
+		/// appropriate type when resolving.
 		/// </summary>
-		/// <param name = "dependencyName"></param>
-		/// <param name = "value"></param>
-		/// <returns></returns>
+		/// <param name = "dependencyName"> </param>
+		/// <param name = "value"> </param>
+		/// <returns> </returns>
 		public static Parameter OnConfigValue(string dependencyName, IConfiguration value)
 		{
 			return Parameter.ForKey(dependencyName).Eq(value);
@@ -56,12 +58,12 @@ namespace Castle.MicroKernel.Registration
 
 #if !SILVERLIGHT
 		/// <summary>
-		///   Specifies that value from application configuration file's appSettings section named <paramref name = "settingName" /> should be used to satisfy dependencies matched by <paramref
-		///    name = "dependencyName" />. The value is provided as a string and will be converted to appropriate type when resolving.
+		/// Specifies that value from application configuration file's appSettings section named <paramref name = "settingName" /> should be used to satisfy dependencies matched by
+		///     <paramref name = "dependencyName" />. The value is provided as a string and will be converted to appropriate type when resolving.
 		/// </summary>
-		/// <param name = "dependencyName"></param>
-		/// <param name = "settingName"></param>
-		/// <returns></returns>
+		/// <param name = "dependencyName"> </param>
+		/// <param name = "settingName"> </param>
+		/// <returns> </returns>
 		public static Parameter OnAppSettingsValue(string dependencyName, string settingName)
 		{
 			var value = ConfigurationManager.AppSettings.Get(settingName);
@@ -69,11 +71,11 @@ namespace Castle.MicroKernel.Registration
 		}
 
 		/// <summary>
-		///   Specifies that value from application configuration file's appSettings section named <paramref name = "name" /> should be used to satisfy dependencies matched by <paramref
-		///    name = "name" />. The value is provided as a string and will be converted to appropriate type when resolving.
+		/// Specifies that value from application configuration file's appSettings section named <paramref name = "name" /> should be used to satisfy dependencies matched by <paramref name = "name" />. The value
+		/// is provided as a string and will be converted to appropriate type when resolving.
 		/// </summary>
-		/// <param name = "name"></param>
-		/// <returns></returns>
+		/// <param name = "name"> </param>
+		/// <returns> </returns>
 		public static Parameter OnAppSettingsValue(string name)
 		{
 			return OnAppSettingsValue(name, name);
@@ -81,8 +83,7 @@ namespace Castle.MicroKernel.Registration
 #endif
 
 		/// <summary>
-		///   Specifies that component registered with <paramref name = "componentName" /> should be used to satisfy dependencies matched by <paramref
-		///    name = "dependencyName" />
+		/// Specifies that component registered with <paramref name = "componentName" /> should be used to satisfy dependencies matched by <paramref name = "dependencyName" />
 		/// </summary>
 		public static ServiceOverride OnComponent(string dependencyName, string componentName)
 		{
@@ -90,8 +91,7 @@ namespace Castle.MicroKernel.Registration
 		}
 
 		/// <summary>
-		///   Specifies that component registered with <paramref name = "componentName" /> should be used to satisfy dependencies matched by <paramref
-		///    name = "dependencyType" />
+		/// Specifies that component registered with <paramref name = "componentName" /> should be used to satisfy dependencies matched by <paramref name = "dependencyType" />
 		/// </summary>
 		public static ServiceOverride OnComponent(Type dependencyType, string componentName)
 		{
@@ -99,8 +99,7 @@ namespace Castle.MicroKernel.Registration
 		}
 
 		/// <summary>
-		///   Specifies that component registered with <paramref name = "componentType" /> should be used to satisfy dependencies matched by <paramref
-		///    name = "dependencyName" />
+		/// Specifies that component registered with <paramref name = "componentType" /> should be used to satisfy dependencies matched by <paramref name = "dependencyName" />
 		/// </summary>
 		public static ServiceOverride OnComponent(string dependencyName, Type componentType)
 		{
@@ -108,8 +107,7 @@ namespace Castle.MicroKernel.Registration
 		}
 
 		/// <summary>
-		///   Specifies that component registered with <paramref name = "componentType" /> should be used to satisfy dependencies matched by <paramref
-		///    name = "dependencyType" />
+		/// Specifies that component registered with <paramref name = "componentType" /> should be used to satisfy dependencies matched by <paramref name = "dependencyType" />
 		/// </summary>
 		public static ServiceOverride OnComponent(Type dependencyType, Type componentType)
 		{
@@ -117,8 +115,7 @@ namespace Castle.MicroKernel.Registration
 		}
 
 		/// <summary>
-		///   Specifies that component registered with <typeparamref name = "TComponentType" /> should be used to satisfy dependencies matched by <typeparamref
-		///    name = "TDependencyType" />
+		/// Specifies that component registered with <typeparamref name = "TComponentType" /> should be used to satisfy dependencies matched by <typeparamref name = "TDependencyType" />
 		/// </summary>
 		public static ServiceOverride OnComponent<TDependencyType, TComponentType>()
 		{
@@ -126,8 +123,7 @@ namespace Castle.MicroKernel.Registration
 		}
 
 		/// <summary>
-		///   Specifies that components registered with <paramref name = "componentNames" /> should be used to satisfy collection dependencies matched by <paramref
-		///    name = "collectionDependencyName" />
+		/// Specifies that components registered with <paramref name = "componentNames" /> should be used to satisfy collection dependencies matched by <paramref name = "collectionDependencyName" />
 		/// </summary>
 		public static ServiceOverride OnComponentCollection(string collectionDependencyName, params string[] componentNames)
 		{
@@ -135,8 +131,7 @@ namespace Castle.MicroKernel.Registration
 		}
 
 		/// <summary>
-		///   Specifies that components registered with <paramref name = "componentNames" /> should be used to satisfy collection dependencies matched by <paramref
-		///    name = "collectionDependencyType" />
+		/// Specifies that components registered with <paramref name = "componentNames" /> should be used to satisfy collection dependencies matched by <paramref name = "collectionDependencyType" />
 		/// </summary>
 		public static ServiceOverride OnComponentCollection(Type collectionDependencyType, params string[] componentNames)
 		{
@@ -144,8 +139,7 @@ namespace Castle.MicroKernel.Registration
 		}
 
 		/// <summary>
-		///   Specifies that components registered with <paramref name = "componentNames" /> should be used to satisfy collection dependencies matched by <typeparamref
-		///    name = "TCollectionDependencyType" />
+		/// Specifies that components registered with <paramref name = "componentNames" /> should be used to satisfy collection dependencies matched by <typeparamref name = "TCollectionDependencyType" />
 		/// </summary>
 		public static ServiceOverride OnComponentCollection<TCollectionDependencyType>(params string[] componentNames)
 			where TCollectionDependencyType : IEnumerable
@@ -154,8 +148,7 @@ namespace Castle.MicroKernel.Registration
 		}
 
 		/// <summary>
-		///   Specifies that components registered with <paramref name = "componentTypes" /> should be used to satisfy collection dependencies matched by <paramref
-		///    name = "collectionDependencyName" />
+		/// Specifies that components registered with <paramref name = "componentTypes" /> should be used to satisfy collection dependencies matched by <paramref name = "collectionDependencyName" />
 		/// </summary>
 		public static ServiceOverride OnComponentCollection(string collectionDependencyName, params Type[] componentTypes)
 		{
@@ -163,8 +156,7 @@ namespace Castle.MicroKernel.Registration
 		}
 
 		/// <summary>
-		///   Specifies that components registered with <paramref name = "componentTypes" /> should be used to satisfy collection dependencies matched by <paramref
-		///    name = "collectionDependencyType" />
+		/// Specifies that components registered with <paramref name = "componentTypes" /> should be used to satisfy collection dependencies matched by <paramref name = "collectionDependencyType" />
 		/// </summary>
 		public static ServiceOverride OnComponentCollection(Type collectionDependencyType, params Type[] componentTypes)
 		{
@@ -172,8 +164,7 @@ namespace Castle.MicroKernel.Registration
 		}
 
 		/// <summary>
-		///   Specifies that components registered with <paramref name = "componentTypes" /> should be used to satisfy collection dependencies matched by <typeparamref
-		///    name = "TCollectionDependencyType" />
+		/// Specifies that components registered with <paramref name = "componentTypes" /> should be used to satisfy collection dependencies matched by <typeparamref name = "TCollectionDependencyType" />
 		/// </summary>
 		public static ServiceOverride OnComponentCollection<TCollectionDependencyType>(params Type[] componentTypes)
 			where TCollectionDependencyType : IEnumerable
@@ -182,8 +173,7 @@ namespace Castle.MicroKernel.Registration
 		}
 
 		/// <summary>
-		///   Specifies that value <paramref name = "value" /> should be used to satisfy dependencies matched by <paramref
-		///    name = "dependencyName" />
+		/// Specifies that value <paramref name = "value" /> should be used to satisfy dependencies matched by <paramref name = "dependencyName" />
 		/// </summary>
 		public static Property OnValue(string dependencyName, object value)
 		{
@@ -191,8 +181,7 @@ namespace Castle.MicroKernel.Registration
 		}
 
 		/// <summary>
-		///   Specifies that value <paramref name = "value" /> should be used to satisfy dependencies matched by <paramref
-		///    name = "dependencyType" />
+		/// Specifies that value <paramref name = "value" /> should be used to satisfy dependencies matched by <paramref name = "dependencyType" />
 		/// </summary>
 		public static Property OnValue(Type dependencyType, object value)
 		{
@@ -200,8 +189,7 @@ namespace Castle.MicroKernel.Registration
 		}
 
 		/// <summary>
-		///   Specifies that value <paramref name = "value" /> should be used to satisfy dependencies matched by <typeparamref
-		///    name = "TDependencyType" />
+		/// Specifies that value <paramref name = "value" /> should be used to satisfy dependencies matched by <typeparamref name = "TDependencyType" />
 		/// </summary>
 		public static Property OnValue<TDependencyType>(object value)
 		{
@@ -217,6 +205,31 @@ namespace Castle.MicroKernel.Registration
 				return true;
 			}
 			return false;
+		}
+
+		public static Property OnResource<TResources>(string dependencyName, string resourceName)
+		{
+			var resourceManagerProperty = typeof(TResources).GetProperty("ResourceManager", BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic, null, typeof(ResourceManager), Type.EmptyTypes,
+			                                                             null);
+			if (resourceManagerProperty == null)
+			{
+				throw new ArgumentException(string.Format("Type {0} does not appear to be a correct 'resources' type. It doesn't have 'ResourceManager' property.", typeof(TResources)));
+			}
+			ResourceManager resourceManager;
+			try
+			{
+				resourceManager = (ResourceManager)resourceManagerProperty.GetValue(null, null);
+			}
+			catch (Exception e)
+			{
+				throw new ArgumentException(string.Format("Could not read property {1} on type {0}", typeof(TResources), resourceManagerProperty), e);
+			}
+			return OnResource(dependencyName, resourceManager, resourceName);
+		}
+
+		public static Property OnResource(string dependencyName, ResourceManager resourceManager, string resourceName)
+		{
+			return Property.ForKey(dependencyName).Eq(resourceManager.GetObject(resourceName));
 		}
 	}
 }

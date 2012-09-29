@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2012 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ namespace CastleTests.Registration
 	using Castle.MicroKernel.Registration;
 
 	using CastleTests.Components;
+	using CastleTests.Properties;
 
 	using NUnit.Framework;
 
@@ -30,22 +31,44 @@ namespace CastleTests.Registration
 		public void Can_register_configuration_parameters_from_appSettings_inline()
 		{
 			Container.Register(Component.For<ClassWithArguments>()
-			                   	.DependsOn(
-			                   		Dependency.OnAppSettingsValue("arg1"),
-			                   		Dependency.OnAppSettingsValue("arg2", "number")));
+				                   .DependsOn(
+					                   Dependency.OnAppSettingsValue("arg1"),
+					                   Dependency.OnAppSettingsValue("arg2", "number")));
 
 			var obj = Container.Resolve<ClassWithArguments>();
 
 			Assert.AreEqual("a string", obj.Arg1);
 			Assert.AreEqual(42, obj.Arg2);
 		}
+
+		[Test]
+		public void can_register_value_from_a_resource_file_with_type()
+		{
+			Container.Register(Component.For<ClassWithArguments>()
+				                   .DependsOn(Dependency.OnResource<Resources>("arg1", "SomeResource"),
+				                              Dependency.OnValue("arg2", 2)));
+			var obj = Container.Resolve<ClassWithArguments>();
+
+			Assert.AreEqual("Some resource value", obj.Arg1);
+		}
 #endif
+
+		[Test]
+		public void can_register_value_from_a_resource_file_with_resourceManager()
+		{
+			Container.Register(Component.For<ClassWithArguments>()
+				                   .DependsOn(Dependency.OnResource("arg1", Resources.ResourceManager, "SomeResource"),
+				                              Dependency.OnValue("arg2", 2)));
+			var obj = Container.Resolve<ClassWithArguments>();
+
+			Assert.AreEqual("Some resource value", obj.Arg1);
+		}
 
 		[Test]
 		public void Can_register_configuration_parameters_from_dynamic_parameters_inline()
 		{
 			Container.Register(Component.For<ClassWithArguments>()
-			                   	.DependsOn((k, d) => d.InsertAnonymous(new { arg1 = "a string", arg2 = 42 })));
+				                   .DependsOn((k, d) => d.InsertAnonymous(new { arg1 = "a string", arg2 = 42 })));
 
 			var obj = Container.Resolve<ClassWithArguments>();
 
@@ -57,9 +80,9 @@ namespace CastleTests.Registration
 		public void Can_register_configuration_parameters_inline()
 		{
 			Container.Register(Component.For<ClassWithArguments>()
-			                   	.DependsOn(
-			                   		Dependency.OnConfigValue("arg1", "a string"),
-			                   		Dependency.OnConfigValue("arg2", "42")));
+				                   .DependsOn(
+					                   Dependency.OnConfigValue("arg1", "a string"),
+					                   Dependency.OnConfigValue("arg2", "42")));
 
 			var obj = Container.Resolve<ClassWithArguments>();
 
@@ -71,9 +94,9 @@ namespace CastleTests.Registration
 		public void Can_register_named_inline_dependency()
 		{
 			Container.Register(Component.For<ClassWithArguments>()
-			                   	.DependsOn(
-			                   		Dependency.OnValue("arg1", "a string"),
-			                   		Dependency.OnValue("arg2", 42)));
+				                   .DependsOn(
+					                   Dependency.OnValue("arg1", "a string"),
+					                   Dependency.OnValue("arg2", 42)));
 
 			var obj = Container.Resolve<ClassWithArguments>();
 
@@ -251,9 +274,9 @@ namespace CastleTests.Registration
 		public void Can_register_typed_inline_dependency()
 		{
 			Container.Register(Component.For<ClassWithArguments>()
-			                   	.DependsOn(
-			                   		Dependency.OnValue(typeof(string), "a string"),
-			                   		Dependency.OnValue(typeof(int), 42)));
+				                   .DependsOn(
+					                   Dependency.OnValue(typeof(string), "a string"),
+					                   Dependency.OnValue(typeof(int), 42)));
 
 			var obj = Container.Resolve<ClassWithArguments>();
 
@@ -265,9 +288,9 @@ namespace CastleTests.Registration
 		public void Can_register_typed_inline_dependency_generic()
 		{
 			Container.Register(Component.For<ClassWithArguments>()
-			                   	.DependsOn(
-			                   		Dependency.OnValue<string>("a string"),
-			                   		Dependency.OnValue<int>(42)));
+				                   .DependsOn(
+					                   Dependency.OnValue<string>("a string"),
+					                   Dependency.OnValue<int>(42)));
 
 			var obj = Container.Resolve<ClassWithArguments>();
 

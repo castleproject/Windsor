@@ -604,6 +604,11 @@
     <Compile Include="MicroKernel\NotImplementedDependencyResolver.cs" />
     <Compile Include="Pools\RecyclableComponent.cs" />
     <Compile Include="Pools\UseRecyclableComponent.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="PropertyDependenciesTestCase.cs" />
     <Compile Include="Proxies\InterceptorDependenciesTestCase.cs" />
     <Compile Include="ProxyInfrastructure\OnBehalfAwareInterceptorSelector.cs" />
@@ -1122,6 +1127,10 @@
     <Compile Include="Windsor.Tests\XmlConfigStructureTestCase.cs" />
     <Compile Include="WindsorServiceProviderTestCase.cs" />
     <Compile Include="XmlFiles\Xml.cs" />
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="XmlFiles\Channel1.xml" />
     <EmbeddedResource Include="Config\OneComponentInTwoPieces.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

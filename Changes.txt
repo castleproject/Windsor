@@ -1,3 +1,4 @@
+- implemented IOC-358 - add ability to specify dependency on an embedded resource
 - implemented IOC-357 - Provide some internal logging in Windsor to be able to see non-critical errors
 - implemented IOC-355 - Add a mechanism to mark constructors as unselectable for injection, much like DoNotWireAttribute is for property injection (contributed by Rory Plaire)
 
