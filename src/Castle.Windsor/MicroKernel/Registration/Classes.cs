@@ -18,8 +18,10 @@ namespace Castle.MicroKernel.Registration
 	using System.Collections.Generic;
 	using System.ComponentModel;
 	using System.Reflection;
+	using System.Runtime.CompilerServices;
 
 	using Castle.Core.Internal;
+	using Castle.Windsor;
 
 	/// <summary>
 	///   Entry point to fluent way to register, by convention, multiple concrete (non-abstract) classes (that include also delegate types). Use static methods on the class to fluently build registration.
@@ -73,6 +75,27 @@ namespace Castle.MicroKernel.Registration
 			}
 			return new FromAssemblyDescriptor(type.Assembly, Filter);
 		}
+
+
+
+		/// <summary>
+		///   Scans current assembly and all refernced assemblies with the same first part of the name.
+		/// </summary>
+		/// <returns></returns>
+		/// <remarks>
+		///   Assemblies are considered to belong to the same application based on the first part of the name.
+		///   For example if the method is called from within <c>MyApp.exe</c> and <c>MyApp.exe</c> references <c>MyApp.SuperFeatures.dll</c>,
+		///   <c>mscorlib.dll</c> and <c>ThirdPartyCompany.UberControls.dll</c> the <c>MyApp.exe</c> and <c>MyApp.SuperFeatures.dll</c> 
+		///   will be scanned for components, and other assemblies will be ignored.
+		/// </remarks>
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		public static FromAssemblyDescriptor FromAssemblyInThisApplication()
+		{
+
+			var assemblies = new HashSet<Assembly>(ReflectionUtil.GetApplicationAssemblies(Assembly.GetCallingAssembly()));
+			return new FromAssemblyDescriptor(assemblies, Filter);
+		}
+
 
 		/// <summary>
 		///   Prepares to register types from an assembly containing the type.
