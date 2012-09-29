@@ -18,12 +18,18 @@ namespace Castle.MicroKernel
 	using System.Collections;
 
 	using Castle.Core;
+	using Castle.Core.Logging;
 
 	/// <summary>
 	/// Extended contract of kernel, used internally.
 	/// </summary>
 	public interface IKernelInternal : IKernel
 	{
+		/// <summary>
+		/// Internal logger used by the container (not just <see cref = "IKernelInternal" /> implementation itself but also other classes too) to log information about what's happening in the container.
+		/// </summary>
+		ILogger Logger { get; set; }
+
 		/// <summary>
 		/// Adds a custom made <see cref = "ComponentModel" />. Used by facilities.
 		/// </summary>
