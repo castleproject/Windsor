@@ -16,7 +16,6 @@ namespace CastleTests.Proxies
 {
 	using System;
 
-	using Castle.Core;
 	using Castle.DynamicProxy;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Handlers;
@@ -25,7 +24,6 @@ namespace CastleTests.Proxies
 	using Castle.Windsor.Tests.Interceptors;
 
 	using CastleTests.Components;
-	using CastleTests.Facilities.Synchronize.Components;
 
 	using NUnit.Framework;
 
@@ -251,7 +249,7 @@ namespace CastleTests.Proxies
 		public void can_proxy_interfaces_with_no_impl_given_just_a_hook()
 		{
 			Container.Register(Component.For<ICalcService>()
-				                   .Proxy.Hook(h => h.Instance(new DummyProxyHook())));
+				                   .Proxy.Hook(h => h.Instance(new ProxyNothingHook())));
 
 			var calculator = Container.Resolve<ICalcService>();
 			AssertIsProxy(calculator);
