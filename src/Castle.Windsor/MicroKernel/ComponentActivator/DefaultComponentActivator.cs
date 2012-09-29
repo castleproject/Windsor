@@ -335,12 +335,13 @@ namespace Castle.MicroKernel.ComponentActivator
 				{
 					return resolver.Resolve(context, context.Handler, Model, property.Dependency);
 				}
-				catch (Exception)
+				catch (Exception e)
 				{
 					if (property.Dependency.IsOptional == false)
 					{
 						throw;
 					}
+					Kernel.Logger.Warn(string.Format("Exception when resolving optional dependency {0} on component {1}.", property.Dependency, Model.Name), e);
 				}
 			}
 			return null;
