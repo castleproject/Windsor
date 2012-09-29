@@ -1071,7 +1071,6 @@ namespace Castle.MicroKernel.Registration
 				new DefaultsDescriptor(name, implementation),
 			};
 			list.AddRange(descriptors);
-			list.Add(new InterfaceProxyDescriptor());
 			return list.ToArray();
 		}
 

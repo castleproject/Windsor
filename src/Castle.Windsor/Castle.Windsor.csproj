@@ -601,7 +601,6 @@
     <Compile Include="MicroKernel\ModelBuilder\Inspectors\InterceptorInspector.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="MicroKernel\ModelBuilder\Descriptors\InterfaceProxyDescriptor.cs" />
     <Compile Include="MicroKernel\ModelBuilder\Inspectors\LifecycleModelInspector.cs">
       <SubType>Code</SubType>
     </Compile>

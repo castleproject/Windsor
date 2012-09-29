@@ -1,3 +1,4 @@
+- fixed IOC-356 - Specifying a hook should be enough to create an implementation-less proxy
 - fixed IOC-354 - Deadlock in pooled lifestyle under heavy load
 - fixed IOC-300 - OnCreate does not work for generic components
 

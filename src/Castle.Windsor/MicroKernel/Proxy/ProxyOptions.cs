@@ -1,4 +1,4 @@
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2012 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ namespace Castle.MicroKernel.Proxy
 	using Castle.DynamicProxy;
 
 	/// <summary>
-	///   Represents options to configure proxies.
+	/// 	Represents options to configure proxies.
 	/// </summary>
 	public class ProxyOptions
 	{
@@ -34,18 +34,17 @@ namespace Castle.MicroKernel.Proxy
 		private readonly ComponentModel component;
 
 		/// <summary>
-		///   Initializes a new instance of the <see cref = "ProxyOptions" /> class.
+		/// 	Initializes a new instance of the <see cref="ProxyOptions" /> class.
 		/// </summary>
 		public ProxyOptions(ComponentModel component)
 		{
 			this.component = component;
-			OmitTarget = false;
 		}
 
 		/// <summary>
-		///   Gets the additional interfaces to proxy.
+		/// 	Gets the additional interfaces to proxy.
 		/// </summary>
-		/// <value>The interfaces.</value>
+		/// <value> The interfaces. </value>
 		public Type[] AdditionalInterfaces
 		{
 			get
@@ -60,20 +59,20 @@ namespace Castle.MicroKernel.Proxy
 		}
 
 		/// <summary>
-		///   Determines if the proxied component can change targets.
+		/// 	Determines if the proxied component can change targets.
 		/// </summary>
 		public bool AllowChangeTarget { get; set; }
 
 #if (!SILVERLIGHT)
 		/// <summary>
-		///   Determines if the interface proxied component should inherit 
-		///   from <see cref = "MarshalByRefObject" />
+		/// 	Determines if the interface proxied component should inherit 
+		/// 	from <see cref="MarshalByRefObject" />
 		/// </summary>
 		public bool UseMarshalByRefAsBaseClass { get; set; }
 #endif
 
 		/// <summary>
-		///   Gets or sets the proxy hook.
+		/// 	Gets or sets the proxy hook.
 		/// </summary>
 		public IReference<IProxyGenerationHook> Hook
 		{
@@ -82,9 +81,9 @@ namespace Castle.MicroKernel.Proxy
 		}
 
 		/// <summary>
-		///   Gets the mix ins to integrate.
+		/// 	Gets the mix ins to integrate.
 		/// </summary>
-		/// <value>The interfaces.</value>
+		/// <value> The interfaces. </value>
 		public IEnumerable<IReference<object>> MixIns
 		{
 			get
@@ -98,12 +97,12 @@ namespace Castle.MicroKernel.Proxy
 		}
 
 		/// <summary>
-		///   Determines if the proxied component uses a target.
+		/// 	Determines if the proxied component uses a target.
 		/// </summary>
 		public bool OmitTarget { get; set; }
 
 		/// <summary>
-		///   Gets or sets the interceptor selector.
+		/// 	Gets or sets the interceptor selector.
 		/// </summary>
 		public IReference<IInterceptorSelector> Selector
 		{
@@ -112,9 +111,9 @@ namespace Castle.MicroKernel.Proxy
 		}
 
 		/// <summary>
-		///   Adds the additional interfaces to proxy.
+		/// 	Adds the additional interfaces to proxy.
 		/// </summary>
-		/// <param name = "interfaces">The interfaces.</param>
+		/// <param name="interfaces"> The interfaces. </param>
 		public void AddAdditionalInterfaces(params Type[] interfaces)
 		{
 			if (interfaces == null || interfaces.Length == 0)
@@ -131,9 +130,9 @@ namespace Castle.MicroKernel.Proxy
 		}
 
 		/// <summary>
-		///   Adds the additional mix ins to integrate.
+		/// 	Adds the additional mix ins to integrate.
 		/// </summary>
-		/// <param name = "mixIns">The mix ins.</param>
+		/// <param name="mixIns"> The mix ins. </param>
 		public void AddMixIns(params object[] mixIns)
 		{
 			if (mixIns == null || mixIns.Length == 0)
@@ -155,9 +154,9 @@ namespace Castle.MicroKernel.Proxy
 		}
 
 		/// <summary>
-		///   Adds the additional mix in to integrate.
+		/// 	Adds the additional mix in to integrate.
 		/// </summary>
-		/// <param name = "mixIn">The mix in.</param>
+		/// <param name="mixIn"> The mix in. </param>
 		public void AddMixinReference(IReference<object> mixIn)
 		{
 			if (mixIn == null)
@@ -174,10 +173,10 @@ namespace Castle.MicroKernel.Proxy
 		}
 
 		/// <summary>
-		///   Equals the specified obj.
+		/// 	Equals the specified obj.
 		/// </summary>
-		/// <param name = "obj">The obj.</param>
-		/// <returns>true if equal.</returns>
+		/// <param name="obj"> The obj. </param>
+		/// <returns> true if equal. </returns>
 		public override bool Equals(object obj)
 		{
 			if (this == obj)
@@ -209,9 +208,9 @@ namespace Castle.MicroKernel.Proxy
 		}
 
 		/// <summary>
-		///   Gets the hash code.
+		/// 	Gets the hash code.
 		/// </summary>
-		/// <returns></returns>
+		/// <returns> </returns>
 		public override int GetHashCode()
 		{
 			return 29*base.GetHashCode()
@@ -245,7 +244,7 @@ namespace Castle.MicroKernel.Proxy
 
 		public bool RequiresProxy
 		{
-			get { return interfaceList != null || mixInList != null; }
+			get { return interfaceList != null || mixInList != null || hook != null; }
 		}
 
 		private int GetCollectionHashCode(IEnumerable items)

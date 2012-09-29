@@ -123,6 +123,10 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 			options.UseMarshalByRefAsBaseClass = behavior.UseMarshalByRefProxy;
 #endif
 			options.AddAdditionalInterfaces(behavior.AdditionalInterfaces);
+			if(model.Implementation.IsInterface)
+			{
+				options.OmitTarget = true;
+			}
 		}
 
 #if !SILVERLIGHT
