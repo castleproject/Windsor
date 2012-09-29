@@ -12,16 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace CastleTests.Components
+namespace Castle.Core
 {
-    using Castle.Core;
+    using System;
 
-	public class ClassWithDoNotWireProperties
-	{
-		[DoNotWire]
-		public string Host { get; set; }
-
-		[DoNotWire]
-		public int Port { get; set; }
-	}
+    /// <summary>
+    ///   Marks as constructor to be skipped and not be selected
+    ///   by the IoC container during new component activation
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Constructor)]
+    public sealed class DoNotSelectAttribute : Attribute
+    {
+    }
 }
