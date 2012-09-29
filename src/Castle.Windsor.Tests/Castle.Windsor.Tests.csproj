@@ -327,6 +327,7 @@
     <Compile Include="ClassComponents\DecoratedRepository2.cs" />
     <Compile Include="ClassComponents\DefaultRepository.cs" />
     <Compile Include="ClassComponents\DoubleRepository.cs" />
+    <Compile Include="Components\ClassWithDoNotSelectConstructors.cs" />
     <Compile Include="Components\CustomComponentWithCustomLifestyleAttribute.cs" />
     <Compile Include="Components\CustomTestLifestyleAttribute.cs" />
     <Compile Include="Components\D_DB.cs" />
@@ -455,6 +456,7 @@
     <Compile Include="GenericServiceStrategyTestCase.cs" />
     <Compile Include="Generics\GenericA.cs" />
     <Compile Include="Generics\GenericB.cs" />
+    <Compile Include="IgnoreSelectTestCase.cs" />
     <Compile Include="Interceptors\InterceptorAttributeTestCase.cs" />
     <Compile Include="CreatingContainerTestCase.cs" />
     <Compile Include="Diagnostics\UsingContainerAsServiceLocatorDiagnosticTestCase.cs" />
@@ -1224,6 +1226,7 @@
     <EmbeddedResource Include="XmlFiles\sample_config.xml" />
     <EmbeddedResource Include="XmlFiles\facilityWithoutId.xml" />
     <EmbeddedResource Include="XmlFiles\BoundLifestyle.xml" />
+    <EmbeddedResource Include="XmlFiles\ignorector.xml" />
     <Content Include="XmlProcessor\TestFiles\AssemblyIncludeTestDisabled.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
