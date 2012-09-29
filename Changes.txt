@@ -1,3 +1,5 @@
+- implemented IOC-355 - Add a mechanism to mark constructors as unselectable for injection, much like DoNotWireAttribute is for property injection (contributed by Rory Plaire)
+
 - fixed IOC-356 - Specifying a hook should be enough to create an implementation-less proxy
 - fixed IOC-354 - Deadlock in pooled lifestyle under heavy load
 - fixed IOC-300 - OnCreate does not work for generic components
