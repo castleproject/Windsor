@@ -1,4 +1,4 @@
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2012 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -25,14 +25,10 @@ namespace Castle.MicroKernel.ComponentActivator
 	using Castle.MicroKernel.Context;
 
 	/// <summary>
-	///   Attempts to dynamically load a UserControl by invoking Page.LoadControl.  
-	///   There are two uses of this class.  
-	///   <para>
-	///     1) Add a component to the Kernel and add a VirtualPath attribute specifying 
-	///     the relative path of the .ascx file for the associated UserControl. (easy)
-	///   </para>
-	///   <example>
-	///     <code>
+	/// Attempts to dynamically load a UserControl by invoking Page.LoadControl. There are two uses of this class.
+	///     <para> 1) Add a component to the Kernel and add a VirtualPath attribute specifying the relative path of the .ascx file for the associated UserControl. (easy) </para>
+	///     <example>
+	///         <code>
 	///       &lt;component id="BasketView" 
 	///       service="Castle.ShoppingCart.IBasketView, Castle.ShoppingCart"
 	///       type="Castle.ShoppingCart.BasketView, Castle.ShoppingCart" 
@@ -40,23 +36,20 @@ namespace Castle.MicroKernel.ComponentActivator
 	///       virtualPath="~/Views/BasketView.ascx"
 	///       /&gt;
 	///     </code>
-	///   </example>
-	///   <para>
-	///     2) Precompile a UserControl and add the pre-compiled class to the Kernel. (hard)  
-	///     Has not been tested with proxies.
-	///   </para>
+	///     </example>
+	///     <para> 2) Precompile a UserControl and add the pre-compiled class to the Kernel. (hard) Has not been tested with proxies. </para>
 	/// </summary>
 	[Serializable]
 	public class WebUserControlComponentActivator : DefaultComponentActivator
 	{
 		/// <summary>
-		///   Initializes a new instance of the <see cref = "WebUserControlComponentActivator" /> class.
+		/// Initializes a new instance of the <see cref = "WebUserControlComponentActivator" /> class.
 		/// </summary>
-		/// <param name = "model">The model.</param>
-		/// <param name = "kernel">The kernel.</param>
-		/// <param name = "onCreation">The on creation.</param>
-		/// <param name = "onDestruction">The on destruction.</param>
-		public WebUserControlComponentActivator(ComponentModel model, IKernel kernel,
+		/// <param name = "model"> The model. </param>
+		/// <param name = "kernel"> The kernel. </param>
+		/// <param name = "onCreation"> The on creation. </param>
+		/// <param name = "onDestruction"> The on destruction. </param>
+		public WebUserControlComponentActivator(ComponentModel model, IKernelInternal kernel,
 		                                        ComponentInstanceDelegate onCreation,
 		                                        ComponentInstanceDelegate onDestruction)
 			: base(model, kernel, onCreation, onDestruction)
@@ -64,12 +57,12 @@ namespace Castle.MicroKernel.ComponentActivator
 		}
 
 		/// <summary>
-		///   Creates the instance.
+		/// Creates the instance.
 		/// </summary>
-		/// <param name = "context">The context.</param>
-		/// <param name = "constructor"></param>
-		/// <param name = "arguments">The arguments.</param>
-		/// <returns></returns>
+		/// <param name = "context"> The context. </param>
+		/// <param name = "constructor"> </param>
+		/// <param name = "arguments"> The arguments. </param>
+		/// <returns> </returns>
 		protected override object CreateInstance(CreationContext context, ConstructorCandidate constructor, object[] arguments)
 		{
 			object instance = null;

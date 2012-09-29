@@ -387,7 +387,6 @@
     </Compile>
     <Compile Include="MicroKernel\HandlerState.cs" />
     <Compile Include="MicroKernel\HandlerStateDelegate.cs" />
-    <Compile Include="MicroKernel\ComponentActivator\CollectionActivator.cs" />
     <Compile Include="MicroKernel\Handlers\ComponentLifecycleExtension.cs" />
     <Compile Include="MicroKernel\Handlers\ComponentReleasingDelegate.cs" />
     <Compile Include="MicroKernel\Handlers\ComponentResolvingDelegate.cs" />

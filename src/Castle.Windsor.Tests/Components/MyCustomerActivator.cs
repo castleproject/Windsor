@@ -1,4 +1,4 @@
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2012 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -21,13 +21,11 @@ namespace CastleTests.Components
 	using Castle.MicroKernel.Tests.ClassComponents;
 
 	/// <summary>
-	///   Summary description for MyCustomerActivator.
+	/// Summary description for MyCustomerActivator.
 	/// </summary>
 	public class MyCustomerActivator : AbstractComponentActivator
 	{
-		public MyCustomerActivator(ComponentModel model, IKernel kernel,
-		                           ComponentInstanceDelegate onCreation,
-		                           ComponentInstanceDelegate onDestruction)
+		public MyCustomerActivator(ComponentModel model, IKernelInternal kernel, ComponentInstanceDelegate onCreation, ComponentInstanceDelegate onDestruction)
 			: base(model, kernel, onCreation, onDestruction)
 		{
 		}

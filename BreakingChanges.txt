@@ -1,3 +1,11 @@
+change - AbstractComponentActivator constructor takes IKernelInternal instead of IKernel now
+
+reason - IKernelInternal exposes a logger which allows activators to log information about their
+	behavior. See http://issues.castleproject.org/issue/IOC-357 for more details.
+
+fix - update the signature of your custom activator to take IKernelInternal instead of IKernel.
+
+
 === version 3.1
 ================================================================================================
 change - Windsor will no longer allow components from parent container to have dependencies from

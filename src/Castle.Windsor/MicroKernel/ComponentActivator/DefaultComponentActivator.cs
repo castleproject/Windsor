@@ -1,4 +1,4 @@
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2012 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -29,15 +29,11 @@ namespace Castle.MicroKernel.ComponentActivator
 #endif
 
 	/// <summary>
-	///   Standard implementation of <see cref = "IComponentActivator" />.
-	///   Handles the selection of the best constructor, fills the
-	///   writable properties the component exposes, run the commission 
-	///   and decommission lifecycles, etc.
+	/// Standard implementation of <see cref = "IComponentActivator" />. Handles the selection of the best constructor, fills the writable properties the component exposes, run the commission and
+	/// decommission lifecycles, etc.
 	/// </summary>
 	/// <remarks>
-	///   Custom implementors can just override the <c>CreateInstance</c> method.
-	///   Please note however that the activator is responsible for the proxy creation
-	///   when needed.
+	/// Custom implementors can just override the <c>CreateInstance</c> method. Please note however that the activator is responsible for the proxy creation when needed.
 	/// </remarks>
 	[Serializable]
 	public class DefaultComponentActivator : AbstractComponentActivator
@@ -47,13 +43,13 @@ namespace Castle.MicroKernel.ComponentActivator
 #endif
 
 		/// <summary>
-		///   Initializes a new instance of the <see cref = "DefaultComponentActivator" /> class.
+		/// Initializes a new instance of the <see cref = "DefaultComponentActivator" /> class.
 		/// </summary>
-		/// <param name = "model"></param>
-		/// <param name = "kernel"></param>
-		/// <param name = "onCreation"></param>
-		/// <param name = "onDestruction"></param>
-		public DefaultComponentActivator(ComponentModel model, IKernel kernel, ComponentInstanceDelegate onCreation, ComponentInstanceDelegate onDestruction)
+		/// <param name = "model"> </param>
+		/// <param name = "kernel"> </param>
+		/// <param name = "onCreation"> </param>
+		/// <param name = "onDestruction"> </param>
+		public DefaultComponentActivator(ComponentModel model, IKernelInternal kernel, ComponentInstanceDelegate onCreation, ComponentInstanceDelegate onDestruction)
 			: base(model, kernel, onCreation, onDestruction)
 		{
 #if (!SILVERLIGHT)
