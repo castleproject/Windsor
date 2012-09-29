@@ -316,6 +316,7 @@
     <Compile Include="Core\BoundToAttribute.cs" />
     <Compile Include="Core\ComponentDependencyModel.cs" />
     <Compile Include="Core\CustomLifestyleAttribute.cs" />
+    <Compile Include="Core\DoNotSelectAttribute.cs" />
     <Compile Include="Core\Internal\ComponentModelExtensions.cs" />
     <Compile Include="Core\Internal\Constants.cs" />
     <Compile Include="Core\Internal\ExceptionHelper.cs" />
