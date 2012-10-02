@@ -45,8 +45,7 @@ namespace Castle.Core
 			}
 		}
 
-		public static PropertySet[] Default(ComponentModel model, PropertyInfo[] properties,
-		                                    PropertySetBuilder propertySetBuilder)
+		public static PropertySet[] Default(ComponentModel model, PropertyInfo[] properties, PropertySetBuilder propertySetBuilder)
 		{
 			return properties.Select(p => propertySetBuilder(p, true)).ToArray();
 		}
@@ -58,8 +57,7 @@ namespace Castle.Core
 			                                        	.ToArray();
 		}
 
-		public static ICollection<PropertyDependencyFilter> GetPropertyFilters(ComponentModel componentModel,
-		                                                                       bool createIfMissing)
+		public static ICollection<PropertyDependencyFilter> GetPropertyFilters(ComponentModel componentModel, bool createIfMissing)
 		{
 			var filters = (ICollection<PropertyDependencyFilter>)componentModel.ExtendedProperties[Constants.PropertyFilters];
 			if (filters == null && createIfMissing)

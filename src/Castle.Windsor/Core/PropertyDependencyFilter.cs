@@ -18,6 +18,5 @@ namespace Castle.Core
 
 	public delegate PropertySet PropertySetBuilder(PropertyInfo property, bool isOptional);
 
-	public delegate PropertySet[] PropertyDependencyFilter(
-		ComponentModel model, PropertyInfo[] properties, PropertySetBuilder buildDependencyCallback);
+	public delegate PropertySet[] PropertyDependencyFilter(ComponentModel model, PropertyInfo[] properties, PropertySetBuilder buildDependencyCallback);
 }
