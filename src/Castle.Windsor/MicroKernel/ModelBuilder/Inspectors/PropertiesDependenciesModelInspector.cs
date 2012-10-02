@@ -15,6 +15,7 @@
 namespace Castle.MicroKernel.ModelBuilder.Inspectors
 {
 	using System;
+	using System.Collections.Generic;
 	using System.Linq;
 	using System.Reflection;
 
@@ -69,7 +70,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 			}
 
 			var properties = GetProperties(model, targetType);
-			if (properties.Length == 0)
+			if (properties.Count == 0)
 			{
 				return;
 			}
@@ -80,7 +81,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 			}
 			else
 			{
-				foreach (var filter in filters)
+				foreach (var filter in filters.Concat(new[] { StandardPropertyFilters.Create(PropertyFilter.Default) }))
 				{
 					var dependencies = filter.Invoke(model, properties, BuildDependency);
 					if (dependencies != null)
@@ -89,7 +90,10 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 						{
 							model.AddProperty(dependency);
 						}
-						break;
+					}
+					if (properties.Count == 0)
+					{
+						return;
 					}
 				}
 			}
@@ -140,7 +144,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 			}
 		}
 
-		private PropertyInfo[] GetProperties(ComponentModel model, Type targetType)
+		private List<PropertyInfo> GetProperties(ComponentModel model, Type targetType)
 		{
 			BindingFlags bindingFlags;
 			if (model.InspectionBehavior == PropertiesInspectionBehavior.DeclaredOnly)
@@ -153,7 +157,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 			}
 
 			var properties = targetType.GetProperties(bindingFlags);
-			return properties.Where(IsValidPropertyDependency).ToArray();
+			return properties.Where(IsValidPropertyDependency).ToList();
 		}
 
 		private static bool HasDoNotWireAttribute(PropertyInfo property)

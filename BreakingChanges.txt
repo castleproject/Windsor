@@ -1,7 +1,22 @@
+change - .Properties() methods in registration API have changed behavior and are obsolete now.
+	When calling .Properties() on a component multiple times, subsequent calls with now only
+	be passed properties for which previuos calls returned false.
+
+reason - The API was not behaving the way most users expected and the way it was structured
+	it was hard to use.
+
+issue - IOC-359 (http://issues.castleproject.org/issue/IOC-359)
+
+fix - use either overload taking PropertyFilter enum, or one of the two new methods:
+	PropertiesIgnore() and PropertiesRequire().
+
+================================================================================================
 change - AbstractComponentActivator constructor takes IKernelInternal instead of IKernel now
 
 reason - IKernelInternal exposes a logger which allows activators to log information about their
-	behavior. See http://issues.castleproject.org/issue/IOC-357 for more details.
+	behavior.
+
+issue - IOC-359 (http://issues.castleproject.org/issue/IOC-357)
 
 fix - update the signature of your custom activator to take IKernelInternal instead of IKernel.
 
