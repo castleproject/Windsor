@@ -300,7 +300,9 @@
     <Compile Include="Bugs\IoC-267.cs" />
     <Compile Include="Bugs\IoC-334.cs" />
     <Compile Include="ByRefDependenciesTestCase.cs" />
+    <Compile Include="ClassComponents\Common2Impl.cs" />
     <Compile Include="ClassComponents\CommonServiceUser3.cs" />
+    <Compile Include="ClassComponents\CustomerValidatorAndRepository.cs" />
     <Compile Include="ClassComponents\GenericDummyComponentAImpl.cs" />
     <Compile Include="ClassComponents\GenericDummyComponentImpl.cs" />
     <Compile Include="ClassComponents\GenericDummyComponentImpl2.cs" />
