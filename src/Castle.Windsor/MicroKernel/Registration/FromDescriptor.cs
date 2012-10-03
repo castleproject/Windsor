@@ -17,6 +17,8 @@ namespace Castle.MicroKernel.Registration
 	using System;
 	using System.Collections.Generic;
 
+	using System.Linq;
+
 	/// <summary>
 	///   Describes the source of types to register.
 	/// </summary>
@@ -57,9 +59,19 @@ namespace Castle.MicroKernel.Registration
 		/// <summary>
 		///   Returns the descriptor for accepting a type.
 		/// </summary>
-		/// <param name = "basedOn">The base type.</param>
+		/// <param name = "basedOn">One or more base types. To be accepted a type must implement at least one of the given base types.</param>
 		/// <returns>The descriptor for the type.</returns>
-		public BasedOnDescriptor BasedOn(Type basedOn)
+		public BasedOnDescriptor BasedOn(params Type[] basedOn)
+		{
+			return BasedOn(basedOn.AsEnumerable());
+		}
+
+		/// <summary>
+		///   Returns the descriptor for accepting a type.
+		/// </summary>
+		/// <param name = "basedOn">One or more base types. To be accepted a type must implement at least one of the given base types.</param>
+		/// <returns>The descriptor for the type.</returns>
+		public BasedOnDescriptor BasedOn(IEnumerable<Type> basedOn)
 		{
 			var descriptor = new BasedOnDescriptor(basedOn, this, additionalFilters);
 			criterias.Add(descriptor);
@@ -145,7 +157,7 @@ namespace Castle.MicroKernel.Registration
 		/// <returns>The descriptor for the type.</returns>
 		public BasedOnDescriptor Where(Predicate<Type> accepted)
 		{
-			var descriptor = new BasedOnDescriptor(typeof(object), this, additionalFilters).If(accepted);
+			var descriptor = new BasedOnDescriptor(new[] { typeof(object) }, this, additionalFilters).If(accepted);
 			criterias.Add(descriptor);
 			return descriptor;
 		}

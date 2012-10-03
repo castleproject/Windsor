@@ -37,9 +37,9 @@ namespace Castle.MicroKernel.Registration
 		/// <summary>
 		///   Initializes a new instance of the BasedOnDescriptor.
 		/// </summary>
-		internal BasedOnDescriptor(Type basedOn, FromDescriptor from, Predicate<Type> additionalFilters)
+		internal BasedOnDescriptor(IEnumerable<Type> basedOn, FromDescriptor from, Predicate<Type> additionalFilters)
 		{
-			this.potentialBases = new List<Type> { basedOn };
+			this.potentialBases = basedOn.ToList();
 			this.from = from;
 			service = new ServiceDescriptor(this);
 			If(additionalFilters);
