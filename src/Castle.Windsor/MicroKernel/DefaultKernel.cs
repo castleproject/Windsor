@@ -277,22 +277,9 @@ namespace Castle.MicroKernel
 
 		public virtual IKernel AddFacility(IFacility facility)
 		{
-			if (facility == null)
-			{
-				throw new ArgumentNullException("facility");
-			}
-			var facilityType = facility.GetType();
-			if (facilities.Any(f => f.GetType() == facilityType))
-			{
-				throw new ArgumentException(
-					string.Format(
-						"Facility of type '{0}' has already been registered with the container. Only one facility of a given type can exist in the container.",
-						facilityType.FullName));
-			}
-			facilities.Add(facility);
-			facility.Init(this, ConfigurationStore.GetFacilityConfiguration(facilityType.FullName));
-
-			return this;
+#pragma warning disable 612,618
+			return AddFacility(facility != null ? facility.GetType().FullName : null, facility);
+#pragma warning restore 612,618
 		}
 
 		public IKernel AddFacility<T>() where T : IFacility, new()
