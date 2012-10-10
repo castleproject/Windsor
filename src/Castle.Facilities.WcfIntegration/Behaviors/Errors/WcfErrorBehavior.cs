@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2012 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,6 +14,7 @@
 
 namespace Castle.Facilities.WcfIntegration
 {
+	using System.Collections.Generic;
 	using System.Collections.ObjectModel;
 	using System.ServiceModel;
 	using System.ServiceModel.Channels;
@@ -22,36 +23,30 @@ namespace Castle.Facilities.WcfIntegration
 
 	public class WcfErrorBehavior : IServiceBehavior, IEndpointBehavior
 	{
-		private readonly IErrorHandler errorHandler;
+		private readonly ICollection<IErrorHandler> errorHandlers;
 
-		public WcfErrorBehavior(IErrorHandler errorHandler)
+		public WcfErrorBehavior(ICollection<IErrorHandler> errorHandlers)
 		{
-			this.errorHandler = errorHandler;
+			this.errorHandlers = errorHandlers;
 		}
 
-		#region IServiceBehavior
-
-		public void AddBindingParameters(ServiceDescription serviceDescription, ServiceHostBase serviceHostBase,
-										 Collection<ServiceEndpoint> endpoints,
-										 BindingParameterCollection bindingParameters)
+		public WcfErrorBehavior(params IErrorHandler[] errorHandlers)
 		{
+			this.errorHandlers = new List<IErrorHandler>(errorHandlers);
 		}
 
-		public void ApplyDispatchBehavior(ServiceDescription serviceDescription, ServiceHostBase serviceHostBase)
+		public void Add(IEnumerable<IErrorHandler> handlers)
 		{
-			foreach (ChannelDispatcher channelDispatcher in serviceHostBase.ChannelDispatchers)
+			foreach (var handler in handlers)
 			{
-				channelDispatcher.ErrorHandlers.Add(errorHandler);
+				errorHandlers.Add(handler);
 			}
 		}
 
-		public void Validate(ServiceDescription serviceDescription, ServiceHostBase serviceHostBase)
+		public void Add(IErrorHandler handler)
 		{
+			errorHandlers.Add(handler);
 		}
-
-		#endregion
-
-		#region IEndpointBehavior
 
 		public void AddBindingParameters(ServiceEndpoint endpoint, BindingParameterCollection bindingParameters)
 		{
@@ -59,18 +54,43 @@ namespace Castle.Facilities.WcfIntegration
 
 		public void ApplyClientBehavior(ServiceEndpoint endpoint, ClientRuntime clientRuntime)
 		{
-			clientRuntime.CallbackDispatchRuntime.ChannelDispatcher.ErrorHandlers.Add(errorHandler);
+			foreach (var errorHandler in errorHandlers)
+			{
+				clientRuntime.CallbackDispatchRuntime.ChannelDispatcher.ErrorHandlers.Add(errorHandler);
+			}
 		}
 
 		public void ApplyDispatchBehavior(ServiceEndpoint endpoint, EndpointDispatcher endpointDispatcher)
 		{
-			endpointDispatcher.ChannelDispatcher.ErrorHandlers.Add(errorHandler);
+			foreach (var errorHandler in errorHandlers)
+			{
+				endpointDispatcher.ChannelDispatcher.ErrorHandlers.Add(errorHandler);
+			}
 		}
 
 		public void Validate(ServiceEndpoint endpoint)
 		{
 		}
 
-		#endregion
+		public void AddBindingParameters(ServiceDescription serviceDescription, ServiceHostBase serviceHostBase,
+		                                 Collection<ServiceEndpoint> endpoints,
+		                                 BindingParameterCollection bindingParameters)
+		{
+		}
+
+		public void ApplyDispatchBehavior(ServiceDescription serviceDescription, ServiceHostBase serviceHostBase)
+		{
+			foreach (ChannelDispatcher channelDispatcher in serviceHostBase.ChannelDispatchers)
+			{
+				foreach (var errorHandler in errorHandlers)
+				{
+					channelDispatcher.ErrorHandlers.Add(errorHandler);
+				}
+			}
+		}
+
+		public void Validate(ServiceDescription serviceDescription, ServiceHostBase serviceHostBase)
+		{
+		}
 	}
 }
