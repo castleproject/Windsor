@@ -437,6 +437,7 @@
     <Compile Include="Components\UsesLazy.cs" />
     <Compile Include="Components\UsesUri.cs" />
     <Compile Include="CompositePatternTestCase.cs" />
+    <Compile Include="ConstructorFilteringInRegistrationTestCase.cs" />
     <Compile Include="ContainerAndGenericsInConfigTestCase.cs" />
     <Compile Include="ConventionRegistrationConfigureTestCase.cs" />
     <Compile Include="ConventionVerification.cs" />

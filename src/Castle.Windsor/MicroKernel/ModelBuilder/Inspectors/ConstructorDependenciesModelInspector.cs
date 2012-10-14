@@ -15,6 +15,7 @@
 namespace Castle.MicroKernel.ModelBuilder.Inspectors
 {
 	using System;
+	using System.Collections.Generic;
 	using System.Linq;
 	using System.Reflection;
 
@@ -32,20 +33,46 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 	{
 		public virtual void ProcessModel(IKernel kernel, ComponentModel model)
 		{
-			var targetType = model.Implementation;
-			var constructors = targetType.GetConstructors(BindingFlags.Public | BindingFlags.Instance)
-										 .Where(c => !HasDoNotSelectAttribute(c));
-
-			foreach (var constructor in constructors)
-			{
-				// We register each public constructor
-				// and let the ComponentFactory select an 
-				// eligible amongst the candidates later
-				model.AddConstructor(CreateConstructorCandidate(model, constructor));
-			}
+		    InspectConstructors(model);
 		}
 
-		protected virtual ConstructorCandidate CreateConstructorCandidate(ComponentModel model, ConstructorInfo constructor)
+        protected virtual void InspectConstructors(ComponentModel model)
+        {
+            var targetType = model.Implementation;
+            var constructors = GetConstructors(model, targetType);
+
+            if (constructors.Count == 0)
+			{
+				return;
+            }
+
+            var filters = StandardConstructorFilters.GetConstructorFilters(model, false);
+
+            // We register each valid public constructor
+            // which is not selected by the filter predicate
+            // and let the ComponentFactory select an 
+            // eligible amongst the candidates later
+            if (filters == null)
+            {
+                constructors.ForEach(c => model.AddConstructor(CreateConstructorCandidate(model, c)));
+            }
+            else
+            {
+                var filteredConstructors = constructors.ToArray();
+                filteredConstructors = filters.Aggregate(filteredConstructors, (c, filter) => filter(model, c));
+                filteredConstructors.ForEach(c => model.AddConstructor(CreateConstructorCandidate(model, c)));
+            }
+        }
+
+        private List<ConstructorInfo> GetConstructors(ComponentModel model, Type targetType)
+        {
+            var constructors = targetType.GetConstructors(BindingFlags.Public | BindingFlags.Instance)
+                                         .Where(IsValidConstructor)
+                                         .ToList();
+            return constructors;
+        }
+
+	    protected virtual ConstructorCandidate CreateConstructorCandidate(ComponentModel model, ConstructorInfo constructor)
 		{
 			var parameters = constructor.GetParameters();
 			var dependencies = parameters.ConvertAll(BuildParameterDependency);
@@ -61,5 +88,10 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 		{
 			return constructor.HasAttribute<DoNotSelectAttribute>();
 		}
+
+        private static bool IsValidConstructor(ConstructorInfo constructor)
+        {
+            return !HasDoNotSelectAttribute(constructor);
+        }
 	}
 }

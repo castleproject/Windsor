@@ -1305,7 +1305,11 @@ namespace Castle.MicroKernel.Registration
         /// </param>
         public ComponentRegistration<TService> ConstructorsIgnore(Func<ComponentModel, ConstructorInfo, bool> constructorSelector)
         {
-
+            return AddDescriptor(new DelegatingModelDescriptor(builder: (k, c) =>
+            {
+                var filters = StandardConstructorFilters.GetConstructorFilters(c, createIfMissing: true);
+                filters.Add(StandardConstructorFilters.IgnoreSelected(constructorSelector));
+            }));
         }
 	}
 }

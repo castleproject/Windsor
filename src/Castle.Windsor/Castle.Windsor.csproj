@@ -352,6 +352,7 @@
     <Compile Include="Core\PooledAttribute.cs" />
     <Compile Include="Core\PropertiesInspectionBehavior.cs" />
     <Compile Include="Core\PropertyDependencyFilter.cs" />
+    <Compile Include="Core\StandardConstructorFilters.cs" />
     <Compile Include="Core\StandardPropertyFilters.cs" />
     <Compile Include="Core\PropertyFilter.cs" />
     <Compile Include="Core\ScopedAttribute.cs" />

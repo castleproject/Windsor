@@ -24,7 +24,7 @@ namespace CastleTests
 
 	using NUnit.Framework;
 
-	[TestFixture]
+    [TestFixture]
 	public class PropertyDependenciesTestCase : AbstractContainerTestCase
 	{
 		[Test]

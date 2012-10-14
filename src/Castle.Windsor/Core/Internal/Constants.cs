@@ -22,7 +22,8 @@ namespace Castle.Core.Internal
 		private const string genericServiceStrategy = "castle.generic-service-strategy";
 		private const string helpLink = @"groups.google.com/group/castle-project-users";
 
-		private const string propertyFilters = "castle.property-filters";
+        private const string propertyFilters = "castle.property-filters";
+        private const string constructorFilters = "castle.constructor-filters";
 		private const string scopeAccessorType = "castle.scope-accessor-type";
 		private const string scopeRootSelector = "castle.scope-root";
 
@@ -66,5 +67,10 @@ namespace Castle.Core.Internal
 		{
 			get { return scopeRootSelector; }
 		}
+
+	    public static object ConstructorFilters
+        {
+            get { return constructorFilters; }
+	    }
 	}
 }
