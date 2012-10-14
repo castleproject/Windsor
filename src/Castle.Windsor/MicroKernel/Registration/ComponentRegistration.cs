@@ -1283,5 +1283,29 @@ namespace Castle.MicroKernel.Registration
 				filters.Add(StandardPropertyFilters.Create(filter));
 			}));
 		}
+        
+        /// <summary>
+        /// Filters constructors of the component's implementation type to ignore.
+        /// </summary>
+        /// <param name = "constructorSelector">
+        /// Predicate finding constructors to ignore. If it returns <see langword="true"/> the constructor will not be selected during component activation and Windsor
+        /// will never create an instance with it. 
+        /// </param>
+        public ComponentRegistration<TService> ConstructorsIgnore(Func<ConstructorInfo, bool> constructorSelector)
+        {
+            return ConstructorsIgnore((_, c) => constructorSelector(c));
+        }
+        
+        /// <summary>
+        /// Filters constructors of the component's implementation type to ignore.
+        /// </summary>
+        /// <param name = "constructorSelector">
+        /// Predicate finding constructors to ignore. If it returns <see langword="true"/> the constructor will not be selected during component activation and Windsor
+        /// will never create an instance with it. 
+        /// </param>
+        public ComponentRegistration<TService> ConstructorsIgnore(Func<ComponentModel, ConstructorInfo, bool> constructorSelector)
+        {
+
+        }
 	}
 }
