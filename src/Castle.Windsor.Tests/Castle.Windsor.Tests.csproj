@@ -382,6 +382,7 @@
     <Compile Include="Components\EmptyServiceDecoratorViaProperty.cs" />
     <Compile Include="Components\GenericWithCtor.cs" />
     <Compile Include="Components\GenericWithProperty.cs" />
+    <Compile Include="Components\HasDependenciesCtorAndDefaultCtor.cs" />
     <Compile Include="Components\HasDictionaryDependency.cs" />
     <Compile Include="Components\HasInstanceCount.cs" />
     <Compile Include="Components\HasNullableDoubleConstructor.cs" />
