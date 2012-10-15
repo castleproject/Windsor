@@ -21,7 +21,7 @@ namespace Castle.Core
 
 	using Castle.Core.Internal;
 
-	public class StandardPropertyFilters
+    public class StandardPropertyFilters
 	{
 		public static PropertyDependencyFilter Create(PropertyFilter filter)
 		{

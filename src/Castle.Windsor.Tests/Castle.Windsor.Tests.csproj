@@ -382,6 +382,7 @@
     <Compile Include="Components\EmptyServiceDecoratorViaProperty.cs" />
     <Compile Include="Components\GenericWithCtor.cs" />
     <Compile Include="Components\GenericWithProperty.cs" />
+    <Compile Include="Components\HasDependenciesCtorAndDefaultCtor.cs" />
     <Compile Include="Components\HasDictionaryDependency.cs" />
     <Compile Include="Components\HasInstanceCount.cs" />
     <Compile Include="Components\HasNullableDoubleConstructor.cs" />
@@ -437,6 +438,7 @@
     <Compile Include="Components\UsesLazy.cs" />
     <Compile Include="Components\UsesUri.cs" />
     <Compile Include="CompositePatternTestCase.cs" />
+    <Compile Include="ConstructorFilteringInRegistrationTestCase.cs" />
     <Compile Include="ContainerAndGenericsInConfigTestCase.cs" />
     <Compile Include="ConventionRegistrationConfigureTestCase.cs" />
     <Compile Include="ConventionVerification.cs" />
