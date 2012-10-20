@@ -1,4 +1,4 @@
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2012 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,10 +15,8 @@
 namespace Castle.Facilities.Synchronize
 {
 	using System;
-	using System.Collections.Generic;
 	using System.ComponentModel;
 	using System.Linq;
-	using System.Reflection;
 	using System.Runtime.Serialization;
 	using System.Threading;
 	using System.Windows.Threading;
@@ -114,71 +112,71 @@ namespace Castle.Facilities.Synchronize
 #endif
 		private bool InvokeInSynchronizationContext(IInvocation invocation)
 		{
-			if (metaInfo != null)
+			if (metaInfo == null)
 			{
-				SynchronizationContext syncContext = null;
-				SynchronizationContext prevSyncContext = null;
-				var methodInfo = invocation.MethodInvocationTarget;
-				var syncContextRef = metaInfo.GetSynchronizedContextFor(methodInfo);
-
-				if (syncContextRef != null)
-				{
-					syncContext = syncContextRef.Resolve(kernel, CreationContext.CreateEmpty());
-					prevSyncContext = SynchronizationContext.Current;
-				}
-				else
-				{
-					syncContext = SynchronizationContext.Current;
-				}
-
-				if (syncContext != activeSyncContext)
-				{
-					try
-					{
-						var result = CreateResult(invocation);
-
-						if (prevSyncContext != null)
-						{
-							SynchronizationContext.SetSynchronizationContext(syncContext);
-						}
-
-						if (syncContext.GetType() == typeof(SynchronizationContext))
-						{
-							InvokeSynchronously(invocation, result);
-						}
-						else
-						{
-							syncContext.Send(state =>
-							{
-								activeSyncContext = syncContext;
-								try
-								{
-									InvokeSafely(invocation, result);
-								}
-								finally
-								{
-									activeSyncContext = null;
-								}
-							}, null);
-						}
-					}
-					finally
-					{
-						if (prevSyncContext != null)
-						{
-							SynchronizationContext.SetSynchronizationContext(prevSyncContext);
-						}
-					}
-				}
-				else
-				{
-					InvokeSynchronously(invocation, null);
-				}
-
-				return true;
+				return false;
 			}
 
-			return false;
+			SynchronizationContext syncContext = null;
+			SynchronizationContext prevSyncContext = null;
+			var methodInfo = invocation.MethodInvocationTarget;
+			var syncContextRef = metaInfo.GetSynchronizedContextFor(methodInfo);
+
+			if (syncContextRef != null)
+			{
+				syncContext = syncContextRef.Resolve(kernel, CreationContext.CreateEmpty());
+				prevSyncContext = SynchronizationContext.Current;
+			}
+			else
+			{
+				syncContext = SynchronizationContext.Current;
+			}
+
+			if (syncContext != activeSyncContext)
+			{
+				try
+				{
+					var result = CreateResult(invocation);
+
+					if (prevSyncContext != null)
+					{
+						SynchronizationContext.SetSynchronizationContext(syncContext);
+					}
+
+					if (syncContext.GetType() == typeof(SynchronizationContext))
+					{
+						InvokeSynchronously(invocation, result);
+					}
+					else
+					{
+						syncContext.Send(state =>
+						                 {
+							                 activeSyncContext = syncContext;
+							                 try
+							                 {
+								                 InvokeSafely(invocation, result);
+							                 }
+							                 finally
+							                 {
+								                 activeSyncContext = null;
+							                 }
+						                 }, null);
+					}
+				}
+				finally
+				{
+					if (prevSyncContext != null)
+					{
+						SynchronizationContext.SetSynchronizationContext(prevSyncContext);
+					}
+				}
+			}
+			else
+			{
+				InvokeSynchronously(invocation, null);
+			}
+
+			return true;
 		}
 
 #if DOTNET40

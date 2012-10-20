@@ -45,7 +45,7 @@ namespace Castle.Facilities.WcfIntegration.Internal
 
 			if (service.IsInterface)
 			{
-				return service.GetInterfaces().Any(parent => IsServiceContract(parent));
+				return service.GetInterfaces().Any(IsServiceContract);
 			}
 
 			return false;
