@@ -1,4 +1,4 @@
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2012 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@ namespace CastleTests
 {
 	using System;
 
+	using Castle.Core;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.ComponentActivator;
 	using Castle.MicroKernel.Registration;
@@ -27,7 +28,7 @@ namespace CastleTests
 	using NUnit.Framework;
 
 	[TestFixture]
-	public class ExceptionsTestCase : AbstractContainerTestCase
+	public class HelpfulExceptionsOnResolveTestCase : AbstractContainerTestCase
 	{
 		[Test]
 		public void Resolving_by_name_not_found_prints_helpful_message_many_other_options_present()
@@ -41,7 +42,8 @@ namespace CastleTests
 
 			var expected =
 				string.Format(
-					"Requested component named 'Stefan-Mucha' was not found in the container. Did you forget to register it?{0}There are 2 other components supporting requested service '{1}'. Were you looking for any of them?",
+					"Requested component named 'Stefan-Mucha' was not found in the container. Did you forget to register it?{0}" +
+					"There are 2 other components supporting requested service '{1}'. Were you looking for any of them?",
 					Environment.NewLine, typeof(A).FullName);
 
 			Assert.AreEqual(expected, exception.Message);
@@ -58,7 +60,8 @@ namespace CastleTests
 
 			var expected =
 				string.Format(
-					"Requested component named 'Stefan-Mucha' was not found in the container. Did you forget to register it?{0}There is one other component supporting requested service '{1}'. Is it what you were looking for?",
+					"Requested component named 'Stefan-Mucha' was not found in the container. Did you forget to register it?{0}" +
+					"There is one other component supporting requested service '{1}'. Is it what you were looking for?",
 					Environment.NewLine, typeof(A).FullName);
 
 			Assert.AreEqual(expected, exception.Message);
@@ -73,7 +76,8 @@ namespace CastleTests
 
 			var expected =
 				string.Format(
-					"Requested component named 'Stefan-Mucha' was not found in the container. Did you forget to register it?{0}There are no components supporting requested service '{1}'. You need to register components in order to be able to use them.",
+					"Requested component named 'Stefan-Mucha' was not found in the container. Did you forget to register it?{0}" +
+					"There are no components supporting requested service '{1}'. You need to register components in order to be able to use them.",
 					Environment.NewLine, typeof(A).FullName);
 
 			Assert.AreEqual(expected, exception.Message);
@@ -88,7 +92,10 @@ namespace CastleTests
 
 			var exception = Assert.Throws<ComponentActivatorException>(() => Container.Resolve<PropertySetterThrows>());
 
-			var message = @"Error setting property PropertySetterThrows.CommonService in component CastleTests.ClassComponents.PropertySetterThrows. See inner exception for more information. If you don't want Windsor to set this property you can do it by either decorating it with DoNotWireAttribute or via registration API.";
+			var message = string.Format("Error setting property PropertySetterThrows.CommonService in component {1}. See inner exception for more information.{0}" +
+			                            "If you don't want Windsor to set this property you can do it by either decorating it with {2} or via registration API.{0}" +
+			                            "Alternatively consider making the setter non-public.",
+			                            Environment.NewLine, typeof(PropertySetterThrows), typeof(DoNotWireAttribute));
 
 			Assert.AreEqual(message, exception.Message);
 		}

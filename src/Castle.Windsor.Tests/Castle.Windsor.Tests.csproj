@@ -444,7 +444,7 @@
     <Compile Include="ContainerExtensions\GoodDependencyResolver.cs" />
     <Compile Include="DependencyCyclesTestCase.cs" />
     <Compile Include="Diagnostics\AllServicesDiagnosticTestCase.cs" />
-    <Compile Include="ExceptionsTestCase.cs" />
+    <Compile Include="HelpfulExceptionsOnResolveTestCase.cs" />
     <Compile Include="Facilities\Startable\StartableAndExceptionThrowingInstallersTestCase.cs" />
     <Compile Include="Facilities\TypedFactory\Delegates\HasFuncProperty.cs" />
     <Compile Include="Facilities\TypedFactory\TypedFactoryDelegatesInvalidScenariosTestCase.cs" />

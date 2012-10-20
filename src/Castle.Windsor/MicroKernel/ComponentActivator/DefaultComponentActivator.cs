@@ -29,11 +29,11 @@ namespace Castle.MicroKernel.ComponentActivator
 #endif
 
 	/// <summary>
-	/// Standard implementation of <see cref = "IComponentActivator" />. Handles the selection of the best constructor, fills the writable properties the component exposes, run the commission and
-	/// decommission lifecycles, etc.
+	/// 	Standard implementation of <see cref = "IComponentActivator" />. Handles the selection of the best constructor, fills the writable properties the component exposes, run the commission and
+	/// 	decommission lifecycles, etc.
 	/// </summary>
 	/// <remarks>
-	/// Custom implementors can just override the <c>CreateInstance</c> method. Please note however that the activator is responsible for the proxy creation when needed.
+	/// 	Custom implementors can just override the <c>CreateInstance</c> method. Please note however that the activator is responsible for the proxy creation when needed.
 	/// </remarks>
 	[Serializable]
 	public class DefaultComponentActivator : AbstractComponentActivator
@@ -43,7 +43,7 @@ namespace Castle.MicroKernel.ComponentActivator
 #endif
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref = "DefaultComponentActivator" /> class.
+		/// 	Initializes a new instance of the <see cref = "DefaultComponentActivator" /> class.
 		/// </summary>
 		/// <param name = "model"> </param>
 		/// <param name = "kernel"> </param>
@@ -319,8 +319,14 @@ namespace Castle.MicroKernel.ComponentActivator
 				{
 					var message =
 						String.Format(
-							"Error setting property {1}.{0} in component {2}. See inner exception for more information. If you don't want Windsor to set this property you can do it by either decorating it with {3} or via registration API.",
-							property.Property.Name, instance.GetType().Name, Model.Name, typeof(DoNotWireAttribute).Name);
+							"Error setting property {1}.{0} in component {2}. See inner exception for more information.{4}" +
+							"If you don't want Windsor to set this property you can do it by either decorating it with {3} or via registration API.{0}" +
+							"Alternatively consider making the setter non-public.",
+							property.Property.Name,
+							instance.GetType().Name,
+							Model.Name,
+							typeof(DoNotWireAttribute).Name,
+							Environment.NewLine);
 					throw new ComponentActivatorException(message, ex, Model);
 				}
 			}
