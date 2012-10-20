@@ -1,4 +1,4 @@
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2012 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -24,7 +24,6 @@ namespace CastleTests.Activators
 	using Castle.MicroKernel.SubSystems.Configuration;
 	using Castle.MicroKernel.Tests.ClassComponents;
 	using Castle.MicroKernel.Tests.Configuration.Components;
-	using Castle.Windsor.Tests;
 
 	using CastleTests.Components;
 
@@ -196,9 +195,9 @@ namespace CastleTests.Activators
 			Container.Register(Component.For<ICommon>().ImplementedBy<CommonImpl1>().Named("Mucha"),
 			                   Component.For<ICustomer>().ImplementedBy<CustomerImpl>().Named("Stefan"),
 			                   Component.For<HasTwoConstructors>().Named("first")
-			                   	.DependsOn(ServiceOverride.ForKey("customer").Eq("Stefan")),
+				                   .DependsOn(ServiceOverride.ForKey("customer").Eq("Stefan")),
 			                   Component.For<HasTwoConstructors>().Named("second")
-			                   	.DependsOn(ServiceOverride.ForKey("common").Eq("Mucha")));
+				                   .DependsOn(ServiceOverride.ForKey("common").Eq("Mucha")));
 
 			var first = Container.Resolve<HasTwoConstructors>("first");
 			var second = Container.Resolve<HasTwoConstructors>("second");
@@ -226,7 +225,7 @@ namespace CastleTests.Activators
 		{
 			Container.Register(Component.For<ICommon>().ImplementedBy<CommonImpl1>(),
 			                   Component.For<HasTwoConstructors2>()
-			                   	.DependsOn(Parameter.ForKey("param").Eq("foo")));
+				                   .DependsOn(Parameter.ForKey("param").Eq("foo")));
 
 			var component = Container.Resolve<HasTwoConstructors2>();
 
@@ -244,7 +243,7 @@ namespace CastleTests.Activators
 		}
 
 		[Test]
-		public void When_no_constructor_is_resolvable_and_no_inline_arguments_used_NoResolvableConstructorFoundException_is_thrown()
+		public void When_no_constructor_is_resolvable_and_no_inline_arguments_used_HandlerException_is_thrown()
 		{
 			Container.Register(Component.For<ClassWithConstructors>());
 
