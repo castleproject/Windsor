@@ -994,7 +994,6 @@
     <Compile Include="Bugs\IoC-115.cs" />
     <Compile Include="Bugs\IoC-138.cs" />
     <Compile Include="Bugs\IoC-78\IoC-78.cs" />
-    <Compile Include="Activators\ConstructorTestCase.cs" />
     <Compile Include="Bugs\IoC_169\IoC_169.cs" />
     <Compile Include="ChildContainerSupportTestCase.cs">
       <SubType>Code</SubType>

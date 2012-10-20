@@ -161,6 +161,10 @@ namespace Castle.MicroKernel.ComponentActivator
 						Kernel.ReleaseComponent(argument);
 					}
 				}
+				if (ex is ComponentActivatorException)
+				{
+					throw;
+				}
 
 				throw new ComponentActivatorException(
 					"ComponentActivator: could not instantiate " + Model.Implementation.FullName, ex, Model);
@@ -178,8 +182,11 @@ namespace Castle.MicroKernel.ComponentActivator
 			{
 				throw new ComponentActivatorException(
 					string.Format(
-						"Could not find a public constructor for type {0}. Windsor can not instantiate types that don't expose public constructors. To expose the type as a service add public constructor, or use custom component activator.",
-						implType), Model);
+						"Could not find a public constructor for type {0}.{1}" +
+						"Windsor by default cannot instantiate types that don't expose public constructors.{1}" +
+						"To expose the type as a service add public constructor, or use custom component activator.",
+						implType,
+						Environment.NewLine), Model);
 			}
 			var instance = FormatterServices.GetUninitializedObject(implType);
 
@@ -320,7 +327,7 @@ namespace Castle.MicroKernel.ComponentActivator
 					var message =
 						String.Format(
 							"Error setting property {1}.{0} in component {2}. See inner exception for more information.{4}" +
-							"If you don't want Windsor to set this property you can do it by either decorating it with {3} or via registration API.{0}" +
+							"If you don't want Windsor to set this property you can do it by either decorating it with {3} or via registration API.{4}" +
 							"Alternatively consider making the setter non-public.",
 							property.Property.Name,
 							instance.GetType().Name,

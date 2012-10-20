@@ -84,6 +84,53 @@ namespace CastleTests
 		}
 
 		[Test]
+		[Bug("IOC-120")]
+		public void When_attemting_to_resolve_component_with_internal_ctor_should_throw_meaningfull_exception()
+		{
+			Container.Register(Component.For<EmptyClass>(),
+			                   Component.For<HasInternalConstructor>());
+
+			var exception = Assert.Throws<ComponentActivatorException>(() =>
+			                                                           Container.Resolve<HasInternalConstructor>());
+			var message =
+#if SILVERLIGHT
+				string.Format("Type {0} does not have a public default constructor and could not be instantiated.",
+				              typeof(HasInternalConstructor).FullName);
+#else
+				string.Format(
+					"Could not find a public constructor for type {1}.{0}" +
+					"Windsor by default cannot instantiate types that don't expose public constructors.{0}" +
+					"To expose the type as a service add public constructor, or use custom component activator.",
+					Environment.NewLine,
+					typeof(HasInternalConstructor).FullName);
+#endif
+			Assert.AreEqual(message, exception.Message);
+		}
+
+		[Test]
+		[Bug("IOC-83")]
+		[Bug("IOC-120")]
+		public void When_attemting_to_resolve_component_with_protected_ctor_should_throw_meaningfull_exception()
+		{
+			Container.Register(Component.For<HasProtectedConstructor>());
+
+			var exception = Assert.Throws<ComponentActivatorException>(() => Container.Resolve<HasProtectedConstructor>());
+			var message =
+#if SILVERLIGHT
+				string.Format("Type {0} does not have a public default constructor and could not be instantiated.",
+				              typeof(HasProtectedConstructor).FullName);
+#else
+				string.Format(
+					"Could not find a public constructor for type {1}.{0}" +
+					"Windsor by default cannot instantiate types that don't expose public constructors.{0}" +
+					"To expose the type as a service add public constructor, or use custom component activator.",
+					Environment.NewLine,
+					typeof(HasProtectedConstructor).FullName);
+#endif
+			Assert.AreEqual(message, exception.Message);
+		}
+
+		[Test]
 		public void When_property_setter_throws_at_resolution_time_exception_suggests_disabling_setting_the_property()
 		{
 			Container.Register(
@@ -95,7 +142,9 @@ namespace CastleTests
 			var message = string.Format("Error setting property PropertySetterThrows.CommonService in component {1}. See inner exception for more information.{0}" +
 			                            "If you don't want Windsor to set this property you can do it by either decorating it with {2} or via registration API.{0}" +
 			                            "Alternatively consider making the setter non-public.",
-			                            Environment.NewLine, typeof(PropertySetterThrows), typeof(DoNotWireAttribute));
+			                            Environment.NewLine,
+			                            typeof(PropertySetterThrows),
+			                            typeof(DoNotWireAttribute).Name);
 
 			Assert.AreEqual(message, exception.Message);
 		}
