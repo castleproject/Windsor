@@ -42,7 +42,7 @@ namespace Castle.Facilities.TypedFactory
 		protected override object InternalCreate(CreationContext context)
 		{
 			var instance = Kernel.ProxyFactory.Create(proxyFactory, Kernel, Model, context);
-			ApplyDecommissionConcerns(instance);
+			ApplyCommissionConcerns(instance);
 			return instance;
 		}
 
