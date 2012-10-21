@@ -72,19 +72,5 @@ namespace Castle.MicroKernel.Tests.Bugs
 			Kernel.Register(Component.For(typeof(IAssembler<object>)).ImplementedBy(typeof(ObjectAssembler)).Named("assembler"));
 			Assert.IsInstanceOf(typeof(Service1), Kernel.Resolve<IService>());
 		}
-
-		[Test]
-		public void Throws_right_exception_when_not_found_matching_generic_service()
-		{
-			Kernel.Register(Component.For(typeof(IProcessor<>)).ImplementedBy(typeof(DefaultProcessor<>)).Named("processor"));
-			Kernel.Register(Component.For<IAssembler<object>>().ImplementedBy<ObjectAssembler>().Named("assembler"));
-			var exception = Assert.Throws<HandlerException>(() => Kernel.Resolve<IProcessor<int>>());
-
-			var message = string.Format(
-				"Can't create component 'processor' as it has dependencies to be satisfied.{0}{0}'processor' is waiting for the following dependencies:{0}- Service 'Castle.MicroKernel.Tests.Bugs.IoC_141+IAssembler`1[[{1}]]' which was not registered.{0}",
-				Environment.NewLine, typeof(int).AssemblyQualifiedName);
-
-			Assert.AreEqual(message, exception.Message);
-		}
 	}
 }

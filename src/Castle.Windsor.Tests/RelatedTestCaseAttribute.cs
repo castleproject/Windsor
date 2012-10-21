@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2012 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2012 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,14 +16,16 @@ namespace CastleTests
 {
 	using System;
 
-	[AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
-	public class BugAttribute : Attribute
+	[AttributeUsage(AttributeTargets.Method | AttributeTargets.Class, AllowMultiple = true)]
+	public class RelatedTestCaseAttribute : Attribute
 	{
-		public BugAttribute(string bugId)
+		public RelatedTestCaseAttribute(Type relatedTestCaseType, string descriptoin = null)
 		{
-			BugId = bugId;
+			RelatedTestCaseType = relatedTestCaseType;
+			Descriptoin = descriptoin;
 		}
 
-		public string BugId { get; set; }
+		public string Descriptoin { get; set; }
+		public Type RelatedTestCaseType { get; set; }
 	}
 }

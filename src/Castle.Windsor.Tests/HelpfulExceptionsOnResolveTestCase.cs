@@ -19,8 +19,11 @@ namespace CastleTests
 	using Castle.Core;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.ComponentActivator;
+	using Castle.MicroKernel.Handlers;
 	using Castle.MicroKernel.Registration;
+	using Castle.MicroKernel.Tests.Bugs;
 	using Castle.MicroKernel.Tests.ClassComponents;
+	using Castle.MicroKernel.Tests.Configuration.Components;
 
 	using CastleTests.ClassComponents;
 	using CastleTests.Components;
@@ -30,6 +33,61 @@ namespace CastleTests
 	[TestFixture]
 	public class HelpfulExceptionsOnResolveTestCase : AbstractContainerTestCase
 	{
+		[Test]
+		public void No_resolvable_constructor_no_inline_arguments()
+		{
+			Container.Register(Component.For<ClassWithConstructors>());
+
+			var exception = Assert.Throws<HandlerException>(() => Container.Resolve<ClassWithConstructors>());
+
+			var message =
+				string.Format(
+					"Can't create component '{1}' as it has dependencies to be satisfied.{0}{0}" +
+					"'{1}' is waiting for the following dependencies:{0}" +
+					"- Parameter 'host' which was not provided. Did you forget to set the dependency?{0}" +
+					"- Parameter 'hosts' which was not provided. Did you forget to set the dependency?{0}",
+					Environment.NewLine,
+					typeof(ClassWithConstructors));
+			Assert.AreEqual(message, exception.Message);
+		}
+
+		[Test]
+		[Bug("IOC-141")]
+		public void No_resolvable_constructor_open_generic_component()
+		{
+			Container.Register(Component.For(typeof(IoC_141.IProcessor<>)).ImplementedBy(typeof(IoC_141.DefaultProcessor<>)).Named("processor"),
+			                   Component.For<IoC_141.IAssembler<object>>().ImplementedBy<IoC_141.ObjectAssembler>());
+
+			var exception = Assert.Throws<HandlerException>(() => Container.Resolve<IoC_141.IProcessor<int>>());
+
+			var message = string.Format(
+				"Can't create component 'processor' as it has dependencies to be satisfied.{0}{0}" +
+				"'processor' is waiting for the following dependencies:{0}" +
+				"- Service 'Castle.MicroKernel.Tests.Bugs.IoC_141+IAssembler`1[[{1}]]' which was not registered.{0}",
+				Environment.NewLine, typeof(int).AssemblyQualifiedName);
+
+			Assert.AreEqual(message, exception.Message);
+		}
+
+		[Test]
+		public void No_resolvable_constructor_with_inline_arguments()
+		{
+			Container.Register(Component.For<ClassWithConstructors>());
+
+			var fakeArgument = new Arguments(new[] { new object() });
+
+			var exception = Assert.Throws<HandlerException>(() => Container.Resolve<ClassWithConstructors>(fakeArgument));
+			var message =
+				string.Format(
+					"Can't create component '{1}' as it has dependencies to be satisfied.{0}{0}" +
+					"'{1}' is waiting for the following dependencies:{0}" +
+					"- Parameter 'host' which was not provided. Did you forget to set the dependency?{0}" +
+					"- Parameter 'hosts' which was not provided. Did you forget to set the dependency?{0}",
+					Environment.NewLine,
+					typeof(ClassWithConstructors));
+			Assert.AreEqual(message, exception.Message);
+		}
+
 		[Test]
 		public void Resolving_by_name_not_found_prints_helpful_message_many_other_options_present()
 		{

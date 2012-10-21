@@ -20,7 +20,6 @@ namespace Castle.MicroKernel.Tests
 	using Castle.MicroKernel.Handlers;
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Tests.ClassComponents;
-	using Castle.Windsor.Tests;
 
 	using CastleTests;
 

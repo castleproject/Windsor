@@ -14,22 +14,19 @@
 
 namespace CastleTests.Activators
 {
-	using System;
-
 	using Castle.Core.Configuration;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.ComponentActivator;
-	using Castle.MicroKernel.Handlers;
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.SubSystems.Configuration;
 	using Castle.MicroKernel.Tests.ClassComponents;
-	using Castle.MicroKernel.Tests.Configuration.Components;
 
 	using CastleTests.Components;
 
 	using NUnit.Framework;
 
 	[TestFixture]
+	[RelatedTestCase(typeof(HelpfulExceptionsOnResolveTestCase), "Some tests about exceptions thrown when constructor not available.")]
 	public class BestConstructorTestCase : AbstractContainerTestCase
 	{
 		[Test]
@@ -230,30 +227,6 @@ namespace CastleTests.Activators
 			var component = Container.Resolve<HasTwoConstructors2>();
 
 			Assert.AreEqual("foo", component.Param);
-		}
-
-		[Test]
-		public void When_no_constructor_is_resolvable_and_inline_arguments_are_used_HandlerException_is_thrown()
-		{
-			Container.Register(Component.For<ClassWithConstructors>());
-
-			var fakeArgument = new Arguments(new[] { new object() });
-
-			Assert.Throws<HandlerException>(() => Container.Resolve<ClassWithConstructors>(fakeArgument));
-		}
-
-		[Test]
-		public void When_no_constructor_is_resolvable_and_no_inline_arguments_used_HandlerException_is_thrown()
-		{
-			Container.Register(Component.For<ClassWithConstructors>());
-
-			var exception = Assert.Throws<HandlerException>(() => Container.Resolve<ClassWithConstructors>());
-
-			var message =
-				string.Format(
-					"Can't create component 'Castle.MicroKernel.Tests.Configuration.Components.ClassWithConstructors' as it has dependencies to be satisfied.{0}{0}'Castle.MicroKernel.Tests.Configuration.Components.ClassWithConstructors' is waiting for the following dependencies:{0}- Parameter 'host' which was not provided. Did you forget to set the dependency?{0}- Parameter 'hosts' which was not provided. Did you forget to set the dependency?{0}",
-					Environment.NewLine);
-			Assert.AreEqual(message, exception.Message);
 		}
 	}
 }

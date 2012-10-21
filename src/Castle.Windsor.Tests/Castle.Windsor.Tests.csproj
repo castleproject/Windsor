@@ -726,6 +726,7 @@
     <Compile Include="Registration\ServiceOverridesTestCase.cs" />
     <Compile Include="Registration\TypesTestCase.cs" />
     <Compile Include="Registration\WithServiceTestCase.cs" />
+    <Compile Include="RelatedTestCaseAttribute.cs" />
     <Compile Include="ResolveScopesTestCase.cs" />
     <Compile Include="ServiceOverridesStackOverflowTestCase.cs" />
     <Compile Include="SpecializedResolvers\CollectionResolverTestCase.cs" />
