@@ -14,16 +14,15 @@
 
 namespace Castle.Windsor.Diagnostics
 {
-	using System;
-	using System.Linq;
+	using System.Collections.Generic;
 
+	using Castle.Core;
 	using Castle.MicroKernel;
 
 	/// <summary>
-	/// 	Collects all handlers for components in hosting container grouped by services they expose.
-	/// 	Within the service group, first one would be the default (the one obtained when callling <see cref = "IKernel.Resolve(System.Type)" /> for the service type)
+	/// 	Collects dependencies that are duplicated between constructors and properties.
 	/// </summary>
-	public interface IAllServicesDiagnostic : IDiagnostic<ILookup<Type, IHandler>>
+	public interface IDuplicatedDependenciesDiagnostic : IDiagnostic<IDictionary<IHandler, Pair<ConstructorDependencyModel, PropertySet>>>
 	{
 	}
 }

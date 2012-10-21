@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2012 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,15 +15,15 @@
 namespace Castle.Windsor.Diagnostics
 {
 	/// <summary>
-	///   Base inteface for exposing diagnostic information about container, its components and extensions
+	/// 	Base inteface for exposing diagnostic information about container, its components and extensions
 	/// </summary>
-	/// <typeparam name = "T"></typeparam>
+	/// <typeparam name = "T"> </typeparam>
 	public interface IDiagnostic<out T>
 	{
 		/// <summary>
-		///   Collects specified diagnostic information.
+		/// 	Collects specified diagnostic information.
 		/// </summary>
-		/// <returns></returns>
+		/// <returns> </returns>
 		T Inspect();
 	}
 }
