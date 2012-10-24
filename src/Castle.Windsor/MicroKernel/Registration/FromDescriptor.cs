@@ -59,11 +59,21 @@ namespace Castle.MicroKernel.Registration
 		/// <summary>
 		///   Returns the descriptor for accepting a type.
 		/// </summary>
+		/// <param name = "basedOn">The base type.</param>
+		/// <returns>The descriptor for the type.</returns>
+		public BasedOnDescriptor BasedOn(Type basedOn)
+		{
+            return BasedOn((IEnumerable<Type>)new[] { basedOn });
+		}
+
+		/// <summary>
+		///   Returns the descriptor for accepting a type.
+		/// </summary>
 		/// <param name = "basedOn">One or more base types. To be accepted a type must implement at least one of the given base types.</param>
 		/// <returns>The descriptor for the type.</returns>
 		public BasedOnDescriptor BasedOn(params Type[] basedOn)
 		{
-			return BasedOn(basedOn.AsEnumerable());
+            return BasedOn((IEnumerable<Type>)basedOn);
 		}
 
 		/// <summary>
