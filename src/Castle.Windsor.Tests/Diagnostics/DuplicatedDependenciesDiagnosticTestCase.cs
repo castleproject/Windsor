@@ -22,6 +22,9 @@ namespace CastleTests.Diagnostics
 	using Castle.MicroKernel.Tests.ClassComponents;
 	using Castle.Windsor.Diagnostics;
 
+	using CastleTests.ClassComponents;
+	using CastleTests.Components;
+
 	using NUnit.Framework;
 
 	public class DuplicatedDependenciesDiagnosticTestCase : AbstractContainerTestCase
@@ -38,7 +41,16 @@ namespace CastleTests.Diagnostics
 		}
 
 		[Test]
-		public void Can_detect_components_having_duplicated_dependencies()
+		public void Can_detect_components_having_duplicated_dependencies_same_name_different_type()
+		{
+			Container.Register(Component.For<HasObjectPropertyAndTypedCtorParameterWithSameName>());
+
+			var result = diagnostic.Inspect();
+			CollectionAssert.IsNotEmpty(result);
+		}
+
+		[Test]
+		public void Can_detect_components_having_duplicated_dependencies_same_type_and_name()
 		{
 			Container.Register(Component.For<HasTwoConstructors>());
 
@@ -47,13 +59,26 @@ namespace CastleTests.Diagnostics
 		}
 
 		[Test]
+		public void Can_detect_components_having_duplicated_dependencies_via_service_override()
+		{
+			Container.Register(Component.For<HasObjectPropertyAndTypedCtorParameterDifferentName>()
+				                   .DependsOn(Dependency.OnComponent(typeof(object), typeof(EmptyService2Impl1)),
+				                              Dependency.OnComponent(typeof(IEmptyService), typeof(EmptyService2Impl1))));
+			var result = diagnostic.Inspect();
+			CollectionAssert.IsNotEmpty(result);
+		}
+
+		//
+
+		[Test]
 		public void member_should_action_in_context()
 		{
 			var types = GetType().Assembly.GetTypes().Where(t =>
 			                                                {
 				                                                var properties = t.GetProperties().Where(p => p.CanWrite && p.GetSetMethod() != null).ToArray();
 				                                                var constructorParameters = t.GetConstructors().SelectMany(c => c.GetParameters()).ToArray();
-				                                                return properties.Any(p => constructorParameters.Any(c => c.ParameterType == p.PropertyType && c.Name.Equals(p.Name, StringComparison.OrdinalIgnoreCase)));
+				                                                //return properties.Any(p => constructorParameters.Any(c => c.ParameterType == p.PropertyType && c.Name.Equals(p.Name, StringComparison.OrdinalIgnoreCase)));
+				                                                return properties.Any(p => p.PropertyType == typeof(object)) || constructorParameters.Any(c => c.ParameterType == typeof(object));
 			                                                }).ToArray();
 			foreach (var type in types)
 			{

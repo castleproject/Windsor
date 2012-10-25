@@ -308,6 +308,8 @@
     <Compile Include="ClassComponents\GenericExtendedImpl.cs" />
     <Compile Include="ClassComponents\GenericImplA.cs" />
     <Compile Include="ClassComponents\GenericWithTDependency.cs" />
+    <Compile Include="ClassComponents\HasObjectPropertyAndTypedCtorParameterDifferentName.cs" />
+    <Compile Include="ClassComponents\HasObjectPropertyAndTypedCtorParameterWithSameName.cs" />
     <Compile Include="ClassComponents\IGenericExtended.cs" />
     <Compile Include="ClassComponents\PropertySetterThrows.cs" />
     <Compile Include="ClassComponents\UseGenericExtended1.cs" />

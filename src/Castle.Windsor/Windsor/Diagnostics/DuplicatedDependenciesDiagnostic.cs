@@ -36,7 +36,7 @@ namespace Castle.Windsor.Diagnostics
 			foreach (var handler in allHandlers)
 			{
 				var duplicateDependencies = FindDuplicateDependenciesFor(handler);
-				if(duplicateDependencies.Length > 0)
+				if (duplicateDependencies.Length > 0)
 				{
 					result.Add(handler, duplicateDependencies);
 				}
@@ -47,6 +47,7 @@ namespace Castle.Windsor.Diagnostics
 		private Pair<ConstructorDependencyModel, PropertySet>[] FindDuplicateDependenciesFor(IHandler handler)
 		{
 			// TODO: handler non-default activators
+			// TODO: handle duplicates between properties/ctor arguments when they have both same type, but no service override...
 			var duplicates = new List<Pair<ConstructorDependencyModel, PropertySet>>();
 			var properties = handler.ComponentModel.Properties;
 			var constructors = handler.ComponentModel.Constructors;
@@ -60,8 +61,7 @@ namespace Castle.Windsor.Diagnostics
 						{
 							duplicates.Add(new Pair<ConstructorDependencyModel, PropertySet>(dependency, property));
 						}
-					
-				}
+					}
 				}
 			}
 			return duplicates.ToArray();
@@ -69,8 +69,12 @@ namespace Castle.Windsor.Diagnostics
 
 		private bool IsDuplicate(DependencyModel foo, DependencyModel bar)
 		{
-			return string.Equals(foo.DependencyKey, bar.DependencyKey, StringComparison.OrdinalIgnoreCase) &&
-			       foo.TargetType == bar.TargetType;
+			if (foo.ReferencedComponentName != null && bar.ReferencedComponentName != null)
+			{
+				return string.Equals(foo.ReferencedComponentName, bar.ReferencedComponentName, StringComparison.OrdinalIgnoreCase);
+			}
+
+			return string.Equals(foo.DependencyKey, bar.DependencyKey, StringComparison.OrdinalIgnoreCase);
 		}
 	}
 }
