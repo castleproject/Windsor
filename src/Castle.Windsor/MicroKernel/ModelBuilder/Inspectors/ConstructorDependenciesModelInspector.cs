@@ -34,7 +34,7 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 		{
 			var targetType = model.Implementation;
 			var constructors = targetType.GetConstructors(BindingFlags.Public | BindingFlags.Instance)
-										 .Where(c => !HasDoNotSelectAttribute(c));
+										 .Where(IsVisibleToContainer);
 
 			foreach (var constructor in constructors)
 			{
@@ -57,9 +57,9 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 			return new ConstructorDependencyModel(parameter);
 		}
 
-		private static bool HasDoNotSelectAttribute(ConstructorInfo constructor)
+		protected virtual bool IsVisibleToContainer(ConstructorInfo constructor)
 		{
-			return constructor.HasAttribute<DoNotSelectAttribute>();
+			return constructor.HasAttribute<DoNotSelectAttribute>() == false;
 		}
 	}
 }
