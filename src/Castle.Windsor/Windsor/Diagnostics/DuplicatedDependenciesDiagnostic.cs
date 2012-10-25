@@ -29,9 +29,48 @@ namespace Castle.Windsor.Diagnostics
 			this.kernel = kernel;
 		}
 
-		public IDictionary<IHandler, Pair<ConstructorDependencyModel, PropertySet>> Inspect()
+		public IDictionary<IHandler, Pair<ConstructorDependencyModel, PropertySet>[]> Inspect()
 		{
-			throw new NotImplementedException();
+			var allHandlers = kernel.GetAssignableHandlers(typeof(object));
+			var result = new Dictionary<IHandler, Pair<ConstructorDependencyModel, PropertySet>[]>();
+			foreach (var handler in allHandlers)
+			{
+				var duplicateDependencies = FindDuplicateDependenciesFor(handler);
+				if(duplicateDependencies.Length > 0)
+				{
+					result.Add(handler, duplicateDependencies);
+				}
+			}
+			return result;
+		}
+
+		private Pair<ConstructorDependencyModel, PropertySet>[] FindDuplicateDependenciesFor(IHandler handler)
+		{
+			// TODO: handler non-default activators
+			var duplicates = new List<Pair<ConstructorDependencyModel, PropertySet>>();
+			var properties = handler.ComponentModel.Properties;
+			var constructors = handler.ComponentModel.Constructors;
+			foreach (var constructor in constructors)
+			{
+				foreach (var dependency in constructor.Dependencies)
+				{
+					foreach (var property in properties)
+					{
+						if (IsDuplicate(property.Dependency, dependency))
+						{
+							duplicates.Add(new Pair<ConstructorDependencyModel, PropertySet>(dependency, property));
+						}
+					
+				}
+				}
+			}
+			return duplicates.ToArray();
+		}
+
+		private bool IsDuplicate(DependencyModel foo, DependencyModel bar)
+		{
+			return string.Equals(foo.DependencyKey, bar.DependencyKey, StringComparison.OrdinalIgnoreCase) &&
+			       foo.TargetType == bar.TargetType;
 		}
 	}
 }

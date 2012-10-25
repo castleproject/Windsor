@@ -14,6 +14,7 @@
 
 namespace Castle.Windsor.Diagnostics.Extensions
 {
+#if !SILVERLIGHT
 	using System.Collections.Generic;
 
 	using Castle.Core;
@@ -22,7 +23,7 @@ namespace Castle.Windsor.Diagnostics.Extensions
 
 	public class DuplicatedDependenciesDebuggerExtension : AbstractContainerDebuggerExtension
 	{
-		private const string name = "Objects tracked by release policy";
+		private const string name = "Potentially duplicated dependencies";
 		private DuplicatedDependenciesDiagnostic diagnostic;
 
 		public override IEnumerable<DebuggerViewItem> Attach()
@@ -46,7 +47,7 @@ namespace Castle.Windsor.Diagnostics.Extensions
 			diagnosticsHost.AddDiagnostic<IDuplicatedDependenciesDiagnostic>(diagnostic);
 		}
 
-		private DebuggerViewItem BuildItem(IDictionary<IHandler, Pair<ConstructorDependencyModel, PropertySet>> results)
+		private DebuggerViewItem BuildItem(IDictionary<IHandler, Pair<ConstructorDependencyModel, PropertySet>[]> results)
 		{
 			return new DebuggerViewItem(name, "NOT IMPLEMENTED YET");
 			//var totalCount = 0;
@@ -71,4 +72,5 @@ namespace Castle.Windsor.Diagnostics.Extensions
 			get { return name; }
 		}
 	}
+#endif
 }
