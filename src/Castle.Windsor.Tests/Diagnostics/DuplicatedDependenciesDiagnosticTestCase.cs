@@ -59,6 +59,14 @@ namespace CastleTests.Diagnostics
 		}
 
 		[Test]
+		public void Can_detect_components_having_duplicated_dependencies_same_type_different_name()
+		{
+			Container.Register(Component.For<HasPropertyAndCtorParameterSameTypeDifferentName>());
+			var result = diagnostic.Inspect();
+			CollectionAssert.IsNotEmpty(result);
+		}
+
+		[Test]
 		public void Can_detect_components_having_duplicated_dependencies_via_service_override()
 		{
 			Container.Register(Component.For<HasObjectPropertyAndTypedCtorParameterDifferentName>()
@@ -68,17 +76,13 @@ namespace CastleTests.Diagnostics
 			CollectionAssert.IsNotEmpty(result);
 		}
 
-		//
-
 		[Test]
 		public void member_should_action_in_context()
 		{
 			var types = GetType().Assembly.GetTypes().Where(t =>
 			                                                {
-				                                                var properties = t.GetProperties().Where(p => p.CanWrite && p.GetSetMethod() != null).ToArray();
-				                                                var constructorParameters = t.GetConstructors().SelectMany(c => c.GetParameters()).ToArray();
-				                                                //return properties.Any(p => constructorParameters.Any(c => c.ParameterType == p.PropertyType && c.Name.Equals(p.Name, StringComparison.OrdinalIgnoreCase)));
-				                                                return properties.Any(p => p.PropertyType == typeof(object)) || constructorParameters.Any(c => c.ParameterType == typeof(object));
+				                                                var properties = t.GetProperties().Where(p => p.CanWrite && p.GetSetMethod() != null).ToLookup(p=>p.PropertyType);
+				                                                return properties.Any(p => p.Count() > 1);
 			                                                }).ToArray();
 			foreach (var type in types)
 			{

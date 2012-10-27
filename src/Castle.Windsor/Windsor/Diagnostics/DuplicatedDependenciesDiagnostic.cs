@@ -48,6 +48,7 @@ namespace Castle.Windsor.Diagnostics
 		{
 			// TODO: handler non-default activators
 			// TODO: handle duplicates between properties/ctor arguments when they have both same type, but no service override...
+
 			var duplicates = new List<Pair<ConstructorDependencyModel, PropertySet>>();
 			var properties = handler.ComponentModel.Properties;
 			var constructors = handler.ComponentModel.Constructors;
