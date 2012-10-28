@@ -36,6 +36,20 @@ namespace Castle.Core.Internal
 			}
 		}
 
+		/// <summary>
+		///   Returns all values and clears the dictionary
+		/// </summary>
+		/// <returns> </returns>
+		public TValue[] EjectAllValues()
+		{
+			using (@lock.ForWriting())
+			{
+				var values = inner.Values.ToArray();
+				inner.Clear();
+				return values;
+			}
+		}
+
 		public TValue GetOrAdd(TKey key, Func<TKey, TValue> factory)
 		{
 			using (var token = @lock.ForReadingUpgradeable())
@@ -56,18 +70,17 @@ namespace Castle.Core.Internal
 			}
 		}
 
-		/// <summary>
-		///   Returns all values and clears the dictionary
-		/// </summary>
-		/// <returns> </returns>
-		public TValue[] EjectAllValues()
+		public TValue GetOrThrow(TKey key)
 		{
-			using (@lock.ForWriting())
+			using (var token = @lock.ForReading())
 			{
-				var values = inner.Values.ToArray();
-				inner.Clear();
-				return values;
+				TValue value;
+				if (TryGet(key, out value))
+				{
+					return value;
+				}
 			}
+			throw new ArgumentException(string.Format("Item for key {0} was not found.", key));
 		}
 
 		private bool TryGet(TKey key, out TValue value)

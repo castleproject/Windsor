@@ -315,7 +315,9 @@ namespace CastleTests.Facilities.TypedFactory
 		[Test]
 		public void Factory_obeys_release_policy_non_tracking()
 		{
+#pragma warning disable 612,618
 			Container.Kernel.ReleasePolicy = new NoTrackingReleasePolicy();
+#pragma warning restore 612,618
 			Container.Register(Component.For<DisposableFoo>().LifeStyle.Transient,
 			                   Component.For<UsesDisposableFooDelegate>().LifeStyle.Transient);
 			var dependsOnFoo = Container.Resolve<UsesDisposableFooDelegate>();

@@ -1,4 +1,4 @@
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2012 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -46,8 +46,8 @@ namespace CastleTests.Facilities.TypedFactory
 		public void Can_Resolve_by_closed_generic_closed_on_arguments_type_with_custom_selector()
 		{
 			Container.Register(AllTypes.FromAssemblyContaining<TypedFactoryFacilityTake2TestCase>()
-			                   	.BasedOn(typeof(GenericComponent<>))
-			                   	.WithService.Base().Configure(c => c.LifestyleTransient()),
+				                   .BasedOn(typeof(GenericComponent<>))
+				                   .WithService.Base().Configure(c => c.LifestyleTransient()),
 			                   Component.For<IObjectFactory>().AsFactory(s => s.SelectedWith<SelectorByClosedArgumentType>()),
 			                   Component.For<SelectorByClosedArgumentType>());
 
@@ -189,25 +189,6 @@ namespace CastleTests.Facilities.TypedFactory
 
 			var component = factory.CreateDummyComponent();
 			Assert.IsNotNull(component);
-		}
-
-		[Test]
-		public void Get_method_resolves_by_type_is_told_to_ignore_name()
-		{
-			Container.Register(
-				Component.For<IDummyComponent>()
-					.ImplementedBy<Component2>()
-					.Named("SecondComponent")
-					.LifeStyle.Transient,
-				Component.For<IDummyComponentFactory>()
-					.AsFactory(new DefaultTypedFactoryComponentSelector(getMethodsResolveByName: false)));
-			var factory = Container.Resolve<IDummyComponentFactory>();
-
-			var component = factory.GetSecondComponent();
-
-			Assert.IsNotNull(component);
-
-			Assert.IsInstanceOf<Component1>(component);
 		}
 
 		[Test]
@@ -465,6 +446,25 @@ namespace CastleTests.Facilities.TypedFactory
 			GC.Collect();
 
 			Assert.IsTrue(weak.IsAlive);
+		}
+
+		[Test]
+		public void Get_method_resolves_by_type_is_told_to_ignore_name()
+		{
+			Container.Register(
+				Component.For<IDummyComponent>()
+					.ImplementedBy<Component2>()
+					.Named("SecondComponent")
+					.LifeStyle.Transient,
+				Component.For<IDummyComponentFactory>()
+					.AsFactory(new DefaultTypedFactoryComponentSelector(getMethodsResolveByName: false)));
+			var factory = Container.Resolve<IDummyComponentFactory>();
+
+			var component = factory.GetSecondComponent();
+
+			Assert.IsNotNull(component);
+
+			Assert.IsInstanceOf<Component1>(component);
 		}
 
 		[Test]
@@ -734,7 +734,9 @@ namespace CastleTests.Facilities.TypedFactory
 		[Test]
 		public void Typed_factory_obeys_release_policy_non_tracking()
 		{
+#pragma warning disable 612,618
 			Container.Kernel.ReleasePolicy = new NoTrackingReleasePolicy();
+#pragma warning restore 612,618
 			Container.Register(
 				Component.For<INonDisposableFactory>().LifeStyle.Transient.AsFactory(),
 				Component.For<DisposableComponent>().LifeStyle.Transient);

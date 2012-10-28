@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2012 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -95,7 +95,9 @@ namespace CastleTests.Diagnostics
 		[Test]
 		public void NoTrackingReleasePolicy_does_not_appear()
 		{
+#pragma warning disable 612,618
 			Kernel.ReleasePolicy = new NoTrackingReleasePolicy();
+#pragma warning restore 612,618
 			Register<DisposableFoo>();
 
 			Container.Resolve<DisposableFoo>();

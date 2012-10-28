@@ -1,4 +1,4 @@
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2012 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ namespace Castle.MicroKernel.Releasers
 	///   No tracking of component instances are made.
 	/// </summary>
 	[Serializable]
+	[Obsolete("This class is a hack, will be removed in the future release and should be avoided. Please implement proper lifecycle management instead.")]
 	public class NoTrackingReleasePolicy : IReleasePolicy
 	{
 		public void Dispose()
