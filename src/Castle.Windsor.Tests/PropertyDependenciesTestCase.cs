@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2012 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,9 +14,6 @@
 
 namespace CastleTests
 {
-	using System;
-	using System.Linq;
-
 	using Castle.Core;
 	using Castle.MicroKernel.Handlers;
 	using Castle.MicroKernel.Registration;
@@ -31,16 +28,6 @@ namespace CastleTests
 	public class PropertyDependenciesTestCase : AbstractContainerTestCase
 	{
 		[Test]
-		public void Can_opt_out_of_setting_properties_open_generic_via_enum()
-		{
-			Container.Register(Component.For(typeof(GenericImpl2<>))
-			                   	.DependsOn(Dependency.OnValue(typeof(int), 5))
-			                   	.Properties(PropertyFilter.IgnoreAll));
-
-			var item = Container.Resolve<GenericImpl2<A>>();
-			Assert.AreEqual(0, item.Value);
-		}
-		[Test]
 		public void Can_opt_out_of_setting_base_properties_via_enum()
 		{
 			Container.Register(
@@ -54,25 +41,22 @@ namespace CastleTests
 		}
 
 		[Test]
-		public void member_should_action()
+		public void Can_opt_out_of_setting_properties_open_generic_via_enum()
 		{
-			var types = GetType().Assembly.GetExportedTypes().Where(t=>t.Name.EndsWith("TestCase") == false)
-				.Where(t=>t.IsClass && t.IsAbstract == false && t.IsGenericTypeDefinition)
-				.Where(t=>t.BaseType !=typeof(object))
-				.Where(t=>t.GetProperties().Any())
-				.Where(t=>t.BaseType.GetProperties().Any());
-			foreach (var type in types)
-			{
-				Console.WriteLine(type);
-			}
+			Container.Register(Component.For(typeof(GenericImpl2<>))
+				                   .DependsOn(Dependency.OnValue(typeof(int), 5))
+				                   .Properties(PropertyFilter.IgnoreAll));
+
+			var item = Container.Resolve<GenericImpl2<A>>();
+			Assert.AreEqual(0, item.Value);
 		}
 
 		[Test]
 		public void Can_opt_out_of_setting_properties_open_generic_via_predicate()
 		{
 			Container.Register(Component.For(typeof(GenericImpl2<>))
-			                   	.DependsOn(Dependency.OnValue(typeof(int), 5))
-			                   	.Properties(p => false));
+				                   .DependsOn(Dependency.OnValue(typeof(int), 5))
+				                   .PropertiesIgnore(p => true));
 
 			var item = Container.Resolve<GenericImpl2<A>>();
 			Assert.AreEqual(0, item.Value);
@@ -96,7 +80,7 @@ namespace CastleTests
 			Container.Register(
 				Component.For<ICommon>().ImplementedBy<CommonImpl1>(),
 				Component.For<CommonServiceUser2>()
-					.Properties(p => false));
+					.PropertiesIgnore(p => true));
 
 			var item = Container.Resolve<CommonServiceUser2>();
 			Assert.IsNull(item.CommonService);
@@ -113,7 +97,7 @@ namespace CastleTests
 		[Test]
 		public void Can_require_setting_properties_open_generic_via_predicate()
 		{
-			Container.Register(Component.For(typeof(GenericImpl2<>)).Properties(p => true, isRequired: true));
+			Container.Register(Component.For(typeof(GenericImpl2<>)).PropertiesRequire(p => true));
 
 			Assert.Throws<HandlerException>(() => Container.Resolve<GenericImpl2<A>>());
 		}
@@ -129,7 +113,25 @@ namespace CastleTests
 		[Test]
 		public void Can_require_setting_properties_via_predicate()
 		{
-			Container.Register(Component.For<CommonServiceUser2>().Properties(p => true, isRequired: true));
+			Container.Register(Component.For<CommonServiceUser2>().PropertiesRequire(p => true));
+
+			Assert.Throws<HandlerException>(() => Container.Resolve<CommonServiceUser2>());
+		}
+
+		[Test]
+		public void First_one_wins()
+		{
+			Container.Register(Component.For<CommonServiceUser2>().Properties(PropertyFilter.IgnoreAll)
+				                   .Properties(PropertyFilter.RequireAll));
+
+			Container.Resolve<CommonServiceUser2>();
+		}
+
+		[Test]
+		public void First_one_wins_2()
+		{
+			Container.Register(Component.For<CommonServiceUser2>().Properties(PropertyFilter.RequireAll)
+				                   .Properties(PropertyFilter.IgnoreAll));
 
 			Assert.Throws<HandlerException>(() => Container.Resolve<CommonServiceUser2>());
 		}

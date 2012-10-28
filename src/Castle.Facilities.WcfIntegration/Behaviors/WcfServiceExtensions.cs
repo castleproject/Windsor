@@ -51,7 +51,7 @@ namespace Castle.Facilities.WcfIntegration
 			WcfUtils.AddBehaviors(kernel, WcfExtensionScope.Services,
 				serviceHost.Description.Behaviors, burden, behavior =>
 				{
-					if (behavior.GetType() == typeof(ServiceBehaviorAttribute))
+					if (behavior is ServiceBehaviorAttribute)
 					{
 						serviceHost.Description.Behaviors.Remove<ServiceBehaviorAttribute>();
 					}
@@ -59,7 +59,7 @@ namespace Castle.Facilities.WcfIntegration
 					{
 						serviceHost.Description.Behaviors.Remove<ServiceDebugBehavior>();
 					}
-					else if (behavior.GetType() == typeof(AspNetCompatibilityRequirementsAttribute))
+					else if (behavior is AspNetCompatibilityRequirementsAttribute)
 					{
 						serviceHost.Description.Behaviors.Remove<AspNetCompatibilityRequirementsAttribute>();
 					}
@@ -88,9 +88,12 @@ namespace Castle.Facilities.WcfIntegration
 
 		private static void AddErrorHandlers(ServiceHost serviceHost, IKernel kernel, IWcfBurden burden)
 		{
-			var errorHandlers = new KeyedByTypeCollection<IErrorHandler>();
-			WcfUtils.AddBehaviors(kernel, WcfExtensionScope.Services, errorHandlers, burden, errorHandler =>
-				WcfUtils.RegisterErrorHandler(serviceHost, errorHandler, true));
+			var errorHandlers = new List<IErrorHandler>();
+			WcfUtils.AddBehaviors(kernel, WcfExtensionScope.Services, errorHandlers, burden, errorHandler => WcfUtils.IsBehaviorExtension(errorHandler) == false);
+			if(errorHandlers.Count > 0)
+			{
+				WcfUtils.RegisterErrorHandlers(serviceHost, errorHandlers);
+			}
 		}
 	}
 }

@@ -1,4 +1,4 @@
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2012 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,17 +19,17 @@ namespace Castle.MicroKernel.ModelBuilder
 	public interface IComponentModelDescriptor
 	{
 		/// <summary>
-		///   Contribute to component model before standard <see cref = "IContributeComponentModelConstruction" /> run.
+		/// 	Contribute to component model before standard <see cref="IContributeComponentModelConstruction" /> run.
 		/// </summary>
-		/// <param name = "kernel"></param>
-		/// <param name = "model"></param>
+		/// <param name="kernel"> </param>
+		/// <param name="model"> </param>
 		void BuildComponentModel(IKernel kernel, ComponentModel model);
 
 		/// <summary>
-		///   Contribute to component model after standard <see cref = "IContributeComponentModelConstruction" /> run.
+		/// 	Contribute to component model after standard <see cref="IContributeComponentModelConstruction" /> run.
 		/// </summary>
-		/// <param name = "kernel"></param>
-		/// <param name = "model"></param>
+		/// <param name="kernel"> </param>
+		/// <param name="model"> </param>
 		void ConfigureComponentModel(IKernel kernel, ComponentModel model);
 	}
 }

@@ -1,4 +1,4 @@
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2012 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,24 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.MicroKernel.ModelBuilder.Descriptors
+namespace Castle.MicroKernel.ModelBuilder
 {
 	using Castle.Core;
-	using Castle.MicroKernel.Proxy;
 
-	public class InterfaceProxyDescriptor : IComponentModelDescriptor
+	public interface IMetaComponentModelDescriptor
 	{
-		public void BuildComponentModel(IKernel kernel, ComponentModel model)
-		{
-		}
-
-		public void ConfigureComponentModel(IKernel kernel, ComponentModel model)
-		{
-			if (model.HasInterceptors && model.Implementation.IsInterface)
-			{
-				var options = model.ObtainProxyOptions();
-				options.OmitTarget = true;
-			}
-		}
+		/// <summary>
+		/// 	Contribute to component model after standard <see cref="IContributeComponentModelConstruction" /> run.
+		/// </summary>
+		/// <param name="kernel"> </param>
+		/// <param name="model"> </param>
+		void ConfigureComponentModel(IKernel kernel, ComponentModel model);
 	}
 }

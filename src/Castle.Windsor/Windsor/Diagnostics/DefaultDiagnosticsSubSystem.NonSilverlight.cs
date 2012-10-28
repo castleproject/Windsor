@@ -48,6 +48,7 @@ namespace Castle.Windsor.Diagnostics
 			Add(new AllServices());
 			Add(new PotentiallyMisconfiguredComponents());
 			Add(new PotentialLifestyleMismatches());
+			Add(new DuplicatedDependenciesDebuggerExtension());
 			Add(new UsingContainerAsServiceLocator());
 			Add(new ReleasePolicyTrackedObjects());
 			Add(new Facilities());

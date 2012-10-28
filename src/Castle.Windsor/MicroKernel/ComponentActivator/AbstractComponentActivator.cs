@@ -1,4 +1,4 @@
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2012 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -26,24 +26,21 @@ namespace Castle.MicroKernel.ComponentActivator
 #endif
 
 	/// <summary>
-	///   Abstract implementation of <see cref = "IComponentActivator" />.
-	///   The implementors must only override the InternalCreate and 
-	///   InternalDestroy methods in order to perform their creation and
-	///   destruction logic.
+	/// Abstract implementation of <see cref = "IComponentActivator" />. The implementors must only override the InternalCreate and InternalDestroy methods in order to perform their creation and destruction
+	/// logic.
 	/// </summary>
 	[Serializable]
 	public abstract class AbstractComponentActivator : IComponentActivator
 	{
-		private readonly IKernel kernel;
+		private readonly IKernelInternal kernel;
 		private readonly ComponentModel model;
 		private readonly ComponentInstanceDelegate onCreation;
 		private readonly ComponentInstanceDelegate onDestruction;
 
 		/// <summary>
-		///   Constructs an AbstractComponentActivator
+		/// Constructs an AbstractComponentActivator
 		/// </summary>
-		protected AbstractComponentActivator(ComponentModel model, IKernel kernel, ComponentInstanceDelegate onCreation,
-		                                     ComponentInstanceDelegate onDestruction)
+		protected AbstractComponentActivator(ComponentModel model, IKernelInternal kernel, ComponentInstanceDelegate onCreation, ComponentInstanceDelegate onDestruction)
 		{
 			this.model = model;
 			this.kernel = kernel;
@@ -51,7 +48,7 @@ namespace Castle.MicroKernel.ComponentActivator
 			this.onDestruction = onDestruction;
 		}
 
-		public IKernel Kernel
+		public IKernelInternal Kernel
 		{
 			get { return kernel; }
 		}
@@ -100,7 +97,7 @@ namespace Castle.MicroKernel.ComponentActivator
 			}
 
 			instance = ProxyUtil.GetUnproxiedInstance(instance);
-			if(instance == null)
+			if (instance == null)
 			{
 				// see http://issues.castleproject.org/issue/IOC-332 for details
 				throw new NotSupportedException(string.Format("Can not apply commission concerns to component {0} because it appears to be a target-less proxy. Currently those are not supported.", Model.Name));

@@ -27,8 +27,6 @@ namespace Castle.Facilities.WcfIntegration
 	{
 		private object instance;
 
-		#region IWcfServiceExtension
-
 		public void Install(ServiceHost serviceHost, IKernel kernel, IWcfBurden burden)
 		{
 			object extension = GetInstance(kernel, burden);
@@ -55,10 +53,6 @@ namespace Castle.Facilities.WcfIntegration
 			}
 		}
 
-		#endregion
-
-		#region IWcfChannelExtension Members
-
 		public void Install(ChannelFactory channelFactory, IKernel kernel, IWcfBurden burden)
 		{
 			var extension = GetInstance(kernel, burden);
@@ -68,10 +62,6 @@ namespace Castle.Facilities.WcfIntegration
 				WcfUtils.BindChannelFactoryAware(channelFactory, (IChannelFactoryAware)extension, true);
 			}
 		}
-
-		#endregion
-
-		#region IWcfEndpointExtension 
 
 		public void Install(ServiceEndpoint endpoint, bool withContract, IKernel kernel, IWcfBurden burden)
 		{
@@ -121,8 +111,6 @@ namespace Castle.Facilities.WcfIntegration
 				}
 			}
 		}
-
-		#endregion
 
 		private object GetInstance(IKernel kernel, IWcfBurden burden)
 		{

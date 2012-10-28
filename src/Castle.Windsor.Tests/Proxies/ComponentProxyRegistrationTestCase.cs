@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2012 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,13 +16,13 @@ namespace CastleTests.Proxies
 {
 	using System;
 
+	using Castle.DynamicProxy;
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Handlers;
 	using Castle.MicroKernel.Registration;
 	using Castle.ProxyInfrastructure;
 	using Castle.Windsor.Tests.Interceptors;
 
-	using CastleTests;
 	using CastleTests.Components;
 
 	using NUnit.Framework;
@@ -30,15 +30,21 @@ namespace CastleTests.Proxies
 	[TestFixture]
 	public class ComponentProxyRegistrationTestCase : AbstractContainerTestCase
 	{
+		private void AssertIsProxy(object o)
+		{
+			Assert.IsInstanceOf<IProxyTargetAccessor>(o);
+		}
+
 		[Test]
 		public void AddComponent_WithMixIn_AddsMixin()
 		{
 			Container.Register(Component.For<ICalcService>()
-			                   	.ImplementedBy<CalculatorService>()
-			                   	.Proxy.MixIns(new SimpleMixIn())
+				                   .ImplementedBy<CalculatorService>()
+				                   .Proxy.MixIns(new SimpleMixIn())
 				);
 
 			var calculator = Container.Resolve<ICalcService>();
+			AssertIsProxy(calculator);
 			Assert.IsInstanceOf(typeof(ISimpleMixIn), calculator);
 
 			var mixin = (ISimpleMixIn)calculator;
@@ -54,6 +60,7 @@ namespace CastleTests.Proxies
 					.Proxy.MixIns(m => m.Objects(new SimpleMixIn())));
 
 			var calculator = Container.Resolve<ICalcService>();
+			AssertIsProxy(calculator);
 			Assert.IsInstanceOf(typeof(ISimpleMixIn), calculator);
 
 			var mixin = (ISimpleMixIn)calculator;
@@ -68,6 +75,7 @@ namespace CastleTests.Proxies
 				Component.For<ISimpleMixIn>().ImplementedBy<SimpleMixIn>().Named("other"));
 
 			var calculator = Container.Resolve<ICalcService>();
+			AssertIsProxy(calculator);
 			Assert.IsInstanceOf(typeof(ISimpleMixIn), calculator);
 
 			var mixin = (ISimpleMixIn)calculator;
@@ -82,6 +90,7 @@ namespace CastleTests.Proxies
 				Component.For<ISimpleMixIn>().ImplementedBy<SimpleMixIn>());
 
 			var calculator = Container.Resolve<ICalcService>();
+			AssertIsProxy(calculator);
 			Assert.IsInstanceOf(typeof(ISimpleMixIn), calculator);
 
 			var mixin = (ISimpleMixIn)calculator;
@@ -92,8 +101,8 @@ namespace CastleTests.Proxies
 		public void Missing_dependency_on_hook_statically_detected()
 		{
 			Container.Register(Component.For<ICalcService>()
-			                   	.ImplementedBy<CalculatorService>()
-			                   	.Proxy.Hook(h => h.Service<ProxyNothingHook>()));
+				                   .ImplementedBy<CalculatorService>()
+				                   .Proxy.Hook(h => h.Service<ProxyNothingHook>()));
 
 			var calc = Container.Kernel.GetHandler(typeof(ICalcService));
 			Assert.AreEqual(HandlerState.WaitingDependency, calc.CurrentState);
@@ -113,8 +122,8 @@ namespace CastleTests.Proxies
 		public void Missing_dependency_on_mixin_statically_detected()
 		{
 			Container.Register(Component.For<ICalcService>()
-			                   	.ImplementedBy<CalculatorService>()
-			                   	.Proxy.MixIns(m => m.Component<A>()));
+				                   .ImplementedBy<CalculatorService>()
+				                   .Proxy.MixIns(m => m.Component<A>()));
 
 			var calc = Container.Kernel.GetHandler(typeof(ICalcService));
 			Assert.AreEqual(HandlerState.WaitingDependency, calc.CurrentState);
@@ -134,8 +143,8 @@ namespace CastleTests.Proxies
 		public void Missing_dependency_on_selector_statically_detected()
 		{
 			Container.Register(Component.For<ICalcService>()
-			                   	.ImplementedBy<CalculatorService>()
-			                   	.SelectInterceptorsWith(s => s.Service<DummyInterceptorSelector>()));
+				                   .ImplementedBy<CalculatorService>()
+				                   .SelectInterceptorsWith(s => s.Service<DummyInterceptorSelector>()));
 
 			var calc = Container.Kernel.GetHandler(typeof(ICalcService));
 			Assert.AreEqual(HandlerState.WaitingDependency, calc.CurrentState);
@@ -163,6 +172,7 @@ namespace CastleTests.Proxies
 					.LifeStyle.Transient);
 
 			var calculator = Container.Resolve<ICalcService>();
+			AssertIsProxy(calculator);
 			Assert.IsInstanceOf<ISimpleService>(calculator);
 
 			var mixin = (ISimpleService)calculator;
@@ -178,12 +188,13 @@ namespace CastleTests.Proxies
 			var hook = new ProxyNothingHook();
 			Container.Register(Component.For<ResultModifierInterceptor>().Instance(interceptor),
 			                   Component.For<ICalcService>()
-			                   	.ImplementedBy<CalculatorService>()
-			                   	.Interceptors<ResultModifierInterceptor>()
-			                   	.Proxy.Hook(hook));
+				                   .ImplementedBy<CalculatorService>()
+				                   .Interceptors<ResultModifierInterceptor>()
+				                   .Proxy.Hook(hook));
 
-			var calc = Container.Resolve<ICalcService>();
-			Assert.AreEqual(4, calc.Sum(2, 2));
+			var calculator = Container.Resolve<ICalcService>();
+			AssertIsProxy(calculator);
+			Assert.AreEqual(4, calculator.Sum(2, 2));
 		}
 
 		[Test]
@@ -193,12 +204,13 @@ namespace CastleTests.Proxies
 			var hook = new ProxyNothingHook();
 			Container.Register(Component.For<ResultModifierInterceptor>().Instance(interceptor),
 			                   Component.For<ICalcService>()
-			                   	.ImplementedBy<CalculatorService>()
-			                   	.Interceptors<ResultModifierInterceptor>()
-			                   	.Proxy.Hook(h => h.Instance(hook)));
+				                   .ImplementedBy<CalculatorService>()
+				                   .Interceptors<ResultModifierInterceptor>()
+				                   .Proxy.Hook(h => h.Instance(hook)));
 
-			var calc = Container.Resolve<ICalcService>();
-			Assert.AreEqual(4, calc.Sum(2, 2));
+			var calculator = Container.Resolve<ICalcService>();
+			AssertIsProxy(calculator);
+			Assert.AreEqual(4, calculator.Sum(2, 2));
 		}
 
 		[Test]
@@ -208,12 +220,13 @@ namespace CastleTests.Proxies
 			Container.Register(Component.For<ResultModifierInterceptor>().Instance(interceptor),
 			                   Component.For<ProxyNothingHook>().Named("hook"),
 			                   Component.For<ICalcService>()
-			                   	.ImplementedBy<CalculatorService>()
-			                   	.Interceptors<ResultModifierInterceptor>()
-			                   	.Proxy.Hook(h => h.Service("hook")));
+				                   .ImplementedBy<CalculatorService>()
+				                   .Interceptors<ResultModifierInterceptor>()
+				                   .Proxy.Hook(h => h.Service("hook")));
 
-			var calc = Container.Resolve<ICalcService>();
-			Assert.AreEqual(4, calc.Sum(2, 2));
+			var calculator = Container.Resolve<ICalcService>();
+			AssertIsProxy(calculator);
+			Assert.AreEqual(4, calculator.Sum(2, 2));
 		}
 
 		[Test]
@@ -223,12 +236,23 @@ namespace CastleTests.Proxies
 			Container.Register(Component.For<ResultModifierInterceptor>().Instance(interceptor),
 			                   Component.For<ProxyNothingHook>(),
 			                   Component.For<ICalcService>()
-			                   	.ImplementedBy<CalculatorService>()
-			                   	.Interceptors<ResultModifierInterceptor>()
-			                   	.Proxy.Hook(h => h.Service<ProxyNothingHook>()));
+				                   .ImplementedBy<CalculatorService>()
+				                   .Interceptors<ResultModifierInterceptor>()
+				                   .Proxy.Hook(h => h.Service<ProxyNothingHook>()));
 
-			var calc = Container.Resolve<ICalcService>();
-			Assert.AreEqual(4, calc.Sum(2, 2));
+			var calculator = Container.Resolve<ICalcService>();
+			AssertIsProxy(calculator);
+			Assert.AreEqual(4, calculator.Sum(2, 2));
+		}
+
+		[Test]
+		public void can_proxy_interfaces_with_no_impl_given_just_a_hook()
+		{
+			Container.Register(Component.For<ICalcService>()
+				                   .Proxy.Hook(h => h.Instance(new ProxyNothingHook())));
+
+			var calculator = Container.Resolve<ICalcService>();
+			AssertIsProxy(calculator);
 		}
 
 		[Test]
@@ -240,11 +264,12 @@ namespace CastleTests.Proxies
 			Container.Register(Component.For<ResultModifierInterceptor>().Instance(interceptor),
 			                   Component.For<DisposableHook>().Named("hook").LifeStyle.Transient,
 			                   Component.For<ICalcService>()
-			                   	.ImplementedBy<CalculatorService>()
-			                   	.Interceptors<ResultModifierInterceptor>()
-			                   	.Proxy.Hook(h => h.Service("hook")));
+				                   .ImplementedBy<CalculatorService>()
+				                   .Interceptors<ResultModifierInterceptor>()
+				                   .Proxy.Hook(h => h.Service("hook")));
 
-			Container.Resolve<ICalcService>();
+			var calculator = Container.Resolve<ICalcService>();
+			AssertIsProxy(calculator);
 
 			Assert.AreEqual(1, DisposableHook.InstancesCreated);
 			Assert.AreEqual(1, DisposableHook.InstancesDisposed);

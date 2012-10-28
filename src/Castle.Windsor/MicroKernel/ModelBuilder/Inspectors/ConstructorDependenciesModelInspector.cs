@@ -15,6 +15,7 @@
 namespace Castle.MicroKernel.ModelBuilder.Inspectors
 {
 	using System;
+	using System.Linq;
 	using System.Reflection;
 
 	using Castle.Core;
@@ -32,7 +33,8 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 		public virtual void ProcessModel(IKernel kernel, ComponentModel model)
 		{
 			var targetType = model.Implementation;
-			var constructors = targetType.GetConstructors(BindingFlags.Public | BindingFlags.Instance);
+			var constructors = targetType.GetConstructors(BindingFlags.Public | BindingFlags.Instance)
+										 .Where(IsVisibleToContainer);
 
 			foreach (var constructor in constructors)
 			{
@@ -53,6 +55,11 @@ namespace Castle.MicroKernel.ModelBuilder.Inspectors
 		private static ConstructorDependencyModel BuildParameterDependency(ParameterInfo parameter)
 		{
 			return new ConstructorDependencyModel(parameter);
+		}
+
+		protected virtual bool IsVisibleToContainer(ConstructorInfo constructor)
+		{
+			return constructor.HasAttribute<DoNotSelectAttribute>() == false;
 		}
 	}
 }

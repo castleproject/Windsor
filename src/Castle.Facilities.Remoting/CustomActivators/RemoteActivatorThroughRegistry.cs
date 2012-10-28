@@ -1,4 +1,4 @@
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2012 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -23,19 +23,18 @@ namespace Castle.Facilities.Remoting.CustomActivators
 	using Castle.MicroKernel.Context;
 
 	/// <summary>
-	///   Activates a client connecting to the remote server through the <see cref = "RemotingRegistry" />.
+	/// Activates a client connecting to the remote server through the <see cref = "RemotingRegistry" />.
 	/// </summary>
 	public class RemoteActivatorThroughRegistry : DefaultComponentActivator, IDependencyAwareActivator
 	{
 		/// <summary>
-		///   Initializes a new instance of the <see cref = "RemoteActivatorThroughRegistry" /> class.
+		/// Initializes a new instance of the <see cref = "RemoteActivatorThroughRegistry" /> class.
 		/// </summary>
-		/// <param name = "model">The model.</param>
-		/// <param name = "kernel">The kernel.</param>
-		/// <param name = "onCreation">The oncreation event handler.</param>
-		/// <param name = "onDestruction">The ondestruction event handler.</param>
-		public RemoteActivatorThroughRegistry(ComponentModel model, IKernel kernel, ComponentInstanceDelegate onCreation,
-		                                      ComponentInstanceDelegate onDestruction)
+		/// <param name = "model"> The model. </param>
+		/// <param name = "kernel"> The kernel. </param>
+		/// <param name = "onCreation"> The oncreation event handler. </param>
+		/// <param name = "onDestruction"> The ondestruction event handler. </param>
+		public RemoteActivatorThroughRegistry(ComponentModel model, IKernelInternal kernel, ComponentInstanceDelegate onCreation, ComponentInstanceDelegate onDestruction)
 			: base(model, kernel, onCreation, onDestruction)
 		{
 		}

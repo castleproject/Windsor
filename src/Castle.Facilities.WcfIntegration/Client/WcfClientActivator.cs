@@ -1,4 +1,4 @@
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2012 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ namespace Castle.Facilities.WcfIntegration
 	using System.Linq;
 	using System.Reflection;
 	using System.ServiceModel;
+	using System.ServiceModel.Channels;
 
 	using Castle.Core;
 	using Castle.Facilities.WcfIntegration.Internal;
@@ -30,21 +31,40 @@ namespace Castle.Facilities.WcfIntegration
 	using Castle.MicroKernel.Context;
 	using Castle.MicroKernel.Facilities;
 
-	using System.ServiceModel.Channels;
-
 	public class WcfClientActivator : DefaultComponentActivator
 	{
+		private static readonly ConcurrentDictionary<Type, CreateChannelDelegate>
+			createChannelCache = new ConcurrentDictionary<Type, CreateChannelDelegate>();
+
+		private static readonly MethodInfo createChannelMethod = typeof(WcfClientActivator).GetMethod(
+			"CreateChannelCreatorInternal", BindingFlags.NonPublic | BindingFlags.Static, null,
+			new[]
+			{
+				typeof(IKernel), typeof(IWcfClientModel),
+				typeof(ComponentModel), typeof(IWcfBurden).MakeByRefType()
+			},
+			null
+			);
+
 		private readonly WcfClientExtension clients;
 		private readonly WcfProxyFactory proxyFactory;
-		private ChannelCreator createChannel;
 		private IWcfBurden channelBurden;
+		private ChannelCreator createChannel;
 
-		public WcfClientActivator(ComponentModel model, IKernel kernel,
+		public WcfClientActivator(ComponentModel model, IKernelInternal kernel,
 		                          ComponentInstanceDelegate onCreation, ComponentInstanceDelegate onDestruction)
 			: base(model, kernel, onCreation, onDestruction)
 		{
 			clients = kernel.Resolve<WcfClientExtension>();
 			proxyFactory = new WcfProxyFactory(clients.ProxyGenerator, clients);
+		}
+
+		protected override void ApplyDecommissionConcerns(object instance)
+		{
+			base.ApplyDecommissionConcerns(instance);
+
+			var channelHolder = (IWcfChannelHolder)instance;
+			channelHolder.Dispose();
 		}
 
 		protected override object Instantiate(CreationContext context)
@@ -69,28 +89,20 @@ namespace Castle.Facilities.WcfIntegration
 			}
 		}
 
-		protected override void ApplyDecommissionConcerns(object instance)
-		{
-			base.ApplyDecommissionConcerns(instance);
-
-			var channelHolder = (IWcfChannelHolder)instance;
-			channelHolder.Dispose();
-		}
-
 		protected override void SetUpProperties(object instance, CreationContext context)
 		{
 			//we don't... there should be no properties on WCF clients
 		}
 
 		/// <summary>
-		///   Creates the channel creator.
+		/// Creates the channel creator.
 		/// </summary>
-		/// <param name = "context">The context for the creator.</param>
-		/// <param name = "burden">Receives the channel burden.</param>
-		/// <returns>The channel creator.</returns>
+		/// <param name = "context"> The context for the creator. </param>
+		/// <param name = "burden"> Receives the channel burden. </param>
+		/// <returns> The channel creator. </returns>
 		/// <remarks>
-		///   Always Open the channel before being used to prevent serialization of requests.
-		///   http://blogs.msdn.com/wenlong/archive/2007/10/26/best-practice-always-open-wcf-client-proxy-explicitly-when-it-is-shared.aspx
+		/// Always Open the channel before being used to prevent serialization of requests.
+		/// http://blogs.msdn.com/wenlong/archive/2007/10/26/best-practice-always-open-wcf-client-proxy-explicitly-when-it-is-shared.aspx
 		/// </remarks>
 		private ChannelCreator GetChannelCreator(CreationContext context, out IWcfBurden burden)
 		{
@@ -159,7 +171,9 @@ namespace Castle.Facilities.WcfIntegration
 			}
 			return channelCreator;
 		}
-
+		/// <summary>
+		/// This method is used internally
+		/// </summary>
 		private static ChannelCreator CreateChannelCreatorInternal<TModel>(
 			IKernel kernel, IWcfClientModel clientModel, ComponentModel model, out IWcfBurden burden)
 			where TModel : IWcfClientModel
@@ -235,18 +249,5 @@ namespace Castle.Facilities.WcfIntegration
 		}
 
 		private delegate ChannelCreator CreateChannelDelegate(IKernel kernel, IWcfClientModel clientModel, ComponentModel model, out IWcfBurden burden);
-
-		private static readonly ConcurrentDictionary<Type, CreateChannelDelegate>
-			createChannelCache = new ConcurrentDictionary<Type, CreateChannelDelegate>();
-
-		private static readonly MethodInfo createChannelMethod = typeof(WcfClientActivator).GetMethod(
-			"CreateChannelCreatorInternal", BindingFlags.NonPublic | BindingFlags.Static, null,
-			new[]
-			{
-				typeof(IKernel), typeof(IWcfClientModel),
-				typeof(ComponentModel), typeof(IWcfBurden).MakeByRefType()
-			},
-			null
-		);
 	}
 }

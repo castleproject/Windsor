@@ -1,4 +1,4 @@
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2012 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -24,18 +24,18 @@ namespace Castle.Facilities.Remoting.CustomActivators
 	using Castle.MicroKernel.Context;
 
 	/// <summary>
-	///   Activates and publishes a server object.
+	/// Activates and publishes a server object.
 	/// </summary>
 	public class RemoteMarshallerActivator : DefaultComponentActivator, IDependencyAwareActivator
 	{
 		/// <summary>
-		///   Initializes a new instance of the <see cref = "RemoteMarshallerActivator" /> class.
+		/// Initializes a new instance of the <see cref = "RemoteMarshallerActivator" /> class.
 		/// </summary>
-		/// <param name = "model">The model.</param>
-		/// <param name = "kernel">The kernel.</param>
-		/// <param name = "onCreation">The oncreation event handler.</param>
-		/// <param name = "onDestruction">The ondestruction event handler.</param>
-		public RemoteMarshallerActivator(ComponentModel model, IKernel kernel, ComponentInstanceDelegate onCreation, ComponentInstanceDelegate onDestruction)
+		/// <param name = "model"> The model. </param>
+		/// <param name = "kernel"> The kernel. </param>
+		/// <param name = "onCreation"> The oncreation event handler. </param>
+		/// <param name = "onDestruction"> The ondestruction event handler. </param>
+		public RemoteMarshallerActivator(ComponentModel model, IKernelInternal kernel, ComponentInstanceDelegate onCreation, ComponentInstanceDelegate onDestruction)
 			: base(model, kernel, onCreation, onDestruction)
 		{
 		}

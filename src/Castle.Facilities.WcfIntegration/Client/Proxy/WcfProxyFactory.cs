@@ -127,7 +127,7 @@ namespace Castle.Facilities.WcfIntegration.Proxy
 
 		private ProxyGenerationOptions CreateProxyGenerationOptions(Type service, ProxyOptions proxyOptions, IKernel kernel, CreationContext context)
 		{
-			if (proxyOptions.MixIns != null && proxyOptions.MixIns.Count() > 0)
+			if (proxyOptions.MixIns != null && proxyOptions.MixIns.Any())
 			{
 				throw new NotImplementedException("Support for mixins is not yet implemented.  How about contributing a patch?");
 			}

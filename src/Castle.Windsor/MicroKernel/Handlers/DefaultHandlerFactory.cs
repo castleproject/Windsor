@@ -18,6 +18,7 @@ namespace Castle.MicroKernel.Handlers
 
 	using Castle.Core;
 	using Castle.Core.Internal;
+	using Castle.MicroKernel.ModelBuilder;
 
 	[Serializable]
 	public class DefaultHandlerFactory : IHandlerFactory
@@ -52,6 +53,10 @@ namespace Castle.MicroKernel.Handlers
 				var serviceStrategy = GenericServiceStrategy(model);
 				return new DefaultGenericHandler(model, matchingStrategy, serviceStrategy);
 			}
+
+			// meta descriptors only apply to open generic handlers so we cam safely let go of them, save some memory
+			ComponentModelDescriptorUtil.RemoveMetaDescriptors(model);
+
 			var resolveExtensions = model.ResolveExtensions(false);
 			var releaseExtensions = model.ReleaseExtensions(false);
 			if (releaseExtensions == null && resolveExtensions == null)

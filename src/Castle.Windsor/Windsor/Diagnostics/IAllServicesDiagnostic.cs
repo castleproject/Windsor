@@ -1,4 +1,4 @@
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2012 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,9 +20,8 @@ namespace Castle.Windsor.Diagnostics
 	using Castle.MicroKernel;
 
 	/// <summary>
-	///   Collects all handlers for components in hosting container grouped by services they expose.
-	///   Within the service group, first one would be the default (the one obtained when callling <see
-	///    cref = "IKernel.Resolve(System.Type)" /> for the service type)
+	/// 	Collects all handlers for components in hosting container grouped by services they expose.
+	/// 	Within the service group, first one would be the default (the one obtained when callling <see cref = "IKernel.Resolve(System.Type)" /> for the service type)
 	/// </summary>
 	public interface IAllServicesDiagnostic : IDiagnostic<ILookup<Type, IHandler>>
 	{

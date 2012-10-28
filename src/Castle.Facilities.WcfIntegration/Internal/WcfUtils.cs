@@ -45,7 +45,7 @@ namespace Castle.Facilities.WcfIntegration.Internal
 
 			if (service.IsInterface)
 			{
-				return service.GetInterfaces().Any(parent => IsServiceContract(parent));
+				return service.GetInterfaces().Any(IsServiceContract);
 			}
 
 			return false;
@@ -82,7 +82,7 @@ namespace Castle.Facilities.WcfIntegration.Internal
 		}
 
 		internal static void AddBehaviors<T>(IKernel kernel, WcfExtensionScope scope,
-										   KeyedByTypeCollection<T> behaviors, IWcfBurden burden,
+										   ICollection<T> behaviors, IWcfBurden burden,
 										   Predicate<T> predicate)
 		{
 			foreach (var handler in FindExtensions<T>(kernel, scope))
@@ -225,14 +225,27 @@ namespace Castle.Facilities.WcfIntegration.Internal
 		public static bool RegisterErrorHandler(ServiceHost serviceHost, IErrorHandler errorHandler, bool skipPiggybacks)
 		{
 			if (skipPiggybacks && IsBehaviorExtension(errorHandler)) return false;
-			serviceHost.Description.Behaviors.Add(new WcfErrorBehavior(errorHandler));
+			AddErrorHandler(serviceHost.Description.Behaviors, new List<IErrorHandler> { errorHandler });
 			return true;
+		}
+
+		public static void RegisterErrorHandlers(ServiceHost serviceHost, ICollection<IErrorHandler> errorHandlers)
+		{
+			AddErrorHandler(serviceHost.Description.Behaviors, errorHandlers);
 		}
 
 		public static bool RegisterErrorHandler(ServiceEndpoint endpoint, IErrorHandler errorHandler, bool skipPiggybacks)
 		{
 			if (skipPiggybacks && IsBehaviorExtension(errorHandler)) return false;
-			endpoint.Behaviors.Add(new WcfErrorBehavior(errorHandler));
+			var wcfErrorBehavior = endpoint.Behaviors.Find<WcfErrorBehavior>();
+			if (wcfErrorBehavior == null)
+			{
+				endpoint.Behaviors.Add(new WcfErrorBehavior(errorHandler));
+			}
+			else
+			{
+				wcfErrorBehavior.Add(errorHandler);
+			}
 			return true;
 		}
 
@@ -360,6 +373,19 @@ namespace Castle.Facilities.WcfIntegration.Internal
 			getCache = source();
 			var updatedCache = Interlocked.CompareExchange(ref cache, getCache, null);
 			return updatedCache ?? getCache;
+		}
+
+		private static void AddErrorHandler(KeyedByTypeCollection<IServiceBehavior> behaviors, ICollection<IErrorHandler> errorHandlers)
+		{
+			var wcfErrorBehavior = behaviors.Find<WcfErrorBehavior>();
+			if (wcfErrorBehavior == null)
+			{
+				behaviors.Add(new WcfErrorBehavior(errorHandlers));
+			}
+			else
+			{
+				wcfErrorBehavior.Add(errorHandlers);
+			}
 		}
 
 		/// <summary>

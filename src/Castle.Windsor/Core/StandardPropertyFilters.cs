@@ -1,4 +1,4 @@
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2012 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -45,21 +45,29 @@ namespace Castle.Core
 			}
 		}
 
-		public static PropertySet[] Default(ComponentModel model, PropertyInfo[] properties,
-		                                    PropertySetBuilder propertySetBuilder)
+		public static PropertySet[] Default(ComponentModel model, ICollection<PropertyInfo> properties, PropertySetBuilder propertySetBuilder)
 		{
-			return properties.Select(p => propertySetBuilder(p, true)).ToArray();
+			var props = properties.Select(p => propertySetBuilder(p, isOptional: true)).ToArray();
+			properties.Clear();
+			return props;
 		}
 
-		public static PropertyDependencyFilter FromFunction(Func<ComponentModel, PropertyInfo, bool> filter, bool isRequired)
+		public static PropertyDependencyFilter FromObsoleteFunction(Func<ComponentModel, PropertyInfo, bool> filter, bool isRequired)
 		{
-			return (model, properties, callback) => properties.Where(p => filter(model, p))
-			                                        	.Select(p => callback(p, isRequired == false))
-			                                        	.ToArray();
+			return (model, properties, callback) =>
+			{
+				var props = properties.ToArray()
+					.Where(p => filter(model, p))
+					.Select(p =>
+					{
+						properties.Remove(p);
+						return callback(p, isRequired == false);
+					}).ToArray();
+				return props;
+			};
 		}
 
-		public static ICollection<PropertyDependencyFilter> GetPropertyFilters(ComponentModel componentModel,
-		                                                                       bool createIfMissing)
+		public static ICollection<PropertyDependencyFilter> GetPropertyFilters(ComponentModel componentModel, bool createIfMissing)
 		{
 			var filters = (ICollection<PropertyDependencyFilter>)componentModel.ExtendedProperties[Constants.PropertyFilters];
 			if (filters == null && createIfMissing)
@@ -70,30 +78,63 @@ namespace Castle.Core
 			return filters;
 		}
 
-		public static PropertySet[] IgnoreAll(ComponentModel model, PropertyInfo[] properties,
-		                                      PropertySetBuilder propertySetBuilder)
+		public static PropertySet[] IgnoreAll(ComponentModel model, ICollection<PropertyInfo> properties, PropertySetBuilder propertySetBuilder)
 		{
+			properties.Clear();
 			return new PropertySet[0];
 		}
 
-		public static PropertySet[] IgnoreBase(ComponentModel model, PropertyInfo[] properties,
-		                                       PropertySetBuilder propertySetBuilder)
+		public static PropertySet[] IgnoreBase(ComponentModel model, ICollection<PropertyInfo> properties, PropertySetBuilder propertySetBuilder)
 		{
-			return properties.Where(p => p.DeclaringType == model.Implementation)
-				.Select(p => propertySetBuilder(p, true)).ToArray();
+			var baseProperties = properties.Where(p => p.DeclaringType != model.Implementation).ToArray();
+			foreach (var baseProperty in baseProperties)
+			{
+				properties.Remove(baseProperty);
+			}
+			return new PropertySet[0];
 		}
 
-		public static PropertySet[] RequireAll(ComponentModel model, PropertyInfo[] properties,
-		                                       PropertySetBuilder propertySetBuilder)
+		public static PropertyDependencyFilter IgnoreSelected(Func<ComponentModel, PropertyInfo, bool> selector)
 		{
-			return properties.Select(p => propertySetBuilder(p, false)).ToArray();
+			return (model, properties, callback) =>
+			{
+				foreach (var property in properties.ToArray())
+				{
+					if (selector(model, property))
+					{
+						properties.Remove(property);
+					}
+				}
+				return new PropertySet[0];
+			};
 		}
 
-		public static PropertySet[] RequireBase(ComponentModel model, PropertyInfo[] properties,
-		                                        PropertySetBuilder propertySetBuilder)
+		public static PropertySet[] RequireAll(ComponentModel model, ICollection<PropertyInfo> properties, PropertySetBuilder propertySetBuilder)
 		{
-			return properties.Where(p => p.DeclaringType != model.Implementation)
-				.Select(p => propertySetBuilder(p, false)).ToArray();
+			var props = properties.Select(p => propertySetBuilder(p, isOptional: false)).ToArray();
+			properties.Clear();
+			return props;
+		}
+
+		public static PropertySet[] RequireBase(ComponentModel model, ICollection<PropertyInfo> properties, PropertySetBuilder propertySetBuilder)
+		{
+			var baseProperties = properties.Where(p => p.DeclaringType != model.Implementation).ToArray();
+			return baseProperties
+				.Select(p =>
+				{
+					properties.Remove(p);
+					return propertySetBuilder(p, false);
+				}).ToArray();
+		}
+
+		public static PropertyDependencyFilter RequireSelected(Func<ComponentModel, PropertyInfo, bool> selector)
+		{
+			return (model, properties, callback) => properties.ToArray().Where(property => selector(model, property))
+				                                        .Select(p =>
+				                                        {
+					                                        properties.Remove(p);
+					                                        return callback(p, isOptional: false);
+				                                        }).ToArray();
 		}
 	}
 }

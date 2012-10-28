@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2012 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ namespace Castle.MicroKernel.ComponentActivator
 		protected readonly Func<IKernel, ComponentModel, CreationContext, T> creator;
 		protected readonly bool managedExternally;
 
-		public FactoryMethodActivator(ComponentModel model, IKernel kernel, ComponentInstanceDelegate onCreation, ComponentInstanceDelegate onDestruction)
+		public FactoryMethodActivator(ComponentModel model, IKernelInternal kernel, ComponentInstanceDelegate onCreation, ComponentInstanceDelegate onDestruction)
 			: base(model, kernel, onCreation, onDestruction)
 		{
 			creator = Model.ExtendedProperties["factoryMethodDelegate"] as Func<IKernel, ComponentModel, CreationContext, T>;
@@ -75,7 +75,7 @@ namespace Castle.MicroKernel.ComponentActivator
 			{
 				instance = Kernel.ProxyFactory.Create(Kernel, instance, Model, context);
 			}
-			if(instance == null)
+			if (instance == null)
 			{
 				throw new ComponentActivatorException(
 					string.Format("Factory method creating instances of component '{0}' returned null. This is not allowed and most likely a bug in the factory method.", Model.Name), Model);
@@ -98,11 +98,7 @@ namespace Castle.MicroKernel.ComponentActivator
 			{
 				return false;
 			}
-			if (ProxyUtil.IsProxy(instance))
-			{
-				return false;
-			}
-			return true;
+			return ProxyUtil.IsProxy(instance) == false;
 		}
 	}
 }

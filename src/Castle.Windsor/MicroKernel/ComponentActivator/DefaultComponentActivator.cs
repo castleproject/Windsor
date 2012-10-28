@@ -1,4 +1,4 @@
-// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+// Copyright 2004-2012 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -29,15 +29,11 @@ namespace Castle.MicroKernel.ComponentActivator
 #endif
 
 	/// <summary>
-	///   Standard implementation of <see cref = "IComponentActivator" />.
-	///   Handles the selection of the best constructor, fills the
-	///   writable properties the component exposes, run the commission 
-	///   and decommission lifecycles, etc.
+	/// 	Standard implementation of <see cref = "IComponentActivator" />. Handles the selection of the best constructor, fills the writable properties the component exposes, run the commission and
+	/// 	decommission lifecycles, etc.
 	/// </summary>
 	/// <remarks>
-	///   Custom implementors can just override the <c>CreateInstance</c> method.
-	///   Please note however that the activator is responsible for the proxy creation
-	///   when needed.
+	/// 	Custom implementors can just override the <c>CreateInstance</c> method. Please note however that the activator is responsible for the proxy creation when needed.
 	/// </remarks>
 	[Serializable]
 	public class DefaultComponentActivator : AbstractComponentActivator
@@ -47,13 +43,13 @@ namespace Castle.MicroKernel.ComponentActivator
 #endif
 
 		/// <summary>
-		///   Initializes a new instance of the <see cref = "DefaultComponentActivator" /> class.
+		/// 	Initializes a new instance of the <see cref = "DefaultComponentActivator" /> class.
 		/// </summary>
-		/// <param name = "model"></param>
-		/// <param name = "kernel"></param>
-		/// <param name = "onCreation"></param>
-		/// <param name = "onDestruction"></param>
-		public DefaultComponentActivator(ComponentModel model, IKernel kernel, ComponentInstanceDelegate onCreation, ComponentInstanceDelegate onDestruction)
+		/// <param name = "model"> </param>
+		/// <param name = "kernel"> </param>
+		/// <param name = "onCreation"> </param>
+		/// <param name = "onDestruction"> </param>
+		public DefaultComponentActivator(ComponentModel model, IKernelInternal kernel, ComponentInstanceDelegate onCreation, ComponentInstanceDelegate onDestruction)
 			: base(model, kernel, onCreation, onDestruction)
 		{
 #if (!SILVERLIGHT)
@@ -165,6 +161,10 @@ namespace Castle.MicroKernel.ComponentActivator
 						Kernel.ReleaseComponent(argument);
 					}
 				}
+				if (ex is ComponentActivatorException)
+				{
+					throw;
+				}
 
 				throw new ComponentActivatorException(
 					"ComponentActivator: could not instantiate " + Model.Implementation.FullName, ex, Model);
@@ -182,8 +182,11 @@ namespace Castle.MicroKernel.ComponentActivator
 			{
 				throw new ComponentActivatorException(
 					string.Format(
-						"Could not find a public constructor for type {0}. Windsor can not instantiate types that don't expose public constructors. To expose the type as a service add public constructor, or use custom component activator.",
-						implType), Model);
+						"Could not find a public constructor for type {0}.{1}" +
+						"Windsor by default cannot instantiate types that don't expose public constructors.{1}" +
+						"To expose the type as a service add public constructor, or use custom component activator.",
+						implType,
+						Environment.NewLine), Model);
 			}
 			var instance = FormatterServices.GetUninitializedObject(implType);
 
@@ -323,8 +326,14 @@ namespace Castle.MicroKernel.ComponentActivator
 				{
 					var message =
 						String.Format(
-							"Error setting property {1}.{0} in component {2}. See inner exception for more information. If you don't want Windsor to set this property you can do it by either decorating it with {3} or via registration API.",
-							property.Property.Name, instance.GetType().Name, Model.Name, typeof(DoNotWireAttribute).Name);
+							"Error setting property {1}.{0} in component {2}. See inner exception for more information.{4}" +
+							"If you don't want Windsor to set this property you can do it by either decorating it with {3} or via registration API.{4}" +
+							"Alternatively consider making the setter non-public.",
+							property.Property.Name,
+							instance.GetType().Name,
+							Model.Name,
+							typeof(DoNotWireAttribute).Name,
+							Environment.NewLine);
 					throw new ComponentActivatorException(message, ex, Model);
 				}
 			}
@@ -339,12 +348,13 @@ namespace Castle.MicroKernel.ComponentActivator
 				{
 					return resolver.Resolve(context, context.Handler, Model, property.Dependency);
 				}
-				catch (Exception)
+				catch (Exception e)
 				{
 					if (property.Dependency.IsOptional == false)
 					{
 						throw;
 					}
+					Kernel.Logger.Warn(string.Format("Exception when resolving optional dependency {0} on component {1}.", property.Dependency, Model.Name), e);
 				}
 			}
 			return null;

@@ -17,6 +17,7 @@ namespace Castle.MicroKernel
 	using System;
 	using System.Collections;
 	using System.ComponentModel;
+	using System.Linq;
 
 	using Castle.Core;
 	using Castle.MicroKernel.ComponentActivator;
@@ -291,7 +292,22 @@ namespace Castle.MicroKernel
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public virtual IKernel AddFacility(String key, IFacility facility)
 		{
-			return AddFacility(facility);
+			if (facility == null)
+			{
+				throw new ArgumentNullException("facility");
+			}
+			var facilityType = facility.GetType();
+			if (facilities.Any(f => f.GetType() == facilityType))
+			{
+				throw new ArgumentException(
+					string.Format(
+						"Facility of type '{0}' has already been registered with the container. Only one facility of a given type can exist in the container.",
+						facilityType.FullName));
+			}
+			facilities.Add(facility);
+			facility.Init(this, ConfigurationStore.GetFacilityConfiguration(key));
+
+			return this;
 		}
 
 		[Obsolete("Use AddFacility<TFacility>() instead.")]

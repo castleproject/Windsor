@@ -14,7 +14,7 @@
 
 namespace CastleTests.Components
 {
-	using Castle.Core;
+    using Castle.Core;
 
 	public class ClassWithDoNotWireProperties
 	{

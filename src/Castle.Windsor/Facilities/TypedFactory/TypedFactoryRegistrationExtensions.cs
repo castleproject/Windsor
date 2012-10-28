@@ -133,7 +133,7 @@ namespace Castle.Facilities.TypedFactory
 			var classServices = registration.Services.TakeWhile(s => s.IsClass).ToArray();
 			if (classServices.Any() == false)
 			{
-				Debug.Assert(registration.Services.Count() > 0, "registration.Services.Count > 0");
+				Debug.Assert(registration.Services.Any(), "registration.Services.Any()");
 				return RegisterInterfaceBasedFactory(registration, configuration);
 			}
 			if (classServices.Length != 1)
