@@ -20,7 +20,6 @@ namespace Castle.MicroKernel.Handlers
 	using System.Linq;
 
 	using Castle.Core;
-	using Castle.MicroKernel.ComponentActivator;
 	using Castle.MicroKernel.Context;
 	using Castle.MicroKernel.Resolvers;
 
@@ -339,25 +338,6 @@ namespace Castle.MicroKernel.Handlers
 
 				// We don't need these anymore
 				missingDependencies = null;
-			}
-		}
-
-		/// <summary>
-		/// Checks if the handler is able to, at very least, satisfy the dependencies for the constructor with less parameters
-		/// </summary>
-		/// <remarks>
-		/// For each non*optional dependency, the implementation will invoke <see cref = "AddDependency" />
-		/// </remarks>
-		protected virtual void EnsureDependenciesCanBeSatisfied(IDependencyAwareActivator activator)
-		{
-			if (activator != null && activator.CanProvideRequiredDependencies(ComponentModel))
-			{
-				return;
-			}
-
-			foreach (var dependency in ComponentModel.Dependencies)
-			{
-				AddDependency(dependency);
 			}
 		}
 
