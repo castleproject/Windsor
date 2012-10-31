@@ -313,6 +313,7 @@
     <Compile Include="ClassComponents\HasPropertyAndCtorParameterSameTypeDifferentName.cs" />
     <Compile Include="ClassComponents\IGenericExtended.cs" />
     <Compile Include="ClassComponents\PropertySetterThrows.cs" />
+    <Compile Include="ClassComponents\TwoEmptyServiceDependenciesProperty.cs" />
     <Compile Include="ClassComponents\UseGenericExtended1.cs" />
     <Compile Include="ClassComponents\UseGenericExtended2.cs" />
     <Compile Include="ClassComponents\UsesArrayOfGeneric.cs" />

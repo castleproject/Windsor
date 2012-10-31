@@ -12,17 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace Castle.Windsor.Diagnostics
+namespace Castle.MicroKernel.Tests.ClassComponents
 {
-	using System.Collections.Generic;
+	using CastleTests.Components;
 
-	using Castle.Core;
-	using Castle.MicroKernel;
-
-	/// <summary>
-	/// 	Collects dependencies that are duplicated between constructors and properties.
-	/// </summary>
-	public interface IDuplicatedDependenciesDiagnostic : IDiagnostic<IDictionary<IHandler, Pair<DependencyModel, DependencyModel>[]>>
+	public class TwoEmptyServiceDependenciesProperty
 	{
+		public IEmptyService One { get; set; }
+		public IEmptyService Two { get; set; }
 	}
 }

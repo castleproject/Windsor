@@ -77,13 +77,21 @@ namespace CastleTests.Diagnostics
 		}
 
 		[Test]
+		public void Can_detect_components_having_duplicated_dependencies_same_type_via_properties()
+		{
+			Container.Register(Component.For<TwoEmptyServiceDependenciesProperty>());
+			var result = diagnostic.Inspect();
+			CollectionAssert.IsNotEmpty(result);
+		}
+
+		[Test]
 		public void member_should_action_in_context()
 		{
 			var types = GetType().Assembly.GetTypes().Where(t =>
-			                                                {
-				                                                var properties = t.GetProperties().Where(p => p.CanWrite && p.GetSetMethod() != null).ToLookup(p=>p.PropertyType);
-				                                                return properties.Any(p => p.Count() > 1);
-			                                                }).ToArray();
+			{
+				var properties = t.GetProperties().Where(p => p.CanWrite && p.GetSetMethod() != null).ToLookup(p => p.PropertyType);
+				return properties.Any(p => p.Count() > 1);
+			}).ToArray();
 			foreach (var type in types)
 			{
 				Console.WriteLine(type);

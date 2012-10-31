@@ -47,7 +47,7 @@ namespace Castle.Windsor.Diagnostics.Extensions
 			diagnosticsHost.AddDiagnostic<IDuplicatedDependenciesDiagnostic>(diagnostic);
 		}
 
-		private DebuggerViewItem BuildItem(IDictionary<IHandler, Pair<ConstructorDependencyModel, PropertySet>[]> results)
+		private DebuggerViewItem BuildItem(IDictionary<IHandler, Pair<DependencyModel, DependencyModel>[]> results)
 		{
 			return new DebuggerViewItem(name, "NOT IMPLEMENTED YET");
 			//var totalCount = 0;
