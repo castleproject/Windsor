@@ -20,6 +20,7 @@ namespace Castle.Windsor.Diagnostics.Extensions
 	using System.Linq;
 
 	using Castle.Core;
+	using Castle.Core.Internal;
 	using Castle.MicroKernel;
 	using Castle.Windsor.Diagnostics.DebuggerViews;
 
@@ -73,9 +74,11 @@ namespace Castle.Windsor.Diagnostics.Extensions
 
 		private static string Description(DependencyModel dependencyModel)
 		{
-			return dependencyModel.ToString();
-
-
+			if (dependencyModel.ReferencedComponentName == null)
+			{
+				return dependencyModel.TargetItemType.ToCSharpString() + " " + dependencyModel.DependencyKey;
+			}
+			return dependencyModel.TargetItemType.ToCSharpString() + " " + dependencyModel.DependencyKey + " (" + dependencyModel.ReferencedComponentName + ")";
 		}
 	}
 #endif
