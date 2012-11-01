@@ -14,9 +14,6 @@
 
 namespace CastleTests.Diagnostics
 {
-	using System;
-	using System.Linq;
-
 	using Castle.MicroKernel;
 	using Castle.MicroKernel.Registration;
 	using Castle.MicroKernel.Tests.ClassComponents;
@@ -67,11 +64,9 @@ namespace CastleTests.Diagnostics
 		}
 
 		[Test]
-		public void Can_detect_components_having_duplicated_dependencies_via_service_override()
+		public void Can_detect_components_having_duplicated_dependencies_same_type_via_constructor()
 		{
-			Container.Register(Component.For<HasObjectPropertyAndTypedCtorParameterDifferentName>()
-				                   .DependsOn(Dependency.OnComponent(typeof(object), typeof(EmptyService2Impl1)),
-				                              Dependency.OnComponent(typeof(IEmptyService), typeof(EmptyService2Impl1))));
+			Container.Register(Component.For<TwoEmptyServiceDependenciesConstructor>());
 			var result = diagnostic.Inspect();
 			CollectionAssert.IsNotEmpty(result);
 		}
@@ -85,17 +80,13 @@ namespace CastleTests.Diagnostics
 		}
 
 		[Test]
-		public void member_should_action_in_context()
+		public void Can_detect_components_having_duplicated_dependencies_via_service_override()
 		{
-			var types = GetType().Assembly.GetTypes().Where(t =>
-			{
-				var properties = t.GetProperties().Where(p => p.CanWrite && p.GetSetMethod() != null).ToLookup(p => p.PropertyType);
-				return properties.Any(p => p.Count() > 1);
-			}).ToArray();
-			foreach (var type in types)
-			{
-				Console.WriteLine(type);
-			}
+			Container.Register(Component.For<HasObjectPropertyAndTypedCtorParameterDifferentName>()
+				                   .DependsOn(Dependency.OnComponent(typeof(object), typeof(EmptyService2Impl1)),
+				                              Dependency.OnComponent(typeof(IEmptyService), typeof(EmptyService2Impl1))));
+			var result = diagnostic.Inspect();
+			CollectionAssert.IsNotEmpty(result);
 		}
 	}
 }

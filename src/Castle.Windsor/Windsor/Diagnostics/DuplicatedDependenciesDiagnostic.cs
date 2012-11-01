@@ -45,19 +45,31 @@ namespace Castle.Windsor.Diagnostics
 			return result;
 		}
 
-		private void CollectDuplicatesBetweenProperties(IEnumerable<PropertySet> properties, List<Pair<DependencyModel, DependencyModel>> duplicates)
+		private void CollectDuplicatesBetween(DependencyModel[] array, List<Pair<DependencyModel, DependencyModel>> duplicates)
 		{
-			var array = properties.ToArray();
 			for (var i = 0; i < array.Length; i++)
 			{
 				for (var j = i + 1; j < array.Length; j++)
 				{
-					if (IsDuplicate(array[i].Dependency, array[j].Dependency))
+					if (IsDuplicate(array[i], array[j]))
 					{
-						duplicates.Add(new Pair<DependencyModel, DependencyModel>(array[i].Dependency, array[j].Dependency));
+						duplicates.Add(new Pair<DependencyModel, DependencyModel>(array[i], array[j]));
 					}
 				}
 			}
+		}
+
+		private void CollectDuplicatesBetweenConstructorParameters(ConstructorCandidateCollection constructors, List<Pair<DependencyModel, DependencyModel>> duplicates)
+		{
+			foreach (var constructor in constructors)
+			{
+				CollectDuplicatesBetween(constructor.Dependencies, duplicates);
+			}
+		}
+
+		private void CollectDuplicatesBetweenProperties(IEnumerable<PropertySet> properties, List<Pair<DependencyModel, DependencyModel>> duplicates)
+		{
+			CollectDuplicatesBetween(properties.Select(c => c.Dependency).ToArray(), duplicates);
 		}
 
 		private void CollectDuplicatesBetweenPropertiesAndConstructors(ConstructorCandidateCollection constructors, PropertySetCollection properties, List<Pair<DependencyModel, DependencyModel>> duplicates)
@@ -80,12 +92,12 @@ namespace Castle.Windsor.Diagnostics
 		private Pair<DependencyModel, DependencyModel>[] FindDuplicateDependenciesFor(IHandler handler)
 		{
 			// TODO: handler non-default activators
-			// TODO: handle duplicates between properties/ctor arguments when they have both same type, but no service override...
 
 			var duplicates = new List<Pair<DependencyModel, DependencyModel>>();
 			var properties = handler.ComponentModel.Properties;
 			var constructors = handler.ComponentModel.Constructors;
 			CollectDuplicatesBetweenProperties(properties, duplicates);
+			CollectDuplicatesBetweenConstructorParameters(constructors, duplicates);
 			CollectDuplicatesBetweenPropertiesAndConstructors(constructors, properties, duplicates);
 			return duplicates.ToArray();
 		}
