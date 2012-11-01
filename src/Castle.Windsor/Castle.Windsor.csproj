@@ -887,6 +887,7 @@
     </Compile>
     <Compile Include="Windsor\Diagnostics\AllComponentsDiagnostic.cs" />
     <Compile Include="Windsor\Diagnostics\AllServicesDiagnostic.cs" />
+    <Compile Include="Windsor\Diagnostics\ComponentDebuggerExtension.cs" />
     <Compile Include="Windsor\Diagnostics\DefaultDiagnosticsSubSystem.NonSilverlight.cs" />
     <Compile Include="Windsor\Diagnostics\DebuggerViews\ReleasePolicyTrackedObjectsDebuggerViewItem.cs" />
     <Compile Include="Windsor\Diagnostics\DuplicatedDependenciesDiagnostic.cs" />

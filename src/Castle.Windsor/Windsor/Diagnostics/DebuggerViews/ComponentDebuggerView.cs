@@ -1,4 +1,4 @@
-﻿// Copyright 2004-2011 Castle Project - http://www.castleproject.org/
+﻿// Copyright 2004-2012 Castle Project - http://www.castleproject.org/
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -32,15 +32,11 @@ namespace Castle.Windsor.Diagnostics.DebuggerViews
 		private readonly IComponentDebuggerExtension[] extension;
 
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
-		private readonly IHandler handler;
-
-		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 		private readonly string name;
 
 		public ComponentDebuggerView(IHandler handler, string description, params IComponentDebuggerExtension[] defaultExtension)
 		{
 			name = handler.GetComponentName();
-			this.handler = handler;
 			this.description = description;
 			extension = defaultExtension.Concat(GetExtensions(handler)).ToArray();
 		}
@@ -63,16 +59,28 @@ namespace Castle.Windsor.Diagnostics.DebuggerViews
 			get { return name; }
 		}
 
-		private IEnumerable<IComponentDebuggerExtension> GetExtensions(IHandler handler)
+		public static ComponentDebuggerView BuildFor(IHandler handler, string description = null)
+		{
+			var extensions = new List<IComponentDebuggerExtension> { new DefaultComponentViewBuilder(handler) };
+			extensions.AddRange(GetExtensions(handler));
+			return BuildRawFor(handler, description ?? handler.ComponentModel.GetLifestyleDescription(), extensions.ToArray());
+		}
+
+		public static ComponentDebuggerView BuildRawFor(IHandler handler, string description, IComponentDebuggerExtension[] extensions)
+		{
+			return new ComponentDebuggerView(handler, description, extensions);
+		}
+
+		public static ComponentDebuggerView BuildRawFor(IHandler handler, string description, DebuggerViewItem[] items)
+		{
+			return new ComponentDebuggerView(handler, description, new ComponentDebuggerExtension(items));
+		}
+
+		private static IEnumerable<IComponentDebuggerExtension> GetExtensions(IHandler handler)
 		{
 			var handlerExtensions = handler.ComponentModel.ExtendedProperties["DebuggerExtensions"];
 			return (IEnumerable<IComponentDebuggerExtension>)handlerExtensions ??
 			       Enumerable.Empty<IComponentDebuggerExtension>();
-		}
-
-		public static ComponentDebuggerView BuildFor(IHandler handler, string description = null)
-		{
-			return new ComponentDebuggerView(handler, description ?? handler.ComponentModel.GetLifestyleDescription(), new DefaultComponentViewBuilder(handler));
 		}
 	}
 #endif

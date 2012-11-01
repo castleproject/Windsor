@@ -15,7 +15,9 @@
 namespace Castle.Windsor.Diagnostics.Extensions
 {
 #if !SILVERLIGHT
+	using System;
 	using System.Collections.Generic;
+	using System.Linq;
 
 	using Castle.Core;
 	using Castle.MicroKernel;
@@ -29,16 +31,15 @@ namespace Castle.Windsor.Diagnostics.Extensions
 		public override IEnumerable<DebuggerViewItem> Attach()
 		{
 			var result = diagnostic.Inspect();
-			if (result == null)
+			if (result.Length == 0)
 			{
-				return new DebuggerViewItem[0];
+				return Enumerable.Empty<DebuggerViewItem>();
 			}
-			var item = BuildItem(result);
-			if (item != null)
+			var items = BuildItems(result);
+			return new[]
 			{
-				return new[] { item };
-			}
-			return new DebuggerViewItem[0];
+				new DebuggerViewItem(name, "Count = " + items.Length, items)
+			};
 		}
 
 		public override void Init(IKernel kernel, IDiagnosticsHost diagnosticsHost)
@@ -47,29 +48,34 @@ namespace Castle.Windsor.Diagnostics.Extensions
 			diagnosticsHost.AddDiagnostic<IDuplicatedDependenciesDiagnostic>(diagnostic);
 		}
 
-		private DebuggerViewItem BuildItem(IDictionary<IHandler, Pair<DependencyModel, DependencyModel>[]> results)
+		private ComponentDebuggerView[] BuildItems(Pair<IHandler, Pair<DependencyModel, DependencyModel>[]>[] results)
 		{
-			return new DebuggerViewItem(name, "NOT IMPLEMENTED YET");
-			//var totalCount = 0;
-			//var items = new List<DebuggerViewItem>();
-			//foreach (var result in results.OrderBy(l => l.Key.ComponentModel.Name))
-			//{
-			//    var handler = result.Key;
-			//    var objects = result.ToArray();
-			//    totalCount += objects.Length;
-			//    var view = ComponentDebuggerView.BuildFor(handler);
-			//    var item = new DebuggerViewItem(handler.GetComponentName(),
-			//                                    "Count = " + objects.Length,
-			//                                    new ReleasePolicyTrackedObjectsDebuggerViewItem(view, objects));
-			//    items.Add(item);
-			//}
-			//items.Sort((f, s) => f.Name.CompareTo(s.Name));
-			//return new DebuggerViewItem(name, "Count = " + totalCount, items.ToArray());
+			return Array.ConvertAll(results, ComponentWithDuplicateDependenciesView);
+		}
+
+		private ComponentDebuggerView ComponentWithDuplicateDependenciesView(Pair<IHandler, Pair<DependencyModel, DependencyModel>[]> input)
+		{
+			var handler = input.First;
+			var mismatches = input.Second;
+			var items = Array.ConvertAll(mismatches, MismatchView);
+			return ComponentDebuggerView.BuildRawFor(handler, "Count = " + mismatches.Length, items);
+		}
+
+		private DebuggerViewItem MismatchView(Pair<DependencyModel, DependencyModel> input)
+		{
+			return new DebuggerViewItem(Description(input.First), Description(input.Second), null);
 		}
 
 		public static string Name
 		{
 			get { return name; }
+		}
+
+		private static string Description(DependencyModel dependencyModel)
+		{
+			return dependencyModel.ToString();
+
+
 		}
 	}
 #endif

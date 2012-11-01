@@ -30,19 +30,19 @@ namespace Castle.Windsor.Diagnostics
 			this.kernel = kernel;
 		}
 
-		public IDictionary<IHandler, Pair<DependencyModel, DependencyModel>[]> Inspect()
+		public Pair<IHandler, Pair<DependencyModel, DependencyModel>[]>[] Inspect()
 		{
 			var allHandlers = kernel.GetAssignableHandlers(typeof(object));
-			var result = new Dictionary<IHandler, Pair<DependencyModel, DependencyModel>[]>();
+			var result = new List<Pair<IHandler, Pair<DependencyModel, DependencyModel>[]>>();
 			foreach (var handler in allHandlers)
 			{
 				var duplicateDependencies = FindDuplicateDependenciesFor(handler);
 				if (duplicateDependencies.Length > 0)
 				{
-					result.Add(handler, duplicateDependencies);
+					result.Add(new Pair<IHandler, Pair<DependencyModel, DependencyModel>[]>(handler, duplicateDependencies));
 				}
 			}
-			return result;
+			return result.ToArray();
 		}
 
 		private void CollectDuplicatesBetween(DependencyModel[] array, List<Pair<DependencyModel, DependencyModel>> duplicates)

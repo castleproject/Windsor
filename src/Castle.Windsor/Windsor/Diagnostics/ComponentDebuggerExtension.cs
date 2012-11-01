@@ -14,13 +14,24 @@
 
 namespace Castle.Windsor.Diagnostics
 {
-	using Castle.Core;
-	using Castle.MicroKernel;
+#if !SILVERLIGHT
+	using System.Collections.Generic;
 
-	/// <summary>
-	///   Collects dependencies that are duplicated between constructors and properties.
-	/// </summary>
-	public interface IDuplicatedDependenciesDiagnostic : IDiagnostic<Pair<IHandler, Pair<DependencyModel, DependencyModel>[]>[]>
+	using Castle.Windsor.Diagnostics.DebuggerViews;
+
+	public class ComponentDebuggerExtension : IComponentDebuggerExtension
 	{
+		private readonly IEnumerable<DebuggerViewItem> items;
+
+		public ComponentDebuggerExtension(IEnumerable<DebuggerViewItem> items)
+		{
+			this.items = items;
+		}
+
+		public IEnumerable<DebuggerViewItem> Attach()
+		{
+			return items;
+		}
 	}
+#endif
 }

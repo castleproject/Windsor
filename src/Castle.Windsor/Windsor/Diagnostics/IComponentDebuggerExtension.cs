@@ -23,5 +23,6 @@ namespace Castle.Windsor.Diagnostics
 	{
 		IEnumerable<DebuggerViewItem> Attach();
 	}
+
 #endif
 }
